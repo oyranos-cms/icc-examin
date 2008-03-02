@@ -56,8 +56,8 @@ class Speicher
     int         id_;
     static int  globale_id_;
     std::string *name_;                   // z.B. Profilname
-    time_t      *letze_aen_zeit_;         // letztes mal geaendert
-    time_t      *letze_ben_zeit_;         // letztes mal benutzt
+    double      *letze_aen_zeit_;         // letztes mal geaendert
+    double      *letze_ben_zeit_;         // letztes mal benutzt
 
     void        init  ()    {
                               DBG_MEM_START
@@ -68,8 +68,8 @@ class Speicher
                               zeiger_=          (char**)       new char*[1];
                               groesse_=         (size_t*)      new size_t[1];
                               name_ =           (std::string*) new std::string;
-                              letze_aen_zeit_ = (time_t*)      new time_t[1];
-                              letze_ben_zeit_ = (time_t*)      new time_t[1];
+                              letze_aen_zeit_ = (double*)      new double[1];
+                              letze_ben_zeit_ = (double*)      new double[1];
                               *ref_n_ = 1; *zeiger_ = 0; *groesse_ = 0;
                               *letze_aen_zeit_ = *letze_ben_zeit_ = 0;
                               DBG_MEM_ENDE
@@ -100,8 +100,8 @@ class Speicher
                                 DBG_MEM_V(  letze_aen_zeit_ <<" "<<
                                            *letze_aen_zeit_ )
                                 DBG_MEM_V( *groesse_ )
-                              *letze_aen_zeit_ = time(0);
-                              *letze_ben_zeit_ = time(0);
+                              *letze_aen_zeit_ = (double)time(0);
+                              *letze_ben_zeit_ = (double)time(0);
                               DBG_MEM_ENDE
                             }
     void        zeiger_clear_ () {
@@ -209,10 +209,10 @@ class Speicher
                               DBG_MEM_ENDE
                               return *groesse_;
                             }
-    time_t      zeit     () const {
+    double      zeit     () const {
                               return *letze_aen_zeit_;
                             }
-    void        zeit     (time_t neue_zeit) {
+    void        zeit     (double neue_zeit) {
                               *letze_aen_zeit_ = neue_zeit;
                             }
 
@@ -233,6 +233,11 @@ class Speicher
                               DBG_MEM_START
                               DBG_MEM_ENDE
                               return *groesse_;
+                            }
+    operator Speicher &  () {
+                              DBG_MEM_START
+                              DBG_MEM_ENDE
+                              return *this;
                             }
     Speicher&           operator = (const Speicher& s) {
                               DBG_MEM_START

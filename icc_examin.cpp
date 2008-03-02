@@ -183,10 +183,11 @@ ICCexamin::start (int argc, char** argv)
       if (argc>1) {
         status( argv[1] << " " << _("loaded") )
         std::vector<std::string>profilnamen;
-        profilnamen.resize(argc-1);
         for (int i = 1; i < argc; i++) {
           DBG_PROG_S( i <<" "<< argv[i] )
-          profilnamen[i-1] = argv[i];
+          // keine process serial number in osX
+          if(std::string(argv[i]).find("-psn_") == std::string::npos)
+            profilnamen.push_back( argv[i] );
         }
         oeffnen (profilnamen);
       } else {

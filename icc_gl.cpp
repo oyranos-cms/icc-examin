@@ -1050,7 +1050,17 @@ GL_Ansicht::netzeAuffrischen()
        zeichneKoordinaten_();
        }
       
-       ICCnetz netz;
+       static ICCnetz netz;
+       netz.punkte.clear();
+       netz.indexe.clear();
+       static int punkt_zahl_alt = 0;
+       int punkt_zahl = 0;
+       for (unsigned int i = 0; i < dreiecks_netze.size(); ++i)
+         punkt_zahl += dreiecks_netze[i].punkte.size();
+       if(punkt_zahl > punkt_zahl_alt)
+         netz.punkte.reserve(punkt_zahl);
+       punkt_zahl_alt = punkt_zahl;
+       //netz.indexe.reserve(punkt_zahl);
        int punkte_n = 0;
        double abstand;
        for( j = 0; j < dreiecks_netze.size(); j++ )
@@ -1079,8 +1089,8 @@ GL_Ansicht::netzeAuffrischen()
                 it != dreiecks_netze[j].indexe.end(); ++it )
            {
                // die Indexe werden gesondert eingefuegt, um sie neu zu zaehlen
-       /*A*/ std::pair<double,DreiecksIndexe>
-                            index_p( *it );
+       /*A*/ std::pair<double,DreiecksIndexe> index_p( *it );
+
        /*B*/ for( k = 0; k < 3; ++k)
                index_p.second.i[k] += punkte_n;
        /*C*/

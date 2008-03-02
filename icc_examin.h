@@ -73,7 +73,7 @@ class ICCexamin : public icc_examin_ns::Beobachter
     int          erneuern_;
   public:
     int          erneuern() { return erneuern_; }
-    void         erneuern(int pos) { DBG_PROG_V( erneuern_ ) erneuern_ = pos; }
+    void         erneuern(int pos) { erneuern_ = pos; DBG_PROG_V( erneuern_ ) }
   private:
     std::vector<Speicher> speicher_vect_;
     static
@@ -84,7 +84,7 @@ class ICCexamin : public icc_examin_ns::Beobachter
 #endif
                  oeffnenStatisch_ ( void* ICCexamina );
     void         oeffnenThread_ ();            // nur einmal pro ICCexamin
-    void         oeffnenThread_ (int erneuern_); 
+    void         oeffnenThread_ (int erneuern__); 
   public:
     void         oeffnen ();                   // interaktiv
     void         oeffnen (std::vector<std::string> dateinamen);

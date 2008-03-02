@@ -94,8 +94,7 @@ class ICCkette : public icc_examin_ns::Modell
                if(profilnamen_.size()) return profilnamen_[aktuelles_profil_];
                else return ""; }
     ICCprofile*  operator [] (int n)
-             { if (profile_.size() && n >= 0 && n < (int)profile_.size() &&
-                   aktiv(n) ) {
+             { if (profile_.size() && n >= 0 && n < (int)profile_.size()) {
                  return &(profile_[n]);
                } else return 0;
              }

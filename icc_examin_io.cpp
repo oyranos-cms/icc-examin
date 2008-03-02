@@ -72,11 +72,16 @@ ICCexamin::oeffnenThread_ (int pos)
 
   // Laden
   fortschrittThreaded( .1 );
+  if((int)speicher_vect_.size() < (pos+1))
+    WARN_S( "Speicher nicht besetzt" )
+
+  dateiNachSpeicher( speicher_vect_[pos], profile.name(pos) );
+  
   for (unsigned int i = 0; i < speicher_vect_.size(); ++i)
   {
     DBG_PROG_V( speicher_vect_[i].size()<<" "<<speicher_vect_[i].name() )
     fortschrittThreaded( 1./3.+ (double)(i)/speicher_vect_.size()/3.0 );
-    profile.einfuegen( speicher_vect_[i], pos );
+    profile.einfuegen( speicher_vect_[pos], pos );
     fortschrittThreaded( 1./3.+ (double)(i+1)/speicher_vect_.size()/3.0 );
     DBG_THREAD
   }
@@ -239,8 +244,8 @@ ICCexamin::oeffnenThread_ ()
       DBG_PROG_V( dateinamen[0] <<" "<< detaillabel )
     }
 
-  } else
-    fortschrittThreaded( 1.1 );
+  }
+  fortschrittThreaded( 1.1 );
   DBG_PROG_ENDE
 }
 
@@ -306,6 +311,7 @@ ICCexamin::oeffnenStatisch_ (void* ie)
     if(examin->lade_) {
       examin->oeffnenThread_();
       examin->lade_ = false;
+      examin->erneuern(-1);
     } else if(examin->erneuern() >= 0 &&
               examin->erneuern() < profile.size()) {
       examin->oeffnenThread_(examin->erneuern());

@@ -110,11 +110,17 @@ ICCkette::einfuegen (const Speicher & prof, int pos)
 
   // Ist das Profile eventuell schon geladen? -> Abbruch
   for(unsigned int i = 0; i < profile_.size(); ++i)
-    if(prof.name() == profile_[i].filename())
+    if((icc_examin->erneuern() != (int)i) &&
+       prof.name() == profile_[i].filename()) {
+      frei(true);
       return erfolg;
+    }
+  icc_examin->erneuern(-1);
 
-  if(!prof.size())
+  if(!prof.size()) {
+    frei(true);
     return false;
+  }
 
   DBG_PROG_V( pos )
 
@@ -155,15 +161,8 @@ ICCkette::einfuegen (const Speicher & prof, int pos)
       name = profile_[pos].getTagText( profile_[pos].getTagByName("desc"))[0];
   profilnamen_[pos] = name ;
 
-  std::string moni = icc_oyranos.moni_name();
-  if(name == moni)
-    aktiv_[pos] = false;
-  else
-    aktiv_[pos] = true;
-  int test = profile.size()-1;
-  DBG_V( test <<" "<< profile.aktiv(test) )
-
-  profil_mzeit_[pos] = (double)prof.zeit();
+  aktiv_[pos] = true;
+  profil_mzeit_[pos] = holeDateiModifikationsZeit( name.c_str() );
   DBG_PROG
 
   if( profile_.size() ) {
@@ -202,9 +201,10 @@ ICCkette::waechter (void* zeiger)
   {
     for(unsigned i = 0; i < obj->profilnamen_.size(); ++i)
     {
-      DBG_MEM_V( obj->profilnamen_[i] );
-      double m_zeit = holeDateiModifikationsZeit( obj->profilnamen_[i].c_str());
-      DBG_MEM_V( m_zeit <<" "<< obj->profil_mzeit_[i] << obj->profilnamen_[i] )
+      const char* name = obj->profilnamen_[i].c_str();
+      DBG_MEM_V( name );
+      double m_zeit = holeDateiModifikationsZeit( name );
+      DBG_MEM_V( m_zeit <<" "<< obj->profil_mzeit_[i] << name )
       if( m_zeit &&
           obj->aktiv_[i] &&
           obj->profil_mzeit_[i] != m_zeit
@@ -214,24 +214,15 @@ ICCkette::waechter (void* zeiger)
         )
       {
         DBG_PROG_V( obj->profil_mzeit_[i] )
-        if( obj->profil_mzeit_[i] == 0 ) {
-          obj->profil_mzeit_[i] = m_zeit;
-        } else {
-          // TODO
-          while(!obj->frei()) icc_examin_ns::sleep(0.05); obj->frei(false);
+        if( obj->profil_mzeit_[i] != 0 ) {
           // lade in LADEN und warte auf Ergebnis
           icc_examin->erneuern(i);
-          //obj->profile_[i].load( dateiNachSpeicher(obj->profilnamen_[i]) );
-          icc_examin_ns::lock(__FILE__,__LINE__);
-          obj->/*Modell::*/benachrichtigen( i );
-          icc_examin_ns::unlock(icc_examin, __FILE__,__LINE__);
-          obj->profil_mzeit_[i] = m_zeit;
-          obj->frei(true);
         }
+        obj->profil_mzeit_[i] = m_zeit;
       }
     }
     DBG_THREAD
-    icc_examin_ns::sleep(1.0/2.0);
+    icc_examin_ns::sleep(1.0/10.0);
   }
 
 # if USE_THREADS

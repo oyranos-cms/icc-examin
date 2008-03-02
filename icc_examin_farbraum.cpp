@@ -144,7 +144,7 @@ ICCexamin::netzLese (int n,
     }
   }
   for(int i = 0; i < (int)netz->size(); ++i)
-    DBG_PROG_V( (*netz)[i].transparenz <<" "<< (*netz)[i].umriss.size() )
+    DBG_PROG_V( (*netz)[n].aktiv <<" "<< (*netz)[i].transparenz <<" "<< (*netz)[i].umriss.size() );
   DBG_PROG_ENDE
 }
 
@@ -276,6 +276,11 @@ ICCexamin::farbraum (int n)
     }
 
     icc_betrachter->DD_farbraum->achsNamen( texte );
+
+    std::string moni = icc_oyranos.moni_name();
+    if(profile[n]->filename() == moni)
+      profile.passiv(n);
+    DBG_PROG_V( n <<" "<< profile.aktiv(n) )
   }
   if(icc_betrachter->DD_farbraum->dreiecks_netze[n].name == "") {
     icc_betrachter->DD_farbraum->dreiecks_netze[n].name =
@@ -286,17 +291,6 @@ ICCexamin::farbraum (int n)
       dateiname = dateiname.substr( dateiname.find_last_of("/")+1,
                                     dateiname.size() );
     DBG_PROG_V( icc_betrachter->DD_farbraum->dreiecks_netze[n].name )
-  }
-  // Waehler / Netz Abgleich
-  if(netz->size()) {
-    int n_size = netz->size();
-    for (int i = 0; i < n_size; ++i) {
-      if(profile.size() > i) {
-        DBG_V( (*netz)[i].aktiv <<"|"<< (*netz)[i].grau <<"|"<<(*netz)[i].transparenz <<" "<< profile.aktiv(i) )
-        (*netz)[i].aktiv = profile.aktiv(i);
-        DBG_V( (*netz)[i].aktiv <<"|"<< (*netz)[i].grau <<"|"<<(*netz)[i].transparenz <<" "<< profile.aktiv(i) )
-      }
-    }
   }
 
   FREI_(true);

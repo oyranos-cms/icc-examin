@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2005-09-29 10:23+0200\n"
+"POT-Creation-Date: 2005-10-06 15:58+0200\n"
 "PO-Revision-Date: 2005-08-13 17:35+0200\n"
 "Last-Translator: Kai-Uwe Behrmann\n"
 "Language-Team:  <de@li.org>\n"
@@ -21,7 +21,7 @@ msgstr ""
 msgid "GL Fenster nicht frei"
 msgstr ""
 
-#: agviewer.cpp:312 icc_gl.cpp:2161 icc_gl.cpp:2180 icc_gl.cpp:2299
+#: agviewer.cpp:312 icc_gl.cpp:2171 icc_gl.cpp:2190 icc_gl.cpp:2309
 msgid "left-/middle-/right mouse button -> rotate/cut/menu"
 msgstr "linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menue"
 
@@ -29,8 +29,8 @@ msgstr "linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menue"
 msgid "Pause"
 msgstr "Pause"
 
-#: agviewer.cpp:349 agviewer.cpp:357 icc_gl.cpp:2265 icc_gl.cpp:2276
-#: icc_gl.cpp:2281 icc_gl.cpp:2286
+#: agviewer.cpp:349 agviewer.cpp:357 icc_gl.cpp:2275 icc_gl.cpp:2286
+#: icc_gl.cpp:2291 icc_gl.cpp:2296
 msgid "left mouse button -> go back"
 msgstr "linke Maustaste -> zurueck"
 
@@ -153,7 +153,7 @@ msgstr "Grün"
 msgid "Blue"
 msgstr "Blau"
 
-#: icc_draw.cpp:662 icc_gl.cpp:1602 icc_helfer.cpp:342 icc_waehler.h:128
+#: icc_draw.cpp:662 icc_gl.cpp:1612 icc_helfer.cpp:342 icc_waehler.h:128
 msgid "Gray"
 msgstr "Grau"
 
@@ -169,7 +169,7 @@ msgstr ""
 msgid "Yellow"
 msgstr "Gelb"
 
-#: icc_draw.cpp:675 icc_gl.cpp:1604 icc_helfer.cpp:402 icc_helfer.cpp:412
+#: icc_draw.cpp:675 icc_gl.cpp:1614 icc_helfer.cpp:402 icc_helfer.cpp:412
 msgid "Black"
 msgstr "Schwarz"
 
@@ -201,18 +201,18 @@ msgstr "Helligkeit"
 msgid "Value"
 msgstr "Wert"
 
-#: icc_draw.cpp:691 icc_examin_farbraum.cpp:202 icc_examin_io.cpp:173
+#: icc_draw.cpp:691 icc_examin_farbraum.cpp:202 icc_examin_io.cpp:178
 #: icc_helfer.cpp:387 icc_helfer.cpp:390
 msgid "CIE *L"
 msgstr ""
 
-#: icc_draw.cpp:693 icc_examin_farbraum.cpp:203 icc_examin_io.cpp:174
+#: icc_draw.cpp:693 icc_examin_farbraum.cpp:203 icc_examin_io.cpp:179
 #: icc_gl.cpp:765 icc_gl.cpp:835 icc_gl.cpp:859 icc_gl.cpp:867
 #: icc_helfer.cpp:388
 msgid "CIE *a"
 msgstr ""
 
-#: icc_draw.cpp:695 icc_examin_farbraum.cpp:204 icc_examin_io.cpp:175
+#: icc_draw.cpp:695 icc_examin_farbraum.cpp:204 icc_examin_io.cpp:180
 #: icc_gl.cpp:778 icc_gl.cpp:875 icc_gl.cpp:893 icc_gl.cpp:900
 #: icc_helfer.cpp:389
 msgid "CIE *b"
@@ -250,95 +250,95 @@ msgstr "Darstellungsoptionen"
 msgid "icc_waehler_ nicht reservierbar"
 msgstr ""
 
-#: icc_examin.cpp:184 icc_examin_io.cpp:437
+#: icc_examin.cpp:184 icc_examin_io.cpp:443
 msgid "loaded"
 msgstr "geladen"
 
-#: icc_examin.cpp:193
+#: icc_examin.cpp:194
 msgid "Ready"
 msgstr "Bereit"
 
-#: icc_examin.cpp:218 icc_kette.cpp:72
+#: icc_examin.cpp:219 icc_kette.cpp:72
 msgid "Waechter Thread nicht gestartet Fehler: "
 msgstr ""
 
-#: icc_examin.cpp:223 icc_kette.cpp:77
+#: icc_examin.cpp:224 icc_kette.cpp:77
 msgid "zu viele Waechter Threads Fehler: "
 msgstr ""
 
-#: icc_examin.cpp:228 icc_kette.cpp:82
+#: icc_examin.cpp:229 icc_kette.cpp:82
 msgid "unbekannter Fehler beim Start eines Waechter Threads Fehler: "
 msgstr ""
 
-#: icc_examin.cpp:421
+#: icc_examin.cpp:422
 msgid "Keine Kurve gefunden"
 msgstr ""
 
-#: icc_examin.cpp:535
+#: icc_examin.cpp:536
 msgid "verstecke "
 msgstr ""
 
-#: icc_examin.cpp:539
+#: icc_examin.cpp:540
 msgid "zeige     "
 msgstr ""
 
-#: icc_examin_farbraum.cpp:179 icc_gl.cpp:1826
+#: icc_examin_farbraum.cpp:179 icc_gl.cpp:1836
 msgid "RGB Ergebnis nicht verfuegbar"
 msgstr ""
 
-#: icc_examin_io.cpp:182
+#: icc_examin_io.cpp:187
 msgid "kein Netz gefunden in VRML Datei"
 msgstr ""
 
-#: icc_examin_io.cpp:198
+#: icc_examin_io.cpp:203
 msgid "Anzahl gabs schon mal"
 msgstr ""
 
-#: icc_examin_io.cpp:219
+#: icc_examin_io.cpp:224
 msgid "Kein Netz gefunden. Ist Argyll installiert?"
 msgstr ""
 
-#: icc_examin_io.cpp:350
+#: icc_examin_io.cpp:356
 msgid "Stop loading "
 msgstr "Laden angehalten: "
 
-#: icc_examin_io.cpp:395 icc_betrachter.cxx:467
+#: icc_examin_io.cpp:401 icc_betrachter.cxx:467
 msgid "Filename"
 msgstr "Dateiname"
 
-#: icc_examin_io.cpp:399
+#: icc_examin_io.cpp:405
 msgid "found no content for"
 msgstr "keine Inhalte gefunden für"
 
-#: icc_examin_io.cpp:402
+#: icc_examin_io.cpp:408
 msgid "Internal error"
 msgstr "interner Fehler"
 
-#: icc_examin_io.cpp:404
+#: icc_examin_io.cpp:410
 msgid "No. Tag   Type   Size Description"
 msgstr "Nr. Teil  Typ   Größe Beschreibung"
 
-#: icc_examin_io.cpp:463
+#: icc_examin_io.cpp:469
 msgid "HTML Documents (*.htm*)"
 msgstr "HTML Dokumente (*.htm*)"
 
-#: icc_examin_io.cpp:467 icc_betrachter.cxx:386
+#: icc_examin_io.cpp:473 icc_betrachter.cxx:386
 msgid "Save Report"
 msgstr "Bericht Speichern"
 
-#: icc_examin_io.cpp:538 icc_betrachter.cxx:497
+#: icc_examin_io.cpp:544 icc_betrachter.cxx:497
 msgid "ICC colour profiles (*.ic*)"
 msgstr "ICC Farbprofile (*.ic*)"
 
-#: icc_examin_io.cpp:539 icc_betrachter.cxx:387
+#: icc_examin_io.cpp:545 icc_betrachter.cxx:387
 msgid "Save Gamut as Profile"
 msgstr "Speichere Farbhülle als Profil"
 
-#: icc_examin_io.cpp:541
+#: icc_examin_io.cpp:547
 msgid "VRML Files (*.wrl)"
 msgstr "VRML Dateien (*.wrl)"
 
-#: icc_examin_io.cpp:542 icc_betrachter.cxx:388
+#: icc_examin_io.cpp:548 icc_betrachter.cxx:388
 msgid "Save Gamut as VRML"
 msgstr "Speichere Farbhülle als VRML"
 
@@ -376,123 +376,123 @@ msgstr ""
 msgid "Kanalauswahl geaendert: "
 msgstr ""
 
-#: icc_gl.cpp:1346 icc_gl.cpp:1475
+#: icc_gl.cpp:1356 icc_gl.cpp:1485
 msgid "Lab_speicher Speicher nicht verfuegbar"
 msgstr ""
 
-#: icc_gl.cpp:1367 icc_gl.cpp:1368 icc_gl.cpp:1493 icc_gl.cpp:1494
+#: icc_gl.cpp:1377 icc_gl.cpp:1378 icc_gl.cpp:1503 icc_gl.cpp:1504
 msgid "RGB_speicher Ergebnis nicht verfuegbar"
 msgstr ""
 
-#: icc_gl.cpp:1466
+#: icc_gl.cpp:1476
 msgid "XYZ_speicher Speicher nicht verfuegbar"
 msgstr ""
 
-#: icc_gl.cpp:1576 icc_gl.cpp:1586 icc_gl.cpp:1588 icc_gl.cpp:1590
+#: icc_gl.cpp:1586 icc_gl.cpp:1596 icc_gl.cpp:1598 icc_gl.cpp:1600
 msgid "Slice"
 msgstr "Schnitt"
 
-#: icc_gl.cpp:1577
+#: icc_gl.cpp:1587
 msgid "Rotate around slice"
 msgstr "Drehen um Schnitt"
 
-#: icc_gl.cpp:1592
+#: icc_gl.cpp:1602
 msgid "Rotate around"
 msgstr "Drehen um"
 
-#: icc_gl.cpp:1592
+#: icc_gl.cpp:1602
 msgid "axis"
 msgstr "Achse"
 
-#: icc_gl.cpp:1597
+#: icc_gl.cpp:1607
 msgid "Slice plane"
 msgstr "Querschnitt"
 
-#: icc_gl.cpp:1600
+#: icc_gl.cpp:1610
 msgid "White"
 msgstr "Weiß"
 
-#: icc_gl.cpp:1601
+#: icc_gl.cpp:1611
 msgid "Light gray"
 msgstr "Hellgrau"
 
-#: icc_gl.cpp:1603
+#: icc_gl.cpp:1613
 msgid "Dark gray"
 msgstr "Dunkelgrau"
 
-#: icc_gl.cpp:1607
+#: icc_gl.cpp:1617
 msgid "Background colour"
 msgstr "Hintergrundfarbe"
 
-#: icc_gl.cpp:1612
+#: icc_gl.cpp:1622
 msgid "gray"
 msgstr "grau"
 
-#: icc_gl.cpp:1613
+#: icc_gl.cpp:1623
 msgid "coloured"
 msgstr "farbig"
 
-#: icc_gl.cpp:1614
+#: icc_gl.cpp:1624
 msgid "high contrast"
 msgstr "kontrastreich"
 
-#: icc_gl.cpp:1615
+#: icc_gl.cpp:1625
 msgid "shells"
 msgstr "schalen"
 
-#: icc_gl.cpp:1620
+#: icc_gl.cpp:1630
 msgid "Sphere 1dE"
 msgstr "Kugel 1dE"
 
-#: icc_gl.cpp:1621
+#: icc_gl.cpp:1631
 msgid "Sphere 2dE"
 msgstr "Kugel 2dE"
 
-#: icc_gl.cpp:1622
+#: icc_gl.cpp:1632
 msgid "Sphere 4dE"
 msgstr "Kugel 4dE"
 
-#: icc_gl.cpp:1625
+#: icc_gl.cpp:1635
 msgid "Star"
 msgstr "Stern"
 
-#: icc_gl.cpp:1628
+#: icc_gl.cpp:1638
 msgid "Point"
 msgstr "Punkt"
 
-#: icc_gl.cpp:1631
+#: icc_gl.cpp:1641
 msgid "without markers"
 msgstr "ohne Farborte"
 
-#: icc_gl.cpp:1632
+#: icc_gl.cpp:1642
 msgid "Spektral line"
 msgstr "Spektrallinie"
 
-#: icc_gl.cpp:1635 icc_betrachter.cxx:695
+#: icc_gl.cpp:1645 icc_betrachter.cxx:695
 msgid "Texts"
 msgstr "Texte"
 
-#: icc_gl.cpp:1637
+#: icc_gl.cpp:1647
 msgid "Texts/Arrows on/off"
 msgstr "Texte/Pfeile an/aus"
 
-#: icc_gl.cpp:1639
+#: icc_gl.cpp:1649
 msgid "Illustration"
 msgstr "Darstellung"
 
-#: icc_gl.cpp:1900
+#: icc_gl.cpp:1910
 msgid "Pos"
 msgstr ""
 
-#: icc_gl.cpp:1995 icc_profile_tags.cpp:291
+#: icc_gl.cpp:2005 icc_profile_tags.cpp:291
 msgid "Channel"
 msgstr "Kanal"
 
-#: icc_gl.cpp:2324
+#: icc_gl.cpp:2334
 msgid "Konnte keine Eltern finden"
 msgstr ""
 
-#: icc_gl.cpp:2334
+#: icc_gl.cpp:2344
 msgid "Konnte keine passende Programmstruktur finden"
 msgstr ""
 
@@ -1121,11 +1121,11 @@ msgstr ""
 msgid "set codeset for \"icc_examin\" to "
 msgstr ""
 
-#: icc_kette.cpp:150
+#: icc_kette.cpp:156
 msgid "noName"
 msgstr "kein Name"
 
-#: icc_kette.cpp:174
+#: icc_kette.cpp:173
 msgid "File not loaded!"
 msgstr "Datei nicht geladen!"
 
@@ -1307,9 +1307,8 @@ msgid "Profil konnte nicht geladen werden"
 msgstr ""
 
 #: icc_oyranos.cpp:316
-#, fuzzy
 msgid "Monitor Profile"
-msgstr "Profil öffnen"
+msgstr "Bildschirmprofil"
 
 #: icc_oyranos.cpp:709 icc_oyranos.cpp:795
 msgid "hLab Profil nicht geoeffnet"
@@ -2170,7 +2169,7 @@ msgid "!!! Warnung !!!"
 msgstr ""
 
 #: icc_version.h:9
-msgid "May 2004 - Aug 2005"
+msgid "May 2004 - September 2005"
 msgstr ""
 
 #: icc_waehler.h:68
