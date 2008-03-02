@@ -1,3 +1,9 @@
+2007-06-20
+	* neu: switch to v0.45
+	* fix: Fl_Window::set_modal() is not undoable: remove
+	* fix: fix saving: filechooser dateiwahl callback is not sete by default
+	* fix: bug#1745530 FL_WHEN_CHANGED prevents double clicks on directories in filechooser: solution fileList->when(FL_WHEN_CHANGED) -> when(3)
+
 2007-06-29
 	* neu: ncl2 loockup from 2D view
 	* und: user defined selection order in file browser (FL_WHEN_CHANGED + own list)
@@ -6,6 +12,11 @@
 	* neu: handle patch names in ICCexamin::farbenLese
 	* new: single ncl2 patch in ICCexamin::farbenLese as negative n arg
 	* und: added ncl2 to selectTextsLine callback
+	* neu: mark ncl2 and cgats tags text lines containing colour patches
+	* neu: synchronise html report view with cgats tag text line selection
+	* neu: add name to each patch to make it selectable in html report
+	* neu: ICCmeasurement::getPatchLines helper to mark cgats tag text lines
+	* und: rename ICCmeasurement::getLine() ICCmeasurement::getPatchLine()
 
 2007-06-28
 	* neu: show selected measurement patch in 3D view

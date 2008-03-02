@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2007-06-30 08:28+0200\n"
+"POT-Creation-Date: 2007-07-01 22:49+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: agviewer.cpp:313 icc_gl.cpp:2624 icc_gl.cpp:2643 icc_gl.cpp:2762
+#: agviewer.cpp:313 icc_gl.cpp:2659 icc_gl.cpp:2678 icc_gl.cpp:2797
 msgid "left-/middle-/right mouse button -> rotate/cut/menu"
 msgstr ""
 
@@ -24,8 +24,8 @@ msgstr ""
 msgid "Pause"
 msgstr ""
 
-#: agviewer.cpp:350 agviewer.cpp:358 icc_gl.cpp:2728 icc_gl.cpp:2739
-#: icc_gl.cpp:2744 icc_gl.cpp:2749
+#: agviewer.cpp:350 agviewer.cpp:358 icc_gl.cpp:2763 icc_gl.cpp:2774
+#: icc_gl.cpp:2779 icc_gl.cpp:2784
 msgid "left mouse button -> go back"
 msgstr ""
 
@@ -52,7 +52,7 @@ msgstr ""
 msgid "Blue"
 msgstr ""
 
-#: icc_draw.cpp:666 icc_gl.cpp:1985 icc_helfer.cpp:438 icc_waehler.h:131
+#: icc_draw.cpp:666 icc_gl.cpp:1988 icc_helfer.cpp:438 icc_waehler.h:131
 msgid "Gray"
 msgstr ""
 
@@ -68,7 +68,7 @@ msgstr ""
 msgid "Yellow"
 msgstr ""
 
-#: icc_draw.cpp:679 icc_gl.cpp:1987 icc_helfer.cpp:575 icc_helfer.cpp:585
+#: icc_draw.cpp:679 icc_gl.cpp:1990 icc_helfer.cpp:575 icc_helfer.cpp:585
 msgid "Black"
 msgstr ""
 
@@ -106,13 +106,13 @@ msgid "CIE *L"
 msgstr ""
 
 #: icc_draw.cpp:697 icc_examin_farbraum.cpp:318 icc_examin_io.cpp:214
-#: icc_gl.cpp:949 icc_gl.cpp:1023 icc_gl.cpp:1049 icc_gl.cpp:1057
+#: icc_gl.cpp:952 icc_gl.cpp:1026 icc_gl.cpp:1052 icc_gl.cpp:1060
 #: icc_helfer.cpp:561
 msgid "CIE *a"
 msgstr ""
 
 #: icc_draw.cpp:699 icc_examin_farbraum.cpp:319 icc_examin_io.cpp:215
-#: icc_gl.cpp:962 icc_gl.cpp:1065 icc_gl.cpp:1085 icc_gl.cpp:1092
+#: icc_gl.cpp:965 icc_gl.cpp:1068 icc_gl.cpp:1088 icc_gl.cpp:1095
 #: icc_helfer.cpp:562
 msgid "CIE *b"
 msgstr ""
@@ -141,65 +141,65 @@ msgstr ""
 msgid " with one entry for gamma: "
 msgstr ""
 
-#: icc_examin.cpp:176
+#: icc_examin.cpp:178
 msgid "Gamut selector"
 msgstr ""
 
-#: icc_examin.cpp:263 icc_examin.cpp:1019
+#: icc_examin.cpp:266 icc_examin.cpp:1088
 msgid "loaded"
 msgstr ""
 
-#: icc_examin.cpp:269
+#: icc_examin.cpp:272
 msgid "Ready"
 msgstr ""
 
-#: icc_examin.cpp:318
+#: icc_examin.cpp:321
 msgid ""
 "ICC colour profiles (*.{I,i}{C,c}{M,m,C,c})\tMeasurement (*.{txt,it8,IT8,RGB,"
 "CMYK,ti*,cgats,CIE,cie,nCIE,oRPT,DLY,LAB,Q60})\tArgyll Gamuts (*.{wrl,vrml}"
 msgstr ""
 
-#: icc_examin.cpp:318
+#: icc_examin.cpp:321
 msgid "Which ICC profile?"
 msgstr ""
 
-#: icc_examin.cpp:579 icc_examin.cpp:582
+#: icc_examin.cpp:648 icc_examin.cpp:651
 msgid "Compare Measurement <-> Profile Colours"
 msgstr ""
 
-#: icc_examin.cpp:581
+#: icc_examin.cpp:650
 msgid "none"
 msgstr ""
 
-#: icc_examin.cpp:595 icc_examin.cpp:597
+#: icc_examin.cpp:664 icc_examin.cpp:666
 msgid "Gamut View"
 msgstr ""
 
-#: icc_examin.cpp:639 icc_gl.h:253
+#: icc_examin.cpp:708 icc_gl.h:257
 msgid "not available"
 msgstr ""
 
-#: icc_examin.cpp:960
+#: icc_examin.cpp:1029
 msgid "Filename (ICC data type)"
 msgstr ""
 
-#: icc_examin.cpp:963
+#: icc_examin.cpp:1032
 msgid "Filename (other data type)"
 msgstr ""
 
-#: icc_examin.cpp:965
+#: icc_examin.cpp:1034
 msgid "Filename (corrupted ICC data type)"
 msgstr ""
 
-#: icc_examin.cpp:970
+#: icc_examin.cpp:1039
 msgid "found no content for"
 msgstr ""
 
-#: icc_examin.cpp:973
+#: icc_examin.cpp:1042
 msgid "Internal error"
 msgstr ""
 
-#: icc_examin.cpp:976
+#: icc_examin.cpp:1045
 msgid "No. Tag   Type   Size Description"
 msgstr ""
 
@@ -259,117 +259,117 @@ msgstr ""
 msgid "Yes"
 msgstr ""
 
-#: icc_gl.cpp:703 icc_gl.cpp:706 icc_gl.cpp:709 icc_gl.cpp:715 icc_gl.cpp:719
-#: icc_gl.cpp:734
+#: icc_gl.cpp:706 icc_gl.cpp:709 icc_gl.cpp:712 icc_gl.cpp:718 icc_gl.cpp:722
+#: icc_gl.cpp:737
 msgid "Could not open font in:"
 msgstr ""
 
-#: icc_gl.cpp:826
+#: icc_gl.cpp:829
 #, c-format
 msgid "0,0,0"
 msgstr ""
 
-#: icc_gl.cpp:1959 icc_gl.cpp:1969 icc_gl.cpp:1971 icc_gl.cpp:1973
+#: icc_gl.cpp:1962 icc_gl.cpp:1972 icc_gl.cpp:1974 icc_gl.cpp:1976
 msgid "Slice"
 msgstr ""
 
-#: icc_gl.cpp:1960
+#: icc_gl.cpp:1963
 msgid "Rotate around slice"
 msgstr ""
 
-#: icc_gl.cpp:1975
+#: icc_gl.cpp:1978
 msgid "Rotate around"
 msgstr ""
 
-#: icc_gl.cpp:1975
+#: icc_gl.cpp:1978
 msgid "axis"
 msgstr ""
 
-#: icc_gl.cpp:1980
+#: icc_gl.cpp:1983
 msgid "Slice plane"
 msgstr ""
 
-#: icc_gl.cpp:1983
+#: icc_gl.cpp:1986
 msgid "White"
 msgstr ""
 
-#: icc_gl.cpp:1984
+#: icc_gl.cpp:1987
 msgid "Light gray"
 msgstr ""
 
-#: icc_gl.cpp:1986
+#: icc_gl.cpp:1989
 msgid "Dark gray"
 msgstr ""
 
-#: icc_gl.cpp:1990
+#: icc_gl.cpp:1993
 msgid "Background colour"
 msgstr ""
 
-#: icc_gl.cpp:1995
+#: icc_gl.cpp:1998
 msgid "gray"
 msgstr ""
 
-#: icc_gl.cpp:1996
+#: icc_gl.cpp:1999
 msgid "coloured"
 msgstr ""
 
-#: icc_gl.cpp:1997
+#: icc_gl.cpp:2000
 msgid "high contrast"
 msgstr ""
 
-#: icc_gl.cpp:1998
+#: icc_gl.cpp:2001
 msgid "shells"
 msgstr ""
 
-#: icc_gl.cpp:1999
+#: icc_gl.cpp:2002
 msgid "Colour line"
 msgstr ""
 
-#: icc_gl.cpp:2004
+#: icc_gl.cpp:2007
 msgid "Sphere 1dE"
 msgstr ""
 
-#: icc_gl.cpp:2005
+#: icc_gl.cpp:2008
 msgid "Sphere 2dE"
 msgstr ""
 
-#: icc_gl.cpp:2006
+#: icc_gl.cpp:2009
 msgid "Sphere 4dE"
 msgstr ""
 
-#: icc_gl.cpp:2009
+#: icc_gl.cpp:2012
 msgid "Star"
 msgstr ""
 
-#: icc_gl.cpp:2012
+#: icc_gl.cpp:2015
 msgid "Point"
 msgstr ""
 
-#: icc_gl.cpp:2015
+#: icc_gl.cpp:2018
 msgid "without markers"
 msgstr ""
 
-#: icc_gl.cpp:2016
+#: icc_gl.cpp:2019
 msgid "Spektral line"
 msgstr ""
 
-#: icc_gl.cpp:2019
+#: icc_gl.cpp:2022
 msgid "Texts"
 msgstr ""
 
-#: icc_gl.cpp:2021
+#: icc_gl.cpp:2024
 msgid "Texts/Arrows on/off"
 msgstr ""
 
-#: icc_gl.cpp:2023
+#: icc_gl.cpp:2026
 msgid "Illustration"
 msgstr ""
 
-#: icc_gl.cpp:2304
+#: icc_gl.cpp:2324
 msgid "Pos"
 msgstr ""
 
-#: icc_gl.cpp:2388 icc_profile_tags.cpp:312
+#: icc_gl.cpp:2408 icc_profile_tags.cpp:312
 msgid "Channel"
 msgstr ""
 
@@ -1990,7 +1990,7 @@ msgid "What kind of image is this?\n"
 msgstr ""
 
 #: icc_examin_version.h:9
-msgid "May 2004 - June 2007"
+msgid "May 2004 - July 2007"
 msgstr ""
 
 #: icc_utils.h:226 icc_utils.h:227 icc_utils.h:228

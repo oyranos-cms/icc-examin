@@ -111,7 +111,7 @@ class ICCexamin : public icc_examin_ns::Beobachter,
     std::string  waehleTag (int item);
     void         waehleMft (int item);
     std::vector<int> kurve_umkehren;
-    enum { GL_STOP, GL_ZEICHNEN, GL_AUFFRISCHEN }; //!< GL waiting
+    enum { GL_STOP, GL_ZEICHNEN, GL_AUFFRISCHEN, GL_MOUSE_HIT3D }; //!< GL waiting
     icc_examin_ns::EinModell  * alle_gl_fenster;   //!< all Gl windows
   private:
     int  _item,  _mft_item;    //!< @brief selected profil items

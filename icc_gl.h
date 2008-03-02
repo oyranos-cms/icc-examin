@@ -50,19 +50,23 @@
 class Fl_Menu_Button;
 class Agviewer;
 
-class GL_Ansicht : public Fl_Gl_Window, /*, public Fl_Slot*/
+class GL_Ansicht : public Fl_Gl_Window,
                    public icc_examin_ns::ThreadDaten,
-                   public icc_examin_ns::Beobachter {
+                   public icc_examin_ns::Beobachter,
+                   public icc_examin_ns::Modell {
   // internal data
-    // position: colour1, colour2, colour3, colour channel No., value
+    //! position: colour1, colour2, colour3, colour channel No., value
   std::vector<std::vector<std::vector<std::vector<double> > > > tabelle_;
   std::vector<std::string>nach_farb_namen_;
   std::vector<std::string>von_farb_namen_;
   std::vector<std::string>farb_namen_;
-  std::vector<double> punkte_;        //                (n*3)
-  std::vector<float>  farben_;        // rgba 0.0 - 1.0 (n*4)
-  ICCnetzPunkt epoint_;
+  std::vector<double> punkte_;        //!<                (n*3)
+  std::vector<float>  farben_;        //!< rgba 0.0 - 1.0 (n*4)
+  ICCnetzPunkt epoint_;               //!< emphasize point
+public:
+  ICCnetzPunkt mouse_3D_hit;          //!< a point recently hit by the mouse
 
+private:
   void fensterForm();
 
   // adapt inner struktures at data change

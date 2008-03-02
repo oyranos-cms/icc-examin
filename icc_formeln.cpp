@@ -162,6 +162,26 @@ dE2000 (const Lab_s & Lab1_n, const Lab_s & Lab2_n,
   return de2000;
 }
 
+double
+dE ( Lab_s Lab1, Lab_s Lab2 )
+{
+  double l1[3], l2[3];
+  LabToCIELab( Lab1, l1 );
+  LabToCIELab( Lab2, l2 );
+
+  return HYP3( l1[0]-l2[0], l1[1]-l2[1], l1[2]-l2[2] );
+}
+
+double
+dE ( double * Lab1, Lab_s Lab2 )
+{
+   Lab_s Lab1_;
+   Lab1_.L = Lab1[0];
+   Lab1_.a = Lab1[1];
+   Lab1_.b = Lab1[2];
+   return dE( Lab1_, Lab2 );
+}
+
 void
 LabtoXYZ (Lab_s &lab, XYZ_s &XYZ)
 {

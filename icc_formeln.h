@@ -85,6 +85,8 @@ void FarbeZuDouble (CMYK_s *cmyk, double* d_cmyk);
 // colour difference
 double        dE2000 (const Lab_s & Lab1, const Lab_s & Lab2,
                       double kL, double kC, double kH);
+double        dE     ( Lab_s Lab1, Lab_s Lab2 );
+double        dE     ( double* Lab1, Lab_s Lab2 );
 
 // standard colour transformations
 void          XYZtoLab (XYZ_s & xyz, Lab_s & lab);

@@ -5,6 +5,7 @@ TARGET_NAME="ICC Examin"
 BINTARGET="`echo $TARGET | sed s/_//g`"
 ERROR=0
 test -f error.tmp && rm error.tmp
+test -f config.sh && rm config.sh
 
 CONF_H=config.h
 CONF=makefile
@@ -20,7 +21,7 @@ VERSION_A=0
 VERSION_B=4
 VERSION_C=5
 RELEASE=0
-ZEIT="May 2004 - June 2007"
+ZEIT="May 2004 - July 2007"
 VERSION=$VERSION_A.$VERSION_B$VERSION_C
 if [ $VERSION_A -gt 9 ]; then
   VERSION_L="$VERSION_A"

@@ -47,6 +47,8 @@
 #include <Carbon/Carbon.h>
 #endif
 
+#include <limits.h>
+#include <float.h>
 #include <FL/x.H>
 
 using namespace icc_examin_ns;
@@ -248,6 +250,7 @@ ICCexamin::start (int argc, char** argv)
   DBG_PROG
 
   modellDazu( /*ICCkette*/&profile ); // wird in nachricht ausgewertet
+  modellDazu( /*GL_Ansicht*/icc_betrachter->DD_farbraum);
 
   Fl::add_handler(tastatur);
 
@@ -550,11 +553,77 @@ ICCexamin::nachricht( Modell* modell , int info )
         icc_examin_ns::unlock(icc_betrachter->DD_farbraum, __FILE__,__LINE__);
       }
     }
+    fortschritt(1.0 , 1.0);
+    fortschritt(1.1 , 1.0);
+    Beobachter::nachricht(modell, info);
   }
 
-  Beobachter::nachricht(modell, info);
-  fortschritt(1.0 , 1.0);
-  fortschritt(1.1 , 1.0);
+
+  GL_Ansicht* gl = dynamic_cast<GL_Ansicht*>(modell);
+  if(gl && info == GL_MOUSE_HIT3D)
+  {
+    // find a CGATS/ncl2 tag_text / inspect_html line from a 3D(Lab) mouse hit
+    // it's the inverse from selectTextsLine(int * line)
+    int item = icc_examin->tag_nr();
+#if 0
+    if( icc_betrachter->inspekt_html->visible() ||
+        (profile.profil()->tagBelongsToMeasurement(item) &&
+         icc_betrachter->tag_browser->value() > 5)
+      )
+#endif
+    {
+      ICCmeasurement & m = profile.profil()->getMeasurement();
+      double lab[3];
+      LabToCIELab( &gl->mouse_3D_hit.koord[0], &lab[0], 1 );
+
+      DBG_S( lab[0] <<" "<< lab[1] <<" "<< lab[2] )
+
+      int n = m.getPatchCount();
+      std::vector<std::string> TagInfo = profile.profil()->printTagInfo(item);
+
+      std::vector<Lab_s> lab_v;
+      /*if( TagInfo[0] == "DevD" ||
+          TagInfo[0] == "targ" ||
+          icc_betrachter->inspekt_html->visible() )*/
+        lab_v = m.getMessLab();
+
+      n =  lab_v.size();
+      double min = DBL_MAX;
+      int min_pos = -1;
+      for(int i = 0; i < n; ++i)
+      {
+        double len = fabs( dE( gl->mouse_3D_hit.koord, lab_v[i] ) );
+        
+        if(len < min)
+        {
+          min = len;
+          min_pos = i;
+        }
+      }
+
+      if(min < 5)
+      {
+        std::vector<float> rgb;
+        std::vector<double> lab; lab.resize(3);
+        std::string name = m.getFieldName(min_pos);
+        if(icc_betrachter->inspekt_html->visible())
+        {
+          icc_betrachter->inspekt_html->topline( name.c_str() );
+        }
+        if(profile.profil()->tagBelongsToMeasurement(item))
+        {
+          std::vector<int> pl = m.getPatchLines ( TagInfo[0].c_str() );
+          icc_betrachter->tag_text->select(pl[min_pos]+1);
+        }
+        DBG_V(min <<" "<< min_pos)
+        lab[0] = lab_v[min_pos].L;
+        lab[1] = lab_v[min_pos].a;
+        lab[2] = lab_v[min_pos].b;
+        icc_betrachter->DD_farbraum->emphasizePoint( lab, rgb, name);
+      }
+    }
+  }
+
   DBG_PROG_ENDE
 }
 

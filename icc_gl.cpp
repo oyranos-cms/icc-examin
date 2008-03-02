@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2005  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2007  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -87,13 +87,16 @@ void zeichneKegel( GLdouble breite, GLdouble hoehe, GLint seiten,
 #define glStatus( txt, tuep ) icc_examin_ns::status_info( txt, tuep - 1 );
 
 
-#define bNachX(b) (b*b_darstellungs_breite - b_darstellungs_breite/2.)
-#define LNachY(L) (L - 0.5)
-#define aNachZ(a) (a*a_darstellungs_breite - a_darstellungs_breite/2.)
+#define bNachX(b) ((b)*b_darstellungs_breite - b_darstellungs_breite/2.)
+#define LNachY(L) ((L) - 0.5)
+#define aNachZ(a) ((a)*a_darstellungs_breite - a_darstellungs_breite/2.)
 #define LabNachXYZv(L,a,b) \
          (b*b_darstellungs_breite - b_darstellungs_breite/2.), \
          (L - 0.5), \
          (a*a_darstellungs_breite - a_darstellungs_breite/2.)
+#define YNachL(Y) ((Y) + .5)
+#define Znacha(Z) ((Z) / a_darstellungs_breite + .5)
+#define Xnachb(X) ((X) / b_darstellungs_breite + .5)
 
 const double GL_Ansicht::std_vorder_schnitt = 4.2;
 #ifdef HAVE_FTGL
@@ -2188,9 +2191,9 @@ GL_Ansicht::zeichnen()
       // localisate
       if( strlen(text) && Fl::belowmouse() != this )
       {
-        oY = epoint_.koord[0]-0.5;
-        oZ = epoint_.koord[1]-a_darstellungs_breite/2.;
-        oX = epoint_.koord[2]-b_darstellungs_breite/2.;
+        oY = LNachY( epoint_.koord[0] );
+        oZ = aNachZ( epoint_.koord[1] );
+        oX = bNachX( epoint_.koord[2] );
         mausPunkt_( oX, oY, oZ, X, Y, Z, 0 );
       } else
       {
@@ -2203,42 +2206,59 @@ GL_Ansicht::zeichnen()
                        -grenze < oY && oY < grenze &&
                        -grenze < oX && oX < grenze &&
                        -grenze < oZ && oZ < grenze)
+        {
           sprintf( text,"%s:%.01f %s:%.01f %s:%.01f",
                                von_farb_namen_[0].c_str(), oY*100+50.,
                                von_farb_namen_[1].c_str(), oZ*100,
                                von_farb_namen_[2].c_str(), oX*100 );
+          mouse_3D_hit.koord[0] = YNachL(oY);
+          mouse_3D_hit.koord[1] = Znacha(oZ);
+          mouse_3D_hit.koord[2] = Xnachb(oX);
+          benachrichtigen( ICCexamin::GL_MOUSE_HIT3D );
+          if(strlen(epoint_.name.c_str()))
+          {
+            oY = LNachY( epoint_.koord[0] );
+            oZ = aNachZ( epoint_.koord[1] );
+            oX = bNachX( epoint_.koord[2] );
+            mausPunkt_( oX, oY, oZ, X, Y, Z, 0 );
+          }
+        } else
+          epoint_.name = "";
       }
 
       if(strlen(text) && typ() != 1)
-                    {
-                        double lab[3] = {oY+0.5, oZ/2.55+0.5, oX/2.55+0.5},
-                              *rgb = 0;
-                        icc_examin->statusFarbe(lab[0],lab[1],lab[2]);
-                        DBG_V( lab[0]<<" "<<lab[1]<<" "<<lab[2] )
-                        rgb = icc_oyranos. wandelLabNachBildschirmFarben(lab, 1,
-                                 icc_examin->intentGet(NULL),
+      {
+        double lab[3] = {oY+0.5, oZ/2.55+0.5, oX/2.55+0.5},
+              *rgb_ = 0, *rgb;
+
+        icc_examin->statusFarbe(lab[0],lab[1],lab[2]);
+          DBG_V( lab[0]<<" "<<lab[1]<<" "<<lab[2] )
+        if(strlen(epoint_.name.c_str()))
+          rgb = &epoint_.farbe[0];
+        else
+          rgb_ = rgb = icc_oyranos. wandelLabNachBildschirmFarben(lab,
+                                 1, icc_examin->intentGet(NULL),
                                  icc_examin->gamutwarn()?cmsFLAGS_GAMUTCHECK:0);
-                        if(!rgb)  WARN_S( "RGB result not available" )
-                        else {
-#                         ifndef Beleuchtung_
-                          glDisable(GL_LIGHTING);
-#                         endif
-                          glPushMatrix();
-                            glLineWidth(strich3*strichmult);
-                            FARBE(rgb[0], rgb[1], rgb[2],1)
-                            glBegin(GL_LINES);
-                              glVertex3f( oX, oY, oZ );
-                              glVertex3f( oX, -0.5, oZ );
-                            glEnd();
-                          glPopMatrix();
-                          DBG_PROG_V( rgb[0] <<" "<< rgb[1] <<" "<< rgb[2] )
-#                         ifndef Beleuchtung_
-                          glEnable(GL_LIGHTING);
-#                         endif
-                        }
-                        glLineWidth(strich1*strichmult);
-                        if(rgb) delete [] rgb;
-                    }
+        {
+#         ifndef Beleuchtung_
+          glDisable(GL_LIGHTING);
+#         endif
+          glPushMatrix();
+            glLineWidth(strich3*strichmult);
+            FARBE(rgb[0], rgb[1], rgb[2],1)
+            glBegin(GL_LINES);
+              glVertex3f( oX, oY, oZ );
+              glVertex3f( oX, -0.5, oZ );
+            glEnd();
+          glPopMatrix();
+            DBG_PROG_V( rgb[0] <<" "<< rgb[1] <<" "<< rgb[2] )
+#         ifndef Beleuchtung_
+          glEnable(GL_LIGHTING);
+#         endif
+        }
+        glLineWidth(strich1*strichmult);
+        if(rgb_) delete [] rgb_;
+      }
 
       if(dreiecks_netze.size())
         netzeAuffrischen();
@@ -2546,7 +2566,7 @@ GL_Ansicht::emphasizePoint    (std::vector<double> &point_coordinates,
   // show curve from tag_browser
   DBG_NUM_V( point_name )
   MARK( frei(false); )
-  if(point_coordinates.size()==3 && point_colour.size() == 4)
+  if(point_coordinates.size()==3)
   {
     double l[3];
     Lab_s lab;
@@ -2554,12 +2574,27 @@ GL_Ansicht::emphasizePoint    (std::vector<double> &point_coordinates,
     lab.a = point_coordinates[1];
     lab.b = point_coordinates[2];
     epoint_.koord[0] = point_coordinates[0];
-    epoint_.koord[1] = point_coordinates[1]*a_darstellungs_breite;
-    epoint_.koord[2] = point_coordinates[2]*b_darstellungs_breite;
-    epoint_.farbe[0] = point_colour[0];
-    epoint_.farbe[1] = point_colour[1];
-    epoint_.farbe[2] = point_colour[2];
-    epoint_.farbe[3] = point_colour[3];
+    epoint_.koord[1] = point_coordinates[1];
+    epoint_.koord[2] = point_coordinates[2];
+
+    if(point_colour.size() == 4)
+    {
+      epoint_.farbe[0] = point_colour[0];
+      epoint_.farbe[1] = point_colour[1];
+      epoint_.farbe[2] = point_colour[2];
+      epoint_.farbe[3] = point_colour[3];
+    } else {
+      double* rgb = icc_oyranos.wandelLabNachBildschirmFarben(&epoint_.koord[0],
+                                1, icc_examin->intentGet(NULL),
+                                (icc_examin->gamutwarn()?cmsFLAGS_GAMUTCHECK:0)|
+                                (icc_examin->bpc()?cmsFLAGS_BLACKPOINTCOMPENSATION:0));
+      epoint_.farbe[0] = rgb[0];
+      epoint_.farbe[1] = rgb[1];
+      epoint_.farbe[2] = rgb[2];
+      epoint_.farbe[3] = 1.0;
+
+    }
+
     icc_examin->statusFarbe( lab.L, lab.a, lab.b );
     LabToCIELab( lab, &l[0] );
     sprintf( text,"%s %s:%.01f %s:%.01f %s:%.01f", point_name.c_str(),
