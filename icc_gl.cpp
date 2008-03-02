@@ -678,11 +678,10 @@ GL_Ansicht::hinein_tabelle(std::vector<std::vector<std::vector<std::vector<doubl
 
   zeig_mich(this); DBG_PROG_V( first )
 
+  MakeDisplayLists();
 
   if (first)
     init();
-  else
-    MakeDisplayLists();
 
   MenueErneuern();
 
