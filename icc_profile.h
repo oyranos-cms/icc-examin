@@ -30,7 +30,8 @@
 #ifndef ICC_PROFILE_H
 #define ICC_PROFILE_H
 
-
+// need lcms.h for BSD
+#include <lcms.h>
 #include <icc34.h>
 #include <string>
 #include <iostream>

@@ -75,6 +75,10 @@ else
       OSUNAME=SunOS
     else
       if [ $UNAME_ = "OpenBSD" ] || [ $UNAME_ = "NetBSD" ] || [ $UNAME_ = "FreeBSD" ]; then
+        echo "BSD = 1" >> $CONF
+        ARCH=.bsd
+        echo "#define BSD 1" >> $CONF_H
+        echo "BSD $UNAME_             detected"
         OSUNAME=BSD
       else
         echo "ICC Examin may or may not compile on your $UNAME_ system"
@@ -82,6 +86,7 @@ else
     fi
   fi
 fi
+echo "MAKEFILE_ARCH = makefile$ARCH"  >> $CONF
 MACH_=`uname -m`
 MACH=BUILD_32
 if [ $? = 0 ]; then
@@ -101,7 +106,6 @@ if [ $? = 0 ]; then
     fi
   fi
 fi
-
 if [ $MACH = "BUILD_64" ]; then
   BARCH="64"
   LINE_ARCH="-64"
@@ -110,7 +114,7 @@ else
   LINE_ARCH=""
 fi
 LIBDIR="lib"$BARCH
-export LIBDIR BARCH
+export MACH OSUNAME LIBDIR BARCH LINE_ARCH
 
 if [ $# -gt 0 ]; then
   prefix=""
@@ -151,6 +155,17 @@ export XINERAMA=1
 export XF86VMODE=1
 export PO=1
 ./configure.sh
+export ELEKTRA=0
+export OYRANOS=0
+export LCMS=0
+export FTGL=0
+export FLTK=0
+export LIBPNG=0
+export FLU=0
+export X11=0
+export XINERAMA=0
+export XF86VMODE=0
+export PO=0
 if [ $? -gt 0 ]; then
   ERROR=1
 fi
@@ -263,29 +278,14 @@ else
     echo "I18N_LIB = \$(ICONV) -lintl \$(LIBNAMEV)" >> $CONF
     echo "I18N_LIBSTAT = \$(ICONV) -lintl \$(LIBNAMEV)" >> $CONF
     echo "MAKEDEPEND	= makedepend -Y" >> $CONF
-    echo "OPTS = -Wall -O2 -g -fpic -L." >> $CONF
+    echo "OPTS = -Wall -g -fpic \$(DEBUG) -L." >> $CONF
     echo "RM = rm -f" >> $CONF
   fi
 fi
 
 
-
-
-# get time stamp
-C=`date +%C`
-TIME=`date +%Y%m%e.%H%M%S | sed s/$C//`
-echo "MTIME   =$TIME" >> $CONF
-
 echo "" >> $CONF
 echo "" >> $CONF
-
-
-if [ $OSUNAME = "BSD" ]; then
-  cat  makefile.in | sed 's/^\#if/.if/g ; s/^\#end/.end/g ; s/^\#include\ mkdepend/.include "mkdepend"/g'  >> $CONF
-else
-  cat  makefile.in | sed 's/^\#if/if/g ; s/^\#end/end/g ; s/^\#include/include/g'  >> $CONF
-fi
-echo $CONF generated
 echo ""
 echo ""
 
@@ -301,6 +301,10 @@ if [ $ERROR != 0 ]; then
 fi
 
 echo "" > mkdepend
+
+export PREPARE_MAKEFILES=1
+export MAKEFILES="makefile"
+./configure.sh
 
 
 if [ `cat error.txt | wc -l` -lt 1 ]; then

@@ -31,6 +31,8 @@
 #define ICC_PROFILE_TAGS_H
 
 
+// lcms.h for BSD compiling
+#include <lcms.h>
 #include <icc34.h>
 #include <string>
 #include <vector>

@@ -3,7 +3,6 @@ COLLECT = ar cru
 RANLIB = ranlib
 MAKEDEPEND	= $(CXX) -MM
 LINK = ln -s
-RM = rm -vf
 INSTALL = install -v
 
 exec_prefix	= ${prefix}
@@ -189,11 +188,16 @@ ALL_FILES =	$(SOURCES) \
 	$(FLUID)
 
 
+# get time stamp
+C := $(shell date +%C)
+MTIME   := $(shell date +%Y%m%e.%H%M%S | sed s/$C//)
+
+
 #.SILENT:
 
 all:	dynamic
 	
-BASE = mkdepend 
+BASE = 
 	
 release:	icc_alles.o
 	echo Verknuepfen $@...
@@ -228,7 +232,7 @@ $(LIBNAME):	$(I18N_OBJECTS)
 	$(RANLIB) $(LIBNAME)
 
 $(LIBFL_I18N):
-	(cd fl_i18n/; make)
+	(cd fl_i18n/; make -f $(MAKEFILE_ARCH))
 
 static:	$(BINTARGET)
 	echo Verknuepfen $@ ...
@@ -307,13 +311,13 @@ $(POT_FILE):	$(ALL_SOURCEFILES)
 
 clean:	unbundle unpkg
 	echo mache sauber $@ ...
-	-$(RM) mkdepend config.h
 	-$(RM) $(OBJECTS) $(I18N_OBJECTS) $(BINTARGET) \
 	$(LIBNAME) $(LIBSO) $(LIBSONAME) $(LIBSONAMEFULL)
 	-for ling in $(LINGUAS); do \
 	  test -f po/$${ling}.gmo \
         && $(RM) po/$${ling}.gmo; \
 	done;
+	(cd fl_i18n/; make -f $(MAKEFILE_ARCH) clean)
 	echo ... $@ fertig
 
 config:
@@ -373,7 +377,7 @@ targz:
 copy_files:
 	mkdir $(DESTDIR)
 	(cd fl_i18n; \
-	 make DESTDIR=../$(DESTDIR)/fl_i18n copy_files; \
+	 make DESTDIR=../$(DESTDIR)/fl_i18n -f $(MAKEFILE_ARCH) copy_files; \
 	 cd ..)
 	$(COPY) -R \
 	$(ALL_FILES) \
@@ -386,7 +390,7 @@ copy_files:
 	done;
 
 
-dist: $(BASE) targz
+dist:	$(BASE) targz
 	test -f && $(COPY) ../Archiv/$(TARGET)_$(MTIME).tgz $(TARGET)-$(VERSION).tar.gz || $(COPY) $(TARGET)_$(MTIME).tgz $(TARGET)-$(VERSION).tar.gz
 
 $(TARGET).spec:
@@ -505,7 +509,7 @@ unpkg:
 	echo ... $@ fertig
 
 # mkdepend
-#include mkdepend
+include mkdepend
 
 #ifndef MAKEDEPEND_ISUP
 mkdepend: depend

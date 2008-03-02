@@ -1,7 +1,7 @@
 ERROR=0
 
 
-if [ -n "$ELEKTRA" ]; then
+if [ -n "$ELEKTRA" ] && [ $ELEKTRA -gt 0 ]; then
   if [ -z "$elektra_min" ]; then
     elektra_min="0.6"
   fi
@@ -28,7 +28,7 @@ if [ -n "$ELEKTRA" ]; then
   fi
 fi
 
-if [ -n "$OYRANOS" ]; then
+if [ -n "$OYRANOS" ] && [ $OYRANOS -gt 0 ]; then
   OY_=`oyranos-config 2>>error.txt`
   if [ $? = 0 ] && [ -n $OY_ ]; then
     echo "Oyranos `oyranos-config --version`           detected"
@@ -45,7 +45,7 @@ if [ -n "$OYRANOS" ]; then
   fi
 fi
 
-if [ -n "$LCMS" ]; then
+if [ -n "$LCMS" ] && [ $LCMS -gt 0 ]; then
   `pkg-config  --atleast-version=1.14 lcms`
   if [ $? = 0 ]; then
     echo "littleCMS `pkg-config --modversion lcms`          detected"
@@ -59,7 +59,7 @@ if [ -n "$LCMS" ]; then
   fi
 fi
 
-if [ -n "$X11" ]; then
+if [ -n "$X11" ] && [ $X11 -gt 0 ]; then
   if [ -f /usr/X11R6/include/X11/Xlib.h ] ||
      [ -f /usr/include/X11/Xlib.h ]; then
     echo "X11                     detected"
@@ -74,8 +74,8 @@ if [ -n "$X11" ]; then
     fi
   fi
 fi
-if [ "$X11" = 1 ]; then
-  if [ -n "$XF86VMODE" ]; then
+if [ "$X11" = 1 ] && [ $X11 -gt 0 ]; then
+  if [ -n "$XF86VMODE" ] && [ $XF86VMODE -gt 0 ]; then
     if [ -f /usr/X11R6/include/X11/extensions/xf86vmode.h ] ||
        [ -f /usr/include/X11/extensions/xf86vmode.h ]; then
       echo "X VidMode extension     detected"
@@ -90,7 +90,7 @@ if [ "$X11" = 1 ]; then
     fi
   fi
 
-  if [ -n "$XINERAMA" ]; then
+  if [ -n "$XINERAMA" ] && [ $XINERAMA -gt 0 ]; then
     if [ -f /usr/X11R6/include/X11/extensions/Xinerama.h ] ||
        [ -f /usr/include/X11/extensions/Xinerama.h ]; then
       echo "X Xinerama              detected"
@@ -109,7 +109,7 @@ if [ "$X11" = 1 ]; then
   echo "X11_LIBS=\$(X11_LIB_PATH) -lX11 \$(XF86VMODE_LIB) -lXpm -lXext \$(XINERAMA_LIB)" >> $CONF
 fi
 
-if [ -n "$FTGL" ]; then
+if [ -n "$FTGL" ] && [ $FTGL -gt 0 ]; then
   `pkg-config  --atleast-version=1.0 ftgl`
   if [ $? = 0 ]; then
     echo "FTGL      `pkg-config --modversion ftgl`         detected"
@@ -122,13 +122,13 @@ if [ -n "$FTGL" ]; then
   fi
 fi
 
-if [ -n "$FLTK" ]; then
+if [ -n "$FLTK" ] && [ $FLTK -gt 0 ]; then
   FLTK_=`fltk-config --cxxflags 2>>error.txt`
   if [ $? = 0 ] && [ -n "$FLTK_" ]; then
     echo "FLTK `fltk-config --version`              detected"
     echo "#define HAVE_FLTK 1" >> $CONF_H
     echo "FLTK = 1" >> $CONF
-    echo "FLTK_H = `fltk-config --cxxflags`" >> $CONF
+    echo "FLTK_H = `fltk-config --cxxflags | sed 's/-O[0-9]//'`" >> $CONF
     echo "FLTK_LIBS = `fltk-config --use-images --use-gl --ldflags`" >> $CONF
   else
     echo "   FLTK is not found; download: www.fltk.org"
@@ -136,7 +136,7 @@ if [ -n "$FLTK" ]; then
   fi
 fi
 
-if [ -n "$FLU" ]; then
+if [ -n "$FLU" ] && [ $FLU -gt 0 ]; then
   FLU_=`flu-config --cxxflags 2>>error.txt`
   if [ `fltk-config --version` == "1.1.7" ]; then
     echo -e "\c"
@@ -163,7 +163,7 @@ if [ -n "$FLU" ]; then
   fi
 fi
 
-if [ -n "$DOXYGEN" ]; then
+if [ -n "$DOXYGEN" ] && [ $DOXYGEN -gt 0 ]; then
   if [ "`which doxygen`" != "" ]; then
     echo "Doxygen `doxygen --version`           detected"
   else
@@ -171,7 +171,7 @@ if [ -n "$DOXYGEN" ]; then
   fi
 fi
 
-if [ -n "$LIBPNG" ]; then
+if [ -n "$LIBPNG" ] && [ $LIBPNG -gt 0 ]; then
   LIBPNG=libpng
   `pkg-config  --atleast-version=1.0 $LIBPNG 2>>error.txt`
   if [ $? != 0 ]; then
@@ -189,13 +189,26 @@ if [ -n "$LIBPNG" ]; then
   fi
 fi
 
-if [ -n "$PO" ]; then
+if [ -n "$PO" ] && [ $PO -gt 0 ]; then
   pos_dir="`ls po/*.po 2> /dev/null`"
   LING="`echo $pos_dir`"
   LINGUAS="`echo $pos_dir | sed 's/\.po//g ; s/po\///g'`"
   echo "LINGUAS = $LINGUAS" >> $CONF
   echo "Languages detected:     $LINGUAS"
   echo "LING = $LING" >> $CONF
+fi
+
+if [ -n "$PREPARE_MAKEFILES" ] && [ $PREPARE_MAKEFILES -gt 0 ]; then
+  if [ -n "$MAKEFILES" ]; then
+    for i in $MAKEFILES; do
+      echo preparing "$i"
+      if [ $OSUNAME = "BSD" ]; then
+        cat  "$i".in | sed 's/^\#if/.if/g ; s/^\#end/.end/g '  >> "$i"
+      else
+        cat  "$i".in | sed 's/^\#if/if/g ; s/^\#elif/elif/g ; s/^\#else/else/g ; s/^\ \ \#if/\ \ if/g ; s/^\#end/end/g '  >> "$i"
+      fi
+    done
+  fi
 fi
 
 # we cannot reimport, just return

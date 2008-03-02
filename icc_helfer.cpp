@@ -34,6 +34,7 @@
 # define DEBUG_ICCFUNKT
 #endif
 
+#include <lcms.h>
 #include <icc34.h>
 #include "icc_utils.h"
 #include "icc_formeln.h"
@@ -818,7 +819,7 @@ printDatum                      (icDateTimeNumber date)
 
 namespace icc_examin_ns {
 
-#          if LINUX || APPLE || SOLARIS
+#          if defined(LINUX) || defined(APPLE) || defined(SOLARIS)
 # define   ZEIT_TEILER 10000
 #          else // WINDOWS TODO
 # define   ZEIT_TEILER CLOCKS_PER_SEC;
@@ -836,7 +837,7 @@ namespace icc_examin_ns {
   {
            time_t zeit_;
            double teiler = ZEIT_TEILER;
-#          if LINUX || APPLE || SOLARIS
+#          if defined(LINUX) || defined(APPLE) || defined(SOLARIS) || defined(BSD)
            struct timeval tv;
            gettimeofday( &tv, NULL );
            double tmp_d;
@@ -856,7 +857,7 @@ namespace icc_examin_ns {
   }
   void sleep(double sekunden)
   {
-#            if LINUX || APPLE
+#            if defined(LINUX) || defined(APPLE)
              timespec ts;
              double ganz;
              double rest = modf(sekunden, &ganz);
@@ -1058,7 +1059,7 @@ holeDateiModifikationsZeit (const char* fullFileName)
   double m_zeit = 0.0;
   if (r)
   {
-#   if __APPLE__
+#   if defined(APPLE) || defined(BSD)
     m_zeit = status.st_mtime ;
     m_zeit += status.st_mtimespec.tv_nsec/1000000. ;
 #   else

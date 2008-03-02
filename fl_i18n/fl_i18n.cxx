@@ -97,7 +97,10 @@ fl_set_codeset_    ( const char* lang, const char* codeset_,
 
         /* 1c. set the locale info after LANG */
         if(set_zero_locale)
-          snprintf( locale, TEXTLEN, setlocale (LC_MESSAGES, "")); DBG_PROG_V( locale )
+        {
+          char *ptr = setlocale (LC_MESSAGES, "");
+          if(ptr) snprintf( locale, TEXTLEN, ptr); DBG_PROG_V( locale )
+        }
       }
     }
 }
@@ -109,7 +112,7 @@ fl_set_codeset_    ( const char* lang, const char* codeset_,
 #define DIR_SEPARATOR "/"
 #endif
 
-int
+signed int
 fl_search_locale_path (int n_places, const char **locale_paths,
                     const char *search_lang, const char *app_name)
 {

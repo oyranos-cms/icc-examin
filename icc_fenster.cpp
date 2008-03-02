@@ -172,15 +172,12 @@ nachricht_ (std::string text) {
       o->align(FL_ALIGN_CENTER|FL_ALIGN_INSIDE);
       w->hotspot(o);
     }
-    { Fl_Scroll* o = new Fl_Scroll(0,0,275,299);
       { Fl_Output* o = output_info = new Fl_Output(0, 0, 275, 290);
         o->type(12);
-        o->color((Fl_Color)53);
+        //o->color((Fl_Color)53);
         o->value(text.c_str());
+        Fl_Group::current()->resizable(o);
       }
-      Fl_Group::current()->resizable(o);
-      o->end();
-    }
     o->show();
     o->end();
   }

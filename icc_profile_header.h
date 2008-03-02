@@ -31,7 +31,10 @@
 #define ICC_PROFILE_HEADER_H
 
 
+// lcms.h for BSD compiling
+#include <lcms.h>
 #include <icc34.h>
+
 #include <string>
 
 #include "icc_utils.h"

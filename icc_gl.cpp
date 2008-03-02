@@ -1321,7 +1321,7 @@ GL_Ansicht::netzeAuffrischen()
         {
           glBegin(GL_TRIANGLES);
           int index;
-          double normale[3], len, v1[3], v2[3];
+          double normale[3], len=1.0, v1[3], v2[3];
           for( int l = 2; l >= 0; --l)
           {
             index = it->second.i[l];

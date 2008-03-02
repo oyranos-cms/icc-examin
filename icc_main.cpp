@@ -56,7 +56,7 @@ main (int argc, char** argv)
   DBG_PROG_START
 
   const char *locale_paths[3] = {0,0,0};
-  int is_path = -1;
+  signed int is_path = -1;
   int num_paths = 2;
 # if __APPLE__
   std::string bdr;
