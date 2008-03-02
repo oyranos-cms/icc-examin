@@ -27,7 +27,10 @@
 
 #include "icc_kette.h"
 #include "icc_examin.h"
-#include "callback_simple.h"
+//#include "callback_simple.h"
+
+ICCkette profile;
+
 
 bool
 ICCkette::oeffnen (std::vector<std::string> dateinamen)

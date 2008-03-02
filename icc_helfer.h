@@ -82,18 +82,35 @@ std::string         printDatum( icDateTimeNumber date );
 std::string         zeig_bits_bin      (void* speicher, int groesse);
 
 // Texthelfer
-int                 suchenErsetzen    ( std::string            &text,
+namespace icc_parser {
+  extern const char *alnum;
+  extern const char *alpha;
+  extern const char *numerisch;
+  extern const char *ziffer;
+  extern const char *leer_zeichen;
+
+  int               suchenErsetzen    ( std::string            &text,
                                         std::string            &suchen,
                                         std::string            &ersetzen,
                                         std::string::size_type  pos );
-int                 suchenErsetzen    ( std::string            &text,
+  int               suchenErsetzen    ( std::string            &text,
                                         const char             *suchen,
                                         const char             *ersetzen,
                                         std::string::size_type  pos );
-std::vector<std::string> zeilenNachVector (std::string &text);
-std::string::size_type sucheWort      ( std::string            &text,
+  std::vector<std::string> zeilenNachVector (std::string &text);
+  std::string::size_type sucheWort    ( std::string            &text,
                                         std::string             wort,
                                         std::string::size_type  pos );
 
+  struct ZifferWort {
+    std::pair<bool,std::string> wort;
+    std::pair<bool,double>      zahl;
+    std::pair<bool,int>         ganz_zahl;
+  };
+
+  std::vector<ZifferWort>       unterscheideZiffernWorte ( std::string &zeile,
+                                                 bool anfuehrungsstriche_setzen,
+                                                 char *trennzeichen );
+}
 
 #endif //ICC_HELFER_H

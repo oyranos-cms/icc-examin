@@ -43,12 +43,12 @@ erase_file (char *file)
 
   fp = fopen (file, "r");
   if (fp) {
-  fclose (fp);
-  remove (file);
-  return (1);
+    fclose (fp);
+    remove (file);
+    return 0;
   }
 
-  return (0);
+  return 1;
 }
 
 #define lp {l+=0.1; icc_examin->fortschritt(l);}

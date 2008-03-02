@@ -27,12 +27,13 @@
 
 
 #include "icc_kette.h"
-//#include "icc_examin.h"
+#include "icc_examin.h"
 #include "icc_betrachter.h"
 #include "icc_fenster.h"
 #include "icc_draw.h"
 #include "icc_gl.h"
 #include "icc_helfer_ui.h"
+
 
 //#define DEBUG_EXAMIN
 #ifdef DEBUG_EXAMIN

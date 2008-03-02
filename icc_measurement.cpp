@@ -405,7 +405,7 @@ ICCmeasurement::init_umrechnen                     (void)
     #else
     #define BW_COMP 0
     #endif
-    #define TYPE_COLOUR_DBL (COLORSPACE_SH(PT_ANY)|CHANNELS_SH(_channels)|BYTES_SH(0))
+    #define TYPE_nCOLOUR_DBL (COLORSPACE_SH(PT_ANY)|CHANNELS_SH(_channels)|BYTES_SH(0))
     if ((_RGB_measurement ||
          _CMYK_measurement))
     {
@@ -432,17 +432,17 @@ ICCmeasurement::init_umrechnen                     (void)
         WARN_S(_("hCOLOUR ist leer"))
 
       // Wie sieht das Profil die Messfarbe? -> XYZ
-      hCOLOURtoXYZ =  cmsCreateTransform (hCOLOUR, TYPE_COLOUR_DBL,
+      hCOLOURtoXYZ =  cmsCreateTransform (hCOLOUR, TYPE_nCOLOUR_DBL,
                                     hXYZ, TYPE_XYZ_DBL,
                                     INTENT_ABSOLUTE_COLORIMETRIC,
                                     PRECALC|BW_COMP);
       // Wie sieht das Profil die Messfarbe? -> Lab
-      hCOLOURtoLab =  cmsCreateTransform (hCOLOUR, TYPE_COLOUR_DBL,
+      hCOLOURtoLab =  cmsCreateTransform (hCOLOUR, TYPE_nCOLOUR_DBL,
                                     hLab, TYPE_Lab_DBL,
                                     INTENT_ABSOLUTE_COLORIMETRIC,
                                     PRECALC|BW_COMP);
       // Wie sieht das Profil die Messfarbe? -> Bildschirmdarstellung
-      hCOLOURtoRGB = cmsCreateTransform (hCOLOUR, TYPE_COLOUR_DBL,
+      hCOLOURtoRGB = cmsCreateTransform (hCOLOUR, TYPE_nCOLOUR_DBL,
                                     hsRGB, TYPE_RGB_DBL,
                                     INTENT_ABSOLUTE_COLORIMETRIC,
                                     PRECALC|BW_COMP);

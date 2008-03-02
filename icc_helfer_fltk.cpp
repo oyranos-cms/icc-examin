@@ -111,6 +111,9 @@ getChannel_flColours (icColorSpaceSignature color)
   }
   return flFarben;
 }
+
+#undef nFARBEN
+
 #endif
 
 

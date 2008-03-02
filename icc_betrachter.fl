@@ -176,7 +176,7 @@ class TagTexts {: {public Fl_Hold_Browser}
 
       this->clear();
 
-      std::vector <std::string> texte = zeilenNachVector( text );
+      std::vector <std::string> texte = icc_parser::zeilenNachVector( text );
       for (unsigned int i = 0; i < texte.size(); i++)
         this->add( texte[i].c_str(), 0);
 
@@ -268,7 +268,7 @@ class MftChoice {: {public Fl_Choice}
 
     DBG_PROG_V( profile.profil()->printTagInfo(icc_examin->icc_betrachter->tag_nummer)[1].c_str() )
 
-    Info = zeilenNachVector (text);
+    Info = icc_parser::zeilenNachVector (text);
 
     if ( strstr (typ,"mft2") != 0 )
     { DBG_PROG
@@ -413,7 +413,7 @@ class ICCfltkBetrachter {open
     dateiwahl->preview_label = _("Vorschau");
   \#endif} {}
     Fl_Window ueber {
-      label {Über ICC examin} open
+      label {Über ICC examin}
       xywh {567 641 366 241} type Double hide resizable
       code0 {o->hide();} non_modal
     } {
@@ -431,8 +431,8 @@ class ICCfltkBetrachter {open
       }
     }
     Fl_Window vcgt {
-      label {Grafikkarten Gamma Tabellen} open
-      xywh {668 398 370 390} type Double resizable
+      label {Grafikkarten Gamma Tabellen}
+      xywh {673 419 370 390} type Double resizable
       code0 {o->hide();} non_modal visible
     } {
       Fl_Group {} {open
@@ -460,19 +460,19 @@ class ICCfltkBetrachter {open
         }
         Fl_Button {} {
           label Standard
-          callback {icc_examin->standardGamma();} selected
+          callback {icc_examin->standardGamma();}
           xywh {5 360 75 25} hotspot
         }
       }
     }
     Fl_Window details {
       label {ICC Details} open
-      xywh {867 382 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
+      xywh {872 403 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
     } {
       Fl_Group {} {open
         xywh {0 0 385 520}
       } {
-        Fl_Menu_Bar {} {open
+        Fl_Menu_Bar {} {open selected
           xywh {0 0 385 25} align 20 when 3
         } {
           submenu {} {
@@ -500,7 +500,7 @@ class ICCfltkBetrachter {open
             }
           }
           submenu {} {
-            label Bearbeiten open
+            label Bearbeiten
             xywh {25 25 100 20}
           } {
             menuitem {} {
@@ -529,7 +529,7 @@ class ICCfltkBetrachter {open
     w->fullscreen_off(px,py,pw,ph);
     fullscreen = false;
   }}
-              xywh {15 15 100 20} shortcut 0x40076
+              xywh {15 15 100 20} shortcut 0x40076 divider
             }
             menuitem menueintrag_inspekt {
               label {Prüfansicht}
@@ -548,16 +548,6 @@ class ICCfltkBetrachter {open
   icc_examin->neuzeichnen(inspekt_html);}
               tooltip {Mess- und Profilwerte bildlich und in Zahlen dargestellt; Ctrl+b} xywh {40 40 100 20} type Toggle shortcut 0x40062 deactivate
             }
-            menuitem menueintrag_zeigcgats {
-              label {CGATS Ansicht}
-              callback {Fl_Menu_* mw = (Fl_Menu_*)o;
-  const Fl_Menu_Item* m = mw->mvalue();
-
-  DBG_PROG_S (m->value())
-
-  icc_examin->zeigCGATS();}
-              tooltip {Mess- und Profilwerte bildlich und in Zahlen dargestellt; Ctrl+b} xywh {50 50 100 20} shortcut 0x40067 deactivate
-            }
             menuitem menueintrag_3D {
               label {3D Ansicht}
               callback {Fl_Menu_* mw = (Fl_Menu_*)o;
@@ -569,6 +559,16 @@ class ICCfltkBetrachter {open
   }
   icc_examin->neuzeichnen(DD_histogram);}
               xywh {50 50 100 20} type Toggle shortcut 0x40068 divider
+            }
+            menuitem menueintrag_zeigcgats {
+              label {CGATS Ansicht}
+              callback {Fl_Menu_* mw = (Fl_Menu_*)o;
+  const Fl_Menu_Item* m = mw->mvalue();
+
+  DBG_PROG_S (m->value())
+
+  icc_examin->zeigCGATS();}
+              tooltip {Mess- und Profilwerte bildlich und in Zahlen dargestellt; Ctrl+b} xywh {50 50 100 20} shortcut 0x40067 deactivate
             }
             menuitem menueintrag_vcgt {
               label {Grafikkarten Gamma}

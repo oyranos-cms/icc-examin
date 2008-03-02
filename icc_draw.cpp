@@ -571,6 +571,9 @@ void drawKurve    (int id, int X, int Y, int W, int H)
   DBG_prog_ende
 }
 
+#undef x
+#undef y
+
 #if 0
 /**********************************************************************/
 // http://www.physics.sfasu.edu/astro/color/blackbodyc.txt

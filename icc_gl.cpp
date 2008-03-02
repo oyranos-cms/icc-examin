@@ -882,7 +882,6 @@ GL_Ansicht::punkteAuffrischen()
 extern float cieXYZ [471][3]; // in 
 #include <lcms.h>
 
-#define TYPE_COLOUR_DBL (COLORSPACE_SH(PT_ANY)|CHANNELS_SH(3)|BYTES_SH(0))
 #define PRECALC cmsFLAGS_NOTPRECALC 
 #if 0
 #define BW_COMP cmsFLAGS_WHITEBLACKCOMPENSATION
@@ -937,23 +936,8 @@ GL_Ansicht::zeigeSpektralband_()
   if(!Lab_Speicher)  WARN_S( _("Lab_speicher Speicher nicht verfügbar") )
   if(!RGB_Speicher)  WARN_S( _("RGB_speicher Speicher nicht verfügbar") )
 
-  #if 0
-  cmsHPROFILE hXYZ;
-  cmsHTRANSFORM hXYZtoLab;
-  hXYZ  = cmsCreateXYZProfile();
-  if(!hXYZ)  WARN_S( _("hXYZ Profil nicht geöffnet") )
-  hXYZtoLab = cmsCreateTransform          (hXYZ, TYPE_XYZ_DBL,
-                                           hLab, TYPE_COLOUR_DBL,
-                                           INTENT_ABSOLUTE_COLORIMETRIC,
-                                           PRECALC|BW_COMP);
-  if (!hXYZtoLab) WARN_S( _("keine hXYZtoLab Transformation gefunden") )
-  for(int i = 0; i < nano_max; ++i)
-    cmsDoTransform (hXYZtoLab, &XYZ_Speicher[i*3], &Lab_Speicher[i*3], 1);
-  cmsDoTransform (hXYZtoLab, XYZ_Speicher, Lab_Speicher, nano_max);
-  #else
 
   XYZtoLab (XYZ_Speicher, Lab_Speicher, nano_max);
-  #endif
 
   DBG_PROG_V( nano_max )
   double *cielab = new double[nano_max*3];

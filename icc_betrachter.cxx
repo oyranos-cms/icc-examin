@@ -112,7 +112,7 @@ void TagTexts::hinein(std::string text) {
 
       this->clear();
 
-      std::vector <std::string> texte = zeilenNachVector( text );
+      std::vector <std::string> texte = icc_parser::zeilenNachVector( text );
       for (unsigned int i = 0; i < texte.size(); i++)
         this->add( texte[i].c_str(), 0);
 
@@ -192,7 +192,7 @@ void MftChoice::profilTag(int _tag, std::string text) {
 
     DBG_PROG_V( profile.profil()->printTagInfo(icc_examin->icc_betrachter->tag_nummer)[1].c_str() )
 
-    Info = zeilenNachVector (text);
+    Info = icc_parser::zeilenNachVector (text);
 
     if ( strstr (typ,"mft2") != 0 )
     { DBG_PROG
@@ -351,18 +351,6 @@ void ICCfltkBetrachter::cb_menueintrag_inspekt(Fl_Menu_* o, void* v) {
   ((ICCfltkBetrachter*)(o->parent()->parent()->user_data()))->cb_menueintrag_inspekt_i(o,v);
 }
 
-inline void ICCfltkBetrachter::cb_menueintrag_zeigcgats_i(Fl_Menu_* o, void*) {
-  Fl_Menu_* mw = (Fl_Menu_*)o;
-  const Fl_Menu_Item* m = mw->mvalue();
-
-  DBG_PROG_S (m->value())
-
-  icc_examin->zeigCGATS();
-}
-void ICCfltkBetrachter::cb_menueintrag_zeigcgats(Fl_Menu_* o, void* v) {
-  ((ICCfltkBetrachter*)(o->parent()->parent()->user_data()))->cb_menueintrag_zeigcgats_i(o,v);
-}
-
 inline void ICCfltkBetrachter::cb_menueintrag_3D_i(Fl_Menu_* o, void*) {
   Fl_Menu_* mw = (Fl_Menu_*)o;
   const Fl_Menu_Item* m = mw->mvalue();
@@ -375,6 +363,18 @@ inline void ICCfltkBetrachter::cb_menueintrag_3D_i(Fl_Menu_* o, void*) {
 }
 void ICCfltkBetrachter::cb_menueintrag_3D(Fl_Menu_* o, void* v) {
   ((ICCfltkBetrachter*)(o->parent()->parent()->user_data()))->cb_menueintrag_3D_i(o,v);
+}
+
+inline void ICCfltkBetrachter::cb_menueintrag_zeigcgats_i(Fl_Menu_* o, void*) {
+  Fl_Menu_* mw = (Fl_Menu_*)o;
+  const Fl_Menu_Item* m = mw->mvalue();
+
+  DBG_PROG_S (m->value())
+
+  icc_examin->zeigCGATS();
+}
+void ICCfltkBetrachter::cb_menueintrag_zeigcgats(Fl_Menu_* o, void* v) {
+  ((ICCfltkBetrachter*)(o->parent()->parent()->user_data()))->cb_menueintrag_zeigcgats_i(o,v);
 }
 
 inline void ICCfltkBetrachter::cb_menueintrag_vcgt_i(Fl_Menu_*, void*) {
@@ -403,10 +403,10 @@ Fl_Menu_Item ICCfltkBetrachter::menu_[] = {
  {"Voreinstellungen", 0,  (Fl_Callback*)ICCfltkBetrachter::cb_Voreinstellungen, 0, 0, 0, 0, 14, 56},
  {0},
  {"Ansicht", 0,  0, 0, 192, 0, 0, 14, 56},
- {"Ganzer Bildschirm an/aus", 0x40076,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_Voll, 0, 0, 0, 0, 14, 56},
+ {"Ganzer Bildschirm an/aus", 0x40076,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_Voll, 0, 128, 0, 0, 14, 56},
  {"Pr\374""fansicht", 0x40062,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_inspekt, 0, 3, 0, 0, 14, 56},
- {"CGATS Ansicht", 0x40067,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_zeigcgats, 0, 1, 0, 0, 14, 56},
  {"3D Ansicht", 0x40068,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_3D, 0, 130, 0, 0, 14, 56},
+ {"CGATS Ansicht", 0x40067,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_zeigcgats, 0, 1, 0, 0, 14, 56},
  {"Grafikkarten Gamma", 0x40067,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_vcgt, 0, 0, 0, 0, 14, 56},
  {0},
  {"Hilfe", 0,  0, 0, 64, 0, 0, 14, 56},
@@ -417,8 +417,8 @@ Fl_Menu_Item ICCfltkBetrachter::menu_[] = {
 Fl_Menu_Item* ICCfltkBetrachter::menueintrag_html_speichern = ICCfltkBetrachter::menu_ + 2;
 Fl_Menu_Item* ICCfltkBetrachter::menueintrag_Voll = ICCfltkBetrachter::menu_ + 9;
 Fl_Menu_Item* ICCfltkBetrachter::menueintrag_inspekt = ICCfltkBetrachter::menu_ + 10;
-Fl_Menu_Item* ICCfltkBetrachter::menueintrag_zeigcgats = ICCfltkBetrachter::menu_ + 11;
-Fl_Menu_Item* ICCfltkBetrachter::menueintrag_3D = ICCfltkBetrachter::menu_ + 12;
+Fl_Menu_Item* ICCfltkBetrachter::menueintrag_3D = ICCfltkBetrachter::menu_ + 11;
+Fl_Menu_Item* ICCfltkBetrachter::menueintrag_zeigcgats = ICCfltkBetrachter::menu_ + 12;
 Fl_Menu_Item* ICCfltkBetrachter::menueintrag_vcgt = ICCfltkBetrachter::menu_ + 13;
 Fl_Menu_Item* ICCfltkBetrachter::menu_hilfe = ICCfltkBetrachter::menu_ + 15;
 

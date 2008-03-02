@@ -1,6 +1,6 @@
 CC=c++
 MAKEDEPEND	= /usr/X11R6//bin/makedepend -Y
-OPTS=-Wall -g #-Os
+RM = rm -v
 
 prefix		= /opt/local
 exec_prefix	= ${prefix}
@@ -39,10 +39,12 @@ endif
 FLTK_GL_LIBS=-lfltk_gl
 
 ifdef APPLE
+  OPTS=-Wall -g
   GLUT = -framework GLUT -lobjc
   OSX_CPP = icc_helfer_osx.cpp
   OSX_H  = -DHAVE_OSX
 else
+  OPTS=-Wall -g #-Os
   GLUT = -lglut
   X_H  = -DHAVE_X
   X_CPP = icc_helfer_x.cpp
@@ -94,16 +96,19 @@ CPPFILES = \
 	icc_formeln.cpp \
 	icc_gl.cpp \
 	icc_helfer.cpp \
+	icc_kette.cpp \
 	$(X_CPP) \
 	$(OSX_CPP) \
-	icc_kette.cpp \
 	icc_main.cpp \
 	icc_measurement.cpp \
 	icc_oyranos.cpp \
 	icc_profile.cpp \
+	icc_profile_header.cpp \
+	icc_profile_tags.cpp \
 	icc_ueber.cpp \
 	icc_utils.cpp \
 	icc_vrml.cpp \
+	icc_vrml_parser.cpp \
 	agviewer.cpp
 #	vFLGLWidget.cpp \
 	ViewerFLTK.cpp 
@@ -143,9 +148,17 @@ dir     = Entwickeln
 timedir = $(topdir)/$(dir)
 mtime   = `find $(timedir) -prune -printf %Ty%Tm%Td.%TT | sed s/://g`
 
-#.SILENT:
+.SILENT:
 
 all:	$(TARGET)
+
+release:	icc_alles.o
+	echo Linking $@...
+	$(CC) $(OPTS) -o $(TARGET) \
+	icc_alles.o \
+	$(LDLIBS)
+	$(APPLE)
+	$(RM) icc_alles.o
 
 $(TARGET):	$(OBJECTS)
 	echo Linking $@...
@@ -178,7 +191,7 @@ test1:	icc_draw.o
 	$(APPLE)
 
 t3:
-	rm test3
+	$(RM) test3
 	make test3
 
 test3:  ViewerFLTK.o vFLGLWidget.o
@@ -198,7 +211,7 @@ cgats:	icc_utils.h icc_utils.cpp icc_cgats_filter.cpp icc_cgats_parser.cpp
 install:	$(TARGET)
 	cp icc_examin $(bindir)
 clean:
-	rm -v $(OBJECTS) $(TARGET)
+	$(RM) $(OBJECTS) $(TARGET)
 
 it3:	t3
 	cp test3 /opt/kai-uwe/bin/icc_examin

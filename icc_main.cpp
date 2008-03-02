@@ -27,11 +27,9 @@
 
 
 #include "icc_examin.h"
-#include "icc_kette.h"
 #include <vector>
 
 ICCexamin *icc_examin;
-ICCkette profile;
 
 
 int

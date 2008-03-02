@@ -125,6 +125,8 @@
 #include <fstream>
 #include <sstream>
 
+using namespace icc_parser;
+
 //#define CGATS_DEBUG
 #ifdef CGATS_DEBUG
 #define DBG_CGATS DBG_PROG

@@ -404,6 +404,8 @@ getChannelNames (icColorSpaceSignature color)
   return texte;
 }
 
+#undef nFARBEN
+
 std::string
 getDeviceClassName (icProfileClassSignature deviceClass)
 {
@@ -749,6 +751,13 @@ zeig_bits_bin(void* speicher, int groesse)
   return text;
 }
 
+namespace icc_parser {
+const char *alnum = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_|/-+=()[]{}<>&?!:;,.0123456789";
+const char *numerisch = "-+,.0123456789";
+const char *ziffer = "0123456789";
+const char *alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_|/=()[]{}<>&?!:;";
+const char *leer_zeichen = " \t\n\v\f\r";
+
 int
 suchenErsetzen          (std::string &text,
                          std::string &suchen,
@@ -778,6 +787,20 @@ suchenErsetzen          (std::string &text,
   return n;
 }
 
+//#define PARSER_DEBUG
+#ifdef PARSER_DEBUG
+#define DBG_PARSER DBG_PROG
+#define DBG_PARSER_START DBG_PROG_START
+#define DBG_PARSER_ENDE DBG_PROG_ENDE
+#define DBG_PARSER_S( text ) DBG_PROG_S( text )
+#define DBG_PARSER_V( text ) DBG_PROG_V( text )
+#else
+#define DBG_PARSER
+#define DBG_PARSER_START
+#define DBG_PARSER_ENDE
+#define DBG_PARSER_S( text ) 
+#define DBG_PARSER_V( text )
+#endif
 
 std::vector<std::string>
 zeilenNachVector(std::string &text)
@@ -809,7 +832,7 @@ std::string::size_type
 sucheWort         ( std::string            &text,
                     std::string             wort,
                     std::string::size_type  pos )
-{ //DBG_PROG_START
+{ DBG_PARSER_START
   std::string::size_type pos_ = std::string::npos;
   bool fertig = false;
 
@@ -835,8 +858,172 @@ sucheWort         ( std::string            &text,
       fertig = true;
   }
 
-  //DBG_PROG_ENDE
+  DBG_PARSER_ENDE
   return pos_;
 }
+
+ZifferWort zifferWort( std::string & wert )
+{ ZifferWort t; t.wort.first = true; t.wort.second = wert; return t; }
+ZifferWort zifferWort( double wert )
+{ ZifferWort t; t.zahl.first = true; t.zahl.second = wert; return t; }
+ZifferWort zifferWort( int wert )
+{ ZifferWort t; t.ganz_zahl.first = true; t.ganz_zahl.second = wert; return t; }
+
+
+std::vector<ZifferWort>
+unterscheideZiffernWorte ( std::string &zeile,
+                           bool         anfuehrungsstriche_setzen,
+                           const char  *trennzeichen )
+{
+  std::string::size_type pos = 0, ende = 0, pos2, pos3;
+  static char text[64];
+  bool in_anfuehrung = false;
+  std::string txt;
+  std::vector<ZifferWort> ergebnis;
+  std::vector<std::string> worte;
+  char trenner [16];
+
+  if( trennzeichen ) {
+    sprintf (trenner, trennzeichen );
+  } else {
+    sprintf (trenner, leer_zeichen );
+    suchenErsetzen( zeile, ",", ".", 0 );
+  }
+
+  // Worte Suchen und von Zahlen scheiden
+  for( pos = 0; pos < zeile.size() ; ++pos )
+  { DBG_PARSER_V( pos <<" "<< zeile.size() )
+    in_anfuehrung = false;
+    pos2 = pos;
+
+    // erstes Zeichen suchen
+    if( (pos = zeile.find_first_of( alnum, pos )) != std::string::npos )
+    {
+      bool anf_zaehlen = true;
+      // erstes Anführungszeichen suchen
+      if( zeile.find_first_of( "\"", pos2 ) != std::string::npos &&
+          zeile.find_first_of( "\"", pos2 ) < pos )
+        pos2 = zeile.find_first_of( "\"", pos2 );
+      else
+        anf_zaehlen = false;
+      DBG_PARSER_V( pos2 )
+
+      // Anführungszeichen zählen [ ""  " "  ABC ] - zeichenweise
+      int letzes_anf_zeichen = -1;
+      if( anf_zaehlen )
+        for( pos3 = pos2; pos3 < pos; ++pos3)
+          if( zeile[pos3] == '"' &&
+              letzes_anf_zeichen >= 0 )
+            letzes_anf_zeichen = -1;
+          else
+            letzes_anf_zeichen = pos3;
+
+      // falls ein Anführungszeichen vor dem Wort ungerade sind // ["" " ABC ]
+      if( letzes_anf_zeichen >= 0 )
+      {
+        in_anfuehrung = true;
+        pos2 = pos;
+        pos = letzes_anf_zeichen+1;
+      }
+      DBG_PARSER_V( pos )
+      // das Ende des Wortes finden
+      if( in_anfuehrung )
+        ende = zeile.find_first_of( "\"", pos + 1 );
+      else
+        if( (ende = zeile.find_first_of( trenner, pos2 + 1 ))
+            == std::string::npos )
+          ende = zeile.size();
+
+      // bitte das erste Wort einbeziehen
+      if( zeile.find_first_of( alnum, pos ) > ende )
+        ende = zeile.find_first_of( trenner,
+                                zeile.find_first_of( alnum, pos ) + 1 );
+      // das Wort extrahieren
+      txt = zeile.substr( pos, ende-pos );
+      DBG_PARSER_V( pos <<" "<< ende )
+      #ifdef PARSER_DEBUG
+      cout << zeile << endl;
+      for(unsigned int j = 0; j < zeile.size();    ++j)
+        if( j != pos && j != ende )
+          cout << " ";
+        else
+          cout << "^";
+      cout << "\n";
+      #endif
+      // das Wort untersuchen
+      if( txt.find_first_of( numerisch ) != std::string::npos &&
+          txt.find( "." ) != std::string::npos &&
+          txt.find_first_of( alpha ) == std::string::npos )
+      { // ist Fließkommazahl
+        pos += txt.size();
+        sprintf( text, "%f", atof( zeile.substr( pos, ende-pos ).c_str() ) );
+        DBG_PARSER_S( "Fließkommazahl: " << txt )
+        ergebnis.push_back( zifferWort(atof(txt.c_str())) );
+      } else
+      if( txt.find_first_of( ziffer ) != std::string::npos &&
+          txt.find( "." ) == std::string::npos &&
+          txt.find_first_of( alpha ) == std::string::npos )
+      { // ist Ganzzahl
+        pos += txt.size();
+        sprintf( text, "%d", atoi( zeile.substr( pos, ende-pos ).c_str() ) );
+        ergebnis.push_back( zifferWort(atoi(txt.c_str())) );
+        DBG_PARSER_S( "Ganzzahl: " << txt )
+      } else
+      if( txt.find_first_of( alnum ) != std::string::npos )
+      { // ist Text
+        bool neusetzen = false;
+        int anf = 0;
+        ergebnis.push_back( zifferWort(txt) );
+        DBG_PARSER_S( "Text: " << txt )
+        DBG_PARSER_V( in_anfuehrung )
+        // Anführungszeichen Beginn
+        if( !in_anfuehrung && anfuehrungsstriche_setzen )
+        {
+          zeile.insert( pos, "\"" );
+          in_anfuehrung = true;
+          neusetzen = true;
+          ++pos;
+          ++anf;
+        }
+        if( anf_zaehlen )
+          in_anfuehrung = false;
+        // Ende des Wortes
+        if( (pos2 = zeile.find_first_of( trenner, pos ))
+            == std::string::npos)
+          pos2 = zeile.size();
+        // Es folgt ein Anführungszeichen
+        if( pos2 > zeile.find_first_of( "\"", pos ) &&
+            zeile.find_first_of( "\"", pos ) != std::string::npos &&
+            !neusetzen )
+          pos2 = zeile.find_first_of( "\"", pos );
+        
+        if( in_anfuehrung && anfuehrungsstriche_setzen )
+        { DBG_PARSER_V( zeile )
+          zeile.insert( pos2, "\"" );
+          in_anfuehrung = false;
+          ++anf;
+        }
+        ende += anf;
+        pos = ende;
+      }
+      DBG_PARSER_V( pos << zeile.size() )
+      // Schleife beenden
+      if( zeile.find_first_of( alnum, pos ) == std::string::npos )
+      {
+        DBG_PARSER_V( zeile.find_first_of( alnum, pos ) )
+        pos = zeile.size();
+      }
+      DBG_PARSER_V( pos << zeile )
+    } else
+      pos = zeile.size();
+  }
+  for( unsigned i = 0; i < worte.size(); i++)
+    DBG_PARSER_V( worte[i] );
+
+  return ergebnis;
+}
+
+}
+
 
 
