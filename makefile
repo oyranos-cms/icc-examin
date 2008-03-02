@@ -17,11 +17,14 @@ srcdir		= .
 DEBUG = -DDEBUG
 DL = --ldflags # --ldstaticflags
 
+X_CPPFILES = icc_helfer_x.cpp
+OSX_CPPFILES = icc_helfer_osx.cpp
+FLTK_CPPFILES = icc_helfer_fltk.cpp
 
 ifdef APPLE
   OPTS=-Wall -g $(DEBUG)
   GLUT = -framework GLUT -lobjc
-  OSX_CPP = icc_helfer_osx.cpp
+  OSX_CPP = $(OSX_CPPFILES)
   INCL=-I$(includedir) -I/usr/X11R6/include -I./ -I/usr/include/gcc/darwin/default/c++
 else
   OPTS = -Wall  -Os -g $(DEBUG) #-fomit-frame-pointer -g
@@ -31,6 +34,7 @@ endif
 
 ifdef FLTK
   FLTK_LIBS=`fltk-config --use-images --use-gl --use-glut $(DL)`
+  TOOLKIT_FILES = $(FLTK_CPPFILES)
 endif
 
 ifdef FLU
@@ -38,7 +42,7 @@ ifdef FLU
 endif
 
 ifdef X11
-  X_CPP = icc_helfer_x.cpp
+  X_CPP = $(X_CPPFILES)
   X11_LIBS=-L/usr/X11R6/lib -lX11 -lXxf86vm -lXext
 endif
 
@@ -87,7 +91,7 @@ CPP_HEADERS = \
 	icc_version.h \
 	icc_vrml.h \
 	icc_vrml_parser.h
-CPPFILES = \
+COMMON_CPPFILES = \
 	icc_cgats_filter.cpp \
 	icc_draw.cpp \
 	icc_examin.cpp \
@@ -97,8 +101,6 @@ CPPFILES = \
 	icc_helfer.cpp \
 	icc_info.cpp \
 	icc_kette.cpp \
-	$(X_CPP) \
-	$(OSX_CPP) \
 	icc_main.cpp \
 	icc_measurement.cpp \
 	icc_modell_beobachter.cpp \
@@ -111,14 +113,24 @@ CPPFILES = \
 	icc_vrml.cpp \
 	icc_vrml_parser.cpp \
 	agviewer.cpp
-CPPFLTKFILES = \
-	icc_helfer_fltk.cpp
+CPPFILES = \
+	$(COMMON_CPPFILES) \
+	$(TOOLKIT_FILES) \
+	$(X_CPP) \
+	$(OSX_CPP)
 CXXFILES = \
 	icc_betrachter.cxx \
 	fl_oyranos.cxx
 TEST = \
 	dE2000_test.cpp \
 	ciede2000testdata.h
+ALL_CPPFILES = \
+	$(COMMON_CPPFILES) \
+	$(OSX_CPPFILES) \
+	$(X_CPPFILES) \
+	$(FLTK_CPPFILES) \
+	$(CXXFILES) \
+	$(TEST)
 DOKU = \
 	TODO \
 	README \
@@ -130,11 +142,8 @@ FLUID = \
 	icc_betrachter.fl \
 	fl_oyranos.fl
 
-ifdef FLTK
-TOOLKIT_FILES = $(CPPFLTKFILES)
-endif
-SOURCES = $(CPPFILES) $(CXXFILES) $(CPP_HEADERS)
-OBJECTS = $(CPPFILES:.cpp=.o) $(CXXFILES:.cxx=.o) $(TOOLKIT_FILES:.cpp=.o)
+SOURCES = $(ALL_CPPFILES) $(CXXFILES) $(CPP_HEADERS)
+OBJECTS = $(CPPFILES:.cpp=.o) $(CXXFILES:.cxx=.o)
 TARGET  = icc_examin
 
 REZ     = /Developer/Tools/Rez -t APPL -o $(TARGET) /opt/local/include/FL/mac.r
@@ -224,10 +233,8 @@ tgz:
 	mkdir icc_examin_$(VERSION)
 	$(COPY) \
 	$(SOURCES) \
-	$(CPPFLTKFILES) \
 	makefile \
 	configure.sh \
-	$(TEST) \
 	$(DOKU) \
 	$(FLUID) \
 	icc_examin_$(VERSION)
@@ -238,6 +245,6 @@ tgz:
 	test `pwd` != `(cd icc_examin_$(VERSION); pwd)` && \
 	rm -R icc_examin_$(VERSION) 
 
-# Abh√§ngigkeiten
+# Abh‰ngigkeiten
 include mkdepend
 

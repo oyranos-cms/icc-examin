@@ -7,7 +7,7 @@ VERSION="0.24"
 ZEIT="Mai 2004 - Maerz 2005"
 
 test -f error.txt && rm -v error.txt
-make clean
+test -f config && make clean
 
 
 echo -e "\c" > $CONF_H
