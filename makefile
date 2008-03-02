@@ -233,7 +233,7 @@ tgz:
 	test -d ../Archiv && mv -v $(TARGET)_*.tgz ../Archiv
 	test -d Entwickeln && \
 	test `pwd` != `(cd Entwickeln; pwd)` && \
-	rm -R Entwickeln
+	#rm -R Entwickeln
 
 targz:
 	mkdir icc_examin_$(VERSION)

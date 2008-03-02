@@ -481,14 +481,18 @@ ICCexamin::nachricht( Modell* modell , int info )
   {
     DBG_PROG_S( _("Nachricht von ICCkette") )
     DBG_PROG_S( _("Auffrischen von Profil Nr.: ") << info )
-    if(info>=0 && !(*k)[info]->changing())
-    { DBG_PROG
-      if(k->aktiv(info)) {
-        histogram (info);
-        if (info<(int)icc_betrachter->DD_histogram->dreiecks_netze.size())
-          icc_betrachter->DD_histogram->dreiecks_netze[info].aktiv = true;
-      } else if (info<(int)icc_betrachter->DD_histogram->dreiecks_netze.size()){
-        icc_betrachter->DD_histogram->dreiecks_netze[info].aktiv = false;
+    if(info>=0) {
+      ICCprofile *p = (*k)[info];
+      DBG_PROG_V( (int*)p )
+      if (p && !p->changing())
+      { DBG_PROG
+        if(k->aktiv(info)) {
+          histogram (info);
+          if (info<(int)icc_betrachter->DD_histogram->dreiecks_netze.size())
+            icc_betrachter->DD_histogram->dreiecks_netze[info].aktiv = true;
+        } else if (info<(int)icc_betrachter->DD_histogram->dreiecks_netze.size()){
+          icc_betrachter->DD_histogram->dreiecks_netze[info].aktiv = false;
+        }
       }
     }
   }

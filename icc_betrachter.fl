@@ -495,7 +495,7 @@ class ICCfltkBetrachter {} {
   if (m->value()) {
     //icc_examin->histogram();
   }
-  icc_examin->neuzeichnen(DD_histogram);}
+  icc_examin->neuzeichnen(icc_examin->icc_betrachter->DD_histogram);}
               xywh {50 50 100 20} type Toggle shortcut 0x40068 divider
             }
             menuitem menueintrag_zeigcgats {
