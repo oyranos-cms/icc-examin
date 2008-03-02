@@ -33,7 +33,9 @@
 
 #include <X11/Xutil.h>
 #include <X11/extensions/xf86vmode.h>
-
+#ifdef HAVE_FLTK
+#include <FL/x.H>
+#endif
 
 std::vector<std::vector<double> >
 getXgamma        (std::string display_name,
@@ -55,13 +57,20 @@ getXgamma        (std::string display_name,
   if(display_name.size())
     display = XOpenDisplay(display_name.c_str());
   else
+  {
+    #ifdef HAVE_FLTK
+    display = fl_display;
+    #else
     display = XOpenDisplay(0);
+    #endif
+  }
 
   if (!display) {
     WARN_S( XDisplayName (display_name.c_str()) )
     DBG_PROG_ENDE
     return kurven;
   }
+  DBG_PROG_V( XDisplayName (display_name.c_str()) )
 
   if (!XF86VidModeGetMonitor(display, screen, &monitor))
     WARN_S( _("Keine Monitor Information erhalten") )
@@ -75,6 +84,29 @@ getXgamma        (std::string display_name,
   DBG_PROG_V( monitor.model )
   if (!XF86VidModeGetGamma(display, screen, &gamma))
     WARN_S( _("Keine Gamma Information erhalten") )
+  else {
+    char t[24];
+    if( gamma.red != 1.0 ) {
+      texte.push_back("");
+      texte.push_back(_("Gamma Rot:   "));
+      sprintf(t, "%.2f", gamma.red);
+      texte[texte.size()-1].append(t);
+    }
+    DBG_NUM_V( gamma.red )
+    if( gamma.green != 1.0 ) {
+      texte.push_back(_("Gamma Grün: "));
+      sprintf(t, "%.2f", gamma.green);
+      texte[texte.size()-1].append(t);
+    }
+    DBG_NUM_V( gamma.green )
+    if( gamma.blue != 1.0 ) {
+      texte.push_back(_("Gamma Blau:  "));
+      sprintf(t, "%.2f", gamma.blue);
+      texte[texte.size()-1].append(t);
+    }
+    DBG_NUM_V( gamma.blue )
+  }
+
   int size;
   if (!XF86VidModeGetGammaRampSize(display, screen, &size))
     WARN_S( _("Kein Gammagradient Information erhalten") )
@@ -102,6 +134,8 @@ getXgamma        (std::string display_name,
     delete [] green;
     delete [] blue;
   } else DBG_NUM_S( "kein vcgt in X anzeigbar" )
+
+  XCloseDisplay(display);
 
   DBG_PROG_ENDE
   return kurven;

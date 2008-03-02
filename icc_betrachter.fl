@@ -419,7 +419,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window vcgt {
       label {Grafikkarten Gamma Tabellen} open
-      xywh {783 332 370 390} type Double labeltype NORMAL_LABEL resizable
+      xywh {711 230 370 390} type Double labeltype NORMAL_LABEL resizable
       code0 {o->hide();} non_modal visible
     } {
       Fl_Group {} {open
@@ -437,14 +437,14 @@ class ICCfltkBetrachter {open
         }
         Fl_Button {} {
           label Auffrischen
-          callback {icc_examin->vcgtZeigen();}
+          callback {icc_examin->vcgtZeigen();} selected
           xywh {135 360 110 25} hotspot
         }
       }
     }
     Fl_Window details {
       label {ICC Details} open
-      xywh {591 364 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
+      xywh {596 385 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
     } {
       Fl_Group {} {open
         xywh {0 0 385 520}
@@ -539,7 +539,7 @@ class ICCfltkBetrachter {open
             menuitem menueintrag_vcgt {
               label {Grafikkarten Gamma}
               callback {vcgt->show();
-icc_examin->vcgtZeigen();} selected
+icc_examin->vcgtZeigen();}
               xywh {15 15 100 20} shortcut 0x40067
               code0 {o->hide();}
             }
