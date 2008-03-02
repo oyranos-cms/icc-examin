@@ -55,21 +55,19 @@ FLTK_H = -I/data3/CD/programme/fltk118-utf8-2007-07-14_SuSE9.2 -I/usr/include/fr
 FLTK_LIBS = -L/data3/CD/programme/fltk118-utf8-2007-07-14_SuSE9.2/lib -L/usr/X11R6/lib -Wall -g -L/usr/X11R6/lib -lfltk-utf8_images -lpng -lz -ljpeg -lfltk-utf8_gl -lGLU -lGL -lfltk-utf8 -lfltk_xutf8 -lXft -lXinerama -lpthread -ldl -lm -lXext -lX11
 fltkconfig = /opt/kai-uwe/bin/fltk-config
 GETTEXT = -DUSE_GETTEXT
-DEBUG = -Wall -g -DDEBUG --pedantic
-DEBUG_SWITCH = -v
 .SILENT:
 src_dir = /home/kuwe/programme/icc_examin/icc_examin-0.45
 srcdir = /home/kuwe/programme/icc_examin/Entwickeln
-prefix=/opt/kai-uwe
-exec_prefix=/opt/kai-uwe
-bindir=/opt/kai-uwe/bin
-sbindir=/opt/kai-uwe/sbin
-libdir=/opt/kai-uwe/lib
-includedir=/opt/kai-uwe/include
-datadir=/opt/kai-uwe/share
-mandir=/opt/kai-uwe/share/man
-pixmapdir=/opt/kai-uwe/share/pixmaps
-desktopdir=/opt/kai-uwe/share/applications
+prefix=/usr
+exec_prefix=/usr
+bindir=/usr/bin
+sbindir=/usr/sbin
+libdir=/usr/lib
+includedir=/usr/include
+datadir=/usr/share
+mandir=/usr/share/man
+pixmapdir=/usr/share/pixmaps
+desktopdir=/usr/share/applications
 
 
 ### End of automatic generated options ###
