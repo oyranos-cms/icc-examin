@@ -1608,7 +1608,9 @@ GL_Ansicht::hineinNetze       (const std::vector<ICCnetz> & d_n)
   DBG_PROG_ENDE
 }
 
-void GL_Ansicht::hineinKurven(std::vector<std::vector<double> >vect, std::vector<std::string> txt)
+void
+GL_Ansicht::hineinKurven(std::vector<std::vector<double> > vect,
+                         std::vector<std::string>          txt)
 { DBG_PROG_START
   //Kurve aus tag_browser anzeigen
   kurven_ = vect;

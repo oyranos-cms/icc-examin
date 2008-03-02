@@ -53,7 +53,7 @@ class GL_Ansicht : public Fl_Group , public Fl_Slot {
 
   bool auffrischen_;
   // Referenz zu einem abgekoppelten fltk Objekt
-  // Der Gedanke ist : Glut Fenster lassen sich nicht schliesen.
+  // Der Gedanke ist : Fltk löscht den OpenGL Kontext.
   //                   Die Klasse gl_fenster_ behält ihre volle Größe.
   //                   Die GL_Ansicht kann in gl_fenster_ eingepasst oder
   //                   auf 1x1 verkleinert werden.
@@ -68,7 +68,7 @@ class GL_Ansicht : public Fl_Group , public Fl_Slot {
   void garnieren_();
   // Menüs
   Fl_Menu_Button  *menue_;
-  Fl_Menu_Button *menue_button_;
+  Fl_Menu_Button  *menue_button_;
   Fl_Menu_Button  *menue_schnitt_;
   Fl_Menu_Button  *menue_form_;
   Fl_Menu_Button  *menue_hintergrund_;

@@ -39,6 +39,7 @@
 #include "icc_modell_beobachter.h"
 
 class  ICCfltkBetrachter;
+class  ICCwaehler;
 class  ICCexamin;
 extern ICCexamin *icc_examin;
 
@@ -73,6 +74,7 @@ class ICCexamin : public icc_examin_ns::Beobachter
          _zeig_histogram;
     int  status_;
     bool frei_;
+    ICCwaehler *icc_waehler_;
   public:
     int  laeuft ()  { return status_; }          // kann bei >1 genutzt werden
     bool frei()     { return frei_; }            // ist nicht gesperrt

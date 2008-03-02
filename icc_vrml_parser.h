@@ -47,6 +47,7 @@ struct ICCnetz {
   std::multimap<double,DreiecksIndexe> indexe;
   std::string name;
   double transparenz;
+  int grau;
 };
 
 std::vector<ICCnetz> extrahiereNetzAusVRML (std::string & vrml);

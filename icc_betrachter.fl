@@ -1,5 +1,5 @@
 # data file for the Fltk User Interface Designer (fluid)
-version 1.0106 
+version 1.0104 
 header_name {.h} 
 code_name {.cxx}
 decl {\#include <cassert>} {public
@@ -59,10 +59,9 @@ decl {\#include "icc_profile.h"
 
 decl {\#include "icc_gl.h"} {} 
 
-decl {using namespace icc_examin_ns;} {selected
-} 
+decl {using namespace icc_examin_ns;} {} 
 
-Function {icc_read_info(char* filename)} {return_type {char*}
+Function {iccReadInfo(char* filename)} {selected return_type {char*}
 } {
   code DBG_PROG_START {}
   code {char systemBefehl[1024];
@@ -262,8 +261,7 @@ class MftChoice {: {public Fl_Choice}
   }
 } 
 
-class ICCfltkBetrachter {open
-} {
+class ICCfltkBetrachter {} {
   decl {bool setTitleUrl;
 
  int px,py,pw,ph;
@@ -372,7 +370,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window vcgt {
       label {Grafikkarten Gamma Tabellen}
-      xywh {669 190 370 390} type Double resizable
+      xywh {673 -587 370 390} type Double resizable
       code0 {o->hide();} non_modal visible
     } {
       Fl_Group {} {open
@@ -407,7 +405,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window details {
       label {ICC Details} open
-      xywh {665 424 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
+      xywh {501 -918 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
     } {
       Fl_Group {} {open
         xywh {0 0 385 520}
@@ -750,7 +748,7 @@ ueber_html->value(getUeberHtml().c_str());}
   }
 } 
 
-Function {dHaendler(void* o)} {return_type {static void}
+Function {dHaendler(void* o)} {open return_type {static void}
 } {
   code DBG_PROG_START {}
   code {Fl::remove_timeout( (void(*)(void*))dHaendler, 0 );

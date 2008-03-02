@@ -34,6 +34,7 @@
 #include "icc_gl.h"
 #include "agviewer.h"
 #include "icc_helfer_ui.h"
+#include "icc_waehler.h"
 
 using namespace icc_examin_ns;
 
@@ -637,9 +638,12 @@ ICCexamin::histogram (int n)
     {
       icc_betrachter->DD_histogram-> dreiecks_netze .resize( netz.size() );
       netz[n].transparenz = 0.3;
-    } else
+      netz[n].grau = true;
+    } else {
       netz[n].transparenz = icc_betrachter->DD_histogram->dreiecks_netze[n].
                             transparenz;
+      netz[n].grau = false;
+    }
 
     icc_betrachter->DD_histogram->dreiecks_netze[n] = netz[n];
     icc_betrachter->DD_histogram->achsNamen( texte );
@@ -965,6 +969,7 @@ ICCexamin::initReihenfolgeGL_Ansicht(GL_Ansicht* gl_ansicht)
       icc_betrachter->DD_histogram->show();
     }
     icc_betrachter->DD_histogram->init(2);
+    icc_waehler_ = new  ICCwaehler(485, 186, _("Ansichtsw\212hler"));
   }
   DBG_PROG_ENDE
 }
