@@ -156,13 +156,13 @@ GL_Ansicht::init(int init_id)
 
   mode(FL_RGB |FL_DOUBLE |FL_ALPHA |FL_DEPTH |FL_MULTISAMPLE);
   if(!can_do()) {
-    WARN_S( _("OpenGL eventuell nicht korrekt gesetzt von ICC Examin "<< mode()) )
+    WARN_S( _("OpenGL eventuell nicht korrekt gesetzt von ICC Examin ") << mode() )
     mode(FL_RGB |FL_DOUBLE |FL_ALPHA |FL_DEPTH);
     if(!can_do()) {
-      WARN_S( _("OpenGL eventuell nicht korrekt gesetzt von ICC Examin "<< mode()) )
+      WARN_S( _("OpenGL eventuell nicht korrekt gesetzt von ICC Examin ") << mode() )
       mode(0);
       if(!can_do()) {
-        WARN_S( _("OpenGL eventuell nicht korrekt gesetzt von ICC Examin "<< mode()) )
+        WARN_S( _("OpenGL eventuell nicht korrekt gesetzt von ICC Examin ") << mode() )
       }
     }
   }
@@ -335,23 +335,23 @@ GL_Ansicht::GLinit_()
 
   char* font_name = "/usr/X11R6/lib/X11/fonts/truetype/FreeSans.ttf";
   if(!holeDateiModifikationsZeit(font_name)) {
-    WARN_S( _("Konnte Font nicht ˆffnen:") << font_name )
+    WARN_S( _("Konnte Font nicht oeffnen:") << font_name )
     font_name = "/usr/X11R6/lib/X11/fonts/truetype/arial.ttf";
     if(!holeDateiModifikationsZeit(font_name)) {
-      WARN_S( _("Konnte Font nicht ˆffnen:") << font_name )
+      WARN_S( _("Konnte Font nicht oeffnen:") << font_name )
       font_name = "/Library/Fonts/Arial.ttf";
       if(!holeDateiModifikationsZeit(font_name)) {
-        WARN_S( _("Konnte Font nicht ˆffnen:") << font_name )
+        WARN_S( _("Konnte Font nicht oeffnen:") << font_name )
         char *n = (char*) calloc(sizeof(char), 1024);
         sprintf (n, "%s/.fonts/arial.ttf", getenv("HOME"));
         font_name = n;
         DBG_PROG_V( holeDateiModifikationsZeit(font_name) )
         if(!holeDateiModifikationsZeit(font_name)) {
-          WARN_S( _("Konnte Font nicht ˆffnen:") << font_name )
+          WARN_S( _("Konnte Font nicht oeffnen:") << font_name )
           sprintf (n, "%s/fonts/FreeSans.ttf", DATADIR);
           font_name = n;
           if(!holeDateiModifikationsZeit(font_name)) {
-            WARN_S( _("Konnte Font nicht ˆffnen:") << font_name )
+            WARN_S( _("Konnte Font nicht oeffnen:") << font_name )
             sprintf (n, "%s/FreeSans.ttf", SRCDIR);
             font_name = n;
           }
@@ -366,13 +366,13 @@ GL_Ansicht::GLinit_()
     delete font;
     delete ortho_font;
     font = ortho_font = 0;
-    WARN_S( _("Konnte Font nicht ˆffnen:") << font_name )
+    WARN_S( _("Konnte Font nicht oeffnen:") << font_name )
   } else {
     font->CharMap( ft_encoding_unicode );
     font->Depth(12);
-    if(!font->FaceSize(72)) WARN_S(_("Fontgrˆﬂe nicht setzbar")); \
+    if(!font->FaceSize(72)) WARN_S(_("Fontgroesse nicht setzbar")); \
     ortho_font->CharMap( ft_encoding_unicode );
-    if(!ortho_font->FaceSize(16)) WARN_S(_("Fontgrˆﬂe nicht setzbar"));
+    if(!ortho_font->FaceSize(16)) WARN_S(_("Fontgroesse nicht setzbar"));
   }
   #endif
 
@@ -723,7 +723,7 @@ GL_Ansicht::tabelleAuffrischen()
   if(tabelle_.size()) {
     if( (int)tabelle_[0][0][0].size() <= kanal) {
       kanal = tabelle_[0][0][0].size()-1;
-      DBG_PROG_S( _("Kanalauswahl ge‰ndert: ") << kanal )
+      DBG_PROG_S( _("Kanalauswahl geoendert: ") << kanal )
     }
   }
 
@@ -899,14 +899,14 @@ GL_Ansicht::netzeAuffrischen()
            for( it = dreiecks_netze[j].indexe.begin();
                 it != dreiecks_netze[j].indexe.end(); ++it )
            {
-               // die Indexe werden gesondert eingef¸gt, um sie neu zu z‰hlen
+               // die Indexe werden gesondert eingef√ºgt, um sie neu zu z√§hlen
        /*A*/ std::pair<double,DreiecksIndexe>
                             index_p( *it );
        /*B*/ for( k = 0; k < 3; ++k)
                index_p.second.i[k] += punkte_n;
        /*C*/
              #if 0
-               // das wird der Mittelpunkt des umschlieﬂenden Quaders
+               // das wird der Mittelpunkt des umschlie√üenden Quaders
              abstand =
                 ( HYP3(netz.punkte[index_p.second.i[0]].koord[0]+Y,
                        netz.punkte[index_p.second.i[0]].koord[1]+Z,
@@ -943,10 +943,10 @@ GL_Ansicht::netzeAuffrischen()
              abstand = HYP3( mittelpunkt[0], mittelpunkt[1], mittelpunkt[2] );
              #endif  
              index_p.first = abstand;
-               // der Beh‰lter std::map ¸bernimmt die Sortierung
+               // der Beh√§lter std::map √ºbernimmt die Sortierung
        /*D*/ netz.indexe.insert(index_p);
            }
-             // neue Basis f¸r Indexnummern
+             // neue Basis f√ºr Indexnummern
            punkte_n += dreiecks_netze[j].punkte.size();
          }
        }
@@ -972,15 +972,15 @@ GL_Ansicht::netzeAuffrischen()
       //glAlphaFunc (GL_ALPHA_TEST, GL_ONE_MINUS_DST_ALPHA);
       #else
       glEnable (GL_BLEND);
-      //glDepthMask(GL_FALSE);              // Konturen und Schnittkanten m¸ssen
-                                          // richtig ¸bergeben werden 
+      //glDepthMask(GL_FALSE);              // Konturen und Schnittkanten m√ºssen
+                                          // richtig √ºbergeben werden 
       glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
       glEnable (GL_ALPHA_TEST_FUNC);
       glAlphaFunc (GL_ALPHA_TEST, GL_ONE_MINUS_DST_ALPHA);
       #endif
       #if 0
-      glPolygonMode(GL_FRONT, GL_FILL);   // Vorderseite als Fl‰che 
-      glPolygonMode(GL_BACK, GL_LINE);   // R¸ckseite als Linien
+      glPolygonMode(GL_FRONT, GL_FILL);   // Vorderseite als Fl√§che 
+      glPolygonMode(GL_BACK, GL_LINE);   // R√ºckseite als Linien
       #endif
       glFrontFace(GL_CCW);
       glPushMatrix();
@@ -1207,7 +1207,7 @@ GL_Ansicht::zeigeSpektralband_()
     double *XYZ_Speicher = 0;
     double *Lab_Speicher = 0;
 
-    // Initialisierung f¸r lcms
+    // Initialisierung f√ºr lcms
     size_t groesse = 0;
     const char* block = 0;
     block = icc_oyranos.moni(groesse);
@@ -1217,9 +1217,9 @@ GL_Ansicht::zeigeSpektralband_()
       hsRGB = cmsOpenProfileFromMem(const_cast<char*>(block), groesse);
     else
       hsRGB = cmsCreate_sRGBProfile();
-    if(!hsRGB) WARN_S( _("hsRGB Profil nicht geˆffnet") )
+    if(!hsRGB) WARN_S( _("hsRGB Profil nicht geoeffnet") )
     hLab  = cmsCreateLabProfile(cmsD50_xyY());
-    if(!hLab)  WARN_S( _("hLab Profil nicht geˆffnet") )
+    if(!hLab)  WARN_S( _("hLab Profil nicht geoeffnet") )
 
     hLabtoRGB = cmsCreateTransform          (hLab, TYPE_Lab_DBL,
                                              hsRGB, TYPE_RGB_DBL,
@@ -1240,9 +1240,9 @@ GL_Ansicht::zeigeSpektralband_()
     }
     Lab_Speicher = new double [nano_max*3];
     RGB_Speicher = new double [nano_max*3];
-    if(!XYZ_Speicher)  WARN_S( _("XYZ_speicher Speicher nicht verf¸gbar") )
-    if(!Lab_Speicher)  WARN_S( _("Lab_speicher Speicher nicht verf¸gbar") )
-    if(!RGB_Speicher)  WARN_S( _("RGB_speicher Speicher nicht verf¸gbar") )
+    if(!XYZ_Speicher)  WARN_S( _("XYZ_speicher Speicher nicht verfuegbar") )
+    if(!Lab_Speicher)  WARN_S( _("Lab_speicher Speicher nicht verfuegbar") )
+    if(!RGB_Speicher)  WARN_S( _("RGB_speicher Speicher nicht verfuegbar") )
 
 
     XYZtoLab (XYZ_Speicher, Lab_Speicher, nano_max);
@@ -1303,7 +1303,7 @@ void
 GL_Ansicht::menueErneuern_()
 { DBG_PROG_START
 
-  // Lˆschen
+  // L√∂schen
   menue_schnitt_->clear();
   menue_hintergrund_->clear();
   menue_form_->clear();
@@ -1366,7 +1366,7 @@ GL_Ansicht::menueErneuern_()
     #ifdef Lab_STERN
       menue_form_->add( _("Stern"), 0,c_, (void*)MENU_dE1STERN, 0 );
     #else
-      // Punkte werden f¸r Bildfarben reserviert
+      // Punkte werden f√ºr Bildfarben reserviert
       menue_form_->add( _("Punkt"), 0,c_, (void*)MENU_dE1STERN, 0 );
     #endif
     }
@@ -1383,7 +1383,7 @@ GL_Ansicht::menueErneuern_()
   DBG_PROG_V( menue_->size() )
 
 
-  // -> (Hauptmen¸)
+  // -> (Hauptmen√º)
   for (int i = 0; i < (int)nach_farb_namen_.size(); i++) {
     char* p = (char*) nach_farb_namen_[i].c_str();
     menue_->add( p, 0,c_, (void*)(MENU_MAX + i), 0 );
@@ -1393,7 +1393,7 @@ GL_Ansicht::menueErneuern_()
   menue_button_->copy(menue_->menu());
   menue_button_->callback(c_);
 
-  icc_examin_ns::status_info(_("linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Men¸"));
+  icc_examin_ns::status_info(_("linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menue"));
 
   DBG_PROG_ENDE
 }
@@ -1434,7 +1434,7 @@ GL_Ansicht::setzePerspektive()
     else
       gluPerspective(15, seitenverhaeltnis,
                      vorder_schnitt, 50);
-                  // ^-- vordere Schnittfl‰che
+                  // ^-- vordere Schnittfl√§che
   //DBG_ICCGL_ENDE
 }
 
@@ -1661,7 +1661,7 @@ GL_Ansicht::hineinTabelle (std::vector<std::vector<std::vector<std::vector<doubl
   valid(false);
   redraw();
 
-  icc_examin_ns::status_info(_("linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Men¸"));
+  icc_examin_ns::status_info(_("linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menue"));
 
   DBG_PROG_ENDE
 }
@@ -1760,7 +1760,7 @@ GL_Ansicht::menueAufruf ( int value )
       for (int i=0; i < 3 ; ++i) textfarbe[i] = 0.5;
       break;
     case Agviewer::FLYING:
-      icc_examin_ns::status_info(_("Schnitt; linker Mausklick setzt zur¸ck"));
+      icc_examin_ns::status_info(_("Schnitt; linker Mausklick setzt zurueck"));
       agv_.duenn = true;
       break;
     case Agviewer::ICCFLY_L:
@@ -1771,17 +1771,17 @@ GL_Ansicht::menueAufruf ( int value )
         agv_.eyeDist( agv_.dist() );
         vorder_schnitt = std_vorder_schnitt;
       }
-      icc_examin_ns::status_info(_("waagerechter Schnitt; linker Mausklick setzt zur¸ck"));
+      icc_examin_ns::status_info(_("waagerechter Schnitt; linker Mausklick setzt zurueck"));
       agv_.duenn = true;
       break;
     case Agviewer::ICCFLY_a:
       vorder_schnitt = std_vorder_schnitt;
-     icc_examin_ns::status_info(_("senkrechter Schnitt von rechts; linker Mausklick setzt zur¸ck"));
+     icc_examin_ns::status_info(_("senkrechter Schnitt von rechts; linker Mausklick setzt zurueck"));
       agv_.duenn = true;
       break;
     case Agviewer::ICCFLY_b:
       vorder_schnitt = std_vorder_schnitt;
-      icc_examin_ns::status_info(_("senkrechter Schnitt von vorn; linker Mausklick setzt zur¸ck"));
+      icc_examin_ns::status_info(_("senkrechter Schnitt von vorn; linker Mausklick setzt zurueck"));
       agv_.duenn = true;
       break;
     case Agviewer::ICCPOLAR:
@@ -1795,7 +1795,7 @@ GL_Ansicht::menueAufruf ( int value )
     if (value >= MENU_MAX &&
         value < 100) {
       kanal = value - MENU_MAX; DBG_PROG_V( kanal )
-      icc_examin_ns::status_info(_("linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Men¸"));
+      icc_examin_ns::status_info(_("linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menue"));
     }
   }
 

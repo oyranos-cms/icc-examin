@@ -37,15 +37,15 @@
  *  Arbeitsweise
  *
  *  Die Klasse modell stellt einen beobachtbaren Zustand dar.
- *  Beobachter der Klasse beobachter k�nnen sich �ber den Zustand von modell
+ *  Beobachter der Klasse beobachter können sich über den Zustand von modell
  *  informieren lassen.
- *  Eine einfache Ganzzahl informiert über den sich geänderten Zustand.
- *  Dabei ist es wichtig sein Modell zu kennen und den übergebenen Wert zu
+ *  Eine einfache Ganzzahl informiert Ã¼ber den sich geÃ¤nderten Zustand.
+ *  Dabei ist es wichtig sein Modell zu kennen und den Ã¼bergebenen Wert zu
  *  interpretieren.
  *  Die Festlegung auf einen Argumenttyp reduziert die Instanzierungen und
- *  erh�ht den Interpretationsaufwand.
- *  Modelle und Beobachter wissen alle �bereinander. (Es w�re alternativ m�glich
- *  einen H�ndling zu �bergeben, an dem abgelesen werden k�nnte ob die
+ *  erhöht den Interpretationsaufwand.
+ *  Modelle und Beobachter wissen alle Übereinander. (Es wäre alternativ möglich
+ *  einen Händling zu übergeben, an dem abgelesen werden könnte ob die
  *  Beobachterklasse noch existiert.)
  *
  *  Benutzung:

@@ -21,7 +21,7 @@
  * 
  * -----------------------------------------------------------------------------
  *
- * Zeichenroutinen für Diagramme.
+ * Zeichenroutinen fÃ¼r Diagramme.
  * 
  */
 

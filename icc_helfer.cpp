@@ -65,11 +65,11 @@ icValue (icUInt16Number val)
 
   #ifdef DEBUG_ICCFUNKT
   #if 0
-  cout << *erg << " Grˆﬂe nach Wandlung " << (int)korb[0] << " "
+  cout << *erg << " Gr√∂√üe nach Wandlung " << (int)korb[0] << " "
        << (int)korb[1] << " " << (int)korb[2] << " " <<(int)korb[3]
        << " "; DBG_PROG
   #else
-  cout << *erg << " Grˆﬂe nach Wandlung " << (int)temp[0] << " " << (int)temp[1]
+  cout << *erg << " Gr√∂√üe nach Wandlung " << (int)temp[0] << " " << (int)temp[1]
        << " "; DBG_PROG
   #endif
   #endif
@@ -95,7 +95,7 @@ icValue (icUInt32Number val)
   unsigned int *erg = (unsigned int*) &uint32[0];
 
   #ifdef DEBUG_ICCFUNKT
-  cout << *erg << " Grˆﬂe nach Wandlung " << (int)temp[0] << " "
+  cout << *erg << " Gr√∂√üe nach Wandlung " << (int)temp[0] << " "
        << (int)temp[1] << " " << (int)temp[2] << " " <<(int)temp[3]
        << " "; DBG_PROG
   #endif
@@ -126,7 +126,7 @@ icValue (icUInt64Number val)
   unsigned long *erg = (unsigned long*) &uint64[0];
 
   #ifdef DEBUG_ICCFUNKT
-  cout << *erg << " Grˆﬂe nach Wandlung " << (int)temp[0] << " "
+  cout << *erg << " Gr√∂√üe nach Wandlung " << (int)temp[0] << " "
        << (int)temp[1] << " " << (int)temp[2] << " " <<(int)temp[3]
        << " "; DBG_PROG
   #endif
@@ -155,7 +155,7 @@ icValue (icInt32Number val)
   signed int *erg = (signed int*) &korb[0];
 
   #ifdef DEBUG_ICCFUNKT
-  cout << *erg << " Grˆﬂe nach Wandlung " << (int)korb[0] << " "
+  cout << *erg << " Gr√∂√üe nach Wandlung " << (int)korb[0] << " "
        << (int)korb[1] << " " << (int)korb[2] << " " <<(int)korb[3]
        << " "; DBG_PROG
   #endif
@@ -183,7 +183,7 @@ icValue (icInt16Number val)
 
   signed int *erg = (signed int*) &korb[0];
   #ifdef DEBUG_ICCFUNKT
-  cout << *erg << " Grˆﬂe nach Wandlung " << (int)korb[0] << " "
+  cout << *erg << " Gr√∂√üe nach Wandlung " << (int)korb[0] << " "
        << (int)korb[1] << " " << (int)korb[2] << " " <<(int)korb[3]
        << " "; DBG_PROG
   #endif
@@ -294,7 +294,7 @@ renderingIntentName (int intent)
       s << _("relativ Farbmetrisch");
       break;
     case 2:
-      s << _("Ges‰ttigt");
+      s << _("Ges√§ttigt");
       break;
     case 3:
       s << _("absolut Farbmetrisch");
@@ -373,15 +373,15 @@ getChannelNames (icColorSpaceSignature color)
                        texte.push_back (_("CIE x"));
                        texte.push_back (_("CIE y")); break;
     case icSigRgbData: texte.push_back (_("Rot"));
-                       texte.push_back (_("Gr¸n"));
+                       texte.push_back (_("Gr√ºn"));
                        texte.push_back (_("Blau")); break;
     case icSigGrayData: texte.push_back (_("Schwarz")); break;
     case icSigHsvData: texte.push_back (_("Farbton"));
-                       texte.push_back (_("S‰ttigung"));
+                       texte.push_back (_("S√§ttigung"));
                        texte.push_back (_("Wert")); break;
     case icSigHlsData: texte.push_back (_("Farbton"));
                        texte.push_back (_("Helligkeit"));
-                       texte.push_back (_("S‰ttigung")); break;
+                       texte.push_back (_("S√§ttigung")); break;
     case icSigCmykData: texte.push_back (_("Cyan"));
                        texte.push_back (_("Magenta"));
                        texte.push_back (_("Gelb"));
@@ -420,7 +420,7 @@ getDeviceClassName (icProfileClassSignature deviceClass)
     case icSigInputClass: text =_("Eingabe"); break;
     case icSigDisplayClass: text =_("Monitor"); break;
     case icSigOutputClass: text =_("Ausgabe"); break;
-    case icSigLinkClass: text =_("Verkn¸pfung"); break;
+    case icSigLinkClass: text =_("Verkn√ºpfung"); break;
     case icSigAbstractClass: text =_("Abstrakter Farbraum"); break;
     case icSigColorSpaceClass: text =_("Farbraum"); break;
     case icSigNamedColorClass: text =_("Schmuckfarben"); break;
@@ -542,36 +542,36 @@ getSigTagDescription                            ( icTagSignature  sig )
   std::string text = "Beschreibung";
 
   switch (sig) {
-    case icSigAToB0Tag: text = _("Farbtabelle, Ger‰t an Kontaktfarbraum, Anpassung 0"); break;
-    case icSigAToB1Tag: text = _("Farbtabelle, Ger‰t an Kontaktfarbraum, Anpassung 1"); break;
-    case icSigAToB2Tag: text = _("Farbtabelle, Ger‰t an Kontaktfarbraum, Anpassung 2"); break;
+    case icSigAToB0Tag: text = _("Farbtabelle, Ger√§t an Kontaktfarbraum, Anpassung 0"); break;
+    case icSigAToB1Tag: text = _("Farbtabelle, Ger√§t an Kontaktfarbraum, Anpassung 1"); break;
+    case icSigAToB2Tag: text = _("Farbtabelle, Ger√§t an Kontaktfarbraum, Anpassung 2"); break;
     case icSigBlueColorantTag: text = _("blaue Grundfarbe"); break;
     case icSigBlueTRCTag: text = _("blaue Farbwiedergabekurve"); break;
-    case icSigBToA0Tag: text = _("Farbtabelle, Kontaktfarbraum an Ger‰t, Anpassung 0"); break;
-    case icSigBToA1Tag: text = _("Farbtabelle, Kontaktfarbraum an Ger‰t, Anpassung 1"); break;
-    case icSigBToA2Tag: text = _("Farbtabelle, Kontaktfarbraum an Ger‰t, Anpassung 2"); break;
+    case icSigBToA0Tag: text = _("Farbtabelle, Kontaktfarbraum an Ger√§t, Anpassung 0"); break;
+    case icSigBToA1Tag: text = _("Farbtabelle, Kontaktfarbraum an Ger√§t, Anpassung 1"); break;
+    case icSigBToA2Tag: text = _("Farbtabelle, Kontaktfarbraum an Ger√§t, Anpassung 2"); break;
     case icSigCalibrationDateTimeTag: text = _("Kalibrationsdatum"); break;
     case icSigCharTargetTag: text = _("Farbmessdaten"); break;
     case icSigCopyrightTag: text = _("Kopierrecht"); break;
     case icSigCrdInfoTag: text = _("crdi"); break;
     case icSigDeviceMfgDescTag: text = _("Herstellerbeschreibung"); break;
-    case icSigDeviceModelDescTag: text = _("Ger‰tebeschreibung"); break;
+    case icSigDeviceModelDescTag: text = _("Ger√§tebeschreibung"); break;
     case icSigGamutTag: text = _("Farbumfang"); break;
     case icSigGrayTRCTag: text = _("schwarze Wiedergabekurve"); break;
-    case icSigGreenColorantTag: text = _("gr¸ne Grundfarbe"); break;
-    case icSigGreenTRCTag: text = _("gr¸ne Farbwiedergabekurve"); break;
-    case icSigLuminanceTag: text = _("Lichtintensit‰t"); break;
+    case icSigGreenColorantTag: text = _("gr√ºne Grundfarbe"); break;
+    case icSigGreenTRCTag: text = _("gr√ºne Farbwiedergabekurve"); break;
+    case icSigLuminanceTag: text = _("Lichtintensit√§t"); break;
     case icSigMeasurementTag: text = _("Messart"); break;
     case icSigMediaBlackPointTag: text = _("Medienschwarzpunkt"); break;
-    case icSigMediaWhitePointTag: text = _("Medienweiﬂpunkt"); break;
+    case icSigMediaWhitePointTag: text = _("Medienwei√üpunkt"); break;
     case icSigNamedColorTag: text = _("Einzelfarben"); break;
     case icSigNamedColor2Tag: text = _("Einzelfarben 2"); break;
     case icSigPreview0Tag: text = _("Voransicht, fotografisch"); break;
     case icSigPreview1Tag: text = _("Voransicht, relativ farbmetrisch"); break;
-    case icSigPreview2Tag: text = _("Voransicht, farbges‰ttigt"); break;
+    case icSigPreview2Tag: text = _("Voransicht, farbges√§ttigt"); break;
     case icSigProfileDescriptionTag: text = _("Profilbeschreibung"); break;
     case 1685283693: text = _("Profilbeschreibung mehrsprachig"); break;//dscm
-    case icSigProfileSequenceDescTag: text = _("Beschreibung der Profilverkn¸pfung"); break;
+    case icSigProfileSequenceDescTag: text = _("Beschreibung der Profilverkn√ºpfung"); break;
     case icSigPs2CRD0Tag: text = _("psd0"); break;
     case icSigPs2CRD1Tag: text = _("psd1"); break;
     case icSigPs2CRD2Tag: text = _("psd2"); break;
@@ -586,12 +586,12 @@ getSigTagDescription                            ( icTagSignature  sig )
     case icSigUcrBgTag: text = _("bfd"); break;
     case icSigViewingCondDescTag: text = _("Beschreibung der Betrachtungbedingungen"); break;
     case icSigViewingConditionsTag: text = _("Betrachtungsbedingungen"); break;
-    case 1147500100: text = _("Farbmessfl‰chen"); break;//DevD
+    case 1147500100: text = _("Farbmessfl√§chen"); break;//DevD
     case 1128875332: text = _("Farbmessergebnisse"); break;//CIED
     case 1349350514: text = _("Profilierungsparameter"); break;//Pmtr
     case 1986226036: text = _("GrafikKartenGammaTabelle"); break;//vcgt
     case 1667785060: text = _("Farbanpassungsmatrix"); break; //chad
-    case icSigChromaticityType: text = _("Prim‰rfarben"); break; //chrm
+    case icSigChromaticityType: text = _("Prim√§rfarben"); break; //chrm
     case 1668051567: text = _("Schmuckfarbordnung"); break;//clro
     case 1668051572: text = _("Schmuckfarbnamen"); break;//clrt
     case 0: text = _("----"); break;
@@ -829,7 +829,7 @@ ladeDatei ( std::string dateiname, size_t *size )
       f.close();
     } else {
       data = 0;
-      WARN_S( _("Dateigrˆﬂe 0 f¸r ") << dateiname )
+      WARN_S( _("Dateigr√∂√üe 0 f√ºr ") << dateiname )
     }
 
 
@@ -944,7 +944,7 @@ suchenErsetzen          (std::string &text,
 std::vector<std::string>
 zeilenNachVector(std::string &text)
 { DBG_PROG_START
-  // f¸ilen aus einen Text in einen Vector
+  // f√ºilen aus einen Text in einen Vector
   std::vector <std::string> texte;
 
       int len = strlen(text.c_str());
@@ -960,7 +960,7 @@ zeilenNachVector(std::string &text)
         } else
           text_line += c;
       }
-      if (text_line.size() > 0) // falls was ¸brig bleibt
+      if (text_line.size() > 0) // falls was √ºbrig bleibt
         texte.push_back(text_line.c_str());
 
   DBG_PROG_ENDE
@@ -978,7 +978,7 @@ sucheWort         ( std::string            &text,
   while( !fertig )
   { // vielleicht etwas viel Aufwand ...
     if( (pos = text.find( wort, pos )) != std::string::npos )
-    { // Best‰tige das Ende des Wortes
+    { // Best√§tige das Ende des Wortes
       //DBG_NUM_V( (pos + wort.size()) <<" "<< text.size() )
       if( (text[pos + wort.size()] == 0    ||  // NUL
            text[pos + wort.size()] == ' '  ||  // SP
@@ -1043,7 +1043,7 @@ unterscheideZiffernWorte ( std::string &zeile,
     if( (pos = zeile.find_first_of( alnum, pos )) != std::string::npos )
     {
       bool anf_zaehlen = true;
-      // erstes Anf¸hrungszeichen suchen
+      // erstes Anf√ºhrungszeichen suchen
       if( zeile.find_first_of( "\"", pos2 ) != std::string::npos &&
           zeile.find_first_of( "\"", pos2 ) < pos )
         pos2 = zeile.find_first_of( "\"", pos2 );
@@ -1051,7 +1051,7 @@ unterscheideZiffernWorte ( std::string &zeile,
         anf_zaehlen = false;
       DBG_PARSER_V( pos2 )
 
-      // Anf¸hrungszeichen z‰hlen [ ""  " "  ABC ] - zeichenweise
+      // Anf√ºhrungszeichen z√§hlen [ ""  " "  ABC ] - zeichenweise
       int letzes_anf_zeichen = -1;
       if( anf_zaehlen )
         for( pos3 = pos2; pos3 < pos; ++pos3)
@@ -1061,7 +1061,7 @@ unterscheideZiffernWorte ( std::string &zeile,
           else
             letzes_anf_zeichen = pos3;
 
-      // falls ein Anf¸hrungszeichen vor dem Wort ungerade sind // ["" " ABC ]
+      // falls ein Anf√ºhrungszeichen vor dem Wort ungerade sind // ["" " ABC ]
       if( letzes_anf_zeichen >= 0 )
       {
         in_anfuehrung = true;
@@ -1097,12 +1097,12 @@ unterscheideZiffernWorte ( std::string &zeile,
       if( txt.find_first_of( numerisch ) != std::string::npos &&
           txt.find( "." ) != std::string::npos &&
           txt.find_first_of( alpha ) == std::string::npos )
-      { // ist Flieﬂkommazahl
+      { // ist Flie√ükommazahl
         pos += txt.size();
         sprintf( text, "%f", atof( zeile.substr( pos, ende-pos ).c_str() ) );
-        DBG_PARSER_S( "Flieﬂkommazahl: " << txt )
+        DBG_PARSER_S( "Flie√ükommazahl: " << txt )
         ergebnis.push_back( zifferWort((double)atof(txt.c_str())) );
-        DBG_PARSER_S( "pr¸fen: "<< ergebnis[ergebnis.size()-1].zahl.first <<" "<< ergebnis[ergebnis.size()-1].zahl.second )
+        DBG_PARSER_S( "pr√ºfen: "<< ergebnis[ergebnis.size()-1].zahl.first <<" "<< ergebnis[ergebnis.size()-1].zahl.second )
       } else
       if( txt.find_first_of( ziffer ) != std::string::npos &&
           txt.find( "." ) == std::string::npos &&
@@ -1120,7 +1120,7 @@ unterscheideZiffernWorte ( std::string &zeile,
         ergebnis.push_back( zifferWort(txt) );
         DBG_PARSER_S( "Text: " << txt )
         DBG_PARSER_V( in_anfuehrung )
-        // Anf¸hrungszeichen Beginn
+        // Anf√ºhrungszeichen Beginn
         if( !in_anfuehrung && anfuehrungsstriche_setzen )
         {
           zeile.insert( pos, "\"" );
@@ -1135,7 +1135,7 @@ unterscheideZiffernWorte ( std::string &zeile,
         if( (pos2 = zeile.find_first_of( trenner, pos ))
             == std::string::npos)
           pos2 = zeile.size();
-        // Es folgt ein Anf¸hrungszeichen
+        // Es folgt ein Anf√ºhrungszeichen
         if( pos2 > zeile.find_first_of( "\"", pos ) &&
             zeile.find_first_of( "\"", pos ) != std::string::npos &&
             !neusetzen )

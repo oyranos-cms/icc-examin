@@ -21,7 +21,7 @@
  *
  * -----------------------------------------------------------------------------
  *
- * Zeichenroutinen für Diagramme.
+ * Zeichenroutinen fÃ¼r Diagramme.
  * 
  */
 
@@ -188,7 +188,7 @@ TagDrawings::ruhigNeuzeichnen (void)
 void
 TagDrawings::init_shoe_ ()
 {
-  // Initialisierung für lcms
+  // Initialisierung fÃ¼r lcms
   hXYZ  = cmsCreateXYZProfile();
 
   size_t groesse = 0;
@@ -234,7 +234,7 @@ TagDrawings::draw ()
       wiederholen = true; 
     }
   } else
-    DBG_PROG_S( __func__ << _(" zu früh benutzt!") );
+    DBG_PROG_S( __func__ << _(" zu frÃ¼h benutzt!") );
   DBG_PROG_ENDE
 }
 
@@ -266,7 +266,7 @@ TagDrawings::drawCieShoe_ ( int repeated)
   fl_color(DIAG);
   fl_line(xNachBild(1), yNachBild(0), xNachBild(0), yNachBild(1));
 
-  // Farbfläche
+  // FarbflÃ¤che
   if (!repeated)
   {
     register char RGB[3];
@@ -335,7 +335,7 @@ TagDrawings::drawCieShoe_ ( int repeated)
     raster = raster_alt;
   }
 
-  // Verdecke den Rest des cie_xy - scheußlich umständlich
+  // Verdecke den Rest des cie_xy - scheuÃŸlich umstÃ¤ndlich
   //fl_push_no_clip();
   fl_color(BG);
   #define x_xyY cieXYZ[i][0]/(cieXYZ[i][0]+cieXYZ[i][1]+cieXYZ[i][2])
@@ -427,7 +427,7 @@ TagDrawings::drawCieShoe_ ( int repeated)
 
   fl_push_clip( x(),yNachBild(max_x), xNachBild(max_x),(int)(hoehe+tab_rand_y+0.5) );
 
-  { // Primärfarben / Weisspunkt
+  { // PrimÃ¤rfarben / Weisspunkt
     register char RGB[3];
     register cmsCIEXYZ XYZ;
     std::vector<double> pos;
@@ -481,7 +481,7 @@ TagDrawings::drawCieShoe_ ( int repeated)
         #endif
         XYZ.Z = punkte[j++]; //1 - ( punkte[i][0] +  punkte[i][1] );
 
-        // Farbe für Darstellung konvertieren (lcms)
+        // Farbe fÃ¼r Darstellung konvertieren (lcms)
         cmsDoTransform (xform, &XYZ, RGB, 1);
 
         double _XYZ[3] = {XYZ.X, XYZ.Y, XYZ.Z};
@@ -493,7 +493,7 @@ TagDrawings::drawCieShoe_ ( int repeated)
         fl_circle ( pos_x , pos_y , 9.0);
         fl_color (fl_rgb_color (RGB[0],RGB[1],RGB[2]));
         fl_circle ( pos_x , pos_y , 7.0);
-        // etwas Erklärung zu den Farbpunkten
+        // etwas ErklÃ¤rung zu den Farbpunkten
         fl_font (FL_HELVETICA, 12);
         std::stringstream s;
         std::stringstream t;
@@ -633,7 +633,7 @@ TagDrawings::drawKurve_    ()
       name = _("Rot");
     } else if (name == "gTRC") {
       fl_color(FL_GREEN);
-      name = _("Grün");
+      name = _("GrÃ¼n");
     } else if (name == "bTRC") {
       fl_color(FL_BLUE);
       name = _("Blau");
@@ -643,7 +643,7 @@ TagDrawings::drawKurve_    ()
       name = _("Grau");
     } else if (name == _("Rot")) {
       fl_color(FL_RED);
-    } else if (name == _("Grün")) {
+    } else if (name == _("GrÃ¼n")) {
       fl_color(FL_GREEN);
     } else if (name == _("Blau")) {
       fl_color(FL_BLUE);
@@ -736,9 +736,9 @@ TagDrawings::drawKurve_    ()
                  xNachBild( pow( (double)i/segmente, gamma ) * max_x ),
                  yNachBild( (i) / ((segmente-1) / max_y) ) );
       // Infos einblenden 
-      s << name << _(" mit einem Eintrag für Gamma: ") << gamma; DBG_NUM_V( gamma )
+      s << name << _(" mit einem Eintrag fÃ¼r Gamma: ") << gamma; DBG_NUM_V( gamma )
       fl_draw ( s.str().c_str(), xNachBild(0) + 2, yNachBild(max_y) + j*16 +12);
-    // parametrischer Eintrag mit Wert für Minimum und Maximum 
+    // parametrischer Eintrag mit Wert fÃ¼r Minimum und Maximum 
     } else if (kurven[j].size() == 3
             && texte[texte.size()-1] == "gamma_start_ende") {
       double segmente = 256;
@@ -755,7 +755,7 @@ TagDrawings::drawKurve_    ()
                  yNachBild( (i) / ((segmente-1) / max_y) ) );
       }
       // Infos einblenden 
-      s << name << _(" mit einem Eintrag für Gamma: ") << gamma;
+      s << name << _(" mit einem Eintrag fÃ¼r Gamma: ") << gamma;
       fl_draw ( s.str().c_str(), xNachBild(0) + 2, yNachBild(max_y) + j*16 +12);
     // segmentierte Kurve
     } else { // Wertebereich 0.0 -> max_[x,y]
@@ -780,7 +780,7 @@ TagDrawings::drawKurve_    ()
       fl_draw ( s.str().c_str(), xNachBild(min_x) + 2, yNachBild(max_y) + j*16 +12);
     }
   }
-  // zusätzlicher Text
+  // zusÃ¤tzlicher Text
   if (texte.size() > kurven.size() &&
       texte.size() > kurven2.size() )
   { 

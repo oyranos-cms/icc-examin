@@ -119,7 +119,7 @@ ICCheader::attributes (void) const
   if (f[0] & maske2)  
     s << _("matt, ");
   else
-    s << _("glänzend, ");
+    s << _("glÃ¤nzend, ");
 
   if (f[0] & maske3)  
     s << _("negativ, ");
@@ -161,9 +161,9 @@ ICCheader::flags (void) const
     s << _("Farbprofil ist nicht eingebettet und ");
 
   if (f[0] & maske2)  
-    s << _("kann nicht unabhängig vom Bild verwendet werden.");
+    s << _("kann nicht unabhÃ¤ngig vom Bild verwendet werden.");
   else
-    s << _("kann unabhängig vom Bild verwendet werden.");
+    s << _("kann unabhÃ¤ngig vom Bild verwendet werden.");
 
   #ifdef DEBUG
   DBG_NUM_S( (int)f[0] << " " << (long)header.flags )
@@ -209,7 +209,7 @@ ICCheader::print_long() const
   if (valid) { DBG_PROG
     s.str("");
     s << "ICC Dateikopf:\n"<< endl \
-      <<  "    " << _("Größe") << ":       " <<
+      <<  "    " << _("GrÃ¶ÃŸe") << ":       " <<
                        size() << " " << _("bytes") << endl \
       <<  "    " << _("CMM") << ":         " << cm << endl \
       <<  "    " << _("Version") << ":     " << versionName() << endl \
@@ -227,7 +227,7 @@ ICCheader::print_long() const
       <<  "    " << _("Model") << ":       " << mo << endl \
       <<  "    " << _("Attribute") << ":   " <<
                        attributes() << endl \
-      <<  "    " << _("Übertragung") << ": " <<
+      <<  "    " << _("Ãœbertragung") << ": " <<
                        renderingIntent() << endl \
       <<  "    " << _("Beleuchtung") << ": X=" <<
                        icSFValue(header.illuminant.X) << ", Y=" << \
@@ -241,7 +241,7 @@ ICCheader::print_long() const
 std::string
 ICCheader::print() const
 { DBG_PROG_START
-  std::string s = _("Dateikopf ungültig");
+  std::string s = _("Dateikopf ungÃ¼ltig");
   if (valid)
     s = _("    Kopf        Dateikopf     128 Dateikopf");
   DBG_PROG_ENDE

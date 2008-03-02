@@ -207,7 +207,7 @@ ICCexamin::waehleMft (int item)
 
   DBG_PROG_V( _mft_item )
   switch (_mft_item) {
-  case 0: // Überblick
+  case 0: // Ãœberblick
     { std::vector<std::string> Info = icc_betrachter->mft_choice->Info;
       //profile.profil()->getTagText (icc_betrachter->tag_nummer)[0];
       for (unsigned int i = 1; i < Info.size(); i++) // erste Zeile weglassen

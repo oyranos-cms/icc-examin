@@ -123,7 +123,7 @@ ICCprofile::clear (void)
   tags.clear();
   measurement.clear();
 
-  DBG_NUM_S( "data_, tags und measurement gelöscht" )
+  DBG_NUM_S( "data_, tags und measurement gelÃ¶scht" )
   DBG_PROG_ENDE
 }
 
@@ -157,16 +157,16 @@ ICCprofile::fload ()
     data_ = ladeDatei (file, &size_);
     DBG_MEM
   }
-    catch (Ausnahme & a) {	// fängt alles von Ausnahme Abstammende
+    catch (Ausnahme & a) {	// fÃ¤ngt alles von Ausnahme Abstammende
         DBG_NUM_V( _("Ausnahme aufgetreten: ") << a.what() );
         a.report();
         _filename = "";
     }
-    catch (std::exception & e) { // fängt alles von exception Abstammende
+    catch (std::exception & e) { // fÃ¤ngt alles von exception Abstammende
         DBG_NUM_V( _("Std-Ausnahme aufgetreten: ") << e.what() );
         _filename = "";
     }
-    catch (...) {		// fängt alles Übriggebliebene
+    catch (...) {		// fÃ¤ngt alles Ãœbriggebliebene
         DBG_NUM_V( _("Huch, unbekannte Ausnahme") );
         _filename = "";
     }
@@ -176,7 +176,7 @@ ICCprofile::fload ()
   if (data_ && size_) {
     DBG_PROG_S( _("!!!! Profil wird wiederbenutzt !!!! ") )
     clear();
-    // zweites mal Laden nach clear() ; könnte optimiert werden
+    // zweites mal Laden nach clear() ; kÃ¶nnte optimiert werden
     data_ = ladeDatei (file, &size_);
     _filename = file;
 
@@ -191,7 +191,7 @@ ICCprofile::fload ()
 #if 0
   // Test   > 132 byte
   if (size_ < 132) {
-    WARN_S( _("Kein Profil")<<_(" Größe ")<<size_ )
+    WARN_S( _("Kein Profil")<<_(" GrÃ¶ÃŸe ")<<size_ )
     measurement.load( this, data_, size_ );
     DBG_PROG_ENDE
     return;
@@ -209,7 +209,7 @@ ICCprofile::fload ()
     WARN_S( _("Kein Profil") )
     header.clear();
 
-    // "targ"  Messdaten als Block hinzufügen
+    // "targ"  Messdaten als Block hinzufÃ¼gen
     int groesse = 8 + size_ + 1;
     char* tag_block = (char*) calloc (sizeof (char), groesse);
     icTag ic_tag;
@@ -305,7 +305,7 @@ ICCprofile::load (const Speicher & prof)
 
   // Test   > 132 byte
   if (size_ < 132) {
-    WARN_S( _("Kein Profil")<<_(" Größe ")<<size_ )
+    WARN_S( _("Kein Profil")<<_(" GrÃ¶ÃŸe ")<<size_ )
     measurement.load( this, data_, size_ );
     DBG_PROG_ENDE
     return;
@@ -323,7 +323,7 @@ ICCprofile::load (const Speicher & prof)
     WARN_S( _("Kein Profil") )
     header.clear();
 
-    // "targ"  Messdaten als Block hinzufügen
+    // "targ"  Messdaten als Block hinzufÃ¼gen
     int groesse = 8 + size_ + 1;
     char* tag_block = (char*) calloc (sizeof (char), groesse);
     icTag ic_tag;
@@ -489,7 +489,7 @@ ICCprofile::printTags            ()
 std::vector<std::string>
 ICCprofile::getTagText                                  (int item)
 { DBG_PROG_START
-  // Prüfen
+  // PrÃ¼fen
   std::string name = tags[item].getTypName();
   std::string leer = name + " Typ - keine Textausgabe";
   std::vector<std::string> v;
@@ -515,12 +515,12 @@ std::vector<std::string>
 ICCprofile::getTagChannelNames                          (int item,
                                                          ICCtag::MftChain typ)
 { DBG_PROG_START
-  // Prüfen
+  // PrÃ¼fen
   std::string leer = tags[item].getTypName() + " Typ - keine Textausgabe";
   std::vector<std::string> v;
   v.push_back( leer );
 
-  // Prüfen
+  // PrÃ¼fen
   if (tags[item].getTypName() != "mft2"
    && tags[item].getTypName() != "mft1")
   { DBG_PROG_ENDE
@@ -534,7 +534,7 @@ ICCprofile::getTagChannelNames                          (int item,
 std::vector<std::string>
 ICCprofile::getTagDescription                    (int item)
 { DBG_PROG_START
-  // Prüfen
+  // PrÃ¼fen
   std::vector<std::string> leer;
   if (tags[item].getTypName() != "desc") { DBG_PROG_ENDE return leer; }
 
@@ -545,7 +545,7 @@ ICCprofile::getTagDescription                    (int item)
 std::vector<double>
 ICCprofile::getTagCIEXYZ                         (int item)
 { DBG_PROG_START
-  // Prüfen
+  // PrÃ¼fen
   std::vector<double> XYZ;
 
   if ( tags[item].getTypName() == "XYZ"
@@ -559,7 +559,7 @@ ICCprofile::getTagCIEXYZ                         (int item)
 std::vector<double>
 ICCprofile::getTagCurve                          (int item)
 { DBG_PROG_START
-  // Prüfen
+  // PrÃ¼fen
   std::vector<double> leer;
   if (tags[item].getTypName() != "curv")
   {
@@ -577,14 +577,14 @@ ICCprofile::getTagCurve                          (int item)
 std::vector<std::vector<double> >
 ICCprofile::getTagCurves                         (int item,ICCtag::MftChain typ)
 { DBG_PROG_START
-  // Prüfen
+  // PrÃ¼fen
   std::vector<std::vector<double> > leer;
   if (tags[item].getTypName() != "mft2"
    && tags[item].getTypName() != "mft1"
    && tags[item].getTypName() != "vcgt")
   {
     #ifdef DEBUG_ICCPROFILE
-    DBG_NUM_S( "gibt nix für " << tags[item].getTypName() )
+    DBG_NUM_S( "gibt nix fÃ¼r " << tags[item].getTypName() )
     #endif
     DBG_PROG_ENDE
     return leer;
@@ -597,13 +597,13 @@ ICCprofile::getTagCurves                         (int item,ICCtag::MftChain typ)
 std::vector<std::vector<std::vector<std::vector<double> > > >
 ICCprofile::getTagTable                         (int item,ICCtag::MftChain typ)
 { DBG_PROG_START
-  // Prüfen
+  // PrÃ¼fen
   std::vector<std::vector<std::vector<std::vector<double> > > > leer;
   if (tags[item].getTypName() != "mft2"
    && tags[item].getTypName() != "mft1")
   {
     #ifdef DEBUG_ICCPROFILE
-    DBG_NUM_S( "gibt nix für " << tags[item].getTypName() )
+    DBG_NUM_S( "gibt nix fÃ¼r " << tags[item].getTypName() )
     #endif
     DBG_PROG_ENDE
     return leer;
@@ -616,7 +616,7 @@ ICCprofile::getTagTable                         (int item,ICCtag::MftChain typ)
 std::vector<double>
 ICCprofile::getTagNumbers                        (int item,ICCtag::MftChain typ)
 { DBG_PROG_START
-  // Prüfen
+  // PrÃ¼fen
   std::vector<double> leer;
   if (tags[item].getTypName() != "mft2"
    && tags[item].getTypName() != "mft1"

@@ -30,7 +30,6 @@
 
 #ifndef ICC_OYRANOS_EXTERN_H
 #define ICC_OYRANOS_EXTERN_H
-#define _(text) text
 
 void oyranos_einstellungen();
 

@@ -151,7 +151,7 @@ Agviewer::agvMove_statisch(void* agv)
   if (obj)
     obj->agvMove_();
   else
-    WARN_S( _("kein Agviewer übergeben; kann agvMove_ nicht ausführen") )
+    WARN_S( _("kein Agviewer uebergeben; kann agvMove_ nicht ausfiuehren") )
 }
 void
 Agviewer::agvMove_(void)
@@ -259,7 +259,7 @@ Agviewer::agvSwitchMoveMode(int move)
       EyeEl = -EyeEl;
       EyeMove = init_move;
 #if 0
-      icc_examin_ns::status_info(_("Schnitt; linker Mausklick setzt zurück"));
+      icc_examin_ns::status_info(_("Schnitt; linker Mausklick setzt zurÃƒÂ¼ck"));
       duenn = true;
 #endif
       break;
@@ -275,7 +275,7 @@ Agviewer::agvSwitchMoveMode(int move)
         icc_examin->glAnsicht(RedisplayWindow)->vorder_schnitt = 
          icc_examin->glAnsicht(RedisplayWindow)->std_vorder_schnitt;
       }
-      icc_examin_ns::status_info(_("waagerechter Schnitt; linker Mausklick setzt zurück"));
+      icc_examin_ns::status_info(_("waagerechter Schnitt; linker Mausklick setzt zurÃƒÂ¼ck"));
       duenn = true;
 #endif
       EyeAz   = init_polar_az;
@@ -297,7 +297,7 @@ Agviewer::agvSwitchMoveMode(int move)
 #if 0
       icc_examin->glAnsicht(RedisplayWindow)->vorder_schnitt = 
          icc_examin->glAnsicht(RedisplayWindow)->std_vorder_schnitt;
-      icc_examin_ns::status_info(_("senkrechter Schnitt von rechts; linker Mausklick setzt zurück"));
+      icc_examin_ns::status_info(_("senkrechter Schnitt von rechts; linker Mausklick setzt zurÃƒÂ¼ck"));
       duenn = true;
 #endif
       break;
@@ -313,7 +313,7 @@ Agviewer::agvSwitchMoveMode(int move)
 #if 0
       icc_examin->glAnsicht(RedisplayWindow)->vorder_schnitt = 
          icc_examin->glAnsicht(RedisplayWindow)->std_vorder_schnitt;
-      icc_examin_ns::status_info(_("senkrechter Schnitt von vorn; linker Mausklick setzt zurück"));
+      icc_examin_ns::status_info(_("senkrechter Schnitt von vorn; linker Mausklick setzt zurÃƒÂ¼ck"));
       duenn = true;
 #endif
       break;
@@ -374,7 +374,7 @@ Agviewer::agvHandleButton(int button, int event, int x, int y)
         AdjustingAzEl = 1;
 	MoveOn(0); //ICC stop
         if (MoveMode == FLYING)
-          icc_examin_ns::status_info(_("linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menü"));
+          icc_examin_ns::status_info(_("linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menue"));
         duenn = false;
         MoveMode = POLAR;
     } else
@@ -406,7 +406,7 @@ Agviewer::agvHandleButton(int button, int event, int x, int y)
         AdjustingAzEl = 0;
         MoveOn(1);
         if (MoveMode == FLYING) {
-          icc_examin_ns::status_info(_("linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menü"));
+          icc_examin_ns::status_info(_("linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menue"));
           duenn = false;
         }
       } else
@@ -414,7 +414,7 @@ Agviewer::agvHandleButton(int button, int event, int x, int y)
       {
         EyeMove = downEyeMove;
         if (MoveMode == FLYING) {
-          icc_examin_ns::status_info(_("linke Maustaste -> zurück"));
+          icc_examin_ns::status_info(_("linke Maustaste -> zurueck"));
           duenn = true;
         }
       } else

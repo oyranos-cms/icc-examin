@@ -67,7 +67,7 @@ ICCexamin::oeffnen (std::vector<std::string> dateinamen)
     DBG_PROG
     histogramModus(profile.aktuell());
 
-      // Oberflächenpflege
+      // OberflÃ¤chenpflege
     tag_browserText ();
     if(icc_betrachter->DD_histogram->visible() &&
        !icc_betrachter->inspekt_html->visible() )
@@ -76,7 +76,7 @@ ICCexamin::oeffnen (std::vector<std::string> dateinamen)
     icc_betrachter->measurement( profile.profil()->hasMeasurement() );
     if(histogramModus())
     {
-        // Oberflächenpflege
+        // OberflÃ¤chenpflege
       icc_betrachter->DD_histogram->show();
       icc_waehler_->show();
       icc_betrachter->menueintrag_3D->set();
@@ -98,7 +98,7 @@ ICCexamin::oeffnen (std::vector<std::string> dateinamen)
       char *data = ladeDatei (dateinamen[0], &size);
       std::string d (data,size);
       //DBG_NUM_V( d <<" "<< size )
-      if(data) free( data ); // übernimmt std::string einfach den Speicherblock?
+      if(data) free( data ); // Ã¼bernimmt std::string einfach den Speicherblock?
       std::vector<ICCnetz> netze = extrahiereNetzAusVRML (d);
       if( netze.size() )
       { DBG_NUM_V( netze.size() )
@@ -210,12 +210,12 @@ ICCexamin::tag_browserText (void)
   add_s ("@b    " << profile.profil()->filename() )
   add_s ("")
   if (tag_list.size() == 0) {
-    add_s (_("keine Inhalte gefunden für") <<" \"" << profile.profil()->filename() << "\"")
+    add_s (_("keine Inhalte gefunden fÃ¼r") <<" \"" << profile.profil()->filename() << "\"")
     return;
   } else if ((int)tag_list.size() != profile.profil()->tagCount()*5 ) {
     add_s (_("interner Fehler") )
   }
-  add_s ("@B26@tNr. Bezeichner  Typ         GröBeschreibung")
+  add_s ("@B26@tNr. Bezeichner  Typ         GrÃ¶Beschreibung")
   add_s ("@t" << profile.profil()->printHeader() )
   std::vector<std::string>::iterator it;
   for(int i = 0; i < (int)tag_list.size(); ++i)
@@ -231,7 +231,7 @@ ICCexamin::tag_browserText (void)
     s << *it; for (int i = (*it++).size(); i < 12; i++) {s << " ";} ++anzahl;
     // Typ
     s << *it; for (int i = (*it++).size(); i < 12; i++) {s << " ";} ++anzahl;
-    // Größe
+    // GrÃ¶ÃŸe
     for (int i = (*it).size(); i < 5; i++) {s << " ";} s << *it++; s << " "; ++anzahl;
     // Beschreibung
     add_s (*it)

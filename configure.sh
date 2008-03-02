@@ -17,6 +17,8 @@ else
   prefix=/opt/local
 fi
 
+src_dir="`(cd ..;pwd)`/$TARGET_$VERSION"
+srcdir="`pwd`"
 
 test -f error.txt && rm -v error.txt
 test -f config && make clean
@@ -26,6 +28,10 @@ echo "/* automatically generated file - do not edit */" > $CONF_H
 echo "" >> $CONF
 echo "TARGET = $TARGET" >> $CONF
 echo "prefix = $prefix" >> $CONF
+echo "#define PREFIX         \"$prefix\"" >> $CONF_H
+echo "#define LOCALEDIR      \"$prefix/share/locale\"" >> $CONF_H
+echo "#define SRCDIR         \"$srcdir\"" >> $CONF_H
+echo "#define SRC_LOCALEDIR  \"$srcdir/locale\"" >> $CONF_H
 echo "" >> $CONF
 
 
@@ -130,8 +136,9 @@ echo "VERSION_B = $VERSION_B" >> $CONF
 echo "VERSION_C = $VERSION_C" >> $CONF
 echo "VERSION   = $VERSION" >> $CONF
 echo "VERSION_L = $VERSION_L" >> $CONF
-echo "src_dir = `(cd ..;pwd)`/$TARGET_$VERSION" >> $CONF
-echo "srcdir = `pwd`" >> $CONF
+echo "" >> $CONF
+echo "src_dir = $src_dir" >> $CONF
+echo "srcdir = $srcdir" >> $CONF
 
 echo "#ifndef ICC_VERSION_H" > icc_version.h
 echo "#define ICC_VERSION_H" >> icc_version.h

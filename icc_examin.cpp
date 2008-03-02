@@ -84,7 +84,7 @@ ICCexamin::start (int argc, char** argv)
 
   icc_betrachter->mft_gl->init(1);
   icc_betrachter->DD_histogram->init(2);
-  icc_waehler_ = new  ICCwaehler(485, 186, _("Ansichtsw\344hler"));
+  icc_waehler_ = new  ICCwaehler(485, 186, _("Gamut selector"));
   if(!icc_waehler_) WARN_S( _("icc_waehler_ nicht reservierbar") )
   icc_waehler_->hide();
 
@@ -101,7 +101,7 @@ ICCexamin::start (int argc, char** argv)
   if(!icc_debug)
     icc_betrachter->menueintrag_testkurven->hide();
 
-  status(_(""));
+  status("");
   DBG_PROG
 
   modellDazu( /*ICCkette*/&profile ); // wird in nachricht ausgewertet
@@ -109,7 +109,7 @@ ICCexamin::start (int argc, char** argv)
       if (argc>1) {
         statlabel = argv[1];
         statlabel.append (" ");
-        statlabel.append (_("geladen"));
+        statlabel.append (_("loaded"));
         status(statlabel.c_str());
         std::vector<std::string>profilnamen;
         profilnamen.resize(argc-1);
@@ -119,7 +119,7 @@ ICCexamin::start (int argc, char** argv)
         }
         oeffnen (profilnamen);
       } else {
-        status(_("Bereit"));
+        status(_("Ready"));
       }
 
   Fl::add_handler(tastatur);
@@ -145,7 +145,7 @@ void
 ICCexamin::zeigCGATS()
 {
   DBG_PROG_START
-  // CGATS in Fenster präsentieren
+  // CGATS in Fenster prÃ¤sentieren
   icc_examin_ns::nachricht(profile.profil()->cgats_max());
   DBG_PROG_ENDE
 }
@@ -193,7 +193,7 @@ ICCexamin::nachricht( Modell* modell , int info )
         } else if (info < (int)icc_betrachter->DD_histogram->dreiecks_netze.size()) {
           icc_betrachter->DD_histogram->dreiecks_netze[info].aktiv = false;
         }
-          // Oberflächenpflege - Aktualisieren
+          // OberflÃ¤chenpflege - Aktualisieren
         if(icc_betrachter->DD_histogram->visible())
           icc_betrachter->DD_histogram->flush();
         if(icc_betrachter->menueintrag_inspekt->active() &&
@@ -246,7 +246,7 @@ ICCexamin::testZeigen ()
   std::vector<std::string> txt;
   txt.resize(8);
   txt[0] = "ein Bild";
-  txt[1] = "Gemälde";
+  txt[1] = "GemÃ¤lde";
   txt[2] = "fast HDR";
   txt[3] = "2 fast HDR";
   txt[4] = "3 fast HDR";
@@ -362,7 +362,7 @@ ICCexamin::neuzeichnen (void* z)
     oben = TAG_ZEIGEN;
   DBG_PROG_V( oben )
 
-  // inhaltliches Zurückschalten auf tiefere Ebene
+  // inhaltliches ZurÃ¼ckschalten auf tiefere Ebene
   bool waehle_tag = false;
   if( oben == TAG_ZEIGEN &&
       (icc_betrachter->DD_histogram->visible()

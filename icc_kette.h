@@ -55,8 +55,8 @@ class ICCkette : public icc_examin_ns::Modell
     std::vector<int>         aktiv_;
     std::vector<double>      profil_mzeit_;
 
-    // Starte einen pthread W‰chter und lasse Ihn alle unsere Beobachter
-    // informieren, welches Profile gerade ge‰ndert wurde.
+    // Starte einen pthread W√§chter und lasse Ihn alle unsere Beobachter
+    // informieren, welches Profile gerade ge√§ndert wurde.
     static void  waechter (void*);
   public:
     bool         oeffnen   (std::vector<std::string> dateinamen);

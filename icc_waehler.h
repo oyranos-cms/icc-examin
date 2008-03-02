@@ -21,11 +21,11 @@
  * 
  * -----------------------------------------------------------------------------
  *
- * Die Wähler von Profilen Klasse
+ * Die WÃ¤hler von Profilen Klasse
  * 
  */
 
-// Date:      März 2005
+// Date:      MÃ¤rz 2005
 
 #ifndef ICC_WAEHLER_H
 #define ICC_WAEHLER_H

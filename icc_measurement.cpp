@@ -21,7 +21,7 @@
  * 
  * -----------------------------------------------------------------------------
  *
- * Qualtitätsprüfung anhand von Messdaten welche im Profil vorhanden sind.
+ * QualtitÃ¤tsprÃ¼fung anhand von Messdaten welche im Profil vorhanden sind.
  * 
  */
 
@@ -42,7 +42,7 @@
 #endif
 
 
-#include <lcms.h> // für CGATS lesen
+#include <lcms.h> // fÃ¼r CGATS lesen
 #include "icc_profile.h"
 #include "icc_oyranos.h"
 #include "icc_version.h"
@@ -274,7 +274,7 @@ ICCmeasurement::lcms_parse                   (void)
    || _nFelder == (int)cmsIT8GetPropertyDbl(_lcms_it8, "NUMBER_OF_SETS")) { DBG_NUM
     _nFelder = (int)cmsIT8GetPropertyDbl(_lcms_it8, "NUMBER_OF_SETS"); DBG_NUM
   } else {
-    WARN_S( "Messfeldanzahl sollte schon übereinstimmen! " << _nFelder << "|" << (int)cmsIT8GetPropertyDbl(_lcms_it8, "NUMBER_OF_SETS") )
+    WARN_S( "Messfeldanzahl sollte schon Ã¼bereinstimmen! " << _nFelder << "|" << (int)cmsIT8GetPropertyDbl(_lcms_it8, "NUMBER_OF_SETS") )
     clear();
     return;
   }
@@ -284,7 +284,7 @@ ICCmeasurement::lcms_parse                   (void)
   bool _sample_id = false;
   bool _id_vor_name = false;
 
-  // Was ist alles da? Wollen wir später die Namen tauschen?
+  // Was ist alles da? Wollen wir spÃ¤ter die Namen tauschen?
   for (int i = 0; i < _nKanaele; i++) {
     if (strstr((char*)SampleNames[i],"SAMPLE_ID") != 0)
       _sample_id = true;
@@ -301,7 +301,7 @@ ICCmeasurement::lcms_parse                   (void)
 
   // Auslesen und Aufbereiten
   std::vector<std::string> farbkanaele;
-  // müssen lokal bleiben !
+  // mÃ¼ssen lokal bleiben !
   bool has_Lab = false;
   bool has_XYZ = false;
   bool has_CMYK = false;
@@ -355,7 +355,7 @@ ICCmeasurement::lcms_parse                   (void)
   if (has_xyY) farben++;
 
 
-  // vorläufige lcms Farbnamen listen
+  // vorlÃ¤ufige lcms Farbnamen listen
     _Feldnamen.resize(_nFelder);
     DBG_PROG_V( _nFelder )
     for (int k = 0; k < _nFelder; k++) {
@@ -376,7 +376,7 @@ ICCmeasurement::lcms_parse                   (void)
   DBG_NUM_V( has_XYZ << has_RGB << has_CMYK )
  
   // Farben auslesen
-  if (has_XYZ) { DBG_PROG // keine Umrechnung nötig
+  if (has_XYZ) { DBG_PROG // keine Umrechnung nÃ¶tig
     _XYZ_Satz.resize(_nFelder);
     for (int i = 0; i < _nFelder; i++) {
         _XYZ_Satz[i].X = cmsIT8GetDataDbl (_lcms_it8, _Feldnamen[i].c_str(),
@@ -387,7 +387,7 @@ ICCmeasurement::lcms_parse                   (void)
                                            "XYZ_Z") / 100.0;
     }
   }
-  if (has_RGB) { DBG_PROG // keine Umrechnung nötig
+  if (has_RGB) { DBG_PROG // keine Umrechnung nÃ¶tig
     _RGB_Satz.resize(_nFelder);
     for (int i = 0; i < _nFelder; i++) {
         _RGB_Satz[i].R = cmsIT8GetDataDbl (_lcms_it8, _Feldnamen[i].c_str(),
@@ -398,7 +398,7 @@ ICCmeasurement::lcms_parse                   (void)
                                            "RGB_B") / 255.0;
     }
   }
-  if (has_CMYK) { DBG_PROG // keine Umrechnung nötig
+  if (has_CMYK) { DBG_PROG // keine Umrechnung nÃ¶tig
     _CMYK_Satz.resize(_nFelder);
     for (int i = 0; i < _nFelder; i++) {
         _CMYK_Satz[i].C = cmsIT8GetDataDbl (_lcms_it8, _Feldnamen[i].c_str(),
@@ -577,7 +577,7 @@ ICCmeasurement::init_umrechnen                     (void)
       if( !hsRGB )
         WARN_S(_("hsRGB ist leer"))
 
-      // Wie sieht das Messgerät die Messfarbe? -> Lab
+      // Wie sieht das MessgerÃ¤t die Messfarbe? -> Lab
       hXYZtoLab = cmsCreateTransform (hXYZ, TYPE_XYZ_DBL,
                                     hLab, TYPE_Lab_DBL,
                                     INTENT_ABSOLUTE_COLORIMETRIC,
@@ -733,7 +733,7 @@ ICCmeasurement::getHtmlReport                     (bool aussen)
   #define LAYOUTFARBE if (layout[l++] == true) \
                         html << HF; \
                       else \
-                        html << SF; //Farbe nach Layoutoption auswählen
+                        html << SF; //Farbe nach Layoutoption auswÃ¤hlen
   int l = 0;
   std::stringstream html; DBG_NUM_V( _RGB_MessFarben.size() )
 
@@ -775,7 +775,7 @@ ICCmeasurement::getHtmlReport                     (bool aussen)
   html <<       "  <tr> \n";
   // Tabellenkopf
   int s = 0;           // Spalten
-  int f = 0;           // Spalten für Farben
+  int f = 0;           // Spalten fÃ¼r Farben
   if (_XYZ_Satz.size() && _RGB_MessFarben.size() == _XYZ_Satz.size()) {
     f = 2;
   } DBG_PROG_V( _reportTabelle.size() )
@@ -857,12 +857,12 @@ ICCmeasurement::getText                     (void)
   int z = 0; // Zeilen
 
   tabelle[0].resize(1);
-  tabelle[0][0] = _("keine Messdaten verfügbar");
+  tabelle[0][0] = _("keine Messdaten verfÃ¼gbar");
 
   if ((_CMYK_measurement || _RGB_measurement)
        && _XYZ_measurement) {
     tabelle.resize(_nFelder+5); // push_back ist zu langsam
-    // Tabellenüberschrift
+    // TabellenÃ¼berschrift
     tabelle[0].resize(1);
     tabelle[0][0] =    _("Mess- und Profilfarben aus <b>"); 
     if (_RGB_measurement)

@@ -42,8 +42,8 @@
  *
  * ref_n_   : Referenz
  * zeiger_  : new [] Speicher
- * lade()   : löscht den alten Speicher und kopiert oder fordert neuen an
- * Forderung: zeiger_, groesse_, ref_n_ müssen von allen Kopien von Speicher aus
+ * lade()   : lÃ¶scht den alten Speicher und kopiert oder fordert neuen an
+ * Forderung: zeiger_, groesse_, ref_n_ mÃ¼ssen von allen Kopien von Speicher aus
  *            sichtbar sein
  */
 
@@ -54,7 +54,7 @@ class Speicher
     size_t*     groesse_;
     int*        ref_n_;
     std::string *name_;                   // z.B. Profilname
-    time_t      *letze_aen_zeit_;         // letztes mal geändert
+    time_t      *letze_aen_zeit_;         // letztes mal geÃ¤ndert
     time_t      *letze_ben_zeit_;         // letztes mal benutzt
 
     void        init  ()    {
@@ -126,7 +126,7 @@ class Speicher
                                 DBG_MEM_S("delete[]zeiger_ " << (int*)zeiger_ )
                                 delete [] *zeiger_;
                               }
-                              if(*ref_n_==0) // Üsch bün dor letzäää(h)
+                              if(*ref_n_==0) // Ãœsch bÃ¼n dor letzÃ¤Ã¤Ã¤(h)
                               {              // h nach belieben   ---^
                                   DBG_MEM_S( "delete Referenz "<< *ref_n_ )
                                 if(ref_n_!=0)         delete [] ref_n_;

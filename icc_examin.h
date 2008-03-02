@@ -64,7 +64,7 @@ class ICCexamin : public icc_examin_ns::Beobachter
     bool         berichtSpeichern (void);      // GCATS Auswertung -> html Datei
     void         zeigPrueftabelle ();
     void         zeigCGATS();                  // korrigiertes CGATS zeigen
-    void         neuzeichnen (void* widget);   // Oberfl‰che neuzeichnen
+    void         neuzeichnen (void* widget);   // Oberfl√§che neuzeichnen
 
     std::string  waehleTag (int item);
     void         waehleMft (int item);
@@ -75,7 +75,7 @@ class ICCexamin : public icc_examin_ns::Beobachter
          histogram_angezeigt_;
     int  status_;
     bool frei_,                  // wird nicht von weiterem Prozess benutzt
-         histogram_modus_;       // profile.profil() enth‰lt ncl2 Schmuckfarben
+         histogram_modus_;       // profile.profil() enth√§lt ncl2 Schmuckfarben
     ICCwaehler *icc_waehler_;
   public:
     int  laeuft ()  { return status_; }          // kann bei >1 genutzt werden
@@ -117,7 +117,7 @@ class ICCexamin : public icc_examin_ns::Beobachter
       // virtual aus icc_examin_ns::Beobachter::
     void nachricht( icc_examin_ns::Modell* modell , int infos );
 
-    // Oberfl‰chenfunktionen (GUI)
+    // Oberfl√§chenfunktionen (GUI)
     void fortschritt(double f);  // Fortschritt: f<0-Start f=Wert f>1-Ende
 
     void statusAktualisieren();  // benutze das "status" Makro

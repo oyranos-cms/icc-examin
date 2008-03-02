@@ -76,7 +76,7 @@ ICCexamin::messwertLese (int n,
         std::vector<double> daten = messung.getMessLab(j);
         for (unsigned i = 0; i < daten.size(); ++i)
           p.push_back(daten[i]);
-        // ... dann die über das Profil errechneten Lab Werte
+        // ... dann die Ã¼ber das Profil errechneten Lab Werte
         if (icc_betrachter->DD_histogram->zeig_punkte_als_messwert_paare) {
           daten = messung.getCmmLab(j);
           for (unsigned i = 0; i < daten.size(); ++i)

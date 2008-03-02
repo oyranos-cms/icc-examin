@@ -69,7 +69,7 @@ class ICCtag {
     int                 size_;
     char*               data_;
 
-    int                 _intent; // für mft1/2
+    int                 _intent; // fÃ¼r mft1/2
     icColorSpaceSignature _color_in;
     icColorSpaceSignature _color_out;
     bool                _to_pcs;

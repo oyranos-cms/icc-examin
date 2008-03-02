@@ -21,7 +21,7 @@
  * 
  * -----------------------------------------------------------------------------
  *
- * Aufbereitung von ICC internen Informationen - werkzeugabh‰ngig
+ * Aufbereitung von ICC internen Informationen - werkzeugabh√§ngig
  * 
  */
 
@@ -113,6 +113,19 @@ getChannel_flColours (icColorSpaceSignature color)
 }
 
 #undef nFARBEN
+
+#include <FL/Fl_Menu_Button.H>
+const Fl_Menu_Item* menue_uebersetzen( Fl_Menu_* menueleiste )
+{
+  int size = menueleiste->size();
+  Fl_Menu_Button menueintraege (0,0,0,0,0);
+  menueintraege.copy (menueleiste->menu());
+  for(int i = 0; i < size ; ++i) {
+    const char* text = menueintraege.text(i);
+    menueintraege.replace( i, _(text) );
+  }
+  return menueintraege.menu();
+}
 
 
 #endif

@@ -21,7 +21,7 @@
  * 
  * -----------------------------------------------------------------------------
  *
- * Inhalt für das informative "Über" Fenster.
+ * Inhalt fÃ¼r das informative "Ãœber" Fenster.
  * 
  */
 

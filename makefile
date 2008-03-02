@@ -35,7 +35,7 @@ FLTK_CPPFILES = icc_helfer_fltk.cpp
 
 ifdef APPLE
   OPTS=-Wall -g -DPIC $(DEBUG)
-  LINK_FLAGS = -dynamiclib
+  LINK_FLAGS = -dynamiclib -lintl
   OSX_CPP = $(OSX_CPPFILES)
   INCL=-I$(includedir) -I/usr/X11R6/include -I./ -I/usr/include/gcc/darwin/default/c++
 else
@@ -51,7 +51,7 @@ else
   else
     OPTS=-Wall -O2 -g -fpic -L.
     RM = rm -f
-    LINK_FLAGS = -shared -ldl $(ICONV)
+    LINK_FLAGS = -shared -ldl $(ICONV) -lintl
   endif
 endif
 
@@ -152,6 +152,10 @@ FREEGLUT_HFILES = \
 	freeglut_internal.h
 FREEGLUT_CFILES = \
 	freeglut_geometry.c
+
+LINGUAS = \
+	de #en_GB
+
 COMMON_CFILES = \
 	$(FREEGLUT_CFILES)
 CFILES = \
@@ -197,6 +201,18 @@ SOURCES = $(ALL_SOURCEFILES) $(ALL_HEADERFILES)
 OBJECTS = $(CPPFILES:.cpp=.o) $(CXXFILES:.cxx=.o)
 CLIB_OBJECTS =  $(CFILES:.c=.o)
 
+POT_FILE = po/$(TARGET).pot
+XGETTEXT_OPTIONS = \
+	--keyword=gettext --flag=gettext:1:pass-c-format \
+	--keyword=_ --flag=_:1:pass-c-format \
+	--keyword=N_ --flag=N_:1:pass-c-format \
+	--copyright-holder='Kai-Uwe Behrmann' \
+	--msgid-bugs-address='ku.b@gmx.de' \
+	--from-code=utf-8 \
+	-d $(TARGET) \
+	-o $(POT_FILE) \
+	$(SOURCES)
+
 ALL_FILES =	$(SOURCES) \
 	makefile \
 	configure.sh \
@@ -211,7 +227,7 @@ endif
 timedir = .
 mtime   = `find $(timedir) -prune -printf %Ty%Tm%Td.%TT | sed s/://g`
 
-#.SILENT:
+.SILENT:
 
 all:	mkdepend $(TARGET)
 
@@ -223,7 +239,7 @@ release:	icc_alles.o
 	$(REZ)
 	$(RM) icc_alles.o
 
-$(TARGET):	$(OBJECTS) $(LIBNAME) #$(LIBSONAMEFULL)
+$(TARGET):	$(OBJECTS) $(LIBNAME) pot #$(LIBSONAMEFULL)
 	echo Linking $@...
 	$(CXX) $(OPTS) -o $(TARGET) \
 	$(OBJECTS) \
@@ -259,6 +275,30 @@ test:	icc_formeln.o icc_utils.o
 	-L$(libdir) -llcms
 	$(REZ)
 
+pot:	$(POT_FILE)
+	echo Preparing Linguas ...
+	for ling in $(LINGUAS); do \
+	   \
+	  test -f po/$${ling}.po \
+        && (echo "update po/$${ling}.po ..."; \
+            msgmerge --update po/$${ling}.po $(POT_FILE)) \
+        || (echo "to start translation - create po/$${ling}.po with:"; \
+            echo "        msginit -o po/$${ling}.po -i $(POT_FILE)"); \
+	  echo "update po/$${ling}.mo ..."; \
+	  test -f po/$${ling}.po \
+        && (msgfmt -c --statistics -o po/$${ling}.gmo po/$${ling}.po; \
+            !(test -d po/$${ling}) && mkdir po/$${ling}; \
+            !(test -d po/$${ling}/LC_MESSAGES) && mkdir po/$${ling}/LC_MESSAGES; \
+            test -f po/$${ling}/LC_MESSAGES/$(TARGET).gmo && rm po/$${ling}/LC_MESSAGES/$(TARGET).gmo; \
+            ln -s ../../$${ling}.gmo po/$${ling}/LC_MESSAGES/$(TARGET).gmo;) \
+        || (echo $${ling}.po is not yet available ... skipping) \
+	done;
+
+potfile:
+	xgettext --force-po $(XGETTEXT_OPTIONS)
+
+$(POT_FILE):	potfile
+
 install:	$(TARGET)
 	$(COPY) $(TARGET) $(bindir)
 	$(COPY) $(FONT) $(datadir)/fonts
@@ -270,7 +310,8 @@ clean:
 	echo "mache sauber"
 	$(RM) mkdepend config config.h
 	$(RM) $(OBJECTS) $(CLIB_OBJECTS) $(TARGET) \
-	$(LIBSO) $(LIBSONAME) $(LIBSONAMEFULL)
+	$(LIBSO) $(LIBSONAME) $(LIBSONAMEFULL) \
+	$(POT_FILE)
 
 config:
 	configure.sh
@@ -306,11 +347,21 @@ EXEEXT		=
 	echo Compiling $< ...
 	$(CXX) $(CXXFLAGS) -c $<
 
+.po:
+	echo Generating $@ ...
+	msgfmt $<
+
 tgz:
 	mkdir Entwickeln
 	$(COPY) \
 	$(ALL_FILES) \
 	Entwickeln
+	mkdir Entwickeln/po
+	$(COPY) $(POT_FILE) Entwickeln/po
+	for ling in $(LINGUAS); do \
+	  test -f po/$${ling}.po \
+        && $(COPY) po/$${ling}.po Entwickeln/po/$${ling}.po; \
+	done;
 	tar cf - Entwickeln/ \
 	| gzip > $(TARGET)_$(mtime).tgz
 	test -d ../Archiv && mv -v $(TARGET)_*.tgz ../Archiv
@@ -319,16 +370,23 @@ tgz:
 	rm -R Entwickeln
 
 targz:
-	mkdir icc_examin_$(VERSION)
+	mkdir $(TARGET)_$(VERSION)
 	$(COPY) \
 	$(ALL_FILES) \
-	icc_examin_$(VERSION)
-	tar cf - icc_examin_$(VERSION)/ \
+	$(TARGET)_$(VERSION)
+	mkdir $(TARGET)_$(VERSION)$(TARGET)_$(VERSION)/po
+	$(COPY) $(POT_FILE) $(TARGET)_$(VERSION)/po
+	for ling in $(LINGUAS); do \
+	   \
+	  test -f po/$${ling}.po \
+        && $(COPY) po/$${ling}.po $(TARGET)_$(VERSION)/po/$${ling}.po \
+	done;
+	tar cf - $(TARGET)_$(VERSION)/ \
 	| gzip > $(TARGET)_$(mtime).tgz
 	test -d ../Archiv && mv -v $(TARGET)_*.tgz ../Archiv
-	test -d icc_examin_$(VERSION) && \
-	test `pwd` != `(cd icc_examin_$(VERSION); pwd)` && \
-	rm -R icc_examin_$(VERSION) 
+	test -d $(TARGET)_$(VERSION) && \
+	test `pwd` != `(cd $(TARGET)_$(VERSION); pwd)` && \
+	rm -R $(TARGET)_$(VERSION) 
 
 # Abhängigkeiten
 include mkdepend

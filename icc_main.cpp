@@ -26,8 +26,14 @@
  */
 
 
+#include "config.h"
 #include "icc_examin.h"
 #include <vector>
+
+
+#include <locale.h>
+#include <libintl.h>
+
 
 ICCexamin *icc_examin;
 
@@ -39,6 +45,28 @@ main (int argc, char** argv)
     icc_debug = atoi(getenv("ICCEXAMIN_DEBUG"));
   else
     icc_debug = 0;
+
+
+  char* locale = setlocale (/*LC_ALL*/LC_MESSAGES, "");
+  if(locale)
+    DBG_PROG_S( locale );
+
+  textdomain ("icc_examin");
+  char test[1024];
+  sprintf(test, "%s%s", LOCALEDIR, "/de/LC_MESSAGES/icc_examin.mo");
+  char* bdtd = 0;
+  if( holeDateiModifikationsZeit(test) ) {
+    bdtd = bindtextdomain ("icc_examin", LOCALEDIR);
+    DBG_PROG_S( "Hat geklappt: " << bdtd );
+  } else {
+    DBG_PROG_S( "daneben: " << test );
+    bdtd = bindtextdomain ("icc_examin", SRC_LOCALEDIR);
+    DBG_PROG_S( "Versuche locale in " << bdtd );
+  }
+
+  DBG_PROG_V( _("Yes") )
+  DBG_PROG_V( _("Files") )
+  DBG_PROG_V( _("About ICC Examin") )
 
   ICCexamin hauptprogramm;
 

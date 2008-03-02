@@ -21,7 +21,7 @@
  *
  * -----------------------------------------------------------------------------
  *
- * ICC Helfer - werkzeugabh‰ngig
+ * ICC Helfer - werkzeugabh√§ngig
  * 
  */
 

@@ -21,7 +21,7 @@
  * 
  * -----------------------------------------------------------------------------
  *
- * Zeichenroutinen für Diagramme.
+ * Zeichenroutinen fÃ¼r Diagramme.
  * 
  */
 
@@ -43,13 +43,13 @@ public:
   ~TagDrawings      ( );
   void draw         ( );  // fltk virtual
   void ruhigNeuzeichnen (void);
-  // der Vektor vect enthält fortlaufende XYZ Daten, txt den passenden Text
+  // der Vektor vect enthÃ¤lt fortlaufende XYZ Daten, txt den passenden Text
   void hineinPunkt  ( std::vector<double> &vect,
                       std::vector<std::string> &txt);
-  // vect enthält Kurven mit 1 Koordinaten, txt den passenden Text dazu
+  // vect enthÃ¤lt Kurven mit 1 Koordinaten, txt den passenden Text dazu
   void hineinKurven ( std::vector<std::vector<double> > &vect,
                       std::vector<std::string> &txt);
-  // vect enthält Kurven mit 2 Koordinaten, txt den passenden Text dazu
+  // vect enthÃ¤lt Kurven mit 2 Koordinaten, txt den passenden Text dazu
   void hineinDaten  ( std::vector<std::vector<std::pair<double,double> > >&vect,
                       std::vector<std::string> &txt);
 //  void hineinDaten  ( Handler* daten, std::vector<std::string> &txt);
@@ -66,7 +66,7 @@ public:
   bool zeichne_linie;             // Typ kurven2
   bool zeichne_symbole;           // Typ kurven2
   bool ursprung_zeichnen;         // Koordinatenursprung zeichnen
-  bool kurve_umkehren;            // tauscht x und y Achse für Typ kurven
+  bool kurve_umkehren;            // tauscht x und y Achse fÃ¼r Typ kurven
 
 private:
   void drawCieShoe_ ( int  repeated);
@@ -80,10 +80,10 @@ public:
   // Zeichenbereichvariablen
   int tab_rand_x;                  // Tabellenrand rechts und links
   int tab_rand_y;
-  int linker_text_rand;            // zusätzlicher Rand für Text links
+  int linker_text_rand;            // zusÃ¤tzlicher Rand fÃ¼r Text links
   int unterer_text_rand;
   int raster_abstand;              // Abstand der Rasterlinien in Punkte
-  bool zeige_raster;               // Schalter für Darstellung der Rasterlinien
+  bool zeige_raster;               // Schalter fÃ¼r Darstellung der Rasterlinien
 
   // Wertebereiche
   double min_x, min_y, max_x, max_y;
@@ -94,7 +94,7 @@ private:
   void   zeichneRaster_(void);     // Darstellung des Raster mit Werten
 
   // CIExy Raster
-  int raster;                      // Variable für CIExy Diagram
+  int raster;                      // Variable fÃ¼r CIExy Diagram
   int init_s;
   void init_shoe_ ();
 

@@ -35,8 +35,13 @@
 #include <new>			// bad_alloc()
 #include <iostream>
 
-
-#define _(text) text
+#define USE_GETTEXT
+#ifdef USE_GETTEXT
+  #include <libintl.h>
+  #define _(text) gettext(text)
+#else
+  #define _(text) text
+#endif
 
 #define cout std::cout
 #define endl std::endl
@@ -54,7 +59,7 @@ extern int icc_debug;
  *   9: DBG_PROG_START & DBG_PROG_ENDE
  *
  *   [1,2,...,9]    diese und alle kleineren Kategorien
- *   10+[1,2,...,9] einzig diese Kategorie , z.B. ICCEXAMIN_DEBUG=13 w‰hlt alle
+ *   10+[1,2,...,9] einzig diese Kategorie , z.B. ICCEXAMIN_DEBUG=13 w√§hlt alle
  *                                                Speicherinformationen aus
  *
  */
@@ -176,7 +181,7 @@ public:
     virtual const char* what() const throw()	{ return "Datei I/O"; }
     virtual void report () const throw() {
       DBG_PROG_S ("Ausnahme-Report:\n");
-      DBG_PROG_S ("\tDatei \""<< fname <<"\" war nicht zu ˆffnen\n");//testweise
+      DBG_PROG_S ("\tDatei \""<< fname <<"\" war nicht zu √∂ffnen\n");//testweise
     };
 };
 
@@ -184,14 +189,14 @@ public:
 /*void ausn_file_io::report () const throw()
 {
     printf ("Ausnahme-Report:\n");
-    printf ("\tDatei \"%s\" war nicht zu ˆffnen\n", fname);	// testweise
+    printf ("\tDatei \"%s\" war nicht zu √∂ffnen\n", fname);	// testweise
 }*/
 
 
 // ==================
 // Die FilePtr-Klasse:
 // ==================
-/*  Konstruktor wirft ausn_file_io bei Miﬂerfolg.
+/*  Konstruktor wirft ausn_file_io bei Mi√üerfolg.
 */
 #if 0
 class FilePtr {
@@ -200,13 +205,13 @@ public:
     FilePtr (const char *fname, const char *mode)
       	{
 	   if (!(f = fopen (fname, mode))) {
- 	      printf ("%s(): Kann \"%s\" nicht ˆffnen\n", __func__, fname);
+ 	      printf ("%s(): Kann \"%s\" nicht √∂ffnen\n", __func__, fname);
 	      throw ausn_file_io (fname);
            }
-           printf ("%s(): ÷ffne \"%s\"\n", __func__, fname);
+           printf ("%s(): √ñffne \"%s\"\n", __func__, fname);
         }
     FilePtr (FILE* p)			{ f = p; }
-    ~FilePtr ()				{ printf ("Schlieﬂe Datei...\n");
+    ~FilePtr ()				{ printf ("Schlie√üe Datei...\n");
                                           if (f) fclose (f); }
     operator FILE*()			{ return f; }
 };
@@ -219,20 +224,20 @@ public:
 #if 0
 void f ()
 {
-    // Datei ˆffnen:
+    // Datei √∂ffnen:
     FilePtr fp (__FILE__, "ro");	// wahrsch. erfolgreich
     //FilePtr fp ("gibs_nich", "ro");	// wirft wahrsch. ausn_file_io
 
     // Datei jetzt offen
 
-    FILE* p = fp;		// Benutzung von fp wie gewˆhnliches FILE*.
+    FILE* p = fp;		// Benutzung von fp wie gew√∂hnliches FILE*.
 
     // Speicher anfordern...
     // int* buf = new int [100];
     // Angenommen, geht schief und Ausnahme wird geworfen:
     throw std::bad_alloc();	// Ausnahmen-Mechanismus von C++ ruft Destr.
     				// der bis hierin fertigen Objekte auf:
-				// --> ~FilePtr() schlieﬂt Datei fp
+				// --> ~FilePtr() schlie√üt Datei fp
 
     // Daten aus Datei nach buf lesen...
 
@@ -252,20 +257,20 @@ int f_C ()
     int*  buf;
 
     if (! (fp = fopen ("datei","ro")))
-       return -1;			// R¸ckgabe-Kode f¸r Miﬂerfolg
+       return -1;			// R√ºckgabe-Kode f√ºr Mi√üerfolg
 
     // Datei jetzt offen
 
     // Speicher anfordern...
     if (! (buf = (int*) malloc (100))) {
-       fclose (fp);			// explizites Dateischlieﬂen nˆtig
-       return -1;			// R¸ckgabe-Kode f¸r Miﬂerfolg
+       fclose (fp);			// explizites Dateischlie√üen n√∂tig
+       return -1;			// R√ºckgabe-Kode f√ºr Mi√üerfolg
     }
     // Daten aus Datei nach buf lesen...
 
     // Normalfall:
-    fclose (fp);			// explizites Dateischlieﬂen nˆtig
-    return 0;				// R¸ckgabe-Kode f¸r Erfolg
+    fclose (fp);			// explizites Dateischlie√üen n√∂tig
+    return 0;				// R√ºckgabe-Kode f√ºr Erfolg
 }
 
 
@@ -278,14 +283,14 @@ int main ()
     try {
       f();
     }
-    catch (Ausnahme & a) {	// f‰ngt alles von Ausnahme Abstammende
+    catch (Ausnahme & a) {	// f√§ngt alles von Ausnahme Abstammende
         printf ("Ausnahme aufgetreten: %s\n", a.what());
         a.report();
     }
-    catch (std::exception & e) { // f‰ngt alles von exception Abstammende
+    catch (std::exception & e) { // f√§ngt alles von exception Abstammende
         printf ("Std-Ausnahme aufgetreten: %s\n", e.what());
     }
-    catch (...) {		// f‰ngt alles ‹briggebliebene
+    catch (...) {		// f√§ngt alles √úbriggebliebene
         printf ("Huch, unbekannte Ausnahme\n");
     }
 }

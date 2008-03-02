@@ -21,7 +21,7 @@
  * 
  * -----------------------------------------------------------------------------
  *
- * Inhalt für das informative "Über" Fenster.
+ * Inhalt fÃ¼r das informative "Ãœber" Fenster.
  * 
  */
 
@@ -43,7 +43,7 @@ getUeberHtml()
   #define LAYOUTFARBE if (layout[l++] == true) \
                         html << HF; \
                       else \
-                        html << SF; //Farbe nach Layoutoption auswählen
+                        html << SF; //Farbe nach Layoutoption auswÃ¤hlen
   std::stringstream html;
 
 
@@ -83,7 +83,7 @@ getUeberHtml()
   html << _("Datum: ") << ICC_EXAMIN_D; html << " \
 <br> \
 <p> \
-ICC Examin ist ein Betrachter von Farbprofilen gem&auml;ß ICC Standard  - www.color.org . \
+ICC Examin ist ein Betrachter von Farbprofilen gem&auml;ÃŸ ICC Standard  - www.color.org . \
 Im Moment werden Version 2 Profile unterst&uuml;tzt. \
 </p>\n \
 <p> \

@@ -1,5 +1,8 @@
 # data file for the Fltk User Interface Designer (fluid)
 version 1.0106 
+i18n_type 1 
+i18n_include <libintl.h> 
+i18n_function gettext 
 header_name {.h} 
 code_name {.cxx}
 decl {\#include "icc_betrachter.h"} {public
@@ -12,38 +15,38 @@ decl {\#include "icc_oyranos.h"} {}
 Function {voreinstellungen_intern()} {open
 } {
   Fl_Window {} {
-    label Einstellungen open
-    xywh {826 560 375 205} type Double resizable
+    label Preferences open
+    xywh {836 602 375 205} type Double resizable
     code0 {o->show();} visible
   } {
     Fl_Tabs {} {
-      label Einstellungen open
+      label Preferences open
       xywh {0 0 375 205} align 17 resizable
     } {
       Fl_Group {} {
-        label Farbprofile open
+        label {ICC Profiles} open
         xywh {0 25 375 180} resizable
       } {
         Fl_Group order_gruppe {open
           xywh {5 30 365 115} box ENGRAVED_FRAME
         } {
           Fl_Button {} {
-            label {Löschen}
+            label Erase
             callback {oyranos_pfade_loeschen();}
             xywh {80 105 75 30}
           }
           Fl_Button {} {
-            label Auffrischen
+            label Refresh
             callback {oyranos_pfade_einlesen();}
             xywh {160 105 85 30}
           }
           Fl_Button {} {
-            label Neu
+            label New
             callback {oyranos_pfade_waehlen();}
             xywh {280 105 85 30}
           }
           Fl_Browser fl_oyanos_pfade_browser {
-            label {Pfade:}
+            label {Paths:} selected
             xywh {80 35 285 70} align 4
             class TagTexts
           }
@@ -63,6 +66,5 @@ Function {oyranos_pfade_waehlen()} {open
 
       fl_oyanos_pfade_browser->topline(0);
       fl_oyanos_pfade_browser->textfont(FL_COURIER);
-      fl_oyanos_pfade_browser->textsize(14);} {selected
-  }
+      fl_oyanos_pfade_browser->textsize(14);} {}
 } 

@@ -87,13 +87,13 @@ ICCvrmlParser::lesen_ ()
   DBG_PROG_START
   int netz_n = 0;                       // das n-the Netz
   std::vector<std::string> zeilen;      // Editierzeilen
-  std::vector<ZifferWort> werte;        // Zwischenrückgabewert
+  std::vector<ZifferWort> werte;        // ZwischenrÃ¼ckgabewert
   char trennzeichen[12];                // zu verwendende Trennzeichen
   trennzeichen[0] = ',';
   sprintf(&trennzeichen[1], leer_zeichen);
-  const bool anfuehrungstriche = false; // keine Anführungsstriche setzen
-  unsigned int dimensionen;             // Anzahl der zusammmengehörenden Werte
-  int achse;                            // ausgewählter Wert aus dimensionen
+  const bool anfuehrungstriche = false; // keine AnfÃ¼hrungsstriche setzen
+  unsigned int dimensionen;             // Anzahl der zusammmengehÃ¶renden Werte
+  int achse;                            // ausgewÃ¤hlter Wert aus dimensionen
   DBG_PROG_V( original_.size() )
 
   std::string::size_type pos=0, netz_pos=0;

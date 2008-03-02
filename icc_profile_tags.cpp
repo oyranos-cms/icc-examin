@@ -112,7 +112,7 @@ ICCtag::clear              ()
 {
   DBG_PROG
   if (data_ && size_) {
-    DBG_MEM_S("lösche: "<<(int*)data_)
+    DBG_MEM_S("lÃ¶sche: "<<(int*)data_)
     free (data_);
   }
   defaults();
@@ -193,7 +193,7 @@ ICCtag::load                        ( ICCprofile *profil,
 
   #ifdef DEBUG_ICCTAG_
   char* text = data_;
-  DBG_MEM_S( _sig << "=" << tag->sig << " offset " << icValue(tag->offset) << " size " << size_ << " nächster tag " << size_ + icValue(tag->offset) << " " << text << " " )
+  DBG_MEM_S( _sig << "=" << tag->sig << " offset " << icValue(tag->offset) << " size " << size_ << " nÃ¤chster tag " << size_ + icValue(tag->offset) << " " << text << " " )
   #endif
   DBG_MEM_ENDE
 }
@@ -229,7 +229,7 @@ ICCtag::getText                     (void)
     memcpy (&meas, &data_[8] , 28);
     s << _("Standard Betrachter") << ": " <<
     getStandardObserver( (icStandardObserver)icValue( meas.stdObserver) ) <<endl
-      << _("Rückseite") << ": X = " << icSFValue(meas.backing.X)
+      << _("RÃ¼ckseite") << ": X = " << icSFValue(meas.backing.X)
                         << ", Y = " << icSFValue(meas.backing.Y)
                         << ", Z = " << icSFValue(meas.backing.Z) << endl
       << _("Geometrie") << ": "<< 
@@ -251,13 +251,13 @@ ICCtag::getText                     (void)
     inputEnt = icValue(lut16->inputEnt);
     outputEnt = icValue(lut16->outputEnt);
     std::stringstream s;
-    s << _("Konvertierungskette mit 16-bit Präzission:") << endl <<
+    s << _("Konvertierungskette mit 16-bit PrÃ¤zission:") << endl <<
          _("Intent:") << " " << renderingIntentName(_intent) << endl <<
-         _("Eingangskanäle") << " (" << getColorSpaceName(_color_in)  << "): " << (int)inputChan << endl <<
-         _("Ausgangskanäle") << " (" << getColorSpaceName(_color_out) << "): " << (int)outputChan << endl <<
+         _("EingangskanÃ¤le") << " (" << getColorSpaceName(_color_in)  << "): " << (int)inputChan << endl <<
+         _("AusgangskanÃ¤le") << " (" << getColorSpaceName(_color_out) << "): " << (int)outputChan << endl <<
          _("Matrix") << endl <<
          _("lineare Eingangkurve") << " " << _("mit") << " " << (int)inputEnt << " " << _("Stufungen") << endl <<
-         _("3D Farbtabelle mit") << " " <<  (int)clutPoints << " " << _("Punkten Seitenlänge") << endl <<
+         _("3D Farbtabelle mit") << " " <<  (int)clutPoints << " " << _("Punkten SeitenlÃ¤nge") << endl <<
          _("lineare Ausgangskurve") << " " << _("mit") << " " << (int)outputEnt << " " << _("Stufungen") << endl;
     texte.push_back( s.str() );
 
@@ -270,12 +270,12 @@ ICCtag::getText                     (void)
     clutPoints = (int)lut8->clutPoints;
 
     std::stringstream s;
-    s << _("Konvertierungskette mit 8-bit Präzission:") << endl <<
+    s << _("Konvertierungskette mit 8-bit PrÃ¤zission:") << endl <<
          _("Intent:") << " " << renderingIntentName(_intent) << endl <<
-         _("Eingangskanäle") << " (" << getColorSpaceName(_color_in)  << "): " << (int)inputChan << endl <<
-         _("Ausgangskanäle") << " (" << getColorSpaceName(_color_out) << "): " << (int)outputChan << endl <<
+         _("EingangskanÃ¤le") << " (" << getColorSpaceName(_color_in)  << "): " << (int)inputChan << endl <<
+         _("AusgangskanÃ¤le") << " (" << getColorSpaceName(_color_out) << "): " << (int)outputChan << endl <<
          _("Matrix") << endl <<
-         _("3D Farbtabelle mit") << " " <<  (int)clutPoints << " " << _("Punkten Seitenlänge") << endl;
+         _("3D Farbtabelle mit") << " " <<  (int)clutPoints << " " << _("Punkten SeitenlÃ¤nge") << endl;
     texte.push_back( s.str() );
 
   } else if (((icTagBase*)&data_[0])->sig == (icTagTypeSignature)icValue( icSigChromaticityType )) {
@@ -384,7 +384,7 @@ ICCtag::getText                     (void)
   } else if ( text == "vcgt" ) {
 
     texte.push_back( _("Rot") );
-    texte.push_back( _("Grün") );
+    texte.push_back( _("GrÃ¼n") );
     texte.push_back( _("Blau") );
     texte.push_back( "gamma_start_ende" );
 
@@ -415,7 +415,7 @@ ICCtag::getText                     (void)
     s << "\n\n   " <<
          _("Anzahl Farben:") << icValue(ncl2->anzahl) << "\n" <<
          "   " << _("Name") << "    " << _("CIE*Lab") <<
-         " / " << _("Gerätefarben") << "\n\n";
+         " / " << _("GerÃ¤tefarben") << "\n\n";
     texte[0] = s.str();
     DBG_MEM_V( texte[0] )
     DBG_MEM_V( sizeof(Ncl2)+icValue(ncl2->anzahl)*sizeof(Ncl2Farbe) )
@@ -423,9 +423,9 @@ ICCtag::getText                     (void)
     DBG_MEM_V( sizeof(Ncl2) )
     for (int i = 0; i < farben_n; ++i)
     {
-      Ncl2Farbe *f = (Ncl2Farbe*) ((char*)ncl2 + 76 + // Basisgröße von Ncl2
-                     (i * (38 +                 // Basisgröße von Ncl2Farbe
-                           geraetefarben_n      // Anzahl Gerätefarben
+      Ncl2Farbe *f = (Ncl2Farbe*) ((char*)ncl2 + 76 + // BasisgrÃ¶ÃŸe von Ncl2
+                     (i * (38 +                 // BasisgrÃ¶ÃŸe von Ncl2Farbe
+                           geraetefarben_n      // Anzahl GerÃ¤tefarben
                            * sizeof(icUInt16Number))));//Ncl2Farbe::geraetefarbe
       DBG_MEM_V( sizeof(icUInt16Number) <<"|"<< geraetefarben_n )
       DBG_MEM_V( i <<" "<<(int*)f <<" "<< (int*)ncl2  )
@@ -584,7 +584,7 @@ ICCtag::getCurves                                 (MftChain typ)
            }
            kurven.push_back (kurve);
            #ifdef DEBUG_ICCTAG
-           DBG_NUM_S( kurve.size() << " Einträge" )
+           DBG_NUM_S( kurve.size() << " EintrÃ¤ge" )
            #endif
          } DBG_PROG
          break;
@@ -605,7 +605,7 @@ ICCtag::getCurves                                 (MftChain typ)
                               / div );
            kurven.push_back (kurve);
            #ifdef DEBUG_ICCTAG
-           DBG_NUM_S( kurve.size() << "|" << outputEnt << " Einträge" )
+           DBG_NUM_S( kurve.size() << "|" << outputEnt << " EintrÃ¤ge" )
            #endif
          }
          break;
@@ -636,7 +636,7 @@ ICCtag::getCurves                                 (MftChain typ)
                               / div );
            kurven.push_back (kurve);
            #ifdef DEBUG_ICCTAG
-           DBG_NUM_S( kurve.size() << " Einträge" )
+           DBG_NUM_S( kurve.size() << " EintrÃ¤ge" )
            #endif
          }
          break;
@@ -660,7 +660,7 @@ ICCtag::getCurves                                 (MftChain typ)
                               / div );
            kurven.push_back (kurve);
            #ifdef DEBUG_ICCTAG
-           DBG_NUM_S( kurve.size() << " Einträge" )
+           DBG_NUM_S( kurve.size() << " EintrÃ¤ge" )
            #endif
          }
          break;
@@ -708,7 +708,7 @@ ICCtag::getCurves                                 (MftChain typ)
                                 / div );
              kurven.push_back (kurve);
              //#ifdef DEBUG_ICCTAG
-             DBG_NUM_S( kurve.size() << " Einträge" )
+             DBG_NUM_S( kurve.size() << " EintrÃ¤ge" )
              //#endif
            }
     }
@@ -918,9 +918,9 @@ ICCtag::getNumbers                                 (MftChain typ)
     DBG_PROG_V( nummern[0] )
     for (int i = 0; i < farben_n; ++i)
     {
-      Ncl2Farbe *f = (Ncl2Farbe*) ((char*)ncl2 + 76 + // Basisgröße von Ncl2
-                     (i * (38 +                 // Basisgröße von Ncl2Farbe
-                           geraetefarben_n      // Anzahl Gerätefarben
+      Ncl2Farbe *f = (Ncl2Farbe*) ((char*)ncl2 + 76 + // BasisgrÃ¶ÃŸe von Ncl2
+                     (i * (38 +                 // BasisgrÃ¶ÃŸe von Ncl2Farbe
+                           geraetefarben_n      // Anzahl GerÃ¤tefarben
                            * sizeof(icUInt16Number))));//Ncl2Farbe::geraetefarbe
       nummern[i*3 +1] = icValue(f->pcsfarbe[0])/65280.0;
       nummern[i*3 +2] = icValue(f->pcsfarbe[1])/65535.0;
@@ -946,7 +946,7 @@ ICCtag::getText                     (MftChain typ)
   char n[6];
 
 
-  // TODO: prüfen auf icColorSpaceSignature <-> Kanalanzahl
+  // TODO: prÃ¼fen auf icColorSpaceSignature <-> Kanalanzahl
     // Was wird verlangt?
     switch (typ) {
     case TABLE:
@@ -970,14 +970,14 @@ ICCtag::getText                     (MftChain typ)
   if (kanaele.size()
    && (texte.size() < (unsigned int)kanaele[0]))
   {
-    // falls "keine Farbe" zu erwarten währe
+    // falls "keine Farbe" zu erwarten wÃ¤hre
            if (texte.size() == 1)
            {
              sprintf(n,"%d",1);
              texte[0] = _("Farbe");
              texte[0] = texte[0] + n;
            }
-    // Auffüllen
+    // AuffÃ¼llen
            for (int i = texte.size(); i < kanaele[0]; i++)
            {
              sprintf(n,"%d",i+1);

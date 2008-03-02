@@ -58,7 +58,7 @@ class GL_Ansicht : public Fl_Gl_Window /*, public Fl_Slot*/ {
   void erstelleGLListen_();
   void textGarnieren_();
   void garnieren_();
-  // Menüs
+  // MenÃ¼s
   Fl_Menu_Button  *menue_;
   Fl_Menu_Button  *menue_button_;
   Fl_Menu_Button  *menue_schnitt_;
@@ -135,11 +135,11 @@ public:
                                std::vector<std::string> nachFarben);
 
   // transparente Darstellung
-  int  kanal;               // gewählter Kanal
+  int  kanal;               // gewÃ¤hlter Kanal
        // Darstellung der Gitterpunkte der Transformationstabelle
   int  punktform;           // MENU_KUGEL MENU_WUERFEL MENU_STERN
   int  punktfarbe;          // MENU_GRAU MENU_FARBIG MENU_KONTRASTREICH
-  int  punktgroesse;        // Größe in Pixel
+  int  punktgroesse;        // GrÃ¶ÃŸe in Pixel
 
   int  hintergrundfarbe;    // Hintergrundfarben Farbschema
   float textfarbe[3];
@@ -150,18 +150,18 @@ public:
   // Darstellungsfunktionen
   void setzePerspektive();  // Perspektive aktualisieren
   void auffrischen();       // Erneuerung ohne init()
-  void tabelleAuffrischen(); // glCompile für Tabelle
-  void punkteAuffrischen(); // glCompile für Punkte
+  void tabelleAuffrischen(); // glCompile fÃ¼r Tabelle
+  void punkteAuffrischen(); // glCompile fÃ¼r Punkte
   void netzeAuffrischen();    // Sortieren und Zeichnen
   double seitenverhaeltnis; // Proportion des Fensters
   static const double std_vorder_schnitt;
   double vorder_schnitt;      // Entfernung der ersten Schnittebene
   double schnitttiefe;      // Dicke der GL Schnitttiefe
-  double a_darstellungs_breite; // Richtung CIE*a   für Zoom und Pfeillängen
+  double a_darstellungs_breite; // Richtung CIE*a   fÃ¼r Zoom und PfeillÃ¤ngen
   double b_darstellungs_breite; // ~        CIE*b ; wobei CIE*L immer 1.0
   bool zeig_punkte_als_messwert_paare;
   bool zeig_punkte_als_messwerte;
-  int  spektralband;        // stelle die spektral gesättigten Farben dar
+  int  spektralband;        // stelle die spektral gesÃ¤ttigten Farben dar
   int  zeige_helfer;        // zeige Pfeile und Text
 private:
   void zeigeSpektralband_();
@@ -181,7 +181,7 @@ public:
                           (int)nach_farb_namen_.size() > kanal) {
                         return nach_farb_namen_[kanal].c_str();
                       } else {
-                        return _("");}  }
+                        return "";}  }
   const char* kanalName(unsigned int i) const {
                       if (nach_farb_namen_.size()>i) 
                         return (const char*)nach_farb_namen_[i].c_str();

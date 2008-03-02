@@ -30,7 +30,6 @@
 
 #ifndef ICC_OYRANOS_H
 #define ICC_OYRANOS_H
-#define _(text) text
 
 #include <string>
 #include <list>

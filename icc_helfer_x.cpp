@@ -21,7 +21,7 @@
  * 
  * -----------------------------------------------------------------------------
  *
- * Aufbereitung von X internen Informationen - werkzeugabhängig
+ * Aufbereitung von X internen Informationen - werkzeugabhÃ¤ngig
  * 
  */
 
@@ -54,7 +54,7 @@ leseGrafikKartenGamma        (std::string display_name,
 
   texte.resize(4);
   texte[0] = _("Rot");
-  texte[1] = _("Grün");
+  texte[1] = _("GrÃ¼n");
   texte[2] = _("Blau");
   texte[3] = "gamma_start_ende";
 
@@ -98,7 +98,7 @@ leseGrafikKartenGamma        (std::string display_name,
     }
     DBG_NUM_V( gamma.red )
     if( gamma.green != 1.0 ) {
-      texte.push_back(_("Gamma Grün: "));
+      texte.push_back(_("Gamma GrÃ¼n: "));
       sprintf(t, "%.2f", gamma.green);
       texte[texte.size()-1].append(t);
     }

@@ -1,5 +1,8 @@
 # data file for the Fltk User Interface Designer (fluid)
-version 1.0106 
+version 1.0104 
+i18n_type 1 
+i18n_include <libintl.h> 
+i18n_function gettext 
 header_name {.h} 
 code_name {.cxx}
 decl {\#include <cassert>} {public
@@ -53,7 +56,8 @@ decl {\#include "icc_draw.h"
 decl {\#include "icc_profile.h"
 \#include "icc_utils.h"
 \#include "icc_ueber.h"
-\#include "icc_helfer.h"} {public
+\#include "icc_helfer.h"
+\#include "icc_helfer_fltk.h"} {public
 } 
 
 decl {\#include "icc_gl.h"} {} 
@@ -75,7 +79,7 @@ Function {iccReadInfo(char* filename)} {return_type {char*}
   code DBG_PROG_ENDE {}
 } 
 
-class TagBrowser {: {public Fl_Hold_Browser}
+class TagBrowser {open : {public Fl_Hold_Browser}
 } {
   decl {int X; int Y; int W; int H; char* start_info; std::string selectedTagName;} {public
   }
@@ -358,7 +362,7 @@ class ICCfltkBetrachter {open
     dateiwahl->preview_label = _("Vorschau");
   \#endif} {}
     Fl_Window ueber {
-      label {Über ICC examin}
+      label {About ICC Examin} open
       xywh {567 641 366 241} type Double hide resizable
       code0 {o->hide();} non_modal
     } {
@@ -369,15 +373,15 @@ class ICCfltkBetrachter {open
           xywh {0 0 365 205} resizable
         }
         Fl_Button ja {
-          label Gut
+          label Yes
           callback {ueber->hide();}
           xywh {130 210 110 25}
         }
       }
     }
     Fl_Window vcgt {
-      label {Grafikkarten Gamma Tabellen}
-      xywh {708 167 370 390} type Double resizable
+      label {Grafic Card Gamma Table} open
+      xywh {733 272 370 390} type Double resizable
       code0 {o->hide();} non_modal visible
     } {
       Fl_Group {} {open
@@ -389,48 +393,48 @@ class ICCfltkBetrachter {open
           class TagDrawings
         }
         Fl_Button {} {
-          label Gut
+          label Close
           callback {vcgt->hide();}
           xywh {290 360 75 25}
         }
         Fl_Button {} {
-          label Auffrischen
+          label Refresh
           callback {icc_examin->vcgtZeigen();}
-          xywh {185 360 105 25} hotspot
+          tooltip {refresh gamma table from video card} xywh {195 360 95 25} hotspot
         }
         Fl_Button {} {
-          label {setze Gamma}
+          label Monitorprofile
           callback {icc_examin->moniSetzen();}
-          xywh {80 360 105 25} hotspot
+          tooltip {Set the current profile as monitor profile and upload vcgt tag to the video card} xywh {80 360 115 25} hotspot
         }
         Fl_Button {} {
           label Standard
           callback {icc_examin->standardGamma();}
-          xywh {5 360 75 25} hotspot
+          tooltip {reset to standard gamma} xywh {5 360 75 25} hotspot
         }
       }
     }
     Fl_Window details {
       label {ICC Details} open
-      xywh {815 359 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
+      xywh {846 374 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
     } {
       Fl_Group {} {open
         xywh {0 0 385 520}
       } {
-        Fl_Menu_Bar {} {open
+        Fl_Menu_Bar menueleiste {open
           xywh {0 0 385 25} align 20 when 3
         } {
           submenu {} {
-            label Daten open
+            label Files open
             xywh {15 15 100 20}
           } {
             menuitem {} {
-              label {Öffnen}
+              label Open
               callback {icc_examin->oeffnen()}
               xywh {15 15 100 20} shortcut 0x4006f
             }
             menuitem menueintrag_html_speichern {
-              label {Bericht Speichern}
+              label {Save Report}
               callback {DBG_PROG_START
 
   icc_examin->berichtSpeichern ();
@@ -439,23 +443,23 @@ class ICCfltkBetrachter {open
               xywh {0 0 100 20} deactivate divider
             }
             menuitem {} {
-              label Beenden
+              label Quit
               callback {quit()}
               xywh {15 15 100 20} shortcut 0x40071
             }
           }
           submenu {} {
-            label Bearbeiten open
+            label Edit open
             xywh {25 25 100 20}
           } {
             menuitem {} {
-              label Voreinstellungen
+              label {Oyranos Settings}
               callback {oyranos_einstellungen()}
               xywh {25 25 100 20}
             }
           }
           menuitem menueintrag_huelle {
-            label {Hülle}
+            label Gamut
             callback {Fl_Menu_* mw = (Fl_Menu_*)o;
   const Fl_Menu_Item* m = mw->mvalue();
 
@@ -467,15 +471,15 @@ class ICCfltkBetrachter {open
     widget_oben = WID_0;
     ((Fl_Menu_Item*)menueintrag_3D)->clear();
   }
-  icc_examin->neuzeichnen(DD_histogram);} selected
+  icc_examin->neuzeichnen(DD_histogram);}
             xywh {60 60 100 20} type Toggle shortcut 0x40068
           }
           submenu {} {
-            label Ansicht open
+            label View open
             xywh {15 15 100 20} divider
           } {
             menuitem menueintrag_Voll {
-              label {Ganzer Bildschirm an/aus}
+              label {Whole Screen on/off}
               callback {Fl_Window *w = (Fl_Window *)details;
 
   if (!fullscreen) {
@@ -493,7 +497,7 @@ class ICCfltkBetrachter {open
               xywh {15 15 100 20} shortcut 0x40076 divider
             }
             menuitem menueintrag_inspekt {
-              label {Prüfansicht}
+              label {Report View}
               callback {Fl_Menu_* mw = (Fl_Menu_*)o;
   const Fl_Menu_Item* m = mw->mvalue();
 
@@ -512,7 +516,7 @@ class ICCfltkBetrachter {open
               tooltip {Mess- und Profilwerte bildlich und in Zahlen dargestellt; Ctrl+b} xywh {40 40 100 20} type Toggle shortcut 0x40062 deactivate
             }
             menuitem menueintrag_3D {
-              label {3D Ansicht}
+              label {3D Gamut}
               callback {Fl_Menu_* mw = (Fl_Menu_*)o;
   const Fl_Menu_Item* m = mw->mvalue();
 
@@ -529,7 +533,7 @@ class ICCfltkBetrachter {open
               xywh {50 50 100 20} type Toggle shortcut 0x40068 divider
             }
             menuitem menueintrag_zeigcgats {
-              label {CGATS Ansicht}
+              label {CGATS View}
               callback {Fl_Menu_* mw = (Fl_Menu_*)o;
   const Fl_Menu_Item* m = mw->mvalue();
 
@@ -539,28 +543,28 @@ class ICCfltkBetrachter {open
               tooltip {Mess- und Profilwerte bildlich und in Zahlen dargestellt; Ctrl+b} xywh {50 50 100 20} shortcut 0x40067 deactivate
             }
             menuitem menueintrag_vcgt {
-              label {Grafikkarten Gamma}
+              label {Videocard Gamma}
               callback {vcgt->show();
 icc_examin->vcgtZeigen();}
               xywh {15 15 100 20} shortcut 0x40074
               code0 {o->hide();}
             }
             menuitem menueintrag_testkurven {
-              label {Test Kurven}
+              label {Test Curves}
               callback {vcgt->show();
 icc_examin->testZeigen();}
               xywh {25 25 100 20} shortcut 0x50074
             }
           }
           submenu menu_hilfe {
-            label Hilfe open
+            label Help open
             xywh {0 0 100 20}
           } {
             menuitem {} {
-              label {Über}
+              label About
               callback {ueber->show();
 ueber_html->value(getUeberHtml().c_str());}
-              xywh {5 5 100 20}
+              xywh {5 5 100 20} shortcut 0xffbe
             }
           }
         }
@@ -578,9 +582,9 @@ ueber_html->value(getUeberHtml().c_str());}
           xywh {0 25 385 470} resizable
         } {
           Fl_Browser tag_browser {
-            label {Bitte wählen Sie ein Profilmerkmal aus}
+            label Tags
             callback {o->selectItem( o->value() );}
-            xywh {0 25 385 135} color 49 align 17 textcolor 32
+            tooltip {Choose one profile tag} xywh {0 25 385 135} color 49 align 17 textcolor 32
             code0 {int lines = tag_browser->size();}
             code1 {DBG_PROG_V( lines )}
             class TagBrowser
@@ -593,9 +597,9 @@ ueber_html->value(getUeberHtml().c_str());}
               code0 {o->show();}
             } {
               Fl_Choice mft_choice {
-                label {Wählen Sie ein Kettenmerkmal}
+                label {Chain selection}
                 callback {o->auswahlCb();} open
-                xywh {0 160 385 25} box NO_BOX down_box BORDER_BOX color 49
+                tooltip {Choose a attribute} xywh {0 160 385 25} box NO_BOX down_box BORDER_BOX color 49
                 code0 {o->show();}
                 class MftChoice
               } {}
@@ -605,7 +609,7 @@ ueber_html->value(getUeberHtml().c_str());}
                 class TagDrawings
               }
               Fl_Browser mft_text {
-                label {Der Text}
+                label {Chain -texts}
                 xywh {0 185 385 310} color 48 align 18 textcolor 32
                 code0 {o->show();}
                 class TagTexts
@@ -622,22 +626,21 @@ ueber_html->value(getUeberHtml().c_str());}
               class TagDrawings
             }
             Fl_Browser tag_text {
-              label {Der Text}
+              label Texts
               xywh {0 160 385 335} color 49 align 18 textcolor 32
               code0 {o->show();}
               class TagTexts
             }
           }
         }
-        Fl_Group {} {
+        Fl_Group {} {open
           xywh {0 495 385 25}
         } {
           Fl_Box box_stat {
-            label {No wrl file loaded.}
             xywh {0 495 385 25} box THIN_DOWN_BOX align 20
           }
           Fl_Progress load_progress {
-            label {Laden ..}
+            label {Loading ..}
             xywh {0 495 385 25}
             code0 {o->hide();}
             code1 {o->maximum(1.0);}
@@ -651,7 +654,10 @@ ueber_html->value(getUeberHtml().c_str());}
   w->resizable(tag_text);
   w->show();
   Fl::scheme(NULL);
-  Fl_File_Icon::load_system_icons();} {}
+  Fl_File_Icon::load_system_icons();
+  const Fl_Menu_Item* mi = menue_uebersetzen( dynamic_cast<Fl_Menu_*>(menueleiste) );
+  menueleiste->copy( mi );} {selected
+    }
     code DBG_PROG_ENDE {}
   }
   Function {run()} {} {
