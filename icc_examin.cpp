@@ -328,6 +328,7 @@ ICCexamin::neuzeichnen (void* z)
   DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->mft_gl)->visible() )
   DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->mft_viewer)->visible() )
 
+  // oberstes Widget testen
   DBG_PROG_V( icc_betrachter->widget_oben )
   enum { DD_ZEIGEN, INSPEKT_ZEIGEN, TAG_ZEIGEN };
   int oben;
@@ -341,12 +342,14 @@ ICCexamin::neuzeichnen (void* z)
     oben = TAG_ZEIGEN;
   DBG_PROG_V( oben )
 
+  // inhaltliches Zurückschalten auf tiefere Ebene
   bool waehle_tag = false;
   if( oben == TAG_ZEIGEN &&
       (icc_betrachter->DD_histogram->visible()
     || icc_betrachter->inspekt_html->visible()) )
     waehle_tag = true;
 
+  // die oberste Ebene zeigen/verstecken
   if(oben == DD_ZEIGEN) {
     if(!icc_betrachter->DD_histogram->visible()) {
       DBG_PROG_S( "3D Histogramm zeigen" )
@@ -377,35 +380,31 @@ ICCexamin::neuzeichnen (void* z)
     }
     icc_betrachter->tag_browser->show();
     icc_betrachter->ansichtsgruppe->show();
-    icc_betrachter->tag_text->show();
   } else {
     icc_betrachter->examin->hide();
     icc_betrachter->tag_browser->hide();
     icc_betrachter->ansichtsgruppe->hide();
-    icc_betrachter->tag_text->hide();
     DBG_PROG_S( "examin verstecken" )
   }
 
+  // Inhalte Erneuern
   if(waehle_tag)
     waehleTag(_item);
 
+  // Bereinigen - hier?
   if (wid == icc_betrachter->tag_viewer ||
       wid == icc_betrachter->mft_viewer) {
     wid->clear_visible(); DBG_PROG_V( item << _item )
   }
-DBG_PROG
+
+  // Tabellenkompanion
   if (wid == icc_betrachter->mft_text ||
       wid == icc_betrachter->mft_gl ||
       wid == icc_betrachter->mft_viewer)
   { icc_betrachter->mft_choice->show(); DBG_PROG_S( "mft_choice zeigen" ) 
   } else
     icc_betrachter->mft_choice->hide();
-DBG_PROG
-  if (wid != icc_betrachter->mft_gl)
-    icc_betrachter->mft_gl->hide();
-  else
-    icc_betrachter->mft_gl->show();
-DBG_PROG
+
   #define zeig(widget) \
   { Fl_Widget *w = dynamic_cast<Fl_Widget*> (icc_betrachter->widget); \
     if (w != wid && w->visible()) { DBG_PROG_S( #widget << " verstecken" ) \
@@ -417,9 +416,16 @@ DBG_PROG
   }
 
   zeig(mft_viewer)
+  zeig(mft_gl)
   zeig(mft_text)
   zeig(tag_viewer)
   zeig(tag_text)
+
+  // wenigstens ein Widget zeigen
+  if(oben == TAG_ZEIGEN &&
+     !icc_betrachter->mft_choice ->visible() &&
+     !icc_betrachter->tag_viewer ->visible() )
+    icc_betrachter->tag_text->show();
 
   DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->DD_histogram)->visible())
   DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->inspekt_html)->visible())

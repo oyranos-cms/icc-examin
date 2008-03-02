@@ -60,6 +60,7 @@ class ICCexamin : public icc_examin_ns::Beobachter
 
     void         oeffnen (std::vector<std::string> dateinamen);
     void         oeffnen ();                   // interaktiv
+    void         tag_browserText  (void);
     bool         berichtSpeichern (void);      // GCATS Auswertung -> html Datei
     void         zeigPrueftabelle ();
     void         zeigCGATS();                  // korrigiertes CGATS zeigen

@@ -28,8 +28,8 @@ class GL_Ansicht;
 char* iccReadInfo(char* filename);
 
 class TagBrowser : public Fl_Hold_Browser {
-  int X; int Y; int W; int H; char* start_info; std::string selectedTagName;
 public:
+  int X; int Y; int W; int H; char* start_info; std::string selectedTagName;
   TagBrowser(int X,int Y,int W,int H,char* start_info) ;
   void reopen();
   void selectItem(int item);

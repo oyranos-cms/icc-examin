@@ -28,7 +28,7 @@ TagBrowser::TagBrowser(int X,int Y,int W,int H,char* start_info) : Fl_Hold_Brows
 void TagBrowser::reopen() {
   DBG_PROG_START
   //open and preparing the first selected item
-
+  #if 0
   std::stringstream s;
   std::string text;
   std::vector<std::string> tag_list = profile.profil()->printTags();
@@ -75,15 +75,15 @@ void TagBrowser::reopen() {
     value(item);
   }
 
-  std::string::size_type pos=0 , max = 0;
+  std::string::size_type pos=0;
   std::string data = profile.profil()->filename(); DBG_NUM_S( data )
-  while ((pos = data.find ("/", pos)) != std::string::npos) {
-    if (pos > max) max = pos; pos++; max++;
+  if((pos = data.find_last_of ("/", pos)) != std::string::npos) {
+    data.erase (0, pos);
   }
-  data.erase (0, max); DBG_NUM_S( max << data )
 
   s.clear(); s << "ICC Details: " << data;
   status ((const char*) s.str().c_str() );
+  #endif
   DBG_PROG_ENDE
 }
 

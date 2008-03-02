@@ -68,11 +68,9 @@ ICCexamin::oeffnen (std::vector<std::string> dateinamen)
     histogramModus(profile.aktuell());
 
       // Oberflächenpflege
-    if(!icc_betrachter->DD_histogram->visible() &&
+    tag_browserText ();
+    if(icc_betrachter->DD_histogram->visible() &&
        !icc_betrachter->inspekt_html->visible() )
-      icc_betrachter->tag_browser->reopen ();
-    else if(icc_betrachter->DD_histogram->visible() &&
-            !icc_betrachter->inspekt_html->visible() )
       icc_betrachter->DD_histogram->flush();
 
     icc_betrachter->measurement( profile.profil()->hasMeasurement() );
@@ -190,6 +188,72 @@ ICCexamin::oeffnen ()
   DBG_PROG_ENDE
 }
 
+void
+ICCexamin::tag_browserText (void)
+{
+  DBG_PROG_START
+  //open and preparing the first selected item
+
+  TagBrowser *b = icc_betrachter->tag_browser;
+
+  std::stringstream s;
+  std::string text;
+  std::vector<std::string> tag_list = profile.profil()->printTags();
+
+  #define add_s(stream) s << stream; b->add (s.str().c_str()); s.str("");
+  #define add_          s << " ";
+
+  //neuzeichnen(b);
+
+  b->clear();
+  add_s ("@fDateiname:")
+  add_s ("@b    " << profile.profil()->filename() )
+  add_s ("")
+  if (tag_list.size() == 0) {
+    add_s ("keine Inhalte gefunden für << profile.profil()->filename() \"" << profile.profil()->filename() << "\"")
+    return;
+  }
+  add_s ("@B26@tNr. Bezeichner  Typ         GröBeschreibung")
+  add_s ("@t" << profile.profil()->printHeader() )
+  std::vector<std::string>::iterator it;
+  DBG_PROG_V( tag_list.size() )
+  for (it = tag_list.begin() ; it != tag_list.end(); ++it) {
+    DBG_PROG
+    s << "@t";
+    // Nummer
+    int Nr = atoi((*it).c_str()) + 1;
+    std::stringstream t; t << Nr;
+    for (int i = t.str().size(); i < 3; i++) {s << " ";} s << Nr; *it++; s << " ";
+    // Name/Bezeichnung
+    s << *it; //for (int i = (*it++).size(); i < 12; i++) {s << " ";}
+    // Typ
+    s << *it; //for (int i = (*it++).size(); i < 12; i++) {s << " ";}
+    // Größe  for (int i = (*it).size(); i < 5; i++) {s << " ";} s << *it++; s << " ";
+    // Beschreibung
+    add_s (*it)
+  }
+  DBG_PROG
+  if (b->value())
+    b->selectItem (b->value()); // Anzeigen
+  else
+    b->selectItem (1);
+
+  if (profile.profil()->hasTagName (b->selectedTagName)) {
+    int item = profile.profil()->getTagByName (b->selectedTagName) + 6;
+    b->selectItem (item);
+    b->value(item);
+  }
+
+  std::string::size_type pos=0;
+  std::string data = profile.profil()->filename(); DBG_NUM_S( data )
+  if((pos = data.find_last_of ("/", pos)) != std::string::npos) {
+    data.erase (0, pos);
+  }
+
+  s.clear(); s << "ICC Details: " << data;
+  status ((const char*) s.str().c_str() );
+  DBG_PROG_ENDE
+}
 
 bool
 ICCexamin::berichtSpeichern (void)
