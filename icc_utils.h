@@ -1,7 +1,29 @@
 /*
-   file_ptr.cpp
+ * ICC Examin ist eine ICC Profil Betrachter
+ * 
+ * Copyright (C) 2004  Kai-Uwe Behrmann 
+ *
+ * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ * 
+ * Der 3D Betrachter.
+ * 
+ */
 
-*/
+// Date:      August 2004
 
 #ifndef ICC_UTILS_H
 #define ICC_UTILS_H
@@ -40,8 +62,8 @@ extern int level_PROG;
 #endif
 #if 1
 #define DBG_PROG DBG
-#define DBG_PROG_START level_PROG++; for (int i = 0; i < level_PROG; i++) cout << "+"; cout << " Start: "; DBG
-#define DBG_PROG_ENDE for (int i = 0; i < level_PROG; i++) cout << "+"; cout << " Ende:  "; DBG level_PROG--;
+#define DBG_PROG_START level_PROG++; { for (int i = 0; i < level_PROG; i++) cout << "+"; cout << " Start: "; DBG }
+#define DBG_PROG_ENDE { for (int i = 0; i < level_PROG; i++) cout << "+"; cout << " Ende:  "; DBG level_PROG--; }
 #define DBG_PROG_S(txt) DBG_S(txt)
 #define DBG_PROG_V(txt) DBG_V(txt)
 #else
@@ -134,6 +156,7 @@ public:
 // ==================
 /*  Konstruktor wirft ausn_file_io bei Mißerfolg.
 */
+#if 0
 class FilePtr {
     FILE* f;
 public:
@@ -150,7 +173,7 @@ public:
                                           if (f) fclose (f); }
     operator FILE*()			{ return f; }
 };
-
+#endif
 
 
 // ==========================================================

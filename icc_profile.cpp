@@ -1608,19 +1608,18 @@ const char* cp_nchar (char* text, int n)
 { DBG_PROG_START
   static char string[1024];
 
-  for (int i = 0; i < 1024 ; i++)
-    string[i] = '\000';
+/*  for (int i = 0; i < 1024 ; i++)
+    string[i] = '\000';*/
 
   if (n < 1024)
     snprintf(&string[0], n, text);
-  else
-    return NULL;
+  string[1023] = '\000';
 
   #ifdef DEBUG
   DBG_NUM_V( n << " Buchstaben kopieren " <<  (int)text << " " << string)
   #endif
   DBG_PROG_ENDE
-  return &string[0];
+  return string;
 }
 
 

@@ -100,6 +100,38 @@ Mein herzlicher Dank gilt insbesondere Marti Maria und den vielen Schreibenden d
   </tr> \
 </table>\
 <p>\n\
+ICC Examin benutzt forgende Bibliotheken:<br>\n \
+<p> \
+  fltk (statisch eigebunden): Bill Spitzack und andere www.fltk.org<br>\n";
+#ifdef HAVE_FLU
+html << " \
+</p>\n \
+<p> \
+  flu (statisch eigebunden): Jason Bryan www.osc.edu/~jbryan/FLU/<br>\n";
+#endif
+html << " \
+</p>\n \
+<p> \
+  littleCMS: Marti Maria www.littlecms.com<br>\n \
+ <br> \
+ <br> \
+</p>\n \
+<p> \
+Für die Visualisation des Farbumfangs (extern):<br>\n \
+<p> \
+  argyll: Greame Gill web.access.net.au/argyll/argyllcms.html<br<br><br>\n \
+<br>\n \
+</p>\n \
+</p>\n \
+<p> \
+3D Visualisierung:<br>\n \
+<p> \
+  agv openGL Betrachter: Philip Winston<br>\n \
+</p>\n \
+</p>\n \
+\
+</p>\n \
+<p>\n\
     Lizensiert: unter der GPL \
 <br<br> \
 </p>\n \

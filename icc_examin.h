@@ -12,8 +12,10 @@
 #include <FL/Fl_Window.H>
 #include <FL/Fl_Menu_Bar.H>
 #include <FL/Fl_Box.H>
-#include <FL/Fl_File_Chooser.H> 
+#ifdef HAVE_FLU
 #include <FLU/Flu_File_Chooser.h> 
+#endif
+#include <FL/Fl_File_Chooser.H> 
 #include <FL/Fl_Hold_Browser.H> 
 #include <FL/Fl_File_Icon.H> 
 #include <FL/Fl_Shared_Image.H> 
@@ -24,10 +26,10 @@ class TagTexts;
 class MftChoice;
 class GL_Ansicht;
 #define _(text) text
-#define status(_texte) {std::stringstream s; s << _texte; stat->label(s.str().c_str());}
+#define status(_texte) {std::stringstream s; s << _texte; box_stat->label(s.str().c_str());}
 #include "icc_profile.h"
 #include "icc_utils.h"
-#include "icc_profilierer.h"
+
 #include "icc_ueber.h"
 extern ICCprofile profile;
 #include <FL/Fl_Double_Window.H>
@@ -54,14 +56,14 @@ extern Fl_Group *tag_3D;
 extern TagDrawings *tag_viewer;
 extern TagTexts *tag_text;
 #include <FL/Fl_Box.H>
-extern Fl_Box *stat;
+extern Fl_Box *box_stat;
 #include <FL/Fl_Progress.H>
 extern Fl_Progress *load_progress;
 extern Fl_Menu_Item menu_[];
 #define menueintrag_html_speichern (menu_+2)
 #define menueintrag_Voll (menu_+6)
-#define menueintrag_inspekt (menu_+9)
-#define menu_hilfe (menu_+10)
+#define menueintrag_inspekt (menu_+8)
+#define menu_hilfe (menu_+9)
 std::string open(int interaktiv);
 void quit(void);
 char* icc_read_info(char* filename);

@@ -11,21 +11,34 @@ libdir		= ${exec_prefix}/lib
 mandir		= ${prefix}/man
 srcdir		= .
 
-APPLE = 1
+#APPLE = 1
+FLU = 1
 
-CXXFLAGS=$(OPTS) $(INCL)
+ifdef FLU
+FLU_H = -DHAVE_FLU
+endif
+
+CXXFLAGS=$(OPTS) $(INCL) $(FLU_H)
 INCL=-I$(includedir) -I/usr/X11R6/include -I./
 
 VRML_LIBS=$(FLTK_GL_LIBS) -lGL -lopenvrml -lopenvrml-gl -lpng -ljpeg
+
 X11_LIBS=-L/usr/X11R6/lib -lXinerama -lXft
+
 FLTK_LIBS=`fltk-config --use-images --use-gl --use-glut --ldstaticflags`
+
+ifdef FLU
 FLU_LIBS=`flu-config --ldstaticflags`
+endif
+
 FLTK_GL_LIBS=-lfltk_gl
+
 ifdef APPLE
   GLUT = -framework GLUT -lobjc
 else
   GLUT = -lglut
 endif
+
 LDLIBS = -L$(libdir) -L./ $(FLTK_LIBS) \
 	$(X11_LIBS) -llcms $(GLUT) $(FLU_LIBS)
 
@@ -41,7 +54,6 @@ CPP_HEADERS = \
         icc_gl.h \
 	icc_helfer.h \
 	icc_profile.h \
-	icc_profilierer.h \
        	icc_ueber.h \
 	icc_utils.h \
 	icc_vrml.h \
@@ -57,8 +69,8 @@ CPPFILES = \
 	icc_helfer.cpp \
 	icc_measurement.cpp \
 	icc_profile.cpp \
-	icc_profilierer.cpp \
 	icc_ueber.cpp \
+	icc_utils.cpp \
 	icc_vrml.cpp \
         agviewer.cpp
 #	vFLGLWidget.cpp \
@@ -79,7 +91,7 @@ dir     = Entwickeln
 timedir = $(topdir)/$(dir)
 mtime   = `find $(timedir) -prune -printf %Ty%Tm%Td.%TT | sed s/://g`
 
-#.SILENT:
+.SILENT:
 
 all:	$(TARGET)
 
@@ -89,6 +101,9 @@ $(TARGET):	$(OBJECTS)
 	$(OBJECTS) \
 	$(LDLIBS)
 	$(APPLE)
+
+prof:
+	c++ icc_profilieren.cpp -o icc_profilieren icc_profile.o icc_profilierer.o icc_helfer.o icc_utils.o icc_measurement.o icc_formeln.o -llcms
 
 static:		$(OBJECTS)
 	echo Linking $@...

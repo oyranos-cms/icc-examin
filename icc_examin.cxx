@@ -13,17 +13,20 @@ static char *statlabel;
 #include "agviewer.h"
 #include "icc_gl.h"
 ICCprofile profile;
-/* */ int level_PROG = -1;
-#ifdef FLU_EXPORT
+#ifdef HAVE_FLU
 static Flu_File_Chooser *dateiwahl;
 
 static void dateiwahl_cb(const char *dateiname, int typ, void *arg) {
   DBG_PROG_START
 
-    if (dateiname && dateiwahl->preview()) {
+    if (dateiname) {
       filename_alt = dateiname;
 
       DBG_NUM_V( filename_alt )
+      filename_alt = dateiwahl->get_current_directory();
+      filename_alt.append( dateiname );
+      DBG_NUM_V( filename_alt )
+
       open(false);
     }
 
@@ -107,14 +110,6 @@ static void cb_menueintrag_Voll(Fl_Menu_*, void*) {
   };
 }
 
-static void cb_MatrixTestprofil(Fl_Menu_*, void*) {
-  Profilierer pr;
-//profile.removeTag(0); //Test
-pr.load (profile);
-ICCprofile matrix (pr.matrix());
-matrix.saveProfileToFile("/tmp/icc_examin_test.icc");
-}
-
 static void cb_menueintrag_inspekt(Fl_Menu_* o, void*) {
   Fl_Menu_* mw = (Fl_Menu_*)o;
   const Fl_Menu_Item* m = mw->mvalue();
@@ -146,7 +141,6 @@ Fl_Menu_Item menu_[] = {
  {0},
  {"Ansicht", 0,  0, 0, 192, 0, 0, 14, 56},
  {"Ganzer Bildschirm an/aus", 0x40076,  (Fl_Callback*)cb_menueintrag_Voll, 0, 0, 0, 0, 14, 56},
- {"MatrixTestprofil schreiben", 0,  (Fl_Callback*)cb_MatrixTestprofil, 0, 0, 0, 0, 14, 56},
  {0},
  {"Pr\374""fansicht", 0x40062,  (Fl_Callback*)cb_menueintrag_inspekt, 0, 3, 0, 0, 14, 56},
  {"Hilfe", 0,  0, 0, 64, 0, 0, 14, 56},
@@ -189,7 +183,7 @@ TagDrawings *tag_viewer=(TagDrawings *)0;
 
 TagTexts *tag_text=(TagTexts *)0;
 
-Fl_Box *stat=(Fl_Box *)0;
+Fl_Box *box_stat=(Fl_Box *)0;
 
 Fl_Progress *load_progress=(Fl_Progress *)0;
 
@@ -338,7 +332,7 @@ int main(int argc, char **argv) {
         Fl_Group::current()->resizable(o);
       }
       { Fl_Group* o = new Fl_Group(0, 495, 385, 25);
-        { Fl_Box* o = stat = new Fl_Box(0, 495, 385, 25, "No wrl file loaded.");
+        { Fl_Box* o = box_stat = new Fl_Box(0, 495, 385, 25, "No wrl file loaded.");
           o->box(FL_THIN_DOWN_BOX);
           o->color((Fl_Color)53);
           o->align(FL_ALIGN_LEFT|FL_ALIGN_INSIDE);
@@ -361,7 +355,7 @@ int main(int argc, char **argv) {
       if (argc>1) {
 
         sprintf (statlabel, "%s geladen", argv[1]);
-        stat->label(statlabel);
+        box_stat->label(statlabel);
         filename_alt = argv[1];
       } else {
         status(_("Konnte Datei nicht laden!"));
@@ -374,9 +368,36 @@ int main(int argc, char **argv) {
   Fl::scheme(NULL);
   Fl_File_Icon::load_system_icons();
 
-  #ifdef FLU_EXPORT
-    dateiwahl = new Flu_File_Chooser(filename_alt.c_str(), _("ICC Farbprofile (*.[I,i][C,c][M,m,C,c])"), Flu_File_Chooser::SINGLE, _("Welches ICC Profil?"));
-    dateiwahl->add_context_handler(Flu_File_Chooser::ENTRY_FILE, "ic*", "Profile Behandler", dateiwahl_cb, NULL);
+  #ifdef HAVE_FLU
+    dateiwahl = new Flu_File_Chooser(filename_alt.c_str(), _("ICC Farbprofile (*.ic*)"), Flu_File_Chooser::SINGLE, _("Welches ICC Profil?"));
+    dateiwahl->add_context_handler(Flu_File_Chooser::ENTRY_FILE, "icc", _("Profil öffnen"), dateiwahl_cb, NULL);
+    dateiwahl->add_context_handler(Flu_File_Chooser::ENTRY_FILE, "icm", _("Profil öffnen"), dateiwahl_cb, NULL);
+    dateiwahl->favoritesTxt = _("Vorgemerkte Ordner");
+    dateiwahl->myComputerTxt = _("Mein Rechner");
+    dateiwahl->myDocumentsTxt = _("Dokumente");
+    dateiwahl->filenameTxt = _("Dateiname");
+    dateiwahl->okTxt = _("Laden");
+    dateiwahl->cancelTxt = _("Abbrechen");
+    dateiwahl->locationTxt = _("Verzeichnis");
+    dateiwahl->showHiddenTxt = _("zeige versteckte Dateien");
+    dateiwahl->allFilesTxt = _("Alle Dateien");
+    dateiwahl->defaultFolderNameTxt = _("Neues Verzeichnis");
+    dateiwahl->backTTxt = _("vorheriges Verzeichnis");
+    dateiwahl->forwardTTxt = _("nächstes Verzeichnis");
+    dateiwahl->upTTxt = _("nächsthöheres Verzeichnis");
+    dateiwahl->reloadTTxt = _("Auffrischen");
+    dateiwahl->trashTTxt = _("Löschen");
+    dateiwahl->newDirTTxt = _("Verzeichnis erstellen");
+    dateiwahl->addFavoriteTTxt = _("Vormerken");
+    dateiwahl->previewTTxt = _("Vorschau");
+    dateiwahl->listTTxt = _("Standard Anzeige");
+    dateiwahl->wideListTTxt = _("weite Anzeige");
+    dateiwahl->detailTTxt = _("detailierte Informationen");
+/*    dateiwahl-> = _("");
+    dateiwahl-> = _("");
+    dateiwahl-> = _("");
+    dateiwahl-> = _("");
+    dateiwahl-> = _("");*/
   #else
     dateiwahl = new Fl_File_Chooser(filename_alt.c_str(), _("ICC Farbprofile (*.[I,i][C,c][M,m,C,c])"), Fl_File_Chooser::SINGLE, _("Welches ICC Profil?"));
     dateiwahl->callback(dateiwahl_cb);
@@ -395,21 +416,24 @@ std::string open(int interaktiv) {
   #include "icc_vrml.h"
 
   std::string filename = filename_alt;
-  //Fl_File_Icon	*icon;	// New file icon
+  Fl_File_Icon	*icon;	// New file icon
   DBG_PROG
   load_progress->show ();    load_progress->value (0.0);
 
   if (interaktiv) {
     dateiwahl->show(); //filename=fl_file_chooser("Wähle ICC Profil?", "ICC Farbprofile (*.[I,i][C,c][M,m,C,c])", filename_alt.c_str());
+
+    
+
     DBG_PROG_S( filename_alt << "|" << filename)
 
-    //while (dateiwahl->visible())
-      //Fl::wait();
+    while (dateiwahl->visible())
+      Fl::wait();
 
     DBG_NUM_V( dateiwahl->count() )
-    if (dateiwahl->count() && dateiwahl->value(0)) {
-      DBG_NUM_V( dateiwahl->value(0) )
-      filename = dateiwahl->value(0);
+    if (dateiwahl->count() && dateiwahl->value()) {
+      DBG_NUM_V( dateiwahl->value() )
+      filename = dateiwahl->value();
     }
   }
 
@@ -437,13 +461,13 @@ std::string open(int interaktiv) {
     //browser->load_url(url, param);
     sprintf (statlabel, "%s geladen", filename.c_str());
     cout << statlabel << endl; DBG_PROG
-    stat->label(statlabel);
+    box_stat->label(statlabel);
   } else {
     status(_("Datei nicht geladen!"));
   } DBG_PROG
 
-  stat->hide();
-  stat->show();
+  box_stat->hide();
+  box_stat->show();
   load_progress->value (1.0);
   load_progress->value (0.0);
   load_progress->hide();
