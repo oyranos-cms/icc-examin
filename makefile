@@ -12,7 +12,7 @@ mandir		= ${prefix}/man
 srcdir		= .
 
 DEBUG = -DDEBUG
-#APPLE = 1
+APPLE = 1
 FLTK = 1
 ifdef FLTK
 FLU = 1
