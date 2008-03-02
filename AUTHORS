@@ -3,13 +3,16 @@ ICC Examin: Kai-Uwe Behrmann
 
 ----------------------------------------------------------------------------
 
-agv openGL Betrachter: Philip Winston
 
 ICC Examin benutzt forgende Bibliotheken:
   fltk (statisch eigebunden): Bill Spitzack und andere <www.fltk.org>
+  flu (statisch eigebunden): Jason Bryan <www.osc.edu/~jbryan/FLU/>
   lcms: Marti Maria <www.littlecms.com>
 
 
 Für die Visualisation des Farbumfangs (extern):
-  argyll: Greame Gill <http://web.access.net.au/argyll/argyllcms.html>
+  argyll: Greame Gill <web.access.net.au/argyll/argyllcms.html>
+
+3D Visualisierung:
+  agv openGL Betrachter: Philip Winston
 

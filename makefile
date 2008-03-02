@@ -19,7 +19,7 @@ INCL=-I$(includedir) -I/usr/X11R6/include -I./
 VRML_LIBS=$(FLTK_GL_LIBS) -lGL -lopenvrml -lopenvrml-gl -lpng -ljpeg
 X11_LIBS=-L/usr/X11R6/lib -lXinerama -lXft
 FLTK_LIBS=`fltk-config --use-images --use-gl --use-glut --ldstaticflags`
-FLU_LIBS=`flua-config --ldstaticflags`
+FLU_LIBS=`flu-config --ldstaticflags`
 FLTK_GL_LIBS=-lfltk_gl
 ifdef APPLE
   GLUT = -framework GLUT -lobjc

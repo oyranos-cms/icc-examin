@@ -17,21 +17,17 @@ ICCprofile profile;
 #ifdef FLU_EXPORT
 static Flu_File_Chooser *dateiwahl;
 
-static void dateiwahl_cb(Fl_Widget *f,void *data) {
+static void dateiwahl_cb(const char *dateiname, int typ, void *arg) {
   DBG_PROG_START
 
-  const char *filename;
+    if (dateiname) {
+      filename_alt = dateiname;
 
-    Flu_File_Chooser* fl = (Flu_File_Chooser*)f;
+      DBG_NUM_V( filename_alt )
+      filename_alt = dateiwahl->get_current_directory();
+      filename_alt.append( dateiname );
+      DBG_NUM_V( filename_alt )
 
-    DBG_NUM_V( data )
-    filename = fl->value();
-  
-
-    if (fl->count() && fl->value(0) && dateiwahl->preview()) {
-      filename_alt = fl->value(0);
-
-      DBG_NUM_V( filename )
       open(false);
     }
 
@@ -383,10 +379,37 @@ int main(int argc, char **argv) {
   Fl_File_Icon::load_system_icons();
 
   #ifdef FLU_EXPORT
-    dateiwahl = new Flu_File_Chooser(filename_alt.c_str(), "ICC Farbprofile (*.[I,i][C,c][M,m,C,c])", Flu_File_Chooser::SINGLE, "Wähle ICC Profil?");
-    dateiwahl->callback((Fl_Callback*)dateiwahl_cb);
+    dateiwahl = new Flu_File_Chooser(filename_alt.c_str(), _("ICC Farbprofile (*.ic*)"), Flu_File_Chooser::SINGLE, _("Welches ICC Profil?"));
+    dateiwahl->add_context_handler(Flu_File_Chooser::ENTRY_FILE, "icc", _("Profil öffnen"), dateiwahl_cb, NULL);
+    dateiwahl->add_context_handler(Flu_File_Chooser::ENTRY_FILE, "icm", _("Profil öffnen"), dateiwahl_cb, NULL);
+/*    dateiwahl->favoritesTxt = _("Vorgemerkte Ordner");
+    dateiwahl->myComputerTxt = _("Mein Rechner");
+    dateiwahl->myDocumentsTxt = _("Dokumente");
+    dateiwahl->filenameTxt = _("Dateiname");
+    dateiwahl->okTxt = _("Laden");
+    dateiwahl->cancelTxt = _("Abbrechen");
+    dateiwahl->locationTxt = _("Verzeichnis");
+    dateiwahl->showHiddenTxt = _("zeige versteckte Dateien");
+    dateiwahl->allFilesTxt = _("Alle Dateien");
+    dateiwahl->defaultFolderNameTxt = _("Neues Verzeichnis");
+    dateiwahl->backTTxt = _("vorheriges Verzeichnis");
+    dateiwahl->forwardTTxt = _("nächstes Verzeichnis");
+    dateiwahl->upTTxt = _("nächsthöheres Verzeichnis");
+    dateiwahl->reloadTTxt = _("Auffrischen");
+    dateiwahl->trashTTxt = _("Löschen");
+    dateiwahl->newDirTTxt = _("Verzeichnis erstellen");
+    dateiwahl->addFavoriteTTxt = _("Vormerken");
+    dateiwahl->previewTTxt = _("Vorschau");
+    dateiwahl->listTTxt = _("Standard Anzeige");
+    dateiwahl->wideListTTxt = _("weite Anzeige");
+    dateiwahl->detailTTxt = _("detailierte Informationen");*/
+/*    dateiwahl-> = _("");
+    dateiwahl-> = _("");
+    dateiwahl-> = _("");
+    dateiwahl-> = _("");
+    dateiwahl-> = _("");*/
   #else
-    dateiwahl = new Fl_File_Chooser(filename_alt.c_str(), "ICC Farbprofile (*.[I,i][C,c][M,m,C,c])", Fl_File_Chooser::SINGLE, "Wähle ICC Profil?");
+    dateiwahl = new Fl_File_Chooser(filename_alt.c_str(), _("ICC Farbprofile (*.[I,i][C,c][M,m,C,c])"), Fl_File_Chooser::SINGLE, _("Welches ICC Profil?"));
     dateiwahl->callback(dateiwahl_cb);
     dateiwahl->preview_label = _("Vorschau");
   #endif
@@ -403,21 +426,24 @@ std::string open(int interaktiv) {
   #include "icc_vrml.h"
 
   std::string filename = filename_alt;
-  //Fl_File_Icon	*icon;	// New file icon
+  Fl_File_Icon	*icon;	// New file icon
   DBG_PROG
   load_progress->show ();    load_progress->value (0.0);
 
   if (interaktiv) {
     dateiwahl->show(); //filename=fl_file_chooser("Wähle ICC Profil?", "ICC Farbprofile (*.[I,i][C,c][M,m,C,c])", filename_alt.c_str());
+
+    
+
     DBG_PROG_S( filename_alt << "|" << filename)
 
-    //while (dateiwahl->visible())
-      //Fl::wait();
+    while (dateiwahl->visible())
+      Fl::wait();
 
     DBG_NUM_V( dateiwahl->count() )
-    if (dateiwahl->count() && dateiwahl->value(0)) {
-      DBG_NUM_V( dateiwahl->value(0) )
-      filename = dateiwahl->value(0);
+    if (dateiwahl->count() && dateiwahl->value()) {
+      DBG_NUM_V( dateiwahl->value() )
+      filename = dateiwahl->value();
     }
   }
 
