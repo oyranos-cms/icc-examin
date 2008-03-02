@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2005  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2006  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -404,7 +404,7 @@ ICCexamin::zeigMftTabellen ()
       lw = icc_betrachter->mft_gl->w(),
       lh = icc_betrachter->mft_gl->h();
 
-#ifdef __APPLE__
+#if defined(__APPLE__) && 0
   int X,Y,bt,bx,by;
   Fl_X::fake_X_wm(icc_betrachter->details, &X, &Y, &bt, &bx, &by);
 #endif
