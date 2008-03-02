@@ -32,6 +32,7 @@
 #include "icc_fenster.h"
 #include "icc_draw.h"
 #include "icc_gl.h"
+#include "agviewer.h"
 #include "icc_helfer_ui.h"
 
 

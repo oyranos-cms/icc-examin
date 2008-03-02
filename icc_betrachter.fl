@@ -2,9 +2,6 @@
 version 1.0106 
 header_name {.h} 
 code_name {.cxx}
-decl {\#define DEBUG} {public
-} 
-
 decl {\#include <cassert>} {public
 } 
 
@@ -60,8 +57,7 @@ decl {\#include "icc_profile.h"
 \#include "icc_helfer.h"} {public
 } 
 
-decl {\#include "agviewer.h"
-\#include "icc_gl.h"} {} 
+decl {\#include "icc_gl.h"} {} 
 
 Function {icc_read_info(char* filename)} {return_type {char*}
 } {

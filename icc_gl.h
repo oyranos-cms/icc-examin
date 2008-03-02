@@ -32,8 +32,10 @@
 #define ICC_GL_H
 #include <vector>
 
-#include "agviewer.h"
+//#include "agviewer.h"
 #include "icc_vrml_parser.h"
+
+#include <FL/Fl_Group.H>
 
 class GL_Ansicht : public Fl_Group {
   // Datenhaltung
@@ -147,7 +149,7 @@ public:
   void verstecken();        //  ~           verstecken      ~
   bool sichtbar() {return gl_fenster_zeigen_; } // angezeigt / versteckt
   // Bewegungsfunktionen
-  void stop() {if (beruehrt_) { agviewers[agv_].agvSwitchMoveMode (Agviewer::AGV_STOP); } }
+  void stop(); 
 
   // Daten Informationen
   char* kanalName() { DBG_PROG_START DBG_PROG_V( nach_farb_namen_.size() <<"|"<< kanal )

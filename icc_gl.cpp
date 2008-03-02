@@ -271,6 +271,15 @@ GL_Ansicht::verstecken()
 }
 
 void
+GL_Ansicht::stop()
+{ DBG_PROG_START
+  if (beruehrt_) {
+    agviewers[agv_].agvSwitchMoveMode (Agviewer::AGV_STOP);
+  }
+  DBG_PROG_ENDE
+}
+
+void
 GL_Ansicht::auffrischen()
 { DBG_PROG_START
   menueErneuern_();
@@ -324,7 +333,7 @@ GL_Ansicht::myGLinit_()
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
 
-  //glEnable(GL_NORMALIZE);
+  glEnable(GL_NORMALIZE);
 
   glDepthFunc(GL_LESS);
   glEnable(GL_DEPTH_TEST);
@@ -367,7 +376,7 @@ GL_Ansicht::myGLinit_()
 
 void
 zeichneKoordinaten()
-{ DBG_PROG_START
+{ DBG_ICCGL_START
   char text[256];
   GLfloat farbe[] =   { 1.0, 1.0, 1.0, 1.0 };
 
@@ -422,7 +431,7 @@ zeichneKoordinaten()
         glTranslatef(.1,0,0);
       glRotatef (270,0.0,.5,.0);
     glTranslatef(0,0,-.1);
-  DBG_PROG_ENDE
+  DBG_ICCGL_ENDE
 }
 
 void
@@ -764,17 +773,86 @@ GL_Ansicht::netzeAuffrischen()
   DBG_PROG_START
     if( dreiecks_netze.size() )
     {
-      DBG_NUM_V( dreiecks_netze.size() )
-      DBG_NUM_V( dreiecks_netze[0].name )
-      DBG_NUM_V( dreiecks_netze[0].punkte.size() )
-      DBG_NUM_V( dreiecks_netze[0].indexe.size() )
-      DBG_NUM_V( dreiecks_netze[0].transparenz )
+      DBG_ICCGL_V( dreiecks_netze.size() )
+      DBG_ICCGL_V( dreiecks_netze[0].name )
+      DBG_ICCGL_V( dreiecks_netze[0].punkte.size() )
+      DBG_ICCGL_V( dreiecks_netze[0].indexe.size() )
+      DBG_ICCGL_V( dreiecks_netze[0].transparenz )
     }
 
   unsigned int i,j,k;
 
+      // Netze sortieren
+      glPushMatrix();
+         // Die Matrix auf die Kamera ausrichten
+       float EyeAz = agviewers[agv_].eyeAzimuth(),
+             EyeEl = agviewers[agv_].eyeElevation(),
+             EyeDist = agviewers[agv_].eyeDist(),
+             X = EyeDist*sin(TORAD(EyeAz))*cos(TORAD(EyeEl)),   // CIE*b
+             Y = EyeDist*sin(TORAD(EyeEl)),                     // CIE*L
+             Z = EyeDist*cos(TORAD(EyeAz))*cos(TORAD(EyeEl));   // CIE*a
+
+       #ifdef DEBUG_ICCGL
+       DBG_ICCGL_S( "dist:"<<EyeDist<<" elevation:"<<EyeEl<<" azimuth:"<<EyeAz )
+       glMatrixMode(GL_MODELVIEW);
+       glLoadIdentity();
+       glTranslatef(-X/1.2,Y/1.2,Z/1.2);
+       DBG_ICCGL_S( "X:"<<X<<" Y:"<<Y<<" Z:"<<Z )
+       zeichneKoordinaten();
+       #endif
+      
+       ICCnetz netz;
+       int punkte_n = 0;
+       double abstand;
+       for( j = 0; j < dreiecks_netze.size(); j++ )
+       {
+           // ich hoffe das dauert nicht zu lange
+         netz.punkte. insert( netz.punkte.begin()+punkte_n ,
+                              dreiecks_netze[j].punkte.begin(),
+                              dreiecks_netze[j].punkte.end()    );
+           // den Punkten im neuen Netz die Transparenz zuweisen
+         for( k = punkte_n; k < netz.punkte.size(); ++k) {
+           netz.punkte[k].farbe[3] = dreiecks_netze[j].transparenz;
+           netz.punkte[k].koord[1] *= a_darstellungs_breite;
+           netz.punkte[k].koord[2] *= b_darstellungs_breite;
+         }
+
+         std::multimap<double,DreiecksIndexe>::const_iterator it;
+         for( it = dreiecks_netze[j].indexe.begin();
+                it != dreiecks_netze[j].indexe.end(); ++it )
+         {
+             // die Indexe werden gesondert eingefügt, um sie neu zu zählen
+     /*A*/ std::pair<double,DreiecksIndexe>
+                          index_p( *it );
+     /*B*/ for( k = 0; k < 3; ++k)
+             index_p.second.i[k] += punkte_n;
+     /*C*/ abstand =
+              ( HYP3(netz.punkte[index_p.second.i[0]].koord[0]+Y,
+                     netz.punkte[index_p.second.i[0]].koord[1]+Z,
+                     netz.punkte[index_p.second.i[0]].koord[2]-X)
+              + HYP3(netz.punkte[index_p.second.i[1]].koord[0]+Y,
+                     netz.punkte[index_p.second.i[1]].koord[1]+Z,
+                     netz.punkte[index_p.second.i[1]].koord[2]-X)
+              + HYP3(netz.punkte[index_p.second.i[2]].koord[0]+Y,
+                     netz.punkte[index_p.second.i[2]].koord[1]+Z,
+                     netz.punkte[index_p.second.i[2]].koord[2]-X)
+              ) / 3.0;
+           index_p.first = abstand;
+             // der Behälter std::map übernimmt die Sortierung
+     /*D*/ netz.indexe.insert(index_p);
+             DBG_ICCGL_V( it->first  )
+         }
+           // neue Basis für Indexnummern
+         punkte_n += dreiecks_netze[j].punkte.size();
+       }
+      glPopMatrix();
+
+
+  if (gl_voll[RASTER])
+    glDeleteLists (id()*DL_MAX + RASTER, 1);
+
       //glNewList(id()*DL_MAX + RASTER, GL_COMPILE); DBG_PROG_V( id()*DL_MAX + RASTER )
-      gl_voll[RASTER] = true;
+      //gl_voll[RASTER] = true;
       #ifndef Beleuchtung
       glDisable(GL_LIGHTING);
       #endif
@@ -797,57 +875,38 @@ GL_Ansicht::netzeAuffrischen()
       glPolygonMode(GL_BACK, GL_LINE);   // Rückseite als Linien
       #endif
       glFrontFace(GL_CCW);
-      glColor3f(0.9, 0.9, 0.9);
       glPushMatrix();
         // zurecht setzen
       glTranslatef( -b_darstellungs_breite/2, -.5, -a_darstellungs_breite/2 );
 
       
-      // Netze sortieren
-      glPushMatrix();
-       glMatrixMode(GL_MODELVIEW);
-         // Die Matrix auf die Kamera ausrichten
-       glTranslatef(0, 0, -agviewers[agv_].eyeDist());
-       glRotatef(agviewers[agv_].eyeElevation(), 1, 0, 0);
-       glRotatef(agviewers[agv_].eyeAzimuth(), 0, 1, 0);
-      
-       ICCnetz netz;
-       int punkte_n = 0;
-       double abstand;
-       for( j = 0; j < dreiecks_netze.size(); j++ )
-       {
-           // ich hoffe das dauert nicht zu lange
-         netz.punkte. insert( netz.punkte.begin()+punkte_n ,
-                              dreiecks_netze[j].punkte.begin(),
-                              dreiecks_netze[j].punkte.end()    );
-           // den Punkten im neuen Netz die Transparenz zuweisen
-         for( k = punkte_n; k < netz.punkte.size(); ++k)
-           netz.punkte[k].farbe[3] = dreiecks_netze[j].transparenz;
+      glColor3f(0.9, 0.9, 0.9);
+      DBG_ICCGL_V( netz.indexe.size() <<" "<< netz.punkte.size() )
 
-         std::multimap<double,DreiecksIndexe>::const_iterator it;
-         for( it = dreiecks_netze[j].indexe.begin();
-                it != dreiecks_netze[j].indexe.end(); ++it )
-         {
-             // die Indexe werden gesondert eingefügt, um sie neu zu zählen
-           /*A*/ std::pair<double,DreiecksIndexe>
-                                index_p( *it );
-             // nur einen Punkt pro Dreieck berechnen (3 wäre besser)
-           /*B*/ abstand =
-                 sqrt(  dreiecks_netze[j].punkte[index_p.second.i[0]].koord[0]
-                      * dreiecks_netze[j].punkte[index_p.second.i[0]].koord[1]
-                      * dreiecks_netze[j].punkte[index_p.second.i[0]].koord[2]);
-                 index_p.first = abstand;
-           /*C*/ for( k = 0; k < 3; ++k)
-                   index_p.second.i[k] += punkte_n;
-             // der Behälter std::map übernimmt die Sortierung
-           /*D*/ netz.indexe.insert(index_p);
-         }
-           // neue Basis für Indexnummern
-         punkte_n += dreiecks_netze[j].punkte.size();
-       }
-      glPopMatrix();
-      DBG_PROG_V( netz.indexe.size() <<" "<< netz.punkte.size() )
-#if 0
+#if 1
+        int n=0;
+        std::multimap<double,DreiecksIndexe>::const_iterator it;
+        for( it = netz.indexe.begin(); it != netz.indexe.end(); ++it )
+        {
+          DBG_ICCGL_V( ++n<<" "<<it->first  )
+          glBegin(GL_TRIANGLES);
+          int index;
+          for( int l = 2; l >= 0; --l)
+          {
+            index = it->second.i[l];
+            glColor4d( netz.punkte[index].farbe[0],
+                       netz.punkte[index].farbe[1],
+                       netz.punkte[index].farbe[2],
+                       netz.punkte[index].farbe[3]);
+
+            // Punktkoordinaten setzen
+            glVertex3d( netz.punkte[index].koord[2],
+                        netz.punkte[index].koord[0],
+                        netz.punkte[index].koord[1] );
+          }
+          glEnd();
+        }
+#else
       for( j = 0; j < dreiecks_netze.size(); j++ )
       {
         std::multimap<double,DreiecksIndexe>::const_iterator it;
@@ -871,29 +930,6 @@ GL_Ansicht::netzeAuffrischen()
           glEnd();
         }
       }
-#else
-        int n=0;
-        std::multimap<double,DreiecksIndexe>::const_iterator it;
-        for( it = netz.indexe.begin(); it != netz.indexe.end(); ++it )
-        {
-          DBG_ICCGL_V( ++n <<" "<< netz.indexe.size() )
-          glBegin(GL_TRIANGLES);
-          int index;
-          for( int l = 2; l >= 0; --l)
-          {
-            index = it->second.i[l];
-            glColor4d( netz.punkte[index].farbe[0],
-                       netz.punkte[index].farbe[1],
-                       netz.punkte[index].farbe[2],
-                       netz.punkte[index].farbe[3]);
-
-            // Punktkoordinaten setzen
-            glVertex3d( netz.punkte[index].koord[2]*b_darstellungs_breite,
-                        netz.punkte[index].koord[0],
-                        netz.punkte[index].koord[1]*a_darstellungs_breite );
-          }
-          glEnd();
-        }
 #endif
       glPopMatrix();
       #ifndef Beleuchtung

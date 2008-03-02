@@ -253,6 +253,9 @@ Agviewer
          init_move,
          minmove;
 public:
+  float eyeX () const { return Ex; } // ICC Examin
+  float eyeY () const { return Ey; } // ICC Examin
+  float eyeZ () const { return Ez; } // ICC Examin
   float eyeDist () const { return EyeDist; } // ICC Examin
   float eyeAzimuth () const { return EyeAz; } // ICC Examin
   float eyeElevation () const { return EyeEl; } // ICC Examin

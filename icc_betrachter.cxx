@@ -5,7 +5,6 @@
 #include "icc_kette.h"
 #include "icc_oyranos.h"
 #include "fl_oyranos.h"
-#include "agviewer.h"
 #include "icc_gl.h"
 
 char* icc_read_info(char* filename) {
