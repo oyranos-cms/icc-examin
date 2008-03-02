@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2006-02-08 13:52+0100\n"
+"POT-Creation-Date: 2006-02-22 11:28+0100\n"
 "PO-Revision-Date: 2005-08-13 17:35+0200\n"
 "Last-Translator: Kai-Uwe Behrmann\n"
 "Language-Team:  <eo@li.org>\n"
@@ -21,7 +21,7 @@ msgstr ""
 msgid "GL Fenster nicht frei"
 msgstr ""
 
-#: agviewer.cpp:312 icc_gl.cpp:2383 icc_gl.cpp:2402 icc_gl.cpp:2521
+#: agviewer.cpp:312 icc_gl.cpp:2389 icc_gl.cpp:2408 icc_gl.cpp:2527
 msgid "left-/middle-/right mouse button -> rotate/cut/menu"
 msgstr ""
 
@@ -29,8 +29,8 @@ msgstr ""
 msgid "Pause"
 msgstr ""
 
-#: agviewer.cpp:349 agviewer.cpp:357 icc_gl.cpp:2487 icc_gl.cpp:2498
-#: icc_gl.cpp:2503 icc_gl.cpp:2508
+#: agviewer.cpp:349 agviewer.cpp:357 icc_gl.cpp:2493 icc_gl.cpp:2504
+#: icc_gl.cpp:2509 icc_gl.cpp:2514
 msgid "left mouse button -> go back"
 msgstr ""
 
@@ -153,7 +153,7 @@ msgstr "verda"
 msgid "Blue"
 msgstr "blua"
 
-#: icc_draw.cpp:662 icc_gl.cpp:1819 icc_helfer.cpp:342 icc_waehler.h:128
+#: icc_draw.cpp:662 icc_gl.cpp:1832 icc_helfer.cpp:342 icc_waehler.h:128
 msgid "Gray"
 msgstr ""
 
@@ -169,7 +169,7 @@ msgstr "malva"
 msgid "Yellow"
 msgstr "flavo"
 
-#: icc_draw.cpp:675 icc_gl.cpp:1821 icc_helfer.cpp:402 icc_helfer.cpp:412
+#: icc_draw.cpp:675 icc_gl.cpp:1834 icc_helfer.cpp:402 icc_helfer.cpp:412
 msgid "Black"
 msgstr "nigro"
 
@@ -207,13 +207,13 @@ msgid "CIE *L"
 msgstr ""
 
 #: icc_draw.cpp:693 icc_examin_farbraum.cpp:203 icc_examin_io.cpp:180
-#: icc_gl.cpp:844 icc_gl.cpp:919 icc_gl.cpp:945 icc_gl.cpp:953
+#: icc_gl.cpp:857 icc_gl.cpp:932 icc_gl.cpp:958 icc_gl.cpp:966
 #: icc_helfer.cpp:388
 msgid "CIE *a"
 msgstr ""
 
 #: icc_draw.cpp:695 icc_examin_farbraum.cpp:204 icc_examin_io.cpp:181
-#: icc_gl.cpp:857 icc_gl.cpp:961 icc_gl.cpp:981 icc_gl.cpp:988
+#: icc_gl.cpp:870 icc_gl.cpp:974 icc_gl.cpp:994 icc_gl.cpp:1001
 #: icc_helfer.cpp:389
 msgid "CIE *b"
 msgstr ""
@@ -282,7 +282,7 @@ msgstr ""
 msgid "zeige     "
 msgstr ""
 
-#: icc_examin_farbraum.cpp:179 icc_gl.cpp:2043
+#: icc_examin_farbraum.cpp:179 icc_gl.cpp:2050
 msgid "RGB Ergebnis nicht verfuegbar"
 msgstr ""
 
@@ -302,7 +302,7 @@ msgstr ""
 msgid "Stop loading "
 msgstr ""
 
-#: icc_examin_io.cpp:414 fl_i18n.cxx:356 icc_betrachter.cxx:474
+#: icc_examin_io.cpp:414 fl_i18n_fl.cxx:90 icc_betrachter.cxx:474
 msgid "Filename"
 msgstr ""
 
@@ -367,132 +367,132 @@ msgstr ""
 msgid "Fontgroesse nicht setzbar"
 msgstr ""
 
-#: icc_gl.cpp:734
+#: icc_gl.cpp:747
 #, c-format
 msgid "0,0,0"
 msgstr ""
 
-#: icc_gl.cpp:1011
+#: icc_gl.cpp:1024
 msgid "Kanalauswahl geaendert: "
 msgstr ""
 
-#: icc_gl.cpp:1555 icc_gl.cpp:1692
+#: icc_gl.cpp:1568 icc_gl.cpp:1705
 msgid "Lab_speicher Speicher nicht verfuegbar"
 msgstr ""
 
-#: icc_gl.cpp:1576 icc_gl.cpp:1577 icc_gl.cpp:1710 icc_gl.cpp:1711
+#: icc_gl.cpp:1589 icc_gl.cpp:1590 icc_gl.cpp:1723 icc_gl.cpp:1724
 msgid "RGB_speicher Ergebnis nicht verfuegbar"
 msgstr ""
 
-#: icc_gl.cpp:1683
+#: icc_gl.cpp:1696
 msgid "XYZ_speicher Speicher nicht verfuegbar"
 msgstr ""
 
-#: icc_gl.cpp:1793 icc_gl.cpp:1803 icc_gl.cpp:1805 icc_gl.cpp:1807
+#: icc_gl.cpp:1806 icc_gl.cpp:1816 icc_gl.cpp:1818 icc_gl.cpp:1820
 msgid "Slice"
 msgstr ""
 
-#: icc_gl.cpp:1794
+#: icc_gl.cpp:1807
 msgid "Rotate around slice"
 msgstr ""
 
-#: icc_gl.cpp:1809
+#: icc_gl.cpp:1822
 msgid "Rotate around"
 msgstr ""
 
-#: icc_gl.cpp:1809
+#: icc_gl.cpp:1822
 msgid "axis"
 msgstr ""
 
-#: icc_gl.cpp:1814
+#: icc_gl.cpp:1827
 msgid "Slice plane"
 msgstr ""
 
-#: icc_gl.cpp:1817
+#: icc_gl.cpp:1830
 msgid "White"
 msgstr "blanka"
 
-#: icc_gl.cpp:1818
+#: icc_gl.cpp:1831
 msgid "Light gray"
 msgstr ""
 
-#: icc_gl.cpp:1820
+#: icc_gl.cpp:1833
 msgid "Dark gray"
 msgstr ""
 
-#: icc_gl.cpp:1824
+#: icc_gl.cpp:1837
 msgid "Background colour"
 msgstr ""
 
-#: icc_gl.cpp:1829
+#: icc_gl.cpp:1842
 msgid "gray"
 msgstr ""
 
-#: icc_gl.cpp:1830
+#: icc_gl.cpp:1843
 msgid "coloured"
 msgstr ""
 
-#: icc_gl.cpp:1831
+#: icc_gl.cpp:1844
 msgid "high contrast"
 msgstr ""
 
-#: icc_gl.cpp:1832
+#: icc_gl.cpp:1845
 msgid "shells"
 msgstr ""
 
-#: icc_gl.cpp:1837
+#: icc_gl.cpp:1850
 msgid "Sphere 1dE"
 msgstr ""
 
-#: icc_gl.cpp:1838
+#: icc_gl.cpp:1851
 msgid "Sphere 2dE"
 msgstr ""
 
-#: icc_gl.cpp:1839
+#: icc_gl.cpp:1852
 msgid "Sphere 4dE"
 msgstr ""
 
-#: icc_gl.cpp:1842
+#: icc_gl.cpp:1855
 msgid "Star"
 msgstr ""
 
-#: icc_gl.cpp:1845
+#: icc_gl.cpp:1858
 msgid "Point"
 msgstr ""
 
-#: icc_gl.cpp:1848
+#: icc_gl.cpp:1861
 msgid "without markers"
 msgstr ""
 
-#: icc_gl.cpp:1849
+#: icc_gl.cpp:1862
 msgid "Spektral line"
 msgstr "spektra linio"
 
-#: icc_gl.cpp:1852 icc_betrachter.cxx:726
+#: icc_gl.cpp:1865 icc_betrachter.cxx:726
 msgid "Texts"
 msgstr ""
 
-#: icc_gl.cpp:1854
+#: icc_gl.cpp:1867
 msgid "Texts/Arrows on/off"
 msgstr ""
 
-#: icc_gl.cpp:1856
+#: icc_gl.cpp:1869
 msgid "Illustration"
 msgstr ""
 
-#: icc_gl.cpp:2122
+#: icc_gl.cpp:2129
 msgid "Pos"
 msgstr ""
 
-#: icc_gl.cpp:2217 icc_profile_tags.cpp:291
+#: icc_gl.cpp:2223 icc_profile_tags.cpp:291
 msgid "Channel"
 msgstr "kanalo"
 
-#: icc_gl.cpp:2546
+#: icc_gl.cpp:2552
 msgid "Konnte keine Eltern finden"
 msgstr ""
 
-#: icc_gl.cpp:2556
+#: icc_gl.cpp:2562
 msgid "Konnte keine passende Programmstruktur finden"
 msgstr ""
 
@@ -1784,51 +1784,51 @@ msgstr ""
 msgid "set codeset for \"icc_examin\" to "
 msgstr ""
 
-#: fl_i18n.cxx:351
+#: fl_i18n_fl.cxx:85
 msgid "Add to Favorites"
 msgstr ""
 
-#: fl_i18n.cxx:352 icc_betrachter.cxx:481
+#: fl_i18n_fl.cxx:86 icc_betrachter.cxx:481
 msgid "All Files (*)"
 msgstr ""
 
-#: fl_i18n.cxx:353
+#: fl_i18n_fl.cxx:87
 msgid "Custom Filter"
 msgstr ""
 
-#: fl_i18n.cxx:354
+#: fl_i18n_fl.cxx:88
 msgid "Please choose an existing file!"
 msgstr ""
 
-#: fl_i18n.cxx:355 icc_betrachter.cxx:455
+#: fl_i18n_fl.cxx:89 icc_betrachter.cxx:455
 msgid "Favorites"
 msgstr ""
 
-#: fl_i18n.cxx:357
+#: fl_i18n_fl.cxx:91
 msgid "Manage Favorites"
 msgstr ""
 
-#: fl_i18n.cxx:359
+#: fl_i18n_fl.cxx:93
 msgid "My Computer"
 msgstr ""
 
-#: fl_i18n.cxx:361
+#: fl_i18n_fl.cxx:95
 msgid "Filesystems"
 msgstr ""
 
-#: fl_i18n.cxx:363
+#: fl_i18n_fl.cxx:97
 msgid "New Directory?"
 msgstr ""
 
-#: fl_i18n.cxx:364
+#: fl_i18n_fl.cxx:98
 msgid "Preview"
 msgstr ""
 
-#: fl_i18n.cxx:366
+#: fl_i18n_fl.cxx:100
 msgid "Save"
 msgstr ""
 
-#: fl_i18n.cxx:368
+#: fl_i18n_fl.cxx:102
 msgid "Show:"
 msgstr ""
 

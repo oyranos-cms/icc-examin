@@ -50,7 +50,7 @@ class ICCheader {
                 ICCheader ();
     void        clear();
   private:
-    icHeader    header;
+    icHeader    header;               //!<brief icc34.h Definition
   public:
     const char* header_raw () const
                   { DBG_PROG return /*cp_nchar (*/(const char*)&header/*,

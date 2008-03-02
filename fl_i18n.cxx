@@ -324,52 +324,6 @@ fl_initialise_locale( const char *locale_path )
 }
 
 
-#include <FL/Fl_Menu_Item.H>
-void
-fl_translate_menue( Fl_Menu_Item* menueleiste )
-{
-#ifdef USE_GETTEXT
-  DBG_PROG_START
-  int size = menueleiste->size();
-  DBG_PROG_V( size )
-  for(int i = 0; i < size ; ++i) {
-    const char* text = menueleiste[i].label();
-    menueleiste[i].label( _(text) );
-    DBG_PROG_V( i )
-    if(text)
-      DBG_PROG_V( text <<" "<< _(text) );
-  }
-#endif
-}
-
-#include <Fl/Fl_File_Chooser.H>
-void
-fl_translate_file_chooser( )
-{
-#ifdef USE_GETTEXT
-  DBG_PROG_START
-    Fl_File_Chooser::add_favorites_label = _("Add to Favorites");
-    Fl_File_Chooser::all_files_label = _("All Files (*)");
-    Fl_File_Chooser::custom_filter_label = _("Custom Filter");
-    Fl_File_Chooser::existing_file_label = _("Please choose an existing file!");
-    Fl_File_Chooser::favorites_label = _("Favorites");
-    Fl_File_Chooser::filename_label = _("Filename");
-    Fl_File_Chooser::manage_favorites_label = _("Manage Favorites");
-#   ifdef WIN32
-    Fl_File_Chooser::filesystems_label = _("My Computer");
-#   else
-    Fl_File_Chooser::filesystems_label = _("Filesystems");
-#   endif
-    Fl_File_Chooser::new_directory_label = _("New Directory?");
-    Fl_File_Chooser::preview_label = _("Preview");
-#   if (FL_MAJOR_VERSION == 1 && FL_MINOR_VERSION >= 1 && FL_PATCH_VERSION >= 7)
-    Fl_File_Chooser::save_label = _("Save"); // since 1.1.7?
-#   endif
-    Fl_File_Chooser::show_label = _("Show:");
-  DBG_PROG_ENDE
-#endif
-}
-
 const char*
 threadGettext( const char* text)
 {

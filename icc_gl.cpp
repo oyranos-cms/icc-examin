@@ -263,7 +263,7 @@ GL_Ansicht::mausPunkt_( GLdouble &oX, GLdouble &oY, GLdouble &oZ,
 {
   DBG_PROG_START  
   // den Ort lokalisieren
-  // wie weit ist das nächste Objekt in diese Richtung, sehr aufwendig
+  // wie weit ist das naechste Objekt in diese Richtung, sehr aufwendig
   GLfloat zBuffer;
   glReadPixels((GLint)maus_x_,(GLint)h()-maus_y_,1,1,GL_DEPTH_COMPONENT, GL_FLOAT, &zBuffer);
   GLdouble modell_matrix[16], projektions_matrix[16];
@@ -626,18 +626,31 @@ GL_Ansicht::tastatur(int e)
     } else if(Fl::event_key() == FL_End) {
       vorder_schnitt = agv_.eyeDist();
     }
-    DBG_ICCGL_S("e = " << Fl::event_key() )
+    DBG_ICCGL_S("e = " << e << " " << Fl::event_key() )
     if(e == FL_SHORTCUT)
     switch (Fl::event_key()) {
-      case '-':
-        if(punktgroesse > 1) {
+      case 45: // '-' Dies ist nicht konform auf allen Tastaturen; benutzt FLTK native Tastaturkodes?
+        if(punktform >= MENU_dE1KUGEL || punktform <= MENU_dE4KUGEL)
+          if (punktform > MENU_dE1KUGEL) {
+            --punktform;
+          }
+        else if (punktform == MENU_DIFFERENZ_LINIE)
+          punktform = MENU_dE1KUGEL;
+        else if(punktgroesse > 1) {
           --punktgroesse;
           auffrischen_();
           redraw();
         }
         DBG_PROG_V( Fl::event_key() <<" "<< punktgroesse )
         break;
-      case '+':
+      case 43: // '+'
+        if(punktform >= MENU_dE1KUGEL || punktform <= MENU_dE4KUGEL) {
+          if (punktform < MENU_dE4KUGEL) {
+            ++punktform;
+          }
+        else if (punktform == MENU_DIFFERENZ_LINIE)
+          punktform = MENU_dE4KUGEL;
+        } else
         if(punktgroesse < 21) {
           ++punktgroesse;
           auffrischen_();
@@ -1988,10 +2001,8 @@ GL_Ansicht::zeichnen()
       glEnable(GL_LINE_SMOOTH);
     }
 
-
+    // Beginn der Zeichnung
     glPushMatrix();
-
-      glLoadIdentity();
 
       GL_Ansicht::setzePerspektive();
 
@@ -2003,16 +2014,12 @@ GL_Ansicht::zeichnen()
 
       glCallList( glListen[SPEKTRUM] ); DBG_ICCGL_V( glListen[SPEKTRUM] )
       glCallList( glListen[UMRISSE] ); DBG_ICCGL_V( glListen[UMRISSE] )
-
       if (zeige_helfer) {
         glCallList( glListen[HELFER] ); DBG_ICCGL_V( glListen[HELFER] )
       }
-
       glCallList( glListen[RASTER] ); DBG_ICCGL_V( glListen[RASTER] )
-
       if(punktform == MENU_dE1STERN)
         glCallList( glListen[PUNKTE] );
-
       glCallList( glListen[PUNKTE] ); DBG_ICCGL_V( glListen[PUNKTE] )
 
 
@@ -2064,141 +2071,140 @@ GL_Ansicht::zeichnen()
         netzeAuffrischen();
 
     glPopMatrix();
+    // Ende der Zeichnung
 
-  //glTranslatef(-2, 1, -2);
+    // Text
+    FARBE(textfarbe[0],textfarbe[1],textfarbe[2])
 
-                  // Text
-                  FARBE(textfarbe[0],textfarbe[1],textfarbe[2])
+    GLfloat lmodel_ambient[] = {hintergrundfarbe,
+                                hintergrundfarbe,
+                                hintergrundfarbe, 1.0};
+    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, lmodel_ambient);
 
-                  GLfloat lmodel_ambient[] = {hintergrundfarbe,
-                                              hintergrundfarbe,
-                                              hintergrundfarbe, 1.0};
-                  glLightModelfv(GL_LIGHT_MODEL_AMBIENT, lmodel_ambient);
+    if(1)
+    {
+       glPushMatrix(); 
+         // Text in der Szene
+         glDisable(GL_TEXTURE_2D);
+         glDisable(GL_LIGHTING);
+         glLoadIdentity();
+         glMatrixMode(GL_MODELVIEW);
+         glOrtho( 0, w(), 0, h(), 0.1, 100.0);
 
-                  if(1)
-                  {
-                  glPushMatrix(); 
-                    // Text in der Szene
-                    glDisable(GL_TEXTURE_2D);
-                    glDisable(GL_LIGHTING);
-                    glLoadIdentity();
-                    glMatrixMode(GL_MODELVIEW);
-                    glOrtho( 0, w(), 0, h(), 0.1, 100.0);
+         if (zeige_helfer)
+           textGarnieren_();
 
-                    if (zeige_helfer)
-                      textGarnieren_();
+         // Kann aus der Zeichenfunktion auswandern
+         if(strlen(text))
+         {
+            DBG_ICCGL_V( X<<" "<<Y<<" "<<Z )
+            DBG_ICCGL_V( oX<<" "<<oY<<" "<<oZ )
 
-                    // Kann aus der Zeichenfunktion auswandern
-                    if(strlen(text))
-                    {
-                      DBG_ICCGL_V( X<<" "<<Y<<" "<<Z )
-                      DBG_ICCGL_V( oX<<" "<<oY<<" "<<oZ )
+            // Text ueber der Szene
+            glLoadIdentity();
+            glMatrixMode(GL_PROJECTION);
 
-                      // Text über der Szene
-                      glLoadIdentity();
-                      glMatrixMode(GL_PROJECTION);
+            glLoadIdentity();
+            glOrtho(0,w(),0,h(),-10.0,10.0);
 
-                      glLoadIdentity();
-                      glOrtho(0,w(),0,h(),-10.0,10.0);
-
-                      glRasterPos3f (X, Y, 9.999);
+            glRasterPos3f (X, Y, 9.999);
                       
-                      if(id() == 1) {
-                        DBG_PROG_V( oY<<" "<<oZ<<" "<<oX )
+            if(id() == 1) {
+              DBG_PROG_V( oY<<" "<<oZ<<" "<<oX )
                         /*if(-0.505 <= oY && oY <= 0.505 &&
                            -0.505 <= oZ && oZ <= 0.505 &&
                            -0.505 <= oX && oX <= 0.505)*/
-                        if(tabelle_.size())
-                        {
-                          int L = (int)((oY+0.5)*tabelle_.size());
-                          if(0 <= L && L < (int)tabelle_.size()) {
-                          int a = (int)((oZ+0.5)*tabelle_[L].size());
-                          if(0 <= a && a < (int)tabelle_[L].size()) {
-                          int b = (int)((oX+0.5)*tabelle_[L][a].size());
-                          if(0 <= b && b < (int)tabelle_[L][a].size()) {
-                          double wert = tabelle_[L][a][b][kanal];
-                          DBG_PROG_V( L<<" "<<a<<" "<<b<<" "<<wert )
-                          DBG_PROG_V( tabelle_.size()<<" "<<tabelle_[L].size()<<" "<<tabelle_[L][a].size()<<" "<<kanal )
-                          sprintf( text,"%s[%d][%d][%d]: ", _("Pos"),
-                                   (int)((oY+0.5)*tabelle_.size()),
-                                   (int)((oZ+0.5)*tabelle_[L].size()),
-                                   (int)((oX+0.5)*tabelle_[L][a].size()));
-                          for (int i = 0 ; i < (int)tabelle_[L][a][b].size(); ++i) {
-                            if(i == kanal) sprintf(&text[strlen(text)], "[");
-                            sprintf(&text[strlen(text)], "%.5f", tabelle_[L][a][b][i]);
-                            if(i == kanal) sprintf(&text[strlen(text)], "]");
-                            if (i != (int)tabelle_[L][a][b].size()-1)
-                              sprintf(&text[strlen(text)], " ");
-                          }
-                          icc_examin_ns::status_info( text );
-                          ZeichneOText (ortho_font, scal, text)
-                          }}}
-                       }
-                      } else {
-                        icc_examin_ns::status_info( text );
-                        ZeichneOText (ortho_font, scal, text)
-                      }
-                      if(icc_debug == 14) {
-                        glScalef(100,100,100);
-                        zeichneKoordinaten_();
-                        glScalef(.01,.01,.01);
-                      }
-                      DBG_ICCGL_V( maus_x_-x() <<" "<< -maus_y_+h() )
-                    }
+              if(tabelle_.size())
+              {
+                 int L = (int)((oY+0.5)*tabelle_.size());
+                 if(0 <= L && L < (int)tabelle_.size()) {
+                 int a = (int)((oZ+0.5)*tabelle_[L].size());
+                 if(0 <= a && a < (int)tabelle_[L].size()) {
+                 int b = (int)((oX+0.5)*tabelle_[L][a].size());
+                 if(0 <= b && b < (int)tabelle_[L][a].size()) {
+                   double wert = tabelle_[L][a][b][kanal];
+                   DBG_PROG_V( L<<" "<<a<<" "<<b<<" "<<wert )
+                   DBG_PROG_V( tabelle_.size()<<" "<<tabelle_[L].size()<<" "<<
+                               tabelle_[L][a].size()<<" "<<kanal )
+                   sprintf( text,"%s[%d][%d][%d]: ", _("Pos"),
+                            (int)((oY+0.5)*tabelle_.size()),
+                            (int)((oZ+0.5)*tabelle_[L].size()),
+                            (int)((oX+0.5)*tabelle_[L][a].size()));
+                   for (int i = 0 ; i < (int)tabelle_[L][a][b].size(); ++i) {
+                     if(i == kanal) sprintf(&text[strlen(text)], "[");
+                     sprintf(&text[strlen(text)], "%.5f", tabelle_[L][a][b][i]);
+                     if(i == kanal) sprintf(&text[strlen(text)], "]");
+                     if (i != (int)tabelle_[L][a][b].size()-1)
+                       sprintf(&text[strlen(text)], " ");
+                   }
+                   icc_examin_ns::status_info( text );
+                   ZeichneOText (ortho_font, scal, text)
+                 }}}
+               }
+            } else {
+              icc_examin_ns::status_info( text );
+              ZeichneOText (ortho_font, scal, text)
+            }
+            if(icc_debug == 14) {
+              glScalef(100,100,100);
+              zeichneKoordinaten_();
+              glScalef(.01,.01,.01);
+            }
+            DBG_ICCGL_V( maus_x_-x() <<" "<< -maus_y_+h() )
+         }
 
-                    glMatrixMode(GL_MODELVIEW);
-                  glPopMatrix();
-                  }
+       glPopMatrix();
+    }
 
-           bool strich_neu = false;
-           rechen_zeit = icc_examin_ns::zeitSekunden() - rechen_zeit;
-           if(rechen_zeit > 1./15. )
-           {
-             if(smooth)
-             {
-               smooth = 0;
-               strich_neu = true;
-             }
-           }
-           if(rechen_zeit < 1./40.)
-           {
-             if(!smooth)
-             {
-               smooth = 1;
-               strich_neu = true;
-             }
-           }
-           if(strich_neu) {
-             zeigeSpektralband_();
-             garnieren_();
-           }
+    bool strich_neu = false;
+    rechen_zeit = icc_examin_ns::zeitSekunden() - rechen_zeit;
+    if(rechen_zeit > 1./15. )
+    {
+      if(smooth)
+      {
+        smooth = 0;
+        strich_neu = true;
+      }
+    }
+    if(rechen_zeit < 1./40.)
+    {
+      if(!smooth)
+      {
+        smooth = 1;
+        strich_neu = true;
+      }
+    }
+    if(strich_neu) {
+      zeigeSpektralband_();
+      garnieren_();
+    }
 
-           // Geschwindigkeit
-           static double zeit_alt = 0;
-           double zeit = icc_examin_ns::zeitSekunden();
-           double dzeit = zeit - zeit_alt;
-           if(dzeit < 0.001)
-             dzeit = 0.001;
-           zeit_diff_ = dzeit;;
+    // Geschwindigkeit
+    static double zeit_alt = 0;
+    double zeit = icc_examin_ns::zeitSekunden();
+    double dzeit = zeit - zeit_alt;
+    if(dzeit < 0.001)
+      dzeit = 0.001;
+    zeit_diff_ = dzeit;;
 
-           zeit_alt = zeit;
-           sprintf(t, "zeit_diff_:%01f zeit:%f dzeit:%f",
-                   zeit_diff_, zeit, dzeit);
-           DBG_PROG_V( t )
+    zeit_alt = zeit;
+    sprintf(t, "zeit_diff_:%01f zeit:%f dzeit:%f",
+            zeit_diff_, zeit, dzeit);
+    DBG_PROG_V( t )
 
 
-#          ifdef HAVE_FTGL
-           if(ortho_font)
-             glRasterPos2f(0, h() -10 );
-#          endif
-           if(icc_debug)
-             ZeichneOText (ortho_font, scal, t)
+#   ifdef HAVE_FTGL
+    if(ortho_font)
+      glRasterPos2f(0, h() -10 );
+#   endif
+    if(icc_debug)
+      ZeichneOText (ortho_font, scal, t)
 
-           static int maus_x_alt, maus_y_alt;
-           if(maus_x_alt != maus_x_ || maus_y_alt != maus_y_)
-             maus_steht = true;
-           maus_x_alt = maus_x_;
-           maus_y_alt = maus_y_;
+    static int maus_x_alt, maus_y_alt;
+    if(maus_x_alt != maus_x_ || maus_y_alt != maus_y_)
+    maus_steht = true;
+    maus_x_alt = maus_x_;
+    maus_y_alt = maus_y_;
 
     // Farbkanalname
     // Text
@@ -2402,7 +2408,7 @@ GL_Ansicht::menueAufruf ( int value )
       icc_examin_ns::status_info(_("left-/middle-/right mouse button -> rotate/cut/menu"));
     }
 #   if APPLE
-    double farb_faktor = 0.6666*0.8;
+    double farb_faktor = 1./*0.6666*/ *0.8;
 #   else
     double farb_faktor = 1.*.8;
 #   endif
@@ -2444,7 +2450,7 @@ GL_Ansicht::menueAufruf ( int value )
        punktform = MENU_dE4KUGEL;
       break;
     case MENU_DIFFERENZ_LINIE:
-       punktform = MENU_DIFFERENZ_LINIE;
+       if(punktform == MENU_dE1STERN) punktform = MENU_DIFFERENZ_LINIE; else punktform = MENU_dE1STERN;
       break;
     case MENU_SPEKTRALBAND:
       if (! spektralband)
