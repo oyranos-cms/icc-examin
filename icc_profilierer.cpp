@@ -27,14 +27,15 @@ void weisspunktanpassung (XYZ& korrektur, XYZ *f);
 
 std::string
 Profilierer::print()
-{ DBG
+{ DBG_PROG_START
   std::string s = _("Dateikopf ungültig");
+  DBG_PROG_ENDE
   return s;
 }
 
 const ICCprofile&
 Profilierer::matrix()
-{ DBG
+{ DBG_PROG_START
   _profil.clear();
   // Profilkopf schreiben
   ICCheader header;
@@ -56,35 +57,39 @@ Profilierer::matrix()
   // Primärtags + Weiss und Schwarz schreiben
   std::vector<std::map<double,XYZ> > tonwertskalen =
   RGB_Tags ();
-  // vorläufiges Gamma 1.0
-  RGB_Gamma_schreiben (1.0);
+  // Gamma 1.8
+  double gamma = 2.2;
+  RGB_Gamma_schreiben (gamma);
   // endgültiges Gamma berechnen und schreiben
-  RGB_Gamma_anpassen (tonwertskalen);
+  RGB_Gamma_anpassen (tonwertskalen, gamma);
 
   schreibMessTag (&profile);  // TODO bedient sich bei icc_examin
 
+  DBG_PROG_ENDE
   return _profil;
 }
 
 void
 weisspunktanpassung (XYZ& korrektur, XYZ *f)
-{
+{ DBG_PROG_START
   f->X = f->X * korrektur.X;
   f->Y = f->Y * korrektur.Y;
   f->Z = f->Z * korrektur.Z;
+  DBG_PROG_ENDE
 }
 
 void
 Profilierer::RGB_Gamma_schreiben (double gamma)
-{
+{ DBG_PROG_START
   schreibKurveTag (icSigRedTRCTag, gamma);
   schreibKurveTag (icSigGreenTRCTag, gamma);
   schreibKurveTag (icSigBlueTRCTag, gamma);
+  DBG_PROG_ENDE
 }
 
 double*
 Profilierer::XYZnachRGB (XYZ mess_xyz)
-{ DBG
+{ DBG_PROG_START
   static double rgb[3], xyz[3];
   DBG_S( "XYZ: " << mess_xyz.X << " " << mess_xyz.Y << " " << mess_xyz.Z )
 
@@ -113,73 +118,104 @@ Profilierer::XYZnachRGB (XYZ mess_xyz)
   cmsDeleteTransform (hXYZtoRGB);
   cmsCloseProfile (testRGB);
   DBG_S( "RGB: " << rgb[0] << " " << rgb[1] << " " << rgb[2] )
+  DBG_PROG_ENDE
   return &rgb[0];
 }
 
+// Tabellentyp von vcgt
+typedef struct VCGT_Tag {
+  icTagSignature name;
+  icUInt32Number leer;
+  icUInt32Number parametrisch; // 8
+  icUInt16Number nkurven;      // 12
+  icUInt16Number segmente;     // 14
+  icUInt16Number byte;         // 16
+  icUInt16Number kurve[1];     // 18
+};
+
 void
-Profilierer::RGB_Gamma_anpassen (std::vector<std::map<double,XYZ> > tonwertskalen)
-{
+Profilierer::RGB_Gamma_anpassen (std::vector<std::map<double,XYZ> > tonwertskalen, double gamma)
+{ DBG_PROG_START
   icTag ic_tag;
+  VCGT_Tag *vcgtTag;
+  icTag vcgt_tag;
   ic_tag.offset = 0;
+  vcgt_tag.offset = 0;
   icCurveType* kurveTag = NULL; //icCurveType = icTagBase + icCurve
 
-  int size = 0;
+  int k_size = 0, v_size = 0;
 
-  if (kurveTag && size)
-    { free (kurveTag); size = 0; }
-  size = 8 + 4 + tonwertskalen[0].size() * 2;
-  kurveTag = (icCurveType*) calloc (sizeof (char), size);
+  if (kurveTag && k_size)
+    { free (kurveTag); k_size = 0; }
+  k_size = 8 + 4 + tonwertskalen[0].size() * 2;
+  kurveTag = (icCurveType*) calloc (sizeof (char), k_size);
 
   kurveTag->base.sig = (icTagTypeSignature)icValue( icSigCurveType );
   // Werte eintragen
   kurveTag->curve.count = icValue( tonwertskalen[0].size() );
-  ic_tag.size = icValue ((icUInt32Number)size);
+  ic_tag.size = icValue ((icUInt32Number)k_size);
+  vcgt_tag.size = icValue ((icUInt32Number)18 + 2 * tonwertskalen[0].size()*3);
+  vcgt_tag.sig = icValue ((icTagSignature)1986226036);
+  v_size = 18 + sizeof (icUInt16Number) * 3 * tonwertskalen[0].size();
+  vcgtTag = (VCGT_Tag*)calloc (sizeof (char), v_size);
+  vcgtTag->name = icValue ((icTagSignature)1986226036);
+  vcgtTag->leer = 0;
+  vcgtTag->parametrisch = icValue ((icUInt32Number)0);
+  vcgtTag->nkurven = icValue ((icUInt16Number)3);
+  vcgtTag->segmente = icValue ((icUInt16Number)tonwertskalen[0].size());
+  vcgtTag->byte = icValue ((icUInt16Number)2);
 
   int zahl = 0;
-  double korr, kFarbe, min;
   int kanal = 0;
   double *dRGB;
 
   std::map<double,XYZ>::const_iterator i;
 
   for (; kanal < 3; kanal++) {
-    i = tonwertskalen[kanal].begin();
-    dRGB = XYZnachRGB (i->second);
-    min = dRGB[kanal];
-    i = tonwertskalen[kanal].end(); i--;
-    dRGB = XYZnachRGB (i->second); DBG_V( dRGB[0] << dRGB[1] << dRGB[2] )
-    korr = 1.0/(dRGB[kanal]/* - min*/);
     for (i= tonwertskalen[kanal].begin(); i != tonwertskalen[kanal].end(); i++){
       dRGB = XYZnachRGB (i->second);
 
-      DBG_V( i->first ) DBG_V( min ) DBG_V( korr ) DBG_V( dRGB[kanal] )
+      DBG_V( i->first ) DBG_V( dRGB[kanal] )
 
-      kFarbe = (dRGB[kanal]/* - min*/)* korr;
-      kurveTag->curve.data[zahl] = icValue( (icUInt16Number)(kFarbe*65535.0+0.5) );
-      zahl++; DBG_V( icValue( kurveTag->curve.data[zahl] ) )
-    } zahl = 0;
+      // Soll
+      double soll = i->first; DBG_V( soll <<" "<< zahl <<" "<< dRGB[kanal])
+      double diff = (double)zahl/(tonwertskalen[kanal].size()-1) + dRGB[kanal] - soll; DBG_V( (double)zahl/(tonwertskalen[kanal].size()-1) <<" "<< diff )
+      vcgtTag->kurve[kanal*zahl] = icValue( (icUInt16Number)(diff*65535.0+0.5));
+      DBG_V( icValue( vcgtTag->kurve[kanal*zahl] ) )
+      kurveTag->curve.data[zahl] = icValue( (icUInt16Number)(soll*65535.0+0.5));
+      DBG_V( icValue( kurveTag->curve.data[zahl] ) )
+      zahl++;
+    }
+    zahl = 0;
     // Tagbeschreibung mitgeben
     switch (kanal) {
       case 0: ic_tag.sig = icValue (icSigRedTRCTag);
-              _profil.removeTagByName("rTRC");  break;
+              //_profil.removeTagByName("rTRC");
+              break;
       case 1: ic_tag.sig = icValue (icSigGreenTRCTag);
-              _profil.removeTagByName("gTRC");  break;
+              //_profil.removeTagByName("gTRC");
+              break;
       case 2: ic_tag.sig = icValue (icSigBlueTRCTag);
-              _profil.removeTagByName("bTRC");  break;
+              //_profil.removeTagByName("bTRC");
+              break;
     }
     // Tag kreieren
     ICCtag Tag;
     DBG_V( &_profil ) DBG_V( icValue(ic_tag.size) << &ic_tag ) DBG_V( kurveTag )
     Tag.load( &_profil, &ic_tag, (char*)kurveTag );
     // hinzufügen
-    _profil.addTag( Tag ); Tag.clear(); 
+    //_profil.addTag( Tag ); Tag.clear();
   }
+  ICCtag Tag;
+  Tag.load( &_profil, &vcgt_tag, (char*)vcgtTag ); 
+  _profil.addTag( Tag );
   _testProfil.clear();
+  DBG_PROG_ENDE
 }
 
 std::vector<std::map<double,XYZ> >
 Profilierer::RGB_Tags (void)
-{ DBG
+{ DBG_PROG_START
   std::vector<XYZ> xyz = _measurement.getMessXYZ();
   std::vector<RGB> rgb = _measurement.getMessRGB();
 
@@ -196,52 +232,43 @@ Profilierer::RGB_Tags (void)
   for (int i = 0; i < (int)rgb.size(); i++) {
     if (rgb[i].G == 0.0 && rgb[i].B == 0.0) {
       tonwertskalen[0][rgb[i].R] = xyz[i];
-      tonwertskalen[0][rgb[i].R].X /= 100.0;
-      tonwertskalen[0][rgb[i].R].Y /= 100.0;
-      tonwertskalen[0][rgb[i].R].Z /= 100.0;
-      if (rgb[i].R == 255.0) {
-        rot.X = xyz[i].X/100.0; DBG_S( "rot" )
-        rot.Y = xyz[i].Y/100.0;
-        rot.Z = xyz[i].Z/100.0;
+      if (rgb[i].R == 1.0) {
+        rot.X = xyz[i].X; DBG_S( "rot" )
+        rot.Y = xyz[i].Y;
+        rot.Z = xyz[i].Z;
       }
     }
     if (rgb[i].R == 0.0 && rgb[i].B == 0.0) {
       tonwertskalen[1][rgb[i].G] = xyz[i];
-      tonwertskalen[1][rgb[i].G].X /= 100.0;
-      tonwertskalen[1][rgb[i].G].Y /= 100.0;
-      tonwertskalen[1][rgb[i].G].Z /= 100.0;
-      if (rgb[i].G == 255.0) {
-        gruen.X = xyz[i].X/100.0; DBG_S( "grün" )
-        gruen.Y = xyz[i].Y/100.0;
-        gruen.Z = xyz[i].Z/100.0;
+      if (rgb[i].G == 1.0) {
+        gruen.X = xyz[i].X; DBG_S( "grün" )
+        gruen.Y = xyz[i].Y;
+        gruen.Z = xyz[i].Z;
       }
     }
     if (rgb[i].R == 0.0 && rgb[i].G == 0.0) {
       tonwertskalen[2][rgb[i].B] = xyz[i];
-      tonwertskalen[2][rgb[i].B].X /= 100.0;
-      tonwertskalen[2][rgb[i].B].Y /= 100.0;
-      tonwertskalen[2][rgb[i].B].Z /= 100.0;
-      if (rgb[i].B == 255.0) {
-        blau.X = xyz[i].X/100.0; DBG_S( "blau" )
-        blau.Y = xyz[i].Y/100.0;
-        blau.Z = xyz[i].Z/100.0;
+      if (rgb[i].B == 1.0) {
+        blau.X = xyz[i].X; DBG_S( "blau" )
+        blau.Y = xyz[i].Y;
+        blau.Z = xyz[i].Z;
       }
     }
     if (rgb[i].R == 0.0 && rgb[i].G == 0.0 && rgb[i].B == 0.0) {
-      schwarz.X = xyz[i].X/100.0; DBG_S( "schwarz" )
-      schwarz.Y = xyz[i].Y/100.0;
-      schwarz.Z = xyz[i].Z/100.0;
+      schwarz.X = xyz[i].X; DBG_S( "schwarz" )
+      schwarz.Y = xyz[i].Y;
+      schwarz.Z = xyz[i].Z;
     }
-    if (rgb[i].R == 255.0 && rgb[i].G == 255.0 && rgb[i].B == 255.0) {
-      weiss.X = xyz[i].X/100.0; DBG_S( "weiss" )
-      weiss.Y = xyz[i].Y/100.0;
-      weiss.Z = xyz[i].Z/100.0;
+    if (rgb[i].R == 1.0 && rgb[i].G == 1.0 && rgb[i].B == 1.0) {
+      weiss.X = xyz[i].X; DBG_S( "weiss" )
+      weiss.Y = xyz[i].Y;
+      weiss.Z = xyz[i].Z;
     }
   }
-  DBG_V( tonwertskalen[0].size() )
-  DBG_V( tonwertskalen[1].size() )
-  DBG_V( tonwertskalen[2].size() )
-  DBG_V( weiss.X<<" "<<weiss.Y<<" "<<weiss.Z )
+  DBG_NUM_V( tonwertskalen[0].size() )
+  DBG_NUM_V( tonwertskalen[1].size() )
+  DBG_NUM_V( tonwertskalen[2].size() )
+  DBG_NUM_V( weiss.X<<" "<<weiss.Y<<" "<<weiss.Z )
 
   // Korrekturen weiss -> D50
   weiss_D50.X = 0.9642; weiss_D50.Y = 1.0; weiss_D50.Z = 0.8249;
@@ -263,7 +290,7 @@ Profilierer::RGB_Tags (void)
       weisspunktanpassung (korr, &(i->second));
     }
   }
-  DBG_V( weiss.X <<" "<< weiss.Y <<" "<< weiss.Z )
+  DBG_NUM_V( weiss.X <<" "<< weiss.Y <<" "<< weiss.Z )
 
 
   schreibXYZTag (icSigMediaWhitePointTag, weiss.X, weiss.Y, weiss.Z );
@@ -272,12 +299,13 @@ Profilierer::RGB_Tags (void)
   schreibXYZTag (icSigGreenColorantTag, gruen.X, gruen.Y, gruen.Z );
   schreibXYZTag (icSigBlueColorantTag, blau.X, blau.Y, blau.Z );
 
+  DBG_PROG_ENDE
   return tonwertskalen;
 }
 
 void
 Profilierer::schreibKurveTag (icTagSignature name, double gamma)
-{
+{ DBG_PROG_START
   icTag ic_tag;
   ic_tag.offset = 0;
   icCurveType* kurveTag = NULL; //icCurveType = icTagBase + icCurve
@@ -302,11 +330,12 @@ Profilierer::schreibKurveTag (icTagSignature name, double gamma)
   Tag.load( &_profil, &ic_tag, (char*)kurveTag );
   // hinzufügen
   _profil.addTag( Tag ); Tag.clear(); 
+  DBG_PROG_ENDE
 }
 
 void
 Profilierer::schreibXYZTag (icTagSignature name, double X, double Y, double Z)
-{
+{ DBG_PROG_START
   icXYZType xyzTag;
   memset ((char*)&xyzTag, 0, sizeof(icXYZType));
   icTag ic_tag;
@@ -321,11 +350,12 @@ Profilierer::schreibXYZTag (icTagSignature name, double X, double Y, double Z)
 
   Tag.load( &_profil, &ic_tag, (char*)&xyzTag );
   _profil.addTag( Tag );
+  DBG_PROG_ENDE
 }
 
 void
 Profilierer::schreibTextTag (icTagSignature name, std::string text)
-{
+{ DBG_PROG_START
   int groesse = 8 + text.size() + 1;
   char* tag_block = (char*) calloc (sizeof (char), groesse);
   icTag ic_tag;
@@ -343,22 +373,24 @@ Profilierer::schreibTextTag (icTagSignature name, std::string text)
   _profil.addTag( Tag );
 
   free (tag_block);
+  DBG_PROG_ENDE
 }
 
 void
 Profilierer::schreibMessTag (ICCprofile *profil)
-{
+{ DBG_PROG_START
   if (profil->hasTagName("CIED"))
     _profil.addTag( profil->getTag(profil->getTagByName("CIED")) );
   if (profil->hasTagName("DevD"))
     _profil.addTag( profil->getTag(profil->getTagByName("DevD")) );
   if (profil->hasTagName("targ"))
     _profil.addTag( profil->getTag(profil->getTagByName("targ")) );
+  DBG_PROG_ENDE
 }
 
 void
 Profilierer::gemeinsamerHeader (ICCheader* header)
-{ DBG
+{ DBG_PROG_START
   header->cmmName ("lcms");
   header->version (0x02300000);
   header->set_current_date ();
@@ -372,6 +404,7 @@ Profilierer::gemeinsamerHeader (ICCheader* header)
   header->set_illuminant ();
   header->set_creator ();
   //header->setID(); // TODO MD5
+  DBG_PROG_ENDE
 }
 
 

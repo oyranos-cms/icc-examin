@@ -11,6 +11,7 @@ static char *statlabel;
  int tag_nummer;
 #include "icc_draw.h"
 ICCprofile profile;
+/* */ int level_PROG = -1;
 
 Fl_Double_Window *details=(Fl_Double_Window *)0;
 
@@ -134,6 +135,7 @@ Fl_Progress *load_progress=(Fl_Progress *)0;
 
 int main(int argc, char **argv) {
   Fl_Double_Window* w;
+  DBG_PROG_START
   statlabel = (char*)calloc (sizeof (char), 1024);
   fullscreen = false;
   inspekt_topline = 0;
@@ -278,11 +280,13 @@ int main(int argc, char **argv) {
   Fl_File_Icon::load_system_icons();
   if (argc > 1)
     open (false);
+  DBG_PROG_ENDE
   w->show(argc, argv);
   return Fl::run();
 }
 
 std::string open(int interaktiv) {
+  DBG_PROG_START
   #include "icc_vrml.h"
 
   std::string filename = filename_alt;
@@ -356,18 +360,22 @@ std::string open(int interaktiv) {
   }
 
   return filename;
+  DBG_PROG_ENDE
 }
 
 void quit(void) {
+  DBG_PROG_START
   /*Fl::remove_timeout((void (*)(void *))timeIT, (void *)viewer);
   delete viewer;
   delete browser;
   delete canvas;*/
   details->hide();
   exit(0);
+  DBG_PROG_ENDE
 }
 
 char* icc_read_info(char* filename) {
+  DBG_PROG_START
   char systemBefehl[1024];
   char *textfile = "/tmp/icc_temp.txt";
 
@@ -377,12 +385,14 @@ char* icc_read_info(char* filename) {
   system (systemBefehl);
 
   return textfile;
+  DBG_PROG_ENDE
 }
 
 TagBrowser::TagBrowser(int X,int Y,int W,int H,char* start_info) : Fl_Hold_Browser(X,Y,W,H,start_info), X(X), Y(Y), W(W), H(H) {
 }
 
 void TagBrowser::reopen() {
+  DBG_PROG_START
   //open and preparing the first selected item
   std::stringstream s;
   std::string text;
@@ -432,9 +442,11 @@ void TagBrowser::reopen() {
 
   s.clear(); s << "ICC Details: " << profile.filename();
   details->label( (const char*) s.str().c_str() );
+  DBG_PROG_ENDE
 }
 
 void TagBrowser::select_item(int item) {
+  DBG_PROG_START
   //Auswahl aus tag_browser
   std::string text = _("Leer");
   tag_text->hinein(text);
@@ -508,12 +520,14 @@ void TagBrowser::select_item(int item) {
     }
     selectedTagName = TagInfo[0];
   }DBG
+  DBG_PROG_ENDE
 }
 
 TagTexts::TagTexts(int X,int Y,int W,int H,char* start_info) : Fl_Hold_Browser(X,Y,W,H,start_info), X(X), Y(Y), W(W), H(H) {
 }
 
 void TagTexts::hinein(std::string text) {
+  DBG_PROG_START
   //Text aus tag_browser anzeigen
 
   zeig_mich(this); DBG
@@ -528,12 +542,14 @@ void TagTexts::hinein(std::string text) {
       this->topline(0);
       this->textfont(FL_COURIER);
       this->textsize(14);
+  DBG_PROG_ENDE
 }
 
 TagDrawings::TagDrawings(int X,int Y,int W,int H) : Fl_Widget(X,Y,W,H), X(X), Y(Y), W(W), H(H) {
 }
 
 void TagDrawings::draw() {
+  DBG_PROG_START
   // Kurven oder Punkte malen
   cout << punkte.size() << "/" << kurven.size() <<" "<< texte.size() <<" "; DBG
 
@@ -552,9 +568,11 @@ void TagDrawings::draw() {
     draw_kurve   (x(),y(),w(),h(),texte,kurven);
   }
   DBG
+  DBG_PROG_ENDE
 }
 
 void TagDrawings::hinein_punkt(std::vector<double> vect, std::vector<std::string> txt) {
+  DBG_PROG_START
   //CIExyY aus tag_browser anzeigen
   punkte.clear();
   for (unsigned int i = 0; i < vect.size(); i++)
@@ -566,9 +584,11 @@ void TagDrawings::hinein_punkt(std::vector<double> vect, std::vector<std::string
   wiederholen = false;
 
   zeig_mich(this);
+  DBG_PROG_ENDE
 }
 
 void TagDrawings::hinein_kurven(std::vector<std::vector<double> >vect, std::vector<std::string> txt) {
+  DBG_PROG_START
   //Kurve aus tag_browser anzeigen
   kurven = vect;
   texte = txt;
@@ -577,10 +597,13 @@ void TagDrawings::hinein_kurven(std::vector<std::vector<double> >vect, std::vect
 
   zeig_mich(this);
   DBG
+  DBG_PROG_ENDE
 }
 
 void TagDrawings::ruhig_neuzeichnen(void) {
+  DBG_PROG_START
   draw_cie_shoe(x(),y(),w(),h(),texte,punkte,true);
+  DBG_PROG_ENDE
 }
 #include <FL/fl_draw.H>
 
@@ -588,6 +611,7 @@ MftChoice::MftChoice(int X,int Y,int W,int H,char* start_info) : Fl_Choice(X,Y,W
 }
 
 void MftChoice::profil_tag(int _tag) {
+  DBG_PROG_START
   tag_nummer = _tag;
 
 // = profile.printTagInfo(tag_nummer);
@@ -622,9 +646,11 @@ void MftChoice::profil_tag(int _tag) {
 
   zeig_mich (this);
   auswahl_cb();
+  DBG_PROG_ENDE
 }
 
 void MftChoice::auswahl_cb(void) {
+  DBG_PROG_START
   //Auswahl aus mft_choice
 
   Fl_Menu_* mw = (Fl_Menu_*)this;
@@ -673,9 +699,11 @@ void MftChoice::auswahl_cb(void) {
   }
 
   gewaehlter_eintrag = mw->value();
+  DBG_PROG_ENDE
 }
 
 void d_haendler(void* o) {
+  DBG_PROG_START
   Fl::remove_timeout( (void(*)(void*))d_haendler, 0 );
   if (!Fl::has_timeout( (void(*)(void*))d_haendler, 0 )
    && ((TagDrawings*)o)->active()
@@ -686,9 +714,11 @@ void d_haendler(void* o) {
     DBG_V( ((TagDrawings*)o)->wiederholen )
     #endif
   }
+  DBG_PROG_ENDE
 }
 
 void zeig_mich(void* widget) {
+  DBG_PROG_START
   // zeigt das ausgewählte Fenster (widget)
 
   tabellengruppe->hide();
@@ -700,9 +730,11 @@ void zeig_mich(void* widget) {
   tag_text->hide();
   ((Fl_Widget*)widget)->parent()->show(); DBG
   ((Fl_Widget*)widget)->show(); DBG
+  DBG_PROG_ENDE
 }
 
 std::vector<std::string> zeilenNachVector(std::string text) {
+  DBG_PROG_START
   // fügt Zeilen aus einen Text in einen Vector
   std::vector <std::string> texte;
 
@@ -722,7 +754,7 @@ std::vector<std::string> zeilenNachVector(std::string text) {
       if (text_line.size() > 0) // falls was übrig bleibt
         texte.push_back(text_line.c_str());
 
-
+  DBG_PROG_ENDE
   return texte;
 }
 
@@ -730,6 +762,7 @@ GL_Ansicht::GL_Ansicht(int X,int Y,int W,int H) : Fl_Widget(X,Y,W,H), X(X), Y(Y)
 }
 
 void GL_Ansicht::draw() {
+  DBG_PROG_START
   // Kurven oder Punkte malen
   cout << punkte.size() << "/" << kurven.size() <<" "<< texte.size() <<" "; DBG
 
@@ -743,9 +776,11 @@ void GL_Ansicht::draw() {
     draw_kurve   (x(),y(),w(),h(),texte,kurven);
   }
   DBG
+  DBG_PROG_ENDE
 }
 
 void GL_Ansicht::hinein_punkt(std::vector<double> vect, std::vector<std::string> txt) {
+  DBG_PROG_START
   //CIExyY aus tag_browser anzeigen
   punkte.clear();
   for (unsigned int i = 0; i < vect.size(); i++)
@@ -756,17 +791,22 @@ void GL_Ansicht::hinein_punkt(std::vector<double> vect, std::vector<std::string>
   kurven.clear();
 
   zeig_mich(this);
+  DBG_PROG_ENDE
 }
 
 void GL_Ansicht::hinein_kurven(std::vector<std::vector<double> >vect, std::vector<std::string> txt) {
+  DBG_PROG_START
   //Kurve aus tag_browser anzeigen
   kurven = vect;
   texte = txt;
   punkte.clear();
 
   zeig_mich(this);
+  DBG_PROG_ENDE
 }
 
 void GL_Ansicht::ruhig_neuzeichnen(void) {
+  DBG_PROG_START
   draw_cie_shoe(x(),y(),w(),h(),texte,punkte,true);
+  DBG_PROG_ENDE
 }

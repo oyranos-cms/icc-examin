@@ -33,6 +33,14 @@ float n = 1.0;
   #define DIAG FL_LIGHT1
 #endif
 
+#ifdef DEBUG_DRAW
+  #define DBG_prog_start DBG_PROG_START
+  #define DBG_prog_ende DBG_PROG_ENDE
+#else
+  #define DBG_prog_start
+  #define DBG_prog_ende
+#endif
+
 
 int raster = 4;
 int init_s = FALSE;
@@ -59,7 +67,7 @@ draw_cie_shoe (int X, int Y, int W, int H,
                     std::vector<std::string>               texte,
                     std::vector<double>                    punkte,
                     int                                    repeated)
-{
+{ DBG_prog_start
   if (!init_s)
     init_shoe();
   init_s = TRUE;
@@ -341,12 +349,13 @@ draw_cie_shoe (int X, int Y, int W, int H,
   }
 
   fl_pop_clip();
+  DBG_prog_ende
 }
 
 void draw_kurve    (int X, int Y, int W, int H,
                     std::vector<std::string> texte,
                     std::vector<std::vector<double> > kurven)
-{
+{ DBG_prog_start
   // Zeichenflaeche
   fl_color(BG);
   fl_rectf(X,Y,W,H);
@@ -463,10 +472,10 @@ void draw_kurve    (int X, int Y, int W, int H,
       int segmente = 256;
       double gamma = kurven[j][0]; DBG_V( gamma )
       for (int i = 1; i < segmente; i++)
-        fl_line (x( (i-1) / ((segmente-1) *n) ),
-               y( pow( (double)(i-1.0)/segmente, gamma ) ),
-               x( (i) / ((segmente-1) *n) ),
-               y( pow( (double)i/segmente, gamma ) ) );
+        fl_line (x( pow( (double)(i-1.0)/segmente, gamma ) ),
+                 y( (i-1) / ((segmente-1) *n) ),
+                 x( pow( (double)i/segmente, gamma ) ),
+                 y( (i) / ((segmente-1) *n) ) );
       // Infos einblenden 
       s << name << _(" mit einem Eintrag für Gamma: ") << gamma; DBG_V( gamma )
       fl_draw ( s.str().c_str(), x(0) + 2, y(n) + j*16 + 12);
@@ -478,20 +487,20 @@ void draw_kurve    (int X, int Y, int W, int H,
       double ende  = kurven[j][2]; DBG_V( ende )
       double mult  = (ende - start); DBG_V( mult )
       for (int i = 1; i < segmente; i++) {
-        fl_line (x( (i-1) / ((segmente-1) *n) ),
-               y( pow( (double)(i-1.0)/segmente, gamma ) * mult + start ),
-               x( (i) / ((segmente-1) *n) ),
-               y( pow( (double)i/segmente, gamma ) * mult + start) );
+        fl_line (x( pow( (double)(i-1.0)/segmente, gamma ) * mult + start ),
+                 y( (i-1) / ((segmente-1) *n) ),
+                 x( pow( (double)i/segmente, gamma ) * mult + start),
+                 y( (i) / ((segmente-1) *n) ) );
       }
       // Infos einblenden 
       s << name << _(" mit einem Eintrag für Gamma: ") << gamma;
       fl_draw ( s.str().c_str(), x(0) + 2, y(n) + j*16 + 12);
     } else {
       for (unsigned int i = 1; i < kurven[j].size(); i++) {
-        fl_line (x( (i-1) / ((kurven[j].size()-1) *n) ),
-               y( kurven[j][i-1] ),
-               x( (i) / ((kurven[j].size()-1) *n) ),
-               y( kurven[j][i] ) );
+        fl_line (x( kurven[j][i-1] ),
+                 y( (i-1) / ((kurven[j].size()-1) *n) ),
+                 x( kurven[j][i] ),
+                 y( (i) / ((kurven[j].size()-1) *n) ) );
       }
       // Infos einblenden 
       s << name << _(" mit ") << kurven[j].size() << _(" Punkten");
@@ -500,6 +509,7 @@ void draw_kurve    (int X, int Y, int W, int H,
   }
   
   fl_pop_clip();
+  DBG_prog_ende
 }
 
 /**********************************************************************/

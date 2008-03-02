@@ -15,9 +15,25 @@
 #define cout std::cout
 #define endl std::endl
 
+extern int level_PROG;
+
 #define DBG cout << __FILE__<<":"<<__LINE__ <<" "<< __func__ << "()" << endl;
 #define DBG_S(txt) cout << __FILE__<<":"<<__LINE__ <<" "<< __func__ << "() " << txt << endl;
 #define DBG_V(txt) cout << __FILE__<<":"<<__LINE__ <<" "<< __func__ << "() " << #txt << " " << txt << endl;
+#define DBG_MEM DBG
+#define DBG_MEM_S(txt) DBG_S(txt)
+#define DBG_MEM_V(txt) DBG_V(txt)
+#define DBG_NUM DBG
+#define DBG_NUM_S(txt) DBG_S(txt)
+#define DBG_NUM_V(txt) DBG_V(txt)
+#define DBG_PROG DBG
+#define DBG_PROG_START level_PROG++; for (int i = 0; i < level_PROG; i++) cout << "+"; cout << " Start: "; DBG
+#define DBG_PROG_ENDE for (int i = 0; i < level_PROG; i++) cout << "+"; cout << " Ende:  "; DBG level_PROG--;
+#define DBG_PROG_S(txt) DBG_S(txt)
+#define DBG_PROG_V(txt) DBG_V(txt)
+#define WARN DBG
+#define WARN_S(txt) DBG_S(txt)
+#define WARN_V(txt) DBG_V(txt)
 
 class Wert
 {

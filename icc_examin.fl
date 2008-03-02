@@ -11,7 +11,7 @@ decl {\#include <stdio.h>} {public
 decl {\#include <iostream>} {public
 } 
 
-decl {\#include <sstream>} {public
+decl {//\#include <sstream>} {public
 } 
 
 decl {\#include <cassert>} {public
@@ -64,14 +64,17 @@ decl {\#include "icc_profile.h"
 decl {ICCprofile profile;} {public
 } 
 
+decl {/* */ int level_PROG = -1;} {} 
+
 Function {} {open C return_type int
 } {
+  code DBG_PROG_START {}
   code {statlabel = (char*)calloc (sizeof (char), 1024);
   fullscreen = false;
   inspekt_topline = 0;} {}
   Fl_Window details {
     label {ICC Details} open
-    xywh {489 442 385 515} type Double box NO_BOX color 53
+    xywh {509 532 385 515} type Double box NO_BOX color 53
     code1 {DBG
     if (argc>1) {
 
@@ -151,7 +154,7 @@ Function {} {open C return_type int
 //profile.removeTag(0); //Test
 pr.load (profile);
 ICCprofile matrix (pr.matrix());
-matrix.saveProfileToFile("/tmp/icc_examin_test.icc");} selected
+matrix.saveProfileToFile("/tmp/icc_examin_test.icc");}
             tooltip {zu finden in "/tmp/icc_examin_test.icc"} xywh {0 0 100 20}
           }
         }
@@ -258,10 +261,12 @@ matrix.saveProfileToFile("/tmp/icc_examin_test.icc");} selected
   Fl_File_Icon::load_system_icons();
   if (argc > 1)
     open (false);} {}
+  code DBG_PROG_ENDE {}
 } 
 
 Function {open(int interaktiv)} {open return_type {std::string}
 } {
+  code DBG_PROG_START {}
   code {\#include "icc_vrml.h"
 
   std::string filename = filename_alt;
@@ -335,19 +340,24 @@ Function {open(int interaktiv)} {open return_type {std::string}
   }
 
   return filename;} {}
+  code DBG_PROG_ENDE {}
 } 
 
-Function {quit(void)} {} {
+Function {quit(void)} {open
+} {
+  code DBG_PROG_START {}
   code {/*Fl::remove_timeout((void (*)(void *))timeIT, (void *)viewer);
   delete viewer;
   delete browser;
   delete canvas;*/
   details->hide();
   exit(0);} {}
+  code DBG_PROG_ENDE {}
 } 
 
-Function {icc_read_info(char* filename)} {return_type {char*}
+Function {icc_read_info(char* filename)} {open return_type {char*}
 } {
+  code DBG_PROG_START {}
   code {char systemBefehl[1024];
   char *textfile = "/tmp/icc_temp.txt";
 
@@ -357,6 +367,7 @@ Function {icc_read_info(char* filename)} {return_type {char*}
   system (systemBefehl);
 
   return textfile;} {}
+  code DBG_PROG_ENDE {}
 } 
 
 class TagBrowser {open : {public Fl_Hold_Browser}
@@ -365,6 +376,7 @@ class TagBrowser {open : {public Fl_Hold_Browser}
   Function {TagBrowser(int X,int Y,int W,int H,char* start_info) : Fl_Hold_Browser(X,Y,W,H,start_info), X(X), Y(Y), W(W), H(H)} {} {}
   Function {reopen()} {open
   } {
+    code DBG_PROG_START {}
     code {//open and preparing the first selected item
   std::stringstream s;
   std::string text;
@@ -414,9 +426,11 @@ class TagBrowser {open : {public Fl_Hold_Browser}
 
   s.clear(); s << "ICC Details: " << profile.filename();
   details->label( (const char*) s.str().c_str() );} {}
+    code DBG_PROG_ENDE {}
   }
   Function {select_item(int item)} {open
   } {
+    code DBG_PROG_START {}
     code {//Auswahl aus tag_browser
   std::string text = _("Leer");
   tag_text->hinein(text);
@@ -490,16 +504,18 @@ class TagBrowser {open : {public Fl_Hold_Browser}
     }
     selectedTagName = TagInfo[0];
   }DBG} {}
+    code DBG_PROG_ENDE {}
   }
 } 
 
-class TagTexts {: {public Fl_Hold_Browser}
+class TagTexts {open : {public Fl_Hold_Browser}
 } {
   decl {int X; int Y; int W; int H; char* start_info;} {}
   Function {TagTexts(int X,int Y,int W,int H,char* start_info) : Fl_Hold_Browser(X,Y,W,H,start_info), X(X), Y(Y), W(W), H(H)} {open
   } {}
   Function {hinein(std::string text)} {open
   } {
+    code DBG_PROG_START {}
     code {//Text aus tag_browser anzeigen
 
   zeig_mich(this); DBG
@@ -514,6 +530,7 @@ class TagTexts {: {public Fl_Hold_Browser}
       this->topline(0);
       this->textfont(FL_COURIER);
       this->textsize(14);} {}
+    code DBG_PROG_ENDE {}
   }
 } 
 
@@ -525,6 +542,7 @@ class TagDrawings {open : {public Fl_Widget}
   Function {TagDrawings(int X,int Y,int W,int H) : Fl_Widget(X,Y,W,H), X(X), Y(Y), W(W), H(H)} {} {}
   Function {draw()} {open
   } {
+    code DBG_PROG_START {}
     code {// Kurven oder Punkte malen
   cout << punkte.size() << "/" << kurven.size() <<" "<< texte.size() <<" "; DBG
 
@@ -543,9 +561,11 @@ class TagDrawings {open : {public Fl_Widget}
     draw_kurve   (x(),y(),w(),h(),texte,kurven);
   }
   DBG} {}
+    code DBG_PROG_ENDE {}
   }
   Function {hinein_punkt(std::vector<double> vect, std::vector<std::string> txt)} {open
   } {
+    code DBG_PROG_START {}
     code {//CIExyY aus tag_browser anzeigen
   punkte.clear();
   for (unsigned int i = 0; i < vect.size(); i++)
@@ -557,9 +577,11 @@ class TagDrawings {open : {public Fl_Widget}
   wiederholen = false;
 
   zeig_mich(this);} {}
+    code DBG_PROG_ENDE {}
   }
   Function {hinein_kurven(std::vector<std::vector<double> >vect, std::vector<std::string> txt)} {open
   } {
+    code DBG_PROG_START {}
     code {//Kurve aus tag_browser anzeigen
   kurven = vect;
   texte = txt;
@@ -568,22 +590,26 @@ class TagDrawings {open : {public Fl_Widget}
 
   zeig_mich(this);
   DBG} {}
+    code DBG_PROG_ENDE {}
   }
   Function {ruhig_neuzeichnen(void)} {open return_type void
   } {
+    code DBG_PROG_START {}
     code {draw_cie_shoe(x(),y(),w(),h(),texte,punkte,true);} {}
+    code DBG_PROG_ENDE {}
   }
 } 
 
 decl {\#include <FL/fl_draw.H>} {} 
 
-class MftChoice {: {public Fl_Choice}
+class MftChoice {open : {public Fl_Choice}
 } {
   decl {int X; int Y; int W; int H; char* start_info; char typ[5]; std::vector<std::string> Info; int gewaehlter_eintrag;} {}
   Function {MftChoice(int X,int Y,int W,int H,char* start_info) : Fl_Choice(X,Y,W,H,start_info), X(X), Y(Y), W(W), H(H)} {open
   } {}
   Function {profil_tag(int _tag)} {open
   } {
+    code DBG_PROG_START {}
     code {tag_nummer = _tag;
 
 // = profile.printTagInfo(tag_nummer);
@@ -618,9 +644,11 @@ class MftChoice {: {public Fl_Choice}
 
   zeig_mich (this);
   auswahl_cb();} {}
+    code DBG_PROG_ENDE {}
   }
   Function {auswahl_cb(void)} {open
   } {
+    code DBG_PROG_START {}
     code {//Auswahl aus mft_choice
 
   Fl_Menu_* mw = (Fl_Menu_*)this;
@@ -669,11 +697,13 @@ class MftChoice {: {public Fl_Choice}
   }
 
   gewaehlter_eintrag = mw->value();} {}
+    code DBG_PROG_ENDE {}
   }
 } 
 
 Function {d_haendler(void* o)} {open return_type {static void}
 } {
+  code DBG_PROG_START {}
   code {Fl::remove_timeout( (void(*)(void*))d_haendler, 0 );
   if (!Fl::has_timeout( (void(*)(void*))d_haendler, 0 )
    && ((TagDrawings*)o)->active()
@@ -684,10 +714,12 @@ Function {d_haendler(void* o)} {open return_type {static void}
     DBG_V( ((TagDrawings*)o)->wiederholen )
     \#endif
   }} {}
+  code DBG_PROG_ENDE {}
 } 
 
 Function {zeig_mich(void* widget)} {open
 } {
+  code DBG_PROG_START {}
   code {// zeigt das ausgewählte Fenster (widget)
 
   tabellengruppe->hide();
@@ -699,10 +731,12 @@ Function {zeig_mich(void* widget)} {open
   tag_text->hide();
   ((Fl_Widget*)widget)->parent()->show(); DBG
   ((Fl_Widget*)widget)->show(); DBG} {}
+  code DBG_PROG_ENDE {}
 } 
 
-Function {zeilenNachVector(std::string text)} {return_type {std::vector<std::string>}
+Function {zeilenNachVector(std::string text)} {open selected return_type {std::vector<std::string>}
 } {
+  code DBG_PROG_START {}
   code {// fügt Zeilen aus einen Text in einen Vector
   std::vector <std::string> texte;
 
@@ -722,11 +756,11 @@ Function {zeilenNachVector(std::string text)} {return_type {std::vector<std::str
       if (text_line.size() > 0) // falls was übrig bleibt
         texte.push_back(text_line.c_str());
 
-
+  DBG_PROG_ENDE
   return texte;} {}
 } 
 
-class GL_Ansicht {: {public Fl_Widget}
+class GL_Ansicht {open : {public Fl_Widget}
 } {
   decl {int X; int Y; int W; int H; std::vector<std::string>texte; std::vector<double>punkte; std::vector<std::vector<double> >kurven;} {}
   decl {int wiederholen;} {public
@@ -734,6 +768,7 @@ class GL_Ansicht {: {public Fl_Widget}
   Function {GL_Ansicht(int X,int Y,int W,int H) : Fl_Widget(X,Y,W,H), X(X), Y(Y), W(W), H(H)} {} {}
   Function {draw()} {open
   } {
+    code DBG_PROG_START {}
     code {// Kurven oder Punkte malen
   cout << punkte.size() << "/" << kurven.size() <<" "<< texte.size() <<" "; DBG
 
@@ -747,9 +782,11 @@ class GL_Ansicht {: {public Fl_Widget}
     draw_kurve   (x(),y(),w(),h(),texte,kurven);
   }
   DBG} {}
+    code DBG_PROG_ENDE {}
   }
   Function {hinein_punkt(std::vector<double> vect, std::vector<std::string> txt)} {open
   } {
+    code DBG_PROG_START {}
     code {//CIExyY aus tag_browser anzeigen
   punkte.clear();
   for (unsigned int i = 0; i < vect.size(); i++)
@@ -760,17 +797,23 @@ class GL_Ansicht {: {public Fl_Widget}
   kurven.clear();
 
   zeig_mich(this);} {}
+    code DBG_PROG_ENDE {}
   }
-  Function {hinein_kurven(std::vector<std::vector<double> >vect, std::vector<std::string> txt)} {} {
+  Function {hinein_kurven(std::vector<std::vector<double> >vect, std::vector<std::string> txt)} {open
+  } {
+    code DBG_PROG_START {}
     code {//Kurve aus tag_browser anzeigen
   kurven = vect;
   texte = txt;
   punkte.clear();
 
   zeig_mich(this);} {}
+    code DBG_PROG_ENDE {}
   }
-  Function {ruhig_neuzeichnen(void)} {return_type void
+  Function {ruhig_neuzeichnen(void)} {open return_type void
   } {
+    code DBG_PROG_START {}
     code {draw_cie_shoe(x(),y(),w(),h(),texte,punkte,true);} {}
+    code DBG_PROG_ENDE {}
   }
 } 

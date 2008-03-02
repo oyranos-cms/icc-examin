@@ -13,7 +13,7 @@
 #include "icc_utils.h"
 
 #ifdef DEBUG_ICCFORMELN
-  #define DBG_v(x) DBG_V(x)
+  #define DBG_v(x) DBG_NUM_V(x)
 #else
   #define DBG_v(x)
 #endif
