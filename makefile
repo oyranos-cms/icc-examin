@@ -23,7 +23,7 @@ DL = --ldflags # --ldstaticflags
 VRML_LIBS=$(FLTK_GL_LIBS) -lGL -lopenvrml -lopenvrml-gl -lpng -ljpeg \
  -lXinerama -lXft
 
-X11_LIBS=-L/usr/X11R6/lib
+X11_LIBS=-L/usr/X11R6/lib -lX11 -lXxf86vm -lXext
 
 FLTK_LIBS=`fltk-config --use-images --use-gl --use-glut $(DL)`
 
