@@ -61,7 +61,7 @@ ICCkette::init ()
   int fehler = fl_create_thread( fl_t, &waechter, (void *)this );
 # if HAVE_PTHREAD_H
   DBG_THREAD_V( fl_t <<" "<< pthread_self () )
-  icc_thread_liste[THREAD_WACHE] = fl_t; DBG_THREAD
+  registerThreadId( fl_t, THREAD_WACHE );
 # endif
   if(!fehler)
     DBG_PROG_S( "neuer Thread" );

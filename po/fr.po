@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ICC Examin 0.41\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2006-12-04 10:38+0100\n"
+"POT-Creation-Date: 2006-12-04 18:56+0100\n"
 "PO-Revision-Date: 2006-06-29 19:31+0200\n"
 "Last-Translator: Pascal LACROIX <lacroixpascal at vfemail.net>\n"
 "Language-Team: ALL <ku.b@gmx.de>\n"
@@ -1996,45 +1996,45 @@ msgstr ""
 msgid "@2>"
 msgstr ""
 
-#: icc_cinepaint.cpp:418
+#: icc_cinepaint.cpp:412
 #, fuzzy
 msgid "Image Profile..."
 msgstr "ICC Profils"
 
-#: icc_cinepaint.cpp:419
+#: icc_cinepaint.cpp:413
 #, fuzzy
 msgid "Proof Profile..."
 msgstr "Écran Profil"
 
-#: icc_cinepaint.cpp:420
+#: icc_cinepaint.cpp:414
 msgid "Watch Colours 3D..."
 msgstr ""
 
-#: icc_cinepaint.cpp:421
+#: icc_cinepaint.cpp:415
 msgid "Watch Colours 3D.2..."
 msgstr ""
 
-#: icc_cinepaint.cpp:565 icc_cinepaint.cpp:1192
+#: icc_cinepaint.cpp:587 icc_cinepaint.cpp:1217
 msgid "No profil assigned to image."
 msgstr ""
 
-#: icc_cinepaint.cpp:607
+#: icc_cinepaint.cpp:621
 msgid "Profil not written."
 msgstr ""
 
-#: icc_cinepaint.cpp:1247
+#: icc_cinepaint.cpp:1272
 msgid "Wrong profil assigned to image."
 msgstr ""
 
-#: icc_cinepaint.cpp:1451
+#: icc_cinepaint.cpp:1476
 msgid "No active drawable found."
 msgstr ""
 
-#: icc_cinepaint.cpp:1738
+#: icc_cinepaint.cpp:1763
 msgid "What kind of image is this?"
 msgstr ""
 
-#: icc_cinepaint.cpp:1832
+#: icc_cinepaint.cpp:1857
 msgid "What kind of image is this?\n"
 msgstr ""
 
@@ -2046,7 +2046,7 @@ msgstr ""
 msgid "Gibts nicht"
 msgstr ""
 
-#: icc_utils.h:224 icc_utils.h:225 icc_utils.h:226
+#: icc_utils.h:225 icc_utils.h:226 icc_utils.h:227
 msgid "!!! Warnung !!!"
 msgstr ""
 

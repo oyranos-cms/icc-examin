@@ -347,7 +347,6 @@ MAIN()
 static void
 query ()
 {
-  int dependency_error = 0;
   static GParamDef args[] =
   {
     { PARAM_INT32, "run_mode", "Interactive, non-interactive" },
@@ -539,6 +538,34 @@ dialog_ (gint32 image_ID)
   return true;
 }
 
+/** @brief start ICC Exmain GUI */
+static void
+startWithArgs( int argc, char **argv )
+{
+# if HAVE_PTHREAD_H
+  registerThreadId( pthread_self(), THREAD_HAUPT );
+# ifdef CWDEBUG
+  Debug(myproject::debug::init_thread());	// This is a custom function defined
+  						// in example-project/debug.cc.
+# endif
+# endif
+
+    if(getenv("ICCEXAMIN_DEBUG") && atoi(getenv("ICCEXAMIN_DEBUG"))>0)
+      icc_debug = atoi(getenv("ICCEXAMIN_DEBUG"));
+    else
+      icc_debug = 0;
+
+    DBG_PROG_START
+
+    setI18N( argv[0] );
+
+    ICCexamin hauptprogramm;
+
+    icc_examin = &hauptprogramm;
+
+    hauptprogramm.start(argc, argv);
+}
+
 /** @brief Farbprofil in ICC Examin ansehen
 
  *  benötigt ICC Examin
@@ -578,23 +605,15 @@ doExamin (gint32 image_ID, CMSProfileType typ)
     tn += profil_temp_name.str();
     tn += "'";
 
-# if 0
-    //system (tn.c_str());
+#if 0
+    system (tn.c_str());
 #else
-  if(getenv("ICCEXAMIN_DEBUG") && atoi(getenv("ICCEXAMIN_DEBUG"))>0)
-    icc_debug = atoi(getenv("ICCEXAMIN_DEBUG"));
-  else
-    icc_debug = 0;
+    const char *args_c[2];
 
-  DBG_PROG_START
+    args_c[0] = argv[0];
+    args_c[1] = profil_temp_name.str().c_str();
 
-  setI18N( argv[0] );
-
-  ICCexamin hauptprogramm;
-
-  icc_examin = &hauptprogramm;
-
-  hauptprogramm.start(argc, argv);
+    startWithArgs(2, (char**)args_c);
 #endif
 
     remove( profil_temp_name.str().c_str() );
@@ -998,14 +1017,25 @@ waechter (void* zeiger)
 
     DBG_S( tn )
 
+#if 0
     system (tn.c_str());
+#else
+    const char *args_c[4];
+
+    args_c[0] = argv[0];
+    args_c[1] = b.c_str();
+    args_c[2] = a.c_str();
+    args_c[3] = p.c_str();
+
+    startWithArgs(3, (char**)args_c);
+#endif
 
     DBG_S( "bin_erste: " << bin_erste )
     freilauf = false;
     while(farbe_pruefen_laeuft)
     {
       DBG_S( "bin_erste: " << bin_erste )
-      sleep(1);
+      icc_examin_ns::sleep( 0.1 );
       DBG_S( "bin_erste: " << bin_erste )
     }
     freilauf = true;

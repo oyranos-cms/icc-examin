@@ -108,11 +108,11 @@ void
 ICCexamin::quit ()
 { DBG_PROG_START
   status_ = false;
+  delete alle_gl_fenster;
   delete icc_betrachter->DD;
   delete icc_betrachter->details;
   delete icc_betrachter;
   delete io_;
-  delete alle_gl_fenster;
 
   Fl_Preferences vor( Fl_Preferences::USER, "oyranos.org", "iccexamin");
   Fl_Preferences gl_gamut(vor, "gl_gamut");
@@ -271,7 +271,7 @@ ICCexamin::start (int argc, char** argv)
   DBG_THREAD_V( fl_t )
   int fehler = fl_create_thread( fl_t, &ICCexaminIO::oeffnenStatisch_, (void *)this );
 # if HAVE_PTHREAD_H
-  icc_thread_liste[THREAD_LADEN] = fl_t;
+  registerThreadId( fl_t, THREAD_LADEN );
 # ifdef CWDEBUG
   Debug(myproject::debug::init_thread());
 # endif

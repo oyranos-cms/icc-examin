@@ -236,7 +236,7 @@ $(BINTARGET):	$(BASE) $(OBJECTS) $(MAIN_OBJECTS) $(LINGUAS_SRC) $(I18N_OBJECTS) 
 
 $(CINEPAINT_OBJECTS):	$(CINEPAINT_SOURCES)
 	echo Compiling Gtk CinePaint plug-in ...
-	$(CXX) $(CXXFLAGS_) $(CP_FLAGS) -c $(CINEPAINT).cpp
+	$(CXX) $(CXXFLAGS_) $(CP_FLAGS) -c $(CINEPAINT_SOURCES)
 
 $(CINEPAINT):	$(BASE) $(CINEPAINT_OBJECTS) $(OBJECTS) $(LINGUAS_SRC) $(I18N_OBJECTS) $(LIBNAME) $(LIBFL_I18N)
 	echo Verknuepfen $@ ...
@@ -266,7 +266,7 @@ $(LIBFL_I18N):
 
 static:	$(BINTARGET)
 	echo Verknuepfen $@ ...
-	$(CXX) $(CXXFLAGS_) -o $(BINTARGET) $(OBJECTS) \
+	$(CXX) $(CXXFLAGS_) -o $(BINTARGET) $(MAIN_OBJECTS) $(OBJECTS) \
 	-L./ \
 	`test -f /opt/local/lib/libfltk_images.a && (echo /opt/local/lib/libfltk_images.a; \
 	    (test -f /opt/local/lib/libpng.a && echo /opt/local/lib/libpng.a || echo "-lpng"); (test -f /opt/local/lib/libjpeg.a && echo /opt/local/lib/libjpeg.a || echo "-ljpeg"); echo -lz) || \
@@ -387,7 +387,7 @@ EXEEXT		=
 	msgfmt $<
 
 tgz:
-	make DESTDIR=Entwickeln copy_files
+	make DESTDIR="`pwd`/Entwickeln" copy_files
 	tar cf - Entwickeln/ \
 	| gzip > $(TARGET)_$(MTIME).tgz
 	test -d Entwickeln && \
@@ -396,7 +396,7 @@ tgz:
 	test -d ../Archiv && mv -v $(TARGET)_*.tgz ../Archiv
 
 targz:
-	make DESTDIR=$(TARGET)-$(VERSION) copy_files
+	make DESTDIR="`pwd`/$(TARGET)-$(VERSION)" copy_files
 	tar cf - $(TARGET)-$(VERSION)/ \
 	| gzip > $(TARGET)_$(MTIME).tgz
 	test -d $(TARGET)-$(VERSION) && \
@@ -407,7 +407,7 @@ targz:
 copy_files:
 	mkdir $(DESTDIR)
 	(cd fl_i18n; \
-	 make DESTDIR=../$(DESTDIR)/fl_i18n -f $(MAKEFILE_ARCH) copy_files; \
+	 make DESTDIR=$(DESTDIR)/fl_i18n -f $(MAKEFILE_ARCH) copy_files; \
 	 cd ..)
 	$(COPY) -R \
 	$(ALL_FILES) \
@@ -440,7 +440,27 @@ rpm:	$(TARGET).spec dist
 	@echo "============================================================"
 	@echo "Beendet - die Packete befinden sich in rpmdir/RPMS and rpmdir/SRPMS!"
 
-install:
+install:	$(INSTALL_TARGET)
+
+install_cp:
+	echo Installation ...
+	mkdir -p $(DESTDIR)$(CP_DIR)
+	$(INSTALL) -m 755 $(CINEPAINT) $(DESTDIR)$(CP_DIR)
+	#strip $(DESTDIR)$(bindir)/$(CINEPAINT)
+	fltk-config --post $(DESTDIR)$(CP_DIR)/$(CINEPAINT)
+	mkdir -p $(DESTDIR)$(datadir)/fonts/
+	echo  Linguas ...
+	for ling in $(LINGUAS); do \
+	  echo "installiere po/$${ling}.gmo ..."; \
+	  mkdir -p $(DESTDIR)$(datadir)/locale/$${ling}/LC_MESSAGES; \
+	  test -f po/$${ling}.gmo \
+		&& (mkdir -p $(DESTDIR)$(datadir)/locale/$${ling}/LC_MESSAGES; \
+            $(INSTALL) -m 644 po/$${ling}.gmo $(DESTDIR)$(datadir)/locale/$${ling}/LC_MESSAGES/$(CINEPAINT).mo ) \
+		|| (echo $${ling}.gmo is not yet ready ... skipping); \
+	done;
+	echo ... Installation beendet
+
+install_global:
 	echo Installation ...
 	mkdir -p $(DESTDIR)$(bindir)
 	$(INSTALL) -m 755 $(BINTARGET) $(DESTDIR)$(bindir)

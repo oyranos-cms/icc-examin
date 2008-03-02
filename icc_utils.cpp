@@ -111,6 +111,14 @@ Fl_Thread icc_thread_liste[12] = {0,0,0,0,0,0,0,0,0,0,0,0};
  *
  */
 
+
+void
+registerThreadId(Fl_Thread id, int pos)
+{
+  if(0 <= pos && pos < 12 )
+    icc_thread_liste[pos] = id;
+}
+
 Fl_Thread
 wandelThreadId(Fl_Thread id)
 {

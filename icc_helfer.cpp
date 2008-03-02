@@ -1209,6 +1209,9 @@ setI18N( const char *exename )
   }
 # endif
   is_path = fl_search_locale_path (num_paths, locale_paths, "de", "icc_examin");
+  if(is_path < 0)
+    is_path = fl_search_locale_path (num_paths, locale_paths, "de",
+              strrchr(exename, DIR_SEPARATOR_C)+1 );
 
   if(is_path >= 0) {
     fl_initialise_locale ( "icc_examin", locale_paths[is_path] );

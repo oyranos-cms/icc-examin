@@ -326,17 +326,34 @@ XINERAMA=0; export XINERAMA
 XF86VMODE=0; export XF86VMODE
 PO=0; export PO
 
-CP_CONFIG=`which cinepainttool 2>/dev/null`
-if [ -n "$CP_CONFIG" ]; then
-  CP_FLAGS=`cinepainttool --cflags`
-  CP_LIBS=`cinepainttool --libs`
-  CP_VERSION=`cinepainttool --version`
+if [ -d ../../../plug-ins/icc_examin/ ]; then
+  build_plug_in_only=1
+  CP_CONFIG=../../../cinepainttool
+  CP_FLAGS="-I../../../lib -I../../.. `$CP_CONFIG --cflags`"
+  CP_LIBS="-L../../../lib/.libs `$CP_CONFIG --libs`"
+  CP_VERSION=`$CP_CONFIG --version`
+  echo "CP_DIR=`$CP_CONFIG --install-dir`" >> $CONF
+  echo "INSTALL_TARGET=install_cp" >> $CONF
+  echo "local CinePaint $CP_VERSION  detected"
+  echo "CINEPAINT = icc_examin_cp" >> $CONF
+else
+  echo "INSTALL_TARGET=install_global" >> $CONF
 fi
+if [ -z "$CP_CONFIG" ]; then
+  CP_CONFIG=`which cinepainttool 2>/dev/null`
+  if [ -n "$CP_CONFIG" ]; then
+    CP_FLAGS=`cinepainttool --cflags`
+    CP_LIBS=`cinepainttool --libs`
+    CP_VERSION=`cinepainttool --version`
+    echo "CINEPAINT = icc_examin_cp" >> $CONF
+    echo "Gtk CinePaint $CP_VERSION    detected"
+  fi
+fi
+ 
 if [ -n "$CP_VERSION" ]; then
-  echo "CINEPAINT = icc_cinepaint" >> $CONF
   echo "CP_FLAGS=$CP_FLAGS" >> $CONF
   echo "CP_LIBS=$CP_LIBS" >> $CONF
-  echo "Gtk CinePaint $CP_VERSION    detected"
+  echo "#define ICC_CINEPAINT_VERSION \"Gtk CinePaint $CP_VERSION\"" >> $VERS
 fi
 
 echo ""
@@ -363,6 +380,9 @@ echo "#define ICC_EXAMIN_VERSION_C $VERSION_C" >> $VERS
 echo "#define ICC_EXAMIN_VERSION $VERSION_L" >> $VERS
 echo "#define ICC_EXAMIN_V \"$VERSION\"" >> $VERS
 echo "#define ICC_EXAMIN_D _(\"$ZEIT\")" >> $VERS
+if [ -n "$CP_VERSION" ]; then
+  echo "#define ICC_CINEPAINT_VERSION \"Gtk CinePaint $CP_VERSION\"" >> $VERS
+fi
 echo "" >> $VERS
 echo "#endif //ICC_VERSION_H" >> $VERS
 

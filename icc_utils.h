@@ -83,10 +83,11 @@ const char* threadGettext( const char* text);
 
 
 #define DBG_MAX_THREADS 12
-extern Fl_Thread icc_thread_liste[DBG_MAX_THREADS];
-enum { THREAD_HAUPT, THREAD_GL1, THREAD_GL2, THREAD_WACHE, THREAD_LADEN };
+enum { THREAD_HAUPT, THREAD_GL1, THREAD_GL2, THREAD_WACHE, THREAD_LADEN,
+  THREAD_ICCEXAMIN_MAX };
 void           dbgThreadId (Fl_Thread id);
 Fl_Thread   wandelThreadId (Fl_Thread id);
+void        registerThreadId (Fl_Thread id, int pos);
 
 
 // Statusmeldungen zur Fehlersuche

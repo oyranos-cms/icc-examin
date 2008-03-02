@@ -280,7 +280,7 @@ targz:
 
 copy_files:
 	echo Copy all fl_i18n files ...
-	mkdir $(DESTDIR)
+	mkdir -p $(DESTDIR)
 	$(COPY) -R \
 	$(ALL_FILES) \
 	$(DESTDIR)

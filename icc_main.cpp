@@ -42,8 +42,7 @@ main (int argc, char** argv)
   						// in example-project/debug.cc.
 # endif
 # if HAVE_PTHREAD_H
-  icc_thread_liste[THREAD_HAUPT] = pthread_self();
-
+  registerThreadId( pthread_self(), THREAD_HAUPT );
 # ifdef CWDEBUG
   Debug(myproject::debug::init_thread());	// This is a custom function defined
   						// in example-project/debug.cc.
