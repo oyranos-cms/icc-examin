@@ -2,8 +2,9 @@
 // Copyright: Kai-Uwe Behrmann
 // Date:      August 2004
 
+
 #ifndef ICC_PROFILIERER_H
-#define ICC_PROFILEIRER_H
+#define ICC_PROFILIERER_H
 
 #include <string>
 #include <iostream>
@@ -25,19 +26,26 @@
 
 class Profilierer {
   public:
-                        Profilierer (); 
+                        Profilierer ()                   { DBG }
+                        Profilierer (ICCprofile& profil) { DBG load(profil); }
+                        ~Profilierer()                   { DBG }
+    void                load (ICCprofile& profil)        { DBG
+                            _measurement = profil.getMeasurement();
+                            DBG
+                        }
   private:
     ICCprofile          _profil; // ZIEL
     ICCmeasurement      _measurement;
     bool                check (ICCprofile& p);
+    std::string         _testProfil;
   public:
-    void                load  (ICCprofile& p);
     // erzeuge Matrixprofil
     const ICCprofile&   matrix();
   private:
     std::vector<std::map<double,XYZ> > RGB_Tags (void);
     void                RGB_Gamma_schreiben (double gamma);
     void   RGB_Gamma_anpassen (std::vector<std::map<double,XYZ> >tonwertskalen);
+    double*             XYZnachRGB (XYZ mess_xyz);
     void                gemeinsamerHeader (ICCheader *header);
     std::string         print ();
     void                schreibKurveTag (icTagSignature name, double gamma);

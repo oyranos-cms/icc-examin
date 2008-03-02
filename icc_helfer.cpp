@@ -219,6 +219,73 @@ icValueXYZ (icXYZNumber* ic_xyz,double X, double Y, double Z)
   ic_xyz->Z = icValueSF(Z);
 }
 
+
+void
+FarbeZuDouble (double* d_xyz, XYZ xyz)
+{ DBG
+  d_xyz[0] = xyz.X;
+  d_xyz[1] = xyz.Y;
+  d_xyz[2] = xyz.Z;
+}
+
+void
+FarbeZuDouble (XYZ *xyz, double* d_xyz)
+{ DBG
+  xyz->X = d_xyz[0];
+  xyz->Y = d_xyz[1];
+  xyz->Z = d_xyz[2];
+}
+
+void
+FarbeZuDouble (double* d_lab, Lab lab)
+{ DBG
+  d_lab[0] = lab.L;
+  d_lab[1] = lab.a;
+  d_lab[2] = lab.b;
+}
+
+void
+FarbeZuDouble (Lab *lab, double* d_lab)
+{ DBG
+  lab->L = d_lab[0];
+  lab->a = d_lab[1];
+  lab->b = d_lab[2];
+}
+
+void
+FarbeZuDouble (double* d_rgb, RGB rgb)
+{ DBG
+  d_rgb[0] = rgb.R;
+  d_rgb[1] = rgb.G;
+  d_rgb[2] = rgb.B;
+}
+
+void
+FarbeZuDouble (RGB *rgb, double* d_rgb)
+{ DBG
+  rgb->R = d_rgb[0];
+  rgb->G = d_rgb[1];
+  rgb->B = d_rgb[2];
+}
+
+void
+FarbeZuDouble (double* d_cmyk, CMYK cmyk)
+{ DBG
+  d_cmyk[0] = cmyk.C;
+  d_cmyk[1] = cmyk.M;
+  d_cmyk[2] = cmyk.Y;
+  d_cmyk[3] = cmyk.K;
+}
+
+void
+FarbeZuDouble (CMYK *cmyk, double* d_cmyk)
+{ DBG
+  cmyk->C = d_cmyk[0];
+  cmyk->M = d_cmyk[1];
+  cmyk->Y = d_cmyk[2];
+  cmyk->K = d_cmyk[3];
+}
+
 // Farbkonvertierungen
 
 double*

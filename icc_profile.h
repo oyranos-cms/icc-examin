@@ -2,8 +2,8 @@
 // Copyright: Kai-Uwe Behrmann
 // Date:      Mai 2004
 
-#ifndef ICC_PROFILIERER_H
-#define ICC_PROFILIERER_H
+#ifndef ICC_PROFILE_H
+#define ICC_PROFILE_H
 
 #define ICC_EXAMIN_V 0.12
 
@@ -55,6 +55,17 @@ typedef struct {
     double Y;
     double K;
 } CMYK;
+
+// Umwandlungen
+void FarbeZuDouble (double* d_xyz, XYZ xyz);
+void FarbeZuDouble (double* d_rgb, RGB rgb);
+void FarbeZuDouble (double* d_lab, Lab lab);
+void FarbeZuDouble (double* d_cmyk, CMYK cmyk);
+void FarbeZuDouble (XYZ *xyz, double* d_xyz);
+void FarbeZuDouble (RGB *rgb, double* d_rgb);
+void FarbeZuDouble (Lab *lab, double* d_lab);
+void FarbeZuDouble (CMYK *cmyk, double* d_cmyk);
+
 
 // Farbfunktionen
 // definiert in icc_formeln.cpp
@@ -539,8 +550,8 @@ class ICCprofile {
   public: // Datei I/O
     int                 checkProfileDevice (char* type,
                                            icProfileClassSignature deviceClass);
-    void                saveProfileToFile  (char* filename, char *profile,
-                                           int    size);
+    void                saveMemToFile  (char* filename, char *block,
+                                           int size);
  
   public: // Messwertinfos
     bool                hasMeasurement () {DBG return (hasTagName("targ") ||
@@ -559,6 +570,8 @@ class ICCprofile {
                           if (hasTagName(name))
                             removeTag (getTagByName(name)); }
     void                saveProfileToFile  (char* filename);
+    int                 getProfileSize  (void);
+    char*               saveProfileToMem  (int* size);
   private:
     void                writeTags (void);
     void                writeHeader (void);
@@ -566,4 +579,4 @@ class ICCprofile {
 };
 
 
-#endif //ICC_PROFILIERER_H
+#endif //ICC_PROFILE_H

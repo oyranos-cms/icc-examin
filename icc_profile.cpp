@@ -1156,6 +1156,39 @@ ICCprofile::saveProfileToFile  (char* filename)
   f.close();
 }
 
+int
+ICCprofile::getProfileSize  ()
+{ DBG
+  if (_data && _size) free(_data);//delete []_data;
+  _size = sizeof (icHeader) + sizeof (icUInt32Number); DBG_V(_size <<" "<<sizeof (icProfile))
+  _data = (char*)calloc (sizeof (char) , _size); //new char (sizeof(icHeader) );
+  writeTagTable ();
+  writeTags ();
+  header.size(_size); DBG_V (_size )
+  writeHeader ();
+
+  DBG_V( _size )
+  return _size;
+}
+
+char*
+ICCprofile::saveProfileToMem  (int *size)
+{ DBG
+  if (_data && _size) free(_data);//delete []_data;
+  _size = sizeof (icHeader) + sizeof (icUInt32Number); DBG_V(_size <<" "<<sizeof (icProfile))
+  _data = (char*)calloc (sizeof (char) , _size); //new char (sizeof(icHeader) );
+  writeTagTable ();
+  writeTags ();
+  header.size(_size); DBG_V (_size )
+  writeHeader ();
+
+  char *block = (char*)calloc (sizeof (char) , _size);
+  memcpy (block, _data, _size);
+  *size = _size;
+  DBG_V( _size )
+  return block;
+}
+
 void
 ICCprofile::writeTags (void)
 { DBG
@@ -1180,6 +1213,7 @@ ICCprofile::writeTags (void)
     DBG_V (icValue(list->tags[i].sig))
     DBG_V (icValue(list->tags[i].size) << " " << (int)&_data[0])
   }
+  DBG_V( _size )
 }
 
 void
@@ -1284,14 +1318,14 @@ ICCprofile::checkProfileDevice (char* type, icProfileClassSignature deviceClass)
 }
 
 void
-ICCprofile::saveProfileToFile (char* filename, char *profile, int size)
+ICCprofile::saveMemToFile (char* filename, char *block, int size)
 { DBG
   FILE *fp=NULL;
   int   pt = 0;
 
   if ((fp=fopen(filename, "w")) != NULL) {
     do {
-      fputc ( profile[pt++] , fp);
+      fputc ( block[pt++] , fp);
     } while (--size);
   }
 

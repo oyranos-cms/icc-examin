@@ -56,10 +56,10 @@ static void cb_menueintrag_Voll(Fl_Menu_*, void*) {
 }
 
 static void cb_MatrixTestprofil(Fl_Menu_*, void*) {
-  Profilierer p;
+  Profilierer pr;
 //profile.removeTag(0); //Test
-p.load (profile);
-ICCprofile matrix (p.matrix());
+pr.load (profile);
+ICCprofile matrix (pr.matrix());
 matrix.saveProfileToFile("/tmp/icc_examin_test.icc");
 }
 

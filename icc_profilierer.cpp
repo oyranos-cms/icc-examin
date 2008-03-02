@@ -19,23 +19,10 @@
 // locale Funktionen
 
 void weisspunktanpassung (XYZ& korrektur, XYZ *f);
-RGB* RGB_Differenz (ICCprofile profil, XYZ mess_xyz);
 
 /**
   *  @brief Profilierer Funktionen
   */ 
-
-Profilierer::Profilierer()
-{ DBG
-  
-}
-
-void
-Profilierer::load (ICCprofile& profil)
-{ DBG
-  _measurement = profil.getMeasurement();
-  DBG
-}
 
 
 std::string
@@ -49,16 +36,6 @@ const ICCprofile&
 Profilierer::matrix()
 { DBG
   _profil.clear();
-  std::vector<std::map<double,XYZ> > tonwertskalen;
-  // Primärtags + Weiss und Schwarz schreiben
-  tonwertskalen = RGB_Tags ();
-  // vorläufiges Gamma 1.0
-  RGB_Gamma_schreiben (1.0);
-  // endgültiges Gamma berechnen und schreiben
-  RGB_Gamma_anpassen (tonwertskalen);
-
-  schreibMessTag (&profile);  // TODO bedient sich bei icc_examin
-
   // Profilkopf schreiben
   ICCheader header;
   gemeinsamerHeader (&header);
@@ -75,6 +52,16 @@ Profilierer::matrix()
   s << "SB v" << ICC_PROFILIERER_VERSION << " Test";
   schreibTextTag (icSigProfileDescriptionTag, s.str());
   schreibTextTag (icSigCopyrightTag, "Lesen und Anwenden sind verboten. Veröffentlichen ist Hochverrat und wir mit Enthauptung nach Patentrecht bestraft!!!");
+
+  // Primärtags + Weiss und Schwarz schreiben
+  std::vector<std::map<double,XYZ> > tonwertskalen =
+  RGB_Tags ();
+  // vorläufiges Gamma 1.0
+  RGB_Gamma_schreiben (1.0);
+  // endgültiges Gamma berechnen und schreiben
+  RGB_Gamma_anpassen (tonwertskalen);
+
+  schreibMessTag (&profile);  // TODO bedient sich bei icc_examin
 
   return _profil;
 }
@@ -93,6 +80,40 @@ Profilierer::RGB_Gamma_schreiben (double gamma)
   schreibKurveTag (icSigRedTRCTag, gamma);
   schreibKurveTag (icSigGreenTRCTag, gamma);
   schreibKurveTag (icSigBlueTRCTag, gamma);
+}
+
+double*
+Profilierer::XYZnachRGB (XYZ mess_xyz)
+{ DBG
+  static double rgb[3], xyz[3];
+  DBG_S( "XYZ: " << mess_xyz.X << " " << mess_xyz.Y << " " << mess_xyz.Z )
+
+  if (_testProfil.size() == 0) {
+    int size = _profil.getProfileSize(); DBG_V( size )
+    _testProfil.assign( _profil.saveProfileToMem( &size ), size );
+  }
+  if (_testProfil.size() == 0)
+    DBG_S( "!!! _testProfile war leer !!!" )
+  char* const_ptr = (char*) _testProfil.c_str();
+
+  #define PRECALC cmsFLAGS_NOTPRECALC // No memory overhead, VERY
+                                      // SLOW ON TRANSFORMING, very fast on creating transform.
+  cmsHPROFILE testRGB = cmsOpenProfileFromMem (const_ptr, _testProfil.size() ),
+              hXYZ;
+  cmsHTRANSFORM hXYZtoRGB;
+  hXYZ = cmsCreateXYZProfile ();
+  hXYZtoRGB = cmsCreateTransform   (hXYZ, TYPE_XYZ_DBL,
+                                    testRGB, TYPE_RGB_DBL,
+                                    INTENT_ABSOLUTE_COLORIMETRIC,
+                                    PRECALC|cmsFLAGS_WHITEBLACKCOMPENSATION);
+  FarbeZuDouble( &xyz[0], mess_xyz );
+  DBG_S( "xyz: " << xyz[0] << " " << xyz[1] << " " << xyz[2] )
+  cmsDoTransform (hXYZtoRGB, &xyz[0], &rgb[0], 1);
+
+  cmsDeleteTransform (hXYZtoRGB);
+  cmsCloseProfile (testRGB);
+  DBG_S( "RGB: " << rgb[0] << " " << rgb[1] << " " << rgb[2] )
+  return &rgb[0];
 }
 
 void
@@ -114,21 +135,27 @@ Profilierer::RGB_Gamma_anpassen (std::vector<std::map<double,XYZ> > tonwertskale
   kurveTag->curve.count = icValue( tonwertskalen[0].size() );
   ic_tag.size = icValue ((icUInt32Number)size);
 
-  std::map<double,XYZ>::const_iterator i;
-
   int zahl = 0;
-  double korr_Y, Y, min_Y;
+  double korr, kFarbe, min;
   int kanal = 0;
+  double *dRGB;
+
+  std::map<double,XYZ>::const_iterator i;
 
   for (; kanal < 3; kanal++) {
     i = tonwertskalen[kanal].begin();
-    min_Y = i->second.Y;
+    dRGB = XYZnachRGB (i->second);
+    min = dRGB[kanal];
     i = tonwertskalen[kanal].end(); i--;
-    korr_Y = 1.0/(i->second.Y - min_Y);
-    for (i= tonwertskalen[kanal].begin(); tonwertskalen[kanal].end() != i; i++){
-      DBG_V( i->first ) DBG_V( min_Y ) DBG_V( korr_Y ) DBG_V( i->second.Y )
-      Y = (i->second.Y - min_Y)* korr_Y;
-      kurveTag->curve.data[zahl] = icValue( (icUInt16Number)(Y*65535.0+0.5) );
+    dRGB = XYZnachRGB (i->second); DBG_V( dRGB[0] << dRGB[1] << dRGB[2] )
+    korr = 1.0/(dRGB[kanal]/* - min*/);
+    for (i= tonwertskalen[kanal].begin(); i != tonwertskalen[kanal].end(); i++){
+      dRGB = XYZnachRGB (i->second);
+
+      DBG_V( i->first ) DBG_V( min ) DBG_V( korr ) DBG_V( dRGB[kanal] )
+
+      kFarbe = (dRGB[kanal]/* - min*/)* korr;
+      kurveTag->curve.data[zahl] = icValue( (icUInt16Number)(kFarbe*65535.0+0.5) );
       zahl++; DBG_V( icValue( kurveTag->curve.data[zahl] ) )
     } zahl = 0;
     // Tagbeschreibung mitgeben
@@ -147,6 +174,7 @@ Profilierer::RGB_Gamma_anpassen (std::vector<std::map<double,XYZ> > tonwertskale
     // hinzufügen
     _profil.addTag( Tag ); Tag.clear(); 
   }
+  _testProfil.clear();
 }
 
 std::vector<std::map<double,XYZ> >
@@ -168,6 +196,9 @@ Profilierer::RGB_Tags (void)
   for (int i = 0; i < (int)rgb.size(); i++) {
     if (rgb[i].G == 0.0 && rgb[i].B == 0.0) {
       tonwertskalen[0][rgb[i].R] = xyz[i];
+      tonwertskalen[0][rgb[i].R].X /= 100.0;
+      tonwertskalen[0][rgb[i].R].Y /= 100.0;
+      tonwertskalen[0][rgb[i].R].Z /= 100.0;
       if (rgb[i].R == 255.0) {
         rot.X = xyz[i].X/100.0; DBG_S( "rot" )
         rot.Y = xyz[i].Y/100.0;
@@ -176,6 +207,9 @@ Profilierer::RGB_Tags (void)
     }
     if (rgb[i].R == 0.0 && rgb[i].B == 0.0) {
       tonwertskalen[1][rgb[i].G] = xyz[i];
+      tonwertskalen[1][rgb[i].G].X /= 100.0;
+      tonwertskalen[1][rgb[i].G].Y /= 100.0;
+      tonwertskalen[1][rgb[i].G].Z /= 100.0;
       if (rgb[i].G == 255.0) {
         gruen.X = xyz[i].X/100.0; DBG_S( "grün" )
         gruen.Y = xyz[i].Y/100.0;
@@ -184,6 +218,9 @@ Profilierer::RGB_Tags (void)
     }
     if (rgb[i].R == 0.0 && rgb[i].G == 0.0) {
       tonwertskalen[2][rgb[i].B] = xyz[i];
+      tonwertskalen[2][rgb[i].B].X /= 100.0;
+      tonwertskalen[2][rgb[i].B].Y /= 100.0;
+      tonwertskalen[2][rgb[i].B].Z /= 100.0;
       if (rgb[i].B == 255.0) {
         blau.X = xyz[i].X/100.0; DBG_S( "blau" )
         blau.Y = xyz[i].Y/100.0;
@@ -220,6 +257,12 @@ Profilierer::RGB_Tags (void)
   weisspunktanpassung (korr, &rot);
   weisspunktanpassung (korr, &gruen);
   weisspunktanpassung (korr, &blau);
+  for (int kanal = 0; kanal < 3 ; kanal++) {
+    std::map<double,XYZ>::iterator i;
+    for (i= tonwertskalen[kanal].begin(); i != tonwertskalen[kanal].end(); i++){
+      weisspunktanpassung (korr, &(i->second));
+    }
+  }
   DBG_V( weiss.X <<" "<< weiss.Y <<" "<< weiss.Z )
 
 

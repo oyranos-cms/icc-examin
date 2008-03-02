@@ -71,7 +71,7 @@ Function {} {open C return_type int
   inspekt_topline = 0;} {}
   Fl_Window details {
     label {ICC Details} open
-    xywh {484 418 385 515} type Double box NO_BOX color 53
+    xywh {489 442 385 515} type Double box NO_BOX color 53
     code1 {DBG
     if (argc>1) {
 
@@ -147,11 +147,11 @@ Function {} {open C return_type int
           }
           menuitem {} {
             label {MatrixTestprofil schreiben}
-            callback {Profilierer p;
+            callback {Profilierer pr;
 //profile.removeTag(0); //Test
-p.load (profile);
-ICCprofile matrix (p.matrix());
-matrix.saveProfileToFile("/tmp/icc_examin_test.icc");}
+pr.load (profile);
+ICCprofile matrix (pr.matrix());
+matrix.saveProfileToFile("/tmp/icc_examin_test.icc");} selected
             tooltip {zu finden in "/tmp/icc_examin_test.icc"} xywh {0 0 100 20}
           }
         }
@@ -542,8 +542,7 @@ class TagDrawings {open : {public Fl_Widget}
     wiederholen = false;
     draw_kurve   (x(),y(),w(),h(),texte,kurven);
   }
-  DBG} {selected
-    }
+  DBG} {}
   }
   Function {hinein_punkt(std::vector<double> vect, std::vector<std::string> txt)} {open
   } {
