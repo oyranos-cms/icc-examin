@@ -35,7 +35,9 @@ class Profilierer {
     // erzeuge Matrixprofil
     const ICCprofile&   matrix();
   private:
-    void                RGB_Tags (void);
+    std::vector<std::map<double,XYZ> > RGB_Tags (void);
+    void                RGB_Gamma_schreiben (double gamma);
+    void   RGB_Gamma_anpassen (std::vector<std::map<double,XYZ> >tonwertskalen);
     void                gemeinsamerHeader (ICCheader *header);
     std::string         print ();
     void                schreibKurveTag (icTagSignature name, double gamma);
@@ -44,6 +46,7 @@ class Profilierer {
     void                schreibXYZTag (icTagSignature name,
                                        double X, double Y, double Z);
     void                schreibTextTag (icTagSignature name, std::string text);
+    void                schreibMessTag (ICCprofile *profil);
 };
 
 

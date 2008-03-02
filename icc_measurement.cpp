@@ -354,7 +354,6 @@ ICCmeasurement::lcms_parse                   (void)
 
 
   // vorläufige lcms Farbnamen listen
-  if (farben > 0) {
     _Feldnamen.resize(_nFelder);
     DBG
     for (int k = 0; k < _nFelder; k++) {
@@ -369,7 +368,9 @@ ICCmeasurement::lcms_parse                   (void)
         _Feldnamen[k] = constr;
       }
     }
-  } DBG_S (_Feldnamen[0] << " bis " << _Feldnamen[_nFelder-1])
+  DBG_S (_Feldnamen[0] << " bis " << _Feldnamen[_nFelder-1])
+
+  DBG_V( has_XYZ << has_RGB << has_CMYK )
  
   // Farben auslesen
   if (has_XYZ) { DBG // keine Umrechnung nötig
@@ -779,8 +780,8 @@ ICCmeasurement::getText                     (void)
   if (_RGB_MessFarben.size() == 0)
     init ();
 
-  std::vector<std::vector<std::string> > tabelle;
-  tabelle.resize(1); // push_back ist zu langsam
+  // push_back ist zu langsam
+  std::vector<std::vector<std::string> > tabelle (1);
   std::stringstream s;
   int z = 0; // Zeilen
 

@@ -2,8 +2,8 @@
 // Copyright: Kai-Uwe Behrmann
 // Date:      Mai 2004
 
-#ifndef ICC_PROFILE_H
-#define ICC_PROFILE_H
+#ifndef ICC_PROFILIERER_H
+#define ICC_PROFILIERER_H
 
 #define ICC_EXAMIN_V 0.12
 
@@ -555,6 +555,9 @@ class ICCprofile {
     void                addTag (ICCtag tag)  {DBG tags.push_back(tag); }
     ICCtag&             getTag (int item)  {return tags[item]; }
     void                removeTag (int item);
+    void                removeTagByName (std::string name) { DBG
+                          if (hasTagName(name))
+                            removeTag (getTagByName(name)); }
     void                saveProfileToFile  (char* filename);
   private:
     void                writeTags (void);
@@ -563,4 +566,4 @@ class ICCprofile {
 };
 
 
-#endif //ICC_PROFILE_H
+#endif //ICC_PROFILIERER_H

@@ -619,9 +619,9 @@ ICCtag::getCurves                                 (MftChain typ)
     int parametrisch        = icValue(*(icUInt32Number*) &_data[8]);
     icUInt16Number nkurven  = icValue(*(icUInt16Number*) &_data[12]);
     icUInt16Number segmente = icValue(*(icUInt16Number*) &_data[14]);
-    icUInt16Number mult     = icValue(*(icUInt16Number*) &_data[16]);
+    icUInt16Number byte     = icValue(*(icUInt16Number*) &_data[16]);
     
-    cout << _data << " parametrisch " << parametrisch << " nkurven " << nkurven << " segmente " << segmente << " mult " << mult << " "; DBG
+    cout << _data << " parametrisch " << parametrisch << " nkurven " << nkurven << " segmente " << segmente << " byte " << byte << " "; DBG
 
     if (parametrisch) { //icU16Fixed16Number
       double r_gamma = 1.0/icValue(*(icUInt32Number*)&_data[12])*65536.0;
@@ -644,8 +644,7 @@ ICCtag::getCurves                                 (MftChain typ)
       kurve.push_back(start_b);
       kurve.push_back(ende_b); kurven.push_back (kurve); kurve.clear();
     } else {
-      int start = 18,
-          byte  = 2;
+      int start = 18;
       double div   = 65536.0;
            for (int j = 0; j < nkurven; j++)
            { kurve.clear();
