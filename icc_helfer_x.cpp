@@ -38,7 +38,7 @@
 
 #include <X11/Xutil.h>
 #include <X11/extensions/xf86vmode.h>
-#ifdef XIN
+#ifdef HAVE_XIN
   #include <X11/extensions/Xinerama.h>
 #endif
 #ifdef HAVE_FLTK
@@ -81,7 +81,7 @@ leseGrafikKartenGamma        (std::string display_name,
 
   // Wo befindet sich das Fenster?
   int n_fenster = 0;
-# ifdef XIN
+# ifdef HAVE_XIN
   XineramaScreenInfo* fenster = 0;
 # endif
   if( ScreenCount( display ) > 1 )
@@ -99,7 +99,7 @@ leseGrafikKartenGamma        (std::string display_name,
         XF86VidModeGetViewPort( display, i, &x, &y );
         DBG_PROG_V( x <<" "<< y )
     }
-# ifdef XIN
+# ifdef HAVE_XIN
   else
     if( XineramaIsActive( display ) )
     {

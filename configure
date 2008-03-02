@@ -126,19 +126,33 @@ fi
   fi
 #fi
 
-
-if [ -f /usr/X11R6/include/X11/extensions/xf86vmode.h ] && [ $UNAME_ = "Linux" ]; then
-  echo "X VidMode extension     detected"
+if [ -f /usr/X11R6/include/X11/Xlib.h ] ||
+   [ -f /usr/include/X11/Xlib.h ]; then
+  echo "X11                     detected"
   echo "#define HAVE_X 1" >> $CONF_H
   echo "X11 = 1" >> $CONF
-  echo "X_H =" >> $CONF
+  echo "X_H = -I/usr/X11R6/include/X11 -I/usr/include/X11" >> $CONF
 else
   if [ $UNAME_ = "Linux" ]; then
-    echo "X VidMode extension not found in /usr/X11R6/include/X11/extensions/xf86vmode.h"
+    echo "X11 header not found in /usr/X11R6/include/X11/Xlib.h or"
+    echo "/usr/include/X11/Xlib.h"
   fi
 fi
 
-if [ -f /usr/X11R6/include/X11/extensions/Xinerama.h ]; then
+if [ -f /usr/X11R6/include/X11/extensions/xf86vmode.h ] ||
+   [ -f /usr/include/X11/extensions/xf86vmode.h ]; then
+  echo "X VidMode extension     detected"
+  echo "#define HAVE_XF86VMODE 1" >> $CONF_H
+  echo "XF86VMODE = 1" >> $CONF
+else
+  if [ $UNAME_ = "Linux" ]; then
+    echo "X VidMode extension not found in /usr/X11R6/include/X11/extensions/xf86vmode.h or"
+    echo "/usr/include/X11/extensions/xf86vmode.h"
+  fi
+fi
+
+if [ -f /usr/X11R6/include/X11/extensions/Xinerama.h ] ||
+   [ -f /usr/include/X11/extensions/Xinerama.h ]; then
   echo "X Xinerama              detected"
   echo "#define HAVE_XIN 1" >> $CONF_H
   echo "XIN = 1" >> $CONF

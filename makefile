@@ -123,10 +123,13 @@ ifdef X11
   else
     X11_LIB_PATH=-L/usr/X11R6/lib
   endif
+  ifdef XF86VMODE
+  XF86VMODE_LIB = -lXxf86vm
+  endif
   ifdef XIN
   XINERAMA_LIB = -lXinerama
   endif
-  X11_LIBS=$(X11_LIB_PATH) -lX11 -lXxf86vm -lXext -lXpm $(XINERAMA_LIB)
+  X11_LIBS=$(X11_LIB_PATH) -lX11 $(XF86VMODE_LIB) -lXext -lXpm $(XINERAMA_LIB)
 endif
 
 INCL_DEP = $(INCL) $(X_H) $(OSX_H) $(OYRANOS_H) \
@@ -287,7 +290,7 @@ ALL_FILES =	$(SOURCES) \
 timedir = .
 mtime   := $(shell find $(timedir) -prune -printf %Ty%Tm%Td.%TT | sed s/://g)
 
-#.SILENT:
+.SILENT:
 
 all:	dynamic
 	
