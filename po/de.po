@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2008-01-25 11:31+0100\n"
+"POT-Creation-Date: 2008-01-28 14:48+0100\n"
 "PO-Revision-Date: 2005-08-13 17:35+0200\n"
 "Last-Translator: Kai-Uwe Behrmann\n"
 "Language-Team:  <ku.b@gmx.de>\n"
@@ -139,17 +139,17 @@ msgid "unknown Colour"
 msgstr "unbekannte Farbe"
 
 #: icc_draw.cpp:656 icc_draw.cpp:667 icc_helfer.cpp:412
-#: icc_profile_tags.cpp:480 icc_helfer_osx.cpp:68 icc_helfer_x.cpp:64
+#: icc_profile_tags.cpp:481 icc_helfer_osx.cpp:68 icc_helfer_x.cpp:64
 msgid "Red"
 msgstr "Rot"
 
 #: icc_draw.cpp:659 icc_draw.cpp:669 icc_helfer.cpp:413
-#: icc_profile_tags.cpp:481 icc_helfer_osx.cpp:69 icc_helfer_x.cpp:65
+#: icc_profile_tags.cpp:482 icc_helfer_osx.cpp:69 icc_helfer_x.cpp:65
 msgid "Green"
 msgstr "Grün"
 
 #: icc_draw.cpp:662 icc_draw.cpp:671 icc_helfer.cpp:414
-#: icc_profile_tags.cpp:482 icc_helfer_osx.cpp:70 icc_helfer_x.cpp:66
+#: icc_profile_tags.cpp:483 icc_helfer_osx.cpp:70 icc_helfer_x.cpp:66
 msgid "Blue"
 msgstr "Blau"
 
@@ -465,7 +465,7 @@ msgstr "Darstellung"
 msgid "Pos"
 msgstr ""
 
-#: icc_gl.cpp:2504 icc_profile_tags.cpp:319
+#: icc_gl.cpp:2504 icc_profile_tags.cpp:320
 msgid "Channel"
 msgstr "Kanal"
 
@@ -485,7 +485,7 @@ msgstr "Sättigung"
 msgid "Absolute Colorimetric"
 msgstr "Absolut Farbmetrisch"
 
-#: icc_helfer.cpp:392 icc_profile_tags.cpp:1091 icc_profile_tags.cpp:1098
+#: icc_helfer.cpp:392 icc_profile_tags.cpp:1144 icc_profile_tags.cpp:1151
 msgid "Colour"
 msgstr "Farbe"
 
@@ -1336,93 +1336,97 @@ msgstr "Dateikopf ungültig"
 msgid "    head  head    128 File header"
 msgstr "    Kopf  Kopf    128 Dateikopf"
 
-#: icc_profile_tags.cpp:257
+#: icc_profile_tags.cpp:258
 msgid "Standard Observer"
 msgstr "Standard Betrachter"
 
-#: icc_profile_tags.cpp:260
+#: icc_profile_tags.cpp:261
 msgid "Back side"
 msgstr "Rückseite"
 
-#: icc_profile_tags.cpp:263
+#: icc_profile_tags.cpp:264
 msgid "Geometrie"
 msgstr ""
 
-#: icc_profile_tags.cpp:265
+#: icc_profile_tags.cpp:266
 msgid "Flare"
 msgstr "Überstrahlung"
 
-#: icc_profile_tags.cpp:267
+#: icc_profile_tags.cpp:268
 msgid "Illuminant Type"
 msgstr "Beleuchtungstyp"
 
-#: icc_profile_tags.cpp:282
+#: icc_profile_tags.cpp:283
 msgid "Conversion table with 16-bit precission:"
 msgstr "Konvertierungskette mit 16-bit Präzission:"
 
-#: icc_profile_tags.cpp:283 icc_profile_tags.cpp:302
+#: icc_profile_tags.cpp:284 icc_profile_tags.cpp:303
 msgid "Intent:"
 msgstr "Übertragung:"
 
-#: icc_profile_tags.cpp:284 icc_profile_tags.cpp:303
+#: icc_profile_tags.cpp:285 icc_profile_tags.cpp:304
 msgid "Number of input channels"
 msgstr "Eingangskanäle"
 
-#: icc_profile_tags.cpp:285 icc_profile_tags.cpp:304
+#: icc_profile_tags.cpp:286 icc_profile_tags.cpp:305
 msgid "Number of output channels"
 msgstr "Ausgangskanäle"
 
-#: icc_profile_tags.cpp:286 icc_profile_tags.cpp:305
+#: icc_profile_tags.cpp:287 icc_profile_tags.cpp:306
 msgid "Matrix"
 msgstr ""
 
-#: icc_profile_tags.cpp:287
+#: icc_profile_tags.cpp:288
 msgid "Linear input curve"
 msgstr "lineare Eingangkurve"
 
-#: icc_profile_tags.cpp:287 icc_profile_tags.cpp:289
+#: icc_profile_tags.cpp:288 icc_profile_tags.cpp:290
 msgid "with"
 msgstr "mit"
 
-#: icc_profile_tags.cpp:287 icc_profile_tags.cpp:289
+#: icc_profile_tags.cpp:288 icc_profile_tags.cpp:290
 msgid "steps"
 msgstr "Stufungen"
 
-#: icc_profile_tags.cpp:288 icc_profile_tags.cpp:306
+#: icc_profile_tags.cpp:289 icc_profile_tags.cpp:307
 msgid "3D Lockup table with"
 msgstr "3D Farbtabelle mit"
 
-#: icc_profile_tags.cpp:288 icc_profile_tags.cpp:306
+#: icc_profile_tags.cpp:289 icc_profile_tags.cpp:307
 msgid "points length per side"
 msgstr "Punkten Seitenlänge"
 
-#: icc_profile_tags.cpp:289
+#: icc_profile_tags.cpp:290
 msgid "Linear output curve"
 msgstr "lineare Ausgangskurve"
 
-#: icc_profile_tags.cpp:301
+#: icc_profile_tags.cpp:302
 msgid "Conversion table with 8-bit precission:"
 msgstr "Konvertierungskette mit 8-bit Präzission:"
 
-#: icc_profile_tags.cpp:400
+#: icc_profile_tags.cpp:401
 msgid "Error in ICC profile tag found!"
 msgstr "Fehler in ICC Profilbaustein gefunden!"
 
-#: icc_profile_tags.cpp:513
+#: icc_profile_tags.cpp:514
 msgid "Number of colours:"
 msgstr "Anzahl Farben:"
 
-#: icc_profile_tags.cpp:514
+#: icc_profile_tags.cpp:515
 msgid "Name"
 msgstr ""
 
-#: icc_profile_tags.cpp:514
+#: icc_profile_tags.cpp:515
 msgid "CIE*Lab"
 msgstr ""
 
-#: icc_profile_tags.cpp:515
+#: icc_profile_tags.cpp:516
 msgid "Device Colours"
 msgstr "Gerätefarben"
+
+#: icc_profile_tags.cpp:575
+msgid "Profiles where originally involved."
+msgstr ""
 
 #: icc_ueber.cpp:67 icc_betrachter.cxx:677
 msgid "About ICC Examin"
@@ -1910,6 +1914,10 @@ msgstr "Mai 2004 - Januar 2008"
 #: icc_utils.h:344 icc_utils.h:345
 msgid "!!! Warning !!!"
 msgstr "!!! Warnung !!!"
+
+#, fuzzy
+#~ msgid "Profiles"
+#~ msgstr "ICC Profil\"."
 
 #, fuzzy
 #~ msgid "mouse"

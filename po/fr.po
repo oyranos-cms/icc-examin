@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ICC Examin 0.41\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2008-01-25 11:31+0100\n"
+"POT-Creation-Date: 2008-01-28 14:48+0100\n"
 "PO-Revision-Date: 2006-06-29 19:31+0200\n"
 "Last-Translator: Pascal LACROIX <lacroixpascal at vfemail.net>\n"
 "Language-Team: ALL <ku.b@gmx.de>\n"
@@ -138,17 +138,17 @@ msgid "unknown Colour"
 msgstr "Non Couleur"
 
 #: icc_draw.cpp:656 icc_draw.cpp:667 icc_helfer.cpp:412
-#: icc_profile_tags.cpp:480 icc_helfer_osx.cpp:68 icc_helfer_x.cpp:64
+#: icc_profile_tags.cpp:481 icc_helfer_osx.cpp:68 icc_helfer_x.cpp:64
 msgid "Red"
 msgstr "Rouge"
 
 #: icc_draw.cpp:659 icc_draw.cpp:669 icc_helfer.cpp:413
-#: icc_profile_tags.cpp:481 icc_helfer_osx.cpp:69 icc_helfer_x.cpp:65
+#: icc_profile_tags.cpp:482 icc_helfer_osx.cpp:69 icc_helfer_x.cpp:65
 msgid "Green"
 msgstr "Vert"
 
 #: icc_draw.cpp:662 icc_draw.cpp:671 icc_helfer.cpp:414
-#: icc_profile_tags.cpp:482 icc_helfer_osx.cpp:70 icc_helfer_x.cpp:66
+#: icc_profile_tags.cpp:483 icc_helfer_osx.cpp:70 icc_helfer_x.cpp:66
 msgid "Blue"
 msgstr "Bleu"
 
@@ -463,7 +463,7 @@ msgstr ""
 msgid "Pos"
 msgstr ""
 
-#: icc_gl.cpp:2504 icc_profile_tags.cpp:319
+#: icc_gl.cpp:2504 icc_profile_tags.cpp:320
 msgid "Channel"
 msgstr "Canal"
 
@@ -483,7 +483,7 @@ msgstr "Saturation"
 msgid "Absolute Colorimetric"
 msgstr "Colorimétrie absolue"
 
-#: icc_helfer.cpp:392 icc_profile_tags.cpp:1091 icc_profile_tags.cpp:1098
+#: icc_helfer.cpp:392 icc_profile_tags.cpp:1144 icc_profile_tags.cpp:1151
 msgid "Colour"
 msgstr "Couleur"
 
@@ -1335,92 +1335,96 @@ msgstr ""
 msgid "    head  head    128 File header"
 msgstr ""
 
-#: icc_profile_tags.cpp:257
+#: icc_profile_tags.cpp:258
 msgid "Standard Observer"
 msgstr ""
 
-#: icc_profile_tags.cpp:260
+#: icc_profile_tags.cpp:261
 msgid "Back side"
 msgstr ""
 
-#: icc_profile_tags.cpp:263
+#: icc_profile_tags.cpp:264
 msgid "Geometrie"
 msgstr ""
 
-#: icc_profile_tags.cpp:265
+#: icc_profile_tags.cpp:266
 msgid "Flare"
 msgstr ""
 
-#: icc_profile_tags.cpp:267
+#: icc_profile_tags.cpp:268
 msgid "Illuminant Type"
 msgstr ""
 
-#: icc_profile_tags.cpp:282
+#: icc_profile_tags.cpp:283
 msgid "Conversion table with 16-bit precission:"
 msgstr ""
 
-#: icc_profile_tags.cpp:283 icc_profile_tags.cpp:302
+#: icc_profile_tags.cpp:284 icc_profile_tags.cpp:303
 msgid "Intent:"
 msgstr "Intention:"
 
-#: icc_profile_tags.cpp:284 icc_profile_tags.cpp:303
+#: icc_profile_tags.cpp:285 icc_profile_tags.cpp:304
 msgid "Number of input channels"
 msgstr ""
 
-#: icc_profile_tags.cpp:285 icc_profile_tags.cpp:304
+#: icc_profile_tags.cpp:286 icc_profile_tags.cpp:305
 msgid "Number of output channels"
 msgstr ""
 
-#: icc_profile_tags.cpp:286 icc_profile_tags.cpp:305
+#: icc_profile_tags.cpp:287 icc_profile_tags.cpp:306
 msgid "Matrix"
 msgstr ""
 
-#: icc_profile_tags.cpp:287
+#: icc_profile_tags.cpp:288
 msgid "Linear input curve"
 msgstr ""
 
-#: icc_profile_tags.cpp:287 icc_profile_tags.cpp:289
+#: icc_profile_tags.cpp:288 icc_profile_tags.cpp:290
 msgid "with"
 msgstr "avec"
 
-#: icc_profile_tags.cpp:287 icc_profile_tags.cpp:289
+#: icc_profile_tags.cpp:288 icc_profile_tags.cpp:290
 msgid "steps"
 msgstr ""
 
-#: icc_profile_tags.cpp:288 icc_profile_tags.cpp:306
+#: icc_profile_tags.cpp:289 icc_profile_tags.cpp:307
 msgid "3D Lockup table with"
 msgstr ""
 
-#: icc_profile_tags.cpp:288 icc_profile_tags.cpp:306
+#: icc_profile_tags.cpp:289 icc_profile_tags.cpp:307
 msgid "points length per side"
 msgstr ""
 
-#: icc_profile_tags.cpp:289
+#: icc_profile_tags.cpp:290
 msgid "Linear output curve"
 msgstr ""
 
-#: icc_profile_tags.cpp:301
+#: icc_profile_tags.cpp:302
 msgid "Conversion table with 8-bit precission:"
 msgstr ""
 
-#: icc_profile_tags.cpp:400
+#: icc_profile_tags.cpp:401
 msgid "Error in ICC profile tag found!"
 msgstr ""
 
-#: icc_profile_tags.cpp:513
+#: icc_profile_tags.cpp:514
 msgid "Number of colours:"
 msgstr ""
 
-#: icc_profile_tags.cpp:514
+#: icc_profile_tags.cpp:515
 msgid "Name"
 msgstr "Nom"
 
-#: icc_profile_tags.cpp:514
+#: icc_profile_tags.cpp:515
 msgid "CIE*Lab"
 msgstr ""
 
-#: icc_profile_tags.cpp:515
+#: icc_profile_tags.cpp:516
 msgid "Device Colours"
+msgstr ""
+
+#: icc_profile_tags.cpp:575
+msgid "Profiles where originally involved."
 msgstr ""
 
 #: icc_ueber.cpp:67 icc_betrachter.cxx:677
@@ -1888,6 +1892,10 @@ msgstr ""
 #: icc_utils.h:344 icc_utils.h:345
 msgid "!!! Warning !!!"
 msgstr ""
+
+#, fuzzy
+#~ msgid "Profiles"
+#~ msgstr "Profils"
 
 #, fuzzy
 #~ msgid "mouse"

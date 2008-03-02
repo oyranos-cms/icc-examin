@@ -38,6 +38,7 @@
 #include "icc_profile.h"
 #include "icc_utils.h"
 #include "icc_helfer.h"
+#include <oyranos/oyranos_alpha.h>
 
 #include <cmath>
 #include <sstream>
@@ -548,21 +549,73 @@ ICCtag::getText                     (std::string text)
 
   } else {
 
-    texte .resize(1);
-    texte[0].append ("\n\n",2);
+    oyProfileTag_s * tag_ = oyProfileTag_New( 0 );
+    icTagBase *base  = (icTagBase*)(&data_[0]);
+    icTagTypeSignature tag_type = icValue( base->sig );
+    oySTATUS_e status = oyOK;
+    int error = oyProfileTag_Set( tag_, _sig, tag_type,
+                                  status, size_, base );
+    oyChar **texts = 0;
+    int    texts_n = 0;
+    int    profiles_n = 0;
 
-    for (int i = 0; i < size_-8; i = i + 4)
-    { texte[0].append (" ", 1);
-      text = zeig_bits_bin(&data_[8+i], MIN(4,size_-8-i));
-      texte[0].append (text.data(), text.size());
-      for (int k = 0; k <  MIN(4,size_-8-i); k++)
-        if (isprint(data_[8+i+k]))
-          text[k] = data_[8+i+k];
-        else
-          text[k] = '.';
-      //text[MIN(4,size_-8-i)] = 0;
-      texte[0].append (text.data(), MIN(4,size_-8-i));//text.size());
-      texte[0].append ("\n", 1);
+    sprintf( tag_->required_cmm, "oyra" );
+
+    if(!error)
+      texts = oyProfileTag_GetText( tag_,&texts_n,0,0,0,0 );
+
+    texte .resize(1);
+
+    for (int i = 0; i < texts_n; ++i)
+    {
+      int line_break = 1;
+
+      if(i == 0)
+      {
+        const char * t = _("Profiles where originally involved.");
+        profiles_n = atoi(texts[i]);
+        texte[0].append (texts[i], strlen(texts[i]));
+        texte[0].append (" ", 1);
+        texte[0].append (t, strlen(t));
+        texte[0].append (":", 1);
+      }
+      else
+      {
+        if(((i-1)%7))
+        {
+          texte[0].append ("  ", 2);
+
+          if((((i-1)%7)-1)%2)
+            texte[0].append ("    ", 4);
+          else
+            line_break = 1;
+        }
+
+        if(texts[i])
+          texte[0].append (texts[i], strlen(texts[i]));
+      }
+      if(line_break)
+        texte[0].append ("\n", 1);
+    }
+
+    if(!texts_n || !texte[0].size())
+    {
+      texte[0].append ("\n\n",2);
+
+      for (int i = 0; i < size_-8; i = i + 4)
+      {
+        texte[0].append (" ", 1);
+        text = zeig_bits_bin(&data_[8+i], MIN(4,size_-8-i));
+        texte[0].append (text.data(), text.size());
+        for (int k = 0; k <  MIN(4,size_-8-i); k++)
+          if (isprint(data_[8+i+k]))
+            text[k] = data_[8+i+k];
+          else
+            text[k] = '.';
+        //text[MIN(4,size_-8-i)] = 0;
+        texte[0].append (text.data(), MIN(4,size_-8-i));//text.size());
+        texte[0].append ("\n", 1);
+      }
     }
     DBG_PROG
     //char c[5]; sprintf (c, "%s", "mluc"); printf ("%d\n",icValue(*(int*)c));
