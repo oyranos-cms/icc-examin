@@ -170,8 +170,8 @@ class ICCheader {
     void        set_creator ()
                   { DBG_PROG char* m = {"SB  "};
                     header.creator = *(icSignature*)m; }
-    void        setID ()           {/*char* m = ((char*)&header)[84];
-                                            *m = "-";*/ } // v4
+    void        setID ()
+                  {/*char* m = ((char*)&header)[84]; *m = "-";*/ } // v4
     std::string print () const;
     std::string print_long () const;
 };
@@ -182,16 +182,17 @@ class ICCtag {
     void                copy               (const ICCtag& tag);
     void                defaults           ();
   public:
-                        ICCtag             ()             {DBG_PROG defaults(); }
+                        ICCtag             ()
+                          { DBG_PROG defaults(); }
                         ICCtag             (ICCprofile* profil,
                                             icTag* tag, char* data);
                         ICCtag             (const ICCtag& tag)
-                                                          {DBG_PROG copy (tag);}
-    ICCtag&             operator=          (const ICCtag& tag)
-                                                          {DBG_PROG copy (tag); 
-                                                           return *this; }
+                          { DBG_PROG copy (tag); }
+    ICCtag&             operator =         (const ICCtag& tag)
+                          { DBG_PROG copy (tag); return *this; }
     void                clear              ();
-                        ~ICCtag            () {DBG_PROG_S("::ICCtag~") clear();}
+                        ~ICCtag            ()
+                          { DBG_PROG_S("::ICCtag~") clear(); }
   private:
     icTagSignature      _sig;
     int                 _size;
@@ -208,15 +209,17 @@ class ICCtag {
     void                load (ICCprofile* profil ,icTag* tag, char* data);
   public:
     icTagSignature      getSignature ()    {DBG_PROG return _sig; }
-    std::string         getTagName()       {/*DBG_PROG*/ return getSigTagName (_sig); }
-    std::string         getInfo()          {DBG_PROG return getSigTagDescription(_sig); }
-    std::string         getTypName()       {DBG_PROG icTagTypeSignature sig =
-                                            ((icTagBase*)_data) ->
-                                            sig;
-                                            return getSigTypeName(
-                                              (icTagTypeSignature)icValue(sig));
-                                           }
-    int                 getSize()          {DBG_PROG return _size; }
+    std::string         getTagName ()
+                          { /*DBG_PROG*/ return getSigTagName (_sig); }
+    std::string         getInfo ()
+                          { DBG_PROG  return getSigTagDescription(_sig); }
+    std::string         getTypName()
+                          { DBG_PROG
+                            icTagTypeSignature sig = ((icTagBase*)_data) -> sig;
+                            return getSigTypeName(
+                                            (icTagTypeSignature)icValue(sig)); }
+    int                 getSize()
+                          { DBG_PROG  return _size; }
 
     std::vector<double> getCIEXYZ();
     std::vector<double> getCurve();
@@ -231,7 +234,7 @@ class ICCtag {
     std::vector<std::vector<double> >
                         getCurves    (MftChain typ);
     std::vector<std::vector<std::vector<std::vector<double> > > >
-                        getTable    (MftChain typ);
+                        getTable     (MftChain typ);
     std::vector<double> getNumbers   (MftChain typ);
 
     std::vector<std::string> getText ();
@@ -239,8 +242,9 @@ class ICCtag {
     std::vector<std::string> getDescription();
     std::string         getVrml();
   public:  // I/O
-    const char*         write(int* size)   {DBG_PROG *size = _size;
-                                            return (const char*)_data; }
+    const char*         write(int* size)
+                          { DBG_PROG  *size = _size;
+                            return (const char*)_data; }
 };
 
 

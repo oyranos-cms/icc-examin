@@ -327,7 +327,7 @@ ICCtag::getText                     (void)
   #endif
     texte.push_back( text );
 
-  } else if ( text == "mluc" ) {
+  } else if ( /*text == "mluc"*/0 ) {
 
     int anzahl = icValue( *(icUInt32Number*)&_data[8] );
     int groesse = icValue( *(icUInt32Number*)&_data[12] ); // 12
