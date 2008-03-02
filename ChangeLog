@@ -1,9 +1,19 @@
+2005-08-20
+	* neu: Start esperanto in po/eo.po
+	* neu: eigenständiges "bundle" Ziel in makefile
+
+2005-08-18
+	* und: Resoucen in Bundle orten
+
+2005-08-14
+	* neu: Bildchen
+
 2005-08-13
 	* fix: farbraummodus (ncl2) wieder aktiviert für CinePaint
 	* neu: mime für Dateimanager - icc.xml
 
 2005-08-12
-	* neu: Fehlersuche zeigt threads an, bessere Lesbarkeit
+	* neu: Fehlersuche zeigt threads farbig an, bessere Lesbarkeit
 	* und: nach 'export ICCEXAMIN_DEBUG=19' zeigt icc_examin Funktionesaufrufe
 	* fix: Verklemmungen
 	* fix: unerschiedliche Farben in ICCgl osX/X11

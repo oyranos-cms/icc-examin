@@ -1,6 +1,5 @@
 o Weisspunktvergleich mit idealem schwarzem Koerper
 o interne Farbberechnung
-o Uebersetzungen
 o AGV Ersatz
 o Farbraum Menues in obere Menueleiste -> ::neuzeichnen
 
@@ -10,4 +9,5 @@ o Intent beeinflusst gamut Ansicht
 o OpenGL ausschalten falls nicht ansichtig
 o Startverzeichniss sinnvoller
 o osX Integration (Menues,DnD)
+o Uebersetzungen
 

@@ -22,7 +22,7 @@ char* iccReadInfo(char* filename) {
   DBG_PROG_ENDE
 }
 
-TagBrowser::TagBrowser(int X,int Y,int W,int H,char* start_info) : Fl_Hold_Browser(X,Y,W,H,start_info), X(X), Y(Y), W(W), H(H) {
+TagBrowser::TagBrowser(int X,int Y,int W,int H,const char* start_info) : Fl_Hold_Browser(X,Y,W,H,start_info), X(X), Y(Y), W(W), H(H) {
 }
 
 void TagBrowser::reopen_nicht() {
@@ -50,7 +50,7 @@ int TagBrowser::visible() {
   return Fl_Widget::visible();
 }
 
-TagTexts::TagTexts(int X,int Y,int W,int H,char* start_info) : Fl_Hold_Browser(X,Y,W,H,start_info), X(X), Y(Y), W(W), H(H) {
+TagTexts::TagTexts(int X,int Y,int W,int H,const char* start_info) : Fl_Hold_Browser(X,Y,W,H,start_info), X(X), Y(Y), W(W), H(H) {
 }
 
 void TagTexts::hinein(std::string text) {
@@ -71,7 +71,7 @@ void TagTexts::hinein(std::string text) {
 }
 #include <FL/fl_draw.H>
 
-MftChoice::MftChoice(int X,int Y,int W,int H,char* start_info) : Fl_Choice(X,Y,W,H,start_info), X(X), Y(Y), W(W), H(H) {
+MftChoice::MftChoice(int X,int Y,int W,int H,const char* start_info) : Fl_Choice(X,Y,W,H,start_info), X(X), Y(Y), W(W), H(H) {
   gewaehlter_eintrag = 0;
 }
 

@@ -46,10 +46,6 @@ ifdef APPLE
   OSX_CPP = $(OSX_CPPFILES)
   INCL=-I$(includedir) -I/usr/X11R6/include -I./ -I/usr/include/gcc/darwin/default/c++
   REZ = \
-      test -d ICC\ Examin.app/Contents/MacOS/ || mkdir ICC\ Examin.app/ ICC\ Examin.app/Contents/ ICC\ Examin.app/Contents/MacOS/ ICC\ Examin.app/Contents/Resources/; \
-      $(COPY) Info.plist ICC\ Examin.app/Contents/Info.plist; \
-      $(COPY) $(TARGET) ICC\ Examin.app/Contents/MacOS/ICC\ Examin; \
-      $(COPY) $(TARGET) ICC\ Examin/build/ICC\ Examin.app/Contents/MacOS/ICC\ Examin; \
       fltk-config --post $(TARGET);
   MAKEDEPEND = /usr/X11R6/bin/makedepend -Y
   DBG_LIBS = #-lMallocDebug
@@ -190,7 +186,7 @@ FREEGLUT_CFILES = \
 	freeglut_geometry.c
 
 LINGUAS = \
-	de #en_GB
+	de eo #en_GB
 
 COMMON_CFILES = \
 	$(FREEGLUT_CFILES)
@@ -265,7 +261,7 @@ all:	dynamic
 base:	config mkdepend 
 	
 release:	icc_alles.o
-	echo Linking $@...
+	echo Verknuepfen $@...
 	$(CXX) $(OPTS) -o $(TARGET) \
 	icc_alles.o \
 	$(LDLIBS)
@@ -275,14 +271,14 @@ release:	icc_alles.o
 $(TARGET):	base $(OBJECTS) $(LIBNAME) pot #$(LIBSONAMEFULL)
 	
 dynamic:	$(TARGET)
-	echo Linking $@...
+	echo Verknuepfen $@...
 	$(CXX) $(OPTS) -o $(TARGET) \
 	$(OBJECTS) \
 	$(LDLIBS) $(LINK_LIB_PATH) $(LINK_SRC_PATH)
 	$(REZ)
 
 $(LIBSONAMEFULL):	$(CLIB_OBJECTS)
-	echo Linking $@ ...
+	echo Verknuepfen $@ ...
 	$(CC) $(OPTS) $(LIBLINK_FLAGS) $(LINK_NAME) -o $(LIBSONAMEFULL) \
 	$(CLIB_OBJECTS) 
 	$(REZ)
@@ -292,13 +288,13 @@ $(LIBSONAMEFULL):	$(CLIB_OBJECTS)
 	$(LNK) $(LIBSONAMEFULL) $(LIBSO)
 
 $(LIBNAME):	$(CLIB_OBJECTS)
-	echo Linking $@ ...
+	echo Verknuepfen $@ ...
 	$(COLLECT) $(LIBNAME) $(CLIB_OBJECTS)
 	$(RANLIB) $(LIBNAME)
 
 static:	$(TARGET)
-	echo Linking $@ ...
-	$(CXX) -Wall -O3 -o $(TARGET) $(OBJECTS) \
+	echo Verknuepfen $@ ...
+	$(CXX) $(OPTS) -o $(TARGET) $(OBJECTS) \
 	-L./  -licc_examin \
 	`flu-config --ldstaticflags` \
 	`fltk-config --use-gl --use-images --ldstaticflags` \
@@ -309,7 +305,6 @@ static:	$(TARGET)
 	$(I18N_LIB) \
 	$(DBG_LIBS) \
 	`test -f /opt/kai-uwe/lib/liblcms.a && echo /opt/kai-uwe/lib/liblcms.a || pkg-config --libs lcms` #/usr/lib/libkdb.a # Hack for static lcms
-	strip $(TARGET)
 	$(REZ)
 
 static_static:	$(OBJECTS)
@@ -327,7 +322,7 @@ test:	icc_formeln.o icc_utils.o
 	$(REZ)
 
 pot:	$(POT_FILE)
-	echo Preparing Linguas ...
+	echo Linguas ...
 	for ling in $(LINGUAS); do \
 	  echo "update po/$${ling}.gmo ..."; \
 	  test -f po/$${ling}.po \
@@ -355,9 +350,10 @@ potfile:
 $(POT_FILE):	potfile
 
 install:
-	echo Installing ...
+	echo Installation ...
 	mkdir -p $(DESTDIR)$(bindir)
 	$(INSTALL) -m 755 $(TARGET) $(DESTDIR)$(bindir)
+	fltk-config --post $(DESTDIR)$(bindir)/$(TARGET)
 	mkdir -p $(DESTDIR)$(datadir)/fonts/
 	$(INSTALL) -m 644 $(FONT) $(DESTDIR)$(datadir)/fonts/$(FONT)
 	mkdir -p $(DESTDIR)$(datadir)/applications/
@@ -368,17 +364,36 @@ install:
 	$(INSTALL) -m 644 icc_examin.png $(DESTDIR)$(datadir)/pixmaps/icc_examin.png
 	echo  Linguas ...
 	for ling in $(LINGUAS); do \
-	  echo "update po/$${ling}.gmo ..."; \
+	  echo "installiere po/$${ling}.gmo ..."; \
       mkdir -p $(DESTDIR)$(datadir)/locale/$${ling}/LC_MESSAGES; \
       test -f po/$${ling}.gmo \
 		&& (mkdir -p $(DESTDIR)$(datadir)/locale/$${ling}/LC_MESSAGES; \
             $(INSTALL) -m 644 po/$${ling}.gmo $(DESTDIR)$(datadir)/locale/$${ling}/LC_MESSAGES/$(TARGET).mo ) \
 		|| (echo $${ling}.gmo is not yet ready ... skipping); \
 	done;
-	echo ... Installation finished
+	echo ... Installation beendet
+
+bundle:	static
+	echo bündeln ...
+	test -d ICC\ Examin.app/Contents/MacOS/ || mkdir -p ICC\ Examin.app/ ICC\ Examin.app/Contents/ ICC\ Examin.app/Contents/MacOS/ ICC\ Examin.app/Contents/Resources/
+	$(INSTALL) -m 755 $(TARGET) ICC\ Examin.app/Contents/MacOS/ICC\ Examin
+	strip ICC\ Examin.app/Contents/MacOS/ICC\ Examin
+	$(INSTALL) -m 644 Info.plist ICC\ Examin.app/Contents/Info.plist
+	$(INSTALL) -m 644 $(FONT) ICC\ Examin.app/Contents/Resources/
+	test -f ~/bin/iccgamut \
+	  && $(INSTALL) -m 755 ~/bin/iccgamut ICC\ Examin.app/Contents/Resources/
+	echo  Linguas ...
+	for ling in $(LINGUAS); do \
+	  echo "bündele po/$${ling}.gmo ..."; \
+      test -f po/$${ling}.gmo \
+		&& (mkdir -p ICC\ Examin.app/Contents/Resources/locale/$${ling}/LC_MESSAGES; \
+            $(INSTALL) -m 644 po/$${ling}.gmo ICC\ Examin.app/Contents/Resources/locale/$${ling}/LC_MESSAGES/$(TARGET).mo ) \
+		|| (echo $${ling}.gmo is not yet ready ... skipping); \
+	done;
+	echo ... bündeln beendet
 
 uninstall:
-	echo Uninstalling ...
+	echo deinstalliere ...
 	$(RM) $(DESTDIR)$(bindir)/$(TARGET)
 	$(RM) $(DESTDIR)$(datadir)/applications/icc_examin.desktop
 	$(RM) $(DESTDIR)$(datadir)/mime/packages/icc.xml
@@ -394,10 +409,13 @@ clean:
 	$(RM) $(OBJECTS) $(CLIB_OBJECTS) $(TARGET) \
 	$(LIBNAME) $(LIBSO) $(LIBSONAME) $(LIBSONAMEFULL)
 	$(RM) ICC\ Examin.app/Contents/MacOS/ICC\ Examin
+	$(RM) ICC\ Examin.app/Contents/Resources/$(FONT)
 	for ling in $(LINGUAS); do \
 	  test -f po/$${ling}.gmo \
         && $(RM) po/$${ling}.gmo; \
 	done;
+	test -d ICC\ Examin.app/Contents/Resources/locale/ \
+      && $(RM) -R ICC\ Examin.app/Contents/Resources/locale/ \
 
 config:
 	configure
@@ -485,7 +503,7 @@ rpm:	dist
 	cp -f $(TARGET)_$(VERSION).tar.gz rpmdir/SOURCES
 	rpmbuild --clean -ba $(srcdir)/$(TARGET).spec --define "_topdir $$PWD/rpmdir"
 	@echo "============================================================"
-	@echo "Finished - the packages are in rpmdir/RPMS and rpmdir/SRPMS!"
+	@echo "Beendet - die Packete befinden sich in rpmdir/RPMS and rpmdir/SRPMS!"
 
 
 # Abhaengigkeiten

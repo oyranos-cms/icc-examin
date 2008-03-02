@@ -89,10 +89,21 @@ icc_create_vrml( const char* p, int size, int intent )
   }
   // vrml produzieren - argyll Variante
   int ret;
-  DBG_PROG_V( PATH_SHELLSTRING )
-  s.str("");
-  s << PATH_SHELLSTRING ;
-  s << "iccgamut -n ";
+# if APPLE
+  std::string argyll_bundle_pfad = icc_examin_ns::holeBundleResource("iccgamut",
+                                                                     "");
+  if(argyll_bundle_pfad.size()) {
+    icc_parser::suchenErsetzen(argyll_bundle_pfad," ","\\ ",0);
+    s << argyll_bundle_pfad;
+  } else
+# endif
+  {
+    DBG_PROG_V( PATH_SHELLSTRING )
+    s.str("");
+    s << PATH_SHELLSTRING ;
+    s << "iccgamut";
+  }
+  s << " -n ";
   if(intent == 0)
     s << "-i p ";
   else if(intent == 1)

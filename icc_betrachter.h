@@ -31,26 +31,26 @@ char* iccReadInfo(char* filename);
 
 class TagBrowser : public Fl_Hold_Browser {
 public:
-  int X; int Y; int W; int H; char* start_info; std::string selectedTagName;
-  TagBrowser(int X,int Y,int W,int H,char* start_info) ;
+  int X; int Y; int W; int H; const char* start_info; std::string selectedTagName;
+  TagBrowser(int X,int Y,int W,int H,const char* start_info) ;
   void reopen_nicht();
   void selectItem(int item);
   int visible();
 };
 
 class TagTexts : public Fl_Hold_Browser {
-  int X; int Y; int W; int H; char* start_info;
+  int X; int Y; int W; int H; const char* start_info;
 public:
   int inspekt_topline;
-  TagTexts(int X,int Y,int W,int H,char* start_info) ;
+  TagTexts(int X,int Y,int W,int H,const char* start_info) ;
   void hinein(std::string text);
 };
 
 class MftChoice : public Fl_Choice {
-  int X; int Y; int W; int H; char* start_info; char typ[5];
+  int X; int Y; int W; int H; const char* start_info; char typ[5];
 public:
   std::vector<std::string> Info; int gewaehlter_eintrag;
-  MftChoice(int X,int Y,int W,int H,char* start_info) ;
+  MftChoice(int X,int Y,int W,int H,const char* start_info) ;
   void profilTag(int _tag, std::string text);
   void auswahlCb(void);
 };

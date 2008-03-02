@@ -28,17 +28,22 @@
 // Date:      August 2004
 
 
-#include <icc_utils.h>
+#include "icc_utils.h"
+#include "icc_helfer.h"
 #include <fstream>
 
 
 int level_PROG_[DBG_MAX_THREADS] = {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1};
 int icc_debug = 1;
+std::ostringstream debug_s_;
+#ifdef HAVE_PTHREAD_H
+pthread_mutex_t debug_s_mutex_ = PTHREAD_MUTEX_INITIALIZER;
+#endif
 
 //#define WRITE_DBG
 
 void
-dbgWriteF (std::stringstream & ss)
+dbgWriteF (/*std::ostringstream & ss*/)
 {
 #ifdef WRITE_DBG
     std::string dateiname = "/tmp/icc_examin_dbg_";
@@ -77,7 +82,7 @@ dbgWriteF (std::stringstream & ss)
 
 
 #else
-  cout << ss.str();
+  cout << debug_s_/*ss*/.str();
 #endif
 }
 
@@ -114,6 +119,10 @@ wandelThreadId(Fl_Thread id)
   {
     if      (icc_thread_liste[THREAD_HAUPT] == id)
       pos = THREAD_HAUPT;
+    else if (icc_thread_liste[THREAD_GL1] == id)
+      pos = THREAD_GL1;
+    else if (icc_thread_liste[THREAD_GL2] == id)
+      pos = THREAD_GL2;
     else if (icc_thread_liste[THREAD_LADEN] == id)
       pos = THREAD_LADEN;
     else if (icc_thread_liste[THREAD_WACHE] == id)
@@ -124,24 +133,60 @@ wandelThreadId(Fl_Thread id)
   return pos;
 }
 
-std::string
+void//std::string
 dbgThreadId(Fl_Thread id)
 {
-  std::stringstream ss("??");
+  //std::string s("??");
   int dbg_id = wandelThreadId ( id );
+  //printf("%d\n", (int*)s.c_str());
   switch (dbg_id)
   {
     // in icc_thread_liste eingetragene Fl_Thread's lassen sich identifizieren
     case THREAD_HAUPT:
-      ss << "\033[30m\033[1m[HAUPT]\033[m"; break;
+      cout << "\033[30m\033[1m[HAUPT]\033[m"; break;
+    case THREAD_GL1:
+      cout << "\033[33m\033[1m[GL  1]\033[m"; break;
+    case THREAD_GL2:
+      cout << "\033[35m\033[1m[GL  2]\033[m"; break;
     case THREAD_LADEN:
-      ss << "\033[32m\033[1m[LADEN]\033[m"; break;
+      cout << "\033[32m\033[1m[LADEN]\033[m"; break;
     case THREAD_WACHE:
-      ss << "\033[34m\033[1m[WACHE]\033[m"; break;
+      cout << "\033[34m\033[1m[WACHE]\033[m"; break;
     default:
-      ss << "\033[31m\033[1m["<< dbg_id <<"]\033[m"; break;
+      cout << "\033[31m\033[1m["; cout <</*s +=*/ dbg_id; cout << "]\033[m"; break;
   }
-  return ss.str();
+  //cout << s;
+  //return s;
 }
 
+const char*
+threadGettext( const char* text)
+{
+  printf("START %s:%d %s()\n", __FILE__,__LINE__,__func__);
+  const char *translation = text;
+# ifdef HAVE_PTHREAD_H
+  static pthread_mutex_t translation_mutex_ = PTHREAD_MUTEX_INITIALIZER;
+  while (pthread_mutex_trylock( &debug_s_mutex_ )) {
+    pthread_mutex_unlock( &translation_mutex_ );
+    printf("debug_s_mutex_ nicht verfügbar\n");
+    icc_examin_ns::sleep(1.);
+    pthread_mutex_lock( &translation_mutex_ );
+  }
+  printf("debug_s_mutex_ ist lock\n");
+  pthread_mutex_lock( &translation_mutex_ );
+  printf("translation_mutex_ ist lock\n");
+
+  translation = gettext( text );
+
+  pthread_mutex_unlock( &translation_mutex_ );
+  printf("translation_mutex_ ist unlock\n");
+  pthread_mutex_unlock( &debug_s_mutex_ );
+  printf("debug_s_mutex_ ist unlock\n");
+# else
+  translation = gettext( text );
+# endif
+  printf("ENDE  %s:%d %s()\n", __FILE__,__LINE__,__func__);
+  //DBG_PROG_ENDE
+  return translation;
+}
 

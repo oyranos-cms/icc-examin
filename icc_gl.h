@@ -181,7 +181,7 @@ public:
   bool darfBewegen()        { return darf_bewegen_; };
 private:
   void stupps_(bool lauf);
-  static void bewegenStatisch_(void* GL_Ansicht);
+  static void* bewegenStatisch_(void* GL_Ansicht);
   bool darf_bewegen_;
   bool ist_bewegt_;
 private:

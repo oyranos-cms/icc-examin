@@ -29,6 +29,8 @@
 
 #include "icc_utils.h"
 #include "icc_icc.h"
+#include "icc_helfer.h"
+//#include "icc_examin.h"
 #include "icc_helfer_x.h"
 
 #if APPLE
@@ -123,4 +125,42 @@ leseGrafikKartenGamma  (std::string display_name,
   return kurven;
 }
 
+namespace icc_examin_ns {
+
+  std::string
+  holeBundleResource(const char* dateiname, const char* ende)
+  {
+    std::string adresse, suchen = "%20", ersetzen = " ";
+    // osX Resourcen
+    CFBundleRef mainBundle;
+    // Get the main bundle for the app
+    mainBundle = CFBundleGetMainBundle();
+    CFURLRef fontURL;
+    // Look for a resource in the main bundle by name and type.
+    if(mainBundle) {
+      CFStringRef d, e;
+      d = CFStringCreateWithCString(NULL, dateiname,kCFStringEncodingISOLatin1);
+      e = CFStringCreateWithCString(NULL, ende,kCFStringEncodingISOLatin1);
+      fontURL = CFBundleCopyResourceURL( mainBundle, d, e, NULL );
+      CFRelease(d); CFRelease(e);
+      CFStringRef cfstring;
+      if(fontURL) {
+        cfstring = CFURLCopyPath(fontURL);
+        // copy to a C buffer
+        CFIndex gr = 1024;
+        char *text = (char*)alloca (CFStringGetLength(cfstring));
+        text[0] = 0;
+        CFStringGetCString( cfstring, text, gr, kCFStringEncodingISOLatin1 );
+        adresse = text;
+        if(adresse.size()) {
+          icc_parser::suchenErsetzen(adresse, suchen, ersetzen, 0);
+        }
+        DBG_PROG_S( adresse )
+        CFRelease(cfstring);
+      } else { WARN_S( "Für "<<dateiname<<"|"<<ende<<" kein Adresse gefunden" ) }
+    }
+    return adresse;
+  }
+
+}
 

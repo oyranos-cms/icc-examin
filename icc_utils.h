@@ -44,10 +44,12 @@
 #define USE_GETTEXT
 #ifdef USE_GETTEXT
 # include <libintl.h>
-# define _(text) gettext(text)
+# define _(text) threadGettext(text)
+const char* threadGettext( const char* text);
 #else
 # define _(text) text
 #endif
+
 
 // ByteOrder on Solaris
 #ifndef BIG_ENDIAN
@@ -72,14 +74,35 @@
 
 #define DBG_MAX_THREADS
 extern Fl_Thread icc_thread_liste[DBG_MAX_THREADS];
-enum { THREAD_HAUPT, THREAD_WACHE, THREAD_LADEN };
-std::string dbgThreadId    (Fl_Thread id);
+enum { THREAD_HAUPT, THREAD_GL1, THREAD_GL2, THREAD_WACHE, THREAD_LADEN };
+void/*std::string*/ dbgThreadId    (Fl_Thread id);
 int         wandelThreadId (Fl_Thread id);
 
 
 // Statusmeldungen zur Fehlersuche
-void dbgWriteF (std::stringstream & ss);
-#define dbgWrite(ss) { std::stringstream debug_s; debug_s << ss; dbgWriteF(debug_s); }
+void dbgWriteF (/*std::ostringstream & ss*/);
+extern std::ostringstream debug_s_;
+
+# ifdef HAVE_PTHREAD_H
+extern pthread_mutex_t debug_s_mutex_;
+# endif
+
+#ifdef HAVE_PTHREAD_H
+#define dbgWrite(ss) { \
+  while (pthread_mutex_trylock( &debug_s_mutex_ )) { \
+    printf("debug_s_mutex_ nicht verfügbar\n"); \
+    icc_examin_ns::sleep(.001); \
+  } \
+ debug_s_.str(""); \
+ debug_s_ << ss; \
+ dbgWriteF(/*debug_s_*/); \
+ pthread_mutex_unlock( &debug_s_mutex_ ); \
+}
+#else
+#define dbgWrite(ss) { \
+ debug_s_ << ss; dbgWriteF(debug_s_); \
+}
+#endif
 // look in icc_utils.cpp for the WRITE_DBG definition
 
 #define cout std::cout
@@ -97,7 +120,7 @@ extern int icc_debug;
  *   1: DBG_NUM
  *   2: DBG_PROG
  *   3: DBG_MEM
- *   4: Datei E/A
+ *   4: DBG_THREAD; Datei E/A
  *   9: DBG_PROG_START & DBG_PROG_ENDE
  *
  *   [1,2,...,9]    diese und alle kleineren Kategorien
@@ -130,7 +153,7 @@ extern int icc_debug;
 
 #ifdef DEBUG
 #define DBG_BED(n) if (icc_debug >= n && icc_debug < 10 || icc_debug == 1##n)
-#define DBG_BED2(n1,n2) if (icc_debug >= n1 && icc_debug < 10 || icc_debug == 1##n1 || icc_debug >= n2 && icc_debug < 10 || icc_debug == 1##n2 )
+#define DBG_BED2(n1,n2) if ((icc_debug >= n1 && icc_debug < 10) || icc_debug == 1##n1 || (icc_debug >= n2 && icc_debug < 10) || icc_debug == 1##n2 )
 #define DBG_NUM        DBG_BED(1) DBG
 #define DBG_NUM_S(txt) DBG_BED(1) DBG_S(txt)
 #define DBG_NUM_V(txt) DBG_BED(1) DBG_V(txt)

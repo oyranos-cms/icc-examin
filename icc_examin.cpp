@@ -30,6 +30,7 @@
 #include "icc_draw.h"
 #include "icc_examin.h"
 #include "icc_gl.h"
+#include "icc_helfer.h"
 #include "icc_helfer_ui.h"
 #include "icc_helfer_fltk.h"
 #include "icc_fenster.h"
@@ -48,8 +49,8 @@ using namespace icc_examin_ns;
 #else
 #endif
 // TODO: beseitige Hack
-static int frei_tuen = 0;
-#define frei_ frei_tuen
+//static int frei_tuen = 0;
+//#define frei_ frei_tuen
 
 //#define DEBUG_EXAMIN
 #ifdef DEBUG_EXAMIN
@@ -136,9 +137,9 @@ ICCexamin::start (int argc, char** argv)
 # endif
 
   icc_betrachter->init( argc, argv );
-
-  icc_betrachter->mft_gl->init(1);
-  icc_betrachter->DD_farbraum->init(2);
+  DBG_PROG
+  icc_betrachter->mft_gl->init(1); DBG_PROG
+  icc_betrachter->DD_farbraum->init(2); DBG_PROG
   icc_waehler_ = new  ICCwaehler(485, 186, _("Gamut selector"));
   if(!icc_waehler_) WARN_S( _("icc_waehler_ nicht reservierbar") )
   icc_waehler_->hide();
@@ -164,26 +165,6 @@ ICCexamin::start (int argc, char** argv)
 # endif
 
 # if APPLE
-  // osX Rsourcen
-  CFBundleRef mainBundle;
-  // Get the main bundle for the app
-  mainBundle = CFBundleGetMainBundle();
-  CFURLRef fontURL;
-  // Look for a resource in the main bundle by name and type.
-  if(mainBundle) {
-    fontURL = CFBundleCopyResourceURL( mainBundle, 
-                CFSTR("FreeSans"), CFSTR("ttf"), NULL );
-    CFStringRef cfstring = CFURLCopyPath(fontURL);
-      // copy to a C buffer
-    CFIndex gr = 1024;
-    char text[1024];
-    Boolean fehler = CFStringGetCString( cfstring, text, gr, kCFStringEncodingISOLatin1 );
-    if(!fehler && strlen(text)) {
-      icc_examin_ns::nachricht( text );
-      WARN_V( text )
-    }
-  }
-
   IBNibRef nibRef;
   OSStatus err;
   err = CreateNibReference(CFSTR("main"), &nibRef);
@@ -790,7 +771,8 @@ tastatur(int e)
   default: 
     {
       //if(Fl::event_length())
-        DBG_MEM_S( dbgFltkEvent(e)<<": "<< Fl::event_length() << " bei: "<<Fl::event_x()<<","<<Fl::event_y() );
+        dbgFltkEvents(e);
+        DBG_PROG_S( Fl::event_length() << " bei: "<<Fl::event_x()<<","<<Fl::event_y() );
     }
     break;
   }

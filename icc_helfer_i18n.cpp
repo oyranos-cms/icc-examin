@@ -48,7 +48,7 @@ initialiseI18N()
 
   std::string locale;
 
-# ifdef APPLE
+# if APPLE
   // 1. get the locale info
   CFLocaleRef userLocaleRef = CFLocaleCopyCurrent();
   CFStringRef cfstring = CFLocaleGetIdentifier( userLocaleRef );
@@ -205,13 +205,21 @@ initialiseI18N()
   textdomain ("icc_examin");
 
   char test[1024];
-  sprintf(test, "%s%s", LOCALEDIR, "/de/LC_MESSAGES/icc_examin.mo");
+  std::string localedir = LOCALEDIR;
+# if APPLE
+  std::string temp = icc_examin_ns::holeBundleResource("locale","");
+  if(temp.size()) {
+    localedir = temp;
+    DBG_PROG_V( localedir )
+  }
+# endif
+  sprintf(test, "%s%s", localedir.c_str(), "/de/LC_MESSAGES/icc_examin.mo");
   char* bdtd = 0;
 
   // 4. where to find the MO file? select an appropriate directory
   if( holeDateiModifikationsZeit(test) ) {
       // installation directory ..
-    bdtd = bindtextdomain ("icc_examin", LOCALEDIR);
+    bdtd = bindtextdomain ("icc_examin", localedir.c_str());
 
     DBG_PROG_S( _("fine with: ") << bdtd );
   } else {
