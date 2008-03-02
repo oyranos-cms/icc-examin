@@ -474,7 +474,7 @@ MyFl_File_Chooser::fileListCB()
     Fl::add_timeout(1.0, (Fl_Timeout_Handler)previewCB, this);
 
     // Do any callback that is registered...
-    if (callback_) (*callback_)(this, data_);
+    if (callback_) (*callback_)(this, data_, 0);
 
     // Activate the OK button as needed...
     if (!fl_filename_isdir(pathname) || (type_ & DIRECTORY))
@@ -557,7 +557,7 @@ MyFl_File_Chooser::fileNameCB()
 	update_preview();
 
 	// Do any callback that is registered...
-	if (callback_) (*callback_)(this, data_);
+	if (callback_) (*callback_)(this, data_, 0);
 
 	// Hide the window to signal things are done...
 	window->hide();

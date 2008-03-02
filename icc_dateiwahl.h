@@ -54,7 +54,7 @@ namespace icc_examin_ns {
   void dateiwahl_cb(const char *dateiname, int typ, void *arg);
 #else
   extern MyFl_File_Chooser  *dateiwahl;
-  void dateiwahl_cb(MyFl_File_Chooser *f,void *data);
+  void dateiwahl_cb( MyFl_File_Chooser *f, void *data, int typ );
 #endif
 
 }

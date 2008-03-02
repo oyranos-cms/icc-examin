@@ -392,7 +392,7 @@ ICCexamin::zeigCGATS()
   icc_examin_ns::lock(__FILE__,__LINE__);
   // CGATS in Fenster praesentieren
   icc_examin_ns::nachricht(profile.profil()->cgats_max());
-  icc_examin_ns::unlock(this, __FILE__,__LINE__);
+  icc_examin_ns::unlock(0, __FILE__,__LINE__);
   DBG_PROG_ENDE
 }
 
@@ -542,7 +542,7 @@ ICCexamin::nachricht( Modell* modell , int info )
 
         setzeFensterTitel();
 
-        icc_examin_ns::unlock(this, __FILE__,__LINE__);
+        icc_examin_ns::unlock(icc_betrachter->DD_farbraum, __FILE__,__LINE__);
       }
     }
   }
@@ -578,7 +578,7 @@ ICCexamin::setzeFensterTitel()
 
     icc_examin_ns::lock(__FILE__,__LINE__);
     window->label(t);
-    icc_examin_ns::unlock(this, __FILE__,__LINE__);
+    icc_examin_ns::unlock(window, __FILE__,__LINE__);
   }
 
   window = icc_betrachter->DD_farbraum->window();
@@ -593,7 +593,7 @@ ICCexamin::setzeFensterTitel()
 
     icc_examin_ns::lock(__FILE__,__LINE__);
     window->label(t);
-    icc_examin_ns::unlock(this, __FILE__,__LINE__);
+    icc_examin_ns::unlock(window, __FILE__,__LINE__);
   }
 
   window = icc_betrachter->details;
@@ -606,7 +606,7 @@ ICCexamin::setzeFensterTitel()
 
     icc_examin_ns::lock(__FILE__,__LINE__);
     window->label(t);
-    icc_examin_ns::unlock(this, __FILE__,__LINE__);
+    icc_examin_ns::unlock(window, __FILE__,__LINE__);
   }
 
   if(t) free(t);
@@ -628,7 +628,7 @@ ICCexamin::setzMesswerte()
       int topline = icc_betrachter->tag_text->inspekt_topline = icc_betrachter->inspekt_html->topline();
       icc_betrachter->inspekt_html->value(profile.profil()->report(export_html).c_str());
       icc_betrachter->inspekt_html->topline( topline );
-      icc_examin_ns::unlock(this, __FILE__,__LINE__);
+      icc_examin_ns::unlock(icc_betrachter->inspekt_html, __FILE__,__LINE__);
 
     } else
       icc_betrachter->inspekt_html->value(_("not available"));
@@ -895,7 +895,7 @@ ICCexamin::gamutAnsichtZeigen ()
       if(icc_betrachter->DD_farbraum->window() != icc_betrachter->details)
         icc_betrachter->details->iconize(icc_betrachter->details);
 
-      icc_examin_ns::unlock(this, __FILE__,__LINE__);
+      icc_examin_ns::unlock(icc_betrachter->details, __FILE__,__LINE__);
       DBG_PROG_S("icc_betrachterNeuzeichnen DD_farbraum")
 }
 

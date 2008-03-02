@@ -21,7 +21,7 @@
  * 
  * -----------------------------------------------------------------------------
  *
- * Aufbereitung von ICC internen Informationen - werkzeugabhängig
+ * Aufbereitung von ICC internen Informationen - werkzeugabhaengig
  * 
  */
 
@@ -198,33 +198,38 @@ setzeIcon      ( Fl_Window *fenster, char   **xpm_daten )
 
   /** Programmstraenge - threads
 
-      mögliche Szenarien: \n
+      moegliche Szenarien: \n
       A: \n
-         - Stränge A und B greifen nacheinander zu \n
-         - A erhält das Recht des Ersteren, B wartet \n
+         - Straenge A und B greifen nacheinander zu \n
+         - A erhaelt das Recht des Ersteren, B wartet \n
          - B kann nachdem A freigegeben hat auch mal
 
       B: \n
          - A und B und C wollen \n
          - Strang A darf, B wartet und C auch \n
-         - nachdem A nicht mehr mag, können B und C streiten sich
+         - nachdem A nicht mehr mag, koennen B und C streiten sich
    */
 
 #include "icc_examin.h"
 #include "icc_betrachter.h"
 namespace icc_examin_ns {
 
-  // Prüfvariablen
+  // Pruefvariablen
   static int icc_thread_lock_zaehler_ = 0;
   Fl_Thread icc_thread_lock_besitzer_ = 0;
 
-  int  awake(void) { Fl::awake(icc_examin->icc_betrachter->details); return 0; }
+  int  awake(void)
+  {
+    Fl::awake(0);
+    return 0;
+  }
+  int  leerWait(void) { return 0; }
   int  (*waitFunc)(void) = Fl::check;//awake;
 
   void lock(const char *file, int line)
   {
 # if 0
-    // Fuer Ungezählte, Ausserhäusige und Besitzlose
+    // Fuer Ungezaehlte, Ausserhaeusige und Besitzlose
     if(icc_thread_lock_zaehler_ == 0 ||
        (pthread_self() != icc_thread_lock_besitzer_ ||
         icc_thread_lock_besitzer_ == 0))
@@ -245,13 +250,18 @@ namespace icc_examin_ns {
       // ... in Besitz nehmen
       icc_thread_lock_besitzer_ = pthread_self();
 # endif
-    // ... Prüfnummer im Haus
+    // ... Pruefnummer im Haus
     ++icc_thread_lock_zaehler_;
     //Fl::awake();
     DBG_THREAD_S( "locks: "<<icc_thread_lock_zaehler_ <<" angehalten bei: "<<file<<":"<<line )
   }
   void unlock(void *widget, const char *file, int line)
-  { // hinausgehen und Türe offen lassen
+  { // hinausgehen und Tuere offen lassen
+    if(widget) { DBG_THREAD
+      Fl::awake(widget); DBG_THREAD
+      // Ereignisse entlocken
+      //Fl::wait(0); DBG_THREAD
+    }
 # if 0
     --icc_thread_lock_zaehler_;
     DBG_THREAD_S( "locks: "<<icc_thread_lock_zaehler_ <<" Aufruf bei: "<<file<<":"<<line )
@@ -260,10 +270,10 @@ namespace icc_examin_ns {
        icc_thread_lock_besitzer_ != 0) {
       dbgThreadId(icc_thread_lock_besitzer_);DBG_THREAD_S( "locks: " << icc_thread_lock_zaehler_ << " Besitzer/Aufrufer" )
     }
-    // drausen nichts unternehmen, da die offene Tür "gut" ist 
+    // drausen nichts unternehmen, da die offene Tuer "gut" ist 
     if(icc_thread_lock_zaehler_ >= 0)
       Fl::unlock();
-    // zurücksetzen, da das Schloss nun offen ist
+    // zuruecksetzen, da das Schloss nun offen ist
 # else
       Fl::unlock();
 # endif
@@ -271,11 +281,6 @@ namespace icc_examin_ns {
     icc_thread_lock_zaehler_ = 0;
 
     // Oberflaeche erneuern
-    if(widget) { DBG_THREAD
-      Fl::awake(widget); DBG_THREAD
-      // Ereignisse entlocken
-      //Fl::wait(0); DBG_THREAD
-    }
     DBG_THREAD_S( ": " << icc_thread_lock_zaehler_ << " weiter" )
   }
 }

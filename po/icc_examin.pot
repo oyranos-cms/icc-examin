@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2007-01-26 14:38+0100\n"
+"POT-Creation-Date: 2007-01-27 09:45+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: agviewer.cpp:313 icc_gl.cpp:2599 icc_gl.cpp:2618 icc_gl.cpp:2737
+#: agviewer.cpp:313 icc_gl.cpp:2549 icc_gl.cpp:2568 icc_gl.cpp:2687
 msgid "left-/middle-/right mouse button -> rotate/cut/menu"
 msgstr ""
 
@@ -24,8 +24,8 @@ msgstr ""
 msgid "Pause"
 msgstr ""
 
-#: agviewer.cpp:350 agviewer.cpp:358 icc_gl.cpp:2703 icc_gl.cpp:2714
-#: icc_gl.cpp:2719 icc_gl.cpp:2724
+#: agviewer.cpp:350 agviewer.cpp:358 icc_gl.cpp:2653 icc_gl.cpp:2664
+#: icc_gl.cpp:2669 icc_gl.cpp:2674
 msgid "left mouse button -> go back"
 msgstr ""
 
@@ -140,7 +140,7 @@ msgstr ""
 msgid "Blue"
 msgstr ""
 
-#: icc_draw.cpp:663 icc_gl.cpp:2010 icc_helfer.cpp:392 icc_waehler.h:131
+#: icc_draw.cpp:663 icc_gl.cpp:1960 icc_helfer.cpp:392 icc_waehler.h:131
 msgid "Gray"
 msgstr ""
 
@@ -156,7 +156,7 @@ msgstr ""
 msgid "Yellow"
 msgstr ""
 
-#: icc_draw.cpp:676 icc_gl.cpp:2012 icc_helfer.cpp:452 icc_helfer.cpp:462
+#: icc_draw.cpp:676 icc_gl.cpp:1962 icc_helfer.cpp:452 icc_helfer.cpp:462
 msgid "Black"
 msgstr ""
 
@@ -194,13 +194,13 @@ msgid "CIE *L"
 msgstr ""
 
 #: icc_draw.cpp:694 icc_examin_farbraum.cpp:268 icc_examin_io.cpp:218
-#: icc_gl.cpp:925 icc_gl.cpp:999 icc_gl.cpp:1025 icc_gl.cpp:1033
+#: icc_gl.cpp:926 icc_gl.cpp:1000 icc_gl.cpp:1026 icc_gl.cpp:1034
 #: icc_helfer.cpp:438
 msgid "CIE *a"
 msgstr ""
 
 #: icc_draw.cpp:696 icc_examin_farbraum.cpp:269 icc_examin_io.cpp:219
-#: icc_gl.cpp:938 icc_gl.cpp:1041 icc_gl.cpp:1061 icc_gl.cpp:1068
+#: icc_gl.cpp:939 icc_gl.cpp:1042 icc_gl.cpp:1062 icc_gl.cpp:1069
 #: icc_helfer.cpp:439
 msgid "CIE *b"
 msgstr ""
@@ -347,117 +347,117 @@ msgstr ""
 msgid "Information:"
 msgstr ""
 
-#: icc_gl.cpp:684 icc_gl.cpp:687 icc_gl.cpp:690 icc_gl.cpp:696 icc_gl.cpp:700
-#: icc_gl.cpp:715
+#: icc_gl.cpp:685 icc_gl.cpp:688 icc_gl.cpp:691 icc_gl.cpp:697 icc_gl.cpp:701
+#: icc_gl.cpp:716
 msgid "Could not open font in:"
 msgstr ""
 
-#: icc_gl.cpp:807
+#: icc_gl.cpp:808
 #, c-format
 msgid "0,0,0"
 msgstr ""
 
-#: icc_gl.cpp:1984 icc_gl.cpp:1994 icc_gl.cpp:1996 icc_gl.cpp:1998
+#: icc_gl.cpp:1934 icc_gl.cpp:1944 icc_gl.cpp:1946 icc_gl.cpp:1948
 msgid "Slice"
 msgstr ""
 
-#: icc_gl.cpp:1985
+#: icc_gl.cpp:1935
 msgid "Rotate around slice"
 msgstr ""
 
-#: icc_gl.cpp:2000
+#: icc_gl.cpp:1950
 msgid "Rotate around"
 msgstr ""
 
-#: icc_gl.cpp:2000
+#: icc_gl.cpp:1950
 msgid "axis"
 msgstr ""
 
-#: icc_gl.cpp:2005
+#: icc_gl.cpp:1955
 msgid "Slice plane"
 msgstr ""
 
-#: icc_gl.cpp:2008
+#: icc_gl.cpp:1958
 msgid "White"
 msgstr ""
 
-#: icc_gl.cpp:2009
+#: icc_gl.cpp:1959
 msgid "Light gray"
 msgstr ""
 
-#: icc_gl.cpp:2011
+#: icc_gl.cpp:1961
 msgid "Dark gray"
 msgstr ""
 
-#: icc_gl.cpp:2015
+#: icc_gl.cpp:1965
 msgid "Background colour"
 msgstr ""
 
-#: icc_gl.cpp:2020
+#: icc_gl.cpp:1970
 msgid "gray"
 msgstr ""
 
-#: icc_gl.cpp:2021
+#: icc_gl.cpp:1971
 msgid "coloured"
 msgstr ""
 
-#: icc_gl.cpp:2022
+#: icc_gl.cpp:1972
 msgid "high contrast"
 msgstr ""
 
-#: icc_gl.cpp:2023
+#: icc_gl.cpp:1973
 msgid "shells"
 msgstr ""
 
-#: icc_gl.cpp:2024
+#: icc_gl.cpp:1974
 msgid "Colour line"
 msgstr ""
 
-#: icc_gl.cpp:2029
+#: icc_gl.cpp:1979
 msgid "Sphere 1dE"
 msgstr ""
 
-#: icc_gl.cpp:2030
+#: icc_gl.cpp:1980
 msgid "Sphere 2dE"
 msgstr ""
 
-#: icc_gl.cpp:2031
+#: icc_gl.cpp:1981
 msgid "Sphere 4dE"
 msgstr ""
 
-#: icc_gl.cpp:2034
+#: icc_gl.cpp:1984
 msgid "Star"
 msgstr ""
 
-#: icc_gl.cpp:2037
+#: icc_gl.cpp:1987
 msgid "Point"
 msgstr ""
 
-#: icc_gl.cpp:2040
+#: icc_gl.cpp:1990
 msgid "without markers"
 msgstr ""
 
-#: icc_gl.cpp:2041
+#: icc_gl.cpp:1991
 msgid "Spektral line"
 msgstr ""
 
-#: icc_gl.cpp:2044 icc_betrachter.cxx:864
+#: icc_gl.cpp:1994 icc_betrachter.cxx:864
 msgid "Texts"
 msgstr ""
 
-#: icc_gl.cpp:2046
+#: icc_gl.cpp:1996
 msgid "Texts/Arrows on/off"
 msgstr ""
 
-#: icc_gl.cpp:2048
+#: icc_gl.cpp:1998
 msgid "Illustration"
 msgstr ""
 
-#: icc_gl.cpp:2321
+#: icc_gl.cpp:2271
 msgid "Pos"
 msgstr ""
 
-#: icc_gl.cpp:2405 icc_profile_tags.cpp:302
+#: icc_gl.cpp:2355 icc_profile_tags.cpp:302
 msgid "Channel"
 msgstr ""
 
@@ -1158,7 +1158,7 @@ msgstr ""
 msgid "b'"
 msgstr ""
 
-#: icc_measurement.cpp:1228 my_file_chooser.cxx:272
+#: icc_measurement.cpp:1228 my_file_chooser.cxx:273
 msgid "X"
 msgstr ""
 
@@ -1724,55 +1724,55 @@ msgstr ""
 msgid "Kein Gammagradient Information erhalten"
 msgstr ""
 
-#: icc_helfer_fltk.cpp:299
+#: icc_helfer_fltk.cpp:304
 msgid "Add to Favorites"
 msgstr ""
 
-#: icc_helfer_fltk.cpp:300
+#: icc_helfer_fltk.cpp:305
 msgid "All Files (*)"
 msgstr ""
 
-#: icc_helfer_fltk.cpp:301
+#: icc_helfer_fltk.cpp:306
 msgid "Custom Filter"
 msgstr ""
 
-#: icc_helfer_fltk.cpp:302
+#: icc_helfer_fltk.cpp:307
 msgid "Please choose an existing file!"
 msgstr ""
 
-#: icc_helfer_fltk.cpp:303 my_file_chooser.cxx:178
+#: icc_helfer_fltk.cpp:308 my_file_chooser.cxx:180
 msgid "Favorites"
 msgstr ""
 
-#: icc_helfer_fltk.cpp:304
+#: icc_helfer_fltk.cpp:309
 msgid "Filename"
 msgstr ""
 
-#: icc_helfer_fltk.cpp:305 my_file_chooser.cxx:251
+#: icc_helfer_fltk.cpp:310 my_file_chooser.cxx:253
 msgid "Manage Favorites"
 msgstr ""
 
-#: icc_helfer_fltk.cpp:307
+#: icc_helfer_fltk.cpp:312
 msgid "My Computer"
 msgstr ""
 
-#: icc_helfer_fltk.cpp:309
+#: icc_helfer_fltk.cpp:314
 msgid "File Systems"
 msgstr ""
 
-#: icc_helfer_fltk.cpp:311
+#: icc_helfer_fltk.cpp:316
 msgid "New Directory?"
 msgstr ""
 
-#: icc_helfer_fltk.cpp:312 my_file_chooser.cxx:208
+#: icc_helfer_fltk.cpp:317 my_file_chooser.cxx:210
 msgid "Preview"
 msgstr ""
 
-#: icc_helfer_fltk.cpp:314 my_file_chooser.cxx:287
+#: icc_helfer_fltk.cpp:319 my_file_chooser.cxx:288
 msgid "Save"
 msgstr ""
 
-#: icc_helfer_fltk.cpp:316 my_file_chooser.cxx:171
+#: icc_helfer_fltk.cpp:321 my_file_chooser.cxx:173
 msgid "Show:"
 msgstr ""
 
@@ -1970,31 +1970,31 @@ msgstr ""
 msgid "Paths:"
 msgstr ""
 
-#: my_file_chooser.cxx:158
+#: my_file_chooser.cxx:161
 msgid "Choose File"
 msgstr ""
 
-#: my_file_chooser.cxx:198
+#: my_file_chooser.cxx:200
 msgid "?"
 msgstr ""
 
-#: my_file_chooser.cxx:227
+#: my_file_chooser.cxx:229
 msgid "Filename:"
 msgstr ""
 
-#: my_file_chooser.cxx:233
+#: my_file_chooser.cxx:235
 msgid "OK"
 msgstr ""
 
-#: my_file_chooser.cxx:237 my_file_chooser.cxx:283
+#: my_file_chooser.cxx:239 my_file_chooser.cxx:284
 msgid "Cancel"
 msgstr ""
 
-#: my_file_chooser.cxx:269
+#: my_file_chooser.cxx:270
 msgid "@8>"
 msgstr ""
 
-#: my_file_chooser.cxx:277
+#: my_file_chooser.cxx:278
 msgid "@2>"
 msgstr ""
 

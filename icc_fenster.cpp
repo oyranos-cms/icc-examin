@@ -95,7 +95,7 @@ dateiwahl_cb (const char *dateiname, int typ, void *arg)
 MyFl_File_Chooser  *dateiwahl;
 
 void
-dateiwahl_cb (MyFl_File_Chooser *f,void *data)
+dateiwahl_cb (MyFl_File_Chooser *f, void *data, int finish)
 { DBG_PROG_START
 
   const char *filename;

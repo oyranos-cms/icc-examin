@@ -1,5 +1,5 @@
 # data file for the Fltk User Interface Designer (fluid)
-version 1.0107 
+version 1.0108 
 i18n_type 1 
 i18n_include <libintl.h> 
 i18n_function _ 
@@ -47,7 +47,7 @@ class FL_EXPORT MyFl_File_Chooser {open
   decl {enum { SINGLE = 0, MULTI = 1, CREATE = 2, DIRECTORY = 4 };} {public
   }
   decl {static Fl_Preferences prefs_;} {}
-  decl {void (*callback_)(MyFl_File_Chooser*, void *);} {}
+  decl {void (*callback_)(MyFl_File_Chooser*, void *data, int finish);} {}
   decl {void *data_;} {}
   decl {char directory_[1024];} {}
   decl {char pattern_[1024];} {}
@@ -69,8 +69,8 @@ class FL_EXPORT MyFl_File_Chooser {open
       callback {fileName->value("");
 fileList->deselect();
 Fl::remove_timeout((Fl_Timeout_Handler)previewCB, this);
-window->hide();} open selected
-      xywh {706 127 490 380} type Double resizable
+window->hide();} open
+      xywh {881 149 490 380} type Double resizable
       code0 {if (title) window->label(title);}
       code1 {\#include <stdio.h>}
       code2 {\#include <stdlib.h>}
@@ -146,7 +146,7 @@ window->hide();} open selected
             label OK
             callback {// Do any callback that is registered...
 if (callback_)
-  (*callback_)(this, data_);
+  (*callback_)(this, data_,1);
 
 window->hide();}
             private xywh {270 345 100 25}
@@ -155,10 +155,14 @@ window->hide();}
           }
           Fl_Button cancelButton {
             label Cancel
-            callback {fileName->value("");
-fileList->deselect();
-Fl::remove_timeout((Fl_Timeout_Handler)previewCB, this);
-window->hide();}
+            callback {// Do any callback that is registered...
+  if (callback_)
+    (*callback_)(this, data_,-1);
+
+  fileName->value("");
+  fileList->deselect();
+  Fl::remove_timeout((Fl_Timeout_Handler)previewCB, this);
+  window->hide();} selected
             private xywh {380 345 100 25}
             code0 {//o->label(fl_cancel);}
           }
@@ -170,7 +174,7 @@ window->hide();}
     }
     Fl_Window favWindow {
       label {Manage Favorites}
-      xywh {240 190 355 150} type Double resizable
+      xywh {116 214 355 150} type Double resizable
       code0 {favWindow->label(manage_favorites_label);}
       class {icc_examin_ns::MyFl_Double_Window} modal size_range {181 150 0 0} visible
     } {
@@ -236,7 +240,7 @@ preview(e);} {}
 delete window;
 delete favWindow;} {}
   }
-  Function {callback(void (*cb)(MyFl_File_Chooser *, void *), void *d = 0)} {return_type void
+  Function {callback(void (*cb)(MyFl_File_Chooser *, void *, int), void *d = 0)} {return_type void
   } {
     code {callback_ = cb;
 data_     = d;} {}
@@ -373,7 +377,7 @@ else
   } {
     code {return (data_);} {}
   }
-  Function {user_data(void *d)} {open return_type void
+  Function {user_data(void *d)} {return_type void
   } {
     code {data_ = d;} {}
   }

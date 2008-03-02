@@ -294,7 +294,7 @@ Agviewer::agvHandleButton(int button, int event, int x, int y)
   DBG_PROG_START
   DBG_PROG_V( button <<" "<< event);
 
-  if (event == FL_PUSH && downb == -1)
+  if (event == FL_PUSH/* && downb == -1*/)
   {
     lastx = downx = x;
     lasty = downy = y;
