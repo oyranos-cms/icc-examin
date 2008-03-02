@@ -123,11 +123,11 @@ Profilierer::RGB_Tags (void)
   DBG_V( weiss.X<<" "<<weiss.Y<<" "<<weiss.Z )
   DBG_V( schwarz.Y )
   
-
+/*
   icTag ic_tag;
   ic_tag.offset = 0;
   icCurveType* kurveTag = NULL; //icCurveType = icTagBase + icCurve
-/*
+
   int size = 0;
 
   if (kurveTag && size)
@@ -170,6 +170,9 @@ Profilierer::RGB_Tags (void)
   Tag.load( &_profil, &ic_tag, (char*)kurveTag );
   _profil.addTag( Tag );
 */
+  schreibKurveTag (icSigRedTRCTag, 2.2);
+  schreibKurveTag (icSigGreenTRCTag, 2.2);
+  schreibKurveTag (icSigBlueTRCTag, 2.2);
   schreibXYZTag (icSigMediaWhitePointTag, weiss.X, weiss.Y, weiss.Z );
   schreibXYZTag (icSigMediaBlackPointTag, schwarz.X, schwarz.Y, schwarz.Z );
   schreibXYZTag (icSigRedColorantTag, rot.X, rot.Y, rot.Z );
@@ -180,13 +183,44 @@ Profilierer::RGB_Tags (void)
 }
 
 void
+Profilierer::schreibKurveTag (icTagSignature name, double gamma)
+{
+  icTag ic_tag;
+  ic_tag.offset = 0;
+  icCurveType* kurveTag = NULL; //icCurveType = icTagBase + icCurve
+
+  int size = 0;
+
+  if (kurveTag && size)
+    { free (kurveTag); size = 0; }
+  size = 8 + 4 + 1 * 2;
+  kurveTag = (icCurveType*) calloc (sizeof (char), size);
+
+  kurveTag->base.sig = (icTagTypeSignature)icValue( icSigCurveType );
+  // Werte eintragen
+  kurveTag->curve.count = icValue( (icUInt32Number) 1 );
+  kurveTag->curve.data[0] = icValue( (icUInt16Number)(gamma*256.0));
+  // Tagbeschreibung mitgeben
+  ic_tag.sig = icValue (name);
+  ic_tag.size = icValue ((icUInt32Number)size);
+  // Tag kreieren
+  ICCtag Tag;
+  DBG_V( &_profil ) DBG_V( icValue(ic_tag.size) << &ic_tag ) DBG_V( kurveTag )
+  Tag.load( &_profil, &ic_tag, (char*)kurveTag );
+  // hinzufügen
+  _profil.addTag( Tag ); Tag.clear(); 
+}
+
+void
 Profilierer::schreibXYZTag (icTagSignature name, double X, double Y, double Z)
 {
   icXYZType xyzTag;
+  memset ((char*)&xyzTag, 0, sizeof(icXYZType));
   icTag ic_tag;
   ICCtag Tag;
 
   ic_tag.size = icValue ((icUInt32Number)sizeof(icXYZType));
+  ic_tag.offset = 0;
   ic_tag.sig = icValue (name);
 
   xyzTag.base.sig = (icTagTypeSignature)icValue( icSigXYZType );
@@ -205,6 +239,7 @@ Profilierer::schreibTextTag (icTagSignature name, std::string text)
   ICCtag Tag;
 
   ic_tag.size = icValue ((icUInt32Number)groesse); DBG_V( groesse )
+  ic_tag.offset = 0;
   ic_tag.sig = icValue (name);
 
   char sig[] = "text";

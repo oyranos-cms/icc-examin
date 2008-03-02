@@ -206,58 +206,9 @@ ICCheader::print()
   *  @brief ICCtag Funktionen
   */
 
-ICCtag::ICCtag ()
-{
-  _sig = icMaxEnumTag;
-  _size = 0;
-  _data = NULL; DBG_S("ICCtag::ICCtag")
-  _profil = NULL;
-  if (_size) DBG_V ((int*)_data)
-}
-
 ICCtag::ICCtag                      (ICCprofile* profil, icTag* tag, char* data)
 { DBG_S("ICCtag::ICCtag ICCprofile* , icTag* , char*  - beginn")
   ICCtag::load (profil, tag, data); DBG_S("ICCtag::ICCtag ICCprofile* , icTag* , char*  - fertig")
-}
-
-void
-ICCtag::copy                        (const ICCtag& tag)
-{
-  _sig = tag._sig; //DBG_S (tag._sig << " " << _sig)
-  _size = tag._size; DBG_S("ICCtag::ICCtag <- Kopie _size: " << _size )
-  if (_size && tag._data) {
-    _data = (char*)calloc(sizeof(char),_size);//new char[_size];
-    memcpy (_data , tag._data , _size); DBG_S((int*)tag._data << " -> " << (int*)_data)
-  } else {
-    _data = NULL;
-    _size = 0;
-  }
-
-  _intent = tag._intent;
-  _color_in = tag._color_in;
-  _color_out = tag._color_out;
-
-  _profil = tag._profil;
-}
-
-ICCtag::~ICCtag ()
-{
-  _sig = icMaxEnumTag;
-  if (_size) {
-    #ifdef DEBUG_ICCTAG
-    #if 0
-    DBG_S( "ICCtag~ löschen: " << (char*)(icTagTypeSignature*)&_data[0] )
-    #else
-    DBG_S("ICCtag~ löschen: " << (int*)_data)
-    #endif
-    #endif
-    free(_data);//delete [] (_data);
-  } else {
-    #ifdef DEBUG_ICCTAG
-    DBG_S( "ICCtag~ war leer!" )
-    #endif
-  }
-  _size = 0;
 }
 
 void
@@ -327,7 +278,7 @@ ICCtag::load                        ( ICCprofile *profil,
   memcpy ( _data , data , _size );
   DBG_S((int*)_data)
 
-  #ifdef DEBUG_ICCTAG
+  #ifdef DEBUG_ICCTAG_
   char* text = _data;
   cout << _sig << "=" << tag->sig << " offset " << icValue(tag->offset) << " size " << _size << " nächster tag " << _size + icValue(tag->offset) << " " << text << " "; DBG
   #endif
@@ -852,6 +803,9 @@ void
 ICCprofile::clear (void)
 { DBG
   DBG_S( "Profil wird geleert" )
+
+  if (_data && _size)
+    free(_data);
 
   _data = NULL;
   _size = 0;

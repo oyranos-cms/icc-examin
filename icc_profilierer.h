@@ -38,6 +38,9 @@ class Profilierer {
     void                RGB_Tags (void);
     void                gemeinsamerHeader (ICCheader *header);
     std::string         print ();
+    void                schreibKurveTag (icTagSignature name, double gamma);
+    void                schreibKurveTag (icTagSignature name,
+                                         std::vector<double> kurve);
     void                schreibXYZTag (icTagSignature name,
                                        double X, double Y, double Z);
     void                schreibTextTag (icTagSignature name, std::string text);

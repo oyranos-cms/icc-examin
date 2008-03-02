@@ -20,48 +20,9 @@
   *  @brief ICCmeasurement Funktionen
   */
 
-ICCmeasurement::ICCmeasurement ()
-{ DBG
-  _sig = icMaxEnumTag;
-  _data = NULL;
-  _profil = NULL;
-}
-
 ICCmeasurement::ICCmeasurement (ICCprofile* profil, ICCtag &tag)
 {
   ICCmeasurement::load (profil, tag); DBG
-}
-
-void
-ICCmeasurement::clear               (void)
-{ DBG
-  if (_data != NULL) free (_data);
-  _sig = icMaxEnumTag;
-  _size = 0;
-  _data = NULL;
-
-  _nFelder = 0;
-
-  _profil = NULL;
-  _XYZ_measurement = false;
-  _RGB_measurement = false;
-  _CMYK_measurement = false;
-  _XYZ_Satz.clear();
-  _Lab_Satz.clear();
-  _RGB_Satz.clear();
-  _CMYK_Satz.clear();
-  _Feldnamen.clear();
-  _XYZ_Ergebnis.clear();
-  _Lab_Ergebnis.clear();
-  _RGB_MessFarben.clear();
-  _RGB_ProfilFarben.clear();
-  _Lab_Differenz.clear();
-  _DE00_Differenz.clear();
-  _reportTabelle.clear();
-
-  #ifdef DEBUG_ICCMEASUREMENT
-  DBG
-  #endif
 }
 
 void
@@ -395,7 +356,6 @@ ICCmeasurement::lcms_parse                   (void)
   // vorläufige lcms Farbnamen listen
   if (farben > 0) {
     _Feldnamen.resize(_nFelder);
-    const char* constr = (const char*) calloc (sizeof (char), 12);
     DBG
     for (int k = 0; k < _nFelder; k++) {
       if (_id_vor_name
@@ -403,8 +363,9 @@ ICCmeasurement::lcms_parse                   (void)
         char *text = (char*) calloc (sizeof(char), 12);
         sprintf (text, "%d", k+1);
         _Feldnamen[k] = text;
+        free(text);
       } else {
-        constr = cmsIT8GetPatchName (_lcms_it8, k, NULL);
+        const char *constr = cmsIT8GetPatchName (_lcms_it8, k, NULL);
         _Feldnamen[k] = constr;
       }
     }

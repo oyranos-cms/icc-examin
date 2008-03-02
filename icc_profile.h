@@ -211,9 +211,38 @@ class ICCheader {
 class ICCtag {
     friend class ICCmeasurement;
 
-    void                copy               (const ICCtag& tag);
+    void                copy               (const ICCtag& tag)
+                        {    _sig = tag._sig;
+                             _size = tag._size;
+                             DBG_S("ICCtag::ICCtag <- Kopie _size: " << _size )
+                             if (_size && tag._data) {
+                               _data = (char*)calloc(sizeof(char),_size);
+                               memcpy (_data , tag._data , _size);
+                               DBG_S((int*)tag._data << " -> " << (int*)_data)
+                             } else {
+                               _data = NULL;
+                               _size = 0;
+                             }
+
+                             _intent = tag._intent;
+                             _color_in = tag._color_in;
+                             _color_out = tag._color_out;
+
+                             _profil = tag._profil;
+                        }
+    void                defaults ()
+                        {    DBG
+                             _sig = icMaxEnumTag;
+                             _size = 0;
+                             _data = NULL;
+                             _intent = 0;
+                             _color_in = icMaxEnumData;
+                             _color_out = icMaxEnumData;
+                             _profil = NULL;
+                             if (_size) DBG_V ((int*)_data)
+                        }
   public:
-                        ICCtag             ();
+                        ICCtag             ()             {DBG defaults(); }
                         ICCtag             (ICCprofile* profil,
                                             icTag* tag, char* data);
                         ICCtag             (const ICCtag& tag)
@@ -221,17 +250,12 @@ class ICCtag {
     ICCtag&             operator=          (const ICCtag& tag)
                                                           {DBG copy (tag); 
                                                            return *this; }
-    void                clear              () {DBG _sig = icMaxEnumTag;
-                                               DBG_S((int*)_data)
-                                               if (_data && _size) free (_data);
-                                               _size = 0;
-                                               _data = NULL;
-                                               _intent = 0;
-                                               _color_in = icMaxEnumData;
-                                               _color_out = icMaxEnumData;
-                                               _profil = NULL; DBG
-                                               }
-                        ~ICCtag            ();
+    void                clear              () {    DBG
+                                              if (_data && _size) {
+                                                DBG_S("lösche: "<<(int*)_data)
+                                                free (_data);
+                                              } defaults(); }
+                        ~ICCtag            () {DBG_S("::ICCtag~") clear();}
   private:
     icTagSignature      _sig;
     int                 _size;
@@ -281,14 +305,94 @@ class ICCtag {
 
 // definiert in icc_measurement.cpp
 class ICCmeasurement {
+    void                copy (const ICCmeasurement& m)
+                        {    _sig = m._sig;
+                             _size = m._size;
+                             if (_size && m._data) {
+                               _data = (char*)calloc(sizeof(char),_size);
+                               memcpy (_data , m._data , _size);
+                               DBG_S((int*)m._data << " -> " << (int*)_data)
+                             } else {
+                               _data = NULL;
+                               _size = 0;
+                             }
+
+                             _nFelder = m._nFelder;
+                             _profil = m._profil;
+                             _XYZ_measurement = m._XYZ_measurement;
+                             _RGB_measurement = m._RGB_measurement;
+                             _CMYK_measurement = m._CMYK_measurement;
+                             // Messwerte
+                             _XYZ_Satz = m._XYZ_Satz;
+                             _Lab_Satz = m._Lab_Satz;
+                             _RGB_Satz = m._RGB_Satz;
+                             _CMYK_Satz = m._CMYK_Satz;
+                             // Profilwerte
+                             _Feldnamen = m._Feldnamen;
+                             _XYZ_Ergebnis = m._XYZ_Ergebnis;
+                             _Lab_Ergebnis = m._Lab_Ergebnis;
+                             _RGB_MessFarben = m._RGB_MessFarben;
+                             _RGB_ProfilFarben = m._RGB_ProfilFarben;
+                             // Ergebnisse
+                             _Lab_Differenz = m._Lab_Differenz;
+                             _Lab_Differenz_max = m._Lab_Differenz_max;
+                             _Lab_Differenz_min = m._Lab_Differenz_min;
+                             _Lab_Differenz_Durchschnitt = m._Lab_Differenz_Durchschnitt;
+                             _DE00_Differenz = m._DE00_Differenz;
+                             _DE00_Differenz_max = m._DE00_Differenz_max;
+                             _DE00_Differenz_min = m._DE00_Differenz_min;
+                             _DE00_Differenz_Durchschnitt = m._DE00_Differenz_Durchschnitt;
+
+                        }
+    void                defaults ()
+                        {    DBG
+                            _sig = icMaxEnumTag;
+                            _size = 0;
+                            _data = NULL;
+
+                            _nFelder = 0;
+
+                            _profil = NULL;
+                            _XYZ_measurement = false;
+                            _RGB_measurement = false;
+                            _CMYK_measurement = false;
+                            _Lab_Differenz_max = -1000;
+                            _Lab_Differenz_min = 1000;
+                            _Lab_Differenz_Durchschnitt = 0;
+                            _DE00_Differenz_max = -1000;
+                            _DE00_Differenz_min = 1000;
+                            _DE00_Differenz_Durchschnitt = 0;
+                        }
   public:
-                        ICCmeasurement     ();
+                        ICCmeasurement     () { DBG defaults(); }
                         ICCmeasurement     (ICCprofile* profil , ICCtag& tag);
                         ICCmeasurement     (ICCprofile* profil,
                                             icTag& tag, char* data);
-    void                clear(void);
-                        ~ICCmeasurement    () {clear(); }
+    void                clear (void)
+                        {   DBG
+                            if (_data != NULL) free(_data);
+                            defaults();
+                            _XYZ_Satz.clear();
+                            _Lab_Satz.clear();
+                            _RGB_Satz.clear();
+                            _CMYK_Satz.clear();
+                            _Feldnamen.clear();
+                            _XYZ_Ergebnis.clear();
+                            _Lab_Ergebnis.clear();
+                            _RGB_MessFarben.clear();
+                            _RGB_ProfilFarben.clear();
+                            _Lab_Differenz.clear();
+                            _DE00_Differenz.clear();
+                            _reportTabelle.clear();
+                            layout.clear();
+                        }
+                        ~ICCmeasurement() {DBG_S("::~ICCmeasurement") clear(); }
     void                init (void);
+                        ICCmeasurement     (const ICCmeasurement& m)
+                                                          {DBG copy (m); }
+    ICCmeasurement&     operator=          (const ICCmeasurement& m)
+                                                          {DBG copy (m); 
+                                                           return *this; }
 
   private:
     // laden und auswerten
