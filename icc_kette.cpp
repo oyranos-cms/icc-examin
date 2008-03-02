@@ -28,11 +28,11 @@
 #include "icc_kette.h"
 #include "icc_examin.h"
 #include "callback_simple.h"
-#include "icc_betrachter.h"
 
-void
+bool
 ICCkette::oeffnen (std::vector<std::string> dateinamen)
 { DBG_PROG_START
+  bool erfolgreich = false;
 
   // Laden TODO: test auf Existenz der Datei (oyranos?)
   _profile.resize(dateinamen.size());
@@ -67,13 +67,15 @@ ICCkette::oeffnen (std::vector<std::string> dateinamen)
     DBG_PROG
 
     //Button a( make_callback((Callback1<Button*>*)0, icc_examin->icc_betrachter->tag_browser, &TagBrowser::reopen) );
-    icc_examin->icc_betrachter->tag_browser->reopen ();
+    //icc_examin->icc_betrachter->tag_browser->reopen ();
 
-    icc_examin->icc_betrachter->measurement( _profile[_aktuelles_profil].hasMeasurement() );
+    //icc_examin->icc_betrachter->measurement( _profile[_aktuelles_profil].hasMeasurement() );
+    erfolgreich = true;
   } else {
     status(_("Datei nicht geladen!"));
   } DBG_PROG
 
+  return erfolgreich;
   DBG_PROG_ENDE
 }
 

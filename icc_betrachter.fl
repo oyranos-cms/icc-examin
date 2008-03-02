@@ -35,14 +35,8 @@ decl {\#include <FL/Fl_Menu_Bar.H>} {public
 decl {\#include <FL/Fl_Box.H>} {public
 } 
 
-decl {\#ifdef HAVE_FLU
-\#include <FLU/Flu_File_Chooser.h> 
-\#endif
-\#include <FL/Fl_File_Chooser.H> 
-\#include <FL/Fl_Hold_Browser.H> 
-\#include <FL/Fl_File_Icon.H> 
-\#include <FL/Fl_Shared_Image.H> 
-\#include <FL/Fl_PNM_Image.H>} {public
+decl {\#include "icc_fenster.h" 
+\#include <FL/Fl_Hold_Browser.H>} {public
 } 
 
 decl {class TagDrawings;
@@ -67,75 +61,6 @@ decl {\#include "icc_profile.h"
 
 decl {\#include "agviewer.h"
 \#include "icc_gl.h"} {} 
-
-declblock {\#ifdef HAVE_FLU} {after {\#endif}
-} {
-  decl {Flu_File_Chooser *dateiwahl;} {}
-  Function {dateiwahl_cb(const char *dateiname, int typ, void *arg)} {open private
-  } {
-    code {DBG_PROG_START
-
-  // kein Profile Dialog
-  if (strstr( dateiwahl->pattern(), "*.ic*") == 0) { DBG_PROG
-    DBG_PROG_ENDE
-    return;
-  }
-
-    if (dateiname)
-    {
-      std::vector<std::string> profilnamen;
-      profilnamen.resize(1);
-      //profilnamen[0] = dateiname;
-
-      DBG_NUM_V( profile )
-      profilnamen[0] = dateiwahl->get_current_directory();
-      profilnamen[0].append( dateiname );
-      DBG_NUM_V( profilnamen[0] )
-      icc_examin->oeffnen( profilnamen );
-    }
-
-  DBG_PROG_ENDE} {}
-  }
-  decl {\#else} {}
-  decl {Fl_File_Chooser *dateiwahl;} {}
-  Function {dateiwahl_cb(Fl_File_Chooser *f,void *data)} {open private
-  } {
-    code {DBG_PROG_START
-
-
-  const char *filename;
-
-    Fl_File_Chooser* fl = (Fl_File_Chooser*)f;
-
-    DBG_NUM_V( data )
-    filename = fl->value();
-  
-    // kein Profile Dialog
-    if (strstr(fl->filter(),
-    \#ifdef  HAVE_FLU
-                        "*.ic*"
-    \#else
-                        "*.{I,i}{C,c}"
-    \#endif
-                                    ) == 0) {
-      if (filename)
-        DBG_PROG_V( filename )
-      DBG_PROG_ENDE
-      return;
-    }
-
-    if (filename && fl->count() && dateiwahl->preview()) {
-      filenamen_alt.resize(fl->count());
-      for (int i = 0; i < fl->count(); i++) {
-        filenamen_alt[i] = fl->value(i);
-      }
-      DBG_NUM_V( filenamen_alt.size() << filename )
-      icc_examin->open(false);
-    }
-
-  DBG_PROG_ENDE} {}
-  }
-} 
 
 Function {icc_read_info(char* filename)} {return_type {char*}
 } {
@@ -470,15 +395,16 @@ class ICCfltkBetrachter {open
     dateiwahl->add_context_handler(Flu_File_Chooser::ENTRY_FILE, "icm", _("Profil öffnen"), dateiwahl_cb, NULL);
   \#else
     const char* ptr = NULL;
-    if (filenamen_alt.size())
-      ptr = profile;
+    if (profile.size())
+      ptr = profile.name().c_str();
     dateiwahl = new Fl_File_Chooser(ptr, _("ICC Farbprofile (*.{I,i}{C,c}{M,m,C,c})"), Fl_File_Chooser::SINGLE, _("Welches ICC Profil?"));
     dateiwahl->callback(dateiwahl_cb);
     dateiwahl->preview_label = _("Vorschau");
-  \#endif} {}
+  \#endif} {selected
+    }
     Fl_Window ueber {
       label {Über ICC examin}
-      xywh {617 782 366 241} type Double hide resizable
+      xywh {567 641 366 241} type Double hide resizable
       code0 {o->hide();} non_modal
     } {
       Fl_Group {} {open
@@ -496,7 +422,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window details {
       label {ICC Details} open
-      xywh {633 222 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
+      xywh {895 238 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
     } {
       Fl_Group {} {open
         xywh {0 0 385 520}
@@ -516,55 +442,8 @@ class ICCfltkBetrachter {open
             menuitem menueintrag_html_speichern {
               label {Bericht Speichern}
               callback {DBG_PROG_START
-  std::string filename = profile.name();  DBG_PROG_V( filename )
 
-  std::string::size_type pos=0;
-  if ((pos = filename.find_last_of(".", filename.size())) != std::string::npos) { DBG_PROG
-    filename.replace (pos, 5, ".html"); DBG_NUM_S( ".html gesetzt" )
-  } DBG_PROG_V( filename )
-  DBG_PROG_V( dateiwahl->filter() )
-
-  std::string muster = dateiwahl->filter(); DBG_PROG
-  std::string datei;
-  if (dateiwahl->value())
-    datei = dateiwahl->value(); DBG_PROG
-  std::string titel = dateiwahl->label(); DBG_PROG
-
-  dateiwahl->filter(_("HTML Dokumente (*.htm*)")); DBG_PROG
-  \#ifdef HAVE_FLU
-  dateiwahl->cd(".");
-  \#endif
-  dateiwahl->label(_("Bericht Speichern")); DBG_PROG
-  dateiwahl->value(filename.c_str()); DBG_PROG
-
-  dateiwahl->show(); DBG_PROG
-  while( dateiwahl->shown() )
-    Fl::wait( 0.01 );
-
-  DBG_PROG_V( dateiwahl->filter() )
-  if (dateiwahl->value())
-    filename = dateiwahl->value();
-  else
-    filename = "";
-  DBG_PROG
-
-  dateiwahl->filter(muster.c_str()); DBG_PROG
-  dateiwahl->value(datei.c_str()); DBG_PROG
-  dateiwahl->label(titel.c_str()); DBG_PROG
-  DBG_PROG_V( dateiwahl->filter() )
-
-  DBG_PROG_V( filename )
-
-  if (dateiwahl->count() == 0 || filename != "" || filename == profile.name()) {
-    load_progress->hide ();
-    return;
-  }
-
-  std::string bericht = profile.profil()->report();
-
-  std::ofstream f ( filename.c_str(),  std::ios::out );
-  f.write ( bericht.c_str(), bericht.size() );
-  f.close();
+  icc_examin->berichtSpeichern ();
 
   DBG_PROG_ENDE}
               xywh {0 0 100 20} deactivate divider
@@ -654,16 +533,6 @@ ueber_html->value(getUeberHtml().c_str());}
         Fl_Tile examin {open
           xywh {0 25 385 470} resizable
         } {
-          Fl_Help_View inspekt_html {
-            label Inspect selected
-            xywh {0 25 385 470} align 16
-            code0 {o->hide();}
-          }
-          Fl_Box DD_histogram {
-            xywh {0 25 385 470}
-            code0 {o->hide();}
-            class GL_Ansicht
-          }
           Fl_Browser tag_browser {
             label {Bitte wählen Sie ein Profilmerkmal aus}
             callback {o->selectItem( o->value() );}
@@ -714,6 +583,16 @@ ueber_html->value(getUeberHtml().c_str());}
               code0 {o->show();}
               class TagTexts
             }
+          }
+          Fl_Box DD_histogram {
+            xywh {0 25 385 470}
+            code0 {o->hide();}
+            class GL_Ansicht
+          }
+          Fl_Help_View inspekt_html {
+            label Inspect
+            xywh {0 25 385 470} align 16
+            code0 {o->hide();}
           }
         }
         Fl_Group {} {open

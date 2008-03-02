@@ -14,14 +14,8 @@
 #include <FL/Fl_Window.H>
 #include <FL/Fl_Menu_Bar.H>
 #include <FL/Fl_Box.H>
-#ifdef HAVE_FLU
-#include <FLU/Flu_File_Chooser.h> 
-#endif
-#include <FL/Fl_File_Chooser.H> 
-#include <FL/Fl_Hold_Browser.H> 
-#include <FL/Fl_File_Icon.H> 
-#include <FL/Fl_Shared_Image.H> 
-#include <FL/Fl_PNM_Image.H>
+#include "icc_fenster.h" 
+#include <FL/Fl_Hold_Browser.H>
 class TagDrawings;
 class TagBrowser;
 class TagTexts;
@@ -129,8 +123,6 @@ private:
   static void cb_ber(Fl_Menu_*, void*);
 public:
   Fl_Tile *examin;
-  Fl_Help_View *inspekt_html;
-  GL_Ansicht *DD_histogram;
   TagBrowser *tag_browser;
 private:
   inline void cb_tag_browser_i(TagBrowser*, void*);
@@ -148,6 +140,8 @@ public:
   GL_Ansicht *mft_gl;
   TagDrawings *tag_viewer;
   TagTexts *tag_text;
+  GL_Ansicht *DD_histogram;
+  Fl_Help_View *inspekt_html;
   Fl_Box *box_stat;
   Fl_Progress *load_progress;
   void run();

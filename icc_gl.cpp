@@ -51,7 +51,19 @@
 typedef enum {NOTALLOWED, AXES, RASTER, PUNKTE , HELFER, DL_MAX } DisplayLists;
 bool gl_voll[5] = {false,false,false,false,false};
 
-typedef enum { MENU_AXES, MENU_QUIT, MENU_RING, MENU_KUGEL, MENU_WUERFEL, MENU_STERN, MENU_MAX } MenuChoices;
+typedef enum {
+ MENU_AXES,
+ MENU_QUIT,
+ MENU_RING,
+ MENU_KUGEL,
+ MENU_WUERFEL,
+ MENU_STERN,
+ MENU_GRAU,
+ MENU_FARBIG,
+ MENU_KONTRASTREICH,
+ MENU_SCHALEN,
+ MENU_MAX
+} MenuChoices;
 
 std::vector<GL_Ansicht*> gl_ansichten;
 
@@ -71,7 +83,8 @@ GL_Ansicht::GL_Ansicht(int X,int Y,int W,int H) : Fl_Group(X,Y,W,H)
   first_ = true;
   auffrischen_ = true;
   menue_kanal_eintraege_ = 0;
-  Punktform = MENU_WUERFEL;
+  punktform = MENU_WUERFEL;
+  punktfarbe = MENU_GRAU;
   gl_fenster_zeigen_ = false;
   glut_id_ = -1;
   DBG_PROG_ENDE
@@ -79,12 +92,15 @@ GL_Ansicht::GL_Ansicht(int X,int Y,int W,int H) : Fl_Group(X,Y,W,H)
 
 GL_Ansicht::~GL_Ansicht()
 { DBG_PROG_START
-  if (gl_voll[RASTER])
+  if (gl_voll[RASTER]) {
     glDeleteLists (id()*DL_MAX + RASTER, 1);
-  if (gl_voll[HELFER])
+    DBG_PROG_S( "delete glListe " << id()*DL_MAX + RASTER ) }
+  if (gl_voll[HELFER]) {
     glDeleteLists (id()*DL_MAX + HELFER, 1);
-  if (gl_voll[PUNKTE])
+    DBG_PROG_S( "delete glListe " << id()*DL_MAX + HELFER ) }
+  if (gl_voll[PUNKTE]) {
     glDeleteLists (id()*DL_MAX + PUNKTE, 1);
+    DBG_PROG_S( "delete glListe " << id()*DL_MAX + PUNKTE ) }
   DBG_PROG_ENDE
 }
 
@@ -124,10 +140,10 @@ GL_Ansicht::verstecken()
   } else {
     //agviewers[agv_].agvSwitchMoveMode (Agviewer::AGV_STOP);
     gl_fenster_->size(1,1);
+    stop();
     DBG_PROG_S("-------------- GL Fenster auf 1x1 verkleinert ----------------")
   }
 
-  stop();
   
   DBG_PROG_ENDE
 }
@@ -382,7 +398,7 @@ GL_Ansicht::makeDisplayLists_()
       {
         ptr = (char*) nach_farb_namen_[kanal].c_str();
         sprintf (&text[0], ptr);
-        ZeichneText(GLUT_STROKE_ROMAN,&text[0])
+        //ZeichneText(GLUT_STROKE_ROMAN,&text[0])
       }
     glPopMatrix(); DBG_PROG
 
@@ -498,7 +514,7 @@ GL_Ansicht::makeDisplayLists_()
       double start_x,start_y,start_z, x,y,z;
       double groesse = (dim_x + dim_y + dim_z)/ 3;
       double wert;
-              switch (Punktform) {
+              switch (punktform) {
                 case MENU_STERN:   
                 schnitttiefe= HYP3(dim_x,dim_y,dim_z);
                 break;
@@ -530,14 +546,28 @@ GL_Ansicht::makeDisplayLists_()
             double x_versatz= (double)b/(n_b-1)*dim_x-n_b/((n_b-0.0)*2.0)*dim_z;
             glTranslatef(dim_x,0.0,0.0); //DBG_PROG_V( dim_x )
             wert = tabelle_[L][a][b][kanal]; //DBG_PROG_V( L << a << b << kanal )
+            #ifdef Beleuchtung
+            FARBE(wert, wert, wert)
+            //glColor3f(wert, wert, wert);
+            #else
+            switch (punktfarbe) {
+              case MENU_GRAU:   glColor4f( wert, wert, wert, 1.0); break;
+              case MENU_FARBIG: glColor4f((wert*2),
+                                           wert*2-1.0,
+                                           1.0-wert, 1.0);         break;
+              case MENU_KONTRASTREICH: wert = wert * 6;
+                                while(wert > 1.0) { wert = wert - 1.0; }
+                                if (schalen && wert < 0.80) wert = 0.0;
+                                if (0/*schalen*/) {
+                                  glDisable(GL_LIGHTING);
+                                  FARBE(wert, wert, wert)
+                                  glEnable(GL_LIGHTING);
+                                } else glColor4f( wert, wert, wert, 1.0);
+                                                                   break;
+            }
             if (wert) {
-              #ifdef Beleuchtung
-              FARBE(wert, wert, wert)
-              //glColor3f(wert, wert, wert);
-              #else
-              glColor4f(wert, wert, wert, 1.0);
               #endif
-              switch (Punktform) {
+              switch (punktform) {
                 case MENU_STERN: {
                 glBegin(GL_QUADS);
                   glVertex3f( dim_x/2,  dim_y/2, z_versatz);
@@ -657,7 +687,7 @@ GL_Ansicht::makeDisplayLists_()
           glColor4f(farben_[i/3*4+0], farben_[i/3*4+1], farben_[i/3*4+2],
                     farben_[i/3*4+3] );
         double groesse = 0.02;
-        switch (Punktform)
+        switch (punktform)
         {
           case MENU_STERN:
             glBegin(GL_QUADS);
@@ -773,10 +803,14 @@ GL_Ansicht::menuInit_()
   glutAddMenuEntry(_("Kugel"),  MENU_KUGEL);   DBG_PROG_V( menue_form_ )
   glutAddMenuEntry(_("Würfel"), MENU_WUERFEL);
   glutAddMenuEntry(_("Stern"),  MENU_STERN);
+  glutAddMenuEntry(_("grau"),  MENU_GRAU);
+  glutAddMenuEntry(_("farbig"),  MENU_FARBIG);
+  glutAddMenuEntry(_("kontrastreich"),  MENU_KONTRASTREICH);
+  glutAddMenuEntry(_("schalen"),  MENU_SCHALEN);
 
   glutSetMenu(menue_);
   glutAddSubMenu(_("Querschnitte"), menue_schnitt_);
-  glutAddSubMenu(_("Formen"), menue_form_);
+  glutAddSubMenu(_("Darstellung"), menue_form_);
 
 
   //menueErneuern_();
@@ -1087,15 +1121,34 @@ handlemenu (int id, int value)
       }
       break;
     case MENU_KUGEL:
-      icc_examin->glAnsicht(id)->Punktform = MENU_KUGEL;
+      icc_examin->glAnsicht(id)->punktform = MENU_KUGEL;
       icc_examin->glAnsicht(id)->auffrischen();
       break;
     case MENU_WUERFEL:
-      icc_examin->glAnsicht(id)-> Punktform = MENU_WUERFEL;
+      icc_examin->glAnsicht(id)-> punktform = MENU_WUERFEL;
       icc_examin->glAnsicht(id)->auffrischen();
       break;
     case MENU_STERN:
-      icc_examin->glAnsicht(id)-> Punktform = MENU_STERN;
+      icc_examin->glAnsicht(id)-> punktform = MENU_STERN;
+      icc_examin->glAnsicht(id)->auffrischen();
+      break;
+    case MENU_GRAU:
+      icc_examin->glAnsicht(id)-> punktfarbe = MENU_GRAU;
+      icc_examin->glAnsicht(id)->auffrischen();
+      break;
+    case MENU_FARBIG:
+      icc_examin->glAnsicht(id)-> punktfarbe = MENU_FARBIG;
+      icc_examin->glAnsicht(id)->auffrischen();
+      break;
+    case MENU_KONTRASTREICH:
+      icc_examin->glAnsicht(id)-> punktfarbe = MENU_KONTRASTREICH;
+      icc_examin->glAnsicht(id)->auffrischen();
+      break;
+    case MENU_SCHALEN:
+      if (!icc_examin->glAnsicht(id)-> schalen)
+        icc_examin->glAnsicht(id)-> schalen = 5;
+      else
+        icc_examin->glAnsicht(id)-> schalen = 0;
       icc_examin->glAnsicht(id)->auffrischen();
       break;
     }

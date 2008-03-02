@@ -91,7 +91,10 @@ public:
                                std::vector<std::string> nachFarben);
 
   int  kanal;               // gewählter Kanal
-  int  Punktform;           // Form der Gitterpunkte der Transformationstabelle
+  // Darstellung der Gitterpunkte der Transformationstabelle
+  int  punktform;           // MENU_KUGEL MENU_WUERFEL MENU_STERN
+  int  punktfarbe;          // MENU_GRAU MENU_FARBIG MENU_KONTRASTREICH
+  int  schalen;             // MENU_SCHALEN
   void auffrischen();       // Erneuerung ohne init()
   double seitenverhaeltnis;
   double schnitttiefe;
@@ -100,9 +103,12 @@ public:
   void verstecken();
   void stop() {if (!first_) { agvSwitchMoveMode (Agviewer::AGV_STOP); } }
 
-  char* kanalName() { if ((int)nach_farb_namen_.size() > kanal) 
+  char* kanalName() { DBG_PROG_START DBG_PROG_V( nach_farb_namen_.size() <<"|"<< kanal )
+                      if (nach_farb_namen_.size() &&
+                          (int)nach_farb_namen_.size() > kanal) { DBG_PROG_ENDE
                         return (char*)nach_farb_namen_[kanal].c_str();
-                      else  return _("Gibts nicht"); }
+                      } else { DBG_PROG_ENDE
+                        return _("");}  }
   char* kanalName(unsigned int i) { if (nach_farb_namen_.size()>i) 
                                       return (char*)nach_farb_namen_[i].c_str();
                                     else  return _("Gibts nicht"); }

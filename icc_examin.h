@@ -48,7 +48,8 @@ class ICCexamin
     void         quit(void);
 
     void         oeffnen (std::vector<std::string> dateinamen);
-    void         oeffnen ();	// interaktiv
+    void         oeffnen ();                   // interaktiv
+    bool         berichtSpeichern (void);      // GCATS Auswertung -> html Datei
     void         neuzeichnen (void* widget);   // Oberfläche neuzeichnen
 
     std::string  waehleTag (int item);

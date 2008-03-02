@@ -1,4 +1,13 @@
 
+2005-01-11
+	* und: icc_kette von icc_betrachter gereinigt
+	* neu: Datei icc_fenster.h/cpp mit Dateiauswahlfenster
+
+2005-01-09/10
+	* fix: doppelter Aufruf von auswahlCb - in MftChoice::profilTag
+	* und: Textausgabe in GL_Ansicht überarbeitet
+	* und: glut Menüs neu sortiert
+
 2005-01-08
 	* neu: Initialisierungsreihenfolge der GL_Ansicht in icc_examin
 	* neu: statische glut Funktionen je GL_Ansicht in icc_gl.h/cpp

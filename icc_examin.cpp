@@ -29,6 +29,7 @@
 #include "icc_kette.h"
 //#include "icc_examin.h"
 #include "icc_betrachter.h"
+#include "icc_fenster.h"
 #include "icc_draw.h"
 #include "icc_gl.h"
 
@@ -50,6 +51,7 @@ ICCexamin::quit ()
   for (unsigned i = 0; i < _gl_ansichten.size(); i++)
     delete _gl_ansichten[i];
   agviewers.resize(0);
+  profile.clear();
   DBG_PROG_ENDE
   exit(0);
 }
@@ -90,7 +92,11 @@ void
 ICCexamin::oeffnen (std::vector<std::string> dateinamen)
 { DBG_PROG_START
   // Laden
-  profile.oeffnen(dateinamen);
+  bool weiter = profile.oeffnen(dateinamen);
+  if (weiter) {
+    icc_betrachter->tag_browser->reopen ();
+    icc_betrachter->measurement( profile.profil()->hasMeasurement() );
+  }
   DBG_PROG_ENDE
 }
 
@@ -358,11 +364,87 @@ ICCexamin::histogram ()
   DBG_PROG_ENDE
 }
 
+bool
+ICCexamin::berichtSpeichern (void)
+{ DBG_PROG_START
+  bool erfolgreich = true;
+  std::string dateiname = profile.name();  DBG_PROG_V( dateiname )
+
+  // Profilnamen ersetzen
+  std::string::size_type pos=0;
+  if ((pos = dateiname.find_last_of(".", dateiname.size())) != std::string::npos)
+  { DBG_PROG
+    dateiname.replace (pos, 5, ".html"); DBG_NUM_S( ".html gesetzt" )
+  } DBG_PROG_V( dateiname )
+
+  // FLTK Dateidialog aufrufen
+  DBG_PROG_V( dateiwahl->filter() )
+
+  std::string muster = dateiwahl->filter(); DBG_PROG
+  std::string datei;
+  if (dateiwahl->value())
+    datei = dateiwahl->value(); DBG_PROG
+  std::string titel = dateiwahl->label(); DBG_PROG
+
+  dateiwahl->filter(_("HTML Dokumente (*.htm*)")); DBG_PROG
+  #ifdef HAVE_FLU
+  dateiwahl->cd(".");
+  #endif
+  dateiwahl->label(_("Bericht Speichern")); DBG_PROG
+  dateiwahl->value(dateiname.c_str()); DBG_PROG
+
+  dateiwahl->show(); DBG_PROG
+  while( dateiwahl->shown() )
+    Fl::wait( 0.01 );
+
+  DBG_PROG_V( dateiwahl->filter() )
+  if (dateiwahl->value())
+    dateiname = dateiwahl->value();
+  else
+    dateiname = "";
+  DBG_PROG
+
+  dateiwahl->filter(muster.c_str()); DBG_PROG
+  dateiwahl->value(datei.c_str()); DBG_PROG
+  dateiwahl->label(titel.c_str()); DBG_PROG
+  DBG_PROG_V( dateiwahl->filter() )
+
+  DBG_PROG_V( dateiname )
+
+  if (dateiwahl->count() == 0 ||
+      dateiname != "" ||
+      dateiname == profile.name()) {
+    fortschritt (1.1);
+    DBG_PROG_ENDE
+    return false;
+  }
+
+  // Bericht erzeugen
+  std::string bericht = profile.profil()->report();
+  // Speichern
+  std::ofstream f ( dateiname.c_str(),  std::ios::out );
+  f.write ( bericht.c_str(), bericht.size() );
+  f.close();
+
+  DBG_PROG_ENDE
+  return erfolgreich;
+}
+
 void
 ICCexamin::neuzeichnen (void* z)
 { DBG_PROG_START
   Fl_Widget *wid = (Fl_Widget*)z;
   static int item;
+
+  DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->DD_histogram)->visible())
+  DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->inspekt_html)->visible())
+  DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->tag_browser)->visible() )
+  DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->tag_text)->visible() )
+  DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->tag_viewer)->visible() )
+  DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->mft_choice)->visible() )
+  DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->mft_text)->visible() )
+  DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->mft_gl)->visible() )
+  DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->mft_viewer)->visible() )
 
   DBG_PROG_V(_zeig_histogram << icc_betrachter->menueintrag_3D->value() )
   if (icc_betrachter->menueintrag_3D->value() && !_zeig_histogram)
@@ -392,10 +474,11 @@ ICCexamin::neuzeichnen (void* z)
   }
 DBG_PROG
   if(icc_betrachter->menueintrag_inspekt->value() ||
-     icc_betrachter->menueintrag_3D->value())
-    icc_betrachter->tag_browser->hide();
-  else
-    icc_betrachter->tag_browser->show();
+     icc_betrachter->menueintrag_3D->value()) {
+    icc_betrachter->tag_browser->hide(); DBG_PROG
+  } else {
+    icc_betrachter->tag_browser->show(); DBG_PROG
+  }
 DBG_PROG
   if (wid == icc_betrachter->tag_viewer ||
       wid == icc_betrachter->mft_viewer) {
@@ -428,6 +511,16 @@ DBG_PROG
   zeig(mft_text)
   zeig(tag_viewer)
   zeig(tag_text)
+
+  DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->DD_histogram)->visible())
+  DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->inspekt_html)->visible())
+  DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->tag_browser)->visible() )
+  DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->tag_text)->visible() )
+  DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->tag_viewer)->visible() )
+  DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->mft_choice)->visible() )
+  DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->mft_text)->visible() )
+  DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->mft_gl)->visible() )
+  DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->mft_viewer)->visible() )
 
   DBG_PROG_ENDE
 }

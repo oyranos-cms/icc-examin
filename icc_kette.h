@@ -43,7 +43,7 @@ class ICCkette
   public:
                  ICCkette  () {_aktuelles_profil = -1; }
                  ~ICCkette () {; }
-
+    void         clear()      {_profile.resize(0); _profilnamen.resize(0); }
   private:
     int                      _aktuelles_profil;
     // Liste der geladenen Profile
@@ -51,9 +51,9 @@ class ICCkette
     std::vector<std::string> _profilnamen;
     std::vector<int>         _aktiv;
   public:
-    void         oeffnen   (std::vector<std::string> dateinamen);
+    bool         oeffnen   (std::vector<std::string> dateinamen);
     //void         oeffnen   ();	// interaktiv
-    void         oeffnen   (std::string dateiname, int pos);
+    bool         oeffnen   (std::string dateiname, int pos);
     void         aktiv     (int pos);
     void         passiv    (int pos);
     std::vector<int> aktiv () { return _aktiv; }

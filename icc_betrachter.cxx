@@ -7,73 +7,6 @@
 #include "fl_oyranos.h"
 #include "agviewer.h"
 #include "icc_gl.h"
-#ifdef HAVE_FLU
-static Flu_File_Chooser *dateiwahl;
-
-static void dateiwahl_cb(const char *dateiname, int typ, void *arg) {
-  DBG_PROG_START
-
-  // kein Profile Dialog
-  if (strstr( dateiwahl->pattern(), "*.ic*") == 0) { DBG_PROG
-    DBG_PROG_ENDE
-    return;
-  }
-
-    if (dateiname)
-    {
-      std::vector<std::string> profilnamen;
-      profilnamen.resize(1);
-      //profilnamen[0] = dateiname;
-
-      DBG_NUM_V( profile )
-      profilnamen[0] = dateiwahl->get_current_directory();
-      profilnamen[0].append( dateiname );
-      DBG_NUM_V( profilnamen[0] )
-      icc_examin->oeffnen( profilnamen );
-    }
-
-  DBG_PROG_ENDE
-}
-#else
-static Fl_File_Chooser *dateiwahl;
-
-static void dateiwahl_cb(Fl_File_Chooser *f,void *data) {
-  DBG_PROG_START
-
-
-  const char *filename;
-
-    Fl_File_Chooser* fl = (Fl_File_Chooser*)f;
-
-    DBG_NUM_V( data )
-    filename = fl->value();
-  
-    // kein Profile Dialog
-    if (strstr(fl->filter(),
-    #ifdef  HAVE_FLU
-                        "*.ic*"
-    #else
-                        "*.{I,i}{C,c}"
-    #endif
-                                    ) == 0) {
-      if (filename)
-        DBG_PROG_V( filename )
-      DBG_PROG_ENDE
-      return;
-    }
-
-    if (filename && fl->count() && dateiwahl->preview()) {
-      filenamen_alt.resize(fl->count());
-      for (int i = 0; i < fl->count(); i++) {
-        filenamen_alt[i] = fl->value(i);
-      }
-      DBG_NUM_V( filenamen_alt.size() << filename )
-      icc_examin->open(false);
-    }
-
-  DBG_PROG_ENDE
-}
-#endif
 
 char* icc_read_info(char* filename) {
   DBG_PROG_START
@@ -324,55 +257,8 @@ void ICCfltkBetrachter::cb_ffnen(Fl_Menu_* o, void* v) {
 
 inline void ICCfltkBetrachter::cb_menueintrag_html_speichern_i(Fl_Menu_*, void*) {
   DBG_PROG_START
-  std::string filename = profile.name();  DBG_PROG_V( filename )
 
-  std::string::size_type pos=0;
-  if ((pos = filename.find_last_of(".", filename.size())) != std::string::npos) { DBG_PROG
-    filename.replace (pos, 5, ".html"); DBG_NUM_S( ".html gesetzt" )
-  } DBG_PROG_V( filename )
-  DBG_PROG_V( dateiwahl->filter() )
-
-  std::string muster = dateiwahl->filter(); DBG_PROG
-  std::string datei;
-  if (dateiwahl->value())
-    datei = dateiwahl->value(); DBG_PROG
-  std::string titel = dateiwahl->label(); DBG_PROG
-
-  dateiwahl->filter(_("HTML Dokumente (*.htm*)")); DBG_PROG
-  #ifdef HAVE_FLU
-  dateiwahl->cd(".");
-  #endif
-  dateiwahl->label(_("Bericht Speichern")); DBG_PROG
-  dateiwahl->value(filename.c_str()); DBG_PROG
-
-  dateiwahl->show(); DBG_PROG
-  while( dateiwahl->shown() )
-    Fl::wait( 0.01 );
-
-  DBG_PROG_V( dateiwahl->filter() )
-  if (dateiwahl->value())
-    filename = dateiwahl->value();
-  else
-    filename = "";
-  DBG_PROG
-
-  dateiwahl->filter(muster.c_str()); DBG_PROG
-  dateiwahl->value(datei.c_str()); DBG_PROG
-  dateiwahl->label(titel.c_str()); DBG_PROG
-  DBG_PROG_V( dateiwahl->filter() )
-
-  DBG_PROG_V( filename )
-
-  if (dateiwahl->count() == 0 || filename != "" || filename == profile.name()) {
-    load_progress->hide ();
-    return;
-  }
-
-  std::string bericht = profile.profil()->report();
-
-  std::ofstream f ( filename.c_str(),  std::ios::out );
-  f.write ( bericht.c_str(), bericht.size() );
-  f.close();
+  icc_examin->berichtSpeichern ();
 
   DBG_PROG_ENDE;
 }
@@ -561,8 +447,8 @@ Fl_Double_Window* ICCfltkBetrachter::init() {
     dateiwahl->add_context_handler(Flu_File_Chooser::ENTRY_FILE, "icm", _("Profil öffnen"), dateiwahl_cb, NULL);
   #else
     const char* ptr = NULL;
-    if (filenamen_alt.size())
-      ptr = profile;
+    if (profile.size())
+      ptr = profile.name().c_str();
     dateiwahl = new Fl_File_Chooser(ptr, _("ICC Farbprofile (*.{I,i}{C,c}{M,m,C,c})"), Fl_File_Chooser::SINGLE, _("Welches ICC Profil?"));
     dateiwahl->callback(dateiwahl_cb);
     dateiwahl->preview_label = _("Vorschau");
@@ -596,22 +482,6 @@ Fl_Double_Window* ICCfltkBetrachter::init() {
         o->menu(menu_);
       }
       { Fl_Tile* o = examin = new Fl_Tile(0, 25, 385, 470);
-        { Fl_Help_View* o = inspekt_html = new Fl_Help_View(0, 25, 385, 470, "Inspect");
-          o->align(FL_ALIGN_CENTER|FL_ALIGN_INSIDE);
-          o->hide();
-        }
-        { GL_Ansicht* o = DD_histogram = new GL_Ansicht(0, 25, 385, 470);
-          o->box(FL_NO_BOX);
-          o->color(FL_BACKGROUND_COLOR);
-          o->selection_color(FL_BACKGROUND_COLOR);
-          o->labeltype(FL_NORMAL_LABEL);
-          o->labelfont(0);
-          o->labelsize(14);
-          o->labelcolor(FL_BLACK);
-          o->align(FL_ALIGN_CENTER);
-          o->when(FL_WHEN_RELEASE);
-          o->hide();
-        }
         { TagBrowser* o = tag_browser = new TagBrowser(0, 25, 385, 135, "Bitte w\344hlen Sie ein Profilmerkmal aus");
           o->box(FL_NO_BOX);
           o->color(FL_BACKGROUND_COLOR);
@@ -709,6 +579,22 @@ Fl_Double_Window* ICCfltkBetrachter::init() {
             o->show();
           }
           o->end();
+        }
+        { GL_Ansicht* o = DD_histogram = new GL_Ansicht(0, 25, 385, 470);
+          o->box(FL_NO_BOX);
+          o->color(FL_BACKGROUND_COLOR);
+          o->selection_color(FL_BACKGROUND_COLOR);
+          o->labeltype(FL_NORMAL_LABEL);
+          o->labelfont(0);
+          o->labelsize(14);
+          o->labelcolor(FL_BLACK);
+          o->align(FL_ALIGN_CENTER);
+          o->when(FL_WHEN_RELEASE);
+          o->hide();
+        }
+        { Fl_Help_View* o = inspekt_html = new Fl_Help_View(0, 25, 385, 470, "Inspect");
+          o->align(FL_ALIGN_CENTER|FL_ALIGN_INSIDE);
+          o->hide();
         }
         o->end();
         Fl_Group::current()->resizable(o);

@@ -11,10 +11,10 @@ libdir		= ${exec_prefix}/lib
 mandir		= ${prefix}/man
 srcdir		= .
 
-APPLE = 1
+#APPLE = 1
 FLTK = 1
 ifdef FLTK
-FLU = 1
+#FLU = 1
 FLTK_H = -DHAVE_FLTK
 endif
 DL = --ldflags # --ldstaticflags
@@ -24,7 +24,7 @@ FLU_H = -DHAVE_FLU
 endif
 
 CXXFLAGS=$(OPTS) $(INCL) $(FLU_H) $(FLTK_H)
-INCL=-I$(includedir) -I/usr/X11R6/include -I./ -I/opt/kai-uwe
+INCL=-I$(includedir) -I/usr/X11R6/include -I./ -I/opt/kai-uwe/include
 
 VRML_LIBS=$(FLTK_GL_LIBS) -lGL -lopenvrml -lopenvrml-gl -lpng -ljpeg \
  -lXinerama -lXft
@@ -48,7 +48,7 @@ else
 endif
 
 LDLIBS = -L$(libdir) -L./ $(FLTK_LIBS) \
-	$(X11_LIBS) -llcms $(KDB_LIBS) $(GLUT) $(FLU_LIBS)
+	$(X11_LIBS) -llcms $(KDB_LIBS) $(GLUT) $(FLU_LIBS) -L/opt/kai-uwe/lib
 
 #	$(VRML_LIBS)
 
@@ -60,9 +60,10 @@ CPP_HEADERS = \
 	icc_betrachter.h \
 	icc_draw.h \
 	icc_draw_fltk.h \
+	icc_fenster.h \
 	icc_formeln.h \
 	icc_examin.h \
-        icc_gl.h \
+	icc_gl.h \
 	icc_helfer.h \
 	icc_helfer_fltk.h \
 	icc_helfer_ui.h \
@@ -71,7 +72,7 @@ CPP_HEADERS = \
 	fl_oyranos.h \
 	icc_oyranos.h \
 	icc_profile.h \
-       	icc_ueber.h \
+	icc_ueber.h \
 	icc_utils.h \
 	icc_version.h \
 	icc_vrml.h
@@ -80,8 +81,9 @@ CPP_HEADERS = \
 CPPFILES = \
 	icc_draw.cpp \
 	icc_examin.cpp \
+	icc_fenster.cpp \
 	icc_formeln.cpp \
-        icc_gl.cpp \
+	icc_gl.cpp \
 	icc_helfer.cpp \
 	icc_kette.cpp \
 	icc_main.cpp \
@@ -91,7 +93,7 @@ CPPFILES = \
 	icc_ueber.cpp \
 	icc_utils.cpp \
 	icc_vrml.cpp \
-        agviewer.cpp
+	agviewer.cpp
 #	vFLGLWidget.cpp \
 	ViewerFLTK.cpp 
 CPPFLTKFILES = \
@@ -103,10 +105,11 @@ TEST = \
 	dE2000_test.cpp \
 	ciede2000testdata.h
 DOKU = \
-        README \
-        ChangeLog \
-        COPYING \
-        AUTHORS
+	TODO \
+	README \
+	ChangeLog \
+	COPYING \
+	AUTHORS
 FLUID = \
 	icc_betrachter.fl \
 	fl_oyranos.fl
