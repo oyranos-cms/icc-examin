@@ -63,6 +63,38 @@ void* myAllocFunc(size_t size)
   return new char [size];
 }
 
+void
+oyCopyDouble ( double * from, double * to, int n )
+{
+  int i;
+
+  memcpy( to, from, sizeof(double)*n );
+
+  for(i = 0; i < n; ++i)
+    to[i] = from[i];
+}
+
+oyNamedColour_s*
+oyCreateNamedColour( double * lab, double * chan, char *sig,
+                     char **names_chan, char *name, char *name_long, char *nick,
+                     char  *blob, int blob_len, char *ref_file,
+                     oyAllocFunc_t allocate_func)
+{
+  oyNamedColour_s * patch = allocate_func(sizeof(oyNamedColour_s));
+  icColorSpaceSignature sig_; 
+
+  if(!patch)
+    return NULL;
+
+  if(sig)
+    sig_ = oyValueUInt16( (icColorSpaceSignature*)sig );
+
+  oyCopyDouble( lab, &patch->lab[0], 3 );
+  
+}
+
+
+
 Oyranos icc_oyranos;
 
 

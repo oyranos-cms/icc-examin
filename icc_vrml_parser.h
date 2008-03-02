@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2005  Kai-Uwe Behrmann 
+ * Copyright (C) 2005-2007  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -37,7 +37,6 @@
 struct ICCnetzPunkt {
   double koord[3]; //!< allways Lab 0..1
   double farbe[4]; //!< eigther from VRML parsed or calculated otherwise
-  std::string name;
 };
 
 /** point indexes for a representable plain */

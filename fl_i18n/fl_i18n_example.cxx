@@ -29,8 +29,7 @@ int main(int argc, char **argv) {
 
   fl_font( FL_HELVETICA, 24);
   fl_font( FL_COURIER, 24);
-  printf("%s %s %f\n", Fl::get_font((Fl_Font)0), Fl::get_font_name((Fl_Font)0,0),
-          Fl::version() );
+  printf("%s %s\n", Fl::get_font((Fl_Font)0), Fl::get_font_name((Fl_Font)0,0));
 
   if ( fl_search_locale_path  ( 1,
                                 locale_paths,

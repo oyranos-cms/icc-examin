@@ -275,7 +275,7 @@ ICCexamin::farbenLese (int n,
            *rgb=0;
     if(single) {
       for(unsigned i = 0; i < n_farben * 3; ++i)
-        lab[i] = p_neu[i - patch*3];
+        lab[i] = p_neu[patch*3 + i];
     } else 
       for(unsigned i = 0; i < n_farben * 3; ++i)
         lab[i] = p_neu[i];

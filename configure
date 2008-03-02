@@ -43,7 +43,23 @@ VERSION_L=`echo $VERSION_L | sed 's/^0*//g'`
 cwdebug=0
 debug=0
 nodeps=0
+
+# find a suitable fltk-config script
 fltkconfig="fltk-config"
+old_IFS=$IFS; 
+IFS=:
+for i in $PATH; do
+  test -x "$i/$fltkconfig" && fltkconfig_="$i/$fltkconfig"
+done
+if [ -z "$fltkconfig_" ]; then
+  for i in $PATH; do
+    test -x "$i/fltk-utf8-config" && fltkconfig_="$i/fltk-utf8-config"
+  done
+fi
+if [ -n "$fltkconfig_" ]; then
+  fltkconfig="$fltkconfig_"
+fi
+IFS=$old_IFS
 
 echo ""
 echo "################################################################"

@@ -62,9 +62,9 @@ class GL_Ansicht : public Fl_Gl_Window,
   std::vector<std::string>farb_namen_;
   std::vector<double> punkte_;        //!<                (n*3)
   std::vector<float>  farben_;        //!< rgba 0.0 - 1.0 (n*4)
-  ICCnetzPunkt epoint_;               //!< emphasize point
+  oyNamedColour_s epoint_;            //!< emphasize point
 public:
-  ICCnetzPunkt mouse_3D_hit;          //!< a point recently hit by the mouse
+  oyNamedColour_s mouse_3D_hit;       //!< a point recently hit by the mouse
 
 private:
   void fensterForm();

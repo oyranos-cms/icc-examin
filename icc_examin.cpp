@@ -658,9 +658,9 @@ ICCexamin::nachricht( Modell* modell , int info )
           icc_betrachter->tag_text->select(min_pos+6);
 
         DBG_PROG_V(min <<" "<< min_pos)
-        lab_dv[0] = lab[min_pos*3*mult+0];
-        lab_dv[1] = lab[min_pos*3*mult+1];
-        lab_dv[2] = lab[min_pos*3*mult+2];
+        lab_dv[0] = lab_dv[min_pos*3*mult+0];
+        lab_dv[1] = lab_dv[min_pos*3*mult+1];
+        lab_dv[2] = lab_dv[min_pos*3*mult+2];
         lab_dv.resize(3);
         rgb[0] = rgb[min_pos*4*mult+0];
         rgb[1] = rgb[min_pos*4*mult+1];

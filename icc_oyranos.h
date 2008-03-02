@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2005  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2007  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -34,6 +34,9 @@
 #include "icc_speicher.h"
 #include "icc_vrml_parser.h"
 
+#include <oyranos/oyranos.h>
+#include <oyranos/oyranos_icc.h>
+
 #include <string>
 #include <list>
 #include <map>
@@ -58,6 +61,32 @@ struct ColourTransform
     char  *block;
     size_t size;
 };
+
+struct oyNamedColour_s {
+  double       lab[3];          //!< Lab  0...1 : for better integer/float conversion
+  double       channels[32];    //!< eigther parsed or calculated otherwise
+  char         sig[4];          //!< ICC colour space signature
+  const char * names_chan[32];  //!< user visible channel description
+  const char * name;            //!< normal user visible name (A1-MySys)
+  const char * name_long;       //!< full user description (A1-MySys from Oyranos)
+  const char * nick_name;       //!< few letters for mass representation (A1)
+  const char * cgats;           //!< advanced CGATS / ICC ?
+};
+
+oyNamedColour_s* oyCreateNamedColour ( double * lab,
+                                       double * chan,
+                                       char   * sig,
+                                       char  ** names_chan,
+                                       char   * name,
+                                       char   * name_long,
+                                       char   * nick,
+                                       char   * blob,
+                                       int      blob_len,
+                                       char   * icc_ref,
+                                       oyAllocFunc_t allocate_func);
+
+void             oyCopyDouble            ( double * from, double * to, int n );
+int              oyGetColorSpaceChannels ( icColorSpaceSignature color );
 
 
 class Oyranos
