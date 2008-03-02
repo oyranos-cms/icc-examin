@@ -84,7 +84,7 @@ class ICCmeasurement {
 
   private:
     icTagSignature      _sig;
-    int                 size_;
+    size_t              size_;
     char*               data_;
 
     ICCprofile*         _profil;
@@ -133,7 +133,7 @@ class ICCmeasurement {
     bool                hasRGB ()          {DBG_PROG return _RGB_measurement; }
     bool                hasCMYK ()         {DBG_PROG return _CMYK_measurement; }
     bool                hasXYZ ()          {DBG_PROG return _XYZ_measurement; }
-    int                 getSize()          {DBG_PROG return size_; }
+    size_t              getSize()          {DBG_PROG return size_; }
     int                 getPatchCount()    {DBG_PROG return _nFelder; }
     // Werte
     std::vector<double> getMessRGB (int patch); // Darstellungsfarben
@@ -190,7 +190,7 @@ class ICCprofile {
 
     // icc34.h Definitionen
     char*               data_;
-    unsigned int        size_;
+    size_t              size_;
 
     ICCheader           header;
     std::vector<ICCtag> tags;
@@ -200,7 +200,7 @@ class ICCprofile {
   public: // Informationen
     const char*         filename ();
     void                filename (const char* s);
-    int                 size     ();
+    size_t              size     ();
     //const char*         cmm      ()        {DBG_PROG return header.cmmName(); }
     //void                cmm      (const char* s) {DBG_PROG header.cmmName (s); }
     //int                 version  ()        {DBG_PROG return (int) header.version(); }
@@ -253,8 +253,8 @@ class ICCprofile {
     void                removeTag          (int item);
     void                removeTagByName    (std::string name);
     void                saveProfileToFile  (char* filename);
-    int                 getProfileSize     (void);
-    char*               saveProfileToMem   (int* size);
+    size_t              getProfileSize     (void);
+    char*               saveProfileToMem   (size_t* size);
   private:
     void                writeTags     (void);
     void                writeHeader   (void);

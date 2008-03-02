@@ -870,14 +870,14 @@ holeDateiModifikationsZeit (const char* fullFileName)
   double m_zeit = 0.0;
   if (r)
   {
-    #if 1
+    #if __APPLE__
+    m_zeit = status.st_mtime ;
+    m_zeit += status.st_mtimespec.tv_nsec/1000000. ;
+    #else
     m_zeit = status.st_mtim.tv_sec ;
     DBG_PROG_V( status.st_mtim.tv_sec )
     m_zeit += status.st_mtim.tv_nsec/1000000. ;
     DBG_PROG_V( status.st_mtim.tv_nsec )
-    #else
-    m_zeit = status.st_mtime ;
-    m_zeit += status.st_mtimensec/1000000. ;
     #endif
   }
 

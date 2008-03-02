@@ -406,7 +406,7 @@ ICCprofile::filename (const char* s)
   DBG_PROG _filename = s;
 }
 
-int
+size_t
 ICCprofile::size     ()
 {
   DBG_PROG
@@ -774,7 +774,7 @@ ICCprofile::saveProfileToFile  (char* filename)
   DBG_PROG_ENDE
 }
 
-int
+size_t
 ICCprofile::getProfileSize  ()
 { DBG_PROG_START
   if (data_ && size_) free(data_);//delete []data_;
@@ -791,7 +791,7 @@ ICCprofile::getProfileSize  ()
 }
 
 char*
-ICCprofile::saveProfileToMem  (int *size)
+ICCprofile::saveProfileToMem  (size_t *size)
 { DBG_PROG_START
   if (data_ && size_) free(data_);//delete []data_;
   size_ = sizeof (icHeader) + sizeof (icUInt32Number); DBG_PROG_V(size_ <<" "<<sizeof (icProfile))
@@ -844,7 +844,7 @@ ICCprofile::writeTagTable (void)
 { DBG_PROG_START
   icProfile* p = (icProfile*) data_;
   p->count = icValue((icUInt32Number)tags.size());
-  int size = sizeof (icTag) * tags.size();
+  size_t size = sizeof (icTag) * tags.size();
   char* data = (char*) calloc (sizeof(char), size + size_);
   memcpy (data, data_, size_);
   size_ = size_ + size;
