@@ -212,6 +212,9 @@ class Speicher
     time_t      zeit     () const {
                               return *letze_aen_zeit_;
                             }
+    void        zeit     (time_t neue_zeit) {
+                              *letze_aen_zeit_ = neue_zeit;
+                            }
 
     operator const char* () const {
                               DBG_MEM_START

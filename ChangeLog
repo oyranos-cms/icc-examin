@@ -1,3 +1,8 @@
+2005-08-12
+	* neu: Fehlersuche zeigt threads an, bessere Lesbarkeit
+	* und: nach 'export ICCEXAMIN_DEBUG=19' zeigt icc_examin Funktionesaufrufe
+	* fix: Verklemmung
+
 2005-08-11
 	* und: threads
 	* und: Datei Behandlung einfacher, Dateizugriff aus ICCprofile entfernt

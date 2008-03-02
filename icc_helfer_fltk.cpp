@@ -146,5 +146,26 @@ zeigFltkEvents(int event)
   }
 }
 
+namespace icc_examin_ns {
+
+  static int icc_thread_lock_zaehler_ = 0;
+  void lock(const char *file, int line)
+  {
+    ++icc_thread_lock_zaehler_;
+    DBG_THREAD_S( "locks: "<<icc_thread_lock_zaehler_ <<" Aufruf bei: "<<file<<":"<<line )
+    Fl::lock();
+    DBG_THREAD_S( "weiter" )
+  }
+  void unlock(void *widget, const char *file, int line)
+  {
+    --icc_thread_lock_zaehler_;
+    DBG_THREAD_S( "locks: "<<icc_thread_lock_zaehler_ <<" Aufruf bei: "<<file<<":"<<line )
+    Fl::unlock();
+    Fl::awake(widget);
+    DBG_THREAD_S( "weiter" )
+    icc_thread_lock_zaehler_ = 0;
+  }
+}
+
 
 #endif

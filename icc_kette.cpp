@@ -42,9 +42,15 @@
 ICCkette profile;
 
 ICCkette::ICCkette  ()
-{
-  aktuelles_profil_ = -1;
+{ DBG_PROG_START
   frei_ = true;
+  DBG_PROG_ENDE
+}
+
+void
+ICCkette::init ()
+{ DBG_PROG_START
+  aktuelles_profil_ = -1;
   #if USE_THREADS
   // Es gibt drei threads.
   // Der erste Neben-thread started eine while Schleife zum Beobachten
@@ -53,10 +59,9 @@ ICCkette::ICCkette  ()
   // Ein weiterer Thread übernimmt das Laden von neuen Daten.
 
   static Fl_Thread fl_t;
-  Fl::lock();
   int fehler = fl_create_thread( fl_t, &waechter, (void *)this );
 # if HAVE_PTHREAD_H
-  DBG_V( fl_t <<" "<< pthread_self () )
+  DBG_THREAD_V( fl_t <<" "<< pthread_self () )
   icc_thread_liste[THREAD_WACHE] = fl_t;
 # endif
   if(!fehler)
@@ -66,20 +71,21 @@ ICCkette::ICCkette  ()
   {
     WARN_S( _("Waechter Thread nicht gestartet Fehler: ")  << fehler );
   } else
-  #if !APPLE && !WIN32
+# if !APPLE && !WIN32
   if( fehler == PTHREAD_THREADS_MAX )
   {
     WARN_S( _("zu viele Waechter Threads Fehler: ") << fehler );
   } else
-  #endif
+# endif
   if( fehler != 0 )
   {
     WARN_S( _("unbekannter Fehler beim Start eines Waechter Threads Fehler: ") << fehler );
   }
 
-  #else
+# else
   Fl::add_timeout( 0.4, /*(void(*)(void*))*/waechter ,(void*)this);
-  #endif
+# endif
+  DBG_PROG_ENDE
 }
 
 bool
@@ -156,9 +162,9 @@ ICCkette::einfuegen (const Speicher & prof, int pos)
   }
 
 
-  Fl::lock();
+  icc_examin_ns::lock(__FILE__,__LINE__);
   /*Modell::*/benachrichtigen( pos );
-  Fl::unlock();
+  icc_examin_ns::unlock(icc_examin, __FILE__,__LINE__);
   frei(true);
   DBG_PROG_ENDE
   return erfolg;
@@ -171,9 +177,10 @@ void
 #endif
 ICCkette::waechter (void* zeiger)
 {
-  //DBG_PROG_START
+  DBG_PROG_START
   ICCkette* obj = (ICCkette*) zeiger;
-  Fl::unlock();
+  // Haupt Thread freigeben
+  //icc_examin_ns::unlock(icc_examin, __FILE__,__LINE__);
 
   while(1)
   {
@@ -181,7 +188,7 @@ ICCkette::waechter (void* zeiger)
     {
       DBG_MEM_V( obj->profilnamen_[i] );
       double m_zeit = holeDateiModifikationsZeit( obj->profilnamen_[i].c_str());
-      DBG_MEM_V( m_zeit )
+      DBG_MEM_V( m_zeit <<" "<< obj->profil_mzeit_[i] )
       if( m_zeit &&
           obj->aktiv_[i] &&
           obj->profil_mzeit_[i] != m_zeit
@@ -190,16 +197,20 @@ ICCkette::waechter (void* zeiger)
 #      endif
         )
       {
-        obj->frei(false);
-        obj->profile_[i].load( dateiNachSpeicher(obj->profilnamen_[i]) );
-        Fl::lock();
-        obj->/*Modell::*/benachrichtigen( i );
-        Fl::unlock();
-        obj->profil_mzeit_[i] = m_zeit;
-        obj->frei(true);
+        if( obj->profil_mzeit_[i] == 0 ) {
+          obj->profil_mzeit_[i] = m_zeit;
+        } else {
+          obj->frei(false);
+          obj->profile_[i].load( dateiNachSpeicher(obj->profilnamen_[i]) );
+          icc_examin_ns::lock(__FILE__,__LINE__);
+          obj->/*Modell::*/benachrichtigen( i );
+          icc_examin_ns::unlock(icc_examin, __FILE__,__LINE__);
+          obj->profil_mzeit_[i] = m_zeit;
+          obj->frei(true);
+        }
       }
     }
-    DBG_PROG
+    DBG_THREAD
     icc_examin_ns::sleep(1.0/3.0);
   }
 
@@ -207,7 +218,7 @@ ICCkette::waechter (void* zeiger)
   Fl::wait();
 # endif
 
-  //DBG_PROG_ENDE
+  DBG_PROG_ENDE
   return
 # if USE_THREADS
          0

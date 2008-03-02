@@ -40,7 +40,6 @@
 
 
 void dump_vrml_header (char *vrml);
-#define lp //{l+=0.1; icc_examin_ns::fortschritt(l);}
 
 int
 erase_file (const char *file)
@@ -83,16 +82,12 @@ icc_create_vrml( const char* p, int size, int intent )
     f.open ( ptn.c_str(),  std::ios::out );
     if(f.good())
     {
-      size_t s = size;
-      f.write ( p, s );
+      size_t sz = size;
+      f.write ( p, sz );
     }
     f.close();
   }
   // vrml produzieren - argyll Variante
-  char* system_befehl = (char*) new char [1024];
-  //double l = -0.1;
-  //icc_examin_ns::fortschritt(l);
-  lp
   int ret;
   DBG_PROG_V( PATH_SHELLSTRING )
   s.str("");
@@ -107,14 +102,12 @@ icc_create_vrml( const char* p, int size, int intent )
   else if(intent == 3)
     s << "-i a ";
   s << "-w " << ptn;
-  sprintf(system_befehl,s.str().c_str());
-  DBG_PROG_V( system_befehl )
-  ret = system (system_befehl); lp DBG_PROG
+  DBG_PROG_V( s.str() )
+  ret = system (s.str().c_str()); DBG_PROG
   ptn = profil_temp_name.str(); ptn.append(".icc");
   erase_file (ptn.c_str());
   ptn = profil_temp_name.str(); ptn.append(".gam");
   erase_file (ptn.c_str());
-  delete [] system_befehl;
 
   // Datei Oeffnen
   {
@@ -148,7 +141,6 @@ icc_create_vrml( const char* p, int size, int intent )
     erase_file (ptn.c_str());
   }
 
-  //icc_examin_ns::fortschritt(1.1);
   DBG_PROG_ENDE
   return vrml;
 }
@@ -157,26 +149,23 @@ int
 create_vrml              ( const char *profilA, char *profilB, char *vrml)
 {
   char system_befehl[1024];
-  //float l = -0.1;
-  //icc_examin_ns::fortschritt(l);
 
   if (!vrml || (!profilA && !profilB))
   return (0);
 
-  lp
-  erase_file (vrml); lp
-  dump_vrml_header (vrml); lp
+  erase_file (vrml);
+  dump_vrml_header (vrml);
 
   // gamut A
   if (profilA) {
   if (!erase_file ("/tmp/tmpA.icc")) remove ("/tmp/tmpA.icc");
   sprintf (system_befehl, "ln -s \"%s\" /tmp/tmpA.icc", profilA);
   system (system_befehl);
-  system ("iccgamut -n -w -d 6.0 /tmp/tmpA.icc"); lp
+  system ("iccgamut -n -w -d 6.0 /tmp/tmpA.icc");
   erase_file ("/tmp/tmpA.wrl");
   erase_file ("/tmp/tmpA.icc");
   system ("viewgam -n -c n /tmp/tmpA.gam /tmp/tmp.wrl");
-  sprintf (system_befehl ,"cat /tmp/tmp.wrl >> \"%s\"", vrml); lp
+  sprintf (system_befehl ,"cat /tmp/tmp.wrl >> \"%s\"", vrml);
   system (system_befehl);
   erase_file ("/tmp/tmp.wrl");
   }
@@ -186,10 +175,10 @@ create_vrml              ( const char *profilA, char *profilB, char *vrml)
   if (!erase_file ("/tmp/tmpB.icc")) remove ("/tmp/tmpB.icc");
   sprintf (system_befehl, "ln -s \"%s\" /tmp/tmpB.icc", profilB);
   system (system_befehl);
-  system ("iccgamut -n -w -d 6.0 /tmp/tmpB.icc"); lp
+  system ("iccgamut -n -w -d 6.0 /tmp/tmpB.icc");
   erase_file ("/tmp/tmpB.wrl");
   erase_file ("/tmp/tmpB.icc");
-  system ("viewgam -n -t 0.5 -c w /tmp/tmpB.gam /tmp/tmp.wrl"); lp
+  system ("viewgam -n -t 0.5 -c w /tmp/tmpB.gam /tmp/tmp.wrl");
   sprintf (system_befehl ,"cat /tmp/tmp.wrl >> \"%s\"", vrml);
   system (system_befehl);
   erase_file ("/tmp/tmp.wrl");
@@ -197,7 +186,7 @@ create_vrml              ( const char *profilA, char *profilB, char *vrml)
 
   // Unterschiede
   if (profilA && profilB) {
-  system ("smthtest /tmp/tmpA.gam /tmp/tmpB.gam /tmp/tmp.wrl"); lp
+  system ("smthtest /tmp/tmpA.gam /tmp/tmpB.gam /tmp/tmp.wrl");
   sprintf (system_befehl ,"cat /tmp/tmp.wrl >> \"%s\"", vrml);
   system (system_befehl);
   erase_file ("/tmp/tmp.wrl");

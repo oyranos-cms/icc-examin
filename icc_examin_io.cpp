@@ -69,23 +69,23 @@ ICCexamin::oeffnenThread_ ()
   }
 
 # if 0
-  for (float f = 0.; f < 1.1 ; f += 0.00001) {
+  for (float f = 0.; f < 1.0 ; f += 0.1) {
     fortschrittThreaded( f );
-    if (f >= 0.99)
-      f = 0.;
+    icc_examin_ns::sleep(.5);
   }
 # endif
 
   // Laden
   icc_betrachter->DD_farbraum->punkte_clear();
   profile.clear();
-  fortschritt( -.1 );
+  fortschrittThreaded( -.1 );
   for (unsigned int i = 0; i < speicher_vect_.size(); ++i)
   {
-    DBG_V( speicher_vect_[i].size()<<" "<<speicher_vect_[i].name() )
-    fortschritt( 1./3.+ (double)(i)/speicher_vect_.size()/3.0 );
+    DBG_PROG_V( speicher_vect_[i].size()<<" "<<speicher_vect_[i].name() )
+    fortschrittThreaded( 1./3.+ (double)(i)/speicher_vect_.size()/3.0 );
     profile.einfuegen( speicher_vect_[i], -1 );
-    fortschritt( 1./3.+ (double)(i+1)/speicher_vect_.size()/3.0 );
+    fortschrittThreaded( 1./3.+ (double)(i+1)/speicher_vect_.size()/3.0 );
+    DBG_THREAD
   }
 
   std::vector<std::string> dateinamen = profile;
@@ -93,24 +93,29 @@ ICCexamin::oeffnenThread_ ()
   if (profile.size())
   {
       // Oberflaechenpflege
-    Fl::lock();
+    icc_examin_ns::lock(__FILE__,__LINE__);
     erneuerTagBrowserText_ ();
     if(icc_betrachter->DD_farbraum->visible() &&
        !icc_betrachter->inspekt_html->visible() )
-      icc_betrachter->DD_farbraum->flush();
+      icc_betrachter->DD_farbraum->damage(FL_DAMAGE_ALL);
     icc_betrachter->menueintrag_gamut_speichern->activate();
     icc_betrachter->menueintrag_gamut_vrml_speichern->activate();
 
-    Fl::unlock();
+#   if 0
+    icc_examin_ns::unlock(this, __FILE__,__LINE__);
     fortschrittThreaded( 2./3.+ 1./3. );
-    Fl::lock();
+    icc_examin_ns::sleep(0.04);
+    icc_examin_ns::lock(__FILE__,__LINE__);
+#   else
+    fortschritt( 2./3.+ 1./3. );
+#   endif
     icc_betrachter->measurement( profile.profil()->hasMeasurement() );
     if(farbraumModus())
     {
         // Oberflaechenpflege
       gamutAnsichtZeigen();
     }
-    Fl::unlock();
+    icc_examin_ns::unlock(this, __FILE__,__LINE__);
 
       // Sortieren
     if( dateinamen.size() &&
@@ -141,7 +146,7 @@ ICCexamin::oeffnenThread_ ()
           netze[i].grau = false;
           netze[i].aktiv = true;
         }
-        Fl::lock();
+        icc_examin_ns::lock(__FILE__,__LINE__);
         icc_betrachter->DD_farbraum->hineinNetze(netze);
         std::vector<std::string> texte;
         texte.push_back(_("CIE *L"));
@@ -151,7 +156,7 @@ ICCexamin::oeffnenThread_ ()
         icc_betrachter->DD_farbraum->punkte_clear();
         icc_betrachter->DD_farbraum->auffrischen();
         gamutAnsichtZeigen();
-        Fl::unlock();
+        icc_examin_ns::unlock(this, __FILE__,__LINE__);
       } else
         WARN_S(_("kein Netz gefunden in VRML Datei"))
     } else {
@@ -241,6 +246,8 @@ ICCexamin::lade (std::vector<Speicher> & neu)
   {
     speicher_vect_ = neu;
     lade_ = true;
+  } else {
+    DBG_THREAD_S( "muss warten" )
   }
 }
 
@@ -263,7 +270,7 @@ ICCexamin::oeffnenStatisch_ (void* ie)
   }
 
   // Haupt Thread freigeben
-  Fl::unlock();
+  //icc_examin_ns::unlock(ie, __FILE__,__LINE__);
 
   // Bezug herstellen
   ICCexamin* examin = (ICCexamin*) ie;
@@ -296,70 +303,41 @@ ICCexamin::oeffnen (std::vector<std::string> dateinamen)
   }
   #endif
 
+  fortschritt( 0.0 );
+
   // Laden
-  char* data = 0;
-  size_t size = 0;
-  #if 0
-  static std::vector<Speicher> ss;
-  ss.clear();
-  #else
   std::vector<Speicher> ss;
-  #endif
   // resize benutzt copy, und erzeugt damit Referenzen auf das
   // selbe Objekt ; wir benoetigen aber neue Objekte
   // ss.resize(dateinamen.size());
   for (unsigned int i = 0; i < dateinamen.size(); ++i)
+  {
     ss.push_back(Speicher());
 
-  fortschritt( 0.0 );
-  for(unsigned int i = 0; i < dateinamen.size(); ++i)
-  {
-    try {
-      DBG_PROG_V( dateinamen[i] )
-      fortschritt( (double)i/dateinamen.size()/3.0 );
-      data = ladeDatei (dateinamen[i], &size);
-      fortschritt( (double)(i+1)/dateinamen.size()/3.0 );
-    }
-    #if HAVE_EXCEPTION
-      catch (Ausnahme & a) {  // faengt alles von Ausnahme Abstammende
-        DBG_NUM_V (_("Ausnahme aufgetreten: ") << a.what());
-        a.report();
-      }
-      catch (std::exception & e) { // faengt alles von exception Abstammende
-        DBG_NUM_V (_("Std-Ausnahme aufgetreten: ") << e.what());
-      }
-      catch (...) {       // faengt alles Uebriggebliebene
-        DBG_NUM_V (_("Huch, unbekannte Ausnahme"));
-      }
-    #endif
-
-    if(data && size)
-    {
-      DBG_PROG_V( i<<":"<< ss[i].size() )
-      ss[i].lade(data,size);
-      ss[i] = dateiName(dateinamen[i]);
-      free(data);
-      DBG_PROG
-    } else {
-      status( _("Stop loading ") << dateinamen[i] <<" "<<
-              (int*)data <<"|"<< size )
+    ss[i] = dateiNachSpeicher(dateinamen[i]);
+    if(ss[i].size() == 0) {
+      status( _("Stop loading ") << dateinamen[i] )
       fortschritt( 1.1 );
       return;
     }
   }
   DBG_PROG
 
+# if 0
   if(!kannLaden())
   {
     int erfolg = false;
     while(!erfolg) {
       if(kannLaden()) {
         erfolg = true;
-      } else
+      } else {
         // kurze Pause 
+        DBG_THREAD_S( "muss warten" )
         icc_examin_ns::sleep(0.05);
+      }
     }
   }
+# endif
   lade (ss);
 
   DBG_PROG_ENDE
@@ -515,10 +493,11 @@ ICCexamin::gamutSpeichern (IccGamutFormat format)
   std::string::size_type pos=0;
   if ((pos = dateiname.find_last_of(".", dateiname.size())) != std::string::npos)
   { DBG_PROG
-    if(format == ICC_ABSTRACT)
+    if(format == ICC_ABSTRACT) {
       dateiname.replace (pos, 5, "_proof.icc"); DBG_NUM_S( "_proof.icc gesetzt")
-    else if(format == ICC_VRML)
+    } else if(format == ICC_VRML) {
       dateiname.replace (pos, 5, ".wrl"); DBG_NUM_S( ".wrl gesetzt")
+    }
   } DBG_PROG_V( dateiname )
 
   // FLTK Dateidialog aufrufen

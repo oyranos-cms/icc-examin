@@ -46,6 +46,7 @@ class ICCkette : public icc_examin_ns::Modell
 {
   public:
                  ICCkette  ();
+    void         init ();
                  ~ICCkette () {; }
     void         clear()      {profile_.clear(); profilnamen_.clear();
                                aktiv_.clear(); profil_mzeit_.clear(); }

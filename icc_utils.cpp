@@ -31,7 +31,6 @@
 #include <icc_utils.h>
 #include <fstream>
 
-std::stringstream debug_s;
 
 #ifndef HAVE_OY
 int level_PROG = -1;
@@ -88,16 +87,42 @@ dbgWriteF (std::stringstream & ss)
 // Threads identifizieren
 Fl_Thread icc_thread_liste[12] = {0,0,0,0,0,0,0,0,0,0,0,0};
 
+
+/**
+ * Steuerschnipsel
+ * Beschreibung entnommen aus SuSE's /etc/rc.status
+ *
+#    \033          ascii ESCape
+#    \033[<NUM>G   move to column <NUM> (linux console, xterm, not vt100)
+#    \033[<NUM>C   move <NUM> columns forward but only upto last column
+#    \033[<NUM>D   move <NUM> columns backward but only upto first column
+#    \033[<NUM>A   move <NUM> rows up
+#    \033[<NUM>B   move <NUM> rows down
+#    \033[1m       switch on bold
+#    \033[31m      switch on red
+#    \033[32m      switch on green
+#    \033[33m      switch on yellow
+#    \033[m        switch off color/bold
+#    \017          exit alternate mode (xterm, vt100, linux console)
+#    \033[10m      exit alternate mode (linux console)
+#    \015          carriage return (without newline)
+ *
+ */
+
 std::string
 dbgThreadId(Fl_Thread id)
 {
   std::stringstream ss("??");
   {
     // in icc_thread_liste eingetragene Fl_Thread's lassen sich identifizieren
-    if      (icc_thread_liste[THREAD_HAUPT] == id) ss << "[HAUPT]";
-    else if (icc_thread_liste[THREAD_WACHE] == id) ss << "[WACHE]";
-    else if (icc_thread_liste[THREAD_LADEN] == id) ss << "[LADEN]";
-    else                                           ss << "["<< id <<"]";
+    if      (icc_thread_liste[THREAD_HAUPT] == id) ss <<
+      "\033[30m\033[1m[HAUPT]\033[m";
+    else if (icc_thread_liste[THREAD_LADEN] == id) ss <<
+      "\033[32m\033[1m[LADEN]\033[m";
+    else if (icc_thread_liste[THREAD_WACHE] == id) ss <<
+      "\033[34m\033[1m[WACHE]\033[m";
+    else                                           ss <<
+      "\033[31m\033[1m["<< id <<"]\033[m";
   }
   return ss.str();
 }

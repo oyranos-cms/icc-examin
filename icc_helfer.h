@@ -93,9 +93,12 @@ std::string         getMeasurementGeometry( icMeasurementGeometry measgeo );
 std::string         getMeasurementFlare( icMeasurementFlare flare );
 std::string         printDatum( icDateTimeNumber date );
 
-// Zeit / Uhr
 namespace icc_examin_ns {
+  // Zeit / Uhr
   void sleep(double Sekunden);
+  // Fl_Thread's sperren / freigeben
+  void lock(const char *file, int line);
+  void unlock(void *widget, const char *file, int line);
 }
 
 // Datendarstellung

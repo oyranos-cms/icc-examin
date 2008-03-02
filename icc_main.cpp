@@ -29,6 +29,8 @@
 #include "icc_utils.h"
 #include "icc_helfer.h"
 #include "icc_examin.h"
+#include "icc_kette.h"
+
 #include <FL/Fl.H>
 #include <FL/Fl_Double_Window.H>
 
@@ -40,7 +42,7 @@ int
 main (int argc, char** argv)
 {
 # if HAVE_PTHREAD_H
-  icc_thread_liste[THREAD_HAUPT] = pthread_self ();
+  icc_thread_liste[THREAD_HAUPT] = pthread_self();
 # endif
 
 # if APPLE

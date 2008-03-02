@@ -66,7 +66,10 @@ static int frei_tuen = 0;
 
 ICCexamin::ICCexamin ()
 { DBG_PROG_START
+  icc_examin_ns::lock(__FILE__,__LINE__);
   icc_betrachter = new ICCfltkBetrachter;
+  profile.init();
+
   lade_ = false;
   _item = -1;
   _mft_item = -1;
@@ -108,7 +111,6 @@ ICCexamin::start (int argc, char** argv)
 
   #if USE_THREADS
   static Fl_Thread fl_t;
-  Fl::lock();
   DBG_V( fl_t )
   int fehler = fl_create_thread( fl_t, &oeffnenStatisch_, (void *)this );
 # if HAVE_PTHREAD_H
@@ -239,7 +241,6 @@ ICCexamin::nachricht( Modell* modell , int info )
     //DBG_PROG_ENDE
     //return;
   }
-  //Fl::lock();
 
   frei_ = false;
   DBG_PROG_V( info )
@@ -266,7 +267,7 @@ ICCexamin::nachricht( Modell* modell , int info )
             intent_ = intent_neu;
           } else
             farbraum (info);
-          icc_examin_ns::fortschritt(0.5);
+          icc_examin->fortschrittThreaded(0.5);
 
           if (info < (int)icc_betrachter->DD_farbraum->dreiecks_netze.size())
             icc_betrachter->DD_farbraum->dreiecks_netze[info].aktiv = true;
@@ -275,29 +276,28 @@ ICCexamin::nachricht( Modell* modell , int info )
           icc_betrachter->DD_farbraum->dreiecks_netze[info].aktiv = false;
         }
           // Oberflaechenpflege - Aktualisieren
-        icc_examin_ns::fortschritt(0.6);
+        icc_examin->fortschrittThreaded(0.6);
         if(profile[info]->tagCount() <= _item)
           _item = (-1);
         DBG_PROG_V( _item )
  
         if(icc_betrachter->DD_farbraum->visible())
         {
-          icc_betrachter->DD_farbraum->flush();
+          icc_betrachter->DD_farbraum->damage(FL_DAMAGE_ALL);
         }
-        icc_examin_ns::fortschritt(0.7);
+        icc_examin->fortschrittThreaded(0.7);
         if(icc_betrachter->menueintrag_inspekt->active() &&
            profile[info]->hasMeasurement() )
           setzMesswerte();
         else if(icc_betrachter->examin->visible())
           waehleTag(_item);
-        icc_examin_ns::fortschritt(0.9);
+        icc_examin->fortschrittThreaded(0.9);
       }
     }
   }
   Beobachter::nachricht(modell, info);
-  icc_examin_ns::fortschritt(1.0);
-  icc_examin_ns::fortschritt(1.1);
-  //Fl::unlock();
+  icc_examin->fortschrittThreaded(1.0);
+  icc_examin->fortschrittThreaded(1.1);
   frei_ = true;
   DBG_PROG_ENDE
 }
@@ -319,7 +319,7 @@ void
 ICCexamin::testZeigen ()
 { DBG_PROG_START
 
-  #if HAVE_X || APPLE
+# if HAVE_X || APPLE
   std::vector<std::vector<std::pair<double,double> > > kurven2;
   kurven2.resize(8);
   kurven2[0].resize(4);
@@ -349,7 +349,7 @@ ICCexamin::testZeigen ()
   icc_betrachter->vcgt_viewer->show();
   icc_betrachter->vcgt_viewer->hineinDaten ( kurven2, txt );
   icc_betrachter->vcgt_viewer->kurve_umkehren = true;
-  #endif
+# endif
 
   // TODO: osX
   DBG_PROG_ENDE
@@ -361,7 +361,7 @@ ICCexamin::vcgtZeigen ()
   frei_ = false;
   kurve_umkehren[VCGT_VIEWER] = true;
 
-  #if HAVE_X || APPLE
+# if HAVE_X || APPLE
   std::string display_name = "";
   kurven[VCGT_VIEWER] = leseGrafikKartenGamma (display_name,texte[VCGT_VIEWER]);
   if (kurven[VCGT_VIEWER].size()) {
@@ -374,7 +374,7 @@ ICCexamin::vcgtZeigen ()
     WARN_S(_("Keine Kurve gefunden")) //TODO kleines Fenster
     icc_betrachter->vcgt_viewer->hide();
   }
-  #endif
+# endif
 
   frei_ = true;
   // TODO: osX
@@ -403,9 +403,11 @@ ICCexamin::moniHolen ()
     if(kannLaden()) {
       lade(ss);
       erfolg = true;
-    } else
+    } else {
       // kurze Pause 
+      DBG_THREAD_S( "muss warten" )
       icc_examin_ns::sleep(0.05);
+    }
   }
 
   // TODO: X notification event
@@ -607,13 +609,10 @@ ICCexamin::neuzeichnen (void* z)
 void
 ICCexamin::fortschritt(double f)
 { DBG_PROG_START
-  //Fl::lock();
   if(0.0 < f && f <= 1.0) {
     if(!icc_betrachter->load_progress->visible())
       icc_betrachter->load_progress-> show();
     icc_betrachter->load_progress-> value( f );
-    icc_betrachter->load_progress-> damage(FL_DAMAGE_ALL);
-    //icc_betrachter->load_progress-> redraw();
     DBG_PROG_V( f )
   } else if (1.0 < f) {
     icc_betrachter->load_progress-> hide();
@@ -622,15 +621,14 @@ ICCexamin::fortschritt(double f)
     icc_betrachter->load_progress-> show();
     DBG_PROG_V( f )
   }
-  icc_betrachter->load_progress-> redraw();//damage(FL_DAMAGE_ALL);
-  //Fl::unlock();
   DBG_PROG_ENDE
 }
 
 void
 ICCexamin::fortschrittThreaded(double f)
 { DBG_PROG_START
-  Fl::lock();
+  frei_ = false;
+  icc_examin_ns::lock(__FILE__,__LINE__);
   if(0.0 < f && f <= 1.0) {
     if(!icc_betrachter->load_progress->visible())
       icc_betrachter->load_progress-> show();
@@ -643,8 +641,8 @@ ICCexamin::fortschrittThreaded(double f)
     icc_betrachter->load_progress-> show();
     DBG_PROG_V( f )
   }
-  Fl::unlock();
-  Fl::awake((void*) (this));
+  icc_examin_ns::unlock(this, __FILE__,__LINE__);
+  frei_ = true;
   DBG_PROG_ENDE
 }
 

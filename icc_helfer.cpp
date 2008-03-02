@@ -794,7 +794,6 @@ namespace icc_examin_ns {
              //DBG_PROG_V( sekunden<<" "<<ts.tv_sec<<" "<<ganz<<" "<<rest )
              nanosleep(&ts, 0);
   }
-  
 }
 
 std::string
@@ -893,6 +892,9 @@ dateiNachSpeicher (const std::string & dateiname)
   char *block = ladeDatei(dateiname, &groesse);
   Speicher s (block,groesse);
   s = dateiname;
+  s.zeit ((time_t)holeDateiModifikationsZeit( dateiname.c_str() ));
+  DBG_PROG_V( s.zeit() )
+  if(block) free(block);
   DBG_PROG_ENDE
   return s;
 }
@@ -904,6 +906,9 @@ dateiNachSpeicher (Speicher & s, const std::string & dateiname)
   char *block = ladeDatei(dateiname, &groesse);
   s.lade (block,groesse);
   s = dateiname;
+  s.zeit ((time_t)holeDateiModifikationsZeit( dateiname.c_str() ));
+  if(block) free(block);
+  DBG_PROG_V( s.zeit() )
   DBG_PROG_ENDE
 }
 

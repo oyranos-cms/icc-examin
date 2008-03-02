@@ -76,8 +76,7 @@ std::string dbgThreadId(Fl_Thread id);
 
 // Statusmeldungen zur Fehlersuche
 void dbgWriteF (std::stringstream & ss);
-extern std::stringstream debug_s;
-#define dbgWrite(ss) { debug_s.str(""); debug_s << ss; dbgWriteF(debug_s); }
+#define dbgWrite(ss) { std::stringstream debug_s; debug_s << ss; dbgWriteF(debug_s); }
 // look in icc_utils.cpp for the WRITE_DBG definition
 
 #define cout std::cout
@@ -110,8 +109,16 @@ extern int icc_debug;
 #define DBG_S_(txt){ LEVEL dbgWrite ("        "); DBG_T_ dbgWrite (txt << endl); }
 #define DBG_V_(txt){ LEVEL dbgWrite ("        "); DBG_T_ dbgWrite (#txt << " " << txt << endl);}
 #define DBG        DBG_
-#define DBG_START  {level_PROG++; for (int i = 0; i < level_PROG; i++) dbgWrite ( "+"); dbgWrite (" Start: "); DBG_T_ dbgWrite (endl); }
-#define DBG_ENDE   { for (int i = 0; i < level_PROG; i++) dbgWrite ("+"); dbgWrite (" Ende:  "); DBG_T_ level_PROG--; dbgWrite (endl); }
+#define LEVEL_PLUS double m; \
+    for (int i = 0; i < level_PROG; i++) { \
+      if( (int)(modf( i / 10.0 , &m) * 10.) < 5 ) { \
+        dbgWrite ("+"); \
+      } else { \
+        dbgWrite ("\033[1m+\033[m"); \
+      } \
+    }
+#define DBG_START  {level_PROG++; LEVEL_PLUS dbgWrite (" Start: "); DBG_T_ dbgWrite (endl); }
+#define DBG_ENDE   { LEVEL_PLUS dbgWrite (" Ende:  "); DBG_T_ level_PROG--; dbgWrite (endl); }
 #define DBG_S(txt) DBG_S_(txt)
 #define DBG_V(txt) DBG_V_(txt)
 
@@ -151,6 +158,19 @@ extern int icc_debug;
 #define DBG_MEM_ENDE ;
 #define DBG_MEM_S(txt) ;
 #define DBG_MEM_V(txt) ;
+#endif
+#ifdef DEBUG
+#define DBG_THREAD        DBG_BED(4) DBG
+#define DBG_THREAD_START  DBG_BED2(4,8) DBG_START
+#define DBG_THREAD_ENDE   DBG_BED2(4,8) DBG_ENDE
+#define DBG_THREAD_S(txt) DBG_BED(4) DBG_S(txt)
+#define DBG_THREAD_V(txt) DBG_BED(4) DBG_V(txt)
+#else
+#define DBG_THREAD ;
+#define DBG_THREAD_START ;
+#define DBG_THREAD_ENDE ;
+#define DBG_THREAD_S(txt) ;
+#define DBG_THREAD_V(txt) ;
 #endif
 #define WARN { dbgWrite (_("!!! Warnung !!!")); DBG_ }
 #define WARN_S(txt) { dbgWrite (_("!!! Warnung !!!")); DBG_S_(txt) }

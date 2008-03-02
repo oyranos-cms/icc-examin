@@ -277,6 +277,9 @@ GL_Ansicht::draw()
     return;
   }
 
+  if(!icc_examin->frei())
+    icc_examin_ns::sleep(0.333);
+
   if(!valid()) {
     GLinit_();  DBG_PROG
     agv_.agvSetAllowIdle (1);
