@@ -215,59 +215,112 @@ if [ -n "$LCMS" ] && [ $LCMS -gt 0 ]; then
 fi
 
 if [ -n "$X11" ] && [ $X11 -gt 0 ]; then
-  if [ -f /usr/X11R6/include/X11/Xlib.h ] ||
-     [ -f /usr/include/X11/Xlib.h ] ||
-     [ -f $includedir/X11/Xlib.h ]; then
-    echo_="X11                     detected"; echo "$echo_" >> $CONF_LOG; test -n "$ECHO" && $ECHO "$echo_"
-    echo "#define HAVE_X 1" >> $CONF_H
-    if [ -n "$MAKEFILE_DIR" ]; then
-      for i in $MAKEFILE_DIR; do
-        test -f "$i/makefile".in && echo "X11 = X11" >> "$i/makefile"
-        test -f "$i/makefile".in && echo "X_H = -I/usr/X11R6/include -I/usr/include" >> "$i/makefile"
-      done
+    found=""
+    version=""
+    pc_package=x11
+    if [ -z "$found" ]; then
+      pkg-config  --atleast-version=1.0 $pc_package
+      if [ $? = 0 ]; then
+        found=`pkg-config --cflags $pc_package`
+        version=`pkg-config --modversion $pc_package`
+      fi
     fi
-  elif [ $OSUNAME = "Linux" ]; then
-    echo_="X11 header not found in /usr/X11R6/include/X11/Xlib.h or"; echo "$echo_" >> $CONF_LOG; test -n "$ECHO" && $ECHO "$echo_"
-    echo_="/usr/include/X11/Xlib.h"; echo "$echo_" >> $CONF_LOG; test -n "$ECHO" && $ECHO "$echo_"
-    X11=0
-  fi
+    if [ -z "$found" ]; then
+      if [ -f /usr/X11R6/include/X11/Xlib.h ]; then
+        found="-I/usr/X11R6/include"
+      elif [ -f /usr/include/X11/Xlib.h ]; then
+        found="-I/usr/include"
+      elif [ -f $includedir/X11/Xlib.h ]; then
+        found="-I$includedir"
+      fi
+    fi
+    if [ -z "$found" ] && [ $OSUNAME = "Linux" ]; then
+      echo_="X11 header not found in /usr/X11R6/include/X11/Xlib.h or"; echo "$echo_" >> $CONF_LOG; test -n "$ECHO" && $ECHO "$echo_"
+      echo_="  /usr/include/X11/Xlib.h or"; echo "$echo_" >> $CONF_LOG; test -n "$ECHO" && $ECHO "$echo_"
+      echo_="  $pc_package.pc"; echo "$echo_" >> $CONF_LOG; test -n "$ECHO" && $ECHO "$echo_"
+      X11=0
+    fi
 fi
 if [ -n "$X11" ] && [ $X11 -gt 0 ]; then
   if [ -n "$XF86VMODE" ] && [ $XF86VMODE -gt 0 ]; then
-    if [ -f /usr/X11R6/include/X11/extensions/xf86vmode.h ] ||
-       [ -f /usr/include/X11/extensions/xf86vmode.h ] ||
-       [ -f $includedir/X11/extensions/xf86vmode.h ]; then
-      echo_="X VidMode extension     detected"; echo "$echo_" >> $CONF_LOG; test -n "$ECHO" && $ECHO "$echo_"
+    found=""
+    version=""
+    pc_package=xf86vidmodeproto
+    if [ -z "$found" ]; then
+      pkg-config  --atleast-version=1.0 $pc_package
+      if [ $? = 0 ]; then
+        found=`pkg-config --cflags $pc_package`
+        version=`pkg-config --modversion $pc_package`
+      fi
+    fi
+    if [ -z "$found" ]; then
+      if [ -f /usr/X11R6/include/X11/extensions/xf86vmode.h ]; then
+        found="-I/usr/X11R6/include"
+      elif [ -f /usr/include/X11/extensions/xf86vmode.h ]; then
+        found="-I/usr/include"
+      elif [ -f $includedir/X11/extensions/xf86vmode.h ]; then
+        found="-I$includedir"
+      fi
+    fi
+    if [ -n "$found" ]; then
+      if [ -n "$version" ]; then
+        echo_="X VidMode $version         detected"; echo "$echo_" >> $CONF_LOG; test -n "$ECHO" && $ECHO "$echo_"
+      else
+        echo_="X VidMode               detected"; echo "$echo_" >> $CONF_LOG; test -n "$ECHO" && $ECHO "$echo_"
+      fi
       echo "#define HAVE_XF86VMODE 1" >> $CONF_H
       if [ -n "$MAKEFILE_DIR" ]; then
         for i in $MAKEFILE_DIR; do
           test -f "$i/makefile".in && echo "XF86VMODE = 1" >> "$i/makefile"
+          test -f "$i/makefile".in && echo "XF86VMODE_INC = $found" >> "$i/makefile"
           test -f "$i/makefile".in && echo "XF86VMODE_LIB = -lXxf86vm" >> "$i/makefile"
         done
       fi
     elif [ $OSUNAME = "Linux" ]; then
       echo_="X VidMode extension not found in /usr/X11R6/include/X11/extensions/xf86vmode.h or"; echo "$echo_" >> $CONF_LOG; test -n "$ECHO" && $ECHO "$echo_"
-      echo_="/usr/include/X11/extensions/xf86vmode.h"; echo "$echo_" >> $CONF_LOG; test -n "$ECHO" && $ECHO "$echo_"
+      echo_="  /usr/include/X11/extensions/xf86vmode.h or"; echo "$echo_" >> $CONF_LOG; test -n "$ECHO" && $ECHO "$echo_"
+      echo_="  $pc_package.pc"; echo "$echo_" >> $CONF_LOG; test -n "$ECHO" && $ECHO "$echo_"
     fi
   fi
 
   if [ -n "$XINERAMA" ] && [ $XINERAMA -gt 0 ]; then
-    if [ -f /usr/X11R6/include/X11/extensions/Xinerama.h ] ||
-       [ -f /usr/include/X11/extensions/Xinerama.h ] ||
-       [ -f $includedir/X11/extensions/Xinerama.h ]; then
-      echo_="X Xinerama              detected"; echo "$echo_" >> $CONF_LOG; test -n "$ECHO" && $ECHO "$echo_"
+    found=""
+    version=""
+    pc_package=xinerama
+    if [ -z "$found" ]; then
+      pkg-config  --atleast-version=1.0 $pc_package
+      if [ $? = 0 ]; then
+        found=`pkg-config --cflags $pc_package`
+        version=`pkg-config --modversion $pc_package`
+      fi
+    fi
+    if [ -z "$found" ]; then
+      if [ -f /usr/X11R6/include/X11/extensions/Xinerama.h ]; then
+        found="-I/usr/X11R6/include"
+      elif [ -f /usr/include/X11/extensions/Xinerama.h ]; then
+        found="-I/usr/include"
+      elif [ -f $includedir/X11/extensions/Xinerama.h ]; then
+        found="-I$includedir"
+      fi
+    fi
+    if [ -n "$found" ]; then
+      if [ -n "$version" ]; then
+        echo_="X Xinerama $version        detected"; echo "$echo_" >> $CONF_LOG; test -n "$ECHO" && $ECHO "$echo_"
+      else
+        echo_="X Xinerama              detected"; echo "$echo_" >> $CONF_LOG; test -n "$ECHO" && $ECHO "$echo_"
+      fi
       echo "#define HAVE_XIN 1" >> $CONF_H
       if [ -n "$MAKEFILE_DIR" ]; then
         for i in $MAKEFILE_DIR; do
           test -f "$i/makefile".in && echo "XIN = 1" >> "$i/makefile"
+          test -f "$i/makefile".in && echo "XINERAMA_INC = $found" >> "$i/makefile"
           test -f "$i/makefile".in && echo "XINERAMA_LIB = -lXinerama" >> "$i/makefile"
         done
       fi
-    else
-      if [ $OSUNAME = "Linux" ]; then
+    elif [ $OSUNAME = "Linux" ]; then
         echo_="X Xinerma not found in /usr/X11R6/include/X11/extensions/Xinerama.h or"; echo "$echo_" >> $CONF_LOG; test -n "$ECHO" && $ECHO "$echo_"
-        echo_="/usr/include/X11/extensions/Xinerama.h"; echo "$echo_" >> $CONF_LOG; test -n "$ECHO" && $ECHO "$echo_"
-      fi
+        echo_="  /usr/include/X11/extensions/Xinerama.h or"; echo "$echo_" >> $CONF_LOG; test -n "$ECHO" && $ECHO "$echo_"
+        echo_="  $pc_package.pc"; echo "$echo_" >> $CONF_LOG; test -n "$ECHO" && $ECHO "$echo_"
     fi
   fi
   echo "X_CPP = \$(X_CPPFILES)" >> $CONF
@@ -331,9 +384,50 @@ if [ -n "$X11" ] && [ $X11 -gt 0 ]; then
   fi
   if [ -n "$MAKEFILE_DIR" ]; then
     for i in $MAKEFILE_DIR; do
+      test -f "$i/makefile".in && echo "X11_INCL=\$(XF86VMODE_INC) \$(XINERAMA_INC)" >> "$i/makefile"
       test -f "$i/makefile".in && echo "X11_LIBS=\$(X11_LIB_PATH) -lX11 \$(XF86VMODE_LIB) $X_ADD_LIBS \$(XINERAMA_LIB)" >> "$i/makefile"
     done
   fi
+fi
+if [ -n "$X11" ] && [ $X11 -gt 0 ]; then
+    found=""
+    version=""
+    pc_package=x11
+    if [ -z "$found" ]; then
+      pkg-config  --atleast-version=1.0 $pc_package
+      if [ $? = 0 ]; then
+        found=`pkg-config --cflags $pc_package`
+        version=`pkg-config --modversion $pc_package`
+      fi
+    fi
+    if [ -z "$found" ]; then
+      if [ -f /usr/X11R6/include/X11/Xlib.h ]; then
+        found="-I/usr/X11R6/include"
+      elif [ -f /usr/include/X11/Xlib.h ]; then
+        found="-I/usr/include"
+      elif [ -f $includedir/X11/Xlib.h ]; then
+        found="-I$includedir"
+      fi
+    fi
+    if [ -n "$found" ]; then
+      if [ -n "$version" ]; then
+        echo_="X11 $version               detected"; echo "$echo_" >> $CONF_LOG; test -n "$ECHO" && $ECHO "$echo_"
+      else
+        echo_="X11                     detected"; echo "$echo_" >> $CONF_LOG; test -n "$ECHO" && $ECHO "$echo_"
+      fi
+      echo "#define HAVE_X 1" >> $CONF_H
+      if [ -n "$MAKEFILE_DIR" ]; then
+        for i in $MAKEFILE_DIR; do
+          test -f "$i/makefile".in && echo "X11 = X11" >> "$i/makefile"
+          test -f "$i/makefile".in && echo "X_H = -I/usr/X11R6/include -I/usr/include $found \$(X11_INCL)" >> "$i/makefile"
+        done
+      fi
+    elif [ $OSUNAME = "Linux" ]; then
+      echo_="X11 header not found in /usr/X11R6/include/X11/Xlib.h or"; echo "$echo_" >> $CONF_LOG; test -n "$ECHO" && $ECHO "$echo_"
+      echo_="  /usr/include/X11/Xlib.h or"; echo "$echo_" >> $CONF_LOG; test -n "$ECHO" && $ECHO "$echo_"
+      echo_="  $pc_package.pc"; echo "$echo_" >> $CONF_LOG; test -n "$ECHO" && $ECHO "$echo_"
+      X11=0
+    fi
 fi
 
 if [ -n "$FTGL" ] && [ $FTGL -gt 0 ]; then
@@ -386,14 +480,17 @@ if [ -n "$FLTK" ] && [ $FLTK -gt 0 ]; then
     else
       rm fltk_test$EXEC_END
     fi
+    if [ -z "$fltkldflags" ]; then
+      fltkldflags="--ldflags"
+    fi
     echo "#define HAVE_FLTK 1" >> $CONF_H
     echo "FLTK = 1" >> $CONF
     echo "FLTK_H = `$fltkconfig --cxxflags | sed \"$STRIPOPT\"`" >> $CONF
-    echo "FLTK_LIBS = `$fltkconfig --use-images --use-gl --ldflags | sed \"$STRIPOPT\"`" >> $CONF
+    echo "FLTK_LIBS = `$fltkconfig --use-images --use-gl $fltkldflags | sed \"$STRIPOPT\"`" >> $CONF
     echo "fltkconfig = $fltkconfig" >> $CONF
     echo "FLTK = 1" >> $CONF_I18N
     echo "FLTK_H = `$fltkconfig --cxxflags | sed \"$STRIPOPT\"`" >> $CONF_I18N
-    echo "FLTK_LIBS = `$fltkconfig --use-images --use-gl --ldflags | sed \"$STRIPOPT\"`" >> $CONF_I18N
+    echo "FLTK_LIBS = `$fltkconfig --use-images --use-gl $fltkldflags | sed \"$STRIPOPT\"`" >> $CONF_I18N
     echo "fltkconfig = $fltkconfig" >> $CONF_I18N
 
   else

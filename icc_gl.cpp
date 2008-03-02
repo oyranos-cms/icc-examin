@@ -713,17 +713,17 @@ GL_Ansicht::GLinit_()
   }
 # endif
   if(!holeDateiModifikationsZeit(font_name)) {
-    DBG_S( _("Could not open font in:") << font_name )
+    DBG_PROG_S( _("Could not open font in:") << font_name )
     font_name = "/usr/X11R6/lib/X11/fonts/truetype/arial.ttf";
     if(!holeDateiModifikationsZeit(font_name)) {
-      DBG_S( _("Could not open font in:") << font_name )
+      DBG_PROG_S( _("Could not open font in:") << font_name )
 #ifdef  WIN32
       font_name = "C:\\Windows\\Fonts\\arial.ttf";
 #else
       font_name = "/Library/Fonts/Arial.ttf";
 #endif
       if(!holeDateiModifikationsZeit(font_name)) {
-        DBG_S( _("Could not open font in:") << font_name )
+        DBG_PROG_S( _("Could not open font in:") << font_name )
         char *n = (char*) calloc(sizeof(char), 1024);
 #ifdef  WIN32
         sprintf (n, "%s%s.fonts%sarial.ttf", getenv("HOME"),
@@ -734,11 +734,11 @@ GL_Ansicht::GLinit_()
         font_name = n;
         DBG_PROG_V( holeDateiModifikationsZeit(font_name) )
         if(!holeDateiModifikationsZeit(font_name)) {
-          DBG_S( _("Could not open font in:") << font_name )
+          DBG_PROG_S( _("Could not open font in:") << font_name )
           //sprintf (n, "%s/fonts/FreeSans.ttf", ICCEXAMIN_DATADIR);
           font_name = n;
           if(!holeDateiModifikationsZeit(font_name)) {
-            DBG_S( _("Could not open font in:") << font_name )
+            DBG_PROG_S( _("Could not open font in:") << font_name )
             sprintf (n, "%s/FreeSans.ttf", SRCDIR);
             font_name = n;
           }
@@ -1244,8 +1244,6 @@ GL_Ansicht::netzeAuffrischen()
       DBG_ICCGL_V( dreiecks_netze[0].undurchsicht )
     }
 
-  unsigned int j,k;
-
       // sort meshes
       glPushMatrix();
          // orientate the matrix to the camera
@@ -1380,7 +1378,7 @@ GL_Ansicht::netzeAuffrischen()
 
       glLineWidth(strich1*strichmult);
       int index[7];
-      double normale[3], len=1.0, v1[3], v2[3];
+      double normale[3], len=1.0;
 
       // all material colours obtian here their transparency
       glColorMaterial( GL_FRONT_AND_BACK, GL_SPECULAR );
@@ -1414,7 +1412,7 @@ GL_Ansicht::netzeAuffrischen()
                           netz.punkte[index[l]].koord[1] );
             }
           glEnd();
-          //DBG_V( index <<" "<< len <<" "<< normale[0] <<" "<< v1[0] <<" "<< v2[0] );
+          //DBG_V( index <<" "<< len <<" "<< normale[0] );
           if(icc_debug != 0)
           {
           glLineWidth(strich1*strichmult);
@@ -2163,8 +2161,12 @@ GL_Ansicht::zeichnen()
             oX = bNachX( lab.b );
             mausPunkt_( oX, oY, oZ, X, Y, Z, 0 );
             const char * temp = oyNamedColourGetNick( epoint_ );
-            sprintf( text, "%s", temp );
-          } else {
+            if(temp)
+              sprintf( text, "%s", temp );
+            else
+              text[0] = 0;
+          } 
+          if(!strlen(text)) {
             sprintf( text,"%s:%.02f %s:%.02f %s:%.02f",
                                von_farb_namen_[0].c_str(), oY*1.00+.50,
                                von_farb_namen_[1].c_str(), oZ*1.00,
@@ -2404,7 +2406,7 @@ GL_Ansicht::zeichnen()
 
   } else
     if(!icc_examin->frei())
-      DBG_S("icc_examin not free")
+      DBG_PROG_S("icc_examin not free")
   icc_examin->report_owner = 0;
 
   MARK( frei(true); )
@@ -2538,8 +2540,8 @@ GL_Ansicht::emphasizePoint    (oyNamedColour_s * colour)
     OyLabToLab( l, lab );
 
     icc_examin->statusFarbe( lab.L, lab.a, lab.b );
+    glStatus( oyNamedColourGetDescription( colour ), typ_ );
   }
-  glStatus( oyNamedColourGetDescription( colour ), typ_ );
   MARK( frei(true); )
 
   //valid_=false;

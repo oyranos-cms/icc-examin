@@ -60,6 +60,11 @@ icProfileClassSignature oyValueProfCSig (icProfileClassSignature val);
 icTagSignature          oyValueTagSig   (icTagSignature val);
 
 
+typedef enum {
+  oyOBJECT_TYPE_NONE,
+  oyOBJECT_TYPE_DISPLAY_S,
+  oyOBJECT_TYPE_NAMED_COLOUR_S
+} oyOBJECT_TYPE;
 
 /** @brief colour patch with meta informations
  *
@@ -73,6 +78,7 @@ icTagSignature          oyValueTagSig   (icTagSignature val);
  *  TODO: needs to be Xatom compatible
  */
 typedef struct {
+  oyOBJECT_TYPE type;           /*!< internal struct type */
   double       lab[3];     /*!< Lab  L: 0...1  a/b: -1.28...1.28 */
   double       channels[32];    /*!< eigther parsed or calculated otherwise */
   double       moni_rgb[3];     /*!< monitor colours */

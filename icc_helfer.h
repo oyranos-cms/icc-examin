@@ -362,44 +362,5 @@ public:
   }
 };
 
-#include "icc_thread_daten.h"
-
-/** @brief a thread save list
- *
- *  this safty makes the structure as well expensive
- */
-template <typename T>
-class ICCThreadList : public ICClist<T>,
-                      public icc_examin_ns::ThreadDaten
-{
-  /** @brief index access operator 
-   *
-   *  no check in this basic class
-   */
-  T &      operator [] (size_t i) {
-    //if(i < n_)
-      return ICClist<T>::[i];
-    /*else
-      DBG_PROG_S("out of range");
-    return list_[reserve_ + 1000000000]; // create exception */
-  }
-
-  /** @brief constant index access operator */
-  const T& operator [] (const size_t i) const {
-    //if(i < n_)
-      return const ICClist::[i];
-    /*else
-      DBG_PROG_S("out of range");
-    return list_[reserve_ + 1000000000]; // create exception */
-  }
-
-}
-
-// Callback structure
-/*typedef struct StructVoidInt
-{
-  void* data;
-  int   wert;
-};*/
 
 #endif //ICC_HELFER_H

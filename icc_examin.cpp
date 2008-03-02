@@ -570,7 +570,7 @@ ICCexamin::nachricht( Modell* modell , int info )
     int item = icc_examin->tag_nr();
     std::vector<std::string> TagInfo = profile.profil()->printTagInfo(item),
                              names;
-    std::vector<float> rgb;
+    std::vector<float> chan_fv;
     std::vector<double> lab_dv;
     double min = DBL_MAX, len;
     double cielab1[3], cielab2[3], oylab[3];
@@ -674,7 +674,7 @@ ICCexamin::nachricht( Modell* modell , int info )
 
     } else if( profile.profil()->hasTagName("ncl2") ) {
 
-      farbenLese( profile.aktuell(), lab_dv, rgb, names );
+      farbenLese( profile.aktuell(), lab_dv, chan_fv, names );
       n = names.size();
       int mult = lab_dv.size()/3/names.size();
       int n_ = n*3*mult;
@@ -705,17 +705,14 @@ ICCexamin::nachricht( Modell* modell , int info )
         lab_dv[1] = lab_dv[min_pos*3*mult+1];
         lab_dv[2] = lab_dv[min_pos*3*mult+2];
         lab_dv.resize(3);
-        LabToOyLab( &lab_dv[min_pos], oylab, 1 );
-        chan[0] = rgb[0] = rgb[min_pos*4*mult+0];
-        chan[1] = rgb[1] = rgb[min_pos*4*mult+1];
-        chan[2] = rgb[2] = rgb[min_pos*4*mult+2];
-        chan[3] = rgb[3] = 1.0;
-        rgb.resize(4);
+        LabToOyLab( &lab_dv[0], oylab, 1 );
+        memset(chan, 0, sizeof(double)*32);
+        for(int k = 0; k < profile.profil()->getColourChannelsCount(); ++k)
+          chan[k] = chan_fv[min_pos*4*mult+k];
         oyNamedColour_s * colour = oyNamedColourCreate(
                               oylab, chan,
-                              profile.profil()->colorSpace(),
-                              0, 0, 0,
-                              names[min_pos].c_str(),
+                              profile.profil()->colorSpace(), 0,
+                              0, 0, names[min_pos].c_str(),
                               0,0, profile.profil()->filename(), malloc, free );
         if(!names[min_pos].size())
           WARN_S( "no name found" )
@@ -1516,6 +1513,14 @@ ICCexamin::statusAktualisieren()
 { DBG_PROG_START
   icc_betrachter->box_stat->label(statlabel[0].c_str());
   icc_betrachter->DD_box_stat->label(statlabel[1].c_str());
+  DBG_PROG_ENDE
+}
+
+void
+ICCexamin::scheme(const char *name)
+{ DBG_PROG_START
+  // set a nice GUI surface
+  Fl::scheme(name);
   DBG_PROG_ENDE
 }
 

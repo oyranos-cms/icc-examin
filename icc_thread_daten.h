@@ -33,6 +33,7 @@
 #define ICC_THREAD_DATEN_H
 
 #include "icc_utils.h"
+#include "icc_helfer.h"
 
 /** @brief * the class with locking
  *
@@ -53,6 +54,37 @@ public:
     bool frei();              //!<@brief is not locked
     void frei(int freigeben); //!<@brief lock with wait/unlock
     bool report_owner; 
+};
+
+/** @brief a thread save list
+ *
+ *  this safty makes the structure as well expensive
+ */
+template <typename T>
+class ICCThreadList : public ICClist<T>,
+                      public icc_examin_ns::ThreadDaten
+{
+  /** @brief index access operator 
+   *
+   *  no check in this basic class
+   */
+  T &      operator [] (size_t i) {
+    //if(i < n_)
+      return *((ICClist<T>*)(this))[i];
+    /*else
+      DBG_PROG_S("out of range");
+    return list_[reserve_ + 1000000000]; // create exception */
+  }
+
+  /** @brief constant index access operator */
+  const T& operator [] (const size_t i) const {
+    //if(i < n_)
+      return *((const ICClist<T>*)(this))[i];
+    /*else
+      DBG_PROG_S("out of range");
+    return list_[reserve_ + 1000000000]; // create exception */
+  }
+
 };
 
 }

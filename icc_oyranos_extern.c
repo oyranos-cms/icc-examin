@@ -243,6 +243,7 @@ oyNamedColourCreate( double      * lab,
 
   memset( colour, 0, sizeof(oyNamedColour_s) );
 
+  colour->type = oyOBJECT_TYPE_NAMED_COLOUR_S;
   if(deallocateFunc)
     colour->deallocateFunc = deallocateFunc;
   else
@@ -430,6 +431,7 @@ oyNamedColourGetDescription( oyNamedColour_s * colour )
 /** @brief release correctly
  *
  *  set pointer to zero
+ *  should walk to a general oyFree(void* oy_struct) function
  *
  *  @param[in]    adress of Oyranos colour struct pointer
  *
@@ -439,13 +441,34 @@ void
 oyNamedColourRelease( oyNamedColour_s ** colour )
 {
   oyNamedColour_s * c;
+  int i;
 
   /* TODO */
   if(!colour || !*colour)
     return;
 
   c = *colour;
+  if( c->type != oyOBJECT_TYPE_NAMED_COLOUR_S)
+    return;
+
+  c->type = oyOBJECT_TYPE_NONE;
+
+  for(i = 0; i < 32; ++i)
+    if(c->names_chan[i])
+      c->deallocateFunc( c->names_chan[i] );
+  if(c->name)
+    c->deallocateFunc( c->name );
+  if(c->name_long)
+    c->deallocateFunc( c->name_long );
+  if(c->nick_name)
+    c->deallocateFunc( c->nick_name );
+  if(c->blob) /* c->bloblen */
+    c->deallocateFunc( c->blob );
+  if(c->ref_file)
+    c->deallocateFunc( c->ref_file );
+
   c->deallocateFunc( c );
+
   *colour = NULL;
 }
 

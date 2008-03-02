@@ -140,7 +140,7 @@ class TagTexts {open : {public Fl_Hold_Browser}
 
       std::vector <std::string> texte = icc_parser::zeilenNachVector( text );
       int odd = 1;
-      int k = 0;
+      unsigned k = 0;
       for (unsigned int i = 0; i < texte.size(); i++)
       {
         std::string text;
@@ -887,7 +887,7 @@ icc_examin->testZeigen();}
   { // plastic sets a background image, for others unset a transparent box
     const char* style = Fl::scheme();
     if(!style || (style && strstr(style,"plastic") == 0))
-      box_stat->box(FL_FLAT_BOX);
+      box_stat->box(FL_BORDER_BOX);
   }
   DBG_PROG} {}
     code DBG_PROG_ENDE {}

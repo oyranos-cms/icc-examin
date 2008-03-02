@@ -2,24 +2,28 @@
 LINUX = 1
 CXX = c++
 CC = cc
-CFLAGS   = -O2 -pipe -Wall -g -I/opt/local/include -pipe -Wall -g -I/opt/local/include $(INCL) $(ARGYLL_H) $(DEBUG)
-CXXFLAGS = -O2 -pipe -Wall -g -I/opt/local/include -pipe -Wall -g -I/opt/local/include $(INCL) $(ARGYLL_H) $(DEBUG)
-LDFLAGS  = -L. -Wall -g -L/usr/X11R6/lib -L/opt/local/lib $(dl) $(iconv)
+CFLAGS   =   $(INCL) $(ARGYLL_H) $(DEBUG)
+CXXFLAGS =   $(INCL) $(ARGYLL_H) $(DEBUG)
+LDFLAGS  = -L.  $(dl) $(iconv)
 dl = -ldl
-X11 = X11
-X_H = -I/usr/X11R6/include -I/usr/include
 XF86VMODE = 1
+XF86VMODE_INC =  
 XF86VMODE_LIB = -lXxf86vm
 XIN = 1
+XINERAMA_INC =  
 XINERAMA_LIB = -lXinerama
 X11_LIB_PATH = -L/usr/X11R6/lib$(BARCH) -L/usr/lib$(BARCH) -L$(libdir)
+X11_INCL=$(XF86VMODE_INC) $(XINERAMA_INC)
 X11_LIBS=$(X11_LIB_PATH) -lX11 $(XF86VMODE_LIB) -lXpm -lXext $(XINERAMA_LIB)
+X11 = X11
+X_H = -I/usr/X11R6/include -I/usr/include   $(X11_INCL)
 FLTK = 1
 FLTK_H = -I/usr/include/freetype2 -march=i586 -mtune=i686 -fmessage-length=0 -D_FORTIFY_SOURCE=2  -fno-strict-aliasing
 FLTK_LIBS = -lfltk_images -lpng -lz -ljpeg -lfltk_gl -lGLU -lGL -lfltk -lXft -lXinerama -lpthread -lm -lXext -lX11
 fltkconfig = /usr/bin/fltk-config
 GETTEXT = -DUSE_GETTEXT
-.SILENT:
+DEBUG = -Wall -g -DDEBUG --pedantic
+DEBUG_SWITCH = -v
 TARGET=fl_i18n
 VERSION=0.0.2
 COMPILE_OPTIONS=-DUSE_THREADS $(GETTEXT)

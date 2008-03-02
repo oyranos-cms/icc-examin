@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2005  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2007  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -191,6 +191,7 @@ class ICCexamin : public icc_examin_ns::Beobachter,
 
     void statusAktualisieren();  //!< use the "status" macro
 
+    void scheme(const char* plastic_or_gtk); //!< "plastic" "gtk+"
 };
 
 int tastatur(int e);

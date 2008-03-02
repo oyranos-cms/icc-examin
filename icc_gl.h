@@ -158,7 +158,7 @@ public:
   void nachricht( icc_examin_ns::Modell* modell, int info );
 
   // import data
-  void hineinPunkte (std::vector<double> &vect,
+/*  void hineinPunkte (std::vector<double> &vect,
                      std::vector<std::string> &achsNamen);
   void hineinPunkte (std::vector<double> &vect, 
                      std::vector<float>  &farben_,
@@ -166,7 +166,8 @@ public:
   void hineinPunkte (std::vector<double> &punktKoordinaten, //!< Lab
                      std::vector<float>  &punktFarben,      //!< RGBA
                      std::vector<std::string> &farb_namen_, //!< per point
-                     std::vector<std::string> &achsNamen);  //!< 3*
+                     std::vector<std::string> &achsNamen);  //!< 3* */
+TODO: Punkte auf oyNamedColour_s umstellen
   void emphasizePoint (oyNamedColour_s * colour);  //!< a named colour
   void punkte_clear () { punkte_.clear(); farben_.clear(); }
   void herausNormalPunkte (std::vector<double> & p, std::vector<float> & f);

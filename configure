@@ -126,6 +126,7 @@ if [ $# -gt 0 ]; then
     switch=with-fltk-config
     if [ "`echo \"$1\" | sed s/\"--$switch=\"//`" != "$1" ]; then
       fltkconfig="`echo $1 | sed s/--$switch=//`"
+      fltkldflags="--ldstaticflags"
     fi
     switch=argyll-internal
     if [ "`echo \"$1\" | sed s/\"--$switch=\"//`" != "$1" ]; then
@@ -375,7 +376,7 @@ else
 fi
 export prefix exec_prefix bindir sbindir libdir includedir datadir mandir
 export pixmapdir desktopdir
-export fltkconfig cwdebug debug
+export fltkconfig fltkldflags cwdebug debug
 
 PATH=$bindir:$PATH
 export PATH

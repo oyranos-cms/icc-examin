@@ -666,6 +666,8 @@ ICCprofile::getColourChannelsCount(void)
           this->hasTagName("gTRC") &&
           this->hasTagName("bTRC")) {
     channels = 3;
+  } else {
+    channels = getColorSpaceChannels(colorSpace());
   }
 
   DBG_PROG_ENDE
