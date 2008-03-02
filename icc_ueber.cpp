@@ -123,7 +123,7 @@ html << " \
  <br> \
 </p>\n \
 <p> \
-Für die Visualisation des Farbumfangs (extern):<br>\n \
+Für die Visualisation des Farbumfangs (vrml extern):<br>\n \
 <p> \
   argyll: Greame Gill web.access.net.au/argyll/argyllcms.html<br<br><br>\n \
 <br>\n \

@@ -54,6 +54,7 @@ fi
 OY_=`oyranos-config 2>>error.txt`
 if [ $? == 0 ] && [ -n $OY_ ]; then
   echo "Oyranos                 detected"
+  echo "#define HAVE_OY" >> $CONF_H
   echo "OY = 1" >> $CONF
   echo "OY_H = -DHAVE_OY" >> $CONF
 else
@@ -63,6 +64,7 @@ fi
 
 if [ -f /usr/X11R6/include/X11/extensions/xf86vmode.h ]; then
   echo "X VidMode extension     detected"
+  echo "#define HAVE_X" >> $CONF_H
   echo "X11 = 1" >> $CONF
   echo "X_H = -DHAVE_X" >> $CONF
 else
