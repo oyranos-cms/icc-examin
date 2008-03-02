@@ -16,6 +16,26 @@ ZEIT="May 2004 - October 2005"
 src_dir="`(cd ..;pwd)`/""$TARGET"_"$VERSION"
 srcdir="`pwd`"
 
+prefix=""
+if [ $# -gt 0 ]; then
+  while [ $# -gt 0 ]; do
+    if [ "$1" == "--help" ]; then
+      echo "configure option:"
+      echo "   --prefix=\"/usr/local\""
+      echo ""
+      exit 0;
+    fi
+    if [ "${1%--prefix=*}" != "$1" ]; then
+      teste="${1#--prefix=*}"
+      #echo "test: $teste $1"
+    fi
+    if [ "$teste" != "" ]; then
+      prefix="$teste"
+    fi
+    shift
+  done
+fi
+
 test -f error.txt && rm -v error.txt
 test -f config && rm config config.h
 
@@ -53,13 +73,13 @@ else
   fi
 fi
 
-if [ $# -gt 0 ]; then
-  prefix=${1#*=}
+if [ "$prefix" != "" ]; then
+  echo -e "\c"
 else
   if [ $UNAME_ = "Darwin" ]; then
     prefix=/opt/local
   else
-    prefix=/usr
+    prefix=/usr/local
   fi
 fi
 echo "prefix =                $prefix"

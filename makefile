@@ -221,6 +221,7 @@ DOKU = \
 	COPYING \
 	BUGS \
 	AUTHORS \
+	INSTALL \
 	icc_examin.desktop \
 	icc_examin.png \
 	icc_examin.xpm \
@@ -252,7 +253,7 @@ ALL_FILES =	$(SOURCES) \
 timedir = .
 mtime   := $(shell find $(timedir) -prune -printf %Ty%Tm%Td.%TT | sed s/://g)
 
-.SILENT:
+#.SILENT:
 
 all:	dynamic
 	
@@ -302,7 +303,10 @@ static:	$(TARGET)
 	`pkg-config --libs ftgl`  -lsupc++ \
 	$(I18N_LIB) $(X11_LIBS) \
 	$(DBG_LIBS) \
-	`test -f /opt/kai-uwe/lib/liblcms.a && echo /opt/kai-uwe/lib/liblcms.a || pkg-config --libs lcms` #/usr/lib/libelektra.a # Hack for static lcms
+	`test -f /opt/kai-uwe/lib/liblcms.a && echo /opt/kai-uwe/lib/liblcms.a || \
+	  (test -f /usr/lib/liblcms.a && echo /usr/lib/liblcms.a || \
+        (test -f /usr/local/lib/liblcms.a && echo /usr/local/lib/liblcms.a || \
+	      (pkg-config --libs lcms)))` #/usr/lib/libelektra.a # Hack for static lcms
 	$(REZ)
 
 strip: $(TARGET)
@@ -363,7 +367,7 @@ clean:	unbundle unpkg
 	echo ... $@ fertig
 
 config:
-	configure
+	./configure
 
 depend:
 	echo "schaue nach Abhaengikeiten ..."
@@ -434,10 +438,10 @@ targz:
 	test -d $(TARGET)_$(VERSION) && \
 	test `pwd` != `(cd $(TARGET)_$(VERSION); pwd)` && \
 	$(RM) -R $(TARGET)_$(VERSION) 
-	test -d ../Archiv && mv -v $(TARGET)_*.tgz ../Archiv
+	test -d ../Archiv && mv -v $(TARGET)_*.tgz ../Archiv || echo no copy
 
-dist: targz
-	$(COPY) ../Archiv/$(TARGET)_$(mtime).tgz $(TARGET)_$(VERSION).tar.gz
+dist: targz base
+	test -f && $(COPY) ../Archiv/$(TARGET)_$(mtime).tgz $(TARGET)_$(VERSION).tar.gz || $(COPY) $(TARGET)_$(mtime).tgz $(TARGET)_$(VERSION).tar.gz
 
 $(TARGET).spec:
 	./configure
@@ -521,6 +525,7 @@ unbundle:
 
 pkg:	bundle
 	echo Vorbereiten des osX Packetes ...
+	$(RM) -r installation/*
 	make DESTDIR=`pwd`/installation install
 	mkdir -p installation/Applications/
 	$(COPY) -R ICC\ Examin.app installation/Applications/

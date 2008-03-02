@@ -1,0 +1,34 @@
+Building from Sources:
+
+ICC Examin depends on following libraries:
+
+  # FLTK version >= 1.1.4
+    you need to configure fltk with several options enabled
+    --enable-threads is needed for threads support in ICC Examin
+    --enable-xft is ok for antialiased fonts
+    --enable-debug is generally a good choice
+    --enable-shared is sometimes a good choice for smaller executables
+  # lcms version >= 1.14; 1.15 is recommended due to CGATS parsing is better
+  # FLU version >= 2.14 for a convenient file browser (optionally)
+  # FTGL for a text inside OpenGL (optionally)
+  # argyll for 3D gamut visualisations (optionally, external, binaries see above)
+  # Oyranos for setting options (optionally)
+  # for osX only (since version 0.30) install GNU gettext (and libiconv?)
+
+For building unpack the tgz file and type #make; make install.
+Optionally you can specifiy an other than the default prefix /opt/local by typing:
+
+    #configure --prefix=/what/you/like
+    #make
+    #make install (optionally; may need root rights)
+    #make rpm (linux)
+    #make bundle/package (osX)
+
+    to uninstall
+    #make uninstall
+    #make unbundle (osX)
+
+Install Oyranos before ICC Examin to get Oyranos support compiled in ICC Examin. Oyranos is available from my site too www.behrmann.name
+
+Source code packages need further compiling and installing to work as an executable program. osX should work but without Oyranos. There is no windows support currently. Sorry.
+

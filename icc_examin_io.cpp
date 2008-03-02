@@ -333,6 +333,13 @@ ICCexamin::oeffnenStatisch_ (void* ie)
 }
 
 void
+oeffnen_cb(const char* filenames)
+{ DBG_PROG_START
+  status( filenames )
+  DBG_PROG_ENDE
+}
+
+void
 ICCexamin::oeffnen (std::vector<std::string> dateinamen)
 { DBG_PROG_START
 # if 1

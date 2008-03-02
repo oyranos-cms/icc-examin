@@ -1,3 +1,7 @@
+2005-11-09
+	* und: configure nimmt --prefix=xxx an beliebiger Position
+	* und: Mandrake Test überstanden
+
 2005-10-21
 	* und: (v0.38-2) angekuendigt
 	* und: TagTexts bleiben auf Ihrer Höhe stehen auch bei Neuladen des Inhaltes

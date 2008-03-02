@@ -43,6 +43,8 @@
 #include <Carbon/Carbon.h>
 #endif
 
+#include <FL/x.H>
+
 using namespace icc_examin_ns;
 
 #if USE_THREADS
@@ -105,6 +107,8 @@ resize_fuer_menubar(Fl_Widget* w)
 # if HAVE_X
 # include "icc_examin.xpm" // icc_examin_xpm
 # endif
+
+void oeffnen_cb(const char* filenames);
 
 void
 ICCexamin::start (int argc, char** argv)
@@ -170,6 +174,10 @@ ICCexamin::start (int argc, char** argv)
   DisposeNibReference(nibRef);
   CantSetMenuBar:
   CantGetNibRef:
+
+  // osX DnD behandeln
+  fl_open_callback( oeffnen_cb );
+
 # endif // APPLE
 
   if(!icc_debug)
@@ -198,6 +206,7 @@ ICCexamin::start (int argc, char** argv)
       } else {
         status(_("Ready"))
       }
+
 
   // zur Benutzung freigeben
   status_ = 1;

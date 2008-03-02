@@ -1,4 +1,4 @@
-Release: 2
+Release: 3
 Summary: ICC profile viewer and colour visualisation
 Name: icc_examin
 License: GPL,LGPL
@@ -37,7 +37,6 @@ used components and libraries (partitial statically linked):
 
 %build
 %configure
-configure --prefix=%{_prefix}
 make %{_smp_mflags} static
 make strip
 
