@@ -1074,4 +1074,42 @@ ICCmeasurement::getCmmRGB                   (int patch)
   return punkte;
 }
 
+std::vector<double>
+ICCmeasurement::getMessLab                   (int patch)
+{ DBG_PROG_START
+  std::vector<double> punkte (3) ;
+
+  if (_Lab_Satz.size() == 0)
+    init ();
+
+  if (patch > _nFelder)
+    return punkte;
+
+  punkte[0] = _Lab_Satz[patch].L;
+  punkte[1] = _Lab_Satz[patch].a;
+  punkte[2] = _Lab_Satz[patch].b;
+
+  DBG_PROG_ENDE
+  return punkte;
+}
+
+std::vector<double>
+ICCmeasurement::getCmmLab                   (int patch)
+{ DBG_PROG_START
+  std::vector<double> punkte (3) ;
+
+  if (_Lab_Ergebnis.size() == 0)
+    init ();
+
+  if (patch > _nFelder)
+    return punkte;
+
+  punkte[0] = _Lab_Ergebnis[patch].L;
+  punkte[1] = _Lab_Ergebnis[patch].a;
+  punkte[2] = _Lab_Ergebnis[patch].b;
+
+  DBG_PROG_ENDE
+  return punkte;
+}
+
 

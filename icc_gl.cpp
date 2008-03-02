@@ -85,6 +85,7 @@ GL_Ansicht::GL_Ansicht(int X,int Y,int W,int H) : Fl_Group(X,Y,W,H)
   menue_kanal_eintraege_ = 0;
   punktform = MENU_WUERFEL;
   punktfarbe = MENU_GRAU;
+  schalen = 5;
   gl_fenster_zeigen_ = false;
   glut_id_ = -1;
   DBG_PROG_ENDE

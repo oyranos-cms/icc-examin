@@ -61,22 +61,23 @@ void
 ICCexamin::start (int argc, char** argv)
 { DBG_PROG_START
 
+  kurven.resize(MAX_VIEWER);
+  punkte.resize(MAX_VIEWER);
+  texte.resize(MAX_VIEWER);
+  kurve_umkehren.resize(MAX_VIEWER);
+
   icc_betrachter->init();
-
-  DBG_PROG
-
-  #ifdef HAVE_X
-  icc_betrachter->menueintrag_vcgt->show();
-  #endif
 
   // Die TagViewers registrieren und ihre Variablen initialisieren
   icc_betrachter->tag_viewer->id = TAG_VIEWER;
   icc_betrachter->mft_viewer->id = MFT_VIEWER;
   icc_betrachter->vcgt_viewer->id = VCGT_VIEWER;
-  kurven.resize(MAX_VIEWER);
-  punkte.resize(MAX_VIEWER);
-  texte.resize(MAX_VIEWER);
-  kurve_umkehren.resize(MAX_VIEWER);
+
+  DBG_PROG
+
+  #ifdef HAVE_X || HAVE_OSX
+  icc_betrachter->menueintrag_vcgt->show();
+  #endif
 
   status(_(""));
   DBG_PROG
@@ -379,14 +380,20 @@ ICCexamin::histogram ()
 
   std::vector<double> p;
   std::vector<float>  f;
- 
-  p.push_back(0.2);
-  p.push_back(0.5);
-  p.push_back(0.5);
-  f.push_back(0.1);
-  f.push_back(0.1);
-  f.push_back(0.8);
-  f.push_back(0.5);
+
+  if(profile.profil()->hasMeasurement()) {
+    ICCmeasurement m = profile.profil()->getMeasurement();
+    int j = 0;
+    std::vector<double> v = m.getMessLab(j);
+    for (unsigned i = 0; i < v.size(); ++i) {
+      p.push_back(v[i]);
+    }
+    v = m.getMessRGB(j);
+    for (unsigned i = 0; i < v.size(); ++i) {
+      f.push_back(v[i]);
+    }
+    f.push_back(0.5);
+  }
 
   icc_betrachter->DD_histogram->hineinPunkte( p, f, namen, texte );
 
@@ -398,9 +405,9 @@ ICCexamin::vcgtZeigen ()
 { DBG_PROG_START
   kurve_umkehren[VCGT_VIEWER] = true;
 
-  #ifdef HAVE_X
-  std::string display_name = ":0.0";
-  kurven[VCGT_VIEWER] = getXgamma (display_name, texte[VCGT_VIEWER]);
+  #ifdef HAVE_X || HAVE_OSX
+  std::string display_name = "";
+  kurven[VCGT_VIEWER] = getGrafikKartenGamma (display_name, texte[VCGT_VIEWER]);
   if (kurven[VCGT_VIEWER].size()) {
     icc_betrachter->vcgt_viewer->hide();
     icc_betrachter->vcgt_viewer->show();

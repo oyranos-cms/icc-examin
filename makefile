@@ -11,7 +11,7 @@ libdir		= ${exec_prefix}/lib
 mandir		= ${prefix}/man
 srcdir		= .
 
-#APPLE = 1
+APPLE = 1
 FLTK = 1
 ifdef FLTK
 FLU = 1
@@ -40,12 +40,15 @@ FLTK_GL_LIBS=-lfltk_gl
 
 ifdef APPLE
   GLUT = -framework GLUT -lobjc
+  OSX_CPP = icc_helfer_osx.cpp
+  OSX_H  = -DHAVE_OSX
 else
   GLUT = -lglut
   X_H  = -DHAVE_X
+  X_CPP = icc_helfer_x.cpp
 endif
 
-CXXFLAGS=$(OPTS) $(INCL) $(FLU_H) $(FLTK_H) $(X_H)
+CXXFLAGS=$(OPTS) $(INCL) $(FLU_H) $(FLTK_H) $(X_H) $(OSX_H)
 INCL=-I$(includedir) -I/usr/X11R6/include -I./ -I/opt/kai-uwe/include
 
 LDLIBS = -L$(libdir) -L./ $(FLTK_LIBS) \
@@ -87,7 +90,8 @@ CPPFILES = \
 	icc_formeln.cpp \
 	icc_gl.cpp \
 	icc_helfer.cpp \
-	icc_helfer_x.cpp \
+	$(X_CPP) \
+	$(OSX_CPP) \
 	icc_kette.cpp \
 	icc_main.cpp \
 	icc_measurement.cpp \

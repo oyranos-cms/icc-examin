@@ -420,7 +420,10 @@ class ICCmeasurement {
     // Werte
     std::vector<double> getMessRGB (int patch);
     std::vector<double> getCmmRGB (int patch);
+    std::vector<double> getMessLab (int patch);
+    std::vector<double> getCmmLab (int patch);
     std::vector<XYZ>    getMessXYZ ()      {DBG_PROG return _XYZ_Satz; }
+    std::vector<Lab>    getMessLab ()      {DBG_PROG return _Lab_Satz; }
     std::vector<RGB>    getMessRGB ()      {DBG_PROG return _RGB_Satz; }
     std::vector<CMYK>   getMessCMYK ()     {DBG_PROG return _CMYK_Satz; }
 
