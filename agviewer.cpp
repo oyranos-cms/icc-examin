@@ -30,6 +30,11 @@
 
 #  include "agviewer.h"
 
+// ICC Kopfdateien und Definitionen
+#include "icc_examin.h"
+#include "icc_gl.h"
+#define _(text) text
+
 /* Some <math.h> files do not define M_PI... */
 #ifndef M_PI
 #define M_PI 3.14159265
@@ -42,7 +47,7 @@
    /* Initial polar movement settings */
 #define INIT_POLAR_AZ  90.0
 #define INIT_POLAR_EL  90.0
-#define INIT_DIST      4.72
+#define INIT_DIST      4.74
 #define INIT_AZ_SPIN   0.0
 #define INIT_EL_SPIN   0.0
 
@@ -312,6 +317,7 @@ void agvSwitchMoveMode(int move)
       EyeAz =  EyeAz;
       EyeEl = -EyeEl;
       EyeMove = INIT_MOVE;
+      status(_("Schnitt; linker Mausklick setzt zurück"));
       break;
     case ICCFLY_L:
       MoveMode = POLAR;
@@ -322,6 +328,7 @@ void agvSwitchMoveMode(int move)
       ElSpin  = INIT_EL_SPIN;
       move = FLYING;
       agvSwitchMoveMode( FLYING );
+      status(_("waagerechter Schnitt; linker Mausklick setzt zurück"));
       break;
     case ICCFLY_a:
       MoveMode = POLAR;
@@ -332,6 +339,7 @@ void agvSwitchMoveMode(int move)
       ElSpin  = INIT_EL_SPIN;
       move = FLYING;
       agvSwitchMoveMode( FLYING );
+      status(_("senkrechter Schnitt von rechts; linker Mausklick setzt zurück"));
       break;
     case ICCFLY_b:
       MoveMode = POLAR;
@@ -342,6 +350,7 @@ void agvSwitchMoveMode(int move)
       ElSpin  = INIT_EL_SPIN;
       move = FLYING;
       agvSwitchMoveMode( FLYING );
+      status(_("senkrechter Schnitt von vorn; linker Mausklick setzt zurück"));
       break;
     case POLAR:
       EyeDist = INIT_DIST;
@@ -376,6 +385,8 @@ void agvHandleButton(int button, int state, int x, int y)
         AzSpin = ElSpin = dAz = dEl = 0;
         AdjustingAzEl = 1;
 	MoveOn(0); //ICC stop
+        if (MoveMode == FLYING)
+          status(mft_gl->kanalName() << _("; linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menü"));
         MoveMode = POLAR;
         break;
 
@@ -386,6 +397,8 @@ void agvHandleButton(int button, int state, int x, int y)
 	downEz = Ez;
 	downEyeMove = EyeMove;
 	EyeMove = 0;
+        if (MoveMode == FLYING)
+          status(_("Pause"));
     }
 
   } else if (state == GLUT_UP && button == downb) {
@@ -404,10 +417,14 @@ void agvHandleButton(int button, int state, int x, int y)
 	}
         AdjustingAzEl = 0;
         MoveOn(1);
+        if (MoveMode == FLYING)
+          status(mft_gl->kanalName() << _("; linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menü"));
 	break;
 
       case GLUT_MIDDLE_BUTTON:
 	EyeMove = downEyeMove;
+        if (MoveMode == FLYING)
+          status(_("linke Maustaste -> zurück"));
       }
   }
 }

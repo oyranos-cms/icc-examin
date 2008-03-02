@@ -343,7 +343,7 @@ std::string open(int interaktiv) {
     cout << statlabel << endl; DBG_PROG
     stat->label(statlabel);
   } else {
-    stat->label("Error loading file!");
+    status(_("Datei nicht geladen!"));
   } DBG_PROG
 
   stat->hide();
@@ -467,6 +467,9 @@ void TagBrowser::reopen() {
 void TagBrowser::select_item(int item) {
   DBG_PROG_START
   //Auswahl aus tag_browser
+
+  status("")
+
   std::string text = _("Leer");
   tag_text->hinein(text);
   item -= 6;
@@ -672,6 +675,8 @@ void MftChoice::profil_tag(int _tag) {
 void MftChoice::auswahl_cb(void) {
   DBG_PROG_START
   //Auswahl aus mft_choice
+
+  status("")
 
   Fl_Menu_* mw = (Fl_Menu_*)this;
   const Fl_Menu_Item* m = mw->mvalue();

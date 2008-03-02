@@ -7,6 +7,8 @@
 #define ICC_GL_H
 #define _(text) text
 
+extern int kanal;
+
 class GL_Ansicht : public Fl_Group {
   std::vector<std::vector<std::vector<std::vector<double> > > > tabelle;
   std::vector<std::string>texte;
@@ -36,6 +38,7 @@ public:
   void MakeDisplayLists();
   void zeigen();
   void verstecken();
+  char* kanalName() {return (char*)texte[kanal].c_str(); }
 };
 
 void reshape(int w, int h);
@@ -43,5 +46,6 @@ void display();
 void sichtbar(int v);
 void menuuse(int v);
 void handlemenu(int value);
+
 
 #endif //ICC_GL_H

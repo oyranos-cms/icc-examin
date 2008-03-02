@@ -9,6 +9,7 @@
 #include "icc_gl.h"
 
 #define DEBUG_ICCGL
+//#define Beleuchtung
 
 typedef enum {NOTALLOWED, AXES, RASTER, RING , HELFER} DisplayLists;
 typedef enum { MENU_AXES, MENU_QUIT, MENU_RING, MENU_KUGEL, MENU_WUERFEL, MENU_STERN, MENU_MAX } MenuChoices;
@@ -128,13 +129,14 @@ void GL_Ansicht::myGLinit() {
   GLfloat light0_position[] = { 2.4, 1.6, 1.2, 0.0 };
 
   glLightfv(GL_LIGHT0, GL_POSITION, light0_position);
-  GLfloat light1_position[] = { -2.4, -1.6, -1.2, 0.0 };
-  glLightfv(GL_LIGHT1, GL_POSITION, light1_position);
+  //GLfloat light1_position[] = { -2.4, -1.6, -1.2, 0.0 };
+  //glLightfv(GL_LIGHT1, GL_POSITION, light1_position);
   glEnable(GL_LIGHTING);
   glEnable(GL_LIGHT0);
-  glEnable(GL_LIGHT1);
+  //glEnable(GL_LIGHT1);
+  #ifndef Beleuchtung
   glDisable(GL_LIGHTING);
-
+  #endif
 
   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, mat_ambuse);
   glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
@@ -156,11 +158,13 @@ void GL_Ansicht::myGLinit() {
   DBG_PROG_ENDE
 }
 
+// Materialfarben setzen
 #define FARBE(r,g,b) farbe [0] = (r); farbe [1] = (g); farbe [2] = (b); \
                      glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, farbe); 
 
+// Text zeichnen
 #define ZeichneText(Font,Zeiger) { \
-      glTranslatef(.0,0,0.02); \
+      glTranslatef(.0,0,0.01); \
         glScalef(0.001,0.001,0.001); \
           for (char* p = Zeiger; *p; p++) { \
              glutStrokeCharacter(Font, *p); \
@@ -169,7 +173,7 @@ void GL_Ansicht::myGLinit() {
             glTranslatef(0.0 - glutStrokeWidth(Font, *p),0,0); \
           } \
         glScalef(1000,1000,1000); \
-      glTranslatef(.0,0,-.02); }
+      glTranslatef(.0,0,-.01); }
 #define ZeichneBuchstaben(Font,Buchstabe) { \
         glScalef(0.001,0.001,0.001); \
           glutStrokeCharacter(Font, Buchstabe); \
@@ -243,15 +247,17 @@ zeichneKoordinaten()
 void GL_Ansicht::MakeDisplayLists() {
   DBG_PROG_START
   char text[256];
-  //glColor3f(1,1,1);
+
+  #define PFEILSPITZE glutSolidCone(0.02, 0.05, 8, 4);
+
   glDeleteLists (HELFER, 1);
   glNewList(HELFER, GL_COMPILE);
   GLfloat farbe[] =   { .50, .50, .50, 1.0 };
 
     // Farbkanalname
-    //glEnable(GL_BLEND);
-    //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    //glEnable(GL_LINE_SMOOTH);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_LINE_SMOOTH);
     glPushMatrix();
       glMatrixMode(GL_MODELVIEW);
       glLineWidth(3.0);
@@ -278,9 +284,8 @@ void GL_Ansicht::MakeDisplayLists() {
       glTranslatef(0,1.0,0);
       FARBE(1,1,1)
       glRotatef (270,1.0,0.0,.0);
-      glutSolidCone(0.01, 0.025, 8, 2);
-      glRotatef (90,1.0,0.0,.0);
-      glRotatef (270,0.0,1.0,.0);
+      PFEILSPITZE
+      glRotatef (270,0.0,0.0,1.0);
       FARBE(1,1,1)
       glTranslatef(.02,0,0);
       ptr = (char*) pcsNamen[0].c_str();
@@ -294,11 +299,11 @@ void GL_Ansicht::MakeDisplayLists() {
       FARBE(.2,.9,0.7)
       glRotatef (180,0.0,.5,.0);
       glTranslatef(.0,0.0,1.0);
-      glutSolidCone(0.01, 0.025, 8, 2);
+      PFEILSPITZE
       glTranslatef(.0,0.0,-1.0);
       glRotatef (180,0.0,.5,.0);
       FARBE(.9,0.2,0.5)
-      glutSolidCone(0.01, 0.025, 8, 2);
+      PFEILSPITZE
       FARBE(1,1,1)
       ptr = (char*) pcsNamen[1].c_str();
       sprintf (&text[0], ptr);
@@ -310,11 +315,11 @@ void GL_Ansicht::MakeDisplayLists() {
       glTranslatef(.5,-.5,0);
       FARBE(.9,.9,0.2)
       glRotatef (90,0.0,.5,.0);
-      glutSolidCone(0.01, 0.025, 8, 2);
+      PFEILSPITZE
       glRotatef (180,.0,.5,.0);
       glTranslatef(.0,.0,1.0);
       FARBE(.7,.8,1.0)
-      glutSolidCone(0.01, 0.025, 8, 2);
+      PFEILSPITZE
       glTranslatef(.0,.0,-1.0);
       glRotatef (180,0.0,.5,.0);
       FARBE(1,1,1)
@@ -327,7 +332,6 @@ void GL_Ansicht::MakeDisplayLists() {
   glEndList();
   DBG_PROG_V( tabelle.size() )
 
-  #define Beleuchtung
 
     // Tabelle
   glDeleteLists (RASTER, 1);
@@ -365,8 +369,8 @@ void GL_Ansicht::MakeDisplayLists() {
             wert = tabelle[L][a][b][kanal]; //DBG_PROG_V( L << a << b << kanal )
             if (wert) {
               #ifdef Beleuchtung
-              FARBE(wert/2, wert/2, wert/2)
-              //glColor3f(0., 0., 0.);
+              FARBE(wert, wert, wert)
+              //glColor3f(wert, wert, wert);
               #else
               glColor3f(wert, wert, wert);
               #endif
@@ -407,7 +411,7 @@ void GL_Ansicht::MakeDisplayLists() {
     }
 
   glNewList(RING, GL_COMPILE);
-    glutSolidDodecahedron();
+    //glutSolidDodecahedron();
   glEndList();
 
   //Hintergrund
@@ -443,6 +447,7 @@ GL_Ansicht::MenueErneuern()
 
   if (kanal > MenueKanalEintraege)
     kanal = MenueKanalEintraege;
+  status((char*)(texte[kanal].c_str()) << _("; linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menü"))
 
   DBG_PROG_ENDE
 }
@@ -574,6 +579,8 @@ GL_Ansicht::hinein_tabelle(std::vector<std::vector<std::vector<std::vector<doubl
 
   MenueErneuern();
 
+  status((char*)(texte[kanal].c_str()) << _("; linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menü"))
+
   DBG_PROG_ENDE
 }
 
@@ -660,6 +667,7 @@ void handlemenu(int value)
 
   if (value >= MENU_MAX) {
     kanal = value - MENU_MAX; DBG_PROG_V( kanal )
+    status((mft_gl->kanalName()) << _("; linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menü"))
     mft_gl->MakeDisplayLists();
   }
 
