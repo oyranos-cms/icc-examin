@@ -2,7 +2,7 @@
 
 #include "icc_examin.h"
 static char *statlabel;
- std::string filename_alt;
+ std::vector<std::string> filenamen_alt;
  bool setTitleUrl = true;
 
  int px,py,pw,ph;
@@ -12,7 +12,7 @@ static char *statlabel;
 #include "icc_draw.h"
 #include "agviewer.h"
 #include "icc_gl.h"
-ICCprofile profile;
+std::vector<ICCprofile> profile;
 #ifdef HAVE_FLU
 static Flu_File_Chooser *dateiwahl;
 
@@ -26,12 +26,13 @@ static void dateiwahl_cb(const char *dateiname, int typ, void *arg) {
   }
 
     if (dateiname) {
-      filename_alt = dateiname;
+      filenamen_alt.resize(1);
+      filenamen_alt[0] = dateiname;
 
-      DBG_NUM_V( filename_alt )
-      filename_alt = dateiwahl->get_current_directory();
-      filename_alt.append( dateiname );
-      DBG_NUM_V( filename_alt )
+      DBG_NUM_V( filenamen_alt[0] )
+      filenamen_alt[0] = dateiwahl->get_current_directory();
+      filenamen_alt[0].append( dateiname );
+      DBG_NUM_V( filenamen_alt[0] )
 
       open(false);
     }
@@ -60,15 +61,18 @@ static void dateiwahl_cb(Fl_File_Chooser *f,void *data) {
                         "*.{I,i}{C,c}"
     #endif
                                     ) == 0) {
-      DBG_PROG_V( filename )
+      if (filename)
+        DBG_PROG_V( filename )
       DBG_PROG_ENDE
       return;
     }
 
-    if (fl->value(0) && dateiwahl->preview()) {
-      filename_alt = fl->value(0);
-
-      DBG_NUM_V( filename )
+    if (filename && fl->count() && dateiwahl->preview()) {
+      filenamen_alt.resize(fl->count());
+      for (int i = 0; i < fl->count(); i++) {
+        filenamen_alt[i] = fl->value(i);
+      }
+      DBG_NUM_V( filenamen_alt.size() << filename )
       open(false);
     }
 
@@ -94,7 +98,7 @@ static void cb_ffnen(Fl_Menu_*, void*) {
 
 static void cb_menueintrag_html_speichern(Fl_Menu_*, void*) {
   DBG_PROG_START
-  std::string filename = filename_alt;  DBG_PROG_V( filename )
+  std::string filename = filenamen_alt[0];  DBG_PROG_V( filename )
 
   std::string::size_type pos=0;
   if ((pos = filename.find_last_of(".", filename.size())) != std::string::npos) { DBG_PROG
@@ -133,12 +137,12 @@ static void cb_menueintrag_html_speichern(Fl_Menu_*, void*) {
 
   DBG_PROG_V( filename )
 
-  if (dateiwahl->count() == 0 || filename == "" || filename == filename_alt) {
+  if (dateiwahl->count() == 0 || filename != "" || filename == filenamen_alt[0]) {
     load_progress->hide ();
     return;
   }
 
-  std::string bericht = profile.report();
+  std::string bericht = profile[0].report();
 
   std::ofstream f ( filename.c_str(),  std::ios::out );
   f.write ( bericht.c_str(), bericht.size() );
@@ -177,7 +181,7 @@ static void cb_menueintrag_inspekt(Fl_Menu_* o, void*) {
     mft_gl->stop();
     inspekt->show();
     examin->hide();
-    inspekt_html->value(profile.report().c_str());
+    inspekt_html->value(profile[0].report().c_str());
     inspekt_html->topline(inspekt_topline);
   } else {
     inspekt->hide();
@@ -304,11 +308,18 @@ int main(int argc, char **argv) {
     Flu_File_Chooser:: = _("");
     Flu_File_Chooser:: = _("");
     Flu_File_Chooser:: = _("");*/
-    dateiwahl = new Flu_File_Chooser(filename_alt.c_str(), _("ICC Farbprofile (*.ic*)"), Flu_File_Chooser::SINGLE, _("Welches ICC Profil?"));
+
+    const char* ptr = NULL;
+    if (filenamen_alt.size())
+      ptr = filenamen_alt[0].c_str();
+    dateiwahl = new Flu_File_Chooser(ptr, _("ICC Farbprofile (*.ic*)"), Flu_File_Chooser::SINGLE, _("Welches ICC Profil?"));
     dateiwahl->add_context_handler(Flu_File_Chooser::ENTRY_FILE, "icc", _("Profil öffnen"), dateiwahl_cb, NULL);
     dateiwahl->add_context_handler(Flu_File_Chooser::ENTRY_FILE, "icm", _("Profil öffnen"), dateiwahl_cb, NULL);
   #else
-    dateiwahl = new Fl_File_Chooser(filename_alt.c_str(), _("ICC Farbprofile (*.{I,i}{C,c}{M,m,C,c})"), Fl_File_Chooser::SINGLE, _("Welches ICC Profil?"));
+    const char* ptr = NULL;
+    if (filenamen_alt.size())
+      ptr = filenamen_alt[0].c_str();
+    dateiwahl = new Fl_File_Chooser(ptr, _("ICC Farbprofile (*.{I,i}{C,c}{M,m,C,c})"), Fl_File_Chooser::SINGLE, _("Welches ICC Profil?"));
     dateiwahl->callback(dateiwahl_cb);
     dateiwahl->preview_label = _("Vorschau");
   #endif
@@ -466,7 +477,6 @@ int main(int argc, char **argv) {
       }
       o->end();
     }
-    filename_alt = ".";
     DBG_PROG
 
     if (argc>1) {
@@ -475,7 +485,10 @@ int main(int argc, char **argv) {
 
         sprintf (statlabel, "%s geladen", argv[1]);
         box_stat->label(statlabel);
-        filename_alt = argv[1];
+        filenamen_alt.resize(argc-1);
+        for (int i = 1; i < argc; i++) {
+          DBG_PROG_V( i ) filenamen_alt[i-1] = argv[i];
+        }
       } else {
         status(_("Konnte Datei nicht laden!"));
       }
@@ -494,22 +507,27 @@ int main(int argc, char **argv) {
   return Fl::run();
 }
 
-std::string open(int interaktiv) {
+void open(int interaktiv) {
   DBG_PROG_START
   #include "icc_vrml.h"
 
-  std::string filename = filename_alt;
+  std::vector<std::string> filenamen;
+  filenamen = filenamen_alt;
   //Fl_File_Icon	*icon;	// New file icon
   DBG_PROG
   load_progress->show ();    load_progress->value (0.0);
 
   if (interaktiv) {
-    dateiwahl->value(filename_alt.c_str());
-    dateiwahl->show(); //filename=fl_file_chooser("Wähle ICC Profil?", "ICC Farbprofile (*.{I,i}{C,c}{M,m,C,c})", filename_alt.c_str());
+    const char* ptr = NULL;
+    if (filenamen_alt.size()) {
+      ptr = filenamen_alt[0].c_str();
+      dateiwahl->value(ptr);
+      //DBG_PROG_S( filenamen_alt[0])
+    }
+    dateiwahl->show(); //filename=fl_file_chooser("Wähle ICC Profil?", "ICC Farbprofile (*.{I,i}{C,c}{M,m,C,c})", filenamen_alt[0].c_str());
 
     
 
-    DBG_PROG_S( filename_alt << "|" << filename)
 
     while (dateiwahl->visible())
       Fl::wait();
@@ -517,17 +535,21 @@ std::string open(int interaktiv) {
     DBG_NUM_V( dateiwahl->count() )
     if (dateiwahl->count() && dateiwahl->value()) {
       DBG_NUM_V( dateiwahl->value() )
-      filename = dateiwahl->value();
+      filenamen.resize(dateiwahl->count());
+      for (int i = 1; i <= dateiwahl->count(); i++)
+        filenamen[i-1] = dateiwahl->value(i);
     }
   }
 
-  if (filename == "") {
+  if (filenamen.size() == 0) {
     load_progress->hide ();
-    return "";
+    return;
   }
 
   // Laden
-  profile.load (filename);
+  profile.resize(filenamen.size());
+  for (unsigned int i = 0; i < filenamen.size(); i++)
+    profile[i].load (filenamen[i]);
   // Register the ICC type ...
   //Fl_Shared_Image::add_handler(icc_check);
   //Fl_Shared_Image::add_handler(ps_check);
@@ -535,17 +557,18 @@ std::string open(int interaktiv) {
   std::vector<std::string> url;
   std::vector<std::string> param;
 
-  if (/*browser && */(filename != "")) { DBG_PROG
+  if (/*browser && */(filenamen.size())) { DBG_PROG
+    for (unsigned int i = 0; i < profile.size(); i++) {
+      //create_vrml ( filename.c_str(), "/usr/share/color/icc/sRGB.icm", &vrmlDatei[0]);
 
-    //create_vrml ( filename.c_str(), "/usr/share/color/icc/sRGB.icm", &vrmlDatei[0]);
-
-    load_progress->value (0.8);
-    filename_alt = filename;
-    //url.push_back (&vrmlDatei[0]);
-    //browser->load_url(url, param);
-    sprintf (statlabel, "%s geladen", filename.c_str());
-    cout << statlabel << endl; DBG_PROG
-    box_stat->label(statlabel);
+      load_progress->value (0.8);
+      filenamen_alt = filenamen;
+      //url.push_back (&vrmlDatei[0]);
+      //browser->load_url(url, param);
+      sprintf (statlabel, "%s geladen", filenamen[i].c_str());
+      cout << statlabel << endl; DBG_PROG
+      box_stat->label(statlabel);
+    }
   } else {
     status(_("Datei nicht geladen!"));
   } DBG_PROG
@@ -559,11 +582,11 @@ std::string open(int interaktiv) {
 
   tag_browser->reopen ();
 
-  if (profile.hasMeasurement()) {
+  if (profile[0].hasMeasurement()) {
     inspekt_topline = inspekt_html->topline();
     DBG_PROG_S(menueintrag_inspekt->value())
     if (menueintrag_inspekt->value()) {
-      inspekt_html->value(profile.report().c_str());
+      inspekt_html->value(profile[0].report().c_str());
       cout << inspekt_html->size() << " " << inspekt_topline; DBG_PROG
       if (inspekt_html->size() -75 < inspekt_topline)
         inspekt_html->topline (inspekt_html->size() - 75);
@@ -582,7 +605,7 @@ std::string open(int interaktiv) {
     //menueintrag_inspekt->value( false );
   }
 
-  return filename;
+  return;
   DBG_PROG_ENDE
 }
 
@@ -619,21 +642,21 @@ void TagBrowser::reopen() {
   //open and preparing the first selected item
   std::stringstream s;
   std::string text;
-  std::vector<std::string> tag_list = profile.printTags();
+  std::vector<std::string> tag_list = profile[0].printTags();
 
   #define add_s(stream) s << stream; add (s.str().c_str()); s.str("");
   #define add_          s << " ";
 
   clear();
   add_s ("@fDateiname:")
-  add_s ("@b    " << profile.filename() )
+  add_s ("@b    " << profile[0].filename() )
   add_s ("")
   if (tag_list.size() == 0) {
-    add_s ("keine Inhalte gefunden fŸr \"" << profile.filename() << "\"")
+    add_s ("keine Inhalte gefunden für \"" << profile[0].filename() << "\"")
     return;
   }
   add_s ("@B26@tNr. Bezeichner  Typ         Größe Beschreibung")
-  add_s ("@t" << profile.printHeader() )
+  add_s ("@t" << profile[0].printHeader() )
   DBG_PROG
   std::vector<std::string>::iterator it;
   for (it = tag_list.begin() ; it != tag_list.end(); ++it) {
@@ -646,7 +669,7 @@ void TagBrowser::reopen() {
     s << *it; for (int i = (*it++).size(); i < 12; i++) {s << " ";}
     // Typ
     s << *it; for (int i = (*it++).size(); i < 12; i++) {s << " ";}
-    // Gršße
+    // Größe
     for (int i = (*it).size(); i < 5; i++) {s << " ";} s << *it++; s << " ";
     // Beschreibung
     add_s (*it)
@@ -657,14 +680,14 @@ void TagBrowser::reopen() {
   else
     select_item (1);
 
-  if (profile.hasTagName (selectedTagName)) {
-    int item = profile.getTagByName (selectedTagName) + 6;
+  if (profile[0].hasTagName (selectedTagName)) {
+    int item = profile[0].getTagByName (selectedTagName) + 6;
     select_item (item);
     value(item);
   }
 
   std::string::size_type pos=0 , max = 0;
-  std::string data = profile.filename(); DBG_NUM_S( data )
+  std::string data = profile[0].filename(); DBG_NUM_S( data )
   while ((pos = data.find ("/", pos)) != std::string::npos) {
     if (pos > max) max = pos; pos++; max++;
   }
@@ -692,10 +715,10 @@ void TagBrowser::select_item(int item) {
 
   if (item < 0) {
     select(5);
-    text = profile.printLongHeader(); DBG_PROG
+    text = profile[0].printLongHeader(); DBG_PROG
     tag_text->hinein(text);    
   } else if (item >= 0) {
-    std::vector<std::string> TagInfo = profile.printTagInfo(item);
+    std::vector<std::string> TagInfo = profile[0].printTagInfo(item);
     DBG_PROG_S( TagInfo.size() << " " << TagInfo[0] << " " << TagInfo[1] )
 
     if        ( TagInfo[1] == "text"
@@ -703,19 +726,19 @@ void TagBrowser::select_item(int item) {
              || TagInfo[1] == "meas"
              || TagInfo[1] == "sig"
              || TagInfo[1] == "dtim") {
-      tag_text->hinein ( (profile.getTagText (item))[0] ); DBG_PROG
+      tag_text->hinein ( (profile[0].getTagText (item))[0] ); DBG_PROG
     } else if ( TagInfo[1] == "desc" ) {
-      tag_text->hinein( (profile.getTagDescription (item))[0] ); DBG_PROG
+      tag_text->hinein( (profile[0].getTagDescription (item))[0] ); DBG_PROG
     } else if ( TagInfo[0] == "rXYZ" || TagInfo[0] == "gXYZ" || TagInfo[0] == "bXYZ" ) {
       std::vector<double> alle_punkte, punkte;
       std::vector<std::string> alle_texte;
       std::string TagName;
       for (unsigned int i_name = 0; i_name < rgb_tags.size(); i_name++) {
-        if (profile.hasTagName (rgb_tags[i_name])) {
-          punkte = profile.getTagCIEXYZ (profile.getTagByName(rgb_tags[i_name]));
+        if (profile[0].hasTagName (rgb_tags[i_name])) {
+          punkte = profile[0].getTagCIEXYZ (profile[0].getTagByName(rgb_tags[i_name]));
           for (unsigned int i = 0; i < 3; i++)
             alle_punkte.push_back (punkte[i]);
-          TagInfo = profile.printTagInfo (profile.getTagByName(rgb_tags[i_name]));
+          TagInfo = profile[0].printTagInfo (profile[0].getTagByName(rgb_tags[i_name]));
           for (unsigned int i = 0; i < 2; i++)
             alle_texte.push_back (TagInfo[i]);
         }
@@ -727,12 +750,12 @@ void TagBrowser::select_item(int item) {
       std::vector<double> kurve;
       std::vector<std::string> texte;
       std::string TagName;
-      for (int i_name = 0; i_name < profile.tagCount(); i_name++) {
-        if ( (profile.printTagInfo(i_name))[1] == "curv"
-          || (profile.printTagInfo(i_name))[1] == "bfd" ) {
-          kurve = profile.getTagCurve (i_name);
+      for (int i_name = 0; i_name < profile[0].tagCount(); i_name++) {
+        if ( (profile[0].printTagInfo(i_name))[1] == "curv"
+          || (profile[0].printTagInfo(i_name))[1] == "bfd" ) {
+          kurve = profile[0].getTagCurve (i_name);
           kurven.push_back (kurve);
-          TagInfo = profile.printTagInfo (i_name);
+          TagInfo = profile[0].printTagInfo (i_name);
           //for (unsigned int i = 0; i < 2; i++)
           texte.push_back (TagInfo[0]);
         }
@@ -740,16 +763,16 @@ void TagBrowser::select_item(int item) {
       texte.push_back ("curv");
       tag_viewer->hinein_kurven( kurven, texte );
     } else if ( TagInfo[1] == "chrm") {
-      tag_viewer->hinein_punkt( profile.getTagCIEXYZ(item), profile.getTagText(item) );
+      tag_viewer->hinein_punkt( profile[0].getTagCIEXYZ(item), profile[0].getTagText(item) );
     } else if ( TagInfo[1] == "XYZ" ) {
-      tag_viewer->hinein_punkt( profile.getTagCIEXYZ(item), TagInfo );
+      tag_viewer->hinein_punkt( profile[0].getTagCIEXYZ(item), TagInfo );
     } else if ( TagInfo[1] == "mft2"
              || TagInfo[1] == "mft1" ) {
       mft_choice->profil_tag (item);
-      //mft_text->hinein ( (profile.getTagText (item))[0] ); DBG_PROG
+      //mft_text->hinein ( (profile[0].getTagText (item))[0] ); DBG_PROG
     } else if ( TagInfo[1] == "vcgt" ) { DBG_PROG
-      tag_viewer->hinein_kurven ( profile.getTagCurves (item, ICCtag::CURVE_IN),
-                                  profile.getTagText (item) ); cout << "vcgt "; DBG_PROG
+      tag_viewer->hinein_kurven ( profile[0].getTagCurves (item, ICCtag::CURVE_IN),
+                                  profile[0].getTagText (item) ); cout << "vcgt "; DBG_PROG
     }
     selectedTagName = TagInfo[0];
   }DBG_PROG
@@ -848,10 +871,10 @@ void MftChoice::profil_tag(int _tag) {
   DBG_PROG_START
   tag_nummer = _tag;
 
-// = profile.printTagInfo(tag_nummer);
-    sprintf (&typ[0], profile.printTagInfo(tag_nummer)[1].c_str());
+// = profile[0].printTagInfo(tag_nummer);
+    sprintf (&typ[0], profile[0].printTagInfo(tag_nummer)[1].c_str());
 
-    Info = zeilenNachVector (profile.getTagText (tag_nummer)[0]);
+    Info = zeilenNachVector (profile[0].getTagText (tag_nummer)[0]);
 
     if ( strstr (typ,"mft2") != 0 )
     {
@@ -909,7 +932,7 @@ void MftChoice::auswahl_cb(void) {
       mft_text->hinein ( s.str() ); DBG_PROG // anzeigen
     } break;
   case 1: // Matriz
-    zahlen = profile.getTagNumbers (tag_nummer, ICCtag::MATRIX);
+    zahlen = profile[0].getTagNumbers (tag_nummer, ICCtag::MATRIX);
     cout << zahlen.size() << endl; DBG_PROG
     assert (9 == zahlen.size());
     s << endl <<
@@ -921,20 +944,20 @@ void MftChoice::auswahl_cb(void) {
   case 2: // Eingangskurven
     DBG_PROG
     mft_viewer->hinein_kurven (
-                     profile.getTagCurves (tag_nummer, ICCtag::CURVE_IN),
-                     profile.getTagChannelNames (tag_nummer, ICCtag::CURVE_IN) ); DBG_PROG
+                     profile[0].getTagCurves (tag_nummer, ICCtag::CURVE_IN),
+                     profile[0].getTagChannelNames (tag_nummer, ICCtag::CURVE_IN) ); DBG_PROG
     break;
   case 3: // 3D Tabelle
     DBG_PROG
     mft_gl->hinein_tabelle (
-                     profile.getTagTable (tag_nummer, ICCtag::TABLE),
-                     profile.getTagChannelNames (tag_nummer, ICCtag::TABLE),
-                     profile.getPCSNames () ); DBG_PROG
+                     profile[0].getTagTable (tag_nummer, ICCtag::TABLE),
+                     profile[0].getTagChannelNames (tag_nummer, ICCtag::TABLE),
+                     profile[0].getPCSNames () ); DBG_PROG
     break;
   case 4: // Ausgangskurven
     mft_viewer->hinein_kurven (
-                     profile.getTagCurves (tag_nummer, ICCtag::CURVE_OUT),
-                     profile.getTagChannelNames (tag_nummer, ICCtag::CURVE_OUT) ); DBG_PROG
+                     profile[0].getTagCurves (tag_nummer, ICCtag::CURVE_OUT),
+                     profile[0].getTagChannelNames (tag_nummer, ICCtag::CURVE_OUT) ); DBG_PROG
     break;
   }
 

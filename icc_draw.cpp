@@ -295,7 +295,7 @@ draw_cie_shoe (int X, int Y, int W, int H,
     }
 
     if (texte[0] != "wtpt") { // markiert den Weisspunkt nur
-      double* xyY = XYZto_xyY ( profile.getWhitePkt() );
+      double* xyY = XYZto_xyY ( profile[0].getWhitePkt() );
       int g = 2;
 
       fl_color (FL_WHITE);

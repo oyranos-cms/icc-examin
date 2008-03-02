@@ -12,7 +12,7 @@ mandir		= ${prefix}/man
 srcdir		= .
 
 #APPLE = 1
-#FLU = 1
+FLU = 1
 DL = --ldflags # --ldstaticflags
 
 ifdef FLU

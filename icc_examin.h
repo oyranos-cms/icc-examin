@@ -31,7 +31,7 @@ class GL_Ansicht;
 #include "icc_utils.h"
 
 #include "icc_ueber.h"
-extern ICCprofile profile;
+extern std::vector<ICCprofile> profile;
 #include <FL/Fl_Double_Window.H>
 extern Fl_Double_Window *ueber;
 #include <FL/Fl_Group.H>
@@ -64,7 +64,7 @@ extern Fl_Menu_Item menu_[];
 #define menueintrag_Voll (menu_+6)
 #define menueintrag_inspekt (menu_+8)
 #define menu_hilfe (menu_+9)
-std::string open(int interaktiv);
+void open(int interaktiv);
 void quit(void);
 char* icc_read_info(char* filename);
 
