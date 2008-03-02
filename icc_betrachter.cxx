@@ -433,7 +433,7 @@ Fl_Double_Window* ICCfltkBetrachter::init(int argc, char** argv) {
     const char* ptr = NULL;
     if (profile.size())
       ptr = profile.name().c_str();
-    dateiwahl = new Flu_File_Chooser(ptr, _("ICC colour profiles (*.ic*)"), Flu_File_Chooser::SINGLE, _("Which ICC profile?"));
+    dateiwahl = new Flu_File_Chooser(ptr, _("ICC colour profiles (*.ic*)"), Flu_File_Chooser::/*SINGLE*/MULTI, _("Which ICC profile?"));
     dateiwahl->add_context_handler(Flu_File_Chooser::ENTRY_FILE, "icc", _("Open Profile"), dateiwahl_cb, NULL);
     dateiwahl->add_context_handler(Flu_File_Chooser::ENTRY_FILE, "icm", _("Open Profile"), dateiwahl_cb, NULL);
     dateiwahl->add_context_handler(Flu_File_Chooser::ENTRY_FILE, "it8", _("Open Measurement"), dateiwahl_cb, NULL);

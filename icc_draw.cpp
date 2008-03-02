@@ -760,20 +760,21 @@ TagDrawings::drawKurve_    ()
     // segmentierte Kurve
     } else { // Wertebereich 0.0 -> max_[x,y]
       for (unsigned int i = 1; i < kurven[j].size(); i++) {
-        if( kurve_umkehren )
+        //if( kurve_umkehren )
           fl_line (xNachBild( (i-1) / ((kurven[j].size() -1)
                               / max_x) ),
                    yNachBild( kurven[j][i-1] * max_y ),
                    xNachBild( (i) / ((kurven[j].size() - 1)
                               / max_x) ),
                    yNachBild( kurven[j][i] * max_y) );
-        else
+        /*else
           fl_line (xNachBild( kurven[j][i-1] * max_x),
                    yNachBild( (i-1) / ((kurven[j].size() -1)
                               / max_y) ),
                    xNachBild( kurven[j][i] * max_x),
                    yNachBild( (i) / ((kurven[j].size() - 1)
                               / max_y) ) );
+          */
       }
       // Infos einblenden 
       s << name << _(" with ") << kurven[j].size() << _(" points");

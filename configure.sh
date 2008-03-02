@@ -50,6 +50,11 @@ else
     if [ $UNAME_ = "SunOS" ]; then
       echo "SOLARIS = 1" >> $CONF
       echo "SunOS                   detected"
+      if [ `uname -m` = sun4u ]; then
+        sync
+        #echo "BUILD64 = 1" >> $CONF
+        #echo "spark ultra 4           will build in 64 bit mode"
+      fi
     else
       echo "ICC Examin may or may not compile on your $UNAME_ system"
     fi
@@ -127,7 +132,7 @@ if [ $? = 0 ]; then
   echo "FTGL_H = -DHAVE_FTGL `pkg-config --cflags ftgl`" >> $CONF
   echo "FTGL_LIBS = `pkg-config --libs ftgl`" >> $CONF
 else
-  echo "no or too old FTGL found,\n  need FTGL to render text in OpenGL"
+  echo "  no or too old FTGL found, need FTGL to render text in OpenGL"
 fi
 
 echo "" >> $CONF

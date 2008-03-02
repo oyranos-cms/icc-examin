@@ -173,6 +173,16 @@ ICCexamin::oeffnen (std::vector<std::string> dateinamen)
       }
     }
 
+  // Fenstername setzen
+  if( dateinamen.size() ) {
+    detaillabel = "ICC Examin: ";
+    if( dateinamen[0].find_last_of("/") != std::string::npos)
+      detaillabel.insert( detaillabel.size(), dateinamen[0].substr( dateinamen[0].find_last_of("/")+1,dateinamen[0].size()) );
+    else
+      detaillabel.insert( detaillabel.size(), dateinamen[0] );
+    icc_betrachter->details->label(detaillabel.c_str());
+  }
+
   frei_ = true;
   DBG_PROG_ENDE
 }

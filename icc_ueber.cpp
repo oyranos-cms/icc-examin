@@ -85,6 +85,11 @@ getUeberHtml()
 <br> \
 <p>";
   html << _(
+"internet: www.behrmann.name <br>");
+  html << " \
+</p>\n \
+<p>";
+  html << _(
 "ICC Examin is a viewer for colour profiles according to ICC "
 "standard  - www.color.org . At the moment version 2 profiles are supported.");
   html << " \
@@ -112,7 +117,7 @@ getUeberHtml()
 </p>\n \
 <p>";
   html << _(
-"The internal colour transformations are currently realised with funktions "
+"The internal colour transformations are currently realised with functions "
 "of the littleCMS program library.");
   html << " \
 </p>\n \

@@ -85,6 +85,7 @@ class ICCexamin : public icc_examin_ns::Beobachter
   public:
     ICCfltkBetrachter* icc_betrachter;
     std::string statlabel;
+    std::string detaillabel;
   public:
     int  tag_nr () { return _item; }
     int  mft_nr () { return _mft_item; }

@@ -280,7 +280,7 @@ class ICCfltkBetrachter {open
     const char* ptr = NULL;
     if (profile.size())
       ptr = profile.name().c_str();
-    dateiwahl = new Flu_File_Chooser(ptr, _("ICC colour profiles (*.ic*)"), Flu_File_Chooser::SINGLE, _("Which ICC profile?"));
+    dateiwahl = new Flu_File_Chooser(ptr, _("ICC colour profiles (*.ic*)"), Flu_File_Chooser::/*SINGLE*/MULTI, _("Which ICC profile?"));
     dateiwahl->add_context_handler(Flu_File_Chooser::ENTRY_FILE, "icc", _("Open Profile"), dateiwahl_cb, NULL);
     dateiwahl->add_context_handler(Flu_File_Chooser::ENTRY_FILE, "icm", _("Open Profile"), dateiwahl_cb, NULL);
     dateiwahl->add_context_handler(Flu_File_Chooser::ENTRY_FILE, "it8", _("Open Measurement"), dateiwahl_cb, NULL);
@@ -298,10 +298,11 @@ class ICCfltkBetrachter {open
     dateiwahl = new Fl_File_Chooser(ptr, _("ICC colour profiles (*.{I,i}{C,c}{M,m,C,c})"), Fl_File_Chooser::SINGLE, _("Which ICC profile?"));
     dateiwahl->callback(dateiwahl_cb);
     dateiwahl->preview_label = _("Preview");
-  \#endif} {}
+  \#endif} {selected
+    }
     Fl_Window ueber {
-      label {About ICC Examin} open
-      xywh {587 725 366 241} type Double resizable
+      label {About ICC Examin}
+      xywh {592 746 366 241} type Double resizable
       code0 {o->hide();} non_modal visible
     } {
       Fl_Group {} {open
@@ -318,8 +319,8 @@ class ICCfltkBetrachter {open
       }
     }
     Fl_Window vcgt {
-      label {Grafic Card Gamma Table} open
-      xywh {606 402 370 390} type Double resizable
+      label {Grafic Card Gamma Table}
+      xywh {611 423 370 390} type Double resizable
       code0 {o->hide();} non_modal visible
     } {
       Fl_Group {} {open
@@ -354,12 +355,12 @@ class ICCfltkBetrachter {open
     }
     Fl_Window details {
       label {ICC Examin} open
-      xywh {838 502 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
+      xywh {843 523 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
     } {
       Fl_Group {} {open
         xywh {0 0 385 520}
       } {
-        Fl_Menu_Bar menueleiste {open
+        Fl_Menu_Bar menueleiste {
           xywh {0 0 385 25} align 20 when 3
         } {
           submenu {} {
@@ -503,7 +504,7 @@ icc_examin->testZeigen();}
               xywh {25 25 100 20} shortcut 0x50074 hide
             }
             submenu untermenue_3D {
-              label 3D open selected
+              label 3D open
               xywh {0 0 100 20}
             } {}
           }

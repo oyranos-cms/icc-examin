@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ICC Examin 0.28\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2005-05-11 08:48+0200\n"
+"POT-Creation-Date: 2005-05-19 12:44+0200\n"
 "PO-Revision-Date: 2005-04-22 15:09+0200\n"
 "Last-Translator: Kai-Uwe Behrmann <ku.b@gmx.de>\n"
 "Language-Team: German\n"
@@ -23,7 +23,7 @@ msgstr ""
 msgid "GL Fenster nicht frei"
 msgstr ""
 
-#: agviewer.cpp:359 icc_gl.cpp:1660 icc_gl.cpp:1679 icc_gl.cpp:1799
+#: agviewer.cpp:359 icc_gl.cpp:1720 icc_gl.cpp:1739 icc_gl.cpp:1859
 msgid "left-/middle-/right mouse button -> rotate/cut/menu"
 msgstr "linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menue"
 
@@ -31,8 +31,8 @@ msgstr "linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menue"
 msgid "Pause"
 msgstr "Pause"
 
-#: agviewer.cpp:392 agviewer.cpp:400 icc_gl.cpp:1765 icc_gl.cpp:1776
-#: icc_gl.cpp:1781 icc_gl.cpp:1786
+#: agviewer.cpp:392 agviewer.cpp:400 icc_gl.cpp:1825 icc_gl.cpp:1836
+#: icc_gl.cpp:1841 icc_gl.cpp:1846
 msgid "left mouse button -> go back"
 msgstr "linke Maustaste -> zurueck"
 
@@ -155,7 +155,7 @@ msgstr "Grün"
 msgid "Blue"
 msgstr "Blau"
 
-#: icc_draw.cpp:643 icc_gl.cpp:1334 icc_helfer.cpp:318 icc_waehler.h:127
+#: icc_draw.cpp:643 icc_gl.cpp:1394 icc_helfer.cpp:318 icc_waehler.h:127
 msgid "Gray"
 msgstr "Grau"
 
@@ -171,7 +171,7 @@ msgstr ""
 msgid "Yellow"
 msgstr "Gelb"
 
-#: icc_draw.cpp:656 icc_gl.cpp:1336 icc_helfer.cpp:378 icc_helfer.cpp:388
+#: icc_draw.cpp:656 icc_gl.cpp:1396 icc_helfer.cpp:378 icc_helfer.cpp:388
 msgid "Black"
 msgstr "Schwarz"
 
@@ -209,13 +209,13 @@ msgid "CIE *L"
 msgstr ""
 
 #: icc_draw.cpp:674 icc_examin_farbraum.cpp:187 icc_examin_io.cpp:125
-#: icc_gl.cpp:578 icc_gl.cpp:646 icc_gl.cpp:657 icc_gl.cpp:665
+#: icc_gl.cpp:578 icc_gl.cpp:648 icc_gl.cpp:679 icc_gl.cpp:687
 #: icc_helfer.cpp:364
 msgid "CIE *a"
 msgstr ""
 
 #: icc_draw.cpp:676 icc_examin_farbraum.cpp:188 icc_examin_io.cpp:126
-#: icc_gl.cpp:592 icc_gl.cpp:673 icc_gl.cpp:682 icc_gl.cpp:689
+#: icc_gl.cpp:592 icc_gl.cpp:695 icc_gl.cpp:721 icc_gl.cpp:728
 #: icc_helfer.cpp:365
 msgid "CIE *b"
 msgstr ""
@@ -228,11 +228,11 @@ msgstr "Farbanteil b"
 msgid "Colour r"
 msgstr "Farbanteil r"
 
-#: icc_draw.cpp:719 icc_draw.cpp:779
+#: icc_draw.cpp:719 icc_draw.cpp:780
 msgid " with "
 msgstr " mit "
 
-#: icc_draw.cpp:719 icc_draw.cpp:779
+#: icc_draw.cpp:719 icc_draw.cpp:780
 msgid " points"
 msgstr " Punkten"
 
@@ -296,27 +296,27 @@ msgstr ""
 msgid "Gebe irritiert auf. Kein Netz gefunden. Ist Argyll installiert?"
 msgstr ""
 
-#: icc_examin_io.cpp:207 icc_betrachter.cxx:406
+#: icc_examin_io.cpp:217 icc_betrachter.cxx:406
 msgid "Filename"
 msgstr "Dateiname"
 
-#: icc_examin_io.cpp:211
+#: icc_examin_io.cpp:221
 msgid "found no content for"
 msgstr "keine Inhalte gefunden für"
 
-#: icc_examin_io.cpp:214
+#: icc_examin_io.cpp:224
 msgid "Internal error"
 msgstr "interner Fehler"
 
-#: icc_examin_io.cpp:216
+#: icc_examin_io.cpp:226
 msgid "No. Tag   Type   Size Description"
 msgstr "Nr. Teil  Typ   Größe Beschreibung"
 
-#: icc_examin_io.cpp:283
+#: icc_examin_io.cpp:293
 msgid "HTML Documents (*.htm*)"
 msgstr "HTML Dokumente (*.htm*)"
 
-#: icc_examin_io.cpp:287 icc_betrachter.cxx:333
+#: icc_examin_io.cpp:297 icc_betrachter.cxx:333
 msgid "Save Report"
 msgstr "Bericht Speichern"
 
@@ -342,135 +342,135 @@ msgstr ""
 msgid "0,0,0"
 msgstr ""
 
-#: icc_gl.cpp:712
+#: icc_gl.cpp:751
 msgid "Kanalauswahl geaendert: "
 msgstr ""
 
-#: icc_gl.cpp:1210
+#: icc_gl.cpp:1250
 msgid "hsRGB Profil nicht geoeffnet"
 msgstr ""
 
-#: icc_gl.cpp:1212
+#: icc_gl.cpp:1252
 msgid "hLab Profil nicht geoeffnet"
 msgstr ""
 
-#: icc_gl.cpp:1218
+#: icc_gl.cpp:1258
 msgid "keine hXYZtoRGB Transformation gefunden"
 msgstr ""
 
-#: icc_gl.cpp:1233
+#: icc_gl.cpp:1274
 msgid "XYZ_speicher Speicher nicht verfuegbar"
 msgstr ""
 
-#: icc_gl.cpp:1234
+#: icc_gl.cpp:1275
 msgid "Lab_speicher Speicher nicht verfuegbar"
 msgstr ""
 
-#: icc_gl.cpp:1235
+#: icc_gl.cpp:1276 icc_gl.cpp:1277
 msgid "RGB_speicher Speicher nicht verfuegbar"
 msgstr ""
 
-#: icc_gl.cpp:1308 icc_gl.cpp:1318 icc_gl.cpp:1320 icc_gl.cpp:1322
+#: icc_gl.cpp:1368 icc_gl.cpp:1378 icc_gl.cpp:1380 icc_gl.cpp:1382
 msgid "Slice"
 msgstr "Schnitt"
 
-#: icc_gl.cpp:1309
+#: icc_gl.cpp:1369
 msgid "Rotate around slice"
 msgstr "Drehen um Schnitt"
 
-#: icc_gl.cpp:1324
+#: icc_gl.cpp:1384
 msgid "Rotate around"
 msgstr "Drehen um"
 
-#: icc_gl.cpp:1324
+#: icc_gl.cpp:1384
 msgid "axis"
 msgstr "Achse"
 
-#: icc_gl.cpp:1329
+#: icc_gl.cpp:1389
 msgid "Slice plane"
 msgstr "Querschnitt"
 
-#: icc_gl.cpp:1332
+#: icc_gl.cpp:1392
 msgid "White"
 msgstr "Weiß"
 
-#: icc_gl.cpp:1333
+#: icc_gl.cpp:1393
 msgid "Light gray"
 msgstr "Hellgrau"
 
-#: icc_gl.cpp:1335
+#: icc_gl.cpp:1395
 msgid "Dark gray"
 msgstr "Dunkelgrau"
 
-#: icc_gl.cpp:1339
+#: icc_gl.cpp:1399
 msgid "Background colour"
 msgstr "Hintergrundfarbe"
 
-#: icc_gl.cpp:1344
+#: icc_gl.cpp:1404
 msgid "gray"
 msgstr "grau"
 
-#: icc_gl.cpp:1345
+#: icc_gl.cpp:1405
 msgid "coloured"
 msgstr "farbig"
 
-#: icc_gl.cpp:1346
+#: icc_gl.cpp:1406
 msgid "high contrast"
 msgstr "kontrastreich"
 
-#: icc_gl.cpp:1347
+#: icc_gl.cpp:1407
 msgid "shells"
 msgstr "schalen"
 
-#: icc_gl.cpp:1352
+#: icc_gl.cpp:1412
 msgid "Sphere 1dE"
 msgstr "Kugel 1dE"
 
-#: icc_gl.cpp:1353
+#: icc_gl.cpp:1413
 msgid "Sphere 2dE"
 msgstr "Kugel 2dE"
 
-#: icc_gl.cpp:1354
+#: icc_gl.cpp:1414
 msgid "Sphere 4dE"
 msgstr "Kugel 4dE"
 
-#: icc_gl.cpp:1357
+#: icc_gl.cpp:1417
 msgid "Star"
 msgstr "Stern"
 
-#: icc_gl.cpp:1360
+#: icc_gl.cpp:1420
 msgid "Point"
 msgstr "Punkt"
 
-#: icc_gl.cpp:1363
+#: icc_gl.cpp:1423
 msgid "without markers"
 msgstr "ohne Farborte"
 
-#: icc_gl.cpp:1364
+#: icc_gl.cpp:1424
 msgid "Spektral line"
 msgstr "Spektrallinie"
 
-#: icc_gl.cpp:1367 icc_betrachter.cxx:630
+#: icc_gl.cpp:1427 icc_betrachter.cxx:630
 msgid "Texts"
 msgstr "Texte"
 
-#: icc_gl.cpp:1369
+#: icc_gl.cpp:1429
 msgid "Texts/Arrows on/off"
 msgstr "Texte/Pfeile an/aus"
 
-#: icc_gl.cpp:1371
+#: icc_gl.cpp:1431
 msgid "Illustration"
 msgstr "Darstellung"
 
-#: icc_gl.cpp:1480 icc_profile_tags.cpp:291
+#: icc_gl.cpp:1540 icc_profile_tags.cpp:291
 msgid "Channel"
 msgstr "Kanal"
 
-#: icc_gl.cpp:1824
+#: icc_gl.cpp:1884
 msgid "Konnte keine Eltern finden"
 msgstr ""
 
-#: icc_gl.cpp:1833
+#: icc_gl.cpp:1893
 msgid "Konnte keine passende Programmstruktur finden"
 msgstr ""
 
@@ -1610,6 +1610,10 @@ msgid "Date"
 msgstr "Datum"
 
 #: icc_ueber.cpp:88
+msgid "internet: www.behrmann.name <br>"
+msgstr "Internet: www.behrmann.name <br>"
+
+#: icc_ueber.cpp:93
 msgid ""
 "ICC Examin is a viewer for colour profiles according to ICC standard  - www."
 "color.org . At the moment version 2 profiles are supported."
@@ -1618,7 +1622,7 @@ msgstr ""
 "Standard  - www.color.org . Im Moment werden Version 2 Profile unterst&uuml;"
 "tzt."
 
-#: icc_ueber.cpp:94
+#: icc_ueber.cpp:99
 msgid ""
 "The appliance of colour profiles shall help to achive an easy colour data "
 "exchange, regardless which application or what kind of operating system is "
@@ -1635,7 +1639,7 @@ msgstr ""
 "Qualit&auml;t der Farbmessungen und dem verwendeten Algorithmus wärend der "
 "Erstellung der Farbprofile ab."
 
-#: icc_ueber.cpp:105
+#: icc_ueber.cpp:110
 msgid ""
 "Colour profiles are often available from manufacturers of optical devices "
 "(digital camera, scanner, printer). With ICC Examin you can get an "
@@ -1651,15 +1655,15 @@ msgstr ""
 "erstellen. Die aus den Messdaten errechneten Farbabweichungen werden auch im "
 "dreidimensionalen Farbraumbetrachter dargestellt. <br>"
 
-#: icc_ueber.cpp:115
+#: icc_ueber.cpp:120
 msgid ""
-"The internal colour transformations are currently realised with funktions of "
+"The internal colour transformations are currently realised with functions of "
 "the littleCMS program library."
 msgstr ""
 " Die Farbumwandlungen werden zur Zeit durch Funktionen der littleCMS "
 "Programmbibliothek realisiert."
 
-#: icc_ueber.cpp:121
+#: icc_ueber.cpp:126
 msgid ""
 "My cordially thank is especially dedicated to Marti Maria and the many "
 "writers of the Lcms-user email list."
@@ -1667,39 +1671,39 @@ msgstr ""
 "Mein herzlicher Dank gilt insbesondere Marti Maria und den vielen "
 "Schreibenden der Lcms-user Emailliste."
 
-#: icc_ueber.cpp:134
+#: icc_ueber.cpp:139
 msgid "ICC Examin uses following libraries:<br>\n"
 msgstr "ICC Examin benutzt folgende Bibliotheken:<br>\n"
 
-#: icc_ueber.cpp:138
+#: icc_ueber.cpp:143
 msgid "  FLTK: Bill Spitzack and others www.fltk.org<br>\n"
 msgstr "  FLTK: Bill Spitzack und andere www.fltk.org<br>\n"
 
-#: icc_ueber.cpp:144
+#: icc_ueber.cpp:149
 msgid "  FLU: Jason Bryan www.osc.edu/~jbryan/FLU/<br>\n"
 msgstr ""
 
-#: icc_ueber.cpp:150
+#: icc_ueber.cpp:155
 msgid "  littleCMS: Marti Maria www.littlecms.com<br>\n"
 msgstr ""
 
-#: icc_ueber.cpp:160
+#: icc_ueber.cpp:165
 msgid ""
 "  FTGL: Henry Maddocks homepages.paradise.net.nz/henryj/code/#FTGL<br>\n"
 msgstr ""
 
-#: icc_ueber.cpp:167
+#: icc_ueber.cpp:172
 msgid ""
 "integrated sources, lock at the according files for licence conditions:<br>\n"
 msgstr ""
 "integrierte Quelltexte, die jeweiligen Lizenzbedingungen sind den "
 "entsprechended Dateien zu entnehmen:<br>\n"
 
-#: icc_ueber.cpp:171
+#: icc_ueber.cpp:176
 msgid "  agv 3D Navigation: Philip Winston<br>\n"
 msgstr ""
 
-#: icc_ueber.cpp:177
+#: icc_ueber.cpp:182
 msgid ""
 "  freeglut: freeglut.sf.net<br>\n"
 "   (partialy used) <br>"
@@ -1707,16 +1711,16 @@ msgstr ""
 "  freeglut: freeglut.sf.net<br>\n"
 "   (partiell eingebunden)<br>"
 
-#: icc_ueber.cpp:184
+#: icc_ueber.cpp:189
 msgid "For the visualisation of gamut (external):<br>\n"
 msgstr "F&uuml;r die Visualisation des Farbumfangs (Erzeugung extern):<br>\n"
 
-#: icc_ueber.cpp:188
+#: icc_ueber.cpp:193
 msgid ""
 "  argyll: Greame Gill web.access.net.au/argyll/argyllcms.html<br<br><br>\n"
 msgstr ""
 
-#: icc_ueber.cpp:197
+#: icc_ueber.cpp:202
 msgid ""
 "    all icc_* files are licensed under the GPL.<br>    The other files may "
 "contain deverine licenses which are detectable from file headers. "

@@ -1,7 +1,12 @@
 include config
 
-CC=cc
+ifdef BUILD64
+CC =  cc-64
+CXX = c++-64
+else
+CC = cc
 CXX = c++
+endif
 COLLECT = ar cru
 RANLIB = ranlib
 MAKEDEPEND	= makedepend -Y
@@ -18,7 +23,6 @@ else
 endif
 
 
-prefix		= /opt/local
 exec_prefix	= ${prefix}
 bindir		= ${exec_prefix}/bin
 datadir		= ${prefix}/share
@@ -65,7 +69,7 @@ else
     LINK_LIB_PATH = -Wl,--rpath -Wl,$(libdir)
     LINK_SRC_PATH = -Wl,--rpath -Wl,$(srcdir)
   else
-    OPTS=-Wall -O2 -g -fpic -L.
+    OPTS=-Wall -O2 -g $(DEBUG) -L.
     RM = rm -f
     LIBLINK_FLAGS = -shared -ldl $(ICONV) -lintl
     I18N_LIB = $(ICONV) -lintl
@@ -231,7 +235,7 @@ ALL_FILES =	$(SOURCES) \
 timedir = .
 mtime   = `find $(timedir) -prune -printf %Ty%Tm%Td.%TT | sed s/://g`
 
-#.SILENT:
+.SILENT:
 
 all:	config mkdepend $(TARGET)
 
@@ -308,10 +312,13 @@ potfile:
 $(POT_FILE):	potfile
 
 install:	$(TARGET)
+	echo Installing ...
 	$(COPY) $(TARGET) $(bindir)
 	$(COPY) $(FONT) $(datadir)/fonts
+	echo ... Installation finished
 
 uninstall:
+	echo Uninstalling ...
 	$(RM) $(bindir)/$(TARGET)
 
 clean:

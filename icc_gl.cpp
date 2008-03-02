@@ -640,16 +640,38 @@ GL_Ansicht::garnieren_()
       glEnd();
     glPopMatrix();
 
+    #define ZEIG_GITTER 1
+
     // CIE*a - rechts
     glPushMatrix();
       if (von_farb_namen_.size() &&
           von_farb_namen_[1] == _("CIE *a"))
         glTranslatef(0,-.5,0);
       FARBE(pfeilfarbe[0],pfeilfarbe[1],pfeilfarbe[2])
+      #if ZEIG_GITTER
+      float schritt = .25, Schritt = 1., start, ende;
+      start = - floor (a_darstellungs_breite/2./schritt) * schritt;
+      ende = floor (a_darstellungs_breite/2./schritt) * schritt;
+      // Gitter
+      for(float i = start; i <= ende; i+=schritt) {
+
+        if(i/Schritt == floor(i/Schritt))
+          glLineWidth(3.0*strichmult);
+        else
+          glLineWidth(1.0*strichmult);
+
+        glBegin(GL_LINES);
+          glVertex3f( i, 0,  a_darstellungs_breite/2.);
+          glVertex3f( i, 0, -a_darstellungs_breite/2.);
+        glEnd();
+      }
+      #else
+      // Achslinie
       glBegin(GL_LINES);
         glVertex3f(0, 0,  a_darstellungs_breite/2.);
         glVertex3f(0, 0, -a_darstellungs_breite/2.);
       glEnd();
+      #endif
       glTranslatef(0.0,0.0,a_darstellungs_breite/2.);
       glRotatef (180,0.0,.5,.0);
       glTranslatef(.0,0.0,a_darstellungs_breite);
@@ -673,10 +695,27 @@ GL_Ansicht::garnieren_()
           von_farb_namen_[2] == _("CIE *b"))
         glTranslatef(0,-0.5,0);
       FARBE(pfeilfarbe[0],pfeilfarbe[1],pfeilfarbe[2])
+      #if ZEIG_GITTER
+      // Gitter
+      for(float i = start; i <= ende; i+=schritt) {
+
+        if(i/Schritt == floor(i/Schritt))
+          glLineWidth(3.0*strichmult);
+        else
+          glLineWidth(1.0*strichmult);
+
+        glBegin(GL_LINES);
+          glVertex3f( b_darstellungs_breite/2., 0, i);
+          glVertex3f(-b_darstellungs_breite/2., 0, i);
+        glEnd();
+      }
+      #else
+      // Achslinie
       glBegin(GL_LINES);
         glVertex3f( b_darstellungs_breite/2., 0, 0);
         glVertex3f(-b_darstellungs_breite/2., 0, 0);
       glEnd();
+      #endif
       glTranslatef(b_darstellungs_breite/2.,0,0);
       if (von_farb_namen_.size() &&
           von_farb_namen_[2] == _("CIE *b"))
@@ -1190,12 +1229,13 @@ GL_Ansicht::zeigeSpektralband_()
   if (spektralband == MENU_SPEKTRALBAND)
   {
     // lcms Typen
-    cmsHPROFILE hsRGB;
-    cmsHPROFILE hLab;
+    cmsHPROFILE hsRGB,
+                hLab;
     cmsHTRANSFORM hLabtoRGB;
-    double *RGB_Speicher = 0;
-    double *XYZ_Speicher = 0;
-    double *Lab_Speicher = 0;
+    double *RGB_Speicher = 0,
+           *RGBSchatten_Speicher = 0,
+           *XYZ_Speicher = 0,
+           *Lab_Speicher = 0;
 
     // Initialisierung für lcms
     size_t groesse = 0;
@@ -1230,10 +1270,11 @@ GL_Ansicht::zeigeSpektralband_()
     }
     Lab_Speicher = new double [nano_max*3];
     RGB_Speicher = new double [nano_max*3];
+    RGBSchatten_Speicher = new double [nano_max*3];
     if(!XYZ_Speicher)  WARN_S( _("XYZ_speicher Speicher nicht verfuegbar") )
     if(!Lab_Speicher)  WARN_S( _("Lab_speicher Speicher nicht verfuegbar") )
     if(!RGB_Speicher)  WARN_S( _("RGB_speicher Speicher nicht verfuegbar") )
-
+    if(!RGBSchatten_Speicher)  WARN_S( _("RGB_speicher Speicher nicht verfuegbar") )
 
     XYZtoLab (XYZ_Speicher, Lab_Speicher, nano_max);
 
@@ -1241,6 +1282,12 @@ GL_Ansicht::zeigeSpektralband_()
     double *cielab = new double[nano_max*3];
     LabToCIELab (Lab_Speicher, cielab, nano_max);
     cmsDoTransform (hLabtoRGB, cielab, RGB_Speicher, nano_max);
+    for (int i = 0; i < nano_max; ++i) {
+      cielab[i*3] = hintergrundfarbe*60.+35;
+      cielab[i*3+1] = (cielab[i*3+1])*.25;
+      cielab[i*3+2] = (cielab[i*3+2])*.25;
+    }
+    cmsDoTransform (hLabtoRGB, cielab, RGBSchatten_Speicher, nano_max);
     if (cielab) delete [] cielab;
 
 
@@ -1265,6 +1312,19 @@ GL_Ansicht::zeigeSpektralband_()
           glVertex3d( 
          (Lab_Speicher[i*3+2]*b_darstellungs_breite - b_darstellungs_breite/2.),
          (Lab_Speicher[i*3+0] - 0.5),
+         (Lab_Speicher[i*3+1]*a_darstellungs_breite - a_darstellungs_breite/2.)
+          );
+        }
+      glEnd();
+      // Schatten
+      glLineWidth(2.0*strichmult);
+      glBegin(GL_LINE_STRIP);
+      //#define S * .25 + textfarbe[0] - schatten
+        for (int i=0 ; i <= (nano_max - 1); i++) {
+          FARBE(RGBSchatten_Speicher[i*3],RGBSchatten_Speicher[i*3+1],RGBSchatten_Speicher[i*3+2])
+          glVertex3d( 
+         (Lab_Speicher[i*3+2]*b_darstellungs_breite - b_darstellungs_breite/2.),
+         (- 0.5),
          (Lab_Speicher[i*3+1]*a_darstellungs_breite - a_darstellungs_breite/2.)
           );
         }

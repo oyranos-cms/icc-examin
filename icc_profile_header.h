@@ -151,6 +151,8 @@ class ICCheader {
                                             header.renderingIntent ) ); }
     void        set_renderingIntent ()
                   { DBG_PROG  header.renderingIntent =icValue( 0 ); }
+    void        set_renderingIntent (icUInt32Number intent)
+                  { DBG_PROG  header.renderingIntent =icValue( intent ); }
     void        set_illuminant ()
                   { DBG_PROG  icValueXYZ (&header.illuminant,
                                                   0.9642, 1.0000,0.8249); }

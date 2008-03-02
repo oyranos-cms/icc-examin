@@ -1,3 +1,7 @@
+2005-05-19
+	* neu: im Fenstertitel wird der Dateiname gesetzt
+	* neu: Gitterlinien im Farbraumbetrachter
+	* neu: Schatten für das Spektralband
 
 2005-05-09
 	* und: Umstellung nach Oyranos API 0.0.2
