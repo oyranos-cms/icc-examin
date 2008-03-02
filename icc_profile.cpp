@@ -771,17 +771,41 @@ ICCtag::getTable                                 (MftChain typ)
     outputChan = (int)lut8->outputChan;
     clutPoints = (int)lut8->clutPoints;
     int feldPunkte = (int)pow((double)clutPoints, inputChan);
+    #ifdef DEBUG_ICCTAG
+    cout << feldPunkte << " Feldpunkte " << clutPoints << " clutPoints "; DBG
+    #endif
     int start = 48,
         byte  = 1;
-    //double div   = 255.0;
+    double div= 255.0;
 
     // Was wird verlangt?
     switch (typ) {
-    case TABLE:
+    case TABLE: { DBG_PROG
          start += (inputChan * inputEnt) * byte;
-         for (int i = 0; i < feldPunkte * outputChan; i++)
-           ;//Tabelle.push_back( (double) *(icUInt8Number*)&_data[start + byte*i]
-              //              / div );
+         Tabelle.resize(clutPoints);
+         for (int i = 0; i < clutPoints; i++) {
+           Tabelle[i].resize(clutPoints);
+           for (int j = 0; j < clutPoints; j++) {
+             Tabelle[i][j].resize(clutPoints);
+             for (int k = 0; k < clutPoints; k++)
+               Tabelle[i][j][k].resize(outputChan);
+           }
+         }
+         int n = 0;
+         for (int i = 0; i < clutPoints; i++) {
+           Tabelle[i].resize(clutPoints);
+           for (int j = 0; j < clutPoints; j++) {
+             Tabelle[i][j].resize(clutPoints);
+             for (int k = 0; k < clutPoints; k++) {
+               Tabelle[i][j][k].resize(outputChan);
+               for (int l = 0; l < outputChan; l++) {
+                 Tabelle[i][j][k][l] = (double) *(icUInt8Number*)&_data[start + byte*n++]
+                            / div;
+               }
+             }
+           }
+         }
+         }
          break;
     case MATRIX:
     case CURVE_IN:
