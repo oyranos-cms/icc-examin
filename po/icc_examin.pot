@@ -1,19 +1,17 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR Kai-Uwe Behrmann
-# This file is distributed under the same license as the PACKAGE package.
+# Copyright (C) YEAR Free Software Foundation, Inc.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2005-04-25 06:41+0200\n"
+"POT-Creation-Date: 2005-04-25 13:07+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: agviewer.cpp:154
@@ -157,18 +155,18 @@ msgstr ""
 msgid "unbekannte Farbe"
 msgstr ""
 
-#: icc_draw.cpp:633 icc_draw.cpp:644 icc_helfer.cpp:375
-#: icc_profile_tags.cpp:386 icc_helfer_x.cpp:56
+#: icc_draw.cpp:633 icc_draw.cpp:644 icc_helfer.cpp:375 icc_helfer_x.cpp:56
+#: icc_profile_tags.cpp:386
 msgid "Rot"
 msgstr ""
 
-#: icc_draw.cpp:636 icc_draw.cpp:646 icc_helfer.cpp:376
-#: icc_profile_tags.cpp:387 icc_helfer_x.cpp:57
+#: icc_draw.cpp:636 icc_draw.cpp:646 icc_helfer.cpp:376 icc_helfer_x.cpp:57
+#: icc_profile_tags.cpp:387
 msgid "GrÃ¼n"
 msgstr ""
 
-#: icc_draw.cpp:639 icc_draw.cpp:648 icc_helfer.cpp:377
-#: icc_profile_tags.cpp:388 icc_helfer_x.cpp:58
+#: icc_draw.cpp:639 icc_draw.cpp:648 icc_helfer.cpp:377 icc_helfer_x.cpp:58
+#: icc_profile_tags.cpp:388
 msgid "Blau"
 msgstr ""
 
@@ -347,7 +345,6 @@ msgid "Fontgroesse nicht setzbar"
 msgstr ""
 
 #: icc_gl.cpp:473
-#, c-format
 msgid "0,0,0"
 msgstr ""
 
@@ -1303,7 +1300,7 @@ msgstr ""
 msgid "100"
 msgstr ""
 
-#: icc_helfer.cpp:767 icc_betrachter.cxx:471
+#: icc_betrachter.cxx:471 icc_helfer.cpp:767
 msgid "Datum"
 msgstr ""
 
@@ -1347,15 +1344,15 @@ msgstr ""
 msgid "unbekannter Fehler beim Start eines WÃ¤chter Threads Fehler: "
 msgstr ""
 
-#: icc_main.cpp:67 icc_betrachter.cxx:522
+#: icc_betrachter.cxx:522 icc_main.cpp:67
 msgid "Yes"
 msgstr ""
 
-#: icc_main.cpp:68 icc_betrachter.cxx:388
+#: icc_betrachter.cxx:388 icc_main.cpp:68
 msgid "Files"
 msgstr ""
 
-#: icc_main.cpp:69 icc_betrachter.cxx:515
+#: icc_betrachter.cxx:515 icc_main.cpp:69
 msgid "About ICC Examin"
 msgstr ""
 
@@ -1810,7 +1807,7 @@ msgstr ""
 msgid "Anzahl Farben:"
 msgstr ""
 
-#: icc_profile_tags.cpp:417 icc_betrachter.cxx:468
+#: icc_betrachter.cxx:468 icc_profile_tags.cpp:417
 msgid "Name"
 msgstr ""
 
@@ -1987,11 +1984,11 @@ msgid "vorheriges Verzeichnis"
 msgstr ""
 
 #: icc_betrachter.cxx:457
-msgid "nchstes Verzeichnis"
+msgid "nächstes Verzeichnis"
 msgstr ""
 
 #: icc_betrachter.cxx:458
-msgid "nchsthheres Verzeichnis"
+msgid "nächsthöheres Verzeichnis"
 msgstr ""
 
 #: icc_betrachter.cxx:459
@@ -1999,7 +1996,7 @@ msgid "Auffrischen"
 msgstr ""
 
 #: icc_betrachter.cxx:460 icc_betrachter.cxx:474
-msgid "Lschen"
+msgid "Löschen"
 msgstr ""
 
 #: icc_betrachter.cxx:461
@@ -2031,7 +2028,7 @@ msgid "Typ"
 msgstr ""
 
 #: icc_betrachter.cxx:470
-msgid "Grsse"
+msgid "Grösse"
 msgstr ""
 
 #: icc_betrachter.cxx:472
@@ -2071,7 +2068,7 @@ msgid "Ordner konnte nicht erstellt werden"
 msgstr ""
 
 #: icc_betrachter.cxx:483
-msgid "konnte Datei nicht lschen"
+msgid "konnte Datei nicht löschen"
 msgstr ""
 
 #: icc_betrachter.cxx:484
@@ -2091,13 +2088,13 @@ msgid "Welches ICC Profil?"
 msgstr ""
 
 #: icc_betrachter.cxx:497 icc_betrachter.cxx:498
-msgid "Profil ffnen"
+msgid "Profil öffnen"
 msgstr ""
 
 #: icc_betrachter.cxx:499 icc_betrachter.cxx:500 icc_betrachter.cxx:501
 #: icc_betrachter.cxx:502 icc_betrachter.cxx:503 icc_betrachter.cxx:504
 #: icc_betrachter.cxx:505 icc_betrachter.cxx:506
-msgid "Messdatei ffnen"
+msgid "Messdatei öffnen"
 msgstr ""
 
 #: icc_betrachter.cxx:511
@@ -2112,7 +2109,7 @@ msgstr ""
 msgid "Close"
 msgstr ""
 
-#: icc_betrachter.cxx:551 fl_oyranos.cxx:36
+#: fl_oyranos.cxx:36 icc_betrachter.cxx:551
 msgid "Refresh"
 msgstr ""
 

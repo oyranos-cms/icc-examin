@@ -35,23 +35,46 @@ FLTK_CPPFILES = icc_helfer_fltk.cpp
 
 ifdef APPLE
   OPTS=-Wall -g -DPIC $(DEBUG)
-  LINK_FLAGS = -dynamiclib -lintl
+  LIBLINK_FLAGS = -dynamiclib -lintl
+  I18N_LIB = -lintl #-liconv
   OSX_CPP = $(OSX_CPPFILES)
   INCL=-I$(includedir) -I/usr/X11R6/include -I./ -I/usr/include/gcc/darwin/default/c++
+  REZ = /Developer/Tools/Rez -t APPL -o $(TARGET) /opt/local/include/FL/mac.r
+  MSGMERGE = msgmerge
+  XGETTEXT_OPTIONS = \
+	--keyword=gettext \
+	--keyword=_ \
+	--keyword=N_
 else
   SO = .so
   ifdef LINUX
     OPTS = -Wall  -Os -g $(DEBUG) #-fomit-frame-pointer -g
     INCL=-I$(includedir) -I/usr/X11R6/include -I./
-    LINK_FLAGS = -shared -ldl -L.
+    LIBLINK_FLAGS = -shared -ldl -L.
     LIBSONAME = lib$(TARGET)$(SO).$(VERSION_A)
     LINK_NAME = -Wl,-soname -Wl,$(LIBSONAME)
     LINK_LIB_PATH = -Wl,--rpath -Wl,$(libdir)
     LINK_SRC_PATH = -Wl,--rpath -Wl,$(srcdir)
+    MSGMERGE = msgmerge --update
+    XGETTEXT_OPTIONS = \
+	--keyword=gettext --flag=gettext:1:pass-c-format \
+	--keyword=_ --flag=_:1:pass-c-format \
+	--keyword=N_ --flag=N_:1:pass-c-format \
+	--copyright-holder='Kai-Uwe Behrmann' \
+	--msgid-bugs-address='ku.b@gmx.de' \
+	--from-code=utf-8
   else
     OPTS=-Wall -O2 -g -fpic -L.
     RM = rm -f
-    LINK_FLAGS = -shared -ldl $(ICONV) -lintl
+    LIBLINK_FLAGS = -shared -ldl $(ICONV) -lintl
+    MSGMERGE = msgmerge --update
+    XGETTEXT_OPTIONS = \
+	--keyword=gettext --flag=gettext:1:pass-c-format \
+	--keyword=_ --flag=_:1:pass-c-format \
+	--keyword=N_ --flag=N_:1:pass-c-format \
+	--copyright-holder='Kai-Uwe Behrmann' \
+	--msgid-bugs-address='ku.b@gmx.de' \
+	--from-code=utf-8
   endif
 endif
 
@@ -84,7 +107,7 @@ else
 endif
 
 LDLIBS = -L$(libdir) -L./ $(FLU_FLTK_LIBS) -licc_examin \
-	$(X11_LIBS) -llcms $(OYRANOS_LIBS) $(LCMS_LIBS) $(FTGL_LIBS)
+	$(X11_LIBS) -llcms $(OYRANOS_LIBS) $(LCMS_LIBS) $(FTGL_LIBS) $(I18N_LIB)
 
 CPP_HEADERS = \
 	agviewer.h \
@@ -202,16 +225,6 @@ OBJECTS = $(CPPFILES:.cpp=.o) $(CXXFILES:.cxx=.o)
 CLIB_OBJECTS =  $(CFILES:.c=.o)
 
 POT_FILE = po/$(TARGET).pot
-XGETTEXT_OPTIONS = \
-	--keyword=gettext --flag=gettext:1:pass-c-format \
-	--keyword=_ --flag=_:1:pass-c-format \
-	--keyword=N_ --flag=N_:1:pass-c-format \
-	--copyright-holder='Kai-Uwe Behrmann' \
-	--msgid-bugs-address='ku.b@gmx.de' \
-	--from-code=utf-8 \
-	-d $(TARGET) \
-	-o $(POT_FILE) \
-	$(SOURCES)
 
 ALL_FILES =	$(SOURCES) \
 	makefile \
@@ -220,14 +233,10 @@ ALL_FILES =	$(SOURCES) \
 	$(FONT) \
 	$(FLUID)
 
-ifdef APPLE
-REZ     = /Developer/Tools/Rez -t APPL -o $(TARGET) /opt/local/include/FL/mac.r
-endif
-
 timedir = .
 mtime   = `find $(timedir) -prune -printf %Ty%Tm%Td.%TT | sed s/://g`
 
-.SILENT:
+#.SILENT:
 
 all:	config mkdepend $(TARGET)
 
@@ -248,7 +257,7 @@ $(TARGET):	$(OBJECTS) $(LIBNAME) pot #$(LIBSONAMEFULL)
 
 $(LIBSONAMEFULL):	$(CLIB_OBJECTS)
 	echo Linking $@ ...
-	$(CC) $(OPTS) $(LINK_FLAGS) $(LINK_NAME) -o $(LIBSONAMEFULL) \
+	$(CC) $(OPTS) $(LIBLINK_FLAGS) $(LINK_NAME) -o $(LIBSONAMEFULL) \
 	$(CLIB_OBJECTS) 
 	$(REZ)
 	$(RM)  $(LIBSONAME)
@@ -281,7 +290,7 @@ pot:	$(POT_FILE)
 	   \
 	  test -f po/$${ling}.po \
         && (echo "update po/$${ling}.po ..."; \
-            msgmerge --update po/$${ling}.po $(POT_FILE)) \
+            $(MSGMERGE) po/$${ling}.po $(POT_FILE)) \
         || (echo "to start translation - create po/$${ling}.po with:"; \
             echo "        msginit -o po/$${ling}.po -i $(POT_FILE)"); \
 	  echo "update po/$${ling}.mo ..."; \
@@ -295,7 +304,11 @@ pot:	$(POT_FILE)
 	done;
 
 potfile:
-	xgettext --force-po $(XGETTEXT_OPTIONS)
+	xgettext --force-po $(XGETTEXT_OPTIONS) \
+	-d $(TARGET) \
+	-o $(POT_FILE) \
+	$(SOURCES)
+
 
 $(POT_FILE):	potfile
 
