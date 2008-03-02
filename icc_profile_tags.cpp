@@ -918,21 +918,23 @@ ICCtag::getNumbers                                 (MftChain typ)
 
     int farben_n        = icValue(ncl2->anzahl);
     int geraetefarben_n = icValue(ncl2->koord);
-    nummern .resize(farben_n * 3);
-    nummern[0] = farben_n;
-    DBG_PROG_V( nummern[0] )
-    for (int i = 0; i < farben_n; ++i)
+    if(farben_n)
     {
-      Ncl2Farbe *f = (Ncl2Farbe*) ((char*)ncl2 + 76 + // Basisgröße von Ncl2
-                     (i * (38 +                 // Basisgröße von Ncl2Farbe
-                           geraetefarben_n      // Anzahl Gerätefarben
-                           * sizeof(icUInt16Number))));//Ncl2Farbe::geraetefarbe
-      nummern[i*3 +0] = icValue(f->pcsfarbe[0])/65280.0;
-      nummern[i*3 +1] = icValue(f->pcsfarbe[1])/65535.0;
-      nummern[i*3 +2] = icValue(f->pcsfarbe[2])/65535.0;
-      //for(int j=0; j < geraetefarben_n; ++j)
-        //s << icValue(f->geraetefarbe[j]) << " ";
-
+      nummern .resize(farben_n * 3);
+      nummern[0] = farben_n;
+      DBG_PROG_V( nummern[0] )
+      for (int i = 0; i < farben_n; ++i)
+      {
+        Ncl2Farbe *f = (Ncl2Farbe*) ((char*)ncl2 + 76 + // Basisgröße von Ncl2
+                       (i * (38 +                 // Basisgröße von Ncl2Farbe
+                             geraetefarben_n      // n Ncl2Farbe::geraetefarbe
+                             * sizeof(icUInt16Number))));
+        nummern[i*3 +0] = icValue(f->pcsfarbe[0])/65280.0;
+        nummern[i*3 +1] = icValue(f->pcsfarbe[1])/65535.0;
+        nummern[i*3 +2] = icValue(f->pcsfarbe[2])/65535.0;
+        //for(int j=0; j < geraetefarben_n; ++j)
+          //s << icValue(f->geraetefarbe[j]) << " ";
+      }
     }
   }
 

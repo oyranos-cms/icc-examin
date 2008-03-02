@@ -784,6 +784,42 @@ printDatum                      (icDateTimeNumber date)
 
 namespace icc_examin_ns {
 
+#          if LINUX || APPLE
+# define   ZEIT_TEILER 10000
+#          else // WINDOWS TODO
+# define   ZEIT_TEILER = CLOCKS_PER_SEC;
+#          endif
+
+# include <sys/time.h>
+  double zeitSekunden()
+  {
+           time_t zeit_ = zeit();
+           double teiler = ZEIT_TEILER;
+           double dzeit = zeit_ / teiler;
+    return dzeit;
+  }
+  time_t zeit()
+  {
+           time_t zeit_;
+           double teiler = ZEIT_TEILER;
+#          if LINUX || APPLE
+           struct timeval tv;
+           gettimeofday( &tv, NULL );
+           double tmp_d;
+           zeit_ = tv.tv_usec/(1000000/(time_t)teiler)
+                   + (time_t)(modf( (double)tv.tv_sec / teiler,&tmp_d )
+                     * teiler*teiler);
+           DBG_THREAD_V( modf(tv.tv_sec/teiler,&tmp_d)*teiler*teiler<<","<<
+                         tv.tv_usec/(1000000/teiler) )
+#          else // WINDOWS TODO
+           zeit_ = clock();
+#          endif
+    return zeit_;
+  }
+  time_t zeitProSekunde()
+  {
+    return ZEIT_TEILER;
+  }
   void sleep(double sekunden)
   {
              timespec ts;

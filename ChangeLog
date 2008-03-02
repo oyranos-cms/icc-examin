@@ -1,3 +1,24 @@
+2005-08-26
+	* und: neue mutex_trylock nur für fremde Zweige
+	* neu: Zeit Funktionen
+	* fix: OpenGLglätten besser steuern
+	* und: Darstellungsoptionen auffrischen und neue Fenstergröße
+	* fix: nur aktive Netze werden benamt OpenGL
+	* fix: Löschen alter Hüllen
+	* fix: 0 Farben ncl2 Profilabsturz
+
+2005-08-25
+	* und: OpenGL wieder im Hauptzweig
+	* neu: Fl::wait(pause/0) sorgen für eine flüssige Oberfläche
+	* und: Zeitkoordination
+
+2005-08-24
+	* und: Zeitmessung ordnen
+
+2005-08-23
+	* neu: mutexe für das Entlaussystem (icc_utils)
+	* neu: OpenGL threads
+
 2005-08-20
 	* neu: Start esperanto in po/eo.po
 	* neu: eigenständiges "bundle" Ziel in makefile
@@ -31,6 +52,7 @@
 
 2005-08-07
 	* neu: KDE + Gnome + FLTK DnD
+	* neu: Startverzeichniss sinnvoller
 
 2005-08-06
 	* neu: osX Fl_Sys_Menu wieder entfernt, da nicht kompatibel zu fltk Menüs:

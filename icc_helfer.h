@@ -98,7 +98,9 @@ namespace icc_examin_ns {
   // Fl_Thread's sperren / freigeben
   void lock(const char *file, int line);
   void unlock(void *widget, const char *file, int line);
-
+  double zeitSekunden();
+  time_t zeit();
+  time_t zeitProSekunde();
 #if APPLE
   std::string holeBundleResource (const char* Dateiname_ohne_Endung,
                                   const char* Endung);

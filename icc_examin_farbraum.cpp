@@ -160,8 +160,11 @@ ICCexamin::farbenLese (int n,
     DBG_PROG
     p = profile[n]->getTagNumbers (profile[n]->getTagByName("ncl2"),
                                          ICCtag::MATRIX);
-    DBG_NUM_V( p[0] <<" "<< p.size() )
-    f.resize( (int)p[0] * 4);
+    if(p.size())
+    {
+      DBG_NUM_V( p[0] <<" "<< p.size() )
+      f.resize( (int)p[0] * 4);
+    }
     DBG_NUM_V( f.size() )
     for(unsigned i = 0; i < f.size(); ++i)
       f[i] = 1.0;
@@ -275,6 +278,9 @@ ICCexamin::farbraum ()
   DBG_PROG_START
   frei_ = false;
 
+  if((int)icc_betrachter->DD_farbraum -> dreiecks_netze.size() > profile.size())
+    icc_betrachter->DD_farbraum -> dreiecks_netze.resize(profile.size());
+  DBG_PROG_V( icc_betrachter->DD_farbraum -> dreiecks_netze.size() )
 
   for(int i = 0; i < profile.size(); ++i)
     farbraum(i);

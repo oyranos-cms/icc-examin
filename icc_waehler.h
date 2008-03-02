@@ -56,6 +56,7 @@ class ICCwaehlerProfil : public Fl_Pack
                   aktivieren(false);
                   icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze[parent()->find(this)].aktiv = false;
                 }
+                redraw();
                 icc_examin->icc_betrachter->DD_farbraum->draw();
                 icc_examin->icc_betrachter->DD_farbraum->flush();
                 DBG_PROG_ENDE
@@ -157,9 +158,9 @@ class ICCwaehler : public Fl_Double_Window
   for(int i = 0; i < 128; ++i)
     profile_[i] = 0;
 
-  { Fl_Scroll* o = scroll_profile = new Fl_Scroll(5, 5, 471, 165);
+  { Fl_Scroll* o = scroll_profile = new Fl_Scroll(5, 5, w()-14, h()-21);
       o->box(FL_THIN_DOWN_BOX);
-      { Fl_Pack* o = hbox = new Fl_Pack(6, 6, 469, 161);
+      { Fl_Pack* o = hbox = new Fl_Pack(6, 6, w()-16, h()-25);
         o->end();
       }   
       o->end();
@@ -196,6 +197,7 @@ class ICCwaehler : public Fl_Double_Window
   hbox->begin();
   profile_[pos] = new ICCwaehlerProfil( name, transparenz, grau, aktiv );
   hbox->end();
+  redraw();
   DBG_PROG_ENDE
 }
     void         aktiv  (int pos) {if(pos < size())

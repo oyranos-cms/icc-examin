@@ -75,8 +75,8 @@ const char* threadGettext( const char* text);
 #define DBG_MAX_THREADS 12
 extern Fl_Thread icc_thread_liste[DBG_MAX_THREADS];
 enum { THREAD_HAUPT, THREAD_GL1, THREAD_GL2, THREAD_WACHE, THREAD_LADEN };
-void/*std::string*/ dbgThreadId    (Fl_Thread id);
-int         wandelThreadId (Fl_Thread id);
+void           dbgThreadId (Fl_Thread id);
+Fl_Thread   wandelThreadId (Fl_Thread id);
 
 
 // Statusmeldungen zur Fehlersuche
@@ -85,18 +85,27 @@ extern std::ostringstream debug_s_;
 
 # ifdef HAVE_PTHREAD_H
 extern pthread_mutex_t debug_s_mutex_;
+extern Fl_Thread       debug_s_mutex_thread_;
+extern int             debug_s_mutex_threads_;
 # endif
 
 #ifdef HAVE_PTHREAD_H
 #define dbgWrite(ss) { \
-  while (pthread_mutex_trylock( &debug_s_mutex_ )) { \
+  if( debug_s_mutex_thread_ != pthread_self() || \
+      debug_s_mutex_threads_ == 0 ) \
+    while (pthread_mutex_trylock( &debug_s_mutex_ )) { \
     /*printf("%s:%d %s() debug_s_mutex_ nicht verfügbar\n",__FILE__,__LINE__,__func__);*/ \
-    icc_examin_ns::sleep(.001); \
-  } \
+      icc_examin_ns::sleep(.001); \
+    } \
+  debug_s_mutex_threads_++ ; \
+  if(debug_s_mutex_threads_ == 1) \
+    debug_s_mutex_thread_ = pthread_self(); \
   debug_s_.str(""); \
   debug_s_ << ss; \
-  dbgWriteF(/*debug_s_*/); \
- pthread_mutex_unlock( &debug_s_mutex_ ); \
+  dbgWriteF(); \
+  --debug_s_mutex_threads_; \
+  if(!debug_s_mutex_threads_) \
+    pthread_mutex_unlock( &debug_s_mutex_ ); \
 }
 #else
 #define dbgWrite(ss) { \

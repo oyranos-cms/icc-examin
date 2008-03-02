@@ -118,7 +118,7 @@ getChannel_flColours (icColorSpaceSignature color)
 void
 dbgFltkEvents(int event)
 {
-  DBG_PROG_S( "event: " << dbgFltkEvent(event) )
+  DBG_MEM_S( "event: " << dbgFltkEvent(event) )
 }
 
 std::string

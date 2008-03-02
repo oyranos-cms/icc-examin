@@ -334,7 +334,6 @@ Oyranos::rgb_test_ ()
 {
   DBG_PROG_START
   Speicher *v_block = &rgb_;
-  char* block;
 # if HAVE_OY
   if( !v_block->size() )
   { DBG_PROG_V( v_block->size() )
@@ -352,7 +351,7 @@ Oyranos::rgb_test_ ()
           if( oyCheckProfileMem( block, size, 0 ) )
             WARN_S ( _("Profil konnte nicht geladen werden") )
           else {
-            DBG_PROG_V( (int*)block <<"|"<< size <<" "<<(int) (*cmyk_) )
+            DBG_PROG_V( (int*)block <<"|"<< size <<" "<<(int) (*rgb_) )
             v_block->ladeUndFreePtr(&block, size);
           }
         }
@@ -360,7 +359,7 @@ Oyranos::rgb_test_ ()
   }
 
   if(rgb_.size())
-    DBG_NUM_S( "Standard " OY_DEFAULT_RGB_INPUT_PROFILE " Profil = "<< *rgb_ <<" "<< cmyk_.size() <<"\n" );
+    DBG_NUM_S( "Standard " OY_DEFAULT_RGB_INPUT_PROFILE " Profil = "<< *rgb_ <<" "<< rgb_.size() <<"\n" );
 # endif
   DBG_PROG_ENDE
 }
@@ -371,7 +370,6 @@ Oyranos::cmyk_test_ ()
 {
   DBG_PROG_START
   Speicher *v_block = &rgb_;
-  char* block;
 # if HAVE_OY
   if( !v_block->size() )
   { DBG_PROG_V( v_block->size() )

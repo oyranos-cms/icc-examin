@@ -329,7 +329,7 @@ Agviewer::agvHandleButton(int button, int event, int x, int y)
     DBG_PROG
 
     if (downb & FL_BUTTON1)
-      { DBG_S( "Loslassen" )
+      { DBG_NUM_S( "Loslassen" )
         if (MoveMode != FLYING) {
           AzSpin =  -dAz;
           if (AzSpin < min_azspin && AzSpin > -min_azspin)
@@ -338,9 +338,9 @@ Agviewer::agvHandleButton(int button, int event, int x, int y)
           if (ElSpin < min_elspin && ElSpin > -min_elspin)
             ElSpin = 0; 
           if(!AzSpin && !ElSpin) {
-            parent->bewegen(false); DBG_S("langsames Loslassen")
+            parent->bewegen(false); DBG_NUM_S("langsames Loslassen")
           } else {
-            parent->bewegen(true); DBG_S( "schnelles Loslassen" )
+            parent->bewegen(true); DBG_NUM_S( "schnelles Loslassen" )
           }
         }
         AdjustingAzEl = 0;

@@ -69,6 +69,7 @@ class ICCexamin : public icc_examin_ns::Beobachter
 
   private:
     bool         lade_;
+    bool         neu_laden_;
     std::vector<Speicher> speicher_vect_;
     static
 #if USE_THREADS

@@ -130,20 +130,6 @@ ICCexamin::oeffnenThread_ ()
       std::vector<ICCnetz> netze = extrahiereNetzAusVRML (d);
       if( netze.size() )
       { DBG_NUM_V( netze.size() )
-        for(unsigned int n = 0; n< netze.size(); ++n)
-        {
-          DBG_NUM_V( netze[n].punkte.size() )
-          for(unsigned int i = 0; i < 10; ++i) {
-           cout << netze[n].punkte[i].koord[0] << " ";
-           cout << netze[n].punkte[i].koord[1] << " ";
-           cout << netze[n].punkte[i].koord[2] << "  ";
-           cout << netze[n].punkte[i].farbe[0] << " ";
-           cout << netze[n].punkte[i].farbe[1] << " ";
-           cout << netze[n].punkte[i].farbe[2] << " ";
-           cout << netze[n].punkte[i].farbe[3] << endl;
-          }
-          DBG_NUM_V( netze[n].indexe.size()/4.0 )
-        }
         for(unsigned int i = 0; i < netze.size(); ++i ) {
           netze[i].transparenz = 0.6;
           netze[i].grau = false;
@@ -355,6 +341,7 @@ ICCexamin::oeffnen ()
   fortschritt(0.01);
   std::vector<std::string> profilnamen = icc_betrachter->open( profile );
   oeffnen( profilnamen );
+  neu_laden_ = true;
   DBG_PROG_ENDE
 }
 

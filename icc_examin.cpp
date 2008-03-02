@@ -48,9 +48,6 @@ using namespace icc_examin_ns;
 #include "threads.h"
 #else
 #endif
-// TODO: beseitige Hack
-static int frei_tuen = 0;
-#define frei_ frei_tuen
 
 //#define DEBUG_EXAMIN
 #ifdef DEBUG_EXAMIN
@@ -73,6 +70,7 @@ ICCexamin::ICCexamin ()
   profile.init();
 
   lade_ = false;
+  neu_laden_ = true;
   _item = -1;
   _mft_item = -1;
   farbraum_modus_ = false;
@@ -140,7 +138,9 @@ ICCexamin::start (int argc, char** argv)
 
   icc_betrachter->mft_gl->init(1);
   icc_betrachter->DD_farbraum->init(2);
-  icc_waehler_ = new  ICCwaehler(485, 186, _("Gamut selector"));
+  icc_waehler_ = new  ICCwaehler(485, 110, _("Gamut selector"));
+  icc_waehler_->resize(icc_waehler_->x(), icc_waehler_->y(),
+                       icc_waehler_->w()+20, icc_waehler_->h());
   if(!icc_waehler_) WARN_S( _("icc_waehler_ nicht reservierbar") )
   icc_waehler_->hide();
 
@@ -220,6 +220,9 @@ ICCexamin::start (int argc, char** argv)
   DBG_PROG_ENDE
 }
 
+// TODO: beseitige Hack
+static int frei_tuen = 0;
+#define frei_ frei_tuen
 
 void
 ICCexamin::zeigPrueftabelle ()
@@ -270,9 +273,11 @@ ICCexamin::nachricht( Modell* modell , int info )
           DBG_PROG_V( profile.aktuell() );
           int intent_neu = profile.profil()->intent();
           DBG_PROG_V( intent_neu <<" "<< intent_ )
-          if(intent_ != intent_neu) {
+          if(intent_ != intent_neu ||
+             neu_laden_) {
             farbraum ();
             intent_ = intent_neu;
+            neu_laden_ = false;
           } else
             farbraum (info);
           icc_examin->fortschrittThreaded(0.5);

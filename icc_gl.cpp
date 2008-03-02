@@ -74,7 +74,7 @@
 #define DBG_ICCGL_S( texte )
 #endif
 
-typedef enum {NOTALLOWED, AXES, RASTER, PUNKTE , SPEKTRUM, HELFER, UMRISSE, DL_MAX } DisplayLists;
+typedef enum {NOTALLOWED, AXES, RASTER, PUNKTE, SPEKTRUM, HELFER, UMRISSE, DL_MAX } DisplayLists;
 int glListen[DL_MAX+1];
 
 
@@ -121,6 +121,7 @@ GL_Ansicht::GL_Ansicht(int X,int Y,int W,int H)
   darf_bewegen_ = false;
   ist_bewegt_ = false;
   valid_ = false;
+  zeit_diff_ = 0;
 
   for(int i = 0; i <= DL_MAX; ++i)
     glListen[i] = 0;
@@ -257,84 +258,41 @@ void
 GL_Ansicht::bewegenStatisch_ (void* gl_a)
 {
   DBG_PROG_START
-  static int zahl = 0;
-  if(zahl)
-    WARN_S( "zu viele Nutzer" )
-  ++zahl;
   GL_Ansicht *gl_ansicht = (GL_Ansicht*)gl_a;
-
-  while(1)
-  {
-# if 0
-    if (!gl_ansicht->visible() ||
-        !icc_examin->frei() ||
-        !gl_ansicht->ist_bewegt_ ||
-        !gl_ansicht->darfBewegen() ) {
-      gl_ansicht->stupps_(false); DBG_S( "stoppen" )
-      --zahl;
-      DBG_PROG_ENDE
+  if (!gl_ansicht) {
+      WARN_S( "keine GL_Ansicht uebergeben" )
       return;
-    }
-
-           if (gl_a /*&& gl_ansicht->zeichnete_ == 0*/)
-             gl_ansicht->agv_.agvMove_();
-           else
-             DBG_S( _("agvMove_ nicht ausgefuehrt") )
-
-    double sleep_draw = 0.001;  // keine endlos Warteschlangen
-
-    if (gl_ansicht->fps_ > 25) {
-      sleep_draw = 1./20.-1./gl_ansicht->fps_;
-    }
-
-    //if(gl_ansicht->zeichnete_ > 1)
-      //sleep_draw *= 5*gl_ansicht->zeichnete_;
-    //DBG_V( sleep_draw <<" "<< gl_ansicht->zeichnete_)
-    //Fl::repeat_timeout(sleep_draw, bewegenStatisch_, gl_a);
-#   else
-    bool einmal = false;
-
-    if(!gl_ansicht->visible() || !icc_examin->frei())
-    {
-      if(gl_ansicht->ist_bewegt_) {
-        gl_ansicht->stupps_(false);
-      } else DBG_PROG;
-    } else if(!gl_ansicht->ist_bewegt_ && gl_ansicht->darf_bewegen_) {
-      gl_ansicht->stupps_(true);
-    } else if(gl_ansicht->ist_bewegt_ && !gl_ansicht->darf_bewegen_) {
-      einmal = true;
-    }
-
-    if (gl_ansicht &&
-        gl_ansicht->ist_bewegt_)
-      gl_ansicht->agv_.agvMove_();
-    else
-      DBG_PROG_S( _("agvMove_ nicht ausgefuehrt") );
-
-    //static double zeichnen_schlaf_alt = 0.001;
-    double zeichnen_schlaf = 0.001;  // keine endlos Warteschlangen
-
-#   endif
-    if (gl_ansicht->zeit_diff_ < 1./25.) {
-      zeichnen_schlaf = 1./25. - /*1./ */gl_ansicht->zeit_diff_;
-    }
-
-    DBG_PROG_V( zeichnen_schlaf )
-    if(gl_ansicht->ist_bewegt_) {
-      Fl::wait(zeichnen_schlaf);
-    //icc_examin_ns::sleep(zeichnen_schlaf);
-      gl_ansicht->redraw(); DBG_V( "Pause" )
-      //gl_ansicht->zeichnen();;
-    } else {
-      // kurze Pause 
-      Fl::wait(0.05); DBG_V( "Pause" )
-    }
-
-    if (einmal)
-      gl_ansicht->stupps_(false);
-
   }
-//  if(gl_ansicht->ist_bewegt_)
+
+  static int zahl = 0;
+  if(zahl) {
+    WARN_S( "zu viele Nutzer: " << zahl )
+    return;
+  }
+  ++zahl;
+
+  bool lauf = true;
+  while(lauf)
+  {
+    if(!gl_ansicht->visible() || !icc_examin->frei() ||
+       !gl_ansicht->ist_bewegt_ || !gl_ansicht->darf_bewegen_) {
+      gl_ansicht->stupps_(false);
+      lauf = false;
+      DBG_PROG_S( _("redraw nicht ausgefuehrt") )
+    } else {
+      gl_ansicht->agv_.agvMove_();
+      double zeichnen_schlaf = 0;  // keine endlos Warteschlangen
+
+      if (gl_ansicht->zeit_diff_ < 1./25.) {
+        zeichnen_schlaf = 1./25. - gl_ansicht->zeit_diff_;
+      }
+
+      gl_ansicht->redraw();
+      // kurze Pause 
+      Fl::wait(zeichnen_schlaf);
+      DBG_PROG_S( "Pause " << zeichnen_schlaf <<" "<< gl_ansicht->ist_bewegt_ )
+    }
+  }
   
   --zahl;
   DBG_PROG_ENDE
@@ -346,8 +304,9 @@ GL_Ansicht::stupps_ (bool lauf)
   DBG_PROG_START
   ist_bewegt_ = lauf;
   if(lauf) {
-    //Fl::add_timeout(0.05, bewegenStatisch_,this);
     DBG_PROG_S( "anstuppsen" )
+    if(darf_bewegen_)
+      Fl::add_timeout(0.05, bewegenStatisch_,this);
   } else {
     DBG_PROG_S( "stoppen" )
   }
@@ -380,7 +339,8 @@ void
 GL_Ansicht::draw()
 {
   DBG_PROG_START
-  DBG_PROG_S( "draw() Eintritt" )
+  DBG_PROG_S( "draw() Eintritt ist_bewegt_|darf_bewegen_: "
+               << ist_bewegt_ << "|" << darf_bewegen_ )
   int thread = wandelThreadId(pthread_self());
   if(thread != THREAD_HAUPT) {
     WARN_S( ": falscher Thread" );
@@ -388,19 +348,19 @@ GL_Ansicht::draw()
     return;
   }
 
-# if 0
   if(!visible() || !icc_examin->frei()) {
     if(ist_bewegt_) {
-      stupps_(false); DBG_S( "stoppen" )
+      stupps_(false); DBG_NUM_S( "stoppen" )
     } else DBG;
     DBG_PROG_ENDE
     return;
   } else if(!ist_bewegt_ && darf_bewegen_) {
-    stupps_(true); DBG_S( "anstuppsen" )
+    stupps_(true); DBG_NUM_S( "anstuppsen" )
   } else if(ist_bewegt_ && !darf_bewegen_) {
-    stupps_(false); DBG_S( "stoppen" )
+    stupps_(false); DBG_NUM_S( "stoppen" )
   }
 
+# if 0
   if(!valid()) {
     GLinit_();  DBG_PROG
     fensterForm();
@@ -422,10 +382,8 @@ GL_Ansicht::draw()
       }
     }
 # else
-  if(valid())
+  if(!valid())
     valid_ = false;
-    
-  stupps_ (true);
 # endif
 
   zeichnen();
@@ -1748,6 +1706,8 @@ GL_Ansicht::zeichnen()
     valid_ = true;
   }
 
+  double rechen_zeit = icc_examin_ns::zeitSekunden();
+
   // aktualisiere Schatten
   static char aktive[64];
   static char grau[64];
@@ -1788,52 +1748,6 @@ GL_Ansicht::zeichnen()
     } else {
       glEnable(GL_BLEND);
       glEnable(GL_LINE_SMOOTH);
-    }
-
-    // Farbkanalname
-    // Text
-    {
-      glPushMatrix();
-       glLoadIdentity();
-       glOrtho(0,w(),0,h(),-10.0,10.0);
-
-       FARBE(textfarbe[0],textfarbe[1],textfarbe[2])
-
-       glTranslatef(5,-12,0/*8.8 - schnitttiefe*3*/);
-
-       if(id() == 1) {
-         kanalname.append(_("Channel"));
-         kanalname.append(": ");
-         kanalname.append(kanalName());
-
-#        ifdef HAVE_FTGL
-         if(ortho_font)
-           glRasterPos3f(0,ortho_font->LineHeight()/5+20,9.99);
-#        endif
-         ZeichneOText (ortho_font, scal, kanalname.c_str()) 
-       } else {
-         for (unsigned int i=0;
-                i < dreiecks_netze.size();
-                  ++i)
-         {
-           std::string text;
-           text = dreiecks_netze[i].name.c_str();
-           DBG_PROG_V( dreiecks_netze[i].name )
-#          ifdef HAVE_FTGL
-           if(ortho_font)
-             glRasterPos2f(0, 20 + ortho_font->LineHeight()
-                                   / 1.5 * (dreiecks_netze.size()-i-1) );
-#          endif
-           ZeichneOText (ortho_font, scal, text.c_str())
-         }
-       }
-
-       glEnable(GL_TEXTURE_2D);
-       glEnable(GL_LIGHTING);
-      glPopMatrix();
-      if(!ist_bewegt_ && maus_steht) {
-        //redraw();
-      }
     }
 
 
@@ -1993,8 +1907,8 @@ GL_Ansicht::zeichnen()
                   }
 
            bool strich_neu = false;
-           if(zeit_diff_ > 1./10. &&
-              !wiederholen)
+           rechen_zeit = icc_examin_ns::zeitSekunden() - rechen_zeit;
+           if(rechen_zeit > 1./15. )
            {
              if(smooth)
              {
@@ -2002,8 +1916,7 @@ GL_Ansicht::zeichnen()
                strich_neu = true;
              }
            }
-           if(zeit_diff_ > 1./100. &&
-              !wiederholen && ist_bewegt_)
+           if(rechen_zeit < 1./40.)
            {
              if(!smooth)
              {
@@ -2011,66 +1924,24 @@ GL_Ansicht::zeichnen()
                strich_neu = true;
              }
            }
-
-           if(strich_neu || wiederholen) {
-             bool smooth_neu = false;
-             if(wiederholen && !smooth) {
-               smooth = 1;
-             }
-             //zeigeSpektralband_();
-             //garnieren_();
-             if(smooth_neu)
-               smooth = 0;
-             wiederholen = 0;
+           if(strich_neu) {
+             zeigeSpektralband_();
+             garnieren_();
            }
 
            // Geschwindigkeit
-
-           GL_Ansicht *gl_ansicht = this;
-           //{
-           static time_t zeit_alt = 0;
-           time_t zeit;
-           double teiler;
-#          if LINUX || APPLE
-           struct timeval tv;
-           teiler = 10000.;
-           gettimeofday( &tv, NULL );
-           double tmp_d;
-           //zeit = tv.tv_usec/(1000000/teiler) + modf(tv.tv_sec/teiler,&tmp_d)*teiler*teiler;
-           //DBG_V( modf(tv.tv_sec/teiler,&tmp_d)*teiler*teiler<<","<<tv.tv_usec/(1000000/teiler) )
-           zeit = tv.tv_usec/(1000000/teiler)
-                  + (time_t)(modf((double)tv.tv_sec/teiler,&tmp_d)*teiler*teiler);
-           DBG_THREAD_V( modf(tv.tv_sec/teiler,&tmp_d)*teiler*teiler<<","<<tv.tv_usec/(1000000/teiler) )
-#          else // WINDOWS TODO
-           teiler = CLOCKS_PER_SEC;
-           zeit = clock();
-#          endif
-           time_t dz = zeit - zeit_alt;
-           //static double zeit_sum = 1.0;
-           //static int n = 90;
-           //DBG_V( zeit_alt<<" "<<dz )
-           double dzeit = dz / teiler;
+           static double zeit_alt = 0;
+           double zeit = icc_examin_ns::zeitSekunden();
+           double dzeit = zeit - zeit_alt;
            if(dzeit < 0.001)
              dzeit = 0.001;
-           //zeit_sum += dzeit;
-           gl_ansicht->zeit_diff_ = dzeit;//n / zeit_sum;
-#          if 0
-           DBG_THREAD_V( n<<" "<<dzeit<<" "<<zeit_sum<<" "<<zeit_diff_ )
-           // Messbereichskorrektur
-           if(n > 1/dzeit)
-           {
-             n = (int)(0.6*1/dzeit);
-             zeit_sum = 1./gl_ansicht->fps_ * n;
-           } else
-             ++n;
-#          endif
+           zeit_diff_ = dzeit;;
 
            zeit_alt = zeit;
-           sprintf(gl_ansicht->t, "zeit_diff_:%01f tv:%d,%d zeit:%ld"/* n:%d*/" dzeit:%f",// zeit_sum:%f",
-                   gl_ansicht->zeit_diff_, tv.tv_sec, tv.tv_usec, zeit, /*n,*/ dzeit/*, zeit_sum*/);
-           DBG_PROG_V( gl_ansicht->t )
+           sprintf(t, "zeit_diff_:%01f zeit:%f dzeit:%f",
+                   zeit_diff_, zeit, dzeit);
+           DBG_PROG_V( t )
 
-           //} else
 
 #          ifdef HAVE_FTGL
            if(ortho_font)
@@ -2084,6 +1955,55 @@ GL_Ansicht::zeichnen()
              maus_steht = true;
            maus_x_alt = maus_x_;
            maus_y_alt = maus_y_;
+
+    // Farbkanalname
+    // Text
+    {
+      glPushMatrix();
+       glLoadIdentity();
+       glMatrixMode(GL_PROJECTION);
+       glLoadIdentity();
+       glOrtho(0,w(),0,h(),-10.0,10.0);
+
+       FARBE(textfarbe[0],textfarbe[1],textfarbe[2])
+
+       glTranslatef(5,-12,0/*8.8 - schnitttiefe*3*/);
+
+       if(id() == 1) {
+         kanalname.append(_("Channel"));
+         kanalname.append(": ");
+         kanalname.append(kanalName());
+
+#        ifdef HAVE_FTGL
+         if(ortho_font)
+           glRasterPos3f(0,ortho_font->LineHeight()/5+20,9.99);
+#        endif
+         ZeichneOText (ortho_font, scal, kanalname.c_str()) 
+       } else {
+         for (unsigned int i=0;
+                i < dreiecks_netze.size();
+                  ++i)
+         {
+           std::string text;
+           text = dreiecks_netze[i].name.c_str();
+           DBG_PROG_V( dreiecks_netze[i].name )
+#          ifdef HAVE_FTGL
+           if(ortho_font)
+             glRasterPos2f(0, 20 + ortho_font->LineHeight()
+                                   / 1.5 * (dreiecks_netze.size()-i-1) );
+#          endif
+           if(dreiecks_netze[i].aktiv)
+             ZeichneOText (ortho_font, scal, text.c_str())
+         }
+       }
+
+       glEnable(GL_TEXTURE_2D);
+       glEnable(GL_LIGHTING);
+      glPopMatrix();
+      if(!ist_bewegt_ && maus_steht) {
+        //redraw();
+      }
+    }
 
 #   if 0
     glFlush();
@@ -2181,8 +2101,11 @@ void
 GL_Ansicht::hineinNetze       (const std::vector<ICCnetz> & d_n)
 {
   DBG_PROG_START
-  if(d_n.size())
+  if(d_n.size()) {
+    dreiecks_netze.resize(0);
+    DBG_V( dreiecks_netze.size() )
     dreiecks_netze = d_n;
+  }
 
   DBG_NUM_V( dreiecks_netze.size() )
   for(unsigned i = 0; i < dreiecks_netze.size(); ++i)
