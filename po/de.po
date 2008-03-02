@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2007-02-09 22:23+0100\n"
+"POT-Creation-Date: 2007-02-12 11:43+0100\n"
 "PO-Revision-Date: 2005-08-13 17:35+0200\n"
 "Last-Translator: Kai-Uwe Behrmann\n"
 "Language-Team:  <ku.b@gmx.de>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: vim 6.0\n"
 
-#: agviewer.cpp:313 icc_gl.cpp:2578 icc_gl.cpp:2597 icc_gl.cpp:2716
+#: agviewer.cpp:313 icc_gl.cpp:2577 icc_gl.cpp:2596 icc_gl.cpp:2715
 msgid "left-/middle-/right mouse button -> rotate/cut/menu"
 msgstr "linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menue"
 
@@ -25,8 +25,8 @@ msgstr "linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menue"
 msgid "Pause"
 msgstr "Pause"
 
-#: agviewer.cpp:350 agviewer.cpp:358 icc_gl.cpp:2682 icc_gl.cpp:2693
-#: icc_gl.cpp:2698 icc_gl.cpp:2703
+#: agviewer.cpp:350 agviewer.cpp:358 icc_gl.cpp:2681 icc_gl.cpp:2692
+#: icc_gl.cpp:2697 icc_gl.cpp:2702
 msgid "left mouse button -> go back"
 msgstr "linke Maustaste -> zurueck"
 
@@ -141,7 +141,7 @@ msgstr "Grün"
 msgid "Blue"
 msgstr "Blau"
 
-#: icc_draw.cpp:664 icc_gl.cpp:1989 icc_helfer.cpp:392 icc_waehler.h:131
+#: icc_draw.cpp:664 icc_gl.cpp:1988 icc_helfer.cpp:392 icc_waehler.h:131
 msgid "Gray"
 msgstr "Grau"
 
@@ -157,7 +157,7 @@ msgstr ""
 msgid "Yellow"
 msgstr "Gelb"
 
-#: icc_draw.cpp:677 icc_gl.cpp:1991 icc_helfer.cpp:452 icc_helfer.cpp:462
+#: icc_draw.cpp:677 icc_gl.cpp:1990 icc_helfer.cpp:452 icc_helfer.cpp:462
 msgid "Black"
 msgstr "Schwarz"
 
@@ -195,13 +195,13 @@ msgid "CIE *L"
 msgstr ""
 
 #: icc_draw.cpp:695 icc_examin_farbraum.cpp:270 icc_examin_io.cpp:214
-#: icc_gl.cpp:952 icc_gl.cpp:1026 icc_gl.cpp:1052 icc_gl.cpp:1060
+#: icc_gl.cpp:951 icc_gl.cpp:1025 icc_gl.cpp:1051 icc_gl.cpp:1059
 #: icc_helfer.cpp:438
 msgid "CIE *a"
 msgstr ""
 
 #: icc_draw.cpp:697 icc_examin_farbraum.cpp:271 icc_examin_io.cpp:215
-#: icc_gl.cpp:965 icc_gl.cpp:1068 icc_gl.cpp:1088 icc_gl.cpp:1095
+#: icc_gl.cpp:964 icc_gl.cpp:1067 icc_gl.cpp:1087 icc_gl.cpp:1094
 #: icc_helfer.cpp:439
 msgid "CIE *b"
 msgstr ""
@@ -355,117 +355,117 @@ msgstr "Information:"
 msgid "Yes"
 msgstr "Ja"
 
-#: icc_gl.cpp:706 icc_gl.cpp:709 icc_gl.cpp:712 icc_gl.cpp:718 icc_gl.cpp:722
-#: icc_gl.cpp:737
+#: icc_gl.cpp:705 icc_gl.cpp:708 icc_gl.cpp:711 icc_gl.cpp:717 icc_gl.cpp:721
+#: icc_gl.cpp:736
 msgid "Could not open font in:"
 msgstr "Konnte Font nicht öffnen in:"
 
-#: icc_gl.cpp:829
+#: icc_gl.cpp:828
 #, c-format
 msgid "0,0,0"
 msgstr ""
 
-#: icc_gl.cpp:1963 icc_gl.cpp:1973 icc_gl.cpp:1975 icc_gl.cpp:1977
+#: icc_gl.cpp:1962 icc_gl.cpp:1972 icc_gl.cpp:1974 icc_gl.cpp:1976
 msgid "Slice"
 msgstr "Schnitt"
 
-#: icc_gl.cpp:1964
+#: icc_gl.cpp:1963
 msgid "Rotate around slice"
 msgstr "Drehen um Schnitt"
 
-#: icc_gl.cpp:1979
+#: icc_gl.cpp:1978
 msgid "Rotate around"
 msgstr "Drehen um"
 
-#: icc_gl.cpp:1979
+#: icc_gl.cpp:1978
 msgid "axis"
 msgstr "Achse"
 
-#: icc_gl.cpp:1984
+#: icc_gl.cpp:1983
 msgid "Slice plane"
 msgstr "Querschnitt"
 
-#: icc_gl.cpp:1987
+#: icc_gl.cpp:1986
 msgid "White"
 msgstr "Weiß"
 
-#: icc_gl.cpp:1988
+#: icc_gl.cpp:1987
 msgid "Light gray"
 msgstr "Hellgrau"
 
-#: icc_gl.cpp:1990
+#: icc_gl.cpp:1989
 msgid "Dark gray"
 msgstr "Dunkelgrau"
 
-#: icc_gl.cpp:1994
+#: icc_gl.cpp:1993
 msgid "Background colour"
 msgstr "Hintergrundfarbe"
 
-#: icc_gl.cpp:1999
+#: icc_gl.cpp:1998
 msgid "gray"
 msgstr "grau"
 
-#: icc_gl.cpp:2000
+#: icc_gl.cpp:1999
 msgid "coloured"
 msgstr "farbig"
 
-#: icc_gl.cpp:2001
+#: icc_gl.cpp:2000
 msgid "high contrast"
 msgstr "kontrastreich"
 
-#: icc_gl.cpp:2002
+#: icc_gl.cpp:2001
 msgid "shells"
 msgstr "schalen"
 
-#: icc_gl.cpp:2003
+#: icc_gl.cpp:2002
 msgid "Colour line"
 msgstr "Farbkreis"
 
-#: icc_gl.cpp:2008
+#: icc_gl.cpp:2007
 msgid "Sphere 1dE"
 msgstr "Kugel 1dE"
 
-#: icc_gl.cpp:2009
+#: icc_gl.cpp:2008
 msgid "Sphere 2dE"
 msgstr "Kugel 2dE"
 
-#: icc_gl.cpp:2010
+#: icc_gl.cpp:2009
 msgid "Sphere 4dE"
 msgstr "Kugel 4dE"
 
-#: icc_gl.cpp:2013
+#: icc_gl.cpp:2012
 msgid "Star"
 msgstr "Stern"
 
-#: icc_gl.cpp:2016
+#: icc_gl.cpp:2015
 msgid "Point"
 msgstr "Punkt"
 
-#: icc_gl.cpp:2019
+#: icc_gl.cpp:2018
 msgid "without markers"
 msgstr "ohne Farborte"
 
-#: icc_gl.cpp:2020
+#: icc_gl.cpp:2019
 msgid "Spektral line"
 msgstr "Spektrallinie"
 
-#: icc_gl.cpp:2023
+#: icc_gl.cpp:2022
 msgid "Texts"
 msgstr "Texte"
 
-#: icc_gl.cpp:2025
+#: icc_gl.cpp:2024
 msgid "Texts/Arrows on/off"
 msgstr "Texte/Pfeile an/aus"
 
-#: icc_gl.cpp:2027
+#: icc_gl.cpp:2026
 msgid "Illustration"
 msgstr "Darstellung"
 
-#: icc_gl.cpp:2300
+#: icc_gl.cpp:2299
 msgid "Pos"
 msgstr ""
 
-#: icc_gl.cpp:2384 icc_profile_tags.cpp:302
+#: icc_gl.cpp:2383 icc_profile_tags.cpp:302
 msgid "Channel"
 msgstr "Kanal"
 
