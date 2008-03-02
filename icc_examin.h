@@ -32,9 +32,6 @@
 
 #include <string>
 #include <vector>
-#include "icc_utils.h"
-#include "icc_gl.h"
-
 
 //#include "icc_betrachter.h"
 class ICCfltkBetrachter;
@@ -50,9 +47,10 @@ class ICCexamin
     void         oeffnen (std::vector<std::string> dateinamen);
     void         oeffnen ();	// interaktiv
 
-    std::string  waehleTag (int item);
-    void         waehleMft (int item);
+    std::string  selectTag (int item);
+    int          wiederholen;
     int          kurve_umkehren;
+    void         drawKurve   (int x,int y,int w,int h);
 
     std::vector<std::vector<double> > kurven;
     std::vector<double> punkte;
@@ -65,26 +63,6 @@ public:
 //  private:
     ICCfltkBetrachter* icc_betrachter;
     std::string statlabel;
-
-private:
-    int _gl_ansicht;
-    std::vector<GL_Ansicht*> _gl_ansichten;
-public:
-    void glAnsicht (GL_Ansicht* dazu) { DBG_PROG_START bool vorhanden = false;
-                              for (unsigned i = 0; i < _gl_ansichten.size();i++)
-                                if (dazu == _gl_ansichten[i]) {
-                                  vorhanden = true;
-                                  _gl_ansicht = i;
-                                }
-                              if(!vorhanden) {
-                                _gl_ansicht = _gl_ansichten.size();
-                                _gl_ansichten.resize( _gl_ansicht + 1 );
-                                _gl_ansichten[_gl_ansicht] = dazu; DBG_PROG_ENDE
-                              }
-                            }
-    GL_Ansicht* glAnsicht() { if(_gl_ansicht>=0)
-                                return _gl_ansichten[_gl_ansicht];
-                              else return 0; }
 };
 
 extern ICCexamin *icc_examin;

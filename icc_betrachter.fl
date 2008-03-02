@@ -234,10 +234,9 @@ class TagBrowser {: {public Fl_Hold_Browser}
   item -= 6;
   cout << item << ". Tag "; DBG_PROG
   
-  std::string text = icc_examin->waehleTag(item);
+  std::string text = icc_examin->selectTag(item);
   if (text != "")
-    selectedTagName = text;
-  DBG_PROG_V( text );} {}
+    selectedTagName = text;} {}
     code DBG_PROG_ENDE {}
   }
 } 
@@ -270,10 +269,10 @@ class TagTexts {: {public Fl_Hold_Browser}
   }
 } 
 
-class TagDrawings {: {public Fl_Widget}
+class TagDrawings {open : {public Fl_Widget}
 } {
-  decl {int X; int Y; int W; int H;} {}
-  decl {int wiederholen;} {public
+  decl {int X; int Y; int W; int H; bool kurven;} {}
+  decl {//int wiederholen;} {public
   }
   Function {TagDrawings(int X,int Y,int W,int H) : Fl_Widget(X,Y,W,H), X(X), Y(Y), W(W), H(H)} {open
   } {}
@@ -281,24 +280,25 @@ class TagDrawings {: {public Fl_Widget}
   } {
     code DBG_PROG_START {}
     code {// Kurven oder Punkte malen
-  DBG_PROG_S( icc_examin->kurven.size() <<" "<< icc_examin->punkte.size() )
+  DBG_PROG_S( kurven )
 
   //DBG_PROG_V( wiederholen )
 
-  if (icc_examin->kurven.size())
-  { DBG_PROG
-    wiederholen = false;
-    draw_kurve (x(),y(),w(),h());
-  } else if (icc_examin->punkte.size()) {
-    if (wiederholen)
+  if (kurven)
+  {
+    //wiederholen = false;
+    icc_examin->drawKurve   (x(),y(),w(),h());
+  } /*else {
+    if (icc_examin->wiederholen)
     { draw_cie_shoe(x(),y(),w(),h(),false);
       Fl::add_timeout( 1.2, (void(*)(void*))d_haendler ,(void*)this);
     } else {
       draw_cie_shoe(x(),y(),w(),h(),true);
     }
-    wiederholen = true;
-  }
-  DBG_PROG} {}
+    icc_examin->wiederholen = true;
+  }*/
+  DBG_PROG} {selected
+    }
     code DBG_PROG_ENDE {}
   }
   Function {hinein_punkt(std::vector<double> vect, std::vector<std::string> txt)} {open
@@ -306,7 +306,9 @@ class TagDrawings {: {public Fl_Widget}
     code DBG_PROG_START {}
     code {//CIExyY aus tag_browser anzeigen
 
-  wiederholen = false;
+  kurven = false;
+  icc_examin->wiederholen = false;
+
   icc_examin->icc_betrachter->zeig_mich(this);} {}
     code DBG_PROG_ENDE {}
   }
@@ -315,7 +317,8 @@ class TagDrawings {: {public Fl_Widget}
     code DBG_PROG_START {}
     code {//Kurve aus tag_browser anzeigen
 
-  wiederholen = false;
+  kurven = true;
+  icc_examin->wiederholen = false;
 
   icc_examin->icc_betrachter->zeig_mich(this);
   DBG_PROG} {}
@@ -333,14 +336,12 @@ decl {\#include <FL/fl_draw.H>} {}
 
 class MftChoice {: {public Fl_Choice}
 } {
-  decl {int X; int Y; int W; int H; char* start_info; char typ[5];} {}
-  decl {std::vector<std::string> Info; int gewaehlter_eintrag;} {public
-  }
+  decl {int X; int Y; int W; int H; char* start_info; char typ[5]; std::vector<std::string> Info; int gewaehlter_eintrag;} {}
   Function {MftChoice(int X,int Y,int W,int H,char* start_info) : Fl_Choice(X,Y,W,H,start_info), X(X), Y(Y), W(W), H(H)} {open
   } {
     code {gewaehlter_eintrag = 0;} {}
   }
-  Function {profil_tag(int _tag, std::string text)} {open
+  Function {profil_tag(int _tag)} {open
   } {
     code DBG_PROG_START {}
     code {icc_examin->icc_betrachter->tag_nummer = _tag;
@@ -348,12 +349,10 @@ class MftChoice {: {public Fl_Choice}
 // = profile[0].printTagInfo(icc_examin->icc_betrachter->tag_nummer);
     sprintf (&typ[0], profile[0].printTagInfo(icc_examin->icc_betrachter->tag_nummer)[1].c_str());
 
-    DBG_PROG_V( profile[0].printTagInfo(icc_examin->icc_betrachter->tag_nummer)[1].c_str() )
-
-    Info = zeilenNachVector (text);
+    Info = zeilenNachVector (profile[0].getTagText (icc_examin->icc_betrachter->tag_nummer)[0]);
 
     if ( strstr (typ,"mft2") != 0 )
-    { DBG_PROG
+    {
       Fl_Menu_Item *mft_menue = (Fl_Menu_Item *)calloc (sizeof (Fl_Menu_Item), 6);
 
       mft_menue[0].text = Info[0].c_str();
@@ -363,7 +362,7 @@ class MftChoice {: {public Fl_Choice}
       mft_menue[4].text = Info[7].c_str();
       mft_menue[5].text = 0;
       icc_examin->icc_betrachter->mft_choice->menu(mft_menue);
-    } else { DBG_PROG
+    } else {
       Fl_Menu_Item *mft_menue = (Fl_Menu_Item *)calloc (sizeof (Fl_Menu_Item), 6);
 
       mft_menue[0].text = Info[0].c_str();
@@ -398,11 +397,6 @@ class MftChoice {: {public Fl_Choice}
     DBG_PROG_S("%s \\n" << m->label())
   }
 
-  icc_examin->waehleMft( mw->value() );
-
-  DBG_PROG
-
-\#if 0
   std::stringstream s;
   std::vector<double> zahlen;
 
@@ -442,14 +436,12 @@ class MftChoice {: {public Fl_Choice}
     break;
   }
 
-  gewaehlter_eintrag = mw->value();
-\#endif} {}
+  gewaehlter_eintrag = mw->value();} {}
     code DBG_PROG_ENDE {}
   }
 } 
 
-class ICCfltkBetrachter {open
-} {
+class ICCfltkBetrachter {} {
   decl {bool setTitleUrl;
 
  int px,py,pw,ph;
@@ -550,7 +542,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window details {
       label {ICC Details} open
-      xywh {643 270 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
+      xywh {633 222 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
     } {
       Fl_Group {} {open
         xywh {0 0 385 520}
@@ -688,7 +680,7 @@ class ICCfltkBetrachter {open
   DBG_PROG_S (m->value())
   if (m->value()) {
     group_histogram->show();
-    DD_histogram->zeigen();
+    DD_histogram->show();
     inspekt->hide();
     examin->hide();
   } else {
@@ -696,8 +688,8 @@ class ICCfltkBetrachter {open
     inspekt->hide();
     examin->show();
     tag_text->inspekt_topline = inspekt_html->topline();
-  }} selected
-              tooltip {Mess- und Profilwerte bildlich und in Zahlen dargestellt; Ctrl+b} xywh {50 50 100 20} type Toggle shortcut 0x40068 divider
+  }}
+              tooltip {Mess- und Profilwerte bildlich und in Zahlen dargestellt; Ctrl+b} xywh {50 50 100 20} type Toggle shortcut 0x40062 divider
             }
           }
           submenu menu_hilfe {
@@ -787,8 +779,6 @@ ueber_html->value(getUeberHtml().c_str());}
         } {
           Fl_Box DD_histogram {
             xywh {0 25 385 470}
-            code0 {o->hide();}
-            class GL_Ansicht
           }
         }
         Fl_Group {} {open
@@ -816,11 +806,12 @@ ueber_html->value(getUeberHtml().c_str());}
   Fl_File_Icon::load_system_icons();} {}
     code DBG_PROG_ENDE {}
   }
-  Function {run()} {} {
+  Function {run()} {open
+  } {
     code DBG_PROG_START {}
     code {DBG_PROG_ENDE;  Fl::run();} {}
   }
-  Function {open(std::vector<std::string> dateinamen)} {return_type {std::vector<std::string>}
+  Function {open(std::vector<std::string> dateinamen)} {open return_type {std::vector<std::string>}
   } {
     code DBG_PROG_START {}
     code {\#include "icc_vrml.h"

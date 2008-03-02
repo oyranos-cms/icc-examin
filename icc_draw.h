@@ -32,7 +32,8 @@
 
 #include <vector>
 
-void draw_kurve    (int X, int Y, int W, int H);
+void draw_kurve    (int X, int Y, int W, int H,
+                    bool tauschen);
 
 void draw_cie_shoe (int X, int Y, int W, int H,
                     int  repeated);

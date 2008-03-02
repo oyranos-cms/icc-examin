@@ -32,8 +32,6 @@
 #define ICC_GL_H
 #include <vector>
 
-#include "agviewer.h"
-
 extern int kanal;
 extern bool duenn;
 

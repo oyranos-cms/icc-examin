@@ -65,7 +65,6 @@ ICCheader::load (void *data)
     for (int i = 0; i < 128; i++)
       ((char*)&header)[i] = 0;
     valid = false;
-    DBG_PROG_ENDE
     return;
   }
 
@@ -347,7 +346,7 @@ ICCtag::getText                     (void)
 
   if (text == "sig") {
 
-    if (_size < 12) { DBG_PROG_ENDE return texte; }
+    if (_size < 12) return texte;
     icTechnologySignature tech;
     memcpy (&tech, &_data[8] , 4);
     text = getSigTechnology( (icTechnologySignature) icValue(tech) );
@@ -355,7 +354,7 @@ ICCtag::getText                     (void)
 
   } else if (text == "dtim") {
 
-    if (_size < 20) { DBG_PROG_ENDE return texte; }
+    if (_size < 20) return texte;
     DBG_PROG
     icDateTimeNumber date;
     memcpy (&date, &_data[8] , 12);
@@ -363,7 +362,7 @@ ICCtag::getText                     (void)
 
   } else if (text == "meas") {
 
-    if (_size < 36) { DBG_PROG_ENDE return texte; }
+    if (_size < 36) return texte;
     std::stringstream s;
     icMeasurement meas;
     memcpy (&meas, &_data[8] , 28);
@@ -1262,7 +1261,7 @@ ICCprofile::printTags            ()
   std::string text;
   std::stringstream s;
 
-  if (!tags.size()) { DBG_PROG_ENDE
+  if (!tags.size()) { DBG_MEM
     return StringList;
   } DBG_MEM
 
@@ -1319,9 +1318,7 @@ ICCprofile::getTagChannelNames                          (int item,
   // Prüfen
   if (tags[item].getTypName() != "mft2"
    && tags[item].getTypName() != "mft1")
-  { DBG_PROG_ENDE
     return v;
-  }
 
   DBG_PROG_ENDE
   return tags.at(item).getText(typ);
@@ -1332,7 +1329,8 @@ ICCprofile::getTagDescription                    (int item)
 { DBG_PROG_START
   // Prüfen
   std::vector<std::string> leer;
-  if (tags[item].getTypName() != "desc") { DBG_PROG_ENDE return leer; }
+  if (tags[item].getTypName() != "desc")
+    return leer;
 
   DBG_PROG_ENDE
   return tags.at(item).getDescription();
@@ -1430,7 +1428,7 @@ ICCprofile::getTagNumbers                        (int item,ICCtag::MftChain typ)
 int
 ICCprofile::getTagByName            (std::string name)
 { DBG_PROG_START
-  if (!tags.size()) { DBG_PROG_ENDE 
+  if (!tags.size()) { DBG_MEM
     return -1;
   } DBG_MEM
 
@@ -1737,7 +1735,8 @@ ICCprofile::saveMemToFile (char* filename, char *block, int size)
 void
 ICCprofile::removeTag (int item)
 { DBG_PROG_START
-  if (item >= (int)tags.size() ) { DBG_PROG_ENDE return; }
+  if (item >= (int)tags.size() )
+    return;
 
   std::vector <ICCtag> t(tags.size()-1); DBG_PROG
   DBG_PROG_V (tags.size())

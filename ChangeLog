@@ -1,8 +1,4 @@
 
-2004-12-28
-	* und: Tag- und Mft-auswahl von icc_betrachter -> icc_examin
-	* fix: vcgt Kurven umkehren
-
 2004-12-27
 	* neu: ICCfltkBetrachter als fltk Klasse geformt (Fenster und Garnitur)
 	* und: Öffnen nach icc_examin verschoben
@@ -10,7 +6,7 @@
 	* neu: ICCfltkBetrachter: aus start() wurden init() und eine run()
 	* und: agv: Tastatur Signale ausgeschalten
 	* und: icc_betrachter: globale Variablen -> ICCfltkBetrachter
-	* und: icc_draw() Variablen -> icc_examin
+	* und: icc_draw() Variablen -> icc_examin TODO
 
 2004-12-14
 	* fix: mft GL Untermenü: Kanalnamen mit jedem Tagwechsel aktualisiert

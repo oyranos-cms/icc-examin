@@ -11,7 +11,7 @@ libdir		= ${exec_prefix}/lib
 mandir		= ${prefix}/man
 srcdir		= .
 
-#APPLE = 1
+APPLE = 1
 FLTK = 1
 ifdef FLTK
 FLU = 1
@@ -24,7 +24,7 @@ FLU_H = -DHAVE_FLU
 endif
 
 CXXFLAGS=$(OPTS) $(INCL) $(FLU_H) $(FLTK_H)
-INCL=-I$(includedir) -I/usr/X11R6/include -I./ -I/opt/kai-uwe
+INCL=-I$(includedir) -I/usr/X11R6/include -I./
 
 VRML_LIBS=$(FLTK_GL_LIBS) -lGL -lopenvrml -lopenvrml-gl -lpng -ljpeg \
  -lXinerama -lXft
