@@ -747,7 +747,9 @@ std::vector<double>
 Oyranos::bandVonProfil (const Speicher & p, int intent)
 {
   DBG_PROG_START
+# ifdef DEBUG
   const char* b = p;
+#endif
   DBG_MEM_V( (int*)b )
   std::vector<double> band; // TODO
   DBG_PROG_ENDE

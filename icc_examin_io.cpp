@@ -245,7 +245,8 @@ ICCexaminIO::oeffnenThread_ ()
     if(!namensgleich)
     {
       icc_examin_ns::lock(__FILE__,__LINE__);
-      icc_examin->icc_waehler_->clear();
+      if(icc_examin->icc_waehler_)
+        icc_examin->icc_waehler_->clear();
       int anzahl = profile.size();
       DBG_PROG_V( anzahl )
       double transparenz;
@@ -263,7 +264,9 @@ ICCexaminIO::oeffnenThread_ ()
         transparenz= icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze[i].transparenz;
         DBG_PROG_V( transparenz )
         grau = icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze[i].grau;
-        icc_examin->icc_waehler_->push_back(dateiName(profile.name(i)),
+
+        if(icc_examin->icc_waehler_)
+          icc_examin->icc_waehler_->push_back(dateiName(profile.name(i)),
                                 transparenz, grau , aktiv[i]);
       }
       icc_examin_ns::unlock(this, __FILE__,__LINE__);

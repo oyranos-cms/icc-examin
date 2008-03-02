@@ -135,6 +135,8 @@ public:
   void draw();
   int  handle(int event);
   void redraw();
+  void show();
+  void hide();
   // redraw Aufforderung von agv_
   void nachricht( icc_examin_ns::Modell* modell, int info );
 

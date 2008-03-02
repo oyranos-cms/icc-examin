@@ -228,7 +228,8 @@ class ICCfltkBetrachter {open
   
  enum{ WID_0, WID_3D, WID_INSPEKT }; int widget_oben;} {public
   }
-  Function {init(int argc, char** argv)} {} {
+  Function {init(int argc, char** argv)} {open
+  } {
     code DBG_PROG_START {}
     code {fullscreen = false;
   setTitleUrl = true;
@@ -305,12 +306,12 @@ class ICCfltkBetrachter {open
     dateiwahl->preview(true);
   \#endif} {}
     Fl_Window {} {open
-      xywh {1184 400 100 100} type Double resizable
+      xywh {1184 484 100 100} type Double resizable
       code0 {//o->show();} visible
     } {}
     Fl_Window ueber {
       label {About ICC Examin} open
-      xywh {865 109 365 289} type Double resizable
+      xywh {885 193 365 289} type Double resizable
       code0 {o->hide();}
       code1 {o->use_escape_hide = true;}
       class {icc_examin_ns::MyFl_Double_Window} visible
@@ -351,7 +352,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window vcgt {
       label {Grafic Card Gamma Table} open
-      xywh {90 347 370 390} type Double resizable
+      xywh {78 572 370 390} type Double resizable
       code0 {o->hide();}
       code1 {o->use_escape_hide = true;}
       class {icc_examin_ns::MyFl_Double_Window} visible
@@ -388,11 +389,11 @@ class ICCfltkBetrachter {open
     }
     Fl_Window DD {
       label Gamut open
-      xywh {803 513 385 520} type Double box NO_BOX color 53 resizable
+      xywh {891 355 385 520} type Double box NO_BOX color 53 resizable
       class {icc_examin_ns::MyFl_Double_Window} xclass Fl_Window visible
     } {
       Fl_Group {} {open
-        xywh {0 0 385 520}
+        xywh {0 0 390 525}
       } {
         Fl_Menu_Bar DD_menueleiste {
           xywh {0 0 385 25} align 20 when 3
@@ -504,28 +505,24 @@ class ICCfltkBetrachter {open
             }
           }
         }
-        Fl_Group {} {open
-          xywh {0 25 385 470} resizable
+        Fl_Tile {} {open
+          xywh {0 25 385 495} resizable
         } {
-          Fl_Box DD_farbraum {
-            xywh {0 25 385 470}
+          Fl_Box DD_farbraum {selected
+            xywh {0 25 385 470} box THIN_DOWN_BOX resizable
             code0 {o->hide();}
             code1 {o->fensterId( 1 ); // wandert ins 1. Nebenfenster}
             class GL_Ansicht
           }
-        }
-        Fl_Group {} {open
-          xywh {0 495 385 25}
-        } {
           Fl_Box DD_box_stat {
-            xywh {0 495 385 25} box THIN_DOWN_BOX align 20
+            xywh {0 495 385 25} box THIN_DOWN_BOX align 21
           }
         }
       }
     }
     Fl_Window details {
       label {ICC Examin} open
-      xywh {893 434 385 520} type Double box NO_BOX color 53
+      xywh {899 518 385 520} type Double box NO_BOX color 53
       code0 {o->main_win = o;}
       class {icc_examin_ns::MyFl_Double_Window} xclass Fl_Window visible
     } {
@@ -761,12 +758,7 @@ initHilfe();
                       }
                       Fl_Button {} {
                         label o
-                        callback {int lx = details->x() + mft_gl->w(),
-      ly = details->y(),
-      lw = mft_gl->w(),
-      lh = mft_gl->h();
-
-  icc_examin->zeigMftTabellen( lx, ly, lw,lh );}
+                        callback {icc_examin->zeigMftTabellen();}
                         tooltip {Show all channels of this table a own window.} xywh {340 185 20 20}
                         code0 {o->show();}
                       }
@@ -961,7 +953,7 @@ initHilfe();
   }
 } 
 
-Function {dHaendler(void* o)} {open return_type {static void}
+Function {dHaendler(void* o)} {return_type {static void}
 } {
   code DBG_PROG_START {}
   code {Fl::remove_timeout( (void(*)(void*))dHaendler, 0 );
@@ -976,8 +968,7 @@ Function {dHaendler(void* o)} {open return_type {static void}
     \#ifdef DEBUG
     DBG_PROG_V( ((TagDrawings*)o)->wiederholen )
     \#endif
-  }} {selected
-  }
+  }} {}
   code DBG_PROG_ENDE {}
 } 
 

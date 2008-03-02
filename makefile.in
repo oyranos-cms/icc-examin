@@ -32,6 +32,8 @@ INCL_DEP = $(INCL) $(X_H) $(OSX_H) $(OYRANOS_H) \
 			$(FLU_H) $(FLTK_H) $(FTGL_H) $(LCMS_H) $(ALL_SOURCEFILES)
 ALL_INCL = $(INCL) \
 			$(FLU_H) $(FLTK_H) $(X_H) $(OSX_H) $(OYRANOS_H) $(LCMS_H) $(FTGL_H)
+CFLAGS_ = $(CFLAGS) $(ALL_INCL)
+CXXFLAGS_ = $(CXXFLAGS) $(ALL_INCL)
 
 LDLIBS = -L$(libdir) -L./ $(FLTK_LIBS) $(FLU_LIBS) \
 	$(X11_LIBS) -llcms -L/lib $(OYRANOS_LIBS) $(LCMS_LIBS) \
@@ -207,7 +209,7 @@ BASE =
 	
 release:	icc_alles.o
 	echo Verknuepfen $@...
-	$(CXX) $(CXXFLAGS) -o $(BINTARGET) \
+	$(CXX) $(CXXFLAGS_) -o $(BINTARGET) \
 	icc_alles.o \
 	$(LDLIBS)
 	$(REZ)
@@ -217,14 +219,14 @@ dynamic:	$(BINTARGET)
 
 $(BINTARGET):	$(BASE) $(OBJECTS) $(LINGUAS_SRC) $(I18N_OBJECTS) $(LIBNAME) $(LIBFL_I18N)
 	echo Verknuepfen $@ ...
-	$(CXX) $(CXXFLAGS) -o $(BINTARGET) \
+	$(CXX) $(CXXFLAGS_) -o $(BINTARGET) \
 	$(OBJECTS) \
 	$(LDLIBS) $(LINK_LIB_PATH) $(LINK_SRC_PATH)
 	$(REZ)
 
 $(LIBSONAMEFULL):	$(I18N_OBJECTS)
 	echo Verknuepfen $@ ...
-	$(CXX) $(OPTS) $(LDFLAGS) $(LINK_NAME) -o $(LIBSONAMEFULL) \
+	$(CXX) $(CFLAGS_) $(LDFLAGS) $(LINK_NAME) -o $(LIBSONAMEFULL) \
 	$(I18N_OBJECTS)  icc_utils.o icc_helfer.o icc_speicher.o
 	$(REZ)
 	$(RM)  $(LIBSONAME)
@@ -242,7 +244,7 @@ $(LIBFL_I18N):
 
 static:	$(BINTARGET)
 	echo Verknuepfen $@ ...
-	$(CXX) $(OPTS) -o $(BINTARGET) $(OBJECTS) \
+	$(CXX) $(CXXFLAGS_) -o $(BINTARGET) $(OBJECTS) \
 	-L./ \
 	`test -f /opt/local/lib/libfltk_images.a && (echo /opt/local/lib/libfltk_images.a; \
 	    (test -f /opt/local/lib/libpng.a && echo /opt/local/lib/libpng.a || echo "-lpng"); (test -f /opt/local/lib/libjpeg.a && echo /opt/local/lib/libjpeg.a || echo "-ljpeg"); echo -lz) || \
@@ -268,7 +270,7 @@ strip: $(BINTARGET)
 	strip $(BINTARGET)
 
 static_static:	$(OBJECTS)
-	$(CXX) $(CXXFLAGS) -o $(BINTARGET) \
+	_$(CXX) $(CXXFLAGS_) -o $(BINTARGET) \
 	$(OBJECTS) \
 	$(LDLIBS) -static -ljpeg -lpng -lX11 -lpthread -lz -ldl \
 	-lfreetype -lfontconfig -lXrender -lGLU -lXext -lexpat \
@@ -276,8 +278,8 @@ static_static:	$(OBJECTS)
 	$(REZ)
 
 test:	icc_formeln.o icc_utils.o
-	$(CXX) $(CXXFLAGS) $(INCL) -o dE2000_test.o -c tests/dE2000_test.cpp
-	$(CXX) $(CXXFLAGS) -o dE2000_test dE2000_test.o icc_formeln.o icc_utils.o \
+	$(CXX) $(CXXFLAGS_) $(INCL) -o dE2000_test.o -c tests/dE2000_test.cpp
+	$(CXX) $(CXXFLAGS_) -o dE2000_test dE2000_test.o icc_formeln.o icc_utils.o \
 	-L$(libdir) -llcms
 	$(REZ)
 
@@ -344,15 +346,15 @@ EXEEXT		=
 
 .c.o:
 	echo Compiling $< ...
-	$(CC) $(CFLAGS) -c $<
+	$(CC) $(CFLAGS_) -c $<
 
 .cxx.o:
 	echo Compiling $< ...
-	$(CXX) $(CXXFLAGS) -c $<
+	$(CXX) $(CXXFLAGS_) -c $<
 
 .cpp.o:
 	echo Compiling $< ...
-	$(CXX) $(CXXFLAGS) -c $<
+	$(CXX) $(CXXFLAGS_) -c $<
 
 .fl.cxx:
 	echo Expanding $< ...

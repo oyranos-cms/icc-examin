@@ -31,7 +31,7 @@
 #define ICC_EXAMIN_H
 
 #include "icc_utils.h"
-#include "icc_gl.h"
+//#include "icc_gl.h"
 #include "icc_kette.h"
 #include "icc_oyranos.h"
 #include "icc_modell_beobachter.h"
@@ -95,11 +95,10 @@ class ICCexamin : public icc_examin_ns::Beobachter,
     bool         berichtSpeichern (void);      //!< GCATS Auswertung -> html Datei
 
     bool         gamutSpeichern (icc_examin_ns::IccGamutFormat format); //!< Farbraumhuelle
-    void         zeig3D ();
-    void         zeigPrueftabelle ();
+    void         zeig3D ();                    //!< 3D Farbraumansicht
+    void         zeigPrueftabelle ();          //!< Bericht anzeigen
     void         zeigCGATS();                  //!< korrigiertes CGATS zeigen
-    void         zeigMftTabellen(int x, int y,
-                                 int w, int h);//!< oeffnen aller Kanaele
+    void         zeigMftTabellen();            //!< oeffnen aller Kanaele
     void         icc_betrachterNeuzeichnen (void* widget); //!< Oberflaechenpflege
 
     std::string  waehleTag (int item);

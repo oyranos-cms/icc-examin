@@ -28,6 +28,7 @@
 
 #include "icc_examin.h"
 #include "icc_betrachter.h"
+#include "icc_gl.h"
 
 using namespace icc_examin_ns;
 

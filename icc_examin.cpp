@@ -149,15 +149,12 @@ ICCexamin::start (int argc, char** argv)
 
   icc_betrachter->mft_gl->init(1);
   icc_betrachter->DD_farbraum->init(2);
-  icc_waehler_ = new  ICCwaehler(485, 110, _("Gamut selector"));
-  icc_waehler_->resize(icc_betrachter->details->x(),
-                       icc_betrachter->details->y() - icc_waehler_->h(),
-                       icc_waehler_->w()+20, icc_waehler_->h());
-  if(!icc_waehler_) WARN_S( "icc_waehler_ nicht reservierbar" )
-  // gehoert zum DD_farbraum fenster
-  icc_waehler_->only_with = dynamic_cast<icc_examin_ns::MyFl_Double_Window*>(icc_betrachter->DD_farbraum->window());
-  icc_betrachter->DD_farbraum->end();
-  icc_waehler_->hide();
+  {
+    icc_waehler_ = new ICCwaehler(485, 110, _("Gamut selector"));
+    if(!icc_waehler_) WARN_S( "icc_waehler_ not reservable" )
+    // gehoert zum DD_farbraum fenster
+    icc_waehler_->only_with = dynamic_cast<icc_examin_ns::MyFl_Double_Window*>(icc_betrachter->DD_farbraum->window());
+  }
 
   // Die TagViewers registrieren und ihre Variablen initialisieren
   icc_betrachter->tag_viewer->id = TAG_VIEWER;
@@ -290,30 +287,18 @@ ICCexamin::zeig3D ()
 { DBG_PROG_START
 
   MyFl_Double_Window *w = icc_betrachter->DD;
-  Fl_Widget *wid = icc_betrachter->DD_farbraum;
-
-  int lx = wid->x(),
-      ly = wid->y(),
-      lw = wid->w(),
-      lh = wid->h();
-
-  if(!w)
-  {
-  w =
-    new MyFl_Double_Window( lx+lw, ly, lw, lh, "" );
-    w->user_data((void*)(0));
-      Fl_Group *g = new Fl_Group(0,0,lw,lh);
-      g->end();
-      //wid->resize(0,0, lw,lh);
-      g->add(wid);
-    w->end();
-    w->resizable(g);
-  }
-  w->show();
-  wid->show();
+  GL_Ansicht *wid = icc_betrachter->DD_farbraum;
 
   if(!icc_waehler_->visible())
     icc_waehler_->show();
+
+  w->show();
+  wid->show();
+  wid->damage(FL_DAMAGE_ALL);
+  wid->invalidate();
+  wid->redraw();
+
+  //icc_waehler_->position( w->x(), w->y() - icc_waehler_->h() );
 
   setzeFensterTitel();
 
@@ -332,7 +317,7 @@ ICCexamin::zeigPrueftabelle ()
   if(wid->window() == details)
   {
     int lx = details->x(),
-        ly = details->y(),
+        ly = details->y()+10,
         lw = details->w(),
         lh = details->h();
 
@@ -343,15 +328,14 @@ ICCexamin::zeigPrueftabelle ()
         g->end();
         wid->resize(0,0, lw,lh);
         g->add( wid );
-        wid->show();
       w->end();
       w->resizable(w);
       //w->resizable(g);
       w->show();
+      w->position(w->x(), ly-10);
   }
 
-  if(!wid->window()->visible())
-    wid->window()->show();
+  wid->show();
 
   setzMesswerte();
 
@@ -370,9 +354,10 @@ ICCexamin::zeigCGATS()
 }
 
 void
-ICCexamin::zeigMftTabellen (int lx, int ly, int lw, int lh)
+ICCexamin::zeigMftTabellen ()
 { DBG_PROG_START
-  const char* title = icc_betrachter->mft_gl->window()->label();
+
+  const char* title = profile.profil()->filename();
   char* t = (char*) malloc(strlen(title)+20);
   int   item = tag_nr();
   std::vector<std::string> tag_info =
@@ -382,6 +367,16 @@ ICCexamin::zeigMftTabellen (int lx, int ly, int lw, int lh)
           tag_info[0].c_str(),
           title);
 
+  int lx = icc_betrachter->details->x(),
+      ly = icc_betrachter->details->y()+10,
+      lw = icc_betrachter->details->w(),
+      lh = icc_betrachter->mft_gl->h();
+
+#ifdef __APPLE__
+  int X,Y,bt,bx,by;
+  Fl_X::fake_X_wm(icc_betrachter->details, &X, &Y, &bt, &bx, &by);
+#endif
+
   std::vector<std::string> out_names =
       profile.profil()->getTagChannelNames (icc_betrachter->tag_nummer,
                                             ICCtag::TABLE_OUT);
@@ -389,9 +384,9 @@ ICCexamin::zeigMftTabellen (int lx, int ly, int lw, int lh)
   for(int i = 0; i < (int)out_names.size(); ++i)
   {
     if(!w)
-      w = new MyFl_Double_Window( lx, ly, lw, lh, t);
+    w = new MyFl_Double_Window( lx+lw, ly, lw, lh, t);
     else
-      w = new MyFl_Double_Window( w->x()+lw, w->y(), lw, lh, t);
+    w = new MyFl_Double_Window( w->x()+lw, ly, lw, lh, t);
 
       w->user_data((void*)(0));
       Fl_Group *g = new Fl_Group(0,0,lw,lh);
@@ -404,8 +399,16 @@ ICCexamin::zeigMftTabellen (int lx, int ly, int lw, int lh)
       g->end();
     w->end();
     w->resizable(w);
+    g->show();
     w->show();
+    w->position( w->x(), ly-10 );
+    DBG_PROG_V( icc_betrachter->details->y()<<" "<<w->y() )
+    gl->show();
+    gl->invalidate();
+    gl->damage(FL_DAMAGE_ALL);
   }
+  waehleMft(0);
+
   DBG_PROG_ENDE
 }
 
@@ -567,8 +570,7 @@ ICCexamin::setzMesswerte()
   DBG_PROG_START
   bool export_html = false;
 
-  if(icc_betrachter->inspekt_html->window() != icc_betrachter->details &&
-     icc_betrachter->inspekt_html->window()->shown() )
+  if( icc_betrachter->inspekt_html->window()->shown() )
   {
     if(profile.profil()->hasMeasurement())
     {
@@ -1045,7 +1047,7 @@ ICCexamin::icc_betrachterNeuzeichnen (void* z)
     }
   }
   if(!icc_betrachter->DD_farbraum->visible_r()) {
-      if(icc_waehler_->visible())
+      if(icc_waehler_ && icc_waehler_->visible())
 #   ifdef APPLE
         icc_waehler_->hide();
 #   else

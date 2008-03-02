@@ -62,8 +62,8 @@ public:
 #include <FL/Fl_Output.H>
 #include <FL/Fl_Button.H>
 #include <FL/Fl_Menu_Bar.H>
-#include <FL/Fl_Box.H>
 #include <FL/Fl_Tile.H>
+#include <FL/Fl_Box.H>
 #include <FL/Fl_Pack.H>
 #include <FL/Fl_Progress.H>
 

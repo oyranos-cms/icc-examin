@@ -65,7 +65,9 @@ leseGrafikKartenGamma        (std::string display_name,
   texte[2] = _("Blue");
   texte[3] = "gamma_start_ende";
 
+# ifdef DEBUG
   const char *disp_name = display_name.c_str();
+# endif
   DBG_PROG_V( disp_name )
 
   if(display_name.size())

@@ -425,13 +425,33 @@ GL_Ansicht::auffrischen_()
   DBG_PROG_ENDE
 }
 
+void
+GL_Ansicht::hide()
+{   
+  DBG_PROG_START
+  DBG_PROG_V( visible()<<" "<<shown() )
+  Fl_Gl_Window::hide();
+  DBG_PROG_ENDE
+}     
+
+void
+GL_Ansicht::show()
+{   
+  DBG_PROG_START
+  DBG_PROG_V( visible()<<" "<<shown() )
+  if( window()->visible() )
+    Fl_Gl_Window::show();
+  DBG_PROG_ENDE
+}     
+
+
 /** Empfang einer Zeichennachricht */
 void
 GL_Ansicht::nachricht(icc_examin_ns::Modell* modell, int info)
 {
   DBG_PROG_START
-  DBG_PROG_V( info )
-  if( info )
+  DBG_PROG_V( info<<" "<<window()->visible()<<" "<<visible()<<" "<<shown() )
+  if( info && visible() )
     Fl_Gl_Window::redraw();
   DBG_PROG_ENDE
 }
@@ -441,7 +461,7 @@ void
 GL_Ansicht::redraw()
 {
   DBG_PROG_START
-  if(agv_)
+  if(agv_ && visible())
     agv_->benachrichtigen(1);
   DBG_PROG_ENDE
 }
@@ -2099,6 +2119,9 @@ GL_Ansicht::zeichnen()
 # endif
 
   if(!valid_) {
+    // komplette Initialisierung
+    //init(id_);
+
     GLinit_();  DBG_PROG
     fensterForm();
     auffrischen_();
@@ -2272,7 +2295,9 @@ GL_Ansicht::zeichnen()
                  if(0 <= a && a < (int)tabelle_[L].size()) {
                  int b = (int)((oX+0.5)*tabelle_[L][a].size());
                  if(0 <= b && b < (int)tabelle_[L][a].size()) {
+# ifdef DEBUG
                    double wert = tabelle_[L][a][b][kanal];
+# endif
                    DBG_PROG_V( L<<" "<<a<<" "<<b<<" "<<wert )
                    DBG_PROG_V( tabelle_.size()<<" "<<tabelle_[L].size()<<" "<<
                                tabelle_[L][a].size()<<" "<<kanal )

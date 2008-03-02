@@ -141,10 +141,15 @@ ICCkette::einfuegen (const Speicher & prof, int pos)
   DBG_PROG_V( pos )
 
   //profile_[pos] = ICCprofile();
-  ICCprofile::ICCDataType type = profile_[pos].load(prof);
+# ifdef DEBUG
+  ICCprofile::ICCDataType type =
+#endif
+  profile_[pos].load(prof);
   profile_[pos].filename( prof.name().c_str() );
   DBG_PROG_V( type )
+# ifdef DEBUG
   ICCprofile::ICCDataType dtype = profile_[0].data_type;
+#endif
   DBG_PROG_V( dtype )
 
   int extra_benachrichtigen = -1;

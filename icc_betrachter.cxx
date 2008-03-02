@@ -540,12 +540,7 @@ void ICCfltkBetrachter::cb_mft_choice(MftChoice* o, void* v) {
 }
 
 void ICCfltkBetrachter::cb_o_i(Fl_Button*, void*) {
-  int lx = details->x() + mft_gl->w(),
-      ly = details->y(),
-      lw = mft_gl->w(),
-      lh = mft_gl->h();
-
-  icc_examin->zeigMftTabellen( lx, ly, lw,lh );
+  icc_examin->zeigMftTabellen();
 }
 void ICCfltkBetrachter::cb_o(Fl_Button* o, void* v) {
   ((ICCfltkBetrachter*)(o->parent()->parent()->parent()->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_o_i(o,v);
@@ -747,15 +742,15 @@ ard"));
     o->user_data((void*)(this));
     o->align(FL_ALIGN_TOP);
     o->when(FL_WHEN_RELEASE);
-    { Fl_Group* o = new Fl_Group(0, 0, 385, 520);
+    { Fl_Group* o = new Fl_Group(0, 0, 390, 525);
       { Fl_Menu_Bar* o = DD_menueleiste = new Fl_Menu_Bar(0, 0, 385, 25);
         o->align(FL_ALIGN_LEFT|FL_ALIGN_INSIDE);
         o->when(3);
         o->menu(menu_DD_menueleiste);
       }
-      { Fl_Group* o = new Fl_Group(0, 25, 385, 470);
+      { Fl_Tile* o = new Fl_Tile(0, 25, 385, 495);
         { GL_Ansicht* o = DD_farbraum = new GL_Ansicht(0, 25, 385, 470);
-          o->box(FL_NO_BOX);
+          o->box(FL_THIN_DOWN_BOX);
           o->color(FL_BACKGROUND_COLOR);
           o->selection_color(FL_BACKGROUND_COLOR);
           o->labeltype(FL_NORMAL_LABEL);
@@ -764,18 +759,16 @@ ard"));
           o->labelcolor(FL_FOREGROUND_COLOR);
           o->align(FL_ALIGN_CENTER);
           o->when(FL_WHEN_RELEASE);
+          Fl_Group::current()->resizable(o);
           o->hide();
           o->fensterId( 1 ); // wandert ins 1. Nebenfenster
         }
-        o->end();
-        Fl_Group::current()->resizable(o);
-      }
-      { Fl_Group* o = new Fl_Group(0, 495, 385, 25);
         { Fl_Box* o = DD_box_stat = new Fl_Box(0, 495, 385, 25);
           o->box(FL_THIN_DOWN_BOX);
-          o->align(FL_ALIGN_LEFT|FL_ALIGN_INSIDE);
+          o->align(FL_ALIGN_TOP_LEFT|FL_ALIGN_INSIDE);
         }
         o->end();
+        Fl_Group::current()->resizable(o);
       }
       o->end();
     }
