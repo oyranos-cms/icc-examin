@@ -74,13 +74,23 @@ ICCexamin::quit ()
 }
 
 int
-abbrechen(int e)
+tastatur(int e)
 { //DBG_PROG_START
   int gefunden = 0;
-  if( e == FL_SHORTCUT &&
-      Fl::event_key() == FL_Escape)
-    gefunden = 1;
-  if(gefunden) DBG_NUM_S("FL_Escape")
+  if( e == FL_SHORTCUT )
+  {
+      if(Fl::event_key() == FL_Escape) {
+        gefunden = 1;
+        DBG_NUM_S("FL_Escape")
+      } else
+      if(Fl::event_key() == 'q'
+       && Fl::event_state() == FL_CTRL) {
+        icc_examin->quit();
+        gefunden = 1;
+        DBG_NUM_S("FL_CTRL+Q")
+      } else
+        ;
+  }
   //DBG_PROG_ENDE
   return gefunden;
 }
@@ -103,9 +113,11 @@ ICCexamin::start (int argc, char** argv)
 
   DBG_PROG
 
-  #if HAVE_X || HAVE_OSX
+  #if HAVE_X// || HAVE_OSX
   icc_betrachter->menueintrag_vcgt->show();
   #endif
+  if(!icc_debug)
+    icc_betrachter->menueintrag_testkurven->hide();
 
   status(_(""));
   DBG_PROG
@@ -125,7 +137,7 @@ ICCexamin::start (int argc, char** argv)
         status(_("Bereit"));
       }
 
-  Fl::add_handler(abbrechen);
+  Fl::add_handler(tastatur);
 
   // zur Benutzung freigeben
   status_ = 1;
@@ -302,8 +314,9 @@ ICCexamin::waehleTag (int item)
       kurven[TAG_VIEWER] = profile.profil()->getTagCurves (item, ICCtag::CURVE_IN);
       texte[TAG_VIEWER] = profile.profil()->getTagText (item);
       icc_betrachter->tag_viewer->hineinKurven ( kurven[TAG_VIEWER], texte[TAG_VIEWER] );
+      icc_betrachter->tag_viewer->kurve_umkehren = true;
       neuzeichnen(icc_betrachter->tag_viewer);
-      cout << "vcgt "; DBG_PROG
+      DBG_PROG_S( "vcgt" )
 
     /*} else if ( TagInfo[1] == "chad" ) {
       std::vector<int> zahlen = profile.profil()->getTagNumbers (tag_nummer, ICCtag::MATRIX);
@@ -512,6 +525,46 @@ ICCexamin::histogram ()
 }
 
 void
+ICCexamin::testZeigen ()
+{ DBG_PROG_START
+
+  #if HAVE_X || HAVE_OSX
+  std::vector<std::vector<std::pair<double,double> > > kurven2;
+  kurven2.resize(8);
+  kurven2[0].resize(4);
+  kurven2[1].resize(3);
+  kurven2[2].resize(56);
+  kurven2[3].resize(56);
+  kurven2[4].resize(56);
+  kurven2[5].resize(56);
+  kurven2[6].resize(56);
+  kurven2[7].resize(56);
+  for(unsigned int i = 0; i < kurven2.size(); ++i)
+    for(unsigned int j = 0; j < kurven2[i].size(); ++j) {
+      kurven2[i][j].first = sin(i) * 3.2 - 0.5* (cos(j*2)+0.1);
+      kurven2[i][j].second = i * -0.2 + 0.05 * (sin(j/10.0)+2.7);
+    }
+  std::vector<std::string> txt;
+  txt.resize(8);
+  txt[0] = "ein Bild";
+  txt[1] = "Gemälde";
+  txt[2] = "fast HDR";
+  txt[3] = "2 fast HDR";
+  txt[4] = "3 fast HDR";
+  txt[5] = "4 fast HDR";
+  txt[6] = "5 fast HDR";
+  txt[7] = "6 fast HDR";
+  icc_betrachter->vcgt_viewer->hide();
+  icc_betrachter->vcgt_viewer->show();
+  icc_betrachter->vcgt_viewer->hineinDaten ( kurven2, txt );
+  icc_betrachter->vcgt_viewer->kurve_umkehren = true;
+  #endif
+
+  // TODO: osX
+  DBG_PROG_ENDE
+}
+
+void
 ICCexamin::vcgtZeigen ()
 { DBG_PROG_START
   kurve_umkehren[VCGT_VIEWER] = true;
@@ -522,6 +575,9 @@ ICCexamin::vcgtZeigen ()
   if (kurven[VCGT_VIEWER].size()) {
     icc_betrachter->vcgt_viewer->hide();
     icc_betrachter->vcgt_viewer->show();
+    icc_betrachter->vcgt_viewer->hineinKurven( kurven[VCGT_VIEWER],
+                                               texte [VCGT_VIEWER] );
+    icc_betrachter->vcgt_viewer->kurve_umkehren = true;
   } else {
     WARN_S(_("Keine Kurve gefunden")) //TODO kleines Fenster
     icc_betrachter->vcgt_viewer->hide();

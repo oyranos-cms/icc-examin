@@ -35,6 +35,7 @@
 #include "agviewer.h"
 
 class GL_Ansicht : public Fl_Group {
+  // Datenhaltung
   std::vector<std::vector<std::vector<std::vector<double> > > > tabelle_;
   std::vector<std::string>nach_farb_namen_;
   std::vector<std::string>von_farb_namen_;
@@ -45,21 +46,35 @@ class GL_Ansicht : public Fl_Group {
   std::vector<double> punkte_;        //                (n*3)
   std::vector<float>  farben_;        // rgba 0.0 - 1.0 (n*4)
   std::vector<std::vector<double> >kurven_;
+
   bool auffrischen_;
+  // Referenz zu einem abgekoppelten fltk Objekt
+  // Der Gedanke ist : Glut Fenster lassen sich nicht schliesen.
+  //                   Das gl_fenster_ behält seine volle Größe.
+  //                   Die GL_Ansicht kann in gl_fenster_ eingepasst oder
+  //                   auf 1x1 verkleinert werden.
   Fl_Group *gl_fenster_;
+  // GL_Ansicht an gl_fenster_ anpassen oder Größe 1x1
+  bool gl_fenster_zeigen_;
+
+  // inner Strukturen bei Datenwechsel anpassen
   void menueErneuern_();
   void makeDisplayLists_();
+  // IDs
   int  menue_;
   int  menue_kanal_eintraege_;
   int  menue_schnitt_;
   int  menue_form_;
   int  menue_hintergrund_;
-  void myGLinit_();
-  void menuInit_();
-  bool gl_fenster_zeigen_;
+  
+  // IDs
   int  agv_,
        glut_id_;
+  // gibt den Initalstatus an
   bool beruehrt_;
+  void myGLinit_();
+  void menuInit_();
+
 public:
   GL_Ansicht(int X,int Y,int W,int H);
   ~GL_Ansicht();
@@ -67,9 +82,14 @@ public:
   bool beruehrt () {return beruehrt_; }
   //void setzteGlutId(int id) {if (!beruehrt_) glut_id_ = id; }
 
+  // welches Glutfenster wird verwaltet?
   int  id()          {return glut_id_; }
+  // welches agvfenster wird benutzt?
   int  agv()         {return agv_; }
+  // fltk virtual
   void draw();
+
+  // Daten Laden
   void hineinPunkte (std::vector<double> vect,
                      std::vector<std::string> achsNamen);
   void hineinPunkte (std::vector<double> vect, 
@@ -91,14 +111,18 @@ public:
                                std::vector<std::string> vonFarben,
                                std::vector<std::string> nachFarben);
 
+  // transparente Darstellung
   int  kanal;               // gewählter Kanal
-  // Darstellung der Gitterpunkte der Transformationstabelle
+       // Darstellung der Gitterpunkte der Transformationstabelle
   int  punktform;           // MENU_KUGEL MENU_WUERFEL MENU_STERN
   int  punktfarbe;          // MENU_GRAU MENU_FARBIG MENU_KONTRASTREICH
+
   int  hintergrundfarbe;    // Hintergrundfarben Farbschema
   float textfarbe[3];
   float pfeilfarbe[3];
   int  schalen;             // MENU_SCHALEN
+
+  // Darstellungsfunktionen
   void auffrischen();       // Erneuerung ohne init()
   void punkteAuffrischen(); // glCompile für Punkte
   double seitenverhaeltnis; // Proportion des Fensters
@@ -112,11 +136,14 @@ private:
   void zeigeSpektralband_();
 
 public:
+  // Darstellungsfunktionen
   void zeigen();            // diese Klasse anzeigen (fltk + glut + gl)
   void verstecken();        //  ~           verstecken      ~
   bool sichtbar() {return gl_fenster_zeigen_; } // angezeigt / versteckt
-  void stop() {if (beruehrt_) { agvSwitchMoveMode (Agviewer::AGV_STOP); } }//Bew
+  // Bewegungsfunktionen
+  void stop() {if (beruehrt_) { agviewers[agv_].agvSwitchMoveMode (Agviewer::AGV_STOP); } }
 
+  // Daten Informationen
   char* kanalName() { DBG_PROG_START DBG_PROG_V( nach_farb_namen_.size() <<"|"<< kanal )
                       if (nach_farb_namen_.size() &&
                           (int)nach_farb_namen_.size() > kanal) { DBG_PROG_ENDE

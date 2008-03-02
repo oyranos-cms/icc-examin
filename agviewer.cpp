@@ -54,11 +54,11 @@ std::vector<Agviewer> agviewers;
 void
 Agviewer::agvInit(int window)
 { DBG_PROG_START
-  glutMouseFunc(agvHandleButton);
-  glutMotionFunc(agvHandleMotion);
+  glutMouseFunc(agv::agvHandleButton);
+  glutMotionFunc(agv::agvHandleMotion);
   //glutKeyboardFunc(agvHandleKeys);
   RedisplayWindow = glutGetWindow(); DBG_PROG_V( RedisplayWindow << window )
-  agvSetAllowIdle(window);
+  this->agvSetAllowIdle(window);
   duenn = false; // ICC Schnitt - Kai-Uwe
   DBG_PROG_ENDE
 }
@@ -200,9 +200,9 @@ Agviewer::MoveOn(int v)
     agvMoving = 1;
     if (AllowIdle)
       if (redisplayWindow() == 1) {
-        glutIdleFunc(agvMove1);
+        glutIdleFunc(agv::agvMove1);
       } else {
-        glutIdleFunc(agvMove2);
+        glutIdleFunc(agv::agvMove2);
       }
   } else {
     agvMoving = 0;
@@ -255,7 +255,7 @@ Agviewer::agvSwitchMoveMode(int move)
       AzSpin  = init_az_spin;
       ElSpin  = init_el_spin;
       move = FLYING;
-      agvSwitchMoveMode( FLYING );
+      this->agvSwitchMoveMode( FLYING );
       status(_("waagerechter Schnitt; linker Mausklick setzt zurück"));
       duenn = true;
       break;
@@ -267,7 +267,7 @@ Agviewer::agvSwitchMoveMode(int move)
       AzSpin  = init_az_spin;
       ElSpin  = init_el_spin;
       move = FLYING;
-      agvSwitchMoveMode( FLYING );
+      this->agvSwitchMoveMode( FLYING );
       status(_("senkrechter Schnitt von rechts; linker Mausklick setzt zurück"));
       duenn = true;
       break;
@@ -279,7 +279,7 @@ Agviewer::agvSwitchMoveMode(int move)
       AzSpin  = init_az_spin;
       ElSpin  = init_el_spin;
       move = FLYING;
-      agvSwitchMoveMode( FLYING );
+      this->agvSwitchMoveMode( FLYING );
       status(_("senkrechter Schnitt von vorn; linker Mausklick setzt zurück"));
       duenn = true;
       break;
@@ -531,6 +531,7 @@ Agviewer::agvMakeAxesList(int displaylistnum)
   DBG_PROG_ENDE
 }
 
+namespace agv {
 
 // variable Argumentlänge in einem Macro ?
 void agvMove1(void)
@@ -597,14 +598,16 @@ void agvViewTransform(void)
   DBG_PROG_ENDE
 }
 
-void agvSwitchMoveMode(int move)
+void agvSwitchMoveMode1(int move)
 { DBG_PROG_START
-  std::vector<Agviewer>::iterator it;
-  for (it = agviewers.begin() ; it != agviewers.end(); it++)
-    if (it->redisplayWindow() == glutGetWindow())
-      it->agvSwitchMoveMode( move);
+  agviewers[0].agvSwitchMoveMode( move);
   DBG_PROG_ENDE
-}
+} 
+void agvSwitchMoveMode2(int move)
+{ DBG_PROG_START
+  agviewers[1].agvSwitchMoveMode( move);
+  DBG_PROG_ENDE
+} 
 
 void agvSetAllowIdle(int allowidle)
 { DBG_PROG_START
@@ -626,6 +629,8 @@ int agvMoving(void)
   
   DBG_PROG_ENDE
   return -1;
+}
+
 }
 
 

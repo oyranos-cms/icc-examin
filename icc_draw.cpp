@@ -65,50 +65,45 @@ void dHaendler(void* o);
 
 
 TagDrawings::TagDrawings (int X,int Y,int W,int H)
-  : Fl_Widget(X,Y,W,H), X(X), Y(Y), W(W), H(H)
+  : Fl_Widget(X,Y,W,H)
 {
-  // Zeichenbereichvariablen
-  tab_border_x=30;
-  tab_border_y=30;
-  // Diagrammvariablen
-  n = 1.0;
+  DBG_PROG_START
+  // Zeichenbereichsvariablen
+  tab_rand_x=20;
+  tab_rand_y=20;
+  linker_text_rand  = 25;
+  unterer_text_rand = 17;
+  raster_abstand = 35;
+  zeige_raster = true;
+  // Wertebereichsvariablen
+  min_x = min_y = 0.0;
+  max_x = max_y = 1.0;
+
+  kurve_umkehren = false;
+  zeichne_symbole = true;
+  zeichne_linie = true;
+  ursprung_zeichnen = true;
 
   raster = 4;
   init_s = FALSE;
   rechenzeit = 0.1;
+  hXYZ = hsRGB = 0;
+  xform = 0;
   RGB_speicher = 0;
   XYZ_speicher = 0;
   n_speicher = 0;
-
+  DBG_PROG_ENDE
 }
 
-void
-TagDrawings::draw ()
+TagDrawings::~TagDrawings ()
 {
   DBG_PROG_START
-  // Kurven oder Punkte malen
-  if (icc_examin->laeuft())
-  {
-  
-    DBG_PROG_S( icc_examin->kurven[id].size() <<" "<< icc_examin->punkte[id].size() )
-    
-    //DBG_PROG_V( wiederholen )
+  if(hXYZ) cmsCloseProfile(hXYZ);
+  if(hsRGB) cmsCloseProfile(hsRGB);
+  if(xform) cmsDeleteTransform(xform);
+  if(RGB_speicher) delete [] RGB_speicher;
+  if(XYZ_speicher) delete [] XYZ_speicher;
 
-    if (icc_examin->kurven[id].size())
-    { DBG_PROG
-      wiederholen = false;
-      drawKurve_ (id, x(),y(),w(),h());
-    } else if (icc_examin->punkte[id].size()) {
-      if (wiederholen)
-      { drawCieShoe_ (id, x(),y(),w(),h(),false);
-        Fl::add_timeout( 1.2, (void(*)(void*))dHaendler ,(void*)this);
-      } else {
-        drawCieShoe_ (id, x(),y(),w(),h(),true);
-      }
-      wiederholen = true; 
-    }
-  } else
-    WARN_S( __func__ << " zu früh benutzt!" )
   DBG_PROG_ENDE
 }
 
@@ -117,9 +112,46 @@ TagDrawings::hineinPunkt ( std::vector<double> &vect,
                            std::vector<std::string> &txt)
 {
   DBG_PROG_START
+  clear();
+  punkte = vect;
+  texte = txt;
+
+  // dargestellter Ausschnitt 
+  min_x = min_y = 0.0;
+  max_x = max_y = .85;
+
   //CIExyY aus tag_browser anzeigen
 
   wiederholen = false;
+  DBG_PROG_ENDE
+}
+
+#include <limits>
+
+void
+TagDrawings::hineinDaten (
+                     std::vector<std::vector<std::pair<double,double> > > &vect,
+                     std::vector<std::string> &txt )
+{
+  DBG_PROG_START
+  clear();
+  kurven2 = vect;
+  texte = txt;
+
+  std::numeric_limits<double> l;
+  max_x = max_y = l.min();
+  min_x = min_y = l.max();
+
+  for(unsigned int i = 0; i < kurven2.size(); ++i)
+    for(unsigned int j = 0; j < kurven2[i].size(); ++j) {
+      if(kurven2[i][j].first > max_x)  max_x = kurven2[i][j].first;
+      if(kurven2[i][j].second > max_y) max_y = kurven2[i][j].second;
+      if(kurven2[i][j].first <  min_x) min_x = kurven2[i][j].first;
+      if(kurven2[i][j].second < min_y) min_y = kurven2[i][j].second;
+    }
+
+  wiederholen = false;
+
   DBG_PROG_ENDE
 }
 
@@ -128,6 +160,14 @@ TagDrawings::hineinKurven ( std::vector<std::vector<double> > &vect,
                             std::vector<std::string> &txt)
 {
   DBG_PROG_START
+  clear();
+  kurven = vect;
+  texte = txt;
+  kurve_umkehren = false;
+
+  min_x = min_y = 0.0;
+  max_x = max_y = 1.0;
+
   //Kurve aus tag_browser anzeigen
 
   wiederholen = false;
@@ -139,14 +179,15 @@ void
 TagDrawings::ruhigNeuzeichnen (void)
 {
   DBG_PROG_START
-  drawCieShoe_ (id, x(),y(),w(),h(),true);
+  drawCieShoe_ (true);
   DBG_PROG_ENDE
 }
 
 
 
 void
-TagDrawings::init_shoe() {
+TagDrawings::init_shoe_ ()
+{
   // Initialisierung für lcms
   hXYZ  = cmsCreateXYZProfile();
 
@@ -165,11 +206,44 @@ TagDrawings::init_shoe() {
 }
 
 void
-TagDrawings::drawCieShoe_ (int id, int X, int Y, int W, int H,
-                           int repeated)
+TagDrawings::draw ()
+{
+  DBG_PROG_START
+  // Kurven oder Punkte malen
+  if (icc_examin->laeuft())
+  {
+    // Diagramvariablen in Bildpunkten
+    xO = x() +       tab_rand_x + linker_text_rand;     // Ursprung
+    yO = y() + h() - tab_rand_y - unterer_text_rand;    // Ursprung
+    breite  = (w() - 2*tab_rand_x - linker_text_rand);  // Breite des Diagrammes
+    hoehe   = (h() - 2*tab_rand_y - unterer_text_rand); // Hoehe des Diagrammes
+
+    DBG_PROG_S( kurven.size() <<" "<< punkte.size() )
+    
+    if (kurven.size() || kurven2.size())
+    { DBG_PROG
+      wiederholen = false;
+      drawKurve_ ();
+    } else if (punkte.size()) {
+      if (wiederholen)
+      { drawCieShoe_ (false);
+        Fl::add_timeout( 1.2, (void(*)(void*))dHaendler ,(void*)this);
+      } else {
+        drawCieShoe_ (true);
+      }
+      wiederholen = true; 
+    }
+  } else
+    WARN_S( __func__ << " zu früh benutzt!" )
+  DBG_PROG_ENDE
+}
+
+void
+TagDrawings::drawCieShoe_ ( int repeated)
 { DBG_prog_start
+  //TODO -> icc_oyranos
   if (!init_s)
-    init_shoe();
+    init_shoe_();
   init_s = TRUE;
 
   double rz = (double)clock()/(double)CLOCKS_PER_SEC;
@@ -179,21 +253,10 @@ TagDrawings::drawCieShoe_ (int id, int X, int Y, int W, int H,
 
   // Zeichenflaeche
   fl_color(BG);
-  fl_rectf(X,Y,W,H);
+  fl_rectf(x(),y(),w(),h());
 
-  xO = X + tab_border_x + 10;     // Ursprung
-  yO = Y + H - tab_border_y - 10; // Ursprung
-  breite  = (W - 2*tab_border_x);      // Breite des Diagrammes
-  hoehe   = (H - 2*tab_border_y);      // Hoehe des Diagrammes
 
-  // dargestellter Ausschnitt 
-  n = .85;
-
-  #define x(val) (int)(((double)xO + (double)(val)*breite/n)+0.5)
-  #define y(val) (int)(((double)yO - (double)(val)*hoehe/n)+0.5)
-  #define x2cie(val) (((val)-xO)/breite)
-  #define y2cie(val) ((yO-(val))/hoehe)
-  fl_push_clip( X,y(n), x(n),(int)(hoehe+tab_border_y+0.5) );
+  fl_push_clip( x(),yNachBild(max_x), xNachBild(max_x),(int)(hoehe+tab_rand_y+0.5) );
 
   // Spektrumvariablen
   int nano_min = 63; // 420 nm
@@ -201,18 +264,19 @@ TagDrawings::drawCieShoe_ (int id, int X, int Y, int W, int H,
 
   // Tangente
   fl_color(DIAG);
-  fl_line(x(1), y(0), x(0), y(1));
+  fl_line(xNachBild(1), yNachBild(0), xNachBild(0), yNachBild(1));
 
   // Farbfläche
-  if (!repeated) {
+  if (!repeated)
+  {
     register char RGB[3];
     register cmsCIEXYZ XYZ;
 
-    for (float cie_y=y(0.01) ; cie_y > y(n) ; cie_y -= raster)
-      for (float cie_x=x(0) ; cie_x < x(0.73) ; cie_x+=raster) {
-
-        XYZ.X = x2cie(cie_x);
-        XYZ.Y = y2cie(cie_y);
+    for (int cie_y=yNachBild(0.01) ; cie_y > yNachBild(0.85); cie_y -= raster)
+      for (int cie_x=xNachBild(0) ; cie_x < xNachBild(0.73) ; cie_x += raster)
+      {
+        XYZ.X = bildNachX(cie_x);
+        XYZ.Y = bildNachY(cie_y);
         XYZ.Z = 1 - (XYZ.X +  XYZ.Y);
 
         // Hintergrund zeichnen (lcms)
@@ -220,13 +284,13 @@ TagDrawings::drawCieShoe_ (int id, int X, int Y, int W, int H,
 
         fl_color (fl_rgb_color (RGB[0],RGB[1],RGB[2]));
         if (raster > 1)
-          fl_rectf ((int)cie_x , (int)cie_y, raster,raster);
+          fl_rectf (cie_x , cie_y, raster,raster);
         else
-          fl_point ((int)cie_x , (int)cie_y);
+          fl_point (cie_x , cie_y);
       }
   } else {
-    int wi = x(0.73)-x(0);
-    int hi = y(0.01)-y(n);
+    int wi = xNachBild(0.73)-xNachBild(0);
+    int hi = yNachBild(0.01)-yNachBild(0.85);
 
     int    n_pixel = wi * hi, i = 0;
     if ((n_speicher > 3*n_pixel * 2)
@@ -241,18 +305,18 @@ TagDrawings::drawCieShoe_ (int id, int X, int Y, int W, int H,
       XYZ_speicher = (cmsCIEXYZ*) new cmsCIEXYZ [n_pixel * multi];
     }
 
-    for (float cie_y=y(n) ; cie_y < y(0.01) ; cie_y ++) {
-      for (float cie_x=x(0) ; cie_x < x(0.73) ; cie_x ++) {
+    for (int cie_y=yNachBild(0.85) ; cie_y < yNachBild(0.01) ; cie_y ++) {
+      for (int cie_x=xNachBild(0) ; cie_x < xNachBild(0.73) ; cie_x ++) {
 
-        XYZ_speicher[i].X = x2cie(cie_x);
-        XYZ_speicher[i].Y = y2cie(cie_y);
+        XYZ_speicher[i].X = bildNachX(cie_x);
+        XYZ_speicher[i].Y = bildNachY(cie_y);
         XYZ_speicher[i].Z = 1 - (XYZ_speicher[i].X +  XYZ_speicher[i].Y);
         i++;
       }
     }
     // Hintergrund zeichnen (lcms)
     cmsDoTransform(xform, XYZ_speicher, RGB_speicher, n_pixel);
-    fl_draw_image(RGB_speicher, x(0), y(n), wi, hi, 3, 0);
+    fl_draw_image(RGB_speicher, xNachBild(min_x), yNachBild(0.85), wi, hi, 3, 0);
   }
 
   // Dauer des Neuzeichnens bestimmen
@@ -279,21 +343,21 @@ TagDrawings::drawCieShoe_ (int id, int X, int Y, int W, int H,
 
 
   fl_begin_polygon();
-  fl_vertex (X, Y+H);
-  fl_vertex (x(.18), Y+H);
+  fl_vertex (x(), y()+h());
+  fl_vertex (xNachBild(.18), y()+h());
   for (int i=nano_min ; i<=(int)(nano_max*.38+0.5); i++)
-    fl_vertex( x(x_xyY), y(y_xyY) );
-  fl_vertex (X, y(.25));
+    fl_vertex( xNachBild(x_xyY), yNachBild(y_xyY) );
+  fl_vertex (x(), yNachBild(.25));
   fl_end_polygon();
   #ifdef DEBUG_DRAW
   fl_color(FL_WHITE);
   #endif
   fl_begin_polygon();
-  fl_vertex (X, y(.25));
+  fl_vertex (x(), yNachBild(.25));
   for (int i=(int)(nano_max*.38+0.5) ; i<=(int)(nano_max*.45+0.5); i++)
-    fl_vertex( x(x_xyY), y(y_xyY) );
-  fl_vertex (x(.065), Y);
-  fl_vertex (X, Y);
+    fl_vertex( xNachBild(x_xyY), yNachBild(y_xyY) );
+  fl_vertex (xNachBild(.065), y());
+  fl_vertex (x(), y());
   fl_end_polygon();
   #ifdef DEBUG_DRAW
   fl_color(FL_YELLOW);
@@ -301,97 +365,93 @@ TagDrawings::drawCieShoe_ (int id, int X, int Y, int W, int H,
   fl_begin_polygon();
   {
   int i = (int)(nano_max*.457+0.5)-2;
-  fl_vertex( x(x_xyY), y(y_xyY) );
+  fl_vertex( xNachBild(x_xyY), yNachBild(y_xyY) );
   i = (int)(nano_max*.457+0.5)-1;
-  fl_vertex( x(x_xyY), y(y_xyY) );
-  fl_vertex (x(.1), Y);
-  fl_vertex (x(.065), Y);
+  fl_vertex( xNachBild(x_xyY), yNachBild(y_xyY) );
+  fl_vertex (xNachBild(.1), y());
+  fl_vertex (xNachBild(.065), y());
   for (i=(int)(nano_max*.45+0.5); i<=(int)(nano_max*.457+0.5)-3; i++) {
-    fl_vertex( x(x_xyY), y(y_xyY) );
+    fl_vertex( xNachBild(x_xyY), yNachBild(y_xyY) );
     }
   fl_end_polygon();
   fl_begin_polygon();
   i = (int)(nano_max*.457+0.5)-1;
-  fl_vertex( x(x_xyY), y(y_xyY) );
+  fl_vertex( xNachBild(x_xyY), yNachBild(y_xyY) );
   i = (int)(nano_max*.457+0.5);
-  fl_vertex( x(x_xyY), y(y_xyY) );
-  fl_vertex (x(.1), Y);
+  fl_vertex( xNachBild(x_xyY), yNachBild(y_xyY) );
+  fl_vertex (xNachBild(.1), y());
   }
   fl_end_polygon();
   #ifdef DEBUG_DRAW
   fl_color(FL_BLUE);
   #endif
   fl_begin_polygon();
-  fl_vertex (x(.1), Y);
+  fl_vertex (xNachBild(.1), y());
   for (int i=(int)(nano_max*.457+0.5) ; i<=(int)(nano_max*.48+0.5); i++)
-    fl_vertex( x(x_xyY), y(y_xyY) );
-  fl_vertex (x(.2), Y);
+    fl_vertex( xNachBild(x_xyY), yNachBild(y_xyY) );
+  fl_vertex (xNachBild(.2), y());
   fl_end_polygon();
   #ifdef DEBUG_DRAW
   fl_color(FL_RED);
   #endif
   fl_begin_polygon();
-  fl_vertex (X+W, Y);
-  fl_vertex (x(0.2), Y);
+  fl_vertex (x()+w(), y());
+  fl_vertex (xNachBild(0.2), y());
   for (int i=(int)(nano_max*.48+0.5); i<=(int)(nano_max*.6+0.5); i++)
-    fl_vertex( x(x_xyY), y(y_xyY) );
+    fl_vertex( xNachBild(x_xyY), yNachBild(y_xyY) );
   fl_end_polygon();
   #ifdef DEBUG_DRAW
   fl_color(FL_GREEN);
   #endif
   fl_begin_polygon();
-  fl_vertex (X+W, Y);
+  fl_vertex (x()+w(), y());
   for (int i=(int)(nano_max*.6+0.5); i<=(int)(nano_max+0.5) ; i++)
-    fl_vertex( x(x_xyY), y(y_xyY) );
-  fl_vertex( x(cieXYZ[nano_min][0]/(cieXYZ[nano_min][0]+cieXYZ[nano_min][1]+cieXYZ[nano_min][2])),
-             y(cieXYZ[nano_min][1]/(cieXYZ[nano_min][0]+cieXYZ[nano_min][1]+cieXYZ[nano_min][2])) );
-  fl_vertex (x(.18), Y+H);
-  fl_vertex (X+W, Y+H);
+    fl_vertex( xNachBild(x_xyY), yNachBild(y_xyY) );
+  fl_vertex( xNachBild(cieXYZ[nano_min][0]/(cieXYZ[nano_min][0]+cieXYZ[nano_min][1]+cieXYZ[nano_min][2])),
+             yNachBild(cieXYZ[nano_min][1]/(cieXYZ[nano_min][0]+cieXYZ[nano_min][1]+cieXYZ[nano_min][2])) );
+  fl_vertex (xNachBild(.18), y()+h());
+  fl_vertex (x()+w(), y()+h());
   fl_end_polygon();
 
-  //fl_pop_clip();
+  #undef x_xyY
+  #undef y_xyY
+
+  fl_pop_clip();
 
 
   // Diagramm
   fl_color(VG);
-    // Text
-  fl_font (FL_HELVETICA, 10);
-    // Raster
-  for (float f=0 ; f<n ; f+=0.1) {
-    static char text[64];
-    fl_line ( x(f),(int)(yO+5), x(f),y(n));
-    fl_line ( (int)(xO-5),y(f), x(n),y(f));
-    sprintf ( text, "%.1f", f);
-    fl_draw ( text, (int)(xO-30), y(f)+4 );
-    fl_draw ( text, x(f)-7, (int)(yO+20) );
-  }
-  
+
+  // Raster
+  zeichneRaster_ ();
+
+  fl_push_clip( x(),yNachBild(max_x), xNachBild(max_x),(int)(hoehe+tab_rand_y+0.5) );
 
   { // Primärfarben / Weisspunkt
     register char RGB[3];
     register cmsCIEXYZ XYZ;
     std::vector<double> pos;
-    for (unsigned int i = 0; i < icc_examin->texte[id].size(); i++) {
-        double _XYZ[3] = {icc_examin->punkte[id][i*3+0], icc_examin->punkte[id][i*3+1], icc_examin->punkte[id][i*3+2]};
+    for (unsigned int i = 0; i < texte.size(); i++) {
+        double _XYZ[3] = {punkte[i*3+0], punkte[i*3+1], punkte[i*3+2]};
         double* xyY = XYZto_xyY ( _XYZ );
-        pos.push_back ( x (xyY[0]) );
-        pos.push_back ( y (xyY[1]) );
+        pos.push_back ( xNachBild (xyY[0]) );
+        pos.push_back ( yNachBild (xyY[1]) );
         #ifdef DEBUG_DRAW
-        cout << icc_examin->texte[id][i] << " " << icc_examin->punkte[id].size(); DBG
+        cout << texte[i] << " " << punkte.size(); DBG
         #endif
     }
 
-    if (icc_examin->texte[id][0] != "wtpt") { // markiert den Weisspunkt nur
+    if (texte[0] != "wtpt") { // markiert den Weisspunkt nur
       double* xyY = XYZto_xyY ( profile.profil()->getWhitePkt() );
       int g = 2;
 
       fl_color (FL_WHITE);
-      fl_line ( x(xyY[0])-g, y(xyY[1])-g, x(xyY[0])+g, y(xyY[1])+g );
-      fl_line ( x(xyY[0])-g, y(xyY[1])+g, x(xyY[0])+g, y(xyY[1])-g );
+      fl_line ( xNachBild(xyY[0])-g, yNachBild(xyY[1])-g, xNachBild(xyY[0])+g, yNachBild(xyY[1])+g );
+      fl_line ( xNachBild(xyY[0])-g, yNachBild(xyY[1])+g, xNachBild(xyY[0])+g, yNachBild(xyY[1])-g );
     }
 
     fl_color(BG);
-    if (icc_examin->punkte[id].size() == 9) {
+    if (punkte.size() == 9) {
         for (int k = 0; k <= 3; k+=2) {
             fl_line( (int)(pos[k+0]), (int)(pos[k+1]),
                      (int)(pos[k+2]), (int)(pos[k+3]));
@@ -407,27 +467,27 @@ TagDrawings::drawCieShoe_ (int id, int X, int Y, int W, int H,
     }
 
     int j = 0;
-    for (unsigned int i = 0; i < icc_examin->texte[id].size(); i++) {
+    for (unsigned int i = 0; i < texte.size(); i++) {
         #ifdef DEBUG_DRAW
-        cout << icc_examin->punkte[id][j] << " ";
+        cout << punkte[j] << " ";
         #endif
-        XYZ.X = icc_examin->punkte[id][j++]; 
+        XYZ.X = punkte[j++]; 
         #ifdef DEBUG_DRAW
-        cout << icc_examin->punkte[id][j] << " ";
+        cout << punkte[j] << " ";
         #endif
-        XYZ.Y = icc_examin->punkte[id][j++];
+        XYZ.Y = punkte[j++];
         #ifdef DEBUG_DRAW
-        cout << icc_examin->punkte[id][j] << " " << icc_examin->texte[id][i] << " " << icc_examin->punkte[id].size(); DBG
+        cout << punkte[j] << " " << texte[i] << " " << punkte.size(); DBG
         #endif
-        XYZ.Z = icc_examin->punkte[id][j++]; //1 - ( punkte[i][0] +  punkte[i][1] );
+        XYZ.Z = punkte[j++]; //1 - ( punkte[i][0] +  punkte[i][1] );
 
         // Farbe für Darstellung konvertieren (lcms)
         cmsDoTransform (xform, &XYZ, RGB, 1);
 
         double _XYZ[3] = {XYZ.X, XYZ.Y, XYZ.Z};
         double* xyY = XYZto_xyY ( _XYZ );
-        double pos_x = x(xyY[0]);
-        double pos_y = y(xyY[1]);
+        double pos_x = xNachBild(xyY[0]);
+        double pos_y = yNachBild(xyY[1]);
 
         fl_color (BG);
         fl_circle ( pos_x , pos_y , 9.0);
@@ -438,20 +498,20 @@ TagDrawings::drawCieShoe_ (int id, int X, int Y, int W, int H,
         std::stringstream s;
         std::stringstream t;
         // lcms hilft bei Weisspunkbeschreibung aus
-        if (icc_examin->texte[id][i] == "wtpt") {
+        if (texte[i] == "wtpt") {
           static char txt[1024] = {'\000'};
           _cmsIdentifyWhitePoint (&txt[0], &XYZ);
           t << " (" << &txt[12] << ")";
         }
           
-        s << icc_examin->texte[id][i] << t.str() << " = " << _XYZ[0] <<", "<< _XYZ[1] <<", "<< _XYZ[2];
+        s << texte[i] << t.str() << " = " << _XYZ[0] <<", "<< _XYZ[1] <<", "<< _XYZ[2];
         int _w = 0, _h = 0;
         // Text einpassen
         fl_measure (s.str().c_str(), _w, _h, 1);
         fl_color(FL_WHITE);
         fl_draw ( s.str().c_str(),
-                  (int)(pos_x +9 + _w > x(n) ? x(n) - _w : pos_x +9), 
-                  (int)(pos_y -9 - _h < y(n) ? y(n) + _h : pos_y -9)  );
+                  (int)(pos_x +9 + _w > xNachBild(max_x) ? xNachBild(max_x) - _w : pos_x +9), 
+                  (int)(pos_y -9 - _h < yNachBild(max_x) ? yNachBild(max_x) + _h : pos_y -9)  );
         i++;
       }
   }
@@ -461,39 +521,87 @@ TagDrawings::drawCieShoe_ (int id, int X, int Y, int W, int H,
 }
 
 void
-TagDrawings::drawKurve_    (int id, int X, int Y, int W, int H)
+TagDrawings::zeichneRaster_ ()
+{
+  
+  raster_wert_x_ = (max_x-min_x) * raster_abstand / (double)breite;
+  raster_wert_y_ = (max_y-min_y) * raster_abstand / (double)hoehe;
+
+  // Text
+  fl_font (FL_HELVETICA, 10);
+
+  // TODO Runden
+
+  for (double f=min_x ; f <= max_x ; f += raster_wert_x_)
+  {
+    static char text[64];
+    // Rasterlinien
+    if(zeige_raster)
+      fl_line ( xNachBild(f),(int)(yO+5), xNachBild(f),yNachBild(max_y));
+    else
+      fl_line ( xNachBild(f),(int)(yO+5), xNachBild(f),yNachBild(min_y));
+
+    // Werte
+    if(raster_wert_x_ < 0.01)
+      sprintf ( text, "%.3f", f);
+    else if(raster_wert_x_ < 0.1)
+      sprintf ( text, "%.2f", f);
+    else if(raster_wert_x_ < 1)
+      sprintf ( text, "%.1f", f);
+    else
+      sprintf ( text, "%.f", f);
+    fl_draw ( text, xNachBild(f)-7, (int)(yO+20) );
+  }
+  for (double f=min_y ; f <= max_y ; f += raster_wert_y_)
+  {
+    static char text[64];
+    // Rasterlinien
+    if(zeige_raster)
+      fl_line ( (int)(xO-5),yNachBild(f), xNachBild(max_x),yNachBild(f));
+    else
+      fl_line ( (int)(xO-5),yNachBild(f), xNachBild(min_x),yNachBild(f));
+
+    // Werte
+    if(raster_wert_y_ < 0.01)
+      sprintf ( text, "%.3f", f);
+    else if(raster_wert_y_ < 0.1)
+      sprintf ( text, "%.2f", f);
+    else if(raster_wert_y_ < 1)
+      sprintf ( text, "%.1f", f);
+    else
+      sprintf ( text, "%.f", f);
+    fl_draw ( text, (int)(xO-30), yNachBild(f)+4 );
+  }
+  fl_color(FL_WHITE);
+  if (ursprung_zeichnen)
+  {
+    if (min_x < 0)
+      fl_line ( xNachBild(0),(int)(yO+5), xNachBild(0),yNachBild(max_y));
+    if (min_y < 0)
+      fl_line ( (int)(xO-5),yNachBild(0), xNachBild(max_x),yNachBild(0));
+  }
+  fl_color(VG);
+}
+
+void
+TagDrawings::drawKurve_    ()
 { DBG_prog_start
+
   // Zeichenflaeche
   fl_color(BG);
-  fl_rectf(X,Y,W,H);
-
-  // Diagrammvariablen
-  n = 1.0;                        // maximale Hoehe 
-
-  xO = X + tab_border_x + 10;     // Ursprung
-  yO = Y + H - tab_border_y - 10; // Ursprung
-  breite  = (W - 2*tab_border_x);      // Breite des Diagrammes
-  hoehe   = (H - 2*tab_border_y);      // Hoehe des Diagrammes
-
-  fl_push_clip( X,y(n), x(n),(int)(hoehe+tab_border_y+0.5) );
-
-  // Tangente
-  fl_color(DIAG);
-  fl_line(x(0), y(0), x(1), y(1));
+  fl_rectf(x(),y(),w(),h());
 
   // Diagramm
   fl_color(VG);
-    // Text
-  fl_font (FL_HELVETICA, 10);
-    // Raster
-  for (float f=0 ; f<=n ; f+=0.1) {
-    static char text[64];
-    fl_line ( x(f),(int)(yO+5), x(f),y(n));
-    fl_line ( (int)(xO-5),y(f), x(n),y(f));
-    sprintf ( text, "%.1f", f);
-    fl_draw ( text, (int)(xO-30), y(f)+4 );
-    fl_draw ( text, x(f)-7, (int)(yO+20) );
-  }
+  zeichneRaster_ ();
+
+  // Zeichenbereich
+  fl_push_clip( x(),yNachBild(max_y), xNachBild(max_x),(int)(hoehe+tab_rand_y+0.5) );
+
+  // Tangente
+  fl_color(DIAG);
+  fl_line( xNachBild(min_x), yNachBild(min_y), xNachBild(max_x), yNachBild(max_y) );
+
 
   // Kurve
   fl_font ( FL_HELVETICA, 12) ;
@@ -502,13 +610,20 @@ TagDrawings::drawKurve_    (int id, int X, int Y, int W, int H)
   bool ist_kurve = false;
   icColorSpaceSignature icc_colour_space_signature = icSigLabData;
   int* flFarben = getChannel_flColours (icc_colour_space_signature);
-  for (unsigned int j = 0; j < icc_examin->kurven[id].size(); j++) {
-    if (icc_examin->kurven[id].size() <= icc_examin->texte[id].size())
-      name = icc_examin->texte[id][j];
+  unsigned kurven_n;
+  if(kurven.size()) kurven_n = kurven.size();
+  else              kurven_n = kurven2.size();
+
+  static const char symbol_[][4] = {"*","o","#","x","$","s"};
+  const int sym_n=sizeof(symbol_)/4; DBG_PROG_V( sym_n )
+  int symbol_n_ = 0;
+  for (unsigned int j = 0; j < kurven_n; j++) {
+    if (kurven_n <= texte.size())
+      name = texte[j];
     else
       name = _("unbekannte Farbe");
-    if (icc_examin->kurven[id].size() < icc_examin->texte[id].size()
-     && icc_examin->texte[id][icc_examin->texte[id].size()-1] == "curv")
+    if (kurven_n < texte.size()
+     && texte[texte.size()-1] == "curv")
       ist_kurve = true;
 
     fl_color( flFarben[j] );
@@ -568,79 +683,120 @@ TagDrawings::drawKurve_    (int id, int X, int Y, int W, int H)
       fl_color(9 + j);
     }
     #ifdef DEBUG//_DRAW
-    cout << "Zeichne Kurve "<< name << " " << j << " " << icc_examin->kurven[id][j].size() << " Teile "; DBG
+    cout << "Zeichne Kurve "<< name << " " << j << " " << kurven[j].size() << " Teile "; DBG
     #endif
     s.str("");
-    if (icc_examin->kurven[id][j].size() == 0
-     && ist_kurve) {
-      fl_line (x( 0 ), y( 0 ), x( 1 ), y( 1 ) );
+    if (kurven2.size())
+    {
+      if (symbol_n_ >= sym_n) symbol_n_ = 0;
+      int korr_x, korr_y;
+      fl_measure(symbol_[symbol_n_],  korr_x,  korr_y, 1);
+      korr_x = (int)(korr_x* -1./6. +.5);
+      korr_y = (int)(korr_y*1./4. +.5);
+      for (unsigned int i = 0; i < kurven2[j].size(); i++)
+        if( zeichne_symbole ) {
+          if( kurve_umkehren )
+            fl_draw (symbol_[symbol_n_], xNachBild(kurven2[j][i].first)+korr_x,
+                     yNachBild( kurven2[j][i].second)+korr_y );
+          else
+            fl_draw (symbol_[symbol_n_], xNachBild(kurven2[j][i].second)+korr_x,
+                     yNachBild( kurven2[j][i].first)+korr_y );
+        }
+      
+      for (unsigned int i = 1; i < kurven2[j].size(); i++) {
+        if( zeichne_linie ) {
+          if( kurve_umkehren )
+            fl_line (xNachBild( kurven2[j][i-1].first),
+                     yNachBild( kurven2[j][i-1].second),
+                     xNachBild( kurven2[j][i].first),
+                     yNachBild( kurven2[j][i].second) );
+          else
+            fl_line (xNachBild( kurven2[j][i-1].second),
+                     yNachBild( kurven2[j][i-1].first),
+                     xNachBild( kurven2[j][i].second),
+                     yNachBild( kurven2[j][i].first) );
+        }
+      }
+      s << name << _(" mit ") << kurven2[j].size() << _(" Punkten")<<": "<<symbol_[symbol_n_];
+      fl_draw ( s.str().c_str(), xNachBild(min_x) + 2, yNachBild(max_y) + j*16 + 12);
+      ++symbol_n_;
+    } else if (kurven[j].size() == 0 &&
+               ist_kurve) {
+      fl_line (xNachBild( min_x ), yNachBild( min_y ), xNachBild( max_x ), yNachBild( max_y ) );
       // Infos einblenden 
       s << name << _(" mit Gamma: 1.0");
-      fl_draw ( s.str().c_str(), x(0) + 2, y(n) + j*16 + 12);
+      fl_draw ( s.str().c_str(), xNachBild(0) + 2, yNachBild(max_y) + j*16 +12);
     // parametrischer Eintrag
-    } else if (icc_examin->kurven[id][j].size() == 1
+    } else if (kurven[j].size() == 1
             && ist_kurve) {
-      int segmente = 256;
-      double gamma = icc_examin->kurven[id][j][0]; DBG_V( gamma )
+      double segmente = 256;
+      double gamma = kurven[j][0]; DBG_V( gamma )
       for (int i = 1; i < segmente; i++)
-        fl_line (x( pow( (double)(i-1.0)/segmente, gamma ) ),
-                 y( (i-1) / ((segmente-1) *n) ),
-                 x( pow( (double)i/segmente, gamma ) ),
-                 y( (i) / ((segmente-1) *n) ) );
+        fl_line (xNachBild( pow( (double)(i-1.0)/segmente, gamma ) * max_x ),
+                 yNachBild( (i-1) / ((segmente-1) / max_y) ),
+                 xNachBild( pow( (double)i/segmente, gamma ) * max_x ),
+                 yNachBild( (i) / ((segmente-1) / max_y) ) );
       // Infos einblenden 
       s << name << _(" mit einem Eintrag für Gamma: ") << gamma; DBG_V( gamma )
-      fl_draw ( s.str().c_str(), x(0) + 2, y(n) + j*16 + 12);
+      fl_draw ( s.str().c_str(), xNachBild(0) + 2, yNachBild(max_y) + j*16 +12);
     // parametrischer Eintrag mit Wert für Minimum und Maximum 
-    } else if (icc_examin->kurven[id][j].size() == 3
-            && icc_examin->texte[id][icc_examin->texte[id].size()-1] == "gamma_start_ende") {
-      int segmente = 256;
-      double gamma = icc_examin->kurven[id][j][0]; DBG_V( gamma )
-      double start = icc_examin->kurven[id][j][1]; DBG_V( start )
-      double ende  = icc_examin->kurven[id][j][2]; DBG_V( ende )
+    } else if (kurven[j].size() == 3
+            && texte[texte.size()-1] == "gamma_start_ende") {
+      double segmente = 256;
+      double gamma = kurven[j][0]; DBG_V( gamma )
+      double start = kurven[j][1]; DBG_V( start )
+      double ende  = kurven[j][2]; DBG_V( ende )
       double mult  = (ende - start); DBG_V( mult )
       for (int i = 1; i < segmente; i++) {
-        fl_line (x( pow( (double)(i-1.0)/segmente, gamma ) * mult + start ),
-                 y( (i-1) / ((segmente-1) *n) ),
-                 x( pow( (double)i/segmente, gamma ) * mult + start),
-                 y( (i) / ((segmente-1) *n) ) );
+        fl_line (xNachBild( (pow( (double)(i-1.0)/segmente, gamma)
+                            * mult + start) * max_x ),
+                 yNachBild( (i-1) / ((segmente-1) / max_y) ),
+                 xNachBild( (pow( (double)i/segmente, gamma ) * mult + start)
+                            * max_x ),
+                 yNachBild( (i) / ((segmente-1) / max_y) ) );
       }
       // Infos einblenden 
       s << name << _(" mit einem Eintrag für Gamma: ") << gamma;
-      fl_draw ( s.str().c_str(), x(0) + 2, y(n) + j*16 + 12);
+      fl_draw ( s.str().c_str(), xNachBild(0) + 2, yNachBild(max_y) + j*16 +12);
     // segmentierte Kurve
-    } else {
-      for (unsigned int i = 1; i < icc_examin->kurven[id][j].size(); i++) {
-        if (icc_examin->kurve_umkehren[id])
-          fl_line (x( (i-1) / ((icc_examin->kurven[id][j].size()-1) *n) ),
-                   y( icc_examin->kurven[id][j][i-1] ),
-                   x( (i) / ((icc_examin->kurven[id][j].size()-1) *n) ),
-                   y( icc_examin->kurven[id][j][i] ) );
+    } else { // Wertebereich 0.0 -> max_[x,y]
+      for (unsigned int i = 1; i < kurven[j].size(); i++) {
+        if( kurve_umkehren )
+          fl_line (xNachBild( (i-1) / ((kurven[j].size() -1)
+                              / max_x) ),
+                   yNachBild( kurven[j][i-1] * max_y ),
+                   xNachBild( (i) / ((kurven[j].size() - 1)
+                              / max_x) ),
+                   yNachBild( kurven[j][i] * max_y) );
         else
-          fl_line (x( icc_examin->kurven[id][j][i-1] ),
-                   y( (i-1) / ((icc_examin->kurven[id][j].size()-1) *n) ),
-                   x( icc_examin->kurven[id][j][i] ),
-                   y( (i) / ((icc_examin->kurven[id][j].size()-1) *n) ) );
+          fl_line (xNachBild( kurven[j][i-1] * max_x),
+                   yNachBild( (i-1) / ((kurven[j].size() -1)
+                              / max_y) ),
+                   xNachBild( kurven[j][i] * max_x),
+                   yNachBild( (i) / ((kurven[j].size() - 1)
+                              / max_y) ) );
       }
       // Infos einblenden 
-      s << name << _(" mit ") << icc_examin->kurven[id][j].size() << _(" Punkten");
-      fl_draw ( s.str().c_str(), x(0) + 2, y(n) + j*16 + 12);
+      s << name << _(" mit ") << kurven[j].size() << _(" Punkten");
+      fl_draw ( s.str().c_str(), xNachBild(min_x) + 2, yNachBild(max_y) + j*16 +12);
     }
   }
   // zusätzlicher Text
-  if (icc_examin->texte[id].size() > icc_examin->kurven[id].size()) { 
+  if (texte.size() > kurven.size() &&
+      texte.size() > kurven2.size() )
+  { 
     fl_color(FL_BLACK);
-    for(unsigned j = icc_examin->kurven[id].size();
-          j < icc_examin->texte[id].size(); ++j)
-      if(icc_examin->texte[id][j] != "gamma_start_ende")
-        fl_draw ( icc_examin->texte[id][j].c_str(), x(0) + 2, y(n) + j*16 + 12);
+    for(unsigned j = kurven.size();
+          j < texte.size(); ++j)
+      if(texte[j] != "gamma_start_ende" &&
+         texte[j] != "curv")
+        fl_draw ( texte[j].c_str(), xNachBild(min_x) + 2, yNachBild(max_y) + j*16 + 12);
   }
 
   fl_pop_clip();
   DBG_prog_ende
 }
 
-#undef x
-#undef y
 
 #if 0
 /**********************************************************************/

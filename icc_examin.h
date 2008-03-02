@@ -87,6 +87,7 @@ class ICCexamin
 
     void histogram();
     void vcgtZeigen ();
+    void testZeigen ();
     void moniSetzen ();
     void standardGamma ();
   private:

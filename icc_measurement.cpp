@@ -47,6 +47,7 @@
 #include "icc_examin.h"
 #include "icc_version.h"
 #include "icc_helfer.h"
+#include "icc_cgats_filter.h"
 
 #define _(text) text
 #define g_message printf
@@ -835,6 +836,34 @@ ICCmeasurement::getText                     (void)
 
   DBG_PROG_ENDE
   return tabelle;
+}
+
+std::string
+ICCmeasurement::getCGATS              (void)
+{ DBG_PROG_START
+  std::string text =  "";
+
+  if(has_data())
+    text = cgats_korrigieren(_data,_size);
+  else
+    text = "";
+
+  DBG_PROG_ENDE
+  return text;
+}
+
+std::string
+ICCmeasurement::getMaxCGATS           (void)
+{ DBG_PROG_START
+  std::string text =  "";
+
+  if(has_data())
+    text = cgats_max_korrigieren(_data,_size);
+  else
+    text = "";
+
+  DBG_PROG_ENDE
+  return text;
 }
 
 std::vector<std::string>

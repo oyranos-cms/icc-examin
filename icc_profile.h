@@ -41,7 +41,6 @@
 #include "icc_utils.h"
 #include "icc_formeln.h"
 #include "icc_helfer.h"
-#include "icc_cgats_filter.h"
 
 
 
@@ -439,12 +438,8 @@ class ICCmeasurement {
     std::vector<std::string> getDescription();
     std::string         getHtmlReport (bool export_ausserhalb);
     std::vector<int>    getLayout ()       {DBG_PROG return layout; }
-    std::string         getCGATS()         {DBG_PROG if(has_data())
-                                          return cgats_korrigieren(_data,_size);
-                                          else return ""; }
-    std::string         getMaxCGATS (){DBG_PROG if(has_data())
-                                      return cgats_max_korrigieren(_data,_size);
-                                      else return ""; }
+    std::string         getCGATS    ();
+    std::string         getMaxCGATS ();
 
     // Herkunft
     std::string         getTagName()       {return getSigTagName (_sig); }

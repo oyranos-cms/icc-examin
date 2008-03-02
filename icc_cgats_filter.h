@@ -29,7 +29,6 @@
 #define ICC_CGATS_FILTER_H
 
 #include "icc_utils.h"
-#include "icc_cgats_filter.h"
 
 #include <vector>
 #include <string>
@@ -38,15 +37,13 @@
 
 class CgatsFilter
 {
-    const static double pi = M_PI;           // integral type
-
     // statische Hilfsobjekte
-    const static char *cgats_alnum_;         // non-integral type
-    const static char *cgats_alpha_;
-    const static char *cgats_numerisch_;
-    const static char *cgats_ziffer_;
-    const static char *leer_zeichen_;
-    const static char ss_woerter_[STD_CGATS_FIELDS][16];// Standard Schlüsselwö.
+    static const char *cgats_alnum_;         // non-integral type
+    static const char *cgats_alpha_;
+    static const char *cgats_numerisch_;
+    static const char *cgats_ziffer_;
+    static const char *leer_zeichen_;
+    static const char ss_woerter_[STD_CGATS_FIELDS][16];// Standard Schlüsselwö.
   public:
     CgatsFilter ()
     { DBG_PROG_START
@@ -55,6 +52,7 @@ class CgatsFilter
         kopf = "ICCEXAM";
         spektral = "SPECTRAL_";
         anfuehrungsstriche_setzen = false;
+        messungen.resize(1);
         DBG_PROG_ENDE
     }
     ~CgatsFilter () {; }
@@ -82,11 +80,19 @@ class CgatsFilter
     std::string spektral;
     bool        anfuehrungsstriche_setzen; // für ausgegebene Worte in DATA
 
-    // Liste von Blöcken + Feldbezeichnern
+    // synchrone Liste von Kommentaren + Feldbezeichnern + Blöcken
     //   v- Feld/Block v- Zeilen   v- Inhalt
-    std::vector<  std::vector<std::string> > felder;
-    std::vector<  std::vector<std::string> > bloecke;
-
+    struct Messung {
+      std::vector<std::string> kommentare;
+      std::vector<std::string> felder;
+      std::vector<std::string> block;
+      int feld_spalten;
+      int block_zeilen;
+    };
+    std::vector<Messung> messungen;
+  private:
+    void neuerAbschnitt_ ();
+  public:
     // Die Liste von Mitteilungen und Auffälligkeiten
     // Anm.: bei zusammengefassten Vorgängen ist eventuell nur "meldung" gültig
     struct Log {
@@ -111,7 +117,7 @@ class CgatsFilter
 
     // - Hilfsfunktionen -
     // Auszählen der Formate(Farbkanäle) im DATA_FORMAT Block
-    int sucheInDATA_FORMAT_( std::string &zeile );
+    int sucheInDATA_FORMAT_( std::string &zeile, int &zeile_n );
     // klassifiziert CGATS Keywords; sinnvoll ausserhalb der Blöcke
     int sucheSchluesselwort_( std::string zeile );
     // eine Zeile ausserhalb der beiden DATA und FORMAT Blöcke nach
@@ -154,12 +160,15 @@ class CgatsFilter
     std::string              data_;      // der korrigierte CGATS Text
     std::string              data_orig_; // eine Kopie vom Original
     std::vector<std::string> s_woerter_; // Schlüsselwörter
+    std::vector<std::string> zeilen_;    // Arbeitsspeicher
     int                      typ_;       // Art des Filterns
     enum {                   // enum passend zu typ_
       LCMS,
       MAX_KORRIGIEREN
     };
+    int zeile_letztes_NUMBER_OF_FIELDS;
 };
+
 
 
 // fertig zum Anwenden

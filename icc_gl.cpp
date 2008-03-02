@@ -985,7 +985,6 @@ GL_Ansicht::zeigeSpektralband_()
   DBG_PROG_ENDE
 }
 
-
 void
 GL_Ansicht::menueErneuern_()
 { DBG_PROG_START
@@ -1039,7 +1038,8 @@ GL_Ansicht::menuInit_()
   if (glut_id_ == 1) { menue_ = glutCreateMenu(handlemenu1); }
   else {               menue_ = glutCreateMenu(handlemenu2); }
   DBG_PROG_V( menue_ )
-  menue_schnitt_ = glutCreateMenu(agvSwitchMoveMode); DBG_PROG_V(menue_schnitt_)
+  if (glut_id_ == 1) { menue_schnitt_ =glutCreateMenu(agv::agvSwitchMoveMode1);}
+  else {               menue_schnitt_ =glutCreateMenu(agv::agvSwitchMoveMode2);}
   if (glut_id_ == 1) { menue_hintergrund_ = glutCreateMenu(handlemenu1); }
   else {               menue_hintergrund_ = glutCreateMenu(handlemenu2); }
   if (glut_id_ == 1) { menue_form_ = glutCreateMenu(handlemenu1); }
@@ -1196,7 +1196,7 @@ display(int id)
                   // ^-- vordere Schnittfläche
 
     /* so this replaces gluLookAt or equiv */
-    agvViewTransform();
+    agviewers[icc_examin->glAnsicht(id)->agv()].agvViewTransform();
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
@@ -1220,6 +1220,7 @@ display(int id)
   }
   DBG_ICCGL_ENDE
 }
+
 
 void
 GL_Ansicht::hineinPunkte       (std::vector<double>      vect,
@@ -1372,10 +1373,10 @@ sichtbar (int id, int v)
   if(icc_examin->glAnsicht(id)->sichtbar()) {
     glutSetWindow(id);
     if (v == GLUT_VISIBLE)
-      agvSetAllowIdle(1);
+      agviewers[icc_examin->glAnsicht(id)->agv()].agvSetAllowIdle(1);
     else {
       glutIdleFunc(NULL);
-      agvSetAllowIdle(0);
+      agviewers[icc_examin->glAnsicht(id)->agv()].agvSetAllowIdle(0);
     }
   }
   DBG_PROG_ENDE
@@ -1387,10 +1388,10 @@ menuuse (int id, int v)
   if(icc_examin->glAnsicht(id)->sichtbar()) {
     glutSetWindow(id);
     if (v == GLUT_MENU_NOT_IN_USE)
-      agvSetAllowIdle(1);
+      agviewers[icc_examin->glAnsicht(id)->agv()].agvSetAllowIdle(1);
     else {
       glutIdleFunc(NULL);
-      agvSetAllowIdle(0);
+      agviewers[icc_examin->glAnsicht(id)->agv()].agvSetAllowIdle(0);
     }
   }
   DBG_PROG_ENDE
@@ -1420,10 +1421,10 @@ handlemenu (int id, int value)
       Rotating = !Rotating;
       if (Rotating) {
 	//glutIdleFunc(rotatethering);    /* install our idle function */
-	agvSetAllowIdle(0);         /* and tell AGV to not */
+	agviewers[icc_examin->glAnsicht(id)->agv()].agvSetAllowIdle(0); /* and tell AGV to not */
       } else {
 	glutIdleFunc(NULL);    /* uninstall our idle function      */
-	agvSetAllowIdle(1);/* and tell AGV it can mess with it */
+	agviewers[icc_examin->glAnsicht(id)->agv()].agvSetAllowIdle(1);/* and tell AGV it can mess with it */
       }
       break;
     case MENU_KUGEL:
@@ -1538,4 +1539,10 @@ dID (int id, int display_list)
   return id*DL_MAX + display_list;
 }
 
+
+
+#undef ZeichneText
+#undef FARBE
+#undef ZeichneBuchstaben
+#undef implementGlutFunktionen
 

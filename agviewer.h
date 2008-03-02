@@ -40,6 +40,8 @@
 #  include <GL/glu.h> // added for FLTK
 #endif
 
+#include "icc_utils.h" // ICC Examin
+
 class
 Agviewer
 {
@@ -259,7 +261,7 @@ public:
   int AllowIdle,
       RedisplayWindow;                      // glutWindow
   public: 
-  int redisplayWindow() {return RedisplayWindow; }
+  int redisplayWindow() {DBG_PROG_V(RedisplayWindow) return RedisplayWindow; }
   private:
    /* If AllowIdle is 1 it means AGV will install its own idle which
     * will update the viewpoint as needed and send glutPostRedisplay() to the
@@ -296,6 +298,8 @@ public:
 
 extern std::vector<Agviewer> agviewers;
 
+namespace agv {
+
 extern "C" {
   // Funktionszeiger / pointer
   extern void agvMove(int glut_fenster);
@@ -305,9 +309,12 @@ extern "C" {
   extern void agvHandleMotion(int x, int y);
   extern void agvHandleKeys(unsigned char key, int x, int y);
   extern void agvViewTransform(void);
-  extern void agvSwitchMoveMode(int move);
+  extern void agvSwitchMoveMode1(int move);
+  extern void agvSwitchMoveMode2(int move);
   extern void agvSetAllowIdle(int allowidle);
   extern int  agvMoving();
+
+}
 
 }
 

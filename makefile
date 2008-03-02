@@ -1,5 +1,5 @@
 CC=c++
-MAKEDEPEND	= /usr/X11R6//bin/makedepend -Y
+MAKEDEPEND	= /usr/X11R6/bin/makedepend -Y
 RM = rm -v
 
 prefix		= /opt/local
@@ -212,7 +212,7 @@ it3:	t3
 	cp test3 /opt/kai-uwe/bin/icc_examin
 
 depend:
-	$(MAKEDEPEND) -fmakedepend -I.. $(SOURCES) $(CFILES) $(CPP_HEADERS)
+	$(MAKEDEPEND) -f makedepend -s "#Bitte stehen lassen" -I. $(CXXFLAGS) $(SOURCES)
 
 
 # The extension to use for executables...
@@ -248,4 +248,7 @@ tgz:
 	$(addprefix $(dir)/,$(FLUID)) \
 	| gzip > $(TARGET)_$(mtime).tgz
 	mv -v $(TARGET)_*.tgz ../Archiv
+
+# Abhängigkeiten
+include makedepend
 

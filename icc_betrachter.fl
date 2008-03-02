@@ -1,5 +1,5 @@
 # data file for the Fltk User Interface Designer (fluid)
-version 1.0104 
+version 1.0106 
 header_name {.h} 
 code_name {.cxx}
 decl {\#define DEBUG} {public
@@ -373,7 +373,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window vcgt {
       label {Grafikkarten Gamma Tabellen}
-      xywh {678 440 370 390} type Double resizable
+      xywh {664 169 370 390} type Double resizable
       code0 {o->hide();} non_modal visible
     } {
       Fl_Group {} {open
@@ -408,7 +408,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window details {
       label {ICC Details} open
-      xywh {877 424 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
+      xywh {660 403 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
     } {
       Fl_Group {} {open
         xywh {0 0 385 520}
@@ -514,9 +514,15 @@ class ICCfltkBetrachter {open
             menuitem menueintrag_vcgt {
               label {Grafikkarten Gamma}
               callback {vcgt->show();
-icc_examin->vcgtZeigen();} selected
+icc_examin->vcgtZeigen();}
               xywh {15 15 100 20} shortcut 0x40074
               code0 {o->hide();}
+            }
+            menuitem menueintrag_testkurven {
+              label {Test Kurven}
+              callback {vcgt->show();
+icc_examin->testZeigen();} selected
+              xywh {25 25 100 20} shortcut 0x50074
             }
           }
           submenu menu_hilfe {
