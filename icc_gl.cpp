@@ -70,7 +70,7 @@ void GL_Ansicht::zeigen() {
   if (!first)
     GLFenster->size(w(),h());
   DBG_PROG_V( w() <<" "<< h() )
-  agvSetAllowIdle (1);
+  agv.agvSetAllowIdle (1);
   GLfenster_zeigen = true;
   DBG_PROG
 }
@@ -79,7 +79,7 @@ void
 GL_Ansicht::verstecken()
 { DBG_PROG_START
   if (!first) {
-    agvSwitchMoveMode (AGV_STOP);
+    agv.agvSwitchMoveMode (agviewer::AGV_STOP);
     GLFenster->size(1,1);
   }
   DBG_PROG_V( w() <<" "<< h() )
@@ -109,14 +109,14 @@ void GL_Ansicht::init() {
   GLFenster->end(); DBG_PROG
   GLFenster->resizable(glut_window);
 
-  agvInit(1); DBG_PROG
+  agv.agvInit(1); DBG_PROG
 
   glutReshapeFunc(reshape); DBG_PROG
   glutDisplayFunc(display); DBG_PROG
   //glutVisibilityFunc(sichtbar); DBG_PROG
   //glutMenuStateFunc(menuuse); DBG_PROG
 
-  agvMakeAxesList(AXES); DBG_PROG
+  agv.agvMakeAxesList(AXES); DBG_PROG
 
   myGLinit();  DBG_PROG
   MakeDisplayLists(); DBG_PROG
@@ -506,22 +506,22 @@ void GL_Ansicht::MenuInit() {
   DBG_PROG_START
   int sub2 = glutCreateMenu(agvSwitchMoveMode);   /* pass these right to */
   sprintf (text_L, "%s %s", pcsNamen[0].c_str(), _("Schnitt"));
-  glutAddMenuEntry(text_L,  ICCFLY_L);
+  glutAddMenuEntry(text_L,  agviewer::ICCFLY_L);
   sprintf (text_a, "%s %s", pcsNamen[1].c_str(), _("Schnitt"));
-  glutAddMenuEntry(text_a,  ICCFLY_a);
+  glutAddMenuEntry(text_a,  agviewer::ICCFLY_a);
   sprintf (text_b, "%s %s", pcsNamen[2].c_str(), _("Schnitt"));
-  glutAddMenuEntry(text_b,  ICCFLY_b); DBG_NUM_V( text_L )
+  glutAddMenuEntry(text_b,  agviewer::ICCFLY_b); DBG_NUM_V( text_L )
 /*  glutAddMenuEntry(_("L Schnitt"),  ICCFLY_L);
   glutAddMenuEntry(_("a Schnitt"),  ICCFLY_a);
   glutAddMenuEntry(_("b Schnitt"),  ICCFLY_b);*/
-  glutAddMenuEntry(_("Schnitt"),    FLYING); /* agvSwitchMoveMode() */
-  glutAddMenuEntry(_("Drehen um L-Schnitt"),  ICCPOLAR);
+  glutAddMenuEntry(_("Schnitt"),    agviewer::agviewer::FLYING); /* agvSwitchMoveMode() */
+  glutAddMenuEntry(_("Drehen um L-Schnitt"),  agviewer::ICCPOLAR);
 //  glutAddMenuEntry(_("Betrachten"),   POLAR);
 
   int sub3 = glutCreateMenu(handlemenu);
-  glutAddMenuEntry(_("Kugel"),  MENU_KUGEL); 
+  glutAddMenuEntry(_("Kugel"),  MENU_KUGEL);
   glutAddMenuEntry(_("Würfel"), MENU_WUERFEL);
-  glutAddMenuEntry(_("Stern"),  MENU_STERN), 
+  glutAddMenuEntry(_("Stern"),  MENU_STERN);
   glutCreateMenu(handlemenu);
   glutAddSubMenu(_("Querschnitte"), sub2);
   //glutAddMenuEntry(_("Achsen ein/aus"), MENU_AXES);
@@ -728,7 +728,7 @@ void rotatethering(void)
   //DBG_PROG_START
   Rotation += ROTATEINC;
 
-  if (agvMoving)   /* we since we are the only idle function, we must */
+  if (agvMoving())   /* we since we are the only idle function, we must */
     agvMove();     /* give AGV the chance to update the eye position */
 
   glutPostRedisplay();
@@ -752,10 +752,10 @@ void handlemenu(int value)
       Rotating = !Rotating;
       if (Rotating) {
 	glutIdleFunc(rotatethering);    /* install our idle function */
-	agvSetAllowIdle(0);             /* and tell AGV to not */
+	agvSetAllowIdle(0);         /* and tell AGV to not */
       } else {
 	glutIdleFunc(NULL);    /* uninstall our idle function      */
-	agvSetAllowIdle(1);    /* and tell AGV it can mess with it */
+	agvSetAllowIdle(1);/* and tell AGV it can mess with it */
       }
       break;
     case MENU_KUGEL:

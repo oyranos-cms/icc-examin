@@ -46,6 +46,7 @@ class GL_Ansicht : public Fl_Group {
   void myGLinit();
   void MenuInit();
 public:
+  agviewer agv;
   bool GLfenster_zeigen,
        first;
   GL_Ansicht(int X,int Y,int W,int H);
@@ -62,7 +63,7 @@ public:
   void MakeDisplayLists();
   void zeigen();
   void verstecken();
-  void stop() {if (!first) { agvSwitchMoveMode (AGV_STOP); } }
+  void stop() {if (!first) { agvSwitchMoveMode (agviewer::AGV_STOP); } }
 
   char* kanalName() {return (char*)texte[kanal].c_str(); }
   char* kanalName(unsigned int i) { if (texte.size()>i) 

@@ -219,7 +219,7 @@ Function {} {open C return_type int
   \#endif} {}
   Fl_Window ueber {
     label {Über ICC examin} open
-    xywh {767 418 366 241} type Double resizable
+    xywh {772 442 366 241} type Double resizable
     code0 {o->hide();} non_modal visible
   } {
     Fl_Group {} {open
@@ -236,8 +236,8 @@ Function {} {open C return_type int
     }
   }
   Fl_Window details {
-    label {ICC Details} open selected
-    xywh {896 527 385 520} type Double box NO_BOX color 53
+    label {ICC Details} open
+    xywh {777 247 385 520} type Double box NO_BOX color 53
     code1 {DBG_PROG
 
     if (argc>1) {
@@ -453,6 +453,14 @@ ueber_html->value(getUeberHtml().c_str());}
             code0 {o->show();}
             class TagTexts
           }
+        }
+      }
+      Fl_Group group_histogram {open
+        xywh {0 25 385 470}
+        code0 {o->hide();}
+      } {
+        Fl_Box 3D_histogram {selected
+          xywh {0 25 385 470}
         }
       }
       Fl_Group {} {open

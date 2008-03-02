@@ -24,6 +24,11 @@
  * http://www.cs.hmc.edu/people/pwinston
  */
 
+/*
+ * move (mostly) all into one class - Kai-Uwe Behrmann 2004
+ *
+ */
+
 #include <FL/glut.H>
 #ifdef __APPLE__
 #  include <OpenGL/glu.h>
@@ -31,6 +36,69 @@
 #  include <GL/glu.h> // added for FLTK
 #endif
 
+class
+agviewer {
+  public:
+
+  agviewer ()  {
+/***************************************************************/
+/************************** SETTINGS ***************************/
+/***************************************************************/
+
+   /* Initial polar movement settings */
+          init_polar_az = 90.0;
+          init_polar_el = 90.0;
+          init_dist     = 4.74;
+          init_az_spin  = 0.0;
+          init_el_spin  = 0.0;
+
+
+  /* Start in this mode */
+          MoveMode = POLAR;  /* FLYING or POLAR mode? */
+
+  /* Initial flying movement settings */
+          init_move     = 0.01;
+          minmove       = 0.001;
+          Ex = 0.0;             /* flying parameters */
+          Ey = -2.0;
+          Ez = -2.0;
+          EyeMove = init_move;
+
+          EyeDist = init_dist;      /* polar params */
+          AzSpin  = init_az_spin;
+          ElSpin  = init_el_spin;
+
+          EyeAz = init_polar_az;    /* used by both */
+          EyeEl = init_polar_el;
+
+  /* Multiply EyeMove by (1+-movefraction) when +/- hit in FLYING mode */
+          movefraction = 0.25;
+
+  /* What to multiply number of pixels mouse moved by to get rotation amount */
+          el_sens   = 0.5;
+          az_sens   = 0.5;
+
+  /* What to multiply number of pixels mouse moved by for movement amounts */
+          dist_sens = 0.01;
+          e_sens    = 0.01;
+
+  /* Minimum spin to allow in polar (lower forced to zero) */
+          min_azspin = 0.1;
+          min_elspin = 0.1;
+
+  /* Factors used in computing dAz and dEl (which determine AzSpin, ElSpin) */
+          slow_daz = 0.90;
+          slow_del = 0.90;
+          prev_daz = 0.80;
+          prev_del = 0.80;
+          cur_daz  = 0.20;
+          cur_del  = 0.20;
+
+          downb = -1;
+          AdjustingAzEl = 0;
+          }
+  
+  ~agviewer () {; }
 
  /*
   * Call agvInit() with glut's current window set to the window in 
@@ -57,21 +125,30 @@
   * when your idle isn't installed. 
   *
   */
-void agvInit(int allowidle);
-void agvSetAllowIdle(int allowidle);
-
+  void agvInit(int allowidle);
+  void agvSetAllowIdle(int allowidle);
 
  /*
   * Set which movement mode you are in.
   */
-typedef enum { FLYING, POLAR , ICCPOLAR , ICCFLY_L, ICCFLY_a, ICCFLY_b, AGV_STOP } MovementType;
-void agvSwitchMoveMode(int move);
+  typedef enum {
+  FLYING,
+  POLAR ,
+  ICCPOLAR ,
+  ICCFLY_L,
+  ICCFLY_a,
+  ICCFLY_b,
+  AGV_STOP
+  } MovementType;
+
+  void agvSwitchMoveMode(int move);
+
 
  /*
   * agvViewTransform basically does the appropriate gluLookAt() for the 
   * current position.  So call it in your display on the projection matrix
   */
-void agvViewTransform(void);
+  void agvViewTransform(void);
 
  /*
   * agvMoving will be set by AGV according to whether it needs you to call
@@ -79,8 +156,8 @@ void agvViewTransform(void);
   * you aren't allowing AGV to do its own idle.
   * (Don't change the value of agvMoving)
   */
-extern int agvMoving;
-void agvMove(void);
+  int agvMoving;    /* Currently moving?  */
+  void _agvMove(void);
 
  /*
   * These are the routines AGV registers to deal with mouse and keyboard input.
@@ -89,24 +166,130 @@ void agvMove(void);
   * These are all registered with agvInit(), but you could register
   * something else which called these, or reregister these as needed 
   */
-void agvHandleButton(int button, int state, int x, int y);
-void agvHandleMotion(int x, int y);
-void agvHandleKeys(unsigned char key, int x, int y);
+  void _agvHandleButton(int &button, int &state, int &x, int &y);
+  void _agvHandleMotion(int &x, int &y);
+  void _agvHandleKeys(unsigned char key, int &x, int &y);
 
  /*
   * Just an extra routine which makes an x-y-z axes (about 10x10x10)
   * which is nice for aligning things and debugging.  Pass it an available
   * displaylist number.
   */
-void agvMakeAxesList(int displaylist);
+  void agvMakeAxesList(int displaylist);
 
 
 
-void ncrossprod(float v1[3], float v2[3], float cp[3]);
+  private:
 
+  /* map 0-9 to an EyeMove value when number key is hit in FLYING mode */
+#define SPEEDFUNCTION(x) ((x)*(x)*0.001)  
 
+  double movefraction,
 
+         el_sens,
+         az_sens,
 
+         dist_sens,
+         e_sens,
 
+         min_azspin,
+         min_elspin,
 
+         slow_daz,
+         slow_del,
+         prev_daz,
+         prev_del,
+         cur_daz,
+         cur_del;
+
+/***************************************************************/
+/************************** GLOBALS ****************************/
+/***************************************************************/
+
+  int     MoveMode;  /* FLYING or POLAR mode? */
+
+  GLfloat Ex,           /* flying parameters */
+          Ey,
+          Ez,
+          EyeMove,     
+
+          EyeDist,      /* polar params */
+          AzSpin,
+          ElSpin,
+
+          EyeAz,    /* used by both */
+          EyeEl;
+
+  int downx, downy,   /* for tracking mouse position */
+      lastx, lasty,
+      downb;     /* and button status */
+						
+  GLfloat downDist, downEl, downAz, /* for saving state of things */
+          downEx, downEy, downEz,   /* when button is pressed */
+          downEyeMove;                
+
+  GLfloat dAz, dEl, lastAz, lastEl;  /* to calculate spinning w/ polar motion */
+  int     AdjustingAzEl;
+
+   /* Initial polar movement settings */
+  double init_polar_az,
+         init_polar_el,
+         init_dist,
+         init_az_spin,
+         init_el_spin,
+
+         init_move,
+         minmove;
+
+  int AllowIdle, RedisplayWindow;
+  public: 
+  int redisplayWindow() {return RedisplayWindow; }
+  private:
+   /* If AllowIdle is 1 it means AGV will install its own idle which
+    * will update the viewpoint as needed and send glutPostRedisplay() to the
+    * window RedisplayWindow which was set in agvInit().  AllowIdle of 0
+    * means AGV won't install an idle funciton, and something like
+    * "if (agvMoving) agvMove()" should exist at the end of the running
+    * idle function.
+    */
+
+  #define TORAD(x) ((M_PI/180.0)*(x))
+  #define TODEG(x) ((180.0/M_PI)*(x))
+
+/***************************************************************/
+/************************ PROTOTYPES ***************************/
+/***************************************************************/
+
+  /*
+   * these are functions meant for internal use only
+   * the other prototypes are in agviewer.h
+   */
+
+  void PolarLookFrom(GLfloat dist, GLfloat elevation, GLfloat azimuth);
+  void FlyLookFrom(GLfloat x, GLfloat y, GLfloat z,
+                        GLfloat az, GLfloat el);
+  int  ConstrainEl(void);
+  void MoveOn(int v);
+  void SetMove(float newmove);
+  void normalize(GLfloat v[3]);
+  void ncrossprod(float v1[3], float v2[3], float cp[3]);
+
+};
+
+#include <list>
+
+extern std::list<agviewer> agviewers;
+
+extern "C" {
+  // Funktionszeiger / pointer
+  extern void agvMove(void);
+  extern void agvHandleButton(int button, int state, int x, int y);
+  extern void agvHandleMotion(int x, int y);
+  extern void agvHandleKeys(unsigned char key, int x, int y);
+  extern void agvViewTransform(void);
+  extern void agvSwitchMoveMode(int move);
+  extern void agvSetAllowIdle(int allowidle);
+  extern int  agvMoving();
+
+}
 
