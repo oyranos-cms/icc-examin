@@ -60,7 +60,6 @@ public:
   void hinein_tabelle(std::vector<std::vector<std::vector<std::vector<double> > > >vect,
                                std::vector<std::string> vonFarben,
                                std::vector<std::string> nachFarben);
-  void ruhig_neuzeichnen(void);
 
   int  Punktform;                // Form der Gitterpunkte der Transformationstabelle
   void MakeDisplayLists();

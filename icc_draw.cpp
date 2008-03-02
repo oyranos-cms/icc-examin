@@ -29,6 +29,7 @@
 
 #include "icc_helfer.h"
 #include "icc_profile.h"
+#include "icc_helfer_ui.h"
 #include <stdio.h>
 #include <iostream>
 #include <vector>
@@ -40,6 +41,10 @@
 #include "cccie64.h"
 #include "ciexyz64_1.h"
 
+#ifdef HAVE_FLTK
+#include "icc_draw_fltk.h"
+#endif
+
 // Zeichenbereich
 float w,h, xO, yO;
 // Zeichenbereichvariablen
@@ -48,6 +53,7 @@ int tab_border_y=30;
 // Diagrammvariablen
 float n = 1.0;
 
+#if 0
 //#ifdef __APPLE__
   #define BG FL_DARK3
   #define VG FL_DARK2
@@ -63,6 +69,7 @@ float n = 1.0;
   #define DIAG VG
 #endif
 //#endif
+#endif
 
 #ifdef DEBUG_DRAW
   #define DBG_prog_start DBG_PROG_START
@@ -435,6 +442,8 @@ void draw_kurve    (int X, int Y, int W, int H,
   std::stringstream s ;
   std::string name;
   bool ist_kurve = false;
+  icColorSpaceSignature icc_colour_space_signature = icSigLabData;
+  int* flFarben = getChannel_flColours (icc_colour_space_signature);
   for (unsigned int j = 0; j < kurven.size(); j++) {
     if (kurven.size() <= texte.size())
       name = texte[j];
@@ -444,6 +453,7 @@ void draw_kurve    (int X, int Y, int W, int H,
      && texte[texte.size()-1] == "curv")
       ist_kurve = true;
 
+    fl_color( flFarben[j] );
     fl_color(FL_LIGHT2);
     if        (name == "rTRC") {
       fl_color(FL_RED);
@@ -557,6 +567,7 @@ void draw_kurve    (int X, int Y, int W, int H,
   DBG_prog_ende
 }
 
+#if 0
 /**********************************************************************/
 // http://www.physics.sfasu.edu/astro/color/blackbodyc.txt
 
@@ -699,4 +710,4 @@ double DMAX1(double x, double y, double z) {
     return max;
 }
 
-
+#endif

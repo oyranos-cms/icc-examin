@@ -146,25 +146,14 @@ void GL_Ansicht::init() {
 
 void GL_Ansicht::draw() {
   DBG_PROG_START
-  // Kurven oder Punkte malen
-  DBG_PROG_S( punkte.size() << "/" << kurven.size() <<" "<< nachFarbNamen.size() )
-
   if (GLfenster_zeigen) {
     GLFenster->size(w(),h());
   } else {
     GLFenster->size(1,1);
     DBG_PROG_S("-------------- GL Fenster auf 1x1 verkleinert ----------------")
   }
-
   DBG_PROG_V( GLfenster_zeigen )
 
-  if (punkte.size() >= 3) {
-    //draw_cie_shoe(x(),y(),w(),h(),nachFarbNamen,punkte,false);
-
-  } else {
-    //draw_kurve   (x(),y(),w(),h(),nachFarbNamen,kurven);
-  }
-  DBG_PROG
   DBG_PROG_ENDE
 }
 
@@ -743,13 +732,6 @@ GL_Ansicht::hinein_tabelle(std::vector<std::vector<std::vector<std::vector<doubl
 
   DBG_PROG_ENDE
 }
-
-void GL_Ansicht::ruhig_neuzeichnen(void) {
-  DBG_PROG_START
-  draw_cie_shoe(x(),y(),w(),h(),nachFarbNamen,punkte,true);
-  DBG_PROG_ENDE
-}
-
 
 void sichtbar(int v)
 {

@@ -18,20 +18,24 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- * 
+ *
  * -----------------------------------------------------------------------------
  *
- * Version
+ * ICC
  * 
  */
 
-// Date:      September 2004
+// Date:      Mai 2004
 
-#ifndef ICC_VERSION_H
-#define ICC_VERSION_H
+#ifndef ICC_ICC_H
+#define ICC_ICC_H
 
-#define ICC_EXAMIN_V 0.15
-#define ICC_EXAMIN_D _("Dezember 2004")
+#include <icc34.h>
 
+// Zusätze - nicht definiert in icc34.h
 
-#endif //ICC_VERSION_H
+#ifndef icSigChromaticityType
+#define icSigChromaticityType 0x6368726D
+#endif
+
+#endif //ICC_ICC_H

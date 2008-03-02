@@ -12,14 +12,18 @@ mandir		= ${prefix}/man
 srcdir		= .
 
 #APPLE = 1
+FLTK = 1
+ifdef FLTK
 FLU = 1
+FLTK_H = -DHAVE_FLTK
+endif
 DL = --ldflags # --ldstaticflags
 
 ifdef FLU
 FLU_H = -DHAVE_FLU
 endif
 
-CXXFLAGS=$(OPTS) $(INCL) $(FLU_H)
+CXXFLAGS=$(OPTS) $(INCL) $(FLU_H) $(FLTK_H)
 INCL=-I$(includedir) -I/usr/X11R6/include -I./
 
 VRML_LIBS=$(FLTK_GL_LIBS) -lGL -lopenvrml -lopenvrml-gl -lpng -ljpeg \
@@ -55,10 +59,14 @@ CPP_HEADERS = \
 	ciexyz64_1.h \
 	icc_betrachter.h \
 	icc_draw.h \
+	icc_draw_fltk.h \
 	icc_formeln.h \
 	icc_examin.h \
         icc_gl.h \
 	icc_helfer.h \
+	icc_helfer_fltk.h \
+	icc_helfer_ui.h \
+	icc_icc.h \
 	fl_oyranos.h \
 	icc_oyranos.h \
 	icc_profile.h \
@@ -84,6 +92,8 @@ CPPFILES = \
         agviewer.cpp
 #	vFLGLWidget.cpp \
 	ViewerFLTK.cpp 
+CPPFLTKFILES = \
+	icc_helfer_fltk.cpp
 CXXFILES = \
 	icc_betrachter.cxx \
 	fl_oyranos.cxx
@@ -99,8 +109,11 @@ FLUID = \
 	icc_betrachter.fl \
 	fl_oyranos.fl
 
+ifdef FLTK
+TOOLKIT_FILES = $(CPPFLTKFILES)
+endif
 SOURCES = $(CPPFILES) $(CXXFILES) $(CPP_HEADERS)
-OBJECTS = $(CPPFILES:.cpp=.o) $(CXXFILES:.cxx=.o)
+OBJECTS = $(CPPFILES:.cpp=.o) $(CXXFILES:.cxx=.o) $(TOOLKIT_FILES:.cpp=.o)
 TARGET  = icc_examin
 
 REZ     = /Developer/Tools/Rez -t APPL -o $(TARGET) /opt/local/include/FL/mac.r
@@ -124,7 +137,7 @@ $(TARGET):	$(OBJECTS)
 	$(LDLIBS)
 	$(APPLE)
 
-prof:
+prof:	icc_profile.o icc_profilierer.o
 	c++ icc_profilieren.cpp -o icc_profilieren icc_profile.o icc_profilierer.o icc_helfer.o icc_utils.o icc_measurement.o icc_formeln.o -llcms
 
 static:		$(OBJECTS)
@@ -199,6 +212,7 @@ EXEEXT		=
 tgz:
 	tar cf - -C $(topdir) \
 	$(addprefix $(dir)/,$(SOURCES)) \
+	$(addprefix $(dir)/,$(CPPFLTKFILES)) \
 	$(dir)/makefile \
 	$(addprefix $(dir)/,$(TEST)) \
 	$(addprefix $(dir)/,$(DOKU)) \

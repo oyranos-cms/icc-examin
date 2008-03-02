@@ -21,17 +21,18 @@
  * 
  * -----------------------------------------------------------------------------
  *
- * Version
+ * Zeichenroutinen für Diagramme.
  * 
  */
 
-// Date:      September 2004
+// Date:      Mai 2004
 
-#ifndef ICC_VERSION_H
-#define ICC_VERSION_H
+#ifndef ICC_DRAW_FLTK_H
+#define ICC_DRAW_FLTK_H
 
-#define ICC_EXAMIN_V 0.15
-#define ICC_EXAMIN_D _("Dezember 2004")
+  #define BG FL_DARK2
+  #define VG FL_BACKGROUND_COLOR
+  #define DIAG VG
 
+#endif //ICC_DRAW_FLTK_H
 
-#endif //ICC_VERSION_H

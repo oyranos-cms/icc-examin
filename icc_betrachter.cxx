@@ -858,8 +858,6 @@ void TagDrawings::draw() {
   // Kurven oder Punkte malen
   DBG_PROG_S( punkte.size() << "/" << kurven.size() <<" "<< texte.size() )
 
-  //DBG_PROG_V( wiederholen )
-
   if (punkte.size() >= 3)
   {
     if (wiederholen)

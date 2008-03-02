@@ -21,7 +21,7 @@
  * 
  * -----------------------------------------------------------------------------
  *
- * Aufbereitung von ICC internen Informationen zu Text.
+ * Aufbereitung von ICC internen Informationen
  * 
  */
 

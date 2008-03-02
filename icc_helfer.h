@@ -30,23 +30,12 @@
 #ifndef ICC_HELFER_H
 #define ICC_HELFER_H
 
-#include <icc34.h>
+#include <icc_icc.h>
 #include <string>
-//#include <iostream>
-//#include <sstream>
-//#include <map>
 #include <vector>
-//#include <fstream>
 #include "icc_utils.h"
 
-//#include <lcms.h> // für it8 E/A
 
-
-// Zusätze - nicht definiert in icc34.h
-
-#ifndef icSigChromaticityType
-#define icSigChromaticityType 0x6368726D
-#endif
 
 // interne Funktionen
 
@@ -89,7 +78,6 @@ std::string         getMeasurementGeometry( icMeasurementGeometry measgeo );
 std::string         getMeasurementFlare( icMeasurementFlare flare );
 std::string         printDatum( icDateTimeNumber date );
 std::string         zeig_bits_bin(void* speicher, int groesse);
-
 
 
 

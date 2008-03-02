@@ -18,20 +18,25 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- * 
+ *
  * -----------------------------------------------------------------------------
  *
- * Version
+ * ICC Helfer - werkzeugabhängig
  * 
  */
 
-// Date:      September 2004
+// Date:      Mai 2004
 
-#ifndef ICC_VERSION_H
-#define ICC_VERSION_H
+#ifndef ICC_HELFER_FLTK_H
+#define ICC_HELFER_FLTK_H
 
-#define ICC_EXAMIN_V 0.15
-#define ICC_EXAMIN_D _("Dezember 2004")
+#include "icc_icc.h"
+
+// Helferfunktionen
+// definiert in icc_helfer_fltk.cpp
+
+int* getChannel_flColours(icColorSpaceSignature color);
 
 
-#endif //ICC_VERSION_H
+
+#endif //ICC_HELFER_FLTK_H
