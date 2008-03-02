@@ -89,7 +89,7 @@ ICCmeasurement::load                ( ICCprofile *profil,
     _sig = icSigCharTargetTag;
 
   _size   = size;
-  // enfach austauschen
+  // einfach austauschen
   if (!_data) free (_data);
   _data = (char*) calloc ( _size , sizeof (char) );
   memcpy ( _data , data , _size );
@@ -537,12 +537,15 @@ ICCmeasurement::init_umrechnen                     (void)
 
 
   if ((_RGB_measurement ||
-       _CMYK_measurement) && _XYZ_measurement) {// keine Umrechnung nötig
-    cmsHTRANSFORM hCOLOURtoSRGB, hXYZtoSRGB, hCOLOURtoXYZ, hXYZtoLab, hCOLOURtoLab;
+       _CMYK_measurement) || _XYZ_measurement)
+  {
+    cmsHTRANSFORM hCOLOURtoRGB, hXYZtoRGB, hCOLOURtoXYZ, hXYZtoLab,hCOLOURtoLab;
     cmsHPROFILE hCOLOUR, hsRGB, hLab, hXYZ;
-    hCOLOUR = cmsOpenProfileFromMem (_profil->_data, _profil->_size);
+
+
     if (getColorSpaceName(_profil->header.colorSpace()) != "Rgb"
-     || getColorSpaceName(_profil->header.colorSpace()) != "Cmyk") {
+     || getColorSpaceName(_profil->header.colorSpace()) != "Cmyk")
+    {
       WARN_S("unterschiedliche Messdaten und Profilfarbraum ")
       DBG_PROG_V( getColorSpaceName(_profil->header.colorSpace()) )
       //this->clear();
@@ -558,31 +561,39 @@ ICCmeasurement::init_umrechnen                     (void)
     #define BW_COMP 0
     #endif
     #define TYPE_COLOUR_DBL (COLORSPACE_SH(PT_ANY)|CHANNELS_SH(_channels)|BYTES_SH(0))
-    // Wie sieht das Profil die Messfarbe? -> XYZ
-    hCOLOURtoXYZ =  cmsCreateTransform (hCOLOUR, TYPE_COLOUR_DBL,
+    if ((_RGB_measurement ||
+         _CMYK_measurement))
+    {
+      hCOLOUR = cmsOpenProfileFromMem (_profil->_data, _profil->_size);
+
+      // Wie sieht das Profil die Messfarbe? -> XYZ
+      hCOLOURtoXYZ =  cmsCreateTransform (hCOLOUR, TYPE_COLOUR_DBL,
                                     hXYZ, TYPE_XYZ_DBL,
                                     INTENT_ABSOLUTE_COLORIMETRIC,
                                     PRECALC|BW_COMP);
-    // Wie sieht das Profil die Messfarbe? -> Lab
-    hCOLOURtoLab =  cmsCreateTransform (hCOLOUR, TYPE_COLOUR_DBL,
+      // Wie sieht das Profil die Messfarbe? -> Lab
+      hCOLOURtoLab =  cmsCreateTransform (hCOLOUR, TYPE_COLOUR_DBL,
                                     hLab, TYPE_Lab_DBL,
                                     INTENT_ABSOLUTE_COLORIMETRIC,
                                     PRECALC|BW_COMP);
-    // Wie sieht das Messgerät die Messfarbe? -> Lab
-    hXYZtoLab =  cmsCreateTransform (hXYZ, TYPE_XYZ_DBL,
+      // Wie sieht das Profil die Messfarbe? -> Bildschirmdarstellung
+      hCOLOURtoRGB = cmsCreateTransform (hCOLOUR, TYPE_COLOUR_DBL,
+                                    hsRGB, TYPE_RGB_DBL,
+                                    INTENT_ABSOLUTE_COLORIMETRIC,
+                                    PRECALC|BW_COMP);
+    }
+    if (_XYZ_measurement) {
+      // Wie sieht das Messgerät die Messfarbe? -> Lab
+      hXYZtoLab =  cmsCreateTransform (hXYZ, TYPE_XYZ_DBL,
                                     hLab, TYPE_Lab_DBL,
                                     INTENT_ABSOLUTE_COLORIMETRIC,
                                     PRECALC|BW_COMP);
-    // Wie sieht das Profil die Messfarbe? -> Bildschirmdarstellung
-    hCOLOURtoSRGB = cmsCreateTransform (hCOLOUR, TYPE_COLOUR_DBL,
+      // Wie sieht die CMM die Messfarbe? -> Bildschirmdarstellung
+      hXYZtoRGB = cmsCreateTransform (hXYZ, TYPE_XYZ_DBL,
                                     hsRGB, TYPE_RGB_DBL,
                                     INTENT_ABSOLUTE_COLORIMETRIC,
                                     PRECALC|BW_COMP);
-    // Wie sieht die CMM die Messfarbe? -> Bildschirmdarstellung
-    hXYZtoSRGB = cmsCreateTransform (hXYZ, TYPE_XYZ_DBL,
-                                    hsRGB, TYPE_RGB_DBL,
-                                    INTENT_ABSOLUTE_COLORIMETRIC,
-                                    PRECALC|BW_COMP);
+    }
     double Farbe[_channels], RGB[3], XYZ[3], Lab[3];
     bool vcgt = false;
     std::vector<std::vector<double> > vcgt_kurven;
@@ -593,14 +604,18 @@ ICCmeasurement::init_umrechnen                     (void)
                                                                 ICCtag::MATRIX);
     }
 
-    _RGB_MessFarben.resize(_nFelder);
-    _RGB_ProfilFarben.resize(_nFelder);
-    _XYZ_Ergebnis.resize(_nFelder);
-    _Lab_Satz.resize(_nFelder);
-    _Lab_Ergebnis.resize(_nFelder);
-    _Lab_Differenz.resize(_nFelder); DBG_V( _Lab_Differenz.size() )
-    _DE00_Differenz.resize(_nFelder);
-    for (int i = 0; i < _nFelder; i++) {
+    if (_XYZ_measurement)
+    {
+      _RGB_MessFarben.resize(_nFelder);
+      _RGB_ProfilFarben.resize(_nFelder);
+      _XYZ_Ergebnis.resize(_nFelder);
+      _Lab_Satz.resize(_nFelder);
+      _Lab_Ergebnis.resize(_nFelder);
+      _Lab_Differenz.resize(_nFelder); DBG_V( _Lab_Differenz.size() )
+      _DE00_Differenz.resize(_nFelder);
+
+      for (int i = 0; i < _nFelder; i++)
+      {
         if (_isMatrix) {
           // Messfarben auf Weiss und Schwarz addaptiert
           XYZ[0] = (_XYZ_Satz[i].X-min[0])/(max[0]-min[0])*WP[0];
@@ -616,60 +631,72 @@ ICCmeasurement::init_umrechnen                     (void)
         _Lab_Satz[i].a = Lab[1]; DBG_MESS_V( _Lab_Satz[i].a )
         _Lab_Satz[i].b = Lab[2]; DBG_MESS_V( _Lab_Satz[i].b )
 
-        cmsDoTransform (hXYZtoSRGB, &XYZ[0], &RGB[0], 1);
+        cmsDoTransform (hXYZtoRGB, &XYZ[0], &RGB[0], 1);
         _RGB_MessFarben[i].R = RGB[0]; DBG_MESS_V( _RGB_MessFarben[i].R )
         _RGB_MessFarben[i].G = RGB[1]; DBG_MESS_V( _RGB_MessFarben[i].G )
         _RGB_MessFarben[i].B = RGB[2]; DBG_MESS_V( _RGB_MessFarben[i].B )
 
-        // Profilfarben
-        if (_RGB_measurement) {
-          //for (int n = 0; n < _channels; n++)
-          Farbe[0] = _RGB_Satz[i].R*100.0; DBG_MESS_V( _RGB_Satz[i].R )
-          Farbe[1] = _RGB_Satz[i].G*100.0;
-          Farbe[2] = _RGB_Satz[i].B*100.0;
-        } else {
-          Farbe[0] = _CMYK_Satz[i].C*100.0; DBG_MESS_V( _CMYK_Satz[i].C )
-          Farbe[1] = _CMYK_Satz[i].M*100.0;
-          Farbe[2] = _CMYK_Satz[i].Y*100.0;
-          Farbe[3] = _CMYK_Satz[i].K*100.0;
-        }
-
-        cmsDoTransform (hCOLOURtoXYZ, &Farbe[0], &XYZ[0], 1);
-        _XYZ_Ergebnis[i].X = XYZ[0]; DBG_MESS_V( _XYZ_Ergebnis[i].X )
-        _XYZ_Ergebnis[i].Y = XYZ[1]; DBG_MESS_V( _XYZ_Ergebnis[i].Y )
-        _XYZ_Ergebnis[i].Z = XYZ[2]; DBG_MESS_V( _XYZ_Ergebnis[i].Z )
-
-        cmsDoTransform (hCOLOURtoLab, &Farbe[0], &Lab[0], 1);
-        _Lab_Ergebnis[i].L = Lab[0]; DBG_MESS_V( _Lab_Ergebnis[i].L )
-        _Lab_Ergebnis[i].a = Lab[1]; DBG_MESS_V( _Lab_Ergebnis[i].a )
-        _Lab_Ergebnis[i].b = Lab[2]; DBG_MESS_V( _Lab_Ergebnis[i].b )
         
-        cmsDoTransform (hCOLOURtoSRGB, &Farbe[0], &RGB[0], 1);
-        _RGB_ProfilFarben[i].R = RGB[0]; DBG_MESS_V( _RGB_ProfilFarben[i].R )
-        _RGB_ProfilFarben[i].G = RGB[1]; DBG_MESS_V( _RGB_ProfilFarben[i].G )
-        _RGB_ProfilFarben[i].B = RGB[2]; DBG_MESS_V( _RGB_ProfilFarben[i].B )
+        if ((_RGB_measurement ||
+             _CMYK_measurement))
+        {
 
-        // geometrische Farbortdifferenz - dE CIE*Lab
-        _Lab_Differenz[i] = HYP3( _Lab_Ergebnis[i].L - _Lab_Satz[i].L ,
-                                  _Lab_Ergebnis[i].a - _Lab_Satz[i].a ,
-                                  _Lab_Ergebnis[i].b - _Lab_Satz[i].b  );
-        if (_Lab_Differenz_max < _Lab_Differenz[i])
-          _Lab_Differenz_max = _Lab_Differenz[i];
-        if (_Lab_Differenz_min > _Lab_Differenz[i])
-          _Lab_Differenz_min = _Lab_Differenz[i];
-        // dE2000
-        _DE00_Differenz[i] = cmsCIE2000DeltaE( (cmsCIELab*)&_Lab_Ergebnis[i], (cmsCIELab*)&_Lab_Satz[i] , 1.0, 1.0, 1.0);
-        if (_DE00_Differenz_max < _DE00_Differenz[i])
-          _DE00_Differenz_max = _DE00_Differenz[i];
-        if (_DE00_Differenz_min > _DE00_Differenz[i])
-          _DE00_Differenz_min = _DE00_Differenz[i];
+          // Profilfarben
+          if (_RGB_measurement) {
+            //for (int n = 0; n < _channels; n++)
+            Farbe[0] = _RGB_Satz[i].R*100.0; DBG_MESS_V( _RGB_Satz[i].R )
+            Farbe[1] = _RGB_Satz[i].G*100.0;
+            Farbe[2] = _RGB_Satz[i].B*100.0;
+          } else {
+            Farbe[0] = _CMYK_Satz[i].C*100.0; DBG_MESS_V( _CMYK_Satz[i].C )
+            Farbe[1] = _CMYK_Satz[i].M*100.0;
+            Farbe[2] = _CMYK_Satz[i].Y*100.0;
+            Farbe[3] = _CMYK_Satz[i].K*100.0;
+          }
+
+          cmsDoTransform (hCOLOURtoXYZ, &Farbe[0], &XYZ[0], 1);
+          _XYZ_Ergebnis[i].X = XYZ[0]; DBG_MESS_V( _XYZ_Ergebnis[i].X )
+          _XYZ_Ergebnis[i].Y = XYZ[1]; DBG_MESS_V( _XYZ_Ergebnis[i].Y )
+          _XYZ_Ergebnis[i].Z = XYZ[2]; DBG_MESS_V( _XYZ_Ergebnis[i].Z )
+
+          cmsDoTransform (hCOLOURtoLab, &Farbe[0], &Lab[0], 1);
+          _Lab_Ergebnis[i].L = Lab[0]; DBG_MESS_V( _Lab_Ergebnis[i].L )
+          _Lab_Ergebnis[i].a = Lab[1]; DBG_MESS_V( _Lab_Ergebnis[i].a )
+          _Lab_Ergebnis[i].b = Lab[2]; DBG_MESS_V( _Lab_Ergebnis[i].b )
+        
+          cmsDoTransform (hCOLOURtoRGB, &Farbe[0], &RGB[0], 1);
+          _RGB_ProfilFarben[i].R = RGB[0]; DBG_MESS_V( _RGB_ProfilFarben[i].R )
+          _RGB_ProfilFarben[i].G = RGB[1]; DBG_MESS_V( _RGB_ProfilFarben[i].G )
+          _RGB_ProfilFarben[i].B = RGB[2]; DBG_MESS_V( _RGB_ProfilFarben[i].B )
+
+          // geometrische Farbortdifferenz - dE CIE*Lab
+          _Lab_Differenz[i] = HYP3( _Lab_Ergebnis[i].L - _Lab_Satz[i].L ,
+                                    _Lab_Ergebnis[i].a - _Lab_Satz[i].a ,
+                                    _Lab_Ergebnis[i].b - _Lab_Satz[i].b  );
+          if (_Lab_Differenz_max < _Lab_Differenz[i])
+            _Lab_Differenz_max = _Lab_Differenz[i];
+          if (_Lab_Differenz_min > _Lab_Differenz[i])
+            _Lab_Differenz_min = _Lab_Differenz[i];
+          // dE2000
+          _DE00_Differenz[i] = cmsCIE2000DeltaE( (cmsCIELab*)&_Lab_Ergebnis[i], (cmsCIELab*)&_Lab_Satz[i] , 1.0, 1.0, 1.0);
+          if (_DE00_Differenz_max < _DE00_Differenz[i])
+            _DE00_Differenz_max = _DE00_Differenz[i];
+          if (_DE00_Differenz_min > _DE00_Differenz[i])
+            _DE00_Differenz_min = _DE00_Differenz[i];
+        }
+      }
     }
-    cmsDeleteTransform (hCOLOURtoSRGB);
-    cmsDeleteTransform (hXYZtoSRGB);
-    cmsDeleteTransform (hCOLOURtoXYZ);
-    cmsDeleteTransform (hXYZtoLab);
-    cmsDeleteTransform (hCOLOURtoLab);
-    cmsCloseProfile (hCOLOUR);
+    if (_XYZ_measurement) {
+      cmsDeleteTransform (hXYZtoRGB);
+      cmsDeleteTransform (hXYZtoLab);
+    }
+    if ((_RGB_measurement ||
+         _CMYK_measurement)) {
+      cmsDeleteTransform (hCOLOURtoXYZ);
+      cmsDeleteTransform (hCOLOURtoLab);
+      cmsDeleteTransform (hCOLOURtoRGB);
+      cmsCloseProfile (hCOLOUR);
+    }
     cmsCloseProfile (hsRGB);
     cmsCloseProfile (hLab);
     cmsCloseProfile (hXYZ);

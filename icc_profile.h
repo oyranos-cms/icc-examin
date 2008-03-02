@@ -58,6 +58,7 @@ class ICCmeasurement;
 class ICCheader {
   public:
                         ICCheader (); 
+    void                clear();
   private:
     icHeader            header;
   public:
@@ -433,6 +434,9 @@ class ICCmeasurement {
     std::vector<std::string> getDescription();
     std::string         getHtmlReport ();
     std::vector<int>    getLayout ()       {DBG_PROG return layout; }
+    std::string         getCGATS()         {DBG_PROG if(has_data())
+                                                     return ascii_korrigieren();
+                                                     else return ""; }
 
     // Herkunft
     std::string         getTagName()       {DBG_PROG return getSigTagName (_sig); }
@@ -520,6 +524,7 @@ class ICCprofile {
     ICCmeasurement&     getMeasurement () {DBG_PROG if (hasMeasurement())
                                                  measurement.init();
                                                return measurement; }
+    std::string         cgats() {DBG_PROG return measurement.getCGATS(); }
 
   public: // Profilerstellung
     void                setHeader (void* h) {DBG_PROG header.header_raw(h); }

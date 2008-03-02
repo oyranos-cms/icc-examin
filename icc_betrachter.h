@@ -120,6 +120,11 @@ private:
   inline void cb_menueintrag_inspekt_i(Fl_Menu_*, void*);
   static void cb_menueintrag_inspekt(Fl_Menu_*, void*);
 public:
+  static Fl_Menu_Item *menueintrag_zeigcgats;
+private:
+  inline void cb_menueintrag_zeigcgats_i(Fl_Menu_*, void*);
+  static void cb_menueintrag_zeigcgats(Fl_Menu_*, void*);
+public:
   static Fl_Menu_Item *menueintrag_3D;
 private:
   inline void cb_menueintrag_3D_i(Fl_Menu_*, void*);

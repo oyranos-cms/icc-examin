@@ -34,8 +34,9 @@
 #include <vector>
 #include "icc_utils.h"
 #include "icc_gl.h"
-class ICCfltkBetrachter;
-class ICCexamin;
+#include "icc_kette.h"
+class  ICCfltkBetrachter;
+class  ICCexamin;
 extern ICCexamin *icc_examin;
 
 class ICCexamin
@@ -56,6 +57,8 @@ class ICCexamin
     void         oeffnen (std::vector<std::string> dateinamen);
     void         oeffnen ();                   // interaktiv
     bool         berichtSpeichern (void);      // GCATS Auswertung -> html Datei
+    void         zeigPrueftabelle ();
+    void         zeigCGATS();                  // korrigiertes CGATS zeigen
     void         neuzeichnen (void* widget);   // Oberfläche neuzeichnen
 
     std::string  waehleTag (int item);
@@ -72,7 +75,6 @@ class ICCexamin
   public:
     int  tag_nr () { return _item; }
     int  mft_nr () { return _mft_item; }
-    void zeigPrueftabelle ();
 
     std::vector<std::vector<std::vector<double> > > kurven;
     std::vector<std::vector<double> >               punkte;

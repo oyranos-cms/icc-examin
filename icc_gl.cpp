@@ -817,7 +817,10 @@ GL_Ansicht::punkteAuffrischen()
                         -(punkte_[i+1]*a_darstellungs_breite) );
           glEnd();
           #endif
-        }
+        } else
+          if (punktform == MENU_DIFFERENZ_LINIE)
+            punktform = MENU_dE1STERN;
+
         if (farben_.size())
         {
           if ( farben_[i/3*4+3] < 1.0 )

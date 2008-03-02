@@ -40,6 +40,7 @@
 #include <FL/Fl_File_Icon.H> 
 #include <FL/Fl_Shared_Image.H> 
 #include <FL/Fl_PNM_Image.H>
+#include <FL/fl_ask.H>
 
 #ifdef HAVE_FLU
   extern Flu_File_Chooser *dateiwahl;
@@ -48,6 +49,9 @@
   extern Fl_File_Chooser  *dateiwahl;
   void dateiwahl_cb(Fl_File_Chooser *f,void *data);
 #endif
+
+void nachricht(std::string text);
+
 #endif
 
 #endif //ICC_FENSTER_H

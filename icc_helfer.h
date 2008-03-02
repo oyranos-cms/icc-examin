@@ -77,7 +77,15 @@ std::string         getStandardObserver( icStandardObserver obsv );
 std::string         getMeasurementGeometry( icMeasurementGeometry measgeo );
 std::string         getMeasurementFlare( icMeasurementFlare flare );
 std::string         printDatum( icDateTimeNumber date );
-std::string         zeig_bits_bin(void* speicher, int groesse);
+
+// Datendarstellung
+std::string         zeig_bits_bin      (void* speicher, int groesse);
+
+// Texthelfer
+std::string::size_type suchenErsetzen  (std::string            &text,
+                                        std::string            &suchen,
+                                        std::string            &ersetzen,
+                                        std::string::size_type  pos);
 
 
 

@@ -241,6 +241,15 @@ ICCheader::print()
   return s;
 }
 
+void
+ICCheader::clear()
+{ DBG_PROG_START
+  char *zeiger = (char*) &header;
+  for(unsigned i = 0; i < sizeof(icHeader); ++i)
+    zeiger[i] = 0;
+  DBG_PROG_ENDE
+}
+
 /**
   *  @brief ICCtag Funktionen
   */
@@ -1197,16 +1206,57 @@ ICCprofile::fload ()
   _size = (unsigned int)f.tellg();         f.seekg(0);
   _data = (char*)calloc (sizeof (char), _size);
   
+
   f.read ((char*)_data, _size);
   #ifdef DEBUG_ICCPROFILE
   cout << _size << "|" << f.tellg() << endl;
   #endif
   f.close();
 
+  // Test   > 132 byte
+  if (_size < 132) {
+    WARN_S( _("Kein Profil") )
+    measurement.load( this, _data, _size );
+    DBG_PROG_ENDE
+    return;
+  }
+
   DBG_PROG
   //Kopf
   header.load ((void*)_data); DBG_PROG
 
+  // Test acsp
+  char magic[5];
+  memcpy( magic, header.magicName(), 4); magic[4] = 0;
+  if (strstr(magic, "acsp") == 0)
+  {
+    WARN_S( _("Kein Profil") )
+    header.clear();
+
+    // "targ"  Messdaten als Block hinzufügen
+    int groesse = 8 + _size + 1;
+    char* tag_block = (char*) calloc (sizeof (char), groesse);
+    icTag ic_tag;
+    ICCtag tag;
+
+    ic_tag.size = icValue ((icUInt32Number)groesse); DBG_V( groesse )
+    ic_tag.offset = 0;
+    ic_tag.sig = icValue (icSigCharTargetTag);
+
+    char sig[] = "text";
+    memcpy (&tag_block[0], &sig, 4); DBG_S( tag_block )
+    memcpy (&tag_block[8], _data, _size);
+
+    tag.load( this, &ic_tag, tag_block );
+    addTag( tag );
+
+    free (tag_block);
+
+    measurement.load( this, tag );
+    DBG_PROG_ENDE
+    return;
+  }
+   
   //Profilabschnitte
   // TagTabelle bei 132 abholen
   icTag *tagList = (icTag*)&((char*)_data)[132];

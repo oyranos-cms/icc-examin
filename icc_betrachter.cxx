@@ -332,6 +332,18 @@ void ICCfltkBetrachter::cb_menueintrag_inspekt(Fl_Menu_* o, void* v) {
   ((ICCfltkBetrachter*)(o->parent()->parent()->user_data()))->cb_menueintrag_inspekt_i(o,v);
 }
 
+inline void ICCfltkBetrachter::cb_menueintrag_zeigcgats_i(Fl_Menu_* o, void*) {
+  Fl_Menu_* mw = (Fl_Menu_*)o;
+  const Fl_Menu_Item* m = mw->mvalue();
+
+  DBG_PROG_S (m->value())
+
+  icc_examin->zeigCGATS();
+}
+void ICCfltkBetrachter::cb_menueintrag_zeigcgats(Fl_Menu_* o, void* v) {
+  ((ICCfltkBetrachter*)(o->parent()->parent()->user_data()))->cb_menueintrag_zeigcgats_i(o,v);
+}
+
 inline void ICCfltkBetrachter::cb_menueintrag_3D_i(Fl_Menu_* o, void*) {
   Fl_Menu_* mw = (Fl_Menu_*)o;
   const Fl_Menu_Item* m = mw->mvalue();
@@ -374,21 +386,22 @@ Fl_Menu_Item ICCfltkBetrachter::menu_[] = {
  {"Ansicht", 0,  0, 0, 192, 0, 0, 14, 56},
  {"Ganzer Bildschirm an/aus", 0x40076,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_Voll, 0, 0, 0, 0, 14, 56},
  {"Pr\374""fansicht", 0x40062,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_inspekt, 0, 3, 0, 0, 14, 56},
+ {"CGATS Ansicht", 0x40067,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_zeigcgats, 0, 1, 0, 0, 14, 56},
  {"3D Ansicht", 0x40068,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_3D, 0, 130, 0, 0, 14, 56},
  {"Grafikkarten Gamma", 0x40067,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_vcgt, 0, 0, 0, 0, 14, 56},
  {0},
  {"Hilfe", 0,  0, 0, 64, 0, 0, 14, 56},
  {"\334""ber", 0,  (Fl_Callback*)ICCfltkBetrachter::cb_ber, 0, 0, 0, 0, 14, 56},
- {"", 0xff1b,  0, 0, 0, 0, 0, 14, 56},
  {0},
  {0}
 };
 Fl_Menu_Item* ICCfltkBetrachter::menueintrag_html_speichern = ICCfltkBetrachter::menu_ + 2;
 Fl_Menu_Item* ICCfltkBetrachter::menueintrag_Voll = ICCfltkBetrachter::menu_ + 9;
 Fl_Menu_Item* ICCfltkBetrachter::menueintrag_inspekt = ICCfltkBetrachter::menu_ + 10;
-Fl_Menu_Item* ICCfltkBetrachter::menueintrag_3D = ICCfltkBetrachter::menu_ + 11;
-Fl_Menu_Item* ICCfltkBetrachter::menueintrag_vcgt = ICCfltkBetrachter::menu_ + 12;
-Fl_Menu_Item* ICCfltkBetrachter::menu_hilfe = ICCfltkBetrachter::menu_ + 14;
+Fl_Menu_Item* ICCfltkBetrachter::menueintrag_zeigcgats = ICCfltkBetrachter::menu_ + 11;
+Fl_Menu_Item* ICCfltkBetrachter::menueintrag_3D = ICCfltkBetrachter::menu_ + 12;
+Fl_Menu_Item* ICCfltkBetrachter::menueintrag_vcgt = ICCfltkBetrachter::menu_ + 13;
+Fl_Menu_Item* ICCfltkBetrachter::menu_hilfe = ICCfltkBetrachter::menu_ + 15;
 
 inline void ICCfltkBetrachter::cb_tag_browser_i(TagBrowser* o, void*) {
   o->selectItem( o->value() );
@@ -469,6 +482,12 @@ Fl_Double_Window* ICCfltkBetrachter::init() {
     dateiwahl = new Flu_File_Chooser(ptr, _("ICC Farbprofile (*.ic*)"), Flu_File_Chooser::SINGLE, _("Welches ICC Profil?"));
     dateiwahl->add_context_handler(Flu_File_Chooser::ENTRY_FILE, "icc", _("Profil öffnen"), dateiwahl_cb, NULL);
     dateiwahl->add_context_handler(Flu_File_Chooser::ENTRY_FILE, "icm", _("Profil öffnen"), dateiwahl_cb, NULL);
+    dateiwahl->add_context_handler(Flu_File_Chooser::ENTRY_FILE, "it8", _("Messdatei öffnen"), dateiwahl_cb, NULL);
+    dateiwahl->add_context_handler(Flu_File_Chooser::ENTRY_FILE, "txt", _("Messdatei öffnen"), dateiwahl_cb, NULL);
+    dateiwahl->add_context_handler(Flu_File_Chooser::ENTRY_FILE, "IT8", _("Messdatei öffnen"), dateiwahl_cb, NULL);
+    dateiwahl->add_context_handler(Flu_File_Chooser::ENTRY_FILE, "Q60", _("Messdatei öffnen"), dateiwahl_cb, NULL);
+    dateiwahl->add_context_handler(Flu_File_Chooser::ENTRY_FILE, "LAB", _("Messdatei öffnen"), dateiwahl_cb, NULL);
+    dateiwahl->add_context_handler(Flu_File_Chooser::ENTRY_FILE, "CMYK", _("Messdatei öffnen"), dateiwahl_cb, NULL);
   #else
     const char* ptr = NULL;
     if (profile.size())
@@ -534,7 +553,7 @@ Fl_Double_Window* ICCfltkBetrachter::init() {
       { Fl_Menu_Bar* o = new Fl_Menu_Bar(0, 0, 385, 25);
         o->align(FL_ALIGN_LEFT|FL_ALIGN_INSIDE);
         o->when(3);
-        { Fl_Menu_Item* o = &menu_[12];
+        { Fl_Menu_Item* o = &menu_[13];
           o->hide();
         }
         o->menu(menu_);
@@ -802,6 +821,7 @@ void ICCfltkBetrachter::measurement(bool has_measurement) {
     }
     menueintrag_inspekt->activate();
     menueintrag_html_speichern->activate();
+    menueintrag_zeigcgats->activate();
   } else {
     menueintrag_inspekt->deactivate();
     menueintrag_html_speichern->deactivate();

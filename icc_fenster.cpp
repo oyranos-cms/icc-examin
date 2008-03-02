@@ -41,7 +41,14 @@ dateiwahl_cb (const char *dateiname, int typ, void *arg)
 { DBG_PROG_START
 
   // kein Profile Dialog
-  if (strstr( dateiwahl->pattern(), "*.ic*") == 0) { DBG_PROG
+  if (strstr( dateiwahl->pattern(), "*.ic*") == 0 &&
+      strstr( dateiwahl->pattern(), "*.txt") == 0 &&
+      strstr( dateiwahl->pattern(), "*.TXT") == 0 &&
+      strstr( dateiwahl->pattern(), "*.it8") == 0 &&
+      strstr( dateiwahl->pattern(), "*.IT8") == 0 &&
+      strstr( dateiwahl->pattern(), "*.CMYK") == 0 &&
+      strstr( dateiwahl->pattern(), "*.LAB") == 0 &&
+      strstr( dateiwahl->pattern(), "*.IC*") == 0 ) { DBG_PROG
     DBG_PROG_ENDE
     return;
   }
@@ -76,13 +83,7 @@ dateiwahl_cb (Fl_File_Chooser *f,void *data)
     filename = fl->value();
   
     // kein Profile Dialog
-    if (strstr(fl->filter(),
-    #ifdef  HAVE_FLU
-                        "*.ic*"
-    #else
-                        "*.{I,i}{C,c}"
-    #endif
-                                    ) == 0) {
+    if (strstr(fl->filter(), "*.{I,i}{C,c}") == 0) {
       if (filename)
         DBG_PROG_V( filename )
       DBG_PROG_ENDE
@@ -102,6 +103,14 @@ dateiwahl_cb (Fl_File_Chooser *f,void *data)
   DBG_PROG_ENDE
 }
 #endif
+
+void
+nachricht(std::string text)
+{ DBG_PROG_START
+  fl_message(text.c_str());
+  DBG_PROG_ENDE
+}
+
 #endif
 
 

@@ -71,6 +71,18 @@ ICCexamin::quit ()
   exit(0);
 }
 
+int
+abbrechen(int e)
+{ //DBG_PROG_START
+  int gefunden = 0;
+  if( e == FL_SHORTCUT &&
+      Fl::event_key() == FL_Escape)
+    gefunden = 1;
+  if(gefunden) DBG_NUM_S("FL_Escape")
+  //DBG_PROG_ENDE
+  return gefunden;
+}
+
 void
 ICCexamin::start (int argc, char** argv)
 { DBG_PROG_START
@@ -111,6 +123,8 @@ ICCexamin::start (int argc, char** argv)
         status(_("Bereit"));
       }
 
+  Fl::add_handler(abbrechen);
+
   icc_betrachter->run();
 
   DBG_PROG_ENDE
@@ -122,7 +136,7 @@ ICCexamin::oeffnen (std::vector<std::string> dateinamen)
 { DBG_PROG_START
   // Laden
   bool weiter = profile.oeffnen(dateinamen);
-  if (weiter) {
+  if (weiter) { DBG_PROG
     icc_betrachter->tag_browser->reopen ();
     icc_betrachter->measurement( profile.profil()->hasMeasurement() );
   }
@@ -354,6 +368,14 @@ ICCexamin::zeigPrueftabelle ()
 }
 
 void
+ICCexamin::zeigCGATS()
+{ DBG_PROG_START
+  nachricht(profile.profil()->cgats());
+  DBG_PROG_ENDE
+}
+
+
+void
 ICCexamin::histogram ()
 { DBG_PROG_START
   std::vector<std::vector<double> >v;
@@ -406,8 +428,13 @@ ICCexamin::histogram ()
   if(profile.profil() &&
      profile.profil()->hasMeasurement())
     { DBG_PROG_S( "nutze Messdaten" )
-      icc_betrachter->DD_histogram->zeig_punkte_als_messwert_paare = true;
       ICCmeasurement messung = profile.profil()->getMeasurement();
+
+      if(messung.valid())
+        icc_betrachter->DD_histogram->zeig_punkte_als_messwert_paare = true;
+      else
+        icc_betrachter->DD_histogram->zeig_punkte_als_messwert_paare = false;
+
       unsigned int j;
       int n = messung.getPatchCount(); DBG_PROG_V( messung.getPatchCount() )
       for (j = 0; j < (unsigned) n; ++j)
@@ -564,8 +591,8 @@ ICCexamin::neuzeichnen (void* z)
     }
   } 
 
-         if (icc_betrachter->menueintrag_inspekt->value() &&
-             !icc_betrachter->inspekt_html->visible())
+  if (icc_betrachter->menueintrag_inspekt->value() &&
+      !icc_betrachter->inspekt_html->visible())
   { DBG_PROG
     icc_betrachter->inspekt_html->show();
   } else if (!icc_betrachter->menueintrag_inspekt->value() &&
@@ -704,4 +731,5 @@ ICCexamin::glAnsicht(int id)
   DBG_EXAMIN_ENDE
   return 0;
 }
+
 #endif

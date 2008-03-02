@@ -49,14 +49,10 @@ ICCkette::oeffnen (std::vector<std::string> dateinamen)
 
   if (dateinamen.size()) { DBG_PROG
     for (unsigned int i = 0; i < _profile.size(); i++) {
-      //create_vrml ( dateiname.c_str(), "/usr/share/color/icc/sRGB.icm", &vrmlDatei[0]);
-
       icc_examin->fortschritt (0.8);
 
       std::vector<std::string> url;
       std::vector<std::string> param;
-      //url.push_back (&vrmlDatei[0]);
-      //browser->load_url(url, param);
         icc_examin->statlabel = dateinamen[i].c_str();
         icc_examin->statlabel.append (" ");
         icc_examin->statlabel.append (_("geladen"));
@@ -71,12 +67,12 @@ ICCkette::oeffnen (std::vector<std::string> dateinamen)
 
     //icc_examin->icc_betrachter->measurement( _profile[_aktuelles_profil].hasMeasurement() );
     erfolgreich = true;
-  } else {
+  } else { DBG_PROG
     status(_("Datei nicht geladen!"));
-  } DBG_PROG
+  }
 
-  return erfolgreich;
   DBG_PROG_ENDE
+  return erfolgreich;
 }
 
 

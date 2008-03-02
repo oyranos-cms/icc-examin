@@ -391,6 +391,12 @@ class ICCfltkBetrachter {open
     dateiwahl = new Flu_File_Chooser(ptr, _("ICC Farbprofile (*.ic*)"), Flu_File_Chooser::SINGLE, _("Welches ICC Profil?"));
     dateiwahl->add_context_handler(Flu_File_Chooser::ENTRY_FILE, "icc", _("Profil öffnen"), dateiwahl_cb, NULL);
     dateiwahl->add_context_handler(Flu_File_Chooser::ENTRY_FILE, "icm", _("Profil öffnen"), dateiwahl_cb, NULL);
+    dateiwahl->add_context_handler(Flu_File_Chooser::ENTRY_FILE, "it8", _("Messdatei öffnen"), dateiwahl_cb, NULL);
+    dateiwahl->add_context_handler(Flu_File_Chooser::ENTRY_FILE, "txt", _("Messdatei öffnen"), dateiwahl_cb, NULL);
+    dateiwahl->add_context_handler(Flu_File_Chooser::ENTRY_FILE, "IT8", _("Messdatei öffnen"), dateiwahl_cb, NULL);
+    dateiwahl->add_context_handler(Flu_File_Chooser::ENTRY_FILE, "Q60", _("Messdatei öffnen"), dateiwahl_cb, NULL);
+    dateiwahl->add_context_handler(Flu_File_Chooser::ENTRY_FILE, "LAB", _("Messdatei öffnen"), dateiwahl_cb, NULL);
+    dateiwahl->add_context_handler(Flu_File_Chooser::ENTRY_FILE, "CMYK", _("Messdatei öffnen"), dateiwahl_cb, NULL);
   \#else
     const char* ptr = NULL;
     if (profile.size())
@@ -419,7 +425,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window vcgt {
       label {Grafikkarten Gamma Tabellen} open
-      xywh {711 230 370 390} type Double labeltype NORMAL_LABEL resizable
+      xywh {721 272 370 390} type Double labeltype NORMAL_LABEL resizable
       code0 {o->hide();} non_modal visible
     } {
       Fl_Group {} {open
@@ -437,14 +443,14 @@ class ICCfltkBetrachter {open
         }
         Fl_Button {} {
           label Auffrischen
-          callback {icc_examin->vcgtZeigen();} selected
+          callback {icc_examin->vcgtZeigen();}
           xywh {135 360 110 25} hotspot
         }
       }
     }
     Fl_Window details {
       label {ICC Details} open
-      xywh {596 385 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
+      xywh {606 427 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
     } {
       Fl_Group {} {open
         xywh {0 0 385 520}
@@ -524,6 +530,16 @@ class ICCfltkBetrachter {open
   icc_examin->neuzeichnen(inspekt_html);}
               tooltip {Mess- und Profilwerte bildlich und in Zahlen dargestellt; Ctrl+b} xywh {40 40 100 20} type Toggle shortcut 0x40062 deactivate
             }
+            menuitem menueintrag_zeigcgats {
+              label {CGATS Ansicht}
+              callback {Fl_Menu_* mw = (Fl_Menu_*)o;
+  const Fl_Menu_Item* m = mw->mvalue();
+
+  DBG_PROG_S (m->value())
+
+  icc_examin->zeigCGATS();} selected
+              tooltip {Mess- und Profilwerte bildlich und in Zahlen dargestellt; Ctrl+b} xywh {50 50 100 20} shortcut 0x40067 deactivate
+            }
             menuitem menueintrag_3D {
               label {3D Ansicht}
               callback {Fl_Menu_* mw = (Fl_Menu_*)o;
@@ -553,9 +569,6 @@ icc_examin->vcgtZeigen();}
               callback {ueber->show();
 ueber_html->value(getUeberHtml().c_str());}
               xywh {5 5 100 20}
-            }
-            menuitem {} {
-              xywh {0 0 100 20} shortcut 0xff1b
             }
           }
         }

@@ -749,4 +749,19 @@ zeig_bits_bin(void* speicher, int groesse)
   return text;
 }
 
+std::string::size_type
+suchenErsetzen          (std::string &text,
+                         std::string &suchen,
+                         std::string &ersetzen,
+                         std::string::size_type pos)
+{
+  //std::string::size_type ende;
+  while ((pos = text.find (suchen, pos)) != std::string::npos) {
+    text.replace (pos, suchen.size(), ersetzen);
+    DBG_NUM_S( suchen <<" ersetzt" )
+  }
+
+  return pos;
+}
+
 
