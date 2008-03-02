@@ -694,11 +694,11 @@ ueber_html->value(getUeberHtml().c_str());}
   // stop
   if (widget != mft_gl) {
     mft_gl->stop();
-    mft_gl->verstecken();
+    mft_gl->hide();
   }
   if (widget != DD_histogram ) {
     DD_histogram->stop();
-    DD_histogram->verstecken();
+    DD_histogram->hide();
   }
 
   // start
@@ -719,10 +719,10 @@ ueber_html->value(getUeberHtml().c_str());}
       ;//selectItem(icc_examin->tag_nr()+6);
   } else if (widget == mft_gl) {
     DBG_PROG_S( "mft GL Fenster belassen." )
-    mft_gl->zeigen();
+    mft_gl->show();
   } else if (widget == DD_histogram) {
     DBG_PROG_S( "3D GL Fenster belassen." )
-    DD_histogram->zeigen();
+    DD_histogram->show();
   }} {}
     code DBG_PROG_ENDE {}
   }

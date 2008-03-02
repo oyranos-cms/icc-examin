@@ -109,7 +109,6 @@ class ICCexamin : public icc_examin_ns::Beobachter
     void moniSetzen ();
     void standardGamma ();
   public:
-    void initReihenfolgeGL_Ansicht(GL_Ansicht*);
       // virtual aus icc_examin_ns::Beobachter::
     void nachricht( icc_examin_ns::Modell* modell , int infos );
 

@@ -34,7 +34,7 @@
 // Das glutWindow System ist komplitziert für Klassen und mehrere Fenster
 // o Agviewer in agvviewers werden 0-1 gezählt
 // o gl_ansichten in icc_examin werden auch von 0-1 gezählt haben aber eine
-//   interne Nummer glut_id_
+//   interne Nummer id_
 
 #include "icc_examin.h"
 #include "icc_formeln.h"
@@ -70,7 +70,6 @@ bool gl_voll[DL_MAX] = {false,false,false,false,false,false};
 typedef enum {
  MENU_AXES,
  MENU_QUIT,
- MENU_RING,
  MENU_KUGEL,           // Formen der 3DLut-darstellung
  MENU_WUERFEL,
  MENU_STERN,
@@ -95,11 +94,6 @@ typedef enum {
 
 int DrawAxes = 0;
 
-#define ROTATEINC 2;
-
-GLfloat Rotation = 0;  /* start ring flat and not spinning */
-int     Rotating = 0;
-
 #define bNachX(b) (b*b_darstellungs_breite - b_darstellungs_breite/2.)
 #define LNachY(L) (L - 0.5)
 #define aNachZ(a) (a*a_darstellungs_breite - a_darstellungs_breite/2.)
@@ -111,12 +105,11 @@ int     Rotating = 0;
 const double GL_Ansicht::std_vorder_schnitt = 4.2;
 
 GL_Ansicht::GL_Ansicht(int X,int Y,int W,int H)
-  : Fl_Group(X,Y,W,H)
+  : Fl_Gl_Window(X,Y,W,H)
 { DBG_PROG_START
   kanal = 0;
   schnitttiefe = 0.01;
   vorder_schnitt = std_vorder_schnitt;
-  beruehrt_ = false;
   auffrischen_ = true;
   a_darstellungs_breite = 1.0;
   b_darstellungs_breite = 1.0;
@@ -126,10 +119,9 @@ GL_Ansicht::GL_Ansicht(int X,int Y,int W,int H)
   hintergrundfarbe = MENU_HELLGRAU;
   spektralband = 0;
   zeige_helfer = true;
-  gl_fenster_zeigen_ = false;
   zeig_punkte_als_messwert_paare = false;
   zeig_punkte_als_messwerte = false;
-  glut_id_ = -1;
+  id_ = -1;
   strichmult = 1.0;
   DBG_PROG_ENDE
 }
@@ -155,13 +147,7 @@ void
 GL_Ansicht::init(int init_id)
 { DBG_PROG_START
 
-  glut_id_ = init_id;
-
-  if (beruehrt_)
-  {
-    DBG_PROG_ENDE
-    return;
-  }
+  id_ = init_id;
 
 #if 0
   if(this == icc_examin->icc_betrachter->mft_gl)
@@ -172,23 +158,16 @@ GL_Ansicht::init(int init_id)
   //agv_ = agviewers.size(); DBG_PROG
   //agviewers.resize (agv_ +1);
 
-  beruehrt_ = true;
-  this->begin();
-  gl_fenster_ = new Fl_Gl_Window (x(),y(),w(),h());
-  this->end();
-  gl_fenster_->end();
   DBG_PROG
 
   if (!this->visible())
     WARN_S("Diese GL_Ansicht ist nicht sichtbar")
-  //this->show();
 
-  gl_fenster_->show();
-  gl_fenster_->resizable(0);
+  resizable(0);
 
-  gl_fenster_->mode(FL_RGB |FL_DOUBLE |FL_ALPHA |FL_DEPTH |FL_MULTISAMPLE);
-  if(!gl_fenster_->can_do())
-    WARN_S( _("OpenGL eventuell nicht korrekt gesetzt von ICC Examin "<< gl_fenster_->mode()) )
+  mode(FL_RGB |FL_DOUBLE |FL_ALPHA |FL_DEPTH |FL_MULTISAMPLE);
+  if(!can_do())
+    WARN_S( _("OpenGL eventuell nicht korrekt gesetzt von ICC Examin "<< mode()) )
 
   DBG_PROG
 
@@ -198,7 +177,7 @@ GL_Ansicht::init(int init_id)
   glutInitWindowPosition(x(),y()); DBG_PROG_V( x() << y() )
   glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH | GLUT_MULTISAMPLE);
   DBG_PROG
-  glut_id_ = glutCreateWindow(_("GL Ansicht")); DBG_PROG_V( glut_id_ )
+  id_ = glutCreateWindow(_("GL Ansicht")); DBG_PROG_V( id_ )
 
   gl_fenster_->end(); DBG_PROG
   gl_fenster_->resizable(glut_window);
@@ -210,15 +189,15 @@ GL_Ansicht::init(int init_id)
   glutMenuStateFunc(menuuse##n); DBG_PROG
 #endif
 
-  agv_.agvInit(glut_id_);
+  agv_.agvInit(id_);
 
-  if (glut_id_ == 1) { DBG_PROG_S("mft_gl " << glut_id_)
+  if (id_ == 1) { DBG_PROG_S("mft_gl " << id_)
 #if USE_GLUT
     SetzeGlutFunktionen(1)
 #else
     ;
 #endif
-  } else { DBG_PROG_S("gl Fenster " << glut_id_)
+  } else { DBG_PROG_S("gl Fenster " << id_)
 #if USE_GLUT
     SetzeGlutFunktionen(2)
 #endif
@@ -253,71 +232,10 @@ GL_Ansicht::init(int init_id)
 }
 
 void
-GL_Ansicht::zeigen()
-{
-  DBG_PROG_START
-  DBG_PROG_V( id() )
-
-  if(!beruehrt_) icc_examin->initReihenfolgeGL_Ansicht(this);
-
-  if (!gl_fenster_zeigen_) { DBG_PROG
-    gl_fenster_->resize(x(),y(),w(),h());
-  }
-
-  DBG_PROG_V( id() <<" "<< x()<<" "<< y()<<" "<< w()<<" "<< h() )
-
-  agv_.agvSetAllowIdle (1);
-  gl_fenster_zeigen_ = true; DBG_PROG_V( glut_id_ )
-  fensterForm();
-  auffrischen();
-  glFlush();
-  DBG_PROG_ENDE
-}
-
-void
-GL_Ansicht::verstecken()
-{
-  DBG_PROG_START
-  DBG_PROG_V( id() )
-
-  //DBG_PROG_V( w() <<" "<< h() )
-  gl_fenster_zeigen_ = false; DBG_PROG
-
-  if (!beruehrt_) {
-    icc_examin->initReihenfolgeGL_Ansicht(this);
-  } else {
-    //agv_.agvSwitchMoveMode (Agviewer::AGV_STOP);
-    gl_fenster_->size(1,1);
-    stop();
-    DBG_PROG_S("-------------- GL Fenster auf 1x1 verkleinert ----------------")
-  }
-
-  
-  DBG_PROG_ENDE
-}
-
-void
 GL_Ansicht::stop()
 {
   DBG_PROG_START
-  if (beruehrt_) {
-    agv_.agvSwitchMoveMode (Agviewer::AGV_STOP);
-  }
-  DBG_PROG_ENDE
-}
-
-void
-GL_Ansicht::auffrischen__()
-{
-  DBG_PROG_START
-  DBG_PROG_V( icc_examin->frei() )
-  //if(icc_examin->frei())
-  if(auffrischen_)
-  {
-    erstelleGLListen_();
-    auffrischen_ = false;
-    DBG_PROG
-  }
+  agv_.agvSwitchMoveMode (Agviewer::AGV_STOP);
   DBG_PROG_ENDE
 }
 
@@ -342,24 +260,25 @@ GL_Ansicht::draw()
 {
   DBG_PROG_START
 
-  if(!gl_fenster_->valid()) {
+  if(!valid() && visible()) {
     GLinit_();  DBG_PROG
     menueInit_(); DBG_PROG
     erstelleGLListen_(); DBG_PROG_V( id() )
+    agv_.agvSetAllowIdle (1);
+    fensterForm();
+    auffrischen();
+    glFlush();
   }
 
-  if (gl_fenster_zeigen_)
+  if (visible())
   { DBG_PROG
-    gl_fenster_->size(w(),h());
+    size(w(),h());
     if (auffrischen_) {
       auffrischen();
     }
-  } else { DBG_PROG
-    gl_fenster_->size(1,1);
-    DBG_PROG_S("-------------- GL Fenster auf 1x1 verkleinert ----------------")
   }
   zeichnen();
-  DBG_PROG_V( gl_fenster_zeigen_ <<"|"<< (int*)gl_fenster_ <<"|"<< agv_.redisplayWindow() )
+  DBG_PROG_V( agv_.redisplayWindow() )
 
   DBG_PROG_ENDE
 }
@@ -406,7 +325,7 @@ GL_Ansicht::GLinit_()
 void
 GL_Ansicht::tastatur(int e)
 { DBG_ICCGL_START
-  if(gl_fenster_zeigen_)
+  if(visible())
   {
     //e = Fl::get_key(e);
     if(Fl::event_key() == FL_Up) {
@@ -1306,7 +1225,7 @@ GL_Ansicht::menueErneuern_()
   menue_form_->add (_("Hintergrundfarbe"),0,c_,cpMenueButton(menue_hintergrund_),FL_SUBMENU_POINTER);
 
   // ->Darstellung
-  if(glut_id_ == 1)
+  if(id_ == 1)
   {
     menue_form_->add( _("grau"), 0,c_, (void*)MENU_GRAU, 0 );
     menue_form_->add( _("farbig"), 0,c_, (void*)MENU_FARBIG, 0 );
@@ -1411,7 +1330,7 @@ implementGlutFunktionen(2)
 void
 GL_Ansicht::fensterForm( )
 { DBG_PROG_START
-  if(sichtbar()) {
+  if(visible()) {
     glViewport(x(),y(),w(),h()); DBG_PROG_V( x()<<" "<< y()<<" "<<w()<<" "<<h())
     seitenverhaeltnis = (GLdouble)w()/(GLdouble)h();
     glFlush();
@@ -1423,7 +1342,7 @@ void
 GL_Ansicht::zeichnen()
 {
   DBG_ICCGL_START
-  if(sichtbar() &&
+  if(visible() &&
      icc_examin->frei() )
   {
     //glutSetWindow(id);
@@ -1530,10 +1449,7 @@ GL_Ansicht::achsNamen    (std::vector<std::string> achs_namen)
     von_farb_namen_.push_back ("?");
     von_farb_namen_.push_back ("?");
   }
-  if (!beruehrt_)
-    icc_examin->initReihenfolgeGL_Ansicht(this);
-  else
-    auffrischen_ = true;
+  auffrischen_ = true;
   DBG_PROG_ENDE
 }
 
@@ -1566,10 +1482,7 @@ GL_Ansicht::hineinPunkte       (std::vector<double>      vect,
 
   DBG_PROG_V( punktform <<" "<< MENU_dE1STERN )
   //icc_examin->neuzeichnen(this);
-  if (!beruehrt_)
-    icc_examin->initReihenfolgeGL_Ansicht(this);
-  else
-    auffrischen_ = true;
+  auffrischen_ = true;
   DBG_PROG_ENDE
 }
 
@@ -1615,10 +1528,7 @@ GL_Ansicht::hineinNetze       (const std::vector<ICCnetz> & d_n)
   for(unsigned i = 0; i < dreiecks_netze.size(); ++i)
     DBG_NUM_V( dreiecks_netze[i].name );
 
-  if (!beruehrt_)
-    icc_examin->initReihenfolgeGL_Ansicht(this);
-  else
-    auffrischen_ = true;
+  auffrischen_ = true;
   DBG_PROG_ENDE
 }
 
@@ -1653,10 +1563,7 @@ GL_Ansicht::hineinTabelle (std::vector<std::vector<std::vector<std::vector<doubl
   //icc_examin->neuzeichnen(this); DBG_PROG_V( beruehrt_ )
 
 
-  if (!beruehrt_)
-    icc_examin->initReihenfolgeGL_Ansicht(this);
-  else
-    auffrischen_ = true;
+  auffrischen_ = true;
 
   DBG_PROG_V( auffrischen_ )
   icc_examin_ns::status_info(_("linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menü"));
@@ -1701,7 +1608,7 @@ GL_Ansicht::menueAufruf ( int value )
 {
   DBG_PROG_START
 
-  if(sichtbar()) {
+  if(visible()) {
     ;//DBG_PROG_S( "sichtbar "<< id )
     //glutSetWindow(id);
   }
@@ -1715,16 +1622,6 @@ GL_Ansicht::menueAufruf ( int value )
       //DBG_PROG_V( glutGetWindow() )
       //glutDestroyWindow(glutGetWindow());
       //icc_examin->glAnsicht(id)->beruehrt_ = false;
-      break;
-    case MENU_RING:
-      Rotating = !Rotating;
-      if (Rotating) {
-	//glutIdleFunc(rotatethering);    /* install our idle function */
-	agv_.agvSetAllowIdle(0); /* and tell AGV to not */
-      } else {
-	//glutIdleFunc(NULL);    /* uninstall our idle function      */
-	agv_.agvSetAllowIdle(1);/* and tell AGV it can mess with it */
-      }
       break;
     case MENU_KUGEL:
       punktform = MENU_KUGEL;
@@ -1842,8 +1739,8 @@ GL_Ansicht::menueAufruf ( int value )
     }
   }
 
-  if(sichtbar()) {
-    auffrischen__();
+  if(visible()) {
+    auffrischen();
   }
 
   DBG_PROG_V( value )
@@ -1872,24 +1769,10 @@ GL_Ansicht::c_ ( Fl_Widget* w, void* daten )
   DBG_PROG_ENDE
 }
 
-  /* rotate the axis and adjust position if nec. */
-void
-rotatethering (void)
-{ 
-  //DBG_PROG_START
-  Rotation += ROTATEINC;
-
-//  if (agvMoving())   /* we since we are the only idle function, we must */
-  //  agvMove();     /* give AGV the chance to update the eye position */
-
-  //glutPostRedisplay();
-  //DBG_PROG_ENDE
-}
-
 int
 GL_Ansicht::dID (int display_list)
-{ DBG_ICCGL_V( glut_id_ )
-  return glut_id_ *DL_MAX + display_list;
+{ DBG_ICCGL_V( id_ )
+  return id_ *DL_MAX + display_list;
 }
 
 

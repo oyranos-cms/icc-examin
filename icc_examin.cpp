@@ -55,10 +55,7 @@ using namespace icc_examin_ns;
 
 ICCexamin::ICCexamin ()
 { DBG_PROG_START
-  icc_betrachter = new ICCfltkBetrachter [1];
-  icc_waehler_ = new  ICCwaehler(485, 186, _("Ansichtsw\212hler"));
-  if(!icc_waehler_) WARN_S( _("icc_waehler_ nicht reservierbar") )
-  icc_waehler_->hide();
+  icc_betrachter = new ICCfltkBetrachter;
   _item = -1;
   _mft_item = -1;
   _zeig_histogram = 0;
@@ -109,6 +106,12 @@ ICCexamin::start (int argc, char** argv)
   kurve_umkehren.resize(MAX_VIEWER);
 
   icc_betrachter->init();
+
+  icc_betrachter->mft_gl->init(1);
+  icc_betrachter->DD_histogram->init(2);
+  icc_waehler_ = new  ICCwaehler(485, 186, _("Ansichtsw\212hler"));
+  if(!icc_waehler_) WARN_S( _("icc_waehler_ nicht reservierbar") )
+  icc_waehler_->hide();
 
   // Die TagViewers registrieren und ihre Variablen initialisieren
   icc_betrachter->tag_viewer->id = TAG_VIEWER;
@@ -170,7 +173,7 @@ ICCexamin::oeffnen (std::vector<std::string> dateinamen)
     icc_betrachter->measurement( profile.profil()->hasMeasurement() );
     if(profile.profil()->hasTagName("ncl2"))
     {
-      icc_betrachter->DD_histogram->zeigen();
+      icc_betrachter->DD_histogram->show();
       icc_betrachter->menueintrag_3D->set();
       _zeig_histogram = true;
       profile.oeffnen(icc_oyranos.moni(),-1);
@@ -215,16 +218,13 @@ ICCexamin::oeffnen (std::vector<std::string> dateinamen)
         texte.push_back(_("CIE *b"));
         icc_betrachter->DD_histogram->achsNamen(texte);
         icc_betrachter->DD_histogram->punkte_clear();
-        if(icc_betrachter->DD_histogram->beruehrt())
-          icc_betrachter->DD_histogram->auffrischen();
+        icc_betrachter->DD_histogram->auffrischen();
       } else
         WARN_S(_("kein Netz gefunden in VRML Datei"))
     } else {
-      if (icc_betrachter->DD_histogram->beruehrt())
-      { DBG_PROG
-        histogram();
-        icc_betrachter->DD_histogram->auffrischen();
-      }
+      DBG_PROG
+      histogram();
+      icc_betrachter->DD_histogram->auffrischen();
     }
 
   frei_ = true;
@@ -884,11 +884,11 @@ ICCexamin::neuzeichnen (void* z)
     if(!icc_betrachter->DD_histogram->visible())
       icc_betrachter->DD_histogram->show();
 
-    icc_betrachter->DD_histogram->zeigen();
+    icc_betrachter->DD_histogram->show();
     icc_waehler_->show();
     _zeig_histogram = true;
   } else if (_zeig_histogram) { DBG_PROG_S( "3D hist ausschalten" )
-    icc_betrachter->DD_histogram->verstecken();
+    icc_betrachter->DD_histogram->hide();
     _zeig_histogram = false;
     icc_waehler_->iconize();
 
@@ -930,9 +930,9 @@ DBG_PROG
     icc_betrachter->mft_choice->hide();
 DBG_PROG
   if (wid != icc_betrachter->mft_gl)
-    icc_betrachter->mft_gl->verstecken();
+    icc_betrachter->mft_gl->hide();
   else
-    icc_betrachter->mft_gl->zeigen();
+    icc_betrachter->mft_gl->show();
 DBG_PROG
   #define zeig(widget) \
   { Fl_Widget *w = dynamic_cast<Fl_Widget*> (icc_betrachter->widget); \
@@ -980,25 +980,6 @@ void
 ICCexamin::statusAktualisieren()
 { DBG_PROG_START
   icc_betrachter->box_stat->label(statlabel.c_str());
-  DBG_PROG_ENDE
-}
-
-void
-ICCexamin::initReihenfolgeGL_Ansicht(GL_Ansicht* gl_ansicht)
-{ DBG_PROG_START
-  if (!icc_betrachter->mft_gl->beruehrt()) {
-    icc_betrachter->mft_gl->show();
-    icc_betrachter->mft_gl->init(1);
-  }
-  if (gl_ansicht == icc_betrachter->DD_histogram) {
-    if (!icc_betrachter->DD_histogram->visible()) {
-      WARN_S("DD_histogram war nicht sichtbar")
-      icc_betrachter->DD_histogram->show();
-    }
-    icc_betrachter->DD_histogram->init(2);
-    if(profile.size())
-      nachricht(&profile,0);
-  }
   DBG_PROG_ENDE
 }
 

@@ -41,7 +41,7 @@
 
 class Fl_Menu_Button;
 
-class GL_Ansicht : public Fl_Group , public Fl_Slot {
+class GL_Ansicht : public Fl_Gl_Window , public Fl_Slot {
   // Datenhaltung
   std::vector<std::vector<std::vector<std::vector<double> > > > tabelle_;
   std::vector<std::string>nach_farb_namen_;
@@ -57,9 +57,8 @@ class GL_Ansicht : public Fl_Group , public Fl_Slot {
   //                   Die Klasse gl_fenster_ behält ihre volle Größe.
   //                   Die GL_Ansicht kann in gl_fenster_ eingepasst oder
   //                   auf 1x1 verkleinert werden.
-  Fl_Gl_Window *gl_fenster_;
+  //Fl_Gl_Window *gl_fenster_;
   // GL_Ansicht an gl_fenster_ anpassen oder Größe 1x1
-  bool gl_fenster_zeigen_;
   void fensterForm();
 
   // inner Strukturen bei Datenwechsel anpassen
@@ -76,9 +75,8 @@ class GL_Ansicht : public Fl_Group , public Fl_Slot {
   
   // IDs
   Agviewer agv_;
-  int  glut_id_;
+  int  id_;
   // gibt den Initalstatus an
-  bool beruehrt_;
   void GLinit_();
   void menueInit_();
 
@@ -86,14 +84,14 @@ public:
   GL_Ansicht(int X,int Y,int W,int H);
   ~GL_Ansicht();
   void init(int id);
-  bool beruehrt () {return beruehrt_; }
 
   // welches Glutfenster wird verwaltet?
-  int  id()          {return glut_id_; } // gleich zu agviewer::RedisplayWindow
+  int  id()          {return id_; } // gleich zu agviewer::RedisplayWindow
   // welches agvfenster wird benutzt?
   //Agviewer* agv()         {return &agv_; }
   // fltk virtual
   void draw();
+  void handle(int event);
 
   // Daten Laden
   void hineinPunkte (std::vector<double> vect,
@@ -150,11 +148,7 @@ private:
 
 public:
   // Darstellungsfunktionen
-  void zeigen();            // diese Klasse anzeigen (fltk + glut + gl)
-  void verstecken();        //  ~           verstecken      ~
-  bool sichtbar() {return gl_fenster_zeigen_; } // angezeigt / versteckt
   void zeichnen();          // gl Zeichnen
-  void auffrischen__();       // Erneuerung ohne init() und ohne Menüs
   int  dID (int display_liste);
   void tastatur(int e);
   void menueAufruf(int value);
