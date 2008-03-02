@@ -106,6 +106,11 @@ private:
   inline void cb_Voreinstellungen_i(Fl_Menu_*, void*);
   static void cb_Voreinstellungen(Fl_Menu_*, void*);
 public:
+  static Fl_Menu_Item *menueintrag_huelle;
+private:
+  inline void cb_menueintrag_huelle_i(Fl_Menu_*, void*);
+  static void cb_menueintrag_huelle(Fl_Menu_*, void*);
+public:
   static Fl_Menu_Item *menueintrag_Voll;
 private:
   inline void cb_menueintrag_Voll_i(Fl_Menu_*, void*);

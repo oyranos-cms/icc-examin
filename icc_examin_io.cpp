@@ -141,16 +141,15 @@ ICCexamin::oeffnen (std::vector<std::string> dateinamen)
     static std::vector<std::string> namen_neu, namen_alt;
     bool namensgleich = false;
     namen_neu = profile;
+    DBG_PROG_V( namen_neu.size() <<" "<< namen_alt.size() )
     if(namen_alt.size() == namen_neu.size()) {
       namensgleich = true;
       DBG_NUM_S( _("Anzahl gabs schon mal") )
-      for(int i = 0; i < (int)namen_neu.size(); ++i) {
-        if(namen_neu[i] != namen_alt[i]) {
+      for(int i = 0; i < (int)namen_neu.size(); ++i)
+        if(namen_neu[i] != namen_alt[i])
           namensgleich = false;
-          namen_alt[i] = namen_neu[i];
-        }
-      }
     }
+    namen_alt = namen_neu;
     DBG_NUM_V( "#################### " << namensgleich << " ##############")
     if(!namensgleich)
     {

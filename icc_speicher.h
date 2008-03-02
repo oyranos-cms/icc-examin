@@ -93,6 +93,7 @@ class Speicher
                                 DBG_MEM_S( ref_n_ <<" = "<< *ref_n_ )
                                 DBG_MEM_V( letze_aen_zeit_ )
                                 DBG_MEM_V( *letze_aen_zeit_ )
+                                DBG_MEM_V( *groesse_ )
                               *letze_aen_zeit_ = time(0);
                               *letze_ben_zeit_ = time(0);
                               DBG_MEM_ENDE

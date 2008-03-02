@@ -798,9 +798,11 @@ ICCprofile::saveProfileToMem  (size_t *size)
 
   char *block = (char*)calloc (sizeof (char) , size_);
   memcpy (block, data_, size_);
-  if(size)
+  if(size) {
     *size = size_;
-  DBG_MEM_V( size_ )
+    DBG_MEM_V( *size )
+  }
+  DBG_MEM_V( size_ <<" "<< size )
   DBG_PROG_ENDE
   return block;
 }

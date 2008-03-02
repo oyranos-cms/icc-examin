@@ -252,7 +252,7 @@ GL_Ansicht::handle( int event )
          DBG_ICCGL_S( "FL_MOVE bei: " << Fl::event_x() << "," << Fl::event_y() )
          break;
     case FL_MOUSEWHEEL:
-         DBG_ICCGL_S( "FL_MOUSEWHEEL" )
+         DBG_ICCGL_S( "FL_MOUSEWHEEL" << Fl::event_dx() << "," << Fl::event_dy() )
          break;
     default:
          DBG_ICCGL_S( "default" )

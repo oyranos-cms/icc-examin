@@ -180,11 +180,11 @@ ICCexamin::nachricht( Modell* modell , int info )
           static int intent_alt;
           // ncl2 ?
           DBG_PROG_V( profile.aktuell() );
-          int intent_neu = profile[profile.aktuell()]->intent();
+          int intent_neu = profile.profil()->intent();
+          DBG_PROG_V( intent_neu <<" "<< intent_alt )
           if(intent_alt != intent_neu) {
-            DBG_PROG_V( intent_neu )
             histogram ();
-            intent_neu = intent_neu;
+            intent_alt = intent_neu;
           } else
             histogram (info);
 

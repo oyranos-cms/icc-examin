@@ -3,8 +3,8 @@
 
 CONF_H=config.h
 CONF=config
-VERSION="0.25"
-ZEIT="Mai 2004 - Maerz 2005"
+VERSION="0.26"
+ZEIT="Mai 2004 - April 2005"
 
 test -f error.txt && rm -v error.txt
 test -f config && make clean

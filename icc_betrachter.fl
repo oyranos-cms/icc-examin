@@ -378,7 +378,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window vcgt {
       label {Grafikkarten Gamma Tabellen}
-      xywh {693 104 370 390} type Double resizable
+      xywh {698 125 370 390} type Double resizable
       code0 {o->hide();} non_modal visible
     } {
       Fl_Group {} {open
@@ -413,7 +413,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window details {
       label {ICC Details} open
-      xywh {623 162 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
+      xywh {634 190 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
     } {
       Fl_Group {} {open
         xywh {0 0 385 520}
@@ -446,7 +446,7 @@ class ICCfltkBetrachter {open
             }
           }
           submenu {} {
-            label Bearbeiten
+            label Bearbeiten selected
             xywh {25 25 100 20}
           } {
             menuitem {} {
@@ -454,6 +454,18 @@ class ICCfltkBetrachter {open
               callback {voreinstellungen()}
               xywh {25 25 100 20}
             }
+          }
+          menuitem menueintrag_huelle {
+            label {Hülle}
+            callback {Fl_Menu_* mw = (Fl_Menu_*)o;
+  const Fl_Menu_Item* m = mw->mvalue();
+
+  DBG_PROG_S (m->value())
+  if (m->value()) {
+    ((Fl_Button*)menueintrag_3D)->value(true);
+  } else
+    ((Fl_Button*)menueintrag_3D)->value(false);}
+            xywh {60 60 100 20} type Toggle shortcut 0x40068 hide
           }
           submenu {} {
             label Ansicht open
@@ -507,7 +519,7 @@ class ICCfltkBetrachter {open
     //icc_examin->histogram();
   } else
     widget_oben = WID_0;
-  icc_examin->neuzeichnen(icc_examin->icc_betrachter->DD_histogram);} selected
+  icc_examin->neuzeichnen(icc_examin->icc_betrachter->DD_histogram);}
               xywh {50 50 100 20} type Toggle shortcut 0x40068 divider
             }
             menuitem menueintrag_zeigcgats {

@@ -116,9 +116,9 @@ ICCexamin::netzLese (int n,
 
   if(profile.size() > n)
     if(profile[n]->valid()) {
-      size_t groesse = 0; 
-      s.lade(profile[n]->saveProfileToMem(&groesse), groesse);
-             //profile[n]->getProfileSize());
+      size_t groesse = 0;
+      char* daten = profile[n]->saveProfileToMem(&groesse); 
+      s.lade(daten, groesse);
       DBG_NUM_V( groesse );
     }
 
@@ -138,7 +138,8 @@ ICCexamin::netzLese (int n,
       (*netz)[n].name = profile[n]->filename();
       DBG_NUM_V( (*netz)[n].transparenz )
     }
-  }
+  } else
+    WARN_S(_("kein Profil im Speicher"))
 
   DBG_PROG_ENDE
 }

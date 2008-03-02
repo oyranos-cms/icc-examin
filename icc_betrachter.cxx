@@ -261,6 +261,20 @@ void ICCfltkBetrachter::cb_Voreinstellungen(Fl_Menu_* o, void* v) {
   ((ICCfltkBetrachter*)(o->parent()->parent()->user_data()))->cb_Voreinstellungen_i(o,v);
 }
 
+inline void ICCfltkBetrachter::cb_menueintrag_huelle_i(Fl_Menu_* o, void*) {
+  Fl_Menu_* mw = (Fl_Menu_*)o;
+  const Fl_Menu_Item* m = mw->mvalue();
+
+  DBG_PROG_S (m->value())
+  if (m->value()) {
+    ((Fl_Button*)menueintrag_3D)->value(true);
+  } else
+    ((Fl_Button*)menueintrag_3D)->value(false);
+}
+void ICCfltkBetrachter::cb_menueintrag_huelle(Fl_Menu_* o, void* v) {
+  ((ICCfltkBetrachter*)(o->parent()->parent()->user_data()))->cb_menueintrag_huelle_i(o,v);
+}
+
 inline void ICCfltkBetrachter::cb_menueintrag_Voll_i(Fl_Menu_*, void*) {
   Fl_Window *w = (Fl_Window *)details;
 
@@ -363,6 +377,7 @@ Fl_Menu_Item ICCfltkBetrachter::menu_[] = {
  {"Bearbeiten", 0,  0, 0, 64, 0, 0, 14, 56},
  {"Voreinstellungen", 0,  (Fl_Callback*)ICCfltkBetrachter::cb_Voreinstellungen, 0, 0, 0, 0, 14, 56},
  {0,0,0,0,0,0,0,0,0},
+ {"H\374lle", 0x40068,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_huelle, 0, 18, 0, 0, 14, 56},
  {"Ansicht", 0,  0, 0, 192, 0, 0, 14, 56},
  {"Ganzer Bildschirm an/aus", 0x40076,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_Voll, 0, 128, 0, 0, 14, 56},
  {"Pr\374""fansicht", 0x40062,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_inspekt, 0, 3, 0, 0, 14, 56},
@@ -377,13 +392,14 @@ Fl_Menu_Item ICCfltkBetrachter::menu_[] = {
  {0,0,0,0,0,0,0,0,0}
 };
 Fl_Menu_Item* ICCfltkBetrachter::menueintrag_html_speichern = ICCfltkBetrachter::menu_ + 2;
-Fl_Menu_Item* ICCfltkBetrachter::menueintrag_Voll = ICCfltkBetrachter::menu_ + 9;
-Fl_Menu_Item* ICCfltkBetrachter::menueintrag_inspekt = ICCfltkBetrachter::menu_ + 10;
-Fl_Menu_Item* ICCfltkBetrachter::menueintrag_3D = ICCfltkBetrachter::menu_ + 11;
-Fl_Menu_Item* ICCfltkBetrachter::menueintrag_zeigcgats = ICCfltkBetrachter::menu_ + 12;
-Fl_Menu_Item* ICCfltkBetrachter::menueintrag_vcgt = ICCfltkBetrachter::menu_ + 13;
-Fl_Menu_Item* ICCfltkBetrachter::menueintrag_testkurven = ICCfltkBetrachter::menu_ + 14;
-Fl_Menu_Item* ICCfltkBetrachter::menu_hilfe = ICCfltkBetrachter::menu_ + 16;
+Fl_Menu_Item* ICCfltkBetrachter::menueintrag_huelle = ICCfltkBetrachter::menu_ + 8;
+Fl_Menu_Item* ICCfltkBetrachter::menueintrag_Voll = ICCfltkBetrachter::menu_ + 10;
+Fl_Menu_Item* ICCfltkBetrachter::menueintrag_inspekt = ICCfltkBetrachter::menu_ + 11;
+Fl_Menu_Item* ICCfltkBetrachter::menueintrag_3D = ICCfltkBetrachter::menu_ + 12;
+Fl_Menu_Item* ICCfltkBetrachter::menueintrag_zeigcgats = ICCfltkBetrachter::menu_ + 13;
+Fl_Menu_Item* ICCfltkBetrachter::menueintrag_vcgt = ICCfltkBetrachter::menu_ + 14;
+Fl_Menu_Item* ICCfltkBetrachter::menueintrag_testkurven = ICCfltkBetrachter::menu_ + 15;
+Fl_Menu_Item* ICCfltkBetrachter::menu_hilfe = ICCfltkBetrachter::menu_ + 17;
 
 inline void ICCfltkBetrachter::cb_tag_browser_i(TagBrowser* o, void*) {
   o->selectItem( o->value() );
@@ -544,7 +560,7 @@ Fl_Double_Window* ICCfltkBetrachter::init() {
       { Fl_Menu_Bar* o = new Fl_Menu_Bar(0, 0, 385, 25);
         o->align(FL_ALIGN_LEFT|FL_ALIGN_INSIDE);
         o->when(3);
-        { Fl_Menu_Item* o = &menu_[13];
+        { Fl_Menu_Item* o = &menu_[14];
           o->hide();
         }
         o->menu(menu_);
