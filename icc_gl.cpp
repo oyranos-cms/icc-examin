@@ -47,6 +47,7 @@
 #include <cmath>
 
 //#define Beleuchtung
+//#define Lab_STERN 1
 
 #define DEBUG_ICCGL
 #ifdef DEBUG_ICCGL
@@ -107,12 +108,14 @@ int     Rotating = 0;
          (L - 0.5), \
          (a*a_darstellungs_breite - a_darstellungs_breite/2.)
 
+const double GL_Ansicht::std_vorder_schnitt = 4.2;
 
-GL_Ansicht::GL_Ansicht(int X,int Y,int W,int H) : Fl_Group(X,Y,W,H)
+GL_Ansicht::GL_Ansicht(int X,int Y,int W,int H)
+  : Fl_Group(X,Y,W,H)
 { DBG_PROG_START
   kanal = 0;
   schnitttiefe = 0.01;
-  vorderSchnitt = 4.2;
+  vorder_schnitt = std_vorder_schnitt;
   beruehrt_ = false;
   auffrischen_ = true;
   menue_kanal_eintraege_ = 0;
@@ -125,6 +128,7 @@ GL_Ansicht::GL_Ansicht(int X,int Y,int W,int H) : Fl_Group(X,Y,W,H)
   zeige_helfer = true;
   gl_fenster_zeigen_ = false;
   zeig_punkte_als_messwert_paare = false;
+  zeig_punkte_als_messwerte = false;
   glut_id_ = -1;
   strichmult = 1.0;
   DBG_PROG_ENDE
@@ -353,16 +357,16 @@ GL_Ansicht::tastatur(int e)
   {
     //e = Fl::get_key(e);
     if(Fl::event_key() == FL_Up) {
-      vorderSchnitt += 0.01;
+      vorder_schnitt += 0.01;
       glutPostRedisplay();
     } else if(Fl::event_key() == FL_Down) {
-      vorderSchnitt -= 0.01;
+      vorder_schnitt -= 0.01;
       glutPostRedisplay();
     } else if(Fl::event_key() == FL_Home) {
-      vorderSchnitt = 4.2;
+      vorder_schnitt = 4.2;
       glutPostRedisplay();
     } else if(Fl::event_key() == FL_End) {
-      vorderSchnitt = agviewers[agv_].eyeDist();
+      vorder_schnitt = agviewers[agv_].eyeDist();
       glutPostRedisplay();
     }
     DBG_ICCGL_S("e = " << Fl::event_key() )
@@ -393,6 +397,12 @@ GL_Ansicht::tastatur(int e)
    glEnable(GL_TEXTURE_2D); \
    glEnable(GL_LIGHTING); \
    glLineWidth(strichmult); }
+
+#define ZeichneOText(font, scal, buffer) glPushMatrix(); \
+                                   glScalef(scal,scal,scal); \
+                                   ZeichneText(font,buffer); \
+                                   glScalef(1.0/scal,1.0/scal,1.0/scal); \
+                                   glPopMatrix();
 
 #define ZeichneBuchstaben(Font,Buchstabe) { \
         glScalef(0.001,0.001,0.001); \
@@ -1025,103 +1035,42 @@ GL_Ansicht::punkteAuffrischen()
                       farben_[i/3*4+3] );
           }
 
-          double groesse = 0.01;
           switch (punktform)
           {
           case MENU_dE1STERN:
-               #if 0
-            glBegin(GL_QUADS);
-              glVertex3d(  groesse/2, 0, -groesse/2 );
-              glVertex3d( -groesse/2, 0, -groesse/2 );
-              glVertex3d( -groesse/2, 0,  groesse/2 );
-              glVertex3d(  groesse/2, 0,  groesse/2 );
-            glEnd();
-            glBegin(GL_QUADS);
-              glVertex3d(  groesse/2, -groesse/2, 0 );
-              glVertex3d( -groesse/2, -groesse/2, 0 );
-              glVertex3d( -groesse/2,  groesse/2, 0 );
-              glVertex3d(  groesse/2,  groesse/2, 0 );
-            glEnd();
-            glBegin(GL_QUADS);
-              glVertex3d( 0,  groesse/2, -groesse/2 );
-              glVertex3d( 0, -groesse/2, -groesse/2 );
-              glVertex3d( 0, -groesse/2,  groesse/2 );
-              glVertex3d( 0,  groesse/2,  groesse/2 );
-            glEnd();
+               #ifdef Lab_STERN
+               {
+               double groesse = 0.01;
+               glBegin(GL_QUADS);
+                 glVertex3d(  groesse/2, 0, -groesse/2 );
+                 glVertex3d( -groesse/2, 0, -groesse/2 );
+                 glVertex3d( -groesse/2, 0,  groesse/2 );
+                 glVertex3d(  groesse/2, 0,  groesse/2 );
+               glEnd();
+               glBegin(GL_QUADS);
+                 glVertex3d(  groesse/2, -groesse/2, 0 );
+                 glVertex3d( -groesse/2, -groesse/2, 0 );
+                 glVertex3d( -groesse/2,  groesse/2, 0 );
+                 glVertex3d(  groesse/2,  groesse/2, 0 );
+               glEnd();
+               glBegin(GL_QUADS);
+                 glVertex3d( 0,  groesse/2, -groesse/2 );
+                 glVertex3d( 0, -groesse/2, -groesse/2 );
+                 glVertex3d( 0, -groesse/2,  groesse/2 );
+                 glVertex3d( 0,  groesse/2,  groesse/2 );
+               glEnd();
+               }
                #else
                glBegin(GL_POINTS);
                  glVertex2d( 0,0 );
                glEnd();
                #endif
             break;
-          case MENU_dE1KUGEL: glutSolidSphere (0.005, 12, 12); break;
-          case MENU_dE2KUGEL: glutSolidSphere (0.01, 12, 12); break;
+          case MENU_dE1KUGEL: glutSolidSphere (0.005, 5, 5); break;
+          case MENU_dE2KUGEL: glutSolidSphere (0.01, 8, 8); break;
           case MENU_dE4KUGEL: glutSolidSphere (0.02, 12, 12);
                break;
           case MENU_DIFFERENZ_LINIE:
-               if(1)
-               {
-                 glPushMatrix();
-                  GLdouble modell_matrix[16], projektions_matrix[16];
-                  GLint bildschirm[4];
-                  GLdouble x,y,z;
-                  glGetDoublev(GL_MODELVIEW_MATRIX, modell_matrix);
-                  glGetDoublev(GL_PROJECTION_MATRIX, projektions_matrix);
-                  glGetIntegerv(GL_VIEWPORT, bildschirm);
-                  gluProject(
-                            punkte_[i+2]*b_darstellungs_breite,
-                            punkte_[i+0], punkte_[i+1]*a_darstellungs_breite,
-                            modell_matrix, projektions_matrix,
-                            bildschirm, &x,&y,&z);
-
-
-                  // Text
-                  if(1)
-                  {
-                    // wie weit ist das nächste Objekt in diese Richtung, sehr aufwendig
-             //       GLfloat zBuffer;
-             //       glReadPixels((GLint)x,(GLint)y,1,1,GL_DEPTH_COMPONENT, GL_FLOAT, &zBuffer);
-
-                    glMatrixMode(GL_PROJECTION);
-                    glOrtho( 0, w(), 0, h(), 0.1, 100.0);
-
-                    glTranslatef(x, y, 8.8- schnitttiefe*3);
-
-                              //DBG_NUM_S(x<<" "<<y<<" "<<z)
-             #if 0
-                              glBegin(GL_QUADS);
-                                glVertex2d(  groesse/2, -groesse/2 );
-                                glVertex2d( -groesse/2, -groesse/2 );
-                                glVertex2d( -groesse/2,  groesse/2 );
-                                glVertex2d(  groesse/2,  groesse/2 );
-                              glEnd();
-             #endif
-                    // Start von unten links
-       #define ZeichneOText(font, scal, buffer) glScalef(scal,scal,scal); \
-                                   ZeichneText(font,buffer); \
-                                   glScalef(1.0/scal,1.0/scal,1.0/scal);
-
-       #define ZeichneOText(font, scal, buffer) glPushMatrix(); \
-                                   glScalef(scal,scal,scal); \
-                                   ZeichneText(font,buffer); \
-                                   glScalef(1.0/scal,1.0/scal,1.0/scal); \
-                                   glPopMatrix();
-
-                    float scal = 120.0;
-                    std::string text;
-                    text.append(_("Hallo:"));
-                    text += " ";
-                    text += kanalName();
-
-                    ZeichneOText (GLUT_STROKE_ROMAN, scal, (char*)text.c_str()) 
-
-                    //setzePerspektive();
-                   glPopMatrix();
-                   glMatrixMode(GL_MODELVIEW);
-                 }
-
-                 //glTranslated(x,y,0);
-               }
                break;
           }
         glPopMatrix();
@@ -1336,10 +1285,19 @@ GL_Ansicht::menueInit_()
     glutSetMenu(menue_);
   } else {
     glutSetMenu(menue_form_);
-    glutAddMenuEntry(_("Kugel 1dE"), MENU_dE1KUGEL);
-    glutAddMenuEntry(_("Kugel 2dE"), MENU_dE2KUGEL);
-    glutAddMenuEntry(_("Kugel 4dE"), MENU_dE4KUGEL);
-    glutAddMenuEntry(_("Stern"),     MENU_dE1STERN);
+    // Kugeln mit ihrem Radius symbolisieren Messfarben
+    if(zeig_punkte_als_messwerte)
+    {
+      glutAddMenuEntry(_("Kugel 1dE"), MENU_dE1KUGEL);
+      glutAddMenuEntry(_("Kugel 2dE"), MENU_dE2KUGEL);
+      glutAddMenuEntry(_("Kugel 4dE"), MENU_dE4KUGEL);
+    } else
+    #ifdef Lab_STERN
+      glutAddMenuEntry(_("Stern"),     MENU_dE1STERN);
+    #else
+    // Punkte werden für Bildfarben reserviert
+      glutAddMenuEntry(_("Punkt"),     MENU_dE1STERN);
+    #endif
     glutAddMenuEntry(_("ohne Farborte"), MENU_DIFFERENZ_LINIE);
     glutAddMenuEntry(_("Spektrallinie"), MENU_SPEKTRALBAND);
   }
@@ -1360,11 +1318,11 @@ GL_Ansicht::setzePerspektive()
 { //DBG_ICCGL_START
     if (agviewers[agv()].duenn)
       gluPerspective(15, seitenverhaeltnis,
-                     vorderSchnitt,
-                     vorderSchnitt + schnitttiefe);
+                     vorder_schnitt,
+                     vorder_schnitt + schnitttiefe);
     else
       gluPerspective(15, seitenverhaeltnis,
-                     vorderSchnitt, 50);
+                     vorder_schnitt, 50);
                   // ^-- vordere Schnittfläche
   //DBG_ICCGL_ENDE
 }
@@ -1574,6 +1532,8 @@ GL_Ansicht::hineinNetze       (const std::vector<ICCnetz> & d_n)
     dreiecks_netze = d_n;
 
   DBG_NUM_V( dreiecks_netze.size() )
+  for(unsigned i = 0; i < dreiecks_netze.size(); ++i)
+    DBG_NUM_V( dreiecks_netze[i].name )
   DBG_PROG_ENDE
 }
 

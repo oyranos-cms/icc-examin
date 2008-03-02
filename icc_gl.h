@@ -84,7 +84,7 @@ public:
   //void setzteGlutId(int id) {if (!beruehrt_) glut_id_ = id; }
 
   // welches Glutfenster wird verwaltet?
-  int  id()          {return glut_id_; }
+  int  id()          {return glut_id_; } // gleich zu agviewer::RedisplayWindow
   // welches agvfenster wird benutzt?
   int  agv()         {return agv_; }
   // fltk virtual
@@ -136,11 +136,13 @@ public:
   void punkteAuffrischen(); // glCompile für Punkte
   void netzeAuffrischen();    // Sortieren und Zeichnen
   double seitenverhaeltnis; // Proportion des Fensters
-  double vorderSchnitt;      // Entfernung der ersten Schnittebene
+  static const double std_vorder_schnitt;
+  double vorder_schnitt;      // Entfernung der ersten Schnittebene
   double schnitttiefe;      // Dicke der GL Schnitttiefe
   double a_darstellungs_breite; // Richtung CIE*a   für Zoom und Pfeillängen
   double b_darstellungs_breite; // ~        CIE*b ; wobei CIE*L immer 1.0
   bool zeig_punkte_als_messwert_paare;
+  bool zeig_punkte_als_messwerte;
   int  spektralband;        // stelle die spektral gesättigten Farben dar
   int  zeige_helfer;        // zeige Pfeile und Text
 private:

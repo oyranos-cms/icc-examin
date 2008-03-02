@@ -485,6 +485,19 @@ ICCprofile::hasCLUT(void)
   return has_LUTS;
 }
 
+bool
+ICCprofile::valid ()
+{
+  const char* magic = header.magicName();
+  if (magic[0] == 'a' &&
+      magic[1] == 'c' &&
+      magic[2] == 's' &&
+      magic[3] == 'p')
+    return true;
+  else
+    return false;
+}
+
 int
 ICCprofile::getColourChannelsCount(void)
 { DBG_PROG_START
@@ -569,7 +582,8 @@ ICCprofile::saveProfileToMem  (int *size)
 
   char *block = (char*)calloc (sizeof (char) , _size);
   memcpy (block, _data, _size);
-  *size = _size;
+  if(size)
+    *size = _size;
   DBG_MEM_V( _size )
   DBG_PROG_ENDE
   return block;

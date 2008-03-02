@@ -516,7 +516,7 @@ class ICCprofile {
     std::vector<double> getWhitePkt   (void);
     int                 getColourChannelsCount ();
     int                 hasCLUT ();
-
+    bool                valid ();
   public: // Datei I/O
     int                 checkProfileDevice (char* type,
                                            icProfileClassSignature deviceClass);

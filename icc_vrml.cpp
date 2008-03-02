@@ -125,10 +125,12 @@ icc_create_vrml( const char* p, int size )
       }
 
     if(data)
+    {
       vrml = data;
-    DBG_PROG_V(data)
+      DBG_PROG_V(data)
+      free(data);
+    }
     erase_file (ptn.c_str());
-    if(data) free(data);
     DBG_PROG_V(vrml)
   }
 

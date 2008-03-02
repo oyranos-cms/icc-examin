@@ -37,6 +37,7 @@
 // ICC Kopfdateien und Definitionen
 #include "icc_utils.h"
 #include "icc_examin.h"
+#include "icc_info.h"
 #define _(text) text
 
 /* Some <math.h> files do not define M_PI... */
@@ -159,6 +160,10 @@ Agviewer::_agvMove(void)
       Ex += EyeMove*sin(TORAD(EyeAz))*cos(TORAD(EyeEl));
       Ey += EyeMove*sin(TORAD(EyeEl));
       Ez -= EyeMove*cos(TORAD(EyeAz))*cos(TORAD(EyeEl));
+      if(fabs(EyeDist+0.01) < fabs(EyeDist)) {
+        int button = GLUT_LEFT_BUTTON, state = GLUT_DOWN, x=0, y=0;
+        _agvHandleButton(button,state,x,y);;
+      }
       break;
 
     case POLAR:
@@ -196,7 +201,8 @@ Agviewer::MoveOn(int v)
   //glutSetWindow(RedisplayWindow);
   if (v && ((MoveMode == FLYING && EyeMove != 0) ||
              (MoveMode == POLAR &&
-             (AzSpin != 0 || ElSpin != 0 || AdjustingAzEl)))) {
+             (AzSpin != 0 || ElSpin != 0 || AdjustingAzEl))))
+  {
     agvMoving = 1;
     if (AllowIdle)
       if (redisplayWindow() == 1) {
@@ -244,19 +250,21 @@ Agviewer::agvSwitchMoveMode(int move)
       EyeAz =  EyeAz;
       EyeEl = -EyeEl;
       EyeMove = init_move;
-      status(_("Schnitt; linker Mausklick setzt zurück"));
+      status_info(_("Schnitt; linker Mausklick setzt zurück"));
       duenn = true;
       break;
     case ICCFLY_L:
       MoveMode = POLAR;
-      EyeDist = init_dist;
+      EyeDist = 2*init_dist;
       EyeAz   = init_polar_az;
       EyeEl   = init_polar_el;
       AzSpin  = init_az_spin;
       ElSpin  = init_el_spin;
       move = FLYING;
       this->agvSwitchMoveMode( FLYING );
-      status(_("waagerechter Schnitt; linker Mausklick setzt zurück"));
+      icc_examin->glAnsicht(RedisplayWindow)->vorder_schnitt = 
+         icc_examin->glAnsicht(RedisplayWindow)->std_vorder_schnitt + init_dist;
+      status_info(_("waagerechter Schnitt; linker Mausklick setzt zurück"));
       duenn = true;
       break;
     case ICCFLY_a:
@@ -268,7 +276,9 @@ Agviewer::agvSwitchMoveMode(int move)
       ElSpin  = init_el_spin;
       move = FLYING;
       this->agvSwitchMoveMode( FLYING );
-      status(_("senkrechter Schnitt von rechts; linker Mausklick setzt zurück"));
+      icc_examin->glAnsicht(RedisplayWindow)->vorder_schnitt = 
+         icc_examin->glAnsicht(RedisplayWindow)->std_vorder_schnitt;
+      status_info(_("senkrechter Schnitt von rechts; linker Mausklick setzt zurück"));
       duenn = true;
       break;
     case ICCFLY_b:
@@ -280,7 +290,9 @@ Agviewer::agvSwitchMoveMode(int move)
       ElSpin  = init_el_spin;
       move = FLYING;
       this->agvSwitchMoveMode( FLYING );
-      status(_("senkrechter Schnitt von vorn; linker Mausklick setzt zurück"));
+      icc_examin->glAnsicht(RedisplayWindow)->vorder_schnitt = 
+         icc_examin->glAnsicht(RedisplayWindow)->std_vorder_schnitt;
+      status_info(_("senkrechter Schnitt von vorn; linker Mausklick setzt zurück"));
       duenn = true;
       break;
     case ICCPOLAR:
@@ -324,7 +336,7 @@ Agviewer::_agvHandleButton(int &button, int &state, int &x, int &y)
   //glutSetWindow(RedisplayWindow);
   DBG_PROG_V( button <<" "<< state);
 
- if (state == GLUT_DOWN && downb == -1) {  
+ if (state == GLUT_DOWN && downb == -1) {
     lastx = downx = x;
     lasty = downy = y;
     downb = button;    
@@ -339,7 +351,7 @@ Agviewer::_agvHandleButton(int &button, int &state, int &x, int &y)
         AdjustingAzEl = 1;
 	MoveOn(0); //ICC stop
         if (MoveMode == FLYING)
-          status(_("linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menü"));
+          status_info(_("linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menü"));
         duenn = false;
         MoveMode = POLAR;
         break;
@@ -352,7 +364,7 @@ Agviewer::_agvHandleButton(int &button, int &state, int &x, int &y)
 	downEyeMove = EyeMove;
 	EyeMove = 0;
         if (MoveMode == FLYING)
-          status(_("Pause"));
+          status_info(_("Pause"));
         break;
     }
 
@@ -373,7 +385,7 @@ Agviewer::_agvHandleButton(int &button, int &state, int &x, int &y)
         AdjustingAzEl = 0;
         MoveOn(1);
         if (MoveMode == FLYING) {
-          status(_("linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menü"));
+          status_info(_("linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menü"));
           duenn = false;
         }
         break;
@@ -381,7 +393,7 @@ Agviewer::_agvHandleButton(int &button, int &state, int &x, int &y)
       case GLUT_MIDDLE_BUTTON:
 	EyeMove = downEyeMove;
         if (MoveMode == FLYING) {
-          status(_("linke Maustaste -> zurück"));
+          status_info(_("linke Maustaste -> zurück"));
           duenn = true;
         }
         break;

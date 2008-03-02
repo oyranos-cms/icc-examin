@@ -79,7 +79,7 @@ class Oyranos
     int         setzeMonitorProfil (const char* name );
     std::vector<ICCnetz> netzAusVRML   (std::string & vrml)
                                 { return extrahiereNetzAusVRML (vrml); }
-    std::vector<ICCnetz> netzVonProfil (const Speicher p);
+    std::vector<ICCnetz> netzVonProfil (const Speicher & p);
 
   private:
     void lab_test_();

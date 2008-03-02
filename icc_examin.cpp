@@ -459,6 +459,7 @@ ICCexamin::histogram ()
         icc_betrachter->DD_histogram->zeig_punkte_als_messwert_paare = true;
       else
         icc_betrachter->DD_histogram->zeig_punkte_als_messwert_paare = false;
+      icc_betrachter->DD_histogram->zeig_punkte_als_messwerte = true;
 
       unsigned int j;
       int n = messung.getPatchCount(); DBG_PROG_V( messung.getPatchCount() )
@@ -487,10 +488,10 @@ ICCexamin::histogram ()
         } 
       }
       namen = messung.getFeldNamen();
-  }
+    }
 
-  if(p.size())
-    icc_betrachter->DD_histogram->hineinPunkte( p, f, namen, texte );
+  //if(p.size())
+  icc_betrachter->DD_histogram->hineinPunkte( p, f, namen, texte );
 
   size_t g; DBG_MEM
   const char* p_block = icc_oyranos.moni (g); DBG_MEM
@@ -502,14 +503,40 @@ ICCexamin::histogram ()
     f.close();
   } DBG_MEM
 
-  std::vector<ICCnetz> netz = icc_oyranos. netzVonProfil( icc_oyranos.moni() );
+  std::vector<ICCnetz> netz, netz_temp;
+  Speicher s;
+  if(profile.size())
+    if(profile.profil()->valid())
+      s.lade(profile.profil()->saveProfileToMem(0),
+             profile.profil()->getProfileSize());
+  DBG_NUM
+  if(s.size())
+  {
+    DBG_PROG
+    netz_temp = icc_oyranos. netzVonProfil( s );
+    if(netz_temp.size())
+    {
+      netz.push_back( netz_temp[0] );
+      netz[netz.size()-1].transparenz = 0.6;
+      netz[netz.size()-1].name = profile.profil()->filename();
+      DBG_NUM_V( netz[netz.size()-1].transparenz )
+    }
+  }
+  DBG_PROG
+  s = icc_oyranos.moni();
+  DBG_PROG
+  if(s.size())
+  {
+    netz.push_back( (icc_oyranos. netzVonProfil( s ))[0] );
+    netz[netz.size()-1].transparenz = 0.333;
+    netz[netz.size()-1].name = icc_oyranos.moni_name();
+    DBG_NUM_V( netz[netz.size()-1].transparenz )
+  }
+  DBG_NUM
   if(netz.size())
   {
-    DBG_NUM_V( netz[0].transparenz )
-    netz[0].transparenz = 0.4;
-    netz[0].name = icc_oyranos.moni_name();
     icc_betrachter->DD_histogram->hineinNetze( netz );
-    icc_betrachter->DD_histogram->achsNamen(texte);
+    icc_betrachter->DD_histogram->achsNamen( texte );
   }
 
   DBG_PROG_ENDE

@@ -759,9 +759,13 @@ ladeDatei ( std::string dateiname, size_t *size )
 
     DBG_MEM_V( dateiname )
     if (dateiname == "")
+    {
+      DBG_PROG_ENDE
       throw ausn_file_io (_("kein Dateiname angegeben"));
+    }
     DBG_MEM
     if (!f) {
+      DBG_PROG_ENDE
       throw ausn_file_io (dateiname.c_str());
       dateiname = "";
     }

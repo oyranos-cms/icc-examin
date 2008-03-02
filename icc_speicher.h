@@ -177,6 +177,11 @@ class Speicher
                               return *groesse_;
                             }
 
+    operator const Speicher & () const {
+                              DBG_MEM_START
+                              DBG_MEM_ENDE
+                              return *this;
+                            }
     operator const char* () const {
                               DBG_MEM_START
                               *letze_ben_zeit_ = time(0);
@@ -185,7 +190,7 @@ class Speicher
                               DBG_MEM_ENDE
                               return *zeiger_;
                             }
-    operator const size_t() const {
+    operator const size_t () const {
                               DBG_MEM_START
                               DBG_MEM_ENDE
                               return *groesse_;
