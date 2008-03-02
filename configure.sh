@@ -54,9 +54,9 @@ if [ -n "$ELEKTRA" ] && [ "$ELEKTRA" -gt "0" ]; then
     elektra_mod=`pkg-config --modversion elektra`
   fi
   if [ $? = 0 ] && [ -z "$ELEKTRA_FOUND" ]; then
-    pkg-config  --atleast-version=$elektra_min elektra 2>>error.txt
+    pkg-config  --atleast-version=$elektra_min elektra 2>>$CONF_LOG
     if [ $? = 0 ]; then
-      pkg-config --max-version=$elektra_max elektra 2>>error.txt
+      pkg-config --max-version=$elektra_max elektra 2>>$CONF_LOG
       if [ $? = 0 ]; then
         echo_="elektra `pkg-config --modversion elektra`           detected"; echo "$echo_" >> $CONF_LOG; test -n "$ECHO" && $ECHO "$echo_"
         echo "#define HAVE_ELEKTRA 1" >> $CONF_H
@@ -120,9 +120,9 @@ if [ -n "$ARGYLL" ] && [ "$ARGYLL" -gt "0" ]; then
     argyll_mod=`pkg-config --modversion argyll`
   fi
   if [ $? = 0 ] && [ -z "$ARGYLL_FOUND" ]; then
-    pkg-config  --atleast-version=$argyll_min argyll 2>>error.txt
+    pkg-config  --atleast-version=$argyll_min argyll 2>>$CONF_LOG
     if [ $? = 0 ]; then
-      pkg-config --max-version=$argyll_max argyll 2>>error.txt
+      pkg-config --max-version=$argyll_max argyll 2>>$CONF_LOG
       if [ $? = 0 ]; then
         echo_="argyll `pkg-config --modversion argyll`           detected"; echo "$echo_" >> $CONF_LOG; test -n "$ECHO" && $ECHO "$echo_"
         echo "#define HAVE_ARGYLL 1" >> $CONF_H
@@ -164,7 +164,7 @@ if [ -n "$ARGYLL" ] && [ "$ARGYLL" -gt "0" ]; then
 fi
 
 if [ -n "$OYRANOS" ] && [ "$OYRANOS" != "0" ]; then
-  OY_=`oyranos-config 2>>error.txt`
+  OY_=`oyranos-config 2>>$CONF_LOG`
   if [ $? = 0 ]; then
     echo_="Oyranos `oyranos-config --version`           detected"; echo "$echo_" >> $CONF_LOG; test -n "$ECHO" && $ECHO "$echo_"
     echo "#define HAVE_OY 1" >> $CONF_H
@@ -462,7 +462,7 @@ if [ -z "$fltkconfig" ]; then
   echo_="add fltk-config"; echo "$echo_" >> $CONF_LOG; test -n "$ECHO" && $ECHO "$echo_"
 fi
 if [ -n "$FLTK" ] && [ $FLTK -gt 0 ]; then
-  FLTK_="`$fltkconfig --cxxflags 2>>error.txt | sed \"$STRIPOPT\"`"
+  FLTK_="`$fltkconfig --cxxflags 2>>$CONF_LOG | sed \"$STRIPOPT\"`"
   if [ $? = 0 ] && [ -n "$FLTK_" ]; then
     # check for utf-8 capability
     if [ $fltkconfig != `echo $fltkconfig | sed "s%fltk2-config%% ; s%utf8%%"` ]; then
@@ -476,6 +476,7 @@ if [ -n "$FLTK" ] && [ $FLTK -gt 0 ]; then
     if [ "0" -ne "`$fltkconfig --compile tests/fltk_test.cxx 2>&1 | grep lock | wc -l`" ]; then
       echo_="!!! ERROR: FLTK has no threads support !!!"; echo "$echo_" >> $CONF_LOG; test -n "$ECHO" && $ECHO "$echo_"
       echo_="           Configure FLTK with the --enable-threads option and recompile."; echo "$echo_" >> $CONF_LOG; test -n "$ECHO" && $ECHO "$echo_"
+      $fltkconfig --compile tests/fltk_test.cxx 1>> $CONF_LOG 2>> $CONF_LOG
       ERROR=1
     else
       rm fltk_test$EXEC_END
@@ -505,7 +506,7 @@ if [ -n "$FLTK" ] && [ $FLTK -gt 0 ]; then
 fi
 
 if [ -n "$FLU" ] && [ $FLU -gt 0 ]; then
-  FLU_=`flu-config --cxxflags 2>>error.txt`
+  FLU_=`flu-config --cxxflags 2>>$CONF_LOG`
   if [ "`$fltkconfig --version`" = "1.1.7" ]; then
     echo -e "\c"
     #"
@@ -542,10 +543,10 @@ fi
 
 if [ -n "$LIBPNG" ] && [ $LIBPNG -gt 0 ]; then
   LIBPNG=libpng
-  pkg-config  --atleast-version=1.0 $LIBPNG 2>>error.txt
+  pkg-config  --atleast-version=1.0 $LIBPNG 2>>$CONF_LOG
   if [ $? != 0 ]; then
     LIBPNG=libpng12
-    pkg-config  --atleast-version=1.0 $LIBPNG 2>>error.txt
+    pkg-config  --atleast-version=1.0 $LIBPNG 2>>$CONF_LOG
   fi
   if [ $? = 0 ]; then
     echo_="PNG `pkg-config --modversion $LIBPNG`               detected"; echo "$echo_" >> $CONF_LOG; test -n "$ECHO" && $ECHO "$echo_"
@@ -561,7 +562,7 @@ fi
 
 if [ -n "$LIBTIFF" ] && [ $LIBTIFF -gt 0 ]; then
   rm -f tests/libtest$EXEC_END
-  $CXX $CFLAGS -I$includedir tests/tiff_test.cxx $LDFLAGS -L$libdir -ltiff -ljpeg -o tests/libtest 2>error.txt
+  $CXX $CFLAGS -I$includedir tests/tiff_test.cxx $LDFLAGS -L$libdir -ltiff -ljpeg -o tests/libtest 2>>$CONF_LOG
     if [ -f tests/libtest ]; then
       echo_="`tests/libtest`
                         detected"; echo "$echo_" >> $CONF_LOG; test -n "$ECHO" && $ECHO "$echo_"
@@ -577,8 +578,8 @@ if [ -n "$GETTEXT" ] && [ $GETTEXT -gt 0 ]; then
   rm -f tests/libtest$EXEC_END
     $CXX $CFLAGS -I$includedir tests/gettext_test.cxx $LDFLAGS -L$libdir -o tests/libtest 2>/dev/null
     if [ ! -f tests/libtest ]; then
-       echo $CXX $CFLAGS -I$includedir tests/gettext_test.cxx $LDFLAGS -L$libdir -lintl -o tests/libtest >> error.txt
-       $CXX $CFLAGS -I$includedir tests/gettext_test.cxx $LDFLAGS -L$libdir -lintl -o tests/libtest 2>>error.txt
+       echo $CXX $CFLAGS -I$includedir tests/gettext_test.cxx $LDFLAGS -L$libdir -lintl -o tests/libtest >> $CONF_LOG
+       $CXX $CFLAGS -I$includedir tests/gettext_test.cxx $LDFLAGS -L$libdir -lintl -o tests/libtest 2>>$CONF_LOG
     fi
     if [ -f tests/libtest ]; then
       echo_="Gettext                 detected"; echo "$echo_" >> $CONF_LOG; test -n "$ECHO" && $ECHO "$echo_"

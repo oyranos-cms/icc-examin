@@ -1262,7 +1262,7 @@ Oyranos::wandelProfilNachLabUndZurueck(double *lab, // 0.0 - 1.0
       hLab  = cmsCreateLabProfile(cmsD50_xyY());
       if(!hLab) { WARN_S( "hLab Profil not opened" ); return 1; }
 
-      kanaele = oyColourSpaceGetChannelCount( cmsGetColorSpace( hProfil ) );
+      kanaele = oyColourSpaceGetChannelCountFromSig( cmsGetColorSpace( hProfil ) );
       format = COLORSPACE_SH(PT_ANY) |
                CHANNELS_SH(kanaele) |
                BYTES_SH(0); // lcms_bytes;

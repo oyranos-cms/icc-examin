@@ -27,14 +27,19 @@
 
 /* Date:      25. 11. 2004 */
 
+#if 0
+
 #include "icc_oyranos_extern.h"
+#include "oyranos_helper.h"
+
+
 
 void* myCAllocFunc(size_t size)
 {
   return calloc( sizeof(char), size );
 }
 
-void myCDeAllocFunc(void * buf)
+void  myCDeAllocFunc(void * buf)
 {
   if(buf)
     free(buf);
@@ -107,9 +112,9 @@ oyColourSpaceGetChannelCountFromSig ( icColorSpaceSignature color )
  *  since: (ICC Examin: version 0.45)
  */
 int
-oyColourSpaceGetChannelCount( oyProfile_s * ref )
+oyColourSpaceGetChannelCount( oyColourProfile_s * ref )
 {
-  icColorSpaceSignature sig = oyProfileGetSig ( ref );
+  icColorSpaceSignature sig = oyProfileGetSignature ( ref );
   return oyColourSpaceGetChannelCountFromSig( sig );
 }
 
@@ -176,9 +181,9 @@ oyColourSpaceGetNameFromSig( icColorSpaceSignature sig )
  *  since: (ICC Examin: version 0.45)
  */
 const char *
-oyColourSpaceGetName( oyProfile_s * ref )
+oyColourSpaceGetName( oyColourProfile_s * ref )
 {
-  icColorSpaceSignature sig = oyProfileGetSig ( ref );
+  icColorSpaceSignature sig = oyProfileGetSignature ( ref );
   return oyColourSpaceGetNameFromSig( sig );
 }
 
@@ -192,11 +197,11 @@ void
 oyCopyColour ( const double * from,
                double       * to,
                int            n,
-               oyProfile_s  * ref,
+               oyColourProfile_s  * ref,
                int            channels_n )
 {
   int i, j;
-  icColorSpaceSignature sig = oyProfileGetSig ( ref );
+  icColorSpaceSignature sig = oyProfileGetSignature ( ref );
   int c = oyColourSpaceGetChannelCountFromSig( sig );
 
   if(!n || !to)
@@ -251,18 +256,114 @@ oyCopyColour ( const double * from,
 
 /* Has to go to oyranos_texts.x */
 char*
-oyStringCopy_       ( const char    * text,
+oyStringCopy_      ( const char    * text,
                      oyAllocFunc_t   allocateFunc )
 {
   char * text_copy = NULL;
 
   if(text)
-    if( strlen(text) )
+    if( oyStrlen_(text) )
     {
       text_copy = allocateFunc(strlen(text) + 1);
+      oyAllocHelper_m_( text_copy, oyString, oyStrlen_(text) + 1,
+                        allocateFunc, return 0 );
       sprintf( text_copy, "%s", text );
     }
   return text_copy;
+}
+
+
+
+
+oyObject_s * oyObjectSetNames         ( oyObject_s      * object,
+                                        const char      * nick,
+                                        const char      * name,
+                                        const char      * description )
+{
+  if(!object) return 0;
+
+  if(nick || name || description)
+  {
+    if(!object->names)
+    {
+      oyAllocHelper_m_( object->names, oyNames_s_, 1, object->allocateFunc,
+                        return 0 )
+
+      memset(object->names, 0, sizeof(oyNames_s_));
+    }
+#define oySetString_(n_type)\
+    if(n_type) \
+    { \
+      if(object->names->n_type && object->deallocateFunc) \
+        object->deallocateFunc( object->names->n_type ); \
+      oyAllocHelper_m_( object->names->n_type, oyString, sizeof(oyString) \
+                                                  * (oyStrlen_(n_type) + 1) \
+                        object->allocateFunc, return 0); \
+      oyStrcpy_( object->names->n_type, n_type ); \
+    } 
+    oySetString_(nick)
+    oySetString_(name)
+    oySetString_(description)
+#undef oySetString_
+  }
+
+  return object;
+}
+
+
+/** @brief object memory managers */
+oyObject_s * oyObjectSetAllocators    ( oyObject_s      * object,
+                                        oyAllocFunc_t     allocateFunc,
+                                        oyDeAllocFunc_t   deallocateFunc )
+{
+  if(!object) return 0;
+
+  /* we require a allocation function to be present */
+  if(allocateFunc)
+    object->allocateFunc = allocateFunc;
+  else
+    object->allocateFunc = myCAllocFunc;
+
+  object->deallocateFunc = deallocateFunc;
+
+  return object;
+}
+
+/** @brief object management */
+oyObject_s *
+oyObjectCopy_( oyObject_s    * object,
+               oyOBJECT_TYPE_e type )
+{
+  oyObject_s * o = 0;
+
+  if(object && object->allocateFunc) {
+
+    o = object->allocateFunc(sizeof(oyObject_s));
+    if(!o) return 0;
+
+    memset( o, 0, sizeof(oyObject_s) );
+
+    o = oyObjectSetAllocators( o, object->allocateFunc, object->deallocateFunc);
+  } else {
+
+    o = myCAllocFunc(sizeof(oyObject_s));
+    if(!o) return 0;
+
+    memset( o, 0, sizeof(oyObject_s) );
+
+    o = oyObjectSetAllocators( o, myCAllocFunc, myCDeAllocFunc );
+  }
+
+  if(object && object->names)
+    o = oyObjectSetNames( o, object->names->nick, object->names->name,
+                             object->names->description );
+
+  if(type)
+    o->type = type;
+  o->version = oyVersion(0);
+  o->ref++;
+
+  return o;
 }
 
 /** @brief manage complex oyNamedColour_s inside Oyranos
@@ -284,18 +385,14 @@ oyStringCopy_       ( const char    * text,
  * 
  */
 oyNamedColour_s*
-oyNamedColourCreate( const double* chan,
-                     int           channels_n,
-                     const char  * name,
-                     const char  * name_long,
-                     const char  * nick_name,
-                     const char  * blob,
-                     int           blob_len,
-                     oyProfile_s * ref,
-                     oyAllocFunc_t   allocateFunc,
-                     oyDeAllocFunc_t deallocateFunc )
+oyNamedColourCreate ( oyObject_s        * object,
+                      const double      * chan,
+                      int                 channels_n,
+                      const char        * blob,
+                      int                 blob_len,
+                      oyColourProfile_s * profile_ref)
 {
-  oyNamedColour_s * colour = (oyNamedColour_s*)allocateFunc(sizeof(oyNamedColour_s));
+  oyNamedColour_s * colour = (oyNamedColour_s*)object->allocateFunc(sizeof(oyNamedColour_s));
 
   if(!colour)
   {
@@ -305,7 +402,9 @@ oyNamedColourCreate( const double* chan,
 
   memset( colour, 0, sizeof(oyNamedColour_s) );
 
-  colour->type = oyOBJECT_TYPE_NAMED_COLOUR_S;
+  colour->objects = oyObjectCopy_( object, oyOBJECT_TYPE_NAMED_COLOUR_S );
+
+  colour->objects->type = oyOBJECT_TYPE_NAMED_COLOUR_S;
   if(deallocateFunc)
     colour->deallocateFunc = deallocateFunc;
   else
@@ -331,7 +430,7 @@ oyNamedColourCreate( const double* chan,
   colour->name_long = oyStringCopy_( name_long, colour->allocateFunc );
   colour->nick_name = oyStringCopy_( nick_name, colour->allocateFunc );
 
-  colour->profile   = oyProfileCopy( ref, colour->allocateFunc );
+  colour->profile   = oyProfileCopy( ref, colour->allocateFunc, colour->deallocateFunc );
 
   if(blob && blob_len)
   {
@@ -419,18 +518,18 @@ oyNamedColourCopy  ( const oyNamedColour_s * colour,
 /*  @return                 pointer to D50 Lab doubles with L 0.0...1.0 a/b -1.27...1.27 */
 
 int
-oyNamedColourSetSpace ( oyNamedColour_s * colour,
-                        oyProfile_s     * profile )
+oyNamedColourSetSpace ( oyNamedColour_s   * colour,
+                        oyColourProfile_s * profile )
 {
   WARN_S("not implemented");
   return 1;
 }
 
 int
-oyNamedColourConvert  ( oyNamedColour_s * colour,
-                        oyProfile_s     * profile,
-                        oyPointer       * buf,
-                        oyDATATYPE_e      buf_type )
+oyNamedColourConvert  ( oyNamedColour_s   * colour,
+                        oyColourProfile_s * profile,
+                        oyPointer           buf,
+                        oyDATATYPE_e        buf_type )
 {                        
   oyImage_s * in  = NULL,
             * out = NULL;
@@ -438,7 +537,7 @@ oyNamedColourConvert  ( oyNamedColour_s * colour,
   int ret = 0;
 
   in    = oyImageCreate( 1,1, 
-                         (oyPointer*) colour->channels ,oyDOUBLE,
+                         (oyPointer) colour->channels ,oyDOUBLE,
                          colour->profile,
                          0,0 );
   out   = oyImageCreate( 1,1, 
@@ -448,9 +547,71 @@ oyNamedColourConvert  ( oyNamedColour_s * colour,
 
   conv = oyColourConversionCreate( 0,0,0, in,out );
   ret = oyColourConversionRun( conv );
-  oyColourConversionRelease( conv );
+  conv = oyRelease( conv );
   return ret;
 }
+
+int
+oyNamedColourConvertStd(oyNamedColour_s * colour,
+                        const char      * colour_space_name,
+                        oyPointer         buf,
+                        oyDATATYPE_e      buf_type )
+{                        
+  int ret = 0;
+  oyColourProfile_s * profile;
+
+  if(!colour)
+    return 1;
+
+  if(!colour_space_name)
+    return 1;
+
+  profile = oyProfileCreate ( 0, colour_space_name, 0,NULL );
+  ret = oyNamedColourConvert  ( colour, profile, buf, buf_type );
+  profile = oyRelease ( profile );
+
+  return ret;
+}
+
+/** @brief get colour channels
+ *
+ *
+ *  @param[in]  colour      Oyranos colour struct pointer
+ *  @return                 pointer channels
+ *
+ *  since: (ICC Examin: version 0.45)
+ */
+const double*
+oyNamedColourGetChannelsConst ( oyNamedColour_s * colour )
+{
+  static double l[3] = {-1.f,-1.f,-1.f};
+  if(colour)
+    return colour->channels;
+  else
+    return l;
+}
+
+/** @brief set colour channels
+ *
+ *
+ *  @param[in]  colour      Oyranos colour struct pointer
+ *  @param[in]  channels    pointer to channel data
+ *
+ *  since: (ICC Examin: version 0.45)
+ */
+void
+oyNamedColourSetChannels ( oyNamedColour_s  * colour,
+                           const double     * channels )
+{
+  int i;
+  if(!colour)
+    return;
+
+  if(channels)
+    for(i = 0; i < colour->channels_n; ++i)
+      colour->channels[i] = channels[i];
+}
+
 
 /** @brief get associated colour name
  *
@@ -463,7 +624,7 @@ const char *
 oyNamedColourGetName( oyNamedColour_s * colour )
 {
   double lab[3];
-  oyProfile_s * profile;
+  oyColourProfile_s * profile;
 
   if(!colour)
     return NULL;
@@ -472,10 +633,10 @@ oyNamedColourGetName( oyNamedColour_s * colour )
     return colour->name;
 
   profile = oyProfileCreate ( icSigLabData, NULL, 0,NULL );
-  oyProfileRelease ( profile );
+  profile = oyRelease ( profile );
   profile = oyProfileCreate ( 0, "Lab", 0,NULL );
-  oyNamedColourConvert  ( colour, profile, (oyPointer*)lab, oyDOUBLE );
-  oyProfileRelease ( profile );
+  oyNamedColourConvert  ( colour, profile, (oyPointer)lab, oyDOUBLE );
+  profile = oyRelease ( profile );
 
   colour->name = (char*) colour->allocateFunc(80);
   snprintf( colour->name, 80, "%s%sLab: %.02f %.02f %.02f",
@@ -552,8 +713,8 @@ oyNamedColourGetDescription( oyNamedColour_s * colour )
  *
  *  since: (ICC Examin: version 0.45)
  */
-void
-oyNamedColourRelease( oyNamedColour_s ** colour )
+oyNamedColour_s*
+oyNamedColourRelease( oyNamedColour_s * colour )
 {
   oyNamedColour_s * c;
   int i;
@@ -580,7 +741,7 @@ oyNamedColourRelease( oyNamedColour_s ** colour )
   if(c->blob) /* c->bloblen */
     c->deallocateFunc( c->blob );
 
-  oyProfileRelease( c->profile );
+  c->profile = oyRelease( c->profile );
 
   c->deallocateFunc( c );
 
@@ -709,4 +870,5 @@ icValue_to_icUInt32Number( oyValuePlatSig, icPlatformSignature )
 icValue_to_icUInt32Number( oyValueProfCSig, icProfileClassSignature )
 icValue_to_icUInt32Number( oyValueTagSig, icTagSignature )
 
+#endif
 

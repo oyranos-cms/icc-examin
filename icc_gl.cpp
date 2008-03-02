@@ -194,11 +194,9 @@ GL_Ansicht::init_()
   text[0] = 0;
   colours_ = 0;
   epoint_ = 0;
-  mouse_3D_hit = oyNamedColourCreate(
-                              NULL, NULL,
-                              (icColorSpaceSignature)0, 0,
-                              _("mouse"), NULL, NULL,
-                              NULL,0, NULL, malloc, free );
+  oyProfile_s * prof = oyProfileFromStd( oyEDITING_LAB, NULL );
+  mouse_3D_hit = oyNamedColourCreate( 0, NULL, NULL,0, prof );
+  oyProfileRelease( &prof );
 
   for(int i = 0; i <= DL_MAX; ++i)
     gl_listen[i] = 0;
@@ -314,7 +312,7 @@ GL_Ansicht::copy (const GL_Ansicht & gl)
   tabelle_ = gl. tabelle_;
   nach_farb_namen_ = gl. nach_farb_namen_;
   von_farb_namen_ = gl. von_farb_namen_;
-  colours_ = oyNamedColoursCopy( gl.colours_,0,0 );
+  colours_ = oyNamedColoursCopy( gl.colours_, NULL );
 
   DBG_PROG_ENDE
   return *this;
@@ -1466,9 +1464,9 @@ GL_Ansicht::punkteAuffrischen()
   }
 
   //coordinates  in CIE*b CIE*L CIE*a 
-  if (oyNamedColoursSize( colours_ )) {
-    if( oyNamedColoursSize( colours_ ) )
-      DBG_PROG_V( oyNamedColoursSize( colours_ ) )
+  if (oyNamedColoursCount( colours_ )) {
+    if( oyNamedColoursCount( colours_ ) )
+      DBG_PROG_V( oyNamedColoursCount( colours_ ) )
 
     gl_listen[PUNKTE] = glGenLists(1);
     glNewList( gl_listen[PUNKTE], GL_COMPILE); DBG_PROG_V( gl_listen[PUNKTE] )
@@ -1489,9 +1487,10 @@ GL_Ansicht::punkteAuffrischen()
         // positioning
         glTranslated( -b_darstellungs_breite/2,-.5,-a_darstellungs_breite/2 );
 
-        size_t n = oyNamedColoursSize( colours_ );
+        size_t n = oyNamedColoursCount( colours_ );
         oyNamedColour_s * c = NULL;
-        const double *lab = 0;
+        double lab[3];
+        double rgba[4] = {0,0,0,1};
         if(zeig_punkte_als_paare)
           for (unsigned i = 0; i < n; i+=2) /* 6 */
           {
@@ -1503,19 +1502,25 @@ GL_Ansicht::punkteAuffrischen()
               if(!zeig_punkte_als_messwerte)
                 glColor4d(.97, .97, .97, 1. );
               else {
-                glColor4dv( oyNamedColourGetDisplayConst( c ) );
+                oyNamedColourConvertStd( c, (oyPROFILE_e)0, rgba, oyDOUBLE );
+                glColor4dv( rgba );
+                //glColor4dv( oyNamedColourGetDisplayConst( c ) );
               }
-              lab = oyNamedColourGetLabConst( c );
+              oyNamedColourConvertStd( c, oyEDITING_LAB, lab, oyDOUBLE );
+              CIELabToLab( lab, lab, 1 );
+              //lab = oyNamedColourGetLabConst( c );
               glVertex3d( lab[2], lab[0], lab[1] );
 
               c = oyNamedColoursGet( colours_, i + 1 );
               if(!zeig_punkte_als_messwerte)
                 glColor4d(1., .6, .6, 1.0 );
               else {
-                glColor4dv( oyNamedColourGetDisplayConst( c ) );
+                oyNamedColourConvertStd( c, (oyPROFILE_e)0, rgba, oyDOUBLE );
+                glColor4dv( rgba );
               }
 
-              lab = oyNamedColourGetLabConst( c );
+              oyNamedColourConvertStd( c, oyEDITING_LAB, lab, oyDOUBLE );
+              CIELabToLab( lab, lab, 1 );
               glVertex3d( lab[2], lab[0], lab[1] );
             glEnd();
           }
@@ -1537,16 +1542,20 @@ GL_Ansicht::punkteAuffrischen()
                  for (unsigned i = 0; i < n; i+=2)
                  {
                    oyNamedColour_s * c = oyNamedColoursGet( colours_, i );
-                   glColor4dv( oyNamedColourGetDisplayConst( c ) );
-                   lab = oyNamedColourGetLabConst( c );
+                   oyNamedColourConvertStd( c, (oyPROFILE_e)0, rgba, oyDOUBLE );
+                   glColor4dv( rgba );
+                   oyNamedColourConvertStd( c, oyEDITING_LAB, lab, oyDOUBLE );
+                   CIELabToLab( lab, lab, 1 );
                    glVertex3d( lab[2], lab[0], lab[1] );
                  }
                } else {
                  for (unsigned i = 0; i < n; ++i)
                  {
                    c = oyNamedColoursGet( colours_, i );
-                   glColor4dv( oyNamedColourGetDisplayConst( c ) );
-                   lab = oyNamedColourGetLabConst( c );
+                   oyNamedColourConvertStd( c, (oyPROFILE_e)0, rgba, oyDOUBLE );
+                   glColor4dv( rgba );
+                   oyNamedColourConvertStd( c, oyEDITING_LAB, lab, oyDOUBLE );
+                   CIELabToLab( lab, lab, 1 );
                    glVertex3d( lab[2], lab[0], lab[1] );
                  }
                }
@@ -1558,7 +1567,8 @@ GL_Ansicht::punkteAuffrischen()
                for (unsigned i = 0; i < n; i+=1)
                {
                  c = oyNamedColoursGet( colours_, i );
-                 lab = oyNamedColourGetLabConst( c );
+                 oyNamedColourConvertStd( c, oyEDITING_LAB, lab, oyDOUBLE );
+                 CIELabToLab( lab, lab, 1 );
                  glVertex3d( lab[2], 0, lab[1] );
                }
              glEnd();
@@ -1574,8 +1584,10 @@ GL_Ansicht::punkteAuffrischen()
                for (unsigned i = 0; i < n; ++i) {
                  glPushMatrix();
                    c = oyNamedColoursGet( colours_, i );
-                   glColor4dv( oyNamedColourGetDisplayConst( c ) );
-                   lab = oyNamedColourGetLabConst( c );
+                   oyNamedColourConvertStd( c, (oyPROFILE_e)0, rgba, oyDOUBLE );
+                   glColor4dv( rgba );
+                   oyNamedColourConvertStd( c, oyEDITING_LAB, lab, oyDOUBLE );
+                   CIELabToLab( lab, lab, 1 );
                    glTranslated( lab[2], lab[0], lab[1] );
                    gluSphere( quad, rad, dim, dim );
                  glPopMatrix();
@@ -1934,7 +1946,8 @@ GL_Ansicht::menueErneuern_()
     menue_form_->add( _("gray"), 0,c_, (void*)MENU_GRAU, 0 );
     menue_form_->add( _("coloured"), 0,c_, (void*)MENU_FARBIG, 0 );
     menue_form_->add( _("high contrast"), 0,c_, (void*)MENU_KONTRASTREICH, 0 );
-    menue_form_->add( _("shells"), 0,c_, (void*)MENU_SCHALEN, 0 );
+    // Shells alike displaying, alternatves are "Membranes" or "Shells"
+    menue_form_->add( _("Onion skins"), 0,c_, (void*)MENU_SCHALEN, 0 );
     menue_form_->add( _("Colour line"), 0,c_, (void*)MENU_SPEKTRALBAND, 0 );
   } else {
     // spheres with their radius symbolise measurement colours
@@ -2131,13 +2144,13 @@ GL_Ansicht::zeichnen()
       // localisate
       if( epoint_ && Fl::belowmouse() != this )
       {
-        const double *l;
+        double l[3];
         Lab_s lab;
-        const char * temp = oyNamedColourGetNick( epoint_ );
+        const char * temp = oyObjectGetNickName( epoint_->oy );
         if(temp)
           sprintf( text, "%s", temp );
-        l = oyNamedColourGetLabConst ( epoint_ );
-        OyLabToLab( l, lab );
+        oyNamedColourConvertStd( epoint_, oyEDITING_LAB, l, oyDOUBLE );
+        CIELabToLab( l, lab );
         oY = LNachY( lab.L );
         oZ = aNachZ( lab.a );
         oX = bNachX( lab.b );
@@ -2158,20 +2171,19 @@ GL_Ansicht::zeichnen()
           l[0] = YNachL(oY);
           l[1] = Znacha(oZ);
           l[2] = Xnachb(oX);
-          LabToOyLab( l, l, 1 );
-          oyNamedColourSetLab ( mouse_3D_hit, l );
+          LabToCIELab( l, l, 1 );
+          oyNamedColourSetColourStd ( mouse_3D_hit, oyEDITING_LAB, l );
           benachrichtigen( ICCexamin::GL_MOUSE_HIT3D );
           if(epoint_)
           {
-            const double *l;
             Lab_s lab;
-            l = oyNamedColourGetLabConst ( epoint_ );
-            OyLabToLab( l, lab );
+            oyNamedColourConvertStd( epoint_, oyEDITING_LAB, l, oyDOUBLE );
+            CIELabToLab( l, lab );
             oY = LNachY( lab.L );
             oZ = aNachZ( lab.a );
             oX = bNachX( lab.b );
             mausPunkt_( oX, oY, oZ, X, Y, Z, 0 );
-            const char * temp = oyNamedColourGetNick( epoint_ );
+            const char * temp = oyObjectGetNickName( epoint_->oy );
             if(temp)
               sprintf( text, "%s", temp );
             else
@@ -2290,6 +2302,7 @@ GL_Ansicht::zeichnen()
                    DBG_PROG_V( L<<" "<<a<<" "<<b<<" "<<wert )
                    DBG_PROG_V( tabelle_.size()<<" "<<tabelle_[L].size()<<" "<<
                                tabelle_[L][a].size()<<" "<<kanal )
+                   // "Pos" is a abreviation to position and will be visible in the small statusline with position coordinates
                    sprintf( text,"%s[%d][%d][%d]: ", _("Pos"),
                             (int)((oY+0.5)*tabelle_.size()),
                             (int)((oZ+0.5)*tabelle_[L].size()),
@@ -2377,12 +2390,10 @@ GL_Ansicht::zeichnen()
        if(typ() == 1) {
          kanalname.append(_("Channel"));
          kanalname.append(": ");
-         kanalname.append( 
-              oyColourSpaceGetChannelName( 
-                oyNamedColoursGet( colours_, 0 ) ? 
-                  oyNamedColourGetSpace( oyNamedColoursGet( colours_, 0 ) ) :
-                  (icColorSpaceSignature)0,
-                                           kanal) );
+         oyNamedColour_s     * c = oyNamedColoursGet( colours_, 0 );
+         const oyObject_s ** obs = oyProfileGetChannelNames( c->profile );
+         const char* chan_name = oyObjectGetName( obs[kanal] );
+         kanalname.append( chan_name );
 
 #        ifdef HAVE_FTGL
          if(ortho_font)
@@ -2451,7 +2462,7 @@ GL_Ansicht::namedColours       ()
   oyNamedColours_s * colours;
 
   DBG_PROG_START
-  colours = oyNamedColoursCopy( colours_, 0, 0 );
+  colours = oyNamedColoursCopy( colours_, NULL );
 
   DBG_PROG_ENDE
   return colours;
@@ -2463,7 +2474,7 @@ GL_Ansicht::namedColours       (oyNamedColours_s       * colours)
   DBG_PROG_START
   MARK( frei(false); )
              oyNamedColoursRelease( &colours_ );
-  colours_ = oyNamedColoursCopy( colours, 0, 0 );
+  colours_ = oyNamedColoursCopy( colours, NULL );
 
   MARK( frei(true); )
   DBG_PROG_ENDE
@@ -2474,6 +2485,7 @@ GL_Ansicht::namedColoursRelease()
 {
   frei(false); 
   oyNamedColoursRelease( &colours_ );
+  oyNamedColourRelease( &mouse_3D_hit );
   frei(true);
 }
 
@@ -2569,15 +2581,15 @@ GL_Ansicht::emphasizePoint    (oyNamedColour_s * colour)
   if(colour)
   {
     oyNamedColourRelease( &epoint_ );
-    epoint_ = oyNamedColourCopy( colour, 0, 0 );
+    epoint_ = oyNamedColourCopy( colour, 0 );
 
-    const double *l;
+    double l[3];
     Lab_s lab;
-    l = oyNamedColourGetLabConst( colour );
-    OyLabToLab( l, lab );
+    oyNamedColourConvertStd( colour, oyEDITING_LAB, l, oyDOUBLE );
+    CIELabToLab( l, lab );
 
     icc_examin->statusFarbe( lab.L, lab.a, lab.b );
-    glStatus( oyNamedColourGetDescription( colour ), typ_ );
+    glStatus( oyObjectGetDescription( colour->oy ), typ_ );
   }
   MARK( frei(true); )
 

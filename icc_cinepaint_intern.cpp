@@ -19,8 +19,10 @@
  */
 
 /* 
- * copies an assigned ICC profil to $TMP_DIR and call iccexamin
+ * copies an assigned ICC profil to $TMP_DIR and calls the dialog
  *
+ * internal linking of iccexamin in the icc_examin_cp plug-in
+ *  2006(?)
  * add writing of image samples out to an profile - name: plug_in_icc_watch
  *  2005-02-28
  * bugfixes
@@ -239,8 +241,7 @@ std::vector<double>       geraetefarbe;   //!< image colours
 std::vector<std::string>  name;           //!< colour names
 std::string an,                //!< image profile name
             bn,                //!< colour profile
-            pn,                //!< proof profile
-            tn;                //!< file name and command line
+            pn;                //!< proof profile
 size_t tag_size;               //!< ncl2 tag size
 int x_num;                     //!< number of measurement points in x/y
 int y_num;
@@ -390,20 +391,12 @@ doExamin (gint32 image_ID, CMSProfileType typ)
       profil_temp_name << "/tmp/icc_examin_temp_" << dateiname << "_" << typ << ".icc";
     std::string tname = profil_temp_name.str();
     schreibeDatei(mem_profile, size, tname.c_str());
-    std::string tn = "export PATH=$PATH:/opt/local/bin; iccexamin '";
-    tn += tname;
-    tn += "'";
-
-#if 0
-    system (tn.c_str());
-#else
     const char *args_c[2];
 
     args_c[0] = argv[0];
     args_c[1] = tname.c_str();
 
     startWithArgs(2, (char**)args_c);
-#endif
 
     remove( tname.c_str() );
   } else
@@ -816,19 +809,6 @@ waechter (void* zeiger)
   // start ICC Examin
   if(!bin_erste)
   {
-    tn = "iccexamin ";
-    tn += bn;  // the colours
-    tn += " ";
-    tn += an;  // the image profile
-    tn += " '";
-    tn += pn;  // the proof profile
-    tn += "'";
-
-    DBG_PROG_S( tn )
-
-#if 0
-    system (tn.c_str());
-#else
     const char *args_c[4];
 
     args_c[0] = argv[0];
@@ -837,7 +817,6 @@ waechter (void* zeiger)
     args_c[3] = pn.c_str();
 
     startWithArgs(4, (char**)args_c);
-#endif
 
     DBG_PROG_S( "bin_erste: " << bin_erste )
     freilauf = false;

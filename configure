@@ -44,10 +44,6 @@ else
 fi
 VERSION_L=`echo $VERSION_L | sed 's/^0*//g'`
 
-INFOECHO="&2"
-echo -e "$zeile \$@\n\nexit 0\n\n" > $CONF_LOG
-chmod 0755 $CONF_LOG
-
 
 cwdebug=0
 debug=0
@@ -69,13 +65,6 @@ if [ -n "$fltkconfig_" ]; then
   fltkconfig="$fltkconfig_"
 fi
 IFS=$old_IFS
-
-echo_=""; echo -e "$echo_" >> $CONF_LOG; echo "$echo_"
-echo_="################################################################"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
-echo_="#                                                              #"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
-echo_="        Welcome to $TARGET_NAME Version $VERSION configurator"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
-echo_="#                                                              #"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
-echo_="#                       Configuration                          #"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
 
 if [ $# -gt 0 ]; then
   prefix=""
@@ -140,6 +129,10 @@ if [ $# -gt 0 ]; then
     if [ "`echo \"$1\" | sed s/\"--$switch\"//`" != "$1" ]; then
       cwdebug="1"
     fi
+    switch=with-rpath
+    if [ "`echo \"$1\" | sed s/\"--$switch\"//`" != "$1" ]; then
+      rpath=1
+    fi
     switch=quick
     if [ "`echo \"$1\" | sed s/\"--$switch\"//`" != "$1" ]; then
       quick="1"
@@ -170,16 +163,28 @@ if [ $# -gt 0 ]; then
       echo "   --enable-debug                       debug version"
       echo "   --disable-dependency-tracking        no dependencies [default check]"
       echo "   --enable-cwdebug=[\$cwdebugdir]       deploy cwlibary for debugging"
+      echo "   --with-rpath                         use rpath for ELF linking"
       echo "   --quick                              generate config files only"
       echo "   --help"
       echo ""
       echo " Optionally set the CC, CXX, CFLAGS, CXXFLAGS and LDFLAGS environment variables."
       echo ""
-      exit
+      exit 0
     fi
     shift
   done
 fi
+
+INFOECHO="&2"
+echo -e "$zeile \$@\n\nexit 0\n\n" > $CONF_LOG
+chmod 0755 $CONF_LOG
+
+echo_=""; echo -e "$echo_" >> $CONF_LOG; echo "$echo_"
+echo_="################################################################"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
+echo_="#                                                              #"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
+echo_="        Welcome to $TARGET_NAME Version $VERSION configurator"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
+echo_="#                                                              #"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
+echo_="#                       Configuration                          #"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
 
 ECHO="echo";
 
@@ -198,7 +203,7 @@ if [ -z "$datadir" ]; then
 else
   if [ -f $datadir/config.site ]; then
     . $datadir/config.site
-    (. $prefix/share/config.site >> $CONF_LOG )
+    (. $datadir/share/config.site >> $CONF_LOG )
   fi
 fi
 
@@ -325,7 +330,7 @@ export CC CXX
 
 CFLAGS_COMMON="$CFLAGS"
 CXXFLAGS_COMMON="$CXXFLAGS"
-LDFLAGS_COMMON="$LDFLAGS"
+LDFLAGS_COMMON="$LDFLAGS -loyranos_alpha"
 MAKE_CFLAGS="\$(INCL) \$(ARGYLL_H) \$(DEBUG)"
 MAKE_CXXFLAGS="\$(INCL) \$(ARGYLL_H) \$(DEBUG)"
 MAKE_LDFLAGS="\$(ARGYLL_LIBS)"
@@ -461,8 +466,10 @@ else
     echo "LIBNAMEV = lib\$(TARGET)\$(LIBMID).\$(VERSION_A)" >> $CONF
     echo "LINK_FLAGS_STATIC = $LDFLAGS_COMMON" >> $CONF
     echo "LINK_NAME = -Wl,-soname -Wl,\$(LIBNAMEFULL)" >> $CONF
-    echo "LINK_LIB_PATH = -Wl,--rpath -Wl,\$(libdir)" >> $CONF
-    echo "LINK_SRC_PATH = -Wl,--rpath -Wl,\$(srcdir)" >> $CONF
+    if [ -n "$rpath" ]; then
+      echo "LINK_LIB_PATH = -Wl,--rpath -Wl,\$(libdir)" >> $CONF
+      echo "LINK_SRC_PATH = -Wl,--rpath -Wl,\$(srcdir)" >> $CONF
+    fi
     echo "INSTALL = install $DEBUG_SWITCH" >> $CONF
   else
     echo "COPY = cp -p" >> $CONF
@@ -472,8 +479,10 @@ else
       MAKE_LDFLAGS="\$(iconv)"
       INSTALL="install $DEBUG_SWITCH"
       test -n "$ECHO" && $ECHO "LINK_FLAGS = -shared \$(iconv)" >> $CONF
-      test -n "$ECHO" && $ECHO "LINK_LIB_PATH = -Wl,--rpath -Wl,\$(libdir)" >> $CONF
-      test -n "$ECHO" && $ECHO "LINK_SRC_PATH = -Wl,--rpath -Wl,\$(srcdir)" >> $CONF
+      if [ -n "$rpath" ]; then
+        test -n "$ECHO" && $ECHO "LINK_LIB_PATH = -Wl,--rpath -Wl,\$(libdir)" >> $CONF
+        test -n "$ECHO" && $ECHO "LINK_SRC_PATH = -Wl,--rpath -Wl,\$(srcdir)" >> $CONF
+      fi
       test -n "$ECHO" && $ECHO "INSTALL = install $DEBUG_SWITCH" >> $CONF
     fi
     if [ $OSUNAME = "SunOS" ]; then
@@ -726,9 +735,5 @@ else
   fi
 fi
 
-
-if [ `cat error.txt | wc -l` -lt 1 ]; then
-  rm error.txt
-fi
 
 

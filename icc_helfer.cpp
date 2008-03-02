@@ -271,7 +271,7 @@ renderingIntentName (int intent)
 int
 getColorSpaceChannels (icColorSpaceSignature color)
 {
-  return oyColourSpaceGetChannelCount( color );
+  return oyColourSpaceGetChannelCountFromSig( color );
 }
 
 icColorSpaceSignature getColorSpaceGeneric( int channels )
@@ -302,7 +302,7 @@ std::string
 getColorSpaceName (icColorSpaceSignature sig)
 {
   std::string text;
-  text = oyColourSpaceGetName( sig );
+  text = oyColourSpaceGetNameFromSig( sig );
   return text;
 }
 

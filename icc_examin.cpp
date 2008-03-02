@@ -586,7 +586,9 @@ ICCexamin::nachricht( Modell* modell , int info )
     if(profile.profil()->hasMeasurement())
     {
       ICCmeasurement & m = profile.profil()->getMeasurement();
-      LabToCIELab( &gl->mouse_3D_hit->lab[0], &cielab1[0], 1 );
+      double lab[3];
+      oyNamedColourConvertStd(gl->mouse_3D_hit, oyEDITING_LAB, lab, oyDOUBLE );
+      LabToCIELab( lab, cielab1, 1 );
 
       DBG_PROG_S( cielab1[0] <<" "<< cielab1[1] <<" "<< cielab1[2] )
 
@@ -601,9 +603,9 @@ ICCexamin::nachricht( Modell* modell , int info )
         lab_v = m.getProfileLab();
 
       n =  lab_v.size();
+      for(int k=0; k<3; ++k) cielab1[k] = lab[k] * 100.f;
       for(int i = 0; i < n; ++i)
       {
-        for(int k=0; k<3; ++k) cielab1[k] = gl->mouse_3D_hit->lab[k] * 100.f;
         LabToCIELab( lab_v[i], cielab2 );
         len = fabs( dE( cielab1, cielab2 ) );
         
@@ -662,11 +664,12 @@ ICCexamin::nachricht( Modell* modell , int info )
           }
         }
 
-        oyNamedColour_s * colour = oyNamedColourCreate(
-                              oylab, c,
-                              profile.profil()->colorSpace(), 0,
-                              NULL, NULL, name.c_str(),
-                              NULL,0, profile.profil()->filename(), malloc, free );
+        oyProfile_s * prof = oyProfileFromFile
+                                      ( profile.profil()->filename(), 0,NULL );
+        oyObject_s * oy = oyObjectNew();
+        oy = oyObjectSetNames( oy, NULL, name.c_str(), NULL );
+        oyNamedColour_s * colour = oyNamedColourCreate( oy, c, NULL,0, prof );
+        oyProfileRelease( &prof );
         icc_betrachter->DD_farbraum->emphasizePoint( colour );
         oyNamedColourRelease( &colour );
       }
@@ -679,7 +682,9 @@ ICCexamin::nachricht( Modell* modell , int info )
       int n_ = n*3*mult;
       for(int i = 0; i < n_; i+=3*mult)
       {
-        for(int k=0; k<3; ++k) cielab1[k] = gl->mouse_3D_hit->lab[k] * 100.f;
+        double lab[3];
+        oyNamedColourConvertStd(gl->mouse_3D_hit, oyEDITING_LAB, lab, oyDOUBLE);
+        LabToCIELab( lab, cielab1, 1 );
         LabToCIELab( &lab_dv[i], cielab2, 1 );
         len = fabs( dE( cielab1, cielab2 ) );
         if(len < min)
@@ -704,15 +709,21 @@ ICCexamin::nachricht( Modell* modell , int info )
         lab_dv[1] = lab_dv[min_pos*3*mult+1];
         lab_dv[2] = lab_dv[min_pos*3*mult+2];
         lab_dv.resize(3);
-        LabToOyLab( &lab_dv[0], oylab, 1 );
+        LabToCIELab( &lab_dv[0], cielab1, 1 );
+        double XYZ[3];
+        oyLab2XYZ( cielab1, XYZ );
         memset(chan, 0, sizeof(double)*32);
         for(int k = 0; k < profile.profil()->getColourChannelsCount(); ++k)
           chan[k] = chan_fv[min_pos*4*mult+k];
-        oyNamedColour_s * colour = oyNamedColourCreate(
-                              oylab, chan,
-                              profile.profil()->colorSpace(), 0,
-                              NULL, NULL, names[min_pos].c_str(),
-                              NULL,0, profile.profil()->filename(), malloc, free );
+
+        oyProfile_s * prof = oyProfileFromFile
+                                      ( profile.profil()->filename(), 0,NULL );
+        if(!prof)
+          prof = oyProfileFromStd( oyASSUMED_WEB, NULL );
+        oyNamedColour_s * colour = 
+          oyNamedColourCreateWithName( NULL, names[min_pos].c_str(), NULL,
+                                       chan, XYZ, NULL,0, prof, 0 );
+        oyProfileRelease( &prof );
         if(!names[min_pos].size())
           WARN_S( "no name found" )
         icc_betrachter->DD_farbraum->emphasizePoint( colour );
@@ -1159,7 +1170,7 @@ ICCexamin::erneuerTagBrowserText_ (void)
   } else if ((int)tag_list.size() != profile.profil()->tagCount()*5 ) {
     add_s (_("Internal error") )
   }
-  // this string is sensible to formatting in the tag browser GUI
+  // this string is sensible to formatting in the tag browser GUI, please keep a mono spaced formatting
   add_s ("@B26@t" << _("No. Tag   Type   Size Description") )
   if(profile.profil()->data_type == ICCprofile::ICCprofileDATA ||
      profile.profil()->data_type == ICCprofile::ICCcorruptedprofileDATA) {

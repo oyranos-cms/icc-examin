@@ -256,7 +256,8 @@ ICCtag::getText                     (std::string text)
     memcpy (&meas, &data_[8] , 28);
     s << _("Standard Observer") << ": " <<
     getStandardObserver( icValue( meas.stdObserver) ) <<endl
-      << _("Backsite") << ": X = " << icSFValue(meas.backing.X)
+      // "Back side" or Background
+      << _("Back side") << ": X = " << icSFValue(meas.backing.X)
                         << ", Y = " << icSFValue(meas.backing.Y)
                         << ", Z = " << icSFValue(meas.backing.Z) << endl
       << _("Geometrie") << ": "<< 
