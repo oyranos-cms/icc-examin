@@ -148,7 +148,7 @@ void
 ICCexamin::zeigCGATS()
 {
   DBG_PROG_START
-  // CGATS in Fenster präsentieren
+  // CGATS in Fenster praesentieren
   icc_examin_ns::nachricht(profile.profil()->cgats_max());
   DBG_PROG_ENDE
 }
@@ -197,9 +197,11 @@ ICCexamin::nachricht( Modell* modell , int info )
         } else if (info < (int)icc_betrachter->DD_farbraum->dreiecks_netze.size()) {
           icc_betrachter->DD_farbraum->dreiecks_netze[info].aktiv = false;
         }
-          // Oberflächenpflege - Aktualisieren
+          // Oberflaechenpflege - Aktualisieren
         if(icc_betrachter->DD_farbraum->visible())
+        {
           icc_betrachter->DD_farbraum->flush();
+        }
         if(icc_betrachter->menueintrag_inspekt->active() &&
            profile[info]->hasMeasurement() )
           setzMesswerte();
@@ -387,7 +389,7 @@ ICCexamin::neuzeichnen (void* z)
       icc_betrachter->DD_farbraum->hide();
     }
     if(icc_waehler_->visible())
-      icc_waehler_->iconize();
+      icc_waehler_->hide();
   }
 
   if(oben == INSPEKT_ZEIGEN)

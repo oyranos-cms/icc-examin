@@ -1,9 +1,11 @@
 o Weisspunktvergleich mit idealem schwarzem Körper
-o Intent beeinflusst gamut Ansicht
 o osX Integration (Menüs)
 o interne Farbberechnung
-o Übersetzungen
+o mehr Übersetzungen
 o AGV Ersatz
+o OpenGL ausschalten falls nicht ansichtig
 
+erledigt:
 o HTML komplett sichtbar (Schieber zu kurz)
+o Intent beeinflusst gamut Ansicht
 

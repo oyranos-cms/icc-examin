@@ -64,7 +64,7 @@ ICCexamin::oeffnen (std::vector<std::string> dateinamen)
   bool weiter = profile.oeffnen(dateinamen);
   if (weiter)
   {
-      // Oberflächenpflege
+      // Oberflaechenpflege
     tag_browserText ();
     if(icc_betrachter->DD_farbraum->visible() &&
        !icc_betrachter->inspekt_html->visible() )
@@ -73,12 +73,12 @@ ICCexamin::oeffnen (std::vector<std::string> dateinamen)
     icc_betrachter->measurement( profile.profil()->hasMeasurement() );
     if(farbraumModus())
     {
-        // Oberflächenpflege
-      icc_betrachter->DD_farbraum->show();
-      icc_waehler_->show();
+        // Oberflaechenpflege
       icc_betrachter->menueintrag_3D->set();
       icc_betrachter->menueintrag_huelle->set();
       farbraum_angezeigt_ = true;
+      neuzeichnen(icc_betrachter->DD_farbraum);
+      DBG_PROG_S("neuzeichnen DD_farbraum")
 
       profile.oeffnen(icc_oyranos.moni(),-1);
       profile.oeffnen(icc_oyranos.cmyk(),-1);
