@@ -56,8 +56,11 @@ static void cb_menueintrag_Voll(Fl_Menu_*, void*) {
 }
 
 static void cb_Testprofil(Fl_Menu_*, void*) {
-  profile.removeTag(0);
-profile.saveProfileToFile("/tmp/icc_examin_test.icc");
+  ICCprofile p = profile;
+p.removeTag(0);
+p.removeTag(4);
+p.removeTag(1);
+p.saveProfileToFile("/tmp/icc_examin_test.icc");
 }
 
 static void cb_menueintrag_inspekt(Fl_Menu_* o, void*) {

@@ -70,7 +70,7 @@ Function {} {open C return_type int
   inspekt_topline = 0;} {}
   Fl_Window details {
     label {ICC Details} open
-    xywh {459 298 385 515} type Double box NO_BOX color 53
+    xywh {464 322 385 515} type Double box NO_BOX color 53
     code1 {DBG
     if (argc>1) {
 
@@ -146,8 +146,11 @@ Function {} {open C return_type int
           }
           menuitem {} {
             label {Testprofil schreiben}
-            callback {profile.removeTag(0);
-profile.saveProfileToFile("/tmp/icc_examin_test.icc");} selected
+            callback {ICCprofile p = profile;
+p.removeTag(0);
+p.removeTag(4);
+p.removeTag(1);
+p.saveProfileToFile("/tmp/icc_examin_test.icc");} selected
             tooltip {zu finden in "/tmp/icc_examin_test.icc"} xywh {0 0 100 20}
           }
         }

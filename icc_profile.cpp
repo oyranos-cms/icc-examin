@@ -197,13 +197,33 @@ ICCheader::print()
 ICCtag::ICCtag ()
 {
   _sig = icMaxEnumTag;
-  _data = NULL; DBG
+  _size = 0;
+  _data = NULL; DBG_S("ICCtag::ICCtag")
   _profil = NULL;
 }
 
 ICCtag::ICCtag                      (ICCprofile* profil, icTag* tag, char* data)
+{ DBG_S("ICCtag::ICCtag ICCprofile* , icTag* , char*  - beginn")
+  ICCtag::load (profil, tag, data); DBG_S("ICCtag::ICCtag ICCprofile* , icTag* , char*  - fertig")
+}
+
+void
+ICCtag::copy                        (const ICCtag& tag)
 {
-  ICCtag::load (profil, tag, data); DBG
+  _sig = tag._sig; DBG_S("ICCtag::ICCtag <- Kopie")
+  _size = tag._size; DBG_V (_size)
+  if (_size) {
+    _data = new char[_size]; //(char*)calloc (sizeof(char), _size);
+    memcpy (_data , tag._data , _size);
+  } else {
+    _data = NULL;
+  }
+
+  _intent = tag._intent;
+  _color_in = tag._color_in;
+  _color_out = tag._color_out;
+
+  _profil = tag._profil;
 }
 
 ICCtag::~ICCtag ()
@@ -212,15 +232,14 @@ ICCtag::~ICCtag ()
   _size = 0;
   if (_data != NULL) {
     #ifdef DEBUG_ICCTAG
-    cout << "ICCtag löschen: " << (char*)&_data[0] << " "; DBG
+    DBG_S( "ICCtag~ löschen: " << (char*)(icTagTypeSignature*)&_data[0] )
     #endif
     free (_data);
   } else {
     #ifdef DEBUG_ICCTAG
-    cout << "ICCtag war leer!: "; DBG
+    DBG_S( "ICCtag~ war leer!" )
     #endif
   }
-  DBG
 }
 
 void
@@ -869,12 +888,13 @@ ICCprofile::fload ()
   icTag *tagList = (icTag*)&((char*)_data)[132];
   //(icTag*) calloc ( getTagCount() , sizeof (icTag));
   //memcpy (tagList , &((char*)_data)[132], sizeof (icTag) * getTagCount());
+  DBG
   tags.resize(getTagCount()); DBG
   for (int i = 0 ; i < getTagCount() ; i++) { DBG
     tags[i].load( this, &tagList[i] ,
               &((char*)_data)[ icValue(tagList[i].offset) ]); DBG
     #ifdef DEBUG_ICCPROFILE
-    //cout << " sig: " << tags[i].getTagName() << " " << i << " "; DBG
+    cout << " sig: " << tags[i].getTagName() << " " << i << " "; DBG
     #endif
 
     // bekannte Tags mit Messdaten
@@ -1125,6 +1145,7 @@ ICCprofile::writeTags (void)
 {
   unsigned int i;
   for (i = 0; i < tags.size(); i++) {
+    DBG_V ( i << ": " << tags[i].getTypName() )
     int size;
     const char* data = tags[i].write(&size);
     icTagList* list = (icTagList*)&((char*)_data)[128];
@@ -1260,6 +1281,28 @@ ICCprofile::saveProfileToFile (char* filename, char *profile, int size)
   fclose (fp);
 }
 
+void
+ICCprofile::removeTag (int item)
+{
+  if (item >= (int)tags.size() )
+    return;
+
+  std::vector <ICCtag> t;
+  t.resize (tags.size()-1);
+  DBG_V (tags.size())
+  int i = 0,
+      zahl = 0;
+  for (; i < (int)tags.size(); i++)
+    if (i != item) {
+      t[zahl].copy(tags[i]); DBG_S("i: " << i << " -> zahl: " << zahl)
+      zahl++;
+    }
+
+  DBG
+  tags = t; DBG
+
+  DBG_V( i << " " << tags.size())
+}
 
 /**
   *  allgemeine Funktionen

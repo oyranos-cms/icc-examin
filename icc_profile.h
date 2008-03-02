@@ -156,6 +156,9 @@ class ICCtag {
                         ICCtag             ();
                         ICCtag             (ICCprofile* profil,
                                             icTag* tag, char* data);
+                        ICCtag             (const ICCtag& tag)
+                                                          {ICCtag::copy (tag); }
+    void                copy               (const ICCtag& tag);
                         ~ICCtag            ();
   private:
     icTagSignature      _sig;
@@ -362,10 +365,7 @@ class ICCprofile {
 
   public: // Profilerstellung
     void                addTag (ICCtag tag)  {tags.push_back(tag); }
-    void                removeTag (int item) {std::vector<ICCtag>::iterator it=
-                                              tags.begin();
-                                              for (int i=0; i != item;i++) it++;
-                                              tags.erase(it); } // TODO
+    void                removeTag (int item);
     void                saveProfileToFile  (char* filename);
   private:
     void                writeTags (void);
