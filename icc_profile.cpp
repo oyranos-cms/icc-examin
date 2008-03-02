@@ -873,7 +873,6 @@ ICCtag::getText                     (MftChain typ)
            texte = getChannelNames (_color_in);
          else
            texte = getChannelNames (_color_out);
-           //texte.push_back( "" );
          break;
     case CURVE_OUT:
          texte = getChannelNames (_color_out);

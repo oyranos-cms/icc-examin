@@ -78,7 +78,7 @@ Function {} {open C return_type int
   inspekt_topline = 0;} {}
   Fl_Window details {
     label {ICC Details} open
-    xywh {899 312 385 520} type Double box NO_BOX color 53
+    xywh {899 360 385 520} type Double box NO_BOX color 53
     code1 {DBG_PROG
     if (argc>1) {
 
@@ -617,7 +617,10 @@ class MftChoice {open : {public Fl_Choice}
 } {
   decl {int X; int Y; int W; int H; char* start_info; char typ[5]; std::vector<std::string> Info; int gewaehlter_eintrag;} {}
   Function {MftChoice(int X,int Y,int W,int H,char* start_info) : Fl_Choice(X,Y,W,H,start_info), X(X), Y(Y), W(W), H(H)} {open
-  } {}
+  } {
+    code {gewaehlter_eintrag = 0;} {selected
+    }
+  }
   Function {profil_tag(int _tag)} {open
   } {
     code DBG_PROG_START {}
@@ -701,7 +704,8 @@ class MftChoice {open : {public Fl_Choice}
     DBG_PROG
     mft_gl->hinein_tabelle (
                      profile.getTagTable (tag_nummer, ICCtag::TABLE),
-                     profile.getTagChannelNames (tag_nummer, ICCtag::CURVE_IN) ); DBG_PROG
+                     profile.getTagChannelNames (tag_nummer, ICCtag::TABLE),
+                     profile.getPCSNames () ); DBG_PROG
     break;
   case 4: // Ausgangskurven
     mft_viewer->hinein_kurven (
@@ -710,8 +714,7 @@ class MftChoice {open : {public Fl_Choice}
     break;
   }
 
-  gewaehlter_eintrag = mw->value();} {selected
-    }
+  gewaehlter_eintrag = mw->value();} {}
     code DBG_PROG_ENDE {}
   }
 } 

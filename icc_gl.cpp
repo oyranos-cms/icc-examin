@@ -11,7 +11,7 @@
 #define DEBUG_ICCGL
 
 typedef enum {NOTALLOWED, AXES, RASTER, RING , HELFER} DisplayLists;
-typedef enum { MENU_AXES, MENU_QUIT, MENU_RING, MENU_KUGEL, MENU_WUERFEL, MENU_MAX } MenuChoices;
+typedef enum { MENU_AXES, MENU_QUIT, MENU_RING, MENU_KUGEL, MENU_WUERFEL, MENU_STERN, MENU_MAX } MenuChoices;
 
 int DrawAxes = 0;
 int kanal = 0;
@@ -27,12 +27,14 @@ GL_Ansicht::GL_Ansicht(int X,int Y,int W,int H) : Fl_Group(X,Y,W,H)
 { DBG_PROG_V( first )
   first = true;
   MenueKanalEintraege = 0;
+  //Punktform = MENU_STERN;
   DBG_PROG_ENDE
 }
 
 GL_Ansicht::~GL_Ansicht()
 { DBG_PROG_START
   glDeleteLists (RASTER, 1);
+  glDeleteLists (HELFER, 1);
   DBG_PROG_ENDE
 }
 
@@ -120,14 +122,17 @@ void GL_Ansicht::draw() {
 
 void GL_Ansicht::myGLinit() {
   DBG_PROG_START
-  GLfloat mat_ambuse[] = { 0.95, 0.0, 0.0, 1.0 };
-  GLfloat mat_specular[] = { 0.4, 0.4, 0.4, 1.0 };
+  GLfloat mat_ambuse[] = { 0.95, 0.95, 0.95, 1.0 };
+  GLfloat mat_specular[] = { 0.6, 0.6, 0.6, 1.0 };
 
   GLfloat light0_position[] = { 2.4, 1.6, 1.2, 0.0 };
 
   glLightfv(GL_LIGHT0, GL_POSITION, light0_position);
+  //GLfloat light1_position[] = { -2.4, -1.6, -1.2, 0.0 };
+  //glLightfv(GL_LIGHT1, GL_POSITION, light1_position);
   glEnable(GL_LIGHTING);
   glEnable(GL_LIGHT0);
+  //glEnable(GL_LIGHT1);
   glDisable(GL_LIGHTING);
 
 
@@ -140,12 +145,12 @@ void GL_Ansicht::myGLinit() {
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
 
-  glEnable(GL_NORMALIZE);
+  //glEnable(GL_NORMALIZE);
 
   glDepthFunc(GL_LESS);
   glEnable(GL_DEPTH_TEST);
 
-  glShadeModel(GL_SMOOTH);
+  //glShadeModel(GL_SMOOTH);
 
   glFlush();
   DBG_PROG_ENDE
@@ -155,6 +160,7 @@ void GL_Ansicht::myGLinit() {
                      glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, farbe); 
 
 #define ZeichneText(Font,Zeiger) { \
+      glTranslatef(.0,0,0.02); \
         glScalef(0.001,0.001,0.001); \
           for (char* p = Zeiger; *p; p++) { \
              glutStrokeCharacter(Font, *p); \
@@ -162,7 +168,8 @@ void GL_Ansicht::myGLinit() {
           for (char* p = Zeiger; *p; p++) { \
             glTranslatef(0.0 - glutStrokeWidth(Font, *p),0,0); \
           } \
-        glScalef(1000,1000,1000); }
+        glScalef(1000,1000,1000); \
+      glTranslatef(.0,0,-.02); }
 #define ZeichneBuchstaben(Font,Buchstabe) { \
         glScalef(0.001,0.001,0.001); \
           glutStrokeCharacter(Font, Buchstabe); \
@@ -176,7 +183,7 @@ zeichneKoordinaten()
   char text[256];
   GLfloat farbe[] =   { 1.0, 1.0, 1.0, 1.0 };
 
-  // Koordinaten
+  // Koordinatenachsen
     glBegin(GL_LINES);
         glVertex3f(.1, 0, 0); glVertex3f(0, 0, 0);
     glEnd();
@@ -239,12 +246,10 @@ void GL_Ansicht::MakeDisplayLists() {
   DBG_PROG_START
   char text[256];
   glColor3f(1,1,1);
-  glDeleteLists (RASTER, 1);
-  glNewList(RASTER, GL_COMPILE);
+  glDeleteLists (HELFER, 1);
+  glNewList(HELFER, GL_COMPILE);
   GLfloat farbe[] =   { 1.0, 1.0, 1.0, 1.0 };
 
-      zeichneKoordinaten();
-      zeichneKoordinaten();
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_LINE_SMOOTH);
@@ -252,14 +257,11 @@ void GL_Ansicht::MakeDisplayLists() {
     glPushMatrix();
       glMatrixMode(GL_MODELVIEW);
       glLineWidth(3.0);
-      glTranslatef(.5,0.52,.5);
+      glTranslatef(.5,0.62,.0);
       char* ptr = (char*) texte[kanal].c_str();
       sprintf (&text[0], ptr);
-      glScalef(0.001,0.001,0.001);
-      for (char* p = &text[0]; *p; p++) {
-        glutStrokeCharacter(GLUT_STROKE_ROMAN, *p);
-      }
-    glPopMatrix();
+      ZeichneText(GLUT_STROKE_ROMAN,&text[0])
+    glPopMatrix(); DBG_PROG
 
     glPushMatrix();
       FARBE(1,1,1)
@@ -277,56 +279,59 @@ void GL_Ansicht::MakeDisplayLists() {
       FARBE(1,1,1)
       glRotatef (270,1.0,0.0,.0);
       glutSolidCone(0.01, 0.025, 8, 2);
-      //glRotatef (90,0.0,1.0,.0);
-      //glRotatef (90,1.0,.0,.0);
+      glRotatef (90,1.0,0.0,.0);
       FARBE(1,1,1)
       glTranslatef(.02,0,0);
-      glScalef(0.001,0.001,0.001);
-      sprintf (&text[0], _("CIE*L"));
-      for (char* p = &text[0]; *p; p++) {
-        glutStrokeCharacter(GLUT_STROKE_ROMAN, *p);
-      }
-    glPopMatrix();
+      ptr = (char*) pcsNamen[0].c_str();
+      sprintf (&text[0], ptr);
+      ZeichneText(GLUT_STROKE_ROMAN,&text[0])
+    glPopMatrix(); DBG_PROG
 
     glPushMatrix();
-      glTranslatef(-.5,0,0);
-      glTranslatef(0,.5,0);
-      glRotatef (270,1.0,.0,.0);
-      FARBE(.9,0,0)
+      glTranslatef(0.0,-.5,0.5);
+      FARBE(.2,.9,0.7)
+      glRotatef (180,0.0,.5,.0);
+      glTranslatef(.0,0.0,1.0);
       glutSolidCone(0.01, 0.025, 8, 2);
-      glRotatef (90,1.0,.0,.0);
-      glRotatef (90,0.0,.0,1.0);
-      glScalef(0.001,0.001,0.001);
+      glTranslatef(.0,0.0,-1.0);
+      glRotatef (180,0.0,.5,.0);
+      FARBE(.9,0.2,0.5)
+      glutSolidCone(0.01, 0.025, 8, 2);
       FARBE(1,1,1)
-      sprintf (&text[0], _("CIE*a"));
-      for (char* p = &text[0]; *p; p++) {
-        glutStrokeCharacter(GLUT_STROKE_ROMAN, *p);
-      }
-    glPopMatrix();
+      ptr = (char*) pcsNamen[1].c_str();
+      sprintf (&text[0], ptr);
+      ZeichneText(GLUT_STROKE_ROMAN,&text[0])
+    glPopMatrix(); DBG_PROG
 
     glPushMatrix();
-      glTranslatef(-.5,0,0);
-      glTranslatef(0,0,.5);
-      FARBE(0,.9,0)
-      glutSolidCone(0.01, 0.025, 8, 2);
-      FARBE(1,1,1)
+      glTranslatef(.5,-.5,0);
+      FARBE(.9,.9,0.2)
       glRotatef (90,0.0,.5,.0);
-      glTranslatef(.8,0,0);
-      glScalef(0.001,0.001,0.001);
-      sprintf (&text[0], _("CIE*b"));
-      for (char* p = &text[0]; *p; p++) {
-        glutStrokeCharacter(GLUT_STROKE_ROMAN, *p);
-      }
+      glutSolidCone(0.01, 0.025, 8, 2);
+      glRotatef (180,.0,.5,.0);
+      glTranslatef(.0,.0,1.0);
+      FARBE(.7,.8,1.0)
+      glutSolidCone(0.01, 0.025, 8, 2);
+      glTranslatef(.0,.0,-1.0);
+      glRotatef (180,0.0,.5,.0);
+      FARBE(1,1,1)
+      ptr = (char*) pcsNamen[2].c_str();
+      sprintf (&text[0], ptr);
+      ZeichneText(GLUT_STROKE_ROMAN,&text[0])
     glPopMatrix();
     glLineWidth(1.0);
 
-    DBG_PROG_V( tabelle.size() )
+  glEndList();
+  DBG_PROG_V( tabelle.size() )
 
     // Tabelle
+    glDeleteLists (RASTER, 1);
     if (tabelle.size()) {
-      double dim_x = 1.0/(tabelle.size()); DBG_PROG_V( dim_x )
-      double dim_y = 1.0/(tabelle[0].size()); DBG_PROG_V( dim_y )
-      double dim_z = 1.0/(tabelle[0][0].size()); DBG_PROG_V( dim_z )
+      glNewList(RASTER, GL_COMPILE);
+      int n_L = tabelle.size(), n_a=tabelle[0].size(), n_b=tabelle[0][0].size();
+      double dim_x = 1.0/(n_b); DBG_PROG_V( dim_x )
+      double dim_y = 1.0/(n_L); DBG_PROG_V( dim_y )
+      double dim_z = 1.0/(n_a); DBG_PROG_V( dim_z )
       double start_x,start_y,start_z, x,y,z;
       double groesse = (dim_x + dim_y + dim_z)/ 3;
       double wert;
@@ -336,35 +341,58 @@ void GL_Ansicht::MakeDisplayLists() {
       glDisable(GL_LIGHTING);
       glTranslatef(start_x,start_y,start_z);
       DBG_PROG_V( tabelle.size() <<" "<< tabelle[0].size() )
-      glTranslatef(-dim_x/2.0,-dim_y/2.0,-dim_z/2.0);
-      for (int i = 0; i < (int)tabelle.size(); i++) { //DBG_PROG_V( i )
-        x = start_x + i * dim_x;
-        glTranslatef(0.0,dim_x,0.0);
-        glTranslatef(-1.0,0.0,0.0);
-        for (int j = 0; j < (int)tabelle[i].size(); j++) { //DBG_PROG_V( j )
-          y = start_y + j * dim_y;
-          glTranslatef(dim_y,0.0,0.0);
-          glTranslatef(0,0.0,-1.0);
-          for (int k = 0; k < (int)tabelle[i][j].size(); k++) { //DBG_PROG_V( k )
-            z = start_z + k * dim_z;
-            glTranslatef(0.0,0.0,dim_z); //DBG_PROG_S( "xyz: "<< x <<" "<< y <<" "<< z )
-            wert = tabelle[i][j][k][kanal];
-            glColor3f(wert/0.9, wert/0.9, wert);
-            switch (Punktform) {
-              case MENU_WUERFEL:
-                glutSolidCube(groesse);
+      glTranslatef(-dim_x,-dim_y,-dim_z);
+      for (int L = 0; L < (int)n_L; L++) { DBG_PROG_V( L )
+        x = start_x + L * dim_y;
+        glTranslatef(0.0,dim_y,0.0);
+        glTranslatef(0.0,0.0,-1.0);
+        for (int a = 0; a < (int)n_a; a++) { DBG_PROG_V( a )
+          y = start_y + a * dim_z;
+          glTranslatef(0.0,0.0,dim_z);
+          glTranslatef(-1,0.0,0.0);
+          for (int b = 0; b < (int)n_b; b++) { //DBG_PROG_V( k )
+            z = start_z + b * dim_x; DBG_PROG_V( dim_x )
+            if (dim_x)
+              glTranslatef(dim_x,0.0,0.0); DBG_PROG_V( dim_x )
+            wert = tabelle[L][a][b][kanal]; DBG_PROG_V( L << a << b << kanal )
+            if (1/*wert*/) {
+              glColor3f(wert/0.9*0.95, wert/0.9*0.95, wert*0.95);
+              switch (Punktform) {
+                case MENU_STERN: { DBG_PROG
+                     double x_versatz = (double)b/(n_b-1)*dim_x;
+                     double y_versatz = (double)L/(n_L-1)*dim_y;
+                     double z_versatz = (double)a/(n_a-1)*dim_z;
+                glBegin(GL_QUADS); DBG_PROG
+                  glVertex3f( dim_x/2+x_versatz,  dim_y/2+y_versatz, z_versatz);
+                  glVertex3f( dim_x/2+x_versatz, -dim_y/2+y_versatz, z_versatz);
+                  glVertex3f(-dim_x/2+x_versatz, -dim_y/2+y_versatz, z_versatz);
+                  glVertex3f(-dim_x/2+x_versatz,  dim_y/2+y_versatz, z_versatz);
+                glEnd();
+                glBegin(GL_QUADS); DBG_PROG
+                  glVertex3f(x_versatz,  dim_y/2+y_versatz,-dim_z/2+z_versatz);
+                  glVertex3f(x_versatz, -dim_y/2+y_versatz,-dim_z/2+z_versatz);
+                  glVertex3f(x_versatz, -dim_y/2+y_versatz, dim_z/2+z_versatz);
+                  glVertex3f(x_versatz,  dim_y/2+y_versatz, dim_z/2+z_versatz);
+                glEnd();
+                /*glBegin(GL_QUADS);
+                  glVertex3f(i_versatz,dim_x/2+k_versatz, dim_y/2+j_versatz);
+                  glVertex3f(i_versatz,-dim_x/2+k_versatz, dim_y/2+j_versatz);
+                  glVertex3f(i_versatz,-dim_x/2+k_versatz, -dim_y/2+j_versatz);
+                  glVertex3f(i_versatz,dim_x/2+k_versatz, -dim_y/2+j_versatz);
+                glEnd();*/
+                }
                 break;
-              case MENU_KUGEL:
-                glutSolidSphere (groesse*0.75, 12, 12);
-                break;
+                case MENU_WUERFEL: glutSolidCube(groesse); break;
+                case MENU_KUGEL:   glutSolidSphere (groesse*.75, 12, 12); break;
+              }
             }
           }
         }
       } DBG_PROG
+      glPopMatrix();
       glEnable(GL_LIGHTING);
+      glEndList();
     }
-    glPopMatrix();
-  glEndList();
 
   glNewList(RING, GL_COMPILE);
     //glutSolidDodecahedron();
@@ -415,8 +443,8 @@ void GL_Ansicht::MenuInit() {
 
   int sub3 = glutCreateMenu(handlemenu);
   glutAddMenuEntry(_("Kugel"),  MENU_KUGEL); 
-  glutAddMenuEntry(_("Würfel"),   MENU_WUERFEL);
-
+  glutAddMenuEntry(_("Würfel"), MENU_WUERFEL);
+  glutAddMenuEntry(_("Stern"),  MENU_STERN), 
   glutCreateMenu(handlemenu);
   glutAddSubMenu(_("Bewegung"), sub2);
   glutAddMenuEntry(_("Achsen ein/aus"), MENU_AXES);
@@ -451,7 +479,7 @@ void display() {
 
   glLoadIdentity();
 
-  gluPerspective(45, seitenverhaeltnis, .2, 10);
+  gluPerspective(45, seitenverhaeltnis, 1.2, 10);
 
     /* so this replaces gluLookAt or equiv */
   agvViewTransform();
@@ -463,6 +491,7 @@ void display() {
   if (DrawAxes)
     glCallList(AXES);
 
+  glCallList(HELFER);
   glCallList(RASTER);
 
   glTranslatef(-2, 1, -2);
@@ -509,12 +538,15 @@ void GL_Ansicht::hinein_kurven(std::vector<std::vector<double> >vect, std::vecto
 }
 
 void
-GL_Ansicht::hinein_tabelle(std::vector<std::vector<std::vector<std::vector<double> > > > vect, std::vector<std::string> txt)
+GL_Ansicht::hinein_tabelle(std::vector<std::vector<std::vector<std::vector<double> > > > vect,
+                           std::vector<std::string> txt,
+                           std::vector<std::string> pcs)
 {
   DBG_PROG_START
   //Kurve aus tag_browser anzeigen
   tabelle = vect;  DBG_PROG
   texte = txt; DBG_PROG
+  pcsNamen = pcs;
   kurven.clear(); DBG_PROG
   punkte.clear(); DBG_PROG
 
@@ -605,10 +637,14 @@ void handlemenu(int value)
       mft_gl-> Punktform = MENU_WUERFEL;
       mft_gl->MakeDisplayLists();
       break;
+    case MENU_STERN:
+      mft_gl-> Punktform = MENU_STERN;
+      mft_gl->MakeDisplayLists();
+      break;
     }
 
   if (value >= MENU_MAX) {
-    kanal = value - MENU_MAX;
+    kanal = value - MENU_MAX; DBG_PROG_V( kanal )
     mft_gl->MakeDisplayLists();
   }
 

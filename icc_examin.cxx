@@ -627,6 +627,7 @@ void TagDrawings::ruhig_neuzeichnen(void) {
 #include <FL/fl_draw.H>
 
 MftChoice::MftChoice(int X,int Y,int W,int H,char* start_info) : Fl_Choice(X,Y,W,H,start_info), X(X), Y(Y), W(W), H(H) {
+  gewaehlter_eintrag = 0;
 }
 
 void MftChoice::profil_tag(int _tag) {
@@ -711,7 +712,8 @@ void MftChoice::auswahl_cb(void) {
     DBG_PROG
     mft_gl->hinein_tabelle (
                      profile.getTagTable (tag_nummer, ICCtag::TABLE),
-                     profile.getTagChannelNames (tag_nummer, ICCtag::CURVE_IN) ); DBG_PROG
+                     profile.getTagChannelNames (tag_nummer, ICCtag::TABLE),
+                     profile.getPCSNames () ); DBG_PROG
     break;
   case 4: // Ausgangskurven
     mft_viewer->hinein_kurven (

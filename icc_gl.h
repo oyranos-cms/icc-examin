@@ -10,6 +10,7 @@
 class GL_Ansicht : public Fl_Group {
   std::vector<std::vector<std::vector<std::vector<double> > > > tabelle;
   std::vector<std::string>texte;
+  std::vector<std::string>pcsNamen;
   std::vector<double>punkte;
   std::vector<std::vector<double> >kurven;
   Fl_Group *GLFenster;
@@ -26,7 +27,9 @@ public:
   void draw();
   void hinein_punkt(std::vector<double> vect, std::vector<std::string> txt);
   void hinein_kurven(std::vector<std::vector<double> >vect, std::vector<std::string> txt);
-  void hinein_tabelle(std::vector<std::vector<std::vector<std::vector<double> > > >vect, std::vector<std::string> txt);
+  void hinein_tabelle(std::vector<std::vector<std::vector<std::vector<double> > > >vect,
+                               std::vector<std::string> txt,
+                               std::vector<std::string> pcs);
   void ruhig_neuzeichnen(void);
 
   int  Punktform;                // Form der Gitterpunkte der Transformationstabelle

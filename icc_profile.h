@@ -522,13 +522,15 @@ class ICCprofile {
     const char*         filename ()        {DBG_PROG return _filename.c_str(); }
     void                filename (const char* s) {DBG_PROG _filename = s; }
     int                 size     ()        {DBG_PROG return header.size(); }
-    const char*         cmm      ()        {DBG_PROG return header.cmmName(); }
-    void                cmm      (const char* s) {DBG_PROG header.cmmName (s); }
-    int                 version  ()        {DBG_PROG return (int) header.version(); }
-    const char*         creator  ()        {DBG_PROG return header.creatorName(); }
+    //const char*         cmm      ()        {DBG_PROG return header.cmmName(); }
+    //void                cmm      (const char* s) {DBG_PROG header.cmmName (s); }
+    //int                 version  ()        {DBG_PROG return (int) header.version(); }
+    //const char*         creator  ()        {DBG_PROG return header.creatorName(); }
 
     std::string         printHeader     () {DBG_PROG return header.print(); }
     std::string         printLongHeader () {DBG_PROG return header.print_long(); }
+    std::vector<std::string> getPCSNames       () {DBG_PROG return
+                                                getChannelNames(header.pcs()); }
 
     // Tag Infos
     std::vector<std::string> printTags  (); // Liste der einzelnen Tags (5)
