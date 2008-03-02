@@ -91,7 +91,7 @@ public:
   //Agviewer* agv()         {return &agv_; }
   // fltk virtual
   void draw();
-  void handle(int event);
+  int  handle(int event);
 
   // Daten Laden
   void hineinPunkte (std::vector<double> vect,

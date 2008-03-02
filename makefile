@@ -82,6 +82,7 @@ CPP_HEADERS = \
 	icc_vrml_parser.h \
 	icc_waehler.h
 COMMON_CPPFILES = \
+	agviewer.cpp \
 	icc_cgats_filter.cpp \
 	icc_draw.cpp \
 	icc_examin.cpp \
@@ -101,8 +102,7 @@ COMMON_CPPFILES = \
 	icc_ueber.cpp \
 	icc_utils.cpp \
 	icc_vrml.cpp \
-	icc_vrml_parser.cpp \
-	agviewer.cpp
+	icc_vrml_parser.cpp
 CPPFILES = \
 	$(COMMON_CPPFILES) \
 	$(TOOLKIT_FILES) \

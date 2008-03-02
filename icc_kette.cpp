@@ -246,9 +246,9 @@ ICCkette::waechter (void* zeiger)
 
   for(unsigned i = 0; i < obj->profilnamen_.size(); ++i)
   {
-    DBG_PROG_V( obj->profilnamen_[i] );
+    DBG_MEM_V( obj->profilnamen_[i] );
     double m_zeit = holeDateiModifikationsZeit( obj->profilnamen_[i].c_str() );
-    DBG_PROG_V( m_zeit )
+    DBG_MEM_V( m_zeit )
     if( m_zeit &&
         obj->aktiv_[i] &&
         obj->profil_mzeit_[i] != m_zeit

@@ -3,7 +3,7 @@
 
 CONF_H=config.h
 CONF=config
-VERSION="0.24"
+VERSION="0.25"
 ZEIT="Mai 2004 - Maerz 2005"
 
 test -f error.txt && rm -v error.txt

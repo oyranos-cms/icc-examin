@@ -41,13 +41,16 @@
 #endif
 
 #include "icc_utils.h" // ICC Examin
+class GL_Ansicht;
 
 class
 Agviewer
 {
   public:
+  GL_Ansicht* parent;
 
-  Agviewer ()  {
+  Agviewer (GL_Ansicht* p)  {
+    parent = p;
 /***************************************************************/
 /************************** SETTINGS ***************************/
 /***************************************************************/
@@ -168,6 +171,7 @@ Agviewer
   */
   int agvMoving;    /* Currently moving?  */
   void agvMove_(void);
+  static void agvMove_statisch(void* agv);
 
  /*
   * These are the routines AGV registers to deal with mouse and keyboard input.
@@ -176,8 +180,8 @@ Agviewer
   * These are all registered with agvInit(), but you could register
   * something else which called these, or reregister these as needed 
   */
-  void agvHandleButton_(int &button, int &state, int &x, int &y);
-  void agvHandleMotion_(int &x, int &y);
+  void agvHandleButton(int button, int event, int x, int y);
+  void agvHandleMotion(int x, int y);
   void agvHandleKeys_(unsigned char key, int &x, int &y);
 
  /*
@@ -308,22 +312,6 @@ public:
 extern std::vector<Agviewer> agviewers;
 
 namespace agv {
-
-extern "C" {
-  // Funktionszeiger / pointer
-  extern void agvMove(int glut_fenster);
-  extern void agvMove1(void);
-  extern void agvMove2(void);
-  extern void agvHandleButton(int button, int state, int x, int y);
-  extern void agvHandleMotion(int x, int y);
-  extern void agvHandleKeys(unsigned char key, int x, int y);
-  extern void agvViewTransform(void);
-  extern void agvSwitchMoveMode1(int move);
-  extern void agvSwitchMoveMode2(int move);
-  extern void agvSetAllowIdle(int allowidle);
-  extern int  agvMoving();
-
-}
 
 }
 

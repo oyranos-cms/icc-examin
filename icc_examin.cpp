@@ -68,7 +68,6 @@ void
 ICCexamin::quit ()
 { DBG_PROG_START
   delete icc_betrachter;
-  agviewers.resize(0);
   profile.clear();
   DBG_PROG_ENDE
   exit(0);
@@ -894,6 +893,7 @@ ICCexamin::neuzeichnen (void* z)
 
     if(!icc_betrachter->menueintrag_inspekt->value()) {
       waehleTag(_item);
+      DBG_PROG_ENDE
       return;
     }
   } 
@@ -907,6 +907,7 @@ ICCexamin::neuzeichnen (void* z)
   { DBG_PROG
     icc_betrachter->inspekt_html->hide();
     waehleTag(_item);
+    DBG_PROG_ENDE
     return;
   }
 DBG_PROG

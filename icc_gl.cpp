@@ -105,7 +105,7 @@ int DrawAxes = 0;
 const double GL_Ansicht::std_vorder_schnitt = 4.2;
 
 GL_Ansicht::GL_Ansicht(int X,int Y,int W,int H)
-  : Fl_Gl_Window(X,Y,W,H)
+  : Fl_Gl_Window(X,Y,W,H), agv_(this)
 { DBG_PROG_START
   kanal = 0;
   schnitttiefe = 0.01;
@@ -221,6 +221,7 @@ GL_Ansicht::init(int init_id)
   //icc_examin->glAnsicht (this);
 
   // Initialisieren
+  menueInit_(); DBG_PROG
   menueAufruf (MENU_HELLGRAU); // Farbschema
   menueAufruf (MENU_GRAU);     // CLUT Farbschema
   if (id() == 1) menueAufruf (MENU_WUERFEL);
@@ -259,10 +260,10 @@ void
 GL_Ansicht::draw()
 {
   DBG_PROG_START
+  //gl_start();
 
   if(!valid() && visible()) {
     GLinit_();  DBG_PROG
-    menueInit_(); DBG_PROG
     erstelleGLListen_(); DBG_PROG_V( id() )
     agv_.agvSetAllowIdle (1);
     fensterForm();
@@ -278,9 +279,64 @@ GL_Ansicht::draw()
     }
   }
   zeichnen();
+
   DBG_PROG_V( agv_.redisplayWindow() )
+  //gl_finish();
+  DBG_PROG_ENDE
+}
+
+int
+GL_Ansicht::handle( int event )
+{
+  DBG_PROG_START
+  bool mausknopf = false;
+  switch(event)
+  {
+    case FL_PUSH:
+         agv_.agvHandleButton(Fl::event_state(),event, Fl::event_x(),Fl::event_y());
+         DBG_PROG_S( "FL_PUSH bei: " << Fl::event_x() << "," << Fl::event_y() )
+         mausknopf = true;
+         break;
+    case FL_RELEASE:
+         agv_.agvHandleButton(Fl::event_state(),event, Fl::event_x(),Fl::event_y());
+         DBG_PROG_S( "FL_RELEASE bei: " << Fl::event_x() << "," << Fl::event_y() )
+         mausknopf = true;
+         break;
+    case FL_DRAG:
+         DBG_PROG_S( "FL_DRAG bei: " << Fl::event_x() << "," << Fl::event_y() )
+         agv_.agvHandleMotion(Fl::event_x(), Fl::event_y());
+         mausknopf = true;
+         break;
+    case FL_KEYDOWN:
+         DBG_PROG_S( "FL_KEYDOWN bei: " << Fl::event_x() << "," << Fl::event_y() )
+         break;
+    case FL_KEYUP:
+         DBG_PROG_S( "FL_KEYUP bei: " << Fl::event_x() << "," << Fl::event_y() )
+         break;
+    case FL_MOVE:
+         DBG_PROG_S( "FL_MOVE bei: " << Fl::event_x() << "," << Fl::event_y() )
+         break;
+    case FL_MOUSEWHEEL:
+         DBG_PROG_S( "FL_MOUSEWHEEL" )
+         break;
+    default:
+         DBG_PROG_S( "default" )
+         DBG_PROG_ENDE
+         return Fl_Gl_Window::handle(event);
+  }
+  if(mausknopf)
+  {
+    switch(Fl::event_state()) {
+      case FL_BUTTON1: DBG_PROG_S("FL_BUTTON1") break;
+      case FL_BUTTON2: DBG_PROG_S("FL_BUTTON2") break;
+      case FL_BUTTON3: DBG_PROG_S("FL_BUTTON3") break;
+      default: DBG_PROG_S("unbekanner event_state()") break;
+    }
+    //redraw();
+  }
 
   DBG_PROG_ENDE
+  return 1;
 }
 
 void

@@ -1,6 +1,10 @@
 
+2005-03-31
+	* neu: agviewer ist nun glut frei
+	* neu: profile werden in einem eigenen Fenster angezeigt
+
 2005-03-12
-	* neu: automatische Bibliothekskonfiguration
+	* neu: automatische Bibliothekskonfiguration in configure.sh
 
 2005-02-07
 	* fix: osX nutzt andere Verbundobjekte als Linux in time.h

@@ -19,6 +19,7 @@
 #    include <GL/glu.h> // added for FLTK
 #  endif
 
+
 //#  include <stdio.h>
 //#  include <stdlib.h>
 //#  include <math.h>
@@ -30,6 +31,7 @@
 #  endif // !WIN32 && !__EMX__
 
 #  include "agviewer.h"
+#include "icc_gl.h"
 
 #include <cmath>
 #include <sstream>
@@ -151,6 +153,15 @@ Agviewer::ConstrainEl(void)
   * Idle Function - moves eyeposition
   */
 void
+Agviewer::agvMove_statisch(void* agv)
+{
+  Agviewer *obj = (Agviewer*)agv;
+  if (obj)
+    obj->agvMove_();
+  else
+    WARN_S( _("kein Agviewer übergeben; kann agvMove_ nicht ausführen") )
+}
+void
 Agviewer::agvMove_(void)
 { DBG_PROG_START
   //glutSetWindow(RedisplayWindow);
@@ -163,8 +174,10 @@ Agviewer::agvMove_(void)
       Ey += EyeMove*sin(TORAD(EyeEl));
       Ez -= EyeMove*cos(TORAD(EyeAz))*cos(TORAD(EyeEl));
       if(fabs(EyeDist+0.01) < fabs(EyeDist)) {
-        int button = GLUT_LEFT_BUTTON, state = GLUT_DOWN, x=0, y=0;
-        agvHandleButton_(button,state,x,y);;
+        int button = FL_BUTTON1/*GLUT_LEFT_BUTTON*/,
+            event = FL_PUSH/*GLUT_DOWN*/,
+            x=0, y=0;
+        agvHandleButton(button,event,x,y);;
       }
       break;
 
@@ -188,8 +201,12 @@ Agviewer::agvMove_(void)
     if (AllowIdle) {
       //glutSetWindow(RedisplayWindow); DBG_PROG_V( RedisplayWindow )
       //glutPostRedisplay();
+      parent->redraw();
+      DBG_PROG_S( "AllowIdle: " << AllowIdle )
     }
-  }
+  } else
+    WARN_S( _("GL Fenster nicht frei") )
+
   DBG_PROG_ENDE
 }
 
@@ -207,18 +224,18 @@ Agviewer::MoveOn(int v)
              (AzSpin != 0 || ElSpin != 0 || AdjustingAzEl))))
   {
     agvMoving = 1;
-    if (AllowIdle)
-      if (redisplayWindow() == 1) {
+    if (AllowIdle) {
         //glutIdleFunc(agv::agvMove1);
+        DBG_PROG_S( "idle: agvMove_statisch" )
+        Fl::add_idle(agvMove_statisch,this);
         agvMove_();
-      } else {
-        agvMove_();
-        //glutIdleFunc(agv::agvMove2);
-      }
+    }
   } else {
     agvMoving = 0;
-    if (AllowIdle)
-      ;//glutIdleFunc(NULL);
+    if (AllowIdle) {
+      Fl::remove_idle(agvMove_statisch,this);;//glutIdleFunc(NULL);
+      DBG_PROG_S( "idle: ---" )
+    }
   }
   DBG_PROG_ENDE
 }
@@ -342,6 +359,7 @@ Agviewer::agvSwitchMoveMode(int move)
   MoveMode = move;
   MoveOn(1);
   //glutPostRedisplay();
+  //parent->redraw();
   DBG_PROG_ENDE
 }
 
@@ -350,18 +368,19 @@ Agviewer::agvSwitchMoveMode(int move)
 /***************************************************************/
 
 void
-Agviewer::agvHandleButton_(int &button, int &state, int &x, int &y)
+Agviewer::agvHandleButton(int button, int event, int x, int y)
 { DBG_PROG_START
   //glutSetWindow(RedisplayWindow);
-  DBG_PROG_V( button <<" "<< state);
+  DBG_PROG_V( button <<" "<< event);
 
- if (state == GLUT_DOWN && downb == -1) {
+ if (event == FL_PUSH && downb == -1)
+ {
     lastx = downx = x;
     lasty = downy = y;
     downb = button;    
 
     switch (button) {
-      case GLUT_LEFT_BUTTON:
+      case FL_BUTTON1: //GLUT_LEFT_BUTTON:
         if (MoveMode == FLYING)
           EyeEl = -EyeEl;
         lastEl = downEl = EyeEl;
@@ -375,7 +394,7 @@ Agviewer::agvHandleButton_(int &button, int &state, int &x, int &y)
         MoveMode = POLAR;
         break;
 
-      case GLUT_MIDDLE_BUTTON:
+      case FL_BUTTON2: //GLUT_MIDDLE_BUTTON:
         downDist = EyeDist;
 	downEx = Ex;
 	downEy = Ey;
@@ -387,20 +406,19 @@ Agviewer::agvHandleButton_(int &button, int &state, int &x, int &y)
         break;
     }
 
-  } else if (state == GLUT_UP && button == downb) {
+  } else if (event == FL_RELEASE/*GLUT_UP*/ && /*button ==*/ downb) {
+    DBG_PROG
 
-    downb = -1;
-
-    switch (button) {
-      case GLUT_LEFT_BUTTON:
+    switch (downb) {
+      case FL_BUTTON1: //GLUT_LEFT_BUTTON:
         if (MoveMode != FLYING) {
-	  AzSpin =  -dAz;
-	  if (AzSpin < min_azspin && AzSpin > -min_azspin)
-	    AzSpin = 0;	
-	  ElSpin = -dEl;
-	  if (ElSpin < min_elspin && ElSpin > -min_elspin)
-	    ElSpin = 0; 
-	}
+          AzSpin =  -dAz;
+          if (AzSpin < min_azspin && AzSpin > -min_azspin)
+            AzSpin = 0;	
+          ElSpin = -dEl;
+          if (ElSpin < min_elspin && ElSpin > -min_elspin)
+            ElSpin = 0; 
+        }
         AdjustingAzEl = 0;
         MoveOn(1);
         if (MoveMode == FLYING) {
@@ -409,15 +427,22 @@ Agviewer::agvHandleButton_(int &button, int &state, int &x, int &y)
         }
         break;
 
-      case GLUT_MIDDLE_BUTTON:
-	EyeMove = downEyeMove;
+      case FL_BUTTON2: //GLUT_MIDDLE_BUTTON:
+        EyeMove = downEyeMove;
         if (MoveMode == FLYING) {
           icc_examin_ns::status_info(_("linke Maustaste -> zurück"));
           duenn = true;
         }
         break;
+      default:
+        WARN_S( _("nicht erkennbare Maustaste: ") << button )
       }
-  }
+
+    downb = -1;
+
+  } else
+    WARN_S( _("keine Anweisung erkennbar") )
+
   DBG_PROG_ENDE
 }
 
@@ -425,13 +450,14 @@ Agviewer::agvHandleButton_(int &button, int &state, int &x, int &y)
   * change EyeEl and EyeAz and position when mouse is moved w/ button down
   */
 void
-Agviewer::agvHandleMotion_(int &x, int &y)
+Agviewer::agvHandleMotion(int x, int y)
 { DBG_PROG_START
   //glutSetWindow(RedisplayWindow);
   int deltax = x - downx, deltay = y - downy;
 
   switch (downb) {
-    case GLUT_LEFT_BUTTON:
+    case FL_BUTTON1: //GLUT_LEFT_BUTTON:
+      DBG_PROG_S( "FL_BUTTON1" )
       EyeEl  = downEl + el_sens * deltay;
       ConstrainEl();
       EyeAz  = downAz + az_sens * deltax;
@@ -440,14 +466,16 @@ Agviewer::agvHandleMotion_(int &x, int &y)
       lastAz = EyeAz;
       lastEl = EyeEl;
       break;
-    case GLUT_MIDDLE_BUTTON:
-        EyeDist = downDist + dist_sens*deltay;
-        Ex = downEx - e_sens*deltay*sin(TORAD(EyeAz))*cos(TORAD(EyeEl));
-        Ey = downEy - e_sens*deltay*sin(TORAD(EyeEl));
-        Ez = downEz + e_sens*deltay*cos(TORAD(EyeAz))*cos(TORAD(EyeEl));
+    case FL_BUTTON2: //GLUT_MIDDLE_BUTTON:
+      DBG_PROG_S( "FL_BUTTON2" )
+      EyeDist = downDist + dist_sens*deltay;
+      Ex = downEx - e_sens*deltay*sin(TORAD(EyeAz))*cos(TORAD(EyeEl));
+      Ey = downEy - e_sens*deltay*sin(TORAD(EyeEl));
+      Ez = downEz + e_sens*deltay*cos(TORAD(EyeAz))*cos(TORAD(EyeEl));
       break;
   }
   //glutPostRedisplay();
+  parent->redraw();
   DBG_PROG_ENDE
 }
 

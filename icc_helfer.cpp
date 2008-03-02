@@ -856,7 +856,7 @@ saveMemToFile (char* filename, char *block, int size)
 
 double
 holeDateiModifikationsZeit (const char* fullFileName)
-{ DBG_PROG_START
+{ DBG_MEM_START
   struct stat status;
   int r = 0;
   const char* name = fullFileName;
@@ -875,13 +875,13 @@ holeDateiModifikationsZeit (const char* fullFileName)
     m_zeit += status.st_mtimespec.tv_nsec/1000000. ;
     #else
     m_zeit = status.st_mtim.tv_sec ;
-    DBG_PROG_V( status.st_mtim.tv_sec )
+    DBG_MEM_V( status.st_mtim.tv_sec )
     m_zeit += status.st_mtim.tv_nsec/1000000. ;
-    DBG_PROG_V( status.st_mtim.tv_nsec )
+    DBG_MEM_V( status.st_mtim.tv_nsec )
     #endif
   }
 
-  DBG_PROG_ENDE
+  DBG_MEM_ENDE
   return m_zeit;
 }
 
