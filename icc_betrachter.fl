@@ -188,65 +188,6 @@ class TagTexts {: {public Fl_Hold_Browser}
   }
 } 
 
-class TagDrawings {: {public Fl_Widget}
-} {
-  decl {int X, Y, W, H;} {}
-  decl {int wiederholen, id;} {public
-  }
-  Function {TagDrawings(int X,int Y,int W,int H) : Fl_Widget(X,Y,W,H), X(X), Y(Y), W(W), H(H)} {open
-  } {}
-  Function {draw()} {open
-  } {
-    code DBG_PROG_START {}
-    code {// Kurven oder Punkte malen
-  if (icc_examin->laeuft())
-  {
-
-    DBG_PROG_S( icc_examin->kurven[id].size() <<" "<< icc_examin->punkte[id].size() )
-
-    //DBG_PROG_V( wiederholen )
-
-    if (icc_examin->kurven[id].size())
-    { DBG_PROG
-      wiederholen = false;
-      drawKurve (id, x(),y(),w(),h());
-    } else if (icc_examin->punkte[id].size()) {
-      if (wiederholen)
-      { drawCieShoe(id, x(),y(),w(),h(),false);
-        Fl::add_timeout( 1.2, (void(*)(void*))dHaendler ,(void*)this);
-      } else {
-        drawCieShoe(id, x(),y(),w(),h(),true);
-      }
-      wiederholen = true;
-    }
-  } else
-    WARN_S( __func__ << " zu früh benutzt!" )} {}
-    code DBG_PROG_ENDE {}
-  }
-  Function {hineinPunkt(std::vector<double> &vect, std::vector<std::string> &txt)} {} {
-    code DBG_PROG_START {}
-    code {//CIExyY aus tag_browser anzeigen
-
-  wiederholen = false;} {}
-    code DBG_PROG_ENDE {}
-  }
-  Function {hineinKurven(std::vector<std::vector<double> > &vect, std::vector<std::string> &txt)} {} {
-    code DBG_PROG_START {}
-    code {//Kurve aus tag_browser anzeigen
-
-  wiederholen = false;
-
-  DBG_PROG} {}
-    code DBG_PROG_ENDE {}
-  }
-  Function {ruhigNeuzeichnen(void)} {open return_type void
-  } {
-    code DBG_PROG_START {}
-    code {drawCieShoe(id, x(),y(),w(),h(),true);} {}
-    code DBG_PROG_ENDE {}
-  }
-} 
-
 decl {\#include <FL/fl_draw.H>} {} 
 
 class MftChoice {: {public Fl_Choice}
@@ -432,7 +373,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window vcgt {
       label {Grafikkarten Gamma Tabellen}
-      xywh {673 419 370 390} type Double resizable
+      xywh {678 440 370 390} type Double resizable
       code0 {o->hide();} non_modal visible
     } {
       Fl_Group {} {open
@@ -467,12 +408,12 @@ class ICCfltkBetrachter {open
     }
     Fl_Window details {
       label {ICC Details} open
-      xywh {872 403 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
+      xywh {877 424 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
     } {
       Fl_Group {} {open
         xywh {0 0 385 520}
       } {
-        Fl_Menu_Bar {} {open selected
+        Fl_Menu_Bar {} {open
           xywh {0 0 385 25} align 20 when 3
         } {
           submenu {} {
@@ -573,8 +514,8 @@ class ICCfltkBetrachter {open
             menuitem menueintrag_vcgt {
               label {Grafikkarten Gamma}
               callback {vcgt->show();
-icc_examin->vcgtZeigen();}
-              xywh {15 15 100 20} shortcut 0x40067
+icc_examin->vcgtZeigen();} selected
+              xywh {15 15 100 20} shortcut 0x40074
               code0 {o->hide();}
             }
           }

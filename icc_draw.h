@@ -31,11 +31,53 @@
 #define ICC_DRAW_H
 
 #include <vector>
+#include <FL/Fl.H>
+#include <lcms.h>
 
-void drawKurve    (int id, int X, int Y, int W, int H);
+class TagDrawings : public Fl_Widget {
+  int  X, Y, W, H;
+public:
+  int  wiederholen,
+       id;
+  TagDrawings       ( int X,int Y,int W,int H) ;
+  void draw         ( );
+  // der Vektor vect enthält fortlaufende XYZ Daten, txt den passenden Text
+  void hineinPunkt  ( std::vector<double> &vect,
+                      std::vector<std::string> &txt);
+  // vect enthält Kurven mit 2 Koordinaten, txt den passenden Text dazu
+  void hineinKurven ( std::vector<std::vector<double> > &vect,
+                      std::vector<std::string> &txt);
+  void ruhigNeuzeichnen (void);
 
-void drawCieShoe (int id, int X, int Y, int W, int H,
-                    int  repeated);
+private:
+  void drawKurve_   ( int id, int X, int Y, int W, int H);
+
+  void drawCieShoe_ ( int id, int X, int Y, int W, int H,
+                      int  repeated);
+  // Zeichenbereich
+  float breite,hoehe, xO, yO;
+  // Zeichenbereichvariablen
+  int tab_border_x;
+  int tab_border_y;
+  // Diagrammvariablen
+  float n;
+
+  int raster;
+  int init_s;
+  // lcms Typen
+  cmsHPROFILE hXYZ;
+  cmsHPROFILE hsRGB;
+  cmsHTRANSFORM xform;
+  double rechenzeit;
+  unsigned char* RGB_speicher;
+  cmsCIEXYZ* XYZ_speicher;
+  int n_speicher;
+
+  void init_shoe();
+};
+
+
+
 
 #endif //ICC_DRAW_H
 

@@ -1,4 +1,10 @@
 
+2005-02-08
+	* neu: Zeichenfunktionen in TagDrawings Klasse verbannt
+
+2005-02-05
+	* neu: vrml Parser
+
 2005-02-02
 	* neu: benutzt Monitorprofil zur Anzeige; exportiert html-Farben als sRGB
 	* neu: Monitorprofil in icc_draw und icc_gl

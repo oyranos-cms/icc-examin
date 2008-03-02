@@ -49,13 +49,10 @@
 #include "icc_draw_fltk.h"
 #endif
 
-// Zeichenbereich
-float w,h, xO, yO;
-// Zeichenbereichvariablen
-int tab_border_x=30;
-int tab_border_y=30;
-// Diagrammvariablen
-float n = 1.0;
+#include "icc_draw.h"
+
+// interne Funktionen
+void dHaendler(void* o);
 
 
 #ifdef DEBUG_DRAW
@@ -67,19 +64,89 @@ float n = 1.0;
 #endif
 
 
-int raster = 4;
-int init_s = FALSE;
-// lcms Typen
-cmsHPROFILE hXYZ;
-cmsHPROFILE hsRGB;
-cmsHTRANSFORM xform;
-double rechenzeit = 0.1;
-static unsigned char* RGB_speicher = 0;
-static cmsCIEXYZ* XYZ_speicher = 0;
-static int n_speicher = 0;
+TagDrawings::TagDrawings (int X,int Y,int W,int H)
+  : Fl_Widget(X,Y,W,H), X(X), Y(Y), W(W), H(H)
+{
+  // Zeichenbereichvariablen
+  tab_border_x=30;
+  tab_border_y=30;
+  // Diagrammvariablen
+  n = 1.0;
+
+  raster = 4;
+  init_s = FALSE;
+  rechenzeit = 0.1;
+  RGB_speicher = 0;
+  XYZ_speicher = 0;
+  n_speicher = 0;
+
+}
 
 void
-init_shoe() {
+TagDrawings::draw ()
+{
+  DBG_PROG_START
+  // Kurven oder Punkte malen
+  if (icc_examin->laeuft())
+  {
+  
+    DBG_PROG_S( icc_examin->kurven[id].size() <<" "<< icc_examin->punkte[id].size() )
+    
+    //DBG_PROG_V( wiederholen )
+
+    if (icc_examin->kurven[id].size())
+    { DBG_PROG
+      wiederholen = false;
+      drawKurve_ (id, x(),y(),w(),h());
+    } else if (icc_examin->punkte[id].size()) {
+      if (wiederholen)
+      { drawCieShoe_ (id, x(),y(),w(),h(),false);
+        Fl::add_timeout( 1.2, (void(*)(void*))dHaendler ,(void*)this);
+      } else {
+        drawCieShoe_ (id, x(),y(),w(),h(),true);
+      }
+      wiederholen = true; 
+    }
+  } else
+    WARN_S( __func__ << " zu früh benutzt!" )
+  DBG_PROG_ENDE
+}
+
+void
+TagDrawings::hineinPunkt ( std::vector<double> &vect,
+                           std::vector<std::string> &txt)
+{
+  DBG_PROG_START
+  //CIExyY aus tag_browser anzeigen
+
+  wiederholen = false;
+  DBG_PROG_ENDE
+}
+
+void
+TagDrawings::hineinKurven ( std::vector<std::vector<double> > &vect,
+                            std::vector<std::string> &txt)
+{
+  DBG_PROG_START
+  //Kurve aus tag_browser anzeigen
+
+  wiederholen = false;
+
+  DBG_PROG_ENDE
+}
+
+void
+TagDrawings::ruhigNeuzeichnen (void)
+{
+  DBG_PROG_START
+  drawCieShoe_ (id, x(),y(),w(),h(),true);
+  DBG_PROG_ENDE
+}
+
+
+
+void
+TagDrawings::init_shoe() {
   // Initialisierung für lcms
   hXYZ  = cmsCreateXYZProfile();
 
@@ -98,8 +165,8 @@ init_shoe() {
 }
 
 void
-drawCieShoe (int id, int X, int Y, int W, int H,
-                    int  repeated)
+TagDrawings::drawCieShoe_ (int id, int X, int Y, int W, int H,
+                           int repeated)
 { DBG_prog_start
   if (!init_s)
     init_shoe();
@@ -116,17 +183,17 @@ drawCieShoe (int id, int X, int Y, int W, int H,
 
   xO = X + tab_border_x + 10;     // Ursprung
   yO = Y + H - tab_border_y - 10; // Ursprung
-  w  = (W - 2*tab_border_x);      // Breite des Diagrammes
-  h  = (H - 2*tab_border_y);      // Hoehe des Diagrammes
+  breite  = (W - 2*tab_border_x);      // Breite des Diagrammes
+  hoehe   = (H - 2*tab_border_y);      // Hoehe des Diagrammes
 
   // dargestellter Ausschnitt 
   n = .85;
 
-  #define x(val) (int)(((double)xO + (double)(val)*w/n)+0.5)
-  #define y(val) (int)(((double)yO - (double)(val)*h/n)+0.5)
-  #define x2cie(val) (((val)-xO)/w)
-  #define y2cie(val) ((yO-(val))/h)
-  fl_push_clip( X,y(n), x(n),(int)(h+tab_border_y+0.5) );
+  #define x(val) (int)(((double)xO + (double)(val)*breite/n)+0.5)
+  #define y(val) (int)(((double)yO - (double)(val)*hoehe/n)+0.5)
+  #define x2cie(val) (((val)-xO)/breite)
+  #define y2cie(val) ((yO-(val))/hoehe)
+  fl_push_clip( X,y(n), x(n),(int)(hoehe+tab_border_y+0.5) );
 
   // Spektrumvariablen
   int nano_min = 63; // 420 nm
@@ -393,7 +460,8 @@ drawCieShoe (int id, int X, int Y, int W, int H,
   DBG_prog_ende
 }
 
-void drawKurve    (int id, int X, int Y, int W, int H)
+void
+TagDrawings::drawKurve_    (int id, int X, int Y, int W, int H)
 { DBG_prog_start
   // Zeichenflaeche
   fl_color(BG);
@@ -404,10 +472,10 @@ void drawKurve    (int id, int X, int Y, int W, int H)
 
   xO = X + tab_border_x + 10;     // Ursprung
   yO = Y + H - tab_border_y - 10; // Ursprung
-  w  = (W - 2*tab_border_x);      // Breite des Diagrammes
-  h  = (H - 2*tab_border_y);      // Hoehe des Diagrammes
+  breite  = (W - 2*tab_border_x);      // Breite des Diagrammes
+  hoehe   = (H - 2*tab_border_y);      // Hoehe des Diagrammes
 
-  fl_push_clip( X,y(n), x(n),(int)(h+tab_border_y+0.5) );
+  fl_push_clip( X,y(n), x(n),(int)(hoehe+tab_border_y+0.5) );
 
   // Tangente
   fl_color(DIAG);
@@ -715,6 +783,26 @@ double DMAX1(double x, double y, double z) {
     if(y>max) max=y;
     if(z>max) max=z;
     return max;
+}
+
+void
+dHaendler(void* o)
+{
+  DBG_PROG_START
+  Fl::remove_timeout( (void(*)(void*))dHaendler, 0 );
+
+  if (!Fl::has_timeout( (void(*)(void*))dHaendler, 0 )
+   && ((TagDrawings*)o)->active()
+   && ((TagDrawings*)o)->visible_r()
+   && ((TagDrawings*)o)->wiederholen)
+  {
+    ((TagDrawings*)o)->ruhigNeuzeichnen();
+
+    #ifdef DEBUG
+    DBG_PROG_V( ((TagDrawings*)o)->wiederholen )
+    #endif
+  }
+  DBG_PROG_ENDE
 }
 
 #endif

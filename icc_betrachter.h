@@ -44,17 +44,6 @@ public:
   void hinein(std::string text);
 };
 
-class TagDrawings : public Fl_Widget {
-  int X, Y, W, H;
-public:
-  int wiederholen, id;
-  TagDrawings(int X,int Y,int W,int H) ;
-  void draw();
-  void hineinPunkt(std::vector<double> &vect, std::vector<std::string> &txt);
-  void hineinKurven(std::vector<std::vector<double> > &vect, std::vector<std::string> &txt);
-  void ruhigNeuzeichnen(void);
-};
-
 class MftChoice : public Fl_Choice {
   int X; int Y; int W; int H; char* start_info; char typ[5];
 public:

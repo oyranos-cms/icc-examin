@@ -122,61 +122,6 @@ void TagTexts::hinein(std::string text) {
       this->textsize(14);
   DBG_PROG_ENDE
 }
-
-TagDrawings::TagDrawings(int X,int Y,int W,int H) : Fl_Widget(X,Y,W,H), X(X), Y(Y), W(W), H(H) {
-}
-
-void TagDrawings::draw() {
-  DBG_PROG_START
-  // Kurven oder Punkte malen
-  if (icc_examin->laeuft())
-  {
-
-    DBG_PROG_S( icc_examin->kurven[id].size() <<" "<< icc_examin->punkte[id].size() )
-
-    //DBG_PROG_V( wiederholen )
-
-    if (icc_examin->kurven[id].size())
-    { DBG_PROG
-      wiederholen = false;
-      drawKurve (id, x(),y(),w(),h());
-    } else if (icc_examin->punkte[id].size()) {
-      if (wiederholen)
-      { drawCieShoe(id, x(),y(),w(),h(),false);
-        Fl::add_timeout( 1.2, (void(*)(void*))dHaendler ,(void*)this);
-      } else {
-        drawCieShoe(id, x(),y(),w(),h(),true);
-      }
-      wiederholen = true;
-    }
-  } else
-    WARN_S( __func__ << " zu früh benutzt!" )
-  DBG_PROG_ENDE
-}
-
-void TagDrawings::hineinPunkt(std::vector<double> &vect, std::vector<std::string> &txt) {
-  DBG_PROG_START
-  //CIExyY aus tag_browser anzeigen
-
-  wiederholen = false;
-  DBG_PROG_ENDE
-}
-
-void TagDrawings::hineinKurven(std::vector<std::vector<double> > &vect, std::vector<std::string> &txt) {
-  DBG_PROG_START
-  //Kurve aus tag_browser anzeigen
-
-  wiederholen = false;
-
-  DBG_PROG
-  DBG_PROG_ENDE
-}
-
-void TagDrawings::ruhigNeuzeichnen(void) {
-  DBG_PROG_START
-  drawCieShoe(id, x(),y(),w(),h(),true);
-  DBG_PROG_ENDE
-}
 #include <FL/fl_draw.H>
 
 MftChoice::MftChoice(int X,int Y,int W,int H,char* start_info) : Fl_Choice(X,Y,W,H,start_info), X(X), Y(Y), W(W), H(H) {
@@ -407,7 +352,7 @@ Fl_Menu_Item ICCfltkBetrachter::menu_[] = {
  {"Pr\374""fansicht", 0x40062,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_inspekt, 0, 3, 0, 0, 14, 56},
  {"3D Ansicht", 0x40068,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_3D, 0, 130, 0, 0, 14, 56},
  {"CGATS Ansicht", 0x40067,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_zeigcgats, 0, 1, 0, 0, 14, 56},
- {"Grafikkarten Gamma", 0x40067,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_vcgt, 0, 0, 0, 0, 14, 56},
+ {"Grafikkarten Gamma", 0x40074,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_vcgt, 0, 0, 0, 0, 14, 56},
  {0},
  {"Hilfe", 0,  0, 0, 64, 0, 0, 14, 56},
  {"\334""ber", 0,  (Fl_Callback*)ICCfltkBetrachter::cb_ber, 0, 0, 0, 0, 14, 56},
