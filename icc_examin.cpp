@@ -56,7 +56,6 @@ ICCexamin::ICCexamin ()
   icc_betrachter = new ICCfltkBetrachter;
   _item = -1;
   _mft_item = -1;
-  histogram_angezeigt_ = 0;
   histogram_modus_ = false;
   statlabel = "";
   status_ = false;
@@ -195,7 +194,7 @@ ICCexamin::nachricht( Modell* modell , int info )
           icc_betrachter->DD_histogram->flush();
         if(icc_betrachter->menueintrag_inspekt->active())
           setzMesswerte();
-        else if(icc_betrachter->tag_browser->parent()->visible())
+        else if(icc_betrachter->examin->visible())
           waehleTag(_item);
       }
     }
@@ -320,6 +319,7 @@ ICCexamin::neuzeichnen (void* z)
 
   DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->DD_histogram)->visible())
   DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->inspekt_html)->visible())
+  DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->examin)->visible() )
   DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->tag_browser)->visible() )
   DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->tag_text)->visible() )
   DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->tag_viewer)->visible() )
@@ -328,50 +328,67 @@ ICCexamin::neuzeichnen (void* z)
   DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->mft_gl)->visible() )
   DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->mft_viewer)->visible() )
 
-  DBG_PROG_V(histogram_angezeigt_ << icc_betrachter->menueintrag_3D->value() )
-  if (icc_betrachter->menueintrag_3D->value() && !histogram_angezeigt_)
-  { DBG_PROG_S( "3D Histogramm zeigen" )
+  DBG_PROG_V( icc_betrachter->widget_oben )
+  enum { DD_ZEIGEN, INSPEKT_ZEIGEN, TAG_ZEIGEN };
+  int oben;
+  if (icc_betrachter->menueintrag_3D->value() &&
+      icc_betrachter->widget_oben == ICCfltkBetrachter::WID_3D )
+    oben = DD_ZEIGEN;
+  else if (icc_betrachter->menueintrag_inspekt->value() &&
+             icc_betrachter->widget_oben == ICCfltkBetrachter::WID_INSPEKT)
+    oben = INSPEKT_ZEIGEN;
+  else
+    oben = TAG_ZEIGEN;
+  DBG_PROG_V( oben )
+
+  bool waehle_tag = false;
+  if( oben == TAG_ZEIGEN &&
+      (icc_betrachter->DD_histogram->visible()
+    || icc_betrachter->inspekt_html->visible()) )
+    waehle_tag = true;
+
+  if(oben == DD_ZEIGEN) {
     if(!icc_betrachter->DD_histogram->visible()) {
+      DBG_PROG_S( "3D Histogramm zeigen" )
       icc_betrachter->DD_histogram->show();
       icc_waehler_->show();
+      icc_betrachter->examin->hide();
     }
-
-    //icc_betrachter->DD_histogram->show();
-    histogram_angezeigt_ = true;
-  } else if (histogram_angezeigt_ && !icc_betrachter->menueintrag_3D->value()) {
-    DBG_PROG_S( "3D hist ausschalten" )
+  } else {
+    DBG_PROG_S( "3D hist verstecken" )
     icc_betrachter->DD_histogram->hide();
     icc_waehler_->iconize();
-    WARN_S( "icc_waehler_->iconize();" )
-    histogram_angezeigt_ = false;
+  }
 
-    if(!icc_betrachter->menueintrag_inspekt->value()) {
-      waehleTag(_item);
-      DBG_PROG_ENDE
-      return;
+  if(oben == INSPEKT_ZEIGEN) {
+    if(!icc_betrachter->inspekt_html->visible()) {
+      icc_betrachter->inspekt_html->show();
+      DBG_PROG_S( "inspekt_html zeigen" )
     }
+  } else {
+    icc_betrachter->inspekt_html->hide();
+    DBG_PROG_S( "inspekt_html verstecken" )
   }
 
-  if (icc_betrachter->menueintrag_inspekt->value() &&
-      !icc_betrachter->inspekt_html->visible())
-  { DBG_PROG
-    icc_betrachter->inspekt_html->show();
-  } else if (!icc_betrachter->menueintrag_inspekt->value() &&
-             icc_betrachter->inspekt_html->visible())
-  { DBG_PROG
-    icc_betrachter->inspekt_html->hide();
-    waehleTag(_item);
-    DBG_PROG_ENDE
-    return;
-  }
-DBG_PROG
-  if(icc_betrachter->menueintrag_inspekt->value() ||
-     icc_betrachter->menueintrag_3D->value()) {
-    icc_betrachter->tag_browser->hide(); DBG_PROG
+  if(oben == TAG_ZEIGEN) {
+    if(!icc_betrachter->examin->visible()) {
+      DBG_PROG_S( "examin zeigen" )
+      icc_betrachter->examin->show();
+    }
+    icc_betrachter->tag_browser->show();
+    icc_betrachter->ansichtsgruppe->show();
+    icc_betrachter->tag_text->show();
   } else {
-    icc_betrachter->tag_browser->show(); DBG_PROG
+    icc_betrachter->examin->hide();
+    icc_betrachter->tag_browser->hide();
+    icc_betrachter->ansichtsgruppe->hide();
+    icc_betrachter->tag_text->hide();
+    DBG_PROG_S( "examin verstecken" )
   }
-DBG_PROG
+
+  if(waehle_tag)
+    waehleTag(_item);
+
   if (wid == icc_betrachter->tag_viewer ||
       wid == icc_betrachter->mft_viewer) {
     wid->clear_visible(); DBG_PROG_V( item << _item )
@@ -406,7 +423,9 @@ DBG_PROG
 
   DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->DD_histogram)->visible())
   DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->inspekt_html)->visible())
+  DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->examin)->visible() )
   DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->tag_browser)->visible() )
+  DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->ansichtsgruppe)->visible() )
   DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->tag_text)->visible() )
   DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->tag_viewer)->visible() )
   DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->mft_choice)->visible() )

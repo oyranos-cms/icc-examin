@@ -1,5 +1,5 @@
 # data file for the Fltk User Interface Designer (fluid)
-version 1.0104 
+version 1.0106 
 header_name {.h} 
 code_name {.cxx}
 decl {\#include <cassert>} {public
@@ -61,7 +61,7 @@ decl {\#include "icc_gl.h"} {}
 
 decl {using namespace icc_examin_ns;} {} 
 
-Function {iccReadInfo(char* filename)} {selected return_type {char*}
+Function {iccReadInfo(char* filename)} {return_type {char*}
 } {
   code DBG_PROG_START {}
   code {char systemBefehl[1024];
@@ -261,13 +261,16 @@ class MftChoice {: {public Fl_Choice}
   }
 } 
 
-class ICCfltkBetrachter {} {
+class ICCfltkBetrachter {open
+} {
   decl {bool setTitleUrl;
 
  int px,py,pw,ph;
  int fullscreen;
   
- int tag_nummer;} {public
+ int tag_nummer;
+  
+ enum{ WID_3D, WID_INSPEKT }; int widget_oben;} {public
   }
   Function {init()} {open
   } {
@@ -370,7 +373,7 @@ class ICCfltkBetrachter {} {
     }
     Fl_Window vcgt {
       label {Grafikkarten Gamma Tabellen}
-      xywh {673 -587 370 390} type Double resizable
+      xywh {683 62 370 390} type Double resizable
       code0 {o->hide();} non_modal visible
     } {
       Fl_Group {} {open
@@ -405,9 +408,9 @@ class ICCfltkBetrachter {} {
     }
     Fl_Window details {
       label {ICC Details} open
-      xywh {501 -918 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
+      xywh {613 120 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
     } {
-      Fl_Group {} {open
+      Fl_Group {} {open selected
         xywh {0 0 385 520}
       } {
         Fl_Menu_Bar {} {open
@@ -478,6 +481,7 @@ class ICCfltkBetrachter {} {
 
   if (m->value())
   { bool export_html = false;
+    widget_oben = WID_INSPEKT;
     inspekt_html->value(profile.profil()->report(export_html).c_str());
     inspekt_html->topline(tag_text->inspekt_topline);
   } else {
@@ -493,6 +497,7 @@ class ICCfltkBetrachter {} {
 
   DBG_PROG_S (m->value())
   if (m->value()) {
+    widget_oben = WID_3D;
     //icc_examin->histogram();
   }
   icc_examin->neuzeichnen(icc_examin->icc_betrachter->DD_histogram);}
@@ -534,14 +539,19 @@ ueber_html->value(getUeberHtml().c_str());}
             }
           }
         }
+        Fl_Box DD_histogram {
+          xywh {0 25 385 470}
+          code0 {o->hide();}
+          class GL_Ansicht
+        }
+        Fl_Help_View inspekt_html {
+          label Inspect
+          xywh {0 25 385 470} align 16
+          code0 {o->hide();}
+        }
         Fl_Tile examin {open
           xywh {0 25 385 470} resizable
         } {
-          Fl_Help_View inspekt_html {
-            label Inspect
-            xywh {0 25 385 470} align 16
-            code0 {o->hide();}
-          }
           Fl_Browser tag_browser {
             label {Bitte wählen Sie ein Profilmerkmal aus}
             callback {o->selectItem( o->value() );}
@@ -593,13 +603,8 @@ ueber_html->value(getUeberHtml().c_str());}
               class TagTexts
             }
           }
-          Fl_Box DD_histogram {
-            xywh {0 25 385 470}
-            code0 {o->hide();}
-            class GL_Ansicht
-          }
         }
-        Fl_Group {} {open
+        Fl_Group {} {
           xywh {0 495 385 25}
         } {
           Fl_Box box_stat {

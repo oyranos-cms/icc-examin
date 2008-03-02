@@ -285,6 +285,7 @@ inline void ICCfltkBetrachter::cb_menueintrag_inspekt_i(Fl_Menu_* o, void*) {
 
   if (m->value())
   { bool export_html = false;
+    widget_oben = WID_INSPEKT;
     inspekt_html->value(profile.profil()->report(export_html).c_str());
     inspekt_html->topline(tag_text->inspekt_topline);
   } else {
@@ -302,6 +303,7 @@ inline void ICCfltkBetrachter::cb_menueintrag_3D_i(Fl_Menu_* o, void*) {
 
   DBG_PROG_S (m->value())
   if (m->value()) {
+    widget_oben = WID_3D;
     //icc_examin->histogram();
   }
   icc_examin->neuzeichnen(icc_examin->icc_betrachter->DD_histogram);
@@ -541,11 +543,23 @@ Fl_Double_Window* ICCfltkBetrachter::init() {
         }
         o->menu(menu_);
       }
+      { GL_Ansicht* o = DD_histogram = new GL_Ansicht(0, 25, 385, 470);
+        o->box(FL_NO_BOX);
+        o->color(FL_BACKGROUND_COLOR);
+        o->selection_color(FL_BACKGROUND_COLOR);
+        o->labeltype(FL_NORMAL_LABEL);
+        o->labelfont(0);
+        o->labelsize(14);
+        o->labelcolor(FL_BLACK);
+        o->align(FL_ALIGN_CENTER);
+        o->when(FL_WHEN_RELEASE);
+        o->hide();
+      }
+      { Fl_Help_View* o = inspekt_html = new Fl_Help_View(0, 25, 385, 470, "Inspect");
+        o->align(FL_ALIGN_CENTER|FL_ALIGN_INSIDE);
+        o->hide();
+      }
       { Fl_Tile* o = examin = new Fl_Tile(0, 25, 385, 470);
-        { Fl_Help_View* o = inspekt_html = new Fl_Help_View(0, 25, 385, 470, "Inspect");
-          o->align(FL_ALIGN_CENTER|FL_ALIGN_INSIDE);
-          o->hide();
-        }
         { TagBrowser* o = tag_browser = new TagBrowser(0, 25, 385, 135, "Bitte w\344hlen Sie ein Profilmerkmal aus");
           o->box(FL_NO_BOX);
           o->color(FL_BACKGROUND_COLOR);
@@ -643,18 +657,6 @@ Fl_Double_Window* ICCfltkBetrachter::init() {
             o->show();
           }
           o->end();
-        }
-        { GL_Ansicht* o = DD_histogram = new GL_Ansicht(0, 25, 385, 470);
-          o->box(FL_NO_BOX);
-          o->color(FL_BACKGROUND_COLOR);
-          o->selection_color(FL_BACKGROUND_COLOR);
-          o->labeltype(FL_NORMAL_LABEL);
-          o->labelfont(0);
-          o->labelsize(14);
-          o->labelcolor(FL_BLACK);
-          o->align(FL_ALIGN_CENTER);
-          o->when(FL_WHEN_RELEASE);
-          o->hide();
         }
         o->end();
         Fl_Group::current()->resizable(o);

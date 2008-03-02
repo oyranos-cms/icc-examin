@@ -68,6 +68,8 @@ public:
  int fullscreen;
   
  int tag_nummer;
+  
+ enum{ WID_3D, WID_INSPEKT }; int widget_oben;
   Fl_Double_Window* init();
   Fl_Double_Window *ueber;
   Fl_Help_View *ueber_html;
@@ -138,8 +140,9 @@ private:
   inline void cb_ber_i(Fl_Menu_*, void*);
   static void cb_ber(Fl_Menu_*, void*);
 public:
-  Fl_Tile *examin;
+  GL_Ansicht *DD_histogram;
   Fl_Help_View *inspekt_html;
+  Fl_Tile *examin;
   TagBrowser *tag_browser;
 private:
   inline void cb_tag_browser_i(TagBrowser*, void*);
@@ -157,7 +160,6 @@ public:
   GL_Ansicht *mft_gl;
   TagDrawings *tag_viewer;
   TagTexts *tag_text;
-  GL_Ansicht *DD_histogram;
   Fl_Box *box_stat;
   Fl_Progress *load_progress;
   void run();
