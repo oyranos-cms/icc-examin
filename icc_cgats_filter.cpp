@@ -41,11 +41,18 @@
 /*
    ChangeLog
 
+2005-01-25
+	* und: insert umstellen
+	* neu: KEYWORD in Schlüsselwortliste aufnehmen
 2005-01-24
 	* <- 10:30
 	* Telefon Ulm 11:30 - 12:30
 	* neu: Klasse <- 12:30
 	* -> 14:00
+	* und: Funktionalität wiederherstellen <- 19:00
+	* neu: zeilenOhneDuplikate_
+	* und: Umschreiben zu Liste von Schlüsselworten
+	* und: vector/string Studium -> 22:00
 2005-01-23
 	* neu: CB Anpassungen <- 8:00
 	* neu: Schlüsselworte suchen <- 9:30
@@ -88,6 +95,57 @@
 #include <fstream>
 #include <sstream>
 
+void
+CgatsFilter::standard_schluesselwoerter_anlegen_ ()
+{ DBG_PROG_START
+  {
+    ss_woerter_.push_back( "SAMPLE_ID" );
+    ss_woerter_.push_back( "SAMPLE_NAME" );
+    ss_woerter_.push_back( "CMYK_C" );
+    ss_woerter_.push_back( "CMYK_M" );
+    ss_woerter_.push_back( "CMYK_Y" );
+    ss_woerter_.push_back( "CMYK_K" );
+    ss_woerter_.push_back( "RGB_R" );
+    ss_woerter_.push_back( "RGB_G" );
+    ss_woerter_.push_back( "RGB_B" );
+    ss_woerter_.push_back( "XYZ_X" );
+    ss_woerter_.push_back( "XYZ_Y" );
+    ss_woerter_.push_back( "XYZ_Z" );
+    ss_woerter_.push_back( "XYY_X" );
+    ss_woerter_.push_back( "XYY_Y" );
+    ss_woerter_.push_back( "XYY_CAPY" );
+    ss_woerter_.push_back( "LAB_L" );
+    ss_woerter_.push_back( "LAB_A" );
+    ss_woerter_.push_back( "LAB_B" );
+    ss_woerter_.push_back( "D_RED" );
+    ss_woerter_.push_back( "D_GREEN" );
+    ss_woerter_.push_back( "D_BLUE" );
+    ss_woerter_.push_back( "D_VIS" );
+    ss_woerter_.push_back( "D_MAJOR_FILTER" );
+    ss_woerter_.push_back( "SPECTRAL_PCT" );
+    ss_woerter_.push_back( "SPECTRAL_DEC" );
+    ss_woerter_.push_back( "SPECTRAL_" );
+    ss_woerter_.push_back( "nm" );  // nicht standard
+    ss_woerter_.push_back( "SPECTRUM_" ); // nicht standard
+    ss_woerter_.push_back( "R_" ); // nicht standard
+    ss_woerter_.push_back( "LAB_C" );
+    ss_woerter_.push_back( "LAB_H" );
+    ss_woerter_.push_back( "LAB_DE" );
+    ss_woerter_.push_back( "LAB_DE_94" );
+    ss_woerter_.push_back( "LAB_DE_CMC" );
+    ss_woerter_.push_back( "LAB_DE_2000" );
+    ss_woerter_.push_back( "MEAN_DE" );
+    ss_woerter_.push_back( "STDEV_X" );
+    ss_woerter_.push_back( "STDEV_Y" );
+    ss_woerter_.push_back( "STDEV_Z" );
+    ss_woerter_.push_back( "STDEV_L" );
+    ss_woerter_.push_back( "STDEV_A" );
+    ss_woerter_.push_back( "STDEV_B" );
+    ss_woerter_.push_back( "STDEV_DE" );
+    ss_woerter_.push_back( "CHI_SQD_PAR" );
+  }
+  DBG_PROG_ENDE
+}
 
 int
 CgatsFilter::sucheInDATA_FORMAT_( std::string &zeile )
@@ -95,52 +153,6 @@ CgatsFilter::sucheInDATA_FORMAT_( std::string &zeile )
   std::string::size_type pos=0;
   int n = 0;
 
-  {
-    s_woerter_.push_back( "SAMPLE_ID" );
-    s_woerter_.push_back( "SAMPLE_NAME" );
-    s_woerter_.push_back( "CMYK_C" );
-    s_woerter_.push_back( "CMYK_M" );
-    s_woerter_.push_back( "CMYK_Y" );
-    s_woerter_.push_back( "CMYK_K" );
-    s_woerter_.push_back( "RGB_R" );
-    s_woerter_.push_back( "RGB_G" );
-    s_woerter_.push_back( "RGB_B" );
-    s_woerter_.push_back( "XYZ_X" );
-    s_woerter_.push_back( "XYZ_Y" );
-    s_woerter_.push_back( "XYZ_Z" );
-    s_woerter_.push_back( "XYY_X" );
-    s_woerter_.push_back( "XYY_Y" );
-    s_woerter_.push_back( "XYY_CAPY" );
-    s_woerter_.push_back( "LAB_L" );
-    s_woerter_.push_back( "LAB_A" );
-    s_woerter_.push_back( "LAB_B" );
-    s_woerter_.push_back( "D_RED" );
-    s_woerter_.push_back( "D_GREEN" );
-    s_woerter_.push_back( "D_BLUE" );
-    s_woerter_.push_back( "D_VIS" );
-    s_woerter_.push_back( "D_MAJOR_FILTER" );
-    s_woerter_.push_back( "SPECTRAL_PCT" );
-    s_woerter_.push_back( "SPECTRAL_DEC" );
-    s_woerter_.push_back( "SPECTRAL_" );
-    s_woerter_.push_back( "nm" );  // nicht standard
-    s_woerter_.push_back( "SPECTRUM_" ); // nicht standard
-    s_woerter_.push_back( "R_" ); // nicht standard
-    s_woerter_.push_back( "LAB_C" );
-    s_woerter_.push_back( "LAB_H" );
-    s_woerter_.push_back( "LAB_DE" );
-    s_woerter_.push_back( "LAB_DE_94" );
-    s_woerter_.push_back( "LAB_DE_CMC" );
-    s_woerter_.push_back( "LAB_DE_2000" );
-    s_woerter_.push_back( "MEAN_DE" );
-    s_woerter_.push_back( "STDEV_X" );
-    s_woerter_.push_back( "STDEV_Y" );
-    s_woerter_.push_back( "STDEV_Z" );
-    s_woerter_.push_back( "STDEV_L" );
-    s_woerter_.push_back( "STDEV_A" );
-    s_woerter_.push_back( "STDEV_B" );
-    s_woerter_.push_back( "STDEV_DE" );
-    s_woerter_.push_back( "CHI_SQD_PAR" );
-  }
 
   zeilenOhneDuplikate_( s_woerter_ );
 
@@ -186,11 +198,14 @@ CgatsFilter::zeilenOhneDuplikate_ ( std::vector<std::string> &zeilen )
   #else
   sort( zeilen.begin(), zeilen.end() );
   std::vector<std::string> ::iterator pos; 
-  for( unsigned int i = 0; i < zeilen.size(); ++i)
-    while ( zeilen[i] == zeilen[i+1] )
+  for( unsigned int i = 0; i < zeilen.size()-1; ++i)
+    while ( i < zeilen.size()-1 &&
+            zeilen[i] == zeilen[i+1] )
     {
+      DBG_NUM_S( zeilen[i] <<"="<< zeilen[i+1] << " gelöscht" )
       zeilen.erase( zeilen.begin()+i+1 );
-      DBG_NUM_S( zeilen[i] << " gelöscht" )
+      if( i+1 < zeilen.size() )
+      DBG_NUM_S( zeilen[i+1] )
       ++n;
     }
   #endif
@@ -210,7 +225,7 @@ CgatsFilter::sucheSchluesselwort_( std::string zeile )
         DBG_NUM_S( ret <<" "<< zeile.substr(pos,3) ) \
         return ret; \
       }
-    KEY_Suche( "KEYWORD",            ANFUEHRUNGSSTRICHE )
+    KEY_Suche( "KEYWORD",            KEYWORD )
     KEY_Suche( "SAMPLE_ID",          DATA_FORMAT_ZEILE )
     KEY_Suche( "SAMPLE_NAME",        DATA_FORMAT_ZEILE )
     KEY_Suche( "ORIGINATOR",         ANFUEHRUNGSSTRICHE )
@@ -238,6 +253,7 @@ CgatsFilter::sucheSchluesselwort_( std::string zeile )
   return AUSKOMMENTIEREN;
 }
 
+#if 0
 void
 CgatsFilter::zeileEinfuegen_( std::vector<std::string> &zeilen,
                 int                       pos_n,
@@ -254,6 +270,7 @@ CgatsFilter::zeileEinfuegen_( std::vector<std::string> &zeilen,
         // neue Zeile Einfügen
         zeilen.insert(v_pos, neue_zeile );
 }
+#endif
 
 int
 CgatsFilter::editZeile_( std::vector<std::string> &zeilen,
@@ -270,6 +287,14 @@ CgatsFilter::editZeile_( std::vector<std::string> &zeilen,
   switch( editieren )
   {
     case BELASSEN: break;
+    case KEYWORD:  editZeile_( zeilen, i, ANFUEHRUNGSSTRICHE, false );
+                   pos = zeilen[i].find_first_of('"');
+                   ende = zeilen[i].find_last_of('"');
+                   DBG_NUM_S( zeilen[i].substr( pos + 1, ende - pos - 1 ) )
+                   s_woerter_.insert( s_woerter_.begin(), zeilen[i].substr(
+                                         pos + 1, ende - pos - 1) );
+                   DBG_NUM_S( "neues Schlüsselwort: " << s_woerter_[0] )
+                   break;
     case ANFUEHRUNGSSTRICHE: {
               bool in_anfuehrung = false;
               int letze_anfuehrungsstriche = -1;
@@ -278,9 +303,9 @@ CgatsFilter::editZeile_( std::vector<std::string> &zeilen,
               pos = zeilen[i].find_first_not_of( cgats_alnum_ ,pos, ende );
               DBG_NUM_V( pos )
               for( ; pos < ende; ++pos )
-              { DBG_NUM_V( pos )
+              {
                 if( zeilen[i][pos] == '\"' )
-                { DBG_NUM_V( zeilen[i].substr( pos, ende-pos ) )
+                { DBG_NUM_S( pos <<" "<< zeilen[i].substr( pos, ende-pos ) )
                   if( in_anfuehrung ) // hinaus
                   {
                     in_anfuehrung = false;
@@ -334,11 +359,14 @@ CgatsFilter::editZeile_( std::vector<std::string> &zeilen,
               int zaehler_FIELDS = sucheInDATA_FORMAT_( zeilen[i] );
               std::stringstream s;
               s << "NUMBER_OF_FIELDS " << zaehler_FIELDS;
-              zeileEinfuegen_( zeilen, i, s.str() );
+              zeilen.insert( zeilen.begin() + i, s.str() );
+              //zeileEinfuegen_( zeilen, i, s.str() );
               ++zeilendifferenz;
-              zeileEinfuegen_( zeilen, i+1, "BEGIN_DATA_FORMAT" );
+              zeilen.insert( zeilen.begin() + i + 1, "BEGIN_DATA_FORMAT" );
+              //zeileEinfuegen_( zeilen, i+1, "BEGIN_DATA_FORMAT" );
               ++zeilendifferenz;
-              zeileEinfuegen_( zeilen, i+3, "END_DATA_FORMAT" );
+              zeilen.insert( zeilen.begin() + i + 3, "END_DATA_FORMAT" );
+              //zeileEinfuegen_( zeilen, i+3, "END_DATA_FORMAT" );
               ++zeilendifferenz;
             }
             break;
@@ -504,7 +532,8 @@ CgatsFilter::cgats_korrigieren               ()
       {
         s.str("");
         s << "NUMBER_OF_SETS " << zaehler_SETS;
-        zeileEinfuegen_( zeilen, zeile_letztes_BEGIN_DATA, s.str() );
+        zeilen.insert( zeilen.begin() + zeile_letztes_BEGIN_DATA, s.str() );
+        //zeileEinfuegen_( zeilen, zeile_letztes_BEGIN_DATA, s.str() );
 
         ++i;
         DBG_S( zeilen[zeile_letztes_BEGIN_DATA] << " eingefügt" )
@@ -544,7 +573,8 @@ CgatsFilter::cgats_korrigieren               ()
       {
         s.str("");
         s << "NUMBER_OF_FIELDS " << zaehler_FIELDS;
-        zeileEinfuegen_( zeilen, zeile_letztes_BEGIN_DATA_FORMAT, s.str() );
+        zeilen.insert( zeilen.begin() + zeile_letztes_BEGIN_DATA_FORMAT, s.str() );
+        //zeileEinfuegen_( zeilen, zeile_letztes_BEGIN_DATA_FORMAT, s.str() );
         
         ++i;
         DBG_S( zeilen[zeile_letztes_BEGIN_DATA_FORMAT] << " eingefügt" )
@@ -571,7 +601,8 @@ CgatsFilter::cgats_korrigieren               ()
            (ende - pos) != 14 ) ||
           sucheSchluesselwort_( gtext ) != 3 )
       {
-        zeileEinfuegen_( zeilen, 0, "ICCEXAM" );
+        zeilen.insert( zeilen.begin(), "ICCEXAM" );
+        //zeileEinfuegen_( zeilen, 0, "ICCEXAM" );
         DBG_NUM_S( "Beschreibung eingeführt" )
       }
     } else
@@ -579,9 +610,9 @@ CgatsFilter::cgats_korrigieren               ()
       if( !im_data_block && !im_data_format_block )
     {
       int editieren = sucheSchluesselwort_(gtext);
-      if( editieren == 5 ) // CMY_DATEN 
+      if( editieren == CMY_DATEN ) 
         cmy_daten = true;
-      else if( editieren == 6 ) // CMYK_DATEN
+      else if( editieren == CMYK_DATEN )
         cmy_daten = false;
 
       if( editieren )

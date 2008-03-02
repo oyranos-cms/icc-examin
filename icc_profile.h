@@ -58,105 +58,109 @@ class ICCmeasurement;
 // definiert in icc_profile.cpp
 class ICCheader {
   public:
-                        ICCheader (); 
-    void                clear();
+                ICCheader (); 
+    void        clear();
   private:
-    icHeader            header;
+    icHeader    header;
   public:
-    const char*         header_raw ()        {DBG_PROG return /*cp_nchar (*/(char*)&header/*,
+    const char* header_raw () const  {DBG_PROG return /*cp_nchar (*/(char*)&header/*,
                                                        sizeof (icHeader))*/; }
-    void                header_raw (void* h) {DBG_PROG memcpy ((void*)&header, h,
+    void        header_raw (void* h) {DBG_PROG memcpy ((void*)&header, h,
                                                        sizeof (icHeader)); }
-    void                load  (void*);
+    void        load  (void*);
 
-    int                 valid;
-    int                 size    ()      {DBG_PROG return icValue(header.size); }
-    void                size    (icUInt32Number size)   {DBG_PROG header.size =
-                                                (icUInt32Number)icValue(size); }
-    void                cmmName (const char* s){DBG_PROG memcpy((char*)&(header.cmmId),s,
+    int         valid;
+    int         size    () const     {DBG_PROG return icValue(header.size); }
+    void        size    (icUInt32Number size)   {DBG_PROG header.size =
+                                        (icUInt32Number)icValue(size); }
+    void        cmmName (const char*s){DBG_PROG memcpy((char*)&(header.cmmId),s,
                                                        sizeof (icSignature)); }
-    const char*         cmmName ()      {DBG_PROG return cp_nchar((char*)&(header.cmmId),
+    const char* cmmName ()const{DBG_PROG return cp_nchar((char*)&(header.cmmId),
                                                       sizeof (icSignature)+1); }
-    int                 version ()      {DBG_PROG return icValue(header.version); }
-    void                version (icUInt32Number v) {DBG_PROG header.version= icValue(v);}
-    std::string         versionName ();
-    icProfileClassSignature deviceClass ()
-                                        {DBG_PROG return icValue(header.deviceClass); }
-    void                deviceClass (icProfileClassSignature d)
-                                        {DBG_PROG header.deviceClass = icValue(d); }
-    icColorSpaceSignature colorSpace () {DBG_PROG return icValue(header.colorSpace); }
-    void                colorSpace (icColorSpaceSignature color)
-                                        {DBG_PROG header.colorSpace = icValue(color); }
-    icColorSpaceSignature pcs ()        {DBG_PROG return icValue(header.pcs); }
-    void                pcs (icColorSpaceSignature pcs)
+    int         version () const{DBG_PROG  return icValue(header.version); }
+    void        version (icUInt32Number v) {DBG_PROG header.version= icValue(v);}
+    std::string versionName () const;
+    icProfileClassSignature deviceClass () const
+                                 {DBG_PROG return icValue(header.deviceClass); }
+    void        deviceClass (icProfileClassSignature d)
+                                  {DBG_PROG header.deviceClass = icValue(d); }
+    icColorSpaceSignature colorSpace () const {DBG_PROG
+                                           return icValue(header.colorSpace); }
+    void        colorSpace (icColorSpaceSignature color)
+                                {DBG_PROG header.colorSpace = icValue(color); }
+    icColorSpaceSignature pcs () const  {DBG_PROG
+                                           return icValue(header.pcs); }
+    void        pcs (icColorSpaceSignature pcs)
                                         {DBG_PROG header.pcs = icValue(pcs); }
-    void                set_current_date ();
-    const char*         magicName ()    {DBG_PROG return cp_nchar ((char*)&(header.
+    void        set_current_date ();
+    const char* magicName () const {DBG_PROG return cp_nchar ((char*)&(header.
                                                       magic),
                                                       sizeof (icSignature)+1); }
-    void                set_magic ()    {DBG_PROG char* m = {"acsp"};
+    void        set_magic ()    {DBG_PROG char* m = {"acsp"};
                                          header.magic = *(icSignature*)m; }
-    std::string         platform ()     {DBG_PROG return getPlatformName(icValue(header.platform)); }
-    void                set_platform () {DBG_PROG header.platform = (icValue(icSigSGI));}
-    std::string         flags ();
-    void                set_embedded_flag()   {DBG_PROG ((char*)&header.flags)[0] =
-                                              ((char*)&header.flags)[0] | 0x80;}
-    void                unset_embedded_flag() {DBG_PROG ((char*)&header.flags)[0] =
+    std::string platform () const {DBG_PROG
+                             return getPlatformName(icValue(header.platform)); }
+    void        set_platform () {DBG_PROG header.platform = (icValue(icSigSGI));}
+    std::string flags () const;
+    void        set_embedded_flag()   {DBG_PROG ((char*)&header.flags)[0] =
+                                             ((char*)&header.flags)[0] | 0x80; }
+    void        unset_embedded_flag() {DBG_PROG ((char*)&header.flags)[0] =
                                               ((char*)&header.flags)[0] & 0x7f;}
-    void                set_dependent_flag()  {DBG_PROG ((char*)&header.flags)[0] =
+    void        set_dependent_flag()  {DBG_PROG ((char*)&header.flags)[0] =
                                               ((char*)&header.flags)[0] | 0x40;}
-    void                unset_dependent_flag() {DBG_PROG ((char*)&header.flags)[0] =
+    void        unset_dependent_flag() {DBG_PROG ((char*)&header.flags)[0] =
                                               ((char*)&header.flags)[0] & 0xbf;}
-    const char*         manufacturerName() {DBG_PROG return cp_nchar ((char*)&(header.
-                                                      manufacturer),
+    const char* manufacturerName() const {DBG_PROG
+                                return cp_nchar ((char*)&(header. manufacturer),
                                                       sizeof (icSignature)+1); }
-    void                set_manufacturer (){DBG_PROG char* m = {"none"};
+    void        set_manufacturer (){DBG_PROG char* m = {"none"};
                                          header.manufacturer= *(icSignature*)m;}
-    const char*         modelName ()       {DBG_PROG return cp_nchar ((char*)&(header.
+    const char* modelName () const {DBG_PROG return cp_nchar ((char*)&(header.
                                                       model),
                                                       sizeof (icSignature)+1); }
-    void                set_model ()       {DBG_PROG char* m = {"none"};
+    void        set_model ()       {DBG_PROG char* m = {"none"};
                                          header.model= *(icSignature*)m;}
-    std::string         attributes ();
-    void                set_reflective_attr() {DBG_PROG ((char*)&header.attributes)[0] =
+    std::string attributes () const;
+    void        set_reflective_attr() {DBG_PROG ((char*)&header.attributes)[0] =
                                               ((char*)&header.attributes)[0]
                                                 & 0x7f; }
-    void                set_transparency_attr() {DBG_PROG ((char*)&header.attributes)[0] =
-                                              ((char*)&header.attributes)[0]
-                                                | 0x80; }
-    void                set_glossy_attr() {DBG_PROG ((char*)&header.attributes)[0] =
+    void        set_transparency_attr() {DBG_PROG
+                                        ((char*)&header.attributes)[0] =
+                                        ((char*)&header.attributes)[0] | 0x80; }
+    void        set_glossy_attr() {DBG_PROG ((char*)&header.attributes)[0] =
                                               ((char*)&header.attributes)[0]
                                                 & 0xbf; }
-    void                set_matte_attr() {DBG_PROG ((char*)&header.attributes)[0] =
+    void        set_matte_attr() {DBG_PROG ((char*)&header.attributes)[0] =
                                               ((char*)&header.attributes)[0]
                                                 | 0x40; }
-    void                set_positive_attr() {DBG_PROG ((char*)&header.attributes)[0] =
+    void        set_positive_attr() {DBG_PROG ((char*)&header.attributes)[0] =
                                               ((char*)&header.attributes)[0]
                                                 & 0xdf; }
-    void                set_negative_attr() {DBG_PROG ((char*)&header.attributes)[0] =
+    void        set_negative_attr() {DBG_PROG ((char*)&header.attributes)[0] =
                                               ((char*)&header.attributes)[0]
                                                 | 0x20; }
-    void                set_color_attr() {DBG_PROG ((char*)&header.attributes)[0] =
+    void        set_color_attr() {DBG_PROG ((char*)&header.attributes)[0] =
                                               ((char*)&header.attributes)[0]
                                                 & 0xef; }
-    void                set_gray_attr() {DBG_PROG ((char*)&header.attributes)[0] =
+    void        set_gray_attr() {DBG_PROG ((char*)&header.attributes)[0] =
                                               ((char*)&header.attributes)[0]
                                                 | 0x10; }
-    std::string         renderingIntent () {DBG_PROG return renderingIntentName( icValue(
+    std::string renderingIntent () const {DBG_PROG
+                                            return renderingIntentName( icValue(
                                             header.renderingIntent ) ); }
-    void                set_renderingIntent () {DBG_PROG header.renderingIntent =icValue(
-                                                0 ); }
-    void                set_illuminant ()  {DBG_PROG icValueXYZ (&header.illuminant,
+    void        set_renderingIntent () {DBG_PROG
+                                        header.renderingIntent =icValue( 0 ); }
+    void        set_illuminant ()  {DBG_PROG icValueXYZ (&header.illuminant,
                                                   0.9642, 1.0000,0.8249); }
-    const char*         creatorName ()     {DBG_PROG return cp_nchar((char*)&(header.
+    const char* creatorName ()const{DBG_PROG return cp_nchar((char*)&(header.
                                                       creator),
                                                       sizeof (icSignature)+1); }
-    void                set_creator ()     {DBG_PROG char* m = {"SB  "};
+    void        set_creator ()     {DBG_PROG char* m = {"SB  "};
                                             header.creator= *(icSignature*)m; }
-    void                setID ()           {/*char* m = ((char*)&header)[84];
+    void        setID ()           {/*char* m = ((char*)&header)[84];
                                             *m = "-";*/ }
-    std::string         print ();
-    std::string         print_long ();
+    std::string print () const;
+    std::string print_long () const;
 };
 
 class ICCtag {

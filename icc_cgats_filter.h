@@ -37,17 +37,19 @@
 class CgatsFilter
 {
   public:
-    CgatsFilter () {
+    CgatsFilter () { DBG_PROG_START
         sprintf (cgats_alnum_, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_|/-+=()[]{}<>&?!:;,.0123456789");
         sprintf (leer_zeichen_, "\t\n\v\f\r");
         typ_ = LCMS;
+        standard_schluesselwoerter_anlegen_();
+        DBG_PROG_ENDE
     }
     ~CgatsFilter () {; }
     void lade (char* data, size_t size) { clear();
                                           data_orig_.assign( data,0,size ); }
     void lade (std::string &data)       { clear(); data_orig_ = data; }
     void clear()                        { data_.resize(0); data_orig_.resize(0);
-                                          s_woerter_.resize(0); }
+                                          s_woerter_ = ss_woerter_; }
     enum {
       LCMS,
       MAX_BELASSEN
@@ -75,6 +77,7 @@ private:
     int sucheInDATA_FORMAT_( std::string &zeile );
     // klassifiziert CGATS Keywords; sinnvoll ausserhalb der Blöcke
     int sucheSchluesselwort_( std::string zeile );
+    void standard_schluesselwoerter_anlegen_ ();
     // eine Zeile ausserhalb der beiden DATA und FORMAT Blöcke nach
     //  Klassifizierungsangabe bearbeiten
     int editZeile_( std::vector<std::string> &zeilen, int zeile_n, int editieren,
@@ -87,9 +90,10 @@ private:
                                 std::string               text );
     int  zeilenOhneDuplikate_ ( std::vector<std::string> &zeilen );
 
-    // Schlüsselwort passende korrekturen
+    // Schlüsselwort passende Korrekturen
     enum {
     BELASSEN,
+    KEYWORD,
     ANFUEHRUNGSSTRICHE,
     DATA_FORMAT_ZEILE,
     AUSKOMMENTIEREN,
@@ -101,6 +105,7 @@ private:
     // benötigte Daten
     std::string              data_;      // der korrigierte CGATS Text
     std::string              data_orig_; // eine Kopie vom Original
+    std::vector<std::string> ss_woerter_;// Standard Schlüsselwörter - nur einmalig auffüllen und danach nur noch lesen
     std::vector<std::string> s_woerter_; // Schlüsselwörter
     int                      typ_;       // Art des Filterns
 

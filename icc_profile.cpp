@@ -95,7 +95,7 @@ ICCheader::set_current_date (void)
 }
 
 std::string
-ICCheader::attributes (void)
+ICCheader::attributes (void) const
 { DBG_PROG_START
   std::stringstream s;
   char* f = (char*) &(header.attributes);
@@ -141,7 +141,7 @@ ICCheader::attributes (void)
 }
 
 std::string
-ICCheader::flags (void)
+ICCheader::flags (void) const
 { DBG_PROG_START
   std::stringstream s;
   char* f = (char*) &(header.flags);
@@ -173,7 +173,7 @@ ICCheader::flags (void)
 }
 
 std::string
-ICCheader::versionName (void)
+ICCheader::versionName (void) const
 { DBG_PROG_START
   std::stringstream s;
   char* v = (char*)&(header.version);
@@ -185,7 +185,7 @@ ICCheader::versionName (void)
 }
 
 std::string
-ICCheader::print_long()
+ICCheader::print_long() const
 { DBG_PROG_START
   #ifdef DEBUG_ICCHEADER
   cout << sizeof (icSignature) << " " << sizeof (icUInt32Number)<< endl;
@@ -232,7 +232,7 @@ ICCheader::print_long()
 }
 
 std::string
-ICCheader::print()
+ICCheader::print() const
 { DBG_PROG_START
   std::string s = _("Dateikopf ungültig");
   if (valid)
