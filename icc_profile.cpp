@@ -938,7 +938,7 @@ ICCmeasurement &
 ICCprofile::getMeasurement ()
 {
   DBG_PROG
-  if (hasMeasurement())
+  if (hasMeasurement() && !measurement.validHalf())
     measurement.init();
   return measurement;
 }

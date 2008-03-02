@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2007-12-31 07:47+0100\n"
+"POT-Creation-Date: 2008-01-01 14:21+0100\n"
 "PO-Revision-Date: 2005-08-13 17:35+0200\n"
 "Last-Translator: Kai-Uwe Behrmann\n"
 "Language-Team:  <eo@li.org>\n"
@@ -41,7 +41,7 @@ msgstr ""
 msgid "Rgb"
 msgstr ""
 
-#: icc_oyranos_extern.c:137 icc_draw.cpp:666 icc_gl.cpp:1993 icc_waehler.h:131
+#: icc_oyranos_extern.c:137 icc_draw.cpp:666 icc_gl.cpp:1995 icc_waehler.h:129
 msgid "Gray"
 msgstr "Griza"
 
@@ -117,7 +117,7 @@ msgstr "14koloroj"
 msgid "15color"
 msgstr "15koloroj"
 
-#: agviewer.cpp:311 icc_gl.cpp:2748 icc_gl.cpp:2767 icc_gl.cpp:2886
+#: agviewer.cpp:311 icc_gl.cpp:2749 icc_gl.cpp:2768 icc_gl.cpp:2887
 msgid "left-/middle-/right mouse button -> rotate/cut/menu"
 msgstr ""
 
@@ -125,8 +125,8 @@ msgstr ""
 msgid "Pause"
 msgstr ""
 
-#: agviewer.cpp:348 agviewer.cpp:356 icc_gl.cpp:2852 icc_gl.cpp:2863
-#: icc_gl.cpp:2868 icc_gl.cpp:2873
+#: agviewer.cpp:348 agviewer.cpp:356 icc_gl.cpp:2853 icc_gl.cpp:2864
+#: icc_gl.cpp:2869 icc_gl.cpp:2874
 msgid "left mouse button -> go back"
 msgstr ""
 
@@ -166,7 +166,7 @@ msgstr "Fuksina"
 msgid "Yellow"
 msgstr "Flava"
 
-#: icc_draw.cpp:679 icc_gl.cpp:1995 icc_helfer.cpp:415 icc_helfer.cpp:425
+#: icc_draw.cpp:679 icc_gl.cpp:1997 icc_helfer.cpp:415 icc_helfer.cpp:425
 msgid "Black"
 msgstr "Nigra"
 
@@ -204,13 +204,13 @@ msgid "CIE *L"
 msgstr ""
 
 #: icc_draw.cpp:697 icc_examin_farbraum.cpp:435 icc_examin_io.cpp:218
-#: icc_gl.cpp:975 icc_gl.cpp:1049 icc_gl.cpp:1075 icc_gl.cpp:1083
+#: icc_gl.cpp:977 icc_gl.cpp:1051 icc_gl.cpp:1077 icc_gl.cpp:1085
 #: icc_helfer.cpp:401
 msgid "CIE *a"
 msgstr ""
 
 #: icc_draw.cpp:699 icc_examin_farbraum.cpp:436 icc_examin_io.cpp:219
-#: icc_gl.cpp:988 icc_gl.cpp:1091 icc_gl.cpp:1111 icc_gl.cpp:1118
+#: icc_gl.cpp:990 icc_gl.cpp:1093 icc_gl.cpp:1113 icc_gl.cpp:1120
 #: icc_helfer.cpp:402
 msgid "CIE *b"
 msgstr ""
@@ -273,7 +273,7 @@ msgstr ""
 msgid "Gamut View"
 msgstr ""
 
-#: icc_examin.cpp:812 icc_gl.h:259
+#: icc_examin.cpp:812 icc_gl.h:260
 msgid "not available"
 msgstr ""
 
@@ -353,118 +353,118 @@ msgstr ""
 msgid "Yes"
 msgstr "Jes"
 
-#: icc_gl.cpp:718 icc_gl.cpp:721 icc_gl.cpp:728 icc_gl.cpp:739 icc_gl.cpp:743
-#: icc_gl.cpp:758
+#: icc_gl.cpp:720 icc_gl.cpp:723 icc_gl.cpp:730 icc_gl.cpp:741 icc_gl.cpp:745
+#: icc_gl.cpp:760
 msgid "Could not open font in:"
 msgstr ""
 
-#: icc_gl.cpp:850
+#: icc_gl.cpp:852
 #, c-format
 msgid "0,0,0"
 msgstr ""
 
-#: icc_gl.cpp:1967 icc_gl.cpp:1977 icc_gl.cpp:1979 icc_gl.cpp:1981
+#: icc_gl.cpp:1969 icc_gl.cpp:1979 icc_gl.cpp:1981 icc_gl.cpp:1983
 msgid "Slice"
 msgstr ""
 
-#: icc_gl.cpp:1968
+#: icc_gl.cpp:1970
 msgid "Rotate around slice"
 msgstr ""
 
-#: icc_gl.cpp:1983
+#: icc_gl.cpp:1985
 msgid "Rotate around"
 msgstr ""
 
-#: icc_gl.cpp:1983
+#: icc_gl.cpp:1985
 msgid "axis"
 msgstr ""
 
-#: icc_gl.cpp:1988
+#: icc_gl.cpp:1990
 msgid "Slice plane"
 msgstr ""
 
-#: icc_gl.cpp:1991
+#: icc_gl.cpp:1993
 msgid "White"
 msgstr "Blanka"
 
-#: icc_gl.cpp:1992
+#: icc_gl.cpp:1994
 msgid "Light gray"
 msgstr ""
 
-#: icc_gl.cpp:1994
+#: icc_gl.cpp:1996
 msgid "Dark gray"
 msgstr ""
 
-#: icc_gl.cpp:1998
+#: icc_gl.cpp:2000
 msgid "Background colour"
 msgstr ""
 
-#: icc_gl.cpp:2003
+#: icc_gl.cpp:2005
 msgid "gray"
 msgstr "Griza"
 
-#: icc_gl.cpp:2004
+#: icc_gl.cpp:2006
 msgid "coloured"
 msgstr ""
 
-#: icc_gl.cpp:2005
+#: icc_gl.cpp:2007
 msgid "high contrast"
 msgstr ""
 
-#: icc_gl.cpp:2007
+#: icc_gl.cpp:2009
 msgid "Onion skins"
 msgstr ""
 
-#: icc_gl.cpp:2008
+#: icc_gl.cpp:2010
 #, fuzzy
 msgid "Colour line"
 msgstr "kolora"
 
-#: icc_gl.cpp:2013
+#: icc_gl.cpp:2015
 msgid "Sphere 1dE"
 msgstr ""
 
-#: icc_gl.cpp:2014
+#: icc_gl.cpp:2016
 msgid "Sphere 2dE"
 msgstr ""
 
-#: icc_gl.cpp:2015
+#: icc_gl.cpp:2017
 msgid "Sphere 4dE"
 msgstr ""
 
-#: icc_gl.cpp:2018
+#: icc_gl.cpp:2020
 msgid "Star"
 msgstr ""
 
-#: icc_gl.cpp:2021
+#: icc_gl.cpp:2023
 msgid "Point"
 msgstr ""
 
-#: icc_gl.cpp:2024
+#: icc_gl.cpp:2026
 msgid "without markers"
 msgstr ""
 
-#: icc_gl.cpp:2025
+#: icc_gl.cpp:2027
 msgid "Spektral line"
 msgstr "spektra linio"
 
-#: icc_gl.cpp:2028
+#: icc_gl.cpp:2030
 msgid "Texts"
 msgstr ""
 
-#: icc_gl.cpp:2030
+#: icc_gl.cpp:2032
 msgid "Texts/Arrows on/off"
 msgstr ""
 
-#: icc_gl.cpp:2032
+#: icc_gl.cpp:2034
 msgid "Illustration"
 msgstr ""
 
-#: icc_gl.cpp:2379
+#: icc_gl.cpp:2380
 msgid "Pos"
 msgstr ""
 
-#: icc_gl.cpp:2464 icc_profile_tags.cpp:319
+#: icc_gl.cpp:2465 icc_profile_tags.cpp:319
 msgid "Channel"
 msgstr "kanalo"
 

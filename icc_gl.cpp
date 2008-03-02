@@ -309,9 +309,11 @@ GL_Ansicht::copy (const GL_Ansicht & gl)
   font = ortho_font = 0;
 # endif
 
-  tabelle_ = gl. tabelle_;
-  nach_farb_namen_ = gl. nach_farb_namen_;
-  von_farb_namen_ = gl. von_farb_namen_;
+  tabelle_ = gl.tabelle_;
+  nach_farb_namen_ = gl.nach_farb_namen_;
+  von_farb_namen_ = gl.von_farb_namen_;
+  epoint_ = oyNamedColour_Copy( gl.epoint_, 0 );
+  mouse_3D_hit = oyNamedColour_Copy( gl.mouse_3D_hit, 0 );
   colours_ = oyNamedColours_Copy( gl.colours_, NULL );
 
   DBG_PROG_ENDE
@@ -2145,7 +2147,6 @@ GL_Ansicht::zeichnen()
       grau[i] = dreiecks_netze[i].grau;
       if(!aktualisiert) {
         zeigeUmrisse_();
-        punkteAuffrischen();
         aktualisiert = true;
       }
     }
