@@ -95,8 +95,6 @@ std::string         getMeasurementFlare( icMeasurementFlare flare );
 std::string         printDatum( icDateTimeNumber date );
 
 namespace icc_examin_ns {
-  // Zeit / Uhr
-  void sleep(double Sekunden);
   // Fl_Thread's sperren / freigeben
   void lock(const char *file, int line);
   void unlock(void *widget, const char *file, int line);

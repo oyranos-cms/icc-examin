@@ -70,7 +70,6 @@ class GL_Ansicht : public Fl_Gl_Window /*, public Fl_Slot*/ {
   // IDs
   Agviewer agv_;
   int  id_;
-  // gibt den Initalstatus an
   void GLinit_();
   void menueInit_();
 
@@ -140,23 +139,23 @@ public:
   int  punktfarbe;          // MENU_GRAU MENU_FARBIG MENU_KONTRASTREICH
   int  punktgroesse;        // Größe in Pixel
 
-  float hintergrundfarbe;    // Hintergrundfarben Farbschema
+  float hintergrundfarbe;   // Hintergrundfarben Farbschema
   float textfarbe[3];
   float pfeilfarbe[3];
   float schatten;
   float strichmult;         // Strichmultiplikator
   char  strich1, strich2, strich3;
-  int  schalen;             // MENU_SCHALEN
+  int   schalen;            // MENU_SCHALEN
 
   // Darstellungsfunktionen
   void setzePerspektive();  // Perspektive aktualisieren
   void auffrischen();       // Erneuerung ohne init()
-  void tabelleAuffrischen(); // glCompile für Tabelle
+  void tabelleAuffrischen();// glCompile für Tabelle
   void punkteAuffrischen(); // glCompile für Punkte
-  void netzeAuffrischen();    // Sortieren und Zeichnen
+  void netzeAuffrischen();  // Sortieren und Zeichnen
   double seitenverhaeltnis; // Proportion des Fensters
   static const double std_vorder_schnitt;
-  double vorder_schnitt;      // Entfernung der ersten Schnittebene
+  double vorder_schnitt;    // Entfernung der ersten Schnittebene
   double schnitttiefe;      // Dicke der GL Schnitttiefe
   double a_darstellungs_breite; // Richtung CIE*a   für Zoom und Pfeillängen
   double b_darstellungs_breite; // ~        CIE*b ; wobei CIE*L immer 1.0
@@ -185,8 +184,8 @@ private:
   bool darf_bewegen_;
   bool ist_bewegt_;
 private:
-  double fps_;              // Bilder pro Sekunde
-  int  zeichnete_;          // notiert ob in zeichnen() gezeichnet wurde
+  double zeit_diff_;        // Bilder pro Sekunde
+  int  valid_;              // notiert ob in draw() valid() false war
   char t[128];              // Text zur Fehlersuche
   int  maus_x_;
   int  maus_y_;

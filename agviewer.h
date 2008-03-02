@@ -272,7 +272,7 @@ public:
 
   int RedisplayWindow;                      // glutWindow
   public: 
-  int redisplayWindow() {DBG_PROG_V(RedisplayWindow) return RedisplayWindow; }
+  int redisplayWindow() { return RedisplayWindow; }
   void setIdle(bool set);
   private:
    /* If AllowIdle is 1 it means AGV will install its own idle which

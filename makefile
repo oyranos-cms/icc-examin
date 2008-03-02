@@ -392,6 +392,13 @@ bundle:	static
 	done;
 	echo ... bündeln beendet
 
+unbundle:
+	echo "mache sauber"
+	$(RM) ICC\ Examin.app/Contents/MacOS/ICC\ Examin
+	$(RM) ICC\ Examin.app/Contents/Resources/$(FONT)
+	$(RM) ICC\ Examin.app/Contents/Resources/iccgamut
+	$(RM) -R ICC\ Examin.app/Contents/Resources/locale
+
 uninstall:
 	echo deinstalliere ...
 	$(RM) $(DESTDIR)$(bindir)/$(TARGET)
@@ -403,19 +410,15 @@ uninstall:
 	  $(RM) $(DESTDIR)$(datadir)/locale/$${ling}/LC_MESSAGES/$(TARGET).mo; \
 	done;
 
-clean:
+clean:	unbundle
 	echo "mache sauber"
 	$(RM) mkdepend config config.h
 	$(RM) $(OBJECTS) $(CLIB_OBJECTS) $(TARGET) \
 	$(LIBNAME) $(LIBSO) $(LIBSONAME) $(LIBSONAMEFULL)
-	$(RM) ICC\ Examin.app/Contents/MacOS/ICC\ Examin
-	$(RM) ICC\ Examin.app/Contents/Resources/$(FONT)
 	for ling in $(LINGUAS); do \
 	  test -f po/$${ling}.gmo \
         && $(RM) po/$${ling}.gmo; \
 	done;
-	test -d ICC\ Examin.app/Contents/Resources/locale/ \
-      && $(RM) -R ICC\ Examin.app/Contents/Resources/locale/ \
 
 config:
 	configure

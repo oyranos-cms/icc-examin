@@ -72,7 +72,7 @@ const char* threadGettext( const char* text);
 #endif
 
 
-#define DBG_MAX_THREADS
+#define DBG_MAX_THREADS 12
 extern Fl_Thread icc_thread_liste[DBG_MAX_THREADS];
 enum { THREAD_HAUPT, THREAD_GL1, THREAD_GL2, THREAD_WACHE, THREAD_LADEN };
 void/*std::string*/ dbgThreadId    (Fl_Thread id);
@@ -90,12 +90,12 @@ extern pthread_mutex_t debug_s_mutex_;
 #ifdef HAVE_PTHREAD_H
 #define dbgWrite(ss) { \
   while (pthread_mutex_trylock( &debug_s_mutex_ )) { \
-    printf("debug_s_mutex_ nicht verfügbar\n"); \
+    /*printf("%s:%d %s() debug_s_mutex_ nicht verfügbar\n",__FILE__,__LINE__,__func__);*/ \
     icc_examin_ns::sleep(.001); \
   } \
- debug_s_.str(""); \
- debug_s_ << ss; \
- dbgWriteF(/*debug_s_*/); \
+  debug_s_.str(""); \
+  debug_s_ << ss; \
+  dbgWriteF(/*debug_s_*/); \
  pthread_mutex_unlock( &debug_s_mutex_ ); \
 }
 #else
@@ -109,9 +109,10 @@ extern pthread_mutex_t debug_s_mutex_;
 #define endl std::endl
 
 extern int level_PROG_ [DBG_MAX_THREADS];
-#define icc_level_PROG       level_PROG_ [wandelThreadId( pthread_self())]
-#define icc_level_PROG_plus  level_PROG_ [wandelThreadId( pthread_self())]++
-#define icc_level_PROG_minus level_PROG_ [wandelThreadId( pthread_self())]--
+int    iccLevel_PROG(int plus_minus_null);
+#define icc_level_PROG       iccLevel_PROG( 0)
+#define icc_level_PROG_plus  iccLevel_PROG( 1)
+#define icc_level_PROG_minus iccLevel_PROG(-1)
 extern int icc_debug;
 
 /*  icc_debug wird mit der Umgebungsvariable ICCEXAMIN_DEBUG in main() gesetzt
@@ -132,7 +133,7 @@ extern int icc_debug;
 
 #define DBG_UHR_ (double)clock()/(double)CLOCKS_PER_SEC
 
-#define DBG_T_     dbgWrite ( __FILE__<<":"<<__LINE__ <<" "<< __func__ << "() " << dbgThreadId(pthread_self()) <<" "<< DBG_UHR_ << " ");
+#define DBG_T_     dbgWrite ( __FILE__<<":"<<__LINE__ <<" "<< __func__ << "() " ); dbgThreadId(pthread_self()); dbgWrite ( " "<< DBG_UHR_ <<" " );
 #define LEVEL      { for (int i = 0; i < icc_level_PROG; i++) dbgWrite (" "); }
 #define DBG_       { LEVEL dbgWrite ("        "); DBG_T_ dbgWrite (endl); }
 #define DBG_S_(txt){ LEVEL dbgWrite ("        "); DBG_T_ dbgWrite (txt << endl); }
@@ -204,6 +205,11 @@ extern int icc_debug;
 #define WARN { dbgWrite (_("!!! Warnung !!!")); DBG_ }
 #define WARN_S(txt) { dbgWrite (_("!!! Warnung !!!")); DBG_S_(txt) }
 #define WARN_V(txt) { dbgWrite (_("!!! Warnung !!!")); DBG_V_(txt) }
+
+namespace icc_examin_ns {
+  // Zeit / Uhr
+  void sleep(double Sekunden); // definiert in icc_helfer.cpp
+}
 
 
 // mathematische Helfer

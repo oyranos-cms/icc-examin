@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2005-08-24 08:20+0200\n"
+"POT-Creation-Date: 2005-08-25 08:54+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,7 +20,7 @@ msgstr ""
 msgid "GL Fenster nicht frei"
 msgstr ""
 
-#: agviewer.cpp:312 icc_gl.cpp:2192 icc_gl.cpp:2211 icc_gl.cpp:2330
+#: agviewer.cpp:312 icc_gl.cpp:2202 icc_gl.cpp:2221 icc_gl.cpp:2340
 msgid "left-/middle-/right mouse button -> rotate/cut/menu"
 msgstr ""
 
@@ -28,8 +28,8 @@ msgstr ""
 msgid "Pause"
 msgstr ""
 
-#: agviewer.cpp:349 agviewer.cpp:357 icc_gl.cpp:2296 icc_gl.cpp:2307
-#: icc_gl.cpp:2312 icc_gl.cpp:2317
+#: agviewer.cpp:349 agviewer.cpp:357 icc_gl.cpp:2306 icc_gl.cpp:2317
+#: icc_gl.cpp:2322 icc_gl.cpp:2327
 msgid "left mouse button -> go back"
 msgstr ""
 
@@ -152,7 +152,7 @@ msgstr ""
 msgid "Blue"
 msgstr ""
 
-#: icc_draw.cpp:648 icc_gl.cpp:1593 icc_helfer.cpp:324 icc_waehler.h:127
+#: icc_draw.cpp:648 icc_gl.cpp:1599 icc_helfer.cpp:324 icc_waehler.h:127
 msgid "Gray"
 msgstr ""
 
@@ -168,7 +168,7 @@ msgstr ""
 msgid "Yellow"
 msgstr ""
 
-#: icc_draw.cpp:661 icc_gl.cpp:1595 icc_helfer.cpp:384 icc_helfer.cpp:394
+#: icc_draw.cpp:661 icc_gl.cpp:1601 icc_helfer.cpp:384 icc_helfer.cpp:394
 msgid "Black"
 msgstr ""
 
@@ -206,13 +206,13 @@ msgid "CIE *L"
 msgstr ""
 
 #: icc_draw.cpp:679 icc_examin_farbraum.cpp:184 icc_examin_io.cpp:156
-#: icc_gl.cpp:754 icc_gl.cpp:824 icc_gl.cpp:848 icc_gl.cpp:856
+#: icc_gl.cpp:760 icc_gl.cpp:830 icc_gl.cpp:854 icc_gl.cpp:862
 #: icc_helfer.cpp:370
 msgid "CIE *a"
 msgstr ""
 
 #: icc_draw.cpp:681 icc_examin_farbraum.cpp:185 icc_examin_io.cpp:157
-#: icc_gl.cpp:767 icc_gl.cpp:864 icc_gl.cpp:882 icc_gl.cpp:889
+#: icc_gl.cpp:773 icc_gl.cpp:870 icc_gl.cpp:888 icc_gl.cpp:895
 #: icc_helfer.cpp:371
 msgid "CIE *b"
 msgstr ""
@@ -353,149 +353,149 @@ msgstr ""
 msgid "OpenGL mode: "
 msgstr ""
 
-#: icc_gl.cpp:315
+#: icc_gl.cpp:317
 msgid "agvMove_ nicht ausgefuehrt"
 msgstr ""
 
-#: icc_gl.cpp:530 icc_gl.cpp:533 icc_gl.cpp:536 icc_gl.cpp:542 icc_gl.cpp:546
-#: icc_gl.cpp:562
+#: icc_gl.cpp:536 icc_gl.cpp:539 icc_gl.cpp:542 icc_gl.cpp:548 icc_gl.cpp:552
+#: icc_gl.cpp:568
 msgid "Konnte Font nicht oeffnen:"
 msgstr ""
 
-#: icc_gl.cpp:566 icc_gl.cpp:568
+#: icc_gl.cpp:572 icc_gl.cpp:574
 msgid "Fontgroesse nicht setzbar"
 msgstr ""
 
-#: icc_gl.cpp:644
+#: icc_gl.cpp:650
 #, c-format
 msgid "0,0,0"
 msgstr ""
 
-#: icc_gl.cpp:912
+#: icc_gl.cpp:918
 msgid "Kanalauswahl geaendert: "
 msgstr ""
 
-#: icc_gl.cpp:1336 icc_gl.cpp:1466
+#: icc_gl.cpp:1342 icc_gl.cpp:1472
 msgid "Lab_speicher Speicher nicht verfuegbar"
 msgstr ""
 
-#: icc_gl.cpp:1357 icc_gl.cpp:1358 icc_gl.cpp:1484 icc_gl.cpp:1485
+#: icc_gl.cpp:1363 icc_gl.cpp:1364 icc_gl.cpp:1490 icc_gl.cpp:1491
 msgid "RGB_speicher Ergebnis nicht verfuegbar"
 msgstr ""
 
-#: icc_gl.cpp:1457
+#: icc_gl.cpp:1463
 msgid "XYZ_speicher Speicher nicht verfuegbar"
 msgstr ""
 
-#: icc_gl.cpp:1567 icc_gl.cpp:1577 icc_gl.cpp:1579 icc_gl.cpp:1581
+#: icc_gl.cpp:1573 icc_gl.cpp:1583 icc_gl.cpp:1585 icc_gl.cpp:1587
 msgid "Slice"
 msgstr ""
 
-#: icc_gl.cpp:1568
+#: icc_gl.cpp:1574
 msgid "Rotate around slice"
 msgstr ""
 
-#: icc_gl.cpp:1583
+#: icc_gl.cpp:1589
 msgid "Rotate around"
 msgstr ""
 
-#: icc_gl.cpp:1583
+#: icc_gl.cpp:1589
 msgid "axis"
 msgstr ""
 
-#: icc_gl.cpp:1588
+#: icc_gl.cpp:1594
 msgid "Slice plane"
 msgstr ""
 
-#: icc_gl.cpp:1591
+#: icc_gl.cpp:1597
 msgid "White"
 msgstr ""
 
-#: icc_gl.cpp:1592
+#: icc_gl.cpp:1598
 msgid "Light gray"
 msgstr ""
 
-#: icc_gl.cpp:1594
+#: icc_gl.cpp:1600
 msgid "Dark gray"
 msgstr ""
 
-#: icc_gl.cpp:1598
+#: icc_gl.cpp:1604
 msgid "Background colour"
 msgstr ""
 
-#: icc_gl.cpp:1603
+#: icc_gl.cpp:1609
 msgid "gray"
 msgstr ""
 
-#: icc_gl.cpp:1604
+#: icc_gl.cpp:1610
 msgid "coloured"
 msgstr ""
 
-#: icc_gl.cpp:1605
+#: icc_gl.cpp:1611
 msgid "high contrast"
 msgstr ""
 
-#: icc_gl.cpp:1606
+#: icc_gl.cpp:1612
 msgid "shells"
 msgstr ""
 
-#: icc_gl.cpp:1611
+#: icc_gl.cpp:1617
 msgid "Sphere 1dE"
 msgstr ""
 
-#: icc_gl.cpp:1612
+#: icc_gl.cpp:1618
 msgid "Sphere 2dE"
 msgstr ""
 
-#: icc_gl.cpp:1613
+#: icc_gl.cpp:1619
 msgid "Sphere 4dE"
 msgstr ""
 
-#: icc_gl.cpp:1616
+#: icc_gl.cpp:1622
 msgid "Star"
 msgstr ""
 
-#: icc_gl.cpp:1619
+#: icc_gl.cpp:1625
 msgid "Point"
 msgstr ""
 
-#: icc_gl.cpp:1622
+#: icc_gl.cpp:1628
 msgid "without markers"
 msgstr ""
 
-#: icc_gl.cpp:1623
+#: icc_gl.cpp:1629
 msgid "Spektral line"
 msgstr ""
 
-#: icc_gl.cpp:1626 icc_betrachter.cxx:693
+#: icc_gl.cpp:1632 icc_betrachter.cxx:693
 msgid "Texts"
 msgstr ""
 
-#: icc_gl.cpp:1628
+#: icc_gl.cpp:1634
 msgid "Texts/Arrows on/off"
 msgstr ""
 
-#: icc_gl.cpp:1630
+#: icc_gl.cpp:1636
 msgid "Illustration"
 msgstr ""
 
-#: icc_gl.cpp:1782 icc_profile_tags.cpp:291
+#: icc_gl.cpp:1792 icc_profile_tags.cpp:291
 msgid "Channel"
 msgstr ""
 
-#: icc_gl.cpp:1867
+#: icc_gl.cpp:1877
 msgid "RGB Ergebnis nicht verfuegbar"
 msgstr ""
 
-#: icc_gl.cpp:1941
+#: icc_gl.cpp:1951
 msgid "Pos"
 msgstr ""
 
-#: icc_gl.cpp:2355
+#: icc_gl.cpp:2365
 msgid "Konnte keine Eltern finden"
 msgstr ""
 
-#: icc_gl.cpp:2364
+#: icc_gl.cpp:2374
 msgid "Konnte keine passende Programmstruktur finden"
 msgstr ""
 
@@ -2101,11 +2101,11 @@ msgstr ""
 msgid "Paths:"
 msgstr ""
 
-#: icc_gl.h:211
+#: icc_gl.h:210
 msgid "Gibts nicht"
 msgstr ""
 
-#: icc_utils.h:201 icc_utils.h:202 icc_utils.h:203
+#: icc_utils.h:205 icc_utils.h:206 icc_utils.h:207
 msgid "!!! Warnung !!!"
 msgstr ""
 

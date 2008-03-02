@@ -114,7 +114,7 @@ GL_Ansicht::GL_Ansicht(int X,int Y,int W,int H)
   strich1 = 1;
   strich2 = 2;
   strich3 = 3;
-  fps_ = 0.02;
+  zeit_diff_ = 0.02;
   blend = false;
   smooth = false;
   wiederholen = 0;
@@ -248,6 +248,8 @@ GL_Ansicht::init(int init_id)
   schatten = 0.1;
   if (id() == 1) menueAufruf (MENU_WUERFEL);
 
+  valid_ = false;
+
   DBG_PROG_ENDE
 }
 
@@ -284,9 +286,9 @@ GL_Ansicht::bewegenStatisch_ (void* gl_a)
   DBG_PROG_START
   static int zahl = 0;
   if(zahl > 1) {
-    WARN_S( "zu viele Nutzer in " << dbgThreadId(pthread_self()) );
+    WARN_S( "zu viele Nutzer " );
   } else { pthread_self();
-    DBG_S( "neuer Thread " << dbgThreadId(pthread_self()) );
+    DBG_PROG_S( "neuer Thread" );
   }
   ++zahl;
   GL_Ansicht *gl_ansicht = (GL_Ansicht*)gl_a;
@@ -317,17 +319,11 @@ GL_Ansicht::bewegenStatisch_ (void* gl_a)
     //static double zeichnen_schlaf_alt = 0.001;
     double zeichnen_schlaf = 0.001;  // keine endlos Warteschlangen
 
-    if (gl_ansicht->fps_ < 1./25.) {
-      zeichnen_schlaf = 1./25. - /*1./ */gl_ansicht->fps_;
+    if (gl_ansicht->zeit_diff_ < 1./25.) {
+      zeichnen_schlaf = 1./25. - /*1./ */gl_ansicht->zeit_diff_;
     }
 
-    //if(gl_ansicht->zeichnete_ > 1)
-      //zeichnen_schlaf *= 5*gl_ansicht->zeichnete_;
-    /*else if(gl_ansicht->zeichnete_ == 1 &&
-            zeichnen_schlaf == zeichnen_schlaf_alt )
-      zeichnen_schlaf = 0.01;*/
-    //zeichnen_schlaf_alt = zeichnen_schlaf;
-    DBG_PROG_V( zeichnen_schlaf <<" "<< gl_ansicht->zeichnete_)
+    DBG_PROG_V( zeichnen_schlaf )
     if(gl_ansicht->ist_bewegt_) {
       icc_examin_ns::sleep(zeichnen_schlaf);
       gl_ansicht->zeichnen();;
@@ -353,10 +349,10 @@ GL_Ansicht::stupps_ (bool lauf)
   if(lauf) {
     //Fl::add_timeout(0.1, bewegenStatisch_,this);
     ist_bewegt_ = true;
-    DBG_S( "anstuppsen" )
+    DBG_THREAD_S( "anstuppsen" )
   } else {
     ist_bewegt_ = false;
-    DBG_S( "stoppen" )
+    DBG_THREAD_S( "stoppen" )
   }
   DBG_PROG_ENDE
 }
@@ -387,12 +383,22 @@ void
 GL_Ansicht::draw()
 {
   DBG_PROG_START
-  DBG_S( "draw() Eintritt" )
+  DBG_THREAD_S( "draw() Eintritt" )
   int thread = wandelThreadId(pthread_self());
   if(thread != THREAD_HAUPT) {
     WARN_S( ": falscher Thread" );
     DBG_PROG_ENDE
     return;
+  }
+
+  if(!valid())
+    valid_ = false;
+    
+  if(!valid_) {
+    GLinit_();  DBG_PROG
+    fensterForm();
+    auffrischen();
+    valid_ = true;
   }
 
   stupps_ (true);
@@ -405,7 +411,7 @@ GL_Ansicht::draw()
 
 //#define DBG_BUTTON 1
 #if DBG_BUTTON
-# define DBG_BUTTON_S(text) DBG_S(text)
+# define DBG_BUTTON_S(text) DBG_THREAD_S(text)
 #else
 # define DBG_BUTTON_S(text)
 #endif
@@ -553,8 +559,8 @@ GL_Ansicht::GLinit_()
   }
   font = new FTGLExtrdFont( font_name );
   ortho_font = new FTGLPixmapFont( font_name );
-  DBG_V( font_name )
-  DBG_MEM_V( (int*)font )
+  DBG_THREAD_V( font_name )
+  DBG_MEM_V( (int*)font <<" "<< (int*)ortho_font )
   if(font->Error()) {
     delete font;
     delete ortho_font;
@@ -614,7 +620,7 @@ GL_Ansicht::tastatur(int e)
  #define ZeichneText(Font, Zeiger)
 #endif
 
-#define ZeichneOText(Font, scal, buffer) { \
+#define ZeichneOText(Font, scal, buffer) { DBG_THREAD_V( (int*)Font <<" "<< buffer ) \
                                    glScalef(scal,scal*w()/(double)h(),scal); \
                                    ZeichneText(Font, buffer); \
                                    glScalef(1.0/scal,1.0/(scal*w()/(double)h()),1.0/scal); \
@@ -1642,6 +1648,7 @@ GL_Ansicht::menueErneuern_()
   menue_button_->copy(menue_->menu());
   menue_button_->callback(c_);
 
+  // TODO: -> oberes Menü
   //icc_examin_ns::status_info(_("left-/middle-/right mouse button -> rotate/cut/menu"));
 
   DBG_PROG_ENDE
@@ -1702,19 +1709,22 @@ void
 GL_Ansicht::zeichnen()
 {
   DBG_ICCGL_START
+  icc_examin_ns::lock(__FILE__,__LINE__);
+  gl_start();
 
   int thread = wandelThreadId(pthread_self());
   if( (thread != THREAD_GL1 && id_ == 1) ||
       (thread != THREAD_GL2 && id_ == 2)  ) {
-    WARN_S( ": falscher Thread" << dbgThreadId(pthread_self()) );
+    WARN_S( ": falscher Thread" );
     DBG_PROG_ENDE
     return;
   }
 
-  if(!valid()) {
+  if(!valid_) {
     GLinit_();  DBG_PROG
     fensterForm();
     auffrischen();
+    valid_ = true;
   }
 
   // aktualisiere Schatten
@@ -1970,7 +1980,7 @@ GL_Ansicht::zeichnen()
                   }
 
            bool strich_neu = false;
-           if(fps_ > 1./10. &&
+           if(zeit_diff_ > 1./10. &&
               !wiederholen)
            {
              if(smooth)
@@ -1979,7 +1989,7 @@ GL_Ansicht::zeichnen()
                strich_neu = true;
              }
            }
-           if(fps_ > 1./1000. &&
+           if(zeit_diff_ > 1./1000. &&
               !wiederholen && ist_bewegt_)
            {
              if(!smooth)
@@ -2004,7 +2014,6 @@ GL_Ansicht::zeichnen()
            // Geschwindigkeit
 
            GL_Ansicht *gl_ansicht = this;
-           //if(gl_ansicht->zeichnete_ <= 1)
            //{
            static time_t zeit_alt = 0;
            time_t zeit;
@@ -2016,7 +2025,7 @@ GL_Ansicht::zeichnen()
            double tmp_d;
            zeit = tv.tv_usec/(1000000/teiler)
                   + (time_t)(modf((double)tv.tv_sec/teiler,&tmp_d)*teiler*teiler);
-           DBG_V( modf(tv.tv_sec/teiler,&tmp_d)*teiler*teiler<<","<<tv.tv_usec/(1000000/teiler) )
+           DBG_THREAD_V( modf(tv.tv_sec/teiler,&tmp_d)*teiler*teiler<<","<<tv.tv_usec/(1000000/teiler) )
 #          else // WINDOWS TODO
            teiler = CLOCKS_PER_SEC;
            zeit = clock();
@@ -2024,29 +2033,29 @@ GL_Ansicht::zeichnen()
            time_t dz = zeit - zeit_alt;
            //static double zeit_sum = 1.0;
            //static int n = 90;
-           DBG_V( zeit<<" "<<zeit_alt<<" "<<dz )
+           DBG_THREAD_V( zeit<<" "<<zeit_alt<<" "<<dz )
            double dzeit = dz / teiler;
            if(dzeit < 0.001)
              dzeit = 0.001;
            //zeit_sum += dzeit;
-           gl_ansicht->fps_ = dzeit;//n / zeit_sum;
+           gl_ansicht->zeit_diff_ = dzeit;//n / zeit_sum;
 #          if 0
-           DBG_V( n<<" "<<dzeit<<" "<<zeit_sum<<" "<<fps_ )
+           DBG_THREAD_V( n<<" "<<dzeit<<" "<<zeit_sum<<" "<<zeit_diff_ )
            // Messbereichskorrektur
            if(n > 1/dzeit)
            {
              int n_alt = n;
              n = (int)(0.6/dzeit);
-             zeit_sum = /*1./ */gl_ansicht->fps_;
+             zeit_sum = /*1./ */gl_ansicht->zeit_diff_;
              zeit_sum *= n/(double)n_alt;
            } else
              ++n;
 #          endif
 
            zeit_alt = zeit;
-           sprintf(gl_ansicht->t, "fps_:%01f tv:%d,%d zeit:%ld"/* n:%d*/" dzeit:%f",// zeit_sum:%f",
-                   gl_ansicht->fps_, tv.tv_sec, tv.tv_usec, zeit, /*n,*/ dzeit/*, zeit_sum*/);
-           DBG_V( gl_ansicht->t )
+           sprintf(gl_ansicht->t, "zeit_diff_:%01f tv:%d,%d zeit:%ld"/* n:%d*/" dzeit:%f",// zeit_sum:%f",
+                   gl_ansicht->zeit_diff_, tv.tv_sec, tv.tv_usec, zeit, /*n,*/ dzeit/*, zeit_sum*/);
+           DBG_THREAD_V( gl_ansicht->t )
 
            //} else
 
@@ -2069,9 +2078,10 @@ GL_Ansicht::zeichnen()
     //glFinish();
 #   endif
   } else
-    DBG
+    DBG_THREAD
 
-  zeichnete_++;
+  gl_finish();
+  icc_examin_ns::unlock(this, __FILE__,__LINE__);
   DBG_ICCGL_ENDE
 }
 

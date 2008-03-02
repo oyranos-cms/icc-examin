@@ -78,9 +78,6 @@ dbgWriteF (/*std::ostringstream & ss*/)
       data = 0;
       WARN_S( _("Dateigroesse 0 fuer ") << dateiname )
     }
-
-
-
 #else
   cout << debug_s_/*ss*/.str();
 #endif
@@ -143,50 +140,56 @@ dbgThreadId(Fl_Thread id)
   {
     // in icc_thread_liste eingetragene Fl_Thread's lassen sich identifizieren
     case THREAD_HAUPT:
-      cout << "\033[30m\033[1m[HAUPT]\033[m"; break;
+      dbgWrite( "\033[30m\033[1m[HAUPT]\033[m" ); break;
     case THREAD_GL1:
-      cout << "\033[33m\033[1m[GL  1]\033[m"; break;
+      dbgWrite( "\033[33m\033[1m[GL  1]\033[m" ); break;
     case THREAD_GL2:
-      cout << "\033[35m\033[1m[GL  2]\033[m"; break;
+      dbgWrite( "\033[35m\033[1m[GL  2]\033[m" ); break;
     case THREAD_LADEN:
-      cout << "\033[32m\033[1m[LADEN]\033[m"; break;
+      dbgWrite( "\033[32m\033[1m[LADEN]\033[m" ); break;
     case THREAD_WACHE:
-      cout << "\033[34m\033[1m[WACHE]\033[m"; break;
+      dbgWrite( "\033[34m\033[1m[WACHE]\033[m" ); break;
     default:
-      cout << "\033[31m\033[1m["; cout <</*s +=*/ dbg_id; cout << "]\033[m"; break;
+      dbgWrite( "\033[31m\033[1m[" ); dbgWrite(/*s +=*/ dbg_id ); dbgWrite( "]\033[m" ); break;
   }
-  //cout << s;
+  //dbgWrite( s;
   //return s;
 }
 
 const char*
 threadGettext( const char* text)
 {
-  printf("START %s:%d %s()\n", __FILE__,__LINE__,__func__);
+  //printf("START %s:%d %s()\n", __FILE__,__LINE__,__func__);
   const char *translation = text;
 # ifdef HAVE_PTHREAD_H
   static pthread_mutex_t translation_mutex_ = PTHREAD_MUTEX_INITIALIZER;
-  while (pthread_mutex_trylock( &debug_s_mutex_ )) {
-    pthread_mutex_unlock( &translation_mutex_ );
-    printf("debug_s_mutex_ nicht verfügbar\n");
-    icc_examin_ns::sleep(1.);
-    pthread_mutex_lock( &translation_mutex_ );
+  while (pthread_mutex_trylock( &translation_mutex_ )) {
+    //printf("translation_mutex_ nicht verfügbar\n");
+    icc_examin_ns::sleep(0.001);
   }
-  printf("debug_s_mutex_ ist lock\n");
-  pthread_mutex_lock( &translation_mutex_ );
-  printf("translation_mutex_ ist lock\n");
+  //printf("translation_mutex_ ist lock\n");
 
   translation = gettext( text );
 
   pthread_mutex_unlock( &translation_mutex_ );
-  printf("translation_mutex_ ist unlock\n");
-  pthread_mutex_unlock( &debug_s_mutex_ );
-  printf("debug_s_mutex_ ist unlock\n");
+  //printf("translation_mutex_ ist unlock\n");
 # else
   translation = gettext( text );
 # endif
-  printf("ENDE  %s:%d %s()\n", __FILE__,__LINE__,__func__);
+  //printf("ENDE  %s:%d %s()\n", __FILE__,__LINE__,__func__);
   //DBG_PROG_ENDE
   return translation;
+}
+
+int
+iccLevel_PROG(int plus_minus_null)
+{
+  int pth = wandelThreadId( pthread_self() );
+  if(pth < DBG_MAX_THREADS) {
+    level_PROG_ [pth] = level_PROG_[pth] + plus_minus_null;
+    return level_PROG_ [pth];
+  } else {
+    return 0;
+  }
 }
 
