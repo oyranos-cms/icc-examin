@@ -196,7 +196,13 @@ FONT = FreeSans.ttf
 SOURCES = $(ALL_SOURCEFILES) $(ALL_HEADERFILES)
 OBJECTS = $(CPPFILES:.cpp=.o) $(CXXFILES:.cxx=.o)
 CLIB_OBJECTS =  $(CFILES:.c=.o)
-TARGET  = icc_examin
+
+ALL_FILES =	$(SOURCES) \
+	makefile \
+	configure.sh \
+	$(DOKU) \
+	$(FONT) \
+	$(FLUID)
 
 ifdef APPLE
 REZ     = /Developer/Tools/Rez -t APPL -o $(TARGET) /opt/local/include/FL/mac.r
@@ -303,12 +309,7 @@ EXEEXT		=
 tgz:
 	mkdir Entwickeln
 	$(COPY) \
-	$(SOURCES) \
-	makefile \
-	configure.sh \
-	$(DOKU) \
-	$(FONT) \
-	$(FLUID) \
+	$(ALL_FILES) \
 	Entwickeln
 	tar cf - Entwickeln/ \
 	| gzip > $(TARGET)_$(mtime).tgz
@@ -320,12 +321,7 @@ tgz:
 targz:
 	mkdir icc_examin_$(VERSION)
 	$(COPY) \
-	$(SOURCES) \
-	makefile \
-	configure.sh \
-	$(DOKU) \
-	$(FONT) \
-	$(FLUID) \
+	$(ALL_FILES) \
 	icc_examin_$(VERSION)
 	tar cf - icc_examin_$(VERSION)/ \
 	| gzip > $(TARGET)_$(mtime).tgz

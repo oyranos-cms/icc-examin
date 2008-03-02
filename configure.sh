@@ -1,23 +1,32 @@
 #/bin/bash
 
-
 CONF_H=config.h
 CONF=config
+
+TARGET=icc_examin
 VERSION_A=0
 VERSION_B=2
-VERSION_C=6
+VERSION_C=7
 VERSION=$VERSION_A.$VERSION_B$VERSION_C
 VERSION_L=$VERSION_A.$VERSION_B.$VERSION_C
 ZEIT="Mai 2004 - April 2005"
 
-prefix=/opt/local
+if [ $# -gt 1 ] && [ $1 == "--prefix" ]; then
+  prefix=$2
+else
+  prefix=/opt/local
+fi
+
 
 test -f error.txt && rm -v error.txt
 test -f config && make clean
 
 echo "# automatically generated file - do not edit" > $CONF
 echo "/* automatically generated file - do not edit */" > $CONF_H
+echo "" >> $CONF
+echo "TARGET = $TARGET" >> $CONF
 echo "prefix = $prefix" >> $CONF
+echo "" >> $CONF
 
 
 echo ""
@@ -121,7 +130,7 @@ echo "VERSION_B = $VERSION_B" >> $CONF
 echo "VERSION_C = $VERSION_C" >> $CONF
 echo "VERSION   = $VERSION" >> $CONF
 echo "VERSION_L = $VERSION_L" >> $CONF
-echo "src_dir = `pwd`/icc_examin_$VERSION" >> $CONF
+echo "src_dir = `(cd ..;pwd)`/$TARGET_$VERSION" >> $CONF
 echo "srcdir = `pwd`" >> $CONF
 
 echo "#ifndef ICC_VERSION_H" > icc_version.h
