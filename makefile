@@ -222,8 +222,12 @@ clean:
 it3:	t3
 	cp test3 /opt/kai-uwe/bin/icc_examin
 
-depend:
-	$(MAKEDEPEND) -f makedepend -s "#Bitte stehen lassen" -I. $(CXXFLAGS) $(SOURCES)
+config:
+	configure.sh
+
+mkdepend:
+	echo "" > mkdepend
+	$(MAKEDEPEND) -f mkdepend -s "#Bitte stehen lassen" -I. $(CXXFLAGS) $(SOURCES)
 
 
 # The extension to use for executables...
@@ -237,15 +241,15 @@ EXEEXT		=
 	$(CXX) -I.. $(CXXFLAGS) $< $(LINKFLTK) $(LDLIBS) -o $@
 	$(POSTBUILD) $@ ../FL/mac.r
 
-.c.o:
+.c.o:	mkdepend
 	echo Compiling $<...
 	$(CC) -I.. $(CFLAGS) -c $<
 
-.cxx.o:
+.cxx.o:	mkdepend
 	echo Compiling $<...
 	$(CXX) -I.. $(CXXFLAGS) -c $<
 
-.cpp.o:
+.cpp.o:	mkdepend
 	echo Compiling $<...
 	$(CXX) -I.. $(CXXFLAGS) -c $<
 
@@ -262,5 +266,5 @@ tgz:
 	mv -v $(TARGET)_*.tgz ../Archiv
 
 # Abhängigkeiten
-include makedepend
+include mkdepend
 

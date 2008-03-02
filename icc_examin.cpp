@@ -168,6 +168,8 @@ ICCexamin::oeffnen (std::vector<std::string> dateinamen)
     if(profile.profil()->hasTagName("ncl2"))
     {
       icc_betrachter->DD_histogram->zeigen();
+      icc_betrachter->menueintrag_3D->set();
+      _zeig_histogram = true;
       profile.oeffnen(icc_oyranos.moni(),-1);
       profile.oeffnen(icc_oyranos.cmyk(),-1);
     }
