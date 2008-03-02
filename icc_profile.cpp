@@ -2,7 +2,7 @@
 // Copyright: Kai-Uwe Behrmann <ku.b@gmx.de>
 // Date:      04. 05. 2004
 
-#if 0
+#if 1
   #ifndef DEBUG
    #define DEBUG
   #endif
@@ -38,9 +38,14 @@ icValue (icUInt16Number val)
   unsigned int *erg = (unsigned int*) &korb[0];
 
   #ifdef DEBUG_ICCFUNKT
+  #if 0
   cout << *erg << " Größe nach Wandlung " << (int)korb[0] << " "
        << (int)korb[1] << " " << (int)korb[2] << " " <<(int)korb[3]
        << " "; DBG
+  #else
+  cout << *erg << " Größe nach Wandlung " << (int)temp[0] << " " << (int)temp[1]
+       << " "; DBG
+  #endif
   #endif
   return (long)*erg;
 #else
@@ -308,12 +313,12 @@ getChannelNames (icColorSpaceSignature color)
     case icSigLuvData: texte.push_back (_("CIE *L"));
                        texte.push_back (_("CIE *u"));
                        texte.push_back (_("CIE *v")); break;
-    case icSigYCbCrData: texte.push_back (_("Leuchtdichte"));
-                       texte.push_back (_("Chromina b"));
-                       texte.push_back (_("Chromina r")); break;
-    case icSigYxyData: texte.push_back (_("Y (Leuchtdichte)"));
-                       texte.push_back (_("x"));
-                       texte.push_back (_("y")); break;
+    case icSigYCbCrData: texte.push_back (_("Leuchtdichte Y"));
+                       texte.push_back (_("Farbanteil b"));
+                       texte.push_back (_("Farbanteil r")); break;
+    case icSigYxyData: texte.push_back (_("CIE Y (Leuchtdichte)"));
+                       texte.push_back (_("CIE x"));
+                       texte.push_back (_("CIE y")); break;
     case icSigRgbData: texte.push_back (_("Rot"));
                        texte.push_back (_("Grün"));
                        texte.push_back (_("Blau")); break;
@@ -898,13 +903,13 @@ ICCtag::getText                     (void)
     outputEnt = icValue(lut16->outputEnt);
     std::stringstream s;
     s << _("Konvertierungskette mit 16-bit Präzission:") << endl <<
-      _("Intent:") << " " << renderingIntentName(_intent) << endl <<
-      _("Eingangskanäle") << " (" << getColorSpaceName(_color_in)  << "): " << (int)inputChan << endl <<
-      _("Ausgangskanäle") << " (" << getColorSpaceName(_color_out) << "): " << (int)outputChan << endl <<
-      _("Matrix") << endl <<
-      _("lineare Eingangkurve") << " " << _("mit") << " " << (int)inputEnt << " " << _("Stufungen") << endl <<
-      _("3D Farbtabelle mit") << " " <<  (int)clutPoints << " " << _("Punkten Seitenlänge") << endl <<
-      _("lineare Ausgangskurve") << " " << _("mit") << " " << (int)outputEnt << " " << _("Stufungen") << endl;
+         _("Intent:") << " " << renderingIntentName(_intent) << endl <<
+         _("Eingangskanäle") << " (" << getColorSpaceName(_color_in)  << "): " << (int)inputChan << endl <<
+         _("Ausgangskanäle") << " (" << getColorSpaceName(_color_out) << "): " << (int)outputChan << endl <<
+         _("Matrix") << endl <<
+         _("lineare Eingangkurve") << " " << _("mit") << " " << (int)inputEnt << " " << _("Stufungen") << endl <<
+         _("3D Farbtabelle mit") << " " <<  (int)clutPoints << " " << _("Punkten Seitenlänge") << endl <<
+         _("lineare Ausgangskurve") << " " << _("mit") << " " << (int)outputEnt << " " << _("Stufungen") << endl;
     texte.push_back( s.str() );
   } else if (getTypName() == "mft1") {
     icLut8* lut8 = (icLut8*) &_data[8];
@@ -912,13 +917,14 @@ ICCtag::getText                     (void)
     inputChan = (int)lut8->inputChan;
     outputChan = (int)lut8->outputChan;
     clutPoints = (int)lut8->clutPoints;
+
     std::stringstream s;
     s << _("Konvertierungskette mit 8-bit Präzission:") << endl <<
-      _("Intent:") << " " << renderingIntentName(_intent) << endl <<
-      _("Eingangskanäle") << " (" << getColorSpaceName(_color_in)  << "): " << (int)inputChan << endl <<
-      _("Ausgangskanäle") << " (" << getColorSpaceName(_color_out) << "): " << (int)outputChan << endl <<
-      _("Matrix") << endl <<
-      _("3D Farbtabelle mit") << " " <<  (int)clutPoints << " " << _("Punkten Seitenlänge") << endl;
+         _("Intent:") << " " << renderingIntentName(_intent) << endl <<
+         _("Eingangskanäle") << " (" << getColorSpaceName(_color_in)  << "): " << (int)inputChan << endl <<
+         _("Ausgangskanäle") << " (" << getColorSpaceName(_color_out) << "): " << (int)outputChan << endl <<
+         _("Matrix") << endl <<
+         _("3D Farbtabelle mit") << " " <<  (int)clutPoints << " " << _("Punkten Seitenlänge") << endl;
     texte.push_back( s.str() );
   } else if (((icTagBase*)&_data[0])->sig == (icTagTypeSignature)icValue( icSigChromaticityType )) {
     int count = icValue(*(icUInt16Number*)&_data[8]);
@@ -1167,18 +1173,8 @@ ICCtag::getNumbers                                 (MftChain typ)
          }
          break;
     case CURVE_IN:
-         for (int i = 0; i < inputEnt * inputChan; i++)
-           nummern.push_back( icValue ((icUInt16Number)_data[start + 2*i]) );
-         break;
     case TABLE:
-         start += (inputChan * inputEnt) * 2;
-         for (int i = 0; i < feldPunkte * outputChan; i++)
-           nummern.push_back( icValue ((icUInt16Number)_data[start + 2*i]) );
-         break;
     case CURVE_OUT:
-         start += (inputChan * inputEnt + feldPunkte * outputChan) * 2;
-         for (int i = 0; i < outputEnt * outputChan; i++)
-           nummern.push_back( icValue ((icUInt16Number)_data[start + 2*i]) );
          break;
     } 
   } else if (getTypName() == "mft1") {
@@ -1199,18 +1195,8 @@ ICCtag::getNumbers                                 (MftChain typ)
          }
          break;
     case CURVE_IN:
-         for (int i = 0; i < 256 * inputChan; i++)
-           nummern.push_back( icValue ((icUInt8Number)_data[start + 2*i]) );
-         break;
     case TABLE:
-         start += (inputChan * 256) * 2;
-         for (int i = 0; i < feldPunkte * outputChan; i++)
-           nummern.push_back( icValue ((icUInt8Number)_data[start + 2*i]) );
-         break;
     case CURVE_OUT:
-         start += (inputChan * 256 + feldPunkte * outputChan) * 2;
-         for (int i = 0; i < 256 * outputChan; i++)
-           nummern.push_back( icValue ((icUInt8Number)_data[start + 2*i]) );
          break;
     } 
   }

@@ -400,7 +400,9 @@ void draw_kurve    (int X, int Y, int W, int H,
       fl_color(FL_BLACK);
     } else if (texte[j] == _("Leuchtdichte")) {
       fl_color(FL_WHITE);
-    } else if (texte[j] == _("Y (Leuchtdichte)")) {
+    } else if (texte[j] == _("Leuchtdichte Y")) {
+      fl_color(FL_WHITE);
+    } else if (texte[j] == _("CIE Y (Leuchtdichte)")) {
       fl_color(FL_WHITE);
     } else if (texte[j] == _("Helligkeit")) {
       fl_color(FL_WHITE);
@@ -412,9 +414,9 @@ void draw_kurve    (int X, int Y, int W, int H,
       fl_color(FL_RED);
     } else if (texte[j] == _("CIE *b")) {
       fl_color(FL_BLUE);
-    } else if (texte[j] == _("Chromina b")) {
+    } else if (texte[j] == _("Farbanteil b")) {
       fl_color(FL_BLUE);
-    } else if (texte[j] == _("Chromina r")) {
+    } else if (texte[j] == _("Farbanteil r")) {
       fl_color(FL_RED);
     } else {
       fl_color(9 + j);

@@ -85,7 +85,7 @@ Function {} {open C return_type int
   fullscreen = false;} {}
   Fl_Window details {
     label {ICC Details} open
-    xywh {837 420 385 520} type Double box NO_BOX color 53
+    xywh {801 355 385 520} type Double box NO_BOX color 53
     code0 {browser = new openvrml::browser(cout, cerr);}
     code1 {DBG
     if (argc>1) {
@@ -218,6 +218,9 @@ Function {} {open C return_type int
               label {Der Text}
               xywh {0 185 385 310} color 53 align 18
               class TagTexts
+            }
+            Fl_Box mft_gl {
+              xywh {0 185 385 310}
             }
           }
         }
@@ -671,8 +674,7 @@ class MftChoice {open : {public Fl_Choice}
     break;
   }
 
-  gewaehlter_eintrag = mw->value();} {selected
-    }
+  gewaehlter_eintrag = mw->value();} {}
   }
 } 
 
@@ -728,4 +730,55 @@ Function {zeilenNachVector(std::string text)} {return_type {std::vector<std::str
 
 
   return texte;} {}
+} 
+
+class GL_Ansicht {open : {public Fl_Widget}
+} {
+  decl {int X; int Y; int W; int H; std::vector<std::string>texte; std::vector<double>punkte; std::vector<std::vector<double> >kurven;} {}
+  decl {int wiederholen;} {public
+  }
+  Function {GL_Ansicht(int X,int Y,int W,int H) : Fl_Widget(X,Y,W,H), X(X), Y(Y), W(W), H(H)} {} {}
+  Function {draw()} {open
+  } {
+    code {// Kurven oder Punkte malen
+  cout << punkte.size() << "/" << kurven.size() <<" "<< texte.size() <<" "; DBG
+
+  if (punkte.size() >= 3) {
+    wiederholen = true;
+    draw_cie_shoe(x(),y(),w(),h(),texte,punkte,false);
+    Fl::add_timeout( 1.2, (void(*)(void*))d_haendler ,(void*)this);
+
+  } else {
+    wiederholen = false;
+    draw_kurve   (x(),y(),w(),h(),texte,kurven);
+  }
+  DBG} {selected
+    }
+  }
+  Function {hinein_punkt(std::vector<double> vect, std::vector<std::string> txt)} {open
+  } {
+    code {//CIExyY aus tag_browser anzeigen
+  punkte.clear();
+  for (unsigned int i = 0; i < vect.size(); i++)
+    punkte.push_back (vect[i]);
+  texte.clear();
+  for (unsigned int i = 0; i < txt.size(); i++)
+    texte.push_back (txt[i]);
+  kurven.clear();
+
+  zeig_mich(this);} {}
+  }
+  Function {hinein_kurven(std::vector<std::vector<double> >vect, std::vector<std::string> txt)} {open
+  } {
+    code {//Kurve aus tag_browser anzeigen
+  kurven = vect;
+  texte = txt;
+  punkte.clear();
+
+  zeig_mich(this);} {}
+  }
+  Function {ruhig_neuzeichnen(void)} {open return_type void
+  } {
+    code {draw_cie_shoe(x(),y(),w(),h(),texte,punkte,true);} {}
+  }
 } 
