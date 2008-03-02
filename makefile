@@ -31,6 +31,7 @@ CPP_HEADERS = \
 	icc_examin.h \
 	icc_utils.h \
 	icc_profile.h \
+	icc_profiler.h \
 	icc_vrml.h \
 	cccie64.h \
 	ciexyz64_1.h
@@ -39,6 +40,7 @@ CPPFILES = \
 	ViewerFLTK.cpp \
 	icc_draw.cpp \
 	icc_profile.cpp \
+	icc_profiler.cpp \
 	icc_vrml.cpp
 CXXFILES = \
 	icc_examin.cxx

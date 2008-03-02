@@ -387,16 +387,34 @@ void draw_kurve    (int X, int Y, int W, int H,
     #ifdef DEBUG//_DRAW
     cout << "Zeichne Kurve "<< texte[j] << " " << j << " " << kurven[j].size() << " Teile "; DBG
     #endif
-    for (unsigned int i = 1; i < kurven[j].size(); i++) {
-      fl_line (x( (i-1) / ((kurven[j].size()-1) *n) ),
+    s.str("");
+    if (kurven[j].size() == 0) {
+      fl_line (x( 0 ), y( 0 ), x( 1 ), y( 1 ) );
+      // Infos einblenden 
+      s << name << _(" mit Gamma: 1.0");
+      fl_draw ( s.str().c_str(), x(0) + 2, y(n) + j*16 + 12);
+    } else if (kurven[j].size() == 1) {
+      int segmente = 256;
+      double gamma = kurven[j][0]*256.0;
+      for (int i = 1; i < segmente; i++)
+        fl_line (x( (i-1) / ((segmente-1) *n) ),
+               y( pow( (double)(i-1.0)/segmente, gamma ) ),
+               x( (i) / ((segmente-1) *n) ),
+               y( pow( (double)i/segmente, gamma ) ) );
+      // Infos einblenden 
+      s << name << _(" mit einem Eintrag für Gamma: ") << gamma;
+      fl_draw ( s.str().c_str(), x(0) + 2, y(n) + j*16 + 12);
+    } else {
+      for (unsigned int i = 1; i < kurven[j].size(); i++) {
+        fl_line (x( (i-1) / ((kurven[j].size()-1) *n) ),
                y( kurven[j][i-1] ),
                x( (i) / ((kurven[j].size()-1) *n) ),
                y( kurven[j][i] ) );
+      }
+      // Infos einblenden 
+      s << name << _(" mit ") << kurven[j].size() << _(" Punkten");
+      fl_draw ( s.str().c_str(), x(0) + 2, y(n) + j*16 + 12);
     }
-    // Infos einblenden 
-    s.str("");
-    s << name << _(" mit Punkten: ") << kurven[j].size();
-    fl_draw ( s.str().c_str(), x(0) + 2, y(n) + j*16 + 12);
   }
   
   fl_pop_clip();

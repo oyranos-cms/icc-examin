@@ -189,7 +189,7 @@ int main(int argc, char **argv) {
   }
   w->resizable(tag_texts);
   w->show();
-  canvas->show();
+  canvas->hide();
   viewer->Hok=1;
   viewer->Hdraw=1;
   viewer->timerUpdate();
@@ -383,7 +383,10 @@ void TagBrowser::select_item(int item) {
     cout << TagInfo.size() << " " << TagInfo[0] << TagInfo[1] << " "; DBG
 
     if        ( TagInfo[1] == "text"
-             || TagInfo[1] == "cprt?") {
+             || TagInfo[1] == "cprt?"
+             || TagInfo[1] == "meas"
+             || TagInfo[1] == "sig"
+             || TagInfo[1] == "dtim") {
       tag_texts->hinein ( profile.getTagText (item) ); DBG
     } else if ( TagInfo[1] == "desc" ) {
       tag_texts->hinein( (profile.getTagDescription (item))[0] ); DBG
@@ -403,16 +406,18 @@ void TagBrowser::select_item(int item) {
       }
       tag_viewer->hinein_punkt( alle_punkte, alle_texte );
     } else if ( TagInfo[1] == "curv"
-             || TagInfo[1] == "vcgt" ){
+             || TagInfo[1] == "bfd"
+             || TagInfo[1] == "vcgt" ) {
       std::vector<std::vector<double> > kurven;
       std::vector<double> kurve;
       std::vector<std::string> texte;
       std::string TagName;
       for (int i_name = 0; i_name < profile.tagCount(); i_name++) {
         if ( (profile.printTagInfo(i_name))[1] == "curv"
+          || (profile.printTagInfo(i_name))[1] == "bfd"
           || (profile.printTagInfo(i_name))[1] == "vcgt" ) {
           kurve = profile.getTagCurve (i_name);
-          kurven.push_back (kurve/*[i]*/);
+          kurven.push_back (kurve);
           TagInfo = profile.printTagInfo (i_name);
           for (unsigned int i = 0; i < 2; i++)
             texte.push_back (TagInfo[i]);

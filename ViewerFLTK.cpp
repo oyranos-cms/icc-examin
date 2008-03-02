@@ -1,5 +1,7 @@
 #include "ViewerFLTK.h"
 #include "vFLGLWidget.h"
+
+#define DEBUG
 #ifdef DEBUG
 #define DBG cout << __FILE__<<":"<<__LINE__ << __func__ << "()" << endl;
 #else
@@ -29,20 +31,24 @@ void ViewerFLTK::handleInput( viewer::event_info *e )
 
 void ViewerFLTK::handleRedraw()
 {DBG
-    if ( ( (da_widget->valid()) && (Hok==1) )
-      || ( (da_widget->valid()) && (Hdraw==1) && (Hok==0) ) )
+    if ( (( (da_widget->valid()) && (Hok==1) )
+       || ( (da_widget->valid()) && (Hdraw==1) && (Hok==0) ))
+      && da_widget )
     {DBG
         int width, height;
         width = da_widget->w();
-        height = da_widget->h();
+        height = da_widget->h(); DBG
+        #ifdef DEBUG
+        cout << da_widget << " " << width << "x" << height << " "; DBG
+        #endif
 
-        da_widget->make_current();
+        da_widget->make_current(); DBG
         if (width != d_width || height != d_height)
         {DBG
             resize( width, height );
             d_height = height;
             d_width = width;
-        }
+        } DBG
         redraw();
     }
 }

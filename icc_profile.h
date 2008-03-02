@@ -128,6 +128,11 @@ class ICCtag {
     int                 hasVrml();*/
     std::string         getSigTagName( icTagSignature  sig );
     std::string         getSigTypeName( icTagTypeSignature  sig );
+    std::string         getSigTechnology( icTechnologySignature sig );
+    std::string         getIlluminant( icIlluminant illu );
+    std::string         getStandardObserver( icStandardObserver obsv );
+    std::string         getMeasurementGeometry( icMeasurementGeometry measgeo );
+    std::string         getMeasurementFlare( icMeasurementFlare flare );
 //    void                printLut           (   LPLUT           Lut,
 //                                               int             sig);
 };

@@ -531,11 +531,51 @@ ICCtag::load                        ( icTag *tag, char* data )
 std::string
 ICCtag::getText                     (void)
 { DBG
-  std::string text;
+  std::string text = "Fehl";
 
-  text.append (&_data[8], _size);
+  if (getTypName() == "sig") {
+    if (_size < 12) return text;
+    icTechnologySignature tech;
+    memcpy (&tech, &_data[8] , 4);
+    text = getSigTechnology( (icTechnologySignature) icValue(tech) );
+  } else if (getTypName() == "dtim") {
+    if (_size < 20) return text;
+    DBG
+    std::stringstream s;
+    icDateTimeNumber date;
+    memcpy (&date, &_data[8] , 12);
+    s << _("Datum") << ": " <<
+                       icValue(date.day)     << "/" <<
+                       icValue(date.month)   << "/" <<
+                       icValue(date.year)    << " " <<
+                       icValue(date.hours)   << ":" <<
+                       icValue(date.minutes) << " " << _("Uhr") << " " <<
+                       icValue(date.seconds) << " " << _("Sekunden");
+    text = s.str();
+  } else if (getTypName() == "meas") {
+    if (_size < 36) return text;
+    std::stringstream s;
+    icMeasurement meas;
+    memcpy (&meas, &_data[8] , 28);
+    s << 
+    getStandardObserver( (icStandardObserver)icValue( meas.stdObserver) ) <<endl
+      << _("Rückseite") << ": X= " << icValueSF(meas.backing.X)
+                        << ", Y= " << icValueSF(meas.backing.Y)
+                        << ", Z= " << icValueSF(meas.backing.Z) << endl
+      << _("Geometrie") << ": "<< 
+    getMeasurementGeometry ((icMeasurementGeometry)icValue(meas.geometry))<<endl
+      << _("Flare")     << ": "<< 
+    getMeasurementFlare ((icMeasurementFlare)icValue(meas.flare)) << endl
+      << _("Beleuchtungstyp") << ": " <<
+    getIlluminant ((icIlluminant)icValue(meas.illuminant)) <<endl;
+    text = s.str();
+  } else {
+    text = "";
+    text.append (&_data[8], _size - 8);
+  }
+    
   #ifdef DEBUG_ICCTAG
-  cout << &_data[8] << "|" << "|" << text << " "; DBG
+  cout << " " << "" << "|" << getTypName() << "|" << text << " "; DBG
   #endif
   return text;
 }
@@ -573,8 +613,9 @@ ICCtag::getCurve                                  (void)
 {
   std::vector<double> punkte;
   icCurveType *daten = (icCurveType*) &_data[0];
+  int count = icValue(daten->curve.count);
 
-  for (unsigned int i = 0; i < icValue(daten->curve.count); i++)
+  for (int i = 0; i < count; i++)
     punkte.push_back (icValue(daten->curve.data[i])/65536.0);
 
   return punkte;
@@ -605,7 +646,7 @@ ICCtag::getMore                                   ( void )
     case icSigGreenColorantTag: text = _("grüne Grundfarbe"); break;
     case icSigGreenTRCTag: text = _("grüne Farbwiedergabekurve"); break;
     case icSigLuminanceTag: text = _("lumi"); break;
-    case icSigMeasurementTag: text = _("meas"); break;
+    case icSigMeasurementTag: text = _("Messart"); break;
     case icSigMediaBlackPointTag: text = _("Medienschwarzpunkt"); break;
     case icSigMediaWhitePointTag: text = _("Medienweißpunkt"); break;
     case icSigNamedColorTag: text = _("'ncol"); break;
@@ -744,6 +785,104 @@ ICCtag::getSigTypeName               ( icTagTypeSignature  sig )
     case icSigCrdInfoType: text = _("crdi"); break;
     case 1986226036: text = _("vcgt"); break;
     case icSigCopyrightTag: text = _("cprt?"); break; //??? (Imacon)
+    default: text = _("???"); break;
+  }
+  return text;
+}
+
+std::string
+ICCtag::getSigTechnology             ( icTechnologySignature sig )
+{
+  std::string text;
+  switch (sig) {
+    case icSigDigitalCamera: text = _("Digitale Kamera"); break; //dcam
+    case icSigFilmScanner: text = _("Filmscanner"); break; //fscn
+    case icSigReflectiveScanner: text = _("Reflectiver Scanner"); break; //rscn
+    case icSigInkJetPrinter: text = _("Tintenstrahldrucker"); break; //ijet
+    case icSigThermalWaxPrinter: text = _("Thermischer Wachsdrucker"); break; //twax
+    case icSigElectrophotographicPrinter: text = _("Electrophotograph Drucker"); break; //epho
+    case icSigElectrostaticPrinter: text = _("Electrostatischer Drucker"); break; //esta
+    case icSigDyeSublimationPrinter: text = _("Thermosublimationsdrucker"); break; //dsub
+    case icSigPhotographicPaperPrinter: text = _("Photographischer Papierdrucker"); break; //rpho
+    case icSigFilmWriter: text = _("Filmbelichter"); break; //fprn
+    case icSigVideoMonitor: text = _("Video Monitor"); break; //vidm
+    case icSigVideoCamera: text = _("Video Kamera"); break; //vidc
+    case icSigProjectionTelevision: text = _("Projection Television"); break; //pjtv
+    case icSigCRTDisplay: text = _("Kathodenstrahlmonitor"); break; //CRT
+    case icSigPMDisplay: text = _("Passivmatrixmonitor"); break; //PMD
+    case icSigAMDisplay: text = _("Aktivmatrixmonitor"); break; //AMD
+    case icSigPhotoCD: text = _("Photo CD"); break; //KPCD
+    case icSigPhotoImageSetter: text = _("PhotoImageSetter"); break; //imgs
+    case icSigGravure: text = _("Gravure"); break; //grav
+    case icSigOffsetLithography: text = _("Offset Lithography"); break; //offs
+    case icSigSilkscreen: text = _("Silkscreen"); break; //silk
+    case icSigFlexography: text = _("Flexography"); break; //flex
+    case icMaxEnumTechnology: text = _("----"); break;   
+    default: text = _("???"); break;
+  }
+  return text;
+}
+
+std::string
+ICCtag::getIlluminant             ( icIlluminant sig )
+{
+  std::string text;
+  switch (sig) {
+    case icIlluminantUnknown: text = _("Illuminant unbekannt"); break;
+    case icIlluminantD50: text = _("Illuminant D50"); break;
+    case icIlluminantD65: text = _("Illuminant D65"); break;
+    case icIlluminantD93: text = _("Illuminant D93"); break;
+    case icIlluminantF2: text = _("Illuminant F2"); break;
+    case icIlluminantD55: text = _("Illuminant D55"); break;
+    case icIlluminantA: text = _("Illuminant A"); break;
+    case icIlluminantEquiPowerE: text = _("Illuminant ausgeglichene Energie E"); break;
+    case icIlluminantF8: text = _("Illuminant F8"); break;
+    case icMaxEnumIluminant: text = _("Illuminant ---"); break;
+
+    default: text = _("???"); break;
+  }
+  return text;
+}
+
+std::string
+ICCtag::getStandardObserver             ( icStandardObserver sig )
+{
+  std::string text;
+  switch (sig) {
+    case icStdObsUnknown: text = _("unbekannt"); break;
+    case icStdObs1931TwoDegrees: text = _("2 Grad"); break;
+    case icStdObs1964TenDegrees: text = _("10 Grad"); break;
+    case icMaxStdObs: text = _("---"); break;
+
+    default: text = _("???"); break;
+  }
+  return text;
+}
+
+std::string
+ICCtag::getMeasurementGeometry             ( icMeasurementGeometry sig )
+{
+  std::string text;
+  switch (sig) {
+    case icGeometryUnknown: text = _("unbekannt"); break;
+    case icGeometry045or450: text = _("0/45, 45/0"); break;
+    case icGeometry0dord0: text = _("0/d or d/0"); break;
+    case icMaxGeometry: text = _("---"); break;
+
+    default: text = _("???"); break;
+  }
+  return text;
+}
+
+std::string
+ICCtag::getMeasurementFlare             ( icMeasurementFlare sig )
+{
+  std::string text;
+  switch (sig) {
+    case icFlare0: text = _("0"); break;
+    case icFlare100: text = _("100"); break;
+    case icMaxFlare: text = _("---"); break;
+
     default: text = _("???"); break;
   }
   return text;
@@ -985,9 +1124,12 @@ std::string
 ICCprofile::getTagText                                  (int item)
 {
   // Prüfen
-  std::string leer;
+  std::string leer = tags[item].getTypName() + " Typ - keine Textausgabe";
   if (tags[item].getTypName() != "text"
-   && tags[item].getTypName() != "cprt?")
+   && tags[item].getTypName() != "cprt?"
+   && tags[item].getTypName() != "meas"
+   && tags[item].getTypName() != "sig"
+   && tags[item].getTypName() != "dtim")
     return leer;
 
   return tags.at(item).getText();
