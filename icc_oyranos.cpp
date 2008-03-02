@@ -641,7 +641,8 @@ Oyranos::moniInfo (int x, int y, int *num)
 
   int screen = oyGetScreenFromPosition( display_name, x,y );
   char *new_display_name = changeScreenName_( display_name, screen );
-  int fehler = oyGetMonitorInfo( new_display_name,
+//int fehler =
+               oyGetMonitorInfo( new_display_name,
                                  &manufacturer, &model, &serial,
                                  myAllocFunc );
 

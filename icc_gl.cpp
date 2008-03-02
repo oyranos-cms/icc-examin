@@ -887,13 +887,12 @@ GL_Ansicht::garnieren_()
 
   DBG_PROG_V( id() )
   // Pfeile und Text
-DBG
   if (glListen[HELFER]) {
     glDeleteLists (glListen[HELFER], 1);
   }
-DBG
+
   GL_Ansicht::glListen[HELFER] = glGenLists(1);
-DBG
+
   glNewList( glListen[HELFER], GL_COMPILE); DBG_PROG_V( glListen[HELFER] )
     GLfloat farbe[] =   { pfeilfarbe[0],pfeilfarbe[1],pfeilfarbe[2], 1.0 };
     glLineWidth(strich3*strichmult);

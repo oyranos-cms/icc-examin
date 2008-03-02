@@ -88,13 +88,13 @@ main (int argc, char** argv)
     int len = (strlen(argv[0]) + strlen(reloc_path)) * 2;
     char *path = (char*) malloc( len ); // small one time leak
     char *text = (char*) malloc( len );
+    text[0] = 0;
     // whats the path for the executeable ?
     snprintf (text, len-1, argv[0]);
     if (strrchr(text, DIR_SEPARATOR_C)) {
       char *tmp = strrchr(text, DIR_SEPARATOR_C);
       *tmp = 0;
-    } else
-      sprintf( text,"");
+    }
     snprintf (path, len-1, "%s%s%s",text,DIR_SEPARATOR,reloc_path);
     locale_paths[1] = path;
     locale_paths[2] = SRC_LOCALEDIR; ++num_paths;
