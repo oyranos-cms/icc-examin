@@ -84,23 +84,23 @@ class ICCexamin : public icc_examin_ns::Beobachter
     void
 #endif
                  oeffnenStatisch_ ( void* ICCexamina );
-    void         oeffnenThread_ ();            // nur einmal pro ICCexamin
+    void         oeffnenThread_ ();            //!< nur einmal pro ICCexamin
     void         oeffnenThread_ (int erneuern__); 
   public:
-    void         oeffnen ();                   // interaktiv
+    void         oeffnen ();                   //!< interaktiv
     void         oeffnen (std::vector<std::string> dateinamen);
     bool         kannLaden () {return !lade_; };
     void         lade (std::vector<Speicher> & neu);
 
   private:
-    void         erneuerTagBrowserText_ (void);// Profil Text in browserText
+    void         erneuerTagBrowserText_ (void);//!< Profil Text in browserText
   public:
-    bool         berichtSpeichern (void);      // GCATS Auswertung -> html Datei
+    bool         berichtSpeichern (void);      //!< GCATS Auswertung -> html Datei
 
-    bool         gamutSpeichern (icc_examin_ns::IccGamutFormat format); // Farbraumhuelle
+    bool         gamutSpeichern (icc_examin_ns::IccGamutFormat format); //!< Farbraumhuelle
     void         zeigPrueftabelle ();
-    void         zeigCGATS();                  // korrigiertes CGATS zeigen
-    void         icc_betrachterNeuzeichnen (void* widget); // Oberflaechenpflege
+    void         zeigCGATS();                  //!< korrigiertes CGATS zeigen
+    void         icc_betrachterNeuzeichnen (void* widget); //!< Oberflaechenpflege
 
     std::string  waehleTag (int item);
     void         waehleMft (int item);
@@ -110,20 +110,21 @@ class ICCexamin : public icc_examin_ns::Beobachter
     int  _zeig_prueftabelle,
          farbraum_angezeigt_;
     int  status_,
-         intent_,                // RI
-         gamutwarn_;             // Farbraumwarnung
-    bool frei_,                  // wird nicht von weiterem Prozess benutzt
-         farbraum_modus_;        // profile.profil() enthaelt ncl2 Schmuckfarben
+         intent_,              //!< Uebertragungsart
+         gamutwarn_;           //!< Farbraumwarnung
+    bool frei_,                //!< wird nicht von weiterem Prozess benutzt
+         farbraum_modus_;      //!< profile.profil() enthaelt ncl2 Schmuckfarben
     ICCwaehler *icc_waehler_;
   public:
-    int  laeuft ()  { return status_; }          // kann bei >1 genutzt werden
-    bool frei()     { return frei_; }            // ist nicht gesperrt
-    void frei(int bool_);                        // Sperren mit Warten/Freigeben
+    int  laeuft ()  { return status_; }        //!< kann bei >1 genutzt werden
+    bool frei()     { return frei_; }          //!< ist nicht gesperrt
+    void frei(int bool_);                      //!< Sperren mit Warten/Freigeben
     int  frei_zahl;
-    int  intent ()  { return intent_; }          // 
-    int  gamutwarn ()  { return gamutwarn_; }    // 
+    int  intent ()  { return intent_; }        //!< die globale Uebertragungsart; siehe auch @see: ICCprofile.intent()
+    void intent (int i);                       //!< setze eine Uebertragungsart
+    int  gamutwarn ()  { return gamutwarn_; }  //!< Farbraumwarnung?
     void gamutwarn (int warn) { gamutwarn_ = warn; }
-    void gamutAnsichtZeigen ();                  // DD_farbraum zeigen
+    void gamutAnsichtZeigen ();                //!< DD_farbraum zeigen
 
   public:
     ICCfltkBetrachter* icc_betrachter;
@@ -158,21 +159,21 @@ class ICCexamin : public icc_examin_ns::Beobachter
     void vcgtZeigen ();
     void vcgtStoppen ();
   private:
-    int  vcgt_cb_laeuft_b_;  //<@brief erzaehlt ob der vcgt Fenster cp laeuft
+    int  vcgt_cb_laeuft_b_;  //!< erzaehlt ob der vcgt Fenster cp laeuft
   public:
     void testZeigen ();
     void moniHolen ();
     void moniSetzen ();
     void standardGamma ();
   public:
-      // virtual aus icc_examin_ns::Beobachter::
+      //! virtual aus icc_examin_ns::Beobachter::
     void nachricht( icc_examin_ns::Modell* modell , int infos );
 
     // Oberflaechenfunktionen (GUI)
-    void fortschritt(double f);  // Fortschritt: f<0-Start f=Wert f>1-Ende
-    void fortschrittThreaded(double f);  // inclusive aller Thread Funktionen
+    void fortschritt(double f);  //!< Fortschritt: f<0-Start f=Wert f>1-Ende
+    void fortschrittThreaded(double f);  //!< inclusive aller Thread Funktionen
 
-    void statusAktualisieren();  // benutze das "status" Makro
+    void statusAktualisieren();  //!< benutze das "status" Makro
 
 };
 

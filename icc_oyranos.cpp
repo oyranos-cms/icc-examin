@@ -329,7 +329,7 @@ Oyranos::moni_test_ (int x, int y)
     int screen = oyGetScreenFromPosition( display_name, x,y );
     char *new_display_name = changeScreenName_( display_name, screen );
     char* moni_profil = oyGetMonitorProfile( new_display_name, &size, myAllocFunc );
-    if(new_display_name) free(new_display_name); new_display_name = 0;
+    if(new_display_name) { delete [] new_display_name; new_display_name = 0; }
 
     Speicher v_block = moni_;
       DBG_MEM_V( v_block.size() )
@@ -609,7 +609,7 @@ Oyranos::setzeMonitorProfil (const char* profil_name , int x, int y )
   fehler = oySetMonitorProfile( new_display_name, profil_name );
 
   char *neues_profil = oyGetMonitorProfileName( display_name, myAllocFunc );
-  if(new_display_name) free(new_display_name); new_display_name = 0;
+  if(new_display_name) { delete [] new_display_name; new_display_name = 0; }
   DBG_PROG_V( neues_profil )
 
   if (neues_profil) free (neues_profil);
@@ -667,7 +667,7 @@ Oyranos::moniInfo (int x, int y, int *num)
   }
     
 
-  if(new_display_name) free(new_display_name); new_display_name = 0;
+  if(new_display_name) { delete [] new_display_name; new_display_name = 0; }
 
 # endif
 

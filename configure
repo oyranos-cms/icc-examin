@@ -16,6 +16,7 @@ VERSION_A=0
 VERSION_B=4
 VERSION_C=1
 RELEASE=0
+ZEIT="May 2004 - June 2006"
 VERSION=$VERSION_A.$VERSION_B$VERSION_C
 if [ $VERSION_A -gt 9 ]; then
   VERSION_L="$VERSION_A"
@@ -33,7 +34,6 @@ else
   VERSION_L="${VERSION_L}0$VERSION_C"
 fi
 VERSION_L=`echo $VERSION_L | sed 's/^0*//g'`
-ZEIT="May 2004 - May 2006"
 
 if [ $# -gt 0 ]; then
   prefix=""

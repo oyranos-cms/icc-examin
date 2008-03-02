@@ -51,6 +51,7 @@ CPP_HEADERS = \
 	icc_fenster.h \
 	icc_formeln.h \
 	icc_examin.h \
+	icc_examin_version.h \
 	icc_gamut.h \
 	icc_gl.h \
 	icc_helfer.h \

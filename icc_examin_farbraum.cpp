@@ -115,11 +115,9 @@ ICCexamin::netzLese (int n,
 
   {
     if(farbraumModus() && n == 1)
-      intent_ = profile.profil()->intent();
-    else
-      intent_ = 3;
+      intent( profile.profil()->intent() );
 
-    netz_temp = icc_oyranos. netzVonProfil(  *(profile[n]), intent_ );
+    netz_temp = icc_oyranos. netzVonProfil(  *(profile[n]), intent() );
     if(netz_temp.size())
     {
       netz_temp[0].transparenz = (*netz)[n].transparenz;

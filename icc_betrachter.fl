@@ -341,7 +341,7 @@ class ICCfltkBetrachter {open
     } {}
     Fl_Window ueber {
       label {About ICC Examin} open
-      xywh {757 190 365 289} type Double resizable
+      xywh {777 274 365 289} type Double resizable
       code0 {o->hide();}
       class My_Fl_Window non_modal visible
     } {
@@ -381,7 +381,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window vcgt {
       label {Grafic Card Gamma Table}
-      xywh {222 250 370 390} type Double resizable
+      xywh {242 334 370 390} type Double resizable
       code0 {o->hide();}
       class My_Fl_Window visible
     } {
@@ -410,14 +410,14 @@ class ICCfltkBetrachter {open
         }
         Fl_Button vcgt_close_button {
           label Close
-          callback {icc_examin->vcgtStoppen();} selected
+          callback {icc_examin->vcgtStoppen();}
           xywh {275 360 90 25}
         }
       }
     }
     Fl_Window details {
       label {ICC Examin} open
-      xywh {620 288 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
+      xywh {640 372 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
     } {
       Fl_Group {} {open
         xywh {0 0 385 520}
@@ -490,6 +490,36 @@ class ICCfltkBetrachter {open
 
   icc_examin->gamutwarn(m->value());}
               tooltip {Gamut Warning will gray out all colours not in your monitors gamut.} xywh {35 35 100 20} type Toggle shortcut 0x40077
+            }
+            MenuItem menueintrag_phot_intent {
+              label Photometric
+              callback {Fl_Menu_* mw = (Fl_Menu_*)o;
+  const Fl_Menu_Item* m = mw->mvalue();
+
+  DBG_PROG_S (m->value())
+
+  menueintrag_rel_col_intent->clear();
+
+  if(m->value())
+    icc_examin->intent(0);
+  else
+    icc_examin->intent(3);}
+              tooltip {Enable Photografic Intent} xywh {45 45 100 20} type Toggle shortcut 0x40066
+            }
+            MenuItem menueintrag_rel_col_intent {
+              label {Relative Colorimetric}
+              callback {Fl_Menu_* mw = (Fl_Menu_*)o;
+  const Fl_Menu_Item* m = mw->mvalue();
+
+  DBG_PROG_S (m->value())
+
+  menueintrag_phot_intent->clear();
+
+  if(m->value())
+    icc_examin->intent(1);
+  else
+    icc_examin->intent(3);}
+              tooltip {Enable Whitepoint Adaption;  useful for gamut comparisions} xywh {55 55 100 20} type Toggle shortcut 0x40072
             }
           }
           MenuItem menueintrag_huelle {
@@ -774,7 +804,7 @@ initHilfe();
     if(ptr)
       dateiwahl->value(ptr);
 
-    dateiwahl->show(); //filename=fl_file_chooser("Wähle ICC Profil?", "ICC Farbprofile (*.{I,i}{C,c}{M,m,C,c})", filenamen_alt[0].c_str());
+    dateiwahl->show();
 
     
 
@@ -798,7 +828,8 @@ initHilfe();
   }
 
   DBG_PROG_ENDE
-  return dateinamen;} {}
+  return dateinamen;} {selected
+    }
   }
   Function {quit(void)} {} {
     code DBG_PROG_START {}

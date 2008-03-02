@@ -152,6 +152,16 @@ private:
   void cb_menueintrag_gamutwarn_i(Fl_Menu_*, void*);
   static void cb_menueintrag_gamutwarn(Fl_Menu_*, void*);
 public:
+  static Fl_Menu_Item *menueintrag_phot_intent;
+private:
+  void cb_menueintrag_phot_intent_i(Fl_Menu_*, void*);
+  static void cb_menueintrag_phot_intent(Fl_Menu_*, void*);
+public:
+  static Fl_Menu_Item *menueintrag_rel_col_intent;
+private:
+  void cb_menueintrag_rel_col_intent_i(Fl_Menu_*, void*);
+  static void cb_menueintrag_rel_col_intent(Fl_Menu_*, void*);
+public:
   static Fl_Menu_Item *menueintrag_huelle;
 private:
   void cb_menueintrag_huelle_i(Fl_Menu_*, void*);

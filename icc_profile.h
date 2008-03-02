@@ -104,6 +104,7 @@ class ICCprofile {
     //void                cmm      (const char* s) {DBG_PROG header.cmmName (s); }
     //int                 version  ()        {DBG_PROG return (int) header.version(); }
     //const char*         creator  ()        {DBG_PROG return header.creatorName(); }
+    //! Uebertragungsart; siehe auch @see: ICCexamin.intent()
     int                 intent   ()     {return icValue(((const icHeader*)header
                                            .header_raw())-> renderingIntent ); }
     icColorSpaceSignature colorSpace()  {return header.colorSpace(); }
@@ -114,9 +115,9 @@ class ICCprofile {
 
     // Tag Infos
     int                      tagCount();
-    std::vector<std::string> printTags  (); // Liste der einzelnen Tags (5)
-    std::vector<std::string> printTagInfo      (int item); // Name,Typ
-    std::vector<std::string> getTagText        (int item);    // Inhalt
+    std::vector<std::string> printTags  (); //!< Liste der einzelnen Tags (5)
+    std::vector<std::string> printTagInfo      (int item); //!< Name,Typ
+    std::vector<std::string> getTagText        (int item); //!< Inhalt
     std::vector<std::string> getTagDescription (int item);
 
     std::vector<double>      getTagCIEXYZ      (int item);
@@ -127,11 +128,11 @@ class ICCprofile {
                              getTagTable       (int item, ICCtag::MftChain typ);
     std::vector<double>      getTagNumbers     (int item, ICCtag::MftChain typ);
     std::vector<std::string> getTagChannelNames(int item, ICCtag::MftChain typ);
-    bool                hasTagName   (std::string name); // Name
-    int                 getTagByName (std::string name); // Name
+    bool                hasTagName   (std::string name); //!< Name
+    int                 getTagByName (std::string name); //!< Name
     int                 getTagCount     (); 
 
-    // Profil Infos
+    //! Profil Infos
     char*               getProfileInfo  ();
     std::vector<double> getWhitePkt   (void);
     int                 getColourChannelsCount ();

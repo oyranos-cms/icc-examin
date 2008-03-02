@@ -324,15 +324,7 @@ ICCexamin::nachricht( Modell* modell , int info )
         {
           // ncl2 ?
           DBG_PROG_V( profile.aktuell() );
-          int intent_neu = profile.profil()->intent();
-          DBG_PROG_V( intent_neu <<" "<< intent_ )
-          if(intent_ != intent_neu ||
-             neu_laden_) {
-            farbraum ();
-            intent_ = intent_neu;
-            neu_laden_ = false;
-          } else
-            farbraum (info);
+          farbraum (info);
           icc_examin->fortschrittThreaded(0.5);
         }
 
@@ -601,6 +593,16 @@ ICCexamin::gamutAnsichtZeigen ()
       icc_betrachterNeuzeichnen(icc_betrachter->DD_farbraum);
       icc_examin_ns::unlock(this, __FILE__,__LINE__);
       DBG_PROG_S("icc_betrachterNeuzeichnen DD_farbraum")
+}
+
+void
+ICCexamin::intent( int intent_neu )
+{
+  if(intent_ != intent_neu) {
+    std::vector<std::string> profilnamen = profile;
+    oeffnen( profilnamen );
+  }
+  intent_ = intent_neu;
 }
 
 void
