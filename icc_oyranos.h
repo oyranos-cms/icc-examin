@@ -80,6 +80,9 @@ class Oyranos
                                          return cmyk_; }
     const Speicher & cmyk ()           { cmyk_test_(); return cmyk_; }
 
+    const char* proof (size_t &g)      { proof_test_(); g = proof_.size();
+                                         return proof_; }
+
     // Geraete Profile
     std::string moni_name (int x,int y){ moni_test_(x,y); return moni_.name(); }
     const char* moni (int x, int y, size_t &g)
@@ -103,10 +106,12 @@ class Oyranos
     void moni_test_( int x, int y );
     void rgb_test_();
     void cmyk_test_();
+    void proof_test_();
     Speicher lab_;
     Speicher moni_;
     Speicher rgb_;
     Speicher cmyk_;
+    Speicher proof_;
     std::map<std::string,Speicher> pspeicher_;
     bool profil_test_   (const char* profil_name);
     std::string profil_ (const char* profil_name);  

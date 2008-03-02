@@ -1831,6 +1831,7 @@ GL_Ansicht::zeigeUmrisse_()
     if (Lab_Speicher) free (Lab_Speicher);
     if (Lab_Speicher_schatten) free (Lab_Speicher_schatten);
     if (RGB_Speicher) delete [] RGB_Speicher;
+    if (RGBSchatten_Speicher) delete [] RGBSchatten_Speicher;
 
   }
     GLfloat farbe[] =   { pfeilfarbe[0],pfeilfarbe[1],pfeilfarbe[2], 1.0 };
@@ -2027,6 +2028,7 @@ GL_Ansicht::zeigeSpektralband_()
 
     if (XYZ_Speicher) delete [] XYZ_Speicher;
     if (RGB_Speicher) delete [] RGB_Speicher;
+    if (RGBSchatten_Speicher) delete [] RGBSchatten_Speicher;
     if (Lab_Speicher) delete [] Lab_Speicher;
     if (Lab_Speicher_schatten) delete [] Lab_Speicher_schatten;
 
@@ -2327,6 +2329,7 @@ GL_Ansicht::zeichnen()
                           glEnable(GL_LIGHTING);
 #                         endif
                         }
+                        if(rgb) delete [] rgb;
                     }
 
       if(dreiecks_netze.size())

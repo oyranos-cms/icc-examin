@@ -1,3 +1,11 @@
+2006-11-20
+	* fix: switched from XYZ gamut rendering to intermediate over Lab,
+		still does not match argylls gamut
+
+2006-11-19
+	* neu: out of gamut colours are rendered with the Oyranos proof profile
+	* neu: the Lab to monitor now better checks for changes and recalculates
+
 2006-11-17
 	* neu: "Quit" in 3D Gamut window
 	* fix: fix mft_choice empty entry

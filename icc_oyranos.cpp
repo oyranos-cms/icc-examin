@@ -541,6 +541,51 @@ Oyranos::cmyk_test_ ()
   DBG_PROG_ENDE
 }
 
+void
+Oyranos::proof_test_ ()
+{
+  DBG_PROG_START
+# if HAVE_OY
+  Speicher *v_block = &proof_;
+  char* profil_name = NULL;
+
+  profil_name = oyGetDefaultProfileName( oyranos::oyPROFILE_PROOF, myAllocFunc);
+
+  if( !v_block->size() )
+  { DBG_PROG_V( v_block->size() )
+    if(profil_name) {DBG_PROG_V( profil_name );
+    } else {         DBG_PROG_V( (intptr_t)profil_name );}
+
+    if( profil_name &&
+        *v_block != profil_name )
+    { 
+        *v_block = profil_name;
+
+        size_t size = oyGetProfileSize ( profil_name );
+        DBG_PROG_V( size  )
+        if (size)
+        { char *block = (char*)oyGetProfileBlock( profil_name, &size, myAllocFunc);
+          if( oyCheckProfileMem( block, size, 0 ) )
+            WARN_S(_("WARNING: Could not load profile."))
+          else {
+            DBG_PROG_V( (int*)block <<"|"<< size )
+            v_block->ladeNew(block, size);
+          }
+        } else
+          WARN_S(_("WARNING: Could not load profile."));
+    }
+  }
+
+  if(cmyk_.size())
+    DBG_NUM_S( "Standard " OY_DEFAULT_PROOF_PROFILE " Profil = "<< *proof_ <<" "<< proof_.size() <<"\n" );
+# else
+# if APPLE
+# endif
+# endif
+  //oy_debug = 0;
+  DBG_PROG_ENDE
+}
+
 #if 0
 char*
 Oyranos::holeMonitorProfil (const char* display_name, size_t* size )
@@ -860,8 +905,9 @@ Oyranos::wandelLabNachBildschirmFarben(double *Lab_Speicher, // 0.0 - 1.0
   DBG_PROG_V( size <<" "<< intent <<" "<< flags )
 
     // lcms Typen
-    cmsHPROFILE hsRGB = 0,
-                hLab = 0;
+    cmsHPROFILE hMoni = 0,
+                hLab = 0,
+                hProof = 0;
     static cmsHTRANSFORM hLabtoRGB = 0;
     static cmsHTRANSFORM h_lab_to_RGB_teuer = 0;
     cmsHTRANSFORM form = 0;
@@ -900,17 +946,23 @@ Oyranos::wandelLabNachBildschirmFarben(double *Lab_Speicher, // 0.0 - 1.0
 
       fortschritt(0.2);
       if(groesse)
-        hsRGB = cmsOpenProfileFromMem(const_cast<char*>(block), groesse);
+        hMoni = cmsOpenProfileFromMem(block, groesse);
       else
-        hsRGB = cmsCreate_sRGBProfile();
-      if(!hsRGB) WARN_S( "hsRGB Profil nicht geoeffnet" )
+        hMoni = cmsCreate_sRGBProfile();
+      if(!hMoni) WARN_S( "hMoni Profil nicht geoeffnet" )
       hLab  = cmsCreateLabProfile(cmsD50_xyY());
       if(!hLab)  WARN_S( "hLab Profil nicht geoeffnet" )
 
+      if(flags & cmsFLAGS_GAMUTCHECK)
+      {
+        block = const_cast<char*>( proof(groesse) );
+        hProof = cmsOpenProfileFromMem(block, groesse);
+      }
+
       fortschritt(0.5);
       form = cmsCreateProofingTransform  (hLab, TYPE_Lab_DBL,
-                                               hsRGB, TYPE_RGB_DBL,
-                                               hsRGB, // TODO Simulationsprofil
+                                               hMoni, TYPE_RGB_DBL,
+                                               hProof, // Simulationsprofil
                                                intent,
                                                INTENT_RELATIVE_COLORIMETRIC,
                                                PRECALC|BW_COMP|flags);
@@ -933,7 +985,7 @@ Oyranos::wandelLabNachBildschirmFarben(double *Lab_Speicher, // 0.0 - 1.0
 
     cmsDoTransform (form, cielab, RGB_Speicher, size);
 
-    if(hsRGB)     cmsCloseProfile(hsRGB);
+    if(hMoni)     cmsCloseProfile(hMoni);
     if(hLab)      cmsCloseProfile(hLab);
 
     if(cielab)    free (cielab);

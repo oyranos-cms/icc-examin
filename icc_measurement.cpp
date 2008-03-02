@@ -754,9 +754,9 @@ ICCmeasurement::init_umrechnen                     (void)
   if ((RGB_measurement_ ||
        CMYK_measurement_) || XYZ_measurement_)
   {
-    cmsHTRANSFORM hCOLOURtoRGB=0, hXYZtoRGB=0, hCOLOURtoXYZ=0, hXYZtoLab=0,
+    cmsHTRANSFORM hCOLOURtoRGB=0, hLabtoRGB=0, hCOLOURtoXYZ=0, hXYZtoLab=0,
                   hCOLOURtoLab=0;
-    cmsHPROFILE   hCOLOUR=0, hsRGB=0, hLab=0, hXYZ=0;
+    cmsHPROFILE   hCOLOUR=0, hsRGB=0, hLab=0, hXYZ=0, hProof = 0;
 
 
     if (getColorSpaceName(profile_->header.colorSpace()) != "Rgb"
@@ -794,6 +794,15 @@ ICCmeasurement::init_umrechnen                     (void)
 #   else
 #   define BW_COMP 0
 #   endif
+    if(icc_examin && icc_examin->gamutwarn())
+    {
+      size_t groesse = 0;
+      const char* block = 0;
+      block = const_cast<char*>( icc_oyranos.proof(groesse) );
+      hProof = cmsOpenProfileFromMem(const_cast<char*>(block), groesse);
+      if( !hProof ) WARN_S("hProof ist leer")
+    }
+
     if ((RGB_measurement_ ||
          CMYK_measurement_))
     {
@@ -843,7 +852,7 @@ ICCmeasurement::init_umrechnen                     (void)
       // Wie sieht das Profil die Messfarbe? -> Bildschirmdarstellung
       hCOLOURtoRGB =  cmsCreateProofingTransform (hCOLOUR, TYPE_nCOLOUR_DBL,
                                     hsRGB, TYPE_RGB_DBL,
-                                    hsRGB,
+                                    hProof,
                                     INTENT_ABSOLUTE_COLORIMETRIC,
                                     INTENT_RELATIVE_COLORIMETRIC,
                                     (icc_examin?icc_examin->gamutwarn():0) ?
@@ -862,13 +871,14 @@ ICCmeasurement::init_umrechnen                     (void)
                                     hLab, TYPE_Lab_DBL,
                                     INTENT_ABSOLUTE_COLORIMETRIC,
                                     PRECALC|BW_COMP);
+
       // Wie sieht die CMM die Messfarbe? -> Bildschirmdarstellung
-      hXYZtoRGB = cmsCreateProofingTransform (hXYZ, TYPE_XYZ_DBL,
+      hLabtoRGB = cmsCreateProofingTransform (hLab, TYPE_Lab_DBL,
                                     hsRGB, TYPE_RGB_DBL,
-                                    hsRGB,
+                                    hProof,
                                     INTENT_ABSOLUTE_COLORIMETRIC,
-                                    INTENT_ABSOLUTE_COLORIMETRIC,
-                                    icc_examin->gamutwarn() ?
+                                    INTENT_RELATIVE_COLORIMETRIC,
+                                    (icc_examin?icc_examin->gamutwarn():0) ?
                                     cmsFLAGS_GAMUTCHECK : 0  |
                                     PRECALC|BW_COMP);
     }
@@ -920,7 +930,7 @@ ICCmeasurement::init_umrechnen                     (void)
           Lab_Satz_[i].a = Lab[1]; DBG_MESS_V( Lab_Satz_[i].a )
           Lab_Satz_[i].b = Lab[2]; DBG_MESS_V( Lab_Satz_[i].b )
 
-          cmsDoTransform (hXYZtoRGB, &XYZ[0], &RGB[0], 1);
+          cmsDoTransform (hLabtoRGB, &Lab[0], &RGB[0], 1);
           RGB_MessFarben_[i].R = RGB[0]; DBG_MESS_V( RGB_MessFarben_[i].R )
           RGB_MessFarben_[i].G = RGB[1]; DBG_MESS_V( RGB_MessFarben_[i].G )
           RGB_MessFarben_[i].B = RGB[2]; DBG_MESS_V( RGB_MessFarben_[i].B )
@@ -988,8 +998,8 @@ ICCmeasurement::init_umrechnen                     (void)
 
 
     if (XYZ_measurement_) {
-      if(hXYZtoRGB) cmsDeleteTransform (hXYZtoRGB);
       if(hXYZtoLab) cmsDeleteTransform (hXYZtoLab);
+      if(hLabtoRGB) cmsDeleteTransform (hLabtoRGB);
     }
     if ((RGB_measurement_ ||
          CMYK_measurement_)) {
@@ -1001,6 +1011,7 @@ ICCmeasurement::init_umrechnen                     (void)
     if(hsRGB) cmsCloseProfile (hsRGB);
     if(hLab) cmsCloseProfile (hLab);
     if(hXYZ) cmsCloseProfile (hXYZ);
+    if(hProof) cmsCloseProfile (hProof);
   } else
     WARN_S("keine RGB/CMYK und XYZ Messdaten gefunden")
 

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ICC Examin 0.41\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2006-11-17 11:14+0100\n"
+"POT-Creation-Date: 2006-11-20 14:42+0100\n"
 "PO-Revision-Date: 2006-06-29 19:31+0200\n"
 "Last-Translator: Pascal LACROIX <lacroixpascal at vfemail.net>\n"
 "Language-Team: ALL <ku.b@gmx.de>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: agviewer.cpp:313 icc_gl.cpp:2664 icc_gl.cpp:2683 icc_gl.cpp:2802
+#: agviewer.cpp:313 icc_gl.cpp:2667 icc_gl.cpp:2686 icc_gl.cpp:2805
 msgid "left-/middle-/right mouse button -> rotate/cut/menu"
 msgstr ""
 
@@ -23,8 +23,8 @@ msgstr ""
 msgid "Pause"
 msgstr ""
 
-#: agviewer.cpp:350 agviewer.cpp:358 icc_gl.cpp:2768 icc_gl.cpp:2779
-#: icc_gl.cpp:2784 icc_gl.cpp:2789
+#: agviewer.cpp:350 agviewer.cpp:358 icc_gl.cpp:2771 icc_gl.cpp:2782
+#: icc_gl.cpp:2787 icc_gl.cpp:2792
 msgid "left mouse button -> go back"
 msgstr ""
 
@@ -139,7 +139,7 @@ msgstr "Vert"
 msgid "Blue"
 msgstr "Bleu"
 
-#: icc_draw.cpp:663 icc_gl.cpp:2088 icc_helfer.cpp:355 icc_waehler.h:131
+#: icc_draw.cpp:663 icc_gl.cpp:2090 icc_helfer.cpp:355 icc_waehler.h:131
 msgid "Gray"
 msgstr "Gris"
 
@@ -155,7 +155,7 @@ msgstr "Magenta"
 msgid "Yellow"
 msgstr "Jaune"
 
-#: icc_draw.cpp:676 icc_gl.cpp:2090 icc_helfer.cpp:415 icc_helfer.cpp:425
+#: icc_draw.cpp:676 icc_gl.cpp:2092 icc_helfer.cpp:415 icc_helfer.cpp:425
 msgid "Black"
 msgstr "Noir"
 
@@ -357,108 +357,108 @@ msgstr ""
 msgid "0,0,0"
 msgstr ""
 
-#: icc_gl.cpp:2062 icc_gl.cpp:2072 icc_gl.cpp:2074 icc_gl.cpp:2076
+#: icc_gl.cpp:2064 icc_gl.cpp:2074 icc_gl.cpp:2076 icc_gl.cpp:2078
 msgid "Slice"
 msgstr ""
 
-#: icc_gl.cpp:2063
+#: icc_gl.cpp:2065
 msgid "Rotate around slice"
 msgstr ""
 
-#: icc_gl.cpp:2078
+#: icc_gl.cpp:2080
 msgid "Rotate around"
 msgstr ""
 
-#: icc_gl.cpp:2078
+#: icc_gl.cpp:2080
 msgid "axis"
 msgstr ""
 
-#: icc_gl.cpp:2083
+#: icc_gl.cpp:2085
 msgid "Slice plane"
 msgstr ""
 
-#: icc_gl.cpp:2086
+#: icc_gl.cpp:2088
 msgid "White"
 msgstr "Blanc"
 
-#: icc_gl.cpp:2087
+#: icc_gl.cpp:2089
 msgid "Light gray"
 msgstr ""
 
-#: icc_gl.cpp:2089
+#: icc_gl.cpp:2091
 msgid "Dark gray"
 msgstr "Gris sombre"
 
-#: icc_gl.cpp:2093
+#: icc_gl.cpp:2095
 msgid "Background colour"
 msgstr "Couleur Arrière-plan"
 
-#: icc_gl.cpp:2098
+#: icc_gl.cpp:2100
 msgid "gray"
 msgstr "gris"
 
-#: icc_gl.cpp:2099
+#: icc_gl.cpp:2101
 msgid "coloured"
 msgstr ""
 
-#: icc_gl.cpp:2100
+#: icc_gl.cpp:2102
 msgid "high contrast"
 msgstr ""
 
-#: icc_gl.cpp:2101
+#: icc_gl.cpp:2103
 msgid "shells"
 msgstr ""
 
-#: icc_gl.cpp:2102
+#: icc_gl.cpp:2104
 #, fuzzy
 msgid "Colour line"
 msgstr "Couleur r"
 
-#: icc_gl.cpp:2107
+#: icc_gl.cpp:2109
 msgid "Sphere 1dE"
 msgstr ""
 
-#: icc_gl.cpp:2108
+#: icc_gl.cpp:2110
 msgid "Sphere 2dE"
 msgstr ""
 
-#: icc_gl.cpp:2109
+#: icc_gl.cpp:2111
 msgid "Sphere 4dE"
 msgstr ""
 
-#: icc_gl.cpp:2112
+#: icc_gl.cpp:2114
 msgid "Star"
 msgstr ""
 
-#: icc_gl.cpp:2115
+#: icc_gl.cpp:2117
 msgid "Point"
 msgstr "Point"
 
-#: icc_gl.cpp:2118
+#: icc_gl.cpp:2120
 msgid "without markers"
 msgstr ""
 
-#: icc_gl.cpp:2119
+#: icc_gl.cpp:2121
 msgid "Spektral line"
 msgstr ""
 
-#: icc_gl.cpp:2122 icc_betrachter.cxx:856
+#: icc_gl.cpp:2124 icc_betrachter.cxx:856
 msgid "Texts"
 msgstr ""
 
-#: icc_gl.cpp:2124
+#: icc_gl.cpp:2126
 msgid "Texts/Arrows on/off"
 msgstr ""
 
-#: icc_gl.cpp:2126
+#: icc_gl.cpp:2128
 msgid "Illustration"
 msgstr ""
 
-#: icc_gl.cpp:2393
+#: icc_gl.cpp:2396
 msgid "Pos"
 msgstr ""
 
-#: icc_gl.cpp:2477 icc_profile_tags.cpp:302
+#: icc_gl.cpp:2480 icc_profile_tags.cpp:302
 msgid "Channel"
 msgstr "Canal"
 
@@ -1063,143 +1063,143 @@ msgstr ""
 msgid "use sRGB"
 msgstr ""
 
-#: icc_measurement.cpp:1050
+#: icc_measurement.cpp:1061
 msgid "Report about ICC profile"
 msgstr ""
 
-#: icc_measurement.cpp:1088
+#: icc_measurement.cpp:1099
 msgid "Meas colour"
 msgstr ""
 
-#: icc_measurement.cpp:1090
+#: icc_measurement.cpp:1101
 msgid "Profile colour"
 msgstr ""
 
-#: icc_measurement.cpp:1162
+#: icc_measurement.cpp:1173
 msgid "no measurment data or correct profile conversion available"
 msgstr ""
 
-#: icc_measurement.cpp:1169
+#: icc_measurement.cpp:1180
 msgid "Measurment- and profile colours from <b>"
 msgstr ""
 
-#: icc_measurement.cpp:1171
+#: icc_measurement.cpp:1182
 msgid "RGB"
 msgstr "RVB"
 
-#: icc_measurement.cpp:1173
+#: icc_measurement.cpp:1184
 msgid "CMYK"
 msgstr ""
 
-#: icc_measurement.cpp:1174
+#: icc_measurement.cpp:1185
 msgid "</b> Measurement"
 msgstr ""
 
-#: icc_measurement.cpp:1176
+#: icc_measurement.cpp:1187
 msgid "CMM: <b>lcms</b>"
 msgstr ""
 
-#: icc_measurement.cpp:1178
+#: icc_measurement.cpp:1189
 msgid "averaging deviations (dE CIE*Lab):<b> "
 msgstr ""
 
-#: icc_measurement.cpp:1178
+#: icc_measurement.cpp:1189
 msgid "</b>  maximum: "
 msgstr ""
 
-#: icc_measurement.cpp:1178
+#: icc_measurement.cpp:1189
 msgid "  minimum: "
 msgstr ""
 
-#: icc_measurement.cpp:1178
+#: icc_measurement.cpp:1189
 msgid "  (dE CIE 2000) averaging: "
 msgstr ""
 
-#: icc_measurement.cpp:1178
+#: icc_measurement.cpp:1189
 msgid "  maximum: "
 msgstr ""
 
-#: icc_measurement.cpp:1208
+#: icc_measurement.cpp:1219
 msgid "Measurement patch"
 msgstr ""
 
-#: icc_measurement.cpp:1209
+#: icc_measurement.cpp:1220
 msgid "dE Lab"
 msgstr ""
 
-#: icc_measurement.cpp:1210
+#: icc_measurement.cpp:1221
 msgid "dE2000"
 msgstr ""
 
-#: icc_measurement.cpp:1211
+#: icc_measurement.cpp:1222
 msgid "L"
 msgstr ""
 
-#: icc_measurement.cpp:1212
+#: icc_measurement.cpp:1223
 msgid "a"
 msgstr ""
 
-#: icc_measurement.cpp:1213
+#: icc_measurement.cpp:1224
 msgid "b"
 msgstr ""
 
-#: icc_measurement.cpp:1214
+#: icc_measurement.cpp:1225
 msgid "L'"
 msgstr ""
 
-#: icc_measurement.cpp:1215
+#: icc_measurement.cpp:1226
 msgid "a'"
 msgstr ""
 
-#: icc_measurement.cpp:1216
+#: icc_measurement.cpp:1227
 msgid "b'"
 msgstr ""
 
-#: icc_measurement.cpp:1217 my_file_chooser.cxx:272
+#: icc_measurement.cpp:1228 my_file_chooser.cxx:272
 msgid "X"
 msgstr ""
 
-#: icc_measurement.cpp:1218 icc_measurement.cpp:1232
+#: icc_measurement.cpp:1229 icc_measurement.cpp:1243
 msgid "Y"
 msgstr ""
 
-#: icc_measurement.cpp:1219
+#: icc_measurement.cpp:1230
 msgid "Z"
 msgstr ""
 
-#: icc_measurement.cpp:1221
+#: icc_measurement.cpp:1232
 msgid "X'"
 msgstr ""
 
-#: icc_measurement.cpp:1222
+#: icc_measurement.cpp:1233
 msgid "Y'"
 msgstr ""
 
-#: icc_measurement.cpp:1223
+#: icc_measurement.cpp:1234
 msgid "Z'"
 msgstr ""
 
-#: icc_measurement.cpp:1226
+#: icc_measurement.cpp:1237
 msgid "R"
 msgstr ""
 
-#: icc_measurement.cpp:1227
+#: icc_measurement.cpp:1238
 msgid "G"
 msgstr "V"
 
-#: icc_measurement.cpp:1228
+#: icc_measurement.cpp:1239
 msgid "B"
 msgstr ""
 
-#: icc_measurement.cpp:1230
+#: icc_measurement.cpp:1241
 msgid "C"
 msgstr ""
 
-#: icc_measurement.cpp:1231
+#: icc_measurement.cpp:1242
 msgid "M"
 msgstr ""
 
-#: icc_measurement.cpp:1233
+#: icc_measurement.cpp:1244
 msgid "K"
 msgstr ""
 
@@ -1209,7 +1209,8 @@ msgstr ""
 
 #: icc_oyranos.cpp:171 icc_oyranos.cpp:356 icc_oyranos.cpp:430
 #: icc_oyranos.cpp:438 icc_oyranos.cpp:472 icc_oyranos.cpp:478
-#: icc_oyranos.cpp:524 icc_oyranos.cpp:530
+#: icc_oyranos.cpp:524 icc_oyranos.cpp:530 icc_oyranos.cpp:569
+#: icc_oyranos.cpp:575
 msgid "WARNING: Could not load profile."
 msgstr ""
 
@@ -1217,15 +1218,15 @@ msgstr ""
 msgid "Monitor Profile"
 msgstr "Écran Profil"
 
-#: icc_oyranos.cpp:660 icc_profile_header.cpp:237 icc_helfer_x.cpp:176
+#: icc_oyranos.cpp:705 icc_profile_header.cpp:237 icc_helfer_x.cpp:176
 msgid "Manufacturer:"
 msgstr "Fabricant:   "
 
-#: icc_oyranos.cpp:666
+#: icc_oyranos.cpp:711
 msgid "Model:"
 msgstr "Model:"
 
-#: icc_oyranos.cpp:672
+#: icc_oyranos.cpp:717
 msgid "Serial:"
 msgstr ""
 
