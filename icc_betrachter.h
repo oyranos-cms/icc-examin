@@ -162,6 +162,11 @@ private:
   void cb_menueintrag_rel_col_intent_i(Fl_Menu_*, void*);
   static void cb_menueintrag_rel_col_intent(Fl_Menu_*, void*);
 public:
+  static Fl_Menu_Item *menueintrag_abs_col_intent;
+private:
+  void cb_menueintrag_abs_col_intent_i(Fl_Menu_*, void*);
+  static void cb_menueintrag_abs_col_intent(Fl_Menu_*, void*);
+public:
   static Fl_Menu_Item *menueintrag_bpc;
 private:
   void cb_menueintrag_bpc_i(Fl_Menu_*, void*);

@@ -31,7 +31,7 @@ if [ -n "$ELEKTRA" ] && [ "$ELEKTRA" -gt "0" ]; then
       ERROR=1
     fi
   else
-    echo "Elektra:"
+    echo "ERROR Elektra:"
     echo "  no or too old elektra found,"
     echo "  need at least version $elektra_min, download: elektra.sf.net"
     ERROR=1
@@ -64,7 +64,7 @@ if [ -n "$LCMS" ] && [ $LCMS -gt 0 ]; then
     echo "LCMS_H = `pkg-config --cflags lcms`" >> $CONF
     echo "LCMS_LIBS = `pkg-config --libs lcms`" >> $CONF
   else
-    echo "no or too old LCMS found,\n  need at least version 1.14, download: www.littlecms.com"
+    echo "ERROR: no or too old LCMS found,\n  need at least version 1.14, download: www.littlecms.com"
     ERROR=1
   fi
 fi
@@ -135,12 +135,20 @@ if [ -n "$FLTK" ] && [ $FLTK -gt 0 ]; then
   FLTK_=`fltk-config --cxxflags 2>>error.txt`
   if [ $? = 0 ] && [ -n "$FLTK_" ]; then
     echo "FLTK `fltk-config --version`              detected"
+    if [ "0" -ne "`fltk-config --compile tests/fltk_test.cxx 2>&1 | grep lock | wc -l`" ]; then
+      echo "ERROR:   FLTK has no threads support !!!"
+      echo "         Configure FLTK with the --enable-threads option and recompile."
+      ERROR=1
+    else
+      rm fltk_test
+    fi
     echo "#define HAVE_FLTK 1" >> $CONF_H
     echo "FLTK = 1" >> $CONF
     echo "FLTK_H = `fltk-config --cxxflags | sed 's/-O[0-9]//'`" >> $CONF
     echo "FLTK_LIBS = `fltk-config --use-images --use-gl --ldflags`" >> $CONF
   else
-    echo "   FLTK is not found; download: www.fltk.org"
+    echo "ERROR:\n"
+    echo "           FLTK is not found; download: www.fltk.org"
     ERROR=1
   fi
 fi
@@ -164,8 +172,8 @@ if [ -n "$FLU" ] && [ $FLU -gt 0 ]; then
       if [ "$FLU" -gt 1 ]; then
         echo "   no FLU found, will not use it"
       else
-        echo "   FLU is not found; download:"
-        echo "   http://www.osc.edu/~jbryan/FLU/http://www.osc.edu/~jbryan/FLU/"
+        echo "ERROR:   FLU is not found; download:"
+        echo "         http://www.osc.edu/~jbryan/FLU/http://www.osc.edu/~jbryan/FLU/"
         ERROR=1
       fi
     fi
@@ -222,5 +230,8 @@ if [ -n "$PREPARE_MAKEFILES" ] && [ $PREPARE_MAKEFILES -gt 0 ]; then
 fi
 
 # we cannot reimport, just return
+if [ "$ERROR" -ne "0" ]; then 
+  echo "error" > error.tmp
+fi
 exit $ERROR
 

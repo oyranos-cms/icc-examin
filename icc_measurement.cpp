@@ -214,12 +214,18 @@ ICCmeasurement::load                ( ICCprofile *profil,
   //DBG_MEM_V( profile_->hasTagName("targ") << profile_->printLongHeader() )
 
   sig_    = tag._sig;
-  size_   = tag.size_ - 8;
+  if(tag.size_)
+    size_   = tag.size_ - 8;
+  else
+    size_ = 0;
   DBG_PROG_V( size_ )
   // einfach austauschen
-  if (data_ != NULL) free (data_); 
-  data_ = (char*) calloc ( size_+1 , sizeof (char) );
-  memcpy ( data_ , &(tag.data_)[8] , size_ );
+  if (data_ != NULL) { free (data_); data_ = NULL; }
+  if(size_)
+  {
+    data_ = (char*) calloc ( size_+1 , sizeof (char) );
+    memcpy ( data_ , &(tag.data_)[8] , size_ );
+  }
 
   DBG_PROG_ENDE
 }

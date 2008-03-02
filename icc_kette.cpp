@@ -168,7 +168,6 @@ ICCkette::einfuegen (const Speicher & prof, int pos)
         continue;
       }
     }
-    DBG_PROG_V( profile.profil()->hasMeasurement() )
   }
   DBG_PROG_V( profile_[pos].size() )
   DBG_PROG_V( profile_[pos].filename() )

@@ -365,7 +365,7 @@ ICCtag::getText                     (void)
 # endif
     texte.push_back( text );
 
-  } else if ( text == "mluc" ) {
+  } else if ( text == "mluc" ) { // i18n
 
     int anzahl = icValue( *(icUInt32Number*)&data_[8] );
     int groesse = icValue( *(icUInt32Number*)&data_[12] ); // 12
@@ -385,10 +385,14 @@ ICCtag::getText                     (void)
 
     for (int i = 0; i < anzahl; i++)
     {
-      if (data_[16+ i*groesse] == a && data_[17+ i*groesse] == b)
+      char c = data_[16+ i*groesse],
+           d = data_[17+ i*groesse];
+      int  g = icValue(*(icUInt32Number*)&data_[20+ i*groesse]);
+      DBG_PROG_V( c << d << g )
+
+      if (c == a && d == b)
       {
-        int g =        icValue(*(icUInt32Number*)&data_[20+ i*groesse]),
-            dversatz = icValue(*(icUInt32Number*)&data_[24+ i*groesse]);
+        int dversatz = icValue(*(icUInt32Number*)&data_[24+ i*groesse]);
         char *t = (char*) new char [g];
         int n;
         for (n = 1; n < g ; n = n+2)

@@ -122,9 +122,11 @@ CXXFILES = \
 	icc_betrachter.cxx \
 	fl_oyranos.cxx
 TEST_CPP = \
-	dE2000_test.cpp
+	tests/dE2000_test.cpp \
+	tests/fltk_test.cxx
 TEST_H = \
-	ciede2000testdata.h
+	tests/ciede2000testdata.h
+TEST_FILES = $(TEST_CPP) $(TEST_H)
 
 ALL_SOURCEFILES = \
 	$(COMMON_CFILES) \
@@ -133,13 +135,11 @@ ALL_SOURCEFILES = \
 	$(X_CPPFILES) \
 	$(FLTK_CPPFILES) \
 	$(I18N_CXXFILES) \
-	$(CXXFILES) \
-	$(TEST_CPP)
+	$(CXXFILES)
 
 ALL_HEADERFILES = \
 	$(CPP_HEADERS) \
-	$(I18N_HEADERS) \
-	$(TEST_H)
+	$(I18N_HEADERS)
 
 DOKU = \
 	TODO \
@@ -262,7 +262,7 @@ static_static:	$(OBJECTS)
 	$(REZ)
 
 test:	icc_formeln.o icc_utils.o
-	$(CXX) $(OPTS) $(INCL) -o dE2000_test.o -c dE2000_test.cpp
+	$(CXX) $(OPTS) $(INCL) -o dE2000_test.o -c tests/dE2000_test.cpp
 	$(CXX) $(OPTS) -o dE2000_test dE2000_test.o icc_formeln.o icc_utils.o \
 	-L$(libdir) -llcms
 	$(REZ)
@@ -374,6 +374,8 @@ copy_files:
 	$(COPY) -R \
 	$(ALL_FILES) \
 	$(DESTDIR)
+	mkdir $(DESTDIR)/tests
+	$(COPY) $(TEST_FILES) $(DESTDIR)/tests
 	mkdir $(DESTDIR)/po
 	$(COPY) $(POT_FILE) $(DESTDIR)/po
 	for ling in $(LINGUAS); do \

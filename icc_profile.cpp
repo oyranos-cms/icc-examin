@@ -566,6 +566,9 @@ ICCprofile::getTagByName            (std::string name)
 bool
 ICCprofile::hasTagName            (std::string name)
 { DBG_PROG_START
+
+  DBG_PROG_V( tags.size() )
+
   if (!tags.size()) {
     DBG_PROG_ENDE
     return false;
@@ -897,7 +900,11 @@ ICCprofile::addTag (ICCtag tag)
 ICCtag &
 ICCprofile::getTag (int item)
 {
-  return tags[item];
+  static ICCtag tag;
+  if(item >= 0)
+    return tags[item];
+  else
+    return tag;
 }
 
 void

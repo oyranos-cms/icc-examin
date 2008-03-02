@@ -1237,6 +1237,9 @@ GL_Ansicht::netzeAuffrischen()
            }
 
            std::multimap<double,DreiecksIndexe>::const_iterator it;
+           int s_dn = dreiecks_netze[j].indexe.size();
+           int s_n = netz.indexe.size();
+           DBG_V( j <<" "<< dreiecks_netze[j].indexe.size() <<" "<< netz.indexe.size() )
            for( it = dreiecks_netze[j].indexe.begin();
                 it != dreiecks_netze[j].indexe.end(); ++it )
            {
@@ -1571,7 +1574,7 @@ GL_Ansicht::zeigeUmrisse_()
         Lab_Speicher[j*3+k] = dreiecks_netze[d].umriss[j].koord[k];
 
     RGB_Speicher = icc_oyranos.wandelLabNachBildschirmFarben( Lab_Speicher,
-                                 (size_t)n, icc_examin->intent(), 0);
+                                 (size_t)n, icc_examin->intentGet(NULL), 0);
     DBG_PROG_V( n )
     // Schatten erzeugen
     Lab_Speicher_schatten = (double*) malloc (sizeof(double) * n*3);
@@ -1584,7 +1587,7 @@ GL_Ansicht::zeigeUmrisse_()
     }
 
     RGBSchatten_Speicher = icc_oyranos.wandelLabNachBildschirmFarben(
-                             Lab_Speicher_schatten, n, icc_examin->intent(), 0);
+                             Lab_Speicher_schatten, n, icc_examin->intentGet(NULL), 0);
     if(!RGB_Speicher)  WARN_S( _("RGB_speicher Ergebnis nicht verfuegbar") )
     if(!RGBSchatten_Speicher)  WARN_S( _("RGB_speicher Ergebnis nicht verfuegbar") )
 
@@ -1706,7 +1709,7 @@ GL_Ansicht::zeigeSpektralband_()
     XYZtoLab (XYZ_Speicher, Lab_Speicher, nano_max);
 
     RGB_Speicher = icc_oyranos.wandelLabNachBildschirmFarben( Lab_Speicher,
-                                 (size_t)nano_max, icc_examin->intent(), 0);
+                                 (size_t)nano_max, icc_examin->intentGet(NULL), 0);
     DBG_PROG_V( nano_max )
     // Schatten erzeugen
     for (int i = 0; i < nano_max*2; ++i)
@@ -1718,7 +1721,7 @@ GL_Ansicht::zeigeSpektralband_()
     }
 
     RGBSchatten_Speicher = icc_oyranos.wandelLabNachBildschirmFarben(
-                               Lab_Speicher_schatten, nano_max, icc_examin->intent(), 0);
+                               Lab_Speicher_schatten, nano_max, icc_examin->intentGet(NULL), 0);
     if(!RGB_Speicher)  WARN_S( _("RGB_speicher Ergebnis nicht verfuegbar") )
     if(!RGBSchatten_Speicher)  WARN_S( _("RGB_speicher Ergebnis nicht verfuegbar") )
 
@@ -2044,7 +2047,7 @@ GL_Ansicht::zeichnen()
                         icc_examin->statusFarbe(lab[0],lab[1],lab[2]);
                         DBG_PROG_V( lab[0]<<" "<<lab[1]<<" "<<lab[2] )
                         rgb = icc_oyranos. wandelLabNachBildschirmFarben(lab, 1,
-                                 icc_examin->intent(),
+                                 icc_examin->intentGet(NULL),
                                  icc_examin->gamutwarn()?cmsFLAGS_GAMUTCHECK:0);
                         if(!rgb)  WARN_S( _("RGB Ergebnis nicht verfuegbar") )
                         else {

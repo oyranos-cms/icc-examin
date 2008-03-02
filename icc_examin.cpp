@@ -86,6 +86,7 @@ ICCexamin::ICCexamin ()
   statlabel = "";
   status_ = false;
   intent_ = 3;
+  intent_selection_ = 0;
   bpc_ = 0;
   gamutwarn_ = 0;
   frei_zahl = 0;
@@ -599,11 +600,23 @@ ICCexamin::gamutAnsichtZeigen ()
 void
 ICCexamin::intent( int intent_neu )
 {
-  if(intent_ != intent_neu) {
+  int intent_alt = intent_;
+  if(intent_neu < 0)
+  {
+    if(profile[0])
+      intent_ = profile[0]->intent();
+    else
+      intent_ = 3;
+      intent_selection_ = 0;
+  } else {
+    intent_ = intent_neu;
+    intent_selection_ = 1;
+  }
+
+  if(intent_alt != intent_neu) {
     std::vector<std::string> profilnamen = profile;
     oeffnen( profilnamen );
   }
-  intent_ = intent_neu;
 }
 
 void
@@ -817,7 +830,7 @@ ICCexamin::statusFarbe(double & CIEL, double & CIEa, double & CIEb)
          *rgb = 0;
   DBG_PROG_V( lab[0]<<" "<<lab[1]<<" "<<lab[2] )
   rgb = icc_oyranos. wandelLabNachBildschirmFarben(lab, 1,
-                                icc_examin->intent(),
+                                icc_examin->intentGet(NULL),
                                 (icc_examin->gamutwarn()?cmsFLAGS_GAMUTCHECK:0)|
                                 (icc_examin->bpc()?cmsFLAGS_BLACKPOINTCOMPENSATION:0));
   Fl_Color colour = fl_rgb_color( (int)(rgb[0]*255),

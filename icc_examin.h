@@ -114,6 +114,7 @@ class ICCexamin : public icc_examin_ns::Beobachter
          bpc_,                 //!< Schwarzpunktkompensation
          gamutwarn_;           //!< Farbraumwarnung
     bool frei_,                //!< wird nicht von weiterem Prozess benutzt
+         intent_selection_,    //!< interaktiv gewaehlte Uebertragungsart
          farbraum_modus_;      //!< profile.profil() enthaelt ncl2 Schmuckfarben
     ICCwaehler *icc_waehler_;
   public:
@@ -121,7 +122,9 @@ class ICCexamin : public icc_examin_ns::Beobachter
     bool frei()     { return frei_; }          //!< ist nicht gesperrt
     void frei(int bool_);                      //!< Sperren mit Warten/Freigeben
     int  frei_zahl;
-    int  intent ()  { return intent_; }        //!< die globale Uebertragungsart; siehe auch @see: ICCprofile.intent()
+    int  intentGet(int *interaktiv){ if(interaktiv)
+                                       *interaktiv = (int)intent_selection_;
+                                     return intent_; }        //!< die globale Uebertragungsart; siehe auch @see: ICCprofile.intent()
     void intent (int i);                       //!< setze eine Uebertragungsart
     int  bpc ()  { return bpc_; }              //!< globale BPC
     void bpc (int i);                          //!< setze BPC

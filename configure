@@ -3,6 +3,7 @@
 TARGET=icc_examin
 BINTARGET="`echo $TARGET | sed s/_//g`"
 ERROR=0
+test -f error.tmp && rm error.tmp
 
 CONF_H=config.h
 CONF=makefile
@@ -14,7 +15,7 @@ export CONF_H CONF CONF_I18N
 
 VERSION_A=0
 VERSION_B=4
-VERSION_C=1
+VERSION_C=2
 RELEASE=0
 ZEIT="May 2004 - June 2006"
 VERSION=$VERSION_A.$VERSION_B$VERSION_C
@@ -94,6 +95,7 @@ if [ $# -gt 0 ]; then
       echo "   --mandir=[\$datadir/man]              manual installation path"
       echo "   --pixmapdir=[\$datadir/pixmaps]       icon installation path"
       echo "   --desktopdir=[\$datadir/applications] xdg installation path"
+      echo ""
       echo "   --help"
       echo ""
       echo " Optionally set the CC and CXX environment variables."
@@ -262,9 +264,6 @@ X11=0; export X11
 XINERAMA=0; export XINERAMA
 XF86VMODE=0; export XF86VMODE
 PO=0; export PO
-if [ $? -gt 0 ]; then
-  ERROR=1
-fi
 
 echo ""
 echo ""
@@ -406,6 +405,7 @@ else
     echo "INSTALL = install -v" >> $CONF
   else
     echo "COPY = cp -p" >> $CONF
+    echo "INCL=-I\$(includedir) -I/usr/X11R6/include -I. -I/usr/include/g++ -I/usr/include" >> $CONF
     if [ $OSUNAME = "BSD" ]; then
       echo "LINK_FLAGS = -shared \$(ICONV)" >> $CONF
       echo "INSTALL = install -v" >> $CONF
@@ -427,7 +427,14 @@ echo "" >> $CONF
 echo ""
 echo ""
 
-if [ $ERROR != 0 ]; then
+echo "" > mkdepend
+
+PREPARE_MAKEFILES=1; export PREPARE_MAKEFILES
+MAKEFILES="makefile"; export MAKEFILES
+./configure.sh
+
+test -f error.tmp && ( ERROR=1; rm error.tmp )
+if [ "$ERROR" -ne "0" ]; then
   echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
   echo "!!!                     An ERROR occured                     !!!"
   echo "!!!                     See Log above                        !!!"
@@ -437,12 +444,6 @@ if [ $ERROR != 0 ]; then
   rm $CONF $CONF_H $CONF_SH $SPEC $PKGC $MPKG
   exit
 fi
-
-echo "" > mkdepend
-
-PREPARE_MAKEFILES=1; export PREPARE_MAKEFILES
-MAKEFILES="makefile"; export MAKEFILES
-./configure.sh
 
 
 if [ `cat error.txt | wc -l` -lt 1 ]; then

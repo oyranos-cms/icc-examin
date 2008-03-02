@@ -341,7 +341,7 @@ class ICCfltkBetrachter {open
     } {}
     Fl_Window ueber {
       label {About ICC Examin} open
-      xywh {787 316 365 289} type Double resizable
+      xywh {792 337 365 289} type Double resizable
       code0 {o->hide();}
       class My_Fl_Window non_modal visible
     } {
@@ -381,7 +381,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window vcgt {
       label {Grafic Card Gamma Table}
-      xywh {252 376 370 390} type Double resizable
+      xywh {257 397 370 390} type Double resizable
       code0 {o->hide();}
       class My_Fl_Window visible
     } {
@@ -417,7 +417,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window details {
       label {ICC Examin} open
-      xywh {650 414 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
+      xywh {1151 395 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
     } {
       Fl_Group {} {open
         xywh {0 0 385 520}
@@ -499,11 +499,12 @@ class ICCfltkBetrachter {open
   DBG_PROG_S (m->value())
 
   menueintrag_rel_col_intent->clear();
+  menueintrag_abs_col_intent->clear();
 
   if(m->value())
     icc_examin->intent(0);
   else
-    icc_examin->intent(3);}
+    icc_examin->intent(-1);}
               tooltip {Enable Photografic Intent} xywh {45 45 100 20} type Toggle shortcut 0x40066
             }
             MenuItem menueintrag_rel_col_intent {
@@ -514,12 +515,29 @@ class ICCfltkBetrachter {open
   DBG_PROG_S (m->value())
 
   menueintrag_phot_intent->clear();
+  menueintrag_abs_col_intent->clear();
 
   if(m->value())
     icc_examin->intent(1);
   else
-    icc_examin->intent(3);}
+    icc_examin->intent(-1);}
               tooltip {Enable Whitepoint Adaption;  useful for gamut comparisions} xywh {55 55 100 20} type Toggle shortcut 0x40072
+            }
+            MenuItem menueintrag_abs_col_intent {
+              label {Absolute Colorimetric}
+              callback {Fl_Menu_* mw = (Fl_Menu_*)o;
+  const Fl_Menu_Item* m = mw->mvalue();
+
+  DBG_PROG_S (m->value())
+
+  menueintrag_phot_intent->clear();
+  menueintrag_rel_col_intent->clear();
+
+  if(m->value())
+    icc_examin->intent(3);
+  else
+    icc_examin->intent(-1);} selected
+              tooltip {Enable Whitepoint Adaption;  useful for gamut comparisions} xywh {65 65 100 20} type Toggle shortcut 0x40061
             }
             MenuItem menueintrag_bpc {
               label BPC
@@ -538,7 +556,7 @@ class ICCfltkBetrachter {open
               label LANG
               callback {system("echo $LANG");
   printf("domain     : %s\\n",textdomain(NULL));
-  printf("domain_path: %s\\n",bindtextdomain(NULL,NULL));} selected
+  printf("domain_path: %s\\n",bindtextdomain(NULL,NULL));}
               tooltip {test LANG} xywh {75 75 100 20} type Toggle
             }
           }
