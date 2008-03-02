@@ -1,19 +1,19 @@
 # data file for the Fltk User Interface Designer (fluid)
-version 1.0104 
+version 1.0106 
 header_name {.h} 
 code_name {.cxx}
-decl {\#include "icc_betrachter.h"} {selected public
+decl {\#include "icc_betrachter.h"} {public
 } 
 
 decl {\#include <string>} {} 
 
 decl {\#include "icc_oyranos.h"} {} 
 
-Function {voreinstellungen()} {open
+Function {voreinstellungen_intern()} {open
 } {
   Fl_Window {} {
     label Einstellungen open
-    xywh {821 539 375 205} type Double resizable
+    xywh {826 560 375 205} type Double resizable
     code0 {o->show();} visible
   } {
     Fl_Tabs {} {
@@ -63,5 +63,6 @@ Function {oyranos_pfade_waehlen()} {open
 
       fl_oyanos_pfade_browser->topline(0);
       fl_oyanos_pfade_browser->textfont(FL_COURIER);
-      fl_oyanos_pfade_browser->textsize(14);} {}
+      fl_oyanos_pfade_browser->textsize(14);} {selected
+  }
 } 

@@ -48,8 +48,8 @@ decl {\#include "icc_examin.h"} {public
 
 decl {\#include "icc_draw.h"
 \#include "icc_kette.h"
-\#include "icc_oyranos.h"
-\#include "fl_oyranos.h"} {} 
+\#include "icc_oyranos_extern.h"} {selected
+} 
 
 decl {\#include "icc_profile.h"
 \#include "icc_utils.h"
@@ -378,7 +378,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window vcgt {
       label {Grafikkarten Gamma Tabellen}
-      xywh {698 125 370 390} type Double resizable
+      xywh {703 146 370 390} type Double resizable
       code0 {o->hide();} non_modal visible
     } {
       Fl_Group {} {open
@@ -413,7 +413,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window details {
       label {ICC Details} open
-      xywh {634 190 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
+      xywh {810 338 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
     } {
       Fl_Group {} {open
         xywh {0 0 385 520}
@@ -446,12 +446,12 @@ class ICCfltkBetrachter {open
             }
           }
           submenu {} {
-            label Bearbeiten selected
+            label Bearbeiten open
             xywh {25 25 100 20}
           } {
             menuitem {} {
               label Voreinstellungen
-              callback {voreinstellungen()}
+              callback {oyranos_einstellungen()}
               xywh {25 25 100 20}
             }
           }
@@ -462,10 +462,11 @@ class ICCfltkBetrachter {open
 
   DBG_PROG_S (m->value())
   if (m->value()) {
-    ((Fl_Button*)menueintrag_3D)->value(true);
+    ((Fl_Menu_Item*)menueintrag_3D)->set();
   } else
-    ((Fl_Button*)menueintrag_3D)->value(false);}
-            xywh {60 60 100 20} type Toggle shortcut 0x40068 hide
+    ((Fl_Menu_Item*)menueintrag_3D)->clear();
+  icc_examin->neuzeichnen(DD_histogram);}
+            xywh {60 60 100 20} type Toggle shortcut 0x40068
           }
           submenu {} {
             label Ansicht open
@@ -516,9 +517,12 @@ class ICCfltkBetrachter {open
   DBG_PROG_S (m->value())
   if (m->value()) {
     widget_oben = WID_3D;
+    menueintrag_huelle->set();
     //icc_examin->histogram();
-  } else
+  } else {
     widget_oben = WID_0;
+    menueintrag_huelle->clear();
+  }
   icc_examin->neuzeichnen(icc_examin->icc_betrachter->DD_histogram);}
               xywh {50 50 100 20} type Toggle shortcut 0x40068 divider
             }

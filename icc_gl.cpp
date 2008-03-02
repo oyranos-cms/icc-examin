@@ -1151,8 +1151,11 @@ GL_Ansicht::zeigeSpektralband_()
           DBG_ICCGL_S( i<<" "<<Lab_Speicher[i*3]<<"|"<<Lab_Speicher[i*3+1]<<"|"<<Lab_Speicher[i*3+2] )
           DBG_ICCGL_S( i<<" "<<RGB_Speicher[i*3]<<"|"<<RGB_Speicher[i*3+1]<<"|"<<RGB_Speicher[i*3+2] )
           FARBE(RGB_Speicher[i*3],RGB_Speicher[i*3+1],RGB_Speicher[i*3+2]);
-          glVertex3d( LabNachXYZv
-               (Lab_Speicher[i*3+0], Lab_Speicher[i*3+1], Lab_Speicher[i*3+2]));
+          glVertex3d( 
+         (Lab_Speicher[i*3+2]*b_darstellungs_breite - b_darstellungs_breite/2.),
+         (Lab_Speicher[i*3+0] - 0.5),
+         (Lab_Speicher[i*3+1]*a_darstellungs_breite - a_darstellungs_breite/2.)
+          );
         }
       glEnd();
 

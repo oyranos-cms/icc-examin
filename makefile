@@ -1,9 +1,17 @@
 include config
 
 CC=c++
-MAKEDEPEND	= /usr/X11R6/bin/makedepend -Y
+MAKEDEPEND	= makedepend -Y
 RM = rm -v
-COPY = cp -vp
+ifdef LINUX
+COPY = cp -vdpa
+endif
+ifdef APPLE
+COPY = cp -v
+else
+COPY = cp
+endif
+
 
 prefix		= /opt/local
 exec_prefix	= ${prefix}
@@ -16,6 +24,7 @@ srcdir		= .
 
 DEBUG = -DDEBUG
 DL = --ldflags # --ldstaticflags
+GLUT = -lglut
 
 X_CPPFILES = icc_helfer_x.cpp
 OSX_CPPFILES = icc_helfer_osx.cpp
@@ -26,10 +35,14 @@ ifdef APPLE
   GLUT = -framework GLUT -lobjc
   OSX_CPP = $(OSX_CPPFILES)
   INCL=-I$(includedir) -I/usr/X11R6/include -I./ -I/usr/include/gcc/darwin/default/c++
-else
+endif
+ifdef LINUX
   OPTS = -Wall  -Os -g $(DEBUG) #-fomit-frame-pointer -g
-  GLUT = -lglut
   INCL=-I$(includedir) -I/usr/X11R6/include -I./
+else
+  OPTS=-Wall -O2 -g -fpic -L.
+  GLUT = -lglut
+  RM = rm -f
 endif
 
 ifdef FLTK
@@ -41,10 +54,11 @@ ifdef X11
   X11_LIBS=-L/usr/X11R6/lib -lX11 -lXxf86vm -lXext
 endif
 
-CXXFLAGS=$(OPTS) $(INCL) \
+ALL_INCL = $(INCL) \
 			$(FLU_H) $(FLTK_H) $(X_H) $(OSX_H) $(OYRANOS_H) $(LCMS_H)
+CXXFLAGS=$(OPTS) $(ALL_INCL)
 
-LDLIBS = -L$(libdir) -L./ -L/opt/kai-uwe/lib $(FLTK_LIBS) \
+LDLIBS = -L$(libdir) -L./ $(FLTK_LIBS) \
 	$(X11_LIBS) -llcms $(OYRANOS_LIBS) $(GLUT) $(FLU_LIBS) $(LCMS_LIBS)
 
 CPP_HEADERS = \
@@ -71,6 +85,7 @@ CPP_HEADERS = \
 	icc_modell_beobachter.h \
 	fl_oyranos.h \
 	icc_oyranos.h \
+	icc_oyranos_extern.h \
 	icc_profile.h \
 	icc_profile_header.h \
 	icc_profile_tags.h \
@@ -99,6 +114,7 @@ COMMON_CPPFILES = \
 	icc_measurement.cpp \
 	icc_modell_beobachter.cpp \
 	icc_oyranos.cpp \
+	icc_oyranos_extern.cpp \
 	icc_profile.cpp \
 	icc_profile_header.cpp \
 	icc_profile_tags.cpp \
@@ -139,9 +155,8 @@ SOURCES = $(ALL_CPPFILES) $(CPP_HEADERS)
 OBJECTS = $(CPPFILES:.cpp=.o) $(CXXFILES:.cxx=.o)
 TARGET  = icc_examin
 
-REZ     = /Developer/Tools/Rez -t APPL -o $(TARGET) /opt/local/include/FL/mac.r
 ifdef APPLE
-APPLE   = $(REZ)
+REZ     = /Developer/Tools/Rez -t APPL -o $(TARGET) /opt/local/include/FL/mac.r
 endif
 
 timedir = .
@@ -156,7 +171,7 @@ release:	icc_alles.o
 	$(CC) $(OPTS) -o $(TARGET) \
 	icc_alles.o \
 	$(LDLIBS)
-	$(APPLE)
+	$(REZ)
 	$(RM) icc_alles.o
 
 $(TARGET):	$(OBJECTS)
@@ -164,7 +179,7 @@ $(TARGET):	$(OBJECTS)
 	$(CC) $(OPTS) -o $(TARGET) \
 	$(OBJECTS) \
 	$(LDLIBS)
-	$(APPLE)
+	$(REZ)
 
 static:		$(OBJECTS)
 	echo Linking $@...
@@ -172,13 +187,13 @@ static:		$(OBJECTS)
 	$(OBJECTS) \
 	$(LDLIBS) -static -ljpeg -lpng -lX11 -lpthread -lz -ldl \
 	-lfreetype -lfontconfig -lXrender -lGLU -lXext -lexpat
-	$(APPLE)
+	$(REZ)
 
 test:	icc_formeln.o icc_utils.o
 	$(CC) $(OPTS) $(INCL) -o dE2000_test.o -c dE2000_test.cpp
 	$(CC) $(OPTS) -o dE2000_test dE2000_test.o icc_formeln.o icc_utils.o \
 	-L$(libdir) -llcms
-	$(APPLE)
+	$(REZ)
 
 install:	$(TARGET)
 	$(COPY) icc_examin $(bindir)
@@ -196,7 +211,8 @@ config:
 
 mkdepend:
 	echo "" > mkdepend
-	$(MAKEDEPEND) -f mkdepend -s "#Bitte stehen lassen" -I. $(CXXFLAGS) $(SOURCES)
+	$(MAKEDEPEND) -f mkdepend -s "#Bitte stehen lassen" -I. \
+	$(ALL_INCL) $(SOURCES)
 
 
 # The extension to use for executables...

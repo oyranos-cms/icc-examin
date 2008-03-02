@@ -3,8 +3,7 @@
 #include "icc_betrachter.h"
 #include "icc_draw.h"
 #include "icc_kette.h"
-#include "icc_oyranos.h"
-#include "fl_oyranos.h"
+#include "icc_oyranos_extern.h"
 #include "icc_gl.h"
 using namespace icc_examin_ns;
 
@@ -255,7 +254,7 @@ void ICCfltkBetrachter::cb_Beenden(Fl_Menu_* o, void* v) {
 }
 
 inline void ICCfltkBetrachter::cb_Voreinstellungen_i(Fl_Menu_*, void*) {
-  voreinstellungen();
+  oyranos_einstellungen();
 }
 void ICCfltkBetrachter::cb_Voreinstellungen(Fl_Menu_* o, void* v) {
   ((ICCfltkBetrachter*)(o->parent()->parent()->user_data()))->cb_Voreinstellungen_i(o,v);
@@ -267,9 +266,10 @@ inline void ICCfltkBetrachter::cb_menueintrag_huelle_i(Fl_Menu_* o, void*) {
 
   DBG_PROG_S (m->value())
   if (m->value()) {
-    ((Fl_Button*)menueintrag_3D)->value(true);
+    ((Fl_Menu_Item*)menueintrag_3D)->set();
   } else
-    ((Fl_Button*)menueintrag_3D)->value(false);
+    ((Fl_Menu_Item*)menueintrag_3D)->clear();
+  icc_examin->neuzeichnen(DD_histogram);
 }
 void ICCfltkBetrachter::cb_menueintrag_huelle(Fl_Menu_* o, void* v) {
   ((ICCfltkBetrachter*)(o->parent()->parent()->user_data()))->cb_menueintrag_huelle_i(o,v);
@@ -323,9 +323,12 @@ inline void ICCfltkBetrachter::cb_menueintrag_3D_i(Fl_Menu_* o, void*) {
   DBG_PROG_S (m->value())
   if (m->value()) {
     widget_oben = WID_3D;
+    menueintrag_huelle->set();
     //icc_examin->histogram();
-  } else
+  } else {
     widget_oben = WID_0;
+    menueintrag_huelle->clear();
+  }
   icc_examin->neuzeichnen(icc_examin->icc_betrachter->DD_histogram);
 }
 void ICCfltkBetrachter::cb_menueintrag_3D(Fl_Menu_* o, void* v) {
@@ -377,7 +380,7 @@ Fl_Menu_Item ICCfltkBetrachter::menu_[] = {
  {"Bearbeiten", 0,  0, 0, 64, 0, 0, 14, 56},
  {"Voreinstellungen", 0,  (Fl_Callback*)ICCfltkBetrachter::cb_Voreinstellungen, 0, 0, 0, 0, 14, 56},
  {0,0,0,0,0,0,0,0,0},
- {"H\374lle", 0x40068,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_huelle, 0, 18, 0, 0, 14, 56},
+ {"H\374lle", 0x40068,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_huelle, 0, 2, 0, 0, 14, 56},
  {"Ansicht", 0,  0, 0, 192, 0, 0, 14, 56},
  {"Ganzer Bildschirm an/aus", 0x40076,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_Voll, 0, 128, 0, 0, 14, 56},
  {"Pr\374""fansicht", 0x40062,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_inspekt, 0, 3, 0, 0, 14, 56},
