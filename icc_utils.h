@@ -17,6 +17,7 @@
 
 #define DBG cout << __FILE__<<":"<<__LINE__ <<" "<< __func__ << "()" << endl;
 #define DBG_S(txt) cout << __FILE__<<":"<<__LINE__ <<" "<< __func__ << "() " << txt << endl;
+#define DBG_V(txt) cout << __FILE__<<":"<<__LINE__ <<" "<< __func__ << "() " << #txt << " " << txt << endl;
 
 class Wert
 {

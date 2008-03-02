@@ -55,6 +55,11 @@ static void cb_menueintrag_Voll(Fl_Menu_*, void*) {
   };
 }
 
+static void cb_Testprofil(Fl_Menu_*, void*) {
+  profile.removeTag(0);
+profile.saveProfileToFile("/tmp/icc_examin_test.icc");
+}
+
 static void cb_menueintrag_inspekt(Fl_Menu_* o, void*) {
   Fl_Menu_* mw = (Fl_Menu_*)o;
   const Fl_Menu_Item* m = mw->mvalue();
@@ -80,6 +85,7 @@ Fl_Menu_Item menu_[] = {
  {0},
  {"Ansicht", 0,  0, 0, 64, 0, 0, 14, 56},
  {"Ganzer Bildschirm an/aus", 0x40076,  (Fl_Callback*)cb_menueintrag_Voll, 0, 0, 0, 0, 14, 56},
+ {"Testprofil schreiben", 0,  (Fl_Callback*)cb_Testprofil, 0, 0, 0, 0, 14, 56},
  {0},
  {"Pr\374""fansicht", 0x40062,  (Fl_Callback*)cb_menueintrag_inspekt, 0, 3, 0, 0, 14, 56},
  {0}

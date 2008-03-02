@@ -5,6 +5,8 @@
 #ifndef ICC_PROFILE_H
 #define ICC_PROFILE_H
 
+#define ICC_EXAMIN_V 0.12
+
 #include <icc34.h>
 #include <string>
 #include <iostream>
@@ -54,15 +56,19 @@ typedef struct {
     double K;
 } CMYK;
 
+// Farbfunktionen
+// definiert in icc_formeln.cpp
+double        dE2000 (Lab Lab1, Lab Lab2, double kL, double kC, double kH);
+
 // Helferfunktionen
 // definiert in icc_helfer.cpp
-unsigned int            icValue   (icUInt16Number val);
-unsigned int            icValue   (icUInt32Number val);
+icUInt16Number          icValue   (icUInt16Number val);
+icUInt32Number          icValue   (icUInt32Number val);
 unsigned long           icValue   (icUInt64Number val);
 double                  icValueSF (icS15Fixed16Number val);
 double                  icValueUF (icU16Fixed16Number val);
-int                     icValue   (icInt16Number val);
-int                     icValue   (icInt32Number val);
+icInt16Number                     icValue   (icInt16Number val);
+icInt32Number                     icValue   (icInt32Number val);
 int                     icValue   (icInt64Number val);
 icColorSpaceSignature   icValue   (icColorSpaceSignature val);
 icPlatformSignature     icValue   (icPlatformSignature val);
@@ -102,14 +108,16 @@ class ICCheader {
   private:
     icHeader            header;
   public:
-    const char*         header_raw ()        {return cp_nchar ((char*)&header,
-                                                       sizeof (icSignature)); }
+    const char*         header_raw ()        {return /*cp_nchar (*/(char*)&header/*,
+                                                       sizeof (icHeader))*/; }
     void                header_raw (void* s) {memcpy ((void*)&header, s,
                                                        sizeof (icHeader)); }
     void                load  (void*);
 
     int                 valid;
     int                 size    ()      {return icValue(header.size); }
+    void                size    (icUInt32Number size)   {header.size =
+                                                (icUInt32Number)icValue(size); }
     void                cmmName (const char* s){memcpy((char*)&(header.cmmId),s,
                                                        sizeof (icSignature)); }
     const char*         cmmName ()      {return cp_nchar((char*)&(header.cmmId),
@@ -163,6 +171,7 @@ class ICCtag {
   public:
     void                load (ICCprofile* profil ,icTag* tag, char* data);
   public:
+    icTagSignature      getSignature ()    {return _sig; }
     std::string         getTagName()       {return getSigTagName (_sig); }
     std::string         getInfo()          {return getSigTagDescription(_sig); }
     std::string         getTypName()       {icTagTypeSignature sig =
@@ -189,6 +198,9 @@ class ICCtag {
     std::vector<std::string> getText (MftChain typ);
     std::vector<std::string> getDescription();
     std::string         getVrml();
+  public:  // I/O
+    const char*         write(int* size)   {*size = _size;
+                                            return (const char*)_data; }
 };
 
 
@@ -338,9 +350,10 @@ class ICCprofile {
     std::vector<double> getWhitePkt   (void);
 
   public: // Datei I/O
-    void                saveProfileToFile  (char* filename);
     int                 checkProfileDevice (char* type,
                                            icProfileClassSignature deviceClass);
+    void                saveProfileToFile  (char* filename, char *profile,
+                                           int    size);
  
   public: // Messwertinfos
     bool                hasMeasurement () {return measurement.valid(); }
@@ -352,9 +365,12 @@ class ICCprofile {
     void                removeTag (int item) {std::vector<ICCtag>::iterator it=
                                               tags.begin();
                                               for (int i=0; i != item;i++) it++;
-                                              tags.erase(it); }
-    void                saveProfileToFile  (char* filename, char *profile,
-                                           int    size);
+                                              tags.erase(it); } // TODO
+    void                saveProfileToFile  (char* filename);
+  private:
+    void                writeTags (void);
+    void                writeHeader (void);
+    void                writeTagTable (void);
 };
 
 

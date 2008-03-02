@@ -1104,6 +1104,64 @@ ICCprofile::getWhitePkt           (void)
   return XYZ;
 }
 
+void
+ICCprofile::saveProfileToFile  (char* filename)
+{
+  if (_data) free (_data);
+  _size = sizeof (icHeader) + sizeof (icUInt32Number); DBG_V(_size <<" "<<sizeof (icProfile))
+  _data = (icProfile*) calloc (sizeof (icHeader), 1);
+  writeTagTable ();
+  writeTags ();
+  header.size(_size); DBG_V (_size )
+  writeHeader ();
+
+  std::ofstream f ( filename,  std::ios::out );
+  f.write ( (char*)_data, _size );
+  f.close();
+}
+
+void
+ICCprofile::writeTags (void)
+{
+  unsigned int i;
+  for (i = 0; i < tags.size(); i++) {
+    int size;
+    const char* data = tags[i].write(&size);
+    icTagList* list = (icTagList*)&((char*)_data)[128];
+    
+    list->tags[i].sig = icValue((icTagSignature)tags[i].getSignature());
+    list->tags[i].offset = icValue((icUInt32Number)_size); DBG_V (icValue(list->tags[i].offset))
+    list->tags[i].size = icValue((icUInt32Number)size); DBG_V(_size)
+    char* temp = (char*) calloc (sizeof(char), _size + size + 
+                                               (size%4 ? 4 - size%4 : 0));
+    memcpy (temp, _data, _size); DBG_V( _size<<" "<< size<<" "<<size%4 )
+    memcpy (&temp[_size], data, size);
+    _size = _size + size + (size%4 ? 4 - size%4 : 0);
+    free (_data);
+    _data = (icProfile*) temp;
+    list = (icTagList*)&temp[128]; DBG_V (icValue(list->tags[i].offset))
+    DBG_V (icValue(list->tags[i].sig))
+    DBG_V (icValue(list->tags[i].size) << " " << (int)&_data[0])
+  }
+}
+
+void
+ICCprofile::writeTagTable (void)
+{
+  _data->count = icValue((icUInt32Number)tags.size());
+  int size = sizeof (icTag) * tags.size();
+  char* data = (char*)calloc(sizeof (char), size + _size);
+  memcpy (data, _data, _size);
+  _size = _size + size;
+  free (_data);
+  _data = (icProfile*) data;
+}
+
+void
+ICCprofile::writeHeader (void)
+{
+  memcpy (_data, header.header_raw(), 128);
+}
 
 
 

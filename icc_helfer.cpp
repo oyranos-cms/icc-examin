@@ -15,7 +15,7 @@
 #define _(text) text
 #define g_message printf
 
-unsigned int
+icUInt16Number
 icValue (icUInt16Number val)
 {
 #if BYTE_ORDER == LITTLE_ENDIAN
@@ -53,7 +53,7 @@ icValue (icUInt16Number val)
 #endif
 }
 
-unsigned int
+icUInt32Number
 icValue (icUInt32Number val)
 {
 #if BYTE_ORDER == LITTLE_ENDIAN
@@ -110,7 +110,7 @@ icValue (icUInt64Number val)
 #endif
 }
 
-signed int
+icInt32Number
 icValue (icInt32Number val)
 {
 #if BYTE_ORDER == LITTLE_ENDIAN
@@ -139,7 +139,7 @@ icValue (icInt32Number val)
 #endif
 }
 
-signed int
+icInt16Number
 icValue (icInt16Number val)
 {
 #if BYTE_ORDER == LITTLE_ENDIAN

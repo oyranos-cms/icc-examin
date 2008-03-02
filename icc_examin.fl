@@ -51,7 +51,7 @@ class TagTexts;
 class MftChoice;} {public
 } 
 
-decl {\#define _(text) text} {selected public
+decl {\#define _(text) text} {public
 } 
 
 decl {\#include "icc_draw.h"} {} 
@@ -70,7 +70,7 @@ Function {} {open C return_type int
   inspekt_topline = 0;} {}
   Fl_Window details {
     label {ICC Details} open
-    xywh {861 458 385 515} type Double box NO_BOX color 53
+    xywh {459 298 385 515} type Double box NO_BOX color 53
     code1 {DBG
     if (argc>1) {
 
@@ -143,6 +143,12 @@ Function {} {open C return_type int
     fullscreen = false;
   }}
             xywh {15 15 100 20} shortcut 0x40076
+          }
+          menuitem {} {
+            label {Testprofil schreiben}
+            callback {profile.removeTag(0);
+profile.saveProfileToFile("/tmp/icc_examin_test.icc");} selected
+            tooltip {zu finden in "/tmp/icc_examin_test.icc"} xywh {0 0 100 20}
           }
         }
         menuitem menueintrag_inspekt {

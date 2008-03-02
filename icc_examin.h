@@ -51,7 +51,7 @@ extern Fl_Progress *load_progress;
 extern Fl_Menu_Item menu_[];
 #define menueintrag_html_speichern (menu_+2)
 #define menueintrag_Voll (menu_+6)
-#define menueintrag_inspekt (menu_+8)
+#define menueintrag_inspekt (menu_+9)
 std::string open(int interaktiv);
 void quit(void);
 char* icc_read_info(char* filename);
