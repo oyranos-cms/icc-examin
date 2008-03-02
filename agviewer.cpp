@@ -41,7 +41,7 @@
 #endif
 
 
-std::list<agviewer> agviewers;
+std::vector<agviewer> agviewers;
 
 /***************************************************************/
 /************************ agvInit ******************************/
@@ -49,12 +49,13 @@ std::list<agviewer> agviewers;
 
 void
 agviewer::agvInit(int window)
-{
+{ DBG_PROG_START
   glutMouseFunc(agvHandleButton);
   glutMotionFunc(agvHandleMotion);
   glutKeyboardFunc(agvHandleKeys);
-  RedisplayWindow = glutGetWindow();
+  RedisplayWindow = glutGetWindow(); DBG_PROG_V( RedisplayWindow )
   agvSetAllowIdle(window);
+  DBG_PROG_ENDE
 }
 
 /***************************************************************/
@@ -66,11 +67,12 @@ agviewer::agvInit(int window)
    */
 void
 agviewer::PolarLookFrom(GLfloat dist, GLfloat elevation, GLfloat azimuth)
-{
+{ DBG_PROG_START
   glTranslatef(0, 0, -dist);
   glRotatef(elevation, 1, 0, 0);
   glRotatef(azimuth, 0, 1, 0);
 
+  DBG_PROG_ENDE
 }
 
   /*
@@ -79,7 +81,7 @@ agviewer::PolarLookFrom(GLfloat dist, GLfloat elevation, GLfloat azimuth)
    */
 void
 agviewer::FlyLookFrom(GLfloat x, GLfloat y, GLfloat z, GLfloat az, GLfloat el)
-{
+{ DBG_PROG_START
   float lookat[3], perp[3], up[3];
 
   lookat[0] = sin(TORAD(az))*cos(TORAD(el));
@@ -94,6 +96,7 @@ agviewer::FlyLookFrom(GLfloat x, GLfloat y, GLfloat z, GLfloat az, GLfloat el)
   gluLookAt(x, y, z,
             x+lookat[0], y+lookat[1], z+lookat[2],
             up[0], up[1], up[2]);
+  DBG_PROG_ENDE
 }
 
   /*
@@ -101,7 +104,7 @@ agviewer::FlyLookFrom(GLfloat x, GLfloat y, GLfloat z, GLfloat az, GLfloat el)
    */
 void
 agviewer::agvViewTransform(void)
-{ 
+{ DBG_PROG_START
   switch (MoveMode) {
     case FLYING:
       FlyLookFrom(Ex, Ey, Ez, EyeAz, EyeEl);
@@ -110,6 +113,7 @@ agviewer::agvViewTransform(void)
       PolarLookFrom(EyeDist, EyeEl, EyeAz);
       break;
     }
+  DBG_PROG_ENDE
 }
 
   /*
@@ -119,14 +123,17 @@ agviewer::agvViewTransform(void)
    */
 int
 agviewer::ConstrainEl(void)
-{
+{ DBG_PROG_START
   if (EyeEl <= -90) {
     EyeEl = -89.99;
+    DBG_PROG_ENDE
     return 1;
   } else if (EyeEl >= 90) {
     EyeEl = 89.99;
+    DBG_PROG_ENDE
     return 1;
   }
+  DBG_PROG_ENDE
   return 0;
 }
 
@@ -135,7 +142,7 @@ agviewer::ConstrainEl(void)
   */
 void
 agviewer::_agvMove(void)
-{
+{ DBG_PROG_START
   switch (MoveMode)  {
     case FLYING:
       Ex += EyeMove*sin(TORAD(EyeAz))*cos(TORAD(EyeEl));
@@ -161,9 +168,10 @@ agviewer::_agvMove(void)
   }
 
   if (AllowIdle) {
-    glutSetWindow(RedisplayWindow);
+    glutSetWindow(RedisplayWindow); DBG_PROG_V( RedisplayWindow )
     glutPostRedisplay();
   }
+  DBG_PROG_ENDE
 }
 
 
@@ -173,7 +181,7 @@ agviewer::_agvMove(void)
    */
 void
 agviewer::MoveOn(int v)
-{
+{ DBG_PROG_START
   if (v && ((MoveMode == FLYING && EyeMove != 0) ||
              (MoveMode == POLAR &&
              (AzSpin != 0 || ElSpin != 0 || AdjustingAzEl)))) {
@@ -185,6 +193,7 @@ agviewer::MoveOn(int v)
     if (AllowIdle)
       glutIdleFunc(NULL);
   }
+  DBG_PROG_ENDE
 }
 
   /*
@@ -194,9 +203,10 @@ agviewer::MoveOn(int v)
    */
 void
 agviewer::agvSetAllowIdle(int allowidle)
-{
+{ DBG_PROG_START
   if ((AllowIdle = allowidle))
     MoveOn(1);
+  DBG_PROG_ENDE
 }
 
   /*
@@ -206,7 +216,7 @@ agviewer::agvSetAllowIdle(int allowidle)
    */
 void
 agviewer::agvSwitchMoveMode(int move)
-{
+{ DBG_PROG_START
   switch (move) {
     case FLYING:
       if (MoveMode == FLYING) return;
@@ -283,6 +293,7 @@ agviewer::agvSwitchMoveMode(int move)
   MoveMode = move;
   MoveOn(1);
   glutPostRedisplay();
+  DBG_PROG_ENDE
 }
 
 /***************************************************************/
@@ -291,7 +302,7 @@ agviewer::agvSwitchMoveMode(int move)
 
 void
 agviewer::_agvHandleButton(int &button, int &state, int &x, int &y)
-{
+{ DBG_PROG_START
  if (state == GLUT_DOWN && downb == -1) {  
     lastx = downx = x;
     lasty = downy = y;
@@ -352,6 +363,7 @@ agviewer::_agvHandleButton(int &button, int &state, int &x, int &y)
         duenn = true;
       }
   }
+  DBG_PROG_ENDE
 }
 
  /*
@@ -359,7 +371,7 @@ agviewer::_agvHandleButton(int &button, int &state, int &x, int &y)
   */
 void
 agviewer::_agvHandleMotion(int &x, int &y)
-{
+{ DBG_PROG_START
   int deltax = x - downx, deltay = y - downy;
 
   switch (downb) {
@@ -380,6 +392,7 @@ agviewer::_agvHandleMotion(int &x, int &y)
       break;
   }
   glutPostRedisplay();
+  DBG_PROG_ENDE
 }
 
 /***************************************************************/
@@ -391,7 +404,7 @@ agviewer::_agvHandleMotion(int &x, int &y)
    */
 void
 agviewer::SetMove(float newmove)
-{
+{ DBG_PROG_START
   if (newmove > minmove) {
     EyeMove = newmove;
     MoveOn(1);
@@ -399,13 +412,15 @@ agviewer::SetMove(float newmove)
     EyeMove = 0;
     MoveOn(0);
   }
+  DBG_PROG_ENDE
 }
 
   /*
    * 0->9 set speed, +/- adjust current speed  -- in FLYING mode
    */
 void
-agviewer::_agvHandleKeys(unsigned char key, int&, int&) {
+agviewer::_agvHandleKeys(unsigned char key, int&, int&)
+{ DBG_PROG_START
   if (MoveMode != FLYING)
     return;
 
@@ -423,6 +438,7 @@ agviewer::_agvHandleKeys(unsigned char key, int&, int&) {
 	SetMove(EyeMove *= (1 - movefraction));
         break;
     }
+  DBG_PROG_ENDE
 }
 
 /***************************************************************/
@@ -432,23 +448,25 @@ agviewer::_agvHandleKeys(unsigned char key, int&, int&) {
   /* normalizes v */
 void
 agviewer::normalize(GLfloat v[3])
-{
+{ DBG_PROG_START
   GLfloat d = sqrt(v[0]*v[0] + v[1]*v[1] + v[2]*v[2]);
 
   if (d == 0)
     fprintf(stderr, "Zero length vector in normalize\n");
   else
     v[0] /= d; v[1] /= d; v[2] /= d;
+  DBG_PROG_ENDE
 }
 
   /* calculates a normalized crossproduct to v1, v2 */
 void
 agviewer::ncrossprod(float v1[3], float v2[3], float cp[3])
-{
+{ DBG_PROG_START
   cp[0] = v1[1]*v2[2] - v1[2]*v2[1];
   cp[1] = v1[2]*v2[0] - v1[0]*v2[2];
   cp[2] = v1[0]*v2[1] - v1[1]*v2[0];
   normalize(cp);
+  DBG_PROG_ENDE
 }
 
 /***************************************************************/
@@ -459,7 +477,7 @@ agviewer::ncrossprod(float v1[3], float v2[3], float cp[3])
   /* draw axes -- was helpful to debug/design things */
 void
 agviewer::agvMakeAxesList(int displaylistnum)
-{
+{ DBG_PROG_START
   int i,j;
   GLfloat axes_ambuse[] =   { 0.5, 0.0, 0.0, 1.0 };
   glNewList(displaylistnum, GL_COMPILE);
@@ -482,13 +500,14 @@ agviewer::agvMakeAxesList(int displaylistnum)
     }
   glPopAttrib();
   glEndList();  
+  DBG_PROG_ENDE
 }
 
 
 // variable Argumentlänge in einem Macro ?
 void agvMove(void)
 { DBG_PROG_START
-  std::list<agviewer>::iterator it;
+  std::vector<agviewer>::iterator it;
   for (it = agviewers.begin() ; it != agviewers.end(); it++)
     if (it->redisplayWindow() == glutGetWindow())
       it->_agvMove();
@@ -497,7 +516,7 @@ void agvMove(void)
 
 void agvHandleButton(int button, int state, int x, int y)
 { DBG_PROG_START
-  std::list<agviewer>::iterator it;
+  std::vector<agviewer>::iterator it;
   for (it = agviewers.begin() ; it != agviewers.end(); it++)
     if (it->redisplayWindow() == glutGetWindow())
       it->_agvHandleButton( button, state, x, y);
@@ -506,16 +525,18 @@ void agvHandleButton(int button, int state, int x, int y)
 
 void agvHandleMotion(int x, int y)
 { DBG_PROG_START
-  std::list<agviewer>::iterator it;
-  for (it = agviewers.begin() ; it != agviewers.end(); it++)
+  std::vector<agviewer>::iterator it; DBG_PROG_V( agviewers.size() )
+  for (it = agviewers.begin() ; it != agviewers.end(); it++) {
+    DBG_PROG_V( it->redisplayWindow() )
     if (it->redisplayWindow() == glutGetWindow())
       it->_agvHandleMotion( x, y);
+  }
   DBG_PROG_ENDE
 }
 
 void agvHandleKeys(unsigned char key, int x, int y)
 { DBG_PROG_START
-  std::list<agviewer>::iterator it;
+  std::vector<agviewer>::iterator it;
   for (it = agviewers.begin() ; it != agviewers.end(); it++)
     if (it->redisplayWindow() == glutGetWindow())
       it->_agvHandleKeys( key, x, y);
@@ -524,7 +545,7 @@ void agvHandleKeys(unsigned char key, int x, int y)
 
 void agvViewTransform(void)
 { DBG_PROG_START
-  std::list<agviewer>::iterator it;
+  std::vector<agviewer>::iterator it;
   for (it = agviewers.begin() ; it != agviewers.end(); it++)
     if (it->redisplayWindow() == glutGetWindow())
       it->agvViewTransform();
@@ -533,7 +554,7 @@ void agvViewTransform(void)
 
 void agvSwitchMoveMode(int move)
 { DBG_PROG_START
-  std::list<agviewer>::iterator it;
+  std::vector<agviewer>::iterator it;
   for (it = agviewers.begin() ; it != agviewers.end(); it++)
     if (it->redisplayWindow() == glutGetWindow())
       it->agvSwitchMoveMode( move);
@@ -542,7 +563,7 @@ void agvSwitchMoveMode(int move)
 
 void agvSetAllowIdle(int allowidle)
 { DBG_PROG_START
-  std::list<agviewer>::iterator it;
+  std::vector<agviewer>::iterator it;
   for (it = agviewers.begin() ; it != agviewers.end(); it++)
     if (it->redisplayWindow() == glutGetWindow())
       it->agvSetAllowIdle( allowidle);
@@ -551,7 +572,7 @@ void agvSetAllowIdle(int allowidle)
 
 int agvMoving(void)
 { DBG_PROG_START
-  std::list<agviewer>::iterator it;
+  std::vector<agviewer>::iterator it;
   for (it = agviewers.begin() ; it != agviewers.end(); it++)
     if (it->redisplayWindow() == glutGetWindow()) {
       DBG_PROG_ENDE

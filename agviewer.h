@@ -276,9 +276,9 @@ agviewer {
 
 };
 
-#include <list>
+#include <vector>
 
-extern std::list<agviewer> agviewers;
+extern std::vector<agviewer> agviewers;
 
 extern "C" {
   // Funktionszeiger / pointer

@@ -46,7 +46,7 @@ class GL_Ansicht : public Fl_Group {
   void myGLinit();
   void MenuInit();
 public:
-  agviewer agv;
+  int agv;
   bool GLfenster_zeigen,
        first;
   GL_Ansicht(int X,int Y,int W,int H);

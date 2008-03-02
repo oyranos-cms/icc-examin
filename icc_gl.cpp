@@ -67,10 +67,13 @@ GL_Ansicht::~GL_Ansicht()
 }
 
 void GL_Ansicht::zeigen() {
-  if (!first)
+  if (first)
+    init();
+  else
     GLFenster->size(w(),h());
+
   DBG_PROG_V( w() <<" "<< h() )
-  agv.agvSetAllowIdle (1);
+  agviewers[agv].agvSetAllowIdle (1);
   GLfenster_zeigen = true;
   DBG_PROG
 }
@@ -79,7 +82,7 @@ void
 GL_Ansicht::verstecken()
 { DBG_PROG_START
   if (!first) {
-    agv.agvSwitchMoveMode (agviewer::AGV_STOP);
+    agviewers[agv].agvSwitchMoveMode (agviewer::AGV_STOP);
     GLFenster->size(1,1);
   }
   DBG_PROG_V( w() <<" "<< h() )
@@ -90,6 +93,10 @@ GL_Ansicht::verstecken()
 
 void GL_Ansicht::init() {
   DBG_PROG_START
+
+  agv = agviewers.size();
+  agviewers.resize( agv + 1 ); DBG_PROG_V( agv )
+
   first = false;
   MenueKanalEintraege = 0;
   this->begin();
@@ -109,14 +116,14 @@ void GL_Ansicht::init() {
   GLFenster->end(); DBG_PROG
   GLFenster->resizable(glut_window);
 
-  agv.agvInit(1); DBG_PROG
+  agviewers[agv].agvInit(1); DBG_PROG
 
   glutReshapeFunc(reshape); DBG_PROG
   glutDisplayFunc(display); DBG_PROG
   //glutVisibilityFunc(sichtbar); DBG_PROG
   //glutMenuStateFunc(menuuse); DBG_PROG
 
-  agv.agvMakeAxesList(AXES); DBG_PROG
+  agviewers[agv].agvMakeAxesList(AXES); DBG_PROG
 
   myGLinit();  DBG_PROG
   MakeDisplayLists(); DBG_PROG
