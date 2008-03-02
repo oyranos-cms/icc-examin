@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2007-06-26 19:29+0200\n"
+"POT-Creation-Date: 2007-07-03 13:37+0200\n"
 "PO-Revision-Date: 2005-08-13 17:35+0200\n"
 "Last-Translator: Kai-Uwe Behrmann\n"
 "Language-Team:  <de@li.org>\n"
@@ -90,10 +90,10 @@ msgstr "Sichern"
 msgid "Show:"
 msgstr "Zeige:"
 
-#: fl_i18n_example.cxx:14 fl_i18n_example.cxx:54 fl_i18n_example.cxx:57
+#: fl_i18n_example.cxx:14 fl_i18n_example.cxx:53 fl_i18n_example.cxx:56
 msgid "Hello, world!"
 msgstr "Hallo, Welt! äöüÄÖÜß"
 
-#: fl_i18n_example.cxx:55
+#: fl_i18n_example.cxx:54
 msgid "fl_i18n_example"
 msgstr ""

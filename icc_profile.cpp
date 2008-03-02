@@ -882,6 +882,18 @@ ICCprofile::hasMeasurement()
   return (hasTagName("targ") || (hasTagName("CIED")&&hasTagName("DevD")));
 }
 
+bool
+ICCprofile::tagBelongsToMeasurement( int tag )
+{
+  DBG_PROG
+  std::string name = tags[tag].getTagName();
+  int s = tags[tag].getSize();
+  return ( (name == "targ" ||
+            (name == "CIED"&&hasTagName("DevD")) ||
+            (hasTagName("CIED")&&name == "DevD"))
+           && s );
+}
+
 std::string
 ICCprofile::report (bool auss)
 {
@@ -1013,6 +1025,28 @@ lcms_error (int ErrorCode, const char* ErrorText)
 { DBG_PROG_START
    g_message ("LCMS error:%d %s", ErrorCode, ErrorText);
   DBG_PROG_ENDE
+}
+
+const char* cp_nchar (char* text, int n)
+{ DBG_MEM_START
+  static char string[1024];
+
+/*  for (int i = 0; i < 1024 ; i++)
+    string[i] = '\000';*/
+
+  if (n < 1024)
+#   if 0
+    memcpy (string, text, n);
+#   else
+    snprintf(&string[0], n, text);
+#   endif
+  string[1023] = '\000';
+
+# ifdef DEBUG
+  DBG_MEM_V( n << " letters copy " <<  (intptr_t)text << " " << string)
+# endif
+  DBG_MEM_ENDE
+  return string;
 }
 
 

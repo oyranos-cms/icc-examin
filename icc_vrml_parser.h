@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2005  Kai-Uwe Behrmann 
+ * Copyright (C) 2005-2007  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -32,7 +32,6 @@
 
 #include <vector>
 #include <map>
-#include "icc_helfer.h"
 
 /** a point in space with calculated colour */
 struct ICCnetzPunkt {
@@ -43,12 +42,11 @@ struct ICCnetzPunkt {
 /** point indexes for a representable plain */
 struct DreiecksIndexe {
   int i[4];        //!< referes to std::vector<ICCnetzPunkt>punkte
-  double normale[3];
 };
 
 /** displayable informations to a colour space gamut */
 struct ICCnetz {
-  ICClist<ICCnetzPunkt> punkte;                  //!< single netz points
+  std::vector<ICCnetzPunkt> punkte;              //!< single netz points
   std::multimap<double,DreiecksIndexe> indexe;   //!< assigning the points
   std::vector<ICCnetzPunkt> umriss;              //!< mesh hull, a line
   std::string name;                              //!< name
@@ -57,22 +55,14 @@ struct ICCnetz {
   double undurchsicht;                           //!< alpha 0..1
   double schattierung;                           //!< L* colour for gray 0..1
   int kubus;                                     //!< generated from a cubus
-
-             ICCnetz() {
+  ICCnetz() {
     aktiv = 1;
     grau = 0;
     undurchsicht = 0.5;
     schattierung = 0.2;
     kubus = 0;
   }
-  /*ICCnetz&   copy    (const ICCnetz & net) {
-    return *this;
-  }
-             ICCnetz (const ICCnetz & net) {
-    copy( net );
-  }*/
 };
-
 
 std::vector<ICCnetz> extrahiereNetzAusVRML (std::string & vrml);
 

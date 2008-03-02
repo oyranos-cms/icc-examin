@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eog\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2007-06-26 19:29+0200\n"
+"POT-Creation-Date: 2007-07-03 13:37+0200\n"
 "PO-Revision-Date: 2004-08-02 15:02+0800\n"
 "Last-Translator: Funda Wang <fundawang@linux.net.cn>\n"
 "Language-Team: zh_CN <i18n-translation@lists.linux.net.cn>\n"
@@ -91,10 +91,10 @@ msgstr ""
 msgid "Show:"
 msgstr ""
 
-#: fl_i18n_example.cxx:14 fl_i18n_example.cxx:54 fl_i18n_example.cxx:57
+#: fl_i18n_example.cxx:14 fl_i18n_example.cxx:53 fl_i18n_example.cxx:56
 msgid "Hello, world!"
 msgstr "世界你好！"
 
-#: fl_i18n_example.cxx:55
+#: fl_i18n_example.cxx:54
 msgid "fl_i18n_example"
 msgstr ""

@@ -33,15 +33,12 @@
 
 #include "icc_utils.h"
 #include <string>
-#include <time.h>
 
 #define DBG_SPEICHER_START   if(icc_debug >= 3) DBG_PROG_START
 #define DBG_SPEICHER_ENDE    if(icc_debug >= 3) DBG_PROG_ENDE
 
 /*
- * The Speicher class is a referenced memory block
- *
- * Additionally the object should be observed to see changes and not use blindly.
+ * The Speicher class is a observer of a memory block with references
  *
  * ref_n_   : reference
  * zeiger_  : new [] allocated memory
@@ -222,7 +219,7 @@ class Speicher
 
     operator const char* () const {
                               DBG_MEM_START
-                              *letze_ben_zeit_ = (double)time(0);
+                              *letze_ben_zeit_ = time(0);
                                 DBG_MEM_V( *name_ )
                                 DBG_MEM_V( (int*)*zeiger_<<" "<<*groesse_ <<" "<< id_ )
                               DBG_MEM_ENDE

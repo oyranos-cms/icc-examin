@@ -52,8 +52,8 @@ ICCkette::init ()
   aktuelles_profil_ = -1;
 # if USE_THREADS
   // There are three basic threads for ICC Examin.
+  // iThe first one starts a while loop to observe the opened files
   // In the main thread runs ICCexamin.
-  // The next one starts a while loop to observe the opened files
   // A additional thread loads new files.
 
   int fehler = fl_create_thread( getThreadId(THREAD_WACHE), &waechter, (void *)this );
@@ -122,7 +122,7 @@ ICCkette::einfuegen (const Speicher & prof, int pos)
   if (pos < 0 ||
       pos >= (int)profile_.size() )
   {
-    pos = (int)profile_.size(); DBG_PROG
+    pos = profile_.size(); DBG_PROG
     //profile_.resize (profile_.size()+1 ); DBG_PROG
     profile_.push_back( ICCprofile() ); DBG_PROG
     for( unsigned int i = 0; i < profile_.size(); ++i)
@@ -216,8 +216,6 @@ ICCkette::waechter (void* zeiger)
   // TODO
   //icc_examin_ns::sleep(1.0);
   //cout << (int*)level_PROG_ << endl;
-  registerThreadId( iccThreadSelf(), THREAD_WACHE );
-
   DBG_PROG_START
   ICCkette* obj = (ICCkette*) zeiger;
   // Haupt Thread freigeben
@@ -229,9 +227,7 @@ ICCkette::waechter (void* zeiger)
     {
       const char* name = obj->profilnamen_[i].c_str();
       DBG_MEM_V( name );
-	  icc_examin->frei( false );
       double m_zeit = holeDateiModifikationsZeit( name );
-	  icc_examin->frei( true );
       DBG_MEM_V( m_zeit <<" "<< obj->profil_mzeit_[i] << name )
       if( m_zeit &&
           obj->aktiv_[i] &&

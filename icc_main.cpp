@@ -41,10 +41,12 @@ main (int argc, char** argv)
   Debug(myproject::debug::init());		// This is a custom function defined
   						// in example-project/debug.cc.
 # endif
-  registerThreadId( iccThreadSelf(), THREAD_HAUPT );
+# if HAVE_PTHREAD_H
+  registerThreadId( pthread_self(), THREAD_HAUPT );
 # ifdef CWDEBUG
   Debug(myproject::debug::init_thread());	// This is a custom function defined
   						// in example-project/debug.cc.
+# endif
 # endif
 
 

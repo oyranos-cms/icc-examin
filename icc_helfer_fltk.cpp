@@ -234,7 +234,7 @@ namespace icc_examin_ns {
 
 #if 0
   static pthread_mutex_t data_mutex_         = PTHREAD_MUTEX_INITIALIZER;
-  static Fl_Thread       data_mutex_thread_  = (Fl_Thread)iccThreadSelf();
+  static Fl_Thread       data_mutex_thread_  = (Fl_Thread)pthread_self();
   static int             data_mutex_threads_ = 0;
 #endif
 
@@ -242,7 +242,7 @@ namespace icc_examin_ns {
   {
 # if 0
     // im selben Zweig gesperrten Rat ausschliesen
-    if( data_mutex_thread_ != iccThreadSelf() ||
+    if( data_mutex_thread_ != pthread_self() ||
         data_mutex_threads_ == 0 )
       // Warten bis der Rat von einem anderen Zweig freigegeben wird
       while (pthread_mutex_trylock( &data_mutex_ )) {
@@ -262,12 +262,12 @@ namespace icc_examin_ns {
 
     data_mutex_threads_++ ;
     if(data_mutex_threads_ == 1)
-      data_mutex_thread_ = iccThreadSelf() ;
+      data_mutex_thread_ = pthread_self() ;
 # else
      DBG_THREAD_S( "locks: "<<icc_thread_lock_zaehler_ <<" stopped at: "<<file<<":"<<line )
      Fl::lock(); DBG_THREAD
      // ... taking over
-     icc_thread_lock_besitzer_ = iccThreadSelf();
+     icc_thread_lock_besitzer_ = pthread_self();
 # endif
 
     // ... check number

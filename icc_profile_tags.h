@@ -32,7 +32,7 @@
 
 
 #include "icc_utils.h"
-#include "icc_helfer.h"
+//#include "icc_helfer.h"
 
 
 // lcms.h for BSD compiling
@@ -114,6 +114,7 @@ class ICCtag {
     icColorSpaceSignature colorSpace (MftChain typ);
 
     std::vector<std::string> getText ();
+    std::vector<std::string> getText (std::string type);
     std::vector<std::string> getText (MftChain typ);
     //std::vector<std::string> getDescription(); deprecated
     std::string         getVrml();

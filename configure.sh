@@ -14,7 +14,7 @@ export PKG_CONFIG_PATH
 if [ -n "$LIBS" ] && [ $LIBS -gt 0 ]; then
   if [ -n "$LIBS_TEST" ]; then
     for l in $LIBS_TEST; do
-      rm -f tests/libtest$EXEC_END
+      rm -f tests/libtest
       $CXX $CFLAGS -I$includedir tests/lib_test.cxx $LDFLAGS -L$libdir -l$l -o tests/libtest 2>/dev/null
       if [ -f tests/libtest ]; then
           echo "$l=-l$l" >> "config.sh"
@@ -25,7 +25,7 @@ if [ -n "$LIBS" ] && [ $LIBS -gt 0 ]; then
               test -f "$i/makefile".in && echo "$l = -l$l" >> "$i/makefile"
             done
           fi
-          rm tests/libtest$EXEC_END
+          rm tests/libtest
       fi
     done
   fi
@@ -117,26 +117,11 @@ fi
 if [ -n "$LCMS" ] && [ $LCMS -gt 0 ]; then
   pkg-config  --atleast-version=1.14 lcms
   if [ $? = 0 ]; then
-    HAVE_LCMS=1
+    test -n "$ECHO" && $ECHO "littleCMS `pkg-config --modversion lcms`          detected"
     echo "#define HAVE_LCMS 1" >> $CONF_H
     echo "LCMS = 1" >> $CONF
     echo "LCMS_H = `pkg-config --cflags lcms | sed \"$STRIPOPT\"`" >> $CONF
     echo "LCMS_LIBS = `pkg-config --libs lcms | sed \"$STRIPOPT\"`" >> $CONF
-  else
-    l=lcms 
-    rm -f tests/libtest$EXEC_END
-    $CXX $CFLAGS -I$includedir tests/lib_test.cxx $LDFLAGS -L/usr/X11R6/lib$BARCH -L/usr/lib$BARCH -L$libdir -l$l -o tests/libtest 2>/dev/null
-    if [ -f tests/libtest ]; then
-      HAVE_LCMS=1
-      echo "#define HAVE_LCMS 1" >> $CONF_H
-      echo "LCMS = 1" >> $CONF
-      echo "LCMS_H =" >> $CONF
-      echo "LCMS_LIBS = -llcms" >> $CONF
-      rm tests/libtest$EXEC_END
-    fi
-  fi
-  if [ -n $HAVE_LCMS ]; then
-    test -n "$ECHO" && $ECHO "littleCMS               detected"
   else
     if [ $LCMS -eq 1 ]; then
       test -n "$ECHO" && $ECHO "!!! ERROR: no or too old LCMS found, !!!"
@@ -213,7 +198,7 @@ if [ -n "$X11" ] && [ $X11 -gt 0 ]; then
 
   if [ -n "$X_ADD" ]; then
     for l in $X_ADD; do
-      rm -f tests/libtest$EXEC_END
+      rm -f tests/libtest
       $CXX $CFLAGS -I$includedir tests/lib_test.cxx $LDFLAGS -L/usr/X11R6/lib$BARCH -L/usr/lib$BARCH -L$libdir -l$l -o tests/libtest 2>/dev/null
       if [ -f tests/libtest ]; then
           test -n "$ECHO" && $ECHO "lib$l is available"
@@ -233,7 +218,7 @@ if [ -n "$X11" ] && [ $X11 -gt 0 ]; then
               echo "$l=-l$l" >> "config.sh"
             fi
           fi
-          rm tests/libtest$EXEC_END
+          rm tests/libtest
       else
         if [ $X11 -eq 1 ]; then
           test -n "$ECHO" && $ECHO "!!! ERROR lib$l is missed"
@@ -246,7 +231,7 @@ if [ -n "$X11" ] && [ $X11 -gt 0 ]; then
   fi
   if [ -n "$X_ADD_2" ]; then
     for l in $X_ADD_2; do
-      rm -f tests/libtest$EXEC_END
+      rm -f tests/libtest
       $CXX $CFLAGS -I$includedir tests/lib_test.cxx $LDFLAGS -L/usr/X11R6/lib$BARCH -L/usr/lib$BARCH -L$libdir -l$l -o tests/libtest 2>/dev/null
       if [ -f tests/libtest ]; then
           test -n "$ECHO" && $ECHO "lib$l is available"
@@ -257,7 +242,7 @@ if [ -n "$X11" ] && [ $X11 -gt 0 ]; then
           fi
           echo "#define HAVE_$l 1"  >> $CONF_H
           echo "$l=-l$l" >> "config.sh"
-          rm tests/libtest$EXEC_END
+          rm tests/libtest
       else
         test -n "$ECHO" && $ECHO "lib$l not found"
       fi
@@ -279,19 +264,7 @@ if [ -n "$FTGL" ] && [ $FTGL -gt 0 ]; then
     echo "FTGL_H = `pkg-config --cflags ftgl | sed \"$STRIPOPT\"`" >> $CONF
     echo "FTGL_LIBS = `pkg-config --libs ftgl | sed \"$STRIPOPT\"`" >> $CONF
   else
-    l=ftgl 
-    rm -f tests/libtest$EXEC_END
-    $CXX $CFLAGS -I$includedir tests/lib_test.cxx $LDFLAGS -L/usr/X11R6/lib$BARCH -L/usr/lib$BARCH -L$libdir -l$l -o tests/libtest 2>/dev/null
-    if [ -f tests/libtest ]; then
-      test -n "$ECHO" && $ECHO "FTGL                    detected"
-      echo "#define HAVE_FTGL 1" >> $CONF_H
-      echo "FTGL = 1" >> $CONF
-      echo "FTGL_H =" >> $CONF
-      echo "FTGL_LIBS = -lftgl -lfreetype" >> $CONF
-      rm tests/libtest$EXEC_END
-    else
-      test -n "$ECHO" && $ECHO "  no or too old FTGL found, need FTGL to render text in OpenGL"
-    fi
+    test -n "$ECHO" && $ECHO "  no or too old FTGL found, need FTGL to render text in OpenGL"
   fi
 fi
 
@@ -318,7 +291,7 @@ if [ -n "$FLTK" ] && [ $FLTK -gt 0 ]; then
       test -n "$ECHO" && $ECHO "           Configure FLTK with the --enable-threads option and recompile."
       ERROR=1
     else
-      rm fltk_test$EXEC_END
+      rm fltk_test
     fi
     echo "#define HAVE_FLTK 1" >> $CONF_H
     echo "FLTK = 1" >> $CONF
@@ -397,21 +370,21 @@ if [ -n "$LIBPNG" ] && [ $LIBPNG -gt 0 ]; then
 fi
 
 if [ -n "$LIBTIFF" ] && [ $LIBTIFF -gt 0 ]; then
-  rm -f tests/libtest$EXEC_END
+  rm -f tests/libtest
   $CXX $CFLAGS -I$includedir tests/tiff_test.cxx $LDFLAGS -L$libdir -ltiff -ljpeg -o tests/libtest 2>error.txt
     if [ -f tests/libtest ]; then
       test -n "$ECHO" && $ECHO "`tests/libtest`
                         detected"
       echo "#define HAVE_TIFF 1" >> $CONF_H
       echo "TIFF = 1" >> $CONF
-      rm tests/libtest$EXEC_END
+      rm tests/libtest
     else
       test -n "$ECHO" && $ECHO "no or too old libtiff found,"
     fi
 fi
 
 if [ -n "$GETTEXT" ] && [ $GETTEXT -gt 0 ]; then
-  rm -f tests/libtest$EXEC_END
+  rm -f tests/libtest
     $CXX $CFLAGS -I$includedir tests/gettext_test.cxx $LDFLAGS -L$libdir -o tests/libtest 2>/dev/null
     if [ ! -f tests/libtest ]; then
       $CXX $CFLAGS -I$includedir tests/gettext_test.cxx $LDFLAGS -L$libdir -lintl -o tests/libtest 2>error.txt
@@ -421,7 +394,7 @@ if [ -n "$GETTEXT" ] && [ $GETTEXT -gt 0 ]; then
       echo "#define USE_GETTEXT 1" >> $CONF_H
       echo "GETTEXT = -DUSE_GETTEXT" >> $CONF
       echo "GETTEXT = -DUSE_GETTEXT" >> $CONF_I18N
-      rm tests/libtest$EXEC_END
+      rm tests/libtest
     else
       test -n "$ECHO" && $ECHO "no or too old Gettext found,"
     fi
@@ -456,7 +429,7 @@ if [ -n "$DEBUG" ] && [ $DEBUG -gt 0 ]; then
   if [ -n "$MAKEFILE_DIR" ]; then
     for i in $MAKEFILE_DIR; do
       if [ "$debug" -eq "1" ]; then
-        if [ $OSUNAME == "Darwin" ] || [ $OSUNAME == "Windows" ]; then
+        if [ `uname -s` == "Darwin" ]; then
           DEBUG_="-Wall -g -DDEBUG"
         else
           DEBUG_="-Wall -g -DDEBUG --pedantic"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ICC Examin 0.41\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2007-06-26 19:33+0200\n"
+"POT-Creation-Date: 2007-07-12 08:02+0200\n"
 "PO-Revision-Date: 2006-06-29 19:31+0200\n"
 "Last-Translator: Pascal LACROIX <lacroixpascal at vfemail.net>\n"
 "Language-Team: ALL <ku.b@gmx.de>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: agviewer.cpp:313 icc_gl.cpp:2572 icc_gl.cpp:2591 icc_gl.cpp:2710
+#: agviewer.cpp:313 icc_gl.cpp:2662 icc_gl.cpp:2681 icc_gl.cpp:2800
 msgid "left-/middle-/right mouse button -> rotate/cut/menu"
 msgstr ""
 
@@ -23,8 +23,8 @@ msgstr ""
 msgid "Pause"
 msgstr ""
 
-#: agviewer.cpp:350 agviewer.cpp:358 icc_gl.cpp:2676 icc_gl.cpp:2687
-#: icc_gl.cpp:2692 icc_gl.cpp:2697
+#: agviewer.cpp:350 agviewer.cpp:358 icc_gl.cpp:2766 icc_gl.cpp:2777
+#: icc_gl.cpp:2782 icc_gl.cpp:2787
 msgid "left mouse button -> go back"
 msgstr ""
 
@@ -38,21 +38,21 @@ msgid "unknown Colour"
 msgstr "Non Couleur"
 
 #: icc_draw.cpp:656 icc_draw.cpp:667 icc_helfer.cpp:572
-#: icc_profile_tags.cpp:463 icc_helfer_osx.cpp:68 icc_helfer_x.cpp:64
+#: icc_profile_tags.cpp:473 icc_helfer_osx.cpp:68 icc_helfer_x.cpp:64
 msgid "Red"
 msgstr "Rouge"
 
 #: icc_draw.cpp:659 icc_draw.cpp:669 icc_helfer.cpp:573
-#: icc_profile_tags.cpp:464 icc_helfer_osx.cpp:69 icc_helfer_x.cpp:65
+#: icc_profile_tags.cpp:474 icc_helfer_osx.cpp:69 icc_helfer_x.cpp:65
 msgid "Green"
 msgstr "Vert"
 
 #: icc_draw.cpp:662 icc_draw.cpp:671 icc_helfer.cpp:574
-#: icc_profile_tags.cpp:465 icc_helfer_osx.cpp:70 icc_helfer_x.cpp:66
+#: icc_profile_tags.cpp:475 icc_helfer_osx.cpp:70 icc_helfer_x.cpp:66
 msgid "Blue"
 msgstr "Bleu"
 
-#: icc_draw.cpp:666 icc_gl.cpp:1983 icc_helfer.cpp:438 icc_waehler.h:131
+#: icc_draw.cpp:666 icc_gl.cpp:1988 icc_helfer.cpp:438 icc_waehler.h:131
 msgid "Gray"
 msgstr "Gris"
 
@@ -68,7 +68,7 @@ msgstr "Magenta"
 msgid "Yellow"
 msgstr "Jaune"
 
-#: icc_draw.cpp:679 icc_gl.cpp:1985 icc_helfer.cpp:575 icc_helfer.cpp:585
+#: icc_draw.cpp:679 icc_gl.cpp:1990 icc_helfer.cpp:575 icc_helfer.cpp:585
 msgid "Black"
 msgstr "Noir"
 
@@ -100,19 +100,19 @@ msgstr "Clarté"
 msgid "Value"
 msgstr "Valeur"
 
-#: icc_draw.cpp:695 icc_examin_farbraum.cpp:269 icc_examin_io.cpp:213
+#: icc_draw.cpp:695 icc_examin_farbraum.cpp:324 icc_examin_io.cpp:213
 #: icc_helfer.cpp:560 icc_helfer.cpp:563
 msgid "CIE *L"
 msgstr "CIE *L"
 
-#: icc_draw.cpp:697 icc_examin_farbraum.cpp:270 icc_examin_io.cpp:214
-#: icc_gl.cpp:947 icc_gl.cpp:1021 icc_gl.cpp:1047 icc_gl.cpp:1055
+#: icc_draw.cpp:697 icc_examin_farbraum.cpp:325 icc_examin_io.cpp:214
+#: icc_gl.cpp:952 icc_gl.cpp:1026 icc_gl.cpp:1052 icc_gl.cpp:1060
 #: icc_helfer.cpp:561
 msgid "CIE *a"
 msgstr "CIE *a"
 
-#: icc_draw.cpp:699 icc_examin_farbraum.cpp:271 icc_examin_io.cpp:215
-#: icc_gl.cpp:960 icc_gl.cpp:1063 icc_gl.cpp:1083 icc_gl.cpp:1090
+#: icc_draw.cpp:699 icc_examin_farbraum.cpp:326 icc_examin_io.cpp:215
+#: icc_gl.cpp:965 icc_gl.cpp:1068 icc_gl.cpp:1088 icc_gl.cpp:1095
 #: icc_helfer.cpp:562
 msgid "CIE *b"
 msgstr "CIE *b"
@@ -141,70 +141,70 @@ msgstr " avec Gamma: 1.0"
 msgid " with one entry for gamma: "
 msgstr " avec un entrée pour gamma: "
 
-#: icc_examin.cpp:176
+#: icc_examin.cpp:178
 msgid "Gamut selector"
 msgstr ""
 
-#: icc_examin.cpp:263 icc_examin.cpp:1020
+#: icc_examin.cpp:266 icc_examin.cpp:1139
 msgid "loaded"
 msgstr ""
 
-#: icc_examin.cpp:269
+#: icc_examin.cpp:272
 msgid "Ready"
 msgstr ""
 
-#: icc_examin.cpp:318
+#: icc_examin.cpp:321
 msgid ""
 "ICC colour profiles (*.{I,i}{C,c}{M,m,C,c})\tMeasurement (*.{txt,it8,IT8,RGB,"
 "CMYK,ti*,cgats,CIE,cie,nCIE,oRPT,DLY,LAB,Q60})\tArgyll Gamuts (*.{wrl,vrml}"
 msgstr ""
 
-#: icc_examin.cpp:318
+#: icc_examin.cpp:321
 msgid "Which ICC profile?"
 msgstr ""
 
-#: icc_examin.cpp:580 icc_examin.cpp:583
+#: icc_examin.cpp:699 icc_examin.cpp:702
 msgid "Compare Measurement <-> Profile Colours"
 msgstr ""
 
-#: icc_examin.cpp:582
+#: icc_examin.cpp:701
 msgid "none"
 msgstr ""
 
-#: icc_examin.cpp:596 icc_examin.cpp:598
+#: icc_examin.cpp:715 icc_examin.cpp:717
 #, fuzzy
 msgid "Gamut View"
 msgstr "Gamut"
 
-#: icc_examin.cpp:640 icc_gl.h:248
+#: icc_examin.cpp:759 icc_gl.h:257
 msgid "not available"
 msgstr ""
 
-#: icc_examin.cpp:961
+#: icc_examin.cpp:1080
 msgid "Filename (ICC data type)"
 msgstr ""
 
-#: icc_examin.cpp:964
+#: icc_examin.cpp:1083
 msgid "Filename (other data type)"
 msgstr ""
 
-#: icc_examin.cpp:966
+#: icc_examin.cpp:1085
 msgid "Filename (corrupted ICC data type)"
 msgstr ""
 
-#: icc_examin.cpp:971
+#: icc_examin.cpp:1090
 msgid "found no content for"
 msgstr ""
 
-#: icc_examin.cpp:974
+#: icc_examin.cpp:1093
 msgid "Internal error"
 msgstr ""
 
-#: icc_examin.cpp:977
+#: icc_examin.cpp:1096
 msgid "No. Tag   Type   Size Description"
 msgstr ""
 
-#: icc_examin_farbraum.cpp:232
+#: icc_examin_farbraum.cpp:287
 msgid "RGB result not available"
 msgstr ""
 
@@ -220,166 +220,166 @@ msgstr ""
 msgid "Stop loading "
 msgstr ""
 
-#: icc_examin_io.cpp:514
+#: icc_examin_io.cpp:523
 msgid "HTML Documents (*.htm*)"
 msgstr ""
 
-#: icc_examin_io.cpp:518 icc_betrachter.cxx:521
+#: icc_examin_io.cpp:527 icc_betrachter.cxx:571
 msgid "Save Report"
 msgstr ""
 
-#: icc_examin_io.cpp:589
+#: icc_examin_io.cpp:598
 msgid "ICC colour profiles (*.ic*)"
 msgstr "ICC couleur profile (*.ic*)"
 
-#: icc_examin_io.cpp:590 icc_betrachter.cxx:522
+#: icc_examin_io.cpp:599 icc_betrachter.cxx:572
 msgid "Save Gamut as Profile"
 msgstr ""
 
-#: icc_examin_io.cpp:592
+#: icc_examin_io.cpp:601
 msgid "VRML Files (*.wrl)"
 msgstr "VRML Fichier (*.wrl)"
 
-#: icc_examin_io.cpp:593 icc_betrachter.cxx:523
+#: icc_examin_io.cpp:602 icc_betrachter.cxx:573
 msgid "Save Gamut as VRML"
 msgstr ""
 
-#: icc_examin_tagwahl.cpp:58
+#: icc_examin_tagwahl.cpp:59
 msgid "empty"
 msgstr ""
 
-#: icc_examin_tagwahl.cpp:145
+#: icc_examin_tagwahl.cpp:157
 msgid "RGB primaries"
 msgstr ""
 
-#: icc_fenster.cpp:172
+#: icc_fenster.cpp:212
 msgid "Information:"
 msgstr ""
 
-#: icc_fenster.cpp:175 icc_betrachter.cxx:635
+#: icc_fenster.cpp:215 icc_betrachter.cxx:699
 msgid "Yes"
 msgstr "Oui"
 
-#: icc_gl.cpp:701 icc_gl.cpp:704 icc_gl.cpp:707 icc_gl.cpp:713 icc_gl.cpp:717
-#: icc_gl.cpp:732
+#: icc_gl.cpp:706 icc_gl.cpp:709 icc_gl.cpp:712 icc_gl.cpp:718 icc_gl.cpp:722
+#: icc_gl.cpp:737
 msgid "Could not open font in:"
 msgstr ""
 
-#: icc_gl.cpp:824
+#: icc_gl.cpp:829
 #, c-format
 msgid "0,0,0"
 msgstr ""
 
-#: icc_gl.cpp:1957 icc_gl.cpp:1967 icc_gl.cpp:1969 icc_gl.cpp:1971
+#: icc_gl.cpp:1962 icc_gl.cpp:1972 icc_gl.cpp:1974 icc_gl.cpp:1976
 msgid "Slice"
 msgstr ""
 
-#: icc_gl.cpp:1958
+#: icc_gl.cpp:1963
 msgid "Rotate around slice"
 msgstr ""
 
-#: icc_gl.cpp:1973
+#: icc_gl.cpp:1978
 msgid "Rotate around"
 msgstr ""
 
-#: icc_gl.cpp:1973
+#: icc_gl.cpp:1978
 msgid "axis"
 msgstr ""
 
-#: icc_gl.cpp:1978
+#: icc_gl.cpp:1983
 msgid "Slice plane"
 msgstr ""
 
-#: icc_gl.cpp:1981
+#: icc_gl.cpp:1986
 msgid "White"
 msgstr "Blanc"
 
-#: icc_gl.cpp:1982
+#: icc_gl.cpp:1987
 msgid "Light gray"
 msgstr ""
 
-#: icc_gl.cpp:1984
+#: icc_gl.cpp:1989
 msgid "Dark gray"
 msgstr "Gris sombre"
 
-#: icc_gl.cpp:1988
+#: icc_gl.cpp:1993
 msgid "Background colour"
 msgstr "Couleur Arrière-plan"
 
-#: icc_gl.cpp:1993
+#: icc_gl.cpp:1998
 msgid "gray"
 msgstr "gris"
 
-#: icc_gl.cpp:1994
+#: icc_gl.cpp:1999
 msgid "coloured"
 msgstr ""
 
-#: icc_gl.cpp:1995
+#: icc_gl.cpp:2000
 msgid "high contrast"
 msgstr ""
 
-#: icc_gl.cpp:1996
+#: icc_gl.cpp:2001
 msgid "shells"
 msgstr ""
 
-#: icc_gl.cpp:1997
+#: icc_gl.cpp:2002
 #, fuzzy
 msgid "Colour line"
 msgstr "Couleur r"
 
-#: icc_gl.cpp:2002
+#: icc_gl.cpp:2007
 msgid "Sphere 1dE"
 msgstr ""
 
-#: icc_gl.cpp:2003
+#: icc_gl.cpp:2008
 msgid "Sphere 2dE"
 msgstr ""
 
-#: icc_gl.cpp:2004
+#: icc_gl.cpp:2009
 msgid "Sphere 4dE"
 msgstr ""
 
-#: icc_gl.cpp:2007
+#: icc_gl.cpp:2012
 msgid "Star"
 msgstr ""
 
-#: icc_gl.cpp:2010
+#: icc_gl.cpp:2015
 msgid "Point"
 msgstr "Point"
 
-#: icc_gl.cpp:2013
+#: icc_gl.cpp:2018
 msgid "without markers"
 msgstr ""
 
-#: icc_gl.cpp:2014
+#: icc_gl.cpp:2019
 msgid "Spektral line"
 msgstr ""
 
-#: icc_gl.cpp:2017
+#: icc_gl.cpp:2022
 msgid "Texts"
 msgstr ""
 
-#: icc_gl.cpp:2019
+#: icc_gl.cpp:2024
 msgid "Texts/Arrows on/off"
 msgstr ""
 
-#: icc_gl.cpp:2021
+#: icc_gl.cpp:2026
 msgid "Illustration"
 msgstr ""
 
-#: icc_gl.cpp:2294
+#: icc_gl.cpp:2327
 msgid "Pos"
 msgstr ""
 
-#: icc_gl.cpp:2378 icc_profile_tags.cpp:302
+#: icc_gl.cpp:2411 icc_profile_tags.cpp:312
 msgid "Channel"
 msgstr "Canal"
 
-#: icc_helfer.cpp:329 icc_betrachter.cxx:318
+#: icc_helfer.cpp:329 icc_betrachter.cxx:368
 msgid "Photometric"
 msgstr "Perceptuel"
 
-#: icc_helfer.cpp:332 icc_betrachter.cxx:319
+#: icc_helfer.cpp:332 icc_betrachter.cxx:369
 msgid "Relative Colorimetric"
 msgstr "Colorimétrie relative"
 
@@ -387,7 +387,7 @@ msgstr "Colorimétrie relative"
 msgid "Saturation"
 msgstr "Saturation"
 
-#: icc_helfer.cpp:338 icc_betrachter.cxx:320
+#: icc_helfer.cpp:338 icc_betrachter.cxx:370
 msgid "Absolute Colorimetric"
 msgstr "Colorimétrie absolue"
 
@@ -487,7 +487,7 @@ msgstr "14couleurs"
 msgid "15color"
 msgstr "15couleurs"
 
-#: icc_helfer.cpp:552 icc_profile_tags.cpp:1062 icc_profile_tags.cpp:1069
+#: icc_helfer.cpp:552 icc_profile_tags.cpp:1083 icc_profile_tags.cpp:1090
 msgid "Colour"
 msgstr "Couleur"
 
@@ -960,7 +960,7 @@ msgstr ""
 msgid "seconds"
 msgstr ""
 
-#: icc_helfer.cpp:1137 icc_oyranos.cpp:352 icc_oyranos.cpp:452
+#: icc_helfer.cpp:1137 icc_oyranos.cpp:393 icc_oyranos.cpp:493
 msgid "Monitor Profile"
 msgstr "Écran Profil"
 
@@ -976,169 +976,169 @@ msgstr ""
 msgid "File not loaded!"
 msgstr ""
 
-#: icc_measurement.cpp:815
+#: icc_measurement.cpp:819
 msgid "use sRGB"
 msgstr ""
 
-#: icc_measurement.cpp:1103
+#: icc_measurement.cpp:1107
 msgid "Report about ICC profile"
 msgstr ""
 
-#: icc_measurement.cpp:1141
+#: icc_measurement.cpp:1145
 msgid "Meas colour"
 msgstr ""
 
-#: icc_measurement.cpp:1143
+#: icc_measurement.cpp:1147
 msgid "Profile colour"
 msgstr ""
 
-#: icc_measurement.cpp:1215
+#: icc_measurement.cpp:1224
 msgid "no measurment data or correct profile conversion available"
 msgstr ""
 
-#: icc_measurement.cpp:1222
+#: icc_measurement.cpp:1231
 msgid "Measurment- and profile colours from <b>"
 msgstr ""
 
-#: icc_measurement.cpp:1224
+#: icc_measurement.cpp:1233
 msgid "RGB"
 msgstr "RVB"
 
-#: icc_measurement.cpp:1226
+#: icc_measurement.cpp:1235
 msgid "CMYK"
 msgstr ""
 
-#: icc_measurement.cpp:1227
+#: icc_measurement.cpp:1236
 msgid "</b> Measurement"
 msgstr ""
 
-#: icc_measurement.cpp:1229
+#: icc_measurement.cpp:1238
 msgid "CMM: <b>lcms</b>"
 msgstr ""
 
-#: icc_measurement.cpp:1231
+#: icc_measurement.cpp:1240
 msgid "averaging deviations (dE CIE*Lab):<b> "
 msgstr ""
 
-#: icc_measurement.cpp:1231
+#: icc_measurement.cpp:1240
 msgid "</b>  maximum: "
 msgstr ""
 
-#: icc_measurement.cpp:1231
+#: icc_measurement.cpp:1240
 msgid "  minimum: "
 msgstr ""
 
-#: icc_measurement.cpp:1231
+#: icc_measurement.cpp:1240
 msgid "  (dE CIE 2000) averaging: "
 msgstr ""
 
-#: icc_measurement.cpp:1231
+#: icc_measurement.cpp:1240
 msgid "  maximum: "
 msgstr ""
 
-#: icc_measurement.cpp:1261
+#: icc_measurement.cpp:1270
 msgid "Measurement patch"
 msgstr ""
 
-#: icc_measurement.cpp:1262
+#: icc_measurement.cpp:1271
 msgid "dE Lab"
 msgstr ""
 
-#: icc_measurement.cpp:1263
+#: icc_measurement.cpp:1272
 msgid "dE2000"
 msgstr ""
 
-#: icc_measurement.cpp:1264
+#: icc_measurement.cpp:1273
 msgid "L"
 msgstr ""
 
-#: icc_measurement.cpp:1265
+#: icc_measurement.cpp:1274
 msgid "a"
 msgstr ""
 
-#: icc_measurement.cpp:1266
+#: icc_measurement.cpp:1275
 msgid "b"
 msgstr ""
 
-#: icc_measurement.cpp:1267
+#: icc_measurement.cpp:1276
 msgid "L'"
 msgstr ""
 
-#: icc_measurement.cpp:1268
+#: icc_measurement.cpp:1277
 msgid "a'"
 msgstr ""
 
-#: icc_measurement.cpp:1269
+#: icc_measurement.cpp:1278
 msgid "b'"
 msgstr ""
 
-#: icc_measurement.cpp:1270 my_file_chooser.cxx:273
+#: icc_measurement.cpp:1279 my_file_chooser.cxx:274
 msgid "X"
 msgstr ""
 
-#: icc_measurement.cpp:1271 icc_measurement.cpp:1285
+#: icc_measurement.cpp:1280 icc_measurement.cpp:1294
 msgid "Y"
 msgstr ""
 
-#: icc_measurement.cpp:1272
+#: icc_measurement.cpp:1281
 msgid "Z"
 msgstr ""
 
-#: icc_measurement.cpp:1274
+#: icc_measurement.cpp:1283
 msgid "X'"
 msgstr ""
 
-#: icc_measurement.cpp:1275
+#: icc_measurement.cpp:1284
 msgid "Y'"
 msgstr ""
 
-#: icc_measurement.cpp:1276
+#: icc_measurement.cpp:1285
 msgid "Z'"
 msgstr ""
 
-#: icc_measurement.cpp:1279
+#: icc_measurement.cpp:1288
 msgid "R"
 msgstr ""
 
-#: icc_measurement.cpp:1280
+#: icc_measurement.cpp:1289
 msgid "G"
 msgstr "V"
 
-#: icc_measurement.cpp:1281
+#: icc_measurement.cpp:1290
 msgid "B"
 msgstr ""
 
-#: icc_measurement.cpp:1283
+#: icc_measurement.cpp:1292
 msgid "C"
 msgstr ""
 
-#: icc_measurement.cpp:1284
+#: icc_measurement.cpp:1293
 msgid "M"
 msgstr ""
 
-#: icc_measurement.cpp:1286
+#: icc_measurement.cpp:1295
 msgid "K"
 msgstr ""
 
-#: icc_oyranos.cpp:175 icc_oyranos.cpp:362
+#: icc_oyranos.cpp:216 icc_oyranos.cpp:403
 msgid "WARNING: Could not load corrupt or damaged profile."
 msgstr ""
 
-#: icc_oyranos.cpp:181 icc_oyranos.cpp:442 icc_oyranos.cpp:450
-#: icc_oyranos.cpp:485 icc_oyranos.cpp:491 icc_oyranos.cpp:537
-#: icc_oyranos.cpp:543 icc_oyranos.cpp:582 icc_oyranos.cpp:588
+#: icc_oyranos.cpp:222 icc_oyranos.cpp:483 icc_oyranos.cpp:491
+#: icc_oyranos.cpp:526 icc_oyranos.cpp:532 icc_oyranos.cpp:578
+#: icc_oyranos.cpp:584 icc_oyranos.cpp:623 icc_oyranos.cpp:629
 msgid "WARNING: Could not load profile."
 msgstr ""
 
-#: icc_oyranos.cpp:718 icc_profile_header.cpp:237 icc_helfer_x.cpp:177
+#: icc_oyranos.cpp:759 icc_profile_header.cpp:237 icc_helfer_x.cpp:177
 msgid "Manufacturer:"
 msgstr "Fabricant:   "
 
-#: icc_oyranos.cpp:724
+#: icc_oyranos.cpp:765
 msgid "Model:"
 msgstr "Model:"
 
-#: icc_oyranos.cpp:730
+#: icc_oyranos.cpp:771
 msgid "Serial:"
 msgstr ""
 
@@ -1360,95 +1360,95 @@ msgstr ""
 msgid "    head  head    128 File header"
 msgstr ""
 
-#: icc_profile_tags.cpp:241
+#: icc_profile_tags.cpp:251
 msgid "Standard Observer"
 msgstr ""
 
-#: icc_profile_tags.cpp:243
+#: icc_profile_tags.cpp:253
 msgid "Backsite"
 msgstr ""
 
-#: icc_profile_tags.cpp:246
+#: icc_profile_tags.cpp:256
 msgid "Geometrie"
 msgstr ""
 
-#: icc_profile_tags.cpp:248
+#: icc_profile_tags.cpp:258
 msgid "Flare"
 msgstr ""
 
-#: icc_profile_tags.cpp:250
+#: icc_profile_tags.cpp:260
 msgid "Illuminant Type"
 msgstr ""
 
-#: icc_profile_tags.cpp:265
+#: icc_profile_tags.cpp:275
 msgid "Conversion table with 16-bit precission:"
 msgstr ""
 
-#: icc_profile_tags.cpp:266 icc_profile_tags.cpp:285
+#: icc_profile_tags.cpp:276 icc_profile_tags.cpp:295
 msgid "Intent:"
 msgstr "Intention:"
 
-#: icc_profile_tags.cpp:267 icc_profile_tags.cpp:286
+#: icc_profile_tags.cpp:277 icc_profile_tags.cpp:296
 msgid "Number of input channels"
 msgstr ""
 
-#: icc_profile_tags.cpp:268 icc_profile_tags.cpp:287
+#: icc_profile_tags.cpp:278 icc_profile_tags.cpp:297
 msgid "Number of output channels"
 msgstr ""
 
-#: icc_profile_tags.cpp:269 icc_profile_tags.cpp:288
+#: icc_profile_tags.cpp:279 icc_profile_tags.cpp:298
 msgid "Matrix"
 msgstr ""
 
-#: icc_profile_tags.cpp:270
+#: icc_profile_tags.cpp:280
 msgid "Linear input curve"
 msgstr ""
 
-#: icc_profile_tags.cpp:270 icc_profile_tags.cpp:272
+#: icc_profile_tags.cpp:280 icc_profile_tags.cpp:282
 msgid "with"
 msgstr "avec"
 
-#: icc_profile_tags.cpp:270 icc_profile_tags.cpp:272
+#: icc_profile_tags.cpp:280 icc_profile_tags.cpp:282
 msgid "steps"
 msgstr ""
 
-#: icc_profile_tags.cpp:271 icc_profile_tags.cpp:289
+#: icc_profile_tags.cpp:281 icc_profile_tags.cpp:299
 msgid "3D Lockup table with"
 msgstr ""
 
-#: icc_profile_tags.cpp:271 icc_profile_tags.cpp:289
+#: icc_profile_tags.cpp:281 icc_profile_tags.cpp:299
 msgid "points length per side"
 msgstr ""
 
-#: icc_profile_tags.cpp:272
+#: icc_profile_tags.cpp:282
 msgid "Linear output curve"
 msgstr ""
 
-#: icc_profile_tags.cpp:284
+#: icc_profile_tags.cpp:294
 msgid "Conversion table with 8-bit precission:"
 msgstr ""
 
-#: icc_profile_tags.cpp:383
+#: icc_profile_tags.cpp:393
 msgid "Error in ICC profile tag found!"
 msgstr ""
 
-#: icc_profile_tags.cpp:493
+#: icc_profile_tags.cpp:506
 msgid "Number of colours:"
 msgstr ""
 
-#: icc_profile_tags.cpp:494
+#: icc_profile_tags.cpp:507
 msgid "Name"
 msgstr "Nom"
 
-#: icc_profile_tags.cpp:494
+#: icc_profile_tags.cpp:507
 msgid "CIE*Lab"
 msgstr ""
 
-#: icc_profile_tags.cpp:495
+#: icc_profile_tags.cpp:508
 msgid "Device Colours"
 msgstr ""
 
-#: icc_ueber.cpp:67 icc_betrachter.cxx:588
+#: icc_ueber.cpp:67 icc_betrachter.cxx:652
 msgid "About ICC Examin"
 msgstr "À propos ICC Examin"
 
@@ -1497,12 +1497,12 @@ msgid ""
 "the littleCMS program library."
 msgstr ""
 
-#: icc_ueber.cpp:155 icc_betrachter.cxx:541 icc_betrachter.cxx:543
-#: icc_betrachter.cxx:606
+#: icc_ueber.cpp:155 icc_betrachter.cxx:591 icc_betrachter.cxx:593
+#: icc_betrachter.cxx:670
 msgid "Help"
 msgstr "Aide"
 
-#: icc_ueber.cpp:334 icc_betrachter.cxx:544 icc_betrachter.cxx:612
+#: icc_ueber.cpp:334 icc_betrachter.cxx:594 icc_betrachter.cxx:676
 msgid "License"
 msgstr ""
 
@@ -1651,7 +1651,7 @@ msgstr ""
 msgid "Filename"
 msgstr ""
 
-#: icc_helfer_fltk.cpp:328 my_file_chooser.cxx:253
+#: icc_helfer_fltk.cpp:328 my_file_chooser.cxx:254
 msgid "Manage Favorites"
 msgstr ""
 
@@ -1667,11 +1667,11 @@ msgstr ""
 msgid "New Directory?"
 msgstr ""
 
-#: icc_helfer_fltk.cpp:335 my_file_chooser.cxx:210
+#: icc_helfer_fltk.cpp:335 my_file_chooser.cxx:211
 msgid "Preview"
 msgstr ""
 
-#: icc_helfer_fltk.cpp:337 my_file_chooser.cxx:288
+#: icc_helfer_fltk.cpp:337 my_file_chooser.cxx:289
 msgid "Save"
 msgstr ""
 
@@ -1679,250 +1679,250 @@ msgstr ""
 msgid "Show:"
 msgstr ""
 
-#: icc_betrachter.cxx:108
+#: icc_betrachter.cxx:158
 msgid "lineare entrance curve with 256 steps"
 msgstr ""
 
-#: icc_betrachter.cxx:110
+#: icc_betrachter.cxx:160
 msgid "lineare exit curve with 256 steps"
 msgstr ""
 
-#: icc_betrachter.cxx:310 icc_betrachter.cxx:519
+#: icc_betrachter.cxx:360 icc_betrachter.cxx:569
 msgid "File"
 msgstr "Fichier"
 
-#: icc_betrachter.cxx:311 icc_betrachter.cxx:524
+#: icc_betrachter.cxx:361 icc_betrachter.cxx:574
 msgid "Quit"
 msgstr "Quitter"
 
-#: icc_betrachter.cxx:313 icc_betrachter.cxx:527
+#: icc_betrachter.cxx:363 icc_betrachter.cxx:577
 msgid "View"
 msgstr "Vue"
 
-#: icc_betrachter.cxx:314 icc_betrachter.cxx:528
+#: icc_betrachter.cxx:364 icc_betrachter.cxx:578
 msgid "Whole Screen on/off"
 msgstr ""
 
-#: icc_betrachter.cxx:316 icc_betrachter.cxx:530
+#: icc_betrachter.cxx:366 icc_betrachter.cxx:580
 #, fuzzy
 msgid "Settings"
 msgstr "Oyranos Préférences"
 
-#: icc_betrachter.cxx:317
+#: icc_betrachter.cxx:367
 msgid "Gamut Warning"
 msgstr "Avertissement Gamut"
 
-#: icc_betrachter.cxx:321
+#: icc_betrachter.cxx:371
 msgid "BPC"
 msgstr ""
 
-#: icc_betrachter.cxx:323 icc_betrachter.cxx:534
+#: icc_betrachter.cxx:373 icc_betrachter.cxx:584
 msgid "Windows"
 msgstr ""
 
-#: icc_betrachter.cxx:324
+#: icc_betrachter.cxx:374
 msgid "Show Main Window"
 msgstr ""
 
-#: icc_betrachter.cxx:520
+#: icc_betrachter.cxx:570
 msgid "Open"
 msgstr "Ouvrir"
 
-#: icc_betrachter.cxx:526 icc_betrachter.cxx:535 icc_betrachter.cxx:696
+#: icc_betrachter.cxx:576 icc_betrachter.cxx:585 icc_betrachter.cxx:760
 msgid "Gamut"
 msgstr "Gamut"
 
-#: icc_betrachter.cxx:531
+#: icc_betrachter.cxx:581
 msgid "Oyranos Settings"
 msgstr "Oyranos Préférences"
 
-#: icc_betrachter.cxx:532
+#: icc_betrachter.cxx:582
 msgid "LANG"
 msgstr ""
 
-#: icc_betrachter.cxx:536
+#: icc_betrachter.cxx:586
 msgid "Report View"
 msgstr ""
 
-#: icc_betrachter.cxx:537
+#: icc_betrachter.cxx:587
 msgid "CGATS View"
 msgstr ""
 
-#: icc_betrachter.cxx:538
+#: icc_betrachter.cxx:588
 msgid "Videocard Gamma"
 msgstr ""
 
-#: icc_betrachter.cxx:539
+#: icc_betrachter.cxx:589
 msgid "Test Curves"
 msgstr ""
 
-#: icc_betrachter.cxx:542 icc_betrachter.cxx:601
+#: icc_betrachter.cxx:592 icc_betrachter.cxx:665
 msgid "About"
 msgstr "À propos"
 
-#: icc_betrachter.cxx:619
+#: icc_betrachter.cxx:683
 msgid "Acknowlegement"
 msgstr ""
 
-#: icc_betrachter.cxx:625
+#: icc_betrachter.cxx:689
 msgid "Links"
 msgstr ""
 
-#: icc_betrachter.cxx:645
+#: icc_betrachter.cxx:709
 msgid "Grafic Card Gamma Table"
 msgstr ""
 
-#: icc_betrachter.cxx:670
+#: icc_betrachter.cxx:734
 msgid "Set"
 msgstr "Définir"
 
-#: icc_betrachter.cxx:671
+#: icc_betrachter.cxx:735
 msgid ""
 "Set the current profile as monitor profile and upload vcgt tag to the video "
 "card"
 msgstr ""
 
-#: icc_betrachter.cxx:676
+#: icc_betrachter.cxx:740
 msgid "Reset"
 msgstr "Réinitialiser"
 
-#: icc_betrachter.cxx:677
+#: icc_betrachter.cxx:741
 msgid "reset to standard gamma"
 msgstr ""
 
-#: icc_betrachter.cxx:681
+#: icc_betrachter.cxx:745
 msgid "Load"
 msgstr "Ouvrir"
 
-#: icc_betrachter.cxx:682
+#: icc_betrachter.cxx:746
 msgid "Load the current monitor profile"
 msgstr ""
 
-#: icc_betrachter.cxx:686
+#: icc_betrachter.cxx:750
 msgid "Close"
 msgstr "Fermer"
 
-#: icc_betrachter.cxx:755
+#: icc_betrachter.cxx:819
 msgid "ICC Examin"
 msgstr ""
 
-#: icc_betrachter.cxx:766
+#: icc_betrachter.cxx:830
 msgid "all_invisible"
 msgstr ""
 
-#: icc_betrachter.cxx:767
+#: icc_betrachter.cxx:831
 msgid "menuleiste_invisible"
 msgstr ""
 
-#: icc_betrachter.cxx:775
+#: icc_betrachter.cxx:839
 msgid "tags_group_invisible"
 msgstr ""
 
-#: icc_betrachter.cxx:777
+#: icc_betrachter.cxx:841
 msgid "inspect_html_group_invisible"
 msgstr ""
 
-#: icc_betrachter.cxx:779
+#: icc_betrachter.cxx:843
 msgid "Inspect_html_invisible"
 msgstr ""
 
-#: icc_betrachter.cxx:788
+#: icc_betrachter.cxx:852
 msgid "examin_invisible"
 msgstr ""
 
-#: icc_betrachter.cxx:790
+#: icc_betrachter.cxx:854
 msgid "tag_browser_invisible"
 msgstr ""
 
-#: icc_betrachter.cxx:791
+#: icc_betrachter.cxx:855
 msgid "Choose one profile tag"
 msgstr ""
 
-#: icc_betrachter.cxx:803
+#: icc_betrachter.cxx:867
 msgid "ansichtsgruppe_invisible"
 msgstr ""
 
-#: icc_betrachter.cxx:805
+#: icc_betrachter.cxx:869
 msgid "tabellengruppe_invisible"
 msgstr ""
 
-#: icc_betrachter.cxx:807
+#: icc_betrachter.cxx:871
 msgid "tabellenpack_invisible"
 msgstr ""
 
-#: icc_betrachter.cxx:809
+#: icc_betrachter.cxx:873
 msgid "Chain selection"
 msgstr ""
 
-#: icc_betrachter.cxx:810
+#: icc_betrachter.cxx:874
 msgid "Choose a attribute"
 msgstr ""
 
-#: icc_betrachter.cxx:824
+#: icc_betrachter.cxx:888
 msgid "tabellengruppe2_invisible"
 msgstr ""
 
-#: icc_betrachter.cxx:826
+#: icc_betrachter.cxx:890
 msgid "mft_viewer_invisible"
 msgstr ""
 
-#: icc_betrachter.cxx:838
+#: icc_betrachter.cxx:902
 msgid "mft_text_invisible"
 msgstr ""
 
-#: icc_betrachter.cxx:850
+#: icc_betrachter.cxx:915
 msgid "mft_gl_group_invisible"
 msgstr ""
 
-#: icc_betrachter.cxx:852
+#: icc_betrachter.cxx:917
 msgid "mft_gl_box_invisible"
 msgstr ""
 
-#: icc_betrachter.cxx:856
+#: icc_betrachter.cxx:921
 msgid "mft_gl_invisible"
 msgstr ""
 
-#: icc_betrachter.cxx:871
+#: icc_betrachter.cxx:936
 msgid "o"
 msgstr ""
 
-#: icc_betrachter.cxx:872
+#: icc_betrachter.cxx:937
 msgid "Show all channels of this table a own window."
 msgstr ""
 
-#: icc_betrachter.cxx:890
+#: icc_betrachter.cxx:955
 msgid "tag_pack_invisible"
 msgstr ""
 
-#: icc_betrachter.cxx:892
+#: icc_betrachter.cxx:957
 msgid "tag_box_invisible"
 msgstr ""
 
-#: icc_betrachter.cxx:896
+#: icc_betrachter.cxx:961
 msgid "tag_group_invisible"
 msgstr ""
 
-#: icc_betrachter.cxx:898
+#: icc_betrachter.cxx:963
 msgid " tag_text_invisible"
 msgstr ""
 
-#: icc_betrachter.cxx:910
+#: icc_betrachter.cxx:976
 msgid "tag_viewer_invisible"
 msgstr ""
 
-#: icc_betrachter.cxx:935
+#: icc_betrachter.cxx:1001
 msgid "status_group_invisible"
 msgstr ""
 
-#: icc_betrachter.cxx:937
+#: icc_betrachter.cxx:1003
 msgid "..."
 msgstr ""
 
-#: icc_betrachter.cxx:940
+#: icc_betrachter.cxx:1006
 msgid "Loading .."
 msgstr ""
 
-#: icc_betrachter.cxx:951
+#: icc_betrachter.cxx:1017
 msgid "no_box_invisible"
 msgstr ""
 
@@ -1930,28 +1930,28 @@ msgstr ""
 msgid "Choose File"
 msgstr ""
 
-#: my_file_chooser.cxx:200
+#: my_file_chooser.cxx:201
 msgid "?"
 msgstr ""
 
-#: my_file_chooser.cxx:229
+#: my_file_chooser.cxx:230
 #, fuzzy
 msgid "Filename:"
 msgstr "Fichier"
 
-#: my_file_chooser.cxx:235
+#: my_file_chooser.cxx:236
 msgid "OK"
 msgstr ""
 
-#: my_file_chooser.cxx:239 my_file_chooser.cxx:284
+#: my_file_chooser.cxx:240 my_file_chooser.cxx:285
 msgid "Cancel"
 msgstr "Annuler"
 
-#: my_file_chooser.cxx:270
+#: my_file_chooser.cxx:271
 msgid "@8>"
 msgstr ""
 
-#: my_file_chooser.cxx:278
+#: my_file_chooser.cxx:279
 msgid "@2>"
 msgstr ""
 
@@ -1998,7 +1998,7 @@ msgid "What kind of image is this?\n"
 msgstr ""
 
 #: icc_examin_version.h:9
-msgid "May 2004 - June 2007"
+msgid "May 2004 - July 2007"
 msgstr ""
 
 #: icc_utils.h:226 icc_utils.h:227 icc_utils.h:228

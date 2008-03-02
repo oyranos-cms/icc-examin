@@ -106,14 +106,8 @@ dateiwahl_cb (MyFl_File_Chooser *f, void *data, int finish)
 
     DBG_NUM_V( data )
     filename = fl->value();
-  
-    // no profile dialog
-    if (0 && strstr(fl->filter(), "Profile [*.{I,i}{C,c}]") == 0) {
-      if (filename)
-        DBG_PROG_V( filename );
-      DBG_PROG_ENDE
-      return;
-    }
+
+    static std::vector<std::string> file_vect;
 
     if (filename && fl->count() && dateiwahl->preview()) {
       std::vector<std::string> profilnamen;
@@ -127,8 +121,54 @@ dateiwahl_cb (MyFl_File_Chooser *f, void *data, int finish)
           profilnamen[i] = fl->value(i);
         DBG_PROG_V( i <<":"<< profilnamen[i] )
       }
-      DBG_PROG_V( profilnamen.size() << filename )
-      icc_examin->oeffnen(profilnamen);
+
+      // add new files
+      int file_in_list;
+      for(int i = 0; i < (int)profilnamen.size(); ++i)
+      {
+        file_in_list = 0;
+        for( int j = 0; j < (int)file_vect.size(); ++j )
+          if(profilnamen[i] == file_vect[j])
+          {
+            file_in_list = 1;
+            break;
+          }
+
+        if(!file_in_list)
+          file_vect.push_back( profilnamen[i] );
+      }
+
+      // remove unseen files
+      std::vector<std::string>::iterator it;
+      int run = 1;
+
+      while(run)
+      {
+        run = 0;
+        for(it = file_vect.begin(); it != file_vect.end(); ++it)
+        {
+          file_in_list = 0;
+          for(int i = 0; i < (int)profilnamen.size(); ++i)
+            if(profilnamen[i] == *it)
+            {
+              file_in_list = 1;
+              break;
+            }
+
+          if(!file_in_list)
+          {
+            file_vect.erase( it );
+            run = 1;
+            break;
+          }
+        }
+      }
+
+      if(profilnamen.size() != file_vect.size())
+        WARN_S("Something went wrong here.");
+
+      DBG_PROG_V( file_vect.size() << filename )
+      icc_examin->oeffnen( file_vect );
     }
 
   DBG_PROG_ENDE
@@ -446,8 +486,8 @@ int MyFl_Double_Window::handle( int e )
   wx = this->x();
   wy = this->y();
 
-  /*if(!ergebnis)
-    ;*/
+  if(!ergebnis)
+    ;
 
   int net_desktop = -1;
 #if HAVE_X

@@ -219,7 +219,7 @@ public:
   hbox->begin();
   profile_[pos] = new ICCwaehlerProfil( name, undurchsicht, grau, aktiv, pos );
   hbox->end();
-  profile_[pos]->waehlbar( waehlbar_?true:false );
+  profile_[pos]->waehlbar( waehlbar_ );
   redraw();
   DBG_PROG_ENDE
  }
@@ -245,7 +245,7 @@ public:
  void         waehlbar  ( int pos, int wert )
  { DBG_PROG_START
    if(0 <= pos && pos < size())
-	   profile_[pos]->waehlbar( wert?true:false );
+     profile_[pos]->waehlbar( wert );
    DBG_PROG_ENDE
  }
 };

@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2005  Kai-Uwe Behrmann 
+ * Copyright (C) 2005-2007  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -93,6 +93,7 @@ leseGrafikKartenGamma        (std::string display_name,
   int n_fenster = 0;
   int screens = 0;
   int screen = 0;
+  int effective_screen = 0;
 # ifdef HAVE_XIN
   XineramaScreenInfo* fenster = 0;
 # endif
@@ -159,13 +160,14 @@ leseGrafikKartenGamma        (std::string display_name,
       }
     }
 # endif
+  if (ScreenCount( display ) > 1 || screen == 0)
+    effective_screen = screen;
     
   DBG_PROG_V( ScreenCount( display ) )
 
   XF86VidModeGamma gamma;
   XF86VidModeMonitor monitor;
   //int screen = DefaultScreen( display );
-  char **infos = 0;
   int num = 0;
     if( (infos = icc_oyranos.moniInfo( x,y, &num)) != 0  && num ) {
       for( int i = 0; i < num; ++i ) {
@@ -173,7 +175,7 @@ leseGrafikKartenGamma        (std::string display_name,
         texte[texte.size()-1]. append( infos[i*2 + 1] );
       }
     } else
-    if (XF86VidModeGetMonitor(display, screen, &monitor)) {
+    if (XF86VidModeGetMonitor(display, effective_screen, &monitor)) {
       texte.push_back(_("Manufacturer:"));
       texte[texte.size()-1].append(monitor.vendor);
       texte.push_back(_("Model:       "));
@@ -185,7 +187,7 @@ leseGrafikKartenGamma        (std::string display_name,
     }
   DBG_PROG_V( DisplayWidth(display, screen) <<" "<< DisplayWidthMM(display, screen) )
 
-  if (!XF86VidModeGetGamma(display, screen, &gamma))
+  if (!XF86VidModeGetGamma(display, effective_screen, &gamma))
   { DBG_PROG_S( "no gamma information obtained" );
   } else {
     char t[24];
@@ -210,8 +212,8 @@ leseGrafikKartenGamma        (std::string display_name,
     DBG_NUM_V( gamma.blue )
   }
 
-  int size;
-  if (!XF86VidModeGetGammaRampSize(display, screen, &size))
+  int size = 0;
+  if (!XF86VidModeGetGammaRampSize(display, effective_screen, &size))
     DBG_PROG_S( "no gammagradient information obtained" );
 
   DBG_PROG_V( size )

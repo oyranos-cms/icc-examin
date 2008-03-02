@@ -39,6 +39,7 @@
 #include "icc_utils.h"
 #include "icc_formeln.h"
 #include "icc_helfer.h"
+#include "icc_oyranos.h"
 
 #define g_message printf
 
@@ -79,7 +80,7 @@ icValue (icUInt16Number val)
 # undef KORB
   return (long)*erg;
 #else
-  return val;
+  return (long)val;
 #endif
 }
 
@@ -104,21 +105,20 @@ icValue (icUInt32Number val)
        << " "; DBG_PROG
 # endif
 
-  return (int) *erg;
+  return (icUInt32Number) *erg;
 #else
 # ifdef DEBUG_ICCFUNKT
   cout << "BIG_ENDIAN" << " "; DBG_PROG
 # endif
-  return (int)val;
+  return (icUInt32Number)val;
 #endif
 }
 
-long long
+unsigned long
 icValue (icUInt64Number val)
 {
-  unsigned char        *temp  = (unsigned char*) &val;
-
 #if BYTE_ORDER == LITTLE_ENDIAN
+  unsigned char        *temp  = (unsigned char*) &val;
 
   static unsigned char  uint64[8];
   int little = 0,
@@ -137,7 +137,7 @@ icValue (icUInt64Number val)
 # endif
   return (long)*erg;
 #else
-  return *((long long*)temp);
+  return (long)val;
 #endif
 }
 
@@ -168,7 +168,7 @@ icValue (icInt32Number val)
 # undef KORB
   return (signed int)*erg;
 #else
-  return val;
+  return (signed int)val;
 #endif
 }
 
@@ -198,7 +198,7 @@ icValue (icInt16Number val)
 # undef KORB
   return (signed int)*erg;
 #else
-  return val;
+  return (signed int)val;
 #endif
 }
 
@@ -257,11 +257,6 @@ icValue_to_icUInt32Number(icPlatformSignature)
 icValue_to_icUInt32Number(icProfileClassSignature)
 icValue_to_icUInt32Number(icTagSignature)
 icValue_to_icUInt32Number(icTagTypeSignature)
-icValue_to_icUInt32Number(icTechnologySignature)
-icValue_to_icUInt32Number(icStandardObserver)
-icValue_to_icUInt32Number(icMeasurementGeometry)
-icValue_to_icUInt32Number(icMeasurementFlare)
-icValue_to_icUInt32Number(icIlluminant)
 
 void
 icValueXYZ (icXYZNumber* ic_xyz,double X, double Y, double Z)
@@ -350,59 +345,7 @@ renderingIntentName (int intent)
 int
 getColorSpaceChannels (icColorSpaceSignature color)
 {
-  int n;
-
-  switch (color) {
-    case icSigXYZData: n = 3; break;
-    case icSigLabData: n = 3; break;
-    case icSigLuvData: n = 3; break;
-    case icSigYCbCrData: n = 3; break;
-    case icSigYxyData: n = 3; break;
-    case icSigRgbData: n = 3; break;
-    case icSigGrayData: n = 1; break;
-    case icSigHsvData: n = 3; break;
-    case icSigHlsData: n = 3; break;
-    case icSigCmykData: n = 4; break;
-    case icSigCmyData: n = 3; break;
-    case icSig2colorData: n = 2; break;
-    case icSig3colorData: n = 3; break;
-    case icSig4colorData: n = 4; break;
-    case icSig5colorData:
-    case icSigMCH5Data:
-          n = 5; break;
-    case icSig6colorData:
-    case icSigMCH6Data:
-         n = 6; break;
-    case icSig7colorData:
-    case icSigMCH7Data:
-         n = 7; break;
-    case icSig8colorData:
-    case icSigMCH8Data:
-         n = 8; break;
-    case icSig9colorData:
-    case icSigMCH9Data:
-         n = 9; break;
-    case icSig10colorData:
-    case icSigMCHAData:
-         n = 10; break;
-    case icSig11colorData:
-    case icSigMCHBData:
-         n = 11; break;
-    case icSig12colorData:
-    case icSigMCHCData:
-         n = 12; break;
-    case icSig13colorData:
-    case icSigMCHDData:
-         n = 13; break;
-    case icSig14colorData:
-    case icSigMCHEData:
-         n = 14; break;
-    case icSig15colorData:
-    case icSigMCHFData:
-         n = 15; break;
-    default: n = 0; break;
-  }
-  return n;
+  return oyColorSpaceGetChannelCount( color );
 }
 
 icColorSpaceSignature getColorSpaceGeneric( int channels )
@@ -430,45 +373,10 @@ icColorSpaceSignature getColorSpaceGeneric( int channels )
 
 
 std::string
-getColorSpaceName (icColorSpaceSignature color)
+getColorSpaceName (icColorSpaceSignature sig)
 {
   std::string text;
-
-  switch (color) {
-    case icSigXYZData: text =_("XYZ"); break;
-    case icSigLabData: text =_("Lab"); break;
-    case icSigLuvData: text =_("Luv"); break;
-    case icSigYCbCrData: text =_("YCbCr"); break;
-    case icSigYxyData: text =_("Yxy"); break;
-    case icSigRgbData: text =_("Rgb"); break;
-    case icSigGrayData: text =_("Gray"); break;
-    case icSigHsvData: text =_("Hsv"); break;
-    case icSigHlsData: text =_("Hls"); break;
-    case icSigCmykData: text =_("Cmyk"); break;
-    case icSigCmyData: text =_("Cmy"); break;
-    case icSig2colorData: text =_("2color"); break;
-    case icSig3colorData: text =_("3color"); break;
-    case icSig4colorData: text =_("4color"); break;
-    case icSig5colorData: text =_("5color"); break;
-    case icSig6colorData: text =_("6color"); break;
-    case icSig7colorData: text =_("7color"); break;
-    case icSig8colorData: text =_("8color"); break;
-    case icSig9colorData: text =_("9color"); break;
-    case icSig10colorData: text =_("10color"); break;
-    case icSig11colorData: text =_("11color"); break;
-    case icSig12colorData: text =_("12color"); break;
-    case icSig13colorData: text =_("13color"); break;
-    case icSig14colorData: text =_("14color"); break;
-    case icSig15colorData: text =_("15color"); break;
-    default: { icUInt32Number i = icValue(color);
-               char t[5];
-               memcpy (t,(char*)&i, 4);
-               t[4] = 0;
-               text = t;
-               text += "?";
-               break;
-             }
-  }
+  text = oyColourSpaceGetName( sig );
   return text;
 }
 
@@ -995,47 +903,17 @@ printDatum                      (icDateTimeNumber date)
   return s.str();
 }
 
-
-const char* cp_nchar (char* text, int n)
-{ DBG_MEM_START
-  static char string[1024];
-
-/*  for (int i = 0; i < 1024 ; i++)
-    string[i] = '\000';*/
-  memset( string, 0, 1024 );
-
-  if (n < 1024)
-  {
-#   if 0
-    memcpy (string, text, n);
-#   else
-    snprintf(&string[0], n, text);
-#   endif
-    string[n] = '\000';
-  }
-
-# ifdef DEBUG
-  DBG_MEM_V( n << " letters copy " <<  (intptr_t)text << " " << string)
-# endif
-  DBG_MEM_ENDE
-  return string;
-}
-
-
 namespace icc_examin_ns {
 
-#          if defined(__GNUC__) || defined(LINUX) || defined(APPLE) || defined(SOLARIS)
-# include <sys/time.h>
+#          if defined(LINUX) || defined(APPLE) || defined(SOLARIS)
 # define   ZEIT_TEILER 10000
 #          else // WINDOWS TODO
 # define   ZEIT_TEILER CLOCKS_PER_SEC;
 #          endif
 
-#ifndef WIN32
-# include <unistd.h>
-#endif
-
+# include <sys/time.h>
 #include <time.h>
+#include <unistd.h>
 #include <math.h>
   double zeitSekunden()
   {
@@ -1068,7 +946,7 @@ namespace icc_examin_ns {
   }
   void sleep(double sekunden)
   {
-#          if defined(__GCC__) || defined(__APPLE__)
+#            if defined(__GCC__) || defined(__APPLE__)
              timespec ts;
              double ganz;
              double rest = modf(sekunden, &ganz);
@@ -1076,13 +954,9 @@ namespace icc_examin_ns {
              ts.tv_nsec = (time_t)(rest * 1000000000);
              //DBG_PROG_V( sekunden<<" "<<ts.tv_sec<<" "<<ganz<<" "<<rest )
              nanosleep(&ts, 0);
-#          else
-#            if defined( WIN32 ) 
-               Sleep((DWORD)(sekunden/(double)CLOCKS_PER_SEC));
 #            else
-               usleep((time_t)(sekunden/(double)CLOCKS_PER_SEC));
+             usleep((time_t)(sekunden/(double)CLOCKS_PER_SEC));
 #            endif
-#          endif
   }
   void wait(double sekunden, int aktualisieren)
   {
@@ -1099,7 +973,6 @@ zeig_bits_bin(const void* speicher, int groesse)
   int byte_zahl;
   char txt[12];
 
-  //@todo TODO: ->hexadezimal
   for (int k = 0; k < groesse; k++)
   {   for (int i = 8-1; i >= 0; i--)
       {
@@ -1136,21 +1009,16 @@ isFileFull (const char* fullFileName)
   {
     case EACCES:       WARN_S("EACCES = " << r); break;
     case EIO:          WARN_S("EIO = " << r); break;
+    case ELOOP:        WARN_S("ELOOP = " << r); break;
     case ENAMETOOLONG: WARN_S("ENAMETOOLONG = " << r); break;
     case ENOENT:       WARN_S("ENOENT = " << r); break;
     case ENOTDIR:      WARN_S("ENOTDIR = " << r); break;
-#if !defined( WIN32 )
-    case ELOOP:        WARN_S("ELOOP = " << r); break;
     case EOVERFLOW:    WARN_S("EOVERFLOW = " << r); break;
-#endif
   }
 
   r = !r &&
        (   ((status.st_mode & S_IFMT) & S_IFREG)
-#if !defined( WIN32 )
-        || ((status.st_mode & S_IFMT) & S_IFLNK)
-#endif
-       );
+        || ((status.st_mode & S_IFMT) & S_IFLNK));
 
   DBG_MEM_V( r )
   if (r)
@@ -1192,7 +1060,7 @@ ladeDatei ( std::string dateiname, size_t *size )
         dateiname = "";
       }
 #     if !HAVE_EXCEPTION
-      goto myERROR;
+      goto ERROR;
 #     endif
     }
     DBG_MEM
@@ -1202,7 +1070,7 @@ ladeDatei ( std::string dateiname, size_t *size )
     f.seekg(0);
     if(*size) {
       data = (char*)calloc (sizeof (char), *size+1);
-	  f.read ((char*)data, (std::streamsize)*size);
+      f.read ((char*)data, *size);
       DBG_MEM_V ( *size << "|" << f.tellg() <<" "<< (int*)data <<" "<< strlen(data) )
       f.close();
     } else {
@@ -1210,14 +1078,14 @@ ladeDatei ( std::string dateiname, size_t *size )
       WARN_S( _("file size 0 for ") << dateiname )
     }
 
-  myERROR:
+  ERROR:
 
   DBG_PROG_ENDE
   return data;
 }
 
 void
-saveMemToFile (const char* filename, const char *block, size_t size)
+saveMemToFile (const char* filename, const char *block, int size)
 { DBG_PROG_START
   FILE *fp=NULL;
   int   pt = 0;
@@ -1241,7 +1109,7 @@ dateiNachSpeicher (const std::string & dateiname)
   char *block = ladeDatei(dateiname, &groesse);
   Speicher s (block,groesse);
   s = dateiname;
-  s.zeit (holeDateiModifikationsZeit( dateiname.c_str() ));
+  s.zeit ((time_t)holeDateiModifikationsZeit( dateiname.c_str() ));
   DBG_PROG_V( s.zeit() )
   if(block) free(block);
   DBG_PROG_ENDE
@@ -1255,7 +1123,7 @@ dateiNachSpeicher (Speicher & s, const std::string & dateiname)
   char *block = ladeDatei(dateiname, &groesse);
   s.lade (block,groesse);
   s = dateiname;
-  s.zeit (holeDateiModifikationsZeit( dateiname.c_str() ));
+  s.zeit ((time_t)holeDateiModifikationsZeit( dateiname.c_str() ));
   if(block) free(block);
   DBG_PROG_V( s.zeit() )
   DBG_PROG_ENDE
@@ -1284,10 +1152,7 @@ holeDateiModifikationsZeit (const char* fullFileName)
   r = stat (name, &status);
   r = !r &&
        (   ((status.st_mode & S_IFMT) & S_IFREG)
-#if !defined( WIN32 )
-        || ((status.st_mode & S_IFMT) & S_IFLNK)
-#endif
-       );
+        || ((status.st_mode & S_IFMT) & S_IFLNK));
 
   double m_zeit = 0.0;
   if (r)
@@ -1295,8 +1160,6 @@ holeDateiModifikationsZeit (const char* fullFileName)
 #   if defined(APPLE) || defined(BSD)
     m_zeit = status.st_mtime ;
     m_zeit += status.st_mtimespec.tv_nsec/1000000. ;
-#   elif defined(WIN32) 
-    m_zeit = (double)status.st_mtime ;
 #   else
     m_zeit = status.st_mtim.tv_sec ;
     DBG_MEM_V( status.st_mtim.tv_sec )
@@ -1309,32 +1172,14 @@ holeDateiModifikationsZeit (const char* fullFileName)
   return m_zeit;
 }
 
-std::string
-tempFileName ()
-{
-  std::string profil_temp_name;
-  const char * tmp_path = getenv("TMPDIR"); // WIN32
-  if(!tmp_path)
-    tmp_path = getenv("TMP"); //*nix
-  if(!tmp_path)
-    tmp_path = getenv("TEMP"); //*nix
 
-  if(tmp_path)
-  {
-    profil_temp_name += tmp_path;
-    profil_temp_name += ICC_DIR_SEPARATOR_C;
-    profil_temp_name += "oyranos_";
-	profil_temp_name += time(0);
-  } else {
-    profil_temp_name += ICC_DIR_SEPARATOR_C;
-    profil_temp_name += "tmp";
-    profil_temp_name += ICC_DIR_SEPARATOR_C;
-    profil_temp_name += "oyranos_";
-    profil_temp_name += time(0) ;
-  }
-
-  return profil_temp_name;
-}
+#ifdef WIN32
+#define DIR_SEPARATOR_C '\\'
+#define DIR_SEPARATOR "\\"
+#else
+#define DIR_SEPARATOR_C '/'
+#define DIR_SEPARATOR "/" 
+#endif
 
 char*
 getExecPath(const char *filename)
@@ -1344,7 +1189,7 @@ getExecPath(const char *filename)
 
   if (filename)
   {
-    int len = (int)strlen(filename) * 2 + 1024;
+    int len = strlen(filename) * 2 + 1024;
     char *text = (char*) calloc( sizeof(char), len );
     text[0] = 0;
     /* whats the path for the executeable ? */
@@ -1358,11 +1203,7 @@ getExecPath(const char *filename)
     }
 
     /* relative names - where the first sign is no directory separator */
-#if defined( WIN32 )
-    if (text[1] != ':')
-#else // unix
-    if (text[0] != ICC_DIR_SEPARATOR_C)
-#endif
+    if (text[0] != DIR_SEPARATOR_C)
     {
       FILE *pp = NULL;
   
@@ -1372,41 +1213,34 @@ getExecPath(const char *filename)
       /* Suche das ausfuehrbare Programm
          TODO symbolische Verknuepfungen */
       snprintf( text, 1024, "which %s", filename);
-      pp = icc_popen_m( text, "r" );
+      pp = popen( text, "r" );
       if (pp) {
         if (fscanf (pp, "%s", text) != 1)
         {
-          icc_pclose_m (pp);
+          pclose (pp);
           printf( "no executeable path found\n" );
         }
       } else { 
         printf( "could not ask for executeable path\n" );
       }
     
-#if defined( WIN32 )
-      if (text[1] != ':')
-#else // unix
-      if (text[0] != ICC_DIR_SEPARATOR_C)
-#endif
+      if(text[0] != DIR_SEPARATOR_C)
       {
         char* cn = (char*) calloc(2048, sizeof(char));
-        sprintf (cn, "%s%s%s", getenv("PWD"), ICC_DIR_SEPARATOR, filename);
+        sprintf (cn, "%s%s%s", getenv("PWD"), DIR_SEPARATOR, filename);
         sprintf (text, cn);
         if(cn) free(cn); 
       }
     }
 
     { /* remove the executable name */
-      char *tmp = strrchr(text, '/');
-      char *tmp2 = strrchr(text, '\\');
-      if(tmp > tmp2)
+      char *tmp = strrchr(text, DIR_SEPARATOR_C);
+      if(tmp)
         *tmp = 0;
-      if(tmp < tmp2)
-        *tmp2 = 0;
     }
     while (text[strlen(text)-1] == '.')
       text[strlen(text)-1] = 0;
-    while (text[strlen(text)-1] == ICC_DIR_SEPARATOR_C)
+    while (text[strlen(text)-1] == DIR_SEPARATOR_C)
       text[strlen(text)-1] = 0;
 
     exec_path = text;
@@ -1445,20 +1279,17 @@ setI18N( const char *exename )
 
   DBG_NUM_V( exename )
 
-  {
-    char *reloc_path = (char*) malloc(128);
-    sprintf( reloc_path,"..%cshare%clocale", ICC_DIR_SEPARATOR_C, ICC_DIR_SEPARATOR_C);
-    int len = (int)(strlen(exename) + strlen(reloc_path)) * 2 + 128;
+  { const char *reloc_path = {"../share/locale"};
+    int len = (strlen(exename) + strlen(reloc_path)) * 2 + 128;
     char *path = (char*) malloc( len ); // small one time leak
     char *text = NULL;
 
     text = getExecPath( exename );
-    snprintf (path, len-1, "%s%s%s", text, ICC_DIR_SEPARATOR, reloc_path);
+    snprintf (path, len-1, "%s%s%s", text, DIR_SEPARATOR, reloc_path);
     locale_paths[num_paths] = path; ++num_paths;
     locale_paths[num_paths] = SRC_LOCALEDIR; ++num_paths;
     DBG_NUM_V( path );
     if (text) free (text);
-    if (reloc_path) free (reloc_path);
   }
 # endif
   const char* tdd = getenv("TEXTDOMAINDIR");
@@ -1488,7 +1319,7 @@ setI18N( const char *exename )
     {
       if(exename && strlen(exename))
       {
-        const char *dname = strrchr(exename, ICC_DIR_SEPARATOR_C);
+        const char *dname = strrchr(exename, DIR_SEPARATOR_C);
         if(dname && strlen(dname))
           dname++;
         if(!dname)
@@ -1496,7 +1327,7 @@ setI18N( const char *exename )
         is_path = fl_search_locale_path (num_paths, locale_paths, "de", dname );
       }
       if(is_path >= 0) {
-        int err = fl_initialise_locale ( strrchr(exename, ICC_DIR_SEPARATOR_C)+1,
+        int err = fl_initialise_locale ( strrchr(exename, DIR_SEPARATOR_C)+1,
                                locale_paths[is_path], 1 );
         if(!err) {
           DBG_NUM_S( "locale found in: " << locale_paths[is_path] );
@@ -1566,7 +1397,7 @@ zeilenNachVector(std::string &text)
   // fueilen aus einen Text in einen Vector
   std::vector <std::string> texte;
 
-      int len = (int)strlen(text.c_str());
+      int len = strlen(text.c_str());
       std::string text_line;
       char c;
       const char *chars = text.c_str();
@@ -1674,7 +1505,7 @@ unterscheideZiffernWorte ( std::string &zeile,
               letzes_anf_zeichen >= 0 )
             letzes_anf_zeichen = -1;
           else
-            letzes_anf_zeichen = (int)pos3;
+            letzes_anf_zeichen = pos3;
 
       // in case a quotation mark in front of a word is odd // ["" " ABC ]
       if( letzes_anf_zeichen >= 0 )

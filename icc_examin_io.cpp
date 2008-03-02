@@ -67,7 +67,7 @@ ICCexaminIO::erneuern()
   if(erneuern_.size()) {
     DBG_PROG_START
     int i = *erneuern_.begin();
-    std::set<int>::iterator it = erneuern_.begin();
+    std::set<int>::const_iterator it = erneuern_.begin();
     DBG_NUM_V( *it )
     erneuern_.erase(it);
     DBG_PROG_ENDE
@@ -89,7 +89,7 @@ ICCexaminIO::erneuern(int pos)
 void
 ICCexaminIO::oeffnenThread_ (int pos)
 { DBG_PROG_START
-  if(wandelThreadId( iccThreadSelf() ) != THREAD_LADEN)
+  if(wandelThreadId( pthread_self() ) != THREAD_LADEN)
     WARN_S("THREAD_LADEN???");
 
   if(erneuern_.size() < 0) {
@@ -140,10 +140,7 @@ ICCexaminIO::oeffnenThread_ (int pos)
 void
 ICCexaminIO::oeffnenThread_ ()
 { DBG_PROG_START
-# ifdef WIN32
-  int st = wandelThreadId( iccThreadSelf() );
-# endif
-  if( wandelThreadId( iccThreadSelf() ) != THREAD_LADEN)
+  if(wandelThreadId( pthread_self() ) != THREAD_LADEN)
     WARN_S("THREAD_LADEN???");
 
   if(!speicher_vect_.size()) {
@@ -265,15 +262,12 @@ ICCexaminIO::oeffnenThread_ ()
 
         undurchsicht= icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze[i].undurchsicht;
         DBG_PROG_V( undurchsicht )
-			grau = icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze[i].grau?true:false;
-        waehlbar = profile[i]->size() > 128 ? true : false;
+        grau = icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze[i].grau;
+        waehlbar = profile[i]->size() > 128 ? 1 : 0;
 
         if(icc_examin->icc_waehler_)
-		{
-          std::string name = profile.name(i);
-          icc_examin->icc_waehler_->push_back( dateiName( name.c_str() ),
+          icc_examin->icc_waehler_->push_back(dateiName(profile.name(i)),
                                 undurchsicht, grau , aktiv[i], waehlbar);
-		}
       }
       icc_examin_ns::unlock(this, __FILE__,__LINE__);
     }
@@ -304,7 +298,7 @@ dateiName(const char* name)
   const char* dateiname=0;
         // extract file name
         if(name)
-          dateiname = strrchr(name,ICC_DIR_SEPARATOR_C);
+          dateiname = strrchr(name,'/');
 
         if(!dateiname)
           dateiname = name;
@@ -316,8 +310,7 @@ dateiName(const char* name)
 const char*
 dateiName(std::string name)
 {
-  const char * ptr = name.c_str();
-  return dateiName( ptr );
+  return dateiName(name.c_str());
 }
 
 void
@@ -340,15 +333,13 @@ void
 #endif
 ICCexaminIO::oeffnenStatisch_ (void* ie)
 {
-  registerThreadId( iccThreadSelf(), THREAD_LADEN );
-
   DBG_PROG_START
 
   // detect run time errors
   {
     static int erster = true;
     if(!erster)
-      WARN_S("programing error: thread must\n" <<
+      WARN_S("programing error: " <<__func__<<" thread must\n" <<
              "run only one time.")
     erster = false;
   }
@@ -451,6 +442,8 @@ ICCexaminIO::oeffnen ()
 
   //Fl_File_Icon	*icon;	// New file icon
   DBG_PROG
+    dateiwahl->callback(dateiwahl_cb);
+    dateiwahl->preview(true);
 
     const char* ptr = NULL;
     if (dateinamen.size()) {
@@ -462,7 +455,7 @@ ICCexaminIO::oeffnen ()
     if (!ptr)
       ptr = getenv("PWD");
 
-      if(ptr) DBG_PROG_V( ptr );
+      if(ptr) DBG_PROG_V( ptr )
     if(( ptr &&
         (ptr[0] == '/') &&
         (strlen(ptr) == 1) ) ||
@@ -477,8 +470,12 @@ ICCexaminIO::oeffnen ()
       dateiwahl->value(ptr);
 
 
+    // protected: dateiwahl->window->clear_flag(64); //Fl_Window::FL_MODAL
+    //dateiwahl->type(MyFl_File_Chooser::MULTI);
     while (dateiwahl->visible())
       icc_examin_ns::wait( 0, true );
+    //dateiwahl->type(MyFl_File_Chooser::SINGLE | MyFl_File_Chooser::CREATE);
+    //dateiwahl->window->set_modal();
 
     DBG_NUM_V( dateiwahl->count() )
     if (dateiwahl->count() && dateiwahl->value()) {
@@ -492,6 +489,9 @@ ICCexaminIO::oeffnen ()
 
   if (dateinamen.size() == 0) {
   }
+
+  dateiwahl->callback(0);
+  dateiwahl->preview(false);
 
   oeffnen( dateinamen );
   neu_laden_ = true;
@@ -558,7 +558,7 @@ ICCexaminIO::berichtSpeichern (void)
   std::string bericht = profile.profil()->report(export_html);
   // save
   std::ofstream f ( dateiname.c_str(),  std::ios::out );
-  f.write ( bericht.c_str(), (std::streamsize)bericht.size() );
+  f.write ( bericht.c_str(), bericht.size() );
   f.close();
 
   DBG_PROG_ENDE

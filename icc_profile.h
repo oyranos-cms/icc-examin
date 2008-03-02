@@ -32,7 +32,7 @@
 
 #include "icc_utils.h"
 #include "icc_formeln.h"
-#include "icc_helfer.h"
+//#include "icc_helfer.h"
 #include "icc_speicher.h"
 
 #include "icc_measurement.h"
@@ -145,6 +145,7 @@ class ICCprofile {
  
   public: // measurement infos
     bool                hasMeasurement ();
+    bool                tagBelongsToMeasurement (int tag);
     std::string         report         (bool auss);
     ICCmeasurement&     getMeasurement ();
     std::string         cgats          ();

@@ -35,19 +35,13 @@
 
 #include <string>
 #include <vector>
-#include <stddef.h> // size_t
 
 // file macros / partitialy from config.h
-#ifdef WIN32
-#define ICC_DIR_SEPARATOR_C '\\'
-#define ICC_DIR_SEPARATOR "\\"
+#ifdef __WIN32__
 #define PATH_SHELLSTRING ""
 #else
-#define ICC_DIR_SEPARATOR_C '/'
-#define ICC_DIR_SEPARATOR "/" 
 #define PATH_SHELLSTRING "export PATH=$PATH:" PREFIX "/bin:~/bin; "
 #endif
-
 
 #if HAVE_FLTK
 #include <FL/Fl_Widget.H>
@@ -68,7 +62,7 @@ const char* cp_nchar (char* text, int n);
 // ICC helpers defined in icc_helfer.cpp
 icUInt16Number          icValue   (icUInt16Number val);
 icUInt32Number          icValue   (icUInt32Number val);
-long long               icValue   (icUInt64Number val);
+unsigned long           icValue   (icUInt64Number val);
 double                  icSFValue (icS15Fixed16Number val);
 double                  icUFValue (icU16Fixed16Number val);
 double                  icUI16Value         (icUInt16Number val);
@@ -82,12 +76,6 @@ icColorSpaceSignature   icValue   (icColorSpaceSignature val);
 icPlatformSignature     icValue   (icPlatformSignature val);
 icProfileClassSignature icValue   (icProfileClassSignature val);
 icTagSignature          icValue   (icTagSignature val);
-icTagTypeSignature      icValue   (icTagTypeSignature val);
-icTechnologySignature   icValue   (icTechnologySignature val);
-icStandardObserver      icValue   (icStandardObserver val);
-icMeasurementGeometry   icValue   (icMeasurementGeometry);
-icMeasurementFlare      icValue   (icMeasurementFlare);
-icIlluminant            icValue   (icIlluminant);
 void                    icValueXYZ(icXYZNumber*, double X, double Y, double Z);
 
 const double*           XYZto_xyY (double* XYZ);
@@ -142,7 +130,7 @@ char*     ladeDatei                  ( std::string dateiname,
                                        size_t     *size );
 void      saveMemToFile              ( const char *filename,
                                        const char *block,
-                                       size_t      size );
+                                       int         size );
 #include "icc_speicher.h"
 Speicher  dateiNachSpeicher          ( const std::string & dateiname );
 void      dateiNachSpeicher          ( Speicher & s,
@@ -154,7 +142,6 @@ double    holeDateiModifikationsZeit ( const char *fullFileName );
 // file helpers
 const char* dateiName(const char* name);
 const char* dateiName(std::string name);
-std::string tempFileName ();
 
 
 // common
@@ -193,126 +180,11 @@ namespace icc_parser {
                                                  const char *trennzeichen );
 }
 
-// data structures
-// partitial in icc_speicher.h
-/** @brief list class template
- */
-template <class T>
-class ICClist {
-  size_t     n_;          //!< the exposed number of elements
-  size_t     reserve_;    //!< the allocated elements in list_
-  T        * list_;       //!< the array of T
-  void       init() {
-    list_ = NULL;
-    n_ = 0;
-    reserve_ = 0;
-    reserve_step = 10000/sizeof(T);
-  }
-public:
-             ICClist () {
-    init();
-  }
-             ICClist (int n) {
-    init();
-    reserve(n + reserve_step);
-  }
-  size_t reserve_step; //!< reserve of elements on some allocations
-  ICClist&   copy    (const ICClist & l) {
-    if(l.n_ > n_)
-      list_ = (T*) calloc (sizeof(T), l.n_);
-    if(l.n_)
-      memcpy( list_, l.list_, l.n_ * sizeof(T*) );
-    return *this;
-  }
-  void       clear   () {
-    if(n_ && list_)
-      free(list_);
-    n_ = 0;
-  }
-  size_t     size() {
-    return n_;
-  }
-  operator const size_t () const {
-    return n_;
-  }
-  operator const size_t & () const {
-    return n_;
-  }
-  ICClist& operator = (const ICClist& l) {
-    return copy(l);
-  }
-  T &      operator [] (size_t i) {
-    if(i < n_)
-      return list_[i];
-    else
-      DBG_PROG_S("out of range");
-    return list_[n_];
-  }
-  const T& operator [] (const size_t i) const {
-    if(i < n_)
-      return list_[i];
-    else
-      return 0.0;
-  }
-  void     push_back( T x ) {
-    reserve( n_ + 1 + reserve_step );
-    list_[n_] = x;
-    ++n_;
-  }
-  T *      begin() {
-    if(n_)
-      return &list_[0];
-    else
-      return NULL;
-  }
-  T *      end() {
-    if(n_)
-      return &list_[n_ - 1];
-    else
-      return NULL;
-  }
-  void       reserve (size_t x) {
-    if ( n_ == 0 ) {
-      list_ = (T*) calloc (sizeof(T), x);
-      reserve_ = x;
-    } else if( n_ < x ) {
-      T* tmp = (T*) calloc (sizeof(T), x);
-      reserve_ = x;
-      memcpy( tmp, list_, sizeof(T) * n_ );
-      free(list_);
-      list_ = tmp;
-    }
-}
-  void     insert( T* start_, T* begin_, T* end_ ) {
-    size_t news = (size_t)((intptr_t)(end_ - begin_)) + 1;
-    size_t n = 0;
-    if(&list_[n_] < start_)
-      return;
-    if(begin_ > end_ || !begin_)
-      return;
-    if(start_)
-      n =(size_t)((intptr_t)(start_ - begin()));
-    reserve( n + news + reserve_step );
-    if(!start_)
-      start_ = &list_[0];
-
-    memcpy( start_, begin_, news );
-    n_ = n + news;
-  }
-  void     resize( size_t n ) {
-    if(n > reserve_)
-      reserve (n + reserve_step);
-    n_ = n;
-  }
-};
-
-
-
 // Callback structure
-/*typedef struct StructVoidInt
+typedef struct StructVoidInt
 {
   void* data;
   int   wert;
-};*/
+};
 
 #endif //ICC_HELFER_H

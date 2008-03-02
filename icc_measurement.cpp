@@ -53,8 +53,6 @@
 #include "icc_info.h"
 using namespace icc_examin_ns;
 
-#define g_message printf
-
 
 /**
   *  @brief ICCmeasurement functions
@@ -292,6 +290,10 @@ ICCmeasurement::leseTag (void)
 
     //LCMSHANDLE _lcms_it8 = cmsIT8LoadFromMem ( data_, size_ ); DBG_MEM_V( (int*)data_)
 
+    int ps = patch_src_lines_.size();
+    patch_src_lines_.resize( ps + 1 );
+    patch_src_lines_[ps].first = getSigTagName( sig_ );
+
     const char **SampleNames; DBG_MEM
     int m = 0; // actual measurement
 
@@ -300,6 +302,7 @@ ICCmeasurement::leseTag (void)
      || nFelder_ == cgats.messungen[m].block_zeilen)
     { DBG_NUM
       nFelder_ = cgats.messungen[m].block_zeilen; DBG_NUM
+      patch_src_lines_[ps].second.resize( nFelder_ );
     } else {
       WARN_S( "number of measurements should corespond! " << nFelder_ << "|" << (int)cgats.messungen[m].block_zeilen )
       clear();
@@ -313,7 +316,7 @@ ICCmeasurement::leseTag (void)
       return;
     }
 
-    int _nKanaele = (int)cgats.messungen[m].felder[0].size();
+    int _nKanaele = cgats.messungen[m].felder[0].size();
     bool _sample_name = false;
     bool _sample_id = false;
     bool _id_vor_name = false;
@@ -412,9 +415,10 @@ ICCmeasurement::leseTag (void)
         snprintf(n,8,"%d",k);
         Feldnamen_[k] = n;
       }
+      patch_src_lines_[ps].second[k] = cgats.messungen[m].line[k];
     }
   if(nFelder_)
-    DBG_NUM_S (Feldnamen_[0] << " bis " << Feldnamen_[nFelder_-1]);
+    DBG_NUM_S (Feldnamen_[0] << " bis " << Feldnamen_[nFelder_-1])
 
   DBG_NUM_V( has_XYZ << has_Lab << has_RGB << has_CMYK )
 
@@ -523,7 +527,7 @@ ICCmeasurement::init (void)
     leseTag ();
   }
   if (RGB_MessFarben_.size() != 0)
-    DBG_NUM_V( RGB_MessFarben_.size() );
+    DBG_NUM_V( RGB_MessFarben_.size() )
 
   if (profile_ &&
       profile_->data_type == ICCprofile::ICCprofileDATA )
@@ -831,7 +835,7 @@ ICCmeasurement::init_umrechnen                     (void)
       size_t groesse = 0;
       const char* block = 0;
       block = const_cast<char*>( icc_oyranos.proof(groesse) );
-      hProof = cmsOpenProfileFromMem(const_cast<char*>(block), (DWORD)groesse);
+      hProof = cmsOpenProfileFromMem(const_cast<char*>(block), groesse);
       if( !hProof ) WARN_S("hProof is empty")
     }
 
@@ -846,7 +850,7 @@ ICCmeasurement::init_umrechnen                     (void)
 #   define TYPE_nCOLOUR_DBL (COLORSPACE_SH(PT_ANY)|CHANNELS_SH(channels_)|BYTES_SH(0))
       if( profile_->size() )
         hCOLOUR = cmsOpenProfileFromMem (const_cast<char*>(profile_->data_),
-                                         (DWORD)profile_->size_);
+                                         profile_->size_);
       else { // alternative
         size_t groesse = 0;
         const char* block = 0;
@@ -863,7 +867,7 @@ ICCmeasurement::init_umrechnen                     (void)
           WARN_S("no suitable default profile found")
           goto Kein_Profil; //TODO
         } else
-          hCOLOUR = cmsOpenProfileFromMem(const_cast<char*>(block), (DWORD)groesse);
+          hCOLOUR = cmsOpenProfileFromMem(const_cast<char*>(block), groesse);
       }
       if( !hCOLOUR )
         WARN_S("hCOLOUR is empty")
@@ -938,13 +942,13 @@ ICCmeasurement::init_umrechnen                     (void)
       RGB_ProfilFarben_.resize(nFelder_);
 
       if( (int)XYZ_Satz_.size() != nFelder_ )
-        DBG_PROG_S("XYZ_Satz_.size() and nFelder_ are unequal");
+        DBG_PROG_S("XYZ_Satz_.size() and nFelder_ are unequal")
       if( (int)Lab_Satz_.size() != nFelder_ )
-        DBG_PROG_S("Lab_Satz_.size() and nFelder_ are unequal");
+        DBG_PROG_S("Lab_Satz_.size() and nFelder_ are unequal")
       if( RGB_Satz_.size() && (int)RGB_Satz_.size() != nFelder_ )
-        WARN_S("RGB_Satz_.size() and nFelder_ are unequal");
+        WARN_S("RGB_Satz_.size() and nFelder_ are unequal")
       if( CMYK_Satz_.size() && (int)CMYK_Satz_.size() != nFelder_ )
-        WARN_S("CMYK_Satz_.size() and nFelder_ are unequal");
+        WARN_S("CMYK_Satz_.size() and nFelder_ are unequal")
       for (int i = 0; i < nFelder_; i++)
       {
         if (XYZ_measurement_ || LAB_measurement_)
@@ -1080,7 +1084,7 @@ ICCmeasurement::getHtmlReport                     (bool aussen)
 { DBG_PROG_START
   char SF[] = "#cccccc";  // standard background colours
   char HF[] = "#aaaaaa";  // emphasised
-# define LAYOUTFARBE  if (layout[l++]) \
+# define LAYOUTFARBE  if (layout[l++] == true) \
                         html << HF; \
                       else \
                         html << SF; // select colour after layout option
@@ -1165,10 +1169,15 @@ ICCmeasurement::getHtmlReport                     (bool aussen)
   for (int z = 0; z < nFelder_; z++) {
     html <<     "  <tr>\n";
     l = 0;
-    for (s = 0; s < (int)reportTabelle_[kopf - tkopf].size() + f; s++) {
-      if (s < f) { // colour representation
+    for (s = 0; s < (int)reportTabelle_[kopf - tkopf].size() + f; s++)
+    {
+      if (s < f)
+      { // colour representation
+        if(s == 0)
+          html << "    <a name=\"" << Feldnamen_[z] << "\">\n";
         html << "    <td width=\"20\" bgcolor=\"#"; 
         farbe[0] = 0;
+
         if (s == 0) {
           NACH_HTML (RGB_MessFarben_, R)
           NACH_HTML (RGB_MessFarben_, G)
@@ -1240,7 +1249,7 @@ ICCmeasurement::getText                     (void)
     int h = false;
     if (XYZ_Ergebnis_.size() == XYZ_Satz_.size())
       xyz_erg_sp = 3;
-#   define HI (h) ? h-- : h++ // invert
+#   define HI (h == true) ? h-- : h++ // invert
     layout.clear();
     layout.push_back (HI); // measurement
     layout.push_back (HI); // dE Lab
@@ -1450,6 +1459,114 @@ ICCmeasurement::getCmmLab                   (int patch)
   punkte[0] = Lab_Ergebnis_[patch].L;
   punkte[1] = Lab_Ergebnis_[patch].a;
   punkte[2] = Lab_Ergebnis_[patch].b;
+
+  DBG_MESS_ENDE
+  return punkte;
+}
+
+
+/** get infos about a CGATS tag
+
+    The info becomes available during parsing a CGATS tag
+
+    @param[in]   tag_name    take the according tag : CIED <-> DevD
+
+    @return                  list of patch lines, size() is patch count
+ */
+std::vector<int>
+ICCmeasurement::getPatchLines              ( const char       * tag_name )
+{ DBG_MESS_START
+
+  if (Lab_Ergebnis_.size() == 0)
+    init ();
+
+  std::vector<int> patches;
+
+  for(int j = 0; j < (int)patch_src_lines_.size(); ++j)
+  {
+    if( patch_src_lines_[j].first == tag_name )
+    {
+      int n = patch_src_lines_[j].second.size();
+      patches.resize( n );
+
+      for(int i = 0; i < nFelder_; ++i)
+        patches[ i ] = patch_src_lines_[j].second[i];
+    }
+  }
+
+  DBG_MESS_ENDE
+  return patches;
+}
+
+/** Get information about a text line in a measurement tag.
+ */
+std::vector<double>
+ICCmeasurement::getPatchLine                (int line, const char * tag_name,
+                                             std::vector<float> & rgb,
+                                             std::string & name )
+{ DBG_MESS_START
+  std::vector<double> punkte;
+  int patch = -1;
+
+  if (Lab_Ergebnis_.size() == 0)
+    init ();
+
+  for(int j = 0; j < (int)patch_src_lines_.size(); ++j)
+  {
+    if( patch_src_lines_[j].first == tag_name )
+    {
+      for(int i = 0; i < nFelder_; ++i)
+      {
+        if( patch_src_lines_[j].second[i] == line )
+        {
+          patch = i;
+          break;
+        }
+      }
+      break;
+    }
+  }
+
+  if (patch > nFelder_) {
+    WARN_S( "Patch Nr: " << patch << " outside the measurement set" )
+    DBG_MESS_ENDE
+    return punkte;
+  }
+  if( patch == -1 ) {
+    DBG_PROG_S( "Line Nr: " << line << " outside the measurement size" )
+    DBG_MESS_ENDE
+    return punkte;
+  }
+
+  punkte.resize(3);
+  rgb.resize(4);
+
+  if( std::string(tag_name) == "DevD" ||
+      ( (!Lab_Satz_.size() || !RGB_MessFarben_.size()) &&
+        RGB_ProfilFarben_.size() && Lab_Ergebnis_.size() ) )
+  {
+    punkte[0] = Lab_Ergebnis_[patch].L;
+    punkte[1] = Lab_Ergebnis_[patch].a;
+    punkte[2] = Lab_Ergebnis_[patch].b;
+    rgb[0] = RGB_ProfilFarben_[patch].R;
+    rgb[1] = RGB_ProfilFarben_[patch].G;
+    rgb[2] = RGB_ProfilFarben_[patch].B;
+    rgb[3] = 1.0;
+  } else if (Lab_Satz_.size() && RGB_MessFarben_.size())
+  {
+    punkte[0] = Lab_Satz_[patch].L;
+    punkte[1] = Lab_Satz_[patch].a;
+    punkte[2] = Lab_Satz_[patch].b;
+    rgb[0] = RGB_MessFarben_[patch].R;
+    rgb[1] = RGB_MessFarben_[patch].G;
+    rgb[2] = RGB_MessFarben_[patch].B;
+    rgb[3] = 1.0;
+  } else {
+    punkte.resize(0);
+    rgb.resize(0);
+    name.resize(0);
+  }
+  name = Feldnamen_[patch];
 
   DBG_MESS_ENDE
   return punkte;

@@ -209,7 +209,17 @@ std::vector<std::string>
 ICCtag::getText                     (void)
 { DBG_PROG_START
   std::vector<std::string> texte;
-  std::string text = getTypName();
+  std::string type = getTypName();
+
+  texte = this->getText (type);
+  DBG_PROG_ENDE
+  return texte;
+}
+
+std::vector<std::string>
+ICCtag::getText                     (std::string text)
+{ DBG_PROG_START
+  std::vector<std::string> texte;
 
   if (data_ == NULL || !size_)
   { DBG_PROG_ENDE
@@ -239,16 +249,16 @@ ICCtag::getText                     (void)
     icMeasurement meas;
     memcpy (&meas, &data_[8] , 28);
     s << _("Standard Observer") << ": " <<
-    getStandardObserver( icValue( meas.stdObserver) ) <<endl
+    getStandardObserver( (icStandardObserver)icValue( meas.stdObserver) ) <<endl
       << _("Backsite") << ": X = " << icSFValue(meas.backing.X)
                         << ", Y = " << icSFValue(meas.backing.Y)
                         << ", Z = " << icSFValue(meas.backing.Z) << endl
       << _("Geometrie") << ": "<< 
-    getMeasurementGeometry (icValue(meas.geometry))<<endl
+    getMeasurementGeometry ((icMeasurementGeometry)icValue(meas.geometry))<<endl
       << _("Flare")     << ": "<< 
-    getMeasurementFlare (icValue(meas.flare)) << endl
+    getMeasurementFlare ((icMeasurementFlare)icValue(meas.flare)) << endl
       << _("Illuminant Type") << ": " <<
-    getIlluminant (icValue(meas.illuminant)) <<endl;
+    getIlluminant ((icIlluminant)icValue(meas.illuminant)) <<endl;
     texte.push_back( s.str() );
 
   } else if (text == "mft2") {
@@ -439,7 +449,7 @@ ICCtag::getText                     (void)
         DBG_V( size<<" "<<&data_[dversatz]<<" "<<&data_[dversatz+1]<<" "<< t );
 
         for (n = 0; n < g ; n = n+2)
-          t[n/2] = (char)icValue( *(icUInt16Number*)&data_[dversatz + n] );
+          t[n/2] = icValue( *(icUInt16Number*)&data_[dversatz + n] );
         t[n/2] = 0;
 #endif
         texte.push_back( t );
@@ -481,19 +491,23 @@ ICCtag::getText                     (void)
         texte[0].append (" ", 1);
     }
 
-  } else if ( text == "ncl2" ) {
+  } else if ( text == "ncl2" ||
+              text == "ncl2_names" ) {
 
     Ncl2 *ncl2 = (Ncl2*) &data_[8];
     std::stringstream s;
 
-    texte .resize(1);
     int farben_n        = icValue(ncl2->anzahl);
     int geraetefarben_n = icValue(ncl2->koord);
-    s << "\n\n   " <<
+    if( text == "ncl2" )
+    {
+      texte.resize(1);
+      s << "\n\n   " <<
          _("Number of colours:") << icValue(ncl2->anzahl) << "\n" <<
-         "   " << _("Name") << "    " << _("CIE*Lab") <<
-         " / " << _("Device Colours") << "\n\n";
-    texte[0] = s.str();
+           "   " << _("Name") << "    " << _("CIE*Lab") <<
+           " / " << _("Device Colours") << "\n\n";
+      texte[0] = s.str();
+    }
     DBG_MEM_V( texte[0] )
     DBG_MEM_V( sizeof(Ncl2)+icValue(ncl2->anzahl)*sizeof(Ncl2Farbe) )
     DBG_MEM_V( sizeof(Ncl2Farbe) )
@@ -507,16 +521,23 @@ ICCtag::getText                     (void)
       DBG_MEM_V( sizeof(icUInt16Number) <<"|"<< geraetefarben_n )
       DBG_MEM_V( i <<" "<<(int*)f <<" "<< (int*)ncl2  )
       s << "" <<
-           ncl2->vorname << f->name << ncl2->nachname<<" ";// max 31 byte
-      s << icValue(f->pcsfarbe[0]) << " " <<
-           icValue(f->pcsfarbe[1]) << " " <<
-           icValue(f->pcsfarbe[2]) << " | ";
-      for(int j=0; j < geraetefarben_n; ++j)
-        s << icValue(f->geraetefarbe[j]) << " ";
-
-      s << "\n";
+           ncl2->vorname << f->name << ncl2->nachname;// max 31 byte
+      if( text == "ncl2" )
+      {
+        s <<" ";
+        s << icValue(f->pcsfarbe[0]) << " " <<
+             icValue(f->pcsfarbe[1]) << " " <<
+             icValue(f->pcsfarbe[2]) << " | ";
+        for(int j=0; j < geraetefarben_n; ++j)
+          s << icValue(f->geraetefarbe[j]) << " ";
+        s << "\n";
+      } else {
+        texte.push_back(s.str());
+        s.str("");
+      }
     }
-    texte[0] = s.str();
+    if( text == "ncl2" )
+      texte[0] = s.str();
 
   } else {
 
