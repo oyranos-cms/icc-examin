@@ -589,8 +589,8 @@ getSigTagDescription                            ( icTagSignature  sig )
     case icSigMeasurementTag: text = _("Measurement"); break;
     case icSigMediaBlackPointTag: text = _("Media black point"); break;
     case icSigMediaWhitePointTag: text = _("Media white point"); break;
-    case icSigNamedColorTag: text = _("Named Coulor"); break;
-    case icSigNamedColor2Tag: text = _("Named Coulor 2"); break;
+    case icSigNamedColorTag: text = _("Named Colour"); break;
+    case icSigNamedColor2Tag: text = _("Named Colour 2"); break;
     case icSigPreview0Tag: text = _("Preview, photografic"); break;
     case icSigPreview1Tag: text = _("Preview, relative colorimetric"); break;
     case icSigPreview2Tag: text = _("Preview, saturated"); break;
