@@ -102,7 +102,11 @@ public:
   double a_darstellungs_breite; // Richtung CIE*a   für Zoom und Pfeillängen
   double b_darstellungs_breite; // ~        CIE*b ; wobei CIE*L immer 1.0
   bool zeig_punkte_als_messwert_paare;
+  int  spektralband;        // stelle die spektral gesättigten Farben dar
+private:
+  void zeigeSpektralband_();
 
+public:
   void zeigen();            // diese Klasse anzeigen (fltk + glut + gl)
   void verstecken();        //  ~           verstecken      ~
   bool sichtbar() {return gl_fenster_zeigen_; } // angezeigt / versteckt

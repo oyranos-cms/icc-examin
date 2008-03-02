@@ -63,13 +63,19 @@ typedef enum {
  MENU_AXES,
  MENU_QUIT,
  MENU_RING,
- MENU_KUGEL,
+ MENU_KUGEL,           // Formen der 3DLut
  MENU_WUERFEL,
  MENU_STERN,
- MENU_GRAU,
+ MENU_GRAU,            // Die Farbdarstellung der 3DLut
  MENU_FARBIG,
  MENU_KONTRASTREICH,
- MENU_SCHALEN,
+ MENU_SCHALEN,         // Aussparen der 3DLut
+ MENU_dE1KUGEL,        // Mess-/Profilwertdifferenzen mit Farborten
+ MENU_dE2KUGEL,
+ MENU_dE4KUGEL,
+ MENU_dE1STERN,
+ MENU_DIFFERENZ_LINIE, // Mess-/Profilwertdifferenzen mit Geraden pur
+ MENU_SPEKTRALBAND,    // Darstellung der Spektralfarben als Band
  MENU_MAX
 } MenuChoices;
 
@@ -171,6 +177,10 @@ GL_Ansicht::init()
     setzeGlutFunktionen(2)
     a_darstellungs_breite = 2.55;
     b_darstellungs_breite = 2.55;
+    agviewers[agv_].distA (agviewers[agv_].distA()
+                           + a_darstellungs_breite/2.0 - 0.5);
+    agviewers[agv_].distB (agviewers[agv_].distB()
+                           + b_darstellungs_breite/2.0 - 0.5);
   }
 
   agviewers[agv_].agvMakeAxesList(AXES); DBG_PROG
@@ -733,9 +743,21 @@ GL_Ansicht::punkteAuffrischen()
         // Punktkoordinaten setzen
         glTranslatef( punkte_[i+2]*b_darstellungs_breite,
                       punkte_[i+0], punkte_[i+1]*a_darstellungs_breite );
+        if(zeig_punkte_als_messwert_paare &&
+           i%6 == 0)
+        {
+          glColor4f(1.0, 1.0, 1.0, 1.0 );
+          glBegin(GL_LINES);
+            glVertex3f(0, 0, 0);
+            glVertex3f(punkte_[i+5]*b_darstellungs_breite-punkte_[i+2]*b_darstellungs_breite,
+                       punkte_[i+3]-punkte_[i+0],
+                       punkte_[i+4]*a_darstellungs_breite-punkte_[i+1]*a_darstellungs_breite);
+          glEnd();
+        }
         if (farben_.size())
         {
-          if ( farben_[i/3*4+3] < 1.0 ) {
+          if ( farben_[i/3*4+3] < 1.0 )
+          {
             glEnable (GL_BLEND);
             glEnable (GL_DEPTH_TEST);
             glBlendFunc (GL_SRC_COLOR, GL_DST_ALPHA);
@@ -743,20 +765,11 @@ GL_Ansicht::punkteAuffrischen()
           glColor4f(farben_[i/3*4+0], farben_[i/3*4+1], farben_[i/3*4+2],
                     farben_[i/3*4+3] );
         }
-        if(zeig_punkte_als_messwert_paare &&
-           i%6 == 0)
-        { glBegin(GL_LINES);
-            glVertex3f(0, 0, 0);
-            glVertex3f(punkte_[i+5]*b_darstellungs_breite-punkte_[i+2]*b_darstellungs_breite,
-                       punkte_[i+3]-punkte_[i+0],
-                       punkte_[i+4]*a_darstellungs_breite-punkte_[i+1]*a_darstellungs_breite);
-          glEnd();
-        }
 
-        double groesse = 0.02;
+        double groesse = 0.01;
         switch (punktform)
         {
-          case MENU_STERN:
+          case MENU_dE1STERN:
             glBegin(GL_QUADS);
               glVertex3d(  groesse/2, 0, -groesse/2 );
               glVertex3d( -groesse/2, 0, -groesse/2 );
@@ -776,8 +789,10 @@ GL_Ansicht::punkteAuffrischen()
               glVertex3d( 0,  groesse/2,  groesse/2 );
             glEnd();
             break;
-          case MENU_WUERFEL: glutSolidCube(groesse*0.995); break;
-          case MENU_KUGEL:   glutSolidSphere (groesse*.75, 12, 12); break;
+          case MENU_dE1KUGEL: glutSolidSphere (0.005, 12, 12); break;
+          case MENU_dE2KUGEL: glutSolidSphere (0.01, 12, 12); break;
+          case MENU_dE4KUGEL: glutSolidSphere (0.02, 12, 12); break;
+          case MENU_DIFFERENZ_LINIE: break;
         }
         glPopMatrix();
       }
@@ -795,8 +810,19 @@ GL_Ansicht::punkteAuffrischen()
       #endif
     glEndList();
   }
+
+  if (spektralband == MENU_SPEKTRALBAND)
+    zeigeSpektralband_();
+
   DBG_PROG_ENDE
 }
+
+void
+GL_Ansicht::zeigeSpektralband_()
+{ DBG_PROG_START
+  DBG_PROG_ENDE
+}
+
 
 void
 GL_Ansicht::menueErneuern_()
@@ -860,14 +886,18 @@ GL_Ansicht::menuInit_()
 
   if (glut_id_ == 1) { menue_form_ = glutCreateMenu(handlemenu1); }
   else {               menue_form_ = glutCreateMenu(handlemenu2); }
-  glutAddMenuEntry(_("Kugel"),  MENU_KUGEL);   DBG_PROG_V( menue_form_ )
-  glutAddMenuEntry(_("Würfel"), MENU_WUERFEL);
-  glutAddMenuEntry(_("Stern"),  MENU_STERN);
   if(glut_id_ == 1) {
     glutAddMenuEntry(_("grau"),  MENU_GRAU);
     glutAddMenuEntry(_("farbig"),  MENU_FARBIG);
     glutAddMenuEntry(_("kontrastreich"),  MENU_KONTRASTREICH);
     glutAddMenuEntry(_("schalen"),  MENU_SCHALEN);
+  } else {
+    glutAddMenuEntry(_("Stern"),     MENU_dE1STERN);   DBG_PROG_V( menue_form_ )
+    glutAddMenuEntry(_("Kugel 1dE"), MENU_dE1KUGEL);
+    glutAddMenuEntry(_("Kugel 2dE"), MENU_dE2KUGEL);
+    glutAddMenuEntry(_("Kugel 4dE"), MENU_dE4KUGEL);
+    glutAddMenuEntry(_("ohne Farborte"), MENU_DIFFERENZ_LINIE);
+    glutAddMenuEntry(_("Spektrallinie"), MENU_SPEKTRALBAND);
   }
 
   glutSetMenu(menue_);
@@ -909,93 +939,96 @@ reshape(int id, int w, int h)
 void
 display(int id)
 { DBG_ICCGL_START
-  glutSetWindow(id);
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  if(icc_examin->glAnsicht(id)->sichtbar()) {
+    glutSetWindow(id);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  glLoadIdentity();
-  glMatrixMode(GL_PROJECTION);
-  //glLineWidth(3.0);
+    glLoadIdentity();
+    glMatrixMode(GL_PROJECTION);
+    //glLineWidth(3.0);
 
-  // Text
-  if (id == 1) {
-    glPushMatrix();
-     glLoadIdentity();
-     glOrtho(0,icc_examin->glAnsicht(id)->w(),0,icc_examin->glAnsicht(id)->h(),-10.0,10.0);
+    // Text
+    if (id == 1) {
+      glPushMatrix();
+       glLoadIdentity();
+       glOrtho(0,icc_examin->glAnsicht(id)->w(),0,icc_examin->glAnsicht(id)->h(),-10.0,10.0);
 
-     glDisable(GL_TEXTURE_2D);
-     glDisable(GL_LIGHTING);
-     //glEnable(GL_BLEND);
-     //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-     glDisable(GL_LINE_SMOOTH);
+       glDisable(GL_TEXTURE_2D);
+       glDisable(GL_LIGHTING);
+       //glEnable(GL_BLEND);
+       //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+       glDisable(GL_LINE_SMOOTH);
 
-     glColor4f(0.0,0.0,0.0,1.0);
+       glColor4f(0.0,0.0,0.0,1.0);
 
-     glTranslatef(5,-12,8.8-icc_examin->glAnsicht(id)->schnitttiefe*3);
+       glTranslatef(5,-12,8.8-icc_examin->glAnsicht(id)->schnitttiefe*3);
 
-     // Start von unten links
-     #define ZeichneOText(font, scal, buffer) glScalef(scal,scal,scal); \
-                                 ZeichneText(font,buffer); \
-                                 glScalef(1.0/scal,1.0/scal,1.0/scal);
+       // Start von unten links
+       #define ZeichneOText(font, scal, buffer) glScalef(scal,scal,scal); \
+                                   ZeichneText(font,buffer); \
+                                   glScalef(1.0/scal,1.0/scal,1.0/scal);
 
 
-     int scal = 120, zeilenversatz = (int)(scal/6.0);
-     #if 0
-     static char text[256];
-     for (unsigned int i=0; i < icc_examin->icc_betrachter->mft_gl->kanaele(); i++) {
-       sprintf(&text[0],"%s: %f", icc_examin->icc_betrachter->mft_gl->kanalName(i), 12.0);
+       int scal = 120, zeilenversatz = (int)(scal/6.0);
+       #if 0
+       static char text[256];
+       for (unsigned int i=0; i < icc_examin->icc_betrachter->mft_gl->kanaele(); i++) {
+         sprintf(&text[0],"%s: %f", icc_examin->icc_betrachter->mft_gl->kanalName(i), 12.0);
+         glTranslatef(0,zeilenversatz,0);
+         ZeichneOText (GLUT_STROKE_ROMAN, scal, text)
+       }
+       //sprintf(&text[0],"%s: %s", _("sichtbarer Kanal"),icc_examin->glAnsicht(id)->kanalName());
+       #endif
+       std::string text;
+       text.append(_("Kanal:"));
+       text.append(" ");
+       text.append(icc_examin->glAnsicht(id)->kanalName());
        glTranslatef(0,zeilenversatz,0);
-       ZeichneOText (GLUT_STROKE_ROMAN, scal, text)
-     }
-     //sprintf(&text[0],"%s: %s", _("sichtbarer Kanal"),icc_examin->glAnsicht(id)->kanalName());
-     #endif
-     std::string text;
-     text.append(_("Kanal:"));
-     text.append(" ");
-     text.append(icc_examin->glAnsicht(id)->kanalName());
-     glTranslatef(0,zeilenversatz,0);
 
-     ZeichneOText (GLUT_STROKE_ROMAN, scal, (char*)text.c_str()) 
+       ZeichneOText (GLUT_STROKE_ROMAN, scal, (char*)text.c_str()) 
 
-     glEnable(GL_TEXTURE_2D);
-     glEnable(GL_LIGHTING);
-    glPopMatrix();
-  }
+       glEnable(GL_TEXTURE_2D);
+       glEnable(GL_LIGHTING);
+      glPopMatrix();
+    }
 
-  glPushMatrix();  /* clear of last viewing xform, leaving perspective */
 
-  glLoadIdentity();
+    glPushMatrix();  /* clear of last viewing xform, leaving perspective */
 
-  #define ForderSchnitt 4.2
+    glLoadIdentity();
 
-  if (agviewers[icc_examin->glAnsicht(id)->agv()].duenn)
-    gluPerspective(15, icc_examin->glAnsicht(id)->seitenverhaeltnis,
-                   ForderSchnitt,
-                   ForderSchnitt + icc_examin->glAnsicht(id)->schnitttiefe);
-  else
-    gluPerspective(15, icc_examin->glAnsicht(id)->seitenverhaeltnis,
-                   ForderSchnitt, 15);
-                // ^-- vordere Schnittfläche
+    #define ForderSchnitt 4.2
+
+    if (agviewers[icc_examin->glAnsicht(id)->agv()].duenn)
+      gluPerspective(15, icc_examin->glAnsicht(id)->seitenverhaeltnis,
+                     ForderSchnitt,
+                     ForderSchnitt + icc_examin->glAnsicht(id)->schnitttiefe);
+    else
+      gluPerspective(15, icc_examin->glAnsicht(id)->seitenverhaeltnis,
+                     ForderSchnitt, 15);
+                  // ^-- vordere Schnittfläche
 
     /* so this replaces gluLookAt or equiv */
-  agvViewTransform();
+    agvViewTransform();
 
-  glMatrixMode(GL_MODELVIEW);
-  glLoadIdentity();
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
 
-  if (DrawAxes)
-    glCallList(AXES);
+    if (DrawAxes)
+      glCallList(AXES);
 
-  glCallList(dID(id,HELFER)); DBG_PROG_V( dID(id,HELFER) )
-  glCallList(dID(id,RASTER)); DBG_PROG_V( dID(id,RASTER) )
-  glCallList(dID(id,PUNKTE)); DBG_PROG_V( dID(id,PUNKTE) )
+    glCallList(dID(id,HELFER)); DBG_PROG_V( dID(id,HELFER) )
+    glCallList(dID(id,RASTER)); DBG_PROG_V( dID(id,RASTER) )
+    glCallList(dID(id,PUNKTE)); DBG_PROG_V( dID(id,PUNKTE) )
 
 
-  #if 0
-  glutSwapBuffers();
-  glFlush();
-  #else
-  glFinish();
-  #endif
+    #if 0
+    glutSwapBuffers();
+    glFlush();
+    #else
+    glFinish();
+    #endif
+  }
   DBG_ICCGL_ENDE
 }
 
@@ -1142,12 +1175,14 @@ GL_Ansicht::hineinTabelle (std::vector<std::vector<std::vector<std::vector<doubl
 void
 sichtbar (int id, int v)
 { DBG_PROG_START
-  glutSetWindow(id);
-  if (v == GLUT_VISIBLE)
-    agvSetAllowIdle(1);
-  else {
-    glutIdleFunc(NULL);
-    agvSetAllowIdle(0);
+  if(icc_examin->glAnsicht(id)->sichtbar()) {
+    glutSetWindow(id);
+    if (v == GLUT_VISIBLE)
+      agvSetAllowIdle(1);
+    else {
+      glutIdleFunc(NULL);
+      agvSetAllowIdle(0);
+    }
   }
   DBG_PROG_ENDE
 }
@@ -1155,12 +1190,14 @@ sichtbar (int id, int v)
 void
 menuuse (int id, int v)
 { DBG_PROG_START
-  glutSetWindow(id);
-  if (v == GLUT_MENU_NOT_IN_USE)
-    agvSetAllowIdle(1);
-  else {
-    glutIdleFunc(NULL);
-    agvSetAllowIdle(0);
+  if(icc_examin->glAnsicht(id)->sichtbar()) {
+    glutSetWindow(id);
+    if (v == GLUT_MENU_NOT_IN_USE)
+      agvSetAllowIdle(1);
+    else {
+      glutIdleFunc(NULL);
+      agvSetAllowIdle(0);
+    }
   }
   DBG_PROG_ENDE
 }
@@ -1169,8 +1206,9 @@ menuuse (int id, int v)
 void
 handlemenu (int id, int value)
 { DBG_PROG_START
-  glutSetWindow(id);
-  switch (value) {
+  if(icc_examin->glAnsicht(id)->sichtbar()) {
+    glutSetWindow(id);
+    switch (value) {
     case MENU_AXES:
       DrawAxes = !DrawAxes;
       break;
@@ -1220,12 +1258,40 @@ handlemenu (int id, int value)
         icc_examin->glAnsicht(id)-> schalen = 0;
       icc_examin->glAnsicht(id)->auffrischen();
       break;
+    case MENU_dE1STERN:
+      icc_examin->glAnsicht(id)-> punktform = MENU_dE1STERN;
+      icc_examin->glAnsicht(id)->auffrischen();
+      break;
+    case MENU_dE1KUGEL:
+      icc_examin->glAnsicht(id)-> punktform = MENU_dE1KUGEL;
+      icc_examin->glAnsicht(id)->auffrischen();
+      break;
+    case MENU_dE2KUGEL:
+      icc_examin->glAnsicht(id)-> punktform = MENU_dE2KUGEL;
+      icc_examin->glAnsicht(id)->auffrischen();
+      break;
+    case MENU_dE4KUGEL:
+      icc_examin->glAnsicht(id)-> punktform = MENU_dE4KUGEL;
+      icc_examin->glAnsicht(id)->auffrischen();
+      break;
+    case MENU_DIFFERENZ_LINIE:
+      icc_examin->glAnsicht(id)-> punktform = MENU_DIFFERENZ_LINIE;
+      icc_examin->glAnsicht(id)->auffrischen();
+      break;
+    case MENU_SPEKTRALBAND:
+      if (!icc_examin->glAnsicht(id)-> spektralband)
+        icc_examin->glAnsicht(id)-> spektralband = MENU_SPEKTRALBAND;
+      else
+        icc_examin->glAnsicht(id)-> spektralband = 0;
+      icc_examin->glAnsicht(id)->auffrischen();
+      break;
     }
 
-  if (value >= MENU_MAX) {
-    icc_examin->glAnsicht(id)->kanal = value - MENU_MAX; DBG_PROG_V( icc_examin->glAnsicht(id)->kanal )
-    status(_("linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menü"))
-    icc_examin->glAnsicht(id)->auffrischen();
+    if (value >= MENU_MAX) {
+      icc_examin->glAnsicht(id)->kanal = value - MENU_MAX; DBG_PROG_V( icc_examin->glAnsicht(id)->kanal )
+      status(_("linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menü"))
+      icc_examin->glAnsicht(id)->auffrischen();
+    }
   }
 
   DBG_PROG_V( value )
@@ -1239,8 +1305,8 @@ rotatethering (void)
   //DBG_PROG_START
   Rotation += ROTATEINC;
 
-  if (agvMoving())   /* we since we are the only idle function, we must */
-    agvMove();     /* give AGV the chance to update the eye position */
+//  if (agvMoving())   /* we since we are the only idle function, we must */
+  //  agvMove();     /* give AGV the chance to update the eye position */
 
   glutPostRedisplay();
   //DBG_PROG_ENDE

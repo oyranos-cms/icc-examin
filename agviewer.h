@@ -53,7 +53,7 @@ Agviewer
    /* Initial polar movement settings */
           init_polar_az = 90.0;
           init_polar_el = 90.0;
-          init_dist     = 4.74;
+          init_dist     = init_dist_a = init_dist_b = 4.74;
           init_az_spin  = 0.0;
           init_el_spin  = 0.0;
 
@@ -243,11 +243,18 @@ Agviewer
   double init_polar_az,
          init_polar_el,
          init_dist,
+         init_dist_a,
+         init_dist_b,
          init_az_spin,
          init_el_spin,
 
          init_move,
          minmove;
+public:
+  void distA(double a) { init_dist_a = a; }
+  void distB(double b) { init_dist_b = b; }
+  double distA()       { return init_dist_a; }
+  double distB()       { return init_dist_b; }
 
   int AllowIdle,
       RedisplayWindow;                      // glutWindow
@@ -291,7 +298,9 @@ extern std::vector<Agviewer> agviewers;
 
 extern "C" {
   // Funktionszeiger / pointer
-  extern void agvMove(void);
+  extern void agvMove(int glut_fenster);
+  extern void agvMove1(void);
+  extern void agvMove2(void);
   extern void agvHandleButton(int button, int state, int x, int y);
   extern void agvHandleMotion(int x, int y);
   extern void agvHandleKeys(unsigned char key, int x, int y);

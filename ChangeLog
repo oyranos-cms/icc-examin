@@ -1,4 +1,13 @@
 
+2005-01-18
+	* fix: GL Fenster 2 bewegt sich wenn Fenster 1 angeschoben wurde
+	* fix: Menü für GL 1 und GL 2 differenziert angezeigt
+
+2005-01-17
+	* neu: Messdaten / Differenz im Histogramfenster
+	* neu: Menü für Messdaten in GL : Kugel, Stern , nur Differenzen
+	* neu: Spektralbanddarstellung vorbereitet
+
 2005-01-15
 	* fix: aktualisiere GL nach Profilladen
 	* fix: Daten Übertragung (Farben)

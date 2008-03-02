@@ -496,9 +496,9 @@ ICCexamin::berichtSpeichern (void)
 
   DBG_PROG_V( dateiname )
 
-  if (dateiwahl->count() == 0 ||
-      dateiname != "" ||
-      dateiname == profile.name()) {
+  if (dateiname == "" ||
+      dateiname == profile.name())
+  { DBG_PROG_V( dateiwahl->count() << dateiname )
     fortschritt (1.1);
     DBG_PROG_ENDE
     return false;

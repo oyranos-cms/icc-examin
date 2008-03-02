@@ -74,11 +74,11 @@ Agviewer::agvInit(int window)
 void
 Agviewer::PolarLookFrom(GLfloat dist, GLfloat elevation, GLfloat azimuth)
 { DBG_PROG_START
-  glutSetWindow(RedisplayWindow);
+  //glutSetWindow(RedisplayWindow);
   glTranslatef(0, 0, -dist);
   glRotatef(elevation, 1, 0, 0);
   glRotatef(azimuth, 0, 1, 0);
-
+  DBG_PROG_V( dist )
   DBG_PROG_ENDE
 }
 
@@ -89,7 +89,7 @@ Agviewer::PolarLookFrom(GLfloat dist, GLfloat elevation, GLfloat azimuth)
 void
 Agviewer::FlyLookFrom(GLfloat x, GLfloat y, GLfloat z, GLfloat az, GLfloat el)
 { DBG_PROG_START
-  glutSetWindow(RedisplayWindow);
+  //glutSetWindow(RedisplayWindow);
   float lookat[3], perp[3], up[3];
 
   lookat[0] = sin(TORAD(az))*cos(TORAD(el));
@@ -113,7 +113,7 @@ Agviewer::FlyLookFrom(GLfloat x, GLfloat y, GLfloat z, GLfloat az, GLfloat el)
 void
 Agviewer::agvViewTransform(void)
 { DBG_PROG_START
-  glutSetWindow(RedisplayWindow);
+  //glutSetWindow(RedisplayWindow);
   switch (MoveMode) {
     case FLYING:
       FlyLookFrom(Ex, Ey, Ez, EyeAz, EyeEl);
@@ -133,7 +133,7 @@ Agviewer::agvViewTransform(void)
 int
 Agviewer::ConstrainEl(void)
 { DBG_PROG_START
-  glutSetWindow(RedisplayWindow);
+  //glutSetWindow(RedisplayWindow);
   if (EyeEl <= -90) {
     EyeEl = -89.99;
     DBG_PROG_ENDE
@@ -153,7 +153,7 @@ Agviewer::ConstrainEl(void)
 void
 Agviewer::_agvMove(void)
 { DBG_PROG_START
-  glutSetWindow(RedisplayWindow);
+  //glutSetWindow(RedisplayWindow);
   DBG_PROG_V(redisplayWindow())
   switch (MoveMode)  {
     case FLYING:
@@ -194,13 +194,17 @@ Agviewer::_agvMove(void)
 void
 Agviewer::MoveOn(int v)
 { DBG_PROG_START
-  glutSetWindow(RedisplayWindow);
+  //glutSetWindow(RedisplayWindow);
   if (v && ((MoveMode == FLYING && EyeMove != 0) ||
              (MoveMode == POLAR &&
              (AzSpin != 0 || ElSpin != 0 || AdjustingAzEl)))) {
     agvMoving = 1;
     if (AllowIdle)
-      glutIdleFunc(agvMove);
+      if (redisplayWindow() == 1) {
+        glutIdleFunc(agvMove1);
+      } else {
+        glutIdleFunc(agvMove2);
+      }
   } else {
     agvMoving = 0;
     if (AllowIdle)
@@ -217,7 +221,7 @@ Agviewer::MoveOn(int v)
 void
 Agviewer::agvSetAllowIdle(int allowidle)
 { DBG_PROG_START
-  glutSetWindow(RedisplayWindow);
+  //glutSetWindow(RedisplayWindow);
   if ((AllowIdle = allowidle))
     MoveOn(1);
   DBG_PROG_ENDE
@@ -231,7 +235,7 @@ Agviewer::agvSetAllowIdle(int allowidle)
 void
 Agviewer::agvSwitchMoveMode(int move)
 { DBG_PROG_START
-  glutSetWindow(RedisplayWindow);
+  //glutSetWindow(RedisplayWindow);
   switch (move) {
     case FLYING:
       if (MoveMode == FLYING) return;
@@ -258,7 +262,7 @@ Agviewer::agvSwitchMoveMode(int move)
       break;
     case ICCFLY_a:
       MoveMode = POLAR;
-      EyeDist = init_dist;
+      EyeDist = init_dist_a;
       EyeAz   = 0;
       EyeEl   = 0;
       AzSpin  = init_az_spin;
@@ -270,7 +274,7 @@ Agviewer::agvSwitchMoveMode(int move)
       break;
     case ICCFLY_b:
       MoveMode = POLAR;
-      EyeDist = init_dist;
+      EyeDist = init_dist_b;
       EyeAz   = 270;
       EyeEl   = 0;
       AzSpin  = init_az_spin;
@@ -318,7 +322,7 @@ Agviewer::agvSwitchMoveMode(int move)
 void
 Agviewer::_agvHandleButton(int &button, int &state, int &x, int &y)
 { DBG_PROG_START
-  glutSetWindow(RedisplayWindow);
+  //glutSetWindow(RedisplayWindow);
   DBG_PROG_V( button <<" "<< state);
 
  if (state == GLUT_DOWN && downb == -1) {  
@@ -350,7 +354,7 @@ Agviewer::_agvHandleButton(int &button, int &state, int &x, int &y)
 	EyeMove = 0;
         if (MoveMode == FLYING)
           status(_("Pause"));
-        duenn = false;
+        break;
     }
 
   } else if (state == GLUT_UP && button == downb) {
@@ -369,16 +373,19 @@ Agviewer::_agvHandleButton(int &button, int &state, int &x, int &y)
 	}
         AdjustingAzEl = 0;
         MoveOn(1);
-        if (MoveMode == FLYING)
+        if (MoveMode == FLYING) {
           status(_("linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menü"));
-        duenn = false;
-	break;
+          duenn = false;
+        }
+        break;
 
       case GLUT_MIDDLE_BUTTON:
 	EyeMove = downEyeMove;
-        if (MoveMode == FLYING)
+        if (MoveMode == FLYING) {
           status(_("linke Maustaste -> zurück"));
-        duenn = true;
+          duenn = true;
+        }
+        break;
       }
   }
   DBG_PROG_ENDE
@@ -390,7 +397,7 @@ Agviewer::_agvHandleButton(int &button, int &state, int &x, int &y)
 void
 Agviewer::_agvHandleMotion(int &x, int &y)
 { DBG_PROG_START
-  glutSetWindow(RedisplayWindow);
+  //glutSetWindow(RedisplayWindow);
   int deltax = x - downx, deltay = y - downy;
 
   switch (downb) {
@@ -499,7 +506,7 @@ Agviewer::ncrossprod(float v1[3], float v2[3], float cp[3])
 void
 Agviewer::agvMakeAxesList(int displaylistnum)
 { DBG_PROG_START
-  glutSetWindow(RedisplayWindow);
+  //glutSetWindow(RedisplayWindow);
   int i,j;
   GLfloat axes_ambuse[] =   { 0.5, 0.0, 0.0, 1.0 };
   glNewList(displaylistnum, GL_COMPILE);
@@ -527,17 +534,33 @@ Agviewer::agvMakeAxesList(int displaylistnum)
 
 
 // variable Argumentlänge in einem Macro ?
-void agvMove(void)
+void agvMove1(void)
 { DBG_PROG_START
+  agvMove (1);
+  DBG_PROG_ENDE
+}
+
+void agvMove2(void)
+{ DBG_PROG_START
+  DBG_PROG_V( glutGetWindow() )
+  agvMove (2);
+  DBG_PROG_ENDE
+}
+
+void agvMove(int glut_fenster)
+{ DBG_PROG_START
+  glutSetWindow(glut_fenster);
+  DBG_PROG_V( glutGetWindow() )
   std::vector<Agviewer>::iterator it;
   for (it = agviewers.begin() ; it != agviewers.end(); it++)
-    if (it->redisplayWindow() == glutGetWindow())
+    if (it->redisplayWindow() == glut_fenster)
       it->_agvMove();
   DBG_PROG_ENDE
 }
 
 void agvHandleButton(int button, int state, int x, int y)
 { DBG_PROG_START
+  DBG_PROG_V( glutGetWindow() )
   std::vector<Agviewer>::iterator it;
   for (it = agviewers.begin() ; it != agviewers.end(); it++)
     if (it->redisplayWindow() == glutGetWindow())
@@ -547,6 +570,7 @@ void agvHandleButton(int button, int state, int x, int y)
 
 void agvHandleMotion(int x, int y)
 { DBG_PROG_START
+  DBG_PROG_V( glutGetWindow() )
   std::vector<Agviewer>::iterator it; DBG_PROG_V( agviewers.size() )
   for (it = agviewers.begin() ; it != agviewers.end(); it++) {
     DBG_PROG_V( it->redisplayWindow() )
