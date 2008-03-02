@@ -43,14 +43,20 @@
 			<key>CFBundleTypeExtensions</key>
 			<array>
 				<string>icc</string>
-				<string>ICC</string>
 				<string>icm</string>
-				<string>ICM</string>
 			</array>
+            <key>CFBundleTypeMIMETypes</key>
+            <array>
+                <string>icc</string>
+            </array>
 			<key>CFBundleTypeName</key>
 			<string>ICC profiles</string>
+            <key>CFBundleTypeOSTypes</key>
+            <array>
+                <string>ICC</string>
+            </array>
 		    <key>CFBundleTypeRole</key>
-            <string>Editor</string>
+            <string>Viewer</string>
 		</dict>
 	</array>
 	<key>CFBundleExecutable</key>

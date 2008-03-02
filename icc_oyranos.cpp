@@ -152,7 +152,7 @@ Oyranos::lab_test_ ()
   Speicher *v_block = &lab_;
   if( !v_block->size() )
   { DBG_PROG_V( v_block->size() )
-    char* profil_name = oyGetDefaultProfileName( oyranos::oyINPUT_Lab, myAllocFunc );
+    char* profil_name = oyGetDefaultProfileName( oyranos::oyINPUT_LAB, myAllocFunc );
     if(profil_name)
       DBG_PROG_V( (int*)profil_name << profil_name );
     if( profil_name &&
@@ -479,7 +479,7 @@ Oyranos::cmyk_test_ ()
   Speicher *v_block = &cmyk_;
   if( !v_block->size() )
   { DBG_PROG_V( v_block->size() )
-    char* profil_name = oyGetDefaultProfileName( oyranos::oyINPUT_Cmyk, myAllocFunc );
+    char* profil_name = oyGetDefaultProfileName( oyranos::oyINPUT_CMYK, myAllocFunc );
     if(profil_name) {DBG_PROG_V( profil_name );
     } else {         DBG_PROG_V( (int)profil_name );}
 
