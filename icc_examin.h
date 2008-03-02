@@ -19,6 +19,7 @@
 class TagDrawings;
 class TagBrowser;
 class TagTexts;
+class MftChoice;
 #include <openvrml/browser.h>
 #include <openvrml/gl/viewer.h>
 #include "vFLGLWidget.h"
@@ -42,8 +43,7 @@ extern vFLGLWidget *canvas;
 extern TagDrawings *tag_viewer;
 extern TagTexts *tag_text;
 extern Fl_Group *tabellengruppe;
-#include <FL/Fl_Choice.H>
-extern Fl_Choice *mft_choice;
+extern MftChoice *mft_choice;
 extern TagDrawings *mft_viewer;
 extern TagTexts *mft_text;
 extern Fl_Group *inspekt;
@@ -85,6 +85,15 @@ public:
   void hinein_kurven(std::vector<std::vector<double> >vect, std::vector<std::string> txt);
   void ruhig_neuzeichnen(void);
 };
+
+class MftChoice : public Fl_Choice {
+  int X; int Y; int W; int H; char* start_info; char typ[5]; std::vector<std::string> Info; int gewaehlter_eintrag;
+public:
+  MftChoice(int X,int Y,int W,int H,char* start_info) ;
+  void profil_tag(int _tag);
+  void auswahl_cb(void);
+};
 void d_haendler(void* o);
 void zeig_mich(void* widget);
+std::vector<std::string> zeilenNachVector(std::string text);
 #endif

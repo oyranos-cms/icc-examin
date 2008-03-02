@@ -50,6 +50,18 @@ icTagSignature          icValue   (icTagSignature val);
 double*                 XYZto_xyY (double* XYZ);
 double*                 XYZto_xyY (std::vector<double> XYZ);
 
+std::string         renderingIntentName ( int intent);
+std::string         getColorSpaceName   ( icColorSpaceSignature color);
+std::string         getDeviceClassName  ( icProfileClassSignature cl);
+std::string         getPlatformName     ( icPlatformSignature platform);
+std::string         getSigTagName( icTagSignature  sig );
+std::string         getSigTypeName( icTagTypeSignature  sig );
+std::string         getSigTechnology( icTechnologySignature sig );
+std::string         getIlluminant( icIlluminant illu );
+std::string         getStandardObserver( icStandardObserver obsv );
+std::string         getMeasurementGeometry( icMeasurementGeometry measgeo );
+std::string         getMeasurementFlare( icMeasurementFlare flare );
+
 class ICCheader {
   public:
                         ICCheader (); 
@@ -71,15 +83,17 @@ class ICCheader {
     int                 version ()      {return icValue(header.version); }
     std::string         versionName ();
     icProfileClassSignature deviceClass (){return icValue(header.deviceClass); }
-    icColorSpaceSignature colorSpace  (){return icValue(header.colorSpace); }
-    icColorSpaceSignature pcs ()        {return icValue(header.pcs); }
-    const char*         magicName ()       {return cp_nchar ((char*)&(header.
+    icColorSpaceSignature colorSpace    (){return icValue(header.colorSpace); }
+    icColorSpaceSignature pcs ()          {return icValue(header.pcs); }
+    const char*         magicName ()      {return cp_nchar ((char*)&(header.
                                                       magic),
                                                       sizeof (icSignature)+1); }
-    std::string         platform ()     {return getPlatformName(icValue(header.platform)); }
+
+    std::string         platform ()        {return getPlatformName(icValue(header.platform)); }
     std::string         flags ();
     std::string         attributes ();
-    std::string         renderingIntent ();
+    std::string         renderingIntent () {return renderingIntentName( icValue(
+                                            header.renderingIntent ) ); }
     const char*         modelName ()       {return cp_nchar ((char*)&(header.
                                                       model),
                                                       sizeof (icSignature)+1); }
@@ -91,24 +105,25 @@ class ICCheader {
                                                       sizeof (icSignature)+1); }
     std::string         print ();
     std::string         print_long ();
-
-    std::string         getColorSpaceName  ( icColorSpaceSignature color);
-    std::string         getDeviceClassName ( icProfileClassSignature cl);
-    std::string         getPlatformName    ( icPlatformSignature platform);
 };
 
 class ICCtag {
   public:
                         ICCtag             ();
-                        ICCtag             (icTag *tag, char* data);
+                        ICCtag             (ICCprofile* profil,
+                                            icTag* tag, char* data);
                         ~ICCtag            ();
   private:
     icTagSignature      _sig;
     int                 _size;
     char*               _data;
+    int                 _intent; // für mft1/2
+    icColorSpaceSignature _color_in;
+    icColorSpaceSignature _color_out;
+    ICCprofile*         _profil;
 
   public:
-    void                load (icTag *tag, char* data);
+    void                load (ICCprofile* profil ,icTag* tag, char* data);
   public:
     std::string         getTagName()       {return getSigTagName (_sig); }
     std::string         getTypName()       {//cout << _data << " " ; DBG
@@ -118,27 +133,28 @@ class ICCtag {
                                             return getSigTypeName(
                                               (icTagTypeSignature)icValue(sig));
                                            }
-    int                 getTagByName();
     int                 getSize()          {return _size; }
     std::string         getMore();
 
     std::vector<double> getCIEXYZ();
     std::vector<double> getCurve();
+    typedef enum {
+    MATRIX,
+    CURVE_IN,
+    TABLE,
+    CURVE_OUT
+    } MftChain;
+    std::vector<double> getNumbers(MftChain typ);
+
     std::vector<std::string> getText();
     std::vector<std::string> getDescription();
     std::string         getVrml();
-    std::string         getSigTagName( icTagSignature  sig );
-    std::string         getSigTypeName( icTagTypeSignature  sig );
-    std::string         getSigTechnology( icTechnologySignature sig );
-    std::string         getIlluminant( icIlluminant illu );
-    std::string         getStandardObserver( icStandardObserver obsv );
-    std::string         getMeasurementGeometry( icMeasurementGeometry measgeo );
-    std::string         getMeasurementFlare( icMeasurementFlare flare );
 //    void                printLut           (   LPLUT           Lut,
 //                                               int             sig);
 };
 
 class ICCprofile {
+  friend class ICCtag;
   public:
                         ICCprofile ();
                         ICCprofile (const char *filename);
@@ -158,7 +174,7 @@ class ICCprofile {
     unsigned int        _size;
 
     ICCheader           header;
-    std::vector<ICCtag>   tags;
+    std::vector<ICCtag> tags;
     void                write_tagList(std::stringstream);
 
   public: // Informationen
@@ -176,6 +192,7 @@ class ICCprofile {
     std::vector<std::string> getTagDescription  (int item);
     std::vector<double> getTagCIEXYZ (int item);
     std::vector<double> getTagCurve  (int item);
+    std::vector<double> getTagNumbers  (int item, ICCtag::MftChain typ);
     char*               getProfileInfo  ();
     bool                hasTagName   (std::string name); // Name
     int                 getTagByName (std::string name); // Name

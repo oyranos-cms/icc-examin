@@ -8,6 +8,7 @@ static char *statlabel;
  int px,py,pw,ph;
  int fullscreen;
  int inspekt_zeigen;
+ int tag_nummer;
 static openvrml::browser *browser = 0;
 static ViewerFLTK  *viewer = 0;
 #include "icc_draw.h"
@@ -43,8 +44,6 @@ static void cb_menueintrag_Voll(Fl_Menu_*, void*) {
 }
 
 static void cb_menueintrag_inspekt(Fl_Menu_*, void*) {
-  Fl_Window *w = (Fl_Window *)details;
-
   if (inspekt_zeigen) {
     inspekt_zeigen = false;
     inspekt->hide();
@@ -88,7 +87,11 @@ TagTexts *tag_text=(TagTexts *)0;
 
 Fl_Group *tabellengruppe=(Fl_Group *)0;
 
-Fl_Choice *mft_choice=(Fl_Choice *)0;
+MftChoice *mft_choice=(MftChoice *)0;
+
+static void cb_mft_choice(MftChoice* o, void*) {
+  o->auswahl_cb();
+}
 
 TagDrawings *mft_viewer=(TagDrawings *)0;
 
@@ -171,8 +174,18 @@ int main(int argc, char **argv) {
             o->when(FL_WHEN_RELEASE_ALWAYS);
           }
           { Fl_Group* o = tabellengruppe = new Fl_Group(0, 160, 385, 335);
-            { Fl_Choice* o = mft_choice = new Fl_Choice(0, 160, 385, 25);
+            { MftChoice* o = mft_choice = new MftChoice(0, 160, 385, 25, "W\344hlen Sie ein Kettenmerkmal");
               o->box(FL_NO_BOX);
+              o->down_box(FL_BORDER_BOX);
+              o->color(FL_BACKGROUND2_COLOR);
+              o->selection_color(FL_SELECTION_COLOR);
+              o->labeltype(FL_NORMAL_LABEL);
+              o->labelfont(0);
+              o->labelsize(14);
+              o->labelcolor(FL_BLACK);
+              o->callback((Fl_Callback*)cb_mft_choice);
+              o->align(FL_ALIGN_LEFT);
+              o->when(FL_WHEN_RELEASE);
             }
             { TagDrawings* o = mft_viewer = new TagDrawings(0, 185, 385, 310);
               o->box(FL_NO_BOX);
@@ -491,7 +504,8 @@ void TagBrowser::select_item(int item) {
       tag_viewer->hinein_punkt( profile.getTagCIEXYZ(item), TagInfo );
     } else if ( TagInfo[1] == "mft2"
              || TagInfo[1] == "mft1" ) {
-      tag_text->hinein ( (profile.getTagText (item))[0] ); DBG
+      mft_choice->profil_tag (item);
+      //mft_text->hinein ( (profile.getTagText (item))[0] ); DBG
     }
     selectedTagName = TagInfo[0];
   }DBG
@@ -505,26 +519,16 @@ void TagTexts::hinein(std::string text) {
 
   zeig_mich(this); DBG
 
-      tag_text->clear();
-      int len = strlen(text.c_str());
-      std::string text_line;
-      char c;
-      const char *chars = text.c_str();
-      for (int zeichen = 0; zeichen < len; zeichen++) {
-        c = chars[zeichen];
-        if (c == '\n' || (int)c == 0) {
-          text_line += '\0';
-          tag_text->add(text_line.c_str(), 0);
-          text_line.clear();
-        } else
-          text_line += c;
-      }
-      if (text_line.size() > 0)
-        tag_text->add(text_line.c_str(), 0);
+      this->clear();
 
-      tag_text->topline(0);
-      tag_text->textfont(FL_COURIER);
-      tag_text->textsize(14);
+      std::vector <std::string> texte = zeilenNachVector( text );
+      for (unsigned int i = 0; i < texte.size(); i++)
+        this->add( texte[i].c_str(), 0);
+
+
+      this->topline(0);
+      this->textfont(FL_COURIER);
+      this->textsize(14);
 }
 
 TagDrawings::TagDrawings(int X,int Y,int W,int H) : Fl_Widget(X,Y,W,H), X(X), Y(Y), W(W), H(H) {
@@ -571,6 +575,109 @@ void TagDrawings::hinein_kurven(std::vector<std::vector<double> >vect, std::vect
 void TagDrawings::ruhig_neuzeichnen(void) {
   draw_cie_shoe(x(),y(),w(),h(),texte,punkte,true);
 }
+#include <FL/fl_draw.H>
+
+MftChoice::MftChoice(int X,int Y,int W,int H,char* start_info) : Fl_Choice(X,Y,W,H,start_info), X(X), Y(Y), W(W), H(H) {
+}
+
+void MftChoice::profil_tag(int _tag) {
+  tag_nummer = _tag;
+
+// = profile.printTagInfo(tag_nummer);
+    sprintf (&typ[0], profile.printTagInfo(tag_nummer)[1].c_str());
+
+    Info = zeilenNachVector (profile.getTagText (tag_nummer)[0]);
+
+    if ( strstr (typ,"mft2") != 0 )
+    {
+      Fl_Menu_Item *mft_menue = (Fl_Menu_Item *)calloc (sizeof (Fl_Menu_Item), 6);
+
+      mft_menue[0].text = Info[0].c_str();
+      mft_menue[1].text = Info[4].c_str();
+      mft_menue[2].text = Info[5].c_str();
+      mft_menue[3].text = Info[6].c_str();
+      mft_menue[4].text = Info[7].c_str();
+      mft_menue[5].text = 0;
+      mft_choice->menu(mft_menue);
+    } else {
+      Fl_Menu_Item *mft_menue = (Fl_Menu_Item *)calloc (sizeof (Fl_Menu_Item), 6);
+
+      mft_menue[0].text = Info[0].c_str();
+      mft_menue[1].text = Info[4].c_str();
+      mft_menue[2].text = "lineare Eingangskurve mit 256 Stufungen";
+      mft_menue[3].text = Info[5].c_str();
+      mft_menue[4].text = "lineare Ausgangskurve mit 256 Stufungen";
+      mft_menue[5].text = 0;
+      mft_choice->menu(mft_menue);
+    }
+
+    mft_choice->value( gewaehlter_eintrag );
+
+    if ( strstr (typ,"mft2") != 0 ) {
+    } else if ( strstr (typ, "mft1") != 0 ) {
+      //mft_text->hinein ( (profile.getTagText (tag_nummer))[0] ); DBG
+      //zeig_mich (mft_text);
+    }
+
+
+  zeig_mich (this);
+  auswahl_cb();
+}
+
+void MftChoice::auswahl_cb(void) {
+  //Auswahl aus mft_choice
+
+  Fl_Menu_* mw = (Fl_Menu_*)this;
+  const Fl_Menu_Item* m = mw->mvalue();
+  if (!m)
+    printf("NULL\n");
+  else if (m->shortcut())
+    printf("%s - %s\n", m->label(), fl_shortcut_label(m->shortcut()));
+  else
+    printf("%s\n", m->label());
+
+  std::stringstream s;
+  std::vector<double> zahlen;
+
+  switch (mw->value()) {
+  case 0:
+    { for (unsigned int i = 1; i < Info.size(); i++) // erste Zeile weglassen
+        s << Info [i] << endl;
+      mft_text->hinein ( s.str() ); DBG // anzeigen
+    } break;
+  case 1:
+    zahlen = profile.getTagNumbers (tag_nummer, ICCtag::MATRIX);
+    cout << zahlen.size() << "|" << profile.getTagNumbers (tag_nummer, ICCtag::MATRIX).size(); DBG
+    assert (9 == profile.getTagNumbers (tag_nummer, ICCtag::MATRIX).size());
+    s << zahlen[0] << ", " << zahlen[1] << ", " << zahlen[2] << ", " << endl <<
+         zahlen[3] << ", " << zahlen[4] << ", " << zahlen[5] << ", " << endl <<
+         zahlen[6] << ", " << zahlen[7] << ", " << zahlen[8] << ", " << endl;
+    mft_text->hinein ( s.str() );
+    break;
+  case 2:
+    mft_text->hinein ( "2" );
+    break;
+  }
+
+  gewaehlter_eintrag = mw->value();
+
+    std::vector<std::string> TagInfo = profile.printTagInfo(tag_nummer);
+
+    if ( TagInfo[1] == "mft2" ) {
+
+    } else if ( TagInfo[1] == "mft1" ) {
+      //mft_text->hinein ( (profile.getTagText (tag_nummer))[0] ); DBG
+      int size = profile.getTagText (tag_nummer).size();
+      Fl_Menu_Item *menue_liste = (Fl_Menu_Item *)calloc (sizeof (Fl_Menu_Item), size);
+      std::vector <std::string> texte = zeilenNachVector( profile.getTagText (tag_nummer)[0] );
+      for (unsigned int i = 0; i < texte.size(); i++) {
+        menue_liste[i].text = texte[i].c_str();
+      }
+      cout << texte.size() << " "; DBG
+      mft_choice->menu(menue_liste);
+      zeig_mich (mft_text);
+    }
+}
 
 void d_haendler(void* o) {
   Fl::remove_timeout( (void(*)(void*))d_haendler, 0 );
@@ -594,4 +701,28 @@ void zeig_mich(void* widget) {
   tag_text->hide();
   ((Fl_Widget*)widget)->parent()->show(); DBG
   ((Fl_Widget*)widget)->show(); DBG
+}
+
+std::vector<std::string> zeilenNachVector(std::string text) {
+  // fügt Zeilen aus einen Text in einen Vector
+  std::vector <std::string> texte;
+
+      int len = strlen(text.c_str());
+      std::string text_line;
+      char c;
+      const char *chars = text.c_str();
+      for (int zeichen = 0; zeichen < len; zeichen++) {
+        c = chars[zeichen];
+        if (c == '\n' || (int)c == 0) { // LF oder 0
+          text_line += '\0';
+          texte.push_back(text_line.c_str());
+          text_line.clear();
+        } else
+          text_line += c;
+      }
+      if (text_line.size() > 0) // falls was übrig bleibt
+        texte.push_back(text_line.c_str());
+
+
+  return texte;
 }
