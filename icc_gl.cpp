@@ -499,8 +499,10 @@ GL_Ansicht::MenueErneuern()
     DBG_PROG_V( MENU_MAX + i << texte[i] )
   }
 
-  if (kanal > MenueKanalEintraege)
-    kanal = MenueKanalEintraege;
+  if (kanal >= MenueKanalEintraege)
+    kanal = MenueKanalEintraege - 1;
+
+  DBG_PROG_V( MenueKanalEintraege << kanal )
   status(_("linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menü"))
 
   DBG_PROG_ENDE
@@ -688,10 +690,10 @@ GL_Ansicht::hinein_tabelle(std::vector<std::vector<std::vector<std::vector<doubl
 
   if (first)
     init();
-  else
+  else {
+    MenueErneuern();
     MakeDisplayLists();
-
-  MenueErneuern();
+  }
 
   status(_("linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menü"))
 
