@@ -49,7 +49,7 @@
 //#define Beleuchtung
 //#define Lab_STERN 1
 
-#define DEBUG_ICCGL
+//#define DEBUG_ICCGL
 #ifdef DEBUG_ICCGL
 #define DBG_ICCGL_START DBG_PROG_START
 #define DBG_ICCGL_ENDE DBG_PROG_ENDE
@@ -398,11 +398,10 @@ GL_Ansicht::tastatur(int e)
    glEnable(GL_LIGHTING); \
    glLineWidth(strichmult); }
 
-#define ZeichneOText(font, scal, buffer) glPushMatrix(); \
+#define ZeichneOText(font, scal, buffer) \
                                    glScalef(scal,scal,scal); \
                                    ZeichneText(font,buffer); \
-                                   glScalef(1.0/scal,1.0/scal,1.0/scal); \
-                                   glPopMatrix();
+                                   glScalef(1.0/scal,1.0/scal,1.0/scal);
 
 #define ZeichneBuchstaben(Font,Buchstabe) { \
         glScalef(0.001,0.001,0.001); \
@@ -1397,10 +1396,11 @@ display(int id)
          ZeichneOText (GLUT_STROKE_ROMAN, scal, (char*)text.c_str()) 
        } else {
          for (unsigned int i=0;
-            i < icc_examin->glAnsicht(id)->dreiecks_netze.size();
-            i++)
+                i < icc_examin->glAnsicht(id)->dreiecks_netze.size();
+                  ++i)
          {
            text = icc_examin->glAnsicht(id)-> dreiecks_netze[i].name.c_str();
+           DBG_PROG_V( icc_examin->glAnsicht(id)->dreiecks_netze[i].name )
            glTranslatef(0,zeilenversatz,0);
            ZeichneOText (GLUT_STROKE_ROMAN, scal, text.c_str())
          }

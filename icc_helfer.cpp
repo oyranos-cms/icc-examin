@@ -788,6 +788,22 @@ ladeDatei ( std::string dateiname, size_t *size )
   return data;
 }
 
+void
+saveMemToFile (char* filename, char *block, int size)
+{ DBG_PROG_START
+  FILE *fp=NULL;
+  int   pt = 0;
+
+  if ((fp=fopen(filename, "w")) != NULL) {
+    do {
+      fputc ( block[pt++] , fp);
+    } while (--size);
+  }
+
+  fclose (fp);
+  DBG_PROG_ENDE
+}
+
 
 namespace icc_parser {
 

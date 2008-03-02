@@ -55,6 +55,53 @@ ICCtag::ICCtag                      (ICCprofile* profil, icTag* tag, char* data)
 }
 
 void
+ICCtag::copy                        ( const ICCtag& tag)
+{
+  _sig = tag._sig;
+  _size = tag._size;
+  DBG_PROG_S("ICCtag::ICCtag <- Kopie _size: " << _size )
+  if (_size && tag._data) {
+    _data = (char*)calloc(sizeof(char),_size);
+    memcpy (_data , tag._data , _size);
+    DBG_MEM_S((int*)tag._data << " -> " << (int*)_data)
+  } else {
+    _data = NULL;
+    _size = 0;
+  }
+
+  _intent = tag._intent;
+  _color_in = tag._color_in;
+  _color_out = tag._color_out;
+
+  _profil = tag._profil;
+}
+
+void
+ICCtag::defaults ()
+{
+  DBG_PROG
+  _sig = icMaxEnumTag;
+  _size = 0;
+  _data = NULL;
+  _intent = 0;
+  _color_in = icMaxEnumData;
+  _color_out = icMaxEnumData;
+  _profil = NULL;
+  if (_size) DBG_MEM_V ((int*)_data) ;
+}
+
+void
+ICCtag::clear              ()
+{
+  DBG_PROG
+  if (_data && _size) {
+    DBG_MEM_S("lösche: "<<(int*)_data)
+    free (_data);
+  }
+  defaults();
+}
+
+void
 ICCtag::load                        ( ICCprofile *profil,
                                       icTag      *tag,
                                       char       *data )

@@ -232,6 +232,65 @@ ICCprofile::fload ()
   DBG_PROG_ENDE
 }
 
+const char*
+ICCprofile::filename ()
+{
+  DBG_PROG
+  return _filename.c_str();
+}
+
+void
+ICCprofile::filename (const char* s)
+{
+  DBG_PROG _filename = s;
+}
+
+int
+ICCprofile::size     ()
+{
+  DBG_PROG
+  return header.size();
+}
+    //const char*         cmm      ()        {DBG_PROG return header.cmmName(); }
+    //void                cmm      (const char* s) {DBG_PROG header.cmmName (s); }
+    //int                 version  ()        {DBG_PROG return (int) header.version(); }
+    //const char*         creator  ()        {DBG_PROG return header.creatorName(); }
+
+std::string
+ICCprofile::printHeader     ()
+{
+  DBG_PROG
+  return header.print();
+}
+
+std::string
+ICCprofile::printLongHeader ()
+{
+  DBG_PROG
+  return header.print_long();
+}
+
+std::vector<std::string>
+ICCprofile::getPCSNames     ()
+{
+  DBG_PROG
+  return getChannelNames(header.pcs());
+}
+
+int
+ICCprofile::getTagCount     ()
+{
+  DBG_PROG
+  return icValue(((icProfile*)_data)-> count);
+}
+
+int
+ICCprofile::tagCount        ()
+{
+  DBG_PROG
+  return tags.size();
+}
+
 std::vector<std::string>
 ICCprofile::printTagInfo         (int item)
 { DBG_PROG_START
@@ -642,7 +701,8 @@ ICCprofile::writeHeader (void)
 
 int
 ICCprofile::checkProfileDevice (char* type, icProfileClassSignature deviceClass)
-{ DBG_PROG_START
+{
+  DBG_PROG_START
   int check = true;
 
   if ((strcmp(type, _("Work Space"))) == 0) {
@@ -721,20 +781,67 @@ ICCprofile::checkProfileDevice (char* type, icProfileClassSignature deviceClass)
   return check;
 }
 
+bool
+ICCprofile::hasMeasurement()
+{
+  DBG_PROG
+  return (hasTagName("targ") || (hasTagName("CIED")&&hasTagName("DevD")));
+}
+
+std::string
+ICCprofile::report (bool auss)
+{
+  DBG_PROG
+  return measurement.getHtmlReport(auss);
+}
+
+ICCmeasurement &
+ICCprofile::getMeasurement ()
+{
+  DBG_PROG
+  if (hasMeasurement())
+    measurement.init();
+  return measurement;
+}
+std::string
+ICCprofile::cgats()
+{
+  DBG_PROG
+  return measurement.getCGATS();
+}
+
+std::string
+ICCprofile::cgats_max()
+{
+  DBG_PROG
+  return measurement.getMaxCGATS();
+}
+
 void
-ICCprofile::saveMemToFile (char* filename, char *block, int size)
-{ DBG_PROG_START
-  FILE *fp=NULL;
-  int   pt = 0;
+ICCprofile::setHeader (void* h)
+{
+  DBG_PROG
+  header.header_raw(h);
+}
 
-  if ((fp=fopen(filename, "w")) != NULL) {
-    do {
-      fputc ( block[pt++] , fp);
-    } while (--size);
-  }
+void
+ICCprofile::addTag (ICCtag tag)
+{
+  DBG_PROG tags.push_back(tag);
+}
 
-  fclose (fp);
-  DBG_PROG_ENDE
+ICCtag &
+ICCprofile::getTag (int item)
+{
+  return tags[item];
+}
+
+void
+ICCprofile::removeTagByName (std::string name)
+{
+  DBG_PROG
+  if (hasTagName(name))
+    removeTag (getTagByName(name));
 }
 
 void

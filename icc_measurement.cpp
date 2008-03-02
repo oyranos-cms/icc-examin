@@ -64,6 +64,122 @@ ICCmeasurement::ICCmeasurement (ICCprofile* profil, ICCtag &tag)
 }
 
 void
+ICCmeasurement::copy (const ICCmeasurement& m)
+{
+  _sig = m._sig; DBG_PROG_START
+  _size = m._size;
+  if (_size && m._data) {
+    _data = (char*)calloc(sizeof(char),_size);
+    memcpy (_data , m._data , _size);
+    DBG_MEM_S((int*)m._data << " -> " << (int*)_data)
+  } else {
+    _data = NULL;
+    _size = 0;
+  }
+
+  _nFelder = m._nFelder;
+  _channels = m._channels;
+  _isMatrix = m._isMatrix;
+  _profil = m._profil;
+  _XYZ_measurement = m._XYZ_measurement;
+  _RGB_measurement = m._RGB_measurement;
+  _CMYK_measurement = m._CMYK_measurement;
+  // Messwerte
+  _XYZ_Satz = m._XYZ_Satz;
+  _Lab_Satz = m._Lab_Satz;
+  _RGB_Satz = m._RGB_Satz;
+  _CMYK_Satz = m._CMYK_Satz;
+  // Profilwerte
+  _Feldnamen = m._Feldnamen;
+  _XYZ_Ergebnis = m._XYZ_Ergebnis;
+  _Lab_Ergebnis = m._Lab_Ergebnis;
+  _RGB_MessFarben = m._RGB_MessFarben;
+  _RGB_ProfilFarben = m._RGB_ProfilFarben;
+  // Ergebnisse
+  _Lab_Differenz = m._Lab_Differenz;
+  _Lab_Differenz_max = m._Lab_Differenz_max;
+  _Lab_Differenz_min = m._Lab_Differenz_min;
+  _Lab_Differenz_Durchschnitt = m._Lab_Differenz_Durchschnitt;
+  _DE00_Differenz = m._DE00_Differenz;
+  _DE00_Differenz_max = m._DE00_Differenz_max;
+  _DE00_Differenz_min = m._DE00_Differenz_min;
+  _DE00_Differenz_Durchschnitt = m._DE00_Differenz_Durchschnitt;
+  export_farben = m.export_farben;
+  DBG_PROG_ENDE
+}
+
+void
+ICCmeasurement::defaults ()
+{
+  DBG_PROG
+  _sig = icMaxEnumTag;
+  _size = 0;
+  _data = NULL;
+
+  _nFelder = 0;
+
+  _channels = 0;
+  _isMatrix = 0;
+  _profil = NULL;
+  _XYZ_measurement = false;
+  _RGB_measurement = false;
+  _CMYK_measurement = false;
+  _Lab_Differenz_max = -1000;
+  _Lab_Differenz_min = 1000;
+  _Lab_Differenz_Durchschnitt = 0;
+  _DE00_Differenz_max = -1000;
+  _DE00_Differenz_min = 1000;
+  _DE00_Differenz_Durchschnitt = 0;
+  export_farben = false;
+}
+
+ICCmeasurement::ICCmeasurement     ()
+{
+  DBG_PROG
+  defaults();
+}
+
+void
+ICCmeasurement::clear (void)
+{
+  DBG_PROG
+  if (_data != NULL) free(_data);
+  defaults();
+  _XYZ_Satz.clear();
+  _Lab_Satz.clear();
+  _RGB_Satz.clear();
+  _CMYK_Satz.clear();
+  _Feldnamen.clear();
+  _XYZ_Ergebnis.clear();
+  _Lab_Ergebnis.clear();
+  _RGB_MessFarben.clear();
+  _RGB_ProfilFarben.clear();
+  _Lab_Differenz.clear();
+  _DE00_Differenz.clear();
+  _reportTabelle.clear();
+  layout.clear();
+}
+
+ICCmeasurement::~ICCmeasurement ()
+{
+  DBG_PROG_S("::~ICCmeasurement")
+  clear();
+}
+
+ICCmeasurement::ICCmeasurement     (const ICCmeasurement& m)
+{
+  DBG_PROG
+  copy (m);
+}
+
+ICCmeasurement &
+ICCmeasurement::operator =          (const ICCmeasurement& m)
+{
+  DBG_PROG copy (m); 
+  return *this;
+}
+
+void
 ICCmeasurement::load                ( ICCprofile *profil,
                                       ICCtag&     tag )
 { DBG_PROG_START

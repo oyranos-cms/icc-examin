@@ -83,6 +83,7 @@ std::string         zeig_bits_bin      (const void* speicher, int groesse);
 
 // Datei E/A
 char* ladeDatei ( std::string dateiname, size_t *size );
+void  saveMemToFile  (char* filename, char *block, int size);
 
 // Texthelfer
 namespace icc_parser {
