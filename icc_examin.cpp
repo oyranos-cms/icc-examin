@@ -112,6 +112,12 @@ ICCexamin::oeffnen (std::vector<std::string> dateinamen)
     icc_betrachter->tag_browser->reopen ();
     icc_betrachter->measurement( profile.profil()->hasMeasurement() );
   }
+  DBG_PROG
+  if (icc_betrachter->DD_histogram->beruehrt()) { DBG_PROG
+    histogram();
+    icc_betrachter->DD_histogram->auffrischen();
+  }
+
   DBG_PROG_ENDE
 }
 
@@ -340,6 +346,7 @@ ICCexamin::histogram ()
   std::vector<std::vector<float> > farben;
   std::vector<std::string> texte, namen;
 
+  #if 0
   namen.push_back("Netz A");
   v.resize(1);
   farben.resize(1);
@@ -371,31 +378,36 @@ ICCexamin::histogram ()
         farben[0].push_back(.5);
       }
   }
+  #endif
 
   texte.push_back(_("CIE *L"));
   texte.push_back(_("CIE *a"));
   texte.push_back(_("CIE *b"));
 
-  icc_betrachter->DD_histogram->hineinNetze( v, farben, namen, texte );
+  //icc_betrachter->DD_histogram->hineinNetze( v, farben, namen, texte );
 
   std::vector<double> p;
   std::vector<float>  f;
 
-  if(profile.profil()->hasMeasurement()) {
-    ICCmeasurement m = profile.profil()->getMeasurement();
-    int j = 0;
-    std::vector<double> v = m.getMessLab(j);
-    for (unsigned i = 0; i < v.size(); ++i) {
-      p.push_back(v[i]);
+  if(profile.profil() && profile.profil()->hasMeasurement()) {
+    ICCmeasurement messung = profile.profil()->getMeasurement();
+    unsigned int j;
+    int n = messung.getPatchCount(); DBG_PROG_V( messung.getPatchCount() )
+    for (j = 0; j < (unsigned) n; ++j) {
+      std::vector<double> daten = messung.getMessLab(j);
+      for (unsigned i = 0; i < daten.size(); ++i) {
+        p.push_back(daten[i]);
+      }
+      daten = messung.getMessRGB(j);
+      for (unsigned i = 0; i < daten.size(); ++i) {
+        f.push_back((float)daten[i]);
+      }
+      f.push_back(1.0);
     }
-    v = m.getMessRGB(j);
-    for (unsigned i = 0; i < v.size(); ++i) {
-      f.push_back(v[i]);
-    }
-    f.push_back(0.5);
+    namen = messung.getFeldNamen();
   }
-
   icc_betrachter->DD_histogram->hineinPunkte( p, f, namen, texte );
+
 
   DBG_PROG_ENDE
 }
@@ -610,7 +622,7 @@ ICCexamin::statusAktualisieren()
 void
 ICCexamin::initReihenfolgeGL_Ansicht(GL_Ansicht* gl_ansicht)
 { DBG_PROG_START
-  if (icc_betrachter->mft_gl->jungfrau()) {
+  if (!icc_betrachter->mft_gl->beruehrt()) {
     icc_betrachter->mft_gl->show();
     icc_betrachter->mft_gl->init();
   }

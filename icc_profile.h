@@ -418,14 +418,15 @@ class ICCmeasurement {
     int                 getSize()          {DBG_PROG return _size; }
     int                 getPatchCount()    {DBG_PROG return _nFelder; }
     // Werte
-    std::vector<double> getMessRGB (int patch);
-    std::vector<double> getCmmRGB (int patch);
+    std::vector<double> getMessRGB (int patch); // Darstellungsfarben
+    std::vector<double> getCmmRGB (int patch);  // Darstellungsfarben
     std::vector<double> getMessLab (int patch);
     std::vector<double> getCmmLab (int patch);
     std::vector<XYZ>    getMessXYZ ()      {DBG_PROG return _XYZ_Satz; }
     std::vector<Lab>    getMessLab ()      {DBG_PROG return _Lab_Satz; }
     std::vector<RGB>    getMessRGB ()      {DBG_PROG return _RGB_Satz; }
     std::vector<CMYK>   getMessCMYK ()     {DBG_PROG return _CMYK_Satz; }
+    std::vector<std::string> getFeldNamen () {DBG_PROG return _Feldnamen; }
 
     // Report
     std::vector<std::vector<std::string> > getText ();

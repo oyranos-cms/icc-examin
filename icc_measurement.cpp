@@ -27,12 +27,20 @@
 
 // Date:      20. 08. 2004
 
-#if 1
+#if 0
   #ifndef DEBUG
    #define DEBUG
   #endif
   #define DEBUG_ICCMEASUREMENT
+  #define DBG_MESS_START DBG_PROG_START
+  #define DBG_MESS_ENDE DBG_PROG_ENDE
+  #define DBG_MESS_V(t) DBG_NUM_V(t)
+#else
+  #define DBG_MESS_START
+  #define DBG_MESS_ENDE
+  #define DBG_MESS_V(t)
 #endif
+
 
 #include <lcms.h> // für CGATS lesen
 #include "icc_profile.h"
@@ -535,7 +543,8 @@ ICCmeasurement::init_umrechnen                     (void)
     hCOLOUR = cmsOpenProfileFromMem (_profil->_data, _profil->_size);
     if (getColorSpaceName(_profil->header.colorSpace()) != "Rgb"
      || getColorSpaceName(_profil->header.colorSpace()) != "Cmyk") {
-      WARN_S("unterschiedliche Messdaten und Profilfarbraum ") 
+      WARN_S("unterschiedliche Messdaten und Profilfarbraum ")
+      DBG_PROG_V( getColorSpaceName(_profil->header.colorSpace()) )
       //this->clear();
       //return;
     }
@@ -603,42 +612,42 @@ ICCmeasurement::init_umrechnen                     (void)
           XYZ[2] = _XYZ_Satz[i].Z;
         }
         cmsDoTransform (hXYZtoLab, &XYZ[0], &Lab[0], 1);
-        _Lab_Satz[i].L = Lab[0];
-        _Lab_Satz[i].a = Lab[1];
-        _Lab_Satz[i].b = Lab[2];
+        _Lab_Satz[i].L = Lab[0]; DBG_MESS_V( _Lab_Satz[i].L )
+        _Lab_Satz[i].a = Lab[1]; DBG_MESS_V( _Lab_Satz[i].a )
+        _Lab_Satz[i].b = Lab[2]; DBG_MESS_V( _Lab_Satz[i].b )
 
         cmsDoTransform (hXYZtoSRGB, &XYZ[0], &RGB[0], 1);
-        _RGB_MessFarben[i].R = RGB[0];
-        _RGB_MessFarben[i].G = RGB[1];
-        _RGB_MessFarben[i].B = RGB[2];
+        _RGB_MessFarben[i].R = RGB[0]; DBG_MESS_V( _RGB_MessFarben[i].R )
+        _RGB_MessFarben[i].G = RGB[1]; DBG_MESS_V( _RGB_MessFarben[i].G )
+        _RGB_MessFarben[i].B = RGB[2]; DBG_MESS_V( _RGB_MessFarben[i].B )
 
         // Profilfarben
         if (_RGB_measurement) {
           //for (int n = 0; n < _channels; n++)
-          Farbe[0] = _RGB_Satz[i].R*100.0; DBG_PROG_V( _RGB_Satz[i].R )
+          Farbe[0] = _RGB_Satz[i].R*100.0; DBG_MESS_V( _RGB_Satz[i].R )
           Farbe[1] = _RGB_Satz[i].G*100.0;
           Farbe[2] = _RGB_Satz[i].B*100.0;
         } else {
-          Farbe[0] = _CMYK_Satz[i].C*100.0; DBG_PROG_V( _CMYK_Satz[i].C )
+          Farbe[0] = _CMYK_Satz[i].C*100.0; DBG_MESS_V( _CMYK_Satz[i].C )
           Farbe[1] = _CMYK_Satz[i].M*100.0;
           Farbe[2] = _CMYK_Satz[i].Y*100.0;
           Farbe[3] = _CMYK_Satz[i].K*100.0;
         }
 
         cmsDoTransform (hCOLOURtoXYZ, &Farbe[0], &XYZ[0], 1);
-        _XYZ_Ergebnis[i].X = XYZ[0]; DBG_PROG_V( _XYZ_Ergebnis[i].Y )
-        _XYZ_Ergebnis[i].Y = XYZ[1];
-        _XYZ_Ergebnis[i].Z = XYZ[2];
+        _XYZ_Ergebnis[i].X = XYZ[0]; DBG_MESS_V( _XYZ_Ergebnis[i].X )
+        _XYZ_Ergebnis[i].Y = XYZ[1]; DBG_MESS_V( _XYZ_Ergebnis[i].Y )
+        _XYZ_Ergebnis[i].Z = XYZ[2]; DBG_MESS_V( _XYZ_Ergebnis[i].Z )
 
         cmsDoTransform (hCOLOURtoLab, &Farbe[0], &Lab[0], 1);
-        _Lab_Ergebnis[i].L = Lab[0];
-        _Lab_Ergebnis[i].a = Lab[1];
-        _Lab_Ergebnis[i].b = Lab[2];
+        _Lab_Ergebnis[i].L = Lab[0]; DBG_MESS_V( _Lab_Ergebnis[i].L )
+        _Lab_Ergebnis[i].a = Lab[1]; DBG_MESS_V( _Lab_Ergebnis[i].a )
+        _Lab_Ergebnis[i].b = Lab[2]; DBG_MESS_V( _Lab_Ergebnis[i].b )
         
         cmsDoTransform (hCOLOURtoSRGB, &Farbe[0], &RGB[0], 1);
-        _RGB_ProfilFarben[i].R = RGB[0];
-        _RGB_ProfilFarben[i].G = RGB[1];
-        _RGB_ProfilFarben[i].B = RGB[2];
+        _RGB_ProfilFarben[i].R = RGB[0]; DBG_MESS_V( _RGB_ProfilFarben[i].R )
+        _RGB_ProfilFarben[i].G = RGB[1]; DBG_MESS_V( _RGB_ProfilFarben[i].G )
+        _RGB_ProfilFarben[i].B = RGB[2]; DBG_MESS_V( _RGB_ProfilFarben[i].B )
 
         // geometrische Farbortdifferenz - dE CIE*Lab
         _Lab_Differenz[i] = HYP3( _Lab_Ergebnis[i].L - _Lab_Satz[i].L ,
@@ -1038,77 +1047,89 @@ ICCmeasurement::getDescription              (void)
 
 std::vector<double>
 ICCmeasurement::getMessRGB                  (int patch)
-{ DBG_PROG_START
+{ DBG_MESS_START
   std::vector<double> punkte(3);
 
   if (_RGB_MessFarben.size() == 0)
     init ();
 
-  if (patch > _nFelder)
+  if (patch > _nFelder) {
+    WARN_S( "Patch Nr: " << patch << " ausserhalb des Messfarbsatzes" )
+    DBG_MESS_ENDE
     return punkte;
+  }
 
-  punkte[0] = _RGB_MessFarben[patch].R;
-  punkte[1] = _RGB_MessFarben[patch].G;
-  punkte[2] = _RGB_MessFarben[patch].B;
+  punkte[0] = _RGB_MessFarben[patch].R; DBG_MESS_V( _RGB_MessFarben[patch].R <<  punkte[0] )
+  punkte[1] = _RGB_MessFarben[patch].G; DBG_MESS_V( _RGB_MessFarben[patch].G )
+  punkte[2] = _RGB_MessFarben[patch].B; DBG_MESS_V( _RGB_MessFarben[patch].B )
 
-  DBG_PROG_ENDE
+  DBG_MESS_ENDE
   return punkte;
 }
 
 std::vector<double>
 ICCmeasurement::getCmmRGB                   (int patch)
-{ DBG_PROG_START
+{ DBG_MESS_START
   std::vector<double> punkte (3) ;
 
   if (_RGB_MessFarben.size() == 0)
     init ();
 
-  if (patch > _nFelder)
+  if (patch > _nFelder) {
+    WARN_S( "Patch Nr: " << patch << " ausserhalb des Messfarbsatzes" )
+    DBG_MESS_ENDE
     return punkte;
+  }
 
   punkte[0] = _RGB_ProfilFarben[patch].R;
   punkte[1] = _RGB_ProfilFarben[patch].G;
   punkte[2] = _RGB_ProfilFarben[patch].B;
 
-  DBG_PROG_ENDE
+  DBG_MESS_ENDE
   return punkte;
 }
 
 std::vector<double>
-ICCmeasurement::getMessLab                   (int patch)
-{ DBG_PROG_START
+ICCmeasurement::getMessLab                  (int patch)
+{ DBG_MESS_START
   std::vector<double> punkte (3) ;
 
   if (_Lab_Satz.size() == 0)
     init ();
 
-  if (patch > _nFelder)
+  if (patch > _nFelder) {
+    WARN_S( "Patch Nr: " << patch << " ausserhalb des Messfarbsatzes" )
+    DBG_MESS_ENDE
     return punkte;
+  }
 
-  punkte[0] = _Lab_Satz[patch].L;
-  punkte[1] = _Lab_Satz[patch].a;
-  punkte[2] = _Lab_Satz[patch].b;
+  punkte[0] =  _Lab_Satz[patch].L          / 100.0;
+  punkte[1] = (_Lab_Satz[patch].a + 128.0) / 255.0;
+  punkte[2] = (_Lab_Satz[patch].b + 128.0) / 255.0;
 
-  DBG_PROG_ENDE
+  DBG_MESS_ENDE
   return punkte;
 }
 
 std::vector<double>
 ICCmeasurement::getCmmLab                   (int patch)
-{ DBG_PROG_START
+{ DBG_MESS_START
   std::vector<double> punkte (3) ;
 
   if (_Lab_Ergebnis.size() == 0)
     init ();
 
-  if (patch > _nFelder)
+  if (patch > _nFelder) {
+    WARN_S( "Patch Nr: " << patch << " ausserhalb des Messfarbsatzes" )
+    DBG_MESS_ENDE
     return punkte;
+  }
 
-  punkte[0] = _Lab_Ergebnis[patch].L;
-  punkte[1] = _Lab_Ergebnis[patch].a;
-  punkte[2] = _Lab_Ergebnis[patch].b;
+  punkte[0] =  _Lab_Ergebnis[patch].L          / 100.0;
+  punkte[1] = (_Lab_Ergebnis[patch].a + 128.0) / 255.0;
+  punkte[2] = (_Lab_Ergebnis[patch].b + 128.0) / 255.0;
 
-  DBG_PROG_ENDE
+  DBG_MESS_ENDE
   return punkte;
 }
 

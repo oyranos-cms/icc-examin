@@ -11,7 +11,7 @@ libdir		= ${exec_prefix}/lib
 mandir		= ${prefix}/man
 srcdir		= .
 
-APPLE = 1
+#APPLE = 1
 FLTK = 1
 ifdef FLTK
 FLU = 1

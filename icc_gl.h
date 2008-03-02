@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2005  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -58,13 +58,13 @@ class GL_Ansicht : public Fl_Group {
   bool gl_fenster_zeigen_;
   int  agv_,
        glut_id_;
-  bool first_;
+  bool beruehrt_;
 public:
   GL_Ansicht(int X,int Y,int W,int H);
   ~GL_Ansicht();
   void init();
-  bool jungfrau () {return first_; }
-  //void setzteGlutId(int id) {if (first_) glut_id_ = id; }
+  bool beruehrt () {return beruehrt_; }
+  //void setzteGlutId(int id) {if (!beruehrt_) glut_id_ = id; }
 
   int  id()          {return glut_id_; }
   int  agv()         {return agv_; }
@@ -96,12 +96,13 @@ public:
   int  punktfarbe;          // MENU_GRAU MENU_FARBIG MENU_KONTRASTREICH
   int  schalen;             // MENU_SCHALEN
   void auffrischen();       // Erneuerung ohne init()
+  void punkteAuffrischen(); // glCompile für Punkte
   double seitenverhaeltnis;
   double schnitttiefe;
 
   void zeigen();
   void verstecken();
-  void stop() {if (!first_) { agvSwitchMoveMode (Agviewer::AGV_STOP); } }
+  void stop() {if (beruehrt_) { agvSwitchMoveMode (Agviewer::AGV_STOP); } }
 
   char* kanalName() { DBG_PROG_START DBG_PROG_V( nach_farb_namen_.size() <<"|"<< kanal )
                       if (nach_farb_namen_.size() &&

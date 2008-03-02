@@ -80,7 +80,7 @@ GL_Ansicht::GL_Ansicht(int X,int Y,int W,int H) : Fl_Group(X,Y,W,H)
 { DBG_PROG_START
   kanal = 0;
   schnitttiefe = 0.1;
-  first_ = true;
+  beruehrt_ = false;
   auffrischen_ = true;
   menue_kanal_eintraege_ = 0;
   punktform = MENU_WUERFEL;
@@ -109,7 +109,7 @@ void
 GL_Ansicht::init()
 { DBG_PROG_START
 
-  if (!first_) {
+  if (beruehrt_) {
     DBG_PROG_ENDE
     return;
   }
@@ -122,7 +122,7 @@ GL_Ansicht::init()
   agv_ = agviewers.size(); DBG_PROG
   agviewers.resize (agv_ +1);
 
-  first_ = false;
+  beruehrt_ = true;
   menue_kanal_eintraege_ = 0;
   this->begin();
   gl_fenster_ = new Fl_Group (x(),y(),w(),h());
@@ -178,7 +178,7 @@ GL_Ansicht::zeigen()
 { DBG_PROG_START
   DBG_PROG_V( id() )
 
-  if(first_) icc_examin->initReihenfolgeGL_Ansicht(this);
+  if(!beruehrt_) icc_examin->initReihenfolgeGL_Ansicht(this);
 
   //glutSetWindow( agviewers[agv_].redisplayWindow() );
  
@@ -204,7 +204,7 @@ GL_Ansicht::verstecken()
   //DBG_PROG_V( w() <<" "<< h() )
   gl_fenster_zeigen_ = false; DBG_PROG
 
-  if (first_) {
+  if (!beruehrt_) {
     //icc_examin->initReihenfolgeGL_Ansicht(this);
   } else {
     //agviewers[agv_].agvSwitchMoveMode (Agviewer::AGV_STOP);
@@ -661,36 +661,68 @@ GL_Ansicht::makeDisplayLists_()
       glEndList();
   }
  
+  //Hintergrund
+  #if 1 // Hellgrau
+  glClearColor(.75,.75,.75,1.0);
+  #else // Blauschwarz
+  glClearColor(.0,.0,.1,1.0);
+  #endif
+
+  punkteAuffrischen();
+
+  glPopMatrix();
+  glutPostRedisplay();
+  DBG_PROG_ENDE
+}
+
+void
+GL_Ansicht::punkteAuffrischen()
+{ DBG_PROG_START
+
+  if (gl_voll[PUNKTE])
+    glDeleteLists (id()*DL_MAX + PUNKTE, 1);
+
+  //Koordinaten  in CIE*b CIE*L CIE*a Reihenfolge 
   if (punkte_.size()) {
-    if (gl_voll[PUNKTE])
-      glDeleteLists (id()*DL_MAX + PUNKTE, 1);
+
+    if( punkte_.size() )
+      DBG_PROG_V( punkte_.size() )
+    if( farben_.size() )
+      DBG_PROG_V( farben_.size() )
+    if( farb_namen_.size() )
+      DBG_PROG_V( farb_namen_.size() )
+
     glNewList(id()*DL_MAX + PUNKTE, GL_COMPILE); DBG_PROG_V( id()*DL_MAX + PUNKTE ) 
     gl_voll[PUNKTE] = true;
       #ifndef Beleuchtung
       glDisable(GL_LIGHTING);
       #endif
 
-      #if 0
+      #if 1
       glEnable (GL_BLEND);
       glEnable (GL_DEPTH_TEST);
       glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
       glEnable (GL_ALPHA_TEST_FUNC);
       glAlphaFunc (GL_ALPHA_TEST, GL_ONE_MINUS_DST_ALPHA);
       #else
-      glEnable (GL_BLEND);
-      glEnable (GL_DEPTH_TEST);
-      glBlendFunc (GL_SRC_COLOR, GL_DST_ALPHA);
       #endif
 
-      glColor3f(0.9, 0.9, 0.9);
+      //glColor3f(0.9, 0.9, 0.9);
       for (unsigned i = 0; i < punkte_.size(); i+=3)
       {
         glPushMatrix();
-        glTranslatef( -.5, -.5, -.5 );
-        glTranslatef( punkte_[i+1], punkte_[i+0], punkte_[i+2] );
-        if (farben_.size() > punkte_.size())
+        glTranslatef( -2.55/2, -.5, -2.55/2 );
+        glTranslatef( punkte_[i+2]*2.55, punkte_[i+0], punkte_[i+1]*2.55 );
+        if (farben_.size() > punkte_.size()) {
+          if ( farben_[i/3*4+3] < 1.0 ) {
+            glEnable (GL_BLEND);
+            glEnable (GL_DEPTH_TEST);
+            glBlendFunc (GL_SRC_COLOR, GL_DST_ALPHA);
+          }
           glColor4f(farben_[i/3*4+0], farben_[i/3*4+1], farben_[i/3*4+2],
                     farben_[i/3*4+3] );
+        }
+
         double groesse = 0.02;
         switch (punktform)
         {
@@ -719,7 +751,7 @@ GL_Ansicht::makeDisplayLists_()
         }
         glPopMatrix();
       }
-      #if 1
+      #if 0
       glColor4f(0.8,0.2,0.2,0.5);
       glutSolidSphere (0.7, 36, 36);
       glColor4f(0.2,0.2,0.8,0.5);
@@ -733,16 +765,6 @@ GL_Ansicht::makeDisplayLists_()
       #endif
     glEndList();
   }
-
-  //Hintergrund
-  #if 1 // Hellgrau
-  glClearColor(.75,.75,.75,1.0);
-  #else // Blauschwarz
-  glClearColor(.0,.0,.1,1.0);
-  #endif
-
-  glPopMatrix();
-  glutPostRedisplay();
   DBG_PROG_ENDE
 }
 
@@ -951,10 +973,11 @@ GL_Ansicht::hineinPunkte       (std::vector<double>      vect,
   tabelle_.clear();DBG_PROG  
   punkte_.clear(); DBG_PROG
   kurven_.clear(); DBG_PROG
+  von_farb_namen_.clear();
   if (achsNamen.size() == 3)
     von_farb_namen_ = achsNamen;
   else
-  { von_farb_namen_.clear();
+  {
     von_farb_namen_.push_back ("?");
     von_farb_namen_.push_back ("?");
     von_farb_namen_.push_back ("?");
@@ -969,12 +992,13 @@ GL_Ansicht::hineinPunkte       (std::vector<double>      vect,
 
 void
 GL_Ansicht::hineinPunkte      (std::vector<double>      vect,
-                               std::vector<float>       f,
+                               std::vector<float>       punkt_farben,
                                std::vector<std::string> achsNamen)
 { DBG_PROG_START
   //Kurve aus tag_browser anzeigen
-  if(vect.size() == (f.size()*4/3))
-    farben_ = f;
+  farben_.clear();
+  farben_ = punkt_farben;
+  DBG_PROG_S( farben_.size()/4 << " Farben" )
 
   hineinPunkte(vect,achsNamen);
 
@@ -983,15 +1007,16 @@ GL_Ansicht::hineinPunkte      (std::vector<double>      vect,
 
 void
 GL_Ansicht::hineinPunkte      (std::vector<double> vect,
-                               std::vector<float> f,
+                               std::vector<float> punkt_farben,
                                std::vector<std::string> farb_namen,
                                std::vector<std::string> achs_namen)
 { DBG_PROG_START
   //Kurve aus tag_browser anzeigen
-  if(farb_namen.size() == (f.size()*4))
-    farb_namen_ = farb_namen;
+  DBG_NUM_V( farb_namen.size() <<"|"<< punkt_farben.size() )
+  farb_namen_.clear();
+  farb_namen_ = farb_namen;
 
-  hineinPunkte(vect,f,achs_namen);
+  hineinPunkte(vect, punkt_farben, achs_namen);
 
   DBG_PROG_ENDE
 }
@@ -1041,7 +1066,7 @@ void GL_Ansicht::hineinKurven(std::vector<std::vector<double> >vect, std::vector
   nach_farb_namen_ = txt;
   punkte_.clear();
 
-  //icc_examin->neuzeichnen(this); DBG_PROG_V( first_ )
+  //icc_examin->neuzeichnen(this); DBG_PROG_V( beruehrt_ )
 
   DBG_PROG_ENDE
 }
@@ -1065,10 +1090,10 @@ GL_Ansicht::hineinTabelle (std::vector<std::vector<std::vector<std::vector<doubl
   kurven_.clear(); DBG_PROG
   punkte_.clear(); DBG_PROG
 
-  //icc_examin->neuzeichnen(this); DBG_PROG_V( first_ )
+  //icc_examin->neuzeichnen(this); DBG_PROG_V( beruehrt_ )
 
 
-  if (first_)
+  if (!beruehrt_)
     icc_examin->initReihenfolgeGL_Ansicht(this);
   else
     auffrischen_ = true;
@@ -1116,7 +1141,7 @@ handlemenu (int id, int value)
     case MENU_QUIT:
       DBG_PROG_V( glutGetWindow() )
       //glutDestroyWindow(glutGetWindow());
-      //icc_examin->glAnsicht(id)->first_ = true;
+      //icc_examin->glAnsicht(id)->beruehrt_ = false;
       break;
     case MENU_RING:
       Rotating = !Rotating;

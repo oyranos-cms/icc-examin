@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2005  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -30,8 +30,8 @@
 #ifndef ICC_VERSION_H
 #define ICC_VERSION_H
 
-#define ICC_EXAMIN_V 0.16
-#define ICC_EXAMIN_D _("Dezember 2004")
+#define ICC_EXAMIN_V 0.17
+#define ICC_EXAMIN_D _("Mai 2004 - Januar 2005")
 
 
 #endif //ICC_VERSION_H
