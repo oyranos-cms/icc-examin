@@ -1,7 +1,17 @@
 
+2005-01-19
+	* neu: Menüs neu sortiert
+	* neu: Pfeile/Texte an und aus
+	* neu: Farbvariablen für Text und Pfeile
+	* neu: Hintergrund umschaltbar
+	* und: Spektralbanddarstellung vorbereitet - neue Liste SPEKTRAL
+	* neu: Messdatendifferenzen mit Verlauf versehen
+	* neu: init teilweise auf Anwahl über Menü umgestellt
+
 2005-01-18
 	* fix: GL Fenster 2 bewegt sich wenn Fenster 1 angeschoben wurde
 	* fix: Menü für GL 1 und GL 2 differenziert angezeigt
+	* fix: html Bericht Speichern
 
 2005-01-17
 	* neu: Messdaten / Differenz im Histogramfenster

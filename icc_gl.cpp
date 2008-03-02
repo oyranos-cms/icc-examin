@@ -56,8 +56,8 @@
 #define DBG_ICCGL_ENDE
 #endif
 
-typedef enum {NOTALLOWED, AXES, RASTER, PUNKTE , HELFER, DL_MAX } DisplayLists;
-bool gl_voll[5] = {false,false,false,false,false};
+typedef enum {NOTALLOWED, AXES, RASTER, PUNKTE , SPEKTRUM, HELFER, DL_MAX } DisplayLists;
+bool gl_voll[DL_MAX] = {false,false,false,false,false,false};
 
 typedef enum {
  MENU_AXES,
@@ -76,6 +76,12 @@ typedef enum {
  MENU_dE1STERN,
  MENU_DIFFERENZ_LINIE, // Mess-/Profilwertdifferenzen mit Geraden pur
  MENU_SPEKTRALBAND,    // Darstellung der Spektralfarben als Band
+ MENU_HELFER,          // Texte und Pfeile darstellen
+ MENU_GRAUGRAU,        // Hintergrundfarben
+ MENU_WEISS,
+ MENU_SCHWARZ,
+ MENU_HELLGRAU,
+ MENU_DUNKELGRAU,
  MENU_MAX
 } MenuChoices;
 
@@ -88,6 +94,13 @@ int DrawAxes = 0;
 GLfloat Rotation = 0;  /* start ring flat and not spinning */
 int     Rotating = 0;
 
+#define bNachX(b) (b*b_darstellungs_breite - b_darstellungs_breite/2.)
+#define LNachY(L) (L - 0.5)
+#define aNachZ(a) (a*a_darstellungs_breite - a_darstellungs_breite/2.)
+#define LabNachXYZv(L,a,b) \
+         (b*b_darstellungs_breite - b_darstellungs_breite/2.), \
+         (L - 0.5), \
+         (a*a_darstellungs_breite - a_darstellungs_breite/2.)
 
 
 GL_Ansicht::GL_Ansicht(int X,int Y,int W,int H) : Fl_Group(X,Y,W,H)
@@ -97,11 +110,11 @@ GL_Ansicht::GL_Ansicht(int X,int Y,int W,int H) : Fl_Group(X,Y,W,H)
   beruehrt_ = false;
   auffrischen_ = true;
   menue_kanal_eintraege_ = 0;
-  punktform = MENU_WUERFEL;
-  punktfarbe = MENU_GRAU;
   a_darstellungs_breite = 1.0;
   b_darstellungs_breite = 1.0;
   schalen = 5;
+  spektralband = 0;
+  zeige_helfer = true;
   gl_fenster_zeigen_ = false;
   zeig_punkte_als_messwert_paare = false;
   glut_id_ = -1;
@@ -119,6 +132,9 @@ GL_Ansicht::~GL_Ansicht()
   if (gl_voll[PUNKTE]) {
     glDeleteLists (id()*DL_MAX + PUNKTE, 1);
     DBG_PROG_S( "delete glListe " << id()*DL_MAX + PUNKTE ) }
+  if (gl_voll[SPEKTRUM]) {
+    glDeleteLists (id()*DL_MAX + SPEKTRUM, 1);
+    DBG_PROG_S( "delete glListe " << id()*DL_MAX + SPEKTRUM ) }
   DBG_PROG_ENDE
 }
 
@@ -187,11 +203,17 @@ GL_Ansicht::init()
 
   myGLinit_();  DBG_PROG
   menuInit_(); DBG_PROG
-  makeDisplayLists_(); DBG_PROG
-
-  //glutMainLoop(); // you could use Fl::run() instead
+  makeDisplayLists_(); DBG_PROG_V( id() )
 
   icc_examin->glAnsicht (this);
+
+  // Initialisieren
+  handlemenu (id(), MENU_HELLGRAU); // Farbschema
+  handlemenu (id(), MENU_GRAU);     // CLUT Farbschema
+  if (id() == 1) handlemenu (id(), MENU_WUERFEL);
+  else           handlemenu (id(), MENU_DIFFERENZ_LINIE);
+
+  //glutMainLoop(); // you could use Fl::run() instead
 
   DBG_PROG_ENDE
 }
@@ -307,12 +329,14 @@ GL_Ansicht::myGLinit_()
 
 // Materialfarben setzen
 #define FARBE(r,g,b) {farbe [0] = (r); farbe [1] = (g); farbe [2] = (b); \
-                      glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, farbe); }
+                      glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, farbe); \
+                      glColor4f(farbe[0],farbe[1],farbe[2],1.0); }
 
 // Text zeichnen
 #define ZeichneText(Font,Zeiger) { \
    glDisable(GL_TEXTURE_2D); \
    glDisable(GL_LIGHTING); \
+   glLineWidth(2); \
       glTranslatef(.0,0,0.01); \
         glScalef(0.001,0.001,0.001); \
           for (char* p = Zeiger; *p; p++) { \
@@ -324,7 +348,8 @@ GL_Ansicht::myGLinit_()
         glScalef(1000,1000,1000); \
       glTranslatef(.0,0,-.01); \
    glEnable(GL_TEXTURE_2D); \
-   glEnable(GL_LIGHTING); }
+   glEnable(GL_LIGHTING); \
+   glLineWidth(1.0); }
 
 #define ZeichneBuchstaben(Font,Buchstabe) { \
         glScalef(0.001,0.001,0.001); \
@@ -348,9 +373,6 @@ zeichneKoordinaten()
     glBegin(GL_LINES);
         glVertex3f(0, .1, 0); glVertex3f(0, 0, 0);
     glEnd();
-  //glEnable(GL_BLEND);
-  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-  glEnable(GL_LINE_SMOOTH);
 
     glRotatef (90,0.0,0,1.0);
       glMatrixMode(GL_MODELVIEW);
@@ -403,21 +425,25 @@ GL_Ansicht::makeDisplayLists_()
 
   #define PFEILSPITZE glutSolidCone(0.02, 0.05, 16, 4);
 
+
+  // Pfeile und Text
   if (gl_voll[HELFER])
     glDeleteLists (id()*DL_MAX + HELFER, 1);
   glNewList(id()*DL_MAX + HELFER, GL_COMPILE); DBG_PROG_V( id()*DL_MAX + HELFER )
     gl_voll[HELFER] = true;
-  GLfloat farbe[] =   { .50, .50, .50, 1.0 };
+    GLfloat farbe[] =   { textfarbe[0],textfarbe[1],textfarbe[2], 1.0 };
 
     // Farbkanalname
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_LINE_SMOOTH);
+
     glPushMatrix();
       glMatrixMode(GL_MODELVIEW);
-      glLineWidth(3.0);
+      glLineWidth(1.0);
       glTranslatef(.5,0.62,.5);
       glRotatef (270,0.0,1.0,.0);
+      FARBE(textfarbe[0],textfarbe[1],textfarbe[2])
       if (nach_farb_namen_.size())
       {
         ptr = (char*) nach_farb_namen_[kanal].c_str();
@@ -428,25 +454,25 @@ GL_Ansicht::makeDisplayLists_()
 
     // CIE*L - oben
     glPushMatrix();
-      FARBE(1,1,1)
-      glBegin(GL_LINES);
-        glVertex3f(0, .5, 0); glVertex3f(0, -.5, 0);
-      glEnd();
+      FARBE(pfeilfarbe[0],pfeilfarbe[1],pfeilfarbe[2])
       glTranslatef(0,.5,0);
-      FARBE(1,1,1)
       glRotatef (270,1.0,0.0,.0);
       PFEILSPITZE
       glRotatef (270,0.0,0.0,1.0);
-      FARBE(1,1,1)
       glTranslatef(.02,0,0);
+      FARBE(textfarbe[0],textfarbe[1],textfarbe[2])
       if (von_farb_namen_.size())
       {
         ptr = (char*) von_farb_namen_[0].c_str();
         sprintf (&text[0], ptr);
-        glColor4f(0.0,0.0,0.0,1.0);
         ZeichneText(GLUT_STROKE_ROMAN,&text[0])
       }
     glPopMatrix(); DBG_PROG
+    glPushMatrix();
+      glBegin(GL_LINES);
+        glVertex3f(0, .5, 0); glVertex3f(0, -.5, 0);
+      glEnd();
+    glPopMatrix();
 
     // CIE*a - rechts
     glPushMatrix();
@@ -472,7 +498,7 @@ GL_Ansicht::makeDisplayLists_()
           von_farb_namen_[1] == _("CIE *a"))
         FARBE(.9,0.2,0.5)
       PFEILSPITZE
-      FARBE(1,1,1)
+      FARBE(textfarbe[0],textfarbe[1],textfarbe[2])
       if (von_farb_namen_.size())
       {
         ptr = (char*) von_farb_namen_[1].c_str();
@@ -506,7 +532,7 @@ GL_Ansicht::makeDisplayLists_()
       {
         FARBE(.7,.8,1.0)
         PFEILSPITZE
-        FARBE(1,1,1)
+        FARBE(textfarbe[0],textfarbe[1],textfarbe[2])
       }
       glTranslatef(.0,.0,-b_darstellungs_breite);
       glRotatef (180,0.0,.5,.0);
@@ -687,14 +713,33 @@ GL_Ansicht::makeDisplayLists_()
       glEndList();
   }
  
-  //Hintergrund
-  #if 1 // Hellgrau
-  glClearColor(.75,.75,.75,1.0);
-  #else // Blauschwarz
-  glClearColor(.0,.0,.1,1.0);
-  #endif
+  if (gl_voll[SPEKTRUM])
+    glDeleteLists (id()*DL_MAX + SPEKTRUM, 1);
+  if (spektralband == MENU_SPEKTRALBAND)
+    zeigeSpektralband_();
 
   punkteAuffrischen();
+
+  //Hintergrund
+  switch (hintergrundfarbe) {
+    case MENU_WEISS:
+      glClearColor(1.,1.,1.,1.0);
+      break;
+    case MENU_HELLGRAU:
+      glClearColor(.75,.75,.75,1.0);
+      break;
+    case MENU_GRAUGRAU:
+      glClearColor(.5,.5,.5,1.0);
+      break;
+    case MENU_DUNKELGRAU:
+      glClearColor(.25,.25,.25,1.0);
+      break;
+    case MENU_SCHWARZ:
+      glClearColor(.0,.0,.0,1.0);
+      break;
+  }
+  // Blauschwarz
+  //glClearColor(.0,.0,.1,1.0);
 
   glPopMatrix();
   glutPostRedisplay();
@@ -725,11 +770,11 @@ GL_Ansicht::punkteAuffrischen()
       #endif
 
       #if 1
-      glEnable (GL_BLEND);
+      glDisable (GL_BLEND);
       glEnable (GL_DEPTH_TEST);
-      glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-      glEnable (GL_ALPHA_TEST_FUNC);
-      glAlphaFunc (GL_ALPHA_TEST, GL_ONE_MINUS_DST_ALPHA);
+      //glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+      glDisable/*Enable*/ (GL_ALPHA_TEST_FUNC);
+      //glAlphaFunc (GL_ALPHA_TEST, GL_ONE_MINUS_DST_ALPHA);
       #else
       #endif
 
@@ -746,13 +791,27 @@ GL_Ansicht::punkteAuffrischen()
         if(zeig_punkte_als_messwert_paare &&
            i%6 == 0)
         {
-          glColor4f(1.0, 1.0, 1.0, 1.0 );
+          glLineWidth(2.0);
+          glColor4f(1., 1., 1., 1.0 );
           glBegin(GL_LINES);
             glVertex3f(0, 0, 0);
-            glVertex3f(punkte_[i+5]*b_darstellungs_breite-punkte_[i+2]*b_darstellungs_breite,
+            glColor4f(1., .6, .6, 1.0 );
+            glVertex3f((punkte_[i+5]*b_darstellungs_breite)
+                        -(punkte_[i+2]*b_darstellungs_breite),
                        punkte_[i+3]-punkte_[i+0],
-                       punkte_[i+4]*a_darstellungs_breite-punkte_[i+1]*a_darstellungs_breite);
+                       (punkte_[i+4]*a_darstellungs_breite)
+                        -(punkte_[i+1]*a_darstellungs_breite) );
           glEnd();
+          #if 0
+          glColor4f(0.1, 0.1, 0.1, 1.0 );
+          glBegin(GL_POINTS);
+            glVertex3f((punkte_[i+5]*b_darstellungs_breite)
+                        -(punkte_[i+2]*b_darstellungs_breite),
+                       punkte_[i+3]-punkte_[i+0],
+                       (punkte_[i+4]*a_darstellungs_breite)
+                        -(punkte_[i+1]*a_darstellungs_breite) );
+          glEnd();
+          #endif
         }
         if (farben_.size())
         {
@@ -796,7 +855,7 @@ GL_Ansicht::punkteAuffrischen()
         }
         glPopMatrix();
       }
-      #if 0
+      #if 0 // Test
       glColor4f(0.8,0.2,0.2,0.5);
       glutSolidSphere (0.7, 36, 36);
       glColor4f(0.2,0.2,0.8,0.5);
@@ -811,15 +870,126 @@ GL_Ansicht::punkteAuffrischen()
     glEndList();
   }
 
-  if (spektralband == MENU_SPEKTRALBAND)
-    zeigeSpektralband_();
-
   DBG_PROG_ENDE
 }
+
+extern float cieXYZ [471][3]; // in 
+#include <lcms.h>
+
+#define TYPE_COLOUR_DBL (COLORSPACE_SH(PT_ANY)|CHANNELS_SH(3)|BYTES_SH(0))
+#define PRECALC cmsFLAGS_NOTPRECALC 
+#if 0
+#define BW_COMP cmsFLAGS_WHITEBLACKCOMPENSATION
+#else
+#define BW_COMP 0
+#endif
 
 void
 GL_Ansicht::zeigeSpektralband_()
 { DBG_PROG_START
+
+  // lcms Typen
+  cmsHPROFILE hsRGB;
+  cmsHPROFILE hLab;
+  cmsHTRANSFORM hLabtoRGB;
+  double *RGB_Speicher = 0;
+  double *XYZ_Speicher = 0;
+  double *Lab_Speicher = 0;
+
+  // Initialisierung für lcms
+  hsRGB = cmsCreate_sRGBProfile(); // TODO Monitorprofil
+  if(!hsRGB) WARN_S( _("hsRGB Profil nicht geöffnet") )
+  hLab  = cmsCreateLabProfile(cmsD50_xyY());
+  if(!hLab)  WARN_S( _("hLab Profil nicht geöffnet") )
+
+  hLabtoRGB = cmsCreateTransform          (hLab, TYPE_COLOUR_DBL,
+                                           hsRGB, TYPE_RGB_DBL,
+                                           INTENT_ABSOLUTE_COLORIMETRIC,
+                                           PRECALC|BW_COMP);
+  if (!hLabtoRGB) WARN_S( _("keine hXYZtoRGB Transformation gefunden") )
+
+  // Spektrumvariablen
+  //int nano_min = 63; // 420 nm
+  int nano_max = 471;//341; // 700 nm
+
+  // Umrechnung
+  XYZ_Speicher = new double [nano_max*3];
+  for (int i = 0; i < nano_max; ++i)
+  { for(int j = 0; j < 3 ; ++j)
+    { XYZ_Speicher[i*3+j] = (double)cieXYZ[i][j];
+    }
+  }
+  Lab_Speicher = new double [nano_max*3];
+  RGB_Speicher = new double [nano_max*3];
+  if(!XYZ_Speicher)  WARN_S( _("XYZ_speicher Speicher nicht verfügbar") )
+  if(!Lab_Speicher)  WARN_S( _("Lab_speicher Speicher nicht verfügbar") )
+  if(!RGB_Speicher)  WARN_S( _("RGB_speicher Speicher nicht verfügbar") )
+
+  #if 0
+  cmsHPROFILE hXYZ;
+  cmsHTRANSFORM hXYZtoLab;
+  hXYZ  = cmsCreateXYZProfile();
+  if(!hXYZ)  WARN_S( _("hXYZ Profil nicht geöffnet") )
+  hXYZtoLab = cmsCreateTransform          (hXYZ, TYPE_XYZ_DBL,
+                                           hLab, TYPE_COLOUR_DBL,
+                                           INTENT_ABSOLUTE_COLORIMETRIC,
+                                           PRECALC|BW_COMP);
+  if (!hXYZtoLab) WARN_S( _("keine hXYZtoLab Transformation gefunden") )
+  for(int i = 0; i < nano_max; ++i)
+    cmsDoTransform (hXYZtoLab, &XYZ_Speicher[i*3], &Lab_Speicher[i*3], 1);
+  cmsDoTransform (hXYZtoLab, XYZ_Speicher, Lab_Speicher, nano_max);
+  #else
+
+  XYZtoLab (XYZ_Speicher, Lab_Speicher, nano_max);
+  #endif
+
+  DBG_PROG_V( nano_max )
+  double *cielab = new double[nano_max*3];
+  //LabToCIELab (Lab_Speicher, cielab, nano_max);
+  for (int i=0; i < nano_max*3; ++i) cielab[i] = Lab_Speicher[i]*100.;
+  cmsDoTransform (hLabtoRGB, cielab, RGB_Speicher, nano_max);
+  if (cielab) delete [] cielab;
+
+  glDisable(GL_LIGHTING);
+
+  GLfloat farbe[] =   { pfeilfarbe[0],pfeilfarbe[1],pfeilfarbe[2], 1.0 };
+
+  DBG_PROG_V( id()*DL_MAX + SPEKTRUM ) 
+  glNewList(id()*DL_MAX + SPEKTRUM, GL_COMPILE);
+    gl_voll[SPEKTRUM] = true;
+
+    #if 0
+    glEnable (GL_BLEND);
+    glEnable (GL_DEPTH_TEST);
+    glBlendFunc (GL_SRC_COLOR, GL_DST_ALPHA);
+    #else
+    glDisable (GL_BLEND);
+    glEnable  (GL_DEPTH_TEST);
+    glDisable (GL_ALPHA_TEST_FUNC);
+    glEnable  (GL_LINE_SMOOTH);
+    #endif
+
+    //glutSolidCube(0.01);
+    glLineWidth(3.0);
+    glColor4f(0.5, 1.0, 1.0, 1.0);
+    glBegin(GL_LINE_STRIP);
+      for (int i=0 ; i <= (nano_max - 1); i++) {
+        DBG_NUM_S( i<<" "<<Lab_Speicher[i*3]<<"|"<<Lab_Speicher[i*3+1]<<"|"<<Lab_Speicher[i*3+2] )
+        DBG_NUM_S( i<<" "<<RGB_Speicher[i*3]<<"|"<<RGB_Speicher[i*3+1]<<"|"<<RGB_Speicher[i*3+2] )
+        //glColor4d(RGB_Speicher[i*3],RGB_Speicher[i*3+1],RGB_Speicher[i*3+2],1.);
+        FARBE(RGB_Speicher[i*3],RGB_Speicher[i*3+1],RGB_Speicher[i*3+2]);
+        glVertex3d( LabNachXYZv
+               (Lab_Speicher[i*3+0], Lab_Speicher[i*3+1], Lab_Speicher[i*3+2]));
+      }
+    glEnd();
+
+  glEndList();
+
+  if (XYZ_Speicher) delete [] XYZ_Speicher;
+  if (RGB_Speicher) delete [] RGB_Speicher;
+  if (Lab_Speicher) delete [] Lab_Speicher;
+
+  glEnable(GL_LIGHTING);
   DBG_PROG_ENDE
 }
 
@@ -878,35 +1048,58 @@ GL_Ansicht::menuInit_()
   else {               menue_ = glutCreateMenu(handlemenu2); }
   DBG_PROG_V( menue_ )
   menue_schnitt_ = glutCreateMenu(agvSwitchMoveMode); DBG_PROG_V(menue_schnitt_)
+  if (glut_id_ == 1) { menue_hintergrund_ = glutCreateMenu(handlemenu1); }
+  else {               menue_hintergrund_ = glutCreateMenu(handlemenu2); }
+  if (glut_id_ == 1) { menue_form_ = glutCreateMenu(handlemenu1); }
+  else {               menue_form_ = glutCreateMenu(handlemenu2); }
+
+  // Querschnitte
+  glutSetMenu(menue_schnitt_);
   glutAddMenuEntry("text_L",  Agviewer::ICCFLY_L);
   glutAddMenuEntry("text_a",  Agviewer::ICCFLY_a);
   glutAddMenuEntry("text_b",  Agviewer::ICCFLY_b);
   glutAddMenuEntry(_("Schnitt"), Agviewer::FLYING); /* agvSwitchMoveMode() */
   glutAddMenuEntry(_("Drehen um Schnitt"),  Agviewer::ICCPOLAR);
 
-  if (glut_id_ == 1) { menue_form_ = glutCreateMenu(handlemenu1); }
-  else {               menue_form_ = glutCreateMenu(handlemenu2); }
-  if(glut_id_ == 1) {
-    glutAddMenuEntry(_("grau"),  MENU_GRAU);
-    glutAddMenuEntry(_("farbig"),  MENU_FARBIG);
-    glutAddMenuEntry(_("kontrastreich"),  MENU_KONTRASTREICH);
-    glutAddMenuEntry(_("schalen"),  MENU_SCHALEN);
-  } else {
-    glutAddMenuEntry(_("Stern"),     MENU_dE1STERN);   DBG_PROG_V( menue_form_ )
-    glutAddMenuEntry(_("Kugel 1dE"), MENU_dE1KUGEL);
-    glutAddMenuEntry(_("Kugel 2dE"), MENU_dE2KUGEL);
-    glutAddMenuEntry(_("Kugel 4dE"), MENU_dE4KUGEL);
-    glutAddMenuEntry(_("ohne Farborte"), MENU_DIFFERENZ_LINIE);
-    glutAddMenuEntry(_("Spektrallinie"), MENU_SPEKTRALBAND);
-  }
+  // Hintergrundfarben
+  glutSetMenu(menue_hintergrund_);
+  glutAddMenuEntry(_("Weiss"), MENU_WEISS);
+  glutAddMenuEntry(_("Hellgrau"), MENU_HELLGRAU);
+  glutAddMenuEntry(_("Grau"), MENU_GRAUGRAU);
+  glutAddMenuEntry(_("Dunkelgrau"), MENU_DUNKELGRAU);
+  glutAddMenuEntry(_("Schwarz"), MENU_SCHWARZ);
+
+  glutSetMenu(menue_form_);
+  glutAddSubMenu(_("Hintergrundfarbe"), menue_hintergrund_);
 
   glutSetMenu(menue_);
   glutAddSubMenu(_("Querschnitte"), menue_schnitt_);
   glutAddSubMenu(_("Darstellung"), menue_form_);
 
+  if(glut_id_ == 1) {
+    // Darstellung
+    glutSetMenu(menue_form_);
+    glutAddMenuEntry(_("grau"),  MENU_GRAU);
+    glutAddMenuEntry(_("farbig"),  MENU_FARBIG);
+    glutAddMenuEntry(_("kontrastreich"),  MENU_KONTRASTREICH);
+    glutAddMenuEntry(_("schalen"),  MENU_SCHALEN);
+    glutSetMenu(menue_);
+  } else {
+    glutSetMenu(menue_form_);
+    glutAddMenuEntry(_("Kugel 1dE"), MENU_dE1KUGEL);
+    glutAddMenuEntry(_("Kugel 2dE"), MENU_dE2KUGEL);
+    glutAddMenuEntry(_("Kugel 4dE"), MENU_dE4KUGEL);
+    glutAddMenuEntry(_("Stern"),     MENU_dE1STERN);
+    glutAddMenuEntry(_("ohne Farborte"), MENU_DIFFERENZ_LINIE);
+    glutAddMenuEntry(_("Spektrallinie"), MENU_SPEKTRALBAND);
+  }
+
+  glutSetMenu(menue_form_);
+  glutAddMenuEntry(_("Texte/Pfeile an/aus"), MENU_HELFER);
 
   //menueErneuern_();
 
+  glutSetMenu(menue_);
   glutAttachMenu(GLUT_RIGHT_BUTTON);
   DBG_PROG_ENDE
 }
@@ -959,7 +1152,9 @@ display(int id)
        //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
        glDisable(GL_LINE_SMOOTH);
 
-       glColor4f(0.0,0.0,0.0,1.0);
+       glColor4f(icc_examin->glAnsicht(id)->textfarbe[0],
+                 icc_examin->glAnsicht(id)->textfarbe[1],
+                 icc_examin->glAnsicht(id)->textfarbe[2], 1.0);
 
        glTranslatef(5,-12,8.8-icc_examin->glAnsicht(id)->schnitttiefe*3);
 
@@ -1005,7 +1200,7 @@ display(int id)
                      ForderSchnitt + icc_examin->glAnsicht(id)->schnitttiefe);
     else
       gluPerspective(15, icc_examin->glAnsicht(id)->seitenverhaeltnis,
-                     ForderSchnitt, 15);
+                     ForderSchnitt, 50);
                   // ^-- vordere Schnittfläche
 
     /* so this replaces gluLookAt or equiv */
@@ -1017,7 +1212,9 @@ display(int id)
     if (DrawAxes)
       glCallList(AXES);
 
-    glCallList(dID(id,HELFER)); DBG_PROG_V( dID(id,HELFER) )
+    glCallList(dID(id,SPEKTRUM)); DBG_PROG_V( dID(id,SPEKTRUM) )
+    if (icc_examin->glAnsicht(id)->zeige_helfer)
+      glCallList(dID(id,HELFER)); DBG_PROG_V( dID(id,HELFER) )
     glCallList(dID(id,RASTER)); DBG_PROG_V( dID(id,RASTER) )
     glCallList(dID(id,PUNKTE)); DBG_PROG_V( dID(id,PUNKTE) )
 
@@ -1206,8 +1403,13 @@ menuuse (int id, int v)
 void
 handlemenu (int id, int value)
 { DBG_PROG_START
+
   if(icc_examin->glAnsicht(id)->sichtbar()) {
+    DBG_PROG_S( "sichtbar "<< id )
     glutSetWindow(id);
+  }
+
+  {
     switch (value) {
     case MENU_AXES:
       DrawAxes = !DrawAxes;
@@ -1229,69 +1431,90 @@ handlemenu (int id, int value)
       break;
     case MENU_KUGEL:
       icc_examin->glAnsicht(id)->punktform = MENU_KUGEL;
-      icc_examin->glAnsicht(id)->auffrischen();
       break;
     case MENU_WUERFEL:
       icc_examin->glAnsicht(id)-> punktform = MENU_WUERFEL;
-      icc_examin->glAnsicht(id)->auffrischen();
       break;
     case MENU_STERN:
       icc_examin->glAnsicht(id)-> punktform = MENU_STERN;
-      icc_examin->glAnsicht(id)->auffrischen();
       break;
     case MENU_GRAU:
       icc_examin->glAnsicht(id)-> punktfarbe = MENU_GRAU;
-      icc_examin->glAnsicht(id)->auffrischen();
       break;
     case MENU_FARBIG:
       icc_examin->glAnsicht(id)-> punktfarbe = MENU_FARBIG;
-      icc_examin->glAnsicht(id)->auffrischen();
       break;
     case MENU_KONTRASTREICH:
       icc_examin->glAnsicht(id)-> punktfarbe = MENU_KONTRASTREICH;
-      icc_examin->glAnsicht(id)->auffrischen();
       break;
     case MENU_SCHALEN:
       if (!icc_examin->glAnsicht(id)-> schalen)
         icc_examin->glAnsicht(id)-> schalen = 5;
       else
         icc_examin->glAnsicht(id)-> schalen = 0;
-      icc_examin->glAnsicht(id)->auffrischen();
       break;
     case MENU_dE1STERN:
       icc_examin->glAnsicht(id)-> punktform = MENU_dE1STERN;
-      icc_examin->glAnsicht(id)->auffrischen();
       break;
     case MENU_dE1KUGEL:
       icc_examin->glAnsicht(id)-> punktform = MENU_dE1KUGEL;
-      icc_examin->glAnsicht(id)->auffrischen();
       break;
     case MENU_dE2KUGEL:
       icc_examin->glAnsicht(id)-> punktform = MENU_dE2KUGEL;
-      icc_examin->glAnsicht(id)->auffrischen();
       break;
     case MENU_dE4KUGEL:
       icc_examin->glAnsicht(id)-> punktform = MENU_dE4KUGEL;
-      icc_examin->glAnsicht(id)->auffrischen();
       break;
     case MENU_DIFFERENZ_LINIE:
       icc_examin->glAnsicht(id)-> punktform = MENU_DIFFERENZ_LINIE;
-      icc_examin->glAnsicht(id)->auffrischen();
       break;
     case MENU_SPEKTRALBAND:
       if (!icc_examin->glAnsicht(id)-> spektralband)
         icc_examin->glAnsicht(id)-> spektralband = MENU_SPEKTRALBAND;
       else
         icc_examin->glAnsicht(id)-> spektralband = 0;
-      icc_examin->glAnsicht(id)->auffrischen();
+      break;
+    case MENU_HELFER:
+      if (!icc_examin->glAnsicht(id)-> zeige_helfer)
+        icc_examin->glAnsicht(id)-> zeige_helfer = MENU_HELFER;
+      else
+        icc_examin->glAnsicht(id)-> zeige_helfer = 0;
+      break;
+    case MENU_WEISS:
+      icc_examin->glAnsicht(id)-> hintergrundfarbe = MENU_WEISS;
+      for (int i=0; i < 3 ; ++i) icc_examin->glAnsicht(id)->pfeilfarbe[i] = 1.;
+      for (int i=0; i < 3 ; ++i) icc_examin->glAnsicht(id)->textfarbe[i] = .75;
+      break;
+    case MENU_HELLGRAU:
+      icc_examin->glAnsicht(id)-> hintergrundfarbe = MENU_HELLGRAU;
+      for (int i=0; i < 3 ; ++i) icc_examin->glAnsicht(id)->pfeilfarbe[i] = 1.0;
+      for (int i=0; i < 3 ; ++i) icc_examin->glAnsicht(id)->textfarbe[i] = 0.5;
+      break;
+    case MENU_GRAUGRAU:
+      icc_examin->glAnsicht(id)-> hintergrundfarbe = MENU_GRAUGRAU;
+      for (int i=0; i < 3 ; ++i) icc_examin->glAnsicht(id)->pfeilfarbe[i] = .75;
+      for (int i=0; i < 3 ; ++i) icc_examin->glAnsicht(id)->textfarbe[i] = 0.25;
+      break;
+    case MENU_DUNKELGRAU:
+      icc_examin->glAnsicht(id)-> hintergrundfarbe = MENU_DUNKELGRAU;
+      for (int i=0; i < 3 ; ++i) icc_examin->glAnsicht(id)->pfeilfarbe[i] = 0.5;
+      for (int i=0; i < 3 ; ++i) icc_examin->glAnsicht(id)->textfarbe[i] = 0.75;
+      break;
+    case MENU_SCHWARZ:
+      icc_examin->glAnsicht(id)-> hintergrundfarbe = MENU_SCHWARZ;
+      for (int i=0; i < 3 ; ++i) icc_examin->glAnsicht(id)->pfeilfarbe[i] = .25;
+      for (int i=0; i < 3 ; ++i) icc_examin->glAnsicht(id)->textfarbe[i] = 0.5;
       break;
     }
 
     if (value >= MENU_MAX) {
       icc_examin->glAnsicht(id)->kanal = value - MENU_MAX; DBG_PROG_V( icc_examin->glAnsicht(id)->kanal )
       status(_("linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menü"))
-      icc_examin->glAnsicht(id)->auffrischen();
     }
+  }
+
+  if(icc_examin->glAnsicht(id)->sichtbar()) {
+    icc_examin->glAnsicht(id)->auffrischen();
   }
 
   DBG_PROG_V( value )

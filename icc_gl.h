@@ -53,6 +53,7 @@ class GL_Ansicht : public Fl_Group {
   int  menue_kanal_eintraege_;
   int  menue_schnitt_;
   int  menue_form_;
+  int  menue_hintergrund_;
   void myGLinit_();
   void menuInit_();
   bool gl_fenster_zeigen_;
@@ -94,6 +95,9 @@ public:
   // Darstellung der Gitterpunkte der Transformationstabelle
   int  punktform;           // MENU_KUGEL MENU_WUERFEL MENU_STERN
   int  punktfarbe;          // MENU_GRAU MENU_FARBIG MENU_KONTRASTREICH
+  int  hintergrundfarbe;    // Hintergrundfarben Farbschema
+  float textfarbe[3];
+  float pfeilfarbe[3];
   int  schalen;             // MENU_SCHALEN
   void auffrischen();       // Erneuerung ohne init()
   void punkteAuffrischen(); // glCompile für Punkte
@@ -103,6 +107,7 @@ public:
   double b_darstellungs_breite; // ~        CIE*b ; wobei CIE*L immer 1.0
   bool zeig_punkte_als_messwert_paare;
   int  spektralband;        // stelle die spektral gesättigten Farben dar
+  int  zeige_helfer;        // zeige Pfeile und Text
 private:
   void zeigeSpektralband_();
 

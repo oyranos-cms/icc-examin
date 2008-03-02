@@ -153,6 +153,93 @@ dE2000 (Lab Lab1, Lab Lab2, double kL, double kC, double kH)             // (1)
 
 
 void
+XYZtoLab (XYZ &xyz, Lab &lab)
+{
+    /* white point D50 [0.964294 , 1.000000 , 0.825104]
+     * XYZ->Lab is defined as (found with the help of Marti Maria):
+     *
+     * L* = 116*f(Y/Yn) - 16                     0 <= L* <= 100
+     * a* = 500*[f(X/Xn) - f(Y/Yn)]
+     * b* = 200*[f(Y/Yn) - f(Z/Zn)]
+     *
+     * and
+     *
+     *        f(t) = t^(1/3)                     1 >= t >  0.008856
+     *         7.787*t + (16/116)          0 <= t <= 0.008856
+     */
+
+      float gamma = 1.0/3.0; // standard is 1.0/3.0
+      static XYZ xyz_;
+
+      // CIE XYZ -> CIE*Lab (D50)
+      xyz_.X = xyz.X * 0.964294;
+      xyz_.Y = xyz.Y * 1.000000;
+      xyz_.Z = xyz.Z * 0.825104;
+
+      if (xyz_.X > 0.008856)
+        xyz_.X = pow (xyz_.X, gamma);
+      else
+         xyz_.X = 7.787*xyz_.X + (16.0/116.0);
+      if ( xyz_.Y > 0.008856)
+         xyz_.Y = pow ( xyz_.Y, gamma);
+      else
+         xyz_.Y = 7.787* xyz_.Y + (16.0/116.0);
+      if ( xyz_.Z > 0.008856)
+         xyz_.Z = pow ( xyz_.Z, gamma);
+      else
+         xyz_.Z = 7.787* xyz_.Z + (16.0/116.0);
+
+      // auf 0.0-1.0 normalisieren ------v
+      lab.L = (116.0* xyz_.Y - 16.0)     /100.0 ;
+      lab.a = (500.0*(xyz_.X -  xyz_.Y)  +128.0) / 256.0 ;
+      lab.b = (200.0*( xyz_.Y -  xyz_.Z) +128.0) / 256.0 ;
+}
+
+void
+XYZtoLab (double* xyz, double* lab, int n)
+{
+    for(int i = 0; i < n; ++i) {
+      static XYZ xyz_;
+      static Lab lab_;
+
+      xyz_.X = xyz[i*3+0];
+      xyz_.Y = xyz[i*3+1];
+      xyz_.Z = xyz[i*3+2];
+
+      XYZtoLab (xyz_, lab_);
+
+      lab[i*3+0] = lab_.L;
+      lab[i*3+1] = lab_.a;
+      lab[i*3+2] = lab_.b;
+    }
+}
+
+void
+CIELabToLab (double* cielab, double* lab, int n)
+{
+    for(int i = 0; i < n; ++i)
+    {
+      lab[0] =  cielab[i*3+0]          / 100.0;
+      lab[1] = (cielab[i*3+1] - 128.0) / 256.0;
+      lab[2] = (cielab[i*3+2] - 128.0) / 256.0;
+    }
+}
+
+void
+LabToCIELab (double* lab, double* cielab, int n)
+{
+    for(int i = 0; i < n; ++i)
+    {
+      cielab[i*3+0] =  lab[i*3+0] * 100.0;
+      cielab[i*3+1] = (lab[i*3+1] * 256.0) - 128.0;
+      cielab[i*3+2] = (lab[i*3+2] * 256.0) - 128.0;
+      //DBG_NUM_V( lab[i*3+0] <<" "<< lab[i*3+1] <<" "<< lab[i*3+2] )
+      //DBG_NUM_V( cielab[i*3+0] <<" "<< cielab[i*3+1] <<" "<< cielab[i*3+2] )
+    }
+}
+
+
+void
 FarbeZuDouble (double* d_xyz, XYZ xyz)
 { DBG
   d_xyz[0] = xyz.X;
