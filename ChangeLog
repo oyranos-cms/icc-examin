@@ -5,6 +5,7 @@
 2006-11-19
 	* neu: out of gamut colours are rendered with the Oyranos proof profile
 	* neu: the Lab to monitor now better checks for changes and recalculates
+	* neu: preferences saving for marking out of gamut colours
 
 2006-11-17
 	* neu: "Quit" in 3D Gamut window
@@ -59,7 +60,7 @@
 
 2006-11-08
 	* fix: dont influence the locale settings; (in cgats, vrml ...)
-	* neu: give config the usual header macros
+	* neu: give config.h the usual header macros
 	* fix: mft choice stretching behaviour
 	* neu: make agviewer a observable pointer in GL_Ansicht
 	* neu: register GL_Ansicht::agv_ to agviever's icc_examin_ns::Modell
