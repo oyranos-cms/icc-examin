@@ -399,44 +399,50 @@ Oyranos::wandelLabNachBildschirmFarben(double *Lab_Speicher, // 0.0 - 1.0
     // lcms Typen
     cmsHPROFILE hsRGB = 0,
                 hLab = 0;
-    cmsHTRANSFORM hLabtoRGB = 0;
+    static cmsHTRANSFORM hLabtoRGB = 0;
     double *RGB_Speicher = 0;
 
     // Initialisierung für lcms
-    size_t groesse = 0;
-    const char* block = 0;
-    block = moni(groesse);
-    DBG_MEM_V( (int*) block <<" "<<groesse )
+    if(!hLabtoRGB)
+    {
+      size_t groesse = 0;
+      const char* block = 0;
+      block = moni(groesse);
+      DBG_MEM_V( (int*) block <<" "<<groesse )
 
-    if(groesse)
-      hsRGB = cmsOpenProfileFromMem(const_cast<char*>(block), groesse);
-    else
-      hsRGB = cmsCreate_sRGBProfile();
-    if(!hsRGB) WARN_S( _("hsRGB Profil nicht geoeffnet") )
-    hLab  = cmsCreateLabProfile(cmsD50_xyY());
-    if(!hLab)  WARN_S( _("hLab Profil nicht geoeffnet") )
+      if(groesse)
+        hsRGB = cmsOpenProfileFromMem(const_cast<char*>(block), groesse);
+      else
+        hsRGB = cmsCreate_sRGBProfile();
+      if(!hsRGB) WARN_S( _("hsRGB Profil nicht geoeffnet") )
+      hLab  = cmsCreateLabProfile(cmsD50_xyY());
+      if(!hLab)  WARN_S( _("hLab Profil nicht geoeffnet") )
 
-    hLabtoRGB = cmsCreateTransform          (hLab, TYPE_Lab_DBL,
-                                             hsRGB, TYPE_RGB_DBL,
-                                             intent,
-                                             PRECALC|BW_COMP|flags);
-    if (!hLabtoRGB) WARN_S( _("keine hXYZtoRGB Transformation gefunden") )
+      hLabtoRGB = cmsCreateProofingTransform  (hLab, TYPE_Lab_DBL,
+                                               hsRGB, TYPE_RGB_DBL,
+                                               hsRGB,
+                                               intent,
+                                               INTENT_RELATIVE_COLORIMETRIC,
+                                               cmsFLAGS_GAMUTCHECK|
+                                               PRECALC|BW_COMP|flags);
+      if (!hLabtoRGB) WARN_S( _("keine hXYZtoRGB Transformation gefunden") )
 
-    RGB_Speicher = new double [size*3];
+    }
+
+    RGB_Speicher = new double[size*3];
     if(!RGB_Speicher)  WARN_S( _("RGB_speicher Speicher nicht verfuegbar") )
 
-    double *cielab = new double[size*3];
+    double *cielab = (double*) alloca (sizeof(double)*3*size);
     LabToCIELab (Lab_Speicher, cielab, size);
 
     cmsDoTransform (hLabtoRGB, cielab, RGB_Speicher, size);
 
-    if(cielab)    delete [] cielab;
-    if(hLabtoRGB) cmsDeleteTransform(hLabtoRGB);
+    //if(hLabtoRGB) cmsDeleteTransform(hLabtoRGB);
     if(hsRGB)     cmsCloseProfile(hsRGB);
     if(hLab)      cmsCloseProfile(hLab);
 
-  return RGB_Speicher;
   DBG_PROG_ENDE
+  return RGB_Speicher;
 }
 
 

@@ -1747,11 +1747,6 @@ GL_Ansicht::zeichnen()
 
       glCallList( glListen[PUNKTE] ); DBG_ICCGL_V( glListen[PUNKTE] )
 
-      if(dreiecks_netze.size())
-        netzeAuffrischen();
-
-    glPopMatrix();
-
   // den Ort lokalisieren
                     // wie weit ist das nächste Objekt in diese Richtung, sehr aufwendig
                   GLfloat zBuffer;
@@ -1767,19 +1762,11 @@ GL_Ansicht::zeichnen()
 
                     //std::cout << "X: "<<x<<" Y: "<<y<<" Z: "<<z<<std::endl;
 
-                glPushMatrix();
                   GLdouble X=0.0,Y=.0,Z=0.;
                   gluProject( oX, oY, oZ,
                               modell_matrix, projektions_matrix,
                               bildschirm, &X,&Y,&Z);
 
-  //glTranslatef(-2, 1, -2);
-
-                  // Text
-                  FARBE(textfarbe[0],textfarbe[1],textfarbe[2])
-
-                  if(1)
-                  {
                     static char text[128] = {""};
                     GLfloat grenze = 3.2;
                     if(von_farb_namen_.size() &&
@@ -1793,6 +1780,45 @@ GL_Ansicht::zeichnen()
                     else
                       text[0] = 0;
 
+                    if(strlen(text) && id() != 1)
+                    {
+                        double lab[3] = {oY+0.5, oZ/2.55+0.5, oX/2.55+0.5},
+                              *rgb = 0;
+                        DBG_PROG_V( lab[0]<<" "<<lab[1]<<" "<<lab[2] )
+                        rgb = icc_oyranos.wandelLabNachBildschirmFarben(lab, 1,
+                                          icc_examin->intent(), 0);
+                        if(!rgb)  WARN_S( _("RGB Ergebnis nicht verfuegbar") )
+                        else {
+                          #ifndef Beleuchtung
+                          glDisable(GL_LIGHTING);
+                          #endif
+                          glPushMatrix();
+                            glLineWidth(strich3*strichmult);
+                            FARBE(rgb[0], rgb[1], rgb[2])
+                            glBegin(GL_LINES);
+                              glVertex3f( oX, oY, oZ );
+                              glVertex3f( oX, -0.5, oZ );
+                            glEnd();
+                          glPopMatrix();
+                          DBG_PROG_V( rgb[0] <<" "<< rgb[1] <<" "<< rgb[2] )
+                          #ifndef Beleuchtung
+                          glEnable(GL_LIGHTING);
+                          #endif
+                        }
+                    }
+
+      if(dreiecks_netze.size())
+        netzeAuffrischen();
+
+    glPopMatrix();
+
+  //glTranslatef(-2, 1, -2);
+
+                  // Text
+                  FARBE(textfarbe[0],textfarbe[1],textfarbe[2])
+
+                  if(1)
+                  {
                   glPushMatrix(); 
                     // Text in der Szene
                     glDisable(GL_TEXTURE_2D);
@@ -1815,6 +1841,7 @@ GL_Ansicht::zeichnen()
                       glLoadIdentity();
                       glMatrixMode(GL_PROJECTION);
 
+                      //zeichneKoordinaten_();
                       glLoadIdentity();
                       glOrtho(0,w(),0,h(),-10.0,10.0);
 
@@ -1862,7 +1889,6 @@ GL_Ansicht::zeichnen()
                     glMatrixMode(GL_MODELVIEW);
                   glPopMatrix();
                   }
-                glPopMatrix();
 
     #if 0
     glFlush();

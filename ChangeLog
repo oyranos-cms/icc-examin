@@ -1,3 +1,12 @@
+2005-06-02
+	* und: schnellere OpenGL Tabellendarstellung
+
+2005-05-30
+	* neu: Brerechnen der Bilder pro Sekunde und an-/abschalten von aufwendigen
+	       OpenGL Zeichenfunktionen
+	* neu: Text folgt Kamera
+	* und: Version 0.33
+
 2005-05-26
 	* neu: Umrisse für Rgb und Cmy/Cmyk Profile
 

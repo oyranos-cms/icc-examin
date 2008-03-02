@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2005-06-02 23:29+0200\n"
+"POT-Creation-Date: 2005-06-03 22:39+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -24,7 +24,7 @@ msgstr ""
 msgid "GL Fenster nicht frei"
 msgstr ""
 
-#: agviewer.cpp:377 icc_gl.cpp:1990 icc_gl.cpp:2009 icc_gl.cpp:2123
+#: agviewer.cpp:377 icc_gl.cpp:2016 icc_gl.cpp:2035 icc_gl.cpp:2149
 msgid "left-/middle-/right mouse button -> rotate/cut/menu"
 msgstr ""
 
@@ -32,8 +32,8 @@ msgstr ""
 msgid "Pause"
 msgstr ""
 
-#: agviewer.cpp:410 agviewer.cpp:418 icc_gl.cpp:2089 icc_gl.cpp:2100
-#: icc_gl.cpp:2105 icc_gl.cpp:2110
+#: agviewer.cpp:410 agviewer.cpp:418 icc_gl.cpp:2115 icc_gl.cpp:2126
+#: icc_gl.cpp:2131 icc_gl.cpp:2136
 msgid "left mouse button -> go back"
 msgstr ""
 
@@ -451,15 +451,19 @@ msgstr ""
 msgid "Channel"
 msgstr ""
 
-#: icc_gl.cpp:1839
+#: icc_gl.cpp:1790
+msgid "RGB Ergebnis nicht verfuegbar"
+msgstr ""
+
+#: icc_gl.cpp:1866
 msgid "Pos"
 msgstr ""
 
-#: icc_gl.cpp:2148
+#: icc_gl.cpp:2174
 msgid "Konnte keine Eltern finden"
 msgstr ""
 
-#: icc_gl.cpp:2157
+#: icc_gl.cpp:2183
 msgid "Konnte keine passende Programmstruktur finden"
 msgstr ""
 
@@ -1260,19 +1264,19 @@ msgstr ""
 msgid "Profil konnte nicht geladen werden"
 msgstr ""
 
-#: icc_oyranos.cpp:415
+#: icc_oyranos.cpp:417
 msgid "hsRGB Profil nicht geoeffnet"
 msgstr ""
 
-#: icc_oyranos.cpp:417
+#: icc_oyranos.cpp:419
 msgid "hLab Profil nicht geoeffnet"
 msgstr ""
 
-#: icc_oyranos.cpp:423
+#: icc_oyranos.cpp:428
 msgid "keine hXYZtoRGB Transformation gefunden"
 msgstr ""
 
-#: icc_oyranos.cpp:426
+#: icc_oyranos.cpp:433
 msgid "RGB_speicher Speicher nicht verfuegbar"
 msgstr ""
 
