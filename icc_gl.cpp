@@ -71,11 +71,12 @@ GL_Ansicht::~GL_Ansicht()
 }
 
 void GL_Ansicht::zeigen() {
-  icc_debug = 1;
+  //icc_debug = 1;
   if (first)
     init();
   else
-    GLFenster->resize(x(),y(),w(),h());
+    if (!GLfenster_zeigen)
+      GLFenster->resize(x(),y(),w(),h());
 
   DBG_PROG_V( x() <<" "<< y() <<" "<< w() <<" "<< h() )
   //draw();

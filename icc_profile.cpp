@@ -127,11 +127,15 @@ ICCheader::attributes (void)
 
 
   #ifdef DEBUG
-  cout << (long)header.attributes; DBG_PROG
-  char* ptr = (char*) &(header.attributes);
-  for (int i = 0; i < 8 ; i++)
-    cout << (int)ptr[i] << " ";
-  DBG_PROG
+  DBG_PROG_S( (long)header.attributes )
+  if (icc_debug)
+  {
+    LEVEL cout << "           ";
+    char* ptr = (char*) &(header.attributes);
+    for (int i = 0; i < 8 ; i++)
+      cout << (int)ptr[i] << " ";
+    cout << endl;
+  }
   #endif
   DBG_PROG_ENDE
   return s.str();
@@ -157,10 +161,13 @@ ICCheader::flags (void)
 
   #ifdef DEBUG
   DBG_S( (int)f[0] << " " << (long)header.flags )
-  char* ptr = (char*) &(header.flags);
-  for (int i = 0; i < 8 ; i++)
-    cout << (int)ptr[i] << " ";
-  DBG
+  if (icc_debug)
+  { LEVEL cout << "           ";
+    char* ptr = (char*) &(header.flags);
+    for (int i = 0; i < 8 ; i++)
+      cout << (int)ptr[i] << " ";
+    cout << endl;
+  }
   #endif
   DBG_PROG_ENDE
   return s.str();

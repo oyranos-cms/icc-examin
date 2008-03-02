@@ -46,9 +46,9 @@ extern int icc_debug;
 
 #define DBG_T_     cout << __FILE__<<":"<<__LINE__ <<" "<< __func__ << "() " << DBG_UHR_ << " ";
 #define LEVEL      { for (int i = 0; i < level_PROG; i++) cout << " "; }
-#define DBG        if (icc_debug){ LEVEL cout << "        "; DBG_T_ cout << endl; }
-#define DBG_S(txt) if (icc_debug) { LEVEL cout << "  "; DBG_T_ cout << txt << endl; }
-#define DBG_V(txt) if (icc_debug) { LEVEL cout << "  "; DBG_T_ cout << #txt << " " << txt << endl;}
+#define DBG        if (icc_debug) { LEVEL cout << "        "; DBG_T_ cout << endl; }
+#define DBG_S(txt) if (icc_debug) { LEVEL cout << "        "; DBG_T_ cout << txt << endl; }
+#define DBG_V(txt) if (icc_debug) { LEVEL cout << "        "; DBG_T_ cout << #txt << " " << txt << endl;}
 
 #if 1
 #define DBG_MEM DBG

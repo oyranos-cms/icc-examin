@@ -474,11 +474,13 @@ ICCmeasurement::init_umrechnen                     (void)
     if (_nFelder != _XYZ_Satz.size()) DBG_PROG_S("Messfeldanzahl divergiert")
     for (int i = 0; i < _nFelder; i++)
     { 
-      if (X_max < _XYZ_Satz[i].X) X_max = _XYZ_Satz[i].X;
-      if (Y_max < _XYZ_Satz[i].Y) Y_max = _XYZ_Satz[i].Y;
-      if (Z_max < _XYZ_Satz[i].Z) Z_max = _XYZ_Satz[i].Z;
+      if (Y_max < _XYZ_Satz[i].Y)
+      { X_max = _XYZ_Satz[i].X;
+        Y_max = _XYZ_Satz[i].Y;
+        Z_max = _XYZ_Satz[i].Z;
+      }
     } 
-  }
+  } DBG_PROG_S( "X_max = "<< X_max <<" Y_max = "<< Y_max <<" Z_max = "<< Z_max )
 
   if (_RGB_measurement && _XYZ_measurement) {DBG_PROG // keine Umrechnung nötig
     cmsHTRANSFORM hRGBtoSRGB, hXYZtoSRGB, hRGBtoXYZ, hXYZtoLab, hRGBtoLab;
