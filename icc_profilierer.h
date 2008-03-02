@@ -14,6 +14,8 @@
 
 #include "icc_profile.h"
 
+#define ICC_PROFILIERER_VERSION 0.01
+
 // interne Funktionen
 
 /**
@@ -33,9 +35,12 @@ class Profilierer {
     // erzeuge Matrixprofil
     const ICCprofile&   matrix();
   private:
-    void                RGB_TRC_Kurven (void);
+    void                RGB_Tags (void);
     void                gemeinsamerHeader (ICCheader *header);
     std::string         print ();
+    void                schreibXYZTag (icTagSignature name,
+                                       double X, double Y, double Z);
+    void                schreibTextTag (icTagSignature name, std::string text);
 };
 
 

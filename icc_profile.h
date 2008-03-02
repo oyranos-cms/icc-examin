@@ -76,6 +76,7 @@ icColorSpaceSignature   icValue   (icColorSpaceSignature val);
 icPlatformSignature     icValue   (icPlatformSignature val);
 icProfileClassSignature icValue   (icProfileClassSignature val);
 icTagSignature          icValue   (icTagSignature val);
+void                    icValueXYZ(icXYZNumber*, double X, double Y, double Z);
 
 double*                 XYZto_xyY (double* XYZ);
 double*                 XYZto_xyY (std::vector<double> XYZ);
@@ -194,12 +195,9 @@ class ICCheader {
                                             header.renderingIntent ) ); }
     void                set_renderingIntent () {DBG header.renderingIntent =icValue(
                                                 0 ); }
-    void                set_illuminant ()  {DBG 
-                                        header.illuminant.X = icValueSF(0.9642);
-                                        header.illuminant.Y = icValueSF(1.0000);
-                                        header.illuminant.Z = icValueSF(0.8249);
-                                           } 
-    const char*         creatorName ()     {DBG return cp_nchar ((char*)&(header.
+    void                set_illuminant ()  {DBG icValueXYZ (&header.illuminant,
+                                                  0.9642, 1.0000,0.8249); }
+    const char*         creatorName ()     {DBG return cp_nchar((char*)&(header.
                                                       creator),
                                                       sizeof (icSignature)+1); }
     void                set_creator ()     {DBG char* m = {"SB  "};

@@ -211,6 +211,14 @@ icValue_to_icUInt32Number(icProfileClassSignature)
 icValue_to_icUInt32Number(icTagSignature)
 icValue_to_icUInt32Number(icTagTypeSignature)
 
+void
+icValueXYZ (icXYZNumber* ic_xyz,double X, double Y, double Z)
+{
+  ic_xyz->X = icValueSF(X);
+  ic_xyz->Y = icValueSF(Y);
+  ic_xyz->Z = icValueSF(Z);
+}
+
 // Farbkonvertierungen
 
 double*

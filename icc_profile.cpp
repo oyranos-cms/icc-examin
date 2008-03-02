@@ -270,7 +270,6 @@ ICCtag::load                        ( ICCprofile *profil,
   DBG_V( data )
   _profil = profil;
   _sig    = icValue(tag->sig); DBG_S( getSigTagName(_sig) )
-  _size   = icValue(tag->size); DBG_V( _size )
   switch (_sig) {
   case icSigAToB0Tag:
   case icSigBToA0Tag:
@@ -315,16 +314,20 @@ ICCtag::load                        ( ICCprofile *profil,
     break;
   }
 
-  if (_data != NULL && _size) {
-    free(_data);//delete [] _data;
-    cout << "ICCtag wiederverwendet: " << (char*)tag->sig << " "; DBG
-  }
+  DBG
+
+  if (_data != NULL && _size) { DBG
+    //cout << "ICCtag wiederverwendet: " << (char*)tag->sig << " "; DBG
+    DBG free(_data);DBG//delete [] _data;
+    //cout << "ICCtag wiederverwendet: " << (char*)tag->sig << " "; DBG
+  } DBG
+  _size   = icValue(tag->size); DBG_V( _size )
 
   _data = (char*) calloc(sizeof(char),_size);//new char (_size);
   memcpy ( _data , data , _size );
   DBG_S((int*)_data)
 
-  #ifdef DEBUG_ICCTAG_
+  #ifdef DEBUG_ICCTAG
   char* text = _data;
   cout << _sig << "=" << tag->sig << " offset " << icValue(tag->offset) << " size " << _size << " nächster tag " << _size + icValue(tag->offset) << " " << text << " "; DBG
   #endif
