@@ -19,23 +19,15 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  * 
- * Zeichenroutinen für Diagramme.
+ * Inhalt für das informative "Über" Fenster.
  * 
  */
 
-// Date:      Mai 2004
 
-#ifndef ICC_DRAW_H
-#define ICC_DRAW_H
+#ifndef ICC_UEBER_H
+#define ICC_UEBER_H
+#define _(text) text
 
-void draw_kurve    (int X, int Y, int W, int H,
-                    std::vector<std::string>          texte,
-                    std::vector<std::vector<double> > kurven);
+std::string getUeberHtml();
 
-void draw_cie_shoe (int X, int Y, int W, int H,
-                    std::vector<std::string> texte,
-                    std::vector<double>      punkte,
-                    int                      repeated);
-
-#endif //ICC_DRAW_H
-
+#endif //ICC_UEBER_H

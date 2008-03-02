@@ -34,7 +34,11 @@ CPP_HEADERS = \
 	cccie64.h \
 	ciexyz64_1.h \
         icc_gl.h \
-        agviewer.h
+       	icc_ueber.h \
+	agviewer.h \
+        README \
+        COPYING \
+        AUTHORS
 #	vFLGLWidget.h \
 	ViewerFLTK.h 
 CPPFILES = \

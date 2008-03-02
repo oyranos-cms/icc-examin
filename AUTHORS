@@ -1,0 +1,15 @@
+
+ICC Examin: Kai-Uwe Behrmann
+
+----------------------------------------------------------------------------
+
+agv openGL Betrachter: Philip Winston
+
+ICC Examin benutzt forgende Bibliotheken:
+fltk statisch eigebunden: Bill Spitzack und andere <www.fltk.org>
+lcms: Marti Maria <www.littlecms.com>
+
+
+Für die Visualisation des Farbumfangs (extern):
+argyll Projekt: Greame Gill <http://web.access.net.au/argyll/argyllcms.html>
+
