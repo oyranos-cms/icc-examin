@@ -35,7 +35,8 @@
 //#include "agviewer.h"
 #include "icc_vrml_parser.h"
 
-#include <FL/Fl_Group.H>
+#include <FL/Fl_Gl_Window.H>
+#include <FL/Fl_Menu_Item.H>
 
 class GL_Ansicht : public Fl_Group {
   // Datenhaltung
@@ -53,20 +54,21 @@ class GL_Ansicht : public Fl_Group {
   //                   Die Klasse gl_fenster_ behält ihre volle Größe.
   //                   Die GL_Ansicht kann in gl_fenster_ eingepasst oder
   //                   auf 1x1 verkleinert werden.
-  Fl_Group *gl_fenster_;
+  Fl_Gl_Window *gl_fenster_;
   // GL_Ansicht an gl_fenster_ anpassen oder Größe 1x1
   bool gl_fenster_zeigen_;
+  void fensterForm(int w, int h);
 
   // inner Strukturen bei Datenwechsel anpassen
   void menueErneuern_();
   void erstelleGLListen_();
   void garnieren_();
-  // IDs
-  int  menue_;
-  int  menue_kanal_eintraege_;
-  int  menue_schnitt_;
-  int  menue_form_;
-  int  menue_hintergrund_;
+  // Menüs
+  Fl_Menu_Item  *menue_;
+  Fl_Menu_Item  *menue_kanal_eintraege_;
+  Fl_Menu_Item  *menue_schnitt_;
+  Fl_Menu_Item  *menue_form_;
+  Fl_Menu_Item  *menue_hintergrund_;
   
   // IDs
   int  agv_,
@@ -104,12 +106,6 @@ public:
   void hineinNetze  (const std::vector<ICCnetz> & dreiecks_netze);
   std::vector<ICCnetz> dreiecks_netze;
   void achsNamen    (std::vector<std::string> achs_namen);
-  // veraltet -v
-  void hineinNetze  (std::vector<std::vector<double> >dreiecks_netze_, 
-                     std::vector<std::vector<float> > dreiecks_farben_,
-                     std::vector<std::string> netz_namen_,
-                     std::vector<std::string> _achsNamen);
-
   void hineinKurven(std::vector<std::vector<double> >vect,
                      std::vector<std::string> txt);
 
@@ -154,7 +150,10 @@ public:
   void zeigen();            // diese Klasse anzeigen (fltk + glut + gl)
   void verstecken();        //  ~           verstecken      ~
   bool sichtbar() {return gl_fenster_zeigen_; } // angezeigt / versteckt
+  void zeichnen();          // gl Zeichnen
+  int  dID (int display_liste);
   void tastatur(int e);
+  void menueAufruf(int value);
   // Bewegungsfunktionen
   void stop(); 
 
@@ -172,6 +171,7 @@ public:
   unsigned int kanaele() {return nach_farb_namen_.size(); }
 };
 
+#if 0
 #define deklariereGlutFunktionen(n) \
 void reshape##n( int w, int h ); \
 void display##n(); \
@@ -189,7 +189,7 @@ void menuuse(int id, int v);
 void menueAufruf(int id, int value);
 
 int  dID(int id, int display_list);
-
+#endif
 
 
 #endif //ICC_GL_H

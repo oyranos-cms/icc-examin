@@ -121,4 +121,11 @@ namespace icc_parser {
                                                  const char *trennzeichen );
 }
 
+// Callback Struktur
+typedef struct StructVoidInt
+{
+  void* data;
+  int   wert;
+};
+
 #endif //ICC_HELFER_H
