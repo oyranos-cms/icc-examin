@@ -35,7 +35,7 @@
     o NUMBER_OF_FIELDS: unbekannte FIELDS als KEYWORD deklarieren und mitzählen 
       für Exportmodus
     o im DATA_BLOCK nach Ziffer und Worten unterscheiden und Worte in
-      Anführungszeichen , abschaltbar
+      Anführungszeichen, auf Flieskommazahl/Ganzzahl prüfen, abschaltbar
 */
 
 /*
@@ -45,7 +45,9 @@
 	* und: insert umstellen <- 9:00
 	* neu: KEYWORD in Schlüsselwortliste aufnehmen -> 12:00
 	* neu: ss_woerter_ const static <- 20:00
-	* 
+	* neu: unterscheideZiffernWorte_ <- 21:30
+	* neu: setzeWortInAnfuehrungszeichen_ <- 22:30
+	* -> 23:30
 2005-01-24
 	* <- 10:30
 	* Telefon Ulm 11:30 - 12:30
@@ -100,6 +102,8 @@
 // Initialisierungen
 
 const char *CgatsFilter::cgats_alnum_ = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_|/-+=()[]{}<>&?!:;,.0123456789";
+const char *CgatsFilter::cgats_numerisch_ = "-+,.0123456789";
+const char *CgatsFilter::cgats_alpha_ = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_|/=()[]{}<>&?!:;";
 const char *CgatsFilter::leer_zeichen_ = "\t\n\v\f\r";
 const char CgatsFilter::ss_woerter_[STD_CGATS_FIELDS][16] =
   { "SAMPLE_ID",
@@ -150,56 +154,80 @@ const char CgatsFilter::ss_woerter_[STD_CGATS_FIELDS][16] =
 // Implementationen
 
 void
-CgatsFilter::standard_schluesselwoerter_anlegen_ ()
+CgatsFilter::setzeWortInAnfuehrungszeichen_( std::string &zeile,
+                                        std::string::size_type pos )
 { DBG_PROG_START
-  #if 0
-  {
-    ss_woerter_.push_back( "SAMPLE_ID" );
-    ss_woerter_.push_back( "SAMPLE_NAME" );
-    ss_woerter_.push_back( "CMYK_C" );
-    ss_woerter_.push_back( "CMYK_M" );
-    ss_woerter_.push_back( "CMYK_Y" );
-    ss_woerter_.push_back( "CMYK_K" );
-    ss_woerter_.push_back( "RGB_R" );
-    ss_woerter_.push_back( "RGB_G" );
-    ss_woerter_.push_back( "RGB_B" );
-    ss_woerter_.push_back( "XYZ_X" );
-    ss_woerter_.push_back( "XYZ_Y" );
-    ss_woerter_.push_back( "XYZ_Z" );
-    ss_woerter_.push_back( "XYY_X" );
-    ss_woerter_.push_back( "XYY_Y" );
-    ss_woerter_.push_back( "XYY_CAPY" );
-    ss_woerter_.push_back( "LAB_L" );
-    ss_woerter_.push_back( "LAB_A" );
-    ss_woerter_.push_back( "LAB_B" );
-    ss_woerter_.push_back( "D_RED" );
-    ss_woerter_.push_back( "D_GREEN" );
-    ss_woerter_.push_back( "D_BLUE" );
-    ss_woerter_.push_back( "D_VIS" );
-    ss_woerter_.push_back( "D_MAJOR_FILTER" );
-    ss_woerter_.push_back( "SPECTRAL_PCT" );
-    ss_woerter_.push_back( "SPECTRAL_DEC" );
-    ss_woerter_.push_back( "SPECTRAL_" );
-    ss_woerter_.push_back( "nm" );  // nicht standard
-    ss_woerter_.push_back( "SPECTRUM_" ); // nicht standard
-    ss_woerter_.push_back( "R_" ); // nicht standard
-    ss_woerter_.push_back( "LAB_C" );
-    ss_woerter_.push_back( "LAB_H" );
-    ss_woerter_.push_back( "LAB_DE" );
-    ss_woerter_.push_back( "LAB_DE_94" );
-    ss_woerter_.push_back( "LAB_DE_CMC" );
-    ss_woerter_.push_back( "LAB_DE_2000" );
-    ss_woerter_.push_back( "MEAN_DE" );
-    ss_woerter_.push_back( "STDEV_X" );
-    ss_woerter_.push_back( "STDEV_Y" );
-    ss_woerter_.push_back( "STDEV_Z" );
-    ss_woerter_.push_back( "STDEV_L" );
-    ss_woerter_.push_back( "STDEV_A" );
-    ss_woerter_.push_back( "STDEV_B" );
-    ss_woerter_.push_back( "STDEV_DE" );
-    ss_woerter_.push_back( "CHI_SQD_PAR" );
+  std::string::size_type ende = zeile.size();
+              bool in_anfuehrung = false;
+              int letze_anfuehrungsstriche = -1;
+              // das erste Zeichen nach dem Schlüsselwort
+              pos = zeile.find_first_not_of( cgats_alnum_ ,pos, ende );
+              DBG_NUM_V( pos )
+              for( ; pos < ende; ++pos )
+              {
+                if( zeile[pos] == '\"' )
+                { DBG_NUM_S( pos <<" "<< zeile.substr( pos, ende-pos ) )
+                  if( in_anfuehrung ) // hinaus
+                  {
+                    in_anfuehrung = false;
+                    letze_anfuehrungsstriche = -1;
+                  } else {            // hinein
+                    in_anfuehrung = true;
+                    letze_anfuehrungsstriche = pos;
+                  }
+                } else if( strchr( cgats_alnum_, zeile[pos] ) &&// ein Zeichen
+                           !in_anfuehrung )                     // .. ausserhalb
+                { DBG_NUM_V( zeile.substr( pos, ende-pos ) )
+                  zeile.insert( pos, "\"" );
+                  ++ende;
+                  ++pos;
+                  in_anfuehrung = true;
+                  letze_anfuehrungsstriche = pos-1;
+                  DBG_NUM_S( zeile.substr( pos, ende-pos ) )
+                }
+              }
+              if( in_anfuehrung )
+                if( ende == zeile.size() )
+                  zeile.insert( ende, "\"" );
+                else
+                  zeile.insert( ende-1, "\"" );
+
+  DBG_PROG_ENDE
+}
+
+void
+CgatsFilter::unterscheideZiffernWorte_( std::string &zeile )
+{ DBG_PROG_START
+  std::string::size_type pos = 0, ende = 0;
+  static char text[64];
+
+  suchenErsetzen ( zeile, ",", ".", 0 );
+
+  // Worte Suchen und von Zahlen scheiden
+  for( unsigned int i = 0; i < zeile.size() ; ++i )
+  { 
+    pos = 0;
+    if( (pos = zeile.find_first_of( cgats_alnum_ )) != std::string::npos )
+    {
+      if( (ende = zeile.find_first_not_of( cgats_alnum_ )) == std::string::npos)
+        ende = zeile.size();
+      sprintf( text, "%f", atof( zeile.substr( pos, ende-pos ).c_str() ) );
+      
+      if( strlen( text ) ) // ist Fließkommazahl
+      {
+        i += pos;
+      } else {
+        sprintf( text, "%d", atoi( zeile.substr( pos, ende-pos ).c_str() ) );
+        if( strlen( text ) ) // ist Ganzzahl
+        {
+          i += pos;
+        } else { // Text
+          setzeWortInAnfuehrungszeichen_( zeile, pos );
+          i += pos;
+        }
+      }
+    }
   }
-#endif
   DBG_PROG_ENDE
 }
 
@@ -209,19 +237,7 @@ CgatsFilter::sucheInDATA_FORMAT_( std::string &zeile )
   std::string::size_type pos=0;
   int n = 0;
 
-
   zeilenOhneDuplikate_( s_woerter_ );
-
-  #define \
-    DF_Suche(suche, pos_) /* pos spielt nur bei SPECTRAL_ eine Rolle */ \
-    { pos = pos_; \
-      if ((pos = zeile.find (suche, pos)) != std::string::npos) \
-      { \
-        ++n; \
-        /*DBG_NUM_S( pos << zeile.substr(pos,3) )*/ \
-        pos = pos + strlen( suche ); \
-      } \
-    }
 
   for( unsigned int i = 0; i < s_woerter_.size() ; ++i )
   { 
@@ -241,17 +257,6 @@ CgatsFilter::zeilenOhneDuplikate_ ( std::vector<std::string> &zeilen )
 {
   int n = 0;
 
-  // Duplikate löschen
-  #if 0
-  for( unsigned int i = 0; i < zeilen.size(); ++i)
-    for( unsigned int j = i+1; j < zeilen.size(); ++j)
-      if( zeilen[i] == zeilen[j] )
-      {
-        DBG_NUM_S( "Zeile " << j << " : " << zeilen[j] << " gelöscht" )
-        zeilen.erase( zeilen.begin() + i );
-        ++n;
-      }
-  #else
   sort( zeilen.begin(), zeilen.end() );
   std::vector<std::string> ::iterator pos; 
   for( unsigned int i = 0; i < zeilen.size()-1; ++i)
@@ -261,10 +266,9 @@ CgatsFilter::zeilenOhneDuplikate_ ( std::vector<std::string> &zeilen )
       DBG_NUM_S( zeilen[i] <<"="<< zeilen[i+1] << " gelöscht" )
       zeilen.erase( zeilen.begin()+i+1 );
       if( i+1 < zeilen.size() )
-      DBG_NUM_S( zeilen[i+1] )
+        DBG_NUM_S( zeilen[i+1] )
       ++n;
     }
-  #endif
   return n;
 }
 
@@ -309,25 +313,6 @@ CgatsFilter::sucheSchluesselwort_( std::string zeile )
   return AUSKOMMENTIEREN;
 }
 
-#if 0
-void
-CgatsFilter::zeileEinfuegen_( std::vector<std::string> &zeilen,
-                int                       pos_n,
-                std::string               neue_zeile )
-{
-        // Position im Zeilenvektor suchen
-        std::vector<std::string>::iterator v_pos = zeilen.begin();
-        int n = 0;
-        while( n < pos_n)
-        {
-          ++n;
-          ++v_pos;
-        }
-        // neue Zeile Einfügen
-        zeilen.insert(v_pos, neue_zeile );
-}
-#endif
-
 int
 CgatsFilter::editZeile_( std::vector<std::string> &zeilen,
                          int i, int editieren, bool cmy )
@@ -352,46 +337,18 @@ CgatsFilter::editZeile_( std::vector<std::string> &zeilen,
                    DBG_NUM_S( "neues Schlüsselwort: " << s_woerter_[0] )
                    break;
     case ANFUEHRUNGSSTRICHE: {
-              bool in_anfuehrung = false;
-              int letze_anfuehrungsstriche = -1;
+              std::string gtext = zeilen[i].substr( 0, zeilen[i].find( "#" ) );
               // das erste Zeichen nach dem Schlüsselwort
               //while ( strchr( cgats_alnum_, zeilen[i][pos] )
-              pos = zeilen[i].find_first_not_of( cgats_alnum_ ,pos, ende );
+              pos = gtext.find_first_not_of( cgats_alnum_ ,pos, ende );
               DBG_NUM_V( pos )
-              for( ; pos < ende; ++pos )
-              {
-                if( zeilen[i][pos] == '\"' )
-                { DBG_NUM_S( pos <<" "<< zeilen[i].substr( pos, ende-pos ) )
-                  if( in_anfuehrung ) // hinaus
-                  {
-                    in_anfuehrung = false;
-                    letze_anfuehrungsstriche = -1;
-                  } else {            // hinein
-                    in_anfuehrung = true;
-                    letze_anfuehrungsstriche = pos;
-                  }
-                } else if( strchr( cgats_alnum_, zeilen[i][pos] )&&//ein Zeichen
-                           !in_anfuehrung )                     // .. ausserhalb
-                { DBG_NUM_V( zeilen[i].substr( pos, ende-pos ) )
-                  zeilen[i].insert( pos, "\"" );
-                  ++ende;
-                  ++pos;
-                  in_anfuehrung = true;
-                  letze_anfuehrungsstriche = pos-1;
-                  DBG_NUM_S( zeilen[i].substr( pos, ende-pos ) )
-                }
-#if 0
-                if(!( zeilen[i].find( "\"" ) <
-                      zeilen[i].find_first_of( cgats_alnum_ ,pos, ende ) ))
-                  zeilen[i].insert( pos+1, "\"" );
-                if( zeilen[i].find_last_of( cgats_alnum_ ) < zeile.find( "\"" ))
-                {
-                  zeilen[i].insert( ende-1, "\"" );
-                }
-#endif
-              }
-              if( in_anfuehrung )
-                zeilen[i].insert( ende-1, "\"" );
+              if( (ende = gtext.find( "#", 0 )) == std::string::npos )
+                ende = gtext.size();
+
+              int size = gtext.size();
+              zeilen[i].erase( 0, size );
+              setzeWortInAnfuehrungszeichen_( gtext, pos );
+              zeilen[i].insert( 0, gtext );
             }
             break;
     case DATA_FORMAT_ZEILE: // einige CGATS Dateien kennen nur:
@@ -416,13 +373,10 @@ CgatsFilter::editZeile_( std::vector<std::string> &zeilen,
               std::stringstream s;
               s << "NUMBER_OF_FIELDS " << zaehler_FIELDS;
               zeilen.insert( zeilen.begin() + i, s.str() );
-              //zeileEinfuegen_( zeilen, i, s.str() );
               ++zeilendifferenz;
               zeilen.insert( zeilen.begin() + i + 1, "BEGIN_DATA_FORMAT" );
-              //zeileEinfuegen_( zeilen, i+1, "BEGIN_DATA_FORMAT" );
               ++zeilendifferenz;
               zeilen.insert( zeilen.begin() + i + 3, "END_DATA_FORMAT" );
-              //zeileEinfuegen_( zeilen, i+3, "END_DATA_FORMAT" );
               ++zeilendifferenz;
             }
             break;
@@ -589,7 +543,6 @@ CgatsFilter::cgats_korrigieren               ()
         s.str("");
         s << "NUMBER_OF_SETS " << zaehler_SETS;
         zeilen.insert( zeilen.begin() + zeile_letztes_BEGIN_DATA, s.str() );
-        //zeileEinfuegen_( zeilen, zeile_letztes_BEGIN_DATA, s.str() );
 
         ++i;
         DBG_S( zeilen[zeile_letztes_BEGIN_DATA] << " eingefügt" )
@@ -630,7 +583,6 @@ CgatsFilter::cgats_korrigieren               ()
         s.str("");
         s << "NUMBER_OF_FIELDS " << zaehler_FIELDS;
         zeilen.insert( zeilen.begin() + zeile_letztes_BEGIN_DATA_FORMAT, s.str() );
-        //zeileEinfuegen_( zeilen, zeile_letztes_BEGIN_DATA_FORMAT, s.str() );
         
         ++i;
         DBG_S( zeilen[zeile_letztes_BEGIN_DATA_FORMAT] << " eingefügt" )
@@ -658,7 +610,6 @@ CgatsFilter::cgats_korrigieren               ()
           sucheSchluesselwort_( gtext ) != 3 )
       {
         zeilen.insert( zeilen.begin(), "ICCEXAM" );
-        //zeileEinfuegen_( zeilen, 0, "ICCEXAM" );
         DBG_NUM_S( "Beschreibung eingeführt" )
       }
     } else

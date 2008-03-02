@@ -42,6 +42,8 @@ class CgatsFilter
 
     // Hilfsobjekte
     const static char *cgats_alnum_;         // non-integral type
+    const static char *cgats_alpha_;
+    const static char *cgats_numerisch_;
     const static char *leer_zeichen_;
     const static char ss_woerter_[STD_CGATS_FIELDS][16];// Standard Schlüsselwö.
   public:
@@ -49,7 +51,6 @@ class CgatsFilter
     { DBG_PROG_START
         // Initialisierung konstanter Typen
         typ_ = LCMS;
-        standard_schluesselwoerter_anlegen_();
         DBG_PROG_ENDE
     }
     ~CgatsFilter () {; }
@@ -87,18 +88,17 @@ private:
     int sucheInDATA_FORMAT_( std::string &zeile );
     // klassifiziert CGATS Keywords; sinnvoll ausserhalb der Blöcke
     int sucheSchluesselwort_( std::string zeile );
-    void standard_schluesselwoerter_anlegen_ ();
     // eine Zeile ausserhalb der beiden DATA und FORMAT Blöcke nach
     //  Klassifizierungsangabe bearbeiten
     int editZeile_( std::vector<std::string> &zeilen, int zeile_n, int editieren,
                 bool cmy );
     // vector Bearbeitung fürs zeilenweise Editieren
-    void zeileEinfuegen_      ( std::vector<std::string> &zeilen,
-                                int                       pos_n,
-                                std::string               neue_zeile );
     void suchenLoeschen_      ( std::vector<std::string> &zeilen,
                                 std::string               text );
     int  zeilenOhneDuplikate_ ( std::vector<std::string> &zeilen );
+    void unterscheideZiffernWorte_ ( std::string &zeile );
+    void setzeWortInAnfuehrungszeichen_ ( std::string &zeile,
+                                std::string::size_type pos );
 
     // Schlüsselwort passende Korrekturen
     enum {
