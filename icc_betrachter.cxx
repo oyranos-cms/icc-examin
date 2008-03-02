@@ -577,7 +577,7 @@ icc_examin_ns::MyFl_Double_Window* ICCfltkBetrachter::init(int argc, char** argv
   DBG_PROG_START
   fullscreen = false;
   setTitleUrl = true;
-  { icc_examin_ns::MyFl_Double_Window* o = ueber = new icc_examin_ns::MyFl_Double_Window(365, 289, _("About ICC Examin"));
+  { icc_examin_ns::MyFl_Double_Window* o = ueber = new icc_examin_ns::MyFl_Double_Window(365, 285, _("About ICC Examin"));
     ueber->box(FL_FLAT_BOX);
     ueber->color(FL_BACKGROUND_COLOR);
     ueber->selection_color(FL_BACKGROUND_COLOR);
@@ -592,27 +592,32 @@ icc_examin_ns::MyFl_Double_Window* ICCfltkBetrachter::init(int argc, char** argv
       { Fl_Tabs* o = new Fl_Tabs(0, 0, 365, 260);
         { ueber_html = new Fl_Help_View(0, 25, 365, 235, _("About"));
           ueber_html->box(FL_THIN_UP_BOX);
+          ueber_html->color(FL_BACKGROUND_COLOR);
           ueber_html->selection_color(FL_DARK1);
+          ueber_html->hide();
         } // Fl_Help_View* ueber_html
         { hilfe_html = new Fl_Help_View(0, 25, 365, 235, _("Help"));
           hilfe_html->box(FL_THIN_UP_BOX);
+          hilfe_html->color(FL_BACKGROUND_COLOR);
           hilfe_html->selection_color(FL_DARK1);
           hilfe_html->hide();
         } // Fl_Help_View* hilfe_html
         { lizenz_html = new Fl_Help_View(0, 25, 365, 235, _("License"));
           lizenz_html->box(FL_THIN_UP_BOX);
+          lizenz_html->color(FL_BACKGROUND_COLOR);
           lizenz_html->selection_color(FL_DARK1);
           lizenz_html->hide();
           Fl_Group::current()->resizable(lizenz_html);
         } // Fl_Help_View* lizenz_html
         { dank_html = new Fl_Help_View(0, 25, 365, 235, _("Acknowlegement"));
           dank_html->box(FL_THIN_UP_BOX);
+          dank_html->color(FL_BACKGROUND_COLOR);
           dank_html->selection_color(FL_DARK1);
-          dank_html->hide();
         } // Fl_Help_View* dank_html
         { links_text = new Fl_Output(10, 35, 345, 215, _("Links"));
           links_text->type(12);
           links_text->box(FL_EMBOSSED_BOX);
+          links_text->color(FL_BACKGROUND_COLOR);
           links_text->selection_color(FL_DARK1);
           links_text->hide();
         } // Fl_Output* links_text
@@ -763,6 +768,7 @@ ard"));
         { Fl_Group* o = new Fl_Group(0, 25, 385, 470);
           { Fl_Help_View* o = inspekt_html = new Fl_Help_View(0, 25, 385, 470, _("Inspect"));
             inspekt_html->box(FL_FLAT_BOX);
+            inspekt_html->color(FL_BACKGROUND_COLOR);
             inspekt_html->align(FL_ALIGN_CENTER|FL_ALIGN_INSIDE);
             Fl_Group::current()->resizable(inspekt_html);
             o->hide();
@@ -773,7 +779,7 @@ ard"));
           { tag_browser = new TagBrowser(0, 25, 385, 135, _(" "));
             tag_browser->tooltip(_("Choose one profile tag"));
             tag_browser->box(FL_FLAT_BOX);
-            tag_browser->color(FL_BACKGROUND2_COLOR);
+            tag_browser->color(FL_BACKGROUND_COLOR);
             tag_browser->selection_color(FL_SELECTION_COLOR);
             tag_browser->labeltype(FL_NORMAL_LABEL);
             tag_browser->labelfont(0);
@@ -844,7 +850,7 @@ ard"));
                 } // TagDrawings* mft_viewer
                 { TagTexts* o = mft_text = new TagTexts(0, 185, 385, 310, _(" "));
                 mft_text->box(FL_FLAT_BOX);
-                mft_text->color(FL_BACKGROUND2_COLOR);
+                mft_text->color(FL_BACKGROUND_COLOR);
                 mft_text->selection_color(FL_SELECTION_COLOR);
                 mft_text->labeltype(FL_NORMAL_LABEL);
                 mft_text->labelfont(0);
@@ -870,7 +876,7 @@ ard"));
               { Fl_Group* o = new Fl_Group(0, 165, 385, 330);
                 { TagTexts* o = tag_text = new TagTexts(0, 165, 385, 330, _(" "));
                 tag_text->box(FL_FLAT_BOX);
-                tag_text->color(FL_BACKGROUND2_COLOR);
+                tag_text->color(FL_BACKGROUND_COLOR);
                 tag_text->selection_color(FL_SELECTION_COLOR);
                 tag_text->labeltype(FL_NORMAL_LABEL);
                 tag_text->labelfont(0);
@@ -911,6 +917,7 @@ ard"));
         } // Fl_Box* box_stat
         { Fl_Progress* o = load_progress = new Fl_Progress(0, 495, 385, 25, _("Loading .."));
           load_progress->box(FL_THIN_UP_BOX);
+          load_progress->color(FL_BACKGROUND_COLOR);
           o->hide();
           o->minimum(0.0);
           o->maximum(1.0);
@@ -942,15 +949,18 @@ ard"));
   //Fl::scheme(NULL);
   Fl_File_Icon::load_system_icons();
   Fl::get_system_colors();
-  details->show(/*argc,argv*/);
+  details->show((int)argc, (char**)argv);
   DBG_PROG
   DBG_PROG_ENDE
   return details;
 }
 
-void ICCfltkBetrachter::run() {
+int ICCfltkBetrachter::run(int argc, char** argv) {
   DBG_PROG_START
-  DBG_PROG_ENDE;  Fl::run();
+  int ret = Fl::run();
+
+  DBG_PROG_ENDE;
+  return ret;
 }
 
 std::vector<std::string> ICCfltkBetrachter::open_veraltet(std::vector<std::string> dateinamen) {

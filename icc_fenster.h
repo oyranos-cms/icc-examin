@@ -79,6 +79,7 @@ namespace icc_examin_ns {
      void iconize (void);        //!< Verkleinern fuer benutzer
      void iconize (MyFl_Double_Window * by); //!< Verkleinern automatisch
      void show (void);           //!< Zeigen fuer alle
+     void show (int, char**);    //!< Zeigen fuer alle
      void label (const char * t); //!< Fenstertitel setzen
      const char* label() { return Fl_Double_Window::label(); }
 

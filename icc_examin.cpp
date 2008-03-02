@@ -320,7 +320,7 @@ ICCexamin::start (int argc, char** argv)
     w->use_escape_hide = true;
   }
 
-  icc_betrachter->run();
+  icc_betrachter->run( (int)argc, (char**)argv );
 
   DBG_PROG_ENDE
 }

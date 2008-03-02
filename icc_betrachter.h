@@ -264,7 +264,7 @@ public:
   Fl_Box *box_stat;
   Fl_Progress *load_progress;
   My_Fl_Box *no_box;
-  void run();
+  int run(int argc, char** argv);
   std::vector<std::string> open_veraltet(std::vector<std::string> dateinamen);
   void quit(void);
   void zeig_mich_(void* widget);

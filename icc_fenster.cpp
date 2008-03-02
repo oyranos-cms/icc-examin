@@ -180,6 +180,7 @@ nachricht_ (std::string text) {
         o->type(12);
         //o->color((Fl_Color)53);
         o->box( FL_FLAT_BOX );
+        o->color(FL_BACKGROUND_COLOR);
         o->value(text.c_str());
         Fl_Group::current()->resizable(o);
       }
@@ -266,6 +267,11 @@ MyFl_Double_Window::init_class_ ()
 
 void MyFl_Double_Window::show()
 {
+  this->show( 0, NULL );
+}
+
+void MyFl_Double_Window::show(int argc, char** argv)
+{
   DBG_PROG_S( id_<<" "<<(user_hide?"u":" ")<<" "<<(visible()?"v":" ")<<" "<<(shown()?"s":" ") )
   for( int i = 0; i < ref_; ++i )
   {
@@ -283,7 +289,11 @@ void MyFl_Double_Window::show()
 
   if(!this->visible() || !this->shown())
   {
-    Fl_Double_Window::show();
+    if(argc)
+      Fl_Double_Window::show((int)argc, (char**)argv);
+    else
+      Fl_Double_Window::show();
+
 #if !defined(WIN32) && !defined(__APPLE__)
     Fl_Window::show();
 #endif
