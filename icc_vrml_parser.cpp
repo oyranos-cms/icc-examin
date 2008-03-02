@@ -50,7 +50,7 @@ class ICCvrmlParser
     void lesen_()
 {
   int debug_alt = icc_debug;
-  icc_debug = 1;
+  //icc_debug = 1;
   DBG_PROG_START
   int netz_n = 0;                       // das n-the Netz
   std::vector<std::string> zeilen;      // Editierzeilen
@@ -64,7 +64,7 @@ class ICCvrmlParser
   DBG_PROG_V( original_.size() )
 
   std::string::size_type pos=0, netz_pos=0;
-  std::string::size_type ende, netz_ende;
+  std::string::size_type netz_ende;
 
   // nach Netzen in der vrml Datei suchen
   while( (netz_pos = original_.find( "IndexedFaceSet", netz_pos )) !=
@@ -91,7 +91,7 @@ class ICCvrmlParser
     int endnetz = netze_.size()-1;
     std::string zeile;
     int geschweifte_klammer = 0;
-    int punkt_n = 0, wert_n;
+    int punkt_n = 0, wert_n = 0;
     for(unsigned int z = 0; z < zeilen .size(); z++)
     {
       // Hole eine kommentarfreie Zeile

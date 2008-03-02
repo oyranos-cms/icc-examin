@@ -34,6 +34,7 @@
 
 #include <string>
 #include <list>
+#include "icc_vrml_parser.h"
 
 class Oyranos;
 
@@ -92,6 +93,10 @@ class Oyranos
     const char* moni (size_t &g)       { moni_test_(); g = moni_.size();
                                          return moni_; }
     int         setzeMonitorProfil (const char* name );
+    std::vector<ICCnetz> netzAusVRML (std::string & vrml)
+                                { return extrahiereNetzAusVRML (vrml); }
+    std::vector<ICCnetz> netzVonProfil (Speicher p);
+
   private:
     void lab_test_();
     void moni_test_();

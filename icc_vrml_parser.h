@@ -30,6 +30,8 @@
 #ifndef ICC_VRML_PARSER_H
 #define ICC_VRML_PARSER_H
 
+#include <vector>
+
 struct ICCnetzPunkt {
   double koord[3];
   double farbe[4];

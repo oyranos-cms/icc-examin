@@ -266,6 +266,19 @@ Oyranos::setzeMonitorProfil (const char* profil_name )
 }
 
 
+std::vector<ICCnetz>
+Oyranos::netzVonProfil (Speicher p)
+{
+  DBG_PROG_START
+  std::string vrml;
+  //create_vrml();
+  std::vector<ICCnetz> netz = extrahiereNetzAusVRML (vrml);
+  DBG_PROG_ENDE
+  return netz;
+}
+
+
+
 #if 0
 const Speicher&
 Oyranos::zeigTrafo           ( const char *profilA, int ein_bytes, int kanaeleA,
