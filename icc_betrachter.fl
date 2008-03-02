@@ -46,12 +46,12 @@ decl {\#ifdef HAVE_FLU
 } 
 
 decl {char *statlabel;
- std::vector<std::string> filenamen_alt;
+
  bool setTitleUrl = true;
 
  int px,py,pw,ph;
  int fullscreen;
-  int inspekt_topline;
+  
  int tag_nummer;} {} 
 
 decl {class TagDrawings;
@@ -98,14 +98,15 @@ declblock {\#ifdef HAVE_FLU} {after {\#endif}
 
     if (dateiname)
     {
-      filenamen_alt.resize(1);
-      filenamen_alt[0] = dateiname;
+      std::vector<std::string> profilnamen;
+      profilnamen.resize(1);
+      //profilnamen[0] = dateiname;
 
-      DBG_NUM_V( filenamen_alt[0] )
-      filenamen_alt[0] = dateiwahl->get_current_directory();
-      filenamen_alt[0].append( dateiname );
-      DBG_NUM_V( filenamen_alt[0] )
-      icc_examin->open(false);
+      DBG_NUM_V( profilnamen[0] )
+      profilnamen[0] = dateiwahl->get_current_directory();
+      profilnamen[0].append( dateiname );
+      DBG_NUM_V( profilnamen[0] )
+      icc_examin->oeffnen( profilnamen );
     }
 
   DBG_PROG_ENDE} {}
@@ -174,6 +175,7 @@ class TagBrowser {open : {public Fl_Hold_Browser}
   } {
     code DBG_PROG_START {}
     code {//open and preparing the first selected item
+
   std::stringstream s;
   std::string text;
   std::vector<std::string> tag_list = profile[0].printTags();
@@ -231,8 +233,7 @@ class TagBrowser {open : {public Fl_Hold_Browser}
   status ((const char*) s.str().c_str() );} {}
     code DBG_PROG_ENDE {}
   }
-  Function {select_item(int item)} {open
-  } {
+  Function {select_item(int item)} {} {
     code DBG_PROG_START {}
     code {//Auswahl aus tag_browser
 
@@ -243,8 +244,7 @@ class TagBrowser {open : {public Fl_Hold_Browser}
   
   std::string text = icc_examin->selected_tag(item);
   if (text != "")
-    selectedTagName = text;} {selected
-    }
+    selectedTagName = text;} {}
     code DBG_PROG_ENDE {}
   }
 } 
@@ -252,6 +252,8 @@ class TagBrowser {open : {public Fl_Hold_Browser}
 class TagTexts {: {public Fl_Hold_Browser}
 } {
   decl {int X; int Y; int W; int H; char* start_info;} {}
+  decl {int inspekt_topline;} {public
+  }
   Function {TagTexts(int X,int Y,int W,int H,char* start_info) : Fl_Hold_Browser(X,Y,W,H,start_info), X(X), Y(Y), W(W), H(H)} {open
   } {}
   Function {hinein(std::string text)} {open
@@ -452,13 +454,12 @@ class MftChoice {: {public Fl_Choice}
   }
 } 
 
-class ICCfltkBetrachter {} {
-  Function {start(int argc, char** argv)} {open
-  } {
+class ICCfltkBetrachter {open
+} {
+  Function {init()} {} {
     code DBG_PROG_START {}
     code {statlabel = (char*)calloc (sizeof (char), 1024);
   fullscreen = false;
-  inspekt_topline = 0;
 
   \#ifdef HAVE_FLU
     Flu_File_Chooser::favoritesTxt = _("Lesezeichen");
@@ -514,21 +515,21 @@ class ICCfltkBetrachter {} {
     Flu_File_Chooser:: = _("");*/
 
     const char* ptr = NULL;
-    if (filenamen_alt.size())
-      ptr = filenamen_alt[0].c_str();
+    if (icc_examin->profilnamen.size())
+      ptr = icc_examin->profilnamen[0].c_str();
     dateiwahl = new Flu_File_Chooser(ptr, _("ICC Farbprofile (*.ic*)"), Flu_File_Chooser::SINGLE, _("Welches ICC Profil?"));
     dateiwahl->add_context_handler(Flu_File_Chooser::ENTRY_FILE, "icc", _("Profil öffnen"), dateiwahl_cb, NULL);
     dateiwahl->add_context_handler(Flu_File_Chooser::ENTRY_FILE, "icm", _("Profil öffnen"), dateiwahl_cb, NULL);
   \#else
     const char* ptr = NULL;
     if (filenamen_alt.size())
-      ptr = filenamen_alt[0].c_str();
+      ptr = icc_examin->profilnamen[0].c_str();
     dateiwahl = new Fl_File_Chooser(ptr, _("ICC Farbprofile (*.{I,i}{C,c}{M,m,C,c})"), Fl_File_Chooser::SINGLE, _("Welches ICC Profil?"));
     dateiwahl->callback(dateiwahl_cb);
     dateiwahl->preview_label = _("Vorschau");
   \#endif} {}
     Fl_Window ueber {
-      label {Über ICC examin} open
+      label {Über ICC examin}
       xywh {617 782 366 241} type Double hide resizable
       code0 {o->hide();} non_modal
     } {
@@ -547,23 +548,7 @@ class ICCfltkBetrachter {} {
     }
     Fl_Window details {
       label {ICC Details} open
-      xywh {668 289 385 520} type Double box NO_BOX color 53
-      code1 {DBG_PROG
-
-    if (argc>1) {
-
-      if (argc>1) {
-
-        sprintf (statlabel, "%s geladen", argv[1]);
-        box_stat->label(statlabel);
-        filenamen_alt.resize(argc-1);
-        for (int i = 1; i < argc; i++) {
-          DBG_PROG_V( i ) filenamen_alt[i-1] = argv[i];
-        }
-      } else {
-        status(_("Konnte Datei nicht laden!"));
-      }
-    }} xclass Fl_Window visible
+      xywh {673 313 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
     } {
       Fl_Group {} {open
         xywh {0 0 385 520}
@@ -577,13 +562,13 @@ class ICCfltkBetrachter {} {
           } {
             menuitem {} {
               label {Öffnen}
-              callback {open(true)}
+              callback {icc_examin->oeffnen()}
               xywh {15 15 100 20} shortcut 0x4006f
             }
             menuitem menueintrag_html_speichern {
               label {Bericht Speichern}
               callback {DBG_PROG_START
-  std::string filename = filenamen_alt[0];  DBG_PROG_V( filename )
+  std::string filename = icc_examin->profilnamen[0];  DBG_PROG_V( filename )
 
   std::string::size_type pos=0;
   if ((pos = filename.find_last_of(".", filename.size())) != std::string::npos) { DBG_PROG
@@ -622,7 +607,7 @@ class ICCfltkBetrachter {} {
 
   DBG_PROG_V( filename )
 
-  if (dateiwahl->count() == 0 || filename != "" || filename == filenamen_alt[0]) {
+  if (dateiwahl->count() == 0 || filename != "" || filename == icc_examin->profilnamen[0]) {
     load_progress->hide ();
     return;
   }
@@ -685,11 +670,11 @@ class ICCfltkBetrachter {} {
     inspekt->show();
     examin->hide();
     inspekt_html->value(profile[0].report().c_str());
-    inspekt_html->topline(inspekt_topline);
+    inspekt_html->topline(tag_text->inspekt_topline);
   } else {
     inspekt->hide();
     examin->show();
-    inspekt_topline = inspekt_html->topline();
+    tag_text->inspekt_topline = inspekt_html->topline();
   }}
               tooltip {Mess- und Profilwerte bildlich und in Zahlen dargestellt; Ctrl+b} xywh {40 40 100 20} type Toggle shortcut 0x40062 deactivate
             }
@@ -708,7 +693,7 @@ class ICCfltkBetrachter {} {
     group_histogram->hide();
     inspekt->hide();
     examin->show();
-    inspekt_topline = inspekt_html->topline();
+    tag_text->inspekt_topline = inspekt_html->topline();
   }}
               tooltip {Mess- und Profilwerte bildlich und in Zahlen dargestellt; Ctrl+b} xywh {50 50 100 20} type Toggle shortcut 0x40062 divider
             }
@@ -819,32 +804,33 @@ ueber_html->value(getUeberHtml().c_str());}
         }
       }
     }
-    code {w->resizable(tag_text);
+    code {tag_text->inspekt_topline = 0;
+
+  w->resizable(tag_text);
   w->show();
   Fl::scheme(NULL);
-  Fl_File_Icon::load_system_icons();
-
-  if (argc > 1)
-    open (false);} {}
+  Fl_File_Icon::load_system_icons();} {}
+    code DBG_PROG_ENDE {}
+  }
+  Function {run()} {open
+  } {
     code {DBG_PROG_ENDE
   Fl::run();} {}
   }
-  Function {open(int interaktiv)} {} {
+  Function {open(std::vector<std::string> dateinamen)} {open return_type {std::vector<std::string>}
+  } {
     code DBG_PROG_START {}
     code {\#include "icc_vrml.h"
 
-  std::vector<std::string> filenamen;
-  filenamen = filenamen_alt;
   //Fl_File_Icon	*icon;	// New file icon
   DBG_PROG
   load_progress->show ();    load_progress->value (0.0);
 
-  if (interaktiv) {
     const char* ptr = NULL;
-    if (filenamen_alt.size()) {
-      ptr = filenamen_alt[0].c_str();
+    if (dateinamen.size()) {
+      ptr = dateinamen[0].c_str();
       dateiwahl->value(ptr);
-      //DBG_PROG_S( filenamen_alt[0])
+      //DBG_PROG_S( dateinamen[0])
     }
     dateiwahl->show(); //filename=fl_file_chooser("Wähle ICC Profil?", "ICC Farbprofile (*.{I,i}{C,c}{M,m,C,c})", filenamen_alt[0].c_str());
 
@@ -857,78 +843,22 @@ ueber_html->value(getUeberHtml().c_str());}
     DBG_NUM_V( dateiwahl->count() )
     if (dateiwahl->count() && dateiwahl->value()) {
       DBG_NUM_V( dateiwahl->value() )
-      filenamen.resize(dateiwahl->count());
+      dateinamen.resize(dateiwahl->count());
       for (int i = 1; i <= dateiwahl->count(); i++)
-        filenamen[i-1] = dateiwahl->value(i);
+        dateinamen[i-1] = dateiwahl->value(i);
     }
-  }
-
-  if (filenamen.size() == 0) {
-    load_progress->hide ();
-    return;
-  }
-
-  // Laden
-  profile.resize(filenamen.size());
-  for (unsigned int i = 0; i < filenamen.size(); i++)
-    profile[i].load (filenamen[i]);
-  // Register the ICC type ...
-  //Fl_Shared_Image::add_handler(icc_check);
-  //Fl_Shared_Image::add_handler(ps_check);
-
-  std::vector<std::string> url;
-  std::vector<std::string> param;
-
-  if (/*browser && */(filenamen.size())) { DBG_PROG
-    for (unsigned int i = 0; i < profile.size(); i++) {
-      //create_vrml ( filename.c_str(), "/usr/share/color/icc/sRGB.icm", &vrmlDatei[0]);
-
-      load_progress->value (0.8);
-      filenamen_alt = filenamen;
-      //url.push_back (&vrmlDatei[0]);
-      //browser->load_url(url, param);
-      sprintf (statlabel, "%s geladen", filenamen[i].c_str());
-      cout << statlabel << endl; DBG_PROG
-      box_stat->label(statlabel);
-    }
-  } else {
-    status(_("Datei nicht geladen!"));
-  } DBG_PROG
-
-  box_stat->hide();
-  box_stat->show();
-  load_progress->value (1.0);
-  load_progress->value (0.0);
-  load_progress->hide();
   DBG_PROG
 
-  tag_browser->reopen ();
+  if (dateinamen.size() == 0) {
+    load_progress->hide ();
 
-  if (profile[0].hasMeasurement()) {
-    inspekt_topline = inspekt_html->topline();
-    DBG_PROG_S(menueintrag_inspekt->value())
-    if (menueintrag_inspekt->value()) {
-      inspekt_html->value(profile[0].report().c_str());
-      cout << inspekt_html->size() << " " << inspekt_topline; DBG_PROG
-      if (inspekt_html->size() -75 < inspekt_topline)
-        inspekt_html->topline (inspekt_html->size() - 75);
-      else
-        inspekt_html->topline (inspekt_topline);
-      inspekt->show();
-      examin->hide();
-    }
-    menueintrag_inspekt->activate();
-    menueintrag_html_speichern->activate();
-  } else {
-    menueintrag_inspekt->deactivate();
-    menueintrag_html_speichern->deactivate();
-    inspekt->hide();
-    examin->show();
-    //menueintrag_inspekt->value( false );
+    DBG_PROG_ENDE
+    return dateinamen;
   }
 
-  return;} {}
-    code DBG_PROG_ENDE {}
+  DBG_PROG_ENDE
+  return dateinamen;} {selected
+    }
   }
   Function {quit(void)} {} {
     code DBG_PROG_START {}
@@ -961,6 +891,28 @@ ueber_html->value(getUeberHtml().c_str());}
     mft_gl->zeigen();
   }} {}
     code DBG_PROG_ENDE {}
+  }
+  Function {measurement(bool has_measurement)} {} {
+    code {if (has_measurement) {
+    DBG_PROG_S(menueintrag_inspekt->value())
+    if (menueintrag_inspekt->value()) {
+      inspekt_html->value(profile[0].report().c_str());
+      if (inspekt_html->size() -75 < tag_text->inspekt_topline)
+        inspekt_html->topline (inspekt_html->size() - 75);
+      else
+        inspekt_html->topline (tag_text->inspekt_topline);
+      inspekt->show();
+      examin->hide();
+    }
+    menueintrag_inspekt->activate();
+    menueintrag_html_speichern->activate();
+  } else {
+    menueintrag_inspekt->deactivate();
+    menueintrag_html_speichern->deactivate();
+    inspekt->hide();
+    examin->show();
+    //menueintrag_inspekt->value( false );
+  }} {}
   }
 } 
 

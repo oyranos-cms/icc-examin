@@ -30,7 +30,7 @@
 
 #include "icc_oyranos.h"
 
-#include <kdb.h>
+//#include <kdb.h>
 
 void
 oyranos_pfade_loeschen()

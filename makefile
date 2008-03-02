@@ -2,7 +2,7 @@ CC=c++
 MAKEDEPEND	= /usr/X11R6//bin/makedepend -Y
 OPTS=-Wall -g #-O2
 
-prefix		= /opt/local
+prefix		= /opt/kai-uwe
 exec_prefix	= ${prefix}
 bindir		= ${exec_prefix}/bin
 datadir		= ${prefix}/share

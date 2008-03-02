@@ -47,6 +47,7 @@ public:
 class TagTexts : public Fl_Hold_Browser {
   int X; int Y; int W; int H; char* start_info;
 public:
+  int inspekt_topline;
   TagTexts(int X,int Y,int W,int H,char* start_info) ;
   void hinein(std::string text);
 };
@@ -80,7 +81,7 @@ public:
 
 class ICCfltkBetrachter {
 public:
-  Fl_Double_Window* start(int argc, char** argv);
+  Fl_Double_Window* init();
   Fl_Double_Window *ueber;
   Fl_Help_View *ueber_html;
   Fl_Button *ja;
@@ -148,9 +149,11 @@ public:
   Fl_Box *DD_histogram;
   Fl_Box *box_stat;
   Fl_Progress *load_progress;
-  void open(int interaktiv);
+  void run();
+  std::vector<std::string> open(std::vector<std::string> dateinamen);
   void quit(void);
   void zeig_mich(void* widget);
+  void measurement(bool has_measurement);
 };
 std::vector<std::string> zeilenNachVector(std::string text);
 void d_haendler(void* o);

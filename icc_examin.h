@@ -31,6 +31,7 @@
 #define ICC_EXAMIN_H
 
 #include <string>
+#include <vector>
 
 //#include "icc_betrachter.h"
 class ICCfltkBetrachter;
@@ -43,9 +44,12 @@ class ICCexamin
 
     void         start(int argc, char** argv);
 
-    void         open (int interaktiv);
+    void         oeffnen (std::vector<std::string> dateinamen);
+    void         oeffnen ();	// interaktiv
     std::string  selected_tag (int item);
 
+	// Liste der geladenen Profile
+	std::vector<std::string> profilnamen;
 
 //  private:
     ICCfltkBetrachter* icc_betrachter;

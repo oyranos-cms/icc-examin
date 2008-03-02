@@ -30,25 +30,89 @@
 #include "icc_betrachter.h"
 
 ICCexamin::ICCexamin ()
-{
+{ DBG_PROG_START
   icc_betrachter = new ICCfltkBetrachter [1];
+  DBG_PROG_ENDE
 }
 
 ICCexamin::~ICCexamin ()
-{
+{ DBG_PROG_START
   delete icc_betrachter;
+  DBG_PROG_ENDE
 }
 
 void
 ICCexamin::start (int argc, char** argv)
-{
-  icc_betrachter->start(argc, argv);
+{ DBG_PROG_START
+
+  icc_betrachter->init();
+  DBG_PROG
+
+      if (argc>1) {
+        std::string statlabel = argv[1];
+        statlabel.append (" ");
+        statlabel.append (_("geladen"));
+        status(statlabel.c_str());
+        profilnamen.resize(argc-1);
+        for (int i = 1; i < argc; i++) {
+          DBG_PROG_V( i ) profilnamen[i-1] = argv[i];
+        }
+        oeffnen (profilnamen);
+      } else {
+        status(_("Konnte Datei nicht laden!"));
+      }
+
+  DBG_PROG
+  icc_betrachter->run();
+
+  DBG_PROG_ENDE
+}
+
+//#include "icc_vrml.h"
+void
+ICCexamin::oeffnen (std::vector<std::string> dateinamen)
+{ DBG_PROG_START
+
+  // Laden
+  profile.resize(dateinamen.size());
+  for (unsigned int i = 0; i < dateinamen.size(); i++)
+    profile[i].load (dateinamen[i]);
+
+  std::vector<std::string> url;
+  std::vector<std::string> param;
+
+  if (dateinamen.size()) { DBG_PROG
+    for (unsigned int i = 0; i < profile.size(); i++) {
+      //create_vrml ( dateiname.c_str(), "/usr/share/color/icc/sRGB.icm", &vrmlDatei[0]);
+
+      icc_betrachter->load_progress->value (0.8);
+      //url.push_back (&vrmlDatei[0]);
+      //browser->load_url(url, param);
+        std::string statlabel = dateinamen[i].c_str();
+        statlabel.append (" ");
+        statlabel.append (_("geladen"));
+        status(statlabel.c_str());
+    }
+    icc_betrachter->load_progress->value (1.0);
+    icc_betrachter->load_progress->value (0.0);
+    icc_betrachter->load_progress->hide();
+    DBG_PROG
+
+    icc_betrachter->tag_browser->reopen ();
+
+    icc_betrachter->measurement( profile[0].hasMeasurement() );
+  } else {
+    status(_("Datei nicht geladen!"));
+  } DBG_PROG
+
+  DBG_PROG_ENDE
 }
 
 void
-ICCexamin::open (int interaktiv)
-{
-  icc_betrachter->open( interaktiv );
+ICCexamin::oeffnen ()
+{ DBG_PROG_START
+  icc_betrachter->open( profilnamen );
+  DBG_PROG_ENDE
 }
 
 std::string
