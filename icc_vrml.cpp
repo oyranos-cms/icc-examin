@@ -29,7 +29,7 @@ erase_file (char *file)
 
 #define lp {l+=0.1; load_progress->value(l); details->flush();}
 int 
-create_vrml              ( char *profilA, char *profilB, char *vrml)
+create_vrml              ( const char *profilA, char *profilB, char *vrml)
 {
   char systemBefehl[1024];
   float l = load_progress->value();

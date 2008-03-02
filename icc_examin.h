@@ -45,7 +45,7 @@ extern TagTexts *tag_texts;
 extern Fl_Menu_Item menu_Fl_lookat_MenuBar[];
 #define Voll (menu_Fl_lookat_MenuBar+5)
 #define normal_ansicht (menu_Fl_lookat_MenuBar+6)
-const char* open(void);
+std::string open(int interaktiv);
 void quit(void);
 void worldChangedCB( const openvrml::browser::cb_reason reason );
 void timeIT();

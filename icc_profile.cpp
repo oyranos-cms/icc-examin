@@ -18,7 +18,36 @@
 #define _(text) text
 #define g_message printf
 
-int
+unsigned int
+icValue (icUInt16Number val)
+{
+#if BYTE_ORDER == LITTLE_ENDIAN
+  #define BYTES 2
+  #define KORB  4
+  unsigned char        *temp  = (unsigned char*) &val;
+  static unsigned char  korb[KORB];
+  for (int i = 0; i < KORB ; i++ )
+    korb[i] = (int) 0;
+
+  int klein = 0,
+      gross = BYTES - 1;
+  for (; klein < BYTES ; klein++ )
+    korb[klein] = temp[gross--];
+
+  unsigned int *erg = (unsigned int*) &korb[0];
+
+  #ifdef DEBUG
+  cout << *erg << " Größe nach Wandlung " << (int)korb[0] << " "
+       << (int)korb[1] << " " << (int)korb[2] << " " <<(int)korb[3]
+       << " "; DBG
+  #endif
+  return (long)*erg;
+#else
+  return (long)val;
+#endif
+}
+
+unsigned int
 icValue (icUInt32Number val)
 {
 #if BYTE_ORDER == LITTLE_ENDIAN
@@ -31,14 +60,15 @@ icValue (icUInt32Number val)
   uint32[2] = temp[1];
   uint32[3] = temp[0];
 
-  DBG
+  unsigned int *erg = (unsigned int*) &uint32[0];
+
   #ifdef DEBUG
-  cout << (int)*temp << " Größe nach Wandlung " << (int)temp[0] << " "
+  cout << *erg << " Größe nach Wandlung " << (int)temp[0] << " "
        << (int)temp[1] << " " << (int)temp[2] << " " <<(int)temp[3]
-       << endl;
+       << " "; DBG
   #endif
 
-  return (int) &uint32[0];
+  return (int) *erg;
 #else
   #ifdef DEBUG
   cout << "BIG_ENDIAN" << " "; DBG
@@ -47,7 +77,7 @@ icValue (icUInt32Number val)
 #endif
 }
 
-long
+unsigned long
 icValue (icUInt64Number val)
 {
 #if BYTE_ORDER == LITTLE_ENDIAN
@@ -58,33 +88,128 @@ icValue (icUInt64Number val)
       big    = 8;
 
   for (; little < 8 ; little++ ) {
-    uint64[little++] = temp[big--];
+    uint64[little] = temp[big--];
   }
 
-  DBG
+  unsigned long *erg = (unsigned long*) &uint64[0];
+
   #ifdef DEBUG
-  cout << (int)*temp << " Größe nach Wandlung " << (int)temp[0] << " "
+  cout << *erg << " Größe nach Wandlung " << (int)temp[0] << " "
        << (int)temp[1] << " " << (int)temp[2] << " " <<(int)temp[3]
-       << endl;
+       << " "; DBG
   #endif
-  return (int) &uint64[0];
+  return (long)*erg;
 #else
   return (long)val;
 #endif
 }
 
-double
-icValue (icS15Fixed16Number val)
+signed int
+icValue (icInt32Number val)
 {
-  signed int    temp  = (signed int) val;
-  static double d;
+#if BYTE_ORDER == LITTLE_ENDIAN
+  #define BYTES 4
+  #define KORB  4
+  unsigned char        *temp  = (unsigned char*) &val;
+  //unsigned char         maske = 0xf0;
+  static unsigned char  korb[KORB];
+  for (int i = 0; i < KORB ; i++ )
+    korb[i] = (int) 0;
+  #ifdef DEBUG_
+  cout << " Größe nach Wandlung " << (int)korb[0] << " "
+       << (int)korb[1] << " " << (int)korb[2] << " " <<(int)korb[3]
+       << " "; DBG
+  #endif
 
-  d = (double)temp / 65536;
+  int klein = 0,
+      gross = BYTES - 1;
+  for (; klein < BYTES ; klein++ )
+      korb[klein] = temp[gross--];
 
-  DBG
+  signed int *erg = (signed int*) &korb[0];
+  #ifdef DEBUG_
+  cout << (double)*erg/65536.0 << " Größe nach Wandlung " << (int)korb[0] << " "
+       << (int)korb[1] << " " << (int)korb[2] << " " <<(int)korb[3]
+       << " "; printf ("0x%X ", *erg); DBG
+  #endif
+  #ifdef DEBUG_
+  cout << (double)*erg/65536.0 << " Größe nach Wandlung " << (int)korb[0] << " "
+       << (int)korb[1] << " " << (int)korb[2] << " " <<(int)korb[3]
+       << " "; DBG
+  #endif
+  /*if (temp[0] & maske) {
+    cout << " negativer Wert " << (signed int)korb[4] << " maske " << (int)maske << " "; DBG
+    korb[4] = korb[4] | maske;
+    #ifdef DEBUG
+    cout << " negativer Wert " << (signed int)korb[4]; DBG
+    #endif
+  }*/
 
-  return d;
+  #ifdef DEBUG
+  cout << *erg << " Größe nach Wandlung " << (int)korb[0] << " "
+       << (int)korb[1] << " " << (int)korb[2] << " " <<(int)korb[3]
+       << " "; DBG
+  #endif
+  return (signed int)*erg;
+#else
+  return (signed int)val;
+#endif
 }
+
+signed int
+icValue (icInt16Number val)
+{
+#if BYTE_ORDER == LITTLE_ENDIAN
+  #define BYTES 2
+  #define KORB  4
+  unsigned char        *temp  = (unsigned char*) &val;
+  static unsigned char  korb[KORB];
+  for (int i = 0; i < KORB ; i++ )
+    korb[i] = (int) 0;
+
+  int klein = 0,
+      gross = BYTES - 1;
+  for (; klein < BYTES ; klein++ )
+      korb[klein] = temp[gross--];
+
+  signed int *erg = (signed int*) &korb[0];
+  #ifdef DEBUG
+  cout << *erg << " Größe nach Wandlung " << (int)korb[0] << " "
+       << (int)korb[1] << " " << (int)korb[2] << " " <<(int)korb[3]
+       << " "; DBG
+  #endif
+  return (signed int)*erg;
+#else
+  return (signed int)val;
+#endif
+}
+
+double
+icValueSF (icS15Fixed16Number val)
+{
+  return icValue(val) / 65536.0;
+}
+
+icColorSpaceSignature
+icValue (icColorSpaceSignature val)
+{
+  icUInt32Number i = val;
+  return (icColorSpaceSignature) icValue (i);
+}
+
+#define icValue_to_icUInt32Number(typ) \
+typ \
+icValue (typ val) \
+{ \
+  icUInt32Number i = val; \
+  return (typ) icValue (i); \
+}
+
+icValue_to_icUInt32Number(icPlatformSignature)
+icValue_to_icUInt32Number(icProfileClassSignature)
+icValue_to_icUInt32Number(icTagSignature)
+icValue_to_icUInt32Number(icTagTypeSignature)
+
 
 /**
   *  @brief ICCheader Funktionen
@@ -101,12 +226,12 @@ ICCheader::load (void *data)
   DBG
   memcpy ((void*)&header, data,/* (void*)&header,*/ sizeof (icHeader));
   #ifdef DEBUG_ICCHEADER
-  cout << sizeof (icHeader) << " genommen" << endl;
+  cout << sizeof (icHeader) << " genommen" << " "; DBG
   #endif
   if (header.size > 0) {
     valid = true;
   #ifdef DEBUG_ICCHEADER
-    cout << size() << endl;
+    cout << size() << " "; DBG
   #endif
   } else {
     valid = false;
@@ -114,11 +239,108 @@ ICCheader::load (void *data)
   DBG
 }
 
-/*void
-ICCheader::size (int i)
+std::string
+ICCheader::renderingIntent (void)
 {
-  return size;
-}*/
+  std::stringstream s;
+
+  switch (header.renderingIntent) 
+    {
+    case 0:
+      s << _("Fotographisch");
+      break;
+    case 1:
+      s << _("relativ Farbmetrisch");
+      break;
+    case 2:
+      s << _("Gesättigt");
+      break;
+    case 3:
+      s << _("absolut Farbmetrisch");
+      break;
+    }
+  return s.str();
+}
+
+std::string
+ICCheader::attributes (void)
+{
+  std::stringstream s;
+  char* f = (char*) &(header.attributes);
+  unsigned char         maske1 = 0xf0;
+  unsigned char         maske2 = 0x08;
+  unsigned char         maske3 = 0x04;
+  unsigned char         maske4 = 0x02;
+
+  if (f[0] & maske1)
+    s << _("Durchsicht, ");
+  else
+    s << _("Aufsicht, ");
+
+  if (f[0] & maske2)  
+    s << _("matt, ");
+  else
+    s << _("glänzend, ");
+
+  if (f[0] & maske3)  
+    s << _("negativ, ");
+  else
+    s << _("positiv, ");
+
+  if (f[0] & maske4)  
+    s << _("schwarz/weiss");
+  else
+    s << _("farbig");
+
+
+  #ifdef DEBUG
+  cout << f[0] << " " << (long)header.attributes; DBG
+  char* ptr = (char*) &(header.attributes);
+  for (int i = 0; i < 8 ; i++)
+    cout << (int)ptr[i] << " ";
+  DBG
+  #endif
+  return s.str();
+}
+
+std::string
+ICCheader::flags (void)
+{
+  std::stringstream s;
+  char* f = (char*) &(header.flags);
+  unsigned char         maske1 = 0xf0;
+  unsigned char         maske2 = 0x08;
+
+  if (f[0] & maske1)
+    s << _("Farbprofil ist eingebettet und ");
+  else
+    s << _("Farbprofil ist nicht eingebettet und ");
+
+  if (f[0] & maske2)  
+    s << _("kann nicht unabhängig vom Bild verwendet werden.");
+  else
+    s << _("kann unabhängig vom Bild verwendet werden.");
+
+  #ifdef DEBUG
+  cout << f[0] << " " << (long)header.flags; DBG
+  char* ptr = (char*) &(header.flags);
+  for (int i = 0; i < 8 ; i++)
+    cout << (int)ptr[i] << " ";
+  DBG
+  #endif
+  return s.str();
+}
+
+std::string
+ICCheader::versionName (void)
+{
+  std::stringstream s;
+  char* v = (char*)&(header.version);
+  
+  s << (int)v[0] << "." << (int)v[1]/16 << "." << (int)v[1]%16;
+
+  return s.str();
+}
 
 std::string
 ICCheader::print_long()
@@ -126,16 +348,22 @@ ICCheader::print_long()
   #ifdef DEBUG_ICCHEADER
   cout << sizeof (icSignature) << " " << sizeof (icUInt32Number)<< endl;
   #endif
+  std::string cm = cmmName();
+  std::string mg = magicName();
+  std::string ma = manufacturerName();
+  std::string mo = modelName();
+  std::string cr = creatorName();
   std::stringstream s; DBG
   s << "kein Dateikopf gefunden"; DBG
+  
   //cout << "char icSignature ist " << sizeof (icSignature) << endl;
   if (valid) { DBG
     s.str("");
     s << "ICC Dateikopf:\n"<< endl \
       <<  "    " << _("Größe") << ":       " <<
                        size() << " " << _("bytes") << endl \
-      <<  "    " << _("CMM") << ":         " << CmmName() << endl \
-      <<  "    " << _("Version") << ":     " << version() << endl \
+      <<  "    " << _("CMM") << ":         " << cm << endl \
+      <<  "    " << _("Version") << ":     " << versionName() << endl \
       <<  "    " << _("Klasse") << ":      " <<
                        getDeviceClassName(deviceClass()) << endl \
       <<  "    " << _("Farbraum") << ":    " <<
@@ -143,27 +371,26 @@ ICCheader::print_long()
       <<  "    " << _("PCS") << ":         " <<
                        getColorSpaceName(pcs()) << endl \
       <<  "    " << _("Datum") << ":       " <<
-                       header.date.day     << "/" <<
-                       header.date.month   << "/" <<
-                       header.date.year    << " " <<
-                       header.date.hours   << ":" <<
-                       header.date.minutes << " " << _("Uhr")      << " " <<
-                       header.date.seconds << " " << _("Sekunden") << endl \
-      <<  "    " << _("Magic") << ":       " << icValue(header.magic) << endl \
+                       icValue(header.date.day)     << "/" <<
+                       icValue(header.date.month)   << "/" <<
+                       icValue(header.date.year)    << " " <<
+                       icValue(header.date.hours)   << ":" <<
+                       icValue(header.date.minutes) << " " << _("Uhr") << " " <<
+                       icValue(header.date.seconds) << " " << _("Sekunden") << endl \
+      <<  "    " << _("Magic") << ":       " << mg << endl \
       <<  "    " << _("Plattform") << ":   " << platform() << endl \
-      <<  "    " << _("Flags") << ":       " << icValue(header.flags) << endl \
-      <<  "    " << _("Hersteller") << ":  " <<
-                       icValue(header.manufacturer) << endl \
-      <<  "    " << _("Model") << ":       " << icValue(header.model) << endl \
+      <<  "    " << _("Flags") << ":       " << flags() << endl \
+      <<  "    " << _("Hersteller") << ":  " << ma << endl \
+      <<  "    " << _("Model") << ":       " << mo << endl \
       <<  "    " << _("Attribute") << ":   " <<
-                       icValue(header.attributes) << endl \
+                       attributes() << endl \
       <<  "    " << _("Übertragung") << ": " <<
-                       icValue(header.renderingIntent) << endl \
+                       renderingIntent() << endl \
       <<  "    " << _("Beleuchtung") << ": X=" <<
-                       icValue(header.illuminant.X) << ", Y=" << \
-                       icValue(header.illuminant.Y) << ", Z=" << \
-                       icValue(header.illuminant.Z) << endl \
-      <<  "    " << _("von") << ":         " << icValue(header.flags) << endl ;
+                       icValueSF(header.illuminant.X) << ", Y=" << \
+                       icValueSF(header.illuminant.Y) << ", Z=" << \
+                       icValueSF(header.illuminant.Z) << endl \
+      <<  "    " << _("erzeugt von") << ": " << cr << endl ;
   } DBG
   return s.str();
 }
@@ -178,76 +405,76 @@ ICCheader::print()
 }
 
 
-const char*
+std::string
 ICCheader::getColorSpaceName (icColorSpaceSignature color)
 {
-  const char* name;
+  std::string text;
 
   switch (color) {
-    case icSigXYZData: name = cp_char (_("XYZ")); break;
-    case icSigLabData: name = cp_char (_("Lab")); break;
-    case icSigLuvData: name = cp_char (_("Luv")); break;
-    case icSigYCbCrData: name = cp_char (_("YCbCr")); break;
-    case icSigYxyData: name = cp_char (_("Yxy")); break;
-    case icSigRgbData: name = cp_char (_("Rgb")); break;
-    case icSigGrayData: name = cp_char (_("Gray")); break;
-    case icSigHsvData: name = cp_char (_("Hsv")); break;
-    case icSigHlsData: name = cp_char (_("Hls")); break;
-    case icSigCmykData: name = cp_char (_("Cmyk")); break;
-    case icSigCmyData: name = cp_char (_("Cmy")); break;
-    case icSig2colorData: name = cp_char (_("2color")); break;
-    case icSig3colorData: name = cp_char (_("3color")); break;
-    case icSig4colorData: name = cp_char (_("4color")); break;
-    case icSig5colorData: name = cp_char (_("5color")); break;
-    case icSig6colorData: name = cp_char (_("6color")); break;
-    case icSig7colorData: name = cp_char (_("7color")); break;
-    case icSig8colorData: name = cp_char (_("8color")); break;
-    case icSig9colorData: name = cp_char (_("9color")); break;
-    case icSig10colorData: name = cp_char (_("10color")); break;
-    case icSig11colorData: name = cp_char (_("11color")); break;
-    case icSig12colorData: name = cp_char (_("12color")); break;
-    case icSig13colorData: name = cp_char (_("13color")); break;
-    case icSig14colorData: name = cp_char (_("14color")); break;
-    case icSig15colorData: name = cp_char (_("15color")); break;
-    default: name = cp_char (_("")); break;
+    case icSigXYZData: text =_("XYZ"); break;
+    case icSigLabData: text =_("Lab"); break;
+    case icSigLuvData: text =_("Luv"); break;
+    case icSigYCbCrData: text =_("YCbCr"); break;
+    case icSigYxyData: text =_("Yxy"); break;
+    case icSigRgbData: text =_("Rgb"); break;
+    case icSigGrayData: text =_("Gray"); break;
+    case icSigHsvData: text =_("Hsv"); break;
+    case icSigHlsData: text =_("Hls"); break;
+    case icSigCmykData: text =_("Cmyk"); break;
+    case icSigCmyData: text =_("Cmy"); break;
+    case icSig2colorData: text =_("2color"); break;
+    case icSig3colorData: text =_("3color"); break;
+    case icSig4colorData: text =_("4color"); break;
+    case icSig5colorData: text =_("5color"); break;
+    case icSig6colorData: text =_("6color"); break;
+    case icSig7colorData: text =_("7color"); break;
+    case icSig8colorData: text =_("8color"); break;
+    case icSig9colorData: text =_("9color"); break;
+    case icSig10colorData: text =_("10color"); break;
+    case icSig11colorData: text =_("11color"); break;
+    case icSig12colorData: text =_("12color"); break;
+    case icSig13colorData: text =_("13color"); break;
+    case icSig14colorData: text =_("14color"); break;
+    case icSig15colorData: text =_("15color"); break;
+    default: text =_(""); break;
   }
-  return name;
+  return text;
 }
 
-const char*
+std::string
 ICCheader::getDeviceClassName (icProfileClassSignature deviceClass)
 {
-  const char* name;
+  std::string text;
 
   switch (deviceClass)
   {
-    case icSigInputClass: name = cp_char (_("Eingabe")); break;
-    case icSigDisplayClass: name = cp_char (_("Monitor")); break;
-    case icSigOutputClass: name = cp_char (_("Ausgabe")); break;
-    case icSigLinkClass: name = cp_char (_("Verknüpfung")); break;
-    case icSigAbstractClass: name = cp_char (_("Abstrakter Farbraum")); break;
-    case icSigColorSpaceClass: name = cp_char (_("Farbraum")); break;
-    case icSigNamedColorClass: name = cp_char (_("Schmuckfarben")); break;
-    default: name = cp_char (_("")); break;
+    case icSigInputClass: text =_("Eingabe"); break;
+    case icSigDisplayClass: text =_("Monitor"); break;
+    case icSigOutputClass: text =_("Ausgabe"); break;
+    case icSigLinkClass: text =_("Verknüpfung"); break;
+    case icSigAbstractClass: text =_("Abstrakter Farbraum"); break;
+    case icSigColorSpaceClass: text =_("Farbraum"); break;
+    case icSigNamedColorClass: text =_("Schmuckfarben"); break;
+    default: text =_(""); break;
   }
-  return name;
+  return text;
 }
 
-const char*
+std::string
 ICCheader::getPlatformName (icPlatformSignature platform)
 {
-  const char* name;
+  std::string text;
 
   switch (platform)
   {
-    case icSigMacintosh: name = cp_char (_("Macintosh")); break;
-    case icSigMicrosoft: name = cp_char (_("Microsoft")); break;
-    case icSigSolaris: name = cp_char (_("Solaris")); break;
-    case icSigSGI: name = cp_char (_("SGI")); break;
-    case icSigTaligent: name = cp_char (_("Taligent")); break;
-    default: name = cp_char (_("")); break;
+    case icSigMacintosh: text =_("Macintosh"); break;
+    case icSigMicrosoft: text =_("Microsoft"); break;
+    case icSigSolaris: text =_("Solaris"); break;
+    case icSigSGI: text =_("SGI"); break;
+    case icSigTaligent: text =_("Taligent"); break;
+    default: text =_(""); break;
   }
-  return name;
+  return text;
 }
 
 /*int
@@ -300,7 +527,7 @@ ICCheader::getLcmsGetColorSpace ( cmsHPROFILE   hProfile)
 
 ICCtag::ICCtag ()
 {
-  _tag.sig = icMaxEnumTag;
+  _sig = icMaxEnumTag;
   _data = 0; DBG
 }
 
@@ -311,9 +538,8 @@ ICCtag::ICCtag                      (icTag* tag, char* data)
 
 ICCtag::~ICCtag ()
 {
-  _tag.sig = icMaxEnumTag;
-  _tag.offset = 0;
-  _tag.size = 0;
+  _sig = icMaxEnumTag;
+  _size = 0;
   if (!_data) free (_data);
   DBG
 }
@@ -321,18 +547,17 @@ ICCtag::~ICCtag ()
 void
 ICCtag::load                        ( icTag *tag, char* data )
 {
-  _tag.sig = tag->sig;
-  _tag.offset = tag->offset;
-  _tag.size = tag->size;
+  _sig    = icValue(tag->sig);
+  _size   = icValue(tag->size);
 
   if (!_data) free (_data);
-  _data = (char*) calloc ( _tag.size , sizeof (char) );
-  memcpy ( _data , data , _tag.size );
+  _data = (char*) calloc ( _size , sizeof (char) );
+  memcpy ( _data , data , _size );
   DBG
 
   #ifdef DEBUG_ICCTAG
   char* text = _data;
-  cout << _tag.sig << "=" << tag->sig << " offset " << _tag.offset << " size " << _tag.size << " nächster tag " << _tag.size + _tag.offset << " " << text; DBG
+  cout << _sig << "=" << tag->sig << " offset " << icValue(tag->offset) << " size " << _size << " nächster tag " << _size + icValue(tag->offset) << " " << text << " "; DBG
   #endif
 }
 
@@ -357,10 +582,11 @@ std::vector<double>
 ICCtag::getCIExy                                  (void)
 {
   std::vector<double> punkte;
+  icXYZType *daten = (icXYZType*) &_data[0];
 
-  punkte.push_back(0.3);
-  punkte.push_back(0.5);
-  punkte.push_back(0.3);
+  punkte.push_back( icValueSF( (daten->data.data[0].X) ) );
+  punkte.push_back( icValueSF( (daten->data.data[0].Y) ) );
+  punkte.push_back( icValueSF( (daten->data.data[0].Z) ) );
 
   return punkte;
 }
@@ -377,7 +603,7 @@ ICCtag::getDescription              ( void )
 {
   std::string text = "Beschreibung";
 
-  switch (_tag.sig) {
+  switch (_sig) {
     case icSigAToB0Tag: text = _("Farbtabelle, Gerät an Kontaktfarbraum, Anpassung 0"); break;
     case icSigAToB1Tag: text = _("Farbtabelle, Gerät an Kontaktfarbraum, Anpassung 1"); break;
     case icSigAToB2Tag: text = _("Farbtabelle, Gerät an Kontaktfarbraum, Anpassung 2"); break;
@@ -496,10 +722,10 @@ ICCtag::getSigTagName               ( icTagSignature  sig )
     case 0: text = _("----"); break;
     default: text = _("???"); break;
   }
-  #ifdef DEBUG_ICCTAG
+  #ifdef DEBUG_ICCTAG_
   char c[5] = "clrt";
   long* l = (long*) &c[0];
-  cout << *l << ": " << (long)"clrt" << endl; DBG
+  cout << *l << ": " << (long)"clrt" << " "; DBG
   #endif
   return text;
 }
@@ -634,7 +860,7 @@ ICCprofile::load (std::string filename)
   // delegieren
   _filename = filename;
   try {
-    fload();
+    fload ();
   }
     catch (Ausnahme & a) {	// fängt alles von Ausnahme Abstammende
         printf ("Ausnahme aufgetreten: %s\n", a.what());
@@ -657,7 +883,7 @@ ICCprofile::load (char* filename)
   // delegieren
   _filename = filename;
   try {
-    fload();
+    fload ();
   }
     catch (Ausnahme & a) {	// fängt alles von Ausnahme Abstammende
         printf ("Ausnahme aufgetreten: %s\n", a.what());
@@ -707,21 +933,24 @@ ICCprofile::fload ()
   //Profilabschnitte
   tags.clear(); DBG
   #ifdef DEBUG_ICCPROFILE
-  cout << "TagCount: " << getTagCount() << " / " << tags.size() << endl;
+  cout << "TagCount: " << getTagCount() << " / " << tags.size() << " ";DBG
   #endif
+  // TagTabelle bei 132 abholen
   icTag *tagList = (icTag*)&((char*)_data)[132];
   //(icTag*) calloc ( getTagCount() , sizeof (icTag));
   //memcpy (tagList , &((char*)_data)[132], sizeof (icTag) * getTagCount());
   for (int i = 0 ; i < getTagCount() ; i++) {
     ICCtag tag;//( tagList[i] , &((char*)_data)[ tagList[i].offset ] );
-    tag.load( &tagList[i] , &((char*)_data)[ tagList[i].offset ] );
+    DBG
+    tag.load( &tagList[i] ,
+              &((char*)_data)[ icValue(tagList[i].offset) ]); DBG
   #ifdef DEBUG_ICCPROFILE
-    cout << " sig: " << tag.getTagName() << endl; 
+    cout << " sig: " << tag.getTagName() << " "; DBG
   #endif
-    tags.push_back(tag);
+    tags.push_back(tag); DBG
   }
   #ifdef DEBUG_ICCPROFILE
-  cout << "tags: " << tags.size() << endl;
+  cout << "tags: " << tags.size() << " "; DBG
   #endif
   DBG
 }
@@ -856,13 +1085,13 @@ ICCprofile::getProfileInfo                   ( )
 */
     sprintf (text,_("Device Class:   "));
     sprintf (profile_info,"%s%s %s\n",profile_info,text,
-                              header.getDeviceClassName(header.deviceClass()));
+                              header.getDeviceClassName(header.deviceClass()).c_str());
     sprintf (text,_("Color Space:    "));
     sprintf (profile_info,"%s%s %s\n",profile_info,text,
-                              header.getColorSpaceName(header.colorSpace()));
+                              header.getColorSpaceName(header.colorSpace()).c_str());
     sprintf (text,_("PCS Space:      "));
     sprintf (profile_info,"%s%s %s",profile_info,text,
-                              header.getColorSpaceName(header.pcs()));
+                              header.getColorSpaceName(header.pcs()).c_str());
 
  
   return profile_info;
@@ -889,7 +1118,7 @@ ICCprofile::checkProfileDevice (char* type, icProfileClassSignature deviceClass)
         default:
           g_message ("%s \"%s %s: %s",_("Your"), type,
                      _("Profile\" is designed for an other device"),
-                     header.getDeviceClassName(deviceClass));
+                     header.getDeviceClassName(deviceClass).c_str());
           check = false;
           break;
         }
@@ -907,7 +1136,7 @@ ICCprofile::checkProfileDevice (char* type, icProfileClassSignature deviceClass)
           break;
         default:
           g_message ("%s - %s - %s \"%s %s",_("Device class"),
-                     header.getDeviceClassName(deviceClass),
+                     header.getDeviceClassName(deviceClass).c_str(),
                      _("is not valid for an"),
                      type,
                      _("Profile\"."));
@@ -930,7 +1159,7 @@ ICCprofile::checkProfileDevice (char* type, icProfileClassSignature deviceClass)
           break;
         default:
           g_message ("%s - %s - %s \"%s %s",_("Device class"),
-                     header.getDeviceClassName(deviceClass),
+                     header.getDeviceClassName(deviceClass).c_str(),
                      _("is not valid for an"),
                      type,
                      _("Profile\"."));
@@ -938,7 +1167,7 @@ ICCprofile::checkProfileDevice (char* type, icProfileClassSignature deviceClass)
           break;
         if (icSigCmykData   != header.colorSpace())
           g_message ("%s - %s - %s \"%s %s",_("Color space"),
-                     header.getColorSpaceName(header.colorSpace()),
+                     header.getColorSpaceName(header.colorSpace()).c_str(),
                      _("is not valid for an"),
                      type,
                      _("Profile at the moment\"."));
@@ -989,10 +1218,17 @@ const char* cp_nchar (char* text, int n)
 {
   static char string[1024];
 
+  for (int i = 0; i < 1024 ; i++)
+    string[i] = '\000';
+
   if (n < 1024)
     snprintf(&string[0], n, text);
   else
     return NULL;
+
+  #ifdef DEBUG
+  cout << n << " Buchstaben kopieren " <<  (int)text << " " << string <<" "; DBG
+  #endif
 
   return &string[0];
 }

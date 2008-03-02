@@ -31,7 +31,7 @@ decl {\#include <FL/Fl_File_Chooser.H>
 } 
 
 decl {char *statlabel;
- char *filename_alt;
+ std::string filename_alt;
  bool setTitleUrl = true;
  using namespace std;
  int px,py,pw,ph;
@@ -73,14 +73,13 @@ decl {\#include "icc_profile.h"
 decl {ICCprofile profile;} {public
 } 
 
-Function {} {C return_type int
+Function {} {open C return_type int
 } {
-  code {filename_alt = (char*)calloc (sizeof (char), 1024);
-  statlabel = (char*)calloc (sizeof (char), 1024);
+  code {statlabel = (char*)calloc (sizeof (char), 1024);
   fullscreen = false;} {}
   Fl_Window details {
     label {ICC Details} open
-    xywh {562 194 385 520} type Double box NO_BOX color 53
+    xywh {572 242 385 520} type Double box NO_BOX color 53
     code0 {browser = new openvrml::browser(cout, cerr);}
     code1 {DBG
     if (argc>1) {
@@ -92,7 +91,7 @@ Function {} {C return_type int
         browser->load_url(url, param);
         sprintf (statlabel, "%s geladen", argv[1]);
         stat->label(statlabel);
-        sprintf(filename_alt, argv[1]);
+        filename_alt = argv[1];
       } else {
         stat->label("Error loading file!");
       }
@@ -116,7 +115,7 @@ Function {} {C return_type int
         } {
           menuitem {} {
             label Offnen
-            callback {open()}
+            callback {open(true)}
             xywh {15 15 100 20} shortcut 0x4006f
           }
           menuitem {} {
@@ -205,7 +204,7 @@ Function {} {C return_type int
   }
   code {w->resizable(tag_texts);
   w->show();
-  canvas->show();
+  canvas->hide();
   viewer->Hok=1;
   viewer->Hdraw=1;
   viewer->timerUpdate();
@@ -213,24 +212,28 @@ Function {} {C return_type int
   Fl::add_timeout(0.01, (void (*)(void *))timeIT, (void *)viewer);
 
   Fl::scheme(NULL);
-  Fl_File_Icon::load_system_icons();} {}
+  Fl_File_Icon::load_system_icons();
+  if (argc > 1)
+    open (false);} {}
 } 
 
-Function {open(void)} {open return_type {const char*}
+Function {open(int interaktiv)} {open return_type {std::string}
 } {
   code {\#include "icc_vrml.h"
 
-  char *filename = "/tmp/temp.icc";
+  std::string filename = filename_alt;
   Fl_File_Icon	*icon;	// New file icon
   DBG
   load_progress->show ();    load_progress->value (0.0);
   char vrmlDatei[] = "/tmp/tmp_vrml.wrl";
 
-  filename=fl_file_chooser("Wähle ICC Profil?", "ICC Farbprofile (*.[I,i][C,c][M,m,C,c])", filename_alt);
-  DBG printf (filename_alt); printf ("\\n");
-  if (!filename) {
-    return "";
+  if (interaktiv)
+    filename=fl_file_chooser("Wähle ICC Profil?", "ICC Farbprofile (*.[I,i][C,c][M,m,C,c])", filename_alt.c_str());
+  DBG cout << filename_alt << endl;
+
+  if (filename == "") {
     load_progress->hide ();
+    return "";
   }
 
   // Laden
@@ -242,15 +245,15 @@ Function {open(void)} {open return_type {const char*}
   std::vector<std::string> url;
   std::vector<std::string> param;
 
-  if (browser && filename) { DBG
+  if (browser && (filename != "")) { DBG
 
-    create_vrml ( filename, "/usr/share/color/icc/sRGB.icm", &vrmlDatei[0]);
+    create_vrml ( filename.c_str(), "/usr/share/color/icc/sRGB.icm", &vrmlDatei[0]);
 
     load_progress->value (0.8);
-    sprintf (filename_alt, "%s", filename);
+    filename_alt = filename;
     url.push_back (&vrmlDatei[0]);
     browser->load_url(url, param);
-    sprintf (statlabel, "%s geladen", filename);
+    sprintf (statlabel, "%s geladen", filename.c_str());
     cout << statlabel << endl;
     stat->label(statlabel);
     DBG
@@ -359,7 +362,7 @@ class TagTexts {: {public Fl_Hold_Browser}
   }
 } 
 
-class TagDrawings {open : {public Fl_Widget}
+class TagDrawings {: {public Fl_Widget}
 } {
   decl {int X; int Y; int W; int H; std::vector<std::string>texte; std::vector<double>punkte; std::vector<std::vector<double> >kurven;} {}
   decl {int wiederholen;} {public
@@ -411,7 +414,7 @@ class TagDrawings {open : {public Fl_Widget}
   }
 } 
 
-class TagBrowser {open : {public Fl_Hold_Browser}
+class TagBrowser {: {public Fl_Hold_Browser}
 } {
   decl {int X; int Y; int W; int H; char* start_info;} {}
   Function {TagBrowser(int X,int Y,int W,int H,char* start_info) : Fl_Hold_Browser(X,Y,W,H,start_info), X(X), Y(Y), W(W), H(H)} {open

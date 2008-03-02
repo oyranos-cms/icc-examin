@@ -2,6 +2,8 @@
 // Copyright: Kai-Uwe Behrmann
 // Date:      Mai 2004
 
+#define DEBUG_DRAW_
+
 #include "icc_examin.h"
 //#include "icc_vrml.h"
 #include <stdio.h>
@@ -35,7 +37,7 @@ init_shoe() {
 void
 draw_cie_shoe (int X, int Y, int W, int H,
                     std::vector<std::string>               texte,
-                    std::vector<double> punkte,
+                    std::vector<double>                    punkte,
                     int                                    repeated)
 {
   float w,h, xO, yO;
@@ -130,6 +132,7 @@ draw_cie_shoe (int X, int Y, int W, int H,
     free ((void*)RGB);
   }
 
+  // Dauer des Neuzeichnens bestimmen
   if (!repeated) {
     rz = (double)clock()/(double)CLOCKS_PER_SEC - rz;
     rechenzeit += rz;
@@ -159,29 +162,46 @@ draw_cie_shoe (int X, int Y, int W, int H,
     fl_vertex( x(x_xyY), y(y_xyY) );
   fl_vertex (X, y(.25));
   fl_end_polygon();
-//fl_color(FL_WHITE);
+  #ifdef DEBUG_DRAW
+  fl_color(FL_WHITE);
+  #endif
   fl_begin_polygon();
   fl_vertex (X, y(.25));
-  for (int i=(int)(nano_max*.38+0.5) ; i<=(int)(nano_max*.457+0.5); i++)
+  for (int i=(int)(nano_max*.38+0.5) ; i<=(int)(nano_max*.45+0.5); i++)
     fl_vertex( x(x_xyY), y(y_xyY) );
-  fl_vertex (x(.05), Y);
+  fl_vertex (x(.065), Y);
   fl_vertex (X, Y);
   fl_end_polygon();
-//fl_color(FL_BLUE);
+  #ifdef DEBUG_DRAW
+  fl_color(FL_YELLOW);
+  #endif
   fl_begin_polygon();
-  fl_vertex (x(.05), Y);
+  fl_vertex (x(.065), Y);
+  for (int i=(int)(nano_max*.45+0.5) ; i<=(int)(nano_max*.457+0.5); i++)
+    fl_vertex( x(x_xyY), y(y_xyY) );
+  fl_vertex (x(.1), Y);
+  fl_end_polygon();
+  #ifdef DEBUG_DRAW
+  fl_color(FL_BLUE);
+  #endif
+  fl_begin_polygon();
+  fl_vertex (x(.1), Y);
   for (int i=(int)(nano_max*.457+0.5) ; i<=(int)(nano_max*.48+0.5); i++)
     fl_vertex( x(x_xyY), y(y_xyY) );
   fl_vertex (x(.2), Y);
   fl_end_polygon();
-//fl_color(FL_RED);
+  #ifdef DEBUG_DRAW
+  fl_color(FL_RED);
+  #endif
   fl_begin_polygon();
   fl_vertex (X+W, Y);
   fl_vertex (x(0.2), Y);
   for (int i=(int)(nano_max*.48+0.5); i<=(int)(nano_max*.6+0.5); i++)
     fl_vertex( x(x_xyY), y(y_xyY) );
   fl_end_polygon();
-//fl_color(FL_GREEN);
+  #ifdef DEBUG_DRAW
+  fl_color(FL_GREEN);
+  #endif
   fl_begin_polygon();
   fl_vertex (X+W, Y);
   for (int i=(int)(nano_max*.6+0.5); i<=(int)(nano_max+0.5) ; i++)
@@ -215,24 +235,27 @@ draw_cie_shoe (int X, int Y, int W, int H,
   
 
   // Weisspunkt
-  if (texte.size() > 1) {
+  if (texte.size() < 1) {
     fl_color (fl_rgb_color (255,255,255));
     fl_circle (x(WhitePt.x), y(WhitePt.y), 5.0);
   } else {
   // Primärfarben
     register char RGB[3];
     register cmsCIEXYZ XYZ;
-
-    for (unsigned int i = 0; i < texte.size(); ) {
-
-        XYZ.X = punkte[i++];
-        XYZ.Y = punkte[i++];
-        XYZ.Z = punkte[i++]; //1 - ( punkte[i][0] +  punkte[i][1] );
+    int j = 0;
+    for (unsigned int i = 0; i < texte.size(); i++) {
+        cout << punkte[j] << " ";
+        XYZ.X = punkte[j++]; 
+        cout << punkte[j] << " ";
+        XYZ.Y = punkte[j++];
+        cout << punkte[j] << " " << texte[i] << " " << punkte.size(); DBG
+        XYZ.Z = punkte[j++]; //1 - ( punkte[i][0] +  punkte[i][1] );
 
         cmsDoTransform (xform, &XYZ, RGB, 1);
 
         fl_color (fl_rgb_color (RGB[0],RGB[1],RGB[2]));
-        fl_circle ( x(XYZ.X)+0.5 , y(XYZ.Y)+0.5 , 5.0);
+        fl_circle ( x(XYZ.X)+0.5 , y(XYZ.Y)+0.5 , 8.0);
+        i++;
       }
   }
 

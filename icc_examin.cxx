@@ -2,7 +2,7 @@
 
 #include "icc_examin.h"
 static char *statlabel;
- char *filename_alt;
+ std::string filename_alt;
  bool setTitleUrl = true;
  using namespace std;
  int px,py,pw,ph;
@@ -17,7 +17,7 @@ Fl_Double_Window *details=(Fl_Double_Window *)0;
 Fl_Menu_Bar *Fl_lookat_MenuBar=(Fl_Menu_Bar *)0;
 
 static void cb_Offnen(Fl_Menu_*, void*) {
-  open();
+  open(true);
 }
 
 static void cb_Beenden(Fl_Menu_*, void*) {
@@ -77,7 +77,6 @@ TagTexts *tag_texts=(TagTexts *)0;
 
 int main(int argc, char **argv) {
   Fl_Double_Window* w;
-  filename_alt = (char*)calloc (sizeof (char), 1024);
   statlabel = (char*)calloc (sizeof (char), 1024);
   fullscreen = false;
   { Fl_Double_Window* o = details = new Fl_Double_Window(385, 520, "ICC Details");
@@ -174,7 +173,7 @@ int main(int argc, char **argv) {
         browser->load_url(url, param);
         sprintf (statlabel, "%s geladen", argv[1]);
         stat->label(statlabel);
-        sprintf(filename_alt, argv[1]);
+        filename_alt = argv[1];
       } else {
         stat->label("Error loading file!");
       }
@@ -189,7 +188,7 @@ int main(int argc, char **argv) {
   }
   w->resizable(tag_texts);
   w->show();
-  canvas->show();
+  canvas->hide();
   viewer->Hok=1;
   viewer->Hdraw=1;
   viewer->timerUpdate();
@@ -198,24 +197,28 @@ int main(int argc, char **argv) {
 
   Fl::scheme(NULL);
   Fl_File_Icon::load_system_icons();
+  if (argc > 1)
+    open (false);
   w->show(argc, argv);
   return Fl::run();
 }
 
-const char* open(void) {
+std::string open(int interaktiv) {
   #include "icc_vrml.h"
 
-  char *filename = "/tmp/temp.icc";
+  std::string filename = filename_alt;
   Fl_File_Icon	*icon;	// New file icon
   DBG
   load_progress->show ();    load_progress->value (0.0);
   char vrmlDatei[] = "/tmp/tmp_vrml.wrl";
 
-  filename=fl_file_chooser("Wähle ICC Profil?", "ICC Farbprofile (*.[I,i][C,c][M,m,C,c])", filename_alt);
-  DBG printf (filename_alt); printf ("\n");
-  if (!filename) {
-    return "";
+  if (interaktiv)
+    filename=fl_file_chooser("Wähle ICC Profil?", "ICC Farbprofile (*.[I,i][C,c][M,m,C,c])", filename_alt.c_str());
+  DBG cout << filename_alt << endl;
+
+  if (filename == "") {
     load_progress->hide ();
+    return "";
   }
 
   // Laden
@@ -227,15 +230,15 @@ const char* open(void) {
   std::vector<std::string> url;
   std::vector<std::string> param;
 
-  if (browser && filename) { DBG
+  if (browser && (filename != "")) { DBG
 
-    create_vrml ( filename, "/usr/share/color/icc/sRGB.icm", &vrmlDatei[0]);
+    create_vrml ( filename.c_str(), "/usr/share/color/icc/sRGB.icm", &vrmlDatei[0]);
 
     load_progress->value (0.8);
-    sprintf (filename_alt, "%s", filename);
+    filename_alt = filename;
     url.push_back (&vrmlDatei[0]);
     browser->load_url(url, param);
-    sprintf (statlabel, "%s geladen", filename);
+    sprintf (statlabel, "%s geladen", filename.c_str());
     cout << statlabel << endl;
     stat->label(statlabel);
     DBG

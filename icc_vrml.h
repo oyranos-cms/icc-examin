@@ -5,6 +5,6 @@
 #ifndef ICC_VRML_H
 #define ICC_VRML_H
 
-int create_vrml( char *profilVoll, char *profilTransparent, char *vrml);
+int create_vrml( const char *profilVoll, char *profilTransparent, char *vrml);
 
 #endif //ICC_VRML_H

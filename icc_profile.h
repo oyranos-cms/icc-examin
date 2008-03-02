@@ -30,13 +30,23 @@ class ICCprofile;
 class ICCheader;
 class ICCtag;
 
-int                     icValue   (icUInt32Number val);
-long                    icValue   (icUInt64Number val);
-double                  icValue   (icS15Fixed16Number val);
+unsigned int            icValue   (icUInt16Number val);
+unsigned int            icValue   (icUInt32Number val);
+unsigned long           icValue   (icUInt64Number val);
+double                  icValueSF (icS15Fixed16Number val);
+double                  icValueUF (icU16Fixed16Number val);
+int                     icValue   (icInt16Number val);
+int                     icValue   (icInt32Number val);
+int                     icValue   (icInt64Number val);
+icColorSpaceSignature   icValue   (icColorSpaceSignature val);
+icPlatformSignature     icValue   (icPlatformSignature val);
+icProfileClassSignature icValue   (icProfileClassSignature val);
+icTagSignature          icValue   (icTagSignature val);
+
 
 class ICCheader {
   public:
-                        ICCheader(); 
+                        ICCheader (); 
   private:
     icHeader            header;
     map<string,string>  cmm_map;
@@ -53,22 +63,38 @@ class ICCheader {
 //    void                Cmm     (string s)      {memcpy((char*)&header.cmmId,
 //                                                       cmm_map.find(s),
 //                                                       sizeof (icSignature)); }
-    void                CmmName (const char* s) {memcpy((char*)&header.cmmId, s,
+    void                cmmName (const char* s) {memcpy((char*)&(header.cmmId), s,
                                                        sizeof (icSignature)); }
-    const char*         CmmName ()       {return cp_nchar ((char*)&header.cmmId,
+    const char*         cmmName ()      {return cp_nchar ((char*)&(header.cmmId),
                                                       sizeof (icSignature)+1); }
-    int                 version ()       {return icValue(header.version); }
-    icProfileClassSignature deviceClass ()   {return header.deviceClass; }
-    icColorSpaceSignature colorSpace  ()   {return header.colorSpace; }
-    icColorSpaceSignature pcs ()           {return header.pcs; }
-    const char*         platform ()        {return getPlatformName(header.platform); }
+    int                 version ()      {return icValue(header.version); }
+    std::string         versionName ();
+    icProfileClassSignature deviceClass ()   {return icValue(header.deviceClass); }
+    icColorSpaceSignature colorSpace  (){return icValue(header.colorSpace); }
+    icColorSpaceSignature pcs ()        {return icValue(header.pcs); }
+    const char*         magicName ()       {return cp_nchar ((char*)&(header.
+                                                      magic),
+                                                      sizeof (icSignature)+1); }
+    std::string         platform ()     {return getPlatformName(icValue(header.platform)); }
+    std::string         flags ();
+    std::string         attributes ();
+    std::string         renderingIntent ();
+    const char*         modelName ()       {return cp_nchar ((char*)&(header.
+                                                      model),
+                                                      sizeof (icSignature)+1); }
+    const char*         manufacturerName() {return cp_nchar ((char*)&(header.
+                                                      manufacturer),
+                                                      sizeof (icSignature)+1); }
+    const char*         creatorName ()     {return cp_nchar ((char*)&(header.
+                                                      creator),
+                                                      sizeof (icSignature)+1); }
     std::string         print ();
     std::string         print_long ();
     //char*               getProfileInfo  ();
 
-    const char*         getColorSpaceName  ( icColorSpaceSignature color);
-    const char*         getDeviceClassName ( icProfileClassSignature cl);
-    const char*         getPlatformName    ( icPlatformSignature platform);
+    std::string         getColorSpaceName  ( icColorSpaceSignature color);
+    std::string         getDeviceClassName ( icProfileClassSignature cl);
+    std::string         getPlatformName    ( icPlatformSignature platform);
 };
 
 class ICCtag {
@@ -77,21 +103,23 @@ class ICCtag {
                         ICCtag             (icTag *tag, char* data);
                         ~ICCtag            ();
   private:
-    icTag               _tag;
+    icTagSignature      _sig;
+    int                 _size;
     char*               _data;
 
   public:
     void                load (icTag *tag, char* data);
   public:
-    std::string         getTagName()       {return getSigTagName (_tag.sig); }
+    std::string         getTagName()       {return getSigTagName (_sig); }
     std::string         getTypName()       {//cout << _data << " " ; DBG
                                             icTagTypeSignature sig =
                                             ((icTagBase*)_data) ->
                                             sig;
-                                            return getSigTypeName (sig);
+                                            return getSigTypeName(
+                                              (icTagTypeSignature)icValue(sig));
                                            }
     int                 getTagByName();
-    int                 getSize()          {return _tag.size; }
+    int                 getSize()          {return _size; }
     std::string         getDescription();
 
     std::vector<double> getCIExy();
@@ -135,8 +163,8 @@ class ICCprofile {
     const char*         filename ()        {return _filename.c_str(); }
     void                filename (const char* s) {_filename = s; }
     int                 size     ()        {return header.size(); }
-    const char*         cmm      ()        {return header.CmmName(); }
-    void                cmm      (const char* s) {header.CmmName (s); }
+    const char*         cmm      ()        {return header.cmmName(); }
+    void                cmm      (const char* s) {header.cmmName (s); }
     int                 version  ()        {return (int) header.version(); }
     std::string         printHeader     () {return header.print(); }
     std::string         printLongHeader () {return header.print_long(); }
@@ -147,7 +175,7 @@ class ICCprofile {
     std::vector<double> getTagCurve  (int item);
     char*               getProfileInfo  ();
 
-    int                 getTagCount     () {return _data->count; }
+    int                 getTagCount     () {return icValue(_data->count); }
 
     void                saveProfileToFile  (char* filename, char *profile,
                                            int    size);
