@@ -159,6 +159,16 @@ class ICCtag {
                         ICCtag             (const ICCtag& tag)
                                                           {ICCtag::copy (tag); }
     void                copy               (const ICCtag& tag);
+    void                clear              () {_sig = icMaxEnumTag;
+                                               DBG_S((int*)_data)
+                                               if (_data && _size) free (_data);
+                                               _size = 0;
+                                               _data = NULL;
+                                               _intent = 0;
+                                               _color_in = icMaxEnumData;
+                                               _color_out = icMaxEnumData;
+                                               _profil = NULL; DBG
+                                               }
                         ~ICCtag            ();
   private:
     icTagSignature      _sig;
@@ -313,7 +323,7 @@ class ICCprofile {
     std::string         _filename;
 
     // icc34.h Definitionen
-    icProfile*          _data;
+    char*               _data;
     unsigned int        _size;
 
     ICCheader           header;
@@ -347,7 +357,8 @@ class ICCprofile {
     std::vector<std::string> getTagChannelNames(int item, ICCtag::MftChain typ);
     bool                hasTagName   (std::string name); // Name
     int                 getTagByName (std::string name); // Name
-    int                 getTagCount     () {return icValue(_data->count); }
+    int                 getTagCount     () {return icValue(((icProfile*)_data)->
+                                                   count); }
     // Profil Infos
     char*               getProfileInfo  ();
     std::vector<double> getWhitePkt   (void);

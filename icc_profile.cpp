@@ -80,7 +80,7 @@ ICCheader::attributes (void)
 
 
   #ifdef DEBUG
-  cout << f[0] << " " << (long)header.attributes; DBG
+  cout << (long)header.attributes; DBG
   char* ptr = (char*) &(header.attributes);
   for (int i = 0; i < 8 ; i++)
     cout << (int)ptr[i] << " ";
@@ -108,7 +108,7 @@ ICCheader::flags (void)
     s << _("kann unabhängig vom Bild verwendet werden.");
 
   #ifdef DEBUG
-  cout << f[0] << " " << (long)header.flags; DBG
+  cout /*<< f[0] << " "*/ << (long)header.flags; DBG
   char* ptr = (char*) &(header.flags);
   for (int i = 0; i < 8 ; i++)
     cout << (int)ptr[i] << " ";
@@ -200,6 +200,7 @@ ICCtag::ICCtag ()
   _size = 0;
   _data = NULL; DBG_S("ICCtag::ICCtag")
   _profil = NULL;
+  if (_size) DBG_V ((int*)_data)
 }
 
 ICCtag::ICCtag                      (ICCprofile* profil, icTag* tag, char* data)
@@ -210,13 +211,14 @@ ICCtag::ICCtag                      (ICCprofile* profil, icTag* tag, char* data)
 void
 ICCtag::copy                        (const ICCtag& tag)
 {
-  _sig = tag._sig; DBG_S("ICCtag::ICCtag <- Kopie")
-  _size = tag._size; DBG_V (_size)
-  if (_size) {
-    _data = new char[_size]; //(char*)calloc (sizeof(char), _size);
-    memcpy (_data , tag._data , _size);
+  _sig = tag._sig; //DBG_S (tag._sig << " " << _sig)
+  _size = tag._size; DBG_S("ICCtag::ICCtag <- Kopie _size: " << _size )
+  if (_size && tag._data) {
+    _data = (char*)calloc(sizeof(char),_size);//new char[_size];
+    memcpy (_data , tag._data , _size); DBG_S((int*)tag._data << " -> " << (int*)_data)
   } else {
     _data = NULL;
+    _size = 0;
   }
 
   _intent = tag._intent;
@@ -229,17 +231,21 @@ ICCtag::copy                        (const ICCtag& tag)
 ICCtag::~ICCtag ()
 {
   _sig = icMaxEnumTag;
-  _size = 0;
-  if (_data != NULL) {
+  if (_size) {
     #ifdef DEBUG_ICCTAG
+    #if 0
     DBG_S( "ICCtag~ löschen: " << (char*)(icTagTypeSignature*)&_data[0] )
+    #else
+    DBG_S("ICCtag~ löschen: " << (int*)_data)
     #endif
-    free (_data);
+    #endif
+    free(_data);//delete [] (_data);
   } else {
     #ifdef DEBUG_ICCTAG
     DBG_S( "ICCtag~ war leer!" )
     #endif
   }
+  _size = 0;
 }
 
 void
@@ -294,16 +300,16 @@ ICCtag::load                        ( ICCprofile *profil,
     break;
   }
 
-  if (_data != NULL) {
-    free (_data);
+  if (_data != NULL && _size) {
+    free(_data);//delete [] _data;
     cout << "ICCtag wiederverwendet: " << (char*)tag->sig << " "; DBG
   }
 
-  _data = (char*) calloc ( _size , sizeof (char) );
+  _data = (char*) calloc(sizeof(char),_size);//new char (_size);
   memcpy ( _data , data , _size );
-  DBG
+  DBG_S((int*)_data)
 
-  #ifdef DEBUG_ICCTAG
+  #ifdef DEBUG_ICCTAG_
   char* text = _data;
   cout << _sig << "=" << tag->sig << " offset " << icValue(tag->offset) << " size " << _size << " nächster tag " << _size + icValue(tag->offset) << " " << text << " "; DBG
   #endif
@@ -769,7 +775,7 @@ ICCprofile::ICCprofile (void)
 ICCprofile::ICCprofile (const char *filename)
   : _filename (filename)
 {
-  if (_data) free (_data);
+  if (_data && _size) free(_data);//delete [] _data;
   _data = NULL;
   _size = 0;
 
@@ -796,7 +802,7 @@ ICCprofile::ICCprofile (const char *filename)
 ICCprofile::~ICCprofile (void)
 {
   tags.clear();
-  if (_data != NULL) free (_data);
+  if (_data != NULL && _size) free(_data);//delete [] _data;
 
   #ifdef DEBUG_PROFILE
   cout << "_data und tags gelöscht"; DBG
@@ -864,14 +870,14 @@ ICCprofile::fload ()
     _filename = "";
   }
 
-  if (_data != NULL) {
+  if (_data != NULL && _size) {
     cout << "!!!! Profil wird wiederbenutzt !!!! "; DBG
-    free (_data);
+    free(_data);//delete [] _data;
     tags.clear();
     measurement.clear();
   }
   _size = (unsigned int)f.tellg();         f.seekg(0);
-  _data = (icProfile*) calloc ( _size, sizeof (char));
+  _data = (char*)calloc (sizeof (char), _size);
   
   f.read ((char*)_data, _size);
   #ifdef DEBUG_ICCPROFILE
@@ -886,7 +892,7 @@ ICCprofile::fload ()
   //Profilabschnitte
   // TagTabelle bei 132 abholen
   icTag *tagList = (icTag*)&((char*)_data)[132];
-  //(icTag*) calloc ( getTagCount() , sizeof (icTag));
+  //(icTag*) new char ( getTagCount() * sizeof (icTag));
   //memcpy (tagList , &((char*)_data)[132], sizeof (icTag) * getTagCount());
   DBG
   tags.resize(getTagCount()); DBG
@@ -1127,9 +1133,9 @@ ICCprofile::getWhitePkt           (void)
 void
 ICCprofile::saveProfileToFile  (char* filename)
 {
-  if (_data) free (_data);
+  if (_data && _size) free(_data);//delete []_data;
   _size = sizeof (icHeader) + sizeof (icUInt32Number); DBG_V(_size <<" "<<sizeof (icProfile))
-  _data = (icProfile*) calloc (sizeof (icHeader), 1);
+  _data = (char*)calloc (sizeof (char) , _size); //new char (sizeof(icHeader) );
   writeTagTable ();
   writeTags ();
   header.size(_size); DBG_V (_size )
@@ -1158,8 +1164,8 @@ ICCprofile::writeTags (void)
     memcpy (temp, _data, _size); DBG_V( _size<<" "<< size<<" "<<size%4 )
     memcpy (&temp[_size], data, size);
     _size = _size + size + (size%4 ? 4 - size%4 : 0);
-    free (_data);
-    _data = (icProfile*) temp;
+    free(_data);//delete [] _data;
+    _data = temp;
     list = (icTagList*)&temp[128]; DBG_V (icValue(list->tags[i].offset))
     DBG_V (icValue(list->tags[i].sig))
     DBG_V (icValue(list->tags[i].size) << " " << (int)&_data[0])
@@ -1169,13 +1175,14 @@ ICCprofile::writeTags (void)
 void
 ICCprofile::writeTagTable (void)
 {
-  _data->count = icValue((icUInt32Number)tags.size());
+  icProfile* p = (icProfile*) _data;
+  p->count = icValue((icUInt32Number)tags.size());
   int size = sizeof (icTag) * tags.size();
-  char* data = (char*)calloc(sizeof (char), size + _size);
+  char* data = (char*) calloc (sizeof(char), size + _size);
   memcpy (data, _data, _size);
   _size = _size + size;
-  free (_data);
-  _data = (icProfile*) data;
+  free(_data);//delete [] _data;
+  _data = data;
 }
 
 void
@@ -1287,19 +1294,20 @@ ICCprofile::removeTag (int item)
   if (item >= (int)tags.size() )
     return;
 
-  std::vector <ICCtag> t;
-  t.resize (tags.size()-1);
+  std::vector <ICCtag> t(tags.size()-1); DBG
   DBG_V (tags.size())
   int i = 0,
-      zahl = 0;
+      zahl = 0; DBG
   for (; i < (int)tags.size(); i++)
-    if (i != item) {
+    if (i != item) { DBG
       t[zahl].copy(tags[i]); DBG_S("i: " << i << " -> zahl: " << zahl)
-      zahl++;
+      zahl++; DBG
     }
 
   DBG
-  tags = t; DBG
+  tags.resize(t.size());
+  for (int i = 0; i < (int)t.size(); i++)
+    tags[i].copy (t[i]);
 
   DBG_V( i << " " << tags.size())
 }
