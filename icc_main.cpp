@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2005  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2006  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -48,13 +48,6 @@ main (int argc, char** argv)
   //MallocDebug_CheckFreeList();
 # endif
 
-# if 0
-  saveMemToFile("/tmp/icc_examin_dbg.txt", "Hallo\n", 6);
-  Fl_Double_Window* w = new Fl_Double_Window(410, 285, _("colour adjust"));
-  w->show();
-  Fl::run();
-# endif
-
   if(getenv("ICCEXAMIN_DEBUG") && atoi(getenv("ICCEXAMIN_DEBUG"))>0)
     icc_debug = atoi(getenv("ICCEXAMIN_DEBUG"));
   else
@@ -62,11 +55,20 @@ main (int argc, char** argv)
 
   DBG_PROG_START
 
-  const char *locale_paths[3];
+  const char *locale_paths[3] = {0,0,0};
   int is_path = -1;
 # if __APPLE__
-  std::string bdr = icc_examin_ns::holeBundleResource("locale","");
-  locale_paths[0] = bdr.c_str();
+  std::string bdr;
+  if(getenv("RESOURCESPATH")) {
+    bdr = getenv("RESOURCESPATH");
+    bdr += "/locale";
+    locale_paths[0] = bdr.c_str();
+  }
+  if(!locale_paths[0]) {
+    bdr = icc_examin_ns::holeBundleResource("locale","");
+    if(bdr.size())
+      locale_paths[0] = bdr.c_str();
+  } 
   locale_paths[1] = LOCALEDIR;
   locale_paths[2] = SRC_LOCALEDIR;
   is_path = fl_search_locale_path (3, locale_paths, "de", "icc_examin");
@@ -75,8 +77,10 @@ main (int argc, char** argv)
   locale_paths[1] = SRC_LOCALEDIR;
   is_path = fl_search_locale_path (2, locale_paths, "de", "icc_examin");
 # endif
-  if(is_path >= 0)
+  if(is_path >= 0) {
     fl_initialise_locale ( locale_paths[is_path] );
+    DBG_NUM_S( "locale gefunden in: " << locale_paths[is_path] )
+  }
 
 
   ICCexamin hauptprogramm;

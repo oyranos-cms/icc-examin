@@ -44,6 +44,14 @@
 			<true/>
 		</dict>
 		<dict>
+			<key>CFBundleTypeName</key>
+			<string>ICC Profile</string>
+		    <key>CFBundleTypeRole</key>
+            <string>Viewer</string>
+            <key>CFBundleTypeOSTypes</key>
+            <array>
+				<string>prof</string>
+			</array>
 			<key>CFBundleTypeExtensions</key>
 			<array>
 				<string>icc</string>
@@ -55,14 +63,6 @@
             <array>
                 <string>icc</string>
             </array>
-			<key>CFBundleTypeName</key>
-			<string>ICC Profile</string>
-            <key>CFBundleTypeOSTypes</key>
-            <array>
-                <string>ICC</string>
-            </array>
-		    <key>CFBundleTypeRole</key>
-            <string>Viewer</string>
 			<key>LSIsAppleDefaultForType</key>
 			<true/>
 		</dict>
@@ -70,7 +70,7 @@
 	<key>CFBundleExecutable</key>
 	<string>ICC Examin</string>
 	<key>CFBundleGetInfoString</key>
-	<string>Copyright 2004-2005, Kai-Uwe Behrmann
+	<string>Copyright 2004-2006, Kai-Uwe Behrmann
 	www.behrmann.name</string>
 	<key>CFBundleIconFile</key>
 	<string>icc_examin.icns</string>
@@ -83,7 +83,7 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>0.38</string>
+	<string>0.39</string>
 	<key>CSResourcesFileMapped</key>
 	<true/>
 </dict>

@@ -45,10 +45,22 @@ I18N_HEADERS = fl_i18n.H
 MSGFMT = msgfmt -c --statistics
 RPMARCH = `rpmbuild --showrc | awk '/^build arch/ {print $$4}'`
 
+ifdef FLU
+  FLU_FLTK_LIBS = $(FLU_LIBS) $(FLTK_LIBS)
+else
+  FLU_FLTK_LIBS = $(FLTK_LIBS)
+endif
+
+LIB_LIBS = -L$(libdir) -L./ $(FLU_FLTK_LIBS) \
+	-llcms -L/lib \
+	$(DBG_LIBS) -lintl
+
 ifdef APPLE
+  LIBEXT = .dylib
   OPTS=-Wall -g $(DEBUG) -DPIC -Wunused -fno-exceptions
-  LIBLINK_FLAGS = -dynamiclib
+  LIBLINK_FLAGS = -dynamiclib $(LIB_LIBS) 
   I18N_LIB = -lintl $(LIBNAME) #-liconv
+  I18N_LIBSTAT = /opt/local/lib/libintl.a $(LIBNAME) #-liconv
   OSX_CPP = $(OSX_CPPFILES)
   INCL=-I$(includedir) -I/usr/X11R6/include -I./ -I/usr/include/gcc/darwin/default/c++
   REZ = \
@@ -88,9 +100,9 @@ else
   endif
 endif
 
-LIBSONAMEFULL = lib$(TARGET)$(SO).$(VERSION_L)
-LIBSONAME = lib$(TARGET)$(SO).$(VERSION_A)
-LIBSO = lib$(TARGET)$(SO)
+LIBSONAMEFULL = lib$(TARGET)$(SO).$(VERSION_L)$(LIBEXT)
+LIBSONAME = lib$(TARGET)$(SO).$(VERSION_A)$(LIBEXT)
+LIBSO = lib$(TARGET)$(SO)$(LIBEXT)
 LIBNAME = lib$(TARGET).a
 
 ifdef FLTK
@@ -109,12 +121,6 @@ ALL_INCL = $(INCL) \
 
 CXXFLAGS=$(OPTS) $(ALL_INCL)
 CFLAGS = $(OPTS) $(ALL_INCL)
-
-ifdef FLU
-  FLU_FLTK_LIBS = $(FLU_LIBS) $(FLTK_LIBS)
-else
-  FLU_FLTK_LIBS = $(FLTK_LIBS)
-endif
 
 LDLIBS = -L$(libdir) -L./ $(FLU_FLTK_LIBS) \
 	$(X11_LIBS) -llcms -L/lib $(OYRANOS_LIBS) $(LCMS_LIBS) \
@@ -252,6 +258,7 @@ POT_FILE = po/$(TARGET).pot
 
 APPL_FILES = \
 	ICC\ Examin.app/ \
+	ICC\ Examin.sh \
 	Info.plist
 
 ALL_FILES =	$(SOURCES) \
@@ -281,7 +288,7 @@ release:	icc_alles.o
 
 dynamic:	$(BINTARGET)
 
-$(BINTARGET):	$(BASE) $(OBJECTS) $(LINGUAS_SRC) $(I18N_OBJECTS) $(LIBNAME) $(LIBSONAMEFULL)
+$(BINTARGET):	$(BASE) $(OBJECTS) $(LINGUAS_SRC) $(I18N_OBJECTS) $(LIBNAME) #$(LIBSONAMEFULL)
 	echo Verknuepfen $@ ... $(OBJECTS)
 	$(CXX) $(OPTS) -o $(BINTARGET) \
 	$(OBJECTS) \
@@ -290,8 +297,8 @@ $(BINTARGET):	$(BASE) $(OBJECTS) $(LINGUAS_SRC) $(I18N_OBJECTS) $(LIBNAME) $(LIB
 
 $(LIBSONAMEFULL):	$(I18N_OBJECTS)
 	echo Verknuepfen $@ ...
-	$(CC) $(OPTS) $(LIBLINK_FLAGS) $(LINK_NAME) -o $(LIBSONAMEFULL) \
-	$(I18N_OBJECTS) 
+	$(CXX) $(OPTS) $(LIBLINK_FLAGS) $(LINK_NAME) -o $(LIBSONAMEFULL) \
+	$(I18N_OBJECTS)  icc_utils.o icc_helfer.o icc_speicher.o
 	$(REZ)
 	$(RM)  $(LIBSONAME)
 	$(LINK) $(LIBSONAMEFULL) $(LIBSONAME)
@@ -308,17 +315,21 @@ static:	$(BINTARGET)
 	$(CXX) $(OPTS) -o $(BINTARGET) $(OBJECTS) \
 	-L./ \
 	`flu-config --ldstaticflags` \
-	`fltk-config --use-gl --use-images --ldstaticflags` \
-	-L/usr/X11R6/lib -lX11 -lXxf86vm -lXext -L/opt/local/lib \
+	`test -f /opt/local/lib/libfltk_images.a && echo /opt/local/lib/libfltk_images.a \
+    /opt/local/lib/libpng.a /opt/local/lib/libjpeg.a -lz || \
+	fltk-config --use-gl --use-images --ldstaticflags` \
+	`fltk-config --use-gl --ldstaticflags` \
+	-L/opt/local/lib \
 	`oyranos-config --ld_x_staticflags` -L/$(prefix)/lib \
-	-L$(prefix)/lib -lGLU -lGL -lfreetype \
-	`pkg-config --libs ftgl`  -lsupc++ \
-	$(I18N_LIB) $(X11_LIBS) \
+	-L$(prefix)/lib \
+	/usr/X11R6/lib/libfreetype.a -lftgl \
+	$(I18N_LIBSTAT) $(X11_LIBS) \
 	$(DBG_LIBS) \
 	`test -f /opt/kai-uwe/lib/liblcms.a && echo /opt/kai-uwe/lib/liblcms.a || \
 	  (test -f /usr/lib/liblcms.a && echo /usr/lib/liblcms.a || \
+	  (test -f /opt/local/lib/liblcms.a && echo /opt/local/lib/liblcms.a || \
         (test -f /usr/local/lib/liblcms.a && echo /usr/local/lib/liblcms.a || \
-	      (pkg-config --libs lcms)))` #/usr/lib/libelektra.a # Hack for static lcms
+	      (pkg-config --libs lcms))))` #/usr/lib/libelektra.a # Hack for static lcms
 	$(REZ)
 
 strip: $(BINTARGET)
@@ -507,17 +518,27 @@ uninstall:
 	done;
 	echo ... $@ fertig
 
-bundle:	static
+bundle:
 	echo bündeln ...
-	test -d ICC\ Examin.app/Contents/MacOS/ || mkdir -p ICC\ Examin.app/ ICC\ Examin.app/Contents/ ICC\ Examin.app/Contents/MacOS/ ICC\ Examin.app/Contents/Resources/
-	$(INSTALL) -m 755 $(BINTARGET) ICC\ Examin.app/Contents/MacOS/ICC\ Examin
-	strip ICC\ Examin.app/Contents/MacOS/ICC\ Examin
+	test -d ICC\ Examin.app/Contents/MacOS/ || mkdir -p ICC\ Examin.app/ ICC\ Examin.app/Contents/ ICC\ Examin.app/Contents/MacOS/ ICC\ Examin.app/Contents/Resources/  ICC\ Examin.app/Contents/Resources/bin/ ICC\ Examin.app/Contents/Resources/lib/ ICC\ Examin.app/Contents/Resources/share/
 	$(INSTALL) -m 644 Info.plist ICC\ Examin.app/Contents/Info.plist
-	$(INSTALL) -m 644 $(FONT) ICC\ Examin.app/Contents/Resources/
+	$(INSTALL) -m 755 ICC\ Examin.sh ICC\ Examin.app/Contents/MacOS/ICC\ Examin
+	$(INSTALL) -m 755 $(BINTARGET) ICC\ Examin.app/Contents/MacOS/
+	strip ICC\ Examin.app/Contents/MacOS/$(BINTARGET)
+	echo  Bibliotheken ...
+	for bib in jpeg png lcms intl iconv fltk freetype; do \
+	  echo "bündele lib$${bib}$(LIBEXT) ..."; \
+      test -f /opt/local/lib/lib$${bib}$(LIBEXT) \
+		&& ($(COPY) -R /opt/local/lib/lib$${bib}*$(LIBEXT) ICC\ Examin.app/Contents/Resources/lib/ ) \
+		|| ( test -f /usr/X11R6/lib/lib$${bib}$(LIBEXT) \
+		    && ($(COPY) -R /usr/X11R6/lib/lib$${bib}*$(LIBEXT) ICC\ Examin.app/Contents/Resources/lib/ ) \
+	        || (echo lib$${bib}$(LIBEXT) not found ... skipping)); \
+	done;
 	test -f ~/bin/iccgamut \
-	  && $(INSTALL) -m 755 ~/bin/iccgamut ICC\ Examin.app/Contents/Resources/ \
-	  || test -f iccgamut && $(INSTALL) -m 755 iccgamut ICC\ Examin.app/Contents/Resources/ \
+	  && $(INSTALL) -m 755 ~/bin/iccgamut ICC\ Examin.app/Contents/Resources/bin/ \
+	  || test -f iccgamut && $(INSTALL) -m 755 iccgamut ICC\ Examin.app/Contents/Resources/bin/ \
 	    || echo iccgamut nicht gefunden
+	$(INSTALL) -m 644 $(FONT) ICC\ Examin.app/Contents/Resources/share/
 	echo  Linguas ...
 	for ling in $(LINGUAS); do \
 	  echo "bündele po/$${ling}.gmo ..."; \
@@ -530,11 +551,14 @@ bundle:	static
 
 unbundle:
 	echo mache sauber $@ in $(DESTDIR) ...
-	$(RM) $(DESTDIR)ICC\ Examin.app/Contents/MacOS/ICC\ Examin
-	$(RM) $(DESTDIR)ICC\ Examin.app/Contents/Resources/$(FONT)
-	$(RM) $(DESTDIR)ICC\ Examin.app/Contents/Resources/iccgamut
+	$(RM) $(DESTDIR)ICC\ Examin.app/Contents/MacOS/*
+	$(RM) $(DESTDIR)ICC\ Examin.app/Contents/Resources/share/$(FONT)
+	$(RM) $(DESTDIR)ICC\ Examin.app/Contents/Resources/bin/*
+	$(RM) $(DESTDIR)ICC\ Examin.app/Contents/Resources/lib/*
 	$(RM) -R $(DESTDIR)ICC\ Examin.app/Contents/Resources/locale
 	echo ... $@ fertig
+
+.PHONY: install pkg bundle uninstall unbundle unpkg
 
 pkg:	bundle
 	echo Vorbereiten des osX Packetes ...
@@ -546,6 +570,7 @@ pkg:	bundle
 	test -f ~/bin/iccgamut \
 	  && $(INSTALL) -m 755 ~/bin/iccgamut installation$(bindir) \
 	  || test -f iccgamut && $(INSTALL) -m 755 iccgamut installation$(bindir) \
+	  || test -f /opt/local/bin/iccgamut && $(INSTALL) -m 755 /opt/local/bin/iccgamut installation$(bindir) \
 	    || echo iccgamut nicht gefunden
 	$(LINK) $(bindir)/$(BINTARGET) installation/Applications/ICC\ Examin.app/Contents/MacOS/ICC\ Examin
 	open /Developer/Applications/Utilities/PackageMaker.app ICC\ Examin.pmsp

@@ -108,19 +108,22 @@ fl_search_locale_path (int n_places, const char **locale_paths,
   /* search in a given set of locale paths for a valid locale file */
   for (int i = 0; i < n_places; ++i)
   {
-    char test[1024];
-    FILE *fp = 0;
-    /* construct the full path to a possibly valid locale file */
-    snprintf(test, 1024, "%s%s%s%sLC_MESSAGES%s%s.mo",
-                         locale_paths[i], DIR_SEPARATOR,
-                         search_lang, DIR_SEPARATOR, DIR_SEPARATOR, app_name);
-    /* test the file for existence */
-    fp = fopen(test, "r");
-    if(fp)
+    if(locale_paths[i])
     {
-      fclose(fp);
-      /* tell about the hit place */
-      return i;
+      char test[1024];
+      FILE *fp = 0;
+      /* construct the full path to a possibly valid locale file */
+      snprintf(test, 1024, "%s%s%s%sLC_MESSAGES%s%s.mo",
+                           locale_paths[i], DIR_SEPARATOR,
+                           search_lang, DIR_SEPARATOR, DIR_SEPARATOR, app_name);
+      /* test the file for existence */
+      fp = fopen(test, "r");
+      if(fp)
+      {
+        fclose(fp);
+        /* tell about the hit place */
+        return i;
+      }
     }
   }
   return -1;

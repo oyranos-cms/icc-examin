@@ -1,5 +1,5 @@
 # data file for the Fltk User Interface Designer (fluid)
-version 1.0107 
+version 1.0106 
 i18n_type 1 
 i18n_include <libintl.h> 
 i18n_function _ 
@@ -319,29 +319,49 @@ class ICCfltkBetrachter {open
     dateiwahl = new Fl_File_Chooser(ptr, _("ICC colour profiles (*.{I,i}{C,c}{M,m,C,c})	Measurement (*.{txt,it8,IT8,RGB,CMYK,ti*,CIE,cie,nCIE,oRPT,DLY,LAB,Q60})	Argyll Gamuts (*.{wrl,vrml}"), Fl_File_Chooser::MULTI, _("Which ICC profile?"));
     dateiwahl->callback(dateiwahl_cb);
     dateiwahl->preview(true);
-  \#endif} {selected
-    }
+  \#endif} {}
     Fl_Window ueber {
-      label {About ICC Examin}
-      xywh {657 447 366 241} type Double resizable
+      label {About ICC Examin} open
+      xywh {593 317 365 289} type Double resizable
       code0 {o->hide();} non_modal visible
     } {
       Fl_Group {} {open
-        xywh {0 0 365 240}
+        xywh {0 0 375 285}
       } {
-        Fl_Help_View ueber_html {
-          xywh {0 0 365 205} resizable
+        Fl_Tabs {} {open
+          xywh {0 0 365 260}
+        } {
+          Fl_Help_View ueber_html {
+            label About
+            xywh {0 25 365 235} selection_color 47
+          }
+          Fl_Help_View hilfe_html {
+            label Help
+            xywh {0 25 365 235} selection_color 47 hide
+          }
+          Fl_Help_View lizenz_html {
+            label License
+            xywh {0 25 365 235} selection_color 47 hide resizable
+          }
+          Fl_Help_View dank_html {
+            label Acknowlegement
+            xywh {0 25 365 235} selection_color 47 hide
+          }
+          Fl_Output links_text {
+            label Links
+            xywh {10 35 345 215} type Multiline selection_color 47 hide
+          }
         }
         Fl_Button ja {
           label Yes
           callback {ueber->hide();}
-          xywh {130 210 110 25}
+          xywh {130 260 110 25}
         }
       }
     }
     Fl_Window vcgt {
       label {Grafic Card Gamma Table}
-      xywh {119 182 370 390} type Double resizable
+      xywh {359 104 370 390} type Double resizable
       code0 {o->hide();} visible
     } {
       Fl_Group {} {open
@@ -381,7 +401,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window details {
       label {ICC Examin} open
-      xywh {638 253 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
+      xywh {633 185 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
     } {
       Fl_Group {} {open
         xywh {0 0 385 520}
@@ -389,16 +409,16 @@ class ICCfltkBetrachter {open
         Fl_Menu_Bar menueleiste {open
           xywh {0 0 385 25} align 20 when 3
         } {
-          Submenu {} {
+          submenu {} {
             label File open
             xywh {15 15 100 20}
           } {
-            MenuItem {} {
+            menuitem {} {
               label Open
               callback {icc_examin->oeffnen()}
               xywh {15 15 100 20} shortcut 0x4006f
             }
-            MenuItem menueintrag_html_speichern {
+            menuitem menueintrag_html_speichern {
               label {Save Report}
               callback {DBG_PROG_START
 
@@ -407,7 +427,7 @@ class ICCfltkBetrachter {open
   DBG_PROG_ENDE}
               xywh {0 0 100 20} deactivate divider
             }
-            MenuItem menueintrag_gamut_speichern {
+            menuitem menueintrag_gamut_speichern {
               label {Save Gamut as Profile}
               callback {DBG_PROG_START
 
@@ -416,7 +436,7 @@ class ICCfltkBetrachter {open
   DBG_PROG_ENDE}
               tooltip {Save gamut as abstract profile useful for proofing} xywh {10 10 100 20} deactivate
             }
-            MenuItem menueintrag_gamut_vrml_speichern {
+            menuitem menueintrag_gamut_vrml_speichern {
               label {Save Gamut as VRML}
               callback {DBG_PROG_START
 
@@ -425,27 +445,27 @@ class ICCfltkBetrachter {open
   DBG_PROG_ENDE}
               tooltip {Save gamut as VRML useful for visualisation.} xywh {20 20 100 20} deactivate divider
             }
-            MenuItem {} {
+            menuitem {} {
               label Quit
               callback {quit()}
               xywh {15 15 100 20} shortcut 0x40071
             }
           }
-          Submenu {} {
+          submenu {} {
             label Edit open
             xywh {25 25 100 20} hide
           } {
-            MenuItem {} {
+            menuitem {} {
               label {Oyranos Settings}
               callback {oyranos_einstellungen()}
               xywh {25 25 100 20}
             }
           }
-          Submenu {} {
+          submenu {} {
             label Options open
             xywh {35 35 100 20}
           } {
-            MenuItem menueintrag_gamutwarn {
+            menuitem menueintrag_gamutwarn {
               label {Gamut Warning}
               callback {Fl_Menu_* mw = (Fl_Menu_*)o;
   const Fl_Menu_Item* m = mw->mvalue();
@@ -456,7 +476,7 @@ class ICCfltkBetrachter {open
               tooltip {Gamut Warning will gray out all colours not in your monitors gamut.} xywh {35 35 100 20} type Toggle shortcut 0x40077
             }
           }
-          MenuItem menueintrag_huelle {
+          menuitem menueintrag_huelle {
             label Gamut
             callback {DBG_PROG_START
   Fl_Menu_* mw = (Fl_Menu_*)o;
@@ -477,11 +497,11 @@ class ICCfltkBetrachter {open
   DBG_PROG_ENDE}
             xywh {60 60 100 20} type Toggle shortcut 0x40068
           }
-          Submenu {} {
+          submenu {} {
             label View open
             xywh {15 15 100 20} divider
           } {
-            MenuItem menueintrag_Voll {
+            menuitem menueintrag_Voll {
               label {Whole Screen on/off}
               callback {Fl_Window *w = (Fl_Window *)details;
 
@@ -499,7 +519,7 @@ class ICCfltkBetrachter {open
   }}
               xywh {15 15 100 20} shortcut 0x40076
             }
-            MenuItem menueintrag_3D {
+            menuitem menueintrag_3D {
               label Gamut
               callback {DBG_PROG_START
   Fl_Menu_* mw = (Fl_Menu_*)o;
@@ -520,7 +540,7 @@ class ICCfltkBetrachter {open
   DBG_PROG_ENDE}
               xywh {50 50 100 20} type Toggle shortcut 0x40068 divider
             }
-            MenuItem menueintrag_inspekt {
+            menuitem menueintrag_inspekt {
               label {Report View}
               callback {Fl_Menu_* mw = (Fl_Menu_*)o;
   const Fl_Menu_Item* m = mw->mvalue();
@@ -539,7 +559,7 @@ class ICCfltkBetrachter {open
   icc_examin->icc_betrachterNeuzeichnen(inspekt_html);}
               xywh {40 40 100 20} type Toggle shortcut 0x40062 deactivate
             }
-            MenuItem menueintrag_zeigcgats {
+            menuitem menueintrag_zeigcgats {
               label {CGATS View}
               callback {Fl_Menu_* mw = (Fl_Menu_*)o;
   const Fl_Menu_Item* m = mw->mvalue();
@@ -549,32 +569,36 @@ class ICCfltkBetrachter {open
   icc_examin->zeigCGATS();}
               xywh {50 50 100 20} shortcut 0x40067 deactivate divider
             }
-            MenuItem menueintrag_vcgt {
+            menuitem menueintrag_vcgt {
               label {Videocard Gamma}
               callback {vcgt->show();
 icc_examin->vcgtZeigen();}
               xywh {15 15 100 20} shortcut 0x40074
               code0 {o->hide();}
             }
-            MenuItem menueintrag_testkurven {
+            menuitem menueintrag_testkurven {
               label {Test Curves}
               callback {vcgt->show();
 icc_examin->testZeigen();}
               xywh {25 25 100 20} shortcut 0x50074 hide
             }
-            Submenu untermenue_3D {
+            submenu untermenue_3D {
               label 3D open
               xywh {0 0 100 20} hide
             } {}
           }
-          Submenu menu_hilfe {
+          submenu menu_hilfe {
             label Help open
             xywh {0 0 100 20}
           } {
-            MenuItem {} {
+            menuitem {} {
               label About
               callback {ueber->show();
-ueber_html->value(getUeberHtml().c_str());}
+ueber_html->value(getUeberHtml().c_str());
+hilfe_html->value(getHilfeHtml().c_str());
+lizenz_html->value(getLizenzHtml().c_str());
+dank_html->value(getDankHtml().c_str());
+links_text->value(getLinksText().c_str());} selected
               xywh {5 5 100 20} shortcut 0xffbe
             }
           }

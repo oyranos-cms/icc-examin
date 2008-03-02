@@ -552,10 +552,18 @@ GL_Ansicht::GLinit_()
 
   const char* font_name = "/usr/X11R6/lib/X11/fonts/truetype/FreeSans.ttf";
 # if APPLE
-  std::string f_n = icc_examin_ns::holeBundleResource("FreeSans", "ttf");
+  std::string f_n;
+  if(getenv("RESOURCESPATH"))
+  {
+    f_n = getenv("RESOURCESPATH");
+    f_n += "/share/FreeSans.ttf";
+  }
+  if(!f_n.size()) {
+    f_n = icc_examin_ns::holeBundleResource("FreeSans", "ttf");
+  }
   if(f_n.size()) {
-    font_name = f_n.c_str(); DBG_PROG_S(f_n)
-  } else
+    font_name = f_n.c_str(); DBG_PROG_S( f_n )
+  }
 # endif
   if(!holeDateiModifikationsZeit(font_name)) {
     WARN_S( _("Konnte Font nicht oeffnen:") << font_name )

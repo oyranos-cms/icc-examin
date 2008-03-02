@@ -130,7 +130,7 @@ ICCexamin::start (int argc, char** argv)
   icc_waehler_->resize(icc_waehler_->x(), icc_waehler_->y(),
                        icc_waehler_->w()+20, icc_waehler_->h());
   if(!icc_waehler_) WARN_S( _("icc_waehler_ nicht reservierbar") )
-  //icc_waehler_->set_non_modal(); // gehört zum "details" Hauptfenster
+  //icc_waehler_->set_non_modal(); // gehoert zum "details" Hauptfenster
   icc_waehler_->hide();
 
   // Die TagViewers registrieren und ihre Variablen initialisieren
@@ -430,7 +430,7 @@ ICCexamin::testZeigen ()
   std::vector<std::string> txt;
   txt.resize(8);
   txt[0] = "ein Bild";
-  txt[1] = "Gemälde";
+  txt[1] = "Gemaelde";
   txt[2] = "fast HDR";
   txt[3] = "2 fast HDR";
   txt[4] = "3 fast HDR";

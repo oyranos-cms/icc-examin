@@ -21,7 +21,7 @@
  * 
  * -----------------------------------------------------------------------------
  *
- * Inhalt für das informative "Über" Fenster.
+ * Inhalt fuer das informative "Über" Fenster.
  * 
  */
 
@@ -31,5 +31,9 @@
 #include <string>
 
 std::string getUeberHtml();
+std::string getHilfeHtml();
+std::string getLizenzHtml();
+std::string getDankHtml();
+std::string getLinksText();
 
 #endif //ICC_UEBER_H
