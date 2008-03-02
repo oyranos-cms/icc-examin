@@ -237,7 +237,7 @@ renderingIntentName (int intent)
   switch (intent) 
     {
     case 0:
-      s << _("Fotographisch");
+      s << _("Fotografisch");
       break;
     case 1:
       s << _("relativ Farbmetrisch");
@@ -286,6 +286,68 @@ getColorSpaceName (icColorSpaceSignature color)
     default: text =_(""); break;
   }
   return text;
+}
+
+std::vector<std::string>
+getChannelNames (icColorSpaceSignature color)
+{
+  std::vector<std::string> texte;
+  std::stringstream s;
+  #define nFARBEN(n) for (int i = 0; i < n; i++) \
+                       { s << i << ". " << _("Farbe"); \
+                         texte.push_back (s.str()); \
+                       }
+
+  switch (color) {
+    case icSigXYZData: texte.push_back (_("CIE X"));
+                       texte.push_back (_("CIE Y (Leuchtdichte)"));
+                       texte.push_back (_("CIE Z")); break;
+    case icSigLabData: texte.push_back (_("CIE *L"));
+                       texte.push_back (_("CIE *a"));
+                       texte.push_back (_("CIE *b")); break;
+    case icSigLuvData: texte.push_back (_("CIE *L"));
+                       texte.push_back (_("CIE *u"));
+                       texte.push_back (_("CIE *v")); break;
+    case icSigYCbCrData: texte.push_back (_("Leuchtdichte"));
+                       texte.push_back (_("Chromina b"));
+                       texte.push_back (_("Chromina r")); break;
+    case icSigYxyData: texte.push_back (_("Y (Leuchtdichte)"));
+                       texte.push_back (_("x"));
+                       texte.push_back (_("y")); break;
+    case icSigRgbData: texte.push_back (_("Rot"));
+                       texte.push_back (_("Grün"));
+                       texte.push_back (_("Blau")); break;
+    case icSigGrayData: texte.push_back (_("Schwarz")); break;
+    case icSigHsvData: texte.push_back (_("Farbton"));
+                       texte.push_back (_("Sättigung"));
+                       texte.push_back (_("Wert")); break;
+    case icSigHlsData: texte.push_back (_("Farbton"));
+                       texte.push_back (_("Helligkeit"));
+                       texte.push_back (_("Sättigung")); break;
+    case icSigCmykData: texte.push_back (_("Cyan"));
+                       texte.push_back (_("Magenta"));
+                       texte.push_back (_("Gelb"));
+                       texte.push_back (_("Schwarz")); break;
+    case icSigCmyData: texte.push_back (_("Cyan"));
+                       texte.push_back (_("Magenta"));
+                       texte.push_back (_("Gelb")); break;
+    case icSig2colorData: nFARBEN(2) break;
+    case icSig3colorData: nFARBEN(3) break;
+    case icSig4colorData: nFARBEN(4) break;
+    case icSig5colorData: nFARBEN(5) break;
+    case icSig6colorData: nFARBEN(6) break;
+    case icSig7colorData: nFARBEN(7) break;
+    case icSig8colorData: nFARBEN(8) break;
+    case icSig9colorData: nFARBEN(9) break;
+    case icSig10colorData: nFARBEN(10) break;
+    case icSig11colorData: nFARBEN(11) break;
+    case icSig12colorData: nFARBEN(12) break;
+    case icSig13colorData: nFARBEN(13) break;
+    case icSig14colorData: nFARBEN(14) break;
+    case icSig15colorData: nFARBEN(15) break;
+    default: texte.push_back (_("keine Farbe")); break;
+  }
+  return texte;
 }
 
 std::string
@@ -763,6 +825,9 @@ ICCtag::load                        ( ICCprofile *profil,
     _color_in = _profil->header.pcs();
     _color_out = _profil->header.colorSpace();
     break;
+  case icSigGamutTag:
+    _color_in = _profil->header.pcs(); _color_out = (icColorSpaceSignature)0;
+    break;
   default:
     _color_in = (icColorSpaceSignature)0; _color_out = (icColorSpaceSignature)0;
     break;
@@ -981,6 +1046,102 @@ ICCtag::getCurve                                  (void)
   return punkte;
 }
 
+std::vector<std::vector<double> >
+ICCtag::getCurves                                 (MftChain typ)
+{
+  std::vector<double> kurve;
+  std::vector<std::vector<double> > kurven; DBG
+  // Wer sind wir?
+  if (getTypName() == "mft2") {
+    icLut16* lut16 = (icLut16*) &_data[8];
+    int inputChan, outputChan, clutPoints, inputEnt, outputEnt;
+    inputChan = (int)lut16->inputChan;
+    outputChan = (int)lut16->outputChan;
+    clutPoints = (int)lut16->clutPoints;
+    inputEnt = icValue(lut16->inputEnt);
+    outputEnt = icValue(lut16->outputEnt);
+    int feldPunkte = (int)pow((double)clutPoints, inputChan); cout << feldPunkte << " Feldpunkte " << clutPoints << " clutPoints "; DBG
+    int start = 52,
+        byte  = 2;
+    double div   = 65536.0;
+    DBG
+    // Was wird verlangt?
+    switch (typ) {
+    case MATRIX:
+         break;
+    case CURVE_IN: DBG
+         for (int j = 0; j < inputChan; j++)
+         { kurve.clear(); cout << kurve.size() << " Start "; DBG
+           for (int i = inputEnt * j; i < inputEnt * (j+1); i++)
+             kurve.push_back( (double)icValue ((icUInt16Number)_data[start + byte*i])
+                              / div );
+           kurven.push_back (kurve); cout << kurve.size() << " Einträge "; DBG
+         } DBG
+         break;
+    case TABLE: DBG
+         start += (inputChan * inputEnt) * byte;
+         for (int i = 0; i < feldPunkte * outputChan; i++)
+           kurve.push_back( (double)icValue ((icUInt16Number)_data[start + byte*i])
+                            / div );
+         break;
+    case CURVE_OUT: DBG
+         start += (inputChan * inputEnt + feldPunkte * outputChan) * byte;
+         for (int j = 0; j < outputChan; j++)
+         { kurve.clear();
+           for (int i = inputEnt * j; i < outputEnt * (j+1); i++)
+             kurve.push_back( (double)icValue ((icUInt16Number)_data[start + byte*i])
+                              / div );
+           kurven.push_back (kurve);
+         }
+         break;
+    } 
+  } else if (getTypName() == "mft1") {
+    icLut8* lut8 = (icLut8*) &_data[8];
+    int inputChan, outputChan, clutPoints, inputEnt=256, outputEnt=256;
+    inputChan = (int)lut8->inputChan;
+    outputChan = (int)lut8->outputChan;
+    clutPoints = (int)lut8->clutPoints;
+    int feldPunkte = (int)pow((double)clutPoints, inputChan);
+    int start = 48,
+        byte  = 1;
+    double div   = 255.0;
+
+    // Was wird verlangt?
+    switch (typ) {
+    case MATRIX:
+         break;
+    case CURVE_IN:
+         for (int j = 0; j < inputChan; j++)
+         { kurve.clear(); cout << kurve.size() << " Start "; DBG
+           for (int i = inputEnt * j; i < inputEnt * (j+1); i++)
+             kurve.push_back( (double) (icUInt8Number)_data[start + byte*i]
+                              / div );
+           kurven.push_back (kurve); cout << kurve.size() << " Einträge "; DBG
+         }
+         break;
+    case TABLE:
+         start += (inputChan * inputEnt) * byte;
+         for (int i = 0; i < feldPunkte * outputChan; i++)
+           kurve.push_back( (double) (icUInt8Number)_data[start + byte*i]
+                            / div );
+         break;
+    case CURVE_OUT:
+         start += (inputChan * inputEnt + feldPunkte * outputChan) * byte;
+         for (int j = 0; j < outputChan; j++)
+         { kurve.clear(); cout << kurve.size() << " Start "; DBG
+           for (int i = outputEnt * j; i < outputEnt * (j+1); i++)
+             kurve.push_back( (double) (icUInt8Number)_data[start + byte*i]
+                              / div );
+           kurven.push_back (kurve); cout << kurve.size() << " Einträge "; DBG
+         }
+         break;
+    } 
+  }
+
+  cout << kurven.size() << " "; DBG
+  return kurven;
+}
+
 std::vector<double>
 ICCtag::getNumbers                                 (MftChain typ)
 {
@@ -1019,17 +1180,72 @@ ICCtag::getNumbers                                 (MftChain typ)
          for (int i = 0; i < outputEnt * outputChan; i++)
            nummern.push_back( icValue ((icUInt16Number)_data[start + 2*i]) );
          break;
-  } 
+    } 
   } else if (getTypName() == "mft1") {
     icLut8* lut8 = (icLut8*) &_data[8];
     int inputChan, outputChan, clutPoints;//, inputEnt, outputEnt;
     inputChan = (int)lut8->inputChan;
     outputChan = (int)lut8->outputChan;
     clutPoints = (int)lut8->clutPoints;
+    int feldPunkte = (int)pow((double)icValue(clutPoints),3.0);
+    int start = 52;
 
+    // Was wird verlangt?
+    switch (typ) {
+    case MATRIX:
+         for (int i = 0; i < 9; i++) {
+           icS15Fixed16Number *n = (icS15Fixed16Number*)&_data[12 + 4*i];
+           nummern.push_back( icValueSF (*n) );
+         }
+         break;
+    case CURVE_IN:
+         for (int i = 0; i < 256 * inputChan; i++)
+           nummern.push_back( icValue ((icUInt8Number)_data[start + 2*i]) );
+         break;
+    case TABLE:
+         start += (inputChan * 256) * 2;
+         for (int i = 0; i < feldPunkte * outputChan; i++)
+           nummern.push_back( icValue ((icUInt8Number)_data[start + 2*i]) );
+         break;
+    case CURVE_OUT:
+         start += (inputChan * 256 + feldPunkte * outputChan) * 2;
+         for (int i = 0; i < 256 * outputChan; i++)
+           nummern.push_back( icValue ((icUInt8Number)_data[start + 2*i]) );
+         break;
+    } 
   }
 
+  cout << nummern.size() << " "; DBG
   return nummern;
+}
+
+std::vector<std::string>
+ICCtag::getText                     (MftChain typ)
+{ DBG
+  std::vector<std::string> texte;
+
+  // TODO: prüfen auf icColorSpaceSignature <-> Kanalanzahl
+    // Was wird verlangt?
+    switch (typ) {
+    case MATRIX:
+         for (int i = 0; i < 9; i++) {
+           texte.push_back( "" );
+         }
+         break;
+    case CURVE_IN:
+         texte = getChannelNames (_color_in);
+         break;
+    case TABLE:
+         texte.push_back( "" );
+         break;
+    case CURVE_OUT:
+         texte = getChannelNames (_color_out);
+         break;
+    }
+
+  #ifdef DEBUG_ICCTAG
+  #endif
+  return texte;
 }
 
 std::string
@@ -1094,48 +1310,6 @@ ICCtag::getMore                                   ( void )
   }
   return text;
 }
-
-/*
-void
-ICCtag::printLut            (   LPLUT           Lut,
-                                int             sig)
-{
-  unsigned int      i;
-  int               channels=0;
-
-  printf ("Channels In/Out = %d/%d Nr: %d/%d\n",Lut->InputChan, Lut->OutputChan,
-                                        Lut->InputEntries, Lut->OutputEntries);
-
-  switch (sig)
-  {
-  case icSigAToB0Tag:
-  case icSigAToB1Tag:
-  case icSigAToB2Tag:
-    channels = Lut ->InputChan;
-    break;
-  case icSigBToA0Tag:
-  case icSigBToA1Tag:
-  case icSigBToA2Tag:
-    channels = Lut ->OutputChan;
-    break;
-  case icSigGamutTag:
-    channels = 1;
-    break;
-  }
-  channels = Lut->OutputChan;
-
-  for (i=0; i < Lut ->InputEntries; i++)  {
-    if (channels > 0)
-      printf ("C=%d ", Lut ->L2[0][i]);
-    if (channels > 1)
-      printf ("M=%d ", Lut ->L2[1][i]);
-    if (channels > 2)
-      printf ("Y=%d ", Lut ->L2[2][i]);
-    if (channels > 3)
-      printf ("K=%d ", Lut ->L2[3][i]);
-  }
-  printf ("\n");
-}*/
 
 
 /**
@@ -1351,6 +1525,23 @@ ICCprofile::getTagText                                  (int item)
 }
 
 std::vector<std::string>
+ICCprofile::getTagChannelNames                          (int item,
+                                                         ICCtag::MftChain typ)
+{
+  // Prüfen
+  std::string leer = tags[item].getTypName() + " Typ - keine Textausgabe";
+  std::vector<std::string> v;
+  v.push_back( leer );
+
+  // Prüfen
+  if (tags[item].getTypName() != "mft2"
+   && tags[item].getTypName() != "mft1")
+    return v;
+
+  return tags.at(item).getText(typ);
+}
+
+std::vector<std::string>
 ICCprofile::getTagDescription                           (int item)
 {
   // Prüfen
@@ -1381,9 +1572,25 @@ ICCprofile::getTagCurve                                 (int item)
   std::vector<double> leer;
   if (tags[item].getTypName() != "curv"
    && tags[item].getTypName() != "vcgt")
+  { cout << tags[item].getTypName() << " "; DBG
     return leer;
+  }
 
   return tags.at(item).getCurve();
+}
+
+std::vector<std::vector<double> >
+ICCprofile::getTagCurves                                (int item,ICCtag::MftChain typ)
+{
+  // Prüfen
+  std::vector<std::vector<double> > leer;
+  if (tags[item].getTypName() != "mft2"
+   && tags[item].getTypName() != "mft1")
+  { cout << "gibt nix für " << tags[item].getTypName() << " "; DBG
+    return leer;
+  }
+
+  return tags.at(item).getCurves(typ);
 }
 
 std::vector<double>
@@ -1392,8 +1599,10 @@ ICCprofile::getTagNumbers                                (int item,ICCtag::MftCh
   // Prüfen
   std::vector<double> leer;
   if (tags[item].getTypName() != "mft2"
-   && tags[item].getTypName() != "mft2")
+   && tags[item].getTypName() != "mft1")
+  { cout << tags[item].getTypName() << " "; DBG
     return leer;
+  }
 
   return tags.at(item).getNumbers(typ);
 }

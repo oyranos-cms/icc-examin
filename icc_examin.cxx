@@ -493,8 +493,8 @@ void TagBrowser::select_item(int item) {
           kurve = profile.getTagCurve (i_name);
           kurven.push_back (kurve);
           TagInfo = profile.printTagInfo (i_name);
-          for (unsigned int i = 0; i < 2; i++)
-            texte.push_back (TagInfo[i]);
+          //for (unsigned int i = 0; i < 2; i++)
+          texte.push_back (TagInfo[0]);
         }
       }
       tag_viewer->hinein_kurven( kurven, texte );
@@ -536,7 +536,7 @@ TagDrawings::TagDrawings(int X,int Y,int W,int H) : Fl_Widget(X,Y,W,H), X(X), Y(
 
 void TagDrawings::draw() {
   // Kurven oder Punkte malen
-  cout << punkte.size() << " " << kurven.size() << " "; DBG
+  cout << punkte.size() << "/" << kurven.size() <<" "<< texte.size() <<" "; DBG
 
   if (punkte.size() >= 3) {
     wiederholen = true;
@@ -547,7 +547,7 @@ void TagDrawings::draw() {
     wiederholen = false;
     draw_kurve   (x(),y(),w(),h(),texte,kurven);
   }
-  //DBG
+  DBG
 }
 
 void TagDrawings::hinein_punkt(std::vector<double> vect, std::vector<std::string> txt) {
@@ -629,54 +629,50 @@ void MftChoice::auswahl_cb(void) {
 
   Fl_Menu_* mw = (Fl_Menu_*)this;
   const Fl_Menu_Item* m = mw->mvalue();
-  if (!m)
-    printf("NULL\n");
-  else if (m->shortcut())
-    printf("%s - %s\n", m->label(), fl_shortcut_label(m->shortcut()));
-  else
-    printf("%s\n", m->label());
+  if (!m) {
+    printf("NULL \n"); DBG
+  } else if (m->shortcut()) {
+    printf("%s - %s \n", m->label(), fl_shortcut_label(m->shortcut())); DBG
+  } else {
+    printf("%s \n", m->label()); DBG
+  }
 
   std::stringstream s;
   std::vector<double> zahlen;
 
   switch (mw->value()) {
-  case 0:
+  case 0: // Überblick
     { for (unsigned int i = 1; i < Info.size(); i++) // erste Zeile weglassen
         s << Info [i] << endl;
       mft_text->hinein ( s.str() ); DBG // anzeigen
     } break;
-  case 1:
+  case 1: // Matriz
     zahlen = profile.getTagNumbers (tag_nummer, ICCtag::MATRIX);
-    cout << zahlen.size() << "|" << profile.getTagNumbers (tag_nummer, ICCtag::MATRIX).size(); DBG
-    assert (9 == profile.getTagNumbers (tag_nummer, ICCtag::MATRIX).size());
-    s << zahlen[0] << ", " << zahlen[1] << ", " << zahlen[2] << ", " << endl <<
-         zahlen[3] << ", " << zahlen[4] << ", " << zahlen[5] << ", " << endl <<
-         zahlen[6] << ", " << zahlen[7] << ", " << zahlen[8] << ", " << endl;
-    mft_text->hinein ( s.str() );
+    cout << zahlen.size() << endl; DBG
+    assert (9 == zahlen.size());
+    s << endl <<
+    "  " << zahlen[0] << ", " << zahlen[1] << ", " << zahlen[2] << ", " << endl <<
+    "  " << zahlen[3] << ", " << zahlen[4] << ", " << zahlen[5] << ", " << endl <<
+    "  " << zahlen[6] << ", " << zahlen[7] << ", " << zahlen[8] << ", " << endl;
+    mft_text->hinein ( s.str() ); DBG
     break;
-  case 2:
-    mft_text->hinein ( "2" );
+  case 2: // Eingangskurven
+    DBG
+    mft_viewer->hinein_kurven (
+                     profile.getTagCurves (tag_nummer, ICCtag::CURVE_IN),
+                     profile.getTagChannelNames (tag_nummer, ICCtag::CURVE_IN) ); DBG
+    break;
+  case 3: // 3D Tabelle
+    DBG
+    break;
+  case 4: // Ausgangskurven
+    mft_viewer->hinein_kurven (
+                     profile.getTagCurves (tag_nummer, ICCtag::CURVE_OUT),
+                     profile.getTagChannelNames (tag_nummer, ICCtag::CURVE_OUT) ); DBG
     break;
   }
 
   gewaehlter_eintrag = mw->value();
-
-    std::vector<std::string> TagInfo = profile.printTagInfo(tag_nummer);
-
-    if ( TagInfo[1] == "mft2" ) {
-
-    } else if ( TagInfo[1] == "mft1" ) {
-      //mft_text->hinein ( (profile.getTagText (tag_nummer))[0] ); DBG
-      int size = profile.getTagText (tag_nummer).size();
-      Fl_Menu_Item *menue_liste = (Fl_Menu_Item *)calloc (sizeof (Fl_Menu_Item), size);
-      std::vector <std::string> texte = zeilenNachVector( profile.getTagText (tag_nummer)[0] );
-      for (unsigned int i = 0; i < texte.size(); i++) {
-        menue_liste[i].text = texte[i].c_str();
-      }
-      cout << texte.size() << " "; DBG
-      mft_choice->menu(menue_liste);
-      zeig_mich (mft_text);
-    }
 }
 
 void d_haendler(void* o) {
@@ -696,6 +692,9 @@ void zeig_mich(void* widget) {
   // zeigt das ausgewählte Fenster (widget)
 
   tabellengruppe->hide();
+  mft_viewer->hide();
+  mft_text->hide();
+  
   tag_viewer->hide(); DBG
   tag_viewer->clear_visible(); DBG
   tag_text->hide();

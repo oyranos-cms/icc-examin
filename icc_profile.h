@@ -52,6 +52,7 @@ double*                 XYZto_xyY (std::vector<double> XYZ);
 
 std::string         renderingIntentName ( int intent);
 std::string         getColorSpaceName   ( icColorSpaceSignature color);
+std::vector<std::string> getChannelNames( icColorSpaceSignature color);
 std::string         getDeviceClassName  ( icProfileClassSignature cl);
 std::string         getPlatformName     ( icPlatformSignature platform);
 std::string         getSigTagName( icTagSignature  sig );
@@ -117,9 +118,11 @@ class ICCtag {
     icTagSignature      _sig;
     int                 _size;
     char*               _data;
+
     int                 _intent; // für mft1/2
     icColorSpaceSignature _color_in;
     icColorSpaceSignature _color_out;
+
     ICCprofile*         _profil;
 
   public:
@@ -139,14 +142,17 @@ class ICCtag {
     std::vector<double> getCIEXYZ();
     std::vector<double> getCurve();
     typedef enum {
-    MATRIX,
-    CURVE_IN,
-    TABLE,
-    CURVE_OUT
+      MATRIX,
+      CURVE_IN,
+      TABLE,
+      CURVE_OUT
     } MftChain;
-    std::vector<double> getNumbers(MftChain typ);
+    std::vector<std::vector<double> >
+                        getCurves    (MftChain typ);
+    std::vector<double> getNumbers   (MftChain typ);
 
-    std::vector<std::string> getText();
+    std::vector<std::string> getText ();
+    std::vector<std::string> getText (MftChain typ);
     std::vector<std::string> getDescription();
     std::string         getVrml();
 //    void                printLut           (   LPLUT           Lut,
@@ -187,12 +193,17 @@ class ICCprofile {
     std::string         printHeader     () {return header.print(); }
     std::string         printLongHeader () {return header.print_long(); }
     std::vector<std::string> printTags  (); // Liste der einzelnen Tags (5)
-    std::vector<std::string> printTagInfo (int item); // Name,Typ
-    std::vector<std::string> getTagText      (int item);    // Inhalt
-    std::vector<std::string> getTagDescription  (int item);
-    std::vector<double> getTagCIEXYZ (int item);
-    std::vector<double> getTagCurve  (int item);
-    std::vector<double> getTagNumbers  (int item, ICCtag::MftChain typ);
+    std::vector<std::string> printTagInfo      (int item); // Name,Typ
+    std::vector<std::string> getTagText        (int item);    // Inhalt
+    std::vector<std::string> getTagDescription (int item);
+
+    std::vector<double>      getTagCIEXYZ      (int item);
+    std::vector<double>      getTagCurve       (int item);
+    std::vector<std::vector<double> >
+                             getTagCurves      (int item, ICCtag::MftChain typ);
+    std::vector<double>      getTagNumbers     (int item, ICCtag::MftChain typ);
+    std::vector<std::string> getTagChannelNames(int item, ICCtag::MftChain typ);
+
     char*               getProfileInfo  ();
     bool                hasTagName   (std::string name); // Name
     int                 getTagByName (std::string name); // Name

@@ -369,22 +369,55 @@ void draw_kurve    (int X, int Y, int W, int H,
   std::stringstream s ;
   std::string name;
   for (unsigned int j = 0; j < kurven.size(); j++) {
+    name = texte[j];
     fl_color(FL_LIGHT2);
-    if        (texte[2*j] == "rTRC") {
+    if        (texte[j] == "rTRC") {
       fl_color(FL_RED);
       name = _("Rot");
-    } else if (texte[2*j] == "gTRC") {
+    } else if (texte[j] == "gTRC") {
       fl_color(FL_GREEN);
       name = _("Grün");
-    } else if (texte[2*j] == "bTRC") {
+    } else if (texte[j] == "bTRC") {
       fl_color(FL_BLUE);
       name = _("Blau");
-    } else if (texte[2*j] == "kTRC") {
+    } else if (texte[j] == "kTRC") {
       fl_color(FL_LIGHT2);
       name = _("Grau");
-    } else {
+    } else if (texte[j] == _("Rot")) {
+      fl_color(FL_RED);
+      name = texte[j];
+    } else if (texte[j] == _("Grün")) {
+      fl_color(FL_GREEN);
+    } else if (texte[j] == _("Blau")) {
+      fl_color(FL_BLUE);
+    } else if (texte[j] == _("Cyan")) {
+      fl_color(FL_CYAN);
+    } else if (texte[j] == _("Magenta")) {
+      fl_color(FL_MAGENTA);
+    } else if (texte[j] == _("Gelb")) {
+      fl_color(FL_YELLOW);
+    } else if (texte[j] == _("Schwarz")) {
+      fl_color(FL_BLACK);
+    } else if (texte[j] == _("Leuchtdichte")) {
       fl_color(FL_WHITE);
-      name = texte[2*j];
+    } else if (texte[j] == _("Y (Leuchtdichte)")) {
+      fl_color(FL_WHITE);
+    } else if (texte[j] == _("Helligkeit")) {
+      fl_color(FL_WHITE);
+    } else if (texte[j] == _("Wert")) {
+      fl_color(FL_WHITE);
+    } else if (texte[j] == _("CIE *L")) {
+      fl_color(FL_WHITE);
+    } else if (texte[j] == _("CIE *a")) {
+      fl_color(FL_RED);
+    } else if (texte[j] == _("CIE *b")) {
+      fl_color(FL_BLUE);
+    } else if (texte[j] == _("Chromina b")) {
+      fl_color(FL_BLUE);
+    } else if (texte[j] == _("Chromina r")) {
+      fl_color(FL_RED);
+    } else {
+      fl_color(9 + j);
     }
     #ifdef DEBUG//_DRAW
     cout << "Zeichne Kurve "<< texte[j] << " " << j << " " << kurven[j].size() << " Teile "; DBG
