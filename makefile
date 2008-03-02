@@ -11,7 +11,7 @@ libdir		= ${exec_prefix}/lib
 mandir		= ${prefix}/man
 srcdir		= .
 
-#APPLE = 1
+APPLE = 1
 FLTK = 1
 ifdef FLTK
 FLU = 1
@@ -67,6 +67,7 @@ CPP_HEADERS = \
 	icc_helfer_fltk.h \
 	icc_helfer_ui.h \
 	icc_icc.h \
+	icc_kette.h \
 	fl_oyranos.h \
 	icc_oyranos.h \
 	icc_profile.h \
@@ -82,6 +83,7 @@ CPPFILES = \
 	icc_formeln.cpp \
         icc_gl.cpp \
 	icc_helfer.cpp \
+	icc_kette.cpp \
 	icc_main.cpp \
 	icc_measurement.cpp \
 	icc_oyranos.cpp \

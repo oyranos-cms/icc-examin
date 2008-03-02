@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2005  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -27,8 +27,12 @@
 
 
 #include "icc_examin.h"
+#include "icc_kette.h"
+#include <vector>
 
 ICCexamin *icc_examin;
+ICCkette profile;
+
 
 int
 main (int argc, char** argv)

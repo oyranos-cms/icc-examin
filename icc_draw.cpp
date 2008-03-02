@@ -31,6 +31,7 @@
 #include "icc_profile.h"
 #include "icc_helfer_ui.h"
 #include "icc_examin.h"
+#include "icc_kette.h"
 #include <stdio.h>
 #include <iostream>
 #include <vector>
@@ -305,7 +306,7 @@ draw_cie_shoe (int X, int Y, int W, int H,
     }
 
     if (icc_examin->texte[0] != "wtpt") { // markiert den Weisspunkt nur
-      double* xyY = XYZto_xyY ( profile[0].getWhitePkt() );
+      double* xyY = XYZto_xyY ( profile.profil()->getWhitePkt() );
       int g = 2;
 
       fl_color (FL_WHITE);

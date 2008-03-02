@@ -2,6 +2,7 @@
 
 #include "icc_betrachter.h"
 #include "icc_draw.h"
+#include "icc_kette.h"
 #include "icc_oyranos.h"
 #include "fl_oyranos.h"
 #include "agviewer.h"
@@ -24,7 +25,7 @@ static void dateiwahl_cb(const char *dateiname, int typ, void *arg) {
       profilnamen.resize(1);
       //profilnamen[0] = dateiname;
 
-      DBG_NUM_V( profilnamen[0] )
+      DBG_NUM_V( profile )
       profilnamen[0] = dateiwahl->get_current_directory();
       profilnamen[0].append( dateiname );
       DBG_NUM_V( profilnamen[0] )
@@ -97,21 +98,21 @@ void TagBrowser::reopen() {
 
   std::stringstream s;
   std::string text;
-  std::vector<std::string> tag_list = profile[0].printTags();
+  std::vector<std::string> tag_list = profile.profil()->printTags();
 
   #define add_s(stream) s << stream; add (s.str().c_str()); s.str("");
   #define add_          s << " ";
 
   clear();
   add_s ("@fDateiname:")
-  add_s ("@b    " << profile[0].filename() )
+  add_s ("@b    " << profile.profil()->filename() )
   add_s ("")
   if (tag_list.size() == 0) {
-    add_s ("keine Inhalte gefunden für \"" << profile[0].filename() << "\"")
+    add_s ("keine Inhalte gefunden für \"" << profile.profil()->filename() << "\"")
     return;
   }
   add_s ("@B26@tNr. Bezeichner  Typ         Größe Beschreibung")
-  add_s ("@t" << profile[0].printHeader() )
+  add_s ("@t" << profile.profil()->printHeader() )
   DBG_PROG
   std::vector<std::string>::iterator it;
   for (it = tag_list.begin() ; it != tag_list.end(); ++it) {
@@ -135,14 +136,14 @@ void TagBrowser::reopen() {
   else
     select_item (1);
 
-  if (profile[0].hasTagName (selectedTagName)) {
-    int item = profile[0].getTagByName (selectedTagName) + 6;
+  if (profile.profil()->hasTagName (selectedTagName)) {
+    int item = profile.profil()->getTagByName (selectedTagName) + 6;
     select_item (item);
     value(item);
   }
 
   std::string::size_type pos=0 , max = 0;
-  std::string data = profile[0].filename(); DBG_NUM_S( data )
+  std::string data = profile.profil()->filename(); DBG_NUM_S( data )
   while ((pos = data.find ("/", pos)) != std::string::npos) {
     if (pos > max) max = pos; pos++; max++;
   }
@@ -176,7 +177,7 @@ void TagTexts::hinein(std::string text) {
   DBG_PROG_START
   //Text aus tag_browser anzeigen
 
-  icc_examin->icc_betrachter->zeig_mich(this); DBG_PROG
+  //icc_examin->icc_betrachter->zeig_mich(this); DBG_PROG
 
       this->clear();
 
@@ -223,7 +224,7 @@ void TagDrawings::hinein_punkt(std::vector<double> vect, std::vector<std::string
   //CIExyY aus tag_browser anzeigen
 
   wiederholen = false;
-  icc_examin->icc_betrachter->zeig_mich(this);
+  //icc_examin->icc_betrachter->zeig_mich(this);
   DBG_PROG_ENDE
 }
 
@@ -233,7 +234,7 @@ void TagDrawings::hinein_kurven(std::vector<std::vector<double> >vect, std::vect
 
   wiederholen = false;
 
-  icc_examin->icc_betrachter->zeig_mich(this);
+  //icc_examin->icc_betrachter->zeig_mich(this);
   DBG_PROG
   DBG_PROG_ENDE
 }
@@ -253,10 +254,10 @@ void MftChoice::profil_tag(int _tag, std::string text) {
   DBG_PROG_START
   icc_examin->icc_betrachter->tag_nummer = _tag;
 
-// = profile[0].printTagInfo(icc_examin->icc_betrachter->tag_nummer);
-    sprintf (&typ[0], profile[0].printTagInfo(icc_examin->icc_betrachter->tag_nummer)[1].c_str());
+// = profile.profil()->printTagInfo(icc_examin->icc_betrachter->tag_nummer);
+    sprintf (&typ[0], profile.profil()->printTagInfo(icc_examin->icc_betrachter->tag_nummer)[1].c_str());
 
-    DBG_PROG_V( profile[0].printTagInfo(icc_examin->icc_betrachter->tag_nummer)[1].c_str() )
+    DBG_PROG_V( profile.profil()->printTagInfo(icc_examin->icc_betrachter->tag_nummer)[1].c_str() )
 
     Info = zeilenNachVector (text);
 
@@ -321,7 +322,7 @@ void MftChoice::auswahl_cb(void) {
       icc_examin->icc_betrachter->mft_text->hinein ( s.str() ); DBG_PROG // anzeigen
     } break;
   case 1: // Matriz
-    zahlen = profile[0].getTagNumbers (icc_examin->icc_betrachter->tag_nummer, ICCtag::MATRIX);
+    zahlen = profile.profil()->getTagNumbers (icc_examin->icc_betrachter->tag_nummer, ICCtag::MATRIX);
     cout << zahlen.size() << endl; DBG_PROG
     assert (9 == zahlen.size());
     s << endl <<
@@ -333,20 +334,20 @@ void MftChoice::auswahl_cb(void) {
   case 2: // Eingangskurven
     DBG_PROG
     icc_examin->icc_betrachter->mft_viewer->hinein_kurven (
-                     profile[0].getTagCurves (icc_examin->icc_betrachter->tag_nummer, ICCtag::CURVE_IN),
-                     profile[0].getTagChannelNames (icc_examin->icc_betrachter->tag_nummer, ICCtag::CURVE_IN) ); DBG_PROG
+                     profile.profil()->getTagCurves (icc_examin->icc_betrachter->tag_nummer, ICCtag::CURVE_IN),
+                     profile.profil()->getTagChannelNames (icc_examin->icc_betrachter->tag_nummer, ICCtag::CURVE_IN) ); DBG_PROG
     break;
   case 3: // 3D Tabelle
     DBG_PROG
     icc_examin->icc_betrachter->mft_gl->hinein_tabelle (
-                     profile[0].getTagTable (icc_examin->icc_betrachter->tag_nummer, ICCtag::TABLE),
-                     profile[0].getTagChannelNames (icc_examin->icc_betrachter->tag_nummer, ICCtag::TABLE_IN),
-                     profile[0].getTagChannelNames (icc_examin->icc_betrachter->tag_nummer, ICCtag::TABLE_OUT) ); DBG_PROG
+                     profile.profi/()->getTagTable (icc_examin->icc_betrachter->tag_nummer, ICCtag::TABLE),
+                     profile.profil()->getTagChannelNames (icc_examin->icc_betrachter->tag_nummer, ICCtag::TABLE_IN),
+                     profile.profil()->getTagChannelNames (icc_examin->icc_betrachter->tag_nummer, ICCtag::TABLE_OUT) ); DBG_PROG
     break;
   case 4: // Ausgangskurven
     icc_examin->icc_betrachter->mft_viewer->hinein_kurven (
-                     profile[0].getTagCurves (icc_examin->icc_betrachter->tag_nummer, ICCtag::CURVE_OUT),
-                     profile[0].getTagChannelNames (icc_examin->icc_betrachter->tag_nummer, ICCtag::CURVE_OUT) ); DBG_PROG
+                     profile.profil()->getTagCurves (icc_examin->icc_betrachter->tag_nummer, ICCtag::CURVE_OUT),
+                     profile.profil()->getTagChannelNames (icc_examin->icc_betrachter->tag_nummer, ICCtag::CURVE_OUT) ); DBG_PROG
     break;
   }
 
@@ -371,7 +372,7 @@ void ICCfltkBetrachter::cb_ffnen(Fl_Menu_* o, void* v) {
 
 inline void ICCfltkBetrachter::cb_menueintrag_html_speichern_i(Fl_Menu_*, void*) {
   DBG_PROG_START
-  std::string filename = icc_examin->profilnamen[0];  DBG_PROG_V( filename )
+  std::string filename = profile.name();  DBG_PROG_V( filename )
 
   std::string::size_type pos=0;
   if ((pos = filename.find_last_of(".", filename.size())) != std::string::npos) { DBG_PROG
@@ -410,12 +411,12 @@ inline void ICCfltkBetrachter::cb_menueintrag_html_speichern_i(Fl_Menu_*, void*)
 
   DBG_PROG_V( filename )
 
-  if (dateiwahl->count() == 0 || filename != "" || filename == icc_examin->profilnamen[0]) {
+  if (dateiwahl->count() == 0 || filename != "" || filename == profile.name()) {
     load_progress->hide ();
     return;
   }
 
-  std::string bericht = profile[0].report();
+  std::string bericht = profile.profil()->report();
 
   std::ofstream f ( filename.c_str(),  std::ios::out );
   f.write ( bericht.c_str(), bericht.size() );
@@ -465,17 +466,17 @@ inline void ICCfltkBetrachter::cb_menueintrag_inspekt_i(Fl_Menu_* o, void*) {
   Fl_Menu_* mw = (Fl_Menu_*)o;
   const Fl_Menu_Item* m = mw->mvalue();
 
+  //zeig_mich(inspekt_html);
+
   DBG_PROG_S (m->value())
-  if (m->value()) {
-    mft_gl->stop();
-    inspekt->show();
-    examin->hide();
-    inspekt_html->value(profile[0].report().c_str());
+
+  if (m->value())
+  { inspekt_html->value(profile.profil()->report().c_str());
     inspekt_html->topline(tag_text->inspekt_topline);
+    icc_examin->neuzeichnen(inspekt_html);
   } else {
-    inspekt->hide();
-    examin->show();
     tag_text->inspekt_topline = inspekt_html->topline();
+    icc_examin->neuzeichnen(0);
   };
 }
 void ICCfltkBetrachter::cb_menueintrag_inspekt(Fl_Menu_* o, void* v) {
@@ -486,18 +487,11 @@ inline void ICCfltkBetrachter::cb_menueintrag_3D_i(Fl_Menu_* o, void*) {
   Fl_Menu_* mw = (Fl_Menu_*)o;
   const Fl_Menu_Item* m = mw->mvalue();
 
+  //zeig_mich(DD_histogram);
+
   DBG_PROG_S (m->value())
   if (m->value()) {
-    group_histogram->show();
     icc_examin->histogram();
-    DD_histogram->zeigen();
-    inspekt->hide();
-    examin->hide();
-  } else {
-    group_histogram->hide();
-    inspekt->hide();
-    examin->show();
-    tag_text->inspekt_topline = inspekt_html->topline();
   };
 }
 void ICCfltkBetrachter::cb_menueintrag_3D(Fl_Menu_* o, void* v) {
@@ -528,6 +522,7 @@ Fl_Menu_Item ICCfltkBetrachter::menu_[] = {
  {0},
  {"Hilfe", 0,  0, 0, 64, 0, 0, 14, 56},
  {"\334""ber", 0,  (Fl_Callback*)ICCfltkBetrachter::cb_ber, 0, 0, 0, 0, 14, 56},
+ {"", 0xff1b,  0, 0, 0, 0, 0, 14, 56},
  {0},
  {0}
 };
@@ -611,15 +606,15 @@ Fl_Double_Window* ICCfltkBetrachter::init() {
     Flu_File_Chooser:: = _("");*/
 
     const char* ptr = NULL;
-    if (icc_examin->profilnamen.size())
-      ptr = icc_examin->profilnamen[0].c_str();
+    if (profile.size())
+      ptr = profile.name().c_str();
     dateiwahl = new Flu_File_Chooser(ptr, _("ICC Farbprofile (*.ic*)"), Flu_File_Chooser::SINGLE, _("Welches ICC Profil?"));
     dateiwahl->add_context_handler(Flu_File_Chooser::ENTRY_FILE, "icc", _("Profil öffnen"), dateiwahl_cb, NULL);
     dateiwahl->add_context_handler(Flu_File_Chooser::ENTRY_FILE, "icm", _("Profil öffnen"), dateiwahl_cb, NULL);
   #else
     const char* ptr = NULL;
     if (filenamen_alt.size())
-      ptr = icc_examin->profilnamen[0].c_str();
+      ptr = profile;
     dateiwahl = new Fl_File_Chooser(ptr, _("ICC Farbprofile (*.{I,i}{C,c}{M,m,C,c})"), Fl_File_Chooser::SINGLE, _("Welches ICC Profil?"));
     dateiwahl->callback(dateiwahl_cb);
     dateiwahl->preview_label = _("Vorschau");
@@ -652,8 +647,8 @@ Fl_Double_Window* ICCfltkBetrachter::init() {
         o->when(3);
         o->menu(menu_);
       }
-      { Fl_Group* o = inspekt = new Fl_Group(0, 25, 385, 470);
-        { Fl_Help_View* o = inspekt_html = new Fl_Help_View(0, 25, 385, 470, "Inspect");
+      { Fl_Group* o = inspekt_nein = new Fl_Group(0, 25, 385, 470);
+        { Fl_Help_View* o = inspekt_html_nein = new Fl_Help_View(0, 25, 385, 470, "Inspect");
           o->align(FL_ALIGN_CENTER|FL_ALIGN_INSIDE);
         }
         o->hide();
@@ -726,7 +721,7 @@ Fl_Double_Window* ICCfltkBetrachter::init() {
               o->labelcolor(FL_BLACK);
               o->align(FL_ALIGN_BOTTOM|FL_ALIGN_INSIDE);
               o->when(FL_WHEN_RELEASE);
-              o->first = true;
+              //o->first = true;
               o->hide();
             }
             o->show();
@@ -762,6 +757,10 @@ Fl_Double_Window* ICCfltkBetrachter::init() {
             o->show();
           }
           o->end();
+        }
+        { Fl_Help_View* o = inspekt_html = new Fl_Help_View(0, 25, 385, 470, "Inspect");
+          o->align(FL_ALIGN_CENTER|FL_ALIGN_INSIDE);
+          o->hide();
         }
         o->end();
         Fl_Group::current()->resizable(o);
@@ -862,29 +861,53 @@ void ICCfltkBetrachter::quit(void) {
   delete browser;
   delete canvas;*/
   details->hide();
-  exit(0);
+  icc_examin->quit();
   DBG_PROG_ENDE
 }
 
-void ICCfltkBetrachter::zeig_mich(void* widget) {
+void ICCfltkBetrachter::zeig_mich_(void* widget) {
   DBG_PROG_START
   // zeigt das ausgewählte Fenster (widget)
 
-  //tabellengruppe->hide();
   mft_viewer->hide();
   mft_text->hide();
-  //mft_gl->hide();
-  
   tag_viewer->hide(); DBG_PROG
   tag_viewer->clear_visible(); DBG_PROG
   tag_text->hide();
+  inspekt_html->hide();
+
+  // stop
   if (widget != mft_gl) {
+    mft_gl->stop();
     mft_gl->verstecken();
-    //((Fl_Widget*)widget)->parent()->show(); DBG_PROG
+  }
+  if (widget != DD_histogram ) {
+    DD_histogram->stop();
+    DD_histogram->verstecken();
+  }
+
+  // start
+  if( widget == inspekt_html )
+  { DBG_PROG_S("inspekt_html behandeln")
+    if( menueintrag_inspekt->value() )
+      inspekt_html->show();
+    else
+      inspekt_html->hide();
+  }
+
+  if (widget != mft_gl &&
+      widget != DD_histogram )
+  { 
     ((Fl_Widget*)widget)->show(); DBG_PROG
-  } else {
-    DBG_PROG_S( "GL Fenster belassen." )
+    if( !menueintrag_inspekt->value() &&
+        !menueintrag_3D->value() )
+      ;//select_item(icc_examin->tag_nr()+6);
+  } else if (widget == mft_gl) {
+    DBG_PROG_S( "mft GL Fenster belassen." )
     mft_gl->zeigen();
+  } else if (widget == DD_histogram) {
+    DBG_PROG_S( "3D GL Fenster belassen." )
+    DD_histogram->zeigen();
   }
   DBG_PROG_ENDE
 }
@@ -893,21 +916,21 @@ void ICCfltkBetrachter::measurement(bool has_measurement) {
   if (has_measurement) {
     DBG_PROG_S(menueintrag_inspekt->value())
     if (menueintrag_inspekt->value()) {
-      inspekt_html->value(profile[0].report().c_str());
+      inspekt_html->value(profile.profil()->report().c_str());
       if (inspekt_html->size() -75 < tag_text->inspekt_topline)
         inspekt_html->topline (inspekt_html->size() - 75);
       else
         inspekt_html->topline (tag_text->inspekt_topline);
-      inspekt->show();
-      examin->hide();
+      //inspekt->show();
+      //examin->hide();
     }
     menueintrag_inspekt->activate();
     menueintrag_html_speichern->activate();
   } else {
     menueintrag_inspekt->deactivate();
     menueintrag_html_speichern->deactivate();
-    inspekt->hide();
-    examin->show();
+    //inspekt->hide();
+    //examin->show();
     //menueintrag_inspekt->value( false );
   }
 }

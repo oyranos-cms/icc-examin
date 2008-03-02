@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2005  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -34,44 +34,52 @@
 #include <vector>
 #include "icc_utils.h"
 #include "icc_gl.h"
-
-
-//#include "icc_betrachter.h"
 class ICCfltkBetrachter;
+class ICCexamin;
+extern ICCexamin *icc_examin;
 
 class ICCexamin
 {
   public:
                  ICCexamin ();
-                 ~ICCexamin ();
+                 ~ICCexamin () {; }
 
     void         start(int argc, char** argv);
+    void         quit(void);
 
     void         oeffnen (std::vector<std::string> dateinamen);
     void         oeffnen ();	// interaktiv
+    void         neuzeichnen (void* widget);   // Oberfläche neuzeichnen
 
     std::string  waehleTag (int item);
     void         waehleMft (int item);
     int          kurve_umkehren;
+  private:
+    int  _item,  _mft_item;
+    int  _zeig_prueftabelle,
+         _zeig_histogram;
+
+  public:
+    ICCfltkBetrachter* icc_betrachter;
+    std::string statlabel;
+  public:
+    int  tag_nr () { return _item; }
+    int  mft_nr () { return _mft_item; }
+    void zeig_prueftabelle ();
 
     std::vector<std::vector<double> > kurven;
     std::vector<double> punkte;
     std::vector<std::string> texte;
 
-public:
-	// Liste der geladenen Profile
-	std::vector<std::string> profilnamen;
+  private:
+    int  _feld;
 
-//  private:
-    ICCfltkBetrachter* icc_betrachter;
-    std::string statlabel;
-
-
+  public:
     void histogram();
-private:
+  private:
     int _gl_ansicht;
     std::vector<GL_Ansicht*> _gl_ansichten;
-public:
+  public:
     void glAnsicht (GL_Ansicht* dazu) { DBG_PROG_START bool vorhanden = false;
                               for (unsigned i = 0; i < _gl_ansichten.size();i++)
                                 if (dazu == _gl_ansichten[i]) { DBG_PROG
@@ -87,9 +95,8 @@ public:
     GL_Ansicht* glAnsicht() { if(_gl_ansicht>=0)
                                 return _gl_ansichten[_gl_ansicht];
                               else return 0; }
-};
 
-extern ICCexamin *icc_examin;
+};
 
 #endif //ICC_EXAMIN_H
 

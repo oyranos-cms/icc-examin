@@ -32,7 +32,6 @@ class GL_Ansicht;
 #include "icc_examin.h"
 #include "icc_profile.h"
 #include "icc_utils.h"
-
 #include "icc_ueber.h"
 char* icc_read_info(char* filename);
 
@@ -131,8 +130,8 @@ private:
   inline void cb_ber_i(Fl_Menu_*, void*);
   static void cb_ber(Fl_Menu_*, void*);
 public:
-  Fl_Group *inspekt;
-  Fl_Help_View *inspekt_html;
+  Fl_Group *inspekt_nein;
+  Fl_Help_View *inspekt_html_nein;
   Fl_Tile *examin;
   TagBrowser *tag_browser;
 private:
@@ -152,6 +151,7 @@ public:
   Fl_Group *tag_3D;
   TagDrawings *tag_viewer;
   TagTexts *tag_text;
+  Fl_Help_View *inspekt_html;
   Fl_Group *group_histogram;
   GL_Ansicht *DD_histogram;
   Fl_Box *box_stat;
@@ -159,7 +159,7 @@ public:
   void run();
   std::vector<std::string> open(std::vector<std::string> dateinamen);
   void quit(void);
-  void zeig_mich(void* widget);
+  void zeig_mich_(void* widget);
   void measurement(bool has_measurement);
 };
 std::vector<std::string> zeilenNachVector(std::string text);

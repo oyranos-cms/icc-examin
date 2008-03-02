@@ -1,3 +1,13 @@
+2004-12-31
+	* und: Gedanken über Farbraumhülle
+	*    : maximaler Farbauftrag für maximale Farbsättigung
+	*    : Raster (polar oder orthogonal) mit Prüfung des relativen Intents
+		auf Veränderung; Begin der Veränderung zeigt das Innere des 
+		Farbraumes an
+	     : Grenze Abtasten bei Verdacht
+
+2004-12-30
+        * und: OpenGL Tests;  Transparenz - scheint standpunktabhängig
 
 2004-12-28
 	* und: Tag- und Mft-auswahl von icc_betrachter -> icc_examin

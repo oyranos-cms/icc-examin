@@ -42,7 +42,11 @@ class GL_Ansicht : public Fl_Group {
   std::vector<std::string>nachFarbNamen;
   std::vector<std::string>vonFarbNamen;
   std::vector<std::string>farbNamen;
-  std::vector<double> punkte;
+  std::vector<std::vector<double> > _dreiecksNetze;
+  std::vector<std::vector<float> >  _dreiecksFarben; // rgba 0.0 - 1.0 (n*4)
+  std::vector<std::string>          _netzNamen;
+  std::vector<double> punkte;        //                (n*3)
+  std::vector<float>  farben;        // rgba 0.0 - 1.0 (n*4)
   std::vector<std::vector<double> >kurven;
   Fl_Group *GLFenster;
   void MenueErneuern();
@@ -58,8 +62,23 @@ public:
   GL_Ansicht(int X,int Y,int W,int H);
   ~GL_Ansicht();
   void draw();
-  void hinein_punkte(std::vector<double> vect, std::vector<std::string> txt);
-  void hinein_kurven(std::vector<std::vector<double> >vect, std::vector<std::string> txt);
+  void hinein_punkte(std::vector<double> vect,
+                     std::vector<std::string> achsNamen);
+  void hinein_punkte(std::vector<double> vect, 
+                     std::vector<float> farben,
+                     std::vector<std::string> achsNamen);
+  void hinein_punkte(std::vector<double> punktKoordinaten, 
+                     std::vector<float>  punktFarben,
+                     std::vector<std::string> farbNamen,
+                     std::vector<std::string> achsNamen);
+  void hinein_netze (std::vector<std::vector<double> >_dreiecksNetze, 
+                     std::vector<std::vector<float> > _dreiecksFarben,
+                     std::vector<std::string> _netzNamen,
+                     std::vector<std::string> _achsNamen);
+
+  void hinein_kurven(std::vector<std::vector<double> >vect,
+                     std::vector<std::string> txt);
+
   void hinein_tabelle(std::vector<std::vector<std::vector<std::vector<double> > > >vect,
                                std::vector<std::string> vonFarben,
                                std::vector<std::string> nachFarben);

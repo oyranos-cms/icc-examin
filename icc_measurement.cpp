@@ -61,6 +61,7 @@ ICCmeasurement::load                ( ICCprofile *profil,
 
   _sig    = tag._sig;
   _size   = tag._size - 8;
+  DBG_PROG_V( _size )
   // einfach austauschen
   if (_data != NULL) free (_data); 
   _data = (char*) calloc ( _size , sizeof (char) );

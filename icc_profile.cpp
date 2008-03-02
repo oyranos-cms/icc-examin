@@ -45,9 +45,6 @@
 
 #define g_message printf
 
-std::vector<ICCprofile> profile;
-
-
 /**
   *  @brief ICCheader Funktionen
   */ 
