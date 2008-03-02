@@ -45,17 +45,13 @@ ICCmeasurement::~ICCmeasurement ()
 void
 ICCmeasurement::load                ( ICCprofile *profil,
                                       ICCtag&     tag )
-{
+{ DBG
   _profil = profil;
 
-  if (_sig != icMaxEnumTag)
-    _sig = icSigCharTargetTag;
-  else
-    _sig    = tag._sig;
-
+  _sig    = tag._sig;
   _size   = tag._size - 8;
   // einfach austauschen
-  if (_data != NULL) free (_data);
+  if (_data != NULL) free (_data); 
   _data = (char*) calloc ( _size , sizeof (char) );
   memcpy ( _data , &(tag._data)[8] , _size );
 
@@ -93,7 +89,7 @@ void
 ICCmeasurement::load                ( ICCprofile *profil,
                                       char       *data,
                                       size_t      size )
-{
+{ DBG
   _profil = profil;
 
   if (_sig != icMaxEnumTag)
@@ -115,18 +111,69 @@ ICCmeasurement::load                ( ICCprofile *profil,
 
 void
 ICCmeasurement::init_meas (void)
-{
-  // lcms liest ein
-  _lcms_it8 = cmsIT8LoadFromMem ( _data, _size );
+{ //DBG_S (_data)
 
-  char **SampleNames;
+  std::string data (_data, 0, _size);
 
-  _nFelder = (int)cmsIT8GetPropertyDbl(_lcms_it8, "NUMBER_OF_SETS");
-  int _nKanaele = cmsIT8EnumDataFormat(_lcms_it8, &SampleNames);
-  #ifdef DEBUG_ICCMEASUREMENT
-  for (int i = 0; i < _nKanaele; i++)
-    cout << (char*)SampleNames[i] << endl;
+  // reparieren: Sample_Name , SampleID
+  std::string::size_type pos=0;
+  while ((pos = data.find ("SampleID", pos)) != std::string::npos) {
+      data.replace (pos, 8, "SAMPLE_ID"); DBG_S( "SampleID ersetzt" )
+  }
+  pos = 0;
+  while ((pos = data.find ("Sample_Name", pos)) != std::string::npos) {
+      data.replace (pos, strlen("Sample_Name"), "SAMPLE_NAME"); DBG_S( "Sample_Name ersetzt" )
+  }
+  if (getTagName() == "CIED") {
+      data.insert (0, "ICCEXAM\n"); DBG_S( "Beschreibung eingeführt" )
+  }
+
+  //DBG_S (data)
+  #if 0
+  clear();
+  return;
   #endif
+
+  // lcms liest ein
+  if (_lcms_it8 != NULL) cmsIT8Free (_lcms_it8);
+  _lcms_it8 = cmsIT8Alloc();
+  if (_data != NULL) free (_data);
+  _data = (char*) calloc (sizeof(char), data.size());
+  _size = data.size();
+  memcpy (_data, data.c_str(), _size);
+  _lcms_it8 = cmsIT8LoadFromMem ( _data, _size ); DBG
+
+  char **SampleNames; DBG
+
+  // Messfeldanzahl
+  if (_nFelder == 0
+   || _nFelder == (int)cmsIT8GetPropertyDbl(_lcms_it8, "NUMBER_OF_SETS")) { DBG
+    _nFelder = (int)cmsIT8GetPropertyDbl(_lcms_it8, "NUMBER_OF_SETS"); DBG
+  } else {
+    DBG_S( "Messfeldanzahl sollte schon übereinstimmen! " << _nFelder << "|" << (int)cmsIT8GetPropertyDbl(_lcms_it8, "NUMBER_OF_SETS") )
+    clear();
+    return;
+  }
+
+  int _nKanaele = cmsIT8EnumDataFormat(_lcms_it8, &SampleNames);
+  bool _sample_name = false;
+  bool _sample_id = false;
+  bool _id_vor_name = false;
+
+  // Was ist alles da? Wollen wir später die Namen tauschen?
+  for (int i = 0; i < _nKanaele; i++) {
+    if (strstr((char*)SampleNames[i],"SAMPLE_ID") != 0)
+      _sample_id = true;
+    if (strstr((char*)SampleNames[i],"SAMPLE_NAME") != 0
+     && _sample_id) {
+      _sample_name = true;
+      _id_vor_name = true;
+    }
+    #ifdef DEBUG_ICCMEASUREMENT
+    DBG_S( (char*)SampleNames[i] << " _sample_name " << _sample_name <<
+           " _sample_id" << _sample_id << " _id_vor_name " << _id_vor_name) 
+    #endif
+  }
 
   // Auslesen und Aufbereiten
   std::vector<std::string> farbkanaele;
@@ -173,8 +220,9 @@ ICCmeasurement::init_meas (void)
       farbkanaele.push_back(SampleNames[i]);
     }
 
-  }
+  } DBG
 
+  // Variablen
   int farben = 0;
   if (has_Lab) farben++;
   if (has_XYZ) {farben++; _XYZ_measurement = true; }
@@ -183,20 +231,38 @@ ICCmeasurement::init_meas (void)
   if (has_xyY) farben++;
 
 
-  const char* constr = (const char*) calloc (sizeof (char), 12);
-
-  if (has_XYZ) { // keine Umrechnung nötig
-    _XYZ_Satz.resize(_nFelder);
+  // vorläufige lcms Farbnamen listen
+  if (farben > 0) {
     _Feldnamen.resize(_nFelder);
-    for (int i = 0; i < _nFelder; i++) { DBG
-        constr = cmsIT8GetPatchName (_lcms_it8, i, NULL);
-        _Feldnamen[i] = constr;
-        _XYZ_Satz[i].X = cmsIT8GetDataDbl (_lcms_it8, constr, "XYZ_X")/100.0;
-        _XYZ_Satz[i].Y = cmsIT8GetDataDbl (_lcms_it8, constr, "XYZ_Y")/100.0;
-        _XYZ_Satz[i].Z = cmsIT8GetDataDbl (_lcms_it8, constr, "XYZ_Z")/100.0;
+    const char* constr = (const char*) calloc (sizeof (char), 12);
+    DBG
+    for (int k = 0; k < _nFelder; k++) {
+      if (_id_vor_name
+       && (getTagName() != "DevD")) {// Name ignorieren
+        char *text = (char*) calloc (sizeof(char), 12);
+        sprintf (text, "%d", k+1);
+        _Feldnamen[k] = text;
+      } else {
+        constr = cmsIT8GetPatchName (_lcms_it8, k, NULL);
+        _Feldnamen[k] = constr;
+      }
+      //cout << _Feldnamen[k] << " " << k << " "; DBG
     }
-  } DBG
-  if (has_RGB) { // keine Umrechnung nötig
+  } DBG_S (_Feldnamen[0] << " bis " << _Feldnamen[_nFelder-1])
+ 
+  // Farben auslesen
+  if (has_XYZ) { DBG // keine Umrechnung nötig
+    _XYZ_Satz.resize(_nFelder);
+    for (int i = 0; i < _nFelder; i++) {
+        _XYZ_Satz[i].X = cmsIT8GetDataDbl (_lcms_it8, _Feldnamen[i].c_str(),
+                                           "XYZ_X")/100.0;
+        _XYZ_Satz[i].Y = cmsIT8GetDataDbl (_lcms_it8, _Feldnamen[i].c_str(),
+                                           "XYZ_Y")/100.0;
+        _XYZ_Satz[i].Z = cmsIT8GetDataDbl (_lcms_it8, _Feldnamen[i].c_str(),
+                                           "XYZ_Z")/100.0;
+    }
+  }
+  if (has_RGB) { DBG // keine Umrechnung nötig
     _RGB_Satz.resize(_nFelder);
     for (int i = 0; i < _nFelder; i++) {
         _RGB_Satz[i].R = cmsIT8GetDataDbl (_lcms_it8, _Feldnamen[i].c_str(),
@@ -206,38 +272,53 @@ ICCmeasurement::init_meas (void)
         _RGB_Satz[i].B = cmsIT8GetDataDbl (_lcms_it8, _Feldnamen[i].c_str(),
                                            "RGB_B")/256.0;
     }
-  } DBG
-  if (has_CMYK) { // keine Umrechnung nötig
+  }
+  if (has_CMYK) { DBG // keine Umrechnung nötig
     _CMYK_Satz.resize(_nFelder);
-    for (int i = 0; i < _nFelder; i++) {
+    for (int i = 0; i < _nFelder; i++) { //cout << _Feldnamen[i] << " " << i << " "; DBG
         _CMYK_Satz[i].C = cmsIT8GetDataDbl (_lcms_it8, _Feldnamen[i].c_str(),
-                                           "CMYK_C")/256.0;
+                                           "CMYK_C")/100.0;
         _CMYK_Satz[i].M = cmsIT8GetDataDbl (_lcms_it8, _Feldnamen[i].c_str(),
-                                           "CMYK_M")/256.0;
+                                           "CMYK_M")/100.0;
         _CMYK_Satz[i].Y = cmsIT8GetDataDbl (_lcms_it8, _Feldnamen[i].c_str(),
-                                           "CMYK_Y")/256.0;
+                                           "CMYK_Y")/100.0;
         _CMYK_Satz[i].K = cmsIT8GetDataDbl (_lcms_it8, _Feldnamen[i].c_str(),
-                                           "CMYK_K")/256.0;
-    }
-  } DBG
+                                           "CMYK_K")/100.0;
+    } DBG
+  }
+
+
+  // Farbnamen nach Geschmack (unmittelbar vor cmsIT8Free !)
+  if (_id_vor_name) {
+    for (int i = 0; i < _nFelder; i++) {
+        _Feldnamen[i] = cmsIT8GetData (_lcms_it8, _Feldnamen[i].c_str(),
+                                       "SAMPLE_NAME");
+    } DBG_S (_Feldnamen[0] <<" bis "<< _Feldnamen[_nFelder-1] <<" "<< _nFelder)
+  }
+
+  // lcms's cgats Leser wird nicht mehr gebraucht
+  cmsIT8Free (_lcms_it8);
+  _lcms_it8 = NULL;
 
   #ifdef DEBUG_ICCMEASUREMENT
-  if (_RGB_measurement) {
+  // Infos für die Konsole
+  DBG_S( "Anzahl Messfelder: " << getPatchCount() << " Samples " << _nKanaele )
+
+  if (_RGB_measurement && _XYZ_measurement) {
     for (int i = 0; i < _nFelder; i++) {
       cout << _Feldnamen[i] << ": " << _XYZ_Satz[i].X << ", " << _XYZ_Satz[i].Y << ", " << _XYZ_Satz[i].Z << ", "  << _RGB_Satz[i].R << ", "  << _RGB_Satz[i].G << ", "  << _RGB_Satz[i].B << endl;
     } DBG
-  } else if (_CMYK_measurement) {
+  } else if (_CMYK_measurement && _XYZ_measurement) {
+    DBG_S( _Feldnamen.size() << " | " << _CMYK_Satz.size() )
     for (int i = 0; i < _nFelder; i++) {
       cout << _Feldnamen[i] << ": " << _XYZ_Satz[i].X << ", " << _XYZ_Satz[i].Y << ", " << _XYZ_Satz[i].Z << ", "  << _CMYK_Satz[i].C << ", "  << _CMYK_Satz[i].M << ", "  << _CMYK_Satz[i].Y << ", "  << _CMYK_Satz[i].K << endl;
     } DBG
   }
 
-  cout << "Anzahl Messfelder: " << getPatchCount() << " Samples " << _nKanaele << " "; DBG
-
   if (farben > 1
    && ((has_CMYK || has_RGB)
        && (has_Lab || has_XYZ || has_xyY))) {
-    cout << "sieht gut aus " ; DBG
+    DBG_S( "sieht gut aus" )
   }
   #endif
 }
@@ -248,77 +329,7 @@ ICCmeasurement::getText                     (void)
 { DBG
   std::vector<std::string> texte;
   std::string text = "Fehl";
-  int count = 0;
 
-  if (getTypName() == "meas") {
-    if (_size < 36) return texte;
-    std::stringstream s;
-    icMeasurement meas;
-    memcpy (&meas, &_data[8] , 28);
-    s << _("Standard Betrachter") << ": " <<
-    getStandardObserver( (icStandardObserver)icValue( meas.stdObserver) ) <<endl
-      << _("Rückseite") << ": X = " << icValueSF(meas.backing.X)
-                        << ", Y = " << icValueSF(meas.backing.Y)
-                        << ", Z = " << icValueSF(meas.backing.Z) << endl
-      << _("Geometrie") << ": "<< 
-    getMeasurementGeometry ((icMeasurementGeometry)icValue(meas.geometry))<<endl
-      << _("Flare")     << ": "<< 
-    getMeasurementFlare ((icMeasurementFlare)icValue(meas.flare)) << endl
-      << _("Beleuchtungstyp") << ": " <<
-    getIlluminant ((icIlluminant)icValue(meas.illuminant)) <<endl;
-    texte.push_back( s.str() );
-  } else  if (getTypName() == "text"
-           || getTypName() == "cprt?" ) { // text
-    text = ""; DBG
-  #if 1
-    char* txt = (char*)calloc (_size-8, sizeof(char));
-    memcpy (txt, &_data[8], _size - 8);
-    char* pos = 0;
-    #ifdef DEBUG_ICCMEASUREMENT
-    cout << (int)strchr(txt, 13) << " "; DBG
-    #endif
-    while (strchr(txt, 13) > 0) { // \r 013 0x0d
-      pos = strchr(txt, 13);
-      #ifdef DEBUG_ICCMEASUREMENT
-      cout << (int)pos << " "; DBG
-      #endif
-      if (pos > 0) {
-        if (*(pos+1) == '\n')
-          *pos = ' ';
-        else
-          *pos = '\n';
-      }
-      count++;
-    };
-    text = txt;
-    free (txt);
-  #else
-    text.append (&_data[8], _size - 8);
-    int pos = 0;
-    #ifdef DEBUG_ICCMEASUREMENT
-    cout << (int)text.find('\r') << " "; DBG
-    #endif
-    while ((int)text.find('\r') > 0) { // \r 013 0x0d
-      pos = (int)text.find('\r');
-      #ifdef DEBUG_ICCMEASUREMENT
-      cout << pos << " "; DBG
-      #endif
-      if (pos > 0)
-        //text.erase (pos);
-        text.replace (pos, 1, ' ', 1); 
-      count++;
-    };
-  #endif
-    texte.push_back( text );
-
-  } else {
-    texte.push_back( getTypName() + " | <- iss'n das?" );
-  }
-    
-  #ifdef DEBUG_ICCMEASUREMENT
-  cout << count << " Ersetzungen "; DBG
-  cout << " " << "" << "|" << getTypName() << "|" << text << " "; DBG
-  #endif
   return texte;
 }
 

@@ -396,7 +396,7 @@ ICCtag::getText                     (void)
     while (strchr(txt, 13) > 0) { // \r 013 0x0d
       pos = strchr(txt, 13);
       #ifdef DEBUG_ICCTAG
-      cout << (int)pos << " "; DBG
+      //cout << (int)pos << " "; DBG
       #endif
       if (pos > 0) {
         if (*(pos+1) == '\n')
@@ -877,25 +877,14 @@ ICCprofile::fload ()
     //cout << " sig: " << tags[i].getTagName() << " " << i << " "; DBG
     #endif
 
-    // Messdaten
-    if (tags[i].getTagName() == ("targ")) {
-      measurement.load( this, tags[i] );
+    // bekannte Tags mit Messdaten
+    if (tags[i].getTagName() == ("targ")
+     || tags[i].getTagName() == ("DevD")
+     || tags[i].getTagName() == ("CIED")) {
       #ifdef DEBUG_ICCPROFILE
-      cout << "Messdaten gefunden";DBG
+      cout << "Messdaten gefunden " << tags[i].getTagName() << " "; DBG
       #endif
-    }
-    // andere bekannte Tags mit Messdaten
-    if (tags[i].getTagName() == ("DevD")) {
       measurement.load( this, tags[i] );
-      #ifdef DEBUG_ICCPROFILE
-      cout << "Messdaten gefunden";DBG
-      #endif
-    }
-    if (tags[i].getTagName() == ("CIED")) {
-      measurement.load( this, tags[i] );
-      #ifdef DEBUG_ICCPROFILE
-      cout << "Messdaten gefunden";DBG
-      #endif
     }
   }
   #ifdef DEBUG_ICCPROFILE

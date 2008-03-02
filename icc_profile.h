@@ -218,12 +218,6 @@ class ICCmeasurement {
   public:
     std::string         getTagName()       {return getSigTagName (_sig); }
     std::string         getInfo()          {return getSigTagDescription(_sig); }
-    std::string         getTypName()       {icTagTypeSignature sig =
-                                            ((icTagBase*)_data) ->
-                                            sig;
-                                            return getSigTypeName(
-                                              (icTagTypeSignature)icValue(sig));
-                                           }
     int                 getSize()          {return _size; }
     int                 getPatchCount()    {return _nFelder; }
     int                 getTableCount()    {return cmsIT8TableCount(_lcms_it8);}
@@ -270,6 +264,8 @@ class ICCprofile {
     const char*         cmm      ()        {return header.cmmName(); }
     void                cmm      (const char* s) {header.cmmName (s); }
     int                 version  ()        {return (int) header.version(); }
+    const char*         creator  ()        {return header.creatorName(); }
+
     std::string         printHeader     () {return header.print(); }
     std::string         printLongHeader () {return header.print_long(); }
     std::vector<std::string> printTags  (); // Liste der einzelnen Tags (5)
