@@ -21,32 +21,58 @@ int     Rotating = 0;
 
 
 
-GL_Ansicht::GL_Ansicht(int X,int Y,int W,int H) : Fl_Widget(X,Y,W,H), X(X), Y(Y), W(W), H(H) {  DBG_PROG_START
-
+GL_Ansicht::GL_Ansicht(int X,int Y,int W,int H) : Fl_Group(X,Y,W,H)
+{ DBG_PROG_V( first )
+  first = true;
   DBG_PROG_ENDE
+}
+
+void GL_Ansicht::zeigen() {
+  if (!first)
+    GLFenster->size(w(),h());
+  DBG_PROG_V( w() <<" "<< h() )
+  agvSetAllowIdle (1);
+  GLfenster_zeigen = true;
+  DBG_PROG
+}
+
+void
+GL_Ansicht::verstecken()
+{
+  if (!first)
+    GLFenster->size(1,1);
+  DBG_PROG_V( w() <<" "<< h() )
+  agvSetAllowIdle (0);
+  GLfenster_zeigen = false;
+  DBG_PROG
 }
 
 void GL_Ansicht::init() {
   DBG_PROG_START
   first = false;
+  this->begin();
+  GLFenster = new Fl_Group (x(),y(),w(),h());
+  this->end();
+
+  GLFenster->show();
   this->show();
 
   DBG_PROG
-  details->begin(); DBG_PROG
-  glutInitWindowSize(W,H); DBG_PROG_V( X << Y )
-  glutInitWindowPosition(X,Y); DBG_PROG_V( W << H )
+  GLFenster->begin(); DBG_PROG
+  glutInitWindowSize(w(),h()); DBG_PROG_V( w() << h() )
+  glutInitWindowPosition(x(),y()); DBG_PROG_V( x() << y() )
   glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH | GLUT_MULTISAMPLE); DBG_PROG
-  GLfensterNr = glutCreateWindow(_("GL Ansicht")); DBG_PROG
+  glutCreateWindow(_("GL Ansicht")); DBG_PROG
 
-  details->end(); DBG_PROG
-  details->resizable(glut_window);
+  GLFenster->end(); DBG_PROG
+  GLFenster->resizable(glut_window);
 
   agvInit(1); DBG_PROG
 
   glutReshapeFunc(reshape); DBG_PROG
   glutDisplayFunc(display); DBG_PROG
-  glutVisibilityFunc(sichtbar); DBG_PROG
-  glutMenuStateFunc(menuuse); DBG_PROG
+  //glutVisibilityFunc(sichtbar); DBG_PROG
+  //glutMenuStateFunc(menuuse); DBG_PROG
 
   agvMakeAxesList(AXES); DBG_PROG
 
@@ -56,6 +82,29 @@ void GL_Ansicht::init() {
 
   //glutMainLoop(); // you could use Fl::run() instead
 
+  DBG_PROG_ENDE
+}
+
+void GL_Ansicht::draw() {
+  DBG_PROG_START
+  // Kurven oder Punkte malen
+  DBG_PROG_S( punkte.size() << "/" << kurven.size() <<" "<< texte.size() )
+
+  if (GLfenster_zeigen) {
+    GLFenster->size(w(),h());
+  } else {
+    GLFenster->size(1,1);
+  }
+
+  DBG_PROG_V( GLfenster_zeigen )
+
+  if (punkte.size() >= 3) {
+    //draw_cie_shoe(x(),y(),w(),h(),texte,punkte,false);
+
+  } else {
+    //draw_kurve   (x(),y(),w(),h(),texte,kurven);
+  }
+  DBG_PROG
   DBG_PROG_ENDE
 }
 
@@ -129,11 +178,11 @@ double seitenverhaeltnis;
 
 void reshape(int w, int h) {
   DBG_PROG_START
-  glViewport(0,0,w,h); DBG_PROG_V( w << h )
+  glViewport(0,0,w,h); DBG_PROG_V( w <<" "<< h )
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
-  //gluPerspective(45.0, (GLdouble)w/(GLdouble)h, 0.01, 100); DBG_PROG_V( (double)w / h )
   seitenverhaeltnis = (GLdouble)w/(GLdouble)h;
+  //gluPerspective(45.0, seitenverhaeltnis, 0.01, 100); DBG_PROG_V( (double)w / h )
   glPushMatrix();
   glMatrixMode(GL_MODELVIEW);
   glFlush();
@@ -177,21 +226,6 @@ void display() {
   //DBG_PROG_ENDE
 }
 
-void GL_Ansicht::draw() {
-  DBG_PROG_START
-  // Kurven oder Punkte malen
-  DBG_PROG_S( punkte.size() << "/" << kurven.size() <<" "<< texte.size() )
-
-  if (punkte.size() >= 3) {
-    //draw_cie_shoe(x(),y(),w(),h(),texte,punkte,false);
-
-  } else {
-    //draw_kurve   (x(),y(),w(),h(),texte,kurven);
-  }
-  DBG_PROG
-  DBG_PROG_ENDE
-}
-
 void GL_Ansicht::hinein_punkt(std::vector<double> vect, std::vector<std::string> txt) {
   DBG_PROG_START
   //CIExyY aus tag_browser anzeigen
@@ -214,7 +248,7 @@ void GL_Ansicht::hinein_kurven(std::vector<std::vector<double> >vect, std::vecto
   texte = txt;
   punkte.clear();
 
-  zeig_mich(this); DBG_PROG
+  zeig_mich(this); DBG_PROG_V( first )
 
   if (first)
     init();
@@ -256,14 +290,14 @@ void menuuse(int v)
   /* rotate the axis and adjust position if nec. */
 void rotatethering(void)
 { 
-  DBG_PROG_START
+  //DBG_PROG_START
   Rotation += ROTATEINC;
 
   if (agvMoving)   /* we since we are the only idle function, we must */
     agvMove();     /* give AGV the chance to update the eye position */
 
   glutPostRedisplay();
-  DBG_PROG_ENDE
+  //DBG_PROG_ENDE
 }
 
 

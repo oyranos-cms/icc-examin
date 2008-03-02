@@ -7,10 +7,14 @@
 #define ICC_GL_H
 #define _(text) text
 
-class GL_Ansicht : public Fl_Widget {
-  int X; int Y; int W; int H; std::vector<std::string>texte; std::vector<double>punkte; std::vector<std::vector<double> >kurven;
+class GL_Ansicht : public Fl_Group {
+  std::vector<std::string>texte;
+  std::vector<double>punkte;
+  std::vector<std::vector<double> >kurven;
+  Fl_Group *GLFenster;
 public:
-  int GLfensterNr; bool first;
+  bool GLfenster_zeigen,
+       first;
   GL_Ansicht(int X,int Y,int W,int H) ;
   void init();
   void myGLinit();
@@ -20,8 +24,8 @@ public:
   void hinein_punkt(std::vector<double> vect, std::vector<std::string> txt);
   void hinein_kurven(std::vector<std::vector<double> >vect, std::vector<std::string> txt);
   void ruhig_neuzeichnen(void);
-  void zeigen()     {if (!first) {glutSetWindow(GLfensterNr); glutShowWindow(); glutPostRedisplay(); DBG_PROG_V( glutGetWindow() )} }
-  void verstecken() {if (!first) {glutSetWindow(GLfensterNr); glutHideWindow(); glutPostRedisplay(); DBG_PROG_V( glutGetWindow() )} }
+  void zeigen();
+  void verstecken();
 };
 
 void reshape(int w, int h);

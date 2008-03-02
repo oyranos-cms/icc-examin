@@ -746,7 +746,7 @@ void zeig_mich(void* widget) {
   //tabellengruppe->hide();
   mft_viewer->hide();
   mft_text->hide();
-  mft_gl->verstecken();
+  //mft_gl->hide();
   
   tag_viewer->hide(); DBG_PROG
   tag_viewer->clear_visible(); DBG_PROG
@@ -754,8 +754,9 @@ void zeig_mich(void* widget) {
   if (widget != mft_gl) {
     //((Fl_Widget*)widget)->parent()->show(); DBG_PROG
     ((Fl_Widget*)widget)->show(); DBG_PROG
+    mft_gl->verstecken();
   } else {
-    DBG_PROG_S( "GL Fenster zeigen." )
+    DBG_PROG_S( "GL Fenster belassen." )
     mft_gl->zeigen();
   }
   DBG_PROG_ENDE
