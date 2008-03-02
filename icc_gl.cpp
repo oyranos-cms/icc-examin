@@ -27,7 +27,7 @@ GL_Ansicht::GL_Ansicht(int X,int Y,int W,int H) : Fl_Group(X,Y,W,H)
 { DBG_PROG_V( first )
   first = true;
   MenueKanalEintraege = 0;
-  Punktform = MENU_STERN;
+  Punktform = MENU_WUERFEL;
   DBG_PROG_ENDE
 }
 
@@ -122,17 +122,17 @@ void GL_Ansicht::draw() {
 
 void GL_Ansicht::myGLinit() {
   DBG_PROG_START
-  GLfloat mat_ambuse[] = { 0.95, 0.95, 0.95, 1.0 };
+  GLfloat mat_ambuse[] = { 0.2, 0.2, 0.2, 1.0 };
   GLfloat mat_specular[] = { 0.6, 0.6, 0.6, 1.0 };
 
   GLfloat light0_position[] = { 2.4, 1.6, 1.2, 0.0 };
 
   glLightfv(GL_LIGHT0, GL_POSITION, light0_position);
-  //GLfloat light1_position[] = { -2.4, -1.6, -1.2, 0.0 };
-  //glLightfv(GL_LIGHT1, GL_POSITION, light1_position);
+  GLfloat light1_position[] = { -2.4, -1.6, -1.2, 0.0 };
+  glLightfv(GL_LIGHT1, GL_POSITION, light1_position);
   glEnable(GL_LIGHTING);
   glEnable(GL_LIGHT0);
-  //glEnable(GL_LIGHT1);
+  glEnable(GL_LIGHT1);
   glDisable(GL_LIGHTING);
 
 
@@ -145,12 +145,12 @@ void GL_Ansicht::myGLinit() {
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
 
-  //glEnable(GL_NORMALIZE);
+  glEnable(GL_NORMALIZE);
 
   glDepthFunc(GL_LESS);
   glEnable(GL_DEPTH_TEST);
 
-  //glShadeModel(GL_SMOOTH);
+  glShadeModel(GL_SMOOTH);
 
   glFlush();
   DBG_PROG_ENDE
@@ -196,7 +196,6 @@ zeichneKoordinaten()
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   glEnable(GL_LINE_SMOOTH);
-  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, farbe);
 
     glRotatef (90,0.0,0,1.0);
       glMatrixMode(GL_MODELVIEW);
@@ -232,7 +231,6 @@ zeichneKoordinaten()
     glTranslatef(0,0,.1);
       FARBE(0,1,1)
       glutSolidCone(0.01, 0.025, 8, 2);
-      FARBE(1,1,1)
       glRotatef (90,0.0,.5,.0);
         glTranslatef(-.1,0,0);
           ZeichneBuchstaben(GLUT_STROKE_ROMAN, 'Z')
@@ -245,24 +243,26 @@ zeichneKoordinaten()
 void GL_Ansicht::MakeDisplayLists() {
   DBG_PROG_START
   char text[256];
-  glColor3f(1,1,1);
+  //glColor3f(1,1,1);
   glDeleteLists (HELFER, 1);
   glNewList(HELFER, GL_COMPILE);
-  GLfloat farbe[] =   { 1.0, 1.0, 1.0, 1.0 };
+  GLfloat farbe[] =   { .50, .50, .50, 1.0 };
 
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glEnable(GL_LINE_SMOOTH);
-    glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, farbe);
+    // Farbkanalname
+    //glEnable(GL_BLEND);
+    //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    //glEnable(GL_LINE_SMOOTH);
     glPushMatrix();
       glMatrixMode(GL_MODELVIEW);
       glLineWidth(3.0);
-      glTranslatef(.5,0.62,.0);
+      glTranslatef(.5,0.62,.5);
+      glRotatef (270,0.0,1.0,.0);
       char* ptr = (char*) texte[kanal].c_str();
       sprintf (&text[0], ptr);
       ZeichneText(GLUT_STROKE_ROMAN,&text[0])
     glPopMatrix(); DBG_PROG
 
+    // CIE*L - oben
     glPushMatrix();
       FARBE(1,1,1)
       glBegin(GL_LINES);
@@ -280,6 +280,7 @@ void GL_Ansicht::MakeDisplayLists() {
       glRotatef (270,1.0,0.0,.0);
       glutSolidCone(0.01, 0.025, 8, 2);
       glRotatef (90,1.0,0.0,.0);
+      glRotatef (270,0.0,1.0,.0);
       FARBE(1,1,1)
       glTranslatef(.02,0,0);
       ptr = (char*) pcsNamen[0].c_str();
@@ -287,6 +288,7 @@ void GL_Ansicht::MakeDisplayLists() {
       ZeichneText(GLUT_STROKE_ROMAN,&text[0])
     glPopMatrix(); DBG_PROG
 
+    // CIE*a - rechts
     glPushMatrix();
       glTranslatef(0.0,-.5,0.5);
       FARBE(.2,.9,0.7)
@@ -303,6 +305,7 @@ void GL_Ansicht::MakeDisplayLists() {
       ZeichneText(GLUT_STROKE_ROMAN,&text[0])
     glPopMatrix(); DBG_PROG
 
+    // CIE*b - links
     glPushMatrix();
       glTranslatef(.5,-.5,0);
       FARBE(.9,.9,0.2)
@@ -324,8 +327,10 @@ void GL_Ansicht::MakeDisplayLists() {
   glEndList();
   DBG_PROG_V( tabelle.size() )
 
+  #define Beleuchtung
+
     // Tabelle
-    glDeleteLists (RASTER, 1);
+  glDeleteLists (RASTER, 1);
     if (tabelle.size()) {
       glNewList(RASTER, GL_COMPILE);
       int n_L = tabelle.size(), n_a=tabelle[0].size(), n_b=tabelle[0][0].size();
@@ -337,8 +342,9 @@ void GL_Ansicht::MakeDisplayLists() {
       double wert;
       start_x = start_y = start_z = x = y = z = 0.5; start_y = y = -0.5;
       glPushMatrix();
-
+      #ifndef Beleuchtung
       glDisable(GL_LIGHTING);
+      #endif
       glTranslatef(start_x + dim_x/2.0, start_y + dim_y/2.0, start_z + dim_z/2.0);
       DBG_PROG_V( tabelle.size() <<" "<< tabelle[0].size() )
       glTranslatef(-dim_x,-dim_y,-dim_z);
@@ -358,7 +364,12 @@ void GL_Ansicht::MakeDisplayLists() {
             glTranslatef(dim_x,0.0,0.0); //DBG_PROG_V( dim_x )
             wert = tabelle[L][a][b][kanal]; //DBG_PROG_V( L << a << b << kanal )
             if (wert) {
+              #ifdef Beleuchtung
+              FARBE(wert/2, wert/2, wert/2)
+              //glColor3f(0., 0., 0.);
+              #else
               glColor3f(wert, wert, wert);
+              #endif
               switch (Punktform) {
                 case MENU_STERN: {
                 glBegin(GL_QUADS);
@@ -381,7 +392,7 @@ void GL_Ansicht::MakeDisplayLists() {
                 glEnd();
                 }
                 break;
-                case MENU_WUERFEL: glutSolidCube(groesse); break;
+                case MENU_WUERFEL: glutSolidCube(groesse*0.995); break;
                 case MENU_KUGEL:   glutSolidSphere (groesse*.75, 12, 12); break;
               }
             }
@@ -389,18 +400,20 @@ void GL_Ansicht::MakeDisplayLists() {
         }
       } DBG_PROG
       glPopMatrix();
+      #ifndef Beleuchtung
       glEnable(GL_LIGHTING);
+      #endif
       glEndList();
     }
 
   glNewList(RING, GL_COMPILE);
-    //glutSolidDodecahedron();
+    glutSolidDodecahedron();
   glEndList();
 
   //Hintergrund
-  #if 0
+  #if 1 // Hellgrau
   glClearColor(.75,.75,.75,1.0);
-  #else
+  #else // Blauschwarz
   glClearColor(.0,.0,.1,1.0);
   #endif
 
