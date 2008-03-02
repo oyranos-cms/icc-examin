@@ -54,10 +54,11 @@ std::vector<Agviewer> agviewers;
 void
 Agviewer::agvInit(int window)
 { DBG_PROG_START
-  glutMouseFunc(agv::agvHandleButton);
-  glutMotionFunc(agv::agvHandleMotion);
+  //glutMouseFunc(agv::agvHandleButton);
+  //glutMotionFunc(agv::agvHandleMotion);
   //glutKeyboardFunc(agvHandleKeys);
-  RedisplayWindow = glutGetWindow(); DBG_PROG_V( RedisplayWindow << window )
+  //RedisplayWindow = glutGetWindow(); DBG_PROG_V( RedisplayWindow << window )
+  RedisplayWindow = window;
   this->agvSetAllowIdle(window);
   duenn = false; // ICC Schnitt - Kai-Uwe
   DBG_PROG_ENDE
@@ -150,7 +151,7 @@ Agviewer::ConstrainEl(void)
   * Idle Function - moves eyeposition
   */
 void
-Agviewer::_agvMove(void)
+Agviewer::agvMove_(void)
 { DBG_PROG_START
   //glutSetWindow(RedisplayWindow);
   DBG_PROG_V(redisplayWindow())
@@ -163,7 +164,7 @@ Agviewer::_agvMove(void)
       Ez -= EyeMove*cos(TORAD(EyeAz))*cos(TORAD(EyeEl));
       if(fabs(EyeDist+0.01) < fabs(EyeDist)) {
         int button = GLUT_LEFT_BUTTON, state = GLUT_DOWN, x=0, y=0;
-        _agvHandleButton(button,state,x,y);;
+        agvHandleButton_(button,state,x,y);;
       }
       break;
 
@@ -185,8 +186,8 @@ Agviewer::_agvMove(void)
     }
 
     if (AllowIdle) {
-      glutSetWindow(RedisplayWindow); DBG_PROG_V( RedisplayWindow )
-      glutPostRedisplay();
+      //glutSetWindow(RedisplayWindow); DBG_PROG_V( RedisplayWindow )
+      //glutPostRedisplay();
     }
   }
   DBG_PROG_ENDE
@@ -208,14 +209,16 @@ Agviewer::MoveOn(int v)
     agvMoving = 1;
     if (AllowIdle)
       if (redisplayWindow() == 1) {
-        glutIdleFunc(agv::agvMove1);
+        //glutIdleFunc(agv::agvMove1);
+        agvMove_();
       } else {
-        glutIdleFunc(agv::agvMove2);
+        agvMove_();
+        //glutIdleFunc(agv::agvMove2);
       }
   } else {
     agvMoving = 0;
     if (AllowIdle)
-      glutIdleFunc(NULL);
+      ;//glutIdleFunc(NULL);
   }
   DBG_PROG_ENDE
 }
@@ -252,11 +255,14 @@ Agviewer::agvSwitchMoveMode(int move)
       EyeAz =  EyeAz;
       EyeEl = -EyeEl;
       EyeMove = init_move;
+#if 0
       icc_examin_ns::status_info(_("Schnitt; linker Mausklick setzt zurück"));
       duenn = true;
+#endif
       break;
     case ICCFLY_L:
       MoveMode = POLAR;
+#if 0
       if(RedisplayWindow == 2) {
         EyeDist = 2*init_dist;
         icc_examin->glAnsicht(RedisplayWindow)->vorder_schnitt = 
@@ -266,14 +272,15 @@ Agviewer::agvSwitchMoveMode(int move)
         icc_examin->glAnsicht(RedisplayWindow)->vorder_schnitt = 
          icc_examin->glAnsicht(RedisplayWindow)->std_vorder_schnitt;
       }
+      icc_examin_ns::status_info(_("waagerechter Schnitt; linker Mausklick setzt zurück"));
+      duenn = true;
+#endif
       EyeAz   = init_polar_az;
       EyeEl   = init_polar_el;
       AzSpin  = init_az_spin;
       ElSpin  = init_el_spin;
       move = FLYING;
       this->agvSwitchMoveMode( FLYING );
-      icc_examin_ns::status_info(_("waagerechter Schnitt; linker Mausklick setzt zurück"));
-      duenn = true;
       break;
     case ICCFLY_a:
       MoveMode = POLAR;
@@ -284,10 +291,12 @@ Agviewer::agvSwitchMoveMode(int move)
       ElSpin  = init_el_spin;
       move = FLYING;
       this->agvSwitchMoveMode( FLYING );
+#if 0
       icc_examin->glAnsicht(RedisplayWindow)->vorder_schnitt = 
          icc_examin->glAnsicht(RedisplayWindow)->std_vorder_schnitt;
       icc_examin_ns::status_info(_("senkrechter Schnitt von rechts; linker Mausklick setzt zurück"));
       duenn = true;
+#endif
       break;
     case ICCFLY_b:
       MoveMode = POLAR;
@@ -298,10 +307,12 @@ Agviewer::agvSwitchMoveMode(int move)
       ElSpin  = init_el_spin;
       move = FLYING;
       this->agvSwitchMoveMode( FLYING );
+#if 0
       icc_examin->glAnsicht(RedisplayWindow)->vorder_schnitt = 
          icc_examin->glAnsicht(RedisplayWindow)->std_vorder_schnitt;
       icc_examin_ns::status_info(_("senkrechter Schnitt von vorn; linker Mausklick setzt zurück"));
       duenn = true;
+#endif
       break;
     case ICCPOLAR:
       move = POLAR;
@@ -310,7 +321,7 @@ Agviewer::agvSwitchMoveMode(int move)
       EyeEl   = 0;
       AzSpin  = 1.0;
       ElSpin  = init_el_spin;
-      duenn = true;
+//      duenn = true;
       break;
     case POLAR:
       EyeDist = init_dist;
@@ -318,19 +329,19 @@ Agviewer::agvSwitchMoveMode(int move)
       EyeEl   = init_polar_el;
       AzSpin  = init_az_spin;
       ElSpin  = init_el_spin;
-      duenn = false;
+//      duenn = false;
       break;
     case AGV_STOP:
       MoveMode = POLAR;
       AzSpin  = 0;
       ElSpin  = 0;
       move = POLAR;
-      duenn = false;
+//      duenn = false;
       break;
     }
   MoveMode = move;
   MoveOn(1);
-  glutPostRedisplay();
+  //glutPostRedisplay();
   DBG_PROG_ENDE
 }
 
@@ -339,7 +350,7 @@ Agviewer::agvSwitchMoveMode(int move)
 /***************************************************************/
 
 void
-Agviewer::_agvHandleButton(int &button, int &state, int &x, int &y)
+Agviewer::agvHandleButton_(int &button, int &state, int &x, int &y)
 { DBG_PROG_START
   //glutSetWindow(RedisplayWindow);
   DBG_PROG_V( button <<" "<< state);
@@ -414,7 +425,7 @@ Agviewer::_agvHandleButton(int &button, int &state, int &x, int &y)
   * change EyeEl and EyeAz and position when mouse is moved w/ button down
   */
 void
-Agviewer::_agvHandleMotion(int &x, int &y)
+Agviewer::agvHandleMotion_(int &x, int &y)
 { DBG_PROG_START
   //glutSetWindow(RedisplayWindow);
   int deltax = x - downx, deltay = y - downy;
@@ -436,7 +447,7 @@ Agviewer::_agvHandleMotion(int &x, int &y)
         Ez = downEz + e_sens*deltay*cos(TORAD(EyeAz))*cos(TORAD(EyeEl));
       break;
   }
-  glutPostRedisplay();
+  //glutPostRedisplay();
   DBG_PROG_ENDE
 }
 
@@ -464,7 +475,7 @@ Agviewer::SetMove(float newmove)
    * 0->9 set speed, +/- adjust current speed  -- in FLYING mode
    */
 void
-Agviewer::_agvHandleKeys(unsigned char key, int&, int&)
+Agviewer::agvHandleKeys_(unsigned char key, int&, int&)
 { DBG_PROG_START
   if (MoveMode != FLYING)
   { DBG_PROG_ENDE
@@ -525,6 +536,7 @@ Agviewer::ncrossprod(float v1[3], float v2[3], float cp[3])
 void
 Agviewer::agvMakeAxesList(int displaylistnum)
 { DBG_PROG_START
+  DBG_PROG_V( displaylistnum )
   //glutSetWindow(RedisplayWindow);
   int i,j;
   GLfloat axes_ambuse[] =   { 0.5, 0.0, 0.0, 1.0 };
@@ -554,6 +566,7 @@ Agviewer::agvMakeAxesList(int displaylistnum)
 namespace agv {
 
 // variable Argumentlänge in einem Macro ?
+#if 0
 void agvMove1(void)
 { DBG_PROG_START
   agvMove (1);
@@ -562,19 +575,19 @@ void agvMove1(void)
 
 void agvMove2(void)
 { DBG_PROG_START
-  DBG_PROG_V( glutGetWindow() )
+  //DBG_PROG_V( glutGetWindow() )
   agvMove (2);
   DBG_PROG_ENDE
 }
 
 void agvMove(int glut_fenster)
 { DBG_PROG_START
-  glutSetWindow(glut_fenster);
-  DBG_PROG_V( glutGetWindow() )
+  //glutSetWindow(glut_fenster);
+  //DBG_PROG_V( glutGetWindow() )
   std::vector<Agviewer>::iterator it;
   for (it = agviewers.begin() ; it != agviewers.end(); it++)
     if (it->redisplayWindow() == glut_fenster)
-      it->_agvMove();
+      it->agvMove_();
   DBG_PROG_ENDE
 }
 
@@ -584,7 +597,7 @@ void agvHandleButton(int button, int state, int x, int y)
   std::vector<Agviewer>::iterator it;
   for (it = agviewers.begin() ; it != agviewers.end(); it++)
     if (it->redisplayWindow() == glutGetWindow())
-      it->_agvHandleButton( button, state, x, y);
+      it->agvHandleButton_( button, state, x, y);
   DBG_PROG_ENDE
 }
 
@@ -595,7 +608,7 @@ void agvHandleMotion(int x, int y)
   for (it = agviewers.begin() ; it != agviewers.end(); it++) {
     DBG_PROG_V( it->redisplayWindow() )
     if (it->redisplayWindow() == glutGetWindow())
-      it->_agvHandleMotion( x, y);
+      it->agvHandleMotion_( x, y);
   }
   DBG_PROG_ENDE
 }
@@ -605,7 +618,7 @@ void agvHandleKeys(unsigned char key, int x, int y)
   std::vector<Agviewer>::iterator it;
   for (it = agviewers.begin() ; it != agviewers.end(); it++)
     if (it->redisplayWindow() == glutGetWindow())
-      it->_agvHandleKeys( key, x, y);
+      it->agvHandleKeys_( key, x, y);
   DBG_PROG_ENDE
 }
 
@@ -650,7 +663,7 @@ int agvMoving(void)
   DBG_PROG_ENDE
   return -1;
 }
-
+#endif
 }
 
 

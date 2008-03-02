@@ -139,7 +139,7 @@ Agviewer
   * Set which movement mode you are in.
   */
   typedef enum {
-  FLYING,
+  FLYING = 100,
   POLAR ,
   ICCPOLAR ,
   ICCFLY_L,
@@ -167,7 +167,7 @@ Agviewer
   * (Don't change the value of agvMoving)
   */
   int agvMoving;    /* Currently moving?  */
-  void _agvMove(void);
+  void agvMove_(void);
 
  /*
   * These are the routines AGV registers to deal with mouse and keyboard input.
@@ -176,9 +176,9 @@ Agviewer
   * These are all registered with agvInit(), but you could register
   * something else which called these, or reregister these as needed 
   */
-  void _agvHandleButton(int &button, int &state, int &x, int &y);
-  void _agvHandleMotion(int &x, int &y);
-  void _agvHandleKeys(unsigned char key, int &x, int &y);
+  void agvHandleButton_(int &button, int &state, int &x, int &y);
+  void agvHandleMotion_(int &x, int &y);
+  void agvHandleKeys_(unsigned char key, int &x, int &y);
 
  /*
   * Just an extra routine which makes an x-y-z axes (about 10x10x10)

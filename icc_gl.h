@@ -32,13 +32,16 @@
 #define ICC_GL_H
 #include <vector>
 
-//#include "agviewer.h"
+#include "agviewer.h"
 #include "icc_vrml_parser.h"
+#include "Fl_Slot.H"
 
 #include <FL/Fl_Gl_Window.H>
-#include <FL/Fl_Menu_Item.H>
+#include <FL/Fl_Group.H>
 
-class GL_Ansicht : public Fl_Group {
+class Fl_Menu_Button;
+
+class GL_Ansicht : public Fl_Group , public Fl_Slot {
   // Datenhaltung
   std::vector<std::vector<std::vector<std::vector<double> > > > tabelle_;
   std::vector<std::string>nach_farb_namen_;
@@ -54,25 +57,26 @@ class GL_Ansicht : public Fl_Group {
   //                   Die Klasse gl_fenster_ behält ihre volle Größe.
   //                   Die GL_Ansicht kann in gl_fenster_ eingepasst oder
   //                   auf 1x1 verkleinert werden.
-  Fl_Gl_Window *gl_fenster_;
+  Fl_Group *gl_fenster_;
   // GL_Ansicht an gl_fenster_ anpassen oder Größe 1x1
   bool gl_fenster_zeigen_;
-  void fensterForm(int w, int h);
+  void fensterForm();
 
   // inner Strukturen bei Datenwechsel anpassen
   void menueErneuern_();
   void erstelleGLListen_();
   void garnieren_();
   // Menüs
-  Fl_Menu_Item  *menue_;
-  Fl_Menu_Item  *menue_kanal_eintraege_;
-  Fl_Menu_Item  *menue_schnitt_;
-  Fl_Menu_Item  *menue_form_;
-  Fl_Menu_Item  *menue_hintergrund_;
+  Fl_Menu_Button  *menue_;
+  Fl_Menu_Button *menue_button_;
+  Fl_Menu_Button  *menue_schnitt_;
+  Fl_Menu_Button  *menue_form_;
+  Fl_Menu_Button  *menue_hintergrund_;
+  static void c_(Fl_Widget* w, void* daten);
   
   // IDs
-  int  agv_,
-       glut_id_;
+  Agviewer agv_;
+  int  glut_id_;
   // gibt den Initalstatus an
   bool beruehrt_;
   void GLinit_();
@@ -81,14 +85,13 @@ class GL_Ansicht : public Fl_Group {
 public:
   GL_Ansicht(int X,int Y,int W,int H);
   ~GL_Ansicht();
-  void init();
+  void init(int id);
   bool beruehrt () {return beruehrt_; }
-  //void setzteGlutId(int id) {if (!beruehrt_) glut_id_ = id; }
 
   // welches Glutfenster wird verwaltet?
   int  id()          {return glut_id_; } // gleich zu agviewer::RedisplayWindow
   // welches agvfenster wird benutzt?
-  int  agv()         {return agv_; }
+  //Agviewer* agv()         {return &agv_; }
   // fltk virtual
   void draw();
 
@@ -151,6 +154,7 @@ public:
   void verstecken();        //  ~           verstecken      ~
   bool sichtbar() {return gl_fenster_zeigen_; } // angezeigt / versteckt
   void zeichnen();          // gl Zeichnen
+  void auffrischen__();       // Erneuerung ohne init() und ohne Menüs
   int  dID (int display_liste);
   void tastatur(int e);
   void menueAufruf(int value);

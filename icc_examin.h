@@ -106,13 +106,8 @@ class ICCexamin : public icc_examin_ns::Beobachter
     void testZeigen ();
     void moniSetzen ();
     void standardGamma ();
-  private:
-    int _gl_ansicht;                   // glutWindow
-    std::vector<GL_Ansicht*> _gl_ansichten;
   public:
     void initReihenfolgeGL_Ansicht(GL_Ansicht*);
-    void glAnsicht (GL_Ansicht* dazu);
-    GL_Ansicht* glAnsicht(int id);
       // virtual aus icc_examin_ns::Beobachter::
     void nachricht( icc_examin_ns::Modell* modell , int infos );
 

@@ -114,6 +114,7 @@ getChannel_flColours (icColorSpaceSignature color)
 
 #undef nFARBEN
 
+
 #endif
 
 

@@ -49,6 +49,7 @@ LDLIBS = -L$(libdir) -L./ -L/opt/kai-uwe/lib $(FLTK_LIBS) \
 
 CPP_HEADERS = \
 	agviewer.h \
+	Fl_Slot.H \
 	icc_betrachter.h \
 	cccie64.h \
 	ciexyz64_1.h \

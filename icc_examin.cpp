@@ -58,7 +58,6 @@ ICCexamin::ICCexamin ()
   _item = -1;
   _mft_item = -1;
   _zeig_histogram = 0;
-  _gl_ansicht = -1;
   statlabel = "";
   status_ = false;
   DBG_PROG_ENDE
@@ -68,8 +67,6 @@ void
 ICCexamin::quit ()
 { DBG_PROG_START
   delete icc_betrachter;
-  for (unsigned i = 0; i < _gl_ansichten.size(); i++)
-    delete _gl_ansichten[i];
   agviewers.resize(0);
   profile.clear();
   DBG_PROG_ENDE
@@ -960,18 +957,19 @@ ICCexamin::initReihenfolgeGL_Ansicht(GL_Ansicht* gl_ansicht)
 { DBG_PROG_START
   if (!icc_betrachter->mft_gl->beruehrt()) {
     icc_betrachter->mft_gl->show();
-    icc_betrachter->mft_gl->init();
+    icc_betrachter->mft_gl->init(1);
   }
   if (gl_ansicht == icc_betrachter->DD_histogram) {
     if (!icc_betrachter->DD_histogram->visible()) {
       WARN_S("DD_histogram war nicht sichtbar")
       icc_betrachter->DD_histogram->show();
     }
-    icc_betrachter->DD_histogram->init();
-  } DBG_PROG_ENDE
+    icc_betrachter->DD_histogram->init(2);
+  }
+  DBG_PROG_ENDE
 }
 
-#if 1
+#if 0
 void
 ICCexamin::glAnsicht (GL_Ansicht* dazu)
 { DBG_PROG_START

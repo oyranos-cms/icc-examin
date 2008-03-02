@@ -37,6 +37,4 @@
 
 int* getChannel_flColours(icColorSpaceSignature color);
 
-
-
 #endif //ICC_HELFER_FLTK_H
