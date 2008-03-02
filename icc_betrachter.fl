@@ -341,7 +341,7 @@ class ICCfltkBetrachter {open
     } {}
     Fl_Window ueber {
       label {About ICC Examin} open
-      xywh {792 337 365 289} type Double resizable
+      xywh {797 358 365 289} type Double resizable
       code0 {o->hide();}
       class My_Fl_Window non_modal visible
     } {
@@ -381,7 +381,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window vcgt {
       label {Grafic Card Gamma Table}
-      xywh {257 397 370 390} type Double resizable
+      xywh {262 418 370 390} type Double resizable
       code0 {o->hide();}
       class My_Fl_Window visible
     } {
@@ -417,7 +417,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window details {
       label {ICC Examin} open
-      xywh {1151 395 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
+      xywh {899 416 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
     } {
       Fl_Group {} {open
         xywh {0 0 385 520}
@@ -536,7 +536,7 @@ class ICCfltkBetrachter {open
   if(m->value())
     icc_examin->intent(3);
   else
-    icc_examin->intent(-1);} selected
+    icc_examin->intent(-1);}
               tooltip {Enable Whitepoint Adaption;  useful for gamut comparisions} xywh {65 65 100 20} type Toggle shortcut 0x40061
             }
             MenuItem menueintrag_bpc {
@@ -557,7 +557,7 @@ class ICCfltkBetrachter {open
               callback {system("echo $LANG");
   printf("domain     : %s\\n",textdomain(NULL));
   printf("domain_path: %s\\n",bindtextdomain(NULL,NULL));}
-              tooltip {test LANG} xywh {75 75 100 20} type Toggle
+              tooltip {test LANG} xywh {75 75 100 20} hide deactivate
             }
           }
           MenuItem menueintrag_huelle {
@@ -791,7 +791,7 @@ initHilfe();
           }
         }
       }
-      Fl_Box no_box {
+      Fl_Box no_box {selected
         xywh {0 0 385 520}
         code0 {o->box(FL_NO_BOX);}
         class My_Fl_Box

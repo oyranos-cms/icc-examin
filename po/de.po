@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2006-09-24 21:23+0200\n"
+"POT-Creation-Date: 2006-10-11 14:42+0200\n"
 "PO-Revision-Date: 2005-08-13 17:35+0200\n"
 "Last-Translator: Kai-Uwe Behrmann\n"
 "Language-Team:  <ku.b@gmx.de>\n"
@@ -364,8 +364,9 @@ msgstr ""
 
 #: icc_gl.cpp:569 icc_gl.cpp:572 icc_gl.cpp:575 icc_gl.cpp:581 icc_gl.cpp:585
 #: icc_gl.cpp:600
-msgid "Konnte Font nicht oeffnen:"
-msgstr ""
+#, fuzzy
+msgid "Could not open font in:"
+msgstr "keine Inhalte gefunden für"
 
 #: icc_gl.cpp:604 icc_gl.cpp:606
 msgid "Fontgroesse nicht setzbar"

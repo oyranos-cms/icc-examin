@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2006-09-24 21:23+0200\n"
+"POT-Creation-Date: 2006-11-03 05:40+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -363,7 +363,7 @@ msgstr ""
 
 #: icc_gl.cpp:569 icc_gl.cpp:572 icc_gl.cpp:575 icc_gl.cpp:581 icc_gl.cpp:585
 #: icc_gl.cpp:600
-msgid "Konnte Font nicht oeffnen:"
+msgid "Could not open font in:"
 msgstr ""
 
 #: icc_gl.cpp:604 icc_gl.cpp:606

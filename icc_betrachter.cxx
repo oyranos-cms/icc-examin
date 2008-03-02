@@ -516,7 +516,7 @@ Fl_Menu_Item ICCfltkBetrachter::menu_menueleiste[] = {
  {_("Relative Colorimetric"), 0x40072,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_rel_col_intent, 0, 2, FL_NORMAL_LABEL, 0, 14, 0},
  {_("Absolute Colorimetric"), 0x40061,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_abs_col_intent, 0, 2, FL_NORMAL_LABEL, 0, 14, 0},
  {_("BPC"), 0x40062,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_bpc, 0, 2, FL_NORMAL_LABEL, 0, 14, 0},
- {_("LANG"), 0,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_lang, 0, 2, FL_NORMAL_LABEL, 0, 14, 0},
+ {_("LANG"), 0,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_lang, 0, 17, FL_NORMAL_LABEL, 0, 14, 0},
  {0,0,0,0,0,0,0,0,0},
  {_("Gamut"), 0x40068,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_huelle, 0, 2, FL_NORMAL_LABEL, 0, 14, 0},
  {_("View"), 0,  0, 0, 192, FL_NORMAL_LABEL, 0, 14, 0},

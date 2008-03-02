@@ -171,7 +171,7 @@ ICCexamin::start (int argc, char** argv)
 # endif
 
 # if APPLE
-  // osX Rsourcen
+  // osX Resourcen
   IBNibRef nibRef;
   OSStatus err;
   err = CreateNibReference(CFSTR("main"), &nibRef);

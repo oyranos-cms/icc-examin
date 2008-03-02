@@ -261,6 +261,7 @@ export PATH
 echo "LIB=/"$LIBDIR >> $CONF
 
 
+export ECHO="echo"
 #export ELEKTRA=1
 OYRANOS=1; export OYRANOS
 LCMS=1; export LCMS
