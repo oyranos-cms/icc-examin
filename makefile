@@ -1,6 +1,6 @@
 CC=c++
 MAKEDEPEND	= /usr/X11R6//bin/makedepend -Y
-OPTS=-Wall -g -Os
+OPTS=-Wall -g #-Os
 
 prefix		= /opt/local
 exec_prefix	= ${prefix}
@@ -11,7 +11,7 @@ libdir		= ${exec_prefix}/lib
 mandir		= ${prefix}/man
 srcdir		= .
 
-#APPLE = 1
+APPLE = 1
 FLTK = 1
 ifdef FLTK
 FLU = 1

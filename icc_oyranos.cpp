@@ -55,14 +55,18 @@ Oyranos oyranos;
 Oyranos::Oyranos()
 {
   DBG_PROG_START
+  #if HAVE_OY
   oyOpen();
+  #endif
   DBG_PROG_ENDE
 }
 
 Oyranos::~Oyranos()
 {
   DBG_PROG_START
+  #if HAVE_OY
   oyClose();
+  #endif
   DBG_PROG_ENDE
 }
 
@@ -72,7 +76,7 @@ Oyranos::lab_test_ ()
   DBG_PROG_START
   Speicher *v_block = &lab_;
   char* block;
-
+  #if HAVE_OY
   if( !v_block->size() )
   { DBG_PROG_V( v_block->size() )
     char* profil_name = oyGetDefaultLabProfileName();
@@ -95,7 +99,7 @@ Oyranos::lab_test_ ()
         }
     }
   }
-
+  
   DBG_NUM_S( "default " OY_DEFAULT_LAB_PROFILE " profile = "<< lab_.name <<" "<< lab_.size() <<"\n" )
 
   
@@ -107,7 +111,7 @@ Oyranos::lab_test_ ()
   oyGetMonitorProfile            (x, manufacturer, model, serial );
 
 
-
+  #endif
   DBG_PROG_ENDE
 }
 
@@ -117,7 +121,7 @@ Oyranos::rgb_test_ ()
   DBG_PROG_START
   Speicher *v_block = &rgb_;
   char* block;
-
+  #if HAVE_OY
   if( !v_block->size() )
   { DBG_PROG_V( v_block->size() )
     char* profil_name = oyGetDefaultRGBProfileName();
@@ -142,6 +146,7 @@ Oyranos::rgb_test_ ()
   }
 
   DBG_NUM_S( "default " OY_DEFAULT_RGB_PROFILE " profile = "<< rgb_.name <<" "<< rgb_.size() <<"\n" )
+  #endif
   DBG_PROG_ENDE
 }
 
@@ -151,7 +156,7 @@ Oyranos::cmyk_test_ ()
   DBG_PROG_START
   Speicher *v_block = &cmyk_;
   char* block;
-
+  #if HAVE_OY
   if( !v_block->size() )
   { DBG_PROG_V( v_block->size() )
     char* profil_name = oyGetDefaultCmykProfileName();
@@ -176,6 +181,7 @@ Oyranos::cmyk_test_ ()
   }
 
   DBG_NUM_S( "default " OY_DEFAULT_CMYK_PROFILE " profile = "<< cmyk_.name <<" "<< cmyk_.size() <<"\n" )
+  #endif
   DBG_PROG_ENDE
 }
 

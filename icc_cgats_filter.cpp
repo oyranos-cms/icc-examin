@@ -125,7 +125,7 @@
 #include <fstream>
 #include <sstream>
 
-//#define CGATS_DEBUG
+#define CGATS_DEBUG
 #ifdef CGATS_DEBUG
 #define DBG_CGATS DBG_PROG
 #define DBG_CGATS_START DBG_PROG_START
@@ -224,6 +224,10 @@ CgatsFilter::setzeWortInAnfuehrungszeichen_( std::string &zeile,
                 DBG_CGATS_ENDE
                 return;
               }
+
+              SUCHENundERSETZEN( zeile, "\"\"", "", 0 ) // GMB
+              ende = zeile.find_last_of( cgats_alnum_ );
+
               // Steht dieses Wort bereits in Anführungszeichen
               if( zeile.find_last_of( "\"" ) > ende &&
                   zeile.find_last_of( "\"" ) != std::string::npos )

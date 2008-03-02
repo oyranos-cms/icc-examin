@@ -479,7 +479,7 @@ ICCexamin::vcgtZeigen ()
 { DBG_PROG_START
   kurve_umkehren[VCGT_VIEWER] = true;
 
-  #if HAVE_X || HAVE_OSX
+  #if HAVE_X// || HAVE_OSX
   std::string display_name = "";
   kurven[VCGT_VIEWER] = leseGrafikKartenGamma (display_name,texte[VCGT_VIEWER]);
   if (kurven[VCGT_VIEWER].size()) {
