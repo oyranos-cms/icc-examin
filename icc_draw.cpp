@@ -683,7 +683,8 @@ TagDrawings::drawKurve_    ()
     } else {
       fl_color(9 + j);
     }
-    DBG_PROG_S( cout << "Zeichne Kurve "<< name << " " << j << " " << kurven[j].size() << " Teile " )
+    if(kurven.size())
+      DBG_PROG_S( cout << "Zeichne Kurve "<< name << " " << j << " " << kurven[j].size() << " Teile " )
     s.str("");
     if (kurven2.size())
     {

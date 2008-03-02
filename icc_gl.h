@@ -43,9 +43,6 @@ class GL_Ansicht : public Fl_Group {
   std::vector<std::string>nach_farb_namen_;
   std::vector<std::string>von_farb_namen_;
   std::vector<std::string>farb_namen_;
-  std::vector<std::vector<double> > dreiecks_netze_;
-  std::vector<std::vector<float> >  dreiecks_farben_; // rgba 0.0 - 1.0 (n*4)
-  std::vector<std::string>          netz_namen_;
   std::vector<double> punkte_;        //                (n*3)
   std::vector<float>  farben_;        // rgba 0.0 - 1.0 (n*4)
   std::vector<std::vector<double> >kurven_;
@@ -53,7 +50,7 @@ class GL_Ansicht : public Fl_Group {
   bool auffrischen_;
   // Referenz zu einem abgekoppelten fltk Objekt
   // Der Gedanke ist : Glut Fenster lassen sich nicht schliesen.
-  //                   Das gl_fenster_ behält seine volle Größe.
+  //                   Die Klasse gl_fenster_ behält ihre volle Größe.
   //                   Die GL_Ansicht kann in gl_fenster_ eingepasst oder
   //                   auf 1x1 verkleinert werden.
   Fl_Group *gl_fenster_;
@@ -62,7 +59,8 @@ class GL_Ansicht : public Fl_Group {
 
   // inner Strukturen bei Datenwechsel anpassen
   void menueErneuern_();
-  void makeDisplayLists_();
+  void erstelleGLListen_();
+  void garnieren_();
   // IDs
   int  menue_;
   int  menue_kanal_eintraege_;
@@ -75,8 +73,8 @@ class GL_Ansicht : public Fl_Group {
        glut_id_;
   // gibt den Initalstatus an
   bool beruehrt_;
-  void myGLinit_();
-  void menuInit_();
+  void GLinit_();
+  void menueInit_();
 
 public:
   GL_Ansicht(int X,int Y,int W,int H);
@@ -105,6 +103,7 @@ public:
   void punkte_clear () { punkte_.clear(); farben_.clear(); }
   void hineinNetze  (const std::vector<ICCnetz> & dreiecks_netze);
   std::vector<ICCnetz> dreiecks_netze;
+  void achsNamen    (std::vector<std::string> achs_namen);
   // veraltet -v
   void hineinNetze  (std::vector<std::vector<double> >dreiecks_netze_, 
                      std::vector<std::vector<float> > dreiecks_farben_,
@@ -127,13 +126,17 @@ public:
   int  hintergrundfarbe;    // Hintergrundfarben Farbschema
   float textfarbe[3];
   float pfeilfarbe[3];
+  float strichmult;         // Strichmultiplikator
   int  schalen;             // MENU_SCHALEN
 
   // Darstellungsfunktionen
+  void setzePerspektive();  // Perspektive aktualisieren
   void auffrischen();       // Erneuerung ohne init()
+  void tabelleAuffrischen(); // glCompile für Tabelle
   void punkteAuffrischen(); // glCompile für Punkte
   void netzeAuffrischen();    // Sortieren und Zeichnen
   double seitenverhaeltnis; // Proportion des Fensters
+  double vorderSchnitt;      // Entfernung der ersten Schnittebene
   double schnitttiefe;      // Dicke der GL Schnitttiefe
   double a_darstellungs_breite; // Richtung CIE*a   für Zoom und Pfeillängen
   double b_darstellungs_breite; // ~        CIE*b ; wobei CIE*L immer 1.0
@@ -148,19 +151,21 @@ public:
   void zeigen();            // diese Klasse anzeigen (fltk + glut + gl)
   void verstecken();        //  ~           verstecken      ~
   bool sichtbar() {return gl_fenster_zeigen_; } // angezeigt / versteckt
+  void tastatur(int e);
   // Bewegungsfunktionen
   void stop(); 
 
   // Daten Informationen
-  char* kanalName() { DBG_PROG_START DBG_PROG_V( nach_farb_namen_.size() <<"|"<< kanal )
+  const char* kanalName() const {
                       if (nach_farb_namen_.size() &&
-                          (int)nach_farb_namen_.size() > kanal) { DBG_PROG_ENDE
-                        return (char*)nach_farb_namen_[kanal].c_str();
-                      } else { DBG_PROG_ENDE
+                          (int)nach_farb_namen_.size() > kanal) {
+                        return nach_farb_namen_[kanal].c_str();
+                      } else {
                         return _("");}  }
-  char* kanalName(unsigned int i) { if (nach_farb_namen_.size()>i) 
-                                      return (char*)nach_farb_namen_[i].c_str();
-                                    else  return _("Gibts nicht"); }
+  const char* kanalName(unsigned int i) const {
+                      if (nach_farb_namen_.size()>i) 
+                        return (const char*)nach_farb_namen_[i].c_str();
+                      else  return _("Gibts nicht"); }
   unsigned int kanaele() {return nach_farb_namen_.size(); }
 };
 
@@ -169,7 +174,7 @@ void reshape##n( int w, int h ); \
 void display##n(); \
 void sichtbar##n(int v); \
 void menuuse##n(int v); \
-void handlemenu##n(int value);
+void menueAufruf##n(int value);
 
 deklariereGlutFunktionen(1)  // mft Tabellenfenster
 deklariereGlutFunktionen(2)  // Farbraumhüllansicht
@@ -178,7 +183,7 @@ void reshape(int id, int w, int h);
 void display(int id);
 void sichtbar(int id, int v);
 void menuuse(int id, int v);
-void handlemenu(int id, int value);
+void menueAufruf(int id, int value);
 
 int  dID(int id, int display_list);
 

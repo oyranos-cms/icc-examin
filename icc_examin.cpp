@@ -86,12 +86,12 @@ tastatur(int e)
       } else
       if(Fl::event_key() == 'q'
        && Fl::event_state() == FL_CTRL) {
+        DBG_NUM_S("FL_CTRL+Q")
         icc_examin->quit();
         gefunden = 1;
-        DBG_NUM_S("FL_CTRL+Q")
-      } else
-        ;
+      }
   }
+  icc_examin->icc_betrachter->DD_histogram->tastatur(e);
   //DBG_PROG_ENDE
   return gefunden;
 }
@@ -159,45 +159,53 @@ ICCexamin::oeffnen (std::vector<std::string> dateinamen)
     icc_betrachter->measurement( profile.profil()->hasMeasurement() );
   }
 
-  // Sortieren
-  if( dateinamen.size() &&
-      (dateinamen[0].find( "wrl",  dateinamen[0].find_last_of(".") )
+
+      // Sortieren
+    if( dateinamen.size() &&
+        (dateinamen[0].find( "wrl",  dateinamen[0].find_last_of(".") )
          != std::string::npos) )
-  {
-    size_t size;
-    char *data = ladeDatei (dateinamen[0], &size);
-    std::string d (data,size);
-    //DBG_NUM_V( d <<" "<< size )
-    if(data) free( data ); // übernimmt std::string einfach den Speicherblock?
-    std::vector<ICCnetz> netze = extrahiereNetzAusVRML (d);
-    if( netze.size() )
-    { DBG_NUM_V( netze.size() )
-      for(unsigned int n = 0; n< netze.size(); ++n)
-      {
-        DBG_NUM_V( netze[n].punkte.size() )
-        for(unsigned int i = 0; i < 10; ++i) {
-         cout << netze[n].punkte[i].koord[0] << " ";
-         cout << netze[n].punkte[i].koord[1] << " ";
-         cout << netze[n].punkte[i].koord[2] << "  ";
-         cout << netze[n].punkte[i].farbe[0] << " ";
-         cout << netze[n].punkte[i].farbe[1] << " ";
-         cout << netze[n].punkte[i].farbe[2] << " ";
-         cout << netze[n].punkte[i].farbe[3] << endl;
+    {
+      size_t size;
+      char *data = ladeDatei (dateinamen[0], &size);
+      std::string d (data,size);
+      //DBG_NUM_V( d <<" "<< size )
+      if(data) free( data ); // übernimmt std::string einfach den Speicherblock?
+      std::vector<ICCnetz> netze = extrahiereNetzAusVRML (d);
+      if( netze.size() )
+      { DBG_NUM_V( netze.size() )
+        for(unsigned int n = 0; n< netze.size(); ++n)
+        {
+          DBG_NUM_V( netze[n].punkte.size() )
+          for(unsigned int i = 0; i < 10; ++i) {
+           cout << netze[n].punkte[i].koord[0] << " ";
+           cout << netze[n].punkte[i].koord[1] << " ";
+           cout << netze[n].punkte[i].koord[2] << "  ";
+           cout << netze[n].punkte[i].farbe[0] << " ";
+           cout << netze[n].punkte[i].farbe[1] << " ";
+           cout << netze[n].punkte[i].farbe[2] << " ";
+           cout << netze[n].punkte[i].farbe[3] << endl;
+          }
+          DBG_NUM_V( netze[n].indexe.size()/4.0 )
         }
-        DBG_NUM_V( netze[n].indexe.size()/4.0 )
-      }
-      for(unsigned int i = 0; i < netze.size(); ++i )
-        netze[i].transparenz = 0.6;
-      icc_betrachter->DD_histogram->hineinNetze(netze);
-      icc_betrachter->DD_histogram->punkte_clear();
-      icc_betrachter->DD_histogram->auffrischen();
+        for(unsigned int i = 0; i < netze.size(); ++i )
+          netze[i].transparenz = 0.6;
+        icc_betrachter->DD_histogram->hineinNetze(netze);
+        std::vector<std::string> texte;
+        texte.push_back(_("CIE *L"));
+        texte.push_back(_("CIE *a"));
+        texte.push_back(_("CIE *b"));
+        icc_betrachter->DD_histogram->achsNamen(texte);
+        icc_betrachter->DD_histogram->punkte_clear();
+        if(icc_betrachter->DD_histogram->beruehrt())
+          icc_betrachter->DD_histogram->auffrischen();
+      } else
+        WARN_S(_("kein Netz gefunden in VRML Datei"))
     } else
-      WARN_S(_("kein Netz gefunden in VRML Datei"))
-  } else
-  if (icc_betrachter->DD_histogram->beruehrt()) { DBG_PROG
-    histogram();
-    icc_betrachter->DD_histogram->auffrischen();
-  }
+    if (icc_betrachter->DD_histogram->beruehrt())
+    { DBG_PROG
+      histogram();
+      icc_betrachter->DD_histogram->auffrischen();
+    }
 
   DBG_PROG_ENDE
 }
@@ -432,49 +440,11 @@ ICCexamin::zeigCGATS()
 void
 ICCexamin::histogram ()
 { DBG_PROG_START
-  std::vector<std::vector<double> >v;
-  std::vector<std::vector<float> > farben;
   std::vector<std::string> texte, namen;
-
-  #if 0
-  namen.push_back("Netz A");
-  v.resize(1);
-  farben.resize(1);
-  for (int i = 0; i <= 20; i++)
-  {
-      v[0].push_back( i/20.0 );
-      v[0].push_back( 0.5 );
-      v[0].push_back( 0.5 );
-      v[0].push_back( i/20.0 );
-      v[0].push_back( 0.6 );
-      v[0].push_back( 0.5 );
-      if (i%2) {
-        farben[0].push_back(.2);
-        farben[0].push_back(.5);
-        farben[0].push_back(1.0);
-        farben[0].push_back(.5);
-        farben[0].push_back(.2);
-        farben[0].push_back(.2);
-        farben[0].push_back(1.0);
-        farben[0].push_back(.5);
-      } else {
-        farben[0].push_back(1.0);
-        farben[0].push_back(.5);
-        farben[0].push_back(.2);
-        farben[0].push_back(.5);
-        farben[0].push_back(1.0);
-        farben[0].push_back(.2);
-        farben[0].push_back(.2);
-        farben[0].push_back(.5);
-      }
-  }
-  #endif
 
   texte.push_back(_("CIE *L"));
   texte.push_back(_("CIE *a"));
   texte.push_back(_("CIE *b"));
-
-  //icc_betrachter->DD_histogram->hineinNetze( v, farben, namen, texte );
 
   std::vector<double> p;
   std::vector<float>  f;
@@ -539,6 +509,7 @@ ICCexamin::histogram ()
     netz[0].transparenz = 0.4;
     netz[0].name = icc_oyranos.moni_name();
     icc_betrachter->DD_histogram->hineinNetze( netz );
+    icc_betrachter->DD_histogram->achsNamen(texte);
   }
 
   DBG_PROG_ENDE

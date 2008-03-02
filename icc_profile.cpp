@@ -145,6 +145,9 @@ ICCprofile::fload ()
     // zweites mal Laden nach clear() ; könnte optimiert werden
     _data = ladeDatei (file, &_size);
     _filename = file;
+  } else {
+    DBG_PROG_ENDE
+    return;
   }
 
   // Test   > 132 byte
@@ -175,10 +178,15 @@ ICCprofile::fload ()
 
     ic_tag.size = icValue ((icUInt32Number)groesse); DBG_V( groesse )
     ic_tag.offset = 0;
-    ic_tag.sig = icValue (icSigCharTargetTag);
 
-    char sig[] = "text";
-    memcpy (&tag_block[0], &sig, 4); DBG_S( tag_block )
+    if( _filename.size() &&
+        (_filename.find( "wrl",  _filename.find_last_of(".") )
+         != std::string::npos) )
+      memcpy (&ic_tag.sig, "vrml", 4);
+    else
+      ic_tag.sig = icValue (icSigCharTargetTag);
+
+    memcpy (&tag_block[0], "text", 4); DBG_S( tag_block )
     memcpy (&tag_block[8], _data, _size);
 
     tag.load( this, &ic_tag, tag_block );

@@ -39,6 +39,7 @@
 #include "icc_speicher.h"
 
 class Oyranos;
+class Speicher;
 
 struct ColourTransformKey
 {

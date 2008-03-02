@@ -753,6 +753,8 @@ char*
 ladeDatei ( std::string dateiname, size_t *size )
 { DBG_PROG_START
 
+    *size = 0;
+
     std::ifstream f ( dateiname.c_str(), std::ios::binary | std::ios::ate );
 
     DBG_MEM_V( dateiname )
@@ -767,11 +769,16 @@ ladeDatei ( std::string dateiname, size_t *size )
     *size = (unsigned int)f.tellg();
     DBG_MEM_V ( *size << "|" << f.tellg() )
     f.seekg(0);
-    char* data = (char*)calloc (sizeof (char), *size+1);
+    char* data;
+    if(*size) {
+      data = (char*)calloc (sizeof (char), *size+1);
+      f.read ((char*)data, *size);
+      DBG_MEM_V ( *size << "|" << f.tellg() <<" "<< (int*)data <<" "<< strlen(data) )
+      f.close();
+    } else {
+      data = 0;
+    }
 
-    f.read ((char*)data, *size);
-    DBG_MEM_V ( *size << "|" << f.tellg() <<" "<< (int*)data <<" "<< strlen(data) )
-    f.close();
 
   DBG_PROG_ENDE
   return data;
