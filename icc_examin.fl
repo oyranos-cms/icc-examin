@@ -346,35 +346,35 @@ ueber_html->value(getUeberHtml().c_str());}
   Fl_File_Icon::load_system_icons();
 
   \#ifdef HAVE_FLU
+    Flu_File_Chooser::favoritesTxt = _("Vorgemerkte Ordner");
+    Flu_File_Chooser::myComputerTxt = _("Mein Rechner");
+    Flu_File_Chooser::myDocumentsTxt = _("Dokumente");
+    Flu_File_Chooser::filenameTxt = _("Dateiname");
+    Flu_File_Chooser::okTxt = _("Laden");
+    Flu_File_Chooser::cancelTxt = _("Abbrechen");
+    Flu_File_Chooser::locationTxt = _("Verzeichnis");
+    Flu_File_Chooser::showHiddenTxt = _("zeige versteckte Dateien");
+    Flu_File_Chooser::allFilesTxt = _("Alle Dateien");
+    Flu_File_Chooser::defaultFolderNameTxt = _("Neues Verzeichnis");
+    Flu_File_Chooser::backTTxt = _("vorheriges Verzeichnis");
+    Flu_File_Chooser::forwardTTxt = _("nächstes Verzeichnis");
+    Flu_File_Chooser::upTTxt = _("nächsthöheres Verzeichnis");
+    Flu_File_Chooser::reloadTTxt = _("Auffrischen");
+    Flu_File_Chooser::trashTTxt = _("Löschen");
+    Flu_File_Chooser::newDirTTxt = _("Verzeichnis erstellen");
+    Flu_File_Chooser::addFavoriteTTxt = _("Vormerken");
+    Flu_File_Chooser::previewTTxt = _("Vorschau");
+    Flu_File_Chooser::listTTxt = _("Standard Anzeige");
+    Flu_File_Chooser::wideListTTxt = _("weite Anzeige");
+    Flu_File_Chooser::detailTTxt = _("detailierte Informationen");
+/*    Flu_File_Chooser:: = _("");
+    Flu_File_Chooser:: = _("");
+    Flu_File_Chooser:: = _("");
+    Flu_File_Chooser:: = _("");
+    Flu_File_Chooser:: = _("");*/
     dateiwahl = new Flu_File_Chooser(filename_alt.c_str(), _("ICC Farbprofile (*.ic*)"), Flu_File_Chooser::SINGLE, _("Welches ICC Profil?"));
     dateiwahl->add_context_handler(Flu_File_Chooser::ENTRY_FILE, "icc", _("Profil öffnen"), dateiwahl_cb, NULL);
     dateiwahl->add_context_handler(Flu_File_Chooser::ENTRY_FILE, "icm", _("Profil öffnen"), dateiwahl_cb, NULL);
-    dateiwahl->favoritesTxt = _("Vorgemerkte Ordner");
-    dateiwahl->myComputerTxt = _("Mein Rechner");
-    dateiwahl->myDocumentsTxt = _("Dokumente");
-    dateiwahl->filenameTxt = _("Dateiname");
-    dateiwahl->okTxt = _("Laden");
-    dateiwahl->cancelTxt = _("Abbrechen");
-    dateiwahl->locationTxt = _("Verzeichnis");
-    dateiwahl->showHiddenTxt = _("zeige versteckte Dateien");
-    dateiwahl->allFilesTxt = _("Alle Dateien");
-    dateiwahl->defaultFolderNameTxt = _("Neues Verzeichnis");
-    dateiwahl->backTTxt = _("vorheriges Verzeichnis");
-    dateiwahl->forwardTTxt = _("nächstes Verzeichnis");
-    dateiwahl->upTTxt = _("nächsthöheres Verzeichnis");
-    dateiwahl->reloadTTxt = _("Auffrischen");
-    dateiwahl->trashTTxt = _("Löschen");
-    dateiwahl->newDirTTxt = _("Verzeichnis erstellen");
-    dateiwahl->addFavoriteTTxt = _("Vormerken");
-    dateiwahl->previewTTxt = _("Vorschau");
-    dateiwahl->listTTxt = _("Standard Anzeige");
-    dateiwahl->wideListTTxt = _("weite Anzeige");
-    dateiwahl->detailTTxt = _("detailierte Informationen");
-/*    dateiwahl-> = _("");
-    dateiwahl-> = _("");
-    dateiwahl-> = _("");
-    dateiwahl-> = _("");
-    dateiwahl-> = _("");*/
   \#else
     dateiwahl = new Fl_File_Chooser(filename_alt.c_str(), _("ICC Farbprofile (*.[I,i][C,c][M,m,C,c])"), Fl_File_Chooser::SINGLE, _("Welches ICC Profil?"));
     dateiwahl->callback(dateiwahl_cb);
