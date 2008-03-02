@@ -20,6 +20,22 @@ static void cb_Offnen(Fl_Menu_*, void*) {
   open(true);
 }
 
+static void cb_menueintrag_html_speichern(Fl_Menu_*, void*) {
+  std::string bericht = profile.report();
+  std::string filename = filename_alt;
+  filename=fl_file_chooser("Bericht Speichern", "HTML Dokumente (*.[H,h][T,t][M,m,]*)", filename_alt.c_str());
+  DBG
+
+  if (filename == "" || filename == filename_alt) {
+    load_progress->hide ();
+    return;
+  }
+
+  std::ofstream f ( filename.c_str(),  std::ios::out );
+  f.write ( bericht.c_str(), bericht.size() );
+  f.close();
+}
+
 static void cb_Beenden(Fl_Menu_*, void*) {
   quit();
 }
@@ -59,12 +75,13 @@ static void cb_menueintrag_inspekt(Fl_Menu_*, void*) {
 Fl_Menu_Item menu_[] = {
  {"Daten", 0,  0, 0, 64, 0, 0, 14, 56},
  {"Offnen", 0x4006f,  (Fl_Callback*)cb_Offnen, 0, 0, 0, 0, 14, 56},
+ {"Bericht Speichern", 0,  (Fl_Callback*)cb_menueintrag_html_speichern, 0, 128, 0, 0, 14, 56},
  {"Beenden", 0x40071,  (Fl_Callback*)cb_Beenden, 0, 0, 0, 0, 14, 56},
  {0},
  {"Ansicht", 0,  0, 0, 64, 0, 0, 14, 56},
- {"Ganzer Bildschirm an/aus", 0,  (Fl_Callback*)cb_menueintrag_Voll, 0, 0, 0, 0, 14, 56},
+ {"Ganzer Bildschirm an/aus", 0x40076,  (Fl_Callback*)cb_menueintrag_Voll, 0, 0, 0, 0, 14, 56},
  {0},
- {"Pr\374""fansicht", 0,  (Fl_Callback*)cb_menueintrag_inspekt, 0, 0, 0, 0, 14, 56},
+ {"Pr\374""fansicht", 0x40062,  (Fl_Callback*)cb_menueintrag_inspekt, 0, 2, 0, 0, 14, 56},
  {0}
 };
 
@@ -263,7 +280,6 @@ std::string open(int interaktiv) {
   //Fl_File_Icon	*icon;	// New file icon
   DBG
   load_progress->show ();    load_progress->value (0.0);
-  //char vrmlDatei[] = "/tmp/tmp_vrml.wrl";
 
   if (interaktiv)
     filename=fl_file_chooser("Wähle ICC Profil?", "ICC Farbprofile (*.[I,i][C,c][M,m,C,c])", filename_alt.c_str());
@@ -301,8 +317,6 @@ std::string open(int interaktiv) {
   stat->hide();
   stat->show();
   load_progress->value (1.0);
-  //viewer->timerUpdate();
-  //viewer->handleRedraw();
   load_progress->value (0.0);
   load_progress->hide();
   DBG
@@ -320,8 +334,10 @@ std::string open(int interaktiv) {
         inspekt_html->topline (inspekt_topline);
     }
     menueintrag_inspekt->activate();
+    menueintrag_html_speichern->activate();
   } else {
     menueintrag_inspekt->deactivate();
+    menueintrag_html_speichern->deactivate();
     inspekt->hide();
     examin->show();
     inspekt_zeigen = false;

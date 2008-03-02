@@ -29,8 +29,8 @@ Profilierer::Profilierer()
 void
 Profilierer::load (ICCprofile& profil)
 {
-  measurement = profil.measurement;
-  //DBG
+  _measurement = profil.getMeasurement();
+  DBG
 }
 
 
@@ -39,6 +39,13 @@ Profilierer::print()
 {
   std::string s = _("Dateikopf ungültig");
   return s;
+}
+
+ICCprofile
+Profilierer::matrix()
+{
+  ICCprofile p;
+  return p;
 }
 
 

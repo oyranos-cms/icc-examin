@@ -26,10 +26,11 @@ class Profilierer {
                         Profilierer (); 
   private:
     ICCprofile          _profil; // ZIEL
-    ICCmeasurement      measurement;
+    ICCmeasurement      _measurement;
     bool                check (ICCprofile& p);
   public:
     void                load  (ICCprofile& p);
+    // erzeuge Matrixprofil
     ICCprofile          matrix();
 
     std::string         print ();

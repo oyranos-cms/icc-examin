@@ -25,7 +25,6 @@ ICCmeasurement::ICCmeasurement ()
   _sig = icMaxEnumTag;
   _data = NULL;
   _profil = NULL;
-  _lcms_it8 = NULL;
 }
 
 ICCmeasurement::ICCmeasurement (ICCprofile* profil, ICCtag &tag)
@@ -37,7 +36,6 @@ ICCmeasurement::~ICCmeasurement ()
 {
   _sig = icMaxEnumTag;
   _size = 0;
-  if (_lcms_it8 != NULL) cmsIT8Free (_lcms_it8); // lcms
   if (_data != NULL) free (_data);
   DBG
 }
@@ -62,13 +60,11 @@ ICCmeasurement::load                ( ICCprofile *profil,
 void
 ICCmeasurement::clear               (void)
 {
-  if (_lcms_it8 != NULL) cmsIT8Free (_lcms_it8); // lcms
   if (_data != NULL) free (_data);
   _sig = icMaxEnumTag;
   _size = 0;
   _data = NULL;
 
-  _lcms_it8 = NULL;
   _nFelder = 0;
 
   _profil = NULL;
@@ -85,6 +81,7 @@ ICCmeasurement::clear               (void)
   _RGB_MessFarben.clear();
   _RGB_ProfilFarben.clear();
   _Lab_Differenz.clear();
+  _DE00_Differenz.clear();
   _reportTabelle.clear();
 
   #ifdef DEBUG_ICCMEASUREMENT
@@ -315,12 +312,11 @@ ICCmeasurement::ascii_korrigieren               (void)
 void
 ICCmeasurement::lcms_parse                   (std::string   data)
 {
-  if (_lcms_it8 != NULL) cmsIT8Free (_lcms_it8);
   if (_data != NULL) free (_data);
   _data = (char*) calloc (sizeof(char), data.size());
   _size = data.size();
   memcpy (_data, data.c_str(), _size);
-  _lcms_it8 = cmsIT8LoadFromMem ( _data, _size ); DBG
+  LCMSHANDLE _lcms_it8 = cmsIT8LoadFromMem ( _data, _size ); DBG
 
   char **SampleNames; DBG
 
@@ -485,6 +481,9 @@ ICCmeasurement::init_umrechnen                     (void)
   _Lab_Differenz_max = -1000.0;
   _Lab_Differenz_min = 1000.0;
   _Lab_Differenz_Durchschnitt = 0.0;
+  _DE00_Differenz_max = -1000.0;
+  _DE00_Differenz_min = 1000.0;
+  _DE00_Differenz_Durchschnitt = 0.0;
   #define PRECALC cmsFLAGS_NOTPRECALC // No memory overhead, VERY
                                       // SLOW ON TRANSFORMING, very fast on creating transform.
                                       // Maximum accurancy.
@@ -534,6 +533,7 @@ ICCmeasurement::init_umrechnen                     (void)
     _Lab_Satz.resize(_nFelder);
     _Lab_Ergebnis.resize(_nFelder);
     _Lab_Differenz.resize(_nFelder);
+    _DE00_Differenz.resize(_nFelder);
     for (int i = 0; i < _nFelder; i++) {
         // Messfarben
         XYZ[0] = _XYZ_Satz[i].X / 100.0;
@@ -577,7 +577,12 @@ ICCmeasurement::init_umrechnen                     (void)
           _Lab_Differenz_max = _Lab_Differenz[i];
         if (_Lab_Differenz_min > _Lab_Differenz[i])
           _Lab_Differenz_min = _Lab_Differenz[i];
-        // TODO dE2000
+        // dE2000
+        _DE00_Differenz[i] = cmsCIE2000DeltaE( (cmsCIELab*)&_Lab_Ergebnis[i], (cmsCIELab*)&_Lab_Satz[i] , 1.0, 1.0, 1.0);
+        if (_DE00_Differenz_max < _DE00_Differenz[i])
+          _DE00_Differenz_max = _DE00_Differenz[i];
+        if (_DE00_Differenz_min > _DE00_Differenz[i])
+          _DE00_Differenz_min = _DE00_Differenz[i];
     }
     cmsDeleteTransform (hRGBtoSRGB);
     cmsDeleteTransform (hXYZtoSRGB);
@@ -634,6 +639,7 @@ ICCmeasurement::init_umrechnen                     (void)
     _Lab_Satz.resize(_nFelder);
     _Lab_Ergebnis.resize(_nFelder);
     _Lab_Differenz.resize(_nFelder);
+    _DE00_Differenz.resize(_nFelder);
     for (int i = 0; i < _nFelder; i++) {
         // Messfarben
         XYZ[0] = _XYZ_Satz[i].X / 100.0;
@@ -678,6 +684,12 @@ ICCmeasurement::init_umrechnen                     (void)
           _Lab_Differenz_max = _Lab_Differenz[i];
         if (_Lab_Differenz_min > _Lab_Differenz[i])
           _Lab_Differenz_min = _Lab_Differenz[i];
+        // dE2000
+        _DE00_Differenz[i] = cmsCIE2000DeltaE( (cmsCIELab*)&_Lab_Ergebnis[i], (cmsCIELab*)&_Lab_Satz[i] , 1.0, 1.0, 1.0);
+        if (_DE00_Differenz_max < _DE00_Differenz[i])
+          _DE00_Differenz_max = _DE00_Differenz[i];
+        if (_DE00_Differenz_min > _DE00_Differenz[i])
+          _DE00_Differenz_min = _DE00_Differenz[i];
     }
     cmsDeleteTransform (hCMYKtoSRGB);
     cmsDeleteTransform (hXYZtoSRGB);
@@ -693,6 +705,10 @@ ICCmeasurement::init_umrechnen                     (void)
     _Lab_Differenz_Durchschnitt += _Lab_Differenz[i];
   }
   _Lab_Differenz_Durchschnitt /= (double)_Lab_Differenz.size();
+  for (unsigned int i = 0; i < _DE00_Differenz.size(); i++) {
+    _DE00_Differenz_Durchschnitt += _DE00_Differenz[i];
+  }
+  _DE00_Differenz_Durchschnitt /= (double)_DE00_Differenz.size();
 }
 
 std::string
@@ -715,8 +731,10 @@ ICCmeasurement::getHtmlReport                     (void)
 
   html << "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">";
   html << "<html><head>" << endl;
-  html << "<title>" << _("Prüfung des Farbprofiles") << "</title>\n";
+  html << "<title>" << _("Report zum Farbprofil") << "</title>\n";
   html << "<meta http-equiv=\"content-type\" content=\"text/html; charset=ISO-8859-1\">" << endl;
+  html << "<meta name=\"description\" content=\"icc_examin ICC Profil Report\">\n";
+  html << "<meta name=\"author\" content=\"automatic generated by icc_examin-0.1\">\n";
   html << "</head><body bgcolor=\"" << SF << "\">" << endl << endl;
 
   int kopf = (int)_reportTabelle.size() - _nFelder;
@@ -727,7 +745,7 @@ ICCmeasurement::getHtmlReport                     (void)
     //if (i == 0) html << "</h2>";
     html <<     "<br>\n\n";
   }
-  html <<       "<table align=left cellpadding=\"2\" cellspacing=\"2\" border=\"0\" width=\"90%\" bgcolor=\"" << SF << "\">\n";
+  html <<       "<table align=left cellpadding=\"2\" cellspacing=\"0\" border=\"0\" width=\"90%\" bgcolor=\"" << SF << "\">\n";
   html <<       "<thead> \n";
   html <<       "  <tr> \n";
   // Tabellenkopf
@@ -768,7 +786,7 @@ ICCmeasurement::getHtmlReport                     (void)
     l = 0;
     for (s = 0; s < (int)_reportTabelle[kopf - 1].size() + f; s++) {
       if (s < f) { // Farbdarstellung
-        html << "    <td width=\"10\" bgcolor=\"#"; 
+        html << "    <td width=\"20\" bgcolor=\"#"; 
         sprintf (farbe,"");
         if (s == 0) {
           NACH_HTML (_RGB_MessFarben, R)
@@ -779,7 +797,7 @@ ICCmeasurement::getHtmlReport                     (void)
           NACH_HTML (_RGB_ProfilFarben, G)
           NACH_HTML (_RGB_ProfilFarben, B)
         }
-        html << "></td>\n";
+        html << "\"></td>\n";
       } else {
         html << "    <td bgcolor=\""; LAYOUTFARBE
         html << "\">" << _reportTabelle [kopf + z][s - f] << "</td>\n";
@@ -818,7 +836,7 @@ ICCmeasurement::getText                     (void)
     z++; tabelle[z].resize(1);
     tabelle[z][0] = _("CMM: <b>lcms</b>");
     z++; tabelle[z].resize(1);
-    s << _("Abweichungen (dE CIE*Lab) durchschnittlich:<b> ") << _Lab_Differenz_Durchschnitt << _("</b>  maximal: ") << _Lab_Differenz_max << _("  minimal: ") << _Lab_Differenz_min;
+    s << _("Abweichungen (dE CIE*Lab) durchschnittlich:<b> ") << _Lab_Differenz_Durchschnitt << _("</b>  maximal: ") << _Lab_Differenz_max << _("  minimal: ") << _Lab_Differenz_min << _("  (dE CIE 2000) durchschnittlich: ") << _DE00_Differenz_Durchschnitt << _("  maximal: ") << _DE00_Differenz_max << _("  minimal: ") << _DE00_Differenz_min;
     tabelle[z][0] = s.str();
     z++;
     // Tabellenkopf
@@ -830,6 +848,7 @@ ICCmeasurement::getText                     (void)
     layout.clear();
     layout.push_back (HI); // Messfeld
     layout.push_back (HI); // dE Lab
+    layout.push_back (HI); // dE2000
     layout.push_back (h); layout.push_back (h); layout.push_back (HI); // Lab
     layout.push_back (h); layout.push_back (h); layout.push_back (HI); // Lab'
     layout.push_back (h); layout.push_back (h); layout.push_back (HI); // XYZ
@@ -845,6 +864,7 @@ ICCmeasurement::getText                     (void)
     tabelle[z].resize( spalten ); DBG_S( tabelle[z].size() )
     tabelle[z][sp++] = _("Messfeld");
     tabelle[z][sp++]=_("dE Lab");
+    tabelle[z][sp++]=_("dE2000");
     tabelle[z][sp++]=_("L");
     tabelle[z][sp++]=_("a");
     tabelle[z][sp++]=_("b");
@@ -877,6 +897,7 @@ ICCmeasurement::getText                     (void)
       tabelle[z+i].resize( spalten );
       tabelle[z+i][sp++] =  _Feldnamen[i];
       s << _Lab_Differenz[i]; tabelle[z+i][sp++] = s.str().c_str(); s.str("");
+      s << _DE00_Differenz[i]; tabelle[z+i][sp++] = s.str().c_str(); s.str("");
       s << _Lab_Satz[i].L; tabelle[z+i][sp++] = s.str().c_str(); s.str("");
       s << _Lab_Satz[i].a; tabelle[z+i][sp++] = s.str().c_str(); s.str("");
       s << _Lab_Satz[i].b; tabelle[z+i][sp++] = s.str().c_str(); s.str("");

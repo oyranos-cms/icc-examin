@@ -89,7 +89,7 @@ Function {} {open C return_type int
   inspekt_topline = 0;} {}
   Fl_Window details {
     label {ICC Details} open
-    xywh {841 362 385 515} type Double box NO_BOX color 53
+    xywh {851 410 385 515} type Double box NO_BOX color 53
     code1 {DBG
     if (argc>1) {
 
@@ -118,6 +118,23 @@ Function {} {open C return_type int
             callback {open(true)}
             xywh {15 15 100 20} shortcut 0x4006f
           }
+          menuitem menueintrag_html_speichern {
+            label {Bericht Speichern}
+            callback {std::string bericht = profile.report();
+  std::string filename = filename_alt;
+  filename=fl_file_chooser("Bericht Speichern", "HTML Dokumente (*.[H,h][T,t][M,m,]*)", filename_alt.c_str());
+  DBG
+
+  if (filename == "" || filename == filename_alt) {
+    load_progress->hide ();
+    return;
+  }
+
+  std::ofstream f ( filename.c_str(),  std::ios::out );
+  f.write ( bericht.c_str(), bericht.size() );
+  f.close();}
+            xywh {0 0 100 20} divider
+          }
           menuitem {} {
             label Beenden
             callback {quit()}
@@ -144,7 +161,7 @@ Function {} {open C return_type int
     w->fullscreen_off(px,py,pw,ph);
     fullscreen = false;
   }}
-            xywh {15 15 100 20}
+            xywh {15 15 100 20} shortcut 0x40076
           }
         }
         menuitem menueintrag_inspekt {
@@ -161,7 +178,7 @@ Function {} {open C return_type int
     inspekt_html->value(profile.report().c_str());
     inspekt_html->topline(inspekt_topline);
   }}
-          xywh {30 30 100 20}
+          xywh {30 30 100 20} type Toggle shortcut 0x40062
         }
       }
       Fl_Group inspekt {open
@@ -258,7 +275,6 @@ Function {open(int interaktiv)} {open return_type {std::string}
   //Fl_File_Icon	*icon;	// New file icon
   DBG
   load_progress->show ();    load_progress->value (0.0);
-  //char vrmlDatei[] = "/tmp/tmp_vrml.wrl";
 
   if (interaktiv)
     filename=fl_file_chooser("Wähle ICC Profil?", "ICC Farbprofile (*.[I,i][C,c][M,m,C,c])", filename_alt.c_str());
@@ -296,8 +312,6 @@ Function {open(int interaktiv)} {open return_type {std::string}
   stat->hide();
   stat->show();
   load_progress->value (1.0);
-  //viewer->timerUpdate();
-  //viewer->handleRedraw();
   load_progress->value (0.0);
   load_progress->hide();
   DBG
@@ -315,8 +329,10 @@ Function {open(int interaktiv)} {open return_type {std::string}
         inspekt_html->topline (inspekt_topline);
     }
     menueintrag_inspekt->activate();
+    menueintrag_html_speichern->activate();
   } else {
     menueintrag_inspekt->deactivate();
+    menueintrag_html_speichern->deactivate();
     inspekt->hide();
     examin->show();
     inspekt_zeigen = false;

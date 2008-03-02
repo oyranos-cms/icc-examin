@@ -201,62 +201,81 @@ class ICCmeasurement {
                                             icTag& tag, char* data);
                         ~ICCmeasurement    ();
     void                clear(void);
+
   private:
+    // laden und auswerten
     void                init_meas (void);
+    // Berechnen aller Mess- und Profilwerte
     void                init_umrechnen (void);
+    // ??
     void                pruefen (void);
+    // vorbereiten -> cgats
+    std::string         ascii_korrigieren ();
+    // lcms cgats Leser
+    void                lcms_parse (std::string data);
+
+  private:
     icTagSignature      _sig;
     int                 _size;
     char*               _data;
 
-    LCMSHANDLE          _lcms_it8;
     int                 _nFelder;
 
     ICCprofile*         _profil;
     bool                _XYZ_measurement;
     bool                _RGB_measurement;
     bool                _CMYK_measurement;
-
+    // Messwerte
     std::vector<XYZ>    _XYZ_Satz;
     std::vector<Lab>    _Lab_Satz;
     std::vector<RGB>    _RGB_Satz;
     std::vector<CMYK>   _CMYK_Satz;
-
+    // Profilwerte
     std::vector<std::string> _Feldnamen;
     std::vector<XYZ>    _XYZ_Ergebnis;
     std::vector<Lab>    _Lab_Ergebnis;
     std::vector<RGB>    _RGB_MessFarben;
     std::vector<RGB>    _RGB_ProfilFarben;
-
+    // Ergebnisse
     std::vector<double> _Lab_Differenz;
     double              _Lab_Differenz_max;
     double              _Lab_Differenz_min;
     double              _Lab_Differenz_Durchschnitt;
+    std::vector<double> _DE00_Differenz;
+    double              _DE00_Differenz_max;
+    double              _DE00_Differenz_min;
+    double              _DE00_Differenz_Durchschnitt;
 
     std::vector<std::vector<std::string> > _reportTabelle;
     std::vector<int>    layout;
-  private:
-    std::string         ascii_korrigieren ();
-    void                lcms_parse (std::string data);
+  // I/O
   public:
     void                load (ICCprofile* profil , ICCtag& tag);
     void                load (ICCprofile* profil , char *data, size_t size);
   public:
-    std::string         getTagName()       {return getSigTagName (_sig); }
-    std::string         getInfo()          {return getSigTagDescription(_sig); }
+    // grundlegende Infos
+    bool                valid (void)       {return (_XYZ_measurement
+                                                 && (_RGB_measurement
+                                                  || _CMYK_measurement)); }
+    bool                hasRGB ()          {return _RGB_measurement; }
+    bool                hasCMYK ()         {return _CMYK_measurement; }
+    bool                hasXYZ ()          {return _XYZ_measurement; }
     int                 getSize()          {return _size; }
     int                 getPatchCount()    {return _nFelder; }
-
+    // einzelne Werte
     std::vector<double> getMessRGB (int patch);
     std::vector<double> getCmmRGB (int patch);
 
+    // Report
     std::vector<std::vector<std::string> > getText ();
     std::vector<std::string> getDescription();
     std::string         getHtmlReport ();
     std::vector<int>    getLayout ()       {return layout; }
-    bool                valid (void)       {return (_XYZ_measurement
-                                                 && (_RGB_measurement
-                                                  || _CMYK_measurement)); }
+
+    // Herkunft
+    std::string         getTagName()       {return getSigTagName (_sig); }
+    std::string         getInfo()          {return getSigTagDescription(_sig); }
+
 };
 
 
@@ -284,8 +303,7 @@ class ICCprofile {
 
     ICCheader           header;
     std::vector<ICCtag> tags;
-  public:
-    // cgats parser via lcms
+  private: // cgats via lcms
     ICCmeasurement      measurement;
 
   public: // Informationen
@@ -299,6 +317,8 @@ class ICCprofile {
 
     std::string         printHeader     () {return header.print(); }
     std::string         printLongHeader () {return header.print_long(); }
+
+    // Tag Infos
     std::vector<std::string> printTags  (); // Liste der einzelnen Tags (5)
     std::vector<std::string> printTagInfo      (int item); // Name,Typ
     std::vector<std::string> getTagText        (int item);    // Inhalt
@@ -310,21 +330,31 @@ class ICCprofile {
                              getTagCurves      (int item, ICCtag::MftChain typ);
     std::vector<double>      getTagNumbers     (int item, ICCtag::MftChain typ);
     std::vector<std::string> getTagChannelNames(int item, ICCtag::MftChain typ);
-
-    char*               getProfileInfo  ();
     bool                hasTagName   (std::string name); // Name
     int                 getTagByName (std::string name); // Name
-
     int                 getTagCount     () {return icValue(_data->count); }
+    // Profil Infos
+    char*               getProfileInfo  ();
     std::vector<double> getWhitePkt   (void);
 
-    void                saveProfileToFile  (char* filename, char *profile,
-                                           int    size);
+  public: // Datei I/O
+    void                saveProfileToFile  (char* filename);
     int                 checkProfileDevice (char* type,
                                            icProfileClassSignature deviceClass);
-
+ 
+  public: // Messwertinfos
     bool                hasMeasurement () {return measurement.valid(); }
     std::string         report ()         {return measurement.getHtmlReport(); }
+    ICCmeasurement      getMeasurement () {return measurement; }
+
+  public: // Profilerstellung
+    void                addTag (ICCtag tag)  {tags.push_back(tag); }
+    void                removeTag (int item) {std::vector<ICCtag>::iterator it=
+                                              tags.begin();
+                                              for (int i=0; i != item;i++) it++;
+                                              tags.erase(it); }
+    void                saveProfileToFile  (char* filename, char *profile,
+                                           int    size);
 };
 
 

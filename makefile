@@ -37,6 +37,7 @@ CPP_HEADERS = \
 	ViewerFLTK.h 
 CPPFILES = \
 	icc_draw.cpp \
+	icc_formeln.cpp \
 	icc_helfer.cpp \
 	icc_profile.cpp \
 	icc_measurement.cpp \
