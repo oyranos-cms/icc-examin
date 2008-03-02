@@ -308,7 +308,7 @@ ICCexamin::start (int argc, char** argv)
 
   if(!dateiwahl)
   {
-    fl_translate_file_chooser();
+    my_fl_translate_file_chooser();
 
     const char* ptr = NULL;
     if (profile.size())

@@ -305,7 +305,7 @@ fl_delayed_redraw(void *w)
 
 #include "my_file_chooser.h"
 void
-fl_translate_file_chooser( )
+my_fl_translate_file_chooser( )
 {
 #ifdef USE_GETTEXT
   DBG_PROG_START
