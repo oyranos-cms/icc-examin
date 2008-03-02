@@ -46,6 +46,9 @@ SOURCES = $(CPPFILES) $(CXXFILES) $(CPP_HEADERS)
 OBJECTS = $(CPPFILES:.cpp=.o) $(CXXFILES:.cxx=.o)
 TARGET  = icc_examin
 
+REZ     = /Developer/Tools/Rez -t APPL -o $(TARGET) /opt/local/include/FL/mac.r
+APPLE   = #$(REZ)
+
 topdir  = ..
 dir     = $(TARGET)
 timedir = $(topdir)/$(TARGET)
@@ -60,7 +63,7 @@ $(TARGET):	$(OBJECTS)
 	$(CC) $(OPTS) -o $(TARGET) \
 	$(OBJECTS) \
 	$(LDLIBS)
-	/Developer/Tools/Rez -t APPL -o $(TARGET) /opt/local/include/FL/mac.r
+	$(APPLE)
 
 static:		$(OBJECTS)
 	echo Linking $@...
@@ -68,13 +71,13 @@ static:		$(OBJECTS)
 	$(OBJECTS) \
 	$(LDLIBS) -static -ljpeg -lpng -lX11 -lpthread -lz -ldl \
 	-lfreetype -lfontconfig -lXrender -lGLU -lXext -lexpat
-	/Developer/Tools/Rez -t APPL -o $(TARGET) /opt/local/include/FL/mac.r
+	$(APPLE)
 
 test:	icc_draw.o
 	$(CC) $(OPTS) $(INCL) -o horseshoe.o -c horseshoe.cxx
 	$(CC) $(OPTS) -o horseshoe horseshoe.o icc_draw.o \
 	`fltk-config --ldstaticflags` -L$(libdir) -llcms
-	/Developer/Tools/Rez -t APPL -o horseshoe /opt/local/include/FL/mac.r
+	$(APPLE)
 
 t3:
 	rm test3

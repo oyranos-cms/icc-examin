@@ -10,7 +10,7 @@
 #include <iostream>
 #include <sstream>
 #include <map>
-#include <list>
+#include <vector>
 #include <fstream>
 #include "icc_utils.h"
 
@@ -81,14 +81,29 @@ class ICCtag {
     char*               _data;
 
   public:
-    void                load               (icTag *tag, char* data);
+    void                load (icTag *tag, char* data);
   public:
     std::string         getTagName()       {return getSigTagName (_tag.sig); }
-    //std::string         getTypeName()      {return getSigTypeName (_tag.sig); }
-    std::string         get_vrml();
-    std::string         get_text();
-//    std::map<int,int>   get_curve();
-    std::string         getSigTagName      ( icTagSignature  sig );
+    std::string         getTypName()       {//cout << _data << " " ; DBG
+                                            icTagTypeSignature sig =
+                                            ((icTagBase*)_data) ->
+                                            sig;
+                                            return getSigTypeName (sig);
+                                           }
+    int                 getTagByName();
+    int                 getSize()          {return _tag.size; }
+    std::string         getDescription();
+
+    std::vector<double> getCIExy();
+    std::vector<double> getCurve();
+    std::string         getText();
+    std::string         getVrml();
+    int                 hasCurve();
+    int                 hasCIExy();
+    int                 hasText();
+    int                 hasVrml();
+    std::string         getSigTagName( icTagSignature  sig );
+    std::string         getSigTypeName( icTagTypeSignature  sig );
 //    void                printLut           (   LPLUT           Lut,
 //                                               int             sig);
 };
@@ -100,39 +115,39 @@ class ICCprofile {
     virtual             ~ICCprofile (void);
 
   public:
-    int                 tag_count();
-    void                profile_name (std::string filename);
-    char*               profile_name ();
+    int                 tagCount()         {return tags.size(); }
     void                load (std::string filename);
     void                load (char* filename);
 
   private:
     void                fload ();
     std::string         _filename;
-    //void                read_header();
 
     // icc34.h Definitionen
-    icProfile          *_data;
+    icProfile*          _data;
     unsigned int        _size;
 
     ICCheader           header;
-    std::list<ICCtag>   tags;
+    std::vector<ICCtag>   tags;
     void                write_tagList(std::stringstream);
 
   public: // Informationen
-    const char*         filename () {return _filename.c_str(); }
+    const char*         filename ()        {return _filename.c_str(); }
     void                filename (const char* s) {_filename = s; }
-    int                 size     () {return header.size(); }
-    const char*         cmm      () {return header.CmmName(); }
+    int                 size     ()        {return header.size(); }
+    const char*         cmm      ()        {return header.CmmName(); }
     void                cmm      (const char* s) {header.CmmName (s); }
-    int                 version  () {return (int) header.version(); }
-    std::string         print_header       () {return header.print(); }
-    std::string         print_long_header  () {return header.print_long(); }
-    std::list<std::string> printTags       ();
-    std::string         printLongTag       (int   item);
-    char*               getProfileInfo     ();
+    int                 version  ()        {return (int) header.version(); }
+    std::string         printHeader     () {return header.print(); }
+    std::string         printLongHeader () {return header.print_long(); }
+    std::vector<std::string> printTags  (); // Liste der einzelnen Tags
+    std::vector<std::string> printTagInfo (int item); // Name,Typ
+    std::string         getTagText      (int item);    // Inhalt
+    std::vector<double> getTagCIExy  (int item);
+    std::vector<double> getTagCurve  (int item);
+    char*               getProfileInfo  ();
 
-    int                 getTagCount        () {return _data->count; }
+    int                 getTagCount     () {return _data->count; }
 
     void                saveProfileToFile  (char* filename, char *profile,
                                            int    size);

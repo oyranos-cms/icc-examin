@@ -1,0 +1,65 @@
+# data file for the Fltk User Interface Designer (fluid)
+version 1.0104 
+header_name {.h} 
+code_name {.cxx}
+decl {\#include <FL/fl_draw.H>} {public
+} 
+
+decl {\#include <stdio.h>} {public
+} 
+
+decl {\#include <stdlib.h>
+ \#include <iostream>
+ \#include <sstream>
+ using namespace std;} {public
+} 
+
+decl {\#define DBG //cout << __FILE__<<":"<<__LINE__ <<" "<< __func__ << "()" << endl;} {} 
+
+decl {\#include "icc_draw.h"} {} 
+
+Function {main()} {open C return_type int
+} {
+  Fl_Window {} {open selected
+    xywh {348 87 670 655} type Double hide resizable
+  } {
+    Fl_Box {} {
+      xywh {0 0 670 655}
+      class ShoeClass
+    }
+  }
+  code {//w->end();
+  w->show();
+
+  return Fl::run();} {}
+} 
+
+class ShoeClass {open : {public Fl_Widget}
+} {
+  Function {ShoeClass(int X,int Y,int W,int H) : Fl_Widget(X,Y,W,H)} {open
+  } {
+    code DBG {}
+  }
+  Function {~ShoeClass()} {open
+  } {
+    code DBG {}
+  }
+  Function {draw()} {open return_type void
+  } {
+    code {/*fl_clip(x(),y(),w(),h());
+  fl_color(FL_DARK3);
+  fl_rectf(x(),y(),w(),h());
+  fl_line(10, 30, 300, 300);
+    fl_color(FL_BLACK);
+    fl_begin_line();
+    fl_vertex(12,20);
+    fl_vertex(40,10);
+    fl_vertex(300,280);
+    fl_vertex(30,140);
+    fl_end_line();
+
+  fl_pop_clip();*/
+  draw_cie_shoe(x(), y(), w(), h());
+  DBG} {}
+  }
+} 

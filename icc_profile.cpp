@@ -2,6 +2,14 @@
 // Copyright: Kai-Uwe Behrmann <ku.b@gmx.de>
 // Date:      04. 05. 2004
 
+#if 1
+  #ifndef DEBUG
+   #define DEBUG
+  #endif
+  #define DEBUG_ICCHEADER
+  #define DEBUG_ICCTAG
+  #define DEBUG_ICCPROFILE
+#endif
 
 #include "icc_profile.h"
 #include "icc_examin.h"
@@ -13,11 +21,9 @@
 int
 icValue (icUInt32Number val)
 {
+#if BYTE_ORDER == LITTLE_ENDIAN
   unsigned char        *temp = (unsigned char*) &val;
 
-  //temp = (unsigned char*) &val;
-
-#if BYTE_ORDER == LITTLE_ENDIAN
   static unsigned char  uint32[4];
 
   uint32[0] = temp[3];
@@ -26,15 +32,17 @@ icValue (icUInt32Number val)
   uint32[3] = temp[0];
 
   DBG
+  #ifdef DEBUG
   cout << (int)*temp << " Größe nach Wandlung " << (int)temp[0] << " "
        << (int)temp[1] << " " << (int)temp[2] << " " <<(int)temp[3]
        << endl;
+  #endif
 
   return (int) &uint32[0];
 #else
-  cout << (int)val << " Größe ohne Wandlung " << (int)temp[0] << " "
-       << (int)temp[1] << " " << (int)temp[2] << " " <<(int)temp[3]
-       << endl;
+  #ifdef DEBUG
+  cout << "BIG_ENDIAN" << " "; DBG
+  #endif
   return (int)val;
 #endif
 }
@@ -42,27 +50,25 @@ icValue (icUInt32Number val)
 long
 icValue (icUInt64Number val)
 {
+#if BYTE_ORDER == LITTLE_ENDIAN
   unsigned char        *temp  = (unsigned char*) &val;
 
-#if BYTE_ORDER == LITTLE_ENDIAN
   static unsigned char  uint64[8];
   int little = 0,
       big    = 8;
 
-  for (; little < 8 ; i++ ) {
+  for (; little < 8 ; little++ ) {
     uint64[little++] = temp[big--];
   }
 
   DBG
+  #ifdef DEBUG
   cout << (int)*temp << " Größe nach Wandlung " << (int)temp[0] << " "
        << (int)temp[1] << " " << (int)temp[2] << " " <<(int)temp[3]
        << endl;
-
+  #endif
   return (int) &uint64[0];
 #else
-  cout << (int)val << " Größe ohne Wandlung " << (int)temp[0] << " "
-       << (int)temp[1] << " " << (int)temp[2] << " " <<(int)temp[3]
-       << endl;
   return (long)val;
 #endif
 }
@@ -94,10 +100,14 @@ ICCheader::load (void *data)
 {
   DBG
   memcpy ((void*)&header, data,/* (void*)&header,*/ sizeof (icHeader));
+  #ifdef DEBUG_ICCHEADER
   cout << sizeof (icHeader) << " genommen" << endl;
+  #endif
   if (header.size > 0) {
     valid = true;
+  #ifdef DEBUG_ICCHEADER
     cout << size() << endl;
+  #endif
   } else {
     valid = false;
   }
@@ -113,7 +123,9 @@ ICCheader::size (int i)
 std::string
 ICCheader::print_long()
 {
+  #ifdef DEBUG_ICCHEADER
   cout << sizeof (icSignature) << " " << sizeof (icUInt32Number)<< endl;
+  #endif
   std::stringstream s; DBG
   s << "kein Dateikopf gefunden"; DBG
   //cout << "char icSignature ist " << sizeof (icSignature) << endl;
@@ -161,7 +173,7 @@ ICCheader::print()
 {
   string s = _("Dateikopf ungültig");
   if (valid)
-    s = _("  1 Kopf        icHeader      128 Dateikopf");
+    s = _("    Kopf        icHeader      128 Dateikopf");
   return s;
 }
 
@@ -313,64 +325,217 @@ ICCtag::load                        ( icTag *tag, char* data )
   _tag.offset = tag->offset;
   _tag.size = tag->size;
 
-  cout << _tag.sig << tag->sig << endl;
-
   if (!_data) free (_data);
   _data = (char*) calloc ( _tag.size , sizeof (char) );
   memcpy ( _data , data , _tag.size );
   DBG
+
+  #ifdef DEBUG_ICCTAG
+  char* text = _data;
+  cout << _tag.sig << "=" << tag->sig << " offset " << _tag.offset << " size " << _tag.size << " nächster tag " << _tag.size + _tag.offset << " " << text; DBG
+  #endif
+}
+
+std::string
+ICCtag::getText                     (void)
+{ DBG
+  std::string text;
+
+  // zur Sicherheit nochmal Kopieren
+  //char*       ptr = (char*) calloc (_tag.size, sizeof (char));
+  //memcpy (ptr, &_data[8], _tag.size - 8);
+
+  text = &_data[8];//ptr;
+  #ifdef DEBUG_ICCTAG
+  cout << &_data[8] << "|" << "|" << text << " "; DBG
+  #endif
+  //free (ptr);
+  return text;
+}
+
+std::vector<double>
+ICCtag::getCIExy                                  (void)
+{
+  std::vector<double> punkte;
+
+  punkte.push_back(0.3);
+  punkte.push_back(0.5);
+  punkte.push_back(0.3);
+
+  return punkte;
+}
+
+std::vector<double>
+ICCtag::getCurve                                  (void)
+{
+  std::vector<double> punkte;
+  return punkte;
+}
+
+std::string
+ICCtag::getDescription              ( void )
+{
+  std::string text = "Beschreibung";
+
+  switch (_tag.sig) {
+    case icSigAToB0Tag: text = _("Farbtabelle, Gerät an Kontaktfarbraum, Anpassung 0"); break;
+    case icSigAToB1Tag: text = _("Farbtabelle, Gerät an Kontaktfarbraum, Anpassung 1"); break;
+    case icSigAToB2Tag: text = _("Farbtabelle, Gerät an Kontaktfarbraum, Anpassung 2"); break;
+    case icSigBlueColorantTag: text = _("blaue Grundfarbe"); break;
+    case icSigBlueTRCTag: text = _("blaue Farbwiedergabekurve"); break;
+    case icSigBToA0Tag: text = _("Farbtabelle, Kontaktfarbraum an Gerät, Anpassung 0"); break;
+    case icSigBToA1Tag: text = _("Farbtabelle, Kontaktfarbraum an Gerät, Anpassung 1"); break;
+    case icSigBToA2Tag: text = _("Farbtabelle, Kontaktfarbraum an Gerät, Anpassung 2"); break;
+    case icSigCalibrationDateTimeTag: text = _("Kalibrationsdatum"); break;
+    case icSigCharTargetTag: text = _("targ"); break;
+    case icSigCopyrightTag: text = _("Kopierrecht"); break;
+    case icSigCrdInfoTag: text = _("crdi"); break;
+    case icSigDeviceMfgDescTag: text = _("Herstellerbeschreibung"); break;
+    case icSigDeviceModelDescTag: text = _("Gerätebeschreibung"); break;
+    case icSigGamutTag: text = _("Farbumfang"); break;
+    case icSigGrayTRCTag: text = _("schwarze Wiedergabekurve"); break;
+    case icSigGreenColorantTag: text = _("grüne Grundfarbe"); break;
+    case icSigGreenTRCTag: text = _("grüne Farbwiedergabekurve"); break;
+    case icSigLuminanceTag: text = _("lumi"); break;
+    case icSigMeasurementTag: text = _("meas"); break;
+    case icSigMediaBlackPointTag: text = _("Medienschwarzpunkt"); break;
+    case icSigMediaWhitePointTag: text = _("Medienweißpunkt"); break;
+    case icSigNamedColorTag: text = _("'ncol"); break;
+    case icSigNamedColor2Tag: text = _("ncl2"); break;
+    case icSigPreview0Tag: text = _("pre0"); break;
+    case icSigPreview1Tag: text = _("pre1"); break;
+    case icSigPreview2Tag: text = _("pre2"); break;
+    case icSigProfileDescriptionTag: text = _("Profilbeschreibung"); break;
+    case icSigProfileSequenceDescTag: text = _("Beschreibung der Profilverknüpfung"); break;
+    case icSigPs2CRD0Tag: text = _("psd0"); break;
+    case icSigPs2CRD1Tag: text = _("psd1"); break;
+    case icSigPs2CRD2Tag: text = _("psd2"); break;
+    case icSigPs2CRD3Tag: text = _("psd3"); break;
+    case icSigPs2CSATag: text = _("ps2s"); break;
+    case icSigPs2RenderingIntentTag: text = _("ps2i"); break;
+    case icSigRedColorantTag: text = _("rote Grundfarbe"); break;
+    case icSigRedTRCTag: text = _("rote Farbwiedergabekurve"); break;
+    case icSigScreeningDescTag: text = _("scrd"); break;
+    case icSigScreeningTag: text = _("scrn"); break;
+    case icSigTechnologyTag: text = _("tech"); break;
+    case icSigUcrBgTag: text = _("bfd"); break;
+    case icSigViewingCondDescTag: text = _("Beschreibung der Betrachtungbedingungen"); break;
+    case icSigViewingConditionsTag: text = _("Betrachtungsbedingungen"); break;
+    case 1147500100: text = _("Farbmessflächen"); break;
+    case 1128875332: text = _("Farbmessergebnisse"); break;
+    case 1349350514: text = _("Profilierungsparameter"); break;
+    case 1986226036: text = _("Apple Monitor-Grafikkartentabelle"); break;
+    case 1667785060: text = _("Farbanpassungsmatrix"); break;
+    case 1667789421: text = _("Primärfarben"); break;
+    case 1668051567: text = _("Schmuckfarbordnung"); break;
+    case 1668051572: text = _("Schmuckfarbnamen"); break;
+    case 0: text = _("----"); break;
+    default: text = _("???"); break;
+  }
+  return text;
 }
 
 std::string
 ICCtag::getSigTagName               ( icTagSignature  sig )
 {
+  std::string text;
+
+  switch (sig) {
+    case icSigAToB0Tag: text = _("A2B0"); break;
+    case icSigAToB1Tag: text = _("A2B1"); break;
+    case icSigAToB2Tag: text = _("A2B2"); break;
+    case icSigBlueColorantTag: text = _("bXYZ"); break;
+    case icSigBlueTRCTag: text = _("bTRC"); break;
+    case icSigBToA0Tag: text = _("B2A0"); break;
+    case icSigBToA1Tag: text = _("B2A1"); break;
+    case icSigBToA2Tag: text = _("B2A2"); break;
+    case icSigCalibrationDateTimeTag: text = _("calt"); break;
+    case icSigCharTargetTag: text = _("targ"); break;
+    case icSigCopyrightTag: text = _("cprt"); break;
+    case icSigCrdInfoTag: text = _("crdi"); break;
+    case icSigDeviceMfgDescTag: text = _("dmnd"); break;
+    case icSigDeviceModelDescTag: text = _("dmdd"); break;
+    case icSigGamutTag: text = _("gamt"); break;
+    case icSigGrayTRCTag: text = _("kTRC"); break;
+    case icSigGreenColorantTag: text = _("gXYZ"); break;
+    case icSigGreenTRCTag: text = _("gTRC"); break;
+    case icSigLuminanceTag: text = _("lumi"); break;
+    case icSigMeasurementTag: text = _("meas"); break;
+    case icSigMediaBlackPointTag: text = _("bkpt"); break;
+    case icSigMediaWhitePointTag: text = _("wtpt"); break;
+    case icSigNamedColorTag: text = _("'ncol"); break;
+    case icSigNamedColor2Tag: text = _("ncl2"); break;
+    case icSigPreview0Tag: text = _("pre0"); break;
+    case icSigPreview1Tag: text = _("pre1"); break;
+    case icSigPreview2Tag: text = _("pre2"); break;
+    case icSigProfileDescriptionTag: text = _("desc"); break;
+    case icSigProfileSequenceDescTag: text = _("pseq"); break;
+    case icSigPs2CRD0Tag: text = _("psd0"); break;
+    case icSigPs2CRD1Tag: text = _("psd1"); break;
+    case icSigPs2CRD2Tag: text = _("psd2"); break;
+    case icSigPs2CRD3Tag: text = _("psd3"); break;
+    case icSigPs2CSATag: text = _("ps2s"); break;
+    case icSigPs2RenderingIntentTag: text = _("ps2i"); break;
+    case icSigRedColorantTag: text = _("rXYZ"); break;
+    case icSigRedTRCTag: text = _("rTRC"); break;
+    case icSigScreeningDescTag: text = _("scrd"); break;
+    case icSigScreeningTag: text = _("scrn"); break;
+    case icSigTechnologyTag: text = _("tech"); break;
+    case icSigUcrBgTag: text = _("bfd"); break;
+    case icSigViewingCondDescTag: text = _("vued"); break;
+    case icSigViewingConditionsTag: text = _("view"); break;
+    case 1147500100: text = _("DevD"); break;
+    case 1128875332: text = _("CIED"); break;
+    case 1349350514: text = _("Pmtr"); break;
+    case 1986226036: text = _("vcgt"); break;
+    case 1667785060: text = _("chad"); break;
+    case 1667789421: text = _("chrm"); break;
+    case 1668051567: text = _("clro"); break;
+    case 1668051572: text = _("clrt"); break;
+    //case : text = _(""); break;
+    case 0: text = _("----"); break;
+    default: text = _("???"); break;
+  }
+  #ifdef DEBUG_ICCTAG
+  char c[5] = "clrt";
+  long* l = (long*) &c[0];
+  cout << *l << ": " << (long)"clrt" << endl; DBG
+  #endif
+  return text;
+}
+
+std::string
+ICCtag::getSigTypeName               ( icTagTypeSignature  sig )
+{
   const char* name;
   std::string string;
 
   switch (sig) {
-    case icSigAToB0Tag: name = cp_char (_("A2B0")); break;
-    case icSigAToB1Tag: name = cp_char (_("A2B1")); break;
-    case icSigAToB2Tag: name = cp_char (_("A2B2")); break;
-    case icSigBlueColorantTag: name = cp_char (_("bXYZ")); break;
-    case icSigBlueTRCTag: name = cp_char (_("bTRC")); break;
-    case icSigBToA0Tag: name = cp_char (_("B2A0")); break;
-    case icSigBToA1Tag: name = cp_char (_("B2A1")); break;
-    case icSigBToA2Tag: name = cp_char (_("B2A2")); break;
-    case icSigCalibrationDateTimeTag: name = cp_char (_("calt")); break;
-    case icSigCharTargetTag: name = cp_char (_("targ")); break;
-    case icSigCopyrightTag: name = cp_char (_("cprt")); break;
-    case icSigCrdInfoTag: name = cp_char (_("crdi")); break;
-    case icSigDeviceMfgDescTag: name = cp_char (_("dmnd")); break;
-    case icSigDeviceModelDescTag: name = cp_char (_("dmdd")); break;
-    case icSigGamutTag: name = cp_char (_("gamt")); break;
-    case icSigGrayTRCTag: name = cp_char (_("kTRC")); break;
-    case icSigGreenColorantTag: name = cp_char (_("gXYZ")); break;
-    case icSigGreenTRCTag: name = cp_char (_("gTRC")); break;
-    case icSigLuminanceTag: name = cp_char (_("lumi")); break;
-    case icSigMeasurementTag: name = cp_char (_("meas")); break;
-    case icSigMediaBlackPointTag: name = cp_char (_("bkpt")); break;
-    case icSigMediaWhitePointTag: name = cp_char (_("wtpt")); break;
-    case icSigNamedColorTag: name = cp_char (_("'ncol")); break;
-    case icSigNamedColor2Tag: name = cp_char (_("ncl2")); break;
-    case icSigPreview0Tag: name = cp_char (_("pre0")); break;
-    case icSigPreview1Tag: name = cp_char (_("pre1")); break;
-    case icSigPreview2Tag: name = cp_char (_("pre2")); break;
-    case icSigProfileDescriptionTag: name = cp_char (_("desc")); break;
-    case icSigProfileSequenceDescTag: name = cp_char (_("pseq")); break;
-    case icSigPs2CRD0Tag: name = cp_char (_("psd0")); break;
-    case icSigPs2CRD1Tag: name = cp_char (_("psd1")); break;
-    case icSigPs2CRD2Tag: name = cp_char (_("psd2")); break;
-    case icSigPs2CRD3Tag: name = cp_char (_("psd3")); break;
-    case icSigPs2CSATag: name = cp_char (_("ps2s")); break;
-    case icSigPs2RenderingIntentTag: name = cp_char (_("ps2i")); break;
-    case icSigRedColorantTag: name = cp_char (_("rXYZ")); break;
-    case icSigRedTRCTag: name = cp_char (_("rTRC")); break;
-    case icSigScreeningDescTag: name = cp_char (_("scrd")); break;
-    case icSigScreeningTag: name = cp_char (_("scrn")); break;
-    case icSigTechnologyTag: name = cp_char (_("tech")); break;
-    case icSigUcrBgTag: name = cp_char (_("bfd")); break;
-    case icSigViewingCondDescTag: name = cp_char (_("vued")); break;
-    case icSigViewingConditionsTag: name = cp_char (_("view")); break;
+    case icSigCurveType: name = cp_char (_("curv")); break;
+    case icSigDataType: name = cp_char (_("data")); break;
+    case icSigDateTimeType: name = cp_char (_("dtim")); break;
+    case icSigLut16Type: name = cp_char (_("mft2")); break;
+    case icSigLut8Type: name = cp_char (_("mft1")); break;
+    case icSigMeasurementType: name = cp_char (_("meas")); break;
+    case icSigNamedColorType: name = cp_char (_("ncol")); break;
+    case icSigProfileSequenceDescType: name = cp_char (_("pseq")); break;
+    case icSigS15Fixed16ArrayType: name = cp_char (_("sf32")); break;
+    case icSigScreeningType: name = cp_char (_("scrn")); break;
+    case icSigSignatureType: name = cp_char (_("sig")); break;
+    case icSigTextType: name = cp_char (_("text")); break;
+    case icSigTextDescriptionType: name = cp_char (_("desc")); break;
+    case icSigU16Fixed16ArrayType: name = cp_char (_("uf32")); break;
+    case icSigUcrBgType: name = cp_char (_("bfd")); break;
+    case icSigUInt16ArrayType: name = cp_char (_("ui16")); break;
+    case icSigUInt32ArrayType: name = cp_char (_("ui32")); break;
+    case icSigUInt64ArrayType: name = cp_char (_("ui64")); break;
+    case icSigUInt8ArrayType: name = cp_char (_("ui08")); break;
+    case icSigViewingConditionsType: name = cp_char (_("view")); break;
+    case icSigXYZType: name = cp_char (_("XYZ")); break;
+    //case icSigXYZArrayType: name = cp_char (_("XYZ")); break;
+    case icSigNamedColor2Type: name = cp_char (_("ncl2")); break;
+    case icSigCrdInfoType: name = cp_char (_("crdi")); break;
+    case 1986226036: name = cp_char (_("vcgt")); break;
     default: name = cp_char (_("???")); break;
   }
   string = name;
@@ -515,21 +680,24 @@ ICCprofile::fload ()
   //FilePtr fp ( _filename.c_str(), "rb");
   string file;
   ifstream f ( _filename.c_str(), ios::binary | ios::ate );
-  int i = 0;
 
   DBG
   if (_filename == "")
     throw ausn_file_io ("kein Dateiname angegeben");
   DBG
-  if (!f)
+  if (!f) {
     throw ausn_file_io ("keine lesbare Datei gefunden");
+    _filename = "";
+  }
 
-  if (_data!=NULL) { free (_data); } DBG
+  if (_data!=NULL) { free (_data); DBG }
   _size = (unsigned int)f.tellg();         f.seekg(0);
   _data = (icProfile*) calloc ( _size, sizeof (char)); DBG
   
   f.read ((char*)_data, _size); DBG
-  cout << _size << "|" << i << "|" << f.tellg() << endl;
+  #ifdef DEBUG_ICCPROFILE
+  cout << _size << "|" << f.tellg() << endl;
+  #endif
   f.close(); DBG
 
   DBG
@@ -538,50 +706,97 @@ ICCprofile::fload ()
 
   //Profilabschnitte
   tags.clear(); DBG
+  #ifdef DEBUG_ICCPROFILE
   cout << "TagCount: " << getTagCount() << " / " << tags.size() << endl;
+  #endif
   icTag *tagList = (icTag*)&((char*)_data)[132];
   //(icTag*) calloc ( getTagCount() , sizeof (icTag));
   //memcpy (tagList , &((char*)_data)[132], sizeof (icTag) * getTagCount());
   for (int i = 0 ; i < getTagCount() ; i++) {
     ICCtag tag;//( tagList[i] , &((char*)_data)[ tagList[i].offset ] );
     tag.load( &tagList[i] , &((char*)_data)[ tagList[i].offset ] );
+  #ifdef DEBUG_ICCPROFILE
     cout << " sig: " << tag.getTagName() << endl; 
+  #endif
     tags.push_back(tag);
   }
+  #ifdef DEBUG_ICCPROFILE
   cout << "tags: " << tags.size() << endl;
+  #endif
   DBG
 }
 
-std::string
-ICCprofile::printLongTag         (int item)
+std::vector<std::string>
+ICCprofile::printTagInfo         (int item)
 {
-  std::string text = "Hier kommt die lange Beschreibung";
+  std::vector<std::string> liste;
+
+  liste.push_back( tags.at(item).getTagName() );
+  liste.push_back( tags.at(item).getTypName() );
 
   DBG
-  return text;
+  return liste;
 }
 
-std::list<std::string>
+std::vector<std::string>
 ICCprofile::printTags            ()
 {
   DBG
-  std::list<std::string> StringList;
+  std::vector<std::string> StringList;
+  std::string text;
+  std::stringstream s;
 
-  if (!tags.size()) {
-    std::string text = "Keine Tags vorhanden.";
-    StringList.push_back(text);
+  if (!tags.size()) { DBG
     return StringList;
-  }
+  } DBG
 
-  for (std::list<ICCtag>::iterator i = tags.begin() ;
-         i != tags.end() ; i++) {
-    std::string text;
-
-    text = (*i).getTagName();
-    StringList.push_back(text);
+  int count = 0;
+  for (std::vector<ICCtag>::iterator it = tags.begin(); it != tags.end(); it++){
+    s.str("");
+    s << count; count++;           StringList.push_back(s.str()); s.str("");
+    s.str((*it).getTagName());     StringList.push_back(s.str()); s.str("");
+    s.str((*it).getTypName());     StringList.push_back(s.str()); s.str("");
+    s << (*it).getSize();          StringList.push_back(s.str()); s.str("");
+    s.str((*it).getDescription()); StringList.push_back(s.str()); s.str("");
+  #ifdef DEBUG_ICCPROFILE
+    cout << (*it).getTagName() << " "; DBG
+  #endif
   }
 
   return StringList;
+}
+
+std::string
+ICCprofile::getTagText                                  (int item)
+{
+  // Prüfen
+  std::string leer;
+  if (tags[item].getTypName() != "text")
+    return leer;
+
+  return tags.at(item).getText();
+}
+
+std::vector<double>
+ICCprofile::getTagCIExy                                  (int item)
+{
+  // Prüfen
+  std::vector<double> leer;
+  if (tags[item].getTypName() != "XYZ")
+    return leer;
+
+  return tags.at(item).getCIExy();
+}
+
+std::vector<double>
+ICCprofile::getTagCurve                                  (int item)
+{
+  // Prüfen
+  std::vector<double> leer;
+  if (tags[item].getTypName() != "curv")
+    return leer;
+
+  return tags.at(item).getCurve();
 }
 
 char*

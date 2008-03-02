@@ -3,29 +3,9 @@
 
 */
 
-#ifndef ICC_UTILS_H
-#define ICC_UTILS_H
-
 #include <cstdio>		// printf()
 #include <exception>		// class expeption
 #include <new>			// bad_alloc()
-#include <iostream>
-
-#define DBG cout << __FILE__<<":"<<__LINE__ <<" "<< __func__ << "()" << endl;
-#define DBG_S(txt) cout << __FILE__<<":"<<__LINE__ <<" "<< __func__ << "()" << txt << endl;
-
-class Int {
-public:
-// TODO: byteswap + Groesse + Vorzeichen
-#if BYTE_ORDER == BIG_ENDIAN
-//  int             operator=(const int _n)     {return _n; }
-  //icUInt32Number  operator=(const int _n)     {return _n; }
-#endif
-#if BYTE_ORDER == LITTLE_ENDIAN
-  int             operator=(const int _n)     {return _n; }
-  //icUInt32Number  operator=(const int _n)     {return _n; }
-#endif
-};
 
 
 // ============================================================
@@ -44,18 +24,15 @@ public:
     ausn_file_io (const char *fn) throw()	{ fname = fn; }
     virtual ~ausn_file_io () throw()		{ printf ("Destruktor von %s\n", __func__); }
     virtual const char* what() const throw()	{ return "Datei I/O"; }
-    virtual void report () const throw() {
-      printf ("Ausnahme-Report:\n");
-      printf ("\tDatei \"%s\" war nicht zu öffnen\n", fname);     // testweise
-    };
+    virtual void report () const throw();
 };
 
 
-/*void ausn_file_io::report () const throw()
+void ausn_file_io::report () const throw()
 {
     printf ("Ausnahme-Report:\n");
     printf ("\tDatei \"%s\" war nicht zu öffnen\n", fname);	// testweise
-}*/
+}
 
 
 // ==================
@@ -85,7 +62,6 @@ public:
 // ==========================================================
 // Beispiel einer doppelten Ressourcenanforderung im C++-Stil:
 // ==========================================================
-#if 0
 void f ()
 {
     // Datei öffnen:
@@ -158,6 +134,3 @@ int main ()
         printf ("Huch, unbekannte Ausnahme\n");
     }
 }
-#endif
-
-#endif //ICC_UTILS_H

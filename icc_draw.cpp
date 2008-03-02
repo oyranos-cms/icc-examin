@@ -14,10 +14,41 @@
 #include "cccie64.h"
 #include "ciexyz64_1.h"
 
+int raster = 4;
+int init_s = FALSE;
+cmsHPROFILE hXYZ;
+cmsHPROFILE hsRGB;
+cmsHTRANSFORM xform;
+double rechenzeit = 0.1;
+
 void
-draw_cie_shoe (int X, int Y, int W, int H)
+init_shoe() {
+  hXYZ  = cmsCreateXYZProfile();
+  hsRGB = cmsCreate_sRGBProfile();
+
+  xform = cmsCreateTransform              (hXYZ, TYPE_XYZ_DBL,
+                                           hsRGB, TYPE_RGB_8,
+                                           INTENT_ABSOLUTE_COLORIMETRIC,
+                                           cmsFLAGS_NOTPRECALC);
+}
+
+void
+draw_cie_shoe (int X, int Y, int W, int H,
+                    std::vector<std::string>               texte,
+                    std::vector<double> punkte,
+                    int                                    repeated)
 {
   float w,h, xO, yO;
+
+  if (!init_s)
+    init_shoe();
+  init_s = TRUE;
+
+  double rz = (double)clock()/(double)CLOCKS_PER_SEC;
+  int raster_alt = raster;
+  if (repeated)
+    raster = 1;
+
 
   // Zeichenflaeche
   fl_color(FL_GRAY);
@@ -31,14 +62,14 @@ draw_cie_shoe (int X, int Y, int W, int H)
 
   xO = X + tab_border_x + 10;     // Ursprung
   yO = Y + H - tab_border_y - 10; // Ursprung
-  w  = (W - 2*tab_border_x);    // Breite des Diagrammes
-  h  = (H - 2*tab_border_y);    // Hoehe des Diagrammes
+  w  = (W - 2*tab_border_x);      // Breite des Diagrammes
+  h  = (H - 2*tab_border_y);      // Hoehe des Diagrammes
 
-  #define x(val) xO + (val)*w/n 
-  #define y(val) yO - (val)*h/n
-  #define x2cie(val) ((val)-xO)/w
-  #define y2cie(val) (yO-(val))/h
-  fl_push_clip( X,y(n), x(n),h+tab_border_y);
+  #define x(val) (int)(((double)xO + val*w/n)+0.5)
+  #define y(val) (int)(((double)yO - val*h/n)+0.5)
+  #define x2cie(val) (((val)-xO)/w)
+  #define y2cie(val) ((yO-(val))/h)
+  fl_push_clip( X,y(n), x(n),(int)(h+tab_border_y+0.5) );
 
   // Spektrumvariablen
   int nano_min = 63; // 420 nm
@@ -49,45 +80,70 @@ draw_cie_shoe (int X, int Y, int W, int H)
   fl_line(x(1), y(0), x(0), y(1));
 
 
-  int r, g, b;
-  cmsHPROFILE hXYZ, hsRGB;
-
-  hXYZ = cmsCreateXYZProfile();
-  hsRGB = cmsCreate_sRGBProfile();
-
-  cmsHTRANSFORM xform = cmsCreateTransform(hXYZ, TYPE_XYZ_DBL,
-                                           hsRGB, TYPE_RGB_8,
-                                           INTENT_ABSOLUTE_COLORIMETRIC,
-                                           cmsFLAGS_NOTPRECALC);
-  register char RGB[3];
-  register cmsCIEXYZ XYZ;
   cmsCIEXYZ xyz, MediaWhite;
   cmsCIExyY xyY, WhitePt;
 
   cmsTakeMediaWhitePoint(&MediaWhite, hsRGB);
   cmsXYZ2xyY(&WhitePt, &MediaWhite);
-
   
   // Farbfläche
-  int raster = 4;
-  for (float cie_y=y(0.01) ; cie_y > y(n) ; cie_y -= raster)
-    for (float cie_x=x(0) ; cie_x < x(0.73) ; cie_x+=raster) {
+  if (!repeated) {
+    register char RGB[3];
+    register cmsCIEXYZ XYZ;
 
-      XYZ.X = x2cie(cie_x);
-      XYZ.Y = y2cie(cie_y);
-      XYZ.Z = 1 - (XYZ.X +  XYZ.Y);
+    for (float cie_y=y(0.01) ; cie_y > y(n) ; cie_y -= raster)
+      for (float cie_x=x(0) ; cie_x < x(0.73) ; cie_x+=raster) {
 
-      cmsDoTransform(xform, &XYZ, RGB, 1);
+        XYZ.X = x2cie(cie_x);
+        XYZ.Y = y2cie(cie_y);
+        XYZ.Z = 1 - (XYZ.X +  XYZ.Y);
 
-      fl_color (fl_rgb_color (RGB[0],RGB[1],RGB[2]));
-      if (raster > 1)
+        cmsDoTransform(xform, &XYZ, RGB, 1);
+
+        fl_color (fl_rgb_color (RGB[0],RGB[1],RGB[2]));
+        if (raster > 1)
           fl_rectf ((int)cie_x , (int)cie_y, raster,raster);
-      else
+        else
           fl_point ((int)cie_x , (int)cie_y);
+      }
+  } else {
+    //cout << xO << " " << yO << " " << w << " " << h << " "; DBG
+    int wi = x(0.73)-x(0);
+    int hi = y(0.01)-y(n);
+    //cout << x(0) << " " << y(0.01) << " " << wi << " " << hi << " " << y(0.01) << " "; DBG
+
+    int    n_pixel = wi * hi, i = 0;
+    unsigned char* RGB = (unsigned char*) calloc (3*n_pixel, sizeof(char));
+    cmsCIEXYZ* XYZ = (cmsCIEXYZ*) calloc (n_pixel, sizeof(cmsCIEXYZ));
+
+    for (float cie_y=y(n) ; cie_y < y(0.01) ; cie_y ++) {
+      for (float cie_x=x(0) ; cie_x < x(0.73) ; cie_x ++) {
+
+        XYZ[i].X = x2cie(cie_x);
+        XYZ[i].Y = y2cie(cie_y);
+        XYZ[i].Z = 1 - (XYZ[i].X +  XYZ[i].Y);
+        i++;
+      }
     }
-  cmsDeleteTransform(xform);
-  cmsCloseProfile(hXYZ);
-  cmsCloseProfile(hsRGB);
+    cmsDoTransform(xform, XYZ, RGB, n_pixel);
+    fl_draw_image(RGB, x(0), y(n), wi, hi, 3, 0);
+    free ((void*)RGB);
+  }
+
+  if (!repeated) {
+    rz = (double)clock()/(double)CLOCKS_PER_SEC - rz;
+    rechenzeit += rz;
+    //cout << rechenzeit << " Sekunden  "; DBG
+    if (rechenzeit > 0.05)
+      raster ++;
+    else if (rechenzeit < 0.03)
+      raster --;
+    if (raster < 1)
+      raster = 1;
+    rechenzeit = rz;
+  } else {
+    raster = raster_alt;
+  }
 
   // Verdecke den Rest des cie_xy
   fl_push_no_clip();
@@ -99,14 +155,14 @@ draw_cie_shoe (int X, int Y, int W, int H)
   fl_begin_polygon();
   fl_vertex (X, Y+H);
   fl_vertex (x(.18), Y+H);
-  for (int i=nano_min ; i<=nano_max*.38; i++)
+  for (int i=nano_min ; i<=(int)(nano_max*.38+0.5); i++)
     fl_vertex( x(x_xyY), y(y_xyY) );
   fl_vertex (X, y(.25));
   fl_end_polygon();
 //fl_color(FL_WHITE);
   fl_begin_polygon();
   fl_vertex (X, y(.25));
-  for (int i=nano_max*.38 ; i<=nano_max*.457; i++)
+  for (int i=(int)(nano_max*.38+0.5) ; i<=(int)(nano_max*.457+0.5); i++)
     fl_vertex( x(x_xyY), y(y_xyY) );
   fl_vertex (x(.05), Y);
   fl_vertex (X, Y);
@@ -114,7 +170,7 @@ draw_cie_shoe (int X, int Y, int W, int H)
 //fl_color(FL_BLUE);
   fl_begin_polygon();
   fl_vertex (x(.05), Y);
-  for (int i=nano_max*.457 ; i<=nano_max*.48; i++)
+  for (int i=(int)(nano_max*.457+0.5) ; i<=(int)(nano_max*.48+0.5); i++)
     fl_vertex( x(x_xyY), y(y_xyY) );
   fl_vertex (x(.2), Y);
   fl_end_polygon();
@@ -122,13 +178,13 @@ draw_cie_shoe (int X, int Y, int W, int H)
   fl_begin_polygon();
   fl_vertex (X+W, Y);
   fl_vertex (x(0.2), Y);
-  for (int i=nano_max*.48; i<=nano_max*.6; i++)
+  for (int i=(int)(nano_max*.48+0.5); i<=(int)(nano_max*.6+0.5); i++)
     fl_vertex( x(x_xyY), y(y_xyY) );
   fl_end_polygon();
 //fl_color(FL_GREEN);
   fl_begin_polygon();
   fl_vertex (X+W, Y);
-  for (int i=nano_max*.6; i<=nano_max ; i++)
+  for (int i=(int)(nano_max*.6+0.5); i<=(int)(nano_max+0.5) ; i++)
     fl_vertex( x(x_xyY), y(y_xyY) );
   fl_vertex( x(cieXYZ[nano_min][0]/(cieXYZ[nano_min][0]+cieXYZ[nano_min][1]+cieXYZ[nano_min][2])),
              y(cieXYZ[nano_min][1]/(cieXYZ[nano_min][0]+cieXYZ[nano_min][1]+cieXYZ[nano_min][2])) );
@@ -140,31 +196,98 @@ draw_cie_shoe (int X, int Y, int W, int H)
 
 
   // Diagramm
-  fl_color(FL_LIGHT2);
+  #ifdef __APPLE__
+    fl_color(FL_GRAY0);
+  #else
+    fl_color(FL_LIGHT2);
+  #endif
     // Text
   fl_font (FL_HELVETICA, 10);
     // Raster
   for (float f=0 ; f<n ; f+=0.1) {
     static char text[64];
-    fl_line ( x(f),yO+5, x(f),y(n));
-    fl_line ( xO-5,y(f), x(n),y(f));
-    sprintf (text, "%.1f", f);
-    fl_draw ( text, xO-30,(int)y(f)+4 );
-    fl_draw ( text, (int)x(f)-7,yO+20 );
+    fl_line ( x(f),(int)(yO+5), x(f),y(n));
+    fl_line ( (int)(xO-5),y(f), x(n),y(f));
+    sprintf ( text, "%.1f", f);
+    fl_draw ( text, (int)(xO-30), y(f)+4 );
+    fl_draw ( text, x(f)-7, (int)(yO+20) );
   }
   
 
   // Weisspunkt
-  fl_color (fl_rgb_color (255,255,255));
-  fl_circle (x(WhitePt.x), y(WhitePt.y), 5.0);
+  if (texte.size() > 1) {
+    fl_color (fl_rgb_color (255,255,255));
+    fl_circle (x(WhitePt.x), y(WhitePt.y), 5.0);
+  } else {
+  // Primärfarben
+    register char RGB[3];
+    register cmsCIEXYZ XYZ;
+
+    for (unsigned int i = 0; i < texte.size(); ) {
+
+        XYZ.X = punkte[i++];
+        XYZ.Y = punkte[i++];
+        XYZ.Z = punkte[i++]; //1 - ( punkte[i][0] +  punkte[i][1] );
+
+        cmsDoTransform (xform, &XYZ, RGB, 1);
+
+        fl_color (fl_rgb_color (RGB[0],RGB[1],RGB[2]));
+        fl_circle ( x(XYZ.X)+0.5 , y(XYZ.Y)+0.5 , 5.0);
+      }
+  }
 
   //Meldung
   //printf ("%d %d %d %d\n",X,Y,W,H);
 
   fl_pop_clip();
-  DBG
 }
 
+void draw_kurve    (int X, int Y, int W, int H,
+                    std::vector<std::string> texte,
+                    std::vector<std::vector<double> > kurven)
+{
+  float w,h, xO, yO;
+
+  // Zeichenflaeche
+  fl_color(FL_GRAY);
+  fl_rectf(X,Y,W,H);
+
+  // Zeichenbereichvariablen
+  int tab_border_x=30;
+  int tab_border_y=30;
+  // Diagrammvariablen
+  float n = 1.0;                  // maximale Hoehe 
+
+  xO = X + tab_border_x + 10;     // Ursprung
+  yO = Y + H - tab_border_y - 10; // Ursprung
+  w  = (W - 2*tab_border_x);      // Breite des Diagrammes
+  h  = (H - 2*tab_border_y);      // Hoehe des Diagrammes
+
+  fl_push_clip( X,y(n), x(n),(int)(h+tab_border_y+0.5) );
+
+  // Tangente
+  fl_color(FL_LIGHT1);
+  fl_line(x(1), y(0), x(0), y(1));
+
+  // Diagramm
+  #ifdef __APPLE__
+    fl_color(FL_GRAY0);
+  #else
+    fl_color(FL_LIGHT2);
+  #endif
+    // Text
+  fl_font (FL_HELVETICA, 10);
+    // Raster
+  for (float f=0 ; f<=n ; f+=0.1) {
+    static char text[64];
+    fl_line ( x(f),(int)(yO+5), x(f),y(n));
+    fl_line ( (int)(xO-5),y(f), x(n),y(f));
+    sprintf ( text, "%.1f", f);
+    fl_draw ( text, (int)(xO-30), y(f)+4 );
+    fl_draw ( text, x(f)-7, (int)(yO+20) );
+  }
+  
+}
 
 /**********************************************************************/
 // http://www.physics.sfasu.edu/astro/color/blackbodyc.txt

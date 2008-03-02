@@ -17,11 +17,13 @@
 #include <FL/Fl_PNM_Image.H>
 class TagDrawings;
 class TagBrowser;
+class TagTexts;
 #include <openvrml/browser.h>
 #include <openvrml/gl/viewer.h>
 #include "vFLGLWidget.h"
 #include "ViewerFLTK.h"
 //#define DBG cout << __FILE__<<":"<<__LINE__ <<" "<< __func__ << "()" << endl;
+#define _(text) text
 #include "icc_profile.h"
 #include "icc_utils.h"
 extern ICCprofile profile;
@@ -36,10 +38,10 @@ extern Fl_Box *stat;
 extern Fl_Progress *load_progress;
 #include <FL/Fl_Tile.H>
 extern TagBrowser *tag_browser;
-extern Fl_Box *tag_viewer;
+extern Fl_Group *ansichtsgruppe;
+extern TagDrawings *tag_viewer;
 extern vFLGLWidget *canvas;
-#include <FL/Fl_Output.H>
-extern Fl_Output *tag_texts;
+extern TagTexts *tag_texts;
 extern Fl_Menu_Item menu_Fl_lookat_MenuBar[];
 #define Voll (menu_Fl_lookat_MenuBar+5)
 #define normal_ansicht (menu_Fl_lookat_MenuBar+6)
@@ -48,21 +50,31 @@ void quit(void);
 void worldChangedCB( const openvrml::browser::cb_reason reason );
 void timeIT();
 char* icc_read_info(char* filename);
-Fl_Double_Window* makeKurvenWindow();
+
+class TagTexts : public Fl_Hold_Browser {
+  int X; int Y; int W; int H; char* start_info;
+public:
+  TagTexts(int X,int Y,int W,int H,char* start_info) ;
+  void hinein(std::string text);
+};
 
 class TagDrawings : public Fl_Widget {
-  int X; int Y; int W; int H;
+  int X; int Y; int W; int H; std::vector<std::string>texte; std::vector<double>punkte; std::vector<std::vector<double> >kurven;
 public:
+  int wiederholen;
   TagDrawings(int X,int Y,int W,int H) ;
   void draw();
+  void hinein_punkt(std::vector<double> vect, std::vector<std::string> txt);
+  void hinein_kurve(std::vector<double> vect, std::vector<std::string> txt);
+  void ruhig_neuzeichnen(void);
 };
 
 class TagBrowser : public Fl_Hold_Browser {
   int X; int Y; int W; int H; char* start_info;
 public:
   TagBrowser(int X,int Y,int W,int H,char* start_info) ;
-  void draw_noe();
   void reopen();
   void select_item(int item);
 };
+void d_haendler(void* o);
 #endif

@@ -67,11 +67,13 @@ static void cb_tag_browser(TagBrowser* o, void*) {
   o->select_item( o->value() );
 }
 
-Fl_Box *tag_viewer=(Fl_Box *)0;
+Fl_Group *ansichtsgruppe=(Fl_Group *)0;
+
+TagDrawings *tag_viewer=(TagDrawings *)0;
 
 vFLGLWidget *canvas=(vFLGLWidget *)0;
 
-Fl_Output *tag_texts=(Fl_Output *)0;
+TagTexts *tag_texts=(TagTexts *)0;
 
 int main(int argc, char **argv) {
   Fl_Double_Window* w;
@@ -82,14 +84,14 @@ int main(int argc, char **argv) {
     w = o;
     o->box(FL_NO_BOX);
     o->color((Fl_Color)53);
-    { Fl_Group* o = new Fl_Group(-5, 0, 395, 520);
+    { Fl_Group* o = new Fl_Group(0, 0, 385, 520);
       { Fl_Menu_Bar* o = Fl_lookat_MenuBar = new Fl_Menu_Bar(0, 0, 385, 25);
         o->color((Fl_Color)53);
         o->align(FL_ALIGN_LEFT|FL_ALIGN_INSIDE);
         o->when(3);
         o->menu(menu_Fl_lookat_MenuBar);
       }
-      { Fl_Group* o = new Fl_Group(0, 495, 390, 25);
+      { Fl_Group* o = new Fl_Group(0, 495, 385, 25);
         { Fl_Box* o = stat = new Fl_Box(0, 495, 385, 25, "No wrl file loaded.");
           o->box(FL_THIN_DOWN_BOX);
           o->color((Fl_Color)53);
@@ -116,10 +118,19 @@ int main(int argc, char **argv) {
           o->align(FL_ALIGN_TOP|FL_ALIGN_INSIDE);
           o->when(FL_WHEN_RELEASE_ALWAYS);
           int lines = tag_browser->size();
-          cout << lines << endl;
+          cout << lines << endl; DBG
         }
-        { Fl_Group* o = new Fl_Group(0, 160, 385, 335);
-          { Fl_Box* o = tag_viewer = new Fl_Box(0, 160, 385, 335);
+        { Fl_Group* o = ansichtsgruppe = new Fl_Group(0, 160, 385, 335);
+          { TagDrawings* o = tag_viewer = new TagDrawings(0, 160, 385, 335);
+            o->box(FL_NO_BOX);
+            o->color(FL_BACKGROUND_COLOR);
+            o->selection_color(FL_BACKGROUND_COLOR);
+            o->labeltype(FL_NORMAL_LABEL);
+            o->labelfont(0);
+            o->labelsize(14);
+            o->labelcolor(FL_BLACK);
+            o->align(FL_ALIGN_CENTER);
+            o->when(FL_WHEN_RELEASE);
             o->hide();
           }
           { vFLGLWidget* o = canvas = new vFLGLWidget(0, 160, 385, 335, "OpenVRML");
@@ -133,19 +144,24 @@ int main(int argc, char **argv) {
             o->align(FL_ALIGN_CENTER|FL_ALIGN_INSIDE);
             o->when(FL_WHEN_RELEASE);
             o->hide();
+            o->hide();
           }
-          { Fl_Output* o = tag_texts = new Fl_Output(0, 160, 385, 335);
-            o->type(12);
-            //o->hide();
-            o->show();
+          { TagTexts* o = tag_texts = new TagTexts(0, 160, 385, 335, "Der Text");
+            o->box(FL_NO_BOX);
+            o->color((Fl_Color)53);
+            o->selection_color(FL_SELECTION_COLOR);
+            o->labeltype(FL_NORMAL_LABEL);
+            o->labelfont(0);
+            o->labelsize(14);
+            o->labelcolor(FL_BLACK);
+            o->align(FL_ALIGN_BOTTOM|FL_ALIGN_INSIDE);
+            o->when(FL_WHEN_RELEASE_ALWAYS);
           }
           o->end();
         }
         o->end();
-        Fl_Group::current()->resizable(o);
       }
       o->end();
-      Fl_Group::current()->resizable(o);
     }
     browser = new openvrml::browser(cout, cerr);
     DBG
@@ -171,6 +187,7 @@ int main(int argc, char **argv) {
     canvas->setViewerPtr( viewer );
     o->end();
   }
+  w->resizable(tag_texts);
   w->show();
   canvas->show();
   viewer->Hok=1;
@@ -189,12 +206,12 @@ const char* open(void) {
   #include "icc_vrml.h"
 
   char *filename = "/tmp/temp.icc";
-  //Fl_File_Icon	*icon;	// New file icon
+  Fl_File_Icon	*icon;	// New file icon
   DBG
   load_progress->show ();    load_progress->value (0.0);
   char vrmlDatei[] = "/tmp/tmp_vrml.wrl";
 
-  //filename=fl_file_chooser("Wähle ICC Profil?", "ICC Farbprofile (*.[I,i][C,c][M,m,C,c])", filename_alt);
+  filename=fl_file_chooser("Wähle ICC Profil?", "ICC Farbprofile (*.[I,i][C,c][M,m,C,c])", filename_alt);
   DBG printf (filename_alt); printf ("\n");
   if (!filename) {
     return "";
@@ -288,50 +305,125 @@ char* icc_read_info(char* filename) {
   return textfile;
 }
 
-Fl_Double_Window* makeKurvenWindow() {
-  Fl_Double_Window* w;
-  { Fl_Double_Window* o = new Fl_Double_Window(100, 100);
-    w = o;
-    o->end();
-  }
-  return w;
+TagTexts::TagTexts(int X,int Y,int W,int H,char* start_info) : Fl_Hold_Browser(X,Y,W,H,start_info), X(X), Y(Y), W(W), H(H) {
+}
+
+void TagTexts::hinein(std::string text) {
+  //Text aus tag_browser anzeigen
+
+  canvas->hide(); DBG
+  tag_viewer->hide(); DBG
+  tag_viewer->clear_visible(); DBG
+  tag_texts->show(); DBG
+
+      tag_texts->clear();
+      int len = strlen(text.c_str());
+      std::string text_line;
+      char c;
+      const char *chars = text.c_str();
+      for (int zeichen = 0; zeichen < len; zeichen++) {
+        c = chars[zeichen];
+        if (c == '\n' || (int)c == 0) {
+          text_line += '\0';
+          tag_texts->add(text_line.c_str(), 0);
+          text_line.clear();
+        } else
+          text_line += c;
+      }
+      if (text_line.size() > 0)
+        tag_texts->add(text_line.c_str(), 0);
+
+      tag_texts->topline(0);
+      tag_texts->textfont(FL_COURIER);
+      tag_texts->textsize(14);
 }
 
 TagDrawings::TagDrawings(int X,int Y,int W,int H) : Fl_Widget(X,Y,W,H), X(X), Y(Y), W(W), H(H) {
 }
 
 void TagDrawings::draw() {
-  draw_cie_shoe(x(),y(),w(),h());
-  DBG
+  // Kurven oder Punkte malen
+  cout << punkte.size() << " " << kurven.size() << " "; DBG
+
+  if (punkte.size() >= 3) {
+    wiederholen = true;
+    draw_cie_shoe(x(),y(),w(),h(),texte,punkte,false);
+    Fl::add_timeout( 1.2, (void(*)(void*))d_haendler ,(void*)this);
+
+  } else {
+    wiederholen = false;
+    draw_kurve   (x(),y(),w(),h(),texte,kurven);
+  }
+  //DBG
+}
+
+void TagDrawings::hinein_punkt(std::vector<double> vect, std::vector<std::string> txt) {
+  //CIExyY aus tag_browser anzeigen
+  punkte = vect;
+  texte = txt;
+  kurven.clear();
+
+  canvas->hide(); DBG
+  tag_viewer->show(); DBG
+  tag_texts->hide(); DBG
+}
+
+void TagDrawings::hinein_kurve(std::vector<double> vect, std::vector<std::string> txt) {
+  //Kurve aus tag_browser anzeigen
+  kurven.clear();
+  kurven.push_back(vect);
+  texte = txt;
+  punkte.clear();
+
+  canvas->hide(); DBG
+  tag_viewer->show(); DBG
+  tag_texts->hide(); DBG
+}
+
+void TagDrawings::ruhig_neuzeichnen(void) {
+  draw_cie_shoe(x(),y(),w(),h(),texte,punkte,true);
 }
 
 TagBrowser::TagBrowser(int X,int Y,int W,int H,char* start_info) : Fl_Hold_Browser(X,Y,W,H,start_info), X(X), Y(Y), W(W), H(H) {
-}
-
-void TagBrowser::draw_noe() {
-  draw_cie_shoe(x(),y(),w(),h());
-  DBG
 }
 
 void TagBrowser::reopen() {
   //open and preparing the first selected item
   std::stringstream s;
   std::string text;
-  std::list<std::string> tag_list = profile.printTags();
+  std::vector<std::string> tag_list = profile.printTags();
 
-  #define add_s(stream) s << stream; text = s.str(); add (text.c_str()); s.str("");
+  #define add_s(stream) s << stream; add (s.str().c_str()); s.str("");
+  #define add_          s << " ";
 
   clear();
   add_s ("@fDateiname:")
   add_s ("@b    " << profile.filename() )
   add_s ("")
+  if (tag_list.size() == 0) {
+    add_s ("keine Inhalte gefunden fŸr \"" << profile.filename() << "\"")
+    return;
+  }
   add_s ("@B26@tNr. Bezeichner  Typ         Größe Beschreibung")
-  add_s ("@t" << profile.print_header() );
-
-  std::list<std::string>::iterator it;
-  for (it = tag_list.begin() ; it != tag_list.end(); it++)
-    add_s ("@t" << *it << endl );
-
+  add_s ("@t" << profile.printHeader() )
+  DBG
+  std::vector<std::string>::iterator it;
+  for (it = tag_list.begin() ; it != tag_list.end(); ++it) {
+    s << "@t";
+    // Nummer
+    int Nr = atoi((*it).c_str()) + 1;
+    stringstream t; t << Nr;
+    for (int i = t.str().size(); i < 3; i++) {s << " ";} s << Nr; *it++; s << " "; 
+    // Name/Bezeichnung
+    s << *it; for (int i = (*it++).size(); i < 12; i++) {s << " ";}
+    // Typ
+    s << *it; for (int i = (*it++).size(); i < 12; i++) {s << " ";}
+    // Gršße
+    for (int i = (*it).size(); i < 5; i++) {s << " ";} s << *it++; s << " ";
+    // Beschreibung
+    add_s (*it)
+  }
+  DBG
   if (value())
     select_item (value()); // Anzeigen
   else
@@ -343,22 +435,35 @@ void TagBrowser::reopen() {
 
 void TagBrowser::select_item(int item) {
   //Auswahl aus tag_browser
-  std::string text;
+  std::string text = _("Leer");
+  tag_texts->hinein(text);
+  item -= 6;
+  cout << item << ". Tag "; DBG
 
-  canvas->hide(); DBG
-  tag_viewer->hide(); DBG
-  tag_texts->show(); DBG
-  tag_texts->value("");
-
-  if (item > 0 && item < 6) {
+  if (item < 0) {
     select(5);
-    text = profile.print_long_header(); DBG
-    
-  } else {
-    text = profile.printLongTag( item - 6 );
-  }
+    text = profile.printLongHeader(); DBG
+    tag_texts->hinein(text);    
+  } else if (item >= 0) {
+    std::vector<std::string> TagInfo = profile.printTagInfo(item);
+    cout << TagInfo.size() << " " << TagInfo[0] << TagInfo[1] << " "; DBG
 
-  tag_texts->insert (text.c_str()); DBG
-  tag_texts->textfont(FL_COURIER);
-  tag_texts->textsize(14);
+    if        ( TagInfo[1] == "text" ) {
+      tag_texts->hinein ( profile.getTagText (item));
+    } else if ( TagInfo[1] == "XYZ"  ) {
+      tag_viewer->hinein_punkt( profile.getTagCIExy(item), TagInfo );
+    } else if ( TagInfo[1] == "curv" ) {
+      tag_viewer->hinein_kurve( profile.getTagCurve(item), TagInfo );
+    } else if ( TagInfo[0] == "text" ) {
+    }
+  }DBG
+}
+
+void d_haendler(void* o) {
+  Fl::remove_timeout( (void(*)(void*))d_haendler, 0 );
+  if (!Fl::has_timeout( (void(*)(void*))d_haendler, 0 )
+   && ((TagDrawings*)o)->visible_r()
+   && ((TagDrawings*)o)->wiederholen) {
+    ((TagDrawings*)o)->ruhig_neuzeichnen();
+  }
 }
