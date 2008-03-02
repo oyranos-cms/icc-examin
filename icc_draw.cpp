@@ -309,7 +309,7 @@ draw_cie_shoe (int X, int Y, int W, int H,
           t << " (" << &txt[12] << ")";
         }
           
-        s << texte[i] << t.str() << " = " << _XYZ[0] <<","<< _XYZ[1] <<","<< _XYZ[2];
+        s << texte[i] << t.str() << " = " << _XYZ[0] <<", "<< _XYZ[1] <<", "<< _XYZ[2];
         int _w = 0, _h = 0;
         // Text einpassen
         fl_measure (s.str().c_str(), _w, _h, 1);
@@ -369,6 +369,7 @@ void draw_kurve    (int X, int Y, int W, int H,
   std::stringstream s ;
   std::string name;
   for (unsigned int j = 0; j < kurven.size(); j++) {
+    fl_color(FL_LIGHT2);
     if        (texte[2*j] == "rTRC") {
       fl_color(FL_RED);
       name = _("Rot");
@@ -382,6 +383,7 @@ void draw_kurve    (int X, int Y, int W, int H,
       fl_color(FL_LIGHT2);
       name = _("Grau");
     } else {
+      fl_color(FL_WHITE);
       name = texte[2*j];
     }
     #ifdef DEBUG//_DRAW

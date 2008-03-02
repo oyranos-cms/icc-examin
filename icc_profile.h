@@ -15,7 +15,12 @@
 #include "icc_utils.h"
 
 
-using namespace std;
+// Zusätze - nicht definiert in icc34.h
+
+#define icSigChromaticityType 0x6368726D
+
+
+//using namespace std;
 
 // interne Funktionen
 
@@ -117,15 +122,11 @@ class ICCtag {
     int                 getSize()          {return _size; }
     std::string         getMore();
 
-    std::vector<double> getCIExy();
+    std::vector<double> getCIEXYZ();
     std::vector<double> getCurve();
-    std::string         getText();
+    std::vector<std::string> getText();
     std::vector<std::string> getDescription();
     std::string         getVrml();
-/*    int                 hasCurve();
-    int                 hasCIExy();
-    int                 hasText();
-    int                 hasVrml();*/
     std::string         getSigTagName( icTagSignature  sig );
     std::string         getSigTypeName( icTagTypeSignature  sig );
     std::string         getSigTechnology( icTechnologySignature sig );
@@ -171,9 +172,9 @@ class ICCprofile {
     std::string         printLongHeader () {return header.print_long(); }
     std::vector<std::string> printTags  (); // Liste der einzelnen Tags (5)
     std::vector<std::string> printTagInfo (int item); // Name,Typ
-    std::string         getTagText      (int item);    // Inhalt
+    std::vector<std::string> getTagText      (int item);    // Inhalt
     std::vector<std::string> getTagDescription  (int item);
-    std::vector<double> getTagCIExy  (int item);
+    std::vector<double> getTagCIEXYZ (int item);
     std::vector<double> getTagCurve  (int item);
     char*               getProfileInfo  ();
     bool                hasTagName   (std::string name); // Name

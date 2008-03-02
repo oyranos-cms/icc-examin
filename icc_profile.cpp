@@ -168,6 +168,12 @@ icValueSF (icS15Fixed16Number val)
   return icValue(val) / 65536.0;
 }
 
+double
+icValueUF (icU16Fixed16Number val)
+{
+  return icValue(val) / 65536.0;
+}
+
 icColorSpaceSignature
 icValue (icColorSpaceSignature val)
 {
@@ -528,18 +534,20 @@ ICCtag::load                        ( icTag *tag, char* data )
   #endif
 }
 
-std::string
+std::vector<std::string>
 ICCtag::getText                     (void)
 { DBG
+  std::vector<std::string> texte;
   std::string text = "Fehl";
 
   if (getTypName() == "sig") {
-    if (_size < 12) return text;
+    if (_size < 12) return texte;
     icTechnologySignature tech;
     memcpy (&tech, &_data[8] , 4);
     text = getSigTechnology( (icTechnologySignature) icValue(tech) );
+    texte.push_back( text );
   } else if (getTypName() == "dtim") {
-    if (_size < 20) return text;
+    if (_size < 20) return texte;
     DBG
     std::stringstream s;
     icDateTimeNumber date;
@@ -551,9 +559,9 @@ ICCtag::getText                     (void)
                        icValue(date.hours)   << ":" <<
                        icValue(date.minutes) << " " << _("Uhr") << " " <<
                        icValue(date.seconds) << " " << _("Sekunden");
-    text = s.str();
+    texte.push_back( s.str() );
   } else if (getTypName() == "meas") {
-    if (_size < 36) return text;
+    if (_size < 36) return texte;
     std::stringstream s;
     icMeasurement meas;
     memcpy (&meas, &_data[8] , 28);
@@ -568,16 +576,30 @@ ICCtag::getText                     (void)
     getMeasurementFlare ((icMeasurementFlare)icValue(meas.flare)) << endl
       << _("Beleuchtungstyp") << ": " <<
     getIlluminant ((icIlluminant)icValue(meas.illuminant)) <<endl;
-    text = s.str();
-  } else {
+    texte.push_back( s.str() );
+  } else if (((icTagBase*)&_data[0])->sig == (icTagTypeSignature)icValue( icSigChromaticityType )) {
+    int count = icValue(*(icUInt16Number*)&_data[8]);
+    if (count == 0)
+      count = 3;
+    cout << count << " "; DBG
+    for (int i = 0; i < count ; i++) { // Table 35 -- chromaticityType encoding
+      std::stringstream s;
+      s << _("Kanal ") << i;
+      texte.push_back( s.str() );
+      #ifdef DEBUG_ICCTAG
+      cout << s.str(); DBG
+      #endif
+    }
+  } else { // text
     text = "";
     text.append (&_data[8], _size - 8);
+    texte.push_back( text );
   }
     
   #ifdef DEBUG_ICCTAG
   cout << " " << "" << "|" << getTypName() << "|" << text << " "; DBG
   #endif
-  return text;
+  return texte;
 }
 
 std::vector<std::string>
@@ -596,14 +618,34 @@ ICCtag::getDescription              (void)
 }
 
 std::vector<double>
-ICCtag::getCIExy                                  (void)
+ICCtag::getCIEXYZ                                 (void)
 {
   std::vector<double> punkte;
-  icXYZType *daten = (icXYZType*) &_data[0];
+  icTagBase *base  = (icTagBase*)(&_data[0]);
 
-  punkte.push_back( icValueSF( (daten->data.data[0].X) ) );
-  punkte.push_back( icValueSF( (daten->data.data[0].Y) ) );
-  punkte.push_back( icValueSF( (daten->data.data[0].Z) ) );
+  if ((base->sig) == (icTagTypeSignature)icValue( icSigChromaticityType )) {
+    int count = icValue(*(icUInt16Number*)&_data[8]);
+    if (count == 0)
+      count = 3;
+    cout << count << " "; DBG
+    for (int i = 0; i < count ; i++) { // Table 35 -- chromaticityType encoding
+      icU16Fixed16Number* channel = (icU16Fixed16Number*)&_data[12+(4*i)];
+      double xyz[3] = { icValueUF( channel[0] ),
+                        icValueUF( channel[1] ),
+                        1.0 - (icValueUF(channel[0]) + icValueUF(channel[1])) };
+      punkte.push_back( xyz[0] );
+      punkte.push_back( xyz[1] );
+      punkte.push_back( xyz[2] );
+      #ifdef DEBUG_ICCTAG
+      cout << xyz[0] << ", " << xyz[1] << ", " << xyz[2] << " "; DBG
+      #endif
+    }
+  } else if (base->sig == (icTagTypeSignature)icValue( icSigXYZType )) {
+    icXYZType *daten = (icXYZType*) &_data[0];
+    punkte.push_back( icValueSF( (daten->data.data[0].X) ) );
+    punkte.push_back( icValueSF( (daten->data.data[0].Y) ) );
+    punkte.push_back( icValueSF( (daten->data.data[0].Z) ) );
+  }
 
   return punkte;
 }
@@ -666,18 +708,18 @@ ICCtag::getMore                                   ( void )
     case icSigRedTRCTag: text = _("rote Farbwiedergabekurve"); break;
     case icSigScreeningDescTag: text = _("scrd"); break;
     case icSigScreeningTag: text = _("scrn"); break;
-    case icSigTechnologyTag: text = _("tech"); break;
+    case icSigTechnologyTag: text = _("Technologie"); break;
     case icSigUcrBgTag: text = _("bfd"); break;
     case icSigViewingCondDescTag: text = _("Beschreibung der Betrachtungbedingungen"); break;
     case icSigViewingConditionsTag: text = _("Betrachtungsbedingungen"); break;
-    case 1147500100: text = _("Farbmessflächen"); break;
-    case 1128875332: text = _("Farbmessergebnisse"); break;
-    case 1349350514: text = _("Profilierungsparameter"); break;
-    case 1986226036: text = _("Apple Monitor-Grafikkartentabelle"); break;
-    case 1667785060: text = _("Farbanpassungsmatrix"); break;
-    case 1667789421: text = _("Primärfarben"); break;
-    case 1668051567: text = _("Schmuckfarbordnung"); break;
-    case 1668051572: text = _("Schmuckfarbnamen"); break;
+    case 1147500100: text = _("Farbmessflächen"); break;//DevD
+    case 1128875332: text = _("Farbmessergebnisse"); break;//CIED
+    case 1349350514: text = _("Profilierungsparameter"); break;//Pmtr
+    case 1986226036: text = _("Apple Monitor-Grafikkartentabelle"); break;//vcgt
+    case 1667785060: text = _("Farbanpassungsmatrix"); break; //chad
+    case icSigChromaticityType: text = _("Primärfarben"); break; //chrm
+    case 1668051567: text = _("Schmuckfarbordnung"); break;//clro
+    case 1668051572: text = _("Schmuckfarbnamen"); break;//clrt
     case 0: text = _("----"); break;
     default: text = _("???"); break;
   }
@@ -738,7 +780,7 @@ ICCtag::getSigTagName               ( icTagSignature  sig )
     case 1349350514: text = _("Pmtr"); break;
     case 1986226036: text = _("vcgt"); break;
     case 1667785060: text = _("chad"); break;
-    case 1667789421: text = _("chrm"); break;
+    case icSigChromaticityType: text = _("chrm"); break;
     case 1668051567: text = _("clro"); break;
     case 1668051572: text = _("clrt"); break;
     //case : text = _(""); break;
@@ -783,6 +825,7 @@ ICCtag::getSigTypeName               ( icTagTypeSignature  sig )
     //case icSigXYZArrayType: text = _("XYZ"); break;
     case icSigNamedColor2Type: text = _("ncl2"); break;
     case icSigCrdInfoType: text = _("crdi"); break;
+    case icSigChromaticityType: text = _("chrm"); break;
     case 1986226036: text = _("vcgt"); break;
     case icSigCopyrightTag: text = _("cprt?"); break; //??? (Imacon)
     default: text = _("???"); break;
@@ -1120,17 +1163,22 @@ ICCprofile::printTags            ()
   return StringList;
 }
 
-std::string
+std::vector<std::string>
 ICCprofile::getTagText                                  (int item)
 {
   // Prüfen
-  std::string leer = tags[item].getTypName() + " Typ - keine Textausgabe";
-  if (tags[item].getTypName() != "text"
-   && tags[item].getTypName() != "cprt?"
-   && tags[item].getTypName() != "meas"
-   && tags[item].getTypName() != "sig"
-   && tags[item].getTypName() != "dtim")
-    return leer;
+  std::string name = tags[item].getTypName();
+  std::string leer = name + " Typ - keine Textausgabe";
+  std::vector<std::string> v;
+  v.push_back( leer );
+
+  if (name != "text"
+   && name != "chrm"
+   && name != "cprt?"
+   && name != "meas"
+   && name != "sig"
+   && name != "dtim")
+    return v;
 
   return tags.at(item).getText();
 }
@@ -1147,14 +1195,16 @@ ICCprofile::getTagDescription                           (int item)
 }
 
 std::vector<double>
-ICCprofile::getTagCIExy                                 (int item)
+ICCprofile::getTagCIEXYZ                                (int item)
 {
   // Prüfen
-  std::vector<double> leer;
-  if (tags[item].getTypName() != "XYZ")
-    return leer;
+  std::vector<double> XYZ;
 
-  return tags.at(item).getCIExy();
+  if ( tags[item].getTypName() == "XYZ"
+    || tags[item].getTypName() == "chrm")
+    XYZ = tags.at(item).getCIEXYZ();
+
+  return XYZ;
 }
 
 std::vector<double>
@@ -1216,11 +1266,11 @@ ICCprofile::hasTagName            (std::string name)
 std::vector<double>
 ICCprofile::getWhitePkt           (void)
 {
-  std::vector<double> xyY;
+  std::vector<double> XYZ;
   if (hasTagName ("wtpt"))
-    xyY = getTagCIExy (getTagByName ("wtpt"));
+    XYZ = getTagCIEXYZ (getTagByName ("wtpt"));
 
-  return xyY;
+  return XYZ;
 }
 
 

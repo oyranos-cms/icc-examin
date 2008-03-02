@@ -396,7 +396,7 @@ void TagBrowser::select_item(int item) {
       std::string TagName;
       for (unsigned int i_name = 0; i_name < rgb_tags.size(); i_name++) {
         if (profile.hasTagName (rgb_tags[i_name])) {
-          punkte = profile.getTagCIExy (profile.getTagByName(rgb_tags[i_name]));
+          punkte = profile.getTagCIEXYZ (profile.getTagByName(rgb_tags[i_name]));
           for (unsigned int i = 0; i < 3; i++)
             alle_punkte.push_back (punkte[i]);
           TagInfo = profile.printTagInfo (profile.getTagByName(rgb_tags[i_name]));
@@ -424,8 +424,9 @@ void TagBrowser::select_item(int item) {
         }
       }
       tag_viewer->hinein_kurven( kurven, texte );
-    } else if ( TagInfo[1] == "XYZ" ) {
-      tag_viewer->hinein_punkt( profile.getTagCIExy(item), TagInfo );
+    } else if ( TagInfo[1] == "chrm"
+             || TagInfo[1] == "XYZ" ) {
+      tag_viewer->hinein_punkt( profile.getTagCIEXYZ(item), TagInfo );
     } else if ( TagInfo[1] == "mft2"
              || TagInfo[1] == "mft1" ) {
       tag_viewer->hide();
