@@ -369,27 +369,52 @@ int main(int argc, char **argv) {
   Fl_File_Icon::load_system_icons();
 
   #ifdef HAVE_FLU
-    Flu_File_Chooser::favoritesTxt = _("Vorgemerkte Ordner");
-    Flu_File_Chooser::myComputerTxt = _("Mein Rechner");
+    Flu_File_Chooser::favoritesTxt = _("Lesezeichen");
+    Flu_File_Chooser::myComputerTxt = _("Heimverzeichnis");
     Flu_File_Chooser::myDocumentsTxt = _("Dokumente");
+    Flu_File_Chooser::desktopTxt = _("Desktop");
+
     Flu_File_Chooser::filenameTxt = _("Dateiname");
-    Flu_File_Chooser::okTxt = _("Laden");
+    Flu_File_Chooser::okTxt = _("Öffnen");
     Flu_File_Chooser::cancelTxt = _("Abbrechen");
-    Flu_File_Chooser::locationTxt = _("Verzeichnis");
+    Flu_File_Chooser::locationTxt = _("Ordner");
     Flu_File_Chooser::showHiddenTxt = _("zeige versteckte Dateien");
-    Flu_File_Chooser::allFilesTxt = _("Alle Dateien");
+    Flu_File_Chooser::fileTypesTxt = _("Datei Typen");
+    Flu_File_Chooser::directoryTxt = _("Verzeichnis");
+    Flu_File_Chooser::allFilesTxt = _("Alle Dateien (*)");
     Flu_File_Chooser::defaultFolderNameTxt = _("Neues Verzeichnis");
+
     Flu_File_Chooser::backTTxt = _("vorheriges Verzeichnis");
     Flu_File_Chooser::forwardTTxt = _("nächstes Verzeichnis");
     Flu_File_Chooser::upTTxt = _("nächsthöheres Verzeichnis");
     Flu_File_Chooser::reloadTTxt = _("Auffrischen");
     Flu_File_Chooser::trashTTxt = _("Löschen");
     Flu_File_Chooser::newDirTTxt = _("Verzeichnis erstellen");
-    Flu_File_Chooser::addFavoriteTTxt = _("Vormerken");
+    Flu_File_Chooser::addFavoriteTTxt = _("zu Lesezeichen");
     Flu_File_Chooser::previewTTxt = _("Vorschau");
     Flu_File_Chooser::listTTxt = _("Standard Anzeige");
     Flu_File_Chooser::wideListTTxt = _("weite Anzeige");
     Flu_File_Chooser::detailTTxt = _("detailierte Informationen");
+
+    Flu_File_Chooser::detailTxt[0] = _("Name");
+    Flu_File_Chooser::detailTxt[1] = _("Typ");
+    Flu_File_Chooser::detailTxt[2] = _("Grösse");
+    Flu_File_Chooser::detailTxt[3] = _("Datum");
+    Flu_File_Chooser::contextMenuTxt[0] = _("contextMenuTxt 0");
+    Flu_File_Chooser::contextMenuTxt[1] = _("Umbenennen");
+    Flu_File_Chooser::contextMenuTxt[2] = _("Löschen");
+    Flu_File_Chooser::diskTypesTxt[0] = _("Typ1");
+    Flu_File_Chooser::diskTypesTxt[1] = _("Typ2");
+    Flu_File_Chooser::diskTypesTxt[2] = _("Typ3");
+    Flu_File_Chooser::diskTypesTxt[3] = _("Typ4");
+    Flu_File_Chooser::diskTypesTxt[4] = _("Typ5");
+    Flu_File_Chooser::diskTypesTxt[5] = _("Typ6");
+
+    Flu_File_Chooser::createFolderErrTxt = _("Ordner konnte nicht erstellt werden");
+    Flu_File_Chooser::deleteFileErrTxt = _("konnte Datei nicht löschen");
+    Flu_File_Chooser::fileExistsErrTxt = _("Datei existiert");
+    Flu_File_Chooser::renameErrTxt = _("kontte nicht umbenennen");
+
 /*    Flu_File_Chooser:: = _("");
     Flu_File_Chooser:: = _("");
     Flu_File_Chooser:: = _("");
