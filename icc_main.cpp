@@ -32,10 +32,18 @@
 #include "icc_kette.h"
 #include "fl_i18n/fl_i18n.H"
 
+#ifdef WIN32
+#define DIR_SEPARATOR_C '\\'
+#define DIR_SEPARATOR "\\"
+#else
+#define DIR_SEPARATOR_C '/'
+#define DIR_SEPARATOR "/"
+#endif
 //#include <FL/Fl.H>
 //#include <FL/Fl_Double_Window.H>
 
-void MallocDebug_CheckFreeList();
+void  MallocDebug_CheckFreeList ();
+char* getExecPath               (const char *filename);
 
 int
 main (int argc, char** argv)
@@ -89,51 +97,17 @@ main (int argc, char** argv)
   locale_paths[2] = SRC_LOCALEDIR; ++num_paths;
 # else
   locale_paths[0] = LOCALEDIR; ++num_paths;
-#ifdef WIN32
-#define DIR_SEPARATOR_C '\\'
-#define DIR_SEPARATOR "\\"
-#else
-#define DIR_SEPARATOR_C '/'
-#define DIR_SEPARATOR "/"
-#endif
+
   DBG_NUM_V( argc <<" "<< argv[0] )
+
   if (argc)
-  { const char *reloc_path = {"share/locale"};
+  { const char *reloc_path = {"../share/locale"};
     int len = (strlen(argv[0]) + strlen(reloc_path)) * 2 + 128;
     char *path = (char*) malloc( len ); // small one time leak
-    char *text = (char*) malloc( len );
-    text[0] = 0;
-    // whats the path for the executeable ?
-    snprintf (text, len-1, argv[0]);
-    if (strrchr(text, DIR_SEPARATOR_C))
-    {
-      FILE *pp = NULL;
+    char *text = NULL;
 
-      if (text) free (text);
-      text = (char*) malloc( 1024 );
-
-      // Suche das ausfuehrbare Programm
-      // TODO symbolische Verknuepfungen
-      snprintf( text, 1024, "which %s", argv[0]);
-      pp = popen( text, "r" );
-      if (pp) {
-        if (fscanf (pp, "%s", text) != 1)
-        {
-          pclose (pp);
-          WARN_S( "no executeable path found" );
-        }
-      } else {
-        WARN_S( "could not ask for executeable path" );
-      }
-    }
-    { /* remove the executable name */
-      char *tmp = strrchr(text, DIR_SEPARATOR_C);
-      *tmp = 0;
-      /* remove the expected bin/ dir */
-      tmp = strrchr(text, DIR_SEPARATOR_C);
-      *tmp = 0;
-    }
-    snprintf (path, len-1, "%s%s%s",text,DIR_SEPARATOR,reloc_path);
+    text = getExecPath( argv[0] );
+    snprintf (path, len-1, "%s%s%s", text, DIR_SEPARATOR, reloc_path);
     locale_paths[1] = path; ++num_paths;
     locale_paths[2] = SRC_LOCALEDIR; ++num_paths;
     DBG_NUM_V( path );
@@ -160,4 +134,72 @@ main (int argc, char** argv)
   return false;
 }
 
+char*
+getExecPath(const char *filename)
+{
+  DBG_PROG_START
+  char *exec_path = NULL;
+
+  if (filename)
+  {
+    int len = strlen(filename) * 2 + 1024;
+    char *text = (char*) calloc( sizeof(char), len );
+    text[0] = 0;
+    /* whats the path for the executeable ? */
+    snprintf (text, len-1, filename);
+
+    if(text[0] == '~')
+    {
+      /* home directory */
+      if(getenv("HOME"))
+        sprintf( text, "%s%s", getenv("HOME"), &filename[0]+1 );
+    }
+
+    /* relative names - where the first sign is no directory separator */
+    if (text[0] != DIR_SEPARATOR_C)
+    {
+      FILE *pp = NULL;
+
+      if (text) free (text);
+      text = (char*) malloc( 1024 );
+
+      /* Suche das ausfuehrbare Programm
+         TODO symbolische Verknuepfungen */
+      snprintf( text, 1024, "which %s", filename);
+      pp = popen( text, "r" );
+      if (pp) {
+        if (fscanf (pp, "%s", text) != 1)
+        {
+          pclose (pp);
+          printf( "no executeable path found\n" );
+        }
+      } else {
+        printf( "could not ask for executeable path\n" );
+      }
+
+      if(text[0] != DIR_SEPARATOR_C)
+      {
+        char* cn = (char*) calloc(2048, sizeof(char));
+        sprintf (cn, "%s%s%s", getenv("PWD"), DIR_SEPARATOR, filename);
+        sprintf (text, cn);
+        if(cn) free(cn);
+      }
+    }
+
+    { /* remove the executable name */
+      char *tmp = strrchr(text, DIR_SEPARATOR_C);
+      if(tmp)
+        *tmp = 0;
+    }
+    while (text[strlen(text)-1] == '.')
+      text[strlen(text)-1] = 0;
+    while (text[strlen(text)-1] == DIR_SEPARATOR_C)
+      text[strlen(text)-1] = 0;
+
+    exec_path = text;
+  }
+
+  DBG_PROG_ENDE
+  return exec_path;
+}
 
