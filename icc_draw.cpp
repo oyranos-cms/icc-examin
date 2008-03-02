@@ -194,10 +194,12 @@ TagDrawings::init_shoe_ ()
   size_t groesse = 0;
   const char* block = 0;
   block = icc_oyranos.moni(groesse);
-  if(groesse)
+  if(groesse &&
+     icc_debug != 14) {
     hsRGB = cmsOpenProfileFromMem(const_cast <char*> (block), groesse);
-  else
+  } else {
     hsRGB = cmsCreate_sRGBProfile();
+  }
 
   xform = cmsCreateTransform              (hXYZ, TYPE_XYZ_DBL,
                                            hsRGB, TYPE_RGB_8,
@@ -241,6 +243,7 @@ TagDrawings::draw ()
 void
 TagDrawings::drawCieShoe_ ( int repeated)
 { DBG_prog_start
+
   //TODO -> icc_oyranos
   if (!init_s)
     init_shoe_();
@@ -418,16 +421,18 @@ TagDrawings::drawCieShoe_ ( int repeated)
 
   fl_pop_clip();
 
+  if(icc_debug != 14)
+  {
 
-  // Diagramm
-  fl_color(VG);
+    // Diagramm
+    fl_color(VG);
 
-  // Raster
-  zeichneRaster_ ();
+    // Raster
+    zeichneRaster_ ();
 
-  fl_push_clip( x(),yNachBild(max_x), xNachBild(max_x),(int)(hoehe+tab_rand_y+0.5) );
+    fl_push_clip( x(),yNachBild(max_x), xNachBild(max_x),(int)(hoehe+tab_rand_y+0.5) );
 
-  { // Primärfarben / Weisspunkt
+    // Primärfarben / Weisspunkt
     register char RGB[3];
     register cmsCIEXYZ XYZ;
     std::vector<double> pos;

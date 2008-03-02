@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2005-08-13 14:46+0200\n"
+"POT-Creation-Date: 2005-08-14 08:59+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -24,7 +24,7 @@ msgstr ""
 msgid "GL Fenster nicht frei"
 msgstr ""
 
-#: agviewer.cpp:377 icc_gl.cpp:2036 icc_gl.cpp:2055 icc_gl.cpp:2174
+#: agviewer.cpp:377 icc_gl.cpp:2040 icc_gl.cpp:2059 icc_gl.cpp:2178
 msgid "left-/middle-/right mouse button -> rotate/cut/menu"
 msgstr ""
 
@@ -32,8 +32,8 @@ msgstr ""
 msgid "Pause"
 msgstr ""
 
-#: agviewer.cpp:410 agviewer.cpp:418 icc_gl.cpp:2140 icc_gl.cpp:2151
-#: icc_gl.cpp:2156 icc_gl.cpp:2161
+#: agviewer.cpp:410 agviewer.cpp:418 icc_gl.cpp:2144 icc_gl.cpp:2155
+#: icc_gl.cpp:2160 icc_gl.cpp:2165
 msgid "left mouse button -> go back"
 msgstr ""
 
@@ -133,115 +133,115 @@ msgstr ""
 msgid "NUMBER_OF_SETS stimmt nicht überein: gefunden, berechnet "
 msgstr ""
 
-#: icc_draw.cpp:237
+#: icc_draw.cpp:239
 msgid " zu früh benutzt!"
 msgstr ""
 
-#: icc_draw.cpp:624
+#: icc_draw.cpp:629
 msgid "unbekannte Farbe"
 msgstr ""
 
-#: icc_draw.cpp:633 icc_draw.cpp:644 icc_helfer.cpp:381
+#: icc_draw.cpp:638 icc_draw.cpp:649 icc_helfer.cpp:381
 #: icc_profile_tags.cpp:391 icc_helfer_osx.cpp:65 icc_helfer_x.cpp:56
 msgid "Red"
 msgstr ""
 
-#: icc_draw.cpp:636 icc_draw.cpp:646 icc_helfer.cpp:382
+#: icc_draw.cpp:641 icc_draw.cpp:651 icc_helfer.cpp:382
 #: icc_profile_tags.cpp:392 icc_helfer_osx.cpp:66 icc_helfer_x.cpp:57
 msgid "Green"
 msgstr ""
 
-#: icc_draw.cpp:639 icc_draw.cpp:648 icc_helfer.cpp:383
+#: icc_draw.cpp:644 icc_draw.cpp:653 icc_helfer.cpp:383
 #: icc_profile_tags.cpp:393 icc_helfer_osx.cpp:67 icc_helfer_x.cpp:58
 msgid "Blue"
 msgstr ""
 
-#: icc_draw.cpp:643 icc_gl.cpp:1483 icc_helfer.cpp:324 icc_waehler.h:127
+#: icc_draw.cpp:648 icc_gl.cpp:1483 icc_helfer.cpp:324 icc_waehler.h:127
 msgid "Gray"
 msgstr ""
 
-#: icc_draw.cpp:650 icc_helfer.cpp:391 icc_helfer.cpp:395
+#: icc_draw.cpp:655 icc_helfer.cpp:391 icc_helfer.cpp:395
 msgid "Cyan"
 msgstr ""
 
-#: icc_draw.cpp:652 icc_helfer.cpp:392 icc_helfer.cpp:396
+#: icc_draw.cpp:657 icc_helfer.cpp:392 icc_helfer.cpp:396
 msgid "Magenta"
 msgstr ""
 
-#: icc_draw.cpp:654 icc_helfer.cpp:393 icc_helfer.cpp:397
+#: icc_draw.cpp:659 icc_helfer.cpp:393 icc_helfer.cpp:397
 msgid "Yellow"
 msgstr ""
 
-#: icc_draw.cpp:656 icc_gl.cpp:1485 icc_helfer.cpp:384 icc_helfer.cpp:394
+#: icc_draw.cpp:661 icc_gl.cpp:1485 icc_helfer.cpp:384 icc_helfer.cpp:394
 msgid "Black"
 msgstr ""
 
-#: icc_draw.cpp:658 icc_helfer.cpp:569
+#: icc_draw.cpp:663 icc_helfer.cpp:569
 msgid "Luminance"
 msgstr ""
 
-#: icc_draw.cpp:660 icc_helfer.cpp:375
+#: icc_draw.cpp:665 icc_helfer.cpp:375
 msgid "Luminance Y"
 msgstr ""
 
-#: icc_draw.cpp:662 icc_helfer.cpp:366
+#: icc_draw.cpp:667 icc_helfer.cpp:366
 msgid "CIE X"
 msgstr ""
 
-#: icc_draw.cpp:664 icc_helfer.cpp:367 icc_helfer.cpp:378
+#: icc_draw.cpp:669 icc_helfer.cpp:367 icc_helfer.cpp:378
 msgid "CIE Y (Luminance)"
 msgstr ""
 
-#: icc_draw.cpp:666 icc_helfer.cpp:368
+#: icc_draw.cpp:671 icc_helfer.cpp:368
 msgid "CIE Z"
 msgstr ""
 
-#: icc_draw.cpp:668 icc_helfer.cpp:389
+#: icc_draw.cpp:673 icc_helfer.cpp:389
 msgid "Lightness"
 msgstr ""
 
-#: icc_draw.cpp:670 icc_helfer.cpp:387
+#: icc_draw.cpp:675 icc_helfer.cpp:387
 msgid "Value"
 msgstr ""
 
-#: icc_draw.cpp:672 icc_examin_farbraum.cpp:183 icc_examin_io.cpp:153
+#: icc_draw.cpp:677 icc_examin_farbraum.cpp:183 icc_examin_io.cpp:153
 #: icc_helfer.cpp:369 icc_helfer.cpp:372
 msgid "CIE *L"
 msgstr ""
 
-#: icc_draw.cpp:674 icc_examin_farbraum.cpp:184 icc_examin_io.cpp:154
+#: icc_draw.cpp:679 icc_examin_farbraum.cpp:184 icc_examin_io.cpp:154
 #: icc_gl.cpp:644 icc_gl.cpp:714 icc_gl.cpp:738 icc_gl.cpp:746
 #: icc_helfer.cpp:370
 msgid "CIE *a"
 msgstr ""
 
-#: icc_draw.cpp:676 icc_examin_farbraum.cpp:185 icc_examin_io.cpp:155
+#: icc_draw.cpp:681 icc_examin_farbraum.cpp:185 icc_examin_io.cpp:155
 #: icc_gl.cpp:657 icc_gl.cpp:754 icc_gl.cpp:772 icc_gl.cpp:779
 #: icc_helfer.cpp:371
 msgid "CIE *b"
 msgstr ""
 
-#: icc_draw.cpp:678 icc_helfer.cpp:376
+#: icc_draw.cpp:683 icc_helfer.cpp:376
 msgid "Colour b"
 msgstr ""
 
-#: icc_draw.cpp:680 icc_helfer.cpp:377
+#: icc_draw.cpp:685 icc_helfer.cpp:377
 msgid "Colour r"
 msgstr ""
 
-#: icc_draw.cpp:719 icc_draw.cpp:780
+#: icc_draw.cpp:724 icc_draw.cpp:785
 msgid " with "
 msgstr ""
 
-#: icc_draw.cpp:719 icc_draw.cpp:780
+#: icc_draw.cpp:724 icc_draw.cpp:785
 msgid " points"
 msgstr ""
 
-#: icc_draw.cpp:726
+#: icc_draw.cpp:731
 msgid " with Gamma: 1.0"
 msgstr ""
 
-#: icc_draw.cpp:739 icc_draw.cpp:758
+#: icc_draw.cpp:744 icc_draw.cpp:763
 msgid " with one entry for gamma: "
 msgstr ""
 
@@ -491,11 +491,11 @@ msgstr ""
 msgid "Pos"
 msgstr ""
 
-#: icc_gl.cpp:2199
+#: icc_gl.cpp:2203
 msgid "Konnte keine Eltern finden"
 msgstr ""
 
-#: icc_gl.cpp:2208
+#: icc_gl.cpp:2212
 msgid "Konnte keine passende Programmstruktur finden"
 msgstr ""
 
