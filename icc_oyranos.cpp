@@ -326,7 +326,7 @@ Oyranos::moni_test_ (int x, int y)
     
     display_name = XDisplayString( fl_display );  // gehoert X
     DBG_PROG_V( display_name )
-    int screen = oyGetScreenFromGeometry( display_name, x,y );
+    int screen = oyGetScreenFromPosition( display_name, x,y );
     char *new_display_name = changeScreenName_( display_name, screen );
     char* moni_profil = oyGetMonitorProfile( new_display_name, &size, myAllocFunc );
     if(new_display_name) free(new_display_name); new_display_name = 0;
@@ -605,7 +605,7 @@ Oyranos::setzeMonitorProfil (const char* profil_name , int x, int y )
 
   fehler = oySetMonitorProfile( display_name, profil_name );
 
-  int screen = oyGetScreenFromGeometry( display_name, x,y );
+  int screen = oyGetScreenFromPosition( display_name, x,y );
   char *new_display_name = changeScreenName_( display_name, screen );
   char *neues_profil = oyGetMonitorProfileName( display_name, myAllocFunc );
   if(new_display_name) free(new_display_name); new_display_name = 0;
@@ -639,7 +639,7 @@ Oyranos::moniInfo (int x, int y, int *num)
   char *model = 0;
   char *serial = 0;
 
-  int screen = oyGetScreenFromGeometry( display_name, x,y );
+  int screen = oyGetScreenFromPosition( display_name, x,y );
   char *new_display_name = changeScreenName_( display_name, screen );
   int fehler = oyGetMonitorInfo( new_display_name,
                                  &manufacturer, &model, &serial,

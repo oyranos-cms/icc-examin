@@ -123,7 +123,10 @@ ifdef X11
   else
     X11_LIB_PATH=-L/usr/X11R6/lib
   endif
-  X11_LIBS=$(X11_LIB_PATH) -lX11 -lXxf86vm -lXext -lXpm
+  ifdef XIN
+  XINERAMA_LIB = -lXinerama
+  endif
+  X11_LIBS=$(X11_LIB_PATH) -lX11 -lXxf86vm -lXext -lXpm $(XINERAMA_LIB)
 endif
 
 INCL_DEP = $(INCL) $(X_H) $(OSX_H) $(OYRANOS_H) \

@@ -138,6 +138,16 @@ else
   fi
 fi
 
+if [ -f /usr/X11R6/include/X11/extensions/Xinerama.h ]; then
+  echo "X Xinerama              detected"
+  echo "#define HAVE_XIN 1" >> $CONF_H
+  echo "XIN = 1" >> $CONF
+else
+  if [ $UNAME_ = "Linux" ]; then
+    echo "X Xinerma not found in /usr/X11R6/include/X11/extensions/Xinerama.h"
+  fi
+fi
+
 
 OY_=`oyranos-config 2>>error.txt`
 if [ $? = 0 ] && [ -n $OY_ ]; then

@@ -72,6 +72,9 @@ ICCexamin *icc_examin;
 ICCexamin::ICCexamin ()
 { DBG_PROG_START
   icc_examin_ns::lock(__FILE__,__LINE__);
+
+  //Fl::scheme("plastic");
+
   icc_betrachter = new ICCfltkBetrachter;
   profile.init();
 
@@ -657,7 +660,7 @@ ICCexamin::icc_betrachterNeuzeichnen (void* z)
     if(icc_betrachter->DD_farbraum->visible()) {
       DBG_PROG_S( "3D hist verstecken" )
       icc_betrachter->DD_farbraum->hide();
-      icc_betrachter->box_stat->color(VG);
+      icc_betrachter->box_stat->color( fl_rgb_color( VG ) );
       icc_betrachter->box_stat->labelcolor(FL_BLACK);
       icc_betrachter->box_stat->redraw();
     }
@@ -795,9 +798,10 @@ ICCexamin::statusFarbe(double & CIEL, double & CIEa, double & CIEb)
   rgb = icc_oyranos. wandelLabNachBildschirmFarben(lab, 1,
                                  icc_examin->intent(),
                                  icc_examin->gamutwarn()?cmsFLAGS_GAMUTCHECK:0);
-  Fl_Color colour = fl_rgb_color(rgb[0]*255, rgb[1]*255,rgb[2]*255);
+  Fl_Color colour = fl_rgb_color( (int)(rgb[0]*255),
+                                  (int)(rgb[1]*255), (int)(rgb[2]*255) );
   if (CIEL < .5)
-    icc_betrachter->box_stat->labelcolor(VG);
+    icc_betrachter->box_stat->labelcolor( fl_rgb_color( VG ) );
   else
     icc_betrachter->box_stat->labelcolor(FL_BLACK);
   icc_betrachter->box_stat->color(colour);

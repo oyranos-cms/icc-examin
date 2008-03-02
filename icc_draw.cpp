@@ -473,11 +473,11 @@ TagDrawings::drawCieShoe_ ( int repeated)
         cout << "Linie "; DBG_PROG
 #       endif
     }
-    DBG_V( punkte.size() )
+    DBG_PROG_V( punkte.size() )
     unsigned int i;
     for (i = 0; i < punkte.size()/3; i++)
     {
-        DBG_V( i )
+        DBG_PROG_V( i )
 #       ifdef DEBUG_DRAW
         cout << punkte[i*3+0] << " ";
 #       endif
@@ -520,7 +520,7 @@ TagDrawings::drawCieShoe_ ( int repeated)
           int _w = 0, _h = 0;
           // Text einpassen
           fl_measure (s.str().c_str(), _w, _h, 1);
-          fl_color(FL_WHITE);
+          fl_color(FL_WHITE);//FOREGROUND_COLOR);
           fl_draw ( s.str().c_str(),
                     (int)(pos_x +9 + _w > xNachBild(max_x) ?
                           xNachBild(max_x) - _w : pos_x +9), 

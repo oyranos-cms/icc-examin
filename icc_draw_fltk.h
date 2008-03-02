@@ -31,8 +31,8 @@
 #define ICC_DRAW_FLTK_H
 
 #include "icc_utils.h"
-# define BG FL_DARK2
-# define VG FL_BACKGROUND_COLOR
+# define BG 177,177,177  //FL_BACKGROUND2_COLOR
+# define VG 225,225,225  //FL_BACKGROUND_COLOR
 # define DIAG VG
 #if 0
 //#ifdef __APPLE__
