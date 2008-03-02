@@ -33,8 +33,8 @@ void GL_Ansicht::init() {
 
   DBG_PROG
   details->begin(); DBG_PROG
-  glutInitWindowSize(x(),y()); DBG_PROG_V( x() << y() )
-  glutInitWindowPosition(w(),h()); DBG_PROG_V( w() << h() )
+  glutInitWindowSize(W,H); DBG_PROG_V( X << Y )
+  glutInitWindowPosition(X,Y); DBG_PROG_V( W << H )
   glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH | GLUT_MULTISAMPLE); DBG_PROG
   glutCreateWindow("GL Ansicht"); DBG_PROG
 
@@ -54,7 +54,7 @@ void GL_Ansicht::init() {
   MakeDisplayLists(); DBG_PROG
   MenuInit(); DBG_PROG
 
-  glutMainLoop(); // you could use Fl::run() instead
+  //glutMainLoop(); // you could use Fl::run() instead
 
   DBG_PROG_ENDE
 }
@@ -119,7 +119,7 @@ void GL_Ansicht::MenuInit() {
   glutAddSubMenu("Movement", sub2);
   glutAddMenuEntry("Toggle Axes", MENU_AXES);
   glutAddMenuEntry("Toggle ring rotation", MENU_RING);
-  glutAddMenuEntry("Quit", MENU_QUIT);
+//  glutAddMenuEntry("Quit", MENU_QUIT);
   glutAttachMenu(GLUT_RIGHT_BUTTON);
   DBG_PROG_ENDE
 }
@@ -130,7 +130,6 @@ void reshape(int w, int h) {
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
   gluPerspective(60.0, (GLdouble)w/h, 0.01, 100);
-  glEnable(GL_BLEND);
   glPushMatrix();
   glMatrixMode(GL_MODELVIEW);
   glFlush();
@@ -179,34 +178,10 @@ void GL_Ansicht::draw() {
   // Kurven oder Punkte malen
   DBG_PROG_S( punkte.size() << "/" << kurven.size() <<" "<< texte.size() )
 
-  if (first)
-    init();
-
-    if (!first) {
-        glLoadIdentity();
-        glViewport(0,0,w(),h()); DBG_PROG_V( w() << " " << h() )
-        glOrtho(-10,10,-10,10,-20030,10000);
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    }
-
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    glPushMatrix();
-
-    //glTranslatef(x(), y(), 0);
-    //glRotatef(hAng,0,1,0); glRotatef(vAng,1,0,0);
-    //glScalef(float(size),float(size),float(size));
-
-    //drawCube();
-    
-    glPopMatrix();
-  //reshape (W,H);
-
   if (punkte.size() >= 3) {
     wiederholen = true;
     //draw_cie_shoe(x(),y(),w(),h(),texte,punkte,false);
-    //Fl::add_timeout( 3.0, (void(*)(void*))d_haendler ,(void*)this);
+    Fl::add_timeout( 3.0, (void(*)(void*))d_haendler ,(void*)this);
 
   } else {
     wiederholen = false;
