@@ -43,13 +43,13 @@ icProfileClassSignature icValue   (icProfileClassSignature val);
 icTagSignature          icValue   (icTagSignature val);
 
 double*                 XYZto_xyY (double* XYZ);
+double*                 XYZto_xyY (std::vector<double> XYZ);
 
 class ICCheader {
   public:
                         ICCheader (); 
   private:
     icHeader            header;
-    map<string,string>  cmm_map;
   public:
     const char*         header_raw ()        {return cp_nchar ((char*)&header,
                                                        sizeof (icSignature)); }
@@ -59,17 +59,13 @@ class ICCheader {
 
     int                 valid;
     int                 size    ()      {return icValue(header.size); }
-//    void                size    (int size)      {header.size = inbyteswap (size); }
-//    void                Cmm     (string s)      {memcpy((char*)&header.cmmId,
-//                                                       cmm_map.find(s),
-//                                                       sizeof (icSignature)); }
-    void                cmmName (const char* s) {memcpy((char*)&(header.cmmId), s,
+    void                cmmName (const char* s){memcpy((char*)&(header.cmmId),s,
                                                        sizeof (icSignature)); }
-    const char*         cmmName ()      {return cp_nchar ((char*)&(header.cmmId),
+    const char*         cmmName ()      {return cp_nchar((char*)&(header.cmmId),
                                                       sizeof (icSignature)+1); }
     int                 version ()      {return icValue(header.version); }
     std::string         versionName ();
-    icProfileClassSignature deviceClass ()   {return icValue(header.deviceClass); }
+    icProfileClassSignature deviceClass (){return icValue(header.deviceClass); }
     icColorSpaceSignature colorSpace  (){return icValue(header.colorSpace); }
     icColorSpaceSignature pcs ()        {return icValue(header.pcs); }
     const char*         magicName ()       {return cp_nchar ((char*)&(header.
@@ -179,6 +175,7 @@ class ICCprofile {
     int                 getTagByName (std::string name); // Name
 
     int                 getTagCount     () {return icValue(_data->count); }
+    std::vector<double> getWhitePkt   (void);
 
     void                saveProfileToFile  (char* filename, char *profile,
                                            int    size);

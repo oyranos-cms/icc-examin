@@ -2,7 +2,7 @@
 // Copyright: Kai-Uwe Behrmann <ku.b@gmx.de>
 // Date:      04. 05. 2004
 
-#if 0
+#if 1
   #ifndef DEBUG
    #define DEBUG
   #endif
@@ -199,6 +199,24 @@ XYZto_xyY (double* XYZ)
   xyY[0] = XYZ[0] / summe;
   xyY[1] = XYZ[1] / summe;
   xyY[2] = XYZ[2] / summe;
+
+  return &xyY[0];
+}
+
+double*
+XYZto_xyY (std::vector<double> XYZ)
+{
+  static double xyY[3];
+  for (int i = 0 ; i < 3 ; i++)
+    xyY[i] = 0.0;
+
+  if (XYZ.size() == 3) {
+    double summe = (XYZ[0] + XYZ[1] + XYZ[2]) + 0.0000001;
+
+    xyY[0] = XYZ[0] / summe;
+    xyY[1] = XYZ[1] / summe;
+    xyY[2] = XYZ[2] / summe;
+  }
 
   return &xyY[0];
 }
@@ -780,7 +798,6 @@ ICCtag::printLut            (   LPLUT           Lut,
 
 ICCprofile::ICCprofile (void)
 {
-  //header = new ICCheader();
   _data = NULL;
   _size = 0;
   
@@ -789,6 +806,7 @@ ICCprofile::ICCprofile (void)
 ICCprofile::ICCprofile (const char *filename)
   : _filename (filename)
 {
+  if (_data) free (_data);
   _data = NULL;
   _size = 0;
 
@@ -814,7 +832,12 @@ ICCprofile::ICCprofile (const char *filename)
 
 ICCprofile::~ICCprofile (void)
 {
-  ;
+  if (_data) free (_data);
+  tags.clear();
+
+  #ifdef DEBUG_PROFILE
+  cout << "_data und tags gelöscht"; DBG
+  #endif
 }
 
 void
@@ -997,7 +1020,8 @@ ICCprofile::getTagCurve                                 (int item)
 {
   // Prüfen
   std::vector<double> leer;
-  if (tags[item].getTypName() != "curv")
+  if (tags[item].getTypName() != "curv"
+   && tags[item].getTypName() != "vcgt")
     return leer;
 
   return tags.at(item).getCurve();
@@ -1046,6 +1070,19 @@ ICCprofile::hasTagName            (std::string name)
 
   return false;
 }
+
+std::vector<double>
+ICCprofile::getWhitePkt           (void)
+{
+  std::vector<double> xyY;
+  if (hasTagName ("wtpt"))
+    xyY = getTagCIExy (getTagByName ("wtpt"));
+
+  return xyY;
+}
+
+
+
 
 int
 ICCprofile::checkProfileDevice (char* type, icProfileClassSignature deviceClass)

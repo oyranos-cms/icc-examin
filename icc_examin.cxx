@@ -402,13 +402,15 @@ void TagBrowser::select_item(int item) {
         }
       }
       tag_viewer->hinein_punkt( alle_punkte, alle_texte );
-    } else if ( TagInfo[1] == "curv" ) {
+    } else if ( TagInfo[1] == "curv"
+             || TagInfo[1] == "vcgt" ){
       std::vector<std::vector<double> > kurven;
       std::vector<double> kurve;
       std::vector<std::string> texte;
       std::string TagName;
       for (int i_name = 0; i_name < profile.tagCount(); i_name++) {
-        if ((profile.printTagInfo(i_name))[1] == "curv") {
+        if ( (profile.printTagInfo(i_name))[1] == "curv"
+          || (profile.printTagInfo(i_name))[1] == "vcgt" ) {
           kurve = profile.getTagCurve (i_name);
           kurven.push_back (kurve/*[i]*/);
           TagInfo = profile.printTagInfo (i_name);

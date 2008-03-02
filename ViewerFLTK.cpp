@@ -1,6 +1,10 @@
 #include "ViewerFLTK.h"
 #include "vFLGLWidget.h"
-#define DBG //cout << __FILE__<<":"<<__LINE__ << __func__ << "()" << endl;
+#ifdef DEBUG
+#define DBG cout << __FILE__<<":"<<__LINE__ << __func__ << "()" << endl;
+#else
+#define DBG
+#endif
 
 ViewerFLTK::ViewerFLTK(openvrml::browser & browser,
 		     vFLGLWidget *da_widg) :

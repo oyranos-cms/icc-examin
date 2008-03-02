@@ -72,8 +72,8 @@ draw_cie_shoe (int X, int Y, int W, int H,
   // dargestellter Ausschnitt 
   n = .85;
 
-  #define x(val) (int)(((double)xO + val*w/n)+0.5)
-  #define y(val) (int)(((double)yO - val*h/n)+0.5)
+  #define x(val) (int)(((double)xO + (double)val*w/n)+0.5)
+  #define y(val) (int)(((double)yO - (double)val*h/n)+0.5)
   #define x2cie(val) (((val)-xO)/w)
   #define y2cie(val) ((yO-(val))/h)
   fl_push_clip( X,y(n), x(n),(int)(h+tab_border_y+0.5) );
@@ -239,24 +239,33 @@ draw_cie_shoe (int X, int Y, int W, int H,
     for (unsigned int i = 0; i < texte.size(); i++) {
         double _XYZ[3] = {punkte[i*3+0], punkte[i*3+1], punkte[i*3+2]};
         double* xyY = XYZto_xyY ( _XYZ );
-        pos.push_back ( x (xyY[0]) + 0.5 );
-        pos.push_back ( y (xyY[1]) + 0.5 );
+        pos.push_back ( x (xyY[0]) );
+        pos.push_back ( y (xyY[1]) );
         #ifdef DEBUG_DRAW
         cout << texte[i] << " " << punkte.size(); DBG
         #endif
     }
 
+    if (texte[0] != "wtpt") { // markiert den Weisspunkt nur
+      double* xyY = XYZto_xyY ( profile.getWhitePkt() );
+      int g = 2;
+
+      fl_color (FL_WHITE);
+      fl_line ( x(xyY[0])-g, y(xyY[1])-g, x(xyY[0])+g, y(xyY[1])+g );
+      fl_line ( x(xyY[0])-g, y(xyY[1])+g, x(xyY[0])+g, y(xyY[1])-g );
+    }
+
     fl_color(FL_GRAY);
     if (punkte.size() == 9) {
         for (int k = 0; k <= 3; k+=2) {
-            fl_line( (int)(pos[k+0] +0.5), (int)(pos[k+1] +0.5),
-                     (int)(pos[k+2] +0.5), (int)(pos[k+3] +0.5));
+            fl_line( (int)(pos[k+0]), (int)(pos[k+1]),
+                     (int)(pos[k+2]), (int)(pos[k+3]));
             #ifdef DEBUG_DRAW
             cout << "Linie "; DBG
             #endif
         }
-        fl_line( (int)(pos[0] +0.5), (int)(pos[1] +0.5),
-                 (int)(pos[4] +0.5), (int)(pos[5] +0.5));
+        fl_line( (int)(pos[0]), (int)(pos[1]),
+                 (int)(pos[4]), (int)(pos[5]));
         #ifdef DEBUG_DRAW
         cout << "Linie "; DBG
         #endif
@@ -282,13 +291,13 @@ draw_cie_shoe (int X, int Y, int W, int H,
 
         double _XYZ[3] = {XYZ.X, XYZ.Y, XYZ.Z};
         double* xyY = XYZto_xyY ( _XYZ );
-        double pos_x = x(xyY[0])+0.5;
-        double pos_y = y(xyY[1])+0.5;
+        double pos_x = x(xyY[0]);
+        double pos_y = y(xyY[1]);
 
-        fl_color(FL_GRAY);
-        fl_circle ( pos_x+0.5 , pos_y+0.5 , 9.0);
+        fl_color (FL_GRAY);
+        fl_circle ( pos_x , pos_y , 9.0);
         fl_color (fl_rgb_color (RGB[0],RGB[1],RGB[2]));
-        fl_circle ( pos_x+0.5 , pos_y+0.5 , 7.0);
+        fl_circle ( pos_x , pos_y , 7.0);
         // etwas Erklärung zu den Farbpunkten
         fl_font (FL_HELVETICA, 12);
         std::stringstream s;
@@ -299,6 +308,7 @@ draw_cie_shoe (int X, int Y, int W, int H,
           _cmsIdentifyWhitePoint (&txt[0], &XYZ);
           t << " (" << &txt[12] << ")";
         }
+          
         s << texte[i] << t.str() << " = " << _XYZ[0] <<","<< _XYZ[1] <<","<< _XYZ[2];
         int _w = 0, _h = 0;
         // Text einpassen
@@ -359,7 +369,7 @@ void draw_kurve    (int X, int Y, int W, int H,
   std::stringstream s ;
   std::string name;
   for (unsigned int j = 0; j < kurven.size(); j++) {
-    if (texte[j] == "rTRC") {
+    if        (texte[2*j] == "rTRC") {
       fl_color(FL_RED);
       name = _("Rot");
     } else if (texte[2*j] == "gTRC") {
