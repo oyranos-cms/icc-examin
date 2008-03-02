@@ -46,8 +46,9 @@ extern Fl_Group *tabellengruppe;
 extern MftChoice *mft_choice;
 extern TagDrawings *mft_viewer;
 extern TagTexts *mft_text;
-extern Fl_Group *inspekt;
 #include <FL/Fl_Box.H>
+extern Fl_Box *mft_gl;
+extern Fl_Group *inspekt;
 extern Fl_Box *stat;
 #include <FL/Fl_Progress.H>
 extern Fl_Progress *load_progress;
@@ -96,4 +97,15 @@ public:
 void d_haendler(void* o);
 void zeig_mich(void* widget);
 std::vector<std::string> zeilenNachVector(std::string text);
+
+class GL_Ansicht : public Fl_Widget {
+  int X; int Y; int W; int H; std::vector<std::string>texte; std::vector<double>punkte; std::vector<std::vector<double> >kurven;
+public:
+  int wiederholen;
+  GL_Ansicht(int X,int Y,int W,int H) ;
+  void draw();
+  void hinein_punkt(std::vector<double> vect, std::vector<std::string> txt);
+  void hinein_kurven(std::vector<std::vector<double> >vect, std::vector<std::string> txt);
+  void ruhig_neuzeichnen(void);
+};
 #endif

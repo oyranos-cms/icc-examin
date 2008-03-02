@@ -97,6 +97,8 @@ TagDrawings *mft_viewer=(TagDrawings *)0;
 
 TagTexts *mft_text=(TagTexts *)0;
 
+Fl_Box *mft_gl=(Fl_Box *)0;
+
 Fl_Group *inspekt=(Fl_Group *)0;
 
 Fl_Box *stat=(Fl_Box *)0;
@@ -209,6 +211,7 @@ int main(int argc, char **argv) {
               o->align(FL_ALIGN_BOTTOM|FL_ALIGN_INSIDE);
               o->when(FL_WHEN_RELEASE_ALWAYS);
             }
+            mft_gl = new Fl_Box(0, 185, 385, 310);
             o->end();
           }
           o->end();
@@ -724,4 +727,49 @@ std::vector<std::string> zeilenNachVector(std::string text) {
 
 
   return texte;
+}
+
+GL_Ansicht::GL_Ansicht(int X,int Y,int W,int H) : Fl_Widget(X,Y,W,H), X(X), Y(Y), W(W), H(H) {
+}
+
+void GL_Ansicht::draw() {
+  // Kurven oder Punkte malen
+  cout << punkte.size() << "/" << kurven.size() <<" "<< texte.size() <<" "; DBG
+
+  if (punkte.size() >= 3) {
+    wiederholen = true;
+    draw_cie_shoe(x(),y(),w(),h(),texte,punkte,false);
+    Fl::add_timeout( 1.2, (void(*)(void*))d_haendler ,(void*)this);
+
+  } else {
+    wiederholen = false;
+    draw_kurve   (x(),y(),w(),h(),texte,kurven);
+  }
+  DBG
+}
+
+void GL_Ansicht::hinein_punkt(std::vector<double> vect, std::vector<std::string> txt) {
+  //CIExyY aus tag_browser anzeigen
+  punkte.clear();
+  for (unsigned int i = 0; i < vect.size(); i++)
+    punkte.push_back (vect[i]);
+  texte.clear();
+  for (unsigned int i = 0; i < txt.size(); i++)
+    texte.push_back (txt[i]);
+  kurven.clear();
+
+  zeig_mich(this);
+}
+
+void GL_Ansicht::hinein_kurven(std::vector<std::vector<double> >vect, std::vector<std::string> txt) {
+  //Kurve aus tag_browser anzeigen
+  kurven = vect;
+  texte = txt;
+  punkte.clear();
+
+  zeig_mich(this);
+}
+
+void GL_Ansicht::ruhig_neuzeichnen(void) {
+  draw_cie_shoe(x(),y(),w(),h(),texte,punkte,true);
 }

@@ -91,6 +91,10 @@ test3:  ViewerFLTK.o vFLGLWidget.o
 	$(VRML_LIBS) $(X11_LIBS)
 #vFLGLWidget.o
 
+agv:    agviewer.o agv_example.o
+	$(CC) $(OPTS) $(INCL) -o agv \
+	agviewer.o  agv_example.o $(FLTK_LIBS) $(X11_LIBS) -lglut
+
 install:	$(TARGET)
 	cp icc_examin $(bindir)
 clean:
