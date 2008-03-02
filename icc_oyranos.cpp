@@ -365,7 +365,7 @@ Oyranos::moni_test_ (int x, int y)
             v_block.ladeNew(block, size);
           }
         } else
-          WARN_S(_("WARNING: Could not load profile."))
+          DBG_S(_("Could not load profile."))
         v_block = (const char*)profil_name;
         DBG_MEM
     }
@@ -1323,7 +1323,8 @@ Oyranos::wandelLabNachBildschirmFarben(double *Lab_Speicher, // 0.0 - 1.0
 #endif
 #if OYRANOS_VERSION > 106
     static  char digest[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}, dig[16];
-    oyProfileGetMD5(block, groesse, dig);
+    if(block && groesse)
+      oyProfileGetMD5(block, groesse, dig);
 #endif
 
     if(flags & cmsFLAGS_GAMUTCHECK)

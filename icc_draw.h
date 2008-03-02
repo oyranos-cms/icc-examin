@@ -41,7 +41,7 @@ class TagDrawings : public Fl_Widget {
 public:
   int  wiederholen,
        id;
-  TagDrawings       ( int X,int Y,int W,int H);
+  TagDrawings       ( int X,int Y,int W,int H, const char *label = 0);
   ~TagDrawings      ( );
   void draw         ( );  // fltk virtual
   void ruhigNeuzeichnen (void);

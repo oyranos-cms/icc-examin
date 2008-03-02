@@ -71,7 +71,7 @@ typedef struct {
     double K;
 } CMYK_s;
 
-// Umwandlungen
+// Typumwandlungen
 void FarbeZuDouble (double* d_xyz, XYZ_s xyz);
 void FarbeZuDouble (double* d_rgb, RGB_s rgb);
 void FarbeZuDouble (double* d_lab, Lab_s lab);
@@ -81,14 +81,21 @@ void FarbeZuDouble (RGB_s *rgb, double* d_rgb);
 void FarbeZuDouble (Lab_s *lab, double* d_lab);
 void FarbeZuDouble (CMYK_s *cmyk, double* d_cmyk);
 
-
 // Farbfunktionen
+// Farbdifferenzen
 double        dE2000 (const Lab_s & Lab1, const Lab_s & Lab2,
                       double kL, double kC, double kH);
+
+// Farbumwandlungen
 void          XYZtoLab (XYZ_s & xyz, Lab_s & lab);
 void          XYZtoLab (double* xyz, double* lab, int n);
+void          LabtoXYZ (Lab_s &lab, XYZ_s &XYZ);
+
+// Normalisierung  CIELab L 0...100 a/b -127...+127 // lab 0...1
 void          CIELabToLab (double* cielab, double* lab, int n);
+void          CIELabToLab (double* cielab, Lab_s & lab);
 void          LabToCIELab (double* lab, double* cielab, int n);
+void          LabToCIELab (Lab_s & lab, double* cielab);
 
 
 #endif //ICC_FORMELN_H

@@ -63,9 +63,18 @@ gradATAN(double b, double a)
 }
 
 double
-dE2000 (const Lab_s & Lab1, const Lab_s & Lab2,
+dE2000 (const Lab_s & Lab1_n, const Lab_s & Lab2_n,
         double kL, double kC, double kH)             // (1)
 {
+  // nach CIE*Lab uebertragen
+  Lab_s Lab1, Lab2; 
+  Lab1.L = Lab1_n.L * 100.;
+  Lab2.L = Lab2_n.L * 100.;
+  Lab1.a = Lab1_n.a * 256. - 128.;
+  Lab2.a = Lab2_n.a * 256. - 128.;
+  Lab1.b = Lab1_n.b * 256. - 128.;
+  Lab2.b = Lab2_n.b * 256. - 128.;
+
   /*
    *  Aus: "The CIEDE2000 Color-Difference Formula:
    *        Implementation Notes, Supplementary Test
@@ -153,6 +162,37 @@ dE2000 (const Lab_s & Lab1, const Lab_s & Lab2,
   return de2000;
 }
 
+void
+LabtoXYZ (Lab_s &lab, XYZ_s &XYZ)
+{
+  double l[3];
+  //double e = 216./24389.;             // 0.0088565
+  //double k = 24389./27.;              // 903.30
+  double d = 6./29.;                  // 0.20690
+
+  double Xn = 0.964294;
+  double Yn = 1.000000;
+  double Zn = 0.825104;
+
+  LabToCIELab(lab, l);
+  double fy = (l[0] + 16) / 116.;
+  double fx = fy + l[1] / 500.;
+  double fz = fy - l[2] / 200.;
+
+
+  if(fy > d)
+    XYZ.Y = Yn * pow( fy, 3 );
+  else
+    XYZ.Y = (fy - 16./116.) * 3 * pow( d, 2 ) * Yn;
+  if(fx > d)
+    XYZ.X = Xn * pow( fx, 3 );
+  else
+    XYZ.X = (fx - 16./116.) * 3 * pow( d, 2 ) * Xn;
+  if(fz > d)
+    XYZ.Z = Zn * pow( fz, 3 );
+  else
+    XYZ.Z = (fz - 16./116.) * 3 * pow( d, 2 ) * Zn;
+}
 
 void
 XYZtoLab (XYZ_s &xyz, Lab_s &lab)
@@ -231,6 +271,14 @@ CIELabToLab (double* cielab, double* lab, int n)
 }
 
 void
+CIELabToLab (double* cielab, Lab_s & lab)
+{
+      lab.L =  cielab[0]          / 100.0;
+      lab.a = (cielab[1] + 128.0) / 256.0;
+      lab.b = (cielab[2] + 128.0) / 256.0;
+}
+
+void
 LabToCIELab (double* lab, double* cielab, int n)
 {
     for(int i = 0; i < n; ++i)
@@ -241,6 +289,14 @@ LabToCIELab (double* lab, double* cielab, int n)
       //DBG_NUM_V( lab[i*3+0] <<" "<< lab[i*3+1] <<" "<< lab[i*3+2] )
       //DBG_NUM_V( cielab[i*3+0] <<" "<< cielab[i*3+1] <<" "<< cielab[i*3+2] )
     }
+}
+
+void
+LabToCIELab (Lab_s & lab, double* cielab)
+{
+      cielab[0] =  lab.L * 100.0;
+      cielab[1] = (lab.a * 256.0) - 128.0;
+      cielab[2] = (lab.b * 256.0) - 128.0;
 }
 
 

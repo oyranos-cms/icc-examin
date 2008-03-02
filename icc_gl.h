@@ -120,17 +120,21 @@ class GL_Ansicht : public Fl_Gl_Window, /*, public Fl_Slot*/
 
 public:
   GL_Ansicht(int X,int Y,int W,int H);
+  GL_Ansicht(int X,int Y,int W,int H, const char *l);
   ~GL_Ansicht();
   GL_Ansicht (const GL_Ansicht & gl)
     : Fl_Gl_Window(0,0,gl.w(),gl.h()) { id_ = ref_; ++ref_; copy(gl); }
   GL_Ansicht& copy(const GL_Ansicht& gl);
   GL_Ansicht& operator = (const GL_Ansicht& gl) { return copy(gl); }
+private:
+  void init_();
+public:
   void init(int fenster);
 
   // welches Fenster wird verwaltet?
   int  id()          {return id_; } //!< gleich zu agviewer::RedisplayWindow
   int  typ()   {return typ_; } //!< Fenster ID / Darstellungsart
-  void typ(int t)   { typ_ = t; }
+  void typ(int t_)   { typ_ = t_; }
 
   static Agviewer* getAgv(GL_Ansicht *me, GL_Ansicht *referenz);
 
@@ -138,6 +142,9 @@ public:
   void draw();
   int  handle(int event);
   void redraw();
+private:
+  int  waiting_;       //!< keine neue Bewegung erzeugen und anzeigen
+public:
   void show();
   void hide();
   // redraw Aufforderung von agv_
@@ -218,7 +225,7 @@ private:
   char t[128];              //!< Text zur Fehlersuche
   int  maus_x_;
   int  maus_y_;
-  int maus_x_alt, maus_y_alt;
+  int  maus_x_alt, maus_y_alt;
   bool maus_steht;
   void mausPunkt_( GLdouble & oX, GLdouble & oY, GLdouble & oZ,
                   GLdouble & X, GLdouble & Y, GLdouble & Z );
@@ -226,7 +233,6 @@ public:
   // Geschwindigkeit
   int  smooth;                    //!< glatt zeichnen
   int  blend;                     //!<   -"-
-  int  wiederholen;               //!< bezogen auf smooth/blend
 
   // Daten Informationen
   const char* kanalName() const {

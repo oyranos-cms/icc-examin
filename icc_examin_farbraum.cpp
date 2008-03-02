@@ -82,7 +82,7 @@ ICCexamin::messwertLese (int n,
         for (j = 0; j < (unsigned) n; ++j)
         { // zuerst die Messwerte ...
           std::vector<double> daten;
-          if(messung.hasXYZ())
+          if(messung.hasXYZ() || messung.hasLab())
             daten = messung.getMessLab(j);
           else
             daten = messung.getCmmLab(j);
@@ -95,7 +95,7 @@ ICCexamin::messwertLese (int n,
               p.push_back(daten[i]);
           } 
 
-          if(messung.hasXYZ())
+          if(messung.hasXYZ() || messung.hasLab())
             daten = messung.getMessRGB(j);
           else
             daten = messung.getCmmRGB(j);

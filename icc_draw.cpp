@@ -65,8 +65,8 @@
 #endif
 
 
-TagDrawings::TagDrawings (int X,int Y,int W,int H)
-  : Fl_Widget(X,Y,W,H)
+TagDrawings::TagDrawings (int X,int Y,int W,int H, const char* l)
+  : Fl_Widget(X,Y,W,H,l)
 {
   DBG_PROG_START
   // Zeichenbereichsvariablen

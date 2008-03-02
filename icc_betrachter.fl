@@ -1,5 +1,5 @@
 # data file for the Fltk User Interface Designer (fluid)
-version 1.0108 
+version 1.0107 
 i18n_type 1 
 i18n_include <libintl.h> 
 i18n_function _ 
@@ -218,7 +218,7 @@ class MftChoice {: {public Fl_Choice}
   }
 } 
 
-class My_Fl_Box {: {public Fl_Box}
+class My_Fl_Box {open : {public Fl_Box}
 } {
   Function {My_Fl_Box(int X,int Y,int W, int H, const char* title = 0) : Fl_Box(X,Y,W,H,title)} {open
   } {}
@@ -226,7 +226,7 @@ class My_Fl_Box {: {public Fl_Box}
   } {
     code {int ergebnis = tastatur(event);
   if(!ergebnis)
-    ;//Fl_No_Box::handle(event);
+    ;//ergebnis = Fl_Box::handle(event);
   return ergebnis;} {}
   }
 } 
@@ -249,7 +249,7 @@ class ICCfltkBetrachter {open
   setTitleUrl = true;} {}
     Fl_Window ueber {
       label {About ICC Examin} open
-      xywh {912 732 365 285} type Double resizable
+      xywh {2019 744 365 285} type Double resizable
       code0 {o->hide();}
       code1 {o->use_escape_hide = true;}
       class {icc_examin_ns::MyFl_Double_Window} visible
@@ -273,7 +273,7 @@ class ICCfltkBetrachter {open
             xywh {0 25 365 235} box THIN_UP_BOX color 49 selection_color 47 hide resizable
           }
           Fl_Help_View dank_html {
-            label Acknowlegement selected
+            label Acknowlegement
             xywh {0 25 365 235} box THIN_UP_BOX color 49 selection_color 47
           }
           Fl_Output links_text {
@@ -290,7 +290,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window vcgt {
       label {Grafic Card Gamma Table} open
-      xywh {128 627 370 390} type Double resizable
+      xywh {26 650 370 390} type Double resizable
       code0 {o->hide();}
       code1 {o->use_escape_hide = true;}
       class {icc_examin_ns::MyFl_Double_Window} visible
@@ -327,7 +327,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window DD {
       label Gamut open
-      xywh {1429 319 385 520} type Double box NO_BOX resizable
+      xywh {2129 259 385 520} type Double box NO_BOX resizable
       class {icc_examin_ns::MyFl_Double_Window} visible
     } {
       Fl_Group {} {open
@@ -481,15 +481,17 @@ class ICCfltkBetrachter {open
     }
     Fl_Window details {
       label {ICC Examin} open
-      xywh {1845 388 385 520} type Double box NO_BOX
+      xywh {1697 79 385 520} type Double box NO_BOX
       code0 {o->main_win = o;}
       class {icc_examin_ns::MyFl_Double_Window} visible
     } {
-      Fl_Group {} {open
+      Fl_Group {} {
+        label all_invisible open
         xywh {0 0 385 520}
       } {
-        Fl_Menu_Bar menueleiste {open
-          xywh {0 0 385 25} align 20 when 3
+        Fl_Menu_Bar menueleiste {
+          label menuleiste_invisible open
+          xywh {0 0 385 25} align 4 when 3
         } {
           Submenu {} {
             label File open
@@ -663,38 +665,44 @@ icc_examin->testZeigen();}
             }
           }
         }
-        Fl_Group {} {open
-          xywh {0 25 385 470} resizable
+        Fl_Group {} {
+          label tags_group_invisible open
+          xywh {0 25 385 470} align 4 resizable
         } {
-          Fl_Group {} {open
-            xywh {0 25 385 470}
+          Fl_Group {} {
+            label inspect_html_group_invisible open
+            xywh {0 25 385 470} align 4
           } {
             Fl_Help_View inspekt_html {
-              label Inspect
-              xywh {0 25 385 470} box FLAT_BOX color 49 align 16 resizable
+              label Inspect_html_invisible
+              xywh {0 25 385 470} box FLAT_BOX color 49 align 4 resizable
               code0 {o->hide();}
             }
           }
-          Fl_Tile examin {open
-            xywh {0 25 385 470} resizable
+          Fl_Tile examin {
+            label examin_invisible open
+            xywh {0 25 385 470} align 4 resizable
           } {
             Fl_Browser tag_browser {
-              label { }
+              label tag_browser_invisible
               callback {o->selectItem( o->value() );}
-              tooltip {Choose one profile tag} xywh {0 25 385 135} box FLAT_BOX color 49 align 18
+              tooltip {Choose one profile tag} xywh {0 25 385 135} box FLAT_BOX color 49 align 4
               code0 {int lines = tag_browser->size();}
               code1 {DBG_PROG_V( lines )}
               class TagBrowser
             }
-            Fl_Group ansichtsgruppe {open
-              xywh {0 160 385 335}
+            Fl_Group ansichtsgruppe {
+              label ansichtsgruppe_invisible open
+              xywh {0 160 385 335} align 4
             } {
-              Fl_Group tabellengruppe {open
-                xywh {0 160 385 335}
+              Fl_Group tabellengruppe {
+                label tabellengruppe_invisible open
+                xywh {0 160 385 335} align 4
                 code0 {o->show();}
               } {
-                Fl_Pack {} {open
-                  xywh {0 160 385 335} resizable
+                Fl_Pack {} {
+                  label tabellenpack_invisible open
+                  xywh {0 160 385 335} align 4 resizable
                 } {
                   Fl_Choice mft_choice {
                     label {Chain selection}
@@ -703,20 +711,29 @@ icc_examin->testZeigen();}
                     code0 {o->show();}
                     class MftChoice
                   } {}
-                  Fl_Group {} {open
-                    xywh {0 185 385 310} resizable
+                  Fl_Group {} {
+                    label tabellengruppe2_invisible open
+                    xywh {0 185 385 310} align 4 resizable
                   } {
-                    Fl_Group mft_gl_group {open
-                      xywh {0 185 385 310} resizable
+                    Fl_Box mft_viewer {
+                      label mft_viewer_invisible
+                      xywh {0 185 385 310} align 4
+                      code0 {o->show();}
+                      class TagDrawings
+                    }
+                    Fl_Browser mft_text {
+                      label mft_text_invisible
+                      xywh {0 185 385 310} box FLAT_BOX color 49 align 4
+                      code0 {o->show();}
+                      class TagTexts
+                    }
+                    Fl_Group mft_gl_group {
+                      label mft_gl_group_invisible open
+                      xywh {0 185 385 310} align 4 resizable
                     } {
-                      Fl_Box mft_gl {
-                        xywh {0 185 340 310} align 18 resizable
-                        code0 {o->hide();}
-                        code1 {o->typ( 2 ); // bleibt zumeist im Hauptfenster}
-                        class GL_Ansicht
-                      }
                       Fl_Box {} {
-                        xywh {0 185 385 310} box FLAT_BOX
+                        label mft_gl_box_invisible
+                        xywh {0 185 385 310} box FLAT_BOX align 4
                       }
                       Fl_Button {} {
                         label o
@@ -724,38 +741,38 @@ icc_examin->testZeigen();}
                         tooltip {Show all channels of this table a own window.} xywh {340 185 20 20}
                         code0 {o->show();}
                       }
-                    }
-                    Fl_Box mft_viewer {
-                      xywh {0 185 385 310}
-                      code0 {o->show();}
-                      class TagDrawings
-                    }
-                    Fl_Browser mft_text {
-                      label { }
-                      xywh {0 185 385 310} box FLAT_BOX color 49 align 0
-                      code0 {o->show();}
-                      class TagTexts
+                      Fl_Box mft_gl {
+                        label mft_gl_invisible
+                        xywh {0 185 340 310} align 4 resizable
+                        code0 {o->hide();}
+                        code1 {o->typ( 2 ); // bleibt zumeist im Hauptfenster}
+                        class GL_Ansicht
+                      }
                     }
                   }
                 }
               }
-              Fl_Pack {} {open
-                xywh {0 160 385 335}
+              Fl_Pack twoD_pack {
+                label tag_pack_invisible open selected
+                xywh {0 160 385 335} align 4
               } {
                 Fl_Box {} {
-                  xywh {0 160 385 5} box UP_BOX
+                  label tag_box_invisible
+                  xywh {0 160 385 5} box UP_BOX align 4
                 }
-                Fl_Group {} {open
-                  xywh {0 165 385 330} resizable
+                Fl_Group {} {
+                  label tag_group_invisible open
+                  xywh {0 165 385 330} align 4 resizable
                 } {
                   Fl_Browser tag_text {
-                    label { }
-                    xywh {0 165 385 330} box FLAT_BOX color 49 align 0
+                    label { tag_text_invisible}
+                    xywh {0 165 385 330} box FLAT_BOX color 49 align 4
                     code0 {o->show();}
                     class TagTexts
                   }
                   Fl_Box tag_viewer {
-                    xywh {0 165 385 330}
+                    label tag_viewer_invisible
+                    xywh {0 165 385 330} align 4
                     code0 {o->hide();}
                     class TagDrawings
                   }
@@ -764,11 +781,12 @@ icc_examin->testZeigen();}
             }
           }
         }
-        Fl_Group {} {open
-          xywh {0 495 385 25}
+        Fl_Group {} {
+          label status_group_invisible open
+          xywh {0 495 385 25} align 4
         } {
           Fl_Box box_stat {
-            label { }
+            label {...}
             xywh {0 495 385 25} align 20
           }
           Fl_Progress load_progress {
@@ -781,7 +799,8 @@ icc_examin->testZeigen();}
         }
       }
       Fl_Box no_box {
-        xywh {0 0 385 520}
+        label no_box_invisible
+        xywh {0 0 385 520} align 4
         code0 {o->box(FL_NO_BOX);}
         class My_Fl_Box
       }

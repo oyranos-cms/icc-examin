@@ -440,6 +440,7 @@ ICCexamin::zeigMftTabellen ()
 
         GL_Ansicht::getAgv(gl, icc_betrachter->mft_gl);
         gl->init( icc_betrachter->mft_gl->id() );
+        gl->copy( *icc_betrachter->mft_gl );
         gl->kanal = i;
       g->end();
     w->end();
@@ -1033,6 +1034,7 @@ ICCexamin::icc_betrachterNeuzeichnen (void* z)
   DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->mft_gl_group)->visible() )
   DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->mft_viewer)->visible() )
 
+# if 0
   enum {ZEIGEN, VERSTECKEN, NACHRICHT, KEINEn};
 # define widZEIG(zeigen,widget,dbg) { \
      if        (zeigen ==                  VERSTECKEN && widget->visible()) { \
@@ -1046,7 +1048,6 @@ ICCexamin::icc_betrachterNeuzeichnen (void* z)
   }
 
   // oberstes Widget testen
-# if 0
   DBG_PROG_V( icc_betrachter->widget_oben )
   enum { DD_ZEIGEN, INSPEKT_ZEIGEN, TAG_ZEIGEN };
   int oben;
@@ -1143,8 +1144,9 @@ ICCexamin::icc_betrachterNeuzeichnen (void* z)
   } else
     icc_betrachter->mft_choice->hide();
 
-# define SichtbarkeitsWechsel(widget) \
-  { Fl_Widget *w = dynamic_cast<Fl_Widget*> (icc_betrachter->widget); \
+# define SichtbarkeitsWechsel(widget, oberst) \
+  { \
+    Fl_Widget *w = dynamic_cast<Fl_Widget*> (icc_betrachter->widget); \
     if (w != wid && w->visible()) \
     { DBG_PROG_S( #widget << " verstecken" ) \
       w->hide(); \
@@ -1158,6 +1160,14 @@ ICCexamin::icc_betrachterNeuzeichnen (void* z)
       } \
     } else if(w == wid) \
     { DBG_PROG_S( #widget << " zeigen" ) \
+      /* verstecke alle anderen Zweige */ \
+      for(int i = 0; i < wids_n; ++i) { \
+        if(i != oberst) \
+          wids[i]->hide(); \
+      /* nur all uns uebergeordneten Zweige sind sichtbar */ \
+      if(!wids[oberst]->visible()) \
+        wids[oberst]->show(); \
+      } \
       if (!w->visible_r()) \
       { \
         w->show(); \
@@ -1172,11 +1182,15 @@ ICCexamin::icc_betrachterNeuzeichnen (void* z)
     } \
   }
 
-  SichtbarkeitsWechsel(mft_viewer)
-  SichtbarkeitsWechsel(mft_gl_group)
-  SichtbarkeitsWechsel(mft_text)
-  SichtbarkeitsWechsel(tag_viewer)
-  SichtbarkeitsWechsel(tag_text)
+  int wids_n = 2;
+  Fl_Widget *wids[2] = {icc_betrachter->tabellengruppe,
+                        icc_betrachter->twoD_pack};
+
+  SichtbarkeitsWechsel(mft_viewer, 0)
+  SichtbarkeitsWechsel(mft_gl_group, 0)
+  SichtbarkeitsWechsel(mft_text, 0)
+  SichtbarkeitsWechsel(tag_viewer, 1)
+  SichtbarkeitsWechsel(tag_text, 1)
 
 # if 0
   // wenigstens ein Widget zeigen

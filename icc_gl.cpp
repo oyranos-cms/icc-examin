@@ -134,9 +134,22 @@ FTFont *font = NULL, *ortho_font = NULL;
 
 int GL_Ansicht::ref_ = 0;
 
-
 GL_Ansicht::GL_Ansicht(int X,int Y,int W,int H)
   : Fl_Gl_Window(X,Y,W,H)
+{ DBG_PROG_START
+  init_();
+  DBG_PROG_ENDE
+}
+
+GL_Ansicht::GL_Ansicht(int X,int Y,int W,int H, const char *l)
+  : Fl_Gl_Window(X,Y,W,H,l)
+{ DBG_PROG_START
+  init_();
+  DBG_PROG_ENDE
+}
+
+void
+GL_Ansicht::init_()
 { DBG_PROG_START
 
   id_ = ref_;
@@ -154,7 +167,7 @@ GL_Ansicht::GL_Ansicht(int X,int Y,int W,int H)
   punktform = MENU_dE1STERN;
   punktgroesse = 8;
   punkt_zahl_alt = 0;
-  hintergrundfarbe = MENU_HELLGRAU;
+  hintergrundfarbe = 0.75;
   spektralband = 0;
   zeige_helfer = true;
   zeig_punkte_als_paare = false;
@@ -166,7 +179,7 @@ GL_Ansicht::GL_Ansicht(int X,int Y,int W,int H)
   strich3 = 3;
   blend = false;
   smooth = false;
-  wiederholen = 0;
+  waiting_ = 1;
   maus_x_ = 0;
   maus_y_ = 0;
   maus_x_alt = -1;
@@ -225,8 +238,7 @@ GL_Ansicht::~GL_Ansicht()
     {
       Fl_Preferences gl_cube(gl, "gl_cube");
       gl_cube.set("spektralband", spektralband );
-      int eintrag = hintergrundfarbeZuMenueeintrag(hintergrundfarbe);
-      gl_cube.set("hintergrundfarbe", eintrag );
+      gl_cube.set("hintergrundfarbe", hintergrundfarbe );
       gl_cube.set("zeige_helfer", zeige_helfer );
       gl_cube.set("schalen", schalen );
 
@@ -236,8 +248,7 @@ GL_Ansicht::~GL_Ansicht()
     {
       Fl_Preferences gl_gamut(gl, "gl_gamut");
       gl_gamut.set("spektralband", spektralband );
-      int eintrag = hintergrundfarbeZuMenueeintrag(hintergrundfarbe);
-      gl_gamut.set("hintergrundfarbe", eintrag );
+      gl_gamut.set("hintergrundfarbe", hintergrundfarbe );
       gl_gamut.set("zeige_helfer", zeige_helfer );
       gl_gamut.set("schalen", schalen );
 
@@ -273,7 +284,7 @@ GL_Ansicht::copy (const GL_Ansicht & gl)
   strich3 = gl.strich3;
   blend = gl.blend;
   smooth = gl.smooth;
-  wiederholen = gl.wiederholen;
+  waiting_ = gl.waiting_;
   maus_x_ = gl.maus_x_;
   maus_y_ = gl.maus_y_;
   maus_steht = gl.maus_steht;
@@ -315,7 +326,7 @@ GL_Ansicht::init(int ty)
     {
       Fl_Preferences gl_cube(gl, "gl_cube");
       gl_cube.get("spektralband", spektralband, 0 );
-      gl_cube.get("hintergrundfarbe", hintergrundfarbe, MENU_HELLGRAU );
+      gl_cube.get("hintergrundfarbe", hintergrundfarbe, 0.75 );
       gl_cube.get("zeige_helfer", zeige_helfer, true );
       gl_cube.get("schalen", schalen, 5 );
     } break;
@@ -323,7 +334,7 @@ GL_Ansicht::init(int ty)
     {
       Fl_Preferences gl_gamut(gl, "gl_gamut");
       gl_gamut.get("spektralband", spektralband, 0 );
-      gl_gamut.get("hintergrundfarbe", hintergrundfarbe, MENU_HELLGRAU );
+      gl_gamut.get("hintergrundfarbe", hintergrundfarbe, 0.75 );
       gl_gamut.get("zeige_helfer", zeige_helfer, true );
       gl_gamut.get("schalen", schalen, 5 );
     } break;
@@ -375,7 +386,7 @@ GL_Ansicht::init(int ty)
 
   // Initialisieren
   menueInit_(); DBG_PROG
-  menueAufruf ((int)hintergrundfarbe); // Farbschema
+  menueAufruf (hintergrundfarbeZuMenueeintrag(hintergrundfarbe)); // Farbschema
   menueAufruf (MENU_GRAU);     // CLUT Farbschema
   schatten = 0.1;
   if (typ() == 1) menueAufruf (MENU_WUERFEL);
@@ -426,6 +437,12 @@ GL_Ansicht::bewegenStatisch_ (void* gl_a)
       WARN_S( "keine GL_Ansicht uebergeben " << gl_ansicht->id_ )
       return;
   }
+
+  // Oberflaeche aktualisieren
+  gl_ansicht->waiting_ = 0;
+  icc_examin_ns::wait( 0.0, true );
+  gl_ansicht->waiting_ = 1;
+
 
   {
     if(!icc_examin->frei() ||
@@ -535,9 +552,6 @@ GL_Ansicht::nachricht(icc_examin_ns::Modell* modell, int info)
     darfBewegen( false );
   }
 
-  // Oberflaeche aktualisieren
-  icc_examin_ns::wait( 0.0, true );
-
   DBG_PROG_ENDE
 }
 
@@ -546,6 +560,12 @@ void
 GL_Ansicht::redraw()
 {
   DBG_PROG_START
+
+  if(!waiting_) {
+    DBG_S( "block redraw" )
+    DBG_PROG_ENDE
+    return;
+  }
 
   int thread = wandelThreadId(pthread_self());
   if(thread != THREAD_HAUPT) {
@@ -565,7 +585,7 @@ GL_Ansicht::draw()
   DBG_PROG_START
   --zahl;
   DBG_PROG_S( "Eintritt darfBewegen(): "
-               << darfBewegen()<<" "<<id_<<" "<<hintergrundfarbe )
+               << darfBewegen()<<" "<<id_<<" Farbe: "<<hintergrundfarbe )
   int thread = wandelThreadId(pthread_self());
   if(thread != THREAD_HAUPT) {
     WARN_S( ": falscher Thread" );
@@ -868,6 +888,11 @@ GL_Ansicht::erstelleGLListen_()
   punkteAuffrischen();
 
   //Hintergrund
+       static double hintergrundfarbe_statisch = hintergrundfarbe;
+       if(hintergrundfarbe != hintergrundfarbe_statisch)
+         DBG_NUM_S("Hintergrundfarbe gewechselt"
+                <<" "<<id_<<" Farbe: "<<hintergrundfarbe )
+
   glClearColor(hintergrundfarbe,hintergrundfarbe,hintergrundfarbe,1.);
   /*switch (hintergrundfarbe) {
     case MENU_WEISS:
@@ -1215,6 +1240,9 @@ GL_Ansicht::netzeAuffrischen()
        glEnable(GL_LIGHTING);
        glEnable(GL_DEPTH_TEST);
 
+       static double hintergrundfarbe_statisch = hintergrundfarbe;
+       if(hintergrundfarbe != hintergrundfarbe_statisch)
+         DBG_NUM_S("Hintergrundfarbe gewechselt "<<id_)
        GLfloat lmodel_ambient[] = {0.125+hintergrundfarbe/8,
                                    0.125+hintergrundfarbe/8,
                                    0.125+hintergrundfarbe/8, 1.0};
@@ -2323,8 +2351,8 @@ GL_Ansicht::zeichnen()
 
     // Geschwindigkeit
     static double zeit_alt = 0;
-    sprintf(t, "zeit_: %.01f id: %d f/s: %.03f theoretisch f/s: %.03f",
-            zeit_, id_, 1./(zeit_ - zeit_alt), 1./dzeit);
+    snprintf(t, 128, "zeit_: %.01f id: %d f/s: %.03f theoretisch f/s: %.03f",
+             zeit_, id_, 1./(zeit_ - zeit_alt), 1./dzeit);
     zeit_alt = zeit_;
     DBG_PROG_V( t )
 
@@ -2544,7 +2572,7 @@ GL_Ansicht::hineinTabelle (std::vector<std::vector<std::vector<std::vector<doubl
   MARK( frei(true); )
 
   valid_=false;
-  //redraw();
+  redraw();
 
   glStatus(_("left-/middle-/right mouse button -> rotate/cut/menu"), typ_);
 
@@ -2756,10 +2784,11 @@ GL_Ansicht::handle( int event )
          DBG_BUTTON_S( "FL_MOUSEWHEEL" << Fl::event_dx() << "," << Fl::event_dy() )
          break;
     case FL_LEAVE:
-         DBG_BUTTON_S( "FL_LEAVE" )
+         DBG_BUTTON_S( dbgFltkEvent(event) )
+         break;
     case FL_NO_EVENT:
     default:
-         DBG_BUTTON_S( "default" )
+         DBG_BUTTON_S( dbgFltkEvent(event) )
          DBG_ICCGL_ENDE
          return Fl_Gl_Window::handle(event);
   }

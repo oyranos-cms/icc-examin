@@ -5,7 +5,7 @@ FLTK_H = -I/opt/test1/include -I/usr/include/freetype2 -I/usr/X11R6/include
 FLTK_LIBS = -L/opt/test1/lib -L/usr/X11R6/lib -lfltk_images -lpng -lz -ljpeg -lfltk_gl -lGLU -lGL -lfltk -lXft -lXinerama -lpthread -lm -lXext -lX11
 dl = -ldl
 GETTEXT = -DUSE_GETTEXT
-.SILENT:
+DEBUG_SWITCH = -v
 TARGET=fl_i18n
 VERSION=0.0.2
 COMPILE_OPTIONS=-DUSE_THREADS $(GETTEXT)

@@ -86,6 +86,7 @@ class ICCmeasurement {
 
     //! wird nur gesetzt wenn in CGATS vorhanden
     bool                XYZ_measurement_;
+    bool                LAB_measurement_;
     bool                RGB_measurement_;
     bool                CMYK_measurement_;
     // Messwerte
@@ -120,15 +121,18 @@ class ICCmeasurement {
     // grundlegende Infos
     bool                has_data (void)    {DBG_PROG return (XYZ_Satz_.size() ||
                                                     ( data_ && size_ ) ); }
-    bool                valid (void)       {DBG_PROG return (XYZ_measurement_
+    bool                valid (void)       {DBG_PROG return ((XYZ_measurement_
+                                                  || LAB_measurement_) 
                                                  && (RGB_measurement_
                                                   || CMYK_measurement_)); }
     bool                validHalf (void)   {DBG_PROG return (XYZ_measurement_
+                                                 || LAB_measurement_
                                                  || RGB_measurement_
                                                  || CMYK_measurement_); }
     bool                hasRGB ()          {DBG_PROG return RGB_measurement_; }
     bool                hasCMYK ()         {DBG_PROG return CMYK_measurement_; }
     bool                hasXYZ ()          {DBG_PROG return XYZ_measurement_; }
+    bool                hasLab ()          {DBG_PROG return LAB_measurement_; }
     size_t              getSize()          {DBG_PROG return size_; }
     int                 getPatchCount()    {DBG_PROG return nFelder_; }
     // Werte
