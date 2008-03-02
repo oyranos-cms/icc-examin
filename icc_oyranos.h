@@ -88,7 +88,8 @@ class Oyranos
     std::string profil (const char* n) { if(profil_test_(n)) return profil_(n);}
     const char* profil (const char* n, size_t &g) { return profil_(n,g); }
 
-    int         setzeMonitorProfil (const char* name );
+    int         setzeMonitorProfil     (const char *name );
+    char*       holeMonitorProfil      (const char *display_name, size_t *size );
     std::vector<ICCnetz> netzAusVRML   (std::string & vrml)
                                 { return extrahiereNetzAusVRML (vrml); }
     std::vector<ICCnetz> netzVonProfil (ICCprofile & p, int intent);
@@ -113,8 +114,9 @@ class Oyranos
     double*  wandelLabNachBildschirmFarben(double *Lab_Speicher, // 0.0 - 1.0
                                            size_t  size, int intent, int flags);
     // Create an abstract profile containing GamutCheck + Proof
-    // from a device profile s; return the abstract profile
-    Speicher gamutCheckAbstract(  Speicher    s,
+    // from a device profile; write in the gamut profile in abstract
+    void     gamutCheckAbstract(  Speicher &  profil,
+                                  Speicher &  abstract,
                                   int         intent,
                                   int         flags);
 

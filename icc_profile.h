@@ -122,7 +122,8 @@ class ICCmeasurement {
   // I/O
   public:
     void                load (ICCprofile* profil , ICCtag& tag);
-    void                load (ICCprofile* profil , char *data, size_t size);
+    void                load (ICCprofile* profil ,
+                              const char *data, size_t size);
   public:
     // grundlegende Infos
     bool                has_data (void)    {DBG_PROG return (_XYZ_Satz.size() ||
@@ -171,6 +172,12 @@ class ICCprofile {
 
     ICCprofile &        copy_      ( const ICCprofile & p );
   public:
+  typedef enum {
+    ICCnullDATA,
+    ICCprofileDATA,
+    ICCmeasurementDATA
+  } ICCDataType;
+
                         ICCprofile ();
                         ICCprofile (const char *filename);
                         ICCprofile ( const ICCprofile & p );
@@ -178,14 +185,14 @@ class ICCprofile {
     virtual             ~ICCprofile (void);
     void                clear (void);
 
-    void                load (std::string filename);
-    void                load (char* filename);
-    void                load (const Speicher & profil);
+    ICCDataType         load (std::string filename);
+    ICCDataType         load (char* filename);
+    ICCDataType         load (const Speicher & profil);
     bool                changing()             { return changing_; }
 
   private:
     bool                changing_;
-    void                fload ();
+    ICCDataType         fload ();
     std::string         filename_;
 
     // icc34.h Definitionen

@@ -127,29 +127,32 @@ ICCprofile::clear (void)
   DBG_PROG_ENDE
 }
 
-void
+ICCprofile::ICCDataType
 ICCprofile::load (std::string filename)
 { DBG_PROG_START
   // delegieren
   filename_ = filename;
-  fload ();
+  ICCDataType type = fload();
   DBG_PROG_ENDE
+  return type;
 }
 
-void
+ICCprofile::ICCDataType
 ICCprofile::load (char* filename)
 { DBG_PROG_START
   // delegieren
   filename_ = filename;
-  fload();
+  ICCDataType type = fload();
   DBG_PROG_ENDE
+  return type;
 }
 
-void
+ICCprofile::ICCDataType
 ICCprofile::fload ()
 {
   DBG_PROG_START // ICC Profil laden
- 
+
+  ICCDataType type = ICCnullDATA;
   std::string file = filename_;
   changing_ = true;
 
@@ -182,17 +185,18 @@ ICCprofile::fload ()
 
     Speicher s ((const char*)data_, size_);
     s = file;
-    load(s);
+    type = load(s);
 
   } else {
     DBG_PROG_ENDE
-    return;
+    return type;
   }
   changing_ = false;
   DBG_PROG_ENDE
+  return type;
 }
 
-void
+ICCprofile::ICCDataType
 ICCprofile::load (const Speicher & prof)
 {
   DBG_PROG_START // ICC Profil laden
@@ -214,7 +218,7 @@ ICCprofile::load (const Speicher & prof)
     DBG_MEM_V( (int*)data_ )
   } else {
     DBG_PROG_ENDE
-    return;
+    return ICCnullDATA;
   }
 
   // Test   > 132 byte
@@ -222,7 +226,7 @@ ICCprofile::load (const Speicher & prof)
     WARN_S( _("Kein Profil")<<" "<<_("Size")<<" "<<size_ )
     measurement.load( this, data_, size_ );
     DBG_PROG_ENDE
-    return;
+    return ICCmeasurementDATA;
   }
 
   DBG_PROG
@@ -264,7 +268,7 @@ ICCprofile::load (const Speicher & prof)
 
     measurement.load( this, tag );
     DBG_PROG_ENDE
-    return;
+    return ICCmeasurementDATA;
   }
    
   DBG_MEM
@@ -316,6 +320,7 @@ ICCprofile::load (const Speicher & prof)
 
   changing_ = false;
   DBG_PROG_ENDE
+  return ICCprofileDATA;
 }
 
 

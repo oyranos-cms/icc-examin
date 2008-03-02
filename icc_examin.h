@@ -59,9 +59,11 @@ class ICCexamin : public icc_examin_ns::Beobachter
     void         quit(void);
 
     void         oeffnen (std::vector<std::string> dateinamen);
+    void         oeffnen (std::vector<Speicher> speicher);
     void         oeffnen ();                   // interaktiv
     void         tag_browserText  (void);
     bool         berichtSpeichern (void);      // GCATS Auswertung -> html Datei
+    bool         gamutSpeichern (void);        // Farbraumhuelle abstraktes Profil
     void         zeigPrueftabelle ();
     void         zeigCGATS();                  // korrigiertes CGATS zeigen
     void         neuzeichnen (void* widget);   // Oberflaeche neuzeichnen
@@ -116,6 +118,7 @@ class ICCexamin : public icc_examin_ns::Beobachter
 
     void vcgtZeigen ();
     void testZeigen ();
+    void moniHolen ();
     void moniSetzen ();
     void standardGamma ();
   public:

@@ -51,6 +51,105 @@ using namespace icc_examin_ns;
 #include "icc_vrml_parser.h"
 
 void
+ICCexamin::oeffnen (std::vector<Speicher> profil_vect)
+{ DBG_PROG_START
+  if(!profil_vect.size()) {
+    DBG_PROG_ENDE
+    return;
+  }
+
+  // Laden
+  frei_ = false;
+  icc_betrachter->DD_farbraum->punkte_clear();
+  profile.clear();
+  for (int i = 0; i < (int)profil_vect.size(); ++i)
+    profile.oeffnen( profil_vect[i], 1 );
+
+  if (profile.size())
+  {
+      // Oberflaechenpflege
+    tag_browserText ();
+    if(icc_betrachter->DD_farbraum->visible() &&
+       !icc_betrachter->inspekt_html->visible() )
+      icc_betrachter->DD_farbraum->flush();
+    icc_betrachter->menueintrag_gamut_speichern->activate();
+
+    icc_betrachter->measurement( profile.profil()->hasMeasurement() );
+    if(farbraumModus())
+    {
+        // Oberflaechenpflege
+      icc_betrachter->menueintrag_3D->set();
+      icc_betrachter->menueintrag_huelle->set();
+      icc_betrachter->widget_oben = ICCfltkBetrachter::WID_3D;
+      farbraum_angezeigt_ = true;
+      neuzeichnen(icc_betrachter->DD_farbraum);
+      DBG_PROG_S("neuzeichnen DD_farbraum")
+
+      profile.oeffnen(icc_oyranos.moni(),-1);
+      profile.oeffnen(icc_oyranos.cmyk(),-1);
+    }
+  }
+
+    // ICCwaehler
+      // erneuern?
+    static std::vector<std::string> namen_neu, namen_alt;
+    bool namensgleich = false;
+    namen_neu = profile;
+    DBG_PROG_V( namen_neu.size() <<" "<< namen_alt.size() )
+    if(namen_alt.size() == namen_neu.size()) {
+      namensgleich = true;
+      DBG_NUM_S( _("Anzahl gabs schon mal") )
+      for(int i = 0; i < (int)namen_neu.size(); ++i)
+        if(namen_neu[i] != namen_alt[i])
+          namensgleich = false;
+    }
+    namen_alt = namen_neu;
+    DBG_NUM_V( "####### " << namensgleich << " ########")
+    if(!namensgleich)
+    {
+      icc_waehler_->clear();
+      int anzahl = profile.size();
+      DBG_PROG_V( anzahl )
+      double transparenz;
+      bool grau;
+      std::vector<int> aktiv = profile.aktiv();
+      DBG_PROG_V( aktiv.size() )
+      for(int i = 0; i < anzahl; ++i) {
+        DBG_PROG_V( i )
+        // Datainame extahieren
+        std::string dateiname;
+        if( profile.name(i).find_last_of("/") != std::string::npos)
+          dateiname = profile.name(i).substr( profile.name(i).find_last_of("/")+1, profile.name(i).size() );
+        else
+          dateiname = profile.name(i);
+
+        if( i >= (int)icc_betrachter->DD_farbraum->dreiecks_netze.size() ) {
+          WARN_S( _("Gebe irritiert auf. Kein Netz gefunden. Ist Argyll installiert?") )
+          break;
+        }
+        transparenz = icc_betrachter->DD_farbraum->dreiecks_netze[i].transparenz;
+        DBG_PROG_V( transparenz )
+        grau = icc_betrachter->DD_farbraum->dreiecks_netze[i].grau;
+        icc_waehler_->push_back(dateiname.c_str(), transparenz, grau , aktiv[i]);
+      }
+    }
+
+  // Fenstername setzen
+  {
+    detaillabel = "ICC Examin: ";
+    std::string dateiname = profile.name(profile.aktuell());
+    if( dateiname.find_last_of("/") != std::string::npos)
+      detaillabel.insert( detaillabel.size(), dateiname.substr( dateiname.find_last_of("/")+1, dateiname.size()) );
+    else
+      detaillabel.insert( detaillabel.size(), dateiname );
+    icc_betrachter->details->label(detaillabel.c_str());
+  }
+
+  frei_ = true;
+  DBG_PROG_ENDE
+}
+
+void
 ICCexamin::oeffnen (std::vector<std::string> dateinamen)
 { DBG_PROG_START
   if(!dateinamen.size()) {
@@ -69,6 +168,7 @@ ICCexamin::oeffnen (std::vector<std::string> dateinamen)
     if(icc_betrachter->DD_farbraum->visible() &&
        !icc_betrachter->inspekt_html->visible() )
       icc_betrachter->DD_farbraum->flush();
+    icc_betrachter->menueintrag_gamut_speichern->activate();
 
     icc_betrachter->measurement( profile.profil()->hasMeasurement() );
     if(farbraumModus())
@@ -342,4 +442,85 @@ ICCexamin::berichtSpeichern (void)
   return erfolgreich;
 }
 
+bool
+ICCexamin::gamutSpeichern (void)
+{
+  DBG_PROG_START
+  frei_ = false;
+  bool erfolgreich = true;
+  std::string dateiname = profile.name();  DBG_PROG_V( dateiname )
+
+  // Profilnamen ersetzen
+  std::string::size_type pos=0;
+  if ((pos = dateiname.find_last_of(".", dateiname.size())) != std::string::npos)
+  { DBG_PROG
+    dateiname.replace (pos, 5, "_proof.icc"); DBG_NUM_S( "_proof.icc gesetzt" )
+  } DBG_PROG_V( dateiname )
+
+  // FLTK Dateidialog aufrufen
+  DBG_PROG_V( dateiwahl->filter() )
+
+  std::string muster = dateiwahl->filter(); DBG_PROG
+  std::string datei;
+  if (dateiwahl->value())
+    datei = dateiwahl->value(); DBG_PROG
+  std::string titel = dateiwahl->label(); DBG_PROG
+
+  dateiwahl->filter(_("ICC colour profiles (*.ic*)")); DBG_PROG
+  #ifdef HAVE_FLU
+  dateiwahl->cd(".");
+  #endif
+  dateiwahl->label(_("Save Gamut as Profile")); DBG_PROG
+  dateiwahl->value(dateiname.c_str()); DBG_PROG
+
+  dateiwahl->show(); DBG_PROG
+  while( dateiwahl->shown() )
+    Fl::wait( 0.01 );
+
+  DBG_PROG_V( dateiwahl->filter() )
+  if (dateiwahl->value())
+    dateiname = dateiwahl->value();
+  else
+    dateiname = "";
+  DBG_PROG
+
+  dateiwahl->filter(muster.c_str()); DBG_PROG
+  dateiwahl->value(datei.c_str()); DBG_PROG
+  dateiwahl->label(titel.c_str()); DBG_PROG
+  DBG_PROG_V( dateiwahl->filter() )
+
+  DBG_PROG_V( dateiname )
+
+  if (dateiname == "" ||
+      dateiname == profile.name())
+  { DBG_PROG_V( dateiwahl->count() << dateiname )
+    fortschritt (1.1);
+    frei_ = true;
+    DBG_PROG_ENDE
+    return false;
+  }
+
+  // Gamutprofil erzeugen
+  Speicher profil;
+  size_t groesse = 0;
+  char* daten = profile.profil()->saveProfileToMem( &groesse );
+  //char* block = (char*) calloc (sizeof (char), groesse );
+  //memcpy( daten, daten, groesse);
+  profil.lade( daten, groesse );
+  Speicher abstract;
+  icc_oyranos.gamutCheckAbstract( profil, abstract,
+                                  profile.profil()->intent(),
+                                  /*cmsFLAGS_GAMUTCHECK |*/ cmsFLAGS_SOFTPROOFING );
+
+  // Speichern
+  std::ofstream f ( dateiname.c_str(),  std::ios::out );
+  f.write ( (const char*)abstract, abstract.size() );
+  f.close();
+  profil.clear(); DBG
+  abstract.clear(); DBG
+
+  frei_ = true;
+  DBG_PROG_ENDE
+  return erfolgreich;
+}
 

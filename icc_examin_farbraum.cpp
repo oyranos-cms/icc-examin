@@ -249,7 +249,7 @@ ICCexamin::farbraum (int n)
     if( dateiname.find_last_of("/") != std::string::npos)
       dateiname = dateiname.substr( dateiname.find_last_of("/")+1,
                                     dateiname.size() );
-    DBG_V( icc_betrachter->DD_farbraum->dreiecks_netze[n].name )
+    DBG_PROG_V( icc_betrachter->DD_farbraum->dreiecks_netze[n].name )
   }
 
   frei_ = true;

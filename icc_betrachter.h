@@ -87,10 +87,12 @@ private:
   static void cb_Close(Fl_Button*, void*);
   inline void cb_Refresh_i(Fl_Button*, void*);
   static void cb_Refresh(Fl_Button*, void*);
-  inline void cb_Monitorprofile_i(Fl_Button*, void*);
-  static void cb_Monitorprofile(Fl_Button*, void*);
-  inline void cb_Standard_i(Fl_Button*, void*);
-  static void cb_Standard(Fl_Button*, void*);
+  inline void cb_Set_i(Fl_Button*, void*);
+  static void cb_Set(Fl_Button*, void*);
+  inline void cb_Reset_i(Fl_Button*, void*);
+  static void cb_Reset(Fl_Button*, void*);
+  inline void cb_Load_i(Fl_Button*, void*);
+  static void cb_Load(Fl_Button*, void*);
 public:
   Fl_Double_Window *details;
   Fl_Menu_Bar *menueleiste;
@@ -103,6 +105,11 @@ public:
 private:
   inline void cb_menueintrag_html_speichern_i(Fl_Menu_*, void*);
   static void cb_menueintrag_html_speichern(Fl_Menu_*, void*);
+public:
+  static Fl_Menu_Item *menueintrag_gamut_speichern;
+private:
+  inline void cb_menueintrag_gamut_speichern_i(Fl_Menu_*, void*);
+  static void cb_menueintrag_gamut_speichern(Fl_Menu_*, void*);
   inline void cb_Quit_i(Fl_Menu_*, void*);
   static void cb_Quit(Fl_Menu_*, void*);
   inline void cb_Oyranos_i(Fl_Menu_*, void*);

@@ -197,7 +197,7 @@ ICCmeasurement::load                ( ICCprofile *profil,
 
 void
 ICCmeasurement::load                ( ICCprofile *profil,
-                                      char       *data,
+                                      const char *data,
                                       size_t      size )
 { DBG_PROG_START
   _profil = profil;

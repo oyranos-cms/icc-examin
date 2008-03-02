@@ -301,7 +301,7 @@ class ICCfltkBetrachter {open
   \#endif} {}
     Fl_Window ueber {
       label {About ICC Examin}
-      xywh {607 803 366 241} type Double resizable
+      xywh {617 559 366 241} type Double resizable
       code0 {o->hide();} non_modal visible
     } {
       Fl_Group {} {open
@@ -319,7 +319,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window vcgt {
       label {Grafic Card Gamma Table}
-      xywh {626 486 370 390} type Double resizable
+      xywh {523 522 370 390} type Double resizable
       code0 {o->hide();} non_modal visible
     } {
       Fl_Group {} {open
@@ -338,23 +338,28 @@ class ICCfltkBetrachter {open
         Fl_Button {} {
           label Refresh
           callback {icc_examin->vcgtZeigen();}
-          tooltip {refresh gamma table from video card} xywh {195 360 95 25} hotspot
+          tooltip {refresh gamma table from video card} xywh {215 360 75 25} hotspot
         }
         Fl_Button {} {
-          label Monitorprofile
+          label Set
           callback {icc_examin->moniSetzen();}
-          tooltip {Set the current profile as monitor profile and upload vcgt tag to the video card} xywh {80 360 115 25} hotspot
+          tooltip {Set the current profile as monitor profile and upload vcgt tag to the video card} xywh {10 360 65 25} hotspot
         }
         Fl_Button {} {
-          label Standard
+          label Reset
           callback {icc_examin->standardGamma();}
-          tooltip {reset to standard gamma} xywh {5 360 75 25} hotspot
+          tooltip {reset to standard gamma} xywh {75 360 75 25} hotspot
+        }
+        Fl_Button {} {
+          label Load
+          callback {icc_examin->moniHolen();} selected
+          tooltip {Load the current monitor profile} xywh {150 360 65 25} hotspot
         }
       }
     }
     Fl_Window details {
       label {ICC Examin} open
-      xywh {858 524 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
+      xywh {838 223 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
     } {
       Fl_Group {} {open
         xywh {0 0 385 520}
@@ -378,7 +383,16 @@ class ICCfltkBetrachter {open
   icc_examin->berichtSpeichern ();
 
   DBG_PROG_ENDE}
-              xywh {0 0 100 20} deactivate divider
+              xywh {0 0 100 20} deactivate
+            }
+            menuitem menueintrag_gamut_speichern {
+              label {Save Gamut}
+              callback {DBG_PROG_START
+
+  icc_examin->gamutSpeichern ();
+
+  DBG_PROG_ENDE}
+              xywh {10 10 100 20} deactivate divider
             }
             menuitem {} {
               label Quit
@@ -446,7 +460,7 @@ class ICCfltkBetrachter {open
 
   DBG_PROG_S (m->value())
 
-  icc_examin->gamutwarn(m->value());} selected
+  icc_examin->gamutwarn(m->value());}
               tooltip {Gamut Warning will gray out all colours not in your monitors gamut.} xywh {25 25 100 20} type Toggle shortcut 0x40077 divider
             }
             menuitem menueintrag_3D {

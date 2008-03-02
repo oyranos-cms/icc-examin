@@ -52,12 +52,12 @@ ICCkette::ICCkette  ()
 bool
 ICCkette::oeffnen (const Speicher & prof, int pos)
 { DBG_PROG_START
-  bool erfolgreich = false;
+  bool erfolg = false;
 
   // Ist das Profile eventuell schon geladen? -> Abbruch
   for(unsigned int i = 0; i < profile_.size(); ++i)
     if(prof.name() == profile_[i].filename())
-      return false;
+      return erfolg;
 
   if(!prof.size())
     return false;
@@ -67,10 +67,25 @@ ICCkette::oeffnen (const Speicher & prof, int pos)
       pos < (int)profile_.size() )
   {
     profile_.insert (profile_.begin()+pos, ICCprofile());
-    profile_[pos].load(prof);
+    ICCprofile::ICCDataType type = profile_[pos].load(prof);
+    DBG_V( type )
+    if(type == ICCprofile::ICCmeasurementDATA && pos != 0)
+    {
+      ICCmeasurement m;
+      m.load( profile.profil() , (const char*) prof, prof.size() );
+      DBG_V( profile.profil()->hasMeasurement() )
+    }
     DBG_PROG_V( profile_[pos].size() )
     DBG_PROG_V( profile_[pos].filename() )
     DBG_PROG_V( prof.name() )
+    std::string name;
+    if(prof.name().size())
+      name = prof.name();
+    else
+      if(profile_[pos].hasTagName("desc"))
+        name = profile_[pos].getTagText( profile_[pos].getTagByName("desc"))[0];
+      else
+        name = _("actual monitor");
     profilnamen_.insert (profilnamen_.begin()+pos, prof.name() );
     aktiv_.insert (aktiv_.begin()+pos, true);
     profil_mzeit_.insert (profil_mzeit_.begin()+pos, (double)prof.zeit() );
@@ -87,49 +102,72 @@ ICCkette::oeffnen (const Speicher & prof, int pos)
 
   if( profile_.size() ) {
     aktuelles_profil_ = 0;
-    erfolgreich = true;
+    erfolg = true;
   } else { DBG_PROG
     icc_examin_ns::status_info(_("File not loaded!"));
   }
 
   DBG_PROG_ENDE
-  return erfolgreich;
+  return erfolg;
 }
 
 bool
 ICCkette::oeffnen (std::string dateiname, int pos)
 { DBG_PROG_START
-  bool erfolgreich = false;
+  bool erfolg = false;
   DBG_PROG_V( dateiname <<" "<< pos )
   // Ist das Profile eventuell schon geladen? -> Abbruch
   for(unsigned int i = 0; i < profile_.size(); ++i)
     if(dateiname == profile_[i].filename()) {
       DBG_PROG_S( _("File allready loaded")<< i <<": "<< dateiname )
-      return false;
+      return erfolg;
     }
 
   // Laden TODO: test auf Existenz der Datei (oyranos?)
-  if (pos >= 0 && pos < (int)profile_.size()) {
+  int resize_b = false;
+  if (pos >= 0 &&
+      pos < (int)profile_.size())
+  {
     profile_.insert (profile_.begin()+pos, ICCprofile());
-    profile_[pos].load(dateiname.c_str());
-    DBG_PROG_V( dateiname )
+  } else {
+    profile_.resize( profile_.size() + 1 );
+    pos = profile_.size()-1;
+    resize_b = true;
+  }
+
+  ICCprofile::ICCDataType type = profile_[pos].load(dateiname.c_str());
+  DBG_PROG_V( type )
+  if(type == ICCprofile::ICCmeasurementDATA && pos != 0)
+  {
+      ICCtag tag;
+      if(profile_[pos].hasTagName("targ"))
+      {
+        tag = profile_[pos].getTag( profile_[pos].getTagByName("targ"));
+        profile_[aktuell()].addTag( tag );
+        /*size_t groesse;
+        char* c = profile_[aktuell()].saveProfileToMem( &groesse );*/
+        /*Modell::*/benachrichtigen( aktuell() );
+      }
+      DBG_V( profile.profil()->hasMeasurement() )
+  }
+
+  DBG_PROG_V( dateiname )
+  if( !resize_b )
+  {
     profilnamen_.insert (profilnamen_.begin()+pos, dateiname );
     aktiv_.insert (aktiv_.begin()+pos, true);
     profil_mzeit_.insert (profil_mzeit_.begin()+pos,
                             holeDateiModifikationsZeit( dateiname.c_str() ));
   } else {
-    profile_.resize(profile_.size()+1);
-    profile_[profile_.size()-1].load(dateiname.c_str());
     profilnamen_.push_back( dateiname );
     aktiv_.push_back(true);
     profil_mzeit_.push_back(holeDateiModifikationsZeit( dateiname.c_str() ));
-    pos = profile_.size()-1;
   }
-
+  DBG_PROG
 
   if( profile_.size() ) {
     aktuelles_profil_ = 0;
-    erfolgreich = true;
+    erfolg = true;
   } else { DBG_PROG
     icc_examin_ns::status_info(_("File not loaded!"));
   }
@@ -137,13 +175,13 @@ ICCkette::oeffnen (std::string dateiname, int pos)
   /*Modell::*/benachrichtigen( pos );
 
   DBG_PROG_ENDE
-  return erfolgreich;
+  return erfolg;
 }
 
 bool
 ICCkette::oeffnen (std::vector<std::string> dateinamen)
 { DBG_PROG_START
-  bool erfolgreich = false;
+  bool erfolg = false;
 
   profile_.clear();
   profilnamen_.clear();
@@ -152,8 +190,8 @@ ICCkette::oeffnen (std::vector<std::string> dateinamen)
 
   for (unsigned int i = 0; i < dateinamen.size(); ++i)
   {
-    erfolgreich = oeffnen (dateinamen[i], -1);
-    if (erfolgreich && i == 0)
+    erfolg = oeffnen (dateinamen[i], -1);
+    if (erfolg && i == 0)
       icc_examin->farbraumModus(0);
     DBG_PROG_V( dateinamen[i] )
     //icc_examin_ns::fortschritt (1.0/i);
@@ -163,9 +201,9 @@ ICCkette::oeffnen (std::vector<std::string> dateinamen)
   if( profile_.size() )
     aktuelles_profil_ = 0;
 
-  erfolgreich = true;
+  erfolg = true;
   DBG_PROG_ENDE
-  return erfolgreich;
+  return erfolg;
 }
 
 static bool erstes_mal = true;

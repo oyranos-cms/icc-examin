@@ -158,18 +158,25 @@ void ICCfltkBetrachter::cb_Refresh(Fl_Button* o, void* v) {
   ((ICCfltkBetrachter*)(o->parent()->parent()->user_data()))->cb_Refresh_i(o,v);
 }
 
-inline void ICCfltkBetrachter::cb_Monitorprofile_i(Fl_Button*, void*) {
+inline void ICCfltkBetrachter::cb_Set_i(Fl_Button*, void*) {
   icc_examin->moniSetzen();
 }
-void ICCfltkBetrachter::cb_Monitorprofile(Fl_Button* o, void* v) {
-  ((ICCfltkBetrachter*)(o->parent()->parent()->user_data()))->cb_Monitorprofile_i(o,v);
+void ICCfltkBetrachter::cb_Set(Fl_Button* o, void* v) {
+  ((ICCfltkBetrachter*)(o->parent()->parent()->user_data()))->cb_Set_i(o,v);
 }
 
-inline void ICCfltkBetrachter::cb_Standard_i(Fl_Button*, void*) {
+inline void ICCfltkBetrachter::cb_Reset_i(Fl_Button*, void*) {
   icc_examin->standardGamma();
 }
-void ICCfltkBetrachter::cb_Standard(Fl_Button* o, void* v) {
-  ((ICCfltkBetrachter*)(o->parent()->parent()->user_data()))->cb_Standard_i(o,v);
+void ICCfltkBetrachter::cb_Reset(Fl_Button* o, void* v) {
+  ((ICCfltkBetrachter*)(o->parent()->parent()->user_data()))->cb_Reset_i(o,v);
+}
+
+inline void ICCfltkBetrachter::cb_Load_i(Fl_Button*, void*) {
+  icc_examin->moniHolen();
+}
+void ICCfltkBetrachter::cb_Load(Fl_Button* o, void* v) {
+  ((ICCfltkBetrachter*)(o->parent()->parent()->user_data()))->cb_Load_i(o,v);
 }
 
 inline void ICCfltkBetrachter::cb_Open_i(Fl_Menu_*, void*) {
@@ -188,6 +195,17 @@ inline void ICCfltkBetrachter::cb_menueintrag_html_speichern_i(Fl_Menu_*, void*)
 }
 void ICCfltkBetrachter::cb_menueintrag_html_speichern(Fl_Menu_* o, void* v) {
   ((ICCfltkBetrachter*)(o->parent()->parent()->user_data()))->cb_menueintrag_html_speichern_i(o,v);
+}
+
+inline void ICCfltkBetrachter::cb_menueintrag_gamut_speichern_i(Fl_Menu_*, void*) {
+  DBG_PROG_START
+
+  icc_examin->gamutSpeichern ();
+
+  DBG_PROG_ENDE;
+}
+void ICCfltkBetrachter::cb_menueintrag_gamut_speichern(Fl_Menu_* o, void* v) {
+  ((ICCfltkBetrachter*)(o->parent()->parent()->user_data()))->cb_menueintrag_gamut_speichern_i(o,v);
 }
 
 inline void ICCfltkBetrachter::cb_Quit_i(Fl_Menu_*, void*) {
@@ -342,7 +360,8 @@ void ICCfltkBetrachter::cb_About(Fl_Menu_* o, void* v) {
 Fl_Menu_Item ICCfltkBetrachter::menu_menueleiste[] = {
  {_("File"), 0,  0, 0, 64, 0, 0, 14, 56},
  {_("Open"), 0x4006f,  (Fl_Callback*)ICCfltkBetrachter::cb_Open, 0, 0, 0, 0, 14, 56},
- {_("Save Report"), 0,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_html_speichern, 0, 129, 0, 0, 14, 56},
+ {_("Save Report"), 0,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_html_speichern, 0, 1, 0, 0, 14, 56},
+ {_("Save Gamut"), 0,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_gamut_speichern, 0, 129, 0, 0, 14, 56},
  {_("Quit"), 0x40071,  (Fl_Callback*)ICCfltkBetrachter::cb_Quit, 0, 0, 0, 0, 14, 56},
  {0,0,0,0,0,0,0,0,0},
  {_("Edit"), 0,  0, 0, 64, 0, 0, 14, 56},
@@ -366,16 +385,17 @@ Fl_Menu_Item ICCfltkBetrachter::menu_menueleiste[] = {
  {0,0,0,0,0,0,0,0,0}
 };
 Fl_Menu_Item* ICCfltkBetrachter::menueintrag_html_speichern = ICCfltkBetrachter::menu_menueleiste + 2;
-Fl_Menu_Item* ICCfltkBetrachter::menueintrag_huelle = ICCfltkBetrachter::menu_menueleiste + 8;
-Fl_Menu_Item* ICCfltkBetrachter::menueintrag_Voll = ICCfltkBetrachter::menu_menueleiste + 10;
-Fl_Menu_Item* ICCfltkBetrachter::menueintrag_gamutwarn = ICCfltkBetrachter::menu_menueleiste + 11;
-Fl_Menu_Item* ICCfltkBetrachter::menueintrag_3D = ICCfltkBetrachter::menu_menueleiste + 12;
-Fl_Menu_Item* ICCfltkBetrachter::menueintrag_inspekt = ICCfltkBetrachter::menu_menueleiste + 13;
-Fl_Menu_Item* ICCfltkBetrachter::menueintrag_zeigcgats = ICCfltkBetrachter::menu_menueleiste + 14;
-Fl_Menu_Item* ICCfltkBetrachter::menueintrag_vcgt = ICCfltkBetrachter::menu_menueleiste + 15;
-Fl_Menu_Item* ICCfltkBetrachter::menueintrag_testkurven = ICCfltkBetrachter::menu_menueleiste + 16;
-Fl_Menu_Item* ICCfltkBetrachter::untermenue_3D = ICCfltkBetrachter::menu_menueleiste + 17;
-Fl_Menu_Item* ICCfltkBetrachter::menu_hilfe = ICCfltkBetrachter::menu_menueleiste + 19;
+Fl_Menu_Item* ICCfltkBetrachter::menueintrag_gamut_speichern = ICCfltkBetrachter::menu_menueleiste + 3;
+Fl_Menu_Item* ICCfltkBetrachter::menueintrag_huelle = ICCfltkBetrachter::menu_menueleiste + 9;
+Fl_Menu_Item* ICCfltkBetrachter::menueintrag_Voll = ICCfltkBetrachter::menu_menueleiste + 11;
+Fl_Menu_Item* ICCfltkBetrachter::menueintrag_gamutwarn = ICCfltkBetrachter::menu_menueleiste + 12;
+Fl_Menu_Item* ICCfltkBetrachter::menueintrag_3D = ICCfltkBetrachter::menu_menueleiste + 13;
+Fl_Menu_Item* ICCfltkBetrachter::menueintrag_inspekt = ICCfltkBetrachter::menu_menueleiste + 14;
+Fl_Menu_Item* ICCfltkBetrachter::menueintrag_zeigcgats = ICCfltkBetrachter::menu_menueleiste + 15;
+Fl_Menu_Item* ICCfltkBetrachter::menueintrag_vcgt = ICCfltkBetrachter::menu_menueleiste + 16;
+Fl_Menu_Item* ICCfltkBetrachter::menueintrag_testkurven = ICCfltkBetrachter::menu_menueleiste + 17;
+Fl_Menu_Item* ICCfltkBetrachter::untermenue_3D = ICCfltkBetrachter::menu_menueleiste + 18;
+Fl_Menu_Item* ICCfltkBetrachter::menu_hilfe = ICCfltkBetrachter::menu_menueleiste + 20;
 
 inline void ICCfltkBetrachter::cb_tag_browser_i(TagBrowser* o, void*) {
   o->selectItem( o->value() );
@@ -502,20 +522,25 @@ Fl_Double_Window* ICCfltkBetrachter::init(int argc, char** argv) {
       { Fl_Button* o = new Fl_Button(290, 360, 75, 25, _("Close"));
         o->callback((Fl_Callback*)cb_Close);
       }
-      { Fl_Button* o = new Fl_Button(195, 360, 95, 25, _("Refresh"));
+      { Fl_Button* o = new Fl_Button(215, 360, 75, 25, _("Refresh"));
         o->tooltip(_("refresh gamma table from video card"));
         o->callback((Fl_Callback*)cb_Refresh);
         w->hotspot(o);
       }
-      { Fl_Button* o = new Fl_Button(80, 360, 115, 25, _("Monitorprofile"));
+      { Fl_Button* o = new Fl_Button(10, 360, 65, 25, _("Set"));
         o->tooltip(_("Set the current profile as monitor profile and upload vcgt tag to the video c\
 ard"));
-        o->callback((Fl_Callback*)cb_Monitorprofile);
+        o->callback((Fl_Callback*)cb_Set);
         w->hotspot(o);
       }
-      { Fl_Button* o = new Fl_Button(5, 360, 75, 25, _("Standard"));
+      { Fl_Button* o = new Fl_Button(75, 360, 75, 25, _("Reset"));
         o->tooltip(_("reset to standard gamma"));
-        o->callback((Fl_Callback*)cb_Standard);
+        o->callback((Fl_Callback*)cb_Reset);
+        w->hotspot(o);
+      }
+      { Fl_Button* o = new Fl_Button(150, 360, 65, 25, _("Load"));
+        o->tooltip(_("Load the current monitor profile"));
+        o->callback((Fl_Callback*)cb_Load);
         w->hotspot(o);
       }
       o->end();
@@ -534,7 +559,7 @@ ard"));
       { Fl_Menu_Bar* o = menueleiste = new Fl_Menu_Bar(0, 0, 385, 25);
         o->align(FL_ALIGN_LEFT|FL_ALIGN_INSIDE);
         o->when(3);
-        { Fl_Menu_Item* o = &menu_menueleiste[15];
+        { Fl_Menu_Item* o = &menu_menueleiste[16];
           o->hide();
         }
         o->menu(menu_menueleiste);
