@@ -143,7 +143,7 @@ Agviewer::ConstrainEl(void)
 void
 Agviewer::agvMove_(void)
 { DBG_PROG_START
-  DBG_PROG_V(redisplayWindow())
+  DBG_PROG_V( parent->id() )
   if(icc_examin->frei())
   {
   switch (MoveMode)  {
@@ -168,6 +168,7 @@ Agviewer::agvMove_(void)
         if (fabs(ElSpin) > fabs(AzSpin))
           AzSpin = fabs(ElSpin) * ((AzSpin > 0) ? 1 : -1);
       }
+      DBG_PROG_V( EyeEl<<" "<<EyeAz )
       break;
     }
 
@@ -309,7 +310,7 @@ Agviewer::agvHandleButton(int button, int event, int x, int y)
         AdjustingAzEl = 1;
         MoveOn(0); //ICC stop
         //if (MoveMode == FLYING)
-          icc_examin_ns::status_info(_("left-/middle-/right mouse button -> rotate/cut/menu"),parent->fensterId());
+          icc_examin_ns::status_info(_("left-/middle-/right mouse button -> rotate/cut/menu"),parent->typ());
         duenn = false;
         MoveMode = POLAR;
     } else
@@ -322,7 +323,7 @@ Agviewer::agvHandleButton(int button, int event, int x, int y)
         downEyeMove = EyeMove;
         EyeMove = 0;
         if (MoveMode == FLYING)
-          icc_examin_ns::status_info(_("Pause"),parent->fensterId());
+          icc_examin_ns::status_info(_("Pause"),parent->typ());
     }
 
   } else if (event == FL_RELEASE && /*button ==*/ downb) {
@@ -346,7 +347,7 @@ Agviewer::agvHandleButton(int button, int event, int x, int y)
         AdjustingAzEl = 0;
         MoveOn(1);
         if (MoveMode == FLYING) {
-          icc_examin_ns::status_info(_("left mouse button -> go back"),parent->fensterId());
+          icc_examin_ns::status_info(_("left mouse button -> go back"),parent->typ());
           duenn = false;
         }
       } else
@@ -354,7 +355,7 @@ Agviewer::agvHandleButton(int button, int event, int x, int y)
       {
         EyeMove = downEyeMove;
         if (MoveMode == FLYING) {
-          icc_examin_ns::status_info(_("left mouse button -> go back"),parent->fensterId());
+          icc_examin_ns::status_info(_("left mouse button -> go back"),parent->typ());
           duenn = true;
         }
       } else

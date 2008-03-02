@@ -39,7 +39,7 @@ decl {\#include <FL/fl_draw.H>} {}
 decl {\#include <FL/Fl_Menu_Button.H>} {public
 } 
 
-decl {\#include "icc_fenster.h"} {selected public
+decl {\#include "icc_fenster.h"} {public
 } 
 
 class FL_EXPORT MyFl_File_Chooser {open
@@ -69,8 +69,8 @@ class FL_EXPORT MyFl_File_Chooser {open
       callback {fileName->value("");
 fileList->deselect();
 Fl::remove_timeout((Fl_Timeout_Handler)previewCB, this);
-window->hide();} open
-      xywh {691 64 490 380} type Double resizable
+window->hide();} open selected
+      xywh {706 127 490 380} type Double resizable
       code0 {if (title) window->label(title);}
       code1 {\#include <stdio.h>}
       code2 {\#include <stdlib.h>}
@@ -149,9 +149,9 @@ if (callback_)
   (*callback_)(this, data_);
 
 window->hide();}
-            private xywh {313 345 85 25}
+            private xywh {270 345 100 25}
             code0 {\#include <FL/fl_ask.H>}
-            code1 {okButton->label(fl_ok);}
+            code1 {//okButton->label(fl_ok);}
           }
           Fl_Button cancelButton {
             label Cancel
@@ -159,8 +159,8 @@ window->hide();}
 fileList->deselect();
 Fl::remove_timeout((Fl_Timeout_Handler)previewCB, this);
 window->hide();}
-            private xywh {408 345 72 25}
-            code0 {o->label(fl_cancel);}
+            private xywh {380 345 100 25}
+            code0 {//o->label(fl_cancel);}
           }
           Fl_Box {} {
             private xywh {10 345 30 25} resizable
@@ -170,7 +170,7 @@ window->hide();}
     }
     Fl_Window favWindow {
       label {Manage Favorites}
-      xywh {225 127 355 150} type Double resizable
+      xywh {240 190 355 150} type Double resizable
       code0 {favWindow->label(manage_favorites_label);}
       class {icc_examin_ns::MyFl_Double_Window} modal size_range {181 150 0 0} visible
     } {
@@ -271,9 +271,10 @@ data_     = d;} {}
     code {showChoice->value(f);
 showChoiceCB();} {}
   }
-  Function {hide()} {return_type void
+  Function {hide()} {open return_type void
   } {
-    code {window->hide();} {}
+    code {fileList->deselect();
+window->hide();} {}
   }
   Function {iconsize(uchar s)} {return_type void
   } {

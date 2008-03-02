@@ -285,30 +285,30 @@ fl_delayed_redraw(void *w)
 }
 
 
-#include <Fl/Fl_File_Chooser.H>
+#include "my_file_chooser.h"
 void
 fl_translate_file_chooser( )
 {
 #ifdef USE_GETTEXT
   DBG_PROG_START
-    Fl_File_Chooser::add_favorites_label = _("Add to Favorites");
-    Fl_File_Chooser::all_files_label = _("All Files (*)");
-    Fl_File_Chooser::custom_filter_label = _("Custom Filter");
-    Fl_File_Chooser::existing_file_label = _("Please choose an existing file!");
-    Fl_File_Chooser::favorites_label = _("Favorites");
-    Fl_File_Chooser::filename_label = _("Filename");
-    Fl_File_Chooser::manage_favorites_label = _("Manage Favorites");
+    MyFl_File_Chooser::add_favorites_label = _("Add to Favorites");
+    MyFl_File_Chooser::all_files_label = _("All Files (*)");
+    MyFl_File_Chooser::custom_filter_label = _("Custom Filter");
+    MyFl_File_Chooser::existing_file_label = _("Please choose an existing file!");
+    MyFl_File_Chooser::favorites_label = _("Favorites");
+    MyFl_File_Chooser::filename_label = _("Filename");
+    MyFl_File_Chooser::manage_favorites_label = _("Manage Favorites");
 #   ifdef WIN32
-    Fl_File_Chooser::filesystems_label = _("My Computer");
+    MyFl_File_Chooser::filesystems_label = _("My Computer");
 #   else
-    Fl_File_Chooser::filesystems_label = _("File Systems");
+    MyFl_File_Chooser::filesystems_label = _("File Systems");
 #   endif
-    Fl_File_Chooser::new_directory_label = _("New Directory?");
-    Fl_File_Chooser::preview_label = _("Preview");
+    MyFl_File_Chooser::new_directory_label = _("New Directory?");
+    MyFl_File_Chooser::preview_label = _("Preview");
 #   if (FL_MAJOR_VERSION == 1 && FL_MINOR_VERSION >= 1 && FL_PATCH_VERSION >= 7)
-    Fl_File_Chooser::save_label = _("Save"); // since 1.1.7?
+    MyFl_File_Chooser::save_label = _("Save"); // since 1.1.7?
 #   endif
-    Fl_File_Chooser::show_label = _("Show:");
+    MyFl_File_Chooser::show_label = _("Show:");
   DBG_PROG_ENDE
 #endif
 }

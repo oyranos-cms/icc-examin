@@ -116,22 +116,31 @@ Modell::~Modell()
 }
 
 void
+Modell::beobachterDazu(Beobachter* beo)
+{
+  DBG_PROG_START
+  beobachter_.push_back (beo);
+  DBG_PROG_ENDE
+}
+
+void
 Modell::beobachterFort(Beobachter* beo)
 {
   DBG_PROG_START
   // einzelnen Beobachter aus der Liste entfernen
-  std::list<Beobachter*>::iterator it;
-  for(it = beobachter_.begin(); it != beobachter_.end(); ++it)
+  std::list<Beobachter*>::iterator it = beobachter_.begin();
+  intptr_t isis = (intptr_t)*it;
+  if(isis > 0)
   {
-    if(beo == *it)
+    for(; it != beobachter_.end(); ++it)
     {
-      beobachter_.erase ( it );
-      break;
+      if(beo == *it)
+      {
+        beobachter_.erase ( it );
+        break;
+      }
     }
   }
-
-  if(!beobachter_.size())
-    delete this;
 
   DBG_PROG_ENDE
 }

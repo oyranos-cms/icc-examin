@@ -232,86 +232,14 @@ class ICCfltkBetrachter {open
   } {
     code DBG_PROG_START {}
     code {fullscreen = false;
-  setTitleUrl = true;
-
-  \#ifdef HAVE_FLU
-    Flu_File_Chooser::favoritesTxt = _("Favorites");
-    Flu_File_Chooser::myComputerTxt = _("Home");
-    Flu_File_Chooser::myDocumentsTxt = _("Documents");
-    Flu_File_Chooser::desktopTxt = _("Desktop");
-
-    Flu_File_Chooser::detailTxt[0] = _("Name");
-    Flu_File_Chooser::detailTxt[3] = _("Type");
-    Flu_File_Chooser::detailTxt[1] = _("Size");
-    Flu_File_Chooser::detailTxt[2] = _("Date");
-    Flu_File_Chooser::contextMenuTxt[0] = _("New Folder");
-    Flu_File_Chooser::contextMenuTxt[1] = _("Rename");
-    Flu_File_Chooser::contextMenuTxt[2] = _("Delete");
-    Flu_File_Chooser::diskTypesTxt[0] = _("Floppy Disk");
-    Flu_File_Chooser::diskTypesTxt[1] = _("Removable Disk");
-    Flu_File_Chooser::diskTypesTxt[2] = _("Local Disk");
-    Flu_File_Chooser::diskTypesTxt[3] = _("Compact Disk");
-    Flu_File_Chooser::diskTypesTxt[4] = _("Network Disk");
-    Flu_File_Chooser::diskTypesTxt[5] = _("RAM Disk");
-
-    Flu_File_Chooser::filenameTxt = _("Filename");
-    Flu_File_Chooser::okTxt = _("Yes");
-    Flu_File_Chooser::cancelTxt = _("Cancel");
-    Flu_File_Chooser::locationTxt = _("Folder");
-    Flu_File_Chooser::showHiddenTxt = _("Show Hidden Files");
-    Flu_File_Chooser::fileTypesTxt = _("File Types");
-    Flu_File_Chooser::directoryTxt = _("Folder");
-    Flu_File_Chooser::allFilesTxt = _("All Files (*)");
-    Flu_File_Chooser::defaultFolderNameTxt = _("New Folder");
-
-    Flu_File_Chooser::backTTxt = _("Go back one directory in the history");
-    Flu_File_Chooser::forwardTTxt = _("Go forward one directory in the history");
-    Flu_File_Chooser::upTTxt = _("Go to the parent directory");
-    Flu_File_Chooser::reloadTTxt = _("Refresh this directory");
-    Flu_File_Chooser::trashTTxt = _("Delete file(s)");
-    Flu_File_Chooser::newDirTTxt = _("Create new directory");
-    Flu_File_Chooser::addFavoriteTTxt = _("Add this directory to my favorites");
-    Flu_File_Chooser::previewTTxt = _("Preview files");
-    Flu_File_Chooser::listTTxt = _("List mode");
-    Flu_File_Chooser::wideListTTxt = _("Wide list mode");
-    Flu_File_Chooser::detailTTxt = _("Detail mode");
-
-    Flu_File_Chooser::createFolderErrTxt = _("Could not create directory '%s'. You may not have permission to perform this operation.");
-    Flu_File_Chooser::deleteFileErrTxt = _("An error ocurred while trying to delete '%s'.");
-    Flu_File_Chooser::fileExistsErrTxt = _("File '%s' already exists!");
-    Flu_File_Chooser::renameErrTxt = _("Unable to rename '%s' to '%s'");
-
-    const char* ptr = NULL;
-    if (profile.size())
-      ptr = profile.name().c_str();
-    dateiwahl = new Flu_File_Chooser(ptr, _("ICC colour profiles (*.ic*)"), Flu_File_Chooser::/*SINGLE*/MULTI, _("Which ICC profile?"));
-    dateiwahl->add_context_handler(Flu_File_Chooser::ENTRY_FILE, "icc", _("Open Profile"), dateiwahl_cb, NULL);
-    dateiwahl->add_context_handler(Flu_File_Chooser::ENTRY_FILE, "icm", _("Open Profile"), dateiwahl_cb, NULL);
-    dateiwahl->add_context_handler(Flu_File_Chooser::ENTRY_FILE, "it8", _("Open Measurement"), dateiwahl_cb, NULL);
-    dateiwahl->add_context_handler(Flu_File_Chooser::ENTRY_FILE, "txt", _("Open Measurement"), dateiwahl_cb, NULL);
-    dateiwahl->add_context_handler(Flu_File_Chooser::ENTRY_FILE, "IT8", _("Open Measurement"), dateiwahl_cb, NULL);
-    dateiwahl->add_context_handler(Flu_File_Chooser::ENTRY_FILE, "Q60", _("Open Measurement"), dateiwahl_cb, NULL);
-    dateiwahl->add_context_handler(Flu_File_Chooser::ENTRY_FILE, "LAB", _("Open Measurement"), dateiwahl_cb, NULL);
-    dateiwahl->add_context_handler(Flu_File_Chooser::ENTRY_FILE, "CMYK", _("Open Measurement"), dateiwahl_cb, NULL);
-    dateiwahl->add_context_handler(Flu_File_Chooser::ENTRY_FILE, "DLY", _("Open Measurement"), dateiwahl_cb, NULL);
-    dateiwahl->add_context_handler(Flu_File_Chooser::ENTRY_FILE, "nCIE", _("Open Measurement"), dateiwahl_cb, NULL);
-  \#else
-    fl_translate_file_chooser();
-
-    const char* ptr = NULL;
-    if (profile.size())
-      ptr = profile.name().c_str();
-    dateiwahl = new MyFl_File_Chooser(ptr, _("ICC colour profiles (*.{I,i}{C,c}{M,m,C,c})	Measurement (*.{txt,it8,IT8,RGB,CMYK,ti*,cgats,CIE,cie,nCIE,oRPT,DLY,LAB,Q60})	Argyll Gamuts (*.{wrl,vrml}"), MyFl_File_Chooser::MULTI, _("Which ICC profile?"));
-    dateiwahl->callback(dateiwahl_cb);
-    dateiwahl->preview(true);
-  \#endif} {}
+  setTitleUrl = true;} {}
     Fl_Window {} {open
-      xywh {1184 484 100 100} type Double resizable
+      xywh {1184 547 100 100} type Double resizable
       code0 {//o->show();} visible
     } {}
     Fl_Window ueber {
       label {About ICC Examin} open
-      xywh {885 193 365 289} type Double resizable
+      xywh {900 256 365 289} type Double resizable
       code0 {o->hide();}
       code1 {o->use_escape_hide = true;}
       class {icc_examin_ns::MyFl_Double_Window} visible
@@ -352,7 +280,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window vcgt {
       label {Grafic Card Gamma Table} open
-      xywh {78 572 370 390} type Double resizable
+      xywh {93 635 370 390} type Double resizable
       code0 {o->hide();}
       code1 {o->use_escape_hide = true;}
       class {icc_examin_ns::MyFl_Double_Window} visible
@@ -389,8 +317,8 @@ class ICCfltkBetrachter {open
     }
     Fl_Window DD {
       label Gamut open
-      xywh {891 355 385 520} type Double box NO_BOX color 53 resizable
-      class {icc_examin_ns::MyFl_Double_Window} xclass Fl_Window visible
+      xywh {899 418 385 520} type Double box NO_BOX color 53 resizable
+      class {icc_examin_ns::MyFl_Double_Window} visible
     } {
       Fl_Group {} {open
         xywh {0 0 390 525}
@@ -508,10 +436,10 @@ class ICCfltkBetrachter {open
         Fl_Tile {} {open
           xywh {0 25 385 495} resizable
         } {
-          Fl_Box DD_farbraum {selected
+          Fl_Box DD_farbraum {
             xywh {0 25 385 470} box THIN_DOWN_BOX resizable
             code0 {o->hide();}
-            code1 {o->fensterId( 1 ); // wandert ins 1. Nebenfenster}
+            code1 {o->typ( 1 ); // wandert ins 1. Nebenfenster}
             class GL_Ansicht
           }
           Fl_Box DD_box_stat {
@@ -522,9 +450,9 @@ class ICCfltkBetrachter {open
     }
     Fl_Window details {
       label {ICC Examin} open
-      xywh {899 518 385 520} type Double box NO_BOX color 53
+      xywh {899 524 385 520} type Double box NO_BOX color 53
       code0 {o->main_win = o;}
-      class {icc_examin_ns::MyFl_Double_Window} xclass Fl_Window visible
+      class {icc_examin_ns::MyFl_Double_Window} visible
     } {
       Fl_Group {} {open
         xywh {0 0 385 520}
@@ -668,19 +596,21 @@ icc_examin->testZeigen();}
           } {
             MenuItem {} {
               label About
-              callback {ueber->show();
-initHilfe();
+              callback {ueber->hotspot(ueber_html);
+  ueber->show();
+  initHilfe();
 
   /* set visible */
   Fl_Tabs *tb = dynamic_cast<Fl_Tabs*>(hilfe_html->parent());
   if(tb)
-    tb->value(icc_examin->icc_betrachter->ueber_html);}
+    tb->value(icc_examin->icc_betrachter->ueber_html);} selected
               xywh {5 5 100 20}
             }
             MenuItem {} {
               label Help
-              callback {ueber->show();
-initHilfe();
+              callback {ueber->hotspot(hilfe_html);
+  ueber->show();
+  initHilfe();
 
   /* set visible */
   Fl_Tabs *tb = dynamic_cast<Fl_Tabs*>(hilfe_html->parent());
@@ -690,8 +620,9 @@ initHilfe();
             }
             MenuItem {} {
               label License
-              callback {ueber->show();
-initHilfe();
+              callback {ueber->hotspot(lizenz_html);
+  ueber->show();
+  initHilfe();
 
   /* set visible */
   Fl_Tabs *tb = dynamic_cast<Fl_Tabs*>(hilfe_html->parent());
@@ -750,7 +681,7 @@ initHilfe();
                       Fl_Box mft_gl {
                         xywh {0 185 340 310} align 18 resizable
                         code0 {o->hide();}
-                        code1 {o->fensterId( 0 ); // bleibt im Hauptfenster}
+                        code1 {o->typ( 2 ); // bleibt zumeist im Hauptfenster}
                         class GL_Ansicht
                       }
                       Fl_Box {} {

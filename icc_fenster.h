@@ -32,7 +32,7 @@
 
 #include "icc_utils.h"
 
-#if HAVE_FLTK
+//#if HAVE_FLTK
 #include <FL/Fl_Hold_Browser.H> 
 #include <FL/Fl_File_Icon.H> 
 #include <FL/Fl_Shared_Image.H> 
@@ -45,7 +45,7 @@
 namespace icc_examin_ns {
 
 
-  // register all windows inside this class, to adjust behaviour
+  //! register all windows inside this class, to adjust behaviour
   class MyFl_Double_Window : public Fl_Double_Window
   {
 
@@ -64,12 +64,14 @@ namespace icc_examin_ns {
      ~MyFl_Double_Window (); 
 
      static char ** icon;                   //!< Icon (X11 - xpm)
+     static const char * my_xclass;         //!< Fl_Window::xclass string
      static MyFl_Double_Window *  main_win; //!< das Programmhauptfenster
-     MyFl_Double_Window * only_with;        //<! beobachtetes Fenster
+     MyFl_Double_Window * only_with;        //!< beobachtetes Fenster (WM_TRANSIENT_FOR ?)
 
-     // Benutzer ausgeloestes Verstecken : hide() -> true : hide(*) -> false
-     int user_hide;
+     //! Benutzer ausgeloestes Verstecken : hide() -> true : hide(*) -> false
+     int user_hide;              //!< mit hide(void) versteckt
      int use_escape_hide;        //!< erlaubt mit Escape zu verkleinern
+     int is_toolbox;             //!< Werkzeugkasten
 
      void hide (void);           //!< Verstecken fuer Benutzer 
      void hide (MyFl_Double_Window * by); //!< Verstecken automatisch
@@ -87,7 +89,7 @@ namespace icc_examin_ns {
 
 }
 
-#endif
+//#endif
 
 #endif //ICC_FENSTER_H
 

@@ -74,14 +74,23 @@ namespace icc_examin_ns {
     friend class Beobachter;
     protected:
       Modell();
-      void beobachterDazu(Beobachter* beo)
-           { beobachter_.push_back (beo); }
+      void beobachterDazu(Beobachter* beo);
       void beobachterFort(Beobachter* beo);
       void benachrichtigen(int infos);
 
       virtual ~Modell();
     private:
       std::list<Beobachter*> beobachter_;
+  };
+
+  class EinModell : public Modell
+  {
+    public:
+      EinModell() { ; }
+      ~EinModell() { ; }
+      void beobachterDazu(Beobachter* beo) { Modell::beobachterDazu(beo); }
+      void beobachterFort(Beobachter* beo) { Modell::beobachterFort(beo); }
+      void benachrichtigen(int infos)      { Modell::benachrichtigen(infos); }
   };
 
 }

@@ -444,8 +444,9 @@ void ICCfltkBetrachter::cb_menueintrag_testkurven(Fl_Menu_* o, void* v) {
 }
 
 void ICCfltkBetrachter::cb_About_i(Fl_Menu_*, void*) {
+  ueber->hotspot(ueber_html);
   ueber->show();
-initHilfe();
+  initHilfe();
 
   /* set visible */
   Fl_Tabs *tb = dynamic_cast<Fl_Tabs*>(hilfe_html->parent());
@@ -457,8 +458,9 @@ void ICCfltkBetrachter::cb_About(Fl_Menu_* o, void* v) {
 }
 
 void ICCfltkBetrachter::cb_Help_i(Fl_Menu_*, void*) {
+  ueber->hotspot(hilfe_html);
   ueber->show();
-initHilfe();
+  initHilfe();
 
   /* set visible */
   Fl_Tabs *tb = dynamic_cast<Fl_Tabs*>(hilfe_html->parent());
@@ -470,8 +472,9 @@ void ICCfltkBetrachter::cb_Help(Fl_Menu_* o, void* v) {
 }
 
 void ICCfltkBetrachter::cb_License_i(Fl_Menu_*, void*) {
+  ueber->hotspot(lizenz_html);
   ueber->show();
-initHilfe();
+  initHilfe();
 
   /* set visible */
   Fl_Tabs *tb = dynamic_cast<Fl_Tabs*>(hilfe_html->parent());
@@ -551,78 +554,6 @@ Fl_Double_Window* ICCfltkBetrachter::init(int argc, char** argv) {
   DBG_PROG_START
   fullscreen = false;
   setTitleUrl = true;
-
-  #ifdef HAVE_FLU
-    Flu_File_Chooser::favoritesTxt = _("Favorites");
-    Flu_File_Chooser::myComputerTxt = _("Home");
-    Flu_File_Chooser::myDocumentsTxt = _("Documents");
-    Flu_File_Chooser::desktopTxt = _("Desktop");
-
-    Flu_File_Chooser::detailTxt[0] = _("Name");
-    Flu_File_Chooser::detailTxt[3] = _("Type");
-    Flu_File_Chooser::detailTxt[1] = _("Size");
-    Flu_File_Chooser::detailTxt[2] = _("Date");
-    Flu_File_Chooser::contextMenuTxt[0] = _("New Folder");
-    Flu_File_Chooser::contextMenuTxt[1] = _("Rename");
-    Flu_File_Chooser::contextMenuTxt[2] = _("Delete");
-    Flu_File_Chooser::diskTypesTxt[0] = _("Floppy Disk");
-    Flu_File_Chooser::diskTypesTxt[1] = _("Removable Disk");
-    Flu_File_Chooser::diskTypesTxt[2] = _("Local Disk");
-    Flu_File_Chooser::diskTypesTxt[3] = _("Compact Disk");
-    Flu_File_Chooser::diskTypesTxt[4] = _("Network Disk");
-    Flu_File_Chooser::diskTypesTxt[5] = _("RAM Disk");
-
-    Flu_File_Chooser::filenameTxt = _("Filename");
-    Flu_File_Chooser::okTxt = _("Yes");
-    Flu_File_Chooser::cancelTxt = _("Cancel");
-    Flu_File_Chooser::locationTxt = _("Folder");
-    Flu_File_Chooser::showHiddenTxt = _("Show Hidden Files");
-    Flu_File_Chooser::fileTypesTxt = _("File Types");
-    Flu_File_Chooser::directoryTxt = _("Folder");
-    Flu_File_Chooser::allFilesTxt = _("All Files (*)");
-    Flu_File_Chooser::defaultFolderNameTxt = _("New Folder");
-
-    Flu_File_Chooser::backTTxt = _("Go back one directory in the history");
-    Flu_File_Chooser::forwardTTxt = _("Go forward one directory in the history");
-    Flu_File_Chooser::upTTxt = _("Go to the parent directory");
-    Flu_File_Chooser::reloadTTxt = _("Refresh this directory");
-    Flu_File_Chooser::trashTTxt = _("Delete file(s)");
-    Flu_File_Chooser::newDirTTxt = _("Create new directory");
-    Flu_File_Chooser::addFavoriteTTxt = _("Add this directory to my favorites");
-    Flu_File_Chooser::previewTTxt = _("Preview files");
-    Flu_File_Chooser::listTTxt = _("List mode");
-    Flu_File_Chooser::wideListTTxt = _("Wide list mode");
-    Flu_File_Chooser::detailTTxt = _("Detail mode");
-
-    Flu_File_Chooser::createFolderErrTxt = _("Could not create directory '%s'. You may not have permission to perform this operation.");
-    Flu_File_Chooser::deleteFileErrTxt = _("An error ocurred while trying to delete '%s'.");
-    Flu_File_Chooser::fileExistsErrTxt = _("File '%s' already exists!");
-    Flu_File_Chooser::renameErrTxt = _("Unable to rename '%s' to '%s'");
-
-    const char* ptr = NULL;
-    if (profile.size())
-      ptr = profile.name().c_str();
-    dateiwahl = new Flu_File_Chooser(ptr, _("ICC colour profiles (*.ic*)"), Flu_File_Chooser::/*SINGLE*/MULTI, _("Which ICC profile?"));
-    dateiwahl->add_context_handler(Flu_File_Chooser::ENTRY_FILE, "icc", _("Open Profile"), dateiwahl_cb, NULL);
-    dateiwahl->add_context_handler(Flu_File_Chooser::ENTRY_FILE, "icm", _("Open Profile"), dateiwahl_cb, NULL);
-    dateiwahl->add_context_handler(Flu_File_Chooser::ENTRY_FILE, "it8", _("Open Measurement"), dateiwahl_cb, NULL);
-    dateiwahl->add_context_handler(Flu_File_Chooser::ENTRY_FILE, "txt", _("Open Measurement"), dateiwahl_cb, NULL);
-    dateiwahl->add_context_handler(Flu_File_Chooser::ENTRY_FILE, "IT8", _("Open Measurement"), dateiwahl_cb, NULL);
-    dateiwahl->add_context_handler(Flu_File_Chooser::ENTRY_FILE, "Q60", _("Open Measurement"), dateiwahl_cb, NULL);
-    dateiwahl->add_context_handler(Flu_File_Chooser::ENTRY_FILE, "LAB", _("Open Measurement"), dateiwahl_cb, NULL);
-    dateiwahl->add_context_handler(Flu_File_Chooser::ENTRY_FILE, "CMYK", _("Open Measurement"), dateiwahl_cb, NULL);
-    dateiwahl->add_context_handler(Flu_File_Chooser::ENTRY_FILE, "DLY", _("Open Measurement"), dateiwahl_cb, NULL);
-    dateiwahl->add_context_handler(Flu_File_Chooser::ENTRY_FILE, "nCIE", _("Open Measurement"), dateiwahl_cb, NULL);
-  #else
-    fl_translate_file_chooser();
-
-    const char* ptr = NULL;
-    if (profile.size())
-      ptr = profile.name().c_str();
-    dateiwahl = new MyFl_File_Chooser(ptr, _("ICC colour profiles (*.{I,i}{C,c}{M,m,C,c})	Measurement (*.{txt,it8,IT8,RGB,CMYK,ti*,cgats,CIE,cie,nCIE,oRPT,DLY,LAB,Q60})	Argyll Gamuts (*.{wrl,vrml}"), MyFl_File_Chooser::MULTI, _("Which ICC profile?"));
-    dateiwahl->callback(dateiwahl_cb);
-    dateiwahl->preview(true);
-  #endif
   { Fl_Double_Window* o = new Fl_Double_Window(100, 100);
     w = o;
     o->user_data((void*)(this));
@@ -761,7 +692,7 @@ ard"));
           o->when(FL_WHEN_RELEASE);
           Fl_Group::current()->resizable(o);
           o->hide();
-          o->fensterId( 1 ); // wandert ins 1. Nebenfenster
+          o->typ( 1 ); // wandert ins 1. Nebenfenster
         }
         { Fl_Box* o = DD_box_stat = new Fl_Box(0, 495, 385, 25);
           o->box(FL_THIN_DOWN_BOX);
@@ -772,7 +703,6 @@ ard"));
       }
       o->end();
     }
-    o->xclass("Fl_Window");
     o->end();
     o->resizable(o);
   }
@@ -855,7 +785,7 @@ ard"));
                 o->when(FL_WHEN_RELEASE);
                 Fl_Group::current()->resizable(o);
                 o->hide();
-                o->fensterId( 0 ); // bleibt im Hauptfenster
+                o->typ( 2 ); // bleibt zumeist im Hauptfenster
                 }
                 { Fl_Box* o = new Fl_Box(0, 185, 385, 310);
                 o->box(FL_FLAT_BOX);
@@ -947,7 +877,6 @@ ard"));
       o->end();
     }
     o->main_win = o;
-    o->xclass("Fl_Window");
     o->end();
   }
   tag_text->inspekt_topline = 0;

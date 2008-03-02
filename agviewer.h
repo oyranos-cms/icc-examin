@@ -105,7 +105,10 @@ class Agviewer : public icc_examin_ns::Modell
 
           downb = -1;
           AdjustingAzEl = 0;
+          darf_bewegen_ = false;
           }
+
+  void reparent( GL_Ansicht* p ) { parent = p; }
   
   ~Agviewer () {; }
 
@@ -171,6 +174,10 @@ class Agviewer : public icc_examin_ns::Modell
   int agvMoving;    /* Currently moving?  */
   void agvMove_(void);
   //static void agvMove_statisch(void* agv);
+
+  //! Falls das Fenster sichtbar ist kann gedreht werden
+  bool darf_bewegen_;
+
 
  /*
   * These are the routines AGV registers to deal with mouse and keyboard input.

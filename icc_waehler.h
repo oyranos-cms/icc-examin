@@ -172,6 +172,7 @@ class ICCwaehler : public icc_examin_ns::MyFl_Double_Window
   }       
   icc_examin_ns::MyFl_Double_Window::end();
   icc_examin_ns::MyFl_Double_Window::resizable(scroll_profile);
+  icc_examin_ns::MyFl_Double_Window::is_toolbox = 1;
 
   //icc_examin_ns::MyFl_Double_Window::show();
   //icc_examin_ns::MyFl_Double_Window::iconize();

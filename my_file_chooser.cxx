@@ -230,13 +230,13 @@ MyFl_File_Chooser::MyFl_File_Chooser(const char *d, const char *p, int t, const 
         o->label(filename_label);
       }
       { Fl_Group* o = new Fl_Group(10, 345, 470, 25);
-        { Fl_Return_Button* o = okButton = new Fl_Return_Button(313, 345, 85, 25, _("OK"));
+        { Fl_Return_Button* o = okButton = new Fl_Return_Button(270, 345, 100, 25, _("OK"));
           o->callback((Fl_Callback*)cb_okButton);
-          okButton->label(_("OK"));
+          //okButton->label(fl_ok);
         }
-        { Fl_Button* o = cancelButton = new Fl_Button(408, 345, 72, 25, _("Cancel"));
+        { Fl_Button* o = cancelButton = new Fl_Button(380, 345, 100, 25, _("Cancel"));
           o->callback((Fl_Callback*)cb_cancelButton);
-          o->label(_("Cancel"));
+          //o->label(fl_cancel);
         }
         { Fl_Box* o = new Fl_Box(10, 345, 30, 25);
           Fl_Group::current()->resizable(o);
@@ -282,11 +282,11 @@ MyFl_File_Chooser::MyFl_File_Chooser(const char *d, const char *p, int t, const 
     { Fl_Group* o = new Fl_Group(10, 113, 335, 29);
       { Fl_Button* o = favCancelButton = new Fl_Button(273, 115, 72, 25, _("Cancel"));
         o->callback((Fl_Callback*)cb_favCancelButton);
-        favCancelButton->label(_("Cancel"));
+        favCancelButton->label(fl_cancel);
       }
       { Fl_Return_Button* o = favOkButton = new Fl_Return_Button(181, 115, 79, 25, _("Save"));
         o->callback((Fl_Callback*)cb_favOkButton);
-        favOkButton->label(_("Save"));
+        favOkButton->label(save_label);
       }
       { Fl_Box* o = new Fl_Box(10, 115, 161, 25);
         Fl_Group::current()->resizable(o);
@@ -349,7 +349,8 @@ showChoiceCB();
 }
 
 void MyFl_File_Chooser::hide() {
-  window->hide();
+  fileList->deselect();
+window->hide();
 }
 
 void MyFl_File_Chooser::iconsize(uchar s) {

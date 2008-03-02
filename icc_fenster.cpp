@@ -30,10 +30,15 @@
 #include "icc_examin.h"
 #include "icc_dateiwahl.h"
 #include "icc_fenster.h"
+
 #include <string>
 #include <vector>
 
 #include <FL/Fl.H>
+#if HAVE_X
+#include <X11/Xutil.h>
+#include <FL/x.H>
+#endif
 #include <FL/Fl_Double_Window.H>
 #include <FL/Fl_Return_Button.H>
 #include <FL/Fl_Output.H>
@@ -192,10 +197,11 @@ nachricht_ (std::string text) {
 namespace icc_examin_ns {
 
 MyFl_Double_Window ** MyFl_Double_Window::list_ = NULL;
-MyFl_Double_Window *  MyFl_Double_Window::main_win = NULL;
+MyFl_Double_Window  * MyFl_Double_Window::main_win = NULL;
 int                   MyFl_Double_Window::n_ = 0;
 int                   MyFl_Double_Window::ref_ = 0;
 char               ** MyFl_Double_Window::icon = NULL;
+const char          * MyFl_Double_Window::my_xclass = NULL;
 
 MyFl_Double_Window::MyFl_Double_Window(int W, int H, const char* title)
   : Fl_Double_Window(W,H,title)
@@ -237,6 +243,7 @@ MyFl_Double_Window::init_object_ ()
 
   user_hide = true;
   use_escape_hide = false;
+  is_toolbox = false;
 }
 
 MyFl_Double_Window::~MyFl_Double_Window()
@@ -257,7 +264,7 @@ MyFl_Double_Window::init_class_ ()
 
 void MyFl_Double_Window::show()
 {
-  DBG_S( id_<<" "<<(user_hide?"u":" ")<<" "<<(visible()?"v":" ")<<" "<<(shown()?"s":" ") )
+  DBG_PROG_S( id_<<" "<<(user_hide?"u":" ")<<" "<<(visible()?"v":" ")<<" "<<(shown()?"s":" ") )
   for( int i = 0; i < ref_; ++i )
   {
     MyFl_Double_Window *w = list_[i];
@@ -269,21 +276,48 @@ void MyFl_Double_Window::show()
       w -> show();
   }
 
-  Fl_Double_Window::xclass("iccexamin");
+  if(this->my_xclass)
+    Fl_Double_Window::xclass(my_xclass);
+
   Fl_Double_Window::show();
-  user_hide = true;
+
+  if(/*this == main_win &&*/ icon)
+    setzeIcon( this, icon );
 
 # if HAVE_X
-  if(/*this == main_win &&*/ icon)
-    setzeIcon( main_win, icon );
+  if( is_toolbox )
+  {
+#if 0
+    // scheint nicht zuverlässig unter KDE
+    Atom type = XInternAtom (fl_display, "_NET_WM_WINDOW_TYPE", 0);
+    Atom value = XInternAtom (fl_display, "_NET_WM_WINDOW_TYPE_UTILITY", 0);
+    XChangeProperty (fl_display, fl_xid(this), type, XA_ATOM, 32,
+                PropModeAppend, (unsigned char*) &value, 1);
+#endif
+    for( int i = 0; i < ref_; ++i )
+    {
+      MyFl_Double_Window *w = list_[i];
+      if(!w->only_with)
+        w->only_with = main_win;
+      if( w != this && w->shown() )
+      {
+        if( w -> is_toolbox && w -> only_with == this )
+          XSetTransientForHint(fl_display, fl_xid(this), fl_xid(w));
+        if( this -> is_toolbox && this -> only_with == w  )
+          XSetTransientForHint(fl_display, fl_xid(w), fl_xid(this));
+      }        
+    }
+  }
 # endif
 
-  DBG_S( id_<<" "<<(user_hide?"u":" ")<<" "<<(visible()?"v":" ")<<" "<<(shown()?"s":" ") )
+  user_hide = true;
+
+  DBG_PROG_S( id_<<" "<<(user_hide?"u":" ")<<" "<<(visible()?"v":" ")<<" "<<(shown()?"s":" ") )
 }
 
 void MyFl_Double_Window::hide()
 {
-  DBG_S( id_<<" "<<(user_hide?"u":" ")<<" "<<(visible()?"v":" ")<<" "<<(shown()?"s":" ") )
+  DBG_PROG_S( id_<<" "<<(user_hide?"u":" ")<<" "<<(visible()?"v":" ")<<" "<<(shown()?"s":" ") )
   if(!only_with)
     only_with = main_win;
 
@@ -301,20 +335,20 @@ void MyFl_Double_Window::hide()
   else
     Fl_Double_Window::hide();
   user_hide = true;
-  DBG_S( id_<<" "<<(user_hide?"u":" ")<<" "<<(visible()?"v":" ")<<" "<<(shown()?"s":" ") )
+  DBG_PROG_S( id_<<" "<<(user_hide?"u":" ")<<" "<<(visible()?"v":" ")<<" "<<(shown()?"s":" ") )
 }
 
 void MyFl_Double_Window::hide(MyFl_Double_Window * by)
 {
-  DBG_S( id_<<" "<<(user_hide?"u":" ")<<" "<<(visible()?"v":" ")<<" "<<(shown()?"s":" ") )
+  DBG_PROG_S( id_<<" "<<(user_hide?"u":" ")<<" "<<(visible()?"v":" ")<<" "<<(shown()?"s":" ") )
   hide();
   user_hide = false;
-  DBG_S( id_<<" "<<(user_hide?"u":" ")<<" "<<(visible()?"v":" ")<<" "<<(shown()?"s":" ") )
+  DBG_PROG_S( id_<<" "<<(user_hide?"u":" ")<<" "<<(visible()?"v":" ")<<" "<<(shown()?"s":" ") )
 }
 
 void MyFl_Double_Window::iconize()
 {
-  DBG_S( id_<<" "<<(user_hide?"u":" ")<<" "<<(visible()?"v":" ")<<" "<<(shown()?"s":" ") )
+  DBG_PROG_S( id_<<" "<<(user_hide?"u":" ")<<" "<<(visible()?"v":" ")<<" "<<(shown()?"s":" ") )
   if(!only_with)
     only_with = main_win;
 
@@ -329,18 +363,18 @@ void MyFl_Double_Window::iconize()
 
   Fl_Double_Window::iconize();
   user_hide = true;
-  DBG_S( id_<<" "<<(user_hide?"u":" ")<<" "<<(visible()?"v":" ")<<" "<<(shown()?"s":" ") )
+  DBG_PROG_S( id_<<" "<<(user_hide?"u":" ")<<" "<<(visible()?"v":" ")<<" "<<(shown()?"s":" ") )
 }
 
 void MyFl_Double_Window::iconize(MyFl_Double_Window * by)
 {
-  DBG_S( id_<<" "<<(user_hide?"u":" ")<<" "<<(visible()?"v":" ")<<" "<<(shown()?"s":" ") )
+  DBG_PROG_S( id_<<" "<<(user_hide?"u":" ")<<" "<<(visible()?"v":" ")<<" "<<(shown()?"s":" ") )
   if(this == main_win)
     Fl_Double_Window::iconize();
   else
     iconize();
   user_hide = false;
-  DBG_S( id_<<" "<<(user_hide?"u":" ")<<" "<<(visible()?"v":" ")<<" "<<(shown()?"s":" ") )
+  DBG_PROG_S( id_<<" "<<(user_hide?"u":" ")<<" "<<(visible()?"v":" ")<<" "<<(shown()?"s":" ") )
 }
 
 int MyFl_Double_Window::handle( int e )
@@ -373,7 +407,7 @@ int MyFl_Double_Window::handle( int e )
          fl_window_events = 0;
          break;
   }
-  DBG_S( id_<<" "<<(user_hide?"u":" ")<<" "<<(visible()?"v":" ")<<" "<<(shown()?"s":" ")<<" "<<dbgFltkEvent(e) )
+  DBG_PROG_S( id_<<" "<<(user_hide?"u":" ")<<" "<<(visible()?"v":" ")<<" "<<(shown()?"s":" ")<<" "<<dbgFltkEvent(e) )
 
   if(use_escape_hide)
   if(e == FL_SHORTCUT && Fl::event_key() == FL_Escape)

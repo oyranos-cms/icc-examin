@@ -45,6 +45,8 @@
 #include <FL/Fl_Menu_Button.H>
 #include <FL/Fl.H>
 #include <FL/gl.h>
+#include <FL/Fl_Preferences.H>
+#include <FL/filename.H>
 
 #ifdef HAVE_FTGL
 #include <FTGL/FTFont.h>
@@ -76,6 +78,8 @@ void zeichneKegel( GLdouble breite, GLdouble hoehe, GLint seiten,
 #define DBG_ICCGL_S( texte )
 #endif
 
+#define glStatus( txt, tuep ) icc_examin_ns::status_info( txt, tuep - 1 );
+
 typedef enum {NOTALLOWED, AXES, RASTER, PUNKTE, SPEKTRUM, HELFER, UMRISSE, DL_MAX } DisplayLists;
 int glListen[DL_MAX+1];
 
@@ -90,7 +94,7 @@ int glListen[DL_MAX+1];
 
 const double GL_Ansicht::std_vorder_schnitt = 4.2;
 #ifdef HAVE_FTGL
-FTFont *font, *ortho_font;
+FTFont *font = NULL, *ortho_font = NULL;
 #endif
 
 // Materialfarben setzen
@@ -120,10 +124,16 @@ FTFont *font, *ortho_font;
                                    glScalef(1.0/scal,1.0/(scal*w()/(double)h()),1.0/scal); \
                                  }
 
+int GL_Ansicht::ref_ = 0;
+
 
 GL_Ansicht::GL_Ansicht(int X,int Y,int W,int H)
   : Fl_Gl_Window(X,Y,W,H)
 { DBG_PROG_START
+
+  id_ = ref_;
+  ++ref_;
+
   agv_ = NULL;
   agv_ = this->getAgv(this, NULL);
 
@@ -141,8 +151,7 @@ GL_Ansicht::GL_Ansicht(int X,int Y,int W,int H)
   zeige_helfer = true;
   zeig_punkte_als_messwert_paare = false;
   zeig_punkte_als_messwerte = false;
-  id_ = -1;
-  fenster_id_ = -1;
+  typ_ = -1;
   strichmult = 1.0;
   strich1 = 1;
   strich2 = 2;
@@ -153,7 +162,6 @@ GL_Ansicht::GL_Ansicht(int X,int Y,int W,int H)
   maus_x_ = 0;
   maus_y_ = 0;
   maus_steht = false;
-  darf_bewegen_ = false;
   ist_bewegt_ = false;
   valid_ = false;
   zeit_ = 0;
@@ -163,6 +171,15 @@ GL_Ansicht::GL_Ansicht(int X,int Y,int W,int H)
     for(int i = 0; i <= DL_MAX; ++i)
       glListen[i] = 0;
   gl_list_init_ = 0;
+
+  Fl_Preferences gl( Fl_Preferences::USER, "oyranos.org", "iccexamin");
+
+  gl.get("spektralband", spektralband, 0 );
+  gl.get("hintergrundfarbe", hintergrundfarbe, MENU_HELLGRAU );
+  gl.get("zeige_helfer", zeige_helfer, true );
+  gl.get("schalen", schalen, 5 );
+
+  DBG_V( spektralband )
 
   DBG_PROG_ENDE
 }
@@ -195,9 +212,33 @@ GL_Ansicht::~GL_Ansicht()
     glListen[UMRISSE] = 0;
   }
 # ifdef HAVE_FTGL
-  if(font) delete font;
-  if(ortho_font) delete ortho_font;
+  //if(font) delete font;
+  //if(ortho_font) delete ortho_font;
 # endif
+
+  --ref_;
+
+  if(typ_ == 2)
+  {
+    Fl_Preferences gl( Fl_Preferences::USER, "oyranos.org", "iccexamin");
+
+    gl.set("spektralband", spektralband );
+    if(hintergrundfarbe == 1.0)
+      gl.set("hintergrundfarbe", MENU_WEISS );
+    if(hintergrundfarbe == 0.75)
+      gl.set("hintergrundfarbe", MENU_HELLGRAU );
+    if(hintergrundfarbe == 0.5)
+      gl.set("hintergrundfarbe", MENU_GRAUGRAU );
+    if(hintergrundfarbe == 0.25)
+      gl.set("hintergrundfarbe", MENU_DUNKELGRAU );
+    if(hintergrundfarbe == 0.0)
+      gl.set("hintergrundfarbe", MENU_SCHWARZ );
+    gl.set("zeige_helfer", zeige_helfer );
+    gl.set("schalen", schalen );
+
+    DBG_V( spektralband )
+  }
+
   DBG_PROG_ENDE
 }
 
@@ -219,8 +260,7 @@ GL_Ansicht::copy (const GL_Ansicht & gl)
   zeige_helfer = gl.zeige_helfer;
   zeig_punkte_als_messwert_paare = gl.zeig_punkte_als_messwert_paare;
   zeig_punkte_als_messwerte = gl.zeig_punkte_als_messwerte;
-  id_ = gl.id_;
-  fenster_id_ = gl.fenster_id_;
+  typ_ = gl.typ_;
   strichmult = gl.strichmult;
   strich1 = gl.strich1;
   strich2 = gl.strich2;
@@ -231,7 +271,6 @@ GL_Ansicht::copy (const GL_Ansicht & gl)
   maus_x_ = gl.maus_x_;
   maus_y_ = gl.maus_y_;
   maus_steht = gl.maus_steht;
-  darf_bewegen_ = gl.darf_bewegen_;
   ist_bewegt_ = gl.ist_bewegt_;
   valid_ = gl.valid_;
   zeit_ = gl.zeit_;
@@ -255,11 +294,11 @@ GL_Ansicht::copy (const GL_Ansicht & gl)
 }
 
 void
-GL_Ansicht::init(int init_id)
+GL_Ansicht::init(int ty)
 { DBG_PROG_START
 
   // 1 fuer mft_gl und 2 fuer DD_farbraum
-  id_ = init_id;
+  typ_ = ty;
 
   DBG_PROG
 
@@ -289,7 +328,7 @@ GL_Ansicht::init(int init_id)
 
   agv_->agvInit(id_);
 
-  if (id_ > 1) {
+  if (typ_ > 1) {
     DBG_PROG_S("gl Fenster " << id_)
     a_darstellungs_breite = 2.55;
     b_darstellungs_breite = 2.55;
@@ -307,10 +346,10 @@ GL_Ansicht::init(int init_id)
 
   // Initialisieren
   menueInit_(); DBG_PROG
-  menueAufruf (MENU_HELLGRAU); // Farbschema
+  menueAufruf ((int)hintergrundfarbe); // Farbschema
   menueAufruf (MENU_GRAU);     // CLUT Farbschema
   schatten = 0.1;
-  if (id() == 1) menueAufruf (MENU_WUERFEL);
+  if (typ() == 1) menueAufruf (MENU_WUERFEL);
 
   maus_steht = false;
 
@@ -338,7 +377,7 @@ GL_Ansicht::mausPunkt_( GLdouble &oX, GLdouble &oY, GLdouble &oZ,
                &oX, &oY, &oZ);
 
 
-  DBG_PROG_V( "X: "<<oX<<" Y: "<<oY<<" Z: "<<oZ<<" "<<fenster_id_ )
+  DBG_PROG_V( "X: "<<oX<<" Y: "<<oY<<" Z: "<<oZ<<" "<<id_ )
 
   gluProject( oX, oY, oZ,
               modell_matrix, projektions_matrix, bildschirm,
@@ -355,18 +394,17 @@ GL_Ansicht::bewegenStatisch_ (void* gl_a)
   GL_Ansicht *gl_ansicht = (GL_Ansicht*)gl_a;
 
   if (!gl_ansicht) {
-      WARN_S( "keine GL_Ansicht uebergeben " << gl_ansicht->fenster_id_ )
+      WARN_S( "keine GL_Ansicht uebergeben " << gl_ansicht->id_ )
       return;
   }
 
   {
-    if(!gl_ansicht->visible() || !icc_examin->frei() ||
-       !gl_ansicht->ist_bewegt_ || !gl_ansicht->darf_bewegen_)
+    if(!icc_examin->frei() ||
+       !gl_ansicht->ist_bewegt_ || !gl_ansicht->darfBewegen())
     {
       gl_ansicht->stupps_(false);
-      gl_ansicht->ist_bewegt_ = false;
       zahl = 0;
-      DBG_PROG_S( "redraw nicht ausgefuehrt " << gl_ansicht->fenster_id_ )
+      DBG_PROG_S( "redraw nicht ausgefuehrt " << gl_ansicht->id_ )
     } else {
       double zeichnen_schlaf = 0;  // keine endlos Warteschlangen
       double zeit = icc_examin_ns::zeitSekunden();
@@ -382,11 +420,14 @@ GL_Ansicht::bewegenStatisch_ (void* gl_a)
       // kurze Pause 
       Fl::repeat_timeout( 0.04, bewegenStatisch_, gl_a );
       
-      DBG_PROG_S( "Pause " << gl_ansicht->zeit_diff_<<" "<<zeichnen_schlaf <<" "<< gl_ansicht->ist_bewegt_ <<" "<< gl_ansicht->fenster_id_ <<" "<<zahl)
+      DBG_PROG_S( "Pause " << gl_ansicht->zeit_diff_<<" "<<zeichnen_schlaf <<" "<< gl_ansicht->ist_bewegt_ <<" "<< gl_ansicht->id_ <<" "<<zahl)
     }
   } 
   DBG_PROG_ENDE
 }
+
+bool GL_Ansicht::darfBewegen()        { return agv_->darf_bewegen_; };
+void GL_Ansicht::darfBewegen(int d)   { agv_->darf_bewegen_ = d; };
 
 void
 GL_Ansicht::stupps_ (bool lauf)
@@ -394,11 +435,11 @@ GL_Ansicht::stupps_ (bool lauf)
   DBG_PROG_START
   ist_bewegt_ = lauf;
   if(lauf) {
-    DBG_NUM_S( "anstuppsen " << fenster_id_ )
-    if(darf_bewegen_)
+    DBG_NUM_S( "anstuppsen " << id_ )
+    if(darfBewegen())
       Fl::add_timeout(0.04, bewegenStatisch_,this);
   } else {
-    DBG_NUM_S( "stoppen " << fenster_id_ )
+    DBG_NUM_S( "stoppen " << id_ )
   }
   DBG_PROG_ENDE
 }
@@ -407,11 +448,12 @@ void
 GL_Ansicht::bewegen (bool setze)
 {
   DBG_PROG_START
-  darf_bewegen_ = setze;
+  darfBewegen( setze );
   DBG_PROG_V( setze )
   stupps_(setze);
   if(!setze) {
     agv_->agvSwitchMoveMode (Agviewer::AGV_STOP);
+    agv_->benachrichtigen(ICCexamin::GL_STOP);
   }
   DBG_PROG_ENDE
 }
@@ -430,6 +472,7 @@ GL_Ansicht::hide()
 {   
   DBG_PROG_START
   DBG_PROG_V( visible()<<" "<<shown() )
+  icc_examin->alle_gl_fenster->beobachterFort(this);
   Fl_Gl_Window::hide();
   DBG_PROG_ENDE
 }     
@@ -439,6 +482,7 @@ GL_Ansicht::show()
 {   
   DBG_PROG_START
   DBG_PROG_V( visible()<<" "<<shown() )
+  icc_examin->alle_gl_fenster->beobachterDazu(this);
   if( window()->visible() )
     Fl_Gl_Window::show();
   DBG_PROG_ENDE
@@ -450,9 +494,24 @@ void
 GL_Ansicht::nachricht(icc_examin_ns::Modell* modell, int info)
 {
   DBG_PROG_START
-  DBG_PROG_V( info<<" "<<window()->visible()<<" "<<visible()<<" "<<shown() )
+  DBG_NUM_V( info<<" "<<window()->visible()<<" "<<visible()<<" "<<shown()<<" "<<id_ )
+
+  if( visible() && shown() && !agv_->parent->visible() )
+    agv_->reparent(this);
+
+  if(info == ICCexamin::GL_AUFFRISCHEN)
+  {
+    invalidate();
+    erstelleGLListen_();
+    redraw();
+  }
   if( info && visible() )
     Fl_Gl_Window::redraw();
+  if(info == ICCexamin::GL_STOP)
+  {
+    stupps_(false);
+    darfBewegen( false );
+  }
   DBG_PROG_ENDE
 }
 
@@ -461,8 +520,8 @@ void
 GL_Ansicht::redraw()
 {
   DBG_PROG_START
-  if(agv_ && visible())
-    agv_->benachrichtigen(1);
+  if(agv_)
+    agv_->benachrichtigen(ICCexamin::GL_ZEICHNEN);
   DBG_PROG_ENDE
 }
 
@@ -471,8 +530,8 @@ GL_Ansicht::draw()
 {
   DBG_PROG_START
   --zahl;
-  DBG_PROG_S( "draw() Eintritt ist_bewegt_|darf_bewegen_: "
-               << ist_bewegt_ << "|" << darf_bewegen_ )
+  DBG_NUM_S( "Eintritt ist_bewegt_|darfBewegen(): "
+               << ist_bewegt_ << "|" << darfBewegen()<<" "<<id_<<" "<<hintergrundfarbe )
   Fl_Thread thread = wandelThreadId(pthread_self());
   if(thread != (Fl_Thread)THREAD_HAUPT) {
     WARN_S( ": falscher Thread" );
@@ -480,19 +539,23 @@ GL_Ansicht::draw()
     return;
   }
 
-  if(!visible() || !icc_examin->frei() || !shown()) {
+  if(!icc_examin->frei()) {
     if(ist_bewegt_) {
       stupps_(false); DBG_NUM_S( "stoppen" )
     } else DBG;
     DBG_PROG_ENDE
     return;
-  } else if(!ist_bewegt_ && darf_bewegen_) {
+  } else if(!ist_bewegt_ && darfBewegen()) {
     stupps_(true); DBG_NUM_S( "anstuppsen" )
-  } else if(ist_bewegt_ && !darf_bewegen_) {
+  } else if(ist_bewegt_ && !darfBewegen()) {
     stupps_(false); DBG_NUM_S( "stoppen" )
   }
+
   if(ist_bewegt_)
     agv_->agvMove_();
+
+  if(!visible() || !shown())
+    return;
 
 
 # if 0
@@ -542,6 +605,7 @@ GL_Ansicht::handle( int event )
   int mausknopf = Fl::event_state();
   int schluss = 1;
   DBG_MEM_V( dbgFltkEvent(event) )
+
   switch(event)
   {
     case FL_PUSH:
@@ -612,7 +676,10 @@ GL_Ansicht::getAgv( GL_Ansicht *ansicht, GL_Ansicht *referenz )
   Agviewer *agv = NULL;
 
   if(!agv && referenz)
+  {
     agv = referenz->agv_;
+    agv -> reparent( ansicht );
+  }
 
   if(!agv)
     agv = new Agviewer (ansicht);
@@ -1829,7 +1896,7 @@ GL_Ansicht::zeigeSpektralband_()
            *Lab_Speicher_schatten = 0;
     int n_punkte = 471;//341; // 700 nm
 
-    if(id_ > 1)
+    if(typ_ > 1)
     {
       // Spektrumvariablen
       //int nano_min = 63; // 420 nm
@@ -1867,7 +1934,7 @@ GL_Ansicht::zeigeSpektralband_()
     RGB_Speicher = icc_oyranos.wandelLabNachBildschirmFarben( Lab_Speicher,
                                  (size_t)n_punkte, icc_examin->intentGet(NULL), 0);
 
-    if(id_ == 1)
+    if(typ_ == 1)
       for (int i = 0; i < n_punkte; ++i)
         Lab_Speicher[i*3+0] = (double).0;
 
@@ -1918,7 +1985,7 @@ GL_Ansicht::zeigeSpektralband_()
         }
       glEnd();
       // Schatten
-      if(id_ > 1)
+      if(typ_ > 1)
       {
       glLineWidth(strich2*strichmult);
       glBegin(GL_LINE_STRIP);
@@ -2004,7 +2071,7 @@ GL_Ansicht::menueErneuern_()
   menue_form_->add (_("Background colour"),0,c_,cpMenueButton(menue_hintergrund_),FL_SUBMENU_POINTER);
 
   // ->Darstellung
-  if(id_ == 1)
+  if(typ_ == 1)
   {
     menue_form_->add( _("gray"), 0,c_, (void*)MENU_GRAU, 0 );
     menue_form_->add( _("coloured"), 0,c_, (void*)MENU_FARBIG, 0 );
@@ -2050,7 +2117,7 @@ GL_Ansicht::menueErneuern_()
   menue_button_->copy(menue_->menu());
   menue_button_->callback(c_);
 
-  //icc_examin_ns::status_info(_("left-/middle-/right mouse button -> rotate/cut/menu"), fenster_id_);
+  //glStatus(_("left-/middle-/right mouse button -> rotate/cut/menu"), typ_);
 
   DBG_PROG_ENDE
 }
@@ -2211,7 +2278,7 @@ GL_Ansicht::zeichnen()
                     else
                       text[0] = 0;
 
-                    if(strlen(text) && id() != 1)
+                    if(strlen(text) && typ() != 1)
                     {
                         double lab[3] = {oY+0.5, oZ/2.55+0.5, oX/2.55+0.5},
                               *rgb = 0;
@@ -2282,7 +2349,7 @@ GL_Ansicht::zeichnen()
 
             glRasterPos3f (X, Y, 9.999);
                       
-            if(id() == 1) {
+            if(typ() == 1) {
               DBG_PROG_V( oY<<" "<<oZ<<" "<<oX )
                         /*if(-0.505 <= oY && oY <= 0.505 &&
                            -0.505 <= oZ && oZ <= 0.505 &&
@@ -2312,12 +2379,12 @@ GL_Ansicht::zeichnen()
                      if (i != (int)tabelle_[L][a][b].size()-1)
                        sprintf(&text[strlen(text)], " ");
                    }
-                   icc_examin_ns::status_info( text, fenster_id_ );
+                   glStatus( text, typ_ );
                    ZeichneOText (ortho_font, scal, text)
                  }}}
                }
             } else {
-              icc_examin_ns::status_info( text, fenster_id_ );
+              glStatus( text, typ_ );
               ZeichneOText (ortho_font, scal, text)
             }
             if(icc_debug == 14) {
@@ -2356,10 +2423,10 @@ GL_Ansicht::zeichnen()
 
     // Geschwindigkeit
     static double zeit_alt = 0;
-    sprintf(t, "zeit_: %.01f f/s: %.03f theoretisch f/s: %.03f",
-            zeit_, 1/(zeit_ - zeit_alt), 1./dzeit);
+    sprintf(t, "zeit_: %.01f id: %d f/s: %.03f theoretisch f/s: %.03f",
+            zeit_, id_, 1./(zeit_ - zeit_alt), 1./dzeit);
     zeit_alt = zeit_;
-    DBG_NUM_V( t )
+    DBG_PROG_V( t )
 
 
 #   ifdef HAVE_FTGL
@@ -2384,7 +2451,7 @@ GL_Ansicht::zeichnen()
 
        glTranslatef(5,-12,0/*8.8 - schnitttiefe*3*/);
 
-       if(id() == 1) {
+       if(typ() == 1) {
          kanalname.append(_("Channel"));
          kanalname.append(": ");
          kanalname.append(kanalName());
@@ -2572,7 +2639,7 @@ GL_Ansicht::hineinTabelle (std::vector<std::vector<std::vector<std::vector<doubl
   valid_=false;
   redraw();
 
-  icc_examin_ns::status_info(_("left-/middle-/right mouse button -> rotate/cut/menu"), fenster_id_);
+  glStatus(_("left-/middle-/right mouse button -> rotate/cut/menu"), typ_);
 
   DBG_PROG_ENDE
 }
@@ -2591,7 +2658,7 @@ GL_Ansicht::menueAufruf ( int value )
     if (value >= MENU_MAX &&
         value < 100) {
       kanal = value - MENU_MAX; DBG_PROG_V( kanal )
-      icc_examin_ns::status_info(_("left-/middle-/right mouse button -> rotate/cut/menu"), fenster_id_);
+      glStatus(_("left-/middle-/right mouse button -> rotate/cut/menu"), typ_);
     }
 #   if APPLE
     double farb_faktor = 1./*0.6666*/ *0.8;
@@ -2676,51 +2743,50 @@ GL_Ansicht::menueAufruf ( int value )
       for (int i=0; i < 3 ; ++i) textfarbe[i] = 0.5*farb_faktor;
       break;
     case Agviewer::FLYING:
-      icc_examin_ns::status_info(_("left mouse button -> go back"), fenster_id_);
+      glStatus(_("left mouse button -> go back"), typ_);
       agv_->duenn = true;
       break;
     case Agviewer::ICCFLY_L:
-      if(id() == 2) {
+      if(typ() == 2) {
         agv_->eyeDist( 2 * agv_->dist() );
         vorder_schnitt = std_vorder_schnitt + agv_->dist();
       } else {
         agv_->eyeDist( agv_->dist() );
         vorder_schnitt = std_vorder_schnitt;
       }
-      icc_examin_ns::status_info(_("left mouse button -> go back"), fenster_id_);
+      glStatus(_("left mouse button -> go back"), typ_);
       agv_->duenn = true;
       break;
     case Agviewer::ICCFLY_a:
       vorder_schnitt = std_vorder_schnitt;
-      icc_examin_ns::status_info(_("left mouse button -> go back"), fenster_id_);
+      glStatus(_("left mouse button -> go back"), typ_);
       agv_->duenn = true;
       break;
     case Agviewer::ICCFLY_b:
       vorder_schnitt = std_vorder_schnitt;
-      icc_examin_ns::status_info(_("left mouse button -> go back"), fenster_id_);
+      glStatus(_("left mouse button -> go back"), typ_);
       agv_->duenn = true;
       break;
     case Agviewer::ICCPOLAR:
       agv_->duenn = true;
     case Agviewer::POLAR:
-      if(id() == 1)
+      if(typ() == 1)
         agv_->duenn = true;
       else
         agv_->duenn = false;
       break;
     case Agviewer::AGV_STOP:
       agv_->duenn = false;
-      icc_examin_ns::status_info(_("left-/middle-/right mouse button -> rotate/cut/menu"), fenster_id_);
+      glStatus(_("left-/middle-/right mouse button -> rotate/cut/menu"), typ_);
       break;
     }
   }
 
   if(visible()) {
-    erstelleGLListen_();
-    redraw();
+    icc_examin->alle_gl_fenster->benachrichtigen(ICCexamin::GL_AUFFRISCHEN);
   }
 
-  DBG_PROG_V( value )
+  DBG_PROG_V( value<<" "<<id_ )
   DBG_PROG_ENDE
 }
 
@@ -2750,11 +2816,11 @@ GL_Ansicht::c_ ( Fl_Widget* w, void* daten )
   DBG_PROG_ENDE
 }
 
-int
+/*int
 GL_Ansicht::dID (int display_list)
 { DBG_ICCGL_V( id_ )
   return id_ *DL_MAX + display_list;
-}
+}*/
 
 
 

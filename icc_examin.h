@@ -47,6 +47,7 @@ class  ICCwaehler;
 class  ICCexamin;
 extern ICCexamin *icc_examin;
 class  ICCexaminIO;
+class  icc_examin_ns::EinModell;
 
 namespace icc_examin_ns {
     enum IccGamutFormat {
@@ -104,6 +105,8 @@ class ICCexamin : public icc_examin_ns::Beobachter,
     std::string  waehleTag (int item);
     void         waehleMft (int item);
     std::vector<int> kurve_umkehren;
+    enum { GL_STOP, GL_ZEICHNEN, GL_AUFFRISCHEN }; //!< GL Warten
+    icc_examin_ns::EinModell  * alle_gl_fenster;   //!< alle Gl Fenster
   private:
     int  _item,  _mft_item;    //!< @brief ausgewaehlte Profilbestandteile
     int  _zeig_prueftabelle,

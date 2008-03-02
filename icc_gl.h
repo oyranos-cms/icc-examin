@@ -81,8 +81,9 @@ class GL_Ansicht : public Fl_Gl_Window, /*, public Fl_Slot*/
   
   // IDs
   Agviewer *agv_;
+  static int  ref_;
   int  id_;
-  int  fenster_id_;
+  int  typ_;
   void GLinit_();
   void menueInit_();
 
@@ -119,15 +120,15 @@ public:
   GL_Ansicht(int X,int Y,int W,int H);
   ~GL_Ansicht();
   GL_Ansicht (const GL_Ansicht & gl)
-    : Fl_Gl_Window(0,0,gl.w(),gl.h()) { copy(gl); }
+    : Fl_Gl_Window(0,0,gl.w(),gl.h()) { id_ = ref_; ++ref_; copy(gl); }
   GL_Ansicht& copy(const GL_Ansicht& gl);
   GL_Ansicht& operator = (const GL_Ansicht& gl) { return copy(gl); }
-  void init(int id);
+  void init(int fenster);
 
   // welches Fenster wird verwaltet?
   int  id()          {return id_; } //!< gleich zu agviewer::RedisplayWindow
-  int  fensterId()   {return fenster_id_; } //!< Fenster ID
-  void fensterId(int fenster_id)   { fenster_id_ = fenster_id; }
+  int  typ()   {return typ_; } //!< Fenster ID / Darstellungsart
+  void typ(int t)   { typ_ = t; }
 
   static Agviewer* getAgv(GL_Ansicht *me, GL_Ansicht *referenz);
 
@@ -199,16 +200,18 @@ private:
 public:
   // Darstellungsfunktionen
   void zeichnen();          //!< gl Zeichnen
-  int  dID (int display_liste);
+//  int  dID (int display_liste);
   void tastatur(int e);
   void menueAufruf(int value);
   // Bewegungsfunktionen
   void bewegen(bool setze);
-  bool darfBewegen()        { return darf_bewegen_; };
+  bool darfBewegen();
+  void darfBewegen(int d);
 private:
   void stupps_(bool lauf);
   static void bewegenStatisch_(void* GL_Ansicht);
-  bool darf_bewegen_;
+  //bool darf_bewegen_;
+  //! Ist es zu drehen möglich? Fenster sichtbar?
   bool ist_bewegt_;
 private:
   double zeit_diff_;        //!< Sekunde pro Bild

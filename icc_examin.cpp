@@ -77,6 +77,7 @@ ICCexamin::ICCexamin ()
 
   //Fl::scheme("plastic");
 
+  alle_gl_fenster = new icc_examin_ns::EinModell;
   icc_betrachter = new ICCfltkBetrachter;
   io_ = new ICCexaminIO;
   profile.init();
@@ -101,8 +102,11 @@ void
 ICCexamin::quit ()
 { DBG_PROG_START
   status_ = false;
+  delete icc_betrachter->DD;
+  delete icc_betrachter->details;
   delete icc_betrachter;
   delete io_;
+  delete alle_gl_fenster;
   DBG_PROG_ENDE
   exit(0);
 }
@@ -277,6 +281,20 @@ ICCexamin::start (int argc, char** argv)
   Fl::add_timeout( 0.01, /*(void(*)(void*))*/ICCexaminIO::oeffnenStatisch_ ,(void*)this);
 # endif
 
+  if(!dateiwahl)
+  {
+    fl_translate_file_chooser();
+
+    const char* ptr = NULL;
+    if (profile.size())
+      ptr = profile.name().c_str();
+    dateiwahl = new MyFl_File_Chooser(ptr, _("ICC colour profiles (*.{I,i}{C,c}{M,m,C,c})	Measurement (*.{txt,it8,IT8,RGB,CMYK,ti*,cgats,CIE,cie,nCIE,oRPT,DLY,LAB,Q60})	Argyll Gamuts (*.{wrl,vrml}"), MyFl_File_Chooser::MULTI, _("Which ICC profile?"));
+    dateiwahl->callback(dateiwahl_cb);
+    dateiwahl->preview(true);
+    icc_examin_ns::MyFl_Double_Window *w = dateiwahl->window;
+    w->use_escape_hide = true;
+  }
+
   icc_betrachter->run();
 
   DBG_PROG_ENDE
@@ -335,6 +353,7 @@ ICCexamin::zeigPrueftabelle ()
       w->position(w->x(), ly-10);
   }
 
+  wid->window()->show();
   wid->show();
 
   setzMesswerte();
@@ -369,7 +388,7 @@ ICCexamin::zeigMftTabellen ()
 
   int lx = icc_betrachter->details->x(),
       ly = icc_betrachter->details->y()+10,
-      lw = icc_betrachter->details->w(),
+      lw = icc_betrachter->mft_gl->w(),
       lh = icc_betrachter->mft_gl->h();
 
 #ifdef __APPLE__
@@ -384,7 +403,7 @@ ICCexamin::zeigMftTabellen ()
   for(int i = 0; i < (int)out_names.size(); ++i)
   {
     if(!w)
-    w = new MyFl_Double_Window( lx+lw, ly, lw, lh, t);
+    w = new MyFl_Double_Window( lx+icc_betrachter->details->w(), ly, lw, lh, t);
     else
     w = new MyFl_Double_Window( w->x()+lw, ly, lw, lh, t);
 
@@ -407,6 +426,8 @@ ICCexamin::zeigMftTabellen ()
     gl->invalidate();
     gl->damage(FL_DAMAGE_ALL);
   }
+
+  icc_betrachter->mft_choice->value(0);
   waehleMft(0);
 
   DBG_PROG_ENDE
@@ -1235,6 +1256,7 @@ tastatur(int e)
       if(Fl::event_key() == FL_F + 1) {
         DBG_NUM_S("F1")
         ICCfltkBetrachter *b = icc_examin->icc_betrachter;
+        b->ueber->hotspot(b->ueber_html);
         b->ueber->show();
         initHilfe();
 

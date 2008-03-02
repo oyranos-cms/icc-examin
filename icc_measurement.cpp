@@ -303,8 +303,11 @@ ICCmeasurement::leseTag (void)
     }
 
     if(cgats.messungen[m].felder.size() != 1)
+    {
       WARN_S( "There are unadequate field deflarations: "
               << cgats.messungen[m].felder.size() )
+      return;
+    }
 
     int _nKanaele = cgats.messungen[m].felder[0].size();
     bool _sample_name = false;
