@@ -41,6 +41,20 @@
 
 #define g_message printf
 
+struct Ncl2Farbe {
+  char name[32];
+  icUInt16Number pcsfarbe[3]; //PCSLab oder XYZ
+  icUInt16Number geraetefarbe[16];
+};
+
+struct Ncl2 {
+  char vendor_flag[4];
+  icUInt32Number anzahl;
+  icUInt32Number koord;
+  char vorname[32];
+  char nachname[32];
+  Ncl2Farbe *farben;
+};
 
 
 /**
@@ -327,13 +341,24 @@ ICCtag::getText                     (void)
   #endif
     texte.push_back( text );
 
-  } else if ( /*text == "mluc"*/0 ) {
+  } else if ( text == "mluc" ) {
 
     int anzahl = icValue( *(icUInt32Number*)&_data[8] );
     int groesse = icValue( *(icUInt32Number*)&_data[12] ); // 12
+    char a = 'd';
+    char b = 'e';
+    const char *locale = getenv("LANG");
+    if(locale && strlen(locale) >= 2 )
+    {
+      a = locale[0];
+      b = locale[1];
+    }
+
     for (int i = 0; i < anzahl; i++)
-    { if (_data[16+ i*groesse] == 'd' && _data[17+ i*groesse] == 'e')
-      { int g =        icValue(*(icUInt32Number*)&_data[20+ i*groesse]),
+    {
+      if (_data[16+ i*groesse] == a && _data[17+ i*groesse] == b)
+      {
+        int g =        icValue(*(icUInt32Number*)&_data[20+ i*groesse]),
             dversatz = icValue(*(icUInt32Number*)&_data[24+ i*groesse]);
         char *t = (char*) new char [g];
         int n;
@@ -378,6 +403,43 @@ ICCtag::getText                     (void)
       else
         texte[0].append (" ", 1);
     }
+
+  } else if ( text == "ncl2" ) {
+
+    Ncl2 *ncl2 = (Ncl2*) &_data[8];
+    std::stringstream s;
+
+    texte .resize(1);
+    int farben_n        = icValue(ncl2->anzahl);
+    int geraetefarben_n = icValue(ncl2->koord);
+    s << "\n\n   " <<
+         _("Anzahl Farben:") << icValue(ncl2->anzahl) << "\n" <<
+         "   " << _("Name") << "    " << _("CIE*Lab") <<
+         " / " << _("Gerätefarben") << "\n\n";
+    texte[0] = s.str();
+    DBG_MEM_V( texte[0] )
+    DBG_MEM_V( sizeof(Ncl2)+icValue(ncl2->anzahl)*sizeof(Ncl2Farbe) )
+    DBG_MEM_V( sizeof(Ncl2Farbe) )
+    DBG_MEM_V( sizeof(Ncl2) )
+    for (int i = 0; i < farben_n; ++i)
+    {
+      Ncl2Farbe *f = (Ncl2Farbe*) ((char*)ncl2 + 76 + // Basisgröße von Ncl2
+                     (i * (38 +                 // Basisgröße von Ncl2Farbe
+                           geraetefarben_n      // Anzahl Gerätefarben
+                           * sizeof(icUInt16Number))));//Ncl2Farbe::geraetefarbe
+      DBG_MEM_V( sizeof(icUInt16Number) <<"|"<< geraetefarben_n )
+      DBG_MEM_V( i <<" "<<(int*)f <<" "<< (int*)ncl2  )
+      s << "   " <<
+           ncl2->vorname << f->name << ncl2->nachname<<" ";// maximal 31 Zeichen
+      s << icValue(f->pcsfarbe[0]) << " " <<
+           icValue(f->pcsfarbe[1]) << " " <<
+           icValue(f->pcsfarbe[2]) << " | ";
+      for(int j=0; j < geraetefarben_n; ++j)
+        s << icValue(f->geraetefarbe[j]) << " ";
+
+      s << "\n";
+    }
+    texte[0] = s.str();
 
   } else {
 

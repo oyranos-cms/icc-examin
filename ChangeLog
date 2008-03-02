@@ -1,6 +1,13 @@
 
+2005-02-24
+	* neu: viel an der 3D Darstellung gearbeitet
+	* neu: Umgebungsvariable LANG wird zum Auslesen von mluc Tags verwendet
+	* fix: Profilenamen werden alle angezeigt; kein glLoadIdentity() für Text
+	* neu: icc_profile.h viele Funktionen in cpp Dateien verschoben
+	* neu: ncl2 läuft als Text
+
 2005-02-11
-	* fix: beschnitt der Achsenbeschriftung aufgehoben für CIExy
+	* fix: Beschnitt der Achsenbeschriftung aufgehoben für CIExy
 	* fix: agvSwitchMoveMode[1,2] nach Fenstern aufgeteilt
 
 2005-02-10
