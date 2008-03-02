@@ -272,9 +272,12 @@ ICCtag::load                        ( ICCprofile *profil,
                                       icTag      *tag,
                                       char       *data )
 {
+  DBG_V( profil )
+  DBG_V( tag )
+  DBG_V( data )
   _profil = profil;
-  _sig    = icValue(tag->sig);
-  _size   = icValue(tag->size);
+  _sig    = icValue(tag->sig); DBG_S( getSigTagName(_sig) )
+  _size   = icValue(tag->size); DBG_V( _size )
   switch (_sig) {
   case icSigAToB0Tag:
   case icSigBToA0Tag:
@@ -1336,15 +1339,18 @@ ICCprofile::removeTag (int item)
       zahl = 0; DBG
   for (; i < (int)tags.size(); i++)
     if (i != item) { DBG
-      t[zahl].copy(tags[i]); DBG_S("i: " << i << " -> zahl: " << zahl)
+      t[zahl] = tags[i]; DBG_S("i: " << i << " -> zahl: " << zahl)
       zahl++; DBG
     }
 
   DBG
+  #if 0
   tags.resize(t.size());
   for (int i = 0; i < (int)t.size(); i++)
     tags[i].copy (t[i]);
-
+  #else
+  tags = t;
+  #endif
   DBG_V( i << " " << tags.size())
 }
 

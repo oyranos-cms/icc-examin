@@ -58,7 +58,7 @@ decl {\#include "icc_draw.h"} {}
 
 decl {\#include "icc_profile.h"
 \#include "icc_utils.h"
-\#include "icc_profilierer.h"} {selected public
+\#include "icc_profilierer.h"} {public
 } 
 
 decl {ICCprofile profile;} {public
@@ -71,7 +71,7 @@ Function {} {open C return_type int
   inspekt_topline = 0;} {}
   Fl_Window details {
     label {ICC Details} open
-    xywh {469 346 385 515} type Double box NO_BOX color 53
+    xywh {479 394 385 515} type Double box NO_BOX color 53
     code1 {DBG
     if (argc>1) {
 
@@ -148,9 +148,10 @@ Function {} {open C return_type int
           menuitem {} {
             label {MatrixTestprofil schreiben}
             callback {Profilierer p;
+//profile.removeTag(0); //Test
 p.load (profile);
 ICCprofile matrix (p.matrix());
-matrix.saveProfileToFile("/tmp/icc_examin_test.icc");}
+matrix.saveProfileToFile("/tmp/icc_examin_test.icc");} selected
             tooltip {zu finden in "/tmp/icc_examin_test.icc"} xywh {0 0 100 20}
           }
         }

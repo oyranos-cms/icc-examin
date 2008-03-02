@@ -49,7 +49,7 @@ Profilierer::matrix()
 
   // Profilkopf schreiben
   ICCheader header;
-  gemeinsamerHeader (header);
+  gemeinsamerHeader (&header);
   header.deviceClass (icSigDisplayClass);
   header.colorSpace (icSigRgbData);
   header.pcs (icSigXYZData);
@@ -69,11 +69,47 @@ Profilierer::RGB_TRC_Kurven (void)
   std::vector<RGB> rgb = _measurement.getMessRGB();
 
   std::vector<double> r,g,b;
+  std::vector<XYZ> r_xyz, g_xyz, b_xyz;
   // Kanaltests
   for (int i = 0; i < (int)rgb.size(); i++) {
-    if (rgb[i].G == 0.0 && rgb[i].B == 0.0) r.push_back(rgb[i].R);
-    if (rgb[i].R == 0.0 && rgb[i].B == 0.0) g.push_back(rgb[i].G);
-    if (rgb[i].R == 0.0 && rgb[i].G == 0.0) b.push_back(rgb[i].B);
+    if (rgb[i].G == 0.0 && rgb[i].B == 0.0) {
+      r.push_back(rgb[i].R);
+      r_xyz.push_back (xyz[i]);
+    }
+    if (rgb[i].R == 0.0 && rgb[i].B == 0.0) {
+      g.push_back(rgb[i].G);
+      g_xyz.push_back (xyz[i]);
+    }
+    if (rgb[i].R == 0.0 && rgb[i].G == 0.0) {
+      b.push_back(rgb[i].B);
+      b_xyz.push_back (xyz[i]);
+    }
+  }
+
+  // Sortieren
+  //XYZ temp;
+  double demp, min, max;
+  int i, begin = 0, ende = r.size() - 1, pos_min = 0, pos_max = 0;
+  bool sortieren = true;
+  while (sortieren) {
+    min  = +100000; max = -100000;
+    for (i = begin; i <= ende; i++) {
+      if (r[i] < min) {min = r[i]; pos_min = i;  DBG_S(begin<<"-"<<pos_min<<"-"<<ende << " : " <<r[i]) }
+    }
+    // Tauschen
+    demp = r[begin]; DBG_V(demp)
+    r[begin] = r[pos_min]; DBG_V(r[begin])
+    r[pos_min] = demp; DBG_V(r[pos_min]) 
+    for (i = begin; i <= ende; i++) {
+      if (r[i] > max) {max = r[i]; pos_max = i; DBG_S(begin<<"-"<<pos_max<<"-"<<ende << " : " <<r[i]) }
+    }
+    demp = r[ende]; DBG_V(demp)
+    r[ende] = r[pos_max]; DBG_V(r[ende])
+    r[pos_max] = demp; DBG_V(r[pos_max])
+    // Suchbereich einengen
+    begin ++; ende --;
+    // Fertig?
+    if (begin >= ende) sortieren = false;
   }
 
   icTag ic_tag;
@@ -89,35 +125,39 @@ Profilierer::RGB_TRC_Kurven (void)
   kurveTag->base.sig = (icTagTypeSignature)icValue( icSigCurveType );
   // Werte eintragen
   kurveTag->curve.count = icValue( r.size() );
-  for (int i = 0; i < (int) r.size(); i++) {
-    kurveTag->curve.data[i] = icValue( (int)(r[i]+0.5) );
+  for (int i = 0; i < (int) r.size(); i++) { DBG_S (i)
+    kurveTag->curve.data[i] = icValue( (icUInt16Number)((double)r[i]*257.0+0.5) ); DBG_V ( i << " " << kurveTag->curve.data[i] << " " << r[i] )
   }
   // Tagbeschreibung mitgeben
   ic_tag.sig = icValue (icSigRedTRCTag);
-  ic_tag.size = size;
+  ic_tag.size = icValue (size);
   // Tag kreieren
-  ICCtag rTRC( &_profil, &ic_tag, (char*)kurveTag );
+  ICCtag rTRC; DBG
+  DBG_V( &_profil )
+  DBG_V( icValue(ic_tag.size) << &ic_tag )
+  DBG_V( kurveTag )
+  rTRC.load( &_profil, &ic_tag, (char*)kurveTag );
   // hinzufügen
   _profil.addTag( rTRC );
 
 }
 
 void
-Profilierer::gemeinsamerHeader (ICCheader& header)
+Profilierer::gemeinsamerHeader (ICCheader* header)
 {
-  header.cmmName ("lcms");
-  header.version (0x02300000);
-  header.set_current_date ();
-  header.set_magic ();
-  header.set_platform ();
-  header.unset_embedded_flag ();
-  header.unset_dependent_flag ();
-  header.set_manufacturer ();
-  header.set_model ();
-  header.set_renderingIntent ();
-  header.set_illuminant ();
-  header.set_creator ();
-  //header.setID(); // TODO MD5
+  header->cmmName ("lcms");
+  header->version (0x02300000);
+  header->set_current_date ();
+  header->set_magic ();
+  header->set_platform ();
+  header->unset_embedded_flag ();
+  header->unset_dependent_flag ();
+  header->set_manufacturer ();
+  header->set_model ();
+  header->set_renderingIntent ();
+  header->set_illuminant ();
+  header->set_creator ();
+  //header->setID(); // TODO MD5
 }
 
 

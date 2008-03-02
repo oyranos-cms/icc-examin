@@ -144,14 +144,14 @@ class ICCheader {
     std::string         platform ()     {return getPlatformName(icValue(header.platform)); }
     void                set_platform () {header.platform = (icValue(icSigSGI));}
     std::string         flags ();
-    void                set_embedded_flag()   {((char*)header.flags)[0] =
-                                              ((char*)header.flags)[0] | 0x80; }
-    void                unset_embedded_flag() {((char*)header.flags)[0] =
-                                              ((char*)header.flags)[0] & 0x7f; }
-    void                set_dependent_flag()   {((char*)header.flags)[0] =
-                                              ((char*)header.flags)[0] | 0x40; }
-    void                unset_dependent_flag() {((char*)header.flags)[0] =
-                                              ((char*)header.flags)[0] & 0xbf; }
+    void                set_embedded_flag()   {((char*)&header.flags)[0] =
+                                              ((char*)&header.flags)[0] | 0x80;}
+    void                unset_embedded_flag() {((char*)&header.flags)[0] =
+                                              ((char*)&header.flags)[0] & 0x7f;}
+    void                set_dependent_flag()   {((char*)&header.flags)[0] =
+                                              ((char*)&header.flags)[0] | 0x40;}
+    void                unset_dependent_flag() {((char*)&header.flags)[0] =
+                                              ((char*)&header.flags)[0] & 0xbf;}
     const char*         manufacturerName() {return cp_nchar ((char*)&(header.
                                                       manufacturer),
                                                       sizeof (icSignature)+1); }
@@ -163,29 +163,29 @@ class ICCheader {
     void                set_model ()       {char* m = {"none"};
                                          header.manufacturer= *(icSignature*)m;}
     std::string         attributes ();
-    void                set_reflective_attr() {((char*)header.attributes)[0] =
-                                              ((char*)header.attributes)[0]
+    void                set_reflective_attr() {((char*)&header.attributes)[0] =
+                                              ((char*)&header.attributes)[0]
                                                 & 0x7f; }
-    void                set_transparency_attr() {((char*)header.attributes)[0] =
-                                              ((char*)header.attributes)[0]
+    void                set_transparency_attr() {((char*)&header.attributes)[0] =
+                                              ((char*)&header.attributes)[0]
                                                 | 0x80; }
-    void                set_glossy_attr() {((char*)header.attributes)[0] =
-                                              ((char*)header.attributes)[0]
+    void                set_glossy_attr() {((char*)&header.attributes)[0] =
+                                              ((char*)&header.attributes)[0]
                                                 & 0xbf; }
-    void                set_matte_attr() {((char*)header.attributes)[0] =
-                                              ((char*)header.attributes)[0]
+    void                set_matte_attr() {((char*)&header.attributes)[0] =
+                                              ((char*)&header.attributes)[0]
                                                 | 0x40; }
-    void                set_positive_attr() {((char*)header.attributes)[0] =
-                                              ((char*)header.attributes)[0]
+    void                set_positive_attr() {((char*)&header.attributes)[0] =
+                                              ((char*)&header.attributes)[0]
                                                 & 0xdf; }
-    void                set_negative_attr() {((char*)header.attributes)[0] =
-                                              ((char*)header.attributes)[0]
+    void                set_negative_attr() {((char*)&header.attributes)[0] =
+                                              ((char*)&header.attributes)[0]
                                                 | 0x20; }
-    void                set_color_attr() {((char*)header.attributes)[0] =
-                                              ((char*)header.attributes)[0]
+    void                set_color_attr() {((char*)&header.attributes)[0] =
+                                              ((char*)&header.attributes)[0]
                                                 & 0xef; }
-    void                set_gray_attr() {((char*)header.attributes)[0] =
-                                              ((char*)header.attributes)[0]
+    void                set_gray_attr() {((char*)&header.attributes)[0] =
+                                              ((char*)&header.attributes)[0]
                                                 | 0x10; }
     std::string         renderingIntent () {return renderingIntentName( icValue(
                                             header.renderingIntent ) ); }
@@ -210,13 +210,16 @@ class ICCheader {
 class ICCtag {
     friend class ICCmeasurement;
 
+    void                copy               (const ICCtag& tag);
   public:
                         ICCtag             ();
                         ICCtag             (ICCprofile* profil,
                                             icTag* tag, char* data);
                         ICCtag             (const ICCtag& tag)
-                                                          {ICCtag::copy (tag); }
-    void                copy               (const ICCtag& tag);
+                                                          {copy (tag); }
+    ICCtag&             operator=          (const ICCtag& tag)
+                                                          {copy (tag); 
+                                                           return *this; }
     void                clear              () {_sig = icMaxEnumTag;
                                                DBG_S((int*)_data)
                                                if (_data && _size) free (_data);
@@ -434,7 +437,7 @@ class ICCprofile {
   public: // Messwertinfos
     bool                hasMeasurement () {return measurement.valid(); }
     std::string         report ()         {return measurement.getHtmlReport(); }
-    ICCmeasurement      getMeasurement () {return measurement; }
+    ICCmeasurement&     getMeasurement () {return measurement; }
 
   public: // Profilerstellung
     void                setHeader (void* h) {header.header_raw(h); }

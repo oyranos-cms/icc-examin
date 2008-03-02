@@ -34,7 +34,7 @@ class Profilierer {
     const ICCprofile&   matrix();
   private:
     void                RGB_TRC_Kurven (void);
-    void                gemeinsamerHeader (ICCheader& header);
+    void                gemeinsamerHeader (ICCheader *header);
     std::string         print ();
 };
 
