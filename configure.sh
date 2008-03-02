@@ -172,6 +172,16 @@ if [ "$X11" = 1 ] && [ $X11 -gt 0 ]; then
             X_ADD_LIBS="$X_ADD_LIBS -l$l"
           fi
           echo "#define HAVE_$l 1"  >> $CONF_H
+          # Test if we need to link explicitely, possibly symbols are included
+          if [ $OSUNAME = "Darwin" ]; then
+            if [ -n "`otool -L tests/libtest | grep $l`" ]; then
+              echo "$l=-l$l" >> "config.sh"
+            fi
+          else
+            if [ -n "`ldd tests/libtest | grep $l`" ]; then
+              echo "$l=-l$l" >> "config.sh"
+            fi
+          fi
           rm tests/libtest
       else
         test -n "$ECHO" && $ECHO "!!! ERROR lib$l is missed"
@@ -191,6 +201,7 @@ if [ "$X11" = 1 ] && [ $X11 -gt 0 ]; then
             X_ADD_LIBS="$X_ADD_LIBS -l$l"
           fi
           echo "#define HAVE_$l 1"  >> $CONF_H
+          echo "$l=-l$l" >> "config.sh"
           rm tests/libtest
       else
         test -n "$ECHO" && $ECHO "lib$l not found"
@@ -305,6 +316,7 @@ if [ -n "$LIBS" ] && [ $LIBS -gt 0 ]; then
       rm -f tests/libtest
       $CXX $CFLAGS -I$includedir tests/lib_test.cxx $LDFLAGS -L$libdir -l$l -o tests/libtest 2>/dev/null
       if [ -f tests/libtest ]; then
+          echo "$l=-l$l" >> "config.sh"
           test -n "$ECHO" && $ECHO "lib$l is available"
           if [ -n "$MAKEFILE_DIR" ]; then
             for i in $MAKEFILE_DIR; do
@@ -374,14 +386,16 @@ fi
 
 
 if [ -n "$DEBUG" ] && [ $DEBUG -gt 0 ]; then
-  if [ "$debug" -eq "1" ]; then
-    DEBUG_="-Wall -g -DDEBUG --pedantic"
-    echo "DEBUG = $DEBUG_" >> $CONF
-    echo "DEBUG_SWITCH = -v" >> $CONF
-    echo "DEBUG_SWITCH = -v" >> $CONF_I18N
-  else
-    echo ".SILENT:" >> $CONF
-    echo ".SILENT:" >> $CONF_I18N
+  if [ -n "$MAKEFILE_DIR" ]; then
+    for i in $MAKEFILE_DIR; do
+      if [ "$debug" -eq "1" ]; then
+        DEBUG_="-Wall -g -DDEBUG --pedantic"
+        test -f "$i/makefile".in && echo "DEBUG = $DEBUG_"  >> "$i/makefile"
+        test -f "$i/makefile".in && echo "DEBUG_SWITCH = -v"  >> "$i/makefile"
+      else
+        test -f "$i/makefile".in && echo ".SILENT:"  >> "$i/makefile"
+      fi
+    done
   fi
 fi
 

@@ -360,6 +360,9 @@ ICCprofile::printTagInfo         (int item)
 { DBG_PROG_START
   std::vector<std::string> liste;
 
+  if(0 > item || item >= (int)tags.size())
+    return liste;
+
   liste.push_back( tags.at(item).getTagName() );
   liste.push_back( tags.at(item).getTypName() );
 

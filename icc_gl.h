@@ -87,8 +87,8 @@ class GL_Ansicht : public Fl_Gl_Window, /*, public Fl_Slot*/
   void GLinit_();
   void menueInit_();
 
-  typedef enum {NOTALLOWED, AXES, RASTER, PUNKTE , SPEKTRUM, HELFER, DL_MAX } DisplayLists;
-  int glListen[DL_MAX];
+  typedef enum {NOTALLOWED, AXES, RASTER, PUNKTE , SPEKTRUM, HELFER, UMRISSE, DL_MAX } DisplayLists;
+  int gl_listen[DL_MAX];
   typedef enum {
    MENU_AXES,
    MENU_QUIT,

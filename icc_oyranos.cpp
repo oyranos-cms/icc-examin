@@ -1230,6 +1230,7 @@ Oyranos::wandelProfilNachLabUndZurueck(double *lab, // 0.0 - 1.0
     const char*  block = p;
     int flags_ = 0;
     int kanaele, format;
+    int input_ausnahme = 0;
 
     {
       flags_ = flags & ~cmsFLAGS_GAMUTCHECK;
@@ -1262,7 +1263,18 @@ Oyranos::wandelProfilNachLabUndZurueck(double *lab, // 0.0 - 1.0
                                                hProfil, format,
                                                intent,
                                                PRECALC|flags);
-      if (!form) { WARN_S( "no transformation found" ); return 1; }
+      if (!form) {
+        if(device == icSigInputClass && 
+           kanaele == 3)
+        {
+          // gleich Farben benutzen
+          input_ausnahme = 1;
+
+        } else {
+          WARN_S( "no transformation found" );
+          return 1;
+        }
+      }
     }
 
     double *farben = new double [size * kanaele];
@@ -1272,8 +1284,13 @@ Oyranos::wandelProfilNachLabUndZurueck(double *lab, // 0.0 - 1.0
 
     LabToCIELab (lab, cielab, size);
 
-    cmsDoTransform (form, cielab, farben, size);
-    cmsDeleteTransform (form);
+    if(!input_ausnahme)
+    {
+      cmsDoTransform (form, cielab, farben, size);
+      cmsDeleteTransform (form);
+    } else {
+      memcpy( farben, cielab, size * kanaele * sizeof(double)); // wieso cielab?
+    }
 
     form = cmsCreateTransform                 (hProfil, format,
                                                hLab, TYPE_Lab_DBL,

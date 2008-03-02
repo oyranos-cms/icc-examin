@@ -1,3 +1,31 @@
+2007-03-06
+	* neu: add MCH5++ colour space signatures
+	* neu: render input profile gamut by directly going from max RGB->Lab
+
+2007-02-28
+	* und: build system: check for Xpm, Xext, dl, iconv and intl
+	* neu: check for building in CinePaint source tree.
+	* und: allow compiling without i18n libs
+	* und: keep progressbar spinning
+	* fix: hide all lower widgets to not confuse FLTK event paths
+	* fix: false variable assignment for background colour
+	* fix: move global variables to GL_Ansicht object
+	* fix: valgrind warning in icc_gl.cpp
+	* und: simplify the motion events
+
+2007-02-20
+	* fix: empty pointer chrash in locale path search (icc_helfer.cpp)
+
+2007-02-09
+	* neu: allow Lab without XYZ measurements
+	* und: new conversion functions for Lab/XYZ and Lab/CIELab
+
+2007-02-06
+	* und: allocate more memory to thread (in a wrong attempt to fix osX)
+
+2007-02-01
+	* neu: gray out non selectable profiles (empty proofing profile)
+
 2007-01-00
 	* fix: plastic workaround for X11, call Fl_Window::show() in
 		MyFl_Double_Window::show()

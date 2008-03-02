@@ -212,7 +212,7 @@ ICCexamin::start (int argc, char** argv)
   if(out)
   {  
     char name[64];
-    fscanf( out, "%12s", name );
+    size_t r = fscanf( out, "%12s", name ); r=r;
     if( strcmp(name, "oyranos") == 0 )
       icc_betrachter->menu_einstellungen->show();
     pclose(out);
@@ -341,6 +341,7 @@ ICCexamin::zeig3D ()
   wid->damage(FL_DAMAGE_ALL);
   wid->invalidate();
   wid->redraw();
+  w->show(); // needed for osX
 
   //icc_waehler_->position( w->x(), w->y() - icc_waehler_->h() );
 
@@ -790,7 +791,7 @@ ICCexamin::auffrischen(int schalter)
 void
 ICCexamin::oyranos_einstellungen()
 {
-  system("oyranos-config-fltk");
+  int r = system("oyranos-config-fltk"); r = r;
   auffrischen( PROGRAMM | OYRANOS );
 }
 

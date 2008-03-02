@@ -46,8 +46,8 @@
 
 
 /* The following macros belong to Kai-Uwe's debug environment. */
-#ifdef DEBUG
-#include "icc_utils.h"
+#ifdef DEBUG_
+#include "../icc_utils.h"
 #else
 /*extern int icc_debug;*/
 #endif
@@ -219,8 +219,10 @@ fl_initialise_locale( const char *domain, const char *locale_path,
   // 1. get default locale info ..
     // use the standard way
     // this is dangerous
-  char *previous_locale = strdup(setlocale (LC_MESSAGES, NULL));
-  char *tmp = strdup(setlocale (LC_MESSAGES, ""));
+  char *temp = setlocale (LC_MESSAGES, NULL);
+  char *previous_locale = temp ? strdup(temp) : NULL;
+  temp = setlocale (LC_MESSAGES, "");
+  char *tmp = temp ? strdup(temp) : NULL;
   if(tmp) {
     snprintf(locale,TEXTLEN, tmp);
     DBG_PROG_V( locale )

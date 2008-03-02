@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: hello-sh 0.14.1\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2007-02-08 11:45+0100\n"
+"POT-Creation-Date: 2007-03-23 22:17+0100\n"
 "PO-Revision-Date: 2004-11-17 10:08+0200\n"
 "Last-Translator: Pavel Maryanov <acid_jack@ukr.net>\n"
 "Language-Team: Russian <ru@li.org>\n"
@@ -25,75 +25,79 @@ msgstr ""
 msgid "osX locale not obtained"
 msgstr ""
 
-#: fl_i18n.cxx:323
+#: fl_i18n.cxx:325
 msgid "try to set LANG"
 msgstr ""
 
-#: fl_i18n.cxx:342
+#: fl_i18n.cxx:344
 msgid "try locale in "
 msgstr ""
 
-#: fl_i18n.cxx:351
+#: fl_i18n.cxx:353
 msgid "set codeset for"
 msgstr ""
 
-#: fl_i18n.cxx:387
+#: fl_i18n.cxx:389
 msgid "Add to Favorites"
 msgstr ""
 
-#: fl_i18n.cxx:388
+#: fl_i18n.cxx:390
 msgid "All Files (*)"
 msgstr ""
 
-#: fl_i18n.cxx:389
+#: fl_i18n.cxx:391
 msgid "Custom Filter"
 msgstr ""
 
-#: fl_i18n.cxx:390
+#: fl_i18n.cxx:392
 msgid "Please choose an existing file!"
 msgstr ""
 
-#: fl_i18n.cxx:391
+#: fl_i18n.cxx:393
 msgid "Favorites"
 msgstr ""
 
-#: fl_i18n.cxx:392
+#: fl_i18n.cxx:394
 msgid "Filename"
 msgstr ""
 
-#: fl_i18n.cxx:393
+#: fl_i18n.cxx:395
 msgid "Manage Favorites"
 msgstr ""
 
-#: fl_i18n.cxx:395
+#: fl_i18n.cxx:397
 msgid "My Computer"
 msgstr ""
 
-#: fl_i18n.cxx:397
+#: fl_i18n.cxx:399
 msgid "Filesystems"
 msgstr ""
 
-#: fl_i18n.cxx:399
+#: fl_i18n.cxx:401
 msgid "New Directory?"
 msgstr ""
 
-#: fl_i18n.cxx:400
+#: fl_i18n.cxx:402
 msgid "Preview"
 msgstr ""
 
-#: fl_i18n.cxx:402
+#: fl_i18n.cxx:404
 msgid "Save"
 msgstr ""
 
-#: fl_i18n.cxx:404
+#: fl_i18n.cxx:406
 msgid "Show:"
 msgstr ""
 
-#: fl_i18n_example.cxx:15 fl_i18n_example.cxx:44 fl_i18n_example.cxx:47
+#: fl_i18n_example.cxx:20 fl_i18n_example.cxx:50 fl_i18n_example.cxx:57
 msgid "Hello, world!"
 msgstr "Здравствуй, мир!"
 
-#: fl_i18n_example.cxx:45
+#: fl_i18n_example.cxx:52
+msgid "no gettext compiled in."
+msgstr ""
+
+#: fl_i18n_example.cxx:55
 msgid "fl_i18n_example"
 msgstr ""
 

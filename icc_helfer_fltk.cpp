@@ -232,30 +232,42 @@ namespace icc_examin_ns {
   int  leerWait(void) { return 0; }
   int  (*waitFunc)(void) = Fl::check;//awake;
 
+  static pthread_mutex_t data_mutex_         = PTHREAD_MUTEX_INITIALIZER;
+  static Fl_Thread       data_mutex_thread_  = (Fl_Thread)pthread_self();
+  static int             data_mutex_threads_ = 0;
+
   void lock(const char *file, int line)
   {
 # if 0
-    // Fuer Ungezaehlte, Ausserhaeusige und Besitzlose
-    if(icc_thread_lock_zaehler_ == 0 ||
-       (pthread_self() != icc_thread_lock_besitzer_ ||
-        icc_thread_lock_besitzer_ == 0))
-    { // Fehlersuche
-      if(icc_thread_lock_besitzer_) {
-        dbgThreadId(icc_thread_lock_besitzer_); DBG_THREAD_S( " Besitzer/Aufrufer locks: "<<icc_thread_lock_zaehler_ <<" Aufruf bei: "<<file<<":"<<line )
-      } else {
-        DBG_THREAD_S( "locks: "<<icc_thread_lock_zaehler_ <<" Aufruf bei: "<<file<<":"<<line )
-      }
-      // ... ins Haus gehen
-      Fl::lock();
-      // ... in Besitz nehmen
-      icc_thread_lock_besitzer_ = pthread_self();
-    } DBG_THREAD
+    // im selben Zweig gesperrten Rat ausschliesen
+    if( data_mutex_thread_ != pthread_self() ||
+        data_mutex_threads_ == 0 )
+      // Warten bis der Rat von einem anderen Zweig freigegeben wird
+      while (pthread_mutex_trylock( &data_mutex_ )) {
+        float sekunden = 0.001;
+#            if defined(__GNUC__) || defined(__APPLE__)
+               timespec ts;
+               double ganz;
+               double rest = modf(sekunden, &ganz);
+               ts.tv_sec = (time_t)ganz;
+               ts.tv_nsec = (time_t)(rest * 1000000000);
+               //DBG_PROG_V( sekunden<<" "<<ts.tv_sec<<" "<<ganz<<" "<<rest )
+               nanosleep(&ts, 0);
+#            else
+               usleep((time_t)(sekunden/(double)CLOCKS_PER_SEC));
+#            endif
+    }
+
+    data_mutex_threads_++ ;
+    if(data_mutex_threads_ == 1)
+      data_mutex_thread_ = pthread_self() ;
 # else
-      DBG_THREAD_S( "locks: "<<icc_thread_lock_zaehler_ <<" anhalten bei: "<<file<<":"<<line )
-      Fl::lock(); DBG_THREAD
-      // ... in Besitz nehmen
-      icc_thread_lock_besitzer_ = pthread_self();
+     DBG_THREAD_S( "locks: "<<icc_thread_lock_zaehler_ <<" anhalten bei: "<<file<<":"<<line )
+     Fl::lock(); DBG_THREAD
+     // ... in Besitz nehmen
+     icc_thread_lock_besitzer_ = pthread_self();
 # endif
+
     // ... Pruefnummer im Haus
     ++icc_thread_lock_zaehler_;
     //Fl::awake();
@@ -265,20 +277,9 @@ namespace icc_examin_ns {
   void unlock(void *widget, const char *file, int line)
   {
 # if 0
-    --icc_thread_lock_zaehler_;
-    DBG_THREAD_S( "locks: "<<icc_thread_lock_zaehler_ <<" Aufruf bei: "<<file<<":"<<line )
-    // Fehlersuche
-    if(pthread_self() != icc_thread_lock_besitzer_ &&
-       icc_thread_lock_besitzer_ != 0) {
-      dbgThreadId(icc_thread_lock_besitzer_);DBG_THREAD_S( "locks: " << icc_thread_lock_zaehler_ << " Besitzer/Aufrufer" )
-    }
-    // drausen nichts unternehmen, da die offene Tuer "gut" ist 
-    if(icc_thread_lock_zaehler_ >= 0)
-      Fl::unlock();
-    // zuruecksetzen, da das Schloss nun offen ist
-# else
-      Fl::unlock();
-# endif
+    --data_mutex_threads_;
+    if(!data_mutex_threads_)
+      pthread_mutex_unlock( &data_mutex_ );
 
     // hinausgehen und Tuere offen lassen
     if(widget) { DBG_THREAD
@@ -286,6 +287,11 @@ namespace icc_examin_ns {
       // Ereignisse entlocken
       //Fl::wait(0); DBG_THREAD
     }
+# else
+    if(widget) { DBG_THREAD
+      Fl::awake(widget); DBG_THREAD }
+    Fl::unlock();
+# endif
 
     icc_thread_lock_besitzer_ = 0;
     icc_thread_lock_zaehler_ = 0;

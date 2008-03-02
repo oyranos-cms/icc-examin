@@ -80,7 +80,7 @@ class ICCmeasurement {
 
     ICCprofile*         profile_;
     int                 channels_;
-    int                 isMatrix_;
+    int                 isICCDisplay_;
 
     int                 nFelder_;
 

@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2006  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2007  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -80,6 +80,10 @@ namespace icc_examin_ns {
      void iconize (MyFl_Double_Window * by); //!< Verkleinern automatisch
      void show (void);           //!< Zeigen fuer alle
      void show (int, char**);    //!< Zeigen fuer alle
+  private:
+     enum {HIDE, SHOW, ICONIZE, HANDLE, FUNC_MAX};
+     int in_middle_of_[FUNC_MAX];      //!< Statusvariable
+  public:
      void label (const char * t); //!< Fenstertitel setzen
      const char* label() { return Fl_Double_Window::label(); }
 

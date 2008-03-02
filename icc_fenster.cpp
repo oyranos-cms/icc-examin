@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2005  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2007  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -47,6 +47,8 @@
 
 
 namespace icc_examin_ns {
+
+#define IN_MIDDLE_OF_(n) { DBG_NUM_S("Break signal loop "<<n); /*return;*/ }
 
 #ifdef HAVE_FLTK
 #ifdef HAVE_FLU
@@ -247,6 +249,8 @@ MyFl_Double_Window::init_object_ ()
   user_hide = true;
   use_escape_hide = false;
   is_toolbox = false;
+  for (int i = 0; i < FUNC_MAX; ++i)
+    in_middle_of_[i] = 0;
 }
 
 MyFl_Double_Window::~MyFl_Double_Window()
@@ -272,6 +276,10 @@ void MyFl_Double_Window::show()
 
 void MyFl_Double_Window::show(int argc, char** argv)
 {
+  if(in_middle_of_[SHOW])
+    IN_MIDDLE_OF_(in_middle_of_[SHOW])
+  in_middle_of_[SHOW] += 1;
+
   DBG_PROG_S( id_<<" "<<(user_hide?"u":" ")<<" "<<(visible()?"v":" ")<<" "<<(shown()?"s":" ") )
   for( int i = 0; i < ref_; ++i )
   {
@@ -330,12 +338,18 @@ void MyFl_Double_Window::show(int argc, char** argv)
 
   user_hide = true;
 
+  in_middle_of_[SHOW] = 0;
+
   DBG_PROG_S( id_<<" "<<(user_hide?"u":" ")<<" "<<(visible()?"v":" ")<<" "<<
               (shown()?"s":" ") )
 }
 
 void MyFl_Double_Window::hide()
 {
+  if(in_middle_of_[HIDE])
+    IN_MIDDLE_OF_(in_middle_of_[HIDE])
+  in_middle_of_[HIDE] += 1;
+
   DBG_PROG_S( id_<<" "<<(user_hide?"u":" ")<<" "<<(visible()?"v":" ")<<" "<<
               (shown()?"s":" ") )
   if(!only_with)
@@ -355,6 +369,9 @@ void MyFl_Double_Window::hide()
   else
     Fl_Double_Window::hide();
   user_hide = true;
+
+  in_middle_of_[HIDE] = 0;
+
   DBG_PROG_S( id_<<" "<<(user_hide?"u":" ")<<" "<<(visible()?"v":" ")<<" "<<
               (shown()?"s":" ") )
 }
@@ -371,6 +388,10 @@ void MyFl_Double_Window::hide(MyFl_Double_Window * by)
 
 void MyFl_Double_Window::iconize()
 {
+  if(in_middle_of_[ICONIZE])
+    IN_MIDDLE_OF_(in_middle_of_[ICONIZE])
+  in_middle_of_[ICONIZE] += 1;
+
   DBG_PROG_S( id_<<" "<<(user_hide?"u":" ")<<" "<<(visible()?"v":" ")<<" "<<
               (shown()?"s":" ") )
   if(!only_with)
@@ -387,6 +408,9 @@ void MyFl_Double_Window::iconize()
 
   Fl_Double_Window::iconize();
   user_hide = true;
+
+  in_middle_of_[ICONIZE] = 0;
+
   DBG_PROG_S( id_<<" "<<(user_hide?"u":" ")<<" "<<(visible()?"v":" ")<<" "<<
               (shown()?"s":" ") )
 }
@@ -406,6 +430,10 @@ void MyFl_Double_Window::iconize(MyFl_Double_Window * by)
 
 int MyFl_Double_Window::handle( int e )
 {
+  if(in_middle_of_[HANDLE])
+    IN_MIDDLE_OF_(in_middle_of_[HANDLE])
+  in_middle_of_[HANDLE] += 1;
+
   int ergebnis = tastatur(e);
   int zeigen = (e == FL_HIDE || e == FL_SHOW);
 
@@ -476,6 +504,8 @@ int MyFl_Double_Window::handle( int e )
 
   if(zeigen && net_desktop >= 0 && this->shown() && this->visible())
     desktop_ = net_desktop;
+
+  in_middle_of_[HANDLE] = 0;
 
   if(fl_window_events)
     return Fl_Double_Window::handle(e);

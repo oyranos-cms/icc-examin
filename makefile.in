@@ -341,7 +341,7 @@ $(POT_FILE):	$(ALL_SOURCEFILES)
 
 clean:	unbundle unpkg
 	echo mache sauber $@ ...
-	-$(RM) $(ALL_OBJECTS)$(BINTARGET) \
+	-$(RM) $(ALL_OBJECTS) $(BINTARGET) \
 	$(LIBNAME) $(LIBSO) $(LIBSONAME) $(LIBSONAMEFULL)
 	-for ling in $(LINGUAS); do \
 	  test -f po/$${ling}.gmo \

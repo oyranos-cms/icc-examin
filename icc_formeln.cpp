@@ -211,41 +211,41 @@ XYZtoLab (XYZ_s &xyz, Lab_s &lab)
      */
 
       double gamma = 1.0/3.0; // standard is 1.0/3.0
-      static XYZ_s xyz_;
+      XYZ_s xyz_;
       double K = 24389./27.;
-      double k = K/116.;      // 0.008856
-      double e = 216./24389.; // 7.787
+      double k = K/116.;      // 7.787
+      double e = 216./24389.; // 0.008856
 
       // CIE XYZ -> CIE*Lab (D50)
-      xyz_.X = xyz.X * 0.964294;
-      xyz_.Y = xyz.Y * 1.000000;
-      xyz_.Z = xyz.Z * 0.825104;
+      xyz_.X = xyz.X / 0.964294;
+      xyz_.Y = xyz.Y / 1.000000;
+      xyz_.Z = xyz.Z / 0.825104;
 
       if ( xyz_.X > e)
-        xyz_.X = pow (xyz_.X, gamma);
+         xyz_.X = pow (xyz_.X, gamma);
       else
-         xyz_.X = k*xyz_.X + (16.0/116.0);
+         xyz_.X = k * xyz_.X + (16.0/116.0);
       if ( xyz_.Y > e)
          xyz_.Y = pow ( xyz_.Y, gamma);
       else
-         xyz_.Y = k* xyz_.Y + (16.0/116.0);
+         xyz_.Y = k * xyz_.Y + (16.0/116.0);
       if ( xyz_.Z > e)
          xyz_.Z = pow ( xyz_.Z, gamma);
       else
-         xyz_.Z = k* xyz_.Z + (16.0/116.0);
+         xyz_.Z = k * xyz_.Z + (16.0/116.0);
 
       // auf 0.0-1.0 normalisieren ------v
-      lab.L = (116.0* xyz_.Y - 16.0)     /100.0 ;
-      lab.a = (500.0*(xyz_.X -  xyz_.Y)  +128.0) / 256.0 ;
-      lab.b = (200.0*( xyz_.Y -  xyz_.Z) +128.0) / 256.0 ;
+      lab.L = (116.0*  xyz_.Y -  16.0)   / 100.0;
+      lab.a = (500.0*( xyz_.X -  xyz_.Y) + 128.0) / 256.0 ;
+      lab.b = (200.0*( xyz_.Y -  xyz_.Z) + 128.0) / 256.0 ;
 }
 
 void
 XYZtoLab (double* xyz, double* lab, int n)
 {
+    XYZ_s xyz_;
+    Lab_s lab_;
     for(int i = 0; i < n; ++i) {
-      static XYZ_s xyz_;
-      static Lab_s lab_;
 
       xyz_.X = xyz[i*3+0];
       xyz_.Y = xyz[i*3+1];

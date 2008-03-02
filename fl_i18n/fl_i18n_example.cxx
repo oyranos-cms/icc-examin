@@ -5,6 +5,11 @@
 #include <FL/fl_draw.H>//#include "fl_i18n.H"
 #include <cstdio>
 
+#ifdef USE_GETTEXT
+#include <locale.h>
+#include <libintl.h>
+#endif
+
 void MyBox::draw() {
   fl_font( FL_HELVETICA, 24);
   Fl::set_font( FL_HELVETICA," Tahoma" );
@@ -41,7 +46,12 @@ int main(int argc, char **argv) {
   } else
     printf("Locale not found in %s\n", locale_paths[0]);
 
-  printf("%s\n",_("Hello, world!"));
+#ifdef USE_GETTEXT
+  printf("%s   %s\n",_("Hello, world!"),setlocale(LC_MESSAGES,NULL));
+#else
+  printf("%s\n",_("no gettext compiled in."));
+#endif
+
   { Fl_Double_Window* o = new Fl_Double_Window(238, 133, _("fl_i18n_example"));
     w = o;
     new Fl_Button(25, 61, 190, 69, _("Hello, world!"));

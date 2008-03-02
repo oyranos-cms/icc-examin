@@ -361,17 +361,39 @@ getColorSpaceChannels (icColorSpaceSignature color)
     case icSig2colorData: n = 2; break;
     case icSig3colorData: n = 3; break;
     case icSig4colorData: n = 4; break;
-    case icSig5colorData: n = 5; break;
-    case icSig6colorData: n = 6; break;
-    case icSig7colorData: n = 7; break;
-    case icSig8colorData: n = 8; break;
-    case icSig9colorData: n = 9; break;
-    case icSig10colorData: n = 10; break;
-    case icSig11colorData: n = 11; break;
-    case icSig12colorData: n = 12; break;
-    case icSig13colorData: n = 13; break;
-    case icSig14colorData: n = 14; break;
-    case icSig15colorData: n = 15; break;
+    case icSig5colorData:
+    case icSigMCH5Data:
+          n = 5; break;
+    case icSig6colorData:
+    case icSigMCH6Data:
+         n = 6; break;
+    case icSig7colorData:
+    case icSigMCH7Data:
+         n = 7; break;
+    case icSig8colorData:
+    case icSigMCH8Data:
+         n = 8; break;
+    case icSig9colorData:
+    case icSigMCH9Data:
+         n = 9; break;
+    case icSig10colorData:
+    case icSigMCHAData:
+         n = 10; break;
+    case icSig11colorData:
+    case icSigMCHBData:
+         n = 11; break;
+    case icSig12colorData:
+    case icSigMCHCData:
+         n = 12; break;
+    case icSig13colorData:
+    case icSigMCHDData:
+         n = 13; break;
+    case icSig14colorData:
+    case icSigMCHEData:
+         n = 14; break;
+    case icSig15colorData:
+    case icSigMCHFData:
+         n = 15; break;
     default: n = 0; break;
   }
   return n;
@@ -1232,14 +1254,13 @@ setI18N( const char *exename )
     bdr = icc_examin_ns::holeBundleResource("locale","");
     if(bdr.size())
     {
-      locale_paths[0] = bdr.c_str();
-      ++num_paths;
+      locale_paths[num_paths] = bdr.c_str(); ++num_paths;
     }
   }
-  locale_paths[1] = LOCALEDIR; ++num_paths;
-  locale_paths[2] = SRC_LOCALEDIR; ++num_paths;
+  locale_paths[num_paths] = LOCALEDIR; ++num_paths;
+  locale_paths[num_paths] = SRC_LOCALEDIR; ++num_paths;
 # else
-  locale_paths[0] = LOCALEDIR; ++num_paths;
+  locale_paths[num_paths] = LOCALEDIR; ++num_paths;
 
   DBG_NUM_V( exename )
 
@@ -1250,8 +1271,8 @@ setI18N( const char *exename )
 
     text = getExecPath( exename );
     snprintf (path, len-1, "%s%s%s", text, DIR_SEPARATOR, reloc_path);
-    locale_paths[1] = path; ++num_paths;
-    locale_paths[2] = SRC_LOCALEDIR; ++num_paths;
+    locale_paths[num_paths] = path; ++num_paths;
+    locale_paths[num_paths] = SRC_LOCALEDIR; ++num_paths;
     DBG_NUM_V( path );
     if (text) free (text);
   }
@@ -1275,9 +1296,15 @@ setI18N( const char *exename )
   } else {
     if(is_path < 0)
     {
-      is_path = fl_search_locale_path (num_paths, locale_paths, "de",
-                strrchr(exename, DIR_SEPARATOR_C)+1 );
-
+      if(exename && strlen(exename))
+      {
+        const char *dname = strrchr(exename, DIR_SEPARATOR_C);
+        if(dname && strlen(dname))
+          dname++;
+        if(!dname)
+          dname = exename;
+        is_path = fl_search_locale_path (num_paths, locale_paths, "de", dname );
+      }
       if(is_path >= 0) {
         int err = fl_initialise_locale ( strrchr(exename, DIR_SEPARATOR_C)+1,
                                locale_paths[is_path], 1 );

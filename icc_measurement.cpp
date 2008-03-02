@@ -116,7 +116,7 @@ ICCmeasurement::defaults ()
   nFelder_ = 0;
 
   channels_ = 0;
-  isMatrix_ = 0;
+  isICCDisplay_ = 0;
   profile_ = NULL;
   XYZ_measurement_ = false;
   LAB_measurement_ = false;
@@ -150,7 +150,7 @@ ICCmeasurement::copy (const ICCmeasurement& m)
 
   nFelder_ = m.nFelder_;
   channels_ = m.channels_;
-  isMatrix_ = m.isMatrix_;
+  isICCDisplay_ = m.isICCDisplay_;
   profile_ = m.profile_;
   LAB_measurement_ = m.LAB_measurement_;
   XYZ_measurement_ = m.XYZ_measurement_;
@@ -529,7 +529,8 @@ ICCmeasurement::init (void)
       profile_->data_type == ICCprofile::ICCprofileDATA )
   {
     channels_ = profile_->getColourChannelsCount();
-    isMatrix_ = !(profile_->hasCLUT());
+    isICCDisplay_ = /*!(profile_->hasCLUT()) &&*/
+                profile_->getHeader().deviceClass() == icSigDisplayClass;
   }
 
   init_umrechnen();
@@ -745,8 +746,8 @@ ICCmeasurement::init_umrechnen                     (void)
     }
 
     int m = nFelder_ < (int)XYZ_Satz_.size() ? nFelder_ : (int)XYZ_Satz_.size();
-    if(!m && isMatrix_)
-      WARN_S("No XYZ data available. Dont support this matrix profile?");
+    if(!m && isICCDisplay_)
+      WARN_S("No XYZ data available. Dont support this display profile?");
     DBG_PROG_S( "Felder: " << m )
 
     for (int i = 0; i < m; i++)
@@ -950,7 +951,7 @@ ICCmeasurement::init_umrechnen                     (void)
         {
           if (XYZ_measurement_)
           {
-          if (isMatrix_) {
+          if (isICCDisplay_) {
             // Messfarben auf Weiss und Schwarz addaptiert
             XYZ[0] = (XYZ_Satz_[i].X-min[0])/(max[0]-min[0])*WP[0];
             XYZ[1] = (XYZ_Satz_[i].Y-min[1])/(max[1]-min[1])*WP[1];
@@ -960,11 +961,12 @@ ICCmeasurement::init_umrechnen                     (void)
 
           }
 
-          if(LAB_measurement_)
+          if(LAB_measurement_ && !isICCDisplay_)
           {
             LabToCIELab( Lab_Satz_[i], &CIELab[0] );
           } else {
-            //cmsDoTransform (hXYZtoLab, &XYZ[0], &CIELab[0], 1);
+            //double cielab[3];
+            //cmsDoTransform (hXYZtoLab, &XYZ[0], &cielab[0], 1);
             double lab[3];
             XYZtoLab (&XYZ[0], &lab[0], 1);
             FarbeZuDouble( &Lab_Satz_[i], &lab[0] );

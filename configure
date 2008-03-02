@@ -138,6 +138,9 @@ if [ $# -gt 0 ]; then
   done
 fi
 
+ECHO="echo";
+
+
 echo "$zeile" > config.log
 chmod 0755 config.log
 
@@ -364,7 +367,7 @@ if [ -z "$CP_CONFIG" ]; then
     CP_FLAGS="cinepainttool --cflags"
     CP_LIBS="cinepainttool --libs"
     CP_VERSION=`cinepainttool --version`
-    CP_N_VERSION=`cinepainttool --version | sed "s/\.// ; s/-//"`
+    CP_N_VERSION=`cinepainttool --version | sed "s/\.// ; s/-.//"`
     echo "Gtk CinePaint $CP_VERSION    detected"
     cp_reqired=22
     if [ "$CP_N_VERSION" -ge $cp_reqired ]; then
@@ -472,7 +475,7 @@ if [ $OSUNAME = "Darwin" ]; then
   echo "COPY = cp -p $DEBUG_SWITCH" >> $CONF
   LDFLAGS="$LDFLAGS -L."
   echo "DBG_LIBS = #-lMallocDebug" >> $CONF
-  echo "I18N_LIB = \$(lintl) \$(LIBNAME)" >> $CONF
+  echo "I18N_LIB = \$(intl) \$(LIBNAME)" >> $CONF
   echo "I18N_LIBSTAT = /opt/local/lib/libintl.a \$(LIBNAME) \$(iconv)" >> $CONF
   echo "INCL=-I\$(includedir) -I/usr/X11R6/include -I./ -I/usr/include/gcc/darwin/default/c++" >> $CONF
   echo "LIBEXT = .dylib" >> $CONF
@@ -523,8 +526,10 @@ else
     if [ $OSUNAME = "BSD" ]; then
       LDFLAGS="$LDFLAGS \$(iconv)"
       INSTALL="install $DEBUG_SWITCH"
-      echo "LINK_FLAGS = -shared \$(iconv)" >> $CONF
-      echo "INSTALL = install $DEBUG_SWITCH" >> $CONF
+      test -n "$ECHO" && $ECHO "LINK_FLAGS = -shared \$(iconv)" >> $CONF
+      test -n "$ECHO" && $ECHO "LINK_LIB_PATH = -Wl,--rpath -Wl,\$(libdir)" >> $CONF
+      test -n "$ECHO" && $ECHO "LINK_SRC_PATH = -Wl,--rpath -Wl,\$(srcdir)" >> $CONF
+      test -n "$ECHO" && $ECHO "INSTALL = install $DEBUG_SWITCH" >> $CONF
     fi
     if [ $OSUNAME = "SunOS" ]; then
       LDFLAGS="$LDFLAGS -mimpure-text \$(dl) -lrt \$(iconv)"
@@ -535,8 +540,8 @@ else
       echo "LINK_FLAGS = -shared \$(dl) \$(iconv)" >> $CONF
       echo "INSTALL = install" >> $CONF
     fi
-    echo "I18N_LIB = \$(iconv) \$(lintl) \$(LIBNAMEV)" >> $CONF
-    echo "I18N_LIBSTAT = \$(iconv) \$(lintl) \$(LIBNAMEV)" >> $CONF
+    echo "I18N_LIB = \$(iconv) \$(intl) \$(LIBNAMEV)" >> $CONF
+    echo "I18N_LIBSTAT = \$(iconv) \$(intl) \$(LIBNAMEV)" >> $CONF
     echo "MAKEDEPEND	= makedepend -Y" >> $CONF
     CFLAGS="$CFLAGS_COMMON -Wall -g -L. -fPIC"
     CXXFLAGS="$CXXFLAGS_COMMON -Wall -g -L. -fPIC"
@@ -581,6 +586,8 @@ if [ "$ERROR" -ne "0" ]; then
   echo ""
   rm Makefile $CONF_H $CONF_SH $SPEC $PKGC $MPKG
   exit
+else
+  make depend
 fi
 
 

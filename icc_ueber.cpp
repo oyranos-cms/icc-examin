@@ -80,7 +80,7 @@ getUeberHtml()
   </tr> \
   <tr> \
     <td bgcolor=\"" << "#9f9f9f" << "\"> \
-    <b>Copyright &copy; 2004-2006  Kai-Uwe Behrmann \
+    <b>Copyright &copy; 2004-2007  Kai-Uwe Behrmann \
     </b><p> \
       <table cellpadding=0 cellspacing=0 width=\"100%\"> \
         <tr> \

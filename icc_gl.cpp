@@ -86,9 +86,6 @@ void zeichneKegel( GLdouble breite, GLdouble hoehe, GLint seiten,
 
 #define glStatus( txt, tuep ) icc_examin_ns::status_info( txt, tuep - 1 );
 
-typedef enum {NOTALLOWED, AXES, RASTER, PUNKTE, SPEKTRUM, HELFER, UMRISSE, DL_MAX } DisplayLists;
-int glListen[DL_MAX+1];
-
 
 #define bNachX(b) (b*b_darstellungs_breite - b_darstellungs_breite/2.)
 #define LNachY(L) (L - 0.5)
@@ -188,41 +185,38 @@ GL_Ansicht::init_()
   valid_ = false;
   zeit_ = 0;
 
-  static int gl_list_init_ = 1;
-  if(gl_list_init_)
-    for(int i = 0; i <= DL_MAX; ++i)
-      glListen[i] = 0;
-  gl_list_init_ = 0;
+  for(int i = 0; i <= DL_MAX; ++i)
+    gl_listen[i] = 0;
 
   DBG_PROG_ENDE
 }
 
 GL_Ansicht::~GL_Ansicht()
 { DBG_PROG_START
-  if (glListen[RASTER]) {
-    DBG_PROG_S( "delete glListe " << glListen[RASTER] )
-    glDeleteLists (glListen[RASTER],1);
-    glListen[RASTER] = 0;
+  if (gl_listen[RASTER]) {
+    DBG_PROG_S( "delete glListe " << gl_listen[RASTER] )
+    glDeleteLists (gl_listen[RASTER],1);
+    gl_listen[RASTER] = 0;
   }
-  if (glListen[HELFER]) {
-    DBG_PROG_S( "delete glListe " << glListen[HELFER] )
-    glDeleteLists (glListen[HELFER],1);
-    glListen[HELFER] = 0;
+  if (gl_listen[HELFER]) {
+    DBG_PROG_S( "delete glListe " << gl_listen[HELFER] )
+    glDeleteLists (gl_listen[HELFER],1);
+    gl_listen[HELFER] = 0;
   }
-  if (glListen[PUNKTE]) {
-    DBG_PROG_S( "delete glListe " << glListen[PUNKTE] )
-    glDeleteLists (glListen[PUNKTE],1);
-    glListen[PUNKTE] = 0;
+  if (gl_listen[PUNKTE]) {
+    DBG_PROG_S( "delete glListe " << gl_listen[PUNKTE] )
+    glDeleteLists (gl_listen[PUNKTE],1);
+    gl_listen[PUNKTE] = 0;
   }
-  if (glListen[SPEKTRUM]) {
-    DBG_PROG_S( "delete glListe " << glListen[SPEKTRUM] )
-    glDeleteLists (glListen[SPEKTRUM],1);
-    glListen[SPEKTRUM] = 0;
+  if (gl_listen[SPEKTRUM]) {
+    DBG_PROG_S( "delete glListe " << gl_listen[SPEKTRUM] )
+    glDeleteLists (gl_listen[SPEKTRUM],1);
+    gl_listen[SPEKTRUM] = 0;
   }
-  if (glListen[UMRISSE]) {
-    DBG_PROG_S( "delete glListe " << glListen[UMRISSE] )
-    glDeleteLists (glListen[UMRISSE],1);
-    glListen[UMRISSE] = 0;
+  if (gl_listen[UMRISSE]) {
+    DBG_PROG_S( "delete glListe " << gl_listen[UMRISSE] )
+    glDeleteLists (gl_listen[UMRISSE],1);
+    gl_listen[UMRISSE] = 0;
   }
 # ifdef HAVE_FTGL
   //if(font) delete font;
@@ -292,7 +286,7 @@ GL_Ansicht::copy (const GL_Ansicht & gl)
   zeit_ = gl.zeit_;
 
   for(int i = 0; i <= DL_MAX; ++i)
-    glListen[i] = 0;
+    gl_listen[i] = 0;
 
 # ifdef HAVE_FTGL
   font = ortho_font = 0;
@@ -379,8 +373,8 @@ GL_Ansicht::init(int ty)
     agv_->eyeDist (agv_->dist()*2.0);
   }
 
-  glListen[AXES] = glGenLists(1);
-  agv_->agvMakeAxesList( glListen[AXES] ); DBG_PROG
+  gl_listen[AXES] = glGenLists(1);
+  agv_->agvMakeAxesList( gl_listen[AXES] ); DBG_PROG
 
   gl_font( FL_HELVETICA, 10 );
 
@@ -404,7 +398,7 @@ GL_Ansicht::mausPunkt_( GLdouble &oX, GLdouble &oY, GLdouble &oZ,
   DBG_PROG_START  
   // den Ort lokalisieren
   // wie weit ist das naechste Objekt in diese Richtung, sehr aufwendig
-  GLfloat zBuffer;
+  GLfloat zBuffer = 0;
   glReadPixels((GLint)maus_x_,(GLint)h()-maus_y_,1,1,GL_DEPTH_COMPONENT, GL_FLOAT, &zBuffer);
   GLdouble modell_matrix[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
            projektions_matrix[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
@@ -569,7 +563,7 @@ GL_Ansicht::redraw()
 
   int thread = wandelThreadId(pthread_self());
   if(thread != THREAD_HAUPT) {
-    WARN_S( ": falscher Thread" );
+    Fl::awake(this);
     DBG_PROG_ENDE
     return;
   }
@@ -981,13 +975,13 @@ GL_Ansicht::garnieren_()
 
   DBG_PROG_V( id() )
   // Pfeile und Text
-  if (glListen[HELFER]) {
-    glDeleteLists (glListen[HELFER], 1);
+  if (gl_listen[HELFER]) {
+    glDeleteLists (gl_listen[HELFER], 1);
   }
 
-  GL_Ansicht::glListen[HELFER] = glGenLists(1);
+  GL_Ansicht::gl_listen[HELFER] = glGenLists(1);
 
-  glNewList( glListen[HELFER], GL_COMPILE); DBG_PROG_V( glListen[HELFER] )
+  glNewList( gl_listen[HELFER], GL_COMPILE); DBG_PROG_V( gl_listen[HELFER] )
     GLfloat farbe[] =   { pfeilfarbe[0],pfeilfarbe[1],pfeilfarbe[2], 1.0 };
     glLineWidth(strich3*strichmult);
 
@@ -1119,15 +1113,15 @@ GL_Ansicht::tabelleAuffrischen()
   }
 
   // Tabelle
-  if (glListen[RASTER]) {
-    glDeleteLists ( glListen[RASTER], 1);
-    glListen[RASTER] = 0;
+  if (gl_listen[RASTER]) {
+    glDeleteLists ( gl_listen[RASTER], 1);
+    gl_listen[RASTER] = 0;
   }
 
   if (tabelle_.size())
   {
-    glListen[RASTER] = glGenLists(1);
-    glNewList( glListen[RASTER], GL_COMPILE); DBG_PROG_V( glListen[RASTER] )
+    gl_listen[RASTER] = glGenLists(1);
+    glNewList( gl_listen[RASTER], GL_COMPILE); DBG_PROG_V( gl_listen[RASTER] )
       int n_L = tabelle_.size(), n_a=tabelle_[0].size(), n_b=tabelle_[0][0].size();
       double dim_x = 1.0/(n_b); DBG_PROG_V( dim_x )
       double dim_y = 1.0/(n_L); DBG_PROG_V( dim_y )
@@ -1379,9 +1373,9 @@ GL_Ansicht::netzeAuffrischen()
       glPopMatrix();
 
 
-  if (glListen[RASTER]) {
-    glDeleteLists (glListen[RASTER], 1);
-    glListen[RASTER] = 0;
+  if (gl_listen[RASTER]) {
+    glDeleteLists (gl_listen[RASTER], 1);
+    gl_listen[RASTER] = 0;
   }
 
 #     ifdef Beleuchtung
@@ -1531,9 +1525,9 @@ void
 GL_Ansicht::punkteAuffrischen()
 { DBG_PROG_START
 
-  if (glListen[PUNKTE]) {
-    glDeleteLists (glListen[PUNKTE], 1);
-    glListen[PUNKTE] = 0;
+  if (gl_listen[PUNKTE]) {
+    glDeleteLists (gl_listen[PUNKTE], 1);
+    gl_listen[PUNKTE] = 0;
   }
 
   //Koordinaten  in CIE*b CIE*L CIE*a Reihenfolge 
@@ -1545,8 +1539,8 @@ GL_Ansicht::punkteAuffrischen()
     if( farb_namen_.size() )
       DBG_PROG_V( farb_namen_.size() )
 
-    glListen[PUNKTE] = glGenLists(1);
-    glNewList( glListen[PUNKTE], GL_COMPILE); DBG_PROG_V( glListen[PUNKTE] )
+    gl_listen[PUNKTE] = glGenLists(1);
+    glNewList( gl_listen[PUNKTE], GL_COMPILE); DBG_PROG_V( gl_listen[PUNKTE] )
 #     ifndef Beleuchtung_
       glDisable(GL_LIGHTING);
 #     endif
@@ -1669,10 +1663,10 @@ GL_Ansicht::zeigeUmrisse_()
     dreiecks_netze[j].schattierung = schattierung;
   }
 
-  if (glListen[UMRISSE]) {
-    DBG_PROG_S( "delete glListe " << glListen[UMRISSE] )
-    glDeleteLists (glListen[UMRISSE],1);
-    glListen[UMRISSE] = 0;
+  if (gl_listen[UMRISSE]) {
+    DBG_PROG_S( "delete glListe " << gl_listen[UMRISSE] )
+    glDeleteLists (gl_listen[UMRISSE],1);
+    gl_listen[UMRISSE] = 0;
   }
 
   //if (spektralband == MENU_SPEKTRALBAND)
@@ -1724,9 +1718,9 @@ GL_Ansicht::zeigeUmrisse_()
   }
     GLfloat farbe[] =   { pfeilfarbe[0],pfeilfarbe[1],pfeilfarbe[2], 1.0 };
 
-  glListen[UMRISSE] = glGenLists(1);
-  glNewList( glListen[UMRISSE], GL_COMPILE );
-  DBG_PROG_V( glListen[UMRISSE] ) 
+  gl_listen[UMRISSE] = glGenLists(1);
+  glNewList( gl_listen[UMRISSE], GL_COMPILE );
+  DBG_PROG_V( gl_listen[UMRISSE] ) 
 
     glDisable (GL_LIGHTING);
     glDisable (GL_ALPHA_TEST_FUNC);
@@ -1805,9 +1799,9 @@ GL_Ansicht::zeigeSpektralband_()
 {
   DBG_PROG_START
 
-  if (glListen[SPEKTRUM])
-    glDeleteLists (glListen[SPEKTRUM], 1);
-  glListen[SPEKTRUM] = 0;
+  if (gl_listen[SPEKTRUM])
+    glDeleteLists (gl_listen[SPEKTRUM], 1);
+  gl_listen[SPEKTRUM] = 0;
   if (spektralband == MENU_SPEKTRALBAND)
   {
     double *RGB_Speicher = 0,
@@ -1877,9 +1871,9 @@ GL_Ansicht::zeigeSpektralband_()
 
     GLfloat farbe[] =   { pfeilfarbe[0],pfeilfarbe[1],pfeilfarbe[2], 1.0 };
 
-    glListen[SPEKTRUM] = glGenLists(1);
-    glNewList( glListen[SPEKTRUM], GL_COMPILE );
-    DBG_PROG_V( glListen[SPEKTRUM] ) 
+    gl_listen[SPEKTRUM] = glGenLists(1);
+    glNewList( gl_listen[SPEKTRUM], GL_COMPILE );
+    DBG_PROG_V( gl_listen[SPEKTRUM] ) 
 
       glDisable (GL_LIGHTING);
       glDisable (GL_ALPHA_TEST_FUNC);
@@ -2178,15 +2172,15 @@ GL_Ansicht::zeichnen()
       glMatrixMode(GL_MODELVIEW);
       glLoadIdentity();
 
-      glCallList( glListen[SPEKTRUM] ); DBG_ICCGL_V( glListen[SPEKTRUM] )
-      glCallList( glListen[UMRISSE] ); DBG_ICCGL_V( glListen[UMRISSE] )
+      glCallList( gl_listen[SPEKTRUM] ); DBG_ICCGL_V( gl_listen[SPEKTRUM] )
+      glCallList( gl_listen[UMRISSE] ); DBG_ICCGL_V( gl_listen[UMRISSE] )
       if (zeige_helfer) {
-        glCallList( glListen[HELFER] ); DBG_ICCGL_V( glListen[HELFER] )
+        glCallList( gl_listen[HELFER] ); DBG_ICCGL_V( gl_listen[HELFER] )
       }
-      glCallList( glListen[RASTER] ); DBG_ICCGL_V( glListen[RASTER] )
+      glCallList( gl_listen[RASTER] ); DBG_ICCGL_V( gl_listen[RASTER] )
       if(punktform == MENU_dE1STERN)
-        glCallList( glListen[PUNKTE] );
-      glCallList( glListen[PUNKTE] ); DBG_ICCGL_V( glListen[PUNKTE] )
+        glCallList( gl_listen[PUNKTE] );
+      glCallList( gl_listen[PUNKTE] ); DBG_ICCGL_V( gl_listen[PUNKTE] )
 
 
       // den Ort lokalisieren
@@ -2362,7 +2356,7 @@ GL_Ansicht::zeichnen()
       glRasterPos2f(0, h() -10 );
 #   endif
     if(maus_x_alt != maus_x_ || maus_y_alt != maus_y_)
-    maus_steht = true;
+      maus_steht = true;
     maus_x_alt = maus_x_;
     maus_y_alt = maus_y_;
 
@@ -2493,6 +2487,7 @@ GL_Ansicht::hineinPunkte       (std::vector<double>      &vect,
   MARK( frei (true); )
 
   valid_=false;
+  redraw();
   DBG_PROG_ENDE
 }
 
@@ -2550,7 +2545,7 @@ GL_Ansicht::hineinNetze       (const std::vector<ICCnetz> & d_n)
     DBG_NUM_V( dreiecks_netze[i].name );
 
   valid_=false;
-  //redraw();
+  redraw();
   DBG_PROG_ENDE
 }
 

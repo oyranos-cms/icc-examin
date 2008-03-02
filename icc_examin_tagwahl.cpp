@@ -59,8 +59,19 @@ ICCexamin::waehleTag (int item)
 
   if(!profile.size() ||
      !icc_betrachter->examin->visible_r() ||
-     !icc_betrachter->examin->visible() )
+     !icc_betrachter->examin->visible() ||
+     !profile.profil() )
   {
+    DBG_PROG_ENDE
+    return text;
+  }
+
+  if( item >= (int)profile.profil()->tagCount() )
+  {
+    frei(false);
+    icc_betrachter->tag_text->hinein(text);
+    frei(true);
+    icc_betrachterNeuzeichnen(icc_betrachter->tag_text);
     DBG_PROG_ENDE
     return text;
   }
