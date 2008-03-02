@@ -316,9 +316,9 @@ Fl_Double_Window* icc_betrachter(int argc, char** argv) {
     Flu_File_Chooser::detailTTxt = _("detailierte Informationen");
 
     Flu_File_Chooser::detailTxt[0] = _("Name");
-    Flu_File_Chooser::detailTxt[1] = _("Typ");
-    Flu_File_Chooser::detailTxt[2] = _("Grösse");
-    Flu_File_Chooser::detailTxt[3] = _("Datum");
+    Flu_File_Chooser::detailTxt[3] = _("Typ");
+    Flu_File_Chooser::detailTxt[1] = _("Grösse");
+    Flu_File_Chooser::detailTxt[2] = _("Datum");
     Flu_File_Chooser::contextMenuTxt[0] = _("contextMenuTxt 0");
     Flu_File_Chooser::contextMenuTxt[1] = _("Umbenennen");
     Flu_File_Chooser::contextMenuTxt[2] = _("Löschen");
@@ -376,7 +376,6 @@ Fl_Double_Window* icc_betrachter(int argc, char** argv) {
     o->color((Fl_Color)53);
     { Fl_Group* o = new Fl_Group(0, 0, 385, 520);
       { Fl_Menu_Bar* o = new Fl_Menu_Bar(0, 0, 385, 25);
-        o->color((Fl_Color)53);
         o->align(FL_ALIGN_LEFT|FL_ALIGN_INSIDE);
         o->when(3);
         o->menu(menu_);
@@ -391,7 +390,7 @@ Fl_Double_Window* icc_betrachter(int argc, char** argv) {
       { Fl_Tile* o = examin = new Fl_Tile(0, 25, 385, 470);
         { TagBrowser* o = tag_browser = new TagBrowser(0, 25, 385, 135, "Bitte w\344hlen Sie ein Profilmerkmal aus");
           o->box(FL_NO_BOX);
-          o->color((Fl_Color)53);
+          o->color(FL_BACKGROUND_COLOR);
           o->selection_color(FL_SELECTION_COLOR);
           o->labeltype(FL_NORMAL_LABEL);
           o->labelfont(0);
@@ -409,7 +408,7 @@ Fl_Double_Window* icc_betrachter(int argc, char** argv) {
             { MftChoice* o = mft_choice = new MftChoice(0, 160, 385, 25, "W\344hlen Sie ein Kettenmerkmal");
               o->box(FL_NO_BOX);
               o->down_box(FL_BORDER_BOX);
-              o->color(FL_BACKGROUND2_COLOR);
+              o->color(FL_BACKGROUND_COLOR);
               o->selection_color(FL_SELECTION_COLOR);
               o->labeltype(FL_NORMAL_LABEL);
               o->labelfont(0);
@@ -434,7 +433,7 @@ Fl_Double_Window* icc_betrachter(int argc, char** argv) {
             }
             { TagTexts* o = mft_text = new TagTexts(0, 185, 385, 310, "Der Text");
               o->box(FL_NO_BOX);
-              o->color((Fl_Color)53);
+              o->color((Fl_Color)48);
               o->selection_color(FL_SELECTION_COLOR);
               o->labeltype(FL_NORMAL_LABEL);
               o->labelfont(0);
@@ -479,7 +478,7 @@ Fl_Double_Window* icc_betrachter(int argc, char** argv) {
           }
           { TagTexts* o = tag_text = new TagTexts(0, 160, 385, 335, "Der Text");
             o->box(FL_NO_BOX);
-            o->color((Fl_Color)53);
+            o->color(FL_BACKGROUND_COLOR);
             o->selection_color(FL_SELECTION_COLOR);
             o->labeltype(FL_NORMAL_LABEL);
             o->labelfont(0);
@@ -503,11 +502,9 @@ Fl_Double_Window* icc_betrachter(int argc, char** argv) {
       { Fl_Group* o = new Fl_Group(0, 495, 385, 25);
         { Fl_Box* o = box_stat = new Fl_Box(0, 495, 385, 25, "No wrl file loaded.");
           o->box(FL_THIN_DOWN_BOX);
-          o->color((Fl_Color)53);
           o->align(FL_ALIGN_LEFT|FL_ALIGN_INSIDE);
         }
         { Fl_Progress* o = load_progress = new Fl_Progress(0, 495, 385, 25, "Laden ..");
-          o->color((Fl_Color)53);
           o->hide();
           o->maximum(1.0);
           o->minimum(0.0);

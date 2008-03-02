@@ -11,7 +11,7 @@ decl {\#include <cassert>} {public
 decl {\#include <iostream>} {public
 } 
 
-decl {//\#include <sstream>} {selected public
+decl {//\#include <sstream>} {public
 } 
 
 decl {\#include <stdio.h>} {public
@@ -184,9 +184,9 @@ Function {icc_betrachter(int argc, char** argv)} {open
     Flu_File_Chooser::detailTTxt = _("detailierte Informationen");
 
     Flu_File_Chooser::detailTxt[0] = _("Name");
-    Flu_File_Chooser::detailTxt[1] = _("Typ");
-    Flu_File_Chooser::detailTxt[2] = _("Grösse");
-    Flu_File_Chooser::detailTxt[3] = _("Datum");
+    Flu_File_Chooser::detailTxt[3] = _("Typ");
+    Flu_File_Chooser::detailTxt[1] = _("Grösse");
+    Flu_File_Chooser::detailTxt[2] = _("Datum");
     Flu_File_Chooser::contextMenuTxt[0] = _("contextMenuTxt 0");
     Flu_File_Chooser::contextMenuTxt[1] = _("Umbenennen");
     Flu_File_Chooser::contextMenuTxt[2] = _("Löschen");
@@ -221,7 +221,8 @@ Function {icc_betrachter(int argc, char** argv)} {open
     dateiwahl = new Fl_File_Chooser(ptr, _("ICC Farbprofile (*.{I,i}{C,c}{M,m,C,c})"), Fl_File_Chooser::SINGLE, _("Welches ICC Profil?"));
     dateiwahl->callback(dateiwahl_cb);
     dateiwahl->preview_label = _("Vorschau");
-  \#endif} {}
+  \#endif} {selected
+  }
   Fl_Window ueber {
     label {Über ICC examin} open
     xywh {612 777 366 241} type Double hide resizable
@@ -242,7 +243,7 @@ Function {icc_betrachter(int argc, char** argv)} {open
   }
   Fl_Window details {
     label {ICC Details} open
-    xywh {170 332 385 520} type Double box NO_BOX color 53
+    xywh {653 217 385 520} type Double box NO_BOX color 53
     code1 {DBG_PROG
 
     if (argc>1) {
@@ -264,7 +265,7 @@ Function {icc_betrachter(int argc, char** argv)} {open
       xywh {0 0 385 520}
     } {
       Fl_Menu_Bar {} {open
-        xywh {0 0 385 25} color 53 align 20 when 3
+        xywh {0 0 385 25} align 20 when 3
       } {
         submenu {} {
           label Daten open
@@ -435,7 +436,7 @@ ueber_html->value(getUeberHtml().c_str());}
         Fl_Browser tag_browser {
           label {Bitte wählen Sie ein Profilmerkmal aus}
           callback {o->select_item( o->value() );}
-          xywh {0 25 385 135} color 53 align 17 textcolor 32
+          xywh {0 25 385 135} color 49 align 17 textcolor 32
           code0 {int lines = tag_browser->size();}
           code1 {DBG_PROG_V( lines )}
           class TagBrowser
@@ -450,7 +451,7 @@ ueber_html->value(getUeberHtml().c_str());}
             Fl_Choice mft_choice {
               label {Wählen Sie ein Kettenmerkmal}
               callback {o->auswahl_cb();} open
-              xywh {0 160 385 25} box NO_BOX down_box BORDER_BOX
+              xywh {0 160 385 25} box NO_BOX down_box BORDER_BOX color 49
               code0 {o->show();}
               class MftChoice
             } {}
@@ -461,7 +462,7 @@ ueber_html->value(getUeberHtml().c_str());}
             }
             Fl_Browser mft_text {
               label {Der Text}
-              xywh {0 185 385 310} color 53 align 18 textcolor 32
+              xywh {0 185 385 310} color 48 align 18 textcolor 32
               code0 {o->show();}
               class TagTexts
             }
@@ -483,7 +484,7 @@ ueber_html->value(getUeberHtml().c_str());}
           }
           Fl_Browser tag_text {
             label {Der Text}
-            xywh {0 160 385 335} color 53 align 18 textcolor 32
+            xywh {0 160 385 335} color 49 align 18 textcolor 32
             code0 {o->show();}
             class TagTexts
           }
@@ -502,11 +503,11 @@ ueber_html->value(getUeberHtml().c_str());}
       } {
         Fl_Box box_stat {
           label {No wrl file loaded.}
-          xywh {0 495 385 25} box THIN_DOWN_BOX color 53 align 20
+          xywh {0 495 385 25} box THIN_DOWN_BOX align 20
         }
         Fl_Progress load_progress {
           label {Laden ..}
-          xywh {0 495 385 25} color 53
+          xywh {0 495 385 25}
           code0 {o->hide();}
           code1 {o->maximum(1.0);}
           code2 {o->minimum(0.0);}

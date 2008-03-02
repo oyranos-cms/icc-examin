@@ -512,6 +512,25 @@ GL_Ansicht::MenueErneuern()
 { DBG_PROG_START
   DBG_PROG_V( MenueKanalEintraege << " "<< glutGet(GLUT_MENU_NUM_ITEMS) )
 
+  int old_menue = glutGetMenu();
+  glutSetMenu (MenueSchnitt);
+  if (vonFarbNamen.size() >= 3)
+  {
+    static char text_L[64];
+    static char text_a[64];
+    static char text_b[64];
+    static char text_S[64];
+    sprintf (text_L, "%s %s", vonFarbNamen[0].c_str(), _("Schnitt"));
+    glutChangeToMenuEntry(1, text_L, agviewer::ICCFLY_L);
+    sprintf (text_a, "%s %s", vonFarbNamen[1].c_str(), _("Schnitt"));
+    glutChangeToMenuEntry(2, text_a, agviewer::ICCFLY_a);
+    sprintf (text_b, "%s %s", vonFarbNamen[2].c_str(), _("Schnitt"));
+    glutChangeToMenuEntry(3, text_b, agviewer::ICCFLY_b);
+    sprintf (text_S, "%s %s %s", _("Drehen um"),vonFarbNamen[0].c_str(), _("Achse"));
+    glutChangeToMenuEntry(5,text_S,  agviewer::ICCPOLAR);
+  }
+  glutSetMenu (old_menue);
+
   int me = glutGet(GLUT_MENU_NUM_ITEMS);
   for (int i = 0; i < MenueKanalEintraege; i++) {
     glutRemoveMenuItem (me - i);
@@ -537,33 +556,20 @@ GL_Ansicht::MenueErneuern()
 }
 
 void GL_Ansicht::MenuInit() {
-  static char text_L[32];
-  static char text_a[32];
-  static char text_b[32];
   DBG_PROG_START
-  int sub2 = glutCreateMenu(agvSwitchMoveMode);   /* pass these right to */
-  sprintf (text_L, "%s %s", vonFarbNamen[0].c_str(), _("Schnitt"));
-  glutAddMenuEntry(text_L,  agviewer::ICCFLY_L);
-  sprintf (text_a, "%s %s", vonFarbNamen[1].c_str(), _("Schnitt"));
-  glutAddMenuEntry(text_a,  agviewer::ICCFLY_a);
-  sprintf (text_b, "%s %s", vonFarbNamen[2].c_str(), _("Schnitt"));
-  glutAddMenuEntry(text_b,  agviewer::ICCFLY_b); DBG_NUM_V( text_L )
-/*  glutAddMenuEntry(_("L Schnitt"),  ICCFLY_L);
-  glutAddMenuEntry(_("a Schnitt"),  ICCFLY_a);
-  glutAddMenuEntry(_("b Schnitt"),  ICCFLY_b);*/
+  MenueSchnitt = glutCreateMenu(agvSwitchMoveMode);   /* pass these right to */
+  glutAddMenuEntry("text_L",  agviewer::ICCFLY_L);
+  glutAddMenuEntry("text_a",  agviewer::ICCFLY_a);
+  glutAddMenuEntry("text_b",  agviewer::ICCFLY_b);
   glutAddMenuEntry(_("Schnitt"),    agviewer::agviewer::FLYING); /* agvSwitchMoveMode() */
-  glutAddMenuEntry(_("Drehen um L-Schnitt"),  agviewer::ICCPOLAR);
-//  glutAddMenuEntry(_("Betrachten"),   POLAR);
+  glutAddMenuEntry(_("Drehen um Schnitt"),  agviewer::ICCPOLAR);
 
   int sub3 = glutCreateMenu(handlemenu);
   glutAddMenuEntry(_("Kugel"),  MENU_KUGEL);
   glutAddMenuEntry(_("Würfel"), MENU_WUERFEL);
   glutAddMenuEntry(_("Stern"),  MENU_STERN);
   glutCreateMenu(handlemenu);
-  glutAddSubMenu(_("Querschnitte"), sub2);
-  //glutAddMenuEntry(_("Achsen ein/aus"), MENU_AXES);
-  //glutAddMenuEntry(_("Rotation an/aus"), MENU_RING);
-  //glutAddMenuEntry(_("Beenden"), MENU_QUIT);
+  glutAddSubMenu(_("Querschnitte"), MenueSchnitt);
   glutAddSubMenu(_("Formen"), sub3);
 
 

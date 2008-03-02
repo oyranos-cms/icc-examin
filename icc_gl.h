@@ -44,6 +44,7 @@ class GL_Ansicht : public Fl_Group {
   Fl_Group *GLFenster;
   void MenueErneuern();
   int  MenueKanalEintraege;
+  int  MenueSchnitt;
   void init();
   void myGLinit();
   void MenuInit();
