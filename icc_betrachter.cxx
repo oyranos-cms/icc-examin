@@ -144,12 +144,25 @@ My_Fl_Box::My_Fl_Box(int X,int Y,int W, int H, const char* title ) : Fl_Box(X,Y,
 }
 
 int My_Fl_Box::handle( int event ) {
-  //zeigFltkEvents( event);
-
   int ergebnis = tastatur(event);
   if(!ergebnis)
     ;//Fl_No_Box::handle(event);
   return ergebnis;
+}
+
+My_Fl_Window::My_Fl_Window(int W, int H, const char* title ) : Fl_Double_Window(W,H,title) {
+}
+
+int My_Fl_Window::handle( int e ) {
+  /*int ergebnis = tastatur(event);
+
+  if(!ergebnis)
+    */
+
+  if(e == FL_SHORTCUT && Fl::event_key() == FL_Escape)
+    hide();
+
+  return Fl_Double_Window::handle(e);
 }
 
 void ICCfltkBetrachter::cb_ja_i(Fl_Button*, void*) {
@@ -523,13 +536,28 @@ Fl_Double_Window* ICCfltkBetrachter::init(int argc, char** argv) {
     dateiwahl->callback(dateiwahl_cb);
     dateiwahl->preview(true);
   #endif
-  { Fl_Double_Window* o = ueber = new Fl_Double_Window(365, 289, _("About ICC Examin"));
+  { Fl_Double_Window* o = new Fl_Double_Window(100, 100);
     w = o;
     o->user_data((void*)(this));
+    o->end();
+  }
+  { My_Fl_Window* o = ueber = new My_Fl_Window(365, 289, _("About ICC Examin"));
+    w = o;
+    o->box(FL_FLAT_BOX);
+    o->color(FL_BACKGROUND_COLOR);
+    o->selection_color(FL_BACKGROUND_COLOR);
+    o->labeltype(FL_NO_LABEL);
+    o->labelfont(0);
+    o->labelsize(14);
+    o->labelcolor(FL_FOREGROUND_COLOR);
+    o->user_data((void*)(this));
+    o->align(FL_ALIGN_TOP);
+    o->when(FL_WHEN_RELEASE);
     { Fl_Group* o = new Fl_Group(0, 0, 375, 285);
       { Fl_Tabs* o = new Fl_Tabs(0, 0, 365, 260);
         { Fl_Help_View* o = ueber_html = new Fl_Help_View(0, 25, 365, 235, _("About"));
           o->selection_color(FL_DARK1);
+          o->hide();
         }
         { Fl_Help_View* o = hilfe_html = new Fl_Help_View(0, 25, 365, 235, _("Help"));
           o->selection_color(FL_DARK1);
@@ -547,7 +575,6 @@ Fl_Double_Window* ICCfltkBetrachter::init(int argc, char** argv) {
         { Fl_Output* o = links_text = new Fl_Output(10, 35, 345, 215, _("Links"));
           o->type(12);
           o->selection_color(FL_DARK1);
-          o->hide();
         }
         o->end();
       }
@@ -561,9 +588,18 @@ Fl_Double_Window* ICCfltkBetrachter::init(int argc, char** argv) {
     o->end();
     o->resizable(o);
   }
-  { Fl_Double_Window* o = vcgt = new Fl_Double_Window(370, 390, _("Grafic Card Gamma Table"));
+  { My_Fl_Window* o = vcgt = new My_Fl_Window(370, 390, _("Grafic Card Gamma Table"));
     w = o;
+    o->box(FL_FLAT_BOX);
+    o->color(FL_BACKGROUND_COLOR);
+    o->selection_color(FL_BACKGROUND_COLOR);
+    o->labeltype(FL_NO_LABEL);
+    o->labelfont(0);
+    o->labelsize(14);
+    o->labelcolor(FL_FOREGROUND_COLOR);
     o->user_data((void*)(this));
+    o->align(FL_ALIGN_TOP);
+    o->when(FL_WHEN_RELEASE);
     { Fl_Group* o = new Fl_Group(0, 0, 370, 390);
       { TagDrawings* o = vcgt_viewer = new TagDrawings(0, 0, 370, 360);
         o->box(FL_NO_BOX);

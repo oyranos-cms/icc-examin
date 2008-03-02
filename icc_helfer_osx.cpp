@@ -42,7 +42,8 @@
 
 std::vector<std::vector<double> >
 leseGrafikKartenGamma  (std::string display_name,
-                       std::vector<std::string> &texte )
+                        std::vector<std::string> &texte,
+                              int x, int y )
 { DBG_PROG_START
   std::vector<std::vector<double> > kurven;
 # if APPLE

@@ -217,18 +217,34 @@ class MftChoice {: {public Fl_Choice}
   }
 } 
 
-class My_Fl_Box {: {public Fl_Box}
+class My_Fl_Box {open : {public Fl_Box}
 } {
   Function {My_Fl_Box(int X,int Y,int W, int H, const char* title = 0) : Fl_Box(X,Y,W,H,title)} {open
   } {}
   Function {handle( int event )} {open return_type int
   } {
-    code {//zeigFltkEvents( event);
-
-  int ergebnis = tastatur(event);
+    code {int ergebnis = tastatur(event);
   if(!ergebnis)
     ;//Fl_No_Box::handle(event);
   return ergebnis;} {}
+  }
+} 
+
+class My_Fl_Window {open : {public Fl_Double_Window}
+} {
+  Function {My_Fl_Window(int W, int H, const char* title = 0) : Fl_Double_Window(W,H,title)} {open
+  } {}
+  Function {handle( int e )} {open return_type int
+  } {
+    code {/*int ergebnis = tastatur(event);
+
+  if(!ergebnis)
+    */
+
+  if(e == FL_SHORTCUT && Fl::event_key() == FL_Escape)
+    hide();
+
+  return Fl_Double_Window::handle(e);} {}
   }
 } 
 
@@ -320,10 +336,14 @@ class ICCfltkBetrachter {open
     dateiwahl->callback(dateiwahl_cb);
     dateiwahl->preview(true);
   \#endif} {}
+    Fl_Window {} {open selected
+      xywh {2380 175 100 100} type Double visible
+    } {}
     Fl_Window ueber {
-      label {About ICC Examin} open
-      xywh {598 338 365 289} type Double resizable
-      code0 {o->hide();} non_modal visible
+      label {About ICC Examin}
+      xywh {1242 90 365 289} type Double resizable
+      code0 {o->hide();}
+      class My_Fl_Window non_modal visible
     } {
       Fl_Group {} {open
         xywh {0 0 375 285}
@@ -333,7 +353,7 @@ class ICCfltkBetrachter {open
         } {
           Fl_Help_View ueber_html {
             label About
-            xywh {0 25 365 235} selection_color 47
+            xywh {0 25 365 235} selection_color 47 hide
           }
           Fl_Help_View hilfe_html {
             label Help
@@ -349,7 +369,7 @@ class ICCfltkBetrachter {open
           }
           Fl_Output links_text {
             label Links
-            xywh {10 35 345 215} type Multiline selection_color 47 hide
+            xywh {10 35 345 215} type Multiline selection_color 47
           }
         }
         Fl_Button ja {
@@ -361,8 +381,9 @@ class ICCfltkBetrachter {open
     }
     Fl_Window vcgt {
       label {Grafic Card Gamma Table}
-      xywh {364 125 370 390} type Double resizable
-      code0 {o->hide();} visible
+      xywh {466 21 370 390} type Double resizable
+      code0 {o->hide();}
+      class My_Fl_Window visible
     } {
       Fl_Group {} {open
         xywh {0 0 370 390}
@@ -400,8 +421,8 @@ class ICCfltkBetrachter {open
       }
     }
     Fl_Window details {
-      label {ICC Examin} open
-      xywh {638 206 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
+      label {ICC Examin}
+      xywh {847 191 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
     } {
       Fl_Group {} {open
         xywh {0 0 385 520}
@@ -573,7 +594,7 @@ class ICCfltkBetrachter {open
               label {Videocard Gamma}
               callback {icc_examin->vcgtStoppen();
 vcgt->show();
-icc_examin->vcgtZeigen();} selected
+icc_examin->vcgtZeigen();}
               xywh {15 15 100 20} shortcut 0x40074
               code0 {o->hide();}
             }

@@ -445,7 +445,6 @@ EXEEXT		=
 
 tgz:
 	make DESTDIR=Entwickeln copy_files
-	(cd fl_i18n; make DESTDIR=../Entwickeln/fl_i18n copy_files)
 	tar cf - Entwickeln/ \
 	| gzip > $(TARGET)_$(mtime).tgz
 	test -d Entwickeln && \

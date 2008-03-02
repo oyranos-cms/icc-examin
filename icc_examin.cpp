@@ -482,7 +482,9 @@ ICCexamin::vcgtZeigen ()
   FREI_(false);
 # if HAVE_X || APPLE
   std::string display_name = "";
-  kurven[VCGT_VIEWER] = leseGrafikKartenGamma (display_name,texte[VCGT_VIEWER]);
+  int x = icc_betrachter->vcgt->x() + icc_betrachter->vcgt->w()/2;
+  int y = icc_betrachter->vcgt->y() + icc_betrachter->vcgt->h()/2;
+  kurven[VCGT_VIEWER] = leseGrafikKartenGamma (display_name,texte[VCGT_VIEWER], x,y);
   if (kurven[VCGT_VIEWER].size()) {
     icc_betrachter->vcgt_viewer->hide();
     icc_betrachter->vcgt_viewer->show();

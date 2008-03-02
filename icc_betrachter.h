@@ -60,6 +60,12 @@ public:
   My_Fl_Box(int X,int Y,int W, int H, const char* title = 0) ;
   int handle( int event );
 };
+
+class My_Fl_Window : public Fl_Double_Window {
+public:
+  My_Fl_Window(int W, int H, const char* title = 0) ;
+  int handle( int e );
+};
 #include <FL/Fl_Double_Window.H>
 #include <FL/Fl_Group.H>
 #include <FL/Fl_Tabs.H>
@@ -82,7 +88,7 @@ public:
   
  enum{ WID_0, WID_3D, WID_INSPEKT }; int widget_oben;
   Fl_Double_Window* init(int argc, char** argv);
-  Fl_Double_Window *ueber;
+  My_Fl_Window *ueber;
   Fl_Help_View *ueber_html;
   Fl_Help_View *hilfe_html;
   Fl_Help_View *lizenz_html;
@@ -93,7 +99,7 @@ private:
   void cb_ja_i(Fl_Button*, void*);
   static void cb_ja(Fl_Button*, void*);
 public:
-  Fl_Double_Window *vcgt;
+  My_Fl_Window *vcgt;
   TagDrawings *vcgt_viewer;
   Fl_Button *vcgt_set_button;
 private:
