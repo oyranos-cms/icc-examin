@@ -159,7 +159,31 @@ ICCexamin::start (int argc, char** argv)
 # if HAVE_X || APPLE
   icc_betrachter->menueintrag_vcgt->show();
   DBG_PROG_S( "Zeige vcgt" )
+# else
+  DBG_PROG_S( "Zeige vcgt nicht" )
+# endif
+
 # if APPLE
+  // osX Rsourcen
+  CFBundleRef mainBundle;
+  // Get the main bundle for the app
+  mainBundle = CFBundleGetMainBundle();
+  CFURLRef fontURL;
+  // Look for a resource in the main bundle by name and type.
+  if(mainBundle) {
+    fontURL = CFBundleCopyResourceURL( mainBundle, 
+                CFSTR("FreeSans"), CFSTR("ttf"), NULL );
+    CFStringRef cfstring = CFURLCopyPath(fontURL);
+      // copy to a C buffer
+    CFIndex gr = 1024;
+    char text[1024];
+    Boolean fehler = CFStringGetCString( cfstring, text, gr, kCFStringEncodingISOLatin1 );
+    if(!fehler && strlen(text)) {
+      icc_examin_ns::nachricht( text );
+      WARN_V( text )
+    }
+  }
+
   IBNibRef nibRef;
   OSStatus err;
   err = CreateNibReference(CFSTR("main"), &nibRef);
@@ -173,9 +197,7 @@ ICCexamin::start (int argc, char** argv)
   CantSetMenuBar:
   CantGetNibRef:
 # endif // APPLE
-# else
-  DBG_PROG_S( "Zeige vcgt nicht" )
-# endif
+
   if(!icc_debug)
     icc_betrachter->menueintrag_testkurven->hide();
 
@@ -241,6 +263,7 @@ ICCexamin::nachricht( Modell* modell , int info )
 {
   DBG_PROG_START
   if(!frei()) {
+    WARN_S("icc_examin ist nicht frei")
     //DBG_PROG_ENDE
     //return;
   }
@@ -767,8 +790,7 @@ tastatur(int e)
   default: 
     {
       //if(Fl::event_length())
-        dbgFltkEvents(e);
-        DBG_PROG_S( Fl::event_length() << " bei: "<<Fl::event_x()<<","<<Fl::event_y() );
+        DBG_MEM_S( dbgFltkEvent(e)<<": "<< Fl::event_length() << " bei: "<<Fl::event_x()<<","<<Fl::event_y() );
     }
     break;
   }

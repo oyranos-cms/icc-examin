@@ -833,11 +833,9 @@ void ICCfltkBetrachter::zeig_mich_(void* widget) {
 
   // stop
   if (widget != mft_gl) {
-    mft_gl->stop();
     mft_gl->hide();
   }
   if (widget != DD_farbraum ) {
-    DD_farbraum->stop();
     DD_farbraum->hide();
   }
 

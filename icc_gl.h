@@ -177,17 +177,26 @@ public:
   void tastatur(int e);
   void menueAufruf(int value);
   // Bewegungsfunktionen
-  void stop(); 
+  void bewegen(bool setze);
+  bool darfBewegen()        { return darf_bewegen_; };
 private:
+  void stupps_(bool lauf);
+  static void bewegenStatisch_(void* GL_Ansicht);
+  bool darf_bewegen_;
+  bool ist_bewegt_;
+private:
+  double fps_;              // Bilder pro Sekunde
+  int  zeichnete_;          // notiert ob in zeichnen() gezeichnet wurde
+  char t[128];              // Text zur Fehlersuche
   int  maus_x_;
   int  maus_y_;
   void mausPunkt_( GLdouble & oX, GLdouble & oY, GLdouble & oZ,
                   GLdouble & X, GLdouble & Y, GLdouble & Z );
 public:
   // Geschwindigkeit
-  int  smooth;
-  int  blend;
-  int  wiederholen;
+  int  smooth;                    // glatt zeichnen
+  int  blend;                     //   -"-
+  int  wiederholen;               // bezogen auf smooth/blend
 
   // Daten Informationen
   const char* kanalName() const {

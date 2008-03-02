@@ -72,7 +72,7 @@
 
 #define DBG_MAX_THREADS
 extern Fl_Thread icc_thread_liste[DBG_MAX_THREADS];
-typedef enum ThreadDbgId { THREAD_HAUPT, THREAD_WACHE, THREAD_LADEN };
+enum { THREAD_HAUPT, THREAD_WACHE, THREAD_LADEN };
 std::string dbgThreadId    (Fl_Thread id);
 int         wandelThreadId (Fl_Thread id);
 

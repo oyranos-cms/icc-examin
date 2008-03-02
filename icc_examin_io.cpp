@@ -62,7 +62,7 @@ const char* dateiName(std::string name);
 void
 ICCexamin::oeffnenThread_ ()
 { DBG_PROG_START
-  if(wandelThreadId(pthread_self() != THREAD_LADEN)) WARN_S( "THREAD_LADEN???" )
+  if(wandelThreadId(pthread_self()) != THREAD_LADEN) WARN_S( "THREAD_LADEN???" )
 
   if(!speicher_vect_.size()) {
     fortschritt( 1.1 );

@@ -40,7 +40,7 @@ MSGFMT = msgfmt -c --statistics
 RPMARCH = `rpmbuild --showrc | awk '/^build arch/ {print $$4}'`
 
 ifdef APPLE
-  OPTS=-Wall -g $(DEBUG) -DPIC
+  OPTS=-Wall -g $(DEBUG) -DPIC -Wunused -fno-exceptions
   LIBLINK_FLAGS = -dynamiclib
   I18N_LIB = -lintl #-liconv
   OSX_CPP = $(OSX_CPPFILES)
@@ -77,7 +77,7 @@ else
     LINK_LIB_PATH = -Wl,--rpath -Wl,$(libdir)
     LINK_SRC_PATH = -Wl,--rpath -Wl,$(srcdir)
   else
-    OPTS=-Wall -O2 -g $(DEBUG) -L.
+    OPTS=-Wall -O2 -g $(DEBUG) -L. -Wunused -fno-exceptions
     RM = rm -f
     LIBLINK_FLAGS = -shared -ldl
     I18N_LIB = $(ICONV) -lintl

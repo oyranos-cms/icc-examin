@@ -749,11 +749,9 @@ ueber_html->value(getUeberHtml().c_str());}
 
   // stop
   if (widget != mft_gl) {
-    mft_gl->stop();
     mft_gl->hide();
   }
   if (widget != DD_farbraum ) {
-    DD_farbraum->stop();
     DD_farbraum->hide();
   }
 

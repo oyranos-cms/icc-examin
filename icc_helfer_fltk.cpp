@@ -36,6 +36,7 @@
 
 #include "icc_utils.h"
 #include "icc_helfer_fltk.h"
+#include "icc_helfer.h"
 #include "icc_icc.h"
 #include <Fl/Fl.H>
 
@@ -117,33 +118,41 @@ getChannel_flColours (icColorSpaceSignature color)
 void
 dbgFltkEvents(int event)
 {
+  DBG_PROG_S( "event: " << dbgFltkEvent(event) )
+}
+
+std::string
+dbgFltkEvent(int event)
+{
+  std::string text;
   switch(event) {
-  case FL_NO_EVENT: DBG_PROG_S( "FL_NO_EVENT" ) break;
-  case FL_PUSH: DBG_PROG_S( "FL_PUSH" ) break;
-  case FL_RELEASE: DBG_PROG_S( "FL_RELEASE" ) break;
-  case FL_ENTER: DBG_PROG_S( "FL_ENTER" ) break;
-  case FL_LEAVE: DBG_PROG_S( "FL_LEAVE" ) break;
-  case FL_DRAG: DBG_PROG_S( "FL_DRAG" ) break;
-  case FL_FOCUS: DBG_PROG_S( "FL_FOCUS" ) break;
-  case FL_UNFOCUS: DBG_PROG_S( "FL_UNFOCUS" ) break;
-  case FL_KEYDOWN: DBG_PROG_S( "FL_KEYDOWN" ) break;
-  case FL_KEYUP: DBG_PROG_S( "FL_KEYUP" ) break;
-  case FL_CLOSE: DBG_PROG_S( "FL_CLOSE" ) break;
-  case FL_MOVE: DBG_PROG_S( "FL_MOVE" ) break;
-  case FL_SHORTCUT: DBG_PROG_S( "FL_SHORTCUT" ) break;
-  case FL_DEACTIVATE: DBG_PROG_S( "FL_DEACTIVATE" ) break;
-  case FL_ACTIVATE: DBG_PROG_S( "FL_ACTIVATE" ) break;
-  case FL_HIDE: DBG_PROG_S( "FL_HIDE" ) break;
-  case FL_SHOW: DBG_PROG_S( "FL_SHOW" ) break;
-  case FL_PASTE: DBG_PROG_S( "FL_PASTE" ) break;
-  case FL_SELECTIONCLEAR: DBG_PROG_S( "FL_SELECTIONCLEAR" ) break;
-  case FL_MOUSEWHEEL: DBG_PROG_S( "FL_MOUSEWHEEL" ) break;
-  case FL_DND_ENTER: DBG_PROG_S( "FL_DND_ENTER" ) break;
-  case FL_DND_DRAG: DBG_PROG_S( "FL_DND_DRAG" ) break;
-  case FL_DND_LEAVE: DBG_PROG_S( "FL_DND_LEAVE" ) break;
-  case FL_DND_RELEASE: DBG_PROG_S( "FL_DND_RELEASE" ) break;
-  default: DBG_PROG_S( "event: " << event ) break;
+  case FL_NO_EVENT: text = "FL_NO_EVENT"; break;
+  case FL_PUSH: text = "FL_PUSH"; break;
+  case FL_RELEASE: text = "FL_RELEASE"; break;
+  case FL_ENTER: text = "FL_ENTER"; break;
+  case FL_LEAVE: text = "FL_LEAVE"; break;
+  case FL_DRAG: text = "FL_DRAG"; break;
+  case FL_FOCUS: text = "FL_FOCUS"; break;
+  case FL_UNFOCUS: text = "FL_UNFOCUS"; break;
+  case FL_KEYDOWN: text = "FL_KEYDOWN"; break;
+  case FL_KEYUP: text = "FL_KEYUP"; break;
+  case FL_CLOSE: text = "FL_CLOSE"; break;
+  case FL_MOVE: text = "FL_MOVE"; break;
+  case FL_SHORTCUT: text = "FL_SHORTCUT"; break;
+  case FL_DEACTIVATE: text = "FL_DEACTIVATE"; break;
+  case FL_ACTIVATE: text = "FL_ACTIVATE"; break;
+  case FL_HIDE: text = "FL_HIDE"; break;
+  case FL_SHOW: text = "FL_SHOW"; break;
+  case FL_PASTE: text = "FL_PASTE"; break;
+  case FL_SELECTIONCLEAR: text = "FL_SELECTIONCLEAR"; break;
+  case FL_MOUSEWHEEL: text = "FL_MOUSEWHEEL"; break;
+  case FL_DND_ENTER: text = "FL_DND_ENTER"; break;
+  case FL_DND_DRAG: text = "FL_DND_DRAG"; break;
+  case FL_DND_LEAVE: text = "FL_DND_LEAVE"; break;
+  case FL_DND_RELEASE: text = "FL_DND_RELEASE"; break;
+  default: text = "event: "; event += event;
   }
+  return text;
 }
 
 namespace icc_examin_ns {

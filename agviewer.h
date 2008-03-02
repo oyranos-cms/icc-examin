@@ -170,7 +170,7 @@ Agviewer
   */
   int agvMoving;    /* Currently moving?  */
   void agvMove_(void);
-  static void agvMove_statisch(void* agv);
+  //static void agvMove_statisch(void* agv);
 
  /*
   * These are the routines AGV registers to deal with mouse and keyboard input.
@@ -270,8 +270,7 @@ public:
   double distB()       { return init_dist_b; }
   double dist()        { return init_dist; }
 
-  int AllowIdle,
-      RedisplayWindow;                      // glutWindow
+  int RedisplayWindow;                      // glutWindow
   public: 
   int redisplayWindow() {DBG_PROG_V(RedisplayWindow) return RedisplayWindow; }
   void setIdle(bool set);

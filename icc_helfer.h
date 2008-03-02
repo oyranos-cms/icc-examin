@@ -48,8 +48,9 @@ void initialiseI18N();
 
 #if HAVE_FLTK
 #include <FL/Fl_Menu_Item.H>
-void menue_translate( Fl_Menu_Item* menueleiste );
-void dbgFltkEvents(int event);
+void        menue_translate( Fl_Menu_Item *menueleiste );
+void        dbgFltkEvents  ( int           event);
+std::string dbgFltkEvent   ( int           event);
 #endif
 
 // interne Funktionen

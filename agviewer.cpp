@@ -57,7 +57,6 @@ void
 Agviewer::agvInit(int window)
 { DBG_PROG_START
   RedisplayWindow = window;
-  this->agvSetAllowIdle(window);
   duenn = false; // ICC Schnitt - Kai-Uwe
   DBG_PROG_ENDE
 }
@@ -142,38 +141,8 @@ Agviewer::ConstrainEl(void)
 }
 
 void
-Agviewer::setIdle(bool set)
-{
-  DBG_PROG_V( set )
-  if(set) {
-    Fl::add_idle(agvMove_statisch,this);
-    AllowIdle = true;
-  } else {
-    Fl::remove_idle(agvMove_statisch,this);
-    AllowIdle = false;
-  }
-}
-
- /*
-  * Idle Function - moves eyeposition
-  */
-void
-Agviewer::agvMove_statisch(void* agv)
-{
-  Agviewer *obj = (Agviewer*)agv;
-  if (obj)
-    obj->agvMove_();
-  else
-    WARN_S( _("kein Agviewer uebergeben; kann agvMove_ nicht ausfuehren") )
-
-  if(!obj->parent->visible())
-    obj->setIdle(0);
-}
-void
 Agviewer::agvMove_(void)
 { DBG_PROG_START
-  int sl = 0;
-  static double rz = 0;
   DBG_PROG_V(redisplayWindow())
   if(icc_examin->frei())
   {
@@ -207,26 +176,6 @@ Agviewer::agvMove_(void)
       dEl *= slow_del;
     }
 
-    if (AllowIdle) {
-      parent->redraw();
-
-      // 50 fps TODO: missing precission
-      // clock_gettime is not available
-/*__uint64_t readTSC (void)
-{
-  struct timespec tp;
-  clock_gettime (CLOCK_SGI_CYCLE, &tp);
-  return (__uint64_t)(tp.tv_sec * (__uint64_t)1000000000) + (__uint64_t)tp.tv_nsec;
-}*/
-      double tmp = (double)clock()/(double)CLOCKS_PER_SEC;
-      double z = tmp - rz;
-      rz = tmp;
-      sl = 25000-(int)(z*1000000.0);
-      if (sl>5000)
-        ;//usleep(sl);
-      DBG_PROG_S( clock() << "z: " << z*1000000. << " sl " << sl )
-      DBG_PROG_S( "AllowIdle: " << AllowIdle )
-    }
   } else
     WARN_S( _("GL Fenster nicht frei") )
 
@@ -245,32 +194,16 @@ Agviewer::MoveOn(int v)
              (MoveMode == POLAR &&
              (AzSpin != 0 || ElSpin != 0 || AdjustingAzEl))))
   {
-    agvMoving = 1;
-    if (AllowIdle) {
-        DBG_PROG_S( "idle: agvMove_statisch" )
-        Fl::add_idle(agvMove_statisch,this);
-        agvMove_();
+    if (parent->darfBewegen()) {
+      DBG_PROG_S( "idle: agvMove_statisch" )
+      agvMove_();
+      parent->redraw();
     }
   } else {
-    agvMoving = 0;
-    if (AllowIdle) {
-      Fl::remove_idle(agvMove_statisch,this);
+    if (parent->darfBewegen()) {
       DBG_PROG_S( "idle: ---" )
     }
   }
-  DBG_PROG_ENDE
-}
-
-  /*
-   * set new redisplay window.  If <= 0 it means we are not to install
-   * an idle function and will rely on whoever does install one to 
-   * put statement like "if (agvMoving) agvMove();" at end of it
-   */
-void
-Agviewer::agvSetAllowIdle(int allowidle)
-{ DBG_PROG_START
-  if ((AllowIdle = allowidle))
-    MoveOn(1);
   DBG_PROG_ENDE
 }
 
@@ -291,6 +224,7 @@ Agviewer::agvSwitchMoveMode(int move)
       EyeAz =  EyeAz;
       EyeEl = -EyeEl;
       EyeMove = init_move;
+      parent->bewegen(true);
       break;
     case ICCFLY_L:
       MoveMode = POLAR;
@@ -328,6 +262,7 @@ Agviewer::agvSwitchMoveMode(int move)
       EyeEl   = 0;
       AzSpin  = 1.0;
       ElSpin  = init_el_spin;
+      parent->bewegen(true);
       break;
     case POLAR:
       EyeDist = init_dist;
@@ -358,8 +293,8 @@ Agviewer::agvHandleButton(int button, int event, int x, int y)
   DBG_PROG_START
   DBG_PROG_V( button <<" "<< event);
 
- if (event == FL_PUSH && downb == -1)
- {
+  if (event == FL_PUSH && downb == -1)
+  {
     lastx = downx = x;
     lasty = downy = y;
     downb = button;    
@@ -373,9 +308,8 @@ Agviewer::agvHandleButton(int button, int event, int x, int y)
         AzSpin = ElSpin = dAz = dEl = 0;
         AdjustingAzEl = 1;
         MoveOn(0); //ICC stop
-        if (MoveMode == FLYING) {
+        //if (MoveMode == FLYING)
           icc_examin_ns::status_info(_("left-/middle-/right mouse button -> rotate/cut/menu"));
-        }
         duenn = false;
         MoveMode = POLAR;
     } else
@@ -395,7 +329,7 @@ Agviewer::agvHandleButton(int button, int event, int x, int y)
     DBG_PROG
 
     if (downb & FL_BUTTON1)
-      {
+      { DBG_S( "Loslassen" )
         if (MoveMode != FLYING) {
           AzSpin =  -dAz;
           if (AzSpin < min_azspin && AzSpin > -min_azspin)
@@ -403,6 +337,11 @@ Agviewer::agvHandleButton(int button, int event, int x, int y)
           ElSpin = -dEl;
           if (ElSpin < min_elspin && ElSpin > -min_elspin)
             ElSpin = 0; 
+          if(!AzSpin && !ElSpin) {
+            parent->bewegen(false); DBG_S("langsames Loslassen")
+          } else {
+            parent->bewegen(true); DBG_S( "schnelles Loslassen" )
+          }
         }
         AdjustingAzEl = 0;
         MoveOn(1);
@@ -456,7 +395,6 @@ Agviewer::agvHandleMotion(int x, int y)
       Ey = downEy - e_sens*deltay*sin(TORAD(EyeEl));
       Ez = downEz + e_sens*deltay*cos(TORAD(EyeAz))*cos(TORAD(EyeEl));
   }
-  parent->redraw();
   DBG_PROG_ENDE
 }
 
@@ -499,10 +437,10 @@ Agviewer::agvHandleKeys_(unsigned char key, int&, int&)
         if (EyeMove == 0)
           SetMove(minmove);
          else
-	  SetMove(EyeMove *= (1 + movefraction));
+          SetMove(EyeMove *= (1 + movefraction));
         break;
       case '-':
-	SetMove(EyeMove *= (1 - movefraction));
+        SetMove(EyeMove *= (1 - movefraction));
         break;
     }
   DBG_PROG_ENDE
