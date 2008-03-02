@@ -368,69 +368,79 @@ void draw_kurve    (int X, int Y, int W, int H,
   fl_font ( FL_HELVETICA, 12) ;
   std::stringstream s ;
   std::string name;
+  bool ist_kurve = false;
   for (unsigned int j = 0; j < kurven.size(); j++) {
-    name = texte[j];
+    if (kurven.size() <= texte.size())
+      name = texte[j];
+    else
+      name = _("unbekannte Farbe");
+    if (kurven.size() < texte.size()
+     && texte[texte.size()-1] == "curv")
+      ist_kurve = true;
+
     fl_color(FL_LIGHT2);
-    if        (texte[j] == "rTRC") {
+    if        (name == "rTRC") {
       fl_color(FL_RED);
       name = _("Rot");
-    } else if (texte[j] == "gTRC") {
+    } else if (name == "gTRC") {
       fl_color(FL_GREEN);
       name = _("Grün");
-    } else if (texte[j] == "bTRC") {
+    } else if (name == "bTRC") {
       fl_color(FL_BLUE);
       name = _("Blau");
-    } else if (texte[j] == "kTRC") {
+    } else if (name == "kTRC"
+            || name == "bdf") {
       fl_color(FL_LIGHT2);
       name = _("Grau");
-    } else if (texte[j] == _("Rot")) {
+    } else if (name == _("Rot")) {
       fl_color(FL_RED);
-      name = texte[j];
-    } else if (texte[j] == _("Grün")) {
+    } else if (name == _("Grün")) {
       fl_color(FL_GREEN);
-    } else if (texte[j] == _("Blau")) {
+    } else if (name == _("Blau")) {
       fl_color(FL_BLUE);
-    } else if (texte[j] == _("Cyan")) {
+    } else if (name == _("Cyan")) {
       fl_color(FL_CYAN);
-    } else if (texte[j] == _("Magenta")) {
+    } else if (name == _("Magenta")) {
       fl_color(FL_MAGENTA);
-    } else if (texte[j] == _("Gelb")) {
+    } else if (name == _("Gelb")) {
       fl_color(FL_YELLOW);
-    } else if (texte[j] == _("Schwarz")) {
+    } else if (name == _("Schwarz")) {
       fl_color(FL_BLACK);
-    } else if (texte[j] == _("Leuchtdichte")) {
+    } else if (name == _("Leuchtdichte")) {
       fl_color(FL_WHITE);
-    } else if (texte[j] == _("Leuchtdichte Y")) {
+    } else if (name == _("Leuchtdichte Y")) {
       fl_color(FL_WHITE);
-    } else if (texte[j] == _("CIE Y (Leuchtdichte)")) {
+    } else if (name == _("CIE Y (Leuchtdichte)")) {
       fl_color(FL_WHITE);
-    } else if (texte[j] == _("Helligkeit")) {
+    } else if (name == _("Helligkeit")) {
       fl_color(FL_WHITE);
-    } else if (texte[j] == _("Wert")) {
+    } else if (name == _("Wert")) {
       fl_color(FL_WHITE);
-    } else if (texte[j] == _("CIE *L")) {
+    } else if (name == _("CIE *L")) {
       fl_color(FL_WHITE);
-    } else if (texte[j] == _("CIE *a")) {
+    } else if (name == _("CIE *a")) {
       fl_color(FL_RED);
-    } else if (texte[j] == _("CIE *b")) {
+    } else if (name == _("CIE *b")) {
       fl_color(FL_BLUE);
-    } else if (texte[j] == _("Farbanteil b")) {
+    } else if (name == _("Farbanteil b")) {
       fl_color(FL_BLUE);
-    } else if (texte[j] == _("Farbanteil r")) {
+    } else if (name == _("Farbanteil r")) {
       fl_color(FL_RED);
     } else {
       fl_color(9 + j);
     }
     #ifdef DEBUG//_DRAW
-    cout << "Zeichne Kurve "<< texte[j] << " " << j << " " << kurven[j].size() << " Teile "; DBG
+    //cout << "Zeichne Kurve "<< name << " " << j << " " << kurven[j].size() << " Teile "; DBG
     #endif
     s.str("");
-    if (kurven[j].size() == 0) {
+    if (kurven[j].size() == 0
+     && ist_kurve) {
       fl_line (x( 0 ), y( 0 ), x( 1 ), y( 1 ) );
       // Infos einblenden 
       s << name << _(" mit Gamma: 1.0");
       fl_draw ( s.str().c_str(), x(0) + 2, y(n) + j*16 + 12);
-    } else if (kurven[j].size() == 1) {
+    } else if (kurven[j].size() == 1
+            && ist_kurve) {
       int segmente = 256;
       double gamma = kurven[j][0]*256.0;
       for (int i = 1; i < segmente; i++)

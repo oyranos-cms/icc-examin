@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <iostream>
 #include <sstream>
+#include <cassert>
 #include <FL/Fl.H>
 #include <FL/Fl_Window.H>
 #include <FL/Fl_Menu_Bar.H>
@@ -20,10 +21,10 @@ class TagDrawings;
 class TagBrowser;
 class TagTexts;
 class MftChoice;
-#include <openvrml/browser.h>
-#include <openvrml/gl/viewer.h>
-#include "vFLGLWidget.h"
-#include "ViewerFLTK.h"
+//#include <openvrml/browser.h>
+//#include <openvrml/gl/viewer.h>
+//#include "vFLGLWidget.h"
+//#include "ViewerFLTK.h"
 //#define DBG cout << __FILE__<<":"<<__LINE__ <<" "<< __func__ << "()" << endl;
 #define _(text) text
 #include "icc_profile.h"
@@ -39,7 +40,6 @@ extern Fl_Tile *examin;
 extern TagBrowser *tag_browser;
 extern Fl_Group *ansichtsgruppe;
 extern Fl_Group *tag_3D;
-extern vFLGLWidget *canvas;
 extern TagDrawings *tag_viewer;
 extern TagTexts *tag_text;
 extern Fl_Group *tabellengruppe;
@@ -57,8 +57,6 @@ extern Fl_Menu_Item menu_Fl_lookat_MenuBar[];
 #define menueintrag_inspekt (menu_Fl_lookat_MenuBar+6)
 std::string open(int interaktiv);
 void quit(void);
-void worldChangedCB( const openvrml::browser::cb_reason reason );
-void timeIT();
 char* icc_read_info(char* filename);
 
 class TagBrowser : public Fl_Hold_Browser {

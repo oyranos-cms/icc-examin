@@ -9,8 +9,8 @@ static char *statlabel;
  int fullscreen;
  int inspekt_zeigen;
  int tag_nummer;
-static openvrml::browser *browser = 0;
-static ViewerFLTK  *viewer = 0;
+//openvrml::browser *browser = 0;
+//ViewerFLTK  *viewer = 0;
 #include "icc_draw.h"
 ICCprofile profile;
 
@@ -46,12 +46,12 @@ static void cb_menueintrag_Voll(Fl_Menu_*, void*) {
 static void cb_menueintrag_inspekt(Fl_Menu_*, void*) {
   if (inspekt_zeigen) {
     inspekt_zeigen = false;
-    inspekt->hide();
-    examin->show();
+    /*inspekt->hide();
+    examin->show();*/
   } else {
     inspekt_zeigen = true;
-    inspekt->show();
-    examin->hide();
+    /*inspekt->show();
+    examin->hide();*/
   };
 }
 
@@ -78,8 +78,6 @@ static void cb_tag_browser(TagBrowser* o, void*) {
 Fl_Group *ansichtsgruppe=(Fl_Group *)0;
 
 Fl_Group *tag_3D=(Fl_Group *)0;
-
-vFLGLWidget *canvas=(vFLGLWidget *)0;
 
 TagDrawings *tag_viewer=(TagDrawings *)0;
 
@@ -137,18 +135,6 @@ int main(int argc, char **argv) {
         }
         { Fl_Group* o = ansichtsgruppe = new Fl_Group(0, 160, 385, 335);
           { Fl_Group* o = tag_3D = new Fl_Group(0, 160, 385, 335);
-            { vFLGLWidget* o = canvas = new vFLGLWidget(0, 160, 385, 335, "OpenVRML");
-              o->box(FL_NO_BOX);
-              o->color(FL_BACKGROUND_COLOR);
-              o->selection_color(FL_BACKGROUND_COLOR);
-              o->labeltype(FL_NORMAL_LABEL);
-              o->labelfont(0);
-              o->labelsize(14);
-              o->labelcolor(FL_BLACK);
-              o->align(FL_ALIGN_CENTER|FL_ALIGN_INSIDE);
-              o->when(FL_WHEN_RELEASE);
-              o->hide();
-            }
             o->hide();
             o->end();
           }
@@ -239,15 +225,15 @@ int main(int argc, char **argv) {
       }
       o->end();
     }
-    browser = new openvrml::browser(cout, cerr);
+    //browser = new openvrml::browser(cout, cerr);
     DBG
     if (argc>1) {
-      std::vector<std::string> url;
-      std::vector<std::string> param;
+//      std::vector<std::string> url;
+//      std::vector<std::string> param;
 
-      if (browser && argc>1) {
-        url.push_back (argv[1]);
-        browser->load_url(url, param);
+      if (/*browser &&*/ argc>1) {
+//        url.push_back (argv[1]);
+//        browser->load_url(url, param);
         sprintf (statlabel, "%s geladen", argv[1]);
         stat->label(statlabel);
         filename_alt = argv[1];
@@ -256,23 +242,23 @@ int main(int argc, char **argv) {
       }
     } // if
     DBG
-    browser->add_world_changed_callback( worldChangedCB );
-    worldChangedCB( openvrml::browser::replace_world_id );
+//    browser->add_world_changed_callback( worldChangedCB );
+//    worldChangedCB( openvrml::browser::replace_world_id );
     DBG
-    viewer = new ViewerFLTK( *browser, canvas );
-    canvas->setViewerPtr( viewer );
+//    viewer = new ViewerFLTK( *browser, canvas );
+//    canvas->setViewerPtr( viewer );
     o->end();
   }
   w->resizable(tag_text);
   w->show();
-  canvas->show();
+  /*canvas->show();
 //  canvas->show_widget = false;
   viewer->Hok=1;
   viewer->Hdraw=1;
   viewer->timerUpdate();
   viewer->handleRedraw();
   Fl::add_timeout(0.01, (void (*)(void *))timeIT, (void *)viewer);
-
+*/
   Fl::scheme(NULL);
   Fl_File_Icon::load_system_icons();
   if (argc > 1)
@@ -288,7 +274,7 @@ std::string open(int interaktiv) {
   //Fl_File_Icon	*icon;	// New file icon
   DBG
   load_progress->show ();    load_progress->value (0.0);
-  char vrmlDatei[] = "/tmp/tmp_vrml.wrl";
+  //char vrmlDatei[] = "/tmp/tmp_vrml.wrl";
 
   if (interaktiv)
     filename=fl_file_chooser("Wähle ICC Profil?", "ICC Farbprofile (*.[I,i][C,c][M,m,C,c])", filename_alt.c_str());
@@ -308,14 +294,14 @@ std::string open(int interaktiv) {
   std::vector<std::string> url;
   std::vector<std::string> param;
 
-  if (browser && (filename != "")) { DBG
+  if (/*browser && */(filename != "")) { DBG
 
     //create_vrml ( filename.c_str(), "/usr/share/color/icc/sRGB.icm", &vrmlDatei[0]);
 
     load_progress->value (0.8);
     filename_alt = filename;
-    url.push_back (&vrmlDatei[0]);
-    browser->load_url(url, param);
+    //url.push_back (&vrmlDatei[0]);
+    //browser->load_url(url, param);
     sprintf (statlabel, "%s geladen", filename.c_str());
     cout << statlabel << endl; DBG
     stat->label(statlabel);
@@ -326,8 +312,8 @@ std::string open(int interaktiv) {
   stat->hide();
   stat->show();
   load_progress->value (1.0);
-  viewer->timerUpdate();
-  viewer->handleRedraw();
+  //viewer->timerUpdate();
+  //viewer->handleRedraw();
   load_progress->value (0.0);
   load_progress->hide();
   DBG
@@ -338,39 +324,12 @@ std::string open(int interaktiv) {
 }
 
 void quit(void) {
-  Fl::remove_timeout((void (*)(void *))timeIT, (void *)viewer);
+  /*Fl::remove_timeout((void (*)(void *))timeIT, (void *)viewer);
   delete viewer;
   delete browser;
-  delete canvas;
+  delete canvas;*/
   details->hide();
   exit(0);
-}
-
-void worldChangedCB( const openvrml::browser::cb_reason reason ) {
-  switch (reason)
-    {
-        case openvrml::browser::destroy_world_id:
-            delete browser;
-            delete viewer;
-            Fl::remove_timeout((void (*)(void *))timeIT, (void *)viewer);
-            exit(0);
-            break;
-        case openvrml::browser::replace_world_id: DBG
-            if (setTitleUrl) { DBG
-                stat->label(statlabel);//browser->world_url().c_str());
-            }
-            //buildViewpointMenu();
-            break;
-            DBG
-    }
-}
-
-void timeIT() {
-  if (canvas->LeftViewer == 0) {
-    viewer->timerUpdate();
-    viewer->handleRedraw();
-  }
-  Fl::add_timeout(0.01, (void (*)(void *))timeIT, (void *)viewer);
 }
 
 char* icc_read_info(char* filename) {
@@ -500,6 +459,7 @@ void TagBrowser::select_item(int item) {
           texte.push_back (TagInfo[0]);
         }
       }
+      texte.push_back ("curv");
       tag_viewer->hinein_kurven( kurven, texte );
     } else if ( TagInfo[1] == "chrm") {
       tag_viewer->hinein_punkt( profile.getTagCIEXYZ(item), profile.getTagText(item) );

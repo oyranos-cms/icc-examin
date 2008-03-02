@@ -11,6 +11,10 @@
 #include <new>			// bad_alloc()
 #include <iostream>
 
+
+#define cout std::cout
+#define endl std::endl
+
 #define DBG cout << __FILE__<<":"<<__LINE__ <<" "<< __func__ << "()" << endl;
 #define DBG_S(txt) cout << __FILE__<<":"<<__LINE__ <<" "<< __func__ << "()" << txt << endl;
 

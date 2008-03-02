@@ -20,13 +20,11 @@ X11_LIBS=-L/usr/X11R6/lib -lXinerama -lXft
 FLTK_LIBS=`fltk-config --use-images --use-gl --ldstaticflags`
 FLTK_GL_LIBS=-lfltk_gl
 LDLIBS = -L./ $(FLTK_LIBS) \
-	$(VRML_LIBS) \
 	$(X11_LIBS) -llcms
+#	$(VRML_LIBS) \
 # -llprof
 
 CPP_HEADERS = \
-	vFLGLWidget.h \
-	ViewerFLTK.h \
 	icc_draw.h \
 	icc_examin.h \
 	icc_utils.h \
@@ -35,13 +33,15 @@ CPP_HEADERS = \
 	icc_vrml.h \
 	cccie64.h \
 	ciexyz64_1.h
+#	vFLGLWidget.h \
+	ViewerFLTK.h 
 CPPFILES = \
-	vFLGLWidget.cpp \
-	ViewerFLTK.cpp \
 	icc_draw.cpp \
 	icc_profile.cpp \
 	icc_profiler.cpp \
 	icc_vrml.cpp
+#	vFLGLWidget.cpp \
+	ViewerFLTK.cpp 
 CXXFILES = \
 	icc_examin.cxx
 SOURCES = $(CPPFILES) $(CXXFILES) $(CPP_HEADERS)

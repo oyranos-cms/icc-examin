@@ -14,6 +14,9 @@ decl {\#include <iostream>} {public
 decl {\#include <sstream>} {public
 } 
 
+decl {\#include <cassert>} {public
+} 
+
 decl {\#include <FL/Fl.H>} {public
 } 
 
@@ -48,21 +51,21 @@ class TagTexts;
 class MftChoice;} {public
 } 
 
-decl {\#include <openvrml/browser.h>} {public
+decl {//\#include <openvrml/browser.h>} {public
 } 
 
-decl {\#include <openvrml/gl/viewer.h>} {public
+decl {//\#include <openvrml/gl/viewer.h>} {public
 } 
 
-decl {\#include "vFLGLWidget.h"} {public
+decl {//\#include "vFLGLWidget.h"} {public
 } 
 
-decl {\#include "ViewerFLTK.h"} {public
+decl {//\#include "ViewerFLTK.h"} {public
 } 
 
-decl {openvrml::browser *browser = 0;} {} 
+decl {//openvrml::browser *browser = 0;} {} 
 
-decl {ViewerFLTK  *viewer = 0;} {} 
+decl {//ViewerFLTK  *viewer = 0;} {} 
 
 decl {//\#define DBG cout << __FILE__<<":"<<__LINE__ <<" "<< __func__ << "()" << endl;} {public
 } 
@@ -85,16 +88,16 @@ Function {} {open C return_type int
   fullscreen = false;} {}
   Fl_Window details {
     label {ICC Details} open
-    xywh {801 355 385 520} type Double box NO_BOX color 53
-    code0 {browser = new openvrml::browser(cout, cerr);}
+    xywh {658 282 385 520} type Double box NO_BOX color 53
+    code0 {//browser = new openvrml::browser(cout, cerr);}
     code1 {DBG
     if (argc>1) {
-      std::vector<std::string> url;
-      std::vector<std::string> param;
+//      std::vector<std::string> url;
+//      std::vector<std::string> param;
 
-      if (browser && argc>1) {
-        url.push_back (argv[1]);
-        browser->load_url(url, param);
+      if (/*browser &&*/ argc>1) {
+//        url.push_back (argv[1]);
+//        browser->load_url(url, param);
         sprintf (statlabel, "%s geladen", argv[1]);
         stat->label(statlabel);
         filename_alt = argv[1];
@@ -103,11 +106,11 @@ Function {} {open C return_type int
       }
     } // if}
     code2 {DBG
-    browser->add_world_changed_callback( worldChangedCB );
-    worldChangedCB( openvrml::browser::replace_world_id );}
+//    browser->add_world_changed_callback( worldChangedCB );
+//    worldChangedCB( openvrml::browser::replace_world_id );}
     code3 {DBG
-    viewer = new ViewerFLTK( *browser, canvas );
-    canvas->setViewerPtr( viewer );} xclass Fl_Window visible
+//    viewer = new ViewerFLTK( *browser, canvas );
+//    canvas->setViewerPtr( viewer );} xclass Fl_Window visible
   } {
     Fl_Group {} {open
       xywh {0 0 385 520}
@@ -156,18 +159,18 @@ Function {} {open C return_type int
             label {Prüfansicht an/aus}
             callback {if (inspekt_zeigen) {
     inspekt_zeigen = false;
-    inspekt->hide();
-    examin->show();
+    /*inspekt->hide();
+    examin->show();*/
   } else {
     inspekt_zeigen = true;
-    inspekt->show();
-    examin->hide();
+    /*inspekt->show();
+    examin->hide();*/
   }}
             xywh {25 25 100 20}
           }
         }
       }
-      Fl_Tile examin {open
+      Fl_Tile examin {
         xywh {0 25 385 470} resizable
       } {
         Fl_Browser tag_browser {
@@ -181,16 +184,10 @@ Function {} {open C return_type int
         Fl_Group ansichtsgruppe {open
           xywh {0 160 385 335}
         } {
-          Fl_Group tag_3D {
+          Fl_Group tag_3D {open
             xywh {0 160 385 335}
             code0 {o->hide();}
-          } {
-            Fl_Box canvas {
-              label OpenVRML
-              xywh {0 160 385 335} align 16 hide
-              class vFLGLWidget
-            }
-          }
+          } {}
           Fl_Box tag_viewer {
             xywh {0 160 385 335}
             code0 {o->hide();}
@@ -225,11 +222,11 @@ Function {} {open C return_type int
           }
         }
       }
-      Fl_Group inspekt {
+      Fl_Group inspekt {open
         xywh {0 25 385 470}
         code0 {o->hide();}
       } {}
-      Fl_Group {} {
+      Fl_Group {} {open
         xywh {0 495 385 25}
       } {
         Fl_Box stat {
@@ -248,14 +245,14 @@ Function {} {open C return_type int
   }
   code {w->resizable(tag_text);
   w->show();
-  canvas->show();
+  /*canvas->show();
 //  canvas->show_widget = false;
   viewer->Hok=1;
   viewer->Hdraw=1;
   viewer->timerUpdate();
   viewer->handleRedraw();
   Fl::add_timeout(0.01, (void (*)(void *))timeIT, (void *)viewer);
-
+*/
   Fl::scheme(NULL);
   Fl_File_Icon::load_system_icons();
   if (argc > 1)
@@ -270,7 +267,7 @@ Function {open(int interaktiv)} {return_type {std::string}
   //Fl_File_Icon	*icon;	// New file icon
   DBG
   load_progress->show ();    load_progress->value (0.0);
-  char vrmlDatei[] = "/tmp/tmp_vrml.wrl";
+  //char vrmlDatei[] = "/tmp/tmp_vrml.wrl";
 
   if (interaktiv)
     filename=fl_file_chooser("Wähle ICC Profil?", "ICC Farbprofile (*.[I,i][C,c][M,m,C,c])", filename_alt.c_str());
@@ -290,14 +287,14 @@ Function {open(int interaktiv)} {return_type {std::string}
   std::vector<std::string> url;
   std::vector<std::string> param;
 
-  if (browser && (filename != "")) { DBG
+  if (/*browser && */(filename != "")) { DBG
 
     //create_vrml ( filename.c_str(), "/usr/share/color/icc/sRGB.icm", &vrmlDatei[0]);
 
     load_progress->value (0.8);
     filename_alt = filename;
-    url.push_back (&vrmlDatei[0]);
-    browser->load_url(url, param);
+    //url.push_back (&vrmlDatei[0]);
+    //browser->load_url(url, param);
     sprintf (statlabel, "%s geladen", filename.c_str());
     cout << statlabel << endl; DBG
     stat->label(statlabel);
@@ -308,8 +305,8 @@ Function {open(int interaktiv)} {return_type {std::string}
   stat->hide();
   stat->show();
   load_progress->value (1.0);
-  viewer->timerUpdate();
-  viewer->handleRedraw();
+  //viewer->timerUpdate();
+  //viewer->handleRedraw();
   load_progress->value (0.0);
   load_progress->hide();
   DBG
@@ -320,42 +317,15 @@ Function {open(int interaktiv)} {return_type {std::string}
 } 
 
 Function {quit(void)} {} {
-  code {Fl::remove_timeout((void (*)(void *))timeIT, (void *)viewer);
+  code {/*Fl::remove_timeout((void (*)(void *))timeIT, (void *)viewer);
   delete viewer;
   delete browser;
-  delete canvas;
+  delete canvas;*/
   details->hide();
   exit(0);} {}
 } 
 
-Function {worldChangedCB( const openvrml::browser::cb_reason reason )} {} {
-  code {switch (reason)
-    {
-        case openvrml::browser::destroy_world_id:
-            delete browser;
-            delete viewer;
-            Fl::remove_timeout((void (*)(void *))timeIT, (void *)viewer);
-            exit(0);
-            break;
-        case openvrml::browser::replace_world_id: DBG
-            if (setTitleUrl) { DBG
-                stat->label(statlabel);//browser->world_url().c_str());
-            }
-            //buildViewpointMenu();
-            break;
-            DBG
-    }} {}
-} 
-
-Function {timeIT()} {} {
-  code {if (canvas->LeftViewer == 0) {
-    viewer->timerUpdate();
-    viewer->handleRedraw();
-  }
-  Fl::add_timeout(0.01, (void (*)(void *))timeIT, (void *)viewer);} {}
-} 
-
-Function {icc_read_info(char* filename)} {return_type {char*}
+Function {icc_read_info(char* filename)} {open return_type {char*}
 } {
   code {char systemBefehl[1024];
   char *textfile = "/tmp/icc_temp.txt";
@@ -485,6 +455,7 @@ class TagBrowser {open : {public Fl_Hold_Browser}
           texte.push_back (TagInfo[0]);
         }
       }
+      texte.push_back ("curv");
       tag_viewer->hinein_kurven( kurven, texte );
     } else if ( TagInfo[1] == "chrm") {
       tag_viewer->hinein_punkt( profile.getTagCIEXYZ(item), profile.getTagText(item) );
@@ -496,7 +467,8 @@ class TagBrowser {open : {public Fl_Hold_Browser}
       //mft_text->hinein ( (profile.getTagText (item))[0] ); DBG
     }
     selectedTagName = TagInfo[0];
-  }DBG} {}
+  }DBG} {selected
+    }
   }
 } 
 
@@ -524,7 +496,7 @@ class TagTexts {: {public Fl_Hold_Browser}
   }
 } 
 
-class TagDrawings {open : {public Fl_Widget}
+class TagDrawings {: {public Fl_Widget}
 } {
   decl {int X; int Y; int W; int H; std::vector<std::string>texte; std::vector<double>punkte; std::vector<std::vector<double> >kurven;} {}
   decl {int wiederholen;} {public
@@ -576,7 +548,7 @@ class TagDrawings {open : {public Fl_Widget}
 
 decl {\#include <FL/fl_draw.H>} {} 
 
-class MftChoice {open : {public Fl_Choice}
+class MftChoice {: {public Fl_Choice}
 } {
   decl {int X; int Y; int W; int H; char* start_info; char typ[5]; std::vector<std::string> Info; int gewaehlter_eintrag;} {}
   Function {MftChoice(int X,int Y,int W,int H,char* start_info) : Fl_Choice(X,Y,W,H,start_info), X(X), Y(Y), W(W), H(H)} {open
@@ -692,8 +664,7 @@ Function {d_haendler(void* o)} {return_type {static void}
   }} {}
 } 
 
-Function {zeig_mich(void* widget)} {open
-} {
+Function {zeig_mich(void* widget)} {} {
   code {// zeigt das ausgewählte Fenster (widget)
 
   tabellengruppe->hide();
@@ -752,8 +723,7 @@ class GL_Ansicht {open : {public Fl_Widget}
     wiederholen = false;
     draw_kurve   (x(),y(),w(),h(),texte,kurven);
   }
-  DBG} {selected
-    }
+  DBG} {}
   }
   Function {hinein_punkt(std::vector<double> vect, std::vector<std::string> txt)} {open
   } {
