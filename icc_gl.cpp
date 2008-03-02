@@ -8,8 +8,9 @@
 #include "agviewer.h"
 #include "icc_gl.h"
 
+#define DEBUG_ICCGL
 
-typedef enum {NOTALLOWED, AXES, STUFF, RING } DisplayLists;
+typedef enum {NOTALLOWED, AXES, RASTER, RING } DisplayLists;
 typedef enum { MENU_AXES, MENU_QUIT, MENU_RING } MenuChoices;
 
 int DrawAxes = 0;
@@ -139,22 +140,110 @@ void GL_Ansicht::myGLinit() {
   DBG_PROG_ENDE
 }
 
+#define FARBE(r,g,b) farbe [0] = (r); farbe [1] = (g); farbe [2] = (b); \
+                     glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, farbe); 
+
 void GL_Ansicht::MakeDisplayLists() {
+  char text[256];
   DBG_PROG_START
-  glNewList(STUFF, GL_COMPILE);
-  glPushMatrix();
-    glutSolidCube(1.0);
-    glTranslatef(2, 0, 0);
-    glutSolidSphere(0.5, 10, 10);
-    glTranslatef(-2, 0, 3);
-    glRotatef(-90, 1, 0, 0);
-    glutSolidCone(0.5, 1.0, 8, 8);
-    glutWireTeapot (1.0);
-  glPopMatrix();
+  glNewList(RASTER, GL_COMPILE);
+  GLfloat farbe[] =   { 1.0, 1.0, 1.0, 1.0 };
+  // Koordinaten
+  #ifdef DEBUG_ICCGL
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  glEnable(GL_LINE_SMOOTH);
+  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, farbe);
+    glPushMatrix();
+      glMatrixMode(GL_MODELVIEW);
+      glLineWidth(3.0);
+      glTranslatef(-0.3,-0.1,-0.05);
+      sprintf (&text[0],_("0,0,0"));
+      glScalef(0.001,0.001,0.001);
+      for (char* p = &text[0]; *p; p++) {
+        glutStrokeCharacter(GLUT_STROKE_ROMAN, *p);
+      }
+    glPopMatrix();
+
+    glPushMatrix();
+      FARBE(1,1,1)
+      glBegin(GL_LINES);
+        glVertex3f(.1, 0, 0); glVertex3f(0, 0, 0);
+      glEnd();
+      glBegin(GL_LINES);
+        glVertex3f(0, 0, .1); glVertex3f(0, 0, 0);
+      glEnd();
+      glBegin(GL_LINES);
+        glVertex3f(0, .1, 0); glVertex3f(0, 0, 0);
+      glEnd();
+      glTranslatef(.1,0,0);
+      FARBE(1,0,1)
+      glRotatef (90,0.0,1.0,.0);
+      glutSolidCone(0.01, 0.025, 8, 2);
+      glRotatef (-90,0.0,1.0,.0);
+      FARBE(1,1,1)
+      glTranslatef(.02,0,0);
+      glScalef(0.001,0.001,0.001);
+      glutStrokeCharacter(GLUT_STROKE_ROMAN, 'X');
+    glPopMatrix();
+
+    glPushMatrix();
+      glTranslatef(0,.1,0);
+      glRotatef (270,1.0,.0,.0);
+      FARBE(1,1,0)
+      glutSolidCone(0.01, 0.025, 8, 2);
+      glRotatef (90,1.0,.0,.0);
+      glRotatef (90,0.0,.0,1.0);
+      glScalef(0.001,0.001,0.001);
+      FARBE(1,1,1)
+      glutStrokeCharacter(GLUT_STROKE_ROMAN, 'Y');
+    glPopMatrix();
+
+    glPushMatrix();
+      glTranslatef(0,0,.1);
+      FARBE(0,1,1)
+      glutSolidCone(0.01, 0.025, 8, 2);
+      FARBE(1,1,1)
+      glRotatef (90,0.0,.5,.0);
+      glTranslatef(-.1,0,0);
+      glScalef(0.001,0.001,0.001);
+      glutStrokeCharacter(GLUT_STROKE_ROMAN, 'Z');
+    glPopMatrix();
+    glLineWidth(1.0);
+    #endif
+
+    // Tabelle
+    double dim_x = 1.0/(tabelle.size()); DBG_PROG_V( dim_x )
+    double dim_y = 1.0/(tabelle[0].size()); DBG_PROG_V( dim_y )
+    double dim_z = 1.0/(tabelle[0][0].size()); DBG_PROG_V( dim_z )
+    double start_x,start_y,start_z, x,y,z;
+    double groesse = (dim_x + dim_y + dim_z)/ 24.0;
+    start_x = start_y = start_z = x = y = z = 0.5; start_x = x = -0.5;
+    glPushMatrix();
+
+    glTranslatef(start_x,start_y,start_z);
+    DBG_PROG_V( tabelle.size() <<" "<< tabelle[0].size() )
+    glTranslatef(-dim_x/2.0,-dim_y/2.0,-dim_z/2.0);
+    for (int i = 0; i < (int)tabelle.size(); i++) { //DBG_PROG_V( i )
+      x = start_x + i * dim_x;
+      glTranslatef(dim_x,0.0,0.0);
+      glTranslatef(0,-1.0,0.0);
+      for (int j = 0; j < (int)tabelle[i].size(); j++) { //DBG_PROG_V( j )
+        y = start_y + j * dim_y;
+        glTranslatef(0.0, dim_y,0.0);
+        glTranslatef(0,0.0,-1.0);
+        for (int k = 0; k < (int)tabelle[i][j].size(); k++) { //DBG_PROG_V( k )
+          z = start_z + k * dim_z;
+          glTranslatef(0.0,0.0,dim_z); //DBG_PROG_S( "xyz: "<< x <<" "<< y <<" "<< z )
+          glutSolidCube(groesse);
+        }
+      }
+    }
+    glPopMatrix();
   glEndList();
 
   glNewList(RING, GL_COMPILE);
-    glutSolidTorus(0.1, 0.5, 8, 15);
+    glutSolidDodecahedron();
   glEndList();
   DBG_PROG_ENDE
 }
@@ -168,7 +257,7 @@ void GL_Ansicht::MenuInit() {
   glutCreateMenu(handlemenu);
   glutAddSubMenu(_("Bewegung"), sub2);
   glutAddMenuEntry(_("Achsen ein/aus"), MENU_AXES);
-  glutAddMenuEntry(_("Ring Rotation an/aus"), MENU_RING);
+  glutAddMenuEntry(_("Rotation an/aus"), MENU_RING);
   glutAddMenuEntry(_("Beenden"), MENU_QUIT);
   glutAttachMenu(GLUT_RIGHT_BUTTON);
   DBG_PROG_ENDE
@@ -179,12 +268,7 @@ double seitenverhaeltnis;
 void reshape(int w, int h) {
   DBG_PROG_START
   glViewport(0,0,w,h); DBG_PROG_V( w <<" "<< h )
-  glMatrixMode(GL_PROJECTION);
-  glLoadIdentity();
   seitenverhaeltnis = (GLdouble)w/(GLdouble)h;
-  //gluPerspective(45.0, seitenverhaeltnis, 0.01, 100); DBG_PROG_V( (double)w / h )
-  glPushMatrix();
-  glMatrixMode(GL_MODELVIEW);
   glFlush();
   DBG_PROG_ENDE
 }
@@ -199,7 +283,7 @@ void display() {
 
   glLoadIdentity();
 
-  gluPerspective(60, seitenverhaeltnis, 0.01, 100);
+  gluPerspective(45, seitenverhaeltnis, 0.01, 100);
 
     /* so this replaces gluLookAt or equiv */
   agvViewTransform();
@@ -211,7 +295,7 @@ void display() {
   if (DrawAxes)
     glCallList(AXES);
 
-  glCallList(STUFF);
+  glCallList(RASTER);
 
   glTranslatef(-2, 1, -2);
   glRotatef(Rotation, 1, 0, 0);
@@ -249,6 +333,26 @@ void GL_Ansicht::hinein_kurven(std::vector<std::vector<double> >vect, std::vecto
   punkte.clear();
 
   zeig_mich(this); DBG_PROG_V( first )
+
+  if (first)
+    init();
+
+  DBG_PROG_ENDE
+}
+
+void
+GL_Ansicht::hinein_tabelle(std::vector<std::vector<std::vector<std::vector<double> > > > vect, std::vector<std::string> txt)
+{
+  DBG_PROG_START
+  //Kurve aus tag_browser anzeigen
+  tabelle = vect;  DBG_PROG
+  texte = txt; DBG_PROG
+  kurven.clear(); DBG_PROG
+  punkte.clear(); DBG_PROG
+
+  zeig_mich(this); DBG_PROG_V( first )
+
+  MakeDisplayLists();
 
   if (first)
     init();
@@ -310,8 +414,8 @@ void handlemenu(int value)
       break;
     case MENU_QUIT:
       DBG_PROG_V( glutGetWindow() )
-      glutHideWindow();
-      //exit(0);
+      glutDestroyWindow(glutGetWindow());
+      mft_gl->first = true;
       break;
     case MENU_RING:
       Rotating = !Rotating;

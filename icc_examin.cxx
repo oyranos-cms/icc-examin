@@ -709,8 +709,8 @@ void MftChoice::auswahl_cb(void) {
     break;
   case 3: // 3D Tabelle
     DBG_PROG
-    mft_gl->hinein_kurven (
-                     profile.getTagCurves (tag_nummer, ICCtag::CURVE_IN),
+    mft_gl->hinein_tabelle (
+                     profile.getTagTable (tag_nummer, ICCtag::TABLE),
                      profile.getTagChannelNames (tag_nummer, ICCtag::CURVE_IN) ); DBG_PROG
     break;
   case 4: // Ausgangskurven

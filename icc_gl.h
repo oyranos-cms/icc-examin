@@ -8,6 +8,7 @@
 #define _(text) text
 
 class GL_Ansicht : public Fl_Group {
+  std::vector<std::vector<std::vector<std::vector<double> > > > tabelle;
   std::vector<std::string>texte;
   std::vector<double>punkte;
   std::vector<std::vector<double> >kurven;
@@ -23,6 +24,7 @@ public:
   void draw();
   void hinein_punkt(std::vector<double> vect, std::vector<std::string> txt);
   void hinein_kurven(std::vector<std::vector<double> >vect, std::vector<std::string> txt);
+  void hinein_tabelle(std::vector<std::vector<std::vector<std::vector<double> > > >vect, std::vector<std::string> txt);
   void ruhig_neuzeichnen(void);
   void zeigen();
   void verstecken();

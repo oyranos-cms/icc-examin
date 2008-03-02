@@ -253,12 +253,14 @@ ICCtag::load                        ( ICCprofile *profil,
   case icSigAToB2Tag:
     _color_in = _profil->header.colorSpace();
     _color_out = _profil->header.pcs();
+    _to_pcs = true;
     break;
   case icSigBToA0Tag:
   case icSigBToA1Tag:
   case icSigBToA2Tag:
     _color_in = _profil->header.pcs();
     _color_out = _profil->header.colorSpace();
+    _to_pcs = false;
     break;
   case icSigGamutTag:
     _color_in = _profil->header.pcs(); _color_out = (icColorSpaceSignature)0;
@@ -267,9 +269,11 @@ ICCtag::load                        ( ICCprofile *profil,
   case icSigPreview1Tag:
   case icSigPreview2Tag:
     _color_in = _profil->header.pcs(); _color_out = _profil->header.pcs();
+    _to_pcs = true;
     break;
   default:
     _color_in = (icColorSpaceSignature)0; _color_out = (icColorSpaceSignature)0;
+    _to_pcs = true;
     break;
   }
 
@@ -703,6 +707,95 @@ ICCtag::getCurves                                 (MftChain typ)
   return kurven;
 }
 
+std::vector<std::vector<std::vector<std::vector<double> > > >
+ICCtag::getTable                                 (MftChain typ)
+{ DBG_PROG_START
+  std::vector<std::vector<std::vector<std::vector<double> > > > Tabelle;
+  std::vector<double> Farbe; DBG
+  // Wer sind wir?
+  if (getTypName() == "mft2") {
+    icLut16* lut16 = (icLut16*) &_data[8];
+    int inputChan, outputChan, clutPoints, inputEnt, outputEnt;
+    inputChan = (int)lut16->inputChan;
+    outputChan = (int)lut16->outputChan;
+    clutPoints = (int)lut16->clutPoints;
+    inputEnt = icValue(lut16->inputEnt);
+    outputEnt = icValue(lut16->outputEnt);
+    int feldPunkte = (int)pow((double)clutPoints, inputChan);
+    #ifdef DEBUG_ICCTAG
+    cout << feldPunkte << " Feldpunkte " << clutPoints << " clutPoints "; DBG
+    #endif
+    int start = 52,
+        byte  = 2;
+    double div   = 65536.0;
+    DBG_PROG
+    // Was wird verlangt?
+    switch (typ) {
+    case TABLE: { DBG_PROG
+         start += (inputChan * inputEnt) * byte;
+         Tabelle.resize(clutPoints);
+         for (int i = 0; i < clutPoints; i++) {
+           Tabelle[i].resize(clutPoints);
+           for (int j = 0; j < clutPoints; j++) {
+             Tabelle[i][j].resize(clutPoints);
+             for (int k = 0; k < clutPoints; k++)
+               Tabelle[i][j][k].resize(outputChan);
+           }
+         }
+         int n = 0;
+         for (int i = 0; i < clutPoints; i++) {
+           Tabelle[i].resize(clutPoints);
+           for (int j = 0; j < clutPoints; j++) {
+             Tabelle[i][j].resize(clutPoints);
+             for (int k = 0; k < clutPoints; k++) {
+               Tabelle[i][j][k].resize(outputChan);
+               for (int l = 0; l < outputChan; l++) {
+                 Tabelle[i][j][k][l] = (double)icValue (*(icUInt16Number*)&_data[start + byte*n++])
+                            / div;
+               }
+             }
+           }
+         }
+         }
+         break;
+    case MATRIX:
+    case CURVE_IN:
+    case CURVE_OUT: DBG_PROG
+         break;
+    } 
+  } else if (getTypName() == "mft1") {
+    icLut8* lut8 = (icLut8*) &_data[8];
+    int inputChan, outputChan, clutPoints, inputEnt=256, outputEnt=256;
+    inputChan = (int)lut8->inputChan;
+    outputChan = (int)lut8->outputChan;
+    clutPoints = (int)lut8->clutPoints;
+    int feldPunkte = (int)pow((double)clutPoints, inputChan);
+    int start = 48,
+        byte  = 1;
+    double div   = 255.0;
+
+    // Was wird verlangt?
+    switch (typ) {
+    case TABLE:
+         start += (inputChan * inputEnt) * byte;
+         for (int i = 0; i < feldPunkte * outputChan; i++)
+           ;//Tabelle.push_back( (double) *(icUInt8Number*)&_data[start + byte*i]
+              //              / div );
+         break;
+    case MATRIX:
+    case CURVE_IN:
+    case CURVE_OUT:
+         break;
+    } 
+  }
+
+  #ifdef DEBUG_ICCTAG
+  cout << Tabelle.size() << " "; DBG
+  #endif
+  DBG_PROG_ENDE
+  return Tabelle;
+}
+
 std::vector<double>
 ICCtag::getNumbers                                 (MftChain typ)
 { DBG_PROG_START
@@ -776,7 +869,11 @@ ICCtag::getText                     (MftChain typ)
          texte = getChannelNames (_color_in);
          break;
     case TABLE:
-         texte.push_back( "" );
+         if (_to_pcs)
+           texte = getChannelNames (_color_in);
+         else
+           texte = getChannelNames (_color_out);
+           //texte.push_back( "" );
          break;
     case CURVE_OUT:
          texte = getChannelNames (_color_out);
@@ -1116,6 +1213,25 @@ ICCprofile::getTagCurves                         (int item,ICCtag::MftChain typ)
 
   DBG_PROG_ENDE
   return tags.at(item).getCurves(typ);
+}
+
+std::vector<std::vector<std::vector<std::vector<double> > > >
+ICCprofile::getTagTable                         (int item,ICCtag::MftChain typ)
+{ DBG_PROG_START
+  // Prüfen
+  std::vector<std::vector<std::vector<std::vector<double> > > > leer;
+  if (tags[item].getTypName() != "mft2"
+   && tags[item].getTypName() != "mft1")
+  {
+    #ifdef DEBUG_ICCPROFILE
+    cout << "gibt nix für " << tags[item].getTypName() << " "; DBG
+    #endif
+    DBG_PROG_ENDE
+    return leer;
+  }
+
+  DBG_PROG_ENDE
+  return tags.at(item).getTable(typ);
 }
 
 std::vector<double>

@@ -78,7 +78,7 @@ Function {} {open C return_type int
   inspekt_topline = 0;} {}
   Fl_Window details {
     label {ICC Details} open
-    xywh {899 288 385 520} type Double box NO_BOX color 53
+    xywh {899 312 385 520} type Double box NO_BOX color 53
     code1 {DBG_PROG
     if (argc>1) {
 
@@ -226,7 +226,7 @@ matrix.saveProfileToFile("/tmp/icc_examin_test.icc");}
               code0 {o->show();}
               class TagTexts
             }
-            Fl_Box mft_gl {selected
+            Fl_Box mft_gl {
               xywh {0 185 385 310} align 18
               code0 {o->first = true;}
               code1 {o->hide();}
@@ -699,8 +699,8 @@ class MftChoice {open : {public Fl_Choice}
     break;
   case 3: // 3D Tabelle
     DBG_PROG
-    mft_gl->hinein_kurven (
-                     profile.getTagCurves (tag_nummer, ICCtag::CURVE_IN),
+    mft_gl->hinein_tabelle (
+                     profile.getTagTable (tag_nummer, ICCtag::TABLE),
                      profile.getTagChannelNames (tag_nummer, ICCtag::CURVE_IN) ); DBG_PROG
     break;
   case 4: // Ausgangskurven
@@ -710,7 +710,8 @@ class MftChoice {open : {public Fl_Choice}
     break;
   }
 
-  gewaehlter_eintrag = mw->value();} {}
+  gewaehlter_eintrag = mw->value();} {selected
+    }
     code DBG_PROG_ENDE {}
   }
 } 
@@ -747,13 +748,15 @@ Function {zeig_mich(void* widget)} {open
   if (widget != mft_gl) {
     //((Fl_Widget*)widget)->parent()->show(); DBG_PROG
     ((Fl_Widget*)widget)->show(); DBG_PROG
+    mft_gl->verstecken();
   } else {
     DBG_PROG_S( "GL Fenster belassen." )
+    mft_gl->zeigen();
   }} {}
   code DBG_PROG_ENDE {}
 } 
 
-Function {zeilenNachVector(std::string text)} {open return_type {std::vector<std::string>}
+Function {zeilenNachVector(std::string text)} {return_type {std::vector<std::string>}
 } {
   code DBG_PROG_START {}
   code {// fügt Zeilen aus einen Text in einen Vector

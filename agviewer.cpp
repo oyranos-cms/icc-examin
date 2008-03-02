@@ -41,9 +41,9 @@
 
    /* Initial polar movement settings */
 #define INIT_POLAR_AZ  0.0
-#define INIT_POLAR_EL 30.0
-#define INIT_DIST      4.0
-#define INIT_AZ_SPIN   0.5
+#define INIT_POLAR_EL 90.0
+#define INIT_DIST      1.2
+#define INIT_AZ_SPIN   0.0
 #define INIT_EL_SPIN   0.0
 
   /* Initial flying movement settings */

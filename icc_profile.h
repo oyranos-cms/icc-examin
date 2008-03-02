@@ -275,6 +275,7 @@ class ICCtag {
     int                 _intent; // für mft1/2
     icColorSpaceSignature _color_in;
     icColorSpaceSignature _color_out;
+    bool                _to_pcs;
 
     ICCprofile*         _profil;
 
@@ -302,6 +303,8 @@ class ICCtag {
     } MftChain;
     std::vector<std::vector<double> >
                         getCurves    (MftChain typ);
+    std::vector<std::vector<std::vector<std::vector<double> > > >
+                        getTable    (MftChain typ);
     std::vector<double> getNumbers   (MftChain typ);
 
     std::vector<std::string> getText ();
@@ -537,6 +540,8 @@ class ICCprofile {
     std::vector<double>      getTagCurve       (int item);
     std::vector<std::vector<double> >
                              getTagCurves      (int item, ICCtag::MftChain typ);
+    std::vector<std::vector<std::vector<std::vector<double> > > >
+                             getTagTable       (int item, ICCtag::MftChain typ);
     std::vector<double>      getTagNumbers     (int item, ICCtag::MftChain typ);
     std::vector<std::string> getTagChannelNames(int item, ICCtag::MftChain typ);
     bool                hasTagName   (std::string name); // Name
