@@ -355,7 +355,7 @@ $(LINGUAS_SRC):	$(POT_FILE)
             test -L $${ling}/LC_MESSAGES/$(TARGET).mo \
               && $(RM) $${ling}/LC_MESSAGES/$(TARGET).mo \
               || echo $${ling}/LC_MESSAGES/$(TARGET).mo nicht gefunden; \
-            ln -s ../../$${ling}.gmo $$lingua/LC_MESSAGES/$(TARGET).mo;) \
+            ln -s ../../$${lingua}.gmo $$ling/LC_MESSAGES/$(TARGET).mo;) \
         || (echo $${ling}.po is not yet ready ... skipping) \
 	done;
 

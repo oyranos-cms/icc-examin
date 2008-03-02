@@ -123,14 +123,14 @@ initialiseI18N()
       if(pos != 0) \
       { \
         /* 1 a. select an appropriate charset (needed for non UTF-8 fltk/gtk1)*/ \
-        sprintf (codeset, codeset_); \
+        sprintf (codeset, codeset_); DBG_PROG_V( locale <<" "<< strrchr(locale,'.')) \
         \
           /* merge charset with locale string */ \
-        if((pos = strchr(locale,'.')) == 0) \
+        if((pos = strrchr(locale,'.')) != 0) \
         { \
-          *pos = 0; DBG_PROG_V( pos ) \
+          *pos = 0; DBG_PROG_V( locale ) \
         } \
-        snprintf(locale, TEXTLEN, ".%s",codeset); \
+        snprintf(pos, TEXTLEN-strlen(locale), ".%s",codeset); \
         \
         DBG_PROG_V( locale ) \
         \
@@ -139,7 +139,7 @@ initialiseI18N()
         \
         /* 1c. set the locale info after LANG */ \
         if(set_zero_locale) \
-          snprintf( locale, TEXTLEN, setlocale (LC_MESSAGES, "")); \
+          snprintf( locale, TEXTLEN, setlocale (LC_MESSAGES, "")); DBG_PROG_V( locale )\
       } \
     }
 
