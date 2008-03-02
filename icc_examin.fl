@@ -80,8 +80,8 @@ Function {} {open C return_type int
   fullscreen = false;
   inspekt_topline = 0;} {}
   Fl_Window details {
-    label {ICC Details}
-    xywh {899 456 385 520} type Double box NO_BOX color 53
+    label {ICC Details} open
+    xywh {899 480 385 520} type Double box NO_BOX color 53
     code1 {DBG_PROG
     if (argc>1) {
 
@@ -172,6 +172,7 @@ matrix.saveProfileToFile("/tmp/icc_examin_test.icc");}
 
   DBG_PROG_S (m->value())
   if (m->value()) {
+    mft_gl->stop();
     inspekt->show();
     examin->hide();
     inspekt_html->value(profile.report().c_str());
@@ -180,7 +181,7 @@ matrix.saveProfileToFile("/tmp/icc_examin_test.icc");}
     inspekt->hide();
     examin->show();
     inspekt_topline = inspekt_html->topline();
-  }}
+  }} selected
           tooltip {Mess- und Profilwerte bildlich und in Zahlen dargestellt; Ctrl+b} xywh {30 30 100 20} type Toggle shortcut 0x40062 deactivate
         }
       }
@@ -769,8 +770,7 @@ Function {zeig_mich(void* widget)} {open
   } else {
     DBG_PROG_S( "GL Fenster belassen." )
     mft_gl->zeigen();
-  }} {selected
-  }
+  }} {}
   code DBG_PROG_ENDE {}
 } 
 

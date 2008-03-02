@@ -72,6 +72,7 @@ static void cb_menueintrag_inspekt(Fl_Menu_* o, void*) {
 
   DBG_PROG_S (m->value())
   if (m->value()) {
+    mft_gl->stop();
     inspekt->show();
     examin->hide();
     inspekt_html->value(profile.report().c_str());

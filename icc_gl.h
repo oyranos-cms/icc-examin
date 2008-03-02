@@ -38,6 +38,8 @@ public:
   void MakeDisplayLists();
   void zeigen();
   void verstecken();
+  void stop() {if (!first) { agvSwitchMoveMode (AGV_STOP); } }
+
   char* kanalName() {return (char*)texte[kanal].c_str(); }
 };
 
