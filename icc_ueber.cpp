@@ -87,7 +87,7 @@ ICC Examin ist ein Betrachter von Farbprofilen gemäß ICC Standard  - www.color.o
 Im Moment werden Version 2 Profile unterstützt. \
 </p>\n \
 <p> \
-Farbprofile sind erhältlich ofmals von Herstellern optischer Geräte (digitale Kameras, Scanner, Drucker). Mit ICC Examin haben Sie die Möglichkeit einen Eindruck vom Aufbau als auch von der Qualität eines Profiles zu erlangen. <br> \
+Farbprofile sind erhältlich ofmals von Herstellern optischer Geräte (digitale Kameras, Scanner, Drucker). Mit ICC Examin haben Sie die Möglichkeit einen Eindruck vom Aufbau als auch, unter Umständen, von der Qualität eines Profiles zu erlangen. <br> \
 </p>\n \
 <p> \
 Die Anwendung von Farbprofilen soll einen reibungslosen Datenaustausch zwischen unterschiedlichen Farbräumen und den Abgleich auf unterschiedlichen Geräten mit Ihren jeweiligen physikalischen Gegebenheiten ermöglichen. Dies hängt insbesondere von der Qualität der verwendeten Farbprofile ab. \
@@ -108,12 +108,12 @@ Mein herzlicher Dank gilt insbesondere Marti Maria und den vielen Schreibenden d
 <p>\n\
 ICC Examin benutzt forgende Bibliotheken:<br>\n \
 <p> \
-  fltk (statisch eingebunden): Bill Spitzack und andere www.fltk.org<br>\n";
+  FLTK: Bill Spitzack und andere www.fltk.org<br>\n";
 #ifdef HAVE_FLU
 html << " \
 </p>\n \
 <p> \
-  flu (statisch eingebunden): Jason Bryan www.osc.edu/~jbryan/FLU/<br>\n";
+  FLU: Jason Bryan www.osc.edu/~jbryan/FLU/<br>\n";
 #endif
 html << " \
 </p>\n \
