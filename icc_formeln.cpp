@@ -62,7 +62,8 @@ gradATAN(double b, double a)
 }
 
 double
-dE2000 (Lab Lab1, Lab Lab2, double kL, double kC, double kH)             // (1)
+dE2000 (const Lab & Lab1, const Lab & Lab2,
+        double kL, double kC, double kH)             // (1)
 {
   /*
    *  Aus: "The CIEDE2000 Color-Difference Formula:

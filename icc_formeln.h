@@ -83,8 +83,9 @@ void FarbeZuDouble (CMYK *cmyk, double* d_cmyk);
 
 
 // Farbfunktionen
-double        dE2000 (Lab Lab1, Lab Lab2, double kL, double kC, double kH);
-void          XYZtoLab (XYZ &xyz, Lab &lab);
+double        dE2000 (const Lab & Lab1, const Lab & Lab2,
+                      double kL, double kC, double kH);
+void          XYZtoLab (XYZ & xyz, Lab & lab);
 void          XYZtoLab (double* xyz, double* lab, int n);
 void          CIELabToLab (double* cielab, double* lab, int n);
 void          LabToCIELab (double* lab, double* cielab, int n);

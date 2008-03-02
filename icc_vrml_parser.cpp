@@ -233,6 +233,7 @@ class ICCvrmlParser
           unterscheideZiffernWorte( zeile, anfuehrungstriche, trennzeichen );
 
         // ausgelesene Werte sortieren
+        std::pair<double,DreiecksIndexe> index_p;
         for(unsigned int w = 0; w < werte.size(); ++w)
         {
           if(werte[w].ganz_zahl.first)
@@ -240,18 +241,17 @@ class ICCvrmlParser
             dimensionen = 4;
             achse = wert_n % dimensionen;
             if(achse == 0)
-            {
-              if(netze_[endnetz].indexe.size() <= wert_n/dimensionen)
-                netze_[endnetz].indexe.
-                insert( std::pair<double,DreiecksIndexe>(wert_n,DreiecksIndexe()) );
-
               punkt_n = wert_n/dimensionen;
-            }
+
             DBG_VRML_PARSER_S( "w " << w <<" "<< werte[w].ganz_zahl.second )
             DBG_VRML_PARSER_V( netze_[endnetz].indexe.size() )
 
-            netze_[endnetz].indexe[punkt_n].i[achse] =
+            index_p.second.i[achse] =
                 werte[w].ganz_zahl.second;
+
+            if(achse == (int)dimensionen - 1)
+              if(netze_[endnetz].indexe.size() <= wert_n/dimensionen)
+                netze_[endnetz].indexe.  insert( index_p );
 
             ++wert_n;
           }

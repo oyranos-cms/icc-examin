@@ -555,7 +555,12 @@ ICCmeasurement::init_umrechnen                     (void)
           if (_Lab_Differenz_min > _Lab_Differenz[i])
             _Lab_Differenz_min = _Lab_Differenz[i];
           // dE2000
-          _DE00_Differenz[i] = cmsCIE2000DeltaE( (cmsCIELab*)&_Lab_Ergebnis[i], (cmsCIELab*)&_Lab_Satz[i] , 1.0, 1.0, 1.0);
+          _DE00_Differenz[i] = 
+             #if 0
+             cmsCIE2000DeltaE( (cmsCIELab*)&_Lab_Ergebnis[i], (cmsCIELab*)&_Lab_Satz[i] , 1.0, 1.0, 1.0);
+             #else
+             dE2000(_Lab_Ergebnis[i], _Lab_Satz[i] , 1.0, 1.0, 1.0);
+             #endif
           if (_DE00_Differenz_max < _DE00_Differenz[i])
             _DE00_Differenz_max = _DE00_Differenz[i];
           if (_DE00_Differenz_min > _DE00_Differenz[i])

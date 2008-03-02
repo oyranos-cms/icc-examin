@@ -44,7 +44,7 @@ struct DreiecksIndexe {
 
 struct ICCnetz {
   std::vector<ICCnetzPunkt> punkte;
-  std::map<double,DreiecksIndexe> indexe;
+  std::multimap<double,DreiecksIndexe> indexe;
   std::string name;
   double transparenz;
 };

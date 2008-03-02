@@ -184,12 +184,6 @@ ICCexamin::oeffnen (std::vector<std::string> dateinamen)
          cout << netze[n].punkte[i].farbe[3] << endl;
         }
         DBG_NUM_V( netze[n].indexe.size()/4.0 )
-        for(unsigned int i = 0; i < 10; i+=4) {
-         cout << netze[n].indexe[i].i[0] << " ";
-         cout << netze[n].indexe[i].i[1] << " ";
-         cout << netze[n].indexe[i].i[2] << " ";
-         cout << netze[n].indexe[i].i[3] << endl;
-        }
       }
       for(unsigned int i = 0; i < netze.size(); ++i )
         netze[i].transparenz = 0.6;
