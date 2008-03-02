@@ -110,7 +110,7 @@ class ICCheader {
   public:
     const char*         header_raw ()        {return /*cp_nchar (*/(char*)&header/*,
                                                        sizeof (icHeader))*/; }
-    void                header_raw (void* s) {memcpy ((void*)&header, s,
+    void                header_raw (void* h) {memcpy ((void*)&header, h,
                                                        sizeof (icHeader)); }
     void                load  (void*);
 
@@ -123,28 +123,86 @@ class ICCheader {
     const char*         cmmName ()      {return cp_nchar((char*)&(header.cmmId),
                                                       sizeof (icSignature)+1); }
     int                 version ()      {return icValue(header.version); }
+    void                version (icUInt32Number v) {header.version= icValue(v);}
     std::string         versionName ();
-    icProfileClassSignature deviceClass (){return icValue(header.deviceClass); }
-    icColorSpaceSignature colorSpace    (){return icValue(header.colorSpace); }
-    icColorSpaceSignature pcs ()          {return icValue(header.pcs); }
-    const char*         magicName ()      {return cp_nchar ((char*)&(header.
+    icProfileClassSignature deviceClass ()
+                                        {return icValue(header.deviceClass); }
+    void                deviceClass (icProfileClassSignature d)
+                                        {header.deviceClass = icValue(d); }
+    icColorSpaceSignature colorSpace () {return icValue(header.colorSpace); }
+    void                colorSpace (icColorSpaceSignature color)
+                                        {header.colorSpace = icValue(color); }
+    icColorSpaceSignature pcs ()        {return icValue(header.pcs); }
+    void                pcs (icColorSpaceSignature pcs)
+                                        {header.pcs = icValue(pcs); }
+    void                set_current_date ();
+    const char*         magicName ()    {return cp_nchar ((char*)&(header.
                                                       magic),
                                                       sizeof (icSignature)+1); }
-
-    std::string         platform ()        {return getPlatformName(icValue(header.platform)); }
+    void                set_magic ()    {char* m = {"acsp"};
+                                         header.magic = *(icSignature*)m; }
+    std::string         platform ()     {return getPlatformName(icValue(header.platform)); }
+    void                set_platform () {header.platform = (icValue(icSigSGI));}
     std::string         flags ();
-    std::string         attributes ();
-    std::string         renderingIntent () {return renderingIntentName( icValue(
-                                            header.renderingIntent ) ); }
-    const char*         modelName ()       {return cp_nchar ((char*)&(header.
-                                                      model),
-                                                      sizeof (icSignature)+1); }
+    void                set_embedded_flag()   {((char*)header.flags)[0] =
+                                              ((char*)header.flags)[0] | 0x80; }
+    void                unset_embedded_flag() {((char*)header.flags)[0] =
+                                              ((char*)header.flags)[0] & 0x7f; }
+    void                set_dependent_flag()   {((char*)header.flags)[0] =
+                                              ((char*)header.flags)[0] | 0x40; }
+    void                unset_dependent_flag() {((char*)header.flags)[0] =
+                                              ((char*)header.flags)[0] & 0xbf; }
     const char*         manufacturerName() {return cp_nchar ((char*)&(header.
                                                       manufacturer),
                                                       sizeof (icSignature)+1); }
+    void                set_manufacturer (){char* m = {"none"};
+                                         header.manufacturer= *(icSignature*)m;}
+    const char*         modelName ()       {return cp_nchar ((char*)&(header.
+                                                      model),
+                                                      sizeof (icSignature)+1); }
+    void                set_model ()       {char* m = {"none"};
+                                         header.manufacturer= *(icSignature*)m;}
+    std::string         attributes ();
+    void                set_reflective_attr() {((char*)header.attributes)[0] =
+                                              ((char*)header.attributes)[0]
+                                                & 0x7f; }
+    void                set_transparency_attr() {((char*)header.attributes)[0] =
+                                              ((char*)header.attributes)[0]
+                                                | 0x80; }
+    void                set_glossy_attr() {((char*)header.attributes)[0] =
+                                              ((char*)header.attributes)[0]
+                                                & 0xbf; }
+    void                set_matte_attr() {((char*)header.attributes)[0] =
+                                              ((char*)header.attributes)[0]
+                                                | 0x40; }
+    void                set_positive_attr() {((char*)header.attributes)[0] =
+                                              ((char*)header.attributes)[0]
+                                                & 0xdf; }
+    void                set_negative_attr() {((char*)header.attributes)[0] =
+                                              ((char*)header.attributes)[0]
+                                                | 0x20; }
+    void                set_color_attr() {((char*)header.attributes)[0] =
+                                              ((char*)header.attributes)[0]
+                                                & 0xef; }
+    void                set_gray_attr() {((char*)header.attributes)[0] =
+                                              ((char*)header.attributes)[0]
+                                                | 0x10; }
+    std::string         renderingIntent () {return renderingIntentName( icValue(
+                                            header.renderingIntent ) ); }
+    void                set_renderingIntent () {header.renderingIntent =icValue(
+                                                0 ); }
+    void                set_illuminant ()  {
+                              header.illuminant.X = (int)(0.9642 * 256.0 + 0.5);
+                              header.illuminant.Y = (int)(1.0000 * 256.0 + 0.5);
+                              header.illuminant.Z = (int)(0.8249 * 256.0 + 0.5);
+                                           } 
     const char*         creatorName ()     {return cp_nchar ((char*)&(header.
                                                       creator),
                                                       sizeof (icSignature)+1); }
+    void                set_creator ()     {char* m = {"SB"};
+                                            header.creator= *(icSignature*)m; }
+    void                setID ()           {/*char* m = ((char*)&header)[84];
+                                            *m = "-";*/ }
     std::string         print ();
     std::string         print_long ();
 };
@@ -287,9 +345,12 @@ class ICCmeasurement {
     bool                hasXYZ ()          {return _XYZ_measurement; }
     int                 getSize()          {return _size; }
     int                 getPatchCount()    {return _nFelder; }
-    // einzelne Werte
+    // Werte
     std::vector<double> getMessRGB (int patch);
     std::vector<double> getCmmRGB (int patch);
+    std::vector<XYZ>    getMessXYZ ()      {return _XYZ_Satz; }
+    std::vector<RGB>    getMessRGB ()      {return _RGB_Satz; }
+    std::vector<CMYK>   getMessCMYK ()     {return _CMYK_Satz; }
 
     // Report
     std::vector<std::vector<std::string> > getText ();
@@ -312,6 +373,7 @@ class ICCprofile {
                         ICCprofile ();
                         ICCprofile (const char *filename);
     virtual             ~ICCprofile (void);
+    void                clear (void);
 
   public:
     int                 tagCount()         {return tags.size(); }
@@ -375,6 +437,7 @@ class ICCprofile {
     ICCmeasurement      getMeasurement () {return measurement; }
 
   public: // Profilerstellung
+    void                setHeader (void* h) {header.header_raw(h); }
     void                addTag (ICCtag tag)  {tags.push_back(tag); }
     void                removeTag (int item);
     void                saveProfileToFile  (char* filename);

@@ -55,12 +55,11 @@ static void cb_menueintrag_Voll(Fl_Menu_*, void*) {
   };
 }
 
-static void cb_Testprofil(Fl_Menu_*, void*) {
-  ICCprofile p = profile;
-p.removeTag(0);
-p.removeTag(4);
-p.removeTag(1);
-p.saveProfileToFile("/tmp/icc_examin_test.icc");
+static void cb_MatrixTestprofil(Fl_Menu_*, void*) {
+  Profilierer p;
+p.load (profile);
+ICCprofile matrix (p.matrix());
+matrix.saveProfileToFile("/tmp/icc_examin_test.icc");
 }
 
 static void cb_menueintrag_inspekt(Fl_Menu_* o, void*) {
@@ -88,7 +87,7 @@ Fl_Menu_Item menu_[] = {
  {0},
  {"Ansicht", 0,  0, 0, 64, 0, 0, 14, 56},
  {"Ganzer Bildschirm an/aus", 0x40076,  (Fl_Callback*)cb_menueintrag_Voll, 0, 0, 0, 0, 14, 56},
- {"Testprofil schreiben", 0,  (Fl_Callback*)cb_Testprofil, 0, 0, 0, 0, 14, 56},
+ {"MatrixTestprofil schreiben", 0,  (Fl_Callback*)cb_MatrixTestprofil, 0, 0, 0, 0, 14, 56},
  {0},
  {"Pr\374""fansicht", 0x40062,  (Fl_Callback*)cb_menueintrag_inspekt, 0, 3, 0, 0, 14, 56},
  {0}

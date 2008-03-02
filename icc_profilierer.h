@@ -31,8 +31,10 @@ class Profilierer {
   public:
     void                load  (ICCprofile& p);
     // erzeuge Matrixprofil
-    ICCprofile          matrix();
-
+    const ICCprofile&   matrix();
+  private:
+    void                RGB_TRC_Kurven (void);
+    void                gemeinsamerHeader (ICCheader& header);
     std::string         print ();
 };
 

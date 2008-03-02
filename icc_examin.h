@@ -24,6 +24,7 @@ class MftChoice;
 #define _(text) text
 #include "icc_profile.h"
 #include "icc_utils.h"
+#include "icc_profilierer.h"
 extern ICCprofile profile;
 #include <FL/Fl_Double_Window.H>
 extern Fl_Double_Window *details;

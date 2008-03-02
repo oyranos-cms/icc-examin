@@ -33,6 +33,13 @@ void
 ICCheader::load (void *data)
 {
   DBG
+  if (data == NULL) {
+    for (int i = 0; i < 128; i++)
+      ((char*)&header)[i] = 0;
+    valid = false;
+    return;
+  }
+
   memcpy ((void*)&header, data, sizeof (icHeader));
   #ifdef DEBUG_ICCHEADER
   cout << sizeof (icHeader) << " genommen" << " "; DBG
@@ -48,15 +55,27 @@ ICCheader::load (void *data)
   DBG
 }
 
+
+void
+ICCheader::set_current_date (void)
+{ // TODO Zeit setzen
+  header.date.day = icValue(1);
+  header.date.month = icValue(9);
+  header.date.year = icValue(2004);
+  header.date.hours = icValue(12);
+  header.date.minutes = icValue(00);
+  header.date.seconds = icValue(00);
+}
+
 std::string
 ICCheader::attributes (void)
 {
   std::stringstream s;
   char* f = (char*) &(header.attributes);
-  unsigned char         maske1 = 0xf0;
-  unsigned char         maske2 = 0x08;
-  unsigned char         maske3 = 0x04;
-  unsigned char         maske4 = 0x02;
+  unsigned char         maske1 = 0x80;
+  unsigned char         maske2 = 0x40;
+  unsigned char         maske3 = 0x20;
+  unsigned char         maske4 = 0x10;
 
   if (f[0] & maske1)
     s << _("Durchsicht, ");
@@ -94,8 +113,8 @@ ICCheader::flags (void)
 {
   std::stringstream s;
   char* f = (char*) &(header.flags);
-  unsigned char         maske1 = 0xf0;
-  unsigned char         maske2 = 0x08;
+  unsigned char         maske1 = 0x80;
+  unsigned char         maske2 = 0x40;
 
   if (f[0] & maske1)
     s << _("Farbprofil ist eingebettet und ");
@@ -108,7 +127,7 @@ ICCheader::flags (void)
     s << _("kann unabhängig vom Bild verwendet werden.");
 
   #ifdef DEBUG
-  cout /*<< f[0] << " "*/ << (long)header.flags; DBG
+  cout << (int)f[0] << " " << (long)header.flags; DBG
   char* ptr = (char*) &(header.flags);
   for (int i = 0; i < 8 ; i++)
     cout << (int)ptr[i] << " ";
@@ -801,11 +820,30 @@ ICCprofile::ICCprofile (const char *filename)
 
 ICCprofile::~ICCprofile (void)
 {
-  tags.clear();
-  if (_data != NULL && _size) free(_data);//delete [] _data;
+  this->clear();
 
   #ifdef DEBUG_PROFILE
-  cout << "_data und tags gelöscht"; DBG
+  DBG_S ( "~ICCprofile beendet" )
+  #endif
+}
+ 
+void
+ICCprofile::clear (void)
+{
+  DBG_S( "Profil wird geleert" )
+
+  _data = NULL;
+  _size = 0;
+  _filename = "";
+  header.load(NULL);
+
+  tags.clear();
+  if (_data != NULL && _size) free(_data);
+
+  measurement.clear();
+
+  #ifdef DEBUG_PROFILE
+  cout << "_data, tags und measurement gelöscht"; DBG
   #endif
 }
 
@@ -872,9 +910,7 @@ ICCprofile::fload ()
 
   if (_data != NULL && _size) {
     cout << "!!!! Profil wird wiederbenutzt !!!! "; DBG
-    free(_data);//delete [] _data;
-    tags.clear();
-    measurement.clear();
+    clear();
   }
   _size = (unsigned int)f.tellg();         f.seekg(0);
   _data = (char*)calloc (sizeof (char), _size);
