@@ -341,14 +341,14 @@ GL_Ansicht::draw()
   DBG_PROG_START
   DBG_PROG_S( "draw() Eintritt ist_bewegt_|darf_bewegen_: "
                << ist_bewegt_ << "|" << darf_bewegen_ )
-  int thread = wandelThreadId(pthread_self());
-  if(thread != THREAD_HAUPT) {
+  Fl_Thread thread = wandelThreadId(pthread_self());
+  if(thread != (Fl_Thread)THREAD_HAUPT) {
     WARN_S( ": falscher Thread" );
     DBG_PROG_ENDE
     return;
   }
 
-  if(!visible() || !icc_examin->frei()) {
+  if(!visible() || !icc_examin->frei() || !shown()) {
     if(ist_bewegt_) {
       stupps_(false); DBG_NUM_S( "stoppen" )
     } else DBG;
@@ -578,6 +578,28 @@ GL_Ansicht::tastatur(int e)
       vorder_schnitt = agv_.eyeDist();
     }
     DBG_ICCGL_S("e = " << Fl::event_key() )
+    if(e == FL_SHORTCUT)
+    switch (Fl::event_key()) {
+      case '-':
+        if(punktgroesse > 1) {
+          --punktgroesse;
+          auffrischen();
+          redraw();
+        }
+        DBG_PROG_V( Fl::event_key() <<" "<< punktgroesse )
+        break;
+      case '+':
+        if(punktgroesse < 21) {
+          ++punktgroesse;
+          auffrischen();
+          redraw();
+        }
+        DBG_PROG_V( Fl::event_key()  <<" "<< punktgroesse )
+        break;
+      default:
+        dbgFltkEvents(e);
+        DBG_MEM_V( Fl::event_key() )
+    }
   }
   DBG_ICCGL_ENDE
 }
@@ -600,7 +622,7 @@ GL_Ansicht::tastatur(int e)
     if(blend) glEnable(GL_BLEND); \
    glLineWidth(strichmult); }
 #else
- #define ZeichneText(Font, Zeiger)
+# define ZeichneText(Font, Zeiger)
 #endif
 
 #define ZeichneOText(Font, scal, buffer) { \
@@ -1198,7 +1220,6 @@ GL_Ansicht::punkteAuffrischen()
 
   //Koordinaten  in CIE*b CIE*L CIE*a Reihenfolge 
   if (punkte_.size()) {
-    glPointSize(punktgroesse);
     if( punkte_.size() )
       DBG_PROG_V( punkte_.size() )
     if( farben_.size() )
@@ -1260,7 +1281,7 @@ GL_Ansicht::punkteAuffrischen()
              glEnd();
              // Schatten
              glColor4f( schatten, schatten, schatten, 1. );
-             glPointSize(3);
+             glPointSize((punktgroesse/2-1)>0?(punktgroesse/2-1):1);
              glBegin(GL_POINTS);
                for (unsigned i = 0; i < punkte_.size(); i+=3)
                  glVertex3d( punkte_[i+2], 0, punkte_[i+1] );
@@ -1351,7 +1372,6 @@ GL_Ansicht::zeigeUmrisse_()
         dreiecks_netze[d].umriss[j].farbe[k] = RGBSchatten_Speicher[j*3+k];
 
     if (RGB_Speicher) delete [] RGB_Speicher;
-    //if (Lab_Speicher) delete [] Lab_Speicher;
 
   }
     GLfloat farbe[] =   { pfeilfarbe[0],pfeilfarbe[1],pfeilfarbe[2], 1.0 };
@@ -2037,7 +2057,11 @@ GL_Ansicht::hineinPunkte       (std::vector<double>      &vect,
 
   DBG_PROG_V( vect.size() )
 
-  tabelle_.clear();DBG_PROG  
+  if(!punkte_.size() &&
+     vect.size() > (1000*3) )
+    punktgroesse = 2;
+
+  tabelle_.clear();DBG_PROG
   punkte_.clear(); DBG_PROG
 
   achsNamen(achs_namen);

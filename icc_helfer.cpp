@@ -64,11 +64,11 @@ icValue (icUInt16Number val)
   unsigned int *erg = (unsigned int*) &korb[0];
 
 # ifdef DEBUG_ICCFUNKT
-  #if 0
+# if 0
   cout << *erg << " Größe nach Wandlung " << (int)korb[0] << " "
        << (int)korb[1] << " " << (int)korb[2] << " " <<(int)korb[3]
        << " "; DBG_PROG
-  #else
+# else
   cout << *erg << " Größe nach Wandlung " << (int)temp[0] << " " << (int)temp[1]
        << " "; DBG_PROG
 # endif

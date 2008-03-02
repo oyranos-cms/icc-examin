@@ -38,7 +38,7 @@ int icc_debug = 1;
 std::ostringstream debug_s_;
 #ifdef HAVE_PTHREAD_H
 pthread_mutex_t debug_s_mutex_        = PTHREAD_MUTEX_INITIALIZER;
-Fl_Thread       debug_s_mutex_thread_ = THREAD_HAUPT;
+Fl_Thread       debug_s_mutex_thread_ = (Fl_Thread)THREAD_HAUPT;
 int             debug_s_mutex_threads_ = 0;
 #endif
 
@@ -117,15 +117,15 @@ wandelThreadId(Fl_Thread id)
   Fl_Thread pos = id;
   {
     if      (icc_thread_liste[THREAD_HAUPT] == id)
-      pos = THREAD_HAUPT;
+      pos = (Fl_Thread)THREAD_HAUPT;
     else if (icc_thread_liste[THREAD_GL1] == id)
-      pos = THREAD_GL1;
+      pos = (Fl_Thread)THREAD_GL1;
     else if (icc_thread_liste[THREAD_GL2] == id)
-      pos = THREAD_GL2;
+      pos = (Fl_Thread)THREAD_GL2;
     else if (icc_thread_liste[THREAD_LADEN] == id)
-      pos = THREAD_LADEN;
+      pos = (Fl_Thread)THREAD_LADEN;
     else if (icc_thread_liste[THREAD_WACHE] == id)
-      pos = THREAD_WACHE;
+      pos = (Fl_Thread)THREAD_WACHE;
     else
       pos = id;
   }
@@ -138,7 +138,7 @@ dbgThreadId(Fl_Thread id)
   //std::string s("??");
   Fl_Thread dbg_id = wandelThreadId ( id );
   //printf("%d\n", (int*)s.c_str());
-  switch (dbg_id)
+  switch ((int)dbg_id)
   {
     // in icc_thread_liste eingetragene Fl_Thread's lassen sich identifizieren
     case THREAD_HAUPT:
@@ -165,7 +165,7 @@ threadGettext( const char* text)
   const char *translation = text;
 # ifdef HAVE_PTHREAD_H
   static pthread_mutex_t translation_mutex_         = PTHREAD_MUTEX_INITIALIZER;
-  static Fl_Thread       translation_mutex_thread_  = THREAD_HAUPT;
+  static Fl_Thread       translation_mutex_thread_  = (Fl_Thread)THREAD_HAUPT;
   static int             translation_mutex_threads_ = 0;
   // im selben Zweig gesperrten Rat ausschliesen
   if( translation_mutex_thread_ != wandelThreadId( pthread_self() ) ||
@@ -197,7 +197,7 @@ threadGettext( const char* text)
 int
 iccLevel_PROG(int plus_minus_null)
 {
-  int pth = wandelThreadId( pthread_self() );
+  int pth = (int)wandelThreadId( pthread_self() );
   if(pth < DBG_MAX_THREADS) {
     level_PROG_ [pth] = level_PROG_[pth] + plus_minus_null;
     return level_PROG_ [pth];

@@ -66,7 +66,7 @@ else
 	--from-code=utf-8
   ifdef LINUX
     OPTS = -Wall -g $(DEBUG) -Wunused -fPIC -fno-exceptions #-Os -fomit-frame-pointer -g
-    INCL=-I$(includedir) -I/usr/X11R6/include -I./
+    INCL=-I$(includedir) -I/usr/X11R6/include -I. -I/usr/include/g++ -I/usr/include
     LIBLINK_FLAGS = -shared -ldl -L.
     LIBSONAME = lib$(TARGET)$(SO).$(VERSION_A)
     LINK_NAME = -Wl,-soname -Wl,$(LIBSONAME)
@@ -91,10 +91,11 @@ endif
 
 ifdef X11
   X_CPP = $(X_CPPFILES)
-  X11_LIBS=-L/usr/X11R6/lib -lX11 -lXxf86vm -lXext
+  X11_LIBS=-L/usr/X11R6/lib -lX11 -lXxf86vm -lXext -lXpm
 endif
 
-INCL_DEP = $(INCL) $(X_H) $(OSX_H) $(OYRANOS_H) $(SOURCES)
+INCL_DEP = $(INCL) $(X_H) $(OSX_H) $(OYRANOS_H) \
+			$(FLU_H) $(FLTK_H) $(FTGL_H) $(LCMS_H) $(SOURCES)
 ALL_INCL = $(INCL) \
 			$(FLU_H) $(FLTK_H) $(X_H) $(OSX_H) $(OYRANOS_H) $(LCMS_H) $(FTGL_H)
 
@@ -226,6 +227,7 @@ DOKU = \
 	AUTHORS \
 	icc_examin.desktop \
 	icc_examin.png \
+	icc_examin.xpm \
 	icc_examin.spec \
 	icc.xml
 FLUID = \
@@ -252,7 +254,7 @@ ALL_FILES =	$(SOURCES) \
 	$(FLUID)
 
 timedir = .
-mtime   = `find $(timedir) -prune -printf %Ty%Tm%Td.%TT | sed s/://g`
+mtime   := $(shell find $(timedir) -prune -printf %Ty%Tm%Td.%TT | sed s/://g)
 
 .SILENT:
 
@@ -302,7 +304,7 @@ static:	$(TARGET)
 	`oyranos-config --ld_x_staticflags` -L/$(prefix)/lib \
 	-L$(prefix)/lib -lGLU -lGL -lfreetype \
 	`pkg-config --libs ftgl`  -lsupc++ \
-	$(I18N_LIB) \
+	$(I18N_LIB) $(X11_LIBS) \
 	$(DBG_LIBS) \
 	`test -f /opt/kai-uwe/lib/liblcms.a && echo /opt/kai-uwe/lib/liblcms.a || pkg-config --libs lcms` #/usr/lib/libkdb.a # Hack for static lcms
 	$(REZ)

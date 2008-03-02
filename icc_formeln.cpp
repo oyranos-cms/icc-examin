@@ -28,10 +28,10 @@
 // Date:      26. 08. 2004
 
 #if 0
-  #ifndef DEBUG
-   #define DEBUG
-  #endif
-  #define DEBUG_ICCFORMELN
+# ifndef DEBUG
+#   define DEBUG
+# endif
+# define DEBUG_ICCFORMELN
 #endif
 
 #include "icc_formeln.h"

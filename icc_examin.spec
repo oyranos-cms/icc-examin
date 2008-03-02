@@ -64,6 +64,7 @@ update-mime-database %{_datadir}/mime/
 %{_datadir}/pixmaps/icc_examin.png
 %{_datadir}/fonts/FreeSans.ttf
 %{_datadir}/locale/de/LC_MESSAGES/icc_examin.mo
+%{_datadir}/locale/eo/LC_MESSAGES/icc_examin.mo
 
 
 %changelog

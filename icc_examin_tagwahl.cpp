@@ -241,7 +241,7 @@ ICCexamin::waehleMft (int item)
     icc_betrachter->mft_gl->hineinTabelle (
                      profile.profil()->getTagTable (icc_betrachter->tag_nummer, ICCtag::TABLE),
                      profile.profil()->getTagChannelNames (icc_betrachter->tag_nummer, ICCtag::TABLE_IN),
-                     profile.profil()->getTagChannelNames (icc_betrachter->tag_nummer, ICCtag::TABLE_OUT) ); DBG_PROG
+                     profile.profil()->getTagChannelNames (icc_betrachter->tag_nummer, ICCtag::TABLE_OUT) ); DBG_PROG_S( "3D Tabelle" )
     neuzeichnen(icc_betrachter->mft_gl);
     break;
   case 4: // Ausgangskurven

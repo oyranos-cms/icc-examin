@@ -136,8 +136,8 @@ void
 Oyranos::lab_test_ ()
 {
   DBG_PROG_START
-  Speicher *v_block = &lab_;
 # if HAVE_OY
+  Speicher *v_block = &lab_;
   if( !v_block->size() )
   { DBG_PROG_V( v_block->size() )
     char* profil_name = oyGetDefaultLabInputProfileName();
@@ -202,6 +202,86 @@ MyFlattenProfileProc (
 
   return 0;
 };
+
+OSErr
+MyFlattenProfileProcSize (
+   SInt32 command, 
+   SInt32 *size, 
+   void *data, 
+   void *refCon)
+{
+  // Alle Bestandteile einsammeln
+  if(*size)
+  {
+    refcon *ref = (refcon*) refCon;
+    ref->size += *size;
+  }
+  DBG_PROG_V(command<<" "<<*size)
+
+  return 0;
+};
+
+int
+oyGetProfileBlock (CMProfileRef prof, char *block, size_t *size)
+{
+  DBG_PROG_START
+    CMProfileLocation loc;
+    CMGetProfileLocation(prof, &loc);
+    switch(loc.locType)
+    {
+      case cmNoProfileBase:
+             DBG_PROG_S("Das Monitorprofil ist ein temporäres Profil.")
+             break;
+      case cmFileBasedProfile:
+             DBG_PROG_S("Das Monitorprofil ist ein Datei Profil.")
+             break;
+      case cmHandleBasedProfile:
+             DBG_PROG_S("Das Monitorprofil ist ein Händling Profil.")
+             break;
+      case cmPtrBasedProfile:
+             DBG_PROG_S("Das Monitorprofil ist ein Zeiger Profil.")
+             break;
+      case cmProcedureBasedProfile:
+             DBG_PROG_S("Das Monitorprofil ist ein prozedurales Profil.")
+             break;
+      case cmPathBasedProfile:
+             DBG_PROG_S("Das Monitorprofil ist ein Pfad Profil.")
+             break;
+      case cmBufferBasedProfile:
+             DBG_PROG_S("Das Monitorprofil ist ein Speicherblock Profil.")
+             break;
+      default:
+             DBG_PROG_S("kein Profil gefunden?")
+             break;
+    }
+
+    refcon ref = {0,0};
+    Boolean bol;
+    // only the size
+    if(*size == 0) {
+      CMError err = CMFlattenProfile ( prof, 0, MyFlattenProfileProcSize, &ref, &bol);
+      *size = ref.size;
+      return err;
+    }
+    CMError err = CMFlattenProfile ( prof, 0, MyFlattenProfileProc, &ref, &bol);
+    
+    err = 0;
+    Str255 str;
+    ScriptCode code;
+    CMGetScriptProfileDescription(prof, str, &code);
+    DBG_PROG_V( (int)str[0] )
+	if (prof) CMCloseProfile(prof);
+    const char *profil_name = str; ++profil_name;
+    if(ref.size && ref.data)
+    {
+        *size = ref.size;
+        memcpy(block, ref.data, ref.size);
+          DBG_MEM_V( size )
+    }
+  DBG_PROG_ENDE
+  return 0;
+}
+
 #endif
 
 void
@@ -282,7 +362,7 @@ Oyranos::moni_test_ ()
     refcon ref = {0,0};
     Boolean bol;
     CMError err = CMFlattenProfile ( prof, 0, MyFlattenProfileProc, &ref, &bol);
-    
+    err = 0;
     Str255 str;
     ScriptCode code;
     CMGetScriptProfileDescription(prof, str, &code);
@@ -333,8 +413,8 @@ void
 Oyranos::rgb_test_ ()
 {
   DBG_PROG_START
-  Speicher *v_block = &rgb_;
 # if HAVE_OY
+  Speicher *v_block = &rgb_;
   if( !v_block->size() )
   { DBG_PROG_V( v_block->size() )
     const char* profil_name = oyGetDefaultRGBInputProfileName();
@@ -360,6 +440,19 @@ Oyranos::rgb_test_ ()
 
   if(rgb_.size())
     DBG_NUM_S( "Standard " OY_DEFAULT_RGB_INPUT_PROFILE " Profil = "<< *rgb_ <<" "<< rgb_.size() <<"\n" );
+# else
+# if APPLE
+  CMProfileRef prof=NULL;
+  char *block = 0;
+  size_t groesse = 0;
+  oyGetProfileBlock(prof, block, &groesse);
+  if(groesse) {
+    block = (char*)malloc(groesse);
+    oyGetProfileBlock(prof, block, &groesse);
+  }
+  Speicher *v_block = &rgb_;
+  v_block->lade(block,groesse);
+# endif
 # endif
   DBG_PROG_ENDE
 }
@@ -369,8 +462,8 @@ void
 Oyranos::cmyk_test_ ()
 {
   DBG_PROG_START
-  Speicher *v_block = &rgb_;
 # if HAVE_OY
+  Speicher *v_block = &rgb_;
   if( !v_block->size() )
   { DBG_PROG_V( v_block->size() )
     char* profil_name = oyGetDefaultCmykInputProfileName();
@@ -398,6 +491,9 @@ Oyranos::cmyk_test_ ()
 
   if(cmyk_.size())
     DBG_NUM_S( "Standard " OY_DEFAULT_CMYK_INPUT_PROFILE " Profil = "<< *cmyk_ <<" "<< cmyk_.size() <<"\n" );
+# else
+# if APPLE
+# endif
 # endif
   //oy_debug = 0;
   DBG_PROG_ENDE
@@ -469,7 +565,7 @@ Oyranos::setzeMonitorProfil (const char* profil_name )
   if( !display )
     display = XOpenDisplay(0);
 
-  display_name = XDisplayString( display );  // gehÃ¶rt X
+  display_name = XDisplayString( display );  // gehoert X
   DBG_PROG_V( display_name <<" "<< strlen(display_name) )
 
 # ifndef HAVE_FLTK

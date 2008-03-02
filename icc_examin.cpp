@@ -98,6 +98,10 @@ resize_fuer_menubar(Fl_Widget* w)
 # endif
 }
 
+# if HAVE_X
+# include "icc_examin.xpm" // icc_examin_xpm
+# endif
+
 void
 ICCexamin::start (int argc, char** argv)
 { DBG_PROG_START
@@ -142,6 +146,7 @@ ICCexamin::start (int argc, char** argv)
   icc_waehler_->resize(icc_waehler_->x(), icc_waehler_->y(),
                        icc_waehler_->w()+20, icc_waehler_->h());
   if(!icc_waehler_) WARN_S( _("icc_waehler_ nicht reservierbar") )
+  icc_waehler_->set_non_modal(); // gehört zum "details" Hauptfenster
   icc_waehler_->hide();
 
   // Die TagViewers registrieren und ihre Variablen initialisieren
@@ -157,8 +162,16 @@ ICCexamin::start (int argc, char** argv)
 # endif
   DBG_PROG
 
+  // Oberflaechenpflege
 # if HAVE_X || APPLE
   icc_betrachter->menueintrag_vcgt->show();
+#   if APPLE
+    icc_betrachter->vcgt_set_button->deactivate();
+    icc_betrachter->vcgt_reset_button->deactivate();
+#   endif
+# if HAVE_X
+  setzeIcon( icc_betrachter->details, icc_examin_xpm );
+# endif
   DBG_PROG_S( "Zeige vcgt" )
 # else
   DBG_PROG_S( "Zeige vcgt nicht" )
@@ -189,6 +202,7 @@ ICCexamin::start (int argc, char** argv)
 
   Fl::add_handler(tastatur);
 
+  // Behandle Kommandozeilenargumente
       if (argc>1) {
         status( argv[1] << " " << _("loaded") )
         std::vector<std::string>profilnamen;
@@ -543,7 +557,7 @@ ICCexamin::neuzeichnen (void* z)
       icc_betrachter->DD_farbraum->hide();
     }
     if(icc_waehler_->visible())
-#   ifdef __APPLE__
+#   ifdef APPLE
       icc_waehler_->hide();
 #   else
       icc_waehler_->iconize();
@@ -565,10 +579,6 @@ ICCexamin::neuzeichnen (void* z)
     widZEIG(VERSTECKEN, icc_betrachter->ansichtsgruppe ,NACHRICHT)
   }
 
-  // Inhalte Erneuern
-  if(waehle_tag)
-    waehleTag(_item);
-
   // Bereinigen - hier?
   if (wid == icc_betrachter->tag_viewer ||
       wid == icc_betrachter->mft_viewer) {
@@ -587,6 +597,10 @@ ICCexamin::neuzeichnen (void* z)
   { Fl_Widget *w = dynamic_cast<Fl_Widget*> (icc_betrachter->widget); \
     if (w != wid && w->visible()) { DBG_PROG_S( #widget << " verstecken" ) \
       w->hide(); \
+      if(w->visible()) { \
+        WARN_S( #widget << " ist noch sichbar" ); \
+        w->hide(); \
+      } \
     } else if(w == wid && !w->visible()) { DBG_PROG_S( #widget << " zeigen" ) \
       w->show(); \
       item = _item; \
@@ -616,6 +630,10 @@ ICCexamin::neuzeichnen (void* z)
   DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->mft_text)->visible() )
   DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->mft_gl)->visible() )
   DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->mft_viewer)->visible() )
+
+  // Inhalte Erneuern
+  if(waehle_tag)
+    waehleTag(_item);
 
   DBG_PROG_ENDE
 }
@@ -684,6 +702,12 @@ tastatur(int e)
        && Fl::event_state() == FL_CTRL) {
         DBG_NUM_S("FL_CTRL+Q")
         icc_examin->quit();
+        gefunden = 1;
+      } else
+      if(Fl::event_key() == 'o'
+       && Fl::event_state() == FL_COMMAND) {
+        DBG_NUM_S("FL_COMMAND+O")
+        icc_examin->oeffnen();
         gefunden = 1;
       }
     break;

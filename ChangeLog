@@ -1,3 +1,14 @@
+2005-08-28
+	* fix: Gamut Warnung wählbar auch für Messungen TODO: update
+	* neu: X icon
+	* neu: punktgroesse für zu viel ncl2 Farben auf 2 voreingestellt
+
+2005-08-27
+	* fix: nicht verstecktes mft_gl ??bug ein zweites mal verstecken
+	* fix: neuzeichnen zu zeitiges waehleTag
+	* und: Menüorganisation
+	* und: FL_COMMAND+o ist in icc_examin.cpp tastatur() definiert
+
 2005-08-26
 	* und: neue mutex_trylock nur für fremde Zweige
 	* neu: Zeit Funktionen

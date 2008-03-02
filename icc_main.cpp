@@ -49,12 +49,12 @@ main (int argc, char** argv)
   //MallocDebug_CheckFreeList();
 # endif
 
-  #if 0
+# if 0
   saveMemToFile("/tmp/icc_examin_dbg.txt", "Hallo\n", 6);
   Fl_Double_Window* w = new Fl_Double_Window(410, 285, _("colour adjust"));
   w->show();
   Fl::run();
-  #endif
+# endif
 
   if(getenv("ICCEXAMIN_DEBUG") && atoi(getenv("ICCEXAMIN_DEBUG"))>0)
     icc_debug = atoi(getenv("ICCEXAMIN_DEBUG"));

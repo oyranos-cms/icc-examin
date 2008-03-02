@@ -118,7 +118,7 @@ class TagTexts {: {public Fl_Hold_Browser}
   decl {int X; int Y; int W; int H; const char* start_info;} {}
   decl {int inspekt_topline;} {public
   }
-  Function {TagTexts(int X,int Y,int W,int H,const char* start_info) : Fl_Hold_Browser(X,Y,W,H,start_info), X(X), Y(Y), W(W), H(H)} {open selected
+  Function {TagTexts(int X,int Y,int W,int H,const char* start_info) : Fl_Hold_Browser(X,Y,W,H,start_info), X(X), Y(Y), W(W), H(H)} {open
   } {}
   Function {hinein(std::string text)} {open
   } {
@@ -229,7 +229,8 @@ class My_Fl_Box {: {public Fl_Box}
   }
 } 
 
-class ICCfltkBetrachter {} {
+class ICCfltkBetrachter {open
+} {
   decl {bool setTitleUrl;
 
  int px,py,pw,ph;
@@ -316,7 +317,7 @@ class ICCfltkBetrachter {} {
   \#endif} {}
     Fl_Window ueber {
       label {About ICC Examin}
-      xywh {677 664 366 241} type Double resizable
+      xywh {657 538 366 241} type Double resizable
       code0 {o->hide();} non_modal visible
     } {
       Fl_Group {} {open
@@ -334,8 +335,8 @@ class ICCfltkBetrachter {} {
     }
     Fl_Window vcgt {
       label {Grafic Card Gamma Table}
-      xywh {858 283 370 390} type Double resizable
-      code0 {o->hide();} visible
+      xywh {653 304 370 390} type Double resizable
+      code0 {o->hide();} non_modal visible
     } {
       Fl_Group {} {open
         xywh {0 0 370 390}
@@ -345,36 +346,36 @@ class ICCfltkBetrachter {} {
           code0 {o->show();}
           class TagDrawings
         }
-        Fl_Button {} {
-          label Close
-          callback {vcgt->hide();}
-          xywh {290 360 75 25}
-        }
-        Fl_Button {} {
-          label Refresh
-          callback {icc_examin->vcgtZeigen();}
-          tooltip {refresh gamma table from video card} xywh {215 360 75 25} hotspot
-        }
-        Fl_Button {} {
+        Fl_Button vcgt_set_button {
           label Set
           callback {icc_examin->moniSetzen();}
           tooltip {Set the current profile as monitor profile and upload vcgt tag to the video card} xywh {10 360 65 25} hotspot
         }
-        Fl_Button {} {
+        Fl_Button vcgt_reset_button {
           label Reset
           callback {icc_examin->standardGamma();}
           tooltip {reset to standard gamma} xywh {75 360 75 25} hotspot
         }
-        Fl_Button {} {
+        Fl_Button vcgt_load_button {
           label Load
           callback {icc_examin->moniHolen();}
           tooltip {Load the current monitor profile} xywh {150 360 65 25} hotspot
         }
+        Fl_Button vcgt_refresh_button {
+          label Refresh
+          callback {icc_examin->vcgtZeigen();}
+          tooltip {refresh gamma table from video card} xywh {215 360 75 25} hotspot
+        }
+        Fl_Button vcgt_close_button {
+          label Close
+          callback {vcgt->hide();}
+          xywh {290 360 75 25}
+        }
       }
     }
     Fl_Window details {
-      label {ICC Examin} open
-      xywh {745 372 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
+      label {ICC Examin} selected
+      xywh {602 123 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
     } {
       Fl_Group {} {open
         xywh {0 0 385 520}
@@ -426,12 +427,27 @@ class ICCfltkBetrachter {} {
           }
           submenu {} {
             label Edit open
-            xywh {25 25 100 20}
+            xywh {25 25 100 20} hide
           } {
             menuitem {} {
               label {Oyranos Settings}
               callback {oyranos_einstellungen()}
               xywh {25 25 100 20}
+            }
+          }
+          submenu {} {
+            label Options open
+            xywh {35 35 100 20}
+          } {
+            menuitem menueintrag_gamutwarn {
+              label {Gamut Warning}
+              callback {Fl_Menu_* mw = (Fl_Menu_*)o;
+  const Fl_Menu_Item* m = mw->mvalue();
+
+  DBG_PROG_S (m->value())
+
+  icc_examin->gamutwarn(m->value());}
+              tooltip {Gamut Warning will gray out all colours not in your monitors gamut.} xywh {35 35 100 20} type Toggle shortcut 0x40077
             }
           }
           menuitem menueintrag_huelle {
@@ -477,16 +493,6 @@ class ICCfltkBetrachter {} {
   }}
               xywh {15 15 100 20} shortcut 0x40076
             }
-            menuitem menueintrag_gamutwarn {
-              label {Gamut Warning}
-              callback {Fl_Menu_* mw = (Fl_Menu_*)o;
-  const Fl_Menu_Item* m = mw->mvalue();
-
-  DBG_PROG_S (m->value())
-
-  icc_examin->gamutwarn(m->value());}
-              tooltip {Gamut Warning will gray out all colours not in your monitors gamut.} xywh {25 25 100 20} type Toggle shortcut 0x40077 divider
-            }
             menuitem menueintrag_3D {
               label Gamut
               callback {DBG_PROG_START
@@ -506,7 +512,7 @@ class ICCfltkBetrachter {} {
   DBG_PROG_V( menueintrag_huelle->value() )
   icc_examin->neuzeichnen(icc_examin->icc_betrachter->DD_farbraum);
   DBG_PROG_ENDE}
-              xywh {50 50 100 20} type Toggle shortcut 0x40068 hide divider
+              xywh {50 50 100 20} type Toggle shortcut 0x40068 divider
             }
             menuitem menueintrag_inspekt {
               label {Report View}
@@ -552,7 +558,7 @@ icc_examin->testZeigen();}
             }
             submenu untermenue_3D {
               label 3D open
-              xywh {0 0 100 20}
+              xywh {0 0 100 20} hide
             } {}
           }
           submenu menu_hilfe {
@@ -660,7 +666,7 @@ ueber_html->value(getUeberHtml().c_str());}
   //Fl::background(255,255,255);
   //Fl::scheme(NULL);
   Fl_File_Icon::load_system_icons();
-  w->show(/*argc,argv*/);
+  w->show(argc,argv);
   DBG_PROG} {}
     code DBG_PROG_ENDE {}
   }

@@ -39,6 +39,12 @@
 #include "icc_helfer.h"
 #include "icc_icc.h"
 #include <Fl/Fl.H>
+#if HAVE_X
+#include <X11/xpm.h>
+#include <X11/extensions/shape.h>
+#include <FL/x.H>
+#endif
+
 
 #ifdef HAVE_FLTK
 int*
@@ -154,6 +160,39 @@ dbgFltkEvent(int event)
   }
   return text;
 }
+
+void
+setzeIcon      ( Fl_Window *fenster, char   **xpm_daten )
+{
+  fl_open_display();
+  fenster->make_current();
+  DBG_PROG_V( (int*) fl_display <<" "<< fl_window )
+  Pixmap pm, mask;
+  XpmCreatePixmapFromData(  fl_display,
+                            DefaultRootWindow(fl_display),
+                            xpm_daten,
+                            &pm,
+                            &mask,
+                            NULL);
+# if 0
+  XShapeCombineMask(fl_display, fl_window,
+                    ShapeBounding,0,0,
+                    mask,ShapeSet);
+# endif
+  //fenster->icon((char*)p); // die FLTK Methode
+
+  XWMHints *hinweis;
+  hinweis = XGetWMHints( fl_display, fl_window );
+  if (!hinweis)
+    hinweis = XAllocWMHints();
+  hinweis->flags |= IconPixmapHint;
+  hinweis->icon_pixmap = pm;
+  hinweis->flags |= IconMaskHint;
+  hinweis->icon_mask = mask;
+  XSetWMHints( fl_display, fl_window, hinweis );
+  XFree( hinweis );
+}
+
 
 namespace icc_examin_ns {
 

@@ -51,6 +51,8 @@ void initialiseI18N();
 void        menue_translate( Fl_Menu_Item *menueleiste );
 void        dbgFltkEvents  ( int           event);
 std::string dbgFltkEvent   ( int           event);
+void        setzeIcon      ( Fl_Window    *fenster,
+                             char        **xpm_daten );
 #endif
 
 // interne Funktionen

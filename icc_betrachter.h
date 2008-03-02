@@ -89,17 +89,30 @@ private:
 public:
   Fl_Double_Window *vcgt;
   TagDrawings *vcgt_viewer;
+  Fl_Button *vcgt_set_button;
 private:
-  inline void cb_Close_i(Fl_Button*, void*);
-  static void cb_Close(Fl_Button*, void*);
-  inline void cb_Refresh_i(Fl_Button*, void*);
-  static void cb_Refresh(Fl_Button*, void*);
-  inline void cb_Set_i(Fl_Button*, void*);
-  static void cb_Set(Fl_Button*, void*);
-  inline void cb_Reset_i(Fl_Button*, void*);
-  static void cb_Reset(Fl_Button*, void*);
-  inline void cb_Load_i(Fl_Button*, void*);
-  static void cb_Load(Fl_Button*, void*);
+  inline void cb_vcgt_set_button_i(Fl_Button*, void*);
+  static void cb_vcgt_set_button(Fl_Button*, void*);
+public:
+  Fl_Button *vcgt_reset_button;
+private:
+  inline void cb_vcgt_reset_button_i(Fl_Button*, void*);
+  static void cb_vcgt_reset_button(Fl_Button*, void*);
+public:
+  Fl_Button *vcgt_load_button;
+private:
+  inline void cb_vcgt_load_button_i(Fl_Button*, void*);
+  static void cb_vcgt_load_button(Fl_Button*, void*);
+public:
+  Fl_Button *vcgt_refresh_button;
+private:
+  inline void cb_vcgt_refresh_button_i(Fl_Button*, void*);
+  static void cb_vcgt_refresh_button(Fl_Button*, void*);
+public:
+  Fl_Button *vcgt_close_button;
+private:
+  inline void cb_vcgt_close_button_i(Fl_Button*, void*);
+  static void cb_vcgt_close_button(Fl_Button*, void*);
 public:
   Fl_Double_Window *details;
   Fl_Menu_Bar *menueleiste;
@@ -127,6 +140,11 @@ private:
   inline void cb_Oyranos_i(Fl_Menu_*, void*);
   static void cb_Oyranos(Fl_Menu_*, void*);
 public:
+  static Fl_Menu_Item *menueintrag_gamutwarn;
+private:
+  inline void cb_menueintrag_gamutwarn_i(Fl_Menu_*, void*);
+  static void cb_menueintrag_gamutwarn(Fl_Menu_*, void*);
+public:
   static Fl_Menu_Item *menueintrag_huelle;
 private:
   inline void cb_menueintrag_huelle_i(Fl_Menu_*, void*);
@@ -136,11 +154,6 @@ public:
 private:
   inline void cb_menueintrag_Voll_i(Fl_Menu_*, void*);
   static void cb_menueintrag_Voll(Fl_Menu_*, void*);
-public:
-  static Fl_Menu_Item *menueintrag_gamutwarn;
-private:
-  inline void cb_menueintrag_gamutwarn_i(Fl_Menu_*, void*);
-  static void cb_menueintrag_gamutwarn(Fl_Menu_*, void*);
 public:
   static Fl_Menu_Item *menueintrag_3D;
 private:

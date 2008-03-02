@@ -48,6 +48,7 @@
 #include "icc_version.h"
 #include "icc_helfer.h"
 #include "icc_cgats_filter.h"
+#include "icc_examin.h"
 
 #define g_message printf
 
@@ -523,9 +524,9 @@ ICCmeasurement::init_umrechnen                     (void)
       hsRGB = cmsCreate_sRGBProfile ();
     hLab = cmsCreateLabProfile (cmsD50_xyY());
     hXYZ = cmsCreateXYZProfile ();
-    #if 0
-    #define BW_COMP cmsFLAGS_WHITEBLACKCOMPENSATION
-    #else
+#   if 0
+#   define BW_COMP cmsFLAGS_WHITEBLACKCOMPENSATION
+#   else
 #   define BW_COMP 0
 #   endif
 #   define TYPE_nCOLOUR_DBL (COLORSPACE_SH(PT_ANY)|CHANNELS_SH(_channels)|BYTES_SH(0))
@@ -572,7 +573,8 @@ ICCmeasurement::init_umrechnen                     (void)
                                     hsRGB,
                                     INTENT_ABSOLUTE_COLORIMETRIC,
                                     INTENT_ABSOLUTE_COLORIMETRIC,
-                                    cmsFLAGS_GAMUTCHECK|
+                                    icc_examin->gamutwarn() ?
+                                    cmsFLAGS_GAMUTCHECK : 0  |
                                     PRECALC|BW_COMP);
     }
     Kein_Profil:
@@ -591,7 +593,8 @@ ICCmeasurement::init_umrechnen                     (void)
                                     hsRGB,
                                     INTENT_ABSOLUTE_COLORIMETRIC,
                                     INTENT_ABSOLUTE_COLORIMETRIC,
-                                    cmsFLAGS_GAMUTCHECK|
+                                    icc_examin->gamutwarn() ?
+                                    cmsFLAGS_GAMUTCHECK : 0  |
                                     PRECALC|BW_COMP);
     }
     double Farbe[_channels], RGB[3], XYZ[3], Lab[3];
@@ -685,9 +688,9 @@ ICCmeasurement::init_umrechnen                     (void)
             _Lab_Differenz_min = _Lab_Differenz[i];
           // dE2000
           _DE00_Differenz[i] = 
-             #if 0
+#            if 0
              cmsCIE2000DeltaE( (cmsCIELab*)&_Lab_Ergebnis[i], (cmsCIELab*)&_Lab_Satz[i] , 1.0, 1.0, 1.0);
-             #else
+#            else
              dE2000(_Lab_Ergebnis[i], _Lab_Satz[i] , 1.0, 1.0, 1.0);
 #            endif
           if (_DE00_Differenz_max < _DE00_Differenz[i])
