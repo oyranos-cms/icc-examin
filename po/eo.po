@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2005-11-06 15:26+0100\n"
+"POT-Creation-Date: 2005-11-07 07:08+0100\n"
 "PO-Revision-Date: 2005-08-13 17:35+0200\n"
 "Last-Translator: Kai-Uwe Behrmann\n"
 "Language-Team:  <eo@li.org>\n"
@@ -1085,11 +1085,11 @@ msgstr ""
 msgid "seconds"
 msgstr ""
 
-#: icc_helfer.cpp:904 icc_utils.cpp:61
+#: icc_helfer.cpp:908 icc_utils.cpp:61
 msgid "no filename given"
 msgstr ""
 
-#: icc_helfer.cpp:931 icc_utils.cpp:81
+#: icc_helfer.cpp:935 icc_utils.cpp:81
 msgid "Dateigroesse 0 fuer "
 msgstr ""
 
@@ -1101,23 +1101,23 @@ msgstr ""
 msgid "osX locale not obtained"
 msgstr ""
 
-#: icc_helfer_i18n.cpp:196
+#: icc_helfer_i18n.cpp:200
 msgid "try to set LANG"
 msgstr ""
 
-#: icc_helfer_i18n.cpp:233
+#: icc_helfer_i18n.cpp:237
 msgid "fine with: "
 msgstr ""
 
-#: icc_helfer_i18n.cpp:235
+#: icc_helfer_i18n.cpp:239
 msgid "failed with: "
 msgstr ""
 
-#: icc_helfer_i18n.cpp:240
+#: icc_helfer_i18n.cpp:244
 msgid "try locale in "
 msgstr ""
 
-#: icc_helfer_i18n.cpp:247
+#: icc_helfer_i18n.cpp:251
 msgid "set codeset for \"icc_examin\" to "
 msgstr ""
 

@@ -78,10 +78,14 @@ initialiseI18N()
     locale = tmp; 
   set_zero_locale = 0;
 # else
-
+  DBG_PROG
 
   // 1. get default locale info ..
-  locale = setlocale (LC_MESSAGES, "");
+  const char *tmp = setlocale (LC_MESSAGES, "");
+  if(tmp) {
+    locale = tmp;
+    DBG_PROG_V( locale )
+  }
 
     // .. or take locale info from environment
   if(getenv("LANG"))
@@ -91,7 +95,7 @@ initialiseI18N()
   char codeset[24] = "ISO-8859-1";
 
 #   define SetCodesetForLocale( lang, codeset_ ) \
-    { \
+    if( locale.size() ) { \
       std::string::size_type pos = locale.find( lang ,0); \
       if(pos == 0) \
       { \

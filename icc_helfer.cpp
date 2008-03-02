@@ -818,10 +818,10 @@ printDatum                      (icDateTimeNumber date)
 
 namespace icc_examin_ns {
 
-#          if LINUX || APPLE
+#          if LINUX || APPLE || SOLARIS
 # define   ZEIT_TEILER 10000
 #          else // WINDOWS TODO
-# define   ZEIT_TEILER = CLOCKS_PER_SEC;
+# define   ZEIT_TEILER CLOCKS_PER_SEC;
 #          endif
 
 # include <sys/time.h>
@@ -836,7 +836,7 @@ namespace icc_examin_ns {
   {
            time_t zeit_;
            double teiler = ZEIT_TEILER;
-#          if LINUX || APPLE
+#          if LINUX || APPLE || SOLARIS
            struct timeval tv;
            gettimeofday( &tv, NULL );
            double tmp_d;
@@ -856,6 +856,7 @@ namespace icc_examin_ns {
   }
   void sleep(double sekunden)
   {
+#            if LINUX || APPLE
              timespec ts;
              double ganz;
              double rest = modf(sekunden, &ganz);
@@ -863,6 +864,9 @@ namespace icc_examin_ns {
              ts.tv_nsec = (time_t)(rest * 1000000000);
              //DBG_PROG_V( sekunden<<" "<<ts.tv_sec<<" "<<ganz<<" "<<rest )
              nanosleep(&ts, 0);
+#            else
+             usleep((time_t)(sekunden/(double)CLOCKS_PER_SEC));
+#            endif
   }
 }
 
