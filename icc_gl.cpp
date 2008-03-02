@@ -1676,10 +1676,11 @@ GL_Ansicht::menueAufruf ( int value )
     }
   }
 
+  valid(false);
   if(visible()) {
     auffrischen();
-  } else
     redraw();
+  }
 
   DBG_PROG_V( value )
   DBG_PROG_ENDE
