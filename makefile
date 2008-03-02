@@ -45,7 +45,7 @@ ifdef APPLE
   OSX_CPP = icc_helfer_osx.cpp
   OSX_H  = -DHAVE_OSX
 else
-  OPTS=-Wall -g -Os $(DEBUG)
+  OPTS=-Wall -g -Os $(DEBUG) #-fomit-frame-pointer
   GLUT = -lglut
   X_H  = -DHAVE_X
   X_CPP = icc_helfer_x.cpp
@@ -79,9 +79,12 @@ CPP_HEADERS = \
 	icc_info.h \
 	icc_icc.h \
 	icc_kette.h \
+	icc_measurement.h \
 	fl_oyranos.h \
 	icc_oyranos.h \
 	icc_profile.h \
+	icc_profile_header.h \
+	icc_profile_tags.h \
 	icc_speicher.h \
 	icc_ueber.h \
 	icc_utils.h \

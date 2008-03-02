@@ -335,7 +335,14 @@ getColorSpaceName (icColorSpaceSignature color)
     case icSig13colorData: text =_("13color"); break;
     case icSig14colorData: text =_("14color"); break;
     case icSig15colorData: text =_("15color"); break;
-    default: icUInt32Number i = icValue(color); text = cp_nchar ((char*)&i, 5); text += "?"; break;
+    default: { icUInt32Number i = icValue(color);
+               char t[5];
+               memcpy (t,(char*)&i, 4);
+               t[4] = 0;
+               text = t;
+               text += "?";
+               break;
+             }
   }
   return text;
 }
@@ -418,7 +425,14 @@ getDeviceClassName (icProfileClassSignature deviceClass)
     case icSigAbstractClass: text =_("Abstrakter Farbraum"); break;
     case icSigColorSpaceClass: text =_("Farbraum"); break;
     case icSigNamedColorClass: text =_("Schmuckfarben"); break;
-    default: icUInt32Number i = icValue(deviceClass); text = cp_nchar ((char*)&i, 5); text += "?"; break;
+    default: { icUInt32Number i = icValue(deviceClass);
+               char t[5];
+               memcpy (t,(char*)&i, 4);
+               t[4] = 0;
+               text = t;
+               text += "?";
+               break;
+             }
   }
   return text;
 }
@@ -435,7 +449,14 @@ getPlatformName (icPlatformSignature platform)
     case icSigSolaris: text =_("Solaris"); break;
     case icSigSGI: text =_("SGI"); break;
     case icSigTaligent: text =_("Taligent"); break;
-    default: icUInt32Number i = icValue(platform); text = cp_nchar ((char*)&i, 5); text += "?"; break;
+    default: { icUInt32Number i = icValue(platform);
+               char t[5];
+               memcpy (t,(char*)&i, 4);
+               t[4] = 0;
+               text = t;
+               text += "?";
+               break;
+             }
   }
   return text;
 }
@@ -499,7 +520,14 @@ getSigTagName               ( icTagSignature  sig )
     case 1668051567: text = _("clro"); break;
     case 1668051572: text = _("clrt"); break;
     case 0: text = _("----"); break;
-    default: icUInt32Number i = icValue(sig); text = cp_nchar ((char*)&i, 5); text += "?"; break;
+    default: { icUInt32Number i = icValue(sig);
+               char t[5];
+               memcpy (t,(char*)&i, 4);
+               t[4] = 0;
+               text = t;
+               text += "?";
+               break;
+             }
   }
   #ifdef DEBUG_ICCTAG_
   char c[5] = "clrt";
@@ -568,7 +596,14 @@ getSigTagDescription                            ( icTagSignature  sig )
     case 1668051567: text = _("Schmuckfarbordnung"); break;//clro
     case 1668051572: text = _("Schmuckfarbnamen"); break;//clrt
     case 0: text = _("----"); break;
-    default: icUInt32Number i = icValue(sig); text = cp_nchar ((char*)&i, 5); text += "?"; break;
+    default: { icUInt32Number i = icValue(sig);
+               char t[5];
+               memcpy (t,(char*)&i, 4);
+               t[4] = 0;
+               text = t;
+               text += "?";
+               break;
+             }
   }
   return text;
 }
@@ -607,7 +642,14 @@ getSigTypeName               ( icTagTypeSignature  sig )
     case 1986226036: text = _("vcgt"); break;
     case icSigCopyrightTag: text = _("cprt?"); break; //??? (Imacon)
     case 1835824483: text = _("mluc"); break;
-    default: icUInt32Number i = icValue(sig); text = cp_nchar ((char*)&i, 5); text += "?"; break;
+    default: { icUInt32Number i = icValue(sig);
+               char t[5];
+               memcpy (t,(char*)&i, 4);
+               t[4] = 0;
+               text = t;
+               text += "?";
+               break;
+             }
   }
   return text;
 }
@@ -640,7 +682,14 @@ getSigTechnology             ( icTechnologySignature sig )
     case icSigSilkscreen: text = _("Silkscreen"); break; //silk
     case icSigFlexography: text = _("Flexography"); break; //flex
     case icMaxEnumTechnology: text = _("----"); break;   
-    default: icUInt32Number i = icValue(sig); text = cp_nchar ((char*)&i, 5); text += "?"; break;
+    default: { icUInt32Number i = icValue(sig);
+               char t[5];
+               memcpy (t,(char*)&i, 4);
+               t[4] = 0;
+               text = t;
+               text += "?";
+               break;
+             }
   }
   return text;
 }

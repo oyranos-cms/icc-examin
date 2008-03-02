@@ -459,7 +459,9 @@ ICCexamin::histogram ()
         icc_betrachter->DD_histogram->zeig_punkte_als_messwert_paare = true;
       else
         icc_betrachter->DD_histogram->zeig_punkte_als_messwert_paare = false;
+      DBG_NUM_V( icc_betrachter->DD_histogram->zeig_punkte_als_messwert_paare )
       icc_betrachter->DD_histogram->zeig_punkte_als_messwerte = true;
+      DBG_NUM_V( icc_betrachter->DD_histogram->zeig_punkte_als_messwerte )
 
       unsigned int j;
       int n = messung.getPatchCount(); DBG_PROG_V( messung.getPatchCount() )
@@ -490,7 +492,23 @@ ICCexamin::histogram ()
       namen = messung.getFeldNamen();
     }
 
-  //if(p.size())
+  // benannte Farben darstellen
+  if( profile.profil() &&
+      profile.profil()->getTagByName("ncl2") >= 0 )
+  {
+    DBG_PROG
+    p = profile.profil()->getTagNumbers (profile.profil()->getTagByName("ncl2"),
+                                         ICCtag::MATRIX);
+    DBG_NUM_V( p[0] )
+    f.resize( (int)p[0] * 4);
+    DBG_NUM_V( f.size() )
+    for(unsigned i = 0; i < f.size(); ++i)
+      f[i] = 1.0;
+    p.erase( p.begin() );
+    icc_betrachter->DD_histogram->zeig_punkte_als_messwert_paare = false;
+    icc_betrachter->DD_histogram->zeig_punkte_als_messwerte = false;
+  }
+
   icc_betrachter->DD_histogram->hineinPunkte( p, f, namen, texte );
 
   size_t g; DBG_MEM

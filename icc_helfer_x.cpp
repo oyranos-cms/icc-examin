@@ -113,7 +113,7 @@ leseGrafikKartenGamma        (std::string display_name,
 
   int size;
   if (!XF86VidModeGetGammaRampSize(display, screen, &size))
-    WARN_S( _("Kein Gammagradient Information erhalten") )
+    WARN_S( _("Kein Gammagradient Information erhalten") );
 
   DBG_PROG_V( size )
   if (size)
@@ -137,7 +137,7 @@ leseGrafikKartenGamma        (std::string display_name,
     delete [] red;
     delete [] green;
     delete [] blue;
-  } else DBG_NUM_S( "kein vcgt in X anzeigbar" )
+  } else DBG_NUM_S( "kein vcgt in X anzeigbar" );
 
   //XCloseDisplay(display);
 

@@ -34,10 +34,13 @@
   #define DEBUG_ICCTAG
 #endif
 
+#include "icc_profile_tags.h"
 #include "icc_profile.h"
 #include "icc_utils.h"
+#include "icc_helfer.h"
 
 #include <cmath>
+#include <sstream>
 
 #define g_message printf
 
@@ -124,7 +127,7 @@ ICCtag::load                        ( ICCprofile *profil,
   DBG_MEM_V( tag )
   DBG_MEM_V( data )
   _profil = profil;
-  _sig    = icValue(tag->sig); DBG_PROG_S( getSigTagName(_sig) )
+  _sig    = icValue(tag->sig); //DBG_PROG_S( getSigTagName(_sig) )
   switch (_sig) {
   case icSigAToB0Tag:
   case icSigBToA0Tag:
@@ -429,7 +432,7 @@ ICCtag::getText                     (void)
                            * sizeof(icUInt16Number))));//Ncl2Farbe::geraetefarbe
       DBG_MEM_V( sizeof(icUInt16Number) <<"|"<< geraetefarben_n )
       DBG_MEM_V( i <<" "<<(int*)f <<" "<< (int*)ncl2  )
-      s << "   " <<
+      s << "" <<
            ncl2->vorname << f->name << ncl2->nachname<<" ";// maximal 31 Zeichen
       s << icValue(f->pcsfarbe[0]) << " " <<
            icValue(f->pcsfarbe[1]) << " " <<
@@ -902,6 +905,36 @@ ICCtag::getNumbers                                 (MftChain typ)
     case CURVE_OUT:
          break;
     } 
+
+  } else if ( getTypName() == "ncl2" ) {
+
+    // 0: Anzahl Farben
+    // 1...n: CIE*Lab Farbwerte
+    // n = 3 * FarbAnzahl
+
+    Ncl2 *ncl2 = (Ncl2*) &_data[8];
+
+    int farben_n        = icValue(ncl2->anzahl);
+    int geraetefarben_n = icValue(ncl2->koord);
+    nummern .resize(farben_n * 3 + 1);
+    nummern[0] = farben_n;
+    DBG_PROG_V( nummern[0] )
+    for (int i = 0; i < farben_n; ++i)
+    {
+      Ncl2Farbe *f = (Ncl2Farbe*) ((char*)ncl2 + 76 + // Basisgröße von Ncl2
+                     (i * (38 +                 // Basisgröße von Ncl2Farbe
+                           geraetefarben_n      // Anzahl Gerätefarben
+                           * sizeof(icUInt16Number))));//Ncl2Farbe::geraetefarbe
+      nummern[i*3 +1] = icValue(f->pcsfarbe[0])/65280.0;
+      nummern[i*3 +2] = icValue(f->pcsfarbe[1])/65535.0;
+      nummern[i*3 +3] = icValue(f->pcsfarbe[2])/65535.0;
+      DBG_PROG_V( nummern[i+0] )
+      DBG_PROG_V( nummern[i+1] )
+      DBG_PROG_V( nummern[i+2] )
+      //for(int j=0; j < geraetefarben_n; ++j)
+        //s << icValue(f->geraetefarbe[j]) << " ";
+
+    }
   }
 
   #ifdef DEBUG_ICCTAG

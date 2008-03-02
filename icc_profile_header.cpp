@@ -34,10 +34,11 @@
   #define DEBUG_ICCHEADER
 #endif
 
-#include "icc_profile.h"
+#include "icc_profile_header.h"
 #include "icc_utils.h"
 
 #include <cmath>
+#include <sstream>
 
 #define g_message printf
 
@@ -54,7 +55,8 @@ ICCheader::ICCheader()
 void
 ICCheader::load (void *data)
 { DBG_PROG_START
-  if (data == NULL) {
+  if (data == NULL)
+  {
     for (int i = 0; i < 128; i++)
       ((char*)&header)[i] = 0;
     valid = false;
@@ -81,12 +83,14 @@ ICCheader::load (void *data)
 void
 ICCheader::set_current_date (void)
 { DBG_PROG_START // TODO Zeit setzen
-  header.date.day = icValue((icUInt16Number)1);
-  header.date.month = icValue((icUInt16Number)9);
-  header.date.year = icValue((icUInt16Number)2004);
-  header.date.hours = icValue((icUInt16Number)12);
-  header.date.minutes = icValue((icUInt16Number)0);
-  header.date.seconds = icValue((icUInt16Number)0);
+  struct tm tm_;
+  mktime(&tm_);
+  header.date.day = icValue((icUInt16Number)tm_.tm_mday);
+  header.date.month = icValue((icUInt16Number)tm_.tm_mon+1);
+  header.date.year = icValue((icUInt16Number)tm_.tm_year+1900);
+  header.date.hours = icValue((icUInt16Number)tm_.tm_hour);
+  header.date.minutes = icValue((icUInt16Number)tm_.tm_min);
+  header.date.seconds = icValue((icUInt16Number)tm_.tm_sec);
   DBG_PROG_ENDE
 }
 

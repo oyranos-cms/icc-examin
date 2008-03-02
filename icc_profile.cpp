@@ -27,7 +27,7 @@
 
 // Date:      04. 05. 2004
 
-#if 0
+#if 1
   #ifndef DEBUG
    #define DEBUG
   #endif
@@ -206,27 +206,33 @@ ICCprofile::fload ()
   //memcpy (tagList , &((char*)_data)[132], sizeof (icTag) * getTagCount());
   DBG_PROG
   tags.resize(getTagCount()); DBG_PROG
-  for (int i = 0 ; i < getTagCount() ; i++) { DBG_PROG
+  for (int i = 0 ; i < getTagCount() ; i++)
+  { DBG_PROG
     tags[i].load( this, &tagList[i] ,
               &((char*)_data)[ icValue(tagList[i].offset) ]); DBG_PROG
     #ifdef DEBUG_ICCPROFILE
     cout << " sig: " << tags[i].getTagName() << " " << i << " "; DBG_PROG
     #endif
 
+    DBG_PROG
     // bekannte Tags mit Messdaten
-    if (tags[i].getTagName() == ("targ")
-     || tags[i].getTagName() == ("DevD")
-     || tags[i].getTagName() == ("CIED")) {
+    if (tags[i].getTagName() == "targ"
+     || tags[i].getTagName() == "DevD"
+     || tags[i].getTagName() == "CIED") {
+      DBG_PROG
       #ifdef DEBUG_ICCPROFILE
       DBG_S( "Messdaten gefunden " << tags[i].getTagName() )
       #endif
       measurement.load( this, tags[i] );
+      DBG_PROG
     }
+    DBG_PROG
   }
+  DBG_PROG
   #ifdef DEBUG_ICCPROFILE
   DBG_S( "TagCount: " << getTagCount() << " / " << tags.size() )
   #endif
-
+ 
   DBG_NUM_V( _filename )
 
   DBG_PROG_ENDE
@@ -463,7 +469,8 @@ ICCprofile::getTagNumbers                        (int item,ICCtag::MftChain typ)
   // Prüfen
   std::vector<double> leer;
   if (tags[item].getTypName() != "mft2"
-   && tags[item].getTypName() != "mft1")
+   && tags[item].getTypName() != "mft1"
+   && tags[item].getTypName() != "ncl2")
   {
     #ifdef DEBUG_ICCPROFILE
     DBG_S( tags[item].getTypName() )
@@ -487,7 +494,7 @@ ICCprofile::getTagByName            (std::string name)
     if ( (*it).getTagName() == name
       && (*it).getSize()            ) {
       #ifdef DEBUG_ICCPROFILE
-      DBG_S( item << "=" << (*it).getTagName() << " gefunden" )
+      DBG_PROG_S( item << " = " << (*it).getTagName() << " gefunden" )
       #endif
       DBG_PROG_ENDE
       return item;
@@ -890,7 +897,11 @@ const char* cp_nchar (char* text, int n)
     string[i] = '\000';*/
 
   if (n < 1024)
+    #if 0
+    memcpy (string, text, n);
+    #else
     snprintf(&string[0], n, text);
+    #endif
   string[1023] = '\000';
 
   #ifdef DEBUG

@@ -1533,7 +1533,7 @@ GL_Ansicht::hineinNetze       (const std::vector<ICCnetz> & d_n)
 
   DBG_NUM_V( dreiecks_netze.size() )
   for(unsigned i = 0; i < dreiecks_netze.size(); ++i)
-    DBG_NUM_V( dreiecks_netze[i].name )
+    DBG_NUM_V( dreiecks_netze[i].name );
   DBG_PROG_ENDE
 }
 

@@ -461,7 +461,9 @@ ICCmeasurement::init_umrechnen                     (void)
   }
   { int maxFeld=0, minFeld=0;
     const char *maxFN=0, *minFN=0;
-    if (_nFelder != (int)_XYZ_Satz.size()) DBG_PROG_S("Messfeldanzahl divergiert")
+    if (_nFelder != (int)_XYZ_Satz.size()) {
+      DBG_PROG_S("Messfeldanzahl divergiert");
+    }
     int m = _nFelder < (int)_XYZ_Satz.size() ? _nFelder : (int)_XYZ_Satz.size();
     DBG_PROG_S( "Felder: " << m )
     for (int i = 0; i < m; i++)
@@ -481,10 +483,12 @@ ICCmeasurement::init_umrechnen                     (void)
         minFN = _Feldnamen[i].c_str();
       }
     }
-    if( maxFN )
-      DBG_PROG_S( maxFN << " Nr. " << maxFeld << endl << " X_max = "<< max[0] <<" Y_max = "<< max[1] <<" Z_max = "<< max[2] )
-    if( minFN )
-    DBG_PROG_S( minFN << " Nr. " << minFeld << endl << " X_min = "<< min[0] <<" Y_min = "<< min[1] <<" Z_min = "<< min[2] )
+    if( maxFN ) {
+      DBG_PROG_S( maxFN << " Nr. " << maxFeld << endl << " X_max = "<< max[0] <<" Y_max = "<< max[1] <<" Z_max = "<< max[2] );
+    }
+    if( minFN ) {
+      DBG_PROG_S( minFN << " Nr. " << minFeld << endl << " X_min = "<< min[0] <<" Y_min = "<< min[1] <<" Z_min = "<< min[2] );
+    }
   }
 
 
@@ -513,7 +517,7 @@ ICCmeasurement::init_umrechnen                     (void)
       if(groesse)
         hsRGB = cmsOpenProfileFromMem(const_cast<char*>(block), groesse);
       DBG_PROG_S( icc_oyranos.moni_name() << " Farben" )
-    } else DBG_PROG_S( "Export Farben" )
+    } else { DBG_PROG_S( "Export Farben" ); }
     if(!hsRGB)
       hsRGB = cmsCreate_sRGBProfile ();
     hLab = cmsCreateLabProfile (cmsD50_xyY());
