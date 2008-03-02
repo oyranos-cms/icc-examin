@@ -681,7 +681,14 @@ GL_Ansicht::hinein_tabelle(std::vector<std::vector<std::vector<std::vector<doubl
   //Kurve aus tag_browser anzeigen
   tabelle = vect;  DBG_PROG
   texte = txt; DBG_PROG
-  pcsNamen = pcs;
+  if (pcs.size() == 3)
+    pcsNamen = pcs;
+  else
+  { pcsNamen.clear();
+    pcsNamen.push_back ("?");
+    pcsNamen.push_back ("?");
+    pcsNamen.push_back ("?");
+  }
   kurven.clear(); DBG_PROG
   punkte.clear(); DBG_PROG
 

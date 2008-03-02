@@ -472,9 +472,23 @@ ICCtag::getText                     (void)
     texte.push_back( _("Blau") );
     texte.push_back( "gamma_start_ende" );
 
+  } else if ( getTypName() == "sf32" ) {
+
+    texte.push_back( getTypName() + " ist in Arbeit" );
+
   } else {
 
-    texte.push_back( getTypName() + " | <- iss'n das?" );
+    texte .resize(1);
+    std::string t;
+    texte[0].append ("\n\n",2);
+
+    for (int i = 0; i < _size-8; i = i + 4)
+    { texte[0].append ("  ", 2);
+      t = zeig_bits_bin(&_data[8+i], MIN(4,_size-8-i));
+      texte[0].append (t.data(), t.size());
+      texte[0].append ("\n", 1);
+    }
+
   }
     
   #ifdef DEBUG_ICCTAG
@@ -485,6 +499,7 @@ ICCtag::getText                     (void)
   DBG_PROG_ENDE
   return texte;
 }
+
 
 std::vector<std::string>
 ICCtag::getDescription              (void)
@@ -1171,7 +1186,7 @@ ICCprofile::getTagText                                  (int item)
   std::string leer = name + " Typ - keine Textausgabe";
   std::vector<std::string> v;
   v.push_back( leer );
-
+#if 0
   if (name != "chrm"
    && name != "cprt?"
    && name != "dtim"
@@ -1183,7 +1198,7 @@ ICCprofile::getTagText                                  (int item)
    && name != "vcgt"
    && name != "XYZ")
     return v;
-
+#endif
   DBG_PROG_ENDE
   return tags.at(item).getText();
 }

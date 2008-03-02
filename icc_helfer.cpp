@@ -723,4 +723,27 @@ printDatum                      (icDateTimeNumber date)
   return s.str();
 }
 
+std::string
+zeig_bits_bin(void* speicher, int groesse)
+{
+  std::string text;
+  int byte_zahl;
+  char txt[12];
+
+  for (int k = 0; k < groesse; k++)
+  {   for (int i = 8-1; i >= 0; i--)
+      {
+              unsigned char* u8 = (unsigned char*)speicher;
+              byte_zahl = (u8[k] >> i) & 1;
+              sprintf (&txt[7-i], "%d", byte_zahl);
+              //DBG_PROG_V( 7-i <<" "<< byte_zahl )
+      }
+      text.append( txt, strlen (txt));
+      text.append( " ", 1); /*aller 8 bit ein leerzeichen*/
+      //DBG_PROG_V( k << txt )
+  }
+
+  return text;
+}
+
 

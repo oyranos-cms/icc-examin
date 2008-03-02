@@ -102,12 +102,12 @@ Mein herzlicher Dank gilt insbesondere Marti Maria und den vielen Schreibenden d
 <p>\n\
 ICC Examin benutzt forgende Bibliotheken:<br>\n \
 <p> \
-  fltk (statisch eigebunden): Bill Spitzack und andere www.fltk.org<br>\n";
+  fltk (statisch eingebunden): Bill Spitzack und andere www.fltk.org<br>\n";
 #ifdef HAVE_FLU
 html << " \
 </p>\n \
 <p> \
-  flu (statisch eigebunden): Jason Bryan www.osc.edu/~jbryan/FLU/<br>\n";
+  flu (statisch eingebunden): Jason Bryan www.osc.edu/~jbryan/FLU/<br>\n";
 #endif
 html << " \
 </p>\n \

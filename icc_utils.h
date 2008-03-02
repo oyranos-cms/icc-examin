@@ -84,7 +84,7 @@ extern int level_PROG;
 #define MAX(a,b)    (((a) > (b)) ? (a) : (b))
 #define HYP(a,b)    pow((a)*(a) + (b)*(b),1.0/2.0)
 #define HYP3(a,b,c) pow( (a)*(a) + (b)*(b) + (c)*(c) , 1.0/2.0)
-
+#define RUND(a)     ((a) + 0.5)
 
 class Wert
 {

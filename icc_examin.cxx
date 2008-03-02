@@ -190,6 +190,24 @@ static void cb_menueintrag_inspekt(Fl_Menu_* o, void*) {
   };
 }
 
+static void cb_menueintrag_3D(Fl_Menu_* o, void*) {
+  Fl_Menu_* mw = (Fl_Menu_*)o;
+  const Fl_Menu_Item* m = mw->mvalue();
+
+  DBG_PROG_S (m->value())
+  if (m->value()) {
+    group_histogram->show();
+    DD_histogram->show();
+    inspekt->hide();
+    examin->hide();
+  } else {
+    group_histogram->hide();
+    inspekt->hide();
+    examin->show();
+    inspekt_topline = inspekt_html->topline();
+  };
+}
+
 static void cb_ber(Fl_Menu_*, void*) {
   ueber->show();
 ueber_html->value(getUeberHtml().c_str());
@@ -205,6 +223,7 @@ Fl_Menu_Item menu_[] = {
  {"Ganzer Bildschirm an/aus", 0x40076,  (Fl_Callback*)cb_menueintrag_Voll, 0, 0, 0, 0, 14, 56},
  {0},
  {"Pr\374""fansicht", 0x40062,  (Fl_Callback*)cb_menueintrag_inspekt, 0, 3, 0, 0, 14, 56},
+ {"3D Ansicht", 0x40062,  (Fl_Callback*)cb_menueintrag_3D, 0, 130, 0, 0, 14, 56},
  {"Hilfe", 0,  0, 0, 64, 0, 0, 14, 56},
  {"\334""ber", 0,  (Fl_Callback*)cb_ber, 0, 0, 0, 0, 14, 56},
  {0},
@@ -244,6 +263,10 @@ Fl_Group *tag_3D=(Fl_Group *)0;
 TagDrawings *tag_viewer=(TagDrawings *)0;
 
 TagTexts *tag_text=(TagTexts *)0;
+
+Fl_Group *group_histogram=(Fl_Group *)0;
+
+Fl_Box *DD_histogram=(Fl_Box *)0;
 
 Fl_Box *box_stat=(Fl_Box *)0;
 
@@ -460,6 +483,11 @@ int main(int argc, char **argv) {
         }
         o->end();
         Fl_Group::current()->resizable(o);
+      }
+      { Fl_Group* o = group_histogram = new Fl_Group(0, 25, 385, 470);
+        DD_histogram = new Fl_Box(0, 25, 385, 470);
+        o->hide();
+        o->end();
       }
       { Fl_Group* o = new Fl_Group(0, 495, 385, 25);
         { Fl_Box* o = box_stat = new Fl_Box(0, 495, 385, 25, "No wrl file loaded.");
@@ -773,6 +801,8 @@ void TagBrowser::select_item(int item) {
     } else if ( TagInfo[1] == "vcgt" ) { DBG_PROG
       tag_viewer->hinein_kurven ( profile[0].getTagCurves (item, ICCtag::CURVE_IN),
                                   profile[0].getTagText (item) ); cout << "vcgt "; DBG_PROG
+    } else {
+      tag_text->hinein ( (profile[0].getTagText (item))[0] ); DBG_PROG
     }
     selectedTagName = TagInfo[0];
   }DBG_PROG

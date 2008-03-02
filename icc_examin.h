@@ -55,7 +55,9 @@ extern GL_Ansicht *mft_gl;
 extern Fl_Group *tag_3D;
 extern TagDrawings *tag_viewer;
 extern TagTexts *tag_text;
+extern Fl_Group *group_histogram;
 #include <FL/Fl_Box.H>
+extern Fl_Box *DD_histogram;
 extern Fl_Box *box_stat;
 #include <FL/Fl_Progress.H>
 extern Fl_Progress *load_progress;
@@ -63,7 +65,8 @@ extern Fl_Menu_Item menu_[];
 #define menueintrag_html_speichern (menu_+2)
 #define menueintrag_Voll (menu_+6)
 #define menueintrag_inspekt (menu_+8)
-#define menu_hilfe (menu_+9)
+#define menueintrag_3D (menu_+9)
+#define menu_hilfe (menu_+10)
 void open(int interaktiv);
 void quit(void);
 char* icc_read_info(char* filename);
