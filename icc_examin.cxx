@@ -283,7 +283,7 @@ void worldChangedCB( const openvrml::browser::cb_reason reason ) {
             if (setTitleUrl) { DBG
                 stat->label(statlabel);//browser->world_url().c_str());
             }
-            //buildViewpointMenu();
+            buildViewpointMenu();
             break;
             DBG
     }
@@ -515,7 +515,7 @@ void TagDrawings::ruhig_neuzeichnen(void) {
 void d_haendler(void* o) {
   Fl::remove_timeout( (void(*)(void*))d_haendler, 0 );
   if (!Fl::has_timeout( (void(*)(void*))d_haendler, 0 )
-   && ((TagDrawings*)o)->active_r()
+   && ((TagDrawings*)o)->active()
    && ((TagDrawings*)o)->visible_r()
    && ((TagDrawings*)o)->wiederholen) {
     ((TagDrawings*)o)->ruhig_neuzeichnen();
