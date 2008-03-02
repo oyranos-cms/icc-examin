@@ -144,12 +144,12 @@ ICCmeasurement::init_meas (void)
       data.replace (pos, strlen("Sample_Name"), "SAMPLE_NAME"); DBG_S( "Sample_Name ersetzt" )
   }
   pos = 0;
-  while ((pos = data.find ("Date:", pos)) != std::string::npos) {
-      data.replace (pos, strlen("Date:"), "CREATED #"); DBG_S( "Date: ersetzt" )
-  }
-  pos = 0;
   while ((pos = data.find ("\"\"", pos)) != std::string::npos) {
       data.replace (pos, strlen("\"\""), "\""); DBG_S( "\"\" ersetzt" )
+  }
+  pos = 0;
+  while ((pos = data.find ("Date:", pos)) != std::string::npos) {
+      data.replace (pos, strlen("Date:"), "CREATED \"\" #"); DBG_S( "Date: ersetzt" )
   }
   // fehlendes SAMPLE_ID einführen und jeder Zeile einen Zähler voransetzen
   int count;
