@@ -423,7 +423,7 @@ GL_Ansicht::draw()
   DBG_PROG_ENDE
 }
 
-//#define DBG_BUTTON 1
+#define DBG_BUTTON 0
 #if DBG_BUTTON
 # define DBG_BUTTON_S(text) DBG_S(text)
 #else

@@ -107,20 +107,20 @@ else
 fi
 
 
-FLU_=`flu-config --cxxflags 2>>error.txt`
-if [ `fltk-config --version` == "1.1.7" ]; then
-  echo "FLTK version 1.1.7 is not supported by FLU"
-else
+#FLU_=`flu-config --cxxflags 2>>error.txt`
+#if [ `fltk-config --version` == "1.1.7" ]; then
+ # echo -e "\c" #echo "FLTK version 1.1.7 is not supported by FLU"
+#else
   if [ -n "$FLU_" ] && [ -n "$FLTK_" ]; then
     echo "FLU                     detected"
     echo "#define HAVE_FLU 1" >> $CONF_H
     echo "FLU = 1" >> $CONF
     echo "FLU_H = `flu-config --cxxflags`" >> $CONF
     echo "FLU_LIBS = `flu-config --ldflags --use-gl`" >> $CONF
-  else
-    echo "no FLU found, will not use it"
+  #else
+    #"no FLU found, will not use it"
   fi
-fi
+#fi
 
 
 if [ -f /usr/X11R6/include/X11/extensions/xf86vmode.h ] && [ $UNAME_ = "Linux" ]; then

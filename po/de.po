@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2006-01-04 23:06+0100\n"
+"POT-Creation-Date: 2006-01-08 00:44+0100\n"
 "PO-Revision-Date: 2005-08-13 17:35+0200\n"
 "Last-Translator: Kai-Uwe Behrmann\n"
 "Language-Team:  <de@li.org>\n"
@@ -302,7 +302,7 @@ msgstr ""
 msgid "Stop loading "
 msgstr "Laden angehalten: "
 
-#: icc_examin_io.cpp:416 fl_i18n.cxx:314 icc_betrachter.cxx:470
+#: icc_examin_io.cpp:416 fl_i18n.cxx:349 icc_betrachter.cxx:470
 msgid "Filename"
 msgstr "Dateiname"
 
@@ -1784,75 +1784,75 @@ msgstr "Gamma Grün: "
 msgid "Kein Gammagradient Information erhalten"
 msgstr ""
 
-#: fl_i18n.cxx:89
+#: fl_i18n.cxx:123
 msgid "osX locale obtained: "
 msgstr ""
 
-#: fl_i18n.cxx:92
+#: fl_i18n.cxx:126
 msgid "osX locale not obtained"
 msgstr ""
 
-#: fl_i18n.cxx:222
+#: fl_i18n.cxx:258
 msgid "try to set LANG"
 msgstr ""
 
-#: fl_i18n.cxx:261
+#: fl_i18n.cxx:297
 msgid "fine with: "
 msgstr "gut mit: "
 
-#: fl_i18n.cxx:263
+#: fl_i18n.cxx:299
 msgid "failed with: "
 msgstr "daneben mit: "
 
-#: fl_i18n.cxx:268
+#: fl_i18n.cxx:304
 msgid "try locale in "
 msgstr ""
 
-#: fl_i18n.cxx:275
+#: fl_i18n.cxx:311
 msgid "set codeset for \"icc_examin\" to "
 msgstr ""
 
-#: fl_i18n.cxx:309
+#: fl_i18n.cxx:344
 msgid "Add to Favorites"
 msgstr "Lesezeichen hinzufügen"
 
-#: fl_i18n.cxx:310 icc_betrachter.cxx:477
+#: fl_i18n.cxx:345 icc_betrachter.cxx:477
 msgid "All Files (*)"
 msgstr "Alle Dateien (*)"
 
-#: fl_i18n.cxx:311
+#: fl_i18n.cxx:346
 msgid "Custom Filter"
 msgstr "Eigener Filter"
 
-#: fl_i18n.cxx:312
+#: fl_i18n.cxx:347
 msgid "Please choose an existing file!"
 msgstr "Bitte wählen Sie eine existierende Datei!"
 
-#: fl_i18n.cxx:313 icc_betrachter.cxx:451
+#: fl_i18n.cxx:348 icc_betrachter.cxx:451
 msgid "Favorites"
 msgstr "Lesezeichen"
 
-#: fl_i18n.cxx:315
+#: fl_i18n.cxx:350
 msgid "Manage Favorites"
 msgstr "Lesezeichen bearbeiten"
 
-#: fl_i18n.cxx:317
+#: fl_i18n.cxx:352
 msgid "My Computer"
 msgstr "Mein Rechner"
 
-#: fl_i18n.cxx:319
+#: fl_i18n.cxx:354
 msgid "Filesystems"
 msgstr "Dateisysteme"
 
-#: fl_i18n.cxx:321
+#: fl_i18n.cxx:356
 msgid "New Directory?"
 msgstr "Verzeichnis erstellen"
 
-#: fl_i18n.cxx:322
+#: fl_i18n.cxx:357
 msgid "Preview"
 msgstr "Vorschau"
 
-#: fl_i18n.cxx:325
+#: fl_i18n.cxx:360
 msgid "Show:"
 msgstr "Zeige:"
 
