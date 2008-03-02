@@ -71,17 +71,23 @@ endif
 
 INCL_DEP = $(INCL) $(X_H) $(OSX_H) $(OYRANOS_H) $(SOURCES)
 ALL_INCL = $(INCL) \
-			$(FLU_H) $(FLTK_H) $(X_H) $(OSX_H) $(OYRANOS_H) $(LCMS_H) $(FTGL_H)
+			$(FLU_H) $(FLTK_H) $(X_H) $(OSX_H) $(OYRANOS_H) $(LCMS_H) $(FTGL_H)\
+			-DSRCDIR=\"$(srcdir)\" -DDATADIR=\"$(datadir)\"
 
 CXXFLAGS=$(OPTS) $(ALL_INCL)
-CFLAGS = $(OPTS)
+CFLAGS = $(OPTS) $(ALL_INCL)
 
-LDLIBS = -L$(libdir) -L./ $(FLTK_LIBS) -licc_examin \
-	$(X11_LIBS) -llcms $(OYRANOS_LIBS) $(FLU_LIBS) $(LCMS_LIBS) $(FTGL_LIBS)
+ifdef FLU
+  FLU_FLTK_LIBS = $(FLU_LIBS) $(FLTK_LIBS)
+else
+  FLU_FLTK_LIBS = $(FLTK_LIBS)
+endif
+
+LDLIBS = -L$(libdir) -L./ $(FLU_FLTK_LIBS) -licc_examin \
+	$(X11_LIBS) -llcms $(OYRANOS_LIBS) $(LCMS_LIBS) $(FTGL_LIBS)
 
 CPP_HEADERS = \
 	agviewer.h \
-	Fl_Slot.H \
 	icc_betrachter.h \
 	cccie64.h \
 	ciexyz64_1.h \
@@ -114,6 +120,8 @@ CPP_HEADERS = \
 	icc_vrml.h \
 	icc_vrml_parser.h \
 	icc_waehler.h
+#	Fl_Slot.H
+
 COMMON_CPPFILES = \
 	agviewer.cpp \
 	icc_cgats_filter.cpp \
@@ -183,6 +191,7 @@ DOKU = \
 FLUID = \
 	icc_betrachter.fl \
 	fl_oyranos.fl
+FONT = FreeSans.ttf
 
 SOURCES = $(ALL_SOURCEFILES) $(ALL_HEADERFILES)
 OBJECTS = $(CPPFILES:.cpp=.o) $(CXXFILES:.cxx=.o)
@@ -246,6 +255,7 @@ test:	icc_formeln.o icc_utils.o
 
 install:	$(TARGET)
 	$(COPY) $(TARGET) $(bindir)
+	$(COPY) $(FONT) $(datadir)/fonts
 
 uninstall:
 	$(RM) $(bindir)/$(TARGET)
@@ -297,6 +307,7 @@ tgz:
 	makefile \
 	configure.sh \
 	$(DOKU) \
+	$(FONT) \
 	$(FLUID) \
 	Entwickeln
 	tar cf - Entwickeln/ \
@@ -313,6 +324,7 @@ targz:
 	makefile \
 	configure.sh \
 	$(DOKU) \
+	$(FONT) \
 	$(FLUID) \
 	icc_examin_$(VERSION)
 	tar cf - icc_examin_$(VERSION)/ \

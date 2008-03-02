@@ -59,14 +59,14 @@ if [ $? = 0 ] && [ -n "$FLU_" ] && [ -n "$FLTK_" ]; then
   echo "#define HAVE_FLU" >> $CONF_H
   echo "FLU = 1" >> $CONF
   echo "FLU_H = -DHAVE_FLU `flu-config --cxxflags`" >> $CONF
-  echo "FLU_LIBS = `flu-config --ldflags`" >> $CONF
+  echo "FLU_LIBS = `flu-config --ldflags --use-gl`" >> $CONF
 else
   echo "no FLU found, will not use it"
 fi
 
 
 
-if [ -f /usr/X11R6/include/X11/extensions/xf86vmode.h ]; then
+if [ -f /usr/X11R6/include/X11/extensions/xf86vmode.h ] && [ $UNAME_ = "Linux" ]; then
   echo "X VidMode extension     detected"
   echo "#define HAVE_X" >> $CONF_H
   echo "X11 = 1" >> $CONF
@@ -106,10 +106,10 @@ fi
 
 `pkg-config  --atleast-version=1.0 ftgl`
 if [ $? = 0 ]; then
-  echo "FTGK      `pkg-config --modversion ftgl`         detected"
+  echo "FTGL      `pkg-config --modversion ftgl`         detected"
   echo "#define HAVE_FTGL" >> $CONF_H
   echo "FTGL = 1" >> $CONF
-  echo "FTGL_H = `pkg-config --cflags ftgl`" >> $CONF
+  echo "FTGL_H = -DHAVE_FTGL `pkg-config --cflags ftgl`" >> $CONF
   echo "FTGL_LIBS = `pkg-config --libs ftgl`" >> $CONF
 else
   echo "no or too old FTGL found,\n  need FTGL to render text in OpenGL"

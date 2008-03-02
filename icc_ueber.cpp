@@ -122,6 +122,14 @@ html << " \
  <br> \
  <br> \
 </p>\n \
+<br>\n";
+#ifdef HAVE_FTGL
+html << " \
+<p> \
+  FTGL: Henry Maddocks homepages.paradise.net.nz/henryj/code/#FTGL<br>\n \
+</p>";
+#endif
+html << " \
 <p> \
 integrierte Quelltexte:<br>\n \
 <p> \

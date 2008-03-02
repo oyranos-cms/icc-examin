@@ -196,7 +196,8 @@ ICCexamin::nachricht( Modell* modell , int info )
           // Oberflächenpflege - Aktualisieren
         if(icc_betrachter->DD_histogram->visible())
           icc_betrachter->DD_histogram->flush();
-        if(icc_betrachter->menueintrag_inspekt->active())
+        if(icc_betrachter->menueintrag_inspekt->active() &&
+           profile[info]->hasMeasurement() )
           setzMesswerte();
         else if(icc_betrachter->examin->visible())
           waehleTag(_item);

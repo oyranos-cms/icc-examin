@@ -34,14 +34,14 @@
 
 #include "agviewer.h"
 #include "icc_vrml_parser.h"
-#include "Fl_Slot.H"
+//#include "Fl_Slot.H"
 
 #include <FL/Fl_Gl_Window.H>
 #include <FL/Fl_Group.H>
 
 class Fl_Menu_Button;
 
-class GL_Ansicht : public Fl_Gl_Window , public Fl_Slot {
+class GL_Ansicht : public Fl_Gl_Window /*, public Fl_Slot*/ {
   // Datenhaltung
     // Position: Farbe1, Farbe2, Farbe3, Farbkanal Nr., Wert
   std::vector<std::vector<std::vector<std::vector<double> > > > tabelle_;
@@ -50,7 +50,6 @@ class GL_Ansicht : public Fl_Gl_Window , public Fl_Slot {
   std::vector<std::string>farb_namen_;
   std::vector<double> punkte_;        //                (n*3)
   std::vector<float>  farben_;        // rgba 0.0 - 1.0 (n*4)
-  std::vector<std::vector<double> >kurven_;
 
   void fensterForm();
 

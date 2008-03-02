@@ -1,4 +1,12 @@
 
+2005-04-18
+	* neu: Fonts mit FTGL: nicht innerhalb anderer glLists benutzen
+	* neu:                 Raster Position mit glRasterPos* setzen
+	* fix: Farbeinstellungen im 3D Ansichtwähler bleiben erhalten
+	* fix: setzMesswerte nicht falls keine vorhanden sind
+	* fix: alte Messwerte mit Laden eines neuen Profiles löschen
+	* fix: zugriff auf nicht existentes 3D Netz 
+
 2005-04-01
 	* neu: aktualisieren der Ansichten nach ICCkette::benachrichtigen ->
 		   setzMesswerte

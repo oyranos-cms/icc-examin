@@ -28,9 +28,6 @@
 // Date:      12. 09. 2004
 
 
-//TODO: alpha benötigt eine Liste der Objekte in Reihenfolge von Objekt<->Kamera
-//      die Objekte werden mit alpha in dieser Reihenfolge gezeichnet
-
 #include "icc_examin.h"
 #include "icc_formeln.h"
 #include "icc_oyranos.h"
@@ -42,11 +39,14 @@
 #include <FL/Fl_Menu_Button.H>
 #include <FL/Fl.H>
 #include <FL/gl.h>
+
+#ifdef HAVE_FTGL
 #include <FTGL/FTFont.h>
 #include <FTGL/FTGLTextureFont.h>
 #include <FTGL/FTGLPixmapFont.h>
 #include <FTGL/FTGLPolygonFont.h>
 #include <FTGL/FTGLExtrdFont.h>
+#endif
 
 #include "freeglut_internal.h"
 
@@ -81,7 +81,9 @@ int glListen[DL_MAX] = {0,0,0,0,0,0};
          (a*a_darstellungs_breite - a_darstellungs_breite/2.)
 
 const double GL_Ansicht::std_vorder_schnitt = 4.2;
+#ifdef HAVE_FTGL
 static FTFont* font, *ortho_font;
+#endif
 
 
 GL_Ansicht::GL_Ansicht(int X,int Y,int W,int H)
@@ -105,8 +107,10 @@ GL_Ansicht::GL_Ansicht(int X,int Y,int W,int H)
 
   for(int i = 0; i < DL_MAX; ++i)
     glListen[i] = 0;
-  //DrawAxes = 0;
+
+  #ifdef HAVE_FTGL
   font = ortho_font = 0;
+  #endif
 
   DBG_PROG_ENDE
 }
@@ -114,23 +118,29 @@ GL_Ansicht::GL_Ansicht(int X,int Y,int W,int H)
 GL_Ansicht::~GL_Ansicht()
 { DBG_PROG_START
   if (glListen[RASTER]) {
+    DBG_PROG_S( "delete glListe " << glListen[RASTER] )
     glDeleteLists (glListen[RASTER],1);
     glListen[RASTER] = 0;
-    DBG_PROG_S( "delete glListe " << id()*DL_MAX + RASTER ) }
+  }
   if (glListen[HELFER]) {
+    DBG_PROG_S( "delete glListe " << glListen[HELFER] )
     glDeleteLists (glListen[HELFER],1);
     glListen[HELFER] = 0;
-    DBG_PROG_S( "delete glListe " << id()*DL_MAX + HELFER ) }
+  }
   if (glListen[PUNKTE]) {
+    DBG_PROG_S( "delete glListe " << glListen[HELFER] )
     glDeleteLists (glListen[PUNKTE],1);
     glListen[PUNKTE] = 0;
-    DBG_PROG_S( "delete glListe " << id()*DL_MAX + PUNKTE ) }
+  }
   if (glListen[SPEKTRUM]) {
+    DBG_PROG_S( "delete glListe " << glListen[SPEKTRUM] )
     glDeleteLists (glListen[SPEKTRUM],1);
     glListen[SPEKTRUM] = 0;
-    DBG_PROG_S( "delete glListe " << id()*DL_MAX + SPEKTRUM ) }
+  }
+  #ifdef HAVE_FTGL
   if(font) delete font;
   if(ortho_font) delete ortho_font;
+  #endif
   DBG_PROG_ENDE
 }
 
@@ -235,10 +245,13 @@ GL_Ansicht::handle( int event )
   switch(event)
   {
     case FL_PUSH:
-         if(mausknopf & FL_BUTTON3) {
+         if(mausknopf & FL_BUTTON3 ||
+           (mausknopf & FL_BUTTON1 && mausknopf & FL_CTRL) ) {
            menue_button_->popup();
            break;
          }
+         if(mausknopf & FL_BUTTON1 && mausknopf & FL_SHIFT)
+           mausknopf = FL_BUTTON2;
          agv_.agvHandleButton( mausknopf, event, Fl::event_x(),Fl::event_y());
          DBG_ICCGL_S( "FL_PUSH bei: " << Fl::event_x() << "," << Fl::event_y() )
          break;
@@ -315,18 +328,53 @@ GL_Ansicht::GLinit_()
 
   //glShadeModel(GL_SMOOTH);
   glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+
+  #ifdef HAVE_FTGL
   if(font) delete font;
   if(ortho_font) delete ortho_font;
 
-  //font = new FTGLTextureFont( "/usr/X11R6/lib/X11/fonts/truetype/FreeSans.ttf" );
-  //font = new FTGLPolygonFont( "/usr/X11R6/lib/X11/fonts/truetype/FreeSans.ttf" );
-  font = new FTGLExtrdFont( "/usr/X11R6/lib/X11/fonts/truetype/FreeSans.ttf" );
-  ortho_font = new FTGLPixmapFont( "/usr/X11R6/lib/X11/fonts/truetype/FreeSans.ttf" );
-  font->CharMap( ft_encoding_unicode );
-  font->Depth(12);
-  if(!font->FaceSize(72)) WARN_S(_("Fontgröße nicht setzbar")); \
-  ortho_font->CharMap( ft_encoding_unicode );
-  if(!ortho_font->FaceSize(16)) WARN_S(_("Fontgröße nicht setzbar")); \
+  char* font_name = "/usr/X11R6/lib/X11/fonts/truetype/FreeSans.ttf";
+  if(!holeDateiModifikationsZeit(font_name)) {
+    WARN_S( _("Konnte Font nicht öffnen:") << font_name )
+    font_name = "/usr/X11R6/lib/X11/fonts/truetype/arial.ttf";
+    if(!holeDateiModifikationsZeit(font_name)) {
+      WARN_S( _("Konnte Font nicht öffnen:") << font_name )
+      font_name = "/Library/Fonts/Arial.ttf";
+      if(!holeDateiModifikationsZeit(font_name)) {
+        WARN_S( _("Konnte Font nicht öffnen:") << font_name )
+        char *n = (char*) calloc(sizeof(char), 1024);
+        sprintf (n, "%s/.fonts/arial.ttf", getenv("HOME"));
+        font_name = n;
+        DBG_PROG_V( holeDateiModifikationsZeit(font_name) )
+        if(!holeDateiModifikationsZeit(font_name)) {
+          WARN_S( _("Konnte Font nicht öffnen:") << font_name )
+          sprintf (n, "%s/fonts/FreeSans.ttf", DATADIR);
+          font_name = n;
+          if(!holeDateiModifikationsZeit(font_name)) {
+            WARN_S( _("Konnte Font nicht öffnen:") << font_name )
+            sprintf (n, "%s/FreeSans.ttf", SRCDIR);
+            font_name = n;
+          }
+        }
+      }
+    }
+  }
+  font = new FTGLExtrdFont( font_name );
+  ortho_font = new FTGLPixmapFont( font_name );
+  DBG_MEM_V( (int*)font )
+  if(font->Error()) {
+    delete font;
+    delete ortho_font;
+    font = ortho_font = 0;
+    WARN_S( _("Konnte Font nicht öffnen:") << font_name )
+  } else {
+    font->CharMap( ft_encoding_unicode );
+    font->Depth(12);
+    if(!font->FaceSize(72)) WARN_S(_("Fontgröße nicht setzbar")); \
+    ortho_font->CharMap( ft_encoding_unicode );
+    if(!ortho_font->FaceSize(16)) WARN_S(_("Fontgröße nicht setzbar"));
+  }
+  #endif
 
   glFlush();
   DBG_PROG_ENDE
@@ -380,16 +428,20 @@ GL_Ansicht::tastatur(int e)
    glEnable(GL_LIGHTING); \
    glLineWidth(strichmult); }
 #else
-#define ZeichneText(Font, Zeiger) { \
+ #ifdef HAVE_FTGL
+ #define ZeichneText(Font, Zeiger) { \
    glLineWidth(strichmult); \
     glDisable(GL_BLEND); \
       glTranslatef(.0,0,0.01); \
         glScalef(0.002,0.002,0.002); \
-            Font->Render(Zeiger); \
+          if(Font) Font->Render(Zeiger); \
         glScalef(500,500,500); \
       glTranslatef(.0,0,-.01); \
     glEnable(GL_BLEND); \
    glLineWidth(strichmult); }
+ #else
+ #define ZeichneText(Font, Zeiger)
+ #endif
 #endif
 
 #define ZeichneOText(Font, scal, buffer) \
@@ -506,14 +558,12 @@ GL_Ansicht::textGarnieren_()
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_LINE_SMOOTH);
     glEnable(GL_LIGHTING);
-  #define PFEILSPITZE icc_gl::glutSolidCone(0.02, 0.05, 16, 4);
+    FARBE(textfarbe[0],textfarbe[1],textfarbe[2])
 
     glPushMatrix();
       glMatrixMode(GL_MODELVIEW);
-      glLineWidth(1.0*strichmult);
       glTranslatef(.5,0.62,.5);
       glRotatef (270,0.0,1.0,.0);
-      FARBE(textfarbe[0],textfarbe[1],textfarbe[2])
       if (nach_farb_namen_.size())
       {
         ptr = (char*) nach_farb_namen_[kanal].c_str();
@@ -524,12 +574,10 @@ GL_Ansicht::textGarnieren_()
 
     // CIE*L - oben
     glPushMatrix();
-      FARBE(pfeilfarbe[0],pfeilfarbe[1],pfeilfarbe[2])
       glTranslatef(0,.5,0);
       glRotatef (270,1.0,0.0,.0);
       glRotatef (270,0.0,0.0,1.0);
       glTranslatef(.02,0,0);
-      FARBE(textfarbe[0],textfarbe[1],textfarbe[2])
       if (von_farb_namen_.size())
       {
         ptr = (char*) von_farb_namen_[0].c_str();
@@ -543,25 +591,13 @@ GL_Ansicht::textGarnieren_()
       if (von_farb_namen_.size() &&
           von_farb_namen_[1] == _("CIE *a"))
         glTranslatef(0,-.5,0);
-      glBegin(GL_LINES);
-        glVertex3f(0, 0,  a_darstellungs_breite/2.);
-        glVertex3f(0, 0, -a_darstellungs_breite/2.);
-      glEnd();
       glTranslatef(0.0,0.0,a_darstellungs_breite/2.);
-      glRotatef (180,0.0,.5,.0);
-      glTranslatef(.0,0.0,a_darstellungs_breite);
-      glTranslatef(.0,0.0,-a_darstellungs_breite);
-      glRotatef (180,0.0,.5,.0);
-      FARBE(textfarbe[0],textfarbe[1],textfarbe[2])
       if (von_farb_namen_.size())
       {
         ptr = (char*) von_farb_namen_[1].c_str();
         sprintf (&text[0], ptr);
         ZeichneText(font, text)
       }
-      if (von_farb_namen_.size() &&
-          von_farb_namen_[1] == _("CIE *a"))
-        glTranslatef(0,0.5,0);
     glPopMatrix(); DBG_PROG
 
     // CIE*b - links
@@ -571,22 +607,13 @@ GL_Ansicht::textGarnieren_()
         glTranslatef(0,-0.5,0);
       glTranslatef(b_darstellungs_breite/2.,0,0);
       glRotatef (90,0.0,.5,.0);
-      glRotatef (180,.0,.5,.0);
-      glTranslatef(.0,.0,b_darstellungs_breite);
-      glTranslatef(.0,.0,-b_darstellungs_breite);
-      glRotatef (180,0.0,.5,.0);
-      FARBE(textfarbe[0],textfarbe[1],textfarbe[2])
       if (von_farb_namen_.size())
       {
         ptr = (char*) von_farb_namen_[2].c_str();
         sprintf (&text[0], ptr);
         ZeichneText(font, text)
       }
-      if (von_farb_namen_.size() &&
-          von_farb_namen_[2] == _("CIE *b"))
-        glTranslatef(0,0.5,0);
     glPopMatrix();
-    glLineWidth(1.0*strichmult);
 
   DBG_PROG_ENDE
 }
@@ -595,19 +622,18 @@ void
 GL_Ansicht::garnieren_()
 {
   DBG_PROG_START
-  char text[256];
-  char* ptr = 0;
 
   #define PFEILSPITZE icc_gl::glutSolidCone(0.02, 0.05, 16, 4);
 
   DBG_PROG_V( id() )
-  // Pfeile und Text TODO: trennen
+  // Pfeile und Text
   if (glListen[HELFER]) {
     glDeleteLists (glListen[HELFER], 1);
   }
   glListen[HELFER] = glGenLists(1);
   glNewList( glListen[HELFER], GL_COMPILE); DBG_PROG_V( glListen[HELFER] )
-    GLfloat farbe[] =   { textfarbe[0],textfarbe[1],textfarbe[2], 1.0 };
+    GLfloat farbe[] =   { pfeilfarbe[0],pfeilfarbe[1],pfeilfarbe[2], 1.0 };
+    glLineWidth(3.0*strichmult);
 
     // Farbkanalname
     glEnable(GL_BLEND);
@@ -660,7 +686,7 @@ GL_Ansicht::garnieren_()
       if (von_farb_namen_.size() &&
           von_farb_namen_[2] == _("CIE *b"))
         glTranslatef(0,-0.5,0);
-      FARBE(textfarbe[0],textfarbe[1],textfarbe[2])
+      FARBE(pfeilfarbe[0],pfeilfarbe[1],pfeilfarbe[2])
       glBegin(GL_LINES);
         glVertex3f( b_darstellungs_breite/2., 0, 0);
         glVertex3f(-b_darstellungs_breite/2., 0, 0);
@@ -1435,40 +1461,36 @@ GL_Ansicht::zeichnen()
 
     glLoadIdentity();
     glMatrixMode(GL_PROJECTION);
-    //glLineWidth(3.0*strichmult);
 
+    glEnable(GL_TEXTURE_2D);
+    glDisable(GL_LIGHTING);
+    glDisable(GL_BLEND);
+    glDisable(GL_LINE_SMOOTH);
+
+    // Farbkanalname
     // Text
     {
       glPushMatrix();
        glLoadIdentity();
        glOrtho(0,w(),0,h(),-10.0,10.0);
 
-       glEnable(GL_TEXTURE_2D);
-       glEnable(GL_LIGHTING);
-       glEnable(GL_BLEND);
-       glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-       glDisable(GL_LINE_SMOOTH);
-
-       glColor4f(textfarbe[0],
-                 textfarbe[1],
-                 textfarbe[2], 1.0);
-       //glTranslatef(0,12,0);
-       //ZeichneOText(ortho_font, 250,"OpenGL");
        GLfloat farbe[] =   { textfarbe[0],textfarbe[1],textfarbe[2], 1.0 };
        FARBE(textfarbe[0],textfarbe[1],textfarbe[2])
 
        glTranslatef(5,-12,0/*8.8 - schnitttiefe*3*/);
 
-       int scal = 1, zeilenversatz = (int)(scal/6.0);
-       //float strichmult = 1.0;
+       int scal = 1;
        std::string text;
        if(id() == 1) {
          text.append(_("Kanal:"));
          text.append(" ");
          text.append(kanalName());
-         glTranslatef(0,zeilenversatz,0);
 
-         ZeichneOText (ortho_font, scal, (char*)text.c_str()) 
+         #ifdef HAVE_FTGL
+         if(ortho_font)
+           glRasterPos2f(0,ortho_font->LineHeight()/5+20);
+         #endif
+         ZeichneOText (ortho_font, scal, text.c_str()) 
        } else {
          for (unsigned int i=0;
                 i < dreiecks_netze.size();
@@ -1476,8 +1498,11 @@ GL_Ansicht::zeichnen()
          {
            text = dreiecks_netze[i].name.c_str();
            DBG_PROG_V( dreiecks_netze[i].name )
+           #ifdef HAVE_FTGL
+           if(ortho_font)
+             glRasterPos2f(0,ortho_font->LineHeight()/5*i+20);
+           #endif
            ZeichneOText (ortho_font, scal, text.c_str())
-           glRasterPos2f(0,font->LineHeight()/5*i+25);
          }
        }
 
@@ -1499,18 +1524,18 @@ GL_Ansicht::zeichnen()
       glMatrixMode(GL_MODELVIEW);
       glLoadIdentity();
 
-      if (DrawAxes)
-        glCallList( glListen[AXES] );
-
       glCallList( glListen[SPEKTRUM] ); DBG_ICCGL_V( glListen[SPEKTRUM] )
+
       if (zeige_helfer) {
         textGarnieren_();
         glCallList( glListen[HELFER] ); DBG_ICCGL_V( glListen[HELFER] )
       }
+
       glCallList( glListen[RASTER] ); DBG_ICCGL_V( glListen[RASTER] )
 
       if(punktform == MENU_dE1STERN)
         glCallList( glListen[PUNKTE] ); //punkteAuffrischen();
+
       glCallList( glListen[PUNKTE] ); DBG_ICCGL_V( glListen[PUNKTE] )
 
       if(dreiecks_netze.size())
@@ -1552,7 +1577,6 @@ GL_Ansicht::hineinPunkte       (std::vector<double>      vect,
 
   tabelle_.clear();DBG_PROG  
   punkte_.clear(); DBG_PROG
-  kurven_.clear(); DBG_PROG
 
   achsNamen(achs_namen);
 
@@ -1621,18 +1645,6 @@ GL_Ansicht::hineinNetze       (const std::vector<ICCnetz> & d_n)
   DBG_PROG_ENDE
 }
 
-void
-GL_Ansicht::hineinKurven(std::vector<std::vector<double> > vect,
-                         std::vector<std::string>          txt)
-{ DBG_PROG_START
-  //Kurve aus tag_browser anzeigen
-  kurven_ = vect;
-  nach_farb_namen_ = txt;
-  punkte_.clear();
-
-  DBG_PROG_ENDE
-}
-
 
 void
 GL_Ansicht::hineinTabelle (std::vector<std::vector<std::vector<std::vector<double> > > > vect,
@@ -1644,7 +1656,6 @@ GL_Ansicht::hineinTabelle (std::vector<std::vector<std::vector<std::vector<doubl
   nach_farb_namen_ = nach; DBG_PROG
 
   achsNamen(achs_namen);
-  kurven_.clear(); DBG_PROG
   punkte_.clear(); DBG_PROG
 
   valid(false);

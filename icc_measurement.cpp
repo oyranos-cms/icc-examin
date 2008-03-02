@@ -861,7 +861,7 @@ ICCmeasurement::getText                     (void)
 
   if ((_CMYK_measurement || _RGB_measurement)
        && _XYZ_measurement) {
-    tabelle.resize(_nFelder+4); // push_back ist zu langsam
+    tabelle.resize(_nFelder+5); // push_back ist zu langsam
     // Tabellenüberschrift
     tabelle[0].resize(1);
     tabelle[0][0] =    _("Mess- und Profilfarben aus <b>"); 
@@ -874,6 +874,10 @@ ICCmeasurement::getText                     (void)
     tabelle[z][0] = _("CMM: <b>lcms</b>");
     z++; tabelle[z].resize(1);
     s << _("Abweichungen (dE CIE*Lab) durchschnittlich:<b> ") << _Lab_Differenz_Durchschnitt << _("</b>  maximal: ") << _Lab_Differenz_max << _("  minimal: ") << _Lab_Differenz_min << _("  (dE CIE 2000) durchschnittlich: ") << _DE00_Differenz_Durchschnitt << _("  maximal: ") << _DE00_Differenz_max << _("  minimal: ") << _DE00_Differenz_min;
+    tabelle[z][0] = s.str();
+    z++; tabelle[z].resize(1);
+    s.str("");
+    s << "___________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________";
     tabelle[z][0] = s.str();
     z++;
     // Tabellenkopf
