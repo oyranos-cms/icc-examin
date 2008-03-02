@@ -40,9 +40,9 @@
 /***************************************************************/
 
    /* Initial polar movement settings */
-#define INIT_POLAR_AZ  0.0
-#define INIT_POLAR_EL 90.0
-#define INIT_DIST      1.72
+#define INIT_POLAR_AZ  90.0
+#define INIT_POLAR_EL  90.0
+#define INIT_DIST      4.72
 #define INIT_AZ_SPIN   0.0
 #define INIT_EL_SPIN   0.0
 
@@ -313,6 +313,36 @@ void agvSwitchMoveMode(int move)
       EyeEl = -EyeEl;
       EyeMove = INIT_MOVE;
       break;
+    case ICCFLY_L:
+      MoveMode = POLAR;
+      EyeDist = INIT_DIST;
+      EyeAz   = INIT_POLAR_AZ;
+      EyeEl   = INIT_POLAR_EL;
+      AzSpin  = INIT_AZ_SPIN;
+      ElSpin  = INIT_EL_SPIN;
+      move = FLYING;
+      agvSwitchMoveMode( FLYING );
+      break;
+    case ICCFLY_a:
+      MoveMode = POLAR;
+      EyeDist = INIT_DIST;
+      EyeAz   = 0;
+      EyeEl   = 0;
+      AzSpin  = INIT_AZ_SPIN;
+      ElSpin  = INIT_EL_SPIN;
+      move = FLYING;
+      agvSwitchMoveMode( FLYING );
+      break;
+    case ICCFLY_b:
+      MoveMode = POLAR;
+      EyeDist = INIT_DIST;
+      EyeAz   = 270;
+      EyeEl   = 0;
+      AzSpin  = INIT_AZ_SPIN;
+      ElSpin  = INIT_EL_SPIN;
+      move = FLYING;
+      agvSwitchMoveMode( FLYING );
+      break;
     case POLAR:
       EyeDist = INIT_DIST;
       EyeAz   = INIT_POLAR_AZ;
@@ -339,11 +369,14 @@ void agvHandleButton(int button, int state, int x, int y)
 
     switch (button) {
       case GLUT_LEFT_BUTTON:
+        if (MoveMode == FLYING)
+          EyeEl = -EyeEl;
         lastEl = downEl = EyeEl;
         lastAz = downAz = EyeAz;
         AzSpin = ElSpin = dAz = dEl = 0;
         AdjustingAzEl = 1;
-	MoveOn(1);
+	MoveOn(0); //ICC stop
+        MoveMode = POLAR;
         break;
 
       case GLUT_MIDDLE_BUTTON:

@@ -27,7 +27,7 @@ GL_Ansicht::GL_Ansicht(int X,int Y,int W,int H) : Fl_Group(X,Y,W,H)
 { DBG_PROG_V( first )
   first = true;
   MenueKanalEintraege = 0;
-  //Punktform = MENU_STERN;
+  Punktform = MENU_STERN;
   DBG_PROG_ENDE
 }
 
@@ -339,47 +339,46 @@ void GL_Ansicht::MakeDisplayLists() {
       glPushMatrix();
 
       glDisable(GL_LIGHTING);
-      glTranslatef(start_x,start_y,start_z);
+      glTranslatef(start_x + dim_x/2.0, start_y + dim_y/2.0, start_z + dim_z/2.0);
       DBG_PROG_V( tabelle.size() <<" "<< tabelle[0].size() )
       glTranslatef(-dim_x,-dim_y,-dim_z);
-      for (int L = 0; L < (int)n_L; L++) { DBG_PROG_V( L )
+      for (int L = 0; L < (int)n_L; L++) { //DBG_PROG_V( L )
+        double y_versatz = (double)L/(n_L-1)*dim_y-n_L/((n_L-0.0)*2.0)*dim_y;
         x = start_x + L * dim_y;
         glTranslatef(0.0,dim_y,0.0);
         glTranslatef(0.0,0.0,-1.0);
-        for (int a = 0; a < (int)n_a; a++) { DBG_PROG_V( a )
+        for (int a = 0; a < (int)n_a; a++) { //DBG_PROG_V( a )
+          double z_versatz = (double)a/(n_a-1)*dim_z-n_a/((n_a-0.0)*2.0)*dim_z;
           y = start_y + a * dim_z;
           glTranslatef(0.0,0.0,dim_z);
           glTranslatef(-1,0.0,0.0);
           for (int b = 0; b < (int)n_b; b++) { //DBG_PROG_V( k )
-            z = start_z + b * dim_x; DBG_PROG_V( dim_x )
-            if (dim_x)
-              glTranslatef(dim_x,0.0,0.0); DBG_PROG_V( dim_x )
-            wert = tabelle[L][a][b][kanal]; DBG_PROG_V( L << a << b << kanal )
-            if (1/*wert*/) {
-              glColor3f(wert/0.9*0.95, wert/0.9*0.95, wert*0.95);
+            z = start_z + b * dim_x; //DBG_PROG_V( dim_x )
+            double x_versatz= (double)b/(n_b-1)*dim_x-n_b/((n_b-0.0)*2.0)*dim_z;
+            glTranslatef(dim_x,0.0,0.0); //DBG_PROG_V( dim_x )
+            wert = tabelle[L][a][b][kanal]; //DBG_PROG_V( L << a << b << kanal )
+            if (wert) {
+              glColor3f(wert, wert, wert);
               switch (Punktform) {
-                case MENU_STERN: { DBG_PROG
-                     double x_versatz = (double)b/(n_b-1)*dim_x;
-                     double y_versatz = (double)L/(n_L-1)*dim_y;
-                     double z_versatz = (double)a/(n_a-1)*dim_z;
-                glBegin(GL_QUADS); DBG_PROG
-                  glVertex3f( dim_x/2+x_versatz,  dim_y/2+y_versatz, z_versatz);
-                  glVertex3f( dim_x/2+x_versatz, -dim_y/2+y_versatz, z_versatz);
-                  glVertex3f(-dim_x/2+x_versatz, -dim_y/2+y_versatz, z_versatz);
-                  glVertex3f(-dim_x/2+x_versatz,  dim_y/2+y_versatz, z_versatz);
+                case MENU_STERN: {
+                glBegin(GL_QUADS);
+                  glVertex3f( dim_x/2,  dim_y/2, z_versatz);
+                  glVertex3f( dim_x/2, -dim_y/2, z_versatz);
+                  glVertex3f(-dim_x/2, -dim_y/2, z_versatz);
+                  glVertex3f(-dim_x/2,  dim_y/2, z_versatz);
                 glEnd();
-                glBegin(GL_QUADS); DBG_PROG
-                  glVertex3f(x_versatz,  dim_y/2+y_versatz,-dim_z/2+z_versatz);
-                  glVertex3f(x_versatz, -dim_y/2+y_versatz,-dim_z/2+z_versatz);
-                  glVertex3f(x_versatz, -dim_y/2+y_versatz, dim_z/2+z_versatz);
-                  glVertex3f(x_versatz,  dim_y/2+y_versatz, dim_z/2+z_versatz);
+                glBegin(GL_QUADS);
+                  glVertex3f(x_versatz,  dim_y/2,-dim_z/2);
+                  glVertex3f(x_versatz, -dim_y/2,-dim_z/2);
+                  glVertex3f(x_versatz, -dim_y/2, dim_z/2);
+                  glVertex3f(x_versatz,  dim_y/2, dim_z/2);
                 glEnd();
-                /*glBegin(GL_QUADS);
-                  glVertex3f(i_versatz,dim_x/2+k_versatz, dim_y/2+j_versatz);
-                  glVertex3f(i_versatz,-dim_x/2+k_versatz, dim_y/2+j_versatz);
-                  glVertex3f(i_versatz,-dim_x/2+k_versatz, -dim_y/2+j_versatz);
-                  glVertex3f(i_versatz,dim_x/2+k_versatz, -dim_y/2+j_versatz);
-                glEnd();*/
+                glBegin(GL_QUADS);
+                  glVertex3f( dim_x/2, y_versatz,-dim_z/2);
+                  glVertex3f(-dim_x/2, y_versatz,-dim_z/2);
+                  glVertex3f(-dim_x/2, y_versatz, dim_z/2);
+                  glVertex3f( dim_x/2, y_versatz, dim_z/2);
+                glEnd();
                 }
                 break;
                 case MENU_WUERFEL: glutSolidCube(groesse); break;
@@ -438,18 +437,21 @@ GL_Ansicht::MenueErneuern()
 void GL_Ansicht::MenuInit() {
   DBG_PROG_START
   int sub2 = glutCreateMenu(agvSwitchMoveMode);   /* pass these right to */
-  glutAddMenuEntry(_("Fliegen"),  FLYING); /* agvSwitchMoveMode() */
-  glutAddMenuEntry(_("Betrachten"),   POLAR);
+  glutAddMenuEntry(_("L Schnitt"),  ICCFLY_L);
+  glutAddMenuEntry(_("a Schnitt"),  ICCFLY_a);
+  glutAddMenuEntry(_("b Schnitt"),  ICCFLY_b);
+  glutAddMenuEntry(_("Schnitt"),    FLYING); /* agvSwitchMoveMode() */
+//  glutAddMenuEntry(_("Betrachten"),   POLAR);
 
   int sub3 = glutCreateMenu(handlemenu);
   glutAddMenuEntry(_("Kugel"),  MENU_KUGEL); 
   glutAddMenuEntry(_("Würfel"), MENU_WUERFEL);
   glutAddMenuEntry(_("Stern"),  MENU_STERN), 
   glutCreateMenu(handlemenu);
-  glutAddSubMenu(_("Bewegung"), sub2);
-  glutAddMenuEntry(_("Achsen ein/aus"), MENU_AXES);
-  glutAddMenuEntry(_("Rotation an/aus"), MENU_RING);
-  glutAddMenuEntry(_("Beenden"), MENU_QUIT);
+  glutAddSubMenu(_("Querschnitte"), sub2);
+  //glutAddMenuEntry(_("Achsen ein/aus"), MENU_AXES);
+  //glutAddMenuEntry(_("Rotation an/aus"), MENU_RING);
+  //glutAddMenuEntry(_("Beenden"), MENU_QUIT);
   glutAddSubMenu(_("Formen"), sub3);
 
 
@@ -479,7 +481,7 @@ void display() {
 
   glLoadIdentity();
 
-  gluPerspective(45, seitenverhaeltnis, 1.2, 10);
+  gluPerspective(15, seitenverhaeltnis, 4.2, 15);
 
     /* so this replaces gluLookAt or equiv */
   agvViewTransform();
