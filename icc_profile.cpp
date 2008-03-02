@@ -63,8 +63,10 @@ ICCprofile::copy_ ( const ICCprofile & p )
   _filename = p._filename;
   changing_ = p.changing_;
   measurement = p.measurement;
+  measurement._profil = this;
   tags = p.tags;
   header = p.header;
+  
   DBG_PROG_ENDE
   return *this;
 }
@@ -145,7 +147,9 @@ ICCprofile::load (char* filename)
 
 void
 ICCprofile::fload ()
-{ DBG_PROG_START // ICC Profil laden
+{
+  DBG_PROG_START // ICC Profil laden
+ 
   std::string file = _filename;
   changing_ = true;
 
@@ -175,11 +179,16 @@ ICCprofile::fload ()
     // zweites mal Laden nach clear() ; könnte optimiert werden
     data_ = ladeDatei (file, &size_);
     _filename = file;
+
+    Speicher s ((const char*)data_, size_);
+    s = file;
+    load(s);
+
   } else {
     DBG_PROG_ENDE
     return;
   }
-
+#if 0
   // Test   > 132 byte
   if (size_ < 132) {
     WARN_S( _("Kein Profil")<<_(" Größe ")<<size_ )
@@ -264,7 +273,7 @@ ICCprofile::fload ()
   #endif
  
   DBG_NUM_V( _filename )
-
+#endif
   changing_ = false;
   DBG_PROG_ENDE
 }
@@ -276,21 +285,19 @@ ICCprofile::load (const Speicher & prof)
   std::string file = prof.name();
   changing_ = true;
 
-  size_ = prof.size();
-  data_ = (char*)calloc (sizeof (char), size_+1);
-  const char* z = prof;
-  memcpy(data_, z, size_);
-  DBG_MEM
-
   DBG_MEM_V( (int*)data_ <<" "<< size_ )
 
-  if (data_ && size_) {
-    WARN_S( _("!!!! Profil wird wiederbenutzt !!!! ") )
+  if (prof.size()) {
+    //WARN_S( _("!!!! Profil wird wiederbenutzt !!!! ") )
     clear();
-    // zweites mal Laden nach clear() ; könnte optimiert werden
+    size_ = prof.size();
     data_ = (char*)calloc (sizeof (char), size_+1);
+    const char* z = prof;
     memcpy(data_, z, size_);
     _filename = file;
+    DBG_MEM_V( _filename )
+    DBG_MEM_V( size_ )
+    DBG_MEM_V( (int*)data_ )
   } else {
     DBG_PROG_ENDE
     return;
@@ -656,7 +663,7 @@ ICCprofile::getTagByName            (std::string name)
 bool
 ICCprofile::hasTagName            (std::string name)
 { DBG_PROG_START
-  if (!tags.size()) { DBG_PROG_ENDE
+  if (!tags.size()) {
     DBG_PROG_ENDE
     return false;
   } DBG_PROG

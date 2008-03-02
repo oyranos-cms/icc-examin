@@ -57,6 +57,7 @@ class ICCprofile;
 
 // definiert in icc_measurement.cpp
 class ICCmeasurement {
+  friend class ICCprofile;
     void                copy (const ICCmeasurement& m);
     void                defaults ();
 

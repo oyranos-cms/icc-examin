@@ -45,7 +45,7 @@ ifdef APPLE
   OSX_CPP = icc_helfer_osx.cpp
   OSX_H  = -DHAVE_OSX
 else
-  OPTS = -Wall  -Os $(DEBUG) #-fomit-frame-pointer -g
+  OPTS = -Wall  -Os -g $(DEBUG) #-fomit-frame-pointer -g
   GLUT = -lglut
   X_H  = -DHAVE_X
   X_CPP = icc_helfer_x.cpp

@@ -116,7 +116,7 @@ class Speicher
                               DBG_MEM_ENDE
                             }
                ~Speicher () {
-                              DBG_MEM_START
+                              DBG_MEM_START DBG_MEM_S( "~Speicher ()" )
                                 DBG_MEM_S( ref_n_ <<" = "<< *ref_n_ )
                               --(*ref_n_);
                                 DBG_MEM_S( ref_n_ <<" = "<< *ref_n_ )
@@ -163,7 +163,7 @@ class Speicher
                 Speicher (const char* zeiger, int groesse) {
                               DBG_MEM_START
                               init();
-                              char *z = (char*) new char [groesse];
+                              char *z = (char*) new char [groesse+1];
                               memcpy(z, zeiger, groesse);
                                 DBG_MEM_S( "neu: "<<(int*)z<<" "<<groesse )
                               lade (z, groesse);
@@ -186,11 +186,6 @@ class Speicher
                               return *letze_aen_zeit_;
                             }
 
-    operator const Speicher & () const {
-                              DBG_MEM_START
-                              DBG_MEM_ENDE
-                              return *this;
-                            }
     operator const char* () const {
                               DBG_MEM_START
                               *letze_ben_zeit_ = time(0);

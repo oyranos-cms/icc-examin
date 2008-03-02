@@ -59,10 +59,17 @@ ICCkette::oeffnen (const Speicher & prof, int pos)
     if(prof.name() == profile_[i].filename())
       return false;
 
+  if(!prof.size())
+    return false;
+
   // Laden TODO: test auf Existenz der Datei (oyranos?)
-  if (pos >= 0 && pos < (int)profile_.size()) {
+  if (pos >= 0 &&
+      pos < (int)profile_.size() )
+  {
     profile_.insert (profile_.begin()+pos, ICCprofile());
     profile_[pos].load(prof);
+    DBG_PROG_V( profile_[pos].size() )
+    DBG_PROG_V( profile_[pos].filename() )
     DBG_PROG_V( prof.name() )
     profilnamen_.insert (profilnamen_.begin()+pos, prof.name() );
     aktiv_.insert (aktiv_.begin()+pos, true);

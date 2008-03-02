@@ -91,6 +91,17 @@ class ICCexamin : public icc_examin_ns::Beobachter
 
     void histogram();
     void histogram(int erneuere_nummer_in_profile_kette);
+    void messwertLese  ( int n,
+                         std::vector<double> & p,
+                         std::vector<float>  & f,
+                         std::vector<std::string> & namen);
+    void netzLese      ( int n,
+                         std::vector<ICCnetz> & netz);
+    void farbenLese    ( int n,
+                         std::vector<double> & p,
+                         std::vector<float>  & f);
+
+
     void vcgtZeigen ();
     void testZeigen ();
     void moniSetzen ();

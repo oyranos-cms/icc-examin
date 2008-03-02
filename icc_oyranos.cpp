@@ -233,10 +233,12 @@ Oyranos::rgb_test_ ()
   DBG_PROG_ENDE
 }
 
+extern int oy_debug;
 void
 Oyranos::cmyk_test_ ()
 {
   DBG_PROG_START
+  //oy_debug = 1;
   Speicher *v_block = &cmyk_;
   char* block;
   #if HAVE_OY
@@ -265,6 +267,7 @@ Oyranos::cmyk_test_ ()
 
   DBG_NUM_S( "Standard " OY_DEFAULT_CMYK_PROFILE " Profil = "<< *cmyk_ <<" "<< cmyk_.size() <<"\n" )
   #endif
+  //oy_debug = 0;
   DBG_PROG_ENDE
 }
 
