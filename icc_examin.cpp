@@ -536,7 +536,6 @@ ICCexamin::netzLese (int n,
                      std::vector<ICCnetz> & netz)
 {
   DBG_PROG_START
-
   std::vector<ICCnetz> netz_temp;
   Speicher s;
   if(profile.size() > n)
@@ -553,7 +552,6 @@ ICCexamin::netzLese (int n,
       if(n+1 > (int)netz.size())
         netz.resize( n+1 );
       netz[n] = netz_temp[0];
-      netz[n].transparenz = 0.6;
       netz[n].name = profile[n]->filename();
       DBG_NUM_V( netz[n].transparenz )
     }
@@ -630,7 +628,15 @@ ICCexamin::histogram (int n)
   DBG_PROG
   if(netz.size())
   {
-    icc_betrachter->DD_histogram->hineinNetze( netz );
+    if(icc_betrachter->DD_histogram->dreiecks_netze.size() < netz.size())
+    {
+      icc_betrachter->DD_histogram-> dreiecks_netze .resize( netz.size() );
+      netz[n].transparenz = 0.3;
+    } else
+      netz[n].transparenz = icc_betrachter->DD_histogram->dreiecks_netze[n].
+                            transparenz;
+
+    icc_betrachter->DD_histogram->dreiecks_netze[n] = netz[n];
     icc_betrachter->DD_histogram->achsNamen( texte );
   }
 
@@ -648,6 +654,11 @@ ICCexamin::histogram ()
 
   for(int i = 0; i < profile.size(); ++i)
     histogram(i);
+
+  icc_betrachter->DD_histogram ->
+    dreiecks_netze [icc_betrachter->DD_histogram->dreiecks_netze.size()-1]
+      . transparenz = 0.7;
+
   DBG_PROG_V( profile.size() )
 
   frei_ = true;
