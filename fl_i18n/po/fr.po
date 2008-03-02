@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: fl_i18n-0.0.1\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2007-08-11 17:35+0200\n"
+"POT-Creation-Date: 2007-09-03 17:38+0200\n"
 "PO-Revision-Date: 2005-08-13 17:35+0200\n"
 "Last-Translator: Kai-Uwe Behrmann\n"
 "Language-Team:  <de@li.org>\n"
@@ -16,82 +16,82 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: KBabel 1.9\n"
 
-#: fl_i18n.cxx:214
+#: fl_i18n.c:211
 msgid "osX locale obtained: "
 msgstr ""
 
-#: fl_i18n.cxx:217
+#: fl_i18n.c:214
 msgid "osX locale not obtained"
 msgstr ""
 
-#: fl_i18n.cxx:338
+#: fl_i18n.c:335
 msgid "try to set LANG"
 msgstr ""
 
-#: fl_i18n.cxx:357
+#: fl_i18n.c:354
 msgid "try locale in "
 msgstr ""
 
-#: fl_i18n.cxx:367
+#: fl_i18n.c:364
 msgid "set codeset for"
 msgstr ""
 
-#: fl_i18n.cxx:403
+#: fl_i18n_fltk.cxx:88
 msgid "Add to Favorites"
 msgstr ""
 
-#: fl_i18n.cxx:404
+#: fl_i18n_fltk.cxx:89
 msgid "All Files (*)"
 msgstr ""
 
-#: fl_i18n.cxx:405
+#: fl_i18n_fltk.cxx:90
 msgid "Custom Filter"
 msgstr ""
 
-#: fl_i18n.cxx:406
+#: fl_i18n_fltk.cxx:91
 msgid "Please choose an existing file!"
 msgstr ""
 
-#: fl_i18n.cxx:407
+#: fl_i18n_fltk.cxx:92
 msgid "Favorites"
 msgstr ""
 
-#: fl_i18n.cxx:408
+#: fl_i18n_fltk.cxx:93
 msgid "Filename"
 msgstr ""
 
-#: fl_i18n.cxx:409
+#: fl_i18n_fltk.cxx:94
 msgid "Manage Favorites"
 msgstr ""
 
-#: fl_i18n.cxx:411
+#: fl_i18n_fltk.cxx:96
 msgid "My Computer"
 msgstr ""
 
-#: fl_i18n.cxx:413
+#: fl_i18n_fltk.cxx:98
 msgid "Filesystems"
 msgstr ""
 
-#: fl_i18n.cxx:415
+#: fl_i18n_fltk.cxx:100
 msgid "New Directory?"
 msgstr ""
 
-#: fl_i18n.cxx:416
+#: fl_i18n_fltk.cxx:101
 msgid "Preview"
 msgstr ""
 
-#: fl_i18n.cxx:418
+#: fl_i18n_fltk.cxx:103
 msgid "Save"
 msgstr ""
 
-#: fl_i18n.cxx:420
+#: fl_i18n_fltk.cxx:105
 msgid "Show:"
 msgstr ""
 
-#: fl_i18n_example.cxx:14 fl_i18n_example.cxx:54 fl_i18n_example.cxx:57
+#: fl_i18n_example.cxx:14 fl_i18n_example.cxx:53 fl_i18n_example.cxx:56
 msgid "Hello, world!"
 msgstr "Bonjour, le monde!"
 
-#: fl_i18n_example.cxx:55
+#: fl_i18n_example.cxx:54
 msgid "fl_i18n_example"
 msgstr ""

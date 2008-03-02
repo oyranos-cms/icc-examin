@@ -109,8 +109,7 @@ ICCvrmlParser::lesen_ ()
 # endif
 
   // locale - differenciate commas
-  const char* temp = setlocale(LC_NUMERIC, NULL);
-  char* loc_alt = icc_strdup_m(temp); //getenv("LANG");
+  char* loc_alt = strdup(setlocale(LC_NUMERIC, NULL)); //getenv("LANG");
   if(loc_alt)
     DBG_NUM_V( loc_alt )
   else

@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2005  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2007  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -25,43 +25,32 @@
  * 
  */
 
-// Date:      August 2004
+/* Date:      August 2004 */
 
 #ifndef ICC_UTILS_H
 #define ICC_UTILS_H
 
-#ifndef ICC_EXTERN
 #include "config.h"
-#endif
 
 #ifdef CWDEBUG
 # include "sys.h"
 # include "debug.h"
 #endif
 
-#include <cstdio>		// printf()
+#ifdef __cplusplus
+#include <cstdio>		/* printf() */
 #ifdef HAVE_EXCEPTION
-#  include <exception>		// class expeption
+#  include <exception>		/* class expeption */
 #endif
 #include "threads.h"
-#ifdef WIN32
-# define iccThreadSelf  GetCurrentThreadId
-# define iccThreadEqual(a,b) ((a) == (b)) 
-# define icc_popen_m    _popen
-# define icc_pclose_m   _pclose
-  char * icc_strdup(const char*);
-# define icc_strdup_m(text_) icc_strdup(text_)
-#else
-# define iccThreadSelf  pthread_self 
-# define iccThreadEqual(a,b) pthread_equal((a),(b)) 
-# define icc_popen_m    popen
-# define icc_pclose_m   pclose
-# define icc_strdup_m(text_) strdup(text_)
-#endif 
-#include <new>			// bad_alloc()
+#include <new>			/* bad_alloc() */
 #include <iostream>
 #include <sstream>
 #include <cmath>
+# include "fl_i18n/fl_i18n.H"
+#else
+# define threadGettext(text) text
+#endif /* __cplusplus */
 
 #include <errno.h>
 #ifndef EAGAIN
@@ -71,39 +60,18 @@
 #ifdef USE_GETTEXT
 # include <libintl.h>
 # define _(text) threadGettext(text)
-const char* threadGettext( const char* text);
 #else
 # define _(text) text
 #endif
 
 
+/* ByteOrder on Solaris */
 #ifndef BIG_ENDIAN
 # define BIG_ENDIAN 4321
 #endif
 #ifndef LITTLE_ENDIAN
 # define LITTLE_ENDIAN 1234
 #endif
-
-#ifdef WIN32
-//#include <WinSock2.h>
-#if BIGENDIAN 
-# ifdef BYTE_ORDER
-#   undef BYTE_ORDER
-# endif
-# define BYTE_ORDER BIG_ENDIAN
-#endif
-#if LITTLEENDIAN 
-# ifdef BYTE_ORDER
-#   undef BYTE_ORDER
-# endif
-# define BYTE_ORDER LITTLE_ENDIAN
-#endif
-#ifndef BYTE_ORDER
-# define BYTE_ORDER LITTLE_ENDIAN
-#endif
-#endif
-
-// ByteOrder on Solaris
 #ifdef _BIG_ENDIAN
 # ifdef BYTE_ORDER
 #   undef BYTE_ORDER
@@ -118,6 +86,7 @@ const char* threadGettext( const char* text);
 #endif
 
 
+#ifdef __cplusplus
 #define DBG_MAX_THREADS 12
 enum { THREAD_HAUPT, THREAD_GL1, THREAD_GL2, THREAD_WACHE, THREAD_LADEN,
   THREAD_ICCEXAMIN_MAX };
@@ -126,8 +95,7 @@ int         wandelThreadId (Fl_Thread id);
 Fl_Thread & getThreadId ( int pos );
 void        registerThreadId ( Fl_Thread id, int pos );
 
-
-// status messages for error tracking
+/* status messages for error tracking */
 void dbgWriteF (/*std::ostringstream & ss*/);
 extern std::ostringstream debug_s_;
 
@@ -139,7 +107,7 @@ extern int             debug_s_mutex_threads_;
 
 #ifdef HAVE_PTHREAD_H
 #define dbgWrite(ss) { \
-  if( !iccThreadEqual(debug_s_mutex_thread_, iccThreadSelf()) || \
+  if( !pthread_equal(debug_s_mutex_thread_, pthread_self()) || \
       debug_s_mutex_threads_ == 0 ) \
     while (pthread_mutex_trylock( &debug_s_mutex_ )) { \
     /*printf("%s:%d %s() debug_s_mutex_ nicht verfuegbar\n",__FILE__,__LINE__,__func__);*/ \
@@ -147,7 +115,7 @@ extern int             debug_s_mutex_threads_;
     } \
   debug_s_mutex_threads_++ ; \
   if(debug_s_mutex_threads_ == 1) \
-    debug_s_mutex_thread_ = iccThreadSelf(); \
+    debug_s_mutex_thread_ = pthread_self(); \
   debug_s_.str(""); \
   debug_s_ << ss; \
   dbgWriteF(); \
@@ -157,22 +125,21 @@ extern int             debug_s_mutex_threads_;
 }
 #else
 #define dbgWrite(ss) { \
- debug_s_ << ss; dbgWriteF(); \
+ debug_s_ << ss; dbgWriteF(debug_s_); \
 }
 #endif
-// look in icc_utils.cpp for the WRITE_DBG definition
+/* look in icc_utils.cpp for the WRITE_DBG definition */
 
 #define cout std::cout
 #define endl std::endl
 
-//extern Fl_Thread level_PROG_ [DBG_MAX_THREADS];
+/* extern Fl_Thread level_PROG_ [DBG_MAX_THREADS]; */
 int    iccLevel_PROG(int plus_minus_null);
 #define icc_level_PROG       iccLevel_PROG( 0)
 #define icc_level_PROG_plus  iccLevel_PROG( 1)
 #define icc_level_PROG_minus iccLevel_PROG(-1)
 extern int icc_debug;
 
-#include <time.h>
 /*  icc_debug is controled be the environment variale ICCEXAMIN_DEBUG in main()
  *  levels:
  *   0: DBG              // use only intermediate and then remove, standard
@@ -191,11 +158,7 @@ extern int icc_debug;
 
 #define DBG_UHR_ (double)clock()/(double)CLOCKS_PER_SEC
 
-#ifndef WIN32
 #define DBG_T_     dbgWrite ( __FILE__<<":"<<__LINE__ <<" "<< __func__ << "() " ); dbgThreadId(); dbgWrite ( " "<< DBG_UHR_ <<" " );
-#else
-#define DBG_T_     dbgWrite ( __FILE__<<":"<<__LINE__ <<" " ); dbgThreadId(); dbgWrite ( " "<< DBG_UHR_ <<" " );
-#endif
 #define LEVEL      { for (int i = 0; i < icc_level_PROG; i++) dbgWrite (" "); }
 #define DBG_       { LEVEL dbgWrite ("        "); DBG_T_ dbgWrite (endl); }
 #define DBG_S_(txt){ LEVEL dbgWrite ("        "); DBG_T_ dbgWrite (txt << endl); }
@@ -269,37 +232,19 @@ extern int icc_debug;
 #define WARN_V(txt) { dbgWrite (_("!!! Warning !!!")); DBG_V_(txt) }
 
 namespace icc_examin_ns {
-  // Zeit / Uhr
-  void sleep(double Sekunden); // definiert in icc_helfer.cpp
+  /* Zeit / Uhr */
+  void sleep(double Sekunden); /* definiert in icc_helfer.cpp */
 }
 
 
-// mathematische Helfer
 
-#define MIN(a,b)    (((a) <= (b)) ? (a) : (b))
-#define MAX(a,b)    (((a) > (b)) ? (a) : (b))
-#define HYP(a,b)    sqrt( (a)*(a) + (b)*(b) )
-#define HYP3(a,b,c) sqrt( (a)*(a) + (b)*(b) + (c)*(c) )
-#define RUND(a)     ((a) + 0.5)
-
-#ifndef M_PI
-#define M_PI 3.14159265358979323846
-#endif
-
-#ifdef min
-#undef min
-#endif
-#ifdef max
-#undef max
-#endif
-
-// ============================================================
-// Provisorische Ausnahme-Klasse; von std::exception abstammend:
-// ============================================================
+/* ============================================================ */
+/* Provisorische Ausnahme-Klasse; von std::exception abstammend: */
+/* ============================================================ */
 #ifdef HAVE_EXCEPTION
 class Ausnahme : public std::exception {
 public:
-    virtual void report () const throw() {}  // oder = 0;
+    virtual void report () const throw() {}  /* oder = 0; */
 };
 
 
@@ -312,9 +257,25 @@ public:
     virtual const char* what() const throw()	{ return "Datei I/O"; }
     virtual void report () const throw() {
       DBG_PROG_S ("Ausnahme-Report:\n");
-      DBG_PROG_S ("\tDatei \""<< fname <<"\" war nicht zu oeffnen\n");//testweise
+      DBG_PROG_S ("\tDatei \""<< fname <<"\" war nicht zu oeffnen\n");/*testweise */
     };
 };
 #endif
 
-#endif //ICC_UTILS_H
+#else /* __cplusplus */
+#define WARN { printf ("%s:%d %s\n", __FILE__,__LINE__,_("!!! Warning !!!")); }
+#define WARN_S(txt) { printf ("%s:%d %s %s\n", __FILE__,__LINE__,_("!!! Warning !!!"), txt); }
+#define WARN_V(txt) { printf ("%s:%d %s %s %s\n", __FILE__,__LINE__,_("!!! Warning !!!"), #txt, txt); }
+#endif /* __cplusplus */
+
+
+/* mathematische Helfer */
+
+#define MIN(a,b)    (((a) <= (b)) ? (a) : (b))
+#define MAX(a,b)    (((a) > (b)) ? (a) : (b))
+#define HYP(a,b)    sqrt( (a)*(a) + (b)*(b) )
+#define HYP3(a,b,c) sqrt( (a)*(a) + (b)*(b) + (c)*(c) )
+#define RUND(a)     ((a) + 0.5)
+
+
+#endif /* ICC_UTILS_H */

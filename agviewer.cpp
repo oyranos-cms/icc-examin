@@ -87,9 +87,9 @@ Agviewer::FlyLookFrom(GLfloat x, GLfloat y, GLfloat z, GLfloat az, GLfloat el)
 { DBG_PROG_START
   float lookat[3], perp[3], up[3];
 
-  lookat[0] = (GLfloat)(sin(TORAD(az))*cos(TORAD(el)));
-  lookat[1] = (GLfloat)sin(TORAD(el));
-  lookat[2] = (GLfloat)(-cos(TORAD(az))*cos(TORAD(el)));
+  lookat[0] = sin(TORAD(az))*cos(TORAD(el));
+  lookat[1] = sin(TORAD(el));
+  lookat[2] = -cos(TORAD(az))*cos(TORAD(el));
   normalize(lookat);
   perp[0] = lookat[2];
   perp[1] = 0;
@@ -128,11 +128,11 @@ int
 Agviewer::ConstrainEl(void)
 { DBG_PROG_START
   if (EyeEl <= -90) {
-    EyeEl = -89.99f;
+    EyeEl = -89.99;
     DBG_PROG_ENDE
     return 1;
   } else if (EyeEl >= 90) {
-    EyeEl = 89.99f;
+    EyeEl = 89.99;
     DBG_PROG_ENDE
     return 1;
   }
@@ -148,9 +148,9 @@ Agviewer::agvMove_(void)
   {
   switch (MoveMode)  {
     case FLYING:
-      Ex += (GLfloat)(EyeMove*sin(TORAD(EyeAz))*cos(TORAD(EyeEl)));
-      Ey += (GLfloat)(EyeMove*sin(TORAD(EyeEl)));
-      Ez -= (GLfloat)(EyeMove*cos(TORAD(EyeAz))*cos(TORAD(EyeEl)));
+      Ex += EyeMove*sin(TORAD(EyeAz))*cos(TORAD(EyeEl));
+      Ey += EyeMove*sin(TORAD(EyeEl));
+      Ez -= EyeMove*cos(TORAD(EyeAz))*cos(TORAD(EyeEl));
       if(fabs(EyeDist+0.01) < fabs(EyeDist)) {
         int button = FL_BUTTON1,
             event = FL_PUSH,
@@ -173,8 +173,8 @@ Agviewer::agvMove_(void)
     }
 
     if (AdjustingAzEl) {
-      dAz *= (GLfloat)slow_daz;
-      dEl *= (GLfloat)slow_del;
+      dAz *= slow_daz;
+      dEl *= slow_del;
     }
 
   } else
@@ -219,58 +219,58 @@ Agviewer::agvSwitchMoveMode(int move)
   switch (move) {
     case FLYING:
       if (MoveMode == FLYING) return;
-      Ex    = (GLfloat)(-EyeDist*sin(TORAD(EyeAz))*cos(TORAD(EyeEl)));
-      Ey    = (GLfloat)( EyeDist*sin(TORAD(EyeEl)));
-      Ez    = (GLfloat)( EyeDist*(cos(TORAD(EyeAz))*cos(TORAD(EyeEl))));
+      Ex    = -EyeDist*sin(TORAD(EyeAz))*cos(TORAD(EyeEl));
+      Ey    =  EyeDist*sin(TORAD(EyeEl));
+      Ez    =  EyeDist*(cos(TORAD(EyeAz))*cos(TORAD(EyeEl)));
       EyeAz =  EyeAz;
       EyeEl = -EyeEl;
-      EyeMove = (GLfloat)init_move;
+      EyeMove = init_move;
       parent->bewegen(true);
       break;
     case ICCFLY_L:
       MoveMode = POLAR;
-      EyeAz   = (GLfloat)init_polar_az;
-      EyeEl   = (GLfloat)init_polar_el;
-      AzSpin  = (GLfloat)init_az_spin;
-      ElSpin  = (GLfloat)init_el_spin;
+      EyeAz   = init_polar_az;
+      EyeEl   = init_polar_el;
+      AzSpin  = init_az_spin;
+      ElSpin  = init_el_spin;
       move = FLYING;
       this->agvSwitchMoveMode( FLYING );
       break;
     case ICCFLY_a:
       MoveMode = POLAR;
-      EyeDist = (GLfloat)init_dist_a;
+      EyeDist = init_dist_a;
       EyeAz   = 0;
       EyeEl   = 0;
-      AzSpin  = (GLfloat)init_az_spin;
-      ElSpin  = (GLfloat)init_el_spin;
+      AzSpin  = init_az_spin;
+      ElSpin  = init_el_spin;
       move = FLYING;
       this->agvSwitchMoveMode( FLYING );
       break;
     case ICCFLY_b:
       MoveMode = POLAR;
-      EyeDist = (GLfloat)init_dist_b;
+      EyeDist = init_dist_b;
       EyeAz   = 270;
       EyeEl   = 0;
-      AzSpin  = (GLfloat)init_az_spin;
-      ElSpin  = (GLfloat)init_el_spin;
+      AzSpin  = init_az_spin;
+      ElSpin  = init_el_spin;
       move = FLYING;
       this->agvSwitchMoveMode( FLYING );
       break;
     case ICCPOLAR:
       move = POLAR;
-      EyeDist = 4.2f; // der Schnittabstand
+      EyeDist = 4.2; // der Schnittabstand
       //EyeAz   = 0;
       EyeEl   = 0;
       AzSpin  = 1.0;
-      ElSpin  = (GLfloat)init_el_spin;
+      ElSpin  = init_el_spin;
       parent->bewegen(true);
       break;
     case POLAR:
-      EyeDist = (GLfloat)init_dist;
-      EyeAz   = (GLfloat)init_polar_az;
-      EyeEl   = (GLfloat)init_polar_el;
-      AzSpin  = (GLfloat)init_az_spin;
-      ElSpin  = (GLfloat)init_el_spin;
+      EyeDist = init_dist;
+      EyeAz   = init_polar_az;
+      EyeEl   = init_polar_el;
+      AzSpin  = init_az_spin;
+      ElSpin  = init_el_spin;
       break;
     case AGV_STOP:
       MoveMode = POLAR;
@@ -380,21 +380,21 @@ Agviewer::agvHandleMotion(int x, int y)
   if (downb & FL_BUTTON1)
   {
       DBG_PROG_S( "FL_BUTTON1" )
-      EyeEl  = (GLfloat)(downEl + el_sens * deltay);
+      EyeEl  = downEl + el_sens * deltay;
       ConstrainEl();
-      EyeAz  = (GLfloat)(downAz + az_sens * deltax);
-      dAz    = (GLfloat)(prev_daz*dAz + cur_daz*(lastAz - EyeAz));
-      dEl    = (GLfloat)(prev_del*dEl + cur_del*(lastEl - EyeEl));
+      EyeAz  = downAz + az_sens * deltax;
+      dAz    = prev_daz*dAz + cur_daz*(lastAz - EyeAz);
+      dEl    = prev_del*dEl + cur_del*(lastEl - EyeEl);
       lastAz = EyeAz;
       lastEl = EyeEl;
   } else
   if (downb & FL_BUTTON2)
   {
       DBG_PROG_S( "FL_BUTTON2" )
-      EyeDist = (GLfloat)(downDist + dist_sens*deltay);
-      Ex = (GLfloat)(downEx - e_sens*deltay*sin(TORAD(EyeAz))*cos(TORAD(EyeEl)));
-      Ey = (GLfloat)(downEy - e_sens*deltay*sin(TORAD(EyeEl)));
-      Ez = (GLfloat)(downEz + e_sens*deltay*cos(TORAD(EyeAz))*cos(TORAD(EyeEl)));
+      EyeDist = downDist + dist_sens*deltay;
+      Ex = downEx - e_sens*deltay*sin(TORAD(EyeAz))*cos(TORAD(EyeEl));
+      Ey = downEy - e_sens*deltay*sin(TORAD(EyeEl));
+      Ez = downEz + e_sens*deltay*cos(TORAD(EyeAz))*cos(TORAD(EyeEl));
   }
   DBG_PROG_ENDE
 }
@@ -431,17 +431,17 @@ Agviewer::agvHandleKeys_(unsigned char key, int&, int&)
   }
 
   if (key >= '0' && key <= '9')
-    SetMove((GLfloat)SPEEDFUNCTION((key-'0')));
+    SetMove(SPEEDFUNCTION((key-'0')));
   else
     switch(key) {
       case '+':  
         if (EyeMove == 0)
-          SetMove((GLfloat)minmove);
+          SetMove(minmove);
          else
-          SetMove(EyeMove *= (GLfloat)(1 + movefraction));
+          SetMove(EyeMove *= (1 + movefraction));
         break;
       case '-':
-        SetMove(EyeMove *= (GLfloat)(1 - movefraction));
+        SetMove(EyeMove *= (1 - movefraction));
         break;
     }
   DBG_PROG_ENDE
@@ -498,10 +498,10 @@ Agviewer::agvMakeAxesList(int displaylistnum)
     glEnd();
     for (i = 0; i < 3; i++) {
       glPushMatrix();
-        glTranslatef((GLfloat)-10*(i==0), (GLfloat)-10*(i==1), (GLfloat)-10*(i==2));
+        glTranslatef(-10*(i==0), -10*(i==1), -10*(i==2));
         for (j = 0; j < 21; j++) {
 //          glutSolidCube(0.1);
-          glTranslatef((GLfloat)i==0, (GLfloat)i==1, (GLfloat)i==2);
+          glTranslatef(i==0, i==1, i==2);
 	}
       glPopMatrix();
     }

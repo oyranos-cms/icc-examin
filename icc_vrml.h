@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2007  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2005  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -32,7 +32,7 @@
 
 #include <string>
 
-int createVrml( const char *profilVoll, char *profilTransparent, char *vrml);
-std::string iccCreateVrml( const char* p, int size, int intent );
+int create_vrml( const char *profilVoll, char *profilTransparent, char *vrml);
+std::string icc_create_vrml( const char* p, int size, int intent );
 
 #endif //ICC_VRML_H

@@ -35,6 +35,7 @@
 #include "icc_utils.h"
 //#include "agviewer.h"
 #include "icc_vrml_parser.h"
+#include "icc_oyranos.h"
 #include "icc_thread_daten.h"
 #if APPLE
 #  include <OpenGL/glu.h>
@@ -50,18 +51,23 @@
 class Fl_Menu_Button;
 class Agviewer;
 
-class GL_Ansicht : public Fl_Gl_Window, /*, public Fl_Slot*/
+class GL_Ansicht : public Fl_Gl_Window,
                    public icc_examin_ns::ThreadDaten,
-                   public icc_examin_ns::Beobachter {
+                   public icc_examin_ns::Beobachter,
+                   public icc_examin_ns::Modell {
   // internal data
-    // position: colour1, colour2, colour3, colour channel No., value
+    //! position: colour1, colour2, colour3, colour channel No., value
   std::vector<std::vector<std::vector<std::vector<double> > > > tabelle_;
   std::vector<std::string>nach_farb_namen_;
   std::vector<std::string>von_farb_namen_;
   std::vector<std::string>farb_namen_;
-  std::vector<double> punkte_;        //                (n*3)
-  std::vector<float>  farben_;        // rgba 0.0 - 1.0 (n*4)
+  std::vector<double> punkte_;        //!<                (n*3)
+  std::vector<float>  farben_;        //!< rgba 0.0 - 1.0 (n*4)
+  oyNamedColour_s * epoint_;            //!< emphasize point
+public:
+  oyNamedColour_s * mouse_3D_hit;       //!< a point recently hit by the mouse
 
+private:
   void fensterForm();
 
   // adapt inner struktures at data change
@@ -161,11 +167,11 @@ public:
                      std::vector<float>  &punktFarben,      //!< RGBA
                      std::vector<std::string> &farb_namen_, //!< per point
                      std::vector<std::string> &achsNamen);  //!< 3*
+  void emphasizePoint (oyNamedColour_s * colour);  //!< a named colour
   void punkte_clear () { punkte_.clear(); farben_.clear(); }
   void herausNormalPunkte (std::vector<double> & p, std::vector<float> & f);
   void hineinNetze  (const std::vector<ICCnetz> & dreiecks_netze);
   std::vector<ICCnetz> dreiecks_netze;
-  double *netz_coords;     //!< 3*coords + 4*colour per point
   void achsNamen    (std::vector<std::string> achs_namen);
 
   void hineinTabelle(std::vector<std::vector<std::vector<std::vector<double> > > >vect,
@@ -178,7 +184,7 @@ public:
   int  punktform;           //!< MENU_KUGEL MENU_WUERFEL MENU_STERN
   int  punktfarbe;          //!< MENU_GRAU MENU_FARBIG MENU_KONTRASTREICH
   int  punktgroesse;        //!< size in pixel
-  ICCnetz netz;             //!< internal net representation
+  int  punkt_zahl_alt;
 
   float hintergrundfarbe;   //!< background colour / colour sheme
   float textfarbe[3];
@@ -203,6 +209,7 @@ public:
   bool zeig_punkte_als_messwerte;
   int  spektralband;        //!< show spectral saturated colour line
   int  zeige_helfer;        //!< show arrows and text
+  char text[128];           //!< Status line text
 private:
   void zeigeSpektralband_();
   void zeigeUmrisse_();
@@ -230,7 +237,7 @@ private:
   int  maus_x_alt, maus_y_alt;
   bool maus_steht;
   void mausPunkt_( GLdouble & oX, GLdouble & oY, GLdouble & oZ,
-                  GLdouble & X, GLdouble & Y, GLdouble & Z );
+                  GLdouble & X, GLdouble & Y, GLdouble & Z, int from_mouse );
 public:
   // speed
   int  smooth;                    //!< smooth drawing
@@ -247,7 +254,7 @@ public:
                       if (nach_farb_namen_.size()>i) 
                         return (const char*)nach_farb_namen_[i].c_str();
                       else  return _("not available"); }
-  unsigned int kanaele() {return (unsigned int)nach_farb_namen_.size(); }
+  unsigned int kanaele() {return nach_farb_namen_.size(); }
 };
 
 

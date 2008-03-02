@@ -100,6 +100,7 @@ class ICCmeasurement {
     std::vector<Lab_s>    Lab_Ergebnis_;
     std::vector<RGB_s>    RGB_MessFarben_;
     std::vector<RGB_s>    RGB_ProfilFarben_;
+    std::vector<std::pair<std::string,std::vector<int> > > patch_src_lines_;
     // results
     std::vector<double> Lab_Differenz_;
     double              Lab_Differenz_max_;
@@ -109,6 +110,11 @@ class ICCmeasurement {
     double              DE00_Differenz_max_;
     double              DE00_Differenz_min_;
     double              DE00_Differenz_Durchschnitt_;
+    // input range normalisation
+    double              range_XYZ[6];
+    double              range_Lab[6];
+    double              range_RGB[6];
+    double              range_CMYK[8];
 
     std::vector<std::vector<std::string> > reportTabelle_;
     std::vector<int>    layout;
@@ -140,11 +146,21 @@ class ICCmeasurement {
     std::vector<double> getCmmRGB (int patch);  //!< displaying colours
     std::vector<double> getMessLab (int patch);
     std::vector<double> getCmmLab (int patch);
+    std::vector<int>    getPatchLines ( const char       * tag_name );
+    std::vector<double> getPatchLine  ( int line, const char * tag_name,
+                                        std::vector<float> & channels,
+                                        std::string & name );
     std::vector<XYZ_s>    getMessXYZ ()      {DBG_PROG return XYZ_Satz_; }
     std::vector<Lab_s>    getMessLab ()      {DBG_PROG return Lab_Satz_; }
     std::vector<RGB_s>    getMessRGB ()      {DBG_PROG return RGB_Satz_; }
     std::vector<CMYK_s>   getMessCMYK ()     {DBG_PROG return CMYK_Satz_; }
+    void                  getTargRGB  (int patch, RGB_s * rgb) 
+                                             { *rgb = RGB_Satz_[patch]; }
+    void                  getTargCMYK (int patch, CMYK_s * cmyk)
+                                             { *cmyk = CMYK_Satz_[patch]; }
     std::vector<std::string> getFeldNamen () {DBG_PROG return Feldnamen_; }
+    std::string           getFieldName (int p) {DBG_PROG return Feldnamen_[p]; }
+    std::vector<Lab_s>    getProfileLab ()   {DBG_PROG return Lab_Ergebnis_; }
 
     // report
     std::vector<std::vector<std::string> > getText ();

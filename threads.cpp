@@ -82,11 +82,7 @@ int fl_create_thread(Fl_Thread& t, void *(*f) (void *), void* p)
 #  elif defined(WIN32) && !defined(__WATCOMC__) // Use Windows threading...
 
 int fl_create_thread(Fl_Thread& t, void *(*f) (void *), void* p) {
-  t = (Fl_Thread)_beginthread((void( __cdecl * )( void * ))f, 0, p);
-  if( t )
-    return 0;
-  else
-	return 1;
+  return t = (Fl_Thread)_beginthread((void( __cdecl * )( void * ))f, 0, p);
 }
 
 #  elif defined(__WATCOMC__)
