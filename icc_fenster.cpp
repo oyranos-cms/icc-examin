@@ -280,7 +280,7 @@ void MyFl_Double_Window::show()
   if(this->my_xclass)
     Fl_Double_Window::xclass(my_xclass);
 
-  if(!this->visible())
+  if(!this->visible() || !this->shown())
     Fl_Double_Window::show();
 
   if(/*this == main_win &&*/ icon)

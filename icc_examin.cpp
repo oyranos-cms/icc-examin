@@ -110,10 +110,10 @@ ICCexamin::quit ()
   status_ = false;
   icc_examin_ns::sleep(0.5);
 
-  delete alle_gl_fenster;
   delete icc_betrachter->DD;
   delete icc_betrachter->details;
   delete icc_betrachter;
+  delete alle_gl_fenster;
   delete io_;
 
   Fl_Preferences vor( Fl_Preferences::USER, "oyranos.org", "iccexamin");
@@ -269,11 +269,8 @@ ICCexamin::start (int argc, char** argv)
 # endif
 
 # if USE_THREADS
-  static Fl_Thread fl_t;
-  DBG_THREAD_V( fl_t )
-  int fehler = fl_create_thread( fl_t, &ICCexaminIO::oeffnenStatisch_, (void *)this );
+  int fehler = fl_create_thread( getThreadId(THREAD_LADEN), &ICCexaminIO::oeffnenStatisch_, (void *)this );
 # if HAVE_PTHREAD_H
-  registerThreadId( fl_t, THREAD_LADEN );
 # ifdef CWDEBUG
   Debug(myproject::debug::init_thread());
 # endif
@@ -881,7 +878,9 @@ ICCexamin::intent( int intent_neu )
       intent_ = profile.profil()->intent();
     else
       intent_ = 3;
-      intent_selection_ = 0;
+
+    intent_selection_ = 0;
+
   } else {
     intent_ = intent_neu;
     intent_selection_ = 1;

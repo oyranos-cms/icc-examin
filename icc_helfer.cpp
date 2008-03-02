@@ -341,6 +341,42 @@ renderingIntentName (int intent)
   return s.str();
 }
 
+int
+getColorSpaceChannels (icColorSpaceSignature color)
+{
+  int n;
+
+  switch (color) {
+    case icSigXYZData: n = 3; break;
+    case icSigLabData: n = 3; break;
+    case icSigLuvData: n = 3; break;
+    case icSigYCbCrData: n = 3; break;
+    case icSigYxyData: n = 3; break;
+    case icSigRgbData: n = 3; break;
+    case icSigGrayData: n = 1; break;
+    case icSigHsvData: n = 3; break;
+    case icSigHlsData: n = 3; break;
+    case icSigCmykData: n = 4; break;
+    case icSigCmyData: n = 3; break;
+    case icSig2colorData: n = 2; break;
+    case icSig3colorData: n = 3; break;
+    case icSig4colorData: n = 4; break;
+    case icSig5colorData: n = 5; break;
+    case icSig6colorData: n = 6; break;
+    case icSig7colorData: n = 7; break;
+    case icSig8colorData: n = 8; break;
+    case icSig9colorData: n = 9; break;
+    case icSig10colorData: n = 10; break;
+    case icSig11colorData: n = 11; break;
+    case icSig12colorData: n = 12; break;
+    case icSig13colorData: n = 13; break;
+    case icSig14colorData: n = 14; break;
+    case icSig15colorData: n = 15; break;
+    default: n = 0; break;
+  }
+  return n;
+}
+
 std::string
 getColorSpaceName (icColorSpaceSignature color)
 {
@@ -966,14 +1002,17 @@ ladeDatei ( std::string dateiname, size_t *size )
     DBG_PROG_V( dateiname )
     if (dateiname == "" || !isFileFull(dateiname.c_str()) || !f)
     { DBG_MEM
-      if(dateiname == "") WARN_S( "kein Dateiname" );
-      if(!isFileFull(dateiname.c_str())) WARN_S( "keine Datei: " << dateiname );
-      if(!f) WARN_S( "fehlerhafte Datei: " << dateiname );
-#     if HAVE_EXCEPTION
-      DBG_PROG_ENDE
-      throw ausn_file_io (dateiname.c_str());
-#     endif
-      dateiname = "";
+      if(dateiname != _("Monitor Profile")) 
+      {
+        if(dateiname == "") WARN_S( "kein Dateiname" );
+        if(!isFileFull(dateiname.c_str())) WARN_S( "keine Datei: " << dateiname );
+        if(!f) WARN_S( "fehlerhafte Datei: " << dateiname );
+#       if HAVE_EXCEPTION
+        DBG_PROG_ENDE
+        throw ausn_file_io (dateiname.c_str());
+#       endif
+        dateiname = "";
+      }
 #     if !HAVE_EXCEPTION
       goto ERROR;
 #     endif

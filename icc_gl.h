@@ -66,10 +66,10 @@ class GL_Ansicht : public Fl_Gl_Window, /*, public Fl_Slot*/
 
   // inner Strukturen bei Datenwechsel anpassen
   void menueErneuern_();
-  void erstelleGLListen_();
+  int  erstelleGLListen_();
   void textGarnieren_();
   void garnieren_();
-  void auffrischen_();      //!< Erneuerung ohne init()
+  int  auffrischen_();      //!< Erneuerung ohne init()
 
   // Menues
   Fl_Menu_Button  *menue_;
@@ -149,11 +149,12 @@ public:
   void hineinPunkte (std::vector<double> &vect, 
                      std::vector<float>  &farben_,
                      std::vector<std::string> &achsNamen);
-  void hineinPunkte (std::vector<double> &punktKoordinaten, //!< XYZ
+  void hineinPunkte (std::vector<double> &punktKoordinaten, //!< Lab
                      std::vector<float>  &punktFarben,      //!< RGBA
                      std::vector<std::string> &farb_namen_, //!< pro Punkt
                      std::vector<std::string> &achsNamen);  //!< 3*
   void punkte_clear () { punkte_.clear(); farben_.clear(); }
+  void herausNormalPunkte (std::vector<double> & p, std::vector<float> & f);
   void hineinNetze  (const std::vector<ICCnetz> & dreiecks_netze);
   std::vector<ICCnetz> dreiecks_netze;
   void achsNamen    (std::vector<std::string> achs_namen);
@@ -189,7 +190,7 @@ public:
   double schnitttiefe;      //!< Dicke der GL Schnitttiefe
   double a_darstellungs_breite; //!< Richtung CIE*a   fuer Zoom und Pfeillaengen
   double b_darstellungs_breite; //!< ~        CIE*b ; wobei CIE*L immer 1.0
-  bool zeig_punkte_als_messwert_paare;
+  bool zeig_punkte_als_paare;
   bool zeig_punkte_als_messwerte;
   int  spektralband;        //!< stelle die spektral gesaettigten Farben dar
   int  zeige_helfer;        //!< zeige Pfeile und Text

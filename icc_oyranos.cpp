@@ -69,14 +69,14 @@ Oyranos icc_oyranos;
         /* Konzepte:
          *   o - oyInit() initialisiert die Bibliothek und erlaubt das lesen von
          *       Zeigern
-         *     - oyQuit() beräumt all diese
+         *     - oyQuit() beraeumt all diese
          *   o ein Objekt pro Profil (void* cmsOpen(...) ; cmsClose(void*))
          *       dies bleibt ein CMM Architektur vorbehalten
-         *   o ein C++ Wrapper für liboyranos wie mit Oyranos oyranos
+         *   o ein C++ Wrapper fuer liboyranos wie mit Oyranos oyranos
          *       oyranos als C++ Header exportieren
-         *   o alles dem Benutzer überlassen (C free())
+         *   o alles dem Benutzer ueberlassen (C free())
          *       im Prototyp hier   
-         *   o sich auf reine Namensnennung beschränken --
+         *   o sich auf reine Namensnennung beschraenken --
          */
 
 
@@ -113,7 +113,7 @@ Oyranos::profil_test_ (const char* profil_name)
       fehler = oyCheckProfile( profil_name, 0 );
       if( !fehler )
       {
-        // leeren Block einfügen
+        // leeren Block einfuegen
         Prof_Map_elem teil (profil_name, Speicher());
         Prof_mapIt_bool erg = pspeicher_ .insert( teil );
         if( erg.second = true )
@@ -730,10 +730,305 @@ Oyranos::moniInfo (int x, int y, int *num)
   return infos;
 }
 
+/** erzeugt eine Farbhuelle */
+std::string
+Oyranos::netzVonProfil_ (std::vector<ICCnetz> & netze,
+               Speicher & profil,
+               int intent, int bpc)
+{
+  DBG_PROG_START
+  // eine Flaeche aus sechs Quadraten mit den Flaechen das Lab Wuerfels
+  // wird in den Profilfarbraum imgewandelt und in ein Netz umgewandelt
+  int a = 12; // Aufloesung : 10 - schnell; 20 - genauer
+  size_t  size = 4*a*(a+1) + 2*(a-1)*(a-1);
+  int     kanaele = 3;
+  double *lab = new double [size*kanaele];
+  double  min = 0.01, max = 0.99;
+  // Mantel
+  for(int y = 0; y <= a; ++y)
+    for(int x = 0; x < 4 * a; ++x)
+    {
+      int b = 0; // Bereich
+      int pos = (y * 4 * a + x) * kanaele;
+
+      lab[pos + 0] = 1.0 - (double)y/(double)a;
+
+      if       (b * a <= x && x < ++b * a) {
+        lab[pos + 1] = min + (x - (b - 1) * a)/(double)a * (max-min);
+        lab[pos + 2] = min;
+      } else if(b * a <= x && x < ++b * a) {
+        lab[pos + 1] = max;
+        lab[pos + 2] = min + (x - (b - 1) * a)/(double)a * (max-min);
+      } else if(b * a <= x && x < ++b * a) {
+        lab[pos + 1] = max - (x - (b - 1) * a)/(double)a * (max-min);
+        lab[pos + 2] = max;
+      } else if(b * a <= x && x < ++b * a) {
+        lab[pos + 1] = min;
+        lab[pos + 2] = max - (x - (b - 1) * a)/(double)a * (max-min);
+      }
+    }
+  // Deckel und Boden
+  for(int y = 0; y < (a - 1); ++y)
+    for(int x = 0; x < 2 * (a - 1); ++x)
+    {
+      int pos = (4 * a * (a + 1)  +  y * 2 * (a - 1) + x) * kanaele;
+      int b = 0; // Bereich
+      int x_pos = x + 1, y_pos = y + 1;
+      double val = (double)y_pos/(double)a * (max-min);
+
+      if       (b * (a - b) <= x && x < ++b * a - b) {
+        lab[pos + 0] = 1.0;
+        lab[pos + 1] = min + (x_pos - (b - 1) * (a - 1))/(double)a * (max-min);
+        lab[pos + 2] = min + val;
+      } else if(b * (a - b) <= x && x < ++b * a - b) {
+        lab[pos + 0] = 0.0;
+        lab[pos + 1] = min + (x_pos - (b - 1) * (a - 1))/(double)a * (max-min);
+        lab[pos + 2] = min + val;
+      }
+    }
+
+  wandelProfilNachLabUndZurueck( lab, size, intent, bpc, profil );
+  double * rgb = wandelLabNachBildschirmFarben( lab, size, 0, 0 );
+
+  // Netz initialisieren
+  netze.resize(1);
+  // Farbpunkte sammeln
+  netze[0].punkte. resize( size );
+  for(size_t i = 0; i < size; ++i)
+  {
+    for(int k = 0; k < kanaele; ++k)
+    {
+      netze[0].punkte[i].koord[k] = lab [i*kanaele+k];
+      netze[0].punkte[i].farbe[k] = rgb [i*kanaele+k];
+    }
+    netze[0].punkte[i].farbe[kanaele] = 1.0;
+  }
+  // Netze bauen
+  char *liste = new char [size];
+  memset( liste, 1, size );
+  for(int i = 0 ; i < size; ++i)
+    for(int j = i; j < size; ++j)
+      if(0) ;
+
+  std::pair<double,DreiecksIndexe> index_p;
+  for(int y = 0; y < a; ++y)
+    for(int x = 0; x < 4 * a; ++x)
+    {
+      int x_ = (x == 4 * a - 1) ? -1 : x;
+      index_p.second.i[0] =  y *  4*a+x; index_p.second.i[1] =  y *  4*a+x_+1;
+      index_p.second.i[2] = (y+1)*4*a+x;
+      netze[0].indexe. insert( index_p );
+
+                                         index_p.second.i[0] =  y *  4*a+x_+1;
+      index_p.second.i[2] = (y+1)*4*a+x; index_p.second.i[1] = (y+1)*4*a+x_+1;
+      netze[0].indexe. insert( index_p );
+    }
+
+  for(int y = 0; y < a; ++y)
+  {
+    int off = 4 * a * (a + 1);
+    if(0 < y && y < a - 1)
+    {
+      // 0 0 .
+      index_p.second.i[0] = off-y;  index_p.second.i[1] = off+(y+1)*2*(a-1)-a+1;
+      index_p.second.i[2] = off-y-1;
+      netze[0].indexe. insert( index_p );
+
+                                    index_p.second.i[0] = off+(y+0)*2*(a-1)-a+1;
+      index_p.second.i[2] = off-y;  index_p.second.i[1] = off+(y+1)*2*(a-1)-a+1;
+      netze[0].indexe. insert( index_p );
+
+      // 0 1 .
+      index_p.second.i[0] = off+(y+1)*2*(a-1)-1; index_p.second.i[2] =off-3*a+y+1;
+      index_p.second.i[1] = off+(y)*2*(a-1)-1;
+      netze[0].indexe. insert( index_p );
+
+                                               index_p.second.i[0] =off-3*a+y+1;
+      index_p.second.i[1] = off+(y)*2*(a-1)-1; index_p.second.i[2] = off-3*a+y;
+      netze[0].indexe. insert( index_p );
+
+      // 1 0 .
+                          index_p.second.i[0] = off+2*(a-1)*(a-1)-(y+1)*2*(a-1);
+      index_p.second.i[1] = 3*a+y+1; index_p.second.i[2] = off+2*(a-1)*(a-1)-y*2*(a-1);
+      netze[0].indexe. insert( index_p );
+
+      index_p.second.i[0] = 3*a+y+1;  index_p.second.i[2] = off+2*(a-1)*(a-1)-y*2*(a-1);
+      index_p.second.i[1] = 3*a+y;
+      netze[0].indexe. insert( index_p );
+
+      // 1 1 .
+      index_p.second.i[0] = off+2*(a-1)*(a-1)-(y+1)*2*(a-1)+a-2;
+      index_p.second.i[1] = off+2*(a-1)*(a-1)-(y+0)*2*(a-1)+a-2; index_p.second.i[2] = 2*a-y;
+      netze[0].indexe. insert( index_p );
+
+                                         index_p.second.i[0] = 2*a-y-1;
+      index_p.second.i[1] = off+2*(a-1)*(a-1)-(y+1)*2*(a-1)+a-2; index_p.second.i[2] = 2*a-y;
+      netze[0].indexe. insert( index_p );
+    }
+
+    for(int x = 0; x < 2 * a; ++x)
+    {
+      int x_ = x + off;
+      int b = 0; // Bereich
+
+          // 1 0 0 (L a b)
+          index_p.second.i[0] = 4*a-1;   index_p.second.i[1] = off;
+          index_p.second.i[2] = 0;
+          netze[0].indexe. insert( index_p );
+
+                                         index_p.second.i[0] = off;
+          index_p.second.i[2] = 0;       index_p.second.i[1] = 1;
+          netze[0].indexe. insert( index_p );
+
+          // 0 0 0
+          index_p.second.i[0] = off-1;   index_p.second.i[2] = off+a-1;
+          index_p.second.i[1] = off-4*a;
+          netze[0].indexe. insert( index_p );
+
+                                         index_p.second.i[0] = off+a-1;
+          index_p.second.i[1] = off-4*a; index_p.second.i[2] = off - 4*a+1;
+          netze[0].indexe. insert( index_p );
+
+          // 0 0 1
+          index_p.second.i[0] = off-a; index_p.second.i[2] = off-a-1;
+                                    index_p.second.i[1] = off+2*(a-1)*(a-1)-a+1;
+          netze[0].indexe. insert( index_p );
+
+          index_p.second.i[0] = off-a;
+          index_p.second.i[1] = off-a+1; index_p.second.i[2] = off+2*(a-1)*(a-1)-a+1;
+          netze[0].indexe. insert( index_p );
+
+          // 0 1 1
+          index_p.second.i[0] = off-2*a+1; index_p.second.i[2] = off-2*a;
+          index_p.second.i[1] = off+2*(a-1)*(a-1)-1;
+          netze[0].indexe. insert( index_p );
+
+                                         index_p.second.i[0] = off-2*a;
+          index_p.second.i[1] = off+2*(a-1)*(a-1)-1; index_p.second.i[2] = off-2*a-1;
+          netze[0].indexe. insert( index_p );
+
+
+          // 1 1 1
+          index_p.second.i[0] = 2*a-1;   index_p.second.i[2] = 2*a;
+          index_p.second.i[1] = off+2*(a-1)*(a-1)-a;
+          netze[0].indexe. insert( index_p );
+
+                                         index_p.second.i[0] = 2*a;
+          index_p.second.i[1] = off+2*(a-1)*(a-1)-a;index_p.second.i[2] = 2*a+1;
+          netze[0].indexe. insert( index_p );
+
+          // 1 0 1
+          index_p.second.i[0] = 3*a;   index_p.second.i[1] = 3*a-1;
+                                  index_p.second.i[2] = off+2*(a-1)*(a-1)-2*a+2;
+          netze[0].indexe. insert( index_p );
+
+          index_p.second.i[0] = 3*a;
+          index_p.second.i[2] = 3*a+1; index_p.second.i[1] = off+2*(a-1)*(a-1)-2*a+2;
+          netze[0].indexe. insert( index_p );
+
+          // 1 1 0
+          index_p.second.i[0] = off+a-2; index_p.second.i[1] = a + 1;
+          index_p.second.i[2] = a - 1;
+          netze[0].indexe. insert( index_p );
+
+                                         index_p.second.i[0] = a + 1;
+          index_p.second.i[2] = a - 1;   index_p.second.i[1] = a;
+          netze[0].indexe. insert( index_p );
+
+          // 0 1 0
+          index_p.second.i[0] = off+2*(a-1)-1;
+          index_p.second.i[1] = off-3*a-1; index_p.second.i[2] = off-3*a;
+          netze[0].indexe. insert( index_p );
+
+          index_p.second.i[0] = off+2*(a-1)-1; index_p.second.i[2] = off-3*a+1;
+                                         index_p.second.i[1] = off-3*a+0;
+          netze[0].indexe. insert( index_p );
+
+      // unterer Rand
+      if( y == 0 )
+      {
+        if(x == 0) {
+        } else if(x == a - 1) {
+        } else if(x < a - 1) {
+          // 1 . 0
+          index_p.second.i[0] = off + x - 1; index_p.second.i[1] = off + x;
+          index_p.second.i[2] = x;
+          netze[0].indexe. insert( index_p );
+
+                                         index_p.second.i[0] = off + x;
+          index_p.second.i[2] = x;       index_p.second.i[1] = x + 1;
+          netze[0].indexe. insert( index_p );
+
+          // 0 . 1
+          index_p.second.i[0] = off-a-x; index_p.second.i[2] = off-a-x-1;
+          index_p.second.i[1] = off+2*(a-1)*(a-1)-a+x;
+          netze[0].indexe. insert( index_p );
+
+                                         index_p.second.i[0] = off-a-x-1;
+          index_p.second.i[1] = off+2*(a-1)*(a-1)-a+x; index_p.second.i[2] = off+2*(a-1)*(a-1)-a+x+1;
+          netze[0].indexe. insert( index_p );
+
+          // 1 . 1
+          index_p.second.i[0] = 3*a - x; index_p.second.i[1] = 3*a - x-1;
+          index_p.second.i[2] = off+2*(a-1)*(a-1)-2*(a-1)+x-1;
+          netze[0].indexe. insert( index_p );
+
+                                         index_p.second.i[0] = 3*a - x-1;
+          index_p.second.i[2] = off+2*(a-1)*(a-1)-2*(a-1)+x-1; index_p.second.i[1] = off+2*(a-1)*(a-1)-2*(a-1)+x;
+          netze[0].indexe. insert( index_p );
+
+        } else if (x > a + 1) {
+          // 0 . 0
+          index_p.second.i[0] = off+x-3; index_p.second.i[2] = off+x-3+1;
+          index_p.second.i[1] = 4*a*(a+1)-4*a + x-a-1;
+          netze[0].indexe. insert( index_p );
+
+                                         index_p.second.i[0] = off+x-3+1;
+          index_p.second.i[1] = 4*a*(a+1)-4*a + x-a-1; index_p.second.i[2] = 4*a*(a+1)-4*a + x-a;
+          netze[0].indexe. insert( index_p );
+        }
+      // oberer Rand
+      } else if( y == a - 1 )
+      {
+        if(x == 0) {
+        }
+      } else if(b * (a - b) <= x && x < ++b * a - b - 1) {
+
+        // oberes Mittelfeld (*L=0.0)
+        index_p.second.i[0] = (y-1) *  2*(a-1)+x_; index_p.second.i[2] =  (y-1)*2*(a-1)+x_+1;
+        index_p.second.i[1] = (y+0)*2*(a-1)+x_;
+        netze[0].indexe. insert( index_p );
+
+                                                index_p.second.i[0] = (y-1)*2*(a-1)+x_+1;
+        index_p.second.i[1] = (y+0)*2*(a-1)+x_; index_p.second.i[2] = (y+0)*2*(a-1)+x_+1;
+        netze[0].indexe. insert( index_p );
+
+      } else if(b * (a - b) <= x && x < ++b * a - b - 1) {
+        // unteres Mittelfeld (*L=1.0)
+        index_p.second.i[0] = (y-1) *  2*(a-1)+x_; index_p.second.i[1] =  (y-1)*2*(a-1)+x_+1;
+        index_p.second.i[2] = (y+0)*2*(a-1)+x_;
+        netze[0].indexe. insert( index_p );
+
+                                                index_p.second.i[0] = (y-1)*2*(a-1)+x_+1;
+        index_p.second.i[2] = (y+0)*2*(a-1)+x_; index_p.second.i[1] = (y+0)*2*(a-1)+x_+1;
+        netze[0].indexe. insert( index_p );
+      }
+    }
+  }
+
+
+  delete [] rgb;
+  delete [] lab;
+
+  DBG_PROG_ENDE
+  return std::string("oyranos");
+}
+
+
 #include "icc_vrml.h"
 #include "icc_gamut.h"
 std::vector<ICCnetz>
-Oyranos::netzVonProfil (ICCprofile & profil, int intent)
+Oyranos::netzVonProfil (ICCprofile & profil, int intent, int bpc)
 {
   DBG_PROG_START
   Speicher s;
@@ -751,6 +1046,12 @@ Oyranos::netzVonProfil (ICCprofile & profil, int intent)
     std::string vrml;
     vrml = icc_create_vrml ( s,s.size(), intent );
     netz = netzAusVRML (vrml);
+    std::string t;
+    if(!netz.size())
+    {
+      t = netzVonProfil_(netz, s, intent, bpc);
+      WARN_S("Fall back to internal hull generation. Argyll is not installed?");
+    }
 
     if(netz.size())
     {
@@ -898,6 +1199,80 @@ Oyranos::gamutCheckAbstract(Speicher & s, Speicher & abstract,
 }
 
 
+void
+Oyranos::wandelProfilNachLabUndZurueck(double *lab, // 0.0 - 1.0
+                                       size_t  size, int intent, int flags,
+                                       Speicher & p )
+{
+  DBG_PROG_START
+
+  DBG_PROG_V( size <<" "<< intent <<" "<< flags )
+
+    // lcms Typen
+    cmsHPROFILE hProfil = 0,
+                hLab = 0;
+    cmsHTRANSFORM form = 0;
+
+    size_t groesse = p.size();
+    const char*  block = p;
+    int flags_ = 0;
+    int kanaele, format;
+
+    {
+      flags_ = flags & ~cmsFLAGS_GAMUTCHECK;
+
+      // Initialisierung fuer lcms
+      DBG_MEM_V( (int*) block <<" "<<groesse )
+
+      if(groesse)
+        hProfil = cmsOpenProfileFromMem(const_cast<char*>(block), groesse);
+      else
+        WARN_S("no profile found");
+      hLab  = cmsCreateLabProfile(cmsD50_xyY());
+      if(!hLab)  WARN_S( "hLab Profil not opened" )
+
+      kanaele = getColorSpaceChannels( cmsGetColorSpace( hProfil ) );
+      format = COLORSPACE_SH(PT_ANY) |
+               CHANNELS_SH(kanaele) |
+               BYTES_SH(0); // lcms_bytes;
+
+      form = cmsCreateTransform               (hLab, TYPE_Lab_DBL,
+                                               hProfil, format,
+                                               intent,
+                                               PRECALC|flags);
+      if (!form) WARN_S( "no transformation found" )
+    }
+
+    double *farben = new double [size * kanaele];
+    if(!farben)  WARN_S( "not enough memory available" )
+
+    double *cielab = new double [size * 3];
+
+    LabToCIELab (lab, cielab, size);
+
+    cmsDoTransform (form, cielab, farben, size);
+    cmsDeleteTransform (form);
+
+    form = cmsCreateTransform                 (hProfil, format,
+                                               hLab, TYPE_Lab_DBL,
+                                               intent,
+                                               PRECALC|flags);
+
+    cmsDoTransform (form, farben, cielab, size);
+    cmsDeleteTransform (form);
+
+    CIELabToLab (cielab, lab, size);
+
+    if(hProfil)   cmsCloseProfile(hProfil);
+    if(hLab)      cmsCloseProfile(hLab);
+
+    if(cielab)    delete [] cielab;
+    if(farben)    delete [] farben;
+
+  DBG_PROG_ENDE
+}
+
+
 double*
 Oyranos::wandelLabNachBildschirmFarben(double *Lab_Speicher, // 0.0 - 1.0
                                        size_t  size, int intent, int flags)
@@ -912,9 +1287,10 @@ Oyranos::wandelLabNachBildschirmFarben(double *Lab_Speicher, // 0.0 - 1.0
                 hProof = 0;
     static cmsHTRANSFORM hLabtoRGB = 0;
     static cmsHTRANSFORM h_lab_to_RGB_teuer = 0;
-    cmsHTRANSFORM form = 0;
+    cmsHTRANSFORM *form = 0;
     double *RGB_Speicher = 0;
     static int flags_ = 0;
+    static int intent_ = 0;
 
     size_t groesse = 0;
     char*  block = (char*) moni(0,0, groesse);
@@ -927,28 +1303,30 @@ Oyranos::wandelLabNachBildschirmFarben(double *Lab_Speicher, // 0.0 - 1.0
 #endif
 
     if(flags & cmsFLAGS_GAMUTCHECK)
-      form = h_lab_to_RGB_teuer;
+      form = &h_lab_to_RGB_teuer;
     else
-      form = hLabtoRGB;
+      form = &hLabtoRGB;
 
 
     if(flags_ != (flags & ~cmsFLAGS_GAMUTCHECK) ||
+       intent_ != intent ||
 #if OYRANOS_VERSION > 106
        memcmp(digest, dig, 16) != 0 ||
 #endif
-       !form )
+       !*form )
     {
       flags_ = flags & ~cmsFLAGS_GAMUTCHECK;
+      intent_ = intent;
 #if OYRANOS_VERSION > 106
       memcpy( digest, dig, 16 );
 #endif
 
       fortschritt(0.05);
 
-      if (form)
+      if (*form)
       {
-        cmsDeleteTransform(form);
-        form = 0;
+        cmsDeleteTransform(*form);
+        *form = 0;
       }
 
       // Initialisierung fuer lcms
@@ -970,18 +1348,18 @@ Oyranos::wandelLabNachBildschirmFarben(double *Lab_Speicher, // 0.0 - 1.0
       }
 
       fortschritt(0.5);
-      form = cmsCreateProofingTransform  (hLab, TYPE_Lab_DBL,
+      *form = cmsCreateProofingTransform  (hLab, TYPE_Lab_DBL,
                                                hMoni, TYPE_RGB_DBL,
                                                hProof, // Simulationsprofil
                                                intent,
                                                INTENT_RELATIVE_COLORIMETRIC,
                                                PRECALC|BW_COMP|flags);
-      if (!form) WARN_S( "keine hXYZtoRGB Transformation gefunden" )
+      if (!*form) WARN_S( "keine hXYZtoRGB Transformation gefunden" )
 
       if(flags & cmsFLAGS_GAMUTCHECK)
-        h_lab_to_RGB_teuer = form;
+        h_lab_to_RGB_teuer = *form;
       else
-        hLabtoRGB = form;
+        hLabtoRGB = *form;
     }
 
 
@@ -993,7 +1371,7 @@ Oyranos::wandelLabNachBildschirmFarben(double *Lab_Speicher, // 0.0 - 1.0
     double *cielab = (double*) malloc (sizeof(double)*3*size);
     LabToCIELab (Lab_Speicher, cielab, size);
 
-    cmsDoTransform (form, cielab, RGB_Speicher, size);
+    cmsDoTransform (*form, cielab, RGB_Speicher, size);
 
     if(hMoni)     cmsCloseProfile(hMoni);
     if(hLab)      cmsCloseProfile(hLab);
@@ -1020,7 +1398,7 @@ Oyranos::zeigTrafo           ( const char *profilA, int ein_bytes, int kanaeleA,
   DBG_PROG_START
   Speicher   *v_block = &cmyk_;
   const char *block;
-  // Schlüssel erzeugen
+  // Schluessel erzeugen
   static char schluessel[1024];
   
   sprintf (schluessel, "%s-%d_%s-%d_%d", profilA, ein_bytes, kanaeleA,

@@ -1,3 +1,5 @@
+2006-12-30
+	* bug: in fl_i18n Fl::wait() ruft unerwünschte Ereignisse auf -> sleep()
 
 2005-02-11
 	* bug: icc_gl spricht falsches GL Fenster an für automatisches Drehen

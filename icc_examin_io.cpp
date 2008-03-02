@@ -93,7 +93,8 @@ ICCexaminIO::erneuern(int pos)
 void
 ICCexaminIO::oeffnenThread_ (int pos)
 { DBG_PROG_START
-  if(wandelThreadId(pthread_self()) != (Fl_Thread)THREAD_LADEN) WARN_S("THREAD_LADEN???");
+  if(wandelThreadId( pthread_self() ) != THREAD_LADEN)
+    WARN_S("THREAD_LADEN???");
 
   if(erneuern_.size() < 0) {
     icc_examin->fortschritt( 1.1 );
@@ -143,7 +144,8 @@ ICCexaminIO::oeffnenThread_ (int pos)
 void
 ICCexaminIO::oeffnenThread_ ()
 { DBG_PROG_START
-  if(wandelThreadId(pthread_self()) != (Fl_Thread)THREAD_LADEN) WARN_S("THREAD_LADEN???");
+  if(wandelThreadId( pthread_self() ) != THREAD_LADEN)
+    WARN_S("THREAD_LADEN???");
 
   if(!speicher_vect_.size()) {
     icc_examin->fortschritt( 1.1 );
@@ -205,7 +207,7 @@ ICCexaminIO::oeffnenThread_ ()
       if( netze.size() )
       { DBG_NUM_V( netze.size() )
         for(unsigned int i = 0; i < netze.size(); ++i ) {
-          netze[i].transparenz = 0.6;
+          netze[i].undurchsicht = 0.6;
           netze[i].grau = false;
           netze[i].aktiv = true;
         }
@@ -249,7 +251,7 @@ ICCexaminIO::oeffnenThread_ ()
         icc_examin->icc_waehler_->clear();
       int anzahl = profile.size();
       DBG_PROG_V( anzahl )
-      double transparenz;
+      double undurchsicht;
       bool grau;
       std::vector<int> aktiv = profile.aktiv();
       DBG_PROG_V( aktiv.size() )
@@ -261,13 +263,13 @@ ICCexaminIO::oeffnenThread_ ()
           break;
         }
 
-        transparenz= icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze[i].transparenz;
-        DBG_PROG_V( transparenz )
+        undurchsicht= icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze[i].undurchsicht;
+        DBG_PROG_V( undurchsicht )
         grau = icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze[i].grau;
 
         if(icc_examin->icc_waehler_)
           icc_examin->icc_waehler_->push_back(dateiName(profile.name(i)),
-                                transparenz, grau , aktiv[i]);
+                                undurchsicht, grau , aktiv[i]);
       }
       icc_examin_ns::unlock(this, __FILE__,__LINE__);
     }

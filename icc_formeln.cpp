@@ -224,9 +224,9 @@ CIELabToLab (double* cielab, double* lab, int n)
 {
     for(int i = 0; i < n; ++i)
     {
-      lab[0] =  cielab[i*3+0]          / 100.0;
-      lab[1] = (cielab[i*3+1] - 128.0) / 256.0;
-      lab[2] = (cielab[i*3+2] - 128.0) / 256.0;
+      lab[i*3+0] =  cielab[i*3+0]          / 100.0;
+      lab[i*3+1] = (cielab[i*3+1] + 128.0) / 256.0;
+      lab[i*3+2] = (cielab[i*3+2] + 128.0) / 256.0;
     }
 }
 

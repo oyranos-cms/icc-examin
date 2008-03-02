@@ -46,6 +46,11 @@ using namespace icc_examin_ns;
 #define DBG_EXAMIN_S( texte )
 #endif
 
+#ifdef DEBUG_
+#define MARK(x) DBG_S( #x ) x
+#else
+#define MARK(x) x
+#endif
 
 
 void
@@ -62,10 +67,10 @@ ICCexamin::messwertLese (int n,
       ICCmeasurement messung = profile[n]->getMeasurement();
 
       if(messung.valid() && profile[n]->size())
-        icc_betrachter->DD_farbraum->zeig_punkte_als_messwert_paare = true;
+        icc_betrachter->DD_farbraum->zeig_punkte_als_paare = true;
       else
-        icc_betrachter->DD_farbraum->zeig_punkte_als_messwert_paare = false;
-      DBG_NUM_V( icc_betrachter->DD_farbraum->zeig_punkte_als_messwert_paare )
+        icc_betrachter->DD_farbraum->zeig_punkte_als_paare = false;
+      DBG_NUM_V( icc_betrachter->DD_farbraum->zeig_punkte_als_paare )
       icc_betrachter->DD_farbraum->zeig_punkte_als_messwerte = true;
       DBG_NUM_V( icc_betrachter->DD_farbraum->zeig_punkte_als_messwerte )
 
@@ -84,7 +89,7 @@ ICCexamin::messwertLese (int n,
           for (unsigned i = 0; i < daten.size(); ++i)
             p.push_back(daten[i]);
           // ... dann die über das Profil errechneten Lab Werte
-          if (icc_betrachter->DD_farbraum->zeig_punkte_als_messwert_paare) {
+          if (icc_betrachter->DD_farbraum->zeig_punkte_als_paare) {
             daten = messung.getCmmLab(j);
             for (unsigned i = 0; i < daten.size(); ++i)
               p.push_back(daten[i]);
@@ -98,7 +103,7 @@ ICCexamin::messwertLese (int n,
             f.push_back((float)daten[i]);
           }
           f.push_back(1.0);
-          if (icc_betrachter->DD_farbraum->zeig_punkte_als_messwert_paare)
+          if (icc_betrachter->DD_farbraum->zeig_punkte_als_paare)
           { daten = messung.getCmmRGB(j);
             for (unsigned i = 0; i < daten.size(); ++i)
               f.push_back(daten[i]);
@@ -124,11 +129,13 @@ ICCexamin::netzLese (int n,
 
   std::vector<ICCnetz> netz_temp;
 
+  
   {
-    netz_temp = icc_oyranos. netzVonProfil(  *(profile[n]), intentGet(NULL) );
+    netz_temp = icc_oyranos. netzVonProfil( *(profile[n]),
+                                            profile[n]->intent(), bpc() );
     if(netz_temp.size())
     {
-      netz_temp[0].transparenz = (*netz)[n].transparenz;
+      netz_temp[0].undurchsicht = (*netz)[n].undurchsicht;
       netz_temp[0].grau = (*netz)[n].grau;
       netz_temp[0].aktiv = (*netz)[n].aktiv;
       if(n >= (int)netz->size())
@@ -141,7 +148,7 @@ ICCexamin::netzLese (int n,
       if( dateiname.find_last_of("/") != std::string::npos)
         dateiname = dateiname.substr( dateiname.find_last_of("/")+1,
                                     dateiname.size() );
-      DBG_NUM_V( (*netz)[n].transparenz <<" "<< (*netz)[n].umriss.size() )
+      DBG_NUM_V( (*netz)[n].undurchsicht <<" "<< (*netz)[n].umriss.size() )
     }
 # if 0  // sollte beim Laden geprueft werden
     else {
@@ -153,7 +160,7 @@ ICCexamin::netzLese (int n,
 #endif
   }
   for(int i = 0; i < (int)netz->size(); ++i)
-    DBG_PROG_V( (*netz)[n].aktiv <<" "<< (*netz)[i].transparenz <<" "<< (*netz)[i].umriss.size() );
+    DBG_PROG_V( (*netz)[n].aktiv <<" "<< (*netz)[i].undurchsicht <<" "<< (*netz)[i].umriss.size() );
   DBG_PROG_ENDE
 }
 
@@ -167,35 +174,82 @@ ICCexamin::farbenLese (int n,
   if( profile.size() > n )
   {
     DBG_PROG
-    p = profile[n]->getTagNumbers (profile[n]->getTagIDByName("ncl2"),
+
+    std::vector<double> p_neu = profile[n]->getTagNumbers (profile[n]->getTagIDByName("ncl2"),
                                          ICCtag::MATRIX);
-    if(p.size())
+    unsigned int n_farben = p_neu.size()/3;
+
+    int mult = 1;
+    int neu = 0;
+    icc_betrachter->DD_farbraum->zeig_punkte_als_messwerte = false;
+    icc_betrachter->DD_farbraum->zeig_punkte_als_paare = true;
+    if(icc_betrachter->DD_farbraum->zeig_punkte_als_paare)
+      mult = 2;
+
+    if(n_farben != p.size() / 3 / mult)
     {
-      DBG_NUM_V( p[0] <<" "<< p.size() )
-      f.resize( p.size() * 4/3);
+      DBG_S( "resize " << n_farben <<" "<<
+              p_neu.size() / 3 <<" "<< p.size() / 3 / mult )
+      p.resize( n_farben * 3 * mult );
+      f.resize( n_farben * 4 * mult );
+      neu = 1;
     }
+    int s;
+    for(size_t i = 0; i < n_farben; ++i)
+    {
+      s = i*mult*3;
+      if(mult == 2 && !neu)
+      {
+        p[s+3] = p[s+0];
+        p[s+4] = p[s+1];
+        p[s+5] = p[s+2];
+      }
+      p[s+0] = p_neu[i*3+0];
+      p[s+1] = p_neu[i*3+1];
+      p[s+2] = p_neu[i*3+2];
+      if(mult == 2 && neu)
+      {
+        p[s+3] = p[s+0];
+        p[s+4] = p[s+1];
+        p[s+5] = p[s+2];
+      }
+    }
+
     DBG_NUM_V( f.size() )
     // ncl2 Farben -> Bildschirm
-    unsigned int n_farben = p.size()/3;
-    double *lab = new double [n_farben*3],
+    double *lab = new double [n_farben*mult*3],
            *rgb=0;
-    for(unsigned i = 0; i < n_farben*3; ++i)
-      lab[i] = p[i];
-    rgb = icc_oyranos. wandelLabNachBildschirmFarben(lab, n_farben,
+    for(unsigned i = 0; i < n_farben * 3; ++i)
+      lab[i] = p_neu[i];
+    rgb = icc_oyranos. wandelLabNachBildschirmFarben(lab, n_farben*mult,
                                  icc_examin->intentGet(NULL),
                                  icc_examin->gamutwarn()?cmsFLAGS_GAMUTCHECK:0);
     DBG_NUM_V( n_farben )
     if(!rgb)  WARN_S( _("RGB Ergebnis nicht verfuegbar") )
-    for(unsigned i = 0; i < n_farben; ++i) {
-      f[i*4+0] = rgb[i*3+0];
-      f[i*4+1] = rgb[i*3+1];
-      f[i*4+2] = rgb[i*3+2];
-      f[i*4+3] = 1.0;
+    for(unsigned i = 0; i < n_farben; ++i)
+    {
+      s = i*mult*4;
+      if(mult == 2 && !neu)
+      {
+        f[s+4] = f[s+0];
+        f[s+5] = f[s+1];
+        f[s+6] = f[s+2];
+        f[s+7] = 0.;
+      }
+      f[s+0] = rgb[i*3+0];
+      f[s+1] = rgb[i*3+1];
+      f[s+2] = rgb[i*3+2];
+      f[s+3] = 1.0;
+      if(mult == 2 && neu)
+      {
+        f[s+4] = f[s+0];
+        f[s+5] = f[s+1];
+        f[s+6] = f[s+2];
+        f[s+7] = f[s+3];
+      }
     }
     if(lab) delete [] lab;
     if(rgb) delete [] rgb;
-    icc_betrachter->DD_farbraum->zeig_punkte_als_messwert_paare = false;
-    icc_betrachter->DD_farbraum->zeig_punkte_als_messwerte = false;
   }
 
   DBG_PROG_ENDE
@@ -214,13 +268,15 @@ ICCexamin::farbraum (int n)
 
   std::vector<double> p;
   std::vector<float>  f;
+  icc_betrachter->DD_farbraum->herausNormalPunkte( p, f );
+
   DBG_PROG_V( n <<" "<< profile.size()<<" "<<profile.aktuell() )
   DBG_PROG_V( profile[n]->filename() )
 
   // Messwerte
   int messwerte=false;
   bool has_mess = profile[n]->hasMeasurement();
-  frei(false);
+  MARK( frei(false); )
   if(profile.size() > n &&
      profile.aktuell() == n &&
      has_mess )
@@ -229,7 +285,7 @@ ICCexamin::farbraum (int n)
       messwertLese(n, p,f,namen);
       messwerte = true;
     }
-  frei(true);
+  MARK( frei(true); )
 
   int ncl2_profil = profile[n]->hasTagName("ncl2");
 
@@ -251,8 +307,12 @@ ICCexamin::farbraum (int n)
   if(n == 0)
     icc_betrachter->DD_farbraum->hineinPunkte( p, f, namen, texte );
 
+  do {
+    icc_examin_ns::sleep(0.05);
+  } while(!icc_betrachter->DD_farbraum-> frei());
+
   {
-  icc_betrachter->DD_farbraum-> frei(false);
+  MARK( icc_betrachter->DD_farbraum-> frei(false); )
 
     if((int)icc_betrachter->DD_farbraum-> dreiecks_netze .size() <= n)
       icc_betrachter->DD_farbraum-> dreiecks_netze .resize( n + 1 );
@@ -272,27 +332,27 @@ ICCexamin::farbraum (int n)
       if((n == 0 && ncl2_profil) &&
          !messwerte )
       {
-        (*netz)[n].transparenz = 0.15;
+        (*netz)[n].undurchsicht = 0.15;
         (*netz)[n].grau = false;
       }
       else
       if ( farbraumModus() && !messwerte )
       {
         if(n == 1)
-          (*netz)[n].transparenz = 0.15;
+          (*netz)[n].undurchsicht = 0.15;
         else
-          (*netz)[n].transparenz = 0.10;
+          (*netz)[n].undurchsicht = 0.10;
         (*netz)[n].grau = true;
       }
       else
       if ( profile.size() == 1 )
       {
-        (*netz)[n].transparenz = 0.25;
+        (*netz)[n].undurchsicht = 0.25;
         (*netz)[n].grau = false;
       }
       else
       {
-        (*netz)[n].transparenz = 0.3;
+        (*netz)[n].undurchsicht = 0.3;
         (*netz)[n].grau = true;
       }
 
@@ -315,10 +375,10 @@ ICCexamin::farbraum (int n)
       DBG_PROG_V( icc_betrachter->DD_farbraum->dreiecks_netze[n].name )
     }
 
-  icc_betrachter->DD_farbraum-> frei(true);
+  MARK( icc_betrachter->DD_farbraum-> frei(true); )
   }
 
-  frei(true);
+  MARK( frei(true); )
   DBG_PROG_ENDE
 }
 
@@ -326,16 +386,16 @@ void
 ICCexamin::farbraum ()
 {
   DBG_PROG_START
-  frei(false);
+  MARK( frei(false); )
 
   if((int)icc_betrachter->DD_farbraum -> dreiecks_netze.size() > profile.size())
   {
-    icc_betrachter->DD_farbraum ->frei(false);
+    MARK( icc_betrachter->DD_farbraum ->frei(false); )
     icc_betrachter->DD_farbraum -> dreiecks_netze.resize(profile.size());
-    icc_betrachter->DD_farbraum ->frei(true);
+    MARK( icc_betrachter->DD_farbraum ->frei(true); )
   }
   DBG_PROG_V( icc_betrachter->DD_farbraum -> dreiecks_netze.size() )
-  frei(true);
+  MARK( frei(true); )
 
   for(int i = 0; i < profile.size(); ++i)
   {
@@ -347,7 +407,7 @@ ICCexamin::farbraum ()
   /*if(icc_betrachter->DD_farbraum -> dreiecks_netze.size())
     icc_betrachter->DD_farbraum ->
       dreiecks_netze [icc_betrachter->DD_farbraum->dreiecks_netze.size()-1]
-        . transparenz = 0.7;*/
+        . undurchsicht = 0.7;*/
 
   DBG_PROG_V( profile.size() )
 
@@ -358,7 +418,7 @@ void
 ICCexamin::farbraumModus (int profil)
 {
   DBG_PROG_START
-  frei(false);
+  MARK( frei(false); )
 
   farbraum_modus_ = false;
   if(profile.size() && profile.profil()->hasTagName("ncl2")) {
@@ -370,7 +430,7 @@ ICCexamin::farbraumModus (int profil)
 
   DBG_PROG_V( farbraum_modus_ )
 
-  frei(true);
+  MARK( frei(true); )
   DBG_PROG_ENDE
 }
 

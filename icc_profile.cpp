@@ -140,9 +140,11 @@ ICCprofile::load (const Speicher & prof)
 
   DBG_MEM_V( (int*)data_ <<" "<< size_ )
 
-  if (prof.size()) {
+  this->clear();
+
+  // Mindestgroesse fuer sinnvolle Daten abfragen
+  if (prof.size() > 64) {
     //WARN_S( _("!!!! Profil wird wiederbenutzt !!!! ") )
-    clear();
     size_ = prof.size();
     data_ = (char*)calloc (sizeof (char), size_+1);
     const char* z = prof;
@@ -158,7 +160,7 @@ ICCprofile::load (const Speicher & prof)
     return ICCnullDATA;
   }
 
-  // Test   > 132 byte
+  // Test   > 132 byte, ansonsten erst einmal als Messdaten aufnehmen
   if (size_ < 132) {
     WARN_S( _("Kein Profil")<<" "<<_("Size")<<" "<<size_ )
     measurement.load( this, data_, size_ );

@@ -74,16 +74,16 @@ class ICCwaehlerProfil : public Fl_Pack
               }
   Fl_Pack   *gruppe_;
   Fl_Output *name_;
-  Fl_Value_Slider *transparenz_;
-  void transparenz_cb_() {
-                icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze[parent()->find(this)].transparenz = transparenz_->value();
+  Fl_Value_Slider *undurchsicht_;
+  void undurchsicht_cb_() {
+                icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze[parent()->find(this)].undurchsicht = undurchsicht_->value();
                 icc_examin->icc_betrachter->DD_farbraum->draw();
                 icc_examin->icc_betrachter->DD_farbraum->flush();
               }
-  static void transparenz_cb_statisch_(Fl_Widget* w, void* data) {
+  static void undurchsicht_cb_statisch_(Fl_Widget* w, void* data) {
                 ICCwaehlerProfil* obj = dynamic_cast<ICCwaehlerProfil*>(w->parent()->parent());
                 if(obj)
-                  obj->transparenz_cb_();
+                  obj->undurchsicht_cb_();
               }
   Fl_Light_Button *grau_;
   void grau_cb_() {
@@ -97,13 +97,13 @@ class ICCwaehlerProfil : public Fl_Pack
                   obj->grau_cb_();
               }
 public:
- ICCwaehlerProfil(const char* name, double transparenz, 
+ ICCwaehlerProfil(const char* name, double undurchsicht, 
                    bool grau, bool aktiv, int pos)
     : Fl_Pack( 0,0,470,25 ), pos_(pos)
  {
   DBG_PROG_START
   DBG_PROG_V( name )
-  DBG_PROG_V( transparenz )
+  DBG_PROG_V( undurchsicht )
   DBG_PROG_V( grau )
   DBG_PROG_V( aktiv )
   {
@@ -123,10 +123,10 @@ public:
               o->value( name );
               this->resizable(o);
             }
-            { Fl_Value_Slider* o = transparenz_ = new Fl_Value_Slider(259, 6, 150, 25);
+            { Fl_Value_Slider* o = undurchsicht_ = new Fl_Value_Slider(259, 6, 150, 25);
               o->type(1);
-              o->value(transparenz);
-              o->callback(transparenz_cb_statisch_);
+              o->value(undurchsicht);
+              o->callback(undurchsicht_cb_statisch_);
             }
             { Fl_Light_Button* o = grau_ = new Fl_Light_Button(409, 6, 65, 25, _("Gray"));
               o->selection_color(FL_DARK3);
@@ -208,13 +208,13 @@ private:
     ICCwaehlerProfil* profile_[128];
 
 public:
- void         push_back (const char* name, double transparenz, 
+ void         push_back (const char* name, double undurchsicht, 
                             bool grau, bool aktiv)
  {
   DBG_PROG_START
   int pos = size();
   hbox->begin();
-  profile_[pos] = new ICCwaehlerProfil( name, transparenz, grau, aktiv, pos );
+  profile_[pos] = new ICCwaehlerProfil( name, undurchsicht, grau, aktiv, pos );
   hbox->end();
   redraw();
   DBG_PROG_ENDE

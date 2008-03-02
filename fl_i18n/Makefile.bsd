@@ -111,8 +111,8 @@ POT_FILE = po/$(TARGET).pot
 
 
 ALL_FILES =	$(SOURCES) \
-	makefile \
-	makefile.bsd \
+	Makefile \
+	Makefile.bsd \
 	$(DOKU)
 
 # get time stamp

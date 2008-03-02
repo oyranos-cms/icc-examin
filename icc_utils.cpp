@@ -33,7 +33,7 @@
 #include <fstream>
 
 
-Fl_Thread level_PROG_[DBG_MAX_THREADS] = {THREAD_ICCEXAMIN_MAX,THREAD_ICCEXAMIN_MAX,THREAD_ICCEXAMIN_MAX,THREAD_ICCEXAMIN_MAX,THREAD_ICCEXAMIN_MAX,THREAD_ICCEXAMIN_MAX,THREAD_ICCEXAMIN_MAX,THREAD_ICCEXAMIN_MAX,THREAD_ICCEXAMIN_MAX,THREAD_ICCEXAMIN_MAX,THREAD_ICCEXAMIN_MAX,THREAD_ICCEXAMIN_MAX};
+int level_PROG_[DBG_MAX_THREADS];
 int icc_debug = 1;
 std::ostringstream debug_s_;
 #ifdef HAVE_PTHREAD_H
@@ -113,40 +113,49 @@ Fl_Thread icc_thread_liste[12] = {0,0,0,0,0,0,0,0,0,0,0,0};
 
 
 void
-registerThreadId(Fl_Thread id, int pos)
+registerThreadId( Fl_Thread id, int pos )
 {
-  if(0 <= pos && pos < 12 )
-    icc_thread_liste[pos] = id;
+  if(!(0 <= pos && pos < 12 ))
+    WARN_S( "outside supported thread range: 0-11 | " << pos );
+
+  icc_thread_liste[pos] = id;
 }
 
-Fl_Thread
-wandelThreadId(Fl_Thread id)
+Fl_Thread &
+getThreadId( int pos )
 {
-  Fl_Thread pos = id;
+  if(!(0 <= pos && pos < 12 ))
+    WARN_S( "outside supported thread range: 0-11 | " << pos );
+
+  return icc_thread_liste[pos];
+}
+
+int
+wandelThreadId( Fl_Thread id )
+{
+  int pos = -1;
   {
-    if      (icc_thread_liste[THREAD_HAUPT] == id)
-      pos = (Fl_Thread)THREAD_HAUPT;
-    else if (icc_thread_liste[THREAD_GL1] == id)
-      pos = (Fl_Thread)THREAD_GL1;
-    else if (icc_thread_liste[THREAD_GL2] == id)
-      pos = (Fl_Thread)THREAD_GL2;
-    else if (icc_thread_liste[THREAD_LADEN] == id)
-      pos = (Fl_Thread)THREAD_LADEN;
-    else if (icc_thread_liste[THREAD_WACHE] == id)
-      pos = (Fl_Thread)THREAD_WACHE;
-    else
-      pos = id;
+    if      (pthread_equal( icc_thread_liste[THREAD_HAUPT], id ))
+      pos = THREAD_HAUPT;
+    else if (pthread_equal( icc_thread_liste[THREAD_GL1], id ))
+      pos = THREAD_GL1;
+    else if (pthread_equal( icc_thread_liste[THREAD_GL2], id ))
+      pos = THREAD_GL2;
+    else if (pthread_equal( icc_thread_liste[THREAD_LADEN], id ))
+      pos = THREAD_LADEN;
+    else if (pthread_equal( icc_thread_liste[THREAD_WACHE], id ))
+      pos = THREAD_WACHE;
   }
   return pos;
 }
 
 void//std::string
-dbgThreadId(Fl_Thread id)
+dbgThreadId()
 {
   //std::string s("??");
-  Fl_Thread dbg_id = wandelThreadId ( id );
+  int dbg_id = wandelThreadId ( pthread_self() );
   //printf("%d\n", (int*)s.c_str());
-  switch ((int)dbg_id)
+  switch (dbg_id)
   {
     // in icc_thread_liste eingetragene Fl_Thread's lassen sich identifizieren
     case THREAD_HAUPT:
@@ -169,13 +178,13 @@ dbgThreadId(Fl_Thread id)
 int
 iccLevel_PROG(int plus_minus_null)
 {
-  Fl_Thread pth = wandelThreadId( pthread_self() );
-  if(0 <= (intptr_t)pth && (intptr_t)pth < DBG_MAX_THREADS) {
-    level_PROG_ [(intptr_t)pth] = level_PROG_[(intptr_t)pth] + plus_minus_null;
-    if(level_PROG_ [(intptr_t)pth] < 0)
+  int pth = wandelThreadId( pthread_self() );
+  if(0 <= pth && pth < DBG_MAX_THREADS) {
+    level_PROG_ [pth] = level_PROG_[pth] + plus_minus_null;
+    if(level_PROG_ [pth] < 0)
       return 0;
     else
-      return level_PROG_ [(intptr_t)pth];
+      return level_PROG_ [pth];
   } else {
     return 0;
   }

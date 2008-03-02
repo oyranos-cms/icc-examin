@@ -57,12 +57,7 @@ ICCkette::init ()
   // Im Haupthread laeuft ICCexamin.
   // Ein weiterer Thread übernimmt das Laden von neuen Daten.
 
-  static Fl_Thread fl_t;
-  int fehler = fl_create_thread( fl_t, &waechter, (void *)this );
-# if HAVE_PTHREAD_H
-  DBG_THREAD_V( fl_t <<" "<< pthread_self () )
-  registerThreadId( fl_t, THREAD_WACHE );
-# endif
+  int fehler = fl_create_thread( getThreadId(THREAD_WACHE), &waechter, (void *)this );
   if(!fehler)
     DBG_PROG_S( "neuer Thread" );
 

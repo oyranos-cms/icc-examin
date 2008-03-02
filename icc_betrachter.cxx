@@ -968,8 +968,8 @@ void ICCfltkBetrachter::quit(void) {
   /*Fl::remove_timeout((void (*)(void *))timeIT, (void *)viewer);
   delete viewer;
   delete browser;
-  delete canvas;*/
-  details->hide();
+  delete canvas;
+  details->hide();*/
   icc_examin->quit();
   DBG_PROG_ENDE
 }

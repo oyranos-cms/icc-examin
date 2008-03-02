@@ -46,7 +46,7 @@
 #define PLUG_IN_DESCRIPTION3  "Shows some colours of the image in a ICC Examin including profile gamut"
 #define PLUG_IN_VERSION       version()
 #define PLUG_IN_AUTHOR        "Kai-Uwe Behrmann <ku.b@gmx.de>"
-#define PLUG_IN_COPYRIGHT     "2004-2006 Kai-Uwe Behrmann"
+#define PLUG_IN_COPYRIGHT     "2004-2007 Kai-Uwe Behrmann"
 
 /***   includes   ***/
 
@@ -65,6 +65,14 @@
 #include "icc_examin.h"
 #include "icc_kette.h"
 #include "icc_examin_version.h"
+
+#ifdef DEBUG_ 
+#define DBG_PLUG_V(x)  DBG_V(x) 
+#define DBG_PLUG_S(x)  DBG_S(x)
+#else
+#define DBG_PLUG_V(x) 
+#define DBG_PLUG_S(x)
+#endif
 
 char* version() { static char t[80];
                   sprintf(t, "%s - %s", ICC_EXAMIN_V, ICC_EXAMIN_D); return t; }
@@ -157,6 +165,8 @@ struct Channel {
   gint          sel_x1, sel_y1, sel_x2, sel_y2; //!< Auswahlmaske
   gint          sel_w, sel_h;    //!< Dimension der Auswahlmaske
   icUInt32Number intent;         //!< CinePaint &Uuml;bertragungsart
+  icUInt32Number intent_proof;   //!< CinePaint Simulations &Uuml;bertragungsart
+  int           flags;           //!< CinePaint CMM Schalter
   ChanModE      status;          //!< Aufgaben f&uuml;r sp&auml;ter
   Channel() {
     display_ID = 0;
@@ -170,6 +180,8 @@ struct Channel {
     sel_x1 = sel_y1 = sel_x2 = sel_y2 = 0;
     sel_w = sel_h = 0;
     intent = 0;
+    intent_proof = 0;
+    flags = 0;
     status = 256;
   }
   ~Channel() {
@@ -246,6 +258,7 @@ struct Ncl2 {
 
 cmsHPROFILE hl;                //!< lcms CIE*Lab Profil
 cmsHPROFILE hp;                //!< lcms Bildprofil
+cmsHPROFILE hs;                //!< lcms Simulationsprofil
 cmsHTRANSFORM transf = 0;      //!< lcms &Uuml;bertragungstabelle
 long format;                   //!< lcms Farblayout
 int farb_kanaele;              //!< Farbkanaele wie im Bildprofil angegeben
@@ -253,7 +266,7 @@ double *colour = 0;            //!< gemessene Farben : 0.0 -> 1.0 ==farb_kanaele
 double *outbuf = 0;            //!< nach Lab umgewandelte Farben
 char* colour_profile = 0;      //!< Messfarbprofile (Schmuckfarben)
 char *image_profile = NULL;    //!< Bildprofil
-void *proof_profile = NULL;    //!< Simulationsprofil
+char *proof_profile = NULL;    //!< Simulationsprofil
 std::vector<double>       pcsfarbe;       //!< -> ungerechnete Farben: CIE*Lab 
 std::vector<double>       geraetefarbe;   //!< Bildfarben
 std::vector<std::string>  name;           //!< Farbnamen
@@ -276,6 +289,8 @@ gint32 image_ID;               //!< CinePaint Bildnummer
 
 bool farben_sind_gleich = true;//!< Pr&uuml;fschalter
 int  intent_alt = -12;         //!< Test auf ver&auml;nderte &Uuml;bertragung
+int  intent_alt_proof = -12;   //!< Test auf ver&auml;nderte &Uuml;bertragung
+int  flags_alt = -12;          //!< Test auf Schwarzpunktkompensation ...
 static bool erstes_mal = true; //!< Programmzweig identifizieren
 static bool farbe_pruefen_laeuft = false; //!< Vetoschalter
 }
@@ -562,7 +577,7 @@ startWithArgs( int argc, char **argv )
 
 /** @brief Farbprofil in ICC Examin ansehen
 
- *  benötigt ICC Examin
+ *  ben&ouml;tigt ICC Examin
 
  *  @param image_ID			CinePaint Bildnummer
  *  @param typ				CinePaint Profiltyp (Bild/Simulation)
@@ -706,12 +721,13 @@ schreibeNcl2Tag              ( std::vector<double>       pcsfarbe,
       sprintf(f->name, name[i].c_str());
 
     #ifdef DEBUG_
-    DBG_PROG_S(  icValue(f->pcsfarbe[0]) << "," << pcsfarbe[3*i+0] <<
-            icValue(f->pcsfarbe[1]) << "," << pcsfarbe[3*i+1] <<
-            f->pcsfarbe[2] << " " << pcsfarbe[3*i+2] <<
+    if( 10 < i && i < 20 )
+    DBG_S(  icValue(f->pcsfarbe[0]) << "," << pcsfarbe[3*i+0] <<" "<<
+            icValue(f->pcsfarbe[1]) << "," << pcsfarbe[3*i+1] <<" "<<
+            f->pcsfarbe[2] << " " << pcsfarbe[3*i+2] <<" "<<
             f->geraetefarbe[0] << " " <<
             f->geraetefarbe[1] << " " <<
-            f->geraetefarbe[2] )
+            f->geraetefarbe[2] );
     #endif
 
   }
@@ -739,23 +755,34 @@ transformAnlegen( channel & layer )
     drawableColourLayoutToLcms( layer, hp );
 
     DBG_PROG_S( transf )
+    double in[6] = {0.5,0.5,0.5,0.5,0.5,0.5}, out[3]={0,0,0},
+           out2[3]={0,0,0};
     if(transf)
+    {
+      cmsDoTransform( transf, in, out, 1);
       cmsDeleteTransform (transf);
+    }
     transf = 0;
     DBG_PROG_S( transf <<" "<< layer.intent )
 
-    transf = cmsCreateTransform (hp, format,
+    transf = cmsCreateProofingTransform (hp, format,
                                  hl, TYPE_Lab_DBL,
-                                 layer.intent,
-                                 cmsFLAGS_NOTPRECALC);
-    DBG_PROG_S( transf <<" "<< hp <<" "<< hl <<" channels: "<< T_CHANNELS(format) <<
-           " depth "<< T_BYTES(format) )
+                                 hs,
+                                 layer.intent, layer.intent_proof,
+                                 layer.flags | cmsFLAGS_NOTPRECALC);
+    DBG_S( transf <<" "<< hp <<" "<< hl <<" "<< hs <<" channels: "<<
+           T_CHANNELS(format) << " depth "<< T_BYTES(format) <<" i"<<
+           layer.intent <<" ip"<< layer.intent_proof <<" f"<< layer.flags );
+
+    cmsDoTransform( transf, in, out2, 1);
+    DBG_S( out[0]<<" "<<out[1]<<" "<<out[2]<<"  "<<
+           out2[0]<<" "<<out2[1]<<" "<<out2[2] )
 }
 
 /** @brief sucht nach sich ver&auml;ndernden Farben
 
- *  da keine R&uuml;ckmeldung über ein sich veränderndes Bild m&ouml;glich ist
- *  wird best&auml;ndig auf Veränderungen gepr&uuml;ft, und ein
+ *  da keine R&uuml;ckmeldung &uuml;ber ein sich veraenderndes Bild m&ouml;glich ist
+ *  wird best&auml;ndig auf Ver&auml;nderungen gepr&uuml;ft, und ein
  *  neues ncl2 erzeugt.
 
  *  @param zeiger		Ebenenstapel
@@ -768,12 +795,12 @@ vergleicheFarben(void* zeiger)
   if(zeiger)
     layer = (channel*) zeiger;
 
-  DBG_PROG_S( "layer "<< (int*)layer )
+  DBG_PLUG_S( "layer "<< (int*)layer )
 
   // Farbgedaechtnis - static ist vielleicht gefaehrlich?
   static std::vector<double> vorherige_farben;
 
-  DBG_PROG_S( "zeiger " << (int*)zeiger )
+  DBG_PLUG_S( "zeiger " << (int*)zeiger )
 
   if(!layer) {
     farbe_pruefen_laeuft = false;
@@ -804,12 +831,6 @@ vergleicheFarben(void* zeiger)
     setzeRaster( layer );
 	DBG_PROG_S("gerastert")
   }
-  if( GET_GEOMETRY(layer->status) ||
-      GET_CHANNELS(layer->status) ||
-      GET_BITDEPTH(layer->status)) {
-    reserviereSpeicher( *layer );
-	DBG_PROG_S("reserviert")
-  }
 
   // &Uuml;bertragungstabelle anlegen
   if( GET_TRANSFORM(layer->status) ||
@@ -818,8 +839,15 @@ vergleicheFarben(void* zeiger)
       GET_BITDEPTH(layer->status) ) {
     transformAnlegen( *layer );
   }
+  if( GET_GEOMETRY(layer->status) ||
+      GET_PROFIL(layer->status) ||
+      GET_CHANNELS(layer->status) ||
+      GET_BITDEPTH(layer->status)) {
+    reserviereSpeicher( *layer );
+	DBG_PROG_S("reserviert")
+  }
 
-  DBG_PROG_S( "nlayers: " << nlayers )
+  DBG_PLUG_S( "nlayers: " << nlayers )
   if(nlayers)
     for( int x = 0; x < x_num; ++x )
       for( int y = 0; y < y_num; ++y )
@@ -868,16 +896,17 @@ vergleicheFarben(void* zeiger)
       }
     }
 
-    DBG_PROG_S( colour_x << " " << n_points )
+    DBG_PLUG_S( colour_x << " " << n_points )
  
       // Wir koennen das weitere auslassen
     if(farben_sind_gleich &&
        !layer->status)
     {
       farbe_pruefen_laeuft = false;
-      DBG_PROG_S("colours are equal")
+      DBG_PLUG_S("colours are equal")
       return false;
-    }
+    } else
+      DBG_PLUG_S("colours are not equal");
   }
 
 # ifdef DEBUG_
@@ -1093,6 +1122,7 @@ aufraeumen(channel *layer)
     cmsDeleteTransform (transf);
     cmsCloseProfile (hl);
     cmsCloseProfile (hp);
+    if(hs) cmsCloseProfile (hs);
   }
 }
 
@@ -1167,7 +1197,7 @@ drawableColourLayoutToLcms( channel    & layer,
         bit = 32; 
         lcms_bytes = 0;
         break;
-      case 4:         // f16 (R&H) TODO
+      case 4:         // f16 OpenEXR
         bit = 16; 
         lcms_bytes = 0;
         break;
@@ -1204,8 +1234,10 @@ bearbeiteEingebetteteProfile( channel *layer )
     return 1;
   }
 
-  layer->intent = gimp_display_get_cms_intent (image_ID, ICC_IMAGE_PROFILE);
-  DBG_PROG_S( layer->intent <<" "<< intent_alt )
+  layer->intent = gimp_display_get_cms_intent (layer->display_ID/*image_ID*/, ICC_IMAGE_PROFILE);
+  layer->intent_proof = gimp_display_get_cms_intent (layer->display_ID/*image_ID*/, ICC_PROOF_PROFILE);
+  layer->flags = gimp_display_get_cms_flags (layer->display_ID);
+  DBG_PLUG_S( layer->intent <<" "<< intent_alt )
 
   char* profil_name = gimp_image_get_icc_profile_description(image_ID,
                                                              ICC_IMAGE_PROFILE);
@@ -1222,7 +1254,7 @@ bearbeiteEingebetteteProfile( channel *layer )
   if(profil_name)
     ;//DBG_PROG_S( image_ID <<": "<< profil_name <<" "<< old_profil_name )
   if(pprofil_name)
-    DBG_PROG_S( image_ID <<": "<< pprofil_name <<" "<< old_pprofil_name )
+    DBG_PLUG_S( image_ID <<": "<< pprofil_name <<" "<< old_pprofil_name )
 
   // Test auf Veraenderung des Profiles
   if( strcmp(old_profil_name.c_str(), profil_name) == 0/* &&
@@ -1236,11 +1268,13 @@ bearbeiteEingebetteteProfile( channel *layer )
 
   //DBG_PROG_S( "hp = " << hp )
   // Speichern des eingebetteten Profiles
-  if(strcmp(old_profil_name.c_str(), profil_name) != 0)
+  if(strcmp(old_profil_name.c_str(), profil_name) != 0 ||
+     layer->intent != intent_alt)
   {
     gint size=0;
     image_profile = gimp_image_get_icc_profile_by_mem( image_ID, &size,
                                                      ICC_IMAGE_PROFILE);
+    setzeRenderingIntent ( image_profile, layer->intent );
     schreibeDatei( image_profile, size, an );
 //sleep(10);
     // Berechnung -> CIE*Lab vorbereiten
@@ -1257,12 +1291,6 @@ bearbeiteEingebetteteProfile( channel *layer )
     //DBG_PROG_S( "hp = " << hp << " status:"<< layer->status )
   }
 
-  // Intent anpassen
-  if((int)layer->intent != intent_alt) {
-    intent_alt = layer->intent;
-    layer->status |= TRANSFORM_NEU(1);
-  }
-
   // Speichern des eingebetteten Proofprofiles
   int        new_proofing = 
                  gimp_display_get_cms_flags (image_ID) & cmsFLAGS_SOFTPROOFING;
@@ -1270,7 +1298,8 @@ bearbeiteEingebetteteProfile( channel *layer )
 
   if( (pprofil_name ?
        (strcmp(old_pprofil_name.c_str(), pprofil_name) != 0 ||
-        old_proofing != new_proofing ) : 0) )
+        old_proofing != new_proofing ) : 0) ||
+      layer->intent_proof != intent_alt_proof )
   {
     gint psize=0;
     if ( gimp_image_has_icc_profile (image_ID, ICC_PROOF_PROFILE) &&
@@ -1278,6 +1307,9 @@ bearbeiteEingebetteteProfile( channel *layer )
     {
       proof_profile = gimp_image_get_icc_profile_by_mem ( image_ID, &psize,
                                                           ICC_PROOF_PROFILE);
+      if(hs) cmsCloseProfile (hs);
+      hs   = cmsOpenProfileFromMem( proof_profile, psize );
+      setzeRenderingIntent ( proof_profile, layer->intent_proof );
       schreibeDatei( proof_profile, psize, pn );
     } else {
       DBG_MEM_S( "schreibe 1 byte\n" )
@@ -1294,6 +1326,24 @@ bearbeiteEingebetteteProfile( channel *layer )
 
   if(profil_name) free(profil_name);
   if(pprofil_name) free(pprofil_name);
+
+  // Intent anpassen
+  if((int)layer->intent != intent_alt) {
+    intent_alt = layer->intent;
+    layer->status |= TRANSFORM_NEU(1);
+  }
+
+  // Intent anpassen
+  if((int)layer->intent_proof != intent_alt_proof) {
+    intent_alt_proof = layer->intent_proof;
+    layer->status |= TRANSFORM_NEU(1);
+  }
+
+  // Schalter anpassen
+  if((int)layer->flags != flags_alt) {
+    flags_alt = layer->flags;
+    layer->status |= TRANSFORM_NEU(1);
+  }
 
   return 0;
 }
@@ -1576,13 +1626,14 @@ reserviereSpeicher( channel & layer )
 
   // weiter Aufbereiten
   tag_size  = berechneTagGroesse( n_points, farb_kanaele );
-  if(colour_profile) free (colour_profile);
-  colour_profile = (char*) new char [320 + tag_size];
+  if(colour_profile) delete [] colour_profile;
+  // tag_size * 3 sollte fuer sich aendernde Kanalzahlen ausreichen
+  colour_profile = (char*) new char [320 + tag_size * 3];
 
   DBG_NUM_S( "320 + tag_size: " << 320 + tag_size )
 
   if(colour) delete [] colour;
-  colour = (double*) new double [n_points * farb_kanaele];
+  colour = (double*) new double [n_points * (farb_kanaele == 1 ? 4 : 4)];
   if(!colour) return 1;
   for(int i = 0; i < n_points*farb_kanaele; ++i)
     colour[i] = 0.0;
@@ -1608,6 +1659,7 @@ minMax(gint32 image_ID, int & min_x, int & min_y,
 
   float max = -100000.0, max_color[4], //max_x, max_y,
         min = 100000.0, min_color[4]; //, min_x, min_y;
+  ShortsFloat u;
 
   for(int i = 0; i < 4; ++i) {
     max_color[i] = 0.0;
@@ -1733,6 +1785,23 @@ minMax(gint32 image_ID, int & min_x, int & min_y,
               case FLOAT16_RGBA_IMAGE: break;
               case FLOAT16_GRAY_IMAGE: break;
               case FLOAT16_GRAYA_IMAGE: break;
+                     if (max < FLT(((guint16*)data)[pos + c], u)
+                      ) {
+                       for (colori = 0; colori < colors; colori++)
+                         max_color[colori] = FLT(((guint16*)data)[pos + colori], u);
+                       max = FLT(((guint16*)data)[pos + c], u);
+                       max_x = x;
+                       max_y = y;
+                     }
+                     if (min > FLT(((guint16*)data)[pos + c], u)
+                      ) {
+                       for (colori = 0; colori < colors; colori++)
+                         min_color[colori] = FLT(((guint16*)data)[pos + colori], u);
+                       min = FLT(((guint16*)data)[pos + c], u);
+                       min_x = x;
+                       min_y = y;
+                     }
+                   break;
               default: g_message (_("What kind of image is this?")); break;
             }
           }

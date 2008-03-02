@@ -98,7 +98,12 @@ class Oyranos
 //    char*       holeMonitorProfil      (const char *display_name, size_t *size );
     std::vector<ICCnetz> netzAusVRML   (std::string & vrml)
                                 { return extrahiereNetzAusVRML (vrml); }
-    std::vector<ICCnetz> netzVonProfil (ICCprofile & p, int intent);
+    std::vector<ICCnetz> netzVonProfil (ICCprofile & p, int intent, int bpc);
+  private:
+    std::string netzVonProfil_      (std::vector<ICCnetz> & netz,
+                                     Speicher & profil,
+                                     int intent, int bpc);
+  public:
     std::vector<double>  bandVonProfil (const Speicher & p, int intent);
 
   private:
@@ -119,6 +124,9 @@ class Oyranos
 
   public:
     // uebergangsweise
+    void     wandelProfilNachLabUndZurueck(double *lab, // 0.0 - 1.0
+                                           size_t  size, int intent, int flags,
+                                           Speicher & profil);
     double*  wandelLabNachBildschirmFarben(double *Lab_Speicher, // 0.0 - 1.0
                                            size_t  size, int intent, int flags);
     // Create an abstract profile containing GamutCheck + Proof

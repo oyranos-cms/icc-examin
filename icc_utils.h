@@ -85,9 +85,10 @@ const char* threadGettext( const char* text);
 #define DBG_MAX_THREADS 12
 enum { THREAD_HAUPT, THREAD_GL1, THREAD_GL2, THREAD_WACHE, THREAD_LADEN,
   THREAD_ICCEXAMIN_MAX };
-void           dbgThreadId (Fl_Thread id);
-Fl_Thread   wandelThreadId (Fl_Thread id);
-void        registerThreadId (Fl_Thread id, int pos);
+void        dbgThreadId ();
+int         wandelThreadId (Fl_Thread id);
+Fl_Thread & getThreadId ( int pos );
+void        registerThreadId ( Fl_Thread id, int pos );
 
 
 // Statusmeldungen zur Fehlersuche
@@ -102,7 +103,7 @@ extern int             debug_s_mutex_threads_;
 
 #ifdef HAVE_PTHREAD_H
 #define dbgWrite(ss) { \
-  if( debug_s_mutex_thread_ != pthread_self() || \
+  if( !pthread_equal(debug_s_mutex_thread_, pthread_self()) || \
       debug_s_mutex_threads_ == 0 ) \
     while (pthread_mutex_trylock( &debug_s_mutex_ )) { \
     /*printf("%s:%d %s() debug_s_mutex_ nicht verfügbar\n",__FILE__,__LINE__,__func__);*/ \
@@ -128,7 +129,7 @@ extern int             debug_s_mutex_threads_;
 #define cout std::cout
 #define endl std::endl
 
-extern Fl_Thread level_PROG_ [DBG_MAX_THREADS];
+//extern Fl_Thread level_PROG_ [DBG_MAX_THREADS];
 int    iccLevel_PROG(int plus_minus_null);
 #define icc_level_PROG       iccLevel_PROG( 0)
 #define icc_level_PROG_plus  iccLevel_PROG( 1)
@@ -153,7 +154,7 @@ extern int icc_debug;
 
 #define DBG_UHR_ (double)clock()/(double)CLOCKS_PER_SEC
 
-#define DBG_T_     dbgWrite ( __FILE__<<":"<<__LINE__ <<" "<< __func__ << "() " ); dbgThreadId(pthread_self()); dbgWrite ( " "<< DBG_UHR_ <<" " );
+#define DBG_T_     dbgWrite ( __FILE__<<":"<<__LINE__ <<" "<< __func__ << "() " ); dbgThreadId(); dbgWrite ( " "<< DBG_UHR_ <<" " );
 #define LEVEL      { for (int i = 0; i < icc_level_PROG; i++) dbgWrite (" "); }
 #define DBG_       { LEVEL dbgWrite ("        "); DBG_T_ dbgWrite (endl); }
 #define DBG_S_(txt){ LEVEL dbgWrite ("        "); DBG_T_ dbgWrite (txt << endl); }

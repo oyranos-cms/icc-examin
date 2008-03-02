@@ -127,6 +127,9 @@ void
 Modell::beobachterFort(Beobachter* beo)
 {
   DBG_PROG_START
+  if(!beobachter_.size())
+    return;
+
   // einzelnen Beobachter aus der Liste entfernen
   std::list<Beobachter*>::iterator it = beobachter_.begin();
   intptr_t isis = (intptr_t)*it;

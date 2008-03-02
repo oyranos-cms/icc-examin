@@ -20,7 +20,7 @@ VERSION_A=0
 VERSION_B=4
 VERSION_C=3
 RELEASE=0
-ZEIT="May 2004 - December 2006"
+ZEIT="May 2004 - January 2007"
 VERSION=$VERSION_A.$VERSION_B$VERSION_C
 if [ $VERSION_A -gt 9 ]; then
   VERSION_L="$VERSION_A"
@@ -196,7 +196,7 @@ else
     else
       if [ $UNAME_ = "OpenBSD" ] || [ $UNAME_ = "NetBSD" ] || [ $UNAME_ = "FreeBSD" ]; then
         echo "BSD = 1" >> $CONF
-        ARCH=.bsd
+        OS_EXT=.bsd
         echo "#define BSD 1" >> $CONF_H
         echo "BSD $UNAME_             detected"
         OSUNAME=BSD
@@ -206,7 +206,7 @@ else
     fi
   fi
 fi
-echo "MAKEFILE_ARCH = Makefile$ARCH"  >> $CONF
+echo "MAKEFILE_ARCH = Makefile$OS_EXT"  >> $CONF
 MACH_=`uname -m`
 MACH=BUILD_32
 if [ $? = 0 ]; then

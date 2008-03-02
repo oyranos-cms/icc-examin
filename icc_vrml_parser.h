@@ -33,28 +33,31 @@
 #include <vector>
 #include <map>
 
+/** ein Punkt im Raum mit berechneter Farbe */
 struct ICCnetzPunkt {
-  double koord[3]; // immer CIE*Lab
-  double farbe[4];
+  double koord[3]; //!< immer Lab 0..1
+  double farbe[4]; //!< entweder aus VRML geparst oder anders berechnet
 };
 
+/** Punktindexe zu einer darstellbaren Flaeche */
 struct DreiecksIndexe {
-  int i[4];
+  int i[4];        //!< bezieht sich auf std::vector<ICCnetzPunkt>punkte
 };
 
+/** darstellbare Informationen zu einer Farbraumhuelle */
 struct ICCnetz {
-  std::vector<ICCnetzPunkt> punkte;
-  std::multimap<double,DreiecksIndexe> indexe;
-  std::vector<ICCnetzPunkt> umriss;
-  std::string name;
-  int aktiv;
-  int grau;
-  double transparenz;
-  double schattierung;
+  std::vector<ICCnetzPunkt> punkte;              //!< einzelne Netzpunkte
+  std::multimap<double,DreiecksIndexe> indexe;   //!< Zuordnen der Punkte
+  std::vector<ICCnetzPunkt> umriss;              //!< Netzumriss, eine Linie
+  std::string name;                              //!< Anzeigename
+  int aktiv;                                     //!< zeigen?
+  int grau;                                      //!< keine farbe?
+  double undurchsicht;                           //!< Undurchlaessigkeit 0..1
+  double schattierung;                           //!< L* Farbton fuer Grau 0..1
   ICCnetz() {
     aktiv = 1;
     grau = 0;
-    transparenz = 0.5;
+    undurchsicht = 0.5;
     schattierung = 0.2;
   }
 };

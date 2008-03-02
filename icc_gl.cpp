@@ -58,6 +58,12 @@
 
 #include <cmath>
 
+#ifdef DEBUG_
+#define MARK(x) DBG_S( #x ) x
+#else
+#define MARK(x) x
+#endif
+
 #define Beleuchtung
 //#define Lab_STERN 1
 
@@ -150,7 +156,7 @@ GL_Ansicht::GL_Ansicht(int X,int Y,int W,int H)
   hintergrundfarbe = MENU_HELLGRAU;
   spektralband = 0;
   zeige_helfer = true;
-  zeig_punkte_als_messwert_paare = false;
+  zeig_punkte_als_paare = false;
   zeig_punkte_als_messwerte = false;
   typ_ = -1;
   strichmult = 1.0;
@@ -256,7 +262,7 @@ GL_Ansicht::copy (const GL_Ansicht & gl)
   hintergrundfarbe = gl.hintergrundfarbe;
   spektralband = gl.spektralband;
   zeige_helfer = gl.zeige_helfer;
-  zeig_punkte_als_messwert_paare = gl.zeig_punkte_als_messwert_paare;
+  zeig_punkte_als_paare = gl.zeig_punkte_als_paare;
   zeig_punkte_als_messwerte = gl.zeig_punkte_als_messwerte;
   typ_ = gl.typ_;
   strichmult = gl.strichmult;
@@ -480,13 +486,19 @@ GL_Ansicht::bewegen (bool setze)
   DBG_PROG_ENDE
 }
 
-void
+int
 GL_Ansicht::auffrischen_()
 {
   DBG_PROG_START
+
   menueErneuern_();
-  erstelleGLListen_();
+  int err = erstelleGLListen_();
+
+  if(err)
+    valid_ = false;
+
   DBG_PROG_ENDE
+  return err;
 }
 
 void
@@ -554,8 +566,8 @@ GL_Ansicht::draw()
   --zahl;
   DBG_PROG_S( "Eintritt ist_bewegt_|darfBewegen(): "
                << ist_bewegt_ << "|" << darfBewegen()<<" "<<id_<<" "<<hintergrundfarbe )
-  Fl_Thread thread = wandelThreadId(pthread_self());
-  if(thread != (Fl_Thread)THREAD_HAUPT) {
+  int thread = wandelThreadId(pthread_self());
+  if(thread != THREAD_HAUPT) {
     WARN_S( ": falscher Thread" );
     DBG_PROG_ENDE
     return;
@@ -1009,12 +1021,14 @@ GL_Ansicht::zeichneKoordinaten_()
   DBG_ICCGL_ENDE
 }
 
-void
+int
 GL_Ansicht::erstelleGLListen_()
 { DBG_PROG_START
 
+  if(!frei())
+    return 1;
 
-  frei(false);
+  MARK( frei(false); )
 
   garnieren_();
 
@@ -1048,9 +1062,10 @@ GL_Ansicht::erstelleGLListen_()
       break;
   }*/
 
-  frei(true);
+  MARK( frei(true); )
 
   DBG_PROG_ENDE
+  return 0;
 }
 
 void
@@ -1354,7 +1369,7 @@ GL_Ansicht::netzeAuffrischen()
       DBG_ICCGL_V( dreiecks_netze[0].name )
       DBG_ICCGL_V( dreiecks_netze[0].punkte.size() )
       DBG_ICCGL_V( dreiecks_netze[0].indexe.size() )
-      DBG_ICCGL_V( dreiecks_netze[0].transparenz )
+      DBG_ICCGL_V( dreiecks_netze[0].undurchsicht )
     }
 
   unsigned int j,k;
@@ -1446,7 +1461,7 @@ GL_Ansicht::netzeAuffrischen()
        for( j = 0; j < dreiecks_netze.size(); j++ )
        {
          double schattierung = dreiecks_netze[j].schattierung;
-         if(dreiecks_netze[j].aktiv && dreiecks_netze[j].transparenz)
+         if(dreiecks_netze[j].aktiv && dreiecks_netze[j].undurchsicht)
          {
              // ich hoffe das dauert nicht zu lange
            netz.punkte. insert( netz.punkte.begin()+punkte_n ,
@@ -1459,7 +1474,7 @@ GL_Ansicht::netzeAuffrischen()
                netz.punkte[k].farbe[1] = schattierung;
                netz.punkte[k].farbe[2] = schattierung;
              }
-             netz.punkte[k].farbe[3] = dreiecks_netze[j].transparenz;
+             netz.punkte[k].farbe[3] = dreiecks_netze[j].undurchsicht;
              netz.punkte[k].koord[1] *= a_darstellungs_breite;
              netz.punkte[k].koord[2] *= b_darstellungs_breite;
            }
@@ -1572,7 +1587,7 @@ GL_Ansicht::netzeAuffrischen()
                       netz.punkte[it->second.i[0]].koord[1];
               v2[2] = netz.punkte[it->second.i[2]].koord[2]-
                       netz.punkte[it->second.i[0]].koord[2];
-              // Flächennormale bestimmen
+              // Flaechennormale bestimmen
               normale[0] =   v1[2]*v2[1] - v1[1]*v2[2];
               normale[1] =   v1[0]*v2[2] - v1[2]*v2[0];
               normale[2] =   v1[1]*v2[0] - v1[0]*v2[1];
@@ -1638,7 +1653,7 @@ GL_Ansicht::netzeAuffrischen()
             glColor4d( dreiecks_netze[j].punkte[index].farbe[0],
                        dreiecks_netze[j].punkte[index].farbe[1],
                        dreiecks_netze[j].punkte[index].farbe[2],
-                       dreiecks_netze[j].transparenz);
+                       dreiecks_netze[j].undurchsicht);
 
             // Punktkoordinaten setzen
             glVertex3d( dreiecks_netze[j].punkte[index].koord[2]*b_darstellungs_breite,
@@ -1698,14 +1713,26 @@ GL_Ansicht::punkteAuffrischen()
         // zurecht setzen
         glTranslatef( -b_darstellungs_breite/2,-.5,-a_darstellungs_breite/2 );
 
-        if(zeig_punkte_als_messwert_paare)
-          for (unsigned i = 0; i < punkte_.size(); i+=6)
+        size_t n = punkte_.size()/6;
+        if(zeig_punkte_als_paare)
+          for (unsigned i = 0; i < n*6; i+=6)
           {
             glLineWidth(strich2*strichmult);
-            glColor4f(.97, .97, .97, 1. );
             glBegin(GL_LINES);
+              if(zeig_punkte_als_messwerte)
+                glColor4f(.97, .97, .97, 1. );
+              else
+                glColor4f(farben_[i/3*4+0], farben_[i/3*4+1],
+                          farben_[i/3*4+2], farben_[i/3*4+3] );
+
               glVertex3f(punkte_[i+2], punkte_[i+0], punkte_[i+1]);
-              glColor4f(1., .6, .6, 1.0 );
+
+              if(zeig_punkte_als_messwerte)
+                glColor4f(1., .6, .6, 1.0 );
+              else
+                glColor4f(farben_[i/3*4+4], farben_[i/3*4+5],
+                          farben_[i/3*4+6], farben_[i/3*4+7] );
+
               glVertex3f(punkte_[i+5], punkte_[i+3], punkte_[i+4] );
             glEnd();
           }
@@ -1722,13 +1749,23 @@ GL_Ansicht::punkteAuffrischen()
              glPointSize(punktgroesse);
              glColor4f(.97, .97, .97, 1. );
              glBegin(GL_POINTS);
-               for (unsigned i = 0; i < punkte_.size(); i+=3)
+               if(zeig_punkte_als_paare && !zeig_punkte_als_messwerte)
                {
-                 if (!dreiecks_netze[0].grau && farben_.size())
-                   glColor4f(farben_[i/3*4+0], farben_[i/3*4+1],
-                             farben_[i/3*4+2], farben_[i/3*4+3] );
-
-                 glVertex3d( punkte_[i+2], punkte_[i+0], punkte_[i+1] );
+                 for (unsigned i = 0; i < n*6; i+=6)
+                 {
+                   if (!dreiecks_netze[0].grau && farben_.size())
+                     glColor4f(farben_[i/3*4+0], farben_[i/3*4+1],
+                               farben_[i/3*4+2], farben_[i/3*4+3] );
+                   glVertex3d( punkte_[i+2], punkte_[i+0], punkte_[i+1] );
+                 }
+               } else {
+                 for (unsigned i = 0; i < punkte_.size(); i+=3)
+                 {
+                   if (!dreiecks_netze[0].grau && farben_.size())
+                     glColor4f(farben_[i/3*4+0], farben_[i/3*4+1],
+                               farben_[i/3*4+2], farben_[i/3*4+3] );
+                   glVertex3d( punkte_[i+2], punkte_[i+0], punkte_[i+1] );
+                 }
                }
              glEnd();
              // Schatten
@@ -1854,7 +1891,7 @@ GL_Ansicht::zeigeUmrisse_()
     {
       if(dreiecks_netze[i].umriss.size() &&
          dreiecks_netze[i].aktiv &&
-         dreiecks_netze[i].transparenz)
+         dreiecks_netze[i].undurchsicht)
       {
 #       ifdef DRAW_UMRISS
         glLineWidth(6.0*strichmult);
@@ -2182,7 +2219,7 @@ GL_Ansicht::setzePerspektive()
     else
       gluPerspective(15, seitenverhaeltnis,
                      vorder_schnitt, 50);
-                  // ^-- vordere Schnittfläche
+                  // ^-- vordere Schnittflaeche
   //DBG_ICCGL_ENDE
 }
 
@@ -2215,12 +2252,15 @@ GL_Ansicht::zeichnen()
 
     GLinit_();  DBG_PROG
     fensterForm();
-    auffrischen_();
-    valid_ = true;
+    int err = auffrischen_();
+    if(!err)
+      valid_ = true;
+    else
+      return;
   }
 
   if(!frei()) return;
-  frei(false);
+  MARK( frei(false); )
 
   zeit_ = icc_examin_ns::zeitSekunden();
 
@@ -2493,7 +2533,7 @@ GL_Ansicht::zeichnen()
                   ++i)
          {
            std::string text;
-           text = dreiecks_netze[i].name.c_str();
+           text = dreiecks_netze[i].name;
            DBG_PROG_V( dreiecks_netze[i].name )
 #          ifdef HAVE_FTGL
            if(ortho_font)
@@ -2524,7 +2564,7 @@ GL_Ansicht::zeichnen()
   } else
     DBG
 
-  frei(true);
+  MARK( frei(true); )
 
   DBG_ICCGL_ENDE
 }
@@ -2545,15 +2585,30 @@ GL_Ansicht::achsNamen    (std::vector<std::string> achs_namen)
 }
 
 void
+GL_Ansicht::herausNormalPunkte (std::vector<double>    & p,
+                                std::vector<float>     & f)
+{
+  p = punkte_,
+  f = farben_;
+  unsigned int n = p.size()/3;
+  for (unsigned int i = 0; i < n; ++i)
+  {
+    p[i*3+1] = p[i*3+1]/a_darstellungs_breite;
+    p[i*3+2] = p[i*3+2]/b_darstellungs_breite;
+  }
+}
+
+void
 GL_Ansicht::hineinPunkte       (std::vector<double>      &vect,
                                 std::vector<std::string> &achs_namen)
 { DBG_PROG_START
 
   DBG_PROG_V( vect.size() )
 
-  frei (false);
+  MARK( frei (false); )
   if(!punkte_.size() &&
-     vect.size() > (1000*3) )
+     vect.size() > (1000*3 *
+       ((!zeig_punkte_als_messwerte && zeig_punkte_als_paare) ? 2:1)) )
     punktgroesse = 2;
 
   tabelle_.clear();DBG_PROG
@@ -2569,19 +2624,19 @@ GL_Ansicht::hineinPunkte       (std::vector<double>      &vect,
     punkte_[i*3+2] = vect[i*3+2]*b_darstellungs_breite;
   }
   
-  DBG_PROG_V( zeig_punkte_als_messwert_paare<<"|"<<punktform<<"|"<<punkte_.size() )
+  DBG_PROG_V( zeig_punkte_als_paare<<"|"<<punktform<<"|"<<punkte_.size() )
 
-  if (!zeig_punkte_als_messwert_paare &&
+  if (!zeig_punkte_als_messwerte &&
       punktform != MENU_dE1STERN &&
       punkte_.size())
     punktform = MENU_dE1STERN;
 
-  if (zeig_punkte_als_messwert_paare &&
+  if (zeig_punkte_als_messwerte &&
       punktform == MENU_dE1STERN &&
       punkte_.size())
     punktform = MENU_dE1KUGEL;
 
-  frei (true);
+  MARK( frei (true); )
 
   valid_=false;
   DBG_PROG_ENDE
@@ -2593,11 +2648,11 @@ GL_Ansicht::hineinPunkte      (std::vector<double>      &vect,
                                std::vector<std::string> &achsNamen)
 { DBG_PROG_START
 
-  frei (false);
+  MARK( frei (false); )
   //Kurve aus tag_browser anzeigen
   farben_.clear();
   farben_ = punkt_farben;
-  frei (true);
+  MARK( frei (true); )
   DBG_PROG_S( farben_.size()/4 << " Farben" )
 
   hineinPunkte(vect,achsNamen);
@@ -2613,10 +2668,10 @@ GL_Ansicht::hineinPunkte      (std::vector<double> &vect,
 { DBG_PROG_START
   //Kurve aus tag_browser anzeigen
   DBG_NUM_V( farb_namen.size() <<"|"<< punkt_farben.size() )
-  frei(false);
+  MARK( frei(false); )
   farb_namen_.clear();
   farb_namen_ = farb_namen;
-  frei(true);
+  MARK( frei(true); )
 
   hineinPunkte(vect, punkt_farben, achs_namen);
 
@@ -2628,13 +2683,13 @@ GL_Ansicht::hineinNetze       (const std::vector<ICCnetz> & d_n)
 {
   DBG_PROG_START
 
-  frei(false);
+  MARK( frei(false); )
   if(d_n.size()) {
     DBG_NUM_V( dreiecks_netze.size() )
     dreiecks_netze = d_n;
   } else
     dreiecks_netze.resize(0);
-  frei(true);
+  MARK( frei(true); )
 
   DBG_NUM_V( dreiecks_netze.size() )
   for(unsigned i = 0; i < dreiecks_netze.size(); ++i)
@@ -2652,7 +2707,7 @@ GL_Ansicht::hineinTabelle (std::vector<std::vector<std::vector<std::vector<doubl
                            std::vector<std::string> nach)
 { DBG_PROG_START
 
-  frei(false);
+  MARK( frei(false); )
   //Kurve aus tag_browser anzeigen
   tabelle_ = vect;  DBG_PROG
   nach_farb_namen_ = nach; DBG_PROG
@@ -2660,7 +2715,7 @@ GL_Ansicht::hineinTabelle (std::vector<std::vector<std::vector<std::vector<doubl
   achsNamen(achs_namen);
   punkte_.clear(); DBG_PROG
 
-  frei(true);
+  MARK( frei(true); )
 
   valid_=false;
   redraw();

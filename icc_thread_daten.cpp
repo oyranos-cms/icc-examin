@@ -47,6 +47,8 @@ icc_examin_ns::ThreadDaten::frei(int freigeben)
     Fl_Thread pth_alt = pth;
     pth = pthread_self();
 
+    int x = 0;
+
     while(!frei_)
     {
       if(pth == pth_alt)
@@ -55,6 +57,11 @@ icc_examin_ns::ThreadDaten::frei(int freigeben)
         break;
       }
       icc_examin_ns::sleep(0.01);
+      if(++x > 200)
+      {
+        WARN_S("More than 2 seconds frozen.")
+        x = 0;
+      }
     }
 
     frei_ = false;

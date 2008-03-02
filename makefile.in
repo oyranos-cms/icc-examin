@@ -495,7 +495,7 @@ install_global:
 uninstall:
 	echo deinstalliere ...
 	if [ "$(INSTALL_TARGET)" = "install_global" ]; then \
-	  $(DESTDIR)$(bindir)/$(BINTARGET); \
+	  $(RM) $(DESTDIR)$(bindir)/$(BINTARGET); \
 	else \
 	  $(RM) $(DESTDIR)$(CP_DIR)/$(CINEPAINT); \
 	fi
