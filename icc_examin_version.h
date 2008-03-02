@@ -3,10 +3,9 @@
 
 #define ICC_EXAMIN_VERSION_A 0
 #define ICC_EXAMIN_VERSION_B 4
-#define ICC_EXAMIN_VERSION_C 5
-#define ICC_EXAMIN_VERSION 405
-#define ICC_EXAMIN_V "0.45"
-#define ICC_EXAMIN_D _("May 2004 - July 2007")
-#define ICC_CINEPAINT_VERSION "Gtk CinePaint 0.23-0"
+#define ICC_EXAMIN_VERSION_C 4
+#define ICC_EXAMIN_VERSION 404
+#define ICC_EXAMIN_V "0.44"
+#define ICC_EXAMIN_D _("May 2004 - June 2007")
 
 #endif //ICC_VERSION_H

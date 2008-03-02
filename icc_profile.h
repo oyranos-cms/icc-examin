@@ -145,7 +145,6 @@ class ICCprofile {
  
   public: // measurement infos
     bool                hasMeasurement ();
-    bool                tagBelongsToMeasurement (int tag);
     std::string         report         (bool auss);
     ICCmeasurement&     getMeasurement ();
     std::string         cgats          ();

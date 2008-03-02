@@ -11,7 +11,7 @@ main ()
 {
   DBG_PROG_START
 
-  Lab quelle, ziel; 
+  Lab_s quelle, ziel; 
   double de00;
 
   for (int i = 0 ; i < cietest_; i++) {

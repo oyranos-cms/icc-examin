@@ -90,7 +90,7 @@ dE2000 (const Lab_s & Lab1_n, const Lab_s & Lab2_n,
   double Cs1ab = sqrt( QUAD(Lab1.a) + QUAD(Lab1.b)); DBG_v (Cs1ab)
   double Cs2ab = sqrt( QUAD(Lab2.a) + QUAD(Lab2.b)); DBG_v (Cs2ab)       // (2)
   double Cab   = (Cs1ab + Cs2ab) / 2;                DBG_v (Cab)         // (3)
-  double G     = 0.5 * (1.0 - sqrt( pow(Cab,7) / (pow(Cab,7) + pow(25,7)))); DBG_v (G)
+  double G     = 0.5 * (1.0 - sqrt( pow(Cab,7) / (pow(Cab,7) + pow((double)25,7)))); DBG_v (G)
                                                                          // (4)
   double a1    = (1.0+G) * Lab1.a; DBG_v (a1)
   double a2    = (1.0+G) * Lab2.a; DBG_v (a2)                            // (5)
@@ -143,7 +143,7 @@ dE2000 (const Lab_s & Lab1_n, const Lab_s & Lab2_n,
                      - 0.20 * cos (nachRAD(4.0 * mean_h - 63.0));DBG_v (T)//(15)
   double dTheta= 30.0 * exp (- QUAD((mean_h - 275.0)/25.0)); DBG_v (dTheta)
                                                                          // (16) 
-  double RC    = 2.0 * sqrt( pow(aC,7)/(pow(aC,7) + pow(25, 7))); DBG_v (RC)
+  double RC    = 2.0 * sqrt( pow(aC,7)/(pow(aC,7) + pow((double)25, 7))); DBG_v (RC)
                                                                          // (17)
   double SL    = 1.0 + (0.015 * QUAD(aL - 50.0))
                      / sqrt(20.0 + QUAD(aL - 50.0)); DBG_v (SL)          // (18)
@@ -160,36 +160,6 @@ dE2000 (const Lab_s & Lab1_n, const Lab_s & Lab2_n,
                  );                                                      // (22)
   DBG_v ( de2000 )
   return de2000;
-}
-
-double
-dE ( Lab_s Lab1, Lab_s Lab2 )
-{
-  double l1[3], l2[3];
-  LabToCIELab( Lab1, l1 );
-  LabToCIELab( Lab2, l2 );
-
-  return HYP3( l1[0]-l2[0], l1[1]-l2[1], l1[2]-l2[2] );
-}
-
-double
-dE ( double * Lab1, Lab_s Lab2 )
-{
-   Lab_s Lab1_;
-   Lab1_.L = Lab1[0];
-   Lab1_.a = Lab1[1];
-   Lab1_.b = Lab1[2];
-   return dE( Lab1_, Lab2 );
-}
-
-double
-dE ( double * Lab1, double * Lab2 )
-{
-   Lab_s Lab2_;
-   Lab2_.L = Lab2[0];
-   Lab2_.a = Lab2[1];
-   Lab2_.b = Lab2[2];
-   return dE( Lab1, Lab2_ );
 }
 
 void

@@ -197,7 +197,7 @@ TagDrawings::init_shoe_ ()
   block = icc_oyranos.moni(0,0, groesse);
   if(groesse &&
      icc_debug != 14) {
-    hsRGB = cmsOpenProfileFromMem(const_cast <char*> (block), groesse);
+    hsRGB = cmsOpenProfileFromMem(const_cast <char*> (block), (DWORD)groesse);
   } else {
     hsRGB = cmsCreate_sRGBProfile();
   }
@@ -216,10 +216,10 @@ TagDrawings::draw ()
   if (icc_examin_ns::laeuft())
   {
     // diagramvariables in image points
-    xO = x() +       tab_rand_x + linker_text_rand;     // origin
-    yO = y() + h() - tab_rand_y - unterer_text_rand;    // origin
-    breite  = (w() - 2*tab_rand_x - linker_text_rand);  // width of diagram
-    float hoehe_   = (h() - 2*tab_rand_y - unterer_text_rand); // height of diagram
+    xO = (float)(x() +       tab_rand_x + linker_text_rand);     // origin
+    yO = (float)(y() + h() - tab_rand_y - unterer_text_rand);    // origin
+    breite  = (float)(w() - 2*tab_rand_x - linker_text_rand);  // width of diagram
+    float hoehe_   = (float)(h() - 2*tab_rand_y - unterer_text_rand); // height of diagram
     hoehe   = MAX( 0, hoehe_ );
 
     DBG_PROG_S( kurven.size() <<" "<< punkte.size() )
@@ -634,8 +634,8 @@ TagDrawings::drawKurve_    ()
   icColorSpaceSignature icc_colour_space_signature = icSigLabData;
   int* flFarben = getChannel_flColours (icc_colour_space_signature);
   unsigned kurven_n;
-  if(kurven.size()) kurven_n = kurven.size();
-  else              kurven_n = kurven2.size();
+  if(kurven.size()) kurven_n = (unsigned)kurven.size();
+  else              kurven_n = (unsigned)kurven2.size();
 
   static const char symbol_[][4] = {"*","o","#","x","$","s"};
   const int sym_n=sizeof(symbol_)/4; DBG_PROG_V( sym_n )
@@ -706,7 +706,7 @@ TagDrawings::drawKurve_    ()
       fl_color(9 + j);
     }
     if(kurven.size())
-      DBG_PROG_S( cout << "draw curv "<< name << " " << j << " " << kurven[j].size() << " parts " )
+      DBG_PROG_S( cout << "draw curv "<< name << " " << j << " " << kurven[j].size() << " parts " );
     s.str("");
     if (kurven2.size())
     {
@@ -809,8 +809,8 @@ TagDrawings::drawKurve_    ()
       texte.size() > kurven2.size() )
   { 
     fl_color(FL_BLACK);
-    for(unsigned j = kurven.size();
-          j < texte.size(); ++j)
+    for(unsigned j = (unsigned)kurven.size();
+          j < (unsigned)texte.size(); ++j)
       if(texte[j] != "gamma_start_ende" &&
          texte[j] != "curv")
         fl_draw ( texte[j].c_str(), xNachBild(min_x) + 2, yNachBild(max_y) + j*16 + 12);

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GNU hello-c 0.13.1\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2007-07-03 13:37+0200\n"
+"POT-Creation-Date: 2007-06-26 19:29+0200\n"
 "PO-Revision-Date: 2003-12-20 00:24+0900\n"
 "Last-Translator: Masahito Yamaga <ma@yama-ga.com>\n"
 "Language-Team: Japanese <translation-team-ja@lists.sourceforge.net>\n"
@@ -86,10 +86,10 @@ msgstr ""
 msgid "Show:"
 msgstr ""
 
-#: fl_i18n_example.cxx:14 fl_i18n_example.cxx:53 fl_i18n_example.cxx:56
+#: fl_i18n_example.cxx:14 fl_i18n_example.cxx:54 fl_i18n_example.cxx:57
 msgid "Hello, world!"
 msgstr "世界よ, こんにちは!"
 
-#: fl_i18n_example.cxx:54
+#: fl_i18n_example.cxx:55
 msgid "fl_i18n_example"
 msgstr ""

@@ -31,6 +31,7 @@
 
 #include "icc_thread_daten.h"
 #include "threads.h"
+#include "icc_utils.h"
 
 void
 icc_examin_ns::ThreadDaten::frei(int freigeben)
@@ -45,7 +46,7 @@ icc_examin_ns::ThreadDaten::frei(int freigeben)
   } else {
 
     Fl_Thread pth_alt = pth;
-    pth = pthread_self();
+    pth = iccThreadSelf();
 
     int x = 0;
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: hello-sh 0.14.1\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2007-07-03 13:37+0200\n"
+"POT-Creation-Date: 2007-06-26 19:29+0200\n"
 "PO-Revision-Date: 2004-11-17 10:08+0200\n"
 "Last-Translator: Pavel Maryanov <acid_jack@ukr.net>\n"
 "Language-Team: Russian <ru@li.org>\n"
@@ -89,11 +89,11 @@ msgstr ""
 msgid "Show:"
 msgstr ""
 
-#: fl_i18n_example.cxx:14 fl_i18n_example.cxx:53 fl_i18n_example.cxx:56
+#: fl_i18n_example.cxx:14 fl_i18n_example.cxx:54 fl_i18n_example.cxx:57
 msgid "Hello, world!"
 msgstr "Здравствуй, мир!"
 
-#: fl_i18n_example.cxx:54
+#: fl_i18n_example.cxx:55
 msgid "fl_i18n_example"
 msgstr ""
 

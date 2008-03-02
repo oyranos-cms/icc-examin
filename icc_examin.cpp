@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2006  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2007  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -43,12 +43,11 @@
 #include "icc_waehler.h"
 #include "fl_i18n/fl_i18n.H"
 
+
 #if APPLE
 #include <Carbon/Carbon.h>
 #endif
 
-#include <limits.h>
-#include <float.h>
 #include <FL/x.H>
 
 using namespace icc_examin_ns;
@@ -211,14 +210,14 @@ ICCexamin::start (int argc, char** argv)
   DBG_PROG_S( "Show vcgt not" )
 # endif
 
-  FILE *out = popen("oyranos-config", "r");
+  FILE *out = icc_popen_m("oyranos-config", "r");
   if(out)
   {  
     char name[64];
     size_t r = fscanf( out, "%12s", name ); r=r;
     if( strcmp(name, "oyranos") == 0 )
       icc_betrachter->menu_einstellungen->show();
-    pclose(out);
+    icc_pclose_m(out);
   } 
 
 # if APPLE
@@ -250,7 +249,6 @@ ICCexamin::start (int argc, char** argv)
   DBG_PROG
 
   modellDazu( /*ICCkette*/&profile ); // wird in nachricht ausgewertet
-  modellDazu( /*GL_Ansicht*/icc_betrachter->DD_farbraum);
 
   Fl::add_handler(tastatur);
 
@@ -319,8 +317,9 @@ ICCexamin::start (int argc, char** argv)
     if (profile.size())
       ptr = profile.name().c_str();
     dateiwahl = new MyFl_File_Chooser(ptr, _("ICC colour profiles (*.{I,i}{C,c}{M,m,C,c})	Measurement (*.{txt,it8,IT8,RGB,CMYK,ti*,cgats,CIE,cie,nCIE,oRPT,DLY,LAB,Q60})	Argyll Gamuts (*.{wrl,vrml}"), MyFl_File_Chooser::MULTI, _("Which ICC profile?"));
+    dateiwahl->callback(dateiwahl_cb);
+    dateiwahl->preview(true);
     icc_examin_ns::MyFl_Double_Window *w = dateiwahl->window;
-    //w->set_modal();
     w->use_escape_hide = true;
   }
 
@@ -553,128 +552,11 @@ ICCexamin::nachricht( Modell* modell , int info )
         icc_examin_ns::unlock(icc_betrachter->DD_farbraum, __FILE__,__LINE__);
       }
     }
-    fortschritt(1.0 , 1.0);
-    fortschritt(1.1 , 1.0);
-    Beobachter::nachricht(modell, info);
   }
 
-
-  GL_Ansicht* gl = dynamic_cast<GL_Ansicht*>(modell);
-  if(gl && info == GL_MOUSE_HIT3D)
-  {
-    // find a CGATS/ncl2 tag_text / inspect_html line from a 3D(Lab) mouse hit
-    // it's the inverse from selectTextsLine(int * line)
-    int item = icc_examin->tag_nr();
-    std::vector<std::string> TagInfo = profile.profil()->printTagInfo(item),
-                             names;
-    std::vector<float> rgb;
-    std::vector<double> lab_dv;
-    double min = DBL_MAX, len;
-    double lab[3];
-    int min_pos = -1,
-        n;
-#if 0
-    if( icc_betrachter->inspekt_html->visible() ||
-        (profile.profil()->tagBelongsToMeasurement(item) &&
-         icc_betrachter->tag_browser->value() > 5)
-      )
-#endif
-    if(profile.profil()->hasMeasurement())
-    {
-      ICCmeasurement & m = profile.profil()->getMeasurement();
-      LabToCIELab( &gl->mouse_3D_hit.koord[0], &lab[0], 1 );
-
-      DBG_PROG_S( lab[0] <<" "<< lab[1] <<" "<< lab[2] )
-
-      n = m.getPatchCount();
-
-      std::vector<Lab_s> lab_v;
-      /*if( TagInfo[0] == "DevD" ||
-          TagInfo[0] == "targ" ||
-          icc_betrachter->inspekt_html->visible() )*/
-        lab_v = m.getMessLab();
-      if(!lab_v.size())
-        lab_v = m.getProfileLab();
-
-      n =  lab_v.size();
-      for(int i = 0; i < n; ++i)
-      {
-        len = fabs( dE( gl->mouse_3D_hit.koord, lab_v[i] ) );
-        
-        if(len < min)
-        {
-          min = len;
-          min_pos = i;
-        }
-      }
-
-      if(min < 5)
-      {
-        lab_dv.resize(3);
-        std::string name = m.getFieldName(min_pos);
-        if(icc_betrachter->inspekt_html->visible())
-        {
-          icc_betrachter->inspekt_html->topline( name.c_str() );
-        }
-        if(profile.profil()->tagBelongsToMeasurement(item))
-        {
-          std::vector<int> pl = m.getPatchLines ( TagInfo[0].c_str() );
-          icc_betrachter->tag_text->select(pl[min_pos]+1);
-        }
-        DBG_PROG_V(min <<" "<< min_pos)
-        lab_dv[0] = lab_v[min_pos].L;
-        lab_dv[1] = lab_v[min_pos].a;
-        lab_dv[2] = lab_v[min_pos].b;
-        icc_betrachter->DD_farbraum->emphasizePoint( lab_dv, rgb, name);
-      }
-
-    } else if( profile.profil()->hasTagName("ncl2") ) {
-
-      farbenLese( profile.aktuell(), lab_dv, rgb, names );
-      n = names.size();
-      int mult = lab_dv.size()/3/names.size();
-      int n_ = n*3*mult;
-      for(int i = 0; i < n_; i+=3*mult)
-      {
-        lab[0] = lab_dv[i+0];
-        lab[1] = lab_dv[i+1];
-        lab[2] = lab_dv[i+2];
-        len = fabs( dE( gl->mouse_3D_hit.koord, &lab[0] ) );
-        if(len < min)
-        {
-          min = len;
-          min_pos = i/3/mult;
-        }
-      }
-
-      if(min < 5)
-      {
-        if(icc_betrachter->inspekt_html->visible())
-        {
-          icc_betrachter->inspekt_html->topline( names[min_pos].c_str() );
-        }
-        if(TagInfo.size())
-        if(TagInfo[0] == "ncl2")
-          icc_betrachter->tag_text->select(min_pos+6);
-
-        DBG_PROG_V(min <<" "<< min_pos)
-        lab_dv[0] = lab_dv[min_pos*3*mult+0];
-        lab_dv[1] = lab_dv[min_pos*3*mult+1];
-        lab_dv[2] = lab_dv[min_pos*3*mult+2];
-        lab_dv.resize(3);
-        rgb[0] = rgb[min_pos*4*mult+0];
-        rgb[1] = rgb[min_pos*4*mult+1];
-        rgb[2] = rgb[min_pos*4*mult+2];
-        rgb[3] = 1.0;
-        rgb.resize(4);
-        if(!names[min_pos].size())
-          WARN_S( "no name found" )
-        icc_betrachter->DD_farbraum->emphasizePoint( lab_dv,
-                                                     rgb, names[min_pos]);
-      }
-    }
-  }
-
+  Beobachter::nachricht(modell, info);
+  fortschritt(1.0 , 1.0);
+  fortschritt(1.1 , 1.0);
   DBG_PROG_ENDE
 }
 
@@ -684,7 +566,11 @@ ICCexamin::setzeFensterTitel()
   DBG_PROG_START
   char* t = (char*) malloc(256);
   const char* title = NULL;
+  unsigned int t_len = 256;
 
+#ifdef WIN32
+  t_len = 30;
+#endif
 
   if(profile.profil())
     title = dateiName(profile.profil()->filename());
@@ -702,7 +588,10 @@ ICCexamin::setzeFensterTitel()
               _("Compare Measurement <-> Profile Colours"));
 
     icc_examin_ns::lock(__FILE__,__LINE__);
+	// TODO: ???
+#ifndef WIN32
     window->label(t);
+#endif
     icc_examin_ns::unlock(window, __FILE__,__LINE__);
   }
 
@@ -711,13 +600,19 @@ ICCexamin::setzeFensterTitel()
      window->shown() )
   {
     if(title)
-      snprintf(t, 256, "ICC Examin: %s - %s", title,
+	{
+      snprintf(t, t_len, "ICC Examin: %s - %s", title,
               _("Gamut View"));
-    else
-      snprintf(t, 256, "ICC Examin: - %s", _("Gamut View"));
+	  if(strlen(title) > t_len)
+	    sprintf( &t[t_len], "..." );
+    } else
+      snprintf(t, t_len, "ICC Examin: - %s", _("Gamut View"));
 
     icc_examin_ns::lock(__FILE__,__LINE__);
+	// TODO: ???
+#ifndef WIN32
     window->label(t);
+#endif
     icc_examin_ns::unlock(window, __FILE__,__LINE__);
   }
 
@@ -725,12 +620,18 @@ ICCexamin::setzeFensterTitel()
   if(window->shown() )
   {
     if(title)
-      snprintf(t, 256, "ICC Examin: %s", title);
-    else
-      snprintf(t, 256, "ICC Examin: -");
+	{
+      snprintf(t, t_len, "ICC Examin: %s", title);
+	  if(strlen(title) > t_len)
+	    sprintf( &t[t_len], "..." );
+	} else
+      snprintf(t, t_len, "ICC Examin: -");
 
     icc_examin_ns::lock(__FILE__,__LINE__);
+	// TODO: ???
+#ifndef WIN32
     window->label(t);
+#endif
     icc_examin_ns::unlock(window, __FILE__,__LINE__);
   }
 
@@ -1109,13 +1010,13 @@ ICCexamin::erneuerTagBrowserText_ (void)
     // Number
     int Nr = atoi((*it).c_str()) + 1;
     std::stringstream t; t << Nr;
-    for (int i = t.str().size(); i < 3; i++) {s << " ";} s << Nr; *it++; ++anzahl; s << " ";
+    for (int i = (int)t.str().size(); i < 3; i++) {s << " ";} s << Nr; *it++; ++anzahl; s << " ";
     // Name/title
-    s << *it; for (int i = (*it++).size(); i < 6; i++) {s << " ";} ++anzahl;
+    s << *it; for (int i = (int)(*it++).size(); i < 6; i++) {s << " ";} ++anzahl;
     // Typ
-    s << *it; for (int i = (*it++).size(); i < 5; i++) {s << " ";} ++anzahl;
+    s << *it; for (int i = (int)(*it++).size(); i < 5; i++) {s << " ";} ++anzahl;
     // Size
-    for (int i = (*it).size(); i < 6; i++) {s << " ";} s << *it++; s << " "; ++anzahl;
+    for (int i = (int)(*it).size(); i < 6; i++) {s << " ";} s << *it++; s << " "; ++anzahl;
     // description
     add_s (*it)
   }
@@ -1369,7 +1270,7 @@ void
 ICCexamin::fortschritt(double f, double anteil)
 { DBG_PROG_START
   
-  int thread = wandelThreadId(pthread_self());
+  int thread = wandelThreadId(iccThreadSelf());
   if(thread != THREAD_HAUPT)
     icc_examin_ns::lock(__FILE__,__LINE__);
 
@@ -1378,10 +1279,10 @@ ICCexamin::fortschritt(double f, double anteil)
          anteil > 0.0 )
         icc_betrachter->load_progress-> show();
       if(fabs(anteil) >= 1.0)
-        icc_betrachter->load_progress-> value( f );
+        icc_betrachter->load_progress-> value( (float)f );
       else
-        icc_betrachter->load_progress-> value( 1.0 -
-                    icc_betrachter->load_progress->value() / fabs(anteil) * f );
+        icc_betrachter->load_progress-> value( (float)(1.0 -
+                    icc_betrachter->load_progress->value() / fabs(anteil) * f) );
       DBG_PROG_V( f )
     } else if (1.0 < f &&
                anteil > 0.0) {
@@ -1420,7 +1321,7 @@ ICCexamin::statusFarbe(double & CIEL, double & CIEa, double & CIEb)
   Fl_Color colour = fl_rgb_color( (int)(rgb[0]*255),
                                   (int)(rgb[1]*255), (int)(rgb[2]*255) );
 
-  int thread = wandelThreadId(pthread_self());
+  int thread = wandelThreadId(iccThreadSelf());
   if(thread != THREAD_HAUPT)
     icc_examin_ns::lock(__FILE__,__LINE__);
 
@@ -1567,7 +1468,7 @@ tastatur(int e)
             const char *filter_a = "file:";
             DBG_PROG_V( profilnamen[i] )
             if(strstr(profilnamen[i].c_str(), filter_a)) {
-              int len_neu = len-strlen(filter_a);
+              int len_neu = (int)(len-strlen(filter_a));
               char *txt = (char*)malloc(profilnamen[i].size()+1);
               memcpy(txt, &(profilnamen[i].c_str())[strlen(filter_a)],
                      len_neu);

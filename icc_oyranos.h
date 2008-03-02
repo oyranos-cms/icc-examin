@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2007  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2005  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -34,9 +34,6 @@
 #include "icc_speicher.h"
 #include "icc_vrml_parser.h"
 
-#include <oyranos/oyranos.h>
-#include <oyranos/oyranos_icc.h>
-
 #include <string>
 #include <list>
 #include <map>
@@ -61,32 +58,6 @@ struct ColourTransform
     char  *block;
     size_t size;
 };
-
-struct oyNamedColour_s {
-  double       lab[3];          //!< Lab  0...1 : for better integer/float conversion
-  double       channels[32];    //!< eigther parsed or calculated otherwise
-  char         sig[4];          //!< ICC colour space signature
-  const char * names_chan[32];  //!< user visible channel description
-  const char * name;            //!< normal user visible name (A1-MySys)
-  const char * name_long;       //!< full user description (A1-MySys from Oyranos)
-  const char * nick_name;       //!< few letters for mass representation (A1)
-  const char * cgats;           //!< advanced CGATS / ICC ?
-};
-
-oyNamedColour_s* oyCreateNamedColour ( double * lab,
-                                       double * chan,
-                                       char   * sig,
-                                       char  ** names_chan,
-                                       char   * name,
-                                       char   * name_long,
-                                       char   * nick,
-                                       char   * blob,
-                                       int      blob_len,
-                                       char   * icc_ref,
-                                       oyAllocFunc_t allocate_func);
-
-void             oyCopyDouble            ( double * from, double * to, int n );
-int              oyGetColorSpaceChannels ( icColorSpaceSignature color );
 
 
 class Oyranos
@@ -125,11 +96,11 @@ class Oyranos
     const char* profil (const char* n, size_t &g) { return profil_(n,g); }
 
 //    char*       holeMonitorProfil      (const char *display_name, size_t *size );
-    std::vector<ICCnetz> netzAusVRML   (std::string & vrml)
-                                { return extrahiereNetzAusVRML (vrml); }
-    std::vector<ICCnetz> netzVonProfil (ICCprofile & p, int intent, int bpc);
+    void        netzAusVRML   (std::string & vrml, std::vector<ICCnetz> & netz)
+                                { netz = extrahiereNetzAusVRML (vrml); }
+    void        netzVonProfil (ICCprofile & p, int intent, int bpc, ICCnetz & netz);
   private:
-    std::string netzVonProfil_      (std::vector<ICCnetz> & netz,
+    std::string netzVonProfil_      (ICCnetz  & netz,
                                      Speicher & profil,
                                      int intent, int bpc);
   public:
@@ -172,32 +143,32 @@ class Oyranos
     // colour transformations
     ColourTransformKey erzeugeTrafo (
                                   const char* eingangs_profil__geraet,
-                                  int         byte,
-                                  int         kanaele,
+                                  int         byte_in,
+                                  int         kanaele_in,
                                   const char* ausgangs_profil__geraet,
-                                  int         byte,
-                                  int         kanaele,
+                                  int         byte_out,
+                                  int         kanaele_out,
                                   int         farb_intent,
                                   const char* cmm, // 4 bytes 'lcms' 'APPL'
                                   int         cmm_optionen); // BPC, precission
     ColourTransformKey erzeugeTrafo (
                                   const char* eingangs_profil__geraet,
-                                  int         byte,
-                                  int         kanaele,
+                                  int         byte_in,
+                                  int         kanaele_in,
                                   const char* ausgangs_profil__geraet,
-                                  int         byte,
-                                  int         kanaele,
+                                  int         byte_out,
+                                  int         kanaele_out,
                                   int         farb_intent,
                                   const char* cmm, // 4 bytes 'lcms' 'APPL'
                                   int         cmm_optionen,
                                   std::list<const char*> &profile );
     ColourTransformKey erzeugeTrafo (
                                   const char* eingangs_profil__geraet,
-                                  int         byte,
-                                  int         kanaele,
+                                  int         byte_in,
+                                  int         kanaele_in,
                                   const char* ausgangs_profil__geraet,
-                                  int         byte,
-                                  int         kanaele,
+                                  int         byte_out,
+                                  int         kanaele_out,
                                   int         farb_intent,
                                   const char* cmm, // 4 bytes 'lcms' 'APPL'
                                   int         cmm_optionen,
@@ -211,11 +182,11 @@ class Oyranos
   private:
     ColourTransformKey erzeugeSchluessel_ (
                                   const char* eingangs_profil__geraet,
-                                  int         byte,
-                                  int         kanaele,
+                                  int         byte_in,
+                                  int         kanaele_in,
                                   const char* ausgangs_profil__geraet,
-                                  int         byte,
-                                  int         kanaele,
+                                  int         byte_out,
+                                  int         kanaele_out,
                                   int         farb_intent,
                                   int         cmm_optionen,
                                   const char* simulations_profil,

@@ -5,7 +5,6 @@ TARGET_NAME="ICC Examin"
 BINTARGET="`echo $TARGET | sed s/_//g`"
 ERROR=0
 test -f error.tmp && rm error.tmp
-test -f config.sh && rm config.sh
 
 CONF_H=config.h
 CONF=makefile
@@ -19,9 +18,9 @@ export CONF_H CONF CONF_I18N
 
 VERSION_A=0
 VERSION_B=4
-VERSION_C=5
+VERSION_C=4
 RELEASE=0
-ZEIT="May 2004 - July 2007"
+ZEIT="May 2004 - June 2007"
 VERSION=$VERSION_A.$VERSION_B$VERSION_C
 if [ $VERSION_A -gt 9 ]; then
   VERSION_L="$VERSION_A"
@@ -43,23 +42,7 @@ VERSION_L=`echo $VERSION_L | sed 's/^0*//g'`
 cwdebug=0
 debug=0
 nodeps=0
-
-# find a suitable fltk-config script
 fltkconfig="fltk-config"
-old_IFS=$IFS; 
-IFS=:
-for i in $PATH; do
-  test -x "$i/$fltkconfig" && fltkconfig_="$i/$fltkconfig"
-done
-if [ -z "$fltkconfig_" ]; then
-  for i in $PATH; do
-    test -x "$i/fltk-utf8-config" && fltkconfig_="$i/fltk-utf8-config"
-  done
-fi
-if [ -n "$fltkconfig_" ]; then
-  fltkconfig="$fltkconfig_"
-fi
-IFS=$old_IFS
 
 echo ""
 echo "################################################################"
@@ -228,7 +211,16 @@ else
         echo "BSD $UNAME_             detected"
         OSUNAME=BSD
       else
-        echo "ICC Examin may or may not compile on your $UNAME_ system"
+        if [ `uname -a | grep W32 | wc -l` -gt 0 ];then
+          echo "WIN32 = 1" >> $CONF
+          echo "#define WIN32 1" >> $CONF_H
+          echo "Windows $UNAME_             detected"
+          echo "EXEC_END = .exe" >> $CONF
+          EXEC_END=.exe; export EXEC_END
+          OSUNAME=Windows
+        else
+          echo "ICC Examin may or may not compile on your $UNAME_ system"
+        fi
       fi
     fi
   fi
@@ -260,7 +252,11 @@ LIBDIR="lib"$BARCH
 export MACH OSUNAME LIBDIR BARCH LINE_ARCH
 
 if [ -z "$CC" ]; then
-  CC=cc
+  if [ $OSUNAME = Windows ]; then
+    CC=gcc
+  else
+    CC=cc
+  fi
 #$LINE_ARCH
 fi
 if [ -z "$CXX" ]; then
@@ -346,10 +342,10 @@ OYRANOS=1; export OYRANOS
 LCMS=1; export LCMS
 FTGL=2; export FTGL
 FLTK=1; export FLTK
-LIBPNG=2; export LIBPNG
+LIBPNG=0; export LIBPNG
 LIBTIFF=1; export LIBTIFF
 #FLU=2; export FLU
-if [ $OSUNAME != "Darwin" ]; then
+if [ $OSUNAME != "Darwin" ] && [ $OSUNAME != "Windows" ]; then
 X11=1;   export X11
 fi
 XINERAMA=1; export XINERAMA
@@ -485,7 +481,7 @@ echo "desktopdir=$desktopdir" >> $CONF
 echo "" >> $CONF
 
 echo "#define PREFIX         \"$prefix\"" >> $CONF_H
-echo "#define DATADIR        \"$datadir\"" >> $CONF_H
+echo "#define ICCEXAMIN_DATADIR        \"$datadir\"" >> $CONF_H
 echo "#define LOCALEDIR      \"$datadir/locale\"" >> $CONF_H
 echo "#define PIXMAPDIR      \"$pixmapdir\"" >> $CONF_H
 echo "#define SRCDIR         \"$srcdir\"" >> $CONF_H
@@ -497,7 +493,7 @@ if [ $nodeps -eq 1 ]; then
   GCC_MM="echo \"\#disable dependency tracking\""
   nodeps_config_opt=--disable-dependency-tracking
 else
-  GCC_MM="cc -MM"
+  GCC_MM="$CC -MM"
 fi
 
 
@@ -554,6 +550,7 @@ else
   else
     echo "COPY = cp -p" >> $CONF
     echo "INCL=-I\$(includedir) -I/usr/X11R6/include -I. -I/usr/include/g++ -I/usr/include" >> $CONF
+    PIC=-fPIC
     if [ $OSUNAME = "BSD" ]; then
       LDFLAGS="$LDFLAGS \$(iconv)"
       INSTALL="install $DEBUG_SWITCH"
@@ -571,10 +568,13 @@ else
       echo "LINK_FLAGS = -shared \$(dl) \$(iconv)" >> $CONF
       echo "INSTALL = install" >> $CONF
     fi
+    if [ $OSUNAME = "Windows" ]; then
+      PIC=""
+    fi
     echo "I18N_LIB = \$(iconv) \$(intl) \$(LIBNAMEV)" >> $CONF
     echo "I18N_LIBSTAT = \$(iconv) \$(intl) \$(LIBNAMEV)" >> $CONF
     CFLAGS="$CFLAGS_COMMON -Wall -g -L. -fPIC"
-    CXXFLAGS="$CXXFLAGS_COMMON -Wall -g -L. -fPIC"
+    CXXFLAGS="$CXXFLAGS_COMMON -Wall -g -L. $PIC"
     echo "RM = rm -f" >> $CONF
   fi
 fi

@@ -33,6 +33,7 @@
 #include <libintl.h>
 #endif
 #include <cstdio>
+#include <stdio.h>
 #include <cstdlib>
 #include <cstring>
 
@@ -144,12 +145,13 @@ fl_search_locale_path (int n_places, const char **locale_paths,
       char *test = (char*) calloc(sizeof(char), 1024);
       FILE *fp = 0;
       if(!test) {
-        printf("%s:%d %s() Could not allocate enough memory.",
-            __FILE__,__LINE__,__func__);
+        printf("%s:%d Could not allocate enough memory.",
+            __FILE__,__LINE__);
         return -1;
       }
       /* construct the full path to a possibly valid locale file */
-      snprintf(test, 1024, "%s%s%s%sLC_MESSAGES%s%s.mo",
+	  if(strlen(locale_paths[i])+strlen(app_name) < 1000)
+        sprintf(test, "%s%s%s%sLC_MESSAGES%s%s.mo",
                            locale_paths[i], DIR_SEPARATOR,
                            search_lang, DIR_SEPARATOR, DIR_SEPARATOR, app_name);
       /* test the file for existence */
@@ -228,9 +230,9 @@ fl_initialise_locale( const char *domain, const char *locale_path,
     // use the standard way
     // this is dangerous
   char *temp = setlocale (LC_MESSAGES, NULL);
-  char *previous_locale = temp ? strdup(temp) : NULL;
+  char *previous_locale = temp ? icc_strdup_m(temp) : NULL;
   temp = setlocale (LC_MESSAGES, "");
-  char *tmp = temp ? strdup(temp) : NULL;
+  char *tmp = temp ? icc_strdup_m(temp) : NULL;
   if(tmp) {
     snprintf(locale,TEXTLEN, tmp);
     DBG_PROG_V( locale )
@@ -419,9 +421,11 @@ fl_translate_file_chooser( )
 
 
 
+#ifndef WIN32
 #include <sys/time.h>
-#include <time.h>
 #include <unistd.h>
+#endif
+#include <time.h>
 #include <math.h>
 const char*
 threadGettext( const char* text)

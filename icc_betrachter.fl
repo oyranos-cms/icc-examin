@@ -83,12 +83,11 @@ Function {iccReadInfo(char* filename)} {return_type {const char*}
   code DBG_PROG_ENDE {}
 } 
 
-class TagBrowser {open : {public Fl_Hold_Browser}
+class TagBrowser {: {public Fl_Hold_Browser}
 } {
   decl {int X; int Y; int W; int H; const char* start_info; std::string selectedTagName;} {public
   }
-  Function {TagBrowser(int X,int Y,int W,int H,const char* start_info) : Fl_Hold_Browser(X,Y,W,H,start_info), X(X), Y(Y), W(W), H(H)} {open
-  } {}
+  Function {TagBrowser(int X,int Y,int W,int H,const char* start_info) : Fl_Hold_Browser(X,Y,W,H,start_info), X(X), Y(Y), W(W), H(H)} {} {}
   Function {reopen_nicht()} {open
   } {
     code DBG_PROG_START {}
@@ -117,19 +116,14 @@ class TagBrowser {open : {public Fl_Hold_Browser}
   }
 } 
 
-decl {typedef const char* (*tagTextsCB_f)(int * line);} {public global
-} 
-
-class TagTexts {open : {public Fl_Hold_Browser}
+class TagTexts {: {public Fl_Hold_Browser}
 } {
   decl {int X; int Y; int W; int H; const char* start_info;} {}
   decl {int inspekt_topline;} {public
   }
   Function {TagTexts(int X,int Y,int W,int H,const char* start_info) : Fl_Hold_Browser(X,Y,W,H,start_info), X(X), Y(Y), W(W), H(H)} {open
-  } {
-    code {cb = NULL;} {}
-  }
-  Function {hinein(std::string text, std::vector<int> patches)} {open
+  } {}
+  Function {hinein(std::string text)} {open
   } {
     code DBG_PROG_START {}
     code {//show text from tag_browser
@@ -139,65 +133,13 @@ class TagTexts {open : {public Fl_Hold_Browser}
       this->clear();
 
       std::vector <std::string> texte = icc_parser::zeilenNachVector( text );
-      int odd = 1;
-      int k = 0;
       for (unsigned int i = 0; i < texte.size(); i++)
-      {
-        std::string text;
-        if( patches.size() > k )
-        if( patches[k] == (int)i )
-        { 
-          if(odd) {
-\#if 0
-            char t[8];
-            sprintf(t, "%d", k/2); // test for a goof colour @31
-            text = "@B";
-            text.append( t );
-            text.append("@.");
-\#else
-            text = "@B7@.";
-\#endif
-          }
-          odd = !odd;
-          ++k;
-        }
+        this->add( texte[i].c_str(), 0);
 
-        text.append( texte[i] );
-        this->add( text.c_str(), 0);
-      }
 
       this->topline(inspekt_topline);
       this->textfont(FL_COURIER);
-      this->textsize(14);} {selected
-    }
-    code DBG_PROG_ENDE {}
-  }
-  Function {hinein(std::string text)} {open
-  } {
-    code DBG_PROG_START {}
-    code {std::vector<int> patches;
-this->hinein( text, patches );} {}
-    code DBG_PROG_ENDE {}
-  }
-  decl {tagTextsCB_f cb;} {public global
-  }
-  Function {selectItem(int item)} {open
-  } {
-    code DBG_PROG_START {}
-    code {// selection from tag_browser
-
-  const char * txt = 0;
-  int i = item;
-
-  status("")
-
-  DBG_PROG_S( item << ". Tag " )
-  
-  if (cb)
-    txt = (*cb) ( &i );
-
-  if(i != item)
-    select(i);} {}
+      this->textsize(14);} {}
     code DBG_PROG_ENDE {}
   }
 } 
@@ -312,7 +254,7 @@ class ICCfltkBetrachter {open
   setTitleUrl = true;} {}
     Fl_Window ueber {
       label {About ICC Examin} open
-      xywh {839 747 365 295} type Double resizable
+      xywh {819 663 365 295} type Double resizable
       code0 {o->hide();}
       code1 {o->use_escape_hide = true;}
       class {icc_examin_ns::MyFl_Double_Window} visible
@@ -353,7 +295,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window vcgt {
       label {Grafic Card Gamma Table} open
-      xywh {218 639 370 405} type Double resizable
+      xywh {198 639 370 405} type Double resizable
       code0 {o->hide();}
       code1 {o->use_escape_hide = true;}
       class {icc_examin_ns::MyFl_Double_Window} visible
@@ -390,7 +332,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window DD {
       label Gamut open
-      xywh {891 200 385 520} type Double box NO_BOX resizable
+      xywh {871 116 385 520} type Double box NO_BOX resizable
       class {icc_examin_ns::MyFl_Double_Window} visible
     } {
       Fl_Group {} {open
@@ -544,7 +486,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window details {
       label {ICC Examin} open
-      xywh {370 457 385 520} type Double box NO_BOX
+      xywh {350 373 385 520} type Double box NO_BOX
       code0 {o->main_win = o;}
       class {icc_examin_ns::MyFl_Double_Window} visible
     } {
@@ -665,7 +607,8 @@ class ICCfltkBetrachter {open
             }
             MenuItem menueintrag_zeigcgats {
               label {CGATS View}
-              callback {\#ifdef DEBUG
+              callback {
+\#ifdef DEBUG
   Fl_Menu_* mw = (Fl_Menu_*)o;
   const Fl_Menu_Item* m = mw->mvalue();
 
@@ -788,7 +731,6 @@ icc_examin->testZeigen();}
                     }
                     Fl_Browser mft_text {
                       label mft_text_invisible
-                      callback {o->selectItem( o->value() );}
                       xywh {0 185 385 310} box FLAT_BOX color 49 align 4
                       code0 {o->show();}
                       class TagTexts
@@ -836,7 +778,6 @@ icc_examin->testZeigen();}
                 } {
                   Fl_Browser tag_text {
                     label { tag_text_invisible}
-                    callback {o->selectItem( o->value() );}
                     xywh {0 165 385 330} box FLAT_BOX color 49 align 4
                     code0 {o->show();}
                     class TagTexts
@@ -1076,7 +1017,8 @@ icc_examin->testZeigen();}
     mft_gl_button_pack->resizable(o);
   mft_gl_group->end();
   
-  DBG_PROG_ENDE} {}
+  DBG_PROG_ENDE} {selected
+    }
   }
 } 
 
