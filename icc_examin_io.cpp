@@ -212,7 +212,7 @@ ICCexamin::tag_browserText (void)
   } else if ((int)tag_list.size() != profile.profil()->tagCount()*5 ) {
     add_s (_("Internal error") )
   }
-  add_s ("@B26@t" << _("No. Tag         Type         Size Description") )
+  add_s ("@B26@t" << _("No. Tag   Type   Size Description") )
   add_s ("@t" << profile.profil()->printHeader() )
   std::vector<std::string>::iterator it;
   for(int i = 0; i < (int)tag_list.size(); ++i)
@@ -225,11 +225,11 @@ ICCexamin::tag_browserText (void)
     std::stringstream t; t << Nr;
     for (int i = t.str().size(); i < 3; i++) {s << " ";} s << Nr; *it++; ++anzahl; s << " ";
     // Name/Bezeichnung
-    s << *it; for (int i = (*it++).size(); i < 12; i++) {s << " ";} ++anzahl;
+    s << *it; for (int i = (*it++).size(); i < 6; i++) {s << " ";} ++anzahl;
     // Typ
-    s << *it; for (int i = (*it++).size(); i < 12; i++) {s << " ";} ++anzahl;
+    s << *it; for (int i = (*it++).size(); i < 5; i++) {s << " ";} ++anzahl;
     // Größe
-    for (int i = (*it).size(); i < 5; i++) {s << " ";} s << *it++; s << " "; ++anzahl;
+    for (int i = (*it).size(); i < 6; i++) {s << " ";} s << *it++; s << " "; ++anzahl;
     // Beschreibung
     add_s (*it)
   }

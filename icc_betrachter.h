@@ -72,7 +72,7 @@ public:
  int tag_nummer;
   
  enum{ WID_0, WID_3D, WID_INSPEKT }; int widget_oben;
-  Fl_Double_Window* init();
+  Fl_Double_Window* init(int argc, char** argv);
   Fl_Double_Window *ueber;
   Fl_Help_View *ueber_html;
   Fl_Button *ja;

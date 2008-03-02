@@ -1154,6 +1154,11 @@ GL_Ansicht::punkteAuffrischen()
                glBegin(GL_POINTS);
                  glVertex2d( 0,0 );
                glEnd();
+               glColor4f(0.1, 0.1, 0.1, 1. );
+               glTranslatef( 0, -punkte_[i+0], 0 );
+               glBegin(GL_POINTS);
+                 glVertex2d( 0,0 );
+               glEnd();
                #endif
             break;
           case MENU_dE1KUGEL: icc_gl::glutSolidSphere (0.005, 5, 5); break;
@@ -1497,7 +1502,8 @@ GL_Ansicht::zeichnen()
            DBG_PROG_V( dreiecks_netze[i].name )
            #ifdef HAVE_FTGL
            if(ortho_font)
-             glRasterPos2f(0,ortho_font->LineHeight()/1.5*i+20);
+             glRasterPos2f(0, 20 + ortho_font->LineHeight()
+                                   / 1.5 * (dreiecks_netze.size()-i-1) );
            #endif
            ZeichneOText (ortho_font, scal, text.c_str())
          }

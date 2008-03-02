@@ -66,7 +66,6 @@ main (int argc, char** argv)
 
   ICCexamin hauptprogramm;
 
-
   icc_examin = &hauptprogramm;
 
   hauptprogramm.start(argc, argv);

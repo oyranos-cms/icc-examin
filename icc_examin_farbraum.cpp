@@ -133,6 +133,7 @@ ICCexamin::netzLese (int n,
     {
       netz_temp[0].transparenz = (*netz)[n].transparenz;
       netz_temp[0].grau = (*netz)[n].grau;
+      netz_temp[0].aktiv = (*netz)[n].aktiv;
       if(n >= (int)netz->size())
         netz->resize( n+1 );
       DBG_PROG_V( netz->size() <<" "<< netz_temp.size() )

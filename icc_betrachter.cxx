@@ -374,7 +374,7 @@ void ICCfltkBetrachter::cb_mft_choice(MftChoice* o, void* v) {
   ((ICCfltkBetrachter*)(o->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_mft_choice_i(o,v);
 }
 
-Fl_Double_Window* ICCfltkBetrachter::init() {
+Fl_Double_Window* ICCfltkBetrachter::init(int argc, char** argv) {
   Fl_Double_Window* w;
   DBG_PROG_START
   fullscreen = false;
@@ -661,7 +661,8 @@ ard"));
   tag_text->inspekt_topline = 0;
 
   w->resizable(tag_text);
-  w->show();
+  Fl::background(190,190,190);
+  w->show(argc,argv);
   Fl::scheme(NULL);
   Fl_File_Icon::load_system_icons();
   menue_uebersetzen( menu_menueleiste );

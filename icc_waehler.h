@@ -136,8 +136,13 @@ class ICCwaehlerProfil : public Fl_Pack
   
   DBG_PROG_ENDE
 }
-    void  aktivieren(bool wert) { aktiv_knopf_->value(wert);
-             if(wert) gruppe_->activate(); else gruppe_->deactivate(); }
+    void  aktivieren(bool wert)
+{
+  aktiv_knopf_->value(wert);
+  if(wert) { gruppe_->activate();
+  } else {   gruppe_->deactivate();
+  }
+}
 };
 
 class ICCwaehler : public Fl_Double_Window

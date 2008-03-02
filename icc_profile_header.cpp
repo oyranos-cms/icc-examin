@@ -243,7 +243,7 @@ ICCheader::print() const
 { DBG_PROG_START
   std::string s = _("File header invalid");
   if (valid)
-    s = _("    Header      File header   128 File header");
+    s = _("    head  head    128 File header");
   DBG_PROG_ENDE
   return s;
 }

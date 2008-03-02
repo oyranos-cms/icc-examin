@@ -1,6 +1,15 @@
+
+2005-04-28
+	* und: Layout im Tagwähler nach links gerückt
+	* fix: Profile bleiben gewählt wie im Profilewähler eingestellt
+	* fix: Namen werden im GL Fenster so dargestellt wie im Profilewähler
+	* neu: Schatten für Einzelfarben hinzugefügt
+
 2005-04-27
 	* und: de Übersetzung vollständig
 	* fix: *.po is now the translation file and *.utf-8 temporarily used
+	* fix: ncl2 korrekt angezeigt
+	* fix: Voreinstellungen der Farbigkeit im Farbraummodus verbessert
 
 2005-04-26
 	* und: Menüs Texte werden ausgetauscht; Fluid Zeigernamen bleiben erhalten

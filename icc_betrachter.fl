@@ -79,7 +79,7 @@ Function {iccReadInfo(char* filename)} {return_type {char*}
   code DBG_PROG_ENDE {}
 } 
 
-class TagBrowser {open : {public Fl_Hold_Browser}
+class TagBrowser {: {public Fl_Hold_Browser}
 } {
   decl {int X; int Y; int W; int H; char* start_info; std::string selectedTagName;} {public
   }
@@ -224,7 +224,7 @@ class ICCfltkBetrachter {open
   
  enum{ WID_0, WID_3D, WID_INSPEKT }; int widget_oben;} {public
   }
-  Function {init()} {open
+  Function {init(int argc, char** argv)} {open
   } {
     code DBG_PROG_START {}
     code {fullscreen = false;
@@ -301,7 +301,7 @@ class ICCfltkBetrachter {open
   \#endif} {}
     Fl_Window ueber {
       label {About ICC Examin} open
-      xywh {572 662 366 241} type Double resizable
+      xywh {577 683 366 241} type Double resizable
       code0 {o->hide();} non_modal visible
     } {
       Fl_Group {} {open
@@ -319,7 +319,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window vcgt {
       label {Grafic Card Gamma Table} open
-      xywh {591 339 370 390} type Double resizable
+      xywh {596 360 370 390} type Double resizable
       code0 {o->hide();} non_modal visible
     } {
       Fl_Group {} {open
@@ -354,7 +354,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window details {
       label {ICC Examin} open
-      xywh {823 439 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
+      xywh {828 460 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
     } {
       Fl_Group {} {open
         xywh {0 0 385 520}
@@ -510,7 +510,7 @@ icc_examin->testZeigen();}
             menuitem {} {
               label About
               callback {ueber->show();
-ueber_html->value(getUeberHtml().c_str());} selected
+ueber_html->value(getUeberHtml().c_str());}
               xywh {5 5 100 20} shortcut 0xffbe
             }
           }
@@ -599,14 +599,17 @@ ueber_html->value(getUeberHtml().c_str());} selected
     code {tag_text->inspekt_topline = 0;
 
   w->resizable(tag_text);
-  w->show();
+  Fl::background(190,190,190);
+  w->show(argc,argv);
   Fl::scheme(NULL);
   Fl_File_Icon::load_system_icons();
   menue_uebersetzen( menu_menueleiste );
-  DBG_PROG} {}
+  DBG_PROG} {selected
+    }
     code DBG_PROG_ENDE {}
   }
-  Function {run()} {} {
+  Function {run()} {open
+  } {
     code DBG_PROG_START {}
     code {DBG_PROG_ENDE;  Fl::run();} {}
   }

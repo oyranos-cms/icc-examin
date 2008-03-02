@@ -80,7 +80,7 @@ ICCexamin::start (int argc, char** argv)
   texte.resize(MAX_VIEWER);
   kurve_umkehren.resize(MAX_VIEWER);
 
-  icc_betrachter->init();
+  icc_betrachter->init( argc, argv );
 
   icc_betrachter->mft_gl->init(1);
   icc_betrachter->DD_farbraum->init(2);
@@ -193,6 +193,7 @@ ICCexamin::nachricht( Modell* modell , int info )
 
           if (info < (int)icc_betrachter->DD_farbraum->dreiecks_netze.size())
             icc_betrachter->DD_farbraum->dreiecks_netze[info].aktiv = true;
+
         } else if (info < (int)icc_betrachter->DD_farbraum->dreiecks_netze.size()) {
           icc_betrachter->DD_farbraum->dreiecks_netze[info].aktiv = false;
         }
