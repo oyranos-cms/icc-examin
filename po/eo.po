@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2006-06-19 09:34+0200\n"
+"POT-Creation-Date: 2006-06-22 19:15+0200\n"
 "PO-Revision-Date: 2005-08-13 17:35+0200\n"
 "Last-Translator: Kai-Uwe Behrmann\n"
 "Language-Team:  <eo@li.org>\n"
@@ -270,15 +270,11 @@ msgstr ""
 msgid "unbekannter Fehler beim Start eines Waechter Threads Fehler: "
 msgstr ""
 
-#: icc_examin.cpp:498
-msgid "Keine Kurve gefunden"
-msgstr ""
-
-#: icc_examin.cpp:623
+#: icc_examin.cpp:627
 msgid "verstecke "
 msgstr ""
 
-#: icc_examin.cpp:627
+#: icc_examin.cpp:631
 msgid "zeige     "
 msgstr ""
 
@@ -1282,31 +1278,31 @@ msgstr ""
 msgid "Monitor Profile"
 msgstr ""
 
-#: icc_oyranos.cpp:651 icc_profile_header.cpp:226 icc_helfer_x.cpp:150
+#: icc_oyranos.cpp:652 icc_profile_header.cpp:226 icc_helfer_x.cpp:174
 msgid "Manufacturer:"
 msgstr ""
 
-#: icc_oyranos.cpp:657
+#: icc_oyranos.cpp:658
 msgid "Model:"
 msgstr ""
 
-#: icc_oyranos.cpp:663
+#: icc_oyranos.cpp:664
 msgid "Serial:"
 msgstr ""
 
-#: icc_oyranos.cpp:787 icc_oyranos.cpp:873
+#: icc_oyranos.cpp:788 icc_oyranos.cpp:874
 msgid "hLab Profil nicht geoeffnet"
 msgstr ""
 
-#: icc_oyranos.cpp:871
+#: icc_oyranos.cpp:872
 msgid "hsRGB Profil nicht geoeffnet"
 msgstr ""
 
-#: icc_oyranos.cpp:882
+#: icc_oyranos.cpp:883
 msgid "keine hXYZtoRGB Transformation gefunden"
 msgstr ""
 
-#: icc_oyranos.cpp:886
+#: icc_oyranos.cpp:887
 msgid "RGB_speicher Speicher nicht verfuegbar"
 msgstr ""
 
@@ -1499,7 +1495,7 @@ msgstr ""
 msgid "Flags:       "
 msgstr ""
 
-#: icc_profile_header.cpp:227 icc_helfer_x.cpp:152
+#: icc_profile_header.cpp:227 icc_helfer_x.cpp:176
 msgid "Model:       "
 msgstr ""
 
@@ -1765,7 +1761,7 @@ msgstr ""
 msgid "Model:      "
 msgstr ""
 
-#: icc_helfer_osx.cpp:87 icc_helfer_x.cpp:167
+#: icc_helfer_osx.cpp:87 icc_helfer_x.cpp:191
 msgid "Gamma Red:   "
 msgstr ""
 
@@ -1773,35 +1769,36 @@ msgstr ""
 msgid "Gamma Green: "
 msgstr ""
 
-#: icc_helfer_osx.cpp:99 icc_helfer_x.cpp:179
+#: icc_helfer_osx.cpp:99 icc_helfer_x.cpp:203
 msgid "Gamma Blue:  "
 msgstr ""
 
-#: icc_helfer_x.cpp:80
+#: icc_helfer_x.cpp:83
 msgid "open X Display failed"
 msgstr ""
 
-#: icc_helfer_x.cpp:103
+#: icc_helfer_x.cpp:123
+#, fuzzy
 msgid "Screen:"
-msgstr ""
+msgstr "verda"
 
-#: icc_helfer_x.cpp:124
+#: icc_helfer_x.cpp:147
 msgid "XineramaScreen:"
 msgstr ""
 
-#: icc_helfer_x.cpp:157
+#: icc_helfer_x.cpp:181
 msgid "Keine Monitor Information erhalten"
 msgstr ""
 
-#: icc_helfer_x.cpp:162
+#: icc_helfer_x.cpp:186
 msgid "Keine Gamma Information erhalten"
 msgstr ""
 
-#: icc_helfer_x.cpp:173
+#: icc_helfer_x.cpp:197
 msgid "Gamma Green:"
 msgstr ""
 
-#: icc_helfer_x.cpp:188 icc_helfer_x.cpp:197
+#: icc_helfer_x.cpp:212 icc_helfer_x.cpp:221
 msgid "Kein Gammagradient Information erhalten"
 msgstr ""
 

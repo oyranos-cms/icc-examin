@@ -45,7 +45,7 @@
   #include <X11/extensions/Xinerama.h>
 #endif
 #ifdef HAVE_FLTK
-//#include <FL/x.H>
+#include <FL/x.H>
 #endif
 
 std::vector<std::vector<double> >
@@ -65,15 +65,18 @@ leseGrafikKartenGamma        (std::string display_name,
   texte[2] = _("Blue");
   texte[3] = "gamma_start_ende";
 
+  const char *disp_name = display_name.c_str();
+  DBG_PROG_V( disp_name )
+
   if(display_name.size())
     display = XOpenDisplay(display_name.c_str());
   else
   {
-    //#ifdef HAVE_FLTK
-    //display = fl_display;
-    //#else
+#   ifdef HAVE_FLTK
+    display = fl_display;
+#   else
     display = XOpenDisplay(0);
-    //#endif
+#   endif
   }
 
   if (!display) {
@@ -91,23 +94,43 @@ leseGrafikKartenGamma        (std::string display_name,
   XineramaScreenInfo* fenster = 0;
 # endif
   if( ScreenCount( display ) > 1 )
+  {
+    int scr_nr = -1;
+    char *display_name = getenv("DISPLAY");
+    char *ptr = NULL;
+
+    if(display_name &&
+       (ptr = strchr(display_name,':')) != 0)
+      if( (ptr = strchr(ptr, '.')) != 0 )
+        ++ptr;
+    if(ptr)
+    {
+      Screen *scr = XScreenOfDisplay( display, atoi(ptr) );
+      scr_nr = XScreenNumberOfScreen( scr );
+      screen = scr_nr;
+    }
+
     for (int i = 0; i < ScreenCount( display ); ++i)
     {
       Screen *scr = XScreenOfDisplay( display, i );
-      int scr_nr = XScreenNumberOfScreen( scr );
+      scr_nr = XScreenNumberOfScreen( scr );
+      DBG_PROG_V( scr_nr )
       if( scr_nr != i )
-        DBG_PROG_S( "scr_nr != i" << scr_nr <<"/"<< i )
-      else
+        WARN_S( "scr_nr != i" << scr_nr <<"/"<< i )
+      else if( scr_nr == screen )
       {
-        char nr[8]; snprintf( nr, 8, "%d", i );
+        char nr[8]; snprintf( nr, 8, "%d", scr_nr );
         texte.push_back(_("Screen:"));
+        texte[texte.size()-1].append( " ." );
         texte[texte.size()-1].append( nr );
-        screen = i;
+        //screen = scr_nr;
       }
-      XF86VidModeGetViewPort( display, i, &x, &y );
+      XF86VidModeGetViewPort( display, scr_nr, &x, &y );
       DBG_PROG_V( x <<" "<< y )
       ++screens;
     }
+
+  }
 # ifdef HAVE_XIN
   else
     if( XineramaIsActive( display ) )
@@ -120,10 +143,11 @@ leseGrafikKartenGamma        (std::string display_name,
                     fenster[i].height );
         if( x >= fenster[i].x_org && x < fenster[i].x_org + fenster[i].width &&
             y >= fenster[i].y_org && y < fenster[i].y_org + fenster[i].height )
-        { char nr[8]; snprintf( nr, 8, "%d", i );
+        { char nr[8]; snprintf( nr, 8, "%d", fenster[i].screen_number );
           texte.push_back(_("XineramaScreen:"));
+          texte[texte.size()-1].append( " " );
           texte[texte.size()-1].append( nr );
-          screen = i;
+          screen = fenster[i].screen_number;
         }
         //int vp_x, vp_y;
         //XF86VidModeGetViewPort( display, i, &vp_x, &vp_y );
@@ -159,8 +183,8 @@ leseGrafikKartenGamma        (std::string display_name,
   DBG_PROG_V( DisplayWidth(display, screen) <<" "<< DisplayWidthMM(display, screen) )
 
   if (!XF86VidModeGetGamma(display, screen, &gamma))
-    WARN_S( _("Keine Gamma Information erhalten") )
-  else {
+  { DBG_PROG_S( _("Keine Gamma Information erhalten") );
+  } else {
     char t[24];
     if( gamma.red != 1.0 ) {
       texte.push_back("");
@@ -185,7 +209,7 @@ leseGrafikKartenGamma        (std::string display_name,
 
   int size;
   if (!XF86VidModeGetGammaRampSize(display, screen, &size))
-    WARN_S( _("Kein Gammagradient Information erhalten") );
+    DBG_PROG_S( _("Kein Gammagradient Information erhalten") );
 
   DBG_PROG_V( size )
   if (size)
@@ -211,8 +235,10 @@ leseGrafikKartenGamma        (std::string display_name,
     delete [] blue;
   } else DBG_NUM_S( "kein vcgt in X anzeigbar" );
 
+# ifndef HAVE_FLTK
   if (display) XCloseDisplay(display);
   else WARN_S( "no X Display active" )
+# endif
 
 #endif
   DBG_PROG_ENDE

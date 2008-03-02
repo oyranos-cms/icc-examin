@@ -71,7 +71,6 @@ CPP_HEADERS = \
 	icc_speicher.h \
 	icc_ueber.h \
 	icc_utils.h \
-	icc_version.h \
 	icc_vrml.h \
 	icc_vrml_parser.h \
 	icc_waehler.h \

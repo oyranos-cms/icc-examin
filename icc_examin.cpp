@@ -495,8 +495,13 @@ ICCexamin::vcgtZeigen ()
                                                texte [VCGT_VIEWER] );
     icc_betrachter->vcgt_viewer->kurve_umkehren = true;
   } else {
-    WARN_S(_("Keine Kurve gefunden")) //TODO kleines Fenster
+    std::vector<std::vector<double> > leer;
     icc_betrachter->vcgt_viewer->hide();
+    icc_betrachter->vcgt_viewer->show();
+    leer.resize(3);
+    icc_betrachter->vcgt_viewer->hineinKurven( leer,
+                                               texte [VCGT_VIEWER] );
+    icc_betrachter->vcgt_viewer->kurve_umkehren = true;
   }
 # endif
 
@@ -574,7 +579,6 @@ ICCexamin::standardGamma ()
   int x = icc_betrachter->vcgt->x() + icc_betrachter->vcgt->w()/2;
   int y = icc_betrachter->vcgt->y() + icc_betrachter->vcgt->h()/2;
 
-  system("xgamma -gamma 1.0&");
   FREI_(true);
   vcgtZeigen();
   FREI_(false);

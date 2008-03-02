@@ -1,10 +1,22 @@
+2006-06-20
+	* fix: Xinerama / screen bugs
+
 2006-06-19
 	* neu: ICCvrmlDATA ICCcorruptedprofileDATA in ICCprofile::ICCDataType
 	* neu: Anzeige des Datentyps in Benutzeroberflaeche
+	* und: Hinweis: eventuell falsche Farbtransformation (Qualitaetsbericht)
+	* fix: mehrere Datenabfragen, werden besser ueberprueft vor dem Zugriff
+	* neu: setzten von 0 Daten bei fehlenden Profileintraegen
+	* und: Darstellung des Profilkopfeintrages nur für ICC Typen
+	* und: neue Zeilenvorauswahl in icc_betrachter fuer nicht ICC Profile
+	* fix: Xinerama / Screen bugs
 
 2006-06-18
-	* fix: 0 cgats -> lcms wird weggelassen (bug von HalVEngel berichtet)
+	* fix: 0 cgats -> lcms wird weggelassen (Fehler von HalVEngel berichtet)
 	* fix: Warnung fuer Eintraege in Tag Tabelle ausserhalb der Datei
+
+2006-06-12
+	* und: veraendertes zaehlen der Screen's (Xinerama screens)
 
 2006-04-28
 	* fix: Versionsnummer in configure

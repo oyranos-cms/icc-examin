@@ -603,10 +603,11 @@ Oyranos::setzeMonitorProfil (const char* profil_name , int x, int y )
 
 # endif
 
-  fehler = oySetMonitorProfile( display_name, profil_name );
-
   int screen = oyGetScreenFromPosition( display_name, x,y );
   char *new_display_name = changeScreenName_( display_name, screen );
+
+  fehler = oySetMonitorProfile( new_display_name, profil_name );
+
   char *neues_profil = oyGetMonitorProfileName( display_name, myAllocFunc );
   if(new_display_name) free(new_display_name); new_display_name = 0;
   DBG_PROG_V( neues_profil )
