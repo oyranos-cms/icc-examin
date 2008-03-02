@@ -32,6 +32,13 @@
 
 using namespace icc_examin_ns;
 
+#if USE_THREADS
+#include "threads.h"
+#else
+// TODO: beseitige Hack
+static int frei_tuen = 0;
+#define frei_ frei_tuen
+#endif
 
 //#define DEBUG_EXAMIN
 #ifdef DEBUG_EXAMIN
@@ -46,28 +53,44 @@ using namespace icc_examin_ns;
 #define DBG_EXAMIN_S( texte )
 #endif
 
+const char* dateiName(const char* name);
+const char* dateiName(std::string name);
+
+static int laden_sperren = false;
 
 
 #include "icc_vrml_parser.h"
 
 void
-ICCexamin::oeffnen (std::vector<Speicher> profil_vect)
-{ DBG_PROG_START
-  if(!profil_vect.size()) {
+ICCexamin::oeffnen (std::vector<Speicher> speicher_vect)
+{ DBG_START
+  if(!speicher_vect.size() ||
+     laden_sperren) {
+    fortschritt( 1.1 );
     DBG_PROG_ENDE
     return;
   }
+  laden_sperren = true;
 
   // Laden
   frei_ = false;
   icc_betrachter->DD_farbraum->punkte_clear();
   profile.clear();
-  for (int i = 0; i < (int)profil_vect.size(); ++i)
-    profile.oeffnen( profil_vect[i], 1 );
+  fortschritt( -.1 );
+  for (unsigned int i = 0; i < speicher_vect.size(); ++i)
+  {
+    DBG_V( speicher_vect[i].size()<<" "<<speicher_vect[i].name() )
+    fortschritt( 1./3.+ (double)(i)/speicher_vect.size()/3.0 );
+    profile.einfuegen( speicher_vect[i], -1 );
+    fortschritt( 1./3.+ (double)(i+1)/speicher_vect.size()/3.0 );
+  }
+
+  std::vector<std::string> dateinamen = profile;
 
   if (profile.size())
   {
       // Oberflaechenpflege
+    Fl::lock();
     tag_browserText ();
     if(icc_betrachter->DD_farbraum->visible() &&
        !icc_betrachter->inspekt_html->visible() )
@@ -75,120 +98,22 @@ ICCexamin::oeffnen (std::vector<Speicher> profil_vect)
     icc_betrachter->menueintrag_gamut_speichern->activate();
     icc_betrachter->menueintrag_gamut_vrml_speichern->activate();
 
+    fortschritt( 2./3.+ 1./3. );
     icc_betrachter->measurement( profile.profil()->hasMeasurement() );
     if(farbraumModus())
     {
         // Oberflaechenpflege
       gamutAnsichtZeigen();
-
-      profile.oeffnen(icc_oyranos.moni(),-1);
-      profile.oeffnen(icc_oyranos.cmyk(),-1);
     }
-  }
-
-    // ICCwaehler
-      // erneuern?
-    static std::vector<std::string> namen_neu, namen_alt;
-    bool namensgleich = false;
-    namen_neu = profile;
-    DBG_PROG_V( namen_neu.size() <<" "<< namen_alt.size() )
-    if(namen_alt.size() == namen_neu.size()) {
-      namensgleich = true;
-      DBG_NUM_S( _("Anzahl gabs schon mal") )
-      for(int i = 0; i < (int)namen_neu.size(); ++i)
-        if(namen_neu[i] != namen_alt[i])
-          namensgleich = false;
-    }
-    namen_alt = namen_neu;
-    DBG_NUM_V( "####### " << namensgleich << " ########")
-    if(!namensgleich)
-    {
-      icc_waehler_->clear();
-      int anzahl = profile.size();
-      DBG_PROG_V( anzahl )
-      double transparenz;
-      bool grau;
-      std::vector<int> aktiv = profile.aktiv();
-      DBG_PROG_V( aktiv.size() )
-      for(int i = 0; i < anzahl; ++i) {
-        DBG_PROG_V( i )
-        // Datainame extahieren
-        std::string dateiname;
-        if( profile.name(i).find_last_of("/") != std::string::npos)
-          dateiname = profile.name(i).substr( profile.name(i).find_last_of("/")+1, profile.name(i).size() );
-        else
-          dateiname = profile.name(i);
-
-        if( i >= (int)icc_betrachter->DD_farbraum->dreiecks_netze.size() ) {
-          WARN_S( _("Gebe irritiert auf. Kein Netz gefunden. Ist Argyll installiert?") )
-          break;
-        }
-        transparenz = icc_betrachter->DD_farbraum->dreiecks_netze[i].transparenz;
-        DBG_PROG_V( transparenz )
-        grau = icc_betrachter->DD_farbraum->dreiecks_netze[i].grau;
-        icc_waehler_->push_back(dateiname.c_str(), transparenz, grau , aktiv[i]);
-      }
-    }
-
-  // Fenstername setzen
-  {
-    detaillabel = "ICC Examin: ";
-    std::string dateiname = profile.name(profile.aktuell());
-    if( dateiname.find_last_of("/") != std::string::npos)
-      detaillabel.insert( detaillabel.size(), dateiname.substr( dateiname.find_last_of("/")+1, dateiname.size()) );
-    else
-      detaillabel.insert( detaillabel.size(), dateiname );
-    icc_betrachter->details->label(detaillabel.c_str());
-  }
-
-  frei_ = true;
-  DBG_PROG_ENDE
-}
-
-void
-ICCexamin::oeffnen (std::vector<std::string> dateinamen)
-{ DBG_PROG_START
-  if(!dateinamen.size()) {
-    DBG_PROG_ENDE
-    return;
-  }
-
-  // Laden
-  frei_ = false;
-  icc_betrachter->DD_farbraum->punkte_clear();
-  bool weiter = profile.oeffnen(dateinamen);
-  if (weiter)
-  {
-      // Oberflaechenpflege
-    tag_browserText ();
-    if(icc_betrachter->DD_farbraum->visible() &&
-       !icc_betrachter->inspekt_html->visible() )
-      icc_betrachter->DD_farbraum->flush();
-    icc_betrachter->menueintrag_gamut_speichern->activate();
-    icc_betrachter->menueintrag_gamut_vrml_speichern->activate();
-
-    icc_betrachter->measurement( profile.profil()->hasMeasurement() );
-    if(farbraumModus())
-    {
-        // Oberflaechenpflege
-      gamutAnsichtZeigen();
-
-      profile.oeffnen(icc_oyranos.moni(),-1);
-      profile.oeffnen(icc_oyranos.cmyk(),-1);
-    }
-  }
-
+    Fl::unlock();
 
       // Sortieren
     if( dateinamen.size() &&
         (dateinamen[0].find( "wrl",  dateinamen[0].find_last_of(".") )
          != std::string::npos) )
     {
-      size_t size;
-      char *data = ladeDatei (dateinamen[0], &size);
-      std::string d (data,size);
+      std::string d (speicher_vect[0], speicher_vect[0].size());
       //DBG_NUM_V( d <<" "<< size )
-      if(data) free( data ); // übernimmt std::string einfach den Speicherblock?
       std::vector<ICCnetz> netze = extrahiereNetzAusVRML (d);
       if( netze.size() )
       { DBG_NUM_V( netze.size() )
@@ -211,6 +136,7 @@ ICCexamin::oeffnen (std::vector<std::string> dateinamen)
           netze[i].grau = false;
           netze[i].aktiv = true;
         }
+        Fl::lock();
         icc_betrachter->DD_farbraum->hineinNetze(netze);
         std::vector<std::string> texte;
         texte.push_back(_("CIE *L"));
@@ -220,6 +146,7 @@ ICCexamin::oeffnen (std::vector<std::string> dateinamen)
         icc_betrachter->DD_farbraum->punkte_clear();
         icc_betrachter->DD_farbraum->auffrischen();
         gamutAnsichtZeigen();
+        Fl::unlock();
       } else
         WARN_S(_("kein Netz gefunden in VRML Datei"))
     } else {
@@ -228,8 +155,9 @@ ICCexamin::oeffnen (std::vector<std::string> dateinamen)
       //icc_betrachter->DD_farbraum->auffrischen();
     }
 
+    fortschritt( 2./3.+ 2./3. );
     // ICCwaehler
-      // erneuern?
+      // erneuern
     static std::vector<std::string> namen_neu, namen_alt;
     bool namensgleich = false;
     namen_neu = profile;
@@ -254,45 +182,171 @@ ICCexamin::oeffnen (std::vector<std::string> dateinamen)
       DBG_PROG_V( aktiv.size() )
       for(int i = 0; i < anzahl; ++i) {
         DBG_PROG_V( i )
-        // Datainame extahieren
-        std::string dateiname;
-        if( profile.name(i).find_last_of("/") != std::string::npos)
-          dateiname = profile.name(i).substr( profile.name(i).find_last_of("/")+1, profile.name(i).size() );
-        else
-          dateiname = profile.name(i);
 
         if( i >= (int)icc_betrachter->DD_farbraum->dreiecks_netze.size() ) {
-          WARN_S( _("Gebe irritiert auf. Kein Netz gefunden. Ist Argyll installiert?") )
+          WARN_S( _("Kein Netz gefunden. Ist Argyll installiert?") )
           break;
         }
-        transparenz = icc_betrachter->DD_farbraum->dreiecks_netze[i].transparenz;
+
+        transparenz= icc_betrachter->DD_farbraum->dreiecks_netze[i].transparenz;
         DBG_PROG_V( transparenz )
         grau = icc_betrachter->DD_farbraum->dreiecks_netze[i].grau;
-        icc_waehler_->push_back(dateiname.c_str(), transparenz, grau , aktiv[i]);
+        icc_waehler_->push_back(dateiName(profile.name(i)),
+                                transparenz, grau , aktiv[i]);
       }
     }
 
-  // Fenstername setzen
-  if( dateinamen.size() ) {
-    detaillabel = "ICC Examin: ";
-    if( dateinamen[0].find_last_of("/") != std::string::npos)
-      detaillabel.insert( detaillabel.size(), dateinamen[0].substr( dateinamen[0].find_last_of("/")+1,dateinamen[0].size()) );
-    else
-      detaillabel.insert( detaillabel.size(), dateinamen[0] );
-    icc_betrachter->details->label(detaillabel.c_str());
+    // Fenstername setzen
+    {
+      detaillabel = "ICC Examin: ";
+      detaillabel.insert( detaillabel.size(), dateiName(dateinamen[0]) );
+      icc_betrachter->details->label(detaillabel.c_str());
+      DBG_PROG_V( dateinamen[0] <<" "<< detaillabel )
+    }
+
+  }
+  frei_ = true;
+  laden_sperren = false;
+  DBG_ENDE
+}
+
+const char*
+dateiName(const char* name)
+{
+  const char* dateiname=0;
+        // Datainame extahieren
+        if(name)
+          dateiname = strrchr(name,'/');
+
+        if(!dateiname)
+          dateiname = name;
+        else
+          ++dateiname;
+  return dateiname;
+}
+
+const char*
+dateiName(std::string name)
+{
+  return dateiName(name.c_str());
+}
+
+// Dieses Spalten in Threads fuer eine fluessige Oberflaeche
+#if USE_THREADS
+void*
+#else
+void
+#endif
+ICCexamin::oeffnenStatisch (void* ptr)
+{ DBG_PROG_START
+  DBG_MEM_V( ptr )
+  if(!ptr)
+    WARN_S( "kein Speichervektor uebergeben: "<< ptr )
+  std::vector<Speicher> *ss = (std::vector<Speicher>*)ptr;;
+  DBG_PROG_V( (*ss).size() )
+  icc_examin->oeffnen(*ss);
+
+  DBG_PROG_ENDE
+  #if USE_THREADS
+  return 0;
+  #endif
+}
+
+void
+ICCexamin::oeffnen (std::vector<std::string> dateinamen)
+{ DBG_PROG_START
+  if(!dateinamen.size()) {
+    WARN_S("keine Dateinamen angegeben")
+    fortschritt( 1.1 );
+    DBG_PROG_ENDE
+    return;
   }
 
+  // Laden
+  frei_ = false;
+  char* data = 0;
+  size_t size = 0;
+  #if 0
+  static std::vector<Speicher> ss;
+  ss.clear();
+  #else
+  std::vector<Speicher> *ss = (std::vector<Speicher>*)new std::vector<Speicher>;
+  #endif
+  // resize benutzt copy, und erzeugt damit Referenzen auf das
+  // selbe Objekt ; wir benoetigen aber neue Objekte
+  // ss.resize(dateinamen.size());
+  for (unsigned int i = 0; i < dateinamen.size(); ++i)
+    ss->push_back(Speicher());
+
+  fortschritt( 0.0 );
+  for(unsigned int i = 0; i < dateinamen.size(); ++i)
+  {
+    try {
+      DBG_PROG_V( dateinamen[i] )
+      fortschritt( (double)i/dateinamen.size()/3.0 );
+      data = ladeDatei (dateinamen[i], &size);
+      fortschritt( (double)(i+1)/dateinamen.size()/3.0 );
+    }
+      catch (Ausnahme & a) {  // faengt alles von Ausnahme Abstammende
+        DBG_NUM_V (_("Ausnahme aufgetreten: ") << a.what());
+        a.report();
+      }
+      catch (std::exception & e) { // faengt alles von exception Abstammende
+        DBG_NUM_V (_("Std-Ausnahme aufgetreten: ") << e.what());
+      }
+      catch (...) {       // faengt alles Uebriggebliebene
+        DBG_NUM_V (_("Huch, unbekannte Ausnahme"));
+      }
+
+    if(data && size)
+    {
+      DBG_PROG_V( (int*)ss )
+      (*ss)[i].lade(data,size);
+      (*ss)[i] = dateiName(dateinamen[i]);
+      free(data);
+      DBG_PROG
+    } else {
+      status( _("Stop loading ") << dateinamen[i] <<" "<<
+              (int*)data <<"|"<< size )
+      fortschritt( 1.1 );
+      return;
+    }
+  }
   frei_ = true;
+  DBG_PROG
+  #if USE_THREADS
+  static Fl_Thread fl_t;
+  int fehler = fl_create_thread( fl_t, &oeffnenStatisch, (void *)ss );
+  if( fehler == EAGAIN)
+  {
+    WARN_S( _("Waechter Thread nicht gestartet Fehler: ")  << fehler );
+  } else
+  #if !APPLE && !WIN32
+  if( fehler == PTHREAD_THREADS_MAX )
+  {
+    WARN_S( _("zu viele Waechter Threads Fehler: ") << fehler );
+  } else
+  #endif
+  if( fehler != 0 )
+  {
+    WARN_S( _("unbekannter Fehler beim Start eines Waechter Threads Fehler: ") << fehler );
+  }
+  #else
+  Fl::add_timeout( 0.01, /*(void(*)(void*))*/oeffnenStatisch ,(void*)&ss);
+  #endif
+
   DBG_PROG_ENDE
 }
 
 void
 ICCexamin::oeffnen ()
 { DBG_PROG_START
-
-  std::vector<std::string> profilnamen = icc_betrachter->open( profile );
-  oeffnen( profilnamen );
-
+  if(!laden_sperren)
+  {
+    fortschritt(0.01);
+    std::vector<std::string> profilnamen = icc_betrachter->open( profile );
+    oeffnen( profilnamen );
+  }
   DBG_PROG_ENDE
 }
 
@@ -355,14 +409,7 @@ ICCexamin::tag_browserText (void)
     b->value(item);
   }
 
-  std::string::size_type pos=0;
-  std::string data = profile.profil()->filename(); DBG_NUM_S( data )
-  if((pos = data.find_last_of ("/", pos)) != std::string::npos) {
-    data.erase (0, pos);
-  }
-
-  s.clear(); s << "ICC Details: " << data;
-  status ((const char*) s.str().c_str() );
+  status ( dateiName( profile.profil()->filename() ) << " " << _("loaded")  )
   DBG_PROG_ENDE
 }
 

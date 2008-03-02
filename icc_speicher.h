@@ -42,7 +42,7 @@
  *
  * ref_n_   : Referenz
  * zeiger_  : new [] Speicher
- * lade()   : löscht den alten Speicher und kopiert oder fordert neuen an
+ * lade()   : loescht den alten Speicher und kopiert oder fordert neuen an
  * Forderung: zeiger_, groesse_, ref_n_ müssen von allen Kopien von Speicher aus
  *            sichtbar sein
  */
@@ -53,12 +53,17 @@ class Speicher
     char**      zeiger_;
     size_t*     groesse_;
     int*        ref_n_;
+    int         id_;
+    static int  globale_id_;
     std::string *name_;                   // z.B. Profilname
-    time_t      *letze_aen_zeit_;         // letztes mal geändert
+    time_t      *letze_aen_zeit_;         // letztes mal geaendert
     time_t      *letze_ben_zeit_;         // letztes mal benutzt
 
     void        init  ()    {
                               DBG_MEM_START
+                              id_ = globale_id_;
+                                DBG_PROG_V( id_ )
+                              ++globale_id_;
                               ref_n_=           (int*)         new int[1];
                               zeiger_=          (char**)       new char*[1];
                               groesse_=         (size_t*)      new size_t[1];
@@ -71,9 +76,10 @@ class Speicher
                             }
     Speicher&   copy  (const Speicher& s) {
                               DBG_MEM_START
+                              id_ = s.id_;
                               ref_n_ = s.ref_n_;
                               zeiger_ = s.zeiger_;
-                                DBG_MEM_V( (int*)*zeiger_ )
+                                DBG_MEM_V( (int*)*zeiger_ <<" "<< id_ )
                               groesse_ = s.groesse_; DBG_MEM
                               name_ = s.name_; DBG_MEM
                               letze_aen_zeit_ = s.letze_aen_zeit_; DBG_MEM
@@ -83,16 +89,16 @@ class Speicher
                                 DBG_MEM_S( ref_n_ <<" = "<< *ref_n_ )
                               DBG_MEM_ENDE
                               return *this; }
-    void        lade_ (char* zeiger, int groesse)
+    void        lade_ (char* zeiger, size_t groesse)
                             {
                               zeiger_clear_();
                               DBG_MEM_START
                               *zeiger_ = zeiger;
-                                DBG_MEM_V( (int*)*zeiger_ )
+                                DBG_MEM_V( (int*)*zeiger_ <<" "<< id_ )
                               *groesse_ = groesse;
                                 DBG_MEM_S( ref_n_ <<" = "<< *ref_n_ )
-                                DBG_MEM_V( letze_aen_zeit_ )
-                                DBG_MEM_V( *letze_aen_zeit_ )
+                                DBG_MEM_V(  letze_aen_zeit_ <<" "<<
+                                           *letze_aen_zeit_ )
                                 DBG_MEM_V( *groesse_ )
                               *letze_aen_zeit_ = time(0);
                               *letze_ben_zeit_ = time(0);
@@ -100,9 +106,9 @@ class Speicher
                             }
     void        zeiger_clear_ () {
                               DBG_MEM_START
-                              DBG_MEM_V( (int*)*zeiger_ )
+                              DBG_MEM_V( (int*)*zeiger_ <<" "<< id_ )
                               if(*zeiger_) {
-                                DBG_MEM_S("delete[]zeiger_ " << (int*)*zeiger_ )
+                                DBG_MEM_S("delete[]zeiger_ " << (int*)*zeiger_ <<" "<< id_ )
                                 delete [] *zeiger_;
                               }
                               *zeiger_ = 0;
@@ -119,16 +125,16 @@ class Speicher
                               DBG_MEM_START DBG_MEM_S( "~Speicher ()" )
                                 DBG_MEM_S( ref_n_ <<" = "<< *ref_n_ )
                               --(*ref_n_);
-                                DBG_MEM_S( ref_n_ <<" = "<< *ref_n_ )
-                                DBG_MEM_V( (int*)zeiger_<<" "<<*groesse_ )
+                                DBG_MEM_S( ref_n_ <<" = "<< *ref_n_ <<"|"<< id_ )
+                                DBG_MEM_V( (int*)zeiger_<<" "<<*groesse_ <<" "<< id_ )
                                 DBG_MEM_V( *name_ )
                               if(*ref_n_==0 && *zeiger_) {
-                                DBG_MEM_S("delete[]zeiger_ " << (int*)zeiger_ )
+                                DBG_MEM_S("delete[]zeiger_ " << (int*)zeiger_ <<" "<< id_ )
                                 delete [] *zeiger_;
                               }
-                              if(*ref_n_==0) // Üsch bün dor letzäää(h)
+                              if(*ref_n_==0) // Uesch buen dor letzaeaeae(h)
                               {              // h nach belieben   ---^
-                                  DBG_MEM_S( "delete Referenz "<< *ref_n_ )
+                                  DBG_MEM_S( "delete Referenz "<< *ref_n_ <<"|"<< id_ )
                                 if(ref_n_!=0)         delete [] ref_n_;
                                 if(zeiger_!=0)        delete [] zeiger_;
                                 if(groesse_!=0)       delete [] groesse_;
@@ -149,31 +155,52 @@ class Speicher
                               zeiger_clear_();
                               DBG_MEM_ENDE
                             }
-    void        lade     (char* zeiger, int groesse) {
+    // Bequemlickkeitsfunktionen
+    void        ladeNew     (char* zeiger, size_t & groesse) {
                               DBG_MEM_START
-                              lade_(zeiger,groesse);
+                              if(zeiger && groesse) {
+                                // mit new angelegt : einfach uebernehmen
+                                lade_(zeiger,groesse);
+                              }
                               DBG_MEM_ENDE
                             }
-                Speicher (char* zeiger, int groesse) {
+    void        ladeUndFreePtr(char** zeiger, size_t & groesse) {
+                              DBG_MEM_START
+                              if(*zeiger && groesse) {
+                                // mit *alloc angelegt : erst kopieren durch "lade"
+                                lade(*zeiger,groesse);
+                                free(*zeiger);
+                                zeiger = 0;
+                                groesse = 0;
+                              }
+                              DBG_MEM_ENDE
+                            }
+    // Laden mit Kopie in einen mit new bereitgestellten Block
+    void        lade     (const char* zeiger, size_t groesse) {
+                              DBG_MEM_START
+                              char *block = (char*) new char [groesse+1];
+                              memcpy(block, zeiger, groesse);
+                                DBG_MEM_S( "neu: "<<(int*)block<<" "<<groesse <<" "<< id_ )
+                              lade_(block,groesse);
+                              DBG_MEM_ENDE
+                            }
+                Speicher (char* zeiger, size_t groesse) {
                               DBG_MEM_START
                               init();
                               lade (zeiger, groesse);
                               DBG_MEM_ENDE
                             }
-                Speicher (const char* zeiger, int groesse) {
+                Speicher (const char* zeiger, size_t groesse) {
                               DBG_MEM_START
                               init();
-                              char *z = (char*) new char [groesse+1];
-                              memcpy(z, zeiger, groesse);
-                                DBG_MEM_S( "neu: "<<(int*)z<<" "<<groesse )
-                              lade (z, groesse);
+                              lade (zeiger, groesse);
                               DBG_MEM_ENDE
                             }
 
     std::string name     () const {
                               DBG_MEM_START
                                 DBG_MEM_V( *name_ )
-                                DBG_MEM_V( (int*)*zeiger_<<" "<<*groesse_ )
+                                DBG_MEM_V( (int*)*zeiger_<<" "<<*groesse_ <<" "<< id_ )
                               DBG_MEM_ENDE
                               return *name_;
                             }
@@ -190,7 +217,7 @@ class Speicher
                               DBG_MEM_START
                               *letze_ben_zeit_ = time(0);
                                 DBG_MEM_V( *name_ )
-                                DBG_MEM_V( (int*)*zeiger_<<" "<<*groesse_ )
+                                DBG_MEM_V( (int*)*zeiger_<<" "<<*groesse_ <<" "<< id_ )
                               DBG_MEM_ENDE
                               return *zeiger_;
                             }
@@ -213,15 +240,15 @@ class Speicher
                               DBG_MEM_START
                               *name_ = s;
                                 DBG_MEM_V( *name_ )
-                                DBG_MEM_V( (int*)*zeiger_<<" "<<*groesse_ )
+                                DBG_MEM_V( (int*)*zeiger_<<" "<<*groesse_ <<" "<< id_ )
                               DBG_MEM_ENDE
                               return name_->c_str();
                             }
     const std::string & operator = (const std::string & s) const {
                               DBG_MEM_START
-                              *name_ = s;
+                              *name_ = s.c_str();
                                 DBG_MEM_V( *name_ )
-                                DBG_MEM_V( (int*)*zeiger_<<" "<<*groesse_ )
+                                DBG_MEM_V( (int*)*zeiger_<<" "<<*groesse_ <<" "<< id_ )
                               DBG_MEM_ENDE
                               return *name_;
                             }

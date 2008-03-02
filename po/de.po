@@ -292,6 +292,10 @@ msgstr ""
 msgid "kein Netz gefunden in VRML Datei"
 msgstr ""
 
+#: icc_examin_io.cpp:243
+msgid "Stop loading "
+msgstr "Laden angehalten: "
+
 #: icc_examin_io.cpp:316 icc_betrachter.cxx:453
 msgid "Filename"
 msgstr "Dateiname"

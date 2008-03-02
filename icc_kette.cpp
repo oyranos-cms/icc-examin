@@ -29,8 +29,8 @@
 #include "icc_info.h"
 #include "icc_examin.h"
 
-#if USE_PTHREAD
-  #include <pthread.h>
+#if USE_THREADS
+  #include "threads.h"
 #else
   #if HAVE_FLTK
     #include <FL/Fl.H>
@@ -42,7 +42,7 @@ ICCkette profile;
 ICCkette::ICCkette  ()
 {
   aktuelles_profil_ = -1;
-  #if USE_PTHREAD
+  #if USE_THREADS
   waechter(this);
   #else
   Fl::add_timeout( 0.4, /*(void(*)(void*))*/waechter ,(void*)this);
@@ -50,7 +50,7 @@ ICCkette::ICCkette  ()
 }
 
 bool
-ICCkette::oeffnen (const Speicher & prof, int pos)
+ICCkette::einfuegen (const Speicher & prof, int pos)
 { DBG_PROG_START
   bool erfolg = false;
 
@@ -62,57 +62,60 @@ ICCkette::oeffnen (const Speicher & prof, int pos)
   if(!prof.size())
     return false;
 
-  // Laden TODO: test auf Existenz der Datei (oyranos?)
-  if (pos >= 0 &&
-      pos < (int)profile_.size() )
-  {
-    profile_.insert (profile_.begin()+pos, ICCprofile());
-    ICCprofile::ICCDataType type = profile_[pos].load(prof);
-    DBG_V( type )
-    if(type == ICCprofile::ICCmeasurementDATA && pos != 0)
-    {
-      ICCmeasurement m;
-      m.load( profile.profil() , (const char*) prof, prof.size() );
-      DBG_V( profile.profil()->hasMeasurement() )
-    }
-    DBG_PROG_V( profile_[pos].size() )
-    DBG_PROG_V( profile_[pos].filename() )
-    DBG_PROG_V( prof.name() )
-    std::string name;
-    if(prof.name().size())
-      name = prof.name();
-    else
-      if(profile_[pos].hasTagName("desc"))
-        name = profile_[pos].getTagText( profile_[pos].getTagByName("desc"))[0];
-      else
-        name = _("actual monitor");
-    profilnamen_.insert (profilnamen_.begin()+pos, prof.name() );
-    aktiv_.insert (aktiv_.begin()+pos, true);
-    profil_mzeit_.insert (profil_mzeit_.begin()+pos, (double)prof.zeit() );
-    /*Modell::*/benachrichtigen( pos );
-  } else {
-    profile_.resize(profile_.size()+1);
-    profile_[profile_.size()-1].load(prof);
-    profilnamen_.push_back( prof.name() );
-    aktiv_.push_back(true);
-    profil_mzeit_.push_back( (double)prof.zeit() );
-    /*Modell::*/benachrichtigen( profile_.size()-1 );
-  }
+  DBG_PROG_V( pos )
 
+  // Laden TODO: test auf Existenz der Datei (oyranos?)
+  if (pos < 0 ||
+      pos >= (int)profile_.size() )
+  {
+    pos = profile_.size();
+    profile_.resize (profile_.size()+1 );
+    profilnamen_.resize (profilnamen_.size()+1 );
+    aktiv_.resize (aktiv_.size()+1 );
+    profil_mzeit_.resize (profil_mzeit_.size()+1 );
+    DBG_PROG_V( pos<<" "<<prof.name() )
+  }
+  DBG_PROG_V( pos )
+
+  profile_[pos] = ICCprofile();
+  ICCprofile::ICCDataType type = profile_[pos].load(prof);
+  profile_[pos].filename( prof.name().c_str() );
+  DBG_PROG_V( type )
+  if(type == ICCprofile::ICCmeasurementDATA && pos != 0)
+  {
+    ICCmeasurement m;
+    m.load( profile.profil() , (const char*) prof, prof.size() );
+    DBG_V( profile.profil()->hasMeasurement() )
+  }
+  DBG_PROG_V( profile_[pos].size() )
+  DBG_PROG_V( profile_[pos].filename() )
+  DBG_PROG_V( prof.name() )
+  std::string name = _("noName");
+  if(prof.name().size())
+    name = prof.name();
+  else
+    if(profile_[pos].hasTagName("desc"))
+      name = profile_[pos].getTagText( profile_[pos].getTagByName("desc"))[0];
+  profilnamen_[pos] = name ;
+  aktiv_[pos] = true;
+  profil_mzeit_[pos] = (double)prof.zeit();
+  DBG_PROG
 
   if( profile_.size() ) {
     aktuelles_profil_ = 0;
+    DBG_PROG_V( aktuell() )
     erfolg = true;
   } else { DBG_PROG
     icc_examin_ns::status_info(_("File not loaded!"));
   }
 
+  /*Modell::*/benachrichtigen( pos );
   DBG_PROG_ENDE
   return erfolg;
 }
-
+#if 0
 bool
-ICCkette::oeffnen (std::string dateiname, int pos)
+ICCkette::einfuegen (std::string dateiname, int pos)
 { DBG_PROG_START
   bool erfolg = false;
   DBG_PROG_V( dateiname <<" "<< pos )
@@ -123,6 +126,7 @@ ICCkette::oeffnen (std::string dateiname, int pos)
       return erfolg;
     }
 
+  #if 0
   // Laden TODO: test auf Existenz der Datei (oyranos?)
   int resize_b = false;
   if (pos >= 0 &&
@@ -173,24 +177,28 @@ ICCkette::oeffnen (std::string dateiname, int pos)
   }
 
   /*Modell::*/benachrichtigen( pos );
+  #else
+  size_t size = 0;
+  char* data = ladeDatei( dateiname, &size );
+  Speicher s(data, size);
+  s = dateiname.c_str();
+  einfuegen(s, pos);
+  #endif
 
   DBG_PROG_ENDE
   return erfolg;
 }
 
 bool
-ICCkette::oeffnen (std::vector<std::string> dateinamen)
+ICCkette::einfuegen (std::vector<std::string> dateinamen)
 { DBG_PROG_START
   bool erfolg = false;
 
-  profile_.clear();
-  profilnamen_.clear();
-  aktiv_.clear();
-  profil_mzeit_.clear();
+  clear();
 
   for (unsigned int i = 0; i < dateinamen.size(); ++i)
   {
-    erfolg = oeffnen (dateinamen[i], -1);
+    erfolg = einfuegen (dateinamen[i], -1);
     if (erfolg && i == 0)
       icc_examin->farbraumModus(0);
     DBG_PROG_V( dateinamen[i] )
@@ -205,40 +213,46 @@ ICCkette::oeffnen (std::vector<std::string> dateinamen)
   DBG_PROG_ENDE
   return erfolg;
 }
-
+#endif
 static bool erstes_mal = true;
+#if USE_THREADS
+void*
+#else
 void
+#endif
 ICCkette::waechter (void* zeiger)
 {
   //DBG_PROG_START
   // warte, starte einen pthread , teste alle Profile - ende 
-  // Es entsteht eine Kette von threads. Fällt einer aus
-  // ist die Überwachung beendet. - etwas labil vielleicht
+  // Es entsteht eine Kette von threads. Faellt einer aus
+  // ist die Ueberwachung beendet. - etwas labil vielleicht
 
   ICCkette* obj = (ICCkette*) zeiger;
 
   if(erstes_mal)
     erstes_mal = false;
-  else
-  #if USE_PTHREAD
+  else {
+  #if USE_THREADS
     sleep(1);
   #endif
-    ;
+  }
 
-  #if USE_PTHREAD
-  pthread_t p_t;
-  int fehler = pthread_create(&p_t, NULL, &waechter, (void *)zeiger);
+  #if USE_THREADS
+  static Fl_Thread fl_t;
+  int fehler = fl_create_thread( fl_t, &waechter, (void *)zeiger );
   if( fehler == EAGAIN)
   {
-    WARN_S( _("Wächter Thread nicht gestartet Fehler: ")  << fehler );
+    WARN_S( _("Waechter Thread nicht gestartet Fehler: ")  << fehler );
   } else
+  #if !APPLE && !WIN32
   if( fehler == PTHREAD_THREADS_MAX )
   {
-    WARN_S( _("zu viele Wächter Threads Fehler: ") << fehler );
+    WARN_S( _("zu viele Waechter Threads Fehler: ") << fehler );
   } else
+  #endif
   if( fehler != 0 )
   {
-    WARN_S( _("unbekannter Fehler beim Start eines Wächter Threads Fehler: ") << fehler );
+    WARN_S( _("unbekannter Fehler beim Start eines Waechter Threads Fehler: ") << fehler );
   }
   #else
   Fl::add_timeout( 0.4, /*(void(*)(void*))*/waechter ,(void*)zeiger);
@@ -252,7 +266,7 @@ ICCkette::waechter (void* zeiger)
     if( m_zeit &&
         obj->aktiv_[i] &&
         obj->profil_mzeit_[i] != m_zeit
-  #if USE_PTHREAD
+  #if USE_THREADS
      && icc_examin->frei()
   #endif
       )
@@ -264,7 +278,7 @@ ICCkette::waechter (void* zeiger)
   }
 
   //DBG_PROG_ENDE
-  #if USE_PTHREAD
+  #if USE_THREADS
   return 0;
   #endif
 }

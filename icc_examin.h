@@ -38,6 +38,8 @@
 #include "icc_oyranos.h"
 #include "icc_modell_beobachter.h"
 
+#define USE_THREADS 1
+
 class  ICCfltkBetrachter;
 class  ICCwaehler;
 class  ICCexamin;
@@ -67,6 +69,13 @@ class ICCexamin : public icc_examin_ns::Beobachter
 
     void         oeffnen (std::vector<std::string> dateinamen);
     void         oeffnen (std::vector<Speicher> speicher);
+    static
+#if USE_THREADS
+    void*
+#else
+    void
+#endif
+                 oeffnenStatisch ( void* std_vector__Speicher );
     void         oeffnen ();                   // interaktiv
     void         tag_browserText  (void);
     bool         berichtSpeichern (void);      // GCATS Auswertung -> html Datei
@@ -139,6 +148,7 @@ class ICCexamin : public icc_examin_ns::Beobachter
     void fortschritt(double f);  // Fortschritt: f<0-Start f=Wert f>1-Ende
 
     void statusAktualisieren();  // benutze das "status" Makro
+
 };
 
 int tastatur(int e);

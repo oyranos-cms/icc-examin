@@ -31,12 +31,24 @@
 #include "icc_examin.h"
 #include "icc_gl.h"
 #include "icc_helfer_ui.h"
+#include "icc_fenster.h"
 #include "icc_info.h"
 #include "icc_kette.h"
 #include "icc_waehler.h"
 
+#if APPLE
+#include <Carbon/Carbon.h>
+#endif
+
 using namespace icc_examin_ns;
 
+#if USE_THREADS
+#include "threads.h"
+#else
+// TODO: beseitige Hack
+static int frei_tuen = 0;
+#define frei_ frei_tuen
+#endif
 
 //#define DEBUG_EXAMIN
 #ifdef DEBUG_EXAMIN
@@ -75,6 +87,14 @@ ICCexamin::quit ()
 }
 
 void
+resize_fuer_menubar(Fl_Widget* w)
+{
+  #if APPLE
+  w->resize( w->x(), w->y()-25, w->w(), w->h()+25 );
+  #endif
+}
+
+void
 ICCexamin::start (int argc, char** argv)
 { DBG_PROG_START
 
@@ -83,6 +103,7 @@ ICCexamin::start (int argc, char** argv)
   texte.resize(MAX_VIEWER);
   kurve_umkehren.resize(MAX_VIEWER);
 
+  menue_translate( icc_betrachter->menu_menueleiste );
   icc_betrachter->init( argc, argv );
 
   icc_betrachter->mft_gl->init(1);
@@ -96,27 +117,45 @@ ICCexamin::start (int argc, char** argv)
   icc_betrachter->mft_viewer->id = MFT_VIEWER;
   icc_betrachter->vcgt_viewer->id = VCGT_VIEWER;
 
+  // Fuer eine Fl_Sys_Menu_Bar
+  #if 0
+  resize_fuer_menubar( icc_betrachter->DD_farbraum );
+  resize_fuer_menubar( icc_betrachter->examin );
+  resize_fuer_menubar( icc_betrachter->inspekt_html );
+  #endif
   DBG_PROG
 
-  #if HAVE_X// || HAVE_OSX
+  #if HAVE_X || APPLE
   icc_betrachter->menueintrag_vcgt->show();
   DBG_PROG_S( "Zeige vcgt" )
+  #if APPLE
+  IBNibRef nibRef;
+  OSStatus err;
+  err = CreateNibReference(CFSTR("main"), &nibRef);
+  require_noerr( err, CantGetNibRef );
+  // Once the nib reference is created, set the menu bar. "MainMenu" is the name of the menu bar
+  // object. This name is set in InterfaceBuilder when the nib is created.
+  err = SetMenuBarFromNib(nibRef, CFSTR("MenuBar"));
+  require_noerr( err, CantSetMenuBar );
+  // We don't need the nib reference anymore.
+  DisposeNibReference(nibRef);
+  CantSetMenuBar:
+  CantGetNibRef:
+  #endif // APPLE
   #else
   DBG_PROG_S( "Zeige vcgt nicht" )
   #endif
   if(!icc_debug)
     icc_betrachter->menueintrag_testkurven->hide();
 
-  status("");
   DBG_PROG
 
   modellDazu( /*ICCkette*/&profile ); // wird in nachricht ausgewertet
 
+  Fl::add_handler(tastatur);
+
       if (argc>1) {
-        statlabel = argv[1];
-        statlabel.append (" ");
-        statlabel.append (_("loaded"));
-        status(statlabel.c_str());
+        status( argv[1] << " " << _("loaded") )
         std::vector<std::string>profilnamen;
         profilnamen.resize(argc-1);
         for (int i = 1; i < argc; i++) {
@@ -125,14 +164,21 @@ ICCexamin::start (int argc, char** argv)
         }
         oeffnen (profilnamen);
       } else {
-        status(_("Ready"));
+        status(_("Ready"))
       }
-
-  Fl::add_handler(tastatur);
 
   // zur Benutzung freigeben
   status_ = 1;
   frei_ = true;
+
+  // receive events
+  #if 1
+  Fl_Widget* w = dynamic_cast<Fl_Widget*>(icc_betrachter->details);
+  if (w) {
+      Fl::pushed(w);
+      DBG_PROG_S( "pushed("<< w <<") "<< Fl::pushed() )
+  }
+  #endif
 
   icc_betrachter->run();
 
@@ -165,9 +211,7 @@ ICCexamin::nachricht( Modell* modell , int info )
     //DBG_PROG_ENDE
     //return;
   }
-  Fl::lock();
-
-  icc_examin_ns::fortschritt(-0.1);
+  //Fl::lock();
 
   frei_ = false;
   DBG_PROG_V( info )
@@ -185,7 +229,6 @@ ICCexamin::nachricht( Modell* modell , int info )
       { DBG_PROG
         if(k->aktiv(info)) // momentan nicht genutzt
         {
-          icc_examin_ns::fortschritt(0.1);
           // ncl2 ?
           DBG_PROG_V( profile.aktuell() );
           int intent_neu = profile.profil()->intent();
@@ -226,7 +269,7 @@ ICCexamin::nachricht( Modell* modell , int info )
   Beobachter::nachricht(modell, info);
   icc_examin_ns::fortschritt(1.0);
   icc_examin_ns::fortschritt(1.1);
-  Fl::unlock();
+  //Fl::unlock();
   frei_ = true;
   DBG_PROG_ENDE
 }
@@ -248,7 +291,7 @@ void
 ICCexamin::testZeigen ()
 { DBG_PROG_START
 
-  #if HAVE_X || HAVE_OSX
+  #if HAVE_X || APPLE
   std::vector<std::vector<std::pair<double,double> > > kurven2;
   kurven2.resize(8);
   kurven2[0].resize(4);
@@ -290,7 +333,7 @@ ICCexamin::vcgtZeigen ()
   frei_ = false;
   kurve_umkehren[VCGT_VIEWER] = true;
 
-  #if HAVE_X// || HAVE_OSX
+  #if HAVE_X || APPLE
   std::string display_name = "";
   kurven[VCGT_VIEWER] = leseGrafikKartenGamma (display_name,texte[VCGT_VIEWER]);
   if (kurven[VCGT_VIEWER].size()) {
@@ -313,28 +356,51 @@ ICCexamin::vcgtZeigen ()
 void
 ICCexamin::moniHolen ()
 { DBG_PROG_START
-  frei_ = false;
+  //frei_ = false;
+  fortschritt( 0.01 );
 
-  size_t size;
-  char *moni_profil = icc_oyranos.holeMonitorProfil( 0, &size );
+  static std::vector<Speicher> ss;
+  ss.clear();
+  ss.push_back(icc_oyranos.moni());
+  size_t size = ss[0].size();
+  const char *moni_profil = ss[0];
   if(!moni_profil || !size) {
     frei_ = true;
     DBG_PROG_ENDE
     return;
   }
 
-  Speicher s (moni_profil, size);
-  std::vector<Speicher> ss;
-  ss.push_back(s);
-  oeffnen (ss);
+  #if USE_THREADS
+  static Fl_Thread fl_t;
+  int fehler = fl_create_thread( fl_t, &oeffnenStatisch, (void *)&ss );
+  if( fehler == EAGAIN)
+  {
+    WARN_S( _("Waechter Thread nicht gestartet Fehler: ")  << fehler );
+  } else
+  #if !APPLE && !WIN32
+  if( fehler == PTHREAD_THREADS_MAX )
+  {
+    WARN_S( _("zu viele Waechter Threads Fehler: ") << fehler );
+  } else
+  #endif
+  if( fehler != 0 )
+  {
+    WARN_S( _("unbekannter Fehler beim Start eines Waechter Threads Fehler: ") << fehler );
+  }
+  #else
+  Fl::add_timeout( 0.01, /*(void(*)(void*))*/oeffnenStatisch ,(void*)&ss);
+  #endif
 
   // TODO: X notification event
+  #if 0
   saveMemToFile("/tmp/vcgt_temp.icc", moni_profil, size);
   system ("xcalib /tmp/vcgt_temp.icc");
   remove ("/tmp/vcgt_temp.icc");
+  #endif
   vcgtZeigen();
 
-  frei_ = true;
+  fortschritt( 1.1 );
+  //frei_ = true;
   DBG_PROG_ENDE
 }
 
@@ -524,15 +590,21 @@ ICCexamin::neuzeichnen (void* z)
 void
 ICCexamin::fortschritt(double f)
 { DBG_PROG_START
-
-  DBG_PROG_V( f )
-  if(0.0 < f && f <= 1.0)
-    icc_betrachter->load_progress-> value(f);
-  else if (1.0 < f)
+  //Fl::lock();
+  if(0.0 < f && f <= 1.0) {
+    if(!icc_betrachter->load_progress->visible())
+      icc_betrachter->load_progress-> show();
+    icc_betrachter->load_progress-> value( f );
+    icc_betrachter->load_progress-> redraw();
+    DBG_PROG_V( f )
+  } else if (1.0 < f) {
     icc_betrachter->load_progress-> hide();
-  else
+    DBG_PROG_V( f )
+  } else {
     icc_betrachter->load_progress-> show();
-
+    DBG_PROG_V( f )
+  }
+  //Fl::unlock();
   DBG_PROG_ENDE
 }
 
@@ -547,8 +619,12 @@ int
 tastatur(int e)
 { //DBG_PROG_START
   int gefunden = 0;
-  if( e == FL_SHORTCUT )
+  static int dnd_kommt = false;
+
+  switch (e)
   {
+  case FL_SHORTCUT:
+    {
       if(Fl::event_key() == FL_Escape) {
         gefunden = 1;
         DBG_NUM_S("FL_Escape")
@@ -559,7 +635,114 @@ tastatur(int e)
         icc_examin->quit();
         gefunden = 1;
       }
+    }
+    break;
+  case FL_DND_ENTER:
+    {
+    DBG_PROG_S( "FL_DND_ENTER" )
+    fortschritt(0.01);
+    return 1;
+    }
+    break;
+  case FL_DND_DRAG:
+    {
+    DBG_PROG_S( "FL_DND_DRAG dnd_text_ops(" <<Fl::dnd_text_ops() <<")" )
+    return 1;
+    }
+    break;
+  case FL_DND_LEAVE:
+    {
+    DBG_PROG_S( "FL_DND_LEAVE" )
+    fortschritt(1.1);
+    return 1;
+    }
+    break;
+  case FL_DND_RELEASE:
+    {
+    DBG_PROG_S( "FL_DND_RELEASE " << Fl::event_length())
+    icc_examin->icc_betrachter->details->take_focus();
+    dnd_kommt = true;
+    return 1;
+    }
+    break;
+  case FL_PASTE:
+    {
+    DBG_PROG_S( "FL_PASTE " << Fl::event_length() )
+      if(dnd_kommt &&
+         Fl::event_length())
+      {
+        DBG_PROG_S( Fl::event_text() );
+        char *temp = (char*)alloca(Fl::event_length()+1),
+             *text;
+        sprintf(temp, Fl::event_text());
+        std::vector<std::string>profilnamen;
+        while((text = strrchr(temp,'\n')) != 0)
+        {
+          profilnamen.push_back(text+1);
+          text[0] = 0;
+        }
+        profilnamen.push_back(temp);
+        icc_examin->oeffnen(profilnamen);
+      }
+      dnd_kommt = false;
+    }
+    break;
+  case FL_RELEASE:
+    {
+    DBG_PROG_S( "FL_RELEASE " << Fl::event_length() )
+    }
+    break;
+  case FL_DRAG:
+    {
+      DBG_PROG_S( "FL_DRAG "<< Fl::event_length() )
+      #if LINUX // TODO: korrektes DnD
+      static int dnd_naechstes_ereignis = false;
+      if(dnd_kommt &&
+         Fl::event_length())
+      {
+        if(dnd_naechstes_ereignis) {
+          DBG_PROG_S( Fl::event_text() );
+          char *temp = (char*)alloca(Fl::event_length()+1),
+               *text;
+          sprintf(temp, Fl::event_text());
+          std::vector<std::string>profilnamen;
+          while((text = strrchr(temp,'\n')) != 0)
+          {
+            if(strlen(text+1))
+              profilnamen.push_back(text+1);
+            text[0] = 0;
+          }
+          profilnamen.push_back(temp);
+          // Korrekturen
+          for(unsigned int i = 0; i < profilnamen.size(); ++i) {
+            const char *filter_a = "file:";
+            if(strstr(profilnamen[i].c_str(), filter_a)) {
+              char *txt = (char*)alloca(profilnamen[i].size()+1);
+              sprintf(txt, &(profilnamen[i].c_str())[strlen(filter_a)]);
+              // Wagenruecklauf beseitigen
+              char *zeiger = strchr(txt, '\r');
+              if(zeiger)
+                zeiger[0] = 0;
+              profilnamen[i] = txt;
+            }
+            DBG_PROG_S( i <<" "<< profilnamen[i] );
+          }
+          icc_examin->oeffnen(profilnamen);
+          dnd_kommt = false;
+          dnd_naechstes_ereignis = false;
+        } else
+          dnd_naechstes_ereignis = true;
+      }
+      #endif
+    }
+    break;
+  default: 
+    {
+      DBG_PROG_S( "Event - "<< e <<" "<< Fl::event_length() )
+    }
+    break;
   }
+  
   icc_examin->icc_betrachter->DD_farbraum->tastatur(e);
   //DBG_PROG_ENDE
   return gefunden;

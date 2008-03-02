@@ -30,9 +30,10 @@
 #ifndef ICC_FENSTER_H
 #define ICC_FENSTER_H
 
+#include "icc_utils.h"
 
-#ifdef HAVE_FLTK
-#ifdef HAVE_FLU
+#if HAVE_FLTK
+#if HAVE_FLU
 #include <FLU/Flu_File_Chooser.h> 
 #endif
 #include <FL/Fl_File_Chooser.H> 
@@ -45,7 +46,7 @@
 namespace icc_examin_ns {
 
 
-#ifdef HAVE_FLU
+#if HAVE_FLU
   extern Flu_File_Chooser *dateiwahl;
   void dateiwahl_cb(const char *dateiname, int typ, void *arg);
 #else

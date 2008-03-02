@@ -33,4 +33,54 @@ int level_PROG = -1;
 #endif
 int icc_debug = 1;
 
+#include <icc_utils.h>
+#include <fstream>
+std::stringstream debug_s;
+
+//#define WRITE_DBG
+
+void
+dbgWriteF (std::stringstream & ss)
+{
+#ifdef WRITE_DBG
+    std::string dateiname = "/tmp/icc_examin_dbg_";
+    dateiname += getenv("USER");
+    dateiname += ".txt";
+    std::ofstream f ( dateiname.c_str(),
+         std::ios::out | std::ios::app | std::ios::binary | std::ios::ate );
+
+    DBG_MEM_V( dateiname )
+    if (dateiname == "")
+    {
+      DBG_PROG_ENDE
+      throw ausn_file_io (_("no filename given"));
+    }
+    DBG_MEM
+    if (!f) {
+      DBG_PROG_ENDE
+      throw ausn_file_io (dateiname.c_str());
+      dateiname = "";
+    }
+
+    size_t size = (unsigned int)f.tellp();
+    DBG_MEM_V ( size << "|" << f.tellp() )
+    //f.seekp(size);
+    const char* data = ss.str().c_str();
+    size = ss.str().size();
+    if(size) {
+      f.write (data, size);
+      DBG_MEM_V ( size << "|" << f.tellp() <<" "<< (int*)data <<" "<< strlen(data) )
+      f.close();
+    } else {
+      data = 0;
+      WARN_S( _("Dateigroesse 0 fuer ") << dateiname )
+    }
+
+
+
+#else
+  cout << ss.str();
+#endif
+}
+
 

@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2005  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -18,24 +18,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
+ * 
  * -----------------------------------------------------------------------------
  *
- * ICC Helfer - werkzeugabhaengig
+ * Die Speicher Klasse
  * 
  */
 
-// Date:      Mai 2004
+// Date:      06. 08. 2005
 
-#ifndef ICC_HELFER_UI_H
-#define ICC_HELFER_UI_H
 
-#include "icc_icc.h"
-#if HAVE_FLTK
-  #include "icc_helfer_fltk.h"
-#endif
-#if HAVE_X || APPLE
-  #include "icc_helfer_x.h"
-#endif
+#include "icc_utils.h"
+#include "icc_speicher.h"
 
-#endif //ICC_HELFER_UI_H
+int Speicher::globale_id_ = 0;
+

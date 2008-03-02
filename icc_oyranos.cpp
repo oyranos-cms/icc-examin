@@ -28,7 +28,15 @@
 // Date:      25. 11. 2004
 
 
+#include "icc_formeln.h"
+#include "icc_oyranos.h"
+#include "icc_profile.h"
+#include "icc_utils.h"
+#include "config.h"
+
+#define BOOL LCMS_BOOL
 #include <lcms.h>
+#undef BOOL
 
 #ifdef HAVE_OY
 #include "oyranos/oyranos.h"
@@ -36,10 +44,9 @@
 using namespace oyranos;
 #endif
 
-#include "icc_formeln.h"
-#include "icc_oyranos.h"
-#include "icc_profile.h"
-#include "icc_utils.h"
+#ifdef APPLE
+#include <Carbon/Carbon.h>
+#endif
 
 Oyranos icc_oyranos;
 
@@ -107,8 +114,8 @@ Oyranos::profil_test_ (const char* profil_name)
           *v_block = profil_name;
           size_t size;
           char* block = (char*)oyGetProfileBlock( profil_name, &size);
-          DBG_PROG_V( (int)block <<"|"<< size )
-          v_block->lade(block, size);
+          DBG_PROG_V( (int*)block <<"|"<< size )
+          v_block->ladeUndFreePtr(&block, size);
         }
       }
     } else // Profil in Liste
@@ -130,7 +137,6 @@ Oyranos::lab_test_ ()
 {
   DBG_PROG_START
   Speicher *v_block = &lab_;
-  char* block;
   #if HAVE_OY
   if( !v_block->size() )
   { DBG_PROG_V( v_block->size() )
@@ -144,12 +150,12 @@ Oyranos::lab_test_ ()
         size_t size = oyGetProfileSize ( profil_name );
         DBG_PROG_V( size )
         if (size)
-        { block = (char*)oyGetProfileBlock( profil_name, &size);
+        { char *block = (char*)oyGetProfileBlock( profil_name, &size);
           if( oyCheckProfileMem( block, size, 0 ) )
             WARN_S ( _("Profil konnte nicht geladen werden") )
           else {
             DBG_PROG_V( (int)block <<"|"<< size )
-            v_block->lade(block, size);
+            v_block->ladeUndFreePtr(&block, size);
           }
         }
     }
@@ -162,13 +168,48 @@ Oyranos::lab_test_ ()
   DBG_PROG_ENDE
 }
 
+#ifdef APPLE
+typedef struct {
+  char   *data;
+  SInt32  size;
+} refcon;
+
+OSErr
+MyFlattenProc (
+   SInt32 command, 
+   SInt32 *size, 
+   void *data, 
+   void *refCon)
+{
+  // Alle Bestandteile einsammeln
+  if(*size)
+  {
+    refcon *ref = (refcon*) refCon;
+
+    char* block = (char*)malloc(ref->size+*size);
+    // old data
+    if(ref->data && ref->size) {
+      memcpy(block, ref->data, ref->size);
+      free(ref->data);
+    }
+    // new data
+    memcpy( &block[ref->size], data, *size );
+
+    ref->data = block;
+    ref->size += *size;
+  }
+  DBG_PROG_V(command<<" "<<*size)
+
+  return 0;
+};
+#endif
+
 void
 Oyranos::moni_test_ ()
 {
   DBG_PROG_START
   #if HAVE_OY
   {
-    char* block;
     const char *display_name = 0;
     char* profil_name =
      oyGetMonitorProfileName (display_name);
@@ -183,16 +224,16 @@ Oyranos::moni_test_ ()
           DBG_MEM_V( size )
         if (size)
         {
-          block = (char*)
-           oyGetProfileBlock( profil_name, &size);
+          char* block =
+           (char*)oyGetProfileBlock( profil_name, &size);
           if( oyCheckProfileMem( block, size, 0 ) )
             WARN_S ( _("Profil konnte nicht geladen werden") )
           else {
               DBG_MEM_V( (int*)block <<"|"<< size )
-            v_block.lade(block, size);
+            v_block.ladeUndFreePtr(&block, size);
           }
         }
-        v_block = profil_name;
+        v_block = (const char*)profil_name;
 
       if(profil_name) free(profil_name);
         DBG_MEM
@@ -201,6 +242,89 @@ Oyranos::moni_test_ ()
   
   DBG_NUM_S( "Monitorprofil = "<< *moni_ <<" "<< moni_.size() <<"\n" )
 
+  #else
+    #ifdef APPLE
+    CMProfileRef prof=NULL;
+    DisplayIDType screenID=0;
+    GDHandle device = DMGetFirstScreenDevice(true); //GetDeviceList();
+    DMGetDisplayIDByGDevice(device, &screenID, false);
+    CMGetProfileByAVID(screenID, &prof);
+    CMProfileLocation loc;
+    CMGetProfileLocation(prof, &loc);
+    switch(loc.locType)
+    {
+      case cmNoProfileBase:
+             DBG_PROG_S("Das Monitorprofil ist ein temporäres Profil.")
+             break;
+      case cmFileBasedProfile:
+             DBG_PROG_S("Das Monitorprofil ist ein Datei Profil.")
+             break;
+      case cmHandleBasedProfile:
+             DBG_PROG_S("Das Monitorprofil ist ein Händling Profil.")
+             break;
+      case cmPtrBasedProfile:
+             DBG_PROG_S("Das Monitorprofil ist ein Zeiger Profil.")
+             break;
+      case cmProcedureBasedProfile:
+             DBG_PROG_S("Das Monitorprofil ist ein prozedurales Profil.")
+             break;
+      case cmPathBasedProfile:
+             DBG_PROG_S("Das Monitorprofil ist ein Pfad Profil.")
+             break;
+      case cmBufferBasedProfile:
+             DBG_PROG_S("Das Monitorprofil ist ein Speicherblock Profil.")
+             break;
+      default:
+             DBG_PROG_S("kein Profil gefunden?")
+             break;
+    }
+
+    refcon ref = {0,0};
+    Boolean bol;
+    CMError err = CMFlattenProfile ( prof, 0, MyFlattenProc, &ref, &bol);
+    
+    Str255 str;
+    ScriptCode code;
+    CMGetScriptProfileDescription(prof, str, &code);
+    //CFStringRef cfstring;
+    //CFStringGetPascalString( cfstring, str, 255, kCFStringEncodingASCII);
+    //cfstring = CFStringCreateWithPascalString( NULL, str, kCFStringEncodingASCII);
+    DBG_PROG_V( (int)str[0] )
+	if (prof) CMCloseProfile(prof);
+    //const char *profil_name = CFStringGetCStringPtr(cfstring, kCFStringEncodingASCII);
+    const char *profil_name = str; ++profil_name;
+    DBG_PROG_V( screenID )
+
+    //char* profil_name = (char*)malloc(strlen(str));
+    //sprintf(profil_name, str);
+    Speicher v_block = moni_;
+      DBG_MEM_V( v_block.size() )
+      DBG_PROG_V( (int*)profil_name <<" "<< profil_name )
+    if( profil_name &&
+        v_block != profil_name )
+    { 
+        size_t size = ref.size;;
+          DBG_MEM_V( size )
+        if (size)
+        {
+          #ifdef HAVE_OY
+          if( oyCheckProfileMem( ref.data, size, 0 ) )
+            WARN_S ( _("Profil konnte nicht geladen werden") )
+          else
+          #endif
+          {
+              DBG_MEM_V( (int*)ref.data <<"|"<< size )
+            v_block.lade((const char*)ref.data, size);
+          }
+        }
+        v_block = profil_name;
+        //if(profil_name) free(profil_name);
+        DBG_PROG_V( v_block.name() )
+
+        DBG_MEM
+    }
+    //CFRelease(cfstring);
+    #endif
   #endif
   DBG_PROG_ENDE
 }
@@ -214,7 +338,7 @@ Oyranos::rgb_test_ ()
   #if HAVE_OY
   if( !v_block->size() )
   { DBG_PROG_V( v_block->size() )
-    char* profil_name = oyGetDefaultRGBInputProfileName();
+    const char* profil_name = oyGetDefaultRGBInputProfileName();
     DBG_PROG_V( (int)profil_name << oyGetDefaultRGBInputProfileName() )
     if( profil_name &&
         *v_block != profil_name )
@@ -224,29 +348,29 @@ Oyranos::rgb_test_ ()
         size_t size = oyGetProfileSize ( profil_name );
         DBG_PROG_V( size )
         if (size)
-        { block = (char*)oyGetProfileBlock( profil_name, &size);
+        { char *block = (char*)oyGetProfileBlock( profil_name, &size);
           if( oyCheckProfileMem( block, size, 0 ) )
             WARN_S ( _("Profil konnte nicht geladen werden") )
           else {
-            DBG_PROG_V( (int)block <<"|"<< size )
-            v_block->lade(block, size);
+            DBG_PROG_V( (int*)block <<"|"<< size <<" "<<(int) (*cmyk_) )
+            v_block->ladeUndFreePtr(&block, size);
           }
         }
     }
   }
 
-  DBG_NUM_S( "Standard " OY_DEFAULT_RGB_INPUT_PROFILE " Profil = "<< *rgb_ <<" "<< rgb_.size() <<"\n" )
+  if(rgb_.size())
+    DBG_NUM_S( "Standard " OY_DEFAULT_RGB_INPUT_PROFILE " Profil = "<< *rgb_ <<" "<< cmyk_.size() <<"\n" );
   #endif
   DBG_PROG_ENDE
 }
 
-extern int oy_debug;
+
 void
 Oyranos::cmyk_test_ ()
 {
   DBG_PROG_START
-  //oy_debug = 1;
-  Speicher *v_block = &cmyk_;
+  Speicher *v_block = &rgb_;
   char* block;
   #if HAVE_OY
   if( !v_block->size() )
@@ -263,12 +387,12 @@ Oyranos::cmyk_test_ ()
         size_t size = oyGetProfileSize ( profil_name );
         DBG_PROG_V( size  )
         if (size)
-        { block = (char*)oyGetProfileBlock( profil_name, &size);
+        { char *block = (char*)oyGetProfileBlock( profil_name, &size);
           if( oyCheckProfileMem( block, size, 0 ) )
             WARN_S ( _("Profil konnte nicht geladen werden") )
           else {
-            v_block->lade(block, size);
-            DBG_PROG_V( (int)block <<"|"<< size <<" "<<(int) (*cmyk_) )
+            DBG_PROG_V( (int*)block <<"|"<< size <<" "<<(int) (*cmyk_) )
+            v_block->ladeUndFreePtr(&block, size);
           }
         }
     }
@@ -288,6 +412,7 @@ Oyranos::cmyk_test_ ()
 #include <FL/x.H>
 #endif
 
+#if 0
 char*
 Oyranos::holeMonitorProfil (const char* display_name, size_t* size )
 {
@@ -324,6 +449,7 @@ Oyranos::holeMonitorProfil (const char* display_name, size_t* size )
   DBG_PROG_ENDE
   return moni_profil;
 }
+#endif
 
 int
 Oyranos::setzeMonitorProfil (const char* profil_name )
@@ -377,9 +503,9 @@ Oyranos::netzVonProfil (ICCprofile & profil, int intent)
 
   if(profil.valid()) {
       size_t groesse = 0;
-      char* daten = profil.saveProfileToMem(&groesse); 
-      s.lade(daten, groesse);
+      char* daten = profil.saveProfileToMem(&groesse);
       DBG_NUM_V( groesse );
+      s.ladeNew(daten, groesse);
   }
 
   if(s.size())
@@ -416,7 +542,7 @@ Oyranos::vrmlVonProfil (ICCprofile & profil, int intent)
   if(profil.valid()) {
       size_t groesse = 0;
       char* daten = profil.saveProfileToMem(&groesse); 
-      s.lade(daten, groesse);
+      s.ladeNew(daten, groesse);
       DBG_NUM_V( groesse );
   }
 
@@ -514,7 +640,7 @@ Oyranos::gamutCheckAbstract(Speicher & s, Speicher & abstract,
       _cmsSaveProfileToMem ( gmt, 0, &groesse );
       char* mem = (char*) calloc( sizeof(char), groesse);
       _cmsSaveProfileToMem ( gmt, mem, &groesse );
-      abstract.lade (mem, groesse); DBG
+      abstract.ladeUndFreePtr (&mem, groesse); DBG
       if(gmt) cmsCloseProfile( gmt );
       if(hLab) cmsCloseProfile( hLab );
       if(tmp) cmsCloseProfile( tmp );

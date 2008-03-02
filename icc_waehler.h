@@ -25,7 +25,7 @@
  * 
  */
 
-// Date:      März 2005
+// Date:      Maerz 2005
 
 #ifndef ICC_WAEHLER_H
 #define ICC_WAEHLER_H

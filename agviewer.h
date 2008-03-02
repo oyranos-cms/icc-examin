@@ -33,14 +33,13 @@
 #ifndef AGVIEWER_H
 #define AGVIEWER_H
 
-//#include <FL/glut.H>
-#ifdef __APPLE__
+#include "icc_utils.h" // ICC Examin
+#if APPLE
 #  include <OpenGL/glu.h>
 #else
 #  include <GL/glu.h> // added for FLTK
 #endif
 
-#include "icc_utils.h" // ICC Examin
 class GL_Ansicht;
 
 class

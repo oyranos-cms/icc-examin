@@ -1,19 +1,17 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR Kai-Uwe Behrmann
-# This file is distributed under the same license as the PACKAGE package.
+# Copyright (C) YEAR Free Software Foundation, Inc.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2005-07-13 11:01+0200\n"
+"POT-Creation-Date: 2005-08-09 09:44+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: agviewer.cpp:167
@@ -141,18 +139,18 @@ msgstr ""
 msgid "unbekannte Farbe"
 msgstr ""
 
-#: icc_draw.cpp:633 icc_draw.cpp:644 icc_helfer.cpp:381
-#: icc_profile_tags.cpp:391 icc_helfer_x.cpp:56
+#: icc_draw.cpp:633 icc_draw.cpp:644 icc_helfer.cpp:381 icc_helfer_osx.cpp:65
+#: icc_helfer_x.cpp:56 icc_profile_tags.cpp:391
 msgid "Red"
 msgstr ""
 
-#: icc_draw.cpp:636 icc_draw.cpp:646 icc_helfer.cpp:382
-#: icc_profile_tags.cpp:392 icc_helfer_x.cpp:57
+#: icc_draw.cpp:636 icc_draw.cpp:646 icc_helfer.cpp:382 icc_helfer_osx.cpp:66
+#: icc_helfer_x.cpp:57 icc_profile_tags.cpp:392
 msgid "Green"
 msgstr ""
 
-#: icc_draw.cpp:639 icc_draw.cpp:648 icc_helfer.cpp:383
-#: icc_profile_tags.cpp:393 icc_helfer_x.cpp:58
+#: icc_draw.cpp:639 icc_draw.cpp:648 icc_helfer.cpp:383 icc_helfer_osx.cpp:67
+#: icc_helfer_x.cpp:58 icc_profile_tags.cpp:393
 msgid "Blue"
 msgstr ""
 
@@ -204,18 +202,18 @@ msgstr ""
 msgid "Value"
 msgstr ""
 
-#: icc_draw.cpp:672 icc_examin_farbraum.cpp:181 icc_examin_io.cpp:216
+#: icc_draw.cpp:672 icc_examin_farbraum.cpp:181 icc_examin_io.cpp:142
 #: icc_helfer.cpp:369 icc_helfer.cpp:372
 msgid "CIE *L"
 msgstr ""
 
-#: icc_draw.cpp:674 icc_examin_farbraum.cpp:182 icc_examin_io.cpp:217
+#: icc_draw.cpp:674 icc_examin_farbraum.cpp:182 icc_examin_io.cpp:143
 #: icc_gl.cpp:640 icc_gl.cpp:710 icc_gl.cpp:734 icc_gl.cpp:742
 #: icc_helfer.cpp:370
 msgid "CIE *a"
 msgstr ""
 
-#: icc_draw.cpp:676 icc_examin_farbraum.cpp:183 icc_examin_io.cpp:218
+#: icc_draw.cpp:676 icc_examin_farbraum.cpp:183 icc_examin_io.cpp:144
 #: icc_gl.cpp:653 icc_gl.cpp:750 icc_gl.cpp:768 icc_gl.cpp:775
 #: icc_helfer.cpp:371
 msgid "CIE *b"
@@ -245,91 +243,119 @@ msgstr ""
 msgid " with one entry for gamma: "
 msgstr ""
 
-#: icc_examin.cpp:90
+#: icc_examin.cpp:111
 msgid "Gamut selector"
 msgstr ""
 
-#: icc_examin.cpp:91
+#: icc_examin.cpp:112
 msgid "icc_waehler_ nicht reservierbar"
 msgstr ""
 
-#: icc_examin.cpp:118
+#: icc_examin.cpp:158 icc_examin_io.cpp:412
 msgid "loaded"
 msgstr ""
 
-#: icc_examin.cpp:128
+#: icc_examin.cpp:167
 msgid "Ready"
 msgstr ""
 
-#: icc_examin.cpp:178
+#: icc_examin.cpp:222
 msgid "Nachricht von ICCkette"
 msgstr ""
 
-#: icc_examin.cpp:179
+#: icc_examin.cpp:223
 msgid "Auffrischen von Profil Nr.: "
 msgstr ""
 
-#: icc_examin.cpp:303
+#: icc_examin.cpp:346
 msgid "Keine Kurve gefunden"
 msgstr ""
 
-#: icc_examin.cpp:402
+#: icc_examin.cpp:378 icc_examin_io.cpp:322 icc_kette.cpp:245
+msgid "Waechter Thread nicht gestartet Fehler: "
+msgstr ""
+
+#: icc_examin.cpp:383 icc_examin_io.cpp:327 icc_kette.cpp:250
+msgid "zu viele Waechter Threads Fehler: "
+msgstr ""
+
+#: icc_examin.cpp:388 icc_examin_io.cpp:332 icc_kette.cpp:255
+msgid "unbekannter Fehler beim Start eines Waechter Threads Fehler: "
+msgstr ""
+
+#: icc_examin.cpp:468
 msgid "verstecke "
 msgstr ""
 
-#: icc_examin.cpp:406
+#: icc_examin.cpp:472
 msgid "zeige     "
 msgstr ""
 
-#: icc_examin_io.cpp:97 icc_examin_io.cpp:239
-msgid "Anzahl gabs schon mal"
-msgstr ""
-
-#: icc_examin_io.cpp:123 icc_examin_io.cpp:265
-msgid "Gebe irritiert auf. Kein Netz gefunden. Ist Argyll installiert?"
-msgstr ""
-
-#: icc_examin_io.cpp:224
+#: icc_examin_io.cpp:151
 msgid "kein Netz gefunden in VRML Datei"
 msgstr ""
 
-#: icc_examin_io.cpp:316 icc_betrachter.cxx:453
+#: icc_examin_io.cpp:167
+msgid "Anzahl gabs schon mal"
+msgstr ""
+
+#: icc_examin_io.cpp:187
+msgid "Kein Netz gefunden. Ist Argyll installiert?"
+msgstr ""
+
+#: icc_examin_io.cpp:291 icc_profile.cpp:164 icc_vrml.cpp:131
+msgid "Ausnahme aufgetreten: "
+msgstr ""
+
+#: icc_examin_io.cpp:295 icc_profile.cpp:169 icc_vrml.cpp:135
+msgid "Std-Ausnahme aufgetreten: "
+msgstr ""
+
+#: icc_examin_io.cpp:298 icc_profile.cpp:173 icc_vrml.cpp:138
+msgid "Huch, unbekannte Ausnahme"
+msgstr ""
+
+#: icc_examin_io.cpp:309
+msgid "Stop loading "
+msgstr ""
+
+#: icc_betrachter.cxx:455 icc_examin_io.cpp:370
 msgid "Filename"
 msgstr ""
 
-#: icc_examin_io.cpp:320
+#: icc_examin_io.cpp:374
 msgid "found no content for"
 msgstr ""
 
-#: icc_examin_io.cpp:323
+#: icc_examin_io.cpp:377
 msgid "Internal error"
 msgstr ""
 
-#: icc_examin_io.cpp:325
+#: icc_examin_io.cpp:379
 msgid "No. Tag   Type   Size Description"
 msgstr ""
 
-#: icc_examin_io.cpp:392
+#: icc_examin_io.cpp:439
 msgid "HTML Documents (*.htm*)"
 msgstr ""
 
-#: icc_examin_io.cpp:396 icc_betrachter.cxx:374
+#: icc_betrachter.cxx:374 icc_examin_io.cpp:443
 msgid "Save Report"
 msgstr ""
 
-#: icc_examin_io.cpp:469 icc_betrachter.cxx:483
+#: icc_betrachter.cxx:485 icc_examin_io.cpp:516
 msgid "ICC colour profiles (*.ic*)"
 msgstr ""
 
-#: icc_examin_io.cpp:470 icc_betrachter.cxx:375
+#: icc_betrachter.cxx:375 icc_examin_io.cpp:517
 msgid "Save Gamut as Profile"
 msgstr ""
 
-#: icc_examin_io.cpp:472
+#: icc_examin_io.cpp:519
 msgid "VRML Files (*.wrl)"
 msgstr ""
 
-#: icc_examin_io.cpp:473 icc_betrachter.cxx:376
+#: icc_betrachter.cxx:376 icc_examin_io.cpp:520
 msgid "Save Gamut as VRML"
 msgstr ""
 
@@ -351,7 +377,6 @@ msgid "Fontgroesse nicht setzbar"
 msgstr ""
 
 #: icc_gl.cpp:530
-#, c-format
 msgid "0,0,0"
 msgstr ""
 
@@ -451,7 +476,7 @@ msgstr ""
 msgid "Spektral line"
 msgstr ""
 
-#: icc_gl.cpp:1512 icc_betrachter.cxx:682
+#: icc_betrachter.cxx:694 icc_gl.cpp:1512
 msgid "Texts"
 msgstr ""
 
@@ -1055,7 +1080,7 @@ msgstr ""
 msgid "seconds"
 msgstr ""
 
-#: icc_helfer.cpp:818
+#: icc_helfer.cpp:818 icc_utils.cpp:56
 msgid "no filename given"
 msgstr ""
 
@@ -1063,56 +1088,48 @@ msgstr ""
 msgid "Dateigröße 0 für "
 msgstr ""
 
-#: icc_helfer_i18n.cpp:67
+#: icc_helfer_i18n.cpp:65
 msgid "osX locale obtained: "
 msgstr ""
 
-#: icc_helfer_i18n.cpp:73
+#: icc_helfer_i18n.cpp:68
 msgid "osX locale not obtained"
 msgstr ""
 
-#: icc_helfer_i18n.cpp:191
+#: icc_helfer_i18n.cpp:187
 msgid "try to set LANG"
 msgstr ""
 
-#: icc_helfer_i18n.cpp:220
+#: icc_helfer_i18n.cpp:216
 msgid "fine with: "
 msgstr ""
 
-#: icc_helfer_i18n.cpp:222
+#: icc_helfer_i18n.cpp:218
 msgid "failed with: "
 msgstr ""
 
-#: icc_helfer_i18n.cpp:227
+#: icc_helfer_i18n.cpp:223
 msgid "try locale in "
 msgstr ""
 
-#: icc_helfer_i18n.cpp:234
+#: icc_helfer_i18n.cpp:230
 msgid "set codeset for \"icc_examin\" to "
 msgstr ""
 
-#: icc_kette.cpp:88
-msgid "actual monitor"
+#: icc_kette.cpp:93
+msgid "noName"
 msgstr ""
 
-#: icc_kette.cpp:107 icc_kette.cpp:172
+#: icc_kette.cpp:109 icc_kette.cpp:176
 msgid "File not loaded!"
 msgstr ""
 
-#: icc_kette.cpp:122
+#: icc_kette.cpp:125
 msgid "File allready loaded"
 msgstr ""
 
-#: icc_kette.cpp:233
-msgid "Wächter Thread nicht gestartet Fehler: "
-msgstr ""
-
-#: icc_kette.cpp:237
-msgid "zu viele Wächter Threads Fehler: "
-msgstr ""
-
-#: icc_kette.cpp:241
-msgid "unbekannter Fehler beim Start eines Wächter Threads Fehler: "
+#: icc_main.cpp:47
+msgid "colour adjust"
 msgstr ""
 
 #: icc_measurement.cpp:551
@@ -1279,24 +1296,24 @@ msgstr ""
 msgid "K"
 msgstr ""
 
-#: icc_oyranos.cpp:149 icc_oyranos.cpp:189 icc_oyranos.cpp:229
-#: icc_oyranos.cpp:268
+#: icc_oyranos.cpp:155 icc_oyranos.cpp:230 icc_oyranos.cpp:312
+#: icc_oyranos.cpp:353 icc_oyranos.cpp:392
 msgid "Profil konnte nicht geladen werden"
 msgstr ""
 
-#: icc_oyranos.cpp:479 icc_oyranos.cpp:565
+#: icc_oyranos.cpp:605 icc_oyranos.cpp:691
 msgid "hLab Profil nicht geoeffnet"
 msgstr ""
 
-#: icc_oyranos.cpp:563
+#: icc_oyranos.cpp:689
 msgid "hsRGB Profil nicht geoeffnet"
 msgstr ""
 
-#: icc_oyranos.cpp:574
+#: icc_oyranos.cpp:700
 msgid "keine hXYZtoRGB Transformation gefunden"
 msgstr ""
 
-#: icc_oyranos.cpp:578
+#: icc_oyranos.cpp:704
 msgid "RGB_speicher Speicher nicht verfuegbar"
 msgstr ""
 
@@ -1329,18 +1346,6 @@ msgid ""
 "is not available."
 msgstr ""
 
-#: icc_profile.cpp:164 icc_vrml.cpp:129
-msgid "Ausnahme aufgetreten: "
-msgstr ""
-
-#: icc_profile.cpp:169 icc_vrml.cpp:133
-msgid "Std-Ausnahme aufgetreten: "
-msgstr ""
-
-#: icc_profile.cpp:173 icc_vrml.cpp:136
-msgid "Huch, unbekannte Ausnahme"
-msgstr ""
-
 #: icc_profile.cpp:180
 msgid "!!!! Profil wird wiederbenutzt !!!! "
 msgstr ""
@@ -1349,7 +1354,7 @@ msgstr ""
 msgid "Kein Profil"
 msgstr ""
 
-#: icc_profile.cpp:226 icc_betrachter.cxx:441
+#: icc_betrachter.cxx:443 icc_profile.cpp:226
 msgid "Size"
 msgstr ""
 
@@ -1493,11 +1498,11 @@ msgstr ""
 msgid "Flags:       "
 msgstr ""
 
-#: icc_profile_header.cpp:226 icc_helfer_x.cpp:82
+#: icc_helfer_x.cpp:82 icc_profile_header.cpp:226
 msgid "Manufacturer:"
 msgstr ""
 
-#: icc_profile_header.cpp:227 icc_helfer_x.cpp:84
+#: icc_helfer_x.cpp:84 icc_profile_header.cpp:227
 msgid "Model:       "
 msgstr ""
 
@@ -1597,7 +1602,7 @@ msgstr ""
 msgid "Number of colours:"
 msgstr ""
 
-#: icc_profile_tags.cpp:422 icc_betrachter.cxx:439
+#: icc_betrachter.cxx:441 icc_profile_tags.cpp:422
 msgid "Name"
 msgstr ""
 
@@ -1621,7 +1626,7 @@ msgstr ""
 msgid "ICC Examin Version"
 msgstr ""
 
-#: icc_ueber.cpp:84 icc_betrachter.cxx:442
+#: icc_betrachter.cxx:444 icc_ueber.cpp:84
 msgid "Date"
 msgstr ""
 
@@ -1719,12 +1724,36 @@ msgid ""
 "contain deverine licenses which are detectable from file headers. "
 msgstr ""
 
+#: icc_utils.cpp:76
+msgid "Dateigroesse 0 fuer "
+msgstr ""
+
 #: icc_vrml.cpp:57
 msgid "Datei "
 msgstr ""
 
 #: icc_vrml.cpp:57
 msgid " konnte nicht gelöscht werden"
+msgstr ""
+
+#: icc_helfer_osx.cpp:70
+msgid "Hersteller: "
+msgstr ""
+
+#: icc_helfer_osx.cpp:72
+msgid "Model:      "
+msgstr ""
+
+#: icc_helfer_osx.cpp:84 icc_helfer_x.cpp:95
+msgid "Gamma Red:   "
+msgstr ""
+
+#: icc_helfer_osx.cpp:90
+msgid "Gamma Green: "
+msgstr ""
+
+#: icc_helfer_osx.cpp:96 icc_helfer_x.cpp:107
+msgid "Gamma Blue:  "
 msgstr ""
 
 #: icc_helfer_x.cpp:80
@@ -1735,16 +1764,8 @@ msgstr ""
 msgid "Keine Gamma Information erhalten"
 msgstr ""
 
-#: icc_helfer_x.cpp:95
-msgid "Gamma Red:   "
-msgstr ""
-
 #: icc_helfer_x.cpp:101
 msgid "Gamma Green:"
-msgstr ""
-
-#: icc_helfer_x.cpp:107
-msgid "Gamma Blue:  "
 msgstr ""
 
 #: icc_helfer_x.cpp:116 icc_helfer_x.cpp:125
@@ -1823,249 +1844,249 @@ msgstr ""
 msgid "About"
 msgstr ""
 
-#: icc_betrachter.cxx:434
+#: icc_betrachter.cxx:436
 msgid "Favorites"
 msgstr ""
 
-#: icc_betrachter.cxx:435
+#: icc_betrachter.cxx:437
 msgid "Home"
 msgstr ""
 
-#: icc_betrachter.cxx:436
+#: icc_betrachter.cxx:438
 msgid "Documents"
 msgstr ""
 
-#: icc_betrachter.cxx:437
+#: icc_betrachter.cxx:439
 msgid "Desktop"
 msgstr ""
 
-#: icc_betrachter.cxx:440
+#: icc_betrachter.cxx:442
 msgid "Type"
 msgstr ""
 
-#: icc_betrachter.cxx:443 icc_betrachter.cxx:461
+#: icc_betrachter.cxx:445 icc_betrachter.cxx:463
 msgid "New Folder"
 msgstr ""
 
-#: icc_betrachter.cxx:444
+#: icc_betrachter.cxx:446
 msgid "Rename"
 msgstr ""
 
-#: icc_betrachter.cxx:445
+#: icc_betrachter.cxx:447
 msgid "Delete"
 msgstr ""
 
-#: icc_betrachter.cxx:446
+#: icc_betrachter.cxx:448
 msgid "Floppy Disk"
 msgstr ""
 
-#: icc_betrachter.cxx:447
+#: icc_betrachter.cxx:449
 msgid "Removable Disk"
 msgstr ""
 
-#: icc_betrachter.cxx:448
+#: icc_betrachter.cxx:450
 msgid "Local Disk"
 msgstr ""
 
-#: icc_betrachter.cxx:449
+#: icc_betrachter.cxx:451
 msgid "Compact Disk"
 msgstr ""
 
-#: icc_betrachter.cxx:450
+#: icc_betrachter.cxx:452
 msgid "Network Disk"
 msgstr ""
 
-#: icc_betrachter.cxx:451
+#: icc_betrachter.cxx:453
 msgid "RAM Disk"
 msgstr ""
 
-#: icc_betrachter.cxx:454 icc_betrachter.cxx:509
+#: icc_betrachter.cxx:456 icc_betrachter.cxx:511
 msgid "Yes"
 msgstr ""
 
-#: icc_betrachter.cxx:455
+#: icc_betrachter.cxx:457
 msgid "Cancel"
 msgstr ""
 
-#: icc_betrachter.cxx:456 icc_betrachter.cxx:459
+#: icc_betrachter.cxx:458 icc_betrachter.cxx:461
 msgid "Folder"
 msgstr ""
 
-#: icc_betrachter.cxx:457
+#: icc_betrachter.cxx:459
 msgid "Show Hidden Files"
 msgstr ""
 
-#: icc_betrachter.cxx:458
+#: icc_betrachter.cxx:460
 msgid "File Types"
 msgstr ""
 
-#: icc_betrachter.cxx:460
+#: icc_betrachter.cxx:462
 msgid "All Files (*)"
 msgstr ""
 
-#: icc_betrachter.cxx:463
+#: icc_betrachter.cxx:465
 msgid "Go back one directory in the history"
 msgstr ""
 
-#: icc_betrachter.cxx:464
+#: icc_betrachter.cxx:466
 msgid "Go forward one directory in the history"
 msgstr ""
 
-#: icc_betrachter.cxx:465
+#: icc_betrachter.cxx:467
 msgid "Go to the parent directory"
 msgstr ""
 
-#: icc_betrachter.cxx:466
+#: icc_betrachter.cxx:468
 msgid "Refresh this directory"
 msgstr ""
 
-#: icc_betrachter.cxx:467
+#: icc_betrachter.cxx:469
 msgid "Delete file(s)"
 msgstr ""
 
-#: icc_betrachter.cxx:468
+#: icc_betrachter.cxx:470
 msgid "Create new directory"
 msgstr ""
 
-#: icc_betrachter.cxx:469
+#: icc_betrachter.cxx:471
 msgid "Add this directory to my favorites"
 msgstr ""
 
-#: icc_betrachter.cxx:470
+#: icc_betrachter.cxx:472
 msgid "Preview files"
 msgstr ""
 
-#: icc_betrachter.cxx:471
+#: icc_betrachter.cxx:473
 msgid "List mode"
 msgstr ""
 
-#: icc_betrachter.cxx:472
+#: icc_betrachter.cxx:474
 msgid "Wide list mode"
 msgstr ""
 
-#: icc_betrachter.cxx:473
+#: icc_betrachter.cxx:475
 msgid "Detail mode"
 msgstr ""
 
-#: icc_betrachter.cxx:475
+#: icc_betrachter.cxx:477
 #, c-format
 msgid ""
 "Could not create directory '%s'. You may not have permission to perform this "
 "operation."
 msgstr ""
 
-#: icc_betrachter.cxx:476
+#: icc_betrachter.cxx:478
 #, c-format
 msgid "An error ocurred while trying to delete '%s'."
 msgstr ""
 
-#: icc_betrachter.cxx:477
+#: icc_betrachter.cxx:479
 #, c-format
 msgid "File '%s' already exists!"
 msgstr ""
 
-#: icc_betrachter.cxx:478
+#: icc_betrachter.cxx:480
 #, c-format
 msgid "Unable to rename '%s' to '%s'"
 msgstr ""
 
-#: icc_betrachter.cxx:483 icc_betrachter.cxx:498
+#: icc_betrachter.cxx:485 icc_betrachter.cxx:500
 msgid "Which ICC profile?"
 msgstr ""
 
-#: icc_betrachter.cxx:484 icc_betrachter.cxx:485
+#: icc_betrachter.cxx:486 icc_betrachter.cxx:487
 msgid "Open Profile"
 msgstr ""
 
-#: icc_betrachter.cxx:486 icc_betrachter.cxx:487 icc_betrachter.cxx:488
-#: icc_betrachter.cxx:489 icc_betrachter.cxx:490 icc_betrachter.cxx:491
-#: icc_betrachter.cxx:492 icc_betrachter.cxx:493
+#: icc_betrachter.cxx:488 icc_betrachter.cxx:489 icc_betrachter.cxx:490
+#: icc_betrachter.cxx:491 icc_betrachter.cxx:492 icc_betrachter.cxx:493
+#: icc_betrachter.cxx:494 icc_betrachter.cxx:495
 msgid "Open Measurement"
 msgstr ""
 
-#: icc_betrachter.cxx:498
+#: icc_betrachter.cxx:500
 msgid "ICC colour profiles (*.{I,i}{C,c}{M,m,C,c})"
 msgstr ""
 
-#: icc_betrachter.cxx:500
+#: icc_betrachter.cxx:502
 msgid "Preview"
 msgstr ""
 
-#: icc_betrachter.cxx:502
+#: icc_betrachter.cxx:504
 msgid "About ICC Examin"
 msgstr ""
 
-#: icc_betrachter.cxx:519
+#: icc_betrachter.cxx:521
 msgid "Grafic Card Gamma Table"
 msgstr ""
 
-#: icc_betrachter.cxx:535
+#: icc_betrachter.cxx:537
 msgid "Close"
 msgstr ""
 
-#: icc_betrachter.cxx:538 fl_oyranos.cxx:36
+#: fl_oyranos.cxx:36 icc_betrachter.cxx:540
 msgid "Refresh"
 msgstr ""
 
-#: icc_betrachter.cxx:539
+#: icc_betrachter.cxx:541
 msgid "refresh gamma table from video card"
 msgstr ""
 
-#: icc_betrachter.cxx:543
+#: icc_betrachter.cxx:545
 msgid "Set"
 msgstr ""
 
-#: icc_betrachter.cxx:544
+#: icc_betrachter.cxx:546
 msgid ""
 "Set the current profile as monitor profile and upload vcgt tag to the video "
 "card"
 msgstr ""
 
-#: icc_betrachter.cxx:549
+#: icc_betrachter.cxx:551
 msgid "Reset"
 msgstr ""
 
-#: icc_betrachter.cxx:550
+#: icc_betrachter.cxx:552
 msgid "reset to standard gamma"
 msgstr ""
 
-#: icc_betrachter.cxx:554
+#: icc_betrachter.cxx:556
 msgid "Load"
 msgstr ""
 
-#: icc_betrachter.cxx:555
+#: icc_betrachter.cxx:557
 msgid "Load the current monitor profile"
 msgstr ""
 
-#: icc_betrachter.cxx:566
+#: icc_betrachter.cxx:567
 msgid "ICC Examin"
 msgstr ""
 
-#: icc_betrachter.cxx:592
+#: icc_betrachter.cxx:604
 msgid "Inspect"
 msgstr ""
 
-#: icc_betrachter.cxx:597
+#: icc_betrachter.cxx:609
 msgid "Tags"
 msgstr ""
 
-#: icc_betrachter.cxx:598
+#: icc_betrachter.cxx:610
 msgid "Choose one profile tag"
 msgstr ""
 
-#: icc_betrachter.cxx:615
+#: icc_betrachter.cxx:627
 msgid "Chain selection"
 msgstr ""
 
-#: icc_betrachter.cxx:616
+#: icc_betrachter.cxx:628
 msgid "Choose a attribute"
 msgstr ""
 
-#: icc_betrachter.cxx:642
+#: icc_betrachter.cxx:654
 msgid "Chain -texts"
 msgstr ""
 
-#: icc_betrachter.cxx:705
+#: icc_betrachter.cxx:717
 msgid "Loading .."
 msgstr ""
 
@@ -2089,16 +2110,16 @@ msgstr ""
 msgid "Paths:"
 msgstr ""
 
-#: icc_gl.h:201
+#: icc_gl.h:202
 msgid "Gibts nicht"
 msgstr ""
 
-#: icc_utils.h:139 icc_utils.h:140 icc_utils.h:141
+#: icc_utils.h:146 icc_utils.h:147 icc_utils.h:148
 msgid "!!! Warnung !!!"
 msgstr ""
 
 #: icc_version.h:9
-msgid "Mai 2004 - Jun 2005"
+msgid "Mai 2004 - Jul 2005"
 msgstr ""
 
 #: icc_waehler.h:67

@@ -953,7 +953,7 @@ GL_Ansicht::netzeAuffrischen()
            for( it = dreiecks_netze[j].indexe.begin();
                 it != dreiecks_netze[j].indexe.end(); ++it )
            {
-               // die Indexe werden gesondert eingefügt, um sie neu zu zählen
+               // die Indexe werden gesondert eingefuegt, um sie neu zu zaehlen
        /*A*/ std::pair<double,DreiecksIndexe>
                             index_p( *it );
        /*B*/ for( k = 0; k < 3; ++k)
@@ -982,10 +982,10 @@ GL_Ansicht::netzeAuffrischen()
                               / 3.0;
              abstand = HYP3( mittelpunkt[0], mittelpunkt[1], mittelpunkt[2] );
              index_p.first = abstand;
-               // der Behälter std::map übernimmt die Sortierung
+               // der Behaelter std::map uebernimmt die Sortierung
        /*D*/ netz.indexe.insert(index_p);
            }
-             // neue Basis für Indexnummern
+             // neue Basis fuer Indexnummern
            punkte_n += dreiecks_netze[j].punkte.size();
          }
        }
@@ -1008,15 +1008,15 @@ GL_Ansicht::netzeAuffrischen()
       //glAlphaFunc (GL_ALPHA_TEST, GL_ONE_MINUS_DST_ALPHA);
       #else
       glEnable (GL_BLEND);
-      //glDepthMask(GL_FALSE);              // Konturen und Schnittkanten müssen
-                                          // richtig übergeben werden 
+      //glDepthMask(GL_FALSE);              // Konturen und Schnittkanten muessn
+                                          // richtig uebergeben werden 
       glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
       glEnable (GL_ALPHA_TEST_FUNC);
       glAlphaFunc (GL_ALPHA_TEST, GL_ONE_MINUS_DST_ALPHA);
       #endif
       #if 0
-      glPolygonMode(GL_FRONT, GL_FILL);   // Vorderseite als Fläche 
-      glPolygonMode(GL_BACK, GL_LINE);   // Rückseite als Linien
+      glPolygonMode(GL_FRONT, GL_FILL);   // Vorderseite als Flaeche 
+      glPolygonMode(GL_BACK, GL_LINE);   // Rueckseite als Linien
       #endif
       glFrontFace(GL_CCW);
       glPushMatrix();
@@ -1438,7 +1438,7 @@ void
 GL_Ansicht::menueErneuern_()
 { DBG_PROG_START
 
-  // Löschen
+  // Loeschen
   menue_schnitt_->clear();
   menue_hintergrund_->clear();
   menue_form_->clear();
@@ -1600,8 +1600,8 @@ GL_Ansicht::zeichnen()
     agv_.setIdle(visible());
   }
 
-  if(visible() &&
-     icc_examin->frei() )
+  if(visible() /*&&
+     icc_examin->frei()*/ )
   {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 

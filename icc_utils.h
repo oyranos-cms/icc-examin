@@ -34,6 +34,9 @@
 #include <exception>		// class expeption
 #include <new>			// bad_alloc()
 #include <iostream>
+#include <sstream>
+
+#include "config.h"
 
 #define USE_GETTEXT
 #ifdef USE_GETTEXT
@@ -63,6 +66,10 @@
   #define BYTE_ORDER LITTLE_ENDIAN
 #endif
 
+void dbgWriteF (std::stringstream & ss);
+extern std::stringstream debug_s;
+#define dbgWrite(ss) { debug_s.str(""); debug_s << ss; dbgWriteF(debug_s); }
+// look in icc_utils.cpp for the WRITE_DBG definition
 
 #define cout std::cout
 #define endl std::endl
@@ -88,14 +95,14 @@ extern int icc_debug;
 
 #define DBG_UHR_ (double)clock()/(double)CLOCKS_PER_SEC
 
-#define DBG_T_     cout << __FILE__<<":"<<__LINE__ <<" "<< __func__ << "() " << DBG_UHR_ << " ";
-#define LEVEL      { for (int i = 0; i < level_PROG; i++) cout << " "; }
-#define DBG_       { LEVEL cout << "        "; DBG_T_ cout << endl; }
-#define DBG_S_(txt){ LEVEL cout << "        "; DBG_T_ cout << txt << endl; }
-#define DBG_V_(txt){ LEVEL cout << "        "; DBG_T_ cout << #txt << " " << txt << endl;}
+#define DBG_T_     dbgWrite ( __FILE__<<":"<<__LINE__ <<" "<< __func__ << "() " << DBG_UHR_ << " ");
+#define LEVEL      { for (int i = 0; i < level_PROG; i++) dbgWrite (" "); }
+#define DBG_       { LEVEL dbgWrite ("        "); DBG_T_ dbgWrite (endl); }
+#define DBG_S_(txt){ LEVEL dbgWrite ("        "); DBG_T_ dbgWrite (txt << endl); }
+#define DBG_V_(txt){ LEVEL dbgWrite ("        "); DBG_T_ dbgWrite (#txt << " " << txt << endl);}
 #define DBG        DBG_
-#define DBG_START  {level_PROG++; for (int i = 0; i < level_PROG; i++) cout << "+"; cout << " Start: "; DBG_T_ cout << endl; }
-#define DBG_ENDE   { for (int i = 0; i < level_PROG; i++) cout << "+"; cout << " Ende:  "; DBG_T_ level_PROG--; cout << endl; }
+#define DBG_START  {level_PROG++; for (int i = 0; i < level_PROG; i++) dbgWrite ( "+"); dbgWrite (" Start: "); DBG_T_ dbgWrite (endl); }
+#define DBG_ENDE   { for (int i = 0; i < level_PROG; i++) dbgWrite ("+"); dbgWrite (" Ende:  "); DBG_T_ level_PROG--; dbgWrite (endl); }
 #define DBG_S(txt) DBG_S_(txt)
 #define DBG_V(txt) DBG_V_(txt)
 
@@ -136,9 +143,9 @@ extern int icc_debug;
 #define DBG_MEM_S(txt) ;
 #define DBG_MEM_V(txt) ;
 #endif
-#define WARN { cout << _("!!! Warnung !!!"); DBG_ }
-#define WARN_S(txt) { cout << _("!!! Warnung !!!"); DBG_S_(txt) }
-#define WARN_V(txt) { cout << _("!!! Warnung !!!"); DBG_V_(txt) }
+#define WARN { dbgWrite (_("!!! Warnung !!!")); DBG_ }
+#define WARN_S(txt) { dbgWrite (_("!!! Warnung !!!")); DBG_S_(txt) }
+#define WARN_V(txt) { dbgWrite (_("!!! Warnung !!!")); DBG_V_(txt) }
 
 
 // mathematische Helfer
@@ -149,39 +156,6 @@ extern int icc_debug;
 #define HYP3(a,b,c) sqrt( (a)*(a) + (b)*(b) + (c)*(c) )
 #define RUND(a)     ((a) + 0.5)
 
-class Wert
-{
-    double _wert;
-  public:
-    Wert & operator = (const Wert   & wert)
-                       {_wert =         wert._wert; return *this; }
-    Wert & operator = (const double & wert)
-                       {_wert =         wert;       return *this; }
-    Wert & operator = (const float  & wert)
-                       {_wert = (double)wert;       return *this; }
-    Wert & operator = (const int    & wert)
-                       {_wert = (double)wert;       return *this; }
-    Wert & operator = (const unsigned int    & wert)
-                       {_wert = (double)wert;       return *this; }
-  public:
-    operator double ()  {return _wert; }
-    operator float  ()  {return (float)_wert; }
-    operator int    ()  {return (int)(_wert + 0.5); }
-    operator unsigned int ()  {return (unsigned int)(_wert + 0.5); }
-};
-
-class Int {
-public:
-// TODO: byteswap + Groesse + Vorzeichen
-#if BYTE_ORDER == BIG_ENDIAN
-//  int             operator=(const int _n)     {return _n; }
-  //icUInt32Number  operator=(const int _n)     {return _n; }
-#endif
-#if BYTE_ORDER == LITTLE_ENDIAN
-  int             operator=(const int _n)     {return _n; }
-  //icUInt32Number  operator=(const int _n)     {return _n; }
-#endif
-};
 
 
 // ============================================================
@@ -206,115 +180,5 @@ public:
     };
 };
 
-
-/*void ausn_file_io::report () const throw()
-{
-    printf ("Ausnahme-Report:\n");
-    printf ("\tDatei \"%s\" war nicht zu öffnen\n", fname);	// testweise
-}*/
-
-
-// ==================
-// Die FilePtr-Klasse:
-// ==================
-/*  Konstruktor wirft ausn_file_io bei Mißerfolg.
-*/
-#if 0
-class FilePtr {
-    FILE* f;
-public:
-    FilePtr (const char *fname, const char *mode)
-      	{
-	   if (!(f = fopen (fname, mode))) {
- 	      printf ("%s(): Kann \"%s\" nicht öffnen\n", __func__, fname);
-	      throw ausn_file_io (fname);
-           }
-           printf ("%s(): Öffne \"%s\"\n", __func__, fname);
-        }
-    FilePtr (FILE* p)			{ f = p; }
-    ~FilePtr ()				{ printf ("Schließe Datei...\n");
-                                          if (f) fclose (f); }
-    operator FILE*()			{ return f; }
-};
-#endif
-
-
-// ==========================================================
-// Beispiel einer doppelten Ressourcenanforderung im C++-Stil:
-// ==========================================================
-#if 0
-void f ()
-{
-    // Datei öffnen:
-    FilePtr fp (__FILE__, "ro");	// wahrsch. erfolgreich
-    //FilePtr fp ("gibs_nich", "ro");	// wirft wahrsch. ausn_file_io
-
-    // Datei jetzt offen
-
-    FILE* p = fp;		// Benutzung von fp wie gewöhnliches FILE*.
-
-    // Speicher anfordern...
-    // int* buf = new int [100];
-    // Angenommen, geht schief und Ausnahme wird geworfen:
-    throw std::bad_alloc();	// Ausnahmen-Mechanismus von C++ ruft Destr.
-    				// der bis hierin fertigen Objekte auf:
-				// --> ~FilePtr() schließt Datei fp
-
-    // Daten aus Datei nach buf lesen...
-
-    // Normalfall:
-    // Blockende von fp --> Destruktor --> Datei fp wird geschlossen
-}
-
-
-// ======================================
-// Zum Vergleich diese Funktion im C-Stil:
-// ======================================
-#include <cstdlib>	// malloc()
-
-int f_C ()
-{
-    FILE* fp;
-    int*  buf;
-
-    if (! (fp = fopen ("datei","ro")))
-       return -1;			// Rückgabe-Kode für Mißerfolg
-
-    // Datei jetzt offen
-
-    // Speicher anfordern...
-    if (! (buf = (int*) malloc (100))) {
-       fclose (fp);			// explizites Dateischließen nötig
-       return -1;			// Rückgabe-Kode für Mißerfolg
-    }
-    // Daten aus Datei nach buf lesen...
-
-    // Normalfall:
-    fclose (fp);			// explizites Dateischließen nötig
-    return 0;				// Rückgabe-Kode für Erfolg
-}
-
-
-// ====================
-// Fangen von Ausnahmen:
-// ====================
-
-int main ()
-{
-    try {
-      f();
-    }
-    catch (Ausnahme & a) {	// fängt alles von Ausnahme Abstammende
-        printf ("Ausnahme aufgetreten: %s\n", a.what());
-        a.report();
-    }
-    catch (std::exception & e) { // fängt alles von exception Abstammende
-        printf ("Std-Ausnahme aufgetreten: %s\n", e.what());
-    }
-    catch (...) {		// fängt alles Übriggebliebene
-        printf ("Huch, unbekannte Ausnahme\n");
-    }
-}
-#endif
 
 #endif //ICC_UTILS_H

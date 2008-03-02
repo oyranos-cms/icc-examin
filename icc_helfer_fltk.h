@@ -30,6 +30,7 @@
 #ifndef ICC_HELFER_FLTK_H
 #define ICC_HELFER_FLTK_H
 
+#include "icc_utils.h"
 #include "icc_icc.h"
 #include <FL/Fl_Menu_Item.H>
 #include <FL/Fl_Menu_.H>

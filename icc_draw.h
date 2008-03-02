@@ -30,6 +30,8 @@
 #ifndef ICC_DRAW_H
 #define ICC_DRAW_H
 
+#include "icc_utils.h"
+
 #include <vector>
 #include <string>
 #include <FL/Fl.H>

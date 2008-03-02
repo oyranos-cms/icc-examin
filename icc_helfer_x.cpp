@@ -27,7 +27,7 @@
 
 // Date:      11. 01. 2005
 
-# define BOOL   LCMS_BOOL
+#define BOOL   LCMS_BOOL
 
 #include "icc_utils.h"
 #include "icc_icc.h"

@@ -31,7 +31,7 @@
 #include "icc_icc.h"
 #include "icc_helfer_x.h"
 
-#ifdef HAVE_OSX
+#if APPLE
  #include <Carbon/Carbon.h>
  #ifdef HAVE_FLTK
   //#include <FL/osx.H>
@@ -39,112 +39,85 @@
 #endif
 
 std::vector<std::vector<double> >
-getGrafikKartenGamma  (std::string display_name,
+leseGrafikKartenGamma  (std::string display_name,
                        std::vector<std::string> &texte )
 { DBG_PROG_START
   std::vector<std::vector<double> > kurven;
-  #ifdef HAVE_OSX
+  #if APPLE
 
-  DisplayIDType         id;
   OSStatus              theErr;
-  UInt32                size;
+  UInt32                size=0, count=0, kanaele=0;
   CMVideoCardGamma*     gamma = nil;
+  DisplayIDType screenID=0;
+  GDHandle device = DMGetFirstScreenDevice(true);
+  // TODO: GetDeviceList();
+  DMGetDisplayIDByGDevice(device, &screenID, false);
 
-  theErr = CMGetGammaByAVID(id, nil, &size);
-/*  require_noerr(theErr, bail);
-
+  theErr = CMGetGammaByAVID(screenID, nil, &size);
+  require_noerr(theErr, bail);
   gamma = (CMVideoCardGamma*) NewPtrClear(size);
-
+  require(gamma, bail);
+	
+  theErr = CMGetGammaByAVID(screenID, gamma, &size);
+  require_noerr(theErr, bail);
 
   texte.resize(4);
-  texte[0] = _("Rot");
-  texte[1] = _("Grün");
-  texte[2] = _("Blau");
+  texte[0] = _("Red");
+  texte[1] = _("Green");
+  texte[2] = _("Blue");
   texte[3] = "gamma_start_ende";
 
-  if(display_name.size())
-    ;//display = XOpenDisplay(display_name.c_str());
-  else
-  {
-    #ifdef HAVE_FLTK
-    //display = fl_display;
-    #else
-    //display = XOpenDisplay(0);
-    #endif
-  }
-
-  //if (!display) {
-    //WARN_S( XDisplayName (display_name.c_str()) )
-    //DBG_PROG_ENDE
-    //return kurven;
-  //}
-  //DBG_PROG_V( XDisplayName (display_name.c_str()) )
-
-  //if (!XF86VidModeGetMonitor(display, screen, &monitor))
-    WARN_S( _("Keine Monitor Information erhalten") )
-  //else {
-    texte.push_back(_("Hersteller: "));
-    //texte[texte.size()-1].append(monitor.vendor);
-    texte.push_back(_("Model:      "));
-    //texte[texte.size()-1].append(monitor.model);
-  //}
-  //if (!XF86VidModeGetGamma(display, screen, &gamma))
-    WARN_S( _("Keine Gamma Information erhalten") )
-  //else {
-
-    char t[24];
-    if( gamma.red != 1.0 ) {
-      texte.push_back("");
-      texte.push_back(_("Gamma Rot:   "));
-      sprintf(t, "%.2f", gamma.red);
-      texte[texte.size()-1].append(t);
-    }
-    DBG_NUM_V( gamma.red )
-    if( gamma.green != 1.0 ) {
-      texte.push_back(_("Gamma Grün: "));
-      sprintf(t, "%.2f", gamma.green);
-      texte[texte.size()-1].append(t);
-    }
-    DBG_NUM_V( gamma.green )
-    if( gamma.blue != 1.0 ) {
-      texte.push_back(_("Gamma Blau:  "));
-      sprintf(t, "%.2f", gamma.blue);
-      texte[texte.size()-1].append(t);
-    }
-    DBG_NUM_V( gamma.blue )
-  }
-
-  int size, kanaele, groesse;
-  //if (!XF86VidModeGetGammaRampSize(display, screen, &size))
-    WARN_S( _("Kein Gammagradient Information erhalten") )
+  texte.push_back(_("Hersteller: "));
+  //texte[texte.size()-1].append(monitor.vendor);
+  texte.push_back(_("Model:      "));
+  //texte[texte.size()-1].append(monitor.model);
 
   if (gamma->tagType == cmVideoCardGammaTableType)
-  { if (gamma->u.table.channels == 3)
-    kanaele = gamma->u.table.channels;
-    size = gamma->u.table.entryCount; 
-  }
-  DBG_PROG_V( size )
-  if (size)
   {
-      WARN_S( _("Kein Gammagradient Information erhalten") )
-
-    kurven.resize();
-    for( int i = 0; i < 3; ++i) {
-      kurven[i].resize(size);
+    kanaele = gamma->u.table.channels;
+    count   = gamma->u.table.entryCount; 
+    size    = gamma->u.table.entrySize;
+    DBG_PROG_V(kanaele<<" "<<count<<" "<<size)
+  } else if (gamma->tagType == cmVideoCardGammaFormulaType) {
+    char t[24];
+    if( gamma->u.formula.redGamma != 1.0 ) {
+      texte[0] =_("Gamma Red:   ");
+      sprintf(t, "%.2f", gamma->u.formula.redGamma/256.0);
+      texte[texte.size()-1].append(t);
     }
-    for(int j = 0; j < size; ++j) {
-        kurven[0][j] = red[j]  /65535.0;
-        kurven[1][j] = green[j]/65535.0;
-        kurven[2][j] = blue[j] /65535.0;
+    DBG_NUM_V( gamma->u.formula.redGamma )
+    if( gamma->u.formula.greenGamma != 1.0 ) {
+      texte[1] = _("Gamma Green: ");
+      sprintf(t, "%.2f", gamma->u.formula.greenGamma/256.0);
+      texte[texte.size()-1].append(t);
+    }
+    DBG_NUM_V( gamma->u.formula.greenGamma )
+    if( gamma->u.formula.blueGamma != 1.0 ) {
+      texte[1] = _("Gamma Blue:  ");
+      sprintf(t, "%.2f", gamma->u.formula.blueGamma/256.0);
+      texte[texte.size()-1].append(t);
+    }
+    DBG_NUM_V( gamma->u.formula.blueGamma )
+  }
+
+  DBG_PROG_V( size )
+
+  if (count)
+  {
+
+    unsigned char* data = (unsigned char*)gamma->u.table.data;
+    kurven.resize(kanaele);
+    for(unsigned int j = 0; j < kanaele; ++j) {
+      kurven[j].resize(count);
+      for( unsigned int i = 0; i < count; ++i) {
+        kurven[j][i] = data[count*size*j + i*size]  / (float)pow(2, 8*size);
+      }
     }
 
-    delete [] red;
-    delete [] green;
-    delete [] blue;
   } else DBG_NUM_S( "kein vcgt in X anzeigbar" )
 
-  //XCloseDisplay(display);
-*/
+  bail:
+
   #endif
   DBG_PROG_ENDE
   return kurven;

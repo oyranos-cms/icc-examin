@@ -40,12 +40,20 @@ MSGFMT = msgfmt -c --statistics
 RPMARCH = `rpmbuild --showrc | awk '/^build arch/ {print $$4}'`
 
 ifdef APPLE
-  OPTS=-Wall -g -DPIC $(DEBUG)
-  LIBLINK_FLAGS = -dynamiclib -lintl
+  OPTS=-Wall -g $(DEBUG) -DPIC
+  LIBLINK_FLAGS = -dynamiclib
   I18N_LIB = -lintl #-liconv
   OSX_CPP = $(OSX_CPPFILES)
   INCL=-I$(includedir) -I/usr/X11R6/include -I./ -I/usr/include/gcc/darwin/default/c++
-  REZ = /Developer/Tools/Rez -t APPL -o $(TARGET) /opt/local/include/FL/mac.r
+  REZ = \
+      test -d ICC\ Examin.app/Contents/MacOS/ || mkdir ICC\ Examin.app/ ICC\ Examin.app/Contents/ ICC\ Examin.app/Contents/MacOS/ ICC\ Examin.app/Contents/Resources/; \
+      $(COPY) Info.plist ICC\ Examin.app/Contents/Info.plist; \
+      $(COPY) $(TARGET) ICC\ Examin.app/Contents/MacOS/ICC\ Examin; \
+      $(COPY) $(TARGET) ICC\ Examin/build/ICC\ Examin.app/Contents/MacOS/ICC\ Examin; \
+      $(COPY) $(TARGET).icns ICC\ Examin.app/Contents/Resources/; \
+      fltk-config --post $(TARGET);
+  MAKEDEPEND = /usr/X11R6/bin/makedepend -Y
+  DBG_LIBS = #-lMallocDebug
   MSGMERGE = msgmerge
   XGETTEXT_OPTIONS = \
 	--keyword=gettext \
@@ -72,7 +80,7 @@ else
   else
     OPTS=-Wall -O2 -g $(DEBUG) -L.
     RM = rm -f
-    LIBLINK_FLAGS = -shared -ldl $(ICONV) -lintl
+    LIBLINK_FLAGS = -shared -ldl
     I18N_LIB = $(ICONV) -lintl
   endif
 endif
@@ -93,8 +101,7 @@ endif
 
 INCL_DEP = $(INCL) $(X_H) $(OSX_H) $(OYRANOS_H) $(SOURCES)
 ALL_INCL = $(INCL) \
-			$(FLU_H) $(FLTK_H) $(X_H) $(OSX_H) $(OYRANOS_H) $(LCMS_H) $(FTGL_H)\
-			-DSRCDIR=\"$(srcdir)\" -DDATADIR=\"$(datadir)\"
+			$(FLU_H) $(FLTK_H) $(X_H) $(OSX_H) $(OYRANOS_H) $(LCMS_H) $(FTGL_H)
 
 CXXFLAGS=$(OPTS) $(ALL_INCL)
 CFLAGS = $(OPTS) $(ALL_INCL)
@@ -106,7 +113,8 @@ else
 endif
 
 LDLIBS = -L$(libdir) -L./ $(FLU_FLTK_LIBS) -licc_examin \
-	$(X11_LIBS) -llcms $(OYRANOS_LIBS) $(LCMS_LIBS) $(FTGL_LIBS) $(I18N_LIB)
+	$(X11_LIBS) -llcms $(OYRANOS_LIBS) $(LCMS_LIBS) $(FTGL_LIBS) $(I18N_LIB) \
+	$(DBG_LIBS)
 
 CPP_HEADERS = \
 	agviewer.h \
@@ -142,7 +150,8 @@ CPP_HEADERS = \
 	icc_version.h \
 	icc_vrml.h \
 	icc_vrml_parser.h \
-	icc_waehler.h
+	icc_waehler.h \
+	threads.h
 #	Fl_Slot.H
 
 COMMON_CPPFILES = \
@@ -170,10 +179,12 @@ COMMON_CPPFILES = \
 	icc_profile_header.cpp \
 	icc_profile_tags.cpp \
 	icc_schnell.cpp \
+	icc_speicher.cpp \
 	icc_ueber.cpp \
 	icc_utils.cpp \
 	icc_vrml.cpp \
-	icc_vrml_parser.cpp
+	icc_vrml_parser.cpp \
+	threads.cpp
 FREEGLUT_HFILES = \
 	freeglut_internal.h
 FREEGLUT_CFILES = \
@@ -231,11 +242,14 @@ CLIB_OBJECTS =  $(CFILES:.c=.o)
 
 POT_FILE = po/$(TARGET).pot
 
+APPL_FILES = ICC\ Examin.app/
+
 ALL_FILES =	$(SOURCES) \
 	makefile \
 	configure \
 	$(DOKU) \
 	$(FONT) \
+	$(APPL_FILES) \
 	$(FLUID)
 
 timedir = .
@@ -243,8 +257,10 @@ mtime   = `find $(timedir) -prune -printf %Ty%Tm%Td.%TT | sed s/://g`
 
 .SILENT:
 
-all:	config mkdepend $(TARGET)
-
+all:	dynamic
+	
+base:	config mkdepend 
+	
 release:	icc_alles.o
 	echo Linking $@...
 	$(CXX) $(OPTS) -o $(TARGET) \
@@ -253,7 +269,9 @@ release:	icc_alles.o
 	$(REZ)
 	$(RM) icc_alles.o
 
-$(TARGET):	$(OBJECTS) $(LIBNAME) pot #$(LIBSONAMEFULL)
+$(TARGET):	base $(OBJECTS) $(LIBNAME) pot #$(LIBSONAMEFULL)
+	
+dynamic:	$(TARGET)
 	echo Linking $@...
 	$(CXX) $(OPTS) -o $(TARGET) \
 	$(OBJECTS) \
@@ -275,8 +293,8 @@ $(LIBNAME):	$(CLIB_OBJECTS)
 	$(COLLECT) $(LIBNAME) $(CLIB_OBJECTS)
 	$(RANLIB) $(LIBNAME)
 
-static:	all
-	echo Linking static $(TARGET) ...
+static:	$(TARGET)
+	echo Linking $@ ...
 	$(CXX) -Wall -O3 -o $(TARGET) $(OBJECTS) \
 	-L./  -licc_examin \
 	`flu-config --ldstaticflags` \
@@ -284,8 +302,10 @@ static:	all
 	-L/usr/X11R6/lib -lX11 -lXxf86vm -lXext -L/opt/local/lib \
 	`oyranos-config --ld_x_staticflags` -L/$(prefix)/lib \
 	-L$(prefix)/lib -lGLU -lGL -lfreetype \
-	`pkg-config --libs ftgl`  /usr/lib/libkdb.a -lsupc++ \
-	`test -f /opt/kai-uwe/lib/liblcms.a && echo /opt/kai-uwe/lib/liblcms.a || pkg-config --libs lcms` # Hack for static lcms
+	`pkg-config --libs ftgl`  -lsupc++ \
+	$(I18N_LIB) \
+	$(DBG_LIBS) \
+	`test -f /opt/kai-uwe/lib/liblcms.a && echo /opt/kai-uwe/lib/liblcms.a || pkg-config --libs lcms` #/usr/lib/libkdb.a # Hack for static lcms
 	strip $(TARGET)
 	$(REZ)
 
@@ -363,6 +383,7 @@ clean:
 	$(RM) mkdepend config config.h
 	$(RM) $(OBJECTS) $(CLIB_OBJECTS) $(TARGET) \
 	$(LIBNAME) $(LIBSO) $(LIBSONAME) $(LIBSONAMEFULL)
+	$(RM) ICC\ Examin.app/Contents/MacOS/ICC\ Examin
 	for ling in $(LINGUAS); do \
 	  test -f po/$${ling}.gmo \
         && $(RM) po/$${ling}.gmo; \
@@ -408,7 +429,7 @@ EXEEXT		=
 
 tgz:
 	mkdir Entwickeln
-	$(COPY) \
+	$(COPY) -R \
 	$(ALL_FILES) \
 	Entwickeln
 	mkdir Entwickeln/po

@@ -32,6 +32,7 @@
 #define ICC_GL_H
 #include <vector>
 
+#include "icc_utils.h"
 #include "agviewer.h"
 #include "icc_vrml_parser.h"
 //#include "Fl_Slot.H"

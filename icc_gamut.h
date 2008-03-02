@@ -31,6 +31,7 @@
 #ifndef ICC_GAMUT_H
 #define ICC_GAMUT_H
 
+#include "icc_utils.h"
 class ICCprofile;
 #include <cstddef>
 

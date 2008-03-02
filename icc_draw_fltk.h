@@ -30,6 +30,7 @@
 #ifndef ICC_DRAW_FLTK_H
 #define ICC_DRAW_FLTK_H
 
+#include "icc_utils.h"
   #define BG FL_DARK2
   #define VG FL_BACKGROUND_COLOR
   #define DIAG VG

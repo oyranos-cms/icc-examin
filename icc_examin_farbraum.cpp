@@ -184,7 +184,7 @@ ICCexamin::farbraum (int n)
 
   std::vector<double> p;
   std::vector<float>  f;
-  DBG_PROG_V( n <<" "<< profile.size() )
+  DBG_PROG_V( n <<" "<< profile.size()<<" "<<profile.aktuell() )
   DBG_PROG_V( profile[n]->filename() )
 
   if(profile.size() > n &&

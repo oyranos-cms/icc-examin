@@ -94,7 +94,9 @@ icc_create_vrml( const char* p, int size, int intent )
   //icc_examin_ns::fortschritt(l);
   lp
   int ret;
+  DBG_PROG_V( PATH_SHELLSTRING )
   s.str("");
+  s << PATH_SHELLSTRING ;
   s << "iccgamut -n ";
   if(intent == 0)
     s << "-i p ";
@@ -105,8 +107,8 @@ icc_create_vrml( const char* p, int size, int intent )
   else if(intent == 3)
     s << "-i a ";
   s << "-w " << ptn;
-  
   sprintf(system_befehl,s.str().c_str());
+  DBG_PROG_V( system_befehl )
   ret = system (system_befehl); lp DBG_PROG
   ptn = profil_temp_name.str(); ptn.append(".icc");
   erase_file (ptn.c_str());
@@ -114,7 +116,7 @@ icc_create_vrml( const char* p, int size, int intent )
   erase_file (ptn.c_str());
   delete [] system_befehl;
 
-  // Datei öffnen
+  // Datei Oeffnen
   {
     ptn = profil_temp_name.str(); ptn.append(".wrl");
 

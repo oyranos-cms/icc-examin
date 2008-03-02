@@ -36,7 +36,8 @@ decl {\#include <FL/Fl_Box.H>} {public
 } 
 
 decl {\#include "icc_fenster.h" 
-\#include <FL/Fl_Hold_Browser.H>} {public
+\#include <FL/Fl_Hold_Browser.H>
+\#include <FL/Fl_Choice.H>} {public
 } 
 
 decl {class TagDrawings;
@@ -224,8 +225,7 @@ class ICCfltkBetrachter {open
   
  enum{ WID_0, WID_3D, WID_INSPEKT }; int widget_oben;} {public
   }
-  Function {init(int argc, char** argv)} {open
-  } {
+  Function {init(int argc, char** argv)} {} {
     code DBG_PROG_START {}
     code {fullscreen = false;
   setTitleUrl = true;
@@ -301,7 +301,7 @@ class ICCfltkBetrachter {open
   \#endif} {}
     Fl_Window ueber {
       label {About ICC Examin}
-      xywh {642 664 366 241} type Double resizable
+      xywh {647 538 366 241} type Double resizable
       code0 {o->hide();} non_modal visible
     } {
       Fl_Group {} {open
@@ -318,9 +318,9 @@ class ICCfltkBetrachter {open
       }
     }
     Fl_Window vcgt {
-      label {Grafic Card Gamma Table}
-      xywh {548 627 370 390} type Double resizable
-      code0 {o->hide();} non_modal visible
+      label {Grafic Card Gamma Table} open
+      xywh {684 60 370 390} type Double resizable
+      code0 {o->hide();} visible
     } {
       Fl_Group {} {open
         xywh {0 0 370 390}
@@ -359,12 +359,12 @@ class ICCfltkBetrachter {open
     }
     Fl_Window details {
       label {ICC Examin} open
-      xywh {863 328 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
+      xywh {818 454 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
     } {
       Fl_Group {} {open
         xywh {0 0 385 520}
       } {
-        Fl_Menu_Bar menueleiste {open selected
+        Fl_Menu_Bar menueleiste {open
           xywh {0 0 385 25} align 20 when 3
         } {
           submenu {} {
@@ -627,8 +627,8 @@ ueber_html->value(getUeberHtml().c_str());}
             label {Loading ..}
             xywh {0 495 385 25}
             code0 {o->hide();}
-            code1 {o->maximum(1.0);}
-            code2 {o->minimum(0.0);}
+            code1 {o->minimum(0.0);}
+            code2 {o->maximum(1.0);}
           }
         }
       }
@@ -638,15 +638,13 @@ ueber_html->value(getUeberHtml().c_str());}
   w->resizable(tag_text);
   //Fl::background(190,190,190);
   //Fl::background(255,255,255);
-  w->show(/*argc,argv*/);
   //Fl::scheme(NULL);
   Fl_File_Icon::load_system_icons();
-  menue_translate( menu_menueleiste );
+  w->show(/*argc,argv*/);
   DBG_PROG} {}
     code DBG_PROG_ENDE {}
   }
-  Function {run()} {open
-  } {
+  Function {run()} {} {
     code DBG_PROG_START {}
     code {DBG_PROG_ENDE;  Fl::run();} {}
   }
@@ -657,14 +655,28 @@ ueber_html->value(getUeberHtml().c_str());}
 
   //Fl_File_Icon	*icon;	// New file icon
   DBG_PROG
-  load_progress->show ();    load_progress->value (0.0);
 
     const char* ptr = NULL;
     if (dateinamen.size()) {
       ptr = dateinamen[0].c_str();
       dateiwahl->value(ptr);
-      //DBG_PROG_S( dateinamen[0])
+      DBG_PROG_S( dateinamen[0])
+    } 
+      if(ptr) DBG_PROG_V( ptr );
+    if (!ptr)
+      ptr = getenv("PWD");
+
+      if(ptr) DBG_PROG_V( ptr )
+    if(( ptr &&
+        (ptr[0] == '/') &&
+        (strlen(ptr) == 1) ) ||
+        !ptr )
+    {
+      ptr = getenv("HOME");
     }
+    if(ptr)
+      dateiwahl->value(ptr);
+
     dateiwahl->show(); //filename=fl_file_chooser("Wähle ICC Profil?", "ICC Farbprofile (*.{I,i}{C,c}{M,m,C,c})", filenamen_alt[0].c_str());
 
     
@@ -682,9 +694,8 @@ ueber_html->value(getUeberHtml().c_str());}
     }
   DBG_PROG
 
-  if (dateinamen.size() == 0) {
-    load_progress->hide ();
 
+  if (dateinamen.size() == 0) {
     DBG_PROG_ENDE
     return dateinamen;
   }
@@ -748,8 +759,7 @@ ueber_html->value(getUeberHtml().c_str());}
   }} {}
     code DBG_PROG_ENDE {}
   }
-  Function {measurement(bool has_measurement)} {open
-  } {
+  Function {measurement(bool has_measurement)} {} {
     code {if (has_measurement) {
     DBG_PROG_S(menueintrag_inspekt->value())
     if (menueintrag_inspekt->value()) {
@@ -767,6 +777,11 @@ ueber_html->value(getUeberHtml().c_str());}
     menueintrag_html_speichern->deactivate();
     menueintrag_zeigcgats->deactivate();
   }} {}
+  }
+  Function {handle(int event)} {open return_type int
+  } {
+    code {return tastatur(event);} {selected
+    }
   }
 } 
 

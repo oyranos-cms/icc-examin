@@ -559,7 +559,6 @@ ard"));
       o->end();
     }
     o->hide();
-    o->set_non_modal();
     o->end();
     o->resizable(o);
   }
@@ -704,8 +703,8 @@ ard"));
         }
         { Fl_Progress* o = load_progress = new Fl_Progress(0, 495, 385, 25, _("Loading .."));
           o->hide();
-          o->maximum(1.0);
           o->minimum(0.0);
+          o->maximum(1.0);
         }
         o->end();
       }
@@ -718,10 +717,9 @@ ard"));
   w->resizable(tag_text);
   //Fl::background(190,190,190);
   //Fl::background(255,255,255);
-  w->show(/*argc,argv*/);
   //Fl::scheme(NULL);
   Fl_File_Icon::load_system_icons();
-  menue_translate( menu_menueleiste );
+  w->show(/*argc,argv*/);
   DBG_PROG
   DBG_PROG_ENDE
   return w;
@@ -738,14 +736,28 @@ std::vector<std::string> ICCfltkBetrachter::open(std::vector<std::string> datein
 
   //Fl_File_Icon	*icon;	// New file icon
   DBG_PROG
-  load_progress->show ();    load_progress->value (0.0);
 
     const char* ptr = NULL;
     if (dateinamen.size()) {
       ptr = dateinamen[0].c_str();
       dateiwahl->value(ptr);
-      //DBG_PROG_S( dateinamen[0])
+      DBG_PROG_S( dateinamen[0])
+    } 
+      if(ptr) DBG_PROG_V( ptr );
+    if (!ptr)
+      ptr = getenv("PWD");
+
+      if(ptr) DBG_PROG_V( ptr )
+    if(( ptr &&
+        (ptr[0] == '/') &&
+        (strlen(ptr) == 1) ) ||
+        !ptr )
+    {
+      ptr = getenv("HOME");
     }
+    if(ptr)
+      dateiwahl->value(ptr);
+
     dateiwahl->show(); //filename=fl_file_chooser("Wähle ICC Profil?", "ICC Farbprofile (*.{I,i}{C,c}{M,m,C,c})", filenamen_alt[0].c_str());
 
     
@@ -763,9 +775,8 @@ std::vector<std::string> ICCfltkBetrachter::open(std::vector<std::string> datein
     }
   DBG_PROG
 
-  if (dateinamen.size() == 0) {
-    load_progress->hide ();
 
+  if (dateinamen.size() == 0) {
     DBG_PROG_ENDE
     return dateinamen;
   }
@@ -850,6 +861,10 @@ void ICCfltkBetrachter::measurement(bool has_measurement) {
     menueintrag_html_speichern->deactivate();
     menueintrag_zeigcgats->deactivate();
   }
+}
+
+int ICCfltkBetrachter::handle(int event) {
+  return tastatur(event);
 }
 
 void dHaendler(void* o) {

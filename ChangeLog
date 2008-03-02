@@ -1,3 +1,25 @@
+2005-07-29
+	* und: aufraeumen in icc_kette.cpp ::einfuegen()
+	* und: statisches Binden hilft mit osX-Dock
+	* und: Version 0.36
+	* und: Speicher kopiert und übernimmt lediglich mit new reservierte Bereiche
+		   direkt, da Freigabefunktion sonst unbekannt, neue Zuweisungsfunktionen
+
+2005-07-24
+	* neu: osX DND
+
+2005-07-22
+	* und: osX icc_examin.r eingefuehrt - Menues schwierig
+
+2005-07-21
+	* neu: osX Display Profil erkennen und auslesen + vcgt aus Gerät auslesen
+
+2005-07-18
+	* neu: Oeffnen vereinfacht -> Speicherbloecke
+
+2005-07-10
+	* neu: VRML schreiben - Version 0.35
+
 2005-06-04
 	* und: Farbhüllwarnung für Messfarben immer, für Lab Auswahl im oberen Menü
 

@@ -79,17 +79,17 @@ class Oyranos
                                          return cmyk_; }
     const Speicher & cmyk ()           { cmyk_test_(); return cmyk_; }
 
-    // Geräte Profile
+    // Gerae^te Profile
     std::string moni_name ()           { moni_test_(); return moni_.name(); }
     const char* moni (size_t &g)       { moni_test_(); g = moni_.size();
                                          return moni_; }
     const Speicher & moni ()           { moni_test_(); return moni_; }
+    int         setzeMonitorProfil     (const char *name );
     // allgemeine Profile
     std::string profil (const char* n) { if(profil_test_(n)) return profil_(n);}
     const char* profil (const char* n, size_t &g) { return profil_(n,g); }
 
-    int         setzeMonitorProfil     (const char *name );
-    char*       holeMonitorProfil      (const char *display_name, size_t *size );
+//    char*       holeMonitorProfil      (const char *display_name, size_t *size );
     std::vector<ICCnetz> netzAusVRML   (std::string & vrml)
                                 { return extrahiereNetzAusVRML (vrml); }
     std::vector<ICCnetz> netzVonProfil (ICCprofile & p, int intent);

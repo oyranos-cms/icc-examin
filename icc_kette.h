@@ -37,6 +37,8 @@
 #include "icc_modell_beobachter.h"
 #include "icc_speicher.h"
 
+#define USE_THREADS 1
+
 class ICCkette;
 extern ICCkette profile;
 
@@ -57,12 +59,17 @@ class ICCkette : public icc_examin_ns::Modell
 
     // Starte einen pthread Wächter und lasse Ihn alle unsere Beobachter
     // informieren, welches Profile gerade geändert wurde.
-    static void  waechter (void*);
+    static
+    #if USE_THREADS
+    void*
+    #else
+    void
+    #endif
+                 waechter (void*);
   public:
-    bool         oeffnen   (std::vector<std::string> dateinamen);
-    //void         oeffnen   ();	// interaktiv
-    bool         oeffnen   (std::string dateiname, int pos);
-    bool         oeffnen   (const Speicher & profil, int pos);
+    //bool         einfuegen (std::vector<std::string> dateinamen);
+    //bool         einfuegen (std::string dateiname, int pos);
+    bool         einfuegen (const Speicher & profil, int pos);
     void         setzAktiv (int pos) { aktiv_[pos]=true; benachrichtigen(pos);}
     void         passiv    (int pos) { aktiv_[pos]=false; benachrichtigen(pos);}
     std::vector<int> aktiv () { return aktiv_; }

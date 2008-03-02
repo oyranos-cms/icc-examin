@@ -1,12 +1,14 @@
-o Weisspunktvergleich mit idealem schwarzem Körper
-o osX Integration (Menüs)
+o Weisspunktvergleich mit idealem schwarzem Koerper
+o osX Integration (Menues,DnD)
 o interne Farbberechnung
-o Übersetzungen
+o Uebersetzungen
 o AGV Ersatz
-o Farbraum Menüs in obere Menüleiste -> ::neuzeichnen
+o Farbraum Menues in obere Menueleiste -> ::neuzeichnen
+o Fortschritt
 
 erledigt:
 o HTML komplett sichtbar (Schieber zu kurz)
 o Intent beeinflusst gamut Ansicht
 o OpenGL ausschalten falls nicht ansichtig
+o Startverzeichniss sinnvoller
 

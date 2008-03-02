@@ -21,7 +21,7 @@
  *
  * -----------------------------------------------------------------------------
  *
- * Zeichenroutinen für Diagramme.
+ * Zeichenroutinen fuer Diagramme.
  * 
  */
 
@@ -266,7 +266,7 @@ TagDrawings::drawCieShoe_ ( int repeated)
   fl_color(DIAG);
   fl_line(xNachBild(1), yNachBild(0), xNachBild(0), yNachBild(1));
 
-  // Farbfläche
+  // Farbflaeche
   if (!repeated)
   {
     register char RGB[3];

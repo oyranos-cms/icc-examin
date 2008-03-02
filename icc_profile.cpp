@@ -215,7 +215,7 @@ ICCprofile::load (const Speicher & prof)
     filename_ = file;
     DBG_MEM_V( filename_ )
     DBG_MEM_V( size_ )
-    DBG_MEM_V( (int*)data_ )
+    DBG_MEM_V( (int*)data_ <<" "<< (int*)z )
   } else {
     DBG_PROG_ENDE
     return ICCnullDATA;

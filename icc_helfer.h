@@ -32,18 +32,24 @@
 
 #include <string>
 #include <vector>
+
 #include "icc_utils.h"
 #include "icc_icc.h"
-
 
 // I18N
 void initialiseI18N();
 
-#ifdef HAVE_FLTK
+// File macros / teilweise aus config.h
+#ifdef __WIN32__
+#define PATH_SHELLSTRING ""
+#else
+#define PATH_SHELLSTRING "export PATH=$PATH:" PREFIX "/bin:~/bin; "
+#endif
+
+#if HAVE_FLTK
 #include <FL/Fl_Menu_Item.H>
 void menue_translate( Fl_Menu_Item* menueleiste );
 #endif
-
 
 // interne Funktionen
 

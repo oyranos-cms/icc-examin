@@ -15,6 +15,7 @@
 #include <FL/Fl_Box.H>
 #include "icc_fenster.h" 
 #include <FL/Fl_Hold_Browser.H>
+#include <FL/Fl_Choice.H>
 class TagDrawings;
 class TagBrowser;
 class TagTexts;
@@ -193,6 +194,7 @@ public:
   void quit(void);
   void zeig_mich_(void* widget);
   void measurement(bool has_measurement);
+  int handle(int event);
 };
 void dHaendler(void* o);
 #endif

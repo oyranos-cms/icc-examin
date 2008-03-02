@@ -32,7 +32,7 @@
 
 #include <lcms.h>
 
-// Zusätze - nicht definiert in icc34.h
+// Zusaetze - nicht definiert in icc34.h
 
 #ifndef icSigChromaticityType
 #define icSigChromaticityType 0x6368726D

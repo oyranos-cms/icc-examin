@@ -30,14 +30,14 @@
 #include <locale.h>
 #include <libintl.h>
 
-#ifdef __APPLE__
-#include <CoreFoundation/CoreFoundation.h>
-#endif
-
-
 #include "config.h"
 #include "icc_helfer.h"
 #include "icc_utils.h"
+
+#ifdef APPLE
+#include <CoreFoundation/CoreFoundation.h>
+#endif
+
 
 
 
@@ -47,9 +47,8 @@ initialiseI18N()
   DBG_PROG_START
 
   std::string locale;
-  char codeset[24] = "ISO-8859-1";
 
-  #ifdef __APPLE__
+  #ifdef APPLE
   // 1. get the locale info
   CFLocaleRef userLocaleRef = CFLocaleCopyCurrent();
   CFStringRef cfstring = CFLocaleGetIdentifier( userLocaleRef );
@@ -63,20 +62,17 @@ initialiseI18N()
   Boolean fehler = CFStringGetCString( cfstring, text, gr, kCFStringEncodingISOLatin1 );
 
   if(fehler) {
-
-    DBG_PROG_S( _("osX locale obtained: ") << text )
-
+      DBG_PROG_S( _("osX locale obtained: ") << text )
     locale = text;
-
   } else {
-
-    DBG_PROG_S( _("osX locale not obtained") )
-
+      DBG_PROG_S( _("osX locale not obtained") )
   }
 
   // set the locale info
   locale = setlocale (LC_MESSAGES, locale.c_str());
   #else
+
+  char codeset[24] = "ISO-8859-1";
 
   // 1. get default locale info ..
   locale = setlocale (LC_MESSAGES, "");
@@ -191,7 +187,7 @@ initialiseI18N()
     DBG_PROG_S( _("try to set LANG") )
 
       // set LANG
-    #ifdef __APPLE__
+    #ifdef APPLE
     if (locale.size())
       setenv("LANG", locale.c_str(), 0);
     #endif
@@ -226,7 +222,7 @@ initialiseI18N()
 
     DBG_PROG_S( _("try locale in ") << bdtd );
   }
-  #ifndef __APPLE__
+  #ifndef APPLE
   // 5. set our charset
   char* cs = bind_textdomain_codeset("icc_examin", codeset);
 
@@ -238,6 +234,7 @@ initialiseI18N()
 
   DBG_PROG_ENDE
 }
+
 
 #ifdef HAVE_FLTK
 #include <FL/Fl_Menu_Item.H>
@@ -257,4 +254,5 @@ menue_translate( Fl_Menu_Item* menueleiste )
   DBG_PROG_ENDE
 }
 #endif
+
 
