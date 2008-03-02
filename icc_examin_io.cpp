@@ -76,6 +76,7 @@ ICCexamin::oeffnen (std::vector<std::string> dateinamen)
         // Oberflaechenpflege
       icc_betrachter->menueintrag_3D->set();
       icc_betrachter->menueintrag_huelle->set();
+      icc_betrachter->widget_oben = ICCfltkBetrachter::WID_3D;
       farbraum_angezeigt_ = true;
       neuzeichnen(icc_betrachter->DD_farbraum);
       DBG_PROG_S("neuzeichnen DD_farbraum")

@@ -1,5 +1,5 @@
 # data file for the Fltk User Interface Designer (fluid)
-version 1.0104 
+version 1.0106 
 i18n_type 1 
 i18n_include <libintl.h> 
 i18n_function _ 
@@ -301,7 +301,7 @@ class ICCfltkBetrachter {open
   \#endif} {}
     Fl_Window ueber {
       label {About ICC Examin} open
-      xywh {577 683 366 241} type Double resizable
+      xywh {587 725 366 241} type Double resizable
       code0 {o->hide();} non_modal visible
     } {
       Fl_Group {} {open
@@ -319,7 +319,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window vcgt {
       label {Grafic Card Gamma Table} open
-      xywh {596 360 370 390} type Double resizable
+      xywh {606 402 370 390} type Double resizable
       code0 {o->hide();} non_modal visible
     } {
       Fl_Group {} {open
@@ -354,7 +354,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window details {
       label {ICC Examin} open
-      xywh {828 460 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
+      xywh {838 502 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
     } {
       Fl_Group {} {open
         xywh {0 0 385 520}
@@ -502,6 +502,10 @@ icc_examin->vcgtZeigen();}
 icc_examin->testZeigen();}
               xywh {25 25 100 20} shortcut 0x50074 hide
             }
+            submenu untermenue_3D {
+              label 3D open selected
+              xywh {0 0 100 20}
+            } {}
           }
           submenu menu_hilfe {
             label Help open
@@ -599,13 +603,13 @@ ueber_html->value(getUeberHtml().c_str());}
     code {tag_text->inspekt_topline = 0;
 
   w->resizable(tag_text);
-  Fl::background(190,190,190);
-  w->show(argc,argv);
+  //Fl::background(190,190,190);
+  //Fl::background(255,255,255);
+  w->show(/*argc,argv*/);
   Fl::scheme(NULL);
   Fl_File_Icon::load_system_icons();
   menue_translate( menu_menueleiste );
-  DBG_PROG} {selected
-    }
+  DBG_PROG} {}
     code DBG_PROG_ENDE {}
   }
   Function {run()} {open

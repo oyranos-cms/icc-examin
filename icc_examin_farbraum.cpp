@@ -140,6 +140,9 @@ ICCexamin::netzLese (int n,
       (*netz)[n] = netz_temp[0];
       (*netz)[n].name = profile[n]->filename();
       DBG_NUM_V( (*netz)[n].transparenz )
+    } else {
+      (*netz)[n].punkte.clear();
+      (*netz)[n].indexe.clear();
     }
   } else
     WARN_S(_("kein Profil im Speicher"))

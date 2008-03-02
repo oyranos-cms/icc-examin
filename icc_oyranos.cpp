@@ -33,6 +33,7 @@
 #include "oyranos/oyranos_monitor.h"
 using namespace oyranos;
 #endif
+
 #include "icc_oyranos.h"
 #include "icc_utils.h"
 
@@ -82,6 +83,7 @@ bool
 Oyranos::profil_test_ (const char* profil_name)
 {
   DBG_PROG_START
+  bool fehler = false;
   #if HAVE_OY
 
   if(profil_name && strlen(profil_name))
@@ -89,7 +91,7 @@ Oyranos::profil_test_ (const char* profil_name)
     Prof_mapIt cmp = pspeicher_.find( profil_name );
     if( cmp == pspeicher_.end() )
     {
-      bool fehler = oyCheckProfile( profil_name, 0 );
+      fehler = oyCheckProfile( profil_name, 0 );
       if( !fehler )
       {
         // leeren Block einfügen
@@ -100,7 +102,7 @@ Oyranos::profil_test_ (const char* profil_name)
           // Referenz auf Block holen
           Speicher *v_block = &pspeicher_[profil_name];
           *v_block = profil_name;
-          int size;
+          size_t size;
           char* block = (char*)oyGetProfileBlock( profil_name, &size);
           DBG_PROG_V( (int)block <<"|"<< size )
           v_block->lade(block, size);
@@ -113,9 +115,10 @@ Oyranos::profil_test_ (const char* profil_name)
     }
   }
   
-  DBG_NUM_S( "Standard " OY_DEFAULT_LAB_PROFILE " Profil = "<< *lab_ <<" "<< lab_.size() <<"\n" )
+  DBG_NUM_S( "Standard " OY_DEFAULT_LAB_INPUT_PROFILE " Profil = "<< *lab_ <<" "<< lab_.size() <<"\n" )
 
   #endif
+  return fehler;
   DBG_PROG_ENDE
 }
 
@@ -128,14 +131,14 @@ Oyranos::lab_test_ ()
   #if HAVE_OY
   if( !v_block->size() )
   { DBG_PROG_V( v_block->size() )
-    char* profil_name = oyGetDefaultLabProfileName();
-    DBG_PROG_V( (int)profil_name << oyGetDefaultLabProfileName() )
+    char* profil_name = oyGetDefaultLabInputProfileName();
+    DBG_PROG_V( (int)profil_name << oyGetDefaultLabInputProfileName() )
     if( profil_name &&
         *v_block != profil_name )
     { 
         *v_block = profil_name;
 
-        int size = oyGetProfileSize ( profil_name );
+        size_t size = oyGetProfileSize ( profil_name );
         DBG_PROG_V( size )
         if (size)
         { block = (char*)oyGetProfileBlock( profil_name, &size);
@@ -149,7 +152,7 @@ Oyranos::lab_test_ ()
     }
   }
   
-  DBG_NUM_S( "Standard " OY_DEFAULT_LAB_PROFILE " Profil = "<< *lab_ <<" "<< lab_.size() <<"\n" )
+  DBG_NUM_S( "Standard " OY_DEFAULT_LAB_INPUT_PROFILE " Profil = "<< *lab_ <<" "<< lab_.size() <<"\n" )
 
   
   #endif
@@ -172,7 +175,7 @@ Oyranos::moni_test_ ()
     if( profil_name &&
         v_block != profil_name )
     { 
-        int size = oyGetProfileSize ( profil_name );
+        size_t size = oyGetProfileSize ( profil_name );
           DBG_MEM_V( size )
         if (size)
         {
@@ -207,14 +210,14 @@ Oyranos::rgb_test_ ()
   #if HAVE_OY
   if( !v_block->size() )
   { DBG_PROG_V( v_block->size() )
-    char* profil_name = oyGetDefaultRGBProfileName();
-    DBG_PROG_V( (int)profil_name << oyGetDefaultRGBProfileName() )
+    char* profil_name = oyGetDefaultRGBInputProfileName();
+    DBG_PROG_V( (int)profil_name << oyGetDefaultRGBInputProfileName() )
     if( profil_name &&
         *v_block != profil_name )
     { 
         *v_block = profil_name;
 
-        int size = oyGetProfileSize ( profil_name );
+        size_t size = oyGetProfileSize ( profil_name );
         DBG_PROG_V( size )
         if (size)
         { block = (char*)oyGetProfileBlock( profil_name, &size);
@@ -228,7 +231,7 @@ Oyranos::rgb_test_ ()
     }
   }
 
-  DBG_NUM_S( "Standard " OY_DEFAULT_RGB_PROFILE " Profil = "<< *rgb_ <<" "<< rgb_.size() <<"\n" )
+  DBG_NUM_S( "Standard " OY_DEFAULT_RGB_INPUT_PROFILE " Profil = "<< *rgb_ <<" "<< rgb_.size() <<"\n" )
   #endif
   DBG_PROG_ENDE
 }
@@ -244,7 +247,7 @@ Oyranos::cmyk_test_ ()
   #if HAVE_OY
   if( !v_block->size() )
   { DBG_PROG_V( v_block->size() )
-    char* profil_name = oyGetDefaultCmykProfileName();
+    char* profil_name = oyGetDefaultCmykInputProfileName();
     if(profil_name) {DBG_PROG_V( profil_name );
     } else {         DBG_PROG_V( (int)profil_name );}
 
@@ -253,7 +256,7 @@ Oyranos::cmyk_test_ ()
     { 
         *v_block = profil_name;
 
-        int size = oyGetProfileSize ( profil_name );
+        size_t size = oyGetProfileSize ( profil_name );
         DBG_PROG_V( size  )
         if (size)
         { block = (char*)oyGetProfileBlock( profil_name, &size);
@@ -268,7 +271,7 @@ Oyranos::cmyk_test_ ()
   }
 
   if(cmyk_.size())
-    DBG_NUM_S( "Standard " OY_DEFAULT_CMYK_PROFILE " Profil = "<< *cmyk_ <<" "<< cmyk_.size() <<"\n" );
+    DBG_NUM_S( "Standard " OY_DEFAULT_CMYK_INPUT_PROFILE " Profil = "<< *cmyk_ <<" "<< cmyk_.size() <<"\n" );
   #endif
   //oy_debug = 0;
   DBG_PROG_ENDE

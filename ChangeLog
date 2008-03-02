@@ -1,4 +1,10 @@
 
+2005-05-09
+	* und: Umstellung nach Oyranos API 0.0.2
+	* und: Version 0.32
+	* fix: für farbraumModus
+	* und: more Linguas in icc_helfer_i18n.cpp
+
 2005-05-03
 	* fix: tag selection crash 
 	* und: Darstellungoptionen werden versteckt (__APPLE__)

@@ -56,10 +56,6 @@ else
 	--copyright-holder='Kai-Uwe Behrmann' \
 	--msgid-bugs-address='ku.b@gmx.de' \
 	--from-code=utf-8
-    RECODE_DE = iso-8859-1
-    RECODE = recode -vf
-    CHARSET_DE = ISO-8859-1
-    #latin-1
   ifdef LINUX
     OPTS = -Wall  -Os -g $(DEBUG) #-fomit-frame-pointer -g
     INCL=-I$(includedir) -I/usr/X11R6/include -I./
@@ -235,7 +231,7 @@ ALL_FILES =	$(SOURCES) \
 timedir = .
 mtime   = `find $(timedir) -prune -printf %Ty%Tm%Td.%TT | sed s/://g`
 
-.SILENT:
+#.SILENT:
 
 all:	config mkdepend $(TARGET)
 

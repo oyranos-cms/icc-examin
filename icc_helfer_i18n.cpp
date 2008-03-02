@@ -111,9 +111,67 @@ initialiseI18N()
       } \
     }
 
-      // TODO: add more LINGUAS here
-    SetCodesetForLocale( "de", "ISO-8859-1" )
+      // add more LINGUAS here
+      // borrowed from http://czyborra.com/charsets/iso8859.html
+    SetCodesetForLocale( "af", "ISO-8859-1" ) // Afrikaans
+    SetCodesetForLocale( "ca", "ISO-8859-1" ) // Catalan
+    SetCodesetForLocale( "da", "ISO-8859-1" ) // Danish
+    SetCodesetForLocale( "de", "ISO-8859-1" ) // German
+    SetCodesetForLocale( "en", "ISO-8859-1" ) // English
+    SetCodesetForLocale( "es", "ISO-8859-1" ) // Spanish
+    SetCodesetForLocale( "eu", "ISO-8859-1" ) // Basque
+    SetCodesetForLocale( "fi", "ISO-8859-1" ) // Finnish
+    SetCodesetForLocale( "fo", "ISO-8859-1" ) // Faroese
+    SetCodesetForLocale( "fr", "ISO-8859-1" ) // French
+    SetCodesetForLocale( "ga", "ISO-8859-1" ) // Irish
+    SetCodesetForLocale( "gd", "ISO-8859-1" ) // Scottish
+    SetCodesetForLocale( "is", "ISO-8859-1" ) // Icelandic
+    SetCodesetForLocale( "it", "ISO-8859-1" ) // Italian
+    SetCodesetForLocale( "nl", "ISO-8859-1" ) // Dutch
+    SetCodesetForLocale( "no", "ISO-8859-1" ) // Norwegian
+    SetCodesetForLocale( "pt", "ISO-8859-1" ) // Portuguese
+    SetCodesetForLocale( "rm", "ISO-8859-1" ) // Rhaeto-Romanic
+    SetCodesetForLocale( "sq", "ISO-8859-1" ) // Albanian
+    SetCodesetForLocale( "sv", "ISO-8859-1" ) // Swedish
+    SetCodesetForLocale( "sw", "ISO-8859-1" ) // Swahili
 
+    SetCodesetForLocale( "cs", "ISO-8859-2" ) // Czech
+    SetCodesetForLocale( "hr", "ISO-8859-2" ) // Croatian
+    SetCodesetForLocale( "hu", "ISO-8859-2" ) // Hungarian
+    SetCodesetForLocale( "pl", "ISO-8859-2" ) // Polish
+    SetCodesetForLocale( "ro", "ISO-8859-2" ) // Romanian
+    SetCodesetForLocale( "sk", "ISO-8859-2" ) // Slovak
+    SetCodesetForLocale( "sl", "ISO-8859-2" ) // Slovenian
+
+    SetCodesetForLocale( "eo", "ISO-8859-3" ) // Esperanto
+    SetCodesetForLocale( "mt", "ISO-8859-3" ) // Maltese
+
+    SetCodesetForLocale( "et", "ISO-8859-4" ) // Estonian
+    SetCodesetForLocale( "lv", "ISO-8859-4" ) // Latvian
+    SetCodesetForLocale( "lt", "ISO-8859-4" ) // Lithuanian
+    SetCodesetForLocale( "kl", "ISO-8859-4" ) // Greenlandic
+
+    SetCodesetForLocale( "be", "ISO-8859-5" ) // Byelorussian
+    SetCodesetForLocale( "bg", "ISO-8859-5" ) // Bulgarian
+    SetCodesetForLocale( "mk", "ISO-8859-5" ) // Macedonian
+    SetCodesetForLocale( "ru", "ISO-8859-5" ) // Russian
+    SetCodesetForLocale( "sr", "ISO-8859-5" ) // Serbian
+    SetCodesetForLocale( "uk", "ISO-8859-5" ) // Ukrainian
+
+    SetCodesetForLocale( "ar", "ISO-8859-6" ) // Arabic
+    SetCodesetForLocale( "fa", "ISO-8859-6" ) // Persian
+    SetCodesetForLocale( "ur", "ISO-8859-6" ) // Pakistani Urdu
+
+    SetCodesetForLocale( "el", "ISO-8859-7" ) // Greek
+
+    SetCodesetForLocale( "iw", "ISO-8859-8" ) // Hebrew
+    SetCodesetForLocale( "ji", "ISO-8859-8" ) // Yiddish
+
+    SetCodesetForLocale( "tr", "ISO-8859-9" ) // Turkish
+
+    SetCodesetForLocale( "th", "ISO-8859-11" ) // Thai
+
+    SetCodesetForLocale( "ja", "SJIS" ) // Japan ; eucJP, ujis, EUC, PCK, jis7, SJIS
   #endif
 
   if(locale.size())

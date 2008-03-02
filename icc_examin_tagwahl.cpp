@@ -158,17 +158,19 @@ ICCexamin::waehleTag (int item)
       icc_betrachter->tag_viewer->kurve_umkehren = true;
       DBG_PROG_S( "vcgt" )
 
-    /*} else if ( TagInfo[1] == "chad" ) {
-      std::vector<int> zahlen = profile.profil()->getTagNumbers (tag_nummer, ICCtag::MATRIX);
+      neuzeichnen(icc_betrachter->tag_viewer);
+/*    } else if ( TagInfo[1] == "chad" ) {
+      std::vector<double> zahlen = profile.profil()->getTagNumbers (icc_betrachter->tag_nummer, ICCtag::MATRIX);
       cout << zahlen.size() << endl; DBG_PROG
       assert (9 == zahlen.size());
+      std::stringstream s;
       s << endl <<
       "  " << zahlen[0] << ", " << zahlen[1] << ", " << zahlen[2] << ", " << endl <<
       "  " << zahlen[3] << ", " << zahlen[4] << ", " << zahlen[5] << ", " << endl <<
       "  " << zahlen[6] << ", " << zahlen[7] << ", " << zahlen[8] << ", " << endl;
       icc_betrachter->tag_text->hinein ( s.str() ); DBG_PROG
-*/
-      neuzeichnen(icc_betrachter->tag_viewer);
+
+      neuzeichnen(icc_betrachter->tag_text); */
     } else {
       icc_betrachter->tag_text->hinein ( (profile.profil()->getTagText (item))[0] ); DBG_PROG
       neuzeichnen(icc_betrachter->tag_text);

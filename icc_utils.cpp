@@ -28,7 +28,9 @@
 // Date:      August 2004
 
 
+#ifndef HAVE_OY
 int level_PROG = -1;
+#endif
 int icc_debug = 1;
 
 
