@@ -76,8 +76,8 @@ Function {} {open C return_type int
   fullscreen = false;
   inspekt_topline = 0;} {}
   Fl_Window details {
-    label {ICC Details} open
-    xywh {467 391 385 515} type Double box NO_BOX color 53
+    label {ICC Details} open selected
+    xywh {825 110 385 520} type Double box NO_BOX color 53
     code1 {DBG_PROG
     if (argc>1) {
 
@@ -203,22 +203,20 @@ matrix.saveProfileToFile("/tmp/icc_examin_test.icc");}
         Fl_Group ansichtsgruppe {open
           xywh {0 160 385 335}
         } {
-          Fl_Group tag_3D {
-            xywh {0 160 385 335}
-            code0 {o->hide();}
-          } {}
           Fl_Group tabellengruppe {open
             xywh {0 160 385 335}
+            code0 {o->show();}
           } {
             Fl_Choice mft_choice {
               label {Wählen Sie ein Kettenmerkmal}
-              callback {o->auswahl_cb();} open selected
+              callback {o->auswahl_cb();} open
               xywh {0 160 385 25} box NO_BOX down_box BORDER_BOX
               code0 {w->show();}
               class MftChoice
             } {}
             Fl_Box mft_viewer {
               xywh {0 185 385 310}
+              code0 {o->show();}
               class TagDrawings
             }
             Fl_Browser mft_text {
@@ -227,10 +225,15 @@ matrix.saveProfileToFile("/tmp/icc_examin_test.icc");}
               class TagTexts
             }
             Fl_Box mft_gl {
-              xywh {0 185 385 310}
-              class GL_Ansicht
+              xywh {0 185 385 310} align 18
+              code0 {//o->first = true;}
+              class TagDrawings
             }
           }
+          Fl_Group tag_3D {
+            xywh {0 160 385 335}
+            code0 {o->hide();}
+          } {}
           Fl_Box tag_viewer {
             xywh {0 160 385 335}
             code0 {o->hide();}
@@ -244,15 +247,15 @@ matrix.saveProfileToFile("/tmp/icc_examin_test.icc");}
         }
       }
       Fl_Group {} {open
-        xywh {0 494 385 25}
+        xywh {0 495 385 25}
       } {
         Fl_Box stat {
           label {No wrl file loaded.}
-          xywh {0 494 385 25} box THIN_DOWN_BOX color 53 align 20
+          xywh {0 495 385 25} box THIN_DOWN_BOX color 53 align 20
         }
         Fl_Progress load_progress {
           label {Laden ..}
-          xywh {0 494 385 25} color 53
+          xywh {0 495 385 25} color 53
           code0 {o->hide();}
           code1 {o->maximum(1.0);}
           code2 {o->minimum(0.0);}
@@ -724,15 +727,14 @@ Function {d_haendler(void* o)} {return_type {static void}
   code DBG_PROG_ENDE {}
 } 
 
-Function {zeig_mich(void* widget)} {open
-} {
+Function {zeig_mich(void* widget)} {} {
   code DBG_PROG_START {}
   code {// zeigt das ausgewählte Fenster (widget)
 
   tabellengruppe->hide();
   mft_viewer->hide();
   mft_text->hide();
-  mft_gl->hide();
+  //mft_gl->hide();
   
   tag_viewer->hide(); DBG_PROG
   tag_viewer->clear_visible(); DBG_PROG
@@ -771,23 +773,33 @@ Function {zeilenNachVector(std::string text)} {return_type {std::vector<std::str
 class GL_Ansicht {open : {public Fl_Widget}
 } {
   decl {int X; int Y; int W; int H; std::vector<std::string>texte; std::vector<double>punkte; std::vector<std::vector<double> >kurven;} {}
-  decl {int wiederholen;} {public
+  decl {int wiederholen; bool first;} {public
   }
   Function {GL_Ansicht(int X,int Y,int W,int H) : Fl_Widget(X,Y,W,H), X(X), Y(Y), W(W), H(H)} {open
+  } {}
+  Function {init()} {open
   } {
+    code DBG_PROG_START {}
     code {details->begin();
-  glutInitWindowSize(X,Y);
+/*  glutInitWindowSize(X,Y);
   glutInitWindowPosition(W,H);
   glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH | GLUT_MULTISAMPLE);
   glutCreateWindow("GL");
+*/
   details->end();
-  details->resizable(glut_window);} {}
+  //details->resizable(glut_window);
+
+  first = false;} {}
+    code DBG_PROG_ENDE {}
   }
   Function {draw()} {open
   } {
     code DBG_PROG_START {}
     code {// Kurven oder Punkte malen
   DBG_PROG_S( punkte.size() << "/" << kurven.size() <<" "<< texte.size() )
+
+  if (first)
+    init();
 
   if (punkte.size() >= 3) {
     wiederholen = true;

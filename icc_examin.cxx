@@ -122,7 +122,7 @@ TagDrawings *mft_viewer=(TagDrawings *)0;
 
 TagTexts *mft_text=(TagTexts *)0;
 
-TagDrawings *mft_gl=(TagDrawings *)0;
+GL_Ansicht *mft_gl=(GL_Ansicht *)0;
 
 Fl_Group *tag_3D=(Fl_Group *)0;
 
@@ -171,7 +171,7 @@ int main(int argc, char **argv) {
           o->align(FL_ALIGN_TOP|FL_ALIGN_INSIDE);
           o->when(FL_WHEN_RELEASE_ALWAYS);
           int lines = tag_browser->size();
-          cout << lines << endl; DBG_PROG
+          DBG_PROG_V( lines ) lines = lines;
         }
         { Fl_Group* o = ansichtsgruppe = new Fl_Group(0, 160, 385, 335);
           { Fl_Group* o = tabellengruppe = new Fl_Group(0, 160, 385, 335);
@@ -187,7 +187,6 @@ int main(int argc, char **argv) {
               o->callback((Fl_Callback*)cb_mft_choice);
               o->align(FL_ALIGN_LEFT);
               o->when(FL_WHEN_RELEASE);
-              w->show();
             }
             { TagDrawings* o = mft_viewer = new TagDrawings(0, 185, 385, 310);
               o->box(FL_NO_BOX);
@@ -212,7 +211,7 @@ int main(int argc, char **argv) {
               o->align(FL_ALIGN_BOTTOM|FL_ALIGN_INSIDE);
               o->when(FL_WHEN_RELEASE_ALWAYS);
             }
-            { TagDrawings* o = mft_gl = new TagDrawings(0, 185, 385, 310);
+            { GL_Ansicht* o = mft_gl = new GL_Ansicht(0, 185, 385, 310);
               o->box(FL_NO_BOX);
               o->color(FL_BACKGROUND_COLOR);
               o->selection_color(FL_BACKGROUND_COLOR);
@@ -222,7 +221,7 @@ int main(int argc, char **argv) {
               o->labelcolor(FL_BLACK);
               o->align(FL_ALIGN_BOTTOM|FL_ALIGN_INSIDE);
               o->when(FL_WHEN_RELEASE);
-              //o->first = true;
+              o->first = true;
             }
             o->show();
             o->end();
@@ -783,11 +782,11 @@ GL_Ansicht::GL_Ansicht(int X,int Y,int W,int H) : Fl_Widget(X,Y,W,H), X(X), Y(Y)
 void GL_Ansicht::init() {
   DBG_PROG_START
   details->begin();
-/*  glutInitWindowSize(X,Y);
+  glutInitWindowSize(X,Y);
   glutInitWindowPosition(W,H);
   glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH | GLUT_MULTISAMPLE);
   glutCreateWindow("GL");
-*/
+
   details->end();
   //details->resizable(glut_window);
 
@@ -805,12 +804,12 @@ void GL_Ansicht::draw() {
 
   if (punkte.size() >= 3) {
     wiederholen = true;
-    draw_cie_shoe(x(),y(),w(),h(),texte,punkte,false);
+    //draw_cie_shoe(x(),y(),w(),h(),texte,punkte,false);
     Fl::add_timeout( 3.0, (void(*)(void*))d_haendler ,(void*)this);
 
   } else {
     wiederholen = false;
-    draw_kurve   (x(),y(),w(),h(),texte,kurven);
+    //draw_kurve   (x(),y(),w(),h(),texte,kurven);
   }
   DBG_PROG
   DBG_PROG_ENDE

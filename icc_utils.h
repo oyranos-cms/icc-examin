@@ -38,7 +38,7 @@ extern int level_PROG;
 #define DBG_NUM_S(txt)
 #define DBG_NUM_V(txt)
 #endif
-#if 1
+#if 0
 #define DBG_PROG DBG
 #define DBG_PROG_START level_PROG++; for (int i = 0; i < level_PROG; i++) cout << "+"; cout << " Start: "; DBG
 #define DBG_PROG_ENDE for (int i = 0; i < level_PROG; i++) cout << "+"; cout << " Ende:  "; DBG level_PROG--;

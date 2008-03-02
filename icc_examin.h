@@ -42,7 +42,7 @@ extern Fl_Group *tabellengruppe;
 extern MftChoice *mft_choice;
 extern TagDrawings *mft_viewer;
 extern TagTexts *mft_text;
-extern TagDrawings *mft_gl;
+extern GL_Ansicht *mft_gl;
 extern Fl_Group *tag_3D;
 extern TagDrawings *tag_viewer;
 extern TagTexts *tag_text;
