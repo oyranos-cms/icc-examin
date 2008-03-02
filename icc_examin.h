@@ -47,10 +47,9 @@ class ICCexamin
     void         oeffnen (std::vector<std::string> dateinamen);
     void         oeffnen ();	// interaktiv
 
-    std::string  selectTag (int item);
-    int          wiederholen;
+    std::string  waehleTag (int item);
+    void         waehleMft (int item);
     int          kurve_umkehren;
-    void         drawKurve   (int x,int y,int w,int h);
 
     std::vector<std::vector<double> > kurven;
     std::vector<double> punkte;

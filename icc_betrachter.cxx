@@ -162,9 +162,10 @@ void TagBrowser::select_item(int item) {
   item -= 6;
   cout << item << ". Tag "; DBG_PROG
   
-  std::string text = icc_examin->selectTag(item);
+  std::string text = icc_examin->waehleTag(item);
   if (text != "")
     selectedTagName = text;
+  DBG_PROG_V( text );
   DBG_PROG_ENDE
 }
 
@@ -196,23 +197,22 @@ TagDrawings::TagDrawings(int X,int Y,int W,int H) : Fl_Widget(X,Y,W,H), X(X), Y(
 void TagDrawings::draw() {
   DBG_PROG_START
   // Kurven oder Punkte malen
-  DBG_PROG_S( kurven )
+  DBG_PROG_S( icc_examin->kurven.size() <<" "<< icc_examin->punkte.size() )
 
   //DBG_PROG_V( wiederholen )
 
-  icc_examin->drawKurve   (x(),y(),w(),h());
-
-  if (kurven)
-  {
-    icc_examin->wiederholen = false;
-  } else {
-    if (icc_examin->wiederholen)
+  if (icc_examin->kurven.size())
+  { DBG_PROG
+    wiederholen = false;
+    draw_kurve (x(),y(),w(),h());
+  } else if (icc_examin->punkte.size()) {
+    if (wiederholen)
     { draw_cie_shoe(x(),y(),w(),h(),false);
       Fl::add_timeout( 1.2, (void(*)(void*))d_haendler ,(void*)this);
     } else {
       draw_cie_shoe(x(),y(),w(),h(),true);
     }
-    icc_examin->wiederholen = true;
+    wiederholen = true;
   }
   DBG_PROG
   DBG_PROG_ENDE
@@ -222,9 +222,7 @@ void TagDrawings::hinein_punkt(std::vector<double> vect, std::vector<std::string
   DBG_PROG_START
   //CIExyY aus tag_browser anzeigen
 
-  kurven = false;
-  icc_examin->wiederholen = false;
-
+  wiederholen = false;
   icc_examin->icc_betrachter->zeig_mich(this);
   DBG_PROG_ENDE
 }
@@ -233,8 +231,7 @@ void TagDrawings::hinein_kurven(std::vector<std::vector<double> >vect, std::vect
   DBG_PROG_START
   //Kurve aus tag_browser anzeigen
 
-  kurven = true;
-  icc_examin->wiederholen = false;
+  wiederholen = false;
 
   icc_examin->icc_betrachter->zeig_mich(this);
   DBG_PROG
@@ -252,17 +249,19 @@ MftChoice::MftChoice(int X,int Y,int W,int H,char* start_info) : Fl_Choice(X,Y,W
   gewaehlter_eintrag = 0;
 }
 
-void MftChoice::profil_tag(int _tag) {
+void MftChoice::profil_tag(int _tag, std::string text) {
   DBG_PROG_START
   icc_examin->icc_betrachter->tag_nummer = _tag;
 
 // = profile[0].printTagInfo(icc_examin->icc_betrachter->tag_nummer);
     sprintf (&typ[0], profile[0].printTagInfo(icc_examin->icc_betrachter->tag_nummer)[1].c_str());
 
-    Info = zeilenNachVector (profile[0].getTagText (icc_examin->icc_betrachter->tag_nummer)[0]);
+    DBG_PROG_V( profile[0].printTagInfo(icc_examin->icc_betrachter->tag_nummer)[1].c_str() )
+
+    Info = zeilenNachVector (text);
 
     if ( strstr (typ,"mft2") != 0 )
-    {
+    { DBG_PROG
       Fl_Menu_Item *mft_menue = (Fl_Menu_Item *)calloc (sizeof (Fl_Menu_Item), 6);
 
       mft_menue[0].text = Info[0].c_str();
@@ -272,7 +271,7 @@ void MftChoice::profil_tag(int _tag) {
       mft_menue[4].text = Info[7].c_str();
       mft_menue[5].text = 0;
       icc_examin->icc_betrachter->mft_choice->menu(mft_menue);
-    } else {
+    } else { DBG_PROG
       Fl_Menu_Item *mft_menue = (Fl_Menu_Item *)calloc (sizeof (Fl_Menu_Item), 6);
 
       mft_menue[0].text = Info[0].c_str();
@@ -307,6 +306,11 @@ void MftChoice::auswahl_cb(void) {
     DBG_PROG_S("%s \n" << m->label())
   }
 
+  icc_examin->waehleMft( mw->value() );
+
+  DBG_PROG
+
+#if 0
   std::stringstream s;
   std::vector<double> zahlen;
 
@@ -347,6 +351,7 @@ void MftChoice::auswahl_cb(void) {
   }
 
   gewaehlter_eintrag = mw->value();
+#endif
   DBG_PROG_ENDE
 }
 

@@ -383,8 +383,7 @@ draw_cie_shoe (int X, int Y, int W, int H,
   DBG_prog_ende
 }
 
-void draw_kurve    (int X, int Y, int W, int H,
-                    bool tauschen)
+void draw_kurve    (int X, int Y, int W, int H)
 { DBG_prog_start
   // Zeichenflaeche
   fl_color(BG);

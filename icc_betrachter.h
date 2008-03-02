@@ -53,7 +53,7 @@ public:
 };
 
 class TagDrawings : public Fl_Widget {
-  int X; int Y; int W; int H; bool kurven;
+  int X; int Y; int W; int H;
 public:
   int wiederholen;
   TagDrawings(int X,int Y,int W,int H) ;
@@ -64,10 +64,11 @@ public:
 };
 
 class MftChoice : public Fl_Choice {
-  int X; int Y; int W; int H; char* start_info; char typ[5]; std::vector<std::string> Info; int gewaehlter_eintrag;
+  int X; int Y; int W; int H; char* start_info; char typ[5];
 public:
+  std::vector<std::string> Info; int gewaehlter_eintrag;
   MftChoice(int X,int Y,int W,int H,char* start_info) ;
-  void profil_tag(int _tag);
+  void profil_tag(int _tag, std::string text);
   void auswahl_cb(void);
 };
 #include <FL/Fl_Double_Window.H>
