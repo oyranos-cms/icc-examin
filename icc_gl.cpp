@@ -105,6 +105,74 @@ GL_Ansicht::~GL_Ansicht()
 }
 
 void
+GL_Ansicht::init()
+{ DBG_PROG_START
+
+  if (!first_) {
+    DBG_PROG_ENDE
+    return;
+  }
+
+  if(this == icc_examin->icc_betrachter->mft_gl)
+    DBG_PROG_S( "init mft_gl" )
+  if(this == icc_examin->icc_betrachter->DD_histogram)
+    DBG_PROG_S( "init DD_histogram" )
+
+  agv_ = agviewers.size(); DBG_PROG
+  agviewers.resize (agv_ +1);
+
+  first_ = false;
+  menue_kanal_eintraege_ = 0;
+  this->begin();
+  gl_fenster_ = new Fl_Group (x(),y(),w(),h());
+  this->end();
+  DBG_PROG
+  gl_fenster_->show();
+
+  if (!this->visible())
+    WARN_S("Diese GL_Ansicht ist nicht sichtbar")
+  this->show();
+
+  DBG_PROG
+  gl_fenster_->begin(); DBG_PROG
+  glutInitWindowSize(w(),h()); DBG_PROG_V( w() << h() )
+  glutInitWindowPosition(x(),y()); DBG_PROG_V( x() << y() )
+  glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH | GLUT_MULTISAMPLE);
+  DBG_PROG
+  glut_id_ = glutCreateWindow(_("GL Ansicht")); DBG_PROG_V( glut_id_ )
+
+  gl_fenster_->end(); DBG_PROG
+  gl_fenster_->resizable(glut_window);
+
+  agviewers[agv_].agvInit(glut_id_);
+  DBG_PROG_V( agv_ <<" "<< agviewers[agv_].redisplayWindow() )
+
+  #define setzeGlutFunktionen(n) \
+  glutReshapeFunc(reshape##n); DBG_PROG \
+  glutDisplayFunc(display##n); DBG_PROG \
+  /*glutVisibilityFunc(sichtbar##n); DBG_PROG \
+  glutMenuStateFunc(menuuse##n); DBG_PROG */
+
+  if (glut_id_ == 1) { DBG_PROG_S("mft_gl " << glut_id_)
+    setzeGlutFunktionen(1) 
+  } else { DBG_PROG_S("gl Fenster " << glut_id_)
+    setzeGlutFunktionen(2)
+  }
+
+  agviewers[agv_].agvMakeAxesList(AXES); DBG_PROG
+
+  myGLinit_();  DBG_PROG
+  menuInit_(); DBG_PROG
+  makeDisplayLists_(); DBG_PROG
+
+  //glutMainLoop(); // you could use Fl::run() instead
+
+  icc_examin->glAnsicht (this);
+
+  DBG_PROG_ENDE
+}
+
+void
 GL_Ansicht::zeigen()
 { DBG_PROG_START
   DBG_PROG_V( id() )
@@ -145,74 +213,6 @@ GL_Ansicht::verstecken()
   }
 
   
-  DBG_PROG_ENDE
-}
-
-void
-GL_Ansicht::init()
-{ DBG_PROG_START
-
-  if (!first_) {
-    DBG_PROG_ENDE
-    return;
-  }
-
-  if(this == icc_examin->icc_betrachter->mft_gl)
-    DBG_PROG_S( "init mft_gl" )
-  if(this == icc_examin->icc_betrachter->DD_histogram)
-    DBG_PROG_S( "init DD_histogram" )
-
-  agv_ = agviewers.size(); DBG_PROG
-  agviewers.resize (agv_ +1);
-
-  first_ = false;
-  menue_kanal_eintraege_ = 0;
-  this->begin();
-  gl_fenster_ = new Fl_Group (x(),y(),w(),h());
-  this->end();
-  DBG_PROG
-  gl_fenster_->show();
-
-  if (!this->visible())
-    WARN_S("Diese GL_Ansicht ist nicht sichtbar")
-  this->show();
-
-  DBG_PROG
-  gl_fenster_->begin(); DBG_PROG
-  glutInitWindowSize(w(),h()); DBG_PROG_V( w() << h() )
-  glutInitWindowPosition(x(),y()); DBG_PROG_V( x() << y() )
-  glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH | GLUT_MULTISAMPLE);
-  DBG_PROG
-  glut_id_ = glutCreateWindow(_("GL Ansicht")); DBG_PROG
-
-  gl_fenster_->end(); DBG_PROG
-  gl_fenster_->resizable(glut_window);
-
-  agviewers[agv_].agvInit(glut_id_); DBG_PROG
-  DBG_PROG_V( agv_ <<" "<< agviewers[agv_].redisplayWindow() )
-
-  #define setzeGlutFunktionen(n) \
-  glutReshapeFunc(reshape##n); DBG_PROG \
-  glutDisplayFunc(display##n); DBG_PROG \
-  /*glutVisibilityFunc(sichtbar##n); DBG_PROG \
-  glutMenuStateFunc(menuuse##n); DBG_PROG */
-
-  if (glut_id_ == 1) {
-    setzeGlutFunktionen(1)
-  } else {
-    setzeGlutFunktionen(2)
-  }
-
-  agviewers[agv_].agvMakeAxesList(AXES); DBG_PROG
-
-  myGLinit_();  DBG_PROG
-  menuInit_(); DBG_PROG
-  makeDisplayLists_(); DBG_PROG
-
-  //glutMainLoop(); // you could use Fl::run() instead
-
-  icc_examin->glAnsicht (this);
-
   DBG_PROG_ENDE
 }
 
@@ -669,12 +669,16 @@ GL_Ansicht::makeDisplayLists_()
       glDisable(GL_LIGHTING);
       #endif
 
-      #if 1
+      #if 0
       glEnable (GL_BLEND);
       glEnable (GL_DEPTH_TEST);
       glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
       glEnable (GL_ALPHA_TEST_FUNC);
       glAlphaFunc (GL_ALPHA_TEST, GL_ONE_MINUS_DST_ALPHA);
+      #else
+      glEnable (GL_BLEND);
+      glEnable (GL_DEPTH_TEST);
+      glBlendFunc (GL_SRC_COLOR, GL_DST_ALPHA);
       #endif
 
       glColor3f(0.9, 0.9, 0.9);
@@ -714,12 +718,15 @@ GL_Ansicht::makeDisplayLists_()
         }
         glPopMatrix();
       }
-      #if 0
+      #if 1
       glColor4f(0.8,0.2,0.2,0.5);
       glutSolidSphere (0.7, 36, 36);
       glColor4f(0.2,0.2,0.8,0.5);
       glutSolidSphere (0.5, 36, 36);
       #endif
+      glEnable (GL_BLEND);
+      glEnable (GL_DEPTH_TEST);
+      glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
       #ifndef Beleuchtung
       glEnable(GL_LIGHTING);
       #endif

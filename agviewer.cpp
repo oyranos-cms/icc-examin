@@ -19,20 +19,24 @@
 #    include <GL/glu.h> // added for FLTK
 #  endif
 
-#  include <stdio.h>
-#  include <stdlib.h>
-#  include <math.h>
-#  include <sys/types.h>
-#  include <time.h>
+//#  include <stdio.h>
+//#  include <stdlib.h>
+//#  include <math.h>
+//#  include <sys/types.h>
+//#  include <time.h>
+
 #  if !defined(WIN32) && !defined(__EMX__)
-#    include <sys/time.h>
+//#    include <sys/time.h>
 #  endif // !WIN32 && !__EMX__
 
 #  include "agviewer.h"
 
+#include <cmath>
+#include <sstream>
+
 // ICC Kopfdateien und Definitionen
 #include "icc_utils.h"
-#include "icc_betrachter.h"
+#include "icc_examin.h"
 #include "icc_gl.h"
 #define _(text) text
 

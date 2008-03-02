@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2005  Kai-Uwe Behrmann 
+ * Copyright (C) 2005  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -18,18 +18,26 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- * 
+ *
  * -----------------------------------------------------------------------------
  *
- * Farbumfang betrachten im WWW-3D Format vrml.
+ * ICC Helfer - X abhängig
  * 
  */
 
-// Date:      Mai 2004
+// Date:      Januar 2005
 
-#ifndef ICC_VRML_H
-#define ICC_VRML_H
+#ifndef ICC_HELFER_X_H
+#define ICC_HELFER_X_H
 
-int create_vrml( const char *profilVoll, char *profilTransparent, char *vrml);
+#include <string>
+#include <vector>
 
-#endif //ICC_VRML_H
+// Helferfunktionen
+// definiert in icc_helfer_x.cpp
+
+std::vector<double> getXgamma(std::string display_name); 
+
+
+
+#endif //ICC_HELFER_X_H

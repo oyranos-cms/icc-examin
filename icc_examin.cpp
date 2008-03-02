@@ -318,7 +318,6 @@ ICCexamin::zeig_prueftabelle ()
 void
 ICCexamin::histogram ()
 { DBG_PROG_START
-  //std::vector<double> v;
   std::vector<std::vector<double> >v;
   std::vector<std::vector<float> > farben;
   std::vector<std::string> texte, namen;
@@ -359,8 +358,21 @@ ICCexamin::histogram ()
   texte.push_back(_("CIE *a"));
   texte.push_back(_("CIE *b"));
 
-  //glAnsicht()->hineinPunkte( v, farben, texte );
   icc_betrachter->DD_histogram->hineinNetze( v, farben, namen, texte );
+
+  std::vector<double> p;
+  std::vector<float>  f;
+ 
+  p.push_back(0.2);
+  p.push_back(0.5);
+  p.push_back(0.5);
+  f.push_back(0.1);
+  f.push_back(0.1);
+  f.push_back(0.8);
+  f.push_back(0.5);
+
+  icc_betrachter->DD_histogram->hineinPunkte( p, f, namen, texte );
+
   DBG_PROG_ENDE
 }
 
@@ -457,8 +469,11 @@ ICCexamin::neuzeichnen (void* z)
   } else if (_zeig_histogram) { DBG_PROG_S( "3D hist ausschalten" )
     icc_betrachter->DD_histogram->verstecken();
     _zeig_histogram = false;
-    waehleTag(_item);
-    return;
+
+    if(!icc_betrachter->menueintrag_inspekt->value()) {
+      waehleTag(_item);
+      return;
+    }
   } 
 
          if (icc_betrachter->menueintrag_inspekt->value() &&

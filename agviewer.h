@@ -41,7 +41,8 @@
 #endif
 
 class
-Agviewer {
+Agviewer
+{
   public:
 
   Agviewer ()  {

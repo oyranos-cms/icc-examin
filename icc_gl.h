@@ -74,10 +74,10 @@ public:
   void hineinPunkte (std::vector<double> vect, 
                      std::vector<float> farben_,
                      std::vector<std::string> achsNamen);
-  void hineinPunkte (std::vector<double> punktKoordinaten, 
-                     std::vector<float>  punktFarben,
-                     std::vector<std::string> farb_namen_,
-                     std::vector<std::string> achsNamen);
+  void hineinPunkte (std::vector<double> punktKoordinaten, // XYZ
+                     std::vector<float>  punktFarben,      // RGBA
+                     std::vector<std::string> farb_namen_, // pro Punkt
+                     std::vector<std::string> achsNamen);  // 3*
   void hineinNetze  (std::vector<std::vector<double> >dreiecks_netze_, 
                      std::vector<std::vector<float> > dreiecks_farben_,
                      std::vector<std::string> netz_namen_,

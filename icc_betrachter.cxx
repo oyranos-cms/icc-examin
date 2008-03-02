@@ -482,6 +482,10 @@ Fl_Double_Window* ICCfltkBetrachter::init() {
         o->menu(menu_);
       }
       { Fl_Tile* o = examin = new Fl_Tile(0, 25, 385, 470);
+        { Fl_Help_View* o = inspekt_html = new Fl_Help_View(0, 25, 385, 470, "Inspect");
+          o->align(FL_ALIGN_CENTER|FL_ALIGN_INSIDE);
+          o->hide();
+        }
         { TagBrowser* o = tag_browser = new TagBrowser(0, 25, 385, 135, "Bitte w\344hlen Sie ein Profilmerkmal aus");
           o->box(FL_NO_BOX);
           o->color(FL_BACKGROUND_COLOR);
@@ -590,10 +594,6 @@ Fl_Double_Window* ICCfltkBetrachter::init() {
           o->labelcolor(FL_BLACK);
           o->align(FL_ALIGN_CENTER);
           o->when(FL_WHEN_RELEASE);
-          o->hide();
-        }
-        { Fl_Help_View* o = inspekt_html = new Fl_Help_View(0, 25, 385, 470, "Inspect");
-          o->align(FL_ALIGN_CENTER|FL_ALIGN_INSIDE);
           o->hide();
         }
         o->end();

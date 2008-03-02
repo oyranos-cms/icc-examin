@@ -1,0 +1,4 @@
+
+2005-01-12
+	* bug: Das Umschalten auf 2. glut_window hält den X (4.3.0) Fokus gefangen
+

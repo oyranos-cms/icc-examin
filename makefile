@@ -14,7 +14,7 @@ srcdir		= .
 #APPLE = 1
 FLTK = 1
 ifdef FLTK
-#FLU = 1
+FLU = 1
 FLTK_H = -DHAVE_FLTK
 endif
 DL = --ldflags # --ldstaticflags
@@ -67,6 +67,7 @@ CPP_HEADERS = \
 	icc_helfer.h \
 	icc_helfer_fltk.h \
 	icc_helfer_ui.h \
+	icc_helfer_x.h \
 	icc_icc.h \
 	icc_kette.h \
 	fl_oyranos.h \
@@ -85,6 +86,7 @@ CPPFILES = \
 	icc_formeln.cpp \
 	icc_gl.cpp \
 	icc_helfer.cpp \
+	icc_helfer_x.cpp \
 	icc_kette.cpp \
 	icc_main.cpp \
 	icc_measurement.cpp \
@@ -109,6 +111,7 @@ DOKU = \
 	README \
 	ChangeLog \
 	COPYING \
+	BUGS \
 	AUTHORS
 FLUID = \
 	icc_betrachter.fl \
@@ -178,6 +181,10 @@ test3:  ViewerFLTK.o vFLGLWidget.o
 agv:    agviewer.o agv_example.o
 	$(CC) $(OPTS) $(INCL) -o agv \
 	agviewer.o  agv_example.o $(FLTK_LIBS) $(X11_LIBS) -lglut
+
+cgats:	icc_utils.h icc_utils.cpp icc_cgats_parser.cpp
+	$(CC) $(OPTS) -o cgats icc_cgats_parser.cpp icc_utils.o
+
 
 install:	$(TARGET)
 	cp icc_examin $(bindir)

@@ -2,6 +2,7 @@
 2005-01-11
 	* und: icc_kette von icc_betrachter gereinigt
 	* neu: Datei icc_fenster.h/cpp mit Dateiauswahlfenster
+	* fix: leerer string löst Ausnahme bei Zugriff aus in icc_gl.h - DBG Macros!
 
 2005-01-09/10
 	* fix: doppelter Aufruf von auswahlCb - in MftChoice::profilTag

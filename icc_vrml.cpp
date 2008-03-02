@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2005  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -27,12 +27,11 @@
 
 // Date:      Mai 2004
 
-#include "icc_betrachter.h"
+#include "icc_examin.h"
 #include "icc_vrml.h"
 #include <stdio.h>
 #include <iostream>
 #include <string.h>
-#include <FL/Fl.H>
 
 
 void dump_vrml_header (char *vrml);
@@ -52,12 +51,13 @@ erase_file (char *file)
   return (0);
 }
 
-#define lp {l+=0.1; icc_examin->icc_betrachter->load_progress->value(l); icc_examin->icc_betrachter->details->flush();}
+#define lp {l+=0.1; icc_examin->fortschritt(l);}
 int 
 create_vrml              ( const char *profilA, char *profilB, char *vrml)
 {
   char systemBefehl[1024];
-  float l = icc_examin->icc_betrachter->load_progress->value();
+  float l = -0.1;
+  icc_examin->fortschritt(l);
 
   if (!vrml || (!profilA && !profilB))
   return (0);
