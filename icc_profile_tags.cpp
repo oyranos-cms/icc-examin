@@ -183,12 +183,19 @@ ICCtag::load                        ( ICCprofile *profil,
     DBG_MEM_S( "ICCtag wiederverwendet: " << (char*)tag->sig << " " )
     DBG_MEM
     free(data_); DBG_MEM // delete [] data_;
+    data_ = NULL;
     DBG_MEM_S( "ICCtag wiederverwendet: " << (char*)tag->sig << " " )
   } DBG_MEM
-  size_   = icValue(tag->size); DBG_MEM_V( size_ )
 
-  data_ = (char*) calloc(sizeof(char),size_); // new char (size_);
-  memcpy ( data_ , data , size_ );
+  size_   = icValue(tag->size); DBG_MEM_V( size_ )
+  if(size_ && data)
+  {
+    data_ = (char*) calloc(sizeof(char),size_); // new char (size_);
+    memcpy ( data_ , data , size_ );
+  } else {
+    size_ = 0;
+    data_ = NULL;
+  }
   DBG_MEM_V((int*)data_)
 
 # ifdef DEBUG_ICCTAG_
@@ -204,6 +211,11 @@ ICCtag::getText                     (void)
   std::vector<std::string> texte;
   std::string text = getTypName();
   int count = 0;
+
+  if (data_ == NULL || !size_)
+  { DBG_PROG_ENDE
+    return texte;
+  }
 
   if (text == "sig") {
 

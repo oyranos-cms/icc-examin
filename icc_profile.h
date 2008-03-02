@@ -65,7 +65,9 @@ class ICCprofile {
   typedef enum {
     ICCnullDATA,
     ICCprofileDATA,
-    ICCmeasurementDATA
+    ICCcorruptedprofileDATA,
+    ICCmeasurementDATA,
+    ICCvrmlDATA
   } ICCDataType;
 
                         ICCprofile ();
@@ -76,7 +78,7 @@ class ICCprofile {
     void                clear (void);
 
     ICCDataType         load (const Speicher & profil);
-    ICCDataType         dataType;  //!< wird zumindest beim Laden gesetzt
+    ICCDataType         data_type;  //!< wird zumindest beim Laden gesetzt
     bool                changing()             { return changing_; }
 
   private:

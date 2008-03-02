@@ -85,6 +85,8 @@ leseGrafikKartenGamma        (std::string display_name,
 
   // Wo befindet sich das Fenster?
   int n_fenster = 0;
+  int screens = 0;
+  int screen = 0;
 # ifdef HAVE_XIN
   XineramaScreenInfo* fenster = 0;
 # endif
@@ -95,13 +97,16 @@ leseGrafikKartenGamma        (std::string display_name,
       int scr_nr = XScreenNumberOfScreen( scr );
       if( scr_nr != i )
         DBG_PROG_S( "scr_nr != i" << scr_nr <<"/"<< i )
-
-        { char nr[8]; snprintf( nr, 8, "%d", i );
-          texte.push_back(_("Screen:"));
-          texte[texte.size()-1].append( nr );
-        }
-        XF86VidModeGetViewPort( display, i, &x, &y );
-        DBG_PROG_V( x <<" "<< y )
+      else
+      {
+        char nr[8]; snprintf( nr, 8, "%d", i );
+        texte.push_back(_("Screen:"));
+        texte[texte.size()-1].append( nr );
+        screen = i;
+      }
+      XF86VidModeGetViewPort( display, i, &x, &y );
+      DBG_PROG_V( x <<" "<< y )
+      ++screens;
     }
 # ifdef HAVE_XIN
   else
@@ -118,12 +123,13 @@ leseGrafikKartenGamma        (std::string display_name,
         { char nr[8]; snprintf( nr, 8, "%d", i );
           texte.push_back(_("XineramaScreen:"));
           texte[texte.size()-1].append( nr );
+          screen = i;
         }
         //int vp_x, vp_y;
         //XF86VidModeGetViewPort( display, i, &vp_x, &vp_y );
         //DBG_PROG_V( i <<": "<< vp_x <<" "<< vp_y )
+        ++screens;
       }
-    
     }
 # endif
     
@@ -131,7 +137,7 @@ leseGrafikKartenGamma        (std::string display_name,
 
   XF86VidModeGamma gamma;
   XF86VidModeMonitor monitor;
-  int screen = DefaultScreen( display );
+  //int screen = DefaultScreen( display );
   char **infos = 0;
   int num = 0;
     if( (infos = icc_oyranos.moniInfo( x,y, &num)) != 0  && num ) {

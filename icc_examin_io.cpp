@@ -415,7 +415,13 @@ ICCexamin::erneuerTagBrowserText_ (void)
 # define add_          s << " ";
 
   b->clear();
-  add_s ("@f" << _("Filename") << ":" )
+  const char *file_type_name = _("Filename (ICC data type)");
+  DBG_PROG_V( profile.profil()->data_type )
+  if(profile.profil()->data_type != ICCprofile::ICCprofileDATA)
+    file_type_name = _("Filename (other data type)");
+  if(profile.profil()->data_type == ICCprofile::ICCcorruptedprofileDATA)
+    file_type_name = _("Filename (corrupted ICC data type)");
+  add_s ("@f" << file_type_name << ":" )
   add_s ("@b    " << profile.profil()->filename() )
   add_s ("")
   if (tag_list.size() == 0) {
@@ -425,7 +431,12 @@ ICCexamin::erneuerTagBrowserText_ (void)
     add_s (_("Internal error") )
   }
   add_s ("@B26@t" << _("No. Tag   Type   Size Description") )
-  add_s ("@t" << profile.profil()->printHeader() )
+  if(profile.profil()->data_type == ICCprofile::ICCprofileDATA ||
+     profile.profil()->data_type == ICCprofile::ICCcorruptedprofileDATA) {
+    add_s ("@t" << profile.profil()->printHeader() )
+  } else {
+    add_s("")
+  }
   std::vector<std::string>::iterator it;
   for(int i = 0; i < (int)tag_list.size(); ++i)
     ;//DBG_PROG_V( i <<" "<< tag_list[i] )
@@ -449,7 +460,12 @@ ICCexamin::erneuerTagBrowserText_ (void)
   if (b->value())
     b->selectItem (b->value()); // Anzeigen
   else
-    b->selectItem (1);
+    if(profile.profil()->data_type == ICCprofile::ICCprofileDATA ||
+       profile.profil()->data_type == ICCprofile::ICCcorruptedprofileDATA) {
+      b->selectItem (1);
+    } else {
+      b->selectItem (6);
+    }
 
   if (profile.profil()->hasTagName (b->selectedTagName)) {
     int item = profile.profil()->getTagByName (b->selectedTagName) + 6;

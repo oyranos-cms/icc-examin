@@ -14,7 +14,7 @@ export CONF_H CONF CONF_I18N
 
 VERSION_A=0
 VERSION_B=4
-VERSION_C=0
+VERSION_C=1
 RELEASE=0
 VERSION=$VERSION_A.$VERSION_B$VERSION_C
 if [ $VERSION_A -gt 9 ]; then
@@ -35,12 +35,80 @@ fi
 VERSION_L=`echo $VERSION_L | sed 's/^0*//g'`
 ZEIT="May 2004 - May 2006"
 
+if [ $# -gt 0 ]; then
+  prefix=""
+  while [ $# -gt 0 ]; do
+    arg=$1
+    # prefix exec_prefix bindir sbindir libdir includedir datadir mandir
+    switch=prefix
+    if [ "`echo \"$1\" | sed s/\"--$switch=\"//`" != "$1" ]; then
+      prefix="`echo \"$1\" | sed s/\"--$switch=\"//`"
+    fi
+    switch="exec-prefix"
+    if [ "`echo \"$1\" | sed s/\"--$switch=\"//`" != "$1" ]; then
+      exec_prefix="`echo $1 | sed s/--$switch=//`"
+    fi
+    switch=bindir
+    if [ "`echo \"$1\" | sed s/\"--$switch=\"//`" != "$1" ]; then
+      bindir="`echo $1 | sed s/--$switch=//`"
+    fi
+    switch=sbindir
+    if [ "`echo \"$1\" | sed s/\"--$switch=\"//`" != "$1" ]; then
+      sbindir="`echo $1 | sed s/--$switch=//`"
+    fi
+    switch=libdir
+    if [ "`echo \"$1\" | sed s/\"--$switch=\"//`" != "$1" ]; then
+      libdir="`echo $1 | sed s/--$switch=//`"
+    fi
+    switch=includedir
+    if [ "`echo \"$1\" | sed s/\"--$switch=\"//`" != "$1" ]; then
+      includedir="`echo $1 | sed s/--$switch=//`"
+    fi
+    switch=datadir
+    if [ "`echo \"$1\" | sed s/\"--$switch=\"//`" != "$1" ]; then
+      datadir="`echo $1 | sed s/--$switch=//`"
+    fi
+    switch=mandir
+    if [ "`echo \"$1\" | sed s/\"--$switch=\"//`" != "$1" ]; then
+      mandir="`echo $1 | sed s/--$switch=//`"
+    fi
+    # pixmapdir desktopdir
+    switch=pixmapdir
+    if [ "`echo \"$1\" | sed s/\"--$switch=\"//`" != "$1" ]; then
+      pixmapdir="`echo $1 | sed s/--$switch=//`"
+    fi
+    switch=desktopdir
+    if [ "`echo \"$1\" | sed s/\"--$switch=\"//`" != "$1" ]; then
+      desktopdir="`echo $1 | sed s/--$switch=//`"
+    fi
+    switch=help
+    if [ "`echo \"$1\" | sed s/\"--$switch\"//`" != "$1" ]; then
+      echo "Usage:"
+      echo "   --prefix=[/usr/local]                package prefix"
+      echo "   --exec-prefix=[\$prefix]              package exec-prefix"
+      echo "   --bindir=[\$exec-prefix/bin]          binary installation path"
+      echo "   --sbindir=[\$exec-prefix/sbin]        super user binary installation path"
+      echo "   --libdir=[\$exec-prefix/lib]          library installation path"
+      echo "   --includedir=[\$prefix/include]       include file installation"
+      echo "   --datadir=[\$prefix/data]             application data base path"
+      echo "   --mandir=[\$datadir/man]              manual installation path"
+      echo "   --pixmapdir=[\$datadir/pixmaps]       icon installation path"
+      echo "   --desktopdir=[\$datadir/applications] xdg installation path"
+      echo "   --help"
+      echo ""
+      echo " Optionally set the CC and CXX environment variables."
+      echo ""
+      exit
+    fi
+    shift
+  done
+fi
+
 src_dir="`(cd ..;pwd)`/""$TARGET"-"$VERSION"
 srcdir="`pwd`"
 
 test -f error.txt && rm error.txt
 test -f mkdepend && rm mkdepend config.h
-
 
 echo "# automatically generated file by configure - do not edit" > $CONF
 echo "/* automatically generated file by configure - do not edit */" > $CONF_H
@@ -118,62 +186,9 @@ LIBDIR="lib"$BARCH
 export MACH OSUNAME LIBDIR BARCH LINE_ARCH
 
 
-if [ $# -gt 0 ]; then
-  prefix=""
-  while [ $# -gt 0 ]; do
-    arg=$1
-    # prefix exec_prefix bindir sbindir libdir includedir datadir mandir
-    switch=prefix
-    if [ "`echo \"$1\" | sed s/\"--$switch=\"//`" != "$1" ]; then
-      prefix="`echo \"$1\" | sed s/\"--$switch=\"//`"
-    fi
-    switch="exec-prefix"
-    if [ "`echo \"$1\" | sed s/\"--$switch=\"//`" != "$1" ]; then
-      exec_prefix="`echo $1 | sed s/--$switch=//`"
-    fi
-    switch=bindir
-    if [ "`echo \"$1\" | sed s/\"--$switch=\"//`" != "$1" ]; then
-      bindir="`echo $1 | sed s/--$switch=//`"
-    fi
-    switch=sbindir
-    if [ "`echo \"$1\" | sed s/\"--$switch=\"//`" != "$1" ]; then
-      sbindir="`echo $1 | sed s/--$switch=//`"
-    fi
-    switch=libdir
-    if [ "`echo \"$1\" | sed s/\"--$switch=\"//`" != "$1" ]; then
-      libdir="`echo $1 | sed s/--$switch=//`"
-    fi
-    switch=includedir
-    if [ "`echo \"$1\" | sed s/\"--$switch=\"//`" != "$1" ]; then
-      includedir="`echo $1 | sed s/--$switch=//`"
-    fi
-    switch=datadir
-    if [ "`echo \"$1\" | sed s/\"--$switch=\"//`" != "$1" ]; then
-      datadir="`echo $1 | sed s/--$switch=//`"
-    fi
-    switch=mandir
-    if [ "`echo \"$1\" | sed s/\"--$switch=\"//`" != "$1" ]; then
-      mandir="`echo $1 | sed s/--$switch=//`"
-    fi
-    # pixmapdir desktopdir
-    switch=pixmapdir
-    if [ "`echo \"$1\" | sed s/\"--$switch=\"//`" != "$1" ]; then
-      pixmapdir="`echo $1 | sed s/--$switch=//`"
-    fi
-    switch=desktopdir
-    if [ "`echo \"$1\" | sed s/\"--$switch=\"//`" != "$1" ]; then
-      desktopdir="`echo $1 | sed s/--$switch=//`"
-    fi
-    shift
-  done
-fi
 # prefix exec_prefix bindir sbindir libdir includedir datadir
 if [ -z "$prefix" ]; then
-  if [ $UNAME_ = "Darwin" ]; then
-    prefix=/opt/local
-  else
-    prefix=/usr/local
-  fi
+  prefix=/usr/local
 fi
 if [ -z "$exec_prefix" ]; then
   exec_prefix="$prefix"
@@ -328,10 +343,17 @@ echo "#define SRC_LOCALEDIR  \"$srcdir/po\"" >> $CONF_H
 
 echo "" >> $CONF
 
-echo "CXX = c++$LINE_ARCH" >> $CONF
-echo "CC = cc$LINE_ARCH" >> $CONF
-echo "CXX = c++$LINE_ARCH" > $CONF_I18N
-echo "CC = cc$LINE_ARCH" >> $CONF_I18N
+if [ -z "$CC" ]; then
+  CC=cc$LINE_ARCH
+fi
+if [ -z "$CXX" ]; then
+  CXX=c++$LINE_ARCH
+fi
+
+echo "CXX = $CXX" >> $CONF
+echo "CC = $CC" >> $CONF
+echo "CXX = $CXX" > $CONF_I18N
+echo "CC = $CC" >> $CONF_I18N
 cat $CONF_I18N.in >> $CONF_I18N
 echo $CONF_I18N prepared
 

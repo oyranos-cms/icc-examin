@@ -145,18 +145,18 @@ ICCkette::einfuegen (const Speicher & prof, int pos)
   ICCprofile::ICCDataType type = profile_[pos].load(prof);
   profile_[pos].filename( prof.name().c_str() );
   DBG_PROG_V( type )
-  ICCprofile::ICCDataType dtype = profile_[0].dataType;
+  ICCprofile::ICCDataType dtype = profile_[0].data_type;
   DBG_PROG_V( dtype )
 
   int extra_benachrichtigen = -1;
   // Messdaten sollten dem ersten Profil, so es normal ist, angehangen werden
-  if(profile_[0].dataType == ICCprofile::ICCprofileDATA)
+  if(profile_[0].data_type == ICCprofile::ICCprofileDATA)
   {
     //ICCmeasurement m;
     //m.load( profile.profil() , (const char*) prof, prof.size() );
     for (unsigned int i = 1; i < profile_.size(); ++i)
     {
-      if(profile_[i].dataType == ICCprofile::ICCmeasurementDATA)
+      if(profile_[i].data_type == ICCprofile::ICCmeasurementDATA)
       {
         ICCmeasurement & m = profile_[0].getMeasurement();
         int tag_n = profile_[i].getTagByName( "targ" );

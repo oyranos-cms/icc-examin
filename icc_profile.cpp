@@ -105,7 +105,7 @@ ICCprofile::copy_ ( const ICCprofile & p )
   measurement.profile_ = this;
   tags = p.tags;
   header = p.header;
-  dataType = p.dataType;
+  data_type = p.data_type;
   
   DBG_PROG_ENDE
   return *this;
@@ -154,7 +154,7 @@ ICCprofile::load (const Speicher & prof)
   } else {
     DBG_PROG_ENDE
     changing_ = false;
-    dataType = ICCnullDATA;
+    data_type = ICCnullDATA;
     return ICCnullDATA;
   }
 
@@ -164,7 +164,7 @@ ICCprofile::load (const Speicher & prof)
     measurement.load( this, data_, size_ );
     DBG_PROG_ENDE
     changing_ = false;
-    dataType = ICCmeasurementDATA;
+    data_type = ICCmeasurementDATA;
     return ICCmeasurementDATA;
   }
 
@@ -196,11 +196,15 @@ ICCprofile::load (const Speicher & prof)
     ic_tag.size = icValue ((icUInt32Number)groesse); DBG_MEM_V( groesse )
     ic_tag.offset = 0;
 
+    data_type = ICCmeasurementDATA;
+
     if( filename_.size() &&
         (filename_.find( "wrl",  filename_.find_last_of(".") )
          != std::string::npos) )
+    {
       memcpy (&ic_tag.sig, "vrml", 4);
-    else
+      data_type = ICCvrmlDATA;
+    } else
       ic_tag.sig = icValue (icSigCharTargetTag);
 
     memcpy (&tag_block[0], "text", 4); DBG_NUM_S( tag_block )
@@ -211,11 +215,12 @@ ICCprofile::load (const Speicher & prof)
 
     free (tag_block);
 
-    measurement.load( this, tag );
+    if(data_type == ICCmeasurementDATA)
+      measurement.load( this, tag );
+
     DBG_PROG_ENDE
     changing_ = false;
-    dataType = ICCmeasurementDATA;
-    return ICCmeasurementDATA;
+    return data_type;
   }
    
   DBG_MEM
@@ -236,16 +241,32 @@ ICCprofile::load (const Speicher & prof)
 # endif
   int tag_count = getTagCount();
   DBG_MEM_V( tag_count <<" "<< tags.size() )
+
   if(tag_count || tags.size())
     tags.resize(tag_count);
+
+  if(tag_count != (int)tags.size())
+    WARN_S(_("wrong tag size in profile ") << tag_count <<" "<< tags.size() <<" :"<< file);
+
+  data_type = ICCprofileDATA;
+
   DBG_MEM
   for (int i = 0 ; i < tag_count; i++)
   {
     DBG_MEM
     icTag *ic_tag = &tagList[i];
     int offset = icValue(tagList[i].offset);
+    int tag_size = icValue(tagList[i].size);
     char *tag_block = &((char*)data_)[offset];
+
+    if((offset+tag_size) > ((int)size_)) {
+      WARN_S(_("tag list is corrupted for tag")<<" "<<i<<" - "<< _("not inside memory block") );
+
+      tag_block = NULL;
+      data_type = ICCcorruptedprofileDATA;
+    }
     tags[i].load( this, ic_tag, tag_block );
+
 #   ifdef DEBUG_ICCPROFILE
     DBG_PROG_S( " sig: " << tags[i].getTagName() << " " << i )
 #   endif
@@ -253,7 +274,8 @@ ICCprofile::load (const Speicher & prof)
     // bekannte Tags mit Messdaten
     if (tags[i].getTagName() == "targ"
      || tags[i].getTagName() == "DevD"
-     || tags[i].getTagName() == "CIED") {
+     || tags[i].getTagName() == "CIED"
+     && data_type == ICCprofileDATA) {
 #     ifdef DEBUG_ICCPROFILE
       DBG_NUM_S( "Messdaten gefunden " << tags[i].getTagName() )
 #     endif
@@ -268,8 +290,7 @@ ICCprofile::load (const Speicher & prof)
 
   changing_ = false;
   DBG_PROG_ENDE
-  dataType = ICCprofileDATA;
-  return ICCprofileDATA;
+  return data_type;
 }
 
 
@@ -351,7 +372,9 @@ ICCprofile::printTags            ()
   std::string text;
   std::stringstream s;
 
-  if (!tags.size()) { DBG_PROG_ENDE
+  int size = tags.size();
+
+  if (!size) { DBG_PROG_ENDE
     return StringList;
   } DBG_MEM
 
@@ -549,7 +572,9 @@ ICCprofile::hasTagName            (std::string name)
   }
 
   int item = 0;
+  DBG_PROG_V( tags.size() )
   for (std::vector<ICCtag>::iterator it = tags.begin(); it != tags.end(); it++){
+    DBG_PROG_V((int)(&it))
     if ( (*it).getTagName() == name
       && (*it).getSize()            ) {
 #     ifdef DEBUG_ICCPROFILE
@@ -603,25 +628,36 @@ int
 ICCprofile::getColourChannelsCount(void)
 { DBG_PROG_START
   int channels = 0;
-       if(this->hasTagName("A2B0"))
-    channels = (int)tags[getTagByName("A2B0")].getNumbers(ICCtag::TABLE_IN)[0];
-  else if(this->hasTagName("A2B1"))
-    channels = (int)tags[getTagByName("A2B1")].getNumbers(ICCtag::TABLE_IN)[0];
-  else if(this->hasTagName("A2B2"))
-    channels = (int)tags[getTagByName("A2B2")].getNumbers(ICCtag::TABLE_IN)[0];
-  else if(this->hasTagName("B2A0"))
-    channels = (int)tags[getTagByName("B2A0")].getNumbers(ICCtag::TABLE_OUT)[0];
-  else if(this->hasTagName("B2A1"))
-    channels = (int)tags[getTagByName("B2A1")].getNumbers(ICCtag::TABLE_OUT)[0];
-  else if(this->hasTagName("B2A2"))
-    channels = (int)tags[getTagByName("B2A2")].getNumbers(ICCtag::TABLE_OUT)[0];
-  else if(this->hasTagName("kTRC"))
+  const char *tag_name = NULL;
+  ICCtag::MftChain format = ICCtag::TABLE_IN;
+  std::vector<double> nummern;
+       if(this->hasTagName("A2B0")) {
+    tag_name = "A2B0";
+  } else if(this->hasTagName("A2B1")) {
+    tag_name = "A2B1";
+  } else if(this->hasTagName("A2B2")) {
+    tag_name = "A2B2";
+  } else if(this->hasTagName("B2A0")) {
+    tag_name = "B2A0"; format = ICCtag::TABLE_OUT;
+  } else if(this->hasTagName("B2A1")) {
+    tag_name = "B2A1"; format = ICCtag::TABLE_OUT;
+  } else if(this->hasTagName("B2A2")) {
+    tag_name = "B2A2"; format = ICCtag::TABLE_OUT;
+  }
+
+  if(tag_name)
+  {
+    nummern = tags[getTagByName(tag_name)].getNumbers(format);
+    if(nummern.size())
+      channels = (int)nummern[0];
+  } else if(this->hasTagName("kTRC")) {
     channels = 1;
-  else if(this->hasTagName("rTRC") &&
+  } else if(this->hasTagName("rTRC") &&
           this->hasTagName("gTRC") &&
-          this->hasTagName("bTRC"))
+          this->hasTagName("bTRC")) {
     channels = 3;
- 
+  }
+
   DBG_PROG_ENDE
   return channels;
 }

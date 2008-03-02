@@ -202,7 +202,7 @@ release:	icc_alles.o
 dynamic:	$(BINTARGET)
 
 $(BINTARGET):	$(BASE) $(OBJECTS) $(LINGUAS_SRC) $(I18N_OBJECTS) $(LIBNAME) $(LIBFL_I18N)
-	echo Verknuepfen $@ ... $(OBJECTS)
+	echo Verknuepfen $@ ...
 	$(CXX) $(OPTS) -o $(BINTARGET) \
 	$(OBJECTS) \
 	$(LDLIBS) $(LINK_LIB_PATH) $(LINK_SRC_PATH)

@@ -87,8 +87,11 @@ class ICCtag {
     std::string         getInfo ()
                           { DBG_MEM  return getSigTagDescription(_sig); }
     std::string         getTypName()
-                          {
-                            icTagTypeSignature sig = ((icTagBase*)data_) -> sig;
+                          { icTagTypeSignature sig;
+                            if( ((icTagBase*)data_) )
+                              sig = ((icTagBase*)data_) -> sig;
+                            else
+                              return "";
                             DBG_MEM
                             return getSigTypeName(
                                             (icTagTypeSignature)icValue(sig)); }

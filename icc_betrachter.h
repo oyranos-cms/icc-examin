@@ -116,11 +116,6 @@ private:
   void cb_vcgt_load_button_i(Fl_Button*, void*);
   static void cb_vcgt_load_button(Fl_Button*, void*);
 public:
-  Fl_Button *vcgt_refresh_button;
-private:
-  void cb_vcgt_refresh_button_i(Fl_Button*, void*);
-  static void cb_vcgt_refresh_button(Fl_Button*, void*);
-public:
   Fl_Button *vcgt_close_button;
 private:
   void cb_vcgt_close_button_i(Fl_Button*, void*);

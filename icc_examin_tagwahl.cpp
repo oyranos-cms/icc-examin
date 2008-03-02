@@ -194,7 +194,12 @@ ICCexamin::waehleTag (int item)
       icc_betrachterNeuzeichnen(icc_betrachter->tag_text); */
     } else {
       FREI_(false);
-      icc_betrachter->tag_text->hinein ( (profile.profil()->getTagText (item))[0] ); DBG_PROG
+      std::vector<std::string> texte = profile.profil()->getTagText (item);
+      if(texte.size())
+        icc_betrachter->tag_text->hinein ( texte[0] );
+      else
+        icc_betrachter->tag_text->hinein ( "" );
+        
       FREI_(true);
       icc_betrachterNeuzeichnen(icc_betrachter->tag_text);
     }

@@ -252,16 +252,22 @@ ICCmeasurement::leseTag (void)
 
   CgatsFilter cgats;
   cgats.lade( data_, size_ );
-  std::string data = cgats.lcms_gefiltert (); DBG_NUM_V( (int*)data_ )
+  std::string data = cgats.lcms_gefiltert (); DBG_NUM_V( (int*)data_ <<" "<< size_ )
 
-  // korrigierte CGATS Daten -> data_
-  if (data_ != NULL) free (data_);
-  data_ = (char*) calloc (sizeof(char), data.size()+1);
-  size_ = data.size();
-  memcpy (data_, data.c_str(), size_); DBG_NUM_V( (int*)data_ )
+  
+  if(data.size())
+  {  
+    // korrigierte CGATS Daten -> data_
+    if (data_ != NULL) { free (data_); data_ = NULL; }
 
-  // lcms liest ein
-  lcms_parse();
+    data_ = (char*) calloc (sizeof(char), data.size()+1);
+    size_ = data.size();
+    memcpy (data_, data.c_str(), size_); DBG_NUM_V( (int*)data_ )
+
+    // lcms liest ein
+    lcms_parse();
+  }
+
   DBG_PROG_ENDE
 }
 
@@ -269,6 +275,9 @@ void
 ICCmeasurement::init (void)
 { DBG_PROG_START DBG_MEM_V( (int*)data_ )
   if (valid())
+    return;
+
+  if( profile_->data_type == ICCprofile::ICCcorruptedprofileDATA )
     return;
 
   if (!profile_) WARN_S( "kann nicht initialisieren, Profilreferenz fehlt; id: "<<id_<<" profil: "<< (int*)profile_ )
@@ -468,6 +477,10 @@ ICCmeasurement::lcms_parse                   (void)
 void
 ICCmeasurement::init_umrechnen                     (void)
 { DBG_PROG_START
+
+  if( profile_->data_type == ICCprofile::ICCcorruptedprofileDATA )
+    return;
+
   Lab_Differenz_max_ = -1000.0;
   Lab_Differenz_min_ = 1000.0;
   Lab_Differenz_Durchschnitt_ = 0.0;
@@ -907,7 +920,7 @@ ICCmeasurement::getText                     (void)
   int z = 0; // Zeilen
 
   tabelle[0].resize(1);
-  tabelle[0][0] = _("no measurment data available");
+  tabelle[0][0] = _("no measurment data or correct profile conversion available");
 
   if ((CMYK_measurement_ || RGB_measurement_)
        && XYZ_measurement_) {

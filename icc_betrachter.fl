@@ -341,7 +341,7 @@ class ICCfltkBetrachter {open
     } {}
     Fl_Window ueber {
       label {About ICC Examin} open
-      xywh {752 169 365 289} type Double resizable
+      xywh {757 190 365 289} type Double resizable
       code0 {o->hide();}
       class My_Fl_Window non_modal visible
     } {
@@ -381,7 +381,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window vcgt {
       label {Grafic Card Gamma Table}
-      xywh {471 42 370 390} type Double resizable
+      xywh {222 250 370 390} type Double resizable
       code0 {o->hide();}
       class My_Fl_Window visible
     } {
@@ -396,33 +396,28 @@ class ICCfltkBetrachter {open
         Fl_Button vcgt_set_button {
           label Set
           callback {icc_examin->moniSetzen();}
-          tooltip {Set the current profile as monitor profile and upload vcgt tag to the video card} xywh {10 360 65 25} hotspot
+          tooltip {Set the current profile as monitor profile and upload vcgt tag to the video card} xywh {10 360 85 25} hotspot
         }
         Fl_Button vcgt_reset_button {
           label Reset
           callback {icc_examin->standardGamma();}
-          tooltip {reset to standard gamma} xywh {75 360 75 25} hotspot
+          tooltip {reset to standard gamma} xywh {95 360 90 25} hotspot
         }
         Fl_Button vcgt_load_button {
           label Load
           callback {icc_examin->moniHolen();}
-          tooltip {Load the current monitor profile} xywh {150 360 65 25} hotspot
-        }
-        Fl_Button vcgt_refresh_button {
-          label Refresh
-          callback {icc_examin->vcgtZeigen();}
-          tooltip {refresh gamma table from video card} xywh {215 360 75 25} hotspot
+          tooltip {Load the current monitor profile} xywh {185 360 90 25} hotspot
         }
         Fl_Button vcgt_close_button {
           label Close
-          callback {icc_examin->vcgtStoppen();}
-          xywh {290 360 75 25}
+          callback {icc_examin->vcgtStoppen();} selected
+          xywh {275 360 90 25}
         }
       }
     }
     Fl_Window details {
       label {ICC Examin} open
-      xywh {615 267 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
+      xywh {620 288 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
     } {
       Fl_Group {} {open
         xywh {0 0 385 520}
@@ -643,7 +638,7 @@ initHilfe();
   /* set visible */
   Fl_Tabs *tb = dynamic_cast<Fl_Tabs*>(hilfe_html->parent());
   if(tb)
-    tb->value(icc_examin->icc_betrachter->lizenz_html);} selected
+    tb->value(icc_examin->icc_betrachter->lizenz_html);}
               xywh {25 25 100 20}
             }
           }

@@ -193,13 +193,6 @@ void ICCfltkBetrachter::cb_vcgt_load_button(Fl_Button* o, void* v) {
   ((ICCfltkBetrachter*)(o->parent()->parent()->user_data()))->cb_vcgt_load_button_i(o,v);
 }
 
-void ICCfltkBetrachter::cb_vcgt_refresh_button_i(Fl_Button*, void*) {
-  icc_examin->vcgtZeigen();
-}
-void ICCfltkBetrachter::cb_vcgt_refresh_button(Fl_Button* o, void* v) {
-  ((ICCfltkBetrachter*)(o->parent()->parent()->user_data()))->cb_vcgt_refresh_button_i(o,v);
-}
-
 void ICCfltkBetrachter::cb_vcgt_close_button_i(Fl_Button*, void*) {
   icc_examin->vcgtStoppen();
 }
@@ -643,28 +636,23 @@ Fl_Double_Window* ICCfltkBetrachter::init(int argc, char** argv) {
         o->when(FL_WHEN_RELEASE);
         o->show();
       }
-      { Fl_Button* o = vcgt_set_button = new Fl_Button(10, 360, 65, 25, _("Set"));
+      { Fl_Button* o = vcgt_set_button = new Fl_Button(10, 360, 85, 25, _("Set"));
         o->tooltip(_("Set the current profile as monitor profile and upload vcgt tag to the video c\
 ard"));
         o->callback((Fl_Callback*)cb_vcgt_set_button);
         w->hotspot(o);
       }
-      { Fl_Button* o = vcgt_reset_button = new Fl_Button(75, 360, 75, 25, _("Reset"));
+      { Fl_Button* o = vcgt_reset_button = new Fl_Button(95, 360, 90, 25, _("Reset"));
         o->tooltip(_("reset to standard gamma"));
         o->callback((Fl_Callback*)cb_vcgt_reset_button);
         w->hotspot(o);
       }
-      { Fl_Button* o = vcgt_load_button = new Fl_Button(150, 360, 65, 25, _("Load"));
+      { Fl_Button* o = vcgt_load_button = new Fl_Button(185, 360, 90, 25, _("Load"));
         o->tooltip(_("Load the current monitor profile"));
         o->callback((Fl_Callback*)cb_vcgt_load_button);
         w->hotspot(o);
       }
-      { Fl_Button* o = vcgt_refresh_button = new Fl_Button(215, 360, 75, 25, _("Refresh"));
-        o->tooltip(_("refresh gamma table from video card"));
-        o->callback((Fl_Callback*)cb_vcgt_refresh_button);
-        w->hotspot(o);
-      }
-      { Fl_Button* o = vcgt_close_button = new Fl_Button(290, 360, 75, 25, _("Close"));
+      { Fl_Button* o = vcgt_close_button = new Fl_Button(275, 360, 90, 25, _("Close"));
         o->callback((Fl_Callback*)cb_vcgt_close_button);
       }
       o->end();
