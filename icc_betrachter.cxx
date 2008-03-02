@@ -129,20 +129,20 @@ TagDrawings::TagDrawings(int X,int Y,int W,int H) : Fl_Widget(X,Y,W,H), X(X), Y(
 void TagDrawings::draw() {
   DBG_PROG_START
   // Kurven oder Punkte malen
-  DBG_PROG_S( icc_examin->kurven.size() <<" "<< icc_examin->punkte.size() )
+  DBG_PROG_S( icc_examin->kurven[id].size() <<" "<< icc_examin->punkte[id].size() )
 
   //DBG_PROG_V( wiederholen )
 
-  if (icc_examin->kurven.size())
+  if (icc_examin->kurven[id].size())
   { DBG_PROG
     wiederholen = false;
-    draw_kurve (x(),y(),w(),h());
-  } else if (icc_examin->punkte.size()) {
+    drawKurve (id, x(),y(),w(),h());
+  } else if (icc_examin->punkte[id].size()) {
     if (wiederholen)
-    { draw_cie_shoe(x(),y(),w(),h(),false);
+    { drawCieShoe(id, x(),y(),w(),h(),false);
       Fl::add_timeout( 1.2, (void(*)(void*))dHaendler ,(void*)this);
     } else {
-      draw_cie_shoe(x(),y(),w(),h(),true);
+      drawCieShoe(id, x(),y(),w(),h(),true);
     }
     wiederholen = true;
   }
@@ -150,7 +150,7 @@ void TagDrawings::draw() {
   DBG_PROG_ENDE
 }
 
-void TagDrawings::hineinPunkt(std::vector<double> vect, std::vector<std::string> txt) {
+void TagDrawings::hineinPunkt(std::vector<double> &vect, std::vector<std::string> &txt) {
   DBG_PROG_START
   //CIExyY aus tag_browser anzeigen
 
@@ -158,7 +158,7 @@ void TagDrawings::hineinPunkt(std::vector<double> vect, std::vector<std::string>
   DBG_PROG_ENDE
 }
 
-void TagDrawings::hineinKurven(std::vector<std::vector<double> >vect, std::vector<std::string> txt) {
+void TagDrawings::hineinKurven(std::vector<std::vector<double> > &vect, std::vector<std::string> &txt) {
   DBG_PROG_START
   //Kurve aus tag_browser anzeigen
 
@@ -170,7 +170,7 @@ void TagDrawings::hineinKurven(std::vector<std::vector<double> >vect, std::vecto
 
 void TagDrawings::ruhigNeuzeichnen(void) {
   DBG_PROG_START
-  draw_cie_shoe(x(),y(),w(),h(),true);
+  drawCieShoe(id, x(),y(),w(),h(),true);
   DBG_PROG_ENDE
 }
 #include <FL/fl_draw.H>
@@ -246,6 +246,20 @@ inline void ICCfltkBetrachter::cb_ja_i(Fl_Button*, void*) {
 }
 void ICCfltkBetrachter::cb_ja(Fl_Button* o, void* v) {
   ((ICCfltkBetrachter*)(o->parent()->parent()->user_data()))->cb_ja_i(o,v);
+}
+
+inline void ICCfltkBetrachter::cb_Gut_i(Fl_Button*, void*) {
+  vcgt->hide();
+}
+void ICCfltkBetrachter::cb_Gut(Fl_Button* o, void* v) {
+  ((ICCfltkBetrachter*)(o->parent()->parent()->user_data()))->cb_Gut_i(o,v);
+}
+
+inline void ICCfltkBetrachter::cb_Auffrischen_i(Fl_Button*, void*) {
+  icc_examin->vcgtZeigen();
+}
+void ICCfltkBetrachter::cb_Auffrischen(Fl_Button* o, void* v) {
+  ((ICCfltkBetrachter*)(o->parent()->parent()->user_data()))->cb_Auffrischen_i(o,v);
 }
 
 inline void ICCfltkBetrachter::cb_ffnen_i(Fl_Menu_*, void*) {
@@ -332,6 +346,14 @@ void ICCfltkBetrachter::cb_menueintrag_3D(Fl_Menu_* o, void* v) {
   ((ICCfltkBetrachter*)(o->parent()->parent()->user_data()))->cb_menueintrag_3D_i(o,v);
 }
 
+inline void ICCfltkBetrachter::cb_menueintrag_vcgt_i(Fl_Menu_*, void*) {
+  vcgt->show();
+icc_examin->vcgtZeigen();
+}
+void ICCfltkBetrachter::cb_menueintrag_vcgt(Fl_Menu_* o, void* v) {
+  ((ICCfltkBetrachter*)(o->parent()->parent()->user_data()))->cb_menueintrag_vcgt_i(o,v);
+}
+
 inline void ICCfltkBetrachter::cb_ber_i(Fl_Menu_*, void*) {
   ueber->show();
 ueber_html->value(getUeberHtml().c_str());
@@ -353,6 +375,7 @@ Fl_Menu_Item ICCfltkBetrachter::menu_[] = {
  {"Ganzer Bildschirm an/aus", 0x40076,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_Voll, 0, 0, 0, 0, 14, 56},
  {"Pr\374""fansicht", 0x40062,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_inspekt, 0, 3, 0, 0, 14, 56},
  {"3D Ansicht", 0x40068,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_3D, 0, 130, 0, 0, 14, 56},
+ {"Grafikkarten Gamma", 0x40067,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_vcgt, 0, 0, 0, 0, 14, 56},
  {0},
  {"Hilfe", 0,  0, 0, 64, 0, 0, 14, 56},
  {"\334""ber", 0,  (Fl_Callback*)ICCfltkBetrachter::cb_ber, 0, 0, 0, 0, 14, 56},
@@ -364,7 +387,8 @@ Fl_Menu_Item* ICCfltkBetrachter::menueintrag_html_speichern = ICCfltkBetrachter:
 Fl_Menu_Item* ICCfltkBetrachter::menueintrag_Voll = ICCfltkBetrachter::menu_ + 9;
 Fl_Menu_Item* ICCfltkBetrachter::menueintrag_inspekt = ICCfltkBetrachter::menu_ + 10;
 Fl_Menu_Item* ICCfltkBetrachter::menueintrag_3D = ICCfltkBetrachter::menu_ + 11;
-Fl_Menu_Item* ICCfltkBetrachter::menu_hilfe = ICCfltkBetrachter::menu_ + 13;
+Fl_Menu_Item* ICCfltkBetrachter::menueintrag_vcgt = ICCfltkBetrachter::menu_ + 12;
+Fl_Menu_Item* ICCfltkBetrachter::menu_hilfe = ICCfltkBetrachter::menu_ + 14;
 
 inline void ICCfltkBetrachter::cb_tag_browser_i(TagBrowser* o, void*) {
   o->selectItem( o->value() );
@@ -470,6 +494,37 @@ Fl_Double_Window* ICCfltkBetrachter::init() {
     o->end();
     o->resizable(o);
   }
+  { Fl_Double_Window* o = vcgt = new Fl_Double_Window(370, 390, "Grafikkarten Gamma Tabellen");
+    w = o;
+    o->labeltype(FL_NORMAL_LABEL);
+    o->user_data((void*)(this));
+    { Fl_Group* o = new Fl_Group(0, 0, 370, 390);
+      { TagDrawings* o = vcgt_viewer = new TagDrawings(0, 0, 370, 360);
+        o->box(FL_NO_BOX);
+        o->color(FL_BACKGROUND_COLOR);
+        o->selection_color(FL_BACKGROUND_COLOR);
+        o->labeltype(FL_NORMAL_LABEL);
+        o->labelfont(0);
+        o->labelsize(14);
+        o->labelcolor(FL_BLACK);
+        o->align(FL_ALIGN_CENTER);
+        o->when(FL_WHEN_RELEASE);
+        o->show();
+      }
+      { Fl_Button* o = new Fl_Button(255, 360, 110, 25, "Gut");
+        o->callback((Fl_Callback*)cb_Gut);
+      }
+      { Fl_Button* o = new Fl_Button(135, 360, 110, 25, "Auffrischen");
+        o->callback((Fl_Callback*)cb_Auffrischen);
+        w->hotspot(o);
+      }
+      o->end();
+    }
+    o->hide();
+    o->set_non_modal();
+    o->end();
+    o->resizable(o);
+  }
   { Fl_Double_Window* o = details = new Fl_Double_Window(385, 520, "ICC Details");
     w = o;
     o->box(FL_NO_BOX);
@@ -479,6 +534,9 @@ Fl_Double_Window* ICCfltkBetrachter::init() {
       { Fl_Menu_Bar* o = new Fl_Menu_Bar(0, 0, 385, 25);
         o->align(FL_ALIGN_LEFT|FL_ALIGN_INSIDE);
         o->when(3);
+        { Fl_Menu_Item* o = &menu_[12];
+          o->hide();
+        }
         o->menu(menu_);
       }
       { Fl_Tile* o = examin = new Fl_Tile(0, 25, 385, 470);

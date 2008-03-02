@@ -189,8 +189,8 @@ class TagTexts {: {public Fl_Hold_Browser}
 
 class TagDrawings {: {public Fl_Widget}
 } {
-  decl {int X; int Y; int W; int H;} {}
-  decl {int wiederholen;} {public
+  decl {int X, Y, W, H;} {}
+  decl {int wiederholen, id;} {public
   }
   Function {TagDrawings(int X,int Y,int W,int H) : Fl_Widget(X,Y,W,H), X(X), Y(Y), W(W), H(H)} {open
   } {}
@@ -198,36 +198,34 @@ class TagDrawings {: {public Fl_Widget}
   } {
     code DBG_PROG_START {}
     code {// Kurven oder Punkte malen
-  DBG_PROG_S( icc_examin->kurven.size() <<" "<< icc_examin->punkte.size() )
+  DBG_PROG_S( icc_examin->kurven[id].size() <<" "<< icc_examin->punkte[id].size() )
 
   //DBG_PROG_V( wiederholen )
 
-  if (icc_examin->kurven.size())
+  if (icc_examin->kurven[id].size())
   { DBG_PROG
     wiederholen = false;
-    draw_kurve (x(),y(),w(),h());
-  } else if (icc_examin->punkte.size()) {
+    drawKurve (id, x(),y(),w(),h());
+  } else if (icc_examin->punkte[id].size()) {
     if (wiederholen)
-    { draw_cie_shoe(x(),y(),w(),h(),false);
+    { drawCieShoe(id, x(),y(),w(),h(),false);
       Fl::add_timeout( 1.2, (void(*)(void*))dHaendler ,(void*)this);
     } else {
-      draw_cie_shoe(x(),y(),w(),h(),true);
+      drawCieShoe(id, x(),y(),w(),h(),true);
     }
     wiederholen = true;
   }
   DBG_PROG} {}
     code DBG_PROG_ENDE {}
   }
-  Function {hineinPunkt(std::vector<double> vect, std::vector<std::string> txt)} {open
-  } {
+  Function {hineinPunkt(std::vector<double> &vect, std::vector<std::string> &txt)} {} {
     code DBG_PROG_START {}
     code {//CIExyY aus tag_browser anzeigen
 
   wiederholen = false;} {}
     code DBG_PROG_ENDE {}
   }
-  Function {hineinKurven(std::vector<std::vector<double> >vect, std::vector<std::string> txt)} {open
-  } {
+  Function {hineinKurven(std::vector<std::vector<double> > &vect, std::vector<std::string> &txt)} {} {
     code DBG_PROG_START {}
     code {//Kurve aus tag_browser anzeigen
 
@@ -239,7 +237,7 @@ class TagDrawings {: {public Fl_Widget}
   Function {ruhigNeuzeichnen(void)} {open return_type void
   } {
     code DBG_PROG_START {}
-    code {draw_cie_shoe(x(),y(),w(),h(),true);} {}
+    code {drawCieShoe(id, x(),y(),w(),h(),true);} {}
     code DBG_PROG_ENDE {}
   }
 } 
@@ -402,7 +400,7 @@ class ICCfltkBetrachter {open
     dateiwahl->preview_label = _("Vorschau");
   \#endif} {}
     Fl_Window ueber {
-      label {Über ICC examin}
+      label {Über ICC examin} open
       xywh {567 641 366 241} type Double hide resizable
       code0 {o->hide();} non_modal
     } {
@@ -419,9 +417,34 @@ class ICCfltkBetrachter {open
         }
       }
     }
+    Fl_Window vcgt {
+      label {Grafikkarten Gamma Tabellen} open
+      xywh {783 332 370 390} type Double labeltype NORMAL_LABEL resizable
+      code0 {o->hide();} non_modal visible
+    } {
+      Fl_Group {} {open
+        xywh {0 0 370 390}
+      } {
+        Fl_Box vcgt_viewer {
+          xywh {0 0 370 360}
+          code0 {o->show();}
+          class TagDrawings
+        }
+        Fl_Button {} {
+          label Gut
+          callback {vcgt->hide();}
+          xywh {255 360 110 25}
+        }
+        Fl_Button {} {
+          label Auffrischen
+          callback {icc_examin->vcgtZeigen();}
+          xywh {135 360 110 25} hotspot
+        }
+      }
+    }
     Fl_Window details {
       label {ICC Details} open
-      xywh {843 460 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
+      xywh {591 364 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
     } {
       Fl_Group {} {open
         xywh {0 0 385 520}
@@ -513,6 +536,13 @@ class ICCfltkBetrachter {open
   icc_examin->neuzeichnen(DD_histogram);}
               xywh {50 50 100 20} type Toggle shortcut 0x40068 divider
             }
+            menuitem menueintrag_vcgt {
+              label {Grafikkarten Gamma}
+              callback {vcgt->show();
+icc_examin->vcgtZeigen();} selected
+              xywh {15 15 100 20} shortcut 0x40067
+              code0 {o->hide();}
+            }
           }
           submenu menu_hilfe {
             label Hilfe open
@@ -529,7 +559,7 @@ ueber_html->value(getUeberHtml().c_str());}
             }
           }
         }
-        Fl_Tile examin {open selected
+        Fl_Tile examin {open
           xywh {0 25 385 470} resizable
         } {
           Fl_Help_View inspekt_html {
@@ -675,8 +705,7 @@ ueber_html->value(getUeberHtml().c_str());}
   icc_examin->quit();} {}
     code DBG_PROG_ENDE {}
   }
-  Function {zeig_mich_(void* widget)} {open
-  } {
+  Function {zeig_mich_(void* widget)} {} {
     code DBG_PROG_START {}
     code {// zeigt das ausgewählte Fenster (widget)
 
@@ -722,8 +751,7 @@ ueber_html->value(getUeberHtml().c_str());}
   }} {}
     code DBG_PROG_ENDE {}
   }
-  Function {measurement(bool has_measurement)} {open
-  } {
+  Function {measurement(bool has_measurement)} {} {
     code {if (has_measurement) {
     DBG_PROG_S(menueintrag_inspekt->value())
     if (menueintrag_inspekt->value()) {

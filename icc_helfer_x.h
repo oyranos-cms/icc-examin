@@ -36,7 +36,8 @@
 // Helferfunktionen
 // definiert in icc_helfer_x.cpp
 
-std::vector<double> getXgamma(std::string display_name); 
+std::vector<std::vector<double> > getXgamma ( std::string display_name,
+                                              std::vector<std::string> &texte ); 
 
 
 

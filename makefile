@@ -23,9 +23,6 @@ ifdef FLU
 FLU_H = -DHAVE_FLU
 endif
 
-CXXFLAGS=$(OPTS) $(INCL) $(FLU_H) $(FLTK_H)
-INCL=-I$(includedir) -I/usr/X11R6/include -I./ -I/opt/kai-uwe/include
-
 VRML_LIBS=$(FLTK_GL_LIBS) -lGL -lopenvrml -lopenvrml-gl -lpng -ljpeg \
  -lXinerama -lXft
 
@@ -45,7 +42,11 @@ ifdef APPLE
   GLUT = -framework GLUT -lobjc
 else
   GLUT = -lglut
+  X_H  = -DHAVE_X
 endif
+
+CXXFLAGS=$(OPTS) $(INCL) $(FLU_H) $(FLTK_H) $(X_H)
+INCL=-I$(includedir) -I/usr/X11R6/include -I./ -I/opt/kai-uwe/include
 
 LDLIBS = -L$(libdir) -L./ $(FLTK_LIBS) \
 	$(X11_LIBS) -llcms $(KDB_LIBS) $(GLUT) $(FLU_LIBS) -L/opt/kai-uwe/lib

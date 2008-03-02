@@ -83,9 +83,9 @@ extern int icc_debug;
 #define DBG_PROG_S(txt)
 #define DBG_PROG_V(txt)
 #endif
-#define WARN DBG
-#define WARN_S(txt) DBG_S(txt)
-#define WARN_V(txt) DBG_V(txt)
+#define WARN { cout << _("!!! Warnung !!!"); DBG }
+#define WARN_S(txt) { cout << _("!!! Warnung !!!"); DBG_S(txt) }
+#define WARN_V(txt) { cout << _("!!! Warnung !!!"); DBG_V(txt) }
 
 
 // mathematische Helfer

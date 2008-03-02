@@ -34,6 +34,8 @@
 #ifdef HAVE_FLTK
   #include "icc_helfer_fltk.h"
 #endif
-
+#ifdef HAVE_X
+  #include "icc_helfer_x.h"
+#endif
 
 #endif //ICC_HELFER_UI_H

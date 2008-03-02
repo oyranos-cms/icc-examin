@@ -40,6 +40,12 @@ extern ICCexamin *icc_examin;
 
 class ICCexamin
 {
+  enum {
+    TAG_VIEWER,
+    MFT_VIEWER,
+    VCGT_VIEWER,
+    MAX_VIEWER
+  };
   public:
                  ICCexamin ();
                  ~ICCexamin () {; }
@@ -54,7 +60,7 @@ class ICCexamin
 
     std::string  waehleTag (int item);
     void         waehleMft (int item);
-    int          kurve_umkehren;
+    std::vector<int> kurve_umkehren;
   private:
     int  _item,  _mft_item;
     int  _zeig_prueftabelle,
@@ -66,14 +72,14 @@ class ICCexamin
   public:
     int  tag_nr () { return _item; }
     int  mft_nr () { return _mft_item; }
-    void zeig_prueftabelle ();
+    void zeigPrueftabelle ();
 
-    std::vector<std::vector<double> > kurven;
-    std::vector<double> punkte;
-    std::vector<std::string> texte;
+    std::vector<std::vector<std::vector<double> > > kurven;
+    std::vector<std::vector<double> >               punkte;
+    std::vector<std::vector<std::string> >          texte;
 
-  public:
     void histogram();
+    void vcgtZeigen ();
   private:
     int _gl_ansicht;                   // glutWindow
     std::vector<GL_Ansicht*> _gl_ansichten;

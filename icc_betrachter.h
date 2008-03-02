@@ -44,13 +44,13 @@ public:
 };
 
 class TagDrawings : public Fl_Widget {
-  int X; int Y; int W; int H;
+  int X, Y, W, H;
 public:
-  int wiederholen;
+  int wiederholen, id;
   TagDrawings(int X,int Y,int W,int H) ;
   void draw();
-  void hineinPunkt(std::vector<double> vect, std::vector<std::string> txt);
-  void hineinKurven(std::vector<std::vector<double> >vect, std::vector<std::string> txt);
+  void hineinPunkt(std::vector<double> &vect, std::vector<std::string> &txt);
+  void hineinKurven(std::vector<std::vector<double> > &vect, std::vector<std::string> &txt);
   void ruhigNeuzeichnen(void);
 };
 
@@ -87,6 +87,14 @@ private:
   inline void cb_ja_i(Fl_Button*, void*);
   static void cb_ja(Fl_Button*, void*);
 public:
+  Fl_Double_Window *vcgt;
+  TagDrawings *vcgt_viewer;
+private:
+  inline void cb_Gut_i(Fl_Button*, void*);
+  static void cb_Gut(Fl_Button*, void*);
+  inline void cb_Auffrischen_i(Fl_Button*, void*);
+  static void cb_Auffrischen(Fl_Button*, void*);
+public:
   Fl_Double_Window *details;
   static Fl_Menu_Item menu_[];
 private:
@@ -116,6 +124,11 @@ public:
 private:
   inline void cb_menueintrag_3D_i(Fl_Menu_*, void*);
   static void cb_menueintrag_3D(Fl_Menu_*, void*);
+public:
+  static Fl_Menu_Item *menueintrag_vcgt;
+private:
+  inline void cb_menueintrag_vcgt_i(Fl_Menu_*, void*);
+  static void cb_menueintrag_vcgt(Fl_Menu_*, void*);
 public:
   static Fl_Menu_Item *menu_hilfe;
 private:

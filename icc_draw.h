@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2005  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -32,9 +32,9 @@
 
 #include <vector>
 
-void draw_kurve    (int X, int Y, int W, int H);
+void drawKurve    (int id, int X, int Y, int W, int H);
 
-void draw_cie_shoe (int X, int Y, int W, int H,
+void drawCieShoe (int id, int X, int Y, int W, int H,
                     int  repeated);
 
 #endif //ICC_DRAW_H
