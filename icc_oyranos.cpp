@@ -308,7 +308,7 @@ Oyranos::moni_test_ ()
     Speicher v_block = moni_;
       DBG_MEM_V( v_block.size() )
     const char *profil_name=_("Monitor Profile");
-      DBG_PROG_V( (int*)profil_name << profil_name )
+      DBG_PROG_V( (int*)profil_name <<" "<< profil_name )
     // Wir holen das Profil wenn es sich geändert hat.
     // a) neuer Name  - schwierig zu identifizieren über oyDeviceProfil
     // b) Benachrichtigung  - vorausgesetzt Oyranos (X?) ändert das Profil
@@ -327,8 +327,7 @@ Oyranos::moni_test_ ()
         DBG_MEM
     }
   }
-  
-  DBG_NUM_S( "Monitorprofil = "<< *moni_ <<" "<< moni_.size() <<"\n" )
+  DBG_NUM_S( "Monitorprofil = "<< moni_.name() <<" "<< moni_.size() <<"\n" )
 
 # else
 #   ifdef APPLE

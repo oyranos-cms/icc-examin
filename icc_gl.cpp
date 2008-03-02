@@ -96,7 +96,7 @@ FTFont *font, *ortho_font;
 // Materialfarben setzen
 #define FARBE(r,g,b) {farbe [0] = (r); farbe [1] = (g); farbe [2] = (b); \
                       glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, farbe); \
-                      glColor4f(farbe[0],farbe[1],farbe[2],farbe[3]); }
+                      glColor4fv(farbe); }
 
 // Text zeichnen
 #ifdef HAVE_FTGL
@@ -504,12 +504,12 @@ void
 GL_Ansicht::GLinit_()
 { DBG_PROG_START
   GLfloat mat_ambuse[] = { 0.2, 0.2, 0.2, 1.0 };
-  GLfloat mat_specular[] = { 0.6, 0.6, 0.6, 1.0 };
+  GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
 
 # ifdef Beleuchtung
-  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, mat_ambuse);
-  glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
-  glMaterialf(GL_FRONT, GL_SHININESS, 25.0);
+  glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, mat_ambuse);
+  glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, mat_specular);
+  glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 50.0);
 # if 0
   GLfloat light0_position[] = { -2.4, -1.6, -1.2, 0.0 };
   glLightfv(GL_LIGHT0, GL_POSITION, light0_position);
@@ -1122,11 +1122,11 @@ GL_Ansicht::netzeAuffrischen()
              lZ = EyeDist*cos(TORAD(EyeAz-30))*cos(TORAD(EyeEl));
        glEnable(GL_LIGHTING);
        glEnable(GL_DEPTH_TEST);
-#      if 1
-       GLfloat lmodel_ambient[] = {hintergrundfarbe, hintergrundfarbe,
-                                   hintergrundfarbe, 1.0};
+
+       GLfloat lmodel_ambient[] = {0.125+hintergrundfarbe/8,
+                                   0.125+hintergrundfarbe/8,
+                                   0.125+hintergrundfarbe/8, 1.0};
        glLightModelfv(GL_LIGHT_MODEL_AMBIENT, lmodel_ambient);
-#      endif
 
        GLfloat light1_position[] = { lX, lY, lZ, 1.0 };
        GLfloat light_ambient[] = {0.1, 0.1, 0.1, 1.0};
@@ -1145,7 +1145,7 @@ GL_Ansicht::netzeAuffrischen()
        GLfloat light2_diffuse[] = {1.0, 1.0, 1.0, 1.0};
        GLfloat light2_specular[] = {1.0, 1.0, 1.0, 1.0};
        GLfloat light2_position[] = {X, Y, Z, 1.0};
-       GLfloat spot_direction[] = {-X, -Y, -Z};
+       GLfloat spot_direction[] = {X, Y, Z};
 
        glLightfv(GL_LIGHT2, GL_AMBIENT, light2_ambient);
        glLightfv(GL_LIGHT2, GL_DIFFUSE, light2_diffuse);
@@ -1164,7 +1164,8 @@ GL_Ansicht::netzeAuffrischen()
        glDisable(GL_LIGHT0);
        glEnable(GL_LIGHTING);
 
-       zeichneKegel(0.02, 0.05, 16, lX, 0, lZ);
+       if(icc_debug != 0)
+         zeichneKegel(0.02, 0.05, 16, lX, 0, lZ);
 
 
        if(icc_debug == 14) {
@@ -1260,10 +1261,10 @@ GL_Ansicht::netzeAuffrischen()
     glListen[RASTER] = 0;
   }
 
-#     ifndef Beleuchtung
-      glDisable(GL_LIGHTING);
-#     else
+#     ifdef Beleuchtung
       glEnable(GL_LIGHTING);
+#     else
+      glDisable(GL_LIGHTING);
 #     endif
 
 #     if 0
@@ -1300,7 +1301,11 @@ GL_Ansicht::netzeAuffrischen()
           double normale[3], len, v1[3], v2[3];
           for( int l = 2; l >= 0; --l)
           {
-            if(l == 2) {
+            index = it->second.i[l];
+#           ifdef Beleuchtung
+            {
+              if(l == 2) {
+              // Kreuzprodukt
               v1[0] = netz.punkte[it->second.i[1]].koord[0]-
                       netz.punkte[it->second.i[0]].koord[0];
               v1[1] = netz.punkte[it->second.i[1]].koord[1]-
@@ -1313,31 +1318,37 @@ GL_Ansicht::netzeAuffrischen()
                       netz.punkte[it->second.i[0]].koord[1];
               v2[2] = netz.punkte[it->second.i[2]].koord[2]-
                       netz.punkte[it->second.i[0]].koord[2];
-               
+              // Flächennormale bestimmen
               normale[0] =   v1[2]*v2[1] - v1[1]*v2[2];
               normale[1] =   v1[0]*v2[2] - v1[2]*v2[0];
               normale[2] =   v1[1]*v2[0] - v1[0]*v2[1];
               len = HYP3( normale[0],normale[1],normale[2] );
+              // Einheitsvektor der Normale setzen
               glNormal3d( normale[2]/len,
                           normale[0]/len,
                           normale[1]/len );
-            }
-            index = it->second.i[l];
-#           ifdef Beleuchtung
-            GLfloat farbe[] =   { netz.punkte[index].farbe[0],
-                                  netz.punkte[index].farbe[1],
-                                  netz.punkte[index].farbe[2],
-                                  netz.punkte[index].farbe[3] };
+              }
+              GLfloat farbe[] =   { netz.punkte[index].farbe[0],
+                                    netz.punkte[index].farbe[1],
+                                    netz.punkte[index].farbe[2],
+                                    netz.punkte[index].farbe[3] };
  
-            FARBE (    netz.punkte[index].farbe[0],
-                       netz.punkte[index].farbe[1],
-                       netz.punkte[index].farbe[2]);
-#           else
-            glColor4d( netz.punkte[index].farbe[0],
-                       netz.punkte[index].farbe[1],
-                       netz.punkte[index].farbe[2],
-                       netz.punkte[index].farbe[3]);
+              FARBE (    netz.punkte[index].farbe[0],
+                         netz.punkte[index].farbe[1],
+                         netz.punkte[index].farbe[2] );
+
+              // Alle Materialfarben erhalten hier die Transparanz
+              glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, farbe);
+              //farbe[0] *= 0.5; farbe[1] *= 0.5; farbe[2] *= 0.5;
+              glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, farbe);
+            }
+
+            if(0) // wird eigentlich in FARBE schon gesetzt
 #           endif
+              glColor4d( netz.punkte[index].farbe[0],
+                         netz.punkte[index].farbe[1],
+                         netz.punkte[index].farbe[2],
+                         netz.punkte[index].farbe[3] );
 
             // Punktkoordinaten setzen
             glVertex3d( netz.punkte[index].koord[2],
@@ -1346,7 +1357,7 @@ GL_Ansicht::netzeAuffrischen()
           }
           glEnd();
           //DBG_V( index <<" "<< len <<" "<< normale[0] <<" "<< v1[0] <<" "<< v2[0] );
-          if(1 ||  icc_debug != 0)
+          if(icc_debug != 0)
           {
           glLineWidth(strich1*strichmult);
           glBegin(GL_LINES);
@@ -2047,6 +2058,11 @@ GL_Ansicht::zeichnen()
 
                   // Text
                   FARBE(textfarbe[0],textfarbe[1],textfarbe[2])
+
+                  GLfloat lmodel_ambient[] = {hintergrundfarbe,
+                                              hintergrundfarbe,
+                                              hintergrundfarbe, 1.0};
+                  glLightModelfv(GL_LIGHT_MODEL_AMBIENT, lmodel_ambient);
 
                   if(1)
                   {

@@ -378,7 +378,7 @@ ICCexamin::oeffnen (std::vector<std::string> dateinamen)
   DBG_PROG
 
   // Das Monitorprofil immer dabei 
-  if (!moni_dabei)
+  if (!moni_dabei && ss.size())
     ss.push_back(icc_oyranos.moni());
 
   lade (ss);

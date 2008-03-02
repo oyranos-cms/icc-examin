@@ -178,6 +178,12 @@ ICCprofile::load (const Speicher & prof)
     WARN_S( _("Kein Profil") )
     header.clear();
 
+#   if 0
+    DBG_PROG_ENDE
+    changing_ = false;
+    return ICCnullDATA;
+#   endif
+
     // "targ"  Messdaten als Block hinzufügen
     int groesse = 8 + size_ + 1;
     char* tag_block = (char*) calloc (sizeof (char), groesse);

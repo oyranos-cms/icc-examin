@@ -891,6 +891,55 @@ zeig_bits_bin(const void* speicher, int groesse)
   return text;
 }
 
+// aus oyranos.c
+#include <errno.h>
+#include <sys/stat.h>
+int
+isFileFull (const char* fullFileName)
+{ DBG_PROG_START
+  struct stat status;
+  int r = 0;
+  const char* name = fullFileName;
+
+  DBG_PROG_S("fullFileName = \"" << fullFileName << "\"" )
+  status.st_mode = 0;
+  r = stat (name, &status);
+
+  DBG_MEM_S("status.st_mode = " << (int)((status.st_mode&S_IFMT)&S_IFDIR) ) 
+  DBG_MEM_S("status.st_mode = " << (int)status.st_mode )
+  DBG_MEM_S("name = " << name )
+  DBG_MEM_V( r )
+  switch (r)
+  {
+    case EACCES:       WARN_S("EACCES = " << r); break;
+    case EIO:          WARN_S("EIO = " << r); break;
+    case ELOOP:        WARN_S("ELOOP = " << r); break;
+    case ENAMETOOLONG: WARN_S("ENAMETOOLONG = " << r); break;
+    case ENOENT:       WARN_S("ENOENT = " << r); break;
+    case ENOTDIR:      WARN_S("ENOTDIR = " << r); break;
+    case EOVERFLOW:    WARN_S("EOVERFLOW = " << r); break;
+  }
+
+  r = !r &&
+       (   ((status.st_mode & S_IFMT) & S_IFREG)
+        || ((status.st_mode & S_IFMT) & S_IFLNK));
+
+  DBG_MEM_V( r )
+  if (r)
+  {
+    FILE* fp = fopen (name, "r");
+    if (!fp) {
+      r = 0;
+    } else {
+      fclose (fp);
+    }
+  } 
+
+  DBG_PROG_ENDE
+  return r;
+}
+
+
 char*
 ladeDatei ( std::string dateiname, size_t *size )
 { DBG_PROG_START
@@ -900,18 +949,12 @@ ladeDatei ( std::string dateiname, size_t *size )
 
     std::ifstream f ( dateiname.c_str(), std::ios::binary | std::ios::ate );
 
-    DBG_MEM_V( dateiname )
-    if (dateiname == "")
-    {
-#     if HAVE_EXCEPTION
-      DBG_PROG_ENDE
-      throw ausn_file_io (_("no filename given"));
-#     else
-      goto ERROR;
-#     endif
-    }
-    DBG_MEM
-    if (!f) {
+    DBG_PROG_V( dateiname )
+    if (dateiname == "" || !isFileFull(dateiname.c_str()) || !f)
+    { DBG_MEM
+      if(dateiname == "") WARN_S( "kein Dateiname" );
+      if(!isFileFull(dateiname.c_str())) WARN_S( "keine Datei: " << dateiname );
+      if(!f) WARN_S( "fehlerhafte Datei: " << dateiname );
 #     if HAVE_EXCEPTION
       DBG_PROG_ENDE
       throw ausn_file_io (dateiname.c_str());
@@ -921,6 +964,7 @@ ladeDatei ( std::string dateiname, size_t *size )
       goto ERROR;
 #     endif
     }
+    DBG_MEM
 
     *size = (unsigned int)f.tellg();
     DBG_MEM_V ( *size << "|" << f.tellg() )

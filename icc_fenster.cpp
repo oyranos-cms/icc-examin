@@ -92,7 +92,7 @@ dateiwahl_cb (Fl_File_Chooser *f,void *data)
     filename = fl->value();
   
     // kein Profile Dialog
-    if (strstr(fl->filter(), "*.{I,i}{C,c}") == 0) {
+    if (0 && strstr(fl->filter(), "Profile [*.{I,i}{C,c}]") == 0) {
       if (filename)
         DBG_PROG_V( filename )
       DBG_PROG_ENDE
@@ -103,7 +103,13 @@ dateiwahl_cb (Fl_File_Chooser *f,void *data)
       std::vector<std::string> profilnamen;
       profilnamen.resize(fl->count());
       for (int i = 0; i < fl->count(); i++) {
-        profilnamen[i] = fl->value(i);
+        if(strchr(fl->value(i), '/') == 0) {
+          profilnamen[i] = fl->directory();
+          profilnamen[i].append("/");
+          profilnamen[i].append(fl->value(i));
+        } else 
+          profilnamen[i] = fl->value(i);
+        DBG_PROG_V( i <<":"<< profilnamen[i] )
       }
       DBG_NUM_V( profilnamen.size() << filename )
       icc_examin->oeffnen(profilnamen);
