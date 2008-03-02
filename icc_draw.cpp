@@ -23,6 +23,15 @@ int tab_border_x=30;
 int tab_border_y=30;
 // Diagrammvariablen
 float n = 1.0;
+#ifdef __APPLE__
+  #define BG FL_DARK3
+  #define VG FL_DARK2
+  #define DIAG FL_DARK2-4
+#else
+  #define BG FL_GRAY
+  #define VG FL_LIGHT2
+  #define DIAG FL_LIGHT1
+#endif
 
 
 int raster = 4;
@@ -61,7 +70,7 @@ draw_cie_shoe (int X, int Y, int W, int H,
     raster = 1;
 
   // Zeichenflaeche
-  fl_color(FL_GRAY);
+  fl_color(BG);
   fl_rectf(X,Y,W,H);
 
   xO = X + tab_border_x + 10;     // Ursprung
@@ -83,7 +92,7 @@ draw_cie_shoe (int X, int Y, int W, int H,
   int nano_max = 341; // 700 nm
 
   // Tangente
-  fl_color(FL_LIGHT1);
+  fl_color(DIAG);
   fl_line(x(1), y(0), x(0), y(1));
 
   // Farbfläche
@@ -148,7 +157,7 @@ draw_cie_shoe (int X, int Y, int W, int H,
 
   // Verdecke den Rest des cie_xy
   //fl_push_no_clip();
-  fl_color(FL_GRAY);
+  fl_color(BG);
   #define x_xyY cieXYZ[i][0]/(cieXYZ[i][0]+cieXYZ[i][1]+cieXYZ[i][2])
   #define y_xyY cieXYZ[i][1]/(cieXYZ[i][0]+cieXYZ[i][1]+cieXYZ[i][2])
 
@@ -228,11 +237,7 @@ draw_cie_shoe (int X, int Y, int W, int H,
 
 
   // Diagramm
-  #ifdef __APPLE__
-    fl_color(FL_GRAY0);
-  #else
-    fl_color(FL_LIGHT2);
-  #endif
+  fl_color(VG);
     // Text
   fl_font (FL_HELVETICA, 10);
     // Raster
@@ -269,7 +274,7 @@ draw_cie_shoe (int X, int Y, int W, int H,
       fl_line ( x(xyY[0])-g, y(xyY[1])+g, x(xyY[0])+g, y(xyY[1])-g );
     }
 
-    fl_color(FL_GRAY);
+    fl_color(BG);
     if (punkte.size() == 9) {
         for (int k = 0; k <= 3; k+=2) {
             fl_line( (int)(pos[k+0]), (int)(pos[k+1]),
@@ -308,7 +313,7 @@ draw_cie_shoe (int X, int Y, int W, int H,
         double pos_x = x(xyY[0]);
         double pos_y = y(xyY[1]);
 
-        fl_color (FL_GRAY);
+        fl_color (BG);
         fl_circle ( pos_x , pos_y , 9.0);
         fl_color (fl_rgb_color (RGB[0],RGB[1],RGB[2]));
         fl_circle ( pos_x , pos_y , 7.0);
@@ -343,7 +348,7 @@ void draw_kurve    (int X, int Y, int W, int H,
                     std::vector<std::vector<double> > kurven)
 {
   // Zeichenflaeche
-  fl_color(FL_GRAY);
+  fl_color(BG);
   fl_rectf(X,Y,W,H);
 
   // Diagrammvariablen
@@ -357,15 +362,11 @@ void draw_kurve    (int X, int Y, int W, int H,
   fl_push_clip( X,y(n), x(n),(int)(h+tab_border_y+0.5) );
 
   // Tangente
-  fl_color(FL_LIGHT1);
+  fl_color(DIAG);
   fl_line(x(0), y(0), x(1), y(1));
 
   // Diagramm
-  #ifdef __APPLE__
-    fl_color(FL_GRAY0);
-  #else
-    fl_color(FL_LIGHT2);
-  #endif
+  fl_color(VG);
     // Text
   fl_font (FL_HELVETICA, 10);
     // Raster

@@ -586,7 +586,7 @@ ICCmeasurement::getHtmlReport                     (void)
   html << "<html><head>" << endl;
   html << "<title>" << _("Prüfung des Farbprofiles") << "</title>\n";
   html << "<meta http-equiv=\"content-type\" content=\"text/html; charset=ISO-8859-1\">" << endl;
-  html << "</head><body>" << endl << endl;
+  html << "</head><body bgcolor=\"#cccccc\">" << endl << endl;
 
   int kopf = (int)_reportTabelle.size() - _nFelder;
   // Allgemeine Informationen
