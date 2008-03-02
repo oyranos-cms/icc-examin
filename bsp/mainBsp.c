@@ -25,7 +25,7 @@ int main(int argc,char *argv[])
    {
       BSPNODE *root= BSPconstructTree(&faceList); /* construct BSP tree */
 
-      BSPtraverseTreeAndRender(root,&oldPosition); /* traverse and render it */
+      BSPtraverseTreeAndRender(root,&oldPosition,1);/* traverse and render it */
 
       BSPfreeTree(&root);	/* free it */
    }

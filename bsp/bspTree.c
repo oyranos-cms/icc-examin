@@ -48,25 +48,31 @@ BSPNODE *BSPconstructTree(FACE **faceList)
  * bspNode  - a node in BSP tree
  * position - position of viewer
  */
-void BSPtraverseTreeAndRender(const BSPNODE *bspNode,const POINT *position)
+void BSPtraverseTreeAndRender(const BSPNODE *bspNode,const POINT *position, int back_face)
 {
    if (bspNode == NULL_BSPNODE) return;
 
    if (bspNode->kind == PARTITION_NODE) {
-      if (BSPisViewerInPositiveSideOfPlane(&bspNode->node->sameDir->plane,position)){
+      if (BSPisViewerInPositiveSideOfFace(bspNode->node->sameDir,position)){
 
-	 BSPtraverseTreeAndRender(bspNode->node->negativeSide,position);
+	 BSPtraverseTreeAndRender(bspNode->node->negativeSide,position,
+                                  back_face);
 	 drawFaceList(stdout,bspNode->node->sameDir);
-	 drawFaceList(stdout,bspNode->node->oppDir); /* back-face cull */
-	 BSPtraverseTreeAndRender(bspNode->node->positiveSide,position);
+         if(back_face)
+           drawFaceList(stdout,bspNode->node->oppDir); /* back-face cull */
+	 BSPtraverseTreeAndRender(bspNode->node->positiveSide,position,
+                                  back_face);
 
       }
       else {
 
-	 BSPtraverseTreeAndRender(bspNode->node->positiveSide,position);
+	 BSPtraverseTreeAndRender(bspNode->node->positiveSide,position,
+                                  back_face);
 	 drawFaceList(stdout,bspNode->node->oppDir);
-	 drawFaceList(stdout,bspNode->node->sameDir); /* back-face cull */
-	 BSPtraverseTreeAndRender(bspNode->node->negativeSide,position);
+         if(back_face)
+           drawFaceList(stdout,bspNode->node->sameDir); /* back-face cull */
+	 BSPtraverseTreeAndRender(bspNode->node->negativeSide,position,
+                                  back_face);
 
       }
    }
@@ -149,15 +155,18 @@ static boolean doesFaceStraddlePlane(const FACE *face, const PLANE *plane)
 
 /* Returns a boolean to indicate whether or not point is in + side of plane.
  * 
- * plane    - plane 
+ * face     - face[plane] (ku.b needs a face for ICC Examin)
  * position - position of point
  */
-boolean BSPisViewerInPositiveSideOfPlane(const PLANE *plane,const POINT *position)
+boolean BSPisViewerInPositiveSideOfFace(const FACE *face,const POINT *position)
 {
-   float dp= plane->aa*position->xx + plane->bb*position->yy +
-             plane->cc*position->zz + plane->dd;
+   const PLANE * plane = &face->plane;
+   float dp = (plane->aa) * (position->xx - face->vhead->xx) + 
+              (plane->bb) * (position->yy - face->vhead->yy) +
+              (plane->cc) * (position->zz - face->vhead->zz);/* + plane->dd;*/
+   //printf("%s:%d dp: %f \n", __FILE__,__LINE__,dp);
    return( (dp > 0.0) ? 1 : 0 );
-} /* BSPisViewerInPositiveSideOfPlane() */
+} /* BSPisViewerInPositiveSideOfFace() */
 
 /* Allocates a BSP node.
  *

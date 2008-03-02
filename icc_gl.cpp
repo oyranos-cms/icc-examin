@@ -905,7 +905,7 @@ GL_Ansicht::erstelleGLListen_()
 
   tabelleAuffrischen();
 
-  hineinNetze (dreiecks_netze);
+  updateNet_();
 
   if(dreiecks_netze.size())
     zeigeUmrisse_();
@@ -1377,7 +1377,7 @@ GL_Ansicht::netzeAuffrischen()
       glFrontFace(GL_CCW);
       glPushMatrix();
         // positioning
-      glTranslated( -b_darstellungs_breite/2, -.5, -a_darstellungs_breite/2 );
+      glTranslated( -b_darstellungs_breite/2., -.5, -a_darstellungs_breite/2. );
 
       
       DBG_ICCGL_V( netz.indexe.size() <<" "<< netz.punkte.size() )
@@ -1400,8 +1400,23 @@ GL_Ansicht::netzeAuffrischen()
 
       if(bsp)
       {
-        icc_examin_ns::POINT pov = {Y,Z,X};
-        icc_examin_ns::BSPtraverseTreeAndRender( bsp, &pov);
+        double dist = HYP3(X,Y,Z);
+        icc_examin_ns::POINT pov = {Y + 0.5,
+                                    Z + b_darstellungs_breite/2,
+                                    X + b_darstellungs_breite/2.};
+        if(icc_debug != 0)
+        {
+          zeichneKegel(0.02, 0.05, 16, X/dist, Y/dist, Z/dist);
+          glBegin(GL_LINES);
+            glVertex3d( X/dist,
+                        Y/dist,
+                        Z/dist);
+            glVertex3d( 0,
+                        0,
+                        0 );
+          glEnd();
+        }
+        icc_examin_ns::BSPtraverseTreeAndRender( bsp, &pov, 1);
       }
         else
       {
@@ -2730,9 +2745,6 @@ void getFacesFromICCnetz ( const ICCnetz & netz, icc_examin_ns::FACE **fList,
       fListTail = fListTail->fnext;
   }
 
-  if(!netz.aktiv)
-    return;
-
   std::multimap<double,DreiecksIndexe>::const_iterator it;
   for( it = netz.indexe.begin(); it != netz.indexe.end(); ++it )
   {
@@ -2749,7 +2761,10 @@ void getFacesFromICCnetz ( const ICCnetz & netz, icc_examin_ns::FACE **fList,
         color.gg = netz.punkte[ index_p.second.i[j] ].farbe[1];
         color.bb = netz.punkte[ index_p.second.i[j] ].farbe[2];
       }
-      color.aa = netz.undurchsicht;
+      if(netz.aktiv)
+        color.aa = netz.undurchsicht;
+      else
+        color.aa = 0.0;
 
       v = allocVertex( netz.punkte[ index_p.second.i[j] ].koord[0]*scale_x,
                        netz.punkte[ index_p.second.i[j] ].koord[1]*scale_y,
@@ -2799,15 +2814,6 @@ void drawGLFaceList(FILE *fp,const icc_examin_ns::FACE *faceList)
   {
     icc_examin_ns::VERTEX *vtrav = 0;
       
-#if 0
-      fprintf(fp,"Face: RGBi:%.2f/%.2f/%.2f/%.2f a: %.3f b: %.3f c: %.3f d: %.3f ",   
-             ftrav->vhead->color.rr,ftrav->vhead->color.gg,
-             ftrav->vhead->color.bb,ftrav->vhead->color.aa,
-             ftrav->plane.aa,ftrav->plane.bb,ftrav->plane.cc,ftrav->plane.dd);
-      fprintf(fp,"\n");
-#endif
-
-
     if(icc_debug)
     {
       glPointSize(5);
@@ -2836,10 +2842,6 @@ void drawGLFaceList(FILE *fp,const icc_examin_ns::FACE *faceList)
       for (vtrav= ftrav->vhead; vtrav->vnext != 0;
              vtrav= vtrav->vnext)
       {
-#if 0
-        fprintf(fp,"\t(%.3f,%.3f,%.3f) ",vtrav->xx,vtrav->yy,vtrav->zz);
-        fprintf(fp,"\n");*/
-#endif
         FARBEN (    vtrav->color.rr, vtrav->color.gg, vtrav->color.bb,
                     vtrav->color.aa );
         glVertex3f( vtrav->zz, vtrav->xx, vtrav->yy );
@@ -2848,10 +2850,117 @@ void drawGLFaceList(FILE *fp,const icc_examin_ns::FACE *faceList)
   }
 }
 
+void
+GL_Ansicht::setBspFaceProperties_( icc_examin_ns::FACE *faceList )
+{
+  DBG_PROG_START
+
+  icc_examin_ns::FACE * ftrav = 0;
+  icc_examin_ns::VERTEX * vtrav = 0;
+
+  if(faceList == 0) return;
+
+
+  double lab[3];
+#if 0
+  oyProfile_s * prof = oyProfile_FromStd( oyEDITING_LAB, 0 );
+  oyProfile_s * disp_prof = icc_oyranos.oyMoni(
+              window()->x() + window()->w()/2, window()->y() + window()->h()/2
+                                              );
+  oyNamedColour_s * c = oyNamedColour_Create( 0, 0, 0, prof, 0 );
+#endif
+
+  for( ftrav = faceList; ftrav != 0; ftrav = ftrav->fnext )
+  {
+    int pos = ftrav->id;
+    ICCnetz & netz = dreiecks_netze[pos];
+
+    for( vtrav = ftrav->vhead; vtrav->vnext != 0; vtrav = vtrav->vnext )
+    {
+      if(netz.grau)
+      {
+        vtrav->color.rr = vtrav->color.gg = vtrav->color.bb = netz.schattierung;
+      } else {
+
+#if 1
+        lab[0] = vtrav->xx;
+        lab[1] = vtrav->yy/a_darstellungs_breite;
+        lab[2] = vtrav->zz/b_darstellungs_breite;
+
+        double * rgb = icc_oyranos.wandelLabNachBildschirmFarben( 
+               window()->x() + window()->w()/2, window()->y() + window()->h()/2,
+                                 lab, 1, icc_examin->intentGet(NULL),
+                                 icc_examin->gamutwarn()?cmsFLAGS_GAMUTCHECK:0);
+
+        vtrav->color.rr = rgb[0];
+        vtrav->color.gg = rgb[1];
+        vtrav->color.bb = rgb[2];
+        delete [] rgb;
+#else
+        double rgba[4] = {0,0,0,1};
+        lab[0] = vtrav->xx; 
+        lab[1] = vtrav->yy/a_darstellungs_breite;
+        lab[2] = vtrav->zz/b_darstellungs_breite;
+        LabToCIELab( lab, lab, 1 );
+
+        oyNamedColour_SetColourStd( c, oyEDITING_LAB, lab, oyDOUBLE, 0 );
+
+        oyNamedColour_GetColour( c, disp_prof, rgba, oyDOUBLE, 0 );
+
+        vtrav->color.rr = rgba[0];
+        vtrav->color.gg = rgba[1];
+        vtrav->color.bb = rgba[2];
+#endif
+      }
+      if(netz.aktiv)
+        vtrav->color.aa = netz.undurchsicht;
+      else
+        vtrav->color.aa = 0.0;
+    }
+  }
+
+  //oyNamedColour_Release( &c );
+
+  DBG_PROG_ENDE
+}
+
+void
+GL_Ansicht::setBspProperties_( icc_examin_ns::BSPNODE *bsp )
+{
+  DBG_PROG_START
+
+  icc_examin_ns::BSPNODE * bspNode = bsp;
+
+  if (bspNode == 0) return;
+
+  if (bspNode->kind == icc_examin_ns::PARTITION_NODE)
+  {
+    setBspProperties_( bspNode->node->negativeSide );
+    setBspFaceProperties_( bspNode->node->sameDir );
+    setBspFaceProperties_( bspNode->node->oppDir );
+    setBspProperties_( bspNode->node->positiveSide );
+  }
+
+  DBG_PROG_ENDE
+}
 
 
 void
-GL_Ansicht::hineinNetze       (const std::vector<ICCnetz> & d_n)
+GL_Ansicht::updateNet_()
+{
+  DBG_PROG_START
+
+  if(!bsp)
+    hineinNetze_( dreiecks_netze );
+
+  if(bsp)
+    setBspProperties_(bsp);
+
+  DBG_PROG_ENDE
+}
+
+void
+GL_Ansicht::hineinNetze_       (const std::vector<ICCnetz> & d_n)
 {
   DBG_PROG_START
 
@@ -2864,14 +2973,26 @@ GL_Ansicht::hineinNetze       (const std::vector<ICCnetz> & d_n)
   if(d_n.size())
   {
     DBG_NUM_V( dreiecks_netze.size() )
-    //dreiecks_netze = d_n;
 
     icc_examin_ns::BSPfreeTree(&bsp);
 
     icc_examin_ns::FACE *faceList = 0;
+    int old_faces_n = 0;
     for(unsigned i = 0; i < d_n.size(); ++i)
+    {
       getFacesFromICCnetz( d_n[i], &faceList,
                            1, a_darstellungs_breite, b_darstellungs_breite );
+
+      icc_examin_ns::FACE *ftrav = 0;
+      int n = 0;
+      for (ftrav= faceList; ftrav != 0; ftrav= ftrav->fnext)
+      {
+        ++n;
+        if(n > old_faces_n)
+          ftrav->id = i;
+      }
+      old_faces_n = n;
+    }
 
     if(faceList)
     {

@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2007  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2008  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -150,6 +150,12 @@ private:
   void draw();
   int  handle(int event);
   int  waiting_;       //!< dont generate and display new movement
+  ICCnetz netz;             //!< internal net representation, thread entry
+  icc_examin_ns::BSPNODE *bsp;   //**< BSP tree root
+  void hineinNetze_  (const std::vector<ICCnetz> & dreiecks_netze);
+  void setBspProperties_( icc_examin_ns::BSPNODE * bsp );
+  void setBspFaceProperties_( icc_examin_ns::FACE * faceList );
+  void updateNet_    ();
 public:
   void show();
   void hide();
@@ -171,7 +177,7 @@ public:
   oyNamedColours_s* namedColours ();
   void              namedColoursRelease ();
   void emphasizePoint (oyNamedColour_s  * colour);  //!< a named colour
-  void hineinNetze  (const std::vector<ICCnetz> & dreiecks_netze);
+  void clearNet    () { icc_examin_ns::BSPfreeTree(&bsp); }
   std::vector<ICCnetz> dreiecks_netze;
   void achsNamen    (std::vector<std::string> achs_namen);
 
@@ -185,8 +191,6 @@ public:
   int  punktform;           //!< MENU_KUGEL MENU_WUERFEL MENU_STERN
   int  punktfarbe;          //!< MENU_GRAU MENU_FARBIG MENU_KONTRASTREICH
   int  punktgroesse;        //!< size in pixel
-  ICCnetz netz;             //!< internal net representation, thread entry
-  icc_examin_ns::BSPNODE *bsp;   //**< BSP tree root
 
   float hintergrundfarbe;   //!< background colour / colour sheme
   float textfarbe[3];

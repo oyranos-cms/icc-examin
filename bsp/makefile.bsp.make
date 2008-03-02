@@ -5,7 +5,7 @@ OBJS	= bspAlloc.o bspCollide.o bspPartition.o \
 bspTree.o bspUtility.o bspMemory.o
 BSPMAIN = mainBsp.o
 
-OPT	= -g -I../gems
+OPT	= -g
 LIBS	= -lm
 BSP	= bsp
 BSPLIB  = lib$(BSP).a

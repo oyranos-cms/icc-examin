@@ -134,9 +134,9 @@ void
 ICCexamin::clear ()
 { DBG_PROG_START
 
-  std::vector<ICCnetz> d_n;
   profile.clear();
-  icc_betrachter->DD_farbraum->hineinNetze (d_n);
+  icc_betrachter->DD_farbraum->dreiecks_netze.clear();
+  icc_betrachter->DD_farbraum->clearNet ();
 
   DBG_PROG_ENDE
 }

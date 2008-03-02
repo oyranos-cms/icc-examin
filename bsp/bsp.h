@@ -32,6 +32,7 @@ typedef struct faceTag {
    VERTEX *vhead;		/* head of list of vertices */
    PLANE plane;			/* plane equation of face */
    struct faceTag *fnext;	/* pointer to next face */
+  int id;                       /* id of the source compound before splitting */
 } FACE;
 #define NULL_FACE ((FACE *) NULL)
 
@@ -58,8 +59,8 @@ typedef enum {NEGATIVE= -1, ZERO= 0, POSITIVE= 1} SIGN;
 
 /* external functions */
 BSPNODE *BSPconstructTree(FACE **faceList);
-boolean BSPisViewerInPositiveSideOfPlane(const PLANE *plane,const POINT *position);
-void BSPtraverseTreeAndRender(const BSPNODE *bspNode,const POINT *position);
+boolean BSPisViewerInPositiveSideOfFace(const FACE * face,const POINT*position);
+void BSPtraverseTreeAndRender(const BSPNODE *bspNode,const POINT *position, int back_face);
 void BSPfreeTree(BSPNODE **bspNode);
 
 boolean BSPdidViewerCollideWithScene(const POINT *from, const POINT *to,

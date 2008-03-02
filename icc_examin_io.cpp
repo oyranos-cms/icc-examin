@@ -159,6 +159,9 @@ ICCexaminIO::oeffnenThread_ (int pos)
       // UI handling
     icc_examin_ns::lock(__FILE__,__LINE__);
     //erneuerTagBrowserText_ ();
+    if( icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze[pos].indexe.size() )
+      icc_examin->icc_betrachter->DD_farbraum->clearNet();
+
     if(icc_examin->icc_betrachter->DD_farbraum->visible() &&
        !icc_examin->icc_betrachter->inspekt_html->visible() )
       icc_examin->icc_betrachter->DD_farbraum->damage(FL_DAMAGE_ALL);
@@ -304,7 +307,7 @@ ICCexaminIO::oeffnenThread_ ()
         }
 
         icc_examin_ns::lock(__FILE__,__LINE__);
-        icc_examin->icc_betrachter->DD_farbraum->hineinNetze(netze);
+        //icc_examin->icc_betrachter->DD_farbraum->hineinNetze(netze);
         std::vector<std::string> texte;
         texte.push_back(_("CIE *L"));
         texte.push_back(_("CIE *a"));

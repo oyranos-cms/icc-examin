@@ -534,9 +534,11 @@ ICCexamin::farbraum (int n)
       DBG_PROG_V( icc_betrachter->DD_farbraum->dreiecks_netze[n].name )
     }
 
+#if 0
     if( profile.size() > n && !ncl2_profil )
       icc_betrachter->DD_farbraum->hineinNetze(
                                   icc_betrachter->DD_farbraum->dreiecks_netze );
+#endif
 
   MARK( icc_betrachter->DD_farbraum->frei(true); )
   }
