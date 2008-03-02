@@ -9,10 +9,10 @@
 #include "fl_i18n/fl_i18n.H"
 using namespace icc_examin_ns;
 
-char* iccReadInfo(char* filename) {
+const char* iccReadInfo(char* filename) {
   DBG_PROG_START
   char systemBefehl[1024];
-  char *textfile = "/tmp/icc_temp.txt";
+  const char *textfile = "/tmp/icc_temp.txt";
 
 
   sprintf (systemBefehl, "iccdump \"%s\" > %s",
@@ -52,6 +52,7 @@ int TagBrowser::visible() {
 }
 
 TagTexts::TagTexts(int X,int Y,int W,int H,const char* start_info) : Fl_Hold_Browser(X,Y,W,H,start_info), X(X), Y(Y), W(W), H(H) {
+  cb = NULL;
 }
 
 void TagTexts::hinein(std::string text) {
@@ -70,6 +71,25 @@ void TagTexts::hinein(std::string text) {
       this->topline(inspekt_topline);
       this->textfont(FL_COURIER);
       this->textsize(14);
+  DBG_PROG_ENDE
+}
+
+void TagTexts::selectItem(int item) {
+  DBG_PROG_START
+  // selection from tag_browser
+
+  const char * txt = 0;
+  int i = item;
+
+  status("")
+
+  DBG_PROG_S( item << ". Tag " )
+  
+  if (cb)
+    txt = (*cb) ( &i );
+
+  if(i != item)
+    select(i);
   DBG_PROG_ENDE
 }
 #include <FL/fl_draw.H>
@@ -443,10 +463,12 @@ void ICCfltkBetrachter::cb_menueintrag_inspekt(Fl_Menu_* o, void* v) {
 }
 
 void ICCfltkBetrachter::cb_menueintrag_zeigcgats_i(Fl_Menu_* o, void*) {
+  #ifdef DEBUG
   Fl_Menu_* mw = (Fl_Menu_*)o;
   const Fl_Menu_Item* m = mw->mvalue();
 
   DBG_PROG_S (m->value())
+#endif
 
   icc_examin->zeigCGATS();
 }
@@ -572,11 +594,25 @@ void ICCfltkBetrachter::cb_mft_choice(MftChoice* o, void* v) {
   ((ICCfltkBetrachter*)(o->parent()->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_mft_choice_i(o,v);
 }
 
+void ICCfltkBetrachter::cb_mft_text_i(TagTexts* o, void*) {
+  o->selectItem( o->value() );
+}
+void ICCfltkBetrachter::cb_mft_text(TagTexts* o, void* v) {
+  ((ICCfltkBetrachter*)(o->parent()->parent()->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_mft_text_i(o,v);
+}
+
 void ICCfltkBetrachter::cb_mft_gl_alltables_button_i(Fl_Button*, void*) {
   icc_examin->zeigMftTabellen();
 }
 void ICCfltkBetrachter::cb_mft_gl_alltables_button(Fl_Button* o, void* v) {
   ((ICCfltkBetrachter*)(o->parent()->parent()->parent()->parent()->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_mft_gl_alltables_button_i(o,v);
+}
+
+void ICCfltkBetrachter::cb_tag_text_i(TagTexts* o, void*) {
+  o->selectItem( o->value() );
+}
+void ICCfltkBetrachter::cb_tag_text(TagTexts* o, void* v) {
+  ((ICCfltkBetrachter*)(o->parent()->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_tag_text_i(o,v);
 }
 
 icc_examin_ns::MyFl_Double_Window* ICCfltkBetrachter::init(int argc, char** argv) {
@@ -797,8 +833,6 @@ ard"));
             tag_browser->callback((Fl_Callback*)cb_tag_browser);
             tag_browser->align(FL_ALIGN_LEFT);
             tag_browser->when(FL_WHEN_RELEASE_ALWAYS);
-            int lines = tag_browser->size();
-            DBG_PROG_V( lines )
           } // TagBrowser* tag_browser
           { ansichtsgruppe = new Fl_Group(0, 160, 385, 335, _("ansichtsgruppe_invisible"));
             ansichtsgruppe->align(FL_ALIGN_LEFT);
@@ -843,6 +877,7 @@ ard"));
                 mft_text->labelfont(0);
                 mft_text->labelsize(14);
                 mft_text->labelcolor(FL_FOREGROUND_COLOR);
+                mft_text->callback((Fl_Callback*)cb_mft_text);
                 mft_text->align(FL_ALIGN_LEFT);
                 mft_text->when(FL_WHEN_RELEASE_ALWAYS);
                 o->show();
@@ -903,6 +938,7 @@ ard"));
                 tag_text->labelfont(0);
                 tag_text->labelsize(14);
                 tag_text->labelcolor(FL_FOREGROUND_COLOR);
+                tag_text->callback((Fl_Callback*)cb_tag_text);
                 tag_text->align(FL_ALIGN_LEFT);
                 tag_text->when(FL_WHEN_RELEASE_ALWAYS);
                 o->show();

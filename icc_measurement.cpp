@@ -53,8 +53,6 @@
 #include "icc_info.h"
 using namespace icc_examin_ns;
 
-#define g_message printf
-
 
 /**
   *  @brief ICCmeasurement functions
@@ -292,6 +290,10 @@ ICCmeasurement::leseTag (void)
 
     //LCMSHANDLE _lcms_it8 = cmsIT8LoadFromMem ( data_, size_ ); DBG_MEM_V( (int*)data_)
 
+    int ps = patch_src_lines_.size();
+    patch_src_lines_.resize( ps + 1 );
+    patch_src_lines_[ps].first = getSigTagName( sig_ );
+
     const char **SampleNames; DBG_MEM
     int m = 0; // actual measurement
 
@@ -300,6 +302,7 @@ ICCmeasurement::leseTag (void)
      || nFelder_ == cgats.messungen[m].block_zeilen)
     { DBG_NUM
       nFelder_ = cgats.messungen[m].block_zeilen; DBG_NUM
+      patch_src_lines_[ps].second.resize( nFelder_ );
     } else {
       WARN_S( "number of measurements should corespond! " << nFelder_ << "|" << (int)cgats.messungen[m].block_zeilen )
       clear();
@@ -412,6 +415,7 @@ ICCmeasurement::leseTag (void)
         snprintf(n,8,"%d",k);
         Feldnamen_[k] = n;
       }
+      patch_src_lines_[ps].second[k] = cgats.messungen[m].line[k];
     }
   if(nFelder_)
     DBG_NUM_S (Feldnamen_[0] << " bis " << Feldnamen_[nFelder_-1])
@@ -481,7 +485,7 @@ ICCmeasurement::leseTag (void)
   if (_id_vor_name) {
     for (int i = 0; i < nFelder_; i++) {
       for (int j = 0; j < _nKanaele; ++j) {
-        if( SampleNames[j] == "SAMPLE_NAME" )
+        if( strcmp(SampleNames[j], "SAMPLE_NAME") == 0 )
           Feldnamen_[i] = cgats.messungen[m].block[i][j].c_str();
       }
     } DBG_NUM_S (Feldnamen_[0] <<" to "<< Feldnamen_[nFelder_-1] <<" "<< nFelder_)
@@ -1450,6 +1454,71 @@ ICCmeasurement::getCmmLab                   (int patch)
   punkte[0] = Lab_Ergebnis_[patch].L;
   punkte[1] = Lab_Ergebnis_[patch].a;
   punkte[2] = Lab_Ergebnis_[patch].b;
+
+  DBG_MESS_ENDE
+  return punkte;
+}
+
+std::vector<double>
+ICCmeasurement::getLine                     (int line, const char * tag_name,
+                                             std::vector<double> & rgb,
+                                             std::string & name )
+{ DBG_MESS_START
+  std::vector<double> punkte;
+  int patch = -1;
+
+  if (Lab_Ergebnis_.size() == 0)
+    init ();
+
+  for(int j = 0; j < (int)patch_src_lines_.size(); ++j)
+  {
+    if( patch_src_lines_[j].first == tag_name )
+    {
+      for(int i = 0; i < nFelder_; ++i)
+      {
+        if( patch_src_lines_[j].second[i] == line )
+        {
+          patch = i;
+          break;
+        }
+      }
+      break;
+    }
+  }
+
+  if (patch > nFelder_) {
+    WARN_S( "Patch Nr: " << patch << " outside the measurement set" )
+    DBG_MESS_ENDE
+    return punkte;
+  }
+  if( patch == -1 ) {
+    DBG_PROG_S( "Line Nr: " << line << " outside the measurement size" )
+    DBG_MESS_ENDE
+    return punkte;
+  }
+
+  punkte.resize(3);
+  rgb.resize(4);
+
+  if( std::string(tag_name) == "DevD")
+  {
+    punkte[0] = Lab_Ergebnis_[patch].L;
+    punkte[1] = Lab_Ergebnis_[patch].a;
+    punkte[2] = Lab_Ergebnis_[patch].b;
+    rgb[0] = RGB_ProfilFarben_[patch].R;
+    rgb[1] = RGB_ProfilFarben_[patch].G;
+    rgb[2] = RGB_ProfilFarben_[patch].B;
+  } else
+  {
+    punkte[0] = Lab_Satz_[patch].L;
+    punkte[1] = Lab_Satz_[patch].a;
+    punkte[2] = Lab_Satz_[patch].b;
+    rgb[0] = RGB_MessFarben_[patch].R;
+    rgb[1] = RGB_MessFarben_[patch].G;
+    rgb[2] = RGB_MessFarben_[patch].B;
+  }
+  rgb[3] = 1.0;
+  name = Feldnamen_[patch];
 
   DBG_MESS_ENDE
   return punkte;

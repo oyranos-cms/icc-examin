@@ -427,14 +427,23 @@ CgatsFilter::sucheSchluesselwort_( std::string zeile )
 {
   // Schluesselworte Klassifizieren
   std::string::size_type pos=0;
-
+  std::string::size_type len=zeile.length();
   {
+    // stelle sicher, dass das Schluesselwort als ganzes Wort auftaucht,
+    // indem davor und dahinter kein alnum-Zeichen sein darf
 #   define \
     KEY_Suche(suche, ret) \
       if ((pos = zeile.find (suche, 0)) != std::string::npos) \
       { \
-        DBG_NUM_S( ret <<" "<< zeile.substr(pos,3) ) \
-        return ret; \
+        if(pos == 0 || std::strchr(cgats_alnum_, zeile[pos-1]) == NULL) \
+        { \
+          std::size_t keylen = std::strlen(suche); \
+          if(pos + keylen == len - 1 || std::strchr(cgats_alnum_, zeile[pos + keylen]) == NULL) \
+          { \
+            DBG_NUM_S( ret <<" "<< zeile.substr(pos,3) ) \
+            return ret; \
+          } \
+        } \
       }
     KEY_Suche( "KEYWORD",            KEYWORD )
     KEY_Suche( "SAMPLE_ID",          DATA_FORMAT_ZEILE )
@@ -665,10 +674,12 @@ CgatsFilter::cgats_korrigieren_               ()
   std::stringstream s;
   std::string gtext; // g&uuml;ltiger Text
   bool cmy_daten = false;
+  int orig_i = -1;
 
   // zeilenweises Bearbeiten
   for (int i = 0; i < (int)zeilen_.size(); ++i)
   {
+    ++orig_i;
     // Hole eine kommentarfreie Zeile -> gtext
     gtext = zeilen_[i].substr( 0, zeilen_[i].find( "#" ) );
 
@@ -731,6 +742,7 @@ CgatsFilter::cgats_korrigieren_               ()
         ++zaehler_SETS;
         messungen[messungen.size()-1].block.push_back(  
                                       unterscheideZiffernWorte_( zeilen_[i] ) );
+        messungen[messungen.size()-1].line.push_back( orig_i );
         messungen[messungen.size()-1].block_zeilen = zaehler_SETS;
       }
     }

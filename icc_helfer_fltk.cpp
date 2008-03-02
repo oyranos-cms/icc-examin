@@ -232,9 +232,11 @@ namespace icc_examin_ns {
   int  leerWait(void) { return 0; }
   int  (*waitFunc)(void) = Fl::check;//awake;
 
+#if 0
   static pthread_mutex_t data_mutex_         = PTHREAD_MUTEX_INITIALIZER;
   static Fl_Thread       data_mutex_thread_  = (Fl_Thread)pthread_self();
   static int             data_mutex_threads_ = 0;
+#endif
 
   void lock(const char *file, int line)
   {

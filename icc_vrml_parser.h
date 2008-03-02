@@ -37,6 +37,7 @@
 struct ICCnetzPunkt {
   double koord[3]; //!< allways Lab 0..1
   double farbe[4]; //!< eigther from VRML parsed or calculated otherwise
+  std::string name;
 };
 
 /** point indexes for a representable plain */

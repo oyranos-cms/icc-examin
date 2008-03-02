@@ -1,3 +1,33 @@
+2007-06-27
+	* neu: build osX universal iccgamut
+
+2007-06-26
+	* neu: configure: support --disable-dependency-tracking configure option
+	* und: configure: remove cc/CC and c++/CXX modifiers for x86_64 builds
+	* fix: configure: fix for user specified fltk-config file
+	* und: configure.sh: more sensible test for libraries
+	* und: configure.sh: remove optimisations from external library flags
+	* neu: configure.sh: detect utf-8 support in FLTK by config script name
+	* und: configure.sh: more sensible debug options for Darwin
+	* fix: icc_betrachter.fl: Solaris compile errors
+	* neu: gui: new dynamic table channel selection buttons
+	* fix: move pthread_attr_getstacksize to DEBUG for Solaris
+
+2007-06-23
+	* neu: icc_helfer.cxx/h: getColorSpaceGeneric, getChannelNamesShort
+	* neu: i18n: set charset according to utf-8 support in FLTK
+
+2007-06-23
+	* fix: icc_profile_tags.cpp: detect wrong desc count and print warning
+	* neu: ICCtag::colorSpace (MftChain typ)
+
+2007-06-13
+	* fix: additional Fl_GL_Window::set_visible() after show() for osX FLTK:STR 1707
+
+2007-04-18
+	* und: remove non translations from icc_cgats_filter.cpp
+	* und: translate many comments to english
+
 2007-03-06
 	* neu: add MCH5++ colour space signatures
 	* neu: render input profile gamut by directly going from max RGB->Lab

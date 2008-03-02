@@ -29,7 +29,7 @@ class TagBrowser;
 class TagTexts;
 class MftChoice;
 class GL_Ansicht;
-char* iccReadInfo(char* filename);
+const char* iccReadInfo(char* filename);
 
 class TagBrowser : public Fl_Hold_Browser {
 public:
@@ -39,6 +39,7 @@ public:
   void selectItem(int item);
   int visible();
 };
+typedef const char* (*tagTextsCB_f)(int * line);
 
 class TagTexts : public Fl_Hold_Browser {
   int X; int Y; int W; int H; const char* start_info; 
@@ -46,6 +47,8 @@ public:
   int inspekt_topline; 
   TagTexts(int X,int Y,int W,int H,const char* start_info) ;
   void hinein(std::string text);
+  tagTextsCB_f cb; 
+  void selectItem(int item);
 };
 
 class MftChoice : public Fl_Choice {
@@ -254,6 +257,10 @@ private:
 public:
   TagDrawings *mft_viewer;
   TagTexts *mft_text;
+private:
+  void cb_mft_text_i(TagTexts*, void*);
+  static void cb_mft_text(TagTexts*, void*);
+public:
   Fl_Group *mft_gl_group;
   GL_Ansicht *mft_gl;
   Fl_Pack *mft_gl_button_pack;
@@ -264,6 +271,10 @@ private:
 public:
   Fl_Pack *twoD_pack;
   TagTexts *tag_text;
+private:
+  void cb_tag_text_i(TagTexts*, void*);
+  static void cb_tag_text(TagTexts*, void*);
+public:
   TagDrawings *tag_viewer;
   Fl_Box *box_stat;
   Fl_Progress *load_progress;

@@ -243,10 +243,12 @@ LIBDIR="lib"$BARCH
 export MACH OSUNAME LIBDIR BARCH LINE_ARCH
 
 if [ -z "$CC" ]; then
-  CC=cc$LINE_ARCH
+  CC=cc
+#$LINE_ARCH
 fi
 if [ -z "$CXX" ]; then
-  CXX=c++$LINE_ARCH
+  CXX=c++
+#$LINE_ARCH
 fi
 
 echo "CXX = $CXX" >> $CONF

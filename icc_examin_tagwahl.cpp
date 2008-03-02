@@ -47,6 +47,7 @@ using namespace icc_examin_ns;
 #define DBG_EXAMIN_S( texte )
 #endif
 
+const char * selectTextsLine( int * line );
 
 
 std::string
@@ -76,6 +77,11 @@ ICCexamin::waehleTag (int item)
     return text;
   }
 
+  if(!icc_betrachter->tag_text->cb)
+  {
+    tagTextsCB_f cb = &selectTextsLine;
+    icc_betrachter->tag_text->cb = cb;
+  }
 
   frei(false);
   kurven[TAG_VIEWER].clear();
@@ -337,4 +343,39 @@ ICCexamin::waehleMft (int item)
   DBG_PROG_ENDE
 }
 
+const char *
+selectTextsLine( int * line )
+{
+  int i = 0;
+  const char * txt = "--";
+
+  if(line)
+  {
+    int item = icc_examin->tag_nr();
+    i = *line;
+    //*line = 1;
+    txt = icc_examin->icc_betrachter->tag_text->text(i);
+
+    std::vector<std::string> TagInfo = profile.profil()->printTagInfo(item);
+    if(profile.profil()->tagBelongsToMeasurement(item) && TagInfo.size() == 2 &&
+       icc_examin->icc_betrachter->tag_browser->value() > 6)
+    {
+      std::vector<double> rgb;
+      std::string name;
+      std::vector<double> lab = 
+       profile.profil()->getMeasurement().getLine( i-1, TagInfo[0].c_str(),
+                                                   rgb, name );
+
+      if(lab.size() == 3)
+      {
+        icc_examin->icc_betrachter->DD_farbraum->emphasizePoint( lab, rgb,name);
+
+        DBG_PROG_S( txt <<" "<< TagInfo[0] <<" "<< TagInfo[1] <<" L "<< lab[0] <<" a "<< lab[1] <<" b "<< lab[2] )
+      } else
+        icc_examin->icc_betrachter->DD_farbraum->emphasizePoint( lab, rgb,name);
+    }
+  }
+
+  return txt;
+}
 

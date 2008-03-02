@@ -61,6 +61,7 @@ class GL_Ansicht : public Fl_Gl_Window, /*, public Fl_Slot*/
   std::vector<std::string>farb_namen_;
   std::vector<double> punkte_;        //                (n*3)
   std::vector<float>  farben_;        // rgba 0.0 - 1.0 (n*4)
+  ICCnetzPunkt epoint_;
 
   void fensterForm();
 
@@ -161,6 +162,9 @@ public:
                      std::vector<float>  &punktFarben,      //!< RGBA
                      std::vector<std::string> &farb_namen_, //!< per point
                      std::vector<std::string> &achsNamen);  //!< 3*
+  void emphasizePoint (std::vector<double> &pointcoordinates, //!< Lab
+                       std::vector<double> &point_colour,     //!< RgbA
+                       std::string point_name);               //!< name
   void punkte_clear () { punkte_.clear(); farben_.clear(); }
   void herausNormalPunkte (std::vector<double> & p, std::vector<float> & f);
   void hineinNetze  (const std::vector<ICCnetz> & dreiecks_netze);
@@ -202,6 +206,7 @@ public:
   bool zeig_punkte_als_messwerte;
   int  spektralband;        //!< show spectral saturated colour line
   int  zeige_helfer;        //!< show arrows and text
+  char text[128];           //!< Status line text
 private:
   void zeigeSpektralband_();
   void zeigeUmrisse_();
@@ -229,7 +234,7 @@ private:
   int  maus_x_alt, maus_y_alt;
   bool maus_steht;
   void mausPunkt_( GLdouble & oX, GLdouble & oY, GLdouble & oZ,
-                  GLdouble & X, GLdouble & Y, GLdouble & Z );
+                  GLdouble & X, GLdouble & Y, GLdouble & Z, int from_mouse );
 public:
   // speed
   int  smooth;                    //!< smooth drawing

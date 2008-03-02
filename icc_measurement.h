@@ -100,6 +100,7 @@ class ICCmeasurement {
     std::vector<Lab_s>    Lab_Ergebnis_;
     std::vector<RGB_s>    RGB_MessFarben_;
     std::vector<RGB_s>    RGB_ProfilFarben_;
+    std::vector<std::pair<std::string,std::vector<int> > > patch_src_lines_;
     // results
     std::vector<double> Lab_Differenz_;
     double              Lab_Differenz_max_;
@@ -140,6 +141,9 @@ class ICCmeasurement {
     std::vector<double> getCmmRGB (int patch);  //!< displaying colours
     std::vector<double> getMessLab (int patch);
     std::vector<double> getCmmLab (int patch);
+    std::vector<double> getLine   ( int line, const char * tag_name,
+                                    std::vector<double> & rgb,
+                                    std::string & name );
     std::vector<XYZ_s>    getMessXYZ ()      {DBG_PROG return XYZ_Satz_; }
     std::vector<Lab_s>    getMessLab ()      {DBG_PROG return Lab_Satz_; }
     std::vector<RGB_s>    getMessRGB ()      {DBG_PROG return RGB_Satz_; }

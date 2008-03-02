@@ -108,7 +108,11 @@ fl_set_codeset_    ( const char* lang, const char* codeset_,
           //putenv( settxt );
           free(settxt);
         }
-        setenv("LANG", locale, 1); /* setenv is Posix */
+#ifdef _POSIX_C_SOURCE
+#if 0
+        setenv("LANG", locale, 1); /* setenv is Posix, but might be ignored */
+#endif
+#endif
 
         /* 1c. set the locale info after LANG */
         if(set_codeset)

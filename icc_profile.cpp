@@ -882,6 +882,18 @@ ICCprofile::hasMeasurement()
   return (hasTagName("targ") || (hasTagName("CIED")&&hasTagName("DevD")));
 }
 
+bool
+ICCprofile::tagBelongsToMeasurement( int tag )
+{
+  DBG_PROG
+  std::string name = tags[tag].getTagName();
+  int s = tags[tag].getSize();
+  return ( (name == "targ" ||
+            (name == "CIED"&&hasTagName("DevD")) ||
+            (hasTagName("CIED")&&name == "DevD"))
+           && s );
+}
+
 std::string
 ICCprofile::report (bool auss)
 {

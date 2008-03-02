@@ -380,6 +380,10 @@ EXEEXT		=
 	echo Expanding $< ...
 	fluid -c $<
 
+.fl.h:
+	echo Expanding $< ...
+	fluid -c $<
+
 .po:
 	echo Generating $@ ...
 	msgfmt $<

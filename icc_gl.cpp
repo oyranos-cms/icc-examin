@@ -184,6 +184,7 @@ GL_Ansicht::init_()
   maus_steht = false;
   valid_ = false;
   zeit_ = 0;
+  text[0] = 0;
 
   for(int i = 0; i <= DL_MAX; ++i)
     gl_listen[i] = 0;
@@ -393,7 +394,7 @@ GL_Ansicht::init(int ty)
 /** @brief localise the position */
 void
 GL_Ansicht::mausPunkt_( GLdouble &oX, GLdouble &oY, GLdouble &oZ,
-                        GLdouble &X, GLdouble &Y, GLdouble &Z )
+                        GLdouble &X, GLdouble &Y, GLdouble &Z, int from_mouse )
 {
   DBG_PROG_START  
   // localise position
@@ -406,9 +407,10 @@ GL_Ansicht::mausPunkt_( GLdouble &oX, GLdouble &oY, GLdouble &oZ,
   glGetDoublev(GL_MODELVIEW_MATRIX, modell_matrix);
   glGetDoublev(GL_PROJECTION_MATRIX, projektions_matrix);
   glGetIntegerv(GL_VIEWPORT, bildschirm);
-  gluUnProject(maus_x_, h()-maus_y_, zBuffer,
-               modell_matrix, projektions_matrix, bildschirm,
-               &oX, &oY, &oZ);
+  if(from_mouse)
+    gluUnProject(maus_x_, h()-maus_y_, zBuffer,
+                 modell_matrix, projektions_matrix, bildschirm,
+                 &oX, &oY, &oZ);
 
 
   DBG_PROG_V( "X: "<<oX<<" Y: "<<oY<<" Z: "<<oZ<<" "<<id_ )
@@ -2140,7 +2142,6 @@ GL_Ansicht::zeichnen()
   GLfloat farbe[] =   { textfarbe[0],textfarbe[1],textfarbe[2], 1.0 };
   GLdouble oX=.0,oY=.0,oZ=.0;
   GLdouble X=.0,Y=.0,Z=.0;
-  static char text[128] = {""};
   std::string kanalname;
 
   if(visible() &&
@@ -2185,26 +2186,35 @@ GL_Ansicht::zeichnen()
 
 
       // localisate
-      mausPunkt_ (oX, oY, oZ, X, Y, Z);
+      if( strlen(text) && Fl::belowmouse() != this )
+      {
+        oY = epoint_.koord[0]-0.5;
+        oZ = epoint_.koord[1]-a_darstellungs_breite/2.;
+        oX = epoint_.koord[2]-b_darstellungs_breite/2.;
+        mausPunkt_( oX, oY, oZ, X, Y, Z, 0 );
+      } else
+      {
+        text[0] = 0;
+        mausPunkt_( oX, oY, oZ, X, Y, Z, 1 );
 
-                    GLfloat grenze = 3.2;
-                    if(von_farb_namen_.size() &&
+        GLfloat grenze = 3.2;
+
+        if(von_farb_namen_.size() &&
                        -grenze < oY && oY < grenze &&
                        -grenze < oX && oX < grenze &&
                        -grenze < oZ && oZ < grenze)
-                      sprintf( text,"%s:%.01f %s:%.01f %s:%.01f",
+          sprintf( text,"%s:%.01f %s:%.01f %s:%.01f",
                                von_farb_namen_[0].c_str(), oY*100+50.,
                                von_farb_namen_[1].c_str(), oZ*100,
                                von_farb_namen_[2].c_str(), oX*100 );
-                    else
-                      text[0] = 0;
+      }
 
-                    if(strlen(text) && typ() != 1)
+      if(strlen(text) && typ() != 1)
                     {
                         double lab[3] = {oY+0.5, oZ/2.55+0.5, oX/2.55+0.5},
                               *rgb = 0;
                         icc_examin->statusFarbe(lab[0],lab[1],lab[2]);
-                        DBG_PROG_V( lab[0]<<" "<<lab[1]<<" "<<lab[2] )
+                        DBG_V( lab[0]<<" "<<lab[1]<<" "<<lab[2] )
                         rgb = icc_oyranos. wandelLabNachBildschirmFarben(lab, 1,
                                  icc_examin->intentGet(NULL),
                                  icc_examin->gamutwarn()?cmsFLAGS_GAMUTCHECK:0);
@@ -2529,6 +2539,48 @@ GL_Ansicht::hineinPunkte      (std::vector<double> &vect,
 }
 
 void
+GL_Ansicht::emphasizePoint    (std::vector<double> &point_coordinates,
+                               std::vector<double> &point_colour,
+                               std::string point_name)
+{ DBG_PROG_START
+  // show curve from tag_browser
+  DBG_NUM_V( point_name )
+  MARK( frei(false); )
+  if(point_coordinates.size()==3 && point_colour.size() == 4)
+  {
+    double l[3];
+    Lab_s lab;
+    lab.L = point_coordinates[0];
+    lab.a = point_coordinates[1];
+    lab.b = point_coordinates[2];
+    epoint_.koord[0] = point_coordinates[0];
+    epoint_.koord[1] = point_coordinates[1]*a_darstellungs_breite;
+    epoint_.koord[2] = point_coordinates[2]*b_darstellungs_breite;
+    epoint_.farbe[0] = point_colour[0];
+    epoint_.farbe[1] = point_colour[1];
+    epoint_.farbe[2] = point_colour[2];
+    epoint_.farbe[3] = point_colour[3];
+    icc_examin->statusFarbe( lab.L, lab.a, lab.b );
+    LabToCIELab( lab, &l[0] );
+    sprintf( text,"%s %s:%.01f %s:%.01f %s:%.01f", point_name.c_str(),
+                  von_farb_namen_[0].c_str(), l[0],
+                  von_farb_namen_[1].c_str(), l[1],
+                  von_farb_namen_[2].c_str(), l[2] );
+    glStatus( text, typ_ );
+    epoint_.name = point_name;
+  } else {
+    memset(epoint_.koord, 0, sizeof(double)*3);
+    memset(epoint_.farbe, 0, sizeof(double)*4);
+    epoint_.name.clear();
+  }
+  MARK( frei(true); )
+
+  //valid_=false;
+  redraw();
+  DBG_PROG_ENDE
+}
+
+void
 GL_Ansicht::hineinNetze       (const std::vector<ICCnetz> & d_n)
 {
   DBG_PROG_START
@@ -2777,6 +2829,7 @@ GL_Ansicht::handle( int event )
          if(visible() && !darfBewegen()) {
            redraw();
          }
+         text[0] = 0;
          break;
     case FL_MOUSEWHEEL:
          DBG_BUTTON_S( "FL_MOUSEWHEEL" << Fl::event_dx() << "," << Fl::event_dy() )
@@ -2807,21 +2860,24 @@ GL_Ansicht::handle( int event )
 void
 GL_Ansicht::tastatur(int e)
 { DBG_ICCGL_START
+  Fl_Widget * wb = Fl::belowmouse();
   if(visible())
+  if( this == wb )
   {
     //e = Fl::get_key(e);
-    if(Fl::event_key() == FL_Up) {
-      vorder_schnitt += 0.01;
-    } else if(Fl::event_key() == FL_Down) {
-      vorder_schnitt -= 0.01;
-    } else if(Fl::event_key() == FL_Home) {
-      vorder_schnitt = 4.2;
-    } else if(Fl::event_key() == FL_End) {
-      vorder_schnitt = agv_->eyeDist();
-    }
     DBG_ICCGL_S("e = " << e << " " << Fl::event_key() )
     if(e == FL_SHORTCUT)
-    switch (Fl::event_key()) {
+    {
+      if(Fl::event_key() == FL_Up) {
+        vorder_schnitt += 0.01;
+      } else if(Fl::event_key() == FL_Down) {
+        vorder_schnitt -= 0.01;
+      } else if(Fl::event_key() == FL_Home) {
+        vorder_schnitt = 4.2;
+      } else if(Fl::event_key() == FL_End) {
+        vorder_schnitt = agv_->eyeDist();
+      }
+      switch (Fl::event_key()) {
       case 45: // '-' this is not conform on all consoles; use FLTK native key codes?
         if(punktform >= MENU_dE1KUGEL && punktform <= MENU_dE4KUGEL)
         {
@@ -2861,6 +2917,7 @@ GL_Ansicht::tastatur(int e)
       default:
         dbgFltkEvents(e);
         DBG_MEM_V( Fl::event_key() )
+      }
     }
   }
   DBG_ICCGL_ENDE

@@ -96,7 +96,8 @@ class ICCheader {
                   { DBG_PROG  return cp_nchar ((char*)&(header.  magic),
                                                       sizeof (icSignature)+1); }
     void        set_magic ()
-                  { DBG_PROG char* m= {"acsp"}; header.magic= *(icSignature*)m;}
+                  { DBG_PROG const char* m= {"acsp"};
+                                                header.magic= *(icSignature*)m;}
     std::string platform () const
                   { DBG_PROG  return getPlatformName(icValue(header.platform));}
     void        set_platform ()
@@ -118,13 +119,13 @@ class ICCheader {
                   { DBG_PROG  return cp_nchar ((char*)&(header. manufacturer),
                                                       sizeof (icSignature)+1); }
     void        set_manufacturer () 
-                  { DBG_PROG  char* m= {"none"};
+                  { DBG_PROG  const char* m= {"none"};
                     header.manufacturer= *(icSignature*)m; }
     const char* modelName () const
                   { DBG_PROG  return cp_nchar ((char*)&(header.  model),
                                                 sizeof (icSignature)+1); }
     void        set_model ()
-                  { DBG_PROG  char* m={"none"}; header.model= *(icSignature*)m;}
+                  { DBG_PROG  const char* m={"none"}; header.model= *(icSignature*)m;}
     std::string attributes () const;
     void        set_reflective_attr()
                   { DBG_PROG  ((char*)&header.attributes)[0] =
@@ -164,7 +165,7 @@ class ICCheader {
                   { DBG_PROG return cp_nchar((char*)&(header.  creator),
                                                       sizeof (icSignature)+1); }
     void        set_creator ()
-                  { DBG_PROG char* m = {"Oyra"};
+                  { DBG_PROG const char* m = {"Oyra"};
                     header.creator = *(icSignature*)m; }
     void        setID ()
                   {/*char* m = ((char*)&header)[84]; *m = "-";*/ } // v4
