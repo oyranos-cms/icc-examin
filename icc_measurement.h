@@ -44,12 +44,14 @@
 
 // definiert in icc_measurement.cpp
 class ICCmeasurement {
+                        ICCmeasurement     (); 
+                        ICCmeasurement     (ICCprofile* profil);
+    int                 id_;
   friend class ICCprofile;
     void                copy (const ICCmeasurement& m);
     void                defaults ();
 
   public:
-                        ICCmeasurement     (); 
                         ICCmeasurement     (ICCprofile* profil , ICCtag& tag);
                         ICCmeasurement     (ICCprofile* profil,
                                             icTag& tag, char* data);

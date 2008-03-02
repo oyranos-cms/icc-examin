@@ -92,20 +92,20 @@ ICCexamin::oeffnenThread_ (int pos)
     icc_betrachter->menueintrag_gamut_speichern->activate();
     icc_betrachter->menueintrag_gamut_vrml_speichern->activate();
 
-    fortschrittThreaded( 2./3.+ 1./3. );
+    fortschrittThreaded( 2./3.+ 1./6. );
     if(profile.profil() == profile[pos])
       icc_betrachter->measurement( profile.profil()->hasMeasurement() );
     icc_examin_ns::unlock(this, __FILE__,__LINE__);
 
-    fortschrittThreaded( 2./3.+ 2./3. );
+    fortschrittThreaded( 2./3.+ 2./6. );
   }
+  fortschrittThreaded( 1.1 );
   DBG_PROG_ENDE
 }
 
 void
 ICCexamin::oeffnenThread_ ()
 { DBG_PROG_START
-  DBG_V( frei_ )
   if(wandelThreadId(pthread_self()) != (Fl_Thread)THREAD_LADEN) WARN_S("THREAD_LADEN???");
 
   if(!speicher_vect_.size()) {
@@ -114,26 +114,16 @@ ICCexamin::oeffnenThread_ ()
     return;
   }
 
-# if 0
-  for (float f = 0.; f < 1.0 ; f += 0.1) {
-    fortschrittThreaded( f );
-    icc_examin_ns::sleep(.5);
-  }
-# endif
-
   // Laden
   icc_betrachter->DD_farbraum->punkte_clear();
   profile.clear();
-  DBG_V( frei_ )
   fortschrittThreaded( -.1 );
-  std::string m = _("Monitor Profile");
   for (unsigned int i = 0; i < speicher_vect_.size(); ++i)
   {
     DBG_PROG_V( speicher_vect_[i].size()<<" "<<speicher_vect_[i].name() )
     fortschrittThreaded( 1./3.+ (double)(i)/speicher_vect_.size()/3.0 );
     profile.einfuegen( speicher_vect_[i], -1 );
-    if(speicher_vect_[i].name() == m)
-      profile.passiv(profile.size()-1);
+
     fortschrittThreaded( 1./3.+ (double)(i+1)/speicher_vect_.size()/3.0 );
     DBG_THREAD
   }
@@ -151,14 +141,8 @@ ICCexamin::oeffnenThread_ ()
     icc_betrachter->menueintrag_gamut_speichern->activate();
     icc_betrachter->menueintrag_gamut_vrml_speichern->activate();
 
-#   if 0
-    icc_examin_ns::unlock(this, __FILE__,__LINE__);
-    fortschrittThreaded( 2./3.+ 1./3. );
-    icc_examin_ns::sleep(0.04);
-    icc_examin_ns::lock(__FILE__,__LINE__);
-#   else
-    fortschritt( 2./3.+ 1./3. );
-#   endif
+    fortschritt( 2./3.+ 1./6. );
+
     icc_betrachter->measurement( profile.profil()->hasMeasurement() );
     if(farbraumModus())
     {
@@ -202,7 +186,7 @@ ICCexamin::oeffnenThread_ ()
       //icc_betrachter->DD_farbraum->auffrischen();
     }
 
-    fortschrittThreaded( 2./3.+ 2./3. );
+    fortschrittThreaded( 2./3.+ 2./6. );
     // ICCwaehler
       // erneuern
     static std::vector<std::string> namen_neu, namen_alt;
@@ -255,7 +239,8 @@ ICCexamin::oeffnenThread_ ()
       DBG_PROG_V( dateinamen[0] <<" "<< detaillabel )
     }
 
-  }
+  } else
+    fortschrittThreaded( 1.1 );
   DBG_PROG_ENDE
 }
 
@@ -301,8 +286,6 @@ void
 #endif
 ICCexamin::oeffnenStatisch_ (void* ie)
 {
-  // TODO
-  //icc_examin_ns::sleep(0.1);
   DBG_PROG_START
 
   // Laufzeitfehler erkennen
@@ -315,18 +298,10 @@ ICCexamin::oeffnenStatisch_ (void* ie)
   }
   if(!ie) WARN_S( "keine ICCexamin Klasse verfuegbar" )
 
-  // Haupt Thread freigeben
-  //icc_examin_ns::unlock(0, __FILE__,__LINE__);
-
   // Bezug herstellen
   ICCexamin* examin = (ICCexamin*) ie;
 
-  //icc_examin_ns::sleep(.5); DBG_THREAD
-  for(float f = 0; f < 1.0; f = f + 0.001) {
-    //icc_examin->fortschrittThreaded(f); DBG_THREAD
-  }
-
-  // Schleife starten die diesen thread laufen lässt
+  // Schleife starten die diesen thread laufen laesst
   while(1) {
     if(examin->lade_) {
       examin->oeffnenThread_();
@@ -338,7 +313,7 @@ ICCexamin::oeffnenStatisch_ (void* ie)
       examin->erneuern(-1);
     } else
       // kurze Pause 
-      icc_examin_ns::sleep(0.5); DBG_THREAD
+      icc_examin_ns::sleep(0.2); DBG_THREAD
   }
 
   DBG_PROG_ENDE
@@ -364,8 +339,7 @@ ICCexamin::oeffnen (std::vector<std::string> dateinamen)
   // Laden
   std::vector<Speicher> ss;
   // resize benutzt copy, und erzeugt damit Referenzen auf das
-  // selbe Objekt ; wir benoetigen aber neue Objekte
-  // ss.resize(dateinamen.size());
+  // selbe Objekt ; wir benoetigen aber neue Objekte => push_back()
   int moni_dabei = 0;
   for (unsigned int i = 0; i < dateinamen.size(); ++i)
   {
@@ -382,22 +356,6 @@ ICCexamin::oeffnen (std::vector<std::string> dateinamen)
   }
   DBG_PROG
 
-# if 0
-  if(!kannLaden())
-  {
-    int erfolg = false;
-    while(!erfolg) {
-      if(kannLaden()) {
-        erfolg = true;
-      } else {
-        // kurze Pause 
-        DBG_THREAD_S( "muss warten" )
-        icc_examin_ns::sleep(0.05);
-      }
-    }
-  }
-# endif
-  
   // Das Monitorprofil immer dabei 
   if (!moni_dabei)
     ss.push_back(icc_oyranos.moni());
@@ -410,12 +368,9 @@ ICCexamin::oeffnen (std::vector<std::string> dateinamen)
 void
 ICCexamin::oeffnen ()
 { DBG_PROG_START
-  DBG_V( frei_ )
   fortschritt(0.01);
   std::vector<std::string> profilnamen = icc_betrachter->open( profile );
-  DBG_V( frei_ )
   oeffnen( profilnamen );
-  DBG_V( frei_ )
   neu_laden_ = true;
   DBG_PROG_ENDE
 }
@@ -514,7 +469,7 @@ ICCexamin::berichtSpeichern (void)
 
   dateiwahl->show(); DBG_PROG
   while( dateiwahl->shown() )
-    Fl::wait( 0.01 );
+    Fl::wait( 0.05 );
 
   DBG_PROG_V( dateiwahl->filter() )
   if (dateiwahl->value())
@@ -553,14 +508,14 @@ ICCexamin::berichtSpeichern (void)
 bool
 ICCexamin::gamutSpeichern (IccGamutFormat format)
 {
-  DBG_PROG_START
+    DBG_PROG_START
   bool erfolgreich = true;
   std::string dateiname = profile.name();  DBG_PROG_V( dateiname )
 
   // Profilnamen ersetzen
   std::string::size_type pos=0;
   if ((pos = dateiname.find_last_of(".", dateiname.size())) != std::string::npos)
-  { DBG_PROG
+  {   DBG_PROG
     if(format == ICC_ABSTRACT) {
       dateiname.replace (pos, 5, "_proof.icc"); DBG_NUM_S( "_proof.icc gesetzt")
     } else if(format == ICC_VRML) {
@@ -569,8 +524,7 @@ ICCexamin::gamutSpeichern (IccGamutFormat format)
   } DBG_PROG_V( dateiname )
 
   // FLTK Dateidialog aufrufen
-  DBG_PROG_V( dateiwahl->filter() )
-
+    DBG_PROG_V( dateiwahl->filter() )
   std::string muster = dateiwahl->filter(); DBG_PROG
   std::string datei;
   if (dateiwahl->value())
@@ -591,27 +545,28 @@ ICCexamin::gamutSpeichern (IccGamutFormat format)
 
   dateiwahl->show(); DBG_PROG
   while( dateiwahl->shown() )
-    Fl::wait( 0.01 );
+    Fl::wait( 0.05 );
 
-  DBG_PROG_V( dateiwahl->filter() )
+    DBG_PROG_V( dateiwahl->filter() )
   if (dateiwahl->value())
     dateiname = dateiwahl->value();
   else
     dateiname = "";
-  DBG_PROG
+
+    DBG_PROG
 
   dateiwahl->filter(muster.c_str()); DBG_PROG
   dateiwahl->value(datei.c_str()); DBG_PROG
   dateiwahl->label(titel.c_str()); DBG_PROG
-  DBG_PROG_V( dateiwahl->filter() )
+    DBG_PROG_V( dateiwahl->filter() )
 
-  DBG_PROG_V( dateiname )
+    DBG_PROG_V( dateiname )
 
   if (dateiname == "" ||
       dateiname == profile.name())
   { DBG_PROG_V( dateiwahl->count() << dateiname )
     fortschritt (1.1);
-    DBG_PROG_ENDE
+      DBG_PROG_ENDE
     return false;
   }
 
@@ -629,16 +584,16 @@ ICCexamin::gamutSpeichern (IccGamutFormat format)
 
     // Speichern
     saveMemToFile ( dateiname.c_str(), (const char*)speicher, speicher.size() );
-    speicher.clear(); DBG
+    speicher.clear();
   } else if(format == ICC_VRML) {
     std::string vrml;
     vrml = icc_oyranos.vrmlVonProfil ( *profile.profil(), profile.profil()->intent() );
     // Speichern
     saveMemToFile ( dateiname.c_str(), vrml.c_str(), vrml.size() );
   }
-  profil.clear(); DBG
+  profil.clear();
 
-  DBG_PROG_ENDE
+    DBG_PROG_ENDE
   return erfolgreich;
 }
 

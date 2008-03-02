@@ -175,7 +175,7 @@ ICCexamin::farbenLese (int n,
     rgb = icc_oyranos. wandelLabNachBildschirmFarben(lab, n_farben,
                                  icc_examin->intent(),
                                  icc_examin->gamutwarn()?cmsFLAGS_GAMUTCHECK:0);
-    DBG_V( n_farben )
+    DBG_NUM_V( n_farben )
     if(!rgb)  WARN_S( _("RGB Ergebnis nicht verfuegbar") )
     for(unsigned i = 0; i < n_farben; ++i) {
       f[i*4+0] = rgb[i*3+0];
@@ -209,7 +209,7 @@ ICCexamin::farbraum (int n)
   DBG_PROG_V( profile[n]->filename() )
 
   // Messwerte
-  bool messwerte;
+  int messwerte=false;
   FREI_(false);
   if(profile.size() > n &&
      profile.aktuell() == n &&
@@ -222,7 +222,7 @@ ICCexamin::farbraum (int n)
     }
   FREI_(true);
 
-  bool ncl2_profil = profile[n]->hasTagName("ncl2");
+  int ncl2_profil = profile[n]->hasTagName("ncl2");
 
   // Oeffnen
   if(lade_)
@@ -287,6 +287,17 @@ ICCexamin::farbraum (int n)
                                     dateiname.size() );
     DBG_PROG_V( icc_betrachter->DD_farbraum->dreiecks_netze[n].name )
   }
+  // Waehler / Netz Abgleich
+  if(netz->size()) {
+    int n_size = netz->size();
+    for (int i = 0; i < n_size; ++i) {
+      if(profile.size() > i) {
+        DBG_V( (*netz)[i].aktiv <<"|"<< (*netz)[i].grau <<"|"<<(*netz)[i].transparenz <<" "<< profile.aktiv(i) )
+        (*netz)[i].aktiv = profile.aktiv(i);
+        DBG_V( (*netz)[i].aktiv <<"|"<< (*netz)[i].grau <<"|"<<(*netz)[i].transparenz <<" "<< profile.aktiv(i) )
+      }
+    }
+  }
 
   FREI_(true);
   DBG_PROG_ENDE
@@ -296,7 +307,6 @@ void
 ICCexamin::farbraum ()
 {
   DBG_PROG_START
-  DBG_V( frei_ )
   FREI_(false);
 
   if((int)icc_betrachter->DD_farbraum -> dreiecks_netze.size() > profile.size())

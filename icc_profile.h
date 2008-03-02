@@ -89,6 +89,8 @@ class ICCprofile {
     std::vector<ICCtag> tags;
   private: // cgats via lcms
     ICCmeasurement      measurement;
+  public:
+    void                measurementReparent() { measurement.profile_ = this; }
 
   public: // Informationen
     const char*         filename ();

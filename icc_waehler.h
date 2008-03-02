@@ -207,13 +207,13 @@ class ICCwaehler : public Fl_Double_Window
     int          size      ()
 {
   DBG_PROG_START
-  int size = 0;
+  int size_ = 0;
   for(int i = 0; i < 128; ++i)
-    if(profile_[i]) ++size;
+    if(profile_[i]) ++size_;
     else break;
-  DBG_PROG_V( size )
+  DBG_PROG_V( size_ )
   DBG_PROG_ENDE
-  return size;
+  return size_;
 }
 
 };

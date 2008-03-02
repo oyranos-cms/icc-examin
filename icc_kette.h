@@ -52,14 +52,15 @@ class ICCkette : public icc_examin_ns::Modell
                                aktiv_.clear(); profil_mzeit_.clear(); }
   private:
     int                      aktuelles_profil_;
-    // Liste der geladenen Profile
+    /** Liste der geladenen Profile */
     std::vector<ICCprofile>  profile_;
     std::vector<std::string> profilnamen_;
     std::vector<int>         aktiv_;
     std::vector<double>      profil_mzeit_;
 
-    // Starte einen pthread Wächter und lasse Ihn alle unsere Beobachter
-    // informieren, welches Profile gerade geändert wurde.
+    /** Starte einen pthread Wächter und lasse Ihn alle unsere Beobachter
+        informieren, welches Profile gerade geändert wurde.
+     */
     static
 #   if USE_THREADS
     void*

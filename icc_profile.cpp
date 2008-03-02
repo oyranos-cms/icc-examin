@@ -48,44 +48,22 @@
   */
 
 ICCprofile::ICCprofile (void)
+ : measurement(this)
 { DBG_PROG_START
   data_ = NULL;
   size_ = 0;
   DBG_PROG_ENDE
 }
 
-ICCprofile &
-ICCprofile::copy_ ( const ICCprofile & p )
-{ DBG_PROG_START
-  data_ = (char*) calloc (sizeof(char), p.size_);
-  size_ = p.size_;
-  memcpy(data_, p.data_, size_);
-  filename_ = p.filename_;
-  changing_ = p.changing_;
-  measurement = p.measurement;
-  measurement.profile_ = this;
-  tags = p.tags;
-  header = p.header;
-  
-  DBG_PROG_ENDE
-  return *this;
-}
-
 ICCprofile::ICCprofile ( const ICCprofile & p )
+ : measurement(this)
 { DBG_PROG_START
   copy_(p);
   DBG_PROG_ENDE
-}
-
-ICCprofile &
-ICCprofile::operator=  ( const ICCprofile & p )
-{ DBG_PROG_START
-  copy_(p);
-  DBG_PROG_ENDE
-  return *this;
 }
 
 ICCprofile::ICCprofile (const Speicher & s)
+ : measurement(this)
 { DBG_PROG_START
   if (data_ && size_) free(data_);
   data_ = NULL;
@@ -106,7 +84,32 @@ ICCprofile::~ICCprofile (void)
 # endif
   DBG_PROG_ENDE
 }
- 
+
+ICCprofile &
+ICCprofile::operator=  ( const ICCprofile & p )
+{ DBG_PROG_START
+  copy_(p);
+  DBG_PROG_ENDE
+  return *this;
+}
+
+ICCprofile &
+ICCprofile::copy_ ( const ICCprofile & p )
+{ DBG_PROG_START
+  data_ = (char*) calloc (sizeof(char), p.size_);
+  size_ = p.size_;
+  memcpy(data_, p.data_, size_);
+  filename_ = p.filename_;
+  changing_ = p.changing_;
+  measurement = p.measurement;
+  measurement.profile_ = this;
+  tags = p.tags;
+  header = p.header;
+  
+  DBG_PROG_ENDE
+  return *this;
+}
+
 void
 ICCprofile::clear (void)
 { DBG_PROG_START

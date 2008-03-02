@@ -47,15 +47,15 @@ struct ICCnetz {
   std::multimap<double,DreiecksIndexe> indexe;
   std::vector<ICCnetzPunkt> umriss;
   std::string name;
+  int aktiv;
+  int grau;
   double transparenz;
-  char grau;
   double schattierung;
-  char aktiv;
   ICCnetz() {
-    transparenz = 0.5;
-    grau = 0;
-    schattierung = 0.2;
     aktiv = 1;
+    grau = 0;
+    transparenz = 0.5;
+    schattierung = 0.2;
   }
 };
 

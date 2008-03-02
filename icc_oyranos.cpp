@@ -234,6 +234,8 @@ MyFlattenProfileProcSize (
   return 0;
 };
 
+typedef  void* (oyAllocFunc_t)(size_t size);
+
 int
 oyGetProfileBlockOSX (CMProfileRef prof, char *block, size_t *size, oyAllocFunc_t allocate_func)
 {

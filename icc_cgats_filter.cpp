@@ -409,7 +409,7 @@ CgatsFilter::zeilenOhneDuplikate_ ( std::vector<std::string> &zeilen )
     while ( (i < zeilen.size()-1) &&
             zeilen[i] == zeilen[i+1] )
     {
-      DBG_NUM_S( zeilen[i] <<"="<< zeilen[i+1] << _(" gelöscht") )
+      DBG_NUM_S( zeilen[i] <<"="<< zeilen[i+1] << _(" geloescht") )
       zeilen.erase( zeilen.begin()+i+1 );
       if( i+1 < zeilen.size() )
         DBG_NUM_S( zeilen[i+1] )
@@ -756,7 +756,7 @@ CgatsFilter::cgats_korrigieren_               ()
       if( messungen[messungen.size()-1].felder.size() >
           messungen[messungen.size()-1].block.size() )
       {
-        logEintrag_( _("Mehr Feldblöcke als Datenblöcke: lösche"),
+        logEintrag_( _("Mehr Feldbloecke als Datenbloecke: loesche"),
                      zeile_letztes_BEGIN_DATA_FORMAT, "", "" );
         messungen[messungen.size()-1].felder.resize(0);
         
@@ -793,9 +793,9 @@ CgatsFilter::cgats_korrigieren_               ()
       {
         zeilen_.insert( zeilen_.begin() + zeile_letztes_BEGIN_DATA_FORMAT, s.str() );
         ++i;
-        logEintrag_( _("fehlendes NUMBER_OF_FIELDS eingefügt"),
+        logEintrag_( _("fehlendes NUMBER_OF_FIELDS eingefuegt"),
                      zeile_letztes_BEGIN_DATA_FORMAT, "", s.str() );
-        DBG_PROG_S( zeilen_[zeile_letztes_BEGIN_DATA_FORMAT] << _(" eingefügt") )
+        DBG_PROG_S( zeilen_[zeile_letztes_BEGIN_DATA_FORMAT] << _(" eingefuegt") )
       } else // NUMBER_OF_FIELDS Parsen und Vergleichen
       { DBG_PROG_V( zeile_letztes_NUMBER_OF_FIELDS )
         std::string t = zeilen_[zeile_letztes_NUMBER_OF_FIELDS].
@@ -863,8 +863,8 @@ CgatsFilter::cgats_korrigieren_               ()
       {
         zeilen_.insert( zeilen_.begin() + zeile_letztes_BEGIN_DATA, s.str() );
         ++i;
-        DBG_PROG_S( zeilen_[zeile_letztes_BEGIN_DATA] << " eingefügt" )
-        logEintrag_( _("fehlende NUMBER_OF_SETS eingefügt"),
+        DBG_PROG_S( zeilen_[zeile_letztes_BEGIN_DATA] << " eingefuegt" )
+        logEintrag_( _("fehlende NUMBER_OF_SETS eingefuegt"),
                      zeile_letztes_BEGIN_DATA, "", s.str() );
       } else // NUMBER_OF_SETS Parsen und Vergleichen
       {
@@ -887,7 +887,7 @@ CgatsFilter::cgats_korrigieren_               ()
           t = s.str();
           zeilen_[zeile_letztes_NUMBER_OF_SETS].insert( 0, t );
           s.str("");
-          s << _("NUMBER_OF_SETS stimmt nicht überein: gefunden, berechnet ") << n_o_ << " <-> "<<
+          s << _("NUMBER_OF_SETS stimmt nicht ueberein: gefunden, berechnet ") << n_o_ << " <-> "<<
                   zaehler_SETS; 
           logEintrag_( s.str(), zeile_letztes_NUMBER_OF_SETS,
                        alt, zeilen_[zeile_letztes_NUMBER_OF_SETS] );
@@ -1009,7 +1009,7 @@ cgats_max_korrigieren( char* data, size_t size )
   DBG_PROG_START
   CgatsFilter cgats;
   // Optionen setzen
-  cgats.kommentar = "# Diese Datei wurde von ICC Examin geprueft bzw. neu zusammengestellt \n# bei Unvertraeglichkeiten bitte einen Hinweis moeglichst mit Datenquelle(n), Ergebnis und Versionsnummer an den Author email: ku.b @ gmx.de \n";
+  cgats.kommentar = "# Diese Datei wurde von ICC Examin geprueft bzw. neu zusammengestellt \n# bei Unvertraeglichkeiten bitte einen Hinweis\n# moeglichst mit Datenquelle(n), Ergebnis und Versionsnummer\n# an den Author email: ku.b @ gmx.de\n";
   // Laden
   cgats.lade( data, size );
   // Bearbeiten und Ausgeben

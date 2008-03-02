@@ -27,6 +27,7 @@
 
 // Date:      Mai 2005
 
+#if 0
 #include <lcms.h>
 
 #ifdef HAVE_OY
@@ -42,4 +43,4 @@ using namespace oyranos;
 
 #include "icc_helfer.h"
 
-
+#endif

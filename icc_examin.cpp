@@ -66,7 +66,7 @@ using namespace icc_examin_ns;
 
 ICCexamin::ICCexamin ()
 { DBG_PROG_START
-  //icc_examin_ns::lock(__FILE__,__LINE__);
+  icc_examin_ns::lock(__FILE__,__LINE__);
   icc_betrachter = new ICCfltkBetrachter;
   profile.init();
 
@@ -288,15 +288,14 @@ ICCexamin::nachricht( Modell* modell , int info )
   ICCkette* k = dynamic_cast<ICCkette*>(modell);
   if(k && (k->size() > info))
   {
-    DBG_PROG_S( _("Nachricht von ICCkette") )
-    DBG_PROG_S( _("Auffrischen von Profil Nr.: ") << info )
+    DBG_PROG_S( "Nachricht von ICCkette" )
+    DBG_PROG_S( "Auffrischen von Profil Nr.: " << info )
     if(info>=0)
     {
       DBG_PROG_V( (int*)(*k)[info] )
       if ((*k)[info])
       if (!(*k)[info]->changing())
       { DBG_PROG
-        if(k->aktiv(info)) // momentan nicht genutzt
         {
           // ncl2 ?
           DBG_PROG_V( profile.aktuell() );
@@ -310,13 +309,16 @@ ICCexamin::nachricht( Modell* modell , int info )
           } else
             farbraum (info);
           icc_examin->fortschrittThreaded(0.5);
+        }
 
-          if (info < (int)icc_betrachter->DD_farbraum->dreiecks_netze.size())
+        if(k->aktiv(info)) // momentan nicht genutzt
+        { if (info < (int)icc_betrachter->DD_farbraum->dreiecks_netze.size())
             icc_betrachter->DD_farbraum->dreiecks_netze[info].aktiv = true;
 
         } else if (info < (int)icc_betrachter->DD_farbraum->dreiecks_netze.size()) {
           icc_betrachter->DD_farbraum->dreiecks_netze[info].aktiv = false;
         }
+
           // Oberflaechenpflege - Aktualisieren
         icc_examin->fortschrittThreaded(0.6);
         if(profile[info]->tagCount() <= _item)
@@ -685,8 +687,8 @@ ICCexamin::fortschritt(double f)
 void
 ICCexamin::fortschrittThreaded(double f)
 { DBG_PROG_START
-  //icc_examin_ns::lock(__FILE__,__LINE__);
-  /*if(0.0 < f && f <= 1.0) {
+  icc_examin_ns::lock(__FILE__,__LINE__);
+  if(0.0 < f && f <= 1.0) {
     if(!icc_betrachter->load_progress->visible())
       icc_betrachter->load_progress-> show();
     icc_betrachter->load_progress-> value( f );
@@ -697,9 +699,9 @@ ICCexamin::fortschrittThreaded(double f)
   } else {
     icc_betrachter->load_progress-> show();
     DBG_PROG_V( f )
-  }*/
+  }
   icc_betrachter->load_progress-> damage(FL_DAMAGE_ALL);
-  //icc_examin_ns::unlock(this, __FILE__,__LINE__);
+  icc_examin_ns::unlock(this, __FILE__,__LINE__);
   DBG_PROG_ENDE
 }
 

@@ -122,8 +122,11 @@ ICCkette::einfuegen (const Speicher & prof, int pos)
   if (pos < 0 ||
       pos >= (int)profile_.size() )
   {
-    pos = profile_.size();
-    profile_.resize (profile_.size()+1 );
+    pos = profile_.size(); DBG_PROG
+    //profile_.resize (profile_.size()+1 ); DBG_PROG
+    profile_.push_back( ICCprofile() ); DBG_PROG
+    for( unsigned int i = 0; i < profile_.size(); ++i)
+      profile_[i].measurementReparent();
     profilnamen_.resize (profilnamen_.size()+1 );
     aktiv_.resize (aktiv_.size()+1 );
     profil_mzeit_.resize (profil_mzeit_.size()+1 );
@@ -131,14 +134,14 @@ ICCkette::einfuegen (const Speicher & prof, int pos)
   }
   DBG_PROG_V( pos )
 
-  profile_[pos] = ICCprofile();
+  //profile_[pos] = ICCprofile();
   ICCprofile::ICCDataType type = profile_[pos].load(prof);
   profile_[pos].filename( prof.name().c_str() );
   DBG_PROG_V( type )
   if(type == ICCprofile::ICCmeasurementDATA && pos != 0)
   {
-    ICCmeasurement m;
-    m.load( profile.profil() , (const char*) prof, prof.size() );
+    //ICCmeasurement m;
+    //m.load( profile.profil() , (const char*) prof, prof.size() );
     DBG_PROG_V( profile.profil()->hasMeasurement() )
   }
   DBG_PROG_V( profile_[pos].size() )
@@ -151,7 +154,15 @@ ICCkette::einfuegen (const Speicher & prof, int pos)
     if(profile_[pos].hasTagName("desc"))
       name = profile_[pos].getTagText( profile_[pos].getTagByName("desc"))[0];
   profilnamen_[pos] = name ;
-  aktiv_[pos] = true;
+
+  std::string moni = icc_oyranos.moni_name();
+  if(name == moni)
+    aktiv_[pos] = false;
+  else
+    aktiv_[pos] = true;
+  int test = profile.size()-1;
+  DBG_V( test <<" "<< profile.aktiv(test) )
+
   profil_mzeit_[pos] = (double)prof.zeit();
   DBG_PROG
 
@@ -165,7 +176,6 @@ ICCkette::einfuegen (const Speicher & prof, int pos)
 
 
   frei(true);
-  DBG_V( frei() )
   //icc_examin_ns::lock(__FILE__,__LINE__);
   /*Modell::*/benachrichtigen( pos );
   //icc_examin_ns::unlock(icc_examin, __FILE__,__LINE__);
@@ -186,7 +196,7 @@ ICCkette::waechter (void* zeiger)
   DBG_PROG_START
   ICCkette* obj = (ICCkette*) zeiger;
   // Haupt Thread freigeben
-  icc_examin_ns::unlock(0,__FILE__,__LINE__);
+  //icc_examin_ns::unlock(0,__FILE__,__LINE__);
 
   while(1)
   {

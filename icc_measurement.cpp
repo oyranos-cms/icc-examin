@@ -57,16 +57,83 @@
   *  @brief ICCmeasurement Funktionen
   */
 
+int icc_measurement_id_ = 0;
+
+ICCmeasurement::ICCmeasurement (ICCprofile* profil)
+{ DBG_PROG_START
+  id_ = icc_measurement_id_++;
+  DBG_MEM_V( id_ <<" "<< profil )
+  defaults();
+  profile_ = profil;
+  DBG_PROG_ENDE
+}
+
 ICCmeasurement::ICCmeasurement (ICCprofile* profil, ICCtag &tag)
 { DBG_PROG_START
+  id_ = icc_measurement_id_++;
+  DBG_MEM_V( id_ <<" "<< profil )
   ICCmeasurement::load (profil, tag); 
+  DBG_PROG_ENDE
+}
+
+ICCmeasurement::ICCmeasurement     (const ICCmeasurement& m)
+{
+  id_ = icc_measurement_id_++;
+  DBG_MEM_V( id_ <<" "<< profile_ )
+  DBG_PROG
+  copy (m);
+}
+
+ICCmeasurement::ICCmeasurement     ()
+{
+  DBG_PROG_START
+  WARN_S( "-----------------------  den default Konstruktor nicht benutzen --------------------------" )
+  id_ = icc_measurement_id_++;
+  DBG_MEM_V( id_ )
+  defaults();
+  DBG_PROG_ENDE
+}
+
+ICCmeasurement::~ICCmeasurement ()
+{
+  DBG_PROG_S("::~ICCmeasurement")
+  clear();
+  DBG_MEM_S( "::~ICCmeasurement id_ "<< id_ <<" "<< profile_ )
+}
+
+void
+ICCmeasurement::defaults ()
+{
+  DBG_PROG_START
+  DBG_MEM_V( id_ <<" "<< profile_ )
+  sig_ = icMaxEnumTag;
+  size_ = 0;
+  data_ = NULL;
+
+  nFelder_ = 0;
+
+  channels_ = 0;
+  isMatrix_ = 0;
+  profile_ = NULL;
+  XYZ_measurement_ = false;
+  RGB_measurement_ = false;
+  CMYK_measurement_ = false;
+  Lab_Differenz_max_ = -1000;
+  Lab_Differenz_min_ = 1000;
+  Lab_Differenz_Durchschnitt_ = 0;
+  DE00_Differenz_max_ = -1000;
+  DE00_Differenz_min_ = 1000;
+  DE00_Differenz_Durchschnitt_ = 0;
+  export_farben = false;
   DBG_PROG_ENDE
 }
 
 void
 ICCmeasurement::copy (const ICCmeasurement& m)
 {
-  sig_ = m.sig_; DBG_PROG_START
+  DBG_PROG_START
+  DBG_MEM_V( id_ <<" "<< m.id_ <<" "<< m.profile_ )
+  sig_ = m.sig_;
   size_ = m.size_;
   if (size_ && m.data_) {
     data_ = (char*)calloc(sizeof(char),size_+1);
@@ -109,40 +176,10 @@ ICCmeasurement::copy (const ICCmeasurement& m)
 }
 
 void
-ICCmeasurement::defaults ()
-{
-  DBG_PROG
-  sig_ = icMaxEnumTag;
-  size_ = 0;
-  data_ = NULL;
-
-  nFelder_ = 0;
-
-  channels_ = 0;
-  isMatrix_ = 0;
-  profile_ = NULL;
-  XYZ_measurement_ = false;
-  RGB_measurement_ = false;
-  CMYK_measurement_ = false;
-  Lab_Differenz_max_ = -1000;
-  Lab_Differenz_min_ = 1000;
-  Lab_Differenz_Durchschnitt_ = 0;
-  DE00_Differenz_max_ = -1000;
-  DE00_Differenz_min_ = 1000;
-  DE00_Differenz_Durchschnitt_ = 0;
-  export_farben = false;
-}
-
-ICCmeasurement::ICCmeasurement     ()
-{
-  DBG_PROG
-  defaults();
-}
-
-void
 ICCmeasurement::clear (void)
 {
-  DBG_PROG
+  DBG_PROG_START
+  DBG_MEM_V( id_ <<" "<< profile_ )
   if (data_ != NULL) free(data_);
   defaults();
   XYZ_Satz_.clear();
@@ -158,18 +195,7 @@ ICCmeasurement::clear (void)
   DE00_Differenz_.clear();
   reportTabelle_.clear();
   layout.clear();
-}
-
-ICCmeasurement::~ICCmeasurement ()
-{
-  DBG_PROG_S("::~ICCmeasurement")
-  clear();
-}
-
-ICCmeasurement::ICCmeasurement     (const ICCmeasurement& m)
-{
-  DBG_PROG
-  copy (m);
+  DBG_PROG_ENDE
 }
 
 ICCmeasurement &
@@ -185,7 +211,7 @@ ICCmeasurement::load                ( ICCprofile *profil,
 { DBG_PROG_START
   profile_ = profil;
   if (!profile_) WARN_S( "kann nicht initialisieren, Profilreferenz fehlt" )
-  DBG_V( profile_->hasTagName("targ") << profile_->printLongHeader() )
+  //DBG_MEM_V( profile_->hasTagName("targ") << profile_->printLongHeader() )
 
   sig_    = tag._sig;
   size_   = tag.size_ - 8;
@@ -245,7 +271,7 @@ ICCmeasurement::init (void)
   if (valid())
     return;
 
-  if (!profile_) WARN_S( "kann nicht initialisieren, Profilreferenz fehlt" )
+  if (!profile_) WARN_S( "kann nicht initialisieren, Profilreferenz fehlt; id: "<<id_<<" profil: "<< (int*)profile_ )
 
   if (profile_->hasTagName("targ")) {
     load (profile_, profile_->getTag(profile_->getTagByName("targ")));

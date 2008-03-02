@@ -928,7 +928,7 @@ ladeDatei ( std::string dateiname, size_t *size )
       f.close();
     } else {
       data = 0;
-      WARN_S( _("Dateigröße 0 für ") << dateiname )
+      WARN_S( _("Dateigroesse 0 fuer ") << dateiname )
     }
 
   ERROR:
