@@ -400,7 +400,20 @@ void TagBrowser::select_item(int item) {
       }
       tag_viewer->hinein_punkt( alle_punkte, alle_texte );
     } else if ( TagInfo[1] == "curv" ) {
-      tag_viewer->hinein_kurve( profile.getTagCurve(item), TagInfo );
+      std::vector<std::vector<double> > kurven;
+      std::vector<double> kurve;
+      std::vector<std::string> texte;
+      std::string TagName;
+      for (int i_name = 0; i_name < profile.tagCount(); i_name++) {
+        if ((profile.printTagInfo(i_name))[1] == "curv") {
+          kurve = profile.getTagCurve (i_name);
+          kurven.push_back (kurve/*[i]*/);
+          TagInfo = profile.printTagInfo (i_name);
+          for (unsigned int i = 0; i < 2; i++)
+            texte.push_back (TagInfo[i]);
+        }
+      }
+      tag_viewer->hinein_kurven( kurven, texte );
     } else if ( TagInfo[1] == "XYZ" ) {
       tag_viewer->hinein_punkt( profile.getTagCIExy(item), TagInfo );
     }
@@ -475,10 +488,9 @@ void TagDrawings::hinein_punkt(std::vector<double> vect, std::vector<std::string
   tag_texts->hide(); DBG
 }
 
-void TagDrawings::hinein_kurve(std::vector<double> vect, std::vector<std::string> txt) {
+void TagDrawings::hinein_kurven(std::vector<std::vector<double> >vect, std::vector<std::string> txt) {
   //Kurve aus tag_browser anzeigen
-  kurven.clear();
-  kurven.push_back(vect);
+  kurven = vect;
   texte = txt;
   punkte.clear();
 

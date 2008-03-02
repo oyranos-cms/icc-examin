@@ -82,7 +82,7 @@ Function {} {C return_type int
   fullscreen = false;} {}
   Fl_Window details {
     label {ICC Details} open
-    xywh {587 314 385 520} type Double box NO_BOX color 53
+    xywh {592 338 385 520} type Double box NO_BOX color 53
     code0 {browser = new openvrml::browser(cout, cerr);}
     code1 {DBG
     if (argc>1) {
@@ -422,7 +422,22 @@ class TagBrowser {open : {public Fl_Hold_Browser}
       }
       tag_viewer->hinein_punkt( alle_punkte, alle_texte );
     } else if ( TagInfo[1] == "curv" ) {
-      tag_viewer->hinein_kurve( profile.getTagCurve(item), TagInfo );
+      std::vector<std::vector<double> > kurven;
+      std::vector<double> kurve;
+      std::vector<std::string> texte;
+      std::string TagName;
+      for (unsigned int i_name = 0; i_name < profile.tagCount(); i_name++) {
+        if ((profile.printTagInfo(i_name))[1] == "curv") {
+          kurve = profile.getTagCurve (i_name);
+          int groesse = kurve.size();
+          //for (unsigned int i = 0; i < groesse; i++)
+            kurven.push_back (kurve/*[i]*/);
+          TagInfo = profile.printTagInfo (i_name);
+          for (unsigned int i = 0; i < 2; i++)
+            texte.push_back (TagInfo[i]);
+        }
+      }
+      tag_viewer->hinein_kurven( kurven, texte );
     } else if ( TagInfo[1] == "XYZ" ) {
       tag_viewer->hinein_punkt( profile.getTagCIExy(item), TagInfo );
     }
@@ -468,7 +483,7 @@ class TagTexts {: {public Fl_Hold_Browser}
   }
 } 
 
-class TagDrawings {: {public Fl_Widget}
+class TagDrawings {open : {public Fl_Widget}
 } {
   decl {int X; int Y; int W; int H; std::vector<std::string>texte; std::vector<double>punkte; std::vector<std::vector<double> >kurven;} {}
   decl {int wiederholen;} {public
@@ -504,10 +519,10 @@ class TagDrawings {: {public Fl_Widget}
   tag_viewer->show(); DBG
   tag_texts->hide(); DBG} {}
   }
-  Function {hinein_kurve(std::vector<double> vect, std::vector<std::string> txt)} {} {
+  Function {hinein_kurve(std::vector<std::vector<double> >vect, std::vector<std::string> txt)} {open selected
+  } {
     code {//Kurve aus tag_browser anzeigen
-  kurven.clear();
-  kurven.push_back(vect);
+  kurven = vect;
   texte = txt;
   punkte.clear();
 
@@ -531,6 +546,5 @@ Function {d_haendler(void* o)} {open return_type {static void}
     \#ifdef DEBUG
     cout << " wiederholen"; DBG
     \#endif
-  }} {selected
-  }
+  }} {}
 } 

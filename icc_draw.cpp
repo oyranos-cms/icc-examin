@@ -22,7 +22,7 @@ float w,h, xO, yO;
 int tab_border_x=30;
 int tab_border_y=30;
 // Diagrammvariablen
-float n = 0.85; 
+float n = 1.0;
 
 
 int raster = 4;
@@ -60,7 +60,6 @@ draw_cie_shoe (int X, int Y, int W, int H,
   if (repeated)
     raster = 1;
 
-
   // Zeichenflaeche
   fl_color(FL_GRAY);
   fl_rectf(X,Y,W,H);
@@ -69,6 +68,9 @@ draw_cie_shoe (int X, int Y, int W, int H,
   yO = Y + H - tab_border_y - 10; // Ursprung
   w  = (W - 2*tab_border_x);      // Breite des Diagrammes
   h  = (H - 2*tab_border_y);      // Hoehe des Diagrammes
+
+  // dargestellter Ausschnitt 
+  n = .85;
 
   #define x(val) (int)(((double)xO + val*w/n)+0.5)
   #define y(val) (int)(((double)yO - val*h/n)+0.5)
@@ -232,9 +234,7 @@ draw_cie_shoe (int X, int Y, int W, int H,
   }
   
 
-  // Weisspunkt
-  {
-  // Primärfarben
+  { // Primärfarben / Weisspunkt
     register char RGB[3];
     register cmsCIEXYZ XYZ;
     std::vector<double> pos;
@@ -313,9 +313,6 @@ draw_cie_shoe (int X, int Y, int W, int H,
       }
   }
 
-  //Meldung
-  //printf ("%d %d %d %d\n",X,Y,W,H);
-
   fl_pop_clip();
 }
 
@@ -328,7 +325,7 @@ void draw_kurve    (int X, int Y, int W, int H,
   fl_rectf(X,Y,W,H);
 
   // Diagrammvariablen
-  n = 1.0;                  // maximale Hoehe 
+  n = 1.0;                        // maximale Hoehe 
 
   xO = X + tab_border_x + 10;     // Ursprung
   yO = Y + H - tab_border_y - 10; // Ursprung
@@ -339,7 +336,7 @@ void draw_kurve    (int X, int Y, int W, int H,
 
   // Tangente
   fl_color(FL_LIGHT1);
-  fl_line(x(1), y(0), x(0), y(1));
+  fl_line(x(0), y(0), x(1), y(1));
 
   // Diagramm
   #ifdef __APPLE__
@@ -358,7 +355,43 @@ void draw_kurve    (int X, int Y, int W, int H,
     fl_draw ( text, (int)(xO-30), y(f)+4 );
     fl_draw ( text, x(f)-7, (int)(yO+20) );
   }
+
+  // Kurve
+  fl_font ( FL_HELVETICA, 12) ;
+  std::stringstream s ;
+  std::string name;
+  for (unsigned int j = 0; j < kurven.size(); j++) {
+    if (texte[j] == "rTRC") {
+      fl_color(FL_RED);
+      name = _("Rot");
+    } else if (texte[2*j] == "gTRC") {
+      fl_color(FL_GREEN);
+      name = _("Grün");
+    } else if (texte[2*j] == "bTRC") {
+      fl_color(FL_BLUE);
+      name = _("Blau");
+    } else if (texte[2*j] == "kTRC") {
+      fl_color(FL_LIGHT2);
+      name = _("Grau");
+    } else {
+      name = texte[2*j];
+    }
+    #ifdef DEBUG//_DRAW
+    cout << "Zeichne Kurve "<< texte[j] << " " << j << " " << kurven[j].size() << " Teile "; DBG
+    #endif
+    for (unsigned int i = 1; i < kurven[j].size(); i++) {
+      fl_line (x( (i-1) / ((kurven[j].size()-1) *n) ),
+               y( kurven[j][i-1] ),
+               x( (i) / ((kurven[j].size()-1) *n) ),
+               y( kurven[j][i] ) );
+    }
+    // Infos einblenden 
+    s.str("");
+    s << name << _(" mit Punkten: ") << kurven[j].size();
+    fl_draw ( s.str().c_str(), x(0) + 2, y(n) + j*16 + 12);
+  }
   
+  fl_pop_clip();
 }
 
 /**********************************************************************/

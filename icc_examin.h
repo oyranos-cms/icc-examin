@@ -74,7 +74,7 @@ public:
   TagDrawings(int X,int Y,int W,int H) ;
   void draw();
   void hinein_punkt(std::vector<double> vect, std::vector<std::string> txt);
-  void hinein_kurve(std::vector<double> vect, std::vector<std::string> txt);
+  void hinein_kurven(std::vector<std::vector<double> >vect, std::vector<std::string> txt);
   void ruhig_neuzeichnen(void);
 };
 void d_haendler(void* o);

@@ -2,10 +2,11 @@
 // Copyright: Kai-Uwe Behrmann <ku.b@gmx.de>
 // Date:      04. 05. 2004
 
-#if 1
+#if 0
   #ifndef DEBUG
    #define DEBUG
   #endif
+  #define DEBUG_ICCFUNKT
   #define DEBUG_ICCHEADER
   #define DEBUG_ICCTAG
   #define DEBUG_ICCPROFILE
@@ -36,7 +37,7 @@ icValue (icUInt16Number val)
 
   unsigned int *erg = (unsigned int*) &korb[0];
 
-  #ifdef DEBUG
+  #ifdef DEBUG_ICCFUNKT
   cout << *erg << " Größe nach Wandlung " << (int)korb[0] << " "
        << (int)korb[1] << " " << (int)korb[2] << " " <<(int)korb[3]
        << " "; DBG
@@ -62,7 +63,7 @@ icValue (icUInt32Number val)
 
   unsigned int *erg = (unsigned int*) &uint32[0];
 
-  #ifdef DEBUG
+  #ifdef DEBUG_ICCFUNKT
   cout << *erg << " Größe nach Wandlung " << (int)temp[0] << " "
        << (int)temp[1] << " " << (int)temp[2] << " " <<(int)temp[3]
        << " "; DBG
@@ -70,7 +71,7 @@ icValue (icUInt32Number val)
 
   return (int) *erg;
 #else
-  #ifdef DEBUG
+  #ifdef DEBUG_ICCFUNKT
   cout << "BIG_ENDIAN" << " "; DBG
   #endif
   return (int)val;
@@ -93,7 +94,7 @@ icValue (icUInt64Number val)
 
   unsigned long *erg = (unsigned long*) &uint64[0];
 
-  #ifdef DEBUG
+  #ifdef DEBUG_ICCFUNKT
   cout << *erg << " Größe nach Wandlung " << (int)temp[0] << " "
        << (int)temp[1] << " " << (int)temp[2] << " " <<(int)temp[3]
        << " "; DBG
@@ -115,7 +116,7 @@ icValue (icInt32Number val)
   static unsigned char  korb[KORB];
   for (int i = 0; i < KORB ; i++ )
     korb[i] = (int) 0;
-  #ifdef DEBUG_
+  #ifdef DEBUG_ICCFUNKT_
   cout << " Größe nach Wandlung " << (int)korb[0] << " "
        << (int)korb[1] << " " << (int)korb[2] << " " <<(int)korb[3]
        << " "; DBG
@@ -127,12 +128,12 @@ icValue (icInt32Number val)
       korb[klein] = temp[gross--];
 
   signed int *erg = (signed int*) &korb[0];
-  #ifdef DEBUG_
+  #ifdef DEBUG_ICCFUNKT_
   cout << (double)*erg/65536.0 << " Größe nach Wandlung " << (int)korb[0] << " "
        << (int)korb[1] << " " << (int)korb[2] << " " <<(int)korb[3]
        << " "; printf ("0x%X ", *erg); DBG
   #endif
-  #ifdef DEBUG_
+  #ifdef DEBUG_ICCFUNKT_
   cout << (double)*erg/65536.0 << " Größe nach Wandlung " << (int)korb[0] << " "
        << (int)korb[1] << " " << (int)korb[2] << " " <<(int)korb[3]
        << " "; DBG
@@ -145,7 +146,7 @@ icValue (icInt32Number val)
     #endif
   }*/
 
-  #ifdef DEBUG
+  #ifdef DEBUG_ICCFUNKT
   cout << *erg << " Größe nach Wandlung " << (int)korb[0] << " "
        << (int)korb[1] << " " << (int)korb[2] << " " <<(int)korb[3]
        << " "; DBG
@@ -173,7 +174,7 @@ icValue (icInt16Number val)
       korb[klein] = temp[gross--];
 
   signed int *erg = (signed int*) &korb[0];
-  #ifdef DEBUG
+  #ifdef DEBUG_ICCFUNKT
   cout << *erg << " Größe nach Wandlung " << (int)korb[0] << " "
        << (int)korb[1] << " " << (int)korb[2] << " " <<(int)korb[3]
        << " "; DBG
@@ -610,6 +611,11 @@ std::vector<double>
 ICCtag::getCurve                                  (void)
 {
   std::vector<double> punkte;
+  icCurveType *daten = (icCurveType*) &_data[0];
+
+  for (unsigned int i = 0; i < icValue(daten->curve.count); i++)
+    punkte.push_back (icValue(daten->curve.data[i])/65536.0);
+
   return punkte;
 }
 
