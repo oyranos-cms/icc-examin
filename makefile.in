@@ -3,7 +3,6 @@ COLLECT = ar cru
 RANLIB = ranlib
 MAKEDEPEND	= $(CXX) -MM
 LINK = ln -s
-INSTALL = install -v
 
 DEBUG = -DDEBUG
 DL = --ldflags # --ldstaticflags
@@ -183,11 +182,10 @@ ALL_FILES =	$(SOURCES) \
 
 
 # get time stamp
-C := $(shell date +%C)
-MTIME   := $(shell date +%Y%m%e.%H%M%S | sed s/$C//)
+MTIME   := $(shell date +%y%m%d.%H%M%S)
 
 
-#.SILENT:
+.SILENT:
 
 all:	dynamic
 	
@@ -280,7 +278,7 @@ $(LINGUAS_SRC):	$(POT_FILE)
               mkdir $${ling}; \
             fi; \
             if [ ! -d ./$${ling}/LC_MESSAGES ]; then \
-              mkdir -v $${ling}/LC_MESSAGES; \
+              mkdir $${ling}/LC_MESSAGES; \
             fi; \
             test -L $${ling}/LC_MESSAGES/$(TARGET).mo \
               && $(RM) $${ling}/LC_MESSAGES/$(TARGET).mo \
@@ -441,7 +439,7 @@ uninstall:
 
 bundle:
 	echo bündeln ...
-	test -d ICC\ Examin.app/Contents/MacOS/ || mkdir -p ICC\ Examin.app/ ICC\ Examin.app/Contents/ ICC\ Examin.app/Contents/MacOS/ ICC\ Examin.app/Contents/Resources/  ICC\ Examin.app/Contents/Resources/bin/ ICC\ Examin.app/Contents/Resources/lib/ ICC\ Examin.app/Contents/Resources/share/
+	test -d ICC\ Examin.app/Contents/Resources/lib/ || mkdir -p ICC\ Examin.app/ ICC\ Examin.app/Contents/ ICC\ Examin.app/Contents/MacOS/ ICC\ Examin.app/Contents/Resources/  ICC\ Examin.app/Contents/Resources/bin/ ICC\ Examin.app/Contents/Resources/lib/ ICC\ Examin.app/Contents/Resources/share/
 	$(INSTALL) -m 644 Info.plist ICC\ Examin.app/Contents/Info.plist
 	$(INSTALL) -m 755 ICC\ Examin.sh ICC\ Examin.app/Contents/MacOS/ICC\ Examin
 	$(INSTALL) -m 755 $(BINTARGET) ICC\ Examin.app/Contents/MacOS/
@@ -449,15 +447,16 @@ bundle:
 	echo  Bibliotheken ...
 	for bib in jpeg png lcms intl iconv fltk freetype; do \
 	  echo "bündele lib$${bib}$(LIBEXT) ..."; \
-      test -f /opt/local/lib/lib$${bib}$(LIBEXT) \
-		&& ($(COPY) -R /opt/local/lib/lib$${bib}*$(LIBEXT) ICC\ Examin.app/Contents/Resources/lib/ ) \
+      test -f $(libdir)/lib$${bib}$(LIBEXT) \
+		&& ($(COPY) -R $(libdir)/lib$${bib}*$(LIBEXT) 'ICC Examin.app/Contents/Resources/lib/' ) \
 		|| ( test -f /usr/X11R6/lib/lib$${bib}$(LIBEXT) \
-		    && ($(COPY) -R /usr/X11R6/lib/lib$${bib}*$(LIBEXT) ICC\ Examin.app/Contents/Resources/lib/ ) \
+		    && ($(COPY) -R /usr/X11R6/lib/lib$${bib}*$(LIBEXT) 'ICC Examin.app/Contents/Resources/lib/' ) \
 	        || (echo lib$${bib}$(LIBEXT) not found ... skipping)); \
 	done;
 	test -f ~/bin/iccgamut \
 	  && $(INSTALL) -m 755 ~/bin/iccgamut ICC\ Examin.app/Contents/Resources/bin/ \
 	  || test -f iccgamut && $(INSTALL) -m 755 iccgamut ICC\ Examin.app/Contents/Resources/bin/ \
+	  || test -f $(bindir)/iccgamut && $(INSTALL) -m 755 $(bindir)/iccgamut ICC\ Examin.app/Contents/Resources/bin/ \
 	    || echo iccgamut nicht gefunden
 	$(INSTALL) -m 644 $(FONT) ICC\ Examin.app/Contents/Resources/share/
 	echo  Linguas ...

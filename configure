@@ -6,10 +6,11 @@ ERROR=0
 
 CONF_H=config.h
 CONF=makefile
+CONF_I18N=fl_i18n/makefile
 SPEC=$TARGET.spec
 VERS="$TARGET"_version.h
 
-export CONF_H CONF
+export CONF_H CONF CONF_I18N
 
 VERSION_A=0
 VERSION_B=4
@@ -184,10 +185,10 @@ if [ "`echo $exec_prefix | grep 64 | wc -l`" -eq "1" ]; then
   export BARCH LIBDIR
 fi
 if [ -z "$bindir" ]; then
-  bindir="$exec_prefix/bin$BARCH"
+  bindir="$exec_prefix/bin"
 fi
 if [ -z "$sbindir" ]; then
-  sbindir="$exec_prefix/sbin$BARCH"
+  sbindir="$exec_prefix/sbin"
 fi
 if [ -z "$libdir" ]; then
   libdir="$exec_prefix/$LIBDIR"
@@ -329,6 +330,11 @@ echo "" >> $CONF
 
 echo "CXX = c++$LINE_ARCH" >> $CONF
 echo "CC = cc$LINE_ARCH" >> $CONF
+echo "CXX = c++$LINE_ARCH" > $CONF_I18N
+echo "CC = cc$LINE_ARCH" >> $CONF_I18N
+cat $CONF_I18N.in >> $CONF_I18N
+echo $CONF_I18N prepared
+
 echo "RM = rm -vf" >> $CONF
 if [ $OSUNAME = "Darwin" ]; then
   echo "" >> $CONF
@@ -349,6 +355,7 @@ if [ $OSUNAME = "Darwin" ]; then
   echo "XGETTEXT_OPTIONS = --keyword=gettext \
         --keyword=_ \
         --keyword=N_" >> $CONF
+  echo "INSTALL = install -v" >> $CONF
 else
   echo "LIBMID = .so" >> $CONF
   echo "LIBNAMEFULL = lib\$(TARGET)\$(LIBMID).\$(VERSION_A).\$(VERSION_B).\$(VERSION_C)" >> $CONF
@@ -374,17 +381,20 @@ else
     echo "LINK_SRC_PATH = -Wl,--rpath -Wl,\$(srcdir)" >> $CONF
     echo "MAKEDEPEND	= makedepend -Y" >> $CONF
     echo "OPTS= -Wall -g \$(DEBUG) -Wunused -fPIC -fno-exceptions #-Os -fomit-frame-pointer" >> $CONF
+    echo "INSTALL = install -v" >> $CONF
   else
     echo "COPY = cp -p" >> $CONF
     if [ $OSUNAME = "BSD" ]; then
       echo "LINK_FLAGS = -shared \$(ICONV)" >> $CONF
+      echo "INSTALL = install -v" >> $CONF
     else
       echo "LINK_FLAGS = -shared -ldl \$(ICONV)" >> $CONF
+      echo "INSTALL = install" >> $CONF
     fi
     echo "I18N_LIB = \$(ICONV) -lintl \$(LIBNAMEV)" >> $CONF
     echo "I18N_LIBSTAT = \$(ICONV) -lintl \$(LIBNAMEV)" >> $CONF
     echo "MAKEDEPEND	= makedepend -Y" >> $CONF
-    echo "OPTS = -Wall -g -fpic \$(DEBUG) -L." >> $CONF
+    echo "OPTS = -Wall -g \$(DEBUG) -L. -fPIC" >> $CONF
     echo "RM = rm -f" >> $CONF
   fi
 fi
@@ -408,8 +418,8 @@ fi
 
 echo "" > mkdepend
 
-export PREPARE_MAKEFILES=1
-export MAKEFILES="makefile"
+PREPARE_MAKEFILES=1; export PREPARE_MAKEFILES
+MAKEFILES="makefile"; export MAKEFILES
 ./configure.sh
 
 

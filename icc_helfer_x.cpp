@@ -36,8 +36,11 @@
 
 #undef BOOL
 
+#include <X11/Xlib.h>
 #include <X11/Xutil.h>
+#ifdef HAVE_XF86VMODE
 #include <X11/extensions/xf86vmode.h>
+#endif
 #ifdef HAVE_XIN
   #include <X11/extensions/Xinerama.h>
 #endif
@@ -51,9 +54,10 @@ leseGrafikKartenGamma        (std::string display_name,
                               int x, int y )
 { DBG_PROG_START
 
-
-  Display *display = 0;
   std::vector<std::vector<double> > kurven;
+
+#ifdef HAVE_XF86VMODE
+  Display *display = 0;
 
   texte.resize(4);
   texte[0] = _("Red");
@@ -204,6 +208,7 @@ leseGrafikKartenGamma        (std::string display_name,
   if (display) XCloseDisplay(display);
   else WARN_S( "no X Display active" )
 
+#endif
   DBG_PROG_ENDE
   return kurven;
 }

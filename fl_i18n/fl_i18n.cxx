@@ -93,7 +93,12 @@ fl_set_codeset_    ( const char* lang, const char* codeset_,
         DBG_PROG_V( locale )
 
         /* 1b. set correct environment variable LANG */
-          setenv("LANG", locale, 1); /* setenv is not standard C */
+        {
+          char settxt[64];
+          snprintf( settxt, 63, "LANG=%s", locale );
+          putenv( settxt );
+        }
+        /* setenv("LANG", locale, 1); *//* setenv is not standard C */
 
         /* 1c. set the locale info after LANG */
         if(set_zero_locale)
