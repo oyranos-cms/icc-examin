@@ -154,18 +154,25 @@ GL_Ansicht::init(int init_id)
 
   resizable(0);
 
-  mode(FL_RGB |FL_DOUBLE |FL_ALPHA |FL_DEPTH |FL_MULTISAMPLE);
-  if(!can_do()) {
-    WARN_S( _("OpenGL eventuell nicht korrekt gesetzt von ICC Examin ") << mode() )
-    mode(FL_RGB |FL_DOUBLE |FL_ALPHA |FL_DEPTH);
-    if(!can_do()) {
-      WARN_S( _("OpenGL eventuell nicht korrekt gesetzt von ICC Examin ") << mode() )
-      mode(0);
-      if(!can_do()) {
-        WARN_S( _("OpenGL eventuell nicht korrekt gesetzt von ICC Examin ") << mode() )
-      }
-    }
+  #define TEST_GL(modus) { \
+    mode(modus); \
+    if(can_do()) { \
+      mod |= modus; \
+      mode(mod); \
+      DBG_PROG_S( "OpenGL versteht: ja   " << #modus <<" "<< mode() ) \
+    } else { \
+      DBG_PROG_S( "OpenGL versteht: nein " << #modus <<" "<< mode() ) \
+    } \
   }
+
+  long mod = 0;
+  TEST_GL(FL_RGB)
+  TEST_GL(FL_DOUBLE)
+  TEST_GL(FL_ALPHA)
+  TEST_GL(FL_DEPTH)
+  TEST_GL(FL_MULTISAMPLE)
+  mode(mod);
+  DBG_PROG_S( _("OpenGL mode: ") << mode() )
 
   DBG_PROG
 
