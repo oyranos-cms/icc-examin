@@ -71,13 +71,13 @@ endif
 
 INCL_DEP = $(INCL) $(X_H) $(OSX_H) $(OYRANOS_H) $(SOURCES)
 ALL_INCL = $(INCL) \
-			$(FLU_H) $(FLTK_H) $(X_H) $(OSX_H) $(OYRANOS_H) $(LCMS_H)
+			$(FLU_H) $(FLTK_H) $(X_H) $(OSX_H) $(OYRANOS_H) $(LCMS_H) $(FTGL_H)
 
 CXXFLAGS=$(OPTS) $(ALL_INCL)
 CFLAGS = $(OPTS)
 
 LDLIBS = -L$(libdir) -L./ $(FLTK_LIBS) -licc_examin \
-	$(X11_LIBS) -llcms $(OYRANOS_LIBS) $(FLU_LIBS) $(LCMS_LIBS) $(FTGL)
+	$(X11_LIBS) -llcms $(OYRANOS_LIBS) $(FLU_LIBS) $(LCMS_LIBS) $(FTGL_LIBS)
 
 CPP_HEADERS = \
 	agviewer.h \

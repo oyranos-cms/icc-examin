@@ -104,6 +104,17 @@ else
   echo "no or too old LCMS found,\n  need at least version 1.14, download: www.littlecms.com"
 fi
 
+`pkg-config  --atleast-version=1.0 ftgl`
+if [ $? = 0 ]; then
+  echo "FTGK      `pkg-config --modversion ftgl`         detected"
+  echo "#define HAVE_FTGL" >> $CONF_H
+  echo "FTGL = 1" >> $CONF
+  echo "FTGL_H = `pkg-config --cflags ftgl`" >> $CONF
+  echo "FTGL_LIBS = `pkg-config --libs ftgl`" >> $CONF
+else
+  echo "no or too old FTGL found,\n  need FTGL to render text in OpenGL"
+fi
+
 echo "" >> $CONF
 echo "VERSION_A = $VERSION_A" >> $CONF
 echo "VERSION_B = $VERSION_B" >> $CONF
