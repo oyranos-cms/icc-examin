@@ -35,6 +35,14 @@
 
 #define STD_CGATS_FIELDS 44
 
+/*
+ *  Arbeitsweise
+ *
+ *  Die Klasse CgatsFilter folgt dem Kontextmodell. Es können Eigenschaften
+ *  eingestellt werden, Daten geladen und die Auswertung erfolgt mit Hilfe der
+ *  zuvor eingestellten Optionen.
+ */
+
 class CgatsFilter
 {
     // statische Hilfsobjekte
@@ -43,23 +51,50 @@ class CgatsFilter
     static const char *cgats_numerisch_;
     static const char *cgats_ziffer_;
     static const char *leer_zeichen_;
-    static const char ss_woerter_[STD_CGATS_FIELDS][16];// Standard Schlüsselwö.
+      // Standard CGATS Schlüsselwörter
+    static const char ss_woerter_[STD_CGATS_FIELDS][16];
   public:
     CgatsFilter ()
     { DBG_PROG_START
-        // Initialisierung konstanter Typen
+        // Initialisierung
         typ_ = LCMS;
+          // die Dateisignatur
         kopf = "ICCEXAM";
+          // das Ersetzungswort für spektrale Feldbezeichner
         spektral = "SPECTRAL_";
         anfuehrungsstriche_setzen = false;
+         // eine erste Messung wird benötigt
         messungen.resize(1);
         DBG_PROG_ENDE
     }
     ~CgatsFilter () {; }
-    void lade (char* data, size_t size) { clear();
-                                          data_orig_.assign( data,0,size ); }
-    void lade (std::string &data)       { clear(); data_orig_ = data; }
+
+    // Kopieren
+  private:
+    CgatsFilter& copy (const CgatsFilter & o)
+                              {
+                                typ_ = o.typ_;
+                                kopf = o.kopf;
+                                kommentar = o.kommentar;
+                                spektral = o.spektral;
+                                messungen = o.messungen;
+                                anfuehrungsstriche_setzen = o.anfuehrungsstriche_setzen;
+                                log = o.log;
+                                return *this;
+                              }
+  public:
+    CgatsFilter             (const CgatsFilter& o) { copy(o); }
+    CgatsFilter& operator = (const CgatsFilter& o) { return copy (o); }
+
+    // Laden der CGATS ascii Daten
+    void lade (char* text, size_t size) { clear();
+                                          data_orig_.assign( text,0,size ); }
+    void lade (std::string &text)       { clear(); data_orig_ = text; }
+    // Zurücksetzen der Datenstrukturen - keine neues Verhalten
     void clear()              { data_.resize(0); data_orig_.resize(0);
+                                messungen.resize(0); messungen.resize(1);
+                                log.clear();
+                                zeilen_.clear();
                                 s_woerter_.resize(STD_CGATS_FIELDS);
                                 for(unsigned i = 0; i < STD_CGATS_FIELDS; ++i)
                                     s_woerter_[i] = ss_woerter_[i];
@@ -67,29 +102,29 @@ class CgatsFilter
     // Ausgeben
     std::string lcms_gefiltert() { typ_ = LCMS; cgats_korrigieren_();
                                    return data_; }
-    // basICColor Modus
+                // basICColor Modus
     std::string max_korrigieren(){ typ_ = MAX_KORRIGIEREN; cgats_korrigieren_();
                                    return data_; }
 
-    
-    // frei wählbarer Kopf ( standardgemäß 7 Zeichen lang )
+    // Optionen
+                // frei wählbarer Kopf ( standardgemäß 7 Zeichen lang )
     std::string kopf;
-    // frei wählbarer Kommentar ( wird nach Kopfzeile eingefügt )
+                // frei wählbarer Kommentar ( wird nach Kopfzeile eingefügt )
     std::string kommentar;
-    // frei wählbarer Bezeichner für Spektraldaten (standard ist SPECTRAL_)
+                // frei wählbarer Bezeichner für Spektraldaten (SPECTRAL_)
     std::string spektral;
-    bool        anfuehrungsstriche_setzen; // für ausgegebene Worte in DATA
+                // für ausgegebene Worte im DATA Block
+    bool        anfuehrungsstriche_setzen;
 
-    // synchrone Liste von Kommentaren + Feldbezeichnern + Blöcken
-    //   v- Feld/Block v- Zeilen   v- Inhalt
+    // Messdaten
     struct Messung {
-      std::vector<std::string> kommentare;
-      std::vector<std::string> felder;
-      std::vector<std::string> block;
-      int feld_spalten;
-      int block_zeilen;
+      std::vector<std::string> kommentare; // KEYWORD ...
+      std::vector<std::string> felder;     // DATA_FIELD
+      std::vector<std::string> block;      // DATA
+      int feld_spalten;                    // NUMBER_OF_FIELDS
+      int block_zeilen;                    // NUMBER_OF_SETS
     };
-    std::vector<Messung> messungen;
+    std::vector<Messung> messungen;        // teilweise strukturierte Messdaten
   private:
     void neuerAbschnitt_ ();
   public:
@@ -104,41 +139,89 @@ class CgatsFilter
     std::vector<Log> log;
 
   private:
-    // --- Hauptfunktion ---
-    // o Konvertierung in Standard unix Dateiformat mit LF
-    // o Suchen und Ersetzen bekannnter Abweichungen (in einem std::string)
-    // o zeilenweises lesen und editieren (in einem vector aus strings)
-    // o verdecken der Kommentare
-    // o kontrollieren der Blöckanfänge und -enden
-    // o die Dateisignatur reparieren (7 / 14 byte lang)
-    // o zwischen den Blöcken die Keywords erkennen und entsprechend bearbeiten
-    // o die Zeilen wieder zusamenfügen und als einen std::string zurückgeben
+    /* --- Hauptfunktion ---
+       o Konvertierung in Standard unix Dateiformat mit LF
+       o Suchen und Ersetzen bekannnter Abweichungen (in data_)
+       o zeilenweises lesen und editieren (in zeilen_)
+       o verdecken der Kommentare (mit lokalem string gtext)
+       o kontrollieren der Blöckanfänge und -enden
+       o die Dateisignatur reparieren (7 / 14 byte lang)
+       o zwischen den Blöcken: Schlüsselworte erkennen und bearbeiten
+       o die Zeilen wieder zusamenfügen und als einen std::string zurückgeben
+    */
     std::string cgats_korrigieren_               ();
-
+    
     // - Hilfsfunktionen -
-    // Auszählen der Formate(Farbkanäle) im DATA_FORMAT Block
-    int sucheInDATA_FORMAT_( std::string &zeile, int &zeile_n );
-    // klassifiziert CGATS Keywords; sinnvoll ausserhalb der Blöcke
-    int sucheSchluesselwort_( std::string zeile );
-    // eine Zeile ausserhalb der beiden DATA und FORMAT Blöcke nach
-    //  Klassifizierungsschlüssel bearbeiten
-    int editZeile_( std::vector<std::string> &zeilen,
-                    int zeile_n, int editieren, bool cmy );
 
-    // vector Bearbeitung fürs zeilenweise Editieren
+      /* Auszählen der Formate(Farbkanäle) im DATA_FORMAT Block
+       *
+       *  zeile     : zu bearbeitende kommentarfreie Zeile
+       *  zeile_x   : Nummer der gewählten Zeile
+       */
+    int sucheInDATA_FORMAT_( std::string &zeile, int &zeile_x );
+
+      /* klassifiziert CGATS Schlüsselworte; sinnvoll ausserhalb der Blöcke
+       *
+       *  zeile     : zu bearbeitende kommentarfreie Zeile
+       */
+    int sucheSchluesselwort_( std::string zeile );
+
+      /* eine Zeile ausserhalb der beiden DATA und FORMAT Blöcke nach
+       * Klassifizierungsschlüssel bearbeiten
+       *
+       *  zeilen    : Referenz auf alle Text Zeilen
+       *  zeile_x   : Nummer der gewählten Zeile
+       *  editieren : Bearbeitungscode aus sucheSchluesselwort_()
+       *  cmy       : Schalter für CB CMY Feldbezeichner
+       */
+    int editZeile_( std::vector<std::string> &zeilen,
+                    int zeile_x, int editieren, bool cmy );
+
+    // allgemeine Textbearbeitung
+      /* Textvektor Bearbeitung fürs zeilenweise Editieren
+       *
+       *  zeilen    : Referenz auf alle Text Zeilen
+       *  zeile_x   : Nummer der gewählten Zeile
+       */
     void suchenLoeschen_      ( std::vector<std::string> &zeilen,
                                 std::string               text );
-    // doppelte Zeilen löschen
+
+      /* doppelte Zeilen löschen
+       *
+       *  zeilen    : Referenz auf alle Text Zeilen
+       */
     int  zeilenOhneDuplikate_ ( std::vector<std::string> &zeilen );
-    // Buchstabenworte von Zahlen unterscheiden
+
+      /* Buchstabenworte von Zahlen unterscheiden
+       *
+       *  zeilen    : Referenz auf alle Text Zeilen
+       */
     std::vector<std::string> unterscheideZiffernWorte_ ( std::string &zeile );
-    // Zeile von pos bis Ende in Anführungszeichen setzen
+
+      /* Zeile von pos bis Ende in Anführungszeichen setzen
+       *
+       *  zeilen    : Referenz auf alle Text Zeilen
+       */
     void setzeWortInAnfuehrungszeichen_ ( std::string &zeile,
-                                std::string::size_type pos );
-    // bequem einen Eintrag zu log hinzufügen
-    unsigned int logEintrag_ (std::string meldung, int zeile_n,
+                                          std::string::size_type pos );
+
+      /* bequem einen Eintrag zu log hinzufügen
+       *
+       *  meldung   : Beschreibung
+       *  zeile_x   : Zeile des Auftretens des Ereignisses
+       *  zeile1    : Ursprünglisch Zeilen
+       *  zeile2    : geänderte Zeilen
+       */
+    unsigned int logEintrag_ (std::string meldung, int zeile_x,
                               std::string zeile1,  std::string zeile2 );
-    // angepasste Variante von suchenErsetzen()
+
+      /* angepasste Variante von suchenErsetzen()
+       *
+       *  text      : Text Zeile
+       *  suchen    : zu suchendes Wort
+       *  ersetzen  : ersetzen durch
+       *  pos       : Startposition in "text"
+       */
     int  suchenUndErsetzen_     ( std::string           &text,
                                   const char*            suchen,
                                   const char*            ersetzen,
@@ -146,14 +229,14 @@ class CgatsFilter
 
     // Schlüsselwort -> passende Korrekturen
     enum {
-    BELASSEN,
-    KEYWORD,
-    ANFUEHRUNGSSTRICHE,
-    DATA_FORMAT_ZEILE,
-    AUSKOMMENTIEREN,
-    LINEARISIERUNG,
-    CMY_DATEN,
-    CMYK_DATEN
+      BELASSEN,
+      KEYWORD,
+      ANFUEHRUNGSSTRICHE,
+      DATA_FORMAT_ZEILE,
+      AUSKOMMENTIEREN,
+      LINEARISIERUNG,
+      CMY_DATEN,
+      CMYK_DATEN
     };
 
     // benötigte dynamische Hilfsobjekte
@@ -161,11 +244,11 @@ class CgatsFilter
     std::string              data_orig_; // eine Kopie vom Original
     std::vector<std::string> s_woerter_; // Schlüsselwörter
     std::vector<std::string> zeilen_;    // Arbeitsspeicher
-    int                      typ_;       // Art des Filterns
-    enum {                   // enum passend zu typ_
+    enum Typ_ {
       LCMS,
       MAX_KORRIGIEREN
     };
+    enum Typ_                typ_;       // Art des Filterns
     int zeile_letztes_NUMBER_OF_FIELDS;
 };
 

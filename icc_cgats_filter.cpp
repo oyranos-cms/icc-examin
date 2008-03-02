@@ -131,7 +131,7 @@
 
 using namespace icc_parser;
 
-//#define CGATS_DEBUG
+//#define CGATS_DEBUG 2
 #ifdef CGATS_DEBUG
 #define DBG_CGATS DBG_PROG
 #define DBG_CGATS_START DBG_PROG_START
@@ -211,7 +211,8 @@ CgatsFilter::suchenUndErsetzen_ ( std::string           &text,
     if( n )
     {
       std::stringstream s;
-      s << _("Ersetzung: Suchwort, n mal, Ersatzwort \"") << suchen << "\", " << n << ", \"" << ersetzen << "\"";
+      s << _("Ersetzung: Suchwort, n mal, Ersatzwort \"") << suchen << "\", "
+        << n << ", \"" << ersetzen << "\"";
       logEintrag_( s.str(), -1, "", "" );
     }
   return n;
@@ -226,60 +227,62 @@ CgatsFilter::setzeWortInAnfuehrungszeichen_( std::string &zeile,
   DBG_CGATS_START
   {
     std::string::size_type ende, pos_orig = pos;
-              bool in_anfuehrung = false;
-              int letze_anfuehrungsstriche = -1;
-              if( (ende = zeile.find_last_of( cgats_alnum_ ))
-                  == std::string::npos )
-              {
-                WARN_S( _("Leere Zeile ? : ") << zeile )
-                DBG_CGATS_ENDE
-                return;
-              }
 
-              suchenUndErsetzen_( zeile, "\"\"", "\"", 0 ); // GMB
+    bool in_anfuehrung = false;
+    int letze_anfuehrungsstriche = -1;
+    if( (ende = zeile.find_last_of( cgats_alnum_ ))
+        == std::string::npos )
+    {
+      WARN_S( _("Leere Zeile ? : ") << zeile )
+      DBG_CGATS_ENDE
+      return;
+    }
 
-              // Steht dieses Wort bereits in Anführungszeichen
-              if( zeile.find_last_of( "\"" ) != std::string::npos &&
-                  zeile.find_last_of( "\"" ) > ende )
-              {
-                ende = zeile.find_last_of( "\"" );
-              }
-              DBG_CGATS_V( pos <<" "<< ende <<" "<< zeile )
-              DBG_CGATS_V( zeile.substr( pos, ende-pos +1 ) )
-              // zeilenweise
-              for( ; pos <= ende; ++pos )
-              {
-                if( zeile[pos] == '\"' )
-                {
-                  DBG_CGATS_S( pos <<" "<< zeile.substr( pos, ende-pos+1 ) )
-                  if( in_anfuehrung ) // hinaus
-                  {
-                    in_anfuehrung = false;
-                    letze_anfuehrungsstriche = -1;
-                  } else {            // hinein
-                    in_anfuehrung = true;
-                    letze_anfuehrungsstriche = pos;
-                  }
-                } else if( strchr( cgats_alnum_, zeile[pos] ) &&// ein Zeichen
-                           !in_anfuehrung )                     // .. ausserhalb
-                {
-                  DBG_CGATS_V( zeile.substr( pos, ende-pos+1 ) )
-                  zeile.insert( pos, "\"" );
-                  ++ende;
-                  ++pos;
-                  in_anfuehrung = true;
-                  letze_anfuehrungsstriche = pos-1;
-                  DBG_CGATS_S( zeile.substr( pos, ende-pos+1 ) )
-                }
-              }
-              DBG_CGATS_V( in_anfuehrung )
-              if( in_anfuehrung )
-                zeile.insert( ende+1, "\"" );
-              // keine leere Zeile ohne ""
-              std::string t = zeile.substr( pos_orig, ende-pos_orig+1 );
-              if( t.find_last_of( cgats_alnum_ ) == std::string::npos &&
-                  t.find_last_of( "\"" ) == std::string::npos )
-                zeile.insert( zeile.size(), "\"\"" );
+    suchenUndErsetzen_( zeile, "\"\"", "\"", 0 ); // GMB
+
+    // Steht dieses Wort bereits in Anführungszeichen
+    if( zeile.find_last_of( "\"" ) != std::string::npos &&
+        zeile.find_last_of( "\"" ) > ende )
+    {
+      ende = zeile.find_last_of( "\"" );
+    }
+    DBG_CGATS_V( pos <<" "<< ende <<" "<< zeile )
+    DBG_CGATS_V( zeile.substr( pos, ende-pos +1 ) )
+    // zeilenweise
+    for( ; pos <= ende; ++pos )
+    {
+      if( zeile[pos] == '\"' )
+      {
+        DBG_CGATS_S( pos <<" "<< zeile.substr( pos, ende-pos+1 ) )
+        if( in_anfuehrung ) // hinaus
+        {
+          in_anfuehrung = false;
+          letze_anfuehrungsstriche = -1;
+        } else {            // hinein
+          in_anfuehrung = true;
+          letze_anfuehrungsstriche = pos;
+        }
+      } else if( strchr( cgats_alnum_, zeile[pos] ) &&// ein Zeichen
+                 !in_anfuehrung )                     // .. ausserhalb
+      {
+        DBG_CGATS_V( zeile.substr( pos, ende-pos+1 ) )
+        zeile.insert( pos, "\"" );
+        ++ende;
+        ++pos;
+        in_anfuehrung = true;
+        letze_anfuehrungsstriche = pos-1;
+        DBG_CGATS_S( zeile.substr( pos, ende-pos+1 ) )
+      }
+    }
+    DBG_CGATS_V( in_anfuehrung )
+    // Abschluss "
+    if( in_anfuehrung )
+      zeile.insert( ende+1, "\"" );
+    // keine leere Zeile ohne ""
+    std::string t = zeile.substr( pos_orig, ende-pos_orig+1 );
+    if( t.find_last_of( cgats_alnum_ ) == std::string::npos &&
+        t.find_last_of( "\"" ) == std::string::npos )
+      zeile.insert( zeile.size(), "\"\"" );
   }
   DBG_CGATS_ENDE
 }
@@ -349,7 +352,7 @@ CgatsFilter::unterscheideZiffernWorte_( std::string &zeile )
       txt = zeile.substr( pos, ende-pos );
       ergebnis.push_back( txt );
       DBG_CGATS_V( pos <<" "<< ende )
-      #ifdef CGATS_DEBUG
+      #if (CGATS_DEBUG >= 2)
       cout << zeile << endl;
       for(unsigned int j = 0; j < zeile.size();    ++j)
         if( j != pos && j != ende )
@@ -432,6 +435,7 @@ CgatsFilter::unterscheideZiffernWorte_( std::string &zeile )
 int
 CgatsFilter::sucheInDATA_FORMAT_( std::string &zeile , int &zeile_n )
 {
+  DBG_CGATS_START
   int n = 0;
   bool anf_setzen = anfuehrungsstriche_setzen;
   anfuehrungsstriche_setzen = false;
@@ -456,7 +460,6 @@ CgatsFilter::sucheInDATA_FORMAT_( std::string &zeile , int &zeile_n )
   for( unsigned int i = 0; i < test.size() ; ++i )
   { 
     pos = 0;
-    //DBG_CGATS_V( i )
     bool gefunden = false;
     for( unsigned j = 0; j < s_woerter_.size(); ++j )
       if( test[i].find( s_woerter_[j], 0 ) != std::string::npos )
@@ -464,11 +467,16 @@ CgatsFilter::sucheInDATA_FORMAT_( std::string &zeile , int &zeile_n )
         gefunden = true;
         DBG_NUM_S( s_woerter_[j] <<" "<< test[i] )
       }
+
     if(!gefunden)
     {
-      zeilen_.insert( zeilen_.begin() + zeile_letztes_NUMBER_OF_FIELDS, "KEYWORD \"" );
-      zeilen_[zeile_letztes_NUMBER_OF_FIELDS].append(test[i]);
-      zeilen_[zeile_letztes_NUMBER_OF_FIELDS].append("\"");
+      DBG_PROG_V( zeile_letztes_NUMBER_OF_FIELDS )
+      int zeile_i = 1;
+      if(zeile_letztes_NUMBER_OF_FIELDS > 0)
+        zeile_i = zeile_letztes_NUMBER_OF_FIELDS;
+      zeilen_.insert( zeilen_.begin() + zeile_i, "KEYWORD \"" );
+      zeilen_[zeile_i].append(test[i]);
+      zeilen_[zeile_i].append("\"");
       ++zeile_n;
       ++zeile_letztes_NUMBER_OF_FIELDS;
       logEintrag_( _("neues Schlüsselwort hinzugefügt: ") + test[i] , zeile_n, "", zeilen_[zeile_letztes_NUMBER_OF_FIELDS] );
@@ -479,6 +487,7 @@ CgatsFilter::sucheInDATA_FORMAT_( std::string &zeile , int &zeile_n )
 
   anfuehrungsstriche_setzen = anf_setzen;
 
+  DBG_CGATS_ENDE
   return n;
 }
 
@@ -509,6 +518,7 @@ CgatsFilter::zeilenOhneDuplikate_ ( std::vector<std::string> &zeilen )
 int
 CgatsFilter::sucheSchluesselwort_( std::string zeile )
 {
+  // Schlüsselworte Klassifizieren
   std::string::size_type pos=0;
 
   {
@@ -543,6 +553,7 @@ CgatsFilter::sucheSchluesselwort_( std::string zeile )
     KEY_Suche( "CMY Daily Target",   CMY_DATEN )
     KEY_Suche( "CMYK Target",        CMYK_DATEN )
   }
+  #undef KEY_Suche
 
   return AUSKOMMENTIEREN;
 }
@@ -551,6 +562,7 @@ int
 CgatsFilter::editZeile_( std::vector<std::string> &zeilen,
                          int i, int editieren, bool cmy )
 {
+  // Zeilen mit Hilfe der Klassifizierung aus sucheSchluesselwort_() bearbeiten
   DBG_CGATS_START
   int zeilendifferenz = 0;
   std::string::size_type ende, pos;
@@ -570,12 +582,11 @@ CgatsFilter::editZeile_( std::vector<std::string> &zeilen,
               ende = zeilen[i].find_last_of('"');
               std::string txt = zeilen[i].substr( pos + 1, ende-pos - 1 );
               DBG_NUM_S( txt )
+              // in Schlüsselwortliste suchen
               bool noch_nicht = true;
               for(unsigned int t = 0; t < s_woerter_.size(); ++t)
-              {
                 if( txt.find(s_woerter_[t]) != std::string::npos )
                   noch_nicht = false;
-              }
               if (noch_nicht)
               {
                 s_woerter_.insert( s_woerter_.begin(), txt );
@@ -626,16 +637,13 @@ CgatsFilter::editZeile_( std::vector<std::string> &zeilen,
               s << "NUMBER_OF_FIELDS " << zaehler_FIELDS;
               zeilen.insert( zeilen.begin() + i, s.str() );
               DBG_CGATS_V( messungen.size() )
-              messungen[messungen.size()-1].felder.push_back( s.str() );
               log[l].ausgabe.push_back( s.str() );
               ++zeilendifferenz;
               zeilen.insert( zeilen.begin() + i + 1, "BEGIN_DATA_FORMAT" );
-              messungen[messungen.size()-1].felder.push_back("BEGIN_DATA_FORMAT");
               log[l].ausgabe.push_back( "BEGIN_DATA_FORMAT" );
               ++zeilendifferenz;
               messungen[messungen.size()-1].felder.push_back( zeilen[i] );
               zeilen.insert( zeilen.begin() + i + 3, "END_DATA_FORMAT" );
-              messungen[messungen.size()-1].felder.push_back( "END_DATA_FORMAT" );
               log[l].ausgabe.push_back( "END_DATA_FORMAT" );
               ++zeilendifferenz;
               DBG_CGATS
@@ -649,6 +657,7 @@ CgatsFilter::editZeile_( std::vector<std::string> &zeilen,
               zeilen[i].insert( 0, "# " );
             break;
     case LINEARISIERUNG:
+            // Übergehen
             DBG_PROG_V( typ_ )
             if( typ_ == MAX_KORRIGIEREN )
             {
@@ -693,16 +702,17 @@ CgatsFilter::cgats_korrigieren_               ()
   if(suchenErsetzen (data_,CR,LF,0))
       logEintrag_( _("CR ersetzt"), -1, "", "" );
 
-  #if (CGATS_DEBUG >= 2)
-  // testweises Speichern
-  std::ofstream f ( "AtestCGATS.txt",  std::ios::out );
-  f.write ( data_.c_str(), data_.size() );
-  f.close();
-  #endif
+  if (icc_debug >= 2)
+  {
+    // testweises Speichern
+    std::ofstream f ( "AtestCGATS.txt",  std::ios::out );
+    f.write ( data_.c_str(), data_.size() );
+    f.close();
+  }
 
 
-  // reparieren:
-  // FORMAT Bezeichner
+  // Reparieren:
+    // FORMAT Bezeichner
   suchenUndErsetzen_( data_, "SampleID" , "SAMPLE_ID", pos ); // GMB
   suchenUndErsetzen_( data_, "Sample_ID" , "SAMPLE_ID", pos );
   suchenUndErsetzen_( data_, "SampleName" , "SAMPLE_NAME", pos );
@@ -713,19 +723,18 @@ CgatsFilter::cgats_korrigieren_               ()
   suchenUndErsetzen_( data_, "Lab_L" , "LAB_L", pos );
   suchenUndErsetzen_( data_, "Lab_a" , "LAB_A", pos );
   suchenUndErsetzen_( data_, "Lab_b" , "LAB_B", pos );
-  // Dateibezeichner
+    // Dateibezeichner
   suchenUndErsetzen_( data_, "CBTD" , "CBTD___", pos ); // CB
   suchenUndErsetzen_( data_, "CBPR" , "CBPR___", pos );
   suchenUndErsetzen_( data_, "CBTA" , "CBTA___", pos );
   suchenUndErsetzen_( data_, "CBRO" , "CBRO___", pos ); // wird nicht behandelt
-  // Sonstiges
+    // Sonstiges
   suchenUndErsetzen_( data_, "Date:" , "CREATED \"\" #", pos ); // GMB
 
 
-  // zeilenweise
+  // Zerlegen
   zeilen_ = zeilenNachVector(data_);
 
-  // Zahlen
   // es gibt zwei Blöcke  BEGIN_DATA / END_DATA und BEGIN_DATA_FORMAT / END_...
   bool im_data_format_block = false;
   bool im_data_block = false;
@@ -735,7 +744,7 @@ CgatsFilter::cgats_korrigieren_               ()
   zeile_letztes_NUMBER_OF_FIELDS = -1;
   bool fehlendes_NUMBER_OF_SETS = true;
   bool fehlendes_NUMBER_OF_FIELDS = true;
-  int zaehler_SETS = -1;
+  int zaehler_SETS = 0;
   int zaehler_FIELDS = 0;
   std::stringstream s;
   std::string gtext; // gültiger Text
@@ -744,7 +753,7 @@ CgatsFilter::cgats_korrigieren_               ()
   // zeilenweises Bearbeiten
   for (int i = 0; i < (int)zeilen_.size(); ++i)
   {
-    // Hole eine kommentarfreie Zeile
+    // Hole eine kommentarfreie Zeile -> gtext
     gtext = zeilen_[i].substr( 0, zeilen_[i].find( "#" ) );
 
     // NUMBER_OF_FIELDS Position merken
@@ -760,17 +769,22 @@ CgatsFilter::cgats_korrigieren_               ()
       DBG_NUM_S( "NUMBER_OF_SETS Zeile " << i )
     }
 
-    if( im_data_block )
+    if( im_data_block &&
+        sucheWort (gtext, "END_DATA", 0 ) == std::string::npos )
     {
-      // SETS zählen
-      if( gtext.find_first_of( cgats_alnum_ ) != std::string::npos )
-        ++zaehler_SETS;
-
       // in gtext , durch . ersetzen und danach in zeilen_[i] zurückschreiben
       if(suchenUndErsetzen_ ( gtext, ",", ".", 0 ))
       {
         zeilen_[i].replace( 0, gtext.size(), gtext );
         DBG_NUM_S( _(", ersetzt") )
+      }
+
+      // SETS zählen
+      if( gtext.find_first_of( cgats_alnum_ ) != std::string::npos )
+      {
+        ++zaehler_SETS;
+        messungen[messungen.size()-1].block.push_back( zeilen_[i] );
+        messungen[messungen.size()-1].block_zeilen = zaehler_SETS;
       }
     }
 
@@ -784,6 +798,7 @@ CgatsFilter::cgats_korrigieren_               ()
       zeilen_[i].insert( 0, gtext );
       // Mitschreiben in felder
       messungen[messungen.size()-1].felder.push_back( zeilen_[i] );
+      messungen[messungen.size()-1].feld_spalten = zaehler_FIELDS;
       DBG_NUM_S( "zaehler_FIELDS " << zaehler_FIELDS << " Zeile " << i )
     }
 
@@ -794,14 +809,14 @@ CgatsFilter::cgats_korrigieren_               ()
     {
       DBG_NUM_V( messungen.size() )
       // das Protokol der Feldbezeichner startet
-      if( messungen[messungen.size()-1].felder.size() <
+      if( messungen[messungen.size()-1].felder.size() >
           messungen[messungen.size()-1].block.size() )
       {
-        logEintrag_( _("Mehr Feldblöcke als Datenblöcke: lösche"), zeile_letztes_BEGIN_DATA_FORMAT,
-                     "", "" );
+        logEintrag_( _("Mehr Feldblöcke als Datenblöcke: lösche"),
+                     zeile_letztes_BEGIN_DATA_FORMAT, "", "" );
         messungen[messungen.size()-1].felder.resize(0);
+        
       }
-      messungen[messungen.size()-1].felder.push_back( "BEGIN_DATA_FORMAT" );
       for( unsigned j = 0; j < messungen[messungen.size()-1].felder.size(); ++j)
         DBG_NUM_S( j<<" "<<messungen[messungen.size()-1].felder[j] )
       // Markieren und Warnen
@@ -819,7 +834,6 @@ CgatsFilter::cgats_korrigieren_               ()
 
     if( sucheWort (gtext, "END_DATA_FORMAT", 0 ) != std::string::npos )
     {
-      messungen[messungen.size()-1].felder.push_back( "END_DATA_FORMAT" );
       for( unsigned j = 0; j < messungen[messungen.size()-1].felder.size(); ++j )
         DBG_CGATS_S( j<<" "<<messungen[messungen.size()-1].felder[j] );
       if( !im_data_format_block )
@@ -827,9 +841,6 @@ CgatsFilter::cgats_korrigieren_               ()
 
       s.str("");
       s << "NUMBER_OF_FIELDS " << zaehler_FIELDS;
-      messungen[messungen.size()-1].felder.insert(
-                                 messungen[messungen.size()-1].felder. begin(),
-                                 s.str() );
       messungen[messungen.size()-1].feld_spalten = zaehler_FIELDS;
       // NUMBER_OF_FIELDS einfügen
       if( im_data_format_block &&
@@ -837,12 +848,13 @@ CgatsFilter::cgats_korrigieren_               ()
       {
         zeilen_.insert( zeilen_.begin() + zeile_letztes_BEGIN_DATA_FORMAT, s.str() );
         ++i;
-        logEintrag_( _("fehlendes NUMBER_OF_FIELDS eingefügt"), zeile_letztes_BEGIN_DATA_FORMAT,
-                     "", s.str() );
+        logEintrag_( _("fehlendes NUMBER_OF_FIELDS eingefügt"),
+                     zeile_letztes_BEGIN_DATA_FORMAT, "", s.str() );
         DBG_S( zeilen_[zeile_letztes_BEGIN_DATA_FORMAT] << _(" eingefügt") )
       } else // NUMBER_OF_FIELDS Parsen und Vergleichen
       {
-        std::string t = zeilen_[zeile_letztes_NUMBER_OF_FIELDS].substr( 0, zeilen_[zeile_letztes_NUMBER_OF_FIELDS].find( "#" ) );
+        std::string t = zeilen_[zeile_letztes_NUMBER_OF_FIELDS].
+               substr( 0, zeilen_[zeile_letztes_NUMBER_OF_FIELDS].find( "#" ) );
         DBG_CGATS_V( t )
         std::vector<std::string> v = unterscheideZiffernWorte_(t);
         int n_o_;
@@ -879,11 +891,9 @@ CgatsFilter::cgats_korrigieren_               ()
     // DATA Block
     if( sucheWort (gtext, "BEGIN_DATA", 0 ) != std::string::npos )
     {
-      messungen[messungen.size()-1].block.push_back( "BEGIN_DATA" );
       // Markieren und Warnen
       if( im_data_block )
-        logEintrag_( _("oops zwei mal BEGIN_DATA  Zeile" ), i,
-                     "", "" );
+        logEintrag_( _("oops zwei mal BEGIN_DATA  Zeile" ), i, "", "" );
       else
         im_data_block = true;
 
@@ -896,15 +906,11 @@ CgatsFilter::cgats_korrigieren_               ()
 
     if( sucheWort (gtext, "END_DATA", 0 ) != std::string::npos )
     {
-      messungen[messungen.size()-1].block.push_back( "END_DATA" );
       if( !im_data_block )
         WARN_S( _("oops END_DATA ohne BEGIN_DATA  Zeile ") << i )
 
       s.str("");
       s << "NUMBER_OF_SETS " << zaehler_SETS;
-      messungen[messungen.size()-1].block.insert(
-                                 messungen[messungen.size()-1].block. begin(),
-                                 s.str() );
       messungen[messungen.size()-1].block_zeilen = zaehler_SETS;
       // NUMBER_OF_SETS einfügen
       if( im_data_block &&
@@ -913,11 +919,12 @@ CgatsFilter::cgats_korrigieren_               ()
         zeilen_.insert( zeilen_.begin() + zeile_letztes_BEGIN_DATA, s.str() );
         ++i;
         DBG_S( zeilen_[zeile_letztes_BEGIN_DATA] << " eingefügt" )
-        logEintrag_( _("fehlende NUMBER_OF_SETS eingefügt"), zeile_letztes_BEGIN_DATA,
-                     "", s.str() );
+        logEintrag_( _("fehlende NUMBER_OF_SETS eingefügt"),
+                     zeile_letztes_BEGIN_DATA, "", s.str() );
       } else // NUMBER_OF_SETS Parsen und Vergleichen
       {
-        std::string t = zeilen_[zeile_letztes_NUMBER_OF_SETS].substr( 0, zeilen_[zeile_letztes_NUMBER_OF_SETS].find( "#" ) );
+        std::string t = zeilen_[zeile_letztes_NUMBER_OF_SETS].
+                 substr( 0, zeilen_[zeile_letztes_NUMBER_OF_SETS].find( "#" ) );
         DBG_PROG_V( t )
         std::vector<std::string> v = unterscheideZiffernWorte_(t);
         int n_o_;
@@ -947,7 +954,7 @@ CgatsFilter::cgats_korrigieren_               ()
       im_data_block = false;
       block_ende = true;
       zeile_letztes_NUMBER_OF_SETS = -1;
-      zaehler_SETS = -1;
+      zaehler_SETS = 0;
       neuerAbschnitt_();
     }
     // ENDE DATA Block
@@ -962,10 +969,16 @@ CgatsFilter::cgats_korrigieren_               ()
         ende = gtext.size();
       }
       DBG_NUM_V( pos <<" "<< ende <<" "<< gtext )
+      bool anf_setzen = anfuehrungsstriche_setzen;
+      anfuehrungsstriche_setzen = false;
+      int wort_zahl = unterscheideZiffernWorte_(zeilen_[0]).size();
+      anfuehrungsstriche_setzen = anf_setzen;
       if( ((ende - pos) != 7 &&
            (ende - pos) != 14 ) ||
-          sucheSchluesselwort_( gtext ) != AUSKOMMENTIEREN )
+          sucheSchluesselwort_( gtext ) != AUSKOMMENTIEREN ||
+          wort_zahl > 1 )
       {
+        editZeile_( zeilen_, 0, AUSKOMMENTIEREN, false );
         messungen[messungen.size()-1].kommentare.push_back( zeilen_[0] );
         zeilen_.insert( zeilen_.begin(), kopf );
         logEintrag_( _("Dateisignatur eingeführt"), 0, "", kopf );
@@ -1010,7 +1023,6 @@ CgatsFilter::cgats_korrigieren_               ()
         unterscheideZiffernWorte_( gtext );
         zeilen_[i].insert( 0, gtext );
       }
-      messungen[messungen.size()-1].block.push_back( zeilen_[i] );
       DBG_CGATS_V( messungen[messungen.size()-1].block.size()-1 )
     }
   }
@@ -1036,6 +1048,8 @@ CgatsFilter::neuerAbschnitt_ ()
   if(messungen[messungen.size()-1]. felder.size() ||
      messungen[messungen.size()-1]. block.size())
     messungen.resize( messungen.size()+1 );
+  messungen[messungen.size()-1]. feld_spalten = 0;
+  messungen[messungen.size()-1]. block_zeilen = 0;
   DBG_PROG_ENDE
 }
 
@@ -1059,6 +1073,8 @@ CgatsFilter::logEintrag_ (std::string meldung, int zeile_n,
 }
 
 
+
+
 std::string
 cgats_korrigieren( char* data, size_t size )
 {
@@ -1075,13 +1091,17 @@ cgats_max_korrigieren( char* data, size_t size )
 {
   DBG_PROG_START
   CgatsFilter cgats;
+  // Optionen setzen
   cgats.kopf = "IS12642";
   cgats.kommentar = "# hier kommt ein langer Kommentar.. \n# ... bis hier\n";
-  cgats.lade( data, size );
   cgats.anfuehrungsstriche_setzen = true;
   cgats.spektral = "R_";
+  // Laden
+  cgats.lade( data, size );
+  // Bearbeiten und Ausgeben
   std::string text = cgats.max_korrigieren ();
 
+  if(icc_debug >= 2)
   {
     for( unsigned i = 0; i < cgats.messungen.size(); ++i )
     {
@@ -1091,6 +1111,8 @@ cgats_max_korrigieren( char* data, size_t size )
         DBG_PROG_S( i<<" "<<j<<" "<<cgats.messungen[i]. felder[j] );
       for( unsigned j = 0; j < cgats.messungen[i]. block.size(); ++j )
         DBG_PROG_S( i<<" "<<j<<" "<<cgats.messungen[i]. block[j] );
+      DBG_PROG_V( cgats.messungen[i]. felder.size() <<" "<< cgats.messungen[i]. feld_spalten )
+      DBG_PROG_V( cgats.messungen[i]. block.size() <<" "<< cgats.messungen[i]. block_zeilen )
     }
   }
 

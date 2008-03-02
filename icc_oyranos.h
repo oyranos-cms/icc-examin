@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2005  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -34,7 +34,9 @@
 
 #include <string>
 #include <list>
+#include <map>
 #include "icc_vrml_parser.h"
+#include "icc_speicher.h"
 
 class Oyranos;
 
@@ -44,31 +46,6 @@ struct ColourTransformKey
     const char* show() { return text.data(); }
   private:
     std::string text; // Schluessel
-};
-
-class Speicher
-{
-    char*  zeiger_;
-    size_t groesse_;
-  public:
-    Speicher       () { zeiger_ = 0; groesse_ = 0; }
-    ~Speicher      () { if( zeiger_ ) free (zeiger_); }
-    Speicher       (const Speicher& s) { zeiger_ = 0; groesse_ = 0; }
-    Speicher& operator = (const Speicher& s) { zeiger_ = 0; groesse_ = 0;
-                        return *this; }
-
-    void        lade     (char* zeiger, int groesse)
-                            { zeiger_ = zeiger;
-                              groesse_ = groesse; }
-                Speicher (char* zeiger, int groesse) { lade (zeiger, groesse); }
-
-    size_t      size     () { return groesse_; }
-    std::string name;
-    int         anzahl;
-
-    operator const char* () { return zeiger_; }
-    operator std::string () { return name; }
-    operator size_t      () { return groesse_; }
 };
 
 class Oyranos
@@ -92,10 +69,14 @@ class Oyranos
     std::string moni ()                { moni_test_(); return moni_.name; }
     const char* moni (size_t &g)       { moni_test_(); g = moni_.size();
                                          return moni_; }
+    // allgemeine Profile
+    std::string profil (const char* n) { if(profil_test_(n)) return profil_(n);}
+    const char* profil (const char* n, size_t &g) { return profil_(n,g); }
+
     int         setzeMonitorProfil (const char* name );
     std::vector<ICCnetz> netzAusVRML (std::string & vrml)
                                 { return extrahiereNetzAusVRML (vrml); }
-    std::vector<ICCnetz> netzVonProfil (Speicher p);
+    std::vector<ICCnetz> netzVonProfil (Speicher& p);
 
   private:
     void lab_test_();
@@ -106,6 +87,10 @@ class Oyranos
     Speicher moni_;
     Speicher rgb_;
     Speicher cmyk_;
+    std::map<std::string,Speicher> pspeicher_;
+    bool profil_test_   (const char* profil_name);
+    std::string profil_ (const char* profil_name);  
+    const char* profil_ (const char* profil_name, size_t &g);
 
   public:
     // Farbtransformationen

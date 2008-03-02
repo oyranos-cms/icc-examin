@@ -80,12 +80,14 @@ CPP_HEADERS = \
 	fl_oyranos.h \
 	icc_oyranos.h \
 	icc_profile.h \
+	icc_speicher.h \
 	icc_ueber.h \
 	icc_utils.h \
 	icc_version.h \
 	icc_vrml.h \
 	icc_vrml_parser.h
 CPPFILES = \
+	icc_oyranos.cpp \
 	icc_cgats_filter.cpp \
 	icc_draw.cpp \
 	icc_examin.cpp \
@@ -98,7 +100,6 @@ CPPFILES = \
 	$(OSX_CPP) \
 	icc_main.cpp \
 	icc_measurement.cpp \
-	icc_oyranos.cpp \
 	icc_profile.cpp \
 	icc_profile_header.cpp \
 	icc_profile_tags.cpp \

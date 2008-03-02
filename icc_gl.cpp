@@ -117,6 +117,7 @@ GL_Ansicht::GL_Ansicht(int X,int Y,int W,int H) : Fl_Group(X,Y,W,H)
   a_darstellungs_breite = 1.0;
   b_darstellungs_breite = 1.0;
   schalen = 5;
+  punktform = MENU_dE1STERN;
   spektralband = 0;
   zeige_helfer = true;
   gl_fenster_zeigen_ = false;
@@ -905,6 +906,7 @@ GL_Ansicht::zeigeSpektralband_()
   size_t groesse = 0;
   const char* block = 0;
   block = icc_oyranos.moni(groesse);
+DBG_PROG_V( (int*) block <<" "<<groesse )
   if(groesse)
     hsRGB = cmsOpenProfileFromMem(const_cast<char*>(block), groesse);
   else
@@ -1243,6 +1245,7 @@ GL_Ansicht::hineinPunkte       (std::vector<double>      vect,
   }
 
   punkte_ = vect;
+  
   DBG_PROG_V( zeig_punkte_als_messwert_paare<<"|"<<punktform<<"|"<<punkte_.size() )
 
   if (!zeig_punkte_als_messwert_paare &&

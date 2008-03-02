@@ -35,9 +35,10 @@
 
 
 void dump_vrml_header (char *vrml);
+#define lp {l+=0.1; icc_examin->fortschritt(l);}
 
 int
-erase_file (char *file)
+erase_file (const char *file)
 {
   FILE *fp;
 
@@ -48,14 +49,79 @@ erase_file (char *file)
     return 0;
   }
 
+  WARN_S( _("Datei ") << file << _(" konnte nicht gelöscht werden") )
   return 1;
 }
 
-#define lp {l+=0.1; icc_examin->fortschritt(l);}
+
+std::string
+icc_create_vrml( const char* p, int size )
+{
+  DBG_PROG_START
+  std::string vrml;
+
+  if (!p || !size)
+    return vrml;
+
+  std::stringstream profil_temp_name;
+  profil_temp_name << getenv("TMPDIR") << "/oyranos_" << time(0) ;
+  DBG_PROG_V( profil_temp_name.str() )
+  std::string ptn = profil_temp_name.str(); ptn.append(".icc");
+
+  // Speichern
+  {
+    std::ofstream f ( ptn.c_str(),  std::ios::out );
+    size_t s = size;
+    f.write ( p, s );
+    f.close();
+  }
+  // vrml produzieren - argyll Variante
+  char* system_befehl = (char*) new char [1024];
+  double l = -0.1;
+  icc_examin->fortschritt(l);
+  lp
+  int ret;
+  sprintf(system_befehl,"iccgamut -n -w %s", ptn.c_str());
+  ret = system (system_befehl); lp DBG_PROG
+  ptn = profil_temp_name.str(); ptn.append(".icc");
+  erase_file (ptn.c_str());
+  ptn = profil_temp_name.str(); ptn.append(".gam");
+  erase_file (ptn.c_str());
+
+  // Datei öffnen
+  {
+    ptn = profil_temp_name.str(); ptn.append(".wrl");
+    std::ifstream f ( ptn.c_str(), std::ios::binary | std::ios::ate );
+
+    DBG_PROG
+    if (ptn == "")
+      throw ausn_file_io ("kein Dateiname angegeben");
+    DBG_PROG
+    if (!f) {
+      throw ausn_file_io ("keine lesbare Datei gefunden");
+      ptn = "";
+    }
+
+    size_t size = (unsigned int)f.tellg();         f.seekg(0);
+    char* data = (char*)calloc (sizeof (char), size);
+
+
+    f.read ((char*)data, size);
+    DBG_PROG_V ( size << "|" << f.tellg() )
+    f.close();
+    vrml = data;
+    erase_file (ptn.c_str());
+  }
+
+  icc_examin->fortschritt(1.1);
+  DBG_PROG_ENDE
+  return vrml;
+}
+
 int 
 create_vrml              ( const char *profilA, char *profilB, char *vrml)
 {
-  char systemBefehl[1024];
+  char system_befehl[1024];
   float l = -0.1;
   icc_examin->fortschritt(l);
 
@@ -69,42 +135,42 @@ create_vrml              ( const char *profilA, char *profilB, char *vrml)
   // gamut A
   if (profilA) {
   if (!erase_file ("/tmp/tmpA.icc")) remove ("/tmp/tmpA.icc");
-  sprintf (systemBefehl, "ln -s \"%s\" /tmp/tmpA.icc", profilA);
-  system (systemBefehl);
+  sprintf (system_befehl, "ln -s \"%s\" /tmp/tmpA.icc", profilA);
+  system (system_befehl);
   system ("iccgamut -n -w -d 6.0 /tmp/tmpA.icc"); lp
   erase_file ("/tmp/tmpA.wrl");
   erase_file ("/tmp/tmpA.icc");
   system ("viewgam -n -c n /tmp/tmpA.gam /tmp/tmp.wrl");
-  sprintf (systemBefehl ,"cat /tmp/tmp.wrl >> \"%s\"", vrml); lp
-  system (systemBefehl);
+  sprintf (system_befehl ,"cat /tmp/tmp.wrl >> \"%s\"", vrml); lp
+  system (system_befehl);
   erase_file ("/tmp/tmp.wrl");
   }
 
   // gamut B transparent
   if (profilB) {
   if (!erase_file ("/tmp/tmpB.icc")) remove ("/tmp/tmpB.icc");
-  sprintf (systemBefehl, "ln -s \"%s\" /tmp/tmpB.icc", profilB);
-  system (systemBefehl);
+  sprintf (system_befehl, "ln -s \"%s\" /tmp/tmpB.icc", profilB);
+  system (system_befehl);
   system ("iccgamut -n -w -d 6.0 /tmp/tmpB.icc"); lp
   erase_file ("/tmp/tmpB.wrl");
   erase_file ("/tmp/tmpB.icc");
   system ("viewgam -n -t 0.5 -c w /tmp/tmpB.gam /tmp/tmp.wrl"); lp
-  sprintf (systemBefehl ,"cat /tmp/tmp.wrl >> \"%s\"", vrml);
-  system (systemBefehl);
+  sprintf (system_befehl ,"cat /tmp/tmp.wrl >> \"%s\"", vrml);
+  system (system_befehl);
   erase_file ("/tmp/tmp.wrl");
   }
 
   // Unterschiede
   if (profilA && profilB) {
   system ("smthtest /tmp/tmpA.gam /tmp/tmpB.gam /tmp/tmp.wrl"); lp
-  sprintf (systemBefehl ,"cat /tmp/tmp.wrl >> \"%s\"", vrml);
-  system (systemBefehl);
+  sprintf (system_befehl ,"cat /tmp/tmp.wrl >> \"%s\"", vrml);
+  system (system_befehl);
   erase_file ("/tmp/tmp.wrl");
   erase_file ("/tmp/tmpA.gam");
   erase_file ("/tmp/tmpB.gam");
   }
 
-  return (1);  
+  return 0;  
 }
 
 void

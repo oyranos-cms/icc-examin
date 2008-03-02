@@ -36,6 +36,7 @@ using namespace oyranos;
 #include "icc_oyranos.h"
 #include "icc_utils.h"
 
+
 Oyranos icc_oyranos;
 
 
@@ -67,6 +68,53 @@ Oyranos::~Oyranos()
   DBG_PROG_START
   #if HAVE_OY
   oyClose();
+  #endif
+  DBG_PROG_ENDE
+}
+
+// nur in icc_oyranos.cpp zu verwendende Typen
+typedef std::map<std::string,Speicher> Prof_map;
+typedef std::map<std::string,Speicher>::iterator Prof_mapIt;
+typedef std::pair<std::string,Speicher> Prof_Map_elem;
+typedef std::pair<Prof_map::const_iterator,bool> Prof_mapIt_bool;
+
+bool
+Oyranos::profil_test_ (const char* profil_name)
+{
+  DBG_PROG_START
+  #if HAVE_OY
+
+  if(profil_name && strlen(profil_name))
+  {
+    Prof_mapIt cmp = pspeicher_.find( profil_name );
+    if( cmp == pspeicher_.end() )
+    {
+      bool fehler = oyCheckProfile( profil_name, 0 );
+      if( !fehler )
+      {
+        // leeren Block einfügen
+        Prof_Map_elem teil (profil_name, Speicher());
+        Prof_mapIt_bool erg = pspeicher_ .insert( teil );
+        if( erg.second = true )
+        {
+          // Referenz auf Block holen
+          Speicher *v_block = &pspeicher_[profil_name];
+          v_block->name = profil_name;
+          int size;
+          char* block = (char*)oyGetProfileBlock( profil_name, &size);
+          DBG_PROG_V( (int)block <<"|"<< size )
+          v_block->lade(block, size);
+        }
+      }
+    } else // Profil in Liste
+    {
+      Speicher *v_block = &pspeicher_[profil_name];
+      // ...
+    }
+  }
+  
+  DBG_NUM_S( "Standard " OY_DEFAULT_LAB_PROFILE " Profil = "<< lab_.name <<" "<< lab_.size() <<"\n" )
+
   #endif
   DBG_PROG_ENDE
 }
@@ -115,7 +163,6 @@ Oyranos::moni_test_ ()
   Speicher *v_block = &moni_;
   char* block;
   #if HAVE_OY
-  if( !v_block->size() )
   { DBG_PROG_V( v_block->size() )
     const char *display_name = 0;
     char* profil_name =
@@ -129,7 +176,8 @@ Oyranos::moni_test_ ()
         int size = oyGetProfileSize ( profil_name );
         DBG_PROG_V( size )
         if (size)
-        { block = (char*)oyGetProfileBlock( profil_name, &size);
+        {
+          block = (char*)oyGetProfileBlock( profil_name, &size);
           if( oyCheckProfileMem( block, size, 0 ) )
             WARN_S ( _("Profil konnte nicht geladen werden") )
           else {
@@ -137,6 +185,7 @@ Oyranos::moni_test_ ()
             v_block->lade(block, size);
           }
         }
+      if(profil_name) free(profil_name);
     }
   }
   
@@ -265,13 +314,15 @@ Oyranos::setzeMonitorProfil (const char* profil_name )
   return fehler;
 }
 
-
+#include "icc_vrml.h"
 std::vector<ICCnetz>
-Oyranos::netzVonProfil (Speicher p)
+Oyranos::netzVonProfil (Speicher& p)
 {
   DBG_PROG_START
   std::string vrml;
-  //create_vrml();
+  const char* b = p;
+  DBG_PROG_V( (int*)b )
+  vrml = icc_create_vrml (p,p);
   std::vector<ICCnetz> netz = extrahiereNetzAusVRML (vrml);
   DBG_PROG_ENDE
   return netz;
