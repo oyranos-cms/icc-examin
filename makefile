@@ -57,10 +57,7 @@ CPP_HEADERS = \
 	icc_profile.h \
        	icc_ueber.h \
 	icc_utils.h \
-	icc_vrml.h \
-        README \
-        COPYING \
-        AUTHORS
+	icc_vrml.h
 #	vFLGLWidget.h \
 	ViewerFLTK.h 
 CPPFILES = \
@@ -78,6 +75,14 @@ CPPFILES = \
 	ViewerFLTK.cpp 
 CXXFILES = \
 	icc_examin.cxx
+TEST = \
+	dE2000_test.cpp \
+	ciede2000testdata.h
+DOKU = \
+        README \
+        COPYING \
+        AUTHORS
+
 SOURCES = $(CPPFILES) $(CXXFILES) $(CPP_HEADERS)
 OBJECTS = $(CPPFILES:.cpp=.o) $(CXXFILES:.cxx=.o)
 TARGET  = icc_examin
@@ -114,7 +119,13 @@ static:		$(OBJECTS)
 	-lfreetype -lfontconfig -lXrender -lGLU -lXext -lexpat
 	$(APPLE)
 
-test:	icc_draw.o
+test:	icc_formeln.o
+	$(CC) $(OPTS) $(INCL) -o dE2000_test.o -c dE2000_test.cpp
+	$(CC) $(OPTS) -o dE2000_test dE2000_test.o icc_formeln.o \
+	-L$(libdir) -llcms
+	$(APPLE)
+
+test1:	icc_draw.o
 	$(CC) $(OPTS) $(INCL) -o horseshoe.o -c horseshoe.cxx
 	$(CC) $(OPTS) -o horseshoe horseshoe.o icc_draw.o \
 	`fltk-config --ldstaticflags` -L$(libdir) -llcms
@@ -174,6 +185,8 @@ tgz:
 	$(addprefix $(dir)/,$(SOURCES)) \
 	$(dir)/makefile \
 	$(dir)/$(TARGET).fl \
+	$(addprefix $(dir)/,$(TEST)) \
+	$(addprefix $(dir)/,$(DOKU)) \
 	| gzip > $(TARGET)_$(mtime).tgz
 	mv -v $(TARGET)_*.tgz ../Archiv
 
