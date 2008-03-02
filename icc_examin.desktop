@@ -1,0 +1,19 @@
+[Desktop Entry]
+Name=ICC Examin profile viewer
+Name[de]=ICC Examin Profilbetrachter
+
+GenericName=
+
+Comment=look at the internals of ICC profiles
+Comment[de]=Interna von ICC Farbprofien betrachten
+
+Type=Application
+Categories=Application;Graphics;
+
+Encoding=UTF-8
+
+Exec=icc_examin %U
+#Icon=icc_examin.png
+StartupNotify=true
+Terminal=false
+

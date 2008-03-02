@@ -90,7 +90,7 @@ icc_create_vrml( const char* p, int size, int intent )
   }
   // vrml produzieren - argyll Variante
   char* system_befehl = (char*) new char [1024];
-  double l = -0.1;
+  //double l = -0.1;
   //icc_examin_ns::fortschritt(l);
   lp
   int ret;
@@ -153,7 +153,7 @@ int
 create_vrml              ( const char *profilA, char *profilB, char *vrml)
 {
   char system_befehl[1024];
-  float l = -0.1;
+  //float l = -0.1;
   //icc_examin_ns::fortschritt(l);
 
   if (!vrml || (!profilA && !profilB))

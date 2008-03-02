@@ -39,7 +39,7 @@ getUeberHtml()
 {
   DBG_PROG_START
   char SF[] = "#cccccc";  // Standard hintergrundFarbe
-  char HF[] = "#aaaaaa";  // Hervorgehoben
+  //char HF[] = "#aaaaaa";  // Hervorgehoben
   #define LAYOUTFARBE if (layout[l++] == true) \
                         html << HF; \
                       else \

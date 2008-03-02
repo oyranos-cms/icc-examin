@@ -73,6 +73,8 @@ icValue (icUInt16Number val)
        << " "; DBG_PROG
   #endif
   #endif
+  #undef BYTES
+  #undef KORB
   return (long)*erg;
 #else
   return (long)val;
@@ -159,6 +161,8 @@ icValue (icInt32Number val)
        << (int)korb[1] << " " << (int)korb[2] << " " <<(int)korb[3]
        << " "; DBG_PROG
   #endif
+  #undef BYTES
+  #undef KORB
   return (signed int)*erg;
 #else
   return (signed int)val;
@@ -187,6 +191,8 @@ icValue (icInt16Number val)
        << (int)korb[1] << " " << (int)korb[2] << " " <<(int)korb[3]
        << " "; DBG_PROG
   #endif
+  #undef BYTES
+  #undef KORB
   return (signed int)*erg;
 #else
   return (signed int)val;

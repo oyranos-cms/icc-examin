@@ -21,7 +21,7 @@ else
   COPY = cp
   endif
 endif
-
+INSTALL = install -v
 
 exec_prefix	= ${prefix}
 bindir		= ${exec_prefix}/bin
@@ -37,6 +37,7 @@ X_CPPFILES = icc_helfer_x.cpp
 OSX_CPPFILES = icc_helfer_osx.cpp
 FLTK_CPPFILES = icc_helfer_fltk.cpp
 MSGFMT = msgfmt -c --statistics
+RPMARCH = `rpmbuild --showrc | awk '/^build arch/ {print $$4}'`
 
 ifdef APPLE
   OPTS=-Wall -g -DPIC $(DEBUG)
@@ -215,7 +216,9 @@ DOKU = \
 	ChangeLog \
 	COPYING \
 	BUGS \
-	AUTHORS
+	AUTHORS \
+	icc_examin.spec \
+	icc_examin.desktop
 FLUID = \
 	icc_betrachter.fl \
 	fl_oyranos.fl
@@ -229,7 +232,7 @@ POT_FILE = po/$(TARGET).pot
 
 ALL_FILES =	$(SOURCES) \
 	makefile \
-	configure.sh \
+	configure \
 	$(DOKU) \
 	$(FONT) \
 	$(FLUID)
@@ -271,12 +274,26 @@ $(LIBNAME):	$(CLIB_OBJECTS)
 	$(COLLECT) $(LIBNAME) $(CLIB_OBJECTS)
 	$(RANLIB) $(LIBNAME)
 
-static:		$(OBJECTS)
-	echo Linking $@...
+static:	all
+	echo Linking static $(TARGET) ...
+	$(CXX) -Wall -O3 -o $(TARGET) $(OBJECTS) \
+	-L./  -licc_examin \
+	`flu-config --ldstaticflags` \
+	`fltk-config --use-gl --use-images --ldstaticflags` \
+	-L/usr/X11R6/lib -lX11 -lXxf86vm -lXext -L/opt/local/lib \
+	`oyranos-config --ld_x_staticflags` -L/$(prefix)/lib \
+	-L$(prefix)/lib -lGLU -lGL -lfreetype \
+	`pkg-config --libs ftgl`  /usr/lib/libkdb.a -lsupc++ \
+	`test -f /opt/kai-uwe/lib/liblcms.a && echo /opt/kai-uwe/lib/liblcms.a || pkg-config --libs lcms` # Hack for static lcms
+	strip $(TARGET)
+	$(REZ)
+
+static_static:	$(OBJECTS)
 	$(CXX) $(OPTS) -o $(TARGET) \
 	$(OBJECTS) \
 	$(LDLIBS) -static -ljpeg -lpng -lX11 -lpthread -lz -ldl \
-	-lfreetype -lfontconfig -lXrender -lGLU -lXext -lexpat
+	-lfreetype -lfontconfig -lXrender -lGLU -lXext -lexpat \
+	-L/opt/local/lib liblcms.a
 	$(REZ)
 
 test:	icc_formeln.o icc_utils.o
@@ -297,7 +314,7 @@ pot:	$(POT_FILE)
             if [ ! -d po/$${ling}/LC_MESSAGES ]; then \
               mkdir po/$${ling}/LC_MESSAGES; \
             fi; \
-            test -f po/$${ling}/LC_MESSAGES/$(TARGET).mo && rm po/$${ling}/LC_MESSAGES/$(TARGET).mo; \
+            test -f po/$${ling}/LC_MESSAGES/$(TARGET).mo && $(RM) po/$${ling}/LC_MESSAGES/$(TARGET).mo; \
             ln -s ../../$${ling}.gmo po/$${ling}/LC_MESSAGES/$(TARGET).mo;) \
         || (echo $${ling}.po is not yet ready ... skipping) \
 	done;
@@ -313,15 +330,32 @@ potfile:
 
 $(POT_FILE):	potfile
 
-install:	$(TARGET)
+install:	static
 	echo Installing ...
-	$(COPY) $(TARGET) $(bindir)
-	$(COPY) $(FONT) $(datadir)/fonts
+	mkdir -p $(DESTDIR)$(bindir)
+	$(INSTALL) -m 755 $(TARGET) $(DESTDIR)$(bindir)
+	mkdir -p $(DESTDIR)$(datadir)/fonts/
+	$(INSTALL) -m 644 $(FONT) $(DESTDIR)$(datadir)/fonts/
+	mkdir -p $(DESTDIR)$(datadir)/applications/
+	$(INSTALL) -m 644 icc_examin.desktop $(DESTDIR)$(datadir)/applications/icc_examin.desktop
+	echo  Linguas ...
+	for ling in $(LINGUAS); do \
+	  echo "update po/$${ling}.gmo ..."; \
+      mkdir -p $(DESTDIR)$(datadir)/locale/$${ling}/LC_MESSAGES; \
+      test -f po/$${ling}.gmo \
+		&& (mkdir -p $(DESTDIR)$(datadir)/locale/$${ling}/LC_MESSAGES; \
+            $(INSTALL) -m 644 po/$${ling}.gmo $(DESTDIR)$(datadir)/locale/$${ling}/LC_MESSAGES/$(TARGET).mo ) \
+		|| (echo $${ling}.gmo is not yet ready ... skipping); \
+	done;
 	echo ... Installation finished
 
 uninstall:
 	echo Uninstalling ...
-	$(RM) $(bindir)/$(TARGET)
+	$(RM) $(DESTDIR)$(bindir)/$(TARGET)
+	$(RM) $(DESTDIR)$(datadir)/fonts/$(FONT)
+	for ling in $(LINGUAS); do \
+	  $(RM) $(DESTDIR)$(datadir)/locale/$${ling}/LC_MESSAGES/$(TARGET).mo; \
+	done;
 
 clean:
 	echo "mache sauber"
@@ -334,7 +368,7 @@ clean:
 	done;
 
 config:
-	configure.sh
+	configure
 
 depend:
 	echo "schaue nach Abhaengikeiten ..."
@@ -387,7 +421,7 @@ tgz:
 	test -d ../Archiv && mv -v $(TARGET)_*.tgz ../Archiv
 	test -d Entwickeln && \
 	test `pwd` != `(cd Entwickeln; pwd)` && \
-	rm -R Entwickeln
+	$(RM) -R Entwickeln
 
 targz:
 	mkdir $(TARGET)_$(VERSION)
@@ -405,7 +439,22 @@ targz:
 	test -d ../Archiv && mv -v $(TARGET)_*.tgz ../Archiv
 	test -d $(TARGET)_$(VERSION) && \
 	test `pwd` != `(cd $(TARGET)_$(VERSION); pwd)` && \
-	rm -R $(TARGET)_$(VERSION) 
+	$(RM) -R $(TARGET)_$(VERSION) 
+
+dist: targz
+	$(COPY) ../Archiv/$(TARGET)_$(mtime).tgz $(TARGET)_$(VERSION).tar.gz
+
+rpm:	dist
+	mkdir -p rpmdir/BUILD \
+	rpmdir/SPECS \
+	rpmdir/SOURCES \
+	rpmdir/SRPMS \
+	rpmdir/RPMS/$(RPMARCH)
+	cp -f $(TARGET)_$(VERSION).tar.gz rpmdir/SOURCES
+	rpmbuild --clean -ba $(srcdir)/$(TARGET).spec --define "_topdir $$PWD/rpmdir"
+	@echo "============================================================"
+	@echo "Finished - the packages are in rpmdir/RPMS and rpmdir/SRPMS!"
+
 
 # Abhaengigkeiten
 include mkdepend

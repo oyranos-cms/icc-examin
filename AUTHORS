@@ -1,18 +1,8 @@
-
 ICC Examin: Kai-Uwe Behrmann <www.behrmann.name>
 
-----------------------------------------------------------------------------
-
-
-ICC Examin benutzt forgende Bibliotheken:
-  fltk (statisch eigebunden): Bill Spitzack und andere <www.fltk.org>
-  flu (statisch eigebunden): Jason Bryan <www.osc.edu/~jbryan/FLU/>
-  lcms: Marti Maria <www.littlecms.com>
-
-
-Für die Visualisation des Farbumfangs (vrml extern):
-  argyll: Greame Gill <web.access.net.au/argyll/argyllcms.html>
-
-3D Navigation:
-  agv openGL Betrachter: Philip Winston
-
+agv: Philip Winston
+freeglut: Pawel W. Olszta
+littleCMS: Marti Maria
+FLTK: Bill Spizak and others
+FLU: Jason Bryan
+FTGL: Henry Maddocks
