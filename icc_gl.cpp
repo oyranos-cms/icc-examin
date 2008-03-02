@@ -73,7 +73,6 @@ GL_Ansicht::~GL_Ansicht()
 }
 
 void GL_Ansicht::zeigen() {
-  //icc_debug = 1;
   if (first)
     init();
   else

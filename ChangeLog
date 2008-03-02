@@ -1,4 +1,10 @@
 
+2004-12-14
+	* fix: mft GL Untermenü: Kanalnamen mit jedem Tagwechsel aktualisiert
+	* neu: Fl::run aus main entfernt, Oberfläche nun in icc_betrachter
+	* neu: Klasse icc_examin als zentrales Model begonnen
+	* neu: neue Farben der Oberfläche, Einheitlich zu osX
+
 2004-12-6
 	* neu: CLUT Koordinaten besser positioniert 
 	* fix: CLUT A2B nicht mehr dargestellt

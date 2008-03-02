@@ -21,7 +21,7 @@
  * 
  * -----------------------------------------------------------------------------
  *
- * Zeichenroutinen fÃ¼r Diagramme.
+ * Zeichenroutinen für Diagramme.
  * 
  */
 
@@ -29,6 +29,7 @@
 
 #ifndef ICC_DRAW_H
 #define ICC_DRAW_H
+
 #include <vector>
 
 void draw_kurve    (int X, int Y, int W, int H,

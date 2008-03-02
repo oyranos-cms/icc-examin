@@ -135,9 +135,9 @@ static:		$(OBJECTS)
 	-lfreetype -lfontconfig -lXrender -lGLU -lXext -lexpat
 	$(APPLE)
 
-test:	icc_formeln.o
+test:	icc_formeln.o icc_utils.o
 	$(CC) $(OPTS) $(INCL) -o dE2000_test.o -c dE2000_test.cpp
-	$(CC) $(OPTS) -o dE2000_test dE2000_test.o icc_formeln.o \
+	$(CC) $(OPTS) -o dE2000_test dE2000_test.o icc_formeln.o icc_utils.o \
 	-L$(libdir) -llcms
 	$(APPLE)
 

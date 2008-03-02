@@ -37,6 +37,7 @@
 #include <lcms.h> // für CGATS lesen
 #include "icc_profile.h"
 #include "icc_examin.h"
+#include "icc_version.h"
 
 #define _(text) text
 #define g_message printf

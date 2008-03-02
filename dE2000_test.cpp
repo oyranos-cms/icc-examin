@@ -2,8 +2,6 @@
 #include "icc_utils.h"
 #include "ciede2000testdata.h"
 
-int level_PROG;
-
 
 int
 main ()
