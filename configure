@@ -189,6 +189,16 @@ else
     echo "LINUX = 1" >> $CONF
     echo "#define LINUX 1" >> $CONF_H
     echo "Linux system            detected"
+    SYS=0
+    if [ -f /etc/SuSE-release ]; then
+      cat /etc/SuSE-release | grep Linux; SYS=1; fi
+    if [ -f /etc/redhat-release ]; then
+      cat /etc/redhat-release; SYS=1; fi
+    if [ -f /etc/debian_version ]; then
+      if [ -f /etc/issue.net ]; then
+        cat /etc/issue.net || cat /etc/debian_version; SYS=2; fi; fi
+    if [ $SYS -eq 0 ]; then 
+      test -f /etc/issue.net && cat /etc/issue.net; fi
     OSUNAME=Linux
   else
     if [ $UNAME_ = "SunOS" ]; then
@@ -251,6 +261,8 @@ export CC CXX
 
 CFLAGS_COMMON="$CFLAGS \$(INCL)"
 CXXFLAGS_COMMON="$CXXFLAGS \$(INCL)"
+
+export CFLAGS CXXFLAGS LDFLAGS
 
 # exec_prefix bindir sbindir libdir includedir datadir
 if [ -z "$exec_prefix" ]; then
@@ -441,8 +453,6 @@ echo "desktopdir      =       $desktopdir"
 if [ -n "$cwdebug" ]; then
 echo "cwdebug         =       $cwdebug"
 fi
-echo "################################################################"
-echo ""
 
 echo "src_dir = $src_dir" >> $CONF
 echo "srcdir = $srcdir" >> $CONF
@@ -559,6 +569,13 @@ fi
 echo "CFLAGS = $CFLAGS"   >> $CONF
 echo "CXXFLAGS = $CXXFLAGS">>$CONF
 echo "LDFLAGS = $LDFLAGS" >> $CONF
+
+echo "INCL            :       `cat makefile | grep '^INCL'`"
+echo "CFLAGS          =       $CFLAGS"
+echo "CXXFLAGS        =       $CXXFLAGS"
+echo "LDFLAGS         =       $LDFLAGS"
+echo "################################################################"
+echo ""
 
 echo "" >> $CONF
 echo "" >> $CONF
