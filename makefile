@@ -13,6 +13,7 @@ srcdir		= .
 
 #APPLE = 1
 FLU = 1
+DL = --ldflags # --ldstaticflags
 
 ifdef FLU
 FLU_H = -DHAVE_FLU
@@ -25,10 +26,10 @@ VRML_LIBS=$(FLTK_GL_LIBS) -lGL -lopenvrml -lopenvrml-gl -lpng -ljpeg
 
 X11_LIBS=-L/usr/X11R6/lib -lXinerama -lXft
 
-FLTK_LIBS=`fltk-config --use-images --use-gl --use-glut --ldstaticflags`
+FLTK_LIBS=`fltk-config --use-images --use-gl --use-glut $(DL)`
 
 ifdef FLU
-FLU_LIBS=`flu-config --ldstaticflags`
+FLU_LIBS=`flu-config $(DL)`
 endif
 
 FLTK_GL_LIBS=-lfltk_gl
@@ -91,7 +92,7 @@ dir     = Entwickeln
 timedir = $(topdir)/$(dir)
 mtime   = `find $(timedir) -prune -printf %Ty%Tm%Td.%TT | sed s/://g`
 
-.SILENT:
+#.SILENT:
 
 all:	$(TARGET)
 

@@ -92,14 +92,17 @@ std::string filename = filename_alt; DBG_PROG_V( filename )
   if ((pos = filename.find_last_of(".", filename.size())) != std::string::npos) { DBG_PROG
     filename.replace (pos, 5, ".html"); DBG_NUM_S( ".html gesetzt" )
   } DBG_PROG_V( filename )
-  dateiwahl->value(filename.c_str()); DBG_PROG
   DBG_PROG_V( dateiwahl->pattern() )
   std::string muster = dateiwahl->pattern(); DBG_PROG
-  std::string datei = dateiwahl->value(); DBG_PROG
+  std::string datei;
+  if (dateiwahl->value())
+    datei = dateiwahl->value(); DBG_PROG
   std::string titel = dateiwahl->label(); DBG_PROG
 
   dateiwahl->pattern(_("HTML Dokumente (*.htm*)")); DBG_PROG
+  dateiwahl->cd(".");
   dateiwahl->label(_("Bericht Speichern")); DBG_PROG
+  dateiwahl->value(filename.c_str()); DBG_PROG
 
   dateiwahl->show(); DBG_PROG
   while( dateiwahl->shown() )
@@ -485,7 +488,7 @@ std::string open(int interaktiv) {
   #include "icc_vrml.h"
 
   std::string filename = filename_alt;
-  Fl_File_Icon	*icon;	// New file icon
+  //Fl_File_Icon	*icon;	// New file icon
   DBG_PROG
   load_progress->show ();    load_progress->value (0.0);
 

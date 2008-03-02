@@ -201,7 +201,7 @@ Function {} {open C return_type int
   \#endif} {}
   Fl_Window ueber {
     label {Über ICC examin} open
-    xywh {727 226 366 241} type Double resizable
+    xywh {732 250 366 241} type Double resizable
     code0 {o->hide();} non_modal visible
   } {
     Fl_Group {} {open
@@ -219,7 +219,7 @@ Function {} {open C return_type int
   }
   Fl_Window details {
     label {ICC Details} open
-    xywh {864 466 385 520} type Double box NO_BOX color 53
+    xywh {869 490 385 520} type Double box NO_BOX color 53
     code0 {filename_alt = ".";}
     code1 {DBG_PROG
 
@@ -258,14 +258,17 @@ std::string filename = filename_alt; DBG_PROG_V( filename )
   if ((pos = filename.find_last_of(".", filename.size())) != std::string::npos) { DBG_PROG
     filename.replace (pos, 5, ".html"); DBG_NUM_S( ".html gesetzt" )
   } DBG_PROG_V( filename )
-  dateiwahl->value(filename.c_str()); DBG_PROG
   DBG_PROG_V( dateiwahl->pattern() )
   std::string muster = dateiwahl->pattern(); DBG_PROG
-  std::string datei = dateiwahl->value(); DBG_PROG
+  std::string datei;
+  if (dateiwahl->value())
+    datei = dateiwahl->value(); DBG_PROG
   std::string titel = dateiwahl->label(); DBG_PROG
 
   dateiwahl->pattern(_("HTML Dokumente (*.htm*)")); DBG_PROG
+  dateiwahl->cd(".");
   dateiwahl->label(_("Bericht Speichern")); DBG_PROG
+  dateiwahl->value(filename.c_str()); DBG_PROG
 
   dateiwahl->show(); DBG_PROG
   while( dateiwahl->shown() )
@@ -296,7 +299,7 @@ std::string filename = filename_alt; DBG_PROG_V( filename )
   f.write ( bericht.c_str(), bericht.size() );
   f.close();
 
-  DBG_PROG_ENDE} selected
+  DBG_PROG_ENDE}
             xywh {0 0 100 20} deactivate divider
           }
           menuitem {} {
@@ -461,7 +464,7 @@ Function {open(int interaktiv)} {open return_type {std::string}
   code {\#include "icc_vrml.h"
 
   std::string filename = filename_alt;
-  Fl_File_Icon	*icon;	// New file icon
+  //Fl_File_Icon	*icon;	// New file icon
   DBG_PROG
   load_progress->show ();    load_progress->value (0.0);
 
@@ -544,7 +547,8 @@ Function {open(int interaktiv)} {open return_type {std::string}
     //menueintrag_inspekt->value( false );
   }
 
-  return filename;} {}
+  return filename;} {selected
+  }
   code DBG_PROG_ENDE {}
 } 
 
