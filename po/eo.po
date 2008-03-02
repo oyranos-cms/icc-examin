@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2005-10-14 17:47+0200\n"
+"POT-Creation-Date: 2005-10-21 13:12+0200\n"
 "PO-Revision-Date: 2005-08-13 17:35+0200\n"
 "Last-Translator: Kai-Uwe Behrmann\n"
 "Language-Team:  <eo@li.org>\n"
@@ -1101,23 +1101,23 @@ msgstr ""
 msgid "osX locale not obtained"
 msgstr ""
 
-#: icc_helfer_i18n.cpp:191
+#: icc_helfer_i18n.cpp:196
 msgid "try to set LANG"
 msgstr ""
 
-#: icc_helfer_i18n.cpp:228
+#: icc_helfer_i18n.cpp:233
 msgid "fine with: "
 msgstr ""
 
-#: icc_helfer_i18n.cpp:230
+#: icc_helfer_i18n.cpp:235
 msgid "failed with: "
 msgstr ""
 
-#: icc_helfer_i18n.cpp:235
+#: icc_helfer_i18n.cpp:240
 msgid "try locale in "
 msgstr ""
 
-#: icc_helfer_i18n.cpp:242
+#: icc_helfer_i18n.cpp:247
 msgid "set codeset for \"icc_examin\" to "
 msgstr ""
 

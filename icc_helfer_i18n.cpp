@@ -68,9 +68,14 @@ initialiseI18N()
   } else {
       DBG_PROG_S( _("osX locale not obtained") )
   }
+  DBG_PROG_V( locale.c_str() )
 
   // set the locale info
-  locale = setlocale (LC_MESSAGES, locale.c_str());
+  const char* tmp = 0;
+  if(locale.size())
+     setlocale (LC_MESSAGES, locale.c_str());
+  if (tmp)
+    locale = tmp; 
   set_zero_locale = 0;
 # else
 
