@@ -216,7 +216,7 @@ class MftChoice {: {public Fl_Choice}
   }
 } 
 
-class My_Fl_Box {: {public Fl_Box}
+class My_Fl_Box {open : {public Fl_Box}
 } {
   Function {My_Fl_Box(int X,int Y,int W, int H, const char* title = 0) : Fl_Box(X,Y,W,H,title)} {open
   } {}
@@ -229,7 +229,7 @@ class My_Fl_Box {: {public Fl_Box}
   }
 } 
 
-class My_Fl_Window {: {public Fl_Double_Window}
+class My_Fl_Window {open : {public Fl_Double_Window}
 } {
   Function {My_Fl_Window(int W, int H, const char* title = 0) : Fl_Double_Window(W,H,title)} {open
   } {}
@@ -244,6 +244,14 @@ class My_Fl_Window {: {public Fl_Double_Window}
     hide();
 
   return Fl_Double_Window::handle(e);} {}
+  }
+} 
+
+class My_Gl_Ansicht {} {
+  decl {GL_Ansicht *gl_;} {}
+  Function {My_GL_Ansicht(int X,int Y,int W, int H, const char* title = 0)} {open
+  } {
+    code {gl_ = new GL_Ansicht(X,Y,W,H);} {}
   }
 } 
 
@@ -336,11 +344,12 @@ class ICCfltkBetrachter {open
     dateiwahl->preview(true);
   \#endif} {}
     Fl_Window {} {open
-      xywh {1161 253 100 100} type Double hide
+      xywh {1171 295 100 100} type Double resizable
+      code0 {//o->show();} visible
     } {}
     Fl_Window ueber {
       label {About ICC Examin}
-      xywh {870 128 365 289} type Double resizable
+      xywh {875 149 365 289} type Double resizable
       code0 {o->hide();}
       class My_Fl_Window non_modal visible
     } {
@@ -379,8 +388,8 @@ class ICCfltkBetrachter {open
       }
     }
     Fl_Window vcgt {
-      label {Grafic Card Gamma Table}
-      xywh {272 460 370 390} type Double resizable
+      label {Grafic Card Gamma Table} open
+      xywh {139 246 370 390} type Double resizable
       code0 {o->hide();}
       class My_Fl_Window visible
     } {
@@ -416,7 +425,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window details {
       label {ICC Examin} open
-      xywh {865 420 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
+      xywh {844 300 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
     } {
       Fl_Group {} {open
         xywh {0 0 385 520}
@@ -706,80 +715,123 @@ initHilfe();
             }
           }
         }
-        Fl_Box DD_farbraum {
-          xywh {0 25 385 470}
-          code0 {o->hide();}
-          class GL_Ansicht
-        }
-        Fl_Help_View inspekt_html {
-          label Inspect
-          xywh {0 25 385 470} align 16
-          code0 {o->hide();}
-        }
-        Fl_Tile examin {open
+        Fl_Group {} {open
           xywh {0 25 385 470} resizable
         } {
-          Fl_Browser tag_browser {
-            label Tags
-            callback {o->selectItem( o->value() );}
-            tooltip {Choose one profile tag} xywh {0 25 385 135} color 49 align 17 textcolor 32
-            code0 {int lines = tag_browser->size();}
-            code1 {DBG_PROG_V( lines )}
-            class TagBrowser
+          Fl_Box DD_farbraum {
+            xywh {0 25 385 470}
+            code0 {o->hide();}
+            class GL_Ansicht
           }
-          Fl_Group ansichtsgruppe {open
-            xywh {0 160 385 335}
+          Fl_Help_View inspekt_html {
+            label Inspect
+            xywh {0 25 385 470} align 16
+            code0 {o->hide();}
+          }
+          Fl_Tile examin {
+            xywh {0 25 385 470}
           } {
-            Fl_Group tabellengruppe {open
+            Fl_Browser tag_browser {
+              label Tags
+              callback {o->selectItem( o->value() );}
+              tooltip {Choose one profile tag} xywh {0 25 385 135} color 49 align 17 textcolor 32
+              code0 {int lines = tag_browser->size();}
+              code1 {DBG_PROG_V( lines )}
+              class TagBrowser
+            }
+            Fl_Group ansichtsgruppe {open
               xywh {0 160 385 335}
-              code0 {o->show();}
             } {
-              Fl_Pack {} {open
+              Fl_Group tabellengruppe {open
                 xywh {0 160 385 335}
+                code0 {o->show();}
               } {
-                Fl_Choice mft_choice {
-                  label {Chain selection}
-                  callback {o->auswahlCb();} open selected
-                  tooltip {Choose a attribute} xywh {0 160 385 25} box NO_BOX down_box BORDER_BOX color 49
-                  code0 {o->show();}
-                  class MftChoice
-                } {}
-                Fl_Group {} {open
-                  xywh {0 185 385 310} resizable
+                Fl_Pack {} {open
+                  xywh {0 160 385 335}
                 } {
-                  Fl_Box mft_viewer {
-                    xywh {0 185 385 310}
+                  Fl_Choice mft_choice {
+                    label {Chain selection}
+                    callback {o->auswahlCb();} open
+                    tooltip {Choose a attribute} xywh {0 160 385 25} box NO_BOX down_box BORDER_BOX color 49
                     code0 {o->show();}
-                    class TagDrawings
-                  }
-                  Fl_Browser mft_text {
-                    label {Chain -texts}
-                    xywh {0 185 385 310} color 48 align 18 textcolor 32
-                    code0 {o->show();}
-                    class TagTexts
-                  }
-                  Fl_Box mft_gl {
-                    xywh {0 185 385 310} align 18
-                    code0 {o->hide();}
-                    class GL_Ansicht
+                    class MftChoice
+                  } {}
+                  Fl_Group {} {
+                    xywh {0 185 385 310} resizable
+                  } {
+                    Fl_Group {} {
+                      xywh {0 185 385 310}
+                    } {
+                      Fl_Box mft_gl {
+                        xywh {0 185 385 310} align 18
+                        code0 {o->hide();}
+                        class GL_Ansicht
+                      }
+                      Fl_Button {} {
+                        label o
+                        callback {int lx = o->parent()->x(),
+      ly = o->parent()->y(),
+      lw = o->parent()->w(),
+      lh = o->parent()->h();
+  const char* title = o->window()->label();
+  char* t = (char*) malloc(strlen(title)+20);
+  int   item = icc_examin->tag_nr();
+  std::vector<std::string> tag_info =
+       profile.profil()->printTagInfo(item);
+
+  sprintf(t, "%d:%s - %s", item + 1,
+          tag_info[0].c_str(),
+          title);
+
+  Fl_Double_Window *w = 
+  new Fl_Double_Window(
+          lx, ly,
+          lw, lh,
+          t);
+    w->user_data((void*)(0));
+    Fl_Group *g = new Fl_Group(0,0,lw,lh);
+      GL_Ansicht *gl = 
+        new GL_Ansicht (*mft_gl); //(0,0,lw,lh);
+
+      GL_Ansicht::getAgv(gl, mft_gl);
+      gl->init( mft_gl->id() );
+    g->end();
+  w->end();
+  w->resizable(w);
+  w->show();}
+                        tooltip {Make this view a own window.} xywh {0 185 20 20}
+                        code0 {o->show();}
+                      }
+                    }
+                    Fl_Box mft_viewer {
+                      xywh {0 185 385 310}
+                      code0 {o->show();}
+                      class TagDrawings
+                    }
+                    Fl_Browser mft_text {
+                      label {Chain -texts}
+                      xywh {0 185 385 310} color 48 align 18 textcolor 32
+                      code0 {o->show();}
+                      class TagTexts
+                    }
                   }
                 }
               }
-            }
-            Fl_Box tag_viewer {
-              xywh {0 160 385 335}
-              code0 {o->hide();}
-              class TagDrawings
-            }
-            Fl_Browser tag_text {
-              label Texts
-              xywh {0 160 385 335} color 49 align 18 textcolor 32
-              code0 {o->show();}
-              class TagTexts
+              Fl_Box tag_viewer {
+                xywh {0 160 385 335}
+                code0 {o->hide();}
+                class TagDrawings
+              }
+              Fl_Browser tag_text {
+                label Texts
+                xywh {0 160 385 335} color 49 align 18 textcolor 32
+                code0 {o->show();}
+                class TagTexts
+              }
             }
           }
         }
-        Fl_Group {} {
+        Fl_Group {} {selected
           xywh {0 495 385 25}
         } {
           Fl_Box box_stat {

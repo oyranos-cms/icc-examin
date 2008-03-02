@@ -198,6 +198,56 @@ GL_Ansicht::~GL_Ansicht()
   DBG_PROG_ENDE
 }
 
+GL_Ansicht&
+GL_Ansicht::copy (const GL_Ansicht & gl)
+{ DBG_PROG_START
+
+  kanal = gl.kanal;
+  schnitttiefe = gl.schnitttiefe;
+  vorder_schnitt = gl.vorder_schnitt;
+  a_darstellungs_breite = gl.a_darstellungs_breite;
+  b_darstellungs_breite = gl.b_darstellungs_breite;
+  schalen = gl.schalen;
+  punktform = gl.punktform;
+  punktgroesse = gl.punktgroesse;
+  hintergrundfarbe = gl.hintergrundfarbe;
+  spektralband = gl.spektralband;
+  zeige_helfer = gl.zeige_helfer;
+  zeig_punkte_als_messwert_paare = gl.zeig_punkte_als_messwert_paare;
+  zeig_punkte_als_messwerte = gl.zeig_punkte_als_messwerte;
+  id_ = gl.id_;
+  strichmult = gl.strichmult;
+  strich1 = gl.strich1;
+  strich2 = gl.strich2;
+  strich3 = gl.strich3;
+  blend = gl.blend;
+  smooth = gl.smooth;
+  wiederholen = gl.wiederholen;
+  maus_x_ = gl.maus_x_;
+  maus_y_ = gl.maus_y_;
+  darf_bewegen_ = gl.darf_bewegen_;
+  ist_bewegt_ = gl.ist_bewegt_;
+  valid_ = gl.valid_;
+  zeit_diff_ = gl.zeit_diff_;
+
+  for(int i = 0; i <= DL_MAX; ++i)
+    glListen[i] = 0;
+
+# ifdef HAVE_FTGL
+  font = ortho_font = 0;
+# endif
+
+  tabelle_ = gl. tabelle_;
+  nach_farb_namen_ = gl. nach_farb_namen_;
+  von_farb_namen_ = gl. von_farb_namen_;
+  farb_namen_ = gl. farb_namen_;
+  punkte_ = gl. punkte_;
+  farben_ = gl. farben_;
+
+  DBG_PROG_ENDE
+  return *this;
+}
+
 void
 GL_Ansicht::init(int init_id)
 { DBG_PROG_START
@@ -364,6 +414,24 @@ GL_Ansicht::auffrischen_()
   DBG_PROG_START
   menueErneuern_();
   erstelleGLListen_();
+  DBG_PROG_ENDE
+}
+
+void
+GL_Ansicht::nachricht(icc_examin_ns::Modell* modell, int info)
+{
+  DBG_PROG_START
+  if( info )
+    Fl_Gl_Window::redraw();
+  DBG_PROG_ENDE
+}
+
+void
+GL_Ansicht::redraw()
+{
+  DBG_PROG_START
+  if(agv_)
+    agv_->benachrichtigen(1);
   DBG_PROG_ENDE
 }
 

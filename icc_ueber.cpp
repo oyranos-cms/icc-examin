@@ -204,7 +204,7 @@ getHilfeHtml()
 <p>ICC Examin can be launched from the Application folder or Dock on osX and from the Graphics menu on Linux. \
 </p> \
 <a name=\"File_opening\"></a><h3> File opening </h3> \
-<p>From the application windows menubar you can select File-&gt;Open and to show file dialog. Select one or more files for gamut comparision as you like. On top right side of the FLTK file selector resides the bookmark alias Favourites button. If you frequently visit directories you will find it usefull to append these directories to yout bookmark / favourites list. To do this, go to an directory with the file selector and choose from the bookmark button the add entry. The added directory appears in the bookmark list and is available for later use. \
+<p>From the application windows menubar you can select File-&gt;Open and to show file dialog. Select one or more files for gamut comparision as you like. On top right side of the FLTK file selector resides the bookmark alias Favourites button. If you frequently visit directories you will find it usefull to append these directories to your bookmark / favourites list. To do this, go to an directory with the file selector and choose from the bookmark button the add entry. The added directory appears in the bookmark list and is available for later use. \
  \
 </p><p>You have selected one file and pressed ok. ICC Examin starts to parse the file, showing the yellow progressbar. Depending on the complexity of the file it may take some time to finish. \
 </p> \

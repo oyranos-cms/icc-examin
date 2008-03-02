@@ -165,6 +165,10 @@ int My_Fl_Window::handle( int e ) {
   return Fl_Double_Window::handle(e);
 }
 
+void My_Gl_Ansicht::My_GL_Ansicht(int X,int Y,int W, int H, const char* title ) {
+  gl_ = new GL_Ansicht(X,Y,W,H);
+}
+
 void ICCfltkBetrachter::cb_ja_i(Fl_Button*, void*) {
   ueber->hide();
 }
@@ -556,14 +560,50 @@ void ICCfltkBetrachter::cb_tag_browser_i(TagBrowser* o, void*) {
   o->selectItem( o->value() );
 }
 void ICCfltkBetrachter::cb_tag_browser(TagBrowser* o, void* v) {
-  ((ICCfltkBetrachter*)(o->parent()->parent()->parent()->user_data()))->cb_tag_browser_i(o,v);
+  ((ICCfltkBetrachter*)(o->parent()->parent()->parent()->parent()->user_data()))->cb_tag_browser_i(o,v);
 }
 
 void ICCfltkBetrachter::cb_mft_choice_i(MftChoice* o, void*) {
   o->auswahlCb();
 }
 void ICCfltkBetrachter::cb_mft_choice(MftChoice* o, void* v) {
-  ((ICCfltkBetrachter*)(o->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_mft_choice_i(o,v);
+  ((ICCfltkBetrachter*)(o->parent()->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_mft_choice_i(o,v);
+}
+
+void ICCfltkBetrachter::cb_o_i(Fl_Button* o, void*) {
+  int lx = o->parent()->x(),
+      ly = o->parent()->y(),
+      lw = o->parent()->w(),
+      lh = o->parent()->h();
+  const char* title = o->window()->label();
+  char* t = (char*) malloc(strlen(title)+20);
+  int   item = icc_examin->tag_nr();
+  std::vector<std::string> tag_info =
+       profile.profil()->printTagInfo(item);
+
+  sprintf(t, "%d:%s - %s", item + 1,
+          tag_info[0].c_str(),
+          title);
+
+  Fl_Double_Window *w = 
+  new Fl_Double_Window(
+          lx, ly,
+          lw, lh,
+          t);
+    w->user_data((void*)(0));
+    Fl_Group *g = new Fl_Group(0,0,lw,lh);
+      GL_Ansicht *gl = 
+        new GL_Ansicht (*mft_gl); //(0,0,lw,lh);
+
+      GL_Ansicht::getAgv(gl, mft_gl);
+      gl->init( mft_gl->id() );
+    g->end();
+  w->end();
+  w->resizable(w);
+  w->show();
+}
+void ICCfltkBetrachter::cb_o(Fl_Button* o, void* v) {
+  ((ICCfltkBetrachter*)(o->parent()->parent()->parent()->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_o_i(o,v);
 }
 
 Fl_Double_Window* ICCfltkBetrachter::init(int argc, char** argv) {
@@ -646,7 +686,9 @@ Fl_Double_Window* ICCfltkBetrachter::init(int argc, char** argv) {
   { Fl_Double_Window* o = new Fl_Double_Window(100, 100);
     w = o;
     o->user_data((void*)(this));
+    //o->show();
     o->end();
+    o->resizable(o);
   }
   { My_Fl_Window* o = ueber = new My_Fl_Window(365, 289, _("About ICC Examin"));
     w = o;
@@ -760,43 +802,44 @@ ard"));
         }
         o->menu(menu_menueleiste);
       }
-      { GL_Ansicht* o = DD_farbraum = new GL_Ansicht(0, 25, 385, 470);
-        o->box(FL_NO_BOX);
-        o->color(FL_BACKGROUND_COLOR);
-        o->selection_color(FL_BACKGROUND_COLOR);
-        o->labeltype(FL_NORMAL_LABEL);
-        o->labelfont(0);
-        o->labelsize(14);
-        o->labelcolor(FL_FOREGROUND_COLOR);
-        o->align(FL_ALIGN_CENTER);
-        o->when(FL_WHEN_RELEASE);
-        o->hide();
-      }
-      { Fl_Help_View* o = inspekt_html = new Fl_Help_View(0, 25, 385, 470, _("Inspect"));
-        o->align(FL_ALIGN_CENTER|FL_ALIGN_INSIDE);
-        o->hide();
-      }
-      { Fl_Tile* o = examin = new Fl_Tile(0, 25, 385, 470);
-        { TagBrowser* o = tag_browser = new TagBrowser(0, 25, 385, 135, _("Tags"));
-          o->tooltip(_("Choose one profile tag"));
+      { Fl_Group* o = new Fl_Group(0, 25, 385, 470);
+        { GL_Ansicht* o = DD_farbraum = new GL_Ansicht(0, 25, 385, 470);
           o->box(FL_NO_BOX);
           o->color(FL_BACKGROUND_COLOR);
-          o->selection_color(FL_SELECTION_COLOR);
+          o->selection_color(FL_BACKGROUND_COLOR);
           o->labeltype(FL_NORMAL_LABEL);
           o->labelfont(0);
           o->labelsize(14);
           o->labelcolor(FL_FOREGROUND_COLOR);
-          o->textcolor(32);
-          o->callback((Fl_Callback*)cb_tag_browser);
-          o->align(FL_ALIGN_TOP|FL_ALIGN_INSIDE);
-          o->when(FL_WHEN_RELEASE_ALWAYS);
-          int lines = tag_browser->size();
-          DBG_PROG_V( lines )
+          o->align(FL_ALIGN_CENTER);
+          o->when(FL_WHEN_RELEASE);
+          o->hide();
         }
-        { Fl_Group* o = ansichtsgruppe = new Fl_Group(0, 160, 385, 335);
-          { Fl_Group* o = tabellengruppe = new Fl_Group(0, 160, 385, 335);
-            { Fl_Pack* o = new Fl_Pack(0, 160, 385, 335);
-              { MftChoice* o = mft_choice = new MftChoice(0, 160, 385, 25, _("Chain selection"));
+        { Fl_Help_View* o = inspekt_html = new Fl_Help_View(0, 25, 385, 470, _("Inspect"));
+          o->align(FL_ALIGN_CENTER|FL_ALIGN_INSIDE);
+          o->hide();
+        }
+        { Fl_Tile* o = examin = new Fl_Tile(0, 25, 385, 470);
+          { TagBrowser* o = tag_browser = new TagBrowser(0, 25, 385, 135, _("Tags"));
+            o->tooltip(_("Choose one profile tag"));
+            o->box(FL_NO_BOX);
+            o->color(FL_BACKGROUND_COLOR);
+            o->selection_color(FL_SELECTION_COLOR);
+            o->labeltype(FL_NORMAL_LABEL);
+            o->labelfont(0);
+            o->labelsize(14);
+            o->labelcolor(FL_FOREGROUND_COLOR);
+            o->textcolor(32);
+            o->callback((Fl_Callback*)cb_tag_browser);
+            o->align(FL_ALIGN_TOP|FL_ALIGN_INSIDE);
+            o->when(FL_WHEN_RELEASE_ALWAYS);
+            int lines = tag_browser->size();
+            DBG_PROG_V( lines )
+          }
+          { Fl_Group* o = ansichtsgruppe = new Fl_Group(0, 160, 385, 335);
+            { Fl_Group* o = tabellengruppe = new Fl_Group(0, 160, 385, 335);
+              { Fl_Pack* o = new Fl_Pack(0, 160, 385, 335);
+                { MftChoice* o = mft_choice = new MftChoice(0, 160, 385, 25, _("Chain selection"));
                 o->tooltip(_("Choose a attribute"));
                 o->box(FL_NO_BOX);
                 o->down_box(FL_BORDER_BOX);
@@ -810,8 +853,28 @@ ard"));
                 o->align(FL_ALIGN_LEFT);
                 o->when(FL_WHEN_RELEASE);
                 o->show();
-              }
-              { Fl_Group* o = new Fl_Group(0, 185, 385, 310);
+                }
+                { Fl_Group* o = new Fl_Group(0, 185, 385, 310);
+                { Fl_Group* o = new Fl_Group(0, 185, 385, 310);
+                { GL_Ansicht* o = mft_gl = new GL_Ansicht(0, 185, 385, 310);
+                o->box(FL_NO_BOX);
+                o->color(FL_BACKGROUND_COLOR);
+                o->selection_color(FL_BACKGROUND_COLOR);
+                o->labeltype(FL_NORMAL_LABEL);
+                o->labelfont(0);
+                o->labelsize(14);
+                o->labelcolor(FL_FOREGROUND_COLOR);
+                o->align(FL_ALIGN_BOTTOM|FL_ALIGN_INSIDE);
+                o->when(FL_WHEN_RELEASE);
+                o->hide();
+                }
+                { Fl_Button* o = new Fl_Button(0, 185, 20, 20, _("o"));
+                o->tooltip(_("Make this view a own window."));
+                o->callback((Fl_Callback*)cb_o);
+                o->show();
+                }
+                o->end();
+                }
                 { TagDrawings* o = mft_viewer = new TagDrawings(0, 185, 385, 310);
                 o->box(FL_NO_BOX);
                 o->color(FL_BACKGROUND_COLOR);
@@ -837,50 +900,40 @@ ard"));
                 o->when(FL_WHEN_RELEASE_ALWAYS);
                 o->show();
                 }
-                { GL_Ansicht* o = mft_gl = new GL_Ansicht(0, 185, 385, 310);
-                o->box(FL_NO_BOX);
-                o->color(FL_BACKGROUND_COLOR);
-                o->selection_color(FL_BACKGROUND_COLOR);
-                o->labeltype(FL_NORMAL_LABEL);
-                o->labelfont(0);
-                o->labelsize(14);
-                o->labelcolor(FL_FOREGROUND_COLOR);
-                o->align(FL_ALIGN_BOTTOM|FL_ALIGN_INSIDE);
-                o->when(FL_WHEN_RELEASE);
-                o->hide();
-                }
                 o->end();
                 Fl_Group::current()->resizable(o);
+                }
+                o->end();
               }
+              o->show();
               o->end();
             }
-            o->show();
+            { TagDrawings* o = tag_viewer = new TagDrawings(0, 160, 385, 335);
+              o->box(FL_NO_BOX);
+              o->color(FL_BACKGROUND_COLOR);
+              o->selection_color(FL_BACKGROUND_COLOR);
+              o->labeltype(FL_NORMAL_LABEL);
+              o->labelfont(0);
+              o->labelsize(14);
+              o->labelcolor(FL_FOREGROUND_COLOR);
+              o->align(FL_ALIGN_CENTER);
+              o->when(FL_WHEN_RELEASE);
+              o->hide();
+            }
+            { TagTexts* o = tag_text = new TagTexts(0, 160, 385, 335, _("Texts"));
+              o->box(FL_NO_BOX);
+              o->color(FL_BACKGROUND_COLOR);
+              o->selection_color(FL_SELECTION_COLOR);
+              o->labeltype(FL_NORMAL_LABEL);
+              o->labelfont(0);
+              o->labelsize(14);
+              o->labelcolor(FL_FOREGROUND_COLOR);
+              o->textcolor(32);
+              o->align(FL_ALIGN_BOTTOM|FL_ALIGN_INSIDE);
+              o->when(FL_WHEN_RELEASE_ALWAYS);
+              o->show();
+            }
             o->end();
-          }
-          { TagDrawings* o = tag_viewer = new TagDrawings(0, 160, 385, 335);
-            o->box(FL_NO_BOX);
-            o->color(FL_BACKGROUND_COLOR);
-            o->selection_color(FL_BACKGROUND_COLOR);
-            o->labeltype(FL_NORMAL_LABEL);
-            o->labelfont(0);
-            o->labelsize(14);
-            o->labelcolor(FL_FOREGROUND_COLOR);
-            o->align(FL_ALIGN_CENTER);
-            o->when(FL_WHEN_RELEASE);
-            o->hide();
-          }
-          { TagTexts* o = tag_text = new TagTexts(0, 160, 385, 335, _("Texts"));
-            o->box(FL_NO_BOX);
-            o->color(FL_BACKGROUND_COLOR);
-            o->selection_color(FL_SELECTION_COLOR);
-            o->labeltype(FL_NORMAL_LABEL);
-            o->labelfont(0);
-            o->labelsize(14);
-            o->labelcolor(FL_FOREGROUND_COLOR);
-            o->textcolor(32);
-            o->align(FL_ALIGN_BOTTOM|FL_ALIGN_INSIDE);
-            o->when(FL_WHEN_RELEASE_ALWAYS);
-            o->show();
           }
           o->end();
         }

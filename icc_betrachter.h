@@ -66,6 +66,12 @@ public:
   My_Fl_Window(int W, int H, const char* title = 0) ;
   int handle( int e );
 };
+
+class My_Gl_Ansicht {
+  GL_Ansicht *gl_;
+public:
+  void My_GL_Ansicht(int X,int Y,int W, int H, const char* title = 0);
+};
 #include <FL/Fl_Double_Window.H>
 #include <FL/Fl_Group.H>
 #include <FL/Fl_Tabs.H>
@@ -237,9 +243,13 @@ private:
   void cb_mft_choice_i(MftChoice*, void*);
   static void cb_mft_choice(MftChoice*, void*);
 public:
+  GL_Ansicht *mft_gl;
+private:
+  void cb_o_i(Fl_Button*, void*);
+  static void cb_o(Fl_Button*, void*);
+public:
   TagDrawings *mft_viewer;
   TagTexts *mft_text;
-  GL_Ansicht *mft_gl;
   TagDrawings *tag_viewer;
   TagTexts *tag_text;
   Fl_Box *box_stat;

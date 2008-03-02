@@ -2,9 +2,9 @@
 	* fix: dont influence the locale settings; (in cgats, vrml ...)
 	* neu: give config the usual header macros
 	* fix: mft choice stretching behaviour
-	* neu: make agviewer a observable pointer in Gl_Ansicht
-	* neu: register Gl_Ansicht::agv_ to agviever's icc_examin_ns::Modell
-	* neu: add Gl_Ansicht::getAgv()
+	* neu: make agviewer a observable pointer in GL_Ansicht
+	* neu: register GL_Ansicht::agv_ to agviever's icc_examin_ns::Modell
+	* neu: add GL_Ansicht::getAgv()
 	* und: delete Modell if no observers are attached
 
 2006-11-07

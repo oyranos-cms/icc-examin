@@ -274,6 +274,11 @@ public:
   public: 
   int redisplayWindow() { return RedisplayWindow; }
   void setIdle(bool set);
+
+  /* gebe allen Beobachtern eine Zeichenaufforderung */
+  void benachrichtigen (int infos)
+                        { icc_examin_ns::Modell::benachrichtigen( infos ); }
+
   private:
    /* If AllowIdle is 1 it means AGV will install its own idle which
     * will update the viewpoint as needed and send glutPostRedisplay() to the
@@ -303,12 +308,7 @@ public:
   void SetMove(float newmove);
   void normalize(GLfloat v[3]);
   void ncrossprod(float v1[3], float v2[3], float cp[3]);
-
 };
-
-#include <vector>
-
-extern std::vector<Agviewer> agviewers;
 
 namespace agv {
 

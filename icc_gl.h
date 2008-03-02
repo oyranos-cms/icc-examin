@@ -33,15 +33,22 @@
 #include <vector>
 
 #include "icc_utils.h"
-#include "agviewer.h"
+//#include "agviewer.h"
 #include "icc_vrml_parser.h"
 #include "icc_thread_daten.h"
+#if APPLE
+#  include <OpenGL/glu.h>
+#else
+#  include <GL/glu.h> // added for FLTK
+#endif
+#include "icc_modell_beobachter.h"
 //#include "Fl_Slot.H"
 
 #include <FL/Fl_Gl_Window.H>
 #include <FL/Fl_Group.H>
 
 class Fl_Menu_Button;
+class Agviewer;
 
 class GL_Ansicht : public Fl_Gl_Window, /*, public Fl_Slot*/
                    public icc_examin_ns::ThreadDaten,
@@ -110,6 +117,10 @@ class GL_Ansicht : public Fl_Gl_Window, /*, public Fl_Slot*/
 public:
   GL_Ansicht(int X,int Y,int W,int H);
   ~GL_Ansicht();
+  GL_Ansicht (const GL_Ansicht & gl)
+    : Fl_Gl_Window(0,0,gl.w(),gl.h()) { copy(gl); }
+  GL_Ansicht& copy(const GL_Ansicht& gl);
+  GL_Ansicht& operator = (const GL_Ansicht& gl) { return copy(gl); }
   void init(int id);
 
   // welches Fenster wird verwaltet?
@@ -120,6 +131,9 @@ public:
   // fltk virtual
   void draw();
   int  handle(int event);
+  void redraw();
+  // redraw Aufforderung von agv_
+  void nachricht( icc_examin_ns::Modell* modell, int info );
 
   // Daten Laden
   void hineinPunkte (std::vector<double> &vect,
