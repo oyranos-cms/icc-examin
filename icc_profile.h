@@ -121,11 +121,12 @@ class ICCtag {
                                            }
     int                 getTagByName();
     int                 getSize()          {return _size; }
-    std::string         getDescription();
+    std::string         getMore();
 
     std::vector<double> getCIExy();
     std::vector<double> getCurve();
     std::string         getText();
+    std::vector<std::string> getDescription();
     std::string         getVrml();
     int                 hasCurve();
     int                 hasCIExy();
@@ -172,6 +173,7 @@ class ICCprofile {
     std::vector<std::string> printTags  (); // Liste der einzelnen Tags (5)
     std::vector<std::string> printTagInfo (int item); // Name,Typ
     std::string         getTagText      (int item);    // Inhalt
+    std::vector<std::string> getTagDescription  (int item);
     std::vector<double> getTagCIExy  (int item);
     std::vector<double> getTagCurve  (int item);
     char*               getProfileInfo  ();

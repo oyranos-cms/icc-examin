@@ -82,7 +82,7 @@ Function {} {C return_type int
   fullscreen = false;} {}
   Fl_Window details {
     label {ICC Details} open
-    xywh {592 338 385 520} type Double box NO_BOX color 53
+    xywh {682 357 385 520} type Double box NO_BOX color 53
     code0 {browser = new openvrml::browser(cout, cerr);}
     code1 {DBG
     if (argc>1) {
@@ -404,8 +404,11 @@ class TagBrowser {open : {public Fl_Hold_Browser}
     std::vector<std::string> TagInfo = profile.printTagInfo(item);
     cout << TagInfo.size() << " " << TagInfo[0] << TagInfo[1] << " "; DBG
 
-    if        ( TagInfo[1] == "text" ) {
-      tag_texts->hinein ( profile.getTagText (item));
+    if        ( TagInfo[1] == "text"
+             || TagInfo[1] == "cprt?") {
+      tag_texts->hinein ( profile.getTagText (item) ); DBG
+    } else if ( TagInfo[1] == "desc" ) {
+      tag_texts->hinein( (profile.getTagDescription (item))[0] ); DBG
     } else if ( TagInfo[0] == "rXYZ" || TagInfo[0] == "gXYZ" || TagInfo[0] == "bXYZ" ) {
       std::vector<double> alle_punkte, punkte;
       std::vector<std::string> alle_texte;
@@ -426,12 +429,10 @@ class TagBrowser {open : {public Fl_Hold_Browser}
       std::vector<double> kurve;
       std::vector<std::string> texte;
       std::string TagName;
-      for (unsigned int i_name = 0; i_name < profile.tagCount(); i_name++) {
+      for (int i_name = 0; i_name < profile.tagCount(); i_name++) {
         if ((profile.printTagInfo(i_name))[1] == "curv") {
           kurve = profile.getTagCurve (i_name);
-          int groesse = kurve.size();
-          //for (unsigned int i = 0; i < groesse; i++)
-            kurven.push_back (kurve/*[i]*/);
+          kurven.push_back (kurve/*[i]*/);
           TagInfo = profile.printTagInfo (i_name);
           for (unsigned int i = 0; i < 2; i++)
             texte.push_back (TagInfo[i]);
@@ -442,7 +443,8 @@ class TagBrowser {open : {public Fl_Hold_Browser}
       tag_viewer->hinein_punkt( profile.getTagCIExy(item), TagInfo );
     }
     selectedTagName = TagInfo[0];
-  }DBG} {}
+  }DBG} {selected
+    }
   }
 } 
 
@@ -519,7 +521,7 @@ class TagDrawings {open : {public Fl_Widget}
   tag_viewer->show(); DBG
   tag_texts->hide(); DBG} {}
   }
-  Function {hinein_kurve(std::vector<std::vector<double> >vect, std::vector<std::string> txt)} {open selected
+  Function {hinein_kurven(std::vector<std::vector<double> >vect, std::vector<std::string> txt)} {open
   } {
     code {//Kurve aus tag_browser anzeigen
   kurven = vect;

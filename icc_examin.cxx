@@ -382,8 +382,11 @@ void TagBrowser::select_item(int item) {
     std::vector<std::string> TagInfo = profile.printTagInfo(item);
     cout << TagInfo.size() << " " << TagInfo[0] << TagInfo[1] << " "; DBG
 
-    if        ( TagInfo[1] == "text" ) {
-      tag_texts->hinein ( profile.getTagText (item));
+    if        ( TagInfo[1] == "text"
+             || TagInfo[1] == "cprt?") {
+      tag_texts->hinein ( profile.getTagText (item) ); DBG
+    } else if ( TagInfo[1] == "desc" ) {
+      tag_texts->hinein( (profile.getTagDescription (item))[0] ); DBG
     } else if ( TagInfo[0] == "rXYZ" || TagInfo[0] == "gXYZ" || TagInfo[0] == "bXYZ" ) {
       std::vector<double> alle_punkte, punkte;
       std::vector<std::string> alle_texte;

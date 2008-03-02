@@ -582,16 +582,26 @@ ICCtag::getText                     (void)
 { DBG
   std::string text;
 
-  // zur Sicherheit nochmal Kopieren
-  //char*       ptr = (char*) calloc (_tag.size, sizeof (char));
-  //memcpy (ptr, &_data[8], _tag.size - 8);
-
-  text = &_data[8];//ptr;
+  text.append (&_data[8], _size);
   #ifdef DEBUG_ICCTAG
   cout << &_data[8] << "|" << "|" << text << " "; DBG
   #endif
-  //free (ptr);
   return text;
+}
+
+std::vector<std::string>
+ICCtag::getDescription              (void)
+{ DBG
+  std::vector<std::string> texte;
+  std::string text =  "";
+  icUInt32Number count = *(icUInt32Number*)(_data+8);
+
+  text.append ((const char*)(_data+12), icValue(count));
+  texte.push_back (text);
+  #ifdef DEBUG_ICCTAG
+  cout << &_data[12] << "|" << "|" << text << " "; DBG
+  #endif
+  return texte;
 }
 
 std::vector<double>
@@ -620,7 +630,7 @@ ICCtag::getCurve                                  (void)
 }
 
 std::string
-ICCtag::getDescription              ( void )
+ICCtag::getMore                                   ( void )
 {
   std::string text = "Beschreibung";
 
@@ -783,6 +793,7 @@ ICCtag::getSigTypeName               ( icTagTypeSignature  sig )
     case icSigNamedColor2Type: name = cp_char (_("ncl2")); break;
     case icSigCrdInfoType: name = cp_char (_("crdi")); break;
     case 1986226036: name = cp_char (_("vcgt")); break;
+    case icSigCopyrightTag: name = cp_char (_("cprt?")); break; //??? (Imacon)
     default: name = cp_char (_("???")); break;
   }
   string = name;
@@ -1007,7 +1018,7 @@ ICCprofile::printTags            ()
     s.str((*it).getTagName());     StringList.push_back(s.str()); s.str("");
     s.str((*it).getTypName());     StringList.push_back(s.str()); s.str("");
     s << (*it).getSize();          StringList.push_back(s.str()); s.str("");
-    s.str((*it).getDescription()); StringList.push_back(s.str()); s.str("");
+    s.str((*it).getMore()); StringList.push_back(s.str()); s.str("");
   #ifdef DEBUG_ICCPROFILE
     cout << (*it).getTagName() << " "; DBG
   #endif
@@ -1021,14 +1032,26 @@ ICCprofile::getTagText                                  (int item)
 {
   // Prüfen
   std::string leer;
-  if (tags[item].getTypName() != "text")
+  if (tags[item].getTypName() != "text"
+   && tags[item].getTypName() != "cprt?")
     return leer;
 
   return tags.at(item).getText();
 }
 
+std::vector<std::string>
+ICCprofile::getTagDescription                           (int item)
+{
+  // Prüfen
+  std::vector<std::string> leer;
+  if (tags[item].getTypName() != "desc")
+    return leer;
+
+  return tags.at(item).getDescription();
+}
+
 std::vector<double>
-ICCprofile::getTagCIExy                                  (int item)
+ICCprofile::getTagCIExy                                 (int item)
 {
   // Prüfen
   std::vector<double> leer;
@@ -1039,7 +1062,7 @@ ICCprofile::getTagCIExy                                  (int item)
 }
 
 std::vector<double>
-ICCprofile::getTagCurve                                  (int item)
+ICCprofile::getTagCurve                                 (int item)
 {
   // Prüfen
   std::vector<double> leer;
@@ -1050,7 +1073,7 @@ ICCprofile::getTagCurve                                  (int item)
 }
 
 char*
-ICCprofile::getProfileInfo                   ( )
+ICCprofile::getProfileInfo                              ( )
 {
   static char text[128];
   static char profile_info[2048];
