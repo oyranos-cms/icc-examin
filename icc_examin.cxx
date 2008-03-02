@@ -20,7 +20,7 @@ static void dateiwahl_cb(const char *dateiname, int typ, void *arg) {
   DBG_PROG_START
 
   // kein Profile Dialog
-  if (strstr("*.ic*" , dateiwahl->filter()) == 0) { DBG_PROG
+  if (strstr( dateiwahl->pattern(), "*.ic*") == 0) { DBG_PROG
     DBG_PROG_ENDE
     return;
   }
@@ -53,12 +53,19 @@ static void dateiwahl_cb(Fl_File_Chooser *f,void *data) {
     filename = fl->value();
   
     // kein Profile Dialog
-    if (strstr("*.ic*" , filename) == 0) { DBG_PROG
+    if (strstr(fl->filter(),
+    #ifdef  HAVE_FLU
+                        "*.ic*"
+    #else
+                        "*.{I,i}{C,c}"
+    #endif
+                                    ) == 0) {
+      DBG_PROG_V( filename )
       DBG_PROG_ENDE
       return;
     }
 
-    if (fl->count() && fl->value(0) && dateiwahl->preview()) {
+    if (fl->value(0) && dateiwahl->preview()) {
       filename_alt = fl->value(0);
 
       DBG_NUM_V( filename )
@@ -87,20 +94,24 @@ static void cb_ffnen(Fl_Menu_*, void*) {
 
 static void cb_menueintrag_html_speichern(Fl_Menu_*, void*) {
   DBG_PROG_START
-std::string filename = filename_alt; DBG_PROG_V( filename )
+  std::string filename = filename_alt;  DBG_PROG_V( filename )
+
   std::string::size_type pos=0;
   if ((pos = filename.find_last_of(".", filename.size())) != std::string::npos) { DBG_PROG
     filename.replace (pos, 5, ".html"); DBG_NUM_S( ".html gesetzt" )
   } DBG_PROG_V( filename )
-  DBG_PROG_V( dateiwahl->pattern() )
-  std::string muster = dateiwahl->pattern(); DBG_PROG
+  DBG_PROG_V( dateiwahl->filter() )
+
+  std::string muster = dateiwahl->filter(); DBG_PROG
   std::string datei;
   if (dateiwahl->value())
     datei = dateiwahl->value(); DBG_PROG
   std::string titel = dateiwahl->label(); DBG_PROG
 
-  dateiwahl->pattern(_("HTML Dokumente (*.htm*)")); DBG_PROG
+  dateiwahl->filter(_("HTML Dokumente (*.htm*)")); DBG_PROG
+  #ifdef HAVE_FLU
   dateiwahl->cd(".");
+  #endif
   dateiwahl->label(_("Bericht Speichern")); DBG_PROG
   dateiwahl->value(filename.c_str()); DBG_PROG
 
@@ -108,17 +119,17 @@ std::string filename = filename_alt; DBG_PROG_V( filename )
   while( dateiwahl->shown() )
     Fl::wait( 0.01 );
 
-  DBG_PROG_V( dateiwahl->pattern() )
+  DBG_PROG_V( dateiwahl->filter() )
   if (dateiwahl->value())
     filename = dateiwahl->value();
   else
     filename = "";
   DBG_PROG
 
-  dateiwahl->pattern(muster.c_str()); DBG_PROG
+  dateiwahl->filter(muster.c_str()); DBG_PROG
   dateiwahl->value(datei.c_str()); DBG_PROG
   dateiwahl->label(titel.c_str()); DBG_PROG
-  DBG_PROG_V( dateiwahl->pattern() )
+  DBG_PROG_V( dateiwahl->filter() )
 
   DBG_PROG_V( filename )
 
@@ -297,7 +308,7 @@ int main(int argc, char **argv) {
     dateiwahl->add_context_handler(Flu_File_Chooser::ENTRY_FILE, "icc", _("Profil öffnen"), dateiwahl_cb, NULL);
     dateiwahl->add_context_handler(Flu_File_Chooser::ENTRY_FILE, "icm", _("Profil öffnen"), dateiwahl_cb, NULL);
   #else
-    dateiwahl = new Fl_File_Chooser(filename_alt.c_str(), _("ICC Farbprofile (*.[I,i][C,c][M,m,C,c])"), Fl_File_Chooser::SINGLE, _("Welches ICC Profil?"));
+    dateiwahl = new Fl_File_Chooser(filename_alt.c_str(), _("ICC Farbprofile (*.{I,i}{C,c}{M,m,C,c})"), Fl_File_Chooser::SINGLE, _("Welches ICC Profil?"));
     dateiwahl->callback(dateiwahl_cb);
     dateiwahl->preview_label = _("Vorschau");
   #endif
@@ -494,7 +505,7 @@ std::string open(int interaktiv) {
 
   if (interaktiv) {
     dateiwahl->value(filename_alt.c_str());
-    dateiwahl->show(); //filename=fl_file_chooser("Wähle ICC Profil?", "ICC Farbprofile (*.[I,i][C,c][M,m,C,c])", filename_alt.c_str());
+    dateiwahl->show(); //filename=fl_file_chooser("Wähle ICC Profil?", "ICC Farbprofile (*.{I,i}{C,c}{M,m,C,c})", filename_alt.c_str());
 
     
 
