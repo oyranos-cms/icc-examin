@@ -3,11 +3,12 @@
 // Date:      Mai 2004
 
 #include "icc_examin.h"
-#include "icc_vrml.h"
+//#include "icc_vrml.h"
 #include <stdio.h>
 #include <iostream>
 #include <string.h>
 #include <FL/Fl.H>
+#include <FL/fl_draw.H>
 
 #include <lcms.h>
 #include "cccie64.h"

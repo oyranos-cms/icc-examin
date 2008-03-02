@@ -10,10 +10,75 @@
 #define _(text) text
 #define g_message printf
 
-// interne Funktionen
+int
+icValue (icUInt32Number val)
+{
+  unsigned char        *temp = (unsigned char*) &val;
 
-static char* cp_char (char* text);
+  //temp = (unsigned char*) &val;
 
+#if BYTE_ORDER == LITTLE_ENDIAN
+  static unsigned char  uint32[4];
+
+  uint32[0] = temp[3];
+  uint32[1] = temp[2];
+  uint32[2] = temp[1];
+  uint32[3] = temp[0];
+
+  DBG
+  cout << (int)*temp << " Größe nach Wandlung " << (int)temp[0] << " "
+       << (int)temp[1] << " " << (int)temp[2] << " " <<(int)temp[3]
+       << endl;
+
+  return (int) &uint32[0];
+#else
+  cout << (int)val << " Größe ohne Wandlung " << (int)temp[0] << " "
+       << (int)temp[1] << " " << (int)temp[2] << " " <<(int)temp[3]
+       << endl;
+  return (int)val;
+#endif
+}
+
+long
+icValue (icUInt64Number val)
+{
+  unsigned char        *temp  = (unsigned char*) &val;
+
+#if BYTE_ORDER == LITTLE_ENDIAN
+  static unsigned char  uint64[8];
+  int little = 0,
+      big    = 8;
+
+  for (; little < 8 ; i++ ) {
+    uint64[little++] = temp[big--];
+  }
+
+  DBG
+  cout << (int)*temp << " Größe nach Wandlung " << (int)temp[0] << " "
+       << (int)temp[1] << " " << (int)temp[2] << " " <<(int)temp[3]
+       << endl;
+
+  return (int) &uint64[0];
+#else
+  cout << (int)val << " Größe ohne Wandlung " << (int)temp[0] << " "
+       << (int)temp[1] << " " << (int)temp[2] << " " <<(int)temp[3]
+       << endl;
+  return (long)val;
+#endif
+}
+
+double
+icValue (icS15Fixed16Number val)
+{
+  signed int    temp  = (signed int) val;
+  static double d;
+
+  d = (double)temp / 65536;
+
+  DBG
+
+  return d;
+}
 
 /**
   *  @brief ICCheader Funktionen
@@ -30,24 +95,63 @@ ICCheader::load (void *data)
   DBG
   memcpy ((void*)&header, data,/* (void*)&header,*/ sizeof (icHeader));
   cout << sizeof (icHeader) << " genommen" << endl;
-  if (header.size > 0)
+  if (header.size > 0) {
     valid = true;
-  else
+    cout << size() << endl;
+  } else {
     valid = false;
+  }
   DBG
 }
+
+/*void
+ICCheader::size (int i)
+{
+  return size;
+}*/
 
 std::string
 ICCheader::print_long()
 {
+  cout << sizeof (icSignature) << " " << sizeof (icUInt32Number)<< endl;
   std::stringstream s; DBG
   s << "kein Dateikopf gefunden"; DBG
+  //cout << "char icSignature ist " << sizeof (icSignature) << endl;
   if (valid) { DBG
     s.str("");
     s << "ICC Dateikopf:\n"<< endl \
-      <<  "    Größe:     " << header.size() << endl \
-      <<  "    CMM:       " << header.cmmId /*getCmmName()*/ << endl \
-      <<  "    Version:   " << header.version << endl;
+      <<  "    " << _("Größe") << ":       " <<
+                       size() << " " << _("bytes") << endl \
+      <<  "    " << _("CMM") << ":         " << CmmName() << endl \
+      <<  "    " << _("Version") << ":     " << version() << endl \
+      <<  "    " << _("Klasse") << ":      " <<
+                       getDeviceClassName(deviceClass()) << endl \
+      <<  "    " << _("Farbraum") << ":    " <<
+                       getColorSpaceName(colorSpace()) << endl \
+      <<  "    " << _("PCS") << ":         " <<
+                       getColorSpaceName(pcs()) << endl \
+      <<  "    " << _("Datum") << ":       " <<
+                       header.date.day     << "/" <<
+                       header.date.month   << "/" <<
+                       header.date.year    << " " <<
+                       header.date.hours   << ":" <<
+                       header.date.minutes << " " << _("Uhr")      << " " <<
+                       header.date.seconds << " " << _("Sekunden") << endl \
+      <<  "    " << _("Magic") << ":       " << icValue(header.magic) << endl \
+      <<  "    " << _("Plattform") << ":   " << platform() << endl \
+      <<  "    " << _("Flags") << ":       " << icValue(header.flags) << endl \
+      <<  "    " << _("Hersteller") << ":  " <<
+                       icValue(header.manufacturer) << endl \
+      <<  "    " << _("Model") << ":       " << icValue(header.model) << endl \
+      <<  "    " << _("Attribute") << ":   " <<
+                       icValue(header.attributes) << endl \
+      <<  "    " << _("Übertragung") << ": " <<
+                       icValue(header.renderingIntent) << endl \
+      <<  "    " << _("Beleuchtung") << ": X=" <<
+                       icValue(header.illuminant.X) << ", Y=" << \
+                       icValue(header.illuminant.Y) << ", Z=" << \
+                       icValue(header.illuminant.Z) << endl \
+      <<  "    " << _("von") << ":         " << icValue(header.flags) << endl ;
   } DBG
   return s.str();
 }
@@ -55,17 +159,17 @@ ICCheader::print_long()
 std::string
 ICCheader::print()
 {
-  string s = "Dateikopf ungültig";
+  string s = _("Dateikopf ungültig");
   if (valid)
-    s = "  1 Kopf        icHeader      128 Dateikopf";
+    s = _("  1 Kopf        icHeader      128 Dateikopf");
   return s;
 }
 
 
-char*
+const char*
 ICCheader::getColorSpaceName (icColorSpaceSignature color)
 {
-  char* name;
+  const char* name;
 
   switch (color) {
     case icSigXYZData: name = cp_char (_("XYZ")); break;
@@ -98,20 +202,37 @@ ICCheader::getColorSpaceName (icColorSpaceSignature color)
   return name;
 }
 
-char*
+const char*
 ICCheader::getDeviceClassName (icProfileClassSignature deviceClass)
 {
-  char* name;
+  const char* name;
 
   switch (deviceClass)
   {
-    case icSigInputClass: name = cp_char (_("Input")); break;
-    case icSigDisplayClass: name = cp_char (_("Display")); break;
-    case icSigOutputClass: name = cp_char (_("Output")); break;
-    case icSigLinkClass: name = cp_char (_("Link")); break;
-    case icSigAbstractClass: name = cp_char (_("Abstract")); break;
-    case icSigColorSpaceClass: name = cp_char (_("ColorSpace")); break;
-    case icSigNamedColorClass: name = cp_char (_("NamedColor")); break;
+    case icSigInputClass: name = cp_char (_("Eingabe")); break;
+    case icSigDisplayClass: name = cp_char (_("Monitor")); break;
+    case icSigOutputClass: name = cp_char (_("Ausgabe")); break;
+    case icSigLinkClass: name = cp_char (_("Verknüpfung")); break;
+    case icSigAbstractClass: name = cp_char (_("Abstrakter Farbraum")); break;
+    case icSigColorSpaceClass: name = cp_char (_("Farbraum")); break;
+    case icSigNamedColorClass: name = cp_char (_("Schmuckfarben")); break;
+    default: name = cp_char (_("")); break;
+  }
+  return name;
+}
+
+const char*
+ICCheader::getPlatformName (icPlatformSignature platform)
+{
+  const char* name;
+
+  switch (platform)
+  {
+    case icSigMacintosh: name = cp_char (_("Macintosh")); break;
+    case icSigMicrosoft: name = cp_char (_("Microsoft")); break;
+    case icSigSolaris: name = cp_char (_("Solaris")); break;
+    case icSigSGI: name = cp_char (_("SGI")); break;
+    case icSigTaligent: name = cp_char (_("Taligent")); break;
     default: name = cp_char (_("")); break;
   }
   return name;
@@ -165,10 +286,46 @@ ICCheader::getLcmsGetColorSpace ( cmsHPROFILE   hProfile)
   *  @brief ICCtag Funktionen
   */
 
-char*
-ICCtag::getSigTagName               (   icTagSignature  sig )
+ICCtag::ICCtag ()
 {
-  char* name;
+  _tag.sig = icMaxEnumTag;
+  _data = 0; DBG
+}
+
+ICCtag::ICCtag                      (icTag* tag, char* data)
+{
+  ICCtag::load (tag, data); DBG
+}
+
+ICCtag::~ICCtag ()
+{
+  _tag.sig = icMaxEnumTag;
+  _tag.offset = 0;
+  _tag.size = 0;
+  if (!_data) free (_data);
+  DBG
+}
+
+void
+ICCtag::load                        ( icTag *tag, char* data )
+{
+  _tag.sig = tag->sig;
+  _tag.offset = tag->offset;
+  _tag.size = tag->size;
+
+  cout << _tag.sig << tag->sig << endl;
+
+  if (!_data) free (_data);
+  _data = (char*) calloc ( _tag.size , sizeof (char) );
+  memcpy ( _data , data , _tag.size );
+  DBG
+}
+
+std::string
+ICCtag::getSigTagName               ( icTagSignature  sig )
+{
+  const char* name;
+  std::string string;
 
   switch (sig) {
     case icSigAToB0Tag: name = cp_char (_("A2B0")); break;
@@ -214,9 +371,10 @@ ICCtag::getSigTagName               (   icTagSignature  sig )
     case icSigUcrBgTag: name = cp_char (_("bfd")); break;
     case icSigViewingCondDescTag: name = cp_char (_("vued")); break;
     case icSigViewingConditionsTag: name = cp_char (_("view")); break;
-    default: name = cp_char (_("")); break;
+    default: name = cp_char (_("???")); break;
   }
-  return name;
+  string = name;
+  return string;
 }
 
 /*
@@ -350,7 +508,7 @@ ICCprofile::load (char* filename)
         _filename = "";
     }
 }
-//#include <lcms.h>
+
 void
 ICCprofile::fload ()
 { // ICC Profil laden
@@ -366,9 +524,7 @@ ICCprofile::fload ()
   if (!f)
     throw ausn_file_io ("keine lesbare Datei gefunden");
 
-  if (_data!=NULL) {
-    free (_data);
-  } DBG
+  if (_data!=NULL) { free (_data); } DBG
   _size = (unsigned int)f.tellg();         f.seekg(0);
   _data = (icProfile*) calloc ( _size, sizeof (char)); DBG
   
@@ -376,35 +532,56 @@ ICCprofile::fload ()
   cout << _size << "|" << i << "|" << f.tellg() << endl;
   f.close(); DBG
 
-  //cmsHPROFILE p = cmsOpenProfileFromMem ((char*)_data, (int)_size);
-  //printf (cmsTakeProductDesc(p));
   DBG
-  header.load ((void*)&_data); DBG
+  //Kopf
+  header.load ((void*)_data); DBG
+
+  //Profilabschnitte
+  tags.clear(); DBG
+  cout << "TagCount: " << getTagCount() << " / " << tags.size() << endl;
+  icTag *tagList = (icTag*)&((char*)_data)[132];
+  //(icTag*) calloc ( getTagCount() , sizeof (icTag));
+  //memcpy (tagList , &((char*)_data)[132], sizeof (icTag) * getTagCount());
+  for (int i = 0 ; i < getTagCount() ; i++) {
+    ICCtag tag;//( tagList[i] , &((char*)_data)[ tagList[i].offset ] );
+    tag.load( &tagList[i] , &((char*)_data)[ tagList[i].offset ] );
+    cout << " sig: " << tag.getTagName() << endl; 
+    tags.push_back(tag);
+  }
+  cout << "tags: " << tags.size() << endl;
+  DBG
 }
 
-void
-ICCprofile::printProfileTags            ()
+std::string
+ICCprofile::printLongTag         (int item)
 {
-#ifdef DEBUG
-  #if LCMS_VERSION >= 113
-  LPLCMSICCPROFILE p = (LPLCMSICCPROFILE) hProfile;
-  int              i;
+  std::string text = "Hier kommt die lange Beschreibung";
 
-  printf ("TagCount = %d \n",p->TagCount);
-  for (i=0; i < p->TagCount ; i++) {
-    char *name = getSigTagName(p->TagNames[i]);
-    long   len = strlen (name);
+  DBG
+  return text;
+}
 
-    if (len <= 1) {
-      name = calloc (sizeof (char), 256);
-      sprintf (name, "%x", p->TagNames[i]);
-    }
-    printf ("%d: TagNames %s TagSizes %d TagOffsets %d TagPtrs %d\n",
-             i, name, p->TagSizes[i], p->TagOffsets[i], (int)p->TagPtrs[i]);
-    free (name);
+std::list<std::string>
+ICCprofile::printTags            ()
+{
+  DBG
+  std::list<std::string> StringList;
+
+  if (!tags.size()) {
+    std::string text = "Keine Tags vorhanden.";
+    StringList.push_back(text);
+    return StringList;
   }
-  #endif
-#endif
+
+  for (std::list<ICCtag>::iterator i = tags.begin() ;
+         i != tags.end() ; i++) {
+    std::string text;
+
+    text = (*i).getTagName();
+    StringList.push_back(text);
+  }
+
+  return StringList;
 }
 
 char*
@@ -464,13 +641,13 @@ ICCprofile::getProfileInfo                   ( )
 */
     sprintf (text,_("Device Class:   "));
     sprintf (profile_info,"%s%s %s\n",profile_info,text,
-                              header.getDeviceClassName(header.header.deviceClass));
+                              header.getDeviceClassName(header.deviceClass()));
     sprintf (text,_("Color Space:    "));
     sprintf (profile_info,"%s%s %s\n",profile_info,text,
-                              header.getColorSpaceName(header.header.colorSpace));
+                              header.getColorSpaceName(header.colorSpace()));
     sprintf (text,_("PCS Space:      "));
     sprintf (profile_info,"%s%s %s",profile_info,text,
-                              header.getColorSpaceName(header.header.pcs));
+                              header.getColorSpaceName(header.pcs()));
 
  
   return profile_info;
@@ -521,7 +698,7 @@ ICCprofile::checkProfileDevice (char* type, icProfileClassSignature deviceClass)
                      _("Profile\"."));
           check = false;
           break;
-        if (icSigCmykData   != header.header.colorSpace)
+        if (icSigCmykData   != header.colorSpace())
           check = false;
         }
   } else if ((strcmp(type, _("Linearisation"))) == 0) {
@@ -544,9 +721,9 @@ ICCprofile::checkProfileDevice (char* type, icProfileClassSignature deviceClass)
                      _("Profile\"."));
           check = false;
           break;
-        if (icSigCmykData   != header.header.colorSpace)
+        if (icSigCmykData   != header.colorSpace())
           g_message ("%s - %s - %s \"%s %s",_("Color space"),
-                     header.getColorSpaceName(header.header.colorSpace),
+                     header.getColorSpaceName(header.colorSpace()),
                      _("is not valid for an"),
                      type,
                      _("Profile at the moment\"."));
@@ -582,11 +759,25 @@ lcms_error (int ErrorCode, const char* ErrorText)
    g_message ("LCMS error:%d %s", ErrorCode, ErrorText);
 }
 
-static char* cp_char (char* text)
+
+
+const char* cp_char (char* text)
 {
   static char string[128];
 
   sprintf(string, text);
+
+  return &string[0];
+}
+
+const char* cp_nchar (char* text, int n)
+{
+  static char string[1024];
+
+  if (n < 1024)
+    snprintf(&string[0], n, text);
+  else
+    return NULL;
 
   return &string[0];
 }

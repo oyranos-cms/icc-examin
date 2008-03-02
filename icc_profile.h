@@ -9,12 +9,18 @@
 #include <string>
 #include <iostream>
 #include <sstream>
+#include <map>
 #include <list>
 #include <fstream>
 #include "icc_utils.h"
 
 
 using namespace std;
+
+// interne Funktionen
+
+const char* cp_char (char* text);
+const char* cp_nchar (char* text, int n);
 
 /**
   *   @brief interne ICC Profilstruktur
@@ -24,40 +30,74 @@ class ICCprofile;
 class ICCheader;
 class ICCtag;
 
+int                     icValue   (icUInt32Number val);
+long                    icValue   (icUInt64Number val);
+double                  icValue   (icS15Fixed16Number val);
+
 class ICCheader {
   public:
                         ICCheader(); 
+  private:
     icHeader            header;
-    icHeader            header_raw();
-    void                header_raw (icHeader);
+    map<string,string>  cmm_map;
+  public:
+    const char*         header_raw ()        {return cp_nchar ((char*)&header,
+                                                       sizeof (icSignature)); }
+    void                header_raw (void* s) {memcpy ((void*)&header, s,
+                                                       sizeof (icHeader)); }
+    void                load  (void*);
+
+    int                 valid;
+    int                 size    ()      {return icValue(header.size); }
+//    void                size    (int size)      {header.size = inbyteswap (size); }
+//    void                Cmm     (string s)      {memcpy((char*)&header.cmmId,
+//                                                       cmm_map.find(s),
+//                                                       sizeof (icSignature)); }
+    void                CmmName (const char* s) {memcpy((char*)&header.cmmId, s,
+                                                       sizeof (icSignature)); }
+    const char*         CmmName ()       {return cp_nchar ((char*)&header.cmmId,
+                                                      sizeof (icSignature)+1); }
+    int                 version ()       {return icValue(header.version); }
+    icProfileClassSignature deviceClass ()   {return header.deviceClass; }
+    icColorSpaceSignature colorSpace  ()   {return header.colorSpace; }
+    icColorSpaceSignature pcs ()           {return header.pcs; }
+    const char*         platform ()        {return getPlatformName(header.platform); }
     std::string         print ();
     std::string         print_long ();
-    void                load  (void*);
-    int                 valid;
-    char*               getCmmName         ();
-    char*               getProfileInfo     ();
-    char*               getColorSpaceName  ( icColorSpaceSignature color);
-    char*               getDeviceClassName ( icProfileClassSignature cl);
+    //char*               getProfileInfo  ();
+
+    const char*         getColorSpaceName  ( icColorSpaceSignature color);
+    const char*         getDeviceClassName ( icProfileClassSignature cl);
+    const char*         getPlatformName    ( icPlatformSignature platform);
 };
 
 class ICCtag {
-    icTag               tag;
-    
   public:
-    std::string         get_type();
+                        ICCtag             ();
+                        ICCtag             (icTag *tag, char* data);
+                        ~ICCtag            ();
+  private:
+    icTag               _tag;
+    char*               _data;
+
+  public:
+    void                load               (icTag *tag, char* data);
+  public:
+    std::string         getTagName()       {return getSigTagName (_tag.sig); }
+    //std::string         getTypeName()      {return getSigTypeName (_tag.sig); }
     std::string         get_vrml();
     std::string         get_text();
 //    std::map<int,int>   get_curve();
-    char*               getSigTagName      ( icTagSignature  sig );
+    std::string         getSigTagName      ( icTagSignature  sig );
 //    void                printLut           (   LPLUT           Lut,
 //                                               int             sig);
 };
 
 class ICCprofile {
   public:
-    ICCprofile ();
-    ICCprofile (const char *filename);
-    virtual ~ICCprofile (void);
+                        ICCprofile ();
+                        ICCprofile (const char *filename);
+    virtual             ~ICCprofile (void);
 
   public:
     int                 tag_count();
@@ -82,22 +122,23 @@ class ICCprofile {
   public: // Informationen
     const char*         filename () {return _filename.c_str(); }
     void                filename (const char* s) {_filename = s; }
-    int                 size     () {return header.header.size; }
-    int                 cmm      () {return header.header.cmmId; }
-    void                cmm      (icSignature s) {header.header.cmmId = s; }
-    int                 version  () {return (int) header.header.version; }
-    std::string         print_header () {return header.print(); }
-    std::string         print_long_header () {return header.print_long(); }
-    void                printProfileTags   ();
+    int                 size     () {return header.size(); }
+    const char*         cmm      () {return header.CmmName(); }
+    void                cmm      (const char* s) {header.CmmName (s); }
+    int                 version  () {return (int) header.version(); }
+    std::string         print_header       () {return header.print(); }
+    std::string         print_long_header  () {return header.print_long(); }
+    std::list<std::string> printTags       ();
+    std::string         printLongTag       (int   item);
     char*               getProfileInfo     ();
+
+    int                 getTagCount        () {return _data->count; }
 
     void                saveProfileToFile  (char* filename, char *profile,
                                            int    size);
     int                 checkProfileDevice (char* type,
                                            icProfileClassSignature deviceClass);
 };
-
-// sollen noch in den Klassen verschwinden
 
 
 #endif //ICC_PROFILE_H

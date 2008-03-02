@@ -2,7 +2,7 @@ CC=c++
 MAKEDEPEND	= /usr/X11R6//bin/makedepend -Y
 OPTS=-Wall -g -O2
 
-prefix		= /opt/kai-uwe
+prefix		= /opt/local
 exec_prefix	= ${prefix}
 bindir		= ${exec_prefix}/bin
 datadir		= ${prefix}/share
@@ -13,11 +13,11 @@ srcdir		= .
 
 
 CXXFLAGS=$(OPTS) $(INCL)
-INCL=-I/opt/kai-uwe/include -I/usr/X11R6/include -I./
+INCL=-I$(includedir) -I/usr/X11R6/include -I./
 
-VRML_LIBS=$(FLTK_GL_LIBS) -lGL -lglut -lopenvrml -lopenvrml-gl -lpng -ljpeg
+VRML_LIBS=$(FLTK_GL_LIBS) -lGL -lopenvrml -lopenvrml-gl -lpng -ljpeg
 X11_LIBS=-L/usr/X11R6/lib -lXinerama -lXft
-FLTK_LIBS=-L/opt/kai-uwe/lib -lfltk_images -lfltk
+FLTK_LIBS=`fltk-config --use-images --use-gl --ldstaticflags`
 FLTK_GL_LIBS=-lfltk_gl
 LDLIBS = -L./ $(FLTK_LIBS) \
 	$(VRML_LIBS) \
@@ -51,7 +51,7 @@ dir     = $(TARGET)
 timedir = $(topdir)/$(TARGET)
 mtime   = `find $(timedir) -prune -printf %Ty%Tm%Td.%TT | sed s/://g`
 
-.SILENT:
+#.SILENT:
 
 all:	$(TARGET)
 
@@ -60,6 +60,7 @@ $(TARGET):	$(OBJECTS)
 	$(CC) $(OPTS) -o $(TARGET) \
 	$(OBJECTS) \
 	$(LDLIBS)
+	/Developer/Tools/Rez -t APPL -o $(TARGET) /opt/local/include/FL/mac.r
 
 static:		$(OBJECTS)
 	echo Linking $@...
@@ -67,10 +68,13 @@ static:		$(OBJECTS)
 	$(OBJECTS) \
 	$(LDLIBS) -static -ljpeg -lpng -lX11 -lpthread -lz -ldl \
 	-lfreetype -lfontconfig -lXrender -lGLU -lXext -lexpat
+	/Developer/Tools/Rez -t APPL -o $(TARGET) /opt/local/include/FL/mac.r
 
-test:
+test:	icc_draw.o
 	$(CC) $(OPTS) $(INCL) -o horseshoe.o -c horseshoe.cxx
-	$(CC) $(OPTS) -o horseshoe horseshoe.o `fltk-config --ldstaticflags`
+	$(CC) $(OPTS) -o horseshoe horseshoe.o icc_draw.o \
+	`fltk-config --ldstaticflags` -L$(libdir) -llcms
+	/Developer/Tools/Rez -t APPL -o horseshoe /opt/local/include/FL/mac.r
 
 t3:
 	rm test3

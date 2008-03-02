@@ -63,7 +63,11 @@ Fl_Progress *load_progress=(Fl_Progress *)0;
 
 TagBrowser *tag_browser=(TagBrowser *)0;
 
-TagDrawings *tag_viewer=(TagDrawings *)0;
+static void cb_tag_browser(TagBrowser* o, void*) {
+  o->select_item( o->value() );
+}
+
+Fl_Box *tag_viewer=(Fl_Box *)0;
 
 vFLGLWidget *canvas=(vFLGLWidget *)0;
 
@@ -108,22 +112,14 @@ int main(int argc, char **argv) {
           o->labelfont(0);
           o->labelsize(14);
           o->labelcolor(FL_BLACK);
+          o->callback((Fl_Callback*)cb_tag_browser);
           o->align(FL_ALIGN_TOP|FL_ALIGN_INSIDE);
           o->when(FL_WHEN_RELEASE_ALWAYS);
           int lines = tag_browser->size();
           cout << lines << endl;
         }
         { Fl_Group* o = new Fl_Group(0, 160, 385, 335);
-          { TagDrawings* o = tag_viewer = new TagDrawings(0, 160, 385, 335);
-            o->box(FL_NO_BOX);
-            o->color(FL_BACKGROUND_COLOR);
-            o->selection_color(FL_BACKGROUND_COLOR);
-            o->labeltype(FL_NORMAL_LABEL);
-            o->labelfont(0);
-            o->labelsize(14);
-            o->labelcolor(FL_BLACK);
-            o->align(FL_ALIGN_CENTER);
-            o->when(FL_WHEN_RELEASE);
+          { Fl_Box* o = tag_viewer = new Fl_Box(0, 160, 385, 335);
             o->hide();
           }
           { vFLGLWidget* o = canvas = new vFLGLWidget(0, 160, 385, 335, "OpenVRML");
@@ -176,7 +172,7 @@ int main(int argc, char **argv) {
     o->end();
   }
   w->show();
-  //canvas->show();
+  canvas->show();
   viewer->Hok=1;
   viewer->Hdraw=1;
   viewer->timerUpdate();
@@ -192,13 +188,13 @@ int main(int argc, char **argv) {
 const char* open(void) {
   #include "icc_vrml.h"
 
-  char *filename;
+  char *filename = "/tmp/temp.icc";
   //Fl_File_Icon	*icon;	// New file icon
   DBG
   load_progress->show ();    load_progress->value (0.0);
   char vrmlDatei[] = "/tmp/tmp_vrml.wrl";
 
-  filename=fl_file_chooser("Wähle ICC Profil?", "ICC Farbprofile (*.[I,i][C,c][M,m,C,c])", filename_alt);
+  //filename=fl_file_chooser("Wähle ICC Profil?", "ICC Farbprofile (*.[I,i][C,c][M,m,C,c])", filename_alt);
   DBG printf (filename_alt); printf ("\n");
   if (!filename) {
     return "";
@@ -313,27 +309,56 @@ TagBrowser::TagBrowser(int X,int Y,int W,int H,char* start_info) : Fl_Hold_Brows
 }
 
 void TagBrowser::draw_noe() {
-  //draw_cie_shoe(x(),y(),w(),h());
+  draw_cie_shoe(x(),y(),w(),h());
   DBG
 }
 
 void TagBrowser::reopen() {
+  //open and preparing the first selected item
   std::stringstream s;
   std::string text;
+  std::list<std::string> tag_list = profile.printTags();
+
   #define add_s(stream) s << stream; text = s.str(); add (text.c_str()); s.str("");
 
   clear();
   add_s ("@fDateiname:")
-  add_s ( "@b    " << profile.filename() )
+  add_s ("@b    " << profile.filename() )
   add_s ("")
   add_s ("@B26@tNr. Bezeichner  Typ         Größe Beschreibung")
-  add_s ("@t" << profile.print_header());
-  select (5); // Header voreinstellen
+  add_s ("@t" << profile.print_header() );
 
-  text = profile.print_long_header(); DBG
+  std::list<std::string>::iterator it;
+  for (it = tag_list.begin() ; it != tag_list.end(); it++)
+    add_s ("@t" << *it << endl );
+
+  if (value())
+    select_item (value()); // Anzeigen
+  else
+    select_item (1);
+
+  s.clear(); s << "ICC Details: " << profile.filename();
+  details->label( (const char*) s.str().c_str() );
+}
+
+void TagBrowser::select_item(int item) {
+  //Auswahl aus tag_browser
+  std::string text;
+
+  canvas->hide(); DBG
+  tag_viewer->hide(); DBG
   tag_texts->show(); DBG
   tag_texts->value("");
+
+  if (item > 0 && item < 6) {
+    select(5);
+    text = profile.print_long_header(); DBG
+    
+  } else {
+    text = profile.printLongTag( item - 6 );
+  }
+
   tag_texts->insert (text.c_str()); DBG
-  tag_viewer->hide(); DBG
-  canvas->hide(); DBG
+  tag_texts->textfont(FL_COURIER);
+  tag_texts->textsize(14);
 }

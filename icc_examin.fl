@@ -76,7 +76,7 @@ Function {} {open C return_type int
   fullscreen = false;} {}
   Fl_Window details {
     label {ICC Details} open
-    xywh {855 397 385 520} type Double box NO_BOX color 53 hide resizable
+    xywh {633 222 385 520} type Double box NO_BOX color 53 resizable
     code0 {browser = new openvrml::browser(cout, cerr);}
     code1 {DBG
     if (argc>1) {
@@ -98,7 +98,7 @@ Function {} {open C return_type int
     worldChangedCB( openvrml::browser::replace_world_id );}
     code3 {DBG
     viewer = new ViewerFLTK( *browser, canvas );
-    canvas->setViewerPtr( viewer );}
+    canvas->setViewerPtr( viewer );} xclass Fl_Window visible
   } {
     Fl_Group {} {open
       xywh {-5 0 395 520} resizable
@@ -170,6 +170,7 @@ Function {} {open C return_type int
       } {
         Fl_Browser tag_browser {
           label {Bitte wählen Sie ein Profilmerkmal aus}
+          callback {o->select_item( o->value() );}
           xywh {0 25 385 135} color 53 align 17
           code0 {int lines = tag_browser->size();}
           code1 {cout << lines << endl;}
@@ -181,7 +182,6 @@ Function {} {open C return_type int
           Fl_Box tag_viewer {
             xywh {0 160 385 335}
             code0 {o->hide();}
-            class TagDrawings
           }
           Fl_Box canvas {
             label OpenVRML
@@ -198,7 +198,7 @@ Function {} {open C return_type int
     }
   }
   code {w->show();
-  //canvas->show();
+  canvas->show();
   viewer->Hok=1;
   viewer->Hdraw=1;
   viewer->timerUpdate();
@@ -213,13 +213,13 @@ Function {open(void)} {open return_type {const char*}
 } {
   code {\#include "icc_vrml.h"
 
-  char *filename;
+  char *filename = "/tmp/temp.icc";
   //Fl_File_Icon	*icon;	// New file icon
   DBG
   load_progress->show ();    load_progress->value (0.0);
   char vrmlDatei[] = "/tmp/tmp_vrml.wrl";
 
-  filename=fl_file_chooser("Wähle ICC Profil?", "ICC Farbprofile (*.[I,i][C,c][M,m,C,c])", filename_alt);
+  //filename=fl_file_chooser("Wähle ICC Profil?", "ICC Farbprofile (*.[I,i][C,c][M,m,C,c])", filename_alt);
   DBG printf (filename_alt); printf ("\\n");
   if (!filename) {
     return "";
@@ -262,10 +262,12 @@ Function {open(void)} {open return_type {const char*}
 
   tag_browser->reopen ();
 
-  return filename;} {}
+  return filename;} {selected
+  }
 } 
 
-Function {quit(void)} {} {
+Function {quit(void)} {open
+} {
   code {Fl::remove_timeout((void (*)(void *))timeIT, (void *)viewer);
   delete viewer;
   delete browser;
@@ -274,7 +276,8 @@ Function {quit(void)} {} {
   exit(0);} {}
 } 
 
-Function {worldChangedCB( const openvrml::browser::cb_reason reason )} {} {
+Function {worldChangedCB( const openvrml::browser::cb_reason reason )} {open
+} {
   code {switch (reason)
     {
         case openvrml::browser::destroy_world_id:
@@ -293,7 +296,8 @@ Function {worldChangedCB( const openvrml::browser::cb_reason reason )} {} {
     }} {}
 } 
 
-Function {timeIT()} {} {
+Function {timeIT()} {open
+} {
   code {if (canvas->LeftViewer == 0) {
     viewer->timerUpdate();
     viewer->handleRedraw();
@@ -340,29 +344,57 @@ class TagBrowser {open : {public Fl_Hold_Browser}
   } {}
   Function {draw_noe()} {open
   } {
-    code {//draw_cie_shoe(x(),y(),w(),h());
+    code {draw_cie_shoe(x(),y(),w(),h());
   DBG} {}
   }
   Function {reopen()} {open
   } {
-    code {std::stringstream s;
+    code {//open and preparing the first selected item
+  std::stringstream s;
   std::string text;
+  std::list<std::string> tag_list = profile.printTags();
+
   \#define add_s(stream) s << stream; text = s.str(); add (text.c_str()); s.str("");
 
   clear();
   add_s ("@fDateiname:")
-  add_s ( "@b    " << profile.filename() )
+  add_s ("@b    " << profile.filename() )
   add_s ("")
   add_s ("@B26@tNr. Bezeichner  Typ         Größe Beschreibung")
-  add_s ("@t" << profile.print_header());
-  select (5); // Header voreinstellen
+  add_s ("@t" << profile.print_header() );
 
-  text = profile.print_long_header(); DBG
+  std::list<std::string>::iterator it = tag_list.begin();
+  for (unsigned int i = 0 ; i < tag_list.size(); i++)
+    add_s ("@t" << *it );
+
+  if (value())
+    select_item (value()); // Anzeigen
+  else
+    select_item (1);
+
+  s.clear(); s << "ICC Details: " << profile.filename();
+  details->label( (const char*) s.str().c_str() );} {}
+  }
+  Function {select_item(int item)} {open
+  } {
+    code {//Auswahl aus tag_browser
+  std::string text;
+
+  canvas->hide(); DBG
+  tag_viewer->hide(); DBG
   tag_texts->show(); DBG
   tag_texts->value("");
+
+  if (item > 0 && item < 6) {
+    select(5);
+    text = profile.print_long_header(); DBG
+    
+  } else {
+    text = profile.printLongTag( item - 6 );
+  }
+
   tag_texts->insert (text.c_str()); DBG
-  tag_viewer->hide(); DBG
-  canvas->hide(); DBG} {selected
-    }
+  tag_texts->textfont(FL_COURIER);
+  tag_texts->textsize(14);} {}
   }
 } 

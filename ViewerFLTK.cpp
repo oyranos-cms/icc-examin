@@ -170,7 +170,7 @@ void ViewerFLTK::swap_buffers()
 
 void ViewerFLTK::timerUpdate()
 {DBG
-  update( 0.0 );	// No gl calls should be made from update()
+  //update( 0.0 );	// No gl calls should be made from update()
 }
 
 

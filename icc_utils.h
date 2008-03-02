@@ -12,7 +12,21 @@
 #include <iostream>
 
 #define DBG cout << __FILE__<<":"<<__LINE__ <<" "<< __func__ << "()" << endl;
-//#define DBG(txt) cout << __FILE__<<":"<<__LINE__ <<" "<< __func__ << "()" << txt << endl;
+#define DBG_S(txt) cout << __FILE__<<":"<<__LINE__ <<" "<< __func__ << "()" << txt << endl;
+
+class Int {
+public:
+// TODO: byteswap + Groesse + Vorzeichen
+#if BYTE_ORDER == BIG_ENDIAN
+//  int             operator=(const int _n)     {return _n; }
+  //icUInt32Number  operator=(const int _n)     {return _n; }
+#endif
+#if BYTE_ORDER == LITTLE_ENDIAN
+  int             operator=(const int _n)     {return _n; }
+  icUInt32Number  operator=(const int _n)     {return _n; }
+#endif
+};
+
 
 // ============================================================
 // Provisorische Ausnahme-Klasse; von std::exception abstammend:

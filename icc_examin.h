@@ -36,7 +36,7 @@ extern Fl_Box *stat;
 extern Fl_Progress *load_progress;
 #include <FL/Fl_Tile.H>
 extern TagBrowser *tag_browser;
-extern TagDrawings *tag_viewer;
+extern Fl_Box *tag_viewer;
 extern vFLGLWidget *canvas;
 #include <FL/Fl_Output.H>
 extern Fl_Output *tag_texts;
@@ -63,5 +63,6 @@ public:
   TagBrowser(int X,int Y,int W,int H,char* start_info) ;
   void draw_noe();
   void reopen();
+  void select_item(int item);
 };
 #endif
