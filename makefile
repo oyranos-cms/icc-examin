@@ -335,10 +335,10 @@ static:	$(BINTARGET)
 	`fltk-config --use-gl --ldstaticflags` \
 	-L/opt/local/lib \
 	`oyranos-config --ld_x_staticflags` -L/$(libdir) \
+	-lftgl \
 	`test -f /usr/X11R6/lib/libfreetype.a \
 	  && echo /usr/X11R6/lib/libfreetype.a || (test -f /usr/lib/libfreetype.a \
 	    && echo /usr/lib/libfreetype.a || echo -lfreetype)` \
-	-lftgl \
 	$(I18N_LIBSTAT) $(X11_LIBS) \
 	$(DBG_LIBS) \
 	`test -f /opt/kai-uwe/lib/liblcms.a && echo /opt/kai-uwe/lib/liblcms.a || \

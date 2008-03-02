@@ -557,7 +557,6 @@ Fl_Double_Window* ICCfltkBetrachter::init(int argc, char** argv) {
       { Fl_Tabs* o = new Fl_Tabs(0, 0, 365, 260);
         { Fl_Help_View* o = ueber_html = new Fl_Help_View(0, 25, 365, 235, _("About"));
           o->selection_color(FL_DARK1);
-          o->hide();
         }
         { Fl_Help_View* o = hilfe_html = new Fl_Help_View(0, 25, 365, 235, _("Help"));
           o->selection_color(FL_DARK1);
@@ -575,6 +574,7 @@ Fl_Double_Window* ICCfltkBetrachter::init(int argc, char** argv) {
         { Fl_Output* o = links_text = new Fl_Output(10, 35, 345, 215, _("Links"));
           o->type(12);
           o->selection_color(FL_DARK1);
+          o->hide();
         }
         o->end();
       }

@@ -193,7 +193,7 @@ echo "#define ICC_EXAMIN_VERSION_A $VERSION_A" >> icc_version.h
 echo "#define ICC_EXAMIN_VERSION_B $VERSION_B" >> icc_version.h
 echo "#define ICC_EXAMIN_VERSION_C $VERSION_C" >> icc_version.h
 echo "#define ICC_EXAMIN_VERSION $VERSION" >> icc_version.h
-echo "#define ICC_EXAMIN_V $VERSION" >> icc_version.h
+echo "#define ICC_EXAMIN_V \"$VERSION\"" >> icc_version.h
 echo "#define ICC_EXAMIN_D _(\"$ZEIT\")" >> icc_version.h
 echo "" >> icc_version.h
 echo "#endif //ICC_VERSION_H" >> icc_version.h

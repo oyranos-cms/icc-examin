@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2006-04-26 16:49+0200\n"
+"POT-Creation-Date: 2006-04-28 10:56+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1639,11 +1639,11 @@ msgid ""
 "the littleCMS program library."
 msgstr ""
 
-#: icc_ueber.cpp:147 icc_betrachter.cxx:429 icc_betrachter.cxx:562
+#: icc_ueber.cpp:147 icc_betrachter.cxx:429 icc_betrachter.cxx:561
 msgid "Help"
 msgstr ""
 
-#: icc_ueber.cpp:326 icc_betrachter.cxx:566
+#: icc_ueber.cpp:326 icc_betrachter.cxx:565
 msgid "License"
 msgstr ""
 
@@ -2021,11 +2021,11 @@ msgid ""
 "CMYK,ti*,CIE,cie,nCIE,oRPT,DLY,LAB,Q60})\tArgyll Gamuts (*.{wrl,vrml}"
 msgstr ""
 
-#: icc_betrachter.cxx:571
+#: icc_betrachter.cxx:570
 msgid "Acknowlegement"
 msgstr ""
 
-#: icc_betrachter.cxx:575
+#: icc_betrachter.cxx:574
 msgid "Links"
 msgstr ""
 
