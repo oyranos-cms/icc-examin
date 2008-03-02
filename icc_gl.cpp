@@ -292,11 +292,13 @@ void
 GL_Ansicht::auffrischen()
 {
   DBG_PROG_START
-  if(icc_examin->frei())
+  DBG_PROG_V( icc_examin->frei() )
+  //if(icc_examin->frei())
   {
     menueErneuern_();
     erstelleGLListen_();
     auffrischen_ = false;
+    DBG_PROG
   }
   DBG_PROG_ENDE
 }
@@ -1202,6 +1204,8 @@ GL_Ansicht::zeigeSpektralband_()
   DBG_PROG_ENDE
 }
 
+int menue_form_n_ = 0;
+
 void
 GL_Ansicht::menueErneuern_()
 { DBG_PROG_START
@@ -1237,13 +1241,54 @@ GL_Ansicht::menueErneuern_()
     char* p = (char*) nach_farb_namen_[i].c_str();
     glutAddMenuEntry(p, MENU_MAX + i);
     menue_kanal_eintraege_++;
-    DBG_PROG_V( MENU_MAX + i << nach_farb_namen_[i] )
+    DBG_PROG_V( MENU_MAX + i <<" "<< nach_farb_namen_[i] )
   }
 
   if (kanal >= menue_kanal_eintraege_)
     kanal = menue_kanal_eintraege_ - 1;
 
   DBG_PROG_V( menue_kanal_eintraege_ << kanal )
+
+  glutSetMenu(menue_form_);
+  for (int i = menue_form_n_; i > 0; --i) {
+    glutRemoveMenuItem (i);
+    DBG_PROG_V( i )
+  }
+
+  if(glut_id_ == 1)
+  {
+    // Darstellung
+    glutAddMenuEntry(_("grau"),  MENU_GRAU);
+    glutAddMenuEntry(_("farbig"),  MENU_FARBIG);
+    glutAddMenuEntry(_("kontrastreich"),  MENU_KONTRASTREICH);
+    glutAddMenuEntry(_("schalen"),  MENU_SCHALEN);
+    menue_form_n_ = 4;
+  } else {
+    // Kugeln mit ihrem Radius symbolisieren Messfarben
+    if(zeig_punkte_als_messwerte)
+    {
+      glutAddMenuEntry(_("Kugel 1dE"), MENU_dE1KUGEL);
+      glutAddMenuEntry(_("Kugel 2dE"), MENU_dE2KUGEL);
+      glutAddMenuEntry(_("Kugel 4dE"), MENU_dE4KUGEL);
+      menue_form_n_ = 3;
+    } else {
+    #ifdef Lab_STERN
+      glutAddMenuEntry(_("Stern"),     MENU_dE1STERN);
+    #else
+    // Punkte werden für Bildfarben reserviert
+      glutAddMenuEntry(_("Punkt"),     MENU_dE1STERN);
+    #endif
+      menue_form_n_ = 1;
+    }
+    glutAddMenuEntry(_("ohne Farborte"), MENU_DIFFERENZ_LINIE);
+    glutAddMenuEntry(_("Spektrallinie"), MENU_SPEKTRALBAND);
+    menue_form_n_ += 2;
+  }
+  glutAddMenuEntry(_("Texte/Pfeile an/aus"), MENU_HELFER);
+  menue_form_n_ += 1;
+
+  glutSetMenu(menue_);
+
   icc_examin_ns::status_info(_("linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menü"));
 
   DBG_PROG_ENDE
@@ -1285,36 +1330,6 @@ GL_Ansicht::menueInit_()
   glutSetMenu(menue_);
   glutAddSubMenu(_("Querschnitte"), menue_schnitt_);
   glutAddSubMenu(_("Darstellung"), menue_form_);
-
-  if(glut_id_ == 1) {
-    // Darstellung
-    glutSetMenu(menue_form_);
-    glutAddMenuEntry(_("grau"),  MENU_GRAU);
-    glutAddMenuEntry(_("farbig"),  MENU_FARBIG);
-    glutAddMenuEntry(_("kontrastreich"),  MENU_KONTRASTREICH);
-    glutAddMenuEntry(_("schalen"),  MENU_SCHALEN);
-    glutSetMenu(menue_);
-  } else {
-    glutSetMenu(menue_form_);
-    // Kugeln mit ihrem Radius symbolisieren Messfarben
-    if(zeig_punkte_als_messwerte)
-    {
-      glutAddMenuEntry(_("Kugel 1dE"), MENU_dE1KUGEL);
-      glutAddMenuEntry(_("Kugel 2dE"), MENU_dE2KUGEL);
-      glutAddMenuEntry(_("Kugel 4dE"), MENU_dE4KUGEL);
-    } else
-    #ifdef Lab_STERN
-      glutAddMenuEntry(_("Stern"),     MENU_dE1STERN);
-    #else
-    // Punkte werden für Bildfarben reserviert
-      glutAddMenuEntry(_("Punkt"),     MENU_dE1STERN);
-    #endif
-    glutAddMenuEntry(_("ohne Farborte"), MENU_DIFFERENZ_LINIE);
-    glutAddMenuEntry(_("Spektrallinie"), MENU_SPEKTRALBAND);
-  }
-
-  glutSetMenu(menue_form_);
-  glutAddMenuEntry(_("Texte/Pfeile an/aus"), MENU_HELFER);
 
   //menueErneuern_();
 
@@ -1605,6 +1620,7 @@ GL_Ansicht::hineinTabelle (std::vector<std::vector<std::vector<std::vector<doubl
   else
     auffrischen_ = true;
 
+  DBG_PROG_V( auffrischen_ )
   icc_examin_ns::status_info(_("linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menü"));
 
   DBG_PROG_ENDE

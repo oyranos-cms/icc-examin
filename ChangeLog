@@ -1,4 +1,11 @@
 
+2005-02-07
+	* fix: osX nutzt andere Verbundobjekte als Linux in time.h
+	* fix: einige int -> size_t in icc_profile
+
+2005-03-0
+	* und: pthread -> Fl::add_timeout in icc_kette
+
 2005-02-28
 	* neu: ICCexamin::frei() zur Anzeige der Benutzung eingeführt (pthread)
 
