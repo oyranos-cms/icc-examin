@@ -1,5 +1,9 @@
+2005-12-14
+	* und: osX dock unterstützt, Standardprofilbetrachter
+
 2005-11-14
 	* fix: vrml lesen: IndexedFaceSets alleinig
+	* und: (v0.39)
 
 2005-11-09
 	* und: configure nimmt --prefix=xxx an beliebiger Position

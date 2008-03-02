@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2005-11-07 19:50+0100\n"
+"POT-Creation-Date: 2005-12-14 09:29+0100\n"
 "PO-Revision-Date: 2005-08-13 17:35+0200\n"
 "Last-Translator: Kai-Uwe Behrmann\n"
 "Language-Team:  <eo@li.org>\n"
@@ -250,7 +250,7 @@ msgstr ""
 msgid "icc_waehler_ nicht reservierbar"
 msgstr ""
 
-#: icc_examin.cpp:201 icc_examin_io.cpp:454
+#: icc_examin.cpp:201 icc_examin_io.cpp:458
 msgid "loaded"
 msgstr ""
 
@@ -298,47 +298,47 @@ msgstr ""
 msgid "Kein Netz gefunden. Ist Argyll installiert?"
 msgstr ""
 
-#: icc_examin_io.cpp:367
+#: icc_examin_io.cpp:371
 msgid "Stop loading "
 msgstr ""
 
-#: icc_examin_io.cpp:412 icc_betrachter.cxx:469
+#: icc_examin_io.cpp:416 icc_betrachter.cxx:469
 msgid "Filename"
 msgstr ""
 
-#: icc_examin_io.cpp:416
+#: icc_examin_io.cpp:420
 msgid "found no content for"
 msgstr ""
 
-#: icc_examin_io.cpp:419
+#: icc_examin_io.cpp:423
 msgid "Internal error"
 msgstr ""
 
-#: icc_examin_io.cpp:421
+#: icc_examin_io.cpp:425
 msgid "No. Tag   Type   Size Description"
 msgstr ""
 
-#: icc_examin_io.cpp:480
+#: icc_examin_io.cpp:484
 msgid "HTML Documents (*.htm*)"
 msgstr ""
 
-#: icc_examin_io.cpp:484 icc_betrachter.cxx:388
+#: icc_examin_io.cpp:488 icc_betrachter.cxx:388
 msgid "Save Report"
 msgstr ""
 
-#: icc_examin_io.cpp:555 icc_betrachter.cxx:499
+#: icc_examin_io.cpp:559 icc_betrachter.cxx:499
 msgid "ICC colour profiles (*.ic*)"
 msgstr ""
 
-#: icc_examin_io.cpp:556 icc_betrachter.cxx:389
+#: icc_examin_io.cpp:560 icc_betrachter.cxx:389
 msgid "Save Gamut as Profile"
 msgstr ""
 
-#: icc_examin_io.cpp:558
+#: icc_examin_io.cpp:562
 msgid "VRML Files (*.wrl)"
 msgstr ""
 
-#: icc_examin_io.cpp:559 icc_betrachter.cxx:390
+#: icc_examin_io.cpp:563 icc_betrachter.cxx:390
 msgid "Save Gamut as VRML"
 msgstr ""
 

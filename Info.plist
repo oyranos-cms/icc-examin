@@ -28,6 +28,8 @@
 			<string>cgats</string>
 		    <key>CFBundleTypeRole</key>
             <string>Editor</string>
+			<key>LSIsAppleDefaultForType</key>
+			<true/>
 		</dict>
 		<dict>
 			<key>CFBundleTypeExtensions</key>
@@ -38,25 +40,31 @@
 			<string>argyll gamut</string>
 		    <key>CFBundleTypeRole</key>
             <string>Editor</string>
+			<key>LSIsAppleDefaultForType</key>
+			<true/>
 		</dict>
 		<dict>
 			<key>CFBundleTypeExtensions</key>
 			<array>
 				<string>icc</string>
 				<string>icm</string>
+				<string>ICC</string>
+				<string>ICM</string>
 			</array>
             <key>CFBundleTypeMIMETypes</key>
             <array>
                 <string>icc</string>
             </array>
 			<key>CFBundleTypeName</key>
-			<string>ICC profiles</string>
+			<string>ICC Profile</string>
             <key>CFBundleTypeOSTypes</key>
             <array>
                 <string>ICC</string>
             </array>
 		    <key>CFBundleTypeRole</key>
             <string>Viewer</string>
+			<key>LSIsAppleDefaultForType</key>
+			<true/>
 		</dict>
 	</array>
 	<key>CFBundleExecutable</key>

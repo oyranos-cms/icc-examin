@@ -335,7 +335,11 @@ ICCexamin::oeffnenStatisch_ (void* ie)
 void
 oeffnen_cb(const char* filenames)
 { DBG_PROG_START
+  std::vector<std::string> dateinamen;
+  dateinamen.push_back( filenames );
   status( filenames )
+  DBG_PROG_V( filenames )
+  icc_examin->oeffnen( dateinamen );
   DBG_PROG_ENDE
 }
 
