@@ -21,7 +21,7 @@
  * 
  * -----------------------------------------------------------------------------
  *
- * Implementation des Modell/Betrachter Musters (observer pattern)
+ * Implementation of the model/observer pattern
  * 
  */
 
@@ -38,7 +38,7 @@
 
 using namespace icc_examin_ns;
 
-// --- Beobachter ---
+// --- observer ---
 
 Beobachter::Beobachter()
 {
@@ -82,11 +82,11 @@ Beobachter::modellFort(Modell* modell)
   DBG_PROG_ENDE
 }
 
-/** @brief Empf&auml;nger von Modell
+/** @brief observer of news from model
 
-    Diese Funktion übernimmt die Informationen aus dem Modell und veranlasst
-    eine entsprechende Reaktion. \n
-    in der abgeleiteten Klasse konkretisieren
+    This function recieves the informations from the model and can cause
+    a according reaktion. \n
+    in the derived class to implement
  */
 void
 Beobachter::nachricht ( Modell* modell , int infos )
@@ -95,7 +95,7 @@ Beobachter::nachricht ( Modell* modell , int infos )
 }
 
 
-// --- Modell ---
+// --- model ---
 
 Modell::Modell()
 {
@@ -106,7 +106,7 @@ Modell::Modell()
 Modell::~Modell()
 {
   DBG_PROG_START
-  // bei allen Beobachtern abmelden
+  // unregister with all observers
   std::list<Beobachter*>::iterator it;
   for(it = beobachter_.begin(); it != beobachter_.end(); ++it)
   {
@@ -130,7 +130,7 @@ Modell::beobachterFort(Beobachter* beo)
   if(!beobachter_.size())
     return;
 
-  // einzelnen Beobachter aus der Liste entfernen
+  // delete single observer from the list
   std::list<Beobachter*>::iterator it = beobachter_.begin();
   intptr_t isis = (intptr_t)*it;
   if(isis > 0)
@@ -149,7 +149,7 @@ Modell::beobachterFort(Beobachter* beo)
 }
 
 
-/** @brief alle meine Beobachter informieren */
+/** @brief inform all my observers */
 void
 Modell::benachrichtigen(int infos)
 {

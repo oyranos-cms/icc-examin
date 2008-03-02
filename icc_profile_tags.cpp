@@ -21,7 +21,7 @@
  * 
  * -----------------------------------------------------------------------------
  *
- * Profilinterpretation
+ * profile interpretation
  * 
  */
 
@@ -61,7 +61,7 @@ struct Ncl2 {
 
 
 /**
-  *  @brief ICCtag Funktionen
+  *  @brief ICCtag functions
   */
 
 ICCtag::ICCtag                      (ICCprofile* profil, icTag* tag, char* data)
@@ -112,7 +112,7 @@ ICCtag::clear              ()
 {
   DBG_PROG
   if (data_ && size_) {
-    DBG_MEM_S("lösche: "<<(int*)data_)
+    DBG_MEM_S("erase: "<<(int*)data_)
     free (data_);
   }
   defaults();
@@ -180,11 +180,11 @@ ICCtag::load                        ( ICCprofile *profil,
   DBG_MEM
 
   if (data_ != NULL && size_) { DBG_MEM
-    DBG_MEM_S( "ICCtag wiederverwendet: " << (char*)tag->sig << " " )
+    DBG_MEM_S( "ICCtag reused: " << (char*)tag->sig << " " )
     DBG_MEM
     free(data_); DBG_MEM // delete [] data_;
     data_ = NULL;
-    DBG_MEM_S( "ICCtag wiederverwendet: " << (char*)tag->sig << " " )
+    DBG_MEM_S( "ICCtag reused: " << (char*)tag->sig << " " )
   } DBG_MEM
 
   size_   = icValue(tag->size); DBG_MEM_V( size_ )
@@ -200,7 +200,7 @@ ICCtag::load                        ( ICCprofile *profil,
 
 # ifdef DEBUG_ICCTAG_
   char* text = data_;
-  DBG_MEM_S( _sig << "=" << tag->sig << " offset " << icValue(tag->offset) << " size " << size_ << " nächster tag " << size_ + icValue(tag->offset) << " " << text << " " )
+  DBG_MEM_S( _sig << "=" << tag->sig << " offset " << icValue(tag->offset) << " size " << size_ << " next tag " << size_ + icValue(tag->offset) << " " << text << " " )
 # endif
   DBG_MEM_ENDE
 }
@@ -418,7 +418,7 @@ ICCtag::getText                     (void)
         delete [] t; DBG_PROG_V( g <<" "<< dversatz )
       }
     }
-    if (!texte.size()) // erster Eintrag
+    if (!texte.size()) // first entry
     { int g =        icValue(*(icUInt32Number*)&data_[20]),
           dversatz = icValue(*(icUInt32Number*)&data_[24]);
       char *t = (char*) new char [g];
@@ -472,14 +472,14 @@ ICCtag::getText                     (void)
     DBG_MEM_V( sizeof(Ncl2) )
     for (int i = 0; i < farben_n; ++i)
     {
-      Ncl2Farbe *f = (Ncl2Farbe*) ((char*)ncl2 + 76 + // Basisgröße von Ncl2
-                     (i * (38 +                 // Basisgröße von Ncl2Farbe
-                           geraetefarben_n      // Anzahl Gerätefarben
+      Ncl2Farbe *f = (Ncl2Farbe*) ((char*)ncl2 + 76 + // base site of Ncl2
+                     (i * (38 +                 // base size of Ncl2Farbe
+                           geraetefarben_n      // number of device colours
                            * sizeof(icUInt16Number))));//Ncl2Farbe::geraetefarbe
       DBG_MEM_V( sizeof(icUInt16Number) <<"|"<< geraetefarben_n )
       DBG_MEM_V( i <<" "<<(int*)f <<" "<< (int*)ncl2  )
       s << "" <<
-           ncl2->vorname << f->name << ncl2->nachname<<" ";// maximal 31 Zeichen
+           ncl2->vorname << f->name << ncl2->nachname<<" ";// max 31 byte
       s << icValue(f->pcsfarbe[0]) << " " <<
            icValue(f->pcsfarbe[1]) << " " <<
            icValue(f->pcsfarbe[2]) << " | ";
@@ -553,7 +553,7 @@ ICCtag::getCIEXYZ                                 (void)
 #   endif
     DBG_S(getChromaticityColorantType( icValue(*(icUInt16Number*)&data_[10])))
     for (int i = 0; i < count ; ++i) { // Table 35 -- chromaticityType encoding
-      // TODO lcms braucht einen 16 Byte Offset (statt 12 Byte)
+      // TODO lcms needs a 16 Byte Offset (instead of 12 Byte ?)
       icU16Fixed16Number* channel = (icU16Fixed16Number*)&data_[12+(8*i)];
       double xyY[3] = { icUFValue( channel[0] ),
                         icUFValue( channel[1] ),
@@ -602,7 +602,7 @@ ICCtag::getCurves                                 (MftChain typ)
 { DBG_PROG_START
   std::vector<double> kurve;
   std::vector<std::vector<double> > kurven; DBG_PROG
-  // Wer sind wir?
+  // Who are we?
   if (getTypName() == "mft2") {
     icLut16* lut16 = (icLut16*) &data_[8];
     int inputChan, outputChan, clutPoints, inputEnt, outputEnt;
@@ -613,13 +613,13 @@ ICCtag::getCurves                                 (MftChain typ)
     outputEnt = icValue(lut16->outputEnt);
     int feldPunkte = (int)pow((double)clutPoints, inputChan);
 #   ifdef DEBUG_ICCTAG
-    DBG_NUM_S( feldPunkte << " Feldpunkte " << clutPoints << " clutPoints" )
+    DBG_NUM_S( feldPunkte << " array points " << clutPoints << " clutPoints" )
 #   endif
     int start = 52,
         byte  = 2;
     double div   = 65536.0;
     DBG_PROG
-    // Was wird verlangt?
+    // What is requested?
     switch (typ) {
     case MATRIX:
          break;
@@ -638,7 +638,7 @@ ICCtag::getCurves                                 (MftChain typ)
            }
            kurven.push_back (kurve);
 #          ifdef DEBUG_ICCTAG
-           DBG_NUM_S( kurve.size() << " Einträge" )
+           DBG_NUM_S( kurve.size() << " entries" )
 #          endif
          } DBG_PROG
          break;
@@ -659,7 +659,7 @@ ICCtag::getCurves                                 (MftChain typ)
                               / div );
            kurven.push_back (kurve);
 #          ifdef DEBUG_ICCTAG
-           DBG_NUM_S( kurve.size() << "|" << outputEnt << " Einträge" )
+           DBG_NUM_S( kurve.size() << "|" << outputEnt << " entries" )
 #          endif
          }
          break;
@@ -675,7 +675,7 @@ ICCtag::getCurves                                 (MftChain typ)
         byte  = 1;
     double div   = 255.0;
 
-    // Was wird verlangt?
+    // What is requested?
     switch (typ) {
     case MATRIX:
          break;
@@ -690,7 +690,7 @@ ICCtag::getCurves                                 (MftChain typ)
                               / div );
            kurven.push_back (kurve);
 #          ifdef DEBUG_ICCTAG
-           DBG_NUM_S( kurve.size() << " Einträge" )
+           DBG_NUM_S( kurve.size() << " entries" )
 #          endif
          }
          break;
@@ -714,7 +714,7 @@ ICCtag::getCurves                                 (MftChain typ)
                               / div );
            kurven.push_back (kurve);
 #          ifdef DEBUG_ICCTAG
-           DBG_NUM_S( kurve.size() << " Einträge" )
+           DBG_NUM_S( kurve.size() << " entries" )
 #          endif
          }
          break;
@@ -726,7 +726,7 @@ ICCtag::getCurves                                 (MftChain typ)
     icUInt16Number byte     = icValue(*(icUInt16Number*) &data_[16]);
     
 #   ifdef DEBUG_ICCTAG
-    DBG_NUM_S( data_ << " parametrisch " << parametrisch << " nkurven " << nkurven << " segmente " << segmente << " byte " << byte )
+    DBG_NUM_S( data_ << " parametric " << parametrisch << " ncurves " << nkurven << " segments " << segmente << " byte " << byte )
 #   endif
 
     if (parametrisch) { //icU16Fixed16Number
@@ -762,7 +762,7 @@ ICCtag::getCurves                                 (MftChain typ)
                                 / div );
              kurven.push_back (kurve);
              //#ifdef DEBUG_ICCTAG
-             DBG_NUM_S( kurve.size() << " Einträge" )
+             DBG_NUM_S( kurve.size() << " entries" )
              //#endif
            }
     }
@@ -791,13 +791,13 @@ ICCtag::getTable                                 (MftChain typ)
     outputEnt = icValue(lut16->outputEnt);
 #   ifdef DEBUG_ICCTAG
     int feldPunkte = (int)pow((double)clutPoints, inputChan);
-    DBG_NUM_S( feldPunkte << " Feldpunkte " << clutPoints << " clutPoints" )
+    DBG_NUM_S( feldPunkte << " array points " << clutPoints << " clutPoints" )
 #   endif
     int start = 52,
         byte  = 2;
     double div   = 65536.0;
     DBG_PROG
-    // Was wird verlangt?
+    // What is requested?
     if (inputChan == 3)
     {
       switch (typ) {
@@ -844,13 +844,13 @@ ICCtag::getTable                                 (MftChain typ)
     clutPoints = (int)lut8->clutPoints;
 #   ifdef DEBUG_ICCTAG
     int feldPunkte = (int)pow((double)clutPoints, inputChan);
-    DBG_NUM_S( feldPunkte << " Feldpunkte " << clutPoints << " clutPoints" )
+    DBG_NUM_S( feldPunkte << " array points " << clutPoints << " clutPoints" )
 #   endif
     int start = 48,
         byte  = 1;
     double div= 255.0;
 
-    // Was wird verlangt?
+    // What is requested?
     switch (typ) {
     case TABLE_IN:
     case TABLE_OUT:
@@ -901,7 +901,7 @@ std::vector<double>
 ICCtag::getNumbers                                 (MftChain typ)
 { DBG_PROG_START
   std::vector<double> nummern;
-  // Wer sind wir?
+  // Who are we?
   if (getTypName() == "mft2") {
     icLut16* lut16 = (icLut16*) &data_[8];
     int inputChan, outputChan, clutPoints, inputEnt, outputEnt;
@@ -911,7 +911,7 @@ ICCtag::getNumbers                                 (MftChain typ)
     inputEnt = icValue(lut16->inputEnt);
     outputEnt = icValue(lut16->outputEnt);
 
-    // Was wird verlangt?
+    // What is requested?
     switch (typ) {
     case MATRIX:
          for (int i = 0; i < 9; i++) {
@@ -938,7 +938,7 @@ ICCtag::getNumbers                                 (MftChain typ)
     outputChan = (int)lut8->outputChan;
     clutPoints = (int)lut8->clutPoints;
 
-    // Was wird verlangt?
+    // What is requested?
     switch (typ) {
     case MATRIX:
          for (int i = 0; i < 9; i++) {
@@ -960,9 +960,9 @@ ICCtag::getNumbers                                 (MftChain typ)
 
   } else if ( getTypName() == "ncl2" ) {
 
-    // 0: Anzahl Farben
-    // 1...n: CIE*Lab Farbwerte
-    // n = 3 * FarbAnzahl
+    // 0: number of colours
+    // 1...n: CIE*Lab colour values
+    // n = 3 * colour number
 
     Ncl2 *ncl2 = (Ncl2*) &data_[8];
 
@@ -975,8 +975,8 @@ ICCtag::getNumbers                                 (MftChain typ)
       DBG_PROG_V( nummern[0] )
       for (int i = 0; i < farben_n; ++i)
       {
-        Ncl2Farbe *f = (Ncl2Farbe*) ((char*)ncl2 + 76 + // Basisgröße von Ncl2
-                       (i * (38 +                 // Basisgröße von Ncl2Farbe
+        Ncl2Farbe *f = (Ncl2Farbe*) ((char*)ncl2 + 76 + // basie size of Ncl2
+                       (i * (38 +                 // base size of Ncl2Farbe
                              geraetefarben_n      // n Ncl2Farbe::geraetefarbe
                              * sizeof(icUInt16Number))));
         nummern[i*3 +0] = icValue(f->pcsfarbe[0])/65280.0;
@@ -1003,8 +1003,8 @@ ICCtag::getText                     (MftChain typ)
   char n[6];
 
 
-  // TODO: prüfen auf icColorSpaceSignature <-> Kanalanzahl
-    // Was wird verlangt?
+  // TODO: check for icColorSpaceSignature <-> channel count
+    // What is requested?
     switch (typ) {
     case TABLE:
     case MATRIX:
@@ -1027,14 +1027,14 @@ ICCtag::getText                     (MftChain typ)
   if (kanaele.size()
    && (texte.size() < (unsigned int)kanaele[0]))
   {
-    // falls "keine Farbe" zu erwarten währe
+    // in case no colour is expected
            if (texte.size() == 1)
            {
              sprintf(n,"%d",1);
              texte[0] = _("Colour");
              texte[0] = texte[0] + n;
            }
-    // Auffüllen
+    // fill
            for (int i = texte.size(); i < kanaele[0]; i++)
            {
              sprintf(n,"%d",i+1);

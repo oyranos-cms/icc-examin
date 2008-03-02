@@ -21,7 +21,7 @@
  * 
  * -----------------------------------------------------------------------------
  *
- * Qualtitaetspruefung anhand von Messdaten welche im Profil vorhanden sind.
+ * qualtity check from measurements, possibly from inside profile itself
  * 
  */
 
@@ -43,7 +43,7 @@
 
 
 #include "icc_utils.h"
-#include <lcms.h> // fuer CGATS lesen
+//#include <lcms.h> // for CGATS reading
 #include "icc_profile.h"
 #include "icc_oyranos.h"
 #include "icc_examin_version.h"
@@ -57,7 +57,7 @@ using namespace icc_examin_ns;
 
 
 /**
-  *  @brief ICCmeasurement Funktionen
+  *  @brief ICCmeasurement functions
   */
 
 int icc_measurement_id_ = 0;
@@ -90,7 +90,7 @@ ICCmeasurement::ICCmeasurement     (const ICCmeasurement& m)
 ICCmeasurement::ICCmeasurement     ()
 {
   DBG_PROG_START
-  WARN_S( "-----------------------  den default Konstruktor nicht benutzen --------------------------" )
+  WARN_S( "-----------------------  dont use the default constructor --------------------------" )
   id_ = icc_measurement_id_++;
   DBG_MEM_V( id_ )
   defaults();
@@ -156,18 +156,18 @@ ICCmeasurement::copy (const ICCmeasurement& m)
   XYZ_measurement_ = m.XYZ_measurement_;
   RGB_measurement_ = m.RGB_measurement_;
   CMYK_measurement_ = m.CMYK_measurement_;
-  // Messwerte
+  // measurments
   XYZ_Satz_ = m.XYZ_Satz_;
   Lab_Satz_ = m.Lab_Satz_;
   RGB_Satz_ = m.RGB_Satz_;
   CMYK_Satz_ = m.CMYK_Satz_;
-  // Profilwerte
+  // profile values
   Feldnamen_ = m.Feldnamen_;
   XYZ_Ergebnis_ = m.XYZ_Ergebnis_;
   Lab_Ergebnis_ = m.Lab_Ergebnis_;
   RGB_MessFarben_ = m.RGB_MessFarben_;
   RGB_ProfilFarben_ = m.RGB_ProfilFarben_;
-  // Ergebnisse
+  // results
   Lab_Differenz_ = m.Lab_Differenz_;
   Lab_Differenz_max_ = m.Lab_Differenz_max_;
   Lab_Differenz_min_ = m.Lab_Differenz_min_;
@@ -215,7 +215,7 @@ ICCmeasurement::load                ( ICCprofile *profil,
                                       ICCtag&     tag )
 { DBG_PROG_START
   profile_ = profil;
-  if (!profile_) WARN_S( "kann nicht initialisieren, Profilreferenz fehlt" )
+  if (!profile_) WARN_S( "cant initialise, profile referenz is missed" )
   //DBG_MEM_V( profile_->hasTagName("targ") << profile_->printLongHeader() )
 
   sig_    = tag._sig;
@@ -224,7 +224,7 @@ ICCmeasurement::load                ( ICCprofile *profil,
   else
     size_ = 0;
   DBG_PROG_V( size_ )
-  // einfach austauschen
+  // simply exchange
   if (data_ != NULL) { free (data_); data_ = NULL; }
   if(size_)
   {
@@ -241,13 +241,13 @@ ICCmeasurement::load                ( ICCprofile *profil,
                                       size_t      size )
 { DBG_PROG_START
   profile_ = profil;
-  if (!profile_) WARN_S( "kann nicht initialisieren, Profilreferenz fehlt" )
+  if (!profile_) WARN_S( "cant initialise, profile referenz is missed" )
 
   if (sig_ != icMaxEnumTag)
     sig_ = icSigCharTargetTag;
 
   size_   = size;
-  // einfach austauschen
+  // simply exchange
   if (!data_) free (data_);
   data_ = (char*) calloc ( size_+1 , sizeof (char) );
   memcpy ( data_ , data , size_ );
@@ -267,18 +267,18 @@ ICCmeasurement::leseTag (void)
   std::string data = cgats.lcms_gefiltert (); DBG_NUM_V( (int*)data_ <<" "<< size_ )
 
   
-  // locale - Kommas unterscheiden (Vorsicht: CgatsFilter veraendert LC_NUMERIC)
+  // locale - differentiate commas (Attention: CgatsFilter changes LC_NUMERIC)
   doLocked_m( const char* loc_alt = setlocale(LC_NUMERIC, NULL);,NULL) //getenv("LANG");
   if(loc_alt) {
     DBG_NUM_V( loc_alt )
   } else {
-    DBG_NUM_S( "keine LANG Variable gefunden" )
+    DBG_NUM_S( "LANG variable not found" )
   }
   setlocale(LC_NUMERIC,"C");
 
   if(data.size())
   {  
-    // korrigierte CGATS Daten -> data_
+    // correct CGATS data -> data_
     if (data_ != NULL) { free (data_); data_ = NULL; }
 
     data_ = (char*) calloc (sizeof(char), data.size()+1);
@@ -293,15 +293,15 @@ ICCmeasurement::leseTag (void)
     //LCMSHANDLE _lcms_it8 = cmsIT8LoadFromMem ( data_, size_ ); DBG_MEM_V( (int*)data_)
 
     const char **SampleNames; DBG_MEM
-    int m = 0; // aktuelle Messung
+    int m = 0; // actual measurement
 
-    // Messfeldanzahl
+    // measurement spot number
     if (nFelder_ == 0
      || nFelder_ == cgats.messungen[m].block_zeilen)
     { DBG_NUM
       nFelder_ = cgats.messungen[m].block_zeilen; DBG_NUM
     } else {
-      WARN_S( "Messfeldanzahl sollte schon uebereinstimmen! " << nFelder_ << "|" << (int)cgats.messungen[m].block_zeilen )
+      WARN_S( "number of measurements should corespond! " << nFelder_ << "|" << (int)cgats.messungen[m].block_zeilen )
       clear();
       return;
     }
@@ -323,7 +323,7 @@ ICCmeasurement::leseTag (void)
       SampleNames[i] = cgats.messungen[m].felder[0][i].c_str();
 
 
-  // Was ist alles da? Wollen wir spaeter die Namen tauschen?
+  // What is all here? Do we want do exchange the names later?
   for (int i = 0; i < _nKanaele; i++) {
     if (strstr(cgats.messungen[m].felder[0][i].c_str(),"SAMPLE_ID") != 0)
       _sample_id = true;
@@ -338,9 +338,9 @@ ICCmeasurement::leseTag (void)
 #   endif
   }
 
-  // Auslesen und Aufbereiten
+  // reding and parsing
   std::vector<std::string> farbkanaele;
-  // muessen lokal bleiben !
+  // locals !
   bool has_Lab = false;
   bool has_XYZ = false;
   bool has_CMYK = false;
@@ -351,32 +351,32 @@ ICCmeasurement::leseTag (void)
     if ((strstr (SampleNames[i], "LAB_L") != 0)
      || (strstr (SampleNames[i], "LAB_A") != 0)
      || (strstr (SampleNames[i], "LAB_B") != 0)) {
-      DBG_PROG_S( "Lab Daten " )
+      DBG_PROG_S( "Lab data " )
       has_Lab = true;
       farbkanaele.push_back(SampleNames[i]);
     } else if ((strstr (SampleNames[i], "XYZ_X") != 0)
             || (strstr (SampleNames[i], "XYZ_Y") != 0)
             || (strstr (SampleNames[i], "XYZ_Z") != 0)) {
-      DBG_PROG_S( "XYZ Daten " )
+      DBG_PROG_S( "XYZ data " )
       has_XYZ = true;
       farbkanaele.push_back(SampleNames[i]);
     } else if ((strstr (SampleNames[i], "CMYK_C") != 0)
             || (strstr (SampleNames[i], "CMYK_M") != 0)
             || (strstr (SampleNames[i], "CMYK_Y") != 0)
             || (strstr (SampleNames[i], "CMYK_K") != 0)) {
-      DBG_PROG_S( "CMYK Daten " )
+      DBG_PROG_S( "CMYK data " )
       has_CMYK = true;
       farbkanaele.push_back(SampleNames[i]);
     } else if ((strstr (SampleNames[i], "RGB_R") != 0)
             || (strstr (SampleNames[i], "RGB_G") != 0)
             || (strstr (SampleNames[i], "RGB_B") != 0)) {
-      DBG_PROG_S( "RGB Daten " )
+      DBG_PROG_S( "RGB data " )
       has_RGB = true;
       farbkanaele.push_back(SampleNames[i]);
     } else if ((strstr (SampleNames[i], "XYY_X") != 0)
             || (strstr (SampleNames[i], "XYY_Y") != 0)
             || (strstr (SampleNames[i], "XYY_CAPY") != 0)) {
-      DBG_PROG_S( "xyY Daten " )
+      DBG_PROG_S( "xyY data " )
       has_xyY = true;
       farbkanaele.push_back(SampleNames[i]);
     } else {
@@ -385,7 +385,7 @@ ICCmeasurement::leseTag (void)
 
   } DBG_PROG
 
-  // Variablen
+  // variables
   int farben = 0;
   if (has_Lab) {farben++; LAB_measurement_ = true; }
   if (has_XYZ) {farben++; XYZ_measurement_ = true; }
@@ -394,12 +394,12 @@ ICCmeasurement::leseTag (void)
   if (has_xyY) farben++;
 
 
-  // vorlaeufige lcms Farbnamen listen
+  // list lcms colour names
     Feldnamen_.resize(nFelder_);
     DBG_PROG_V( nFelder_ )
     for (int k = 0; k < nFelder_; k++) {
       if (_id_vor_name
-       && (getTagName() != "DevD")) {// Name ignorieren
+       && (getTagName() != "DevD")) {// ignore names
         char *text = (char*) calloc (sizeof(char), 12);
         sprintf (text, "%d", k+1);
         Feldnamen_[k] = text;
@@ -418,9 +418,9 @@ ICCmeasurement::leseTag (void)
 
   DBG_NUM_V( has_XYZ << has_Lab << has_RGB << has_CMYK )
 
-  // Farben auslesen
+  // read colours
   if (has_XYZ)
-  { DBG_PROG // keine Umrechnung noetig
+  { DBG_PROG // no calculation required
     XYZ_Satz_.resize(nFelder_);
     for (int i = 0; i < nFelder_; i++) {
       for (int j = 0; j < _nKanaele; ++j) {
@@ -434,7 +434,7 @@ ICCmeasurement::leseTag (void)
     }
   }
   if (has_Lab)
-  { DBG_PROG // keine Umrechnung noetig
+  { DBG_PROG // no calculation required
     Lab_Satz_.resize(nFelder_);
     for (int i = 0; i < nFelder_; i++) {
       for (int j = 0; j < _nKanaele; ++j) {
@@ -447,7 +447,7 @@ ICCmeasurement::leseTag (void)
       }
     }
   }
-  if (has_RGB) { DBG_PROG // keine Umrechnung noetig
+  if (has_RGB) { DBG_PROG // no calculation required
     RGB_Satz_.resize(nFelder_);
     for (int i = 0; i < nFelder_; i++) {
       for (int j = 0; j < _nKanaele; ++j) {
@@ -460,7 +460,7 @@ ICCmeasurement::leseTag (void)
       }
     }
   }
-  if (has_CMYK) { DBG_PROG // keine Umrechnung noetig
+  if (has_CMYK) { DBG_PROG // no calculation required
     CMYK_Satz_.resize(nFelder_);
     for (int i = 0; i < nFelder_; i++) {
       for (int j = 0; j < _nKanaele; ++j) {
@@ -477,14 +477,14 @@ ICCmeasurement::leseTag (void)
   }
 
 
-  // Farbnamen nach Geschmack (unmittelbar vor cmsIT8Free !)
+  // colour names of taste
   if (_id_vor_name) {
     for (int i = 0; i < nFelder_; i++) {
       for (int j = 0; j < _nKanaele; ++j) {
         if( SampleNames[j] == "SAMPLE_NAME" )
           Feldnamen_[i] = cgats.messungen[m].block[i][j].c_str();
       }
-    } DBG_NUM_S (Feldnamen_[0] <<" bis "<< Feldnamen_[nFelder_-1] <<" "<< nFelder_)
+    } DBG_NUM_S (Feldnamen_[0] <<" to "<< Feldnamen_[nFelder_-1] <<" "<< nFelder_)
   }
 
   DBG_NUM_V( XYZ_Satz_.size() )
@@ -509,7 +509,7 @@ ICCmeasurement::init (void)
   if( profile_->data_type == ICCprofile::ICCcorruptedprofileDATA )
     return;
 
-  if (!profile_) WARN_S( "kann nicht initialisieren, Profilreferenz fehlt; id: "<<id_<<" profil: "<< (int*)profile_ )
+  if (!profile_) WARN_S( "cant initialise, profile referenz missed; id: "<<id_<<" profile: "<< (int*)profile_ )
 
   if (profile_->hasTagName("targ")) {
     load (profile_, profile_->getTag(profile_->getTagIDByName("targ")));
@@ -742,13 +742,13 @@ ICCmeasurement::init_umrechnen                     (void)
   { int maxFeld=0, minFeld=0;
     const char *maxFN=0, *minFN=0;
     if (nFelder_ != (int)XYZ_Satz_.size()) {
-      DBG_PROG_S("Messfeldanzahl divergiert");
+      DBG_PROG_S("divergine measurement count");
     }
 
     int m = nFelder_ < (int)XYZ_Satz_.size() ? nFelder_ : (int)XYZ_Satz_.size();
     if(!m && isICCDisplay_)
       WARN_S("No XYZ data available. Dont support this display profile?");
-    DBG_PROG_S( "Felder: " << m )
+    DBG_PROG_S( "fields: " << m )
 
     for (int i = 0; i < m; i++)
     { 
@@ -789,11 +789,11 @@ ICCmeasurement::init_umrechnen                     (void)
     if (getColorSpaceName(profile_->header.colorSpace()) != "Rgb"
      && getColorSpaceName(profile_->header.colorSpace()) != "Cmyk")
     {
-      WARN_S("unterschiedliche Messdaten und Profilfarbraum ")
+      WARN_S("different mesurement- and profile colour space ")
       DBG_PROG_V( getColorSpaceName(profile_->header.colorSpace()) )
     }
 
-    // ein passendes Bildschirm- / Darstellungsprofil aussuchen
+    // select a fitting monitor- / displayprofile
     if(!export_farben)
     {
 #     ifdef HAVE_OY
@@ -807,7 +807,7 @@ ICCmeasurement::init_umrechnen                     (void)
         hsRGB = cmsOpenProfileFromMem(const_cast<char*>(block), groesse);
       DBG_PROG_S( icc_oyranos.moni_name( x,y ) << " Farben" )
 #     endif
-    } else { DBG_PROG_S( "Export Farben" ); }
+    } else { DBG_PROG_S( "Export colours" ); }
 
     if(!hsRGB)
     {
@@ -817,9 +817,9 @@ ICCmeasurement::init_umrechnen                     (void)
     hLab = cmsCreateLabProfile (cmsD50_xyY());
     hXYZ = cmsCreateXYZProfile ();
 
-    if( !hXYZ ) WARN_S("hXYZ ist leer")
-    if( !hLab ) WARN_S("hLab ist leer")
-    if( !hsRGB ) WARN_S("hsRGB ist leer")
+    if( !hXYZ ) WARN_S("hXYZ is empty")
+    if( !hLab ) WARN_S("hLab is empty")
+    if( !hsRGB ) WARN_S("hsRGB is empty")
 
 #   if 0
 #   define BW_COMP cmsFLAGS_WHITEBLACKCOMPENSATION
@@ -832,7 +832,7 @@ ICCmeasurement::init_umrechnen                     (void)
       const char* block = 0;
       block = const_cast<char*>( icc_oyranos.proof(groesse) );
       hProof = cmsOpenProfileFromMem(const_cast<char*>(block), groesse);
-      if( !hProof ) WARN_S("hProof ist leer")
+      if( !hProof ) WARN_S("hProof is empty")
     }
 
     if ((RGB_measurement_ ||
@@ -847,7 +847,7 @@ ICCmeasurement::init_umrechnen                     (void)
       if( profile_->size() )
         hCOLOUR = cmsOpenProfileFromMem (const_cast<char*>(profile_->data_),
                                          profile_->size_);
-      else { // Alternative
+      else { // alternative
         size_t groesse = 0;
         const char* block = 0;
 #       ifdef HAVE_OY
@@ -860,28 +860,28 @@ ICCmeasurement::init_umrechnen                     (void)
         DBG_PROG_V( groesse )
 
         if( !groesse ) {
-          WARN_S("kein passendes voreingestelltes Profil gefunden")
+          WARN_S("no suitable default profile found")
           goto Kein_Profil; //TODO
         } else
           hCOLOUR = cmsOpenProfileFromMem(const_cast<char*>(block), groesse);
       }
       if( !hCOLOUR )
-        WARN_S("hCOLOUR ist leer")
+        WARN_S("hCOLOUR is empty")
 
       fortschritt(0.1 , 0.2);
-      // Wie sieht das Profil die Messfarbe? -> XYZ
+      // How dees the profile the measurement colour? -> XYZ
       hCOLOURtoXYZ =  cmsCreateTransform (hCOLOUR, TYPE_nCOLOUR_DBL,
                                     hXYZ, TYPE_XYZ_DBL,
                                     INTENT_ABSOLUTE_COLORIMETRIC,
                                     PRECALC|BW_COMP);
       fortschritt(0.1, 0.2);
-      // Wie sieht das Profil die Messfarbe? -> Lab
+      // How dees the profile the measurement colour? -> Lab
       hCOLOURtoLab =  cmsCreateTransform (hCOLOUR, TYPE_nCOLOUR_DBL,
                                     hLab, TYPE_Lab_DBL,
                                     INTENT_ABSOLUTE_COLORIMETRIC,
                                     PRECALC|BW_COMP);
       fortschritt(0.15, 0.2);
-      // Wie sieht das Profil die Messfarbe? -> Bildschirmdarstellung
+      // How dees the profile the measurement colour? -> monitor
       hCOLOURtoRGB =  cmsCreateProofingTransform (hCOLOUR, TYPE_nCOLOUR_DBL,
                                     hsRGB, TYPE_RGB_DBL,
                                     hProof,
@@ -895,13 +895,13 @@ ICCmeasurement::init_umrechnen                     (void)
     Kein_Profil:
     if (XYZ_measurement_ || LAB_measurement_)
     {
-      // Wie sieht das Messgeraet die Messfarbe? -> Lab
+      // How sees the measurement device the measurement colour? -> Lab
       hXYZtoLab = cmsCreateTransform (hXYZ, TYPE_XYZ_DBL,
                                     hLab, TYPE_Lab_DBL,
                                     INTENT_ABSOLUTE_COLORIMETRIC,
                                     PRECALC|BW_COMP);
 
-      // Wie sieht die CMM die Messfarbe? -> Bildschirmdarstellung
+      // How sees the CMM the measurement colour? -> monitor
       hLabtoRGB = cmsCreateProofingTransform (hLab, TYPE_Lab_DBL,
                                     hsRGB, TYPE_RGB_DBL,
                                     hProof,
@@ -938,13 +938,13 @@ ICCmeasurement::init_umrechnen                     (void)
       RGB_ProfilFarben_.resize(nFelder_);
 
       if( (int)XYZ_Satz_.size() != nFelder_ )
-        DBG_PROG_S("XYZ_Satz_.size() und nFelder_ sind ungleich")
+        DBG_PROG_S("XYZ_Satz_.size() and nFelder_ are unequal")
       if( (int)Lab_Satz_.size() != nFelder_ )
-        DBG_PROG_S("Lab_Satz_.size() und nFelder_ sind ungleich")
+        DBG_PROG_S("Lab_Satz_.size() and nFelder_ are unequal")
       if( RGB_Satz_.size() && (int)RGB_Satz_.size() != nFelder_ )
-        WARN_S("RGB_Satz_.size() und nFelder_ sind ungleich")
+        WARN_S("RGB_Satz_.size() and nFelder_ are unequal")
       if( CMYK_Satz_.size() && (int)CMYK_Satz_.size() != nFelder_ )
-        WARN_S("CMYK_Satz_.size() und nFelder_ sind ungleich")
+        WARN_S("CMYK_Satz_.size() and nFelder_ are unequal")
       for (int i = 0; i < nFelder_; i++)
       {
         if (XYZ_measurement_ || LAB_measurement_)
@@ -952,7 +952,7 @@ ICCmeasurement::init_umrechnen                     (void)
           if (XYZ_measurement_)
           {
           if (isICCDisplay_) {
-            // Messfarben auf Weiss und Schwarz addaptiert
+            // adapt measurement to white and black
             XYZ[0] = (XYZ_Satz_[i].X-min[0])/(max[0]-min[0])*WP[0];
             XYZ[1] = (XYZ_Satz_[i].Y-min[1])/(max[1]-min[1])*WP[1];
             XYZ[2] = (XYZ_Satz_[i].Z-min[2])/(max[2]-min[2])*WP[2];
@@ -985,7 +985,7 @@ ICCmeasurement::init_umrechnen                     (void)
              CMYK_measurement_))
         {
 
-          // Profilfarben
+          // profile colours
           if (RGB_measurement_) {
             //for (int n = 0; n < channels_; n++)
             Farbe[0] = RGB_Satz_[i].R*100.0; DBG_MESS_V( RGB_Satz_[i].R )
@@ -1009,7 +1009,7 @@ ICCmeasurement::init_umrechnen                     (void)
 
           if(Lab_Satz_.size())
           {
-            // geometrische Farbortdifferenz - dE CIE*Lab
+            // geometric colour differenze - dE CIE*Lab
             double cie_erg[3], cie_satz[3];
             LabToCIELab( Lab_Ergebnis_[i], cie_erg );
             LabToCIELab( Lab_Satz_[i], cie_satz );
@@ -1056,7 +1056,7 @@ ICCmeasurement::init_umrechnen                     (void)
     if(hXYZ) cmsCloseProfile (hXYZ);
     if(hProof) cmsCloseProfile (hProof);
   } else
-    WARN_S("keine RGB/CMYK und XYZ Messdaten gefunden")
+    WARN_S("no RGB/CMYK and XYZ measurements found")
 
   for (unsigned int i = 0; i < Lab_Differenz_.size(); i++) {
     Lab_Differenz_Durchschnitt_ += Lab_Differenz_[i];
@@ -1078,12 +1078,12 @@ ICCmeasurement::init_umrechnen                     (void)
 std::string
 ICCmeasurement::getHtmlReport                     (bool aussen)
 { DBG_PROG_START
-  char SF[] = "#cccccc";  // standard Hintergrundfarbe
-  char HF[] = "#aaaaaa";  // hervorgehoben
+  char SF[] = "#cccccc";  // standard background colours
+  char HF[] = "#aaaaaa";  // emphasised
 # define LAYOUTFARBE  if (layout[l++] == true) \
                         html << HF; \
                       else \
-                        html << SF; //Farbe nach Layoutoption auswaehlen
+                        html << SF; // select colour after layout option
   int l = 0;
   std::stringstream html; DBG_NUM_V( RGB_MessFarben_.size() )
 
@@ -1106,12 +1106,12 @@ ICCmeasurement::getHtmlReport                     (bool aussen)
   html << "<meta name=\"author\" content=\"automatic generated by icc_examin-" << ICC_EXAMIN_V << "\">\n";
   html << "</head><body bgcolor=\"" << SF << "\" text=\"#000000\">" << endl << endl;
 
-  int kopf = (int)reportTabelle_.size() - nFelder_;  // Kopf ueber Tabelle
+  int kopf = (int)reportTabelle_.size() - nFelder_;  // head over table
   if (kopf < 0) kopf = (int)reportTabelle_.size();
-  int tkopf = 1;  // Tabellenkopf
+  int tkopf = 1;  // tablen head
   if (reportTabelle_.size() <= 1)
     tkopf = 0;
-  // Allgemeine Informationen
+  // common informations
   html << dateiName( profile_->filename() ) << ":<br>";
   for (int i = 0; i < kopf - tkopf ; i++) { DBG_NUM_S (nFelder_<<"|"<<kopf<<"|"<<i)
     //if (i == 0) html << "<h2>";
@@ -1126,15 +1126,15 @@ ICCmeasurement::getHtmlReport                     (bool aussen)
   html <<       "<table align=left cellpadding=\"2\" cellspacing=\"0\" border=\"0\" width=\"90%\" bgcolor=\"" << SF << "\">\n";
   html <<       "<thead> \n";
   html <<       "  <tr> \n";
-  // Tabellenkopf
-  int s = 0;           // Spalten
-  int f = 0;           // Spalten fuer Farben
+  // tablen head
+  int s = 0;           // cols
+  int f = 0;           // cols for colours
   if (XYZ_Satz_.size() && RGB_MessFarben_.size() == XYZ_Satz_.size()) {
     f = 2;
   } DBG_PROG_V( reportTabelle_.size() )
   DBG_PROG_V( reportTabelle_[reportTabelle_.size()-1][0]<<" "<<kopf<<" "<<tkopf)
   l = 0;
-  if(tkopf)            // ohne Tabellenkopf keine Tabelle
+  if(tkopf)            // wothout table head no table
   for (s = 0; s < (int)reportTabelle_  [kopf - tkopf].size() + f; s++) {
     if (s < f) {
       if (s == 0) {
@@ -1150,7 +1150,7 @@ ICCmeasurement::getHtmlReport                     (bool aussen)
   html <<       "  </tr>\n";
   html <<       "</thead>\n<tbody>\n";
 
-  // Messfelder
+  // measurements fields
 # define  NACH_HTML(satz,kanal) \
           sprintf (farbe, "%x", (int)(satz[z].kanal*mult+0.5)); \
           if (strlen (farbe) == 1) \
@@ -1161,12 +1161,12 @@ ICCmeasurement::getHtmlReport                     (bool aussen)
 
   char farbe[17];
   double mult = 256.0;
-  if(tkopf)            // ohne Tabellenkopf keine Tabelle
+  if(tkopf)            // without table head no table
   for (int z = 0; z < nFelder_; z++) {
     html <<     "  <tr>\n";
     l = 0;
     for (s = 0; s < (int)reportTabelle_[kopf - tkopf].size() + f; s++) {
-      if (s < f) { // Farbdarstellung
+      if (s < f) { // colour representation
         html << "    <td width=\"20\" bgcolor=\"#"; 
         farbe[0] = 0;
         if (s == 0) {
@@ -1206,18 +1206,18 @@ ICCmeasurement::getText                     (void)
   if (RGB_MessFarben_.size() == 0)
     init ();
 
-  // push_back ist zu langsam
+  // push_back is too slow
   std::vector<std::vector<std::string> > tabelle (1);
   std::stringstream s;
-  int z = 0; // Zeilen
+  int z = 0; // rows
 
   tabelle[0].resize(1);
   tabelle[0][0] = _("no measurment data or correct profile conversion available");
 
   if ((CMYK_measurement_ || RGB_measurement_)
        && (XYZ_measurement_ || LAB_measurement_)) {
-    tabelle.resize(nFelder_+5); // push_back ist zu langsam
-    // Tabellenueberschrift
+    tabelle.resize(nFelder_+5); // push_back is too slow
+    // table head line
     tabelle[0].resize(1);
     tabelle[0][0] =    _("Measurment- and profile colours from <b>"); 
     if (RGB_measurement_)
@@ -1235,14 +1235,14 @@ ICCmeasurement::getText                     (void)
     s << "___________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________";
     tabelle[z][0] = s.str();
     z++;
-    // Tabellenkopf
+    // table head
     int spalten, sp = 0, xyz_erg_sp = 0;
     int h = false;
     if (XYZ_Ergebnis_.size() == XYZ_Satz_.size())
       xyz_erg_sp = 3;
-#   define HI (h == true) ? h-- : h++ // invertieren
+#   define HI (h == true) ? h-- : h++ // invert
     layout.clear();
-    layout.push_back (HI); // Messfeld
+    layout.push_back (HI); // measurement
     layout.push_back (HI); // dE Lab
     layout.push_back (HI); // dE2000
     layout.push_back (h); layout.push_back (h); layout.push_back (HI); // Lab
@@ -1286,7 +1286,7 @@ ICCmeasurement::getText                     (void)
       tabelle[z][sp++] = _("K");
     } DBG_PROG_V( z <<" "<< nFelder_ <<" "<< tabelle.size() )
     z++;
-    // Messwerte
+    // measurements
     s.str("");
 #   define DBG_TAB_V(txt)
     for (int i = 0; i < nFelder_; i++) { 
@@ -1376,7 +1376,7 @@ ICCmeasurement::getMessRGB                  (int patch)
     init ();
 
   if (patch > nFelder_) {
-    WARN_S( "Patch Nr: " << patch << " ausserhalb des Messfarbsatzes" )
+    WARN_S( "Patch No: " << patch << " outside the measurment set" )
     DBG_MESS_ENDE
     return punkte;
   }
@@ -1398,7 +1398,7 @@ ICCmeasurement::getCmmRGB                   (int patch)
     init ();
 
   if (patch > nFelder_) {
-    WARN_S( "Patch Nr: " << patch << " ausserhalb des Messfarbsatzes" )
+    WARN_S( "Patch No: " << patch << " outside the measurement set" )
     DBG_MESS_ENDE
     return punkte;
   }
@@ -1420,7 +1420,7 @@ ICCmeasurement::getMessLab                  (int patch)
     init ();
 
   if (patch > nFelder_) {
-    WARN_S( "Patch Nr: " << patch << " ausserhalb des Messfarbsatzes" )
+    WARN_S( "Patch No: " << patch << " ausserhalb des Messfarbsatzes" )
     DBG_MESS_ENDE
     return punkte;
   }
@@ -1442,7 +1442,7 @@ ICCmeasurement::getCmmLab                   (int patch)
     init ();
 
   if (patch > nFelder_) {
-    WARN_S( "Patch Nr: " << patch << " ausserhalb des Messfarbsatzes" )
+    WARN_S( "Patch Nr: " << patch << " outside the measurement set" )
     DBG_MESS_ENDE
     return punkte;
   }

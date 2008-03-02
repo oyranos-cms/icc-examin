@@ -22,7 +22,7 @@
  * -----------------------------------------------------------------------------
  */
 
-/*  eine Klasse mit thread Ueberwachungsmöglichkeit
+/*  a class with thread observer capabilities
  * 
  */
 
@@ -40,7 +40,7 @@ icc_examin_ns::ThreadDaten::frei(int freigeben)
   {
     frei_ = true;
     --zahl_;
-    DBG_THREAD_S( "freigeben " << zahl_ )
+    DBG_THREAD_S( "unlock " << zahl_ )
 
   } else {
 
@@ -66,7 +66,7 @@ icc_examin_ns::ThreadDaten::frei(int freigeben)
 
     frei_ = false;
     ++zahl_;
-    DBG_THREAD_S( "sperren   " << zahl_ )
+    DBG_THREAD_S( "lock   " << zahl_ )
   }
 
   DBG_PROG_ENDE

@@ -21,7 +21,7 @@
  * 
  * -----------------------------------------------------------------------------
  *
- * Inhalt fuer das informative "Über" Fenster.
+ * content for the informative "About" window.
  * 
  */
 

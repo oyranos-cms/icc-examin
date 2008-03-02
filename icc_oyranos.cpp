@@ -21,7 +21,7 @@
  * 
  * -----------------------------------------------------------------------------
  *
- * Der CMS Sortierer.
+ * The CMS sorter.
  * 
  */
 
@@ -66,16 +66,16 @@ void* myAllocFunc(size_t size)
 Oyranos icc_oyranos;
 
 
-        /* Konzepte:
+        /* concepts:
          *   o - oyInit() initialisiert die Bibliothek und erlaubt das lesen von
          *       Zeigern
          *     - oyQuit() beraeumt all diese
-         *   o ein Objekt pro Profil (void* cmsOpen(...) ; cmsClose(void*))
-         *       dies bleibt ein CMM Architektur vorbehalten
-         *   o ein C++ Wrapper fuer liboyranos wie mit Oyranos oyranos
-         *       oyranos als C++ Header exportieren
-         *   o alles dem Benutzer ueberlassen (C free())
-         *       im Prototyp hier   
+         *   o one object per profile (void* cmsOpen(...) ; cmsClose(void*))
+         *       this will wait until a CMM architecture is ready
+         *   o a C++ wrapper for liboyranos as with Oyranos oyranos
+         *       export oyranos with a C++ header
+         *   o leave all to the user (C free())
+         *       in prototyp here   
          *   o sich auf reine Namensnennung beschraenken --
          */
 
@@ -92,7 +92,7 @@ Oyranos::~Oyranos()
   DBG_PROG_ENDE
 }
 
-// nur in icc_oyranos.cpp zu verwendende Typen
+// local types in icc_oyranos.cpp
 typedef std::map<std::string,Speicher> Prof_map;
 typedef std::map<std::string,Speicher>::iterator Prof_mapIt;
 typedef std::pair<std::string,Speicher> Prof_Map_elem;
@@ -123,12 +123,12 @@ Oyranos::profil_test_ (const char* profil_name)
       fehler = oyCheckProfile( profil_name, 0 );
       if( !fehler )
       {
-        // leeren Block einfuegen
+        // insert empty block
         Prof_Map_elem teil (profil_name, Speicher());
         Prof_mapIt_bool erg = pspeicher_ .insert( teil );
         if( erg.second = true )
         {
-          // Referenz auf Block holen
+          // get referenz to block
           Speicher *v_block = &pspeicher_[profil_name];
           *v_block = profil_name;
           size_t size;
@@ -137,7 +137,7 @@ Oyranos::profil_test_ (const char* profil_name)
           v_block->ladeNew(block, size);
         }
       }
-    } else // Profil in Liste
+    } else // profile in list
     {
       //Speicher *v_block = &pspeicher_[profil_name];
       // ...
@@ -202,7 +202,7 @@ MyFlattenProfileProc (
    void *data, 
    void *refCon)
 {
-  // Alle Bestandteile einsammeln
+  // collect all parts
   if(*size)
   {
     refcon *ref = (refcon*) refCon;
@@ -231,7 +231,7 @@ MyFlattenProfileProcSize (
    void *data, 
    void *refCon)
 {
-  // Alle Bestandteile einsammeln
+  // collect all parts
   if(*size)
   {
     refcon *ref = (refcon*) refCon;
@@ -351,9 +351,9 @@ Oyranos::moni_test_ (int x, int y)
       DBG_MEM_V( v_block.size() )
     const char *profil_name=_("Monitor Profile");
       DBG_PROG_V( (int*)profil_name <<" "<< profil_name )
-    // Wir holen das Profil wenn es sich geaendert hat.
-    // a) neuer Name  - schwierig zu identifizieren ueber oyDeviceProfil
-    // b) Benachrichtigung  - vorausgesetzt Oyranos (X?) aendert das Profil
+    // We take the profile only if it had changed.
+    // a) new name  - difficult to identify with oyDeviceProfil
+    // b) notification  - provided Oyranos (X?) changes the profile
     { 
         if (size)
         {
@@ -365,12 +365,12 @@ Oyranos::moni_test_ (int x, int y)
             v_block.ladeNew(block, size);
           }
         } else
-          DBG_S(_("Could not load profile."))
+          DBG_S("Could not load profile.")
         v_block = (const char*)profil_name;
         DBG_MEM
     }
   }
-  DBG_NUM_S( "Monitorprofil = "<< moni_.name() <<" "<< moni_.size() <<"\n" )
+  DBG_NUM_S( "monitor profile = "<< moni_.name() <<" "<< moni_.size() <<"\n" )
 
 # else
 #   ifdef APPLE
@@ -448,7 +448,7 @@ Oyranos::moni_test_ (int x, int y)
           }
         } else
           WARN_S(_("WARNING: Could not load profile."))
-        // "Monitor Profile" wird woanders speziell behandelt
+        // "Monitor Profile" will be handled special on other places
         v_block = _("Monitor Profile");//profil_name;
         //if(profil_name) free(profil_name);
         DBG_PROG_V( v_block.name() )
@@ -660,7 +660,7 @@ Oyranos::setzeMonitorProfil (const char* profil_name , int x, int y )
   //if( !display )
     //display = XOpenDisplay(0);
 
-  display_name = XDisplayString( fl_display );  // gehoert X
+  display_name = XDisplayString( fl_display );  // belongs to X
   DBG_PROG_V( display_name <<" "<< strlen(display_name) )
 
 # ifndef HAVE_FLTK
@@ -698,7 +698,7 @@ Oyranos::moniInfo (int x, int y, int *num)
 # ifdef HAVE_X
   //static Display *display=0;
 
-  display_name = XDisplayString( fl_display );  // gehoert FLTK
+  display_name = XDisplayString( fl_display );  // belongs to FLTK
   DBG_PROG_V( display_name <<" "<< strlen(display_name) )
 # endif
   infos = (char**) new char* [6];
@@ -741,25 +741,25 @@ Oyranos::moniInfo (int x, int y, int *num)
   return infos;
 }
 
-/** erzeugt eine Farbhuelle */
+/** generates a gamut hull */
 std::string
 Oyranos::netzVonProfil_ (std::vector<ICCnetz> & netze,
                Speicher & profil,
                int intent, int bpc)
 {
   DBG_PROG_START
-  // eine Flaeche aus sechs Quadraten mit den Flaechen das Lab Wuerfels
-  // wird in den Profilfarbraum imgewandelt und in ein Netz umgewandelt
-  int a = 12; // Aufloesung : 10 - schnell; 20 - genauer
+  // a cubus from six squares with the range of the Lab cube
+  // will be transformed to a profile colour space and converted to a mesh
+  int a = 12; // resolution : 10 - more quick; 20 - more precise
   size_t  size = 4*a*(a+1) + 2*(a-1)*(a-1);
   int     kanaele = 3;
   double *lab = new double [size*kanaele];
   double  min = 0.01, max = 0.99;
-  // Mantel
+  // side quares
   for(int y = 0; y <= a; ++y)
     for(int x = 0; x < 4 * a; ++x)
     {
-      int b = 0; // Bereich
+      int b = 0; // area
       int pos = (y * 4 * a + x) * kanaele;
 
       lab[pos + 0] = 1.0 - (double)y/(double)a;
@@ -778,12 +778,12 @@ Oyranos::netzVonProfil_ (std::vector<ICCnetz> & netze,
         lab[pos + 2] = max - (x - (b - 1) * a)/(double)a * (max-min);
       }
     }
-  // Deckel und Boden
+  // buttom and top square
   for(int y = 0; y < (a - 1); ++y)
     for(int x = 0; x < 2 * (a - 1); ++x)
     {
       int pos = (4 * a * (a + 1)  +  y * 2 * (a - 1) + x) * kanaele;
-      int b = 0; // Bereich
+      int b = 0; // area
       int x_pos = x + 1, y_pos = y + 1;
       double val = (double)y_pos/(double)a * (max-min);
 
@@ -802,9 +802,9 @@ Oyranos::netzVonProfil_ (std::vector<ICCnetz> & netze,
     return  std::string("oyranos");
   double * rgb = wandelLabNachBildschirmFarben( lab, size, 0, 0 );
 
-  // Netz initialisieren
+  // initialise mesh
   netze.resize(1);
-  // Farbpunkte sammeln
+  // collect colour points
   netze[0].punkte. resize( size );
   for(size_t i = 0; i < size; ++i)
   {
@@ -815,7 +815,7 @@ Oyranos::netzVonProfil_ (std::vector<ICCnetz> & netze,
     }
     netze[0].punkte[i].farbe[kanaele] = 1.0;
   }
-  // Netze bauen
+  // build mesh
   char *liste = new char [size];
   memset( liste, 1, size );
 
@@ -878,7 +878,7 @@ Oyranos::netzVonProfil_ (std::vector<ICCnetz> & netze,
     for(int x = 0; x < 2 * a; ++x)
     {
       int x_ = x + off;
-      int b = 0; // Bereich
+      int b = 0; // area
 
           // 1 0 0 (L a b)
           index_p.second.i[0] = 4*a-1;   index_p.second.i[1] = off;
@@ -953,7 +953,7 @@ Oyranos::netzVonProfil_ (std::vector<ICCnetz> & netze,
                                          index_p.second.i[2] = off-3*a+0;
           netze[0].indexe. insert( index_p );
 
-      // unterer Rand
+      // lower border
       if( y == 0 )
       {
         if(x == 0) {
@@ -996,14 +996,14 @@ Oyranos::netzVonProfil_ (std::vector<ICCnetz> & netze,
           index_p.second.i[2] = 4*a*(a+1)-4*a + x-a-1; index_p.second.i[0] = 4*a*(a+1)-4*a + x-a;
           netze[0].indexe. insert( index_p );
         }
-      // oberer Rand
+      // upper border
       } else if( y == a - 1 )
       {
         if(x == 0) {
         }
       } else if(b * (a - b) <= x && x < ++b * a - b - 1) {
 
-        // oberes Mittelfeld (*L=0.0)
+        // upper middle field (*L=0.0)
         index_p.second.i[0] = (y-1) *  2*(a-1)+x_; index_p.second.i[2] =  (y-1)*2*(a-1)+x_+1;
         index_p.second.i[1] = (y+0)*2*(a-1)+x_;
         netze[0].indexe. insert( index_p );
@@ -1013,7 +1013,7 @@ Oyranos::netzVonProfil_ (std::vector<ICCnetz> & netze,
         netze[0].indexe. insert( index_p );
 
       } else if(b * (a - b) <= x && x < ++b * a - b - 1) {
-        // unteres Mittelfeld (*L=1.0)
+        // lower middle field (*L=1.0)
         index_p.second.i[0] = (y-1) *  2*(a-1)+x_; index_p.second.i[1] =  (y-1)*2*(a-1)+x_+1;
         index_p.second.i[2] = (y+0)*2*(a-1)+x_;
         netze[0].indexe. insert( index_p );
@@ -1157,7 +1157,7 @@ Oyranos::gamutCheckAbstract(Speicher & s, Speicher & abstract,
 
       fortschritt(0.2, 0.2);
       hLab  = cmsCreateLabProfile(cmsD50_xyY());
-      if(!hLab)  WARN_S( "hLab Profil nicht geoeffnet" )
+      if(!hLab)  WARN_S( "hLab profil not opened" )
 
       fortschritt(0.2, 0.2);
       profil = cmsOpenProfileFromMem(const_cast<char*>(block), groesse);
@@ -1179,7 +1179,7 @@ Oyranos::gamutCheckAbstract(Speicher & s, Speicher & abstract,
       _cmsSaveProfile ( gmt,"proof_gamut.icc"); DBG
 #endif
 
-      // Wir berechnen die Farbhuellwarnung fuer ein abstraktes Profil
+      // We calculate the gamut warning for a abstract profile
       cmsHPROFILE tmp = cmsTransform2DeviceLink(tr1,0);
       fortschritt(0.2,0.2);
       LPLUT gmt_lut = cmsAllocLUT(),
@@ -1221,7 +1221,7 @@ Oyranos::wandelProfilNachLabUndZurueck(double *lab, // 0.0 - 1.0
 
   DBG_PROG_V( size <<" "<< intent <<" "<< flags )
 
-    // lcms Typen
+    // lcms types
     cmsHPROFILE hProfil = 0,
                 hLab = 0;
     cmsHTRANSFORM form = 0;
@@ -1235,7 +1235,7 @@ Oyranos::wandelProfilNachLabUndZurueck(double *lab, // 0.0 - 1.0
     {
       flags_ = flags & ~cmsFLAGS_GAMUTCHECK;
 
-      // Initialisierung fuer lcms
+      // initialising for lcms
       DBG_MEM_V( (int*) block <<" "<<groesse )
 
       if(groesse)
@@ -1267,7 +1267,7 @@ Oyranos::wandelProfilNachLabUndZurueck(double *lab, // 0.0 - 1.0
         if(device == icSigInputClass && 
            kanaele == 3)
         {
-          // gleich Farben benutzen
+          // use colours instantly
           input_ausnahme = 1;
 
         } else {
@@ -1289,7 +1289,7 @@ Oyranos::wandelProfilNachLabUndZurueck(double *lab, // 0.0 - 1.0
       cmsDoTransform (form, cielab, farben, size);
       cmsDeleteTransform (form);
     } else {
-      memcpy( farben, cielab, size * kanaele * sizeof(double)); // wieso cielab?
+      memcpy( farben, cielab, size * kanaele * sizeof(double)); // why cielab?
     }
 
     form = cmsCreateTransform                 (hProfil, format,
@@ -1322,7 +1322,7 @@ Oyranos::wandelLabNachBildschirmFarben(double *Lab_Speicher, // 0.0 - 1.0
 
   DBG_PROG_V( size <<" "<< intent <<" "<< flags )
 
-    // lcms Typen
+    // lcms types
     cmsHPROFILE hMoni = 0,
                 hLab = 0,
                 hProof = 0;
@@ -1372,7 +1372,7 @@ Oyranos::wandelLabNachBildschirmFarben(double *Lab_Speicher, // 0.0 - 1.0
         *form = 0;
       }
 
-      // Initialisierung fuer lcms
+      // initialising for lcms
       DBG_MEM_V( (int*) block <<" "<<groesse )
 
       fortschritt(0.2,0.2);
@@ -1380,9 +1380,9 @@ Oyranos::wandelLabNachBildschirmFarben(double *Lab_Speicher, // 0.0 - 1.0
         hMoni = cmsOpenProfileFromMem(block, groesse);
       else
         hMoni = cmsCreate_sRGBProfile();
-      if(!hMoni) WARN_S( "hMoni Profil nicht geoeffnet" )
+      if(!hMoni) WARN_S( "hMoni profile nicht opened" )
       hLab  = cmsCreateLabProfile(cmsD50_xyY());
-      if(!hLab)  WARN_S( "hLab Profil nicht geoeffnet" )
+      if(!hLab)  WARN_S( "hLab profile not opened" )
 
       if(flags & cmsFLAGS_GAMUTCHECK)
       {
@@ -1393,11 +1393,11 @@ Oyranos::wandelLabNachBildschirmFarben(double *Lab_Speicher, // 0.0 - 1.0
       fortschritt(0.5,0.2);
       *form = cmsCreateProofingTransform  (hLab, TYPE_Lab_DBL,
                                                hMoni, TYPE_RGB_DBL,
-                                               hProof, // Simulationsprofil
+                                               hProof, // simulation profile
                                                intent,
                                                INTENT_RELATIVE_COLORIMETRIC,
                                                PRECALC|BW_COMP|flags);
-      if (!*form) WARN_S( "keine hXYZtoRGB Transformation gefunden" )
+      if (!*form) WARN_S( "no hXYZtoRGB transformation found" )
 
       if(flags & cmsFLAGS_GAMUTCHECK)
         h_lab_to_RGB_teuer = *form;
@@ -1408,7 +1408,7 @@ Oyranos::wandelLabNachBildschirmFarben(double *Lab_Speicher, // 0.0 - 1.0
 
 
     RGB_Speicher = new double[size*3];
-    if(!RGB_Speicher)  WARN_S( "RGB_speicher Speicher nicht verfuegbar" )
+    if(!RGB_Speicher)  WARN_S( "RGB_speicher Speicher not available" )
 
     double *cielab = (double*) malloc (sizeof(double)*3*size);
     LabToCIELab (Lab_Speicher, cielab, size);

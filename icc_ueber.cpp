@@ -21,7 +21,7 @@
  * 
  * -----------------------------------------------------------------------------
  *
- * Inhalt fuer das informative "Über" Fenster.
+ * content for the informative "About" window.
  * 
  */
 
@@ -34,12 +34,12 @@
 
 #define DEBUG_ICCUEBER
 
-#define  SF "#cccccc"  // Standard hintergrundFarbe
+#define  SF "#cccccc"  // standard background colour
 
 # define LAYOUTFARBE if (layout[l++] == true) \
                         html << HF; \
                       else \
-                        html << SF; //Farbe nach Layoutoption auswaehlen
+                        html << SF; // select colour according to layout options
 
 std::string
 getHtmlKopf(const char* titel)
@@ -61,12 +61,12 @@ std::string
 getUeberHtml()
 {
   DBG_PROG_START
-  //char HF[] = "#aaaaaa";  // Hervorgehoben
+  //char HF[] = "#aaaaaa";  // emphasised
   std::stringstream html;
 
   html << getHtmlKopf( _("About ICC Examin") );
 
-  // Allgemeine Informationen
+  // general informations
   html <<
 "<table cellspacing=3 cellpadding=4 width=\"100%\"> \
   <tr> \

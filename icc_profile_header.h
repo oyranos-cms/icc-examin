@@ -21,7 +21,7 @@
  * 
  * -----------------------------------------------------------------------------
  *
- * Profilinterpretation
+ * profile interpretation
  * 
  */
 
@@ -43,17 +43,17 @@
 
 
 /**
-  *   @brief interne ICC Profilstruktur
+  *   @brief internal ICC profile strukture
   **/
 
 
-// definiert in icc_profile.cpp
+// defined in icc_profile.cpp
 class ICCheader {
   public:
                 ICCheader ();
     void        clear();
   private:
-    icHeader    header;               //!<brief icc34.h Definition
+    icHeader    header;               //!<brief icc34.h definition
   public:
     const char* headerRaw () const
                   { DBG_PROG return /*cp_nchar (*/(const char*)&header/*,

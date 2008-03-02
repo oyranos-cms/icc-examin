@@ -21,7 +21,7 @@
  * 
  * -----------------------------------------------------------------------------
  *
- * Farbumfang betrachten im WWW-3D Format vrml.
+ * watch colour gamut in WWW-3D format vrml.
  * 
  */
 

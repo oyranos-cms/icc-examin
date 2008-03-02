@@ -22,7 +22,7 @@
  * -----------------------------------------------------------------------------
  */
 
-/** @brief eine Klasse mit thread Ueberwachungsmöglichkeit
+/** @brief a class with thread observer capabilities
  * 
  */
 
@@ -34,24 +34,24 @@
 
 #include "icc_utils.h"
 
-/** @brief * Die Klasse mit Anmeldung und Freigabe
+/** @brief * the class with locking
  *
- *  erlaubt threadsicheren Datenzugang
+ *  allowes thread save daten handling
  */
 
 namespace icc_examin_ns {
 
 class ThreadDaten
 {
-    bool frei_;               //!<@brief wird nicht von weiterem Prozess benutzt
-    int  zahl_;               //!<@brief Anzahl der Wartenden
+    bool frei_;               //!<@brief is not used from further process
+    int  zahl_;               //!<@brief count of waiters
     Fl_Thread pth;
 protected:
     ThreadDaten() { frei_ = true; zahl_ = 0; pth = 0; }
     ~ThreadDaten() {;}
 public:
-    bool frei()     { return frei_; }          //!<@brief ist nicht gesperrt
-    void frei(int freigeben); //!@brief Sperren mit Warten/Freigeben
+    bool frei()     { return frei_; }          //!<@brief is not locked
+    void frei(int freigeben); //!@brief lock with wait/unlock
 };
 
 }

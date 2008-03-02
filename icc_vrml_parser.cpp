@@ -21,11 +21,11 @@
  * 
  * -----------------------------------------------------------------------------
  *
- * Farbumfang betrachten im WWW-3D Format vrml: Parser
+ * visualise colour gamut in WWW-3D format vrml: parser
  * 
  */
 
-// Beginn Datum:      Februar 2005
+// start date:      Februar 2005
 
 
 #include "icc_helfer.h"
@@ -86,15 +86,15 @@ ICCvrmlParser::lesen_ ()
   int debug_alt = icc_debug;
   //icc_debug = 1;
   DBG_PROG_START
-  int netz_n = 0;                       // das n-the Netz
-  std::vector<std::string> zeilen;      // Editierzeilen
-  std::vector<ZifferWort> werte;        // Zwischenrückgabewert
-  char trennzeichen[12];                // zu verwendende Trennzeichen
+  int netz_n = 0;                       // the n-th net/mesh
+  std::vector<std::string> zeilen;      // editing row
+  std::vector<ZifferWort> werte;        // intermediate return value
+  char trennzeichen[12];                // to be used separating signs
   trennzeichen[0] = ',';
   sprintf(&trennzeichen[1], leer_zeichen);
-  const bool anfuehrungstriche = false; // keine Anführungsstriche setzen
-  unsigned int dimensionen;             // Anzahl der zusammmengehörenden Werte
-  int achse;                            // ausgewählter Wert aus dimensionen
+  const bool anfuehrungstriche = false; // set no quotation marks
+  unsigned int dimensionen;             // number of belonging values
+  int achse;                            // selected value from dimensionen
   DBG_PROG_V( original_.size() )
 
   std::string::size_type pos=0, netz_pos=0;
@@ -108,33 +108,33 @@ ICCvrmlParser::lesen_ ()
   }
 # endif
 
-  // locale - Kommas unterscheiden
+  // locale - differenciate commas
   char* loc_alt = strdup(setlocale(LC_NUMERIC, NULL)); //getenv("LANG");
   if(loc_alt)
     DBG_NUM_V( loc_alt )
   else
-    DBG_NUM_S( "keine LANG Variable gefunden" )
+    DBG_NUM_S( "did not find LANG variable" )
   setlocale(LC_NUMERIC,"C");
 
-  // nach Netzen in der vrml Datei suchen
+  // search for mesh in vrml file
   while( (netz_pos = original_.find( "IndexedFaceSet", netz_pos )) !=
         std::string::npos )
   {
     ++netz_pos;
-    // Bereich des Netzes eingrenzen
+    // get the area of the mesh
     if( (netz_ende = original_.find( "IndexedFaceSet", netz_pos )) ==
         std::string::npos )
       netz_ende = original_.size();
     if( netz_pos == std::string::npos )
       break;
 
-    DBG_VRML_PARSER_S( "IndexedFaceSet gefunden auf Position " << netz_pos <<"-"<< netz_ende );
+    DBG_VRML_PARSER_S( "IndexedFaceSet found at position " << netz_pos <<"-"<< netz_ende );
 
     arbeit_ = original_.substr (netz_pos-1, netz_ende-netz_pos+1);
     zeilen = zeilenNachVector (arbeit_);
     DBG_PROG_V( zeilen.size() <<"|"<< arbeit_.size() )
 
-    // ab nun zeilenweise
+    // from now row wise
     int flaeche_klammer = false;
     //int in_coordinate = false;
     bool in_punkte = false;
@@ -148,7 +148,7 @@ ICCvrmlParser::lesen_ ()
         wert_n = 0;
     for(unsigned int z = 0; z < zeilen .size(); z++)
     {
-      // Hole eine kommentarfreie Zeile
+      // take a comment free line/row
       zeile = zeilen[z].substr( 0, zeilen[z].find( "#" ) );
 
       pos = 0;
@@ -200,9 +200,9 @@ ICCvrmlParser::lesen_ ()
         werte =
           unterscheideZiffernWorte( zeile, anfuehrungstriche, trennzeichen );
 
-        // ausgelesene Werte sortieren
+        // sort the read values
         for(unsigned int w = 0; w < werte.size(); ++w)
-        { DBG_VRML_PARSER_S( "w [" << w <<"]" << werte.size() <<" Netz: "<< endnetz <<" punkte "<< netze_[endnetz].punkte.size() )
+        { DBG_VRML_PARSER_S( "w [" << w <<"]" << werte.size() <<" net: "<< endnetz <<" poinkts "<< netze_[endnetz].punkte.size() )
           if(werte[w].zahl.first)
           {
             dimensionen = 3;
@@ -242,7 +242,7 @@ ICCvrmlParser::lesen_ ()
         werte =
           unterscheideZiffernWorte( zeile, anfuehrungstriche, trennzeichen );
 
-        // ausgelesene Werte sortieren
+        // sort the read values
         for(unsigned int w = 0; w < werte.size(); ++w)
         {
           if(werte[w].zahl.first)
@@ -279,7 +279,7 @@ ICCvrmlParser::lesen_ ()
         werte =
           unterscheideZiffernWorte( zeile, anfuehrungstriche, trennzeichen );
 
-        // ausgelesene Werte sortieren
+        // sort the read values
         std::pair<double,DreiecksIndexe> index_p;
         for(unsigned int w = 0; w < werte.size(); ++w)
         {

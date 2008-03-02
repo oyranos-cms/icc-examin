@@ -21,7 +21,7 @@
  *
  * -----------------------------------------------------------------------------
  *
- * Die Kette von Profilen Klasse.
+ * the chain of profiles.
  * 
  */
 
@@ -51,29 +51,28 @@ ICCkette::init ()
 { DBG_PROG_START
   aktuelles_profil_ = -1;
 # if USE_THREADS
-  // Es gibt drei threads.
-  // Der erste Neben-thread started eine while Schleife zum Beobachten
-  // der göffneten Dateien.
-  // Im Haupthread laeuft ICCexamin.
-  // Ein weiterer Thread übernimmt das Laden von neuen Daten.
+  // There are three basic threads for ICC Examin.
+  // iThe first one starts a while loop to observe the opened files
+  // In the main thread runs ICCexamin.
+  // A additional thread loads new files.
 
   int fehler = fl_create_thread( getThreadId(THREAD_WACHE), &waechter, (void *)this );
   if(!fehler)
-    DBG_PROG_S( "neuer Thread" );
+    DBG_PROG_S( "new thread" );
 
   if( fehler == EAGAIN)
   {
-    WARN_S( "Waechter Thread nicht gestartet Fehler: "  << fehler );
+    WARN_S( "Observer thread not started. Error: "  << fehler );
   } else
 # if !APPLE && !WIN32 && PTHREAD_THREADS_MAX
   if( fehler == (int)PTHREAD_THREADS_MAX )
   {
-    WARN_S( "zu viele Waechter Threads Fehler: " << fehler );
+    WARN_S( "Too many observer threads. Error: " << fehler );
   } else
 # endif
   if( fehler != 0 )
   {
-    WARN_S( "unbekannter Fehler beim Start eines Waechter Threads Fehler: " << fehler );
+    WARN_S( "Unknown error at start of observer threads. Error: " << fehler );
   }
 
 # else
@@ -119,7 +118,7 @@ ICCkette::einfuegen (const Speicher & prof, int pos)
 
   DBG_PROG_V( pos )
 
-  // Laden TODO: test auf Korrektheit des Profiles (oyranos?)
+  // Load TODO: test for correctnes of a profile (oyranos?)
   if (pos < 0 ||
       pos >= (int)profile_.size() )
   {
@@ -148,7 +147,7 @@ ICCkette::einfuegen (const Speicher & prof, int pos)
   DBG_PROG_V( dtype )
 
   int extra_benachrichtigen = -1;
-  // Messdaten sollten dem ersten Profil, so es normal ist, angehangen werden
+  // measurement data should be appended after the first profile, as normal
   if(profile_[0].data_type == ICCprofile::ICCprofileDATA)
   {
     //ICCmeasurement m;
@@ -240,7 +239,7 @@ ICCkette::waechter (void* zeiger)
       {
         DBG_MEM_V( obj->profil_mzeit_[i] )
         if( obj->profil_mzeit_[i] != 0 ) {
-          // lade in LADEN und warte auf Ergebnis
+          // load in LADEN and wait for result
           icc_examin->erneuern(i);
         }
         obj->profil_mzeit_[i] = m_zeit;

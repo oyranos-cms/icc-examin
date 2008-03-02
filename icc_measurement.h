@@ -21,7 +21,7 @@
  * 
  * -----------------------------------------------------------------------------
  *
- * Profilinterpretation
+ * profile interpretation
  * 
  */
 
@@ -38,10 +38,10 @@
 #include "icc_profile_tags.h"
 
 /**
-  *   @brief liest CGATS aus einem Profil 
+  *   @brief reads CGATS from a profile 
   *
-  *   Typischerweise wird ICCmeasurement einem ICCprofile zugeordnet.
-  *   CIE* Lab, CIE* XYZ, RGB und CMYK werden unterstützt.
+  *   typicaly a ICCmeasurement is associated to a ICCprofile.
+  *   CIE* Lab, CIE* XYZ, RGB and CMYK are supported. Spectal can be added.
   **/
 
 
@@ -64,13 +64,13 @@ class ICCmeasurement {
     ICCmeasurement&     operator=          (const ICCmeasurement& m);
 
   private:
-    // laden und auswerten
+    // load and analyse
     void                leseTag ();
-    // Berechnen aller Mess- und Profilwerte
+    // calculate of all measurement- and profile values
     void                init_umrechnen (void);
     // ??
     void                pruefen (void);
-    // lcms cgats Leser
+    // lcms cgats reader
     void                lcms_parse ();
 
   private:
@@ -84,23 +84,23 @@ class ICCmeasurement {
 
     int                 nFelder_;
 
-    //! wird nur gesetzt wenn in CGATS vorhanden
+    //! is only set when in CGATS available
     bool                XYZ_measurement_;
     bool                LAB_measurement_;
     bool                RGB_measurement_;
     bool                CMYK_measurement_;
-    // Messwerte
+    // measurement values
     std::vector<XYZ_s>    XYZ_Satz_;
     std::vector<Lab_s>    Lab_Satz_;
     std::vector<RGB_s>    RGB_Satz_;
     std::vector<CMYK_s>   CMYK_Satz_;
-    // Profilwerte
+    // profile values
     std::vector<std::string> Feldnamen_;
     std::vector<XYZ_s>    XYZ_Ergebnis_;
     std::vector<Lab_s>    Lab_Ergebnis_;
     std::vector<RGB_s>    RGB_MessFarben_;
     std::vector<RGB_s>    RGB_ProfilFarben_;
-    // Ergebnisse
+    // results
     std::vector<double> Lab_Differenz_;
     double              Lab_Differenz_max_;
     double              Lab_Differenz_min_;
@@ -118,7 +118,7 @@ class ICCmeasurement {
     void                load (ICCprofile* profil ,
                               const char *data, size_t size);
   public:
-    // grundlegende Infos
+    // basic infos
     bool                has_data (void)    {DBG_PROG return (XYZ_Satz_.size() ||
                                                     ( data_ && size_ ) ); }
     bool                valid (void)       {DBG_PROG return ((XYZ_measurement_
@@ -135,9 +135,9 @@ class ICCmeasurement {
     bool                hasLab ()          {DBG_PROG return LAB_measurement_; }
     size_t              getSize()          {DBG_PROG return size_; }
     int                 getPatchCount()    {DBG_PROG return nFelder_; }
-    // Werte
-    std::vector<double> getMessRGB (int patch); //!< Darstellungsfarben
-    std::vector<double> getCmmRGB (int patch);  //!< Darstellungsfarben
+    // values
+    std::vector<double> getMessRGB (int patch); //!< displaying colours
+    std::vector<double> getCmmRGB (int patch);  //!< displaying colours
     std::vector<double> getMessLab (int patch);
     std::vector<double> getCmmLab (int patch);
     std::vector<XYZ_s>    getMessXYZ ()      {DBG_PROG return XYZ_Satz_; }
@@ -146,7 +146,7 @@ class ICCmeasurement {
     std::vector<CMYK_s>   getMessCMYK ()     {DBG_PROG return CMYK_Satz_; }
     std::vector<std::string> getFeldNamen () {DBG_PROG return Feldnamen_; }
 
-    // Report
+    // report
     std::vector<std::vector<std::string> > getText ();
     std::vector<std::string> getDescription();
     std::string         getHtmlReport (bool export_ausserhalb);
@@ -154,11 +154,11 @@ class ICCmeasurement {
     std::string         getCGATS    ();
     std::string         getMaxCGATS ();
 
-    // Herkunft
+    // source
     std::string         getTagName()       {return getSigTagName (sig_); }
     std::string         getInfo()          {DBG_PROG return getSigTagDescription(sig_); }
 
-    // Schalter
+    // switch
     bool                export_farben;
 
 };

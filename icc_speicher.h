@@ -21,7 +21,7 @@
  * 
  * -----------------------------------------------------------------------------
  *
- * Die Speicher Klasse
+ * the Speicher (memory) class
  * 
  */
 
@@ -38,26 +38,26 @@
 #define DBG_SPEICHER_ENDE    if(icc_debug >= 3) DBG_PROG_ENDE
 
 /*
- * Die Speicher Klasse ist ein Beobachter eines Speicherblocks mit Referenz
+ * The Speicher class is a observer of a memory block with references
  *
- * ref_n_   : Referenz
- * zeiger_  : new [] Speicher
- * lade()   : loescht den alten Speicher und kopiert oder fordert neuen an
- * Forderung: zeiger_, groesse_, ref_n_ müssen von allen Kopien von Speicher aus
- *            sichtbar sein
+ * ref_n_   : reference
+ * zeiger_  : new [] allocated memory
+ * lade()   : erases the old block and copies or allocates new memory
+ * Forderung: zeiger_, groesse_, ref_n_ must be visible from all copies of the
+ *            class
  */
 
 class Speicher
 {
-    // Zeigermaschine
+    // pointer machine
     char**      zeiger_;
     size_t*     groesse_;
     int*        ref_n_;
     int         id_;
     static int  globale_id_;
-    std::string *name_;                   // z.B. Profilname
-    double      *letze_aen_zeit_;         // letztes mal geaendert
-    double      *letze_ben_zeit_;         // letztes mal benutzt
+    std::string *name_;                   // z.B. profile name
+    double      *letze_aen_zeit_;         // lest time changed
+    double      *letze_ben_zeit_;         // lest time used
 
     void        init  ()    {
                               DBG_MEM_START
@@ -155,11 +155,11 @@ class Speicher
                               zeiger_clear_();
                               DBG_MEM_ENDE
                             }
-    // Bequemlickkeitsfunktionen
+    // convenience functions
     void        ladeNew     (char* zeiger, size_t & groesse) {
                               DBG_MEM_START
                               if(zeiger && groesse) {
-                                // mit new angelegt : einfach uebernehmen
+                                // allocated with new : simply take over
                                 lade_(zeiger,groesse);
                               }
                               DBG_MEM_ENDE
@@ -167,7 +167,8 @@ class Speicher
     void        ladeUndFreePtr(char** zeiger, size_t & groesse) {
                               DBG_MEM_START
                               if(*zeiger && groesse) {
-                                // mit *alloc angelegt : erst kopieren durch "lade"
+                                // allocated with *alloc : copy first through
+                                // "lade"
                                 lade(*zeiger,groesse);
                                 free(*zeiger);
                                 zeiger = 0;
@@ -175,7 +176,7 @@ class Speicher
                               }
                               DBG_MEM_ENDE
                             }
-    // Laden mit Kopie in einen mit new bereitgestellten Block
+    // load with copy in a block allocated with new
     void        lade     (const char* zeiger, size_t groesse) {
                               DBG_MEM_START
                               char *block = (char*) new char [groesse+1];

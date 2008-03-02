@@ -21,7 +21,7 @@
  *
  * -----------------------------------------------------------------------------
  *
- * ICC Helfer - X / osX abhaengig
+ * ICC helper - X / osX dependent
  * 
  */
 
@@ -33,8 +33,8 @@
 #include <string>
 #include <vector>
 
-// Helferfunktionen
-// definiert in icc_helfer_x.cpp / icc_helfer_osx.cpp
+// helper functions
+// defined in icc_helfer_x.cpp / icc_helfer_osx.cpp
 std::vector<std::vector<double> >leseGrafikKartenGamma(std::string display_name,
                                               std::vector<std::string> &texte,
                                               int x, int y );

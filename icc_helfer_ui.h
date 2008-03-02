@@ -21,7 +21,7 @@
  *
  * -----------------------------------------------------------------------------
  *
- * ICC Helfer - werkzeugabhaengig
+ * ICC helper - toolkitdependent
  * 
  */
 

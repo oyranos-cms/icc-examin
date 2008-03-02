@@ -21,7 +21,7 @@
  * 
  * -----------------------------------------------------------------------------
  *
- * Farbumfang betrachten im WWW-3D Format vrml.
+ * visualise colour gamut in WWW-3D format vrml.
  * 
  */
 
@@ -53,7 +53,7 @@ erase_file (const char *file)
     return 0;
   }
 
-  DBG_PROG_S( _("Datei ") << file << _(" konnte nicht geloescht werden") )
+  DBG_PROG_S( "file " << file << " could not be erased" )
   return 1;
 }
 
@@ -75,7 +75,7 @@ icc_create_vrml( const char* p, int size, int intent )
   DBG_PROG_V( profil_temp_name.str() )
   std::string ptn = profil_temp_name.str(); ptn.append(".icc");
 
-  // Speichern
+  // save
   {
     std::ofstream f;
     f.clear();
@@ -87,7 +87,7 @@ icc_create_vrml( const char* p, int size, int intent )
     }
     f.close();
   }
-  // vrml produzieren - argyll Variante
+  // generate vrml - argyll variant
   int ret;
 # if APPLE
   std::string argyll_bundle_pfad = icc_examin_ns::holeBundleResource("iccgamut",
@@ -121,7 +121,7 @@ icc_create_vrml( const char* p, int size, int intent )
   ptn = profil_temp_name.str(); ptn.append(".gam");
   erase_file (ptn.c_str());
 
-  // Datei Oeffnen
+  // open file
   {
     ptn = profil_temp_name.str(); ptn.append(".wrl");
 
@@ -135,15 +135,15 @@ icc_create_vrml( const char* p, int size, int intent )
       data = ladeDatei (ptn.c_str(), &size);
 #   if HAVE_EXCEPTION
     }
-      catch (Ausnahme & a) {  // faengt alles von Ausnahme Abstammende
-        DBG_NUM_V (_("Ausnahme aufgetreten: ") << a.what());
+      catch (Ausnahme & a) {  // catches all from exception
+        DBG_NUM_V (_("exception occured: ") << a.what());
         a.report();
       }
-      catch (std::exception & e) { // faengt alles von exception Abstammende
-        DBG_NUM_V (_("Std-Ausnahme aufgetreten: ") << e.what());
+      catch (std::exception & e) { // catches all from exception
+        DBG_NUM_V (_("Std-exception occured: ") << e.what());
       }
-      catch (...) {       // faengt alles Uebriggebliebene
-        DBG_NUM_V (_("Huch, unbekannte Ausnahme"));
+      catch (...) {       // catches all from exception
+        DBG_NUM_V (_("Huch, unknown exception"));
       }
 #   endif
 
@@ -199,7 +199,7 @@ create_vrml              ( const char *profilA, char *profilB, char *vrml)
   erase_file ("/tmp/tmp.wrl");
   }
 
-  // Unterschiede
+  // differences
   if (profilA && profilB) {
   r = system ("smthtest /tmp/tmpA.gam /tmp/tmpB.gam /tmp/tmp.wrl");
   sprintf (system_befehl ,"cat /tmp/tmp.wrl >> \"%s\"", vrml);

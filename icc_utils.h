@@ -21,7 +21,7 @@
  * 
  * -----------------------------------------------------------------------------
  *
- * Werkzeuge
+ * tools
  * 
  */
 
@@ -91,7 +91,7 @@ Fl_Thread & getThreadId ( int pos );
 void        registerThreadId ( Fl_Thread id, int pos );
 
 
-// Statusmeldungen zur Fehlersuche
+// status messages for error tracking
 void dbgWriteF (/*std::ostringstream & ss*/);
 extern std::ostringstream debug_s_;
 
@@ -136,18 +136,18 @@ int    iccLevel_PROG(int plus_minus_null);
 #define icc_level_PROG_minus iccLevel_PROG(-1)
 extern int icc_debug;
 
-/*  icc_debug wird mit der Umgebungsvariable ICCEXAMIN_DEBUG in main() gesetzt
- *  Niveaus:
- *   0: DBG              // nur zwischenzeitlich verwenden
- *   1: DBG_NUM
- *   2: DBG_PROG
- *   3: DBG_MEM
- *   4: DBG_THREAD; Datei E/A
- *   9: DBG_PROG_START & DBG_PROG_ENDE
+/*  icc_debug is controled be the environment variale ICCEXAMIN_DEBUG in main()
+ *  levels:
+ *   0: DBG              // use only intermediate and then remove, standard
+ *   1: DBG_NUM          // tell about important states
+ *   2: DBG_PROG         // tell about program state
+ *   3: DBG_MEM          // observe memory
+ *   4: DBG_THREAD; file E/A
+ *   9: DBG_PROG_START & DBG_PROG_ENDE  only function tracing
  *
- *   [1,2,...,9]    diese und alle kleineren Kategorien
- *   10+[1,2,...,9] einzig diese Kategorie , z.B. ICCEXAMIN_DEBUG=13 waehlt alle
- *                                                Speicherinformationen aus
+ *   [1,2,...,9]    this and all lower levels
+ *   10+[1,2,...,9] only this level , z.B. ICCEXAMIN_DEBUG=13 selects only 
+ *                                                memory informations
  *
  */
 

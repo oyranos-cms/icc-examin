@@ -21,7 +21,7 @@
  * 
  * -----------------------------------------------------------------------------
  *
- * Farbumfang betrachten im WWW-3D Format vrml: Parser
+ * visualise colour gamut in WWW-3D format vrml: parser
  * 
  */
 
@@ -33,28 +33,28 @@
 #include <vector>
 #include <map>
 
-/** ein Punkt im Raum mit berechneter Farbe */
+/** a point in space with calculated colour */
 struct ICCnetzPunkt {
-  double koord[3]; //!< immer Lab 0..1
-  double farbe[4]; //!< entweder aus VRML geparst oder anders berechnet
+  double koord[3]; //!< allways Lab 0..1
+  double farbe[4]; //!< eigther from VRML parsed or calculated otherwise
 };
 
-/** Punktindexe zu einer darstellbaren Flaeche */
+/** point indexes for a representable plain */
 struct DreiecksIndexe {
-  int i[4];        //!< bezieht sich auf std::vector<ICCnetzPunkt>punkte
+  int i[4];        //!< referes to std::vector<ICCnetzPunkt>punkte
 };
 
-/** darstellbare Informationen zu einer Farbraumhuelle */
+/** displayable informations to a colour space gamut */
 struct ICCnetz {
-  std::vector<ICCnetzPunkt> punkte;              //!< einzelne Netzpunkte
-  std::multimap<double,DreiecksIndexe> indexe;   //!< Zuordnen der Punkte
-  std::vector<ICCnetzPunkt> umriss;              //!< Netzumriss, eine Linie
-  std::string name;                              //!< Anzeigename
-  int aktiv;                                     //!< zeigen?
-  int grau;                                      //!< keine farbe?
-  double undurchsicht;                           //!< Undurchlaessigkeit 0..1
-  double schattierung;                           //!< L* Farbton fuer Grau 0..1
-  int kubus;                                     //!< aus einem Kubus generiert
+  std::vector<ICCnetzPunkt> punkte;              //!< single netz points
+  std::multimap<double,DreiecksIndexe> indexe;   //!< assigning the points
+  std::vector<ICCnetzPunkt> umriss;              //!< mesh hull, a line
+  std::string name;                              //!< name
+  int aktiv;                                     //!< show?
+  int grau;                                      //!< no colour?
+  double undurchsicht;                           //!< alpha 0..1
+  double schattierung;                           //!< L* colour for gray 0..1
+  int kubus;                                     //!< generated from a cubus
   ICCnetz() {
     aktiv = 1;
     grau = 0;

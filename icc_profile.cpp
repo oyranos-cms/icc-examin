@@ -21,7 +21,7 @@
  * 
  * -----------------------------------------------------------------------------
  *
- * Profilinterpretation
+ * profile interpretation
  * 
  */
 
@@ -44,7 +44,7 @@
 
 
 /**
-  *  @brief ICCprofile Funktionen
+  *  @brief ICCprofile functions
   */
 
 ICCprofile::ICCprofile (void)
@@ -69,7 +69,7 @@ ICCprofile::ICCprofile (const Speicher & s)
   data_ = NULL;
   size_ = 0;
 
-  // delegieren
+  // delegate
   filename_ = s.name();
   load(s);
   DBG_PROG_ENDE
@@ -80,7 +80,7 @@ ICCprofile::~ICCprofile (void)
   this->clear();
 
 # ifdef DEBUG_PROFILE
-  DBG__PROG_S ( "~ICCprofile beendet" )
+  DBG__PROG_S ( "~ICCprofile ended" )
 # endif
   DBG_PROG_ENDE
 }
@@ -114,7 +114,7 @@ ICCprofile::copy_ ( const ICCprofile & p )
 void
 ICCprofile::clear (void)
 { DBG_PROG_START
-  DBG_PROG_S( "Profil wird geleert" )
+  DBG_PROG_S( "Profil will be cleared" )
 
   if (data_ && size_) free(data_);
   data_ = NULL;
@@ -126,7 +126,7 @@ ICCprofile::clear (void)
   tags.clear();
   measurement.clear();
 
-  DBG_NUM_S( "data_, tags und measurement geloescht" )
+  DBG_NUM_S( "data_, tags and measurement freed" )
   DBG_PROG_ENDE
 }
 
@@ -134,7 +134,7 @@ ICCprofile::clear (void)
 ICCprofile::ICCDataType
 ICCprofile::load (const Speicher & prof)
 {
-  DBG_PROG_START // ICC Profil laden
+  DBG_PROG_START // ICC Profil load
   std::string file = prof.name();
   changing_ = true;
 
@@ -142,7 +142,7 @@ ICCprofile::load (const Speicher & prof)
 
   this->clear();
 
-  // Mindestgroesse fuer sinnvolle Daten abfragen
+  // check minimum size for plausible data
   if (prof.size() > 64) {
     //WARN_S( _("!!!! Profil wird wiederbenutzt !!!! ") )
     size_ = prof.size();
@@ -160,9 +160,9 @@ ICCprofile::load (const Speicher & prof)
     return ICCnullDATA;
   }
 
-  // Test   > 132 byte, ansonsten erst einmal als Messdaten aufnehmen
+  // test   > 132 byte, otherwise interprete as measurement
   if (size_ < 132) {
-    WARN_S( _("Kein Profil")<<" "<<_("Size")<<" "<<size_ )
+    WARN_S( _("no profile") <<" "<<_("Size")<<" "<<size_ )
     measurement.load( this, data_, size_ );
     DBG_PROG_ENDE
     changing_ = false;
@@ -171,16 +171,16 @@ ICCprofile::load (const Speicher & prof)
   }
 
   DBG_PROG
-  //Kopf
+  // head
   header.load ((void*)data_); DBG_PROG
 
-  // Test acsp
+  // test acsp
   char magic[5];
   memcpy( magic, header.magicName(), 4); magic[4] = 0;
   DBG_MEM
   if (strstr(magic, "acsp") == 0)
   {
-    WARN_S( _("Kein Profil") )
+    WARN_S( _("no profile") )
     header.clear();
 
 #   if 0
@@ -226,8 +226,8 @@ ICCprofile::load (const Speicher & prof)
   }
    
   DBG_MEM
-  //Profilabschnitte
-  // TagTabelle bei 132 abholen
+  // profile parts
+  // pick TagTabelle at 132
   icTag *tagList = (icTag*)&((char*)data_)[132];
 
 # if BYTE_ORDER == LITTLE_ENDIAN
@@ -273,13 +273,13 @@ ICCprofile::load (const Speicher & prof)
     DBG_PROG_S( " sig: " << tags[i].getTagName() << " " << i )
 #   endif
 
-    // bekannte Tags mit Messdaten
+    // known tags with measurements
     if (tags[i].getTagName() == "targ"
      || tags[i].getTagName() == "DevD"
      || tags[i].getTagName() == "CIED"
      && data_type == ICCprofileDATA) {
 #     ifdef DEBUG_ICCPROFILE
-      DBG_NUM_S( "Messdaten gefunden " << tags[i].getTagName() )
+      DBG_NUM_S( "measurements found " << tags[i].getTagName() )
 #     endif
       measurement.load( this, tags[i] );
     }
@@ -429,7 +429,7 @@ ICCprofile::getTagChannelNames                          (int item,
                                                          ICCtag::MftChain typ)
 { DBG_PROG_START
   // check
-  std::string leer = tags[item].getTypName() + " Typ - keine Textausgabe";
+  std::string leer = tags[item].getTypName() + _(" typ - no text output");
   std::vector<std::string> v;
   v.push_back( leer );
 
@@ -557,7 +557,7 @@ ICCprofile::getTagIDByName            (std::string name)
     if ( (*it).getTagName() == name
       && (*it).getSize()            ) {
 #     ifdef DEBUG_ICCPROFILE
-      DBG_PROG_S( item << " = " << (*it).getTagName() << " gefunden" )
+      DBG_PROG_S( item << " = " << (*it).getTagName() << " found" )
 #     endif
       DBG_PROG_ENDE
       return item;
@@ -586,7 +586,7 @@ ICCprofile::hasTagName            (std::string name)
     if ( (*it).getTagName() == name
       && (*it).getSize()            ) {
 #     ifdef DEBUG_ICCPROFILE
-      DBG_NUM_S( (*it).getTagName() << " gefunden" )
+      DBG_NUM_S( (*it).getTagName() << " found" )
 #     endif
       DBG_PROG_ENDE
       return true;
@@ -1005,7 +1005,7 @@ ICCprofile::removeTag (int item)
 }
 
 /**
-  *  allgemeine Funktionen
+  *  general functions
   */
 
 void
@@ -1031,7 +1031,7 @@ const char* cp_nchar (char* text, int n)
   string[1023] = '\000';
 
 # ifdef DEBUG
-  DBG_MEM_V( n << " Buchstaben kopieren " <<  (intptr_t)text << " " << string)
+  DBG_MEM_V( n << " letters copy " <<  (intptr_t)text << " " << string)
 # endif
   DBG_MEM_ENDE
   return string;

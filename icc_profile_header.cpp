@@ -21,7 +21,7 @@
  * 
  * -----------------------------------------------------------------------------
  *
- * Profilinterpretation
+ * profile interpretation
  * 
  */
 
@@ -43,7 +43,7 @@
 #define g_message printf
 
 /**
-  *  @brief ICCheader Funktionen
+  *  @brief ICCheader functions
   */ 
 
 ICCheader::ICCheader()
@@ -254,6 +254,7 @@ ICCheader::print() const
 { DBG_PROG_START
   std::string s = _("File header invalid");
   if (valid)
+    // format sensible, as this string is the header in the tag browser table
     s = _("    head  head    128 File header");
   DBG_PROG_ENDE
   return s;

@@ -21,7 +21,7 @@
  * 
  * -----------------------------------------------------------------------------
  *
- * Profilinterpretation
+ * profile interpretation
  * 
  */
 
@@ -50,12 +50,12 @@
 #include <fstream>
 
 /**
-  *   @brief interne ICC Profilstruktur
+  *   @brief internal ICC profile struktur
   **/
 
 class ICCprofile;
 
-// definiert in icc_profile.cpp
+// defined in icc_profile.cpp
 class ICCprofile {
   friend class ICCtag;
   friend class ICCmeasurement;
@@ -78,14 +78,14 @@ class ICCprofile {
     void                clear (void);
 
     ICCDataType         load (const Speicher & profil);
-    ICCDataType         data_type;  //!< wird zumindest beim Laden gesetzt
+    ICCDataType         data_type;  //!< is set at least at load time
     bool                changing()             { return changing_; }
 
   private:
     bool                changing_;
     std::string         filename_;
 
-    // icc34.h Definitionen
+    // icc34.h definitions
     char*               data_;
     size_t              size_;
 
@@ -96,7 +96,7 @@ class ICCprofile {
   public:
     void                measurementReparent() { measurement.profile_ = this; }
 
-  public: // Informationen
+  public: // informations
     const char*         filename ();
     void                filename (const char* s);
     size_t              size     ();
@@ -104,7 +104,7 @@ class ICCprofile {
     //void                cmm      (const char* s) {DBG_PROG header.cmmName (s); }
     //int                 version  ()        {DBG_PROG return (int) header.version(); }
     //const char*         creator  ()        {DBG_PROG return header.creatorName(); }
-    //! Uebertragungsart; siehe auch @see: ICCexamin.intent()
+    //! rendering intent; see as well @see: ICCexamin.intent()
     int                 intent   ()     {return icValue(((const icHeader*)header
                                            .headerRaw())-> renderingIntent ); }
     icColorSpaceSignature colorSpace()  {return header.colorSpace(); }
@@ -113,11 +113,11 @@ class ICCprofile {
     std::string         printLongHeader ();
     std::vector<std::string> getPCSNames();
 
-    // Tag Infos
+    // tag infos
     int                      tagCount();
-    std::vector<std::string> printTags  (); //!< Liste der einzelnen Tags (5)
-    std::vector<std::string> printTagInfo      (int item); //!< Name,Typ
-    std::vector<std::string> getTagText        (int item); //!< Inhalt
+    std::vector<std::string> printTags  (); //!< list of tags (5)
+    std::vector<std::string> printTagInfo      (int item); //!< name,typ
+    std::vector<std::string> getTagText        (int item); //!< content
     std::vector<std::string> getTagDescription (int item);
 
     std::vector<double>      getTagCIEXYZ      (int item);
@@ -128,29 +128,29 @@ class ICCprofile {
                              getTagTable       (int item, ICCtag::MftChain typ);
     std::vector<double>      getTagNumbers     (int item, ICCtag::MftChain typ);
     std::vector<std::string> getTagChannelNames(int item, ICCtag::MftChain typ);
-    bool                hasTagName   (std::string name); //!< Name
-    int                 getTagIDByName (std::string name); //!< Name
+    bool                hasTagName   (std::string name); //!< name
+    int                 getTagIDByName (std::string name); //!< name
     int                 getTagCount     (); 
 
-    //! Profil Infos
+    //! profile infos
     //char*               getProfileInfo  ();
     char*               getProfileDescription  ();
     std::vector<double> getWhitePkt   (void);
     int                 getColourChannelsCount ();
     int                 hasCLUT ();
     bool                valid ();
-  public: // Datei I/O
+  public: // file I/O
     int                 checkProfileDevice (char* type,
                                            icProfileClassSignature deviceClass);
  
-  public: // Messwertinfos
+  public: // measurement infos
     bool                hasMeasurement ();
     std::string         report         (bool auss);
     ICCmeasurement&     getMeasurement ();
     std::string         cgats          ();
     std::string         cgats_max      ();
 
-  public: // Profilerstellung
+  public: // profile generation
     void                setHeader          (const void* h);
     ICCheader           getHeader          ()      { return header; };
     void                addTag             (ICCtag & tag);

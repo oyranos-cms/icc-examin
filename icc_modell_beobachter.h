@@ -21,7 +21,7 @@
  * 
  * -----------------------------------------------------------------------------
  *
- * Implementation des Modell/Betrachter Musters (observer pattern)
+ * Implementation of the model/observer pattern
  * 
  */
 
@@ -34,23 +34,23 @@
 #include <string>
 
 /*
- *  Arbeitsweise
+ *  mode of work
  *
- *  Die Klasse modell stellt einen beobachtbaren Zustand dar.
- *  Beobachter der Klasse beobachter können sich über den Zustand von modell
- *  informieren lassen.
- *  Eine einfache Ganzzahl informiert Ã¼ber den sich geÃ¤nderten Zustand.
- *  Dabei ist es wichtig sein Modell zu kennen und den Ã¼bergebenen Wert zu
- *  interpretieren.
- *  Die Festlegung auf einen Argumenttyp reduziert die Instanzierungen und
- *  erhöht den Interpretationsaufwand.
- *  Modelle und Beobachter wissen alle Übereinander. (Es wäre alternativ möglich
- *  einen Händling zu übergeben, an dem abgelesen werden könnte ob die
- *  Beobachterklasse noch existiert.)
+ *  The class modell provides the means to observe a condition.
+ *  Observers of the class beobachter can subscribe to changes in modell.
+ *  A simple whole number informs about the changing state.
+ *  It is important to know what kind the model is and to interprete the
+ *  obtained number, possibly as a enumeration.
+ *  The reduction to one argument type reduses the instanciations and
+ *  increases the effort of interpretation.
+ *  Models and observers should know each about the other. (Alternatively
+ *  it would be possible to provide a reference to the model to know whether the
+ *  observer still exists. But with destroying of the observer class a 
+ *  information can easily sent to the model.)
  *
- *  Benutzung:
- *  Von den folgenden Klassen muss abgeleitet
- *  und die virtuellen Funktionen konkretisiert werden.
+ *  Usage:
+ *  It is needed to derive from the following classes and implement the
+ *  virtual functions.
  */
 
 namespace icc_examin_ns {

@@ -21,7 +21,7 @@
  * 
  * -----------------------------------------------------------------------------
  *
- * Aufbereitung von X internen Informationen - werkzeugabhängig
+ * preparation of osX internal informations - toolkitdependent
  * 
  */
 
@@ -181,12 +181,12 @@ leseGrafikKartenGamma        (std::string display_name,
       DBG_PROG_V( monitor.vendor )
       DBG_PROG_V( monitor.model )
     } else {
-      WARN_S( _("Keine Monitor Information erhalten") )
+      WARN_S( "no monitor information obtained" )
     }
   DBG_PROG_V( DisplayWidth(display, screen) <<" "<< DisplayWidthMM(display, screen) )
 
   if (!XF86VidModeGetGamma(display, screen, &gamma))
-  { DBG_PROG_S( _("Keine Gamma Information erhalten") );
+  { DBG_PROG_S( "no gamma information obtained" );
   } else {
     char t[24];
     if( gamma.red != 1.0 ) {
@@ -212,7 +212,7 @@ leseGrafikKartenGamma        (std::string display_name,
 
   int size;
   if (!XF86VidModeGetGammaRampSize(display, screen, &size))
-    DBG_PROG_S( _("Kein Gammagradient Information erhalten") );
+    DBG_PROG_S( "no gammagradient information obtained" );
 
   DBG_PROG_V( size )
   if (size)
@@ -221,7 +221,7 @@ leseGrafikKartenGamma        (std::string display_name,
                    *green = new unsigned short [size],
                    *blue  = new unsigned short [size];
     if (!XF86VidModeGetGammaRamp(display, screen, size, red, green, blue))
-      WARN_S( _("Kein Gammagradient Information erhalten") )
+      WARN_S( _("no gammagradient information obtained") )
 
     kurven.resize(3);
     for( int i = 0; i < 3; ++i) {
@@ -236,7 +236,7 @@ leseGrafikKartenGamma        (std::string display_name,
     delete [] red;
     delete [] green;
     delete [] blue;
-  } else DBG_NUM_S( "kein vcgt in X anzeigbar" );
+  } else DBG_NUM_S( "no vcgt in X displayable" );
 
 # ifndef HAVE_FLTK
   if (display) XCloseDisplay(display);

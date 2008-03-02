@@ -21,7 +21,7 @@
  * 
  * -----------------------------------------------------------------------------
  *
- * Der CMS Sortierer
+ * the CMS sorter
  * 
  */
 
@@ -45,14 +45,14 @@ struct ColourTransformKey
 {
     const char* show() const   { return text; }
     int    eq(const char* cmp) { return !strcmp(cmp, text); }
-    char  *text; // Schluessel
+    char  *text; // key
 };
 
 struct ColourTransform
 {
     int    eq(ColourTransformKey *cmp) { return !strcmp(cmp->text, text); }
     const char* show() const   { return text; }
-    char  *text; // Schluessel
+    char  *text; // key
     char  *cmm;
     char **props; // properties
     char  *block;
@@ -67,7 +67,7 @@ class Oyranos
     ~Oyranos();
     void    init() {; }
 
-    // Standard Profile
+    // standard profiles
     std::string lab  ()                { lab_test_();
                                          return lab_.name(); }
     const char* lab  (size_t &g)       { lab_test_(); g = lab_.size();
@@ -83,7 +83,7 @@ class Oyranos
     const char* proof (size_t &g)      { proof_test_(); g = proof_.size();
                                          return proof_; }
 
-    // Geraete Profile
+    // device profiles
     std::string moni_name (int x,int y){ moni_test_(x,y); return moni_.name(); }
     const char* moni (int x, int y, size_t &g)
                                        { moni_test_(x,y); g = moni_.size();
@@ -91,7 +91,7 @@ class Oyranos
     const Speicher & moni (int x,int y){ moni_test_(x,y); return moni_; }
     int         setzeMonitorProfil     (const char *name, int x, int y );
     char**      moniInfo (int x, int y, int *num);
-    // allgemeine Profile
+    // common profiles
     std::string profil (const char* n) { if(profil_test_(n)) return profil_(n);}
     const char* profil (const char* n, size_t &g) { return profil_(n,g); }
 
@@ -124,7 +124,7 @@ class Oyranos
 
   public:
     void     clear();
-    // uebergangsweise
+    // intermediate
     int      wandelProfilNachLabUndZurueck(double *lab, // 0.0 - 1.0
                                            size_t  size, int intent, int flags,
                                            Speicher & profil);
@@ -140,7 +140,7 @@ class Oyranos
     std::string vrmlVonProfil (   ICCprofile &profil,
                                   int         intent);
 
-    // Farbtransformationen
+    // colour transformations
     ColourTransformKey erzeugeTrafo (
                                   const char* eingangs_profil__geraet,
                                   int         byte,
@@ -150,7 +150,7 @@ class Oyranos
                                   int         kanaele,
                                   int         farb_intent,
                                   const char* cmm, // 4 bytes 'lcms' 'APPL'
-                                  int         cmm_optionen); // BPC, Praezission
+                                  int         cmm_optionen); // BPC, precission
     ColourTransformKey erzeugeTrafo (
                                   const char* eingangs_profil__geraet,
                                   int         byte,
@@ -197,7 +197,7 @@ class Oyranos
 
 extern Oyranos icc_oyranos;
 
-// Benutzeroberflächenfunktionen
+// user GUI helpers
 void	oyranos_pfade_einlesen();
 void	oyranos_pfade_auffrischen();
 void	oyranos_pfade_loeschen();

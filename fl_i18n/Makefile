@@ -9,8 +9,8 @@ XINERAMA_LIB = -lXinerama
 X11_LIB_PATH = -L/usr/X11R6/lib$(BARCH) -L/usr/lib$(BARCH) -L$(libdir)
 X11_LIBS=$(X11_LIB_PATH) -lX11 $(XF86VMODE_LIB) -lXpm -lXext $(XINERAMA_LIB)
 FLTK = 1
-FLTK_H = -I/usr/include/freetype2 -march=i586 -mtune=i686 -fmessage-length=0 -D_FORTIFY_SOURCE=2  -fno-strict-aliasing
-FLTK_LIBS = -lfltk_images -lpng -lz -ljpeg -lfltk_gl -lGLU -lGL -lfltk -lXft -lXinerama -lpthread -lm -lXext -lX11
+FLTK_H = -I/opt/test1/include -I/usr/include/freetype2 -I/usr/X11R6/include
+FLTK_LIBS = -L/opt/test1/lib -L/usr/X11R6/lib -lfltk_images -lpng -lz -ljpeg -lfltk_gl -lGLU -lGL -lfltk -lXft -lXinerama -lpthread -lm -lXext -lX11
 dl = -ldl
 GETTEXT = -DUSE_GETTEXT
 DEBUG = -Wall -g -DDEBUG --pedantic

@@ -21,7 +21,7 @@
  * 
  * -----------------------------------------------------------------------------
  *
- * Profilinterpretation
+ * profile interpretation
  * 
  */
 
@@ -43,7 +43,7 @@
 
 
 /**
-  *   @brief interne ICC Profilstruktur
+  *   @brief internal ICC profile structure
   **/
 
 class ICCprofile;
@@ -71,7 +71,7 @@ class ICCtag {
     int                 size_;
     char*               data_;
 
-    int                 _intent; // für mft1/2
+    int                 _intent; // for mft1/2
     icColorSpaceSignature _color_in;
     icColorSpaceSignature _color_out;
     bool                _to_pcs;
@@ -114,7 +114,7 @@ class ICCtag {
 
     std::vector<std::string> getText ();
     std::vector<std::string> getText (MftChain typ);
-    //std::vector<std::string> getDescription(); veraltet
+    //std::vector<std::string> getDescription(); deprecated
     std::string         getVrml();
   public:  // I/O
     void                load (ICCprofile* profil ,icTag* tag, char* data);

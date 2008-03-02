@@ -21,7 +21,7 @@
  * 
  * -----------------------------------------------------------------------------
  *
- * Aufbereitung von osX internen Informationen - werkzeugabhÃ¤ngig
+ * preparation of osX internal informations - toolkitdependent
  * 
  */
 
@@ -70,7 +70,7 @@ leseGrafikKartenGamma  (std::string display_name,
   texte[2] = _("Blue");
   texte[3] = "gamma_start_ende";
 
-  texte.push_back(_("Hersteller: "));
+  texte.push_back(_("Manufacturer: "));
   //texte[texte.size()-1].append(monitor.vendor);
   texte.push_back(_("Model:      "));
   //texte[texte.size()-1].append(monitor.model);
@@ -117,7 +117,7 @@ leseGrafikKartenGamma  (std::string display_name,
       }
     }
 
-  } else DBG_NUM_S( "kein vcgt in X anzeigbar" )
+  } else DBG_NUM_S( "no vcgt in X displayable" )
 
   bail:
 
@@ -159,7 +159,7 @@ namespace icc_examin_ns {
         DBG_PROG_S( adresse )
         CFRelease(cfstring);
         if(text) free (text);
-      } else { WARN_S( "Für "<<dateiname<<"|"<<ende<<" kein Adresse gefunden" ) }
+      } else { WARN_S( "For "<<dateiname<<"|"<<ende<<" no adress found" ) }
     }
     return adresse;
   }

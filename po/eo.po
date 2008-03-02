@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2007-04-21 11:05+0200\n"
+"POT-Creation-Date: 2007-04-23 19:31+0200\n"
 "PO-Revision-Date: 2005-08-13 17:35+0200\n"
 "Last-Translator: Kai-Uwe Behrmann\n"
 "Language-Team:  <eo@li.org>\n"
@@ -1058,11 +1058,11 @@ msgstr ""
 msgid "file size 0 for "
 msgstr ""
 
-#: icc_kette.cpp:174
+#: icc_kette.cpp:173
 msgid "noName"
 msgstr ""
 
-#: icc_kette.cpp:194
+#: icc_kette.cpp:193
 msgid "File not loaded!"
 msgstr ""
 
@@ -1688,7 +1688,7 @@ msgid "Huch, unbekannte Ausnahme"
 msgstr ""
 
 #: icc_helfer_osx.cpp:73
-msgid "Hersteller: "
+msgid "Manufacturer: "
 msgstr ""
 
 #: icc_helfer_osx.cpp:75
@@ -1720,20 +1720,12 @@ msgstr "verda"
 msgid "XineramaScreen:"
 msgstr ""
 
-#: icc_helfer_x.cpp:184
-msgid "Keine Monitor Information erhalten"
-msgstr ""
-
-#: icc_helfer_x.cpp:189
-msgid "Keine Gamma Information erhalten"
-msgstr ""
-
 #: icc_helfer_x.cpp:200
 msgid "Gamma Green:"
 msgstr ""
 
-#: icc_helfer_x.cpp:215 icc_helfer_x.cpp:224
-msgid "Kein Gammagradient Information erhalten"
+#: icc_helfer_x.cpp:224
+msgid "no gammagradient information obtained"
 msgstr ""
 
 #: icc_helfer_fltk.cpp:320

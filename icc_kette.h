@@ -21,7 +21,7 @@
  * 
  * -----------------------------------------------------------------------------
  *
- * Die Kette von Profilen Klasse
+ * chain of profiles
  * 
  */
 
@@ -54,14 +54,14 @@ class ICCkette : public icc_examin_ns::ThreadDaten,
                                aktiv_.clear(); profil_mzeit_.clear(); }
   private:
     int                      aktuelles_profil_;
-    /** Liste der geladenen Profile */
+    /** list of loaded profiles */
     std::vector<ICCprofile>  profile_;
     std::vector<std::string> profilnamen_;
     std::vector<int>         aktiv_;
     std::vector<double>      profil_mzeit_;
 
-    /** Starte einen pthread Wächter und lasse Ihn alle unsere Beobachter
-        informieren, welches Profile gerade geändert wurde.
+    /** Start a pthread observer, and let him inform all our observers,
+        which profile was just changed.
      */
     static
 #   if USE_THREADS

@@ -21,7 +21,7 @@
  * 
  * -----------------------------------------------------------------------------
  *
- * Werkzeuge.
+ * tools.
  * 
  */
 
@@ -78,7 +78,7 @@ dbgWriteF (/*std::ostringstream & ss*/)
       f.close();
     } else {
       data = 0;
-      WARN_S( _("Dateigroesse 0 fuer ") << dateiname )
+      WARN_S( _("file size 0 for ") << dateiname )
     }
 #else
   cout << debug_s_/*ss*/.str();
@@ -86,13 +86,13 @@ dbgWriteF (/*std::ostringstream & ss*/)
 }
 
 
-// Threads identifizieren
+// threads identify
 Fl_Thread icc_thread_liste[12] = {0,0,0,0,0,0,0,0,0,0,0,0};
 
 
 /**
- * Steuerschnipsel
- * Beschreibung entnommen aus SuSE's /etc/rc.status
+ * console formating snippets
+ * description taken over from SuSE's /etc/rc.status
  *
 #    \033          ascii ESCape
 #    \033[<NUM>G   move to column <NUM> (linux console, xterm, not vt100)
@@ -157,7 +157,7 @@ dbgThreadId()
   //printf("%d\n", (int*)s.c_str());
   switch (dbg_id)
   {
-    // in icc_thread_liste eingetragene Fl_Thread's lassen sich identifizieren
+    // in icc_thread_liste registred Fl_Thread's can be identified
     case THREAD_HAUPT:
       dbgWrite( "\033[30m\033[1m[HAUPT]\033[m" ); break;
     case THREAD_GL1:

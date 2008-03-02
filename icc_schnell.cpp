@@ -21,7 +21,7 @@
  * 
  * -----------------------------------------------------------------------------
  *
- * Schnell kompilieren.
+ * put something here in to compile more quick.
  * 
  */
 
