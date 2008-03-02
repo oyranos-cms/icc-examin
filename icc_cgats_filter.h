@@ -34,12 +34,20 @@
 #include <vector>
 #include <string>
 
+#define STD_CGATS_FIELDS 44
+
 class CgatsFilter
 {
+    const static double pi = M_PI;           // integral type
+
+    // Hilfsobjekte
+    const static char *cgats_alnum_;         // non-integral type
+    const static char *leer_zeichen_;
+    const static char ss_woerter_[STD_CGATS_FIELDS][16];// Standard Schlüsselwö.
   public:
-    CgatsFilter () { DBG_PROG_START
-        sprintf (cgats_alnum_, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_|/-+=()[]{}<>&?!:;,.0123456789");
-        sprintf (leer_zeichen_, "\t\n\v\f\r");
+    CgatsFilter ()
+    { DBG_PROG_START
+        // Initialisierung konstanter Typen
         typ_ = LCMS;
         standard_schluesselwoerter_anlegen_();
         DBG_PROG_ENDE
@@ -49,7 +57,9 @@ class CgatsFilter
                                           data_orig_.assign( data,0,size ); }
     void lade (std::string &data)       { clear(); data_orig_ = data; }
     void clear()                        { data_.resize(0); data_orig_.resize(0);
-                                          s_woerter_ = ss_woerter_; }
+           s_woerter_.resize(STD_CGATS_FIELDS);
+           for(unsigned i = 0; i < STD_CGATS_FIELDS; ++i)
+             s_woerter_[i] = ss_woerter_[i]; }
     enum {
       LCMS,
       MAX_BELASSEN
@@ -105,13 +115,9 @@ private:
     // benötigte Daten
     std::string              data_;      // der korrigierte CGATS Text
     std::string              data_orig_; // eine Kopie vom Original
-    std::vector<std::string> ss_woerter_;// Standard Schlüsselwörter - nur einmalig auffüllen und danach nur noch lesen
     std::vector<std::string> s_woerter_; // Schlüsselwörter
     int                      typ_;       // Art des Filterns
 
-    // Hilfsobjekte
-    char cgats_alnum_[128];
-    char leer_zeichen_[12];
 };
 
 

@@ -42,8 +42,10 @@
    ChangeLog
 
 2005-01-25
-	* und: insert umstellen
-	* neu: KEYWORD in Schlüsselwortliste aufnehmen
+	* und: insert umstellen <- 9:00
+	* neu: KEYWORD in Schlüsselwortliste aufnehmen -> 12:00
+	* neu: ss_woerter_ const static <- 20:00
+	* 
 2005-01-24
 	* <- 10:30
 	* Telefon Ulm 11:30 - 12:30
@@ -95,9 +97,62 @@
 #include <fstream>
 #include <sstream>
 
+// Initialisierungen
+
+const char *CgatsFilter::cgats_alnum_ = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_|/-+=()[]{}<>&?!:;,.0123456789";
+const char *CgatsFilter::leer_zeichen_ = "\t\n\v\f\r";
+const char CgatsFilter::ss_woerter_[STD_CGATS_FIELDS][16] =
+  { "SAMPLE_ID",
+    "SAMPLE_NAME",
+    "CMYK_C",
+    "CMYK_M",
+    "CMYK_Y",
+    "CMYK_K",
+    "RGB_R",
+    "RGB_G",
+    "RGB_B",
+    "XYZ_X",
+    "XYZ_Y",
+    "XYZ_Z",
+    "XYY_X",
+    "XYY_Y",
+    "XYY_CAPY",
+    "LAB_L",
+    "LAB_A",
+    "LAB_B",
+    "D_RED",
+    "D_GREEN",
+    "D_BLUE",
+    "D_VIS",
+    "D_MAJOR_FILTER",
+    "SPECTRAL_PCT",
+    "SPECTRAL_DEC",
+    "SPECTRAL_",
+    "nm",  // nicht standard
+    "SPECTRUM_", // nicht standard
+    "R_", // nicht standard
+    "LAB_C",
+    "LAB_H",
+    "LAB_DE",
+    "LAB_DE_94",
+    "LAB_DE_CMC",
+    "LAB_DE_2000",
+    "MEAN_DE",
+    "STDEV_X",
+    "STDEV_Y",
+    "STDEV_Z",
+    "STDEV_L",
+    "STDEV_A",
+    "STDEV_B",
+    "STDEV_DE",
+    "CHI_SQD_PAR" };
+
+// Implementationen
+
 void
 CgatsFilter::standard_schluesselwoerter_anlegen_ ()
 { DBG_PROG_START
+  #if 0
   {
     ss_woerter_.push_back( "SAMPLE_ID" );
     ss_woerter_.push_back( "SAMPLE_NAME" );
@@ -144,6 +199,7 @@ CgatsFilter::standard_schluesselwoerter_anlegen_ ()
     ss_woerter_.push_back( "STDEV_DE" );
     ss_woerter_.push_back( "CHI_SQD_PAR" );
   }
+#endif
   DBG_PROG_ENDE
 }
 
