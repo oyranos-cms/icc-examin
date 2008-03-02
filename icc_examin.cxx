@@ -4,19 +4,17 @@
 static char *statlabel;
  std::string filename_alt;
  bool setTitleUrl = true;
- using namespace std;
+
  int px,py,pw,ph;
  int fullscreen;
- int inspekt_zeigen;  int inspekt_topline;
+  int inspekt_topline;
  int tag_nummer;
-//openvrml::browser *browser = 0;
-//ViewerFLTK  *viewer = 0;
 #include "icc_draw.h"
 ICCprofile profile;
 
 Fl_Double_Window *details=(Fl_Double_Window *)0;
 
-static void cb_Offnen(Fl_Menu_*, void*) {
+static void cb_ffnen(Fl_Menu_*, void*) {
   open(true);
 }
 
@@ -57,31 +55,33 @@ static void cb_menueintrag_Voll(Fl_Menu_*, void*) {
   };
 }
 
-static void cb_menueintrag_inspekt(Fl_Menu_*, void*) {
-  if (inspekt_zeigen) {
-    inspekt_zeigen = false;
-    inspekt->hide();
-    examin->show();
-    inspekt_topline = inspekt_html->topline();
-  } else {
-    inspekt_zeigen = true;
+static void cb_menueintrag_inspekt(Fl_Menu_* o, void*) {
+  Fl_Menu_* mw = (Fl_Menu_*)o;
+  const Fl_Menu_Item* m = mw->mvalue();
+
+  DBG_S (m->value())
+  if (m->value()) {
     inspekt->show();
     examin->hide();
     inspekt_html->value(profile.report().c_str());
     inspekt_html->topline(inspekt_topline);
+  } else {
+    inspekt->hide();
+    examin->show();
+    inspekt_topline = inspekt_html->topline();
   };
 }
 
 Fl_Menu_Item menu_[] = {
  {"Daten", 0,  0, 0, 64, 0, 0, 14, 56},
- {"Offnen", 0x4006f,  (Fl_Callback*)cb_Offnen, 0, 0, 0, 0, 14, 56},
+ {"\326""ffnen", 0x4006f,  (Fl_Callback*)cb_ffnen, 0, 0, 0, 0, 14, 56},
  {"Bericht Speichern", 0,  (Fl_Callback*)cb_menueintrag_html_speichern, 0, 128, 0, 0, 14, 56},
  {"Beenden", 0x40071,  (Fl_Callback*)cb_Beenden, 0, 0, 0, 0, 14, 56},
  {0},
  {"Ansicht", 0,  0, 0, 64, 0, 0, 14, 56},
  {"Ganzer Bildschirm an/aus", 0x40076,  (Fl_Callback*)cb_menueintrag_Voll, 0, 0, 0, 0, 14, 56},
  {0},
- {"Pr\374""fansicht", 0x40062,  (Fl_Callback*)cb_menueintrag_inspekt, 0, 2, 0, 0, 14, 56},
+ {"Pr\374""fansicht", 0x40062,  (Fl_Callback*)cb_menueintrag_inspekt, 0, 3, 0, 0, 14, 56},
  {0}
 };
 
@@ -325,13 +325,16 @@ std::string open(int interaktiv) {
 
   if (profile.hasMeasurement()) {
     inspekt_topline = inspekt_html->topline();
-    if (inspekt_zeigen) {
+    DBG_S(menueintrag_inspekt->value())
+    if (menueintrag_inspekt->value()) {
       inspekt_html->value(profile.report().c_str());
       cout << inspekt_html->size() << " " << inspekt_topline; DBG
       if (inspekt_html->size() -75 < inspekt_topline)
         inspekt_html->topline (inspekt_html->size() - 75);
       else
         inspekt_html->topline (inspekt_topline);
+      inspekt->show();
+      examin->hide();
     }
     menueintrag_inspekt->activate();
     menueintrag_html_speichern->activate();
@@ -340,7 +343,7 @@ std::string open(int interaktiv) {
     menueintrag_html_speichern->deactivate();
     inspekt->hide();
     examin->show();
-    inspekt_zeigen = false;
+    //menueintrag_inspekt->value( false );
   }
 
   return filename;
@@ -395,7 +398,7 @@ void TagBrowser::reopen() {
     s << "@t";
     // Nummer
     int Nr = atoi((*it).c_str()) + 1;
-    stringstream t; t << Nr;
+    std::stringstream t; t << Nr;
     for (int i = t.str().size(); i < 3; i++) {s << " ";} s << Nr; *it++; s << " "; 
     // Name/Bezeichnung
     s << *it; for (int i = (*it++).size(); i < 12; i++) {s << " ";}

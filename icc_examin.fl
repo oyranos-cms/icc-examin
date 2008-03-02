@@ -39,10 +39,10 @@ decl {\#include <FL/Fl_File_Chooser.H>
 decl {char *statlabel;
  std::string filename_alt;
  bool setTitleUrl = true;
- using namespace std;
+
  int px,py,pw,ph;
  int fullscreen;
- int inspekt_zeigen;  int inspekt_topline;
+  int inspekt_topline;
  int tag_nummer;} {} 
 
 decl {class TagDrawings;
@@ -51,26 +51,7 @@ class TagTexts;
 class MftChoice;} {public
 } 
 
-decl {//\#include <openvrml/browser.h>} {public
-} 
-
-decl {//\#include <openvrml/gl/viewer.h>} {public
-} 
-
-decl {//\#include "vFLGLWidget.h"} {public
-} 
-
-decl {//\#include "ViewerFLTK.h"} {public
-} 
-
-decl {//openvrml::browser *browser = 0;} {} 
-
-decl {//ViewerFLTK  *viewer = 0;} {} 
-
-decl {//\#define DBG cout << __FILE__<<":"<<__LINE__ <<" "<< __func__ << "()" << endl;} {public
-} 
-
-decl {\#define _(text) text} {public
+decl {\#define _(text) text} {selected public
 } 
 
 decl {\#include "icc_draw.h"} {} 
@@ -89,7 +70,7 @@ Function {} {open C return_type int
   inspekt_topline = 0;} {}
   Fl_Window details {
     label {ICC Details} open
-    xywh {851 410 385 515} type Double box NO_BOX color 53
+    xywh {861 458 385 515} type Double box NO_BOX color 53
     code1 {DBG
     if (argc>1) {
 
@@ -114,7 +95,7 @@ Function {} {open C return_type int
           xywh {15 15 100 20}
         } {
           menuitem {} {
-            label Offnen
+            label {Öffnen}
             callback {open(true)}
             xywh {15 15 100 20} shortcut 0x4006f
           }
@@ -166,19 +147,21 @@ Function {} {open C return_type int
         }
         menuitem menueintrag_inspekt {
           label {Prüfansicht}
-          callback {if (inspekt_zeigen) {
-    inspekt_zeigen = false;
-    inspekt->hide();
-    examin->show();
-    inspekt_topline = inspekt_html->topline();
-  } else {
-    inspekt_zeigen = true;
+          callback {Fl_Menu_* mw = (Fl_Menu_*)o;
+  const Fl_Menu_Item* m = mw->mvalue();
+
+  DBG_S (m->value())
+  if (m->value()) {
     inspekt->show();
     examin->hide();
     inspekt_html->value(profile.report().c_str());
     inspekt_html->topline(inspekt_topline);
+  } else {
+    inspekt->hide();
+    examin->show();
+    inspekt_topline = inspekt_html->topline();
   }}
-          xywh {30 30 100 20} type Toggle shortcut 0x40062
+          tooltip {Mess- und Profilwerte bildlich und in Zahlen dargestellt; Ctrl+b} xywh {30 30 100 20} type Toggle shortcut 0x40062 deactivate
         }
       }
       Fl_Group inspekt {open
@@ -320,13 +303,16 @@ Function {open(int interaktiv)} {open return_type {std::string}
 
   if (profile.hasMeasurement()) {
     inspekt_topline = inspekt_html->topline();
-    if (inspekt_zeigen) {
+    DBG_S(menueintrag_inspekt->value())
+    if (menueintrag_inspekt->value()) {
       inspekt_html->value(profile.report().c_str());
       cout << inspekt_html->size() << " " << inspekt_topline; DBG
       if (inspekt_html->size() -75 < inspekt_topline)
         inspekt_html->topline (inspekt_html->size() - 75);
       else
         inspekt_html->topline (inspekt_topline);
+      inspekt->show();
+      examin->hide();
     }
     menueintrag_inspekt->activate();
     menueintrag_html_speichern->activate();
@@ -335,11 +321,10 @@ Function {open(int interaktiv)} {open return_type {std::string}
     menueintrag_html_speichern->deactivate();
     inspekt->hide();
     examin->show();
-    inspekt_zeigen = false;
+    //menueintrag_inspekt->value( false );
   }
 
-  return filename;} {selected
-  }
+  return filename;} {}
 } 
 
 Function {quit(void)} {} {
@@ -394,7 +379,7 @@ class TagBrowser {: {public Fl_Hold_Browser}
     s << "@t";
     // Nummer
     int Nr = atoi((*it).c_str()) + 1;
-    stringstream t; t << Nr;
+    std::stringstream t; t << Nr;
     for (int i = t.str().size(); i < 3; i++) {s << " ";} s << Nr; *it++; s << " "; 
     // Name/Bezeichnung
     s << *it; for (int i = (*it++).size(); i < 12; i++) {s << " ";}

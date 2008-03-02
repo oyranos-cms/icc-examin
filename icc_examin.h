@@ -21,11 +21,6 @@ class TagDrawings;
 class TagBrowser;
 class TagTexts;
 class MftChoice;
-//#include <openvrml/browser.h>
-//#include <openvrml/gl/viewer.h>
-//#include "vFLGLWidget.h"
-//#include "ViewerFLTK.h"
-//#define DBG cout << __FILE__<<":"<<__LINE__ <<" "<< __func__ << "()" << endl;
 #define _(text) text
 #include "icc_profile.h"
 #include "icc_utils.h"

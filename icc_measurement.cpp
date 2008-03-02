@@ -494,6 +494,7 @@ ICCmeasurement::init_umrechnen                     (void)
     hRGB = cmsOpenProfileFromMem (_profil->_data, _profil->_size);
     if (getColorSpaceName(_profil->header.colorSpace()) != "Rgb") {
       cout << "unterschiedliche Messdaten und Profilfarbraum "; DBG
+      this->clear();
       return;
     }
 
@@ -727,7 +728,7 @@ ICCmeasurement::getHtmlReport                     (void)
 
   if (_reportTabelle.size() == 0)
     _reportTabelle = getText();
-  std::vector<int> layout = getLayout();
+  std::vector<int> layout = getLayout(); DBG
 
   html << "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">";
   html << "<html><head>" << endl;
@@ -738,13 +739,19 @@ ICCmeasurement::getHtmlReport                     (void)
   html << "</head><body bgcolor=\"" << SF << "\">" << endl << endl;
 
   int kopf = (int)_reportTabelle.size() - _nFelder;
+  int tkopf = 1;
+  if (_reportTabelle.size() <= 1)
+    tkopf = 0;
   // Allgemeine Informationen
-  for (int i = 0; i < kopf - 1 ; i++) {
+  for (int i = 0; i < kopf - tkopf ; i++) { DBG_S (_nFelder<<"|"<<kopf<<"|"<<i)
     //if (i == 0) html << "<h2>";
     html << _reportTabelle[i][0];
     //if (i == 0) html << "</h2>";
     html <<     "<br>\n\n";
-  }
+  } DBG
+  if (!_nFelder)
+    return html.str();
+
   html <<       "<table align=left cellpadding=\"2\" cellspacing=\"0\" border=\"0\" width=\"90%\" bgcolor=\"" << SF << "\">\n";
   html <<       "<thead> \n";
   html <<       "  <tr> \n";
@@ -755,7 +762,7 @@ ICCmeasurement::getHtmlReport                     (void)
     f = 2;
   }
   l = 0;
-  for (s = 0; s < (int)_reportTabelle  [kopf - 1].size() + f; s++) {
+  for (s = 0; s < (int)_reportTabelle  [kopf - tkopf].size() + f; s++) {
     if (s < f) {
       if (s == 0) {
         html <<   "    <th width=\"25\">" << _("Messfarbe") << "</th>";
@@ -764,11 +771,11 @@ ICCmeasurement::getHtmlReport                     (void)
       }
     } else {
       html <<   "    <th bgcolor=\""; LAYOUTFARBE
-      html << "\">" << _reportTabelle [kopf - 1][s - f] << "</th>\n";
+      html << "\">" << _reportTabelle [kopf - tkopf][s - f] << "</th>\n";
     }
-  }
+  } DBG
   html <<       "  </tr>\n";
-  html <<       "</thead><tbody> \n";
+  html <<       "</thead>\n<tbody>\n";
 
   // Messfelder
   #define NACH_HTML(satz,kanal) \
@@ -784,7 +791,7 @@ ICCmeasurement::getHtmlReport                     (void)
   for (int z = 0; z < _nFelder; z++) {
     html <<     "  <tr>\n";
     l = 0;
-    for (s = 0; s < (int)_reportTabelle[kopf - 1].size() + f; s++) {
+    for (s = 0; s < (int)_reportTabelle[kopf - tkopf].size() + f; s++) {
       if (s < f) { // Farbdarstellung
         html << "    <td width=\"20\" bgcolor=\"#"; 
         sprintf (farbe,"");
@@ -816,7 +823,7 @@ std::vector<std::vector<std::string> >
 ICCmeasurement::getText                     (void)
 { DBG
   std::vector<std::vector<std::string> > tabelle;
-  tabelle.resize(_nFelder+4); // push_back ist zu langsam
+  tabelle.resize(1); // push_back ist zu langsam
   std::stringstream s;
   int z = 0; // Zeilen
 
@@ -825,6 +832,7 @@ ICCmeasurement::getText                     (void)
 
   if ((_CMYK_measurement || _RGB_measurement)
        && _XYZ_measurement) {
+    tabelle.resize(_nFelder+4); // push_back ist zu langsam
     // Tabellenüberschrift
     tabelle[0].resize(1);
     tabelle[0][0] =    _("Mess- und Profilfarben aus <b>"); 
