@@ -63,10 +63,10 @@ extern Fl_Box *box_stat;
 extern Fl_Progress *load_progress;
 extern Fl_Menu_Item menu_[];
 #define menueintrag_html_speichern (menu_+2)
-#define menueintrag_Voll (menu_+11)
-#define menueintrag_inspekt (menu_+12)
-#define menueintrag_3D (menu_+13)
-#define menu_hilfe (menu_+15)
+#define menueintrag_Voll (menu_+9)
+#define menueintrag_inspekt (menu_+10)
+#define menueintrag_3D (menu_+11)
+#define menu_hilfe (menu_+13)
 void open(int interaktiv);
 void quit(void);
 char* icc_read_info(char* filename);

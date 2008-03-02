@@ -63,8 +63,7 @@ decl {\#define status(_texte) {std::stringstream s; s << _texte; box_stat->label
 
 decl {\#include "icc_draw.h"
 \#include "icc_oyranos.h"
-\#include "fl_oyranos.h"} {selected
-} 
+\#include "fl_oyranos.h"} {} 
 
 decl {\#include "icc_profile.h"
 \#include "icc_utils.h"
@@ -240,7 +239,7 @@ Function {} {open C return_type int
   }
   Fl_Window details {
     label {ICC Details} open
-    xywh {633 157 385 520} type Double box NO_BOX color 53
+    xywh {638 181 385 520} type Double box NO_BOX color 53
     code1 {DBG_PROG
 
     if (argc>1) {
@@ -340,69 +339,8 @@ Function {} {open C return_type int
           xywh {25 25 100 20}
         } {
           menuitem {} {
-            label p
-            callback {open(true)}
-            xywh {25 25 100 20}
-          }
-          menuitem {} {
-            label c
-            callback {DBG_PROG_START
-  std::string filename = filenamen_alt[0];  DBG_PROG_V( filename )
-
-  std::string::size_type pos=0;
-  if ((pos = filename.find_last_of(".", filename.size())) != std::string::npos) { DBG_PROG
-    filename.replace (pos, 5, ".html"); DBG_NUM_S( ".html gesetzt" )
-  } DBG_PROG_V( filename )
-  DBG_PROG_V( dateiwahl->filter() )
-
-  std::string muster = dateiwahl->filter(); DBG_PROG
-  std::string datei;
-  if (dateiwahl->value())
-    datei = dateiwahl->value(); DBG_PROG
-  std::string titel = dateiwahl->label(); DBG_PROG
-
-  dateiwahl->filter(_("HTML Dokumente (*.htm*)")); DBG_PROG
-  \#ifdef HAVE_FLU
-  dateiwahl->cd(".");
-  \#endif
-  dateiwahl->label(_("Bericht Speichern")); DBG_PROG
-  dateiwahl->value(filename.c_str()); DBG_PROG
-
-  dateiwahl->show(); DBG_PROG
-  while( dateiwahl->shown() )
-    Fl::wait( 0.01 );
-
-  DBG_PROG_V( dateiwahl->filter() )
-  if (dateiwahl->value())
-    filename = dateiwahl->value();
-  else
-    filename = "";
-  DBG_PROG
-
-  dateiwahl->filter(muster.c_str()); DBG_PROG
-  dateiwahl->value(datei.c_str()); DBG_PROG
-  dateiwahl->label(titel.c_str()); DBG_PROG
-  DBG_PROG_V( dateiwahl->filter() )
-
-  DBG_PROG_V( filename )
-
-  if (dateiwahl->count() == 0 || filename != "" || filename == filenamen_alt[0]) {
-    load_progress->hide ();
-    return;
-  }
-
-  std::string bericht = profile[0].report();
-
-  std::ofstream f ( filename.c_str(),  std::ios::out );
-  f.write ( bericht.c_str(), bericht.size() );
-  f.close();
-
-  DBG_PROG_ENDE}
-            xywh {10 10 100 20} deactivate divider
-          }
-          menuitem {} {
             label Voreinstellungen
-            callback {voreinstellungen()}
+            callback {voreinstellungen()} selected
             xywh {25 25 100 20}
           }
         }
