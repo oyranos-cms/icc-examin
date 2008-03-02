@@ -63,7 +63,6 @@ CPP_HEADERS = \
 	agviewer.h \
 	cccie64.h \
 	ciexyz64_1.h \
-	icc_beobachter.h \
 	icc_cgats_filter.h \
 	icc_draw.h \
 	icc_draw_fltk.h \
