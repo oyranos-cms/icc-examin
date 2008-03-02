@@ -338,20 +338,20 @@ Agviewer::agvHandleButton(int button, int event, int x, int y)
         lastAz = downAz = EyeAz;
         AzSpin = ElSpin = dAz = dEl = 0;
         AdjustingAzEl = 1;
-	MoveOn(0); //ICC stop
+        MoveOn(0); //ICC stop
         if (MoveMode == FLYING)
-          icc_examin_ns::status_info(_("left-/middle-/right mouse button -> rotate/cut/menu"));
+          icc_examin_ns::status_info(_("left mouse button -> go back"));
         duenn = false;
         MoveMode = POLAR;
     } else
       if(button & FL_BUTTON2)
     {
         downDist = EyeDist;
-	downEx = Ex;
-	downEy = Ey;
-	downEz = Ez;
-	downEyeMove = EyeMove;
-	EyeMove = 0;
+        downEx = Ex;
+        downEy = Ey;
+        downEz = Ez;
+        downEyeMove = EyeMove;
+        EyeMove = 0;
         if (MoveMode == FLYING)
           icc_examin_ns::status_info(_("Pause"));
     }

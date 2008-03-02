@@ -57,7 +57,8 @@ else
 	--from-code=utf-8
     RECODE_DE = iso-8859-1
     RECODE = recode -vf
-    CHARSET_DE = latin-1
+    CHARSET_DE = ISO-8859-1
+    #latin-1
   ifdef LINUX
     OPTS = -Wall  -Os -g $(DEBUG) #-fomit-frame-pointer -g
     INCL=-I$(includedir) -I/usr/X11R6/include -I./
@@ -298,29 +299,7 @@ potfile:
 	-o $(POT_FILE) \
 	$(SOURCES)
 	for ling in $(LINGUAS); do \
-	  test -f po/$${ling}.po \
-        && (echo "prepare po/$${ling}.utf-8 ..."; \
-            if [ $$ling = de ]; then \
-              echo transkodiere Uebersetzung von po/$${ling}.po nach po/$${ling}.utf-8; \
-              cat po/$${ling}.po | sed s/charset=$(CHARSET_DE)/charset=UTF-8/ > po/$${ling}.utf-8; \
-              $(RECODE) $(CHARSET_DE)..utf-8 po/$${ling}.utf-8; \
-            else \
-              echo "no native language po file created for $$ling"; \
-            fi); \
-      test -f po/$${ling}.utf-8 \
-        && (echo "update translation in po/$${ling}.utf-8 ..."; \
-            $(MSGMERGE) po/$${ling}.utf-8 $(POT_FILE)) \
-        || (echo "creation of po/$${ling}.utf-8 failed"); \
-	  test -f $(POT_FILE) \
-        && (echo "write po/$${ling}.po back ..."; \
-            if [ $$ling = de ]; then \
-              echo transkodiere Uebersetzung von po/$${ling}.utf-8 nach po/$${ling}.po; \
-              cat po/$${ling}.utf-8 | sed s/charset=UTF-8/charset=$(CHARSET_DE)/ > po/$${ling}.po; \
-              $(RECODE) utf-8..$(CHARSET_DE) po/$${ling}.po; \
-              $(RM) po/$${ling}.utf-8; \
-            else \
-              echo "could not write back to native language po for $$ling"; \
-            fi); \
+            $(MSGMERGE) po/$${ling}.po $(POT_FILE); \
 	done;
 
 $(POT_FILE):	potfile

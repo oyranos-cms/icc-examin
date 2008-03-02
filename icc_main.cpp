@@ -46,10 +46,21 @@ main (int argc, char** argv)
   else
     icc_debug = 0;
 
-
-  char* locale = setlocale (LC_MESSAGES, "");
-  if(locale)
+  // i18n
+  std::string locale = setlocale (LC_MESSAGES, "");
+  if(locale.size())
     DBG_PROG_S( locale );
+  
+  std::string::size_type pos = locale.find("de",0);
+  if(pos == 0) { // de
+    if((pos = locale.find_first_of(".")) != std::string::npos) {
+      locale.erase( pos, locale.size()-pos );
+    }
+    locale += ".ISO-8859-1";
+    setlocale (LC_MESSAGES, locale.c_str());
+    system("export LANG=ISO-8859-1");
+    DBG_PROG_V( locale )
+  }
 
   textdomain ("icc_examin");
   char test[1024];
@@ -63,6 +74,7 @@ main (int argc, char** argv)
     bdtd = bindtextdomain ("icc_examin", SRC_LOCALEDIR);
     DBG_PROG_S( "Versuche locale in " << bdtd );
   }
+  // i18n Ende
 
   ICCexamin hauptprogramm;
 
