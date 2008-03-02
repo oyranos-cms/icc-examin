@@ -57,24 +57,27 @@ main (int argc, char** argv)
 
   const char *locale_paths[3] = {0,0,0};
   signed int is_path = -1;
-  int num_paths = 2;
+  int num_paths = 0;
 # if __APPLE__
   std::string bdr;
   // RESOURCESPATH is set in the bundle by "Contents/MacOS/ICC Examin.sh"
   if(getenv("RESOURCESPATH")) {
     bdr = getenv("RESOURCESPATH");
     bdr += "/locale";
-    locale_paths[0] = bdr.c_str();
+    locale_paths[0] = bdr.c_str(); ++num_paths;
   }
   if(!locale_paths[0]) {
     bdr = icc_examin_ns::holeBundleResource("locale","");
     if(bdr.size())
+    {
       locale_paths[0] = bdr.c_str();
+      ++num_paths;
+    }
   } 
-  locale_paths[1] = LOCALEDIR;
+  locale_paths[1] = LOCALEDIR; ++num_paths;
   locale_paths[2] = SRC_LOCALEDIR; ++num_paths;
 # else
-  locale_paths[0] = LOCALEDIR;
+  locale_paths[0] = LOCALEDIR; ++num_paths;
 #ifdef WIN32
 #define DIR_SEPARATOR_C '\\'
 #define DIR_SEPARATOR "\\"
@@ -85,7 +88,7 @@ main (int argc, char** argv)
   DBG_NUM_V( argc <<" "<< argv[0] )
   if (argc)
   { const char *reloc_path = {"../share/locale"};
-    int len = (strlen(argv[0]) + strlen(reloc_path)) * 2;
+    int len = (strlen(argv[0]) + strlen(reloc_path)) * 2 + 128;
     char *path = (char*) malloc( len ); // small one time leak
     char *text = (char*) malloc( len );
     text[0] = 0;
@@ -94,14 +97,34 @@ main (int argc, char** argv)
     if (strrchr(text, DIR_SEPARATOR_C)) {
       char *tmp = strrchr(text, DIR_SEPARATOR_C);
       *tmp = 0;
+    } else {
+      FILE *pp = NULL;
+
+      if (text) free (text);
+      text = (char*) malloc( 1024 );
+
+      // Suche das ausfuehrbare Programm
+      // TODO symbolische Verknuepfungen
+      snprintf( text, 1024, "which %s", argv[0]);
+      pp = popen( text, "r" );
+      if (pp) {
+        if (fscanf (pp, "%s", text) != 1)
+        {
+          pclose (pp);
+          WARN_S( "no executeable path found" );
+        }
+      } else {
+        WARN_S( "could not ask for executeable path" );
+      }
     }
     snprintf (path, len-1, "%s%s%s",text,DIR_SEPARATOR,reloc_path);
-    locale_paths[1] = path;
+    locale_paths[1] = path; ++num_paths;
     locale_paths[2] = SRC_LOCALEDIR; ++num_paths;
     DBG_NUM_V( path );
     if (text) free (text);
-  } else
-    locale_paths[1] = SRC_LOCALEDIR;
+  } else {
+    locale_paths[1] = SRC_LOCALEDIR; ++num_paths;
+  }
 # endif
   is_path = fl_search_locale_path (num_paths, locale_paths, "de", "icc_examin");
 

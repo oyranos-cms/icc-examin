@@ -111,6 +111,7 @@ class ICCexamin : public icc_examin_ns::Beobachter
          farbraum_angezeigt_;
     int  status_,
          intent_,              //!< Uebertragungsart
+         bpc_,                 //!< Schwarzpunktkompensation
          gamutwarn_;           //!< Farbraumwarnung
     bool frei_,                //!< wird nicht von weiterem Prozess benutzt
          farbraum_modus_;      //!< profile.profil() enthaelt ncl2 Schmuckfarben
@@ -122,6 +123,8 @@ class ICCexamin : public icc_examin_ns::Beobachter
     int  frei_zahl;
     int  intent ()  { return intent_; }        //!< die globale Uebertragungsart; siehe auch @see: ICCprofile.intent()
     void intent (int i);                       //!< setze eine Uebertragungsart
+    int  bpc ()  { return bpc_; }              //!< globale BPC
+    void bpc (int i);                          //!< setze BPC
     int  gamutwarn ()  { return gamutwarn_; }  //!< Farbraumwarnung?
     void gamutwarn (int warn) { gamutwarn_ = warn; }
     void gamutAnsichtZeigen ();                //!< DD_farbraum zeigen

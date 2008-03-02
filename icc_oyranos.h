@@ -59,6 +59,7 @@ struct ColourTransform
     size_t size;
 };
 
+
 class Oyranos
 {
   public:
@@ -79,7 +80,7 @@ class Oyranos
                                          return cmyk_; }
     const Speicher & cmyk ()           { cmyk_test_(); return cmyk_; }
 
-    // Gerae^te Profile
+    // Geraete Profile
     std::string moni_name (int x,int y){ moni_test_(x,y); return moni_.name(); }
     const char* moni (int x, int y, size_t &g)
                                        { moni_test_(x,y); g = moni_.size();

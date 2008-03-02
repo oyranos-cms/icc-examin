@@ -47,7 +47,6 @@
 #define EAGAIN 11
 #endif
 
-#define USE_GETTEXT
 #ifdef USE_GETTEXT
 # include <libintl.h>
 # define _(text) threadGettext(text)

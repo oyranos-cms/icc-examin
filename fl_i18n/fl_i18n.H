@@ -31,6 +31,8 @@
 #ifndef FL_I18N_H
 #define FL_I18N_H
 
+#define FL_I18N_VERSION 101
+
 # include <libintl.h>
 # define _(text) threadGettext(text)
 const char* threadGettext( const char* text);

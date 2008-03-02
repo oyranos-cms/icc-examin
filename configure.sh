@@ -205,6 +205,7 @@ if [ -n "$PO" ] && [ $PO -gt 0 ]; then
   echo "LINGUAS = $LINGUAS" >> $CONF
   echo "Languages detected:     $LINGUAS"
   echo "LING = $LING" >> $CONF
+  echo "#define USE_GETTEXT 1" >> $CONF_H
 fi
 
 if [ -n "$PREPARE_MAKEFILES" ] && [ $PREPARE_MAKEFILES -gt 0 ]; then

@@ -86,6 +86,7 @@ ICCexamin::ICCexamin ()
   statlabel = "";
   status_ = false;
   intent_ = 3;
+  bpc_ = 0;
   gamutwarn_ = 0;
   frei_zahl = 0;
   vcgt_cb_laeuft_b_ = 0;
@@ -606,6 +607,16 @@ ICCexamin::intent( int intent_neu )
 }
 
 void
+ICCexamin::bpc( int bpc_neu )
+{
+  if(bpc_ != bpc_neu) {
+    std::vector<std::string> profilnamen = profile;
+    oeffnen( profilnamen );
+  }
+  bpc_ = bpc_neu;
+}
+
+void
 ICCexamin::icc_betrachterNeuzeichnen (void* z)
 { DBG_PROG_START
   Fl_Widget *wid = (Fl_Widget*)z;
@@ -806,8 +817,9 @@ ICCexamin::statusFarbe(double & CIEL, double & CIEa, double & CIEb)
          *rgb = 0;
   DBG_PROG_V( lab[0]<<" "<<lab[1]<<" "<<lab[2] )
   rgb = icc_oyranos. wandelLabNachBildschirmFarben(lab, 1,
-                                 icc_examin->intent(),
-                                 icc_examin->gamutwarn()?cmsFLAGS_GAMUTCHECK:0);
+                                icc_examin->intent(),
+                                (icc_examin->gamutwarn()?cmsFLAGS_GAMUTCHECK:0)|
+                                (icc_examin->bpc()?cmsFLAGS_BLACKPOINTCOMPENSATION:0));
   Fl_Color colour = fl_rgb_color( (int)(rgb[0]*255),
                                   (int)(rgb[1]*255), (int)(rgb[2]*255) );
   if (CIEL < .5)

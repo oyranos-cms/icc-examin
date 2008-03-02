@@ -270,7 +270,7 @@ test:	icc_formeln.o icc_utils.o
 $(LINGUAS_SRC):	$(POT_FILE)
 	echo Linguas ... $(@:.gmo=)
 	for ling in $(@:.gmo=); do \
-      lingua=`echo $${ling} | sed s%po\/%%g`; \
+	  lingua=`echo $${ling} | sed s%po\/%%g`; \
 	  echo "update $${ling}.gmo ..."; \
 	  test -f $${ling}.po \
         && ($(MSGFMT) -o $${ling}.gmo $${ling}.po; \
@@ -378,7 +378,7 @@ copy_files:
 	$(COPY) $(POT_FILE) $(DESTDIR)/po
 	for ling in $(LINGUAS); do \
 	  test -f po/$${ling}.po \
-        && $(COPY) po/$${ling}.po $(DESTDIR)/po/; \
+	  && $(COPY) po/$${ling}.po $(DESTDIR)/po/; \
 	done;
 
 
@@ -417,8 +417,8 @@ install:
 	echo  Linguas ...
 	for ling in $(LINGUAS); do \
 	  echo "installiere po/$${ling}.gmo ..."; \
-      mkdir -p $(DESTDIR)$(datadir)/locale/$${ling}/LC_MESSAGES; \
-      test -f po/$${ling}.gmo \
+	  mkdir -p $(DESTDIR)$(datadir)/locale/$${ling}/LC_MESSAGES; \
+	  test -f po/$${ling}.gmo \
 		&& (mkdir -p $(DESTDIR)$(datadir)/locale/$${ling}/LC_MESSAGES; \
             $(INSTALL) -m 644 po/$${ling}.gmo $(DESTDIR)$(datadir)/locale/$${ling}/LC_MESSAGES/$(TARGET).mo ) \
 		|| (echo $${ling}.gmo is not yet ready ... skipping); \

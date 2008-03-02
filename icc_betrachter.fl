@@ -341,7 +341,7 @@ class ICCfltkBetrachter {open
     } {}
     Fl_Window ueber {
       label {About ICC Examin} open
-      xywh {777 274 365 289} type Double resizable
+      xywh {787 316 365 289} type Double resizable
       code0 {o->hide();}
       class My_Fl_Window non_modal visible
     } {
@@ -381,7 +381,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window vcgt {
       label {Grafic Card Gamma Table}
-      xywh {242 334 370 390} type Double resizable
+      xywh {252 376 370 390} type Double resizable
       code0 {o->hide();}
       class My_Fl_Window visible
     } {
@@ -417,7 +417,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window details {
       label {ICC Examin} open
-      xywh {640 372 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
+      xywh {650 414 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
     } {
       Fl_Group {} {open
         xywh {0 0 385 520}
@@ -520,6 +520,26 @@ class ICCfltkBetrachter {open
   else
     icc_examin->intent(3);}
               tooltip {Enable Whitepoint Adaption;  useful for gamut comparisions} xywh {55 55 100 20} type Toggle shortcut 0x40072
+            }
+            MenuItem menueintrag_bpc {
+              label BPC
+              callback {Fl_Menu_* mw = (Fl_Menu_*)o;
+  const Fl_Menu_Item* m = mw->mvalue();
+
+  DBG_PROG_S (m->value())
+
+  if(m->value())
+    icc_examin->bpc(0);
+  else
+    icc_examin->bpc(1);}
+              tooltip {Black Point Compensation} xywh {65 65 100 20} type Toggle shortcut 0x40062
+            }
+            MenuItem menueintrag_lang {
+              label LANG
+              callback {system("echo $LANG");
+  printf("domain     : %s\\n",textdomain(NULL));
+  printf("domain_path: %s\\n",bindtextdomain(NULL,NULL));} selected
+              tooltip {test LANG} xywh {75 75 100 20} type Toggle
             }
           }
           MenuItem menueintrag_huelle {
@@ -828,8 +848,7 @@ initHilfe();
   }
 
   DBG_PROG_ENDE
-  return dateinamen;} {selected
-    }
+  return dateinamen;} {}
   }
   Function {quit(void)} {} {
     code DBG_PROG_START {}

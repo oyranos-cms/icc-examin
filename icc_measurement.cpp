@@ -296,7 +296,8 @@ ICCmeasurement::init (void)
   if (RGB_MessFarben_.size() != 0)
     DBG_NUM_V( RGB_MessFarben_.size() )
 
-  if (profile_)
+  if (profile_ &&
+      profile_->data_type == ICCprofile::ICCprofileDATA )
   {
     channels_ = profile_->getColourChannelsCount();
     isMatrix_ = !(profile_->hasCLUT());
@@ -548,7 +549,7 @@ ICCmeasurement::init_umrechnen                     (void)
 
 
     if (getColorSpaceName(profile_->header.colorSpace()) != "Rgb"
-     || getColorSpaceName(profile_->header.colorSpace()) != "Cmyk")
+     && getColorSpaceName(profile_->header.colorSpace()) != "Cmyk")
     {
       WARN_S("unterschiedliche Messdaten und Profilfarbraum ")
       DBG_PROG_V( getColorSpaceName(profile_->header.colorSpace()) )

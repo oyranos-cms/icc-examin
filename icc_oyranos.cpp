@@ -688,7 +688,7 @@ Oyranos::netzVonProfil (ICCprofile & profil, int intent)
       size_t groesse = 0;
       char* daten = profil.saveProfileToMem(&groesse);
       DBG_NUM_V( groesse );
-      s.ladeNew(daten, groesse);
+      s.ladeUndFreePtr(&daten, groesse);
   }
 
   if(s.size())
@@ -725,7 +725,7 @@ Oyranos::vrmlVonProfil (ICCprofile & profil, int intent)
   if(profil.valid()) {
       size_t groesse = 0;
       char* daten = profil.saveProfileToMem(&groesse); 
-      s.ladeNew(daten, groesse);
+      s.ladeUndFreePtr(&daten, groesse);
       DBG_NUM_V( groesse );
   }
 

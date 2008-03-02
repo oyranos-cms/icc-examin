@@ -163,7 +163,7 @@ class ICCheader {
                   { DBG_PROG return cp_nchar((char*)&(header.  creator),
                                                       sizeof (icSignature)+1); }
     void        set_creator ()
-                  { DBG_PROG char* m = {"SB  "};
+                  { DBG_PROG char* m = {"BEHR"};
                     header.creator = *(icSignature*)m; }
     void        setID ()
                   {/*char* m = ((char*)&header)[84]; *m = "-";*/ } // v4
