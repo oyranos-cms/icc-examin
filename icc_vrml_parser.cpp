@@ -21,7 +21,7 @@
  * 
  * -----------------------------------------------------------------------------
  *
- * Farbumfang betrachten im WWW-3D Format vrml.
+ * Farbumfang betrachten im WWW-3D Format vrml: Parser
  * 
  */
 
@@ -32,21 +32,11 @@
 #include <vector>
 
 #include "icc_helfer.h"
+#include "icc_vrml_parser.h"
 
 #define lp {l+=0.1; icc_examin->fortschritt(l);}
 
 using namespace icc_parser;
-
-struct ICCnetzPunkt {
-  double koord[3];
-  double farbe[4];
-};
-
-struct ICCnetz {
-  std::vector<ICCnetzPunkt> punkte;
-  std::vector<int> indexe;  // 4 je Punkt 
-  double transparenz;
-};
 
 class ICCvrmlParser
 {
@@ -84,6 +74,7 @@ class ICCvrmlParser
     bool in_farben = false;
     bool in_indexe = false;
     netze_.resize( netze_.size()+1 );
+    int netz_ende = netze_.size()-1;
     std::string zeile;
     for(unsigned int z = 0; z < zeilen .size(); z++)
     {
@@ -110,7 +101,7 @@ class ICCvrmlParser
       }
 
       if( in_punkte ) {
-        static char trennzeichen[12];
+        char trennzeichen[12];
         trennzeichen[0] = ',';
         sprintf(&trennzeichen[1], leer_zeichen);
         bool anfuehrungstriche = false;
@@ -118,20 +109,23 @@ class ICCvrmlParser
           unterscheideZiffernWorte( zeile, anfuehrungstriche, trennzeichen );
 
         int punkte_n = 0;
-        for(unsigned int w = 0; w < werte.size(); ++w) {
+        for(unsigned int w = 0; w < werte.size(); ++w)
+        {
+          const unsigned int dimension = 3;
           int achse = 0;
-          if(!punkte_n%3) {
-            netze_[netze_.size()-1].punkte.push_back(ICCnetzPunkt());
+          if(!punkte_n%dimension &&
+             netze_[netz_ende].punkte.size() < punkte_n/dimension) {
+            netze_[netz_ende].punkte.push_back(ICCnetzPunkt());
             achse = 0;
           }
 
           if(werte[w].zahl.first) {
-            netze_[netze_.size()-1].punkte[punkte_n].koord[achse] =
+            netze_[netz_ende].punkte[punkte_n].koord[achse] =
                 werte[w].zahl.second;
             ++achse;
           }
-          if(!punkte_n%3) {
-            netze_[netze_.size()-1].punkte.push_back(ICCnetzPunkt());
+          if(!punkte_n%dimension) {
+            netze_[netz_ende].punkte.push_back(ICCnetzPunkt());
             ++punkte_n;
           }
         } 
@@ -145,6 +139,15 @@ class ICCvrmlParser
 
 };
 
+
+
+std::vector<ICCnetz>
+extrahiereNetzAusVRML (std::string & vrml)
+{
+  ICCvrmlParser vrml_parser;
+  vrml_parser.lade(vrml);
+  return vrml_parser.zeigeNetze();
+}
 
 
 

@@ -85,7 +85,8 @@ CPP_HEADERS = \
 	icc_ueber.h \
 	icc_utils.h \
 	icc_version.h \
-	icc_vrml.h
+	icc_vrml.h \
+	icc_vrml_parser.h
 #	vFLGLWidget.h \
 	ViewerFLTK.h 
 CPPFILES = \

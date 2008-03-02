@@ -752,6 +752,7 @@ zeig_bits_bin(void* speicher, int groesse)
 }
 
 namespace icc_parser {
+
 const char *alnum = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_|/-+=()[]{}<>&?!:;,.0123456789";
 const char *numerisch = "-+,.0123456789";
 const char *ziffer = "0123456789";

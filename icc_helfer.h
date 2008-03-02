@@ -110,7 +110,7 @@ namespace icc_parser {
 
   std::vector<ZifferWort>       unterscheideZiffernWorte ( std::string &zeile,
                                                  bool anfuehrungsstriche_setzen,
-                                                 char *trennzeichen );
+                                                 const char *trennzeichen );
 }
 
 #endif //ICC_HELFER_H
