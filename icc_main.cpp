@@ -98,17 +98,15 @@ main (int argc, char** argv)
 #endif
   DBG_NUM_V( argc <<" "<< argv[0] )
   if (argc)
-  { const char *reloc_path = {"../share/locale"};
+  { const char *reloc_path = {"share/locale"};
     int len = (strlen(argv[0]) + strlen(reloc_path)) * 2 + 128;
     char *path = (char*) malloc( len ); // small one time leak
     char *text = (char*) malloc( len );
     text[0] = 0;
     // whats the path for the executeable ?
     snprintf (text, len-1, argv[0]);
-    if (strrchr(text, DIR_SEPARATOR_C)) {
-      char *tmp = strrchr(text, DIR_SEPARATOR_C);
-      *tmp = 0;
-    } else {
+    if (strrchr(text, DIR_SEPARATOR_C))
+    {
       FILE *pp = NULL;
 
       if (text) free (text);
@@ -127,6 +125,13 @@ main (int argc, char** argv)
       } else {
         WARN_S( "could not ask for executeable path" );
       }
+    }
+    { /* remove the executable name */
+      char *tmp = strrchr(text, DIR_SEPARATOR_C);
+      *tmp = 0;
+      /* remove the expected bin/ dir */
+      tmp = strrchr(text, DIR_SEPARATOR_C);
+      *tmp = 0;
     }
     snprintf (path, len-1, "%s%s%s",text,DIR_SEPARATOR,reloc_path);
     locale_paths[1] = path; ++num_paths;
