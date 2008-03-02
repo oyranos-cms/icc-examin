@@ -264,6 +264,7 @@ ICCtag::load                        ( ICCprofile *profil,
     break;
   case icSigGamutTag:
     _color_in = _profil->header.pcs(); _color_out = (icColorSpaceSignature)0;
+    _to_pcs = false;
     break;
   case icSigPreview0Tag:
   case icSigPreview1Tag:
@@ -765,14 +766,14 @@ ICCtag::getTable                                 (MftChain typ)
     } 
   } else if (getTypName() == "mft1") {
     icLut8* lut8 = (icLut8*) &_data[8];
-    int inputChan, outputChan, clutPoints, inputEnt=256, outputEnt=256;
+    int inputChan, outputChan, clutPoints, inputEnt=256;//, outputEnt=256;
     inputChan = (int)lut8->inputChan;
     outputChan = (int)lut8->outputChan;
     clutPoints = (int)lut8->clutPoints;
     int feldPunkte = (int)pow((double)clutPoints, inputChan);
     int start = 48,
         byte  = 1;
-    double div   = 255.0;
+    //double div   = 255.0;
 
     // Was wird verlangt?
     switch (typ) {
@@ -868,11 +869,16 @@ ICCtag::getText                     (MftChain typ)
     case CURVE_IN:
          texte = getChannelNames (_color_in);
          break;
-    case TABLE:
+    case TABLE: {
+         /*icLut16* lut16 = (icLut16*) &_data[8];
+         int inputChan, outputChan, clutPoints, inputEnt, outputEnt;
+         inputChan = (int)lut16->inputChan;
+         outputChan = (int)lut16->outputChan;*/
          if (_to_pcs)
            texte = getChannelNames (_color_in);
          else
            texte = getChannelNames (_color_out);
+         }
          break;
     case CURVE_OUT:
          texte = getChannelNames (_color_out);
@@ -1008,7 +1014,7 @@ ICCprofile::load (char* filename)
 void
 ICCprofile::fload ()
 { DBG_PROG_START // ICC Profil laden
-  std::string file;
+  std::string file = _filename;
   std::ifstream f ( _filename.c_str(), std::ios::binary | std::ios::ate );
 
   DBG_PROG
@@ -1023,6 +1029,7 @@ ICCprofile::fload ()
   if (_data != NULL && _size) {
     cout << "!!!! Profil wird wiederbenutzt !!!! "; DBG_PROG
     clear();
+    _filename = file;
   }
   _size = (unsigned int)f.tellg();         f.seekg(0);
   _data = (char*)calloc (sizeof (char), _size);
@@ -1064,6 +1071,8 @@ ICCprofile::fload ()
   #ifdef DEBUG_ICCPROFILE
   cout << "TagCount: " << getTagCount() << " / " << tags.size() << " ";DBG
   #endif
+
+  DBG_NUM_V( _filename )
 
   DBG_PROG_ENDE
 }

@@ -300,7 +300,6 @@ void agvSetAllowIdle(int allowidle)
     MoveOn(1);
 }
 
-
   /*
    * when moving to flying we stay in the same spot, moving to polar we
    * reset since we have to be looking at the origin (though a pivot from
@@ -358,6 +357,12 @@ void agvSwitchMoveMode(int move)
       EyeEl   = INIT_POLAR_EL;
       AzSpin  = INIT_AZ_SPIN;
       ElSpin  = INIT_EL_SPIN;
+      break;
+    case AGV_STOP:
+      MoveMode = POLAR;
+      AzSpin  = 0;
+      ElSpin  = 0;
+      move = POLAR;
       break;
     }
   MoveMode = move;

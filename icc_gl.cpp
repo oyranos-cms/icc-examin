@@ -50,13 +50,15 @@ void GL_Ansicht::zeigen() {
 
 void
 GL_Ansicht::verstecken()
-{
-  if (!first)
+{ DBG_PROG_START
+  if (!first) {
+    agvSwitchMoveMode (AGV_STOP);
     GLFenster->size(1,1);
+  }
   DBG_PROG_V( w() <<" "<< h() )
-  agvSetAllowIdle (0);
-  GLfenster_zeigen = false;
-  DBG_PROG
+  GLfenster_zeigen = false; DBG_PROG
+  
+  DBG_PROG_ENDE
 }
 
 void GL_Ansicht::init() {

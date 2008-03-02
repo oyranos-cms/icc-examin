@@ -288,7 +288,7 @@ int main(int argc, char **argv) {
         stat->label(statlabel);
         filename_alt = argv[1];
       } else {
-        stat->label("Error loading file!");
+        status(_("Konnte Datei nicht laden!"));
       }
     }
     o->end();
@@ -459,7 +459,14 @@ void TagBrowser::reopen() {
     value(item);
   }
 
-  s.clear(); s << "ICC Details: " << profile.filename();
+  std::string::size_type pos=0 , max = 0;
+  std::string data = profile.filename(); DBG_NUM_S( data )
+  while ((pos = data.find ("/", pos)) != std::string::npos) {
+    if (pos > max) max = pos; pos++; max++;
+  }
+  data.erase (0, max); DBG_NUM_S( max << data )
+
+  s.clear(); s << "ICC Details: " << data;
   details->label( (const char*) s.str().c_str() );
   DBG_PROG_ENDE
 }
@@ -759,9 +766,9 @@ void zeig_mich(void* widget) {
   tag_viewer->clear_visible(); DBG_PROG
   tag_text->hide();
   if (widget != mft_gl) {
+    mft_gl->verstecken();
     //((Fl_Widget*)widget)->parent()->show(); DBG_PROG
     ((Fl_Widget*)widget)->show(); DBG_PROG
-    mft_gl->verstecken();
   } else {
     DBG_PROG_S( "GL Fenster belassen." )
     mft_gl->zeigen();
