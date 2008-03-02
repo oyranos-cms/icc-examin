@@ -34,6 +34,20 @@
 #include "icc_gl.h"
 #include "icc_helfer_ui.h"
 
+//#define DEBUG_EXAMIN
+#ifdef DEBUG_EXAMIN
+#define DBG_EXAMIN_START DBG_PROG_START
+#define DBG_EXAMIN_ENDE DBG_PROG_ENDE
+#define DBG_EXAMIN_V( texte ) DBG_NUM_V( texte )
+#define DBG_EXAMIN_S( texte ) DBG_NUM_S( texte )
+#else
+#define DBG_EXAMIN_START
+#define DBG_EXAMIN_ENDE
+#define DBG_EXAMIN_V( texte )
+#define DBG_EXAMIN_S( texte )
+#endif
+
+
 ICCexamin::ICCexamin ()
 { DBG_PROG_START
   icc_betrachter = new ICCfltkBetrachter [1];
@@ -677,17 +691,17 @@ ICCexamin::glAnsicht (GL_Ansicht* dazu)
 
 GL_Ansicht*
 ICCexamin::glAnsicht(int id)
-{ DBG_PROG_START
+{ DBG_EXAMIN_START
   if(id>0)
-  { DBG_PROG_V( id )
+  { DBG_EXAMIN_V( id )
     std::vector<GL_Ansicht*>::iterator it;
     for (it = _gl_ansichten.begin() ; it != _gl_ansichten.end(); ++it)
       if ((*it)->id() == id)
-      { DBG_PROG_ENDE
+      { DBG_EXAMIN_ENDE
         return *it;
       }
   }
-  DBG_PROG_ENDE
+  DBG_EXAMIN_ENDE
   return 0;
 }
 #endif

@@ -45,15 +45,19 @@
 
 #include <cmath>
 
-#define DEBUG_ICCGL
 //#define Beleuchtung
 
+//#define DEBUG_ICCGL
 #ifdef DEBUG_ICCGL
 #define DBG_ICCGL_START DBG_PROG_START
 #define DBG_ICCGL_ENDE DBG_PROG_ENDE
+#define DBG_ICCGL_V( texte ) DBG_NUM_V( texte )
+#define DBG_ICCGL_S( texte ) DBG_NUM_S( texte )
 #else
 #define DBG_ICCGL_START
 #define DBG_ICCGL_ENDE
+#define DBG_ICCGL_V( texte )
+#define DBG_ICCGL_S( texte )
 #endif
 
 typedef enum {NOTALLOWED, AXES, RASTER, PUNKTE , SPEKTRUM, HELFER, DL_MAX } DisplayLists;
@@ -437,6 +441,7 @@ GL_Ansicht::makeDisplayLists_()
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_LINE_SMOOTH);
+    glEnable(GL_LIGHTING);
 
     glPushMatrix();
       glMatrixMode(GL_MODELVIEW);
@@ -817,9 +822,9 @@ GL_Ansicht::punkteAuffrischen()
         {
           if ( farben_[i/3*4+3] < 1.0 )
           {
-            glEnable (GL_BLEND);
-            glEnable (GL_DEPTH_TEST);
-            glBlendFunc (GL_SRC_COLOR, GL_DST_ALPHA);
+            //glEnable (GL_BLEND);
+            //glEnable (GL_DEPTH_TEST);
+            //glBlendFunc (GL_SRC_COLOR, GL_DST_ALPHA);
           }
           glColor4f(farben_[i/3*4+0], farben_[i/3*4+1], farben_[i/3*4+2],
                     farben_[i/3*4+3] );
@@ -902,7 +907,7 @@ GL_Ansicht::zeigeSpektralband_()
   hLab  = cmsCreateLabProfile(cmsD50_xyY());
   if(!hLab)  WARN_S( _("hLab Profil nicht geöffnet") )
 
-  hLabtoRGB = cmsCreateTransform          (hLab, TYPE_COLOUR_DBL,
+  hLabtoRGB = cmsCreateTransform          (hLab, TYPE_Lab_DBL,
                                            hsRGB, TYPE_RGB_DBL,
                                            INTENT_ABSOLUTE_COLORIMETRIC,
                                            PRECALC|BW_COMP);
@@ -945,12 +950,10 @@ GL_Ansicht::zeigeSpektralband_()
 
   DBG_PROG_V( nano_max )
   double *cielab = new double[nano_max*3];
-  //LabToCIELab (Lab_Speicher, cielab, nano_max);
-  for (int i=0; i < nano_max*3; ++i) cielab[i] = Lab_Speicher[i]*100.;
+  LabToCIELab (Lab_Speicher, cielab, nano_max);
   cmsDoTransform (hLabtoRGB, cielab, RGB_Speicher, nano_max);
   if (cielab) delete [] cielab;
 
-  glDisable(GL_LIGHTING);
 
   GLfloat farbe[] =   { pfeilfarbe[0],pfeilfarbe[1],pfeilfarbe[2], 1.0 };
 
@@ -963,20 +966,19 @@ GL_Ansicht::zeigeSpektralband_()
     glEnable (GL_DEPTH_TEST);
     glBlendFunc (GL_SRC_COLOR, GL_DST_ALPHA);
     #else
+    glDisable(GL_LIGHTING);
     glDisable (GL_BLEND);
     glEnable  (GL_DEPTH_TEST);
     glDisable (GL_ALPHA_TEST_FUNC);
     glEnable  (GL_LINE_SMOOTH);
     #endif
 
-    //glutSolidCube(0.01);
     glLineWidth(3.0);
     glColor4f(0.5, 1.0, 1.0, 1.0);
     glBegin(GL_LINE_STRIP);
       for (int i=0 ; i <= (nano_max - 1); i++) {
-        DBG_NUM_S( i<<" "<<Lab_Speicher[i*3]<<"|"<<Lab_Speicher[i*3+1]<<"|"<<Lab_Speicher[i*3+2] )
-        DBG_NUM_S( i<<" "<<RGB_Speicher[i*3]<<"|"<<RGB_Speicher[i*3+1]<<"|"<<RGB_Speicher[i*3+2] )
-        //glColor4d(RGB_Speicher[i*3],RGB_Speicher[i*3+1],RGB_Speicher[i*3+2],1.);
+        DBG_ICCGL_S( i<<" "<<Lab_Speicher[i*3]<<"|"<<Lab_Speicher[i*3+1]<<"|"<<Lab_Speicher[i*3+2] )
+        DBG_ICCGL_S( i<<" "<<RGB_Speicher[i*3]<<"|"<<RGB_Speicher[i*3+1]<<"|"<<RGB_Speicher[i*3+2] )
         FARBE(RGB_Speicher[i*3],RGB_Speicher[i*3+1],RGB_Speicher[i*3+2]);
         glVertex3d( LabNachXYZv
                (Lab_Speicher[i*3+0], Lab_Speicher[i*3+1], Lab_Speicher[i*3+2]));
@@ -989,7 +991,6 @@ GL_Ansicht::zeigeSpektralband_()
   if (RGB_Speicher) delete [] RGB_Speicher;
   if (Lab_Speicher) delete [] Lab_Speicher;
 
-  glEnable(GL_LIGHTING);
   DBG_PROG_ENDE
 }
 
@@ -1212,11 +1213,11 @@ display(int id)
     if (DrawAxes)
       glCallList(AXES);
 
-    glCallList(dID(id,SPEKTRUM)); DBG_PROG_V( dID(id,SPEKTRUM) )
+    glCallList(dID(id,SPEKTRUM)); DBG_ICCGL_V( dID(id,SPEKTRUM) )
     if (icc_examin->glAnsicht(id)->zeige_helfer)
-      glCallList(dID(id,HELFER)); DBG_PROG_V( dID(id,HELFER) )
-    glCallList(dID(id,RASTER)); DBG_PROG_V( dID(id,RASTER) )
-    glCallList(dID(id,PUNKTE)); DBG_PROG_V( dID(id,PUNKTE) )
+      glCallList(dID(id,HELFER)); DBG_ICCGL_V( dID(id,HELFER) )
+    glCallList(dID(id,RASTER)); DBG_ICCGL_V( dID(id,RASTER) )
+    glCallList(dID(id,PUNKTE)); DBG_ICCGL_V( dID(id,PUNKTE) )
 
 
     #if 0
@@ -1537,7 +1538,7 @@ rotatethering (void)
 
 int
 dID (int id, int display_list)
-{ DBG_PROG_V( id <<"|"<<  glutGetWindow() )
+{ DBG_ICCGL_V( id <<"|"<<  glutGetWindow() )
   return id*DL_MAX + display_list;
 }
 
