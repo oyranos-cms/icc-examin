@@ -325,7 +325,8 @@ inline void ICCfltkBetrachter::cb_menueintrag_inspekt_i(Fl_Menu_* o, void*) {
   DBG_PROG_S (m->value())
 
   if (m->value())
-  { inspekt_html->value(profile.profil()->report().c_str());
+  { bool export_html = false;
+    inspekt_html->value(profile.profil()->report(export_html).c_str());
     inspekt_html->topline(tag_text->inspekt_topline);
   } else {
     tag_text->inspekt_topline = inspekt_html->topline();
@@ -816,7 +817,7 @@ void ICCfltkBetrachter::measurement(bool has_measurement) {
   if (has_measurement) {
     DBG_PROG_S(menueintrag_inspekt->value())
     if (menueintrag_inspekt->value()) {
-      inspekt_html->value(profile.profil()->report().c_str());
+      inspekt_html->value(profile.profil()->report(false).c_str());
       if (inspekt_html->size() -75 < tag_text->inspekt_topline)
         inspekt_html->topline (inspekt_html->size() - 75);
       else

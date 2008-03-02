@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2005  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -32,6 +32,8 @@
 #include "icc_helfer_ui.h"
 #include "icc_examin.h"
 #include "icc_kette.h"
+#include "icc_oyranos.h"
+
 #include <stdio.h>
 #include <iostream>
 #include <vector>
@@ -80,7 +82,14 @@ void
 init_shoe() {
   // Initialisierung für lcms
   hXYZ  = cmsCreateXYZProfile();
-  hsRGB = cmsCreate_sRGBProfile();
+
+  size_t groesse = 0;
+  char* block = 0;
+  block = oyranos.moni(groesse);
+  if(groesse)
+    hsRGB = cmsOpenProfileFromMem(block, groesse);
+  else
+    hsRGB = cmsCreate_sRGBProfile();
 
   xform = cmsCreateTransform              (hXYZ, TYPE_XYZ_DBL,
                                            hsRGB, TYPE_RGB_8,

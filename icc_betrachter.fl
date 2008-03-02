@@ -188,7 +188,7 @@ class TagTexts {: {public Fl_Hold_Browser}
   }
 } 
 
-class TagDrawings {open : {public Fl_Widget}
+class TagDrawings {: {public Fl_Widget}
 } {
   decl {int X, Y, W, H;} {}
   decl {int wiederholen, id;} {public
@@ -220,8 +220,7 @@ class TagDrawings {open : {public Fl_Widget}
       wiederholen = true;
     }
   } else
-    WARN_S( __func__ << " zu früh benutzt!" )} {selected
-    }
+    WARN_S( __func__ << " zu früh benutzt!" )} {}
     code DBG_PROG_ENDE {}
   }
   Function {hineinPunkt(std::vector<double> &vect, std::vector<std::string> &txt)} {} {
@@ -323,7 +322,8 @@ class MftChoice {: {public Fl_Choice}
   }
 } 
 
-class ICCfltkBetrachter {} {
+class ICCfltkBetrachter {open
+} {
   decl {bool setTitleUrl;
 
  int px,py,pw,ph;
@@ -432,7 +432,7 @@ class ICCfltkBetrachter {} {
     }
     Fl_Window vcgt {
       label {Grafikkarten Gamma Tabellen} open
-      xywh {648 314 370 390} type Double resizable
+      xywh {663 377 370 390} type Double resizable
       code0 {o->hide();} non_modal visible
     } {
       Fl_Group {} {open
@@ -457,7 +457,7 @@ class ICCfltkBetrachter {} {
     }
     Fl_Window details {
       label {ICC Details} open
-      xywh {616 222 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
+      xywh {631 285 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
     } {
       Fl_Group {} {open
         xywh {0 0 385 520}
@@ -529,7 +529,8 @@ class ICCfltkBetrachter {} {
   DBG_PROG_S (m->value())
 
   if (m->value())
-  { inspekt_html->value(profile.profil()->report().c_str());
+  { bool export_html = false;
+    inspekt_html->value(profile.profil()->report(export_html).c_str());
     inspekt_html->topline(tag_text->inspekt_topline);
   } else {
     tag_text->inspekt_topline = inspekt_html->topline();
@@ -776,7 +777,7 @@ ueber_html->value(getUeberHtml().c_str());}
     code {if (has_measurement) {
     DBG_PROG_S(menueintrag_inspekt->value())
     if (menueintrag_inspekt->value()) {
-      inspekt_html->value(profile.profil()->report().c_str());
+      inspekt_html->value(profile.profil()->report(false).c_str());
       if (inspekt_html->size() -75 < tag_text->inspekt_topline)
         inspekt_html->topline (inspekt_html->size() - 75);
       else
@@ -789,7 +790,8 @@ ueber_html->value(getUeberHtml().c_str());}
     menueintrag_inspekt->deactivate();
     menueintrag_html_speichern->deactivate();
     menueintrag_zeigcgats->deactivate();
-  }} {}
+  }} {selected
+    }
   }
 } 
 

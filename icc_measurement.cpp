@@ -374,7 +374,7 @@ ICCmeasurement::init_umrechnen                     (void)
        _CMYK_measurement) || _XYZ_measurement)
   {
     cmsHTRANSFORM hCOLOURtoRGB, hXYZtoRGB, hCOLOURtoXYZ, hXYZtoLab,hCOLOURtoLab;
-    cmsHPROFILE hCOLOUR, hsRGB, hLab, hXYZ;
+    cmsHPROFILE hCOLOUR, hsRGB=0, hLab, hXYZ;
 
 
     if (getColorSpaceName(_profil->header.colorSpace()) != "Rgb"
@@ -386,7 +386,18 @@ ICCmeasurement::init_umrechnen                     (void)
       //return;
     }
 
-    hsRGB = cmsCreate_sRGBProfile ();
+    // ein passendes Bildschirm- / Darstellungsprofil aussuchen
+    if(!export_farben)
+    {
+      size_t groesse = 0;
+      char* block = 0;
+      block = oyranos.moni(groesse);
+      if(groesse)
+        hsRGB = cmsOpenProfileFromMem(block, groesse);
+      DBG_PROG_S( oyranos.moni() << " Farben" )
+    } else DBG_PROG_S( "Export Farben" )
+    if(!hsRGB)
+      hsRGB = cmsCreate_sRGBProfile ();
     hLab = cmsCreateLabProfile (cmsD50_xyY());
     hXYZ = cmsCreateXYZProfile ();
     #if 0
@@ -410,6 +421,10 @@ ICCmeasurement::init_umrechnen                     (void)
           block = oyranos.rgb(groesse);
         DBG_PROG_V( groesse )
 
+        if( !groesse ) {
+          WARN_S(_("kein passendes voreingestelltes Profile gefunden"))
+          goto Kein_Profil;
+        }
         hCOLOUR = cmsOpenProfileFromMem (block, groesse);
       }
       if( !hCOLOUR )
@@ -431,6 +446,7 @@ ICCmeasurement::init_umrechnen                     (void)
                                     INTENT_ABSOLUTE_COLORIMETRIC,
                                     PRECALC|BW_COMP);
     }
+    Kein_Profil:
     if (_XYZ_measurement) {
       if( !hsRGB )
         WARN_S(_("hsRGB ist leer"))
@@ -468,9 +484,9 @@ ICCmeasurement::init_umrechnen                     (void)
 
       if( (int)_XYZ_Satz.size() != _nFelder )
         WARN_S(_("_XYZ_Satz.size() und _nFelder sind ungleich"))
-      if( (int)_RGB_Satz.size() != _nFelder )
+      if( _RGB_Satz.size() && (int)_RGB_Satz.size() != _nFelder )
         WARN_S(_("_RGB_Satz.size() und _nFelder sind ungleich"))
-      if( (int)_CMYK_Satz.size() != _nFelder )
+      if( _CMYK_Satz.size() && (int)_CMYK_Satz.size() != _nFelder )
         WARN_S(_("_CMYK_Satz.size() und _nFelder sind ungleich"))
       for (int i = 0; i < _nFelder; i++)
       {
@@ -579,7 +595,7 @@ ICCmeasurement::init_umrechnen                     (void)
 }
 
 std::string
-ICCmeasurement::getHtmlReport                     (void)
+ICCmeasurement::getHtmlReport                     (bool aussen)
 { DBG_PROG_START
   char SF[] = "#cccccc";  // standard Hintergrundfarbe
   char HF[] = "#aaaaaa";  // hervorgehoben
@@ -589,8 +605,12 @@ ICCmeasurement::getHtmlReport                     (void)
                         html << SF; //Farbe nach Layoutoption auswählen
   int l = 0;
   std::stringstream html; DBG_NUM_V( _RGB_MessFarben.size() )
-  if (_RGB_MessFarben.size() == 0)
+
+  bool html_export = aussen;
+  if (_RGB_MessFarben.size() == 0 || aussen) { DBG_PROG
+    export_farben = aussen;
     init ();
+  }
 
 
   if (_reportTabelle.size() == 0)
@@ -627,7 +647,8 @@ ICCmeasurement::getHtmlReport                     (void)
   int f = 0;           // Spalten für Farben
   if (_XYZ_Satz.size() && _RGB_MessFarben.size() == _XYZ_Satz.size()) {
     f = 2;
-  } DBG_PROG
+  } DBG_PROG_V( _reportTabelle.size() )
+  DBG_PROG_V( _reportTabelle[_reportTabelle.size()-1][0] );
   l = 0;
   for (s = 0; s < (int)_reportTabelle  [kopf - tkopf].size() + f; s++) {
     if (s < f) {
@@ -682,6 +703,12 @@ ICCmeasurement::getHtmlReport                     (void)
 
   html <<       "</tbody>\n</table>\n\n<br>\n</body></html>\n";
   //DBG_NUM_S(html.str() )
+
+  if (html_export) {
+    export_farben = false;
+    init ();
+  }
+
   DBG_PROG_ENDE
   return html.str();
 }

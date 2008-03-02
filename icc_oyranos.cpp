@@ -100,16 +100,46 @@ Oyranos::lab_test_ ()
     }
   }
   
-  DBG_NUM_S( "default " OY_DEFAULT_LAB_PROFILE " profile = "<< lab_.name <<" "<< lab_.size() <<"\n" )
+  DBG_NUM_S( "Standard " OY_DEFAULT_LAB_PROFILE " Profil = "<< lab_.name <<" "<< lab_.size() <<"\n" )
 
   
-  char       *manufacturer,
-             *model,
-             *serial;
-  const char *x;
-  char* profil_name =
-  oyGetMonitorProfile            (x, manufacturer, model, serial );
+  #endif
+  DBG_PROG_ENDE
+}
 
+void
+Oyranos::moni_test_ ()
+{
+  DBG_PROG_START
+  Speicher *v_block = &moni_;
+  char* block;
+  #if HAVE_OY
+  if( !v_block->size() )
+  { DBG_PROG_V( v_block->size() )
+    const char *display_name = 0;
+    char* profil_name =
+      oyGetMonitorProfileName (display_name);
+    DBG_PROG_V( (int)profil_name << profil_name )
+    if( profil_name &&
+        v_block->name != profil_name )
+    { 
+        v_block->name = profil_name;
+
+        int size = oyGetProfileSize ( profil_name );
+        DBG_PROG_V( size )
+        if (size)
+        { block = (char*)oyGetProfileBlock( profil_name, &size);
+          if( oyCheckProfileMem( block, size, 0 ) )
+            WARN_S ( _("Profil konnte nicht geladen werden,") )
+          else {
+            DBG_PROG_V( (int)block <<"|"<< size )
+            v_block->lade(block, size);
+          }
+        }
+    }
+  }
+  
+  DBG_NUM_S( "Monitorprofil = "<< moni_.name <<" "<< moni_.size() <<"\n" )
 
   #endif
   DBG_PROG_ENDE
@@ -145,7 +175,7 @@ Oyranos::rgb_test_ ()
     }
   }
 
-  DBG_NUM_S( "default " OY_DEFAULT_RGB_PROFILE " profile = "<< rgb_.name <<" "<< rgb_.size() <<"\n" )
+  DBG_NUM_S( "Standard " OY_DEFAULT_RGB_PROFILE " Profil = "<< rgb_.name <<" "<< rgb_.size() <<"\n" )
   #endif
   DBG_PROG_ENDE
 }
@@ -180,7 +210,7 @@ Oyranos::cmyk_test_ ()
     }
   }
 
-  DBG_NUM_S( "default " OY_DEFAULT_CMYK_PROFILE " profile = "<< cmyk_.name <<" "<< cmyk_.size() <<"\n" )
+  DBG_NUM_S( "Standard " OY_DEFAULT_CMYK_PROFILE " Profil = "<< cmyk_.name <<" "<< cmyk_.size() <<"\n" )
   #endif
   DBG_PROG_ENDE
 }

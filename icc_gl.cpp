@@ -903,7 +903,13 @@ GL_Ansicht::zeigeSpektralband_()
   double *Lab_Speicher = 0;
 
   // Initialisierung für lcms
-  hsRGB = cmsCreate_sRGBProfile(); // TODO Monitorprofil
+  size_t groesse = 0;
+  char* block = 0;
+  block = oyranos.moni(groesse);
+  if(groesse)
+    hsRGB = cmsOpenProfileFromMem(block, groesse);
+  else
+    hsRGB = cmsCreate_sRGBProfile();
   if(!hsRGB) WARN_S( _("hsRGB Profil nicht geöffnet") )
   hLab  = cmsCreateLabProfile(cmsD50_xyY());
   if(!hLab)  WARN_S( _("hLab Profil nicht geöffnet") )

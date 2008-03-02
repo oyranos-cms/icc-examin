@@ -125,7 +125,7 @@
 #include <fstream>
 #include <sstream>
 
-#define CGATS_DEBUG
+//#define CGATS_DEBUG
 #ifdef CGATS_DEBUG
 #define DBG_CGATS DBG_PROG
 #define DBG_CGATS_START DBG_PROG_START
@@ -193,18 +193,24 @@ const char CgatsFilter::ss_woerter_[STD_CGATS_FIELDS][16] =
     "STDEV_DE",
     "CHI_SQD_PAR" };
 
-// Makro
+// Helfer
 
-#define SUCHENundERSETZEN( text, suchen, ersetzen, pos ) { \
-    int n = suchenErsetzen ( text, suchen, ersetzen, pos ); \
-    if( n ) \
-    { \
-      std::stringstream s; \
-      s << suchen << " " << n << " " << _("mal") << " " << _("durch") << " " <<\
-           ersetzen << " " << _("ersetzt"); \
-      logEintrag_( s.str(), -1, "", "" ); \
-    } \
-  }
+int
+CgatsFilter::suchenUndErsetzen_ ( std::string           &text,
+                                  const char*            suchen,
+                                  const char*            ersetzen,
+                                  std::string::size_type pos )
+{
+    int n = suchenErsetzen ( text, suchen, ersetzen, pos );
+    if( n )
+    {
+      std::stringstream s;
+      s << suchen << " " << n << " " << _("mal") << " " << _("durch") << " " <<
+           ersetzen << " " << _("ersetzt");
+      logEintrag_( s.str(), -1, "", "" );
+    }
+  return n;
+}
 
 // Implementationen
 
@@ -214,7 +220,7 @@ CgatsFilter::setzeWortInAnfuehrungszeichen_( std::string &zeile,
 {
   DBG_CGATS_START
   {
-    std::string::size_type ende;
+    std::string::size_type ende, pos_orig = pos;
               bool in_anfuehrung = false;
               int letze_anfuehrungsstriche = -1;
               if( (ende = zeile.find_last_of( cgats_alnum_ ))
@@ -225,17 +231,16 @@ CgatsFilter::setzeWortInAnfuehrungszeichen_( std::string &zeile,
                 return;
               }
 
-              SUCHENundERSETZEN( zeile, "\"\"", "", 0 ) // GMB
-              ende = zeile.find_last_of( cgats_alnum_ );
+              suchenUndErsetzen_( zeile, "\"\"", "\"", 0 ); // GMB
 
               // Steht dieses Wort bereits in Anführungszeichen
-              if( zeile.find_last_of( "\"" ) > ende &&
-                  zeile.find_last_of( "\"" ) != std::string::npos )
+              if( zeile.find_last_of( "\"" ) != std::string::npos &&
+                  zeile.find_last_of( "\"" ) > ende )
               {
                 ende = zeile.find_last_of( "\"" );
               }
               DBG_CGATS_V( pos <<" "<< ende <<" "<< zeile )
-              DBG_CGATS_V( zeile.substr( pos, ende-pos+1 ) )
+              DBG_CGATS_V( zeile.substr( pos, ende-pos +1 ) )
               // zeilenweise
               for( ; pos <= ende; ++pos )
               {
@@ -263,6 +268,11 @@ CgatsFilter::setzeWortInAnfuehrungszeichen_( std::string &zeile,
               DBG_CGATS_V( in_anfuehrung )
               if( in_anfuehrung )
                 zeile.insert( ende+1, "\"" );
+              // keine leere Zeile ohne ""
+              std::string t = zeile.substr( pos_orig, ende-pos_orig+1 );
+              if( t.find_last_of( cgats_alnum_ ) == std::string::npos &&
+                  t.find_last_of( "\"" ) == std::string::npos )
+                zeile.insert( zeile.size(), "\"\"" );
   }
   DBG_CGATS_ENDE
 }
@@ -277,7 +287,7 @@ CgatsFilter::unterscheideZiffernWorte_( std::string &zeile )
   std::string txt;
   std::vector<std::string> ergebnis;
 
-  SUCHENundERSETZEN( zeile, ",", ".", 0 )
+  suchenUndErsetzen_( zeile, ",", ".", 0 );
 
   // Worte Suchen und von Zahlen scheiden
   for( pos = 0; pos < zeile.size() ; ++pos )
@@ -420,10 +430,10 @@ CgatsFilter::sucheInDATA_FORMAT_( std::string &zeile )
 
   zeilenOhneDuplikate_( s_woerter_ );
 
-  SUCHENundERSETZEN( zeile, "nm_", spektral.c_str(), 0 )
-  SUCHENundERSETZEN( zeile, "nm", spektral.c_str(), 0 )
-  SUCHENundERSETZEN( zeile, "SPECTRUM_", spektral.c_str(), 0 )
-  SUCHENundERSETZEN( zeile, "R_", spektral.c_str(), 0 )
+  suchenUndErsetzen_( zeile, "nm_", spektral.c_str(), 0 );
+  suchenUndErsetzen_( zeile, "nm", spektral.c_str(), 0 );
+  suchenUndErsetzen_( zeile, "SPECTRUM_", spektral.c_str(), 0 );
+  suchenUndErsetzen_( zeile, "R_", spektral.c_str(), 0 );
 
   DBG_PROG_V( zeile )
 
@@ -541,7 +551,7 @@ CgatsFilter::editZeile_( std::vector<std::string> &zeilen,
               // Ende vor dem Kommentar
               ende = gtext.size()-1;
               DBG_CGATS_V( pos<<" "<<ende )
-              DBG_CGATS_V( gtext.substr( pos, ende-pos ) )
+              DBG_CGATS_V( gtext.substr( pos, ende-pos +1 ) )
               int size = gtext.size();
               zeilen[i].erase( 0, size );
               setzeWortInAnfuehrungszeichen_( gtext, pos );
@@ -651,23 +661,23 @@ CgatsFilter::cgats_korrigieren_               ()
 
   // reparieren:
   // FORMAT Bezeichner
-  SUCHENundERSETZEN( data_, "SampleID" , "SAMPLE_ID", pos ) // GMB
-  SUCHENundERSETZEN( data_, "Sample_ID" , "SAMPLE_ID", pos )
-  SUCHENundERSETZEN( data_, "SampleName" , "SAMPLE_NAME", pos )
-  SUCHENundERSETZEN( data_, "Sample_Name" , "SAMPLE_NAME", pos )
-  SUCHENundERSETZEN( data_, "Yxy_x", "XYY_X", pos )
-  SUCHENundERSETZEN( data_, "Yxy_y", "XYY_Y", pos )
-  SUCHENundERSETZEN( data_, "Yxy_Y", "XYY_CAPY", pos )
-  SUCHENundERSETZEN( data_, "Lab_L" , "LAB_L", pos )
-  SUCHENundERSETZEN( data_, "Lab_a" , "LAB_A", pos )
-  SUCHENundERSETZEN( data_, "Lab_b" , "LAB_B", pos )
+  suchenUndErsetzen_( data_, "SampleID" , "SAMPLE_ID", pos ); // GMB
+  suchenUndErsetzen_( data_, "Sample_ID" , "SAMPLE_ID", pos );
+  suchenUndErsetzen_( data_, "SampleName" , "SAMPLE_NAME", pos );
+  suchenUndErsetzen_( data_, "Sample_Name" , "SAMPLE_NAME", pos );
+  suchenUndErsetzen_( data_, "Yxy_x", "XYY_X", pos );
+  suchenUndErsetzen_( data_, "Yxy_y", "XYY_Y", pos );
+  suchenUndErsetzen_( data_, "Yxy_Y", "XYY_CAPY", pos );
+  suchenUndErsetzen_( data_, "Lab_L" , "LAB_L", pos );
+  suchenUndErsetzen_( data_, "Lab_a" , "LAB_A", pos );
+  suchenUndErsetzen_( data_, "Lab_b" , "LAB_B", pos );
   // Dateibezeichner
-  SUCHENundERSETZEN( data_, "CBTD" , "CBTD___", pos ) // CB
-  SUCHENundERSETZEN( data_, "CBPR" , "CBPR___", pos )
-  SUCHENundERSETZEN( data_, "CBTA" , "CBTA___", pos )
-  SUCHENundERSETZEN( data_, "CBRO" , "CBRO___", pos ) // wird nicht behandelt
+  suchenUndErsetzen_( data_, "CBTD" , "CBTD___", pos ); // CB
+  suchenUndErsetzen_( data_, "CBPR" , "CBPR___", pos );
+  suchenUndErsetzen_( data_, "CBTA" , "CBTA___", pos );
+  suchenUndErsetzen_( data_, "CBRO" , "CBRO___", pos ); // wird nicht behandelt
   // Sonstiges
-  SUCHENundERSETZEN( data_, "Date:" , "CREATED \"\" #", pos ) // GMB
+  suchenUndErsetzen_( data_, "Date:" , "CREATED \"\" #", pos ); // GMB
 
 
   // zeilenweise

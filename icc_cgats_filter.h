@@ -132,6 +132,11 @@ class CgatsFilter
     // bequem einen Eintrag zu log hinzufügen
     unsigned int logEintrag_ (std::string meldung, int zeile_n,
                               std::string zeile1,  std::string zeile2 );
+    // angepasste Variante von suchenErsetzen()
+    int  suchenUndErsetzen_     ( std::string           &text,
+                                  const char*            suchen,
+                                  const char*            ersetzen,
+                                  std::string::size_type pos );
 
     // Schlüsselwort -> passende Korrekturen
     enum {

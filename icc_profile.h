@@ -304,6 +304,7 @@ class ICCmeasurement {
                              _DE00_Differenz_max = m._DE00_Differenz_max;
                              _DE00_Differenz_min = m._DE00_Differenz_min;
                              _DE00_Differenz_Durchschnitt = m._DE00_Differenz_Durchschnitt;
+                             export_farben = m.export_farben;
                              DBG_PROG_ENDE
                         }
     void                defaults ()
@@ -326,6 +327,7 @@ class ICCmeasurement {
                             _DE00_Differenz_max = -1000;
                             _DE00_Differenz_min = 1000;
                             _DE00_Differenz_Durchschnitt = 0;
+                            export_farben = false;
                         }
   public:
                         ICCmeasurement     () { DBG_PROG defaults(); }
@@ -435,7 +437,7 @@ class ICCmeasurement {
     // Report
     std::vector<std::vector<std::string> > getText ();
     std::vector<std::string> getDescription();
-    std::string         getHtmlReport ();
+    std::string         getHtmlReport (bool export_ausserhalb);
     std::vector<int>    getLayout ()       {DBG_PROG return layout; }
     std::string         getCGATS()         {DBG_PROG if(has_data())
                                           return cgats_korrigieren(_data,_size);
@@ -447,6 +449,9 @@ class ICCmeasurement {
     // Herkunft
     std::string         getTagName()       {return getSigTagName (_sig); }
     std::string         getInfo()          {DBG_PROG return getSigTagDescription(_sig); }
+
+    // Schalter
+    bool                export_farben;
 
 };
 
@@ -526,7 +531,8 @@ class ICCprofile {
   public: // Messwertinfos
     bool                hasMeasurement() {DBG_PROG return (hasTagName("targ") ||
                                     (hasTagName("CIED")&&hasTagName("DevD"))); }
-    std::string         report ()         {DBG_PROG return measurement.getHtmlReport(); }
+    std::string         report (bool auss) {DBG_PROG
+                                       return measurement.getHtmlReport(auss); }
     ICCmeasurement&     getMeasurement () {DBG_PROG if (hasMeasurement())
                                                  measurement.init();
                                                return measurement; }

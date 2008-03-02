@@ -69,6 +69,9 @@ class Oyranos
     std::string lab  ()                { lab_test_(); return lab_.name; }
     char*       lab  (size_t &g)       { lab_test_(); g = lab_.size();
                                          return lab_; }
+    std::string moni ()                { moni_test_(); return moni_.name; }
+    char*       moni (size_t &g)       { moni_test_(); g = moni_.size();
+                                         return moni_; }
     std::string rgb  ()                { rgb_test_(); return rgb_.name; }
     char*       rgb  (size_t &g)       { rgb_test_(); g = rgb_.size();
                                          return rgb_; }
@@ -77,9 +80,11 @@ class Oyranos
                                          return cmyk_; }
   private:
     void lab_test_();
+    void moni_test_();
     void rgb_test_();
     void cmyk_test_();
     Speicher lab_;
+    Speicher moni_;
     Speicher rgb_;
     Speicher cmyk_;
 };
