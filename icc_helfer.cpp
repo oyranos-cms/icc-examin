@@ -782,6 +782,21 @@ printDatum                      (icDateTimeNumber date)
   return s.str();
 }
 
+namespace icc_examin_ns {
+
+  void sleep(double sekunden)
+  {
+             timespec ts;
+             double ganz;
+             double rest = modf(sekunden, &ganz);
+             ts.tv_sec = (time_t)ganz;
+             ts.tv_nsec = (time_t)(rest * 1000000000);
+             //DBG_PROG_V( sekunden<<" "<<ts.tv_sec<<" "<<ganz<<" "<<rest )
+             nanosleep(&ts, 0);
+  }
+  
+}
+
 std::string
 zeig_bits_bin(const void* speicher, int groesse)
 {
@@ -807,6 +822,7 @@ char*
 ladeDatei ( std::string dateiname, size_t *size )
 { DBG_PROG_START
 
+    char* data = 0;
     *size = 0;
 
     std::ifstream f ( dateiname.c_str(), std::ios::binary | std::ios::ate );
@@ -814,20 +830,28 @@ ladeDatei ( std::string dateiname, size_t *size )
     DBG_MEM_V( dateiname )
     if (dateiname == "")
     {
+      #if HAVE_EXCEPTION
       DBG_PROG_ENDE
       throw ausn_file_io (_("no filename given"));
+      #else
+      goto ERROR;
+      #endif
     }
     DBG_MEM
     if (!f) {
+      #if HAVE_EXCEPTION
       DBG_PROG_ENDE
       throw ausn_file_io (dateiname.c_str());
+      #endif
       dateiname = "";
+      #if !HAVE_EXCEPTION
+      goto ERROR;
+      #endif
     }
 
     *size = (unsigned int)f.tellg();
     DBG_MEM_V ( *size << "|" << f.tellg() )
     f.seekg(0);
-    char* data;
     if(*size) {
       data = (char*)calloc (sizeof (char), *size+1);
       f.read ((char*)data, *size);
@@ -838,6 +862,7 @@ ladeDatei ( std::string dateiname, size_t *size )
       WARN_S( _("Dateigröße 0 für ") << dateiname )
     }
 
+  ERROR:
 
   DBG_PROG_ENDE
   return data;
@@ -860,6 +885,37 @@ saveMemToFile (const char* filename, const char *block, int size)
     fclose (fp);
   DBG_PROG_ENDE
 }
+
+Speicher
+dateiNachSpeicher (const std::string & dateiname)
+{ DBG_PROG_START
+  size_t groesse;
+  char *block = ladeDatei(dateiname, &groesse);
+  Speicher s (block,groesse);
+  s = dateiname;
+  DBG_PROG_ENDE
+  return s;
+}
+
+void
+dateiNachSpeicher (Speicher & s, const std::string & dateiname)
+{ DBG_PROG_START
+  size_t groesse;
+  char *block = ladeDatei(dateiname, &groesse);
+  s.lade (block,groesse);
+  s = dateiname;
+  DBG_PROG_ENDE
+}
+
+void
+speicherNachDatei (std::string & dateiname, Speicher & s)
+{ DBG_PROG_START
+  const char  *block = s;
+  size_t groesse = s.size();
+  saveMemToFile( dateiname.c_str(), block, groesse );
+  DBG_PROG_ENDE
+}
+
 
 #include <sys/stat.h>
 

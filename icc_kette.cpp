@@ -25,13 +25,15 @@
  * 
  */
 
+#include "icc_utils.h"
 #include "icc_kette.h"
 #include "icc_info.h"
 #include "icc_examin.h"
+#include "icc_helfer.h"
+
 
 #if USE_THREADS
   #include "threads.h"
-#else
   #if HAVE_FLTK
     #include <FL/Fl.H>
   #endif
@@ -42,13 +44,21 @@ ICCkette profile;
 ICCkette::ICCkette  ()
 {
   aktuelles_profil_ = -1;
+  frei_ = true;
   #if USE_THREADS
-  // Es gibt zwei threads.
+  // Es gibt drei threads.
   // Der erste Neben-thread started eine while Schleife zum Beobachten
-  // des Bildes. Im Haupthread laeuft ICCexamin.
+  // der göffneten Dateien.
+  // Im Haupthread laeuft ICCexamin.
+  // Ein weiterer Thread übernimmt das Laden von neuen Daten.
 
   static Fl_Thread fl_t;
+  Fl::lock();
   int fehler = fl_create_thread( fl_t, &waechter, (void *)this );
+# if HAVE_PTHREAD_H
+  DBG_V( fl_t <<" "<< pthread_self () )
+  icc_thread_liste[THREAD_WACHE] = fl_t;
+# endif
   if(!fehler)
     DBG_PROG_S( "neuer Thread" );
 
@@ -77,6 +87,19 @@ ICCkette::einfuegen (const Speicher & prof, int pos)
 { DBG_PROG_START
   bool erfolg = false;
 
+  if(!frei())
+  {
+    int erfolg = false;
+    while(!erfolg) {
+      if(frei()) {
+        erfolg = true;
+      } else
+        // kurze Pause 
+        icc_examin_ns::sleep(0.05);
+    }
+  }
+  frei(false);
+
   // Ist das Profile eventuell schon geladen? -> Abbruch
   for(unsigned int i = 0; i < profile_.size(); ++i)
     if(prof.name() == profile_[i].filename())
@@ -87,7 +110,7 @@ ICCkette::einfuegen (const Speicher & prof, int pos)
 
   DBG_PROG_V( pos )
 
-  // Laden TODO: test auf Existenz der Datei (oyranos?)
+  // Laden TODO: test auf Korrektheit des Profiles (oyranos?)
   if (pos < 0 ||
       pos >= (int)profile_.size() )
   {
@@ -132,12 +155,15 @@ ICCkette::einfuegen (const Speicher & prof, int pos)
     icc_examin_ns::status_info(_("File not loaded!"));
   }
 
+
+  Fl::lock();
   /*Modell::*/benachrichtigen( pos );
+  Fl::unlock();
+  frei(true);
   DBG_PROG_ENDE
   return erfolg;
 }
 
-static bool erstes_mal = true;
 #if USE_THREADS
 void*
 #else
@@ -147,47 +173,45 @@ ICCkette::waechter (void* zeiger)
 {
   //DBG_PROG_START
   ICCkette* obj = (ICCkette*) zeiger;
+  Fl::unlock();
 
   while(1)
   {
     for(unsigned i = 0; i < obj->profilnamen_.size(); ++i)
     {
-      if(erstes_mal)
-        erstes_mal = false;
-      else {
-      #if USE_THREADS
-             DBG_PROG
-             timespec ts;
-             ts.tv_sec = 0;
-             ts.tv_nsec = (time_t)(0.4 * 1000000000);
-             nanosleep(&ts, 0);
-        //sleep(1);
-      #endif
-      }
-
       DBG_MEM_V( obj->profilnamen_[i] );
       double m_zeit = holeDateiModifikationsZeit( obj->profilnamen_[i].c_str());
       DBG_MEM_V( m_zeit )
       if( m_zeit &&
           obj->aktiv_[i] &&
           obj->profil_mzeit_[i] != m_zeit
-    #if USE_THREADS
-       && icc_examin->frei()
-    #endif
+#      if USE_THREADS
+       && obj->frei()
+#      endif
         )
       {
-        obj->profile_[i].load( obj->profilnamen_[i] );
+        obj->frei(false);
+        obj->profile_[i].load( dateiNachSpeicher(obj->profilnamen_[i]) );
+        Fl::lock();
         obj->/*Modell::*/benachrichtigen( i );
+        Fl::unlock();
         obj->profil_mzeit_[i] = m_zeit;
+        obj->frei(true);
       }
     }
+    DBG_PROG
+    icc_examin_ns::sleep(1.0/3.0);
   }
+
+# if USE_THREADS
+  Fl::wait();
+# endif
 
   //DBG_PROG_ENDE
   return
-  #if USE_THREADS
+# if USE_THREADS
          0
-  #endif
+# endif
           ;
 }
 

@@ -26,6 +26,7 @@
  */
 
 #include "config.h"
+#include "icc_utils.h"
 #include "icc_helfer.h"
 #include "icc_examin.h"
 #include <FL/Fl.H>
@@ -38,9 +39,13 @@ void MallocDebug_CheckFreeList();
 int
 main (int argc, char** argv)
 {
-  #if APPLE
+# if HAVE_PTHREAD_H
+  icc_thread_liste[THREAD_HAUPT] = pthread_self ();
+# endif
+
+# if APPLE
   //MallocDebug_CheckFreeList();
-  #endif
+# endif
 
   #if 0
   saveMemToFile("/tmp/icc_examin_dbg.txt", "Hallo\n", 6);

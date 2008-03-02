@@ -49,7 +49,7 @@ void initialiseI18N();
 #if HAVE_FLTK
 #include <FL/Fl_Menu_Item.H>
 void menue_translate( Fl_Menu_Item* menueleiste );
-void zeigFltkEvents(int event);
+void dbgFltkEvents(int event);
 #endif
 
 // interne Funktionen
@@ -58,7 +58,7 @@ const char* cp_nchar (char* text, int n);
 
 
 // Helferfunktionen
-// definiert in icc_helfer.cpp
+// ICC Helfer definiert in icc_helfer.cpp
 icUInt16Number          icValue   (icUInt16Number val);
 icUInt32Number          icValue   (icUInt32Number val);
 unsigned long           icValue   (icUInt64Number val);
@@ -93,6 +93,11 @@ std::string         getMeasurementGeometry( icMeasurementGeometry measgeo );
 std::string         getMeasurementFlare( icMeasurementFlare flare );
 std::string         printDatum( icDateTimeNumber date );
 
+// Zeit / Uhr
+namespace icc_examin_ns {
+  void sleep(double Sekunden);
+}
+
 // Datendarstellung
 std::string         zeig_bits_bin      (const void* speicher, int groesse);
 
@@ -102,7 +107,15 @@ char*     ladeDatei                  ( std::string dateiname,
 void      saveMemToFile              ( const char *filename,
                                        const char *block,
                                        int         size );
+#include "icc_speicher.h"
+Speicher  dateiNachSpeicher          ( const std::string & dateiname );
+void      dateiNachSpeicher          ( Speicher & s,
+                                       const std::string & dateiname );
+void      speicherNachDatei          ( std::string & dateiname,
+                                       Speicher & s );
+
 double    holeDateiModifikationsZeit ( const char *fullFileName );
+
 
 // Texthelfer
 namespace icc_parser {

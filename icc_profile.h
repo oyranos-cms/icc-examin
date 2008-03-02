@@ -179,20 +179,17 @@ class ICCprofile {
   } ICCDataType;
 
                         ICCprofile ();
-                        ICCprofile (const char *filename);
+                        ICCprofile ( const Speicher & s);
                         ICCprofile ( const ICCprofile & p );
     ICCprofile &        operator=  (const ICCprofile & );
     virtual             ~ICCprofile (void);
     void                clear (void);
 
-    ICCDataType         load (std::string filename);
-    ICCDataType         load (char* filename);
     ICCDataType         load (const Speicher & profil);
     bool                changing()             { return changing_; }
 
   private:
     bool                changing_;
-    ICCDataType         fload ();
     std::string         filename_;
 
     // icc34.h Definitionen
@@ -262,7 +259,6 @@ class ICCprofile {
     ICCtag&             getTag             (int item);
     void                removeTag          (int item);
     void                removeTagByName    (std::string name);
-    void                saveProfileToFile  (const char* filename);
     size_t              getProfileSize     (void);
     char*               saveProfileToMem   (size_t* size);
   private:

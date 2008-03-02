@@ -66,7 +66,10 @@ class ICCkette : public icc_examin_ns::Modell
     void
     #endif
                  waechter (void*);
+    bool         frei_;
   public:
+    void         frei(bool f) {frei_ = f; };
+    bool         frei()       {return frei_; };
     //bool         einfuegen (std::vector<std::string> dateinamen);
     //bool         einfuegen (std::string dateiname, int pos);
     bool         einfuegen (const Speicher & profil, int pos);

@@ -85,16 +85,15 @@ ICCprofile::operator=  ( const ICCprofile & p )
   return *this;
 }
 
-ICCprofile::ICCprofile (const char *filename)
-  : filename_ (filename)
+ICCprofile::ICCprofile (const Speicher & s)
 { DBG_PROG_START
-  if (data_ && size_) free(data_);//delete [] data_;
+  if (data_ && size_) free(data_);
   data_ = NULL;
   size_ = 0;
 
   // delegieren
-  filename_ = filename;
-  fload ();
+  filename_ = s.name();
+  load(s);
   DBG_PROG_ENDE
 }
 
@@ -127,74 +126,6 @@ ICCprofile::clear (void)
   DBG_PROG_ENDE
 }
 
-ICCprofile::ICCDataType
-ICCprofile::load (std::string filename)
-{ DBG_PROG_START
-  // delegieren
-  filename_ = filename;
-  ICCDataType type = fload();
-  DBG_PROG_ENDE
-  return type;
-}
-
-ICCprofile::ICCDataType
-ICCprofile::load (char* filename)
-{ DBG_PROG_START
-  // delegieren
-  filename_ = filename;
-  ICCDataType type = fload();
-  DBG_PROG_ENDE
-  return type;
-}
-
-ICCprofile::ICCDataType
-ICCprofile::fload ()
-{
-  DBG_PROG_START // ICC Profil laden
-
-  ICCDataType type = ICCnullDATA;
-  std::string file = filename_;
-  changing_ = true;
-
-  try {
-    data_ = ladeDatei (file, &size_);
-    DBG_MEM
-  }
-    catch (Ausnahme & a) {	// fängt alles von Ausnahme Abstammende
-        DBG_NUM_V( _("Ausnahme aufgetreten: ") << a.what() );
-        a.report();
-        filename_ = "";
-    }
-    catch (std::exception & e) { // fängt alles von exception Abstammende
-        DBG_NUM_V( _("Std-Ausnahme aufgetreten: ") << e.what() );
-        filename_ = "";
-    }
-    catch (...) {		// fängt alles Übriggebliebene
-        DBG_NUM_V( _("Huch, unbekannte Ausnahme") );
-        filename_ = "";
-    }
-
-  DBG_MEM_V( (int*)data_ <<" "<< size_ )
-
-  if (data_ && size_) {
-    DBG_PROG_S( _("!!!! Profil wird wiederbenutzt !!!! ") )
-    clear();
-    // zweites mal Laden nach clear() ; könnte optimiert werden
-    data_ = ladeDatei (file, &size_);
-    filename_ = file;
-
-    Speicher s ((const char*)data_, size_);
-    s = file;
-    type = load(s);
-
-  } else {
-    DBG_PROG_ENDE
-    return type;
-  }
-  changing_ = false;
-  DBG_PROG_ENDE
-  return type;
-}
 
 ICCprofile::ICCDataType
 ICCprofile::load (const Speicher & prof)
@@ -686,23 +617,6 @@ ICCprofile::getWhitePkt           (void)
  
   DBG_PROG_ENDE
   return XYZ;
-}
-
-void
-ICCprofile::saveProfileToFile  (const char* filename)
-{ DBG_PROG_START
-  if (data_ && size_) free(data_);//delete []data_;
-  size_ = sizeof (icHeader) + sizeof (icUInt32Number); DBG_MEM_V(size_ <<" "<<sizeof (icProfile))
-  data_ = (char*)calloc (sizeof (char) , size_); //new char (sizeof(icHeader) );
-  writeTagTable ();
-  writeTags ();
-  header.size(size_); DBG_MEM_V (size_ )
-  writeHeader ();
-
-  std::ofstream f ( filename,  std::ios::out );
-  f.write ( (char*)data_, size_ );
-  f.close();
-  DBG_PROG_ENDE
 }
 
 size_t

@@ -67,17 +67,26 @@ class ICCexamin : public icc_examin_ns::Beobachter
     void         start(int argc, char** argv);
     void         quit(void);
 
-    void         oeffnen (std::vector<std::string> dateinamen);
-    void         oeffnen (std::vector<Speicher> speicher);
+  private:
+    bool         lade_;
+    std::vector<Speicher> speicher_vect_;
     static
 #if USE_THREADS
     void*
 #else
     void
 #endif
-                 oeffnenStatisch ( void* std_vector__Speicher );
+                 oeffnenStatisch_ ( void* ICCexamina );
+    void         oeffnenThread_ ();            // nur einmal pro ICCexamin
+  public:
     void         oeffnen ();                   // interaktiv
-    void         tag_browserText  (void);
+    void         oeffnen (std::vector<std::string> dateinamen);
+    bool         kannLaden () {return !lade_; };
+    void         lade (std::vector<Speicher> & neu);
+
+  private:
+    void         erneuerTagBrowserText_ (void);// Profil Text in browserText
+  public:
     bool         berichtSpeichern (void);      // GCATS Auswertung -> html Datei
 
     bool         gamutSpeichern (icc_examin_ns::IccGamutFormat format); // Farbraumhuelle
@@ -146,6 +155,7 @@ class ICCexamin : public icc_examin_ns::Beobachter
 
     // Oberflaechenfunktionen (GUI)
     void fortschritt(double f);  // Fortschritt: f<0-Start f=Wert f>1-Ende
+    void fortschrittThreaded(double f);  // inclusive aller Thread Funktionen
 
     void statusAktualisieren();  // benutze das "status" Makro
 

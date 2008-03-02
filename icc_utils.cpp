@@ -28,14 +28,15 @@
 // Date:      August 2004
 
 
+#include <icc_utils.h>
+#include <fstream>
+
+std::stringstream debug_s;
+
 #ifndef HAVE_OY
 int level_PROG = -1;
 #endif
 int icc_debug = 1;
-
-#include <icc_utils.h>
-#include <fstream>
-std::stringstream debug_s;
 
 //#define WRITE_DBG
 
@@ -81,6 +82,24 @@ dbgWriteF (std::stringstream & ss)
 #else
   cout << ss.str();
 #endif
+}
+
+
+// Threads identifizieren
+Fl_Thread icc_thread_liste[12] = {0,0,0,0,0,0,0,0,0,0,0,0};
+
+std::string
+dbgThreadId(Fl_Thread id)
+{
+  std::stringstream ss("??");
+  {
+    // in icc_thread_liste eingetragene Fl_Thread's lassen sich identifizieren
+    if      (icc_thread_liste[THREAD_HAUPT] == id) ss << "[HAUPT]";
+    else if (icc_thread_liste[THREAD_WACHE] == id) ss << "[WACHE]";
+    else if (icc_thread_liste[THREAD_LADEN] == id) ss << "[LADEN]";
+    else                                           ss << "["<< id <<"]";
+  }
+  return ss.str();
 }
 
 

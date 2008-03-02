@@ -56,33 +56,36 @@ static int frei_tuen = 0;
 const char* dateiName(const char* name);
 const char* dateiName(std::string name);
 
-static int laden_sperren = false;
-
 
 #include "icc_vrml_parser.h"
 
 void
-ICCexamin::oeffnen (std::vector<Speicher> speicher_vect)
-{ DBG_START
-  if(!speicher_vect.size() ||
-     laden_sperren) {
+ICCexamin::oeffnenThread_ ()
+{ DBG_PROG_START
+  if(!speicher_vect_.size()) {
     fortschritt( 1.1 );
     DBG_PROG_ENDE
     return;
   }
-  laden_sperren = true;
+
+# if 0
+  for (float f = 0.; f < 1.1 ; f += 0.00001) {
+    fortschrittThreaded( f );
+    if (f >= 0.99)
+      f = 0.;
+  }
+# endif
 
   // Laden
-  frei_ = false;
   icc_betrachter->DD_farbraum->punkte_clear();
   profile.clear();
   fortschritt( -.1 );
-  for (unsigned int i = 0; i < speicher_vect.size(); ++i)
+  for (unsigned int i = 0; i < speicher_vect_.size(); ++i)
   {
-    DBG_V( speicher_vect[i].size()<<" "<<speicher_vect[i].name() )
-    fortschritt( 1./3.+ (double)(i)/speicher_vect.size()/3.0 );
-    profile.einfuegen( speicher_vect[i], -1 );
-    fortschritt( 1./3.+ (double)(i+1)/speicher_vect.size()/3.0 );
+    DBG_V( speicher_vect_[i].size()<<" "<<speicher_vect_[i].name() )
+    fortschritt( 1./3.+ (double)(i)/speicher_vect_.size()/3.0 );
+    profile.einfuegen( speicher_vect_[i], -1 );
+    fortschritt( 1./3.+ (double)(i+1)/speicher_vect_.size()/3.0 );
   }
 
   std::vector<std::string> dateinamen = profile;
@@ -91,14 +94,16 @@ ICCexamin::oeffnen (std::vector<Speicher> speicher_vect)
   {
       // Oberflaechenpflege
     Fl::lock();
-    tag_browserText ();
+    erneuerTagBrowserText_ ();
     if(icc_betrachter->DD_farbraum->visible() &&
        !icc_betrachter->inspekt_html->visible() )
       icc_betrachter->DD_farbraum->flush();
     icc_betrachter->menueintrag_gamut_speichern->activate();
     icc_betrachter->menueintrag_gamut_vrml_speichern->activate();
 
-    fortschritt( 2./3.+ 1./3. );
+    Fl::unlock();
+    fortschrittThreaded( 2./3.+ 1./3. );
+    Fl::lock();
     icc_betrachter->measurement( profile.profil()->hasMeasurement() );
     if(farbraumModus())
     {
@@ -112,7 +117,7 @@ ICCexamin::oeffnen (std::vector<Speicher> speicher_vect)
         (dateinamen[0].find( "wrl",  dateinamen[0].find_last_of(".") )
          != std::string::npos) )
     {
-      std::string d (speicher_vect[0], speicher_vect[0].size());
+      std::string d (speicher_vect_[0], speicher_vect_[0].size());
       //DBG_NUM_V( d <<" "<< size )
       std::vector<ICCnetz> netze = extrahiereNetzAusVRML (d);
       if( netze.size() )
@@ -155,7 +160,7 @@ ICCexamin::oeffnen (std::vector<Speicher> speicher_vect)
       //icc_betrachter->DD_farbraum->auffrischen();
     }
 
-    fortschritt( 2./3.+ 2./3. );
+    fortschrittThreaded( 2./3.+ 2./3. );
     // ICCwaehler
       // erneuern
     static std::vector<std::string> namen_neu, namen_alt;
@@ -205,9 +210,7 @@ ICCexamin::oeffnen (std::vector<Speicher> speicher_vect)
     }
 
   }
-  frei_ = true;
-  laden_sperren = false;
-  DBG_ENDE
+  DBG_PROG_ENDE
 }
 
 const char*
@@ -231,20 +234,49 @@ dateiName(std::string name)
   return dateiName(name.c_str());
 }
 
+void
+ICCexamin::lade (std::vector<Speicher> & neu)
+{
+  if(kannLaden())
+  {
+    speicher_vect_ = neu;
+    lade_ = true;
+  }
+}
+
 // Dieses Spalten in Threads fuer eine fluessige Oberflaeche
 #if USE_THREADS
 void*
 #else
 void
 #endif
-ICCexamin::oeffnenStatisch (void* ptr)
+ICCexamin::oeffnenStatisch_ (void* ie)
 { DBG_PROG_START
-  DBG_MEM_V( ptr )
-  if(!ptr)
-    WARN_S( "kein Speichervektor uebergeben: "<< ptr )
-  std::vector<Speicher> *ss = (std::vector<Speicher>*)ptr;;
-  DBG_PROG_V( (*ss).size() )
-  icc_examin->oeffnen(*ss);
+
+  // Laufzeitfehler erkennen
+  {
+    static int erster = true;
+    if(!erster)
+      WARN_S("Programmierfehler: " <<__func__<<" thread darf\n" <<
+             "nur einmal gestartet werden.")
+    erster = false;
+  }
+
+  // Haupt Thread freigeben
+  Fl::unlock();
+
+  // Bezug herstellen
+  ICCexamin* examin = (ICCexamin*) ie;
+
+  // Schleife starten die diesen thread laufen lässt
+  while(1) {
+    if(examin->lade_) {
+      examin->oeffnenThread_();
+      examin->lade_ = false;
+    } else
+      // kurze Pause 
+      icc_examin_ns::sleep(0.01);
+  }
 
   DBG_PROG_ENDE
   #if USE_THREADS
@@ -255,28 +287,29 @@ ICCexamin::oeffnenStatisch (void* ptr)
 void
 ICCexamin::oeffnen (std::vector<std::string> dateinamen)
 { DBG_PROG_START
+  #if 1
   if(!dateinamen.size()) {
     WARN_S("keine Dateinamen angegeben")
     fortschritt( 1.1 );
     DBG_PROG_ENDE
     return;
   }
+  #endif
 
   // Laden
-  frei_ = false;
   char* data = 0;
   size_t size = 0;
   #if 0
   static std::vector<Speicher> ss;
   ss.clear();
   #else
-  std::vector<Speicher> *ss = (std::vector<Speicher>*)new std::vector<Speicher>;
+  std::vector<Speicher> ss;
   #endif
   // resize benutzt copy, und erzeugt damit Referenzen auf das
   // selbe Objekt ; wir benoetigen aber neue Objekte
   // ss.resize(dateinamen.size());
   for (unsigned int i = 0; i < dateinamen.size(); ++i)
-    ss->push_back(Speicher());
+    ss.push_back(Speicher());
 
   fortschritt( 0.0 );
   for(unsigned int i = 0; i < dateinamen.size(); ++i)
@@ -287,6 +320,7 @@ ICCexamin::oeffnen (std::vector<std::string> dateinamen)
       data = ladeDatei (dateinamen[i], &size);
       fortschritt( (double)(i+1)/dateinamen.size()/3.0 );
     }
+    #if HAVE_EXCEPTION
       catch (Ausnahme & a) {  // faengt alles von Ausnahme Abstammende
         DBG_NUM_V (_("Ausnahme aufgetreten: ") << a.what());
         a.report();
@@ -297,12 +331,13 @@ ICCexamin::oeffnen (std::vector<std::string> dateinamen)
       catch (...) {       // faengt alles Uebriggebliebene
         DBG_NUM_V (_("Huch, unbekannte Ausnahme"));
       }
+    #endif
 
     if(data && size)
     {
-      DBG_PROG_V( (int*)ss )
-      (*ss)[i].lade(data,size);
-      (*ss)[i] = dateiName(dateinamen[i]);
+      DBG_PROG_V( i<<":"<< ss[i].size() )
+      ss[i].lade(data,size);
+      ss[i] = dateiName(dateinamen[i]);
       free(data);
       DBG_PROG
     } else {
@@ -312,28 +347,20 @@ ICCexamin::oeffnen (std::vector<std::string> dateinamen)
       return;
     }
   }
-  frei_ = true;
   DBG_PROG
-  #if USE_THREADS
-  static Fl_Thread fl_t;
-  int fehler = fl_create_thread( fl_t, &oeffnenStatisch, (void *)ss );
-  if( fehler == EAGAIN)
+
+  if(!kannLaden())
   {
-    WARN_S( _("Waechter Thread nicht gestartet Fehler: ")  << fehler );
-  } else
-  #if !APPLE && !WIN32
-  if( fehler == PTHREAD_THREADS_MAX )
-  {
-    WARN_S( _("zu viele Waechter Threads Fehler: ") << fehler );
-  } else
-  #endif
-  if( fehler != 0 )
-  {
-    WARN_S( _("unbekannter Fehler beim Start eines Waechter Threads Fehler: ") << fehler );
+    int erfolg = false;
+    while(!erfolg) {
+      if(kannLaden()) {
+        erfolg = true;
+      } else
+        // kurze Pause 
+        icc_examin_ns::sleep(0.05);
+    }
   }
-  #else
-  Fl::add_timeout( 0.01, /*(void(*)(void*))*/oeffnenStatisch ,(void*)&ss);
-  #endif
+  lade (ss);
 
   DBG_PROG_ENDE
 }
@@ -341,17 +368,14 @@ ICCexamin::oeffnen (std::vector<std::string> dateinamen)
 void
 ICCexamin::oeffnen ()
 { DBG_PROG_START
-  if(!laden_sperren)
-  {
-    fortschritt(0.01);
-    std::vector<std::string> profilnamen = icc_betrachter->open( profile );
-    oeffnen( profilnamen );
-  }
+  fortschritt(0.01);
+  std::vector<std::string> profilnamen = icc_betrachter->open( profile );
+  oeffnen( profilnamen );
   DBG_PROG_ENDE
 }
 
 void
-ICCexamin::tag_browserText (void)
+ICCexamin::erneuerTagBrowserText_ (void)
 {
   DBG_PROG_START
   //open and preparing the first selected item
@@ -416,7 +440,6 @@ ICCexamin::tag_browserText (void)
 bool
 ICCexamin::berichtSpeichern (void)
 { DBG_PROG_START
-  frei_ = false;
   bool erfolgreich = true;
   std::string dateiname = profile.name();  DBG_PROG_V( dateiname )
 
@@ -477,7 +500,6 @@ ICCexamin::berichtSpeichern (void)
   f.write ( bericht.c_str(), bericht.size() );
   f.close();
 
-  frei_ = true;
   DBG_PROG_ENDE
   return erfolgreich;
 }
@@ -486,7 +508,6 @@ bool
 ICCexamin::gamutSpeichern (IccGamutFormat format)
 {
   DBG_PROG_START
-  frei_ = false;
   bool erfolgreich = true;
   std::string dateiname = profile.name();  DBG_PROG_V( dateiname )
 
@@ -543,7 +564,6 @@ ICCexamin::gamutSpeichern (IccGamutFormat format)
       dateiname == profile.name())
   { DBG_PROG_V( dateiwahl->count() << dateiname )
     fortschritt (1.1);
-    frei_ = true;
     DBG_PROG_ENDE
     return false;
   }
@@ -571,7 +591,6 @@ ICCexamin::gamutSpeichern (IccGamutFormat format)
   }
   profil.clear(); DBG
 
-  frei_ = true;
   DBG_PROG_ENDE
   return erfolgreich;
 }

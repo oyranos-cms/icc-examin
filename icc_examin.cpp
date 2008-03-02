@@ -45,10 +45,10 @@ using namespace icc_examin_ns;
 #if USE_THREADS
 #include "threads.h"
 #else
+#endif
 // TODO: beseitige Hack
 static int frei_tuen = 0;
 #define frei_ frei_tuen
-#endif
 
 //#define DEBUG_EXAMIN
 #ifdef DEBUG_EXAMIN
@@ -67,6 +67,7 @@ static int frei_tuen = 0;
 ICCexamin::ICCexamin ()
 { DBG_PROG_START
   icc_betrachter = new ICCfltkBetrachter;
+  lade_ = false;
   _item = -1;
   _mft_item = -1;
   farbraum_modus_ = false;
@@ -104,6 +105,33 @@ ICCexamin::start (int argc, char** argv)
   kurve_umkehren.resize(MAX_VIEWER);
 
   menue_translate( icc_betrachter->menu_menueleiste );
+
+  #if USE_THREADS
+  static Fl_Thread fl_t;
+  Fl::lock();
+  DBG_V( fl_t )
+  int fehler = fl_create_thread( fl_t, &oeffnenStatisch_, (void *)this );
+# if HAVE_PTHREAD_H
+  icc_thread_liste[THREAD_LADEN] = fl_t;
+# endif
+  if( fehler == EAGAIN)
+  {
+    WARN_S( _("Waechter Thread nicht gestartet Fehler: ")  << fehler );
+  } else
+  #if !APPLE && !WIN32
+  if( fehler == PTHREAD_THREADS_MAX )
+  {
+    WARN_S( _("zu viele Waechter Threads Fehler: ") << fehler );
+  } else
+  #endif
+  if( fehler != 0 )
+  {
+    WARN_S( _("unbekannter Fehler beim Start eines Waechter Threads Fehler: ") << fehler );
+  }
+  #else
+  Fl::add_timeout( 0.01, /*(void(*)(void*))*/oeffnenStatisch_ ,(void*)this);
+  #endif
+
   icc_betrachter->init( argc, argv );
 
   icc_betrachter->mft_gl->init(1);
@@ -370,26 +398,15 @@ ICCexamin::moniHolen ()
     return;
   }
 
-  #if USE_THREADS
-  static Fl_Thread fl_t;
-  int fehler = fl_create_thread( fl_t, &oeffnenStatisch, (void *)&ss );
-  if( fehler == EAGAIN)
-  {
-    WARN_S( _("Waechter Thread nicht gestartet Fehler: ")  << fehler );
-  } else
-  #if !APPLE && !WIN32
-  if( fehler == PTHREAD_THREADS_MAX )
-  {
-    WARN_S( _("zu viele Waechter Threads Fehler: ") << fehler );
-  } else
-  #endif
-  if( fehler != 0 )
-  {
-    WARN_S( _("unbekannter Fehler beim Start eines Waechter Threads Fehler: ") << fehler );
+  int erfolg = false;
+  while(!erfolg) {
+    if(kannLaden()) {
+      lade(ss);
+      erfolg = true;
+    } else
+      // kurze Pause 
+      icc_examin_ns::sleep(0.05);
   }
-  #else
-  Fl::add_timeout( 0.01, /*(void(*)(void*))*/oeffnenStatisch ,(void*)&ss);
-  #endif
 
   // TODO: X notification event
   #if 0
@@ -595,7 +612,8 @@ ICCexamin::fortschritt(double f)
     if(!icc_betrachter->load_progress->visible())
       icc_betrachter->load_progress-> show();
     icc_betrachter->load_progress-> value( f );
-    icc_betrachter->load_progress-> redraw();
+    icc_betrachter->load_progress-> damage(FL_DAMAGE_ALL);
+    //icc_betrachter->load_progress-> redraw();
     DBG_PROG_V( f )
   } else if (1.0 < f) {
     icc_betrachter->load_progress-> hide();
@@ -604,7 +622,29 @@ ICCexamin::fortschritt(double f)
     icc_betrachter->load_progress-> show();
     DBG_PROG_V( f )
   }
+  icc_betrachter->load_progress-> redraw();//damage(FL_DAMAGE_ALL);
   //Fl::unlock();
+  DBG_PROG_ENDE
+}
+
+void
+ICCexamin::fortschrittThreaded(double f)
+{ DBG_PROG_START
+  Fl::lock();
+  if(0.0 < f && f <= 1.0) {
+    if(!icc_betrachter->load_progress->visible())
+      icc_betrachter->load_progress-> show();
+    icc_betrachter->load_progress-> value( f );
+    DBG_PROG_V( f )
+  } else if (1.0 < f) {
+    icc_betrachter->load_progress-> hide();
+    DBG_PROG_V( f )
+  } else {
+    icc_betrachter->load_progress-> show();
+    DBG_PROG_V( f )
+  }
+  Fl::unlock();
+  Fl::awake((void*) (this));
   DBG_PROG_ENDE
 }
 

@@ -31,7 +31,10 @@
 #define ICC_UTILS_H
 
 #include <cstdio>		// printf()
-#include <exception>		// class expeption
+#ifdef HAVE_EXCEPTION
+#  include <exception>		// class expeption
+#endif
+#include "threads.h"
 #include <new>			// bad_alloc()
 #include <iostream>
 #include <sstream>
@@ -66,6 +69,12 @@
   #define BYTE_ORDER LITTLE_ENDIAN
 #endif
 
+extern Fl_Thread icc_thread_liste[12];
+enum { THREAD_HAUPT, THREAD_WACHE, THREAD_LADEN };
+std::string dbgThreadId(Fl_Thread id);
+
+
+// Statusmeldungen zur Fehlersuche
 void dbgWriteF (std::stringstream & ss);
 extern std::stringstream debug_s;
 #define dbgWrite(ss) { debug_s.str(""); debug_s << ss; dbgWriteF(debug_s); }
@@ -95,7 +104,7 @@ extern int icc_debug;
 
 #define DBG_UHR_ (double)clock()/(double)CLOCKS_PER_SEC
 
-#define DBG_T_     dbgWrite ( __FILE__<<":"<<__LINE__ <<" "<< __func__ << "() " << DBG_UHR_ << " ");
+#define DBG_T_     dbgWrite ( __FILE__<<":"<<__LINE__ <<" "<< __func__ << "() " << dbgThreadId(pthread_self()) <<" "<< DBG_UHR_ << " ");
 #define LEVEL      { for (int i = 0; i < level_PROG; i++) dbgWrite (" "); }
 #define DBG_       { LEVEL dbgWrite ("        "); DBG_T_ dbgWrite (endl); }
 #define DBG_S_(txt){ LEVEL dbgWrite ("        "); DBG_T_ dbgWrite (txt << endl); }
@@ -161,6 +170,7 @@ extern int icc_debug;
 // ============================================================
 // Provisorische Ausnahme-Klasse; von std::exception abstammend:
 // ============================================================
+#ifdef HAVE_EXCEPTION
 class Ausnahme : public std::exception {
 public:
     virtual void report () const throw() {}  // oder = 0;
@@ -179,6 +189,6 @@ public:
       DBG_PROG_S ("\tDatei \""<< fname <<"\" war nicht zu öffnen\n");//testweise
     };
 };
-
+#endif
 
 #endif //ICC_UTILS_H

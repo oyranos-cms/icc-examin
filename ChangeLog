@@ -1,3 +1,20 @@
+2005-08-11
+	* und: threads
+	* und: Datei Behandlung einfacher, Dateizugriff aus ICCprofile entfernt
+	* und: Datei/Speicher Funktionen in icc_helfer.h/cpp
+	* und: -fnoexeptions + keine Optimierung während des Übersetzens : schneller
+
+2005-08-10
+	* fix: DnD werden vom Fenster akzeptiert mittels eines transparenten Blockes
+
+2005-08-07
+	* neu: KDE + Gnome + FLTK DnD
+
+2005-08-06
+	* neu: osX Fl_Sys_Menu wieder entfernt, da nicht kompatibel zu fltk Menüs:
+		   Textkodierungsprobleme, kein hide(), kein toogle in Menüleiste,
+		   kein update
+
 2005-07-29
 	* und: aufraeumen in icc_kette.cpp ::einfuegen()
 	* und: statisches Binden hilft mit osX-Dock

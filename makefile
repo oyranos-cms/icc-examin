@@ -69,7 +69,7 @@ else
 	--msgid-bugs-address='ku.b@gmx.de' \
 	--from-code=utf-8
   ifdef LINUX
-    OPTS = -Wall  -Os -g $(DEBUG) #-fomit-frame-pointer -g
+    OPTS = -Wall -g $(DEBUG) -Wunused -fPIC -fno-exceptions #-Os -fomit-frame-pointer -g
     INCL=-I$(includedir) -I/usr/X11R6/include -I./
     LIBLINK_FLAGS = -shared -ldl -L.
     LIBSONAME = lib$(TARGET)$(SO).$(VERSION_A)
@@ -441,10 +441,10 @@ tgz:
 	done;
 	tar cf - Entwickeln/ \
 	| gzip > $(TARGET)_$(mtime).tgz
-	test -d ../Archiv && mv -v $(TARGET)_*.tgz ../Archiv
 	test -d Entwickeln && \
 	test `pwd` != `(cd Entwickeln; pwd)` && \
 	$(RM) -R Entwickeln
+	test -d ../Archiv && mv -v $(TARGET)_*.tgz ../Archiv
 
 targz:
 	mkdir $(TARGET)_$(VERSION)
@@ -459,10 +459,10 @@ targz:
 	done;
 	tar cf - $(TARGET)_$(VERSION)/ \
 	| gzip > $(TARGET)_$(mtime).tgz
-	test -d ../Archiv && mv -v $(TARGET)_*.tgz ../Archiv
 	test -d $(TARGET)_$(VERSION) && \
 	test `pwd` != `(cd $(TARGET)_$(VERSION); pwd)` && \
 	$(RM) -R $(TARGET)_$(VERSION) 
+	test -d ../Archiv && mv -v $(TARGET)_*.tgz ../Archiv
 
 dist: targz
 	$(COPY) ../Archiv/$(TARGET)_$(mtime).tgz $(TARGET)_$(VERSION).tar.gz
