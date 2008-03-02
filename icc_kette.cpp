@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2005  Kai-Uwe Behrmann 
+ * Copyright (C) 2005-2008  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -118,11 +118,13 @@ ICCkette::einfuegen (const Speicher & prof, int pos)
 
   DBG_PROG_V( pos )
 
+  int p = pos;
+
   // Load TODO: test for correctnes of a profile (oyranos?)
   if (pos < 0 ||
       pos >= (int)profile_.size() )
   {
-    pos = (int)profile_.size(); DBG_PROG
+    p = (int)profile_.size(); DBG_PROG
     //profile_.resize (profile_.size()+1 ); DBG_PROG
     profile_.push_back( ICCprofile() ); DBG_PROG
     for( unsigned int i = 0; i < profile_.size(); ++i)
@@ -130,16 +132,16 @@ ICCkette::einfuegen (const Speicher & prof, int pos)
     profilnamen_.resize (profilnamen_.size()+1 );
     aktiv_.resize (aktiv_.size()+1 );
     profil_mzeit_.resize (profil_mzeit_.size()+1 );
-    DBG_PROG_V( pos<<" "<<prof.name() )
+    DBG_PROG_V( p<<" "<<prof.name() )
   }
   DBG_PROG_V( pos )
 
-  //profile_[pos] = ICCprofile();
+  //profile_[p] = ICCprofile();
 # ifdef DEBUG
   ICCprofile::ICCDataType type =
 #endif
-  profile_[pos].load(prof);
-  profile_[pos].filename( prof.name().c_str() );
+  profile_[p].load(prof);
+  profile_[p].filename( prof.name().c_str() );
   DBG_PROG_V( type )
 # ifdef DEBUG
   ICCprofile::ICCDataType dtype = profile_[0].data_type;
@@ -167,22 +169,19 @@ ICCkette::einfuegen (const Speicher & prof, int pos)
       }
     }
   }
-  DBG_PROG_V( profile_[pos].size() )
-  DBG_PROG_V( profile_[pos].filename() )
+  DBG_PROG_V( profile_[p].size() )
+  DBG_PROG_V( profile_[p].filename() )
   DBG_PROG_V( prof.name() )
   std::string name = _("noName");
   if(prof.name().size())
     name = prof.name();
   else
-    if(profile_[pos].hasTagName("desc"))
-      name = profile_[pos].getTagText( profile_[pos].getTagIDByName("desc"))[0];
-  profilnamen_[pos] = name ;
+    if(profile_[p].hasTagName("desc"))
+      name = profile_[p].getTagText( profile_[p].getTagIDByName("desc"))[0];
+  profilnamen_[p] = name ;
 
-  aktiv_[pos] = true;
-  if(profile[pos]->filename() == icc_examin->moniName() &&
-     pos != 0)
-    aktiv_[pos] = false;
-  profil_mzeit_[pos] = holeDateiModifikationsZeit( name.c_str() );
+  aktiv_[p] = true;
+  profil_mzeit_[p] = holeDateiModifikationsZeit( name.c_str() );
   DBG_PROG
 
   if( profile_.size() ) {
@@ -196,11 +195,14 @@ ICCkette::einfuegen (const Speicher & prof, int pos)
 
   frei(true);
   //icc_examin_ns::lock(__FILE__,__LINE__);
-  /*Modell::*/benachrichtigen( pos );
-  if( extra_benachrichtigen >= 0 )
-    /*Modell::*/benachrichtigen( extra_benachrichtigen );
+  //if(pos >= 0)
+  {
+    benachrichtigen( p );
+    if( extra_benachrichtigen >= 0 )
+      benachrichtigen( extra_benachrichtigen );
+  }
   //else
-    ///*Modell::*/benachrichtigen( pos );
+    ///*Modell::*/benachrichtigen( p );
   //icc_examin_ns::unlock(icc_examin, __FILE__,__LINE__);
   DBG_PROG_ENDE
   return erfolg;

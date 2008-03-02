@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2005  Kai-Uwe Behrmann 
+ * Copyright (C) 2005-2008  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -304,7 +304,30 @@ ICCvrmlParser::lesen_ ()
             ++wert_n;
           }
         }
-      } // in_indexe
+      } else // in_indexe
+      if( zeile.find("transparency") != std::string::npos )
+      {
+        werte =
+          unterscheideZiffernWorte( zeile, anfuehrungstriche, trennzeichen );
+
+        // sort the read values
+        for(unsigned int w = 0; w < werte.size(); ++w)
+          if(werte[w].zahl.first)
+            netze_[endnetz].undurchsicht = 1.0 - werte[w].zahl.second;
+      } else // transparency
+      if( zeile.find("emissiveColor") != std::string::npos )
+      {
+        werte =
+          unterscheideZiffernWorte( zeile, anfuehrungstriche, trennzeichen );
+
+        // sort the read values
+        for(unsigned int w = 0; w < werte.size(); ++w)
+          if(werte[w].zahl.first)
+          {
+            netze_[endnetz].schattierung = werte[w].zahl.second;
+            break;
+          }
+      } // emissiveColor
     }
     netz_n++;
   }

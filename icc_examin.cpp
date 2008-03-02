@@ -92,8 +92,6 @@ ICCexamin::ICCexamin ()
   intent_selection_ = 0;
   farbraum_modus_ = 0;
   bpc_ = 0;
-  intent_alt_ = intent_;
-  bpc_alt_ = bpc_;
   gamutwarn_ = 0;
   vcgt_cb_laeuft_b_ = 0;
 
@@ -499,31 +497,6 @@ ICCexamin::nachricht( Modell* modell , int info )
       DBG_PROG_S( "load: " << info )
 
       { DBG_PROG
-        {
-          int interactive = 0;
-          intentGet(&interactive);
-          if(farbraumModus() && !interactive)
-            intent( -1 );
-
-          // ncl2 ?
-          DBG_PROG_V( profile.aktuell() );
-          if((info == 0 && farbraumModus()) &&
-             intentGet(NULL) != intent_alt_)
-            farbraum();
-          else
-            farbraum (info);
-          intent_alt_ = intentGet(NULL);
-          fortschritt(0.5 , 1.0);
-        }
-
-        if(k->aktiv(info)) // not useable at the moment
-        { if (info < (int)icc_betrachter->DD_farbraum->dreiecks_netze.size())
-            icc_betrachter->DD_farbraum->dreiecks_netze[info].aktiv = true;
-
-        } else if (info < (int)icc_betrachter->DD_farbraum->dreiecks_netze.size()) {
-          icc_betrachter->DD_farbraum->dreiecks_netze[info].aktiv = false;
-        }
-
           // handle user interface - actualise
         fortschritt(0.6 , 1.0);
         if(profile[info]->tagCount() <= _item)

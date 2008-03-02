@@ -43,6 +43,7 @@
 #  include <GL/glu.h> // added for FLTK
 #endif
 #include "icc_modell_beobachter.h"
+#include "bsp/bsp.h"
 //#include "Fl_Slot.H"
 
 #include <FL/Fl_Gl_Window.H>
@@ -185,6 +186,7 @@ public:
   int  punktfarbe;          //!< MENU_GRAU MENU_FARBIG MENU_KONTRASTREICH
   int  punktgroesse;        //!< size in pixel
   ICCnetz netz;             //!< internal net representation, thread entry
+  icc_examin_ns::BSPNODE *bsp;   //**< BSP tree root
 
   float hintergrundfarbe;   //!< background colour / colour sheme
   float textfarbe[3];

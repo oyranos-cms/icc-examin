@@ -73,6 +73,7 @@ class ICCheader {
     const char* cmmName () const
                   { DBG_PROG  return cp_nchar((char*)&(header.cmmId),
                                               sizeof (icSignature)); }
+    double      versionD() const;
     int         version () const
                   { DBG_PROG  return icValue(header.version); }
     void        version (icUInt32Number v)

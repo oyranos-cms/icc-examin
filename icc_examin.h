@@ -120,8 +120,6 @@ class ICCexamin : public icc_examin_ns::Beobachter,
     int  status_,
          intent_,              //!< rendering intent / de: Uebertragungsart
          bpc_,                 //!< black point compensation / de: Schwarzpunktkompensation
-         intent_alt_,          //!< old rendering intent / de: Uebertragungsart
-         bpc_alt_,             //!< old black point compensation / de: Schwarzpunktkompensation
          gamutwarn_;           //!< gamut warning / de: Farbraumwarnung
     bool intent_selection_,    //!< interactive selected rendering intent
          farbraum_modus_;      //!< profile.profil() contains ncl2 named colours

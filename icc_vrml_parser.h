@@ -58,6 +58,7 @@ struct ICCnetz {
   int grau;                                      //!< no colour?
   double undurchsicht;                           //!< alpha 0..1
   double schattierung;                           //!< L* colour for gray 0..1
+  double volume;                                 //*< net volume if available
   int kubus;                                     //!< generated from a cubus
 
              ICCnetz() {
@@ -68,9 +69,10 @@ struct ICCnetz {
   }
   void       init() {
     aktiv = 1;
-    grau = 0;
-    undurchsicht = 0.5;
-    schattierung = 0.2;
+    grau = -1;
+    undurchsicht = -1.0;
+    schattierung = -1.0;
+    volume = -1.0;
     kubus = 0;
   }
   void       clear() {   //!< release all memory

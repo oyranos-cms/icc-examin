@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2006  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2008  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -87,6 +87,36 @@ ICCexaminIO::erneuern(int pos)
 }
 
 void
+ICCexaminIO::farbraum_(int info)
+{
+        {
+          int interactive = 0;
+          icc_examin->intentGet(&interactive);
+          if(icc_examin->farbraumModus() && !interactive)
+            icc_examin->intent( -1 );
+
+          // ncl2 ?
+          DBG_PROG_V( profile.aktuell() );
+          if(((info == 0 && icc_examin->farbraumModus()) &&
+              icc_examin->intentGet(NULL) != intent_alt_) ||
+             info < 0 )
+            icc_examin->farbraum();
+          else
+            icc_examin->farbraum (info);
+          intent_alt_ = icc_examin->intentGet(NULL);
+          //icc_examin->fortschritt(0.5 , 1.0);
+        }
+
+/*        if(profile.aktiv(info)) // not useable at the moment
+        { if (info < (int)icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze.size())
+            icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze[info].aktiv = true;
+
+        } else if (info < (int)icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze.size()) {
+          icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze[info].aktiv = false;
+        }*/
+}
+
+void
 ICCexaminIO::oeffnenThread_ (int pos)
 { DBG_PROG_START
   if(wandelThreadId( iccThreadSelf() ) != THREAD_LADEN)
@@ -111,12 +141,21 @@ ICCexaminIO::oeffnenThread_ (int pos)
     DBG_PROG_V( speicher_vect_[i].size()<<" "<<speicher_vect_[i].name() )
     icc_examin->fortschritt( 1./3.+ (double)(i)/speicher_vect_.size()/3.0 , 1 );
     profile.einfuegen( speicher_vect_[pos], pos );
+
+    if(profile[0]->data_type == ICCprofile::ICCvrmlDATA)
+    {
+      oeffnenThread_();
+      return;
+    }
+
     icc_examin->fortschritt( 1./3.+ (double)(i+1)/speicher_vect_.size()/3.0, 1);
     DBG_THREAD
   }
 
   if (profile.size())
   {
+    farbraum_(pos);
+
       // UI handling
     icc_examin_ns::lock(__FILE__,__LINE__);
     //erneuerTagBrowserText_ ();
@@ -155,7 +194,7 @@ ICCexaminIO::oeffnenThread_ ()
   // load
   icc_examin->clear();
   icc_examin->icc_betrachter->DD_farbraum->namedColoursRelease();
-  profile.clear();
+
   icc_examin->fortschritt( -.1 , 1.0  );
   for (unsigned int i = 0; i < speicher_vect_.size(); ++i)
   {
@@ -195,23 +234,76 @@ ICCexaminIO::oeffnenThread_ ()
 
     icc_examin_ns::unlock(this, __FILE__,__LINE__);
 
+    ICCprofile::ICCDataType type = ICCprofile::ICCprofileDATA;
+
       // sort
     if( dateinamen.size() &&
         (dateinamen[0].find( "wrl",  dateinamen[0].find_last_of(".") )
          != std::string::npos) )
+      type = ICCprofile::ICCvrmlDATA;
+
+    int anzahl = profile.size();
+
+
+    if(type == ICCprofile::ICCvrmlDATA)
     {
-      std::string d (speicher_vect_[0], speicher_vect_[0].size());
-      //DBG_NUM_V( d <<" "<< size )
-      std::vector<ICCnetz> netze = extrahiereNetzAusVRML (d);
+      if(icc_examin->icc_waehler_)
+        icc_examin->icc_waehler_->clear();
+
+      std::vector<ICCnetz> netze;
+
+      for(int i = 0; i < anzahl; ++i)
+      {
+        std::string d (speicher_vect_[i], speicher_vect_[i].size());
+        //DBG_NUM_V( d <<" "<< size )
+        std::vector<ICCnetz> net = extrahiereNetzAusVRML (d);
+
+        int netze_n = net.size();
+        for(unsigned int j = 0; j < net.size(); ++j)
+        {
+          if(net[j].undurchsicht < 0)
+            net[j].undurchsicht = 1.;
+
+          if(netze_n == 1 && net[j].undurchsicht <= 0)
+            net[j].undurchsicht = 1.;
+ 
+          net[j].aktiv = true;
+
+          netze.push_back( net[j] );
+        }
+      }
+
       if( netze.size() )
       { DBG_NUM_V( netze.size() )
-        for(unsigned int i = 0; i < netze.size(); ++i ) {
-          netze[i].undurchsicht = 0.6;
-          netze[i].grau = false;
-          netze[i].aktiv = true;
+
+        int netze_n = netze.size();
+
+        for(int i = 0; i < netze_n; ++i )
+        {
+          if(netze[i].schattierung <= 0)
+          {
+            netze[i].schattierung = 1.0 - i/(double)netze_n;
+            netze[i].grau = false;
+          } else
+            netze[i].grau = true;
+
+          DBG_V(i<<" "<<netze[i].schattierung)
         }
-        icc_examin_ns::lock(__FILE__,__LINE__);
+
         icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze = netze;
+
+        for(int i = 0; i < netze_n; ++i )
+        {
+          if(icc_examin->icc_waehler_)
+          {
+            bool waehlbar = true;
+            icc_examin->icc_waehler_->push_back( netze[i].name.c_str(),
+                                  netze[i].undurchsicht, netze[i].grau,
+                                  netze[i].aktiv, waehlbar);
+          }
+        }
+
+        icc_examin_ns::lock(__FILE__,__LINE__);
         icc_examin->icc_betrachter->DD_farbraum->hineinNetze(netze);
         std::vector<std::string> texte;
         texte.push_back(_("CIE *L"));
@@ -225,7 +317,7 @@ ICCexaminIO::oeffnenThread_ ()
         WARN_S(_("no net found in VRML file"))
     } else {
       DBG_PROG
-      //farbraum();
+      farbraum_(-1);
     }
 
     icc_examin->fortschritt( 2./3.+ 2./6. , 1.0 );
@@ -244,46 +336,63 @@ ICCexaminIO::oeffnenThread_ ()
     }
     namen_alt = namen_neu;
     DBG_NUM_V( "#################### " << namensgleich << " ##############")
-    int anzahl = profile.size();
-    if(!namensgleich)
+    if(!namensgleich && type != ICCprofile::ICCvrmlDATA)
     {
       icc_examin_ns::lock(__FILE__,__LINE__);
       if(icc_examin->icc_waehler_)
         icc_examin->icc_waehler_->clear();
       DBG_PROG_V( anzahl )
       double undurchsicht;
-      bool grau;
-      bool waehlbar;
-      bool active;
+      bool grau = 0;
+      bool waehlbar = 1;
+      bool active = 1;
       const char * name = 0;
-      std::vector<int> aktiv = profile.aktiv();
-      DBG_PROG_V( aktiv.size() )
-      for(int i = 0; i < anzahl; ++i) {
-        DBG_PROG_V( i )
 
-        if( i >= (int)icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze.size() ) {
-          WARN_S( _("no net found. Is Argyll installed?") )
-          break;
-        }
+      {
+        std::vector<int> aktiv = profile.aktiv();
+        DBG_PROG_V( aktiv.size() )
 
-        undurchsicht= icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze[i].undurchsicht;
-        DBG_PROG_V( undurchsicht )
-        grau = icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze[i].grau?true:false;
-        waehlbar = profile[i]->size() > 128 ? true : false;
-        active = aktiv[i];
-        active = icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze[i].aktiv;
-
-        if(icc_examin->icc_waehler_)
+        for(int i = 0; i < anzahl; ++i)
         {
-          name = profile.name(i).c_str();
-          icc_examin->icc_waehler_->push_back( dateiName( name ),
-                                undurchsicht, grau , active, waehlbar);
+          DBG_PROG_V( i )
+
+          if( i >= (int)icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze.size() ) {
+            WARN_S( _("no net found. Is Argyll installed?") )
+            break;
+          }
+
+          undurchsicht= icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze[i].undurchsicht;
+          DBG_PROG_V( undurchsicht )
+          grau = icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze[i].grau?true:false;
+          waehlbar = profile[i]->size() > 128 ? true : false;
+
+          active = aktiv[i];
+          active = icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze[i].aktiv;
+
+          if(profile[i]->filename() == icc_examin->moniName())
+          {
+            profile.passiv(i);
+            active = false;
+          }
+
+          if(icc_examin->icc_waehler_)
+          {
+            name = profile.name(i).c_str();
+            icc_examin->icc_waehler_->push_back( dateiName( name ),
+                                  undurchsicht, grau , active, waehlbar);
+          }
         }
+
       }
       icc_examin_ns::unlock(this, __FILE__,__LINE__);
     } else
       for(int i = 0; i < anzahl; ++i)
         icc_examin->icc_waehler_->expose(i);
+
+    if(icc_examin->icc_betrachter->DD_farbraum->visible() &&
+       !icc_examin->icc_betrachter->inspekt_html->visible() )
+      icc_examin->icc_betrachter->DD_farbraum->damage(FL_DAMAGE_ALL);
+    icc_examin->icc_betrachter->DD_farbraum->redraw();
 
     // set window name
     if(0) {

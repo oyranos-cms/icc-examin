@@ -179,6 +179,19 @@ ICCheader::flags (void) const
   return s.str();
 }
 
+double
+ICCheader::versionD(void) const
+{ DBG_PROG_START
+  double ver;
+  char* v = (char*)&(header.version);
+  
+  ver = v[0];
+  ver += v[1]/16 /10. + v[1]%16 /100.;
+
+  DBG_PROG_ENDE
+  return ver;
+}
+
 std::string
 ICCheader::versionName (void) const
 { DBG_PROG_START

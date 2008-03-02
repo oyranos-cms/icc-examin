@@ -202,11 +202,6 @@ ICCexamin::netzLese (int n,
       
     if(netz_temp.punkte.size())
     {
-      /*netz_temp[0].undurchsicht = (*netz)[n].undurchsicht;
-      netz_temp[0].grau = (*netz)[n].grau;
-      netz_temp[0].aktiv = (*netz)[n].aktiv;
-      if(n >= (int)netz->size())
-        netz->resize( n+1 );*/
       netz_temp.name = profile[n]->filename();
       // extract the file name
       std::string & dateiname = netz_temp.name;
@@ -215,14 +210,6 @@ ICCexamin::netzLese (int n,
                                     dateiname.size() );
       DBG_NUM_V( netz_temp.undurchsicht <<" "<< netz_temp.umriss.size() )
     }
-# if 0  // should be checked on load time
-    else {
-      (*netz)[n].punkte.clear();
-      (*netz)[n].indexe.clear();
-      (*netz)[n].umriss.clear();
-      (*netz)[n].name.clear();
-    }
-#endif
   }
   /*for(int i = 0; i < (int)netz->size(); ++i)
     DBG_PROG_V( (*netz)[n].aktiv <<" "<< (*netz)[i].undurchsicht <<" "<< (*netz)[i].umriss.size() );*/
@@ -435,9 +422,6 @@ ICCexamin::farbraum (int n)
   texte.push_back(_("CIE *a"));
   texte.push_back(_("CIE *b"));
 
-  std::vector<double> p;
-  std::vector<double> f;
-  std::vector<std::string> names;
   oyNamedColours_s * namedColours = 0;
   namedColours = icc_betrachter->DD_farbraum->namedColours();
 
@@ -455,24 +439,6 @@ ICCexamin::farbraum (int n)
       DBG_PROG
       messwertLese(n, &namedColours);
       messwerte = true;
-#if 0
-      oyNamedColours_Release( &namedColours );
-      oyProfile_s * prof = oyProfile_FromFile( profile[n]->filename(), 0, 0 );
-      oyNamedColour_s * nc = 0, * tmp;
-      for(size_t i = 0; i < namen.size(); ++i)
-      {
-        
-        tmp = nc = oyNamedColour_CreateWithName( 0,namen[i].c_str(),0,
-                                           &f[4*i], 0, 0,0, prof, 0 );
-        namedColours = oyNamedColours_MoveIn( namedColours, &nc, -1 );
-        /*tmp = nc = oyNamedColours_GetRef( namedColours, 
-                                    oyNamedColours_Count(namedColours)-1);
-        oyNamedColour_Release( &nc );
-        tmp = nc = oyNamedColours_GetRef( namedColours, 0 );
-        oyNamedColour_Release( &nc );*/
-      }
-      oyProfile_Release( &prof );
-#endif
     }
   MARK( frei(true); )
 
@@ -486,7 +452,7 @@ ICCexamin::farbraum (int n)
   if( profile.size() > n && ncl2_profil )
   {
     DBG_PROG
-    farbenLese(n, &namedColours );//p,f,names);
+    farbenLese(n, &namedColours );
   }
 
   bool neues_netz = false;
@@ -501,6 +467,7 @@ ICCexamin::farbraum (int n)
     icc_examin_ns::sleep(0.05);
   } while(!icc_betrachter->DD_farbraum->frei());
 
+  if(profile[0]->data_type != ICCprofile::ICCvrmlDATA)
   {
   MARK( icc_betrachter->DD_farbraum->frei(false); )
 
@@ -516,8 +483,6 @@ ICCexamin::farbraum (int n)
       icc_betrachter->DD_farbraum->frei(false);
       netzLese(n, netze);
       icc_betrachter->DD_farbraum->frei(true);
-      icc_betrachter->DD_farbraum->hineinNetze(
-          icc_betrachter->DD_farbraum->dreiecks_netze );
     }
 
     DBG_PROG_V( n <<" "<< netze->size() <<" "<< ncl2_profil )
@@ -541,7 +506,7 @@ ICCexamin::farbraum (int n)
         (*netze)[n].grau = true;
       }
       else
-      if ( profile.size() == 1 )
+      if ( n == 0 )
       {
         (*netze)[n].undurchsicht = 0.25;
         (*netze)[n].grau = false;
@@ -554,11 +519,9 @@ ICCexamin::farbraum (int n)
 
       icc_betrachter->DD_farbraum->achsNamen( texte );
 
-      // as the including is not that exactly a passive is more appropriate
-      if(profile[n]->filename() == moniName())
-        profile.passiv(n);
       DBG_PROG_V( n <<" "<< profile.aktiv(n) )
     }
+
     if(icc_betrachter->DD_farbraum->dreiecks_netze[n].name == "")
     {
       icc_betrachter->DD_farbraum->dreiecks_netze[n].name =
@@ -570,6 +533,10 @@ ICCexamin::farbraum (int n)
                                     dateiname.size() );
       DBG_PROG_V( icc_betrachter->DD_farbraum->dreiecks_netze[n].name )
     }
+
+    if( profile.size() > n && !ncl2_profil )
+      icc_betrachter->DD_farbraum->hineinNetze(
+                                  icc_betrachter->DD_farbraum->dreiecks_netze );
 
   MARK( icc_betrachter->DD_farbraum->frei(true); )
   }

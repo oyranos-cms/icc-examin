@@ -241,6 +241,13 @@ public:
  {
   DBG_PROG_START
   int pos = size();
+
+  if(!name || !strlen(name))
+  {
+    name = new char [12];
+    sprintf((char*)name, "%d.", pos);
+  }
+
   hbox->begin();
   profile_[pos] = new ICCwaehlerProfil( name, 
                                         undurchsicht_, grau_, aktiv_, pos );

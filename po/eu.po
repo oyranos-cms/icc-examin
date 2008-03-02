@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cinepaint_icc-examin_eu\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2008-01-01 14:21+0100\n"
+"POT-Creation-Date: 2008-01-17 10:33+0100\n"
 "PO-Revision-Date: 2007-11-07 11:11+0100\n"
 "Last-Translator: Iñaki Larrañaga Murgoitio <dooteo@zundan.com>\n"
 "Language-Team: Basque <itzulpena@euskalgnu.org>\n"
@@ -42,7 +42,7 @@ msgstr "Yxy"
 msgid "Rgb"
 msgstr "Gbu"
 
-#: icc_oyranos_extern.c:137 icc_draw.cpp:666 icc_gl.cpp:1995 icc_waehler.h:129
+#: icc_oyranos_extern.c:137 icc_draw.cpp:666 icc_gl.cpp:2000 icc_waehler.h:129
 msgid "Gray"
 msgstr "Grisa"
 
@@ -118,7 +118,7 @@ msgstr "14kolorea"
 msgid "15color"
 msgstr "15kolorea"
 
-#: agviewer.cpp:311 icc_gl.cpp:2749 icc_gl.cpp:2768 icc_gl.cpp:2887
+#: agviewer.cpp:311 icc_gl.cpp:2923 icc_gl.cpp:2942 icc_gl.cpp:3061
 msgid "left-/middle-/right mouse button -> rotate/cut/menu"
 msgstr "saguaren ezkerreko/erdiko/eskuineko botoia -> biratu/ebaki/menua"
 
@@ -126,8 +126,8 @@ msgstr "saguaren ezkerreko/erdiko/eskuineko botoia -> biratu/ebaki/menua"
 msgid "Pause"
 msgstr "Pausarazi"
 
-#: agviewer.cpp:348 agviewer.cpp:356 icc_gl.cpp:2853 icc_gl.cpp:2864
-#: icc_gl.cpp:2869 icc_gl.cpp:2874
+#: agviewer.cpp:348 agviewer.cpp:356 icc_gl.cpp:3027 icc_gl.cpp:3038
+#: icc_gl.cpp:3043 icc_gl.cpp:3048
 msgid "left mouse button -> go back"
 msgstr "saguaren ezkerreko botoia -> joan atzera"
 
@@ -166,7 +166,7 @@ msgstr "Magenta"
 msgid "Yellow"
 msgstr "Horia"
 
-#: icc_draw.cpp:679 icc_gl.cpp:1997 icc_helfer.cpp:415 icc_helfer.cpp:425
+#: icc_draw.cpp:679 icc_gl.cpp:2002 icc_helfer.cpp:415 icc_helfer.cpp:425
 msgid "Black"
 msgstr "Beltza"
 
@@ -198,19 +198,19 @@ msgstr "Argitasuna"
 msgid "Value"
 msgstr "Balioa"
 
-#: icc_draw.cpp:695 icc_examin_farbraum.cpp:434 icc_examin_io.cpp:217
+#: icc_draw.cpp:695 icc_examin_farbraum.cpp:421 icc_examin_io.cpp:309
 #: icc_helfer.cpp:400 icc_helfer.cpp:403
 msgid "CIE *L"
 msgstr "CIE *L"
 
-#: icc_draw.cpp:697 icc_examin_farbraum.cpp:435 icc_examin_io.cpp:218
-#: icc_gl.cpp:977 icc_gl.cpp:1051 icc_gl.cpp:1077 icc_gl.cpp:1085
+#: icc_draw.cpp:697 icc_examin_farbraum.cpp:422 icc_examin_io.cpp:310
+#: icc_gl.cpp:979 icc_gl.cpp:1053 icc_gl.cpp:1079 icc_gl.cpp:1087
 #: icc_helfer.cpp:401
 msgid "CIE *a"
 msgstr "CIE *a"
 
-#: icc_draw.cpp:699 icc_examin_farbraum.cpp:436 icc_examin_io.cpp:219
-#: icc_gl.cpp:990 icc_gl.cpp:1093 icc_gl.cpp:1113 icc_gl.cpp:1120
+#: icc_draw.cpp:699 icc_examin_farbraum.cpp:423 icc_examin_io.cpp:311
+#: icc_gl.cpp:992 icc_gl.cpp:1095 icc_gl.cpp:1115 icc_gl.cpp:1122
 #: icc_helfer.cpp:402
 msgid "CIE *b"
 msgstr "CIE *b"
@@ -239,19 +239,19 @@ msgstr " gammarekin: 1.0"
 msgid " with one entry for gamma: "
 msgstr " gammaren sarrera batekin: "
 
-#: icc_examin.cpp:180
+#: icc_examin.cpp:178
 msgid "Gamut selector"
 msgstr "Kolore-gama hautatzailea"
 
-#: icc_examin.cpp:270 icc_examin.cpp:1194
+#: icc_examin.cpp:268 icc_examin.cpp:1167
 msgid "loaded"
 msgstr "kargatuta"
 
-#: icc_examin.cpp:276
+#: icc_examin.cpp:274
 msgid "Ready"
 msgstr "Prest"
 
-#: icc_examin.cpp:325
+#: icc_examin.cpp:323
 msgid ""
 "ICC colour profiles (*.{I,i}{C,c}{M,m,C,c})\tMeasurement (*.{txt,it8,IT8,RGB,"
 "CMYK,ti*,cgats,CIE,cie,nCIE,oRPT,DLY,LAB,Q60})\tArgyll Gamuts (*.{wrl,vrml}"
@@ -260,83 +260,83 @@ msgstr ""
 "CMYK,ti*,cgats,CIE,cie,nCIE,oRPT,DLY,LAB,Q60})\tArgyll Kolore-gama (*.{wrl,"
 "vrml}"
 
-#: icc_examin.cpp:325
+#: icc_examin.cpp:323
 msgid "Which ICC profile?"
 msgstr "Zein ICC profila?"
 
-#: icc_examin.cpp:737 icc_examin.cpp:740
+#: icc_examin.cpp:710 icc_examin.cpp:713
 msgid "Compare Measurement <-> Profile Colours"
 msgstr "Konparatu neurketa <-> profilaren koloreak"
 
-#: icc_examin.cpp:739
+#: icc_examin.cpp:712
 msgid "none"
 msgstr "bat ere ez"
 
-#: icc_examin.cpp:757 icc_examin.cpp:761
+#: icc_examin.cpp:730 icc_examin.cpp:734
 msgid "Gamut View"
 msgstr "Kolore-gamaren ikuspegia"
 
-#: icc_examin.cpp:812 icc_gl.h:260
+#: icc_examin.cpp:785 icc_gl.h:262
 msgid "not available"
 msgstr "ez dago erabilgarri"
 
-#: icc_examin.cpp:1135
+#: icc_examin.cpp:1108
 msgid "Filename (ICC data type)"
 msgstr "Fitxategi-izena (ICC datu mota)"
 
-#: icc_examin.cpp:1138
+#: icc_examin.cpp:1111
 msgid "Filename (other data type)"
 msgstr "Fitxategi-izena (beste datu mota)"
 
-#: icc_examin.cpp:1140
+#: icc_examin.cpp:1113
 msgid "Filename (corrupted ICC data type)"
 msgstr "Fitxategi-izena (hondatutako ICC datu mota)"
 
-#: icc_examin.cpp:1145
+#: icc_examin.cpp:1118
 msgid "found no content for"
 msgstr "ez da honen edukirik aurkitu"
 
-#: icc_examin.cpp:1148
+#: icc_examin.cpp:1121
 msgid "Internal error"
 msgstr "Barneko errorea"
 
-#: icc_examin.cpp:1151
+#: icc_examin.cpp:1124
 msgid "No. Tag   Type   Size Description"
 msgstr "IDa Etik. Mota   Tam. Azalpena"
 
-#: icc_examin_io.cpp:225
+#: icc_examin_io.cpp:317
 msgid "no net found in VRML file"
 msgstr "ez da sarerik aurkitu VRML fitxategian"
 
-#: icc_examin_io.cpp:265
+#: icc_examin_io.cpp:360
 msgid "no net found. Is Argyll installed?"
 msgstr "ez da sarerik aurkitu. Argyll instalatuta dago?"
 
-#: icc_examin_io.cpp:435
+#: icc_examin_io.cpp:544
 msgid "Stop loading "
 msgstr "Gelditu kargatzea "
 
-#: icc_examin_io.cpp:539
+#: icc_examin_io.cpp:648
 msgid "HTML Documents (*.htm*)"
 msgstr "HTML dokumentuak (*.htm*)"
 
-#: icc_examin_io.cpp:543 icc_betrachter.cxx:578
+#: icc_examin_io.cpp:652 icc_betrachter.cxx:578
 msgid "Save Report"
 msgstr "Gorde txostena"
 
-#: icc_examin_io.cpp:615
+#: icc_examin_io.cpp:724
 msgid "ICC colour profiles (*.ic*)"
 msgstr "ICC kolore-profilak (*.ic*)"
 
-#: icc_examin_io.cpp:616 icc_betrachter.cxx:579
+#: icc_examin_io.cpp:725 icc_betrachter.cxx:579
 msgid "Save Gamut as Profile"
 msgstr "Gorde kolore-gama profila gisa"
 
-#: icc_examin_io.cpp:618
+#: icc_examin_io.cpp:727
 msgid "VRML Files (*.wrl)"
 msgstr "VRML fitxategiak (*.wrl)"
 
-#: icc_examin_io.cpp:619 icc_betrachter.cxx:580
+#: icc_examin_io.cpp:728 icc_betrachter.cxx:580
 msgid "Save Gamut as VRML"
 msgstr "Gorde kolore-gama VRML gisa"
 
@@ -356,117 +356,117 @@ msgstr "Informazioa:"
 msgid "Yes"
 msgstr "Bai"
 
-#: icc_gl.cpp:720 icc_gl.cpp:723 icc_gl.cpp:730 icc_gl.cpp:741 icc_gl.cpp:745
-#: icc_gl.cpp:760
+#: icc_gl.cpp:722 icc_gl.cpp:725 icc_gl.cpp:732 icc_gl.cpp:743 icc_gl.cpp:747
+#: icc_gl.cpp:762
 msgid "Could not open font in:"
 msgstr "Ezin izan da letra-tipoa ireki:"
 
-#: icc_gl.cpp:852
+#: icc_gl.cpp:854
 #, c-format
 msgid "0,0,0"
 msgstr "0,0,0"
 
-#: icc_gl.cpp:1969 icc_gl.cpp:1979 icc_gl.cpp:1981 icc_gl.cpp:1983
+#: icc_gl.cpp:1974 icc_gl.cpp:1984 icc_gl.cpp:1986 icc_gl.cpp:1988
 msgid "Slice"
 msgstr "Zatitu"
 
-#: icc_gl.cpp:1970
+#: icc_gl.cpp:1975
 msgid "Rotate around slice"
 msgstr "Biratu zatiaren inguruan"
 
-#: icc_gl.cpp:1985
+#: icc_gl.cpp:1990
 msgid "Rotate around"
 msgstr "Biratu inguruan"
 
-#: icc_gl.cpp:1985
+#: icc_gl.cpp:1990
 msgid "axis"
 msgstr "ardatza"
 
-#: icc_gl.cpp:1990
+#: icc_gl.cpp:1995
 msgid "Slice plane"
 msgstr "Zati planoa"
 
-#: icc_gl.cpp:1993
+#: icc_gl.cpp:1998
 msgid "White"
 msgstr "Zuria"
 
-#: icc_gl.cpp:1994
+#: icc_gl.cpp:1999
 msgid "Light gray"
 msgstr "Gris argia"
 
-#: icc_gl.cpp:1996
+#: icc_gl.cpp:2001
 msgid "Dark gray"
 msgstr "Gris iluna"
 
-#: icc_gl.cpp:2000
+#: icc_gl.cpp:2005
 msgid "Background colour"
 msgstr "Atzeko planoaren kolorea"
 
-#: icc_gl.cpp:2005
+#: icc_gl.cpp:2010
 msgid "gray"
 msgstr "grisa"
 
-#: icc_gl.cpp:2006
+#: icc_gl.cpp:2011
 msgid "coloured"
 msgstr "koloreztatua"
 
-#: icc_gl.cpp:2007
+#: icc_gl.cpp:2012
 msgid "high contrast"
 msgstr "kontraste altua"
 
-#: icc_gl.cpp:2009
+#: icc_gl.cpp:2014
 msgid "Onion skins"
 msgstr ""
 
-#: icc_gl.cpp:2010
+#: icc_gl.cpp:2015
 msgid "Colour line"
 msgstr "Kolore-marra"
 
-#: icc_gl.cpp:2015
+#: icc_gl.cpp:2020
 msgid "Sphere 1dE"
 msgstr "1dE esfera"
 
-#: icc_gl.cpp:2016
+#: icc_gl.cpp:2021
 msgid "Sphere 2dE"
 msgstr "2dE esfera"
 
-#: icc_gl.cpp:2017
+#: icc_gl.cpp:2022
 msgid "Sphere 4dE"
 msgstr "4dE esfera"
 
-#: icc_gl.cpp:2020
+#: icc_gl.cpp:2025
 msgid "Star"
 msgstr "Izarra"
 
-#: icc_gl.cpp:2023
+#: icc_gl.cpp:2028
 msgid "Point"
 msgstr "Puntua"
 
-#: icc_gl.cpp:2026
+#: icc_gl.cpp:2031
 msgid "without markers"
 msgstr "markatzailerik gabe"
 
-#: icc_gl.cpp:2027
+#: icc_gl.cpp:2032
 msgid "Spektral line"
 msgstr "Marra espektrala"
 
-#: icc_gl.cpp:2030
+#: icc_gl.cpp:2035
 msgid "Texts"
 msgstr "Testuak"
 
-#: icc_gl.cpp:2032
+#: icc_gl.cpp:2037
 msgid "Texts/Arrows on/off"
 msgstr "Testuak/Geziak aktibatu/desaktibatu"
 
-#: icc_gl.cpp:2034
+#: icc_gl.cpp:2039
 msgid "Illustration"
 msgstr "Ilustrazioa"
 
-#: icc_gl.cpp:2380
+#: icc_gl.cpp:2398
 msgid "Pos"
 msgstr "Pos."
 
-#: icc_gl.cpp:2465 icc_profile_tags.cpp:319
+#: icc_gl.cpp:2483 icc_profile_tags.cpp:319
 msgid "Channel"
 msgstr "Kanala"
 
@@ -959,7 +959,7 @@ msgstr "puntuan"
 msgid "seconds"
 msgstr "segundo"
 
-#: icc_helfer.cpp:1027 icc_oyranos.cpp:350 icc_oyranos.cpp:450
+#: icc_helfer.cpp:1027 icc_oyranos.cpp:350 icc_oyranos.cpp:452
 msgid "Monitor Profile"
 msgstr "Monitorearen profila"
 
@@ -967,11 +967,11 @@ msgstr "Monitorearen profila"
 msgid "file size 0 for "
 msgstr "fitxategi honen tamaina 0: "
 
-#: icc_kette.cpp:173
+#: icc_kette.cpp:175
 msgid "noName"
 msgstr "izengabea"
 
-#: icc_kette.cpp:193
+#: icc_kette.cpp:192
 msgid "File not loaded!"
 msgstr "Fitxategia ez da kargatu."
 
@@ -1123,29 +1123,29 @@ msgstr "K"
 msgid "WARNING: Could not load corrupt or damaged profile."
 msgstr "ABISUA: ezin izan da hondatutako profila kargatu."
 
-#: icc_oyranos.cpp:178 icc_oyranos.cpp:440 icc_oyranos.cpp:448
-#: icc_oyranos.cpp:483 icc_oyranos.cpp:489 icc_oyranos.cpp:535
-#: icc_oyranos.cpp:541 icc_oyranos.cpp:580 icc_oyranos.cpp:586
+#: icc_oyranos.cpp:178 icc_oyranos.cpp:440 icc_oyranos.cpp:450
+#: icc_oyranos.cpp:485 icc_oyranos.cpp:491 icc_oyranos.cpp:537
+#: icc_oyranos.cpp:543 icc_oyranos.cpp:582 icc_oyranos.cpp:588
 msgid "WARNING: Could not load profile."
 msgstr "ABISUA: ezin izan da profila kargatu."
 
-#: icc_oyranos.cpp:716 icc_profile_header.cpp:237 icc_helfer_x.cpp:180
+#: icc_oyranos.cpp:718 icc_profile_header.cpp:250 icc_helfer_x.cpp:180
 msgid "Manufacturer:"
 msgstr "Hornitzailea:   "
 
-#: icc_oyranos.cpp:722
+#: icc_oyranos.cpp:724
 msgid "Model:"
 msgstr "Modeloa:"
 
-#: icc_oyranos.cpp:728
+#: icc_oyranos.cpp:730
 msgid "Serial:"
 msgstr "Seriekoa:"
 
-#: icc_oyranos.cpp:1280 icc_vrml.cpp:151
+#: icc_oyranos.cpp:1291 icc_vrml.cpp:151
 msgid "Std-exception occured: "
 msgstr "STD salbuespena gertatu da: "
 
-#: icc_oyranos.cpp:1283 icc_vrml.cpp:154
+#: icc_oyranos.cpp:1294 icc_vrml.cpp:154
 msgid "Huch, unknown exception"
 msgstr "Salbuespen ezezaguna"
 
@@ -1257,83 +1257,83 @@ msgstr "ezin da erabili iruditik independenteki"
 msgid "can be used independently from image."
 msgstr "iruditik independenteki erabil daiteke."
 
-#: icc_profile_header.cpp:217
+#: icc_profile_header.cpp:230
 msgid "found no header"
 msgstr "ez da goibururik aurkitu"
 
-#: icc_profile_header.cpp:222
+#: icc_profile_header.cpp:235
 msgid "ICC profile header"
 msgstr "ICC profilaren goiburua"
 
-#: icc_profile_header.cpp:223
+#: icc_profile_header.cpp:236
 msgid "Size:        "
 msgstr "Tamaina:        "
 
-#: icc_profile_header.cpp:224
+#: icc_profile_header.cpp:237
 msgid "bytes"
 msgstr "byte"
 
-#: icc_profile_header.cpp:225
+#: icc_profile_header.cpp:238
 msgid "CMM:         "
 msgstr "CMM:            "
 
-#: icc_profile_header.cpp:226
+#: icc_profile_header.cpp:239
 msgid "Version:     "
 msgstr "Bertsioa:       "
 
-#: icc_profile_header.cpp:227
+#: icc_profile_header.cpp:240
 msgid "Class:       "
 msgstr "Klasea:         "
 
-#: icc_profile_header.cpp:229
+#: icc_profile_header.cpp:242
 msgid "Colour Space:"
 msgstr "Kolore-espazioa:"
 
-#: icc_profile_header.cpp:231
+#: icc_profile_header.cpp:244
 msgid "PCS:         "
 msgstr "PCS:            "
 
-#: icc_profile_header.cpp:233
+#: icc_profile_header.cpp:246
 msgid "Date:        "
 msgstr "Data:           "
 
-#: icc_profile_header.cpp:234
+#: icc_profile_header.cpp:247
 msgid "Magic:       "
 msgstr "Magikoa:        "
 
-#: icc_profile_header.cpp:235
+#: icc_profile_header.cpp:248
 msgid "Platform:    "
 msgstr "Plataforma:     "
 
-#: icc_profile_header.cpp:236
+#: icc_profile_header.cpp:249
 msgid "Flags:       "
 msgstr "Banderak:       "
 
-#: icc_profile_header.cpp:238 icc_helfer_x.cpp:182
+#: icc_profile_header.cpp:251 icc_helfer_x.cpp:182
 msgid "Model:       "
 msgstr "Modeloa:        "
 
-#: icc_profile_header.cpp:239
+#: icc_profile_header.cpp:252
 msgid "Attributes:  "
 msgstr "Atributuak:     "
 
-#: icc_profile_header.cpp:241
+#: icc_profile_header.cpp:254
 msgid "Intent:      "
 msgstr "Helburua:       "
 
-#: icc_profile_header.cpp:243
+#: icc_profile_header.cpp:256
 msgid "Illuminant:  "
 msgstr "Iluminatzailea: "
 
-#: icc_profile_header.cpp:247
+#: icc_profile_header.cpp:260
 msgid "created by:  "
 msgstr "sortzailea:     "
 
-#: icc_profile_header.cpp:255
+#: icc_profile_header.cpp:268
 msgid "File header invalid"
 msgstr "Fitxategiaren goiburua baliogabea"
 
-#: icc_profile_header.cpp:258
+#: icc_profile_header.cpp:271
 msgid "    head  head    128 File header"
 msgstr "    goib. goib.   128 Fitxategi-goiburua"
 

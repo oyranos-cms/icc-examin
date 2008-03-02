@@ -129,9 +129,9 @@ Oyranos::profil_test_ (const char* profil_name)
           Speicher *v_block = &pspeicher_[profil_name];
           *v_block = profil_name;
           size_t size;
-          char* block = (char*)oyGetProfileBlock( profil_name, &size, myAllocFunc);
+          char* block = (char*)oyGetProfileBlock( profil_name, &size, malloc);
           DBG_PROG_V( (int*)block <<"|"<< size )
-          v_block->ladeNew(block, size);
+          v_block->ladeUndFreePtr(&block, size);
         }
       }
     } else // profile in list
@@ -167,12 +167,12 @@ Oyranos::lab_test_ ()
         size_t size = oyGetProfileSize ( profil_name );
         DBG_PROG_V( size )
         if (size)
-        { char *block = (char*)oyGetProfileBlock( profil_name, &size, myAllocFunc);
+        { char *block = (char*)oyGetProfileBlock( profil_name, &size, malloc);
           if( oyCheckProfileMem( block, size, 0 ) )
             WARN_S ( _("WARNING: Could not load corrupt or damaged profile.") )
           else {
             DBG_PROG_V( (intptr_t)block <<"|"<< size )
-            v_block->ladeNew(block, size);
+            v_block->ladeUndFreePtr(&block, size);
           }
         } else
           WARN_S(_("WARNING: Could not load profile."));
@@ -342,7 +342,7 @@ Oyranos::moni_test_ (int x, int y)
     DBG_PROG_V( display_name )
     int screen = oyGetScreenFromPosition( display_name, x,y );
     char *new_display_name = changeScreenName_( display_name, screen );
-    char* moni_profil = oyGetMonitorProfile( new_display_name, &size, myAllocFunc );
+    char* moni_profil = oyGetMonitorProfile( new_display_name, &size, malloc );
     if(new_display_name) { delete [] new_display_name; new_display_name = 0; }
 
     Speicher v_block = moni_;
@@ -355,12 +355,12 @@ Oyranos::moni_test_ (int x, int y)
     { 
         if (size)
         {
-          char* block = moni_profil;
+          char* block = moni_profil; moni_profil = 0;
           if( oyCheckProfileMem( block, size, 0 ) )
             WARN_S(_("WARNING: Could not load corrupt or damaged profile."))
           else {
               DBG_MEM_V( (int*)block <<"|"<< size )
-            v_block.ladeNew(block, size);
+            v_block.ladeUndFreePtr(&block, size);
           }
         } else
           DBG_S("Could not load profile.")
@@ -442,7 +442,9 @@ Oyranos::moni_test_ (int x, int y)
 #         endif
           {
               DBG_MEM_V( (int*)ref.data <<"|"<< size )
-            v_block.lade((const char*)ref.data, size);
+            char * block = (char*) new char [size];
+            memcpy( block, ref.data, size )
+            v_block.ladeNew(block, size);
           }
         } else
           WARN_S(_("WARNING: Could not load profile."))
@@ -478,12 +480,12 @@ Oyranos::rgb_test_ ()
         size_t size = oyGetProfileSize ( profil_name );
         DBG_PROG_V( size )
         if (size)
-        { char *block = (char*)oyGetProfileBlock( profil_name, &size, myAllocFunc);
+        { char *block = (char*)oyGetProfileBlock( profil_name, &size, malloc);
           if( oyCheckProfileMem( block, size, 0 ) )
             WARN_S(_("WARNING: Could not load profile."))
           else {
             DBG_PROG_V( (int*)block <<"|"<< size )
-            v_block->ladeNew(block, size);
+            v_block->ladeUndFreePtr(&block, size);
           }
         } else
           WARN_S(_("WARNING: Could not load profile."))
@@ -497,13 +499,13 @@ Oyranos::rgb_test_ ()
   CMProfileRef prof=NULL;
   char *block = 0;
   size_t groesse = 0;
-  oyGetProfileBlockOSX(prof, block, &groesse, myAllocFunc);
+  oyGetProfileBlockOSX(prof, block, &groesse, malloc);
   if(groesse) {
     block = (char*)malloc(groesse);
-    oyGetProfileBlockOSX(prof, block, &groesse, myAllocFunc);
+    oyGetProfileBlockOSX(prof, block, &groesse, malloc);
   }
   Speicher *v_block = &rgb_;
-  v_block->lade(block,groesse);
+  v_block->ladeUndFreePtr(&block,groesse);
 # endif
 # endif
   DBG_PROG_ENDE
@@ -530,12 +532,12 @@ Oyranos::cmyk_test_ ()
         size_t size = oyGetProfileSize ( profil_name );
         DBG_PROG_V( size  )
         if (size)
-        { char *block = (char*)oyGetProfileBlock( profil_name, &size, myAllocFunc);
+        { char *block = (char*)oyGetProfileBlock( profil_name, &size, malloc);
           if( oyCheckProfileMem( block, size, 0 ) )
             WARN_S(_("WARNING: Could not load profile."))
           else {
             DBG_PROG_V( (int*)block <<"|"<< size )
-            v_block->ladeNew(block, size);
+            v_block->ladeUndFreePtr(&block, size);
           }
         } else
           WARN_S(_("WARNING: Could not load profile."));
@@ -575,12 +577,12 @@ Oyranos::proof_test_ ()
         size_t size = oyGetProfileSize ( profil_name );
         DBG_PROG_V( size  )
         if (size)
-        { char *block = (char*)oyGetProfileBlock( profil_name, &size, myAllocFunc);
+        { char *block = (char*)oyGetProfileBlock( profil_name, &size, malloc);
           if( oyCheckProfileMem( block, size, 0 ) )
             WARN_S(_("WARNING: Could not load profile."))
           else {
             DBG_PROG_V( (int*)block <<"|"<< size )
-            v_block->ladeNew(block, size);
+            v_block->ladeUndFreePtr(&block, size);
           }
         } else
           WARN_S(_("WARNING: Could not load profile."));
@@ -1050,7 +1052,11 @@ Oyranos::netzVonProfil (ICCprofile & profil, int intent, int bpc, ICCnetz & netz
   {
     std::string vrml;
 
-    vrml = iccCreateVrml ( s,(int)s.size(), intent );
+    double v = profil.getHeader().versionD();
+
+    if(v < 4)
+      vrml = iccCreateVrml ( s,(int)s.size(), intent );
+
     std::vector<ICCnetz> netze;
 
     if(vrml.size())
@@ -1068,7 +1074,12 @@ Oyranos::netzVonProfil (ICCprofile & profil, int intent, int bpc, ICCnetz & netz
 #ifdef USE_ARGYLL
       DBG_PROG_S("Fall back to internal hull generation.");
 #else
+      if(v < 4)
+      {
       WARN_S("Fall back to internal hull generation. Argyll is not installed?");
+      } else {
+      DBG_S("Fall back to internal hull generation. "<< v);
+      }
 #endif
     }
 
@@ -1348,7 +1359,7 @@ oyProfile_s * Oyranos::oyMoni (int x, int y)
 
   if(disp_name)
   {
-    char * moni_profile_name = oyGetMonitorProfileName(disp_name, malloc);
+    char * moni_profile_name = oyGetMonitorProfileName(disp_name, myAllocFunc);
     if(moni_profile_name)
     {
       disp_prof = oyProfile_FromFile( moni_profile_name, 0, 0 );
@@ -1363,7 +1374,10 @@ oyProfile_s * Oyranos::oyMoni (int x, int y)
         free(buf); size = 0;
       }
     }
-    free(disp_name);
+    if(disp_name)
+      free(disp_name);
+    if(moni_profile_name)
+      delete [] moni_profile_name;
   }
 
   if (disp_prof)

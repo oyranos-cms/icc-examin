@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2006  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2008  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -78,6 +78,8 @@ class ICCexaminIO /*: public icc_examin_ns::Beobachter,
                  oeffnenStatisch_ ( void* ICCexamina );
     void         oeffnenThread_ ();            //!< only one time pro ICCexamin
     void         oeffnenThread_ (int erneuern__); 
+    int          intent_alt_;   //!< old rendering intent / de: Uebertragungsart
+    void         farbraum_ (int info);
   public:
     void         oeffnen ();                   //!< interactive
     void         oeffnen (std::vector<std::string> dateinamen);

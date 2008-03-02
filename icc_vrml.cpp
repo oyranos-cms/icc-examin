@@ -87,7 +87,7 @@ iccCreateVrml( const char* p, int size, int intent )
 
   int ret;
 #ifdef USE_ARGYLL
-  double volume = 0;
+  double volume = -1.0;
   ret = iccCreateArgyllVrml( ptn.c_str(), intent, &volume );
   DBG_V(volume)
 

@@ -174,7 +174,7 @@ class Speicher
                                 // "lade"
                                 lade(*zeiger,groesse);
                                 free(*zeiger);
-                                zeiger = 0;
+                                *zeiger = 0;
                                 groesse = 0;
                               }
                               DBG_MEM_ENDE

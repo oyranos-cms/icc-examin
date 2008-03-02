@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2007  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2008  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -202,6 +202,8 @@ GL_Ansicht::init_()
 
   for(int i = 0; i <= DL_MAX; ++i)
     gl_listen[i] = 0;
+
+  bsp = 0;
 
   DBG_PROG_ENDE
 }
@@ -1326,6 +1328,7 @@ GL_Ansicht::netzeAuffrischen()
        std::multimap<double,DreiecksIndexe> indexe;
        double abstand;
        std::multimap<double,DreiecksIndexe>::const_iterator it;
+       if(!bsp)
        for( it = netz.indexe.begin(); it != netz.indexe.end(); ++it )
        {
                // insert indicies, to count newly
@@ -1395,6 +1398,13 @@ GL_Ansicht::netzeAuffrischen()
               glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, farbe);*/\
                       glColor4d(r,g,b,a); }
 
+      if(bsp)
+      {
+        icc_examin_ns::POINT pov = {Y,Z,X};
+        icc_examin_ns::BSPtraverseTreeAndRender( bsp, &pov);
+      }
+        else
+      {
         for( it = indexe.begin(); it != indexe.end(); ++it )
         {
           index[0] = it->second.i[0];
@@ -1442,6 +1452,7 @@ GL_Ansicht::netzeAuffrischen()
             glEnd();
           }
         }
+      }
 
       glPopMatrix();
 
@@ -1668,12 +1679,6 @@ GL_Ansicht::zeigeUmrisse_()
 {
   DBG_PROG_START
 
-  for( unsigned int j = 0; j < dreiecks_netze.size(); j++ )
-  {
-    double schattierung = .93 - .8/dreiecks_netze.size()*j;
-    dreiecks_netze[j].schattierung = schattierung;
-  }
-
   if (gl_listen[UMRISSE]) {
     DBG_PROG_S( "delete glListe " << gl_listen[UMRISSE] )
     glDeleteLists (gl_listen[UMRISSE],1);
@@ -1700,9 +1705,9 @@ GL_Ansicht::zeigeUmrisse_()
       for(int k = 0; k < 3 ; ++k)
         Lab_Speicher[j*3+k] = dreiecks_netze[d].umriss[j].koord[k];
 
-    RGB_Speicher = icc_oyranos.wandelLabNachBildschirmFarben( x(),y(),
-                                 Lab_Speicher,
-                                 (size_t)n, icc_examin->intentGet(NULL), 0);
+    RGB_Speicher = icc_oyranos.wandelLabNachBildschirmFarben(
+               window()->x() + window()->w()/2, window()->y() + window()->h()/2,
+               Lab_Speicher, (size_t)n, icc_examin->intentGet(NULL), 0);
     DBG_PROG_V( n )
     // create shadow
     Lab_Speicher_schatten = (double*) malloc (sizeof(double) * n*3);
@@ -1713,8 +1718,9 @@ GL_Ansicht::zeigeUmrisse_()
       Lab_Speicher_schatten[i*3+2] = (Lab_Speicher[i*3+2]-.5)*.25+0.5;
     }
 
-    RGBSchatten_Speicher = icc_oyranos.wandelLabNachBildschirmFarben( x(),y(),
-                             Lab_Speicher_schatten, n, icc_examin->intentGet(NULL), 0);
+    RGBSchatten_Speicher = icc_oyranos.wandelLabNachBildschirmFarben(
+               window()->x() + window()->w()/2, window()->y() + window()->h()/2,
+                      Lab_Speicher_schatten, n, icc_examin->intentGet(NULL), 0);
     if(!RGB_Speicher)  WARN_S( "RGB_speicher result is not available" )
     if(!RGBSchatten_Speicher)  WARN_S( "RGB_speicher result is not available" )
 
@@ -1775,8 +1781,6 @@ GL_Ansicht::zeigeUmrisse_()
         }
         // colour line shadow
         int n = (int)dreiecks_netze[i].umriss.size();
-        if(!dreiecks_netze[i].schattierung)
-          ;//netzeAuffrischen();
         DBG_PROG_V( n )
         glLineWidth(strich2*strichmult);
 
@@ -1857,9 +1861,9 @@ GL_Ansicht::zeigeSpektralband_()
       }
     }
 
-    RGB_Speicher = icc_oyranos.wandelLabNachBildschirmFarben( x(),y(),
-                                 Lab_Speicher,
-                                 (size_t)n_punkte, icc_examin->intentGet(NULL), 0);
+    RGB_Speicher = icc_oyranos.wandelLabNachBildschirmFarben(
+               window()->x() + window()->w()/2, window()->y() + window()->h()/2,
+               Lab_Speicher, (size_t)n_punkte, icc_examin->intentGet(NULL), 0);
 
     if(typ_ == 1)
       for (int i = 0; i < n_punkte; ++i)
@@ -1876,8 +1880,9 @@ GL_Ansicht::zeigeSpektralband_()
       Lab_Speicher_schatten[i*3+2] = (Lab_Speicher[i*3+2]-.5)*.25+0.5;
     }
 
-    RGBSchatten_Speicher = icc_oyranos.wandelLabNachBildschirmFarben( x(),y(),
-                               Lab_Speicher_schatten, n_punkte, icc_examin->intentGet(NULL), 0);
+    RGBSchatten_Speicher = icc_oyranos.wandelLabNachBildschirmFarben(
+               window()->x() + window()->w()/2, window()->y() + window()->h()/2,
+               Lab_Speicher_schatten, n_punkte, icc_examin->intentGet(NULL), 0);
     if(!RGB_Speicher)  WARN_S( "RGB_speicher result not available" )
     if(!RGBSchatten_Speicher)  WARN_S( "RGB_speicher result not available" )
 
@@ -2141,15 +2146,27 @@ GL_Ansicht::zeichnen()
   static char grau[64];
   char aktualisiert = false;
   for(int i = 0; i < (int)dreiecks_netze.size(); ++i)
+  {
+    double netze_n = dreiecks_netze.size();
+    double schattierung = .93 - .8/netze_n*i;
+    schattierung = 1.0 - i/(double)netze_n;
+    if(dreiecks_netze[i].schattierung < 0)
+      dreiecks_netze[i].schattierung = schattierung;
+
     if( dreiecks_netze[i].aktiv != aktive[i] ||
-        dreiecks_netze[i].grau != grau[i]  ) {
+        dreiecks_netze[i].grau != grau[i]  )
+    {
       aktive[i] = dreiecks_netze[i].aktiv;
       grau[i] = dreiecks_netze[i].grau;
-      if(!aktualisiert) {
+      if(!aktualisiert)
+      {
         zeigeUmrisse_();
         aktualisiert = true;
       }
     }
+
+  }
+
 
   int scal = 1;
   GLfloat farbe[] =   { textfarbe[0],textfarbe[1],textfarbe[2], 1.0 };
@@ -2286,8 +2303,9 @@ GL_Ansicht::zeichnen()
         /*if(epoint_ && epoint_->sig == icSigRgbData)
           rgb = &epoint_->channels[0];
         else*/
-          rgb_ = rgb = icc_oyranos.wandelLabNachBildschirmFarben( x(),y(),lab,
-                                 1, icc_examin->intentGet(NULL),
+          rgb_ = rgb = icc_oyranos.wandelLabNachBildschirmFarben( 
+               window()->x() + window()->w()/2, window()->y() + window()->h()/2,
+                                 lab, 1, icc_examin->intentGet(NULL),
                                  icc_examin->gamutwarn()?cmsFLAGS_GAMUTCHECK:0);
         {
 #         ifndef Beleuchtung_
@@ -2695,18 +2713,174 @@ GL_Ansicht::emphasizePoint    (oyNamedColour_s * colour)
   DBG_PROG_ENDE
 }
 
+void getFacesFromICCnetz ( const ICCnetz & netz, icc_examin_ns::FACE **fList,
+                           float scale_x, float scale_y, float scale_z )
+{
+  icc_examin_ns::FACE *fListTail = 0;
+  icc_examin_ns::VERTEX *vList = 0,
+                        *vListTail = 0;
+  icc_examin_ns::COLOR color;
+  icc_examin_ns::PLANE plane;
+  int err = 0;
+
+  if(*fList)
+  {
+    fListTail = *fList;
+    while(fListTail->fnext)
+      fListTail = fListTail->fnext;
+  }
+
+  if(!netz.aktiv)
+    return;
+
+  std::multimap<double,DreiecksIndexe>::const_iterator it;
+  for( it = netz.indexe.begin(); it != netz.indexe.end(); ++it )
+  {
+    std::pair<double,DreiecksIndexe> index_p( *it );
+    icc_examin_ns::VERTEX * v = 0;
+
+    for(int j = 2; j >= 0; --j)
+    {
+      if(netz.grau)
+      {
+        color.rr = color.gg = color.bb = netz.schattierung;
+      } else {
+        color.rr = netz.punkte[ index_p.second.i[j] ].farbe[0];
+        color.gg = netz.punkte[ index_p.second.i[j] ].farbe[1];
+        color.bb = netz.punkte[ index_p.second.i[j] ].farbe[2];
+      }
+      color.aa = netz.undurchsicht;
+
+      v = allocVertex( netz.punkte[ index_p.second.i[j] ].koord[0]*scale_x,
+                       netz.punkte[ index_p.second.i[j] ].koord[1]*scale_y,
+                       netz.punkte[ index_p.second.i[j] ].koord[2]*scale_z,
+                       &color);
+
+      appendVertex( &vList, &vListTail, v );
+    }
+
+    if (vList != 0)
+    {
+      err = 0;
+      /* previous face? */
+      icc_examin_ns::appendVertex( &vList,&vListTail, /* append duplicate 1st vertex  */
+           icc_examin_ns::allocVertex( vList->xx,vList->yy,vList->zz,&color ) );
+
+      err = icc_examin_ns::computePlane(vList->xx,vList->yy,vList->zz,
+                         vList->vnext->xx,vList->vnext->yy,vList->vnext->zz,
+                         vList->vnext->vnext->xx,
+                         vList->vnext->vnext->yy,
+                         vList->vnext->vnext->zz, &plane);
+
+      if(!err)
+        icc_examin_ns::appendFace( fList, &fListTail,
+                                       icc_examin_ns::allocFace(vList,&plane) );
+    }
+
+         /* save vars for this face and start new vertex list */
+         /* printf("f %f/%f/%f",color.rr,color.gg,color.bb); */
+    vList = vListTail = 0;
+  }
+
+  if (vList != 0) { /* process last face (or only) */
+      appendVertex(&vList,&vListTail, /* append duplicate 1st vertex */
+                   allocVertex(vList->xx,vList->yy,vList->zz,&color));
+      computePlane(vList->xx,vList->yy,vList->zz,vList->vnext->xx,
+                   vList->vnext->yy,vList->vnext->zz,vList->vnext->vnext->xx,
+                   vList->vnext->vnext->yy,vList->vnext->vnext->zz,&plane);
+      appendFace(fList,&fListTail,allocFace(vList,&plane));
+  }
+}
+
+void drawGLFaceList(FILE *fp,const icc_examin_ns::FACE *faceList)
+{
+  const icc_examin_ns::FACE *ftrav = 0;
+  for (ftrav= faceList; ftrav != 0; ftrav= ftrav->fnext)
+  {
+    icc_examin_ns::VERTEX *vtrav = 0;
+      
+#if 0
+      fprintf(fp,"Face: RGBi:%.2f/%.2f/%.2f/%.2f a: %.3f b: %.3f c: %.3f d: %.3f ",   
+             ftrav->vhead->color.rr,ftrav->vhead->color.gg,
+             ftrav->vhead->color.bb,ftrav->vhead->color.aa,
+             ftrav->plane.aa,ftrav->plane.bb,ftrav->plane.cc,ftrav->plane.dd);
+      fprintf(fp,"\n");
+#endif
+
+
+    if(icc_debug)
+    {
+      glPointSize(5);
+      glColor4d(.0, .0, .0, 1. );
+      glBegin(GL_POINTS);
+        for (vtrav= ftrav->vhead; vtrav->vnext != 0;
+             vtrav= vtrav->vnext)
+          glVertex3f( vtrav->zz, vtrav->xx, vtrav->yy );
+      glEnd();
+
+      glBegin(GL_LINES);
+        for (vtrav= ftrav->vhead; vtrav->vnext != 0;
+             vtrav= vtrav->vnext)
+        {
+          glVertex3f( vtrav->zz, vtrav->xx, vtrav->yy );
+          glVertex3f( vtrav->zz + ftrav->plane.cc*.1,
+                      vtrav->xx + ftrav->plane.aa*.1,
+                      vtrav->yy + ftrav->plane.bb*.1 );
+        }
+      glEnd();
+    }
+
+    glBegin(GL_TRIANGLE_FAN /*S*/);
+      glNormal3f( ftrav->plane.cc, ftrav->plane.aa, ftrav->plane.bb );
+
+      for (vtrav= ftrav->vhead; vtrav->vnext != 0;
+             vtrav= vtrav->vnext)
+      {
+#if 0
+        fprintf(fp,"\t(%.3f,%.3f,%.3f) ",vtrav->xx,vtrav->yy,vtrav->zz);
+        fprintf(fp,"\n");*/
+#endif
+        FARBEN (    vtrav->color.rr, vtrav->color.gg, vtrav->color.bb,
+                    vtrav->color.aa );
+        glVertex3f( vtrav->zz, vtrav->xx, vtrav->yy );
+      }
+    glEnd();
+  }
+}
+
+
+
 void
 GL_Ansicht::hineinNetze       (const std::vector<ICCnetz> & d_n)
 {
   DBG_PROG_START
 
   MARK( frei(false); )
-  if(d_n.size()) {
+  netz.clear();
+
+    // used by BSPtraverseTreeAndRender
+  icc_examin_ns::drawFaceList = drawGLFaceList;
+
+  if(d_n.size())
+  {
     DBG_NUM_V( dreiecks_netze.size() )
     //dreiecks_netze = d_n;
-    netz.clear();
+
+    icc_examin_ns::BSPfreeTree(&bsp);
+
+    icc_examin_ns::FACE *faceList = 0;
     for(unsigned i = 0; i < d_n.size(); ++i)
-      netz.insert( d_n[i] );
+      getFacesFromICCnetz( d_n[i], &faceList,
+                           1, a_darstellungs_breite, b_darstellungs_breite );
+
+    if(faceList)
+    {
+      bsp = icc_examin_ns::BSPconstructTree(&faceList);
+      icc_examin_ns::freeFaceList( &faceList );
+    } else
+      for(unsigned i = 0; i < d_n.size(); ++i)
+        netz.insert( d_n[i] );
+
     for(unsigned k = 0; k < netz.punkte.size(); ++k)
     {
       netz.punkte[k].koord[1] *= a_darstellungs_breite;
