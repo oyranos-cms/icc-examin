@@ -92,8 +92,8 @@ std::string         zeig_bits_bin      (const void* speicher, int groesse);
 // Datei E/A
 char*     ladeDatei                  ( std::string dateiname,
                                        size_t     *size );
-void      saveMemToFile              ( char       *filename,
-                                       char       *block,
+void      saveMemToFile              ( const char *filename,
+                                       const char *block,
                                        int         size );
 double    holeDateiModifikationsZeit ( const char *fullFileName );
 

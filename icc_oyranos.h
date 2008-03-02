@@ -110,7 +110,7 @@ class Oyranos
     const char* profil_ (const char* profil_name, size_t &g);
 
   public:
-    // Uebergangsweise
+    // uebergangsweise
     double*  wandelLabNachBildschirmFarben(double *Lab_Speicher, // 0.0 - 1.0
                                            size_t  size, int intent, int flags);
     // Create an abstract profile containing GamutCheck + Proof
@@ -119,6 +119,9 @@ class Oyranos
                                   Speicher &  abstract,
                                   int         intent,
                                   int         flags);
+    // Create VMRL from Profile
+    std::string vrmlVonProfil (   ICCprofile &profil,
+                                  int         intent);
 
     // Farbtransformationen
     ColourTransformKey erzeugeTrafo (

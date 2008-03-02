@@ -73,17 +73,21 @@ ICCexamin::oeffnen (std::vector<Speicher> profil_vect)
        !icc_betrachter->inspekt_html->visible() )
       icc_betrachter->DD_farbraum->flush();
     icc_betrachter->menueintrag_gamut_speichern->activate();
+    icc_betrachter->menueintrag_gamut_vrml_speichern->activate();
 
     icc_betrachter->measurement( profile.profil()->hasMeasurement() );
     if(farbraumModus())
     {
         // Oberflaechenpflege
+      gamutAnsichtZeigen();
+      #if 0
       icc_betrachter->menueintrag_3D->set();
       icc_betrachter->menueintrag_huelle->set();
       icc_betrachter->widget_oben = ICCfltkBetrachter::WID_3D;
       farbraum_angezeigt_ = true;
       neuzeichnen(icc_betrachter->DD_farbraum);
       DBG_PROG_S("neuzeichnen DD_farbraum")
+      #endif
 
       profile.oeffnen(icc_oyranos.moni(),-1);
       profile.oeffnen(icc_oyranos.cmyk(),-1);
@@ -169,6 +173,7 @@ ICCexamin::oeffnen (std::vector<std::string> dateinamen)
        !icc_betrachter->inspekt_html->visible() )
       icc_betrachter->DD_farbraum->flush();
     icc_betrachter->menueintrag_gamut_speichern->activate();
+    icc_betrachter->menueintrag_gamut_vrml_speichern->activate();
 
     icc_betrachter->measurement( profile.profil()->hasMeasurement() );
     if(farbraumModus())
@@ -227,6 +232,7 @@ ICCexamin::oeffnen (std::vector<std::string> dateinamen)
         icc_betrachter->DD_farbraum->achsNamen(texte);
         icc_betrachter->DD_farbraum->punkte_clear();
         icc_betrachter->DD_farbraum->auffrischen();
+        gamutAnsichtZeigen();
       } else
         WARN_S(_("kein Netz gefunden in VRML Datei"))
     } else {
@@ -443,7 +449,7 @@ ICCexamin::berichtSpeichern (void)
 }
 
 bool
-ICCexamin::gamutSpeichern (void)
+ICCexamin::gamutSpeichern (IccGamutFormat format)
 {
   DBG_PROG_START
   frei_ = false;
@@ -454,7 +460,10 @@ ICCexamin::gamutSpeichern (void)
   std::string::size_type pos=0;
   if ((pos = dateiname.find_last_of(".", dateiname.size())) != std::string::npos)
   { DBG_PROG
-    dateiname.replace (pos, 5, "_proof.icc"); DBG_NUM_S( "_proof.icc gesetzt" )
+    if(format == ICC_ABSTRACT)
+      dateiname.replace (pos, 5, "_proof.icc"); DBG_NUM_S( "_proof.icc gesetzt")
+    else if(format == ICC_VRML)
+      dateiname.replace (pos, 5, ".wrl"); DBG_NUM_S( ".wrl gesetzt")
   } DBG_PROG_V( dateiname )
 
   // FLTK Dateidialog aufrufen
@@ -466,11 +475,16 @@ ICCexamin::gamutSpeichern (void)
     datei = dateiwahl->value(); DBG_PROG
   std::string titel = dateiwahl->label(); DBG_PROG
 
-  dateiwahl->filter(_("ICC colour profiles (*.ic*)")); DBG_PROG
   #ifdef HAVE_FLU
   dateiwahl->cd(".");
   #endif
-  dateiwahl->label(_("Save Gamut as Profile")); DBG_PROG
+  if(format == ICC_ABSTRACT) {
+    dateiwahl->filter(_("ICC colour profiles (*.ic*)")); DBG_PROG
+    dateiwahl->label(_("Save Gamut as Profile")); DBG_PROG
+  } else if(format == ICC_VRML) {
+    dateiwahl->filter(_("VRML Files (*.wrl)")); DBG_PROG
+    dateiwahl->label(_("Save Gamut as VRML")); DBG_PROG
+  }
   dateiwahl->value(dateiname.c_str()); DBG_PROG
 
   dateiwahl->show(); DBG_PROG
@@ -500,24 +514,28 @@ ICCexamin::gamutSpeichern (void)
     return false;
   }
 
-  // Gamutprofil erzeugen
   Speicher profil;
   size_t groesse = 0;
-  char* daten = profile.profil()->saveProfileToMem( &groesse );
-  //char* block = (char*) calloc (sizeof (char), groesse );
-  //memcpy( daten, daten, groesse);
+  char* daten = 0;
+  daten = profile.profil()->saveProfileToMem( &groesse );
   profil.lade( daten, groesse );
-  Speicher abstract;
-  icc_oyranos.gamutCheckAbstract( profil, abstract,
-                                  profile.profil()->intent(),
-                                  /*cmsFLAGS_GAMUTCHECK |*/ cmsFLAGS_SOFTPROOFING );
+  if(format == ICC_ABSTRACT) {
+    // Gamutprofil erzeugen
+    Speicher speicher;
+    icc_oyranos.gamutCheckAbstract( profil, speicher,
+                                    profile.profil()->intent(),
+                                    /*cmsFLAGS_GAMUTCHECK |*/ cmsFLAGS_SOFTPROOFING );
 
-  // Speichern
-  std::ofstream f ( dateiname.c_str(),  std::ios::out );
-  f.write ( (const char*)abstract, abstract.size() );
-  f.close();
+    // Speichern
+    saveMemToFile ( dateiname.c_str(), (const char*)speicher, speicher.size() );
+    speicher.clear(); DBG
+  } else if(format == ICC_VRML) {
+    std::string vrml;
+    vrml = icc_oyranos.vrmlVonProfil ( *profile.profil(), profile.profil()->intent() );
+    // Speichern
+    saveMemToFile ( dateiname.c_str(), vrml.c_str(), vrml.size() );
+  }
   profil.clear(); DBG
-  abstract.clear(); DBG
 
   frei_ = true;
   DBG_PROG_ENDE

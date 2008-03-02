@@ -110,6 +110,11 @@ public:
 private:
   inline void cb_menueintrag_gamut_speichern_i(Fl_Menu_*, void*);
   static void cb_menueintrag_gamut_speichern(Fl_Menu_*, void*);
+public:
+  static Fl_Menu_Item *menueintrag_gamut_vrml_speichern;
+private:
+  inline void cb_menueintrag_gamut_vrml_speichern_i(Fl_Menu_*, void*);
+  static void cb_menueintrag_gamut_vrml_speichern(Fl_Menu_*, void*);
   inline void cb_Quit_i(Fl_Menu_*, void*);
   static void cb_Quit(Fl_Menu_*, void*);
   inline void cb_Oyranos_i(Fl_Menu_*, void*);

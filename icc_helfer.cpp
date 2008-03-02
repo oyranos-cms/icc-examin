@@ -844,18 +844,20 @@ ladeDatei ( std::string dateiname, size_t *size )
 }
 
 void
-saveMemToFile (char* filename, char *block, int size)
+saveMemToFile (const char* filename, const char *block, int size)
 { DBG_PROG_START
   FILE *fp=NULL;
   int   pt = 0;
 
-  if ((fp=fopen(filename, "w")) != NULL) {
+  if ((fp=fopen(filename, "w")) != NULL &&
+      block && size) {
     do {
       fputc ( block[pt++] , fp);
     } while (--size);
   }
 
-  fclose (fp);
+  if (fp)
+    fclose (fp);
   DBG_PROG_ENDE
 }
 

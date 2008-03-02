@@ -43,6 +43,13 @@ class  ICCwaehler;
 class  ICCexamin;
 extern ICCexamin *icc_examin;
 
+namespace icc_examin_ns {
+    enum IccGamutFormat {
+      ICC_ABSTRACT,
+      ICC_VRML,
+    };
+}
+
 class ICCexamin : public icc_examin_ns::Beobachter
 {
   enum {
@@ -63,7 +70,8 @@ class ICCexamin : public icc_examin_ns::Beobachter
     void         oeffnen ();                   // interaktiv
     void         tag_browserText  (void);
     bool         berichtSpeichern (void);      // GCATS Auswertung -> html Datei
-    bool         gamutSpeichern (void);        // Farbraumhuelle abstraktes Profil
+
+    bool         gamutSpeichern (icc_examin_ns::IccGamutFormat format); // Farbraumhuelle
     void         zeigPrueftabelle ();
     void         zeigCGATS();                  // korrigiertes CGATS zeigen
     void         neuzeichnen (void* widget);   // Oberflaeche neuzeichnen
@@ -87,6 +95,7 @@ class ICCexamin : public icc_examin_ns::Beobachter
     int  intent ()  { return intent_; }          // 
     int  gamutwarn ()  { return gamutwarn_; }    // 
     void gamutwarn (int warn) { gamutwarn_ = warn; }
+    void gamutAnsichtZeigen ();                  // DD_farbraum zeigen
 
   public:
     ICCfltkBetrachter* icc_betrachter;
@@ -100,6 +109,7 @@ class ICCexamin : public icc_examin_ns::Beobachter
     std::vector<std::vector<double> >               punkte;
     std::vector<std::vector<std::string> >          texte;
 
+    // Farbraeume laden
     void farbraum();
     void farbraum(int erneuere_nummer_in_profile_kette);
     bool farbraumModus( ) { /*DBG_PROG_V( farbraum_modus_ );*/ return farbraum_modus_; }

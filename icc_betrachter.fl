@@ -301,7 +301,7 @@ class ICCfltkBetrachter {open
   \#endif} {}
     Fl_Window ueber {
       label {About ICC Examin}
-      xywh {617 559 366 241} type Double resizable
+      xywh {642 664 366 241} type Double resizable
       code0 {o->hide();} non_modal visible
     } {
       Fl_Group {} {open
@@ -319,7 +319,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window vcgt {
       label {Grafic Card Gamma Table}
-      xywh {523 522 370 390} type Double resizable
+      xywh {548 627 370 390} type Double resizable
       code0 {o->hide();} non_modal visible
     } {
       Fl_Group {} {open
@@ -352,19 +352,19 @@ class ICCfltkBetrachter {open
         }
         Fl_Button {} {
           label Load
-          callback {icc_examin->moniHolen();} selected
+          callback {icc_examin->moniHolen();}
           tooltip {Load the current monitor profile} xywh {150 360 65 25} hotspot
         }
       }
     }
     Fl_Window details {
       label {ICC Examin} open
-      xywh {838 223 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
+      xywh {863 328 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
     } {
       Fl_Group {} {open
         xywh {0 0 385 520}
       } {
-        Fl_Menu_Bar menueleiste {open
+        Fl_Menu_Bar menueleiste {open selected
           xywh {0 0 385 25} align 20 when 3
         } {
           submenu {} {
@@ -383,16 +383,25 @@ class ICCfltkBetrachter {open
   icc_examin->berichtSpeichern ();
 
   DBG_PROG_ENDE}
-              xywh {0 0 100 20} deactivate
+              xywh {0 0 100 20} deactivate divider
             }
             menuitem menueintrag_gamut_speichern {
-              label {Save Gamut}
+              label {Save Gamut as Profile}
               callback {DBG_PROG_START
 
-  icc_examin->gamutSpeichern ();
+  icc_examin->gamutSpeichern (icc_examin_ns::ICC_ABSTRACT);
 
   DBG_PROG_ENDE}
-              xywh {10 10 100 20} deactivate divider
+              tooltip {Save gamut as abstract profile useful for proofing} xywh {10 10 100 20} deactivate
+            }
+            menuitem menueintrag_gamut_vrml_speichern {
+              label {Save Gamut as VRML}
+              callback {DBG_PROG_START
+
+  icc_examin->gamutSpeichern (icc_examin_ns::ICC_VRML);
+
+  DBG_PROG_ENDE}
+              tooltip {Save gamut as VRML useful for visualisation.} xywh {20 20 100 20} deactivate divider
             }
             menuitem {} {
               label Quit

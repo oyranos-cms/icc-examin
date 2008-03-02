@@ -406,6 +406,28 @@ Oyranos::netzVonProfil (ICCprofile & profil, int intent)
   return netz;
 }
 
+std::string
+Oyranos::vrmlVonProfil (ICCprofile & profil, int intent)
+{
+  DBG_PROG_START
+  Speicher s;
+  std::string vrml;
+
+  if(profil.valid()) {
+      size_t groesse = 0;
+      char* daten = profil.saveProfileToMem(&groesse); 
+      s.lade(daten, groesse);
+      DBG_NUM_V( groesse );
+  }
+
+  if(s.size())
+  {
+    vrml = icc_create_vrml ( s, s.size(), intent );
+  }
+  DBG_PROG_ENDE
+  return vrml;
+}
+
 std::vector<double>
 Oyranos::bandVonProfil (const Speicher & p, int intent)
 {

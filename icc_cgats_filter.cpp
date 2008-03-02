@@ -671,6 +671,36 @@ CgatsFilter::cgats_korrigieren_               ()
     // Hole eine kommentarfreie Zeile -> gtext
     gtext = zeilen_[i].substr( 0, zeilen_[i].find( "#" ) );
 
+    // Datei Signatur reparieren
+    if( i == 0 )
+    {
+      pos  = gtext.find_first_of( cgats_alnum_ );
+      if((ende = gtext.find_first_not_of( cgats_alnum_ )) == std::string::npos||
+          gtext.find_first_not_of( cgats_alnum_ ) > ende )
+      {
+        ende = gtext.size();
+      }
+      DBG_NUM_V( pos <<" "<< ende <<" "<< gtext )
+      bool anf_setzen = anfuehrungsstriche_setzen;
+      anfuehrungsstriche_setzen = false;
+      int wort_zahl = unterscheideZiffernWorte_(zeilen_[0]).size();
+      anfuehrungsstriche_setzen = anf_setzen;
+      if( ((ende - pos) != 7 &&
+           (ende - pos) != 14 ) )
+      {
+        zeilen_.insert( zeilen_.begin(), kopf );
+        logEintrag_( _("Dateisignatur eingeführt"), 0, "", kopf );
+        ++i;
+      }
+      messungen[messungen.size()-1].kommentare.push_back( zeilen_[0] );
+      // Kommentar einfügen
+      if( kommentar.size() ) {
+        zeilen_.insert( zeilen_.begin()+1, kommentar );
+        messungen[messungen.size()-1].kommentare.push_back( zeilen_[1] );
+        ++i;
+      }
+    }
+
     // NUMBER_OF_FIELDS Position merken
     if( sucheWort (gtext, "NUMBER_OF_FIELDS", 0 ) != std::string::npos )
     {
@@ -874,71 +904,40 @@ CgatsFilter::cgats_korrigieren_               ()
     }
     // ENDE DATA Block
 
-    // Datei Signatur reparieren
-    if( i == 0 )
-    {
-      pos  = gtext.find_first_of( cgats_alnum_ );
-      if((ende = gtext.find_first_not_of( cgats_alnum_ )) == std::string::npos||
-          gtext.find_first_not_of( cgats_alnum_ ) > ende )
-      {
-        ende = gtext.size();
-      }
-      DBG_NUM_V( pos <<" "<< ende <<" "<< gtext )
-      bool anf_setzen = anfuehrungsstriche_setzen;
-      anfuehrungsstriche_setzen = false;
-      int wort_zahl = unterscheideZiffernWorte_(zeilen_[0]).size();
-      anfuehrungsstriche_setzen = anf_setzen;
-      if( ((ende - pos) != 7 &&
-           (ende - pos) != 14 ) ||
-          sucheSchluesselwort_( gtext ) != AUSKOMMENTIEREN ||
-          wort_zahl > 1 )
-      {
-        editZeile_( zeilen_, 0, AUSKOMMENTIEREN, false );
-        messungen[messungen.size()-1].kommentare.push_back( zeilen_[0] );
-        zeilen_.insert( zeilen_.begin(), kopf );
-        logEintrag_( _("Dateisignatur eingeführt"), 0, "", kopf );
-        ++i;
-      }
-      messungen[messungen.size()-1].kommentare.push_back( zeilen_[0] );
-      // Kommentar einfügen
-      if( kommentar.size() ) {
-        zeilen_.insert( zeilen_.begin()+1, kommentar );
-        messungen[messungen.size()-1].kommentare.push_back( zeilen_[1] );
-        ++i;
-      }
-
-    } else
     // Schlüsselwörter aufschlüsseln (Keywords)
+    if( i != 0 )
+    {
       if( !im_data_block && !im_data_format_block &&
           !block_ende )
-    {
-      int editieren = sucheSchluesselwort_(gtext);
-      if( editieren == CMY_DATEN ) 
-        cmy_daten = true;
-      else if( editieren == CMYK_DATEN )
-        cmy_daten = false;
-
-      int i_alt = i;
-      if( editieren )
-      { // ... zuschlüsseln (bearbeiten ;) - dabei Zeilendifferenz hinzuzählen
-        i = i + editZeile_( zeilen_, i, editieren, cmy_daten );
-      }
-      if(editieren != BELASSEN &&
-         editieren != CMY_DATEN && editieren != CMYK_DATEN)
-        for(int k = i_alt; k <= i; ++k)
-          messungen[messungen.size()-1].kommentare.push_back( zeilen_[k] );
-    } else
-      if( im_data_block && !im_data_format_block &&
-          zeile_letztes_BEGIN_DATA != (int)i )
-    {
-      if( typ_ == MAX_KORRIGIEREN )
       {
-        int size = gtext.size();
-        zeilen_[i].erase( 0, size );
-        unterscheideZiffernWorte_( gtext );
-        zeilen_[i].insert( 0, gtext );
+        int editieren = sucheSchluesselwort_(gtext);
+        if( editieren == CMY_DATEN ) 
+          cmy_daten = true;
+        else if( editieren == CMYK_DATEN )
+          cmy_daten = false;
+
+        int i_alt = i;
+        if( editieren )
+        { // ... zuschlüsseln (bearbeiten ;) - dabei Zeilendifferenz hinzuzählen
+          i = i + editZeile_( zeilen_, i, editieren, cmy_daten );
+        }
+        if(editieren != BELASSEN &&
+           editieren != CMY_DATEN && editieren != CMYK_DATEN)
+          for(int k = i_alt; k <= i; ++k)
+            messungen[messungen.size()-1].kommentare.push_back( zeilen_[k] );
+      } else
+        if( im_data_block && !im_data_format_block &&
+            zeile_letztes_BEGIN_DATA != (int)i )
+      {
+        if( typ_ == MAX_KORRIGIEREN )
+        {
+          int size = gtext.size();
+          zeilen_[i].erase( 0, size );
+          unterscheideZiffernWorte_( gtext );
+          zeilen_[i].insert( 0, gtext );
+        }
+        DBG_CGATS_V( messungen[messungen.size()-1].block.size()-1 )
       }
-      DBG_CGATS_V( messungen[messungen.size()-1].block.size()-1 )
     }
   }
 
