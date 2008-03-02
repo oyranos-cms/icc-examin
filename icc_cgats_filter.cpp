@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2005  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2007  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -649,7 +649,10 @@ CgatsFilter::cgats_korrigieren_               ()
   suchenUndErsetzen_( data_, "Lab_L" , "LAB_L", pos );
   suchenUndErsetzen_( data_, "Lab_a" , "LAB_A", pos );
   suchenUndErsetzen_( data_, "Lab_b" , "LAB_B", pos );
-    // Dateibezeichner
+  suchenUndErsetzen_( data_, "SD_RGB_R", "RGB_R", pos );
+  suchenUndErsetzen_( data_, "SD_RGB_G", "RGB_G", pos );
+  suchenUndErsetzen_( data_, "SD_RGB_B", "RGB_B", pos );
+  // Dateibezeichner
   suchenUndErsetzen_( data_, "CBTD" , "CBTD___", pos ); // CB
   suchenUndErsetzen_( data_, "CBPR" , "CBPR___", pos );
   suchenUndErsetzen_( data_, "CBTA" , "CBTA___", pos );
@@ -756,9 +759,12 @@ CgatsFilter::cgats_korrigieren_               ()
       zaehler_FIELDS += sucheInDATA_FORMAT_( gtext, i );
       zeilen_[i].insert( 0, gtext );
       // Mitschreiben in felder
-      messungen[messungen.size()-1].felder.push_back( 
+      if(size && zaehler_FIELDS)
+      {
+        messungen[messungen.size()-1].felder.push_back( 
                      unterscheideZiffernWorte_(zeilen_[i] ) );
-      messungen[messungen.size()-1].feld_spalten = zaehler_FIELDS;
+        messungen[messungen.size()-1].feld_spalten = zaehler_FIELDS;
+      }
       DBG_NUM_S( "zaehler_FIELDS " << zaehler_FIELDS << " Zeile " << i )
     }
 
@@ -970,6 +976,26 @@ CgatsFilter::cgats_korrigieren_               ()
     doLocked_m( setlocale(LC_NUMERIC,loc_alt) , NULL);
 
   //DBG_NUM_S (data_)
+
+  if(icc_debug >= 2)
+  {
+    for( unsigned i = 0; i < messungen.size(); ++i )
+    {
+      for( unsigned j = 0; j < messungen[i].kommentare.size(); ++j )
+        DBG_PROG_S( i<<" "<<j<<" "<<messungen[i]. kommentare[j] );
+      for( unsigned j = 0; j < messungen[i]. felder.size(); ++j )
+        for( unsigned k = 0; k < messungen[i]. felder[j].size(); ++k )
+          DBG_PROG_S( i<<" ["<<j<<"]["<<k<<"] "<<messungen[i]. felder[j][k] );
+#if 0
+      for( unsigned j = 0; j < messungen[i]. block.size(); ++j )
+        for( unsigned k = 0; k < messungen[i]. block[j].size(); ++k )
+          DBG_PROG_S( i<<" ["<<j<<"]["<<k<<"] "<<messungen[i]. block[j][k] );
+#endif
+      DBG_PROG_V( messungen[i]. felder.size() <<" "<< messungen[i]. feld_spalten )
+      DBG_PROG_V( messungen[i]. block.size() <<" "<< messungen[i]. block_zeilen )
+    }
+  }
+
   DBG_PROG_ENDE
   return data_;
 }

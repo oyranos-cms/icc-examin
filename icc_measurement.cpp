@@ -334,7 +334,7 @@ ICCmeasurement::leseTag (void)
 
     if(cgats.messungen[m].felder.size() != 1)
     {
-      WARN_S( "There are unadequate field deflarations: "
+      WARN_S( "There are unadequate field declarations: "
               << cgats.messungen[m].felder.size() )
       return;
     }

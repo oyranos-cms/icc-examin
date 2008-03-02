@@ -207,9 +207,7 @@ ICCexamin::farbenLese (int n,
 
     int item = pr->getTagIDByName("ncl2");
     std::vector<double> p_neu = pr->getTagNumbers (item, ICCtag::MATRIX);
-    int channels_n = pr->getColourChannelsCount();
-    unsigned int n_farben = p_neu.size()/(3+channels_n);
-
+    unsigned int n_farben = 0;
 
     names = pr->getTag(item).getText("ncl2_names");
 
@@ -218,6 +216,7 @@ ICCexamin::farbenLese (int n,
 
     if( !single )
     {
+      n_farben = p_neu.size()/3;
       icc_betrachter->DD_farbraum->zeig_punkte_als_messwerte = true;
       icc_betrachter->DD_farbraum->zeig_punkte_als_paare = true;
       if(icc_betrachter->DD_farbraum->zeig_punkte_als_paare)
@@ -233,7 +232,7 @@ ICCexamin::farbenLese (int n,
       DBG_PROG_S( "resize " << n_farben <<" "<<
               p_neu.size() / 3 <<" "<< p.size() / 3 / mult )
       p.resize( n_farben * 3 * mult );
-      f.resize( n_farben * channels_n * mult );
+      f.resize( n_farben * 4 * mult );
       neu = 1;
     }
 
@@ -273,7 +272,7 @@ ICCexamin::farbenLese (int n,
 
     DBG_NUM_V( f.size() )
     // ncl2 colours -> monitor colours
-    /*double *lab = new double [n_farben*mult*3],
+    double *lab = new double [n_farben*mult*3],
            *rgb=0;
     if(single) {
       for(unsigned i = 0; i < n_farben * 3; ++i)
@@ -286,37 +285,31 @@ ICCexamin::farbenLese (int n,
                                  intentGet(NULL),
                                  gamutwarn()?cmsFLAGS_GAMUTCHECK:0);
     DBG_NUM_V( n_farben )
-    if(!rgb)  WARN_S( _("RGB result not available") ) */
+    if(!rgb)  WARN_S( _("RGB result not available") )
     for(unsigned i = 0; i < n_farben; ++i)
     {
-      s = i*mult*channels_n;
+      s = i*mult*4;
       if(mult == 2 && !neu)
       {
-        for(int j = 0; j < channels_n; ++j)
-          f[s+channels_n + j] = f[s + j];
-/*        f[s+4] = f[s+0];
+        f[s+4] = f[s+0];
         f[s+5] = f[s+1];
         f[s+6] = f[s+2];
-        f[s+7] = 0.;*/
+        f[s+7] = 0.;
       }
-      for(int j = 0; j < channels_n; ++j)
-        f[s + j] = p_neu[3*n_farben + i*channels_n + j];
-/*      f[s+0] = rgb[i*3+0];
+      f[s+0] = rgb[i*3+0];
       f[s+1] = rgb[i*3+1];
       f[s+2] = rgb[i*3+2];
-      f[s+3] = 1.0;*/
+      f[s+3] = 1.0;
       if(mult == 2 && neu)
       {
-        for(int j = 0; j < channels_n; ++j)
-          f[s + channels_n + j] = f[i + j];
-/*        f[s+4] = f[s+0];
+        f[s+4] = f[s+0];
         f[s+5] = f[s+1];
         f[s+6] = f[s+2];
-        f[s+7] = f[s+3];*/
+        f[s+7] = f[s+3];
       }
     }
-    /*if(lab) delete [] lab;
-    if(rgb) delete [] rgb;*/
+    if(lab) delete [] lab;
+    if(rgb) delete [] rgb;
   }
 
   DBG_PROG_ENDE
@@ -336,8 +329,7 @@ ICCexamin::farbraum (int n)
   std::vector<double> p;
   std::vector<float>  f;
   std::vector<std::string> names;
-  oyNamedColours_s * namedColours = 0;
-  namedColours = icc_betrachter->DD_farbraum->namedColours();
+  icc_betrachter->DD_farbraum->herausNormalPunkte( p, f );
 
   DBG_PROG_V( n <<" "<< profile.size()<<" "<<profile.aktuell() )
   DBG_PROG_V( profile[n]->filename() )
@@ -374,7 +366,7 @@ ICCexamin::farbraum (int n)
     neues_netz = true;
 
   if(n == 0)
-    icc_betrachter->DD_farbraum->namedColours( namedColours );
+    icc_betrachter->DD_farbraum->hineinPunkte( p, f, namen, texte );
 
   do {
     icc_examin_ns::sleep(0.05);

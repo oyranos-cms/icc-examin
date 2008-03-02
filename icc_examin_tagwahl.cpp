@@ -387,9 +387,6 @@ selectTextsLine( int * line )
       std::vector<double> lab;
       double l[3];
       double c[32];
-      double XYZ[3];
-      oyNamedColour_s * colour = 0;
-      oyProfile_s * prof = 0;
 
       if(profile.profil()->tagBelongsToMeasurement(item) &&
          icc_examin->icc_betrachter->tag_browser->value() > 5)
@@ -402,25 +399,23 @@ selectTextsLine( int * line )
 
         if(lab.size() == 3)
         {
-          oyLab2XYZ( l, XYZ );
-
-          prof = oyProfileFromFile
-                                      ( profile.profil()->filename(), 0,NULL );
-          colour = oyNamedColourCreateWithName( NULL, name.c_str(), NULL,
-                                         c, XYZ, NULL,0, prof, 0 );
-          oyProfileRelease( &prof );
-
+          LabToOyLab( l, l, 1 );
+          oyNamedColour_s * colour = oyNamedColourCreate(
+                              l, c,
+                              profile.profil()->colorSpace(), 0, 
+                              0, 0, name.c_str(),
+                              0,0, profile.profil()->filename(), malloc, free );
           icc_examin->icc_betrachter->DD_farbraum->emphasizePoint( colour );
-          oyNamedColourRelease( &colour );
-
           // very simple approach, but enough to see the line
           icc_examin->icc_betrachter->inspekt_html->topline( name.c_str() );
 
           DBG_PROG_S( txt <<" "<< TagInfo[0] <<" "<< TagInfo[1] <<" L "<< lab[0] <<" a "<< lab[1] <<" b "<< lab[2] )
+          oyNamedColourRelease( &colour );
         } 
 
       } else if( profile.profil()->hasTagName("ncl2") &&
                  TagInfo[0] == "ncl2" ) {
+          oyNamedColour_s * colour = 0;
           if( icc_examin->icc_betrachter->tag_text->value() > 5 )
           {
             std::vector<std::string> names;
@@ -430,19 +425,14 @@ selectTextsLine( int * line )
             {
               for(unsigned int i = 0; i < 3; ++i) l[i] = lab[i];
               for(unsigned int i = 0; i < v.size() && i < 32; ++i) c[i] = v[i];
-
-              LabToCIELab( l, l, 1 );
-              oyLab2XYZ( l, XYZ );
-
-              prof = oyProfileFromFile
-                                      ( profile.profil()->filename(), 0,NULL );
-              colour = oyNamedColourCreateWithName( NULL, name.c_str(), NULL,
-                                         c, XYZ, NULL,0, prof, 0 );
-              oyProfileRelease( &prof );
-
+              LabToOyLab( l, l, 1 );
+              colour = oyNamedColourCreate(
+                              l, c,
+                              profile.profil()->colorSpace(), 0, 
+                              0, 0, name.c_str(),
+                              0,0, profile.profil()->filename(), malloc, free );
               icc_examin->icc_betrachter->DD_farbraum->emphasizePoint( colour );
               oyNamedColourRelease( &colour );
-
             } else
               icc_examin->icc_betrachter->DD_farbraum->emphasizePoint( NULL );
           } else {

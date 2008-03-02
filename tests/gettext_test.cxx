@@ -2,8 +2,6 @@
 
 int main(void)
 {
-  char * test = 0;
-  test = gettext("OK");
-  test = 0;
+  gettext("OK");
   return 0;
 }

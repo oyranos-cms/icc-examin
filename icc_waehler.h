@@ -68,8 +68,8 @@ class ICCwaehlerProfil : public Fl_Pack
                 ICCwaehlerProfil* obj = dynamic_cast<ICCwaehlerProfil*>(w->parent());
                 if(obj) 
                   obj->aktiv_knopf_cb_();
-                else WARN_S( "not a ICCwaehlerProfil class??" )
-                if(!w) WARN_S( "not a Fl_Widget class??" )
+                else WARN_S( _("kein ICCwaehlerProfil??") )
+                if(!w) WARN_S( _("kein Fl_Widget??") )
                 DBG_PROG_ENDE
               }
   Fl_Pack   *gruppe_;

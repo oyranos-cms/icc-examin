@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2007-09-23 09:32+0200\n"
+"POT-Creation-Date: 2007-09-20 12:23+0200\n"
 "PO-Revision-Date: 2005-08-13 17:35+0200\n"
 "Last-Translator: Kai-Uwe Behrmann\n"
 "Language-Team:  <de@li.org>\n"
@@ -81,7 +81,7 @@ msgstr ""
 msgid "Preview"
 msgstr ""
 
-#: fl_i18n.cxx:460 fl_i18n_example.cxx:32
+#: fl_i18n.cxx:460
 msgid "Save"
 msgstr ""
 
@@ -89,22 +89,10 @@ msgstr ""
 msgid "Show:"
 msgstr ""
 
-#: fl_i18n_example.cxx:14 fl_i18n_example.cxx:66 fl_i18n_example.cxx:70
+#: fl_i18n_example.cxx:14 fl_i18n_example.cxx:53 fl_i18n_example.cxx:56
 msgid "Hello, world!"
 msgstr "Saluto, Globo!"
 
-#: fl_i18n_example.cxx:30
-msgid "File"
-msgstr ""
-
-#: fl_i18n_example.cxx:31
-msgid "Open"
-msgstr ""
-
-#: fl_i18n_example.cxx:33
-msgid "Quit"
-msgstr ""
-
-#: fl_i18n_example.cxx:67
+#: fl_i18n_example.cxx:54
 msgid "fl_i18n_example"
 msgstr ""

@@ -53,7 +53,7 @@ icc_examin_ns::ThreadDaten::frei(int freigeben)
     {
       if(pth == pth_alt)
       {
-        DBG_PROG_S( dbgThreadId(pth) << " request from same thread " << zahl_ )
+        WARN_S( dbgThreadId(pth) << " request from same thread " << zahl_ )
         break;
       }
       icc_examin_ns::sleep(0.01);

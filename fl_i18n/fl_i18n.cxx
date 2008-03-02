@@ -481,7 +481,6 @@ threadGettext( const char* text)
   static pthread_mutex_t translation_mutex_         = PTHREAD_MUTEX_INITIALIZER;
   static Fl_Thread       translation_mutex_thread_  = (Fl_Thread)pthread_self();
   static int             translation_mutex_threads_ = 0;
-  static int len = 0;
   // im selben Zweig gesperrten Rat ausschliesen
   if( translation_mutex_thread_ != pthread_self() ||
       translation_mutex_threads_ == 0 )
@@ -505,9 +504,6 @@ threadGettext( const char* text)
      translation_mutex_thread_ = pthread_self() ;
 
   translation = gettext( text );
-
-  len = translation?strlen(translation):0;
-  ++len;
 
   --translation_mutex_threads_;
   if(!translation_mutex_threads_)

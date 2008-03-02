@@ -15,6 +15,4 @@ public:
 #include <FL/Fl_Double_Window.H>
 #include <FL/Fl_Button.H>
 extern MyBox *b;
-#include <FL/Fl_Menu_Bar.H>
-extern Fl_Menu_Item menu_[];
 #endif

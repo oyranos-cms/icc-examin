@@ -26,9 +26,6 @@ const char* iccReadInfo(char* filename) {
 TagBrowser::TagBrowser(int X,int Y,int W,int H,const char* start_info) : Fl_Hold_Browser(X,Y,W,H,start_info), X(X), Y(Y), W(W), H(H) {
 }
 
-TagBrowser::TagBrowser(int X,int Y,int W,int H) : Fl_Hold_Browser(X,Y,W,H), X(X), Y(Y), W(W), H(H) {
-}
-
 void TagBrowser::reopen_nicht() {
   DBG_PROG_START
   DBG_PROG_ENDE
@@ -58,10 +55,6 @@ TagTexts::TagTexts(int X,int Y,int W,int H,const char* start_info) : Fl_Hold_Bro
   cb = NULL;
 }
 
-TagTexts::TagTexts(int X,int Y,int W,int H) : Fl_Hold_Browser(X,Y,W,H), X(X), Y(Y), W(W), H(H) {
-  cb = NULL;
-}
-
 void TagTexts::hinein(std::string text, std::vector<int> patches) {
   DBG_PROG_START
   //show text from tag_browser
@@ -72,7 +65,7 @@ void TagTexts::hinein(std::string text, std::vector<int> patches) {
 
       std::vector <std::string> texte = icc_parser::zeilenNachVector( text );
       int odd = 1;
-      unsigned k = 0;
+      int k = 0;
       for (unsigned int i = 0; i < texte.size(); i++)
       {
         std::string text;
@@ -834,8 +827,8 @@ ard"));
     details->user_data((void*)(this));
     details->align(FL_ALIGN_TOP);
     details->when(FL_WHEN_RELEASE);
-    { Fl_Group* o = new Fl_Group(0, 0, 385, 520);
-      { menueleiste = new Fl_Menu_Bar(0, 0, 385, 25);
+    { Fl_Group* o = new Fl_Group(0, 0, 385, 520, _("all_invisible"));
+      { menueleiste = new Fl_Menu_Bar(0, 0, 385, 25, _("menuleiste_invisible"));
         menueleiste->align(FL_ALIGN_LEFT);
         menueleiste->when(3);
         { Fl_Menu_Item* o = &menu_menueleiste[19];
@@ -843,11 +836,11 @@ ard"));
         }
         menueleiste->menu(menu_menueleiste);
       } // Fl_Menu_Bar* menueleiste
-      { Fl_Group* o = new Fl_Group(0, 25, 385, 470);
+      { Fl_Group* o = new Fl_Group(0, 25, 385, 470, _("tags_group_invisible"));
         o->align(FL_ALIGN_LEFT);
-        { Fl_Group* o = new Fl_Group(0, 25, 385, 470);
+        { Fl_Group* o = new Fl_Group(0, 25, 385, 470, _("inspect_html_group_invisible"));
           o->align(FL_ALIGN_LEFT);
-          { Fl_Help_View* o = inspekt_html = new Fl_Help_View(0, 25, 385, 470);
+          { Fl_Help_View* o = inspekt_html = new Fl_Help_View(0, 25, 385, 470, _("Inspect_html_invisible"));
             inspekt_html->box(FL_FLAT_BOX);
             inspekt_html->color(FL_BACKGROUND_COLOR);
             inspekt_html->align(FL_ALIGN_LEFT);
@@ -856,9 +849,9 @@ ard"));
           } // Fl_Help_View* inspekt_html
           o->end();
         } // Fl_Group* o
-        { examin = new Fl_Tile(0, 25, 385, 470);
+        { examin = new Fl_Tile(0, 25, 385, 470, _("examin_invisible"));
           examin->align(FL_ALIGN_LEFT);
-          { tag_browser = new TagBrowser(0, 25, 385, 135);
+          { tag_browser = new TagBrowser(0, 25, 385, 135, _("tag_browser_invisible"));
             tag_browser->tooltip(_("Choose one profile tag"));
             tag_browser->box(FL_THIN_DOWN_BOX);
             tag_browser->color(FL_BACKGROUND_COLOR);
@@ -871,11 +864,11 @@ ard"));
             tag_browser->align(FL_ALIGN_LEFT);
             tag_browser->when(FL_WHEN_RELEASE_ALWAYS);
           } // TagBrowser* tag_browser
-          { ansichtsgruppe = new Fl_Group(0, 160, 385, 335);
+          { ansichtsgruppe = new Fl_Group(0, 160, 385, 335, _("ansichtsgruppe_invisible"));
             ansichtsgruppe->align(FL_ALIGN_LEFT);
-            { Fl_Group* o = tabellengruppe = new Fl_Group(0, 160, 385, 335);
+            { Fl_Group* o = tabellengruppe = new Fl_Group(0, 160, 385, 335, _("tabellengruppe_invisible"));
               tabellengruppe->align(FL_ALIGN_LEFT);
-              { Fl_Pack* o = new Fl_Pack(0, 160, 385, 335);
+              { Fl_Pack* o = new Fl_Pack(0, 160, 385, 335, _("tabellenpack_invisible"));
                 o->align(FL_ALIGN_LEFT);
                 { MftChoice* o = mft_choice = new MftChoice(0, 160, 385, 25, _("Chain selection"));
                 mft_choice->tooltip(_("Choose a attribute"));
@@ -892,9 +885,9 @@ ard"));
                 mft_choice->when(FL_WHEN_RELEASE);
                 o->show();
                 } // MftChoice* mft_choice
-                { Fl_Group* o = new Fl_Group(0, 185, 385, 310);
+                { Fl_Group* o = new Fl_Group(0, 185, 385, 310, _("tabellengruppe2_invisible"));
                 o->align(FL_ALIGN_LEFT);
-                { TagDrawings* o = mft_viewer = new TagDrawings(0, 185, 385, 310);
+                { TagDrawings* o = mft_viewer = new TagDrawings(0, 185, 385, 310, _("mft_viewer_invisible"));
                 mft_viewer->box(FL_NO_BOX);
                 mft_viewer->color(FL_BACKGROUND_COLOR);
                 mft_viewer->selection_color(FL_BACKGROUND_COLOR);
@@ -906,7 +899,7 @@ ard"));
                 mft_viewer->when(FL_WHEN_RELEASE);
                 o->show();
                 } // TagDrawings* mft_viewer
-                { TagTexts* o = mft_text = new TagTexts(0, 185, 385, 310);
+                { TagTexts* o = mft_text = new TagTexts(0, 185, 385, 310, _("mft_text_invisible"));
                 mft_text->box(FL_FLAT_BOX);
                 mft_text->color(FL_BACKGROUND_COLOR);
                 mft_text->selection_color(FL_SELECTION_COLOR);
@@ -919,13 +912,13 @@ ard"));
                 mft_text->when(FL_WHEN_RELEASE_ALWAYS);
                 o->show();
                 } // TagTexts* mft_text
-                { mft_gl_group = new Fl_Group(0, 185, 385, 310);
+                { mft_gl_group = new Fl_Group(0, 185, 385, 310, _("mft_gl_group_invisible"));
                 mft_gl_group->align(FL_ALIGN_LEFT);
-                { Fl_Box* o = new Fl_Box(0, 185, 385, 310);
+                { Fl_Box* o = new Fl_Box(0, 185, 385, 310, _("mft_gl_box_invisible"));
                 o->box(FL_FLAT_BOX);
                 o->align(FL_ALIGN_LEFT);
                 } // Fl_Box* o
-                { GL_Ansicht* o = mft_gl = new GL_Ansicht(0, 185, 360, 310);
+                { GL_Ansicht* o = mft_gl = new GL_Ansicht(0, 185, 360, 310, _("mft_gl_invisible"));
                 mft_gl->box(FL_NO_BOX);
                 mft_gl->color(FL_BACKGROUND_COLOR);
                 mft_gl->selection_color(FL_BACKGROUND_COLOR);
@@ -959,15 +952,15 @@ ard"));
               o->show();
               tabellengruppe->end();
             } // Fl_Group* tabellengruppe
-            { twoD_pack = new Fl_Pack(0, 160, 385, 335);
+            { twoD_pack = new Fl_Pack(0, 160, 385, 335, _("tag_pack_invisible"));
               twoD_pack->align(FL_ALIGN_LEFT);
-              { Fl_Box* o = new Fl_Box(0, 160, 385, 5);
+              { Fl_Box* o = new Fl_Box(0, 160, 385, 5, _("tag_box_invisible"));
                 o->box(FL_UP_BOX);
                 o->align(FL_ALIGN_LEFT);
               } // Fl_Box* o
-              { Fl_Group* o = new Fl_Group(0, 165, 385, 330);
+              { Fl_Group* o = new Fl_Group(0, 165, 385, 330, _("tag_group_invisible"));
                 o->align(FL_ALIGN_LEFT);
-                { TagTexts* o = tag_text = new TagTexts(0, 165, 385, 330);
+                { TagTexts* o = tag_text = new TagTexts(0, 165, 385, 330, _(" tag_text_invisible"));
                 tag_text->box(FL_FLAT_BOX);
                 tag_text->color(FL_BACKGROUND_COLOR);
                 tag_text->selection_color(FL_SELECTION_COLOR);
@@ -980,7 +973,7 @@ ard"));
                 tag_text->when(FL_WHEN_RELEASE_ALWAYS);
                 o->show();
                 } // TagTexts* tag_text
-                { TagDrawings* o = tag_viewer = new TagDrawings(0, 165, 385, 330);
+                { TagDrawings* o = tag_viewer = new TagDrawings(0, 165, 385, 330, _("tag_viewer_invisible"));
                 tag_viewer->box(FL_NO_BOX);
                 tag_viewer->color(FL_BACKGROUND_COLOR);
                 tag_viewer->selection_color(FL_BACKGROUND_COLOR);
@@ -1005,7 +998,7 @@ ard"));
         o->end();
         Fl_Group::current()->resizable(o);
       } // Fl_Group* o
-      { Fl_Group* o = new Fl_Group(0, 495, 385, 25);
+      { Fl_Group* o = new Fl_Group(0, 495, 385, 25, _("status_group_invisible"));
         o->align(FL_ALIGN_LEFT);
         { box_stat = new Fl_Box(0, 495, 385, 25, _("..."));
           box_stat->align(FL_ALIGN_LEFT|FL_ALIGN_INSIDE);
@@ -1021,7 +1014,7 @@ ard"));
       } // Fl_Group* o
       o->end();
     } // Fl_Group* o
-    { My_Fl_Box* o = no_box = new My_Fl_Box(0, 0, 385, 520);
+    { My_Fl_Box* o = no_box = new My_Fl_Box(0, 0, 385, 520, _("no_box_invisible"));
       no_box->box(FL_NO_BOX);
       no_box->color(FL_BACKGROUND_COLOR);
       no_box->selection_color(FL_BACKGROUND_COLOR);
@@ -1048,7 +1041,7 @@ ard"));
   { // plastic sets a background image, for others unset a transparent box
     const char* style = Fl::scheme();
     if(!style || (style && strstr(style,"plastic") == 0))
-      box_stat->box(FL_BORDER_BOX);
+      box_stat->box(FL_FLAT_BOX);
   }
   DBG_PROG
   DBG_PROG_ENDE

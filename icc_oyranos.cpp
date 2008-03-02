@@ -1262,7 +1262,7 @@ Oyranos::wandelProfilNachLabUndZurueck(double *lab, // 0.0 - 1.0
       hLab  = cmsCreateLabProfile(cmsD50_xyY());
       if(!hLab) { WARN_S( "hLab Profil not opened" ); return 1; }
 
-      kanaele = oyColourSpaceGetChannelCountFromSig( cmsGetColorSpace( hProfil ) );
+      kanaele = _cmsChannelsOf( cmsGetColorSpace( hProfil ) );
       format = COLORSPACE_SH(PT_ANY) |
                CHANNELS_SH(kanaele) |
                BYTES_SH(0); // lcms_bytes;
@@ -1360,7 +1360,12 @@ Oyranos::wandelLabNachBildschirmFarben(double *Lab_Speicher, // 0.0 - 1.0
 #define OYRANOS_VERSION 0
 #endif
 #if OYRANOS_VERSION > 106
-    static  char digest[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}, dig[16];
+    static
+#if OYRANOS_VERSION > 107
+           unsigned
+#endif
+                     char digest[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+                          dig[16];
     if(block && groesse)
       oyProfileGetMD5(block, groesse, dig);
 #endif

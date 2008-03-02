@@ -22,19 +22,6 @@ MyBox::MyBox( int x, int y, int w, int h ): Fl_Box(x,y,w,h) {
 
 MyBox *b=(MyBox *)0;
 
-static void cb_Quit(Fl_Menu_*, void*) {
-  b->window()->hide();
-}
-
-Fl_Menu_Item menu_[] = {
- {_("File"), 0,  0, 0, 64, FL_NORMAL_LABEL, 0, 14, 0},
- {_("Open"), 0,  0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
- {_("Save"), 0,  0, 0, 128, FL_NORMAL_LABEL, 0, 14, 0},
- {_("Quit"), 0,  (Fl_Callback*)cb_Quit, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
- {0,0,0,0,0,0,0,0,0},
- {0,0,0,0,0,0,0,0,0}
-};
-
 int main(int argc, char **argv) {
   Fl_Double_Window* w;
   const char *locale_paths[1] = {"./po"};
@@ -64,11 +51,10 @@ int main(int argc, char **argv) {
     printf("Locale not found in %s\n", locale_paths[0]);
 
   printf("%s\n",_("Hello, world!"));
-  { Fl_Double_Window* o = new Fl_Double_Window(235, 170, _("fl_i18n_example"));
+  { Fl_Double_Window* o = new Fl_Double_Window(235, 130, _("fl_i18n_example"));
     w = o;
-    o->align(FL_ALIGN_CLIP|FL_ALIGN_INSIDE);
-    new Fl_Button(25, 96, 190, 69, _("Hello, world!"));
-    { MyBox* o = b = new MyBox(0, 27, 235, 66);
+    new Fl_Button(25, 61, 190, 69, _("Hello, world!"));
+    { MyBox* o = b = new MyBox(25, 2, 190, 58);
       o->box(FL_FLAT_BOX);
       o->color(FL_BACKGROUND_COLOR);
       o->selection_color(FL_BACKGROUND_COLOR);
@@ -78,9 +64,6 @@ int main(int argc, char **argv) {
       o->labelcolor(FL_FOREGROUND_COLOR);
       o->align(FL_ALIGN_CENTER);
       o->when(FL_WHEN_RELEASE);
-    }
-    { Fl_Menu_Bar* o = new Fl_Menu_Bar(0, 0, 235, 25);
-      o->menu(menu_);
     }
     o->end();
   }
