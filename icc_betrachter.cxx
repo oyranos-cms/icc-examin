@@ -304,6 +304,7 @@ void MftChoice::auswahlCb(void) {
 
   icc_examin->waehleMft( mw->value() );
 
+  DBG_PROG
   DBG_PROG_ENDE
 }
 
@@ -599,6 +600,18 @@ Fl_Double_Window* ICCfltkBetrachter::init() {
           o->align(FL_ALIGN_CENTER|FL_ALIGN_INSIDE);
           o->hide();
         }
+        { GL_Ansicht* o = DD_histogram = new GL_Ansicht(0, 25, 385, 470);
+          o->box(FL_NO_BOX);
+          o->color(FL_BACKGROUND_COLOR);
+          o->selection_color(FL_BACKGROUND_COLOR);
+          o->labeltype(FL_NORMAL_LABEL);
+          o->labelfont(0);
+          o->labelsize(14);
+          o->labelcolor(FL_BLACK);
+          o->align(FL_ALIGN_CENTER);
+          o->when(FL_WHEN_RELEASE);
+          o->hide();
+        }
         { TagBrowser* o = tag_browser = new TagBrowser(0, 25, 385, 135, "Bitte w\344hlen Sie ein Profilmerkmal aus");
           o->box(FL_NO_BOX);
           o->color(FL_BACKGROUND_COLOR);
@@ -696,18 +709,6 @@ Fl_Double_Window* ICCfltkBetrachter::init() {
             o->show();
           }
           o->end();
-        }
-        { GL_Ansicht* o = DD_histogram = new GL_Ansicht(0, 25, 385, 470);
-          o->box(FL_NO_BOX);
-          o->color(FL_BACKGROUND_COLOR);
-          o->selection_color(FL_BACKGROUND_COLOR);
-          o->labeltype(FL_NORMAL_LABEL);
-          o->labelfont(0);
-          o->labelsize(14);
-          o->labelcolor(FL_BLACK);
-          o->align(FL_ALIGN_CENTER);
-          o->when(FL_WHEN_RELEASE);
-          o->hide();
         }
         o->end();
         Fl_Group::current()->resizable(o);

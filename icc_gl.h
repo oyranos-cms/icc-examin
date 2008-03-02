@@ -100,9 +100,11 @@ public:
   void verstecken();
   void stop() {if (!first_) { agvSwitchMoveMode (Agviewer::AGV_STOP); } }
 
-  char* kanalName() {return (char*)nach_farb_namen_[kanal].c_str(); }
+  char* kanalName() { if ((int)nach_farb_namen_.size() > kanal) 
+                        return (char*)nach_farb_namen_[kanal].c_str();
+                      else  return _("Gibts nicht"); }
   char* kanalName(unsigned int i) { if (nach_farb_namen_.size()>i) 
-                                      return (char*)nach_farb_namen_[i].c_str();  
+                                      return (char*)nach_farb_namen_[i].c_str();
                                     else  return _("Gibts nicht"); }
   unsigned int kanaele() {return nach_farb_namen_.size(); }
 };

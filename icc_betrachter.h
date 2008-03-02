@@ -130,6 +130,7 @@ private:
 public:
   Fl_Tile *examin;
   Fl_Help_View *inspekt_html;
+  GL_Ansicht *DD_histogram;
   TagBrowser *tag_browser;
 private:
   inline void cb_tag_browser_i(TagBrowser*, void*);
@@ -147,7 +148,6 @@ public:
   GL_Ansicht *mft_gl;
   TagDrawings *tag_viewer;
   TagTexts *tag_text;
-  GL_Ansicht *DD_histogram;
   Fl_Box *box_stat;
   Fl_Progress *load_progress;
   void run();
