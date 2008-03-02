@@ -234,7 +234,7 @@ static FACE *createOtherFace(FACE *face,
 
    /* copy original face info but with new vertex list */
    newFace= allocFace(v2,&face->plane);
-   newFace->id = face->id;
+   newFace->group = face->group;
 
    return(newFace);
 } /* createOtherFace() */

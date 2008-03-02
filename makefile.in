@@ -59,6 +59,7 @@ CPP_HEADERS = \
 	icc_gl.h \
 	icc_helfer.h \
 	icc_helfer_fltk.h \
+	icc_helfer_time.h \
 	icc_helfer_ui.h \
 	icc_helfer_x.h \
 	icc_info.h \
@@ -174,6 +175,8 @@ DOKU = \
 	AUTHORS \
 	INSTALL \
 	icc_examin.desktop \
+	x-cgats.desktop \
+	x-icc.desktop \
 	icc_examin.png \
 	icc_examin.xpm \
 	icc_examin.spec.in \
@@ -496,6 +499,8 @@ install_global:
 	$(INSTALL) -m 644 $(FONT) $(DESTDIR)$(datadir)/fonts/$(FONT)
 	mkdir -p $(DESTDIR)$(desktopdir)
 	$(INSTALL) -m 644 icc_examin.desktop $(DESTDIR)$(desktopdir)/icc_examin.desktop
+	$(INSTALL) -m 644 x-icc.desktop $(DESTDIR)$(desktopdir)/x-icc.desktop
+	$(INSTALL) -m 644 x-cgats.desktop $(DESTDIR)$(desktopdir)/x-cgats.desktop
 	mkdir -p $(DESTDIR)$(datadir)/mime/packages/
 	$(INSTALL) -m 644 icc.xml $(DESTDIR)$(datadir)/mime/packages/icc.xml
 	mkdir -p $(DESTDIR)$(pixmapdir)
@@ -519,6 +524,8 @@ uninstall:
 	  $(RM) $(DESTDIR)$(CP_DIR)/$(CINEPAINT); \
 	fi
 	$(RM) $(DESTDIR)$(desktopdir)/icc_examin.desktop
+	$(RM) $(DESTDIR)$(desktopdir)/x-cgats.desktop
+	$(RM) $(DESTDIR)$(desktopdir)/x-icc.desktop
 	$(RM) $(DESTDIR)$(datadir)/mime/packages/icc.xml
 	$(RM) $(DESTDIR)$(pixmapdir)/icc_examin.png
 	$(RM) $(DESTDIR)$(datadir)/fonts/$(FONT)

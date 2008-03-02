@@ -34,6 +34,7 @@
 #include <map>
 #include "icc_helfer.h"
 #include "icc_thread_daten.h"
+#include "icc_oyranos_extern.h"
 
 /** a point in space with calculated colour */
 struct ICCnetzPunkt {
@@ -184,6 +185,15 @@ struct ICCnetz {
 
 icc_examin_ns::ICCThreadList<ICCnetz> extrahiereNetzAusVRML (std::string &vrml);
 std::string netzNachVRML( icc_examin_ns::ICCThreadList<ICCnetz> & netze );
+std::string    writeTextArrows       ( double              text_colour,
+                                       double              arrow_colour );
+std::string    vrmlScene          ( icc_examin_ns::ICCThreadList<ICCnetz> netze,
+                                       oyStructList_s    * colours,
+                                       double              text_colour,
+                                       double              arrow_colour,
+                                       double              background_colour,
+                                       double              diameter );
+std::string    writeVRMLbody         ( std::string         content );
 
 
 

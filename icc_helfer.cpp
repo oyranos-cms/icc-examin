@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2007  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2008  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -384,7 +384,7 @@ getChannelNamesShort (icColorSpaceSignature color)
 }
 
 std::vector<std::string>
-getChannelNames (icColorSpaceSignature color)
+getChannelNames (icColorSpaceSignature sig)
 {
   std::vector<std::string> texte;
   std::stringstream s;
@@ -393,7 +393,7 @@ getChannelNames (icColorSpaceSignature color)
                          texte.push_back (s.str()); s.str(""); \
                        }
 
-  switch (color) {
+  switch (sig) {
     case icSigXYZData: texte.push_back (_("CIE X"));
                        texte.push_back (_("CIE Y (Luminance)"));
                        texte.push_back (_("CIE Z")); break;
@@ -448,8 +448,10 @@ getChannelNames (icColorSpaceSignature color)
 
 
 std::string
-getDeviceClassName (icProfileClassSignature deviceClass)
+getDeviceClassName (icProfileClassSignature sig)
 {
+  std::string text = oyICCDeviceClassDescription( sig );
+#if 0
   std::string text;
 
   switch (deviceClass)
@@ -470,14 +472,16 @@ getDeviceClassName (icProfileClassSignature deviceClass)
                break;
              }
   }
+#endif
   return text;
 }
 
 std::string
 getPlatformName (icPlatformSignature platform)
 {
-  std::string text;
+  std::string text = oyICCPlatformDescription( platform );
 
+#if 0
   switch (platform)
   {
     case icSigMacintosh: text =_("Macintosh"); break;
@@ -494,14 +498,16 @@ getPlatformName (icPlatformSignature platform)
                break;
              }
   }
+#endif
   return text;
 }
 
 std::string
 getSigTagName               ( icTagSignature  sig )
 {
-  std::string text;
+  std::string text = oyICCTagName( sig );
 
+#if 0
   switch (sig) {
     case icSigAToB0Tag: text = "A2B0"; break;
     case icSigAToB1Tag: text = "A2B1"; break;
@@ -566,6 +572,7 @@ getSigTagName               ( icTagSignature  sig )
                break;
              }
   }
+#endif
 # ifdef DEBUG_ICCTAG_
   char c[5] = "clrt";
   long* l = (long*) &c[0];
@@ -577,6 +584,9 @@ getSigTagName               ( icTagSignature  sig )
 std::string
 getSigTagDescription                            ( icTagSignature  sig )
 {
+  std::string text = oyICCTagDescription( sig );
+
+#if 0
   std::string text = _("Description");
 
   switch (sig) {
@@ -642,12 +652,15 @@ getSigTagDescription                            ( icTagSignature  sig )
                break;
              }
   }
+#endif
   return text;
 }
 
 std::string
 getSigTypeName               ( icTagTypeSignature  sig )
 {
+  std::string text = oyICCTagTypeName( sig );
+#if 0
   std::string text;
 
   switch (sig) {
@@ -688,12 +701,15 @@ getSigTypeName               ( icTagTypeSignature  sig )
                break;
              }
   }
+#endif
   return text;
 }
 
 std::string
 getSigTechnology             ( icTechnologySignature sig )
 {
+  std::string text = oyICCTechnologyDescription( sig );
+#if 0
   std::string text;
   switch (sig) {
     case icSigDigitalCamera: text = _("Digital camera"); break; //dcam
@@ -728,12 +744,15 @@ getSigTechnology             ( icTechnologySignature sig )
                break;
              }
   }
+#endif
   return text;
 }
 
 std::string
-getChromaticityColorantType( int type )
+getChromaticityColorantType( int sig )
 {
+  std::string text = oyICCChromaticityColorantDescription( sig );
+#if 0
   std::string text;
   switch (type) {
     case 0: text = ""; break;
@@ -744,12 +763,15 @@ getChromaticityColorantType( int type )
 
     default: DBG text = _("???"); break;
   }
+#endif
   return text;
 }
 
 std::string
 getIlluminant             ( icIlluminant sig )
 {
+  std::string text = oyICCIlluminantDescription( sig );
+#if 0
   std::string text;
   switch (sig) {
     case icIlluminantUnknown: text = _("Illuminant unknown"); break;
@@ -765,12 +787,15 @@ getIlluminant             ( icIlluminant sig )
 
     default: text = _("???"); break;
   }
+#endif
   return text;
 }
 
 std::string
 getStandardObserver             ( icStandardObserver sig )
 {
+  std::string text = oyICCStandardObserverDescription( sig );
+#if 0
   std::string text;
   switch (sig) {
     case icStdObsUnknown: text = _("unknown"); break;
@@ -782,12 +807,15 @@ getStandardObserver             ( icStandardObserver sig )
 
     default: text = _("???"); break;
   }
+#endif
   return text;
 }
 
 std::string
 getMeasurementGeometry             ( icMeasurementGeometry sig )
 {
+  std::string text = oyICCMeasurementGeometryDescription( sig );
+#if 0
   std::string text;
   switch (sig) {
     case icGeometryUnknown: text = _("unknown"); break;
@@ -797,12 +825,15 @@ getMeasurementGeometry             ( icMeasurementGeometry sig )
 
     default: text = _("???"); break;
   }
+#endif
   return text;
 }
 
 std::string
 getMeasurementFlare             ( icMeasurementFlare sig )
 {
+  std::string text = oyICCMeasurementFlareDescription( sig );
+#if 0
   std::string text;
   switch (sig) {
     case icFlare0: text = _("0"); break;
@@ -811,6 +842,7 @@ getMeasurementFlare             ( icMeasurementFlare sig )
 
     default: text = _("???"); break;
   }
+#endif
   return text;
 }
 
@@ -1292,10 +1324,10 @@ setI18N( const char *exename )
       locale_paths[num_paths] = bdr.c_str(); ++num_paths;
     }
   }
-  locale_paths[num_paths] = LOCALEDIR; ++num_paths;
+  locale_paths[num_paths] = ICCEXAMIN_LOCALEDIR; ++num_paths;
   locale_paths[num_paths] = SRC_LOCALEDIR; ++num_paths;
 # else
-  locale_paths[num_paths] = LOCALEDIR; ++num_paths;
+  locale_paths[num_paths] = ICCEXAMIN_LOCALEDIR; ++num_paths;
 
   DBG_NUM_V( exename )
 

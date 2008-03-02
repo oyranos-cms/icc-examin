@@ -664,6 +664,7 @@ ICCexaminIO::berichtSpeichern (void)
     datei = dateiwahl->value(); DBG_PROG
   std::string titel = dateiwahl->label(); DBG_PROG
 
+  dateiwahl->callback(0);
   dateiwahl->filter(_("HTML Documents (*.htm*)")); DBG_PROG
 # ifdef HAVE_FLU
   dateiwahl->cd(".");
@@ -723,7 +724,7 @@ ICCexaminIO::gamutSpeichern (IccGamutFormat format)
   {   DBG_PROG
     if(format == ICC_ABSTRACT) {
       dateiname.replace (pos, 5, "_proof.icc"); DBG_NUM_S( "_proof.icc gesetzt")
-    } else if(format == ICC_VRML) {
+    } else if(format == ICC_VRML || format == GL_VRML) {
       dateiname.replace (pos, 5, ".wrl"); DBG_NUM_S( ".wrl gesetzt")
     }
   } DBG_PROG_V( dateiname )
@@ -742,11 +743,12 @@ ICCexaminIO::gamutSpeichern (IccGamutFormat format)
   if(format == ICC_ABSTRACT) {
     dateiwahl->filter(_("ICC colour profiles (*.ic*)")); DBG_PROG
     dateiwahl->label(_("Save Gamut as Profile")); DBG_PROG
-  } else if(format == ICC_VRML) {
+  } else if(format == ICC_VRML || format == GL_VRML) {
     dateiwahl->filter(_("VRML Files (*.wrl)")); DBG_PROG
     dateiwahl->label(_("Save Gamut as VRML")); DBG_PROG
   }
   dateiwahl->value(dateiname.c_str()); DBG_PROG
+  dateiwahl->callback(0);
 
   dateiwahl->show(); DBG_PROG
   dateiwahl->type(MyFl_File_Chooser::SINGLE | MyFl_File_Chooser::CREATE);
@@ -791,12 +793,31 @@ ICCexaminIO::gamutSpeichern (IccGamutFormat format)
     // save
     saveMemToFile ( dateiname.c_str(), (const char*)speicher, speicher.size() );
     speicher.clear();
-  } else if(format == ICC_VRML) {
+  } else if(format == ICC_VRML || format == GL_VRML) {
     std::string vrml;
-    vrml = icc_oyranos.vrmlVonProfil ( *profile.profil(),
-                                       icc_examin->intentGet(NULL),
-                                       icc_examin->bpc(),
-                                       icc_examin->nativeGamut() );
+    if(format == ICC_VRML)
+      vrml = icc_oyranos.vrmlVonProfil ( *profile.profil(),
+                                         icc_examin->intentGet(NULL),
+                                         icc_examin->bpc(),
+                                         icc_examin->nativeGamut() );
+    else
+    if(format == GL_VRML)
+    {
+      double text_colour = -1., arrow_colour = -1.;
+      icc_examin->icc_betrachter->DD_farbraum->frei(false);
+      if(icc_examin->icc_betrachter->DD_farbraum->zeige_helfer)
+      {
+        text_colour = icc_examin->icc_betrachter->DD_farbraum->textfarbe[0];
+        arrow_colour = icc_examin->icc_betrachter->DD_farbraum->pfeilfarbe[0];
+      }
+      vrml = vrmlScene( icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze,
+                    icc_examin->icc_betrachter->DD_farbraum->namedColours(),
+                    text_colour, arrow_colour,
+                    icc_examin->icc_betrachter->DD_farbraum->hintergrundfarbe,
+                    icc_examin->icc_betrachter->DD_farbraum->pointRadius() );
+      icc_examin->icc_betrachter->DD_farbraum->frei(true);
+    }
+
     // save
     saveMemToFile ( dateiname.c_str(), vrml.c_str(), vrml.size() );
   }

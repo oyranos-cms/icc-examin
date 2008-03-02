@@ -1,40 +1,48 @@
-Building from Sources:
+Supported operating systems:
+If you run a posix compatible *nix systems, including *BSD, Linux, Solaris and
+osX chances are not bad that the sources will compile.
+There is no Windows support currently. Sorry.
 
-ICC Examin depends on following libraries:
 
-  # FLTK version >= 1.1.4
+Requirements:
+  o FLTK version >= 1.1.4
     you need to configure fltk with several options enabled
-    --enable-threads is needed for threads support in ICC Examin
-    --enable-xft is ok for antialiased fonts
-    --enable-debug is generally a good choice
-    --enable-shared is sometimes a good choice for smaller executables
-  # lcms version >= 1.14; 1.15 is recommended due to CGATS parsing is better
-  # FLU version >= 2.14 for a convenient file browser (optionally)
-  # FTGL version >= 2.1.2 for a text inside OpenGL (optionally)
-  # argyll for 3D gamut visualisations (optionally, external, binaries see above)
-  # Oyranos for setting options (optionally)
-  # for osX only (since version 0.30) install GNU gettext (and libiconv?)
+    --enable-threads  is needed for threads support in ICC Examin
+    --enable-xft      is ok for antialiased fonts
+    --enable-debug    is generally a good choice
+    --enable-shared   is sometimes a good choice for smaller executables
+  o lcms version >= 1.14
+  o Oyranos for colour management
+  o FTGL version >= 2.1.2 for showing text inside OpenGL (optionally)
+  o Argyll for a special mode of 3D gamut visualisations (optionally, external
+    iccgamut)
+  o GNU gettext (and libiconv?) for osX only
 
-For building unpack the tgz file and type #make; make install.
-Optionally you can specifiy an other than the default prefix /opt/local by typing:
 
-    #configure --prefix=/what/you/like
-    #make
-    #make install (optionally; may need root rights)
-    #make rpm (linux)
-    #make bundle/package (osX)
+Manual steps:
+For building decompress and unpack the source archive file and run
+  # configure 
+  # make
+  # make install         (optionally; this may need administration rights)
+
+    special binary package targets are
+  # make rpm             (linux)
+  # make bundle/package  (osX)
 
     to uninstall
-    #make uninstall
-    #make unbundle (osX)
+  # make uninstall
+  # make unbundle        (osX)
 
-Install Oyranos before ICC Examin to get Oyranos support compiled in ICC Examin. Oyranos is available from my site too www.behrmann.name
-
-If a package is not found include the configuration scripts, like fltk-config in you executeable path with
-  PATH=$PATH;:/to/my/installation/bin
-As well the pkgconfig file like lcms.pc needs to be configured with the PKG_CONFIG_PATH variable like follows (bash):
-  PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/to/my/installation/lib/pkgconfig
+    show all available configure options
+  # configure --help
 
 
-Source code packages need further compiling and installing to work as an executable program. osX should work but without Oyranos. There is no windows support currently. Sorry.
+Hints:
+If a package is not found, include the path to the configuration scripts, 
+like the one to fltk-config in your executable path with
+  # PATH=$PATH:/to/my/installation/bin
+As well the pkgconfig file like lcms.pc needs often to be configured with the 
+PKG_CONFIG_PATH variable like follows (bash):
+  # PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/to/my/installation/lib/pkgconfig
+
 

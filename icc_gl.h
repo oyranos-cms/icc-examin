@@ -66,7 +66,7 @@ class GL_Ansicht : public Fl_Gl_Window,
   std::vector<std::vector<std::vector<std::vector<double> > > > tabelle_;
   std::vector<std::string>nach_farb_namen_;
   std::vector<std::string>von_farb_namen_;
-  oyNamedColours_s * colours_;
+  oyStructList_s * colours_;
   oyNamedColour_s  * epoint_;            //!< emphasize point
 public:
   oyNamedColour_s  * mouse_3D_hit;       //!< a point recently hit by the mouse
@@ -178,8 +178,8 @@ public:
                      std::vector<std::string> &farb_namen_, //!< per point
                      std::vector<std::string> &achsNamen);  //!< 3* */
   //TODO: Punkte auf oyNamedColour_s umstellen
-  void              namedColours (oyNamedColours_s * colours);
-  oyNamedColours_s* namedColours ();
+  void              namedColours (oyStructList_s * colours);
+  oyStructList_s *  namedColours ();
   void              namedColoursRelease ();
   void emphasizePoint (oyNamedColour_s  * colour);  //!< a named colour
   void              clearNet ();
@@ -196,6 +196,7 @@ public:
   int  punktform;           //!< MENU_KUGEL MENU_WUERFEL MENU_STERN
   int  punktfarbe;          //!< MENU_GRAU MENU_FARBIG MENU_KONTRASTREICH
   int  punktgroesse;        //!< size in pixel
+  double pointRadius();     //*< estimated size of a point
 
   float hintergrundfarbe;   //!< background colour / colour sheme
   float textfarbe[3];

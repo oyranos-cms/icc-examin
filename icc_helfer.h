@@ -32,6 +32,7 @@
 
 #include "icc_utils.h"
 #include "icc_icc.h"
+#include "icc_helfer_time.h"
 
 #include <string>
 #include <vector>
@@ -122,9 +123,6 @@ namespace icc_examin_ns {
   // Fl_Thread's lock / release
   void lock(const char *file, int line);
   void unlock(void *widget, const char *file, int line);
-  double zeitSekunden();
-  time_t zeit();
-  time_t zeitProSekunde();
   void wait (double sekunden, int update_ui);
   extern int  (*waitFunc)(void);
 #if APPLE

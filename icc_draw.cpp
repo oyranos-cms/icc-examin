@@ -285,6 +285,7 @@ TagDrawings::drawCieShoe_ ( int repeated)
         XYZ.Z = 1 - (XYZ.X +  XYZ.Y);
 
         // draw background (lcms)
+        if(xform)
         cmsDoTransform(xform, &XYZ, RGB, 1);
 
         fl_color (fl_rgb_color (RGB[0],RGB[1],RGB[2]));
@@ -320,6 +321,7 @@ TagDrawings::drawCieShoe_ ( int repeated)
       }
     }
     // draw background (lcms)
+    if(xform)
     cmsDoTransform(xform, XYZ_speicher, RGB_speicher, n_pixel);
     fl_draw_image(RGB_speicher, xNachBild(min_x), yNachBild(0.85), wi, hi, 3, 0);
   }
@@ -496,6 +498,7 @@ TagDrawings::drawCieShoe_ ( int repeated)
         XYZ.Z = punkte[i*3+2]; //1 - ( punkte[i][0] +  punkte[i][1] );
 
         // convert colour for displaying (lcms)
+        if(xform)
         cmsDoTransform (xform, &XYZ, RGB, 1);
 
         double _XYZ[3] = {XYZ.X, XYZ.Y, XYZ.Z};

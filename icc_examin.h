@@ -52,7 +52,8 @@ class  icc_examin_ns::EinModell;
 namespace icc_examin_ns {
     enum IccGamutFormat {
       ICC_ABSTRACT,
-      ICC_VRML
+      ICC_VRML,
+      GL_VRML
     };
 }
 
@@ -146,6 +147,7 @@ class ICCexamin : public icc_examin_ns::Beobachter,
     void        statusFarbe(double & CIEL, double & CIEa, double & CIEb);
     std::string detaillabel;
     void        setzeFensterTitel();
+    int         collect_changing_points;       //*< add moving points to olders
   public:
     int  tag_nr () { return _item; }
     int  mft_nr () { return _mft_item; }

@@ -224,13 +224,20 @@ ICCexamin::waehleTag (int item)
       icc_betrachterNeuzeichnen(icc_betrachter->tag_text); */
     } else {
       frei(false);
-      std::vector<std::string> texte = profile.profil()->getTagText (item);
+      profile.frei(false);
+      ICCprofile * pr = profile.profil();
+      std::vector<std::string> texte;
+      if(pr)
+        texte = pr->getTagText (item);
+      profile.frei(true);
       if(texte.size())
       {
         if(TagInfo[0] == "ncl2")
         {
+            profile.frei(false);
             ICCprofile * pr = profile.profil();
             std::vector<double> p_neu = pr->getTagNumbers(item, ICCtag::MATRIX);
+            profile.frei(true);
             int n = p_neu.size()/3;
 
             std::vector<int> patches;
@@ -293,7 +300,9 @@ ICCexamin::waehleMft (int item)
       icc_betrachterNeuzeichnen(icc_betrachter->mft_text);
     } break;
   case 1: // matrix
+    profile.frei(false);
     zahlen = profile.profil()->getTagNumbers (icc_betrachter->tag_nummer, ICCtag::MATRIX);
+    profile.frei(true);
     DBG_PROG_S("show numbers in mft_text")
     assert (9 == zahlen.size());
     s << endl <<
@@ -305,8 +314,10 @@ ICCexamin::waehleMft (int item)
     break;
   case 2: // input curves
     DBG_PROG_S("show curves")
+    profile.frei(false);
     kurven[MFT_VIEWER] =  profile.profil()->getTagCurves (icc_betrachter->tag_nummer, ICCtag::CURVE_IN);
     texte[MFT_VIEWER] = profile.profil()->getTagChannelNames (icc_betrachter->tag_nummer, ICCtag::CURVE_IN);
+    profile.frei(true);
     icc_betrachter->mft_viewer->hineinKurven ( kurven[MFT_VIEWER], texte[MFT_VIEWER] );
     icc_betrachterNeuzeichnen(icc_betrachter->mft_viewer);
     DBG_PROG
@@ -314,6 +325,7 @@ ICCexamin::waehleMft (int item)
   case 3: // 3D table
     DBG_PROG_S("show table")
     {
+      profile.frei(false);
       std::vector<std::string> nach_farb_namen = profile.profil()->getTagChannelNames (icc_betrachter->tag_nummer, ICCtag::TABLE_OUT);
       icColorSpaceSignature sig_out = profile.profil()->getTag( icc_betrachter->tag_nummer ).colorSpace( ICCtag::TABLE_OUT );
       std::vector<std::string> nach_farben_snamen =  getChannelNamesShort( sig_out );
@@ -322,6 +334,7 @@ ICCexamin::waehleMft (int item)
                      profile.profil()->getTagTable (icc_betrachter->tag_nummer, ICCtag::TABLE),
                      profile.profil()->getTagChannelNames (icc_betrachter->tag_nummer, ICCtag::TABLE_IN),
                      nach_farb_namen ); DBG_PROG_S( "3D table" )
+      profile.frei(true);
 
       int      n = (int)nach_farb_namen.size();
       if(n != (int)nach_farben_snamen.size())
@@ -349,8 +362,10 @@ ICCexamin::waehleMft (int item)
     break;
   case 4: // output curves
     DBG_PROG_S("show curves")
+    profile.frei(false);
     kurven[MFT_VIEWER] = profile.profil()->getTagCurves (icc_betrachter->tag_nummer, ICCtag::CURVE_OUT);
     texte[MFT_VIEWER] = profile.profil()->getTagChannelNames (icc_betrachter->tag_nummer, ICCtag::CURVE_OUT);
+    profile.frei(true);
     icc_betrachter->mft_viewer->hineinKurven ( kurven[MFT_VIEWER], texte[MFT_VIEWER] );
     icc_betrachterNeuzeichnen(icc_betrachter->mft_viewer);
     DBG_PROG
@@ -379,7 +394,9 @@ selectTextsLine( int * line )
     //*line = 1;
     txt = icc_examin->icc_betrachter->tag_text->text(i);
 
+    profile.frei(false);
     std::vector<std::string> TagInfo = profile.profil()->printTagInfo(item);
+    profile.frei(true);
     if( TagInfo.size() == 2 )
     {
       std::vector<double> v;
@@ -391,6 +408,7 @@ selectTextsLine( int * line )
       oyNamedColour_s * colour = 0;
       oyProfile_s * prof = 0;
 
+      profile.frei(false);
       if(profile.profil()->tagBelongsToMeasurement(item) &&
          icc_examin->icc_betrachter->tag_browser->value() > 5)
       {
@@ -439,6 +457,7 @@ selectTextsLine( int * line )
             icc_examin->icc_betrachter->DD_farbraum->emphasizePoint( NULL );
           }
       }
+      profile.frei(true);
     }
   }
 

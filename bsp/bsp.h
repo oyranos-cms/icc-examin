@@ -32,7 +32,7 @@ typedef struct faceTag {
    VERTEX *vhead;		/* head of list of vertices */
    PLANE plane;			/* plane equation of face */
    struct faceTag *fnext;	/* pointer to next face */
-  int id;                       /* id of the source compound before splitting */
+  int group;                       /* group id of the source compound before splitting */
 } FACE;
 #define NULL_FACE ((FACE *) NULL)
 

@@ -156,14 +156,40 @@ ICCkette::einfuegen (const Speicher & prof, int pos)
     //m.load( profile.profil() , (const char*) prof, prof.size() );
     for (unsigned int i = 1; i < profile_.size(); ++i)
     {
-      if(profile_[i].data_type == ICCprofile::ICCmeasurementDATA)
+      if(profile_[i].data_type == ICCprofile::ICCmeasurementDATA &&
+         i == (unsigned int) aktuell() + 1)
       {
         ICCmeasurement & m = profile_[0].getMeasurement();
         int tag_n = profile_[i].getTagIDByName( "targ" );
         ICCtag & tag = profile_[i].getTag( tag_n );
         m.load( &profile_[0], tag );
         if( !profile_[0].hasTagName( "targ" ) )
+        {
           profile_[0].addTag( tag );
+
+          // the profile is done: erase it
+          std::vector<ICCprofile>::iterator v_it;
+          std::vector<std::string>::iterator profilnamen_it = profilnamen_.begin();
+          std::vector<int>::iterator         aktiv_it = aktiv_.begin();
+          std::vector<double>::iterator      profil_mzeit_it = profil_mzeit_.begin();
+          unsigned int c = 0;
+          for(v_it = profile_.begin(); v_it != profile_.end(); ++v_it)
+          {
+            ++profilnamen_it;
+            ++aktiv_it;
+            ++profil_mzeit_it;
+            if(i == c)
+            {
+              profile_.erase ( v_it );
+              profilnamen_.erase ( profilnamen_it );
+              aktiv_.erase( aktiv_it );
+              profil_mzeit_.erase( profil_mzeit_it );
+              break;
+            }
+          }
+          // we dont add the measurement to the profiles list
+          return erfolg;
+        }
         extra_benachrichtigen = 0;
         continue;
       }

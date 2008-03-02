@@ -51,19 +51,20 @@ X11_INCL=$(XF86VMODE_INC) $(XINERAMA_INC)
 X11_LIBS=$(X11_LIB_PATH) -lX11 $(XF86VMODE_LIB) -lXpm -lXext $(XINERAMA_LIB)
 X11 = X11
 X_H = -I/usr/X11R6/include -I/usr/include -I/usr/X11R6/include $(X11_INCL)
-.SILENT:
+DEBUG = -Wall -g -DDEBUG --pedantic
+DEBUG_SWITCH = -v
 src_dir = /home/kuwe/programme/icc_examin/icc_examin-0.45
 srcdir = /home/kuwe/programme/icc_examin/Entwickeln
-prefix=/usr
-exec_prefix=/usr
-bindir=/usr/bin
-sbindir=/usr/sbin
-libdir=/usr/lib
-includedir=/usr/include
-datadir=/usr/share
-mandir=/usr/share/man
-pixmapdir=/usr/share/pixmaps
-desktopdir=/usr/share/applications
+prefix=/usr/local
+exec_prefix=/usr/local
+bindir=/usr/local/bin
+sbindir=/usr/local/sbin
+libdir=/usr/local/lib
+includedir=/usr/local/include
+datadir=/usr/local/share
+mandir=/usr/local/share/man
+pixmapdir=/usr/local/share/pixmaps
+desktopdir=/usr/local/share/applications
 
 
 ### End of automatic generated options ###

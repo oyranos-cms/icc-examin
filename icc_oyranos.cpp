@@ -334,13 +334,25 @@ Oyranos::moni_test_ (int x, int y)
   DBG_PROG_START
   size_t size = 0;
   Speicher v_block = moni_;
-  oyProfile_s * oy_moni = oyMoni(x,y);
-  char* block = (char*) oyProfile_GetMem ( oy_moni, &size, 0, malloc );
-  v_block.ladeUndFreePtr(&block, size);
-  const char* oy_moni_name = oyProfile_GetText( oy_moni, oyNAME_NAME );
-  if(oy_moni_name)
-    v_block = oy_moni_name;
-  oyProfile_Release( &oy_moni );
+  oyProfile_s * oy_moni = 0;
+
+  if(icc_examin_ns::zeitSekunden() > v_block.zeit() + 1.0)
+  {
+    oy_moni = oyMoni(x,y);
+
+    char* block = (char*) oyProfile_GetMem ( oy_moni, &size, 0, malloc );
+    if(block && size)
+      v_block.ladeUndFreePtr(&block, size);
+    else
+      v_block.zeit( icc_examin_ns::zeitSekunden() );
+
+    const char* oy_moni_name = oyProfile_GetText( oy_moni, oyNAME_NAME );
+
+    if(oy_moni_name)
+      v_block = oy_moni_name;
+    oyProfile_Release( &oy_moni );
+  }
+
   DBG_PROG_ENDE
   return;
 }
@@ -634,7 +646,7 @@ Oyranos::netzVonProfil_ (ICCnetz & netz,
   DBG_PROG_START
   // a cubus from six squares with the range of the Lab cube
   // will be transformed to a profile colour space and converted to a mesh
-  int a = 10; // resolution : 10 - more quick; 20 - more precise
+  int a = 12; // resolution : 10 - more quick; 20 - more precise
   size_t  size = 4*a*(a+1) + 2*(a-1)*(a-1);
   int     kanaele = 3;
   double *lab = new double [size*kanaele];
@@ -717,53 +729,7 @@ Oyranos::netzVonProfil_ (ICCnetz & netz,
       netz.indexe. insert( index_p );
     }
 
-  for(int y = 0; y < a; ++y)
-  {
     int off = 4 * a * (a + 1);
-    if(0 < y && y < a - 1)
-    {
-      // 0 0 .
-      index_p.second.i[2] = off-y;  index_p.second.i[0] = off+(y+1)*2*(a-1)-a+1;
-      index_p.second.i[1] = off-y-1;
-      netz.indexe. insert( index_p );
-
-                                    index_p.second.i[0] = off+(y+0)*2*(a-1)-a+1;
-      index_p.second.i[2] = off-y;  index_p.second.i[1] = off+(y+1)*2*(a-1)-a+1;
-      netz.indexe. insert( index_p );
-
-      // 0 1 .
-      index_p.second.i[1] = off+(y+1)*2*(a-1)-1; index_p.second.i[0] =off-3*a+y+1;
-      index_p.second.i[2] = off+(y)*2*(a-1)-1;
-      netz.indexe. insert( index_p );
-
-                                               index_p.second.i[1] =off-3*a+y+1;
-      index_p.second.i[2] = off+(y)*2*(a-1)-1; index_p.second.i[0] = off-3*a+y;
-      netz.indexe. insert( index_p );
-
-      // 1 0 .
-                          index_p.second.i[0] = off+2*(a-1)*(a-1)-(y+1)*2*(a-1);
-      index_p.second.i[1] = 3*a+y+1; index_p.second.i[2] = off+2*(a-1)*(a-1)-y*2*(a-1);
-      netz.indexe. insert( index_p );
-
-      index_p.second.i[0] = 3*a+y+1;  index_p.second.i[2] = off+2*(a-1)*(a-1)-y*2*(a-1);
-      index_p.second.i[1] = 3*a+y;
-      netz.indexe. insert( index_p );
-
-      // 1 1 .
-      index_p.second.i[0] = off+2*(a-1)*(a-1)-(y+1)*2*(a-1)+a-2;
-      index_p.second.i[1] = off+2*(a-1)*(a-1)-(y+0)*2*(a-1)+a-2; index_p.second.i[2] = 2*a-y;
-      netz.indexe. insert( index_p );
-
-                                         index_p.second.i[0] = 2*a-y-1;
-      index_p.second.i[1] = off+2*(a-1)*(a-1)-(y+1)*2*(a-1)+a-2; index_p.second.i[2] = 2*a-y;
-      netz.indexe. insert( index_p );
-    }
-
-    for(int x = 0; x < 2 * a; ++x)
-    {
-      int x_ = x + off;
-      int b = 0; // area
-
           // 1 0 0 (L a b)
           index_p.second.i[0] = 4*a-1;   index_p.second.i[1] = off;
           index_p.second.i[2] = 0;
@@ -836,6 +802,52 @@ Oyranos::netzVonProfil_ (ICCnetz & netz,
           index_p.second.i[1] = off+2*(a-1)-1; index_p.second.i[0] = off-3*a+1;
                                          index_p.second.i[2] = off-3*a+0;
           netz.indexe. insert( index_p );
+
+  for(int y = 0; y < a; ++y)
+  {
+    if(0 < y && y < a - 1)
+    {
+      // 0 0 .
+      index_p.second.i[2] = off-y;  index_p.second.i[0] = off+(y+1)*2*(a-1)-a+1;
+      index_p.second.i[1] = off-y-1;
+      netz.indexe. insert( index_p );
+
+                                    index_p.second.i[0] = off+(y+0)*2*(a-1)-a+1;
+      index_p.second.i[2] = off-y;  index_p.second.i[1] = off+(y+1)*2*(a-1)-a+1;
+      netz.indexe. insert( index_p );
+
+      // 0 1 .
+      index_p.second.i[1] = off+(y+1)*2*(a-1)-1; index_p.second.i[0] =off-3*a+y+1;
+      index_p.second.i[2] = off+(y)*2*(a-1)-1;
+      netz.indexe. insert( index_p );
+
+                                               index_p.second.i[1] =off-3*a+y+1;
+      index_p.second.i[2] = off+(y)*2*(a-1)-1; index_p.second.i[0] = off-3*a+y;
+      netz.indexe. insert( index_p );
+
+      // 1 0 .
+                          index_p.second.i[0] = off+2*(a-1)*(a-1)-(y+1)*2*(a-1);
+      index_p.second.i[1] = 3*a+y+1; index_p.second.i[2] = off+2*(a-1)*(a-1)-y*2*(a-1);
+      netz.indexe. insert( index_p );
+
+      index_p.second.i[0] = 3*a+y+1;  index_p.second.i[2] = off+2*(a-1)*(a-1)-y*2*(a-1);
+      index_p.second.i[1] = 3*a+y;
+      netz.indexe. insert( index_p );
+
+      // 1 1 .
+      index_p.second.i[0] = off+2*(a-1)*(a-1)-(y+1)*2*(a-1)+a-2;
+      index_p.second.i[1] = off+2*(a-1)*(a-1)-(y+0)*2*(a-1)+a-2; index_p.second.i[2] = 2*a-y;
+      netz.indexe. insert( index_p );
+
+                                         index_p.second.i[0] = 2*a-y-1;
+      index_p.second.i[1] = off+2*(a-1)*(a-1)-(y+1)*2*(a-1)+a-2; index_p.second.i[2] = 2*a-y;
+      netz.indexe. insert( index_p );
+    }
+
+    for(int x = 0; x < 2 * a; ++x)
+    {
+      int x_ = x + off;
+      int b = 0; // area
 
       // lower border
       if( y == 0 )
@@ -1002,8 +1014,8 @@ Oyranos::vrmlVonProfil (ICCprofile & profil, int intent, int bpc,
                                  netze[0] );
 
   int p_n = netze[0].punkte.size();
-      for(int j = 0; j < p_n; ++j)
-      {
+  for(int j = 0; j < p_n; ++j)
+  {
         double lab[3];
 
         for(int k = 0; k < 3 ; ++k)
@@ -1016,11 +1028,12 @@ Oyranos::vrmlVonProfil (ICCprofile & profil, int intent, int bpc,
           netze[0].punkte[j].farbe[k] = rgb[k];
 
         delete [] rgb;
-      }
+  }
 
   vrml = netzNachVRML( netze );
-
-  if(!vrml.size())
+  if(vrml.size())
+    vrml = writeVRMLbody( vrml );
+  else
   if(profil.valid()) {
       size_t groesse = 0;
       char* daten = profil.saveProfileToMem(&groesse); 
@@ -1465,7 +1478,12 @@ Oyranos::wandelLabNachBildschirmFarben(int x, int y,
                                                intent,
                                                INTENT_RELATIVE_COLORIMETRIC,
                                                PRECALC|BW_COMP|flags);
-      if (!*form) WARN_S( "no hXYZtoRGB transformation found" )
+      if (!*form)
+      {
+        WARN_S( "no hXYZtoRGB transformation found" )
+        DBG_PROG_ENDE
+        return RGB_Speicher;
+      }
 
       if(flags & cmsFLAGS_GAMUTCHECK)
         h_lab_to_RGB_teuer = *form;

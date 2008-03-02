@@ -62,7 +62,6 @@ ICCexamin::messwertLese (int n,
 {
   DBG_PROG_START
   if(profile.size() > n &&
-     profile.aktuell() == n &&
      profile[n]->hasMeasurement() )
     { DBG_NUM_S( "nutze Messdaten" )
       ICCmeasurement messung = profile[n]->getMeasurement();
@@ -423,8 +422,11 @@ ICCexamin::farbraum (int n)
   texte.push_back(_("CIE *a"));
   texte.push_back(_("CIE *b"));
 
-  oyNamedColours_s * namedColours = 0;
-  namedColours = icc_betrachter->DD_farbraum->namedColours();
+  oyStructList_s * namedColours = icc_betrachter->DD_farbraum->namedColours();
+  oyNamedColours_s * ncl = 0;
+  if(oyStructList_Count( namedColours ) > n)
+    ncl = (oyNamedColours_s*) oyStructList_GetRefType( namedColours, n,
+                                   oyOBJECT_TYPE_NAMED_COLOURS_S );
 
   DBG_PROG_V( n <<" "<< profile.size()<<" "<<profile.aktuell() )
   DBG_PROG_V( profile[n]->filename() )
@@ -434,11 +436,12 @@ ICCexamin::farbraum (int n)
   bool has_mess = profile[n]->hasMeasurement();
   MARK( frei(false); )
   if(profile.size() > n &&
-     profile.aktuell() == n &&
-     has_mess )
+     has_mess &&
+     !(profile[n]->data_type == ICCprofile::ICCprofileDATA &&
+       profile.aktuell() != n))
     {
       DBG_PROG
-      messwertLese(n, &namedColours);
+      messwertLese(n, &ncl);
       messwerte = true;
     }
   MARK( frei(true); )
@@ -453,16 +456,29 @@ ICCexamin::farbraum (int n)
   if( profile.size() > n && ncl2_profil )
   {
     DBG_PROG
-    farbenLese(n, &namedColours );
+    farbenLese(n, &ncl );
   }
 
   bool neues_netz = false;
   if( n >= (int)icc_betrachter->DD_farbraum->dreiecks_netze.size() )
     neues_netz = true;
 
-  if(n == 0)
-    icc_betrachter->DD_farbraum->namedColours( namedColours );
-  oyNamedColours_Release( &namedColours );
+
+  //if((int)icc_betrachter->DD_farbraum->dreiecks_netze.size() > n)
+    //icc_betrachter->DD_farbraum->dreiecks_netze[n].undurchsicht = 1.0;
+  if(oyStructList_Count( namedColours ) > n && !collect_changing_points)
+    oyStructList_ReleaseAt( namedColours, n );
+
+  if(ncl)
+  {
+    if(!namedColours)
+      namedColours = oyStructList_New(0);
+    oyStructList_MoveIn( namedColours, (oyStruct_s**)&ncl, n );
+  }
+
+  icc_betrachter->DD_farbraum->namedColours( namedColours );
+  oyStructList_Release( &namedColours );
+
 
   do {
     icc_examin_ns::sleep(0.05);
@@ -492,6 +508,15 @@ ICCexamin::farbraum (int n)
     // set some standard values
     if(netze->size() && neues_netz)
     {
+      if((messwerte || ncl2_profil) && !(*netze)[n].punkte.size())
+      {
+        (*netze)[n].undurchsicht = 1.0;
+        if(n == 0)
+          (*netze)[n].grau = false;
+        else
+          (*netze)[n].grau = true;
+      }
+      else
       if((n == 0 && ncl2_profil) &&
          !messwerte )
       {

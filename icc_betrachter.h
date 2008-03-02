@@ -126,7 +126,10 @@ public:
   icc_examin_ns::MyFl_Double_Window *DD;
   Fl_Menu_Bar *DD_menueleiste;
   static Fl_Menu_Item menu_DD_menueleiste[];
+  static Fl_Menu_Item *menueintrag_gl_vrml_speichern;
 private:
+  void cb_menueintrag_gl_vrml_speichern_i(Fl_Menu_*, void*);
+  static void cb_menueintrag_gl_vrml_speichern(Fl_Menu_*, void*);
   void cb_Quit_i(Fl_Menu_*, void*);
   static void cb_Quit(Fl_Menu_*, void*);
 public:

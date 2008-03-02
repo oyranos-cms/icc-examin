@@ -109,6 +109,7 @@ ICCexamin::ICCexamin ()
   icc_betrachter = new ICCfltkBetrachter;
   io_ = new ICCexaminIO;
   profile.init();
+  collect_changing_points = 0;
 
   DBG_PROG_ENDE
 }
@@ -227,7 +228,7 @@ ICCexamin::start (int argc, char** argv)
   FILE *out = icc_popen_m("oyranos-config", "r");
   if(out)
   {  
-    char name[64];
+    char name[64] = {0};
     size_t r = fscanf( out, "%12s", name ); r=r;
     if( strcmp(name, "oyranos") == 0 )
       icc_betrachter->menu_einstellungen->show();
@@ -696,7 +697,7 @@ ICCexamin::nachricht( Modell* modell , int info )
                                         chan, XYZ, NULL,0, prof, 0 );
         oyProfile_Release( &prof );
         if(!names[min_pos].size())
-          WARN_S( "no name found" )
+          DBG_PROG_S( "no name found" );
         icc_betrachter->DD_farbraum->emphasizePoint( colour );
         oyNamedColour_Release( &colour );
       }

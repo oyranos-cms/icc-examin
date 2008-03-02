@@ -38,6 +38,8 @@
 #include "icc_profile_tags.h"
 #include "icc_oyranos.h"
 
+class CgatsFilter;
+
 /**
   *   @brief reads CGATS from a profile 
   *
@@ -73,6 +75,7 @@ class ICCmeasurement {
     void                pruefen (void);
     // lcms cgats reader
     void                lcms_parse ();
+    CgatsFilter       * cgats;
 
   private:
     icTagSignature      sig_;

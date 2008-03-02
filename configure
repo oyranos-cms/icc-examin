@@ -740,7 +740,7 @@ done
 
 echo "#define PREFIX         \"$prefix\"" >> $CONF_H
 echo "#define ICCEXAMIN_DATADIR        \"$datadir\"" >> $CONF_H
-echo "#define LOCALEDIR      \"$datadir/locale\"" >> $CONF_H
+echo "#define ICCEXAMIN_LOCALEDIR      \"$datadir/locale\"" >> $CONF_H
 echo "#define PIXMAPDIR      \"$pixmapdir\"" >> $CONF_H
 echo "#define SRCDIR         \"$srcdir\"" >> $CONF_H
 if [ $OSUNAME = Windows ]; then

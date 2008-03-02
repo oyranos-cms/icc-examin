@@ -205,7 +205,7 @@ public:
 class ICCwaehler : public icc_examin_ns::MyFl_Double_Window
 {
     Fl_Scroll *scroll_profile;
-    Fl_Pack   *hbox;
+    Fl_Pack/*Fl_Scroll2Pack*/   *hbox;
 public:
     ICCwaehler  (int w_,int h_,const char* name)
   : icc_examin_ns::MyFl_Double_Window(w_, h_, name)
@@ -214,13 +214,16 @@ public:
   for(int i = 0; i < 128; ++i)
     profile_[i] = 0;
 
-  { Fl_Scroll* o = scroll_profile = new Fl_Scroll(5, 5, w()-14, h()-10);
-      //o->box(FL_THIN_DOWN_BOX);
+  {
+    Fl_Scroll* o = scroll_profile = new Fl_Scroll(5, 5, w()-14, h()-10);
+      o->box(FL_THIN_DOWN_BOX);
+      o->type(Fl_Scroll::VERTICAL);
       { Fl_Pack* o = hbox = new Fl_Pack(6, 6, w()-16, h()-12);
+        o->box(FL_THIN_DOWN_FRAME);
         o->end();
       }   
-      o->end();
-      scroll_profile->resizable(hbox);
+    o->end();
+    scroll_profile->resizable( hbox );
   }       
   icc_examin_ns::MyFl_Double_Window::end();
   icc_examin_ns::MyFl_Double_Window::resizable(scroll_profile);
@@ -260,7 +263,7 @@ public:
   }
 
   hbox->begin();
-  profile_[pos] = new ICCwaehlerProfil( name, 
+    profile_[pos] = new ICCwaehlerProfil( name, 
                                         undurchsicht_, grau_, aktiv_, pos );
   hbox->end();
   waehlbar( pos, waehlbar_ );
@@ -268,8 +271,12 @@ public:
   grau( pos, grau_ );
   aktiv( pos, aktiv_ );
   redraw();
+  //scroll_profile->firstsizes_y( scroll_profile->y()+2, hbox->h() );
   DBG_PROG_ENDE
  }
+
+ void draw () { DBG_S(hbox->x()<<","<<hbox->y()<<" "<<hbox->w()<<"x"<<hbox->h())
+                icc_examin_ns::MyFl_Double_Window::draw(); };
 
  void         expose ( int pos )
  {

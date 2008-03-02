@@ -416,6 +416,11 @@ ICCprofile::getTagText                                  (int item)
   std::string leer = name + _(" typ - no text output");
   std::vector<std::string> v;
   v.push_back( leer );
+  if(item < 0 || item >= (int)tags.size())
+  {
+    WARN_S("tag not available " << item)
+    return v;
+  }
 #if 0
   if (name != "chrm"
    && name != "cprt?"

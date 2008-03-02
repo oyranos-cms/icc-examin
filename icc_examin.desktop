@@ -1,22 +1,16 @@
 [Desktop Entry]
+Categories=Application;Graphics;
+Comment=Look at the internals of ICC profiles
+Comment[de]=Interna von ICC Farbprofilen betrachten
+Encoding=UTF-8
+Exec=iccexamin %U
+GenericName=
+Icon=icc_examin.png
+InitialPreference=9
+MimeType=application/x-icc;application/x-cgats;x-world/x-vrml;model/vrml
 Name=ICC Examin
 Name[de]=ICC Examin
-
-GenericName=
-
-Comment=look at the internals of ICC profiles
-Comment[de]=Interna von ICC Farbprofilen betrachten
-
-Type=Application
-Categories=Application;Graphics;
-
-Encoding=UTF-8
-
-TryExec=iccexamin
-Exec=iccexamin %U
-Icon=icc_examin.png
 StartupNotify=false
 Terminal=false
-
-MimeType=application/icc;application/cgats;model/vrml;
-
+TryExec=iccexamin
+Type=Application

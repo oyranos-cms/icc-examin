@@ -244,6 +244,14 @@ GL_Ansicht::~GL_Ansicht()
 
   --ref_;
 
+  doLocked_m( std::string loc_alt = setlocale(LC_NUMERIC, NULL);,NULL) //getenv("LANG");
+  if(loc_alt.size()) {
+    DBG_NUM_V( loc_alt )
+  } else {
+    DBG_NUM_S( "LANG variable not found" )
+  }
+  doLocked_m( setlocale(LC_NUMERIC,"C");,NULL);
+
   Fl_Preferences gl( Fl_Preferences::USER, "oyranos.org", "iccexamin");
   switch (typ_)
   {
@@ -268,6 +276,10 @@ GL_Ansicht::~GL_Ansicht()
       DBG_PROG_V( spektralband )
     } break;
   }
+
+  if(loc_alt.size())
+    doLocked_m( setlocale(LC_NUMERIC,loc_alt.c_str()) , NULL);
+
 
   DBG_PROG_ENDE
 }
@@ -316,7 +328,7 @@ GL_Ansicht::copy (const GL_Ansicht & gl)
   von_farb_namen_ = gl.von_farb_namen_;
   epoint_ = oyNamedColour_Copy( gl.epoint_, 0 );
   mouse_3D_hit = oyNamedColour_Copy( gl.mouse_3D_hit, 0 );
-  colours_ = oyNamedColours_Copy( gl.colours_, NULL );
+  colours_ = oyStructList_Copy( gl.colours_, NULL );
 
   DBG_PROG_ENDE
   return *this;
@@ -330,6 +342,14 @@ GL_Ansicht::init(int ty)
   typ_ = ty;
 
   DBG_PROG
+
+  doLocked_m( std::string loc_alt = setlocale(LC_NUMERIC, NULL);,NULL) //getenv("LANG");
+  if(loc_alt.size()) {
+    DBG_NUM_V( loc_alt )
+  } else {
+    DBG_NUM_S( "LANG variable not found" )
+  }
+  doLocked_m( setlocale(LC_NUMERIC,"C");,NULL);
 
   Fl_Preferences gl( Fl_Preferences::USER, "oyranos.org", "iccexamin");
 
@@ -352,6 +372,9 @@ GL_Ansicht::init(int ty)
       gl_gamut.get("schalen", schalen, 5 );
     } break;
   }
+
+  if(loc_alt.size())
+    doLocked_m( setlocale(LC_NUMERIC,loc_alt.c_str()) , NULL);
 
   DBG_PROG_V( spektralband )
 
@@ -945,7 +968,9 @@ GL_Ansicht::erstelleGLListen_()
   zeigeSpektralband_();
 
   DBG_PROG_V( punktform <<" "<< MENU_dE1STERN )
+  dreiecks_netze.frei(false);
   punkteAuffrischen();
+  dreiecks_netze.frei(true);
 
   //background
        static double hintergrundfarbe_statisch = hintergrundfarbe;
@@ -1552,6 +1577,19 @@ GL_Ansicht::iccPoint3d               ( oyPROFILE_e         projection,
   
 }
 
+double GL_Ansicht::pointRadius()
+{
+  double rad = 0.5;
+  switch (punktform)
+  {
+    case MENU_dE1KUGEL: rad = 0.5; break;
+    case MENU_dE2KUGEL: rad = 1.0; break;
+    case MENU_dE4KUGEL: rad = 2.0; break;
+    default:            rad = ((double)punktgroesse)/4.0; break;
+  }
+  return rad;
+}
+
 void
 GL_Ansicht::punkteAuffrischen()
 { DBG_PROG_START
@@ -1562,22 +1600,13 @@ GL_Ansicht::punkteAuffrischen()
   }
 
   //coordinates  in CIE*b CIE*L CIE*a 
-  if (oyNamedColours_Count( colours_ )) {
-    if( oyNamedColours_Count( colours_ ) )
-      DBG_PROG_V( oyNamedColours_Count( colours_ ) )
+  if (oyStructList_Count( colours_ )) {
+    DBG_PROG_V( oyStructList_Count( colours_ ) )
 
     gl_listen[PUNKTE] = glGenLists(1);
     glNewList( gl_listen[PUNKTE], GL_COMPILE); DBG_PROG_V( gl_listen[PUNKTE] )
 #     ifndef Beleuchtung_
       glDisable(GL_LIGHTING);
-#     endif
-
-#     if 1
-      glDisable (GL_BLEND);
-      //glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-      glDisable/*Enable*/ (GL_ALPHA_TEST_FUNC);
-      //glAlphaFunc (GL_ALPHA_TEST, GL_ONE_MINUS_DST_ALPHA);
-#     else
 #     endif
 
       //glColor3f(0.9, 0.9, 0.9);
@@ -1588,108 +1617,216 @@ GL_Ansicht::punkteAuffrischen()
         int x = this->window()->x() + this->window()->w()/2;
         int y = this->window()->y() + this->window()->h()/2;
 
-        oyProfile_s * disp_prof = icc_oyranos.oyMoni(x,y);
+        oyProfile_s * prof_disp = icc_oyranos.oyMoni(x,y);
 
-        int n = oyNamedColours_Count( colours_ );
-        if(zeig_punkte_als_paare)
-          n /= 2;
-        oyNamedColour_s * c = NULL;
-        double lab[3];
-        double rgba[4] = {0,0,0,1};
+        int nc = oyStructList_Count(colours_);
+
+        double lab[3], rgba[4], XYZ[3];
+        oyProfile_s * prof_in  = 0,
+                    * prof_out = 0;
+        oyImage_s * in = 0,
+                  * out = 0,
+                  * out_disp = 0;
+        oyColourConversion_s * cc_disp = 0, * cc_lab = 0;
         oyPROFILE_e projection = oyEDITING_LAB;
-        if(zeig_punkte_als_paare)
-          for (int i = 0; i < n; ++i) /* 6 */
-          {
-            glLineWidth(strich2*strichmult);
-            glBegin(GL_LINES);
-              c = oyNamedColours_GetRef( colours_, i );
-              if(!zeig_punkte_als_messwerte)
-                glColor4d(.97, .97, .97, 1. );
-              else {
-                oyNamedColour_GetColour( c, disp_prof, rgba, oyDOUBLE, 0 );
-                glColor4dv( rgba );
-              }
-              oyNamedColour_GetColourStd( c, projection, lab, oyDOUBLE, 0 );
-              iccPoint3d ( projection, lab, 0 );
-              oyNamedColour_Release( &c );
 
-              c = oyNamedColours_GetRef( colours_, n + i );
-              if(!zeig_punkte_als_messwerte)
-                glColor4d(1., .6, .6, 1.0 );
-              else {
-                oyNamedColour_GetColour( c, disp_prof, rgba, oyDOUBLE, 0 );
-                glColor4dv( rgba );
-              }
-
-              oyNamedColour_GetColourStd( c, projection, lab, oyDOUBLE, 0 );
-              iccPoint3d ( projection, lab, 0 );
-              oyNamedColour_Release( &c );
-            glEnd();
-          }
-
-        GLUquadricObj *quad;
-        quad = gluNewQuadric();
-        //gluQuadricTexture( quad, GL_TRUE );
-        double rad = .02;
-        int dim = 12;
-        int kugeln_zeichnen = false;
-        switch (punktform)
+        if(nc)
         {
-          case MENU_dE1STERN:
-             glPointSize(punktgroesse);
-             glColor4d(.97, .97, .97, 1. );
-             glBegin(GL_POINTS);
-               for (int i = 0; i < n; ++i)
-               {
-                   c = oyNamedColours_GetRef( colours_, i );
-                   oyNamedColour_GetColour( c, disp_prof, rgba, oyDOUBLE, 0 );
-                   glColor4dv( rgba );
-                   oyNamedColour_GetColourStd( c, projection, lab,
-                                               oyDOUBLE, 0 );
-                   iccPoint3d ( projection, lab, 0 );
-                   oyNamedColour_Release( &c );
-               }
-             glEnd();
-             // shadow
-             glColor4f( schatten, schatten, schatten, 1. );
-             glPointSize((punktgroesse/2-1)>0?(punktgroesse/2-1):1);
-             glBegin(GL_POINTS);
-               for (int i = 0; i < n; ++i)
-               {
-                 c = oyNamedColours_GetRef( colours_, i );
-                 oyNamedColour_GetColourStd( c, projection, lab,
-                                             oyDOUBLE, 0 );
-                 lab[0] = 0;
-                 iccPoint3d ( projection, lab, 0 );
-                 oyNamedColour_Release( &c );
-               }
-             glEnd();
-            break;
-          case MENU_dE1KUGEL: rad = 0.005;dim = 5; kugeln_zeichnen = true;break;
-          case MENU_dE2KUGEL: rad = 0.01; dim = 8; kugeln_zeichnen = true;break;
-          case MENU_dE4KUGEL: rad = 0.02; dim =12; kugeln_zeichnen = true;break;
-               break;
-          case MENU_DIFFERENZ_LINIE: // they are drawn anyway
-               break;
+          prof_in  = oyProfile_FromStd( oyEDITING_XYZ, 0 );
+          prof_out = oyProfile_FromStd( projection, 0 );
+          in =  oyImage_Create( 1,1,
+                         XYZ,
+                         oyChannels_m(oyProfile_GetChannelsCount(prof_in)) |
+                          oyDataType_m(oyDOUBLE),
+                         prof_in,
+                         0 );
+          out = oyImage_Create( 1,1,
+                         lab,
+                         oyChannels_m(oyProfile_GetChannelsCount(prof_out)) |
+                          oyDataType_m(oyDOUBLE),
+                         prof_out,
+                         0 );
+          out_disp = oyImage_Create( 1,1,
+                         rgba,
+                         oyChannels_m(oyProfile_GetChannelsCount(prof_disp)) |
+                          oyDataType_m(oyDOUBLE),
+                         prof_disp,
+                         0 );
+
+          cc_lab = oyColourConversion_Create( 0,0, in,out, 0 );
+          cc_disp = oyColourConversion_Create( 0,0, in,out_disp, 0 );
         }
 
-        if(kugeln_zeichnen)
+        for(int j = 0; j < nc; ++j)
         {
+          oyNamedColours_s * colours = 
+            (oyNamedColours_s*) oyStructList_GetRefType( colours_, j,
+                                                oyOBJECT_TYPE_NAMED_COLOURS_S );
+
+          if(!colours)
+          {
+            WARN_S( "missing list(" << nc << ") member[" << j << "]" )
+            continue;
+          }
+
+          int n = oyNamedColours_Count( colours );
+          int aktiv = 1;
+          int grau = 0;
+          oyNamedColour_s * c = NULL;
+          double schattierung = 1;
+          int has_mesh = 0;
+
+          rgba[3] = 1;
+
+          if(dreiecks_netze.size() > (unsigned)j)
+          {
+            aktiv = dreiecks_netze[j].aktiv;
+            grau = dreiecks_netze[j].grau;
+            rgba[3] = dreiecks_netze[j].undurchsicht;
+            schattierung = dreiecks_netze[j].schattierung;
+            if(dreiecks_netze[j].punkte.size())
+              has_mesh = 1;
+          }
+
+          if(!has_mesh)
+          {
+            glEnable (GL_BLEND);
+            glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+            glEnable (GL_ALPHA_TEST_FUNC);
+            glAlphaFunc (GL_ALPHA_TEST, GL_ONE_MINUS_DST_ALPHA);
+          } else {
+            glDisable (GL_BLEND);
+            glDisable (GL_ALPHA_TEST_FUNC);
+          }
+
+          if(!aktiv)
+            continue;
+
           if(zeig_punkte_als_paare)
+            n /= 2;
+
+          if(zeig_punkte_als_paare)
+            for (int i = 0; i < n; ++i)
+            {
+              glLineWidth(strich2*strichmult);
+              // draw lines
+              glBegin(GL_LINES);
+                c = oyNamedColours_GetRef( colours, i );
+                in->data = (void*) oyNamedColour_GetXYZConst( c );
+
+                if(!zeig_punkte_als_messwerte)
+                  glColor4d(.97, .97, .97, rgba[3] );
+                else {
+                  if(grau)
+                    rgba[0]= rgba[1]= rgba[2] = schattierung;
+                  else
+                    oyColourConversion_Run( cc_disp );
+                  glColor4dv( rgba );
+                }
+
+                oyXYZ2Lab( (const double*) in->data, lab );
+                iccPoint3d ( projection, lab, 0 );
+                oyNamedColour_Release( &c );
+
+                c = oyNamedColours_GetRef( colours, n + i );
+                in->data = (void*) oyNamedColour_GetXYZConst( c );
+                if(!zeig_punkte_als_messwerte)
+                  glColor4d(1., .6, .6, 1.0 );
+                else {
+                  if(grau)
+                    rgba[0]= rgba[1]= rgba[2] = schattierung;
+                  else
+                    oyColourConversion_Run( cc_disp );
+                  glColor4dv( rgba );
+                }
+
+                oyXYZ2Lab( (const double*) in->data, lab );
+                iccPoint3d ( projection, lab, 0 );
+                oyNamedColour_Release( &c );
+              glEnd();
+            }
+
+          if(zeig_punkte_als_paare && !zeig_punkte_als_messwerte)
             n *= 2; 
+
+          double rad = .02;
+          int dim = 12;
+          int kugeln_zeichnen = false;
+          switch (punktform)
+          {
+            case MENU_dE1STERN:
+               glPointSize(punktgroesse);
+               glColor4d(.97, .97, .97, rgba[3] );
+               glBegin(GL_POINTS);
+                 for (int i = 0; i < n; ++i)
+                 {
+                   c = oyNamedColours_GetRef( colours, i );
+                   in->data = (void*) oyNamedColour_GetXYZConst( c );
+                   if(grau)
+                     rgba[0]= rgba[1]= rgba[2] = schattierung;
+                   else
+                     oyColourConversion_Run( cc_disp );
+                   glColor4dv( rgba );
+
+                   oyXYZ2Lab( (const double*) in->data, lab );
+                   iccPoint3d ( projection, lab, 0 );
+                   oyNamedColour_Release( &c );
+                 }
+               glEnd();
+              break;
+            case MENU_dE1KUGEL: rad = 0.005;dim = 5; kugeln_zeichnen = true;break;
+            case MENU_dE2KUGEL: rad = 0.01; dim = 8; kugeln_zeichnen = true;break;
+            case MENU_dE4KUGEL: rad = 0.02; dim =12; kugeln_zeichnen = true;break;
+                 break;
+            case MENU_DIFFERENZ_LINIE: // they are drawn anyway
+                 break;
+          }
+
+          if(kugeln_zeichnen)
+          {
             for (int i = 0; i < n; ++i)
             {
                  glPushMatrix();
-                   c = oyNamedColours_GetRef( colours_, i );
-                   oyNamedColour_GetColour( c, disp_prof, rgba, oyDOUBLE, 0);
+                   c = oyNamedColours_GetRef( colours, i );
+                   in->data = (void*) oyNamedColour_GetXYZConst( c );
+                   if(grau)
+                     rgba[0]= rgba[1]= rgba[2] = schattierung;
+                   else
+                     oyColourConversion_Run( cc_disp );
                    glColor4dv( rgba );
-                   oyNamedColour_GetColourStd( c, projection, lab,
-                                               oyDOUBLE, 0 );
+
+                   oyXYZ2Lab( (const double*) in->data, lab );
                    iccPoint3d( projection, lab, rad );
                    oyNamedColour_Release( &c );
                  glPopMatrix();
             }
+          }
+          // shadow
+          glColor4f( schatten, schatten, schatten, 1. );
+          glPointSize((punktgroesse/2-1)>0?(punktgroesse/2-1):1);
+          glBegin(GL_POINTS);
+            if(zeig_punkte_als_messwerte)
+                 for (int i = 0; i < n; ++i)
+                 {
+                   c = oyNamedColours_GetRef( colours, i );
+                   in->data = (void*) oyNamedColour_GetXYZConst( c );
+                   oyXYZ2Lab( (const double*) in->data, lab );
+                   lab[0] = 0;
+                   iccPoint3d ( projection, lab, 0 );
+                   oyNamedColour_Release( &c );
+                 }
+          glEnd();
         }
+
+        oyColourConversion_Release( &cc_lab );
+        oyColourConversion_Release( &cc_disp );
+        oyImage_Release( &in );
+        oyImage_Release( &out );
+        oyImage_Release( &out_disp );
+        oyProfile_Release( &prof_in );
+        oyProfile_Release( &prof_out );
+        oyProfile_Release( &prof_disp );
+
       glPopMatrix();
 #     ifndef Beleuchtung_
       glEnable(GL_LIGHTING);
@@ -1913,8 +2050,12 @@ GL_Ansicht::zeigeSpektralband_()
     RGBSchatten_Speicher = icc_oyranos.wandelLabNachBildschirmFarben(
                window()->x() + window()->w()/2, window()->y() + window()->h()/2,
                Lab_Speicher_schatten, n_punkte, icc_examin->intentGet(NULL), 0);
-    if(!RGB_Speicher)  WARN_S( "RGB_speicher result not available" )
-    if(!RGBSchatten_Speicher)  WARN_S( "RGB_speicher result not available" )
+    if(!RGB_Speicher || !RGBSchatten_Speicher) 
+    {
+      WARN_S( "RGB_speicher result not available" )
+      DBG_PROG_ENDE
+      return;
+    }
 
     GLfloat farbe[] =   { pfeilfarbe[0],pfeilfarbe[1],pfeilfarbe[2], 1.0 };
 
@@ -2119,6 +2260,7 @@ GL_Ansicht::menueInit_()
 /*inline*/ void
 GL_Ansicht::setzePerspektive()
 { //DBG_ICCGL_START
+    // camera viewing angle
     if (agv_->duenn)
       gluPerspective(15, seitenverhaeltnis,
                      vorder_schnitt,
@@ -2313,6 +2455,7 @@ GL_Ansicht::zeichnen()
                window()->x() + window()->w()/2, window()->y() + window()->h()/2,
                                  lab, 1, icc_examin->intentGet(NULL),
                                  icc_examin->gamutwarn()?cmsFLAGS_GAMUTCHECK:0);
+        if(rgb)
         {
 #         ifndef Beleuchtung_
           glDisable(GL_LIGHTING);
@@ -2586,25 +2729,69 @@ GL_Ansicht::achsNamen    (std::vector<std::string> achs_namen)
   DBG_PROG_ENDE
 }
 
-oyNamedColours_s*
+/** @func  namedColours
+ *  @brief export our colour spots
+ *
+ *  The returned oyStructList_s contains the unaltered oyNamedColours_s objects
+ *  we obtained in GL_Ansicht::namedColours(x).
+ *  We set the name in the oyStructList_s->oy_ member. You can read it with 
+ *  oyranos::oyObject_GetNames. The nick (__FILE__) and name ("colour lists")
+ *  are static. The description contains scene informations as follows
+ *  - show_points_as_pairs is present with zeig_punkte_als_paare being true
+ *  - show_points_as_measurements with zeig_punkte_als_messwerte being true
+ *  - spectralline with spektralband being true
+ *  - viewpoint: is followed by the Lab position. The viewing angle is 15°.
+ *
+ *  @version ICC Examin: 0.45
+ *  @date    2008/02/20
+ *  @since   2005/00/00 (ICC Examin: 0.0.x)
+ */
+oyStructList_s*
 GL_Ansicht::namedColours       ()
 {
-  oyNamedColours_s * colours;
+  oyStructList_s * colours;
 
   DBG_PROG_START
-  colours = oyNamedColours_Copy( colours_, NULL );
+
+  std::string text = "ICC Examin scene:";
+  char t[24];
+  int error = 0;
+  if(zeig_punkte_als_paare)
+    text.append(" show_points_as_pairs");
+  if(zeig_punkte_als_messwerte)
+    text.append(" show_points_as_measurements");
+  if(spektralband)
+    text.append(" spectralline");
+    
+       float EyeAz = agv_->eyeAzimuth(),
+             EyeEl = agv_->eyeElevation(),
+             EyeDist = agv_->eyeDist(),
+             X = (float)(-EyeDist*sin(TORAD(EyeAz))*cos(TORAD(EyeEl))),  // CIE*b
+             Y = (float)(EyeDist*sin(TORAD(EyeEl))),                     // CIE*L
+             Z = (float)(EyeDist*cos(TORAD(EyeAz))*cos(TORAD(EyeEl)));   // CIE*a
+  text.append(" viewpoint:");
+  sprintf(t, "%.02f %.02f %.02f", Y*100.0, Z*100.0, X*100.0);
+  text.append(t);
+  
+  if(colours_)
+    error = oyObject_SetNames ( colours_->oy_, __FILE__, "colour lists",
+                                  text.c_str() );
+
+  colours = oyStructList_Copy( colours_, NULL );
 
   DBG_PROG_ENDE
   return colours;
 }
 
 void
-GL_Ansicht::namedColours       (oyNamedColours_s       * colours)
+GL_Ansicht::namedColours       (oyStructList_s * colours)
 {
   DBG_PROG_START
   MARK( frei(false); )
-             oyNamedColours_Release( &colours_ );
-  colours_ = oyNamedColours_Copy( colours, NULL );
+  oyStructList_Release( &colours_ );
+
+  
+  colours_ = oyStructList_Copy( colours, NULL );
 
   if (!zeig_punkte_als_messwerte &&
       punktform == MENU_dE1STERN &&
@@ -2623,7 +2810,7 @@ void
 GL_Ansicht::namedColoursRelease()
 {
   MARK( frei(false); )
-  oyNamedColours_Release( &colours_ );
+  oyStructList_Release( &colours_ );
   oyNamedColour_Release( &mouse_3D_hit );
   MARK( frei(true); )
 }
@@ -2898,7 +3085,7 @@ GL_Ansicht::setBspFaceProperties_( icc_examin_ns::FACE *faceList )
   /* updateNet_ takes care of dreiecks_netze.frei */
   for( ftrav = faceList; ftrav != 0; ftrav = ftrav->fnext )
   {
-    int pos = ftrav->id;
+    int pos = ftrav->group;
     ICCnetz & netz = dreiecks_netze[pos];
 
     for( vtrav = ftrav->vhead; vtrav->vnext != 0; vtrav = vtrav->vnext )
@@ -2932,10 +3119,13 @@ GL_Ansicht::setBspFaceProperties_( icc_examin_ns::FACE *faceList )
                                  lab, 1, icc_examin->intentGet(NULL),
                                  icc_examin->gamutwarn()?cmsFLAGS_GAMUTCHECK:0);
 
-        vtrav->color.rr = rgb[0];
-        vtrav->color.gg = rgb[1];
-        vtrav->color.bb = rgb[2];
-        delete [] rgb;
+        if(rgb)
+        {
+          vtrav->color.rr = rgb[0];
+          vtrav->color.gg = rgb[1];
+          vtrav->color.bb = rgb[2];
+          delete [] rgb;
+        }
 #endif
       }
       if(netz.aktiv)
@@ -2983,8 +3173,10 @@ GL_Ansicht::updateNet_()
     hineinNetze_( dreiecks_netze );
 
   MARK( frei(false); )
+  dreiecks_netze.frei(false);
   if(bsp)
     setBspProperties_(bsp);
+  dreiecks_netze.frei(true);
   MARK( frei(true); )
 
   DBG_PROG_ENDE
@@ -3020,7 +3212,7 @@ GL_Ansicht::hineinNetze_       (const icc_examin_ns::ICCThreadList<ICCnetz> & d_
       {
         ++n;
         if(n > old_faces_n)
-          ftrav->id = i;
+          ftrav->group = i;         // tell about the net's group id
       }
       old_faces_n = n;
     }

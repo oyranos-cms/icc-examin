@@ -74,15 +74,33 @@ icc_examin_ns::iccLockRelease ( oyranos::oyPointer         thread_lock,
       DBG_THREAD_S( "no lock provided" )
   } else {
     iccThreadMutex_m * m = (iccThreadMutex_m *) thread_lock;
-    iccUnLock( m, marker, line );
+    //iccUnLock( m, marker, line );
     error = iccThreadMutexDestroy_m( m );
 
     if(error)
     {
+      int r = error;
+      const char * err_string = "";
+      switch (r)
+      {
+        case EACCES:       err_string = "EACCES = "; break;
+        case EAGAIN:       err_string = "EAGAIN = "; break;
+        case EBUSY:        err_string = "EBUSY = "; break;
+        case EINVAL:       err_string = "EINVAL = "; break;
+        case ENOMEM:       err_string = "ENOMEM = "; break;
+        case EIO:          err_string = "EIO = "; break;
+        case ELOOP:        err_string = "ELOOP = "; break;
+        case ENAMETOOLONG: err_string = "ENAMETOOLONG = "; break;
+        case ENOENT:       err_string = "ENOENT = "; break;
+        case ENOTDIR:      err_string = "ENOTDIR = "; break;
+        case EOVERFLOW:    err_string = "EOVERFLOW = "; break;
+        case EPERM:        err_string = "EPERM = "; break;
+        default:           err_string = "Error = "; break;
+      }
       if(marker)
-        WARN_S( "Error: " << error << " at " << marker <<":"<< line )
+        WARN_S( err_string << error << " at " << marker <<":"<< line )
       else
-        WARN_S( "Error: " << error )
+        WARN_S( err_string << error )
     }
   }
 

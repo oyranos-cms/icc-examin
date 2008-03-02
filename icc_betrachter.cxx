@@ -246,6 +246,17 @@ void ICCfltkBetrachter::cb_vcgt_close_button(Fl_Button* o, void* v) {
   ((ICCfltkBetrachter*)(o->parent()->parent()->user_data()))->cb_vcgt_close_button_i(o,v);
 }
 
+void ICCfltkBetrachter::cb_menueintrag_gl_vrml_speichern_i(Fl_Menu_*, void*) {
+  DBG_PROG_START
+
+  icc_examin->gamutSpeichern (icc_examin_ns::GL_VRML);
+
+  DBG_PROG_ENDE;
+}
+void ICCfltkBetrachter::cb_menueintrag_gl_vrml_speichern(Fl_Menu_* o, void* v) {
+  ((ICCfltkBetrachter*)(o->parent()->parent()->user_data()))->cb_menueintrag_gl_vrml_speichern_i(o,v);
+}
+
 void ICCfltkBetrachter::cb_Quit_i(Fl_Menu_*, void*) {
   quit();
 }
@@ -380,6 +391,7 @@ void ICCfltkBetrachter::cb_Show(Fl_Menu_* o, void* v) {
 
 Fl_Menu_Item ICCfltkBetrachter::menu_DD_menueleiste[] = {
  {_("File"), 0,  0, 0, 64, FL_NORMAL_LABEL, 0, 14, 0},
+ {_("Save as VRML"), 0x40073,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_gl_vrml_speichern, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
  {_("Quit"), 0x40071,  (Fl_Callback*)ICCfltkBetrachter::cb_Quit, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
  {0,0,0,0,0,0,0,0,0},
  {_("View"), 0,  0, 0, 64, FL_NORMAL_LABEL, 0, 14, 0},
@@ -391,20 +403,21 @@ Fl_Menu_Item ICCfltkBetrachter::menu_DD_menueleiste[] = {
  {_("Relative Colorimetric"), 0x40072,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_rel_col_intent, 0, 2, FL_NORMAL_LABEL, 0, 14, 0},
  {_("Absolute Colorimetric"), 0x40061,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_abs_col_intent, 0, 2, FL_NORMAL_LABEL, 0, 14, 0},
  {_("BPC"), 0x40062,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_bpc, 0, 2, FL_NORMAL_LABEL, 0, 14, 0},
- {_("Native Gamut"), 0x40067,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_nativeGamut, 0, 2, FL_NORMAL_LABEL, 0, 14, 0},
+ {_("Native Gamut"), 0x40062,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_nativeGamut, 0, 2, FL_NORMAL_LABEL, 0, 14, 0},
  {0,0,0,0,0,0,0,0,0},
  {_("Windows"), 0,  0, 0, 64, FL_NORMAL_LABEL, 0, 14, 0},
  {_("Show Main Window"), 0x4006d,  (Fl_Callback*)ICCfltkBetrachter::cb_Show, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
  {0,0,0,0,0,0,0,0,0},
  {0,0,0,0,0,0,0,0,0}
 };
-Fl_Menu_Item* ICCfltkBetrachter::DD_menueintrag_Voll = ICCfltkBetrachter::menu_DD_menueleiste + 4;
-Fl_Menu_Item* ICCfltkBetrachter::menueintrag_gamutwarn = ICCfltkBetrachter::menu_DD_menueleiste + 7;
-Fl_Menu_Item* ICCfltkBetrachter::menueintrag_phot_intent = ICCfltkBetrachter::menu_DD_menueleiste + 8;
-Fl_Menu_Item* ICCfltkBetrachter::menueintrag_rel_col_intent = ICCfltkBetrachter::menu_DD_menueleiste + 9;
-Fl_Menu_Item* ICCfltkBetrachter::menueintrag_abs_col_intent = ICCfltkBetrachter::menu_DD_menueleiste + 10;
-Fl_Menu_Item* ICCfltkBetrachter::menueintrag_bpc = ICCfltkBetrachter::menu_DD_menueleiste + 11;
-Fl_Menu_Item* ICCfltkBetrachter::menueintrag_nativeGamut = ICCfltkBetrachter::menu_DD_menueleiste + 12;
+Fl_Menu_Item* ICCfltkBetrachter::menueintrag_gl_vrml_speichern = ICCfltkBetrachter::menu_DD_menueleiste + 1;
+Fl_Menu_Item* ICCfltkBetrachter::DD_menueintrag_Voll = ICCfltkBetrachter::menu_DD_menueleiste + 5;
+Fl_Menu_Item* ICCfltkBetrachter::menueintrag_gamutwarn = ICCfltkBetrachter::menu_DD_menueleiste + 8;
+Fl_Menu_Item* ICCfltkBetrachter::menueintrag_phot_intent = ICCfltkBetrachter::menu_DD_menueleiste + 9;
+Fl_Menu_Item* ICCfltkBetrachter::menueintrag_rel_col_intent = ICCfltkBetrachter::menu_DD_menueleiste + 10;
+Fl_Menu_Item* ICCfltkBetrachter::menueintrag_abs_col_intent = ICCfltkBetrachter::menu_DD_menueleiste + 11;
+Fl_Menu_Item* ICCfltkBetrachter::menueintrag_bpc = ICCfltkBetrachter::menu_DD_menueleiste + 12;
+Fl_Menu_Item* ICCfltkBetrachter::menueintrag_nativeGamut = ICCfltkBetrachter::menu_DD_menueleiste + 13;
 
 void ICCfltkBetrachter::cb_Open_i(Fl_Menu_*, void*) {
   icc_examin->oeffnen();
@@ -800,10 +813,10 @@ ard"));
       { Fl_Menu_Bar* o = DD_menueleiste = new Fl_Menu_Bar(0, 0, 385, 25);
         o->align(FL_ALIGN_LEFT|FL_ALIGN_INSIDE);
         o->when(3);
-        { Fl_Menu_Item* o = &menu_DD_menueleiste[7];
+        { Fl_Menu_Item* o = &menu_DD_menueleiste[8];
           if(icc_examin->gamutwarn()) o->set();
         }
-        { Fl_Menu_Item* o = &menu_DD_menueleiste[12];
+        { Fl_Menu_Item* o = &menu_DD_menueleiste[13];
           if(icc_examin->nativeGamut()) o->set();
         }
         o->menu(menu_DD_menueleiste);

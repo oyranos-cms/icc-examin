@@ -317,7 +317,7 @@ class ICCfltkBetrachter {open
   setTitleUrl = true;} {}
     Fl_Window ueber {
       label {About ICC Examin} open
-      xywh {869 749 365 295} type Double resizable
+      xywh {879 749 365 295} type Double resizable
       code0 {o->hide();}
       code1 {o->use_escape_hide = true;}
       class {icc_examin_ns::MyFl_Double_Window} visible
@@ -358,7 +358,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window vcgt {
       label {Grafic Card Gamma Table} open
-      xywh {248 639 370 405} type Double resizable
+      xywh {258 639 370 405} type Double resizable
       code0 {o->hide();}
       code1 {o->use_escape_hide = true;}
       class {icc_examin_ns::MyFl_Double_Window} visible
@@ -395,7 +395,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window DD {
       label Gamut open
-      xywh {868 266 385 520} type Double box NO_BOX resizable
+      xywh {878 308 385 520} type Double box NO_BOX resizable
       class {icc_examin_ns::MyFl_Double_Window} visible
     } {
       Fl_Group {} {open
@@ -408,9 +408,18 @@ class ICCfltkBetrachter {open
             label File open
             xywh {0 0 100 20}
           } {
+            MenuItem menueintrag_gl_vrml_speichern {
+              label {Save as VRML}
+              callback {DBG_PROG_START
+
+  icc_examin->gamutSpeichern (icc_examin_ns::GL_VRML);
+
+  DBG_PROG_ENDE}
+              tooltip {Save scene as VRML useful for visualisation.} xywh {30 30 100 20} shortcut 0x40073
+            }
             MenuItem {} {
               label Quit
-              callback {quit()}
+              callback {quit()} selected
               xywh {30 30 100 20} shortcut 0x40071
             }
           }
@@ -523,7 +532,7 @@ class ICCfltkBetrachter {open
   if(m->value())
     icc_examin->nativeGamut(1);
   else
-    icc_examin->nativeGamut(0);} selected
+    icc_examin->nativeGamut(0);}
               tooltip {Native - or Separation Gamut} xywh {75 75 100 20} type Toggle shortcut 0x40062
               code0 {if(icc_examin->nativeGamut()) o->set();}
             }
@@ -563,14 +572,14 @@ class ICCfltkBetrachter {open
     }
     Fl_Window details {
       label {ICC Examin} open
-      xywh {555 407 385 520} type Double box NO_BOX
+      xywh {565 449 385 520} type Double box NO_BOX
       code0 {o->main_win = o;}
       class {icc_examin_ns::MyFl_Double_Window} visible
     } {
       Fl_Group {} {open
         xywh {0 0 385 520}
       } {
-        Fl_Menu_Bar menueleiste {
+        Fl_Menu_Bar menueleiste {open
           xywh {0 0 385 25} align 4 when 3
         } {
           Submenu {} {

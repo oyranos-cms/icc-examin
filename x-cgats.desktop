@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=MimeType
+MimeType=text/x-cgats
+Icon=icc_examin.png
+Patterns=*.cgats *.ti* *.txt *.cie *.ncie *.rgb *.cmyk *.lab *.it8 *.q60
+Name=CGATS
+Comment=CGATS colour measurement
+Encoding=UTF-8

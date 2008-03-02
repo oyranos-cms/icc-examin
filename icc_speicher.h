@@ -33,7 +33,7 @@
 
 #include "icc_utils.h"
 #include <string>
-#include <time.h>
+#include <icc_helfer_time.h> // icc_examin_ns::zeitSekunden()
 
 #define DBG_SPEICHER_START   if(icc_debug >= 3) DBG_PROG_START
 #define DBG_SPEICHER_ENDE    if(icc_debug >= 3) DBG_PROG_ENDE
@@ -59,8 +59,8 @@ class Speicher
     int         id_;
     static int  globale_id_;
     std::string *name_;                   // z.B. profile name
-    double      *letze_aen_zeit_;         // lest time changed
-    double      *letze_ben_zeit_;         // lest time used
+    double      *letze_aen_zeit_;         // lest zeitSekunden changed
+    double      *letze_ben_zeit_;         // lest zeitSekunden used
 
     void        init  ()    {
                               DBG_MEM_START
@@ -103,8 +103,8 @@ class Speicher
                                 DBG_MEM_V(  letze_aen_zeit_ <<" "<<
                                            *letze_aen_zeit_ )
                                 DBG_MEM_V( *groesse_ )
-                              *letze_aen_zeit_ = (double)time(0);
-                              *letze_ben_zeit_ = (double)time(0);
+                              *letze_aen_zeit_ = icc_examin_ns::zeitSekunden();
+                              *letze_ben_zeit_ = icc_examin_ns::zeitSekunden();
                               DBG_MEM_ENDE
                             }
     void        zeiger_clear_ () {
@@ -222,7 +222,7 @@ class Speicher
 
     operator const char* () const {
                               DBG_MEM_START
-                              *letze_ben_zeit_ = (double)time(0);
+                              *letze_ben_zeit_ = icc_examin_ns::zeitSekunden();
                                 DBG_MEM_V( *name_ )
                                 DBG_MEM_V( (int*)*zeiger_<<" "<<*groesse_ <<" "<< id_ )
                               DBG_MEM_ENDE
