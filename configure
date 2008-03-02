@@ -42,6 +42,7 @@ VERSION_L=`echo $VERSION_L | sed 's/^0*//g'`
 cwdebug=0
 debug=0
 nodeps=0
+fltkconfig="fltk-config"
 
 echo ""
 echo "################################################################"
@@ -569,6 +570,9 @@ fi
 echo "CFLAGS = $CFLAGS"   >> $CONF
 echo "CXXFLAGS = $CXXFLAGS">>$CONF
 echo "LDFLAGS = $LDFLAGS" >> $CONF
+echo "CFLAGS = $CFLAGS"   >> $CONF_I18N
+echo "CXXFLAGS = $CXXFLAGS">>$CONF_I18N
+echo "LDFLAGS = $LDFLAGS" >> $CONF_I18N
 
 echo "" >> $CONF
 echo "" >> $CONF

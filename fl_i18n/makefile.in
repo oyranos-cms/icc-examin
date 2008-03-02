@@ -70,10 +70,10 @@ LIBNAME = lib$(TARGET).a
 INCL_DEP = $(INCL) $(FLTK_H) $(ALL_SOURCEFILES)
 ALL_INCL = $(INCL) $(FLTK_H) 
 
-CXXFLAGS=$(OPTS) $(ALL_INCL)
-CFLAGS = $(OPTS) $(ALL_INCL)
+CXXFLAGS_=$(OPTS) $(ALL_INCL) $(CXXFLAGS)
+CFLAG_   = $(OPTS) $(ALL_INCL) $(CFLAGS)
 
-LDLIBS = -L./ $(I18N_LIB) $(FLTK_LIBS) \
+LDLIBS_ = -L./ $(I18N_LIB) $(FLTK_LIBS) $(LDFLAGS) \
 	-L/lib \
 	$(DBG_LIBS)
 
@@ -150,9 +150,9 @@ dynamic:	$(BINTARGET)
 
 $(BINTARGET):	$(BASE) $(OBJECTS) $(LINGUAS_SRC) $(I18N_OBJECTS) $(LIBNAME)
 	echo Verknuepfen $@ ... $(OBJECTS)
-	-$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $(BINTARGET) \
+	-$(CXX) $(CXXFLAGS_) $(LDFLAGS) -o $(BINTARGET) \
 	$(OBJECTS) \
-	$(LDLIBS) $(LINK_LIB_PATH) $(LINK_SRC_PATH)
+	$(LDLIBS_) $(LINK_LIB_PATH) $(LINK_SRC_PATH)
 	$(REZ)
 
 
@@ -168,7 +168,7 @@ strip: $(BINTARGET)
 static_static:	$(OBJECTS)
 	$(CXX) $(OPTS) -o $(BINTARGET) \
 	$(OBJECTS) \
-	$(LDLIBS) -static -ljpeg -lpng -lX11 -lpthread -lz $(dl) \
+	$(LDLIBS_) -static -ljpeg -lpng -lX11 -lpthread -lz $(dl) \
 	-lfreetype -lfontconfig -lXrender -lGLU -lXext -lexpat \
 	-L/opt/local/lib
 	$(REZ)
@@ -226,15 +226,15 @@ EXEEXT		=
 
 .c.o:
 	echo Compiling $< ...
-	$(CC) $(CFLAGS) -c $<
+	$(CC) $(CFLAGS_) -c $<
 
 .cxx.o:
 	echo Compiling $< ...
-	$(CXX) $(CXXFLAGS) -c $<
+	$(CXX) $(CXXFLAGS_) -c $<
 
 .cpp.o:
 	echo Compiling $< ...
-	$(CXX) $(CXXFLAGS) -c $<
+	$(CXX) $(CXXFLAGS_) -c $<
 
 .fl.cxx:
 	echo Expanding $< ...

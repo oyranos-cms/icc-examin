@@ -216,7 +216,7 @@ fl_initialise_locale( const char *domain, const char *locale_path,
   }
   if (tmp)
     snprintf(locale,TEXTLEN, tmp);
-  set_codeset = 0;
+  //set_codeset = 0;
 # else
   DBG_PROG
 

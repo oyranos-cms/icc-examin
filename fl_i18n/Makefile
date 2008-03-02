@@ -9,13 +9,17 @@ XIN = 1
 XINERAMA_LIB = -lXinerama
 X11_LIB_PATH = -L/usr/X11R6/lib$(BARCH) -L/usr/lib$(BARCH) -L$(libdir)
 X11_LIBS=$(X11_LIB_PATH) -lX11 $(XF86VMODE_LIB) -lXpm -lXext $(XINERAMA_LIB)
+HAVE_FLTK_UTF8 = -DHAVE_FLTK_UTF8
 FLTK = 1
-FLTK_H = -I/tmp/RPMS/fltk/fltk118-utf8-2007-06-20 -I/usr/include/freetype2 -I/usr/X11R6/include -D_THREAD_SAFE -D_REENTRANT
-FLTK_LIBS = -L/tmp/RPMS/fltk/fltk118-utf8-2007-06-20/lib -L/usr/X11R6/lib -lfltk-utf8_images -lpng -lz -ljpeg -lfltk-utf8_gl -lGLU -lGL -lfltk-utf8 -lfltk_xutf8 -lXft -lXinerama -lpthread -ldl -lm -lXext -lX11 
-fltkconfig = /tmp/RPMS/fltk/fltk118-utf8-2007-06-20/fltk-utf8-config
+FLTK_H = -I/data3/CD/programme/fltk118-utf8-2007-06-23 -I/usr/include/freetype2 -I/usr/X11R6/include -D_THREAD_SAFE -D_REENTRANT
+FLTK_LIBS = -L/data3/CD/programme/fltk118-utf8-2007-06-23/lib -L/usr/X11R6/lib -lfltk-utf8_images -lpng -lz -ljpeg -lfltk-utf8_gl -lGLU -lGL -lfltk-utf8 -lfltk_xutf8 -lXft -lXinerama -lpthread -ldl -lm -lXext -lX11 
+fltkconfig = /data3/CD/programme/fltk118-utf8-2007-06-23/fltk-utf8-config
 GETTEXT = -DUSE_GETTEXT
 DEBUG = -Wall -g -DDEBUG --pedantic
 DEBUG_SWITCH = -v
+CFLAGS = -Wall -g $(INCL)
+CXXFLAGS = -Wall -g $(INCL)
+LDFLAGS = -Wall -g -L/usr/X11R6/lib -L. $(dl) $(iconv)
 TARGET=fl_i18n
 VERSION=0.0.2
 COMPILE_OPTIONS=-DUSE_THREADS $(GETTEXT)
@@ -88,10 +92,10 @@ endif
 INCL_DEP = $(INCL) $(FLTK_H) $(ALL_SOURCEFILES)
 ALL_INCL = $(INCL) $(FLTK_H) 
 
-CXXFLAGS=$(OPTS) $(ALL_INCL)
-CFLAGS = $(OPTS) $(ALL_INCL)
+CXXFLAGS_=$(OPTS) $(ALL_INCL) $(CXXFLAGS)
+CFLAG_   = $(OPTS) $(ALL_INCL) $(CFLAGS)
 
-LDLIBS = -L./ $(I18N_LIB) $(FLTK_LIBS) \
+LDLIBS_ = -L./ $(I18N_LIB) $(FLTK_LIBS) $(LDFLAGS) \
 	-L/lib \
 	$(DBG_LIBS)
 
@@ -168,9 +172,9 @@ dynamic:	$(BINTARGET)
 
 $(BINTARGET):	$(BASE) $(OBJECTS) $(LINGUAS_SRC) $(I18N_OBJECTS) $(LIBNAME)
 	echo Verknuepfen $@ ... $(OBJECTS)
-	-$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $(BINTARGET) \
+	-$(CXX) $(CXXFLAGS_) $(LDFLAGS) -o $(BINTARGET) \
 	$(OBJECTS) \
-	$(LDLIBS) $(LINK_LIB_PATH) $(LINK_SRC_PATH)
+	$(LDLIBS_) $(LINK_LIB_PATH) $(LINK_SRC_PATH)
 	$(REZ)
 
 
@@ -186,7 +190,7 @@ strip: $(BINTARGET)
 static_static:	$(OBJECTS)
 	$(CXX) $(OPTS) -o $(BINTARGET) \
 	$(OBJECTS) \
-	$(LDLIBS) -static -ljpeg -lpng -lX11 -lpthread -lz $(dl) \
+	$(LDLIBS_) -static -ljpeg -lpng -lX11 -lpthread -lz $(dl) \
 	-lfreetype -lfontconfig -lXrender -lGLU -lXext -lexpat \
 	-L/opt/local/lib
 	$(REZ)
@@ -244,15 +248,15 @@ EXEEXT		=
 
 .c.o:
 	echo Compiling $< ...
-	$(CC) $(CFLAGS) -c $<
+	$(CC) $(CFLAGS_) -c $<
 
 .cxx.o:
 	echo Compiling $< ...
-	$(CXX) $(CXXFLAGS) -c $<
+	$(CXX) $(CXXFLAGS_) -c $<
 
 .cpp.o:
 	echo Compiling $< ...
-	$(CXX) $(CXXFLAGS) -c $<
+	$(CXX) $(CXXFLAGS_) -c $<
 
 .fl.cxx:
 	echo Expanding $< ...

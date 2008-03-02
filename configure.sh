@@ -272,11 +272,20 @@ if [ -z "$fltkconfig" ]; then
   # add /usr/X11R6/bin to path for Fedora
   fltkconfig=fltk-config
   PATH=$PATH:/usr/X11R6/bin; export PATH
+  echo add fltk-config
 fi
 if [ -n "$FLTK" ] && [ $FLTK -gt 0 ]; then
   FLTK_="`$fltkconfig --cxxflags 2>>error.txt | sed \"$STRIPOPT\"`"
   if [ $? = 0 ] && [ -n "$FLTK_" ]; then
-    test -n "$ECHO" && $ECHO "FLTK `$fltkconfig --version`              detected"
+    # check for utf-8 capability
+    if [ $fltkconfig != `echo $fltkconfig | sed "s%fltk2-config%% ; s%utf8%%"` ]; then
+      echo "#define HAVE_FLTK_UTF8 1" >> $CONF_H
+      echo "HAVE_FLTK_UTF8 = -DHAVE_FLTK_UTF8" >> $CONF_I18N
+      fltk_utf8="utf-8 `$fltkconfig --version`"
+    else
+      fltk_utf8="`$fltkconfig --version`      "
+    fi
+    test -n "$ECHO" && $ECHO "FLTK $fltk_utf8        detected"
     if [ "0" -ne "`$fltkconfig --compile tests/fltk_test.cxx 2>&1 | grep lock | wc -l`" ]; then
       test -n "$ECHO" && $ECHO "!!! ERROR: FLTK has no threads support !!!"
       test -n "$ECHO" && $ECHO "           Configure FLTK with the --enable-threads option and recompile."
@@ -293,6 +302,7 @@ if [ -n "$FLTK" ] && [ $FLTK -gt 0 ]; then
     echo "FLTK_H = `$fltkconfig --cxxflags | sed \"$STRIPOPT\"`" >> $CONF_I18N
     echo "FLTK_LIBS = `$fltkconfig --use-images --use-gl --ldflags | sed \"$STRIPOPT\"`" >> $CONF_I18N
     echo "fltkconfig = $fltkconfig" >> $CONF_I18N
+
   else
     if [ $FLTK -eq 1 ]; then
       ERROR=1
@@ -300,7 +310,7 @@ if [ -n "$FLTK" ] && [ $FLTK -gt 0 ]; then
     else
       test -n "$ECHO" && $ECHO "    Warning"
     fi
-    test -n "$ECHO" && $ECHO "           FLTK is not found; download: www.fltk.org"
+    test -n "$ECHO" && $ECHO "           FLTK ($fltkconfig) is not found; download: www.fltk.org"
   fi
 fi
 
