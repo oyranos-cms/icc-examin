@@ -282,11 +282,11 @@ ICCexamin::berichtSpeichern (void)
     datei = dateiwahl->value(); DBG_PROG
   std::string titel = dateiwahl->label(); DBG_PROG
 
-  dateiwahl->filter(_("HTML Dokumente (*.htm*)")); DBG_PROG
+  dateiwahl->filter(_("HTML Documents (*.htm*)")); DBG_PROG
   #ifdef HAVE_FLU
   dateiwahl->cd(".");
   #endif
-  dateiwahl->label(_("Bericht Speichern")); DBG_PROG
+  dateiwahl->label(_("Save Report")); DBG_PROG
   dateiwahl->value(dateiname.c_str()); DBG_PROG
 
   dateiwahl->show(); DBG_PROG

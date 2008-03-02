@@ -89,7 +89,7 @@ ICCkette::oeffnen (const Speicher & prof, int pos)
     aktuelles_profil_ = 0;
     erfolgreich = true;
   } else { DBG_PROG
-    icc_examin_ns::status_info(_("Datei nicht geladen!"));
+    icc_examin_ns::status_info(_("File not loaded!"));
   }
 
   DBG_PROG_ENDE
@@ -104,7 +104,7 @@ ICCkette::oeffnen (std::string dateiname, int pos)
   // Ist das Profile eventuell schon geladen? -> Abbruch
   for(unsigned int i = 0; i < profile_.size(); ++i)
     if(dateiname == profile_[i].filename()) {
-      DBG_PROG_S( _("Datei bereits geladen")<< i <<": "<< dateiname )
+      DBG_PROG_S( _("File allready loaded")<< i <<": "<< dateiname )
       return false;
     }
 
@@ -131,7 +131,7 @@ ICCkette::oeffnen (std::string dateiname, int pos)
     aktuelles_profil_ = 0;
     erfolgreich = true;
   } else { DBG_PROG
-    icc_examin_ns::status_info(_("Datei nicht geladen!"));
+    icc_examin_ns::status_info(_("File not loaded!"));
   }
 
   /*Modell::*/benachrichtigen( pos );
@@ -162,49 +162,6 @@ ICCkette::oeffnen (std::vector<std::string> dateinamen)
     aktuelles_profil_ = 0;
 
   erfolgreich = true;
-#if 0
-  // Laden TODO: test auf Existenz der Datei (oyranos?)
-  profile_.resize(dateinamen.size());
-  for (unsigned int i = 0; i < dateinamen.size(); i++)
-  {
-    profile_[i].load (dateinamen[i]);
-    DBG_PROG_V( dateinamen[i] )
-  }
-
-  profilnamen_ = dateinamen;
-  aktiv_.resize(profile_.size());
-  profil_mzeit_.resize(profile_.size());
-  for(unsigned int i = 0; i < aktiv_.size(); i++)
-  {
-    aktiv_[i] = true;
-    profil_mzeit_[i] = holeDateiModifikationsZeit( dateinamen[i].c_str() );
-  }
-
-  if( profile_.size() )
-    aktuelles_profil_ = 0;
-
-  if (dateinamen.size()) { DBG_PROG
-    for (unsigned int i = 0; i < profile_.size(); i++) {
-      icc_examin_ns::fortschritt (0.8);
-
-      std::vector<std::string> url;
-      std::vector<std::string> param;
-        std::string st = dateinamen[i];
-        st.append (" ");
-        st.append (_("geladen"));
-        icc_examin_ns::status_info(st.c_str());
-    }
-    icc_examin_ns::fortschritt (1.0);
-    icc_examin_ns::fortschritt (1.1);
-
-    //icc_examin->icc_betrachter->tag_browser->reopen ();
-
-    //icc_examin->icc_betrachter->measurement( profile_[aktuelles_profil_].hasMeasurement() );
-    erfolgreich = true;
-  } else { DBG_PROG
-    icc_examin_ns::status_info(_("Datei nicht geladen!"));
-  }
-#endif
   DBG_PROG_ENDE
   return erfolgreich;
 }

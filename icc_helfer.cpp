@@ -288,16 +288,16 @@ renderingIntentName (int intent)
   switch (intent) 
     {
     case 0:
-      s << _("Fotografisch");
+      s << _("Photometric");
       break;
     case 1:
-      s << _("relativ Farbmetrisch");
+      s << _("Relative Colorimetric");
       break;
     case 2:
-      s << _("Gesättigt");
+      s << _("Saturation");
       break;
     case 3:
-      s << _("absolut Farbmetrisch");
+      s << _("Absolute Colorimetric");
       break;
     }
   return s.str();
@@ -358,7 +358,7 @@ getChannelNames (icColorSpaceSignature color)
 
   switch (color) {
     case icSigXYZData: texte.push_back (_("CIE X"));
-                       texte.push_back (_("CIE Y (Leuchtdichte)"));
+                       texte.push_back (_("CIE Y (Luminance)"));
                        texte.push_back (_("CIE Z")); break;
     case icSigLabData: texte.push_back (_("CIE *L"));
                        texte.push_back (_("CIE *a"));
@@ -366,29 +366,29 @@ getChannelNames (icColorSpaceSignature color)
     case icSigLuvData: texte.push_back (_("CIE *L"));
                        texte.push_back (_("CIE *u"));
                        texte.push_back (_("CIE *v")); break;
-    case icSigYCbCrData: texte.push_back (_("Leuchtdichte Y"));
-                       texte.push_back (_("Farbanteil b"));
-                       texte.push_back (_("Farbanteil r")); break;
-    case icSigYxyData: texte.push_back (_("CIE Y (Leuchtdichte)"));
+    case icSigYCbCrData: texte.push_back (_("Luminance Y"));
+                       texte.push_back (_("Colour b"));
+                       texte.push_back (_("Colour r")); break;
+    case icSigYxyData: texte.push_back (_("CIE Y (Luminance)"));
                        texte.push_back (_("CIE x"));
                        texte.push_back (_("CIE y")); break;
-    case icSigRgbData: texte.push_back (_("Rot"));
-                       texte.push_back (_("Grün"));
-                       texte.push_back (_("Blau")); break;
-    case icSigGrayData: texte.push_back (_("Schwarz")); break;
-    case icSigHsvData: texte.push_back (_("Farbton"));
-                       texte.push_back (_("Sättigung"));
-                       texte.push_back (_("Wert")); break;
-    case icSigHlsData: texte.push_back (_("Farbton"));
-                       texte.push_back (_("Helligkeit"));
-                       texte.push_back (_("Sättigung")); break;
+    case icSigRgbData: texte.push_back (_("Red"));
+                       texte.push_back (_("Green"));
+                       texte.push_back (_("Blue")); break;
+    case icSigGrayData: texte.push_back (_("Black")); break;
+    case icSigHsvData: texte.push_back (_("Hue"));
+                       texte.push_back (_("Saturation"));
+                       texte.push_back (_("Value")); break;
+    case icSigHlsData: texte.push_back (_("Hue"));
+                       texte.push_back (_("Lightness"));
+                       texte.push_back (_("Saturation")); break;
     case icSigCmykData: texte.push_back (_("Cyan"));
                        texte.push_back (_("Magenta"));
-                       texte.push_back (_("Gelb"));
-                       texte.push_back (_("Schwarz")); break;
+                       texte.push_back (_("Yellow"));
+                       texte.push_back (_("Black")); break;
     case icSigCmyData: texte.push_back (_("Cyan"));
                        texte.push_back (_("Magenta"));
-                       texte.push_back (_("Gelb")); break;
+                       texte.push_back (_("Yellow")); break;
     case icSig2colorData: nFARBEN(2) break;
     case icSig3colorData: nFARBEN(3) break;
     case icSig4colorData: nFARBEN(4) break;
@@ -403,7 +403,7 @@ getChannelNames (icColorSpaceSignature color)
     case icSig13colorData: nFARBEN(13) break;
     case icSig14colorData: nFARBEN(14) break;
     case icSig15colorData: nFARBEN(15) break;
-    default: texte.push_back (_("keine Farbe")); break;
+    default: texte.push_back (_("No Colour")); break;
   }
   return texte;
 }
@@ -417,13 +417,13 @@ getDeviceClassName (icProfileClassSignature deviceClass)
 
   switch (deviceClass)
   {
-    case icSigInputClass: text =_("Eingabe"); break;
-    case icSigDisplayClass: text =_("Monitor"); break;
-    case icSigOutputClass: text =_("Ausgabe"); break;
-    case icSigLinkClass: text =_("Verknüpfung"); break;
-    case icSigAbstractClass: text =_("Abstrakter Farbraum"); break;
-    case icSigColorSpaceClass: text =_("Farbraum"); break;
-    case icSigNamedColorClass: text =_("Schmuckfarben"); break;
+    case icSigInputClass: text =_("Input"); break;
+    case icSigDisplayClass: text =_("Display"); break;
+    case icSigOutputClass: text =_("Output"); break;
+    case icSigLinkClass: text =_("Link"); break;
+    case icSigAbstractClass: text =_("Abstract"); break;
+    case icSigColorSpaceClass: text =_("Colour Space"); break;
+    case icSigNamedColorClass: text =_("Named Colour"); break;
     default: { icUInt32Number i = icValue(deviceClass);
                char t[5];
                memcpy (t,(char*)&i, 4);
@@ -466,59 +466,59 @@ getSigTagName               ( icTagSignature  sig )
   std::string text;
 
   switch (sig) {
-    case icSigAToB0Tag: text = _("A2B0"); break;
-    case icSigAToB1Tag: text = _("A2B1"); break;
-    case icSigAToB2Tag: text = _("A2B2"); break;
-    case icSigBlueColorantTag: text = _("bXYZ"); break;
-    case icSigBlueTRCTag: text = _("bTRC"); break;
-    case icSigBToA0Tag: text = _("B2A0"); break;
-    case icSigBToA1Tag: text = _("B2A1"); break;
-    case icSigBToA2Tag: text = _("B2A2"); break;
-    case icSigCalibrationDateTimeTag: text = _("calt"); break;
-    case icSigCharTargetTag: text = _("targ"); break;
-    case icSigCopyrightTag: text = _("cprt"); break;
-    case icSigCrdInfoTag: text = _("crdi"); break;
-    case icSigDeviceMfgDescTag: text = _("dmnd"); break;
-    case icSigDeviceModelDescTag: text = _("dmdd"); break;
-    case icSigGamutTag: text = _("gamt"); break;
-    case icSigGrayTRCTag: text = _("kTRC"); break;
-    case icSigGreenColorantTag: text = _("gXYZ"); break;
-    case icSigGreenTRCTag: text = _("gTRC"); break;
-    case icSigLuminanceTag: text = _("lumi"); break;
-    case icSigMeasurementTag: text = _("meas"); break;
-    case icSigMediaBlackPointTag: text = _("bkpt"); break;
-    case icSigMediaWhitePointTag: text = _("wtpt"); break;
-    case icSigNamedColorTag: text = _("'ncol"); break;
-    case icSigNamedColor2Tag: text = _("ncl2"); break;
-    case icSigPreview0Tag: text = _("pre0"); break;
-    case icSigPreview1Tag: text = _("pre1"); break;
-    case icSigPreview2Tag: text = _("pre2"); break;
-    case icSigProfileDescriptionTag: text = _("desc"); break;
-    case 1685283693: text = _("dscm"); break;
-    case icSigProfileSequenceDescTag: text = _("pseq"); break;
-    case icSigPs2CRD0Tag: text = _("psd0"); break;
-    case icSigPs2CRD1Tag: text = _("psd1"); break;
-    case icSigPs2CRD2Tag: text = _("psd2"); break;
-    case icSigPs2CRD3Tag: text = _("psd3"); break;
-    case icSigPs2CSATag: text = _("ps2s"); break;
-    case icSigPs2RenderingIntentTag: text = _("ps2i"); break;
-    case icSigRedColorantTag: text = _("rXYZ"); break;
-    case icSigRedTRCTag: text = _("rTRC"); break;
-    case icSigScreeningDescTag: text = _("scrd"); break;
-    case icSigScreeningTag: text = _("scrn"); break;
-    case icSigTechnologyTag: text = _("tech"); break;
-    case icSigUcrBgTag: text = _("bfd"); break;
-    case icSigViewingCondDescTag: text = _("vued"); break;
-    case icSigViewingConditionsTag: text = _("view"); break;
-    case 1147500100: text = _("DevD"); break;
-    case 1128875332: text = _("CIED"); break;
-    case 1349350514: text = _("Pmtr"); break;
-    case 1986226036: text = _("vcgt"); break;
-    case 1667785060: text = _("chad"); break;
-    case icSigChromaticityType: text = _("chrm"); break;
-    case 1668051567: text = _("clro"); break;
-    case 1668051572: text = _("clrt"); break;
-    case 0: text = _("----"); break;
+    case icSigAToB0Tag: text = "A2B0"; break;
+    case icSigAToB1Tag: text = "A2B1"; break;
+    case icSigAToB2Tag: text = "A2B2"; break;
+    case icSigBlueColorantTag: text = "bXYZ"; break;
+    case icSigBlueTRCTag: text = "bTRC"; break;
+    case icSigBToA0Tag: text = "B2A0"; break;
+    case icSigBToA1Tag: text = "B2A1"; break;
+    case icSigBToA2Tag: text = "B2A2"; break;
+    case icSigCalibrationDateTimeTag: text = "calt"; break;
+    case icSigCharTargetTag: text = "targ"; break;
+    case icSigCopyrightTag: text = "cprt"; break;
+    case icSigCrdInfoTag: text = "crdi"; break;
+    case icSigDeviceMfgDescTag: text = "dmnd"; break;
+    case icSigDeviceModelDescTag: text = "dmdd"; break;
+    case icSigGamutTag: text = "gamt"; break;
+    case icSigGrayTRCTag: text = "kTRC"; break;
+    case icSigGreenColorantTag: text = "gXYZ"; break;
+    case icSigGreenTRCTag: text = "gTRC"; break;
+    case icSigLuminanceTag: text = "lumi"; break;
+    case icSigMeasurementTag: text = "meas"; break;
+    case icSigMediaBlackPointTag: text = "bkpt"; break;
+    case icSigMediaWhitePointTag: text = "wtpt"; break;
+    case icSigNamedColorTag: text = "'ncol"; break;
+    case icSigNamedColor2Tag: text = "ncl2"; break;
+    case icSigPreview0Tag: text = "pre0"; break;
+    case icSigPreview1Tag: text = "pre1"; break;
+    case icSigPreview2Tag: text = "pre2"; break;
+    case icSigProfileDescriptionTag: text = "desc"; break;
+    case 1685283693: text = "dscm"; break;
+    case icSigProfileSequenceDescTag: text = "pseq"; break;
+    case icSigPs2CRD0Tag: text = "psd0"; break;
+    case icSigPs2CRD1Tag: text = "psd1"; break;
+    case icSigPs2CRD2Tag: text = "psd2"; break;
+    case icSigPs2CRD3Tag: text = "psd3"; break;
+    case icSigPs2CSATag: text = "ps2s"; break;
+    case icSigPs2RenderingIntentTag: text = "ps2i"; break;
+    case icSigRedColorantTag: text = "rXYZ"; break;
+    case icSigRedTRCTag: text = "rTRC"; break;
+    case icSigScreeningDescTag: text = "scrd"; break;
+    case icSigScreeningTag: text = "scrn"; break;
+    case icSigTechnologyTag: text = "tech"; break;
+    case icSigUcrBgTag: text = "bfd"; break;
+    case icSigViewingCondDescTag: text = "vued"; break;
+    case icSigViewingConditionsTag: text = "view"; break;
+    case 1147500100: text = "DevD"; break;
+    case 1128875332: text = "CIED"; break;
+    case 1349350514: text = "Pmtr"; break;
+    case 1986226036: text = "vcgt"; break;
+    case 1667785060: text = "chad"; break;
+    case icSigChromaticityType: text = "chrm"; break;
+    case 1668051567: text = "clro"; break;
+    case 1668051572: text = "clrt"; break;
+    case 0: text = "----"; break;
     default: { icUInt32Number i = icValue(sig);
                char t[5];
                memcpy (t,(char*)&i, 4);
@@ -539,61 +539,61 @@ getSigTagName               ( icTagSignature  sig )
 std::string
 getSigTagDescription                            ( icTagSignature  sig )
 {
-  std::string text = "Beschreibung";
+  std::string text = _("Description");
 
   switch (sig) {
-    case icSigAToB0Tag: text = _("Farbtabelle, Gerät an Kontaktfarbraum, Anpassung 0"); break;
-    case icSigAToB1Tag: text = _("Farbtabelle, Gerät an Kontaktfarbraum, Anpassung 1"); break;
-    case icSigAToB2Tag: text = _("Farbtabelle, Gerät an Kontaktfarbraum, Anpassung 2"); break;
-    case icSigBlueColorantTag: text = _("blaue Grundfarbe"); break;
-    case icSigBlueTRCTag: text = _("blaue Farbwiedergabekurve"); break;
-    case icSigBToA0Tag: text = _("Farbtabelle, Kontaktfarbraum an Gerät, Anpassung 0"); break;
-    case icSigBToA1Tag: text = _("Farbtabelle, Kontaktfarbraum an Gerät, Anpassung 1"); break;
-    case icSigBToA2Tag: text = _("Farbtabelle, Kontaktfarbraum an Gerät, Anpassung 2"); break;
-    case icSigCalibrationDateTimeTag: text = _("Kalibrationsdatum"); break;
-    case icSigCharTargetTag: text = _("Farbmessdaten"); break;
-    case icSigCopyrightTag: text = _("Kopierrecht"); break;
+    case icSigAToB0Tag: text = _("Lockup table, device to PCS, intent photometric"); break;
+    case icSigAToB1Tag: text = _("Lockup table, device to PCS, intent relative colorimetric"); break;
+    case icSigAToB2Tag: text = _("Lockup table, device to PCS, intent saturation"); break;
+    case icSigBlueColorantTag: text = _("Blue Colorant"); break;
+    case icSigBlueTRCTag: text = _("Blue tone reproduction curve"); break;
+    case icSigBToA0Tag: text = _("Lockup table, PCS to device, intent photometric"); break;
+    case icSigBToA1Tag: text = _("Lockup table, PCS to device, intent relative colorimetric"); break;
+    case icSigBToA2Tag: text = _("Lockup table, PCS to device, intent saturation"); break;
+    case icSigCalibrationDateTimeTag: text = _("Calibration date"); break;
+    case icSigCharTargetTag: text = _("Colour measurement data"); break;
+    case icSigCopyrightTag: text = _("Copyright"); break;
     case icSigCrdInfoTag: text = _("crdi"); break;
-    case icSigDeviceMfgDescTag: text = _("Herstellerbeschreibung"); break;
-    case icSigDeviceModelDescTag: text = _("Gerätebeschreibung"); break;
-    case icSigGamutTag: text = _("Farbumfang"); break;
-    case icSigGrayTRCTag: text = _("schwarze Wiedergabekurve"); break;
-    case icSigGreenColorantTag: text = _("grüne Grundfarbe"); break;
-    case icSigGreenTRCTag: text = _("grüne Farbwiedergabekurve"); break;
-    case icSigLuminanceTag: text = _("Lichtintensität"); break;
-    case icSigMeasurementTag: text = _("Messart"); break;
-    case icSigMediaBlackPointTag: text = _("Medienschwarzpunkt"); break;
-    case icSigMediaWhitePointTag: text = _("Medienweißpunkt"); break;
-    case icSigNamedColorTag: text = _("Einzelfarben"); break;
-    case icSigNamedColor2Tag: text = _("Einzelfarben 2"); break;
-    case icSigPreview0Tag: text = _("Voransicht, fotografisch"); break;
-    case icSigPreview1Tag: text = _("Voransicht, relativ farbmetrisch"); break;
-    case icSigPreview2Tag: text = _("Voransicht, farbgesättigt"); break;
-    case icSigProfileDescriptionTag: text = _("Profilbeschreibung"); break;
-    case 1685283693: text = _("Profilbeschreibung mehrsprachig"); break;//dscm
-    case icSigProfileSequenceDescTag: text = _("Beschreibung der Profilverknüpfung"); break;
+    case icSigDeviceMfgDescTag: text = _("Device manufacturerer description"); break;
+    case icSigDeviceModelDescTag: text = _("Device model description"); break;
+    case icSigGamutTag: text = _("gamut"); break;
+    case icSigGrayTRCTag: text = _("Gray tone reproduction curve"); break;
+    case icSigGreenColorantTag: text = _("Green Colorant"); break;
+    case icSigGreenTRCTag: text = _("Green tone reproduction curve"); break;
+    case icSigLuminanceTag: text = _("Luminance"); break;
+    case icSigMeasurementTag: text = _("Measurement"); break;
+    case icSigMediaBlackPointTag: text = _("Media black point"); break;
+    case icSigMediaWhitePointTag: text = _("Media white point"); break;
+    case icSigNamedColorTag: text = _("Named Coulor"); break;
+    case icSigNamedColor2Tag: text = _("Named Coulor 2"); break;
+    case icSigPreview0Tag: text = _("Preview, photografic"); break;
+    case icSigPreview1Tag: text = _("Preview, relative colorimetric"); break;
+    case icSigPreview2Tag: text = _("Preview, saturated"); break;
+    case icSigProfileDescriptionTag: text = _("Profile description"); break;
+    case 1685283693: text = _("Profile description, multilingual"); break;//dscm
+    case icSigProfileSequenceDescTag: text = _("Profile sequence description"); break;
     case icSigPs2CRD0Tag: text = _("psd0"); break;
     case icSigPs2CRD1Tag: text = _("psd1"); break;
     case icSigPs2CRD2Tag: text = _("psd2"); break;
     case icSigPs2CRD3Tag: text = _("psd3"); break;
     case icSigPs2CSATag: text = _("ps2s"); break;
     case icSigPs2RenderingIntentTag: text = _("ps2i"); break;
-    case icSigRedColorantTag: text = _("rote Grundfarbe"); break;
-    case icSigRedTRCTag: text = _("rote Farbwiedergabekurve"); break;
+    case icSigRedColorantTag: text = _("Red Colorant"); break;
+    case icSigRedTRCTag: text = _("Red tone reproduction curve"); break;
     case icSigScreeningDescTag: text = _("scrd"); break;
     case icSigScreeningTag: text = _("scrn"); break;
     case icSigTechnologyTag: text = _("Technologie"); break;
     case icSigUcrBgTag: text = _("bfd"); break;
-    case icSigViewingCondDescTag: text = _("Beschreibung der Betrachtungbedingungen"); break;
-    case icSigViewingConditionsTag: text = _("Betrachtungsbedingungen"); break;
-    case 1147500100: text = _("Farbmessflächen"); break;//DevD
-    case 1128875332: text = _("Farbmessergebnisse"); break;//CIED
-    case 1349350514: text = _("Profilierungsparameter"); break;//Pmtr
-    case 1986226036: text = _("GrafikKartenGammaTabelle"); break;//vcgt
-    case 1667785060: text = _("Farbanpassungsmatrix"); break; //chad
-    case icSigChromaticityType: text = _("Primärfarben"); break; //chrm
-    case 1668051567: text = _("Schmuckfarbordnung"); break;//clro
-    case 1668051572: text = _("Schmuckfarbnamen"); break;//clrt
+    case icSigViewingCondDescTag: text = _("Viewing conditions description"); break;
+    case icSigViewingConditionsTag: text = _("Viewing Conditions"); break;
+    case 1147500100: text = _("Device colours"); break;//DevD
+    case 1128875332: text = _("Measured colours"); break;//CIED
+    case 1349350514: text = _("Profiling parameters"); break;//Pmtr
+    case 1986226036: text = _("VideoCardGammaTable"); break;//vcgt
+    case 1667785060: text = _("Colour adaption matrix"); break; //chad
+    case icSigChromaticityType: text = _("Chromaticity"); break; //chrm
+    case 1668051567: text = _("Named colour order"); break;//clro
+    case 1668051572: text = _("Named colour names"); break;//clrt
     case 0: text = _("----"); break;
     default: { icUInt32Number i = icValue(sig);
                char t[5];
@@ -613,34 +613,34 @@ getSigTypeName               ( icTagTypeSignature  sig )
   std::string text;
 
   switch (sig) {
-    case icSigCurveType: text = _("curv"); break;
-    case icSigDataType: text = _("data"); break;
-    case icSigDateTimeType: text = _("dtim"); break;
-    case icSigLut16Type: text = _("mft2"); break;
-    case icSigLut8Type: text = _("mft1"); break;
-    case icSigMeasurementType: text = _("meas"); break;
-    case icSigNamedColorType: text = _("ncol"); break;
-    case icSigProfileSequenceDescType: text = _("pseq"); break;
-    case icSigS15Fixed16ArrayType: text = _("sf32"); break;
-    case icSigScreeningType: text = _("scrn"); break;
-    case icSigSignatureType: text = _("sig"); break;
-    case icSigTextType: text = _("text"); break;
-    case icSigTextDescriptionType: text = _("desc"); break;
-    case icSigU16Fixed16ArrayType: text = _("uf32"); break;
-    case icSigUcrBgType: text = _("bfd"); break;
-    case icSigUInt16ArrayType: text = _("ui16"); break;
-    case icSigUInt32ArrayType: text = _("ui32"); break;
-    case icSigUInt64ArrayType: text = _("ui64"); break;
-    case icSigUInt8ArrayType: text = _("ui08"); break;
-    case icSigViewingConditionsType: text = _("view"); break;
-    case icSigXYZType: text = _("XYZ"); break;
-    //case icSigXYZArrayType: text = _("XYZ"); break;
-    case icSigNamedColor2Type: text = _("ncl2"); break;
-    case icSigCrdInfoType: text = _("crdi"); break;
-    case icSigChromaticityType: text = _("chrm"); break;
-    case 1986226036: text = _("vcgt"); break;
-    case icSigCopyrightTag: text = _("cprt?"); break; //??? (Imacon)
-    case 1835824483: text = _("mluc"); break;
+    case icSigCurveType: text = "curv"; break;
+    case icSigDataType: text = "data"; break;
+    case icSigDateTimeType: text = "dtim"; break;
+    case icSigLut16Type: text = "mft2"; break;
+    case icSigLut8Type: text = "mft1"; break;
+    case icSigMeasurementType: text = "meas"; break;
+    case icSigNamedColorType: text = "ncol"; break;
+    case icSigProfileSequenceDescType: text = "pseq"; break;
+    case icSigS15Fixed16ArrayType: text = "sf32"; break;
+    case icSigScreeningType: text = "scrn"; break;
+    case icSigSignatureType: text = "sig"; break;
+    case icSigTextType: text = "text"; break;
+    case icSigTextDescriptionType: text = "desc"; break;
+    case icSigU16Fixed16ArrayType: text = "uf32"; break;
+    case icSigUcrBgType: text = "bfd"; break;
+    case icSigUInt16ArrayType: text = "ui16"; break;
+    case icSigUInt32ArrayType: text = "ui32"; break;
+    case icSigUInt64ArrayType: text = "ui64"; break;
+    case icSigUInt8ArrayType: text = "ui08"; break;
+    case icSigViewingConditionsType: text = "view"; break;
+    case icSigXYZType: text = "XYZ"; break;
+    //case icSigXYZArrayType: text = "XYZ"; break;
+    case icSigNamedColor2Type: text = "ncl2"; break;
+    case icSigCrdInfoType: text = "crdi"; break;
+    case icSigChromaticityType: text = "chrm"; break;
+    case 1986226036: text = "vcgt"; break;
+    case icSigCopyrightTag: text = "cprt?"; break; //??? (Imacon)
+    case 1835824483: text = "mluc"; break;
     default: { icUInt32Number i = icValue(sig);
                char t[5];
                memcpy (t,(char*)&i, 4);
@@ -658,22 +658,22 @@ getSigTechnology             ( icTechnologySignature sig )
 {
   std::string text;
   switch (sig) {
-    case icSigDigitalCamera: text = _("Digitale Kamera"); break; //dcam
-    case icSigFilmScanner: text = _("Filmscanner"); break; //fscn
-    case icSigReflectiveScanner: text = _("Reflectiver Scanner"); break; //rscn
-    case icSigInkJetPrinter: text = _("Tintenstrahldrucker"); break; //ijet
-    case icSigThermalWaxPrinter: text = _("Thermischer Wachsdrucker"); break; //twax
-    case icSigElectrophotographicPrinter: text = _("Electrophotograph Drucker"); break; //epho
-    case icSigElectrostaticPrinter: text = _("Electrostatischer Drucker"); break; //esta
-    case icSigDyeSublimationPrinter: text = _("Thermosublimationsdrucker"); break; //dsub
-    case icSigPhotographicPaperPrinter: text = _("Photographischer Papierdrucker"); break; //rpho
-    case icSigFilmWriter: text = _("Filmbelichter"); break; //fprn
+    case icSigDigitalCamera: text = _("Digital camera"); break; //dcam
+    case icSigFilmScanner: text = _("Film scanner"); break; //fscn
+    case icSigReflectiveScanner: text = _("Reflective scanner"); break; //rscn
+    case icSigInkJetPrinter: text = _("InkJet printer"); break; //ijet
+    case icSigThermalWaxPrinter: text = _("Thermal wax printer"); break; //twax
+    case icSigElectrophotographicPrinter: text = _("Electrophotographic printer"); break; //epho
+    case icSigElectrostaticPrinter: text = _("Electrostatic printer"); break; //esta
+    case icSigDyeSublimationPrinter: text = _("Dye sublimation printer"); break; //dsub
+    case icSigPhotographicPaperPrinter: text = _("Photographic paper printer"); break; //rpho
+    case icSigFilmWriter: text = _("Film writer"); break; //fprn
     case icSigVideoMonitor: text = _("Video Monitor"); break; //vidm
-    case icSigVideoCamera: text = _("Video Kamera"); break; //vidc
+    case icSigVideoCamera: text = _("Video camera"); break; //vidc
     case icSigProjectionTelevision: text = _("Projection Television"); break; //pjtv
-    case icSigCRTDisplay: text = _("Kathodenstrahlmonitor"); break; //CRT
-    case icSigPMDisplay: text = _("Passivmatrixmonitor"); break; //PMD
-    case icSigAMDisplay: text = _("Aktivmatrixmonitor"); break; //AMD
+    case icSigCRTDisplay: text = _("Cathode ray tube display"); break; //CRT
+    case icSigPMDisplay: text = _("Passive matrix monitor"); break; //PMD
+    case icSigAMDisplay: text = _("Active matrix monitor"); break; //AMD
     case icSigPhotoCD: text = _("Photo CD"); break; //KPCD
     case icSigPhotoImageSetter: text = _("PhotoImageSetter"); break; //imgs
     case icSigGravure: text = _("Gravure"); break; //grav
@@ -698,14 +698,14 @@ getIlluminant             ( icIlluminant sig )
 {
   std::string text;
   switch (sig) {
-    case icIlluminantUnknown: text = _("Illuminant unbekannt"); break;
+    case icIlluminantUnknown: text = _("Illuminant unknown"); break;
     case icIlluminantD50: text = _("Illuminant D50"); break;
     case icIlluminantD65: text = _("Illuminant D65"); break;
     case icIlluminantD93: text = _("Illuminant D93"); break;
     case icIlluminantF2: text = _("Illuminant F2"); break;
     case icIlluminantD55: text = _("Illuminant D55"); break;
     case icIlluminantA: text = _("Illuminant A"); break;
-    case icIlluminantEquiPowerE: text = _("Illuminant mit ausgeglichener Energie E"); break;
+    case icIlluminantEquiPowerE: text = _("Illuminant with equal energy E"); break;
     case icIlluminantF8: text = _("Illuminant F8"); break;
     case icMaxEnumIluminant: text = _("Illuminant ---"); break;
 
@@ -719,10 +719,10 @@ getStandardObserver             ( icStandardObserver sig )
 {
   std::string text;
   switch (sig) {
-    case icStdObsUnknown: text = _("unbekannt"); break;
-    case icStdObs1931TwoDegrees: text = _("2 Grad (1931)");
+    case icStdObsUnknown: text = _("unknown"); break;
+    case icStdObs1931TwoDegrees: text = _("2 degree (1931)");
          break;
-    case icStdObs1964TenDegrees: text = _("10 Grad (1964)");
+    case icStdObs1964TenDegrees: text = _("10 degree (1964)");
          break;
     case icMaxStdObs: text = _("---"); break;
 
@@ -736,7 +736,7 @@ getMeasurementGeometry             ( icMeasurementGeometry sig )
 {
   std::string text;
   switch (sig) {
-    case icGeometryUnknown: text = _("unbekannt"); break;
+    case icGeometryUnknown: text = _("unknown"); break;
     case icGeometry045or450: text = _("0/45, 45/0"); break;
     case icGeometry0dord0: text = _("0/d or d/0"); break;
     case icMaxGeometry: text = _("---"); break;
@@ -809,7 +809,7 @@ ladeDatei ( std::string dateiname, size_t *size )
     if (dateiname == "")
     {
       DBG_PROG_ENDE
-      throw ausn_file_io (_("kein Dateiname angegeben"));
+      throw ausn_file_io (_("no filename given"));
     }
     DBG_MEM
     if (!f) {

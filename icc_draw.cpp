@@ -630,44 +630,44 @@ TagDrawings::drawKurve_    ()
     fl_color(FL_LIGHT2);
     if        (name == "rTRC") {
       fl_color(FL_RED);
-      name = _("Rot");
+      name = _("Red");
     } else if (name == "gTRC") {
       fl_color(FL_GREEN);
-      name = _("Grün");
+      name = _("Green");
     } else if (name == "bTRC") {
       fl_color(FL_BLUE);
-      name = _("Blau");
+      name = _("Blue");
     } else if (name == "kTRC"
             || name == "bdf") {
       fl_color(FL_LIGHT2);
-      name = _("Grau");
-    } else if (name == _("Rot")) {
+      name = _("Gray");
+    } else if (name == _("Red")) {
       fl_color(FL_RED);
-    } else if (name == _("Grün")) {
+    } else if (name == _("Green")) {
       fl_color(FL_GREEN);
-    } else if (name == _("Blau")) {
+    } else if (name == _("Blue")) {
       fl_color(FL_BLUE);
     } else if (name == _("Cyan")) {
       fl_color(FL_CYAN);
     } else if (name == _("Magenta")) {
       fl_color(FL_MAGENTA);
-    } else if (name == _("Gelb")) {
+    } else if (name == _("Yellow")) {
       fl_color(FL_YELLOW);
-    } else if (name == _("Schwarz")) {
+    } else if (name == _("Black")) {
       fl_color(FL_BLACK);
-    } else if (name == _("Leuchtdichte")) {
+    } else if (name == _("Luminance")) {
       fl_color(FL_WHITE);
-    } else if (name == _("Leuchtdichte Y")) {
+    } else if (name == _("Luminance Y")) {
       fl_color(FL_WHITE);
     } else if (name == _("CIE X")) {
       fl_color(FL_RED);
-    } else if (name == _("CIE Y (Leuchtdichte)")) {
+    } else if (name == _("CIE Y (Luminance)")) {
       fl_color(FL_GREEN);
     } else if (name == _("CIE Z")) {
       fl_color(FL_BLUE);
-    } else if (name == _("Helligkeit")) {
+    } else if (name == _("Lightness")) {
       fl_color(FL_WHITE);
-    } else if (name == _("Wert")) {
+    } else if (name == _("Value")) {
       fl_color(FL_WHITE);
     } else if (name == _("CIE *L")) {
       fl_color(FL_WHITE);
@@ -675,9 +675,9 @@ TagDrawings::drawKurve_    ()
       fl_color(FL_RED);
     } else if (name == _("CIE *b")) {
       fl_color(FL_BLUE);
-    } else if (name == _("Farbanteil b")) {
+    } else if (name == _("Colour b")) {
       fl_color(FL_BLUE);
-    } else if (name == _("Farbanteil r")) {
+    } else if (name == _("Colour r")) {
       fl_color(FL_RED);
     } else {
       fl_color(9 + j);

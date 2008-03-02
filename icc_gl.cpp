@@ -723,7 +723,7 @@ GL_Ansicht::tabelleAuffrischen()
   if(tabelle_.size()) {
     if( (int)tabelle_[0][0][0].size() <= kanal) {
       kanal = tabelle_[0][0][0].size()-1;
-      DBG_PROG_S( _("Kanalauswahl geoendert: ") << kanal )
+      DBG_PROG_S( _("Kanalauswahl geaendert: ") << kanal )
     }
   }
 
@@ -958,9 +958,6 @@ GL_Ansicht::netzeAuffrischen()
     glListen[RASTER] = 0;
   }
 
-      //glNewList(id()*DL_MAX + RASTER, GL_COMPILE); DBG_PROG_V( id()*DL_MAX + RASTER )
-      //glListen[RASTER] = true;
-
       #ifndef Beleuchtung
       glDisable(GL_LIGHTING);
       #endif
@@ -1043,7 +1040,6 @@ GL_Ansicht::netzeAuffrischen()
       #ifndef Beleuchtung
       glEnable(GL_LIGHTING);
       #endif
-      //glEndList();
 
   DBG_PROG_ENDE
 }
@@ -1183,6 +1179,7 @@ GL_Ansicht::punkteAuffrischen()
 extern float cieXYZ [471][3]; // in 
 #include <lcms.h>
 
+// TODO: -> Oyranos
 #define PRECALC cmsFLAGS_NOTPRECALC 
 #if 0
 #define BW_COMP cmsFLAGS_WHITEBLACKCOMPENSATION
@@ -1315,8 +1312,8 @@ GL_Ansicht::menueErneuern_()
   menue_schnitt_->add("text_L", 0,c_, (void*)Agviewer::ICCFLY_L, 0);
   menue_schnitt_->add("text_a", 0,c_, (void*)Agviewer::ICCFLY_a, 0);
   menue_schnitt_->add("text_b", 0,c_, (void*)Agviewer::ICCFLY_b, 0);
-  menue_schnitt_->add(_("Schnitt"), 0,c_, (void*)Agviewer::FLYING, 0);
-  menue_schnitt_->add(_("Drehen um Schnitt"),0,c_,(void*)Agviewer::ICCPOLAR, 0);
+  menue_schnitt_->add(_("Slice"), 0,c_, (void*)Agviewer::FLYING, 0);
+  menue_schnitt_->add(_("Rotate around slice"),0,c_,(void*)Agviewer::ICCPOLAR, 0);
   DBG_PROG
 
   if (von_farb_namen_.size() >= 3)
@@ -1325,60 +1322,60 @@ GL_Ansicht::menueErneuern_()
     static char text_a[64];
     static char text_b[64];
     static char text_S[64];
-    sprintf (text_L, "%s %s", von_farb_namen_[0].c_str(), _("Schnitt"));
+    sprintf (text_L, "%s %s", von_farb_namen_[0].c_str(), _("Slice"));
     menue_schnitt_->replace( 0, text_L);
-    sprintf (text_a, "%s %s", von_farb_namen_[1].c_str(), _("Schnitt"));
+    sprintf (text_a, "%s %s", von_farb_namen_[1].c_str(), _("Slice"));
     menue_schnitt_->replace( 1, text_a);
-    sprintf (text_b, "%s %s", von_farb_namen_[2].c_str(), _("Schnitt"));
+    sprintf (text_b, "%s %s", von_farb_namen_[2].c_str(), _("Slice"));
     menue_schnitt_->replace( 2, text_b);
-    sprintf (text_S, "%s %s %s", _("Drehen um"),von_farb_namen_[0].c_str(), _("Achse"));
+    sprintf (text_S, "%s %s %s", _("Rotate around"),von_farb_namen_[0].c_str(), _("axis"));
     menue_schnitt_->replace( 4, text_S);
   }
   DBG_PROG
 
-  menue_->add (_("Querschnitt"),0,0, cpMenueButton(menue_schnitt_),FL_SUBMENU_POINTER);
+  menue_->add (_("Slice plane"),0,0, cpMenueButton(menue_schnitt_),FL_SUBMENU_POINTER);
 
   // ->Darstellung->Hintergrundfarbe
-  menue_hintergrund_->add(_("Weiss"), 0,c_, (void*)MENU_WEISS, 0);
-  menue_hintergrund_->add(_("Hellgrau"), 0,c_, (void*)MENU_HELLGRAU, 0);
-  menue_hintergrund_->add(_("Grau"), 0,c_, (void*)MENU_GRAUGRAU, 0);
-  menue_hintergrund_->add(_("Dunkelgrau"), 0,c_, (void*)MENU_DUNKELGRAU, 0);
-  menue_hintergrund_->add(_("Schwarz"), 0,c_, (void*)MENU_SCHWARZ, 0);
+  menue_hintergrund_->add(_("White"), 0,c_, (void*)MENU_WEISS, 0);
+  menue_hintergrund_->add(_("Light gray"), 0,c_, (void*)MENU_HELLGRAU, 0);
+  menue_hintergrund_->add(_("Gray"), 0,c_, (void*)MENU_GRAUGRAU, 0);
+  menue_hintergrund_->add(_("Dark gray"), 0,c_, (void*)MENU_DUNKELGRAU, 0);
+  menue_hintergrund_->add(_("Black"), 0,c_, (void*)MENU_SCHWARZ, 0);
   DBG_PROG
 
-  menue_form_->add (_("Hintergrundfarbe"),0,c_,cpMenueButton(menue_hintergrund_),FL_SUBMENU_POINTER);
+  menue_form_->add (_("Background colour"),0,c_,cpMenueButton(menue_hintergrund_),FL_SUBMENU_POINTER);
 
   // ->Darstellung
   if(id_ == 1)
   {
-    menue_form_->add( _("grau"), 0,c_, (void*)MENU_GRAU, 0 );
-    menue_form_->add( _("farbig"), 0,c_, (void*)MENU_FARBIG, 0 );
-    menue_form_->add( _("kontrastreich"), 0,c_, (void*)MENU_KONTRASTREICH, 0 );
-    menue_form_->add( _("schalen"), 0,c_, (void*)MENU_SCHALEN, 0 );
+    menue_form_->add( _("gray"), 0,c_, (void*)MENU_GRAU, 0 );
+    menue_form_->add( _("coloured"), 0,c_, (void*)MENU_FARBIG, 0 );
+    menue_form_->add( _("high contrast"), 0,c_, (void*)MENU_KONTRASTREICH, 0 );
+    menue_form_->add( _("shells"), 0,c_, (void*)MENU_SCHALEN, 0 );
   } else {
     // Kugeln mit ihrem Radius symbolisieren Messfarben
     if(zeig_punkte_als_messwerte)
     {
-      menue_form_->add( _("Kugel 1dE"), 0,c_, (void*)MENU_dE1KUGEL, 0 );
-      menue_form_->add( _("Kugel 2dE"), 0,c_, (void*)MENU_dE2KUGEL, 0 );
-      menue_form_->add( _("Kugel 4dE"), 0,c_, (void*)MENU_dE4KUGEL, 0 );
+      menue_form_->add( _("Sphere 1dE"), 0,c_, (void*)MENU_dE1KUGEL, 0 );
+      menue_form_->add( _("Sphere 2dE"), 0,c_, (void*)MENU_dE2KUGEL, 0 );
+      menue_form_->add( _("Sphere 4dE"), 0,c_, (void*)MENU_dE4KUGEL, 0 );
     } else {
     #ifdef Lab_STERN
-      menue_form_->add( _("Stern"), 0,c_, (void*)MENU_dE1STERN, 0 );
+      menue_form_->add( _("Star"), 0,c_, (void*)MENU_dE1STERN, 0 );
     #else
       // Punkte werden für Bildfarben reserviert
-      menue_form_->add( _("Punkt"), 0,c_, (void*)MENU_dE1STERN, 0 );
+      menue_form_->add( _("Point"), 0,c_, (void*)MENU_dE1STERN, 0 );
     #endif
     }
-    menue_form_->add( _("ohne Farborte"), 0,c_, (void*)MENU_DIFFERENZ_LINIE, 0);
-    menue_form_->add( _("Spektrallinie"), 0,c_, (void*)MENU_SPEKTRALBAND, 0 );
+    menue_form_->add( _("without markers"), 0,c_, (void*)MENU_DIFFERENZ_LINIE, 0);
+    menue_form_->add( _("Spektral line"), 0,c_, (void*)MENU_SPEKTRALBAND, 0 );
   }
   DBG_PROG
-  menue_form_->add( _("Texte"), 0,c_, (void*)MENU_HELFER, 0 );
+  menue_form_->add( _("Texts"), 0,c_, (void*)MENU_HELFER, 0 );
   DBG_PROG_V( menue_form_->size() )
-  menue_form_->replace( menue_form_->size()-2, _("Texte/Pfeile an/aus"));
+  menue_form_->replace( menue_form_->size()-2, _("Texts/Arrows on/off"));
 
-  menue_->add (_("Darstellung"),0,c_,cpMenueButton(menue_form_),FL_SUBMENU_POINTER);
+  menue_->add (_("Illustration"),0,c_,cpMenueButton(menue_form_),FL_SUBMENU_POINTER);
 
   DBG_PROG_V( menue_->size() )
 
@@ -1393,7 +1390,7 @@ GL_Ansicht::menueErneuern_()
   menue_button_->copy(menue_->menu());
   menue_button_->callback(c_);
 
-  icc_examin_ns::status_info(_("linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menue"));
+  icc_examin_ns::status_info(_("left-/middle-/right mouse button -> rotate/cut/menu"));
 
   DBG_PROG_ENDE
 }
@@ -1482,8 +1479,8 @@ GL_Ansicht::zeichnen()
        int scal = 1;
        std::string text;
        if(id() == 1) {
-         text.append(_("Kanal:"));
-         text.append(" ");
+         text.append(_("Channel"));
+         text.append(": ");
          text.append(kanalName());
 
          #ifdef HAVE_FTGL
@@ -1661,7 +1658,7 @@ GL_Ansicht::hineinTabelle (std::vector<std::vector<std::vector<std::vector<doubl
   valid(false);
   redraw();
 
-  icc_examin_ns::status_info(_("linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menue"));
+  icc_examin_ns::status_info(_("left-/middle-/right mouse button -> rotate/cut/menu"));
 
   DBG_PROG_ENDE
 }
@@ -1776,7 +1773,7 @@ GL_Ansicht::menueAufruf ( int value )
       break;
     case Agviewer::ICCFLY_a:
       vorder_schnitt = std_vorder_schnitt;
-     icc_examin_ns::status_info(_("senkrechter Schnitt von rechts; linker Mausklick setzt zurueck"));
+      icc_examin_ns::status_info(_("senkrechter Schnitt von rechts; linker Mausklick setzt zurueck"));
       agv_.duenn = true;
       break;
     case Agviewer::ICCFLY_b:
@@ -1795,7 +1792,7 @@ GL_Ansicht::menueAufruf ( int value )
     if (value >= MENU_MAX &&
         value < 100) {
       kanal = value - MENU_MAX; DBG_PROG_V( kanal )
-      icc_examin_ns::status_info(_("linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menue"));
+      icc_examin_ns::status_info(_("left-/middle-/right mouse button -> rotate/cut/menu"));
     }
   }
 
