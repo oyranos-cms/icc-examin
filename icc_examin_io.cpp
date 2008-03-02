@@ -91,7 +91,7 @@ ICCexamin::oeffnenThread_ (int pos)
   {
       // Oberflaechenpflege
     icc_examin_ns::lock(__FILE__,__LINE__);
-    erneuerTagBrowserText_ ();
+    //erneuerTagBrowserText_ ();
     if(icc_betrachter->DD_farbraum->visible() &&
        !icc_betrachter->inspekt_html->visible() )
       icc_betrachter->DD_farbraum->damage(FL_DAMAGE_ALL);

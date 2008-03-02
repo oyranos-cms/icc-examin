@@ -46,7 +46,6 @@
 
 
 class ICCmeasurement {
-                        ICCmeasurement     (); 
                         ICCmeasurement     (ICCprofile* profil);
     int                 id_;
   friend class ICCprofile;
@@ -54,6 +53,7 @@ class ICCmeasurement {
     void                defaults ();
 
   public:
+                        ICCmeasurement     (); 
                         ICCmeasurement     (ICCprofile* profil , ICCtag& tag);
                         ICCmeasurement     (ICCprofile* profil,
                                             icTag& tag, char* data);

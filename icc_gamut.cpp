@@ -129,8 +129,8 @@ iccGrenze(ICCprofile & profil, int intent, size_t & groesse)
   icColorSpaceSignature csp = profil.colorSpace();
   if(csp == icSigRgbData ||
      csp == icSigCmykData) {
-    icUInt16Number *block = (icUInt16Number*) alloca(200*4*sizeof(double));
-    icUInt16Number *lab_block = (icUInt16Number*) alloca(200*4*sizeof(double));
+    icUInt16Number *block = (icUInt16Number*) malloc(200*4*sizeof(double));
+    icUInt16Number *lab_block = (icUInt16Number*) malloc(200*4*sizeof(double));
     size_t size=0;
     char  *p_block = 0;
     p_block = profil.saveProfileToMem(&size);
@@ -169,6 +169,8 @@ iccGrenze(ICCprofile & profil, int intent, size_t & groesse)
     if(lab) cmsCloseProfile(lab);
     if(p) cmsCloseProfile(p);
     if(p_block) delete [] p_block;
+    if(block) free (block);
+    if(lab_block) free (lab_block);
   }
   DBG_PROG_ENDE
   return (double*)lab_erg;

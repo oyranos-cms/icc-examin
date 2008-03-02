@@ -65,7 +65,7 @@ decl {\#include "icc_gl.h"} {}
 
 decl {using namespace icc_examin_ns;} {} 
 
-Function {iccReadInfo(char* filename)} {return_type {char*}
+Function {iccReadInfo(char* filename)} {open return_type {char*}
 } {
   code DBG_PROG_START {}
   code {char systemBefehl[1024];
@@ -113,7 +113,7 @@ class TagBrowser {: {public Fl_Hold_Browser}
   }
 } 
 
-class TagTexts {: {public Fl_Hold_Browser}
+class TagTexts {open : {public Fl_Hold_Browser}
 } {
   decl {int X; int Y; int W; int H; const char* start_info;} {}
   decl {int inspekt_topline;} {public
@@ -125,6 +125,8 @@ class TagTexts {: {public Fl_Hold_Browser}
     code DBG_PROG_START {}
     code {//Text aus tag_browser anzeigen
 
+      inspekt_topline = this->topline();
+
       this->clear();
 
       std::vector <std::string> texte = icc_parser::zeilenNachVector( text );
@@ -132,9 +134,10 @@ class TagTexts {: {public Fl_Hold_Browser}
         this->add( texte[i].c_str(), 0);
 
 
-      this->topline(0);
+      this->topline(inspekt_topline);
       this->textfont(FL_COURIER);
-      this->textsize(14);} {}
+      this->textsize(14);} {selected
+    }
     code DBG_PROG_ENDE {}
   }
 } 
@@ -229,8 +232,7 @@ class My_Fl_Box {: {public Fl_Box}
   }
 } 
 
-class ICCfltkBetrachter {open
-} {
+class ICCfltkBetrachter {} {
   decl {bool setTitleUrl;
 
  int px,py,pw,ph;
@@ -317,7 +319,7 @@ class ICCfltkBetrachter {open
   \#endif} {}
     Fl_Window ueber {
       label {About ICC Examin}
-      xywh {672 601 366 241} type Double resizable
+      xywh {682 643 366 241} type Double resizable
       code0 {o->hide();} non_modal visible
     } {
       Fl_Group {} {open
@@ -335,7 +337,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window vcgt {
       label {Grafic Card Gamma Table}
-      xywh {495 78 370 390} type Double resizable
+      xywh {505 120 370 390} type Double resizable
       code0 {o->hide();} visible
     } {
       Fl_Group {} {open
@@ -375,7 +377,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window details {
       label {ICC Examin} open
-      xywh {335 23 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
+      xywh {842 190 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
     } {
       Fl_Group {} {open
         xywh {0 0 385 520}
@@ -468,7 +470,7 @@ class ICCfltkBetrachter {open
   DBG_PROG_V( menueintrag_3D->value() )
   DBG_PROG_V( menueintrag_huelle->value() )
   icc_examin->icc_betrachterNeuzeichnen(icc_examin->icc_betrachter->DD_farbraum);
-  DBG_PROG_ENDE} selected
+  DBG_PROG_ENDE}
             xywh {60 60 100 20} type Toggle shortcut 0x40068
           }
           submenu {} {

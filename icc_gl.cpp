@@ -1381,7 +1381,7 @@ GL_Ansicht::zeigeUmrisse_()
     DBG_PROG_V( n )
     if(!n) continue;
 
-    Lab_Speicher = (double*) alloca (sizeof(double) * n*3);
+    Lab_Speicher = (double*) malloc (sizeof(double) * n*3);
     if(!Lab_Speicher)  WARN_S( _("Lab_speicher Speicher nicht verfuegbar") )
 
     for ( int j = 0; j < n; ++j)
@@ -1392,7 +1392,7 @@ GL_Ansicht::zeigeUmrisse_()
                                  (size_t)n, icc_examin->intent(), 0);
     DBG_PROG_V( n )
     // Schatten erzeugen
-    Lab_Speicher_schatten = (double*) alloca (sizeof(double) * n*3);
+    Lab_Speicher_schatten = (double*) malloc (sizeof(double) * n*3);
     for (int i = 0; i < n*2; ++i)
       Lab_Speicher_schatten[i] = Lab_Speicher[i];
     for (int i = 0; i < n; ++i) {
@@ -1410,6 +1410,8 @@ GL_Ansicht::zeigeUmrisse_()
       for(int k = 0; k < 3 ; ++k)
         dreiecks_netze[d].umriss[j].farbe[k] = RGBSchatten_Speicher[j*3+k];
 
+    if (Lab_Speicher) free (Lab_Speicher);
+    if (Lab_Speicher_schatten) free (Lab_Speicher_schatten);
     if (RGB_Speicher) delete [] RGB_Speicher;
 
   }

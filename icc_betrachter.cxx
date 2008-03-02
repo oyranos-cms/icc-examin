@@ -57,6 +57,8 @@ void TagTexts::hinein(std::string text) {
   DBG_PROG_START
   //Text aus tag_browser anzeigen
 
+      inspekt_topline = this->topline();
+
       this->clear();
 
       std::vector <std::string> texte = icc_parser::zeilenNachVector( text );
@@ -64,7 +66,7 @@ void TagTexts::hinein(std::string text) {
         this->add( texte[i].c_str(), 0);
 
 
-      this->topline(0);
+      this->topline(inspekt_topline);
       this->textfont(FL_COURIER);
       this->textsize(14);
   DBG_PROG_ENDE

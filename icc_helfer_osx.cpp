@@ -148,7 +148,7 @@ namespace icc_examin_ns {
         cfstring = CFURLCopyPath(fontURL);
         // copy to a C buffer
         CFIndex gr = 1024;
-        char *text = (char*)alloca (CFStringGetLength(cfstring));
+        char *text = (char*)malloc (CFStringGetLength(cfstring));
         text[0] = 0;
         CFStringGetCString( cfstring, text, gr, kCFStringEncodingISOLatin1 );
         adresse = text;
@@ -157,6 +157,7 @@ namespace icc_examin_ns {
         }
         DBG_PROG_S( adresse )
         CFRelease(cfstring);
+        if(text) free (text);
       } else { WARN_S( "Für "<<dateiname<<"|"<<ende<<" kein Adresse gefunden" ) }
     }
     return adresse;

@@ -34,8 +34,6 @@
 //#include <FL/Fl.H>
 //#include <FL/Fl_Double_Window.H>
 
-ICCexamin *icc_examin;
-
 void MallocDebug_CheckFreeList();
 
 int

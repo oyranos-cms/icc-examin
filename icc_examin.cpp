@@ -63,6 +63,8 @@ using namespace icc_examin_ns;
 #define DBG_EXAMIN_S( texte )
 #endif
 
+ICCexamin *icc_examin;
+
 
 ICCexamin::ICCexamin ()
 { DBG_PROG_START
@@ -825,7 +827,7 @@ tastatur(int e)
          Fl::event_length())
       {
         DBG_PROG_S( Fl::event_text() );
-        char *temp = (char*)alloca(Fl::event_length()+1),
+        char *temp = (char*)malloc(Fl::event_length()+1),
              *text;
         sprintf(temp, Fl::event_text());
         std::vector<std::string>profilnamen;
@@ -842,6 +844,7 @@ tastatur(int e)
         if(profilnamen[pos].size())
           icc_parser::suchenErsetzen(profilnamen[pos], suchen, ersetzen, 0);
         icc_examin->oeffnen(profilnamen);
+        free(temp);
       }
       dnd_kommt = false;
 #     else
@@ -851,7 +854,7 @@ tastatur(int e)
         {
           int len = Fl::event_length();
           DBG_PROG_V( len )
-          char *temp = (char*)alloca(MAX_PATH*64/*Fl::event_length()+1*/),
+          char *temp = (char*)malloc(MAX_PATH*64/*Fl::event_length()+1*/),
                *text;
           memcpy(temp, Fl::event_text(), Fl::event_length());
           temp[len]=0;
@@ -873,7 +876,7 @@ tastatur(int e)
             DBG_PROG_V( profilnamen[i] )
             if(strstr(profilnamen[i].c_str(), filter_a)) {
               int len_neu = len-strlen(filter_a);
-              char *txt = (char*)alloca(profilnamen[i].size()+1);
+              char *txt = (char*)malloc(profilnamen[i].size()+1);
               memcpy(txt, &(profilnamen[i].c_str())[strlen(filter_a)],
                      len_neu);
               txt[len_neu]=0;
@@ -882,6 +885,7 @@ tastatur(int e)
               if(zeiger)
                 zeiger[0] = 0;
               profilnamen[i] = txt;
+              free(txt);
             }
             DBG_PROG_V( profilnamen[i] )
             // Leerzeichen filtern
@@ -891,6 +895,7 @@ tastatur(int e)
             DBG_PROG_S( i <<" "<< profilnamen[i] );
           }
           icc_examin->oeffnen(profilnamen);
+          free(temp);
           dnd_kommt = false;
         }
       }
