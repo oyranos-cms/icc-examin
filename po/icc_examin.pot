@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2005-06-29 23:38+0200\n"
+"POT-Creation-Date: 2005-06-30 06:47+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -273,11 +273,11 @@ msgstr ""
 msgid "Keine Kurve gefunden"
 msgstr ""
 
-#: icc_examin.cpp:382
+#: icc_examin.cpp:390
 msgid "verstecke "
 msgstr ""
 
-#: icc_examin.cpp:386
+#: icc_examin.cpp:394
 msgid "zeige     "
 msgstr ""
 
@@ -2094,7 +2094,7 @@ msgid "!!! Warnung !!!"
 msgstr ""
 
 #: icc_version.h:9
-msgid "Mai 2004 - Mai 2005"
+msgid "Mai 2004 - Jun 2005"
 msgstr ""
 
 #: icc_waehler.h:67

@@ -317,10 +317,18 @@ ICCexamin::moniHolen ()
 
   size_t size;
   char *moni_profil = icc_oyranos.holeMonitorProfil( 0, &size );
+  if(!moni_profil || !size) {
+    frei_ = true;
+    DBG_PROG_ENDE
+    return;
+  }
+
   Speicher s (moni_profil, size);
   std::vector<Speicher> ss;
   ss.push_back(s);
   oeffnen (ss);
+
+  // TODO: X notification event
   saveMemToFile("/tmp/vcgt_temp.icc", moni_profil, size);
   system ("xcalib /tmp/vcgt_temp.icc");
   remove ("/tmp/vcgt_temp.icc");
