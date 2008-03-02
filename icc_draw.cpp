@@ -716,14 +716,14 @@ TagDrawings::drawKurve_    ()
                      yNachBild( kurven2[j][i].first) );
         }
       }
-      s << name << _(" mit ") << kurven2[j].size() << _(" Punkten")<<": "<<symbol_[symbol_n_];
+      s << name << _(" with ") << kurven2[j].size() << _(" points")<<": "<<symbol_[symbol_n_];
       fl_draw ( s.str().c_str(), xNachBild(min_x) + 2, yNachBild(max_y) + j*16 + 12);
       ++symbol_n_;
     } else if (kurven[j].size() == 0 &&
                ist_kurve) {
       fl_line (xNachBild( min_x ), yNachBild( min_y ), xNachBild( max_x ), yNachBild( max_y ) );
       // Infos einblenden 
-      s << name << _(" mit Gamma: 1.0");
+      s << name << _(" with Gamma: 1.0");
       fl_draw ( s.str().c_str(), xNachBild(0) + 2, yNachBild(max_y) + j*16 +12);
     // parametrischer Eintrag
     } else if (kurven[j].size() == 1
@@ -736,7 +736,7 @@ TagDrawings::drawKurve_    ()
                  xNachBild( pow( (double)i/segmente, gamma ) * max_x ),
                  yNachBild( (i) / ((segmente-1) / max_y) ) );
       // Infos einblenden 
-      s << name << _(" mit einem Eintrag für Gamma: ") << gamma; DBG_NUM_V( gamma )
+      s << name << _(" with one entry for gamma: ") << gamma; DBG_NUM_V( gamma )
       fl_draw ( s.str().c_str(), xNachBild(0) + 2, yNachBild(max_y) + j*16 +12);
     // parametrischer Eintrag mit Wert für Minimum und Maximum 
     } else if (kurven[j].size() == 3
@@ -755,7 +755,7 @@ TagDrawings::drawKurve_    ()
                  yNachBild( (i) / ((segmente-1) / max_y) ) );
       }
       // Infos einblenden 
-      s << name << _(" mit einem Eintrag für Gamma: ") << gamma;
+      s << name << _(" with one entry for gamma: ") << gamma;
       fl_draw ( s.str().c_str(), xNachBild(0) + 2, yNachBild(max_y) + j*16 +12);
     // segmentierte Kurve
     } else { // Wertebereich 0.0 -> max_[x,y]
@@ -776,7 +776,7 @@ TagDrawings::drawKurve_    ()
                               / max_y) ) );
       }
       // Infos einblenden 
-      s << name << _(" mit ") << kurven[j].size() << _(" Punkten");
+      s << name << _(" with ") << kurven[j].size() << _(" points");
       fl_draw ( s.str().c_str(), xNachBild(min_x) + 2, yNachBild(max_y) + j*16 +12);
     }
   }

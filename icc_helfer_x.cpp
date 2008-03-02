@@ -53,9 +53,9 @@ leseGrafikKartenGamma        (std::string display_name,
   std::vector<std::vector<double> > kurven;
 
   texte.resize(4);
-  texte[0] = _("Rot");
-  texte[1] = _("Grün");
-  texte[2] = _("Blau");
+  texte[0] = _("Red");
+  texte[1] = _("Green");
+  texte[2] = _("Blue");
   texte[3] = "gamma_start_ende";
 
   if(display_name.size())

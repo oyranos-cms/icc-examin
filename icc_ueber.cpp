@@ -83,21 +83,44 @@ getUeberHtml()
 <br>";
   html << _("Date") << ": " << ICC_EXAMIN_D; html << " \
 <br> \
-<p> \
-ICC Examin ist ein Betrachter von Farbprofilen gem&auml;&szlig; ICC Standard  - www.color.org . \
-Im Moment werden Version 2 Profile unterst&uuml;tzt. \
+<p>";
+  html << _(
+"ICC Examin is a viewer for colour profiles according to ICC "
+"standard  - www.color.org . At the moment version 2 profiled are supported.");
+  html << " \
 </p>\n \
-<p> \
-Farbprofile sind erh&auml;ltlich ofmals von Herstellern optischer Ger&auml;te (digitale Kameras, Scanner, Drucker). Mit ICC Examin haben Sie die M&ouml;glichkeit einen Eindruck vom Aufbau als auch, unter Umst&auml;nden, von der Qualit&auml;t eines Profiles zu erlangen. <br> \
+<p>";
+  html << _(
+"The appliance of colour profiles shall help to achive an easy colour data "
+"exchange, regardless which application or what kind of operating system is "
+"used. As well colour adaption between different devices is possible, "
+"provided the colour characteristics of both devices are known. "
+"The qulity of a colour transform from one to an other device depends mainly "
+"on the quality of the colour measurement and the used profiling algorithm "
+"during profile creation.");
+  html << " \
 </p>\n \
-<p> \
-Die Anwendung von Farbprofilen soll einen reibungslosen Datenaustausch zwischen unterschiedlichen Farbr&auml;umen und den Abgleich auf unterschiedlichen Ger&auml;ten mit Ihren jeweiligen physikalischen Gegebenheiten erm&ouml;glichen. Dies h&auml;ngt insbesondere von der Qualit&auml;t der verwendeten Farbprofile ab. \
+<p>";
+  html << _(
+"Colour profiles are often available from manufacturers of optical devices "
+"(digital camera, scanner, printer). With ICC Examin you can get an impression "
+"of the internal data , stored in a ICC profile. For profiles containing "
+"measurement data, ICC Examin can generate a quality report. The deviation, "
+"calculated from the measurement data is shown as well in the three "
+"dimensional gamut viewer.<br>");
+  html << " \
 </p>\n \
-<p> \
-Die Farbumwandlungen werden zur Zeit durch Funktionen der little CMS Programmbibliothek realisiert. \
+<p>";
+  html << _(
+"The internal colour transformations are currently realised with funktions "
+"of the littleCMS program library.");
+  html << " \
 </p>\n \
-<p> \
-Mein herzlicher Dank gilt insbesondere Marti Maria und den vielen Schreibenden der Lcms-user Emailliste. \
+<p>";
+  html << _(
+"My cordially thank is especially dedicated to Marti Maria and the many "
+"writers of the Lcms-user email list.");
+  html << " \
 </p>\n \
 <br> \
 <br> \
@@ -106,54 +129,75 @@ Mein herzlicher Dank gilt insbesondere Marti Maria und den vielen Schreibenden d
     </td> \
   </tr> \
 </table>\
-<p>\n\
-ICC Examin benutzt forgende Bibliotheken:<br>\n \
-<p> \
-  FLTK: Bill Spitzack und andere www.fltk.org<br>\n";
+<p>\n";
+  html << _(
+"ICC Examin uses following libraries:<br>\n");
+  html << " \
+<p>";
+  html << _(
+"  FLTK: Bill Spitzack and others www.fltk.org<br>\n");
 #ifdef HAVE_FLU
-html << " \
+  html << " \
 </p>\n \
-<p> \
-  FLU: Jason Bryan www.osc.edu/~jbryan/FLU/<br>\n";
+<p>";
+  html << _(
+"  FLU: Jason Bryan www.osc.edu/~jbryan/FLU/<br>\n");
 #endif
-html << " \
+  html << " \
 </p>\n \
-<p> \
-  littleCMS: Marti Maria www.littlecms.com<br>\n \
+<p>";
+  html << _(
+"  littleCMS: Marti Maria www.littlecms.com<br>\n");
+  html << " \
  <br> \
  <br> \
 </p>\n \
 <br>\n";
 #ifdef HAVE_FTGL
-html << " \
-<p> \
-  FTGL: Henry Maddocks homepages.paradise.net.nz/henryj/code/#FTGL<br>\n \
+  html << " \
+<p>";
+  html << _(
+"  FTGL: Henry Maddocks homepages.paradise.net.nz/henryj/code/#FTGL<br>\n");
+  html << " \
 </p>";
 #endif
-html << " \
-<p> \
-integrierte Quelltexte:<br>\n \
-<p> \
-  agv 3D Navigation: Philip Winston<br>\n \
+  html << " \
+<p>";
+  html << _(
+"integrated sources, lock at the according files for licence conditions:<br>\n");
+  html << " \
+<p>";
+  html << _(
+"  agv 3D Navigation: Philip Winston<br>\n");
+  html << " \
 </p>\n \
 </p>\n \
-<p> \
-  freeglut: freeglut.sf.net<br>\n \
-  (partiell eingebunden) Beachte spezielle Lizenzbedingungen in freeglut*.[c,h] Dateien<br>\
+<p>";
+  html << _(
+"  freeglut: freeglut.sf.net<br>\n"
+"   (partialy used) <br>");
+  html << " \
 <br>\
 </p>\n \
-<p> \
-F&uuml;r die Visualisation des Farbumfangs (Erzeugung extern):<br>\n \
-<p> \
-  argyll: Greame Gill web.access.net.au/argyll/argyllcms.html<br<br><br>\n \
+<p>";
+  html << _(
+"For the visualisation of gamut (external):<br>\n");
+  html << " \
+<p>";
+  html << _( 
+"  argyll: Greame Gill web.access.net.au/argyll/argyllcms.html<br<br><br>\n");
+  html << " \
 <br>\n \
 </p>\n \
 </p>\n \
 \
 </p>\n \
-<p>\n\
-    all icc_* Dateien sind lizenziert unter der GPL.<br> \
-    Die anderen Dateien k&ouml;nnen abweichende Lizenzbedingungen in den Dateik&ouml;pfen enthalten. \
+<p>\n";
+  html << _( 
+"    all icc_* files are licensed under the GPL.<br>"     
+"    The other files may contain deverine licenses which are detectable from "
+"file headers. ");
+  html << " \
 <br<br> \
 </p>\n \
 <P> \

@@ -72,10 +72,10 @@ class ICCexamin : public icc_examin_ns::Beobachter
   private:
     int  _item,  _mft_item;
     int  _zeig_prueftabelle,
-         histogram_angezeigt_;
+         farbraum_angezeigt_;
     int  status_;
     bool frei_,                  // wird nicht von weiterem Prozess benutzt
-         histogram_modus_;       // profile.profil() enthält ncl2 Schmuckfarben
+         farbraum_modus_;        // profile.profil() enthält ncl2 Schmuckfarben
     ICCwaehler *icc_waehler_;
   public:
     int  laeuft ()  { return status_; }          // kann bei >1 genutzt werden
@@ -93,10 +93,10 @@ class ICCexamin : public icc_examin_ns::Beobachter
     std::vector<std::vector<double> >               punkte;
     std::vector<std::vector<std::string> >          texte;
 
-    void histogram();
-    void histogram(int erneuere_nummer_in_profile_kette);
-    bool histogramModus( ) { return histogram_modus_; }
-    void histogramModus( int profil );
+    void farbraum();
+    void farbraum(int erneuere_nummer_in_profile_kette);
+    bool farbraumModus( ) { /*DBG_PROG_V( farbraum_modus_ );*/ return farbraum_modus_; }
+    void farbraumModus( int profil );
     void messwertLese  ( int n,
                          std::vector<double> & p,
                          std::vector<float>  & f,

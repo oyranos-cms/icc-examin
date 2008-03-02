@@ -84,7 +84,7 @@ class TagBrowser {open : {public Fl_Hold_Browser}
   decl {int X; int Y; int W; int H; char* start_info; std::string selectedTagName;} {public
   }
   Function {TagBrowser(int X,int Y,int W,int H,char* start_info) : Fl_Hold_Browser(X,Y,W,H,start_info), X(X), Y(Y), W(W), H(H)} {} {}
-  Function {reopen_nicht()} {open selected
+  Function {reopen_nicht()} {open
   } {
     code DBG_PROG_START {}
     code {} {}
@@ -300,9 +300,9 @@ class ICCfltkBetrachter {open
     dateiwahl->preview_label = _("Preview");
   \#endif} {}
     Fl_Window ueber {
-      label {About ICC Examin}
-      xywh {567 641 366 241} type Double hide resizable
-      code0 {o->hide();} non_modal
+      label {About ICC Examin} open
+      xywh {572 662 366 241} type Double resizable
+      code0 {o->hide();} non_modal visible
     } {
       Fl_Group {} {open
         xywh {0 0 365 240}
@@ -318,8 +318,8 @@ class ICCfltkBetrachter {open
       }
     }
     Fl_Window vcgt {
-      label {Grafic Card Gamma Table}
-      xywh {586 318 370 390} type Double resizable
+      label {Grafic Card Gamma Table} open
+      xywh {591 339 370 390} type Double resizable
       code0 {o->hide();} non_modal visible
     } {
       Fl_Group {} {open
@@ -353,8 +353,8 @@ class ICCfltkBetrachter {open
       }
     }
     Fl_Window details {
-      label {ICC Details}
-      xywh {818 418 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
+      label {ICC Examin} open
+      xywh {823 439 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
     } {
       Fl_Group {} {open
         xywh {0 0 385 520}
@@ -413,7 +413,7 @@ class ICCfltkBetrachter {open
   DBG_PROG_V( widget_oben )
   DBG_PROG_V( menueintrag_3D->value() )
   DBG_PROG_V( menueintrag_huelle->value() )
-  icc_examin->neuzeichnen(icc_examin->icc_betrachter->DD_histogram);
+  icc_examin->neuzeichnen(icc_examin->icc_betrachter->DD_farbraum);
   DBG_PROG_ENDE}
             xywh {60 60 100 20} type Toggle shortcut 0x40068
           }
@@ -456,7 +456,7 @@ class ICCfltkBetrachter {open
   DBG_PROG_V( widget_oben )
   DBG_PROG_V( menueintrag_3D->value() )
   DBG_PROG_V( menueintrag_huelle->value() )
-  icc_examin->neuzeichnen(icc_examin->icc_betrachter->DD_histogram);
+  icc_examin->neuzeichnen(icc_examin->icc_betrachter->DD_farbraum);
   DBG_PROG_ENDE}
               xywh {50 50 100 20} type Toggle shortcut 0x40068 hide divider
             }
@@ -510,12 +510,12 @@ icc_examin->testZeigen();}
             menuitem {} {
               label About
               callback {ueber->show();
-ueber_html->value(getUeberHtml().c_str());}
+ueber_html->value(getUeberHtml().c_str());} selected
               xywh {5 5 100 20} shortcut 0xffbe
             }
           }
         }
-        Fl_Box DD_histogram {
+        Fl_Box DD_farbraum {
           xywh {0 25 385 470}
           code0 {o->hide();}
           class GL_Ansicht
@@ -678,9 +678,9 @@ ueber_html->value(getUeberHtml().c_str());}
     mft_gl->stop();
     mft_gl->hide();
   }
-  if (widget != DD_histogram ) {
-    DD_histogram->stop();
-    DD_histogram->hide();
+  if (widget != DD_farbraum ) {
+    DD_farbraum->stop();
+    DD_farbraum->hide();
   }
 
   // start
@@ -693,7 +693,7 @@ ueber_html->value(getUeberHtml().c_str());}
   }
 
   if (widget != mft_gl &&
-      widget != DD_histogram )
+      widget != DD_farbraum )
   { 
     ((Fl_Widget*)widget)->show(); DBG_PROG
     if( !menueintrag_inspekt->value() &&
@@ -702,9 +702,9 @@ ueber_html->value(getUeberHtml().c_str());}
   } else if (widget == mft_gl) {
     DBG_PROG_S( "mft GL Fenster belassen." )
     mft_gl->show();
-  } else if (widget == DD_histogram) {
+  } else if (widget == DD_farbraum) {
     DBG_PROG_S( "3D GL Fenster belassen." )
-    DD_histogram->show();
+    DD_farbraum->show();
   }} {}
     code DBG_PROG_ENDE {}
   }

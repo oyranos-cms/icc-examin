@@ -145,7 +145,7 @@ COMMON_CPPFILES = \
 	icc_cgats_filter.cpp \
 	icc_draw.cpp \
 	icc_examin.cpp \
-	icc_examin_histogram.cpp \
+	icc_examin_farbraum.cpp \
 	icc_examin_io.cpp \
 	icc_examin_tagwahl.cpp \
 	icc_fenster.cpp \
@@ -298,20 +298,29 @@ potfile:
 	-o $(POT_FILE) \
 	$(SOURCES)
 	for ling in $(LINGUAS); do \
+	  test -f po/$${ling}.po \
+        && (echo "prepare po/$${ling}.utf-8 ..."; \
+            if [ $$ling = de ]; then \
+              echo transkodiere Uebersetzung von po/$${ling}.po nach po/$${ling}.utf-8; \
+              cat po/$${ling}.po | sed s/charset=$(CHARSET_DE)/charset=UTF-8/ > po/$${ling}.utf-8; \
+              $(RECODE) $(CHARSET_DE)..utf-8 po/$${ling}.utf-8; \
+            else \
+              echo "no native language po file created for $$ling"; \
+            fi); \
       test -f po/$${ling}.utf-8 \
         && (echo "update translation in po/$${ling}.utf-8 ..."; \
             $(MSGMERGE) po/$${ling}.utf-8 $(POT_FILE)) \
-        || (echo "to start translation - create po/$${ling}.po with:"; \
-            echo "        msginit -o po/$${ling}.po -i $(POT_FILE)"); \
+        || (echo "creation of po/$${ling}.utf-8 failed"); \
 	  test -f $(POT_FILE) \
-        && (echo "erase po/$${ling}.po ..."; \
+        && (echo "write po/$${ling}.po back ..."; \
             if [ $$ling = de ]; then \
               echo transkodiere Uebersetzung von po/$${ling}.utf-8 nach po/$${ling}.po; \
               cat po/$${ling}.utf-8 | sed s/charset=UTF-8/charset=$(CHARSET_DE)/ > po/$${ling}.po; \
               $(RECODE) utf-8..$(CHARSET_DE) po/$${ling}.po; \
+              $(RM) po/$${ling}.utf-8; \
             else \
-              echo "no native language po file created for $$ling"; \
-            fi) \
+              echo "could not write back to native language po for $$ling"; \
+            fi); \
 	done;
 
 $(POT_FILE):	potfile
@@ -337,7 +346,7 @@ config:
 	configure.sh
 
 depend:
-	echo "schaue nach Abhängikeiten ..."
+	echo "schaue nach Abhaengikeiten ..."
 	echo "MAKEDEPEND_ISUP = 1" > mkdepend
 	$(MAKEDEPEND) -f mkdepend \
 	-s "#nicht editieren/dont edit - automatisch generiert" \
@@ -380,7 +389,7 @@ tgz:
 	$(COPY) $(POT_FILE) Entwickeln/po
 	for ling in $(LINGUAS); do \
 	  test -f po/$${ling}.po \
-        && $(COPY) po/$${ling}.po Entwickeln/po/$${ling}.utf-8; \
+        && $(COPY) po/$${ling}.po Entwickeln/po/; \
 	done;
 	tar cf - Entwickeln/ \
 	| gzip > $(TARGET)_$(mtime).tgz
@@ -398,7 +407,7 @@ targz:
 	$(COPY) $(POT_FILE) $(TARGET)_$(VERSION)/po
 	for ling in $(LINGUAS); do \
 	  test -f po/$${ling}.po \
-        && $(COPY) po/$${ling}.po $(TARGET)_$(VERSION)/po/$${ling}.utf-8; \
+        && $(COPY) po/$${ling}.po $(TARGET)_$(VERSION)/po/; \
 	done;
 	tar cf - $(TARGET)_$(VERSION)/ \
 	| gzip > $(TARGET)_$(mtime).tgz
@@ -407,7 +416,7 @@ targz:
 	test `pwd` != `(cd $(TARGET)_$(VERSION); pwd)` && \
 	rm -R $(TARGET)_$(VERSION) 
 
-# Abhängigkeiten
+# Abhaengigkeiten
 include mkdepend
 
 ifndef MAKEDEPEND_ISUP

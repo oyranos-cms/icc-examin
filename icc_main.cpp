@@ -47,7 +47,7 @@ main (int argc, char** argv)
     icc_debug = 0;
 
 
-  char* locale = setlocale (/*LC_ALL*/LC_MESSAGES, "");
+  char* locale = setlocale (LC_MESSAGES, "");
   if(locale)
     DBG_PROG_S( locale );
 
@@ -63,10 +63,6 @@ main (int argc, char** argv)
     bdtd = bindtextdomain ("icc_examin", SRC_LOCALEDIR);
     DBG_PROG_S( "Versuche locale in " << bdtd );
   }
-
-  DBG_PROG_V( _("Yes") )
-  DBG_PROG_V( _("File") )
-  DBG_PROG_V( _("About ICC Examin") )
 
   ICCexamin hauptprogramm;
 

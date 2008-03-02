@@ -1,3 +1,7 @@
+2005-04-27
+	* und: de Übersetzung vollständig
+	* fix: *.po is now the translation file and *.utf-8 temporarily used
+
 2005-04-26
 	* und: Menüs Texte werden ausgetauscht; Fluid Zeigernamen bleiben erhalten
 	* und: i18n: msgmerge obtains utf-8; de: recode -> latin-1 +
@@ -83,7 +87,7 @@
 
 2005-01-20
 	* neu: Spektralbanddarstellung fertig
-	* neu: Laden von Messdateien -> 3D Histogram
+	* neu: Laden von Messdateien -> 3D Farbraum
 	* neu: [Escape] wird in icc_examin als Tastenkürzel abgefangen
 
 2005-01-19
@@ -101,7 +105,7 @@
 	* fix: html Bericht Speichern
 
 2005-01-17
-	* neu: Messdaten / Differenz im Histogramfenster
+	* neu: Messdaten / Differenz im Farbraumfenster
 	* neu: Menü für Messdaten in GL : Kugel, Stern , nur Differenzen
 	* neu: Spektralbanddarstellung vorbereitet
 
@@ -112,7 +116,7 @@
 
 version 0.17
 2005-01-14
-	* neu: Messdaten im Histogramfenster darstellen 
+	* neu: Messdaten im Farbraumfenster darstellen 
 
 2005-01-13
 	* neu: drawCurve/CIE greift über id von TagDrawing auf Daten in icc_examin

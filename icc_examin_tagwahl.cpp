@@ -77,7 +77,7 @@ ICCexamin::waehleTag (int item)
     text = profile.profil()->printLongHeader(); DBG_PROG
     icc_betrachter->tag_text->hinein(text);
 
-    if(histogramModus())
+    if(farbraumModus())
       _item = item;
 
     text = "";

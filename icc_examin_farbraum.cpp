@@ -62,12 +62,12 @@ ICCexamin::messwertLese (int n,
       ICCmeasurement messung = profile[n]->getMeasurement();
 
       if(messung.valid() && profile[n]->size())
-        icc_betrachter->DD_histogram->zeig_punkte_als_messwert_paare = true;
+        icc_betrachter->DD_farbraum->zeig_punkte_als_messwert_paare = true;
       else
-        icc_betrachter->DD_histogram->zeig_punkte_als_messwert_paare = false;
-      DBG_NUM_V( icc_betrachter->DD_histogram->zeig_punkte_als_messwert_paare )
-      icc_betrachter->DD_histogram->zeig_punkte_als_messwerte = true;
-      DBG_NUM_V( icc_betrachter->DD_histogram->zeig_punkte_als_messwerte )
+        icc_betrachter->DD_farbraum->zeig_punkte_als_messwert_paare = false;
+      DBG_NUM_V( icc_betrachter->DD_farbraum->zeig_punkte_als_messwert_paare )
+      icc_betrachter->DD_farbraum->zeig_punkte_als_messwerte = true;
+      DBG_NUM_V( icc_betrachter->DD_farbraum->zeig_punkte_als_messwerte )
 
       unsigned int j;
       int n = messung.getPatchCount(); DBG_PROG_V( messung.getPatchCount() )
@@ -77,7 +77,7 @@ ICCexamin::messwertLese (int n,
         for (unsigned i = 0; i < daten.size(); ++i)
           p.push_back(daten[i]);
         // ... dann die über das Profil errechneten Lab Werte
-        if (icc_betrachter->DD_histogram->zeig_punkte_als_messwert_paare) {
+        if (icc_betrachter->DD_farbraum->zeig_punkte_als_messwert_paare) {
           daten = messung.getCmmLab(j);
           for (unsigned i = 0; i < daten.size(); ++i)
             p.push_back(daten[i]);
@@ -88,7 +88,7 @@ ICCexamin::messwertLese (int n,
           f.push_back((float)daten[i]);
         }
         f.push_back(1.0);
-        if (icc_betrachter->DD_histogram->zeig_punkte_als_messwert_paare)
+        if (icc_betrachter->DD_farbraum->zeig_punkte_als_messwert_paare)
         { daten = messung.getCmmRGB(j);
           for (unsigned i = 0; i < daten.size(); ++i)
             f.push_back(daten[i]);
@@ -106,7 +106,7 @@ ICCexamin::netzLese (int n,
                      std::vector<ICCnetz> *netz)
 {
   DBG_PROG_START
-  if( profile.size() == 0 && histogramModus()) {
+  if( profile.size() == 0 && farbraumModus()) {
     netz->resize(1);
     return;
   }
@@ -125,7 +125,7 @@ ICCexamin::netzLese (int n,
   if(s.size())
   {
     int intent = 3;
-    if(histogramModus())
+    if(farbraumModus())
       intent = profile.profil()->intent();
 
     netz_temp = icc_oyranos. netzVonProfil( s, intent );
@@ -164,15 +164,15 @@ ICCexamin::farbenLese (int n,
     for(unsigned i = 0; i < f.size(); ++i)
       f[i] = 1.0;
     p.erase( p.begin() );
-    icc_betrachter->DD_histogram->zeig_punkte_als_messwert_paare = false;
-    icc_betrachter->DD_histogram->zeig_punkte_als_messwerte = false;
+    icc_betrachter->DD_farbraum->zeig_punkte_als_messwert_paare = false;
+    icc_betrachter->DD_farbraum->zeig_punkte_als_messwerte = false;
   }
 
   DBG_PROG_ENDE
 }
 
 void
-ICCexamin::histogram (int n)
+ICCexamin::farbraum (int n)
 {
   DBG_PROG_START
   frei_ = false;
@@ -207,17 +207,17 @@ ICCexamin::histogram (int n)
   }
 
   bool neues_netz = false;
-  if( n >= (int)icc_betrachter->DD_histogram-> dreiecks_netze.size() )
+  if( n >= (int)icc_betrachter->DD_farbraum-> dreiecks_netze.size() )
     neues_netz = true;
 
-  //if(p.size())
-    icc_betrachter->DD_histogram->hineinPunkte( p, f, namen, texte );
+  if(n == 0)
+    icc_betrachter->DD_farbraum->hineinPunkte( p, f, namen, texte );
 
-  if((int)icc_betrachter->DD_histogram-> dreiecks_netze .size() <= n)
-    icc_betrachter->DD_histogram-> dreiecks_netze .resize( n + 1 );
+  if((int)icc_betrachter->DD_farbraum-> dreiecks_netze .size() <= n)
+    icc_betrachter->DD_farbraum-> dreiecks_netze .resize( n + 1 );
 
-  std::vector<ICCnetz> *netz = &icc_betrachter->DD_histogram->dreiecks_netze;
-  DBG_PROG_V( icc_betrachter->DD_histogram-> dreiecks_netze.size() <<" "<< n )
+  std::vector<ICCnetz> *netz = &icc_betrachter->DD_farbraum->dreiecks_netze;
+  DBG_PROG_V( icc_betrachter->DD_farbraum-> dreiecks_netze.size() <<" "<< n )
 
 
   if( profile.size() > n && !ncl2_profil )
@@ -228,7 +228,7 @@ ICCexamin::histogram (int n)
   if(netz->size() && neues_netz)
   {
     if((n == 0 && ncl2_profil)
-    || (n == 1 && histogramModus())
+    || (n == 1 && farbraumModus())
     || profile.size() == 1 )
     {
       (*netz)[n].transparenz = 0.25;
@@ -238,29 +238,31 @@ ICCexamin::histogram (int n)
       (*netz)[n].grau = true;
     }
 
-    icc_betrachter->DD_histogram->achsNamen( texte );
+    icc_betrachter->DD_farbraum->achsNamen( texte );
   }
   if(ncl2_profil)
-    icc_betrachter->DD_histogram->dreiecks_netze[n].transparenz = 1.0;
-
+    icc_betrachter->DD_farbraum->dreiecks_netze[n].transparenz = 1.0;
+  if(icc_betrachter->DD_farbraum->dreiecks_netze[n].name == "")
+    icc_betrachter->DD_farbraum->dreiecks_netze[n].name =
+                                                         profile[n]->filename();
 
   frei_ = true;
   DBG_PROG_ENDE
 }
 
 void
-ICCexamin::histogram ()
+ICCexamin::farbraum ()
 {
   DBG_PROG_START
   frei_ = false;
 
 
   for(int i = 0; i < profile.size(); ++i)
-    histogram(i);
+    farbraum(i);
 
-  /*if(icc_betrachter->DD_histogram -> dreiecks_netze.size())
-    icc_betrachter->DD_histogram ->
-      dreiecks_netze [icc_betrachter->DD_histogram->dreiecks_netze.size()-1]
+  /*if(icc_betrachter->DD_farbraum -> dreiecks_netze.size())
+    icc_betrachter->DD_farbraum ->
+      dreiecks_netze [icc_betrachter->DD_farbraum->dreiecks_netze.size()-1]
         . transparenz = 0.7;*/
 
   DBG_PROG_V( profile.size() )
@@ -270,16 +272,20 @@ ICCexamin::histogram ()
 }
 
 void
-ICCexamin::histogramModus (int profil)
+ICCexamin::farbraumModus (int profil)
 {
   DBG_PROG_START
   frei_ = false;
 
-  histogram_modus_ = false;
-  if(profile.size() && profile.profil()->hasTagName("ncl2"))
-    histogram_modus_ = true;
+  farbraum_modus_ = false;
+  if(profile.size() && profile.profil()->hasTagName("ncl2")) {
+    farbraum_modus_ = true;
+    DBG_PROG_S( "setzte Farbraum Modus" )
+  } else if(!profile.size()) {
+    WARN_S( "zu früh mit " << profile.size() << " Profilen" )
+  }
 
-  DBG_PROG_V( histogram_modus_ )
+  DBG_PROG_V( farbraum_modus_ )
 
   frei_ = true;
   DBG_PROG_ENDE

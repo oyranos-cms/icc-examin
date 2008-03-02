@@ -148,7 +148,7 @@ private:
   inline void cb_About_i(Fl_Menu_*, void*);
   static void cb_About(Fl_Menu_*, void*);
 public:
-  GL_Ansicht *DD_histogram;
+  GL_Ansicht *DD_farbraum;
   Fl_Help_View *inspekt_html;
   Fl_Tile *examin;
   TagBrowser *tag_browser;

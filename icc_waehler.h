@@ -43,7 +43,7 @@
 #include <FL/Fl_Value_Slider.H>
 #include <FL/Fl_Light_Button.H>
 
-// Einstellungen direkt in icc_examin->icc_betrachter->DD_histogram
+// Einstellungen direkt in icc_examin->icc_betrachter->DD_farbraum
 
 class ICCwaehlerProfil : public Fl_Pack
 {
@@ -51,13 +51,13 @@ class ICCwaehlerProfil : public Fl_Pack
   void aktiv_knopf_cb_() {
                 if(aktiv_knopf_->value()) {DBG_PROG_START
                   aktivieren(true);
-                  icc_examin->icc_betrachter->DD_histogram->dreiecks_netze[parent()->find(this)].aktiv = true;
+                  icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze[parent()->find(this)].aktiv = true;
                 } else {
                   aktivieren(false);
-                  icc_examin->icc_betrachter->DD_histogram->dreiecks_netze[parent()->find(this)].aktiv = false;
+                  icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze[parent()->find(this)].aktiv = false;
                 }
-                icc_examin->icc_betrachter->DD_histogram->draw();
-                icc_examin->icc_betrachter->DD_histogram->flush();
+                icc_examin->icc_betrachter->DD_farbraum->draw();
+                icc_examin->icc_betrachter->DD_farbraum->flush();
                 DBG_PROG_ENDE
               }
   static void aktiv_knopf_cb_statisch_(Fl_Widget* w, void* data) {DBG_PROG_START
@@ -72,9 +72,9 @@ class ICCwaehlerProfil : public Fl_Pack
   Fl_Output *name_;
   Fl_Value_Slider *transparenz_;
   void transparenz_cb_() {
-                icc_examin->icc_betrachter->DD_histogram->dreiecks_netze[parent()->find(this)].transparenz = transparenz_->value();
-                icc_examin->icc_betrachter->DD_histogram->draw();
-                icc_examin->icc_betrachter->DD_histogram->flush();
+                icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze[parent()->find(this)].transparenz = transparenz_->value();
+                icc_examin->icc_betrachter->DD_farbraum->draw();
+                icc_examin->icc_betrachter->DD_farbraum->flush();
               }
   static void transparenz_cb_statisch_(Fl_Widget* w, void* data) {
                 ICCwaehlerProfil* obj = dynamic_cast<ICCwaehlerProfil*>(w->parent()->parent());
@@ -83,9 +83,9 @@ class ICCwaehlerProfil : public Fl_Pack
               }
   Fl_Light_Button *grau_;
   void grau_cb_() {
-                icc_examin->icc_betrachter->DD_histogram->dreiecks_netze[parent()->find(this)].grau = grau_->value();
-                icc_examin->icc_betrachter->DD_histogram->draw();
-                icc_examin->icc_betrachter->DD_histogram->flush();
+                icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze[parent()->find(this)].grau = grau_->value();
+                icc_examin->icc_betrachter->DD_farbraum->draw();
+                icc_examin->icc_betrachter->DD_farbraum->flush();
               }
   static void grau_cb_statisch_(Fl_Widget* w, void* data) {
                 ICCwaehlerProfil* obj = dynamic_cast<ICCwaehlerProfil*>(w->parent()->parent());
@@ -124,7 +124,7 @@ class ICCwaehlerProfil : public Fl_Pack
               o->value(transparenz);
               o->callback(transparenz_cb_statisch_);
             }
-            { Fl_Light_Button* o = grau_ = new Fl_Light_Button(409, 6, 65, 25, "Grau");
+            { Fl_Light_Button* o = grau_ = new Fl_Light_Button(409, 6, 65, 25, _("Gray"));
               o->selection_color(FL_DARK3);
               o->value(grau);
               o->callback(grau_cb_statisch_);

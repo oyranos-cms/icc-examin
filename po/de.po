@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ICC Examin 0.28\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2005-04-26 19:26+0200\n"
+"POT-Creation-Date: 2005-04-27 17:36+0200\n"
 "PO-Revision-Date: 2005-04-22 15:09+0200\n"
 "Last-Translator: Kai-Uwe Behrmann <ku.b@gmx.de>\n"
 "Language-Team: German\n"
@@ -143,21 +143,21 @@ msgid "unbekannte Farbe"
 msgstr ""
 
 #: icc_draw.cpp:633 icc_draw.cpp:644 icc_helfer.cpp:375
-#: icc_profile_tags.cpp:386
+#: icc_profile_tags.cpp:386 icc_helfer_x.cpp:56
 msgid "Red"
 msgstr "Rot"
 
 #: icc_draw.cpp:636 icc_draw.cpp:646 icc_helfer.cpp:376
-#: icc_profile_tags.cpp:387
+#: icc_profile_tags.cpp:387 icc_helfer_x.cpp:57
 msgid "Green"
 msgstr "Grün"
 
 #: icc_draw.cpp:639 icc_draw.cpp:648 icc_helfer.cpp:377
-#: icc_profile_tags.cpp:388
+#: icc_profile_tags.cpp:388 icc_helfer_x.cpp:58
 msgid "Blue"
 msgstr "Blau"
 
-#: icc_draw.cpp:643 icc_gl.cpp:1341 icc_helfer.cpp:318
+#: icc_draw.cpp:643 icc_gl.cpp:1341 icc_helfer.cpp:318 icc_waehler.h:127
 msgid "Gray"
 msgstr "Grau"
 
@@ -205,18 +205,18 @@ msgstr "Helligkeit"
 msgid "Value"
 msgstr "Wert"
 
-#: icc_draw.cpp:672 icc_examin_histogram.cpp:182 icc_examin_io.cpp:126
+#: icc_draw.cpp:672 icc_examin_farbraum.cpp:182 icc_examin_io.cpp:123
 #: icc_helfer.cpp:363 icc_helfer.cpp:366
 msgid "CIE *L"
 msgstr ""
 
-#: icc_draw.cpp:674 icc_examin_histogram.cpp:183 icc_examin_io.cpp:127
+#: icc_draw.cpp:674 icc_examin_farbraum.cpp:183 icc_examin_io.cpp:124
 #: icc_gl.cpp:592 icc_gl.cpp:660 icc_gl.cpp:671 icc_gl.cpp:679
 #: icc_helfer.cpp:364
 msgid "CIE *a"
 msgstr ""
 
-#: icc_draw.cpp:676 icc_examin_histogram.cpp:184 icc_examin_io.cpp:128
+#: icc_draw.cpp:676 icc_examin_farbraum.cpp:184 icc_examin_io.cpp:125
 #: icc_gl.cpp:606 icc_gl.cpp:687 icc_gl.cpp:696 icc_gl.cpp:703
 #: icc_helfer.cpp:365
 msgid "CIE *b"
@@ -231,20 +231,20 @@ msgid "Colour r"
 msgstr "Farbanteil r"
 
 #: icc_draw.cpp:719 icc_draw.cpp:779
-msgid " mit "
-msgstr ""
+msgid " with "
+msgstr " mit "
 
 #: icc_draw.cpp:719 icc_draw.cpp:779
-msgid " Punkten"
-msgstr ""
+msgid " points"
+msgstr " Punkten"
 
 #: icc_draw.cpp:726
-msgid " mit Gamma: 1.0"
-msgstr ""
+msgid " with Gamma: 1.0"
+msgstr " mit Gamma: 1.0"
 
 #: icc_draw.cpp:739 icc_draw.cpp:758
-msgid " mit einem Eintrag für Gamma: "
-msgstr ""
+msgid " with one entry for gamma: "
+msgstr " mit einem Eintrag für Gamma: "
 
 #: icc_examin.cpp:87
 msgid "Gamut selector"
@@ -282,43 +282,43 @@ msgstr ""
 msgid "zeige     "
 msgstr ""
 
-#: icc_examin_histogram.cpp:144
+#: icc_examin_farbraum.cpp:144
 msgid "kein Profil im Speicher"
 msgstr ""
 
-#: icc_examin_io.cpp:133
+#: icc_examin_io.cpp:130
 msgid "kein Netz gefunden in VRML Datei"
 msgstr ""
 
-#: icc_examin_io.cpp:148
+#: icc_examin_io.cpp:145
 msgid "Anzahl gabs schon mal"
 msgstr ""
 
-#: icc_examin_io.cpp:168
+#: icc_examin_io.cpp:165
 msgid "Gebe irritiert auf. Kein Netz gefunden. Ist Argyll installiert?"
 msgstr ""
 
-#: icc_examin_io.cpp:209 icc_betrachter.cxx:403
+#: icc_examin_io.cpp:206 icc_betrachter.cxx:403
 msgid "Filename"
 msgstr "Dateiname"
 
-#: icc_examin_io.cpp:213
+#: icc_examin_io.cpp:210
 msgid "found no content for"
 msgstr "keine Inhalte gefunden für"
 
-#: icc_examin_io.cpp:216
+#: icc_examin_io.cpp:213
 msgid "Internal error"
 msgstr "interner Fehler"
 
-#: icc_examin_io.cpp:218
+#: icc_examin_io.cpp:215
 msgid "No. Tag         Type         Size Description"
 msgstr "Nr. Baustein    Typ         Größe Beschreibung"
 
-#: icc_examin_io.cpp:285
+#: icc_examin_io.cpp:282
 msgid "HTML Documents (*.htm*)"
 msgstr "HTML Dokumente (*.htm*)"
 
-#: icc_examin_io.cpp:289 icc_betrachter.cxx:333
+#: icc_examin_io.cpp:286 icc_betrachter.cxx:333
 msgid "Save Report"
 msgstr "Bericht Speichern"
 
@@ -1080,29 +1080,17 @@ msgstr "Datei nicht geladen!"
 msgid "File allready loaded"
 msgstr "Datei bereits geladen"
 
-#: icc_kette.cpp:193
+#: icc_kette.cpp:195
 msgid "Wächter Thread nicht gestartet Fehler: "
 msgstr ""
 
-#: icc_kette.cpp:197
+#: icc_kette.cpp:199
 msgid "zu viele Wächter Threads Fehler: "
 msgstr ""
 
-#: icc_kette.cpp:201
+#: icc_kette.cpp:203
 msgid "unbekannter Fehler beim Start eines Wächter Threads Fehler: "
 msgstr ""
-
-#: icc_main.cpp:67 icc_betrachter.cxx:404 icc_betrachter.cxx:459
-msgid "Yes"
-msgstr "Ja"
-
-#: icc_main.cpp:68 icc_betrachter.cxx:331
-msgid "File"
-msgstr "Datei"
-
-#: icc_main.cpp:69 icc_betrachter.cxx:452
-msgid "About ICC Examin"
-msgstr "Über ICC Examin"
 
 #: icc_measurement.cpp:551
 msgid "kein passendes voreingestelltes Profile gefunden"
@@ -1129,24 +1117,24 @@ msgid "_CMYK_Satz.size() und _nFelder sind ungleich"
 msgstr ""
 
 #: icc_measurement.cpp:753
-msgid "Report zum Farbprofil"
-msgstr ""
+msgid "Report about ICC profile"
+msgstr "Report zum Farbprofil"
 
 #: icc_measurement.cpp:787
-msgid "Messfarbe"
-msgstr ""
+msgid "Meas colour"
+msgstr "Messfarbe"
 
 #: icc_measurement.cpp:789
-msgid "Profilfarbe"
-msgstr ""
+msgid "Profile colour"
+msgstr "Profilfarbe"
 
 #: icc_measurement.cpp:860
-msgid "keine Messdaten verfügbar"
-msgstr ""
+msgid "no measurment data available"
+msgstr "keine Messdaten verfügbar"
 
 #: icc_measurement.cpp:867
-msgid "Mess- und Profilfarben aus <b>"
-msgstr ""
+msgid "Measurment- and profile colours from <b>"
+msgstr "Mess- und Profilfarben aus <b>"
 
 #: icc_measurement.cpp:869
 msgid "RGB"
@@ -1157,36 +1145,36 @@ msgid "CMYK"
 msgstr ""
 
 #: icc_measurement.cpp:872
-msgid "</b> Messdaten"
-msgstr ""
+msgid "</b> Measurement"
+msgstr "</b> Messdaten"
 
 #: icc_measurement.cpp:874
 msgid "CMM: <b>lcms</b>"
 msgstr ""
 
 #: icc_measurement.cpp:876
-msgid "Abweichungen (dE CIE*Lab) durchschnittlich:<b> "
-msgstr ""
+msgid "averaging deviations (dE CIE*Lab):<b> "
+msgstr "Abweichungen (dE CIE*Lab) durchschnittlich:<b> "
 
 #: icc_measurement.cpp:876
-msgid "</b>  maximal: "
-msgstr ""
+msgid "</b>  maximum: "
+msgstr "</b>  maximal: "
 
 #: icc_measurement.cpp:876
-msgid "  minimal: "
-msgstr ""
+msgid "  minimum: "
+msgstr "  minimal: "
 
 #: icc_measurement.cpp:876
-msgid "  (dE CIE 2000) durchschnittlich: "
-msgstr ""
+msgid "  (dE CIE 2000) averaging: "
+msgstr "  (dE CIE 2000) durchschnittlich: "
 
 #: icc_measurement.cpp:876
-msgid "  maximal: "
-msgstr ""
+msgid "  maximum: "
+msgstr "  maximal: "
 
 #: icc_measurement.cpp:906
-msgid "Messfeld"
-msgstr ""
+msgid "Measurement patch"
+msgstr "Messfeld"
 
 #: icc_measurement.cpp:907
 msgid "dE Lab"
@@ -1273,34 +1261,47 @@ msgstr ""
 msgid "Profil konnte nicht geladen werden"
 msgstr ""
 
-#: icc_oyranos_extern.cpp:53
+#: icc_oyranos_extern.cpp:54
 msgid ""
+"Could not find\n"
+"Oyranos configuration dialog\n"
+"in the actual\n"
+"executable path."
+msgstr ""
 "Konnte\n"
 "Oyranos Konfigurationsdialog\n"
 "nicht im aktuellen\n"
 "Ausfuehrungspfad finden."
-msgstr ""
 
-#: icc_oyranos_extern.cpp:55
+#: icc_oyranos_extern.cpp:60
 msgid ""
+"FLU is not installed\n"
+"and is needed for the\n"
+"Oyranos configuration dialog."
+msgstr ""
 "FLU ist nicht installiert\n"
 "und wird benoetigt von\n"
 "Oyranos Konfigurationsdialog"
-msgstr ""
 
-#: icc_oyranos_extern.cpp:57
+#: icc_oyranos_extern.cpp:65
 msgid ""
+"Oyranos and FLU are not installed.\n"
+"They are needed by\n"
+"Oyranos configuration dialog."
+msgstr ""
 "Oyranos und FLU sind nicht installiert\n"
-"und wird benoetigt von\n"
+"und werden benoetigt von\n"
 "Oyranos mit seinem Konfigurationsdialog"
-msgstr ""
 
-#: icc_oyranos_extern.cpp:59
+#: icc_oyranos_extern.cpp:70
 msgid ""
-"Oyranos ist nicht installiert\n"
-"und wird benoetigt von\n"
-"Oyranos mit seinem Konfigurationsdialog"
+"Oyranos is not installed.\n"
+"The Oyranos configuration dialog\n"
+"is not available."
 msgstr ""
+"Oyranos ist nicht installiert.\n"
+"Der Oyranos Konfigurationsdialog\n"
+"ist nicht verfügbar."
 
 #: icc_profile.cpp:161 icc_vrml.cpp:129
 msgid "Ausnahme aufgetreten: "
@@ -1598,24 +1599,128 @@ msgstr ""
 msgid "Date"
 msgstr "Datum"
 
+#: icc_ueber.cpp:88
+msgid ""
+"ICC Examin is a viewer for colour profiles according to ICC standard  - www."
+"color.org . At the moment version 2 profiled are supported."
+msgstr ""
+"ICC Examin ist ein Betrachter von Farbprofilen gem&auml;&szlig; ICC "
+"Standard  - www.color.org . Im Moment werden Version 2 Profile unterst&uuml;"
+"tzt."
+
+#: icc_ueber.cpp:94
+msgid ""
+"The appliance of colour profiles shall help to achive an easy colour data "
+"exchange, regardless which application or what kind of operating system is "
+"used. As well colour adaption between different devices is possible, "
+"provided the colour characteristics of both devices are known. The qulity of "
+"a colour transform from one to an other device depends mainly on the quality "
+"of the colour measurement and the used profiling algorithm during profile "
+"creation."
+msgstr ""
+" Die Anwendung von Farbprofilen soll einen reibungslosen Datenaustausch "
+"zwischen unterschiedlichen Farbr&auml;umen und den Abgleich auf "
+"unterschiedlichen Ger&auml;ten mit Ihren jeweiligen physikalischen "
+"Gegebenheiten erm&ouml;glichen. Das Gelingen h&auml;ngt insbesondere von der "
+"Qualit&auml;t der Farbmessungen und dem verwendeten Algorithmus wärend der "
+"Erstellung der Farbprofile ab."
+
+#: icc_ueber.cpp:105
+msgid ""
+"Colour profiles are often available from manufacturers of optical devices "
+"(digital camera, scanner, printer). With ICC Examin you can get an "
+"impression of the internal data , stored in a ICC profile. For profiles "
+"containing measurement data, ICC Examin can generate a quality report. The "
+"deviation, calculated from the measurement data is shown as well in the "
+"three dimensional gamut viewer.<br>"
+msgstr ""
+"Farbprofile sind erh&auml;ltlich ofmals von Herstellern optischer Ger&auml;"
+"te (digitale Kameras, Scanner, Drucker). Mit ICC Examin haben Sie die M&ouml;"
+"glichkeit einen Eindruck von den internen Daten zu erlangen. ICC Examin "
+"kann, falls Messdaten im Profil hinterlegt sind, einen Qualit&auml;tsbericht "
+"erstellen. Die aus den Messdaten errechneten Farbabweichungen werden auch im "
+"dreidimensionalen Farbraumbetrachter dargestellt. <br>"
+
+#: icc_ueber.cpp:115
+msgid ""
+"The internal colour transformations are currently realised with funktions of "
+"the littleCMS program library."
+msgstr ""
+" Die Farbumwandlungen werden zur Zeit durch Funktionen der littleCMS "
+"Programmbibliothek realisiert."
+
+#: icc_ueber.cpp:121
+msgid ""
+"My cordially thank is especially dedicated to Marti Maria and the many "
+"writers of the Lcms-user email list."
+msgstr ""
+"Mein herzlicher Dank gilt insbesondere Marti Maria und den vielen "
+"Schreibenden der Lcms-user Emailliste."
+
+#: icc_ueber.cpp:134
+msgid "ICC Examin uses following libraries:<br>\n"
+msgstr "ICC Examin benutzt folgende Bibliotheken:<br>\n"
+
+#: icc_ueber.cpp:138
+msgid "  FLTK: Bill Spitzack and others www.fltk.org<br>\n"
+msgstr "  FLTK: Bill Spitzack und andere www.fltk.org<br>\n"
+
+#: icc_ueber.cpp:144
+msgid "  FLU: Jason Bryan www.osc.edu/~jbryan/FLU/<br>\n"
+msgstr ""
+
+#: icc_ueber.cpp:150
+msgid "  littleCMS: Marti Maria www.littlecms.com<br>\n"
+msgstr ""
+
+#: icc_ueber.cpp:160
+msgid ""
+"  FTGL: Henry Maddocks homepages.paradise.net.nz/henryj/code/#FTGL<br>\n"
+msgstr ""
+
+#: icc_ueber.cpp:167
+msgid ""
+"integrated sources, lock at the according files for licence conditions:<br>\n"
+msgstr ""
+"integrierte Quelltexte, die jeweiligen Lizenzbedingungen sind den "
+"entsprechended Dateien zu entnehmen:<br>\n"
+
+#: icc_ueber.cpp:171
+msgid "  agv 3D Navigation: Philip Winston<br>\n"
+msgstr ""
+
+#: icc_ueber.cpp:177
+msgid ""
+"  freeglut: freeglut.sf.net<br>\n"
+"   (partialy used) <br>"
+msgstr ""
+"  freeglut: freeglut.sf.net<br>\n"
+"   (partiell eingebunden)<br>"
+
+#: icc_ueber.cpp:184
+msgid "For the visualisation of gamut (external):<br>\n"
+msgstr "F&uuml;r die Visualisation des Farbumfangs (Erzeugung extern):<br>\n"
+
+#: icc_ueber.cpp:188
+msgid ""
+"  argyll: Greame Gill web.access.net.au/argyll/argyllcms.html<br<br><br>\n"
+msgstr ""
+
+#: icc_ueber.cpp:197
+msgid ""
+"    all icc_* files are licensed under the GPL.<br>    The other files may "
+"contain deverine licenses which are detectable from file headers. "
+msgstr ""
+"    alle icc_* Dateien sind lizenziert unter der GPL.<br>     Die anderen "
+"Dateien k&ouml;nnen abweichende Lizenzbedingungen in den Dateik&ouml;pfen "
+"enthalten."
+
 #: icc_vrml.cpp:57
 msgid "Datei "
 msgstr ""
 
 #: icc_vrml.cpp:57
 msgid " konnte nicht gelöscht werden"
-msgstr ""
-
-#: icc_helfer_x.cpp:56
-msgid "Rot"
-msgstr ""
-
-#: icc_helfer_x.cpp:57
-msgid "Grün"
-msgstr ""
-
-#: icc_helfer_x.cpp:58
-msgid "Blau"
 msgstr ""
 
 #: icc_helfer_x.cpp:80
@@ -1649,6 +1754,10 @@ msgstr "Lineare Eingangskurve mit 256 Stufungen"
 #: icc_betrachter.cxx:107
 msgid "lineare exit curve with 256 steps"
 msgstr "Lineare Ausgangskurve mit 256 Stufungen"
+
+#: icc_betrachter.cxx:331
+msgid "File"
+msgstr "Datei"
 
 #: icc_betrachter.cxx:332
 msgid "Open"
@@ -1757,6 +1866,10 @@ msgstr "Netzwerk Speicher"
 #: icc_betrachter.cxx:401
 msgid "RAM Disk"
 msgstr "RAM Speicher"
+
+#: icc_betrachter.cxx:404 icc_betrachter.cxx:459
+msgid "Yes"
+msgstr "Ja"
 
 #: icc_betrachter.cxx:405
 msgid "Cancel"
@@ -1870,6 +1983,10 @@ msgstr "ICC Farbprofile (*.{I,i}{C,c}{M,m,C,c})"
 msgid "Preview"
 msgstr "Vorschau"
 
+#: icc_betrachter.cxx:452
+msgid "About ICC Examin"
+msgstr "Über ICC Examin"
+
 #: icc_betrachter.cxx:469
 msgid "Grafic Card Gamma Table"
 msgstr "Grafik Karten Gamma Tabelle (vcgt)"
@@ -1907,7 +2024,7 @@ msgid "reset to standard gamma"
 msgstr "Auf Standard Gamma zurücksetzen"
 
 #: icc_betrachter.cxx:511
-msgid "ICC Details"
+msgid "ICC Examin"
 msgstr ""
 
 #: icc_betrachter.cxx:537

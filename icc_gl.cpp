@@ -1497,7 +1497,7 @@ GL_Ansicht::zeichnen()
            DBG_PROG_V( dreiecks_netze[i].name )
            #ifdef HAVE_FTGL
            if(ortho_font)
-             glRasterPos2f(0,ortho_font->LineHeight()/5*i+20);
+             glRasterPos2f(0,ortho_font->LineHeight()/1.5*i+20);
            #endif
            ZeichneOText (ortho_font, scal, text.c_str())
          }

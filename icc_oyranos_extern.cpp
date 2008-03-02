@@ -50,13 +50,26 @@ oyranos_einstellungen()
   int fehl = system("oyranos_config_flu");
   if(fehl) {
     if(hat_oy && hat_flu)
-      nachricht(_("Konnte\nOyranos Konfigurationsdialog\nnicht im aktuellen\nAusfuehrungspfad finden."));
+      nachricht(_(
+      "Could not find\n"
+      "Oyranos configuration dialog\n"
+      "in the actual\n"
+      "executable path."));
     if(hat_oy && !hat_flu)
-      nachricht(_("FLU ist nicht installiert\nund wird benoetigt von\nOyranos Konfigurationsdialog"));
+      nachricht(_(
+      "FLU is not installed\n"
+      "and is needed for the\n"
+      "Oyranos configuration dialog."));
     if(!hat_oy && !hat_flu)
-      nachricht(_("Oyranos und FLU sind nicht installiert\nund wird benoetigt von\nOyranos mit seinem Konfigurationsdialog"));
+      nachricht(_(
+      "Oyranos and FLU are not installed.\n"
+      "They are needed by\n"
+      "Oyranos configuration dialog."));
     if(!hat_oy && hat_flu)
-      nachricht(_("Oyranos ist nicht installiert\nund wird benoetigt von\nOyranos mit seinem Konfigurationsdialog"));
+      nachricht(_(
+      "Oyranos is not installed.\n"
+      "The Oyranos configuration dialog\n"
+      "is not available."));
   }
   DBG_PROG_ENDE
 }

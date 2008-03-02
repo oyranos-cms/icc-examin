@@ -60,28 +60,25 @@ ICCexamin::oeffnen (std::vector<std::string> dateinamen)
 
   // Laden
   frei_ = false;
-  icc_betrachter->DD_histogram->punkte_clear();
+  icc_betrachter->DD_farbraum->punkte_clear();
   bool weiter = profile.oeffnen(dateinamen);
   if (weiter)
   {
-    DBG_PROG
-    histogramModus(profile.aktuell());
-
       // Oberflächenpflege
     tag_browserText ();
-    if(icc_betrachter->DD_histogram->visible() &&
+    if(icc_betrachter->DD_farbraum->visible() &&
        !icc_betrachter->inspekt_html->visible() )
-      icc_betrachter->DD_histogram->flush();
+      icc_betrachter->DD_farbraum->flush();
 
     icc_betrachter->measurement( profile.profil()->hasMeasurement() );
-    if(histogramModus())
+    if(farbraumModus())
     {
         // Oberflächenpflege
-      icc_betrachter->DD_histogram->show();
+      icc_betrachter->DD_farbraum->show();
       icc_waehler_->show();
       icc_betrachter->menueintrag_3D->set();
       icc_betrachter->menueintrag_huelle->set();
-      histogram_angezeigt_ = true;
+      farbraum_angezeigt_ = true;
 
       profile.oeffnen(icc_oyranos.moni(),-1);
       profile.oeffnen(icc_oyranos.cmyk(),-1);
@@ -121,20 +118,20 @@ ICCexamin::oeffnen (std::vector<std::string> dateinamen)
           netze[i].grau = false;
           netze[i].aktiv = true;
         }
-        icc_betrachter->DD_histogram->hineinNetze(netze);
+        icc_betrachter->DD_farbraum->hineinNetze(netze);
         std::vector<std::string> texte;
         texte.push_back(_("CIE *L"));
         texte.push_back(_("CIE *a"));
         texte.push_back(_("CIE *b"));
-        icc_betrachter->DD_histogram->achsNamen(texte);
-        icc_betrachter->DD_histogram->punkte_clear();
-        icc_betrachter->DD_histogram->auffrischen();
+        icc_betrachter->DD_farbraum->achsNamen(texte);
+        icc_betrachter->DD_farbraum->punkte_clear();
+        icc_betrachter->DD_farbraum->auffrischen();
       } else
         WARN_S(_("kein Netz gefunden in VRML Datei"))
     } else {
       DBG_PROG
-      //histogram();
-      //icc_betrachter->DD_histogram->auffrischen();
+      //farbraum();
+      //icc_betrachter->DD_farbraum->auffrischen();
     }
 
     // ICCwaehler
@@ -164,13 +161,13 @@ ICCexamin::oeffnen (std::vector<std::string> dateinamen)
       for(int i = 0; i < anzahl; ++i) {
         DBG_PROG_V( i )
         const char* name = profile.name(i).c_str();
-        if( i >= (int)icc_betrachter->DD_histogram->dreiecks_netze.size() ) {
+        if( i >= (int)icc_betrachter->DD_farbraum->dreiecks_netze.size() ) {
           WARN_S( _("Gebe irritiert auf. Kein Netz gefunden. Ist Argyll installiert?") )
           break;
         }
-        transparenz = icc_betrachter->DD_histogram->dreiecks_netze[i].transparenz;
+        transparenz = icc_betrachter->DD_farbraum->dreiecks_netze[i].transparenz;
         DBG_PROG_V( transparenz )
-        grau = icc_betrachter->DD_histogram->dreiecks_netze[i].grau;
+        grau = icc_betrachter->DD_farbraum->dreiecks_netze[i].grau;
         icc_waehler_->push_back(name, transparenz, grau , aktiv[i]);
       }
     }

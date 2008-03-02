@@ -56,7 +56,7 @@ ICCexamin::ICCexamin ()
   icc_betrachter = new ICCfltkBetrachter;
   _item = -1;
   _mft_item = -1;
-  histogram_modus_ = false;
+  farbraum_modus_ = false;
   statlabel = "";
   status_ = false;
   DBG_PROG_ENDE
@@ -83,7 +83,7 @@ ICCexamin::start (int argc, char** argv)
   icc_betrachter->init();
 
   icc_betrachter->mft_gl->init(1);
-  icc_betrachter->DD_histogram->init(2);
+  icc_betrachter->DD_farbraum->init(2);
   icc_waehler_ = new  ICCwaehler(485, 186, _("Gamut selector"));
   if(!icc_waehler_) WARN_S( _("icc_waehler_ nicht reservierbar") )
   icc_waehler_->hide();
@@ -186,19 +186,19 @@ ICCexamin::nachricht( Modell* modell , int info )
           int intent_neu = profile.profil()->intent();
           DBG_PROG_V( intent_neu <<" "<< intent_alt )
           if(intent_alt != intent_neu) {
-            histogram ();
+            farbraum ();
             intent_alt = intent_neu;
           } else
-            histogram (info);
+            farbraum (info);
 
-          if (info < (int)icc_betrachter->DD_histogram->dreiecks_netze.size())
-            icc_betrachter->DD_histogram->dreiecks_netze[info].aktiv = true;
-        } else if (info < (int)icc_betrachter->DD_histogram->dreiecks_netze.size()) {
-          icc_betrachter->DD_histogram->dreiecks_netze[info].aktiv = false;
+          if (info < (int)icc_betrachter->DD_farbraum->dreiecks_netze.size())
+            icc_betrachter->DD_farbraum->dreiecks_netze[info].aktiv = true;
+        } else if (info < (int)icc_betrachter->DD_farbraum->dreiecks_netze.size()) {
+          icc_betrachter->DD_farbraum->dreiecks_netze[info].aktiv = false;
         }
           // Oberflächenpflege - Aktualisieren
-        if(icc_betrachter->DD_histogram->visible())
-          icc_betrachter->DD_histogram->flush();
+        if(icc_betrachter->DD_farbraum->visible())
+          icc_betrachter->DD_farbraum->flush();
         if(icc_betrachter->menueintrag_inspekt->active() &&
            profile[info]->hasMeasurement() )
           setzMesswerte();
@@ -326,7 +326,7 @@ ICCexamin::neuzeichnen (void* z)
   Fl_Widget *wid = (Fl_Widget*)z;
   static int item;
 
-  DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->DD_histogram)->visible())
+  DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->DD_farbraum)->visible())
   DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->inspekt_html)->visible())
   DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->examin)->visible() )
   DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->tag_browser)->visible() )
@@ -368,22 +368,22 @@ ICCexamin::neuzeichnen (void* z)
   // inhaltliches Zurückschalten auf tiefere Ebene
   bool waehle_tag = false;
   if( oben == TAG_ZEIGEN &&
-      (icc_betrachter->DD_histogram->visible()
+      (icc_betrachter->DD_farbraum->visible()
     || icc_betrachter->inspekt_html->visible()) )
     waehle_tag = true;
 
   // die oberste Ebene zeigen/verstecken
   if(oben == DD_ZEIGEN) {
-    if(!icc_betrachter->DD_histogram->visible()) {
+    if(!icc_betrachter->DD_farbraum->visible()) {
       DBG_PROG_S( "3D Histogramm zeigen" )
-      icc_betrachter->DD_histogram->show();
+      icc_betrachter->DD_farbraum->show();
       widZEIG(ZEIGEN, icc_waehler_ ,NACHRICHT)
       widZEIG(VERSTECKEN, icc_betrachter->examin ,NACHRICHT)
     }
   } else {
-    if(icc_betrachter->DD_histogram->visible()) {
+    if(icc_betrachter->DD_farbraum->visible()) {
       DBG_PROG_S( "3D hist verstecken" )
-      icc_betrachter->DD_histogram->hide();
+      icc_betrachter->DD_farbraum->hide();
     }
     if(icc_waehler_->visible())
       icc_waehler_->iconize();
@@ -444,7 +444,7 @@ ICCexamin::neuzeichnen (void* z)
      !icc_betrachter->tag_viewer ->visible() )
     icc_betrachter->tag_text->show();
 
-  DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->DD_histogram)->visible())
+  DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->DD_farbraum)->visible())
   DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->inspekt_html)->visible())
   DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->examin)->visible() )
   DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->tag_browser)->visible() )
@@ -497,7 +497,7 @@ tastatur(int e)
         gefunden = 1;
       }
   }
-  icc_examin->icc_betrachter->DD_histogram->tastatur(e);
+  icc_examin->icc_betrachter->DD_farbraum->tastatur(e);
   //DBG_PROG_ENDE
   return gefunden;
 }

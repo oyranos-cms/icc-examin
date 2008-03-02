@@ -220,7 +220,7 @@ inline void ICCfltkBetrachter::cb_menueintrag_huelle_i(Fl_Menu_* o, void*) {
   DBG_PROG_V( widget_oben )
   DBG_PROG_V( menueintrag_3D->value() )
   DBG_PROG_V( menueintrag_huelle->value() )
-  icc_examin->neuzeichnen(icc_examin->icc_betrachter->DD_histogram);
+  icc_examin->neuzeichnen(icc_examin->icc_betrachter->DD_farbraum);
   DBG_PROG_ENDE;
 }
 void ICCfltkBetrachter::cb_menueintrag_huelle(Fl_Menu_* o, void* v) {
@@ -263,7 +263,7 @@ inline void ICCfltkBetrachter::cb_menueintrag_3D_i(Fl_Menu_* o, void*) {
   DBG_PROG_V( widget_oben )
   DBG_PROG_V( menueintrag_3D->value() )
   DBG_PROG_V( menueintrag_huelle->value() )
-  icc_examin->neuzeichnen(icc_examin->icc_betrachter->DD_histogram);
+  icc_examin->neuzeichnen(icc_examin->icc_betrachter->DD_farbraum);
   DBG_PROG_ENDE;
 }
 void ICCfltkBetrachter::cb_menueintrag_3D(Fl_Menu_* o, void* v) {
@@ -508,7 +508,7 @@ ard"));
     o->end();
     o->resizable(o);
   }
-  { Fl_Double_Window* o = details = new Fl_Double_Window(385, 520, _("ICC Details"));
+  { Fl_Double_Window* o = details = new Fl_Double_Window(385, 520, _("ICC Examin"));
     w = o;
     o->box(FL_NO_BOX);
     o->color((Fl_Color)53);
@@ -522,7 +522,7 @@ ard"));
         }
         o->menu(menu_menueleiste);
       }
-      { GL_Ansicht* o = DD_histogram = new GL_Ansicht(0, 25, 385, 470);
+      { GL_Ansicht* o = DD_farbraum = new GL_Ansicht(0, 25, 385, 470);
         o->box(FL_NO_BOX);
         o->color(FL_BACKGROUND_COLOR);
         o->selection_color(FL_BACKGROUND_COLOR);
@@ -744,9 +744,9 @@ void ICCfltkBetrachter::zeig_mich_(void* widget) {
     mft_gl->stop();
     mft_gl->hide();
   }
-  if (widget != DD_histogram ) {
-    DD_histogram->stop();
-    DD_histogram->hide();
+  if (widget != DD_farbraum ) {
+    DD_farbraum->stop();
+    DD_farbraum->hide();
   }
 
   // start
@@ -759,7 +759,7 @@ void ICCfltkBetrachter::zeig_mich_(void* widget) {
   }
 
   if (widget != mft_gl &&
-      widget != DD_histogram )
+      widget != DD_farbraum )
   { 
     ((Fl_Widget*)widget)->show(); DBG_PROG
     if( !menueintrag_inspekt->value() &&
@@ -768,9 +768,9 @@ void ICCfltkBetrachter::zeig_mich_(void* widget) {
   } else if (widget == mft_gl) {
     DBG_PROG_S( "mft GL Fenster belassen." )
     mft_gl->show();
-  } else if (widget == DD_histogram) {
+  } else if (widget == DD_farbraum) {
     DBG_PROG_S( "3D GL Fenster belassen." )
-    DD_histogram->show();
+    DD_farbraum->show();
   }
   DBG_PROG_ENDE
 }
