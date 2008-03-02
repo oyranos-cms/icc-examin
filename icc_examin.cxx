@@ -537,11 +537,16 @@ void TagDrawings::draw() {
   // Kurven oder Punkte malen
   cout << punkte.size() << "/" << kurven.size() <<" "<< texte.size() <<" "; DBG
 
-  if (punkte.size() >= 3) {
-    wiederholen = true;
-    draw_cie_shoe(x(),y(),w(),h(),texte,punkte,false);
-    Fl::add_timeout( 1.2, (void(*)(void*))d_haendler ,(void*)this);
+  DBG_V( wiederholen )
 
+  if (punkte.size() >= 3) {
+    if (wiederholen) {
+      draw_cie_shoe(x(),y(),w(),h(),texte,punkte,false);
+      Fl::add_timeout( 1.2, (void(*)(void*))d_haendler ,(void*)this);
+    } else {
+      draw_cie_shoe(x(),y(),w(),h(),texte,punkte,true);
+    }
+    wiederholen = true;
   } else {
     wiederholen = false;
     draw_kurve   (x(),y(),w(),h(),texte,kurven);
@@ -558,6 +563,7 @@ void TagDrawings::hinein_punkt(std::vector<double> vect, std::vector<std::string
   for (unsigned int i = 0; i < txt.size(); i++)
     texte.push_back (txt[i]);
   kurven.clear();
+  wiederholen = false;
 
   zeig_mich(this);
 }
@@ -567,6 +573,7 @@ void TagDrawings::hinein_kurven(std::vector<std::vector<double> >vect, std::vect
   kurven = vect;
   texte = txt;
   punkte.clear();
+  wiederholen = false;
 
   zeig_mich(this);
   DBG
@@ -676,7 +683,7 @@ void d_haendler(void* o) {
    && ((TagDrawings*)o)->wiederholen) {
     ((TagDrawings*)o)->ruhig_neuzeichnen();
     #ifdef DEBUG
-    cout << " wiederholen"; DBG
+    DBG_V( ((TagDrawings*)o)->wiederholen )
     #endif
   }
 }

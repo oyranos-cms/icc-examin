@@ -77,7 +77,7 @@ Profilierer::RGB_Tags (void)
   std::map<double,XYZ> r_map;
   std::map<double,XYZ> g_map;
   std::map<double,XYZ> b_map;
-  XYZ weiss, schwarz, rot, gruen, blau;
+  XYZ weiss, weiss_D50, schwarz, rot, gruen, blau;
   // Kanaltests
   for (std::vector<XYZ>::iterator i = xyz.begin(); i != xyz.end(); i++) {
     DBG_V ( i->X <<" "<< i->Y <<" "<< i->Z )
@@ -173,6 +173,7 @@ Profilierer::RGB_Tags (void)
   schreibKurveTag (icSigRedTRCTag, 2.2);
   schreibKurveTag (icSigGreenTRCTag, 2.2);
   schreibKurveTag (icSigBlueTRCTag, 2.2);
+  weiss_D50.X = 0.9642; weiss_D50.X = 1.0000; weiss_D50.Y = 0.8249;
   schreibXYZTag (icSigMediaWhitePointTag, weiss.X, weiss.Y, weiss.Z );
   schreibXYZTag (icSigMediaBlackPointTag, schwarz.X, schwarz.Y, schwarz.Z );
   schreibXYZTag (icSigRedColorantTag, rot.X, rot.Y, rot.Z );
