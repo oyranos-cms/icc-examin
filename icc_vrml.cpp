@@ -1,5 +1,6 @@
 // Author:    Kai-Uwe Behrmann
 // Copyright: Kai-Uwe Behrmann
+// Date:      Mai 2004
 
 #include "icc_examin.h"
 #include "icc_vrml.h"

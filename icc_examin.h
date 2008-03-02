@@ -15,10 +15,16 @@
 #include <FL/Fl_File_Icon.H> 
 #include <FL/Fl_Shared_Image.H> 
 #include <FL/Fl_PNM_Image.H>
+class TagDrawings;
+class TagBrowser;
 #include <openvrml/browser.h>
 #include <openvrml/gl/viewer.h>
 #include "vFLGLWidget.h"
 #include "ViewerFLTK.h"
+//#define DBG cout << __FILE__<<":"<<__LINE__ <<" "<< __func__ << "()" << endl;
+#include "icc_profile.h"
+#include "icc_utils.h"
+extern ICCprofile profile;
 #include <FL/Fl_Double_Window.H>
 extern Fl_Double_Window *details;
 #include <FL/Fl_Group.H>
@@ -29,11 +35,11 @@ extern Fl_Box *stat;
 #include <FL/Fl_Progress.H>
 extern Fl_Progress *load_progress;
 #include <FL/Fl_Tile.H>
-extern Fl_Hold_Browser *tag_browser;
-extern Fl_Box *tag_viewer;
-#include <FL/Fl_Text_Display.H>
-extern Fl_Text_Display *tag_texts;
+extern TagBrowser *tag_browser;
+extern TagDrawings *tag_viewer;
 extern vFLGLWidget *canvas;
+#include <FL/Fl_Output.H>
+extern Fl_Output *tag_texts;
 extern Fl_Menu_Item menu_Fl_lookat_MenuBar[];
 #define Voll (menu_Fl_lookat_MenuBar+5)
 #define normal_ansicht (menu_Fl_lookat_MenuBar+6)
@@ -42,14 +48,20 @@ void quit(void);
 void worldChangedCB( const openvrml::browser::cb_reason reason );
 void timeIT();
 char* icc_read_info(char* filename);
+Fl_Double_Window* makeKurvenWindow();
 
-class IccProfile {
+class TagDrawings : public Fl_Widget {
+  int X; int Y; int W; int H;
 public:
-  char *data;
-  char *filename;
-  int size;
-  void getChar(int type);
-private:
-  char* read_header();
+  TagDrawings(int X,int Y,int W,int H) ;
+  void draw();
+};
+
+class TagBrowser : public Fl_Hold_Browser {
+  int X; int Y; int W; int H; char* start_info;
+public:
+  TagBrowser(int X,int Y,int W,int H,char* start_info) ;
+  void draw_noe();
+  void reopen();
 };
 #endif

@@ -15,23 +15,29 @@ srcdir		= .
 CXXFLAGS=$(OPTS) $(INCL)
 INCL=-I/opt/kai-uwe/include -I/usr/X11R6/include -I./
 
-VRML_LIBS=$(FLTK_GL_LIBS) -lGL -lglut -lopenvrml -lopenvrml-gl
+VRML_LIBS=$(FLTK_GL_LIBS) -lGL -lglut -lopenvrml -lopenvrml-gl -lpng -ljpeg
 X11_LIBS=-L/usr/X11R6/lib -lXinerama -lXft
 FLTK_LIBS=-L/opt/kai-uwe/lib -lfltk_images -lfltk
 FLTK_GL_LIBS=-lfltk_gl
-LDLIBS = $(FLTK_LIBS) \
+LDLIBS = -L./ $(FLTK_LIBS) \
 	$(VRML_LIBS) \
-	$(X11_LIBS)
+	$(X11_LIBS) -llcms
+# -llprof
 
 CPP_HEADERS = \
 	vFLGLWidget.h \
 	ViewerFLTK.h \
+	icc_draw.h \
 	icc_examin.h \
+	icc_utils.h \
 	icc_profile.h \
-	icc_vrml.h
+	icc_vrml.h \
+	cccie64.h \
+	ciexyz64_1.h
 CPPFILES = \
 	vFLGLWidget.cpp \
 	ViewerFLTK.cpp \
+	icc_draw.cpp \
 	icc_profile.cpp \
 	icc_vrml.cpp
 CXXFILES = \
@@ -55,9 +61,16 @@ $(TARGET):	$(OBJECTS)
 	$(OBJECTS) \
 	$(LDLIBS)
 
+static:		$(OBJECTS)
+	echo Linking $@...
+	$(CC) $(OPTS) -o $(TARGET) \
+	$(OBJECTS) \
+	$(LDLIBS) -static -ljpeg -lpng -lX11 -lpthread -lz -ldl \
+	-lfreetype -lfontconfig -lXrender -lGLU -lXext -lexpat
+
 test:
-	$(CC) $(OPTS) $(INCL) -o test.o -c test.cpp
-	$(CC) $(OPTS) -o test $(FLTK_LIBS) $(X11_LIBS) test.o
+	$(CC) $(OPTS) $(INCL) -o horseshoe.o -c horseshoe.cxx
+	$(CC) $(OPTS) -o horseshoe horseshoe.o `fltk-config --ldstaticflags`
 
 t3:
 	rm test3

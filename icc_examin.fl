@@ -34,7 +34,12 @@ decl {char *statlabel;
  char *filename_alt;
  bool setTitleUrl = true;
  using namespace std;
- int px,py,pw,ph;} {} 
+ int px,py,pw,ph;
+ int fullscreen;} {} 
+
+decl {class TagDrawings;
+class TagBrowser;} {public
+} 
 
 decl {\#include <openvrml/browser.h>} {public
 } 
@@ -52,15 +57,26 @@ decl {openvrml::browser *browser = 0;} {}
 
 decl {ViewerFLTK  *viewer = 0;} {} 
 
-decl {\#define DBG //cout << __FILE__<<":"<<__LINE__ <<" "<< __func__ << "()" << endl;} {} 
+decl {//\#define DBG cout << __FILE__<<":"<<__LINE__ <<" "<< __func__ << "()" << endl;} {public
+} 
+
+decl {\#include "icc_draw.h"} {} 
+
+decl {\#include "icc_profile.h"
+\#include "icc_utils.h"} {public
+} 
+
+decl {ICCprofile profile;} {public
+} 
 
 Function {} {open C return_type int
 } {
   code {filename_alt = (char*)calloc (sizeof (char), 1024);
-  statlabel = (char*)calloc (sizeof (char), 1024);} {}
+  statlabel = (char*)calloc (sizeof (char), 1024);
+  fullscreen = false;} {}
   Fl_Window details {
     label {ICC Details} open
-    xywh {329 519 385 410} type Double box NO_BOX color 53 resizable
+    xywh {855 397 385 520} type Double box NO_BOX color 53 hide resizable
     code0 {browser = new openvrml::browser(cout, cerr);}
     code1 {DBG
     if (argc>1) {
@@ -82,12 +98,12 @@ Function {} {open C return_type int
     worldChangedCB( openvrml::browser::replace_world_id );}
     code3 {DBG
     viewer = new ViewerFLTK( *browser, canvas );
-    canvas->setViewerPtr( viewer );} visible
+    canvas->setViewerPtr( viewer );}
   } {
     Fl_Group {} {open
-      xywh {0 0 385 410} resizable
+      xywh {-5 0 395 520} resizable
     } {
-      Fl_Menu_Bar Fl_lookat_MenuBar {
+      Fl_Menu_Bar Fl_lookat_MenuBar {open
         xywh {0 0 385 25} color 53 align 20 when 3
       } {
         submenu {} {
@@ -113,68 +129,76 @@ Function {} {open C return_type int
             label {Ganzer Bildschirm}
             callback {Fl_Window *w = (Fl_Window *)details;
 
+  if (!fullscreen) {
     px = w->x();
     py = w->y();
     pw = w->w();
     ph = w->h();
 
-    w->fullscreen();}
+    w->fullscreen();
+    fullscreen = true;
+  }}
             xywh {15 15 100 20}
           }
           menuitem normal_ansicht {
             label {normales Fenster}
             callback {Fl_Window *w = (Fl_Window *)details;
 
-    w->fullscreen_off(px,py,pw,ph);}
+    w->fullscreen_off(px,py,pw,ph);
+    fullscreen = false;}
             xywh {25 25 100 20}
           }
         }
       }
       Fl_Group {} {open
-        xywh {0 385 385 25}
+        xywh {0 495 390 25}
       } {
         Fl_Box stat {
           label {No wrl file loaded.}
-          xywh {0 385 385 25} box THIN_DOWN_BOX color 53 align 20
+          xywh {0 495 385 25} box THIN_DOWN_BOX color 53 align 20
         }
         Fl_Progress load_progress {
           label {Laden ..}
-          xywh {0 385 385 25} color 53
+          xywh {0 495 385 25} color 53
           code0 {o->hide();}
           code1 {o->maximum(1.0);}
           code2 {o->minimum(0.0);}
         }
       }
       Fl_Tile {} {open
-        xywh {0 25 385 360} resizable
+        xywh {0 25 385 470} resizable
       } {
         Fl_Browser tag_browser {
-          label {Bitte wählen Sie ein Profilmerkmal aus} selected
+          label {Bitte wählen Sie ein Profilmerkmal aus}
           xywh {0 25 385 135} color 53 align 17
           code0 {int lines = tag_browser->size();}
-          class Fl_Hold_Browser
+          code1 {cout << lines << endl;}
+          class TagBrowser
         }
         Fl_Group {} {open
-          xywh {0 160 385 225}
+          xywh {0 160 385 335}
         } {
           Fl_Box tag_viewer {
-            xywh {0 160 385 225}
-          }
-          Fl_Text_Display tag_texts {
-            label Texts
-            xywh {0 160 385 225} align 16
+            xywh {0 160 385 335}
+            code0 {o->hide();}
+            class TagDrawings
           }
           Fl_Box canvas {
             label OpenVRML
-            xywh {0 160 385 225} align 16 hide
+            xywh {0 160 385 335} align 16 hide
             class vFLGLWidget
+          }
+          Fl_Output tag_texts {
+            xywh {0 160 385 335} type Multiline
+            code0 {//o->hide();}
+            code1 {o->show();}
           }
         }
       }
     }
   }
   code {w->show();
-  canvas->show();
+  //canvas->show();
   viewer->Hok=1;
   viewer->Hdraw=1;
   viewer->timerUpdate();
@@ -185,7 +209,7 @@ Function {} {open C return_type int
   Fl_File_Icon::load_system_icons();} {}
 } 
 
-Function {open(void)} {return_type {const char*}
+Function {open(void)} {open return_type {const char*}
 } {
   code {\#include "icc_vrml.h"
 
@@ -197,7 +221,13 @@ Function {open(void)} {return_type {const char*}
 
   filename=fl_file_chooser("Wähle ICC Profil?", "ICC Farbprofile (*.[I,i][C,c][M,m,C,c])", filename_alt);
   DBG printf (filename_alt); printf ("\\n");
+  if (!filename) {
+    return "";
+    load_progress->hide ();
+  }
 
+  // Laden
+  profile.load (filename);
   // Register the ICC type ...
   //Fl_Shared_Image::add_handler(icc_check);
   //Fl_Shared_Image::add_handler(ps_check);
@@ -230,7 +260,7 @@ Function {open(void)} {return_type {const char*}
   load_progress->hide();
   DBG
 
-  tag_browser->load ( icc_read_info(filename) );
+  tag_browser->reopen ();
 
   return filename;} {}
 } 
@@ -284,16 +314,55 @@ Function {icc_read_info(char* filename)} {open return_type {char*}
   return textfile;} {}
 } 
 
-class IccProfile {open
+Function {makeKurvenWindow()} {open
 } {
-  decl {char *data;} {public
-  }
-  decl {char *filename;} {public
-  }
-  decl {int size;} {public
-  }
-  Function {getChar(int type)} {open
+  Fl_Window {} {open
+    xywh {357 262 100 100} type Double hide
   } {}
-  Function {read_header()} {open private return_type {char*}
+} 
+
+class TagDrawings {open : {public Fl_Widget}
+} {
+  decl {int X; int Y; int W; int H;} {}
+  Function {TagDrawings(int X,int Y,int W,int H) : Fl_Widget(X,Y,W,H), X(X), Y(Y), W(W), H(H)} {open
   } {}
+  Function {draw()} {open
+  } {
+    code {draw_cie_shoe(x(),y(),w(),h());
+  DBG} {}
+  }
+} 
+
+class TagBrowser {open : {public Fl_Hold_Browser}
+} {
+  decl {int X; int Y; int W; int H; char* start_info;} {}
+  Function {TagBrowser(int X,int Y,int W,int H,char* start_info) : Fl_Hold_Browser(X,Y,W,H,start_info), X(X), Y(Y), W(W), H(H)} {open
+  } {}
+  Function {draw_noe()} {open
+  } {
+    code {//draw_cie_shoe(x(),y(),w(),h());
+  DBG} {}
+  }
+  Function {reopen()} {open
+  } {
+    code {std::stringstream s;
+  std::string text;
+  \#define add_s(stream) s << stream; text = s.str(); add (text.c_str()); s.str("");
+
+  clear();
+  add_s ("@fDateiname:")
+  add_s ( "@b    " << profile.filename() )
+  add_s ("")
+  add_s ("@B26@tNr. Bezeichner  Typ         Größe Beschreibung")
+  add_s ("@t" << profile.print_header());
+  select (5); // Header voreinstellen
+
+  text = profile.print_long_header(); DBG
+  tag_texts->show(); DBG
+  tag_texts->value("");
+  tag_texts->insert (text.c_str()); DBG
+  tag_viewer->hide(); DBG
+  canvas->hide(); DBG} {selected
+    }
+  }
 } 

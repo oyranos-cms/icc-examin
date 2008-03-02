@@ -6,9 +6,11 @@ static char *statlabel;
  bool setTitleUrl = true;
  using namespace std;
  int px,py,pw,ph;
+ int fullscreen;
 static openvrml::browser *browser = 0;
 static ViewerFLTK  *viewer = 0;
-#define DBG //cout << __FILE__<<":"<<__LINE__ <<" "<< __func__ << "()" << endl;
+#include "icc_draw.h"
+ICCprofile profile;
 
 Fl_Double_Window *details=(Fl_Double_Window *)0;
 
@@ -25,18 +27,22 @@ static void cb_Beenden(Fl_Menu_*, void*) {
 static void cb_Voll(Fl_Menu_*, void*) {
   Fl_Window *w = (Fl_Window *)details;
 
+  if (!fullscreen) {
     px = w->x();
     py = w->y();
     pw = w->w();
     ph = w->h();
 
     w->fullscreen();
+    fullscreen = true;
+  };
 }
 
 static void cb_normal_ansicht(Fl_Menu_*, void*) {
   Fl_Window *w = (Fl_Window *)details;
 
     w->fullscreen_off(px,py,pw,ph);
+    fullscreen = false;
 }
 
 Fl_Menu_Item menu_Fl_lookat_MenuBar[] = {
@@ -55,36 +61,37 @@ Fl_Box *stat=(Fl_Box *)0;
 
 Fl_Progress *load_progress=(Fl_Progress *)0;
 
-Fl_Hold_Browser *tag_browser=(Fl_Hold_Browser *)0;
+TagBrowser *tag_browser=(TagBrowser *)0;
 
-Fl_Box *tag_viewer=(Fl_Box *)0;
-
-Fl_Text_Display *tag_texts=(Fl_Text_Display *)0;
+TagDrawings *tag_viewer=(TagDrawings *)0;
 
 vFLGLWidget *canvas=(vFLGLWidget *)0;
+
+Fl_Output *tag_texts=(Fl_Output *)0;
 
 int main(int argc, char **argv) {
   Fl_Double_Window* w;
   filename_alt = (char*)calloc (sizeof (char), 1024);
   statlabel = (char*)calloc (sizeof (char), 1024);
-  { Fl_Double_Window* o = details = new Fl_Double_Window(385, 410, "ICC Details");
+  fullscreen = false;
+  { Fl_Double_Window* o = details = new Fl_Double_Window(385, 520, "ICC Details");
     w = o;
     o->box(FL_NO_BOX);
     o->color((Fl_Color)53);
-    { Fl_Group* o = new Fl_Group(0, 0, 385, 410);
+    { Fl_Group* o = new Fl_Group(-5, 0, 395, 520);
       { Fl_Menu_Bar* o = Fl_lookat_MenuBar = new Fl_Menu_Bar(0, 0, 385, 25);
         o->color((Fl_Color)53);
         o->align(FL_ALIGN_LEFT|FL_ALIGN_INSIDE);
         o->when(3);
         o->menu(menu_Fl_lookat_MenuBar);
       }
-      { Fl_Group* o = new Fl_Group(0, 385, 385, 25);
-        { Fl_Box* o = stat = new Fl_Box(0, 385, 385, 25, "No wrl file loaded.");
+      { Fl_Group* o = new Fl_Group(0, 495, 390, 25);
+        { Fl_Box* o = stat = new Fl_Box(0, 495, 385, 25, "No wrl file loaded.");
           o->box(FL_THIN_DOWN_BOX);
           o->color((Fl_Color)53);
           o->align(FL_ALIGN_LEFT|FL_ALIGN_INSIDE);
         }
-        { Fl_Progress* o = load_progress = new Fl_Progress(0, 385, 385, 25, "Laden ..");
+        { Fl_Progress* o = load_progress = new Fl_Progress(0, 495, 385, 25, "Laden ..");
           o->color((Fl_Color)53);
           o->hide();
           o->maximum(1.0);
@@ -92,8 +99,8 @@ int main(int argc, char **argv) {
         }
         o->end();
       }
-      { Fl_Tile* o = new Fl_Tile(0, 25, 385, 360);
-        { Fl_Hold_Browser* o = tag_browser = new Fl_Hold_Browser(0, 25, 385, 135, "Bitte w\344hlen Sie ein Profilmerkmal aus");
+      { Fl_Tile* o = new Fl_Tile(0, 25, 385, 470);
+        { TagBrowser* o = tag_browser = new TagBrowser(0, 25, 385, 135, "Bitte w\344hlen Sie ein Profilmerkmal aus");
           o->box(FL_NO_BOX);
           o->color((Fl_Color)53);
           o->selection_color(FL_SELECTION_COLOR);
@@ -104,13 +111,22 @@ int main(int argc, char **argv) {
           o->align(FL_ALIGN_TOP|FL_ALIGN_INSIDE);
           o->when(FL_WHEN_RELEASE_ALWAYS);
           int lines = tag_browser->size();
+          cout << lines << endl;
         }
-        { Fl_Group* o = new Fl_Group(0, 160, 385, 225);
-          tag_viewer = new Fl_Box(0, 160, 385, 225);
-          { Fl_Text_Display* o = tag_texts = new Fl_Text_Display(0, 160, 385, 225, "Texts");
-            o->align(FL_ALIGN_CENTER|FL_ALIGN_INSIDE);
+        { Fl_Group* o = new Fl_Group(0, 160, 385, 335);
+          { TagDrawings* o = tag_viewer = new TagDrawings(0, 160, 385, 335);
+            o->box(FL_NO_BOX);
+            o->color(FL_BACKGROUND_COLOR);
+            o->selection_color(FL_BACKGROUND_COLOR);
+            o->labeltype(FL_NORMAL_LABEL);
+            o->labelfont(0);
+            o->labelsize(14);
+            o->labelcolor(FL_BLACK);
+            o->align(FL_ALIGN_CENTER);
+            o->when(FL_WHEN_RELEASE);
+            o->hide();
           }
-          { vFLGLWidget* o = canvas = new vFLGLWidget(0, 160, 385, 225, "OpenVRML");
+          { vFLGLWidget* o = canvas = new vFLGLWidget(0, 160, 385, 335, "OpenVRML");
             o->box(FL_NO_BOX);
             o->color(FL_BACKGROUND_COLOR);
             o->selection_color(FL_BACKGROUND_COLOR);
@@ -121,6 +137,11 @@ int main(int argc, char **argv) {
             o->align(FL_ALIGN_CENTER|FL_ALIGN_INSIDE);
             o->when(FL_WHEN_RELEASE);
             o->hide();
+          }
+          { Fl_Output* o = tag_texts = new Fl_Output(0, 160, 385, 335);
+            o->type(12);
+            //o->hide();
+            o->show();
           }
           o->end();
         }
@@ -155,7 +176,7 @@ int main(int argc, char **argv) {
     o->end();
   }
   w->show();
-  canvas->show();
+  //canvas->show();
   viewer->Hok=1;
   viewer->Hdraw=1;
   viewer->timerUpdate();
@@ -179,7 +200,13 @@ const char* open(void) {
 
   filename=fl_file_chooser("Wähle ICC Profil?", "ICC Farbprofile (*.[I,i][C,c][M,m,C,c])", filename_alt);
   DBG printf (filename_alt); printf ("\n");
+  if (!filename) {
+    return "";
+    load_progress->hide ();
+  }
 
+  // Laden
+  profile.load (filename);
   // Register the ICC type ...
   //Fl_Shared_Image::add_handler(icc_check);
   //Fl_Shared_Image::add_handler(ps_check);
@@ -212,7 +239,7 @@ const char* open(void) {
   load_progress->hide();
   DBG
 
-  tag_browser->load ( icc_read_info(filename) );
+  tag_browser->reopen ();
 
   return filename;
 }
@@ -265,8 +292,48 @@ char* icc_read_info(char* filename) {
   return textfile;
 }
 
-void IccProfile::getChar(int type) {
+Fl_Double_Window* makeKurvenWindow() {
+  Fl_Double_Window* w;
+  { Fl_Double_Window* o = new Fl_Double_Window(100, 100);
+    w = o;
+    o->end();
+  }
+  return w;
 }
 
-char* IccProfile::read_header() {
+TagDrawings::TagDrawings(int X,int Y,int W,int H) : Fl_Widget(X,Y,W,H), X(X), Y(Y), W(W), H(H) {
+}
+
+void TagDrawings::draw() {
+  draw_cie_shoe(x(),y(),w(),h());
+  DBG
+}
+
+TagBrowser::TagBrowser(int X,int Y,int W,int H,char* start_info) : Fl_Hold_Browser(X,Y,W,H,start_info), X(X), Y(Y), W(W), H(H) {
+}
+
+void TagBrowser::draw_noe() {
+  //draw_cie_shoe(x(),y(),w(),h());
+  DBG
+}
+
+void TagBrowser::reopen() {
+  std::stringstream s;
+  std::string text;
+  #define add_s(stream) s << stream; text = s.str(); add (text.c_str()); s.str("");
+
+  clear();
+  add_s ("@fDateiname:")
+  add_s ( "@b    " << profile.filename() )
+  add_s ("")
+  add_s ("@B26@tNr. Bezeichner  Typ         Größe Beschreibung")
+  add_s ("@t" << profile.print_header());
+  select (5); // Header voreinstellen
+
+  text = profile.print_long_header(); DBG
+  tag_texts->show(); DBG
+  tag_texts->value("");
+  tag_texts->insert (text.c_str()); DBG
+  tag_viewer->hide(); DBG
+  canvas->hide(); DBG
 }
