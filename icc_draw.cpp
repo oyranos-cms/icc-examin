@@ -383,8 +383,7 @@ draw_cie_shoe (int X, int Y, int W, int H,
   DBG_prog_ende
 }
 
-void draw_kurve    (int X, int Y, int W, int H,
-                    bool tauschen)
+void draw_kurve    (int X, int Y, int W, int H)
 { DBG_prog_start
   // Zeichenflaeche
   fl_color(BG);
@@ -533,10 +532,16 @@ void draw_kurve    (int X, int Y, int W, int H,
     // segmentierte Kurve
     } else {
       for (unsigned int i = 1; i < icc_examin->kurven[j].size(); i++) {
-        fl_line (x( icc_examin->kurven[j][i-1] ),
-                 y( (i-1) / ((icc_examin->kurven[j].size()-1) *n) ),
-                 x( icc_examin->kurven[j][i] ),
-                 y( (i) / ((icc_examin->kurven[j].size()-1) *n) ) );
+        if (icc_examin->kurve_umkehren)
+          fl_line (x( (i-1) / ((icc_examin->kurven[j].size()-1) *n) ),
+                   y( icc_examin->kurven[j][i-1] ),
+                   x( (i) / ((icc_examin->kurven[j].size()-1) *n) ),
+                   y( icc_examin->kurven[j][i] ) );
+        else
+          fl_line (x( icc_examin->kurven[j][i-1] ),
+                   y( (i-1) / ((icc_examin->kurven[j].size()-1) *n) ),
+                   x( icc_examin->kurven[j][i] ),
+                   y( (i) / ((icc_examin->kurven[j].size()-1) *n) ) );
       }
       // Infos einblenden 
       s << name << _(" mit ") << icc_examin->kurven[j].size() << _(" Punkten");

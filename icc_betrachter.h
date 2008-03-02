@@ -28,7 +28,7 @@ class TagTexts;
 class MftChoice;
 class GL_Ansicht;
 #define _(text) text
-#define status(_texte) {std::stringstream s; s << _texte; icc_examin->icc_betrachter->box_stat->label(s.str().c_str());}
+#define status(_texte) {std::stringstream s; s << _texte; icc_examin->statlabel = s.str(); icc_examin->icc_betrachter->box_stat->label(icc_examin->statlabel.c_str());}
 #include "icc_examin.h"
 #include "icc_profile.h"
 #include "icc_utils.h"
@@ -53,7 +53,7 @@ public:
 };
 
 class TagDrawings : public Fl_Widget {
-  int X; int Y; int W; int H; bool kurven;
+  int X; int Y; int W; int H;
 public:
   int wiederholen;
   TagDrawings(int X,int Y,int W,int H) ;
@@ -64,10 +64,11 @@ public:
 };
 
 class MftChoice : public Fl_Choice {
-  int X; int Y; int W; int H; char* start_info; char typ[5]; std::vector<std::string> Info; int gewaehlter_eintrag;
+  int X; int Y; int W; int H; char* start_info; char typ[5];
 public:
+  std::vector<std::string> Info; int gewaehlter_eintrag;
   MftChoice(int X,int Y,int W,int H,char* start_info) ;
-  void profil_tag(int _tag);
+  void profil_tag(int _tag, std::string text);
   void auswahl_cb(void);
 };
 #include <FL/Fl_Double_Window.H>
@@ -152,7 +153,7 @@ public:
   TagDrawings *tag_viewer;
   TagTexts *tag_text;
   Fl_Group *group_histogram;
-  Fl_Box *DD_histogram;
+  GL_Ansicht *DD_histogram;
   Fl_Box *box_stat;
   Fl_Progress *load_progress;
   void run();

@@ -32,6 +32,8 @@
 #define ICC_GL_H
 #include <vector>
 
+#include "agviewer.h"
+
 extern int kanal;
 extern bool duenn;
 
@@ -39,7 +41,8 @@ class GL_Ansicht : public Fl_Group {
   std::vector<std::vector<std::vector<std::vector<double> > > > tabelle;
   std::vector<std::string>nachFarbNamen;
   std::vector<std::string>vonFarbNamen;
-  std::vector<double>punkte;
+  std::vector<std::string>farbNamen;
+  std::vector<double> punkte;
   std::vector<std::vector<double> >kurven;
   Fl_Group *GLFenster;
   void MenueErneuern();
@@ -55,7 +58,7 @@ public:
   GL_Ansicht(int X,int Y,int W,int H);
   ~GL_Ansicht();
   void draw();
-  void hinein_punkt(std::vector<double> vect, std::vector<std::string> txt);
+  void hinein_punkte(std::vector<double> vect, std::vector<std::string> txt);
   void hinein_kurven(std::vector<std::vector<double> >vect, std::vector<std::string> txt);
   void hinein_tabelle(std::vector<std::vector<std::vector<std::vector<double> > > >vect,
                                std::vector<std::string> vonFarben,

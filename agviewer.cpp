@@ -144,6 +144,7 @@ agviewer::ConstrainEl(void)
 void
 agviewer::_agvMove(void)
 { DBG_PROG_START
+  DBG_PROG_V(redisplayWindow())
   switch (MoveMode)  {
     case FLYING:
       Ex += EyeMove*sin(TORAD(EyeAz))*cos(TORAD(EyeEl));
