@@ -79,9 +79,9 @@ leseGrafikKartenGamma        (std::string display_name,
   if (!XF86VidModeGetMonitor(display, screen, &monitor))
     WARN_S( _("Keine Monitor Information erhalten") )
   else {
-    texte.push_back(_("Hersteller: "));
+    texte.push_back(_("Manufacturer:"));
     texte[texte.size()-1].append(monitor.vendor);
-    texte.push_back(_("Model:      "));
+    texte.push_back(_("Model:       "));
     texte[texte.size()-1].append(monitor.model);
   }
   DBG_PROG_V( monitor.vendor )
@@ -92,19 +92,19 @@ leseGrafikKartenGamma        (std::string display_name,
     char t[24];
     if( gamma.red != 1.0 ) {
       texte.push_back("");
-      texte.push_back(_("Gamma Rot:   "));
+      texte.push_back(_("Gamma Red:   "));
       sprintf(t, "%.2f", gamma.red);
       texte[texte.size()-1].append(t);
     }
     DBG_NUM_V( gamma.red )
     if( gamma.green != 1.0 ) {
-      texte.push_back(_("Gamma Grün: "));
+      texte.push_back(_("Gamma Green:"));
       sprintf(t, "%.2f", gamma.green);
       texte[texte.size()-1].append(t);
     }
     DBG_NUM_V( gamma.green )
     if( gamma.blue != 1.0 ) {
-      texte.push_back(_("Gamma Blau:  "));
+      texte.push_back(_("Gamma Blue:  "));
       sprintf(t, "%.2f", gamma.blue);
       texte[texte.size()-1].append(t);
     }

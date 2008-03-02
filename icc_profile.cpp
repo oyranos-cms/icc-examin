@@ -188,92 +188,6 @@ ICCprofile::fload ()
     DBG_PROG_ENDE
     return;
   }
-#if 0
-  // Test   > 132 byte
-  if (size_ < 132) {
-    WARN_S( _("Kein Profil")<<_(" Größe ")<<size_ )
-    measurement.load( this, data_, size_ );
-    DBG_PROG_ENDE
-    return;
-  }
-
-  DBG_PROG
-  //Kopf
-  header.load ((void*)data_); DBG_PROG
-
-  // Test acsp
-  char magic[5];
-  memcpy( magic, header.magicName(), 4); magic[4] = 0;
-  if (strstr(magic, "acsp") == 0)
-  {
-    WARN_S( _("Kein Profil") )
-    header.clear();
-
-    // "targ"  Messdaten als Block hinzufügen
-    int groesse = 8 + size_ + 1;
-    char* tag_block = (char*) calloc (sizeof (char), groesse);
-    icTag ic_tag;
-    ICCtag tag;
-
-    ic_tag.size = icValue ((icUInt32Number)groesse); DBG_MEM_V( groesse )
-    ic_tag.offset = 0;
-
-    if( _filename.size() &&
-        (_filename.find( "wrl",  _filename.find_last_of(".") )
-         != std::string::npos) )
-      memcpy (&ic_tag.sig, "vrml", 4);
-    else
-      ic_tag.sig = icValue (icSigCharTargetTag);
-
-    memcpy (&tag_block[0], "text", 4); DBG_NUM_S( tag_block )
-    memcpy (&tag_block[8], data_, size_);
-
-    tag.load( this, &ic_tag, tag_block );
-    addTag( tag );
-
-    free (tag_block);
-
-    measurement.load( this, tag );
-    DBG_PROG_ENDE
-    return;
-  }
-   
-  //Profilabschnitte
-  // TagTabelle bei 132 abholen
-  icTag *tagList = (icTag*)&((char*)data_)[132];
-  //(icTag*) new char ( getTagCount() * sizeof (icTag));
-  //memcpy (tagList , &((char*)data_)[132], sizeof (icTag) * getTagCount());
-  DBG_PROG
-  tags.resize(getTagCount()); DBG_PROG
-  for (int i = 0 ; i < getTagCount() ; i++)
-  { DBG_PROG
-    tags[i].load( this, &tagList[i] ,
-              &((char*)data_)[ icValue(tagList[i].offset) ]); DBG_PROG
-    #ifdef DEBUG_ICCPROFILE
-    cout << " sig: " << tags[i].getTagName() << " " << i << " "; DBG_PROG
-    #endif
-
-    DBG_PROG
-    // bekannte Tags mit Messdaten
-    if (tags[i].getTagName() == "targ"
-     || tags[i].getTagName() == "DevD"
-     || tags[i].getTagName() == "CIED") {
-      DBG_PROG
-      #ifdef DEBUG_ICCPROFILE
-      DBG_NUM_S( "Messdaten gefunden " << tags[i].getTagName() )
-      #endif
-      measurement.load( this, tags[i] );
-      DBG_PROG
-    }
-    DBG_PROG
-  }
-  DBG_PROG
-  #ifdef DEBUG_ICCPROFILE
-  DBG_NUM_S( "TagCount: " << getTagCount() << " / " << tags.size() )
-  #endif
- 
-  DBG_NUM_V( _filename )
-#endif
   changing_ = false;
   DBG_PROG_ENDE
 }
@@ -305,7 +219,7 @@ ICCprofile::load (const Speicher & prof)
 
   // Test   > 132 byte
   if (size_ < 132) {
-    WARN_S( _("Kein Profil")<<_(" Größe ")<<size_ )
+    WARN_S( _("Kein Profil")<<" "<<_("Size")<<" "<<size_ )
     measurement.load( this, data_, size_ );
     DBG_PROG_ENDE
     return;
@@ -491,7 +405,7 @@ ICCprofile::getTagText                                  (int item)
 { DBG_PROG_START
   // Prüfen
   std::string name = tags[item].getTypName();
-  std::string leer = name + " Typ - keine Textausgabe";
+  std::string leer = name + _(" typ - no text output");
   std::vector<std::string> v;
   v.push_back( leer );
 #if 0
@@ -929,7 +843,7 @@ ICCprofile::checkProfileDevice (char* type, icProfileClassSignature deviceClass)
           check = false;
           break;
         if (icSigCmykData   != header.colorSpace())
-          g_message ("%s - %s - %s \"%s %s",_("Color space"),
+          g_message ("%s - %s - %s \"%s %s",_("Colour Space"),
                      getColorSpaceName(header.colorSpace()).c_str(),
                      _("is not valid for an"),
                      type,

@@ -21,7 +21,7 @@ src_dir="`(cd ..;pwd)`/""$TARGET"_"$VERSION"
 srcdir="`pwd`"
 
 test -f error.txt && rm -v error.txt
-test -f config && make clean
+test -f config && rm config config.h
 
 echo "# automatically generated file - do not edit" > $CONF
 echo "/* automatically generated file - do not edit */" > $CONF_H

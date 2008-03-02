@@ -31,13 +31,13 @@
 #define ICC_HELFER_FLTK_H
 
 #include "icc_icc.h"
+#include <FL/Fl_Menu_Item.H>
 #include <FL/Fl_Menu_.H>
-#include <FL/Fl_Menu_Bar.H>
 
 // Helferfunktionen
 // definiert in icc_helfer_fltk.cpp
 
 int* getChannel_flColours(icColorSpaceSignature color);
-const Fl_Menu_* menue_uebersetzen( Fl_Menu_* menueleiste );
+void menue_uebersetzen( Fl_Menu_Item* menueleiste );
 
 #endif //ICC_HELFER_FLTK_H

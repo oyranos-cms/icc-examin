@@ -97,6 +97,9 @@ ICCexamin::start (int argc, char** argv)
 
   #if HAVE_X// || HAVE_OSX
   icc_betrachter->menueintrag_vcgt->show();
+  DBG_PROG_S( "Zeige vcgt" )
+  #else
+  DBG_PROG_S( "Zeige vcgt nicht" )
   #endif
   if(!icc_debug)
     icc_betrachter->menueintrag_testkurven->hide();

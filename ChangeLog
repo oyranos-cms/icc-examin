@@ -1,3 +1,8 @@
+2005-04-26
+	* und: Menüs Texte werden ausgetauscht; Fluid Zeigernamen bleiben erhalten
+	* und: i18n: msgmerge obtains utf-8; de: recode -> latin-1 +
+	* und:       set charset=latin-1 + msgfmt obtains latin-1 => fltk=correct
+
 2005-04-25
 	* fix: Objekt scope Fehler in icc_betrachter/icc_helfer_fltk
 

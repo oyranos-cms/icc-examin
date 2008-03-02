@@ -47,6 +47,17 @@ ifdef APPLE
 	--keyword=N_
 else
   SO = .so
+    MSGMERGE = msgmerge --update
+    XGETTEXT_OPTIONS = \
+	--keyword=gettext --flag=gettext:1:pass-c-format \
+	--keyword=_ --flag=_:1:pass-c-format \
+	--keyword=N_ --flag=N_:1:pass-c-format \
+	--copyright-holder='Kai-Uwe Behrmann' \
+	--msgid-bugs-address='ku.b@gmx.de' \
+	--from-code=utf-8
+    RECODE_DE = iso-8859-1
+    RECODE = recode -vf
+    CHARSET_DE = latin-1
   ifdef LINUX
     OPTS = -Wall  -Os -g $(DEBUG) #-fomit-frame-pointer -g
     INCL=-I$(includedir) -I/usr/X11R6/include -I./
@@ -55,26 +66,10 @@ else
     LINK_NAME = -Wl,-soname -Wl,$(LIBSONAME)
     LINK_LIB_PATH = -Wl,--rpath -Wl,$(libdir)
     LINK_SRC_PATH = -Wl,--rpath -Wl,$(srcdir)
-    MSGMERGE = msgmerge --update
-    XGETTEXT_OPTIONS = \
-	--keyword=gettext --flag=gettext:1:pass-c-format \
-	--keyword=_ --flag=_:1:pass-c-format \
-	--keyword=N_ --flag=N_:1:pass-c-format \
-	--copyright-holder='Kai-Uwe Behrmann' \
-	--msgid-bugs-address='ku.b@gmx.de' \
-	--from-code=utf-8
   else
     OPTS=-Wall -O2 -g -fpic -L.
     RM = rm -f
     LIBLINK_FLAGS = -shared -ldl $(ICONV) -lintl
-    MSGMERGE = msgmerge --update
-    XGETTEXT_OPTIONS = \
-	--keyword=gettext --flag=gettext:1:pass-c-format \
-	--keyword=_ --flag=_:1:pass-c-format \
-	--keyword=N_ --flag=N_:1:pass-c-format \
-	--copyright-holder='Kai-Uwe Behrmann' \
-	--msgid-bugs-address='ku.b@gmx.de' \
-	--from-code=utf-8
   endif
 endif
 
@@ -236,7 +231,7 @@ ALL_FILES =	$(SOURCES) \
 timedir = .
 mtime   = `find $(timedir) -prune -printf %Ty%Tm%Td.%TT | sed s/://g`
 
-#.SILENT:
+.SILENT:
 
 all:	config mkdepend $(TARGET)
 
@@ -287,20 +282,14 @@ test:	icc_formeln.o icc_utils.o
 pot:	$(POT_FILE)
 	echo Preparing Linguas ...
 	for ling in $(LINGUAS); do \
-	   \
-	  test -f po/$${ling}.po \
-        && (echo "update po/$${ling}.po ..."; \
-            $(MSGMERGE) po/$${ling}.po $(POT_FILE)) \
-        || (echo "to start translation - create po/$${ling}.po with:"; \
-            echo "        msginit -o po/$${ling}.po -i $(POT_FILE)"); \
-	  echo "update po/$${ling}.mo ..."; \
+	  echo "update po/$${ling}.gmo ..."; \
 	  test -f po/$${ling}.po \
         && (msgfmt -c --statistics -o po/$${ling}.gmo po/$${ling}.po; \
             !(test -d po/$${ling}) && mkdir po/$${ling}; \
             !(test -d po/$${ling}/LC_MESSAGES) && mkdir po/$${ling}/LC_MESSAGES; \
             test -f po/$${ling}/LC_MESSAGES/$(TARGET).mo && rm po/$${ling}/LC_MESSAGES/$(TARGET).mo; \
             ln -s ../../$${ling}.gmo po/$${ling}/LC_MESSAGES/$(TARGET).mo;) \
-        || (echo $${ling}.po is not yet available ... skipping) \
+        || (echo $${ling}.po is not yet ready ... skipping) \
 	done;
 
 potfile:
@@ -308,7 +297,22 @@ potfile:
 	-d $(TARGET) \
 	-o $(POT_FILE) \
 	$(SOURCES)
-
+	for ling in $(LINGUAS); do \
+      test -f po/$${ling}.utf-8 \
+        && (echo "update translation in po/$${ling}.utf-8 ..."; \
+            $(MSGMERGE) po/$${ling}.utf-8 $(POT_FILE)) \
+        || (echo "to start translation - create po/$${ling}.po with:"; \
+            echo "        msginit -o po/$${ling}.po -i $(POT_FILE)"); \
+	  test -f $(POT_FILE) \
+        && (echo "erase po/$${ling}.po ..."; \
+            if [ $$ling = de ]; then \
+              echo transkodiere Uebersetzung von po/$${ling}.utf-8 nach po/$${ling}.po; \
+              cat po/$${ling}.utf-8 | sed s/charset=UTF-8/charset=$(CHARSET_DE)/ > po/$${ling}.po; \
+              $(RECODE) utf-8..$(CHARSET_DE) po/$${ling}.po; \
+            else \
+              echo "no native language po file created for $$ling"; \
+            fi) \
+	done;
 
 $(POT_FILE):	potfile
 
@@ -376,7 +380,7 @@ tgz:
 	$(COPY) $(POT_FILE) Entwickeln/po
 	for ling in $(LINGUAS); do \
 	  test -f po/$${ling}.po \
-        && $(COPY) po/$${ling}.po Entwickeln/po/$${ling}.po; \
+        && $(COPY) po/$${ling}.po Entwickeln/po/$${ling}.utf-8; \
 	done;
 	tar cf - Entwickeln/ \
 	| gzip > $(TARGET)_$(mtime).tgz
@@ -394,7 +398,7 @@ targz:
 	$(COPY) $(POT_FILE) $(TARGET)_$(VERSION)/po
 	for ling in $(LINGUAS); do \
 	  test -f po/$${ling}.po \
-        && $(COPY) po/$${ling}.po $(TARGET)_$(VERSION)/po/$${ling}.po; \
+        && $(COPY) po/$${ling}.po $(TARGET)_$(VERSION)/po/$${ling}.utf-8; \
 	done;
 	tar cf - $(TARGET)_$(VERSION)/ \
 	| gzip > $(TARGET)_$(mtime).tgz

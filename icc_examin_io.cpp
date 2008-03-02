@@ -206,16 +206,16 @@ ICCexamin::tag_browserText (void)
   #define add_          s << " ";
 
   b->clear();
-  add_s ("@fDateiname:")
+  add_s ("@f" << _("Filename") << ":" )
   add_s ("@b    " << profile.profil()->filename() )
   add_s ("")
   if (tag_list.size() == 0) {
-    add_s (_("keine Inhalte gefunden für") <<" \"" << profile.profil()->filename() << "\"")
+    add_s (_("found no content for") <<" \"" << profile.profil()->filename() << "\"")
     return;
   } else if ((int)tag_list.size() != profile.profil()->tagCount()*5 ) {
-    add_s (_("interner Fehler") )
+    add_s (_("Internal error") )
   }
-  add_s ("@B26@tNr. Bezeichner  Typ         GröBeschreibung")
+  add_s ("@B26@t" << _("No. Tag         Type         Size Description") )
   add_s ("@t" << profile.profil()->printHeader() )
   std::vector<std::string>::iterator it;
   for(int i = 0; i < (int)tag_list.size(); ++i)

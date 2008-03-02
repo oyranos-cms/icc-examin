@@ -764,15 +764,15 @@ std::string
 printDatum                      (icDateTimeNumber date)
 { DBG_PROG
   std::stringstream s;
-    s << _("Datum") << ":       " <<
+    s <<
                        icValue(date.day)     << "/" <<
                        icValue(date.month)   << "/" <<
                        icValue(date.year)    << " " <<
                        icValue(date.hours)   << ":";
     if (icValue(date.minutes) < 10)
       s << "0";
-                  s << icValue(date.minutes) << " " << _("Uhr") << " " <<
-                       icValue(date.seconds) << " " << _("Sekunden");
+                  s << icValue(date.minutes) << " " << _("o'clock") << " " <<
+                       icValue(date.seconds) << " " << _("seconds");
   return s.str();
 }
 

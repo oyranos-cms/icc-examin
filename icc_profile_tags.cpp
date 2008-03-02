@@ -227,16 +227,16 @@ ICCtag::getText                     (void)
     std::stringstream s;
     icMeasurement meas;
     memcpy (&meas, &data_[8] , 28);
-    s << _("Standard Betrachter") << ": " <<
+    s << _("Standard Observer") << ": " <<
     getStandardObserver( (icStandardObserver)icValue( meas.stdObserver) ) <<endl
-      << _("Rückseite") << ": X = " << icSFValue(meas.backing.X)
+      << _("Backsite") << ": X = " << icSFValue(meas.backing.X)
                         << ", Y = " << icSFValue(meas.backing.Y)
                         << ", Z = " << icSFValue(meas.backing.Z) << endl
       << _("Geometrie") << ": "<< 
     getMeasurementGeometry ((icMeasurementGeometry)icValue(meas.geometry))<<endl
       << _("Flare")     << ": "<< 
     getMeasurementFlare ((icMeasurementFlare)icValue(meas.flare)) << endl
-      << _("Beleuchtungstyp") << ": " <<
+      << _("Illuminant Type") << ": " <<
     getIlluminant ((icIlluminant)icValue(meas.illuminant)) <<endl;
     texte.push_back( s.str() );
 
@@ -251,14 +251,14 @@ ICCtag::getText                     (void)
     inputEnt = icValue(lut16->inputEnt);
     outputEnt = icValue(lut16->outputEnt);
     std::stringstream s;
-    s << _("Konvertierungskette mit 16-bit Präzission:") << endl <<
+    s << _("Conversion table with 16-bit precission:") << endl <<
          _("Intent:") << " " << renderingIntentName(_intent) << endl <<
-         _("Eingangskanäle") << " (" << getColorSpaceName(_color_in)  << "): " << (int)inputChan << endl <<
-         _("Ausgangskanäle") << " (" << getColorSpaceName(_color_out) << "): " << (int)outputChan << endl <<
+         _("Number of input channels") << " (" << getColorSpaceName(_color_in)  << "): " << (int)inputChan << endl <<
+         _("Number of output channels") << " (" << getColorSpaceName(_color_out) << "): " << (int)outputChan << endl <<
          _("Matrix") << endl <<
-         _("lineare Eingangkurve") << " " << _("mit") << " " << (int)inputEnt << " " << _("Stufungen") << endl <<
-         _("3D Farbtabelle mit") << " " <<  (int)clutPoints << " " << _("Punkten Seitenlänge") << endl <<
-         _("lineare Ausgangskurve") << " " << _("mit") << " " << (int)outputEnt << " " << _("Stufungen") << endl;
+         _("Linear input curve") << " " << _("with") << " " << (int)inputEnt << " " << _("steps") << endl <<
+         _("3D Lockup table with") << " " <<  (int)clutPoints << " " << _("points length per side") << endl <<
+         _("Linear output curve") << " " << _("with") << " " << (int)outputEnt << " " << _("steps") << endl;
     texte.push_back( s.str() );
 
   } else if (text == "mft1") {
@@ -270,12 +270,12 @@ ICCtag::getText                     (void)
     clutPoints = (int)lut8->clutPoints;
 
     std::stringstream s;
-    s << _("Konvertierungskette mit 8-bit Präzission:") << endl <<
+    s << _("Conversion table with 8-bit precission:") << endl <<
          _("Intent:") << " " << renderingIntentName(_intent) << endl <<
-         _("Eingangskanäle") << " (" << getColorSpaceName(_color_in)  << "): " << (int)inputChan << endl <<
-         _("Ausgangskanäle") << " (" << getColorSpaceName(_color_out) << "): " << (int)outputChan << endl <<
+         _("Number of input channels") << " (" << getColorSpaceName(_color_in)  << "): " << (int)inputChan << endl <<
+         _("Number of output channels") << " (" << getColorSpaceName(_color_out) << "): " << (int)outputChan << endl <<
          _("Matrix") << endl <<
-         _("3D Farbtabelle mit") << " " <<  (int)clutPoints << " " << _("Punkten Seitenlänge") << endl;
+         _("3D Lockup table with") << " " <<  (int)clutPoints << " " << _("points length per side") << endl;
     texte.push_back( s.str() );
 
   } else if (((icTagBase*)&data_[0])->sig == (icTagTypeSignature)icValue( icSigChromaticityType )) {
@@ -288,7 +288,7 @@ ICCtag::getText                     (void)
     #endif
     for (int i = 0; i < count ; i++) { // Table 35 -- chromaticityType encoding
       std::stringstream s;
-      s << _("Kanal ") << i;
+      s << _("Channel") << " "<< i;
       texte.push_back( s.str() );
       texte.push_back( "chrm" );
       #ifdef DEBUG_ICCTAG
@@ -383,9 +383,9 @@ ICCtag::getText                     (void)
 
   } else if ( text == "vcgt" ) {
 
-    texte.push_back( _("Rot") );
-    texte.push_back( _("Grün") );
-    texte.push_back( _("Blau") );
+    texte.push_back( _("Red") );
+    texte.push_back( _("Green") );
+    texte.push_back( _("Blue") );
     texte.push_back( "gamma_start_ende" );
 
   } else if ( text == "sf32" ) {
@@ -413,9 +413,9 @@ ICCtag::getText                     (void)
     int farben_n        = icValue(ncl2->anzahl);
     int geraetefarben_n = icValue(ncl2->koord);
     s << "\n\n   " <<
-         _("Anzahl Farben:") << icValue(ncl2->anzahl) << "\n" <<
+         _("Number of colours:") << icValue(ncl2->anzahl) << "\n" <<
          "   " << _("Name") << "    " << _("CIE*Lab") <<
-         " / " << _("Gerätefarben") << "\n\n";
+         " / " << _("Device Colours") << "\n\n";
     texte[0] = s.str();
     DBG_MEM_V( texte[0] )
     DBG_MEM_V( sizeof(Ncl2)+icValue(ncl2->anzahl)*sizeof(Ncl2Farbe) )
@@ -974,14 +974,14 @@ ICCtag::getText                     (MftChain typ)
            if (texte.size() == 1)
            {
              sprintf(n,"%d",1);
-             texte[0] = _("Farbe");
+             texte[0] = _("Colour");
              texte[0] = texte[0] + n;
            }
     // Auffüllen
            for (int i = texte.size(); i < kanaele[0]; i++)
            {
              sprintf(n,"%d",i+1);
-             texte.push_back(_("Farbe"));
+             texte.push_back(_("Colour"));
              texte[i] = texte[i] + n;
            }
   }

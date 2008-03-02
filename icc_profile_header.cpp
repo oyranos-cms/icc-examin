@@ -112,24 +112,24 @@ ICCheader::attributes (void) const
   unsigned char         maske4 = 0x10;
 
   if (f[0] & maske1)
-    s << _("Durchsicht, ");
+    s << _("Transparent, ");
   else
-    s << _("Aufsicht, ");
+    s << _("Reflective, ");
 
   if (f[0] & maske2)  
-    s << _("matt, ");
+    s << _("matte, ");
   else
-    s << _("glänzend, ");
+    s << _("glossy, ");
 
   if (f[0] & maske3)  
-    s << _("negativ, ");
+    s << _("negative, ");
   else
-    s << _("positiv, ");
+    s << _("positive, ");
 
   if (f[0] & maske4)  
-    s << _("schwarz/weiss");
+    s << _("black/white");
   else
-    s << _("farbig");
+    s << _("colour");
 
 
   #ifdef DEBUG
@@ -156,14 +156,14 @@ ICCheader::flags (void) const
   unsigned char         maske2 = 0x40;
 
   if (f[0] & maske1)
-    s << _("Farbprofil ist eingebettet und ");
+    s << _("Profile is embedded and ");
   else
-    s << _("Farbprofil ist nicht eingebettet und ");
+    s << _("Profile is not embedded and ");
 
   if (f[0] & maske2)  
-    s << _("kann nicht unabhängig vom Bild verwendet werden.");
+    s << _("can not be used independently from image.");
   else
-    s << _("kann unabhängig vom Bild verwendet werden.");
+    s << _("can be used independently from image.");
 
   #ifdef DEBUG
   DBG_NUM_S( (int)f[0] << " " << (long)header.flags )
@@ -203,37 +203,37 @@ ICCheader::print_long() const
   std::string mo = modelName();
   std::string cr = creatorName();
   std::stringstream s; DBG_PROG
-  s << "kein Dateikopf gefunden"; DBG_PROG
+  s << _("found no header"); DBG_PROG
   
   //cout << "char icSignature ist " << sizeof (icSignature) << endl;
   if (valid) { DBG_PROG
     s.str("");
-    s << "ICC Dateikopf:\n"<< endl \
-      <<  "    " << _("Größe") << ":       " <<
+    s << _("ICC profile header") << ":\n"<< endl \
+      <<  "    " << _("Size:        ") <<
                        size() << " " << _("bytes") << endl \
-      <<  "    " << _("CMM") << ":         " << cm << endl \
-      <<  "    " << _("Version") << ":     " << versionName() << endl \
-      <<  "    " << _("Klasse") << ":      " <<
+      <<  "    " << _("CMM:         ") << cm << endl \
+      <<  "    " << _("Version:     ") << versionName() << endl \
+      <<  "    " << _("Class:       ") <<
                        getDeviceClassName(deviceClass()) << endl \
-      <<  "    " << _("Farbraum") << ":    " <<
+      <<  "    " << _("Colour Space:")  <<
                        getColorSpaceName(colorSpace()) << endl \
-      <<  "    " << _("PCS") << ":         " <<
+      <<  "    " << _("PCS:         ") <<
                        getColorSpaceName(pcs()) << endl \
-      <<  "    " << printDatum(header.date) << endl \
-      <<  "    " << _("Magic") << ":       " << mg << endl \
-      <<  "    " << _("Plattform") << ":   " << platform() << endl \
-      <<  "    " << _("Flags") << ":       " << flags() << endl \
-      <<  "    " << _("Hersteller") << ":  " << ma << endl \
-      <<  "    " << _("Model") << ":       " << mo << endl \
-      <<  "    " << _("Attribute") << ":   " <<
+      <<  "    " << _("Date:        ") << printDatum(header.date) << endl\
+      <<  "    " << _("Magic:       ") << mg << endl \
+      <<  "    " << _("Platform:    ") << platform() << endl \
+      <<  "    " << _("Flags:       ") << flags() << endl \
+      <<  "    " << _("Manufacturer:") << ma << endl \
+      <<  "    " << _("Model:       ") << mo << endl \
+      <<  "    " << _("Attributes:  ") <<
                        attributes() << endl \
-      <<  "    " << _("Übertragung") << ": " <<
+      <<  "    " << _("Intent:      ") <<
                        renderingIntent() << endl \
-      <<  "    " << _("Beleuchtung") << ": X=" <<
+      <<  "    " << _("Illuminant:  ") << "X=" <<
                        icSFValue(header.illuminant.X) << ", Y=" << \
                        icSFValue(header.illuminant.Y) << ", Z=" << \
                        icSFValue(header.illuminant.Z) << endl \
-      <<  "    " << _("erzeugt von") << ": " << cr << endl ;
+      <<  "    " << _("created by:  ") << cr << endl ;
   } DBG_PROG_ENDE
   return s.str();
 }
@@ -241,9 +241,9 @@ ICCheader::print_long() const
 std::string
 ICCheader::print() const
 { DBG_PROG_START
-  std::string s = _("Dateikopf ungültig");
+  std::string s = _("File header invalid");
   if (valid)
-    s = _("    Kopf        Dateikopf     128 Dateikopf");
+    s = _("    Header      File header   128 File header");
   DBG_PROG_ENDE
   return s;
 }

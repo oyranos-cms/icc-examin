@@ -65,7 +65,7 @@ main (int argc, char** argv)
   }
 
   DBG_PROG_V( _("Yes") )
-  DBG_PROG_V( _("Files") )
+  DBG_PROG_V( _("File") )
   DBG_PROG_V( _("About ICC Examin") )
 
   ICCexamin hauptprogramm;
