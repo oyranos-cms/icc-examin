@@ -38,13 +38,15 @@ DL = --ldflags # --ldstaticflags
 X_CPPFILES = icc_helfer_x.cpp
 OSX_CPPFILES = icc_helfer_osx.cpp
 FLTK_CPPFILES = icc_helfer_fltk.cpp
+I18N_CXXFILES = fl_i18n.cxx
+I18N_HEADERS = fl_i18n.H
 MSGFMT = msgfmt -c --statistics
 RPMARCH = `rpmbuild --showrc | awk '/^build arch/ {print $$4}'`
 
 ifdef APPLE
   OPTS=-Wall -g $(DEBUG) -DPIC -Wunused -fno-exceptions
   LIBLINK_FLAGS = -dynamiclib
-  I18N_LIB = -lintl #-liconv
+  I18N_LIB = -lintl $(LIBNAME) #-liconv
   OSX_CPP = $(OSX_CPPFILES)
   INCL=-I$(includedir) -I/usr/X11R6/include -I./ -I/usr/include/gcc/darwin/default/c++
   REZ = \
@@ -74,11 +76,12 @@ else
     LINK_NAME = -Wl,-soname -Wl,$(LIBSONAME)
     LINK_LIB_PATH = -Wl,--rpath -Wl,$(libdir)
     LINK_SRC_PATH = -Wl,--rpath -Wl,$(srcdir)
+    I18N_LIB = $(LIBNAME)
   else
     OPTS=-Wall -O2 -g $(DEBUG) -L. -Wunused -fno-exceptions -lc -lm
     RM = rm -f
     LIBLINK_FLAGS = -shared -ldl
-    I18N_LIB = $(ICONV) -lintl
+    I18N_LIB = $(ICONV) -lintl $(LIBNAME)
   endif
 endif
 
@@ -112,7 +115,7 @@ endif
 
 LDLIBS = -L$(libdir) -L./ $(FLU_FLTK_LIBS) \
 	$(X11_LIBS) -llcms -L/lib $(OYRANOS_LIBS) $(LCMS_LIBS) \
-	$(FTGL_LIBS) $(I18N_LIB) $(DBG_LIBS)
+	$(FTGL_LIBS) $(I18N_LIB) $(DBG_LIBS) $(LIBNAME)
 
 CPP_HEADERS = \
 	agviewer.h \
@@ -165,7 +168,6 @@ COMMON_CPPFILES = \
 	icc_gamut.cpp \
 	icc_gl.cpp \
 	icc_helfer.cpp \
-    icc_helfer_i18n.cpp \
 	icc_info.cpp \
 	icc_kette.cpp \
 	icc_main.cpp \
@@ -208,11 +210,13 @@ ALL_SOURCEFILES = \
 	$(OSX_CPPFILES) \
 	$(X_CPPFILES) \
 	$(FLTK_CPPFILES) \
+	$(I18N_CXXFILES) \
 	$(CXXFILES) \
 	$(TEST)
 
 ALL_HEADERFILES = \
-	$(CPP_HEADERS)
+	$(CPP_HEADERS) \
+	$(I18N_HEADERS)
 
 DOKU = \
 	TODO \
@@ -234,7 +238,7 @@ FONT = FreeSans.ttf
 
 SOURCES = $(ALL_SOURCEFILES) $(ALL_HEADERFILES)
 OBJECTS = $(CPPFILES:.cpp=.o) $(CXXFILES:.cxx=.o)
-CLIB_OBJECTS =  $(CFILES:.c=.o)
+I18N_OBJECTS =  $(I18N_CXXFILES:.cxx=.o)
 
 POT_FILE = po/$(TARGET).pot
 
@@ -267,7 +271,7 @@ release:	icc_alles.o
 	$(REZ)
 	$(RM) icc_alles.o
 
-$(TARGET):	base $(OBJECTS) pot #$(LIBNAME) $(LIBSONAMEFULL)
+$(TARGET):	base $(OBJECTS) pot $(LIBNAME) $(LIBSONAMEFULL)
 	
 dynamic:	$(TARGET)
 	echo Verknuepfen $@...
@@ -276,19 +280,19 @@ dynamic:	$(TARGET)
 	$(LDLIBS) $(LINK_LIB_PATH) $(LINK_SRC_PATH)
 	$(REZ)
 
-$(LIBSONAMEFULL):	$(CLIB_OBJECTS)
+$(LIBSONAMEFULL):	$(I18N_OBJECTS)
 	echo Verknuepfen $@ ...
 	$(CC) $(OPTS) $(LIBLINK_FLAGS) $(LINK_NAME) -o $(LIBSONAMEFULL) \
-	$(CLIB_OBJECTS) 
+	$(I18N_OBJECTS) 
 	$(REZ)
 	$(RM)  $(LIBSONAME)
 	$(LINK) $(LIBSONAMEFULL) $(LIBSONAME)
 	$(RM)  $(LIBSO)
 	$(LINK) $(LIBSONAMEFULL) $(LIBSO)
 
-$(LIBNAME):	$(CLIB_OBJECTS)
+$(LIBNAME):	$(I18N_OBJECTS)
 	echo Verknuepfen $@ ...
-	$(COLLECT) $(LIBNAME) $(CLIB_OBJECTS)
+	$(COLLECT) $(LIBNAME) $(I18N_OBJECTS)
 	$(RANLIB) $(LIBNAME)
 
 static:	$(TARGET)
@@ -360,7 +364,7 @@ $(POT_FILE):	potfile
 clean:	unbundle unpkg
 	echo mache sauber $@ ...
 	$(RM) mkdepend config config.h
-	$(RM) $(OBJECTS) $(CLIB_OBJECTS) $(BINTARGET) \
+	$(RM) $(OBJECTS) $(I18N_OBJECTS) $(BINTARGET) \
 	$(LIBNAME) $(LIBSO) $(LIBSONAME) $(LIBSONAMEFULL)
 	for ling in $(LINGUAS); do \
 	  test -f po/$${ling}.gmo \

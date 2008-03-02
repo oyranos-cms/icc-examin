@@ -111,7 +111,7 @@ dateiwahl_cb (Fl_File_Chooser *f,void *data)
           profilnamen[i] = fl->value(i);
         DBG_PROG_V( i <<":"<< profilnamen[i] )
       }
-      DBG_NUM_V( profilnamen.size() << filename )
+      DBG_PROG_V( profilnamen.size() << filename )
       icc_examin->oeffnen(profilnamen);
     }
 

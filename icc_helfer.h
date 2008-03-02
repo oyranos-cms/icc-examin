@@ -35,9 +35,7 @@
 
 #include "icc_utils.h"
 #include "icc_icc.h"
-
-// I18N
-void initialiseI18N();
+#include "fl_i18n.H"
 
 // File macros / teilweise aus config.h
 #ifdef __WIN32__
@@ -47,8 +45,8 @@ void initialiseI18N();
 #endif
 
 #if HAVE_FLTK
-#include <FL/Fl_Menu_Item.H>
-void        menue_translate( Fl_Menu_Item *menueleiste );
+#include <Fl/Fl_Widget.H>
+// in icc_helfer_fltk.cpp
 void        dbgFltkEvents  ( int           event);
 std::string dbgFltkEvent   ( int           event);
 void        setzeIcon      ( Fl_Window    *fenster,

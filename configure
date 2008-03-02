@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 TARGET=icc_examin
 
@@ -9,9 +9,10 @@ SPEC=$TARGET.spec
 VERSION_A=0
 VERSION_B=3
 VERSION_C=9
+RELEASE=2
 VERSION=$VERSION_A.$VERSION_B$VERSION_C
 VERSION_L=$VERSION_A.$VERSION_B.$VERSION_C
-ZEIT="May 2004 - October 2005"
+ZEIT="May 2004 - Januar 2006"
 
 src_dir="`(cd ..;pwd)`/""$TARGET"_"$VERSION"
 srcdir="`pwd`"
@@ -110,7 +111,7 @@ FLU_=`flu-config --cxxflags 2>>error.txt`
 if [ `fltk-config --version` == "1.1.7" ]; then
   echo "FLTK version 1.1.7 is not supported by FLU"
 else
-  if [ $? = 0 ] && [ -n "$FLU_" ] && [ -n "$FLTK_" ]; then
+  if [ -n "$FLU_" ] && [ -n "$FLTK_" ]; then
     echo "FLU                     detected"
     echo "#define HAVE_FLU 1" >> $CONF_H
     echo "FLU = 1" >> $CONF
@@ -195,6 +196,7 @@ echo "#endif //ICC_VERSION_H" >> icc_version.h
 
 echo "Version: $VERSION" > $SPEC
 echo "Source:  $TARGET"_"$VERSION".tar.gz >> $SPEC
+echo "Release: $RELEASE" >> $SPEC
 cat  $SPEC.in >> $SPEC
 echo $SPEC generated
 

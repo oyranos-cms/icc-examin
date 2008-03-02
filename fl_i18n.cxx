@@ -32,12 +32,23 @@
 
 #include "config.h"
 #include "icc_helfer.h"
-#include "icc_utils.h"
 
-#ifdef APPLE
+#ifdef __APPLE__
 #include <CoreFoundation/CoreFoundation.h>
 #endif
 
+#ifndef DBG_PROG_START
+#define DBG_PROG_START
+#endif
+#ifndef DBG_PROG_V
+#define DBG_PROG_V(text)
+#endif
+#ifndef DBG_PROG_S
+#define DBG_PROG_S(text)
+#endif
+#ifndef DBG_PROG_ENDE
+#define DBG_PROG_ENDE
+#endif
 
 
 
@@ -49,7 +60,7 @@ initialiseI18N()
   std::string locale;
   int set_zero_locale = 1;
 
-# if APPLE
+# ifdef __APPLE__
   // 1. get the locale info
   CFLocaleRef userLocaleRef = CFLocaleCopyCurrent();
   CFStringRef cfstring = CFLocaleGetIdentifier( userLocaleRef );
@@ -200,7 +211,7 @@ initialiseI18N()
     DBG_PROG_S( _("try to set LANG") )
 
       // set LANG
-#   ifdef APPLE
+#   ifdef __APPLE__
     if (locale.size())
       setenv("LANG", locale.c_str(), 0);
 #   endif
@@ -219,7 +230,7 @@ initialiseI18N()
 
   char test[1024];
   std::string localedir = LOCALEDIR;
-# if APPLE
+# if __APPLE__
   std::string temp = icc_examin_ns::holeBundleResource("locale","");
   if(temp.size()) {
     localedir = temp;
@@ -271,6 +282,29 @@ menue_translate( Fl_Menu_Item* menueleiste )
     if(text)
       DBG_PROG_V( text <<" "<< _(text) );
   }
+}
+
+#include <Fl/Fl_File_Chooser.H>
+void
+file_chooser_translate( )
+{
+  DBG_PROG_START
+    Fl_File_Chooser::add_favorites_label = _("Add to Favorites");
+    Fl_File_Chooser::all_files_label = _("All Files (*)");
+    Fl_File_Chooser::custom_filter_label = _("Custom Filter");
+    Fl_File_Chooser::existing_file_label = _("Please choose an existing file!");
+    Fl_File_Chooser::favorites_label = _("Favorites");
+    Fl_File_Chooser::filename_label = _("Filename");
+    Fl_File_Chooser::manage_favorites_label = _("Manage Favorites");
+#   ifdef WIN32
+    Fl_File_Chooser::filesystems_label = _("My Computer");
+#   else
+    Fl_File_Chooser::filesystems_label = _("Filesystems");
+#   endif
+    Fl_File_Chooser::new_directory_label = _("New Directory?");
+    Fl_File_Chooser::preview_label = _("Preview");
+    //Fl_File_Chooser::save_label = _("Save"); // since 1.1.7?
+    Fl_File_Chooser::show_label = _("Show:");
   DBG_PROG_ENDE
 }
 #endif

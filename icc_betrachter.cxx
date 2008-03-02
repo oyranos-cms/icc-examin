@@ -508,22 +508,14 @@ Fl_Double_Window* ICCfltkBetrachter::init(int argc, char** argv) {
     dateiwahl->add_context_handler(Flu_File_Chooser::ENTRY_FILE, "DLY", _("Open Measurement"), dateiwahl_cb, NULL);
     dateiwahl->add_context_handler(Flu_File_Chooser::ENTRY_FILE, "nCIE", _("Open Measurement"), dateiwahl_cb, NULL);
   #else
+    file_chooser_translate();
+
     const char* ptr = NULL;
     if (profile.size())
       ptr = profile.name().c_str();
     dateiwahl = new Fl_File_Chooser(ptr, _("ICC colour profiles (*.{I,i}{C,c}{M,m,C,c})	Measurement (*.{txt,it8,IT8,RGB,CMYK,ti*,CIE,cie,nCIE,oRPT,DLY,LAB,Q60})	Argyll Gamuts (*.{wrl,vrml}"), Fl_File_Chooser::MULTI, _("Which ICC profile?"));
     dateiwahl->callback(dateiwahl_cb);
-    dateiwahl->add_favorites_label = _("Add to Favorites");
-    dateiwahl->all_files_label = _("All Files (*)");
-    dateiwahl->custom_filter_label = _("Custom Filter");
-    dateiwahl->existing_file_label = _("Please choose an existing file!");
-    dateiwahl->favorites_label = _("Favorites");
-    dateiwahl->filename_label = _("Filename");
-    dateiwahl->manage_favorites_label = _("Manage Favorites");
-    dateiwahl->new_directory_label = _("New Directory?");
-    dateiwahl->preview_label = _("Preview");
-    dateiwahl->save_label = _("Save");
-    dateiwahl->show_label = _("Show:");
+    dateiwahl->preview(true);
   #endif
   { Fl_Double_Window* o = ueber = new Fl_Double_Window(366, 241, _("About ICC Examin"));
     w = o;
