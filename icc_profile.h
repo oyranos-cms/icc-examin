@@ -27,10 +27,27 @@
 const char* cp_nchar (char* text, int n);
 
 
-/**
-  *   @brief interne ICC Profilstruktur
-  **/
+// interne Typen
+typedef struct {
+    double X;
+    double Y;
+    double Z;
+} XYZ;
 
+typedef struct {
+    double R;
+    double G;
+    double B;
+} RGB;
+
+typedef struct {
+    double C;
+    double M;
+    double Y;
+    double K;
+} CMYK;
+
+// Helferfunktionen
 // definiert in icc_helfer.cpp
 unsigned int            icValue   (icUInt16Number val);
 unsigned int            icValue   (icUInt32Number val);
@@ -61,6 +78,10 @@ std::string         getIlluminant( icIlluminant illu );
 std::string         getStandardObserver( icStandardObserver obsv );
 std::string         getMeasurementGeometry( icMeasurementGeometry measgeo );
 std::string         getMeasurementFlare( icMeasurementFlare flare );
+
+/**
+  *   @brief interne ICC Profilstruktur
+  **/
 
 class ICCprofile;
 class ICCheader;
@@ -172,6 +193,7 @@ class ICCmeasurement {
                         ICCmeasurement     (ICCprofile* profil,
                                             icTag& tag, char* data);
                         ~ICCmeasurement    ();
+    void                clear(void);
   private:
     void                init_meas (void);
     icTagSignature      _sig;
@@ -179,9 +201,16 @@ class ICCmeasurement {
     char*               _data;
 
     LCMSHANDLE          _lcms_it8;
-    int                 _nFelder;    
+    int                 _nFelder;
 
     ICCprofile*         _profil;
+    bool                _XYZ_measurement;
+    bool                _RGB_measurement;
+    bool                _CMYK_measurement;
+    std::vector<XYZ>    _XYZ_Satz;
+    std::vector<RGB>    _RGB_Satz;
+    std::vector<CMYK>   _CMYK_Satz;
+    std::vector<std::string> _Feldnamen;
 
   public:
     void                load (ICCprofile* profil , ICCtag& tag);
@@ -196,10 +225,8 @@ class ICCmeasurement {
                                               (icTagTypeSignature)icValue(sig));
                                            }
     int                 getSize()          {return _size; }
-    int                 getPatchCount()    {return (int)cmsIT8GetPropertyDbl(
-                                            _lcms_it8, "NUMBER_OF_SETS"); }
+    int                 getPatchCount()    {return _nFelder; }
     int                 getTableCount()    {return cmsIT8TableCount(_lcms_it8);}
-    int                 getSampleCount()   {return _nFelder; }
 
     std::vector<double> getCIEXYZ(int patch);
     std::vector<double> getColor (int patch);

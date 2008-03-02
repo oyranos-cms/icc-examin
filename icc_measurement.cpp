@@ -47,8 +47,14 @@ ICCmeasurement::load                ( ICCprofile *profil,
                                       ICCtag&     tag )
 {
   _profil = profil;
-  _sig    = tag._sig;
+
+  if (_sig != icMaxEnumTag)
+    _sig = icSigCharTargetTag;
+  else
+    _sig    = tag._sig;
+
   _size   = tag._size - 8;
+  // einfach austauschen
   if (_data != NULL) free (_data);
   _data = (char*) calloc ( _size , sizeof (char) );
   memcpy ( _data , &(tag._data)[8] , _size );
@@ -58,13 +64,43 @@ ICCmeasurement::load                ( ICCprofile *profil,
 }
 
 void
+ICCmeasurement::clear               (void)
+{
+  if (_lcms_it8 != NULL) cmsIT8Free (_lcms_it8);
+  if (_data != NULL) free (_data);
+  _sig = icMaxEnumTag;
+  _size = 0;
+  _data = NULL;
+
+  _lcms_it8 = NULL;
+  _nFelder = 0;
+
+  _profil = NULL;
+  _XYZ_measurement = false;
+  _RGB_measurement = false;
+  _CMYK_measurement = false;
+  _XYZ_Satz.clear();
+  _RGB_Satz.clear();
+  _CMYK_Satz.clear();
+  _Feldnamen.clear();
+
+  #ifdef DEBUG_ICCMEASUREMENT
+  DBG
+  #endif
+}
+
+void
 ICCmeasurement::load                ( ICCprofile *profil,
                                       char       *data,
                                       size_t      size )
 {
   _profil = profil;
-  _sig    = icMaxEnumTag;
+
+  if (_sig != icMaxEnumTag)
+    _sig = icSigCharTargetTag;
+
   _size   = size;
+  // enfach austauschen
   if (!_data) free (_data);
   _data = (char*) calloc ( _size , sizeof (char) );
   memcpy ( _data , data , _size );
@@ -83,34 +119,126 @@ ICCmeasurement::init_meas (void)
   // lcms liest ein
   _lcms_it8 = cmsIT8LoadFromMem ( _data, _size );
 
-  char **SampleNames;// = (char**)calloc ( sizeof (char**), 1);
+  char **SampleNames;
 
-  _nFelder = cmsIT8EnumDataFormat(_lcms_it8, &SampleNames);
-
+  _nFelder = (int)cmsIT8GetPropertyDbl(_lcms_it8, "NUMBER_OF_SETS");
+  int _nKanaele = cmsIT8EnumDataFormat(_lcms_it8, &SampleNames);
   #ifdef DEBUG_ICCMEASUREMENT
-  for (int i = 0; i < _nFelder; i++)
+  for (int i = 0; i < _nKanaele; i++)
     cout << (char*)SampleNames[i] << endl;
   #endif
 
-  switch (_sig) {
-  case icSigAToB0Tag:
-  case icSigBToA0Tag:
-  case icSigPreview0Tag:
-    break;
-  case icSigAToB1Tag:
-  case icSigBToA1Tag:
-  case icSigPreview1Tag:
-    break;
-  case icSigAToB2Tag:
-  case icSigBToA2Tag:
-  case icSigPreview2Tag:
-    break;
-  default:
-    break;
+  // Auslesen und Aufbereiten
+  std::vector<std::string> farbkanaele;
+  // müssen lokal bleiben !
+  bool has_Lab = false;
+  bool has_XYZ = false;
+  bool has_CMYK = false;
+  bool has_RGB = false;
+  bool has_xyY = false;
+  for (int i = 0; i < _nKanaele; i++) {
+
+    if ((strstr (SampleNames[i], "LAB_L") != 0)
+     || (strstr (SampleNames[i], "LAB_A") != 0)
+     || (strstr (SampleNames[i], "LAB_B") != 0)) {
+      cout << "Lab Daten ";
+      has_Lab = true;
+      farbkanaele.push_back(SampleNames[i]);
+    } else if ((strstr (SampleNames[i], "XYZ_X") != 0)
+            || (strstr (SampleNames[i], "XYZ_Y") != 0)
+            || (strstr (SampleNames[i], "XYZ_Z") != 0)) {
+      cout << "XYZ Daten ";
+      has_XYZ = true;
+      farbkanaele.push_back(SampleNames[i]);
+    } else if ((strstr (SampleNames[i], "CMYK_C") != 0)
+            || (strstr (SampleNames[i], "CMYK_M") != 0)
+            || (strstr (SampleNames[i], "CMYK_Y") != 0)
+            || (strstr (SampleNames[i], "CMYK_K") != 0)) {
+      cout << "CMYK Daten ";
+      has_CMYK = true;
+      farbkanaele.push_back(SampleNames[i]);
+    } else if ((strstr (SampleNames[i], "RGB_R") != 0)
+            || (strstr (SampleNames[i], "RGB_G") != 0)
+            || (strstr (SampleNames[i], "RGB_B") != 0)) {
+      cout << "RGB Daten ";
+      has_RGB = true;
+      farbkanaele.push_back(SampleNames[i]);
+    } else if ((strstr (SampleNames[i], "XYY_X") != 0)
+            || (strstr (SampleNames[i], "XYY_Y") != 0)
+            || (strstr (SampleNames[i], "XYY_CAPY") != 0)) {
+      cout << "xyY Daten ";
+      has_xyY = true;
+      farbkanaele.push_back(SampleNames[i]);
+    } else {
+      farbkanaele.push_back(SampleNames[i]);
+    }
+
   }
 
+  int farben = 0;
+  if (has_Lab) farben++;
+  if (has_XYZ) {farben++; _XYZ_measurement = true; }
+  if (has_RGB) {farben++; _RGB_measurement = true; }
+  if (has_CMYK) {farben++; _CMYK_measurement = true; }
+  if (has_xyY) farben++;
+
+
+  const char* constr = (const char*) calloc (sizeof (char), 12);
+
+  if (has_XYZ) { // keine Umrechnung nötig
+    _XYZ_Satz.resize(_nFelder);
+    _Feldnamen.resize(_nFelder);
+    for (int i = 0; i < _nFelder; i++) { DBG
+        constr = cmsIT8GetPatchName (_lcms_it8, i, NULL);
+        _Feldnamen[i] = constr;
+        _XYZ_Satz[i].X = cmsIT8GetDataDbl (_lcms_it8, constr, "XYZ_X")/100.0;
+        _XYZ_Satz[i].Y = cmsIT8GetDataDbl (_lcms_it8, constr, "XYZ_Y")/100.0;
+        _XYZ_Satz[i].Z = cmsIT8GetDataDbl (_lcms_it8, constr, "XYZ_Z")/100.0;
+    }
+  } DBG
+  if (has_RGB) { // keine Umrechnung nötig
+    _RGB_Satz.resize(_nFelder);
+    for (int i = 0; i < _nFelder; i++) {
+        _RGB_Satz[i].R = cmsIT8GetDataDbl (_lcms_it8, _Feldnamen[i].c_str(),
+                                           "RGB_R")/256.0;
+        _RGB_Satz[i].G = cmsIT8GetDataDbl (_lcms_it8, _Feldnamen[i].c_str(),
+                                           "RGB_G")/256.0;
+        _RGB_Satz[i].B = cmsIT8GetDataDbl (_lcms_it8, _Feldnamen[i].c_str(),
+                                           "RGB_B")/256.0;
+    }
+  } DBG
+  if (has_CMYK) { // keine Umrechnung nötig
+    _CMYK_Satz.resize(_nFelder);
+    for (int i = 0; i < _nFelder; i++) {
+        _CMYK_Satz[i].C = cmsIT8GetDataDbl (_lcms_it8, _Feldnamen[i].c_str(),
+                                           "CMYK_C")/256.0;
+        _CMYK_Satz[i].M = cmsIT8GetDataDbl (_lcms_it8, _Feldnamen[i].c_str(),
+                                           "CMYK_M")/256.0;
+        _CMYK_Satz[i].Y = cmsIT8GetDataDbl (_lcms_it8, _Feldnamen[i].c_str(),
+                                           "CMYK_Y")/256.0;
+        _CMYK_Satz[i].K = cmsIT8GetDataDbl (_lcms_it8, _Feldnamen[i].c_str(),
+                                           "CMYK_K")/256.0;
+    }
+  } DBG
+
   #ifdef DEBUG_ICCMEASUREMENT
-  cout << "Anzahl Messfelder: " << getPatchCount() << " Samples " << getSampleCount() << " "; DBG
+  if (_RGB_measurement) {
+    for (int i = 0; i < _nFelder; i++) {
+      cout << _Feldnamen[i] << ": " << _XYZ_Satz[i].X << ", " << _XYZ_Satz[i].Y << ", " << _XYZ_Satz[i].Z << ", "  << _RGB_Satz[i].R << ", "  << _RGB_Satz[i].G << ", "  << _RGB_Satz[i].B << endl;
+    } DBG
+  } else if (_CMYK_measurement) {
+    for (int i = 0; i < _nFelder; i++) {
+      cout << _Feldnamen[i] << ": " << _XYZ_Satz[i].X << ", " << _XYZ_Satz[i].Y << ", " << _XYZ_Satz[i].Z << ", "  << _CMYK_Satz[i].C << ", "  << _CMYK_Satz[i].M << ", "  << _CMYK_Satz[i].Y << ", "  << _CMYK_Satz[i].K << endl;
+    } DBG
+  }
+
+  cout << "Anzahl Messfelder: " << getPatchCount() << " Samples " << _nKanaele << " "; DBG
+
+  if (farben > 1
+   && ((has_CMYK || has_RGB)
+       && (has_Lab || has_XYZ || has_xyY))) {
+    cout << "sieht gut aus " ; DBG
+  }
   #endif
 }
 

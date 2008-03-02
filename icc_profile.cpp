@@ -849,6 +849,7 @@ ICCprofile::fload ()
     cout << "!!!! Profil wird wiederbenutzt !!!! "; DBG
     free (_data);
     tags.clear();
+    measurement.clear();
   }
   _size = (unsigned int)f.tellg();         f.seekg(0);
   _data = (icProfile*) calloc ( _size, sizeof (char));
@@ -875,19 +876,32 @@ ICCprofile::fload ()
     #ifdef DEBUG_ICCPROFILE
     //cout << " sig: " << tags[i].getTagName() << " " << i << " "; DBG
     #endif
+
+    // Messdaten
+    if (tags[i].getTagName() == ("targ")) {
+      measurement.load( this, tags[i] );
+      #ifdef DEBUG_ICCPROFILE
+      cout << "Messdaten gefunden";DBG
+      #endif
+    }
+    // andere bekannte Tags mit Messdaten
+    if (tags[i].getTagName() == ("DevD")) {
+      measurement.load( this, tags[i] );
+      #ifdef DEBUG_ICCPROFILE
+      cout << "Messdaten gefunden";DBG
+      #endif
+    }
+    if (tags[i].getTagName() == ("CIED")) {
+      measurement.load( this, tags[i] );
+      #ifdef DEBUG_ICCPROFILE
+      cout << "Messdaten gefunden";DBG
+      #endif
+    }
   }
   #ifdef DEBUG_ICCPROFILE
   cout << "TagCount: " << getTagCount() << " / " << tags.size() << " ";DBG
   #endif
 
-  // Messdaten
-  if (hasTagName ("targ")) {
-    int targNr = getTagByName ("targ");
-    measurement.load( this, tags[targNr] );
-    #ifdef DEBUG_ICCPROFILE
-    cout << "Messdaten in: " << targNr << ".|" << getTagCount() << " / " << tags.size() << " ";DBG
-    #endif
-  }
   DBG
 }
 
