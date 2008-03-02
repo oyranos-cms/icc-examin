@@ -465,6 +465,35 @@ ICCtag::getText                     (void)
   #endif
     texte.push_back( text );
 
+  } else if ( text == "mluc" ) {
+
+    int anzahl = icValue( *(icUInt32Number*)&_data[8] );
+    int groesse = icValue( *(icUInt32Number*)&_data[12] ); // 12
+    for (int i = 0; i < anzahl; i++)
+    { if (_data[16+ i*groesse] == 'd' && _data[17+ i*groesse] == 'e')
+      { int g =        icValue(*(icUInt32Number*)&_data[20+ i*groesse]),
+            dversatz = icValue(*(icUInt32Number*)&_data[24+ i*groesse]);
+        char *t = (char*) new char [g] (0);
+        int n;
+        for (n = 1; n < g ; n = n+2)
+          t[n/2] = _data[dversatz + n];
+        t[n/2] = 0;
+        texte.push_back( t );
+        delete [] t; DBG_PROG_V( g <<" "<< dversatz )
+      }
+    }
+    if (!texte.size()) // erster Eintrag
+    { int g =        icValue(*(icUInt32Number*)&_data[20]),
+          dversatz = icValue(*(icUInt32Number*)&_data[24]);
+      char *t = (char*) new char [g] (0);
+      int n;
+      for (n = 1; n < g ; n = n+2)
+        t[n/2] = _data[dversatz + n];
+      t[n/2] = 0;
+      texte.push_back( t );
+      delete [] t; DBG_PROG_V( g <<" "<< dversatz )
+    }
+
   } else if ( text == "vcgt" ) {
 
     texte.push_back( _("Rot") );
@@ -479,6 +508,8 @@ ICCtag::getText                     (void)
     char t[16];
     for (int i = 0; i < _size-8; i = i + 4)
     { sprintf (t, "%f ", icSFValue (*(icS15Fixed16Number*)(&_data[8+i]) ) );
+      if (t[0] != '-')
+        texte[0].append (" ", 1);
       texte[0].append (t, strlen(t));
       if (!((i/4+1)%3))
         texte[0].append ("\n  ", 3);
@@ -492,12 +523,20 @@ ICCtag::getText                     (void)
     texte[0].append ("\n\n",2);
 
     for (int i = 0; i < _size-8; i = i + 4)
-    { texte[0].append ("  ", 2);
+    { texte[0].append (" ", 1);
       text = zeig_bits_bin(&_data[8+i], MIN(4,_size-8-i));
       texte[0].append (text.data(), text.size());
+      for (int k = 0; k <  MIN(4,_size-8-i); k++)
+        if (isprint(_data[8+i+k]))
+          text[k] = _data[8+i+k];
+        else
+          text[k] = '.';
+      //text[MIN(4,_size-8-i)] = 0;
+      texte[0].append (text.data(), MIN(4,_size-8-i));//text.size());
       texte[0].append ("\n", 1);
     }
     DBG_PROG
+    char c[5]; sprintf (c, "%s", "mluc"); printf ("%d\n",icValue(*(int*)c));
   }
     
   #ifdef DEBUG_ICCTAG

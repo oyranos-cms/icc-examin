@@ -472,6 +472,7 @@ getSigTagName               ( icTagSignature  sig )
     case icSigPreview1Tag: text = _("pre1"); break;
     case icSigPreview2Tag: text = _("pre2"); break;
     case icSigProfileDescriptionTag: text = _("desc"); break;
+    case 1685283693: text = _("dscm"); break;
     case icSigProfileSequenceDescTag: text = _("pseq"); break;
     case icSigPs2CRD0Tag: text = _("psd0"); break;
     case icSigPs2CRD1Tag: text = _("psd1"); break;
@@ -534,12 +535,13 @@ getSigTagDescription                            ( icTagSignature  sig )
     case icSigMeasurementTag: text = _("Messart"); break;
     case icSigMediaBlackPointTag: text = _("Medienschwarzpunkt"); break;
     case icSigMediaWhitePointTag: text = _("Medienweißpunkt"); break;
-    case icSigNamedColorTag: text = _("'ncol"); break;
-    case icSigNamedColor2Tag: text = _("ncl2"); break;
+    case icSigNamedColorTag: text = _("Einzelfarben"); break;
+    case icSigNamedColor2Tag: text = _("Einzelfarben 2"); break;
     case icSigPreview0Tag: text = _("Voransicht, fotografisch"); break;
     case icSigPreview1Tag: text = _("Voransicht, relativ farbmetrisch"); break;
     case icSigPreview2Tag: text = _("Voransicht, farbgesättigt"); break;
     case icSigProfileDescriptionTag: text = _("Profilbeschreibung"); break;
+    case 1685283693: text = _("Profilbeschreibung mehrsprachig"); break;//dscm
     case icSigProfileSequenceDescTag: text = _("Beschreibung der Profilverknüpfung"); break;
     case icSigPs2CRD0Tag: text = _("psd0"); break;
     case icSigPs2CRD1Tag: text = _("psd1"); break;
@@ -602,6 +604,7 @@ getSigTypeName               ( icTagTypeSignature  sig )
     case icSigChromaticityType: text = _("chrm"); break;
     case 1986226036: text = _("vcgt"); break;
     case icSigCopyrightTag: text = _("cprt?"); break; //??? (Imacon)
+    case 1835824483: text = _("mluc"); break;
     default: icUInt32Number i = icValue(sig); text = cp_nchar ((char*)&i, 5); text += "?"; break;
   }
   return text;
