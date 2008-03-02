@@ -82,15 +82,22 @@ ICCheader::load (void *data)
 
 void
 ICCheader::set_current_date (void)
-{ DBG_PROG_START // TODO Zeit setzen
-  struct tm tm_;
-  mktime(&tm_);
-  header.date.day = icValue((icUInt16Number)tm_.tm_mday);
-  header.date.month = icValue((icUInt16Number)tm_.tm_mon+1);
-  header.date.year = icValue((icUInt16Number)tm_.tm_year+1900);
-  header.date.hours = icValue((icUInt16Number)tm_.tm_hour);
-  header.date.minutes = icValue((icUInt16Number)tm_.tm_min);
-  header.date.seconds = icValue((icUInt16Number)tm_.tm_sec);
+{ DBG_PROG_START
+  struct tm *tm_;
+  time_t t = time(0);
+  tm_ = localtime(&t);
+  header.date.day = icValue((icUInt16Number)tm_->tm_mday);
+  DBG_V(tm_->tm_mday)
+  header.date.month = icValue((icUInt16Number)(tm_->tm_mon+1));
+  DBG_V(tm_->tm_mon+1)
+  header.date.year = icValue((icUInt16Number)(tm_->tm_year+1900));
+  DBG_V(tm_->tm_year+1900)
+  header.date.hours = icValue((icUInt16Number)tm_->tm_hour);
+  DBG_V(tm_->tm_hour)
+  header.date.minutes = icValue((icUInt16Number)tm_->tm_min);
+  DBG_V(tm_->tm_min)
+  header.date.seconds = icValue((icUInt16Number)tm_->tm_sec);
+  DBG_V(tm_->tm_sec)
   DBG_PROG_ENDE
 }
 

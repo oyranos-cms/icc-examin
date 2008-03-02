@@ -53,12 +53,31 @@ class ICCvrmlParser
     std::string arbeit_;
     std::vector<ICCnetz> netze_;
   public:
-    void lade ( std::string & vrml )   { DBG_PROG original_ = vrml; }
-    std::vector<ICCnetz> zeigeNetze () { DBG_PROG lesen_(); return netze_; }
+    void lade ( std::string & vrml );
+    std::vector<ICCnetz> zeigeNetze ();
   private:
     void lesen_ ();
 
 };
+
+void
+ICCvrmlParser::lade( std::string & vrml )
+{
+  DBG_PROG_START
+  DBG_PROG
+  original_ = vrml;
+  DBG_PROG_ENDE
+}
+
+std::vector<ICCnetz>
+ICCvrmlParser::zeigeNetze ()
+{
+  DBG_PROG_START
+  DBG_PROG
+  lesen_();
+  DBG_PROG_ENDE
+  return netze_;
+}
 
 void
 ICCvrmlParser::lesen_ ()

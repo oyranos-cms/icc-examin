@@ -123,6 +123,7 @@ GL_Ansicht::GL_Ansicht(int X,int Y,int W,int H)
   b_darstellungs_breite = 1.0;
   schalen = 5;
   punktform = MENU_dE1STERN;
+  punktgroesse = 8;
   hintergrundfarbe = MENU_HELLGRAU;
   spektralband = 0;
   zeige_helfer = true;
@@ -224,7 +225,6 @@ GL_Ansicht::init()
   menueAufruf (id(), MENU_HELLGRAU); // Farbschema
   menueAufruf (id(), MENU_GRAU);     // CLUT Farbschema
   if (id() == 1) menueAufruf (id(), MENU_WUERFEL);
-  else           menueAufruf (id(), MENU_DIFFERENZ_LINIE);
 
   //glutMainLoop(); // you could use Fl::run() instead
 
@@ -488,6 +488,7 @@ GL_Ansicht::erstelleGLListen_()
  
   zeigeSpektralband_();
 
+  DBG_PROG_V( punktform <<" "<< MENU_dE1STERN )
   punkteAuffrischen();
 
   //Hintergrund
@@ -973,7 +974,7 @@ GL_Ansicht::punkteAuffrischen()
 
   //Koordinaten  in CIE*b CIE*L CIE*a Reihenfolge 
   if (punkte_.size()) {
-    glPointSize(24);
+    glPointSize(punktgroesse);
     if( punkte_.size() )
       DBG_PROG_V( punkte_.size() )
     if( farben_.size() )
@@ -1248,7 +1249,8 @@ GL_Ansicht::menueErneuern_()
 
 void
 GL_Ansicht::menueInit_()
-{ DBG_PROG_START
+{
+  DBG_PROG_START
   if (glut_id_ == 1) { menue_ = glutCreateMenu(menueAufruf1); }
   else {               menue_ = glutCreateMenu(menueAufruf2); }
   DBG_PROG_V( menue_ )
@@ -1363,7 +1365,8 @@ reshape(int id, int w, int h)
 
 void
 display(int id)
-{ DBG_ICCGL_START
+{
+  DBG_ICCGL_START
   if(icc_examin->glAnsicht(id)->sichtbar() &&
      icc_examin->frei() )
   {
@@ -1441,9 +1444,10 @@ display(int id)
       glCallList(dID(id,HELFER)); DBG_ICCGL_V( dID(id,HELFER) )
     glCallList(dID(id,RASTER)); DBG_ICCGL_V( dID(id,RASTER) )
 
-    if(icc_examin->glAnsicht(id)->punktform == MENU_DIFFERENZ_LINIE)
+    if(icc_examin->glAnsicht(id)->punktform == MENU_dE1STERN)
       icc_examin->glAnsicht(id)->
                                  punkteAuffrischen();
+    DBG_PROG_V( icc_examin->glAnsicht(id)->punktform <<" "<< MENU_dE1STERN )
     glCallList(dID(id,PUNKTE)); DBG_ICCGL_V( dID(id,PUNKTE) )
 
     if(icc_examin->glAnsicht(id)->dreiecks_netze.size())
@@ -1473,6 +1477,10 @@ GL_Ansicht::achsNamen    (std::vector<std::string> achs_namen)
     von_farb_namen_.push_back ("?");
     von_farb_namen_.push_back ("?");
   }
+  if (!beruehrt_)
+    icc_examin->initReihenfolgeGL_Ansicht(this);
+  else
+    auffrischen_ = true;
   DBG_PROG_ENDE
 }
 
@@ -1494,11 +1502,21 @@ GL_Ansicht::hineinPunkte       (std::vector<double>      vect,
   DBG_PROG_V( zeig_punkte_als_messwert_paare<<"|"<<punktform<<"|"<<punkte_.size() )
 
   if (!zeig_punkte_als_messwert_paare &&
-      punktform == MENU_DIFFERENZ_LINIE &&
+      punktform != MENU_dE1STERN &&
       punkte_.size())
     punktform = MENU_dE1STERN;
 
+  if (zeig_punkte_als_messwert_paare &&
+      punktform == MENU_dE1STERN &&
+      punkte_.size())
+    punktform = MENU_dE1KUGEL;
+
+  DBG_PROG_V( punktform <<" "<< MENU_dE1STERN )
   //icc_examin->neuzeichnen(this);
+  if (!beruehrt_)
+    icc_examin->initReihenfolgeGL_Ansicht(this);
+  else
+    auffrischen_ = true;
   DBG_PROG_ENDE
 }
 
@@ -1543,6 +1561,11 @@ GL_Ansicht::hineinNetze       (const std::vector<ICCnetz> & d_n)
   DBG_NUM_V( dreiecks_netze.size() )
   for(unsigned i = 0; i < dreiecks_netze.size(); ++i)
     DBG_NUM_V( dreiecks_netze[i].name );
+
+  if (!beruehrt_)
+    icc_examin->initReihenfolgeGL_Ansicht(this);
+  else
+    auffrischen_ = true;
   DBG_PROG_ENDE
 }
 

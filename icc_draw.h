@@ -53,17 +53,21 @@ public:
   void hineinDaten  ( std::vector<std::vector<std::pair<double,double> > >&vect,
                       std::vector<std::string> &txt);
 //  void hineinDaten  ( Handler* daten, std::vector<std::string> &txt);
+
 private:
 //  void *daten;
   std::vector<std::string> texte; // Texte zu Punkten oder Kurven
   void drawKurve_   ( );
   std::vector<std::vector<double> > kurven; // Daten
   std::vector<std::vector<std::pair<double,double> > > kurven2;
+  static void dHaendler(void* o);
+
 public:
   bool zeichne_linie;             // Typ kurven2
   bool zeichne_symbole;           // Typ kurven2
   bool ursprung_zeichnen;         // Koordinatenursprung zeichnen
   bool kurve_umkehren;            // tauscht x und y Achse für Typ kurven
+
 private:
   void drawCieShoe_ ( int  repeated);
   std::vector<double> punkte;               // Daten
@@ -80,16 +84,20 @@ public:
   int unterer_text_rand;
   int raster_abstand;              // Abstand der Rasterlinien in Punkte
   bool zeige_raster;               // Schalter für Darstellung der Rasterlinien
+
   // Wertebereiche
   double min_x, min_y, max_x, max_y;
+
 private:
   double raster_wert_x_;           // Rasterweite in Benutzereinheiten
   double raster_wert_y_;
   void   zeichneRaster_(void);     // Darstellung des Raster mit Werten
+
   // CIExy Raster
   int raster;                      // Variable für CIExy Diagram
   int init_s;
   void init_shoe_ ();
+
   // lcms Typen
   cmsHPROFILE hXYZ;
   cmsHPROFILE hsRGB;

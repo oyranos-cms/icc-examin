@@ -86,6 +86,7 @@ class Speicher
                               return *this; }
     void        lade_ (char* zeiger, int groesse)
                             {
+                              zeiger_clear_();
                               DBG_MEM_START
                               *zeiger_ = zeiger;
                                 DBG_MEM_V( (int*)*zeiger_ )
@@ -143,6 +144,11 @@ class Speicher
                               DBG_MEM_ENDE
                             }
 
+    void        clear    () {
+                              DBG_MEM_START
+                              zeiger_clear_();
+                              DBG_MEM_ENDE
+                            }
     void        lade     (char* zeiger, int groesse) {
                               DBG_MEM_START
                               lade_(zeiger,groesse);

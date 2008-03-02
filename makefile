@@ -171,7 +171,10 @@ $(TARGET):	$(OBJECTS)
 	$(APPLE)
 
 prof:	icc_profile.o icc_profilierer.o
-	c++ icc_profilieren.cpp -o icc_profilieren icc_profile.o icc_profilierer.o icc_helfer.o icc_utils.o icc_measurement.o icc_formeln.o -llcms
+	echo "Kopiliere icc_measurement_pur.o ..."
+	c++ -I.. -Wall  -Os -DDEBUG  -I/opt/local/include -I/usr/X11R6/include -I./ -I/opt/kai-uwe/include -c icc_measurement.cpp -o icc_measurement_pur.o
+	echo "Kopiliere icc_profilieren ..."
+	c++ icc_profilieren.cpp -o icc_profilieren icc_profile_header.o icc_profile_tags.o icc_profile.o icc_cgats_filter.o icc_profilierer.o icc_helfer.o icc_utils.o icc_measurement_pur.o icc_formeln.o -llcms
 
 static:		$(OBJECTS)
 	echo Linking $@...

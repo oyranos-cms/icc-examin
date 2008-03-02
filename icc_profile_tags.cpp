@@ -46,7 +46,7 @@
 
 struct Ncl2Farbe {
   char name[32];
-  icUInt16Number pcsfarbe[3]; //PCSLab oder XYZ
+  icUInt16Number pcsfarbe[3]; // PCS Lab oder XYZ
   icUInt16Number geraetefarbe[16];
 };
 

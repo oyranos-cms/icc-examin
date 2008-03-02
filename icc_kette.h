@@ -55,14 +55,15 @@ class ICCkette : public icc_examin_ns::Modell
 
     // Starte einen pthread Wächter und lasse Ihn alle unsere Beobachter
     // informieren, welches Profile gerade geändert wurde.
-    static void* waechter (void*);
+    static void  waechter (void*);
   public:
     bool         oeffnen   (std::vector<std::string> dateinamen);
     //void         oeffnen   ();	// interaktiv
     bool         oeffnen   (std::string dateiname, int pos);
-    void         aktiv     (int pos);
+    void         setzAktiv (int pos);
     void         passiv    (int pos);
     std::vector<int> aktiv () { return aktiv_; }
+    int          aktiv (int pos) { return aktiv_[pos]; }
     void         aktuell   (int pos) {
                                 if(pos < (int)profile_.size())
                                   aktuelles_profil_ = (pos > -1) ? pos : -1; }

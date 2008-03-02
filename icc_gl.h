@@ -122,6 +122,7 @@ public:
        // Darstellung der Gitterpunkte der Transformationstabelle
   int  punktform;           // MENU_KUGEL MENU_WUERFEL MENU_STERN
   int  punktfarbe;          // MENU_GRAU MENU_FARBIG MENU_KONTRASTREICH
+  int  punktgroesse;        // Größe in Pixel
 
   int  hintergrundfarbe;    // Hintergrundfarben Farbschema
   float textfarbe[3];

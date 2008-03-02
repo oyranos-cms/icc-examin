@@ -53,7 +53,6 @@
 #include "icc_draw.h"
 
 // interne Funktionen
-void dHaendler(void* o);
 
 
 #ifdef DEBUG_DRAW
@@ -228,7 +227,7 @@ TagDrawings::draw ()
     } else if (punkte.size()) {
       if (wiederholen)
       { drawCieShoe_ (false);
-        Fl::add_timeout( 1.2, (void(*)(void*))dHaendler ,(void*)this);
+        Fl::add_timeout( 1.2, /*(void(*)(void*))*/dHaendler ,(void*)this);
       } else {
         drawCieShoe_ (true);
       }
@@ -797,6 +796,26 @@ TagDrawings::drawKurve_    ()
   DBG_prog_ende
 }
 
+void
+TagDrawings::dHaendler(void* o)
+{
+  DBG_PROG_START
+  Fl::remove_timeout( (void(*)(void*))dHaendler, 0 );
+
+  if (!Fl::has_timeout( (void(*)(void*))dHaendler, 0 )
+   && ((TagDrawings*)o)->active()
+   && ((TagDrawings*)o)->visible_r()
+   && ((TagDrawings*)o)->wiederholen)
+  {
+    ((TagDrawings*)o)->ruhigNeuzeichnen();
+
+    #ifdef DEBUG
+    DBG_PROG_V( ((TagDrawings*)o)->wiederholen )
+    #endif
+  }
+  DBG_PROG_ENDE
+}
+
 
 #if 0
 /**********************************************************************/
@@ -939,26 +958,6 @@ double DMAX1(double x, double y, double z) {
     if(y>max) max=y;
     if(z>max) max=z;
     return max;
-}
-
-void
-dHaendler(void* o)
-{
-  DBG_PROG_START
-  Fl::remove_timeout( (void(*)(void*))dHaendler, 0 );
-
-  if (!Fl::has_timeout( (void(*)(void*))dHaendler, 0 )
-   && ((TagDrawings*)o)->active()
-   && ((TagDrawings*)o)->visible_r()
-   && ((TagDrawings*)o)->wiederholen)
-  {
-    ((TagDrawings*)o)->ruhigNeuzeichnen();
-
-    #ifdef DEBUG
-    DBG_PROG_V( ((TagDrawings*)o)->wiederholen )
-    #endif
-  }
-  DBG_PROG_ENDE
 }
 
 #endif

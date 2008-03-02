@@ -513,10 +513,12 @@ ICCmeasurement::init_umrechnen                     (void)
     {
       size_t groesse = 0;
       const char* block = 0;
+      #ifdef HAVE_OY
       block = icc_oyranos.moni(groesse);
       if(groesse)
         hsRGB = cmsOpenProfileFromMem(const_cast<char*>(block), groesse);
       DBG_PROG_S( icc_oyranos.moni_name() << " Farben" )
+      #endif
     } else { DBG_PROG_S( "Export Farben" ); }
     if(!hsRGB)
       hsRGB = cmsCreate_sRGBProfile ();
@@ -537,11 +539,13 @@ ICCmeasurement::init_umrechnen                     (void)
       else { // Alternative
         size_t groesse = 0;
         const char* block = 0;
+        #ifdef HAVE_OY
         if( _CMYK_measurement )
           block = icc_oyranos.cmyk(groesse);
         else
         if( _RGB_measurement )
           block = icc_oyranos.rgb(groesse);
+        #endif
         DBG_PROG_V( groesse )
 
         if( !groesse ) {
