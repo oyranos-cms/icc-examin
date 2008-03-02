@@ -790,7 +790,7 @@ void TagBrowser::select_item(int item) {
       }
       texte.push_back ("curv");
       tag_viewer->hinein_kurven( kurven, texte );
-    } else if ( TagInfo[1] == "chrm") {
+    } else if ( TagInfo[1] == "chrm" ) {
       tag_viewer->hinein_punkt( profile[0].getTagCIEXYZ(item), profile[0].getTagText(item) );
     } else if ( TagInfo[1] == "XYZ" ) {
       tag_viewer->hinein_punkt( profile[0].getTagCIEXYZ(item), TagInfo );
@@ -801,6 +801,17 @@ void TagBrowser::select_item(int item) {
     } else if ( TagInfo[1] == "vcgt" ) { DBG_PROG
       tag_viewer->hinein_kurven ( profile[0].getTagCurves (item, ICCtag::CURVE_IN),
                                   profile[0].getTagText (item) ); cout << "vcgt "; DBG_PROG
+
+    /*} else if ( TagInfo[1] == "chad" ) {
+      std::vector<int> zahlen = profile[0].getTagNumbers (tag_nummer, ICCtag::MATRIX);
+      cout << zahlen.size() << endl; DBG_PROG
+      assert (9 == zahlen.size());
+      s << endl <<
+      "  " << zahlen[0] << ", " << zahlen[1] << ", " << zahlen[2] << ", " << endl <<
+      "  " << zahlen[3] << ", " << zahlen[4] << ", " << zahlen[5] << ", " << endl <<
+      "  " << zahlen[6] << ", " << zahlen[7] << ", " << zahlen[8] << ", " << endl;
+      tag_text->hinein ( s.str() ); DBG_PROG
+*/
     } else {
       tag_text->hinein ( (profile[0].getTagText (item))[0] ); DBG_PROG
     }

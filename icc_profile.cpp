@@ -326,10 +326,10 @@ std::vector<std::string>
 ICCtag::getText                     (void)
 { DBG_PROG_START
   std::vector<std::string> texte;
-  std::string text = "Fehl";
+  std::string text = getTypName();
   int count = 0;
 
-  if (getTypName() == "sig") {
+  if (text == "sig") {
 
     if (_size < 12) return texte;
     icTechnologySignature tech;
@@ -337,7 +337,7 @@ ICCtag::getText                     (void)
     text = getSigTechnology( (icTechnologySignature) icValue(tech) );
     texte.push_back( text );
 
-  } else if (getTypName() == "dtim") {
+  } else if (text == "dtim") {
 
     if (_size < 20) return texte;
     DBG
@@ -345,7 +345,7 @@ ICCtag::getText                     (void)
     memcpy (&date, &_data[8] , 12);
     texte.push_back( printDatum(date) );
 
-  } else if (getTypName() == "meas") {
+  } else if (text == "meas") {
 
     if (_size < 36) return texte;
     std::stringstream s;
@@ -364,7 +364,7 @@ ICCtag::getText                     (void)
     getIlluminant ((icIlluminant)icValue(meas.illuminant)) <<endl;
     texte.push_back( s.str() );
 
-  } else if (getTypName() == "mft2") {
+  } else if (text == "mft2") {
 
     icLut16* lut16 = (icLut16*) &_data[8];
     int inputChan, outputChan, clutPoints, inputEnt, outputEnt;
@@ -385,7 +385,7 @@ ICCtag::getText                     (void)
          _("lineare Ausgangskurve") << " " << _("mit") << " " << (int)outputEnt << " " << _("Stufungen") << endl;
     texte.push_back( s.str() );
 
-  } else if (getTypName() == "mft1") {
+  } else if (text == "mft1") {
 
     icLut8* lut8 = (icLut8*) &_data[8];
     int inputChan, outputChan, clutPoints;//, inputEnt, outputEnt;
@@ -420,8 +420,8 @@ ICCtag::getText                     (void)
       #endif
     }
 
-  } else  if (getTypName() == "text"
-           || getTypName() == "cprt?" ) { // text
+  } else  if (text == "text"
+           || text == "cprt?" ) { // text
 
     text = ""; DBG_PROG
   #if 1
@@ -465,30 +465,39 @@ ICCtag::getText                     (void)
   #endif
     texte.push_back( text );
 
-  } else if ( getTypName() == "vcgt" ) {
+  } else if ( text == "vcgt" ) {
 
     texte.push_back( _("Rot") );
     texte.push_back( _("Grün") );
     texte.push_back( _("Blau") );
     texte.push_back( "gamma_start_ende" );
 
-  } else if ( getTypName() == "sf32" ) {
+  } else if ( text == "sf32" ) {
 
-    texte.push_back( getTypName() + " ist in Arbeit" );
+    texte .resize(1);
+    texte[0].append ("\n\n  ",4);
+    char t[16];
+    for (int i = 0; i < _size-8; i = i + 4)
+    { sprintf (t, "%f ", icSFValue (*(icS15Fixed16Number*)(&_data[8+i]) ) );
+      texte[0].append (t, strlen(t));
+      if (!((i/4+1)%3))
+        texte[0].append ("\n  ", 3);
+      else
+        texte[0].append (" ", 1);
+    }
 
   } else {
 
     texte .resize(1);
-    std::string t;
     texte[0].append ("\n\n",2);
 
     for (int i = 0; i < _size-8; i = i + 4)
     { texte[0].append ("  ", 2);
-      t = zeig_bits_bin(&_data[8+i], MIN(4,_size-8-i));
-      texte[0].append (t.data(), t.size());
+      text = zeig_bits_bin(&_data[8+i], MIN(4,_size-8-i));
+      texte[0].append (text.data(), text.size());
       texte[0].append ("\n", 1);
     }
-
+    DBG_PROG
   }
     
   #ifdef DEBUG_ICCTAG

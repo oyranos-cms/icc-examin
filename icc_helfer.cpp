@@ -736,11 +736,9 @@ zeig_bits_bin(void* speicher, int groesse)
               unsigned char* u8 = (unsigned char*)speicher;
               byte_zahl = (u8[k] >> i) & 1;
               sprintf (&txt[7-i], "%d", byte_zahl);
-              //DBG_PROG_V( 7-i <<" "<< byte_zahl )
       }
       text.append( txt, strlen (txt));
       text.append( " ", 1); /*aller 8 bit ein leerzeichen*/
-      //DBG_PROG_V( k << txt )
   }
 
   return text;
