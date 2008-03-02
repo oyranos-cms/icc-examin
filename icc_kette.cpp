@@ -26,7 +26,7 @@
  */
 
 #include "icc_kette.h"
-#include "icc_examin.h"
+#include "icc_info.h"
 //#include "callback_simple.h"
 
 ICCkette profile;
@@ -52,17 +52,17 @@ ICCkette::oeffnen (std::vector<std::string> dateinamen)
 
   if (dateinamen.size()) { DBG_PROG
     for (unsigned int i = 0; i < _profile.size(); i++) {
-      icc_examin->fortschritt (0.8);
+      fortschritt (0.8);
 
       std::vector<std::string> url;
       std::vector<std::string> param;
-        icc_examin->statlabel = dateinamen[i].c_str();
-        icc_examin->statlabel.append (" ");
-        icc_examin->statlabel.append (_("geladen"));
-        status(icc_examin->statlabel.c_str());
+        std::string st = dateinamen[i];
+        st.append (" ");
+        st.append (_("geladen"));
+        status_info(st.c_str());
     }
-    icc_examin->fortschritt (1.0);
-    icc_examin->fortschritt (1.1);
+    fortschritt (1.0);
+    fortschritt (1.1);
     DBG_PROG
 
     //Button a( make_callback((Callback1<Button*>*)0, icc_examin->icc_betrachter->tag_browser, &TagBrowser::reopen) );
@@ -71,7 +71,7 @@ ICCkette::oeffnen (std::vector<std::string> dateinamen)
     //icc_examin->icc_betrachter->measurement( _profile[_aktuelles_profil].hasMeasurement() );
     erfolgreich = true;
   } else { DBG_PROG
-    status(_("Datei nicht geladen!"));
+    status_info(_("Datei nicht geladen!"));
   }
 
   DBG_PROG_ENDE

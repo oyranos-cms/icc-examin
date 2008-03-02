@@ -34,9 +34,7 @@
   #define DEBUG_ICCFUNKT
 #endif
 
-//#include "icc_profile.h"
 #include <icc34.h>
-//#include <lcms.h>
 #include "icc_utils.h"
 #include "icc_formeln.h"
 #include "icc_helfer.h"

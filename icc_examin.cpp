@@ -194,11 +194,11 @@ ICCexamin::oeffnen (std::vector<std::string> dateinamen)
       for(unsigned int i = 0; i < netze.size(); ++i )
         netze[i].transparenz = 0.6;
       icc_betrachter->DD_histogram->hineinNetze(netze);
+      icc_betrachter->DD_histogram->punkte_clear();
+      icc_betrachter->DD_histogram->auffrischen();
     } else
       WARN_S(_("kein Netz gefunden in VRML Datei"))
-  }
-
-  DBG_PROG
+  } else
   if (icc_betrachter->DD_histogram->beruehrt()) { DBG_PROG
     histogram();
     icc_betrachter->DD_histogram->auffrischen();
@@ -487,7 +487,7 @@ ICCexamin::histogram ()
   if(profile.profil() &&
      profile.profil()->hasMeasurement() &&
      profile.profil()->getMeasurement().hasXYZ() )
-    { DBG_PROG_S( "nutze Messdaten" )
+    { DBG_NUM_S( "nutze Messdaten" )
       ICCmeasurement messung = profile.profil()->getMeasurement();
 
       if(messung.valid() && profile.profil()->size())
@@ -530,7 +530,8 @@ ICCexamin::histogram ()
   size_t g; DBG_MEM
   const char* p_block = icc_oyranos.moni (g); DBG_MEM
 
-  {
+  if(icc_debug>=2 && icc_debug < 9)
+  { // Test
     std::ofstream f ( "test_loeschen.icc",  std::ios::out );
     f.write ( p_block, g );
     f.close();
@@ -542,7 +543,7 @@ ICCexamin::histogram ()
     DBG_NUM_V( netz[0].transparenz )
     netz[0].transparenz = 0.4;
     netz[0].name = icc_oyranos.moni_name();
-    //icc_betrachter->DD_histogram->hineinNetze( netz );
+    icc_betrachter->DD_histogram->hineinNetze( netz );
   }
 
   DBG_PROG_ENDE

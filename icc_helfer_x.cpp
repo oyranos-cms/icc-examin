@@ -27,9 +27,13 @@
 
 // Date:      11. 01. 2005
 
+# define BOOL   LCMS_BOOL
+
 #include "icc_utils.h"
 #include "icc_icc.h"
 #include "icc_helfer_x.h"
+
+#undef BOOL
 
 #include <X11/Xutil.h>
 #include <X11/extensions/xf86vmode.h>

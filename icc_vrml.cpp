@@ -27,15 +27,20 @@
 
 // Date:      Mai 2004
 
-#include "icc_examin.h"
 #include "icc_vrml.h"
+#include "icc_utils.h"
+#include "icc_info.h"
+#include "icc_helfer.h"
+
 #include <stdio.h>
 #include <iostream>
+#include <fstream>
+#include <sstream>
 #include <string.h>
 
 
 void dump_vrml_header (char *vrml);
-#define lp {l+=0.1; icc_examin->fortschritt(l);}
+#define lp {l+=0.1; fortschritt(l);}
 
 int
 erase_file (const char *file)
@@ -86,7 +91,7 @@ icc_create_vrml( const char* p, int size )
   // vrml produzieren - argyll Variante
   char* system_befehl = (char*) new char [1024];
   double l = -0.1;
-  icc_examin->fortschritt(l);
+  fortschritt(l);
   lp
   int ret;
   sprintf(system_befehl,"iccgamut -n -w %s", ptn.c_str());
@@ -106,7 +111,7 @@ icc_create_vrml( const char* p, int size )
     size_t size;
     char *data = 0;
     try {
-      data = ladeDatei (profil_temp_name.str(), &size);
+      data = ladeDatei (ptn.c_str(), &size);
     }
       catch (Ausnahme & a) {  // fängt alles von Ausnahme Abstammende
         printf (_("Ausnahme aufgetreten: %s\n"), a.what());
@@ -121,11 +126,13 @@ icc_create_vrml( const char* p, int size )
 
     if(data)
       vrml = data;
+    DBG_PROG_V(data)
     erase_file (ptn.c_str());
     if(data) free(data);
+    DBG_PROG_V(vrml)
   }
 
-  icc_examin->fortschritt(1.1);
+  fortschritt(1.1);
   DBG_PROG_ENDE
   return vrml;
 }
@@ -135,7 +142,7 @@ create_vrml              ( const char *profilA, char *profilB, char *vrml)
 {
   char system_befehl[1024];
   float l = -0.1;
-  icc_examin->fortschritt(l);
+  fortschritt(l);
 
   if (!vrml || (!profilA && !profilB))
   return (0);

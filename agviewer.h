@@ -253,6 +253,7 @@ Agviewer
          init_move,
          minmove;
 public:
+  float eyeDist () const { return EyeDist; } // ICC Examin
   void distA(double a) { init_dist_a = a; }
   void distB(double b) { init_dist_b = b; }
   double distA()       { return init_dist_a; }

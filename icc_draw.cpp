@@ -30,7 +30,7 @@
 #include "icc_helfer.h"
 #include "icc_profile.h"
 #include "icc_helfer_ui.h"
-#include "icc_examin.h"
+#include "icc_info.h"
 #include "icc_kette.h"
 #include "icc_oyranos.h"
 
@@ -39,6 +39,7 @@
 #include <vector>
 #include <string.h>
 #include <FL/Fl.H>
+#include <FL/Fl_Widget.H>
 #include <FL/fl_draw.H>
 
 #include <lcms.h>
@@ -210,7 +211,7 @@ TagDrawings::draw ()
 {
   DBG_PROG_START
   // Kurven oder Punkte malen
-  if (icc_examin->laeuft())
+  if (laeuft())
   {
     // Diagramvariablen in Bildpunkten
     xO = x() +       tab_rand_x + linker_text_rand;     // Ursprung

@@ -30,7 +30,7 @@
 #ifndef ICC_ICC_H
 #define ICC_ICC_H
 
-#include <icc34.h>
+#include <lcms.h>
 
 // Zusätze - nicht definiert in icc34.h
 

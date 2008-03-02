@@ -30,6 +30,8 @@
 #ifndef ICC_VRML_H
 #define ICC_VRML_H
 
+#include <string>
+
 int create_vrml( const char *profilVoll, char *profilTransparent, char *vrml);
 std::string icc_create_vrml( const char* p, int size );
 

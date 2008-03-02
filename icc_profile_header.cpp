@@ -35,7 +35,6 @@
 #endif
 
 #include "icc_profile.h"
-#include "icc_examin.h"
 #include "icc_utils.h"
 
 #include <cmath>

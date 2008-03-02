@@ -37,8 +37,10 @@
 //   interne Nummer glut_id_
 
 #include "icc_examin.h"
-#include "icc_draw.h"
+#include "icc_formeln.h"
+#include "icc_oyranos.h"
 #include "icc_utils.h"
+#include "icc_info.h"
 #include "icc_betrachter.h"
 #include "agviewer.h"
 #include "icc_gl.h"
@@ -322,7 +324,7 @@ GL_Ansicht::myGLinit_()
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
 
-  glEnable(GL_NORMALIZE);
+  //glEnable(GL_NORMALIZE);
 
   glDepthFunc(GL_LESS);
   glEnable(GL_DEPTH_TEST);
@@ -769,12 +771,12 @@ GL_Ansicht::netzeAuffrischen()
       DBG_NUM_V( dreiecks_netze[0].transparenz )
     }
 
-      glNewList(id()*DL_MAX + RASTER, GL_COMPILE); DBG_PROG_V( id()*DL_MAX + RASTER )
+      //glNewList(id()*DL_MAX + RASTER, GL_COMPILE); DBG_PROG_V( id()*DL_MAX + RASTER )
       gl_voll[RASTER] = true;
       #ifndef Beleuchtung
       glDisable(GL_LIGHTING);
       #endif
-
+//glEdgeFlag(GL_TRUE);
       #if 0
       glEnable (GL_BLEND);
       glEnable (GL_DEPTH_TEST);
@@ -788,18 +790,34 @@ GL_Ansicht::netzeAuffrischen()
       glEnable (GL_ALPHA_TEST_FUNC);
       glAlphaFunc (GL_ALPHA_TEST, GL_ONE_MINUS_DST_ALPHA);
       #endif
-
+      #if 0
+      glPolygonMode(GL_FRONT, GL_FILL);   // Vorderseite als Fläche 
+      glPolygonMode(GL_BACK, GL_LINE);   // Rückseite als Linien
+      #endif
+      glFrontFace(GL_CCW);
       glColor3f(0.9, 0.9, 0.9);
       glPushMatrix();
       // zurecht setzen
       glTranslatef( -b_darstellungs_breite/2, -.5, -a_darstellungs_breite/2 );
+
+
+      // Netze sortieren
+      ICCnetz netz;
+      for(unsigned int j = 0; j < dreiecks_netze.size(); j++ )
+      {
+        for(unsigned int i = 0; i < dreiecks_netze[j].indexe.size(); ++i )
+        {
+          agviewers[agv_].eyeDist();
+        }
+      }
+
       for(unsigned int j = 0; j < dreiecks_netze.size(); j++ )
       { glBegin(GL_TRIANGLES);
         DBG_PROG_V( j )
         for(unsigned int i = 0; i < dreiecks_netze[j].indexe.size(); ++i )
         {
           int index;
-          for(int k = 0; k < 3; ++k)
+          for(int k = 2; k >= 0; --k)
           {
             index = dreiecks_netze[j].indexe[i].i[k];
             glColor4f( dreiecks_netze[j].punkte[index].farbe[0],
@@ -819,7 +837,7 @@ GL_Ansicht::netzeAuffrischen()
       #ifndef Beleuchtung
       glEnable(GL_LIGHTING);
       #endif
-      glEndList();
+      //glEndList();
 
   DBG_PROG_ENDE
 }
@@ -834,7 +852,7 @@ GL_Ansicht::punkteAuffrischen()
 
   //Koordinaten  in CIE*b CIE*L CIE*a Reihenfolge 
   if (punkte_.size()) {
-
+    glPointSize(24);
     if( punkte_.size() )
       DBG_PROG_V( punkte_.size() )
     if( farben_.size() )
@@ -909,6 +927,7 @@ GL_Ansicht::punkteAuffrischen()
         switch (punktform)
         {
           case MENU_dE1STERN:
+               #if 0
             glBegin(GL_QUADS);
               glVertex3d(  groesse/2, 0, -groesse/2 );
               glVertex3d( -groesse/2, 0, -groesse/2 );
@@ -927,11 +946,76 @@ GL_Ansicht::punkteAuffrischen()
               glVertex3d( 0, -groesse/2,  groesse/2 );
               glVertex3d( 0,  groesse/2,  groesse/2 );
             glEnd();
+               #else
+               glBegin(GL_POINTS);
+                 glVertex2d( 0,0 );
+               glEnd();
+               #endif
             break;
           case MENU_dE1KUGEL: glutSolidSphere (0.005, 12, 12); break;
           case MENU_dE2KUGEL: glutSolidSphere (0.01, 12, 12); break;
-          case MENU_dE4KUGEL: glutSolidSphere (0.02, 12, 12); break;
-          case MENU_DIFFERENZ_LINIE: break;
+          case MENU_dE4KUGEL: glutSolidSphere (0.02, 12, 12);
+               break;
+          case MENU_DIFFERENZ_LINIE:
+               {
+                 GLdouble modell_matrix[16], projektions_matrix[16];
+                 GLint bildschirm[4];
+                 GLdouble x,y,z;
+                 glGetDoublev(GL_MODELVIEW_MATRIX, modell_matrix);
+                 glGetDoublev(GL_PROJECTION_MATRIX, projektions_matrix);
+                 glGetIntegerv(GL_VIEWPORT, bildschirm);
+                 gluProject(
+                            punkte_[i+2]*b_darstellungs_breite,
+                            punkte_[i+0], punkte_[i+1]*a_darstellungs_breite,
+                            modell_matrix, projektions_matrix,
+                            bildschirm, &x,&y,&z);
+
+                 glMatrixMode(GL_PROJECTION);
+
+    // Text
+    {
+       // wie weit ist das nächste Objekt in diese Richtung, sehr aufwendig
+       GLfloat zBuffer;
+       glReadPixels(x, y,1,1,GL_DEPTH_COMPONENT, GL_FLOAT, &zBuffer);
+
+      glPushMatrix();
+       glLoadIdentity();
+       glOrtho( 0, w(), 0, h(), 0.1, 100.0);
+
+       glTranslatef(x, y, 8.8- schnitttiefe*3);
+
+                 //DBG_NUM_S(x<<" "<<y<<" "<<z)
+
+                 glBegin(GL_QUADS);
+                   glVertex2d(  groesse/2, -groesse/2 );
+                   glVertex2d( -groesse/2, -groesse/2 );
+                   glVertex2d( -groesse/2,  groesse/2 );
+                   glVertex2d(  groesse/2,  groesse/2 );
+                 glEnd();
+
+       // Start von unten links
+       #define ZeichneOText(font, scal, buffer) glScalef(scal,scal,scal); \
+                                   ZeichneText(font,buffer); \
+                                   glScalef(1.0/scal,1.0/scal,1.0/scal);
+
+
+       int scal = 120;
+       std::string text;
+       text.append(_("Hallo:"));
+       text += " ";
+       text += kanalName();
+
+       ZeichneOText (GLUT_STROKE_ROMAN, scal, (char*)text.c_str()) 
+
+      glPopMatrix();
+      glLoadIdentity();
+    }
+
+                 //glTranslated(x,y,0);
+                 glMatrixMode(GL_MODELVIEW);
+      glLoadIdentity();
+               }
+               break;
         }
         glPopMatrix();
       }
@@ -1102,7 +1186,7 @@ GL_Ansicht::menueErneuern_()
     kanal = menue_kanal_eintraege_ - 1;
 
   DBG_PROG_V( menue_kanal_eintraege_ << kanal )
-  status(_("linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menü"))
+  status_info(_("linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menü"));
 
   DBG_PROG_ENDE
 }
@@ -1203,6 +1287,7 @@ display(int id)
     glutSetWindow(id);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+
     glLoadIdentity();
     glMatrixMode(GL_PROJECTION);
     //glLineWidth(3.0);
@@ -1283,6 +1368,11 @@ display(int id)
     if (icc_examin->glAnsicht(id)->zeige_helfer)
       glCallList(dID(id,HELFER)); DBG_ICCGL_V( dID(id,HELFER) )
     glCallList(dID(id,RASTER)); DBG_ICCGL_V( dID(id,RASTER) )
+
+    if(icc_examin->glAnsicht(id)->dreiecks_netze.size())
+      icc_examin->glAnsicht(id)->netzeAuffrischen();
+    if(icc_examin->glAnsicht(id)->punktform == MENU_DIFFERENZ_LINIE)
+      icc_examin->glAnsicht(id)->punkteAuffrischen();
     glCallList(dID(id,PUNKTE)); DBG_ICCGL_V( dID(id,PUNKTE) )
 
 
@@ -1453,7 +1543,7 @@ GL_Ansicht::hineinTabelle (std::vector<std::vector<std::vector<std::vector<doubl
   else
     auffrischen_ = true;
 
-  status(_("linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menü"))
+  status_info(_("linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menü"));
 
   DBG_PROG_ENDE
 }
@@ -1598,7 +1688,7 @@ handlemenu (int id, int value)
 
     if (value >= MENU_MAX) {
       icc_examin->glAnsicht(id)->kanal = value - MENU_MAX; DBG_PROG_V( icc_examin->glAnsicht(id)->kanal )
-      status(_("linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menü"))
+      status_info(_("linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menü"));
     }
   }
 

@@ -76,6 +76,7 @@ CPP_HEADERS = \
 	icc_helfer_fltk.h \
 	icc_helfer_ui.h \
 	icc_helfer_x.h \
+	icc_info.h \
 	icc_icc.h \
 	icc_kette.h \
 	fl_oyranos.h \
@@ -95,6 +96,7 @@ CPPFILES = \
 	icc_formeln.cpp \
 	icc_gl.cpp \
 	icc_helfer.cpp \
+	icc_info.cpp \
 	icc_kette.cpp \
 	$(X_CPP) \
 	$(OSX_CPP) \
