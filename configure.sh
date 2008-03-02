@@ -248,7 +248,9 @@ if [ -n "$FTGL" ] && [ $FTGL -gt 0 ]; then
 fi
 
 if [ -z "$fltkconfig" ]; then
-  fltkconfig="fltk-config"
+  # add /usr/X11R6/bin to path for Fedora
+  fltkconfig=fltk-config
+  PATH=$PATH:/usr/X11R6/bin; export PATH
 fi
 if [ -n "$FLTK" ] && [ $FLTK -gt 0 ]; then
   FLTK_=`$fltkconfig --cxxflags 2>>error.txt | $STRIPOPT`
@@ -308,7 +310,7 @@ if [ -n "$FLU" ] && [ $FLU -gt 0 ]; then
 fi
 
 if [ -n "$DOXYGEN" ] && [ $DOXYGEN -gt 0 ]; then
-  if [ "`which doxygen`" != "" ]; then
+  if [ "`doxygen --help`" != "" ]; then
     test -n "$ECHO" && $ECHO "Doxygen `doxygen --version`           detected"
   else
     test -n "$ECHO" && $ECHO "Doxygen                 not detected"

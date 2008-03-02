@@ -339,6 +339,7 @@ ICCexamin::zeig3D ()
 
   w->show();
   wid->show();
+  wid->set_visible(); // needed for osX Tiger (FLTK bug?)
   wid->damage(FL_DAMAGE_ALL);
   wid->invalidate();
   wid->redraw();

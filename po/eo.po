@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2007-04-25 17:12+0200\n"
+"POT-Creation-Date: 2007-06-13 18:56+0200\n"
 "PO-Revision-Date: 2005-08-13 17:35+0200\n"
 "Last-Translator: Kai-Uwe Behrmann\n"
 "Language-Team:  <eo@li.org>\n"
@@ -128,17 +128,17 @@ msgid "unknown Colour"
 msgstr "kolora"
 
 #: icc_draw.cpp:656 icc_draw.cpp:667 icc_helfer.cpp:471
-#: icc_profile_tags.cpp:435 icc_helfer_osx.cpp:68 icc_helfer_x.cpp:64
+#: icc_profile_tags.cpp:446 icc_helfer_osx.cpp:68 icc_helfer_x.cpp:64
 msgid "Red"
 msgstr "Ruĝa"
 
 #: icc_draw.cpp:659 icc_draw.cpp:669 icc_helfer.cpp:472
-#: icc_profile_tags.cpp:436 icc_helfer_osx.cpp:69 icc_helfer_x.cpp:65
+#: icc_profile_tags.cpp:447 icc_helfer_osx.cpp:69 icc_helfer_x.cpp:65
 msgid "Green"
 msgstr "Verda"
 
 #: icc_draw.cpp:662 icc_draw.cpp:671 icc_helfer.cpp:473
-#: icc_profile_tags.cpp:437 icc_helfer_osx.cpp:70 icc_helfer_x.cpp:66
+#: icc_profile_tags.cpp:448 icc_helfer_osx.cpp:70 icc_helfer_x.cpp:66
 msgid "Blue"
 msgstr "Blua"
 
@@ -235,7 +235,7 @@ msgstr ""
 msgid "Gamut selector"
 msgstr ""
 
-#: icc_examin.cpp:263 icc_examin.cpp:1019
+#: icc_examin.cpp:263 icc_examin.cpp:1020
 msgid "loaded"
 msgstr ""
 
@@ -253,43 +253,43 @@ msgstr ""
 msgid "Which ICC profile?"
 msgstr ""
 
-#: icc_examin.cpp:579 icc_examin.cpp:582
+#: icc_examin.cpp:580 icc_examin.cpp:583
 msgid "Compare Measurement <-> Profile Colours"
 msgstr ""
 
-#: icc_examin.cpp:581
+#: icc_examin.cpp:582
 msgid "none"
 msgstr ""
 
-#: icc_examin.cpp:595 icc_examin.cpp:597
+#: icc_examin.cpp:596 icc_examin.cpp:598
 msgid "Gamut View"
 msgstr ""
 
-#: icc_examin.cpp:639 icc_gl.h:247
+#: icc_examin.cpp:640 icc_gl.h:247
 msgid "not available"
 msgstr ""
 
-#: icc_examin.cpp:960
+#: icc_examin.cpp:961
 msgid "Filename (ICC data type)"
 msgstr ""
 
-#: icc_examin.cpp:963
+#: icc_examin.cpp:964
 msgid "Filename (other data type)"
 msgstr ""
 
-#: icc_examin.cpp:965
+#: icc_examin.cpp:966
 msgid "Filename (corrupted ICC data type)"
 msgstr ""
 
-#: icc_examin.cpp:970
+#: icc_examin.cpp:971
 msgid "found no content for"
 msgstr ""
 
-#: icc_examin.cpp:973
+#: icc_examin.cpp:974
 msgid "Internal error"
 msgstr ""
 
-#: icc_examin.cpp:976
+#: icc_examin.cpp:977
 msgid "No. Tag   Type   Size Description"
 msgstr ""
 
@@ -576,7 +576,7 @@ msgstr "14koloroj"
 msgid "15color"
 msgstr "15koloroj"
 
-#: icc_helfer.cpp:451 icc_profile_tags.cpp:1034 icc_profile_tags.cpp:1041
+#: icc_helfer.cpp:451 icc_profile_tags.cpp:1045 icc_profile_tags.cpp:1052
 msgid "Colour"
 msgstr "kolora"
 
@@ -1517,19 +1517,19 @@ msgstr ""
 msgid "Conversion table with 8-bit precission:"
 msgstr "kun 16-bitoj"
 
-#: icc_profile_tags.cpp:465
+#: icc_profile_tags.cpp:476
 msgid "Number of colours:"
 msgstr "nombro koloroj:"
 
-#: icc_profile_tags.cpp:466
+#: icc_profile_tags.cpp:477
 msgid "Name"
 msgstr "nomo"
 
-#: icc_profile_tags.cpp:466
+#: icc_profile_tags.cpp:477
 msgid "CIE*Lab"
 msgstr ""
 
-#: icc_profile_tags.cpp:467
+#: icc_profile_tags.cpp:478
 msgid "Device Colours"
 msgstr ""
 

@@ -226,7 +226,7 @@ namespace icc_examin_ns {
 
   int  awake(void)
   {
-    Fl::awake(0);
+    Fl::awake();
     return 0;
   }
   int  leerWait(void) { return 0; }

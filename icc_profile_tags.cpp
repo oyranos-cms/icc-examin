@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2005  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2007  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -410,12 +410,23 @@ ICCtag::getText                     (void)
       {
         int dversatz = icValue(*(icUInt32Number*)&data_[24+ i*groesse]);
         char *t = (char*) new char [g];
-        int n;
-        for (n = 1; n < g ; n = n+2)
-          t[n/2] = data_[dversatz + n];
+        int n, j;
+        size_t size = 0;
+        icUInt16Number * uni16be = (icUInt16Number*) &data_[dversatz];
+        wchar_t *wc = (wchar_t*) new wchar_t [g];
+#if 1
+        for( j = 1; j < g/2; ++j)
+          wc[j] = icValue( uni16be[j] );
+        wc[j] = 0;
+        size = wcstombs( t, (const wchar_t*)uni16be, g );
+        DBG_V( size<<" "<<&data_[dversatz]<<" "<<&data_[dversatz+1]<<" "<< t );
+
+        for (n = 0; n < g ; n = n+2)
+          t[n/2] = icValue( *(icUInt16Number*)&data_[dversatz + n] );
         t[n/2] = 0;
+#endif
         texte.push_back( t );
-        delete [] t; DBG_PROG_V( g <<" "<< dversatz )
+        delete [] t; delete [] wc; DBG_PROG_V( g <<" "<< dversatz )
       }
     }
     if (!texte.size()) // first entry
@@ -509,7 +520,7 @@ ICCtag::getText                     (void)
       texte[0].append ("\n", 1);
     }
     DBG_PROG
-    char c[5]; sprintf (c, "%s", "mluc"); printf ("%d\n",icValue(*(int*)c));
+    //char c[5]; sprintf (c, "%s", "mluc"); printf ("%d\n",icValue(*(int*)c));
   }
     
 # ifdef DEBUG_ICCTAG
