@@ -109,7 +109,7 @@ ICCvrmlParser::lesen_ ()
 # endif
 
   // locale - Kommas unterscheiden
-  char* loc_alt = setlocale(LC_NUMERIC, NULL); //getenv("LANG");
+  char* loc_alt = strdup(setlocale(LC_NUMERIC, NULL)); //getenv("LANG");
   if(loc_alt)
     DBG_NUM_V( loc_alt )
   else
@@ -317,7 +317,11 @@ ICCvrmlParser::lesen_ ()
 # endif
 
   if(loc_alt)
+  {
+    DBG_PROG_S( "setting back from "<< setlocale(LC_NUMERIC,NULL) <<" to "<< loc_alt)
     setlocale(LC_NUMERIC,loc_alt);
+    free( loc_alt );
+  }
 
   DBG_PROG_ENDE
   icc_debug = debug_alt;

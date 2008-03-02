@@ -30,21 +30,38 @@
 
 
 #include "icc_thread_daten.h"
+#include "threads.h"
 
 void
 icc_examin_ns::ThreadDaten::frei(int freigeben)
 { DBG_PROG_START
-  if(freigeben) {
+
+  if(freigeben)
+  {
     frei_ = true;
     --zahl_;
     DBG_THREAD_S( "freigeben " << zahl_ )
+
   } else {
+
+    Fl_Thread pth_alt = pth;
+    pth = pthread_self();
+
     while(!frei_)
+    {
+      if(pth == pth_alt)
+      {
+        WARN_S( (intptr_t)pth << " request from same thread" )
+        continue;
+      }
       icc_examin_ns::sleep(0.01);
+    }
+
     frei_ = false;
     ++zahl_;
     DBG_THREAD_S( "sperren   " << zahl_ )
   }
+
   DBG_PROG_ENDE
 }
 

@@ -121,6 +121,7 @@ class ICCexamin : public icc_examin_ns::Beobachter,
          farbraum_modus_;      //!< profile.profil() enthaelt ncl2 Schmuckfarben
     ICCwaehler *icc_waehler_;
   public:
+    void waehlbar ( int pos, int v );//!< ICCwaehler Eintrag waehlbar oder nicht
     int  laeuft ()  { return status_; }        //!< kann bei >1 genutzt werden
     int  intentGet(int *interaktiv){ if(interaktiv)
                                        *interaktiv = (int)intent_selection_;

@@ -136,6 +136,7 @@ ICCexaminIO::oeffnenThread_ (int pos)
 
     icc_examin->fortschrittThreaded( 2./3.+ 2./6. );
   }
+
   icc_examin->fortschrittThreaded( 1.1 );
   DBG_PROG_ENDE
 }
@@ -283,6 +284,7 @@ ICCexaminIO::oeffnenThread_ ()
     }
 
   }
+
   icc_examin->fortschrittThreaded( 1.1 );
   DBG_PROG_ENDE
 }

@@ -33,7 +33,7 @@
 #include <fstream>
 
 
-int level_PROG_[DBG_MAX_THREADS] = {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1};
+Fl_Thread level_PROG_[DBG_MAX_THREADS] = {THREAD_ICCEXAMIN_MAX,THREAD_ICCEXAMIN_MAX,THREAD_ICCEXAMIN_MAX,THREAD_ICCEXAMIN_MAX,THREAD_ICCEXAMIN_MAX,THREAD_ICCEXAMIN_MAX,THREAD_ICCEXAMIN_MAX,THREAD_ICCEXAMIN_MAX,THREAD_ICCEXAMIN_MAX,THREAD_ICCEXAMIN_MAX,THREAD_ICCEXAMIN_MAX,THREAD_ICCEXAMIN_MAX};
 int icc_debug = 1;
 std::ostringstream debug_s_;
 #ifdef HAVE_PTHREAD_H
@@ -170,12 +170,12 @@ int
 iccLevel_PROG(int plus_minus_null)
 {
   Fl_Thread pth = wandelThreadId( pthread_self() );
-  if(pth < DBG_MAX_THREADS) {
-    level_PROG_ [pth] = level_PROG_[pth] + plus_minus_null;
-    if(level_PROG_ [pth] < 0)
+  if(0 <= (intptr_t)pth && (intptr_t)pth < DBG_MAX_THREADS) {
+    level_PROG_ [(intptr_t)pth] = level_PROG_[(intptr_t)pth] + plus_minus_null;
+    if(level_PROG_ [(intptr_t)pth] < 0)
       return 0;
     else
-      return level_PROG_ [pth];
+      return level_PROG_ [(intptr_t)pth];
   } else {
     return 0;
   }

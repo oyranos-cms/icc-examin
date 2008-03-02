@@ -128,7 +128,7 @@ extern int             debug_s_mutex_threads_;
 #define cout std::cout
 #define endl std::endl
 
-extern int level_PROG_ [DBG_MAX_THREADS];
+extern Fl_Thread level_PROG_ [DBG_MAX_THREADS];
 int    iccLevel_PROG(int plus_minus_null);
 #define icc_level_PROG       iccLevel_PROG( 0)
 #define icc_level_PROG_plus  iccLevel_PROG( 1)

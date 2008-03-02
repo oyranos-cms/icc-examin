@@ -448,8 +448,8 @@ GL_Ansicht::bewegenStatisch_ (void* gl_a)
   DBG_PROG_ENDE
 }
 
-bool GL_Ansicht::darfBewegen()        { return agv_->darf_bewegen_; };
-void GL_Ansicht::darfBewegen(int d)   { agv_->darf_bewegen_ = d; };
+bool GL_Ansicht::darfBewegen()        { return agv_->darf_bewegen_; }
+void GL_Ansicht::darfBewegen(int d)   { agv_->darf_bewegen_ = d; }
 
 void
 GL_Ansicht::stupps_ (bool lauf)

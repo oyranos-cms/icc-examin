@@ -391,6 +391,8 @@ void MyFl_Double_Window::iconize(MyFl_Double_Window * by)
 int MyFl_Double_Window::handle( int e )
 {
   int ergebnis = tastatur(e);
+  int zeigen = (e == FL_HIDE || e == FL_SHOW);
+
 
   int x_,y_,w_,h_,wx,wy;
   x_=y_=w_=h_=wx=wy=0;
@@ -405,7 +407,7 @@ int MyFl_Double_Window::handle( int e )
 
   int net_desktop = -1;
 #if HAVE_X
-  if(fl_display)
+  if(fl_display && zeigen)
   {
     Atom atom = XInternAtom (fl_display, "_NET_CURRENT_DESKTOP", 0), a;
     Window w = RootWindow( fl_display, DefaultScreen(fl_display));
@@ -456,7 +458,7 @@ int MyFl_Double_Window::handle( int e )
   if(e == FL_SHORTCUT && Fl::event_key() == FL_Escape)
     hide();
 
-  if(net_desktop >= 0 && this->shown() && this->visible())
+  if(zeigen && net_desktop >= 0 && this->shown() && this->visible())
     desktop_ = net_desktop;
 
   if(fl_window_events)

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ICC Examin 0.41\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2006-12-21 14:37+0100\n"
+"POT-Creation-Date: 2006-12-29 20:17+0100\n"
 "PO-Revision-Date: 2006-06-29 19:31+0200\n"
 "Last-Translator: Pascal LACROIX <lacroixpascal at vfemail.net>\n"
 "Language-Team: ALL <ku.b@gmx.de>\n"
@@ -187,18 +187,18 @@ msgstr "Clarté"
 msgid "Value"
 msgstr "Valeur"
 
-#: icc_draw.cpp:692 icc_examin_farbraum.cpp:211 icc_examin_io.cpp:215
+#: icc_draw.cpp:692 icc_examin_farbraum.cpp:211 icc_examin_io.cpp:216
 #: icc_helfer.cpp:401 icc_helfer.cpp:404
 msgid "CIE *L"
 msgstr "CIE *L"
 
-#: icc_draw.cpp:694 icc_examin_farbraum.cpp:212 icc_examin_io.cpp:216
+#: icc_draw.cpp:694 icc_examin_farbraum.cpp:212 icc_examin_io.cpp:217
 #: icc_gl.cpp:1086 icc_gl.cpp:1160 icc_gl.cpp:1186 icc_gl.cpp:1194
 #: icc_helfer.cpp:402
 msgid "CIE *a"
 msgstr "CIE *a"
 
-#: icc_draw.cpp:696 icc_examin_farbraum.cpp:213 icc_examin_io.cpp:217
+#: icc_draw.cpp:696 icc_examin_farbraum.cpp:213 icc_examin_io.cpp:218
 #: icc_gl.cpp:1099 icc_gl.cpp:1202 icc_gl.cpp:1222 icc_gl.cpp:1229
 #: icc_helfer.cpp:403
 msgid "CIE *b"
@@ -228,66 +228,66 @@ msgstr " avec Gamma: 1.0"
 msgid " with one entry for gamma: "
 msgstr " avec un entrée pour gamma: "
 
-#: icc_examin.cpp:170
+#: icc_examin.cpp:172
 msgid "Gamut selector"
 msgstr ""
 
-#: icc_examin.cpp:246 icc_examin.cpp:976
+#: icc_examin.cpp:248 icc_examin.cpp:984
 msgid "loaded"
 msgstr ""
 
-#: icc_examin.cpp:252
+#: icc_examin.cpp:254
 msgid "Ready"
 msgstr ""
 
-#: icc_examin.cpp:304
+#: icc_examin.cpp:306
 msgid ""
 "ICC colour profiles (*.{I,i}{C,c}{M,m,C,c})\tMeasurement (*.{txt,it8,IT8,RGB,"
 "CMYK,ti*,cgats,CIE,cie,nCIE,oRPT,DLY,LAB,Q60})\tArgyll Gamuts (*.{wrl,vrml}"
 msgstr ""
 
-#: icc_examin.cpp:304
+#: icc_examin.cpp:306
 msgid "Which ICC profile?"
 msgstr ""
 
-#: icc_examin.cpp:557 icc_examin.cpp:560
+#: icc_examin.cpp:565 icc_examin.cpp:568
 msgid "Compare Measurement <-> Profile Colours"
 msgstr ""
 
-#: icc_examin.cpp:559
+#: icc_examin.cpp:567
 msgid "none"
 msgstr ""
 
-#: icc_examin.cpp:573 icc_examin.cpp:575
+#: icc_examin.cpp:581 icc_examin.cpp:583
 #, fuzzy
 msgid "Gamut View"
 msgstr "Gamut"
 
-#: icc_examin.cpp:617
+#: icc_examin.cpp:625
 msgid "not available"
 msgstr ""
 
-#: icc_examin.cpp:918
+#: icc_examin.cpp:926
 msgid "Filename (ICC data type)"
 msgstr ""
 
-#: icc_examin.cpp:921
+#: icc_examin.cpp:929
 msgid "Filename (other data type)"
 msgstr ""
 
-#: icc_examin.cpp:923
+#: icc_examin.cpp:931
 msgid "Filename (corrupted ICC data type)"
 msgstr ""
 
-#: icc_examin.cpp:928
+#: icc_examin.cpp:936
 msgid "found no content for"
 msgstr ""
 
-#: icc_examin.cpp:931
+#: icc_examin.cpp:939
 msgid "Internal error"
 msgstr ""
 
-#: icc_examin.cpp:933
+#: icc_examin.cpp:941
 msgid "No. Tag   Type   Size Description"
 msgstr ""
 
@@ -295,43 +295,43 @@ msgstr ""
 msgid "RGB Ergebnis nicht verfuegbar"
 msgstr ""
 
-#: icc_examin_io.cpp:223
+#: icc_examin_io.cpp:224
 msgid "kein Netz gefunden in VRML Datei"
 msgstr ""
 
-#: icc_examin_io.cpp:238
+#: icc_examin_io.cpp:239
 msgid "Anzahl gabs schon mal"
 msgstr ""
 
-#: icc_examin_io.cpp:260
+#: icc_examin_io.cpp:261
 msgid "Kein Netz gefunden. Ist Argyll installiert?"
 msgstr ""
 
-#: icc_examin_io.cpp:418
+#: icc_examin_io.cpp:420
 msgid "Stop loading "
 msgstr ""
 
-#: icc_examin_io.cpp:513
+#: icc_examin_io.cpp:515
 msgid "HTML Documents (*.htm*)"
 msgstr ""
 
-#: icc_examin_io.cpp:517 icc_betrachter.cxx:499
+#: icc_examin_io.cpp:519 icc_betrachter.cxx:499
 msgid "Save Report"
 msgstr ""
 
-#: icc_examin_io.cpp:588
+#: icc_examin_io.cpp:590
 msgid "ICC colour profiles (*.ic*)"
 msgstr "ICC couleur profile (*.ic*)"
 
-#: icc_examin_io.cpp:589 icc_betrachter.cxx:500
+#: icc_examin_io.cpp:591 icc_betrachter.cxx:500
 msgid "Save Gamut as Profile"
 msgstr ""
 
-#: icc_examin_io.cpp:591
+#: icc_examin_io.cpp:593
 msgid "VRML Files (*.wrl)"
 msgstr "VRML Fichier (*.wrl)"
 
-#: icc_examin_io.cpp:592 icc_betrachter.cxx:501
+#: icc_examin_io.cpp:594 icc_betrachter.cxx:501
 msgid "Save Gamut as VRML"
 msgstr ""
 
@@ -1996,45 +1996,45 @@ msgstr ""
 msgid "@2>"
 msgstr ""
 
-#: icc_cinepaint.cpp:416
+#: icc_cinepaint.cpp:407
 #, fuzzy
 msgid "Image Profile..."
 msgstr "ICC Profils"
 
-#: icc_cinepaint.cpp:417
+#: icc_cinepaint.cpp:408
 #, fuzzy
 msgid "Proof Profile..."
 msgstr "Écran Profil"
 
-#: icc_cinepaint.cpp:418
+#: icc_cinepaint.cpp:409
 msgid "Watch Colours 3D..."
 msgstr ""
 
-#: icc_cinepaint.cpp:419
+#: icc_cinepaint.cpp:410
 msgid "Watch Colours 3D.2..."
 msgstr ""
 
-#: icc_cinepaint.cpp:591 icc_cinepaint.cpp:1222
+#: icc_cinepaint.cpp:581 icc_cinepaint.cpp:1203
 msgid "No profil assigned to image."
 msgstr ""
 
-#: icc_cinepaint.cpp:626
+#: icc_cinepaint.cpp:616
 msgid "Profil not written."
 msgstr ""
 
-#: icc_cinepaint.cpp:1277
+#: icc_cinepaint.cpp:1253
 msgid "Wrong profil assigned to image."
 msgstr ""
 
-#: icc_cinepaint.cpp:1481
+#: icc_cinepaint.cpp:1449
 msgid "No active drawable found."
 msgstr ""
 
-#: icc_cinepaint.cpp:1768
+#: icc_cinepaint.cpp:1736
 msgid "What kind of image is this?"
 msgstr ""
 
-#: icc_cinepaint.cpp:1862
+#: icc_cinepaint.cpp:1830
 msgid "What kind of image is this?\n"
 msgstr ""
 

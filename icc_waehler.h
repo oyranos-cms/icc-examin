@@ -96,11 +96,11 @@ class ICCwaehlerProfil : public Fl_Pack
                 if(obj) 
                   obj->grau_cb_();
               }
-  public:
-  ICCwaehlerProfil(const char* name, double transparenz, 
+public:
+ ICCwaehlerProfil(const char* name, double transparenz, 
                    bool grau, bool aktiv, int pos)
     : Fl_Pack( 0,0,470,25 ), pos_(pos)
-{
+ {
   DBG_PROG_START
   DBG_PROG_V( name )
   DBG_PROG_V( transparenz )
@@ -139,26 +139,39 @@ class ICCwaehlerProfil : public Fl_Pack
   } 
   
   DBG_PROG_ENDE
-}
-    void  aktivieren(bool wert)
-{
+ }
+
+ void  waehlbar(bool wert)
+ {
+  if(wert) {
+    gruppe_->activate();
+    aktiv_knopf_->activate();
+  } else {
+    gruppe_->deactivate();
+    aktiv_knopf_->deactivate();
+  }
+  redraw();
+ }
+
+ void  aktivieren(bool wert)
+ {
   aktiv_knopf_->value(wert);
   if(wert) { gruppe_->activate();
     profile.setzAktiv( pos_ );
   } else {   gruppe_->deactivate();
     profile.passiv( pos_ );
   }
-}
+ }
 };
 
 class ICCwaehler : public icc_examin_ns::MyFl_Double_Window
 {
     Fl_Scroll *scroll_profile;
     Fl_Pack   *hbox;
-  public:
+public:
     ICCwaehler  (int w_,int h_,const char* name)
   : icc_examin_ns::MyFl_Double_Window(w_, h_, name)
-{
+ {
   DBG_PROG_START
   for(int i = 0; i < 128; ++i)
     profile_[i] = 0;
@@ -178,26 +191,26 @@ class ICCwaehler : public icc_examin_ns::MyFl_Double_Window
   //icc_examin_ns::MyFl_Double_Window::iconize();
 
   DBG_PROG_ENDE
-}
+ }
                  ~ICCwaehler () {DBG_PROG_S( "::~ICCwaehler()" ); }
-    void         clear ()
-{
+ void         clear ()
+ {
   DBG_PROG_START
   hbox->clear();
   for(int i = 0; i < 128; ++i)
     profile_[i] = 0;
   DBG_PROG_V( children() )
   DBG_PROG_ENDE
-}
+ }
 
-  private:
+private:
     int                      aktuelles_profil_;
     ICCwaehlerProfil* profile_[128];
 
-  public:
-    void         push_back (const char* name, double transparenz, 
+public:
+ void         push_back (const char* name, double transparenz, 
                             bool grau, bool aktiv)
-{
+ {
   DBG_PROG_START
   int pos = size();
   hbox->begin();
@@ -205,13 +218,16 @@ class ICCwaehler : public icc_examin_ns::MyFl_Double_Window
   hbox->end();
   redraw();
   DBG_PROG_ENDE
-}
-    void         aktiv  (int pos) {if(pos < size())
-                                        profile_[pos]->aktivieren(true);
-                                   else profile_[pos]->aktivieren(false); }
+ }
+ void         aktiv  (int pos)
+ {
+  if(pos < size())
+    profile_[pos]->aktivieren(true);
+  else
+   profile_[pos]->aktivieren(false); }
 
-    int          size      ()
-{
+ int          size      ()
+ {
   DBG_PROG_START
   int size_ = 0;
   for(int i = 0; i < 128; ++i)
@@ -220,8 +236,14 @@ class ICCwaehler : public icc_examin_ns::MyFl_Double_Window
   DBG_PROG_V( size_ )
   DBG_PROG_ENDE
   return size_;
-}
+ }
 
+ void         waehlbar  ( int pos, int wert )
+ { DBG_PROG_START
+   if(0 <= pos && pos < size())
+     profile_[pos]->waehlbar( wert );
+   DBG_PROG_ENDE
+ }
 };
 
 #endif //ICC_WAEHLER_H

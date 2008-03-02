@@ -45,8 +45,9 @@ class ThreadDaten
 {
     bool frei_;               //!<@brief wird nicht von weiterem Prozess benutzt
     int  zahl_;               //!<@brief Anzahl der Wartenden
+    Fl_Thread pth;
 protected:
-    ThreadDaten() { frei_ = true; zahl_ = 0; }
+    ThreadDaten() { frei_ = true; zahl_ = 0; pth = 0; }
     ~ThreadDaten() {;}
 public:
     bool frei()     { return frei_; }          //!<@brief ist nicht gesperrt

@@ -47,13 +47,13 @@ if [ -n "$ELEKTRA" ] && [ "$ELEKTRA" -gt "0" ]; then
         echo "ELEKTRA_SW = `pkg-config --cflags-only-I  elektra | sed 's/\-I// ; s%/include%/etc/kdb/%'`" >> $CONF
         ELEKTRA_FOUND=1
       else
-        test -n "$ECHO" && $ECHO "Elektra:"
+        test -n "$ECHO" && $ECHO "!!! Elektra: !!!"
         test -n "$ECHO" && $ECHO "  too new Elektra found,"
         test -n "$ECHO" && $ECHO "  need a version not greater than $elektra_max, download: elektra.sf.net"
         ERROR=1
       fi
     else
-      test -n "$ECHO" && $ECHO "ERROR Elektra:"
+      test -n "$ECHO" && $ECHO "!!! ERROR Elektra: !!!"
       test -n "$ECHO" && $ECHO "  no or too old elektra found,"
       test -n "$ECHO" && $ECHO "  need at least version $elektra_min, download: elektra.sf.net"
       ERROR=1
@@ -91,7 +91,7 @@ if [ -n "$LCMS" ] && [ $LCMS -gt 0 ]; then
     echo "LCMS_H = `pkg-config --cflags lcms`" >> $CONF
     echo "LCMS_LIBS = `pkg-config --libs lcms`" >> $CONF
   else
-    test -n "$ECHO" && $ECHO "ERROR: no or too old LCMS found,"
+    test -n "$ECHO" && $ECHO "!!! ERROR: no or too old LCMS found, !!!"
     test -n "$ECHO" && $ECHO "  need at least version 1.14, download: www.littlecms.com"
     ERROR=1
   fi
@@ -167,8 +167,8 @@ if [ -n "$FLTK" ] && [ $FLTK -gt 0 ]; then
   if [ $? = 0 ] && [ -n "$FLTK_" ]; then
     test -n "$ECHO" && $ECHO "FLTK `$fltkconfig --version`              detected"
     if [ "0" -ne "`$fltkconfig --compile tests/fltk_test.cxx 2>&1 | grep lock | wc -l`" ]; then
-      test -n "$ECHO" && $ECHO "ERROR:   FLTK has no threads support !!!"
-      test -n "$ECHO" && $ECHO "         Configure FLTK with the --enable-threads option and recompile."
+      test -n "$ECHO" && $ECHO "!!! ERROR: FLTK has no threads support !!!"
+      test -n "$ECHO" && $ECHO "           Configure FLTK with the --enable-threads option and recompile."
       ERROR=1
     else
       rm fltk_test
@@ -178,7 +178,7 @@ if [ -n "$FLTK" ] && [ $FLTK -gt 0 ]; then
     echo "FLTK_H = `$fltkconfig --cxxflags | sed 's/-O[0-9]//'`" >> $CONF
     echo "FLTK_LIBS = `$fltkconfig --use-images --use-gl --ldflags`" >> $CONF
   else
-    test -n "$ECHO" && $ECHO "ERROR:"
+    test -n "$ECHO" && $ECHO "!!! ERROR !!!"
     test -n "$ECHO" && $ECHO "           FLTK is not found; download: www.fltk.org"
     ERROR=1
   fi

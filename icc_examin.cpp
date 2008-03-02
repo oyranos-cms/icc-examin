@@ -108,6 +108,8 @@ void
 ICCexamin::quit ()
 { DBG_PROG_START
   status_ = false;
+  icc_examin_ns::sleep(0.5);
+
   delete alle_gl_fenster;
   delete icc_betrachter->DD;
   delete icc_betrachter->details;
@@ -506,6 +508,12 @@ ICCexamin::nachricht( Modell* modell , int info )
           _item = (-1);
         DBG_PROG_V( _item )
  
+        if((*k)[info]->size() > 128)
+          icc_examin->waehlbar( info, true );
+        else {
+          icc_examin->waehlbar( info, false );
+          icc_betrachter->DD_farbraum->dreiecks_netze[info].aktiv = false;
+        }
       }
 
       if(profile.profil() == profile[info])
@@ -1168,6 +1176,14 @@ ICCexamin::icc_betrachterNeuzeichnen (void* z)
 
   DBG_PROG_ENDE
 }
+
+void
+ICCexamin::waehlbar( int pos, int wert )
+{ DBG_MEM_START
+  icc_waehler_->waehlbar(pos,wert);
+  DBG_MEM_ENDE
+}
+
 
 void
 ICCexamin::fortschritt(double f)

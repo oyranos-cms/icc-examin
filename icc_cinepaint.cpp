@@ -82,16 +82,7 @@ extern "C" {
 
 
 /*** local macros ***/
-#if 0
-#ifdef DEBUG
-#define DBG_ cout << __FILE__<<":"<<__LINE__ <<" "<< __func__ << "() " ;
-#define DBG  {DBG_ cout << endl;}
-#define DBG_S(text) { DBG_ cout  << " "<< text << endl; }
-#else
-#define DBG
-#define DBG_S(text)
-#endif
-#endif
+
 
 /** \addtogroup plug_in_api Externe Plug-in API
 
@@ -266,9 +257,9 @@ void *proof_profile = NULL;    //!< Simulationsprofil
 std::vector<double>       pcsfarbe;       //!< -> ungerechnete Farben: CIE*Lab 
 std::vector<double>       geraetefarbe;   //!< Bildfarben
 std::vector<std::string>  name;           //!< Farbnamen
-std::string a,                 //!< Bildprofil
-            b,                 //!< Farben
-            p,                 //!< Proofprofil
+std::string an,                //!< Bildprofil
+            bn,                //!< Farben
+            pn,                //!< Proofprofil
             tn;                //!< Dateinamen und Befehlszeile
 size_t tag_size;               //!< ncl2 Abschnittsgroesse
 int x_num;                     //!< Anzahl Messpunkte in x/y Richtung
@@ -532,7 +523,6 @@ run (char    *name,
     }
   }
   values[0].data.d_status = status;
-  DBG
 }
 
 /** @brief ungenutzt */
@@ -580,7 +570,7 @@ startWithArgs( int argc, char **argv )
 static gint32
 doExamin (gint32 image_ID, CMSProfileType typ)
 {
-  DBG_S( "Bild: " << image_ID )
+  DBG_PROG_S( "Bild: " << image_ID )
 
   char   *mem_profile=NULL;
   gint  size;
@@ -593,7 +583,7 @@ doExamin (gint32 image_ID, CMSProfileType typ)
   }
 
 
-  DBG_S( (int*)mem_profile << " " << size )
+  DBG_PROG_S( (int*)mem_profile << " " << size )
 
   if (size && mem_profile) {
     char *ptr = gimp_image_get_filename(image_ID);
@@ -675,11 +665,11 @@ schreibeNcl2Tag              ( std::vector<double>       pcsfarbe,
   int    farben_n = pcsfarbe.size() / 3;
   size_t groesse  = berechneTagGroesse( farben_n, farb_kanaele );
 
-  DBG_S( "farb_kanaele: " << farb_kanaele <<" farben_n: "<< farben_n )
+  DBG_PROG_S( "farb_kanaele: " << farb_kanaele <<" farben_n: "<< farben_n )
 
   char* tag_block = (char*) new char [groesse];
 
-  DBG_S( "tag_block: " << (int*)tag_block <<" groesse: "<< groesse )
+  DBG_PROG_S( "tag_block: " << (int*)tag_block <<" groesse: "<< groesse )
 
   for(size_t i = 0; i < groesse; ++i)
     tag_block[i] = 0;
@@ -697,11 +687,10 @@ schreibeNcl2Tag              ( std::vector<double>       pcsfarbe,
   if(nachname && strlen(nachname) < 32)
     sprintf(ncl2->nachname, nachname);
 
-  DBG_S( farben_n <<" "<< pcsfarbe.size() )
+  DBG_PROG_S( farben_n <<" "<< pcsfarbe.size() )
 
   for (int i = 0; i < farben_n; ++i)
   {
-    //cout << i << " "; DBG
     Ncl2Farbe *f = (Ncl2Farbe*) ((char*)ncl2 + 76 + // Basisgroesse von Ncl2
                    (i * (38 +                 // Basisgroesse von Ncl2Farbe
                          farb_kanaele         // Anzahl Geraetefarben
@@ -717,7 +706,7 @@ schreibeNcl2Tag              ( std::vector<double>       pcsfarbe,
       sprintf(f->name, name[i].c_str());
 
     #ifdef DEBUG_
-    DBG_S(  icValue(f->pcsfarbe[0]) << "," << pcsfarbe[3*i+0] <<
+    DBG_PROG_S(  icValue(f->pcsfarbe[0]) << "," << pcsfarbe[3*i+0] <<
             icValue(f->pcsfarbe[1]) << "," << pcsfarbe[3*i+1] <<
             f->pcsfarbe[2] << " " << pcsfarbe[3*i+2] <<
             f->geraetefarbe[0] << " " <<
@@ -749,17 +738,17 @@ transformAnlegen( channel & layer )
 {
     drawableColourLayoutToLcms( layer, hp );
 
-    DBG_S( transf )
+    DBG_PROG_S( transf )
     if(transf)
       cmsDeleteTransform (transf);
     transf = 0;
-    DBG_S( transf <<" "<< layer.intent )
+    DBG_PROG_S( transf <<" "<< layer.intent )
 
     transf = cmsCreateTransform (hp, format,
                                  hl, TYPE_Lab_DBL,
                                  layer.intent,
                                  cmsFLAGS_NOTPRECALC);
-    DBG_S( transf <<" "<< hp <<" "<< hl <<" channels: "<< T_CHANNELS(format) <<
+    DBG_PROG_S( transf <<" "<< hp <<" "<< hl <<" channels: "<< T_CHANNELS(format) <<
            " depth "<< T_BYTES(format) )
 }
 
@@ -775,24 +764,22 @@ bool
 vergleicheFarben(void* zeiger)
 {
   farbe_pruefen_laeuft = true;
-  DBG
   channel* layer = 0;
   if(zeiger)
     layer = (channel*) zeiger;
 
-  DBG_S( "layer "<< (int*)layer )
+  DBG_PROG_S( "layer "<< (int*)layer )
 
   // Farbgedaechtnis - static ist vielleicht gefaehrlich?
   static std::vector<double> vorherige_farben;
 
-  DBG_S( "zeiger " << (int*)zeiger )
+  DBG_PROG_S( "zeiger " << (int*)zeiger )
 
   if(!layer) {
     farbe_pruefen_laeuft = false;
     return true;
   }
 
-  DBG
   pcsfarbe.clear();       // -> ungerechnete Farben: CIE*Lab 
   geraetefarbe.clear();   // Bildfarben
   name.clear();           // Farbnamen
@@ -815,13 +802,13 @@ vergleicheFarben(void* zeiger)
   }
   if( GET_GEOMETRY(layer->status)) {
     setzeRaster( layer );
-	DBG_S("gerastert")
+	DBG_PROG_S("gerastert")
   }
   if( GET_GEOMETRY(layer->status) ||
       GET_CHANNELS(layer->status) ||
       GET_BITDEPTH(layer->status)) {
     reserviereSpeicher( *layer );
-	DBG_S("reserviert")
+	DBG_PROG_S("reserviert")
   }
 
   // &Uuml;bertragungstabelle anlegen
@@ -832,7 +819,7 @@ vergleicheFarben(void* zeiger)
     transformAnlegen( *layer );
   }
 
-  DBG_S( "nlayers: " << nlayers )
+  DBG_PROG_S( "nlayers: " << nlayers )
   if(nlayers)
     for( int x = 0; x < x_num; ++x )
       for( int y = 0; y < y_num; ++y )
@@ -844,12 +831,11 @@ vergleicheFarben(void* zeiger)
                       buf, n, colour_x);
         ++colour_x;
       }
-DBG
+
     // Maximalwerte
   holeFarbPunkt(layer, min_x, min_y, buf, n, colour_x);
   ++colour_x;
   holeFarbPunkt(layer, max_x, max_y, buf, n, colour_x);
-DBG
 
   {
     // Vergleich der vorherigen Auslese
@@ -864,15 +850,14 @@ DBG
       gleichviele = false;
       farben_sind_gleich = false;
       vorherige_farben.clear();
-      DBG_S( "n_points: " << n_points <<
+      DBG_PROG_S( "n_points: " << n_points <<
              " vorherige_farben.size(): " << vorherige_farben.size() )
     }
 
     { // aktuelle Farben merken
-      DBG
       for(int i = 0; i < n_points*farb_kanaele; ++i)
       {
-        //DBG_S( i << " " << n_points*farb_kanaele )
+        //DBG_PROG_S( i << " " << n_points*farb_kanaele )
         if(gleichviele)
           if(colour[i] != vorherige_farben[i])
             farben_sind_gleich = false;
@@ -883,20 +868,20 @@ DBG
       }
     }
 
-    DBG_S( colour_x << " " << n_points )
+    DBG_PROG_S( colour_x << " " << n_points )
  
       // Wir koennen das weitere auslassen
     if(farben_sind_gleich &&
        !layer->status)
     {
       farbe_pruefen_laeuft = false;
-      DBG_S("colours are equal")
+      DBG_PROG_S("colours are equal")
       return false;
     }
   }
 
 # ifdef DEBUG_
-  DBG_S( farb_kanaele <<" "<< T_CHANNELS(format) <<" "<< T_BYTES(format) )
+  DBG_PROG_S( farb_kanaele <<" "<< T_CHANNELS(format) <<" "<< T_BYTES(format) )
   cout <<
           T_COLORSPACE(format) <<" "<<
           T_SWAPFIRST(format) <<" "<<
@@ -919,13 +904,13 @@ DBG
     pcsfarbe.push_back((outbuf[3*i+1]+128.0)/255.0);
     pcsfarbe.push_back((outbuf[3*i+2]+128.0)/255.0);
 
-    //DBG_S( pcsfarbe[farb_kanaele*i+0] << "," << pcsfarbe[farb_kanaele*i+1] << "," << pcsfarbe[farb_kanaele*i+2] )
+    //DBG_PROG_S( pcsfarbe[farb_kanaele*i+0] << "," << pcsfarbe[farb_kanaele*i+1] << "," << pcsfarbe[farb_kanaele*i+2] )
 
     for(int j = 0; j < farb_kanaele; ++j)
     {
       geraetefarbe.push_back( colour[farb_kanaele*i+j]/100.0 );
 
-      //DBG_S( colour[farb_kanaele*i+j] )
+      //DBG_PROG_S( colour[farb_kanaele*i+j] )
     }
   }
 
@@ -940,7 +925,7 @@ DBG
   *((icUInt32Number*)zahl) = icValue((icUInt32Number)tag_size);
   memcpy(&colour_profile[164], zahl, 4);
 
-  DBG_S( (int*)image_profile << " " << tag_size )
+  DBG_PROG_S( (int*)image_profile << " " << tag_size )
 
   schreibeProfil( layer->intent );
 
@@ -961,7 +946,6 @@ DBG
 void*
 waechter (void* zeiger)
 {
-  DBG
 
   bool bin_erste = false;
   if(erstes_mal)
@@ -974,11 +958,11 @@ waechter (void* zeiger)
   if(zeiger)
     layer = (channel*) zeiger;
 
-  DBG_S( (int*)layer )
+  DBG_PROG_S( (int*)layer )
   
   int fehler = false;
 
-  DBG_S( "bin_erste: " << bin_erste )
+  DBG_PROG_S( "bin_erste: " << bin_erste )
 
   static bool freilauf = true;
 
@@ -1001,26 +985,26 @@ waechter (void* zeiger)
         sl = (int)(rz*1000000.0)*4;
         sl = max(sl,50000);
         usleep(sl);
-        DBG_S( "rz: " << rz*1000000 << " sl " << sl )
+        DBG_PROG_S( "rz: " << rz*1000000 << " sl " << sl )
       }
     }
-    DBG_S( "bin_erste: " << bin_erste )
+    DBG_PROG_S( "bin_erste: " << bin_erste )
     sleep(10);
-    DBG_S( "bin_erste: " << bin_erste )
+    DBG_PROG_S( "bin_erste: " << bin_erste )
   }
 
   // ICC Examin starten
   if(!bin_erste)
   {
     tn = "iccexamin ";
-    tn += b;  // die Farben
+    tn += bn;  // die Farben
     tn += " ";
-    tn += a;  // das Bildprofil
+    tn += an;  // das Bildprofil
     tn += " '";
-    tn += p;  // das Proofprofil
+    tn += pn;  // das Proofprofil
     tn += "'";
 
-    DBG_S( tn )
+    DBG_PROG_S( tn )
 
 #if 0
     system (tn.c_str());
@@ -1028,32 +1012,32 @@ waechter (void* zeiger)
     const char *args_c[4];
 
     args_c[0] = argv[0];
-    args_c[1] = b.c_str();
-    args_c[2] = a.c_str();
-    args_c[3] = p.c_str();
+    args_c[1] = bn.c_str();
+    args_c[2] = an.c_str();
+    args_c[3] = pn.c_str();
 
-    startWithArgs(3, (char**)args_c);
+    startWithArgs(4, (char**)args_c);
 #endif
 
-    DBG_S( "bin_erste: " << bin_erste )
+    DBG_PROG_S( "bin_erste: " << bin_erste )
     freilauf = false;
     while(farbe_pruefen_laeuft)
     {
-      DBG_S( "bin_erste: " << bin_erste )
+      DBG_PROG_S( "bin_erste: " << bin_erste )
       icc_examin_ns::sleep( 0.1 );
-      DBG_S( "bin_erste: " << bin_erste )
+      DBG_PROG_S( "bin_erste: " << bin_erste )
     }
     freilauf = true;
-    DBG_S( "bin_erste: " << bin_erste )
+    DBG_PROG_S( "bin_erste: " << bin_erste )
   }
 
   if(freilauf)
   {
     freilauf = false;
     aufraeumen( layer );
-    DBG_S( "bin_erste: " << bin_erste )
+    DBG_PROG_S( "bin_erste: " << bin_erste )
   } else
-    DBG_S( "bin_erste: " << bin_erste );
+    DBG_PROG_S( "bin_erste: " << bin_erste );
 
   return layer;
 }
@@ -1092,14 +1076,13 @@ aufraeumen(channel *layer)
 {
   {
     while(farbe_pruefen_laeuft) {
-      DBG_S( "farbe_pruefen_laeuft " << farbe_pruefen_laeuft )
+      DBG_PROG_S( "farbe_pruefen_laeuft " << farbe_pruefen_laeuft )
       sleep(1);
     }
     // Aufraeumen
-    DBG
-    remove(a.c_str());
-    remove(b.c_str());
-    remove(p.c_str());
+    remove(an.c_str());
+    remove(bn.c_str());
+    remove(pn.c_str());
     if(colour_profile) delete [] colour_profile;
     if(image_profile) free( image_profile);
     if(proof_profile) free (proof_profile);
@@ -1123,7 +1106,7 @@ aufraeumen(channel *layer)
 void
 schreibeDatei(const void *data, gint groesse, std::string name)
 {
-  DBG_S( (int*)data <<": "<< groesse <<" "<< name )
+  DBG_PROG_S( (int*)data <<": "<< groesse <<" "<< name )
   if(data && groesse && name.size())
   {
     std::ofstream f;
@@ -1132,12 +1115,10 @@ schreibeDatei(const void *data, gint groesse, std::string name)
     if(f.good())
     {
       f.write ( (char*)data, groesse );
-#     ifdef DEBUG
-      g_print ("Profile %s written.", name.c_str());
-#     endif
+        DBG_MEM_S( "Profile %s written " << name.c_str() )
     }
     f.close();
-    DBG_S("Profil geschrieben")
+    DBG_PROG_S("Profil geschrieben")
   } else
     g_print ("Profile %s not written.", name.c_str());
 }
@@ -1170,7 +1151,7 @@ drawableColourLayoutToLcms( channel    & layer,
 
   format = 0;
 
-  DBG_S( farb_kanaele <<" "<< format ) 
+  DBG_PROG_S( farb_kanaele <<" "<< format ) 
 
 
     switch (layer.precision) {
@@ -1202,7 +1183,7 @@ drawableColourLayoutToLcms( channel    & layer,
                            CHANNELS_SH(farb_kanaele)|
                            BYTES_SH(0)); // lcms_bytes));
 
-  DBG_S( farb_kanaele <<" "<< T_CHANNELS(format) <<" "<< T_EXTRA(format) <<" "<< T_BYTES(format) )
+  DBG_PROG_S( farb_kanaele <<" "<< T_CHANNELS(format) <<" "<< T_EXTRA(format) <<" "<< T_BYTES(format) )
 
 
   return success;
@@ -1224,7 +1205,7 @@ bearbeiteEingebetteteProfile( channel *layer )
   }
 
   layer->intent = gimp_display_get_cms_intent (image_ID, ICC_IMAGE_PROFILE);
-  DBG_S( layer->intent <<" "<< intent_alt )
+  DBG_PROG_S( layer->intent <<" "<< intent_alt )
 
   char* profil_name = gimp_image_get_icc_profile_description(image_ID,
                                                              ICC_IMAGE_PROFILE);
@@ -1234,38 +1215,33 @@ bearbeiteEingebetteteProfile( channel *layer )
   {
     pprofil_name = gimp_image_get_icc_profile_description(image_ID, 
                                                           ICC_PROOF_PROFILE);
-    DBG
   }
   static std::string old_profil_name;
   static std::string old_pprofil_name;
 
-# ifdef DEBUG
   if(profil_name)
-    ;//DBG_S( image_ID <<": "<< profil_name <<" "<< old_profil_name )
+    ;//DBG_PROG_S( image_ID <<": "<< profil_name <<" "<< old_profil_name )
   if(pprofil_name)
-    cout << image_ID <<": "<< pprofil_name <<" "<< old_pprofil_name << endl;
-# endif
+    DBG_PROG_S( image_ID <<": "<< pprofil_name <<" "<< old_pprofil_name )
 
   // Test auf Veraenderung des Profiles
   if( strcmp(old_profil_name.c_str(), profil_name) == 0/* &&
       (pprofil_name ?
        (strcmp(old_pprofil_name.c_str(), pprofil_name) == 0) : old_pprofil_name.size()) */)
-  { //DBG
+  {
     if(profil_name) old_profil_name = profil_name; else old_profil_name = "";
     if(pprofil_name) old_pprofil_name = pprofil_name; else old_pprofil_name ="";
-    DBG
   } else
     layer->status |= PROFIL_NEU(1);
 
-  //DBG_S( "hp = " << hp )
+  //DBG_PROG_S( "hp = " << hp )
   // Speichern des eingebetteten Profiles
   if(strcmp(old_profil_name.c_str(), profil_name) != 0)
   {
     gint size=0;
     image_profile = gimp_image_get_icc_profile_by_mem( image_ID, &size,
                                                      ICC_IMAGE_PROFILE);
-    schreibeDatei( image_profile, size, a );
-    //DBG
+    schreibeDatei( image_profile, size, an );
 //sleep(10);
     // Berechnung -> CIE*Lab vorbereiten
     if(hl)cmsCloseProfile (hl);
@@ -1278,7 +1254,7 @@ bearbeiteEingebetteteProfile( channel *layer )
       return 1;
     }
     layer->status |= PROFIL_NEU(1);
-    //DBG_S( "hp = " << hp << " status:"<< layer->status )
+    //DBG_PROG_S( "hp = " << hp << " status:"<< layer->status )
   }
 
   // Intent anpassen
@@ -1288,8 +1264,6 @@ bearbeiteEingebetteteProfile( channel *layer )
   }
 
   // Speichern des eingebetteten Proofprofiles
-  WARN_S( "proof Profil\n" )
-
   int        new_proofing = 
                  gimp_display_get_cms_flags (image_ID) & cmsFLAGS_SOFTPROOFING;
   static int old_proofing = 0;
@@ -1304,20 +1278,17 @@ bearbeiteEingebetteteProfile( channel *layer )
     {
       proof_profile = gimp_image_get_icc_profile_by_mem ( image_ID, &psize,
                                                           ICC_PROOF_PROFILE);
-      schreibeDatei( proof_profile, psize, p );
+      schreibeDatei( proof_profile, psize, pn );
     } else {
-      WARN_S( "schreibe 1 byte\n" )
-      schreibeDatei( "", 1, p );
+      DBG_MEM_S( "schreibe 1 byte\n" )
+      schreibeDatei( "", 1, pn );
     }
     layer->status |= PROFIL_NEU(1);
-  } else
-# ifdef DEBUG
-    cout << "" << endl
-# endif
-    ;
+  }
+
   old_proofing = new_proofing;
 
-  //DBG_S( old_pprofil_name.size() <<" status:"<< layer->status )
+  //DBG_PROG_S( old_pprofil_name.size() <<" status:"<< layer->status )
   if(profil_name) old_profil_name = profil_name; else old_profil_name = "";
   if(pprofil_name) old_pprofil_name = pprofil_name; else old_pprofil_name ="";
 
@@ -1338,32 +1309,32 @@ doWatch (gint32 image_ID_)
 {
   image_ID = image_ID_;
 
-  DBG_S( "Bild: " << image_ID )
+  DBG_PROG_S( "Bild: " << image_ID )
 
   std::stringstream profil_temp_name;
 
   if(getenv("TMPDIR")) {
     profil_temp_name << getenv("TMPDIR") << "/cinepaint_" << time(0) ;
-    DBG_S( getenv("TMPDIR") )
+    DBG_PROG_S( getenv("TMPDIR") )
   } else {
     profil_temp_name << "/tmp/cinepaint_" << time(0) ;
   }
 
-  DBG_S( profil_temp_name.str() )
+  DBG_PROG_S( profil_temp_name.str() )
 
-  a = profil_temp_name.str(); a.append("_image.icc");
-  b = profil_temp_name.str(); b.append("_pixel.icc");
-  p = profil_temp_name.str(); p.append("_proof.icc");
+  an = profil_temp_name.str(); an.append("_image.icc");
+  bn = profil_temp_name.str(); bn.append("_pixel.icc");
+  pn = profil_temp_name.str(); pn.append("_proof.icc");
   
   channel *layer = 0;
 
-  DBG_S( "image_ID: " << image_ID )
+  DBG_PROG_S( "image_ID: " << image_ID )
 
   layer = (channel*) new channel [1];
   nlayers = 1;
   layer->display_ID = gimp_display_active();
 
-  DBG_S( "layer: " << (int*)layer ) 
+  DBG_PROG_S( "layer: " << (int*)layer ) 
 
   // Min/Max bestimmen
   minMax( image_ID, min_x, min_y, max_x, max_y );
@@ -1384,17 +1355,14 @@ doWatch (gint32 image_ID_)
       fehler = pthread_create(&p_t, NULL, &waechter, (void *)layer);
       if(fehler) pthreatFehler (fehler);
     }
-    DBG
   }
 
-  DBG
   // starte iccexamin und warte auf seine Beendigung 
   if(!fehler) {
     waechter(layer);
-    DBG
   }
 
-  DBG_S( "end of " <<__func__ )
+  DBG_PROG_S( "end of " <<__func__ )
 
   return image_ID;
 }
@@ -1413,7 +1381,7 @@ holeFarbPunkt (channel* layer, int & x_punkt, int & y_punkt,
 {
 
         #ifdef DEBUG_
-        cout << n <<": " << x_punkt <<","<< y_punkt << " "; DBG
+        DBG_CINE_S( n <<": " << x_punkt <<","<< y_punkt << " " )
         #endif
         gimp_pixel_rgn_get_pixel( &layer->srcRgn, buf, x_punkt, y_punkt);
 
@@ -1445,7 +1413,7 @@ schreibeProfil (icUInt32Number intent)
 {
   char* tag = schreibeNcl2Tag (pcsfarbe, geraetefarbe, farb_kanaele,"",name,"");
 
-  DBG_S( (int*)tag <<" "<< tag_size )
+  DBG_PROG_S( (int*)tag <<" "<< tag_size )
 
   memcpy (&colour_profile[236], tag, tag_size);
   if(tag)    delete [] tag;
@@ -1455,7 +1423,7 @@ schreibeProfil (icUInt32Number intent)
 
   // Speichern des Farbprofiles
   if(colour_profile && tag_size)
-    schreibeDatei( colour_profile, 236 + tag_size , b );
+    schreibeDatei( colour_profile, 236 + tag_size , bn );
 }
 
 
@@ -1544,7 +1512,7 @@ holeLayerInfo    (channel & layer)
       }
       // pixel_rgn
       if(layer.status) {
-        DBG_S("new region")
+        DBG_PROG_S("new region")
         gimp_drawable_detach(layer.drawable);
         layer.drawable = gimp_drawable_get (layer.ID);
         gimp_pixel_rgn_init (&(layer.srcRgn), layer.drawable,
@@ -1574,21 +1542,23 @@ setzeRaster( channel *layer )
   } else {
     y_num = l;
     x_num = (int)((double)y_num * (double)layer->sel_w/(double)layer->sel_h+.5);
-  } DBG_S( x_num <<" "<< y_num )
-  DBG_S( "w/h: " << (double)layer->sel_w/(double)layer->sel_h )
-  DBG_S( "sel_w|sel_h "<<layer->sel_w<<"|"<<layer->sel_h ) 
-  if(x_num > (layer->sel_w)) { DBG x_num = layer->sel_w; }
-  if(y_num > (layer->sel_h)) { DBG y_num = layer->sel_h; }
-  DBG_S( x_num <<" "<< y_num )
+  } DBG_PROG_S( x_num <<" "<< y_num )
+    DBG_PROG_S( "w/h: " << (double)layer->sel_w/(double)layer->sel_h )
+    DBG_PROG_S( "sel_w|sel_h "<<layer->sel_w<<"|"<<layer->sel_h ) 
+
+  if(x_num > (layer->sel_w)) { x_num = layer->sel_w; }
+  if(y_num > (layer->sel_h)) { y_num = layer->sel_h; }
+
+    DBG_PROG_S( x_num <<" "<< y_num )
+
   x_diff = (double)layer->sel_w / (double)x_num;
   y_diff = (double)layer->sel_h / (double)y_num;
   x_start = (int)((double)x_num/layer->sel_w / 2) + layer->sel_x1;
   y_start = (int)((double)y_num/layer->sel_h / 2) + layer->sel_y1;
-  #ifdef DEBUG
-  cout <<"dist:  "<< x_diff <<","<< y_diff << " "; DBG
-  cout <<"start: "<< x_start <<","<< y_start << " "; DBG
-  cout <<"num:   "<< x_num <<","<< y_num << " "; DBG
-  #endif
+
+  DBG_PROG_S( "dist:  "<< x_diff <<","<< y_diff << 
+              "start: "<< x_start <<","<< y_start << " "
+              "num:   "<< x_num <<","<< y_num )
   return 0;
 }
 
@@ -1599,7 +1569,7 @@ reserviereSpeicher( channel & layer )
 {
   n_points = x_num * y_num + 2;
 
-  DBG_S( n_points )
+  DBG_MEM_S( n_points )
 
   outbuf = (double*) new double [n_points*3];
   if(!outbuf) return 1;
@@ -1609,7 +1579,7 @@ reserviereSpeicher( channel & layer )
   if(colour_profile) free (colour_profile);
   colour_profile = (char*) new char [320 + tag_size];
 
-  DBG_S( "320 + tag_size: " << 320 + tag_size )
+  DBG_NUM_S( "320 + tag_size: " << 320 + tag_size )
 
   if(colour) delete [] colour;
   colour = (double*) new double [n_points * farb_kanaele];
@@ -1629,7 +1599,7 @@ static void
 minMax(gint32 image_ID, int & min_x, int & min_y,
                       int & max_x, int & max_y )
 {
-  DBG_S( "Bild: " << image_ID )
+  DBG_PROG_S( "Bild: " << image_ID )
 
   gint32  *layers;
   gint32   nlayers;
@@ -1649,7 +1619,7 @@ minMax(gint32 image_ID, int & min_x, int & min_y,
 
     gint32 drawable_ID = gimp_image_get_active_layer (image_ID);
 
-    DBG_S( "drawable: " << drawable_ID )
+    DBG_PROG_S( "drawable: " << drawable_ID )
 
     int tile_height = gimp_tile_height ();
 
@@ -1661,7 +1631,7 @@ minMax(gint32 image_ID, int & min_x, int & min_y,
     int colors = channels;
     if (channels == 2 || channels == 4) colors--;
 
-    DBG_S( "colors: " << colors )
+    DBG_PROG_S( "colors: " << colors )
 
     int bpp = gimp_drawable_bpp(drawable_ID);
     unsigned char* data = (unsigned char*) calloc (sizeof (char), drawable->width * channels * bpp * tile_height);
@@ -1669,22 +1639,20 @@ minMax(gint32 image_ID, int & min_x, int & min_y,
     gimp_pixel_rgn_init (&pixel_rgn, drawable, 0, 0,
                          (gint32)drawable->width, (gint32)drawable->height,
                          FALSE, FALSE);
-    DBG
 
     gimp_tile_cache_size(drawable->width/tile_height+1);
 
     int yend = 0;
-DBG
     int ystart, y,x, c, colori, pos;
     for (ystart = 0; ystart < (int)drawable->height; ystart = yend + 1) {
       yend = ystart + tile_height - 1;
       yend = MIN (yend, (int)drawable->height);
 
-      DBG_S( ": " <<  ystart <<" - " << yend )
+      DBG_PROG_S( ": " <<  ystart <<" - " << yend )
 
       gimp_pixel_rgn_get_rect (&pixel_rgn, data, 0, ystart, drawable->width, yend - ystart);
 
-      DBG_S( "ystart: " << ystart )
+      DBG_PROG_S( "ystart: " << ystart )
 
       for (y = ystart; y < yend; y++) {
         for (x = 0; x < (int)drawable->width; x++) {
@@ -1776,23 +1744,23 @@ DBG
     gimp_drawable_flush(drawable);
     gimp_drawable_detach (drawable);
 
-    DBG
   }
   if(layers) free(layers);
 
-  #ifdef DEBUG
-  DBG printf("max(%d,%d) = ",
-              (int)max_x,(int)max_y);
-  for (int c=0; c < 4; c++)
-       printf("%f ", max_color[c]);
-  printf ("\n");
+  if(icc_debug > 1) 
+  {
+    DBG printf("max(%d,%d) = ",
+                (int)max_x,(int)max_y);
+    for (int c=0; c < 4; c++)
+         printf("%f ", max_color[c]);
+    printf ("\n");
 
-  printf("\nmin(%d,%d) = ",
-              (int)min_x,(int)min_y); 
-  for (int c=0; c < 4; c++)
-       printf("%f ", min_color[c]);
-  printf ("\n");
-  #endif
+    printf("\nmin(%d,%d) = ",
+                (int)min_x,(int)min_y); 
+    for (int c=0; c < 4; c++)
+         printf("%f ", min_color[c]);
+    printf ("\n");
+  }
 }
 
 

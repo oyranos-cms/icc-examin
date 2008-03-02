@@ -549,9 +549,6 @@ echo "" >> $CONF
 echo ""
 echo ""
 
-cat "$CONF_I18N.in" >> $CONF_I18N
-echo generated $CONF_I18N from "$CONF_I18N.in"
-
 echo "" > mkdepend
 
 # prepare makefile from MAKEFILE_DIR
