@@ -154,18 +154,25 @@ GL_Ansicht::init(int init_id)
 
   resizable(0);
 
-  mode(FL_RGB |FL_DOUBLE |FL_ALPHA |FL_DEPTH |FL_MULTISAMPLE);
-  if(!can_do()) {
-    WARN_S( _("OpenGL eventuell nicht korrekt gesetzt von ICC Examin ") << mode() )
-    mode(FL_RGB |FL_DOUBLE |FL_ALPHA |FL_DEPTH);
-    if(!can_do()) {
-      WARN_S( _("OpenGL eventuell nicht korrekt gesetzt von ICC Examin ") << mode() )
-      mode(0);
-      if(!can_do()) {
-        WARN_S( _("OpenGL eventuell nicht korrekt gesetzt von ICC Examin ") << mode() )
-      }
-    }
+  #define TEST_GL(modus) { \
+    mode(modus); \
+    if(can_do()) { \
+      mod |= modus; \
+      mode(mod); \
+      DBG_PROG_S( "OpenGL versteht: ja   " << #modus <<" "<< mode() ) \
+    } else { \
+      DBG_PROG_S( "OpenGL versteht: nein " << #modus <<" "<< mode() ) \
+    } \
   }
+
+  long mod = 0;
+  TEST_GL(FL_RGB)
+  TEST_GL(FL_DOUBLE)
+  TEST_GL(FL_ALPHA)
+  TEST_GL(FL_DEPTH)
+  TEST_GL(FL_MULTISAMPLE)
+  mode(mod);
+  DBG_PROG_S( _("OpenGL mode: ") << mode() )
 
   DBG_PROG
 
@@ -407,29 +414,7 @@ GL_Ansicht::tastatur(int e)
                       glColor4f(farbe[0],farbe[1],farbe[2],1.0); }
 
 // Text zeichnen
-#if 0
-#define ZeichneText(Font,Zeiger) { \
-   glDisable(GL_TEXTURE_2D); \
-   glDisable(GL_LIGHTING); \
-   glLineWidth(strichmult); \
-      glTranslatef(.0,0,0.01); \
-        glScalef(0.001,0.001,0.001); \
-          if(Zeiger && strlen(Zeiger)) { \
-            DBG_PROG_V( (int*)Zeiger ) \
-            for (const char* p = Zeiger; *p; p++) { \
-              icc_gl::glutStrokeCharacter(Font, *p); \
-            } \
-            for (const char* p = Zeiger; *p; p++) { \
-              glTranslatef(0.0 - glutStrokeWidth(Font, *p),0,0); \
-            } \
-          } \
-        glScalef(1000,1000,1000); \
-      glTranslatef(.0,0,-.01); \
-   glEnable(GL_TEXTURE_2D); \
-   glEnable(GL_LIGHTING); \
-   glLineWidth(strichmult); }
-#else
- #ifdef HAVE_FTGL
+#ifdef HAVE_FTGL
  #define ZeichneText(Font, Zeiger) { \
    glLineWidth(strichmult); \
     glDisable(GL_BLEND); \
@@ -440,9 +425,8 @@ GL_Ansicht::tastatur(int e)
       glTranslatef(.0,0,-.01); \
     glEnable(GL_BLEND); \
    glLineWidth(strichmult); }
- #else
+#else
  #define ZeichneText(Font, Zeiger)
- #endif
 #endif
 
 #define ZeichneOText(Font, scal, buffer) \
@@ -1399,7 +1383,7 @@ GL_Ansicht::menueErneuern_()
   menue_button_->copy(menue_->menu());
   menue_button_->callback(c_);
 
-  icc_examin_ns::status_info(_("left-/middle-/right mouse button -> rotate/cut/menu"));
+  //icc_examin_ns::status_info(_("left-/middle-/right mouse button -> rotate/cut/menu"));
 
   DBG_PROG_ENDE
 }
@@ -1459,6 +1443,11 @@ void
 GL_Ansicht::zeichnen()
 {
   DBG_ICCGL_START
+  if(visible() && agv_.agvMoving && !agv_.AllowIdle)
+  {
+    agv_.setIdle(visible());
+  }
+
   if(visible() &&
      icc_examin->frei() )
   {
@@ -1684,6 +1673,12 @@ GL_Ansicht::menueAufruf ( int value )
   }
 
   {
+    if (value >= MENU_MAX &&
+        value < 100) {
+      kanal = value - MENU_MAX; DBG_PROG_V( kanal )
+      icc_examin_ns::status_info(_("left-/middle-/right mouse button -> rotate/cut/menu"));
+    }
+
     switch (value) {
     case MENU_AXES:
       DrawAxes = !DrawAxes;
@@ -1767,7 +1762,7 @@ GL_Ansicht::menueAufruf ( int value )
       for (int i=0; i < 3 ; ++i) textfarbe[i] = 0.5;
       break;
     case Agviewer::FLYING:
-      icc_examin_ns::status_info(_("Schnitt; linker Mausklick setzt zurueck"));
+      icc_examin_ns::status_info(_("left mouse button -> go back"));
       agv_.duenn = true;
       break;
     case Agviewer::ICCFLY_L:
@@ -1778,37 +1773,36 @@ GL_Ansicht::menueAufruf ( int value )
         agv_.eyeDist( agv_.dist() );
         vorder_schnitt = std_vorder_schnitt;
       }
-      icc_examin_ns::status_info(_("waagerechter Schnitt; linker Mausklick setzt zurueck"));
+      icc_examin_ns::status_info(_("left mouse button -> go back"));
       agv_.duenn = true;
       break;
     case Agviewer::ICCFLY_a:
       vorder_schnitt = std_vorder_schnitt;
-      icc_examin_ns::status_info(_("senkrechter Schnitt von rechts; linker Mausklick setzt zurueck"));
+      icc_examin_ns::status_info(_("left mouse button -> go back"));
       agv_.duenn = true;
       break;
     case Agviewer::ICCFLY_b:
       vorder_schnitt = std_vorder_schnitt;
-      icc_examin_ns::status_info(_("senkrechter Schnitt von vorn; linker Mausklick setzt zurueck"));
+      icc_examin_ns::status_info(_("left mouse button -> go back"));
       agv_.duenn = true;
       break;
     case Agviewer::ICCPOLAR:
       agv_.duenn = true;
     case Agviewer::POLAR:
+      if(id() == 1)
+        agv_.duenn = true;
+      else
+        agv_.duenn = false;
+      break;
     case Agviewer::AGV_STOP:
       agv_.duenn = false;
-      break;
-    }
-
-    if (value >= MENU_MAX &&
-        value < 100) {
-      kanal = value - MENU_MAX; DBG_PROG_V( kanal )
       icc_examin_ns::status_info(_("left-/middle-/right mouse button -> rotate/cut/menu"));
+      break;
     }
   }
 
-  valid(false);
   if(visible()) {
-    auffrischen();
+    erstelleGLListen_();
     redraw();
   }
 

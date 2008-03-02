@@ -33,6 +33,7 @@ X_CPPFILES = icc_helfer_x.cpp
 OSX_CPPFILES = icc_helfer_osx.cpp
 FLTK_CPPFILES = icc_helfer_fltk.cpp
 MSGFMT = msgfmt -c --statistics
+
 ifdef APPLE
   OPTS=-Wall -g -DPIC $(DEBUG)
   LIBLINK_FLAGS = -dynamiclib -lintl
@@ -58,6 +59,7 @@ else
     RECODE_DE = iso-8859-1
     RECODE = recode -vf
     CHARSET_DE = ISO-8859-1
+    #latin-1
   ifdef LINUX
     OPTS = -Wall  -Os -g $(DEBUG) #-fomit-frame-pointer -g
     INCL=-I$(includedir) -I/usr/X11R6/include -I./
@@ -152,6 +154,7 @@ COMMON_CPPFILES = \
 	icc_formeln.cpp \
 	icc_gl.cpp \
 	icc_helfer.cpp \
+    icc_helfer_i18n.cpp \
 	icc_info.cpp \
 	icc_kette.cpp \
 	icc_main.cpp \
@@ -172,7 +175,7 @@ FREEGLUT_CFILES = \
 	freeglut_geometry.c
 
 LINGUAS = \
-	de #es
+	de #en_GB
 
 COMMON_CFILES = \
 	$(FREEGLUT_CFILES)

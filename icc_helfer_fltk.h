@@ -38,6 +38,5 @@
 // definiert in icc_helfer_fltk.cpp
 
 int* getChannel_flColours(icColorSpaceSignature color);
-void menue_uebersetzen( Fl_Menu_Item* menueleiste );
 
 #endif //ICC_HELFER_FLTK_H

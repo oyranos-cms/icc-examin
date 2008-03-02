@@ -1,7 +1,17 @@
 
+2005-05-02
+	* fix: GL zeichnen wenn ansichtig
+	* fix: Infos in Statusleiste
+
+2005-05-01
+	* und: OpenGL Test etwas feiner
+	* und: Darstellungoptionen werden versteckt nicht mehr verkleinert
+	* und: neuzeichnen für farbraumModus
+
 2005-04-30
 	* und: Schalter hintergrundfarbe in Farbwert umgestaltet
 	* und: set charset to iso-8859-1 for 'de' in unix
+	* und: i18n stuff resides in icc_helfer_i18n.cpp
 
 2005-04-29
 	* und: set LANG variable in osX for i18n

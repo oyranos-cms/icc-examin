@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ICC Examin 0.28\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2005-04-30 10:28+0200\n"
+"POT-Creation-Date: 2005-05-02 23:37+0200\n"
 "PO-Revision-Date: 2005-04-22 15:09+0200\n"
 "Last-Translator: Kai-Uwe Behrmann <ku.b@gmx.de>\n"
 "Language-Team: German\n"
@@ -15,31 +15,32 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: agviewer.cpp:154
+#: agviewer.cpp:167
 msgid "kein Agviewer uebergeben; kann agvMove_ nicht ausfuehren"
 msgstr ""
 
-#: agviewer.cpp:197
+#: agviewer.cpp:213
 msgid "GL Fenster nicht frei"
 msgstr ""
 
-#: agviewer.cpp:343 agviewer.cpp:383
-msgid "left mouse button -> go back"
-msgstr "linke Maustaste -> zurueck"
-
-#: agviewer.cpp:356
-msgid "Pause"
-msgstr "Pause"
-
-#: agviewer.cpp:375 icc_gl.cpp:1402 icc_gl.cpp:1671 icc_gl.cpp:1805
+#: agviewer.cpp:359 icc_gl.cpp:1661 icc_gl.cpp:1680 icc_gl.cpp:1800
 msgid "left-/middle-/right mouse button -> rotate/cut/menu"
 msgstr "linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menue"
 
-#: agviewer.cpp:387
+#: agviewer.cpp:373
+msgid "Pause"
+msgstr "Pause"
+
+#: agviewer.cpp:392 agviewer.cpp:400 icc_gl.cpp:1766 icc_gl.cpp:1777
+#: icc_gl.cpp:1782 icc_gl.cpp:1787
+msgid "left mouse button -> go back"
+msgstr "linke Maustaste -> zurueck"
+
+#: agviewer.cpp:404
 msgid "nicht erkennbare Maustaste: "
 msgstr ""
 
-#: agviewer.cpp:392
+#: agviewer.cpp:409
 msgid "keine Anweisung erkennbar"
 msgstr ""
 
@@ -154,7 +155,7 @@ msgstr "Grün"
 msgid "Blue"
 msgstr "Blau"
 
-#: icc_draw.cpp:643 icc_gl.cpp:1350 icc_helfer.cpp:318 icc_waehler.h:127
+#: icc_draw.cpp:643 icc_gl.cpp:1334 icc_helfer.cpp:318 icc_waehler.h:127
 msgid "Gray"
 msgstr "Grau"
 
@@ -170,7 +171,7 @@ msgstr ""
 msgid "Yellow"
 msgstr "Gelb"
 
-#: icc_draw.cpp:656 icc_gl.cpp:1352 icc_helfer.cpp:378 icc_helfer.cpp:388
+#: icc_draw.cpp:656 icc_gl.cpp:1336 icc_helfer.cpp:378 icc_helfer.cpp:388
 msgid "Black"
 msgstr "Schwarz"
 
@@ -208,13 +209,13 @@ msgid "CIE *L"
 msgstr ""
 
 #: icc_draw.cpp:674 icc_examin_farbraum.cpp:184 icc_examin_io.cpp:124
-#: icc_gl.cpp:594 icc_gl.cpp:662 icc_gl.cpp:673 icc_gl.cpp:681
+#: icc_gl.cpp:578 icc_gl.cpp:646 icc_gl.cpp:657 icc_gl.cpp:665
 #: icc_helfer.cpp:364
 msgid "CIE *a"
 msgstr ""
 
 #: icc_draw.cpp:676 icc_examin_farbraum.cpp:185 icc_examin_io.cpp:125
-#: icc_gl.cpp:608 icc_gl.cpp:689 icc_gl.cpp:698 icc_gl.cpp:705
+#: icc_gl.cpp:592 icc_gl.cpp:673 icc_gl.cpp:682 icc_gl.cpp:689
 #: icc_helfer.cpp:365
 msgid "CIE *b"
 msgstr ""
@@ -267,15 +268,15 @@ msgstr ""
 msgid "Auffrischen von Profil Nr.: "
 msgstr ""
 
-#: icc_examin.cpp:286
+#: icc_examin.cpp:288
 msgid "Keine Kurve gefunden"
 msgstr ""
 
-#: icc_examin.cpp:345
+#: icc_examin.cpp:347
 msgid "verstecke "
 msgstr ""
 
-#: icc_examin.cpp:349
+#: icc_examin.cpp:351
 msgid "zeige     "
 msgstr ""
 
@@ -323,169 +324,153 @@ msgstr "Bericht Speichern"
 msgid "Leer"
 msgstr ""
 
-#: icc_gl.cpp:159 icc_gl.cpp:162 icc_gl.cpp:165
-msgid "OpenGL eventuell nicht korrekt gesetzt von ICC Examin "
+#: icc_gl.cpp:175
+msgid "OpenGL mode: "
 msgstr ""
 
-#: icc_gl.cpp:339 icc_gl.cpp:342 icc_gl.cpp:345 icc_gl.cpp:351 icc_gl.cpp:355
-#: icc_gl.cpp:370
+#: icc_gl.cpp:346 icc_gl.cpp:349 icc_gl.cpp:352 icc_gl.cpp:358 icc_gl.cpp:362
+#: icc_gl.cpp:377
 msgid "Konnte Font nicht oeffnen:"
 msgstr ""
 
-#: icc_gl.cpp:374 icc_gl.cpp:376
+#: icc_gl.cpp:381 icc_gl.cpp:383
 msgid "Fontgroesse nicht setzbar"
 msgstr ""
 
-#: icc_gl.cpp:474
+#: icc_gl.cpp:458
 #, c-format
 msgid "0,0,0"
 msgstr ""
 
-#: icc_gl.cpp:728
+#: icc_gl.cpp:712
 msgid "Kanalauswahl geaendert: "
 msgstr ""
 
-#: icc_gl.cpp:1226
+#: icc_gl.cpp:1210
 msgid "hsRGB Profil nicht geoeffnet"
 msgstr ""
 
-#: icc_gl.cpp:1228
+#: icc_gl.cpp:1212
 msgid "hLab Profil nicht geoeffnet"
 msgstr ""
 
-#: icc_gl.cpp:1234
+#: icc_gl.cpp:1218
 msgid "keine hXYZtoRGB Transformation gefunden"
 msgstr ""
 
-#: icc_gl.cpp:1249
+#: icc_gl.cpp:1233
 msgid "XYZ_speicher Speicher nicht verfuegbar"
 msgstr ""
 
-#: icc_gl.cpp:1250
+#: icc_gl.cpp:1234
 msgid "Lab_speicher Speicher nicht verfuegbar"
 msgstr ""
 
-#: icc_gl.cpp:1251
+#: icc_gl.cpp:1235
 msgid "RGB_speicher Speicher nicht verfuegbar"
 msgstr ""
 
-#: icc_gl.cpp:1324 icc_gl.cpp:1334 icc_gl.cpp:1336 icc_gl.cpp:1338
+#: icc_gl.cpp:1308 icc_gl.cpp:1318 icc_gl.cpp:1320 icc_gl.cpp:1322
 msgid "Slice"
 msgstr "Schnitt"
 
-#: icc_gl.cpp:1325
+#: icc_gl.cpp:1309
 msgid "Rotate around slice"
 msgstr "Drehen um Schnitt"
 
-#: icc_gl.cpp:1340
+#: icc_gl.cpp:1324
 msgid "Rotate around"
 msgstr "Drehen um"
 
-#: icc_gl.cpp:1340
+#: icc_gl.cpp:1324
 msgid "axis"
 msgstr "Achse"
 
-#: icc_gl.cpp:1345
+#: icc_gl.cpp:1329
 msgid "Slice plane"
 msgstr "Querschnitt"
 
-#: icc_gl.cpp:1348
+#: icc_gl.cpp:1332
 msgid "White"
 msgstr "Weiß"
 
-#: icc_gl.cpp:1349
+#: icc_gl.cpp:1333
 msgid "Light gray"
 msgstr "Hellgrau"
 
-#: icc_gl.cpp:1351
+#: icc_gl.cpp:1335
 msgid "Dark gray"
 msgstr "Dunkelgrau"
 
-#: icc_gl.cpp:1355
+#: icc_gl.cpp:1339
 msgid "Background colour"
 msgstr "Hintergrundfarbe"
 
-#: icc_gl.cpp:1360
+#: icc_gl.cpp:1344
 msgid "gray"
 msgstr "grau"
 
-#: icc_gl.cpp:1361
+#: icc_gl.cpp:1345
 msgid "coloured"
 msgstr "farbig"
 
-#: icc_gl.cpp:1362
+#: icc_gl.cpp:1346
 msgid "high contrast"
 msgstr "kontrastreich"
 
-#: icc_gl.cpp:1363
+#: icc_gl.cpp:1347
 msgid "shells"
 msgstr "schalen"
 
-#: icc_gl.cpp:1368
+#: icc_gl.cpp:1352
 msgid "Sphere 1dE"
 msgstr "Kugel 1dE"
 
-#: icc_gl.cpp:1369
+#: icc_gl.cpp:1353
 msgid "Sphere 2dE"
 msgstr "Kugel 2dE"
 
-#: icc_gl.cpp:1370
+#: icc_gl.cpp:1354
 msgid "Sphere 4dE"
 msgstr "Kugel 4dE"
 
-#: icc_gl.cpp:1373
+#: icc_gl.cpp:1357
 msgid "Star"
 msgstr "Stern"
 
-#: icc_gl.cpp:1376
+#: icc_gl.cpp:1360
 msgid "Point"
 msgstr "Punkt"
 
-#: icc_gl.cpp:1379
+#: icc_gl.cpp:1363
 msgid "without markers"
 msgstr "ohne Farborte"
 
-#: icc_gl.cpp:1380
+#: icc_gl.cpp:1364
 msgid "Spektral line"
 msgstr "Spektrallinie"
 
-#: icc_gl.cpp:1383 icc_betrachter.cxx:627
+#: icc_gl.cpp:1367 icc_betrachter.cxx:627
 msgid "Texts"
 msgstr "Texte"
 
-#: icc_gl.cpp:1385
+#: icc_gl.cpp:1369
 msgid "Texts/Arrows on/off"
 msgstr "Texte/Pfeile an/aus"
 
-#: icc_gl.cpp:1387
+#: icc_gl.cpp:1371
 msgid "Illustration"
 msgstr "Darstellung"
 
-#: icc_gl.cpp:1491 icc_profile_tags.cpp:291
+#: icc_gl.cpp:1481 icc_profile_tags.cpp:291
 msgid "Channel"
 msgstr "Kanal"
 
-#: icc_gl.cpp:1770
-msgid "Schnitt; linker Mausklick setzt zurueck"
-msgstr ""
-
-#: icc_gl.cpp:1781
-msgid "waagerechter Schnitt; linker Mausklick setzt zurueck"
-msgstr ""
-
-#: icc_gl.cpp:1786
-msgid "senkrechter Schnitt von rechts; linker Mausklick setzt zurueck"
-msgstr ""
-
-#: icc_gl.cpp:1791
-msgid "senkrechter Schnitt von vorn; linker Mausklick setzt zurueck"
-msgstr ""
-
-#: icc_gl.cpp:1830
+#: icc_gl.cpp:1825
 msgid "Konnte keine Eltern finden"
 msgstr ""
 
-#: icc_gl.cpp:1839
+#: icc_gl.cpp:1834
 msgid "Konnte keine passende Programmstruktur finden"
 msgstr ""
 
@@ -1067,6 +1052,34 @@ msgstr "kein Dateiname angegeben"
 
 #: icc_helfer.cpp:832
 msgid "Dateigröße 0 für "
+msgstr ""
+
+#: icc_helfer_i18n.cpp:67
+msgid "osX locale obtained: "
+msgstr ""
+
+#: icc_helfer_i18n.cpp:73
+msgid "osX locale not obtained"
+msgstr ""
+
+#: icc_helfer_i18n.cpp:133
+msgid "try to set LANG"
+msgstr ""
+
+#: icc_helfer_i18n.cpp:160
+msgid "fine with: "
+msgstr "gut mit: "
+
+#: icc_helfer_i18n.cpp:162
+msgid "failed with: "
+msgstr "daneben mit: "
+
+#: icc_helfer_i18n.cpp:167
+msgid "try locale in "
+msgstr ""
+
+#: icc_helfer_i18n.cpp:174
+msgid "set codeset for \"icc_examin\" to "
 msgstr ""
 
 #: icc_kette.cpp:92 icc_kette.cpp:134
@@ -2091,6 +2104,34 @@ msgstr ""
 #: icc_waehler.h:68
 msgid "kein Fl_Widget??"
 msgstr ""
+
+#, fuzzy
+#~ msgid "376_left mouse button -> go back"
+#~ msgstr "linke Maustaste -> zurueck"
+
+#, fuzzy
+#~ msgid "384_left mouse button -> go back"
+#~ msgstr "linke Maustaste -> zurueck"
+
+#, fuzzy
+#~ msgid "1655_left-/middle-/right mouse button -> rotate/cut/menu"
+#~ msgstr "linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menue"
+
+#, fuzzy
+#~ msgid "1674_left-/middle-/right mouse button -> rotate/cut/menu"
+#~ msgstr "linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menue"
+
+#, fuzzy
+#~ msgid "__1795_left-/middle-/right mouse button -> rotate/cut/menu"
+#~ msgstr "linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menue"
+
+#, fuzzy
+#~ msgid "344_left mouse button -> go back"
+#~ msgstr "linke Maustaste -> zurueck"
+
+#, fuzzy
+#~ msgid "1386_left-/middle-/right mouse button -> rotate/cut/menu"
+#~ msgstr "linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menue"
 
 #~ msgid "Size:"
 #~ msgstr "Größe"

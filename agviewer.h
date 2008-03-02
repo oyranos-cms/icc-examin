@@ -275,6 +275,7 @@ public:
       RedisplayWindow;                      // glutWindow
   public: 
   int redisplayWindow() {DBG_PROG_V(RedisplayWindow) return RedisplayWindow; }
+  void setIdle(bool set);
   private:
    /* If AllowIdle is 1 it means AGV will install its own idle which
     * will update the viewpoint as needed and send glutPostRedisplay() to the

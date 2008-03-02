@@ -141,6 +141,19 @@ Agviewer::ConstrainEl(void)
   return 0;
 }
 
+void
+Agviewer::setIdle(bool set)
+{
+  DBG_V( set )
+  if(set) {
+    Fl::add_idle(agvMove_statisch,this);
+    AllowIdle = true;
+  } else {
+    Fl::remove_idle(agvMove_statisch,this);
+    AllowIdle = false;
+  }
+}
+
  /*
   * Idle Function - moves eyeposition
   */
@@ -152,6 +165,9 @@ Agviewer::agvMove_statisch(void* agv)
     obj->agvMove_();
   else
     WARN_S( _("kein Agviewer uebergeben; kann agvMove_ nicht ausfuehren") )
+
+  if(!obj->parent->visible())
+    obj->setIdle(0);
 }
 void
 Agviewer::agvMove_(void)
@@ -213,7 +229,6 @@ Agviewer::MoveOn(int v)
   {
     agvMoving = 1;
     if (AllowIdle) {
-        //glutIdleFunc(agv::agvMove1);
         DBG_PROG_S( "idle: agvMove_statisch" )
         Fl::add_idle(agvMove_statisch,this);
         agvMove_();
@@ -221,7 +236,7 @@ Agviewer::MoveOn(int v)
   } else {
     agvMoving = 0;
     if (AllowIdle) {
-      Fl::remove_idle(agvMove_statisch,this);;//glutIdleFunc(NULL);
+      Fl::remove_idle(agvMove_statisch,this);
       DBG_PROG_S( "idle: ---" )
     }
   }
@@ -321,7 +336,8 @@ Agviewer::agvSwitchMoveMode(int move)
 
 void
 Agviewer::agvHandleButton(int button, int event, int x, int y)
-{ DBG_PROG_START
+{
+  DBG_PROG_START
   DBG_PROG_V( button <<" "<< event);
 
  if (event == FL_PUSH && downb == -1)
@@ -339,8 +355,9 @@ Agviewer::agvHandleButton(int button, int event, int x, int y)
         AzSpin = ElSpin = dAz = dEl = 0;
         AdjustingAzEl = 1;
         MoveOn(0); //ICC stop
-        if (MoveMode == FLYING)
-          icc_examin_ns::status_info(_("left mouse button -> go back"));
+        if (MoveMode == FLYING) {
+          icc_examin_ns::status_info(_("left-/middle-/right mouse button -> rotate/cut/menu"));
+        }
         duenn = false;
         MoveMode = POLAR;
     } else
@@ -372,7 +389,7 @@ Agviewer::agvHandleButton(int button, int event, int x, int y)
         AdjustingAzEl = 0;
         MoveOn(1);
         if (MoveMode == FLYING) {
-          icc_examin_ns::status_info(_("left-/middle-/right mouse button -> rotate/cut/menu"));
+          icc_examin_ns::status_info(_("left mouse button -> go back"));
           duenn = false;
         }
       } else

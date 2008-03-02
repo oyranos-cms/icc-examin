@@ -665,7 +665,7 @@ ard"));
   w->show(argc,argv);
   Fl::scheme(NULL);
   Fl_File_Icon::load_system_icons();
-  menue_uebersetzen( menu_menueleiste );
+  menue_translate( menu_menueleiste );
   DBG_PROG
   DBG_PROG_ENDE
   return w;
