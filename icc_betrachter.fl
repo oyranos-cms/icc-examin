@@ -52,12 +52,6 @@ class MftChoice;
 class GL_Ansicht;} {public
 } 
 
-decl {\#define _(text) text} {public
-} 
-
-decl {\#define status(_texte) {std::stringstream s; s << _texte; icc_examin->statlabel = s.str(); icc_examin->icc_betrachter->box_stat->label(icc_examin->statlabel.c_str());}} {public
-} 
-
 decl {\#include "icc_examin.h"} {public
 } 
 

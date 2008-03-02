@@ -27,8 +27,6 @@ class TagBrowser;
 class TagTexts;
 class MftChoice;
 class GL_Ansicht;
-#define _(text) text
-#define status(_texte) {std::stringstream s; s << _texte; icc_examin->statlabel = s.str(); icc_examin->icc_betrachter->box_stat->label(icc_examin->statlabel.c_str());}
 #include "icc_examin.h"
 #include "icc_profile.h"
 #include "icc_utils.h"

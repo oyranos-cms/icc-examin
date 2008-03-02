@@ -34,9 +34,6 @@
 
 #include "agviewer.h"
 
-extern int kanal;
-extern bool duenn;
-
 class GL_Ansicht : public Fl_Group {
   std::vector<std::vector<std::vector<std::vector<double> > > > tabelle_;
   std::vector<std::string>nach_farb_namen_;
@@ -62,17 +59,18 @@ public:
   GL_Ansicht(int X,int Y,int W,int H);
   ~GL_Ansicht();
   int  id()          {return agv_; }
+  int  agv()         {return agv_; }
   void draw();
-  void hineinPunkte(std::vector<double> vect,
+  void hineinPunkte (std::vector<double> vect,
                      std::vector<std::string> achsNamen);
-  void hineinPunkte(std::vector<double> vect, 
+  void hineinPunkte (std::vector<double> vect, 
                      std::vector<float> farben_,
                      std::vector<std::string> achsNamen);
-  void hineinPunkte(std::vector<double> punktKoordinaten, 
+  void hineinPunkte (std::vector<double> punktKoordinaten, 
                      std::vector<float>  punktFarben,
                      std::vector<std::string> farb_namen_,
                      std::vector<std::string> achsNamen);
-  void hineinNetze (std::vector<std::vector<double> >dreiecks_netze_, 
+  void hineinNetze  (std::vector<std::vector<double> >dreiecks_netze_, 
                      std::vector<std::vector<float> > dreiecks_farben_,
                      std::vector<std::string> netz_namen_,
                      std::vector<std::string> _achsNamen);
@@ -84,7 +82,11 @@ public:
                                std::vector<std::string> vonFarben,
                                std::vector<std::string> nachFarben);
 
+  int  kanal;                    // gewählter Kanal
   int  Punktform;                // Form der Gitterpunkte der Transformationstabelle
+  double seitenverhaeltnis;
+  double schnitttiefe;
+
   void makeDisplayLists();
   void zeigen();
   void verstecken();

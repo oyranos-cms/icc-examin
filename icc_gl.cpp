@@ -43,7 +43,7 @@
 #define DEBUG_ICCGL
 //#define Beleuchtung
 
-typedef enum {NOTALLOWED, AXES, RASTER, PUNKTE , HELFER, DLMAX } DisplayLists;
+typedef enum {NOTALLOWED, AXES, RASTER, PUNKTE , HELFER, DL_MAX } DisplayLists;
 bool gl_voll[5] = {false,false,false,false,false};
 
 typedef enum { MENU_AXES, MENU_QUIT, MENU_RING, MENU_KUGEL, MENU_WUERFEL, MENU_STERN, MENU_MAX } MenuChoices;
@@ -51,9 +51,6 @@ typedef enum { MENU_AXES, MENU_QUIT, MENU_RING, MENU_KUGEL, MENU_WUERFEL, MENU_S
 std::vector<GL_Ansicht*> gl_ansichten;
 
 int DrawAxes = 0;
-int kanal = 0;
-bool duenn = false;
-double Schnitttiefe = 0.1;
 
 #define ROTATEINC 2;
 
@@ -64,6 +61,8 @@ int     Rotating = 0;
 
 GL_Ansicht::GL_Ansicht(int X,int Y,int W,int H) : Fl_Group(X,Y,W,H)
 { DBG_PROG_START
+  kanal = 0;
+  schnitttiefe = 0.1;
   first_ = true;
   menue_kanal_eintraege_ = 0;
   Punktform = MENU_WUERFEL;
@@ -74,9 +73,9 @@ GL_Ansicht::GL_Ansicht(int X,int Y,int W,int H) : Fl_Group(X,Y,W,H)
 GL_Ansicht::~GL_Ansicht()
 { DBG_PROG_START
   if (gl_voll[RASTER])
-    glDeleteLists (RASTER, 1);
+    glDeleteLists (dID(RASTER), 1);
   if (gl_voll[HELFER])
-    glDeleteLists (HELFER, 1);
+    glDeleteLists (dID(HELFER), 1);
   DBG_PROG_ENDE
 }
 
@@ -316,8 +315,8 @@ GL_Ansicht::makeDisplayLists()
   #define PFEILSPITZE glutSolidCone(0.02, 0.05, 8, 4);
 
   if (gl_voll[HELFER])
-    glDeleteLists (HELFER, 1);
-  glNewList(HELFER, GL_COMPILE);
+    glDeleteLists (dID(HELFER), 1);
+  glNewList(dID(HELFER), GL_COMPILE);
     gl_voll[HELFER] = true;
   GLfloat farbe[] =   { .50, .50, .50, 1.0 };
 
@@ -437,11 +436,11 @@ GL_Ansicht::makeDisplayLists()
 
   // Tabelle
   if (gl_voll[RASTER])
-    glDeleteLists (RASTER, 1);
+    glDeleteLists (dID(RASTER), 1);
 
   if (tabelle_.size())
   {
-      glNewList(RASTER, GL_COMPILE);
+      glNewList(dID(RASTER), GL_COMPILE);
       gl_voll[RASTER] = true;
       int n_L = tabelle_.size(), n_a=tabelle_[0].size(), n_b=tabelle_[0][0].size();
       double dim_x = 1.0/(n_b); DBG_PROG_V( dim_x )
@@ -452,13 +451,13 @@ GL_Ansicht::makeDisplayLists()
       double wert;
               switch (Punktform) {
                 case MENU_STERN:   
-                Schnitttiefe= HYP3(dim_x,dim_y,dim_z);
+                schnitttiefe= HYP3(dim_x,dim_y,dim_z);
                 break;
-                case MENU_WUERFEL: Schnitttiefe = HYP3(groesse,groesse,groesse);
+                case MENU_WUERFEL: schnitttiefe = HYP3(groesse,groesse,groesse);
                 break;
-                case MENU_KUGEL:   Schnitttiefe = groesse;
+                case MENU_KUGEL:   schnitttiefe = groesse;
                 break;
-              } DBG_NUM_V( Schnitttiefe );
+              } DBG_NUM_V( schnitttiefe );
       start_x = start_y = start_z = x = y = z = 0.5; start_y = y = -0.5;
       glPushMatrix();
       #ifndef Beleuchtung
@@ -532,7 +531,7 @@ GL_Ansicht::makeDisplayLists()
     if( netz_namen_.size() )
       DBG_PROG_V( netz_namen_[0].size() )
 
-      glNewList(RASTER, GL_COMPILE);
+      glNewList(dID(RASTER), GL_COMPILE);
       gl_voll[RASTER] = true;
       #ifndef Beleuchtung
       glDisable(GL_LIGHTING);
@@ -584,7 +583,7 @@ GL_Ansicht::makeDisplayLists()
  
   if (punkte_.size()) {
     glNewList(dID(PUNKTE), GL_COMPILE);
-    gl_voll[dID(PUNKTE)] = true;
+    gl_voll[PUNKTE] = true;
       #ifndef Beleuchtung
       glDisable(GL_LIGHTING);
       #endif
@@ -730,15 +729,13 @@ GL_Ansicht::menuInit()
   DBG_PROG_ENDE
 }
 
-double seitenverhaeltnis;
-
 void
 reshape(int w, int h)
 { DBG_PROG_START
   glViewport(0,0,w,h); DBG_PROG_V( icc_examin->glAnsicht()->x()<<" "<<icc_examin->glAnsicht()->y()<<" "<<w<<" "<<h )
   glutPositionWindow(icc_examin->glAnsicht()->x(),icc_examin->glAnsicht()->y());
   //icc_examin->glAnsicht()->zeigen();
-  seitenverhaeltnis = (GLdouble)w/(GLdouble)h;
+  icc_examin->glAnsicht()->seitenverhaeltnis = (GLdouble)w/(GLdouble)h;
   glFlush();
   DBG_PROG_ENDE
 }
@@ -746,15 +743,15 @@ reshape(int w, int h)
 void
 display()
 { //DBG_PROG_START
-  static char text[256];
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-   glLoadIdentity();
-   glMatrixMode(GL_PROJECTION);
-   //glLineWidth(3.0);
+  glLoadIdentity();
+  glMatrixMode(GL_PROJECTION);
+  //glLineWidth(3.0);
 
-   // Text
-   glPushMatrix();
+  #if 0
+  // Text
+  glPushMatrix();
    glLoadIdentity();
    glOrtho(0,icc_examin->glAnsicht()->w(),0,icc_examin->glAnsicht()->h(),-10.0,10.0);
 
@@ -773,15 +770,14 @@ display()
                                  ZeichneText(font,buffer); \
                                  glScalef(1.0/scal,1.0/scal,1.0/scal);
 
-   int scal = 100, zeilenversatz = (int)(scal/6.0);
 
-   #if 0
-   for (unsigned int i=0; i < mft_gl->kanaele(); i++) {
-     sprintf(&text[0],"%s: %f", mft_gl->kanalName(i), 12.0);
+   int scal = 100, zeilenversatz = (int)(scal/6.0);
+   static char text[256];
+   for (unsigned int i=0; i < icc_examin->icc_betrachter->mft_gl->kanaele(); i++) {
+     sprintf(&text[0],"%s: %f", icc_examin->icc_betrachter->mft_gl->kanalName(i), 12.0);
      glTranslatef(0,zeilenversatz,0);
      ZeichneOText (GLUT_STROKE_ROMAN, scal, text)
    }
-   #endif
 
    //sprintf(&text[0],"%s: %s", _("sichtbarer Kanal"),icc_examin->glAnsicht()->kanalName());
    glTranslatef(0,zeilenversatz,0);
@@ -790,6 +786,7 @@ display()
    glEnable(GL_TEXTURE_2D);
    glEnable(GL_LIGHTING);
   glPopMatrix();
+  #endif
 
   glPushMatrix();  /* clear of last viewing xform, leaving perspective */
 
@@ -797,12 +794,14 @@ display()
 
   #define ForderSchnitt 4.2
 
-  if (duenn)
-    gluPerspective(15, seitenverhaeltnis, ForderSchnitt,
-                                          ForderSchnitt + Schnitttiefe);
+  if (agviewers[icc_examin->glAnsicht()->agv()].duenn)
+    gluPerspective(15, icc_examin->glAnsicht()->seitenverhaeltnis,
+                   ForderSchnitt,
+                   ForderSchnitt + icc_examin->glAnsicht()->schnitttiefe);
   else
-    gluPerspective(15, seitenverhaeltnis, ForderSchnitt, 15);
-                                        // ^-- vordere Schnittfläche
+    gluPerspective(15, icc_examin->glAnsicht()->seitenverhaeltnis,
+                   ForderSchnitt, 15);
+                // ^-- vordere Schnittfläche
 
     /* so this replaces gluLookAt or equiv */
   agvViewTransform();
@@ -814,9 +813,9 @@ display()
   if (DrawAxes)
     glCallList(AXES);
 
-  glCallList(dID(HELFER));
-  glCallList(dID(RASTER));
-  glCallList(dID(PUNKTE));
+  glCallList(dID(HELFER)); DBG_PROG_V( dID(HELFER) )
+  glCallList(dID(RASTER)); DBG_PROG_V( dID(RASTER) )
+  glCallList(dID(PUNKTE)); DBG_PROG_V( dID(PUNKTE) )
 
 
   #if 0
@@ -1047,7 +1046,7 @@ handlemenu (int value)
     }
 
   if (value >= MENU_MAX) {
-    kanal = value - MENU_MAX; DBG_PROG_V( kanal )
+    icc_examin->glAnsicht()->kanal = value - MENU_MAX; DBG_PROG_V( icc_examin->glAnsicht()->kanal )
     status(_("linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menü"))
     icc_examin->glAnsicht()->makeDisplayLists();
   }
@@ -1060,7 +1059,7 @@ handlemenu (int value)
 int
 dID (int display_list)
 {
-  return display_list * icc_examin->glAnsicht()->id();
+  return icc_examin->glAnsicht()->id()*DL_MAX + display_list;
 }
 
 

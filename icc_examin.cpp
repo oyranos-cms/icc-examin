@@ -423,4 +423,24 @@ ICCexamin::neuzeichnen (void* z)
   DBG_PROG_ENDE
 }
 
+void
+ICCexamin::fortschritt(double f)
+{ DBG_PROG_START
+
+  if(0.0 < f && f <= 1.0)
+    icc_betrachter->load_progress-> value(f);
+  else if (1.0 < f)
+    icc_betrachter->load_progress-> hide();
+  else
+    icc_betrachter->load_progress-> show();
+
+  DBG_PROG_ENDE
+}
+
+void
+ICCexamin::statusAktualisieren()
+{ DBG_PROG_START
+  icc_betrachter->box_stat->label(statlabel.c_str());
+  DBG_PROG_ENDE
+}
 

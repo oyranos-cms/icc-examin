@@ -95,8 +95,14 @@ class ICCexamin
     GL_Ansicht* glAnsicht() { if(_gl_ansicht>=0)
                                 return _gl_ansichten[_gl_ansicht];
                               else return 0; }
+    // Oberflächenfunktionen (GUI)
+    void fortschritt(double f);  // Fortschritt: f<0-Start f=Wert f>1-Ende
 
+    void statusAktualisieren();  // benutze das "status" Makro
 };
+
+#define _(text) text
+#define status(texte) {std::stringstream s; s << texte; icc_examin->statlabel = s.str(); icc_examin->statusAktualisieren();}
 
 #endif //ICC_EXAMIN_H
 

@@ -27,7 +27,6 @@
 
 #include "icc_kette.h"
 #include "icc_examin.h"
-#include "icc_betrachter.h"
 
 void
 ICCkette::oeffnen (std::vector<std::string> dateinamen)
@@ -50,7 +49,7 @@ ICCkette::oeffnen (std::vector<std::string> dateinamen)
     for (unsigned int i = 0; i < _profile.size(); i++) {
       //create_vrml ( dateiname.c_str(), "/usr/share/color/icc/sRGB.icm", &vrmlDatei[0]);
 
-      icc_examin->icc_betrachter->load_progress->value (0.8);
+      icc_examin->fortschritt (0.8);
 
       std::vector<std::string> url;
       std::vector<std::string> param;
@@ -61,9 +60,8 @@ ICCkette::oeffnen (std::vector<std::string> dateinamen)
         icc_examin->statlabel.append (_("geladen"));
         status(icc_examin->statlabel.c_str());
     }
-    icc_examin->icc_betrachter->load_progress->value (1.0);
-    icc_examin->icc_betrachter->load_progress->value (0.0);
-    icc_examin->icc_betrachter->load_progress->hide();
+    icc_examin->fortschritt (1.0);
+    icc_examin->fortschritt (1.1);
     DBG_PROG
 
     icc_examin->icc_betrachter->tag_browser->reopen ();

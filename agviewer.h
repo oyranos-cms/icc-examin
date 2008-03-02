@@ -148,6 +148,9 @@ agviewer {
   void agvSwitchMoveMode(int move);
 
 
+  // thin slice visualisation
+ bool duenn;
+
  /*
   * agvViewTransform basically does the appropriate gluLookAt() for the 
   * current position.  So call it in your display on the projection matrix

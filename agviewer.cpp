@@ -56,6 +56,7 @@ agviewer::agvInit(int window)
   //glutKeyboardFunc(agvHandleKeys);
   RedisplayWindow = glutGetWindow(); DBG_PROG_V( RedisplayWindow )
   agvSetAllowIdle(window);
+  duenn = false; // Kai-Uwe
   DBG_PROG_ENDE
 }
 
