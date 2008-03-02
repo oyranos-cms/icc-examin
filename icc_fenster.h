@@ -50,7 +50,7 @@
   void dateiwahl_cb(Fl_File_Chooser *f,void *data);
 #endif
 
-void nachricht(std::string text);
+Fl_Double_Window* nachricht(std::string text);
 
 #endif
 

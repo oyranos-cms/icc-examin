@@ -104,7 +104,44 @@ dateiwahl_cb (Fl_File_Chooser *f,void *data)
 }
 #endif
 
-void
+#include <FL/Fl_Return_Button.H>
+#include <FL/Fl_Output.H>
+
+
+#if 1
+static void cb_Gut(Fl_Return_Button*, void* v) {
+  ((Fl_Double_Window*)v)->hide();
+}
+
+static Fl_Output *output_info=(Fl_Output *)0;
+
+Fl_Double_Window*
+nachricht (std::string text) {
+  Fl_Double_Window* w;
+  { Fl_Double_Window* o = new Fl_Double_Window(275, 326, "Colori Info:");
+    w = o;
+    w->hotspot(o);
+    { Fl_Return_Button* o = new Fl_Return_Button(60, 295, 160, 25, "Gut");
+      o->shortcut(0xff0d);
+      o->callback((Fl_Callback*)cb_Gut, (void*)(w));
+      o->align(FL_ALIGN_CENTER|FL_ALIGN_INSIDE);
+      w->hotspot(o);
+    }
+    { Fl_Output* o = output_info = new Fl_Output(0, 0, 275, 290);
+      o->type(12);
+      Fl_Group::current()->resizable(o);
+      o->color((Fl_Color)53);
+      o->value(text.c_str());
+    }
+    o->show();
+    o->end();
+  }
+  //output_info->value(text.c_str());
+  return w;
+}
+
+#else
+Fl_Double_Window*
 nachricht(std::string text)
 { DBG_PROG_START
   fl_message_icon()->resize(1,1,1,1);
@@ -113,6 +150,7 @@ nachricht(std::string text)
   fl_message(text.c_str());
   DBG_PROG_ENDE
 }
+#endif
 
 #endif
 
