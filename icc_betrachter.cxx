@@ -667,7 +667,7 @@ ard"));
   //Fl::background(190,190,190);
   //Fl::background(255,255,255);
   w->show(/*argc,argv*/);
-  Fl::scheme(NULL);
+  //Fl::scheme(NULL);
   Fl_File_Icon::load_system_icons();
   menue_translate( menu_menueleiste );
   DBG_PROG

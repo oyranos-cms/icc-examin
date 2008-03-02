@@ -298,11 +298,10 @@ class ICCfltkBetrachter {open
     dateiwahl = new Fl_File_Chooser(ptr, _("ICC colour profiles (*.{I,i}{C,c}{M,m,C,c})"), Fl_File_Chooser::SINGLE, _("Which ICC profile?"));
     dateiwahl->callback(dateiwahl_cb);
     dateiwahl->preview_label = _("Preview");
-  \#endif} {selected
-    }
+  \#endif} {}
     Fl_Window ueber {
       label {About ICC Examin}
-      xywh {592 746 366 241} type Double resizable
+      xywh {597 767 366 241} type Double resizable
       code0 {o->hide();} non_modal visible
     } {
       Fl_Group {} {open
@@ -320,7 +319,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window vcgt {
       label {Grafic Card Gamma Table}
-      xywh {611 423 370 390} type Double resizable
+      xywh {616 444 370 390} type Double resizable
       code0 {o->hide();} non_modal visible
     } {
       Fl_Group {} {open
@@ -355,7 +354,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window details {
       label {ICC Examin} open
-      xywh {843 523 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
+      xywh {848 524 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
     } {
       Fl_Group {} {open
         xywh {0 0 385 520}
@@ -607,10 +606,11 @@ ueber_html->value(getUeberHtml().c_str());}
   //Fl::background(190,190,190);
   //Fl::background(255,255,255);
   w->show(/*argc,argv*/);
-  Fl::scheme(NULL);
+  //Fl::scheme(NULL);
   Fl_File_Icon::load_system_icons();
   menue_translate( menu_menueleiste );
-  DBG_PROG} {}
+  DBG_PROG} {selected
+    }
     code DBG_PROG_ENDE {}
   }
   Function {run()} {open

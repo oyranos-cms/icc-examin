@@ -32,6 +32,7 @@ used components and libraries:
     FLU         Jason Bryan
     FTGL        Henry Maddocks
     Oyranos     Kai-Uwe Behrmann
+    Elektra     Avi Alkalay and others
 
 %prep
 %setup -q -n %{name}_%{version}
