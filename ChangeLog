@@ -1,3 +1,23 @@
+2007-06-29
+	* neu: ncl2 loockup from 2D view
+	* und: user defined selection order in file browser (FL_WHEN_CHANGED + own list)
+	* neu: load patch names into GL_Ansicht
+	* neu: new ncl2 tag query for ncl2_names to show a list of patch names - ICCtag::getText(std::string text)
+	* neu: handle patch names in ICCexamin::farbenLese
+	* new: single ncl2 patch in ICCexamin::farbenLese as negative n arg
+	* und: added ncl2 to selectTextsLine callback
+
+2007-06-28
+	* neu: show selected measurement patch in 3D view
+	* fix: HH: icc_cgats_filter.cpp key word matches complete string
+	* neu: remember original patch line number from CGATS file
+	* neu: new ICCmeasurement::getLine() informations from CGATS to patch
+	* neu: new GL_Ansicht::emphasizePoint() to show a point of interesst
+	* fix: fix continued key applyance after key release - 3D cut plane
+	* neu: new bool ICCprofile::tagBelongsToMeasurement() tells about tag
+	* und: ICCnetzPunkt with new member name used by emphasizePoint()
+	* fix: makefile: trigger source generation with fluid at missing header
+
 2007-06-27
 	* neu: build osX universal iccgamut
 

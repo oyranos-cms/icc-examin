@@ -46,6 +46,7 @@ class TagTexts : public Fl_Hold_Browser {
 public:
   int inspekt_topline; 
   TagTexts(int X,int Y,int W,int H,const char* start_info) ;
+  void hinein(std::string text, std::vector<int> patches);
   void hinein(std::string text);
   tagTextsCB_f cb; 
   void selectItem(int item);

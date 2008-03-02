@@ -55,7 +55,7 @@ TagTexts::TagTexts(int X,int Y,int W,int H,const char* start_info) : Fl_Hold_Bro
   cb = NULL;
 }
 
-void TagTexts::hinein(std::string text) {
+void TagTexts::hinein(std::string text, std::vector<int> patches) {
   DBG_PROG_START
   //show text from tag_browser
 
@@ -64,13 +64,43 @@ void TagTexts::hinein(std::string text) {
       this->clear();
 
       std::vector <std::string> texte = icc_parser::zeilenNachVector( text );
+      int odd = 1;
+      int k = 0;
       for (unsigned int i = 0; i < texte.size(); i++)
-        this->add( texte[i].c_str(), 0);
+      {
+        std::string text;
+        if( patches.size() )
+        if( patches[k] == (int)i )
+        { 
+          if(odd) {
+#if 0
+            char t[8];
+            sprintf(t, "%d", k/2); // test for a goof colour @31
+            text = "@B";
+            text.append( t );
+            text.append("@.");
+#else
+            text = "@B7@.";
+#endif
+          }
+          odd = !odd;
+          ++k;
+        }
 
+        text.append( texte[i] );
+        this->add( text.c_str(), 0);
+      }
 
       this->topline(inspekt_topline);
       this->textfont(FL_COURIER);
       this->textsize(14);
+  DBG_PROG_ENDE
+}
+
+void TagTexts::hinein(std::string text) {
+  DBG_PROG_START
+  std::vector<int> patches;
+this->hinein( text, patches );
   DBG_PROG_ENDE
 }
 

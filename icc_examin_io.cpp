@@ -442,6 +442,8 @@ ICCexaminIO::oeffnen ()
 
   //Fl_File_Icon	*icon;	// New file icon
   DBG_PROG
+    dateiwahl->callback(dateiwahl_cb);
+    dateiwahl->preview(true);
 
     const char* ptr = NULL;
     if (dateinamen.size()) {
@@ -468,8 +470,12 @@ ICCexaminIO::oeffnen ()
       dateiwahl->value(ptr);
 
 
+    // protected: dateiwahl->window->clear_flag(64); //Fl_Window::FL_MODAL
+    //dateiwahl->type(MyFl_File_Chooser::MULTI);
     while (dateiwahl->visible())
       icc_examin_ns::wait( 0, true );
+    //dateiwahl->type(MyFl_File_Chooser::SINGLE | MyFl_File_Chooser::CREATE);
+    //dateiwahl->window->set_modal();
 
     DBG_NUM_V( dateiwahl->count() )
     if (dateiwahl->count() && dateiwahl->value()) {
@@ -483,6 +489,9 @@ ICCexaminIO::oeffnen ()
 
   if (dateinamen.size() == 0) {
   }
+
+  dateiwahl->callback(0);
+  dateiwahl->preview(false);
 
   oeffnen( dateinamen );
   neu_laden_ = true;

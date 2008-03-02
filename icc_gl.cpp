@@ -2540,7 +2540,7 @@ GL_Ansicht::hineinPunkte      (std::vector<double> &vect,
 
 void
 GL_Ansicht::emphasizePoint    (std::vector<double> &point_coordinates,
-                               std::vector<double> &point_colour,
+                               std::vector<float>  &point_colour,
                                std::string point_name)
 { DBG_PROG_START
   // show curve from tag_browser
@@ -2566,13 +2566,13 @@ GL_Ansicht::emphasizePoint    (std::vector<double> &point_coordinates,
                   von_farb_namen_[0].c_str(), l[0],
                   von_farb_namen_[1].c_str(), l[1],
                   von_farb_namen_[2].c_str(), l[2] );
-    glStatus( text, typ_ );
     epoint_.name = point_name;
   } else {
     memset(epoint_.koord, 0, sizeof(double)*3);
     memset(epoint_.farbe, 0, sizeof(double)*4);
-    epoint_.name.clear();
+    epoint_.name = "";
   }
+  glStatus( "", typ_ );
   MARK( frei(true); )
 
   //valid_=false;

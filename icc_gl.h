@@ -163,7 +163,7 @@ public:
                      std::vector<std::string> &farb_namen_, //!< per point
                      std::vector<std::string> &achsNamen);  //!< 3*
   void emphasizePoint (std::vector<double> &pointcoordinates, //!< Lab
-                       std::vector<double> &point_colour,     //!< RgbA
+                       std::vector<float>  &point_colour,     //!< RgbA
                        std::string point_name);               //!< name
   void punkte_clear () { punkte_.clear(); farben_.clear(); }
   void herausNormalPunkte (std::vector<double> & p, std::vector<float> & f);

@@ -1169,10 +1169,15 @@ ICCmeasurement::getHtmlReport                     (bool aussen)
   for (int z = 0; z < nFelder_; z++) {
     html <<     "  <tr>\n";
     l = 0;
-    for (s = 0; s < (int)reportTabelle_[kopf - tkopf].size() + f; s++) {
-      if (s < f) { // colour representation
+    for (s = 0; s < (int)reportTabelle_[kopf - tkopf].size() + f; s++)
+    {
+      if (s < f)
+      { // colour representation
+        if(s == 0)
+          html << "    <a name=\"" << Feldnamen_[z] << "\">\n";
         html << "    <td width=\"20\" bgcolor=\"#"; 
         farbe[0] = 0;
+
         if (s == 0) {
           NACH_HTML (RGB_MessFarben_, R)
           NACH_HTML (RGB_MessFarben_, G)
@@ -1459,9 +1464,45 @@ ICCmeasurement::getCmmLab                   (int patch)
   return punkte;
 }
 
+
+/** get infos about a CGATS tag
+
+    The info becomes available during parsing a CGATS tag
+
+    @param[in]   tag_name    take the according tag : CIED <-> DevD
+
+    @return                  list of patch lines, size() is patch count
+ */
+std::vector<int>
+ICCmeasurement::getPatchLines              ( const char       * tag_name )
+{ DBG_MESS_START
+
+  if (Lab_Ergebnis_.size() == 0)
+    init ();
+
+  std::vector<int> patches;
+
+  for(int j = 0; j < (int)patch_src_lines_.size(); ++j)
+  {
+    if( patch_src_lines_[j].first == tag_name )
+    {
+      int n = patch_src_lines_[j].second.size();
+      patches.resize( n );
+
+      for(int i = 0; i < nFelder_; ++i)
+        patches[ i ] = patch_src_lines_[j].second[i];
+    }
+  }
+
+  DBG_MESS_ENDE
+  return patches;
+}
+
+/** Get information about a text line in a measurement tag.
+ */
 std::vector<double>
-ICCmeasurement::getLine                     (int line, const char * tag_name,
-                                             std::vector<double> & rgb,
+ICCmeasurement::getPatchLine                (int line, const char * tag_name,
+                                             std::vector<float> & rgb,
                                              std::string & name )
 { DBG_MESS_START
   std::vector<double> punkte;

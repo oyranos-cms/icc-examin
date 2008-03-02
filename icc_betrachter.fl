@@ -129,7 +129,7 @@ class TagTexts {open : {public Fl_Hold_Browser}
   } {
     code {cb = NULL;} {}
   }
-  Function {hinein(std::string text)} {open
+  Function {hinein(std::string text, std::vector<int> patches)} {open
   } {
     code DBG_PROG_START {}
     code {//show text from tag_browser
@@ -139,13 +139,44 @@ class TagTexts {open : {public Fl_Hold_Browser}
       this->clear();
 
       std::vector <std::string> texte = icc_parser::zeilenNachVector( text );
+      int odd = 1;
+      int k = 0;
       for (unsigned int i = 0; i < texte.size(); i++)
-        this->add( texte[i].c_str(), 0);
+      {
+        std::string text;
+        if( patches.size() )
+        if( patches[k] == (int)i )
+        { 
+          if(odd) {
+\#if 0
+            char t[8];
+            sprintf(t, "%d", k/2); // test for a goof colour @31
+            text = "@B";
+            text.append( t );
+            text.append("@.");
+\#else
+            text = "@B7@.";
+\#endif
+          }
+          odd = !odd;
+          ++k;
+        }
 
+        text.append( texte[i] );
+        this->add( text.c_str(), 0);
+      }
 
       this->topline(inspekt_topline);
       this->textfont(FL_COURIER);
-      this->textsize(14);} {}
+      this->textsize(14);} {selected
+    }
+    code DBG_PROG_ENDE {}
+  }
+  Function {hinein(std::string text)} {open
+  } {
+    code DBG_PROG_START {}
+    code {std::vector<int> patches;
+this->hinein( text, patches );} {}
     code DBG_PROG_ENDE {}
   }
   decl {tagTextsCB_f cb;} {public global
@@ -281,7 +312,7 @@ class ICCfltkBetrachter {open
   setTitleUrl = true;} {}
     Fl_Window ueber {
       label {About ICC Examin} open
-      xywh {829 705 365 295} type Double resizable
+      xywh {834 726 365 295} type Double resizable
       code0 {o->hide();}
       code1 {o->use_escape_hide = true;}
       class {icc_examin_ns::MyFl_Double_Window} visible
@@ -322,7 +353,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window vcgt {
       label {Grafic Card Gamma Table} open
-      xywh {208 639 370 405} type Double resizable
+      xywh {213 639 370 405} type Double resizable
       code0 {o->hide();}
       code1 {o->use_escape_hide = true;}
       class {icc_examin_ns::MyFl_Double_Window} visible
@@ -359,7 +390,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window DD {
       label Gamut open
-      xywh {881 158 385 520} type Double box NO_BOX resizable
+      xywh {886 179 385 520} type Double box NO_BOX resizable
       class {icc_examin_ns::MyFl_Double_Window} visible
     } {
       Fl_Group {} {open
@@ -513,7 +544,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window details {
       label {ICC Examin} open
-      xywh {360 415 385 520} type Double box NO_BOX
+      xywh {365 436 385 520} type Double box NO_BOX
       code0 {o->main_win = o;}
       class {icc_examin_ns::MyFl_Double_Window} visible
     } {
@@ -805,7 +836,7 @@ icc_examin->testZeigen();}
                 } {
                   Fl_Browser tag_text {
                     label { tag_text_invisible}
-                    callback {o->selectItem( o->value() );} selected
+                    callback {o->selectItem( o->value() );}
                     xywh {0 165 385 330} box FLAT_BOX color 49 align 4
                     code0 {o->show();}
                     class TagTexts

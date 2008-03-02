@@ -316,9 +316,8 @@ ICCexamin::start (int argc, char** argv)
     if (profile.size())
       ptr = profile.name().c_str();
     dateiwahl = new MyFl_File_Chooser(ptr, _("ICC colour profiles (*.{I,i}{C,c}{M,m,C,c})	Measurement (*.{txt,it8,IT8,RGB,CMYK,ti*,cgats,CIE,cie,nCIE,oRPT,DLY,LAB,Q60})	Argyll Gamuts (*.{wrl,vrml}"), MyFl_File_Chooser::MULTI, _("Which ICC profile?"));
-    dateiwahl->callback(dateiwahl_cb);
-    dateiwahl->preview(true);
     icc_examin_ns::MyFl_Double_Window *w = dateiwahl->window;
+    //w->set_modal();
     w->use_escape_hide = true;
   }
 

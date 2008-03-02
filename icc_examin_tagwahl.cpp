@@ -129,7 +129,13 @@ ICCexamin::waehleTag (int item)
       if( texte_l.size() )
       {
         std::string text_l = texte_l[0];
-        icc_betrachter->tag_text->hinein ( text_l );
+        if( profile.profil()->tagBelongsToMeasurement(item) )
+        {
+          icc_betrachter->tag_text->hinein ( text_l,
+          profile.profil()->getMeasurement().getPatchLines(TagInfo[0].c_str()));
+
+        } else
+          icc_betrachter->tag_text->hinein ( text_l );
       }
       frei(true);
 
@@ -220,8 +226,25 @@ ICCexamin::waehleTag (int item)
       frei(false);
       std::vector<std::string> texte = profile.profil()->getTagText (item);
       if(texte.size())
-        icc_betrachter->tag_text->hinein ( texte[0] );
-      else
+      {
+        if(TagInfo[0] == "ncl2")
+        {
+            ICCprofile * pr = profile.profil();
+            std::vector<double> p_neu = pr->getTagNumbers(item, ICCtag::MATRIX);
+            int n = p_neu.size()/3;
+
+            std::vector<int> patches;
+            patches.resize( n );
+            for(int i = 0; i < n; ++i)
+            {
+              patches[i] = i+5;
+            }
+          icc_betrachter->tag_text->hinein ( texte[0], patches );
+
+        } else
+          icc_betrachter->tag_text->hinein ( texte[0] );
+
+      } else
         icc_betrachter->tag_text->hinein ( "" );
         
       frei(true);
@@ -357,22 +380,44 @@ selectTextsLine( int * line )
     txt = icc_examin->icc_betrachter->tag_text->text(i);
 
     std::vector<std::string> TagInfo = profile.profil()->printTagInfo(item);
-    if(profile.profil()->tagBelongsToMeasurement(item) && TagInfo.size() == 2 &&
-       icc_examin->icc_betrachter->tag_browser->value() > 6)
+    if( TagInfo.size() == 2 )
     {
-      std::vector<double> rgb;
+      std::vector<float> rgb;
       std::string name;
-      std::vector<double> lab = 
-       profile.profil()->getMeasurement().getLine( i-1, TagInfo[0].c_str(),
-                                                   rgb, name );
-
-      if(lab.size() == 3)
+      std::vector<double> lab;
+      if(profile.profil()->tagBelongsToMeasurement(item) &&
+         icc_examin->icc_betrachter->tag_browser->value() > 5)
       {
-        icc_examin->icc_betrachter->DD_farbraum->emphasizePoint( lab, rgb,name);
+        lab = 
+            profile.profil()->getMeasurement().getPatchLine( i-1,
+                                                        TagInfo[0].c_str(),
+                                                        rgb, name );
 
-        DBG_PROG_S( txt <<" "<< TagInfo[0] <<" "<< TagInfo[1] <<" L "<< lab[0] <<" a "<< lab[1] <<" b "<< lab[2] )
-      } else
-        icc_examin->icc_betrachter->DD_farbraum->emphasizePoint( lab, rgb,name);
+        if(lab.size() == 3)
+        {
+          icc_examin->icc_betrachter->DD_farbraum->emphasizePoint( lab, rgb,
+                                                                   name);
+          // very simple approach, but enough to see the line
+          icc_examin->icc_betrachter->inspekt_html->topline( name.c_str() );
+
+          DBG_PROG_S( txt <<" "<< TagInfo[0] <<" "<< TagInfo[1] <<" L "<< lab[0] <<" a "<< lab[1] <<" b "<< lab[2] )
+        } else
+          icc_examin->icc_betrachter->DD_farbraum->emphasizePoint( lab, rgb,
+                                                                   name);
+
+      } else if( profile.profil()->hasTagName("ncl2") &&
+                 TagInfo[0] == "ncl2" ) {
+          if( icc_examin->icc_betrachter->tag_text->value() > 5 ) {
+
+            std::vector<std::string> names;
+            icc_examin->farbenLese(-(i-5), lab,rgb,names);
+            name = names.size() ? names[0] : 0;
+            icc_examin->icc_betrachter->DD_farbraum->emphasizePoint( lab, rgb,
+                                                                     name);
+          } else
+            icc_examin->icc_betrachter->DD_farbraum->emphasizePoint( lab, rgb,
+                                                                     name);
+      }
     }
   }
 

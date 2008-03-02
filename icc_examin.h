@@ -167,7 +167,8 @@ class ICCexamin : public icc_examin_ns::Beobachter,
                          std::vector<ICCnetz> * netz);
     void farbenLese    ( int n,
                          std::vector<double> & p,
-                         std::vector<float>  & f);
+                         std::vector<float>  & f,
+                         std::vector<std::string> & names);
 
 
     void vcgtZeigen ();

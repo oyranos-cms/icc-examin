@@ -195,6 +195,7 @@ MyFl_File_Chooser::MyFl_File_Chooser(const char *d, const char *p, int t, const 
       { fileList = new Fl_File_Browser(10, 45, 295, 225);
         fileList->type(2);
         fileList->callback((Fl_Callback*)cb_fileList);
+        fileList->when(3);
         fileList->window()->hotspot(fileList);
       } // Fl_File_Browser* fileList
       { previewBox = new Fl_Box(305, 45, 175, 225, _("?"));

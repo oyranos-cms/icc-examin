@@ -166,27 +166,58 @@ ICCexamin::netzLese (int n,
   DBG_PROG_ENDE
 }
 
+/** 
+   @param[in]  n       < 0 - single patch; >= 0 all patches from profile n
+   @param[out] p       lab positions
+   @param[out] f       colour
+   @param[out] names   according names
+   @return             nothing
+ */
 void
 ICCexamin::farbenLese (int n,
                        std::vector<double> & p,
-                       std::vector<float>  & f)
+                       std::vector<float>  & f,
+                       std::vector<std::string> & names)
 {
   DBG_PROG_START
   // show named colours
-  if( profile.size() > n )
+
+  ICCprofile * pr = NULL;
+  int single = (n < 0);
+  int patch = single ? -n - 1 : -1;
+  int s;
+
+  if( single )
+    pr = profile.profil();
+  else
+    pr = profile[n];
+
+  if( (n >= 0 && profile.size() > n) ||
+      single )
   {
     DBG_PROG
 
-    std::vector<double> p_neu = profile[n]->getTagNumbers (profile[n]->getTagIDByName("ncl2"),
-                                         ICCtag::MATRIX);
-    unsigned int n_farben = p_neu.size()/3;
+    int item = pr->getTagIDByName("ncl2");
+    std::vector<double> p_neu = pr->getTagNumbers (item, ICCtag::MATRIX);
+    unsigned int n_farben = 0;
+
+    names = pr->getTag(item).getText("ncl2_names");
 
     int mult = 1;
     int neu = 0;
-    icc_betrachter->DD_farbraum->zeig_punkte_als_messwerte = false;
-    icc_betrachter->DD_farbraum->zeig_punkte_als_paare = true;
-    if(icc_betrachter->DD_farbraum->zeig_punkte_als_paare)
-      mult = 2;
+
+    if( !single )
+    {
+      n_farben = p_neu.size()/3;
+      icc_betrachter->DD_farbraum->zeig_punkte_als_messwerte = false;
+      icc_betrachter->DD_farbraum->zeig_punkte_als_paare = true;
+      if(icc_betrachter->DD_farbraum->zeig_punkte_als_paare)
+        mult = 2;
+    } else {
+      if( patch > (int)p_neu.size() )
+        WARN_S( "inadequate patch requested" << patch<<">"<< p_neu.size() )
+      n_farben = 1;
+    }
 
     if(n_farben != p.size() / 3 / mult)
     {
@@ -196,26 +227,38 @@ ICCexamin::farbenLese (int n,
       f.resize( n_farben * 4 * mult );
       neu = 1;
     }
-    int s;
-    for(size_t i = 0; i < n_farben; ++i)
+
+    if( single )
     {
-      s = i*mult*3;
-      if(mult == 2 && !neu)
+      p[0] = p_neu[patch*3+0];
+      p[1] = p_neu[patch*3+1];
+      p[2] = p_neu[patch*3+2];
+
+      names[0] = names[patch];
+      names.resize(1);
+
+    } else {
+
+      for(size_t i = 0; i < n_farben; ++i)
       {
-        // copy old colours
-        p[s+3] = p[s+0];
-        p[s+4] = p[s+1];
-        p[s+5] = p[s+2];
-      }
-      p[s+0] = p_neu[i*3+0];
-      p[s+1] = p_neu[i*3+1];
-      p[s+2] = p_neu[i*3+2];
-      if(mult == 2 && neu)
-      {
-        // double of new colours
-        p[s+3] = p[s+0];
-        p[s+4] = p[s+1];
-        p[s+5] = p[s+2];
+        s = i*mult*3;
+        if(mult == 2 && !neu)
+        {
+          // copy old colours
+          p[s+3] = p[s+0];
+          p[s+4] = p[s+1];
+          p[s+5] = p[s+2];
+        }
+        p[s+0] = p_neu[i*3+0];
+        p[s+1] = p_neu[i*3+1];
+        p[s+2] = p_neu[i*3+2];
+        if(mult == 2 && neu)
+        {
+          // double of new colours
+          p[s+3] = p[s+0];
+          p[s+4] = p[s+1];
+          p[s+5] = p[s+2];
+        }
       }
     }
 
@@ -223,8 +266,13 @@ ICCexamin::farbenLese (int n,
     // ncl2 colours -> monitor colours
     double *lab = new double [n_farben*mult*3],
            *rgb=0;
-    for(unsigned i = 0; i < n_farben * 3; ++i)
-      lab[i] = p_neu[i];
+    if(single) {
+      for(unsigned i = 0; i < n_farben * 3; ++i)
+        lab[i] = p_neu[i - patch*3];
+    } else 
+      for(unsigned i = 0; i < n_farben * 3; ++i)
+        lab[i] = p_neu[i];
+
     rgb = icc_oyranos. wandelLabNachBildschirmFarben(lab, n_farben*mult,
                                  intentGet(NULL),
                                  gamutwarn()?cmsFLAGS_GAMUTCHECK:0);
@@ -272,6 +320,7 @@ ICCexamin::farbraum (int n)
 
   std::vector<double> p;
   std::vector<float>  f;
+  std::vector<std::string> names;
   icc_betrachter->DD_farbraum->herausNormalPunkte( p, f );
 
   DBG_PROG_V( n <<" "<< profile.size()<<" "<<profile.aktuell() )
@@ -301,7 +350,7 @@ ICCexamin::farbraum (int n)
   if( profile.size() > n && ncl2_profil )
   {
     DBG_PROG
-    farbenLese(n, p,f);
+    farbenLese(n, p,f,names);
   }
 
   bool neues_netz = false;
