@@ -454,7 +454,10 @@ ICCmeasurement::init_umrechnen                     (void)
 {
   _Lab_Differenz_max = -1000.0;
   _Lab_Differenz_min = 1000.0;
-  _Lab_Differenz_Durchschnitt = -1000.0;
+  _Lab_Differenz_Durchschnitt = 0.0;
+  #define PRECALC cmsFLAGS_NOTPRECALC // No memory overhead, VERY
+                                      // SLOW ON TRANSFORMING, very fast on creating transform.
+                                      // Maximum accurancy.
 
   if (_RGB_measurement && _XYZ_measurement) { DBG // keine Umrechnung nötig
     cmsHTRANSFORM hRGBtoSRGB, hXYZtoSRGB, hRGBtoXYZ, hXYZtoLab, hRGBtoLab;
@@ -472,27 +475,27 @@ ICCmeasurement::init_umrechnen                     (void)
     hRGBtoXYZ =  cmsCreateTransform (hRGB, TYPE_RGB_DBL,
                                     hXYZ, TYPE_XYZ_DBL,
                                     INTENT_ABSOLUTE_COLORIMETRIC,
-                                    cmsFLAGS_HIGHRESPRECALC);
+                                    PRECALC|cmsFLAGS_WHITEBLACKCOMPENSATION);
     // Wie sieht das Profil die Messfarbe? -> Lab
     hRGBtoLab =  cmsCreateTransform (hRGB, TYPE_RGB_DBL,
                                     hLab, TYPE_Lab_DBL,
                                     INTENT_ABSOLUTE_COLORIMETRIC,
-                                    cmsFLAGS_HIGHRESPRECALC);
+                                    PRECALC|cmsFLAGS_WHITEBLACKCOMPENSATION);
     // Wie sieht das Messgerät die Messfarbe? -> Lab
     hXYZtoLab =  cmsCreateTransform (hXYZ, TYPE_XYZ_DBL,
                                     hLab, TYPE_Lab_DBL,
                                     INTENT_ABSOLUTE_COLORIMETRIC,
-                                    cmsFLAGS_HIGHRESPRECALC);
+                                    PRECALC|cmsFLAGS_WHITEBLACKCOMPENSATION);
     // Wie sieht das Profil die Messfarbe? -> Bildschirmdarstellung
     hRGBtoSRGB = cmsCreateTransform (hRGB, TYPE_RGB_DBL,
                                     hsRGB, TYPE_RGB_DBL,
                                     INTENT_ABSOLUTE_COLORIMETRIC,
-                                    cmsFLAGS_HIGHRESPRECALC);
+                                    PRECALC|cmsFLAGS_WHITEBLACKCOMPENSATION);
     // Wie sieht die CMM die Messfarbe? -> Bildschirmdarstellung
     hXYZtoSRGB = cmsCreateTransform (hXYZ, TYPE_XYZ_DBL,
                                     hsRGB, TYPE_RGB_DBL,
                                     INTENT_ABSOLUTE_COLORIMETRIC,
-                                    cmsFLAGS_HIGHRESPRECALC);
+                                    PRECALC|cmsFLAGS_WHITEBLACKCOMPENSATION);
     double RGB[3], sRGB[3], XYZ[3], Lab[3];
 
     _RGB_MessFarben.resize(_nFelder);
@@ -537,9 +540,9 @@ ICCmeasurement::init_umrechnen                     (void)
 
         // geometrische Farbortdifferenz
         _Lab_Differenz[i] = pow (    pow(_Lab_Ergebnis[i].L - _Lab_Satz[i].L,2)
-                                   * pow(_Lab_Ergebnis[i].a - _Lab_Satz[i].a,2)
-                                   * pow(_Lab_Ergebnis[i].b - _Lab_Satz[i].b,2)
-                                 , 1.0/3.0);
+                                   + pow(_Lab_Ergebnis[i].a - _Lab_Satz[i].a,2)
+                                   + pow(_Lab_Ergebnis[i].b - _Lab_Satz[i].b,2)
+                                 , 1.0/2.0);
         if (_Lab_Differenz_max < _Lab_Differenz[i])
           _Lab_Differenz_max = _Lab_Differenz[i];
         if (_Lab_Differenz_min > _Lab_Differenz[i])
@@ -571,27 +574,27 @@ ICCmeasurement::init_umrechnen                     (void)
     hCMYKtoXYZ =  cmsCreateTransform (hCMYK, TYPE_CMYK_DBL,
                                     hXYZ, TYPE_XYZ_DBL,
                                     INTENT_ABSOLUTE_COLORIMETRIC,
-                                    cmsFLAGS_NOTPRECALC);
+                                    PRECALC|cmsFLAGS_WHITEBLACKCOMPENSATION);
     // Wie sieht das Profil die Messfarbe? -> Lab
     hCMYKtoLab =  cmsCreateTransform (hCMYK, TYPE_CMYK_DBL,
                                     hLab, TYPE_Lab_DBL,
                                     INTENT_ABSOLUTE_COLORIMETRIC,
-                                    cmsFLAGS_HIGHRESPRECALC);
+                                    PRECALC|cmsFLAGS_WHITEBLACKCOMPENSATION);
     // Wie sieht das Messgerät die Messfarbe? -> Lab
-    hXYZtoLab =  cmsCreateTransform (hCMYK, TYPE_CMYK_DBL,
+    hXYZtoLab =  cmsCreateTransform (hXYZ, TYPE_XYZ_DBL,
                                     hLab, TYPE_Lab_DBL,
                                     INTENT_ABSOLUTE_COLORIMETRIC,
-                                    cmsFLAGS_HIGHRESPRECALC);
+                                    PRECALC|cmsFLAGS_WHITEBLACKCOMPENSATION);
     // Wie sieht das Profil die Messfarbe? -> Bildschirmdarstellung
     hCMYKtoSRGB = cmsCreateTransform (hCMYK, TYPE_CMYK_DBL,
                                     hsRGB, TYPE_RGB_DBL,
                                     INTENT_ABSOLUTE_COLORIMETRIC,
-                                    cmsFLAGS_NOTPRECALC);
+                                    PRECALC|cmsFLAGS_WHITEBLACKCOMPENSATION);
     // Wie sieht die CMM die Messfarbe? -> Bildschirmdarstellung
     hXYZtoSRGB = cmsCreateTransform (hXYZ, TYPE_XYZ_DBL,
                                     hsRGB, TYPE_RGB_DBL,
                                     INTENT_ABSOLUTE_COLORIMETRIC,
-                                    cmsFLAGS_NOTPRECALC);
+                                    PRECALC|cmsFLAGS_WHITEBLACKCOMPENSATION);
     double CMYK[4], sRGB[3], Lab[3], XYZ[3];
 
     _RGB_MessFarben.resize(_nFelder);
@@ -636,10 +639,10 @@ ICCmeasurement::init_umrechnen                     (void)
         _RGB_ProfilFarben[i].B = sRGB[2];
 
         // geometrische Farbortdifferenz
-        _Lab_Differenz[i] = pow (    pow(_Lab_Ergebnis[i].L - _Lab_Satz[i].L,2.0)
-                                   * pow(_Lab_Ergebnis[i].a - _Lab_Satz[i].a,2.0)
-                                   * pow(_Lab_Ergebnis[i].b - _Lab_Satz[i].b,2.0)
-                                 , 1.0/3.0);
+        _Lab_Differenz[i] = pow (    pow(_Lab_Ergebnis[i].L - _Lab_Satz[i].L,2)
+                                   + pow(_Lab_Ergebnis[i].a - _Lab_Satz[i].a,2)
+                                   + pow(_Lab_Ergebnis[i].b - _Lab_Satz[i].b,2)
+                                 , 1.0/2.0);
         if (_Lab_Differenz_max < _Lab_Differenz[i])
           _Lab_Differenz_max = _Lab_Differenz[i];
         if (_Lab_Differenz_min > _Lab_Differenz[i])
@@ -655,26 +658,35 @@ ICCmeasurement::init_umrechnen                     (void)
     cmsCloseProfile (hLab);
     cmsCloseProfile (hXYZ);
   }
-  for (unsigned int i = 0; i < _Lab_Differenz.size(); i++)
+  for (unsigned int i = 0; i < _Lab_Differenz.size(); i++) {
     _Lab_Differenz_Durchschnitt += _Lab_Differenz[i];
-  _Lab_Differenz_Durchschnitt /= _Lab_Differenz.size();
+  }
+  _Lab_Differenz_Durchschnitt /= (double)_Lab_Differenz.size();
 }
 
 std::string
 ICCmeasurement::getHtmlReport                     (void)
 { DBG
+  char SF[] = "#cccccc";  // standard Hintergrundfarbe
+  char HF[] = "#aaaaaa";  // hervorgehoben
+  #define LAYOUTFARBE if (layout[l++] == true) \
+                        html << HF; \
+                      else \
+                        html << SF; //Farbe nach Layoutoption auswählen
+  int l = 0;
   std::stringstream html;
   if (_RGB_MessFarben.size() == 0)
     init_umrechnen ();
 
   if (_reportTabelle.size() == 0)
     _reportTabelle = getText();
+  std::vector<int> layout = getLayout();
 
   html << "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">";
   html << "<html><head>" << endl;
   html << "<title>" << _("Prüfung des Farbprofiles") << "</title>\n";
   html << "<meta http-equiv=\"content-type\" content=\"text/html; charset=ISO-8859-1\">" << endl;
-  html << "</head><body bgcolor=\"#cccccc\">" << endl << endl;
+  html << "</head><body bgcolor=\"" << SF << "\">" << endl << endl;
 
   int kopf = (int)_reportTabelle.size() - _nFelder;
   // Allgemeine Informationen
@@ -684,7 +696,7 @@ ICCmeasurement::getHtmlReport                     (void)
     //if (i == 0) html << "</h2>";
     html <<     "<br>\n\n";
   }
-  html <<       "<table align=left cellpadding=\"2\" cellspacing=\"2\" border=\"0\" frame=\"hsides\" width=\"90%\" bgcolor=\"#cccccc\">\n";
+  html <<       "<table align=left cellpadding=\"2\" cellspacing=\"2\" border=\"0\" width=\"90%\" bgcolor=\"" << SF << "\">\n";
   html <<       "<thead> \n";
   html <<       "  <tr> \n";
   // Tabellenkopf
@@ -693,14 +705,17 @@ ICCmeasurement::getHtmlReport                     (void)
   if (_XYZ_Satz.size() && _RGB_MessFarben.size() == _XYZ_Satz.size()) {
     f = 2;
   }
+  l = 0;
   for (s = 0; s < (int)_reportTabelle  [kopf - 1].size() + f; s++) {
     if (s < f) {
-      if (s == 0)
+      if (s == 0) {
         html <<   "    <th width=\"25\">" << _("Messfarbe") << "</th>";
-      else
+      } else {
         html <<   "    <th width=\"25\">" << _("Profilfarbe") << "</th>";
+      }
     } else {
-      html <<   "    <th>" << _reportTabelle [kopf - 1][s - f] << "</th>\n";
+      html <<   "    <th bgcolor=\""; LAYOUTFARBE
+      html << "\">" << _reportTabelle [kopf - 1][s - f] << "</th>\n";
     }
   }
   html <<       "  </tr>\n";
@@ -719,6 +734,7 @@ ICCmeasurement::getHtmlReport                     (void)
   double mult = 256.0;
   for (int z = 0; z < _nFelder; z++) {
     html <<     "  <tr>\n";
+    l = 0;
     for (s = 0; s < (int)_reportTabelle[kopf - 1].size() + f; s++) {
       if (s < f) { // Farbdarstellung
         html << "    <td width=\"10\" bgcolor=\"#"; 
@@ -734,7 +750,8 @@ ICCmeasurement::getHtmlReport                     (void)
         }
         html << "></td>\n";
       } else {
-        html << "    <td>" << _reportTabelle [kopf + z][s - f] << "</td>\n";
+        html << "    <td bgcolor=\""; LAYOUTFARBE
+        html << "\">" << _reportTabelle [kopf + z][s - f] << "</td>\n";
       }
     }
     html <<     "  </tr>\n";
@@ -742,6 +759,7 @@ ICCmeasurement::getHtmlReport                     (void)
 
   html <<       "</tbody>\n</table>\n\n<br>\n</body></html>\n";
 
+  //DBG_S (html.str() )
   return html.str();
 }
 
@@ -749,7 +767,7 @@ std::vector<std::vector<std::string> >
 ICCmeasurement::getText                     (void)
 { DBG
   std::vector<std::vector<std::string> > tabelle;
-  tabelle.resize(_nFelder+3); // push_back ist zu langsam
+  tabelle.resize(_nFelder+4); // push_back ist zu langsam
   std::stringstream s;
   int z = 0; // Zeilen
 
@@ -760,26 +778,42 @@ ICCmeasurement::getText                     (void)
        && _XYZ_measurement) {
     // Tabellenüberschrift
     tabelle[0].resize(1);
-    tabelle[0][0] =    _("Mess- und Profilfarben aus "); 
+    tabelle[0][0] =    _("Mess- und Profilfarben aus <b>"); 
     if (_RGB_measurement)
       tabelle[0][0] += _("RGB");
     else
       tabelle[0][0] += _("CMYK");
-    tabelle[0][0] +=   _(" Messdaten");
-    tabelle[z].resize(1);
-    z++;
-    tabelle[z].resize(1);
-    s << _("Abweichungen(dE CIE*Lab) durchschnittlich: ") << _Lab_Differenz_Durchschnitt << _("  maximal: ") << _Lab_Differenz_max << _("  minimal: ") << _Lab_Differenz_min;
+    tabelle[0][0] +=   _("</b> Messdaten");
+    z++; tabelle[z].resize(1);
+    tabelle[z][0] = _("CMM: <b>lcms</b>");
+    z++; tabelle[z].resize(1);
+    s << _("Abweichungen (dE CIE*Lab) durchschnittlich:<b> ") << _Lab_Differenz_Durchschnitt << _("</b>  maximal: ") << _Lab_Differenz_max << _("  minimal: ") << _Lab_Differenz_min;
     tabelle[z][0] = s.str();
     z++;
     // Tabellenkopf
     int spalten, sp = 0, xyz_erg_sp = 0;
+    int h = false;
     if (_XYZ_Ergebnis.size() == _XYZ_Satz.size())
       xyz_erg_sp = 3;
-    spalten = 1 + 6 + 1 + 3 + xyz_erg_sp + (_RGB_measurement ? 3 : 4);
+    #define HI (h == true) ? h-- : h++ // invertieren
+    layout.clear();
+    layout.push_back (HI); // Messfeld
+    layout.push_back (HI); // dE Lab
+    layout.push_back (h); layout.push_back (h); layout.push_back (HI); // Lab
+    layout.push_back (h); layout.push_back (h); layout.push_back (HI); // Lab'
+    layout.push_back (h); layout.push_back (h); layout.push_back (HI); // XYZ
+    if (xyz_erg_sp)
+      layout.push_back (h); layout.push_back (h); layout.push_back (HI);//XYZ'
+    if (_RGB_measurement) {
+      layout.push_back (h); layout.push_back (h); layout.push_back (HI);//RGB
+    } else {
+      layout.push_back (h); layout.push_back (h); layout.push_back (h);
+      layout.push_back (HI); // CMYK
+    }
+    spalten = (int) layout.size();
     tabelle[z].resize( spalten ); DBG_S( tabelle[z].size() )
     tabelle[z][sp++] = _("Messfeld");
-    tabelle[z][sp++]=_("dE CIE*Lab");
+    tabelle[z][sp++]=_("dE Lab");
     tabelle[z][sp++]=_("L");
     tabelle[z][sp++]=_("a");
     tabelle[z][sp++]=_("b");

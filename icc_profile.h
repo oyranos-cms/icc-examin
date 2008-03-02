@@ -234,6 +234,7 @@ class ICCmeasurement {
     double              _Lab_Differenz_Durchschnitt;
 
     std::vector<std::vector<std::string> > _reportTabelle;
+    std::vector<int>    layout;
   private:
     std::string         ascii_korrigieren ();
     void                lcms_parse (std::string data);
@@ -252,6 +253,7 @@ class ICCmeasurement {
     std::vector<std::vector<std::string> > getText ();
     std::vector<std::string> getDescription();
     std::string         getHtmlReport ();
+    std::vector<int>    getLayout ()       {return layout; }
     bool                valid (void)       {return (_XYZ_measurement
                                                  && (_RGB_measurement
                                                   || _CMYK_measurement)); }
