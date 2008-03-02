@@ -69,7 +69,7 @@ void TagTexts::hinein(std::string text, std::vector<int> patches) {
       for (unsigned int i = 0; i < texte.size(); i++)
       {
         std::string text;
-        if( patches.size() )
+        if( patches.size() > k )
         if( patches[k] == (int)i )
         { 
           if(odd) {

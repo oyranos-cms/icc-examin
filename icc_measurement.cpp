@@ -1541,7 +1541,9 @@ ICCmeasurement::getPatchLine                (int line, const char * tag_name,
   punkte.resize(3);
   rgb.resize(4);
 
-  if( std::string(tag_name) == "DevD")
+  if( std::string(tag_name) == "DevD" ||
+      ( (!Lab_Satz_.size() || !RGB_MessFarben_.size()) &&
+        RGB_ProfilFarben_.size() && Lab_Ergebnis_.size() ) )
   {
     punkte[0] = Lab_Ergebnis_[patch].L;
     punkte[1] = Lab_Ergebnis_[patch].a;
@@ -1549,7 +1551,8 @@ ICCmeasurement::getPatchLine                (int line, const char * tag_name,
     rgb[0] = RGB_ProfilFarben_[patch].R;
     rgb[1] = RGB_ProfilFarben_[patch].G;
     rgb[2] = RGB_ProfilFarben_[patch].B;
-  } else
+    rgb[3] = 1.0;
+  } else if (Lab_Satz_.size() && RGB_MessFarben_.size())
   {
     punkte[0] = Lab_Satz_[patch].L;
     punkte[1] = Lab_Satz_[patch].a;
@@ -1557,8 +1560,12 @@ ICCmeasurement::getPatchLine                (int line, const char * tag_name,
     rgb[0] = RGB_MessFarben_[patch].R;
     rgb[1] = RGB_MessFarben_[patch].G;
     rgb[2] = RGB_MessFarben_[patch].B;
+    rgb[3] = 1.0;
+  } else {
+    punkte.resize(0);
+    rgb.resize(0);
+    name.resize(0);
   }
-  rgb[3] = 1.0;
   name = Feldnamen_[patch];
 
   DBG_MESS_ENDE

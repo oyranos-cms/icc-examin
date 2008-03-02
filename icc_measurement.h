@@ -151,6 +151,7 @@ class ICCmeasurement {
     std::vector<CMYK_s>   getMessCMYK ()     {DBG_PROG return CMYK_Satz_; }
     std::vector<std::string> getFeldNamen () {DBG_PROG return Feldnamen_; }
     std::string           getFieldName (int p) {DBG_PROG return Feldnamen_[p]; }
+    std::vector<Lab_s>    getProfileLab ()   {DBG_PROG return Lab_Ergebnis_; }
 
     // report
     std::vector<std::vector<std::string> > getText ();

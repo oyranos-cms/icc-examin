@@ -144,7 +144,7 @@ class TagTexts {open : {public Fl_Hold_Browser}
       for (unsigned int i = 0; i < texte.size(); i++)
       {
         std::string text;
-        if( patches.size() )
+        if( patches.size() > k )
         if( patches[k] == (int)i )
         { 
           if(odd) {
@@ -312,7 +312,7 @@ class ICCfltkBetrachter {open
   setTitleUrl = true;} {}
     Fl_Window ueber {
       label {About ICC Examin} open
-      xywh {834 726 365 295} type Double resizable
+      xywh {839 747 365 295} type Double resizable
       code0 {o->hide();}
       code1 {o->use_escape_hide = true;}
       class {icc_examin_ns::MyFl_Double_Window} visible
@@ -353,7 +353,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window vcgt {
       label {Grafic Card Gamma Table} open
-      xywh {213 639 370 405} type Double resizable
+      xywh {218 639 370 405} type Double resizable
       code0 {o->hide();}
       code1 {o->use_escape_hide = true;}
       class {icc_examin_ns::MyFl_Double_Window} visible
@@ -390,7 +390,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window DD {
       label Gamut open
-      xywh {886 179 385 520} type Double box NO_BOX resizable
+      xywh {891 200 385 520} type Double box NO_BOX resizable
       class {icc_examin_ns::MyFl_Double_Window} visible
     } {
       Fl_Group {} {open
@@ -544,7 +544,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window details {
       label {ICC Examin} open
-      xywh {365 436 385 520} type Double box NO_BOX
+      xywh {370 457 385 520} type Double box NO_BOX
       code0 {o->main_win = o;}
       class {icc_examin_ns::MyFl_Double_Window} visible
     } {

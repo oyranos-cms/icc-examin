@@ -565,34 +565,41 @@ ICCexamin::nachricht( Modell* modell , int info )
     // find a CGATS/ncl2 tag_text / inspect_html line from a 3D(Lab) mouse hit
     // it's the inverse from selectTextsLine(int * line)
     int item = icc_examin->tag_nr();
+    std::vector<std::string> TagInfo = profile.profil()->printTagInfo(item),
+                             names;
+    std::vector<float> rgb;
+    std::vector<double> lab_dv;
+    double min = DBL_MAX, len;
+    double lab[3];
+    int min_pos = -1,
+        n;
 #if 0
     if( icc_betrachter->inspekt_html->visible() ||
         (profile.profil()->tagBelongsToMeasurement(item) &&
          icc_betrachter->tag_browser->value() > 5)
       )
 #endif
+    if(profile.profil()->hasMeasurement())
     {
       ICCmeasurement & m = profile.profil()->getMeasurement();
-      double lab[3];
       LabToCIELab( &gl->mouse_3D_hit.koord[0], &lab[0], 1 );
 
-      DBG_S( lab[0] <<" "<< lab[1] <<" "<< lab[2] )
+      DBG_PROG_S( lab[0] <<" "<< lab[1] <<" "<< lab[2] )
 
-      int n = m.getPatchCount();
-      std::vector<std::string> TagInfo = profile.profil()->printTagInfo(item);
+      n = m.getPatchCount();
 
       std::vector<Lab_s> lab_v;
       /*if( TagInfo[0] == "DevD" ||
           TagInfo[0] == "targ" ||
           icc_betrachter->inspekt_html->visible() )*/
         lab_v = m.getMessLab();
+      if(!lab_v.size())
+        lab_v = m.getProfileLab();
 
       n =  lab_v.size();
-      double min = DBL_MAX;
-      int min_pos = -1;
       for(int i = 0; i < n; ++i)
       {
-        double len = fabs( dE( gl->mouse_3D_hit.koord, lab_v[i] ) );
+        len = fabs( dE( gl->mouse_3D_hit.koord, lab_v[i] ) );
         
         if(len < min)
         {
@@ -603,8 +610,7 @@ ICCexamin::nachricht( Modell* modell , int info )
 
       if(min < 5)
       {
-        std::vector<float> rgb;
-        std::vector<double> lab; lab.resize(3);
+        lab_dv.resize(3);
         std::string name = m.getFieldName(min_pos);
         if(icc_betrachter->inspekt_html->visible())
         {
@@ -615,11 +621,56 @@ ICCexamin::nachricht( Modell* modell , int info )
           std::vector<int> pl = m.getPatchLines ( TagInfo[0].c_str() );
           icc_betrachter->tag_text->select(pl[min_pos]+1);
         }
-        DBG_V(min <<" "<< min_pos)
-        lab[0] = lab_v[min_pos].L;
-        lab[1] = lab_v[min_pos].a;
-        lab[2] = lab_v[min_pos].b;
-        icc_betrachter->DD_farbraum->emphasizePoint( lab, rgb, name);
+        DBG_PROG_V(min <<" "<< min_pos)
+        lab_dv[0] = lab_v[min_pos].L;
+        lab_dv[1] = lab_v[min_pos].a;
+        lab_dv[2] = lab_v[min_pos].b;
+        icc_betrachter->DD_farbraum->emphasizePoint( lab_dv, rgb, name);
+      }
+
+    } else if( profile.profil()->hasTagName("ncl2") ) {
+
+      farbenLese( profile.aktuell(), lab_dv, rgb, names );
+      n = names.size();
+      int mult = lab_dv.size()/3/names.size();
+      int n_ = n*3*mult;
+      for(int i = 0; i < n_; i+=3*mult)
+      {
+        lab[0] = lab_dv[i+0];
+        lab[1] = lab_dv[i+1];
+        lab[2] = lab_dv[i+2];
+        len = fabs( dE( gl->mouse_3D_hit.koord, &lab[0] ) );
+        if(len < min)
+        {
+          min = len;
+          min_pos = i/3/mult;
+        }
+      }
+
+      if(min < 5)
+      {
+        if(icc_betrachter->inspekt_html->visible())
+        {
+          icc_betrachter->inspekt_html->topline( names[min_pos].c_str() );
+        }
+        if(TagInfo.size())
+        if(TagInfo[0] == "ncl2")
+          icc_betrachter->tag_text->select(min_pos+6);
+
+        DBG_PROG_V(min <<" "<< min_pos)
+        lab_dv[0] = lab[min_pos*3*mult+0];
+        lab_dv[1] = lab[min_pos*3*mult+1];
+        lab_dv[2] = lab[min_pos*3*mult+2];
+        lab_dv.resize(3);
+        rgb[0] = rgb[min_pos*4*mult+0];
+        rgb[1] = rgb[min_pos*4*mult+1];
+        rgb[2] = rgb[min_pos*4*mult+2];
+        rgb[3] = 1.0;
+        rgb.resize(4);
+        if(!names[min_pos].size())
+          WARN_S( "no name found" )
+        icc_betrachter->DD_farbraum->emphasizePoint( lab_dv,
+                                                     rgb, names[min_pos]);
       }
     }
   }

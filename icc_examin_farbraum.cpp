@@ -70,9 +70,16 @@ ICCexamin::messwertLese (int n,
         icc_betrachter->DD_farbraum->zeig_punkte_als_paare = true;
       else
         icc_betrachter->DD_farbraum->zeig_punkte_als_paare = false;
-      DBG_NUM_V( icc_betrachter->DD_farbraum->zeig_punkte_als_paare )
-      icc_betrachter->DD_farbraum->zeig_punkte_als_messwerte = true;
-      DBG_NUM_V( icc_betrachter->DD_farbraum->zeig_punkte_als_messwerte )
+
+        DBG_NUM_V( icc_betrachter->DD_farbraum->zeig_punkte_als_paare )
+
+      if(profile.profil()->data_type == ICCprofile::ICCmeasurementDATA || 
+         profile.profil()->hasTagName("ncl2") )
+        icc_betrachter->DD_farbraum->zeig_punkte_als_messwerte = true;
+      else
+        icc_betrachter->DD_farbraum->zeig_punkte_als_messwerte = false;
+
+        DBG_NUM_V( icc_betrachter->DD_farbraum->zeig_punkte_als_messwerte )
 
       unsigned int j;
       int n = messung.getPatchCount(); DBG_PROG_V( messung.getPatchCount() )
@@ -209,7 +216,7 @@ ICCexamin::farbenLese (int n,
     if( !single )
     {
       n_farben = p_neu.size()/3;
-      icc_betrachter->DD_farbraum->zeig_punkte_als_messwerte = false;
+      icc_betrachter->DD_farbraum->zeig_punkte_als_messwerte = true;
       icc_betrachter->DD_farbraum->zeig_punkte_als_paare = true;
       if(icc_betrachter->DD_farbraum->zeig_punkte_als_paare)
         mult = 2;
@@ -221,7 +228,7 @@ ICCexamin::farbenLese (int n,
 
     if(n_farben != p.size() / 3 / mult)
     {
-      DBG_S( "resize " << n_farben <<" "<<
+      DBG_PROG_S( "resize " << n_farben <<" "<<
               p_neu.size() / 3 <<" "<< p.size() / 3 / mult )
       p.resize( n_farben * 3 * mult );
       f.resize( n_farben * 4 * mult );

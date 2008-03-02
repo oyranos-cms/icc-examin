@@ -1571,7 +1571,7 @@ GL_Ansicht::punkteAuffrischen()
           {
             glLineWidth(strich2*strichmult);
             glBegin(GL_LINES);
-              if(zeig_punkte_als_messwerte)
+              if(!zeig_punkte_als_messwerte)
                 glColor4f(.97, .97, .97, 1. );
               else
                 glColor4f(farben_[i/3*4+0], farben_[i/3*4+1],
@@ -1579,7 +1579,7 @@ GL_Ansicht::punkteAuffrischen()
 
               glVertex3f(punkte_[i+2], punkte_[i+0], punkte_[i+1]);
 
-              if(zeig_punkte_als_messwerte)
+              if(!zeig_punkte_als_messwerte)
                 glColor4f(1., .6, .6, 1.0 );
               else
                 glColor4f(farben_[i/3*4+4], farben_[i/3*4+5],
@@ -2002,7 +2002,7 @@ GL_Ansicht::menueErneuern_()
     menue_form_->add( _("Colour line"), 0,c_, (void*)MENU_SPEKTRALBAND, 0 );
   } else {
     // spheres with their radius symbolise measurement colours
-    if(zeig_punkte_als_messwerte)
+    if(!zeig_punkte_als_messwerte)
     {
       menue_form_->add( _("Sphere 1dE"), 0,c_, (void*)MENU_dE1KUGEL, 0 );
       menue_form_->add( _("Sphere 2dE"), 0,c_, (void*)MENU_dE2KUGEL, 0 );
@@ -2232,7 +2232,7 @@ GL_Ansicht::zeichnen()
               *rgb_ = 0, *rgb;
 
         icc_examin->statusFarbe(lab[0],lab[1],lab[2]);
-          DBG_V( lab[0]<<" "<<lab[1]<<" "<<lab[2] )
+          DBG_PROG_V( lab[0]<<" "<<lab[1]<<" "<<lab[2] )
         if(strlen(epoint_.name.c_str()))
           rgb = &epoint_.farbe[0];
         else
@@ -2510,7 +2510,7 @@ GL_Ansicht::hineinPunkte       (std::vector<double>      &vect,
       punkte_.size())
     punktform = MENU_dE1STERN;
 
-  if (zeig_punkte_als_messwerte &&
+  if (!zeig_punkte_als_messwerte &&
       punktform == MENU_dE1STERN &&
       punkte_.size())
     punktform = MENU_dE1KUGEL;

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2007-07-01 22:49+0200\n"
+"POT-Creation-Date: 2007-07-02 22:44+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -100,18 +100,18 @@ msgstr ""
 msgid "Value"
 msgstr ""
 
-#: icc_draw.cpp:695 icc_examin_farbraum.cpp:317 icc_examin_io.cpp:213
+#: icc_draw.cpp:695 icc_examin_farbraum.cpp:324 icc_examin_io.cpp:213
 #: icc_helfer.cpp:560 icc_helfer.cpp:563
 msgid "CIE *L"
 msgstr ""
 
-#: icc_draw.cpp:697 icc_examin_farbraum.cpp:318 icc_examin_io.cpp:214
+#: icc_draw.cpp:697 icc_examin_farbraum.cpp:325 icc_examin_io.cpp:214
 #: icc_gl.cpp:952 icc_gl.cpp:1026 icc_gl.cpp:1052 icc_gl.cpp:1060
 #: icc_helfer.cpp:561
 msgid "CIE *a"
 msgstr ""
 
-#: icc_draw.cpp:699 icc_examin_farbraum.cpp:319 icc_examin_io.cpp:215
+#: icc_draw.cpp:699 icc_examin_farbraum.cpp:326 icc_examin_io.cpp:215
 #: icc_gl.cpp:965 icc_gl.cpp:1068 icc_gl.cpp:1088 icc_gl.cpp:1095
 #: icc_helfer.cpp:562
 msgid "CIE *b"
@@ -145,7 +145,7 @@ msgstr ""
 msgid "Gamut selector"
 msgstr ""
 
-#: icc_examin.cpp:266 icc_examin.cpp:1088
+#: icc_examin.cpp:266 icc_examin.cpp:1139
 msgid "loaded"
 msgstr ""
 
@@ -163,47 +163,47 @@ msgstr ""
 msgid "Which ICC profile?"
 msgstr ""
 
-#: icc_examin.cpp:648 icc_examin.cpp:651
+#: icc_examin.cpp:699 icc_examin.cpp:702
 msgid "Compare Measurement <-> Profile Colours"
 msgstr ""
 
-#: icc_examin.cpp:650
+#: icc_examin.cpp:701
 msgid "none"
 msgstr ""
 
-#: icc_examin.cpp:664 icc_examin.cpp:666
+#: icc_examin.cpp:715 icc_examin.cpp:717
 msgid "Gamut View"
 msgstr ""
 
-#: icc_examin.cpp:708 icc_gl.h:257
+#: icc_examin.cpp:759 icc_gl.h:257
 msgid "not available"
 msgstr ""
 
-#: icc_examin.cpp:1029
+#: icc_examin.cpp:1080
 msgid "Filename (ICC data type)"
 msgstr ""
 
-#: icc_examin.cpp:1032
+#: icc_examin.cpp:1083
 msgid "Filename (other data type)"
 msgstr ""
 
-#: icc_examin.cpp:1034
+#: icc_examin.cpp:1085
 msgid "Filename (corrupted ICC data type)"
 msgstr ""
 
-#: icc_examin.cpp:1039
+#: icc_examin.cpp:1090
 msgid "found no content for"
 msgstr ""
 
-#: icc_examin.cpp:1042
+#: icc_examin.cpp:1093
 msgid "Internal error"
 msgstr ""
 
-#: icc_examin.cpp:1045
+#: icc_examin.cpp:1096
 msgid "No. Tag   Type   Size Description"
 msgstr ""
 
-#: icc_examin_farbraum.cpp:280
+#: icc_examin_farbraum.cpp:287
 msgid "RGB result not available"
 msgstr ""
 

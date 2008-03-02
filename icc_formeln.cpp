@@ -182,6 +182,16 @@ dE ( double * Lab1, Lab_s Lab2 )
    return dE( Lab1_, Lab2 );
 }
 
+double
+dE ( double * Lab1, double * Lab2 )
+{
+   Lab_s Lab2_;
+   Lab2_.L = Lab2[0];
+   Lab2_.a = Lab2[1];
+   Lab2_.b = Lab2[2];
+   return dE( Lab1, Lab2_ );
+}
+
 void
 LabtoXYZ (Lab_s &lab, XYZ_s &XYZ)
 {
