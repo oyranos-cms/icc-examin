@@ -20,7 +20,7 @@ VERSION_A=0
 VERSION_B=4
 VERSION_C=3
 RELEASE=0
-ZEIT="May 2004 - January 2007"
+ZEIT="May 2004 - February 2007"
 VERSION=$VERSION_A.$VERSION_B$VERSION_C
 if [ $VERSION_A -gt 9 ]; then
   VERSION_L="$VERSION_A"
@@ -306,7 +306,9 @@ export PATH
 
 echo "LIB=/"$LIBDIR >> $CONF
 
-export LIBS_TEST="dl iconv intl"
+LIBS_TEST="dl iconv intl"; export LIBS_TEST
+X_ADD="Xpm Xext"; export X_ADD
+
 
 ECHO="echo"; export ECHO
 LIBS=1; export LIBS
@@ -571,7 +573,7 @@ if [ "$ERROR" -ne "0" ]; then
   echo "!!!                     remove  $CONF                     !!!"
   echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
   echo ""
-  rm $CONF $CONF_H $CONF_SH $SPEC $PKGC $MPKG
+  rm Makefile $CONF_H $CONF_SH $SPEC $PKGC $MPKG
   exit
 fi
 

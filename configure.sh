@@ -143,7 +143,26 @@ if [ "$X11" = 1 ] && [ $X11 -gt 0 ]; then
   fi
   echo "X_CPP = \$(X_CPPFILES)" >> $CONF
   echo "X11_LIB_PATH = -L/usr/X11R6/lib\$(BARCH) -L/usr/lib\$(BARCH) -L\$(libdir)" >> $CONF
-  echo "X11_LIBS=\$(X11_LIB_PATH) -lX11 \$(XF86VMODE_LIB) -lXpm -lXext \$(XINERAMA_LIB)" >> $CONF
+
+  if [ -n "$X_ADD" ]; then
+    for l in $X_ADD; do
+      rm -f tests/libtest
+      $CXX $CFLAGS -I$includedir tests/lib_test.cxx $LDFLAGS -L/usr/X11R6/lib$BARCH -L/usr/lib$BARCH -L$libdir -l$l -o tests/libtest 2>/dev/null
+      if [ -f tests/libtest ]; then
+          test -n "$ECHO" && $ECHO "lib$l is available"
+          if [ -z $X_ADD_LIBS ]; then
+            X_ADD_LIBS="-l$l"
+          else
+            X_ADD_LIBS="$X_ADD_LIBS -l$l"
+          fi
+          rm tests/libtest
+      else
+        test -n "$ECHO" && $ECHO "!!! ERROR lib$l is missed"
+        ERROR=1
+      fi
+    done
+  fi
+  echo "X11_LIBS=\$(X11_LIB_PATH) -lX11 \$(XF86VMODE_LIB) $X_ADD_LIBS \$(XINERAMA_LIB)" >> $CONF
 fi
 
 if [ -n "$FTGL" ] && [ $FTGL -gt 0 ]; then
@@ -245,7 +264,7 @@ if [ -n "$LIBS" ] && [ $LIBS -gt 0 ]; then
   if [ -n "$LIBS_TEST" ]; then
     for l in $LIBS_TEST; do
       rm -f tests/libtest
-      $CXX $CFLAGS -I$includedir tests/lib_test.cxx $LDFLAGS -L$libdir -l$l -o tests/libtest
+      $CXX $CFLAGS -I$includedir tests/lib_test.cxx $LDFLAGS -L$libdir -l$l -o tests/libtest 2>/dev/null
       if [ -f tests/libtest ]; then
           test -n "$ECHO" && $ECHO "lib$l is available"
           if [ -n "$MAKEFILE_DIR" ]; then
@@ -261,7 +280,7 @@ fi
 
 if [ -n "$LIBTIFF" ] && [ $LIBTIFF -gt 0 ]; then
   rm -f tests/libtest
-  $CXX $CFLAGS -I$includedir tests/lib_test.cxx $LDFLAGS -L$libdir -ltiff -o tests/libtest
+  $CXX $CFLAGS -I$includedir tests/lib_test.cxx $LDFLAGS -L$libdir -ltiff -o tests/libtest 2>/dev/null
     if [ -f tests/libtest ]; then
       test -n "$ECHO" && $ECHO "`tests/libtest`
                         detected"
@@ -275,9 +294,9 @@ fi
 
 if [ -n "$GETTEXT" ] && [ $GETTEXT -gt 0 ]; then
   rm -f tests/libtest
-    $CXX $CFLAGS -I$includedir tests/gettext_test.cxx $LDFLAGS -L$libdir -o tests/libtest
+    $CXX $CFLAGS -I$includedir tests/gettext_test.cxx $LDFLAGS -L$libdir -o tests/libtest 2>/dev/null
     if [ ! -f tests/libtest ]; then
-      $CXX $CFLAGS -I$includedir tests/gettext_test.cxx $LDFLAGS -L$libdir -lintl -o tests/libtest
+      $CXX $CFLAGS -I$includedir tests/gettext_test.cxx $LDFLAGS -L$libdir -lintl -o tests/libtest 2>/dev/null
     fi
     if [ -f tests/libtest ]; then
       test -n "$ECHO" && $ECHO "Gettext                 detected"
