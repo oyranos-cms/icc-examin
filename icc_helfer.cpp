@@ -60,7 +60,7 @@ icValue (icUInt16Number val)
   for (; klein < BYTES ; klein++ ) {
     korb[klein] = temp[gross--];
     #ifdef DEBUG_ICCFUNKT
-    cout << klein << " "; DBG
+    cout << klein << " "; DBG_PROG
     #endif
   }
 
@@ -70,10 +70,10 @@ icValue (icUInt16Number val)
   #if 0
   cout << *erg << " Größe nach Wandlung " << (int)korb[0] << " "
        << (int)korb[1] << " " << (int)korb[2] << " " <<(int)korb[3]
-       << " "; DBG
+       << " "; DBG_PROG
   #else
   cout << *erg << " Größe nach Wandlung " << (int)temp[0] << " " << (int)temp[1]
-       << " "; DBG
+       << " "; DBG_PROG
   #endif
   #endif
   return (long)*erg;
@@ -100,13 +100,13 @@ icValue (icUInt32Number val)
   #ifdef DEBUG_ICCFUNKT
   cout << *erg << " Größe nach Wandlung " << (int)temp[0] << " "
        << (int)temp[1] << " " << (int)temp[2] << " " <<(int)temp[3]
-       << " "; DBG
+       << " "; DBG_PROG
   #endif
 
   return (int) *erg;
 #else
   #ifdef DEBUG_ICCFUNKT
-  cout << "BIG_ENDIAN" << " "; DBG
+  cout << "BIG_ENDIAN" << " "; DBG_PROG
   #endif
   return (int)val;
 #endif
@@ -131,7 +131,7 @@ icValue (icUInt64Number val)
   #ifdef DEBUG_ICCFUNKT
   cout << *erg << " Größe nach Wandlung " << (int)temp[0] << " "
        << (int)temp[1] << " " << (int)temp[2] << " " <<(int)temp[3]
-       << " "; DBG
+       << " "; DBG_PROG
   #endif
   return (long)*erg;
 #else
@@ -160,7 +160,7 @@ icValue (icInt32Number val)
   #ifdef DEBUG_ICCFUNKT
   cout << *erg << " Größe nach Wandlung " << (int)korb[0] << " "
        << (int)korb[1] << " " << (int)korb[2] << " " <<(int)korb[3]
-       << " "; DBG
+       << " "; DBG_PROG
   #endif
   return (signed int)*erg;
 #else
@@ -188,7 +188,7 @@ icValue (icInt16Number val)
   #ifdef DEBUG_ICCFUNKT
   cout << *erg << " Größe nach Wandlung " << (int)korb[0] << " "
        << (int)korb[1] << " " << (int)korb[2] << " " <<(int)korb[3]
-       << " "; DBG
+       << " "; DBG_PROG
   #endif
   return (signed int)*erg;
 #else
@@ -506,7 +506,7 @@ getSigTagName               ( icTagSignature  sig )
   #ifdef DEBUG_ICCTAG_
   char c[5] = "clrt";
   long* l = (long*) &c[0];
-  cout << *l << ": " << (long)"clrt" << " "; DBG
+  cout << *l << ": " << (long)"clrt" << " "; DBG_PROG
   #endif
   return text;
 }
@@ -716,7 +716,7 @@ getMeasurementFlare             ( icMeasurementFlare sig )
 
 std::string
 printDatum                      (icDateTimeNumber date)
-{ DBG
+{ DBG_PROG
   std::stringstream s;
     s << _("Datum") << ":       " <<
                        icValue(date.day)     << "/" <<
@@ -731,7 +731,7 @@ printDatum                      (icDateTimeNumber date)
 }
 
 std::string
-zeig_bits_bin(void* speicher, int groesse)
+zeig_bits_bin(const void* speicher, int groesse)
 {
   std::string text;
   int byte_zahl;
@@ -821,8 +821,8 @@ suchenErsetzen          (std::string &text,
 #define DBG_PARSER DBG_PROG
 #define DBG_PARSER_START DBG_PROG_START
 #define DBG_PARSER_ENDE DBG_PROG_ENDE
-#define DBG_PARSER_S( text ) DBG_PROG_S( text )
-#define DBG_PARSER_V( text ) DBG_PROG_V( text )
+#define DBG_PARSER_S( text ) DBG_NUM_S( text )
+#define DBG_PARSER_V( text ) DBG_NUM_V( text )
 #else
 #define DBG_PARSER
 #define DBG_PARSER_START
@@ -919,6 +919,10 @@ unterscheideZiffernWorte ( std::string &zeile,
     suchenErsetzen( zeile, ",", ".", 0 );
   }
 
+  // Kommas erkennen
+  char* loc_alt = getenv("LANG");
+  setlocale(LC_ALL,"en_GB");
+
   // Worte Suchen und von Zahlen scheiden
   for( pos = 0; pos < zeile.size() ; ++pos )
   { DBG_PARSER_V( pos <<" "<< zeile.size() )
@@ -987,7 +991,8 @@ unterscheideZiffernWorte ( std::string &zeile,
         pos += txt.size();
         sprintf( text, "%f", atof( zeile.substr( pos, ende-pos ).c_str() ) );
         DBG_PARSER_S( "Fließkommazahl: " << txt )
-        ergebnis.push_back( zifferWort(atof(txt.c_str())) );
+        ergebnis.push_back( zifferWort((double)atof(txt.c_str())) );
+        DBG_PARSER_S( "prüfen: "<< ergebnis[ergebnis.size()-1].zahl.first <<" "<< ergebnis[ergebnis.size()-1].zahl.second )
       } else
       if( txt.find_first_of( ziffer ) != std::string::npos &&
           txt.find( "." ) == std::string::npos &&
@@ -1048,6 +1053,9 @@ unterscheideZiffernWorte ( std::string &zeile,
   }
   for( unsigned i = 0; i < worte.size(); i++)
     DBG_PARSER_V( worte[i] );
+
+  if(loc_alt)
+    setlocale(LC_ALL,loc_alt);
 
   DBG_PARSER_ENDE
   return ergebnis;

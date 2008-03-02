@@ -99,7 +99,7 @@ Oyranos::profil_test_ (const char* profil_name)
         {
           // Referenz auf Block holen
           Speicher *v_block = &pspeicher_[profil_name];
-          v_block->name = profil_name;
+          *v_block = profil_name;
           int size;
           char* block = (char*)oyGetProfileBlock( profil_name, &size);
           DBG_PROG_V( (int)block <<"|"<< size )
@@ -113,7 +113,7 @@ Oyranos::profil_test_ (const char* profil_name)
     }
   }
   
-  DBG_NUM_S( "Standard " OY_DEFAULT_LAB_PROFILE " Profil = "<< lab_.name <<" "<< lab_.size() <<"\n" )
+  DBG_NUM_S( "Standard " OY_DEFAULT_LAB_PROFILE " Profil = "<< *lab_ <<" "<< lab_.size() <<"\n" )
 
   #endif
   DBG_PROG_ENDE
@@ -131,9 +131,9 @@ Oyranos::lab_test_ ()
     char* profil_name = oyGetDefaultLabProfileName();
     DBG_PROG_V( (int)profil_name << oyGetDefaultLabProfileName() )
     if( profil_name &&
-        v_block->name != profil_name )
+        *v_block != profil_name )
     { 
-        v_block->name = profil_name;
+        *v_block = profil_name;
 
         int size = oyGetProfileSize ( profil_name );
         DBG_PROG_V( size )
@@ -149,7 +149,7 @@ Oyranos::lab_test_ ()
     }
   }
   
-  DBG_NUM_S( "Standard " OY_DEFAULT_LAB_PROFILE " Profil = "<< lab_.name <<" "<< lab_.size() <<"\n" )
+  DBG_NUM_S( "Standard " OY_DEFAULT_LAB_PROFILE " Profil = "<< *lab_ <<" "<< lab_.size() <<"\n" )
 
   
   #endif
@@ -160,36 +160,39 @@ void
 Oyranos::moni_test_ ()
 {
   DBG_PROG_START
-  Speicher *v_block = &moni_;
-  char* block;
   #if HAVE_OY
-  { DBG_PROG_V( v_block->size() )
+  {
+    char* block;
     const char *display_name = 0;
     char* profil_name =
-      oyGetMonitorProfileName (display_name);
-    DBG_PROG_V( (int)profil_name << profil_name )
+     oyGetMonitorProfileName (display_name);
+    Speicher v_block = moni_;
+      DBG_MEM_V( v_block.size() )
+      DBG_PROG_V( (int*)profil_name << profil_name )
     if( profil_name &&
-        v_block->name != profil_name )
+        v_block != profil_name )
     { 
-        v_block->name = profil_name;
-
         int size = oyGetProfileSize ( profil_name );
-        DBG_PROG_V( size )
+          DBG_MEM_V( size )
         if (size)
         {
-          block = (char*)oyGetProfileBlock( profil_name, &size);
+          block = (char*)
+           oyGetProfileBlock( profil_name, &size);
           if( oyCheckProfileMem( block, size, 0 ) )
             WARN_S ( _("Profil konnte nicht geladen werden") )
           else {
-            DBG_PROG_V( (int)block <<"|"<< size )
-            v_block->lade(block, size);
+              DBG_MEM_V( (int*)block <<"|"<< size )
+            v_block.lade(block, size);
           }
         }
+        v_block = profil_name;
+
       if(profil_name) free(profil_name);
+        DBG_MEM
     }
   }
   
-  DBG_NUM_S( "Monitorprofil = "<< moni_.name <<" "<< moni_.size() <<"\n" )
+  DBG_NUM_S( "Monitorprofil = "<< *moni_ <<" "<< moni_.size() <<"\n" )
 
   #endif
   DBG_PROG_ENDE
@@ -207,9 +210,9 @@ Oyranos::rgb_test_ ()
     char* profil_name = oyGetDefaultRGBProfileName();
     DBG_PROG_V( (int)profil_name << oyGetDefaultRGBProfileName() )
     if( profil_name &&
-        v_block->name != profil_name )
+        *v_block != profil_name )
     { 
-        v_block->name = profil_name;
+        *v_block = profil_name;
 
         int size = oyGetProfileSize ( profil_name );
         DBG_PROG_V( size )
@@ -225,7 +228,7 @@ Oyranos::rgb_test_ ()
     }
   }
 
-  DBG_NUM_S( "Standard " OY_DEFAULT_RGB_PROFILE " Profil = "<< rgb_.name <<" "<< rgb_.size() <<"\n" )
+  DBG_NUM_S( "Standard " OY_DEFAULT_RGB_PROFILE " Profil = "<< *rgb_ <<" "<< rgb_.size() <<"\n" )
   #endif
   DBG_PROG_ENDE
 }
@@ -242,9 +245,9 @@ Oyranos::cmyk_test_ ()
     char* profil_name = oyGetDefaultCmykProfileName();
     DBG_PROG_V( (int)profil_name << oyGetDefaultCmykProfileName() )
     if( profil_name &&
-        v_block->name != profil_name )
+        *v_block != profil_name )
     { 
-        v_block->name = profil_name;
+        *v_block = profil_name;
 
         int size = oyGetProfileSize ( profil_name );
         DBG_PROG_V( size )
@@ -260,7 +263,7 @@ Oyranos::cmyk_test_ ()
     }
   }
 
-  DBG_NUM_S( "Standard " OY_DEFAULT_CMYK_PROFILE " Profil = "<< cmyk_.name <<" "<< cmyk_.size() <<"\n" )
+  DBG_NUM_S( "Standard " OY_DEFAULT_CMYK_PROFILE " Profil = "<< *cmyk_ <<" "<< cmyk_.size() <<"\n" )
   #endif
   DBG_PROG_ENDE
 }
@@ -316,13 +319,13 @@ Oyranos::setzeMonitorProfil (const char* profil_name )
 
 #include "icc_vrml.h"
 std::vector<ICCnetz>
-Oyranos::netzVonProfil (Speicher& p)
+Oyranos::netzVonProfil (const Speicher p)
 {
   DBG_PROG_START
   std::string vrml;
   const char* b = p;
   DBG_PROG_V( (int*)b )
-  vrml = icc_create_vrml (p,p);
+  vrml = icc_create_vrml ( p,p.size() );
   std::vector<ICCnetz> netz = extrahiereNetzAusVRML (vrml);
   DBG_PROG_ENDE
   return netz;

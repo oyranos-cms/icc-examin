@@ -104,13 +104,13 @@ ICCmeasurement::leseTag (void)
 { DBG_PROG_START
   CgatsFilter cgats;
   cgats.lade( _data, _size );
-  std::string data = cgats.lcms_gefiltert (); DBG_V( (int*)_data )
+  std::string data = cgats.lcms_gefiltert (); DBG_NUM_V( (int*)_data )
 
   // korrigierte CGATS Daten -> _data
   if (_data != NULL) free (_data);
   _data = (char*) calloc (sizeof(char), data.size());
   _size = data.size();
-  memcpy (_data, data.c_str(), _size); DBG_V( (int*)_data )
+  memcpy (_data, data.c_str(), _size); DBG_NUM_V( (int*)_data )
 
   // lcms liest ein
   lcms_parse();
@@ -395,7 +395,7 @@ ICCmeasurement::init_umrechnen                     (void)
       block = icc_oyranos.moni(groesse);
       if(groesse)
         hsRGB = cmsOpenProfileFromMem(const_cast<char*>(block), groesse);
-      DBG_PROG_S( icc_oyranos.moni() << " Farben" )
+      DBG_PROG_S( icc_oyranos.moni_name() << " Farben" )
     } else DBG_PROG_S( "Export Farben" )
     if(!hsRGB)
       hsRGB = cmsCreate_sRGBProfile ();
@@ -481,7 +481,7 @@ ICCmeasurement::init_umrechnen                     (void)
       _XYZ_Ergebnis.resize(_nFelder);
       _Lab_Satz.resize(_nFelder);
       _Lab_Ergebnis.resize(_nFelder);
-      _Lab_Differenz.resize(_nFelder); DBG_V( _Lab_Differenz.size() )
+      _Lab_Differenz.resize(_nFelder); DBG_NUM_V( _Lab_Differenz.size() )
       _DE00_Differenz.resize(_nFelder);
 
       if( (int)_XYZ_Satz.size() != _nFelder )
@@ -587,12 +587,12 @@ ICCmeasurement::init_umrechnen                     (void)
     _DE00_Differenz_Durchschnitt += _DE00_Differenz[i];
   }
   _DE00_Differenz_Durchschnitt /= (double)_DE00_Differenz.size();
-  DBG_V( _Lab_Satz.size() )
-  DBG_V( _Lab_Ergebnis.size() )
-  DBG_V( _Lab_Differenz.size() )
-  DBG_V( _RGB_Satz.size() )
-  DBG_V( _CMYK_Satz.size() )
-  DBG_V( _RGB_MessFarben.size() )
+  DBG_NUM_V( _Lab_Satz.size() )
+  DBG_NUM_V( _Lab_Ergebnis.size() )
+  DBG_NUM_V( _Lab_Differenz.size() )
+  DBG_NUM_V( _RGB_Satz.size() )
+  DBG_NUM_V( _CMYK_Satz.size() )
+  DBG_NUM_V( _RGB_MessFarben.size() )
   DBG_PROG_ENDE
 }
 
@@ -632,7 +632,7 @@ ICCmeasurement::getHtmlReport                     (bool aussen)
   if (_reportTabelle.size() <= 1)
     tkopf = 0;
   // Allgemeine Informationen
-  for (int i = 0; i < kopf - tkopf ; i++) { DBG_S (_nFelder<<"|"<<kopf<<"|"<<i)
+  for (int i = 0; i < kopf - tkopf ; i++) { DBG_NUM_S (_nFelder<<"|"<<kopf<<"|"<<i)
     //if (i == 0) html << "<h2>";
     html << _reportTabelle[i][0];
     //if (i == 0) html << "</h2>";
@@ -769,7 +769,7 @@ ICCmeasurement::getText                     (void)
       layout.push_back (HI); // CMYK
     }
     spalten = (int) layout.size();
-    tabelle[z].resize( spalten ); DBG_S( tabelle[z].size() )
+    tabelle[z].resize( spalten ); DBG_NUM_S( tabelle[z].size() )
     tabelle[z][sp++] = _("Messfeld");
     tabelle[z][sp++]=_("dE Lab");
     tabelle[z][sp++]=_("dE2000");

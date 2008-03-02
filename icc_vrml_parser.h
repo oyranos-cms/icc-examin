@@ -40,6 +40,7 @@ struct ICCnetzPunkt {
 struct ICCnetz {
   std::vector<ICCnetzPunkt> punkte;
   std::vector<int> indexe;  // 4 je Punkt 
+  std::string name;
   double transparenz;
 };
 

@@ -323,7 +323,7 @@ TagDrawings::drawCieShoe_ ( int repeated)
   if (!repeated) {
     rz = (double)clock()/(double)CLOCKS_PER_SEC - rz;
     rechenzeit += rz;
-    //cout << rechenzeit << " Sekunden  "; DBG
+    //cout << rechenzeit << " Sekunden  "; DBG_PROG
     if (rechenzeit > 0.05)
       raster ++;
     else if (rechenzeit < 0.03)
@@ -437,7 +437,7 @@ TagDrawings::drawCieShoe_ ( int repeated)
         pos.push_back ( xNachBild (xyY[0]) );
         pos.push_back ( yNachBild (xyY[1]) );
         #ifdef DEBUG_DRAW
-        cout << texte[i] << " " << punkte.size(); DBG
+        cout << texte[i] << " " << punkte.size(); DBG_PROG
         #endif
     }
 
@@ -456,13 +456,13 @@ TagDrawings::drawCieShoe_ ( int repeated)
             fl_line( (int)(pos[k+0]), (int)(pos[k+1]),
                      (int)(pos[k+2]), (int)(pos[k+3]));
             #ifdef DEBUG_DRAW
-            cout << "Linie "; DBG
+            cout << "Linie "; DBG_PROG
             #endif
         }
         fl_line( (int)(pos[0]), (int)(pos[1]),
                  (int)(pos[4]), (int)(pos[5]));
         #ifdef DEBUG_DRAW
-        cout << "Linie "; DBG
+        cout << "Linie "; DBG_PROG
         #endif
     }
 
@@ -477,7 +477,7 @@ TagDrawings::drawCieShoe_ ( int repeated)
         #endif
         XYZ.Y = punkte[j++];
         #ifdef DEBUG_DRAW
-        cout << punkte[j] << " " << texte[i] << " " << punkte.size(); DBG
+        cout << punkte[j] << " " << texte[i] << " " << punkte.size(); DBG_PROG
         #endif
         XYZ.Z = punkte[j++]; //1 - ( punkte[i][0] +  punkte[i][1] );
 
@@ -682,9 +682,7 @@ TagDrawings::drawKurve_    ()
     } else {
       fl_color(9 + j);
     }
-    #ifdef DEBUG//_DRAW
-    cout << "Zeichne Kurve "<< name << " " << j << " " << kurven[j].size() << " Teile "; DBG
-    #endif
+    DBG_PROG_S( cout << "Zeichne Kurve "<< name << " " << j << " " << kurven[j].size() << " Teile " )
     s.str("");
     if (kurven2.size())
     {
@@ -730,23 +728,23 @@ TagDrawings::drawKurve_    ()
     } else if (kurven[j].size() == 1
             && ist_kurve) {
       double segmente = 256;
-      double gamma = kurven[j][0]; DBG_V( gamma )
+      double gamma = kurven[j][0]; DBG_NUM_V( gamma )
       for (int i = 1; i < segmente; i++)
         fl_line (xNachBild( pow( (double)(i-1.0)/segmente, gamma ) * max_x ),
                  yNachBild( (i-1) / ((segmente-1) / max_y) ),
                  xNachBild( pow( (double)i/segmente, gamma ) * max_x ),
                  yNachBild( (i) / ((segmente-1) / max_y) ) );
       // Infos einblenden 
-      s << name << _(" mit einem Eintrag für Gamma: ") << gamma; DBG_V( gamma )
+      s << name << _(" mit einem Eintrag für Gamma: ") << gamma; DBG_NUM_V( gamma )
       fl_draw ( s.str().c_str(), xNachBild(0) + 2, yNachBild(max_y) + j*16 +12);
     // parametrischer Eintrag mit Wert für Minimum und Maximum 
     } else if (kurven[j].size() == 3
             && texte[texte.size()-1] == "gamma_start_ende") {
       double segmente = 256;
-      double gamma = kurven[j][0]; DBG_V( gamma )
-      double start = kurven[j][1]; DBG_V( start )
-      double ende  = kurven[j][2]; DBG_V( ende )
-      double mult  = (ende - start); DBG_V( mult )
+      double gamma = kurven[j][0]; DBG_NUM_V( gamma )
+      double start = kurven[j][1]; DBG_NUM_V( start )
+      double ende  = kurven[j][2]; DBG_NUM_V( ende )
+      double mult  = (ende - start); DBG_NUM_V( mult )
       for (int i = 1; i < segmente; i++) {
         fl_line (xNachBild( (pow( (double)(i-1.0)/segmente, gamma)
                             * mult + start) * max_x ),

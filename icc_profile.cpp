@@ -802,7 +802,7 @@ lcms_error (int ErrorCode, const char* ErrorText)
 }
 
 const char* cp_nchar (char* text, int n)
-{ DBG_PROG_START
+{ DBG_MEM_START
   static char string[1024];
 
 /*  for (int i = 0; i < 1024 ; i++)
@@ -813,9 +813,9 @@ const char* cp_nchar (char* text, int n)
   string[1023] = '\000';
 
   #ifdef DEBUG
-  DBG_NUM_V( n << " Buchstaben kopieren " <<  (int)text << " " << string)
+  DBG_MEM_V( n << " Buchstaben kopieren " <<  (int)text << " " << string)
   #endif
-  DBG_PROG_ENDE
+  DBG_MEM_ENDE
   return string;
 }
 

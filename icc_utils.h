@@ -44,6 +44,20 @@
 extern int level_PROG;
 extern int icc_debug;
 
+/*  icc_debug wird mit der Umgebungsvariable ICCEXAMIN_DEBUG in main() gesetzt
+ *  Niveaus:
+ *   0: DBG              // nur zwischenzeitlich verwenden
+ *   1: DBG_NUM
+ *   2: DBG_PROG
+ *   3: DBG_MEM
+ *   4: Datei E/A
+ *
+ *   [1,2,...,9]    diese und alle kleineren Kategorien
+ *   10+[1,2,...,9] einzig diese Kategorie , z.B. ICCEXAMIN_DEBUG=13 wählt alle
+ *                                                Speicherinformationen aus
+ */
+
+
 #define DBG_UHR_ (double)clock()/(double)CLOCKS_PER_SEC
 
 #define DBG_T_     cout << __FILE__<<":"<<__LINE__ <<" "<< __func__ << "() " << DBG_UHR_ << " ";
@@ -51,40 +65,47 @@ extern int icc_debug;
 #define DBG_       { LEVEL cout << "        "; DBG_T_ cout << endl; }
 #define DBG_S_(txt){ LEVEL cout << "        "; DBG_T_ cout << txt << endl; }
 #define DBG_V_(txt){ LEVEL cout << "        "; DBG_T_ cout << #txt << " " << txt << endl;}
-#define DBG        if (icc_debug) { DBG_ }
-#define DBG_S(txt) if (icc_debug) { DBG_S_(txt) }
-#define DBG_V(txt) if (icc_debug) { DBG_V_(txt) }
+#define DBG        DBG_
+#define DBG_START  {level_PROG++; for (int i = 0; i < level_PROG; i++) cout << "+"; cout << " Start: "; DBG_T_ cout << endl; }
+#define DBG_ENDE   { for (int i = 0; i < level_PROG; i++) cout << "+"; cout << " Ende:  "; DBG_T_ level_PROG--; cout << endl; }
+#define DBG_S(txt) DBG_S_(txt)
+#define DBG_V(txt) DBG_V_(txt)
 
-#if 1
-#define DBG_MEM DBG
-#define DBG_MEM_S(txt) DBG_S(txt)
-#define DBG_MEM_V(txt) DBG_V(txt)
-#else
-#define DBG_MEM
-#define DBG_MEM_S(txt)
-#define DBG_MEM_V(txt)
-#endif
-#if 1
-#define DBG_NUM DBG
-#define DBG_NUM_S(txt) DBG_S(txt)
-#define DBG_NUM_V(txt) DBG_V(txt)
+#if DEBUG
+#define DBG_BED(n) if (icc_debug >= n && icc_debug < 10 || icc_debug == 1##n)
+#define DBG_NUM        DBG_BED(1) DBG
+#define DBG_NUM_S(txt) DBG_BED(1) DBG_S(txt)
+#define DBG_NUM_V(txt) DBG_BED(1) DBG_V(txt)
 #else
 #define DBG_NUM
 #define DBG_NUM_S(txt)
 #define DBG_NUM_V(txt)
 #endif
-#if 1
-#define DBG_PROG DBG
-#define DBG_PROG_START if (icc_debug) {level_PROG++; for (int i = 0; i < level_PROG; i++) cout << "+"; cout << " Start: "; DBG_T_ cout << endl; }
-#define DBG_PROG_ENDE if (icc_debug) { for (int i = 0; i < level_PROG; i++) cout << "+"; cout << " Ende:  "; DBG_T_ level_PROG--; cout << endl; }
-#define DBG_PROG_S(txt) DBG_S(txt)
-#define DBG_PROG_V(txt) DBG_V(txt)
+#if DEBUG
+#define DBG_PROG        DBG_BED(2) DBG
+#define DBG_PROG_START  DBG_BED(2) DBG_START
+#define DBG_PROG_ENDE   DBG_BED(2) DBG_ENDE
+#define DBG_PROG_S(txt) DBG_BED(2) DBG_S(txt)
+#define DBG_PROG_V(txt) DBG_BED(2) DBG_V(txt)
 #else
 #define DBG_PROG
 #define DBG_PROG_START
 #define DBG_PROG_ENDE
 #define DBG_PROG_S(txt)
 #define DBG_PROG_V(txt)
+#endif
+#if DEBUG
+#define DBG_MEM        DBG_BED(3) DBG
+#define DBG_MEM_START  DBG_BED(3) DBG_START
+#define DBG_MEM_ENDE   DBG_BED(3) DBG_ENDE
+#define DBG_MEM_S(txt) DBG_BED(3) DBG_S(txt)
+#define DBG_MEM_V(txt) DBG_BED(3) DBG_V(txt)
+#else
+#define DBG_MEM
+#define DBG_MEM_START
+#define DBG_MEM_ENDE
+#define DBG_MEM_S(txt)
+#define DBG_MEM_V(txt)
 #endif
 #define WARN { cout << _("!!! Warnung !!!"); DBG_ }
 #define WARN_S(txt) { cout << _("!!! Warnung !!!"); DBG_S_(txt) }

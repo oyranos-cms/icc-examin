@@ -64,15 +64,23 @@ icc_create_vrml( const char* p, int size )
     return vrml;
 
   std::stringstream profil_temp_name;
-  profil_temp_name << getenv("TMPDIR") << "/oyranos_" << time(0) ;
+  if(getenv("TMPDIR"))
+    profil_temp_name << getenv("TMPDIR") << "/oyranos_" << time(0) ;
+  else
+    profil_temp_name << "/tmp/oyranos_" << time(0) ;
   DBG_PROG_V( profil_temp_name.str() )
   std::string ptn = profil_temp_name.str(); ptn.append(".icc");
 
   // Speichern
   {
-    std::ofstream f ( ptn.c_str(),  std::ios::out );
-    size_t s = size;
-    f.write ( p, s );
+    std::ofstream f;
+    f.clear();
+    f.open ( ptn.c_str(),  std::ios::out );
+    if(f.good())
+    {
+      size_t s = size;
+      f.write ( p, s );
+    }
     f.close();
   }
   // vrml produzieren - argyll Variante
@@ -87,6 +95,7 @@ icc_create_vrml( const char* p, int size )
   erase_file (ptn.c_str());
   ptn = profil_temp_name.str(); ptn.append(".gam");
   erase_file (ptn.c_str());
+  delete [] system_befehl;
 
   // Datei öffnen
   {
@@ -94,15 +103,9 @@ icc_create_vrml( const char* p, int size )
     std::ifstream f ( ptn.c_str(), std::ios::binary | std::ios::ate );
 
     DBG_PROG
-    if (ptn == "")
-      throw ausn_file_io ("kein Dateiname angegeben");
-    DBG_PROG
-    if (!f) {
-      throw ausn_file_io ("keine lesbare Datei gefunden");
-      ptn = "";
-    }
 
     size_t size = (unsigned int)f.tellg();         f.seekg(0);
+    ++size;
     char* data = (char*)calloc (sizeof (char), size);
 
 
@@ -111,6 +114,7 @@ icc_create_vrml( const char* p, int size )
     f.close();
     vrml = data;
     erase_file (ptn.c_str());
+    free (data);
   }
 
   icc_examin->fortschritt(1.1);

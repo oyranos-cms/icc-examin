@@ -11,6 +11,7 @@ libdir		= ${exec_prefix}/lib
 mandir		= ${prefix}/man
 srcdir		= .
 
+DEBUG = -DDEBUG
 #APPLE = 1
 FLTK = 1
 ifdef FLTK
@@ -39,12 +40,12 @@ endif
 FLTK_GL_LIBS=-lfltk_gl
 
 ifdef APPLE
-  OPTS=-Wall -g
+  OPTS=-Wall -g $(DEBUG)
   GLUT = -framework GLUT -lobjc
   OSX_CPP = icc_helfer_osx.cpp
   OSX_H  = -DHAVE_OSX
 else
-  OPTS=-Wall -g -Os
+  OPTS=-Wall -g -Os $(DEBUG)
   GLUT = -lglut
   X_H  = -DHAVE_X
   X_CPP = icc_helfer_x.cpp

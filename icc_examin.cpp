@@ -522,19 +522,23 @@ ICCexamin::histogram ()
   if(p.size())
     icc_betrachter->DD_histogram->hineinPunkte( p, f, namen, texte );
 
-  size_t g;
-  const char* p_block = icc_oyranos.moni (g);
+  size_t g; DBG_MEM
+  const char* p_block = icc_oyranos.moni (g); DBG_MEM
 
   {
     std::ofstream f ( "test_loeschen.icc",  std::ios::out );
     f.write ( p_block, g );
     f.close();
-  }
+  } DBG_MEM
 
-  Speicher sp (p_block, g);
-  if(p_block) free(const_cast<char*>(p_block));
-  p_block = 0;
-  std::vector<ICCnetz> netz = icc_oyranos. netzVonProfil( sp );
+  std::vector<ICCnetz> netz = icc_oyranos. netzVonProfil( icc_oyranos.moni() );
+  if(netz.size())
+  {
+    DBG_NUM_V( netz[0].transparenz )
+    netz[0].transparenz = 1.0;
+    netz[0].name = icc_oyranos.moni_name();
+    icc_betrachter->DD_histogram->hineinNetze( netz );
+  }
 
   DBG_PROG_ENDE
 }

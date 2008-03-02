@@ -3,7 +3,6 @@
 #ifndef icc_betrachter_h
 #define icc_betrachter_h
 #include <FL/Fl.H>
-#define DEBUG
 #include <cassert>
 #include <iostream>
 //#include <sstream>

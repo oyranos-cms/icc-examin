@@ -79,7 +79,7 @@ std::string         getMeasurementFlare( icMeasurementFlare flare );
 std::string         printDatum( icDateTimeNumber date );
 
 // Datendarstellung
-std::string         zeig_bits_bin      (void* speicher, int groesse);
+std::string         zeig_bits_bin      (const void* speicher, int groesse);
 
 // Datei E/A
 char* ladeDatei ( std::string dateiname, size_t *size );

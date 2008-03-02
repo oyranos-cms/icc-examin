@@ -36,6 +36,15 @@
 
 #define lp {l+=0.1; icc_examin->fortschritt(l);}
 
+//#define DEBUG_VRML_PARSER 1
+#if DEBUG_VRML_PARSER
+#define DBG_VRML_PARSER_V(text) DBG_NUM_V(text)
+#define DBG_VRML_PARSER_S(text) DBG_NUM_S(text)
+#else
+#define DBG_VRML_PARSER_V(text)
+#define DBG_VRML_PARSER_S(text)
+#endif
+
 using namespace icc_parser;
 
 class ICCvrmlParser
@@ -66,6 +75,14 @@ class ICCvrmlParser
   std::string::size_type pos=0, netz_pos=0;
   std::string::size_type netz_ende;
 
+  #if DEBUG_VRML_PARSER
+  double max_farbe[3],  min_farbe[3], min_pos[3], max_pos[3];
+  for(int i = 0; i < 3; ++i) {
+    max_farbe[i] = max_pos[i] = -100000.0;
+    min_farbe[i] = min_pos[i] =  100000.0;
+  }
+  #endif
+
   // nach Netzen in der vrml Datei suchen
   while( (netz_pos = original_.find( "IndexedFaceSet", netz_pos )) !=
         std::string::npos )
@@ -77,7 +94,8 @@ class ICCvrmlParser
       netz_ende = original_.size();
     if( netz_pos == std::string::npos )
       break;
-    DBG_NUM_S( "IndexedFaceSet gefunden auf Position " << netz_pos <<"-"<< netz_ende );
+
+    DBG_VRML_PARSER_S( "IndexedFaceSet gefunden auf Position " << netz_pos <<"-"<< netz_ende );
 
     arbeit_ = original_.substr (netz_pos, netz_ende-netz_pos+1);
     zeilen = zeilenNachVector (arbeit_);
@@ -86,12 +104,13 @@ class ICCvrmlParser
     // ab nun zeilenweise
     bool in_punkte = false;
     bool in_farben = false;
-    bool in_indexe = false;
-    netze_.resize( netze_.size()+1 );
+    bool in_indexe = false; DBG_MEM_V( netze_.size() )
+    netze_.resize( netze_.size()+1 ); DBG_MEM_V( netze_.size() )
     int endnetz = netze_.size()-1;
-    std::string zeile;
+    std::string zeile; DBG_MEM
     int geschweifte_klammer = 0;
-    int punkt_n = 0, wert_n = 0;
+    int punkt_n = 0,
+        wert_n = 0;
     for(unsigned int z = 0; z < zeilen .size(); z++)
     {
       // Hole eine kommentarfreie Zeile
@@ -99,26 +118,26 @@ class ICCvrmlParser
 
       pos = 0;
       while( (pos = zeile.find("{",pos)) != std::string::npos ) {
-        //DBG_NUM_V( zeilen[z] )
+        DBG_VRML_PARSER_V( zeilen[z] )
         ++geschweifte_klammer;
         ++pos;
       }
       pos = 0;
       while( (pos = zeile.find("}",pos)) != std::string::npos ) {
-        //DBG_NUM_V( zeilen[z] )
+        DBG_VRML_PARSER_V( zeilen[z] )
         --geschweifte_klammer;
         ++pos;
       }
 
       #define VRMLBereichsTest(schalter, schluesselauf, schluesselzu) \
       if( zeile.find(schluesselauf) != std::string::npos ) { \
-        DBG_NUM_S( z << schluesselauf ) \
+        DBG_VRML_PARSER_S( z << schluesselauf ) \
         wert_n = punkt_n = 0; \
-        schalter = true; DBG_NUM_V( schalter ) \
+        schalter = true; DBG_VRML_PARSER_V( schalter ) \
       } \
       if( zeile.find(schluesselzu) != std::string::npos && \
           schalter ) { \
-        DBG_NUM_S( z << schluesselzu ) \
+        DBG_VRML_PARSER_S( z << schluesselzu ) \
         schalter = false; \
       }
 
@@ -127,7 +146,7 @@ class ICCvrmlParser
         VRMLBereichsTest ( in_farben, "Color", "}" )
         VRMLBereichsTest ( in_indexe, "coordIndex", "]" )
       }
-      //DBG_NUM_S( z <<" "<< geschweifte_klammer <<" "<< in_punkte <<" "<< in_farben <<" "<< in_indexe )
+      DBG_VRML_PARSER_S( z <<" "<< geschweifte_klammer <<" "<< in_punkte <<" "<< in_farben <<" "<< in_indexe )
       achse = 0;
       if( in_punkte )
       {
@@ -136,12 +155,12 @@ class ICCvrmlParser
 
         // ausgelesene Werte sortieren
         for(unsigned int w = 0; w < werte.size(); ++w)
-        { //DBG_NUM_S( "w [" << w <<"]" << werte.size() <<" Netz: "<< endnetz <<" punkte "<< netze_[endnetz].punkte.size() )
+        { DBG_VRML_PARSER_S( "w [" << w <<"]" << werte.size() <<" Netz: "<< endnetz <<" punkte "<< netze_[endnetz].punkte.size() )
           if(werte[w].zahl.first)
           {
             dimensionen = 3;
             achse = wert_n%dimensionen;
-            //DBG_NUM_S( "w%3 " << wert_n%dimensionen <<" p_s "<< netze_[endnetz].punkte.size() <<" w/3 "<< wert_n/dimensionen )
+            DBG_VRML_PARSER_S( "w%3 " << wert_n%dimensionen <<" p_s "<< netze_[endnetz].punkte.size() <<" w/3 "<< wert_n/dimensionen )
             if(achse == 0)
             {
               if(netze_[endnetz].punkte.size() <= wert_n/dimensionen)
@@ -150,11 +169,22 @@ class ICCvrmlParser
               punkt_n = wert_n/dimensionen;
             }
 
-            //DBG_NUM_S( "w " << w <<" "<< werte[w].zahl.second )
-            netze_[endnetz].punkte[punkt_n].koord[achse] =
-                werte[w].zahl.second;
+            DBG_VRML_PARSER_S( "w " << w <<" "<< werte[w].zahl.second )
+            if(achse == 2)
+              netze_[endnetz].punkte[punkt_n].koord[0] =
+                  werte[w].zahl.second / 100.0 +0.5;
+            else
+              netze_[endnetz].punkte[punkt_n].koord[achse+1] =
+                  werte[w].zahl.second / 255.0 + 0.5;
 
-            //DBG_NUM_S( endnetz<<" punkt_n "<<punkt_n<<" achse "<<achse<<" "<< netze_[endnetz].punkte[punkt_n].koord[achse] )
+            #if DEBUG_VRML_PARSER
+            if(min_pos[achse] > werte[w].zahl.second)
+              min_pos[achse] = werte[w].zahl.second;
+            if(max_pos[achse] < werte[w].zahl.second)
+              max_pos[achse] = werte[w].zahl.second;
+            #endif
+
+            DBG_VRML_PARSER_S( endnetz<<" punkt_n "<<punkt_n<<" achse "<<achse<<" "<< netze_[endnetz].punkte[punkt_n].koord[achse] )
 
             ++wert_n;
           } //else WARN_S(_("keine Zahl?? " << werte[w].zahl.second))
@@ -181,8 +211,17 @@ class ICCvrmlParser
             } else if (achse == 2)
               netze_[endnetz].punkte[punkt_n].farbe[achse+1] = 1;
 
+            DBG_VRML_PARSER_S( "w " << w <<" "<< werte[w].zahl.second )
+
             netze_[endnetz].punkte[punkt_n].farbe[achse] =
                 werte[w].zahl.second;
+
+            #if DEBUG_VRML_PARSER
+            if(min_farbe[achse] > werte[w].zahl.second)
+              min_farbe[achse] = werte[w].zahl.second;
+            if(max_farbe[achse] < werte[w].zahl.second)
+              max_farbe[achse] = werte[w].zahl.second;
+            #endif
 
             ++wert_n;
           } //else WARN_S(_("keine Zahl?? " << werte[w].zahl.second))
@@ -202,6 +241,13 @@ class ICCvrmlParser
     }
     netz_n++;
   }
+  #if DEBUG_VRML_PARSER
+  for(int i = 0; i < 3; ++i)
+    DBG_VRML_PARSER_S( "Position ["<<i<<"]: " <<min_pos[i] <<" - "<< max_pos[i] )
+  for(int i = 0; i < 3; ++i)
+    DBG_VRML_PARSER_S( "Farbe ["<<i<<"]: " <<min_farbe[i] <<" - "<< max_farbe[i] )
+  #endif
+
   DBG_PROG_ENDE
   icc_debug = debug_alt;
 }

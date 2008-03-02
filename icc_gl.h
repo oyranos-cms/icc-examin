@@ -33,6 +33,7 @@
 #include <vector>
 
 #include "agviewer.h"
+#include "icc_vrml_parser.h"
 
 class GL_Ansicht : public Fl_Group {
   // Datenhaltung
@@ -40,6 +41,7 @@ class GL_Ansicht : public Fl_Group {
   std::vector<std::string>nach_farb_namen_;
   std::vector<std::string>von_farb_namen_;
   std::vector<std::string>farb_namen_;
+  std::vector<ICCnetz> dreiecks_netze;
   std::vector<std::vector<double> > dreiecks_netze_;
   std::vector<std::vector<float> >  dreiecks_farben_; // rgba 0.0 - 1.0 (n*4)
   std::vector<std::string>          netz_namen_;
@@ -99,6 +101,8 @@ public:
                      std::vector<float>  punktFarben,      // RGBA
                      std::vector<std::string> farb_namen_, // pro Punkt
                      std::vector<std::string> achsNamen);  // 3*
+  void hineinNetze  (const std::vector<ICCnetz> & dreiecks_netze);
+  // veraltet -v
   void hineinNetze  (std::vector<std::vector<double> >dreiecks_netze_, 
                      std::vector<std::vector<float> > dreiecks_farben_,
                      std::vector<std::string> netz_namen_,

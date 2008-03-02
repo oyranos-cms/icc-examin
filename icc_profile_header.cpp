@@ -65,12 +65,12 @@ ICCheader::load (void *data)
 
   memcpy ((void*)&header, data, sizeof (icHeader));
   #ifdef DEBUG_ICCHEADER
-  DBG_S( sizeof (icHeader) << " genommen" )
+  DBG_NUM_S( sizeof (icHeader) << " genommen" )
   #endif
   if (header.size > 0) {
     valid = true;
   #ifdef DEBUG_ICCHEADER
-    DBG_V( size() )
+    DBG_NUM_V( size() )
   #endif
   } else {
     valid = false;
@@ -156,7 +156,7 @@ ICCheader::flags (void) const
     s << _("kann unabhängig vom Bild verwendet werden.");
 
   #ifdef DEBUG
-  DBG_S( (int)f[0] << " " << (long)header.flags )
+  DBG_NUM_S( (int)f[0] << " " << (long)header.flags )
   if (icc_debug)
   { LEVEL cout << "           ";
     char* ptr = (char*) &(header.flags);

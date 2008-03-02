@@ -56,27 +56,29 @@ class Oyranos
     void    init() {; }
 
     // Standard Profile
-    std::string lab  ()                { lab_test_(); return lab_.name; }
+    std::string lab  ()                { lab_test_();
+                                         return lab_.name(); }
     const char* lab  (size_t &g)       { lab_test_(); g = lab_.size();
                                          return lab_; }
-    std::string rgb  ()                { rgb_test_(); return rgb_.name; }
+    std::string rgb  ()                { rgb_test_(); return rgb_.name(); }
     const char* rgb  (size_t &g)       { rgb_test_(); g = rgb_.size();
                                          return rgb_; }
-    std::string cmyk ()                { cmyk_test_(); return cmyk_.name; }
+    std::string cmyk ()                { cmyk_test_(); return cmyk_.name(); }
     const char* cmyk (size_t &g)       { cmyk_test_(); g = cmyk_.size();
                                          return cmyk_; }
     // Geräte Profile
-    std::string moni ()                { moni_test_(); return moni_.name; }
+    std::string moni_name ()           { moni_test_(); return moni_.name(); }
     const char* moni (size_t &g)       { moni_test_(); g = moni_.size();
                                          return moni_; }
+    const Speicher & moni ()           { moni_test_(); return moni_; }
     // allgemeine Profile
     std::string profil (const char* n) { if(profil_test_(n)) return profil_(n);}
     const char* profil (const char* n, size_t &g) { return profil_(n,g); }
 
     int         setzeMonitorProfil (const char* name );
-    std::vector<ICCnetz> netzAusVRML (std::string & vrml)
+    std::vector<ICCnetz> netzAusVRML   (std::string & vrml)
                                 { return extrahiereNetzAusVRML (vrml); }
-    std::vector<ICCnetz> netzVonProfil (Speicher& p);
+    std::vector<ICCnetz> netzVonProfil (const Speicher p);
 
   private:
     void lab_test_();
