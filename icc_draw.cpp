@@ -219,7 +219,8 @@ TagDrawings::draw ()
     xO = x() +       tab_rand_x + linker_text_rand;     // Ursprung
     yO = y() + h() - tab_rand_y - unterer_text_rand;    // Ursprung
     breite  = (w() - 2*tab_rand_x - linker_text_rand);  // Breite des Diagrammes
-    hoehe   = (h() - 2*tab_rand_y - unterer_text_rand); // Hoehe des Diagrammes
+    float hoehe_   = (h() - 2*tab_rand_y - unterer_text_rand); // Hoehe des Diagrammes
+    hoehe   = MAX( 0, hoehe_ );
 
     DBG_PROG_S( kurven.size() <<" "<< punkte.size() )
     

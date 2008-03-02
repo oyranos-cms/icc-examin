@@ -88,7 +88,7 @@ ICCexamin::messwertLese (int n,
             daten = messung.getCmmLab(j);
           for (unsigned i = 0; i < daten.size(); ++i)
             p.push_back(daten[i]);
-          // ... dann die über das Profil errechneten Lab Werte
+          // ... dann die ueber das Profil errechneten Lab Werte
           if (icc_betrachter->DD_farbraum->zeig_punkte_als_paare) {
             daten = messung.getCmmLab(j);
             for (unsigned i = 0; i < daten.size(); ++i)
@@ -202,6 +202,7 @@ ICCexamin::farbenLese (int n,
       s = i*mult*3;
       if(mult == 2 && !neu)
       {
+        // alte Farben kopieren
         p[s+3] = p[s+0];
         p[s+4] = p[s+1];
         p[s+5] = p[s+2];
@@ -211,6 +212,7 @@ ICCexamin::farbenLese (int n,
       p[s+2] = p_neu[i*3+2];
       if(mult == 2 && neu)
       {
+        // neue Farben verdoppeln
         p[s+3] = p[s+0];
         p[s+4] = p[s+1];
         p[s+5] = p[s+2];
@@ -360,7 +362,7 @@ ICCexamin::farbraum (int n)
 
       icc_betrachter->DD_farbraum->achsNamen( texte );
 
-      // da das einfügen nicht genau abgebildet wird ist passiv am sichersten
+      // da das einfuegen nicht genau abgebildet wird ist passiv am sichersten
       if(profile[n]->filename() == moniName())
         profile.passiv(n);
       DBG_PROG_V( n <<" "<< profile.aktiv(n) )
@@ -425,9 +427,10 @@ ICCexamin::farbraumModus (int profil)
   farbraum_modus_ = false;
   if(profile.size() && profile.profil()->hasTagName("ncl2")) {
     farbraum_modus_ = true;
+    intent( -1 );
     DBG_PROG_S( "setzte Farbraum Modus" )
   } else if(!profile.size()) {
-    WARN_S( "zu früh mit " << profile.size() << " Profilen" )
+    WARN_S( "zu frueh mit " << profile.size() << " Profilen" )
   }
 
   DBG_PROG_V( farbraum_modus_ )

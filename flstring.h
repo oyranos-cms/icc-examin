@@ -28,7 +28,7 @@
 #ifndef flstring_h
 #  define flstring_h
 
-//#  include <FL/Fl_Export.H>
+/*#  include <FL/Fl_Export.H>*/
 #ifndef FL_EXPORT
 #define FL_EXPORT
 #endif

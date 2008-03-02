@@ -1389,7 +1389,6 @@ GL_Ansicht::netzeAuffrischen()
 
 
       glLineWidth(strich1*strichmult);
-      GLfloat farbe[4] = {  0.5,0.5,0.5,1.0 };
       int index[7];
       double normale[3], len=1.0, v1[3], v2[3];
 
@@ -1397,6 +1396,7 @@ GL_Ansicht::netzeAuffrischen()
       glColorMaterial( GL_FRONT_AND_BACK, GL_SPECULAR );
       glColorMaterial( GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE );
       glEnable( GL_COLOR_MATERIAL );
+      //GLfloat farbe[4] = {  0.5,0.5,0.5,1.0 };
 #define FARBEN(r,g,b,a) {/*farbe [0] = (r); farbe [1] = (g); farbe [2] = (b); \
                       farbe[3] = (a);  \
               glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, farbe); \

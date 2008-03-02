@@ -75,7 +75,7 @@ ICCexamin::ICCexamin ()
 { DBG_PROG_START
   icc_examin_ns::lock(__FILE__,__LINE__);
 
-  //Fl::scheme("plastic");
+  Fl::scheme("plastic"); // gtk+
 
   _item = -1;
   _mft_item = -1;
@@ -201,6 +201,7 @@ ICCexamin::start (int argc, char** argv)
   MyFl_Double_Window::icon = icc_examin_xpm;
   setzeIcon( icc_betrachter->details, icc_examin_xpm );
 # endif
+
   DBG_PROG_S( "Zeige vcgt" )
 # else
   DBG_PROG_S( "Zeige vcgt nicht" )
@@ -212,7 +213,7 @@ ICCexamin::start (int argc, char** argv)
     char name[64];
     fscanf( out, "%12s", name );
     if( strcmp(name, "oyranos") == 0 )
-      icc_betrachter->menu_edit->show();
+      icc_betrachter->menu_einstellungen->show();
     pclose(out);
   } 
 
@@ -292,7 +293,7 @@ ICCexamin::start (int argc, char** argv)
     WARN_S( "Waechter Thread nicht gestartet Fehler: "  << fehler );
   } else
 # if !APPLE && !WIN32 && PTHREAD_THREADS_MAX
-  if( fehler == PTHREAD_THREADS_MAX )
+  if( fehler == (int)PTHREAD_THREADS_MAX )
   {
     WARN_S( "zu viele Waechter Threads Fehler: " << fehler );
   } else

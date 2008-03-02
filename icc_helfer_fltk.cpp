@@ -166,6 +166,10 @@ setzeIcon      ( Fl_Window *fenster, char   **xpm_daten )
 {
 # if HAVE_X && !APPLE
   fl_open_display();
+  if(!fenster) {
+    WARN_S("no window provided")
+    return;
+  }
   fenster->make_current();
   DBG_PROG_V( (int*) fl_display <<" "<< fl_window )
   Pixmap pm, mask;

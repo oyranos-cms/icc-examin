@@ -448,7 +448,8 @@ Oyranos::moni_test_ (int x, int y)
           }
         } else
           WARN_S(_("WARNING: Could not load profile."))
-        v_block = profil_name;
+        // "Monitor Profile" wird woanders speziell behandelt
+        v_block = _("Monitor Profile");//profil_name;
         //if(profil_name) free(profil_name);
         DBG_PROG_V( v_block.name() )
 

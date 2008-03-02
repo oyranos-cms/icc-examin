@@ -64,7 +64,6 @@ CPP_HEADERS = \
 	icc_kette.h \
 	icc_measurement.h \
 	icc_modell_beobachter.h \
-	fl_oyranos.h \
 	icc_oyranos.h \
 	icc_oyranos_extern.h \
 	icc_profile.h \
@@ -131,7 +130,6 @@ CPPFILES = \
 	$(OSX_CPP)
 CXXFILES = \
 	icc_betrachter.cxx \
-	fl_oyranos.cxx \
 	my_file_chooser.cxx \
 	my_file_chooser2.cxx
 TEST_CPP = \
@@ -176,7 +174,6 @@ DOKU = \
 	icc.xml
 FLUID = \
 	icc_betrachter.fl \
-	fl_oyranos.fl \
 	my_file_chooser.fl
 FONT = FreeSans.ttf
 

@@ -170,7 +170,7 @@ nachricht_ (std::string text) {
   { MyFl_Double_Window* o = new MyFl_Double_Window(275, 326, _("Information:"));
     w = o;
     w->hotspot(o);
-    { Fl_Return_Button* o = new Fl_Return_Button(60, 295, 160, 25, "Gut");
+    { Fl_Return_Button* o = new Fl_Return_Button(60, 295, 160, 25, _("Yes"));
       o->shortcut(0xff0d);
       o->callback((Fl_Callback*)cb_Gut, (void*)(w));
       o->align(FL_ALIGN_CENTER|FL_ALIGN_INSIDE);
@@ -179,6 +179,7 @@ nachricht_ (std::string text) {
       { Fl_Output* o = output_info = new Fl_Output(0, 0, 275, 290);
         o->type(12);
         //o->color((Fl_Color)53);
+        o->box( FL_FLAT_BOX );
         o->value(text.c_str());
         Fl_Group::current()->resizable(o);
       }
@@ -281,7 +282,12 @@ void MyFl_Double_Window::show()
     Fl_Double_Window::xclass(my_xclass);
 
   if(!this->visible() || !this->shown())
+  {
     Fl_Double_Window::show();
+#if !defined(WIN32) && !defined(__APPLE__)
+    Fl_Window::show();
+#endif
+  }
 
   if(/*this == main_win &&*/ icon)
     setzeIcon( this, icon );

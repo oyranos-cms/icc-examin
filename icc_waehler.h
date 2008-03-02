@@ -177,11 +177,12 @@ public:
     profile_[i] = 0;
 
   { Fl_Scroll* o = scroll_profile = new Fl_Scroll(5, 5, w()-14, h()-21);
-      o->box(FL_THIN_DOWN_BOX);
+      //o->box(FL_THIN_DOWN_BOX);
       { Fl_Pack* o = hbox = new Fl_Pack(6, 6, w()-16, h()-25);
         o->end();
       }   
       o->end();
+      scroll_profile->resizable(hbox);
   }       
   icc_examin_ns::MyFl_Double_Window::end();
   icc_examin_ns::MyFl_Double_Window::resizable(scroll_profile);

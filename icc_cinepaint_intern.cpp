@@ -1016,6 +1016,7 @@ bearbeiteEingebetteteProfile( channel *layer )
     return 1;
   }
 
+  layer->display_ID = gimp_display_active();
   layer->intent = gimp_display_get_cms_intent (layer->display_ID/*image_ID*/, ICC_IMAGE_PROFILE);
   layer->intent_proof = gimp_display_get_cms_intent (layer->display_ID/*image_ID*/, ICC_PROOF_PROFILE);
   layer->flags = gimp_display_get_cms_flags (layer->display_ID);
@@ -1276,6 +1277,8 @@ holeLayerInfo    (channel & layer)
   gint   var, var1, var2, var3, var4;
   GDrawableType/*GimpDrawableType*/ drawable_type;
 
+  layer.display_ID = gimp_display_active();
+  image_ID = gimp_display_get_image_id( layer.display_ID);
   gint32 drawable_ID = gimp_image_get_active_layer (image_ID);
   if(drawable_ID < 0)
     g_message(_("No active drawable found."));
