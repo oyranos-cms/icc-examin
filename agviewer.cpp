@@ -51,7 +51,7 @@ std::vector<Agviewer> agviewers;
 void
 Agviewer::agvInit(int window)
 { DBG_PROG_START
-  glutMouseFunc(agvHandleButton);
+  //glutMouseFunc(agvHandleButton);
   glutMotionFunc(agvHandleMotion);
   //glutKeyboardFunc(agvHandleKeys);
   RedisplayWindow = glutGetWindow(); DBG_PROG_V( RedisplayWindow << window )

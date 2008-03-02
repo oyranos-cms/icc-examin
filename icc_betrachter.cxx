@@ -282,7 +282,7 @@ void MftChoice::profilTag(int _tag, std::string text) {
 
     icc_examin->icc_betrachter->mft_choice->value( gewaehlter_eintrag );
 
-  auswahlCb();
+  //auswahlCb();
   DBG_PROG_ENDE
 }
 
@@ -304,50 +304,6 @@ void MftChoice::auswahlCb(void) {
 
   icc_examin->waehleMft( mw->value() );
 
-  DBG_PROG
-
-#if 0
-  std::stringstream s;
-  std::vector<double> zahlen;
-
-  switch (mw->value()) {
-  case 0: // Überblick
-    { for (unsigned int i = 1; i < Info.size(); i++) // erste Zeile weglassen
-        s << Info [i] << endl;
-      icc_examin->icc_betrachter->mft_text->hinein ( s.str() ); DBG_PROG // anzeigen
-    } break;
-  case 1: // Matriz
-    zahlen = profile.profil()->getTagNumbers (icc_examin->icc_betrachter->tag_nummer, ICCtag::MATRIX);
-    cout << zahlen.size() << endl; DBG_PROG
-    assert (9 == zahlen.size());
-    s << endl <<
-    "  " << zahlen[0] << ", " << zahlen[1] << ", " << zahlen[2] << ", " << endl <<
-    "  " << zahlen[3] << ", " << zahlen[4] << ", " << zahlen[5] << ", " << endl <<
-    "  " << zahlen[6] << ", " << zahlen[7] << ", " << zahlen[8] << ", " << endl;
-    icc_examin->icc_betrachter->mft_text->hinein ( s.str() ); DBG_PROG
-    break;
-  case 2: // Eingangskurven
-    DBG_PROG
-    icc_examin->icc_betrachter->mft_viewer->hinein_kurven (
-                     profile.profil()->getTagCurves (icc_examin->icc_betrachter->tag_nummer, ICCtag::CURVE_IN),
-                     profile.profil()->getTagChannelNames (icc_examin->icc_betrachter->tag_nummer, ICCtag::CURVE_IN) ); DBG_PROG
-    break;
-  case 3: // 3D Tabelle
-    DBG_PROG
-    icc_examin->icc_betrachter->mft_gl->hinein_tabelle (
-                     profile.profi/()->getTagTable (icc_examin->icc_betrachter->tag_nummer, ICCtag::TABLE),
-                     profile.profil()->getTagChannelNames (icc_examin->icc_betrachter->tag_nummer, ICCtag::TABLE_IN),
-                     profile.profil()->getTagChannelNames (icc_examin->icc_betrachter->tag_nummer, ICCtag::TABLE_OUT) ); DBG_PROG
-    break;
-  case 4: // Ausgangskurven
-    icc_examin->icc_betrachter->mft_viewer->hinein_kurven (
-                     profile.profil()->getTagCurves (icc_examin->icc_betrachter->tag_nummer, ICCtag::CURVE_OUT),
-                     profile.profil()->getTagChannelNames (icc_examin->icc_betrachter->tag_nummer, ICCtag::CURVE_OUT) ); DBG_PROG
-    break;
-  }
-
-  gewaehlter_eintrag = mw->value();
-#endif
   DBG_PROG_ENDE
 }
 
@@ -639,6 +595,10 @@ Fl_Double_Window* ICCfltkBetrachter::init() {
         o->menu(menu_);
       }
       { Fl_Tile* o = examin = new Fl_Tile(0, 25, 385, 470);
+        { Fl_Help_View* o = inspekt_html = new Fl_Help_View(0, 25, 385, 470, "Inspect");
+          o->align(FL_ALIGN_CENTER|FL_ALIGN_INSIDE);
+          o->hide();
+        }
         { TagBrowser* o = tag_browser = new TagBrowser(0, 25, 385, 135, "Bitte w\344hlen Sie ein Profilmerkmal aus");
           o->box(FL_NO_BOX);
           o->color(FL_BACKGROUND_COLOR);
@@ -736,10 +696,6 @@ Fl_Double_Window* ICCfltkBetrachter::init() {
             o->show();
           }
           o->end();
-        }
-        { Fl_Help_View* o = inspekt_html = new Fl_Help_View(0, 25, 385, 470, "Inspect");
-          o->align(FL_ALIGN_CENTER|FL_ALIGN_INSIDE);
-          o->hide();
         }
         { GL_Ansicht* o = DD_histogram = new GL_Ansicht(0, 25, 385, 470);
           o->box(FL_NO_BOX);

@@ -890,7 +890,7 @@ display(int id)
   glCallList(dID(id,PUNKTE)); DBG_PROG_V( dID(id,PUNKTE) )
 
 
-  #if 1
+  #if 0
   glutSwapBuffers();
   glFlush();
   #else

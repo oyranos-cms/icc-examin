@@ -231,8 +231,7 @@ class TagBrowser {open : {public Fl_Hold_Browser}
   std::string text = icc_examin->waehleTag(item);
   if (text != "")
     selectedTagName = text;
-  DBG_PROG_V( text );} {selected
-    }
+  DBG_PROG_V( text );} {}
     code DBG_PROG_ENDE {}
   }
 } 
@@ -540,7 +539,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window details {
       label {ICC Details} open
-      xywh {643 270 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
+      xywh {648 294 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
     } {
       Fl_Group {} {open
         xywh {0 0 385 520}
@@ -698,6 +697,11 @@ ueber_html->value(getUeberHtml().c_str());}
         Fl_Tile examin {open
           xywh {0 25 385 470} resizable
         } {
+          Fl_Box DD_histogram {selected
+            xywh {0 25 385 470}
+            code0 {o->hide();}
+            class GL_Ansicht
+          }
           Fl_Browser tag_browser {
             label {Bitte wählen Sie ein Profilmerkmal aus}
             callback {o->selectItem( o->value() );}
@@ -753,11 +757,6 @@ ueber_html->value(getUeberHtml().c_str());}
             label Inspect
             xywh {0 25 385 470} align 16
             code0 {o->hide();}
-          }
-          Fl_Box DD_histogram {
-            xywh {0 25 385 470}
-            code0 {o->hide();}
-            class GL_Ansicht
           }
         }
         Fl_Group {} {open
