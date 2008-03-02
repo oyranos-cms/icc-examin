@@ -58,7 +58,7 @@ ICCexamin::ICCexamin ()
   icc_betrachter = new ICCfltkBetrachter;
   _item = -1;
   _mft_item = -1;
-  _zeig_histogram = 0;
+  histogram_angezeigt_ = 0;
   statlabel = "";
   status_ = false;
   DBG_PROG_ENDE
@@ -71,28 +71,6 @@ ICCexamin::quit ()
   profile.clear();
   DBG_PROG_ENDE
   exit(0);
-}
-
-int
-tastatur(int e)
-{ //DBG_PROG_START
-  int gefunden = 0;
-  if( e == FL_SHORTCUT )
-  {
-      if(Fl::event_key() == FL_Escape) {
-        gefunden = 1;
-        DBG_NUM_S("FL_Escape")
-      } else
-      if(Fl::event_key() == 'q'
-       && Fl::event_state() == FL_CTRL) {
-        DBG_NUM_S("FL_CTRL+Q")
-        icc_examin->quit();
-        gefunden = 1;
-      }
-  }
-  icc_examin->icc_betrachter->DD_histogram->tastatur(e);
-  //DBG_PROG_ENDE
-  return gefunden;
 }
 
 void
@@ -128,6 +106,8 @@ ICCexamin::start (int argc, char** argv)
   status(_(""));
   DBG_PROG
 
+  modellDazu( /*ICCkette*/&profile ); // wird in nachricht ausgewertet
+
       if (argc>1) {
         statlabel = argv[1];
         statlabel.append (" ");
@@ -145,8 +125,6 @@ ICCexamin::start (int argc, char** argv)
 
   Fl::add_handler(tastatur);
 
-  modellDazu( /*ICCkette*/&profile ); // wird in nachricht ausgewertet
-
   // zur Benutzung freigeben
   status_ = 1;
   frei_ = true;
@@ -161,8 +139,11 @@ ICCexamin::start (int argc, char** argv)
 void
 ICCexamin::oeffnen (std::vector<std::string> dateinamen)
 { DBG_PROG_START
-  if(!dateinamen.size())
+  if(!dateinamen.size()) {
+    DBG_PROG_ENDE
     return;
+  }
+
   // Laden
   frei_ = false;
   icc_betrachter->DD_histogram->punkte_clear();
@@ -173,8 +154,9 @@ ICCexamin::oeffnen (std::vector<std::string> dateinamen)
     if(profile.profil()->hasTagName("ncl2"))
     {
       icc_betrachter->DD_histogram->show();
+      icc_waehler_->show();
       icc_betrachter->menueintrag_3D->set();
-      _zeig_histogram = true;
+      histogram_angezeigt_ = true;
       profile.oeffnen(icc_oyranos.moni(),-1);
       profile.oeffnen(icc_oyranos.cmyk(),-1);
     }
@@ -208,8 +190,11 @@ ICCexamin::oeffnen (std::vector<std::string> dateinamen)
           }
           DBG_NUM_V( netze[n].indexe.size()/4.0 )
         }
-        for(unsigned int i = 0; i < netze.size(); ++i )
+        for(unsigned int i = 0; i < netze.size(); ++i ) {
           netze[i].transparenz = 0.6;
+          netze[i].grau = false;
+          netze[i].aktiv = true;
+        }
         icc_betrachter->DD_histogram->hineinNetze(netze);
         std::vector<std::string> texte;
         texte.push_back(_("CIE *L"));
@@ -222,8 +207,29 @@ ICCexamin::oeffnen (std::vector<std::string> dateinamen)
         WARN_S(_("kein Netz gefunden in VRML Datei"))
     } else {
       DBG_PROG
-      histogram();
-      icc_betrachter->DD_histogram->auffrischen();
+      //histogram();
+      //icc_betrachter->DD_histogram->auffrischen();
+    }
+
+    // ICCwaehler
+    icc_waehler_->clear();
+    int anzahl = profile.size();
+    DBG_PROG_V( anzahl )
+    double transparenz;
+    bool grau;
+    std::vector<int> aktiv = profile.aktiv();
+    DBG_PROG_V( aktiv.size() )
+    for(int i = 0; i < anzahl; ++i) {
+      DBG_PROG_V( i )
+      const char* name = profile.name(i).c_str();
+      if( i >= (int)icc_betrachter->DD_histogram->dreiecks_netze.size() ) {
+        WARN_S( _("Gebe irritiert auf. Kein Netz gefunden. Ist Argyll installiert?") )
+        break;
+      }
+      transparenz = icc_betrachter->DD_histogram->dreiecks_netze[i].transparenz;
+      DBG_PROG
+      grau = icc_betrachter->DD_histogram->dreiecks_netze[i].grau;
+      icc_waehler_->push_back(name, transparenz, grau , aktiv[i]);
     }
 
   frei_ = true;
@@ -464,44 +470,29 @@ ICCexamin::zeigCGATS()
 
 // virtual aus icc_examin_ns::Beobachter::
 void
-ICCexamin::nachricht( Modell* modell , int infos )
+ICCexamin::nachricht( Modell* modell , int info )
 {
   DBG_PROG_START
   frei_ = false;
-  DBG_PROG_V( infos )
+  DBG_PROG_V( info )
   // Modell identifizieren
   ICCkette* k = dynamic_cast<ICCkette*>(modell);
-  if(k)
+  if(k && k->size() > info)
   {
     DBG_PROG_S( _("Nachricht von ICCkette") )
-    if(infos>=0 && !(*k)[infos]->changing())
+    DBG_PROG_S( _("Auffrischen von Profil Nr.: ") << info )
+    if(info>=0 && !(*k)[info]->changing())
     { DBG_PROG
-      histogram (infos);
-    }
-    DBG_PROG_S( _("Auffrischen von Profil Nr.: ") << infos )
-
-    // ICCwaehler
-    icc_waehler_->clear();
-    int anzahl = k->size();
-    DBG_PROG_V( anzahl )
-    double transparenz;
-    bool grau;
-    std::vector<int> aktiv = profile.aktiv();
-    DBG_PROG_V( aktiv.size() )
-    for(int i = 0; i < anzahl; ++i) {
-      DBG_PROG_V( i )
-      const char* name = profile.name(i).c_str();
-      if( i >= (int)icc_betrachter->DD_histogram->dreiecks_netze.size() ) {
-        WARN_S( _("Gebe irritiert auf. Kein Netz gefunden. Ist Argyll installiert?") )
-        break;
+      if(k->aktiv(info)) {
+        histogram (info);
+        if (info<(int)icc_betrachter->DD_histogram->dreiecks_netze.size())
+          icc_betrachter->DD_histogram->dreiecks_netze[info].aktiv = true;
+      } else if (info<(int)icc_betrachter->DD_histogram->dreiecks_netze.size()){
+        icc_betrachter->DD_histogram->dreiecks_netze[info].aktiv = false;
       }
-      transparenz = icc_betrachter->DD_histogram->dreiecks_netze[i].transparenz;
-      DBG_PROG
-      grau = icc_betrachter->DD_histogram->dreiecks_netze[i].grau;
-      icc_waehler_->push_back(name, transparenz, grau , aktiv[i]);
     }
   }
-  Beobachter::nachricht(modell, infos);
+  Beobachter::nachricht(modell, info);
   frei_ = true;
   DBG_PROG_ENDE
 }
@@ -580,6 +571,7 @@ ICCexamin::netzLese (int n,
     {
       if(n+1 > (int)netz.size())
         netz.resize( n+1 );
+      DBG_PROG_V( netz.size() )
       netz[n] = netz_temp[0];
       netz[n].name = profile[n]->filename();
       DBG_NUM_V( netz[n].transparenz )
@@ -655,12 +647,14 @@ ICCexamin::histogram (int n)
   if( profile.size() > n )
     netzLese(n, netz);
 
+  DBG_PROG_V( netz.size() <<" "<< icc_betrachter->DD_histogram-> dreiecks_netze.size() <<" "<< n )
+  if((int)netz.size() <= n)
+    icc_betrachter->DD_histogram-> dreiecks_netze .resize( n + 1 );
   DBG_PROG
   if(netz.size())
   {
     if(icc_betrachter->DD_histogram->dreiecks_netze.size() < netz.size())
     {
-      icc_betrachter->DD_histogram-> dreiecks_netze .resize( netz.size() );
       netz[n].transparenz = 0.3;
       netz[n].grau = true;
     } else {
@@ -671,7 +665,7 @@ ICCexamin::histogram (int n)
 
     icc_betrachter->DD_histogram->dreiecks_netze[n] = netz[n];
     icc_betrachter->DD_histogram->achsNamen( texte );
-    icc_betrachter->DD_histogram->draw();
+    //icc_betrachter->DD_histogram->draw();
   }
 
 
@@ -877,18 +871,19 @@ ICCexamin::neuzeichnen (void* z)
   DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->mft_gl)->visible() )
   DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->mft_viewer)->visible() )
 
-  DBG_PROG_V(_zeig_histogram << icc_betrachter->menueintrag_3D->value() )
-  if (icc_betrachter->menueintrag_3D->value() && !_zeig_histogram)
+  DBG_PROG_V(histogram_angezeigt_ << icc_betrachter->menueintrag_3D->value() )
+  if (icc_betrachter->menueintrag_3D->value() && !histogram_angezeigt_)
   { DBG_PROG_S( "3D Histogramm zeigen" )
-    if(!icc_betrachter->DD_histogram->visible())
+    if(!icc_betrachter->DD_histogram->visible()) {
       icc_betrachter->DD_histogram->show();
+      icc_waehler_->show();
+    }
 
-    icc_betrachter->DD_histogram->show();
-    icc_waehler_->show();
-    _zeig_histogram = true;
-  } else if (_zeig_histogram) { DBG_PROG_S( "3D hist ausschalten" )
+    //icc_betrachter->DD_histogram->show();
+    histogram_angezeigt_ = true;
+  } else if (histogram_angezeigt_) { DBG_PROG_S( "3D hist ausschalten" )
     icc_betrachter->DD_histogram->hide();
-    _zeig_histogram = false;
+    histogram_angezeigt_ = false;
     icc_waehler_->iconize();
 
     if(!icc_betrachter->menueintrag_inspekt->value()) {
@@ -896,7 +891,7 @@ ICCexamin::neuzeichnen (void* z)
       DBG_PROG_ENDE
       return;
     }
-  } 
+  }
 
   if (icc_betrachter->menueintrag_inspekt->value() &&
       !icc_betrachter->inspekt_html->visible())
@@ -984,44 +979,26 @@ ICCexamin::statusAktualisieren()
   DBG_PROG_ENDE
 }
 
-#if 0
-void
-ICCexamin::glAnsicht (GL_Ansicht* dazu)
-{ DBG_PROG_START
-  bool vorhanden = false; DBG_PROG_V( _gl_ansichten.size() )
-  if (dazu != icc_betrachter->mft_gl && // zuerst mft_gl
-      _gl_ansichten.size() < 1)
-  { DBG_PROG
-    icc_betrachter->mft_gl->zeigen(); DBG_PROG
-  }
-  for (unsigned i = 0; i < _gl_ansichten.size(); i++)
-  if (dazu == _gl_ansichten[i])
-  { DBG_PROG
-    vorhanden = true;
-    _gl_ansicht = dazu->id();
-  }
-  if(!vorhanden) { DBG_PROG
-    _gl_ansicht = dazu->id();
-    _gl_ansichten.resize( _gl_ansichten.size() +1 );
-    _gl_ansichten[_gl_ansichten.size() -1] = dazu;
-  }
-  DBG_PROG_ENDE
-}
-
-GL_Ansicht*
-ICCexamin::glAnsicht(int id)
-{ DBG_EXAMIN_START
-  if(id>0)
-  { DBG_EXAMIN_V( id )
-    std::vector<GL_Ansicht*>::iterator it;
-    for (it = _gl_ansichten.begin() ; it != _gl_ansichten.end(); ++it)
-      if ((*it)->id() == id)
-      { DBG_EXAMIN_ENDE
-        return *it;
+int
+tastatur(int e)
+{ //DBG_PROG_START
+  int gefunden = 0;
+  if( e == FL_SHORTCUT )
+  {
+      if(Fl::event_key() == FL_Escape) {
+        gefunden = 1;
+        DBG_NUM_S("FL_Escape")
+      } else
+      if(Fl::event_key() == 'q'
+       && Fl::event_state() == FL_CTRL) {
+        DBG_NUM_S("FL_CTRL+Q")
+        icc_examin->quit();
+        gefunden = 1;
       }
   }
-  DBG_EXAMIN_ENDE
-  return 0;
+  icc_examin->icc_betrachter->DD_histogram->tastatur(e);
+  //DBG_PROG_ENDE
+  return gefunden;
 }
 
-#endif
+

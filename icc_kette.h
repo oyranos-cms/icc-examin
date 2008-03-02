@@ -63,8 +63,8 @@ class ICCkette : public icc_examin_ns::Modell
     //void         oeffnen   ();	// interaktiv
     bool         oeffnen   (std::string dateiname, int pos);
     bool         oeffnen   (const Speicher & profil, int pos);
-    void         setzAktiv (int pos);
-    void         passiv    (int pos);
+    void         setzAktiv (int pos) { aktiv_[pos]=true; benachrichtigen(pos);}
+    void         passiv    (int pos) { aktiv_[pos]=false; benachrichtigen(pos);}
     std::vector<int> aktiv () { return aktiv_; }
     int          aktiv (int pos) { return aktiv_[pos]; }
     void         aktuell   (int pos) {
@@ -82,7 +82,8 @@ class ICCkette : public icc_examin_ns::Modell
                if(profilnamen_.size()) return profilnamen_[aktuelles_profil_];
                else return ""; }
     ICCprofile*  operator [] (int n)
-             { if (profile_.size() && n >= 0 && n < (int)profile_.size()) {
+             { if (profile_.size() && n >= 0 && n < (int)profile_.size() &&
+                   aktiv(n) ) {
                  return &(profile_[n]);
                } else return 0;
              }

@@ -46,27 +46,26 @@
 class ICCwaehlerProfil : public Fl_Pack
 {
   Fl_Button *aktiv_knopf_;
-  void aktiv_knopf_cb_(int aktiv) {aktiv_knopf_->value(aktiv);
-                                   DBG
-                                   aktivieren(aktiv); }
-  static void aktiv_knopf_cb_statisch_(Fl_Widget* w, void* data) {
+  void aktiv_knopf_cb_(int aktiv) { if(aktiv_knopf_->value()) {DBG_PROG_START
+                                      aktivieren(true);
+                                      profile.setzAktiv(parent()->find(this));
+                                    } else {
+                                      aktivieren(false);
+                                      profile.passiv(parent()->find(this));
+                                    }
+                                    //DBG_PROG_V( parent()->find(this) )
+                                    DBG_PROG_ENDE
+                                  }
+  static void aktiv_knopf_cb_statisch_(Fl_Widget* w, void* data) { DBG_PROG_START
                 ICCwaehlerProfil* obj = dynamic_cast<ICCwaehlerProfil*>(w->parent());
                 if(obj) 
                   obj->aktiv_knopf_cb_( (int)data );
                 else WARN_S( _("kein ICCwaehlerProfil??") )
                 if(!w) WARN_S( _("kein Fl_Widget??") )
-                DBG
+                DBG_PROG_ENDE
               }
   Fl_Pack   *gruppe_;
   Fl_Output *name_;
-  void name_cb_(char* name) {name_->value(name); }
-  static void name_cb_statisch_(Fl_Widget* w, void* data) {
-                ICCwaehlerProfil* obj = dynamic_cast<ICCwaehlerProfil*>(w->parent()->parent());
-                if(obj) {
-                  if((int)data)
-                    obj->name_cb_((char*) data);
-                }
-              }
   Fl_Value_Slider *transparenz_;
   void transparenz_cb_(double wert) {transparenz_->value(wert); }
   static void transparenz_cb_statisch_(Fl_Widget* w, void* data) {
@@ -75,7 +74,8 @@ class ICCwaehlerProfil : public Fl_Pack
                   obj->transparenz_cb_( *(double*)data );
               }
   Fl_Light_Button *grau_;
-  void grau_cb_(int aktiv) {grau_->value(aktiv); }
+  void grau_cb_(int aktiv) { if(grau_->value()) ;
+                           }
   static void grau_cb_statisch_(Fl_Widget* w, void* data) {
                 ICCwaehlerProfil* obj = dynamic_cast<ICCwaehlerProfil*>(w->parent()->parent());
                 if(obj) 
@@ -107,7 +107,6 @@ class ICCwaehlerProfil : public Fl_Pack
               o->align(FL_ALIGN_LEFT|FL_ALIGN_INSIDE);
               o->value( name );
               this->resizable(o);
-              o->callback(name_cb_statisch_);
             }
             { Fl_Value_Slider* o = transparenz_ = new Fl_Value_Slider(259, 6, 150, 25);
               o->type(1);

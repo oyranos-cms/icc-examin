@@ -71,7 +71,7 @@ class ICCexamin : public icc_examin_ns::Beobachter
   private:
     int  _item,  _mft_item;
     int  _zeig_prueftabelle,
-         _zeig_histogram;
+         histogram_angezeigt_;
     int  status_;
     bool frei_;
     ICCwaehler *icc_waehler_;
@@ -117,6 +117,8 @@ class ICCexamin : public icc_examin_ns::Beobachter
 
     void statusAktualisieren();  // benutze das "status" Makro
 };
+
+int tastatur(int e);
 
 #define status(texte) {std::stringstream s; s << texte; icc_examin->statlabel = s.str(); icc_examin->statusAktualisieren();}
 

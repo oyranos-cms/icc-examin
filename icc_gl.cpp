@@ -203,13 +203,16 @@ GL_Ansicht::draw()
 {
   DBG_PROG_START
 
-  if(!valid() && visible()) {
+  if(!visible()) {
+    DBG_PROG_ENDE
+    return;
+  }
+
+  if(!valid()) {
     GLinit_();  DBG_PROG
-    erstelleGLListen_(); DBG_PROG_V( id() )
     agv_.agvSetAllowIdle (1);
     fensterForm();
     auffrischen();
-    glFlush();
   }
 
   zeichnen();
@@ -491,9 +494,6 @@ GL_Ansicht::garnieren_()
       FARBE(textfarbe[0],textfarbe[1],textfarbe[2])
       if (nach_farb_namen_.size())
       {
-        // Kanalauswahl korrigieren
-        if(tabelle_[0][0].size() <= kanal)
-          kanal = tabelle_[0][0][0].size()-1;
         ptr = (char*) nach_farb_namen_[kanal].c_str();
         sprintf (&text[0], ptr);
         //ZeichneText(GLUT_STROKE_ROMAN,&text[0])
@@ -606,6 +606,13 @@ GL_Ansicht::tabelleAuffrischen()
   GLfloat farbe[] =   { textfarbe[0],textfarbe[1],textfarbe[2], 1.0 };
 
   DBG_PROG_V( tabelle_.size() )
+  // Kanalauswahl korrigieren
+  if(tabelle_.size()) {
+    if( (int)tabelle_[0][0][0].size() <= kanal) {
+      kanal = tabelle_[0][0][0].size()-1;
+      DBG_PROG_S( _("Kanalauswahl geändert: ") << kanal )
+    }
+  }
 
   // Tabelle
   if (gl_voll[RASTER])
@@ -1421,7 +1428,6 @@ GL_Ansicht::achsNamen    (std::vector<std::string> achs_namen)
     von_farb_namen_.push_back ("?");
   }
   valid(false);
-  redraw();
   DBG_PROG_ENDE
 }
 
@@ -1453,7 +1459,6 @@ GL_Ansicht::hineinPunkte       (std::vector<double>      vect,
     punktform = MENU_dE1KUGEL;
 
   valid(false);
-  redraw();
   DBG_PROG_ENDE
 }
 

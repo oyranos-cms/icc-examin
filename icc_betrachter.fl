@@ -493,7 +493,7 @@ class ICCfltkBetrachter {} {
 
   DBG_PROG_S (m->value())
   if (m->value()) {
-    icc_examin->histogram();
+    //icc_examin->histogram();
   }
   icc_examin->neuzeichnen(DD_histogram);}
               xywh {50 50 100 20} type Toggle shortcut 0x40068 divider

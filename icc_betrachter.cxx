@@ -302,7 +302,7 @@ inline void ICCfltkBetrachter::cb_menueintrag_3D_i(Fl_Menu_* o, void*) {
 
   DBG_PROG_S (m->value())
   if (m->value()) {
-    icc_examin->histogram();
+    //icc_examin->histogram();
   }
   icc_examin->neuzeichnen(DD_histogram);
 }
