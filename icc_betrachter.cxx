@@ -489,7 +489,7 @@ inline void ICCfltkBetrachter::cb_menueintrag_3D_i(Fl_Menu_* o, void*) {
   DBG_PROG_S (m->value())
   if (m->value()) {
     group_histogram->show();
-    DD_histogram->show();
+    DD_histogram->zeigen();
     inspekt->hide();
     examin->hide();
   } else {
@@ -523,7 +523,7 @@ Fl_Menu_Item ICCfltkBetrachter::menu_[] = {
  {"Ansicht", 0,  0, 0, 192, 0, 0, 14, 56},
  {"Ganzer Bildschirm an/aus", 0x40076,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_Voll, 0, 0, 0, 0, 14, 56},
  {"Pr\374""fansicht", 0x40062,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_inspekt, 0, 3, 0, 0, 14, 56},
- {"3D Ansicht", 0x40062,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_3D, 0, 130, 0, 0, 14, 56},
+ {"3D Ansicht", 0x40068,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_3D, 0, 130, 0, 0, 14, 56},
  {0},
  {"Hilfe", 0,  0, 0, 64, 0, 0, 14, 56},
  {"\334""ber", 0,  (Fl_Callback*)ICCfltkBetrachter::cb_ber, 0, 0, 0, 0, 14, 56},
@@ -766,7 +766,18 @@ Fl_Double_Window* ICCfltkBetrachter::init() {
         Fl_Group::current()->resizable(o);
       }
       { Fl_Group* o = group_histogram = new Fl_Group(0, 25, 385, 470);
-        DD_histogram = new Fl_Box(0, 25, 385, 470);
+        { GL_Ansicht* o = DD_histogram = new GL_Ansicht(0, 25, 385, 470);
+          o->box(FL_NO_BOX);
+          o->color(FL_BACKGROUND_COLOR);
+          o->selection_color(FL_BACKGROUND_COLOR);
+          o->labeltype(FL_NORMAL_LABEL);
+          o->labelfont(0);
+          o->labelsize(14);
+          o->labelcolor(FL_BLACK);
+          o->align(FL_ALIGN_CENTER);
+          o->when(FL_WHEN_RELEASE);
+          o->hide();
+        }
         o->hide();
         o->end();
       }

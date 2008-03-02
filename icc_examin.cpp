@@ -29,10 +29,12 @@
 #include "icc_examin.h"
 #include "icc_betrachter.h"
 #include "icc_draw.h"
+#include "icc_gl.h"
 
 ICCexamin::ICCexamin ()
 { DBG_PROG_START
   icc_betrachter = new ICCfltkBetrachter [1];
+  gl_ansicht = -1;
   DBG_PROG_ENDE
 }
 

@@ -378,8 +378,7 @@ class MftChoice {: {public Fl_Choice}
     icc_examin->icc_betrachter->mft_choice->value( gewaehlter_eintrag );
 
   //zeig_mich (this);
-  auswahl_cb();} {selected
-    }
+  auswahl_cb();} {}
     code DBG_PROG_ENDE {}
   }
   Function {auswahl_cb(void)} {open
@@ -551,7 +550,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window details {
       label {ICC Details} open
-      xywh {638 246 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
+      xywh {643 270 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
     } {
       Fl_Group {} {open
         xywh {0 0 385 520}
@@ -689,7 +688,7 @@ class ICCfltkBetrachter {open
   DBG_PROG_S (m->value())
   if (m->value()) {
     group_histogram->show();
-    DD_histogram->show();
+    DD_histogram->zeigen();
     inspekt->hide();
     examin->hide();
   } else {
@@ -697,8 +696,8 @@ class ICCfltkBetrachter {open
     inspekt->hide();
     examin->show();
     tag_text->inspekt_topline = inspekt_html->topline();
-  }}
-              tooltip {Mess- und Profilwerte bildlich und in Zahlen dargestellt; Ctrl+b} xywh {50 50 100 20} type Toggle shortcut 0x40062 divider
+  }} selected
+              tooltip {Mess- und Profilwerte bildlich und in Zahlen dargestellt; Ctrl+b} xywh {50 50 100 20} type Toggle shortcut 0x40068 divider
             }
           }
           submenu menu_hilfe {
@@ -788,6 +787,8 @@ ueber_html->value(getUeberHtml().c_str());}
         } {
           Fl_Box DD_histogram {
             xywh {0 25 385 470}
+            code0 {o->hide();}
+            class GL_Ansicht
           }
         }
         Fl_Group {} {open
@@ -871,8 +872,7 @@ ueber_html->value(getUeberHtml().c_str());}
   exit(0);} {}
     code DBG_PROG_ENDE {}
   }
-  Function {zeig_mich(void* widget)} {open
-  } {
+  Function {zeig_mich(void* widget)} {} {
     code DBG_PROG_START {}
     code {// zeigt das ausgewählte Fenster (widget)
 

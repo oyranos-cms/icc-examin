@@ -153,7 +153,7 @@ public:
   TagDrawings *tag_viewer;
   TagTexts *tag_text;
   Fl_Group *group_histogram;
-  Fl_Box *DD_histogram;
+  GL_Ansicht *DD_histogram;
   Fl_Box *box_stat;
   Fl_Progress *load_progress;
   void run();

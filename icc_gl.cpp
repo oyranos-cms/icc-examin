@@ -45,6 +45,8 @@ bool gl_voll[5] = {false,false,false,false,false};
 
 typedef enum { MENU_AXES, MENU_QUIT, MENU_RING, MENU_KUGEL, MENU_WUERFEL, MENU_STERN, MENU_MAX } MenuChoices;
 
+std::vector<GL_Ansicht*> gl_ansichten;
+
 int DrawAxes = 0;
 int kanal = 0;
 bool duenn = false;
@@ -72,19 +74,23 @@ GL_Ansicht::~GL_Ansicht()
   DBG_PROG_ENDE
 }
 
-void GL_Ansicht::zeigen() {
+void GL_Ansicht::zeigen()
+{ DBG_PROG_START
+  icc_examin->glAnsicht (this);
+
   if (first)
     init();
   else
     if (!GLfenster_zeigen)
       GLFenster->resize(x(),y(),w(),h());
 
+
   DBG_PROG_V( x() <<" "<< y() <<" "<< w() <<" "<< h() )
   //draw();
 
   agviewers[agv].agvSetAllowIdle (1);
   GLfenster_zeigen = true;
-  DBG_PROG
+  DBG_PROG_ENDE
 }
 
 void
@@ -146,9 +152,9 @@ void GL_Ansicht::init() {
 
 void GL_Ansicht::draw() {
   DBG_PROG_START
-  if (GLfenster_zeigen) {
+  if (GLfenster_zeigen) { DBG_PROG
     GLFenster->size(w(),h());
-  } else {
+  } else { DBG_PROG
     GLFenster->size(1,1);
     DBG_PROG_S("-------------- GL Fenster auf 1x1 verkleinert ----------------")
   }
@@ -288,6 +294,7 @@ zeichneKoordinaten()
 void GL_Ansicht::MakeDisplayLists() {
   DBG_PROG_START
   char text[256];
+  char* ptr = 0;
 
   #define PFEILSPITZE glutSolidCone(0.02, 0.05, 8, 4);
 
@@ -306,9 +313,12 @@ void GL_Ansicht::MakeDisplayLists() {
       glLineWidth(3.0);
       glTranslatef(.5,0.62,.5);
       glRotatef (270,0.0,1.0,.0);
-      char* ptr = (char*) nachFarbNamen[kanal].c_str();
-      sprintf (&text[0], ptr);
-      ZeichneText(GLUT_STROKE_ROMAN,&text[0])
+      if (nachFarbNamen.size())
+      {
+        ptr = (char*) nachFarbNamen[kanal].c_str();
+        sprintf (&text[0], ptr);
+        ZeichneText(GLUT_STROKE_ROMAN,&text[0])
+      }
     glPopMatrix(); DBG_PROG
 
     // CIE*L - oben
@@ -324,14 +334,18 @@ void GL_Ansicht::MakeDisplayLists() {
       glRotatef (270,0.0,0.0,1.0);
       FARBE(1,1,1)
       glTranslatef(.02,0,0);
-      ptr = (char*) vonFarbNamen[0].c_str();
-      sprintf (&text[0], ptr);
-      ZeichneText(GLUT_STROKE_ROMAN,&text[0])
+      if (vonFarbNamen.size())
+      {
+        ptr = (char*) vonFarbNamen[0].c_str();
+        sprintf (&text[0], ptr);
+        ZeichneText(GLUT_STROKE_ROMAN,&text[0])
+      }
     glPopMatrix(); DBG_PROG
 
     // CIE*a - rechts
     glPushMatrix();
-      if (vonFarbNamen[1] == _("CIE *a"))
+      if (vonFarbNamen.size() &&
+          vonFarbNamen[1] == _("CIE *a"))
         glTranslatef(0,-0.5,0);
       glBegin(GL_LINES);
         glVertex3f(0, 0, .5); glVertex3f(0, 0, -.5);
@@ -339,39 +353,48 @@ void GL_Ansicht::MakeDisplayLists() {
       glTranslatef(0.0,0,0.5);
       glRotatef (180,0.0,.5,.0);
       glTranslatef(.0,0.0,1.0);
-      if (vonFarbNamen[1] == _("CIE *a"))
+      if (vonFarbNamen.size() &&
+          vonFarbNamen[1] == _("CIE *a"))
       {
         FARBE(.2,.9,0.7)
         PFEILSPITZE
       }
       glTranslatef(.0,0.0,-1.0);
       glRotatef (180,0.0,.5,.0);
-      if (vonFarbNamen[1] == _("CIE *a"))
+      if (vonFarbNamen.size() &&
+          vonFarbNamen[1] == _("CIE *a"))
         FARBE(.9,0.2,0.5)
       PFEILSPITZE
       FARBE(1,1,1)
-      ptr = (char*) vonFarbNamen[1].c_str();
-      sprintf (&text[0], ptr);
-      ZeichneText(GLUT_STROKE_ROMAN,&text[0])
-      if (vonFarbNamen[1] == _("CIE *a"))
+      if (vonFarbNamen.size())
+      {
+        ptr = (char*) vonFarbNamen[1].c_str();
+        sprintf (&text[0], ptr);
+        ZeichneText(GLUT_STROKE_ROMAN,&text[0])
+      }
+      if (vonFarbNamen.size() &&
+          vonFarbNamen[1] == _("CIE *a"))
         glTranslatef(0,0.5,0);
     glPopMatrix(); DBG_PROG
 
     // CIE*b - links
     glPushMatrix();
-      if (vonFarbNamen[2] == _("CIE *b"))
+      if (vonFarbNamen.size() &&
+          vonFarbNamen[2] == _("CIE *b"))
         glTranslatef(0,-0.5,0);
       glBegin(GL_LINES);
         glVertex3f(.5, 0, 0); glVertex3f(-.5, 0, 0);
       glEnd();
       glTranslatef(.5,0,0);
-      if (vonFarbNamen[2] == _("CIE *b"))
+      if (vonFarbNamen.size() &&
+          vonFarbNamen[2] == _("CIE *b"))
         FARBE(.9,.9,0.2)
       glRotatef (90,0.0,.5,.0);
       PFEILSPITZE
       glRotatef (180,.0,.5,.0);
       glTranslatef(.0,.0,1.0);
-      if (vonFarbNamen[2] == _("CIE *b"))
+      if (vonFarbNamen.size() &&
+          vonFarbNamen[2] == _("CIE *b"))
       {
         FARBE(.7,.8,1.0)
         PFEILSPITZE
@@ -379,10 +402,14 @@ void GL_Ansicht::MakeDisplayLists() {
       }
       glTranslatef(.0,.0,-1.0);
       glRotatef (180,0.0,.5,.0);
-      ptr = (char*) vonFarbNamen[2].c_str();
-      sprintf (&text[0], ptr);
-      ZeichneText(GLUT_STROKE_ROMAN,&text[0])
-      if (vonFarbNamen[2] == _("CIE *b"))
+      if (vonFarbNamen.size())
+      {
+        ptr = (char*) vonFarbNamen[2].c_str();
+        sprintf (&text[0], ptr);
+        ZeichneText(GLUT_STROKE_ROMAN,&text[0])
+      }
+      if (vonFarbNamen.size() &&
+          vonFarbNamen[2] == _("CIE *b"))
         glTranslatef(0,0.5,0);
     glPopMatrix();
     glLineWidth(1.0);
@@ -571,9 +598,9 @@ double seitenverhaeltnis;
 
 void reshape(int w, int h) {
   DBG_PROG_START
-  glViewport(0,0,w,h); DBG_PROG_V( icc_examin->icc_betrachter->mft_gl->x()<<" "<<icc_examin->icc_betrachter->mft_gl->y()<<" "<<w<<" "<<h )
-  glutPositionWindow(icc_examin->icc_betrachter->mft_gl->x(), icc_examin->icc_betrachter->mft_gl->y());
-  //mft_gl->zeigen();
+  glViewport(0,0,w,h); DBG_PROG_V( icc_examin->glAnsicht()->x()<<" "<<icc_examin->glAnsicht()->y()<<" "<<w<<" "<<h )
+  glutPositionWindow(icc_examin->glAnsicht()->x(),icc_examin->glAnsicht()->y());
+  //icc_examin->glAnsicht()->zeigen();
   seitenverhaeltnis = (GLdouble)w/(GLdouble)h;
   glFlush();
   DBG_PROG_ENDE
@@ -591,7 +618,7 @@ void display() {
    // Text
    glPushMatrix();
    glLoadIdentity();
-   glOrtho(0,icc_examin->icc_betrachter->mft_gl->w(),0,icc_examin->icc_betrachter->mft_gl->h(),-10.0,10.0);
+   glOrtho(0,icc_examin->glAnsicht()->w(),0,icc_examin->glAnsicht()->h(),-10.0,10.0);
 
    glDisable(GL_TEXTURE_2D);
    glDisable(GL_LIGHTING);
@@ -618,7 +645,7 @@ void display() {
    }
    #endif
 
-   sprintf(&text[0],"%s: %s", _("sichtbarer Kanal"),icc_examin->icc_betrachter->mft_gl->kanalName());
+   //sprintf(&text[0],"%s: %s", _("sichtbarer Kanal"),icc_examin->glAnsicht()->kanalName());
    glTranslatef(0,zeilenversatz,0);
    ZeichneOText (GLUT_STROKE_ROMAN, scal, text) 
 
@@ -781,7 +808,7 @@ void handlemenu(int value)
     case MENU_QUIT:
       DBG_PROG_V( glutGetWindow() )
       glutDestroyWindow(glutGetWindow());
-      icc_examin->icc_betrachter->mft_gl->first = true;
+      icc_examin->glAnsicht()->first = true;
       break;
     case MENU_RING:
       Rotating = !Rotating;
@@ -794,23 +821,23 @@ void handlemenu(int value)
       }
       break;
     case MENU_KUGEL:
-      icc_examin->icc_betrachter->mft_gl-> Punktform = MENU_KUGEL;
-      icc_examin->icc_betrachter->mft_gl->MakeDisplayLists();
+      icc_examin->glAnsicht()->Punktform = MENU_KUGEL;
+      icc_examin->glAnsicht()->MakeDisplayLists();
       break;
     case MENU_WUERFEL:
-      icc_examin->icc_betrachter->mft_gl-> Punktform = MENU_WUERFEL;
-      icc_examin->icc_betrachter->mft_gl->MakeDisplayLists();
+      icc_examin->glAnsicht()-> Punktform = MENU_WUERFEL;
+      icc_examin->glAnsicht()->MakeDisplayLists();
       break;
     case MENU_STERN:
-      icc_examin->icc_betrachter->mft_gl-> Punktform = MENU_STERN;
-      icc_examin->icc_betrachter->mft_gl->MakeDisplayLists();
+      icc_examin->glAnsicht()-> Punktform = MENU_STERN;
+      icc_examin->glAnsicht()->MakeDisplayLists();
       break;
     }
 
   if (value >= MENU_MAX) {
     kanal = value - MENU_MAX; DBG_PROG_V( kanal )
     status(_("linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menü"))
-    icc_examin->icc_betrachter->mft_gl->MakeDisplayLists();
+    icc_examin->glAnsicht()->MakeDisplayLists();
   }
 
   DBG_PROG_V( value )
