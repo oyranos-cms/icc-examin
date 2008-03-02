@@ -25,14 +25,13 @@
   */ 
 
 ICCheader::ICCheader()
-{
+{ DBG
   valid = false;
 }
 
 void
 ICCheader::load (void *data)
-{
-  DBG
+{ DBG
   if (data == NULL) {
     for (int i = 0; i < 128; i++)
       ((char*)&header)[i] = 0;
@@ -58,18 +57,18 @@ ICCheader::load (void *data)
 
 void
 ICCheader::set_current_date (void)
-{ // TODO Zeit setzen
-  header.date.day = icValue(1);
-  header.date.month = icValue(9);
-  header.date.year = icValue(2004);
-  header.date.hours = icValue(12);
-  header.date.minutes = icValue(00);
-  header.date.seconds = icValue(00);
+{ DBG // TODO Zeit setzen
+  header.date.day = icValue((icUInt16Number)1);
+  header.date.month = icValue((icUInt16Number)9);
+  header.date.year = icValue((icUInt16Number)2004);
+  header.date.hours = icValue((icUInt16Number)12);
+  header.date.minutes = icValue((icUInt16Number)0);
+  header.date.seconds = icValue((icUInt16Number)0);
 }
 
 std::string
 ICCheader::attributes (void)
-{
+{ DBG
   std::stringstream s;
   char* f = (char*) &(header.attributes);
   unsigned char         maske1 = 0x80;
@@ -110,7 +109,7 @@ ICCheader::attributes (void)
 
 std::string
 ICCheader::flags (void)
-{
+{ DBG
   std::stringstream s;
   char* f = (char*) &(header.flags);
   unsigned char         maske1 = 0x80;
@@ -138,7 +137,7 @@ ICCheader::flags (void)
 
 std::string
 ICCheader::versionName (void)
-{
+{ DBG
   std::stringstream s;
   char* v = (char*)&(header.version);
   
@@ -175,13 +174,7 @@ ICCheader::print_long()
                        getColorSpaceName(colorSpace()) << endl \
       <<  "    " << _("PCS") << ":         " <<
                        getColorSpaceName(pcs()) << endl \
-      <<  "    " << _("Datum") << ":       " <<
-                       icValue(header.date.day)     << "/" <<
-                       icValue(header.date.month)   << "/" <<
-                       icValue(header.date.year)    << " " <<
-                       icValue(header.date.hours)   << ":" <<
-                       icValue(header.date.minutes) << " " << _("Uhr") << " " <<
-                       icValue(header.date.seconds) << " " << _("Sekunden") << endl \
+      <<  "    " << printDatum(header.date) << endl \
       <<  "    " << _("Magic") << ":       " << mg << endl \
       <<  "    " << _("Plattform") << ":   " << platform() << endl \
       <<  "    " << _("Flags") << ":       " << flags() << endl \
@@ -192,9 +185,9 @@ ICCheader::print_long()
       <<  "    " << _("Übertragung") << ": " <<
                        renderingIntent() << endl \
       <<  "    " << _("Beleuchtung") << ": X=" <<
-                       icValueSF(header.illuminant.X) << ", Y=" << \
-                       icValueSF(header.illuminant.Y) << ", Z=" << \
-                       icValueSF(header.illuminant.Z) << endl \
+                       icSFValue(header.illuminant.X) << ", Y=" << \
+                       icSFValue(header.illuminant.Y) << ", Z=" << \
+                       icSFValue(header.illuminant.Z) << endl \
       <<  "    " << _("erzeugt von") << ": " << cr << endl ;
   } DBG
   return s.str();
@@ -353,17 +346,9 @@ ICCtag::getText                     (void)
   } else if (getTypName() == "dtim") {
     if (_size < 20) return texte;
     DBG
-    std::stringstream s;
     icDateTimeNumber date;
     memcpy (&date, &_data[8] , 12);
-    s << _("Datum") << ": " <<
-                       icValue(date.day)     << "/" <<
-                       icValue(date.month)   << "/" <<
-                       icValue(date.year)    << " " <<
-                       icValue(date.hours)   << ":" <<
-                       icValue(date.minutes) << " " << _("Uhr") << " " <<
-                       icValue(date.seconds) << " " << _("Sekunden");
-    texte.push_back( s.str() );
+    texte.push_back( printDatum(date) );
   } else if (getTypName() == "meas") {
     if (_size < 36) return texte;
     std::stringstream s;
@@ -371,9 +356,9 @@ ICCtag::getText                     (void)
     memcpy (&meas, &_data[8] , 28);
     s << _("Standard Betrachter") << ": " <<
     getStandardObserver( (icStandardObserver)icValue( meas.stdObserver) ) <<endl
-      << _("Rückseite") << ": X = " << icValueSF(meas.backing.X)
-                        << ", Y = " << icValueSF(meas.backing.Y)
-                        << ", Z = " << icValueSF(meas.backing.Z) << endl
+      << _("Rückseite") << ": X = " << icSFValue(meas.backing.X)
+                        << ", Y = " << icSFValue(meas.backing.Y)
+                        << ", Z = " << icSFValue(meas.backing.Z) << endl
       << _("Geometrie") << ": "<< 
     getMeasurementGeometry ((icMeasurementGeometry)icValue(meas.geometry))<<endl
       << _("Flare")     << ": "<< 
@@ -478,6 +463,7 @@ ICCtag::getText                     (void)
     texte.push_back( _("Rot") );
     texte.push_back( _("Grün") );
     texte.push_back( _("Blau") );
+    texte.push_back( "gamma_start_ende" );
   } else {
     texte.push_back( getTypName() + " | <- iss'n das?" );
   }
@@ -506,7 +492,7 @@ ICCtag::getDescription              (void)
 
 std::vector<double>
 ICCtag::getCIEXYZ                                 (void)
-{
+{ DBG
   std::vector<double> punkte;
   icTagBase *base  = (icTagBase*)(&_data[0]);
 
@@ -520,9 +506,9 @@ ICCtag::getCIEXYZ                                 (void)
     for (int i = 0; i < count ; i++) { // Table 35 -- chromaticityType encoding
       // TODO lcms braucht einen 16 Byte Offset (statt 12 Byte)
       icU16Fixed16Number* channel = (icU16Fixed16Number*)&_data[12+(4*i)];
-      double xyz[3] = { icValueUF( channel[0] ),
-                        icValueUF( channel[1] ),
-                        1.0 - (icValueUF(channel[0]) + icValueUF(channel[1])) };
+      double xyz[3] = { icUFValue( channel[0] ),
+                        icUFValue( channel[1] ),
+                        1.0 - (icUFValue(channel[0]) + icUFValue(channel[1])) };
       punkte.push_back( xyz[0] );
       punkte.push_back( xyz[1] );
       punkte.push_back( xyz[2] );
@@ -532,9 +518,9 @@ ICCtag::getCIEXYZ                                 (void)
     }
   } else if (base->sig == (icTagTypeSignature)icValue( icSigXYZType )) {
     icXYZType *daten = (icXYZType*) &_data[0];
-    punkte.push_back( icValueSF( (daten->data.data[0].X) ) );
-    punkte.push_back( icValueSF( (daten->data.data[0].Y) ) );
-    punkte.push_back( icValueSF( (daten->data.data[0].Z) ) );
+    punkte.push_back( icSFValue( (daten->data.data[0].X) ) );
+    punkte.push_back( icSFValue( (daten->data.data[0].Y) ) );
+    punkte.push_back( icSFValue( (daten->data.data[0].Z) ) );
   }
 
   return punkte;
@@ -542,20 +528,24 @@ ICCtag::getCIEXYZ                                 (void)
 
 std::vector<double>
 ICCtag::getCurve                                  (void)
-{
+{ DBG
   std::vector<double> punkte;
   icCurveType *daten = (icCurveType*) &_data[0];
   int count = icValue(daten->curve.count);
 
-  for (int i = 0; i < count; i++)
-    punkte.push_back (icValue(daten->curve.data[i])/65536.0);
+  if (count == 1) { // icU16Fixed16Number
+    punkte.push_back (icValue(daten->curve.data[0])/256.0);
+  } else {
+    for (int i = 0; i < count; i++)
+      punkte.push_back (icValue(daten->curve.data[i])/65536.0);
+  }
 
   return punkte;
 }
 
 std::vector<std::vector<double> >
 ICCtag::getCurves                                 (MftChain typ)
-{
+{ DBG
   std::vector<double> kurve;
   std::vector<std::vector<double> > kurven; DBG
   // Wer sind wir?
@@ -672,26 +662,51 @@ ICCtag::getCurves                                 (MftChain typ)
          break;
     } 
   } else if (getTypName() == "vcgt") {
+    int parametrisch        = icValue(*(icUInt32Number*) &_data[8]);
     icUInt16Number nkurven  = icValue(*(icUInt16Number*) &_data[12]);
     icUInt16Number segmente = icValue(*(icUInt16Number*) &_data[14]);
     icUInt16Number mult     = icValue(*(icUInt16Number*) &_data[16]);
-    int start = 18,
-        byte  = 2;
-    cout << _data << " nkurven " << nkurven << " segmente " << segmente << " mult " << mult << " "; DBG
-    double div   = 65536.0;
-         for (int j = 0; j < nkurven; j++)
-         { kurve.clear();
-           #ifdef DEBUG_ICCTAG
-           cout << kurve.size() << " Start "; DBG
-           #endif
-           for (int i = segmente * j; i < segmente * (j+1); i++)
-             kurve.push_back( (double) icValue (*(icUInt16Number*)&_data[start + byte*i])
-                              / div );
-           kurven.push_back (kurve);
-           #ifdef DEBUG_ICCTAG
-           cout << kurve.size() << " Einträge "; DBG
-           #endif
-         }
+    
+    cout << _data << " parametrisch " << parametrisch << " nkurven " << nkurven << " segmente " << segmente << " mult " << mult << " "; DBG
+
+    if (parametrisch) { //icU16Fixed16Number
+      double r_gamma = 1.0/icValue(*(icUInt32Number*)&_data[12])*65536.0;
+      double start_r = icValue(*(icUInt32Number*)&_data[16])/65536.0;
+      double ende_r = icValue(*(icUInt32Number*)&_data[20])/65536.0;
+      double g_gamma = 1.0/icValue(*(icUInt32Number*)&_data[24])*65536.0;
+      double start_g = icValue(*(icUInt32Number*)&_data[28])/65536.0;
+      double ende_g = icValue(*(icUInt32Number*)&_data[32])/65536.0;
+      double b_gamma = 1.0/icValue(*(icUInt32Number*)&_data[36])*65536.0;
+      double start_b = icValue(*(icUInt32Number*)&_data[40])/65536.0;
+      double ende_b = icValue(*(icUInt32Number*)&_data[44])/65536.0;
+      kurve.clear();
+      kurve.push_back(r_gamma);
+      kurve.push_back(start_r);
+      kurve.push_back(ende_r); kurven.push_back (kurve); kurve.clear();
+      kurve.push_back(g_gamma);
+      kurve.push_back(start_g);
+      kurve.push_back(ende_g); kurven.push_back (kurve); kurve.clear();
+      kurve.push_back(b_gamma);
+      kurve.push_back(start_b);
+      kurve.push_back(ende_b); kurven.push_back (kurve); kurve.clear();
+    } else {
+      int start = 18,
+          byte  = 2;
+      double div   = 65536.0;
+           for (int j = 0; j < nkurven; j++)
+           { kurve.clear();
+             #ifdef DEBUG_ICCTAG
+             cout << kurve.size() << " Start "; DBG
+             #endif
+             for (int i = segmente * j; i < segmente * (j+1); i++)
+               kurve.push_back( (double) icValue (*(icUInt16Number*)&_data[start + byte*i])
+                                / div );
+             kurven.push_back (kurve);
+             #ifdef DEBUG_ICCTAG
+             cout << kurve.size() << " Einträge "; DBG
+             #endif
+           }
+    }
   }
 
   #ifdef DEBUG_ICCTAG
@@ -702,7 +717,7 @@ ICCtag::getCurves                                 (MftChain typ)
 
 std::vector<double>
 ICCtag::getNumbers                                 (MftChain typ)
-{
+{ DBG
   std::vector<double> nummern;
   // Wer sind wir?
   if (getTypName() == "mft2") {
@@ -719,7 +734,7 @@ ICCtag::getNumbers                                 (MftChain typ)
     case MATRIX:
          for (int i = 0; i < 9; i++) {
            icS15Fixed16Number *n = (icS15Fixed16Number*)&_data[12 + 4*i];
-           nummern.push_back( icValueSF (*n) );
+           nummern.push_back( icSFValue (*n) );
          }
          break;
     case CURVE_IN:
@@ -739,7 +754,7 @@ ICCtag::getNumbers                                 (MftChain typ)
     case MATRIX:
          for (int i = 0; i < 9; i++) {
            icS15Fixed16Number *n = (icS15Fixed16Number*)&_data[12 + 4*i];
-           nummern.push_back( icValueSF (*n) );
+           nummern.push_back( icSFValue (*n) );
          }
          break;
     case CURVE_IN:
@@ -788,7 +803,7 @@ ICCtag::getText                     (MftChain typ)
   */
 
 ICCprofile::ICCprofile (void)
-{
+{ DBG
   _data = NULL;
   _size = 0;
   
@@ -796,7 +811,7 @@ ICCprofile::ICCprofile (void)
 
 ICCprofile::ICCprofile (const char *filename)
   : _filename (filename)
-{
+{ DBG
   if (_data && _size) free(_data);//delete [] _data;
   _data = NULL;
   _size = 0;
@@ -822,7 +837,7 @@ ICCprofile::ICCprofile (const char *filename)
 }
 
 ICCprofile::~ICCprofile (void)
-{
+{ DBG
   this->clear();
 
   #ifdef DEBUG_PROFILE
@@ -832,7 +847,7 @@ ICCprofile::~ICCprofile (void)
  
 void
 ICCprofile::clear (void)
-{
+{ DBG
   DBG_S( "Profil wird geleert" )
 
   _data = NULL;
@@ -852,7 +867,7 @@ ICCprofile::clear (void)
 
 void
 ICCprofile::load (std::string filename)
-{
+{ DBG
   // delegieren
   _filename = filename;
   try {
@@ -875,7 +890,7 @@ ICCprofile::load (std::string filename)
 
 void
 ICCprofile::load (char* filename)
-{
+{ DBG
   // delegieren
   _filename = filename;
   try {
@@ -898,7 +913,7 @@ ICCprofile::load (char* filename)
 
 void
 ICCprofile::fload ()
-{ // ICC Profil laden
+{ DBG // ICC Profil laden
   std::string file;
   std::ifstream f ( _filename.c_str(), std::ios::binary | std::ios::ate );
 
@@ -961,7 +976,7 @@ ICCprofile::fload ()
 
 std::vector<std::string>
 ICCprofile::printTagInfo         (int item)
-{
+{ DBG
   std::vector<std::string> liste;
 
   liste.push_back( tags.at(item).getTagName() );
@@ -973,7 +988,7 @@ ICCprofile::printTagInfo         (int item)
 
 std::vector<std::string>
 ICCprofile::printTags            ()
-{
+{ DBG
   DBG
   std::vector<std::string> StringList;
   std::string text;
@@ -1001,7 +1016,7 @@ ICCprofile::printTags            ()
 
 std::vector<std::string>
 ICCprofile::getTagText                                  (int item)
-{
+{ DBG
   // Prüfen
   std::string name = tags[item].getTypName();
   std::string leer = name + " Typ - keine Textausgabe";
@@ -1026,7 +1041,7 @@ ICCprofile::getTagText                                  (int item)
 std::vector<std::string>
 ICCprofile::getTagChannelNames                          (int item,
                                                          ICCtag::MftChain typ)
-{
+{ DBG
   // Prüfen
   std::string leer = tags[item].getTypName() + " Typ - keine Textausgabe";
   std::vector<std::string> v;
@@ -1042,7 +1057,7 @@ ICCprofile::getTagChannelNames                          (int item,
 
 std::vector<std::string>
 ICCprofile::getTagDescription                    (int item)
-{
+{ DBG
   // Prüfen
   std::vector<std::string> leer;
   if (tags[item].getTypName() != "desc")
@@ -1053,7 +1068,7 @@ ICCprofile::getTagDescription                    (int item)
 
 std::vector<double>
 ICCprofile::getTagCIEXYZ                         (int item)
-{
+{ DBG
   // Prüfen
   std::vector<double> XYZ;
 
@@ -1066,7 +1081,7 @@ ICCprofile::getTagCIEXYZ                         (int item)
 
 std::vector<double>
 ICCprofile::getTagCurve                          (int item)
-{
+{ DBG
   // Prüfen
   std::vector<double> leer;
   if (tags[item].getTypName() != "curv")
@@ -1082,7 +1097,7 @@ ICCprofile::getTagCurve                          (int item)
 
 std::vector<std::vector<double> >
 ICCprofile::getTagCurves                         (int item,ICCtag::MftChain typ)
-{
+{ DBG
   // Prüfen
   std::vector<std::vector<double> > leer;
   if (tags[item].getTypName() != "mft2"
@@ -1100,7 +1115,7 @@ ICCprofile::getTagCurves                         (int item,ICCtag::MftChain typ)
 
 std::vector<double>
 ICCprofile::getTagNumbers                        (int item,ICCtag::MftChain typ)
-{
+{ DBG
   // Prüfen
   std::vector<double> leer;
   if (tags[item].getTypName() != "mft2"
@@ -1117,7 +1132,7 @@ ICCprofile::getTagNumbers                        (int item,ICCtag::MftChain typ)
 
 int
 ICCprofile::getTagByName            (std::string name)
-{
+{ DBG
   if (!tags.size()) { DBG
     return -1;
   } DBG
@@ -1139,7 +1154,7 @@ ICCprofile::getTagByName            (std::string name)
 
 bool
 ICCprofile::hasTagName            (std::string name)
-{
+{ DBG
   if (!tags.size()) { DBG
     return false;
   } DBG
@@ -1161,7 +1176,7 @@ ICCprofile::hasTagName            (std::string name)
 
 std::vector<double>
 ICCprofile::getWhitePkt           (void)
-{
+{ DBG
   std::vector<double> XYZ;
   if (hasTagName ("wtpt"))
     XYZ = getTagCIEXYZ (getTagByName ("wtpt"));
@@ -1171,7 +1186,7 @@ ICCprofile::getWhitePkt           (void)
 
 void
 ICCprofile::saveProfileToFile  (char* filename)
-{
+{ DBG
   if (_data && _size) free(_data);//delete []_data;
   _size = sizeof (icHeader) + sizeof (icUInt32Number); DBG_V(_size <<" "<<sizeof (icProfile))
   _data = (char*)calloc (sizeof (char) , _size); //new char (sizeof(icHeader) );
@@ -1187,7 +1202,7 @@ ICCprofile::saveProfileToFile  (char* filename)
 
 void
 ICCprofile::writeTags (void)
-{
+{ DBG
   unsigned int i;
   for (i = 0; i < tags.size(); i++) {
     DBG_V ( i << ": " << tags[i].getTypName() )
@@ -1213,7 +1228,7 @@ ICCprofile::writeTags (void)
 
 void
 ICCprofile::writeTagTable (void)
-{
+{ DBG
   icProfile* p = (icProfile*) _data;
   p->count = icValue((icUInt32Number)tags.size());
   int size = sizeof (icTag) * tags.size();
@@ -1226,7 +1241,7 @@ ICCprofile::writeTagTable (void)
 
 void
 ICCprofile::writeHeader (void)
-{
+{ DBG
   memcpy (_data, header.header_raw(), 128);
 }
 
@@ -1234,7 +1249,7 @@ ICCprofile::writeHeader (void)
 
 int
 ICCprofile::checkProfileDevice (char* type, icProfileClassSignature deviceClass)
-{
+{ DBG
   int check = true;
 
   if ((strcmp(type, _("Work Space"))) == 0) {
@@ -1314,7 +1329,7 @@ ICCprofile::checkProfileDevice (char* type, icProfileClassSignature deviceClass)
 
 void
 ICCprofile::saveProfileToFile (char* filename, char *profile, int size)
-{
+{ DBG
   FILE *fp=NULL;
   int   pt = 0;
 
@@ -1329,7 +1344,7 @@ ICCprofile::saveProfileToFile (char* filename, char *profile, int size)
 
 void
 ICCprofile::removeTag (int item)
-{
+{ DBG
   if (item >= (int)tags.size() )
     return;
 
@@ -1360,12 +1375,12 @@ ICCprofile::removeTag (int item)
 
 void
 lcms_error (int ErrorCode, const char* ErrorText)
-{
+{ DBG
    g_message ("LCMS error:%d %s", ErrorCode, ErrorText);
 }
 
 const char* cp_nchar (char* text, int n)
-{
+{ DBG
   static char string[1024];
 
   for (int i = 0; i < 1024 ; i++)

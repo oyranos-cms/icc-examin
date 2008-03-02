@@ -81,8 +81,8 @@ draw_cie_shoe (int X, int Y, int W, int H,
   // dargestellter Ausschnitt 
   n = .85;
 
-  #define x(val) (int)(((double)xO + (double)val*w/n)+0.5)
-  #define y(val) (int)(((double)yO - (double)val*h/n)+0.5)
+  #define x(val) (int)(((double)xO + (double)(val)*w/n)+0.5)
+  #define y(val) (int)(((double)yO - (double)(val)*h/n)+0.5)
   #define x2cie(val) (((val)-xO)/w)
   #define y2cie(val) ((yO-(val))/h)
   fl_push_clip( X,y(n), x(n),(int)(h+tab_border_y+0.5) );
@@ -449,7 +449,7 @@ void draw_kurve    (int X, int Y, int W, int H,
       fl_color(9 + j);
     }
     #ifdef DEBUG//_DRAW
-    //cout << "Zeichne Kurve "<< name << " " << j << " " << kurven[j].size() << " Teile "; DBG
+    cout << "Zeichne Kurve "<< name << " " << j << " " << kurven[j].size() << " Teile "; DBG
     #endif
     s.str("");
     if (kurven[j].size() == 0
@@ -461,12 +461,28 @@ void draw_kurve    (int X, int Y, int W, int H,
     } else if (kurven[j].size() == 1
             && ist_kurve) {
       int segmente = 256;
-      double gamma = kurven[j][0]*256.0;
+      double gamma = kurven[j][0]; DBG_V( gamma )
       for (int i = 1; i < segmente; i++)
         fl_line (x( (i-1) / ((segmente-1) *n) ),
                y( pow( (double)(i-1.0)/segmente, gamma ) ),
                x( (i) / ((segmente-1) *n) ),
                y( pow( (double)i/segmente, gamma ) ) );
+      // Infos einblenden 
+      s << name << _(" mit einem Eintrag für Gamma: ") << gamma; DBG_V( gamma )
+      fl_draw ( s.str().c_str(), x(0) + 2, y(n) + j*16 + 12);
+    } else if (kurven[j].size() == 3
+            && texte[texte.size()-1] == "gamma_start_ende") {
+      int segmente = 256;
+      double gamma = kurven[j][0]; DBG_V( gamma )
+      double start = kurven[j][1]; DBG_V( start )
+      double ende  = kurven[j][2]; DBG_V( ende )
+      double mult  = (ende - start); DBG_V( mult )
+      for (int i = 1; i < segmente; i++) {
+        fl_line (x( (i-1) / ((segmente-1) *n) ),
+               y( pow( (double)(i-1.0)/segmente, gamma ) * mult + start ),
+               x( (i) / ((segmente-1) *n) ),
+               y( pow( (double)i/segmente, gamma ) * mult + start) );
+      }
       // Infos einblenden 
       s << name << _(" mit einem Eintrag für Gamma: ") << gamma;
       fl_draw ( s.str().c_str(), x(0) + 2, y(n) + j*16 + 12);

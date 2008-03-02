@@ -65,8 +65,10 @@ double        dE2000 (Lab Lab1, Lab Lab2, double kL, double kC, double kH);
 icUInt16Number          icValue   (icUInt16Number val);
 icUInt32Number          icValue   (icUInt32Number val);
 unsigned long           icValue   (icUInt64Number val);
-double                  icValueSF (icS15Fixed16Number val);
-double                  icValueUF (icU16Fixed16Number val);
+double                  icSFValue (icS15Fixed16Number val);
+double                  icUFValue (icU16Fixed16Number val);
+icS15Fixed16Number      icValueSF (double val);
+icU16Fixed16Number      icValueUF (double val);
 icInt16Number                     icValue   (icInt16Number val);
 icInt32Number                     icValue   (icInt32Number val);
 int                     icValue   (icInt64Number val);
@@ -91,6 +93,7 @@ std::string         getIlluminant( icIlluminant illu );
 std::string         getStandardObserver( icStandardObserver obsv );
 std::string         getMeasurementGeometry( icMeasurementGeometry measgeo );
 std::string         getMeasurementFlare( icMeasurementFlare flare );
+std::string         printDatum( icDateTimeNumber date );
 
 /**
   *   @brief interne ICC Profilstruktur
@@ -108,98 +111,98 @@ class ICCheader {
   private:
     icHeader            header;
   public:
-    const char*         header_raw ()        {return /*cp_nchar (*/(char*)&header/*,
+    const char*         header_raw ()        {DBG return /*cp_nchar (*/(char*)&header/*,
                                                        sizeof (icHeader))*/; }
-    void                header_raw (void* h) {memcpy ((void*)&header, h,
+    void                header_raw (void* h) {DBG memcpy ((void*)&header, h,
                                                        sizeof (icHeader)); }
     void                load  (void*);
 
     int                 valid;
-    int                 size    ()      {return icValue(header.size); }
-    void                size    (icUInt32Number size)   {header.size =
+    int                 size    ()      {DBG return icValue(header.size); }
+    void                size    (icUInt32Number size)   {DBG header.size =
                                                 (icUInt32Number)icValue(size); }
-    void                cmmName (const char* s){memcpy((char*)&(header.cmmId),s,
+    void                cmmName (const char* s){DBG memcpy((char*)&(header.cmmId),s,
                                                        sizeof (icSignature)); }
-    const char*         cmmName ()      {return cp_nchar((char*)&(header.cmmId),
+    const char*         cmmName ()      {DBG return cp_nchar((char*)&(header.cmmId),
                                                       sizeof (icSignature)+1); }
-    int                 version ()      {return icValue(header.version); }
-    void                version (icUInt32Number v) {header.version= icValue(v);}
+    int                 version ()      {DBG return icValue(header.version); }
+    void                version (icUInt32Number v) {DBG header.version= icValue(v);}
     std::string         versionName ();
     icProfileClassSignature deviceClass ()
-                                        {return icValue(header.deviceClass); }
+                                        {DBG return icValue(header.deviceClass); }
     void                deviceClass (icProfileClassSignature d)
-                                        {header.deviceClass = icValue(d); }
-    icColorSpaceSignature colorSpace () {return icValue(header.colorSpace); }
+                                        {DBG header.deviceClass = icValue(d); }
+    icColorSpaceSignature colorSpace () {DBG return icValue(header.colorSpace); }
     void                colorSpace (icColorSpaceSignature color)
-                                        {header.colorSpace = icValue(color); }
-    icColorSpaceSignature pcs ()        {return icValue(header.pcs); }
+                                        {DBG header.colorSpace = icValue(color); }
+    icColorSpaceSignature pcs ()        {DBG return icValue(header.pcs); }
     void                pcs (icColorSpaceSignature pcs)
-                                        {header.pcs = icValue(pcs); }
+                                        {DBG header.pcs = icValue(pcs); }
     void                set_current_date ();
-    const char*         magicName ()    {return cp_nchar ((char*)&(header.
+    const char*         magicName ()    {DBG return cp_nchar ((char*)&(header.
                                                       magic),
                                                       sizeof (icSignature)+1); }
-    void                set_magic ()    {char* m = {"acsp"};
+    void                set_magic ()    {DBG char* m = {"acsp"};
                                          header.magic = *(icSignature*)m; }
-    std::string         platform ()     {return getPlatformName(icValue(header.platform)); }
-    void                set_platform () {header.platform = (icValue(icSigSGI));}
+    std::string         platform ()     {DBG return getPlatformName(icValue(header.platform)); }
+    void                set_platform () {DBG header.platform = (icValue(icSigSGI));}
     std::string         flags ();
-    void                set_embedded_flag()   {((char*)&header.flags)[0] =
+    void                set_embedded_flag()   {DBG ((char*)&header.flags)[0] =
                                               ((char*)&header.flags)[0] | 0x80;}
-    void                unset_embedded_flag() {((char*)&header.flags)[0] =
+    void                unset_embedded_flag() {DBG ((char*)&header.flags)[0] =
                                               ((char*)&header.flags)[0] & 0x7f;}
-    void                set_dependent_flag()   {((char*)&header.flags)[0] =
+    void                set_dependent_flag()  {DBG ((char*)&header.flags)[0] =
                                               ((char*)&header.flags)[0] | 0x40;}
-    void                unset_dependent_flag() {((char*)&header.flags)[0] =
+    void                unset_dependent_flag() {DBG ((char*)&header.flags)[0] =
                                               ((char*)&header.flags)[0] & 0xbf;}
-    const char*         manufacturerName() {return cp_nchar ((char*)&(header.
+    const char*         manufacturerName() {DBG return cp_nchar ((char*)&(header.
                                                       manufacturer),
                                                       sizeof (icSignature)+1); }
-    void                set_manufacturer (){char* m = {"none"};
+    void                set_manufacturer (){DBG char* m = {"none"};
                                          header.manufacturer= *(icSignature*)m;}
-    const char*         modelName ()       {return cp_nchar ((char*)&(header.
+    const char*         modelName ()       {DBG return cp_nchar ((char*)&(header.
                                                       model),
                                                       sizeof (icSignature)+1); }
-    void                set_model ()       {char* m = {"none"};
-                                         header.manufacturer= *(icSignature*)m;}
+    void                set_model ()       {DBG char* m = {"none"};
+                                         header.model= *(icSignature*)m;}
     std::string         attributes ();
-    void                set_reflective_attr() {((char*)&header.attributes)[0] =
+    void                set_reflective_attr() {DBG ((char*)&header.attributes)[0] =
                                               ((char*)&header.attributes)[0]
                                                 & 0x7f; }
-    void                set_transparency_attr() {((char*)&header.attributes)[0] =
+    void                set_transparency_attr() {DBG ((char*)&header.attributes)[0] =
                                               ((char*)&header.attributes)[0]
                                                 | 0x80; }
-    void                set_glossy_attr() {((char*)&header.attributes)[0] =
+    void                set_glossy_attr() {DBG ((char*)&header.attributes)[0] =
                                               ((char*)&header.attributes)[0]
                                                 & 0xbf; }
-    void                set_matte_attr() {((char*)&header.attributes)[0] =
+    void                set_matte_attr() {DBG ((char*)&header.attributes)[0] =
                                               ((char*)&header.attributes)[0]
                                                 | 0x40; }
-    void                set_positive_attr() {((char*)&header.attributes)[0] =
+    void                set_positive_attr() {DBG ((char*)&header.attributes)[0] =
                                               ((char*)&header.attributes)[0]
                                                 & 0xdf; }
-    void                set_negative_attr() {((char*)&header.attributes)[0] =
+    void                set_negative_attr() {DBG ((char*)&header.attributes)[0] =
                                               ((char*)&header.attributes)[0]
                                                 | 0x20; }
-    void                set_color_attr() {((char*)&header.attributes)[0] =
+    void                set_color_attr() {DBG ((char*)&header.attributes)[0] =
                                               ((char*)&header.attributes)[0]
                                                 & 0xef; }
-    void                set_gray_attr() {((char*)&header.attributes)[0] =
+    void                set_gray_attr() {DBG ((char*)&header.attributes)[0] =
                                               ((char*)&header.attributes)[0]
                                                 | 0x10; }
-    std::string         renderingIntent () {return renderingIntentName( icValue(
+    std::string         renderingIntent () {DBG return renderingIntentName( icValue(
                                             header.renderingIntent ) ); }
-    void                set_renderingIntent () {header.renderingIntent =icValue(
+    void                set_renderingIntent () {DBG header.renderingIntent =icValue(
                                                 0 ); }
-    void                set_illuminant ()  {
-                              header.illuminant.X = (int)(0.9642 * 256.0 + 0.5);
-                              header.illuminant.Y = (int)(1.0000 * 256.0 + 0.5);
-                              header.illuminant.Z = (int)(0.8249 * 256.0 + 0.5);
+    void                set_illuminant ()  {DBG 
+                                        header.illuminant.X = icValueSF(0.9642);
+                                        header.illuminant.Y = icValueSF(1.0000);
+                                        header.illuminant.Z = icValueSF(0.8249);
                                            } 
-    const char*         creatorName ()     {return cp_nchar ((char*)&(header.
+    const char*         creatorName ()     {DBG return cp_nchar ((char*)&(header.
                                                       creator),
                                                       sizeof (icSignature)+1); }
-    void                set_creator ()     {char* m = {"SB"};
+    void                set_creator ()     {DBG char* m = {"SB  "};
                                             header.creator= *(icSignature*)m; }
     void                setID ()           {/*char* m = ((char*)&header)[84];
                                             *m = "-";*/ }
@@ -216,11 +219,11 @@ class ICCtag {
                         ICCtag             (ICCprofile* profil,
                                             icTag* tag, char* data);
                         ICCtag             (const ICCtag& tag)
-                                                          {copy (tag); }
+                                                          {DBG copy (tag); }
     ICCtag&             operator=          (const ICCtag& tag)
-                                                          {copy (tag); 
+                                                          {DBG copy (tag); 
                                                            return *this; }
-    void                clear              () {_sig = icMaxEnumTag;
+    void                clear              () {DBG _sig = icMaxEnumTag;
                                                DBG_S((int*)_data)
                                                if (_data && _size) free (_data);
                                                _size = 0;
@@ -245,16 +248,16 @@ class ICCtag {
   public:
     void                load (ICCprofile* profil ,icTag* tag, char* data);
   public:
-    icTagSignature      getSignature ()    {return _sig; }
-    std::string         getTagName()       {return getSigTagName (_sig); }
-    std::string         getInfo()          {return getSigTagDescription(_sig); }
-    std::string         getTypName()       {icTagTypeSignature sig =
+    icTagSignature      getSignature ()    {DBG return _sig; }
+    std::string         getTagName()       {DBG return getSigTagName (_sig); }
+    std::string         getInfo()          {DBG return getSigTagDescription(_sig); }
+    std::string         getTypName()       {DBG icTagTypeSignature sig =
                                             ((icTagBase*)_data) ->
                                             sig;
                                             return getSigTypeName(
                                               (icTagTypeSignature)icValue(sig));
                                            }
-    int                 getSize()          {return _size; }
+    int                 getSize()          {DBG return _size; }
 
     std::vector<double> getCIEXYZ();
     std::vector<double> getCurve();
@@ -273,7 +276,7 @@ class ICCtag {
     std::vector<std::string> getDescription();
     std::string         getVrml();
   public:  // I/O
-    const char*         write(int* size)   {*size = _size;
+    const char*         write(int* size)   {DBG *size = _size;
                                             return (const char*)_data; }
 };
 
@@ -285,12 +288,13 @@ class ICCmeasurement {
                         ICCmeasurement     (ICCprofile* profil , ICCtag& tag);
                         ICCmeasurement     (ICCprofile* profil,
                                             icTag& tag, char* data);
-                        ~ICCmeasurement    ();
     void                clear(void);
+                        ~ICCmeasurement    () {clear(); }
+    void                init (void);
 
   private:
     // laden und auswerten
-    void                init_meas (void);
+    void                leseTag ();
     // Berechnen aller Mess- und Profilwerte
     void                init_umrechnen (void);
     // ??
@@ -298,7 +302,7 @@ class ICCmeasurement {
     // vorbereiten -> cgats
     std::string         ascii_korrigieren ();
     // lcms cgats Leser
-    void                lcms_parse (std::string data);
+    void                lcms_parse ();
 
   private:
     icTagSignature      _sig;
@@ -340,30 +344,32 @@ class ICCmeasurement {
     void                load (ICCprofile* profil , char *data, size_t size);
   public:
     // grundlegende Infos
-    bool                valid (void)       {return (_XYZ_measurement
+    bool                has_data (void)    {DBG return (_XYZ_Satz.size() ||
+                                                    ( _data && _size ) ); }
+    bool                valid (void)       {DBG return (_XYZ_measurement
                                                  && (_RGB_measurement
                                                   || _CMYK_measurement)); }
-    bool                hasRGB ()          {return _RGB_measurement; }
-    bool                hasCMYK ()         {return _CMYK_measurement; }
-    bool                hasXYZ ()          {return _XYZ_measurement; }
-    int                 getSize()          {return _size; }
-    int                 getPatchCount()    {return _nFelder; }
+    bool                hasRGB ()          {DBG return _RGB_measurement; }
+    bool                hasCMYK ()         {DBG return _CMYK_measurement; }
+    bool                hasXYZ ()          {DBG return _XYZ_measurement; }
+    int                 getSize()          {DBG return _size; }
+    int                 getPatchCount()    {DBG return _nFelder; }
     // Werte
     std::vector<double> getMessRGB (int patch);
     std::vector<double> getCmmRGB (int patch);
-    std::vector<XYZ>    getMessXYZ ()      {return _XYZ_Satz; }
-    std::vector<RGB>    getMessRGB ()      {return _RGB_Satz; }
-    std::vector<CMYK>   getMessCMYK ()     {return _CMYK_Satz; }
+    std::vector<XYZ>    getMessXYZ ()      {DBG return _XYZ_Satz; }
+    std::vector<RGB>    getMessRGB ()      {DBG return _RGB_Satz; }
+    std::vector<CMYK>   getMessCMYK ()     {DBG return _CMYK_Satz; }
 
     // Report
     std::vector<std::vector<std::string> > getText ();
     std::vector<std::string> getDescription();
     std::string         getHtmlReport ();
-    std::vector<int>    getLayout ()       {return layout; }
+    std::vector<int>    getLayout ()       {DBG return layout; }
 
     // Herkunft
-    std::string         getTagName()       {return getSigTagName (_sig); }
-    std::string         getInfo()          {return getSigTagDescription(_sig); }
+    std::string         getTagName()       {DBG return getSigTagName (_sig); }
+    std::string         getInfo()          {DBG return getSigTagDescription(_sig); }
 
 };
 
@@ -379,7 +385,7 @@ class ICCprofile {
     void                clear (void);
 
   public:
-    int                 tagCount()         {return tags.size(); }
+    int                 tagCount()         {DBG return tags.size(); }
     void                load (std::string filename);
     void                load (char* filename);
 
@@ -397,16 +403,16 @@ class ICCprofile {
     ICCmeasurement      measurement;
 
   public: // Informationen
-    const char*         filename ()        {return _filename.c_str(); }
-    void                filename (const char* s) {_filename = s; }
-    int                 size     ()        {return header.size(); }
-    const char*         cmm      ()        {return header.cmmName(); }
-    void                cmm      (const char* s) {header.cmmName (s); }
-    int                 version  ()        {return (int) header.version(); }
-    const char*         creator  ()        {return header.creatorName(); }
+    const char*         filename ()        {DBG return _filename.c_str(); }
+    void                filename (const char* s) {DBG _filename = s; }
+    int                 size     ()        {DBG return header.size(); }
+    const char*         cmm      ()        {DBG return header.cmmName(); }
+    void                cmm      (const char* s) {DBG header.cmmName (s); }
+    int                 version  ()        {DBG return (int) header.version(); }
+    const char*         creator  ()        {DBG return header.creatorName(); }
 
-    std::string         printHeader     () {return header.print(); }
-    std::string         printLongHeader () {return header.print_long(); }
+    std::string         printHeader     () {DBG return header.print(); }
+    std::string         printLongHeader () {DBG return header.print_long(); }
 
     // Tag Infos
     std::vector<std::string> printTags  (); // Liste der einzelnen Tags (5)
@@ -422,7 +428,7 @@ class ICCprofile {
     std::vector<std::string> getTagChannelNames(int item, ICCtag::MftChain typ);
     bool                hasTagName   (std::string name); // Name
     int                 getTagByName (std::string name); // Name
-    int                 getTagCount     () {return icValue(((icProfile*)_data)->
+    int                 getTagCount     () {DBG return icValue(((icProfile*)_data)->
                                                    count); }
     // Profil Infos
     char*               getProfileInfo  ();
@@ -435,13 +441,17 @@ class ICCprofile {
                                            int    size);
  
   public: // Messwertinfos
-    bool                hasMeasurement () {return measurement.valid(); }
-    std::string         report ()         {return measurement.getHtmlReport(); }
-    ICCmeasurement&     getMeasurement () {return measurement; }
+    bool                hasMeasurement () {DBG return (hasTagName("targ") ||
+                                    (hasTagName("CIED")&&hasTagName("DevD"))); }
+    std::string         report ()         {DBG return measurement.getHtmlReport(); }
+    ICCmeasurement&     getMeasurement () {DBG if (hasMeasurement())
+                                                 measurement.init();
+                                               return measurement; }
 
   public: // Profilerstellung
-    void                setHeader (void* h) {header.header_raw(h); }
-    void                addTag (ICCtag tag)  {tags.push_back(tag); }
+    void                setHeader (void* h) {DBG header.header_raw(h); }
+    void                addTag (ICCtag tag)  {DBG tags.push_back(tag); }
+    ICCtag&             getTag (int item)  {return tags[item]; }
     void                removeTag (int item);
     void                saveProfileToFile  (char* filename);
   private:

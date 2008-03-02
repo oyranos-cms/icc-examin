@@ -21,7 +21,7 @@
   */
 
 ICCmeasurement::ICCmeasurement ()
-{
+{ DBG
   _sig = icMaxEnumTag;
   _data = NULL;
   _profil = NULL;
@@ -32,34 +32,9 @@ ICCmeasurement::ICCmeasurement (ICCprofile* profil, ICCtag &tag)
   ICCmeasurement::load (profil, tag); DBG
 }
 
-ICCmeasurement::~ICCmeasurement ()
-{
-  _sig = icMaxEnumTag;
-  _size = 0;
-  if (_data != NULL) free (_data);
-  DBG
-}
-
-void
-ICCmeasurement::load                ( ICCprofile *profil,
-                                      ICCtag&     tag )
-{ DBG
-  _profil = profil;
-
-  _sig    = tag._sig;
-  _size   = tag._size - 8;
-  // einfach austauschen
-  if (_data != NULL) free (_data); 
-  _data = (char*) calloc ( _size , sizeof (char) );
-  memcpy ( _data , &(tag._data)[8] , _size );
-
-  init_meas();
-  DBG
-}
-
 void
 ICCmeasurement::clear               (void)
-{
+{ DBG
   if (_data != NULL) free (_data);
   _sig = icMaxEnumTag;
   _size = 0;
@@ -91,6 +66,22 @@ ICCmeasurement::clear               (void)
 
 void
 ICCmeasurement::load                ( ICCprofile *profil,
+                                      ICCtag&     tag )
+{ DBG
+  _profil = profil;
+
+  _sig    = tag._sig;
+  _size   = tag._size - 8;
+  // einfach austauschen
+  if (_data != NULL) free (_data); 
+  _data = (char*) calloc ( _size , sizeof (char) );
+  memcpy ( _data , &(tag._data)[8] , _size );
+
+  DBG
+}
+
+void
+ICCmeasurement::load                ( ICCprofile *profil,
                                       char       *data,
                                       size_t      size )
 { DBG
@@ -104,9 +95,6 @@ ICCmeasurement::load                ( ICCprofile *profil,
   if (!_data) free (_data);
   _data = (char*) calloc ( _size , sizeof (char) );
   memcpy ( _data , data , _size );
-  DBG
-
-  init_meas();
 
   #ifdef DEBUG_ICCMEASUREMENT
   DBG
@@ -114,47 +102,49 @@ ICCmeasurement::load                ( ICCprofile *profil,
 }
 
 void
-ICCmeasurement::init_meas (void)
-{
-  std::string data = ascii_korrigieren ();
+ICCmeasurement::leseTag (void)
+{ DBG
+  std::string data = ascii_korrigieren (); DBG_V( (int*)_data )
 
-  #if 0
-  clear();
-  return;
-  #endif
+  // korrigierte CGATS Daten -> _data
+  if (_data != NULL) free (_data);
+  _data = (char*) calloc (sizeof(char), data.size());
+  _size = data.size();
+  memcpy (_data, data.c_str(), _size); DBG_V( (int*)_data )
 
   // lcms liest ein
-  lcms_parse( data );
+  lcms_parse();
+}
 
-  #ifdef DEBUG_ICCMEASUREMENT_
-  // Infos für die Konsole
-  DBG_S( "Anzahl Messfelder: " << getPatchCount() << " Samples " << _nKanaele )
+void
+ICCmeasurement::init (void)
+{ DBG_V( (int*)_data )
+  if (valid())
+    return;
 
-  if (_RGB_measurement && _XYZ_measurement) {
-    for (int i = 0; i < _nFelder; i++) {
-      cout << _Feldnamen[i] << ": " << _XYZ_Satz[i].X << ", " << _XYZ_Satz[i].Y << ", " << _XYZ_Satz[i].Z << ", "  << _RGB_Satz[i].R << ", "  << _RGB_Satz[i].G << ", "  << _RGB_Satz[i].B << endl;
-    } DBG
-  } else if (_CMYK_measurement && _XYZ_measurement) {
-    DBG_S( _Feldnamen.size() << " | " << _CMYK_Satz.size() )
-    for (int i = 0; i < _nFelder; i++) {
-      cout << _Feldnamen[i] << ": " << _XYZ_Satz[i].X << ", " << _XYZ_Satz[i].Y << ", " << _XYZ_Satz[i].Z << ", "  << _CMYK_Satz[i].C << ", "  << _CMYK_Satz[i].M << ", "  << _CMYK_Satz[i].Y << ", "  << _CMYK_Satz[i].K << endl;
-    } DBG
+  if (_profil->hasTagName("targ")) {
+    load (_profil, _profil->getTag(_profil->getTagByName("targ")));
+    leseTag ();
   }
-
-  if (farben > 1
-   && ((has_CMYK || has_RGB)
-       && (has_Lab || has_XYZ || has_xyY))) {
-    DBG_S( "sieht gut aus" )
+  else if (_profil->hasTagName("DevD") && (_profil->hasTagName("CIED"))) {
+    load (_profil, _profil->getTag(_profil->getTagByName("DevD")));
+    leseTag ();
+    
+    load (_profil, _profil->getTag(_profil->getTagByName("CIED")));
+    leseTag ();
   }
-  #endif
+  if (_RGB_MessFarben.size() != 0)
+    DBG_V( _RGB_MessFarben.size() )
+
+  init_umrechnen();
 }
 
 std::string
 ICCmeasurement::ascii_korrigieren               (void)
-{
+{ DBG
   // Reparieren
   // LF FF
-  char* ptr = 0;
+  char* ptr = 0; DBG_V( (int*) _data )
   while (strchr(_data, 13) > 0) { // \r 013 0x0d
       ptr = strchr(_data, 13);
       if (ptr > 0) {
@@ -310,13 +300,9 @@ ICCmeasurement::ascii_korrigieren               (void)
 
 
 void
-ICCmeasurement::lcms_parse                   (std::string   data)
-{
-  if (_data != NULL) free (_data);
-  _data = (char*) calloc (sizeof(char), data.size());
-  _size = data.size();
-  memcpy (_data, data.c_str(), _size);
-  LCMSHANDLE _lcms_it8 = cmsIT8LoadFromMem ( _data, _size ); DBG
+ICCmeasurement::lcms_parse                   (void)
+{ DBG
+  LCMSHANDLE _lcms_it8 = cmsIT8LoadFromMem ( _data, _size ); DBG_V( (int*)_data)
 
   char **SampleNames; DBG
 
@@ -473,11 +459,14 @@ ICCmeasurement::lcms_parse                   (std::string   data)
   // lcms's cgats Leser wird nicht mehr gebraucht
   cmsIT8Free (_lcms_it8);
   _lcms_it8 = NULL;
+  DBG_V( _XYZ_Satz.size() )
+  DBG_V( _RGB_Satz.size() )
+  DBG_V( _CMYK_Satz.size() )
 }
 
 void
 ICCmeasurement::init_umrechnen                     (void)
-{
+{ DBG
   _Lab_Differenz_max = -1000.0;
   _Lab_Differenz_min = 1000.0;
   _Lab_Differenz_Durchschnitt = 0.0;
@@ -713,6 +702,7 @@ ICCmeasurement::init_umrechnen                     (void)
     _DE00_Differenz_Durchschnitt += _DE00_Differenz[i];
   }
   _DE00_Differenz_Durchschnitt /= (double)_DE00_Differenz.size();
+  DBG_V( _RGB_MessFarben.size() )
 }
 
 std::string
@@ -725,9 +715,9 @@ ICCmeasurement::getHtmlReport                     (void)
                       else \
                         html << SF; //Farbe nach Layoutoption auswählen
   int l = 0;
-  std::stringstream html;
+  std::stringstream html; DBG_V( _RGB_MessFarben.size() )
   if (_RGB_MessFarben.size() == 0)
-    init_umrechnen ();
+    init ();
 
   if (_reportTabelle.size() == 0)
     _reportTabelle = getText();
@@ -751,19 +741,19 @@ ICCmeasurement::getHtmlReport                     (void)
     html << _reportTabelle[i][0];
     //if (i == 0) html << "</h2>";
     html <<     "<br>\n\n";
-  } DBG
+  } DBG_V( _nFelder )
   if (!_nFelder)
     return html.str();
 
   html <<       "<table align=left cellpadding=\"2\" cellspacing=\"0\" border=\"0\" width=\"90%\" bgcolor=\"" << SF << "\">\n";
   html <<       "<thead> \n";
-  html <<       "  <tr> \n";
+  html <<       "  <tr> \n"; DBG
   // Tabellenkopf
   int s = 0;           // Spalten
   int f = 0;           // Spalten für Farben
   if (_XYZ_Satz.size() && _RGB_MessFarben.size() == _XYZ_Satz.size()) {
     f = 2;
-  }
+  } DBG
   l = 0;
   for (s = 0; s < (int)_reportTabelle  [kopf - tkopf].size() + f; s++) {
     if (s < f) {
@@ -817,14 +807,17 @@ ICCmeasurement::getHtmlReport                     (void)
   }
 
   html <<       "</tbody>\n</table>\n\n<br>\n</body></html>\n";
-
+  DBG
   //DBG_S (html.str() )
   return html.str();
 }
 
 std::vector<std::vector<std::string> >
 ICCmeasurement::getText                     (void)
-{ DBG
+{ DBG_V( _RGB_MessFarben.size() )
+  if (_RGB_MessFarben.size() == 0)
+    init ();
+
   std::vector<std::vector<std::string> > tabelle;
   tabelle.resize(1); // push_back ist zu langsam
   std::stringstream s;
@@ -952,12 +945,11 @@ ICCmeasurement::getDescription              (void)
 
 std::vector<double>
 ICCmeasurement::getMessRGB                  (int patch)
-{
-  std::vector<double> punkte;
-  punkte.resize(3);
+{ DBG
+  std::vector<double> punkte(3);
 
   if (_RGB_MessFarben.size() == 0)
-    init_umrechnen ();
+    init ();
 
   if (patch > _nFelder)
     return punkte;
@@ -971,12 +963,11 @@ ICCmeasurement::getMessRGB                  (int patch)
 
 std::vector<double>
 ICCmeasurement::getCmmRGB                   (int patch)
-{
-  std::vector<double> punkte;
-  punkte.resize(3);
+{ DBG
+  std::vector<double> punkte (3) ;
 
   if (_RGB_MessFarben.size() == 0)
-    init_umrechnen ();
+    init ();
 
   if (patch > _nFelder)
     return punkte;

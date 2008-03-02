@@ -167,14 +167,26 @@ icValue (icInt16Number val)
 #endif
 }
 
+icS15Fixed16Number
+icValueSF (double val)
+{
+  return icValue((icS15Fixed16Number)(val * 65536.0 + 0.5));
+}
+
+icU16Fixed16Number
+icValueUF (double val)
+{
+  return icValue((icU16Fixed16Number)(val * 65536.0 + 0.5));
+}
+
 double
-icValueSF (icS15Fixed16Number val)
+icSFValue (icS15Fixed16Number val)
 {
   return icValue(val) / 65536.0;
 }
 
 double
-icValueUF (icU16Fixed16Number val)
+icUFValue (icU16Fixed16Number val)
 {
   return icValue(val) / 65536.0;
 }
@@ -511,7 +523,7 @@ getSigTagDescription                            ( icTagSignature  sig )
     case 1147500100: text = _("Farbmessflächen"); break;//DevD
     case 1128875332: text = _("Farbmessergebnisse"); break;//CIED
     case 1349350514: text = _("Profilierungsparameter"); break;//Pmtr
-    case 1986226036: text = _("Apple Monitor-Grafikkartentabelle"); break;//vcgt
+    case 1986226036: text = _("GrafikKartenGammaTabelle"); break;//vcgt
     case 1667785060: text = _("Farbanpassungsmatrix"); break; //chad
     case icSigChromaticityType: text = _("Primärfarben"); break; //chrm
     case 1668051567: text = _("Schmuckfarbordnung"); break;//clro
@@ -660,6 +672,20 @@ getMeasurementFlare             ( icMeasurementFlare sig )
   return text;
 }
 
-
+std::string
+printDatum                      (icDateTimeNumber date)
+{ DBG
+  std::stringstream s;
+    s << _("Datum") << ":       " <<
+                       icValue(date.day)     << "/" <<
+                       icValue(date.month)   << "/" <<
+                       icValue(date.year)    << " " <<
+                       icValue(date.hours)   << ":";
+    if (icValue(date.minutes) < 10)
+      s << "0";
+                  s << icValue(date.minutes) << " " << _("Uhr") << " " <<
+                       icValue(date.seconds) << " " << _("Sekunden");
+  return s.str();
+}
 
 
