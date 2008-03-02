@@ -101,6 +101,11 @@ public:
   int wiederholen; bool first;
   GL_Ansicht(int X,int Y,int W,int H) ;
   void init();
+  void myGLinit();
+  void MakeDisplayLists();
+  void MenuInit();
+  void reshape(int w, int h);
+  void display();
   void draw();
   void hinein_punkt(std::vector<double> vect, std::vector<std::string> txt);
   void hinein_kurven(std::vector<std::vector<double> >vect, std::vector<std::string> txt);

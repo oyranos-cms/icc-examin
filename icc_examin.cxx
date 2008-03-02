@@ -85,7 +85,7 @@ static void cb_menueintrag_inspekt(Fl_Menu_* o, void*) {
 Fl_Menu_Item menu_[] = {
  {"Daten", 0,  0, 0, 64, 0, 0, 14, 56},
  {"\326""ffnen", 0x4006f,  (Fl_Callback*)cb_ffnen, 0, 0, 0, 0, 14, 56},
- {"Bericht Speichern", 0,  (Fl_Callback*)cb_menueintrag_html_speichern, 0, 128, 0, 0, 14, 56},
+ {"Bericht Speichern", 0,  (Fl_Callback*)cb_menueintrag_html_speichern, 0, 129, 0, 0, 14, 56},
  {"Beenden", 0x40071,  (Fl_Callback*)cb_Beenden, 0, 0, 0, 0, 14, 56},
  {0},
  {"Ansicht", 0,  0, 0, 64, 0, 0, 14, 56},
@@ -741,7 +741,7 @@ void zeig_mich(void* widget) {
   tabellengruppe->hide();
   mft_viewer->hide();
   mft_text->hide();
-  //mft_gl->hide();
+  mft_gl->hide();
   
   tag_viewer->hide(); DBG_PROG
   tag_viewer->clear_visible(); DBG_PROG
@@ -775,6 +775,8 @@ std::vector<std::string> zeilenNachVector(std::string text) {
   DBG_PROG_ENDE
   return texte;
 }
+typedef enum {NOTALLOWED, AXES, STUFF, RING } DisplayLists;
+typedef enum { MENU_QUIT, MENU_RAND, MENU_MOVE, MENU_AXES } MenuChoices;
 
 GL_Ansicht::GL_Ansicht(int X,int Y,int W,int H) : Fl_Widget(X,Y,W,H), X(X), Y(Y), W(W), H(H) {
 }
@@ -790,8 +792,123 @@ void GL_Ansicht::init() {
   details->end();
   //details->resizable(glut_window);
 
+  agvInit(1);
+
+  glutReshapeFunc(this->reshape);
+  glutDisplayFunc(this->display);
+  glutVisibilityFunc(this->visible);
+  glutMenuStateFunc(this->menuuse);
+
+  agvMakeAxesList(AXES);
+
+  myGLinit(); 
+  MakeDisplayLists();
+  MenuInit();
+
+  glutMainLoop(); // you could use Fl::run() instead
+
   first = false;
   DBG_PROG_ENDE
+}
+
+void GL_Ansicht::myGLinit() {
+  GLfloat mat_ambuse[] = { 0.95, 0.0, 0.0, 1.0 };
+  GLfloat mat_specular[] = { 0.4, 0.4, 0.4, 1.0 };
+
+  GLfloat light0_position[] = { 0.6, 0.4, 0.3, 0.0 };
+
+  glLightfv(GL_LIGHT0, GL_POSITION, light0_position);
+  glEnable(GL_LIGHTING);
+  glEnable(GL_LIGHT0);
+
+  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, mat_ambuse);
+  glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
+  glMaterialf(GL_FRONT, GL_SHININESS, 25.0);
+  
+  glMatrixMode(GL_PROJECTION);
+  glLoadIdentity();
+  glMatrixMode(GL_MODELVIEW);
+  glLoadIdentity();
+
+  glEnable(GL_NORMALIZE);
+
+  glDepthFunc(GL_LESS);
+  glEnable(GL_DEPTH_TEST);
+
+  glShadeModel(GL_SMOOTH);
+
+  glFlush();
+}
+
+void GL_Ansicht::MakeDisplayLists() {
+  glNewList(STUFF, GL_COMPILE);
+  glPushMatrix();
+    glutSolidCube(1.0);
+    glTranslatef(2, 0, 0);
+    glutSolidSphere(0.5, 10, 10);
+    glTranslatef(-2, 0, 3);
+    glRotatef(-90, 1, 0, 0);
+    glutSolidCone(0.5, 1.0, 8, 8);
+  glPopMatrix();
+  glEndList();
+
+  glNewList(RING, GL_COMPILE);
+    glutSolidTorus(0.1, 0.5, 8, 15);
+  glEndList();
+}
+
+void GL_Ansicht::MenuInit() {
+  int sub2 = glutCreateMenu(agvSwitchMoveMode);   /* pass these right to */
+  glutAddMenuEntry("Flying move",  FLYING);       /* agvSwitchMoveMode() */
+  glutAddMenuEntry("Polar move",   POLAR);
+
+  glutCreateMenu(handlemenu);
+  glutAddSubMenu("Movement", sub2);
+  glutAddMenuEntry("Toggle Axes", MENU_AXES);
+  glutAddMenuEntry("Toggle ring rotation", MENU_RING);
+  glutAddMenuEntry("Quit", MENU_QUIT);
+  glutAttachMenu(GLUT_RIGHT_BUTTON);
+}
+
+void GL_Ansicht::reshape(int w, int h) {
+  glViewport(0,0,w,h);
+  glMatrixMode(GL_PROJECTION);
+  glLoadIdentity();
+  gluPerspective(60.0, (GLdouble)w/h, 0.01, 100);
+  glPushMatrix();
+  glMatrixMode(GL_MODELVIEW);
+  glFlush();
+}
+
+void GL_Ansicht::display() {
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+  glMatrixMode(GL_PROJECTION);
+  glPopMatrix();
+  glPushMatrix();  /* clear of last viewing xform, leaving perspective */
+
+  //glLoadIdentity();
+
+  //gluPerspective(60, 1, 0.01, 100);
+
+    /* so this replaces gluLookAt or equiv */
+  agvViewTransform();
+
+  glMatrixMode(GL_MODELVIEW);
+  glLoadIdentity();
+
+    /* we call agvMakeAxesList() to make this display list */
+  if (DrawAxes)
+    glCallList(AXES);
+
+  glCallList(STUFF);
+
+  glTranslatef(-2, 1, -2);
+  glRotatef(Rotation, 1, 0, 0);
+  glCallList(RING);
+
+  glutSwapBuffers();
+  glFlush();
 }
 
 void GL_Ansicht::draw() {

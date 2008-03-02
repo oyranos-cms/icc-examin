@@ -33,6 +33,7 @@ CPP_HEADERS = \
 	icc_vrml.h \
 	cccie64.h \
 	ciexyz64_1.h \
+        icc_gl.h \
         agviewer.h
 #	vFLGLWidget.h \
 	ViewerFLTK.h 
@@ -44,6 +45,7 @@ CPPFILES = \
 	icc_measurement.cpp \
 	icc_profilierer.cpp \
 	icc_vrml.cpp \
+        icc_gl.cpp \
         agviewer.cpp
 #	vFLGLWidget.cpp \
 	ViewerFLTK.cpp 
