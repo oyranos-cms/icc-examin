@@ -882,7 +882,6 @@ display(int id)
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
 
-    /* we call agvMakeAxesList() to make this display list */
   if (DrawAxes)
     glCallList(AXES);
 
@@ -891,7 +890,7 @@ display(int id)
   glCallList(dID(id,PUNKTE)); DBG_PROG_V( dID(id,PUNKTE) )
 
 
-  #if 0
+  #if 1
   glutSwapBuffers();
   glFlush();
   #else
