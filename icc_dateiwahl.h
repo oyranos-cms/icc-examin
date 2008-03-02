@@ -20,39 +20,46 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  * 
  * -----------------------------------------------------------------------------
- */
-
-/** @brief eine Klasse mit thread Ueberwachungsmöglichkeit
+ *
+ * Dateiwahl
  * 
  */
 
- //! @date      11. 09. 2006
+// Date:      November 2006
 
-
-#ifndef ICC_THREAD_DATEN_H
-#define ICC_THREAD_DATEN_H
+#ifndef ICC_FATAIWAHL_H
+#define ICC_DATEIWAHL_H
 
 #include "icc_utils.h"
 
-/** @brief * Die Klasse mit Anmeldung und Freigabe
- *
- *  erlaubt threadsicheren Datenzugang
- */
+#if HAVE_FLTK
+#if HAVE_FLU
+#include <FLU/Flu_File_Chooser.h> 
+#endif
+#include <FL/Fl_Hold_Browser.H> 
+#include <FL/Fl_File_Icon.H> 
+#include <FL/Fl_Shared_Image.H> 
+#include <FL/Fl_PNM_Image.H>
+#include <FL/Fl_Double_Window.H> 
+#include <FL/fl_ask.H>
 
+
+#include "my_file_chooser.h"
+#include "icc_fenster.h"
 namespace icc_examin_ns {
 
-class ThreadDaten
-{
-    bool frei_;               //!<@brief wird nicht von weiterem Prozess benutzt
-    int  zahl_;               //!<@brief Anzahl der Wartenden
-protected:
-    ThreadDaten() { frei_ = true; zahl_ = 0; }
-    ~ThreadDaten() {;}
-public:
-    bool frei()     { return frei_; }          //!<@brief ist nicht gesperrt
-    void frei(int freigeben); //!@brief Sperren mit Warten/Freigeben
-};
+
+#if HAVE_FLU
+  extern Flu_File_Chooser *dateiwahl;
+  void dateiwahl_cb(const char *dateiname, int typ, void *arg);
+#else
+  extern MyFl_File_Chooser  *dateiwahl;
+  void dateiwahl_cb(MyFl_File_Chooser *f,void *data);
+#endif
 
 }
 
-#endif //ICC_THREAD_DATEN_H
+#endif
+
+#endif //ICC_DATEIWAHL_H
+

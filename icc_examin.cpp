@@ -114,7 +114,6 @@ ICCexamin::clear ()
   std::vector<ICCnetz> d_n;
   profile.clear();
   icc_betrachter->DD_farbraum->hineinNetze (d_n);
-  DBG
 
   DBG_PROG_ENDE
 }
@@ -155,8 +154,8 @@ ICCexamin::start (int argc, char** argv)
                        icc_betrachter->details->y() - icc_waehler_->h(),
                        icc_waehler_->w()+20, icc_waehler_->h());
   if(!icc_waehler_) WARN_S( "icc_waehler_ nicht reservierbar" )
-  icc_betrachter->DD_farbraum->begin();
-    icc_waehler_->set_non_modal(); // gehoert zum "details" Hauptfenster
+  // gehoert zum DD_farbraum fenster
+  icc_waehler_->only_with = dynamic_cast<icc_examin_ns::MyFl_Double_Window*>(icc_betrachter->DD_farbraum->window());
   icc_betrachter->DD_farbraum->end();
   icc_waehler_->hide();
 
@@ -181,6 +180,7 @@ ICCexamin::start (int argc, char** argv)
     icc_betrachter->vcgt_reset_button->deactivate();
 #   endif
 # if HAVE_X
+  MyFl_Double_Window::icon = icc_examin_xpm;
   setzeIcon( icc_betrachter->details, icc_examin_xpm );
 # endif
   DBG_PROG_S( "Zeige vcgt" )
@@ -289,7 +289,7 @@ void
 ICCexamin::zeig3D ()
 { DBG_PROG_START
 
-  Fl_Double_Window *w = icc_betrachter->DD;
+  MyFl_Double_Window *w = icc_betrachter->DD;
   Fl_Widget *wid = icc_betrachter->DD_farbraum;
 
   int lx = wid->x(),
@@ -305,7 +305,7 @@ ICCexamin::zeig3D ()
   if(!w)
   {
   w =
-    new Fl_Double_Window( lx+lw, ly, lw, lh, t );
+    new MyFl_Double_Window( lx+lw, ly, lw, lh, t );
     w->user_data((void*)(0));
       Fl_Group *g = new Fl_Group(0,0,lw,lh);
       g->end();
@@ -328,7 +328,7 @@ void
 ICCexamin::zeigPrueftabelle ()
 { DBG_PROG_START
 
-  Fl_Double_Window *details = icc_betrachter->details;
+  MyFl_Double_Window *details = icc_betrachter->details;
   Fl_Help_View *inspekt_html = icc_betrachter->inspekt_html;
 
   { bool export_html = false;
@@ -352,8 +352,8 @@ ICCexamin::zeigPrueftabelle ()
 
   sprintf(t, "%s - %s", title, _("Compare Measurement <-> Profile Colours"));
 
-  Fl_Double_Window *w =
-    new Fl_Double_Window( lx+lw, ly, lw, lh, t );
+  MyFl_Double_Window *w =
+    new MyFl_Double_Window( lx+lw, ly, lw, lh, t );
     w->user_data((void*)(0));
       Fl_Group *g = new Fl_Group(0,0,lw,lh);
       g->end();
@@ -361,8 +361,6 @@ ICCexamin::zeigPrueftabelle ()
       g->add( wid );
       wid->show();
     w->end();
-    w->set_non_modal();
-    w->xclass("Fl_Window");
     w->resizable(w);
     //w->resizable(g);
     w->show();
@@ -397,13 +395,13 @@ ICCexamin::zeigMftTabellen (int lx, int ly, int lw, int lh)
   std::vector<std::string> out_names =
       profile.profil()->getTagChannelNames (icc_betrachter->tag_nummer,
                                             ICCtag::TABLE_OUT);
-  Fl_Double_Window *w = NULL;
+  MyFl_Double_Window *w = NULL;
   for(int i = 0; i < (int)out_names.size(); ++i)
   {
     if(!w)
-      w = new Fl_Double_Window( lx, ly, lw, lh, t);
+      w = new MyFl_Double_Window( lx, ly, lw, lh, t);
     else
-      w = new Fl_Double_Window( w->x()+lw, w->y(), lw, lh, t);
+      w = new MyFl_Double_Window( w->x()+lw, w->y(), lw, lh, t);
 
       w->user_data((void*)(0));
       Fl_Group *g = new Fl_Group(0,0,lw,lh);
@@ -415,8 +413,6 @@ ICCexamin::zeigMftTabellen (int lx, int ly, int lw, int lh)
         gl->kanal = i;
       g->end();
     w->end();
-    w->set_non_modal();
-    w->xclass("Fl_Window");
     w->resizable(w);
     w->show();
   }
@@ -753,7 +749,7 @@ ICCexamin::gamutAnsichtZeigen ()
       icc_betrachterNeuzeichnen(icc_betrachter->DD_farbraum);
 
       if(icc_betrachter->DD_farbraum->window() != icc_betrachter->details)
-        icc_betrachter->details->hide();
+        icc_betrachter->details->iconize(icc_betrachter->details);
 
       icc_examin_ns::unlock(this, __FILE__,__LINE__);
       DBG_PROG_S("icc_betrachterNeuzeichnen DD_farbraum")
@@ -1159,6 +1155,18 @@ tastatur(int e)
        && Fl::event_state() == FL_COMMAND) {
         DBG_NUM_S("FL_COMMAND+O")
         icc_examin->oeffnen();
+        gefunden = 1;
+      }
+      if(Fl::event_key() == FL_F + 1) {
+        DBG_NUM_S("F1")
+        ICCfltkBetrachter *b = icc_examin->icc_betrachter;
+        b->ueber->show();
+        initHilfe();
+
+        /* set visible */
+        Fl_Tabs *tb = dynamic_cast<Fl_Tabs*>(b->hilfe_html->parent());
+        if(tb)
+          tb->value(b->ueber_html);
         gefunden = 1;
       }
     break;

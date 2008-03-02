@@ -51,6 +51,5 @@ int         fl_search_locale_path  ( int           n_locale_paths,
 #include <FL/Fl_Menu_Item.H>
 /* I18N in fl_i18n.cxx */
 void        fl_translate_menue     ( Fl_Menu_Item *menueleiste );
-void        fl_translate_file_chooser ();
 
 #endif /* FL_I18N_H */

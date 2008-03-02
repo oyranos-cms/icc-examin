@@ -39,5 +39,6 @@
 // definiert in icc_helfer_fltk.cpp
 
 int* getChannel_flColours(icColorSpaceSignature color);
+void        fl_translate_file_chooser ();
 
 #endif //ICC_HELFER_FLTK_H

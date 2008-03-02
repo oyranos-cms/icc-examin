@@ -20,6 +20,7 @@
 #include <FL/Fl_Menu_Bar.H>
 #include <FL/Fl_Box.H>
 #include "icc_fenster.h" 
+#include "icc_dateiwahl.h" 
 #include <FL/Fl_Hold_Browser.H>
 #include <FL/Fl_Choice.H>
 class TagDrawings;
@@ -54,24 +55,6 @@ public:
   void profilTag(int _tag, std::string text);
   void auswahlCb(void);
 };
-
-class My_Fl_Box : public Fl_Box {
-public:
-  My_Fl_Box(int X,int Y,int W, int H, const char* title = 0) ;
-  int handle( int event );
-};
-
-class My_Fl_Window : public Fl_Double_Window {
-public:
-  My_Fl_Window(int W, int H, const char* title = 0) ;
-  int handle( int e );
-};
-
-class My_Gl_Ansicht {
-  GL_Ansicht *gl_;
-public:
-  void My_GL_Ansicht(int X,int Y,int W, int H, const char* title = 0);
-};
 #include <FL/Fl_Double_Window.H>
 #include <FL/Fl_Group.H>
 #include <FL/Fl_Tabs.H>
@@ -95,7 +78,7 @@ public:
   
  enum{ WID_0, WID_3D, WID_INSPEKT }; int widget_oben;
   Fl_Double_Window* init(int argc, char** argv);
-  My_Fl_Window *ueber;
+  icc_examin_ns::MyFl_Double_Window *ueber;
   Fl_Help_View *ueber_html;
   Fl_Help_View *hilfe_html;
   Fl_Help_View *lizenz_html;
@@ -106,7 +89,7 @@ private:
   void cb_ja_i(Fl_Button*, void*);
   static void cb_ja(Fl_Button*, void*);
 public:
-  My_Fl_Window *vcgt;
+  icc_examin_ns::MyFl_Double_Window *vcgt;
   TagDrawings *vcgt_viewer;
   Fl_Button *vcgt_set_button;
 private:
@@ -128,7 +111,7 @@ private:
   void cb_vcgt_close_button_i(Fl_Button*, void*);
   static void cb_vcgt_close_button(Fl_Button*, void*);
 public:
-  Fl_Double_Window *DD;
+  icc_examin_ns::MyFl_Double_Window *DD;
   Fl_Menu_Bar *DD_menueleiste;
   static Fl_Menu_Item menu_DD_menueleiste[];
   static Fl_Menu_Item *DD_menueintrag_Voll;
@@ -165,8 +148,7 @@ private:
 public:
   GL_Ansicht *DD_farbraum;
   Fl_Box *DD_box_stat;
-  My_Fl_Box *DD_no_box;
-  Fl_Double_Window *details;
+  icc_examin_ns::MyFl_Double_Window *details;
   Fl_Menu_Bar *menueleiste;
   static Fl_Menu_Item menu_menueleiste[];
 private:
@@ -267,7 +249,6 @@ public:
   TagTexts *tag_text;
   Fl_Box *box_stat;
   Fl_Progress *load_progress;
-  My_Fl_Box *no_box;
   void run();
   std::vector<std::string> open(std::vector<std::string> dateinamen);
   void quit(void);

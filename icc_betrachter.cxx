@@ -140,35 +140,6 @@ void MftChoice::auswahlCb(void) {
   DBG_PROG_ENDE
 }
 
-My_Fl_Box::My_Fl_Box(int X,int Y,int W, int H, const char* title ) : Fl_Box(X,Y,W,H,title) {
-}
-
-int My_Fl_Box::handle( int event ) {
-  int ergebnis = tastatur(event);
-  if(!ergebnis)
-    ;//Fl_No_Box::handle(event);
-  return ergebnis;
-}
-
-My_Fl_Window::My_Fl_Window(int W, int H, const char* title ) : Fl_Double_Window(W,H,title) {
-}
-
-int My_Fl_Window::handle( int e ) {
-  /*int ergebnis = tastatur(event);
-
-  if(!ergebnis)
-    */
-
-  if(e == FL_SHORTCUT && Fl::event_key() == FL_Escape)
-    hide();
-
-  return Fl_Double_Window::handle(e);
-}
-
-void My_Gl_Ansicht::My_GL_Ansicht(int X,int Y,int W, int H, const char* title ) {
-  gl_ = new GL_Ansicht(X,Y,W,H);
-}
-
 void ICCfltkBetrachter::cb_ja_i(Fl_Button*, void*) {
   ueber->hide();
 }
@@ -653,7 +624,7 @@ Fl_Double_Window* ICCfltkBetrachter::init(int argc, char** argv) {
     const char* ptr = NULL;
     if (profile.size())
       ptr = profile.name().c_str();
-    dateiwahl = new Fl_File_Chooser(ptr, _("ICC colour profiles (*.{I,i}{C,c}{M,m,C,c})	Measurement (*.{txt,it8,IT8,RGB,CMYK,ti*,cgats,CIE,cie,nCIE,oRPT,DLY,LAB,Q60})	Argyll Gamuts (*.{wrl,vrml}"), Fl_File_Chooser::MULTI, _("Which ICC profile?"));
+    dateiwahl = new MyFl_File_Chooser(ptr, _("ICC colour profiles (*.{I,i}{C,c}{M,m,C,c})	Measurement (*.{txt,it8,IT8,RGB,CMYK,ti*,cgats,CIE,cie,nCIE,oRPT,DLY,LAB,Q60})	Argyll Gamuts (*.{wrl,vrml}"), MyFl_File_Chooser::MULTI, _("Which ICC profile?"));
     dateiwahl->callback(dateiwahl_cb);
     dateiwahl->preview(true);
   #endif
@@ -664,7 +635,7 @@ Fl_Double_Window* ICCfltkBetrachter::init(int argc, char** argv) {
     o->end();
     o->resizable(o);
   }
-  { My_Fl_Window* o = ueber = new My_Fl_Window(365, 289, _("About ICC Examin"));
+  { icc_examin_ns::MyFl_Double_Window* o = ueber = new icc_examin_ns::MyFl_Double_Window(365, 289, _("About ICC Examin"));
     w = o;
     o->box(FL_FLAT_BOX);
     o->color(FL_BACKGROUND_COLOR);
@@ -708,11 +679,11 @@ Fl_Double_Window* ICCfltkBetrachter::init(int argc, char** argv) {
       o->end();
     }
     o->hide();
-    o->set_non_modal();
+    o->use_escape_hide = true;
     o->end();
     o->resizable(o);
   }
-  { My_Fl_Window* o = vcgt = new My_Fl_Window(370, 390, _("Grafic Card Gamma Table"));
+  { icc_examin_ns::MyFl_Double_Window* o = vcgt = new icc_examin_ns::MyFl_Double_Window(370, 390, _("Grafic Card Gamma Table"));
     w = o;
     o->box(FL_FLAT_BOX);
     o->color(FL_BACKGROUND_COLOR);
@@ -760,15 +731,22 @@ ard"));
       o->end();
     }
     o->hide();
-    o->set_non_modal();
+    o->use_escape_hide = true;
     o->end();
     o->resizable(o);
   }
-  { Fl_Double_Window* o = DD = new Fl_Double_Window(385, 520, _("Gamut"));
+  { icc_examin_ns::MyFl_Double_Window* o = DD = new icc_examin_ns::MyFl_Double_Window(385, 520, _("Gamut"));
     w = o;
     o->box(FL_NO_BOX);
     o->color((Fl_Color)53);
+    o->selection_color(FL_BACKGROUND_COLOR);
+    o->labeltype(FL_NO_LABEL);
+    o->labelfont(0);
+    o->labelsize(14);
+    o->labelcolor(FL_FOREGROUND_COLOR);
     o->user_data((void*)(this));
+    o->align(FL_ALIGN_TOP);
+    o->when(FL_WHEN_RELEASE);
     { Fl_Group* o = new Fl_Group(0, 0, 385, 520);
       { Fl_Menu_Bar* o = DD_menueleiste = new Fl_Menu_Bar(0, 0, 385, 25);
         o->align(FL_ALIGN_LEFT|FL_ALIGN_INSIDE);
@@ -801,28 +779,22 @@ ard"));
       }
       o->end();
     }
-    { My_Fl_Box* o = DD_no_box = new My_Fl_Box(0, 0, 385, 520);
-      o->box(FL_NO_BOX);
-      o->color(FL_BACKGROUND_COLOR);
-      o->selection_color(FL_BACKGROUND_COLOR);
-      o->labeltype(FL_NORMAL_LABEL);
-      o->labelfont(0);
-      o->labelsize(14);
-      o->labelcolor(FL_FOREGROUND_COLOR);
-      o->align(FL_ALIGN_CENTER);
-      o->when(FL_WHEN_RELEASE);
-      o->box(FL_NO_BOX);
-    }
-    o->set_non_modal();
     o->xclass("Fl_Window");
     o->end();
     o->resizable(o);
   }
-  { Fl_Double_Window* o = details = new Fl_Double_Window(385, 520, _("ICC Examin"));
+  { icc_examin_ns::MyFl_Double_Window* o = details = new icc_examin_ns::MyFl_Double_Window(385, 520, _("ICC Examin"));
     w = o;
     o->box(FL_NO_BOX);
     o->color((Fl_Color)53);
+    o->selection_color(FL_BACKGROUND_COLOR);
+    o->labeltype(FL_NO_LABEL);
+    o->labelfont(0);
+    o->labelsize(14);
+    o->labelcolor(FL_FOREGROUND_COLOR);
     o->user_data((void*)(this));
+    o->align(FL_ALIGN_TOP);
+    o->when(FL_WHEN_RELEASE);
     { Fl_Group* o = new Fl_Group(0, 0, 385, 520);
       { Fl_Menu_Bar* o = menueleiste = new Fl_Menu_Bar(0, 0, 385, 25);
         o->align(FL_ALIGN_LEFT|FL_ALIGN_INSIDE);
@@ -981,18 +953,7 @@ ard"));
       }
       o->end();
     }
-    { My_Fl_Box* o = no_box = new My_Fl_Box(0, 0, 385, 520);
-      o->box(FL_NO_BOX);
-      o->color(FL_BACKGROUND_COLOR);
-      o->selection_color(FL_BACKGROUND_COLOR);
-      o->labeltype(FL_NORMAL_LABEL);
-      o->labelfont(0);
-      o->labelsize(14);
-      o->labelcolor(FL_FOREGROUND_COLOR);
-      o->align(FL_ALIGN_CENTER);
-      o->when(FL_WHEN_RELEASE);
-      o->box(FL_NO_BOX);
-    }
+    o->main_win = o;
     o->xclass("Fl_Window");
     o->end();
   }

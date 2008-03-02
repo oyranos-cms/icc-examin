@@ -45,7 +45,9 @@ CPP_HEADERS = \
 	icc_betrachter.h \
 	cccie64.h \
 	ciexyz64_1.h \
+	flstring.h \
 	icc_cgats_filter.h \
+	icc_dateiwahl.h \
 	icc_draw.h \
 	icc_draw_fltk.h \
 	icc_fenster.h \
@@ -77,6 +79,7 @@ CPP_HEADERS = \
 	icc_vrml.h \
 	icc_vrml_parser.h \
 	icc_waehler.h \
+	my_file_chooser.h \
 	threads.h
 #	Fl_Slot.H
 
@@ -126,7 +129,9 @@ CPPFILES = \
 	$(OSX_CPP)
 CXXFILES = \
 	icc_betrachter.cxx \
-	fl_oyranos.cxx
+	fl_oyranos.cxx \
+	my_file_chooser.cxx \
+	my_file_chooser2.cxx
 TEST_CPP = \
 	tests/dE2000_test.cpp \
 	tests/fltk_test.cxx
@@ -162,7 +167,8 @@ DOKU = \
 	icc.xml
 FLUID = \
 	icc_betrachter.fl \
-	fl_oyranos.fl
+	fl_oyranos.fl \
+	my_file_chooser.fl
 FONT = FreeSans.ttf
 
 SOURCES = $(ALL_SOURCEFILES) $(ALL_HEADERFILES)

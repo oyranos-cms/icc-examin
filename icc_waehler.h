@@ -33,6 +33,7 @@
 #include <string>
 #include <vector>
 #include "icc_utils.h"
+#include "icc_fenster.h"
 
 #include <FL/Fl.H>
 #include <FL/Fl_Double_Window.H>
@@ -150,13 +151,13 @@ class ICCwaehlerProfil : public Fl_Pack
 }
 };
 
-class ICCwaehler : public Fl_Double_Window
+class ICCwaehler : public icc_examin_ns::MyFl_Double_Window
 {
     Fl_Scroll *scroll_profile;
     Fl_Pack   *hbox;
   public:
     ICCwaehler  (int x_,int y_,const char* name)
-  : Fl_Double_Window(x_, y_, name)
+  : icc_examin_ns::MyFl_Double_Window(x_, y_, name)
 {
   DBG_PROG_START
   for(int i = 0; i < 128; ++i)
@@ -169,11 +170,11 @@ class ICCwaehler : public Fl_Double_Window
       }   
       o->end();
   }       
-  Fl_Double_Window::end();
-  Fl_Double_Window::resizable(scroll_profile);
+  icc_examin_ns::MyFl_Double_Window::end();
+  icc_examin_ns::MyFl_Double_Window::resizable(scroll_profile);
 
-  //Fl_Double_Window::show();
-  Fl_Double_Window::iconize();
+  //icc_examin_ns::MyFl_Double_Window::show();
+  icc_examin_ns::MyFl_Double_Window::iconize();
 
   DBG_PROG_ENDE
 }
