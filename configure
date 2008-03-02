@@ -9,12 +9,12 @@ SPEC=$TARGET.spec
 VERSION_A=0
 VERSION_B=3
 VERSION_C=9
-RELEASE=3
+RELEASE=0
 VERSION=$VERSION_A.$VERSION_B$VERSION_C
 VERSION_L=$VERSION_A.$VERSION_B.$VERSION_C
-ZEIT="May 2004 - Januar 2006"
+ZEIT="May 2004 - March 2006"
 
-src_dir="`(cd ..;pwd)`/""$TARGET"_"$VERSION"
+src_dir="`(cd ..;pwd)`/""$TARGET"-"$VERSION"
 srcdir="`pwd`"
 
 prefix=""
@@ -199,7 +199,7 @@ echo "" >> icc_version.h
 echo "#endif //ICC_VERSION_H" >> icc_version.h
 
 echo "Version: $VERSION" > $SPEC
-echo "Source:  $TARGET"_"$VERSION".tar.gz >> $SPEC
+echo "Source:  $TARGET"-"$VERSION".tar.gz >> $SPEC
 echo "Release: $RELEASE" >> $SPEC
 cat  $SPEC.in >> $SPEC
 echo $SPEC generated

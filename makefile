@@ -454,12 +454,12 @@ tgz:
 	test -d ../Archiv && mv -v $(TARGET)_*.tgz ../Archiv
 
 targz:
-	make DESTDIR=$(TARGET)_$(VERSION) copy_files
-	tar cf - $(TARGET)_$(VERSION)/ \
+	make DESTDIR=$(TARGET)-$(VERSION) copy_files
+	tar cf - $(TARGET)-$(VERSION)/ \
 	| gzip > $(TARGET)_$(mtime).tgz
-	test -d $(TARGET)_$(VERSION) && \
-	test `pwd` != `(cd $(TARGET)_$(VERSION); pwd)` && \
-	$(RM) -R $(TARGET)_$(VERSION) 
+	test -d $(TARGET)-$(VERSION) && \
+	test `pwd` != `(cd $(TARGET)-$(VERSION); pwd)` && \
+	$(RM) -R $(TARGET)-$(VERSION) 
 	test -d ../Archiv && mv -v $(TARGET)_*.tgz ../Archiv || echo no copy
 
 copy_files:
@@ -479,7 +479,7 @@ copy_files:
 
 
 dist: $(BASE) targz
-	test -f && $(COPY) ../Archiv/$(TARGET)_$(mtime).tgz $(TARGET)_$(VERSION).tar.gz || $(COPY) $(TARGET)_$(mtime).tgz $(TARGET)_$(VERSION).tar.gz
+	test -f && $(COPY) ../Archiv/$(TARGET)_$(mtime).tgz $(TARGET)-$(VERSION).tar.gz || $(COPY) $(TARGET)_$(mtime).tgz $(TARGET)-$(VERSION).tar.gz
 
 $(TARGET).spec:
 	./configure
@@ -490,7 +490,7 @@ rpm:	$(TARGET).spec dist
 	rpmdir/SOURCES \
 	rpmdir/SRPMS \
 	rpmdir/RPMS/$(RPMARCH)
-	cp -f $(TARGET)_$(VERSION).tar.gz rpmdir/SOURCES
+	cp -f $(TARGET)-$(VERSION).tar.gz rpmdir/SOURCES
 	rpmbuild --clean -ba $(srcdir)/$(TARGET).spec --define "_topdir $$PWD/rpmdir"
 	@echo "============================================================"
 	@echo "Beendet - die Packete befinden sich in rpmdir/RPMS and rpmdir/SRPMS!"

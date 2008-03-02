@@ -29,7 +29,7 @@ used components and libraries (partitial statically linked):
     Elektra     Avi Alkalay and others
 
 %prep
-%setup -q -n %{name}_%{version}
+%setup -q -n %{name}-%{version}
 #-%{release}
 
 %build
@@ -63,6 +63,9 @@ update-mime-database %{_datadir}/mime/
 
 
 %changelog
+* Mon Mar 02 2006 Kai-Uwe Behrmann
+- name-majorversion.minorversion-releaseversion.xxx sheme
+
 * Fri Aug 12 2005 Kai-Uwe Behrmann
 - GUI improvements
 
