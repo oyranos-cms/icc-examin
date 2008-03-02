@@ -92,11 +92,13 @@ else
     LINK_LIB_PATH = -Wl,--rpath -Wl,$(libdir)
     LINK_SRC_PATH = -Wl,--rpath -Wl,$(srcdir)
     I18N_LIB = $(LIBNAME)
+    I18N_LIBSTAT = $(LIBNAME)
   else
     OPTS=-Wall -O2 -g $(DEBUG) -L. -Wunused -fno-exceptions -lc -lm
     RM = rm -f
     LIBLINK_FLAGS = -shared -ldl
     I18N_LIB = $(ICONV) -lintl $(LIBNAME)
+    I18N_LIBSTAT = $(ICONV) -lintl $(LIBNAME)
   endif
 endif
 
@@ -322,7 +324,10 @@ static:	$(BINTARGET)
 	-L/opt/local/lib \
 	`oyranos-config --ld_x_staticflags` -L/$(prefix)/lib \
 	-L$(prefix)/lib \
-	/usr/X11R6/lib/libfreetype.a -lftgl \
+	`test -f /usr/X11R6/lib/libfreetype.a \
+	  && echo /usr/X11R6/lib/libfreetype.a || (test -f /usr/lib/libfreetype.a \
+	    && echo /usr/lib/libfreetype.a || echo -lfreetype)` \
+	-lftgl \
 	$(I18N_LIBSTAT) $(X11_LIBS) \
 	$(DBG_LIBS) \
 	`test -f /opt/kai-uwe/lib/liblcms.a && echo /opt/kai-uwe/lib/liblcms.a || \

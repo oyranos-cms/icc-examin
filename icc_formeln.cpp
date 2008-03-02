@@ -51,11 +51,13 @@ gradATAN(double b, double a)
   if ((b) == 0 && (a) == 0) {
     return 0.0;
   } else {
-    double d;
-    d = atan2 ((b),(a));
-    if (d < 0.0) {
+    double d = atan2 ((b),(a));
+
+    if (d < 0.0) 
       d = d + 2.0*M_PI;
-    }
+    if (d > 2.0*M_PI)
+      d = d - 2.0*M_PI;
+
     d = d * 180.0/M_PI; 
     return d;
   }
@@ -245,7 +247,7 @@ LabToCIELab (double* lab, double* cielab, int n)
 
 void
 FarbeZuDouble (double* d_xyz, XYZ xyz)
-{ DBG
+{ DBG_PROG
   d_xyz[0] = xyz.X;
   d_xyz[1] = xyz.Y;
   d_xyz[2] = xyz.Z;
@@ -253,7 +255,7 @@ FarbeZuDouble (double* d_xyz, XYZ xyz)
 
 void
 FarbeZuDouble (XYZ *xyz, double* d_xyz)
-{ DBG
+{ DBG_PROG
   xyz->X = d_xyz[0];
   xyz->Y = d_xyz[1];
   xyz->Z = d_xyz[2];
@@ -261,7 +263,7 @@ FarbeZuDouble (XYZ *xyz, double* d_xyz)
 
 void
 FarbeZuDouble (double* d_lab, Lab lab)
-{ DBG
+{ DBG_PROG
   d_lab[0] = lab.L;
   d_lab[1] = lab.a;
   d_lab[2] = lab.b;
@@ -269,7 +271,7 @@ FarbeZuDouble (double* d_lab, Lab lab)
 
 void
 FarbeZuDouble (Lab *lab, double* d_lab)
-{ DBG
+{ DBG_PROG
   lab->L = d_lab[0];
   lab->a = d_lab[1];
   lab->b = d_lab[2];
@@ -277,7 +279,7 @@ FarbeZuDouble (Lab *lab, double* d_lab)
 
 void
 FarbeZuDouble (double* d_rgb, RGB rgb)
-{ DBG
+{ DBG_PROG
   d_rgb[0] = rgb.R;
   d_rgb[1] = rgb.G;
   d_rgb[2] = rgb.B;
@@ -285,7 +287,7 @@ FarbeZuDouble (double* d_rgb, RGB rgb)
 
 void
 FarbeZuDouble (RGB *rgb, double* d_rgb)
-{ DBG
+{ DBG_PROG
   rgb->R = d_rgb[0];
   rgb->G = d_rgb[1];
   rgb->B = d_rgb[2];
@@ -293,7 +295,7 @@ FarbeZuDouble (RGB *rgb, double* d_rgb)
 
 void
 FarbeZuDouble (double* d_cmyk, CMYK cmyk)
-{ DBG
+{ DBG_PROG
   d_cmyk[0] = cmyk.C;
   d_cmyk[1] = cmyk.M;
   d_cmyk[2] = cmyk.Y;
@@ -302,7 +304,7 @@ FarbeZuDouble (double* d_cmyk, CMYK cmyk)
 
 void
 FarbeZuDouble (CMYK *cmyk, double* d_cmyk)
-{ DBG
+{ DBG_PROG
   cmyk->C = d_cmyk[0];
   cmyk->M = d_cmyk[1];
   cmyk->Y = d_cmyk[2];

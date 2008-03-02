@@ -164,7 +164,10 @@ iccLevel_PROG(int plus_minus_null)
   int pth = (int)wandelThreadId( pthread_self() );
   if(pth < DBG_MAX_THREADS) {
     level_PROG_ [pth] = level_PROG_[pth] + plus_minus_null;
-    return level_PROG_ [pth];
+    if(level_PROG_ [pth] < 0)
+      return 0;
+    else
+      return level_PROG_ [pth];
   } else {
     return 0;
   }

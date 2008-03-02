@@ -15,7 +15,7 @@ Encoding=UTF-8
 TryExec=iccexamin
 Exec=iccexamin %U
 Icon=icc_examin.png
-StartupNotify=true
+StartupNotify=false
 Terminal=false
 
 MimeType=application/icc;application/cgats;model/vrml;
