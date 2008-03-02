@@ -285,7 +285,9 @@ ICCexamin::farbraum (int n)
 
     icc_betrachter->DD_farbraum->achsNamen( texte );
 
-    std::string moni = icc_oyranos.moni_name();
+    int x = icc_betrachter->vcgt->x() + icc_betrachter->vcgt->w()/2;
+    int y = icc_betrachter->vcgt->y() + icc_betrachter->vcgt->h()/2;
+    std::string moni = icc_oyranos.moni_name( x,y );
     if(profile[n]->filename() == moni)
       profile.passiv(n);
     DBG_PROG_V( n <<" "<< profile.aktiv(n) )

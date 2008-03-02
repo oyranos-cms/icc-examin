@@ -507,10 +507,12 @@ ICCexamin::moniHolen ()
 { DBG_PROG_START
   //FREI_(false);
   fortschritt( 0.01 );
+  int x = icc_betrachter->vcgt->x() + icc_betrachter->vcgt->w()/2;
+  int y = icc_betrachter->vcgt->y() + icc_betrachter->vcgt->h()/2;
 
   static std::vector<Speicher> ss;
   ss.clear();
-  ss.push_back(icc_oyranos.moni());
+  ss.push_back(icc_oyranos.moni(x,y));
   size_t size = ss[0].size();
   const char *moni_profil = ss[0];
   if(!moni_profil || !size) {
@@ -547,9 +549,12 @@ void
 ICCexamin::moniSetzen ()
 { DBG_PROG_START
   FREI_(false);
+  int x = icc_betrachter->vcgt->x() + icc_betrachter->vcgt->w()/2;
+  int y = icc_betrachter->vcgt->y() + icc_betrachter->vcgt->h()/2;
+
   if( profile.size() && profile.profil()->filename() &&
       strlen( profile.profil()->filename() ) ) { DBG_PROG
-    icc_oyranos.setzeMonitorProfil( profile.profil()->filename() );
+    icc_oyranos.setzeMonitorProfil( profile.profil()->filename(), x,y );
     vcgtZeigen();
   }
   FREI_(true);
@@ -560,11 +565,13 @@ void
 ICCexamin::standardGamma ()
 { DBG_PROG_START
   FREI_(false);
+  int x = icc_betrachter->vcgt->x() + icc_betrachter->vcgt->w()/2;
+  int y = icc_betrachter->vcgt->y() + icc_betrachter->vcgt->h()/2;
 
 # if HAVE_X
   system("xgamma -gamma 1.0");
   vcgtZeigen();
-  icc_oyranos.setzeMonitorProfil( 0 );
+  icc_oyranos.setzeMonitorProfil( 0, x,y );
 # endif
 
   // TODO: osX

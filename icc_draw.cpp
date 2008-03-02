@@ -193,7 +193,7 @@ TagDrawings::init_shoe_ ()
 
   size_t groesse = 0;
   const char* block = 0;
-  block = icc_oyranos.moni(groesse);
+  block = icc_oyranos.moni(0,0, groesse);
   if(groesse &&
      icc_debug != 14) {
     hsRGB = cmsOpenProfileFromMem(const_cast <char*> (block), groesse);

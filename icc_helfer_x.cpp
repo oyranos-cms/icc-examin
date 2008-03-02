@@ -32,6 +32,7 @@
 #include "icc_utils.h"
 #include "icc_icc.h"
 #include "icc_helfer_x.h"
+#include "icc_oyranos.h"
 
 #undef BOOL
 
@@ -70,7 +71,7 @@ leseGrafikKartenGamma        (std::string display_name,
   }
 
   if (!display) {
-    WARN_S( XDisplayName (display_name.c_str()) )
+    WARN_S( _("open X Display failed") )
     DBG_PROG_ENDE
     return kurven;
   }
@@ -85,24 +86,21 @@ leseGrafikKartenGamma        (std::string display_name,
       Screen *scr = XScreenOfDisplay( display, i );
       int scr_nr = XScreenNumberOfScreen( scr );
       if( scr_nr != i )
-        DBG_S( "scr_nr != i" << scr_nr <<"/"<< i )
-        if( x > fenster[i].x_org &&
-            x < fenster[i].x_org + XHeightOfScreen( scr ) &&
-            y > fenster[i].y_org &&
-            y < fenster[i].y_org + XWidthOfScreen( scr ) )
+        DBG_PROG_S( "scr_nr != i" << scr_nr <<"/"<< i )
+
         { char nr[8]; snprintf( nr, 8, "%d", i );
           texte.push_back(_("Screen:"));
           texte[texte.size()-1].append( nr );
         }
         XF86VidModeGetViewPort( display, i, &x, &y );
-        DBG_V( x <<" "<< y )
+        DBG_PROG_V( x <<" "<< y )
     }
   else
     if( XineramaIsActive( display ) )
     {
       fenster = XineramaQueryScreens( display, &n_fenster );
       for (int i = 0; i < n_fenster; ++i) {
-        DBG_S( "Fenster[" << fenster[i].screen_number <<"]: "<<
+        DBG_PROG_S( "Fenster[" << fenster[i].screen_number <<"]: "<<
                     fenster[i].x_org <<"+"<<
                     fenster[i].y_org <<","<< fenster[i].width <<"x"<<
                     fenster[i].height );
@@ -112,30 +110,38 @@ leseGrafikKartenGamma        (std::string display_name,
           texte.push_back(_("XineramaScreen:"));
           texte[texte.size()-1].append( nr );
         }
-        int vp_x, vp_y;
-        XF86VidModeGetViewPort( display, i, &vp_x, &vp_y );
-        DBG_V( i <<": "<< vp_x <<" "<< vp_y )
+        //int vp_x, vp_y;
+        //XF86VidModeGetViewPort( display, i, &vp_x, &vp_y );
+        //DBG_PROG_V( i <<": "<< vp_x <<" "<< vp_y )
       }
     
     }
 
     
-  DBG_V( ScreenCount( display ) )
+  DBG_PROG_V( ScreenCount( display ) )
 
   XF86VidModeGamma gamma;
   XF86VidModeMonitor monitor;
   int screen = DefaultScreen( display );
-    if (!XF86VidModeGetMonitor(display, screen, &monitor))
-      WARN_S( _("Keine Monitor Information erhalten") )
-    else {
+  char **infos = 0;
+  int num = 0;
+    if( (infos = icc_oyranos.moniInfo( x,y, &num)) != 0  && num ) {
+      for( int i = 0; i < num; ++i ) {
+        texte.push_back( infos[i*2 + 0] );
+        texte[texte.size()-1]. append( infos[i*2 + 1] );
+      }
+    } else
+    if (XF86VidModeGetMonitor(display, screen, &monitor)) {
       texte.push_back(_("Manufacturer:"));
       texte[texte.size()-1].append(monitor.vendor);
       texte.push_back(_("Model:       "));
       texte[texte.size()-1].append(monitor.model);
       DBG_PROG_V( monitor.vendor )
       DBG_PROG_V( monitor.model )
+    } else {
+      WARN_S( _("Keine Monitor Information erhalten") )
     }
-  DBG_V( DisplayWidth(display, screen) <<" "<< DisplayWidthMM(display, screen) )
+  DBG_PROG_V( DisplayWidth(display, screen) <<" "<< DisplayWidthMM(display, screen) )
 
   if (!XF86VidModeGetGamma(display, screen, &gamma))
     WARN_S( _("Keine Gamma Information erhalten") )
@@ -191,6 +197,7 @@ leseGrafikKartenGamma        (std::string display_name,
   } else DBG_NUM_S( "kein vcgt in X anzeigbar" );
 
   if (display) XCloseDisplay(display);
+  else WARN_S( "no X Display active" )
 
   DBG_PROG_ENDE
   return kurven;

@@ -184,7 +184,7 @@ getHilfeHtml()
 <a href=\"#XYZ\">3.2.3 XYZ</a><br /> \
 <a href=\"#mft1_.2F_mft2\">3.2.4 mft1 / mft2</a><br /> \
 <a href=\"#sf32\">3.2.5 sf32</a><br /> \
-<a href=\"#ncl2\">3.2.6 ncl2</a><br /> \ \
+<a href=\"#ncl2\">3.2.6 ncl2</a><br /> \
 </p> \
 </div> \
 </div> \

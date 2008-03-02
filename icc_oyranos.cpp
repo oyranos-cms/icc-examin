@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2005  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2006  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -239,13 +239,13 @@ oyGetProfileBlockOSX (CMProfileRef prof, char *block, size_t *size, oyAllocFunc_
     switch(loc.locType)
     {
       case cmNoProfileBase:
-             DBG_PROG_S("Das Monitorprofil ist ein temporäres Profil.")
+             DBG_PROG_S("Das Monitorprofil ist ein temporaeres Profil.")
              break;
       case cmFileBasedProfile:
              DBG_PROG_S("Das Monitorprofil ist ein Datei Profil.")
              break;
       case cmHandleBasedProfile:
-             DBG_PROG_S("Das Monitorprofil ist ein Händling Profil.")
+             DBG_PROG_S("Das Monitorprofil ist ein Haendling Profil.")
              break;
       case cmPtrBasedProfile:
              DBG_PROG_S("Das Monitorprofil ist ein Zeiger Profil.")
@@ -293,8 +293,29 @@ oyGetProfileBlockOSX (CMProfileRef prof, char *block, size_t *size, oyAllocFunc_
 
 #endif
 
+char*
+changeScreenName_( const char *display_name, int screen )
+{
+  char *new_display_name = 0;
+  if( (new_display_name = (char*) new char [strlen(display_name) +24]) == 0)
+    return NULL;
+
+  sprintf( new_display_name, "%s", display_name );
+
+  char *ptr = strchr( new_display_name, ':' );
+  char *ptr2 = 0;
+  if( ptr )
+  {
+    ptr2 = strchr( ptr, '.' );
+    sprintf( ptr2, ".%d", screen );
+  } else
+    sprintf( &ptr[strlen(ptr)], ".%d", screen );
+
+  return new_display_name;
+}
+
 void
-Oyranos::moni_test_ ()
+Oyranos::moni_test_ (int x, int y)
 {
   DBG_PROG_START
 # if HAVE_OY
@@ -302,16 +323,21 @@ Oyranos::moni_test_ ()
     size_t size = 0;
 
     const char *display_name = 0;
+    
     display_name = XDisplayString( fl_display );  // gehoert X
     DBG_PROG_V( display_name )
-    char* moni_profil = oyGetMonitorProfile( display_name, &size, myAllocFunc );
+    int screen = oyGetScreenFromGeometry( display_name, x,y );
+    char *new_display_name = changeScreenName_( display_name, screen );
+    char* moni_profil = oyGetMonitorProfile( new_display_name, &size, myAllocFunc );
+    if(new_display_name) free(new_display_name); new_display_name = 0;
+
     Speicher v_block = moni_;
       DBG_MEM_V( v_block.size() )
     const char *profil_name=_("Monitor Profile");
       DBG_PROG_V( (int*)profil_name <<" "<< profil_name )
-    // Wir holen das Profil wenn es sich geändert hat.
-    // a) neuer Name  - schwierig zu identifizieren über oyDeviceProfil
-    // b) Benachrichtigung  - vorausgesetzt Oyranos (X?) ändert das Profil
+    // Wir holen das Profil wenn es sich geaendert hat.
+    // a) neuer Name  - schwierig zu identifizieren ueber oyDeviceProfil
+    // b) Benachrichtigung  - vorausgesetzt Oyranos (X?) aendert das Profil
     { 
         if (size)
         {
@@ -341,13 +367,13 @@ Oyranos::moni_test_ ()
     switch(loc.locType)
     {
       case cmNoProfileBase:
-             DBG_PROG_S("Das Monitorprofil ist ein temporäres Profil.")
+             DBG_PROG_S("Das Monitorprofil ist ein temporaeres Profil.")
              break;
       case cmFileBasedProfile:
              DBG_PROG_S("Das Monitorprofil ist ein Datei Profil.")
              break;
       case cmHandleBasedProfile:
-             DBG_PROG_S("Das Monitorprofil ist ein Händling Profil.")
+             DBG_PROG_S("Das Monitorprofil ist ein Haendling Profil.")
              break;
       case cmPtrBasedProfile:
              DBG_PROG_S("Das Monitorprofil ist ein Zeiger Profil.")
@@ -549,7 +575,7 @@ Oyranos::holeMonitorProfil (const char* display_name, size_t* size )
 #endif
 
 int
-Oyranos::setzeMonitorProfil (const char* profil_name )
+Oyranos::setzeMonitorProfil (const char* profil_name , int x, int y )
 {
   DBG_PROG_START
   int fehler = false;
@@ -579,7 +605,10 @@ Oyranos::setzeMonitorProfil (const char* profil_name )
 
   fehler = oySetMonitorProfile( display_name, profil_name );
 
+  int screen = oyGetScreenFromGeometry( display_name, x,y );
+  char *new_display_name = changeScreenName_( display_name, screen );
   char *neues_profil = oyGetMonitorProfileName( display_name, myAllocFunc );
+  if(new_display_name) free(new_display_name); new_display_name = 0;
   DBG_PROG_V( neues_profil )
 
   if (neues_profil) free (neues_profil);
@@ -587,6 +616,61 @@ Oyranos::setzeMonitorProfil (const char* profil_name )
 
   DBG_PROG_ENDE
   return fehler;
+}
+
+char**
+Oyranos::moniInfo (int x, int y, int *num)
+{
+  DBG_PROG_START
+  *num = 0;
+  char **infos = 0;
+
+# if HAVE_OY
+  const char *display_name=0;
+
+# ifdef HAVE_X
+  //static Display *display=0;
+
+  display_name = XDisplayString( fl_display );  // gehoert FLTK
+  DBG_PROG_V( display_name <<" "<< strlen(display_name) )
+# endif
+  infos = (char**) new char* [6];
+  char *manufacturer = 0;
+  char *model = 0;
+  char *serial = 0;
+
+  int screen = oyGetScreenFromGeometry( display_name, x,y );
+  char *new_display_name = changeScreenName_( display_name, screen );
+  int fehler = oyGetMonitorInfo( new_display_name,
+                                 &manufacturer, &model, &serial,
+                                 myAllocFunc );
+
+  if( manufacturer && strlen( manufacturer ) )
+  {
+    infos[2 * *num] = strdup(_("Manufacturer:"));
+    infos[2 * *num + 1] = strdup( manufacturer );
+    *num += 1;
+  }
+  if( model && strlen( model ) )
+  {
+    infos[2 * *num] = strdup(_("Model:"));
+    infos[2 * *num + 1] = strdup( model );
+    *num += 1;
+  }
+  if( serial && strlen( serial ) )
+  {
+    infos[2 * *num] = strdup(_("Serial:"));
+    infos[2 * *num + 1] = strdup( serial );
+    *num += 1;
+  }
+    
+
+  if(new_display_name) free(new_display_name); new_display_name = 0;
+
+# endif
+
+  DBG_PROG_ENDE
+  return infos;
 }
 
 #include "icc_vrml.h"
@@ -776,7 +860,7 @@ Oyranos::wandelLabNachBildschirmFarben(double *Lab_Speicher, // 0.0 - 1.0
     {
       size_t groesse = 0;
       char* block = 0;
-      block = (char*) moni(groesse);
+      block = (char*) moni(0,0, groesse);
       DBG_MEM_V( (int*) block <<" "<<groesse )
 
       if(groesse)

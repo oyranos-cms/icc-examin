@@ -353,6 +353,10 @@ ICCexamin::oeffnen (std::vector<std::string> dateinamen)
   }
 # endif
 
+  int x = icc_betrachter->vcgt->x() + icc_betrachter->vcgt->w()/2;
+  int y = icc_betrachter->vcgt->y() + icc_betrachter->vcgt->h()/2;
+
+
   fortschritt( 0.0 );
 
   // Laden
@@ -370,14 +374,14 @@ ICCexamin::oeffnen (std::vector<std::string> dateinamen)
       fortschritt( 1.1 );
       return;
     }
-    if (dateinamen[i] == icc_oyranos.moni_name())
+    if (dateinamen[i] == icc_oyranos.moni_name( x,y ))
       moni_dabei = true;
   }
   DBG_PROG
 
   // Das Monitorprofil immer dabei 
   if (!moni_dabei && ss.size())
-    ss.push_back(icc_oyranos.moni());
+    ss.push_back(icc_oyranos.moni( x,y ));
 
   lade (ss);
 

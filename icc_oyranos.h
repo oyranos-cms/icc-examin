@@ -80,11 +80,13 @@ class Oyranos
     const Speicher & cmyk ()           { cmyk_test_(); return cmyk_; }
 
     // Gerae^te Profile
-    std::string moni_name ()           { moni_test_(); return moni_.name(); }
-    const char* moni (size_t &g)       { moni_test_(); g = moni_.size();
+    std::string moni_name (int x,int y){ moni_test_(x,y); return moni_.name(); }
+    const char* moni (int x, int y, size_t &g)
+                                       { moni_test_(x,y); g = moni_.size();
                                          return moni_; }
-    const Speicher & moni ()           { moni_test_(); return moni_; }
-    int         setzeMonitorProfil     (const char *name );
+    const Speicher & moni (int x,int y){ moni_test_(x,y); return moni_; }
+    int         setzeMonitorProfil     (const char *name, int x, int y );
+    char**      moniInfo (int x, int y, int *num);
     // allgemeine Profile
     std::string profil (const char* n) { if(profil_test_(n)) return profil_(n);}
     const char* profil (const char* n, size_t &g) { return profil_(n,g); }
@@ -97,7 +99,7 @@ class Oyranos
 
   private:
     void lab_test_();
-    void moni_test_();
+    void moni_test_( int x, int y );
     void rgb_test_();
     void cmyk_test_();
     Speicher lab_;
