@@ -198,8 +198,8 @@ ICCkette::einfuegen (const Speicher & prof, int pos)
   /*Modell::*/benachrichtigen( pos );
   if( extra_benachrichtigen >= 0 )
     /*Modell::*/benachrichtigen( extra_benachrichtigen );
-  else
-    /*Modell::*/benachrichtigen( pos );
+  //else
+    ///*Modell::*/benachrichtigen( pos );
   //icc_examin_ns::unlock(icc_examin, __FILE__,__LINE__);
   DBG_PROG_ENDE
   return erfolg;

@@ -108,6 +108,8 @@ class ICCexamin : public icc_examin_ns::Beobachter,
     int  status_,
          intent_,              //!< Uebertragungsart
          bpc_,                 //!< Schwarzpunktkompensation
+         intent_alt_,          //!< Uebertragungsart
+         bpc_alt_,             //!< Schwarzpunktkompensation
          gamutwarn_;           //!< Farbraumwarnung
     bool intent_selection_,    //!< interaktiv gewaehlte Uebertragungsart
          farbraum_modus_;      //!< profile.profil() enthaelt ncl2 Schmuckfarben

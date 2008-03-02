@@ -14,27 +14,37 @@ if [ -n "$ELEKTRA" ] && [ "$ELEKTRA" -gt "0" ]; then
   if [ -z "$elektra_max" ]; then
     elektra_max="0.6.100"
   fi
-  pkg-config  --atleast-version=$elektra_min elektra 2>>error.txt
+  elektra_mod=`pkg-config --modversion elektra`
   if [ $? = 0 ]; then
-    pkg-config --max-version=$elektra_max elektra 2>>error.txt
+   pkg-config  --atleast-version=$elektra_min elektra 2>>error.txt
     if [ $? = 0 ]; then
-      echo "elektra `pkg-config --modversion elektra`           detected"
-      echo "#define HAVE_ELEKTRA 1" >> $CONF_H
-      echo "ELEKTRA = 1" >> $CONF
-      echo "ELEKTRA_H = `pkg-config --cflags elektra`" >> $CONF
-      echo "ELEKTRA_LIBS = `pkg-config --libs elektra`" >> $CONF
-      echo "ELEKTRA_SW = `pkg-config --cflags-only-I  elektra | sed 's/\-I// ; s%/include%/etc/kdb/%'`" >> $CONF
-      ELEKTRA_FOUND=1
+      pkg-config --max-version=$elektra_max elektra 2>>error.txt
+      if [ $? = 0 ]; then
+        echo "elektra `pkg-config --modversion elektra`           detected"
+        echo "#define HAVE_ELEKTRA 1" >> $CONF_H
+        echo "ELEKTRA = 1" >> $CONF
+        echo "ELEKTRA_H = `pkg-config --cflags elektra`" >> $CONF
+        if [ $elektra_mod = "0.6.4" ]; then
+          echo "ELEKTRA_LIBS = `pkg-config --libs elektra` -lxml2 -ldb" >> $CONF
+        else
+          echo "ELEKTRA_LIBS = `pkg-config --libs elektra`" >> $CONF
+        fi
+        echo "ELEKTRA_SW = `pkg-config --cflags-only-I  elektra | sed 's/\-I// ; s%/include%/etc/kdb/%'`" >> $CONF
+        ELEKTRA_FOUND=1
+      else
+        echo "Elektra:"
+        echo "  too new Elektra found,"
+        echo "  need a version not greater than $elektra_max, download: elektra.sf.net"
+        ERROR=1
+      fi
     else
-      echo "Elektra:"
-      echo "  too new Elektra found,"
-      echo "  need a version not greater than $elektra_max, download: elektra.sf.net"
+      echo "ERROR Elektra:"
+      echo "  no or too old elektra found,"
+      echo "  need at least version $elektra_min, download: elektra.sf.net"
       ERROR=1
     fi
   else
-    echo "ERROR Elektra:"
-    echo "  no or too old elektra found,"
-    echo "  need at least version $elektra_min, download: elektra.sf.net"
+    echo $elektra_mod
     ERROR=1
   fi
 fi
@@ -214,7 +224,7 @@ if [ -n "$PO" ] && [ $PO -gt 0 ]; then
   LING="`echo $pos_dir`"
   LINGUAS="`echo $pos_dir | sed 's/\.po//g ; s/po\///g'`"
   echo "LINGUAS = $LINGUAS" >> $CONF
-  echo "Languages detected:     $LINGUAS"
+  echo "translations available: $LINGUAS"
   echo "LING = $LING" >> $CONF
   echo "#define USE_GETTEXT 1" >> $CONF_H
 fi

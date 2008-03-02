@@ -630,13 +630,16 @@ GL_Ansicht::tastatur(int e)
     if(e == FL_SHORTCUT)
     switch (Fl::event_key()) {
       case 45: // '-' Dies ist nicht konform auf allen Tastaturen; benutzt FLTK native Tastaturkodes?
-        if(punktform >= MENU_dE1KUGEL || punktform <= MENU_dE4KUGEL)
+        if(punktform >= MENU_dE1KUGEL && punktform <= MENU_dE4KUGEL)
+        {
           if (punktform > MENU_dE1KUGEL) {
             --punktform;
           }
+        }
         else if (punktform == MENU_DIFFERENZ_LINIE)
           punktform = MENU_dE1KUGEL;
-        else if(punktgroesse > 1) {
+        else if(punktgroesse > 1)
+        {
           --punktgroesse;
           auffrischen_();
           redraw();
@@ -644,19 +647,23 @@ GL_Ansicht::tastatur(int e)
         DBG_PROG_V( Fl::event_key() <<" "<< punktgroesse )
         break;
       case 43: // '+'
-        if(punktform >= MENU_dE1KUGEL || punktform <= MENU_dE4KUGEL) {
+        if (punktform >= MENU_dE1KUGEL && punktform <= MENU_dE4KUGEL)
+        {
           if (punktform < MENU_dE4KUGEL) {
             ++punktform;
           }
+        }
         else if (punktform == MENU_DIFFERENZ_LINIE)
+        {
           punktform = MENU_dE4KUGEL;
-        } else
-        if(punktgroesse < 21) {
+        }
+        else if (punktgroesse < 61)
+        {
           ++punktgroesse;
           auffrischen_();
           redraw();
         }
-        DBG_PROG_V( Fl::event_key()  <<" "<< punktgroesse )
+        DBG_PROG_V( Fl::event_key()  <<" "<< punktgroesse <<" "<< punktform <<" "<< MENU_DIFFERENZ_LINIE )
         break;
       default:
         dbgFltkEvents(e);

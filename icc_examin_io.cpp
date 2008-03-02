@@ -570,7 +570,7 @@ ICCexaminIO::gamutSpeichern (IccGamutFormat format)
     // Gamutprofil erzeugen
     Speicher speicher;
     icc_oyranos.gamutCheckAbstract( profil, speicher,
-                                    profile.profil()->intent(),
+                                    icc_examin->intentGet(NULL),
                                     /*cmsFLAGS_GAMUTCHECK |*/ cmsFLAGS_SOFTPROOFING );
 
     // Speichern
@@ -578,7 +578,8 @@ ICCexaminIO::gamutSpeichern (IccGamutFormat format)
     speicher.clear();
   } else if(format == ICC_VRML) {
     std::string vrml;
-    vrml = icc_oyranos.vrmlVonProfil ( *profile.profil(), profile.profil()->intent() );
+    vrml = icc_oyranos.vrmlVonProfil ( *profile.profil(),
+                                       icc_examin->intentGet(NULL) );
     // Speichern
     saveMemToFile ( dateiname.c_str(), vrml.c_str(), vrml.size() );
   }

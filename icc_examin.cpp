@@ -87,7 +87,10 @@ ICCexamin::ICCexamin ()
   status_ = false;
   intent_ = 3;
   intent_selection_ = 0;
+  farbraum_modus_ = 0;
   bpc_ = 0;
+  intent_alt_ = intent_;
+  bpc_alt_ = bpc_;
   gamutwarn_ = 0;
   vcgt_cb_laeuft_b_ = 0;
   DBG_PROG_ENDE
@@ -309,12 +312,19 @@ ICCexamin::nachricht( Modell* modell , int info )
 
       { DBG_PROG
         {
+          int interactive = 0;
+          intentGet(&interactive);
+          if(farbraumModus() && !interactive)
+            intent( -1 );
+
           // ncl2 ?
           DBG_PROG_V( profile.aktuell() );
-          if(info == 0 && farbraumModus())
+          if((info == 0 && farbraumModus()) &&
+             intentGet(NULL) != intent_alt_)
             farbraum();
           else
             farbraum (info);
+          intent_alt_ = intentGet(NULL);
           icc_examin->fortschrittThreaded(0.5);
         }
 

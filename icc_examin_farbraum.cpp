@@ -114,11 +114,6 @@ ICCexamin::netzLese (int n,
   std::vector<ICCnetz> netz_temp;
 
   {
-    int interactive = 0;
-    intentGet(&interactive);
-    if(farbraumModus() && n == 1 && !interactive)
-      intent( -1 );
-
     netz_temp = icc_oyranos. netzVonProfil(  *(profile[n]), intentGet(NULL) );
     if(netz_temp.size())
     {

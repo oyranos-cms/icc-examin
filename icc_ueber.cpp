@@ -237,7 +237,7 @@ getHilfeHtml()
 </p><p>The colour space shown is allways in CIE*Lab coordinates.  \
 </p><p>From the context menu (ctrl+left mouse button or right mouse button) you can select the average human (CIE standard observer) visible spectral colours as a line. \
 </p><p>If meashurements are shown, theyr radius can be selected from the context menu. This is handy to easily detect dE's of above 2 or 4. The connection line goes from the measurement (white) to the deviation by the profile (red). \
-</p><p>ncl2 colours can be enlarged or made smaller by pressing + or -. \
+</p><p>ncl2 colour spots can be enlarged or made smaller by pressing + or -. \
 </p> \
 <a name=\"Report_View\"></a><h4> Report View </h4> \
 <p>If the profile contains measurements a report is generated. You reach this by selecting from the top menu View-&gt;Report. These measurement data are compared to what is calculated with the profile by littleCMS - the internal used CMM. \
