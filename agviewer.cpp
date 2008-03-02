@@ -54,9 +54,9 @@ Agviewer::agvInit(int window)
   glutMouseFunc(agvHandleButton);
   glutMotionFunc(agvHandleMotion);
   //glutKeyboardFunc(agvHandleKeys);
-  RedisplayWindow = glutGetWindow(); DBG_PROG_V( RedisplayWindow )
+  RedisplayWindow = glutGetWindow(); DBG_PROG_V( RedisplayWindow << window )
   agvSetAllowIdle(window);
-  duenn = false; // Kai-Uwe
+  duenn = false; // ICC Schnitt - Kai-Uwe
   DBG_PROG_ENDE
 }
 

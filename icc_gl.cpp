@@ -69,6 +69,7 @@ GL_Ansicht::GL_Ansicht(int X,int Y,int W,int H) : Fl_Group(X,Y,W,H)
   kanal = 0;
   schnitttiefe = 0.1;
   first_ = true;
+  auffrischen_ = true;
   menue_kanal_eintraege_ = 0;
   Punktform = MENU_WUERFEL;
   gl_fenster_zeigen_ = false;
@@ -87,11 +88,12 @@ GL_Ansicht::~GL_Ansicht()
   DBG_PROG_ENDE
 }
 
-void GL_Ansicht::zeigen()
+void
+GL_Ansicht::zeigen()
 { DBG_PROG_START
+  DBG_PROG_V( id() )
 
-  if (first_)
-    init();
+  if(first_) icc_examin->initReihenfolgeGL_Ansicht(this);
 
   //glutSetWindow( agviewers[agv_].redisplayWindow() );
  
@@ -99,26 +101,31 @@ void GL_Ansicht::zeigen()
     gl_fenster_->resize(x(),y(),w(),h());
   }
 
-  DBG_PROG_V( x() <<" "<< y() <<" "<< w() <<" "<< h() )
+  DBG_PROG_V( id() <<" "<< x()<<" "<< y()<<" "<< w()<<" "<< h() )
 
   agviewers[agv_].agvSetAllowIdle (1);
   gl_fenster_zeigen_ = true; DBG_PROG_V( glut_id_ )
   reshape(glut_id_, w(),h());
+  auffrischen();
   //glutPostRedisplay();
-  //draw();
   DBG_PROG_ENDE
 }
 
 void
 GL_Ansicht::verstecken()
 { DBG_PROG_START
-  if (!first_) {
-    agviewers[agv_].agvSwitchMoveMode (Agviewer::AGV_STOP);
+  DBG_PROG_V( id() )
+
+  //DBG_PROG_V( w() <<" "<< h() )
+  gl_fenster_zeigen_ = false; DBG_PROG
+
+  if (first_) {
+    //icc_examin->initReihenfolgeGL_Ansicht(this);
+  } else {
+    //agviewers[agv_].agvSwitchMoveMode (Agviewer::AGV_STOP);
     gl_fenster_->size(1,1);
     DBG_PROG_S("-------------- GL Fenster auf 1x1 verkleinert ----------------")
   }
-  DBG_PROG_V( w() <<" "<< h() )
-  gl_fenster_zeigen_ = false; DBG_PROG
 
   stop();
   
@@ -127,10 +134,17 @@ GL_Ansicht::verstecken()
 
 void
 GL_Ansicht::init()
-{
-  DBG_PROG_START
+{ DBG_PROG_START
 
-  icc_examin->glAnsicht (this);
+  if (!first_) {
+    DBG_PROG_ENDE
+    return;
+  }
+
+  if(this == icc_examin->icc_betrachter->mft_gl)
+    DBG_PROG_S( "init mft_gl" )
+  if(this == icc_examin->icc_betrachter->DD_histogram)
+    DBG_PROG_S( "init DD_histogram" )
 
   agv_ = agviewers.size(); DBG_PROG
   agviewers.resize (agv_ +1);
@@ -142,6 +156,9 @@ GL_Ansicht::init()
   this->end();
   DBG_PROG
   gl_fenster_->show();
+
+  if (!this->visible())
+    WARN_S("Diese GL_Ansicht ist nicht sichtbar")
   this->show();
 
   DBG_PROG
@@ -155,7 +172,7 @@ GL_Ansicht::init()
   gl_fenster_->end(); DBG_PROG
   gl_fenster_->resizable(glut_window);
 
-  agviewers[agv_].agvInit(1); DBG_PROG
+  agviewers[agv_].agvInit(glut_id_); DBG_PROG
   DBG_PROG_V( agv_ <<" "<< agviewers[agv_].redisplayWindow() )
 
   #define setzeGlutFunktionen(n) \
@@ -172,19 +189,35 @@ GL_Ansicht::init()
 
   agviewers[agv_].agvMakeAxesList(AXES); DBG_PROG
 
-  myGLinit();  DBG_PROG
-  menuInit(); DBG_PROG
-  makeDisplayLists(); DBG_PROG
+  myGLinit_();  DBG_PROG
+  menuInit_(); DBG_PROG
+  makeDisplayLists_(); DBG_PROG
 
   //glutMainLoop(); // you could use Fl::run() instead
+
+  icc_examin->glAnsicht (this);
 
   DBG_PROG_ENDE
 }
 
-void GL_Ansicht::draw() {
-  DBG_PROG_START
-  if (gl_fenster_zeigen_) { DBG_PROG
+void
+GL_Ansicht::auffrischen()
+{ DBG_PROG_START
+  menueErneuern_();
+  makeDisplayLists_();
+  auffrischen_ = false;
+  DBG_PROG_ENDE
+}
+
+void
+GL_Ansicht::draw()
+{ DBG_PROG_START
+  if (gl_fenster_zeigen_)
+  { DBG_PROG
     gl_fenster_->size(w(),h());
+    if (auffrischen_) {
+      auffrischen();
+    }
   } else { DBG_PROG
     gl_fenster_->size(1,1);
     DBG_PROG_S("-------------- GL Fenster auf 1x1 verkleinert ----------------")
@@ -195,7 +228,7 @@ void GL_Ansicht::draw() {
 }
 
 void
-GL_Ansicht::myGLinit()
+GL_Ansicht::myGLinit_()
 { DBG_PROG_START
   GLfloat mat_ambuse[] = { 0.2, 0.2, 0.2, 1.0 };
   GLfloat mat_specular[] = { 0.6, 0.6, 0.6, 1.0 };
@@ -323,7 +356,7 @@ zeichneKoordinaten()
 }
 
 void
-GL_Ansicht::makeDisplayLists()
+GL_Ansicht::makeDisplayLists_()
 { DBG_PROG_START
   char text[256];
   char* ptr = 0;
@@ -671,16 +704,16 @@ GL_Ansicht::makeDisplayLists()
   #endif
 
   glPopMatrix();
+  glutPostRedisplay();
   DBG_PROG_ENDE
 }
 
 void
-GL_Ansicht::menueErneuern()
+GL_Ansicht::menueErneuern_()
 { DBG_PROG_START
   DBG_PROG_V( menue_kanal_eintraege_ << " "<< glutGet(GLUT_MENU_NUM_ITEMS) )
 
-  int old_menue = glutGetMenu();
-  glutSetMenu (menue_schnitt_);
+  glutSetMenu (menue_schnitt_); DBG_PROG_V( menue_schnitt_ )
   if (von_farb_namen_.size() >= 3)
   {
     static char text_L[64];
@@ -696,7 +729,7 @@ GL_Ansicht::menueErneuern()
     sprintf (text_S, "%s %s %s", _("Drehen um"),von_farb_namen_[0].c_str(), _("Achse"));
     glutChangeToMenuEntry(5,text_S,  Agviewer::ICCPOLAR);
   }
-  glutSetMenu (old_menue);
+  glutSetMenu (menue_); DBG_PROG_V( menue_ )
 
   int me = glutGet(GLUT_MENU_NUM_ITEMS);
   for (int i = 0; i < menue_kanal_eintraege_; i++) {
@@ -723,28 +756,30 @@ GL_Ansicht::menueErneuern()
 }
 
 void
-GL_Ansicht::menuInit()
+GL_Ansicht::menuInit_()
 { DBG_PROG_START
-  menue_schnitt_ = glutCreateMenu(agvSwitchMoveMode);   /* pass these right to */
+  if (glut_id_ == 1) { menue_ = glutCreateMenu(handlemenu1); }
+  else {               menue_ = glutCreateMenu(handlemenu2); }
+  DBG_PROG_V( menue_ )
+  menue_schnitt_ = glutCreateMenu(agvSwitchMoveMode); DBG_PROG_V(menue_schnitt_)
   glutAddMenuEntry("text_L",  Agviewer::ICCFLY_L);
   glutAddMenuEntry("text_a",  Agviewer::ICCFLY_a);
   glutAddMenuEntry("text_b",  Agviewer::ICCFLY_b);
   glutAddMenuEntry(_("Schnitt"), Agviewer::FLYING); /* agvSwitchMoveMode() */
   glutAddMenuEntry(_("Drehen um Schnitt"),  Agviewer::ICCPOLAR);
 
-  int sub3;
-  if (glut_id_ == 1) { sub3 = glutCreateMenu(handlemenu1); }
-  else {               sub3 = glutCreateMenu(handlemenu2); }
-  glutAddMenuEntry(_("Kugel"),  MENU_KUGEL);
+  if (glut_id_ == 1) { menue_form_ = glutCreateMenu(handlemenu1); }
+  else {               menue_form_ = glutCreateMenu(handlemenu2); }
+  glutAddMenuEntry(_("Kugel"),  MENU_KUGEL);   DBG_PROG_V( menue_form_ )
   glutAddMenuEntry(_("Würfel"), MENU_WUERFEL);
   glutAddMenuEntry(_("Stern"),  MENU_STERN);
-  if (glut_id_ == 1) { sub3 = glutCreateMenu(handlemenu1); }
-  else {               sub3 = glutCreateMenu(handlemenu2); }
+
+  glutSetMenu(menue_);
   glutAddSubMenu(_("Querschnitte"), menue_schnitt_);
-  glutAddSubMenu(_("Formen"), sub3);
+  glutAddSubMenu(_("Formen"), menue_form_);
 
 
-  //menueErneuern();
+  //menueErneuern_();
 
   glutAttachMenu(GLUT_RIGHT_BUTTON);
   DBG_PROG_ENDE
@@ -768,7 +803,6 @@ reshape(int id, int w, int h)
   glutSetWindow(id);
   glViewport(0,0,w,h); DBG_PROG_V( id <<"|"<< icc_examin->glAnsicht(id)->x()<<" "<<icc_examin->glAnsicht(id)->y()<<" "<<w<<" "<<h )
   glutPositionWindow(icc_examin->glAnsicht(id)->x(),icc_examin->glAnsicht(id)->y());
-  //icc_examin->glAnsicht()->zeigen();
   icc_examin->glAnsicht(id)->seitenverhaeltnis = (GLdouble)w/(GLdouble)h;
   glFlush();
   DBG_PROG_ENDE
@@ -784,44 +818,48 @@ display(int id)
   glMatrixMode(GL_PROJECTION);
   //glLineWidth(3.0);
 
-  #if 0
   // Text
   glPushMatrix();
    glLoadIdentity();
-   glOrtho(0,icc_examin->glAnsicht()->w(),0,icc_examin->glAnsicht()->h(),-10.0,10.0);
+   glOrtho(0,icc_examin->glAnsicht(id)->w(),0,icc_examin->glAnsicht(id)->h(),-10.0,10.0);
 
    glDisable(GL_TEXTURE_2D);
    glDisable(GL_LIGHTING);
    //glEnable(GL_BLEND);
-   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+   //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
    glDisable(GL_LINE_SMOOTH);
 
    glColor4f(0.0,0.0,0.0,1.0);
 
-   // Start von unten links
-   glTranslatef(5,-12,8);
+   glTranslatef(5,-12,8.8-icc_examin->glAnsicht(id)->schnitttiefe*3);
 
+   // Start von unten links
    #define ZeichneOText(font, scal, buffer) glScalef(scal,scal,scal); \
                                  ZeichneText(font,buffer); \
                                  glScalef(1.0/scal,1.0/scal,1.0/scal);
 
 
-   int scal = 100, zeilenversatz = (int)(scal/6.0);
+   int scal = 120, zeilenversatz = (int)(scal/6.0);
+   #if 0
    static char text[256];
    for (unsigned int i=0; i < icc_examin->icc_betrachter->mft_gl->kanaele(); i++) {
      sprintf(&text[0],"%s: %f", icc_examin->icc_betrachter->mft_gl->kanalName(i), 12.0);
      glTranslatef(0,zeilenversatz,0);
      ZeichneOText (GLUT_STROKE_ROMAN, scal, text)
    }
-
    //sprintf(&text[0],"%s: %s", _("sichtbarer Kanal"),icc_examin->glAnsicht(id)->kanalName());
+   #endif
+   std::string text;
+   text.append(_("Kanal:"));
+   text.append(" ");
+   text.append(icc_examin->glAnsicht(id)->kanalName());
    glTranslatef(0,zeilenversatz,0);
-             ZeichneOText (GLUT_STROKE_ROMAN, scal, text) 
+
+   ZeichneOText (GLUT_STROKE_ROMAN, scal, (char*)text.c_str()) 
 
    glEnable(GL_TEXTURE_2D);
    glEnable(GL_LIGHTING);
   glPopMatrix();
-  #endif
 
   glPushMatrix();  /* clear of last viewing xform, leaving perspective */
 
@@ -990,19 +1028,11 @@ GL_Ansicht::hineinTabelle (std::vector<std::vector<std::vector<std::vector<doubl
 
 
   if (first_)
-    init();
-  else {
-    menueErneuern();
-    makeDisplayLists();
-  }
+    icc_examin->initReihenfolgeGL_Ansicht(this);
+  else
+    auffrischen_ = true;
 
   status(_("linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menü"))
-
-  #if 1
-  glutPostRedisplay();
-  #else
-  reshape(glut_id_, w(),h());
-  #endif
 
   DBG_PROG_ENDE
 }
@@ -1059,26 +1089,25 @@ handlemenu (int id, int value)
       break;
     case MENU_KUGEL:
       icc_examin->glAnsicht(id)->Punktform = MENU_KUGEL;
-      icc_examin->glAnsicht(id)->makeDisplayLists();
+      icc_examin->glAnsicht(id)->auffrischen();
       break;
     case MENU_WUERFEL:
       icc_examin->glAnsicht(id)-> Punktform = MENU_WUERFEL;
-      icc_examin->glAnsicht(id)->makeDisplayLists();
+      icc_examin->glAnsicht(id)->auffrischen();
       break;
     case MENU_STERN:
       icc_examin->glAnsicht(id)-> Punktform = MENU_STERN;
-      icc_examin->glAnsicht(id)->makeDisplayLists();
+      icc_examin->glAnsicht(id)->auffrischen();
       break;
     }
 
   if (value >= MENU_MAX) {
     icc_examin->glAnsicht(id)->kanal = value - MENU_MAX; DBG_PROG_V( icc_examin->glAnsicht(id)->kanal )
     status(_("linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menü"))
-    icc_examin->glAnsicht(id)->makeDisplayLists();
+    icc_examin->glAnsicht(id)->auffrischen();
   }
 
   DBG_PROG_V( value )
-  glutPostRedisplay();
   DBG_PROG_ENDE
 }
 

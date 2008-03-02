@@ -1,6 +1,11 @@
 
+2005-01-08
+	* neu: Initialisierungsreihenfolge der GL_Ansicht in icc_examin
+	* neu: statische glut Funktionen je GL_Ansicht in icc_gl.h/cpp
+	* neu: zweiphasigiges Initialisierungs Muster erkannt
+
 2005-01-07
-	* neu: erstes Signal
+	* neu: erstes Signal(nix)
 
 2005-01-06
 	* und: weiterer Umbau zu Model/Observer Muster

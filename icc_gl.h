@@ -45,13 +45,16 @@ class GL_Ansicht : public Fl_Group {
   std::vector<double> punkte_;        //                (n*3)
   std::vector<float>  farben_;        // rgba 0.0 - 1.0 (n*4)
   std::vector<std::vector<double> >kurven_;
+  bool auffrischen_;
   Fl_Group *gl_fenster_;
-  void menueErneuern();
+  void menueErneuern_();
+  void makeDisplayLists_();
+  int  menue_;
   int  menue_kanal_eintraege_;
   int  menue_schnitt_;
-  void init();
-  void myGLinit();
-  void menuInit();
+  int  menue_form_;
+  void myGLinit_();
+  void menuInit_();
   bool gl_fenster_zeigen_;
   int  agv_,
        glut_id_;
@@ -59,6 +62,8 @@ class GL_Ansicht : public Fl_Group {
 public:
   GL_Ansicht(int X,int Y,int W,int H);
   ~GL_Ansicht();
+  void init();
+  bool jungfrau () {return first_; }
   //void setzteGlutId(int id) {if (first_) glut_id_ = id; }
 
   int  id()          {return glut_id_; }
@@ -85,12 +90,12 @@ public:
                                std::vector<std::string> vonFarben,
                                std::vector<std::string> nachFarben);
 
-  int  kanal;                    // gewählter Kanal
-  int  Punktform;                // Form der Gitterpunkte der Transformationstabelle
+  int  kanal;               // gewählter Kanal
+  int  Punktform;           // Form der Gitterpunkte der Transformationstabelle
+  void auffrischen();       // Erneuerung ohne init()
   double seitenverhaeltnis;
   double schnitttiefe;
 
-  void makeDisplayLists();
   void zeigen();
   void verstecken();
   void stop() {if (!first_) { agvSwitchMoveMode (Agviewer::AGV_STOP); } }

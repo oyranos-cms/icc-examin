@@ -108,6 +108,7 @@ std::string
 ICCexamin::waehleTag (int item)
 { DBG_PROG_START
 
+  DBG_PROG_V( item )
   std::string text = _("Leer");
 
   if(!profile.size()) {
@@ -361,11 +362,13 @@ ICCexamin::neuzeichnen (void* z)
 
   DBG_PROG_V(_zeig_histogram << icc_betrachter->menueintrag_3D->value() )
   if (icc_betrachter->menueintrag_3D->value() && !_zeig_histogram)
-  { DBG_PROG 
+  { DBG_PROG_S( "3D Histogramm zeigen" )
+    if(!icc_betrachter->DD_histogram->visible())
+      icc_betrachter->DD_histogram->show();
+
     icc_betrachter->DD_histogram->zeigen();
     _zeig_histogram = true;
-  } else if (_zeig_histogram) { 
-    DBG_PROG
+  } else if (_zeig_histogram) { DBG_PROG_S( "3D hist ausschalten" )
     icc_betrachter->DD_histogram->verstecken();
     _zeig_histogram = false;
     waehleTag(_item);
@@ -383,16 +386,17 @@ ICCexamin::neuzeichnen (void* z)
     waehleTag(_item);
     return;
   }
-
+DBG_PROG
   if(icc_betrachter->menueintrag_inspekt->value() ||
      icc_betrachter->menueintrag_3D->value())
     icc_betrachter->tag_browser->hide();
   else
     icc_betrachter->tag_browser->show();
-
+DBG_PROG
   if (wid == icc_betrachter->tag_viewer ||
-      wid == icc_betrachter->mft_viewer)
+      wid == icc_betrachter->mft_viewer) {
     wid->clear_visible(); DBG_PROG_V( item << _item )
+  }
 
   if (wid == icc_betrachter->mft_text ||
       wid == icc_betrachter->mft_gl ||
@@ -400,27 +404,26 @@ ICCexamin::neuzeichnen (void* z)
   { icc_betrachter->mft_choice->show();
   } else
     icc_betrachter->mft_choice->hide();
-
+DBG_PROG
   if (wid != icc_betrachter->mft_gl)
     icc_betrachter->mft_gl->verstecken();
   else
     icc_betrachter->mft_gl->zeigen();
-
+DBG_PROG
   #define zeig(widget) \
-  { DBG_PROG_S( #widget ) \
-    Fl_Widget *w = dynamic_cast<Fl_Widget*> (icc_betrachter->widget); \
-    if (w != wid && w->visible()) { DBG_PROG \
+  { Fl_Widget *w = dynamic_cast<Fl_Widget*> (icc_betrachter->widget); \
+    if (w != wid && w->visible()) { DBG_PROG_S( #widget << " verstecken" ) \
       w->hide(); \
-    } else if(w == wid) { DBG_PROG_V( _item )\
+    } else if(w == wid) { DBG_PROG_S( #widget << " zeigen" ) \
       w->show(); \
       item = _item; \
     } \
   }
 
-    zeig(mft_viewer)
-    zeig(mft_text)
-    zeig(tag_viewer)
-    zeig(tag_text)
+  zeig(mft_viewer)
+  zeig(mft_text)
+  zeig(tag_viewer)
+  zeig(tag_text)
 
   DBG_PROG_ENDE
 }
@@ -444,6 +447,22 @@ ICCexamin::statusAktualisieren()
 { DBG_PROG_START
   icc_betrachter->box_stat->label(statlabel.c_str());
   DBG_PROG_ENDE
+}
+
+void
+ICCexamin::initReihenfolgeGL_Ansicht(GL_Ansicht* gl_ansicht)
+{ DBG_PROG_START
+  if (icc_betrachter->mft_gl->jungfrau()) {
+    icc_betrachter->mft_gl->show();
+    icc_betrachter->mft_gl->init();
+  }
+  if (gl_ansicht == icc_betrachter->DD_histogram) {
+    if (!icc_betrachter->DD_histogram->visible()) {
+      WARN_S("DD_histogram war nicht sichtbar")
+      icc_betrachter->DD_histogram->show();
+    }
+    icc_betrachter->DD_histogram->init();
+  } DBG_PROG_ENDE
 }
 
 #if 1
@@ -474,10 +493,10 @@ GL_Ansicht*
 ICCexamin::glAnsicht(int id)
 { DBG_PROG_START
   if(id>0)
-  {
+  { DBG_PROG_V( id )
     std::vector<GL_Ansicht*>::iterator it;
     for (it = _gl_ansichten.begin() ; it != _gl_ansichten.end(); ++it)
-      if ((*it)->id()==id)
+      if ((*it)->id() == id)
       { DBG_PROG_ENDE
         return *it;
       }

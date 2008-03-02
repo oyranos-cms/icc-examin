@@ -161,7 +161,7 @@ void TagBrowser::selectItem(int item) {
   status("")
 
   item -= 6;
-  cout << item << ". Tag "; DBG_PROG
+  DBG_PROG_S( item << ". Tag " )
   
   std::string text = icc_examin->waehleTag(item);
   if (text != "")

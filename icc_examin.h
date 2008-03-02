@@ -77,6 +77,7 @@ class ICCexamin
     int _gl_ansicht;                   // glutWindow
     std::vector<GL_Ansicht*> _gl_ansichten;
   public:
+    void initReihenfolgeGL_Ansicht(GL_Ansicht*);
     void glAnsicht (GL_Ansicht* dazu);
     GL_Ansicht* glAnsicht(int id);
 
