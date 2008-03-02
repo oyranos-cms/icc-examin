@@ -152,8 +152,17 @@ GL_Ansicht::init(int init_id)
   resizable(0);
 
   mode(FL_RGB |FL_DOUBLE |FL_ALPHA |FL_DEPTH |FL_MULTISAMPLE);
-  if(!can_do())
+  if(!can_do()) {
     WARN_S( _("OpenGL eventuell nicht korrekt gesetzt von ICC Examin "<< mode()) )
+    mode(FL_RGB |FL_DOUBLE |FL_ALPHA |FL_DEPTH);
+    if(!can_do()) {
+      WARN_S( _("OpenGL eventuell nicht korrekt gesetzt von ICC Examin "<< mode()) )
+      mode(0);
+      if(!can_do()) {
+        WARN_S( _("OpenGL eventuell nicht korrekt gesetzt von ICC Examin "<< mode()) )
+      }
+    }
+  }
 
   DBG_PROG
 

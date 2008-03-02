@@ -231,11 +231,11 @@ config:
 	configure.sh
 
 depend:
-	echo "" > mkdepend
-	$(MAKEDEPEND) -f mkdepend -s "#nicht editier/dont edit - automatisch generiert" -I. \
-	$(INCL_DEP)
-mkdepend:
-	make depend
+	echo "schaue nach Abhängikeiten ..."
+	echo "MAKEDEPEND_ISUP = 1" > mkdepend
+	$(MAKEDEPEND) -f mkdepend \
+	-s "#nicht editieren/dont edit - automatisch generiert" \
+	-I. $(INCL_DEP)
 
 
 # The extension to use for executables...
@@ -295,4 +295,8 @@ targz:
 
 # Abhängigkeiten
 include mkdepend
+
+ifndef MAKEDEPEND_ISUP
+mkdepend: depend
+endif
 
