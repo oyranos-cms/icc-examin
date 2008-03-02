@@ -998,10 +998,7 @@ cgats_max_korrigieren( char* data, size_t size )
   DBG_PROG_START
   CgatsFilter cgats;
   // Optionen setzen
-  cgats.kopf = "IS12642";
-  cgats.kommentar = "# hier kommt ein langer Kommentar.. \n# ... bis hier\n";
-  cgats.anfuehrungsstriche_setzen = true;
-  cgats.spektral = "R_";
+  cgats.kommentar = "# Diese Datei wurde von ICC Examin geprüft bzw. neu zusammengestellt \n# bei Unverträglichkeiten bitte einen Hinweis möglichst mit Datenquelle(n), Ergebnis und Versionsnummer an den Author email: ku.b @ gmx.de \n";
   // Laden
   cgats.lade( data, size );
   // Bearbeiten und Ausgeben

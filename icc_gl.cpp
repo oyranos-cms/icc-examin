@@ -357,11 +357,14 @@ GL_Ansicht::tastatur(int e)
    glLineWidth(strichmult); \
       glTranslatef(.0,0,0.01); \
         glScalef(0.001,0.001,0.001); \
-          for (const char* p = Zeiger; *p; p++) { \
-             icc_gl::glutStrokeCharacter(Font, *p); \
-          } \
-          for (const char* p = Zeiger; *p; p++) { \
-            glTranslatef(0.0 - glutStrokeWidth(Font, *p),0,0); \
+          if(Zeiger && strlen(Zeiger)) { \
+            DBG_PROG_V( (int*)Zeiger ) \
+            for (const char* p = Zeiger; *p; p++) { \
+              icc_gl::glutStrokeCharacter(Font, *p); \
+            } \
+            for (const char* p = Zeiger; *p; p++) { \
+              glTranslatef(0.0 - glutStrokeWidth(Font, *p),0,0); \
+            } \
           } \
         glScalef(1000,1000,1000); \
       glTranslatef(.0,0,-.01); \
@@ -401,7 +404,7 @@ zeichneKoordinaten(float strichmult)
       glMatrixMode(GL_MODELVIEW);
       glTranslatef((0.0-0.3),(0.0-0.1),(0.0-0.05));
         sprintf (&text[0],_("0,0,0"));
-        ZeichneText(GLUT_STROKE_ROMAN,&text[0])
+        ZeichneText(GLUT_STROKE_ROMAN,text)
       glTranslatef(0.3,0.1,0.05);
     glRotatef (-90,0.0,0,1.0);
 
@@ -525,7 +528,7 @@ GL_Ansicht::garnieren_()
       {
         ptr = (char*) von_farb_namen_[0].c_str();
         sprintf (&text[0], ptr);
-        ZeichneText(GLUT_STROKE_ROMAN,&text[0])
+        ZeichneText(GLUT_STROKE_ROMAN,text)
       }
     glPopMatrix(); DBG_PROG
     glPushMatrix();
@@ -563,7 +566,7 @@ GL_Ansicht::garnieren_()
       {
         ptr = (char*) von_farb_namen_[1].c_str();
         sprintf (&text[0], ptr);
-        ZeichneText(GLUT_STROKE_ROMAN,&text[0])
+        ZeichneText(GLUT_STROKE_ROMAN,text)
       }
       if (von_farb_namen_.size() &&
           von_farb_namen_[1] == _("CIE *a"))
@@ -600,7 +603,7 @@ GL_Ansicht::garnieren_()
       {
         ptr = (char*) von_farb_namen_[2].c_str();
         sprintf (&text[0], ptr);
-        ZeichneText(GLUT_STROKE_ROMAN,&text[0])
+        ZeichneText(GLUT_STROKE_ROMAN,text)
       }
       if (von_farb_namen_.size() &&
           von_farb_namen_[2] == _("CIE *b"))

@@ -2,15 +2,19 @@ include config
 
 CC=cc
 CXX = c++
+COLLECT = ar cru
+RANLIB = ranlib
 MAKEDEPEND	= makedepend -Y
-RM = rm -v
+LNK = ln -s
+RM = rm -vf
 ifdef LINUX
 COPY = cp -vdpa
-endif
-ifdef APPLE
-COPY = cp -v
 else
-COPY = cp
+  ifdef APPLE
+  COPY = cp -v
+  else
+  COPY = cp
+  endif
 endif
 
 
@@ -21,7 +25,6 @@ datadir		= ${prefix}/share
 includedir	= ${prefix}/include
 libdir		= ${exec_prefix}/lib
 mandir		= ${prefix}/man
-srcdir		= .
 
 DEBUG = -DDEBUG
 DL = --ldflags # --ldstaticflags
@@ -31,18 +34,31 @@ OSX_CPPFILES = icc_helfer_osx.cpp
 FLTK_CPPFILES = icc_helfer_fltk.cpp
 
 ifdef APPLE
-  OPTS=-Wall -g $(DEBUG)
+  OPTS=-Wall -g -DPIC $(DEBUG)
+  LINK_FLAGS = -dynamiclib
   OSX_CPP = $(OSX_CPPFILES)
   INCL=-I$(includedir) -I/usr/X11R6/include -I./ -I/usr/include/gcc/darwin/default/c++
-endif
-ifdef LINUX
-  OPTS = -Wall  -Os -g $(DEBUG) #-fomit-frame-pointer -g
-  INCL=-I$(includedir) -I/usr/X11R6/include -I./
 else
-  OPTS=-Wall -O2 -g -fpic -L.
-  RM = rm -f
+  SO = .so
+  ifdef LINUX
+    OPTS = -Wall  -Os -g $(DEBUG) #-fomit-frame-pointer -g
+    INCL=-I$(includedir) -I/usr/X11R6/include -I./
+    LINK_FLAGS = -shared -ldl -L.
+    LIBSONAME = lib$(TARGET)$(SO).$(VERSION_A)
+    LINK_NAME = -Wl,-soname -Wl,$(LIBSONAME)
+    LINK_LIB_PATH = -Wl,--rpath -Wl,$(libdir)
+    LINK_SRC_PATH = -Wl,--rpath -Wl,$(srcdir)
+  else
+    OPTS=-Wall -O2 -g -fpic -L.
+    RM = rm -f
+    LINK_FLAGS = -shared -ldl $(ICONV)
+  endif
 endif
 
+LIBSONAMEFULL = lib$(TARGET)$(SO).$(VERSION_L)
+LIBSONAME = lib$(TARGET)$(SO).$(VERSION_A)
+LIBSO = lib$(TARGET)$(SO)
+LIBNAME = lib$(TARGET).a
 
 ifdef FLTK
   TOOLKIT_FILES = $(FLTK_CPPFILES)
@@ -58,8 +74,9 @@ ALL_INCL = $(INCL) \
 			$(FLU_H) $(FLTK_H) $(X_H) $(OSX_H) $(OYRANOS_H) $(LCMS_H)
 
 CXXFLAGS=$(OPTS) $(ALL_INCL)
+CFLAGS = $(OPTS)
 
-LDLIBS = -L$(libdir) -L./ $(FLTK_LIBS) \
+LDLIBS = -L$(libdir) -L./ $(FLTK_LIBS) -licc_examin \
 	$(X11_LIBS) -llcms $(OYRANOS_LIBS) $(FLU_LIBS) $(LCMS_LIBS)
 
 CPP_HEADERS = \
@@ -173,7 +190,8 @@ FLUID = \
 	fl_oyranos.fl
 
 SOURCES = $(ALL_SOURCEFILES) $(ALL_HEADERFILES)
-OBJECTS = $(CPPFILES:.cpp=.o) $(CXXFILES:.cxx=.o) $(CFILES:.c=.o)
+OBJECTS = $(CPPFILES:.cpp=.o) $(CXXFILES:.cxx=.o)
+CLIB_OBJECTS =  $(CFILES:.c=.o)
 TARGET  = icc_examin
 
 ifdef APPLE
@@ -195,12 +213,27 @@ release:	icc_alles.o
 	$(REZ)
 	$(RM) icc_alles.o
 
-$(TARGET):	$(OBJECTS)
+$(TARGET):	$(OBJECTS) $(LIBNAME) #$(LIBSONAMEFULL)
 	echo Linking $@...
 	$(CXX) $(OPTS) -o $(TARGET) \
 	$(OBJECTS) \
-	$(LDLIBS)
+	$(LDLIBS) $(LINK_LIB_PATH) $(LINK_SRC_PATH)
 	$(REZ)
+
+$(LIBSONAMEFULL):	$(CLIB_OBJECTS)
+	echo Linking $@ ...
+	$(CC) $(OPTS) $(LINK_FLAGS) $(LINK_NAME) -o $(LIBSONAMEFULL) \
+	$(CLIB_OBJECTS) 
+	$(REZ)
+	$(RM)  $(LIBSONAME)
+	$(LNK) $(LIBSONAMEFULL) $(LIBSONAME)
+	$(RM)  $(LIBSO)
+	$(LNK) $(LIBSONAMEFULL) $(LIBSO)
+
+$(LIBNAME):	$(CLIB_OBJECTS)
+	echo Linking $@ ...
+	$(COLLECT) $(LIBNAME) $(CLIB_OBJECTS)
+	$(RANLIB) $(LIBNAME)
 
 static:		$(OBJECTS)
 	echo Linking $@...
@@ -217,15 +250,16 @@ test:	icc_formeln.o icc_utils.o
 	$(REZ)
 
 install:	$(TARGET)
-	$(COPY) icc_examin $(bindir)
+	$(COPY) $(TARGET) $(bindir)
 
 uninstall:
-	$(RM) $(bindir)/icc_examin
+	$(RM) $(bindir)/$(TARGET)
 
 clean:
 	echo "mache sauber"
 	$(RM) mkdepend config config.h
-	$(RM) $(OBJECTS) $(TARGET)
+	$(RM) $(OBJECTS) $(CLIB_OBJECTS) $(TARGET) \
+	$(LIBSO) $(LIBSONAME) $(LIBSONAMEFULL)
 
 config:
 	configure.sh
@@ -245,21 +279,21 @@ EXEEXT		=
 .SUFFIXES:	.0 .1 .3 .c .cxx .h .fl .man .o .z $(EXEEXT)
 
 .o$(EXEEXT):
-	echo Linking $@...
-	$(CXX) -I.. $(CXXFLAGS) $< $(LINKFLTK) $(LDLIBS) -o $@
+	echo Linking $@ ...
+	$(CXX) $(CXXFLAGS) $< $(LINKFLTK) $(LDLIBS) -o $@
 	$(POSTBUILD) $@ ../FL/mac.r
 
 .c.o:
-	echo Compiling $<...
-	$(CC) -I.. $(CFLAGS) -c $<
+	echo Compiling $< ...
+	$(CC) $(CFLAGS) -c $<
 
 .cxx.o:
-	echo Compiling $<...
-	$(CXX) -I.. $(CXXFLAGS) -c $<
+	echo Compiling $< ...
+	$(CXX) $(CXXFLAGS) -c $<
 
 .cpp.o:
-	echo Compiling $<...
-	$(CXX) -I.. $(CXXFLAGS) -c $<
+	echo Compiling $< ...
+	$(CXX) $(CXXFLAGS) -c $<
 
 tgz:
 	mkdir Entwickeln

@@ -3,7 +3,11 @@
 
 CONF_H=config.h
 CONF=config
-VERSION="0.26"
+VERSION_A=0
+VERSION_B=2
+VERSION_C=6
+VERSION=$VERSION_A.$VERSION_B$VERSION_C
+VERSION_L=$VERSION_A.$VERSION_B.$VERSION_C
 ZEIT="Mai 2004 - April 2005"
 
 prefix=/opt/local
@@ -101,12 +105,21 @@ else
 fi
 
 echo "" >> $CONF
-echo "VERSION = $VERSION" >> $CONF
+echo "VERSION_A = $VERSION_A" >> $CONF
+echo "VERSION_B = $VERSION_B" >> $CONF
+echo "VERSION_C = $VERSION_C" >> $CONF
+echo "VERSION   = $VERSION" >> $CONF
+echo "VERSION_L = $VERSION_L" >> $CONF
 echo "src_dir = `pwd`/icc_examin_$VERSION" >> $CONF
+echo "srcdir = `pwd`" >> $CONF
 
 echo "#ifndef ICC_VERSION_H" > icc_version.h
 echo "#define ICC_VERSION_H" >> icc_version.h
 echo "" >> icc_version.h
+echo "#define ICC_EXAMIN_VERSION_A $VERSION_A" >> icc_version.h
+echo "#define ICC_EXAMIN_VERSION_B $VERSION_B" >> icc_version.h
+echo "#define ICC_EXAMIN_VERSION_C $VERSION_C" >> icc_version.h
+echo "#define ICC_EXAMIN_VERSION $VERSION" >> icc_version.h
 echo "#define ICC_EXAMIN_V $VERSION" >> icc_version.h
 echo "#define ICC_EXAMIN_D _(\"$ZEIT\")" >> icc_version.h
 echo "" >> icc_version.h

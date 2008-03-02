@@ -143,8 +143,8 @@ F&uuml;r die Visualisation des Farbumfangs (Erzeugung extern):<br>\n \
 \
 </p>\n \
 <p>\n\
-    all icc_* Dateien sind lizenziert unter der GPL<br> \
-    die anderen Dateien k&ouml;nnen abweichende Lizenzbedingungen in den Dateik&ouml;pfen enthalten. \
+    all icc_* Dateien sind lizenziert unter der GPL.<br> \
+    Die anderen Dateien k&ouml;nnen abweichende Lizenzbedingungen in den Dateik&ouml;pfen enthalten. \
 <br<br> \
 </p>\n \
 <P> \

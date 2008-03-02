@@ -1,6 +1,10 @@
 #ifndef ICC_VERSION_H
 #define ICC_VERSION_H
 
+#define ICC_EXAMIN_VERSION_A 0
+#define ICC_EXAMIN_VERSION_B 2
+#define ICC_EXAMIN_VERSION_C 6
+#define ICC_EXAMIN_VERSION 0.26
 #define ICC_EXAMIN_V 0.26
 #define ICC_EXAMIN_D _("Mai 2004 - April 2005")
 

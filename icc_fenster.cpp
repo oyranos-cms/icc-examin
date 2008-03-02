@@ -127,7 +127,7 @@ static Fl_Output *output_info=(Fl_Output *)0;
 Fl_Double_Window*
 nachricht (std::string text) {
   Fl_Double_Window* w;
-  { Fl_Double_Window* o = new Fl_Double_Window(275, 326, "Colori Info:");
+  { Fl_Double_Window* o = new Fl_Double_Window(275, 326, "Information:");
     w = o;
     w->hotspot(o);
     { Fl_Return_Button* o = new Fl_Return_Button(60, 295, 160, 25, "Gut");
