@@ -29,7 +29,7 @@ CPP_HEADERS = \
 	icc_examin.h \
 	icc_utils.h \
 	icc_profile.h \
-	icc_profiler.h \
+	icc_profilierer.h \
 	icc_vrml.h \
 	cccie64.h \
 	ciexyz64_1.h
@@ -40,7 +40,7 @@ CPPFILES = \
 	icc_helfer.cpp \
 	icc_profile.cpp \
 	icc_measurement.cpp \
-	icc_profiler.cpp \
+	icc_profilierer.cpp \
 	icc_vrml.cpp
 #	vFLGLWidget.cpp \
 	ViewerFLTK.cpp 

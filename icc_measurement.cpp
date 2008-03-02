@@ -392,7 +392,6 @@ ICCmeasurement::lcms_parse                   (std::string   data)
         constr = cmsIT8GetPatchName (_lcms_it8, k, NULL);
         _Feldnamen[k] = constr;
       }
-      //cout << _Feldnamen[k] << " " << k << " "; DBG
     }
   } DBG_S (_Feldnamen[0] << " bis " << _Feldnamen[_nFelder-1])
  
@@ -401,22 +400,22 @@ ICCmeasurement::lcms_parse                   (std::string   data)
     _XYZ_Satz.resize(_nFelder);
     for (int i = 0; i < _nFelder; i++) {
         _XYZ_Satz[i].X = cmsIT8GetDataDbl (_lcms_it8, _Feldnamen[i].c_str(),
-                                           "XYZ_X"); // /100.0;
+                                           "XYZ_X");
         _XYZ_Satz[i].Y = cmsIT8GetDataDbl (_lcms_it8, _Feldnamen[i].c_str(),
-                                           "XYZ_Y"); // /100.0;
+                                           "XYZ_Y");
         _XYZ_Satz[i].Z = cmsIT8GetDataDbl (_lcms_it8, _Feldnamen[i].c_str(),
-                                           "XYZ_Z"); // /100.0;
+                                           "XYZ_Z");
     }
   }
   if (has_RGB) { DBG // keine Umrechnung nötig
     _RGB_Satz.resize(_nFelder);
     for (int i = 0; i < _nFelder; i++) {
         _RGB_Satz[i].R = cmsIT8GetDataDbl (_lcms_it8, _Feldnamen[i].c_str(),
-                                           "RGB_R"); // /256.0;
+                                           "RGB_R");
         _RGB_Satz[i].G = cmsIT8GetDataDbl (_lcms_it8, _Feldnamen[i].c_str(),
-                                           "RGB_G"); // /256.0;
+                                           "RGB_G");
         _RGB_Satz[i].B = cmsIT8GetDataDbl (_lcms_it8, _Feldnamen[i].c_str(),
-                                           "RGB_B"); // /256.0;
+                                           "RGB_B");
     }
   }
   if (has_CMYK) { DBG // keine Umrechnung nötig
@@ -465,17 +464,17 @@ ICCmeasurement::init_umrechnen                     (void)
     hRGBtoXYZ =  cmsCreateTransform (hRGB, TYPE_RGB_DBL,
                                     hXYZ, TYPE_XYZ_DBL,
                                     INTENT_RELATIVE_COLORIMETRIC,
-                                    cmsFLAGS_NOTPRECALC);
+                                    cmsFLAGS_HIGHRESPRECALC);
     // Wie sieht das Profil die Messfarbe? -> Bildschirmdarstellung
     hRGBtoSRGB = cmsCreateTransform (hRGB, TYPE_RGB_DBL,
                                     hsRGB, TYPE_RGB_DBL,
                                     INTENT_RELATIVE_COLORIMETRIC,
-                                    cmsFLAGS_NOTPRECALC);
+                                    cmsFLAGS_HIGHRESPRECALC);
     // Wie sieht die CMM die Messfarbe? -> Bildschirmdarstellung
     hXYZtoSRGB = cmsCreateTransform (hXYZ, TYPE_XYZ_DBL,
                                     hsRGB, TYPE_RGB_DBL,
                                     INTENT_RELATIVE_COLORIMETRIC,
-                                    cmsFLAGS_NOTPRECALC);
+                                    cmsFLAGS_HIGHRESPRECALC);
     double RGB[3], sRGB[3], XYZ[3];
 
     _RGB_MessFarben.resize(_nFelder);
@@ -490,9 +489,9 @@ ICCmeasurement::init_umrechnen                     (void)
         _RGB_MessFarben[i].G = sRGB[1];
         _RGB_MessFarben[i].B = sRGB[2];
 
-        RGB[0] = _RGB_Satz[i].R;
-        RGB[1] = _RGB_Satz[i].G;
-        RGB[2] = _RGB_Satz[i].B;
+        RGB[0] = _RGB_Satz[i].R/255.0; cout << RGB[0] << " ";
+        RGB[1] = _RGB_Satz[i].G/255.0; cout << RGB[1] << " ";
+        RGB[2] = _RGB_Satz[i].B/255.0; cout << RGB[2] << "\n";
         cmsDoTransform (hRGBtoSRGB, &RGB[0], &sRGB[0], 1);
         _RGB_ProfilFarben[i].R = sRGB[0];
         _RGB_ProfilFarben[i].G = sRGB[1];
@@ -591,12 +590,12 @@ ICCmeasurement::getHtmlReport                     (void)
 
   int kopf = (int)_reportTabelle.size() - _nFelder;
   // Allgemeine Informationen
-  /*for (int i = 0; i < kopf - 1 ; i++) {
-    if (i == 0) html << "<h2>";
+  for (int i = 0; i < kopf - 1 ; i++) {
+    //if (i == 0) html << "<h2>";
     html << _reportTabelle[i][0];
-    if (i == 0) html << "</h2>";
+    //if (i == 0) html << "</h2>";
     html <<     "<br>\n\n";
-  }*/
+  }
   html <<       "<table align=left cellpadding=\"2\" cellspacing=\"2\" border=\"0\" frame=\"hsides\" width=\"90%\" bgcolor=\"#cccccc\">\n";
   html <<       "<thead> \n";
   html <<       "  <tr> \n";
@@ -672,14 +671,10 @@ ICCmeasurement::getHtmlReport                     (void)
       }
     }
     html <<     "  </tr>\n";
-    if (z == 0)
-      ;//DBG_S(html.str())
   }
 
   html <<       "</tbody>\n</table>\n\n<br>\n</body></html>\n";
 
-  //DBG_S( _RGB_ProfilFarben[0].B*100 << endl << _RGB_MessFarben[0].B*100)
-  DBG_S(html.str())
   return html.str();
 }
 

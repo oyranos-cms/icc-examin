@@ -7,7 +7,7 @@ static char *statlabel;
  using namespace std;
  int px,py,pw,ph;
  int fullscreen;
- int inspekt_zeigen;
+ int inspekt_zeigen;  int inspekt_topline;
  int tag_nummer;
 //openvrml::browser *browser = 0;
 //ViewerFLTK  *viewer = 0;
@@ -48,11 +48,13 @@ static void cb_menueintrag_inspekt(Fl_Menu_*, void*) {
     inspekt_zeigen = false;
     inspekt->hide();
     examin->show();
+    inspekt_topline = inspekt_html->topline();
   } else {
     inspekt_zeigen = true;
     inspekt->show();
     examin->hide();
     inspekt_html->value(profile.report().c_str());
+    inspekt_html->topline(inspekt_topline);
   };
 }
 
@@ -110,6 +112,7 @@ int main(int argc, char **argv) {
   Fl_Double_Window* w;
   statlabel = (char*)calloc (sizeof (char), 1024);
   fullscreen = false;
+  inspekt_topline = 0;
   { Fl_Double_Window* o = details = new Fl_Double_Window(385, 520, "ICC Details");
     w = o;
     o->box(FL_NO_BOX);
@@ -247,14 +250,6 @@ int main(int argc, char **argv) {
   }
   w->resizable(tag_text);
   w->show();
-  /*canvas->show();
-//  canvas->show_widget = false;
-  viewer->Hok=1;
-  viewer->Hdraw=1;
-  viewer->timerUpdate();
-  viewer->handleRedraw();
-  Fl::add_timeout(0.01, (void (*)(void *))timeIT, (void *)viewer);
-*/
   Fl::scheme(NULL);
   Fl_File_Icon::load_system_icons();
   if (argc > 1)
@@ -316,8 +311,10 @@ std::string open(int interaktiv) {
 
   tag_browser->reopen ();
 
+  inspekt_topline = inspekt_html->topline();
   if (inspekt_zeigen)
     inspekt_html->value(profile.report().c_str());
+  inspekt_html->topline (inspekt_topline);
 
   return filename;
 }

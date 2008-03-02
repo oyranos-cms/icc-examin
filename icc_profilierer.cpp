@@ -6,10 +6,10 @@
   #ifndef DEBUG
    #define DEBUG
   #endif
-  #define DEBUG_Parser
+  #define DEBUG_PROFILIERER
 #endif
 
-#include "icc_profiler.h"
+#include "icc_profilierer.h"
 #include "icc_utils.h"
 
 #define _(text) text
@@ -18,24 +18,26 @@
 
 
 /**
-  *  @brief ICCparser Funktionen
+  *  @brief Profilierer Funktionen
   */ 
 
-Parser::Parser()
+Profilierer::Profilierer()
 {
+  
 }
 
 void
-Parser::load (void *data)
+Profilierer::load (ICCprofile& profil)
 {
+  measurement = profil.measurement;
   //DBG
 }
 
 
 std::string
-Parser::print()
+Profilierer::print()
 {
-  string s = _("Dateikopf ungültig");
+  std::string s = _("Dateikopf ungültig");
   return s;
 }
 

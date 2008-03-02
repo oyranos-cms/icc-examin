@@ -268,8 +268,9 @@ class ICCprofile {
 
     ICCheader           header;
     std::vector<ICCtag> tags;
+  public:
+    // cgats parser via lcms
     ICCmeasurement      measurement;
-    void                write_tagList(std::stringstream);
 
   public: // Informationen
     const char*         filename ()        {return _filename.c_str(); }
