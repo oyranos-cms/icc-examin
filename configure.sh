@@ -267,9 +267,11 @@ if [ -n "$FLTK" ] && [ $FLTK -gt 0 ]; then
     echo "FLTK = 1" >> $CONF
     echo "FLTK_H = `$fltkconfig --cxxflags | sed 's/-O[0-9]//'`" >> $CONF
     echo "FLTK_LIBS = `$fltkconfig --use-images --use-gl --ldflags | $STRIPOPT`" >> $CONF
+    echo "fltkconfig = $fltkconfig" >> $CONF
     echo "FLTK = 1" >> $CONF_I18N
     echo "FLTK_H = `$fltkconfig --cxxflags | sed 's/-O[0-9]//'`" >> $CONF_I18N
     echo "FLTK_LIBS = `$fltkconfig --use-images --use-gl --ldflags | $STRIPOPT`" >> $CONF_I18N
+    echo "fltkconfig = $fltkconfig" >> $CONF_I18N
   else
     if [ $FLTK -eq 1 ]; then
       ERROR=1
@@ -415,7 +417,11 @@ if [ -n "$DEBUG" ] && [ $DEBUG -gt 0 ]; then
   if [ -n "$MAKEFILE_DIR" ]; then
     for i in $MAKEFILE_DIR; do
       if [ "$debug" -eq "1" ]; then
-        DEBUG_="-Wall -g -DDEBUG --pedantic"
+        if [ `uname -s` == "Darwin" ]; then
+          DEBUG_="-Wall -g -DDEBUG"
+        else
+          DEBUG_="-Wall -g -DDEBUG --pedantic"
+        fi
         test -f "$i/makefile".in && echo "DEBUG = $DEBUG_"  >> "$i/makefile"
         test -f "$i/makefile".in && echo "DEBUG_SWITCH = -v"  >> "$i/makefile"
       else

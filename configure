@@ -41,6 +41,7 @@ VERSION_L=`echo $VERSION_L | sed 's/^0*//g'`
 
 cwdebug=0
 debug=0
+nodeps=0
 
 echo ""
 echo "################################################################"
@@ -111,6 +112,10 @@ if [ $# -gt 0 ]; then
     if [ "`echo \"$1\" | sed s/\"--$switch\"//`" != "$1" ]; then
       debug="1"
     fi
+    switch=disable-dependency-tracking
+    if [ "`echo \"$1\" | sed s/\"--$switch\"//`" != "$1" ]; then
+      nodeps="1"
+    fi
     switch=help
     if [ "`echo \"$1\" | sed s/\"--$switch\"//`" != "$1" ]; then
       echo "Usage:"
@@ -127,6 +132,7 @@ if [ $# -gt 0 ]; then
       echo ""
       echo "   --with-fltk-config=[fltk-config]     alternative fltk version"
       echo "   --enable-debug                       debug version"
+      echo "   --disable-dependency-tracking        no dependencies [default check]"
       echo "   --enable-cwdebug=[\$cwdebugdir]       deploy cwlibary for debugging"
       echo "   --help"
       echo ""
@@ -141,7 +147,7 @@ fi
 ECHO="echo";
 
 
-echo "$zeile" > config.log
+echo "$zeile \$@" > config.log
 chmod 0755 config.log
 
 src_dir="`(cd ..;pwd)`/""$TARGET"-"$VERSION"
@@ -467,9 +473,18 @@ echo "#define SRC_LOCALEDIR  \"$srcdir/po\"" >> $CONF_H
 
 echo "" >> $CONF
 
+if [ $nodeps -eq 1 ]; then
+  GCC_MM="echo \"\#disable dependency tracking\""
+  nodeps_config_opt=--disable-dependency-tracking
+else
+  GCC_MM="cc -MM"
+fi
 
+
+# set some compiler and linker options
 
 echo "RM = rm -f $DEBUG_SWITCH" >> $CONF
+echo "MAKEDEPEND	= $GCC_MM" >> $CONF
 if [ $OSUNAME = "Darwin" ]; then
   echo "" >> $CONF
   echo "COPY = cp -p $DEBUG_SWITCH" >> $CONF
@@ -480,7 +495,6 @@ if [ $OSUNAME = "Darwin" ]; then
   echo "INCL=-I\$(includedir) -I/usr/X11R6/include -I./ -I/usr/include/gcc/darwin/default/c++" >> $CONF
   echo "LIBEXT = .dylib" >> $CONF
   echo "LINK_FLAGS = -dynamiclib -L." >> $CONF
-  echo "MAKEDEPEND	= /usr/X11R6/bin/makedepend -Y" >> $CONF
   echo "MSGMERGE = msgmerge" >> $CONF
   CFLAGS="$CFLAGS_COMMON -Wall -g \$(DEBUG) -DPIC -Wunused -fno-exceptions"
   CXXFLAGS="$CXXFLAGS_COMMON -Wall -g \$(DEBUG) -DPIC -fno-exceptions"
@@ -516,7 +530,6 @@ else
     echo "LINK_NAME = -Wl,-soname -Wl,\$(LIBNAMEFULL)" >> $CONF
     echo "LINK_LIB_PATH = -Wl,--rpath -Wl,\$(libdir)" >> $CONF
     echo "LINK_SRC_PATH = -Wl,--rpath -Wl,\$(srcdir)" >> $CONF
-    echo "MAKEDEPEND	= makedepend -Y" >> $CONF
     CFLAGS="$CFLAGS_COMMON"
     CXXFLAGS="$CXXFLAGS_COMMON"
     echo "INSTALL = install $DEBUG_SWITCH" >> $CONF
@@ -542,7 +555,6 @@ else
     fi
     echo "I18N_LIB = \$(iconv) \$(intl) \$(LIBNAMEV)" >> $CONF
     echo "I18N_LIBSTAT = \$(iconv) \$(intl) \$(LIBNAMEV)" >> $CONF
-    echo "MAKEDEPEND	= makedepend -Y" >> $CONF
     CFLAGS="$CFLAGS_COMMON -Wall -g -L. -fPIC"
     CXXFLAGS="$CXXFLAGS_COMMON -Wall -g -L. -fPIC"
     echo "RM = rm -f" >> $CONF

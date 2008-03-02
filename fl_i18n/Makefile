@@ -9,8 +9,8 @@ XINERAMA_LIB = -lXinerama
 X11_LIB_PATH = -L/usr/X11R6/lib$(BARCH) -L/usr/lib$(BARCH) -L$(libdir)
 X11_LIBS=$(X11_LIB_PATH) -lX11 $(XF86VMODE_LIB) -lXpm -lXext $(XINERAMA_LIB)
 FLTK = 1
-FLTK_H = -I/opt/test1/include -I/usr/include/freetype2 -I/usr/X11R6/include
-FLTK_LIBS = -L/opt/test1/lib -L/usr/X11R6/lib -lfltk_images -lpng -lz -ljpeg -lfltk_gl -lGLU -lGL -lfltk -lXft -lXinerama -lpthread -lm -lXext -lX11
+FLTK_H = -I/opt/kai-uwe/include -I/usr/include/freetype2 -Wall -g -I/usr/X11R6/include
+FLTK_LIBS = -L/opt/kai-uwe/lib -L/usr/X11R6/lib -Wall -g -L/usr/X11R6/lib -lfltk-utf8_images -lpng -lz -ljpeg -lfltk-utf8_gl -lGLU -lGL -lfltk-utf8 -lfltk_xutf8 -lXft -lXinerama -lpthread -ldl -lm -lXext -lX11
 dl = -ldl
 GETTEXT = -DUSE_GETTEXT
 DEBUG = -Wall -g -DDEBUG --pedantic
@@ -252,6 +252,10 @@ EXEEXT		=
 .cpp.o:
 	echo Compiling $< ...
 	$(CXX) $(CXXFLAGS) -c $<
+
+.fl.cxx:
+	echo Expanding $< ...
+	fluid -c $<
 
 .po:
 	echo Generating $@ ...

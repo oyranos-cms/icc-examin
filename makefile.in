@@ -270,8 +270,8 @@ static:	$(BINTARGET)
 	-L./ \
 	`test -f /opt/local/lib/libfltk_images.a && (echo /opt/local/lib/libfltk_images.a; \
 	    (test -f /opt/local/lib/libpng.a && echo /opt/local/lib/libpng.a || echo "-lpng"); (test -f /opt/local/lib/libjpeg.a && echo /opt/local/lib/libjpeg.a || echo "-ljpeg"); echo -lz) || \
-	fltk-config --use-gl --use-images --ldstaticflags` \
-	`fltk-config --use-gl --ldstaticflags` \
+	$(fltkconfig) --use-gl --use-images --ldstaticflags` \
+	`$(fltkconfig) --use-gl --ldstaticflags` \
 	-L/opt/local/lib \
 	`oyranos-config --ld_x_staticflags` -L/$(libdir) \
 	-lftgl \
@@ -455,7 +455,7 @@ install_cp:
 	#strip $(DESTDIR)$(bindir)/$(CINEPAINT)
 	mkdir -p $(DESTDIR)$(datadir)/fonts/
 	$(INSTALL) -m 644 $(FONT) $(DESTDIR)$(datadir)/fonts/$(FONT)
-	fltk-config --post $(DESTDIR)$(CP_DIR)/$(CINEPAINT)
+	$(fltkconfig) --post $(DESTDIR)$(CP_DIR)/$(CINEPAINT)
 	mkdir -p $(DESTDIR)$(datadir)/fonts/
 	echo  Linguas ...
 	for ling in $(LINGUAS); do \
@@ -473,7 +473,7 @@ install_global:
 	mkdir -p $(DESTDIR)$(bindir)
 	$(INSTALL) -m 755 $(BINTARGET) $(DESTDIR)$(bindir)
 	strip $(DESTDIR)$(bindir)/$(BINTARGET)
-	fltk-config --post $(DESTDIR)$(bindir)/$(BINTARGET)
+	$(fltkconfig) --post $(DESTDIR)$(bindir)/$(BINTARGET)
 	mkdir -p $(DESTDIR)$(datadir)/fonts/
 	$(INSTALL) -m 644 $(FONT) $(DESTDIR)$(datadir)/fonts/$(FONT)
 	mkdir -p $(DESTDIR)$(desktopdir)

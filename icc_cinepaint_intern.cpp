@@ -782,12 +782,12 @@ waechter (void* zeiger)
     int sl = 1000000;
     while(!fehler && freilauf)
     {
-      double rz = (double)clock()/(double)CLOCKS_PER_SEC;
+      double rz = icc_examin_ns::zeitSekunden();
 
       if(!fehler)
       fehler = vergleicheFarben( layer );
 
-      rz = (double)clock()/(double)CLOCKS_PER_SEC - rz;
+      rz = icc_examin_ns::zeitSekunden() - rz;
       if(farben_sind_gleich) {
         sl = max(sl,500000);
         usleep(sl*2);

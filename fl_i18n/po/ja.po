@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GNU hello-c 0.13.1\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2007-03-30 08:26+0200\n"
+"POT-Creation-Date: 2007-06-18 22:19+0200\n"
 "PO-Revision-Date: 2003-12-20 00:24+0900\n"
 "Last-Translator: Masahito Yamaga <ma@yama-ga.com>\n"
 "Language-Team: Japanese <translation-team-ja@lists.sourceforge.net>\n"
@@ -14,86 +14,82 @@ msgstr ""
 "Content-Type: text/plain; charset=EUC-JP\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: fl_i18n.cxx:203
+#: fl_i18n.cxx:204
 msgid "osX locale obtained: "
 msgstr ""
 
-#: fl_i18n.cxx:206
+#: fl_i18n.cxx:207
 msgid "osX locale not obtained"
 msgstr ""
 
-#: fl_i18n.cxx:327
+#: fl_i18n.cxx:328
 msgid "try to set LANG"
 msgstr ""
 
-#: fl_i18n.cxx:346
+#: fl_i18n.cxx:347
 msgid "try locale in "
 msgstr ""
 
-#: fl_i18n.cxx:355
+#: fl_i18n.cxx:356
 msgid "set codeset for"
 msgstr ""
 
-#: fl_i18n.cxx:391
+#: fl_i18n.cxx:392
 msgid "Add to Favorites"
 msgstr ""
 
-#: fl_i18n.cxx:392
+#: fl_i18n.cxx:393
 msgid "All Files (*)"
 msgstr ""
 
-#: fl_i18n.cxx:393
+#: fl_i18n.cxx:394
 msgid "Custom Filter"
 msgstr ""
 
-#: fl_i18n.cxx:394
+#: fl_i18n.cxx:395
 msgid "Please choose an existing file!"
 msgstr ""
 
-#: fl_i18n.cxx:395
+#: fl_i18n.cxx:396
 msgid "Favorites"
 msgstr ""
 
-#: fl_i18n.cxx:396
+#: fl_i18n.cxx:397
 msgid "Filename"
 msgstr ""
 
-#: fl_i18n.cxx:397
+#: fl_i18n.cxx:398
 msgid "Manage Favorites"
 msgstr ""
 
-#: fl_i18n.cxx:399
+#: fl_i18n.cxx:400
 msgid "My Computer"
 msgstr ""
 
-#: fl_i18n.cxx:401
+#: fl_i18n.cxx:402
 msgid "Filesystems"
 msgstr ""
 
-#: fl_i18n.cxx:403
+#: fl_i18n.cxx:404
 msgid "New Directory?"
 msgstr ""
 
-#: fl_i18n.cxx:404
+#: fl_i18n.cxx:405
 msgid "Preview"
 msgstr ""
 
-#: fl_i18n.cxx:406
+#: fl_i18n.cxx:407
 msgid "Save"
 msgstr ""
 
-#: fl_i18n.cxx:408
+#: fl_i18n.cxx:409
 msgid "Show:"
 msgstr ""
 
-#: fl_i18n_example.cxx:20 fl_i18n_example.cxx:50 fl_i18n_example.cxx:57
+#: fl_i18n_example.cxx:15 fl_i18n_example.cxx:46 fl_i18n_example.cxx:49
 msgid "Hello, world!"
 msgstr "世界よ, こんにちは!"
 
-#: fl_i18n_example.cxx:52
-msgid "no gettext compiled in."
-msgstr ""
-
-#: fl_i18n_example.cxx:55
+#: fl_i18n_example.cxx:47
 msgid "fl_i18n_example"
 msgstr ""

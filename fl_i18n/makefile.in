@@ -29,7 +29,7 @@ LIB_LIBS = -L./ $(FLTK_LIBS) \
   I18N_LIB = $(intl) $(LIBNAME) #-liconv
   I18N_LIBSTAT = /opt/local/lib/libintl.a $(LIBNAME) #-liconv
   INCL=-I$(includedir) -I/usr/X11R6/include -I./ -I/usr/include/gcc/darwin/default/c++
-  REZ = fltk-config --post $@;
+  REZ = $(fltkconfig) --post $@;
   DBG_LIBS = #-lMallocDebug
   MSGMERGE := msgmerge
   XGETTEXT_OPTIONS = --keyword=gettext \
@@ -235,6 +235,10 @@ EXEEXT		=
 .cpp.o:
 	echo Compiling $< ...
 	$(CXX) $(CXXFLAGS) -c $<
+
+.fl.cxx:
+	echo Expanding $< ...
+	fluid -c $<
 
 .po:
 	echo Generating $@ ...
