@@ -457,6 +457,7 @@ install:
 	echo Installation ...
 	mkdir -p $(DESTDIR)$(bindir)
 	$(INSTALL) -m 755 $(BINTARGET) $(DESTDIR)$(bindir)
+	strip $(DESTDIR)$(bindir)/$(BINTARGET)
 	fltk-config --post $(DESTDIR)$(bindir)/$(BINTARGET)
 	mkdir -p $(DESTDIR)$(datadir)/fonts/
 	$(INSTALL) -m 644 $(FONT) $(DESTDIR)$(datadir)/fonts/$(FONT)
