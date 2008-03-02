@@ -188,7 +188,7 @@ class TagTexts {: {public Fl_Hold_Browser}
   }
 } 
 
-class TagDrawings {: {public Fl_Widget}
+class TagDrawings {open : {public Fl_Widget}
 } {
   decl {int X, Y, W, H;} {}
   decl {int wiederholen, id;} {public
@@ -199,24 +199,29 @@ class TagDrawings {: {public Fl_Widget}
   } {
     code DBG_PROG_START {}
     code {// Kurven oder Punkte malen
-  DBG_PROG_S( icc_examin->kurven[id].size() <<" "<< icc_examin->punkte[id].size() )
+  if (icc_examin->laeuft())
+  {
 
-  //DBG_PROG_V( wiederholen )
+    DBG_PROG_S( icc_examin->kurven[id].size() <<" "<< icc_examin->punkte[id].size() )
 
-  if (icc_examin->kurven[id].size())
-  { DBG_PROG
-    wiederholen = false;
-    drawKurve (id, x(),y(),w(),h());
-  } else if (icc_examin->punkte[id].size()) {
-    if (wiederholen)
-    { drawCieShoe(id, x(),y(),w(),h(),false);
-      Fl::add_timeout( 1.2, (void(*)(void*))dHaendler ,(void*)this);
-    } else {
-      drawCieShoe(id, x(),y(),w(),h(),true);
+    //DBG_PROG_V( wiederholen )
+
+    if (icc_examin->kurven[id].size())
+    { DBG_PROG
+      wiederholen = false;
+      drawKurve (id, x(),y(),w(),h());
+    } else if (icc_examin->punkte[id].size()) {
+      if (wiederholen)
+      { drawCieShoe(id, x(),y(),w(),h(),false);
+        Fl::add_timeout( 1.2, (void(*)(void*))dHaendler ,(void*)this);
+      } else {
+        drawCieShoe(id, x(),y(),w(),h(),true);
+      }
+      wiederholen = true;
     }
-    wiederholen = true;
-  }
-  DBG_PROG} {}
+  } else
+    WARN_S( __func__ << " zu früh benutzt!" )} {selected
+    }
     code DBG_PROG_ENDE {}
   }
   Function {hineinPunkt(std::vector<double> &vect, std::vector<std::string> &txt)} {} {
@@ -397,6 +402,8 @@ class ICCfltkBetrachter {} {
     dateiwahl->add_context_handler(Flu_File_Chooser::ENTRY_FILE, "Q60", _("Messdatei öffnen"), dateiwahl_cb, NULL);
     dateiwahl->add_context_handler(Flu_File_Chooser::ENTRY_FILE, "LAB", _("Messdatei öffnen"), dateiwahl_cb, NULL);
     dateiwahl->add_context_handler(Flu_File_Chooser::ENTRY_FILE, "CMYK", _("Messdatei öffnen"), dateiwahl_cb, NULL);
+    dateiwahl->add_context_handler(Flu_File_Chooser::ENTRY_FILE, "DLY", _("Messdatei öffnen"), dateiwahl_cb, NULL);
+    dateiwahl->add_context_handler(Flu_File_Chooser::ENTRY_FILE, "nCIE", _("Messdatei öffnen"), dateiwahl_cb, NULL);
   \#else
     const char* ptr = NULL;
     if (profile.size())
@@ -425,7 +432,7 @@ class ICCfltkBetrachter {} {
     }
     Fl_Window vcgt {
       label {Grafikkarten Gamma Tabellen} open
-      xywh {731 314 370 390} type Double labeltype NORMAL_LABEL resizable
+      xywh {648 314 370 390} type Double resizable
       code0 {o->hide();} non_modal visible
     } {
       Fl_Group {} {open
@@ -450,7 +457,7 @@ class ICCfltkBetrachter {} {
     }
     Fl_Window details {
       label {ICC Details} open
-      xywh {616 469 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
+      xywh {616 222 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
     } {
       Fl_Group {} {open
         xywh {0 0 385 520}

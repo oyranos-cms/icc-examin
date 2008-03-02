@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2005  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -758,10 +758,12 @@ suchenErsetzen          (std::string &text,
   //std::string::size_type ende;
   while ((pos = text.find (suchen, pos)) != std::string::npos) {
     text.replace (pos, suchen.size(), ersetzen);
+    pos = pos + suchen.size();
     //DBG_NUM_S( suchen <<" ersetzt" )
   }
 
-  return pos;
+  if( pos == std::string::npos) return pos;
+  else return pos - suchen.size();
 }
 
 std::string::size_type
@@ -816,13 +818,15 @@ sucheWort         ( std::string            &text,
   { // vielleicht etwas viel Aufwand ...
     if( (pos = text.find( wort, pos )) != std::string::npos )
     { // Bestätige das Ende des Wortes
+      //DBG_NUM_V( (pos + wort.size()) <<" "<< text.size() )
       if( (text[pos + wort.size()] == 0    ||  // NUL
            text[pos + wort.size()] == ' '  ||  // SP
            text[pos + wort.size()] == '\t' ||  // HT
            text[pos + wort.size()] == '\n' ||  // LF
            text[pos + wort.size()] == '\v' ||  // VT
            text[pos + wort.size()] == '\f' ||  // FF
-           text[pos + wort.size()] == '\r'  ) )// CR
+           text[pos + wort.size()] == '\r' ||  // CR
+           (pos + wort.size()) == text.size() ) )
       {
         pos_ = pos;
         fertig = true;

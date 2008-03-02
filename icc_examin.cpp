@@ -56,6 +56,7 @@ ICCexamin::ICCexamin ()
   _zeig_histogram = 0;
   _gl_ansicht = -1;
   statlabel = "";
+  status_ = false;
   DBG_PROG_ENDE
 }
 
@@ -124,6 +125,9 @@ ICCexamin::start (int argc, char** argv)
       }
 
   Fl::add_handler(abbrechen);
+
+  // zur Benutzung freigeben
+  status_ = 1;
 
   icc_betrachter->run();
 

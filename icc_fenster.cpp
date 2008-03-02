@@ -42,15 +42,21 @@ dateiwahl_cb (const char *dateiname, int typ, void *arg)
 
   // kein Profile Dialog
   if (strstr( dateiwahl->pattern(), "*.ic*") == 0 &&
+      // potentielle Messdaten
       strstr( dateiwahl->pattern(), "*.txt") == 0 &&
       strstr( dateiwahl->pattern(), "*.TXT") == 0 &&
       strstr( dateiwahl->pattern(), "*.it8") == 0 &&
       strstr( dateiwahl->pattern(), "*.IT8") == 0 &&
       strstr( dateiwahl->pattern(), "*.CMYK") == 0 &&
+      strstr( dateiwahl->pattern(), "*.DLY") == 0 &&
+      strstr( dateiwahl->pattern(), "*.nCIE") == 0 &&
+      strstr( dateiwahl->pattern(), "*.oRPT") == 0 &&
       strstr( dateiwahl->pattern(), "*.LAB") == 0 &&
-      strstr( dateiwahl->pattern(), "*.IC*") == 0 ) { DBG_PROG
+      strstr( dateiwahl->pattern(), "*.Q60") == 0 &&
+      strstr( dateiwahl->pattern(), "*.IC*") == 0 )
+  {
     DBG_PROG_ENDE
-    return;
+    //return;
   }
 
     if (dateiname)

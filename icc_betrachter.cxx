@@ -129,24 +129,28 @@ TagDrawings::TagDrawings(int X,int Y,int W,int H) : Fl_Widget(X,Y,W,H), X(X), Y(
 void TagDrawings::draw() {
   DBG_PROG_START
   // Kurven oder Punkte malen
-  DBG_PROG_S( icc_examin->kurven[id].size() <<" "<< icc_examin->punkte[id].size() )
+  if (icc_examin->laeuft())
+  {
 
-  //DBG_PROG_V( wiederholen )
+    DBG_PROG_S( icc_examin->kurven[id].size() <<" "<< icc_examin->punkte[id].size() )
 
-  if (icc_examin->kurven[id].size())
-  { DBG_PROG
-    wiederholen = false;
-    drawKurve (id, x(),y(),w(),h());
-  } else if (icc_examin->punkte[id].size()) {
-    if (wiederholen)
-    { drawCieShoe(id, x(),y(),w(),h(),false);
-      Fl::add_timeout( 1.2, (void(*)(void*))dHaendler ,(void*)this);
-    } else {
-      drawCieShoe(id, x(),y(),w(),h(),true);
+    //DBG_PROG_V( wiederholen )
+
+    if (icc_examin->kurven[id].size())
+    { DBG_PROG
+      wiederholen = false;
+      drawKurve (id, x(),y(),w(),h());
+    } else if (icc_examin->punkte[id].size()) {
+      if (wiederholen)
+      { drawCieShoe(id, x(),y(),w(),h(),false);
+        Fl::add_timeout( 1.2, (void(*)(void*))dHaendler ,(void*)this);
+      } else {
+        drawCieShoe(id, x(),y(),w(),h(),true);
+      }
+      wiederholen = true;
     }
-    wiederholen = true;
-  }
-  DBG_PROG
+  } else
+    WARN_S( __func__ << " zu früh benutzt!" )
   DBG_PROG_ENDE
 }
 
@@ -488,6 +492,8 @@ Fl_Double_Window* ICCfltkBetrachter::init() {
     dateiwahl->add_context_handler(Flu_File_Chooser::ENTRY_FILE, "Q60", _("Messdatei öffnen"), dateiwahl_cb, NULL);
     dateiwahl->add_context_handler(Flu_File_Chooser::ENTRY_FILE, "LAB", _("Messdatei öffnen"), dateiwahl_cb, NULL);
     dateiwahl->add_context_handler(Flu_File_Chooser::ENTRY_FILE, "CMYK", _("Messdatei öffnen"), dateiwahl_cb, NULL);
+    dateiwahl->add_context_handler(Flu_File_Chooser::ENTRY_FILE, "DLY", _("Messdatei öffnen"), dateiwahl_cb, NULL);
+    dateiwahl->add_context_handler(Flu_File_Chooser::ENTRY_FILE, "nCIE", _("Messdatei öffnen"), dateiwahl_cb, NULL);
   #else
     const char* ptr = NULL;
     if (profile.size())
@@ -515,7 +521,6 @@ Fl_Double_Window* ICCfltkBetrachter::init() {
   }
   { Fl_Double_Window* o = vcgt = new Fl_Double_Window(370, 390, "Grafikkarten Gamma Tabellen");
     w = o;
-    o->labeltype(FL_NORMAL_LABEL);
     o->user_data((void*)(this));
     { Fl_Group* o = new Fl_Group(0, 0, 370, 390);
       { TagDrawings* o = vcgt_viewer = new TagDrawings(0, 0, 370, 360);

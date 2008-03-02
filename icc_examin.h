@@ -68,6 +68,9 @@ class ICCexamin
     int  _item,  _mft_item;
     int  _zeig_prueftabelle,
          _zeig_histogram;
+    int  status_;
+  public:
+    int  laeuft () { return status_; }          // kann bei >1 genutzt werden
 
   public:
     ICCfltkBetrachter* icc_betrachter;
