@@ -226,7 +226,7 @@ ICCheader::print()
 { DBG_PROG_START
   std::string s = _("Dateikopf ungültig");
   if (valid)
-    s = _("    Kopf        icHeader      128 Dateikopf");
+    s = _("    Kopf        Dateikopf     128 Dateikopf");
   DBG_PROG_ENDE
   return s;
 }
@@ -1334,6 +1334,7 @@ bool
 ICCprofile::hasTagName            (std::string name)
 { DBG_PROG_START
   if (!tags.size()) { DBG_PROG_ENDE
+    DBG_PROG_ENDE
     return false;
   } DBG_PROG
 
@@ -1344,6 +1345,7 @@ ICCprofile::hasTagName            (std::string name)
       #ifdef DEBUG_ICCPROFILE
       cout << (*it).getTagName() << " gefunden "; DBG
       #endif
+      DBG_PROG_ENDE
       return true;
     }
     item++;

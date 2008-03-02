@@ -36,6 +36,8 @@ decl {\#include <FL/Fl_File_Chooser.H>
 \#include <FL/Fl_PNM_Image.H>} {public
 } 
 
+decl {Fl_File_Chooser *dateiwahl;} {} 
+
 decl {char *statlabel;
  std::string filename_alt;
  bool setTitleUrl = true;
@@ -74,6 +76,26 @@ decl {ICCprofile profile;} {public
 
 decl {/* */ int level_PROG = -1;} {} 
 
+Function {dateiwahl_cb(Fl_File_Chooser *f,void *data)} {open private
+} {
+  code {DBG_PROG_START
+
+  const char *filename;
+
+  DBG_NUM_V( data )
+  filename = f->value();
+  
+
+  if (f->count() && f->value(0) && dateiwahl->preview()) {
+    filename_alt = f->value(0);
+
+    DBG_NUM_V( filename )
+    open(false);
+  }
+
+  DBG_PROG_ENDE} {}
+} 
+
 Function {} {open C return_type int
 } {
   code DBG_PROG_START {}
@@ -81,8 +103,8 @@ Function {} {open C return_type int
   fullscreen = false;
   inspekt_topline = 0;} {}
   Fl_Window ueber {
-    label {Über ICC examin} open
-    xywh {570 139 366 241} type Double resizable
+    label {Über ICC examin} open selected
+    xywh {575 160 366 241} type Double resizable
     code0 {o->hide();} non_modal visible
   } {
     Fl_Group {} {open
@@ -93,14 +115,14 @@ Function {} {open C return_type int
       }
       Fl_Button ja {
         label Gut
-        callback {ueber->hide();} selected
+        callback {ueber->hide();}
         xywh {130 210 110 25}
       }
     }
   }
   Fl_Window details {
     label {ICC Details} open
-    xywh {837 346 385 520} type Double box NO_BOX color 53
+    xywh {842 367 385 520} type Double box NO_BOX color 53
     code1 {DBG_PROG
     if (argc>1) {
 
@@ -305,6 +327,11 @@ ueber_html->value(getUeberHtml().c_str());}
   w->show();
   Fl::scheme(NULL);
   Fl_File_Icon::load_system_icons();
+
+  dateiwahl = new Fl_File_Chooser(filename_alt.c_str(), "ICC Farbprofile (*.[I,i][C,c][M,m,C,c])", Fl_File_Chooser::SINGLE, "Wähle ICC Profil?");
+  dateiwahl->callback(dateiwahl_cb);
+  dateiwahl->preview_label = _("Vorschau");
+
   if (argc > 1)
     open (false);} {}
   code DBG_PROG_ENDE {}
@@ -320,9 +347,19 @@ Function {open(int interaktiv)} {open return_type {std::string}
   DBG_PROG
   load_progress->show ();    load_progress->value (0.0);
 
-  if (interaktiv)
-    filename=fl_file_chooser("Wähle ICC Profil?", "ICC Farbprofile (*.[I,i][C,c][M,m,C,c])", filename_alt.c_str());
-  DBG_PROG_S( filename_alt << "|" << filename)
+  if (interaktiv) {
+    dateiwahl->show(); //filename=fl_file_chooser("Wähle ICC Profil?", "ICC Farbprofile (*.[I,i][C,c][M,m,C,c])", filename_alt.c_str());
+    DBG_PROG_S( filename_alt << "|" << filename)
+
+    //while (dateiwahl->visible())
+      //Fl::wait();
+
+    DBG_NUM_V( dateiwahl->count() )
+    if (dateiwahl->count() && dateiwahl->value(0)) {
+      DBG_NUM_V( dateiwahl->value(0) )
+      filename = dateiwahl->value(0);
+    }
+  }
 
   if (filename == "") {
     load_progress->hide ();
