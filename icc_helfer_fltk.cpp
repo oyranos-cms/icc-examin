@@ -28,10 +28,10 @@
 // Date:      04. 05. 2004
 
 #if 0
-  #ifndef DEBUG
-   #define DEBUG
-  #endif
-  #define DEBUG_ICCFUNKT
+# ifndef DEBUG
+#  define DEBUG
+# endif
+# define DEBUG_ICCFUNKT
 #endif
 
 #include "icc_utils.h"
@@ -44,7 +44,7 @@ int*
 getChannel_flColours (icColorSpaceSignature color)
 {
   static int flFarben[16];
-  #define nFARBEN(n) for (int i = 0; i < n; i++) \
+# define nFARBEN(n) for (int i = 0; i < n; i++) \
                        { \
                          flFarben[i] = 9 + i; \
                        }
@@ -115,7 +115,7 @@ getChannel_flColours (icColorSpaceSignature color)
 #undef nFARBEN
 
 void
-zeigFltkEvents(int event)
+dbgFltkEvents(int event)
 {
   switch(event) {
   case FL_NO_EVENT: DBG_PROG_S( "FL_NO_EVENT" ) break;

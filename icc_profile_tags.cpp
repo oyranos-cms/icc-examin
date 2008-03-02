@@ -28,10 +28,10 @@
 // Date:      04. 05. 2004
 
 #if 0
-  #ifndef DEBUG
-   #define DEBUG
-  #endif
-  #define DEBUG_ICCTAG
+# ifndef DEBUG
+#  define DEBUG
+# endif
+# define DEBUG_ICCTAG
 #endif
 
 #include "icc_profile_tags.h"
@@ -191,10 +191,10 @@ ICCtag::load                        ( ICCprofile *profil,
   memcpy ( data_ , data , size_ );
   DBG_MEM_V((int*)data_)
 
-  #ifdef DEBUG_ICCTAG_
+# ifdef DEBUG_ICCTAG_
   char* text = data_;
   DBG_MEM_S( _sig << "=" << tag->sig << " offset " << icValue(tag->offset) << " size " << size_ << " nächster tag " << size_ + icValue(tag->offset) << " " << text << " " )
-  #endif
+# endif
   DBG_MEM_ENDE
 }
 
@@ -283,35 +283,35 @@ ICCtag::getText                     (void)
     int count = icValue(*(icUInt16Number*)&data_[8]);
     if (count == 0)
       count = 3;
-    #ifdef DEBUG_ICCTAG
+#   ifdef DEBUG_ICCTAG
     DBG_NUM_S( count )
-    #endif
+#   endif
     for (int i = 0; i < count ; i++) { // Table 35 -- chromaticityType encoding
       std::stringstream s;
       s << _("Channel") << " "<< i;
       texte.push_back( s.str() );
       texte.push_back( "chrm" );
-      #ifdef DEBUG_ICCTAG
+#     ifdef DEBUG_ICCTAG
       DBG_NUM_S(  cout << s.str() )
-      #endif
+#     endif
     }
 
   } else  if (text == "text"
            || text == "cprt?" ) { // text
 
     text = ""; DBG_PROG
-  #if 1
+# if 1
     char* txt = (char*)calloc (size_-8, sizeof(char));
     memcpy (txt, &data_[8], size_ - 8);
     char* pos = 0;
-    #ifdef DEBUG_ICCTAG
+#   ifdef DEBUG_ICCTAG
     DBG_NUM_S ((int)strchr(txt, 13))
-    #endif
+#   endif
     while (strchr(txt, 13) > 0) { // \r 013 0x0d
       pos = strchr(txt, 13);
-      #ifdef DEBUG_ICCTAG
+#     ifdef DEBUG_ICCTAG
       //cout << (int)pos << " "; DBG
-      #endif
+#     endif
       if (pos > 0) {
         if (*(pos+1) == '\n')
           *pos = ' ';
@@ -322,23 +322,23 @@ ICCtag::getText                     (void)
     };
     text = txt;
     free (txt);
-  #else
+# else
     text.append (&data_[8], size_ - 8);
     int pos = 0;
-    #ifdef DEBUG_ICCTAG
+#   ifdef DEBUG_ICCTAG
     DEB_S( (int)text.find('\r') )
-    #endif
+#   endif
     while ((int)text.find('\r') > 0) { // \r 013 0x0d
       pos = (int)text.find('\r');
-      #ifdef DEBUG_ICCTAG
+#     ifdef DEBUG_ICCTAG
       DBG_NUM_V( pos )
-      #endif
+#     endif
       if (pos > 0)
         //text.erase (pos);
         text.replace (pos, 1, ' ', 1); 
       count++;
     };
-  #endif
+# endif
     texte.push_back( text );
 
   } else if ( text == "mluc" ) {
@@ -468,9 +468,9 @@ ICCtag::getText                     (void)
     char c[5]; sprintf (c, "%s", "mluc"); printf ("%d\n",icValue(*(int*)c));
   }
     
-  #ifdef DEBUG_ICCTAG
+# ifdef DEBUG_ICCTAG
   DBG_NUM_S( count << " Ersetzungen " << "|" << getTypName() << "|" << text )
-  #endif
+# endif
 
   DBG_PROG_ENDE
   return texte;
@@ -486,9 +486,9 @@ ICCtag::getDescription              (void)
 
   text.append ((const char*)(data_+12), icValue(count));
   texte.push_back (text);
-  #ifdef DEBUG_ICCTAG
+# ifdef DEBUG_ICCTAG
   DBG_NUM_S ( &data_[12] << "|" << "|" << text )
-  #endif
+# endif
   DBG_PROG_ENDE
   return texte;
 }
@@ -503,9 +503,9 @@ ICCtag::getCIEXYZ                                 (void)
     int count = icValue(*(icUInt16Number*)&data_[8]);
     if (count == 0)
       count = 3;
-    #ifdef DEBUG_ICCTAG
+#   ifdef DEBUG_ICCTAG
     DBG_NUM_S( count )
-    #endif
+#   endif
     for (int i = 0; i < count ; i++) { // Table 35 -- chromaticityType encoding
       // TODO lcms braucht einen 16 Byte Offset (statt 12 Byte)
       icU16Fixed16Number* channel = (icU16Fixed16Number*)&data_[12+(4*i)];
@@ -515,9 +515,9 @@ ICCtag::getCIEXYZ                                 (void)
       punkte.push_back( xyz[0] );
       punkte.push_back( xyz[1] );
       punkte.push_back( xyz[2] );
-      #ifdef DEBUG_ICCTAG
+#     ifdef DEBUG_ICCTAG
       DBG_NUM_S( xyz[0] << ", " << xyz[1] << ", " << xyz[2] )
-      #endif
+#     endif
     }
   } else if (base->sig == (icTagTypeSignature)icValue( icSigXYZType )) {
     icXYZType *daten = (icXYZType*) &data_[0];
@@ -563,9 +563,9 @@ ICCtag::getCurves                                 (MftChain typ)
     inputEnt = icValue(lut16->inputEnt);
     outputEnt = icValue(lut16->outputEnt);
     int feldPunkte = (int)pow((double)clutPoints, inputChan);
-    #ifdef DEBUG_ICCTAG
+#   ifdef DEBUG_ICCTAG
     DBG_NUM_S( feldPunkte << " Feldpunkte " << clutPoints << " clutPoints" )
-    #endif
+#   endif
     int start = 52,
         byte  = 2;
     double div   = 65536.0;
@@ -577,20 +577,20 @@ ICCtag::getCurves                                 (MftChain typ)
     case CURVE_IN: DBG_PROG
          for (int j = 0; j < inputChan; j++)
          { kurve.clear();
-           #ifdef DEBUG_ICCTAG
+#          ifdef DEBUG_ICCTAG
            DBG_NUM_S( kurve.size() << " Start" )
-           #endif
+#          endif
            for (int i = inputEnt * j; i < inputEnt * (j+1); i++) {
              kurve.push_back( (double)icValue (*(icUInt16Number*)&data_[start + byte*i])
                               / div );
-             #ifdef DEBUG_ICCTAG
+#            ifdef DEBUG_ICCTAG
              DBG_NUM_S( icValue (*(icUInt16Number*)&data_[start + byte*i]) )
-             #endif
+#            endif
            }
            kurven.push_back (kurve);
-           #ifdef DEBUG_ICCTAG
+#          ifdef DEBUG_ICCTAG
            DBG_NUM_S( kurve.size() << " Einträge" )
-           #endif
+#          endif
          } DBG_PROG
          break;
     case TABLE_IN:
@@ -609,9 +609,9 @@ ICCtag::getCurves                                 (MftChain typ)
              kurve.push_back( (double)icValue (*(icUInt16Number*)&data_[start + byte*i])
                               / div );
            kurven.push_back (kurve);
-           #ifdef DEBUG_ICCTAG
+#          ifdef DEBUG_ICCTAG
            DBG_NUM_S( kurve.size() << "|" << outputEnt << " Einträge" )
-           #endif
+#          endif
          }
          break;
     } 
@@ -633,16 +633,16 @@ ICCtag::getCurves                                 (MftChain typ)
     case CURVE_IN:
          for (int j = 0; j < inputChan; j++)
          { kurve.clear();
-           #ifdef DEBUG_ICCTAG
+#          ifdef DEBUG_ICCTAG
            DBG_NUM_S( kurve.size() << " Start" )
-           #endif
+#          endif
            for (int i = inputEnt * j; i < inputEnt * (j+1); i++)
              kurve.push_back( (double) *(icUInt8Number*)&data_[start + byte*i]
                               / div );
            kurven.push_back (kurve);
-           #ifdef DEBUG_ICCTAG
+#          ifdef DEBUG_ICCTAG
            DBG_NUM_S( kurve.size() << " Einträge" )
-           #endif
+#          endif
          }
          break;
     case TABLE_IN:
@@ -657,16 +657,16 @@ ICCtag::getCurves                                 (MftChain typ)
          start += (inputChan * inputEnt + feldPunkte * outputChan) * byte;
          for (int j = 0; j < outputChan; j++)
          { kurve.clear();
-           #ifdef DEBUG_ICCTAG
+#          ifdef DEBUG_ICCTAG
            DBG_NUM_S( kurve.size() << " Start" )
-           #endif
+#          endif
            for (int i = outputEnt * j; i < outputEnt * (j+1); i++)
              kurve.push_back( (double) *(icUInt8Number*)&data_[start + byte*i]
                               / div );
            kurven.push_back (kurve);
-           #ifdef DEBUG_ICCTAG
+#          ifdef DEBUG_ICCTAG
            DBG_NUM_S( kurve.size() << " Einträge" )
-           #endif
+#          endif
          }
          break;
     } 
@@ -676,9 +676,9 @@ ICCtag::getCurves                                 (MftChain typ)
     icUInt16Number segmente = icValue(*(icUInt16Number*) &data_[14]);
     icUInt16Number byte     = icValue(*(icUInt16Number*) &data_[16]);
     
-    #ifdef DEBUG_ICCTAG
+#   ifdef DEBUG_ICCTAG
     DBG_NUM_S( data_ << " parametrisch " << parametrisch << " nkurven " << nkurven << " segmente " << segmente << " byte " << byte )
-    #endif
+#   endif
 
     if (parametrisch) { //icU16Fixed16Number
       double r_gamma = 1.0/icValue(*(icUInt32Number*)&data_[12])*65536.0;
@@ -705,9 +705,9 @@ ICCtag::getCurves                                 (MftChain typ)
       double div   = 65536.0;
            for (int j = 0; j < nkurven; j++)
            { kurve.clear();
-             #ifdef DEBUG_ICCTAG
+#            ifdef DEBUG_ICCTAG
              DBG_NUM_S( kurve.size() << " Start" )
-             #endif
+#            endif
              for (int i = segmente * j; i < segmente * (j+1); i++)
                kurve.push_back( (double) icValue (*(icUInt16Number*)&data_[start + byte*i])
                                 / div );
@@ -719,9 +719,9 @@ ICCtag::getCurves                                 (MftChain typ)
     }
   }
 
-  #ifdef DEBUG_ICCTAG
+# ifdef DEBUG_ICCTAG
   DBG_NUM_V( kurven.size() )
-  #endif
+# endif
   DBG_PROG_ENDE
   return kurven;
 }
@@ -740,10 +740,10 @@ ICCtag::getTable                                 (MftChain typ)
     clutPoints = (int)lut16->clutPoints;
     inputEnt = icValue(lut16->inputEnt);
     outputEnt = icValue(lut16->outputEnt);
-    #ifdef DEBUG_ICCTAG
+#   ifdef DEBUG_ICCTAG
     int feldPunkte = (int)pow((double)clutPoints, inputChan);
     DBG_NUM_S( feldPunkte << " Feldpunkte " << clutPoints << " clutPoints" )
-    #endif
+#   endif
     int start = 52,
         byte  = 2;
     double div   = 65536.0;
@@ -793,10 +793,10 @@ ICCtag::getTable                                 (MftChain typ)
     inputChan = (int)lut8->inputChan;
     outputChan = (int)lut8->outputChan;
     clutPoints = (int)lut8->clutPoints;
-    #ifdef DEBUG_ICCTAG
+#   ifdef DEBUG_ICCTAG
     int feldPunkte = (int)pow((double)clutPoints, inputChan);
     DBG_NUM_S( feldPunkte << " Feldpunkte " << clutPoints << " clutPoints" )
-    #endif
+#   endif
     int start = 48,
         byte  = 1;
     double div= 255.0;
@@ -841,9 +841,9 @@ ICCtag::getTable                                 (MftChain typ)
     } 
   }
 
-  #ifdef DEBUG_ICCTAG
+# ifdef DEBUG_ICCTAG
   DBG_NUM_S( Tabelle.size() )
-  #endif
+# endif
   DBG_PROG_ENDE
   return Tabelle;
 }
@@ -936,9 +936,9 @@ ICCtag::getNumbers                                 (MftChain typ)
     }
   }
 
-  #ifdef DEBUG_ICCTAG
+# ifdef DEBUG_ICCTAG
   DBG_NUM_S( nummern.size() )
-  #endif
+# endif
   DBG_PROG_ENDE
   return nummern;
 }

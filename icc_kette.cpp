@@ -33,10 +33,10 @@
 
 
 #if USE_THREADS
-  #include "threads.h"
-  #if HAVE_FLTK
-    #include <FL/Fl.H>
-  #endif
+# include "threads.h"
+# if HAVE_FLTK
+#   include <FL/Fl.H>
+# endif
 #endif
 
 ICCkette profile;
@@ -51,7 +51,7 @@ void
 ICCkette::init ()
 { DBG_PROG_START
   aktuelles_profil_ = -1;
-  #if USE_THREADS
+# if USE_THREADS
   // Es gibt drei threads.
   // Der erste Neben-thread started eine while Schleife zum Beobachten
   // der göffneten Dateien.
@@ -137,7 +137,7 @@ ICCkette::einfuegen (const Speicher & prof, int pos)
   {
     ICCmeasurement m;
     m.load( profile.profil() , (const char*) prof, prof.size() );
-    DBG_V( profile.profil()->hasMeasurement() )
+    DBG_PROG_V( profile.profil()->hasMeasurement() )
   }
   DBG_PROG_V( profile_[pos].size() )
   DBG_PROG_V( profile_[pos].filename() )

@@ -56,11 +56,11 @@
 
 
 #ifdef DEBUG_DRAW
-  #define DBG_prog_start DBG_PROG_START
-  #define DBG_prog_ende DBG_PROG_ENDE
+# define DBG_prog_start DBG_PROG_START
+# define DBG_prog_ende DBG_PROG_ENDE
 #else
-  #define DBG_prog_start
-  #define DBG_prog_ende
+# define DBG_prog_start
+# define DBG_prog_ende
 #endif
 
 
@@ -338,8 +338,8 @@ TagDrawings::drawCieShoe_ ( int repeated)
   // Verdecke den Rest des cie_xy - scheußlich umständlich
   //fl_push_no_clip();
   fl_color(BG);
-  #define x_xyY cieXYZ[i][0]/(cieXYZ[i][0]+cieXYZ[i][1]+cieXYZ[i][2])
-  #define y_xyY cieXYZ[i][1]/(cieXYZ[i][0]+cieXYZ[i][1]+cieXYZ[i][2])
+# define x_xyY cieXYZ[i][0]/(cieXYZ[i][0]+cieXYZ[i][1]+cieXYZ[i][2])
+# define y_xyY cieXYZ[i][1]/(cieXYZ[i][0]+cieXYZ[i][1]+cieXYZ[i][2])
 
 
   fl_begin_polygon();
@@ -349,9 +349,9 @@ TagDrawings::drawCieShoe_ ( int repeated)
     fl_vertex( xNachBild(x_xyY), yNachBild(y_xyY) );
   fl_vertex (x(), yNachBild(.25));
   fl_end_polygon();
-  #ifdef DEBUG_DRAW
+# ifdef DEBUG_DRAW
   fl_color(FL_WHITE);
-  #endif
+# endif
   fl_begin_polygon();
   fl_vertex (x(), yNachBild(.25));
   for (int i=(int)(nano_max*.38+0.5) ; i<=(int)(nano_max*.45+0.5); i++)
@@ -359,9 +359,9 @@ TagDrawings::drawCieShoe_ ( int repeated)
   fl_vertex (xNachBild(.065), y());
   fl_vertex (x(), y());
   fl_end_polygon();
-  #ifdef DEBUG_DRAW
+# ifdef DEBUG_DRAW
   fl_color(FL_YELLOW);
-  #endif
+# endif
   fl_begin_polygon();
   {
   int i = (int)(nano_max*.457+0.5)-2;
@@ -382,27 +382,27 @@ TagDrawings::drawCieShoe_ ( int repeated)
   fl_vertex (xNachBild(.1), y());
   }
   fl_end_polygon();
-  #ifdef DEBUG_DRAW
+# ifdef DEBUG_DRAW
   fl_color(FL_BLUE);
-  #endif
+# endif
   fl_begin_polygon();
   fl_vertex (xNachBild(.1), y());
   for (int i=(int)(nano_max*.457+0.5) ; i<=(int)(nano_max*.48+0.5); i++)
     fl_vertex( xNachBild(x_xyY), yNachBild(y_xyY) );
   fl_vertex (xNachBild(.2), y());
   fl_end_polygon();
-  #ifdef DEBUG_DRAW
+# ifdef DEBUG_DRAW
   fl_color(FL_RED);
-  #endif
+# endif
   fl_begin_polygon();
   fl_vertex (x()+w(), y());
   fl_vertex (xNachBild(0.2), y());
   for (int i=(int)(nano_max*.48+0.5); i<=(int)(nano_max*.6+0.5); i++)
     fl_vertex( xNachBild(x_xyY), yNachBild(y_xyY) );
   fl_end_polygon();
-  #ifdef DEBUG_DRAW
+# ifdef DEBUG_DRAW
   fl_color(FL_GREEN);
-  #endif
+# endif
   fl_begin_polygon();
   fl_vertex (x()+w(), y());
   for (int i=(int)(nano_max*.6+0.5); i<=(int)(nano_max+0.5) ; i++)
@@ -413,8 +413,8 @@ TagDrawings::drawCieShoe_ ( int repeated)
   fl_vertex (x()+w(), y()+h());
   fl_end_polygon();
 
-  #undef x_xyY
-  #undef y_xyY
+# undef x_xyY
+# undef y_xyY
 
   fl_pop_clip();
 
@@ -436,9 +436,9 @@ TagDrawings::drawCieShoe_ ( int repeated)
         double* xyY = XYZto_xyY ( _XYZ );
         pos.push_back ( xNachBild (xyY[0]) );
         pos.push_back ( yNachBild (xyY[1]) );
-        #ifdef DEBUG_DRAW
+#       ifdef DEBUG_DRAW
         cout << texte[i] << " " << punkte.size(); DBG_PROG
-        #endif
+#       endif
     }
 
     if (texte[0] != "wtpt") { // markiert den Weisspunkt nur
@@ -455,30 +455,30 @@ TagDrawings::drawCieShoe_ ( int repeated)
         for (int k = 0; k <= 3; k+=2) {
             fl_line( (int)(pos[k+0]), (int)(pos[k+1]),
                      (int)(pos[k+2]), (int)(pos[k+3]));
-            #ifdef DEBUG_DRAW
+#           ifdef DEBUG_DRAW
             cout << "Linie "; DBG_PROG
-            #endif
+#           endif
         }
         fl_line( (int)(pos[0]), (int)(pos[1]),
                  (int)(pos[4]), (int)(pos[5]));
-        #ifdef DEBUG_DRAW
+#       ifdef DEBUG_DRAW
         cout << "Linie "; DBG_PROG
-        #endif
+#       endif
     }
 
     int j = 0;
     for (unsigned int i = 0; i < texte.size(); i++) {
-        #ifdef DEBUG_DRAW
+#       ifdef DEBUG_DRAW
         cout << punkte[j] << " ";
-        #endif
+#       endif
         XYZ.X = punkte[j++]; 
-        #ifdef DEBUG_DRAW
+#       ifdef DEBUG_DRAW
         cout << punkte[j] << " ";
-        #endif
+#       endif
         XYZ.Y = punkte[j++];
-        #ifdef DEBUG_DRAW
+#       ifdef DEBUG_DRAW
         cout << punkte[j] << " " << texte[i] << " " << punkte.size(); DBG_PROG
-        #endif
+#       endif
         XYZ.Z = punkte[j++]; //1 - ( punkte[i][0] +  punkte[i][1] );
 
         // Farbe für Darstellung konvertieren (lcms)
@@ -810,9 +810,9 @@ TagDrawings::dHaendler(void* o)
   {
     ((TagDrawings*)o)->ruhigNeuzeichnen();
 
-    #ifdef DEBUG
+#   ifdef DEBUG
     DBG_PROG_V( ((TagDrawings*)o)->wiederholen )
-    #endif
+#   endif
   }
   DBG_PROG_ENDE
 }

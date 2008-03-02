@@ -40,9 +40,9 @@
 #include <cmath>
 
 #ifdef DEBUG_ICCFORMELN
-  #define DBG_v(x) DBG_NUM_V(x)
+# define DBG_v(x) DBG_NUM_V(x)
 #else
-  #define DBG_v(x)
+# define DBG_v(x)
 #endif
 
 double
@@ -74,8 +74,8 @@ dE2000 (const Lab & Lab1, const Lab & Lab2,
    *  in ciede2000noteCRNA.pdf
    */
 
-  #define nachRAD(grad) (M_PI*(grad)/180.0)
-  #define QUAD(num) (num)*(num)
+# define nachRAD(grad) (M_PI*(grad)/180.0)
+# define QUAD(num) (num)*(num)
 
   double Cs1ab = sqrt( QUAD(Lab1.a) + QUAD(Lab1.b)); DBG_v (Cs1ab)
   double Cs2ab = sqrt( QUAD(Lab2.a) + QUAD(Lab2.b)); DBG_v (Cs2ab)       // (2)
@@ -106,7 +106,7 @@ dE2000 (const Lab & Lab1, const Lab & Lab2,
   double aL    = (Lab1.L + Lab2.L) / 2.0;          DBG_v (aL)            // (12)
   double aC    = (C1 + C2) / 2.0;                   DBG_v (aC)           // (13)
   double mean_h= (h1 + h2); // (C1*C2 == 0.0)
-  #if 1
+# if 1
   if (C1*C2 != 0.0) {
     if (fabs(h1 - h2) <= 180.0) {
          mean_h= (h1 + h2) / 2.0; DBG_v (mean_h)
@@ -118,7 +118,7 @@ dE2000 (const Lab & Lab1, const Lab & Lab2,
       }
     }
   } DBG_v (mean_h)                                                       // (14)
-  #else
+# else
   if ( fabs(h1-h2) > 180.0 ) {
     mean_h = MAX(h1,h2) + (360.0 - fabs ( h1-h2 )) / 2.0; DBG_v (mean_h)
   } else {
@@ -126,7 +126,7 @@ dE2000 (const Lab & Lab1, const Lab & Lab2,
   }
   while (mean_h > 360.0)
     mean_h = mean_h - 360.0; DBG_v (mean_h)                              // (14)
-  #endif
+# endif
   double T     = 1.0 - 0.17 * cos (nachRAD(mean_h - 30.0))
                      + 0.24 * cos (nachRAD(2.0 * mean_h))
                      + 0.32 * cos (nachRAD(3.0 * mean_h + 6.0))

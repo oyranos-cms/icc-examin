@@ -228,8 +228,10 @@ DOKU = \
 	COPYING \
 	BUGS \
 	AUTHORS \
+	icc_examin.desktop \
+	icc_examin.png \
 	icc_examin.spec \
-	icc_examin.desktop
+	icc.xml
 FLUID = \
 	icc_betrachter.fl \
 	fl_oyranos.fl
@@ -352,14 +354,18 @@ potfile:
 
 $(POT_FILE):	potfile
 
-install:	static
+install:
 	echo Installing ...
 	mkdir -p $(DESTDIR)$(bindir)
 	$(INSTALL) -m 755 $(TARGET) $(DESTDIR)$(bindir)
 	mkdir -p $(DESTDIR)$(datadir)/fonts/
-	$(INSTALL) -m 644 $(FONT) $(DESTDIR)$(datadir)/fonts/
+	$(INSTALL) -m 644 $(FONT) $(DESTDIR)$(datadir)/fonts/$(FONT)
 	mkdir -p $(DESTDIR)$(datadir)/applications/
 	$(INSTALL) -m 644 icc_examin.desktop $(DESTDIR)$(datadir)/applications/icc_examin.desktop
+	mkdir -p $(DESTDIR)$(datadir)/mime/packages/
+	$(INSTALL) -m 644 icc.xml $(DESTDIR)$(datadir)/mime/packages/icc.xml
+	mkdir -p $(DESTDIR)$(datadir)/pixmaps/
+	$(INSTALL) -m 644 icc_examin.png $(DESTDIR)$(datadir)/pixmaps/icc_examin.png
 	echo  Linguas ...
 	for ling in $(LINGUAS); do \
 	  echo "update po/$${ling}.gmo ..."; \
@@ -374,6 +380,9 @@ install:	static
 uninstall:
 	echo Uninstalling ...
 	$(RM) $(DESTDIR)$(bindir)/$(TARGET)
+	$(RM) $(DESTDIR)$(datadir)/applications/icc_examin.desktop
+	$(RM) $(DESTDIR)$(datadir)/mime/packages/icc.xml
+	$(RM) $(DESTDIR)$(datadir)/pixmaps/icc_examin.png
 	$(RM) $(DESTDIR)$(datadir)/fonts/$(FONT)
 	for ling in $(LINGUAS); do \
 	  $(RM) $(DESTDIR)$(datadir)/locale/$${ling}/LC_MESSAGES/$(TARGET).mo; \

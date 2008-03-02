@@ -113,7 +113,8 @@ ICCexamin::oeffnenThread_ ()
     if(farbraumModus())
     {
         // Oberflaechenpflege
-      gamutAnsichtZeigen();
+      // siehe ICCexamin::farbraum(int n)
+      //gamutAnsichtZeigen();
     }
     icc_examin_ns::unlock(this, __FILE__,__LINE__);
 
@@ -286,22 +287,22 @@ ICCexamin::oeffnenStatisch_ (void* ie)
   }
 
   DBG_PROG_ENDE
-  #if USE_THREADS
+# if USE_THREADS
   return 0;
-  #endif
+# endif
 }
 
 void
 ICCexamin::oeffnen (std::vector<std::string> dateinamen)
 { DBG_PROG_START
-  #if 1
+# if 1
   if(!dateinamen.size()) {
     WARN_S("keine Dateinamen angegeben")
     fortschritt( 1.1 );
     DBG_PROG_ENDE
     return;
   }
-  #endif
+# endif
 
   fortschritt( 0.0 );
 
@@ -365,8 +366,8 @@ ICCexamin::erneuerTagBrowserText_ (void)
   std::vector<std::string> tag_list = profile.profil()->printTags();
   DBG_PROG_V( tag_list.size() <<" "<< (int*) b )
 
-  #define add_s(stream) s << stream; b->add (s.str().c_str()); s.str("");
-  #define add_          s << " ";
+# define add_s(stream) s << stream; b->add (s.str().c_str()); s.str("");
+# define add_          s << " ";
 
   b->clear();
   add_s ("@f" << _("Filename") << ":" )
@@ -438,9 +439,9 @@ ICCexamin::berichtSpeichern (void)
   std::string titel = dateiwahl->label(); DBG_PROG
 
   dateiwahl->filter(_("HTML Documents (*.htm*)")); DBG_PROG
-  #ifdef HAVE_FLU
+# ifdef HAVE_FLU
   dateiwahl->cd(".");
-  #endif
+# endif
   dateiwahl->label(_("Save Report")); DBG_PROG
   dateiwahl->value(dateiname.c_str()); DBG_PROG
 
@@ -509,9 +510,9 @@ ICCexamin::gamutSpeichern (IccGamutFormat format)
     datei = dateiwahl->value(); DBG_PROG
   std::string titel = dateiwahl->label(); DBG_PROG
 
-  #ifdef HAVE_FLU
+# ifdef HAVE_FLU
   dateiwahl->cd(".");
-  #endif
+# endif
   if(format == ICC_ABSTRACT) {
     dateiwahl->filter(_("ICC colour profiles (*.ic*)")); DBG_PROG
     dateiwahl->label(_("Save Gamut as Profile")); DBG_PROG

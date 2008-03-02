@@ -120,7 +120,7 @@ icc_create_vrml( const char* p, int size, int intent )
     try {
       data = ladeDatei (ptn.c_str(), &size);
     }
-    #if HAVE_EXCEPTION
+#   if HAVE_EXCEPTION
       catch (Ausnahme & a) {  // fängt alles von Ausnahme Abstammende
         DBG_NUM_V (_("Ausnahme aufgetreten: ") << a.what());
         a.report();
@@ -131,7 +131,7 @@ icc_create_vrml( const char* p, int size, int intent )
       catch (...) {       // fängt alles Übriggebliebene
         DBG_NUM_V (_("Huch, unbekannte Ausnahme"));
       }
-    #endif
+#   endif
 
     if(data)
     {

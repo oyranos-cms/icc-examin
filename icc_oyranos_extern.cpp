@@ -37,16 +37,16 @@ oyranos_einstellungen()
 {
   DBG_PROG_START
   bool hat_oy, hat_flu;
-  #if HAVE_OY
+# if HAVE_OY
   hat_oy = true;
-  #else
+# else
   hat_oy = false;
-  #endif
-  #if HAVE_FLU
+# endif
+# if HAVE_FLU
   hat_flu = true;
-  #else
+# else
   hat_flu = false;
-  #endif
+# endif
   int fehl = system("oyranos_config_flu");
   if(fehl) {
     if(hat_oy && hat_flu)

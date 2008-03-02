@@ -48,7 +48,7 @@ initialiseI18N()
 
   std::string locale;
 
-  #ifdef APPLE
+# ifdef APPLE
   // 1. get the locale info
   CFLocaleRef userLocaleRef = CFLocaleCopyCurrent();
   CFStringRef cfstring = CFLocaleGetIdentifier( userLocaleRef );
@@ -70,7 +70,7 @@ initialiseI18N()
 
   // set the locale info
   locale = setlocale (LC_MESSAGES, locale.c_str());
-  #else
+# else
 
   char codeset[24] = "ISO-8859-1";
 
@@ -81,7 +81,7 @@ initialiseI18N()
   if(getenv("LANG"))
     locale = getenv("LANG");
 
-    #define SetCodesetForLocale( lang, codeset_ ) \
+#   define SetCodesetForLocale( lang, codeset_ ) \
     { \
       std::string::size_type pos = locale.find( lang ,0); \
       if(pos == 0) \
@@ -168,7 +168,7 @@ initialiseI18N()
     SetCodesetForLocale( "th", "ISO-8859-11" ) // Thai
 
     SetCodesetForLocale( "ja", "SJIS" ) // Japan ; eucJP, ujis, EUC, PCK, jis7, SJIS
-  #endif
+# endif
 
   if(locale.size())
     DBG_PROG_S( locale );
@@ -187,10 +187,10 @@ initialiseI18N()
     DBG_PROG_S( _("try to set LANG") )
 
       // set LANG
-    #ifdef APPLE
+#   ifdef APPLE
     if (locale.size())
       setenv("LANG", locale.c_str(), 0);
-    #endif
+#   endif
 
       // good?
     if(getenv("LANG"))
@@ -222,13 +222,13 @@ initialiseI18N()
 
     DBG_PROG_S( _("try locale in ") << bdtd );
   }
-  #ifndef APPLE
+# ifndef APPLE
   // 5. set our charset
   char* cs = bind_textdomain_codeset("icc_examin", codeset);
 
   if(cs)
     DBG_PROG_S( _("set codeset for \"icc_examin\" to ") << cs )
-  #endif
+# endif
 
   // gettext initialisation end
 

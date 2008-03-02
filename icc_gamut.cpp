@@ -134,12 +134,12 @@ iccGrenze(ICCprofile & profil, int intent, size_t & groesse)
     size_t size=0;
     char  *p_block = 0;
     p_block = profil.saveProfileToMem(&size);
-    #if 0 
+#   if 0 
     static int num = 0;
     char text[24]; 
     sprintf (text, "Übung%d.icc", num++);
     saveMemToFile( text, p_block, size );
-    #endif
+#   endif
     // hier den Farbumfang abtasten
     cmsHPROFILE lab = cmsCreateLabProfile(cmsD50_xyY());
     cmsHPROFILE p = cmsOpenProfileFromMem(p_block, size);

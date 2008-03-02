@@ -32,10 +32,10 @@
 #include "icc_helfer_x.h"
 
 #if APPLE
- #include <Carbon/Carbon.h>
- #ifdef HAVE_FLTK
+# include <Carbon/Carbon.h>
+# ifdef HAVE_FLTK
   //#include <FL/osx.H>
- #endif
+# endif
 #endif
 
 std::vector<std::vector<double> >
@@ -43,7 +43,7 @@ leseGrafikKartenGamma  (std::string display_name,
                        std::vector<std::string> &texte )
 { DBG_PROG_START
   std::vector<std::vector<double> > kurven;
-  #if APPLE
+# if APPLE
 
   OSStatus              theErr;
   UInt32                size=0, count=0, kanaele=0;
@@ -118,7 +118,7 @@ leseGrafikKartenGamma  (std::string display_name,
 
   bail:
 
-  #endif
+# endif
   DBG_PROG_ENDE
   return kurven;
 }

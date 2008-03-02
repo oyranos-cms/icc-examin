@@ -43,30 +43,30 @@
 
 #define USE_GETTEXT
 #ifdef USE_GETTEXT
-  #include <libintl.h>
-  #define _(text) gettext(text)
+# include <libintl.h>
+# define _(text) gettext(text)
 #else
-  #define _(text) text
+# define _(text) text
 #endif
 
 // ByteOrder on Solaris
 #ifndef BIG_ENDIAN
-  #define BIG_ENDIAN 4321
+# define BIG_ENDIAN 4321
 #endif
 #ifndef LITTLE_ENDIAN
-  #define LITTLE_ENDIAN 1234
+# define LITTLE_ENDIAN 1234
 #endif
 #ifdef _BIG_ENDIAN
-  #ifdef BYTE_ORDER
-    #undef BYTE_ORDER
-  #endif
-  #define BYTE_ORDER BIG_ENDIAN
+# ifdef BYTE_ORDER
+#   undef BYTE_ORDER
+# endif
+# define BYTE_ORDER BIG_ENDIAN
 #endif
 #ifdef _LITTLE_ENDIAN
-  #ifdef BYTE_ORDER
-    #undef BYTE_ORDER
-  #endif
-  #define BYTE_ORDER LITTLE_ENDIAN
+# ifdef BYTE_ORDER
+#   undef BYTE_ORDER
+# endif
+# define BYTE_ORDER LITTLE_ENDIAN
 #endif
 
 extern Fl_Thread icc_thread_liste[12];

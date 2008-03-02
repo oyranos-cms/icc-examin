@@ -1,11 +1,11 @@
 [Desktop Entry]
-Name=ICC Examin profile viewer
-Name[de]=ICC Examin Profilbetrachter
+Name=ICC Examin
+Name[de]=ICC Examin
 
 GenericName=
 
 Comment=look at the internals of ICC profiles
-Comment[de]=Interna von ICC Farbprofien betrachten
+Comment[de]=Interna von ICC Farbprofilen betrachten
 
 Type=Application
 Categories=Application;Graphics;
@@ -14,9 +14,9 @@ Encoding=UTF-8
 
 TryExec=icc_examin
 Exec=icc_examin %U
-#Icon=icc_examin.png
+Icon=icc_examin.png
 StartupNotify=true
 Terminal=false
 
-MimeType=application/x-icc;
+MimeType=application/icc;application/cgats;model/vrml;
 

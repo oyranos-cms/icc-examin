@@ -28,10 +28,10 @@
 // Date:      04. 05. 2004
 
 #if 0
-  #ifndef DEBUG
-   #define DEBUG
-  #endif
-  #define DEBUG_ICCHEADER
+# ifndef DEBUG
+#  define DEBUG
+# endif
+# define DEBUG_ICCHEADER
 #endif
 
 #include "icc_profile_header.h"
@@ -65,14 +65,14 @@ ICCheader::load (void *data)
   }
 
   memcpy ((void*)&header, data, sizeof (icHeader));
-  #ifdef DEBUG_ICCHEADER
+# ifdef DEBUG_ICCHEADER
   DBG_NUM_S( sizeof (icHeader) << " genommen" )
-  #endif
+# endif
   if (header.size > 0) {
     valid = true;
-  #ifdef DEBUG_ICCHEADER
+# ifdef DEBUG_ICCHEADER
     DBG_NUM_V( size() )
-  #endif
+# endif
   } else {
     valid = false;
   }
@@ -87,17 +87,17 @@ ICCheader::set_current_date (void)
   time_t t = time(0);
   tm_ = localtime(&t);
   header.date.day = icValue((icUInt16Number)tm_->tm_mday);
-  DBG_V(tm_->tm_mday)
+  DBG_PROG_V(tm_->tm_mday)
   header.date.month = icValue((icUInt16Number)(tm_->tm_mon+1));
-  DBG_V(tm_->tm_mon+1)
+  DBG_PROG_V(tm_->tm_mon+1)
   header.date.year = icValue((icUInt16Number)(tm_->tm_year+1900));
-  DBG_V(tm_->tm_year+1900)
+  DBG_PROG_V(tm_->tm_year+1900)
   header.date.hours = icValue((icUInt16Number)tm_->tm_hour);
-  DBG_V(tm_->tm_hour)
+  DBG_PROG_V(tm_->tm_hour)
   header.date.minutes = icValue((icUInt16Number)tm_->tm_min);
-  DBG_V(tm_->tm_min)
+  DBG_PROG_V(tm_->tm_min)
   header.date.seconds = icValue((icUInt16Number)tm_->tm_sec);
-  DBG_V(tm_->tm_sec)
+  DBG_PROG_V(tm_->tm_sec)
   DBG_PROG_ENDE
 }
 
@@ -132,7 +132,7 @@ ICCheader::attributes (void) const
     s << _("colour");
 
 
-  #ifdef DEBUG
+# ifdef DEBUG
   DBG_PROG_S( (long)header.attributes )
   if (icc_debug)
   {
@@ -142,7 +142,7 @@ ICCheader::attributes (void) const
       cout << (int)ptr[i] << " ";
     cout << endl;
   }
-  #endif
+# endif
   DBG_PROG_ENDE
   return s.str();
 }
@@ -165,7 +165,7 @@ ICCheader::flags (void) const
   else
     s << _("can be used independently from image.");
 
-  #ifdef DEBUG
+# ifdef DEBUG
   DBG_NUM_S( (int)f[0] << " " << (long)header.flags )
   if (icc_debug)
   { LEVEL cout << "           ";
@@ -174,7 +174,7 @@ ICCheader::flags (void) const
       cout << (int)ptr[i] << " ";
     cout << endl;
   }
-  #endif
+# endif
   DBG_PROG_ENDE
   return s.str();
 }
@@ -194,9 +194,9 @@ ICCheader::versionName (void) const
 std::string
 ICCheader::print_long() const
 { DBG_PROG_START
-  #ifdef DEBUG_ICCHEADER
+# ifdef DEBUG_ICCHEADER
   cout << sizeof (icSignature) << " " << sizeof (icUInt32Number)<< endl;
-  #endif
+# endif
   std::string cm = cmmName();
   std::string mg = magicName();
   std::string ma = manufacturerName();

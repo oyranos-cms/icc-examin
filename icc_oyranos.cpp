@@ -68,18 +68,18 @@ Oyranos icc_oyranos;
 Oyranos::Oyranos()
 {
   DBG_PROG_START
-  #if HAVE_OY
+# if HAVE_OY
   oyOpen();
-  #endif
+# endif
   DBG_PROG_ENDE
 }
 
 Oyranos::~Oyranos()
 {
   DBG_PROG_START
-  #if HAVE_OY
+# if HAVE_OY
   oyClose();
-  #endif
+# endif
   DBG_PROG_ENDE
 }
 
@@ -94,7 +94,7 @@ Oyranos::profil_test_ (const char* profil_name)
 {
   DBG_PROG_START
   bool fehler = false;
-  #if HAVE_OY
+# if HAVE_OY
 
   if(profil_name && strlen(profil_name))
   {
@@ -127,7 +127,7 @@ Oyranos::profil_test_ (const char* profil_name)
   
   DBG_NUM_S( "Standard " OY_DEFAULT_LAB_INPUT_PROFILE " Profil = "<< *lab_ <<" "<< lab_.size() <<"\n" )
 
-  #endif
+# endif
   return fehler;
   DBG_PROG_ENDE
 }
@@ -137,7 +137,7 @@ Oyranos::lab_test_ ()
 {
   DBG_PROG_START
   Speicher *v_block = &lab_;
-  #if HAVE_OY
+# if HAVE_OY
   if( !v_block->size() )
   { DBG_PROG_V( v_block->size() )
     char* profil_name = oyGetDefaultLabInputProfileName();
@@ -164,7 +164,7 @@ Oyranos::lab_test_ ()
   DBG_NUM_S( "Standard " OY_DEFAULT_LAB_INPUT_PROFILE " Profil = "<< *lab_ <<" "<< lab_.size() <<"\n" )
 
   
-  #endif
+# endif
   DBG_PROG_ENDE
 }
 
@@ -208,12 +208,12 @@ void
 Oyranos::moni_test_ ()
 {
   DBG_PROG_START
-  #if HAVE_OY
+# if HAVE_OY
   {
     const char *display_name = 0;
     char* profil_name =
      oyGetMonitorProfileName (display_name);
-    DBG_V( display_name )
+    DBG_PROG_V( display_name )
     Speicher v_block = moni_;
       DBG_MEM_V( v_block.size() )
       DBG_PROG_V( (int*)profil_name << profil_name )
@@ -242,8 +242,8 @@ Oyranos::moni_test_ ()
   
   DBG_NUM_S( "Monitorprofil = "<< *moni_ <<" "<< moni_.size() <<"\n" )
 
-  #else
-    #ifdef APPLE
+# else
+#   ifdef APPLE
     CMProfileRef prof=NULL;
     DisplayIDType screenID=0;
     GDHandle device = DMGetFirstScreenDevice(true); //GetDeviceList();
@@ -307,11 +307,11 @@ Oyranos::moni_test_ ()
           DBG_MEM_V( size )
         if (size)
         {
-          #ifdef HAVE_OY
+#         ifdef HAVE_OY
           if( oyCheckProfileMem( ref.data, size, 0 ) )
             WARN_S ( _("Profil konnte nicht geladen werden") )
           else
-          #endif
+#         endif
           {
               DBG_MEM_V( (int*)ref.data <<"|"<< size )
             v_block.lade((const char*)ref.data, size);
@@ -324,8 +324,8 @@ Oyranos::moni_test_ ()
         DBG_MEM
     }
     //CFRelease(cfstring);
-    #endif
-  #endif
+#   endif
+# endif
   DBG_PROG_ENDE
 }
 
@@ -335,7 +335,7 @@ Oyranos::rgb_test_ ()
   DBG_PROG_START
   Speicher *v_block = &rgb_;
   char* block;
-  #if HAVE_OY
+# if HAVE_OY
   if( !v_block->size() )
   { DBG_PROG_V( v_block->size() )
     const char* profil_name = oyGetDefaultRGBInputProfileName();
@@ -361,7 +361,7 @@ Oyranos::rgb_test_ ()
 
   if(rgb_.size())
     DBG_NUM_S( "Standard " OY_DEFAULT_RGB_INPUT_PROFILE " Profil = "<< *rgb_ <<" "<< cmyk_.size() <<"\n" );
-  #endif
+# endif
   DBG_PROG_ENDE
 }
 
@@ -372,7 +372,7 @@ Oyranos::cmyk_test_ ()
   DBG_PROG_START
   Speicher *v_block = &rgb_;
   char* block;
-  #if HAVE_OY
+# if HAVE_OY
   if( !v_block->size() )
   { DBG_PROG_V( v_block->size() )
     char* profil_name = oyGetDefaultCmykInputProfileName();
@@ -400,7 +400,7 @@ Oyranos::cmyk_test_ ()
 
   if(cmyk_.size())
     DBG_NUM_S( "Standard " OY_DEFAULT_CMYK_INPUT_PROFILE " Profil = "<< *cmyk_ <<" "<< cmyk_.size() <<"\n" );
-  #endif
+# endif
   //oy_debug = 0;
   DBG_PROG_ENDE
 }
@@ -420,30 +420,30 @@ Oyranos::holeMonitorProfil (const char* display_name, size_t* size )
   char* moni_profil = 0;
   *size = 0;
 
-  #if HAVE_OY
+# if HAVE_OY
 
-  #ifdef HAVE_X
+# ifdef HAVE_X
   static Display *display=0;
 
-  #ifdef HAVE_FLTK
+# ifdef HAVE_FLTK
   if( !display )
     display = fl_display;
-  #endif
+# endif
   if( !display )
     display = XOpenDisplay(0);
 
   display_name = XDisplayString( display );  // gehört X
   DBG_PROG_V( display_name <<" "<< strlen(display_name) )
 
-  #ifndef HAVE_FLTK
+# ifndef HAVE_FLTK
     XCloseDisplay( display ); DBG_PROG
-  #endif
+# endif
 
-  #endif
+# endif
 
   moni_profil = oyGetMonitorProfile( display_name, size );
 
-  #endif
+# endif
   DBG_PROG_V( *size <<" "<< (int*)moni_profil )
 
   DBG_PROG_ENDE
@@ -458,27 +458,27 @@ Oyranos::setzeMonitorProfil (const char* profil_name )
   int fehler = false;
 
   DBG_PROG_V( profil_name )
-  #if HAVE_OY
+# if HAVE_OY
   const char *display_name=0;
 
-  #ifdef HAVE_X
+# ifdef HAVE_X
   static Display *display=0;
 
-  #ifdef HAVE_FLTK
+# ifdef HAVE_FLTK
   if( !display )
     ;//display = fl_display;
-  #endif
+# endif
   if( !display )
     display = XOpenDisplay(0);
 
   display_name = XDisplayString( display );  // gehört X
   DBG_PROG_V( display_name <<" "<< strlen(display_name) )
 
-  #ifndef HAVE_FLTK
+# ifndef HAVE_FLTK
     XCloseDisplay( display ); DBG_PROG
-  #endif
+# endif
 
-  #endif
+# endif
 
   fehler = oySetMonitorProfile( display_name, profil_name );
 
@@ -486,7 +486,7 @@ Oyranos::setzeMonitorProfil (const char* profil_name )
   DBG_PROG_V( neues_profil )
 
   if (neues_profil) free (neues_profil);
-  #endif
+# endif
 
   DBG_PROG_ENDE
   return fehler;
@@ -628,7 +628,7 @@ Oyranos::gamutCheckAbstract(Speicher & s, Speicher & abstract,
       LPLUT gmt_lut = cmsAllocLUT(),
             lut = cmsReadICCLut( tmp, icSigAToB0Tag);
       cmsAlloc3DGrid( gmt_lut, lut->cLutPoints, 3, 3);
-      DBG_V( lut->cLutPoints )
+      DBG_PROG_V( lut->cLutPoints )
       cmsSample3DGrid( gmt_lut, icc_examin_ns::gamutCheckSampler, tr1, 0 );
 
       cmsHPROFILE gmt = _cmsCreateProfilePlaceholder();
@@ -739,8 +739,8 @@ Oyranos::zeigTrafo           ( const char *profilA, int ein_bytes, int kanaeleA,
                                          proof_profil, intent_p);
 
   //trafos_.find(schluessel);
-  #if HAVE_OY
-  #endif
+# if HAVE_OY
+# endif
   DBG_PROG_ENDE
 }
 #endif
@@ -763,9 +763,9 @@ oyranos_pfade_einlesen()
 void
 oyranos_pfad_dazu (char* pfad)
 {
-  #ifdef HAVE_OY
+# ifdef HAVE_OY
 
-  #endif
+# endif
 }
 
 

@@ -31,6 +31,7 @@
 #include "icc_examin.h"
 #include "icc_gl.h"
 #include "icc_helfer_ui.h"
+#include "icc_helfer_fltk.h"
 #include "icc_fenster.h"
 #include "icc_info.h"
 #include "icc_kette.h"
@@ -93,9 +94,9 @@ ICCexamin::quit ()
 void
 resize_fuer_menubar(Fl_Widget* w)
 {
-  #if APPLE
+# if APPLE
   w->resize( w->x(), w->y()-25, w->w(), w->h()+25 );
-  #endif
+# endif
 }
 
 void
@@ -109,9 +110,9 @@ ICCexamin::start (int argc, char** argv)
 
   menue_translate( icc_betrachter->menu_menueleiste );
 
-  #if USE_THREADS
+# if USE_THREADS
   static Fl_Thread fl_t;
-  DBG_V( fl_t )
+  DBG_THREAD_V( fl_t )
   int fehler = fl_create_thread( fl_t, &oeffnenStatisch_, (void *)this );
 # if HAVE_PTHREAD_H
   icc_thread_liste[THREAD_LADEN] = fl_t;
@@ -120,19 +121,19 @@ ICCexamin::start (int argc, char** argv)
   {
     WARN_S( _("Waechter Thread nicht gestartet Fehler: ")  << fehler );
   } else
-  #if !APPLE && !WIN32
+# if !APPLE && !WIN32
   if( fehler == PTHREAD_THREADS_MAX )
   {
     WARN_S( _("zu viele Waechter Threads Fehler: ") << fehler );
   } else
-  #endif
+# endif
   if( fehler != 0 )
   {
     WARN_S( _("unbekannter Fehler beim Start eines Waechter Threads Fehler: ") << fehler );
   }
-  #else
+# else
   Fl::add_timeout( 0.01, /*(void(*)(void*))*/oeffnenStatisch_ ,(void*)this);
-  #endif
+# endif
 
   icc_betrachter->init( argc, argv );
 
@@ -148,17 +149,17 @@ ICCexamin::start (int argc, char** argv)
   icc_betrachter->vcgt_viewer->id = VCGT_VIEWER;
 
   // Fuer eine Fl_Sys_Menu_Bar
-  #if 0
+# if 0
   resize_fuer_menubar( icc_betrachter->DD_farbraum );
   resize_fuer_menubar( icc_betrachter->examin );
   resize_fuer_menubar( icc_betrachter->inspekt_html );
-  #endif
+# endif
   DBG_PROG
 
-  #if HAVE_X || APPLE
+# if HAVE_X || APPLE
   icc_betrachter->menueintrag_vcgt->show();
   DBG_PROG_S( "Zeige vcgt" )
-  #if APPLE
+# if APPLE
   IBNibRef nibRef;
   OSStatus err;
   err = CreateNibReference(CFSTR("main"), &nibRef);
@@ -171,10 +172,10 @@ ICCexamin::start (int argc, char** argv)
   DisposeNibReference(nibRef);
   CantSetMenuBar:
   CantGetNibRef:
-  #endif // APPLE
-  #else
+# endif // APPLE
+# else
   DBG_PROG_S( "Zeige vcgt nicht" )
-  #endif
+# endif
   if(!icc_debug)
     icc_betrachter->menueintrag_testkurven->hide();
 
@@ -202,13 +203,13 @@ ICCexamin::start (int argc, char** argv)
   frei_ = true;
 
   // receive events
-  #if 0
+# if 0
   Fl_Widget* w = dynamic_cast<Fl_Widget*>(icc_betrachter->details);
   if (w) {
       Fl::pushed(w);
       DBG_PROG_S( "pushed("<< w <<") "<< Fl::pushed() )
   }
-  #endif
+# endif
 
   icc_betrachter->run();
 
@@ -411,11 +412,11 @@ ICCexamin::moniHolen ()
   }
 
   // TODO: X notification event
-  #if 0
+# if 0
   saveMemToFile("/tmp/vcgt_temp.icc", moni_profil, size);
   system ("xcalib /tmp/vcgt_temp.icc");
   remove ("/tmp/vcgt_temp.icc");
-  #endif
+# endif
   vcgtZeigen();
 
   fortschritt( 1.1 );
@@ -441,11 +442,11 @@ ICCexamin::standardGamma ()
 { DBG_PROG_START
   frei_ = false;
 
-  #if HAVE_X
+# if HAVE_X
   system("xgamma -gamma 1.0");
   vcgtZeigen();
   icc_oyranos.setzeMonitorProfil( 0 );
-  #endif
+# endif
 
   // TODO: osX
   frei_ = true;
@@ -481,7 +482,7 @@ ICCexamin::neuzeichnen (void* z)
   DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->mft_viewer)->visible() )
 
   enum {ZEIGEN, VERSTECKEN, NACHRICHT, KEINEn};
-  #define widZEIG(zeigen,widget,dbg) { \
+# define widZEIG(zeigen,widget,dbg) { \
      if        (zeigen ==                  VERSTECKEN && widget->visible()) { \
          widget->                          hide(); \
          if(dbg==NACHRICHT) DBG_PROG_S( _("verstecke ") << #widget ); \
@@ -529,11 +530,11 @@ ICCexamin::neuzeichnen (void* z)
       icc_betrachter->DD_farbraum->hide();
     }
     if(icc_waehler_->visible())
-    #ifdef __APPLE__
+#   ifdef __APPLE__
       icc_waehler_->hide();
-    #else
+#   else
       icc_waehler_->iconize();
-    #endif
+#   endif
   }
 
   if(oben == INSPEKT_ZEIGEN)
@@ -569,7 +570,7 @@ ICCexamin::neuzeichnen (void* z)
   } else
     icc_betrachter->mft_choice->hide();
 
-  #define SichtbarkeitsWechsel(widget) \
+# define SichtbarkeitsWechsel(widget) \
   { Fl_Widget *w = dynamic_cast<Fl_Widget*> (icc_betrachter->widget); \
     if (w != wid && w->visible()) { DBG_PROG_S( #widget << " verstecken" ) \
       w->hide(); \
@@ -698,7 +699,7 @@ tastatur(int e)
   case FL_PASTE:
     {
     DBG_PROG_S( "FL_PASTE " << Fl::event_length() )
-      #if APPLE_
+#     if APPLE_
       if(dnd_kommt &&
          Fl::event_length())
       {
@@ -716,7 +717,7 @@ tastatur(int e)
         icc_examin->oeffnen(profilnamen);
       }
       dnd_kommt = false;
-      #else
+#     else
       if(dnd_kommt &&
          Fl::event_length())
       {
@@ -751,7 +752,7 @@ tastatur(int e)
           dnd_kommt = false;
         }
       }
-      #endif
+#     endif
     }
     break;
   case FL_RELEASE:
@@ -762,8 +763,9 @@ tastatur(int e)
     break;
   default: 
     {
-      if(Fl::event_length())
-        ;//DBG_PROG_S( "Event - "<< e <<" "<< Fl::event_length() );
+      //if(Fl::event_length())
+        dbgFltkEvents(e);
+        DBG_PROG_S( Fl::event_length() << " bei: "<<Fl::event_x()<<","<<Fl::event_y() );
     }
     break;
   }

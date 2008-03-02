@@ -258,7 +258,7 @@ CgatsFilter::unterscheideZiffernWorte_( std::string &zeile )
       txt = zeile.substr( pos, ende-pos );
       ergebnis.push_back( txt );
       DBG_CGATS_V( pos <<" "<< ende )
-      #if (CGATS_DEBUG >= 2)
+#     if (CGATS_DEBUG >= 2)
       cout << zeile << endl;
       for(unsigned int j = 0; j < zeile.size();    ++j)
         if( j != pos && j != ende )
@@ -266,7 +266,7 @@ CgatsFilter::unterscheideZiffernWorte_( std::string &zeile )
         else
           cout << "^";
       cout << "\n";
-      #endif
+#     endif
       // das Wort untersuchen
       if( txt.find_first_of( cgats_numerisch_ ) != std::string::npos &&
           txt.find( "." ) != std::string::npos &&
@@ -428,7 +428,7 @@ CgatsFilter::sucheSchluesselwort_( std::string zeile )
   std::string::size_type pos=0;
 
   {
-    #define \
+#   define \
     KEY_Suche(suche, ret) \
       if ((pos = zeile.find (suche, 0)) != std::string::npos) \
       { \
@@ -459,7 +459,7 @@ CgatsFilter::sucheSchluesselwort_( std::string zeile )
     KEY_Suche( "CMY Daily Target",   CMY_DATEN )
     KEY_Suche( "CMYK Target",        CMYK_DATEN )
   }
-  #undef KEY_Suche
+# undef KEY_Suche
 
   return AUSKOMMENTIEREN;
 }

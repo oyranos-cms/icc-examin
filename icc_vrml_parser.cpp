@@ -99,13 +99,13 @@ ICCvrmlParser::lesen_ ()
   std::string::size_type pos=0, netz_pos=0;
   std::string::size_type netz_ende;
 
-  #if DEBUG_VRML_PARSER
+# if DEBUG_VRML_PARSER
   double max_farbe[3],  min_farbe[3], min_pos[3], max_pos[3];
   for(int i = 0; i < 3; ++i) {
     max_farbe[i] = max_pos[i] = -100000.0;
     min_farbe[i] = min_pos[i] =  100000.0;
   }
-  #endif
+# endif
 
   // locale - Kommas unterscheiden
   char* loc_alt = getenv("LANG");
@@ -161,7 +161,7 @@ ICCvrmlParser::lesen_ ()
         ++pos;
       }
 
-      #define VRMLBereichsTest(schalter, schluesselauf, schluesselzu) \
+#     define VRMLBereichsTest(schalter, schluesselauf, schluesselzu) \
       if( zeile.find(schluesselauf) != std::string::npos ) { \
         DBG_VRML_PARSER_S( z << schluesselauf ) \
         wert_n = punkt_n = 0; \
@@ -209,12 +209,12 @@ ICCvrmlParser::lesen_ ()
               netze_[endnetz].punkte[punkt_n].koord[achse+1] =
                   werte[w].zahl.second / 255.0 + 0.5;
 
-            #if DEBUG_VRML_PARSER
+#           if DEBUG_VRML_PARSER
             if(min_pos[achse] > werte[w].zahl.second)
               min_pos[achse] = werte[w].zahl.second;
             if(max_pos[achse] < werte[w].zahl.second)
               max_pos[achse] = werte[w].zahl.second;
-            #endif
+#           endif
 
             DBG_VRML_PARSER_S( endnetz<<" punkt_n "<<punkt_n<<" achse "<<achse<<" "<< netze_[endnetz].punkte[punkt_n].koord[achse] )
 
@@ -248,12 +248,12 @@ ICCvrmlParser::lesen_ ()
             netze_[endnetz].punkte[punkt_n].farbe[achse] =
                 werte[w].zahl.second;
 
-            #if DEBUG_VRML_PARSER
+#           if DEBUG_VRML_PARSER
             if(min_farbe[achse] > werte[w].zahl.second)
               min_farbe[achse] = werte[w].zahl.second;
             if(max_farbe[achse] < werte[w].zahl.second)
               max_farbe[achse] = werte[w].zahl.second;
-            #endif
+#           endif
 
             ++wert_n;
           } //else WARN_S(_("keine Zahl?? " << werte[w].zahl.second))
@@ -292,14 +292,14 @@ ICCvrmlParser::lesen_ ()
     }
     netz_n++;
   }
-  #if DEBUG_VRML_PARSER
+# if DEBUG_VRML_PARSER
   for(int i = 0; i < 3; ++i) {
     DBG_VRML_PARSER_S( "Position ["<<i<<"]: " <<min_pos[i] <<" - "<<max_pos[i]);
   }
   for(int i = 0; i < 3; ++i) {
     DBG_VRML_PARSER_S( "Farbe ["<<i<<"]: "<<min_farbe[i]<<" - "<< max_farbe[i]);
   }
-  #endif
+# endif
 
   if(loc_alt)
     setlocale(LC_NUMERIC,loc_alt);

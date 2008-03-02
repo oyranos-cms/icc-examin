@@ -122,9 +122,9 @@ GL_Ansicht::GL_Ansicht(int X,int Y,int W,int H)
   for(int i = 0; i <= DL_MAX; ++i)
     glListen[i] = 0;
 
-  #ifdef HAVE_FTGL
+# ifdef HAVE_FTGL
   font = ortho_font = 0;
-  #endif
+# endif
 
   DBG_PROG_ENDE
 }
@@ -156,10 +156,10 @@ GL_Ansicht::~GL_Ansicht()
     glDeleteLists (glListen[UMRISSE],1);
     glListen[UMRISSE] = 0;
   }
-  #ifdef HAVE_FTGL
+# ifdef HAVE_FTGL
   if(font) delete font;
   if(ortho_font) delete ortho_font;
-  #endif
+# endif
   DBG_PROG_ENDE
 }
 
@@ -173,7 +173,7 @@ GL_Ansicht::init(int init_id)
 
   resizable(0);
 
-  #define TEST_GL(modus) { \
+# define TEST_GL(modus) { \
     mode(modus); \
     if(can_do()) { \
       mod |= modus; \
@@ -343,6 +343,7 @@ GL_Ansicht::handle( int event )
     case FL_KEYUP:
          DBG_ICCGL_S( "FL_KEYUP bei: " << Fl::event_x() << "," << Fl::event_y() )
          break;
+    case FL_ENTER:
     case FL_MOVE:
          DBG_ICCGL_S( "FL_MOVE bei: " << Fl::event_x() << "," << Fl::event_y() )
          maus_x_ = Fl::event_x();
@@ -390,9 +391,9 @@ GL_Ansicht::GLinit_()
   glEnable(GL_LIGHTING);
   glEnable(GL_LIGHT0);
   //glEnable(GL_LIGHT1);
-  #ifndef Beleuchtung
+# ifndef Beleuchtung
   glDisable(GL_LIGHTING);
-  #endif
+# endif
 
   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, mat_ambuse);
   glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
@@ -411,7 +412,7 @@ GL_Ansicht::GLinit_()
   //glShadeModel(GL_SMOOTH);
   glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
 
-  #ifdef HAVE_FTGL
+# ifdef HAVE_FTGL
   if(font) delete font;
   if(ortho_font) delete ortho_font;
 
@@ -456,7 +457,7 @@ GL_Ansicht::GLinit_()
     ortho_font->CharMap( ft_encoding_unicode );
     if(!ortho_font->FaceSize(16)) WARN_S(_("Fontgroesse nicht setzbar"));
   }
-  #endif
+# endif
 
   glFlush();
   DBG_PROG_ENDE
@@ -489,7 +490,7 @@ GL_Ansicht::tastatur(int e)
 
 // Text zeichnen
 #ifdef HAVE_FTGL
- #define ZeichneText(Font, Zeiger) { \
+#  define ZeichneText(Font, Zeiger) { \
    glLineWidth(strichmult); \
     if(blend) glDisable(GL_BLEND); \
       glTranslatef(.0,0,0.01); \
@@ -669,7 +670,7 @@ GL_Ansicht::garnieren_()
 {
   DBG_PROG_START
 
-  #define PFEILSPITZE icc_gl::glutSolidCone(0.02, 0.05, 16, 4);
+# define PFEILSPITZE icc_gl::glutSolidCone(0.02, 0.05, 16, 4);
 
   DBG_PROG_V( id() )
   // Pfeile und Text
@@ -705,7 +706,7 @@ GL_Ansicht::garnieren_()
       glEnd();
     glPopMatrix();
 
-    #define ZEIG_GITTER 1
+#   define ZEIG_GITTER 1
 
     // CIE*a - rechts
     glPushMatrix();
@@ -823,9 +824,9 @@ GL_Ansicht::tabelleAuffrischen()
       DBG_NUM_V( schnitttiefe );
       start_x = start_y = start_z = x = y = z = 0.5; start_y = y = -0.5;
       glPushMatrix();
-      #ifndef Beleuchtung
+#     ifndef Beleuchtung
       glDisable(GL_LIGHTING);
-      #endif
+#     endif
       DBG_PROG_V( tabelle_.size() <<" "<< tabelle_[0].size() )
       float korr = 0.995/2.0;
       glTranslatef(-0.5/0.995+dim_x/2,-0.5/0.995+dim_y/2,-0.5/0.995+dim_z/2);
@@ -837,10 +838,10 @@ GL_Ansicht::tabelleAuffrischen()
           for (int b = 0; b < (int)n_b; b++) {
             z = start_z + b * dim_x;
             wert = tabelle_[L][a][b][kanal]; //DBG_PROG_V( L << a << b << kanal )
-            #ifdef Beleuchtung
+#           ifdef Beleuchtung
             FARBE(wert, wert, wert)
             //glColor3f(wert, wert, wert);
-            #else
+#           else
             switch (punktfarbe) {
               case MENU_GRAU:   glColor4f( wert, wert, wert, 1.0); break;
               case MENU_FARBIG: glColor4f((wert*2),
@@ -856,7 +857,7 @@ GL_Ansicht::tabelleAuffrischen()
                                 } else glColor4f( wert, wert, wert, 1.0);
                                                                    break;
             }
-            #endif
+#           endif
             if (wert) {
                 glBegin(GL_TRIANGLE_FAN);
                   glVertex3f(dim_x*b+ dim_x*korr,dim_y*L+ dim_y*korr,dim_z*a+ dim_z*korr);
@@ -884,9 +885,9 @@ GL_Ansicht::tabelleAuffrischen()
         }
       } DBG_PROG
       glPopMatrix();
-      #ifndef Beleuchtung
+#     ifndef Beleuchtung
       glEnable(GL_LIGHTING);
-      #endif
+#     endif
     glEndList();
   }
  
@@ -1000,27 +1001,27 @@ GL_Ansicht::netzeAuffrischen()
     glListen[RASTER] = 0;
   }
 
-      #ifndef Beleuchtung
+#     ifndef Beleuchtung
       glDisable(GL_LIGHTING);
-      #endif
+#     endif
 
-      #if 0
+#     if 0
       glEnable (GL_BLEND);
       glBlendFunc (GL_SRC_COLOR, GL_DST_ALPHA);
       glEnable (GL_ALPHA_TEST_FUNC);
       //glAlphaFunc (GL_ALPHA_TEST, GL_ONE_MINUS_DST_ALPHA);
-      #else
+#     else
       glEnable (GL_BLEND);
       //glDepthMask(GL_FALSE);              // Konturen und Schnittkanten muessn
                                           // richtig uebergeben werden 
       glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
       glEnable (GL_ALPHA_TEST_FUNC);
       glAlphaFunc (GL_ALPHA_TEST, GL_ONE_MINUS_DST_ALPHA);
-      #endif
-      #if 0
+#     endif
+#     if 0
       glPolygonMode(GL_FRONT, GL_FILL);   // Vorderseite als Flaeche 
       glPolygonMode(GL_BACK, GL_LINE);   // Rueckseite als Linien
-      #endif
+#     endif
       glFrontFace(GL_CCW);
       glPushMatrix();
         // zurecht setzen
@@ -1079,9 +1080,9 @@ GL_Ansicht::netzeAuffrischen()
 
       glDisable (GL_BLEND);
       glDepthMask(GL_TRUE);
-      #ifndef Beleuchtung
+#     ifndef Beleuchtung
       glEnable(GL_LIGHTING);
-      #endif
+#     endif
 
   DBG_PROG_ENDE
 }
@@ -1108,17 +1109,17 @@ GL_Ansicht::punkteAuffrischen()
 
     glListen[PUNKTE] = glGenLists(1);
     glNewList( glListen[PUNKTE], GL_COMPILE); DBG_PROG_V( glListen[PUNKTE] )
-      #ifndef Beleuchtung
+#     ifndef Beleuchtung
       glDisable(GL_LIGHTING);
-      #endif
+#     endif
 
-      #if 1
+#     if 1
       glDisable (GL_BLEND);
       //glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
       glDisable/*Enable*/ (GL_ALPHA_TEST_FUNC);
       //glAlphaFunc (GL_ALPHA_TEST, GL_ONE_MINUS_DST_ALPHA);
-      #else
-      #endif
+#     else
+#     endif
 
       //glColor3f(0.9, 0.9, 0.9);
       glPushMatrix();
@@ -1184,9 +1185,9 @@ GL_Ansicht::punkteAuffrischen()
                  glPopMatrix();
                }
       glPopMatrix();
-      #ifndef Beleuchtung
+#     ifndef Beleuchtung
       glEnable(GL_LIGHTING);
-      #endif
+#     endif
     glEndList();
   }
 
@@ -1276,7 +1277,7 @@ GL_Ansicht::zeigeUmrisse_()
          dreiecks_netze[i].aktiv &&
          dreiecks_netze[i].transparenz)
       {
-        #if 0
+#       if 0
         glLineWidth(6.0*strichmult);
         glColor4f(1., 1.0, 1.0, 1.0);
         glBegin(GL_LINE_STRIP);
@@ -1288,7 +1289,7 @@ GL_Ansicht::zeigeUmrisse_()
           );
         }
         glEnd();
-        #endif
+#       endif
         // Schatten
         int n = dreiecks_netze[i].umriss.size();
         if(!dreiecks_netze[i].schattierung)
@@ -1501,12 +1502,12 @@ GL_Ansicht::menueErneuern_()
       menue_form_->add( _("Sphere 2dE"), 0,c_, (void*)MENU_dE2KUGEL, 0 );
       menue_form_->add( _("Sphere 4dE"), 0,c_, (void*)MENU_dE4KUGEL, 0 );
     } else {
-    #ifdef Lab_STERN
+#   ifdef Lab_STERN
       menue_form_->add( _("Star"), 0,c_, (void*)MENU_dE1STERN, 0 );
-    #else
+#   else
       // Punkte werden für Bildfarben reserviert
       menue_form_->add( _("Point"), 0,c_, (void*)MENU_dE1STERN, 0 );
-    #endif
+#   endif
     }
     menue_form_->add( _("without markers"), 0,c_, (void*)MENU_DIFFERENZ_LINIE, 0);
     menue_form_->add( _("Spektral line"), 0,c_, (void*)MENU_SPEKTRALBAND, 0 );
@@ -1638,10 +1639,10 @@ GL_Ansicht::zeichnen()
          kanalname.append(": ");
          kanalname.append(kanalName());
 
-         #ifdef HAVE_FTGL
+#        ifdef HAVE_FTGL
          if(ortho_font)
            glRasterPos3f(0,ortho_font->LineHeight()/5+20,9.99);
-         #endif
+#        endif
          ZeichneOText (ortho_font, scal, kanalname.c_str()) 
        } else {
          for (unsigned int i=0;
@@ -1651,11 +1652,11 @@ GL_Ansicht::zeichnen()
            std::string text;
            text = dreiecks_netze[i].name.c_str();
            DBG_PROG_V( dreiecks_netze[i].name )
-           #ifdef HAVE_FTGL
+#          ifdef HAVE_FTGL
            if(ortho_font)
              glRasterPos2f(0, 20 + ortho_font->LineHeight()
                                    / 1.5 * (dreiecks_netze.size()-i-1) );
-           #endif
+#          endif
            ZeichneOText (ortho_font, scal, text.c_str())
          }
        }
@@ -1667,15 +1668,15 @@ GL_Ansicht::zeichnen()
            static char t[128];
            static time_t zeit_alt;
            time_t z, teiler;
-           #if 1 //#if LINUX || APPLE
+#          if 1 //#if LINUX || APPLE
            struct timeval tv;
            teiler = 1000;
            gettimeofday( &tv, NULL );
            z = tv.tv_usec/1000 + tv.tv_sec*1000;
-           #else // WINDOWS
+#          else // WINDOWS
            teiler = CLOCKS_PER_SEC;
            z = clock();
-           #endif
+#          endif
            time_t dz = z-zeit_alt;
            static double zeit_sum = 0.0;
            static int n = 90;
@@ -1735,10 +1736,10 @@ GL_Ansicht::zeichnen()
            sprintf(t, "fps:%01f %01f %d %ld %01f", fps, zeit, n, dz, zeit_sum);
            DBG_PROG_V( t )
 
-           #ifdef HAVE_FTGL
+#          ifdef HAVE_FTGL
            if(ortho_font)
              glRasterPos2f(0, h() -10 );
-           #endif
+#          endif
            if(icc_debug)
              ZeichneOText (ortho_font, scal, t)
 
@@ -1810,9 +1811,9 @@ GL_Ansicht::zeichnen()
                                  icc_examin->gamutwarn()?cmsFLAGS_GAMUTCHECK:0);
                         if(!rgb)  WARN_S( _("RGB Ergebnis nicht verfuegbar") )
                         else {
-                          #ifndef Beleuchtung
+#                         ifndef Beleuchtung
                           glDisable(GL_LIGHTING);
-                          #endif
+#                         endif
                           glPushMatrix();
                             glLineWidth(strich3*strichmult);
                             FARBE(rgb[0], rgb[1], rgb[2])
@@ -1822,9 +1823,9 @@ GL_Ansicht::zeichnen()
                             glEnd();
                           glPopMatrix();
                           DBG_PROG_V( rgb[0] <<" "<< rgb[1] <<" "<< rgb[2] )
-                          #ifndef Beleuchtung
+#                         ifndef Beleuchtung
                           glEnable(GL_LIGHTING);
-                          #endif
+#                         endif
                         }
                     }
 
@@ -1909,11 +1910,11 @@ GL_Ansicht::zeichnen()
                   glPopMatrix();
                   }
 
-    #if 0
+#   if 0
     glFlush();
-    #else
+#   else
     glFinish();
-    #endif
+#   endif
   }
   DBG_ICCGL_ENDE
 }
@@ -2053,6 +2054,11 @@ GL_Ansicht::menueAufruf ( int value )
       kanal = value - MENU_MAX; DBG_PROG_V( kanal )
       icc_examin_ns::status_info(_("left-/middle-/right mouse button -> rotate/cut/menu"));
     }
+#   if APPLE
+    double farb_faktor = 0.6666;
+#   else
+    double farb_faktor = 1.0;
+#   endif
 
     switch (value) {
     case MENU_AXES:
@@ -2107,28 +2113,28 @@ GL_Ansicht::menueAufruf ( int value )
       break;
     case MENU_WEISS:
       hintergrundfarbe = 1.;//MENU_WEISS;
-      for (int i=0; i < 3 ; ++i) pfeilfarbe[i] = 1.;
-      for (int i=0; i < 3 ; ++i) textfarbe[i] = .75;
+      for (int i=0; i < 3 ; ++i) pfeilfarbe[i] = 1.*farb_faktor;
+      for (int i=0; i < 3 ; ++i) textfarbe[i] = .75*farb_faktor;
       break;
     case MENU_HELLGRAU:
       hintergrundfarbe = 0.75;//MENU_HELLGRAU;
-      for (int i=0; i < 3 ; ++i) pfeilfarbe[i] = 1.0;
-      for (int i=0; i < 3 ; ++i) textfarbe[i] = 0.5;
+      for (int i=0; i < 3 ; ++i) pfeilfarbe[i] = 1.0*farb_faktor;
+      for (int i=0; i < 3 ; ++i) textfarbe[i] = 0.5*farb_faktor;
       break;
     case MENU_GRAUGRAU:
       hintergrundfarbe = 0.5;//MENU_GRAUGRAU;
-      for (int i=0; i < 3 ; ++i) pfeilfarbe[i] = .75;
-      for (int i=0; i < 3 ; ++i) textfarbe[i] = 0.25;
+      for (int i=0; i < 3 ; ++i) pfeilfarbe[i] = .75*farb_faktor;
+      for (int i=0; i < 3 ; ++i) textfarbe[i] = 0.25*farb_faktor;
       break;
     case MENU_DUNKELGRAU:
       hintergrundfarbe = 0.25;//MENU_DUNKELGRAU;
-      for (int i=0; i < 3 ; ++i) pfeilfarbe[i] = 0.5;
-      for (int i=0; i < 3 ; ++i) textfarbe[i] = 0.75;
+      for (int i=0; i < 3 ; ++i) pfeilfarbe[i] = 0.5*farb_faktor;
+      for (int i=0; i < 3 ; ++i) textfarbe[i] = 0.75*farb_faktor;
       break;
     case MENU_SCHWARZ:
       hintergrundfarbe = 0.0;//MENU_SCHWARZ;
-      for (int i=0; i < 3 ; ++i) pfeilfarbe[i] = .25;
-      for (int i=0; i < 3 ; ++i) textfarbe[i] = 0.5;
+      for (int i=0; i < 3 ; ++i) pfeilfarbe[i] = .25*farb_faktor;
+      for (int i=0; i < 3 ; ++i) textfarbe[i] = 0.5*farb_faktor;
       break;
     case Agviewer::FLYING:
       icc_examin_ns::status_info(_("left mouse button -> go back"));

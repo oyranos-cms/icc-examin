@@ -28,10 +28,10 @@
 // Date:      04. 05. 2004
 
 #if 1
-  #ifndef DEBUG
-   #define DEBUG
-  #endif
-  #define DEBUG_ICCPROFILE
+# ifndef DEBUG
+#  define DEBUG
+# endif
+# define DEBUG_ICCPROFILE
 #endif
 
 #include "icc_profile.h"
@@ -101,9 +101,9 @@ ICCprofile::~ICCprofile (void)
 { DBG_PROG_START
   this->clear();
 
-  #ifdef DEBUG_PROFILE
+# ifdef DEBUG_PROFILE
   DBG__PROG_S ( "~ICCprofile beendet" )
-  #endif
+# endif
   DBG_PROG_ENDE
 }
  
@@ -209,17 +209,17 @@ ICCprofile::load (const Speicher & prof)
   //(icTag*) new char ( getTagCount() * sizeof (icTag));
   //memcpy (tagList , &((char*)data_)[132], sizeof (icTag) * getTagCount());
 
-  #if BYTE_ORDER == LITTLE_ENDIAN
+# if BYTE_ORDER == LITTLE_ENDIAN
     DBG_PROG_S("LITTLE_ENDIAN")
-  #else
+# else
     DBG_PROG_S("BIG_ENDIAN")
-  #endif
-  #ifdef _BIG_ENDIAN
+# endif
+# ifdef _BIG_ENDIAN
     DBG_PROG_S( "BIG_ENDIAN" )
-  #endif
-  #ifdef _LITTLE_ENDIAN
+# endif
+# ifdef _LITTLE_ENDIAN
     DBG_PROG_S( "LITTLE_ENDIAN" )
-  #endif
+# endif
   DBG_MEM_V( getTagCount() <<" "<< tags.size() )
   if(getTagCount() || tags.size())
     tags.resize(getTagCount());
@@ -229,23 +229,23 @@ ICCprofile::load (const Speicher & prof)
     DBG_MEM
     tags[i].load( this, &tagList[i] ,
               &((char*)data_)[ icValue(tagList[i].offset) ]);
-    #ifdef DEBUG_ICCPROFILE
+#   ifdef DEBUG_ICCPROFILE
     DBG_PROG_S( " sig: " << tags[i].getTagName() << " " << i )
-    #endif
+#   endif
 
     // bekannte Tags mit Messdaten
     if (tags[i].getTagName() == "targ"
      || tags[i].getTagName() == "DevD"
      || tags[i].getTagName() == "CIED") {
-      #ifdef DEBUG_ICCPROFILE
+#     ifdef DEBUG_ICCPROFILE
       DBG_NUM_S( "Messdaten gefunden " << tags[i].getTagName() )
-      #endif
+#     endif
       measurement.load( this, tags[i] );
     }
   }
-  #ifdef DEBUG_ICCPROFILE
+# ifdef DEBUG_ICCPROFILE
   DBG_NUM_S( "TagCount: " << getTagCount() << " / " << tags.size() )
-  #endif
+# endif
  
   DBG_NUM_V( filename_ )
 
@@ -345,9 +345,9 @@ ICCprofile::printTags            ()
     s.str((*it).getTypName());     StringList.push_back(s.str()); s.str("");
     s << (*it).getSize();          StringList.push_back(s.str()); s.str("");
     s.str((*it).getInfo()); StringList.push_back(s.str()); s.str("");
-  #ifdef DEBUG_ICCPROFILE
+# ifdef DEBUG_ICCPROFILE
     DBG_NUM_S( (*it).getTagName() << " " << count )
-  #endif
+# endif
   }
   DBG_PROG_ENDE
   return StringList;
@@ -430,9 +430,9 @@ ICCprofile::getTagCurve                          (int item)
   std::vector<double> leer;
   if (tags[item].getTypName() != "curv")
   {
-    #ifdef DEBUG_ICCPROFILE
+#   ifdef DEBUG_ICCPROFILE
     DBG_NUM_S( tags[item].getTypName() )
-    #endif
+#   endif
     DBG_PROG_ENDE
     return leer;
   }
@@ -450,9 +450,9 @@ ICCprofile::getTagCurves                         (int item,ICCtag::MftChain typ)
    && tags[item].getTypName() != "mft1"
    && tags[item].getTypName() != "vcgt")
   {
-    #ifdef DEBUG_ICCPROFILE
+#   ifdef DEBUG_ICCPROFILE
     DBG_NUM_S( "gibt nix für " << tags[item].getTypName() )
-    #endif
+#   endif
     DBG_PROG_ENDE
     return leer;
   }
@@ -469,9 +469,9 @@ ICCprofile::getTagTable                         (int item,ICCtag::MftChain typ)
   if (tags[item].getTypName() != "mft2"
    && tags[item].getTypName() != "mft1")
   {
-    #ifdef DEBUG_ICCPROFILE
+#   ifdef DEBUG_ICCPROFILE
     DBG_NUM_S( "gibt nix für " << tags[item].getTypName() )
-    #endif
+#   endif
     DBG_PROG_ENDE
     return leer;
   }
@@ -489,9 +489,9 @@ ICCprofile::getTagNumbers                        (int item,ICCtag::MftChain typ)
    && tags[item].getTypName() != "mft1"
    && tags[item].getTypName() != "ncl2")
   {
-    #ifdef DEBUG_ICCPROFILE
+#   ifdef DEBUG_ICCPROFILE
     DBG_NUM_S( tags[item].getTypName() )
-    #endif
+#   endif
     DBG_PROG_ENDE
     return leer;
   }
@@ -510,9 +510,9 @@ ICCprofile::getTagByName            (std::string name)
   for (std::vector<ICCtag>::iterator it = tags.begin(); it != tags.end(); it++){
     if ( (*it).getTagName() == name
       && (*it).getSize()            ) {
-      #ifdef DEBUG_ICCPROFILE
+#     ifdef DEBUG_ICCPROFILE
       DBG_PROG_S( item << " = " << (*it).getTagName() << " gefunden" )
-      #endif
+#     endif
       DBG_PROG_ENDE
       return item;
     }
@@ -534,9 +534,9 @@ ICCprofile::hasTagName            (std::string name)
   for (std::vector<ICCtag>::iterator it = tags.begin(); it != tags.end(); it++){
     if ( (*it).getTagName() == name
       && (*it).getSize()            ) {
-      #ifdef DEBUG_ICCPROFILE
+#     ifdef DEBUG_ICCPROFILE
       DBG_NUM_S( (*it).getTagName() << " gefunden" )
-      #endif
+#     endif
       DBG_PROG_ENDE
       return true;
     }
@@ -870,13 +870,13 @@ ICCprofile::removeTag (int item)
     }
 
   DBG_PROG
-  #if 0
+# if 0
   tags.resize(t.size());
   for (int i = 0; i < (int)t.size(); i++)
     tags[i].copy (t[i]);
-  #else
+# else
   tags = t;
-  #endif
+# endif
   DBG_MEM_V( i << " " << tags.size())
   DBG_PROG_ENDE
 }
@@ -900,16 +900,16 @@ const char* cp_nchar (char* text, int n)
     string[i] = '\000';*/
 
   if (n < 1024)
-    #if 0
+#   if 0
     memcpy (string, text, n);
-    #else
+#   else
     snprintf(&string[0], n, text);
-    #endif
+#   endif
   string[1023] = '\000';
 
-  #ifdef DEBUG
+# ifdef DEBUG
   DBG_MEM_V( n << " Buchstaben kopieren " <<  (int)text << " " << string)
-  #endif
+# endif
   DBG_MEM_ENDE
   return string;
 }

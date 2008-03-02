@@ -284,8 +284,8 @@ public:
     * idle function.
     */
 
-  #define TORAD(x) ((M_PI/180.0)*(x))
-  #define TODEG(x) ((180.0/M_PI)*(x))
+# define TORAD(x) ((M_PI/180.0)*(x))
+# define TODEG(x) ((180.0/M_PI)*(x))
 
 /***************************************************************/
 /************************ PROTOTYPES ***************************/

@@ -1,19 +1,21 @@
+# translation of de.po to 
 # German translations for icc_examin
 # Copyright (C) 2005 Kai-Uwe Behrmann
 # Kai-Uwe Behrmann <ku.b@gmx.de>, 2005.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: ICC Examin 0.28\n"
+"Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2005-08-12 19:02+0200\n"
-"PO-Revision-Date: 2005-04-22 15:09+0200\n"
-"Last-Translator: Kai-Uwe Behrmann <ku.b@gmx.de>\n"
-"Language-Team: German\n"
+"POT-Creation-Date: 2005-08-13 14:03+0200\n"
+"PO-Revision-Date: 2005-08-13 17:35+0200\n"
+"Last-Translator: Kai-Uwe Behrmann\n"
+"Language-Team:  <de@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: KBabel 1.9\n"
 
 #: agviewer.cpp:167
 msgid "kein Agviewer uebergeben; kann agvMove_ nicht ausfuehren"
@@ -23,7 +25,7 @@ msgstr ""
 msgid "GL Fenster nicht frei"
 msgstr ""
 
-#: agviewer.cpp:377 icc_gl.cpp:2032 icc_gl.cpp:2051 icc_gl.cpp:2165
+#: agviewer.cpp:377 icc_gl.cpp:2036 icc_gl.cpp:2055 icc_gl.cpp:2174
 msgid "left-/middle-/right mouse button -> rotate/cut/menu"
 msgstr "linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menue"
 
@@ -31,8 +33,8 @@ msgstr "linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menue"
 msgid "Pause"
 msgstr "Pause"
 
-#: agviewer.cpp:410 agviewer.cpp:418 icc_gl.cpp:2131 icc_gl.cpp:2142
-#: icc_gl.cpp:2147 icc_gl.cpp:2152
+#: agviewer.cpp:410 agviewer.cpp:418 icc_gl.cpp:2140 icc_gl.cpp:2151
+#: icc_gl.cpp:2156 icc_gl.cpp:2161
 msgid "left mouse button -> go back"
 msgstr "linke Maustaste -> zurueck"
 
@@ -155,7 +157,7 @@ msgstr "Grün"
 msgid "Blue"
 msgstr "Blau"
 
-#: icc_draw.cpp:643 icc_gl.cpp:1479 icc_helfer.cpp:324 icc_waehler.h:127
+#: icc_draw.cpp:643 icc_gl.cpp:1483 icc_helfer.cpp:324 icc_waehler.h:127
 msgid "Gray"
 msgstr "Grau"
 
@@ -171,7 +173,7 @@ msgstr ""
 msgid "Yellow"
 msgstr "Gelb"
 
-#: icc_draw.cpp:656 icc_gl.cpp:1481 icc_helfer.cpp:384 icc_helfer.cpp:394
+#: icc_draw.cpp:656 icc_gl.cpp:1485 icc_helfer.cpp:384 icc_helfer.cpp:394
 msgid "Black"
 msgstr "Schwarz"
 
@@ -203,19 +205,19 @@ msgstr "Helligkeit"
 msgid "Value"
 msgstr "Wert"
 
-#: icc_draw.cpp:672 icc_examin_farbraum.cpp:181 icc_examin_io.cpp:152
+#: icc_draw.cpp:672 icc_examin_farbraum.cpp:183 icc_examin_io.cpp:153
 #: icc_helfer.cpp:369 icc_helfer.cpp:372
 msgid "CIE *L"
 msgstr ""
 
-#: icc_draw.cpp:674 icc_examin_farbraum.cpp:182 icc_examin_io.cpp:153
-#: icc_gl.cpp:640 icc_gl.cpp:710 icc_gl.cpp:734 icc_gl.cpp:742
+#: icc_draw.cpp:674 icc_examin_farbraum.cpp:184 icc_examin_io.cpp:154
+#: icc_gl.cpp:644 icc_gl.cpp:714 icc_gl.cpp:738 icc_gl.cpp:746
 #: icc_helfer.cpp:370
 msgid "CIE *a"
 msgstr ""
 
-#: icc_draw.cpp:676 icc_examin_farbraum.cpp:183 icc_examin_io.cpp:154
-#: icc_gl.cpp:653 icc_gl.cpp:750 icc_gl.cpp:768 icc_gl.cpp:775
+#: icc_draw.cpp:676 icc_examin_farbraum.cpp:185 icc_examin_io.cpp:155
+#: icc_gl.cpp:657 icc_gl.cpp:754 icc_gl.cpp:772 icc_gl.cpp:779
 #: icc_helfer.cpp:371
 msgid "CIE *b"
 msgstr ""
@@ -244,107 +246,107 @@ msgstr " mit Gamma: 1.0"
 msgid " with one entry for gamma: "
 msgstr " mit einem Eintrag für Gamma: "
 
-#: icc_examin.cpp:121 icc_kette.cpp:72
+#: icc_examin.cpp:122 icc_kette.cpp:72
 msgid "Waechter Thread nicht gestartet Fehler: "
 msgstr ""
 
-#: icc_examin.cpp:126 icc_kette.cpp:77
+#: icc_examin.cpp:127 icc_kette.cpp:77
 msgid "zu viele Waechter Threads Fehler: "
 msgstr ""
 
-#: icc_examin.cpp:131 icc_kette.cpp:82
+#: icc_examin.cpp:132 icc_kette.cpp:82
 msgid "unbekannter Fehler beim Start eines Waechter Threads Fehler: "
 msgstr ""
 
-#: icc_examin.cpp:141
+#: icc_examin.cpp:142
 msgid "Gamut selector"
 msgstr "Darstellungsoptionen"
 
-#: icc_examin.cpp:142
+#: icc_examin.cpp:143
 msgid "icc_waehler_ nicht reservierbar"
 msgstr ""
 
-#: icc_examin.cpp:188 icc_examin_io.cpp:414
+#: icc_examin.cpp:189 icc_examin_io.cpp:415
 msgid "loaded"
 msgstr "geladen"
 
-#: icc_examin.cpp:197
+#: icc_examin.cpp:198
 msgid "Ready"
 msgstr "Bereit"
 
-#: icc_examin.cpp:251
+#: icc_examin.cpp:252
 msgid "Nachricht von ICCkette"
 msgstr ""
 
-#: icc_examin.cpp:252
+#: icc_examin.cpp:253
 msgid "Auffrischen von Profil Nr.: "
 msgstr ""
 
-#: icc_examin.cpp:374
+#: icc_examin.cpp:375
 msgid "Keine Kurve gefunden"
 msgstr ""
 
-#: icc_examin.cpp:487
+#: icc_examin.cpp:488
 msgid "verstecke "
 msgstr ""
 
-#: icc_examin.cpp:491
+#: icc_examin.cpp:492
 msgid "zeige     "
 msgstr ""
 
-#: icc_examin_io.cpp:161
+#: icc_examin_io.cpp:162
 msgid "kein Netz gefunden in VRML Datei"
 msgstr ""
 
-#: icc_examin_io.cpp:177
+#: icc_examin_io.cpp:178
 msgid "Anzahl gabs schon mal"
 msgstr ""
 
-#: icc_examin_io.cpp:197
+#: icc_examin_io.cpp:198
 msgid "Kein Netz gefunden. Ist Argyll installiert?"
 msgstr ""
 
-#: icc_examin_io.cpp:319
+#: icc_examin_io.cpp:320
 msgid "Stop loading "
 msgstr "Laden angehalten: "
 
-#: icc_examin_io.cpp:372 icc_betrachter.cxx:465
+#: icc_examin_io.cpp:373 icc_betrachter.cxx:465
 msgid "Filename"
 msgstr "Dateiname"
 
-#: icc_examin_io.cpp:376
+#: icc_examin_io.cpp:377
 msgid "found no content for"
 msgstr "keine Inhalte gefunden für"
 
-#: icc_examin_io.cpp:379
+#: icc_examin_io.cpp:380
 msgid "Internal error"
 msgstr "interner Fehler"
 
-#: icc_examin_io.cpp:381
+#: icc_examin_io.cpp:382
 msgid "No. Tag   Type   Size Description"
 msgstr "Nr. Teil  Typ   Größe Beschreibung"
 
-#: icc_examin_io.cpp:440
+#: icc_examin_io.cpp:441
 msgid "HTML Documents (*.htm*)"
 msgstr "HTML Dokumente (*.htm*)"
 
-#: icc_examin_io.cpp:444 icc_betrachter.cxx:386
+#: icc_examin_io.cpp:445 icc_betrachter.cxx:386
 msgid "Save Report"
 msgstr "Bericht Speichern"
 
-#: icc_examin_io.cpp:516 icc_betrachter.cxx:495
+#: icc_examin_io.cpp:517 icc_betrachter.cxx:495
 msgid "ICC colour profiles (*.ic*)"
 msgstr "ICC Farbprofile (*.ic*)"
 
-#: icc_examin_io.cpp:517 icc_betrachter.cxx:387
+#: icc_examin_io.cpp:518 icc_betrachter.cxx:387
 msgid "Save Gamut as Profile"
 msgstr "Speichere Farbhülle als Profil"
 
-#: icc_examin_io.cpp:519
+#: icc_examin_io.cpp:520
 msgid "VRML Files (*.wrl)"
 msgstr "VRML Dateien (*.wrl)"
 
-#: icc_examin_io.cpp:520 icc_betrachter.cxx:388
+#: icc_examin_io.cpp:521 icc_betrachter.cxx:388
 msgid "Save Gamut as VRML"
 msgstr "Speichere Farbhülle als VRML"
 
@@ -356,145 +358,145 @@ msgstr ""
 msgid "OpenGL mode: "
 msgstr ""
 
-#: icc_gl.cpp:417 icc_gl.cpp:420 icc_gl.cpp:423 icc_gl.cpp:429 icc_gl.cpp:433
-#: icc_gl.cpp:448
+#: icc_gl.cpp:421 icc_gl.cpp:424 icc_gl.cpp:427 icc_gl.cpp:433 icc_gl.cpp:437
+#: icc_gl.cpp:452
 msgid "Konnte Font nicht oeffnen:"
 msgstr ""
 
-#: icc_gl.cpp:452 icc_gl.cpp:454
+#: icc_gl.cpp:456 icc_gl.cpp:458
 msgid "Fontgroesse nicht setzbar"
 msgstr ""
 
-#: icc_gl.cpp:530
+#: icc_gl.cpp:534
 #, c-format
 msgid "0,0,0"
 msgstr ""
 
-#: icc_gl.cpp:798
+#: icc_gl.cpp:802
 msgid "Kanalauswahl geaendert: "
 msgstr ""
 
-#: icc_gl.cpp:1222 icc_gl.cpp:1352
+#: icc_gl.cpp:1226 icc_gl.cpp:1356
 msgid "Lab_speicher Speicher nicht verfuegbar"
 msgstr ""
 
-#: icc_gl.cpp:1243 icc_gl.cpp:1244 icc_gl.cpp:1370 icc_gl.cpp:1371
+#: icc_gl.cpp:1247 icc_gl.cpp:1248 icc_gl.cpp:1374 icc_gl.cpp:1375
 msgid "RGB_speicher Ergebnis nicht verfuegbar"
 msgstr ""
 
-#: icc_gl.cpp:1343
+#: icc_gl.cpp:1347
 msgid "XYZ_speicher Speicher nicht verfuegbar"
 msgstr ""
 
-#: icc_gl.cpp:1453 icc_gl.cpp:1463 icc_gl.cpp:1465 icc_gl.cpp:1467
+#: icc_gl.cpp:1457 icc_gl.cpp:1467 icc_gl.cpp:1469 icc_gl.cpp:1471
 msgid "Slice"
 msgstr "Schnitt"
 
-#: icc_gl.cpp:1454
+#: icc_gl.cpp:1458
 msgid "Rotate around slice"
 msgstr "Drehen um Schnitt"
 
-#: icc_gl.cpp:1469
+#: icc_gl.cpp:1473
 msgid "Rotate around"
 msgstr "Drehen um"
 
-#: icc_gl.cpp:1469
+#: icc_gl.cpp:1473
 msgid "axis"
 msgstr "Achse"
 
-#: icc_gl.cpp:1474
+#: icc_gl.cpp:1478
 msgid "Slice plane"
 msgstr "Querschnitt"
 
-#: icc_gl.cpp:1477
+#: icc_gl.cpp:1481
 msgid "White"
 msgstr "Weiß"
 
-#: icc_gl.cpp:1478
+#: icc_gl.cpp:1482
 msgid "Light gray"
 msgstr "Hellgrau"
 
-#: icc_gl.cpp:1480
+#: icc_gl.cpp:1484
 msgid "Dark gray"
 msgstr "Dunkelgrau"
 
-#: icc_gl.cpp:1484
+#: icc_gl.cpp:1488
 msgid "Background colour"
 msgstr "Hintergrundfarbe"
 
-#: icc_gl.cpp:1489
+#: icc_gl.cpp:1493
 msgid "gray"
 msgstr "grau"
 
-#: icc_gl.cpp:1490
+#: icc_gl.cpp:1494
 msgid "coloured"
 msgstr "farbig"
 
-#: icc_gl.cpp:1491
+#: icc_gl.cpp:1495
 msgid "high contrast"
 msgstr "kontrastreich"
 
-#: icc_gl.cpp:1492
+#: icc_gl.cpp:1496
 msgid "shells"
 msgstr "schalen"
 
-#: icc_gl.cpp:1497
+#: icc_gl.cpp:1501
 msgid "Sphere 1dE"
 msgstr "Kugel 1dE"
 
-#: icc_gl.cpp:1498
+#: icc_gl.cpp:1502
 msgid "Sphere 2dE"
 msgstr "Kugel 2dE"
 
-#: icc_gl.cpp:1499
+#: icc_gl.cpp:1503
 msgid "Sphere 4dE"
 msgstr "Kugel 4dE"
 
-#: icc_gl.cpp:1502
+#: icc_gl.cpp:1506
 msgid "Star"
 msgstr "Stern"
 
-#: icc_gl.cpp:1505
+#: icc_gl.cpp:1509
 msgid "Point"
 msgstr "Punkt"
 
-#: icc_gl.cpp:1508
+#: icc_gl.cpp:1512
 msgid "without markers"
 msgstr "ohne Farborte"
 
-#: icc_gl.cpp:1509
+#: icc_gl.cpp:1513
 msgid "Spektral line"
 msgstr "Spektrallinie"
 
-#: icc_gl.cpp:1512 icc_betrachter.cxx:693
+#: icc_gl.cpp:1516 icc_betrachter.cxx:693
 msgid "Texts"
 msgstr "Texte"
 
-#: icc_gl.cpp:1514
+#: icc_gl.cpp:1518
 msgid "Texts/Arrows on/off"
 msgstr "Texte/Pfeile an/aus"
 
-#: icc_gl.cpp:1516
+#: icc_gl.cpp:1520
 msgid "Illustration"
 msgstr "Darstellung"
 
-#: icc_gl.cpp:1634 icc_profile_tags.cpp:291
+#: icc_gl.cpp:1638 icc_profile_tags.cpp:291
 msgid "Channel"
 msgstr "Kanal"
 
-#: icc_gl.cpp:1808
+#: icc_gl.cpp:1812
 msgid "RGB Ergebnis nicht verfuegbar"
 msgstr ""
 
-#: icc_gl.cpp:1882
+#: icc_gl.cpp:1886
 msgid "Pos"
 msgstr ""
 
-#: icc_gl.cpp:2190
+#: icc_gl.cpp:2199
 msgid "Konnte keine Eltern finden"
 msgstr ""
 
-#: icc_gl.cpp:2199
+#: icc_gl.cpp:2208
 msgid "Konnte keine passende Programmstruktur finden"
 msgstr ""
 
@@ -940,7 +942,7 @@ msgstr "Filmbelichter"
 
 #: icc_helfer.cpp:677
 msgid "Video Monitor"
-msgstr ""
+msgstr "Video Bildschirm"
 
 #: icc_helfer.cpp:678
 msgid "Video camera"
@@ -992,39 +994,39 @@ msgstr "Illuminant unbekannt"
 
 #: icc_helfer.cpp:708
 msgid "Illuminant D50"
-msgstr ""
+msgstr "Farbtemperatur D50"
 
 #: icc_helfer.cpp:709
 msgid "Illuminant D65"
-msgstr ""
+msgstr "Farbtemperatur D65"
 
 #: icc_helfer.cpp:710
 msgid "Illuminant D93"
-msgstr ""
+msgstr "Farbtemperatur D93"
 
 #: icc_helfer.cpp:711
 msgid "Illuminant F2"
-msgstr ""
+msgstr "Farbtemperatur F2"
 
 #: icc_helfer.cpp:712
 msgid "Illuminant D55"
-msgstr ""
+msgstr "Farbtemperatur D55"
 
 #: icc_helfer.cpp:713
 msgid "Illuminant A"
-msgstr ""
+msgstr "Farbtemperatur A"
 
 #: icc_helfer.cpp:714
 msgid "Illuminant with equal energy E"
-msgstr "Illuminant mit ausgeglichener Energie E"
+msgstr "Farbtemperatur mit ausgeglichener Energie E"
 
 #: icc_helfer.cpp:715
 msgid "Illuminant F8"
-msgstr ""
+msgstr "Farbtemperatur F8"
 
 #: icc_helfer.cpp:716
 msgid "Illuminant ---"
-msgstr ""
+msgstr "Farbtemperatur ---"
 
 #: icc_helfer.cpp:718 icc_helfer.cpp:735 icc_helfer.cpp:750 icc_helfer.cpp:764
 msgid "???"
@@ -1052,7 +1054,7 @@ msgstr ""
 
 #: icc_helfer.cpp:747
 msgid "0/d or d/0"
-msgstr ""
+msgstr "0/d oder d/0"
 
 #: icc_helfer.cpp:760
 msgid "0"
@@ -1107,18 +1109,16 @@ msgid "set codeset for \"icc_examin\" to "
 msgstr ""
 
 #: icc_kette.cpp:145
-#, fuzzy
 msgid "noName"
-msgstr "Umbenennen"
+msgstr "kein Name"
 
 #: icc_kette.cpp:161
 msgid "File not loaded!"
 msgstr "Datei nicht geladen!"
 
 #: icc_main.cpp:54
-#, fuzzy
 msgid "colour adjust"
-msgstr "farbig"
+msgstr "Farbe einstellen"
 
 #: icc_measurement.cpp:551
 msgid "kein passendes voreingestelltes Profile gefunden"
@@ -1457,7 +1457,7 @@ msgstr "Größe:       "
 
 #: icc_profile_header.cpp:213
 msgid "bytes"
-msgstr ""
+msgstr "Bytes"
 
 #: icc_profile_header.cpp:214
 msgid "CMM:         "
@@ -1541,7 +1541,7 @@ msgstr ""
 
 #: icc_profile_tags.cpp:237
 msgid "Flare"
-msgstr ""
+msgstr "Überstrahlung"
 
 #: icc_profile_tags.cpp:239
 msgid "Illuminant Type"
@@ -1706,13 +1706,11 @@ msgid "  littleCMS: Marti Maria www.littlecms.com<br>\n"
 msgstr ""
 
 #: icc_ueber.cpp:165
-msgid ""
-"  FTGL: Henry Maddocks homepages.paradise.net.nz/henryj/code/#FTGL<br>\n"
+msgid "  FTGL: Henry Maddocks homepages.paradise.net.nz/henryj/code/#FTGL<br>\n"
 msgstr ""
 
 #: icc_ueber.cpp:172
-msgid ""
-"integrated sources, lock at the according files for licence conditions:<br>\n"
+msgid "integrated sources, lock at the according files for licence conditions:<br>\n"
 msgstr ""
 "integrierte Quelltexte, die jeweiligen Lizenzbedingungen sind den "
 "entsprechended Dateien zu entnehmen:<br>\n"
@@ -1734,8 +1732,7 @@ msgid "For the visualisation of gamut (external):<br>\n"
 msgstr "F&uuml;r die Visualisation des Farbumfangs (Erzeugung extern):<br>\n"
 
 #: icc_ueber.cpp:193
-msgid ""
-"  argyll: Greame Gill web.access.net.au/argyll/argyllcms.html<br<br><br>\n"
+msgid "  argyll: Greame Gill web.access.net.au/argyll/argyllcms.html<br<br><br>\n"
 msgstr ""
 
 #: icc_ueber.cpp:202
@@ -1776,18 +1773,16 @@ msgid "Hersteller: "
 msgstr ""
 
 #: icc_helfer_osx.cpp:72
-#, fuzzy
 msgid "Model:      "
-msgstr "Modell:      "
+msgstr "Modell:     "
 
 #: icc_helfer_osx.cpp:84 icc_helfer_x.cpp:95
 msgid "Gamma Red:   "
 msgstr "Gamma Rot:   "
 
 #: icc_helfer_osx.cpp:90
-#, fuzzy
 msgid "Gamma Green: "
-msgstr "Gamma Grün: "
+msgstr "Gamma Grün:  "
 
 #: icc_helfer_osx.cpp:96 icc_helfer_x.cpp:107
 msgid "Gamma Blue:  "
@@ -2158,7 +2153,7 @@ msgid "!!! Warnung !!!"
 msgstr ""
 
 #: icc_version.h:9
-msgid "Mai 2004 - Jul 2005"
+msgid "Mai 2004 - Aug 2005"
 msgstr ""
 
 #: icc_waehler.h:67
@@ -2169,55 +2164,3 @@ msgstr ""
 msgid "kein Fl_Widget??"
 msgstr ""
 
-#~ msgid "File allready loaded"
-#~ msgstr "Datei bereits geladen"
-
-#~ msgid "actual monitor"
-#~ msgstr "Aktivmatrixmonitor"
-
-#~ msgid "Monitorprofile"
-#~ msgstr "Monitorprofil"
-
-#, fuzzy
-#~ msgid "ICC Profiles (*.icc*)"
-#~ msgstr "ICC Farbprofile (*.ic*)"
-
-#, fuzzy
-#~ msgid "376_left mouse button -> go back"
-#~ msgstr "linke Maustaste -> zurueck"
-
-#, fuzzy
-#~ msgid "384_left mouse button -> go back"
-#~ msgstr "linke Maustaste -> zurueck"
-
-#, fuzzy
-#~ msgid "1655_left-/middle-/right mouse button -> rotate/cut/menu"
-#~ msgstr "linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menue"
-
-#, fuzzy
-#~ msgid "1674_left-/middle-/right mouse button -> rotate/cut/menu"
-#~ msgstr "linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menue"
-
-#, fuzzy
-#~ msgid "__1795_left-/middle-/right mouse button -> rotate/cut/menu"
-#~ msgstr "linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menue"
-
-#, fuzzy
-#~ msgid "344_left mouse button -> go back"
-#~ msgstr "linke Maustaste -> zurueck"
-
-#, fuzzy
-#~ msgid "1386_left-/middle-/right mouse button -> rotate/cut/menu"
-#~ msgstr "linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menue"
-
-#~ msgid "Size:"
-#~ msgstr "Größe"
-
-#~ msgid "Model: "
-#~ msgstr "Modell:"
-
-#~ msgid "Size "
-#~ msgstr "Größe"
-
-#~ msgid "Filename "
-#~ msgstr "Dateiname"

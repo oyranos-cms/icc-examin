@@ -1,7 +1,14 @@
+2005-08-13
+	* fix: farbraummodus (ncl2) wieder aktiviert für CinePaint
+	* neu: mime für Dateimanager - icc.xml
+
 2005-08-12
 	* neu: Fehlersuche zeigt threads an, bessere Lesbarkeit
 	* und: nach 'export ICCEXAMIN_DEBUG=19' zeigt icc_examin Funktionesaufrufe
-	* fix: Verklemmung
+	* fix: Verklemmungen
+	* fix: unerschiedliche Farben in ICCgl osX/X11
+	* fix: Löschen alter Hüllumrisse und Namen in ICCgl
+	* fix: Maus Ereignisse weiterreichen an ICCgl
 
 2005-08-11
 	* und: threads

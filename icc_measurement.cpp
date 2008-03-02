@@ -28,17 +28,17 @@
 // Date:      20. 08. 2004
 
 #if 0
-  #ifndef DEBUG
-   #define DEBUG
-  #endif
-  #define DEBUG_ICCMEASUREMENT
-  #define DBG_MESS_START DBG_PROG_START
-  #define DBG_MESS_ENDE DBG_PROG_ENDE
-  #define DBG_MESS_V(t) DBG_NUM_V(t)
+# ifndef DEBUG
+#  define DEBUG
+# endif
+# define DEBUG_ICCMEASUREMENT
+# define DBG_MESS_START DBG_PROG_START
+# define DBG_MESS_ENDE DBG_PROG_ENDE
+# define DBG_MESS_V(t) DBG_NUM_V(t)
 #else
-  #define DBG_MESS_START
-  #define DBG_MESS_ENDE
-  #define DBG_MESS_V(t)
+# define DBG_MESS_START
+# define DBG_MESS_ENDE
+# define DBG_MESS_V(t)
 #endif
 
 
@@ -293,10 +293,10 @@ ICCmeasurement::lcms_parse                   (void)
       _sample_name = true;
       _id_vor_name = true;
     }
-    #ifdef DEBUG_ICCMEASUREMENT
+#   ifdef DEBUG_ICCMEASUREMENT
     DBG_NUM_S( (char*)SampleNames[i] << " _sample_name " << _sample_name <<
            " _sample_id" << _sample_id << " _id_vor_name " << _id_vor_name) 
-    #endif
+#   endif
   }
 
   // Auslesen und Aufbereiten
@@ -439,7 +439,7 @@ ICCmeasurement::init_umrechnen                     (void)
   _DE00_Differenz_max = -1000.0;
   _DE00_Differenz_min = 1000.0;
   _DE00_Differenz_Durchschnitt = 0.0;
-  #define PRECALC cmsFLAGS_NOTPRECALC // No memory overhead, VERY
+# define PRECALC cmsFLAGS_NOTPRECALC // No memory overhead, VERY
                                       // SLOW ON TRANSFORMING, very fast on creating transform.
                                       // Maximum accurancy.
 
@@ -512,12 +512,12 @@ ICCmeasurement::init_umrechnen                     (void)
     {
       size_t groesse = 0;
       const char* block = 0;
-      #ifdef HAVE_OY
+#     ifdef HAVE_OY
       block = icc_oyranos.moni(groesse);
       if(groesse)
         hsRGB = cmsOpenProfileFromMem(const_cast<char*>(block), groesse);
       DBG_PROG_S( icc_oyranos.moni_name() << " Farben" )
-      #endif
+#     endif
     } else { DBG_PROG_S( "Export Farben" ); }
     if(!hsRGB)
       hsRGB = cmsCreate_sRGBProfile ();
@@ -526,9 +526,9 @@ ICCmeasurement::init_umrechnen                     (void)
     #if 0
     #define BW_COMP cmsFLAGS_WHITEBLACKCOMPENSATION
     #else
-    #define BW_COMP 0
-    #endif
-    #define TYPE_nCOLOUR_DBL (COLORSPACE_SH(PT_ANY)|CHANNELS_SH(_channels)|BYTES_SH(0))
+#   define BW_COMP 0
+#   endif
+#   define TYPE_nCOLOUR_DBL (COLORSPACE_SH(PT_ANY)|CHANNELS_SH(_channels)|BYTES_SH(0))
     if ((_RGB_measurement ||
          _CMYK_measurement))
     {
@@ -538,13 +538,13 @@ ICCmeasurement::init_umrechnen                     (void)
       else { // Alternative
         size_t groesse = 0;
         const char* block = 0;
-        #ifdef HAVE_OY
+#       ifdef HAVE_OY
         if( _CMYK_measurement )
           block = icc_oyranos.cmyk(groesse);
         else
         if( _RGB_measurement )
           block = icc_oyranos.rgb(groesse);
-        #endif
+#       endif
         DBG_PROG_V( groesse )
 
         if( !groesse ) {
@@ -689,7 +689,7 @@ ICCmeasurement::init_umrechnen                     (void)
              cmsCIE2000DeltaE( (cmsCIELab*)&_Lab_Ergebnis[i], (cmsCIELab*)&_Lab_Satz[i] , 1.0, 1.0, 1.0);
              #else
              dE2000(_Lab_Ergebnis[i], _Lab_Satz[i] , 1.0, 1.0, 1.0);
-             #endif
+#            endif
           if (_DE00_Differenz_max < _DE00_Differenz[i])
             _DE00_Differenz_max = _DE00_Differenz[i];
           if (_DE00_Differenz_min > _DE00_Differenz[i])
@@ -736,7 +736,7 @@ ICCmeasurement::getHtmlReport                     (bool aussen)
 { DBG_PROG_START
   char SF[] = "#cccccc";  // standard Hintergrundfarbe
   char HF[] = "#aaaaaa";  // hervorgehoben
-  #define LAYOUTFARBE if (layout[l++] == true) \
+# define LAYOUTFARBE  if (layout[l++] == true) \
                         html << HF; \
                       else \
                         html << SF; //Farbe nach Layoutoption auswählen
@@ -803,7 +803,7 @@ ICCmeasurement::getHtmlReport                     (bool aussen)
   html <<       "</thead>\n<tbody>\n";
 
   // Messfelder
-  #define NACH_HTML(satz,kanal) \
+# define  NACH_HTML(satz,kanal) \
           sprintf (farbe, "%x", (int)(satz[z].kanal*mult+0.5)); \
           if (strlen (farbe) == 1) \
             html << "0"; \
@@ -891,7 +891,7 @@ ICCmeasurement::getText                     (void)
     int h = false;
     if (_XYZ_Ergebnis.size() == _XYZ_Satz.size())
       xyz_erg_sp = 3;
-    #define HI (h == true) ? h-- : h++ // invertieren
+#   define HI (h == true) ? h-- : h++ // invertieren
     layout.clear();
     layout.push_back (HI); // Messfeld
     layout.push_back (HI); // dE Lab
@@ -939,7 +939,7 @@ ICCmeasurement::getText                     (void)
     z++;
     // Messwerte
     s.str("");
-    #define DBG_TAB_V(txt)
+#   define DBG_TAB_V(txt)
     for (int i = 0; i < _nFelder; i++) { 
       sp = 0;
       tabelle[z+i].resize( spalten );
@@ -1011,8 +1011,8 @@ ICCmeasurement::getDescription              (void)
   std::vector<std::string> texte;
   std::string text =  "";
 
-  #ifdef DEBUG_ICCMEASUREMENT
-  #endif
+# ifdef DEBUG_ICCMEASUREMENT
+# endif
 
   DBG_PROG_ENDE
   return texte;

@@ -28,10 +28,10 @@
 // Date:      04. 05. 2004
 
 #if 0
-  #ifndef DEBUG
-   #define DEBUG
-  #endif
-  #define DEBUG_ICCFUNKT
+# ifndef DEBUG
+#  define DEBUG
+# endif
+# define DEBUG_ICCFUNKT
 #endif
 
 #include <icc34.h>
@@ -45,8 +45,8 @@ icUInt16Number
 icValue (icUInt16Number val)
 {
 #if BYTE_ORDER == LITTLE_ENDIAN
-  #define BYTES 2
-  #define KORB  4
+# define BYTES 2
+# define KORB  4
   unsigned char        *temp  = (unsigned char*) &val;
   static unsigned char  korb[KORB];
   for (int i = 0; i < KORB ; i++ )
@@ -56,14 +56,14 @@ icValue (icUInt16Number val)
       gross = BYTES - 1;
   for (; klein < BYTES ; klein++ ) {
     korb[klein] = temp[gross--];
-    #ifdef DEBUG_ICCFUNKT
+#   ifdef DEBUG_ICCFUNKT
     cout << klein << " "; DBG_PROG
-    #endif
+#   endif
   }
 
   unsigned int *erg = (unsigned int*) &korb[0];
 
-  #ifdef DEBUG_ICCFUNKT
+# ifdef DEBUG_ICCFUNKT
   #if 0
   cout << *erg << " Größe nach Wandlung " << (int)korb[0] << " "
        << (int)korb[1] << " " << (int)korb[2] << " " <<(int)korb[3]
@@ -71,10 +71,10 @@ icValue (icUInt16Number val)
   #else
   cout << *erg << " Größe nach Wandlung " << (int)temp[0] << " " << (int)temp[1]
        << " "; DBG_PROG
-  #endif
-  #endif
-  #undef BYTES
-  #undef KORB
+# endif
+# endif
+# undef BYTES
+# undef KORB
   return (long)*erg;
 #else
   return (long)val;
@@ -96,17 +96,17 @@ icValue (icUInt32Number val)
 
   unsigned int *erg = (unsigned int*) &uint32[0];
 
-  #ifdef DEBUG_ICCFUNKT
+# ifdef DEBUG_ICCFUNKT
   cout << *erg << " Größe nach Wandlung " << (int)temp[0] << " "
        << (int)temp[1] << " " << (int)temp[2] << " " <<(int)temp[3]
        << " "; DBG_PROG
-  #endif
+# endif
 
   return (int) *erg;
 #else
-  #ifdef DEBUG_ICCFUNKT
+# ifdef DEBUG_ICCFUNKT
   cout << "BIG_ENDIAN" << " "; DBG_PROG
-  #endif
+# endif
   return (int)val;
 #endif
 }
@@ -127,11 +127,11 @@ icValue (icUInt64Number val)
 
   unsigned long *erg = (unsigned long*) &uint64[0];
 
-  #ifdef DEBUG_ICCFUNKT
+# ifdef DEBUG_ICCFUNKT
   cout << *erg << " Größe nach Wandlung " << (int)temp[0] << " "
        << (int)temp[1] << " " << (int)temp[2] << " " <<(int)temp[3]
        << " "; DBG_PROG
-  #endif
+# endif
   return (long)*erg;
 #else
   return (long)val;
@@ -142,8 +142,8 @@ icInt32Number
 icValue (icInt32Number val)
 {
 #if BYTE_ORDER == LITTLE_ENDIAN
-  #define BYTES 4
-  #define KORB  4
+# define BYTES 4
+# define KORB  4
   unsigned char        *temp  = (unsigned char*) &val;
   static unsigned char  korb[KORB];
   for (int i = 0; i < KORB ; i++ )
@@ -156,13 +156,13 @@ icValue (icInt32Number val)
 
   signed int *erg = (signed int*) &korb[0];
 
-  #ifdef DEBUG_ICCFUNKT
+# ifdef DEBUG_ICCFUNKT
   cout << *erg << " Größe nach Wandlung " << (int)korb[0] << " "
        << (int)korb[1] << " " << (int)korb[2] << " " <<(int)korb[3]
        << " "; DBG_PROG
-  #endif
-  #undef BYTES
-  #undef KORB
+# endif
+# undef BYTES
+# undef KORB
   return (signed int)*erg;
 #else
   return (signed int)val;
@@ -173,8 +173,8 @@ icInt16Number
 icValue (icInt16Number val)
 {
 #if BYTE_ORDER == LITTLE_ENDIAN
-  #define BYTES 2
-  #define KORB  4
+# define BYTES 2
+# define KORB  4
   unsigned char        *temp  = (unsigned char*) &val;
   static unsigned char  korb[KORB];
   for (int i = 0; i < KORB ; i++ )
@@ -186,13 +186,13 @@ icValue (icInt16Number val)
       korb[klein] = temp[gross--];
 
   signed int *erg = (signed int*) &korb[0];
-  #ifdef DEBUG_ICCFUNKT
+# ifdef DEBUG_ICCFUNKT
   cout << *erg << " Größe nach Wandlung " << (int)korb[0] << " "
        << (int)korb[1] << " " << (int)korb[2] << " " <<(int)korb[3]
        << " "; DBG_PROG
-  #endif
-  #undef BYTES
-  #undef KORB
+# endif
+# undef BYTES
+# undef KORB
   return (signed int)*erg;
 #else
   return (signed int)val;
@@ -357,7 +357,7 @@ getChannelNames (icColorSpaceSignature color)
 {
   std::vector<std::string> texte;
   std::stringstream s;
-  #define nFARBEN(n) for (int i = 0; i < n; i++) \
+# define nFARBEN(n) for (int i = 0; i < n; i++) \
                        { s << i << ". " << _("Farbe"); \
                          texte.push_back (s.str()); \
                        }
@@ -534,11 +534,11 @@ getSigTagName               ( icTagSignature  sig )
                break;
              }
   }
-  #ifdef DEBUG_ICCTAG_
+# ifdef DEBUG_ICCTAG_
   char c[5] = "clrt";
   long* l = (long*) &c[0];
   cout << *l << ": " << (long)"clrt" << " "; DBG_PROG
-  #endif
+# endif
   return text;
 }
 
@@ -829,23 +829,23 @@ ladeDatei ( std::string dateiname, size_t *size )
     DBG_MEM_V( dateiname )
     if (dateiname == "")
     {
-      #if HAVE_EXCEPTION
+#     if HAVE_EXCEPTION
       DBG_PROG_ENDE
       throw ausn_file_io (_("no filename given"));
-      #else
+#     else
       goto ERROR;
-      #endif
+#     endif
     }
     DBG_MEM
     if (!f) {
-      #if HAVE_EXCEPTION
+#     if HAVE_EXCEPTION
       DBG_PROG_ENDE
       throw ausn_file_io (dateiname.c_str());
-      #endif
+#     endif
       dateiname = "";
-      #if !HAVE_EXCEPTION
+#     if !HAVE_EXCEPTION
       goto ERROR;
-      #endif
+#     endif
     }
 
     *size = (unsigned int)f.tellg();
@@ -940,15 +940,15 @@ holeDateiModifikationsZeit (const char* fullFileName)
   double m_zeit = 0.0;
   if (r)
   {
-    #if __APPLE__
+#   if __APPLE__
     m_zeit = status.st_mtime ;
     m_zeit += status.st_mtimespec.tv_nsec/1000000. ;
-    #else
+#   else
     m_zeit = status.st_mtim.tv_sec ;
     DBG_MEM_V( status.st_mtim.tv_sec )
     m_zeit += status.st_mtim.tv_nsec/1000000. ;
     DBG_MEM_V( status.st_mtim.tv_nsec )
-    #endif
+#   endif
   }
 
   DBG_MEM_ENDE
@@ -1149,7 +1149,7 @@ unterscheideZiffernWorte ( std::string &zeile,
       // das Wort extrahieren
       txt = zeile.substr( pos, ende-pos );
       DBG_PARSER_V( pos <<" "<< ende )
-      #ifdef PARSER_DEBUG
+#     ifdef PARSER_DEBUG
       cout << zeile << endl;
       for(unsigned int j = 0; j < zeile.size();    ++j)
         if( j != pos && j != ende )
@@ -1157,7 +1157,7 @@ unterscheideZiffernWorte ( std::string &zeile,
         else
           cout << "^";
       cout << "\n";
-      #endif
+#     endif
       // das Wort untersuchen
       if( txt.find_first_of( numerisch ) != std::string::npos &&
           txt.find( "." ) != std::string::npos &&

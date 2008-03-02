@@ -32,10 +32,10 @@
 
 #include "icc_icc.h"
 #if HAVE_FLTK
-  #include "icc_helfer_fltk.h"
+# include "icc_helfer_fltk.h"
 #endif
 #if HAVE_X || APPLE
-  #include "icc_helfer_x.h"
+# include "icc_helfer_x.h"
 #endif
 
 #endif //ICC_HELFER_UI_H

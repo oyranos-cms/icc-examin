@@ -9,7 +9,7 @@ VERSION_B=3
 VERSION_C=6
 VERSION=$VERSION_A.$VERSION_B$VERSION_C
 VERSION_L=$VERSION_A.$VERSION_B.$VERSION_C
-ZEIT="Mai 2004 - Jul 2005"
+ZEIT="Mai 2004 - Aug 2005"
 
 if [ $# -gt 1 ] && [ $1 == "--prefix" ]; then
   prefix=$2

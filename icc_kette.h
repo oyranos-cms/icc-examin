@@ -61,11 +61,11 @@ class ICCkette : public icc_examin_ns::Modell
     // Starte einen pthread Wächter und lasse Ihn alle unsere Beobachter
     // informieren, welches Profile gerade geändert wurde.
     static
-    #if USE_THREADS
+#   if USE_THREADS
     void*
-    #else
+#   else
     void
-    #endif
+#   endif
                  waechter (void*);
     bool         frei_;
   public:

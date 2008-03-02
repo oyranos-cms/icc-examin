@@ -139,6 +139,8 @@ ICCexamin::netzLese (int n,
     } else {
       (*netz)[n].punkte.clear();
       (*netz)[n].indexe.clear();
+      (*netz)[n].umriss.clear();
+      (*netz)[n].name.clear();
     }
   }
   for(int i = 0; i < (int)netz->size(); ++i)
@@ -197,6 +199,17 @@ ICCexamin::farbraum (int n)
     }
 
   bool ncl2_profil = profile[n]->hasTagName("ncl2");
+
+  // Oeffnen
+  if(lade_)
+  {
+    farbraumModus( profile.aktuell() );
+    if(farbraumModus())
+    {
+        // Oberflaechenpflege
+      gamutAnsichtZeigen();
+    }
+  }
 
   // benannte Farben darstellen
   if( profile.size() > n && ncl2_profil )
