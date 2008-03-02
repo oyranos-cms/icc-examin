@@ -74,7 +74,8 @@ class ICCexamin : public icc_examin_ns::Beobachter
     int  _zeig_prueftabelle,
          farbraum_angezeigt_;
     int  status_,
-         intent_;                // RI
+         intent_,                // RI
+         gamutwarn_;             // Farbraumwarnung
     bool frei_,                  // wird nicht von weiterem Prozess benutzt
          farbraum_modus_;        // profile.profil() enthaelt ncl2 Schmuckfarben
     ICCwaehler *icc_waehler_;
@@ -82,7 +83,8 @@ class ICCexamin : public icc_examin_ns::Beobachter
     int  laeuft ()  { return status_; }          // kann bei >1 genutzt werden
     bool frei()     { return frei_; }            // ist nicht gesperrt
     int  intent ()  { return intent_; }          // 
-
+    int  gamutwarn ()  { return gamutwarn_; }    // 
+    void gamutwarn (int warn) { gamutwarn_ = warn; }
 
   public:
     ICCfltkBetrachter* icc_betrachter;

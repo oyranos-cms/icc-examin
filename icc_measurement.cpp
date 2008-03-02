@@ -567,9 +567,12 @@ ICCmeasurement::init_umrechnen                     (void)
                                     INTENT_ABSOLUTE_COLORIMETRIC,
                                     PRECALC|BW_COMP);
       // Wie sieht das Profil die Messfarbe? -> Bildschirmdarstellung
-      hCOLOURtoRGB = cmsCreateTransform (hCOLOUR, TYPE_nCOLOUR_DBL,
+      hCOLOURtoRGB = cmsCreateProofingTransform (hCOLOUR, TYPE_nCOLOUR_DBL,
                                     hsRGB, TYPE_RGB_DBL,
+                                    hsRGB,
                                     INTENT_ABSOLUTE_COLORIMETRIC,
+                                    INTENT_ABSOLUTE_COLORIMETRIC,
+                                    cmsFLAGS_GAMUTCHECK|
                                     PRECALC|BW_COMP);
     }
     Kein_Profil:
@@ -583,9 +586,12 @@ ICCmeasurement::init_umrechnen                     (void)
                                     INTENT_ABSOLUTE_COLORIMETRIC,
                                     PRECALC|BW_COMP);
       // Wie sieht die CMM die Messfarbe? -> Bildschirmdarstellung
-      hXYZtoRGB = cmsCreateTransform (hXYZ, TYPE_XYZ_DBL,
+      hXYZtoRGB = cmsCreateProofingTransform (hXYZ, TYPE_XYZ_DBL,
                                     hsRGB, TYPE_RGB_DBL,
+                                    hsRGB,
                                     INTENT_ABSOLUTE_COLORIMETRIC,
+                                    INTENT_ABSOLUTE_COLORIMETRIC,
+                                    cmsFLAGS_GAMUTCHECK|
                                     PRECALC|BW_COMP);
     }
     double Farbe[_channels], RGB[3], XYZ[3], Lab[3];

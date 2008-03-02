@@ -247,6 +247,18 @@ void ICCfltkBetrachter::cb_menueintrag_Voll(Fl_Menu_* o, void* v) {
   ((ICCfltkBetrachter*)(o->parent()->parent()->user_data()))->cb_menueintrag_Voll_i(o,v);
 }
 
+inline void ICCfltkBetrachter::cb_menueintrag_gamutwarn_i(Fl_Menu_* o, void*) {
+  Fl_Menu_* mw = (Fl_Menu_*)o;
+  const Fl_Menu_Item* m = mw->mvalue();
+
+  DBG_PROG_S (m->value())
+
+  icc_examin->gamutwarn(m->value());
+}
+void ICCfltkBetrachter::cb_menueintrag_gamutwarn(Fl_Menu_* o, void* v) {
+  ((ICCfltkBetrachter*)(o->parent()->parent()->user_data()))->cb_menueintrag_gamutwarn_i(o,v);
+}
+
 inline void ICCfltkBetrachter::cb_menueintrag_3D_i(Fl_Menu_* o, void*) {
   DBG_PROG_START
   Fl_Menu_* mw = (Fl_Menu_*)o;
@@ -338,7 +350,8 @@ Fl_Menu_Item ICCfltkBetrachter::menu_menueleiste[] = {
  {0,0,0,0,0,0,0,0,0},
  {_("Gamut"), 0x40068,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_huelle, 0, 2, 0, 0, 14, 56},
  {_("View"), 0,  0, 0, 192, 0, 0, 14, 56},
- {_("Whole Screen on/off"), 0x40076,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_Voll, 0, 128, 0, 0, 14, 56},
+ {_("Whole Screen on/off"), 0x40076,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_Voll, 0, 0, 0, 0, 14, 56},
+ {_("Gamut Warning"), 0x40077,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_gamutwarn, 0, 130, 0, 0, 14, 56},
  {_("Gamut"), 0x40068,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_3D, 0, 146, 0, 0, 14, 56},
  {_("Report View"), 0x40062,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_inspekt, 0, 3, 0, 0, 14, 56},
  {_("CGATS View"), 0x40067,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_zeigcgats, 0, 129, 0, 0, 14, 56},
@@ -355,13 +368,14 @@ Fl_Menu_Item ICCfltkBetrachter::menu_menueleiste[] = {
 Fl_Menu_Item* ICCfltkBetrachter::menueintrag_html_speichern = ICCfltkBetrachter::menu_menueleiste + 2;
 Fl_Menu_Item* ICCfltkBetrachter::menueintrag_huelle = ICCfltkBetrachter::menu_menueleiste + 8;
 Fl_Menu_Item* ICCfltkBetrachter::menueintrag_Voll = ICCfltkBetrachter::menu_menueleiste + 10;
-Fl_Menu_Item* ICCfltkBetrachter::menueintrag_3D = ICCfltkBetrachter::menu_menueleiste + 11;
-Fl_Menu_Item* ICCfltkBetrachter::menueintrag_inspekt = ICCfltkBetrachter::menu_menueleiste + 12;
-Fl_Menu_Item* ICCfltkBetrachter::menueintrag_zeigcgats = ICCfltkBetrachter::menu_menueleiste + 13;
-Fl_Menu_Item* ICCfltkBetrachter::menueintrag_vcgt = ICCfltkBetrachter::menu_menueleiste + 14;
-Fl_Menu_Item* ICCfltkBetrachter::menueintrag_testkurven = ICCfltkBetrachter::menu_menueleiste + 15;
-Fl_Menu_Item* ICCfltkBetrachter::untermenue_3D = ICCfltkBetrachter::menu_menueleiste + 16;
-Fl_Menu_Item* ICCfltkBetrachter::menu_hilfe = ICCfltkBetrachter::menu_menueleiste + 18;
+Fl_Menu_Item* ICCfltkBetrachter::menueintrag_gamutwarn = ICCfltkBetrachter::menu_menueleiste + 11;
+Fl_Menu_Item* ICCfltkBetrachter::menueintrag_3D = ICCfltkBetrachter::menu_menueleiste + 12;
+Fl_Menu_Item* ICCfltkBetrachter::menueintrag_inspekt = ICCfltkBetrachter::menu_menueleiste + 13;
+Fl_Menu_Item* ICCfltkBetrachter::menueintrag_zeigcgats = ICCfltkBetrachter::menu_menueleiste + 14;
+Fl_Menu_Item* ICCfltkBetrachter::menueintrag_vcgt = ICCfltkBetrachter::menu_menueleiste + 15;
+Fl_Menu_Item* ICCfltkBetrachter::menueintrag_testkurven = ICCfltkBetrachter::menu_menueleiste + 16;
+Fl_Menu_Item* ICCfltkBetrachter::untermenue_3D = ICCfltkBetrachter::menu_menueleiste + 17;
+Fl_Menu_Item* ICCfltkBetrachter::menu_hilfe = ICCfltkBetrachter::menu_menueleiste + 19;
 
 inline void ICCfltkBetrachter::cb_tag_browser_i(TagBrowser* o, void*) {
   o->selectItem( o->value() );
@@ -520,7 +534,7 @@ ard"));
       { Fl_Menu_Bar* o = menueleiste = new Fl_Menu_Bar(0, 0, 385, 25);
         o->align(FL_ALIGN_LEFT|FL_ALIGN_INSIDE);
         o->when(3);
-        { Fl_Menu_Item* o = &menu_menueleiste[14];
+        { Fl_Menu_Item* o = &menu_menueleiste[15];
           o->hide();
         }
         o->menu(menu_menueleiste);

@@ -51,6 +51,12 @@ struct ICCnetz {
   char grau;
   double schattierung;
   char aktiv;
+  ICCnetz() {
+    transparenz = 0.5;
+    grau = 0;
+    schattierung = 0.2;
+    aktiv = 1;
+  }
 };
 
 std::vector<ICCnetz> extrahiereNetzAusVRML (std::string & vrml);

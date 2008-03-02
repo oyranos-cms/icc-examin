@@ -116,6 +116,8 @@ GL_Ansicht::GL_Ansicht(int X,int Y,int W,int H)
   blend = false;
   smooth = false;
   wiederholen = 0;
+  maus_x_ = 0;
+  maus_y_ = 0;
 
   for(int i = 0; i < DL_MAX; ++i)
     glListen[i] = 0;
@@ -222,6 +224,33 @@ GL_Ansicht::init(int init_id)
 }
 
 void
+GL_Ansicht::mausPunkt_( GLdouble &oX, GLdouble &oY, GLdouble &oZ,
+                        GLdouble &X, GLdouble &Y, GLdouble &Z )
+{
+  DBG_PROG_START  
+  // den Ort lokalisieren
+  // wie weit ist das nächste Objekt in diese Richtung, sehr aufwendig
+  GLfloat zBuffer;
+  glReadPixels((GLint)maus_x_,(GLint)h()-maus_y_,1,1,GL_DEPTH_COMPONENT, GL_FLOAT, &zBuffer);
+  GLdouble modell_matrix[16], projektions_matrix[16];
+  GLint bildschirm[4];
+  glGetDoublev(GL_MODELVIEW_MATRIX, modell_matrix);
+  glGetDoublev(GL_PROJECTION_MATRIX, projektions_matrix);
+  glGetIntegerv(GL_VIEWPORT, bildschirm);
+  gluUnProject(maus_x_, h()-maus_y_, zBuffer,
+               modell_matrix, projektions_matrix, bildschirm,
+               &oX, &oY, &oZ);
+
+
+  DBG_PROG_V( "X: "<<oX<<" Y: "<<oY<<" Z: "<<oZ )
+
+  gluProject( oX, oY, oZ,
+              modell_matrix, projektions_matrix, bildschirm,
+              &X,&Y,&Z);
+  DBG_PROG_ENDE
+}
+
+void
 GL_Ansicht::stop()
 {
   DBG_PROG_START
@@ -301,9 +330,9 @@ GL_Ansicht::handle( int event )
          break;
     case FL_DRAG:
          DBG_ICCGL_S( "FL_DRAG bei: " << Fl::event_x() << "," << Fl::event_y() )
-         maus_x = Fl::event_x();
-         maus_y = Fl::event_y();
-         agv_.agvHandleMotion(maus_x, maus_y);
+         maus_x_ = Fl::event_x();
+         maus_y_ = Fl::event_y();
+         agv_.agvHandleMotion(maus_x_, maus_y_);
          break;
     case FL_KEYDOWN:
          DBG_ICCGL_S( "FL_KEYDOWN bei: " << Fl::event_x() << "," << Fl::event_y() )
@@ -313,8 +342,8 @@ GL_Ansicht::handle( int event )
          break;
     case FL_MOVE:
          DBG_ICCGL_S( "FL_MOVE bei: " << Fl::event_x() << "," << Fl::event_y() )
-         maus_x = Fl::event_x();
-         maus_y = Fl::event_y();
+         maus_x_ = Fl::event_x();
+         maus_y_ = Fl::event_y();
          if(visible() && !agv_.agvMoving && agv_.AllowIdle) {
            zeichnen();
          }
@@ -1119,7 +1148,7 @@ GL_Ansicht::punkteAuffrischen()
              glBegin(GL_POINTS);
              for (unsigned i = 0; i < punkte_.size(); i+=3)
              {
-               if (farben_.size())
+               if (farben_.size() == punkte_.size())
                  glColor4f(farben_[i/3*4+0], farben_[i/3*4+1], farben_[i/3*4+2],
                            farben_[i/3*4+3] );
 
@@ -1559,7 +1588,11 @@ GL_Ansicht::zeichnen()
   DBG_ICCGL_START
   int scal = 1;
   GLfloat farbe[] =   { textfarbe[0],textfarbe[1],textfarbe[2], 1.0 };
+  GLdouble oX=.0,oY=.0,oZ=.0;
+  GLdouble X=.0,Y=.0,Z=.0;
+  static char text[128] = {""};
   std::string kanalname;
+
   if(visible() && agv_.agvMoving && !agv_.AllowIdle)
   {
     agv_.setIdle(visible());
@@ -1602,7 +1635,7 @@ GL_Ansicht::zeichnen()
 
          #ifdef HAVE_FTGL
          if(ortho_font)
-           glRasterPos2f(0,ortho_font->LineHeight()/5+20);
+           glRasterPos3f(0,ortho_font->LineHeight()/5+20,9.99);
          #endif
          ZeichneOText (ortho_font, scal, kanalname.c_str()) 
        } else {
@@ -1705,10 +1738,10 @@ GL_Ansicht::zeichnen()
              ZeichneOText (ortho_font, scal, t)
 
            static int maus_x_alt, maus_y_alt;
-           if(maus_x_alt != maus_x || maus_y_alt != maus_y)
+           if(maus_x_alt != maus_x_ || maus_y_alt != maus_y_)
              maus_steht = true;
-           maus_x_alt = maus_x;
-           maus_y_alt = maus_y;
+           maus_x_alt = maus_x_;
+           maus_y_alt = maus_y_;
        }
 
        glEnable(GL_TEXTURE_2D);
@@ -1720,7 +1753,7 @@ GL_Ansicht::zeichnen()
     }
 
 
-    glPushMatrix();  /* clear of last viewing xform, leaving perspective */
+    glPushMatrix();
 
       glLoadIdentity();
 
@@ -1736,38 +1769,20 @@ GL_Ansicht::zeichnen()
       glCallList( glListen[UMRISSE] ); DBG_ICCGL_V( glListen[UMRISSE] )
 
       if (zeige_helfer) {
-        //textGarnieren_();
         glCallList( glListen[HELFER] ); DBG_ICCGL_V( glListen[HELFER] )
       }
 
       glCallList( glListen[RASTER] ); DBG_ICCGL_V( glListen[RASTER] )
 
       if(punktform == MENU_dE1STERN)
-        glCallList( glListen[PUNKTE] ); //punkteAuffrischen();
+        glCallList( glListen[PUNKTE] );
 
       glCallList( glListen[PUNKTE] ); DBG_ICCGL_V( glListen[PUNKTE] )
 
-  // den Ort lokalisieren
-                    // wie weit ist das nächste Objekt in diese Richtung, sehr aufwendig
-                  GLfloat zBuffer;
-                  glReadPixels((GLint)maus_x,(GLint)h()-maus_y,1,1,GL_DEPTH_COMPONENT, GL_FLOAT, &zBuffer);
-                  GLdouble oX=0.0,oY=.0,oZ=0.;
-                  GLdouble modell_matrix[16], projektions_matrix[16];
-                  GLint bildschirm[4];
-                  glGetDoublev(GL_MODELVIEW_MATRIX, modell_matrix);
-                  glGetDoublev(GL_PROJECTION_MATRIX, projektions_matrix);
-                  glGetIntegerv(GL_VIEWPORT, bildschirm);
-                  gluUnProject(maus_x, h()-maus_y, zBuffer, modell_matrix, projektions_matrix, bildschirm, &oX, &oY, &oZ);
 
+      // den Ort lokalisieren
+      mausPunkt_ (oX, oY, oZ, X, Y, Z);
 
-                    //std::cout << "X: "<<x<<" Y: "<<y<<" Z: "<<z<<std::endl;
-
-                  GLdouble X=0.0,Y=.0,Z=0.;
-                  gluProject( oX, oY, oZ,
-                              modell_matrix, projektions_matrix,
-                              bildschirm, &X,&Y,&Z);
-
-                    static char text[128] = {""};
                     GLfloat grenze = 3.2;
                     if(von_farb_namen_.size() &&
                        -grenze < oY && oY < grenze &&
@@ -1785,8 +1800,9 @@ GL_Ansicht::zeichnen()
                         double lab[3] = {oY+0.5, oZ/2.55+0.5, oX/2.55+0.5},
                               *rgb = 0;
                         DBG_PROG_V( lab[0]<<" "<<lab[1]<<" "<<lab[2] )
-                        rgb = icc_oyranos.wandelLabNachBildschirmFarben(lab, 1,
-                                          icc_examin->intent(), 0);
+                        rgb = icc_oyranos. wandelLabNachBildschirmFarben(lab, 1,
+                                 icc_examin->intent(),
+                                 icc_examin->gamutwarn()?cmsFLAGS_GAMUTCHECK:0);
                         if(!rgb)  WARN_S( _("RGB Ergebnis nicht verfuegbar") )
                         else {
                           #ifndef Beleuchtung
@@ -1829,7 +1845,6 @@ GL_Ansicht::zeichnen()
 
                     if (zeige_helfer)
                       textGarnieren_();
-                    //ZeichneOText (ortho_font, scal, text)
 
                     // Kann aus der Zeichenfunktion auswandern
                     if(strlen(text))
@@ -1841,7 +1856,6 @@ GL_Ansicht::zeichnen()
                       glLoadIdentity();
                       glMatrixMode(GL_PROJECTION);
 
-                      //zeichneKoordinaten_();
                       glLoadIdentity();
                       glOrtho(0,w(),0,h(),-10.0,10.0);
 
@@ -1883,7 +1897,7 @@ GL_Ansicht::zeichnen()
                         ZeichneOText (ortho_font, scal, text)
                       }
                       //zeichneKoordinaten_();
-                      DBG_ICCGL_V( maus_x-x() <<" "<< -maus_y+h() )
+                      DBG_ICCGL_V( maus_x_-x() <<" "<< -maus_y_+h() )
                     }
 
                     glMatrixMode(GL_MODELVIEW);

@@ -401,6 +401,14 @@ Oyranos::wandelLabNachBildschirmFarben(double *Lab_Speicher, // 0.0 - 1.0
                 hLab = 0;
     static cmsHTRANSFORM hLabtoRGB = 0;
     double *RGB_Speicher = 0;
+    
+    static int flags_ = 0;
+
+    if(flags_ != flags && hLabtoRGB) {
+      cmsDeleteTransform(hLabtoRGB);
+      hLabtoRGB = 0;
+      flags_ = flags;
+    }
 
     // Initialisierung für lcms
     if(!hLabtoRGB)
@@ -423,8 +431,27 @@ Oyranos::wandelLabNachBildschirmFarben(double *Lab_Speicher, // 0.0 - 1.0
                                                hsRGB,
                                                intent,
                                                INTENT_RELATIVE_COLORIMETRIC,
-                                               cmsFLAGS_GAMUTCHECK|
                                                PRECALC|BW_COMP|flags);
+      cmsHPROFILE viele[3];
+      cmsHTRANSFORM tr1 = cmsCreateProofingTransform  (hsRGB, TYPE_RGB_DBL,
+                                               hLab, TYPE_Lab_DBL,
+                                               hsRGB,
+                                               intent,
+                                               INTENT_RELATIVE_COLORIMETRIC,
+                                               PRECALC|BW_COMP|flags);
+
+      viele[0] = cmsOpenProfileFromMem(const_cast<char*>(block), groesse);
+      viele[1] = cmsTransform2DeviceLink(tr1, 0);
+      _cmsSaveProfile ( viele[1],"proof1.icc");
+      viele[2] = cmsCreateLabProfile(cmsD50_xyY());
+      cmsHTRANSFORM tr = cmsCreateMultiprofileTransform  (viele,3,
+                                               TYPE_Lab_DBL,
+                                               TYPE_Lab_DBL,
+                                               INTENT_RELATIVE_COLORIMETRIC,
+                                               PRECALC|BW_COMP|flags);
+      cmsHPROFILE dp = cmsTransform2DeviceLink(tr, 0);
+      _cmsSaveProfile (dp,"proof2.icc");
+      DBG_V( "proof.icc geschrieben" )
       if (!hLabtoRGB) WARN_S( _("keine hXYZtoRGB Transformation gefunden") )
 
     }

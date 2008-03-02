@@ -1,3 +1,9 @@
+2005-06-04
+	* und: Farbhüllwarnung für Messfarben immer, für Lab Auswahl im oberen Menü
+
+2005-06-03
+	* und: farbiger Balken von gewählten 3D Punkt Lab -> 0ab
+
 2005-06-02
 	* und: schnellere OpenGL Tabellendarstellung
 

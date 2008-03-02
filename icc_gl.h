@@ -107,7 +107,7 @@ public:
   ~GL_Ansicht();
   void init(int id);
 
-  // welches Glutfenster wird verwaltet?
+  // welches Fenster wird verwaltet?
   int  id()          {return id_; } // gleich zu agviewer::RedisplayWindow
   // fltk virtual
   void draw();
@@ -177,8 +177,12 @@ public:
   void menueAufruf(int value);
   // Bewegungsfunktionen
   void stop(); 
-  int  maus_x;
-  int  maus_y;
+private:
+  int  maus_x_;
+  int  maus_y_;
+  void mausPunkt_( GLdouble & oX, GLdouble & oY, GLdouble & oZ,
+                  GLdouble & X, GLdouble & Y, GLdouble & Z );
+public:
   // Geschwindigkeit
   int  smooth;
   int  blend;

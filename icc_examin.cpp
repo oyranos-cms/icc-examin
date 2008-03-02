@@ -61,6 +61,7 @@ ICCexamin::ICCexamin ()
   statlabel = "";
   status_ = false;
   intent_ = 3;
+  gamutwarn_ = 0;
   DBG_PROG_ENDE
 }
 
