@@ -65,7 +65,8 @@ main (int argc, char** argv)
   const char *locale_paths[3];
   int is_path = -1;
 # if __APPLE__
-  locale_paths[0] = icc_examin_ns::holeBundleResource("locale","");
+  std::string bdr = icc_examin_ns::holeBundleResource("locale","");
+  locale_paths[0] = bdr.c_str();
   locale_paths[1] = LOCALEDIR;
   locale_paths[2] = SRC_LOCALEDIR;
   is_path = fl_search_locale_path (3, locale_paths, "de", "icc_examin");
