@@ -51,14 +51,6 @@ class GL_Ansicht : public Fl_Gl_Window , public Fl_Slot {
   std::vector<float>  farben_;        // rgba 0.0 - 1.0 (n*4)
   std::vector<std::vector<double> >kurven_;
 
-  bool auffrischen_;
-  // Referenz zu einem abgekoppelten fltk Objekt
-  // Der Gedanke ist : Fltk löscht den OpenGL Kontext.
-  //                   Die Klasse gl_fenster_ behält ihre volle Größe.
-  //                   Die GL_Ansicht kann in gl_fenster_ eingepasst oder
-  //                   auf 1x1 verkleinert werden.
-  //Fl_Gl_Window *gl_fenster_;
-  // GL_Ansicht an gl_fenster_ anpassen oder Größe 1x1
   void fensterForm();
 
   // inner Strukturen bei Datenwechsel anpassen
@@ -87,8 +79,6 @@ public:
 
   // welches Glutfenster wird verwaltet?
   int  id()          {return id_; } // gleich zu agviewer::RedisplayWindow
-  // welches agvfenster wird benutzt?
-  //Agviewer* agv()         {return &agv_; }
   // fltk virtual
   void draw();
   int  handle(int event);
@@ -168,26 +158,6 @@ public:
                       else  return _("Gibts nicht"); }
   unsigned int kanaele() {return nach_farb_namen_.size(); }
 };
-
-#if 0
-#define deklariereGlutFunktionen(n) \
-void reshape##n( int w, int h ); \
-void display##n(); \
-void sichtbar##n(int v); \
-void menuuse##n(int v); \
-void menueAufruf##n(int value);
-
-deklariereGlutFunktionen(1)  // mft Tabellenfenster
-deklariereGlutFunktionen(2)  // Farbraumhüllansicht
-
-void reshape(int id, int w, int h);
-void display(int id);
-void sichtbar(int id, int v);
-void menuuse(int id, int v);
-void menueAufruf(int id, int value);
-
-int  dID(int id, int display_list);
-#endif
 
 
 #endif //ICC_GL_H
