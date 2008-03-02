@@ -9,6 +9,7 @@
   #define DEBUG_PROFILIERER
 #endif
 
+#include <lcms.h>  // Farbumwandlung
 #include "icc_profilierer.h"
 #include "icc_examin.h"
 #include "icc_utils.h"

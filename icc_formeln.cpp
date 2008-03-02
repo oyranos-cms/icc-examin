@@ -32,7 +32,7 @@
   #define DEBUG_ICCFORMELN
 #endif
 
-#include "icc_profile.h"
+#include "icc_formeln.h"
 #include "icc_utils.h"
 
 #ifdef DEBUG_ICCFORMELN
@@ -40,9 +40,6 @@
 #else
   #define DBG_v(x)
 #endif
-
-#define MIN(a,b) (((a) <= (b)) ? (a) : (b))
-#define MAX(a,b) (((a) > (b)) ? (a) : (b))
 
 double
 gradATAN(double b, double a)
@@ -148,6 +145,73 @@ dE2000 (Lab Lab1, Lab Lab2, double kL, double kC, double kH)             // (1)
                  );                                                      // (22)
   DBG_v ( de2000 )
   return de2000;
+}
+
+
+void
+FarbeZuDouble (double* d_xyz, XYZ xyz)
+{ DBG
+  d_xyz[0] = xyz.X;
+  d_xyz[1] = xyz.Y;
+  d_xyz[2] = xyz.Z;
+}
+
+void
+FarbeZuDouble (XYZ *xyz, double* d_xyz)
+{ DBG
+  xyz->X = d_xyz[0];
+  xyz->Y = d_xyz[1];
+  xyz->Z = d_xyz[2];
+}
+
+void
+FarbeZuDouble (double* d_lab, Lab lab)
+{ DBG
+  d_lab[0] = lab.L;
+  d_lab[1] = lab.a;
+  d_lab[2] = lab.b;
+}
+
+void
+FarbeZuDouble (Lab *lab, double* d_lab)
+{ DBG
+  lab->L = d_lab[0];
+  lab->a = d_lab[1];
+  lab->b = d_lab[2];
+}
+
+void
+FarbeZuDouble (double* d_rgb, RGB rgb)
+{ DBG
+  d_rgb[0] = rgb.R;
+  d_rgb[1] = rgb.G;
+  d_rgb[2] = rgb.B;
+}
+
+void
+FarbeZuDouble (RGB *rgb, double* d_rgb)
+{ DBG
+  rgb->R = d_rgb[0];
+  rgb->G = d_rgb[1];
+  rgb->B = d_rgb[2];
+}
+
+void
+FarbeZuDouble (double* d_cmyk, CMYK cmyk)
+{ DBG
+  d_cmyk[0] = cmyk.C;
+  d_cmyk[1] = cmyk.M;
+  d_cmyk[2] = cmyk.Y;
+  d_cmyk[3] = cmyk.K;
+}
+
+void
+FarbeZuDouble (CMYK *cmyk, double* d_cmyk)
+{ DBG
+  cmyk->C = d_cmyk[0];
+  cmyk->M = d_cmyk[1];
+  cmyk->Y = d_cmyk[2];
+  cmyk->K = d_cmyk[3];
 }
 
 

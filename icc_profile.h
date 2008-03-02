@@ -38,97 +38,10 @@
 #include <vector>
 #include <fstream>
 #include "icc_utils.h"
-
-#include <lcms.h> // für it8 E/A
-
-
-// Zusätze - nicht definiert in icc34.h
-
-#ifndef icSigChromaticityType
-#define icSigChromaticityType 0x6368726D
-#endif
-
-// interne Funktionen
-
-const char* cp_nchar (char* text, int n);
+#include "icc_formeln.h"
+#include "icc_helfer.h"
 
 
-// interne Typen
-typedef struct {
-    double X;
-    double Y;
-    double Z;
-} XYZ;
-
-typedef struct {
-    double L;
-    double a;
-    double b;
-} Lab;
-
-typedef struct {
-    double R;
-    double G;
-    double B;
-} RGB;
-
-typedef struct {
-    double C;
-    double M;
-    double Y;
-    double K;
-} CMYK;
-
-// Umwandlungen
-void FarbeZuDouble (double* d_xyz, XYZ xyz);
-void FarbeZuDouble (double* d_rgb, RGB rgb);
-void FarbeZuDouble (double* d_lab, Lab lab);
-void FarbeZuDouble (double* d_cmyk, CMYK cmyk);
-void FarbeZuDouble (XYZ *xyz, double* d_xyz);
-void FarbeZuDouble (RGB *rgb, double* d_rgb);
-void FarbeZuDouble (Lab *lab, double* d_lab);
-void FarbeZuDouble (CMYK *cmyk, double* d_cmyk);
-
-
-// Farbfunktionen
-// definiert in icc_formeln.cpp
-double        dE2000 (Lab Lab1, Lab Lab2, double kL, double kC, double kH);
-
-// Helferfunktionen
-// definiert in icc_helfer.cpp
-icUInt16Number          icValue   (icUInt16Number val);
-icUInt32Number          icValue   (icUInt32Number val);
-unsigned long           icValue   (icUInt64Number val);
-double                  icSFValue (icS15Fixed16Number val);
-double                  icUFValue (icU16Fixed16Number val);
-icS15Fixed16Number      icValueSF (double val);
-icU16Fixed16Number      icValueUF (double val);
-icInt16Number                     icValue   (icInt16Number val);
-icInt32Number                     icValue   (icInt32Number val);
-int                     icValue   (icInt64Number val);
-icColorSpaceSignature   icValue   (icColorSpaceSignature val);
-icPlatformSignature     icValue   (icPlatformSignature val);
-icProfileClassSignature icValue   (icProfileClassSignature val);
-icTagSignature          icValue   (icTagSignature val);
-void                    icValueXYZ(icXYZNumber*, double X, double Y, double Z);
-
-double*                 XYZto_xyY (double* XYZ);
-double*                 XYZto_xyY (std::vector<double> XYZ);
-
-std::string         renderingIntentName ( int intent);
-std::string         getColorSpaceName   ( icColorSpaceSignature color);
-std::vector<std::string> getChannelNames( icColorSpaceSignature color);
-std::string         getDeviceClassName  ( icProfileClassSignature cl);
-std::string         getPlatformName     ( icPlatformSignature platform);
-std::string         getSigTagName( icTagSignature  sig );
-std::string         getSigTagDescription( icTagSignature  sig );
-std::string         getSigTypeName( icTagTypeSignature  sig );
-std::string         getSigTechnology( icTechnologySignature sig );
-std::string         getIlluminant( icIlluminant illu );
-std::string         getStandardObserver( icStandardObserver obsv );
-std::string         getMeasurementGeometry( icMeasurementGeometry measgeo );
-std::string         getMeasurementFlare( icMeasurementFlare flare );
-std::string         printDatum( icDateTimeNumber date );
 
 /**
   *   @brief interne ICC Profilstruktur

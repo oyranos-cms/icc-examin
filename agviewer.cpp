@@ -129,7 +129,6 @@ int AllowIdle, RedisplayWindow;
     * idle function.
     */
 
-#define MAX(x,y) (((x) > (y)) ? (x) : (y))
 #define TORAD(x) ((M_PI/180.0)*(x))
 #define TODEG(x) ((180.0/M_PI)*(x))
 

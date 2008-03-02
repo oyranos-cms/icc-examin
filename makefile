@@ -25,17 +25,19 @@ LDLIBS = -L$(libdir) -L./ $(FLTK_LIBS) \
 # -llprof
 
 CPP_HEADERS = \
-	icc_draw.h \
-	icc_examin.h \
-	icc_utils.h \
-	icc_profile.h \
-	icc_profilierer.h \
-	icc_vrml.h \
+	agviewer.h \
 	cccie64.h \
 	ciexyz64_1.h \
+	icc_draw.h \
+	icc_formeln.h \
+	icc_examin.h \
         icc_gl.h \
+	icc_helfer.h \
+	icc_profile.h \
+	icc_profilierer.h \
        	icc_ueber.h \
-	agviewer.h \
+	icc_utils.h \
+	icc_vrml.h \
         README \
         COPYING \
         AUTHORS
@@ -44,13 +46,13 @@ CPP_HEADERS = \
 CPPFILES = \
 	icc_draw.cpp \
 	icc_formeln.cpp \
+        icc_gl.cpp \
 	icc_helfer.cpp \
-	icc_profile.cpp \
 	icc_measurement.cpp \
+	icc_profile.cpp \
 	icc_profilierer.cpp \
 	icc_ueber.cpp \
 	icc_vrml.cpp \
-        icc_gl.cpp \
         agviewer.cpp
 #	vFLGLWidget.cpp \
 	ViewerFLTK.cpp 

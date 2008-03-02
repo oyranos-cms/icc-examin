@@ -32,6 +32,7 @@
   #define DEBUG_ICCMEASUREMENT
 #endif
 
+#include <lcms.h> // für CGATS lesen
 #include "icc_profile.h"
 #include "icc_examin.h"
 
