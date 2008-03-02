@@ -19,6 +19,12 @@ static Flu_File_Chooser *dateiwahl;
 static void dateiwahl_cb(const char *dateiname, int typ, void *arg) {
   DBG_PROG_START
 
+  // kein Profile Dialog
+  if (strstr("*.ic*" , dateiwahl->filter()) == 0) { DBG_PROG
+    DBG_PROG_ENDE
+    return;
+  }
+
     if (dateiname) {
       filename_alt = dateiname;
 
@@ -38,6 +44,7 @@ static Fl_File_Chooser *dateiwahl;
 static void dateiwahl_cb(Fl_File_Chooser *f,void *data) {
   DBG_PROG_START
 
+
   const char *filename;
 
     Fl_File_Chooser* fl = (Fl_File_Chooser*)f;
@@ -45,6 +52,11 @@ static void dateiwahl_cb(Fl_File_Chooser *f,void *data) {
     DBG_NUM_V( data )
     filename = fl->value();
   
+    // kein Profile Dialog
+    if (strstr("*.ic*" , filename) == 0) { DBG_PROG
+      DBG_PROG_ENDE
+      return;
+    }
 
     if (fl->count() && fl->value(0) && dateiwahl->preview()) {
       filename_alt = fl->value(0);
@@ -74,19 +86,51 @@ static void cb_ffnen(Fl_Menu_*, void*) {
 }
 
 static void cb_menueintrag_html_speichern(Fl_Menu_*, void*) {
-  std::string bericht = profile.report();
-  std::string filename = filename_alt;
-  filename=fl_file_chooser("Bericht Speichern", "HTML Dokumente (*.[H,h][T,t][M,m,]*)", filename_alt.c_str());
+  DBG_PROG_START
+std::string filename = filename_alt; DBG_PROG_V( filename )
+  std::string::size_type pos=0;
+  if ((pos = filename.find_last_of(".", filename.size())) != std::string::npos) { DBG_PROG
+    filename.replace (pos, 5, ".html"); DBG_NUM_S( ".html gesetzt" )
+  } DBG_PROG_V( filename )
+  dateiwahl->value(filename.c_str()); DBG_PROG
+  DBG_PROG_V( dateiwahl->pattern() )
+  std::string muster = dateiwahl->pattern(); DBG_PROG
+  std::string datei = dateiwahl->value(); DBG_PROG
+  std::string titel = dateiwahl->label(); DBG_PROG
+
+  dateiwahl->pattern(_("HTML Dokumente (*.htm*)")); DBG_PROG
+  dateiwahl->label(_("Bericht Speichern")); DBG_PROG
+
+  dateiwahl->show(); DBG_PROG
+  while( dateiwahl->shown() )
+    Fl::wait( 0.01 );
+
+  DBG_PROG_V( dateiwahl->pattern() )
+  if (dateiwahl->value())
+    filename = dateiwahl->value();
+  else
+    filename = "";
   DBG_PROG
 
-  if (filename == "" || filename == filename_alt) {
+  dateiwahl->pattern(muster.c_str()); DBG_PROG
+  dateiwahl->value(datei.c_str()); DBG_PROG
+  dateiwahl->label(titel.c_str()); DBG_PROG
+  DBG_PROG_V( dateiwahl->pattern() )
+
+  DBG_PROG_V( filename )
+
+  if (dateiwahl->count() == 0 || filename == "" || filename == filename_alt) {
     load_progress->hide ();
     return;
   }
 
+  std::string bericht = profile.report();
+
   std::ofstream f ( filename.c_str(),  std::ios::out );
   f.write ( bericht.c_str(), bericht.size() );
   f.close();
+
+  DBG_PROG_ENDE;
 }
 
 static void cb_Beenden(Fl_Menu_*, void*) {
@@ -193,6 +237,67 @@ int main(int argc, char **argv) {
   statlabel = (char*)calloc (sizeof (char), 1024);
   fullscreen = false;
   inspekt_topline = 0;
+
+  #ifdef HAVE_FLU
+    Flu_File_Chooser::favoritesTxt = _("Lesezeichen");
+    Flu_File_Chooser::myComputerTxt = _("Heimverzeichnis");
+    Flu_File_Chooser::myDocumentsTxt = _("Dokumente");
+    Flu_File_Chooser::desktopTxt = _("Desktop");
+
+    Flu_File_Chooser::filenameTxt = _("Dateiname");
+    Flu_File_Chooser::okTxt = _("Ja");
+    Flu_File_Chooser::cancelTxt = _("Abbrechen");
+    Flu_File_Chooser::locationTxt = _("Ordner");
+    Flu_File_Chooser::showHiddenTxt = _("zeige versteckte Dateien");
+    Flu_File_Chooser::fileTypesTxt = _("Datei Typen");
+    Flu_File_Chooser::directoryTxt = _("Verzeichnis");
+    Flu_File_Chooser::allFilesTxt = _("Alle Dateien (*)");
+    Flu_File_Chooser::defaultFolderNameTxt = _("Neues Verzeichnis");
+
+    Flu_File_Chooser::backTTxt = _("vorheriges Verzeichnis");
+    Flu_File_Chooser::forwardTTxt = _("nächstes Verzeichnis");
+    Flu_File_Chooser::upTTxt = _("nächsthöheres Verzeichnis");
+    Flu_File_Chooser::reloadTTxt = _("Auffrischen");
+    Flu_File_Chooser::trashTTxt = _("Löschen");
+    Flu_File_Chooser::newDirTTxt = _("Verzeichnis erstellen");
+    Flu_File_Chooser::addFavoriteTTxt = _("zu Lesezeichen");
+    Flu_File_Chooser::previewTTxt = _("Vorschau");
+    Flu_File_Chooser::listTTxt = _("Standard Anzeige");
+    Flu_File_Chooser::wideListTTxt = _("weite Anzeige");
+    Flu_File_Chooser::detailTTxt = _("detailierte Informationen");
+
+    Flu_File_Chooser::detailTxt[0] = _("Name");
+    Flu_File_Chooser::detailTxt[1] = _("Typ");
+    Flu_File_Chooser::detailTxt[2] = _("Grösse");
+    Flu_File_Chooser::detailTxt[3] = _("Datum");
+    Flu_File_Chooser::contextMenuTxt[0] = _("contextMenuTxt 0");
+    Flu_File_Chooser::contextMenuTxt[1] = _("Umbenennen");
+    Flu_File_Chooser::contextMenuTxt[2] = _("Löschen");
+    Flu_File_Chooser::diskTypesTxt[0] = _("Typ1");
+    Flu_File_Chooser::diskTypesTxt[1] = _("Typ2");
+    Flu_File_Chooser::diskTypesTxt[2] = _("Typ3");
+    Flu_File_Chooser::diskTypesTxt[3] = _("Typ4");
+    Flu_File_Chooser::diskTypesTxt[4] = _("Typ5");
+    Flu_File_Chooser::diskTypesTxt[5] = _("Typ6");
+
+    Flu_File_Chooser::createFolderErrTxt = _("Ordner konnte nicht erstellt werden");
+    Flu_File_Chooser::deleteFileErrTxt = _("konnte Datei nicht löschen");
+    Flu_File_Chooser::fileExistsErrTxt = _("Datei existiert");
+    Flu_File_Chooser::renameErrTxt = _("kontte nicht umbenennen");
+
+/*    Flu_File_Chooser:: = _("");
+    Flu_File_Chooser:: = _("");
+    Flu_File_Chooser:: = _("");
+    Flu_File_Chooser:: = _("");
+    Flu_File_Chooser:: = _("");*/
+    dateiwahl = new Flu_File_Chooser(filename_alt.c_str(), _("ICC Farbprofile (*.ic*)"), Flu_File_Chooser::SINGLE, _("Welches ICC Profil?"));
+    dateiwahl->add_context_handler(Flu_File_Chooser::ENTRY_FILE, "icc", _("Profil öffnen"), dateiwahl_cb, NULL);
+    dateiwahl->add_context_handler(Flu_File_Chooser::ENTRY_FILE, "icm", _("Profil öffnen"), dateiwahl_cb, NULL);
+  #else
+    dateiwahl = new Fl_File_Chooser(filename_alt.c_str(), _("ICC Farbprofile (*.[I,i][C,c][M,m,C,c])"), Fl_File_Chooser::SINGLE, _("Welches ICC Profil?"));
+    dateiwahl->callback(dateiwahl_cb);
+    dateiwahl->preview_label = _("Vorschau");
+  #endif
   { Fl_Double_Window* o = ueber = new Fl_Double_Window(366, 241, "\334""ber ICC examin");
     w = o;
     { Fl_Group* o = new Fl_Group(0, 0, 365, 240);
@@ -368,67 +473,6 @@ int main(int argc, char **argv) {
   Fl::scheme(NULL);
   Fl_File_Icon::load_system_icons();
 
-  #ifdef HAVE_FLU
-    Flu_File_Chooser::favoritesTxt = _("Lesezeichen");
-    Flu_File_Chooser::myComputerTxt = _("Heimverzeichnis");
-    Flu_File_Chooser::myDocumentsTxt = _("Dokumente");
-    Flu_File_Chooser::desktopTxt = _("Desktop");
-
-    Flu_File_Chooser::filenameTxt = _("Dateiname");
-    Flu_File_Chooser::okTxt = _("Öffnen");
-    Flu_File_Chooser::cancelTxt = _("Abbrechen");
-    Flu_File_Chooser::locationTxt = _("Ordner");
-    Flu_File_Chooser::showHiddenTxt = _("zeige versteckte Dateien");
-    Flu_File_Chooser::fileTypesTxt = _("Datei Typen");
-    Flu_File_Chooser::directoryTxt = _("Verzeichnis");
-    Flu_File_Chooser::allFilesTxt = _("Alle Dateien (*)");
-    Flu_File_Chooser::defaultFolderNameTxt = _("Neues Verzeichnis");
-
-    Flu_File_Chooser::backTTxt = _("vorheriges Verzeichnis");
-    Flu_File_Chooser::forwardTTxt = _("nächstes Verzeichnis");
-    Flu_File_Chooser::upTTxt = _("nächsthöheres Verzeichnis");
-    Flu_File_Chooser::reloadTTxt = _("Auffrischen");
-    Flu_File_Chooser::trashTTxt = _("Löschen");
-    Flu_File_Chooser::newDirTTxt = _("Verzeichnis erstellen");
-    Flu_File_Chooser::addFavoriteTTxt = _("zu Lesezeichen");
-    Flu_File_Chooser::previewTTxt = _("Vorschau");
-    Flu_File_Chooser::listTTxt = _("Standard Anzeige");
-    Flu_File_Chooser::wideListTTxt = _("weite Anzeige");
-    Flu_File_Chooser::detailTTxt = _("detailierte Informationen");
-
-    Flu_File_Chooser::detailTxt[0] = _("Name");
-    Flu_File_Chooser::detailTxt[1] = _("Typ");
-    Flu_File_Chooser::detailTxt[2] = _("Grösse");
-    Flu_File_Chooser::detailTxt[3] = _("Datum");
-    Flu_File_Chooser::contextMenuTxt[0] = _("contextMenuTxt 0");
-    Flu_File_Chooser::contextMenuTxt[1] = _("Umbenennen");
-    Flu_File_Chooser::contextMenuTxt[2] = _("Löschen");
-    Flu_File_Chooser::diskTypesTxt[0] = _("Typ1");
-    Flu_File_Chooser::diskTypesTxt[1] = _("Typ2");
-    Flu_File_Chooser::diskTypesTxt[2] = _("Typ3");
-    Flu_File_Chooser::diskTypesTxt[3] = _("Typ4");
-    Flu_File_Chooser::diskTypesTxt[4] = _("Typ5");
-    Flu_File_Chooser::diskTypesTxt[5] = _("Typ6");
-
-    Flu_File_Chooser::createFolderErrTxt = _("Ordner konnte nicht erstellt werden");
-    Flu_File_Chooser::deleteFileErrTxt = _("konnte Datei nicht löschen");
-    Flu_File_Chooser::fileExistsErrTxt = _("Datei existiert");
-    Flu_File_Chooser::renameErrTxt = _("kontte nicht umbenennen");
-
-/*    Flu_File_Chooser:: = _("");
-    Flu_File_Chooser:: = _("");
-    Flu_File_Chooser:: = _("");
-    Flu_File_Chooser:: = _("");
-    Flu_File_Chooser:: = _("");*/
-    dateiwahl = new Flu_File_Chooser(filename_alt.c_str(), _("ICC Farbprofile (*.ic*)"), Flu_File_Chooser::SINGLE, _("Welches ICC Profil?"));
-    dateiwahl->add_context_handler(Flu_File_Chooser::ENTRY_FILE, "icc", _("Profil öffnen"), dateiwahl_cb, NULL);
-    dateiwahl->add_context_handler(Flu_File_Chooser::ENTRY_FILE, "icm", _("Profil öffnen"), dateiwahl_cb, NULL);
-  #else
-    dateiwahl = new Fl_File_Chooser(filename_alt.c_str(), _("ICC Farbprofile (*.[I,i][C,c][M,m,C,c])"), Fl_File_Chooser::SINGLE, _("Welches ICC Profil?"));
-    dateiwahl->callback(dateiwahl_cb);
-    dateiwahl->preview_label = _("Vorschau");
-  #endif
-
   if (argc > 1)
     open (false);
   DBG_PROG_ENDE
@@ -446,6 +490,7 @@ std::string open(int interaktiv) {
   load_progress->show ();    load_progress->value (0.0);
 
   if (interaktiv) {
+    dateiwahl->value(filename_alt.c_str());
     dateiwahl->show(); //filename=fl_file_chooser("Wähle ICC Profil?", "ICC Farbprofile (*.[I,i][C,c][M,m,C,c])", filename_alt.c_str());
 
     
