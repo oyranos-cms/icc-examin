@@ -16,7 +16,6 @@ public:
   void myGLinit();
   void MakeDisplayLists();
   void MenuInit();
-  void display();
   void draw();
   void hinein_punkt(std::vector<double> vect, std::vector<std::string> txt);
   void hinein_kurven(std::vector<std::vector<double> >vect, std::vector<std::string> txt);
@@ -24,5 +23,9 @@ public:
 };
 
 void reshape(int w, int h);
+void display();
+void sichtbar(int v);
+void menuuse(int v);
+void handlemenu(int value);
 
 #endif //ICC_GL_H

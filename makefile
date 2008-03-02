@@ -20,7 +20,7 @@ X11_LIBS=-L/usr/X11R6/lib -lXinerama -lXft
 FLTK_LIBS=`fltk-config --use-images --use-gl --ldstaticflags`
 FLTK_GL_LIBS=-lfltk_gl
 LDLIBS = -L$(libdir) -L./ $(FLTK_LIBS) \
-	$(X11_LIBS) -llcms
+	$(X11_LIBS) -llcms -lglut
 #	$(VRML_LIBS) \
 # -llprof
 
