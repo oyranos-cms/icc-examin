@@ -1,4 +1,7 @@
 
+2005-03-12
+	* neu: automatische Bibliothekskonfiguration
+
 2005-02-07
 	* fix: osX nutzt andere Verbundobjekte als Linux in time.h
 	* fix: einige int -> size_t in icc_profile

@@ -33,12 +33,7 @@ else
 endif
 
 ifdef FLTK
-  FLTK_LIBS=`fltk-config --use-images --use-gl --use-glut $(DL)`
   TOOLKIT_FILES = $(FLTK_CPPFILES)
-endif
-
-ifdef FLU
-  FLU_LIBS=`flu-config $(DL)`
 endif
 
 ifdef X11
@@ -46,18 +41,11 @@ ifdef X11
   X11_LIBS=-L/usr/X11R6/lib -lX11 -lXxf86vm -lXext
 endif
 
-ifdef OY
-  ifdef X11
-    OY_LIBS = -loyranos_moni
-  endif
-  OYRANOS_LIBS = -lkdb -loyranos $(OY_LIBS)
-  OYRANOS_H = -I/usr/include
-endif
-
-CXXFLAGS=$(OPTS) $(INCL) $(FLU_H) $(FLTK_H) $(X_H) $(OSX_H) $(OY_H)
+CXXFLAGS=$(OPTS) $(INCL) \
+			$(FLU_H) $(FLTK_H) $(X_H) $(OSX_H) $(OYRANOS_H) $(LCMS_H)
 
 LDLIBS = -L$(libdir) -L./ -L/opt/kai-uwe/lib $(FLTK_LIBS) \
-	$(X11_LIBS) -llcms $(OYRANOS_LIBS) $(GLUT) $(FLU_LIBS)
+	$(X11_LIBS) -llcms $(OYRANOS_LIBS) $(GLUT) $(FLU_LIBS) $(LCMS_LIBS)
 
 CPP_HEADERS = \
 	agviewer.h \

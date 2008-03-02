@@ -32,10 +32,10 @@
 #include <string>
 #include <vector>
 
+namespace icc_examin_ns {
+
 #ifdef HAVE_FLTK
 #ifdef HAVE_FLU
-
-namespace icc_examin_ns {
 
 Flu_File_Chooser *dateiwahl;
 
@@ -161,8 +161,8 @@ nachricht(std::string text)
 }
 #endif
 
-}
-
 #endif
+
+}
 
 
