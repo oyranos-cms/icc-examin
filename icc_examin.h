@@ -33,16 +33,16 @@ extern Fl_Double_Window *details;
 #include <FL/Fl_Group.H>
 #include <FL/Fl_Menu_Bar.H>
 extern Fl_Menu_Bar *Fl_lookat_MenuBar;
-#include <FL/Fl_Box.H>
-extern Fl_Box *stat;
-#include <FL/Fl_Progress.H>
-extern Fl_Progress *load_progress;
 #include <FL/Fl_Tile.H>
 extern TagBrowser *tag_browser;
 extern Fl_Group *ansichtsgruppe;
 extern TagDrawings *tag_viewer;
 extern vFLGLWidget *canvas;
 extern TagTexts *tag_texts;
+#include <FL/Fl_Box.H>
+extern Fl_Box *stat;
+#include <FL/Fl_Progress.H>
+extern Fl_Progress *load_progress;
 extern Fl_Menu_Item menu_Fl_lookat_MenuBar[];
 #define Voll (menu_Fl_lookat_MenuBar+5)
 #define normal_ansicht (menu_Fl_lookat_MenuBar+6)

@@ -108,10 +108,8 @@ draw_cie_shoe (int X, int Y, int W, int H,
           fl_point ((int)cie_x , (int)cie_y);
       }
   } else {
-    //cout << xO << " " << yO << " " << w << " " << h << " "; DBG
     int wi = x(0.73)-x(0);
     int hi = y(0.01)-y(n);
-    //cout << x(0) << " " << y(0.01) << " " << wi << " " << hi << " " << y(0.01) << " "; DBG
 
     int    n_pixel = wi * hi, i = 0;
     unsigned char* RGB = (unsigned char*) calloc (3*n_pixel, sizeof(char));

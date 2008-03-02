@@ -57,10 +57,6 @@ Fl_Menu_Item menu_Fl_lookat_MenuBar[] = {
  {0}
 };
 
-Fl_Box *stat=(Fl_Box *)0;
-
-Fl_Progress *load_progress=(Fl_Progress *)0;
-
 TagBrowser *tag_browser=(TagBrowser *)0;
 
 static void cb_tag_browser(TagBrowser* o, void*) {
@@ -74,6 +70,10 @@ TagDrawings *tag_viewer=(TagDrawings *)0;
 vFLGLWidget *canvas=(vFLGLWidget *)0;
 
 TagTexts *tag_texts=(TagTexts *)0;
+
+Fl_Box *stat=(Fl_Box *)0;
+
+Fl_Progress *load_progress=(Fl_Progress *)0;
 
 int main(int argc, char **argv) {
   Fl_Double_Window* w;
@@ -89,20 +89,6 @@ int main(int argc, char **argv) {
         o->align(FL_ALIGN_LEFT|FL_ALIGN_INSIDE);
         o->when(3);
         o->menu(menu_Fl_lookat_MenuBar);
-      }
-      { Fl_Group* o = new Fl_Group(0, 495, 385, 25);
-        { Fl_Box* o = stat = new Fl_Box(0, 495, 385, 25, "No wrl file loaded.");
-          o->box(FL_THIN_DOWN_BOX);
-          o->color((Fl_Color)53);
-          o->align(FL_ALIGN_LEFT|FL_ALIGN_INSIDE);
-        }
-        { Fl_Progress* o = load_progress = new Fl_Progress(0, 495, 385, 25, "Laden ..");
-          o->color((Fl_Color)53);
-          o->hide();
-          o->maximum(1.0);
-          o->minimum(0.0);
-        }
-        o->end();
       }
       { Fl_Tile* o = new Fl_Tile(0, 25, 385, 470);
         { TagBrowser* o = tag_browser = new TagBrowser(0, 25, 385, 135, "Bitte w\344hlen Sie ein Profilmerkmal aus");
@@ -159,6 +145,21 @@ int main(int argc, char **argv) {
           o->end();
         }
         o->end();
+        Fl_Group::current()->resizable(o);
+      }
+      { Fl_Group* o = new Fl_Group(0, 495, 385, 25);
+        { Fl_Box* o = stat = new Fl_Box(0, 495, 385, 25, "No wrl file loaded.");
+          o->box(FL_THIN_DOWN_BOX);
+          o->color((Fl_Color)53);
+          o->align(FL_ALIGN_LEFT|FL_ALIGN_INSIDE);
+        }
+        { Fl_Progress* o = load_progress = new Fl_Progress(0, 495, 385, 25, "Laden ..");
+          o->color((Fl_Color)53);
+          o->hide();
+          o->maximum(1.0);
+          o->minimum(0.0);
+        }
+        o->end();
       }
       o->end();
     }
@@ -188,7 +189,7 @@ int main(int argc, char **argv) {
   }
   w->resizable(tag_texts);
   w->show();
-  canvas->hide();
+  canvas->show();
   viewer->Hok=1;
   viewer->Hdraw=1;
   viewer->timerUpdate();
@@ -419,6 +420,11 @@ void TagBrowser::select_item(int item) {
       tag_viewer->hinein_kurven( kurven, texte );
     } else if ( TagInfo[1] == "XYZ" ) {
       tag_viewer->hinein_punkt( profile.getTagCIExy(item), TagInfo );
+    } else if ( TagInfo[1] == "mft2"
+             || TagInfo[1] == "mft1" ) {
+      tag_viewer->hide();
+      tag_texts->hide();
+      canvas->show();
     }
     selectedTagName = TagInfo[0];
   }DBG
@@ -509,6 +515,7 @@ void TagDrawings::ruhig_neuzeichnen(void) {
 void d_haendler(void* o) {
   Fl::remove_timeout( (void(*)(void*))d_haendler, 0 );
   if (!Fl::has_timeout( (void(*)(void*))d_haendler, 0 )
+   && ((TagDrawings*)o)->active_r()
    && ((TagDrawings*)o)->visible_r()
    && ((TagDrawings*)o)->wiederholen) {
     ((TagDrawings*)o)->ruhig_neuzeichnen();
