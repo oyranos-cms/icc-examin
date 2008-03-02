@@ -234,12 +234,12 @@ class ICCfltkBetrachter {open
     code {fullscreen = false;
   setTitleUrl = true;} {}
     Fl_Window {} {open
-      xywh {1184 589 100 100} type Double resizable
+      xywh {1184 631 100 100} type Double resizable
       code0 {//o->show();} visible
     } {}
     Fl_Window ueber {
       label {About ICC Examin} open
-      xywh {910 298 365 289} type Double resizable
+      xywh {919 340 365 289} type Double resizable
       code0 {o->hide();}
       code1 {o->use_escape_hide = true;}
       class {icc_examin_ns::MyFl_Double_Window} visible
@@ -280,7 +280,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window vcgt {
       label {Grafic Card Gamma Table} open
-      xywh {103 654 370 390} type Double resizable
+      xywh {113 654 370 390} type Double resizable
       code0 {o->hide();}
       code1 {o->use_escape_hide = true;}
       class {icc_examin_ns::MyFl_Double_Window} visible
@@ -317,7 +317,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window DD {
       label Gamut open
-      xywh {899 460 385 520} type Double box NO_BOX color 53 resizable
+      xywh {1671 308 385 520} type Double box NO_BOX color 53 resizable
       class {icc_examin_ns::MyFl_Double_Window} visible
     } {
       Fl_Group {} {open
@@ -326,6 +326,16 @@ class ICCfltkBetrachter {open
         Fl_Menu_Bar DD_menueleiste {open
           xywh {0 0 385 25} align 20 when 3
         } {
+          Submenu {} {
+            label File open
+            xywh {0 0 100 20}
+          } {
+            MenuItem {} {
+              label Quit
+              callback {quit()}
+              xywh {30 30 100 20} shortcut 0x40071
+            }
+          }
           Submenu {} {
             label View open
             xywh {25 25 100 20}
@@ -348,18 +358,6 @@ class ICCfltkBetrachter {open
   }}
               xywh {25 25 100 20} shortcut 0x40076
             }
-            MenuItem {} {
-              label {Show Main Window}
-              callback {DBG_PROG_START
-  details->show();
-  DBG_PROG_ENDE}
-              xywh {60 60 100 20} shortcut 0x4006d divider
-            }
-            MenuItem {} {
-              label Quit
-              callback {quit()}
-              xywh {25 25 100 20} shortcut 0x40071
-            }
           }
           Submenu {} {
             label Options open
@@ -372,7 +370,7 @@ class ICCfltkBetrachter {open
 
   DBG_PROG_S (m->value())
 
-  icc_examin->gamutwarn(m->value());} selected
+  icc_examin->gamutwarn(m->value());}
               tooltip {Gamut Warning will gray out all colours not in your monitors gamut.} xywh {35 35 100 20} type Toggle shortcut 0x40077
               code0 {if(icc_examin->gamutwarn()) o->set();}
             }
@@ -438,6 +436,18 @@ class ICCfltkBetrachter {open
               tooltip {Black Point Compensation} xywh {65 65 100 20} type Toggle shortcut 0x40062
             }
           }
+          Submenu {} {
+            label Windows open
+            xywh {0 0 100 20}
+          } {
+            MenuItem {} {
+              label {Show Main Window}
+              callback {DBG_PROG_START
+  details->show();
+  DBG_PROG_ENDE}
+              xywh {65 65 100 20} shortcut 0x4006d
+            }
+          }
         }
         Fl_Tile {} {open
           xywh {0 25 385 495} resizable
@@ -456,7 +466,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window details {
       label {ICC Examin} open
-      xywh {899 524 385 520} type Double box NO_BOX color 53
+      xywh {2071 272 385 520} type Double box NO_BOX color 53
       code0 {o->main_win = o;}
       class {icc_examin_ns::MyFl_Double_Window} visible
     } {
@@ -508,13 +518,13 @@ class ICCfltkBetrachter {open
               xywh {15 15 100 20} shortcut 0x40071
             }
           }
-          Submenu {} {
+          Submenu menu_edit {
             label Edit open
             xywh {25 25 100 20} hide
           } {
-            MenuItem {} {
+            MenuItem menueintrag_oyranos {
               label {Oyranos Settings}
-              callback {oyranos_einstellungen()}
+              callback {icc_examin->oyranos_einstellungen();} selected
               xywh {25 25 100 20}
             }
           }
@@ -535,11 +545,11 @@ class ICCfltkBetrachter {open
             callback {DBG_PROG_START
   icc_examin->zeig3D();
   DBG_PROG_ENDE}
-            xywh {60 60 100 20} shortcut 0x40068
+            xywh {60 60 100 20} shortcut 0x40068 hide
           }
           Submenu {} {
             label View open
-            xywh {15 15 100 20} divider
+            xywh {15 15 100 20}
           } {
             MenuItem menueintrag_Voll {
               label {Whole Screen on/off}
@@ -559,17 +569,22 @@ class ICCfltkBetrachter {open
   }}
               xywh {15 15 100 20} shortcut 0x40076
             }
+          }
+          Submenu {} {
+            label Windows open
+            xywh {10 10 100 20} divider
+          } {
             MenuItem menueintrag_3D {
               label Gamut
               callback {DBG_PROG_START
   icc_examin->zeig3D();
   DBG_PROG_ENDE}
-              xywh {50 50 100 20} shortcut 0x40068 divider
+              xywh {55 55 100 20} shortcut 0x40068 divider
             }
             MenuItem menueintrag_inspekt {
               label {Report View}
               callback {icc_examin->zeigPrueftabelle();}
-              xywh {40 40 100 20} shortcut 0x40062 deactivate
+              xywh {45 45 100 20} shortcut 0x40062 deactivate
             }
             MenuItem menueintrag_zeigcgats {
               label {CGATS View}
@@ -579,21 +594,21 @@ class ICCfltkBetrachter {open
   DBG_PROG_S (m->value())
 
   icc_examin->zeigCGATS();}
-              xywh {50 50 100 20} shortcut 0x40067 deactivate divider
+              xywh {55 55 100 20} shortcut 0x40067 deactivate divider
             }
             MenuItem menueintrag_vcgt {
               label {Videocard Gamma}
               callback {icc_examin->vcgtStoppen();
 vcgt->show();
 icc_examin->vcgtZeigen();}
-              xywh {15 15 100 20} shortcut 0x40074
+              xywh {20 20 100 20} shortcut 0x40074
               code0 {o->hide();}
             }
             MenuItem menueintrag_testkurven {
               label {Test Curves}
               callback {vcgt->show();
 icc_examin->testZeigen();}
-              xywh {25 25 100 20} shortcut 0x50074 hide
+              xywh {30 30 100 20} shortcut 0x50074 hide
             }
           }
           Submenu menu_hilfe {

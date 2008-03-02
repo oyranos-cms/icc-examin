@@ -131,8 +131,10 @@ ICCexamin::netzLese (int n,
 
   
   {
-    netz_temp = icc_oyranos. netzVonProfil( *(profile[n]),
-                                            profile[n]->intent(), bpc() );
+    int intent = intentGet(NULL);
+    if(farbraumModus())
+      intent = profile[n]->intent();
+    netz_temp = icc_oyranos. netzVonProfil( *(profile[n]), intent, bpc() );
     if(netz_temp.size())
     {
       netz_temp[0].undurchsicht = (*netz)[n].undurchsicht;
@@ -222,8 +224,8 @@ ICCexamin::farbenLese (int n,
     for(unsigned i = 0; i < n_farben * 3; ++i)
       lab[i] = p_neu[i];
     rgb = icc_oyranos. wandelLabNachBildschirmFarben(lab, n_farben*mult,
-                                 icc_examin->intentGet(NULL),
-                                 icc_examin->gamutwarn()?cmsFLAGS_GAMUTCHECK:0);
+                                 intentGet(NULL),
+                                 gamutwarn()?cmsFLAGS_GAMUTCHECK:0);
     DBG_NUM_V( n_farben )
     if(!rgb)  WARN_S( _("RGB Ergebnis nicht verfuegbar") )
     for(unsigned i = 0; i < n_farben; ++i)

@@ -54,11 +54,13 @@ struct ICCnetz {
   int grau;                                      //!< keine farbe?
   double undurchsicht;                           //!< Undurchlaessigkeit 0..1
   double schattierung;                           //!< L* Farbton fuer Grau 0..1
+  int kubus;                                     //!< aus einem Kubus generiert
   ICCnetz() {
     aktiv = 1;
     grau = 0;
     undurchsicht = 0.5;
     schattierung = 0.2;
+    kubus = 0;
   }
 };
 

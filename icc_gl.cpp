@@ -168,6 +168,8 @@ GL_Ansicht::GL_Ansicht(int X,int Y,int W,int H)
   wiederholen = 0;
   maus_x_ = 0;
   maus_y_ = 0;
+  maus_x_alt = -1;
+  maus_y_alt = -1;
   maus_steht = false;
   ist_bewegt_ = false;
   valid_ = false;
@@ -1449,6 +1451,7 @@ GL_Ansicht::netzeAuffrischen()
        static ICCnetz netz;
        netz.punkte.clear();
        netz.indexe.clear();
+       netz.kubus = dreiecks_netze[0].kubus;
        int punkt_zahl = 0;
        for (unsigned int i = 0; i < dreiecks_netze.size(); ++i)
          punkt_zahl += dreiecks_netze[i].punkte.size();
@@ -1561,7 +1564,17 @@ GL_Ansicht::netzeAuffrischen()
       
       DBG_ICCGL_V( netz.indexe.size() <<" "<< netz.punkte.size() )
 
-#if 1
+//#define EXTERN_LINIEN
+#ifdef EXTERN_LINIEN
+      double *linien = NULL;
+      if(netz.kubus)
+      {
+        linien = new double [netz.indexe.size() * 7 + 1];
+        linien[0] = netz.indexe.size();
+      }
+      int n = 0;
+#endif
+
         std::multimap<double,DreiecksIndexe>::const_iterator it;
         for( it = netz.indexe.begin(); it != netz.indexe.end(); ++it )
         {
@@ -1638,32 +1651,70 @@ GL_Ansicht::netzeAuffrischen()
                         netz.punkte[index].koord[1]+normale[1]/len*.1 );
           glEnd();
           }
-        }
-#else
-      for( j = 0; j < dreiecks_netze.size(); j++ )
-      {
-        std::multimap<double,DreiecksIndexe>::const_iterator it;
-        for( it = dreiecks_netze[j].indexe.begin(); it != dreiecks_netze[j].indexe.end(); ++it )
-        {
-          glBegin(GL_TRIANGLES);
-          int index;
-          for( int l = 2; l >= 0; --l)
+#ifdef EXTERN_LINIEN
+          if(linien)
           {
-            index = it->second.i[l];
-            glColor4d( dreiecks_netze[j].punkte[index].farbe[0],
-                       dreiecks_netze[j].punkte[index].farbe[1],
-                       dreiecks_netze[j].punkte[index].farbe[2],
-                       dreiecks_netze[j].undurchsicht);
-
-            // Punktkoordinaten setzen
-            glVertex3d( dreiecks_netze[j].punkte[index].koord[2]*b_darstellungs_breite,
-                        dreiecks_netze[j].punkte[index].koord[0],
-                        dreiecks_netze[j].punkte[index].koord[1]*a_darstellungs_breite );
+            linien[n*7+3] = netz.punkte[it->second.i[1]].koord[2];
+            linien[n*7+1] = netz.punkte[it->second.i[1]].koord[0];
+            linien[n*7+2] = netz.punkte[it->second.i[1]].koord[1];
+            linien[n*7+6] = netz.punkte[it->second.i[1]].koord[2];
+            linien[n*7+4] = netz.punkte[it->second.i[1]].koord[0];
+            linien[n*7+5] = netz.punkte[it->second.i[1]].koord[1];
+            linien[n*7+7] = netz.punkte[index].farbe[3];
           }
+          ++n;
+#else
+          if(netz.kubus)
+          {
+          GLfloat farbe[] =   { 0,0,0, netz.punkte[index].farbe[3] };
+          FARBE ( 1.0,1.0,1.0 );
+          glLineWidth(strich1*strichmult);
+          glDisable (GL_LIGHTING);
+          glDisable (GL_ALPHA_TEST_FUNC);
+          glBegin(GL_LINES);
+            glVertex3d( netz.punkte[it->second.i[1]].koord[2],
+                        netz.punkte[it->second.i[1]].koord[0],
+                        netz.punkte[it->second.i[1]].koord[1] );
+            glVertex3d( netz.punkte[it->second.i[0]].koord[2],
+                        netz.punkte[it->second.i[0]].koord[0],
+                        netz.punkte[it->second.i[0]].koord[1] );
           glEnd();
-        }
-      }
+          glEnable (GL_ALPHA_TEST_FUNC);
+          glEnable (GL_LIGHTING);
+          }
 #endif
+        }
+#ifdef EXTERN_LINIEN
+        GLfloat farbe[] =   { 0,0,0,0 };
+        glLineWidth(strich1*strichmult);
+        glDisable (GL_LIGHTING);
+        glDisable (GL_ALPHA_TEST_FUNC);
+        if(linien)
+        {
+          double op_alt = -1.0;
+          for(int i = 0; i < linien[0]; ++i)
+          {
+            if(op_alt != linien[i*7+7])
+            {
+              farbe[3] = linien[i*7+7];
+              FARBE ( 1.0,1.0,1.0 );
+              op_alt = linien[i*7+7];
+            }
+            glBegin(GL_LINES);
+              glVertex3d( linien[n*7+3],
+                          linien[n*7+1],
+                          linien[n*7+2] );
+              glVertex3d( linien[n*7+6],
+                          linien[n*7+4],
+                          linien[n*7+5] );
+            glEnd();
+          }
+          delete [] linien;
+        }
+        glEnable (GL_ALPHA_TEST_FUNC);
+        glEnable (GL_LIGHTING);
+#endif
+
       glPopMatrix();
 
       glDisable (GL_BLEND);
@@ -1893,20 +1944,30 @@ GL_Ansicht::zeigeUmrisse_()
          dreiecks_netze[i].aktiv &&
          dreiecks_netze[i].undurchsicht)
       {
-#       ifdef DRAW_UMRISS
-        glLineWidth(6.0*strichmult);
+        //Farbband
+        if(icc_debug)
+        {
+        glLineWidth(strich3*strichmult);
         glColor4f(1., 1.0, 1.0, 1.0);
         glBegin(GL_LINE_STRIP);
         for (int z=0 ; z < (int)dreiecks_netze[i].umriss.size(); z++) {
+          if(!dreiecks_netze[i].grau) {
+            FARBE(dreiecks_netze[i].umriss[z].farbe[0],
+                  dreiecks_netze[i].umriss[z].farbe[1],
+                  dreiecks_netze[i].umriss[z].farbe[2])
+          }
+
           glVertex3d( 
-         (dreiecks_netze[i].umriss[z*3].koord[2]*b_darstellungs_breite - b_darstellungs_breite/2.),
-         (dreiecks_netze[i].umriss[z*3].koord[0] - 0.5),
-         (dreiecks_netze[i].umriss[z*3].koord[1]*a_darstellungs_breite - a_darstellungs_breite/2.)
+                  (dreiecks_netze[i].umriss[z].koord[2] * b_darstellungs_breite
+                    - b_darstellungs_breite/2.),
+                  (dreiecks_netze[i].umriss[z].koord[0] - 0.5),
+                  (dreiecks_netze[i].umriss[z].koord[1] * a_darstellungs_breite
+                    - a_darstellungs_breite/2.)
           );
         }
         glEnd();
-#       endif
-        // Schatten
+        }
+        // farbbandschatten
         int n = dreiecks_netze[i].umriss.size();
         if(!dreiecks_netze[i].schattierung)
           ;//netzeAuffrischen();
@@ -2370,6 +2431,7 @@ GL_Ansicht::zeichnen()
                           glEnable(GL_LIGHTING);
 #                         endif
                         }
+                        glLineWidth(strich1*strichmult);
                         if(rgb) delete [] rgb;
                     }
 

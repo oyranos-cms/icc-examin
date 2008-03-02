@@ -114,14 +114,14 @@ public:
   icc_examin_ns::MyFl_Double_Window *DD;
   Fl_Menu_Bar *DD_menueleiste;
   static Fl_Menu_Item menu_DD_menueleiste[];
+private:
+  void cb_Quit_i(Fl_Menu_*, void*);
+  static void cb_Quit(Fl_Menu_*, void*);
+public:
   static Fl_Menu_Item *DD_menueintrag_Voll;
 private:
   void cb_DD_menueintrag_Voll_i(Fl_Menu_*, void*);
   static void cb_DD_menueintrag_Voll(Fl_Menu_*, void*);
-  void cb_Show_i(Fl_Menu_*, void*);
-  static void cb_Show(Fl_Menu_*, void*);
-  void cb_Quit_i(Fl_Menu_*, void*);
-  static void cb_Quit(Fl_Menu_*, void*);
 public:
   static Fl_Menu_Item *menueintrag_gamutwarn;
 private:
@@ -147,6 +147,8 @@ public:
 private:
   void cb_menueintrag_bpc_i(Fl_Menu_*, void*);
   static void cb_menueintrag_bpc(Fl_Menu_*, void*);
+  void cb_Show_i(Fl_Menu_*, void*);
+  static void cb_Show(Fl_Menu_*, void*);
 public:
   GL_Ansicht *DD_farbraum;
   Fl_Box *DD_box_stat;
@@ -173,8 +175,12 @@ private:
   static void cb_menueintrag_gamut_vrml_speichern(Fl_Menu_*, void*);
   void cb_Quit1_i(Fl_Menu_*, void*);
   static void cb_Quit1(Fl_Menu_*, void*);
-  void cb_Oyranos_i(Fl_Menu_*, void*);
-  static void cb_Oyranos(Fl_Menu_*, void*);
+public:
+  static Fl_Menu_Item *menu_edit;
+  static Fl_Menu_Item *menueintrag_oyranos;
+private:
+  void cb_menueintrag_oyranos_i(Fl_Menu_*, void*);
+  static void cb_menueintrag_oyranos(Fl_Menu_*, void*);
 public:
   static Fl_Menu_Item *menueintrag_lang;
 private:

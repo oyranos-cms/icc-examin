@@ -861,9 +861,13 @@ vergleicheFarben(void* zeiger)
       }
 
     // Maximalwerte
-  holeFarbPunkt(layer, min_x, min_y, buf, n, colour_x);
+  int x = MAX(MIN(min_x, layer->sel_w + layer->sel_x1), layer->sel_x1);
+  int y = MAX(MIN(min_y, layer->sel_h + layer->sel_y1), layer->sel_y1);
+  holeFarbPunkt(layer, x, y, buf, n, colour_x);
   ++colour_x;
-  holeFarbPunkt(layer, max_x, max_y, buf, n, colour_x);
+  x = MAX(MIN(max_x, layer->sel_w + layer->sel_x1), layer->sel_x1);
+  y = MAX(MIN(max_y, layer->sel_h + layer->sel_y1), layer->sel_y1);
+  holeFarbPunkt(layer, x, y, buf, n, colour_x);
 
   {
     // Vergleich der vorherigen Auslese
@@ -1269,7 +1273,7 @@ bearbeiteEingebetteteProfile( channel *layer )
   //DBG_PROG_S( "hp = " << hp )
   // Speichern des eingebetteten Profiles
   if(strcmp(old_profil_name.c_str(), profil_name) != 0 ||
-     layer->intent != intent_alt)
+     (int)layer->intent != intent_alt)
   {
     gint size=0;
     image_profile = gimp_image_get_icc_profile_by_mem( image_ID, &size,
@@ -1299,7 +1303,7 @@ bearbeiteEingebetteteProfile( channel *layer )
   if( (pprofil_name ?
        (strcmp(old_pprofil_name.c_str(), pprofil_name) != 0 ||
         old_proofing != new_proofing ) : 0) ||
-      layer->intent_proof != intent_alt_proof )
+      (int)layer->intent_proof != intent_alt_proof )
   {
     gint psize=0;
     if ( gimp_image_has_icc_profile (image_ID, ICC_PROOF_PROFILE) &&

@@ -84,11 +84,17 @@ class ICCexamin : public icc_examin_ns::Beobachter,
   public:
     int          erneuern();
     void         erneuern(int pos);
+    enum AUFFRISCHEN {
+    PROGRAMM = 1,
+    OYRANOS = 2
+    };
+    void         auffrischen(int schalter);
   public:
     void         oeffnen ();                   //!< interaktiv
     void         oeffnen (std::vector<std::string> dateinamen);
     bool         lade ();
     void         lade (std::vector<Speicher> & neu);
+    void         oyranos_einstellungen();
 
   private:
     void         erneuerTagBrowserText_ (void);//!< Profil Text in browserText

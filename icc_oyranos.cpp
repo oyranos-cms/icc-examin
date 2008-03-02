@@ -98,6 +98,16 @@ typedef std::map<std::string,Speicher>::iterator Prof_mapIt;
 typedef std::pair<std::string,Speicher> Prof_Map_elem;
 typedef std::pair<Prof_map::const_iterator,bool> Prof_mapIt_bool;
 
+void
+Oyranos::clear()
+{
+    lab_.clear();
+    moni_.clear();
+    rgb_.clear();
+    cmyk_.clear();
+    proof_.clear();
+}
+
 bool
 Oyranos::profil_test_ (const char* profil_name)
 {
@@ -787,7 +797,8 @@ Oyranos::netzVonProfil_ (std::vector<ICCnetz> & netze,
       }
     }
 
-  wandelProfilNachLabUndZurueck( lab, size, intent, bpc, profil );
+  if(wandelProfilNachLabUndZurueck( lab, size, intent, bpc, profil ))
+    return  std::string("oyranos");
   double * rgb = wandelLabNachBildschirmFarben( lab, size, 0, 0 );
 
   // Netz initialisieren
@@ -806,9 +817,6 @@ Oyranos::netzVonProfil_ (std::vector<ICCnetz> & netze,
   // Netze bauen
   char *liste = new char [size];
   memset( liste, 1, size );
-  for(int i = 0 ; i < size; ++i)
-    for(int j = i; j < size; ++j)
-      if(0) ;
 
   std::pair<double,DreiecksIndexe> index_p;
   for(int y = 0; y < a; ++y)
@@ -830,8 +838,8 @@ Oyranos::netzVonProfil_ (std::vector<ICCnetz> & netze,
     if(0 < y && y < a - 1)
     {
       // 0 0 .
-      index_p.second.i[0] = off-y;  index_p.second.i[1] = off+(y+1)*2*(a-1)-a+1;
-      index_p.second.i[2] = off-y-1;
+      index_p.second.i[2] = off-y;  index_p.second.i[0] = off+(y+1)*2*(a-1)-a+1;
+      index_p.second.i[1] = off-y-1;
       netze[0].indexe. insert( index_p );
 
                                     index_p.second.i[0] = off+(y+0)*2*(a-1)-a+1;
@@ -839,12 +847,12 @@ Oyranos::netzVonProfil_ (std::vector<ICCnetz> & netze,
       netze[0].indexe. insert( index_p );
 
       // 0 1 .
-      index_p.second.i[0] = off+(y+1)*2*(a-1)-1; index_p.second.i[2] =off-3*a+y+1;
-      index_p.second.i[1] = off+(y)*2*(a-1)-1;
+      index_p.second.i[1] = off+(y+1)*2*(a-1)-1; index_p.second.i[0] =off-3*a+y+1;
+      index_p.second.i[2] = off+(y)*2*(a-1)-1;
       netze[0].indexe. insert( index_p );
 
-                                               index_p.second.i[0] =off-3*a+y+1;
-      index_p.second.i[1] = off+(y)*2*(a-1)-1; index_p.second.i[2] = off-3*a+y;
+                                               index_p.second.i[1] =off-3*a+y+1;
+      index_p.second.i[2] = off+(y)*2*(a-1)-1; index_p.second.i[0] = off-3*a+y;
       netze[0].indexe. insert( index_p );
 
       // 1 0 .
@@ -881,17 +889,17 @@ Oyranos::netzVonProfil_ (std::vector<ICCnetz> & netze,
           netze[0].indexe. insert( index_p );
 
           // 0 0 0
-          index_p.second.i[0] = off-1;   index_p.second.i[2] = off+a-1;
-          index_p.second.i[1] = off-4*a;
+          index_p.second.i[1] = off-1;   index_p.second.i[0] = off+a-1;
+          index_p.second.i[2] = off-4*a;
           netze[0].indexe. insert( index_p );
 
-                                         index_p.second.i[0] = off+a-1;
-          index_p.second.i[1] = off-4*a; index_p.second.i[2] = off - 4*a+1;
+                                         index_p.second.i[1] = off+a-1;
+          index_p.second.i[2] = off-4*a; index_p.second.i[0] = off - 4*a+1;
           netze[0].indexe. insert( index_p );
 
           // 0 0 1
-          index_p.second.i[0] = off-a; index_p.second.i[2] = off-a-1;
-                                    index_p.second.i[1] = off+2*(a-1)*(a-1)-a+1;
+          index_p.second.i[2] = off-a; index_p.second.i[1] = off-a-1;
+                                    index_p.second.i[0] = off+2*(a-1)*(a-1)-a+1;
           netze[0].indexe. insert( index_p );
 
           index_p.second.i[0] = off-a;
@@ -903,8 +911,8 @@ Oyranos::netzVonProfil_ (std::vector<ICCnetz> & netze,
           index_p.second.i[1] = off+2*(a-1)*(a-1)-1;
           netze[0].indexe. insert( index_p );
 
-                                         index_p.second.i[0] = off-2*a;
-          index_p.second.i[1] = off+2*(a-1)*(a-1)-1; index_p.second.i[2] = off-2*a-1;
+                                         index_p.second.i[1] = off-2*a;
+          index_p.second.i[2] = off+2*(a-1)*(a-1)-1; index_p.second.i[0] = off-2*a-1;
           netze[0].indexe. insert( index_p );
 
 
@@ -913,17 +921,17 @@ Oyranos::netzVonProfil_ (std::vector<ICCnetz> & netze,
           index_p.second.i[1] = off+2*(a-1)*(a-1)-a;
           netze[0].indexe. insert( index_p );
 
-                                         index_p.second.i[0] = 2*a;
-          index_p.second.i[1] = off+2*(a-1)*(a-1)-a;index_p.second.i[2] = 2*a+1;
+                                         index_p.second.i[1] = 2*a;
+          index_p.second.i[2] = off+2*(a-1)*(a-1)-a;index_p.second.i[0] = 2*a+1;
           netze[0].indexe. insert( index_p );
 
           // 1 0 1
-          index_p.second.i[0] = 3*a;   index_p.second.i[1] = 3*a-1;
-                                  index_p.second.i[2] = off+2*(a-1)*(a-1)-2*a+2;
+          index_p.second.i[2] = 3*a;   index_p.second.i[0] = 3*a-1;
+                                  index_p.second.i[1] = off+2*(a-1)*(a-1)-2*a+2;
           netze[0].indexe. insert( index_p );
 
-          index_p.second.i[0] = 3*a;
-          index_p.second.i[2] = 3*a+1; index_p.second.i[1] = off+2*(a-1)*(a-1)-2*a+2;
+          index_p.second.i[2] = 3*a;
+          index_p.second.i[1] = 3*a+1; index_p.second.i[0] = off+2*(a-1)*(a-1)-2*a+2;
           netze[0].indexe. insert( index_p );
 
           // 1 1 0
@@ -940,8 +948,8 @@ Oyranos::netzVonProfil_ (std::vector<ICCnetz> & netze,
           index_p.second.i[1] = off-3*a-1; index_p.second.i[2] = off-3*a;
           netze[0].indexe. insert( index_p );
 
-          index_p.second.i[0] = off+2*(a-1)-1; index_p.second.i[2] = off-3*a+1;
-                                         index_p.second.i[1] = off-3*a+0;
+          index_p.second.i[1] = off+2*(a-1)-1; index_p.second.i[0] = off-3*a+1;
+                                         index_p.second.i[2] = off-3*a+0;
           netze[0].indexe. insert( index_p );
 
       // unterer Rand
@@ -964,8 +972,8 @@ Oyranos::netzVonProfil_ (std::vector<ICCnetz> & netze,
           index_p.second.i[1] = off+2*(a-1)*(a-1)-a+x;
           netze[0].indexe. insert( index_p );
 
-                                         index_p.second.i[0] = off-a-x-1;
-          index_p.second.i[1] = off+2*(a-1)*(a-1)-a+x; index_p.second.i[2] = off+2*(a-1)*(a-1)-a+x+1;
+                                         index_p.second.i[2] = off-a-x-1;
+          index_p.second.i[0] = off+2*(a-1)*(a-1)-a+x; index_p.second.i[1] = off+2*(a-1)*(a-1)-a+x+1;
           netze[0].indexe. insert( index_p );
 
           // 1 . 1
@@ -983,8 +991,8 @@ Oyranos::netzVonProfil_ (std::vector<ICCnetz> & netze,
           index_p.second.i[1] = 4*a*(a+1)-4*a + x-a-1;
           netze[0].indexe. insert( index_p );
 
-                                         index_p.second.i[0] = off+x-3+1;
-          index_p.second.i[1] = 4*a*(a+1)-4*a + x-a-1; index_p.second.i[2] = 4*a*(a+1)-4*a + x-a;
+                                         index_p.second.i[1] = off+x-3+1;
+          index_p.second.i[2] = 4*a*(a+1)-4*a + x-a-1; index_p.second.i[0] = 4*a*(a+1)-4*a + x-a;
           netze[0].indexe. insert( index_p );
         }
       // oberer Rand
@@ -999,8 +1007,8 @@ Oyranos::netzVonProfil_ (std::vector<ICCnetz> & netze,
         index_p.second.i[1] = (y+0)*2*(a-1)+x_;
         netze[0].indexe. insert( index_p );
 
-                                                index_p.second.i[0] = (y-1)*2*(a-1)+x_+1;
-        index_p.second.i[1] = (y+0)*2*(a-1)+x_; index_p.second.i[2] = (y+0)*2*(a-1)+x_+1;
+                                                index_p.second.i[2] = (y-1)*2*(a-1)+x_+1;
+        index_p.second.i[0] = (y+0)*2*(a-1)+x_; index_p.second.i[1] = (y+0)*2*(a-1)+x_+1;
         netze[0].indexe. insert( index_p );
 
       } else if(b * (a - b) <= x && x < ++b * a - b - 1) {
@@ -1016,6 +1024,7 @@ Oyranos::netzVonProfil_ (std::vector<ICCnetz> & netze,
     }
   }
 
+  netze[0].kubus = 1;
 
   delete [] rgb;
   delete [] lab;
@@ -1199,7 +1208,7 @@ Oyranos::gamutCheckAbstract(Speicher & s, Speicher & abstract,
 }
 
 
-void
+int
 Oyranos::wandelProfilNachLabUndZurueck(double *lab, // 0.0 - 1.0
                                        size_t  size, int intent, int flags,
                                        Speicher & p )
@@ -1228,8 +1237,17 @@ Oyranos::wandelProfilNachLabUndZurueck(double *lab, // 0.0 - 1.0
         hProfil = cmsOpenProfileFromMem(const_cast<char*>(block), groesse);
       else
         WARN_S("no profile found");
+
+      icColorSpaceSignature pcs = cmsGetPCS( hProfil );
+      if( pcs != icSigXYZData && pcs != icSigLabData )
+        return 1;
+      icProfileClassSignature device = cmsGetDeviceClass( hProfil );
+      if( device != icSigInputClass && device != icSigDisplayClass &&
+          device != icSigOutputClass && device != icSigAbstractClass )
+        return 1;
+
       hLab  = cmsCreateLabProfile(cmsD50_xyY());
-      if(!hLab)  WARN_S( "hLab Profil not opened" )
+      if(!hLab) { WARN_S( "hLab Profil not opened" ); return 1; }
 
       kanaele = getColorSpaceChannels( cmsGetColorSpace( hProfil ) );
       format = COLORSPACE_SH(PT_ANY) |
@@ -1240,11 +1258,11 @@ Oyranos::wandelProfilNachLabUndZurueck(double *lab, // 0.0 - 1.0
                                                hProfil, format,
                                                intent,
                                                PRECALC|flags);
-      if (!form) WARN_S( "no transformation found" )
+      if (!form) { WARN_S( "no transformation found" ); return 1; }
     }
 
     double *farben = new double [size * kanaele];
-    if(!farben)  WARN_S( "not enough memory available" )
+    if(!farben) { WARN_S( "not enough memory available" ); return 1; }
 
     double *cielab = new double [size * 3];
 
@@ -1257,6 +1275,7 @@ Oyranos::wandelProfilNachLabUndZurueck(double *lab, // 0.0 - 1.0
                                                hLab, TYPE_Lab_DBL,
                                                intent,
                                                PRECALC|flags);
+    if (!form) { WARN_S( "no transformation found" ); return 1; }
 
     cmsDoTransform (form, farben, cielab, size);
     cmsDeleteTransform (form);
@@ -1270,6 +1289,7 @@ Oyranos::wandelProfilNachLabUndZurueck(double *lab, // 0.0 - 1.0
     if(farben)    delete [] farben;
 
   DBG_PROG_ENDE
+  return 0;
 }
 
 

@@ -164,6 +164,8 @@ ICCexamin::start (int argc, char** argv)
   fl_translate_menue( icc_betrachter->menu_menueleiste );
   fl_translate_menue( icc_betrachter->menu_DD_menueleiste );
 
+  cmsErrorAction( LCMS_ERRC_WARNING );
+
   icc_betrachter->init( argc, argv );
 
   icc_betrachter->mft_gl->init(1);
@@ -203,6 +205,16 @@ ICCexamin::start (int argc, char** argv)
 # else
   DBG_PROG_S( "Zeige vcgt nicht" )
 # endif
+
+  FILE *out = popen("oyranos-config", "r");
+  if(out)
+  {  
+    char name[64];
+    fscanf( out, "%12s", name );
+    if( strcmp(name, "oyranos") == 0 )
+      icc_betrachter->menu_edit->show();
+    pclose(out);
+  } 
 
 # if APPLE
   // osX Resourcen
@@ -760,6 +772,25 @@ ICCexamin::erneuern(int pos)
 { io_->erneuern(pos);
 }
 
+/** Auffrischen des Programmes (Neuladen) */
+void
+ICCexamin::auffrischen(int schalter)
+{
+  if(schalter & OYRANOS)
+    icc_oyranos.clear();
+  if(schalter & PROGRAMM)
+  {
+    std::vector<std::string> profilnamen = profile;
+    oeffnen( profilnamen );
+  }
+}
+void
+ICCexamin::oyranos_einstellungen()
+{
+  system("oyranos-config-fltk");
+  auffrischen( PROGRAMM | OYRANOS );
+}
+
 void
 ICCexamin::moniHolen ()
 { DBG_PROG_START
@@ -887,8 +918,7 @@ ICCexamin::intent( int intent_neu )
   }
 
   if(intent_alt != intent_neu) {
-    std::vector<std::string> profilnamen = profile;
-    oeffnen( profilnamen );
+    auffrischen( PROGRAMM );
   }
 }
 

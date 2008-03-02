@@ -123,8 +123,9 @@ class Oyranos
     const char* profil_ (const char* profil_name, size_t &g);
 
   public:
+    void     clear();
     // uebergangsweise
-    void     wandelProfilNachLabUndZurueck(double *lab, // 0.0 - 1.0
+    int      wandelProfilNachLabUndZurueck(double *lab, // 0.0 - 1.0
                                            size_t  size, int intent, int flags,
                                            Speicher & profil);
     double*  wandelLabNachBildschirmFarben(double *Lab_Speicher, // 0.0 - 1.0
