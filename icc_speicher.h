@@ -30,7 +30,6 @@
 
 #ifndef ICC_SPEICHER_H
 #define ICC_SPEICHER_H
-#define _(text) text
 
 #include <string>
 #include "icc_utils.h"

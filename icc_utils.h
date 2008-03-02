@@ -169,11 +169,11 @@ public:
     const char *fname;
 
     ausn_file_io (const char *fn) throw()	{ fname = fn; }
-    virtual ~ausn_file_io () throw()		{ printf ("Destruktor von %s\n", __func__); }
+    virtual ~ausn_file_io () throw()		{ DBG_PROG_S ("Destruktor von " << __func__ << endl); }
     virtual const char* what() const throw()	{ return "Datei I/O"; }
     virtual void report () const throw() {
-      printf ("Ausnahme-Report:\n");
-      printf ("\tDatei \"%s\" war nicht zu öffnen\n", fname);     // testweise
+      DBG_PROG_S ("Ausnahme-Report:\n");
+      DBG_PROG_S ("\tDatei \""<< fname <<"\" war nicht zu öffnen\n");//testweise
     };
 };
 

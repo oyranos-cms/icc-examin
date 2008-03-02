@@ -166,11 +166,12 @@ ICCexamin::oeffnen (std::vector<std::string> dateinamen)
     icc_betrachter->tag_browser->reopen ();
     icc_betrachter->measurement( profile.profil()->hasMeasurement() );
     if(profile.profil()->hasTagName("ncl2"))
+    {
       icc_betrachter->DD_histogram->zeigen();
+      profile.oeffnen(icc_oyranos.moni(),-1);
+      profile.oeffnen(icc_oyranos.cmyk(),-1);
+    }
   }
-
-  profile.oeffnen(icc_oyranos.moni(),-1);
-  profile.oeffnen(icc_oyranos.cmyk(),-1);
 
 
       // Sortieren
@@ -625,7 +626,8 @@ ICCexamin::histogram (int n)
     icc_betrachter->DD_histogram->hineinPunkte( p, f, namen, texte );
 
   std::vector<ICCnetz> netz;
-  netzLese(n, netz);
+  if( profile.size() > n )
+    netzLese(n, netz);
 
   DBG_PROG
   if(netz.size())

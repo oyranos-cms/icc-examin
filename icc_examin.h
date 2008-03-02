@@ -122,7 +122,6 @@ class ICCexamin : public icc_examin_ns::Beobachter
     void statusAktualisieren();  // benutze das "status" Makro
 };
 
-#define _(text) text
 #define status(texte) {std::stringstream s; s << texte; icc_examin->statlabel = s.str(); icc_examin->statusAktualisieren();}
 
 #endif //ICC_EXAMIN_H

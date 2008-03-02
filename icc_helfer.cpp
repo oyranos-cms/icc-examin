@@ -39,7 +39,6 @@
 #include "icc_formeln.h"
 #include "icc_helfer.h"
 
-#define _(text) text
 #define g_message printf
 
 icUInt16Number

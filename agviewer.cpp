@@ -38,7 +38,6 @@
 #include "icc_utils.h"
 #include "icc_examin.h"
 #include "icc_info.h"
-#define _(text) text
 
 /* Some <math.h> files do not define M_PI... */
 #ifndef M_PI

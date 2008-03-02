@@ -54,7 +54,7 @@ erase_file (const char *file)
     return 0;
   }
 
-  WARN_S( _("Datei ") << file << _(" konnte nicht gelöscht werden") )
+  DBG_PROG_S( _("Datei ") << file << _(" konnte nicht gelöscht werden") )
   return 1;
 }
 
@@ -114,14 +114,14 @@ icc_create_vrml( const char* p, int size )
       data = ladeDatei (ptn.c_str(), &size);
     }
       catch (Ausnahme & a) {  // fängt alles von Ausnahme Abstammende
-        printf (_("Ausnahme aufgetreten: %s\n"), a.what());
+        DBG_NUM_V (_("Ausnahme aufgetreten: ") << a.what());
         a.report();
       }
       catch (std::exception & e) { // fängt alles von exception Abstammende
-        printf (_("Std-Ausnahme aufgetreten: %s\n"), e.what());
+        DBG_NUM_V (_("Std-Ausnahme aufgetreten: ") << e.what());
       }
       catch (...) {       // fängt alles Übriggebliebene
-        printf (_("Huch, unbekannte Ausnahme\n"));
+        DBG_NUM_V (_("Huch, unbekannte Ausnahme"));
       }
 
     if(data)

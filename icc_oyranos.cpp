@@ -245,27 +245,28 @@ Oyranos::cmyk_test_ ()
   if( !v_block->size() )
   { DBG_PROG_V( v_block->size() )
     char* profil_name = oyGetDefaultCmykProfileName();
-    DBG_PROG_V( (int)profil_name << oyGetDefaultCmykProfileName() )
+    DBG_PROG_V( (int)profil_name <<" "<< profil_name )
     if( profil_name &&
         *v_block != profil_name )
     { 
         *v_block = profil_name;
 
         int size = oyGetProfileSize ( profil_name );
-        DBG_PROG_V( size )
+        DBG_PROG_V( size  )
         if (size)
         { block = (char*)oyGetProfileBlock( profil_name, &size);
           if( oyCheckProfileMem( block, size, 0 ) )
             WARN_S ( _("Profil konnte nicht geladen werden") )
           else {
-            DBG_PROG_V( (int)block <<"|"<< size )
+            DBG_PROG_V( (int)block <<"|"<< size <<" "<<(int) (*cmyk_) )
             v_block->lade(block, size);
           }
         }
     }
   }
 
-  DBG_NUM_S( "Standard " OY_DEFAULT_CMYK_PROFILE " Profil = "<< *cmyk_ <<" "<< cmyk_.size() <<"\n" )
+  if(cmyk_.size())
+    DBG_NUM_S( "Standard " OY_DEFAULT_CMYK_PROFILE " Profil = "<< *cmyk_ <<" "<< cmyk_.size() <<"\n" )
   #endif
   //oy_debug = 0;
   DBG_PROG_ENDE

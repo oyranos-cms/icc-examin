@@ -49,7 +49,6 @@
 #include "icc_helfer.h"
 #include "icc_cgats_filter.h"
 
-#define _(text) text
 #define g_message printf
 
 

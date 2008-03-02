@@ -103,7 +103,7 @@ ICCprofile::~ICCprofile (void)
   this->clear();
 
   #ifdef DEBUG_PROFILE
-  DBG_S ( "~ICCprofile beendet" )
+  DBG__PROG_S ( "~ICCprofile beendet" )
   #endif
   DBG_PROG_ENDE
 }
@@ -158,23 +158,23 @@ ICCprofile::fload ()
     DBG_MEM
   }
     catch (Ausnahme & a) {	// fängt alles von Ausnahme Abstammende
-        printf ("Ausnahme aufgetreten: %s\n", a.what());
+        DBG_NUM_V( _("Ausnahme aufgetreten: ") << a.what() );
         a.report();
         _filename = "";
     }
     catch (std::exception & e) { // fängt alles von exception Abstammende
-        printf ("Std-Ausnahme aufgetreten: %s\n", e.what());
+        DBG_NUM_V( _("Std-Ausnahme aufgetreten: ") << e.what() );
         _filename = "";
     }
     catch (...) {		// fängt alles Übriggebliebene
-        printf ("Huch, unbekannte Ausnahme\n");
+        DBG_NUM_V( _("Huch, unbekannte Ausnahme") );
         _filename = "";
     }
 
   DBG_MEM_V( (int*)data_ <<" "<< size_ )
 
   if (data_ && size_) {
-    WARN_S( _("!!!! Profil wird wiederbenutzt !!!! ") )
+    DBG_PROG_S( _("!!!! Profil wird wiederbenutzt !!!! ") )
     clear();
     // zweites mal Laden nach clear() ; könnte optimiert werden
     data_ = ladeDatei (file, &size_);
@@ -225,7 +225,7 @@ ICCprofile::fload ()
     else
       ic_tag.sig = icValue (icSigCharTargetTag);
 
-    memcpy (&tag_block[0], "text", 4); DBG_S( tag_block )
+    memcpy (&tag_block[0], "text", 4); DBG_NUM_S( tag_block )
     memcpy (&tag_block[8], data_, size_);
 
     tag.load( this, &ic_tag, tag_block );
@@ -260,7 +260,7 @@ ICCprofile::fload ()
      || tags[i].getTagName() == "CIED") {
       DBG_PROG
       #ifdef DEBUG_ICCPROFILE
-      DBG_S( "Messdaten gefunden " << tags[i].getTagName() )
+      DBG_NUM_S( "Messdaten gefunden " << tags[i].getTagName() )
       #endif
       measurement.load( this, tags[i] );
       DBG_PROG
@@ -269,7 +269,7 @@ ICCprofile::fload ()
   }
   DBG_PROG
   #ifdef DEBUG_ICCPROFILE
-  DBG_S( "TagCount: " << getTagCount() << " / " << tags.size() )
+  DBG_NUM_S( "TagCount: " << getTagCount() << " / " << tags.size() )
   #endif
  
   DBG_NUM_V( _filename )
@@ -339,7 +339,7 @@ ICCprofile::load (const Speicher & prof)
     else
       ic_tag.sig = icValue (icSigCharTargetTag);
 
-    memcpy (&tag_block[0], "text", 4); DBG_S( tag_block )
+    memcpy (&tag_block[0], "text", 4); DBG_NUM_S( tag_block )
     memcpy (&tag_block[8], data_, size_);
 
     tag.load( this, &ic_tag, tag_block );
@@ -364,7 +364,7 @@ ICCprofile::load (const Speicher & prof)
     tags[i].load( this, &tagList[i] ,
               &((char*)data_)[ icValue(tagList[i].offset) ]); DBG_PROG
     #ifdef DEBUG_ICCPROFILE
-    cout << " sig: " << tags[i].getTagName() << " " << i << " "; DBG_PROG
+    DBG_PROG_S( " sig: " << tags[i].getTagName() << " " << i )
     #endif
 
     DBG_PROG
@@ -374,7 +374,7 @@ ICCprofile::load (const Speicher & prof)
      || tags[i].getTagName() == "CIED") {
       DBG_PROG
       #ifdef DEBUG_ICCPROFILE
-      DBG_S( "Messdaten gefunden " << tags[i].getTagName() )
+      DBG_NUM_S( "Messdaten gefunden " << tags[i].getTagName() )
       #endif
       measurement.load( this, tags[i] );
       DBG_PROG
@@ -383,7 +383,7 @@ ICCprofile::load (const Speicher & prof)
   }
   DBG_PROG
   #ifdef DEBUG_ICCPROFILE
-  DBG_S( "TagCount: " << getTagCount() << " / " << tags.size() )
+  DBG_NUM_S( "TagCount: " << getTagCount() << " / " << tags.size() )
   #endif
  
   DBG_NUM_V( _filename )
@@ -484,7 +484,7 @@ ICCprofile::printTags            ()
     s << (*it).getSize();          StringList.push_back(s.str()); s.str("");
     s.str((*it).getInfo()); StringList.push_back(s.str()); s.str("");
   #ifdef DEBUG_ICCPROFILE
-    DBG_S( (*it).getTagName() << " " << count )
+    DBG_NUM_S( (*it).getTagName() << " " << count )
   #endif
   }
   DBG_PROG_ENDE
@@ -569,7 +569,7 @@ ICCprofile::getTagCurve                          (int item)
   if (tags[item].getTypName() != "curv")
   {
     #ifdef DEBUG_ICCPROFILE
-    DBG_S( tags[item].getTypName() )
+    DBG_NUM_S( tags[item].getTypName() )
     #endif
     DBG_PROG_ENDE
     return leer;
@@ -589,7 +589,7 @@ ICCprofile::getTagCurves                         (int item,ICCtag::MftChain typ)
    && tags[item].getTypName() != "vcgt")
   {
     #ifdef DEBUG_ICCPROFILE
-    DBG_S( "gibt nix für " << tags[item].getTypName() )
+    DBG_NUM_S( "gibt nix für " << tags[item].getTypName() )
     #endif
     DBG_PROG_ENDE
     return leer;
@@ -608,7 +608,7 @@ ICCprofile::getTagTable                         (int item,ICCtag::MftChain typ)
    && tags[item].getTypName() != "mft1")
   {
     #ifdef DEBUG_ICCPROFILE
-    DBG_S( "gibt nix für " << tags[item].getTypName() )
+    DBG_NUM_S( "gibt nix für " << tags[item].getTypName() )
     #endif
     DBG_PROG_ENDE
     return leer;
@@ -628,7 +628,7 @@ ICCprofile::getTagNumbers                        (int item,ICCtag::MftChain typ)
    && tags[item].getTypName() != "ncl2")
   {
     #ifdef DEBUG_ICCPROFILE
-    DBG_S( tags[item].getTypName() )
+    DBG_NUM_S( tags[item].getTypName() )
     #endif
     DBG_PROG_ENDE
     return leer;
@@ -673,7 +673,7 @@ ICCprofile::hasTagName            (std::string name)
     if ( (*it).getTagName() == name
       && (*it).getSize()            ) {
       #ifdef DEBUG_ICCPROFILE
-      DBG_S( (*it).getTagName() << " gefunden" )
+      DBG_NUM_S( (*it).getTagName() << " gefunden" )
       #endif
       DBG_PROG_ENDE
       return true;

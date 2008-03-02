@@ -850,7 +850,7 @@ CgatsFilter::cgats_korrigieren_               ()
         ++i;
         logEintrag_( _("fehlendes NUMBER_OF_FIELDS eingefügt"),
                      zeile_letztes_BEGIN_DATA_FORMAT, "", s.str() );
-        DBG_S( zeilen_[zeile_letztes_BEGIN_DATA_FORMAT] << _(" eingefügt") )
+        DBG_PROG_S( zeilen_[zeile_letztes_BEGIN_DATA_FORMAT] << _(" eingefügt") )
       } else // NUMBER_OF_FIELDS Parsen und Vergleichen
       {
         std::string t = zeilen_[zeile_letztes_NUMBER_OF_FIELDS].
@@ -918,7 +918,7 @@ CgatsFilter::cgats_korrigieren_               ()
       {
         zeilen_.insert( zeilen_.begin() + zeile_letztes_BEGIN_DATA, s.str() );
         ++i;
-        DBG_S( zeilen_[zeile_letztes_BEGIN_DATA] << " eingefügt" )
+        DBG_PROG_S( zeilen_[zeile_letztes_BEGIN_DATA] << " eingefügt" )
         logEintrag_( _("fehlende NUMBER_OF_SETS eingefügt"),
                      zeile_letztes_BEGIN_DATA, "", s.str() );
       } else // NUMBER_OF_SETS Parsen und Vergleichen

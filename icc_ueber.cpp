@@ -31,7 +31,6 @@
 //#include "icc_ueber.h"
 #include <sstream>
 
-#define _(text) text
 
 #define DEBUG_ICCUEBER
 
