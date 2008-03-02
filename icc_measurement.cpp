@@ -201,6 +201,12 @@ ICCmeasurement::ascii_korrigieren               (void)
   while ((pos = data.find ("Date:", pos)) != std::string::npos) {
       data.replace (pos, strlen("Date:"), "CREATED \"\" #"); DBG_S( "Date: ersetzt" )
   }
+  pos = data.find ("BEGIN_DATA\n", 0); // Kommentarzeilen löschen
+  while ((pos = data.find ("\n#", pos)) != std::string::npos
+       && (ende = data.find ("END_DATA\n", pos+2)) != std::string::npos) {
+      ende = data.find ("\n", pos+2);
+      data.erase (pos, ende - pos); DBG_S( "Kommentarzeile gelöscht" )
+  }
   // fehlendes SAMPLE_ID einführen und jeder Zeile einen Zähler voransetzen
   int count;
   if ((data.find ("SAMPLE_ID", 0)) == std::string::npos) {
@@ -221,24 +227,48 @@ ICCmeasurement::ascii_korrigieren               (void)
   if ((data.find ("NUMBER_OF_FIELDS", 0)) == std::string::npos) {
     pos = data.find ("BEGIN_DATA_FORMAT\n", 0); DBG_S (pos)
     count = 0; pos++;
-    if (data.find ("SAMPLE_ID", 0) != std::string::npos) count ++;
-    if (data.find ("SAMPLE_NAME", 0) != std::string::npos) count ++;
-    if (data.find ("CMYK_C", 0) != std::string::npos) count ++;
-    if (data.find ("CMYK_M", 0) != std::string::npos) count ++;
-    if (data.find ("CMYK_Y", 0) != std::string::npos) count ++;
-    if (data.find ("CMYK_K", 0) != std::string::npos) count ++;
-    if (data.find ("RGB_R", 0) != std::string::npos) count ++;
-    if (data.find ("RGB_G", 0) != std::string::npos) count ++;
-    if (data.find ("RGB_B", 0) != std::string::npos) count ++;
-    if (data.find ("XYZ_X", 0) != std::string::npos) count ++;
-    if (data.find ("XYZ_Y", 0) != std::string::npos) count ++;
-    if (data.find ("XYZ_Z", 0) != std::string::npos) count ++;
-    if (data.find ("XYY_X", 0) != std::string::npos) count ++;
-    if (data.find ("XYY_Y", 0) != std::string::npos) count ++;
-    if (data.find ("XYY_CAPY", 0) != std::string::npos) count ++;
-    if (data.find ("LAB_L", 0) != std::string::npos) count ++;
-    if (data.find ("LAB_A", 0) != std::string::npos) count ++;
-    if (data.find ("LAB_B", 0) != std::string::npos) count ++;
+    if (data.find ("SAMPLE_ID", pos) != std::string::npos) count ++;
+    if (data.find ("SAMPLE_NAME", pos) != std::string::npos) count ++;
+    if (data.find ("CMYK_C", pos) != std::string::npos) count ++;
+    if (data.find ("CMYK_M", pos) != std::string::npos) count ++;
+    if (data.find ("CMYK_Y", pos) != std::string::npos) count ++;
+    if (data.find ("CMYK_K", pos) != std::string::npos) count ++;
+    if (data.find ("RGB_R", pos) != std::string::npos) count ++;
+    if (data.find ("RGB_G", pos) != std::string::npos) count ++;
+    if (data.find ("RGB_B", pos) != std::string::npos) count ++;
+    if (data.find ("XYZ_X", pos) != std::string::npos) count ++;
+    if (data.find ("XYZ_Y", pos) != std::string::npos) count ++;
+    if (data.find ("XYZ_Z", pos) != std::string::npos) count ++;
+    if (data.find ("XYY_X", pos) != std::string::npos) count ++;
+    if (data.find ("XYY_Y", pos) != std::string::npos) count ++;
+    if (data.find ("XYY_CAPY", pos) != std::string::npos) count ++;
+    if (data.find ("LAB_L", pos) != std::string::npos) count ++;
+    if (data.find ("LAB_A", pos) != std::string::npos) count ++;
+    if (data.find ("LAB_B", pos) != std::string::npos) count ++;
+    if (data.find ("D_RED", pos) != std::string::npos) count ++;
+    if (data.find ("D_GREEN", pos) != std::string::npos) count ++;
+    if (data.find ("D_BLUE", pos) != std::string::npos) count ++;
+    if (data.find ("D_VIS", pos) != std::string::npos) count ++;
+    if (data.find ("D_MAJOR_FILTER", pos) != std::string::npos) count ++;
+    if (data.find ("SPECTRAL_NM", pos) != std::string::npos) count ++;
+    if (data.find ("SPECTRAL_PCT", pos) != std::string::npos) count ++;
+    if (data.find ("SPECTRAL_DEC", pos) != std::string::npos) count ++;
+    if (data.find ("XYY_CAPY", pos) != std::string::npos) count ++;
+    if (data.find ("LAB_C", pos) != std::string::npos) count ++;
+    if (data.find ("LAB_H", pos) != std::string::npos) count ++;
+    if (data.find ("LAB_DE", pos) != std::string::npos) count ++;
+    if (data.find ("LAB_DE_94", pos) != std::string::npos) count ++;
+    if (data.find ("LAB_DE_CMC", pos) != std::string::npos) count ++;
+    if (data.find ("LAB_DE_2000", pos) != std::string::npos) count ++;
+    if (data.find ("MEAN_DE", pos) != std::string::npos) count ++;
+    if (data.find ("STDEV_X", pos) != std::string::npos) count ++;
+    if (data.find ("STDEV_Y", pos) != std::string::npos) count ++;
+    if (data.find ("STDEV_Z", pos) != std::string::npos) count ++;
+    if (data.find ("STDEV_L", pos) != std::string::npos) count ++;
+    if (data.find ("STDEV_A", pos) != std::string::npos) count ++;
+    if (data.find ("STDEV_B", pos) != std::string::npos) count ++;
+    if (data.find ("STDEV_DE", pos) != std::string::npos) count ++;
+    if (data.find ("CHI_SQD_PAR", pos) != std::string::npos) count ++;
     static char zahl[64];
     pos = data.find ("BEGIN_DATA_FORMAT\n", 0);
     sprintf (&zahl[0], "NUMBER_OF_FIELDS %d\n", count);
@@ -520,9 +550,9 @@ ICCmeasurement::init_umrechnen                     (void)
         _RGB_MessFarben[i].B = sRGB[2];
 
         // Profilfarben
-        RGB[0] = _RGB_Satz[i].R/255.0; cout << RGB[0] << " ";
-        RGB[1] = _RGB_Satz[i].G/255.0; cout << RGB[1] << " ";
-        RGB[2] = _RGB_Satz[i].B/255.0; cout << RGB[2] << "\n";
+        RGB[0] = _RGB_Satz[i].R/255.0;
+        RGB[1] = _RGB_Satz[i].G/255.0;
+        RGB[2] = _RGB_Satz[i].B/255.0;
         cmsDoTransform (hRGBtoXYZ, &RGB[0], &XYZ[0], 1);
         _XYZ_Ergebnis[i].X = XYZ[0] * 100.0;
         _XYZ_Ergebnis[i].Y = XYZ[1] * 100.0;
@@ -538,7 +568,7 @@ ICCmeasurement::init_umrechnen                     (void)
         _RGB_ProfilFarben[i].G = sRGB[1];
         _RGB_ProfilFarben[i].B = sRGB[2];
 
-        // geometrische Farbortdifferenz
+        // geometrische Farbortdifferenz - dE CIE*Lab
         _Lab_Differenz[i] = pow (    pow(_Lab_Ergebnis[i].L - _Lab_Satz[i].L,2)
                                    + pow(_Lab_Ergebnis[i].a - _Lab_Satz[i].a,2)
                                    + pow(_Lab_Ergebnis[i].b - _Lab_Satz[i].b,2)
@@ -547,6 +577,7 @@ ICCmeasurement::init_umrechnen                     (void)
           _Lab_Differenz_max = _Lab_Differenz[i];
         if (_Lab_Differenz_min > _Lab_Differenz[i])
           _Lab_Differenz_min = _Lab_Differenz[i];
+        // TODO dE2000
     }
     cmsDeleteTransform (hRGBtoSRGB);
     cmsDeleteTransform (hXYZtoSRGB);
