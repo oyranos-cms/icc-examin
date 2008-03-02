@@ -3,7 +3,7 @@ include config
 CC=c++
 MAKEDEPEND	= /usr/X11R6/bin/makedepend -Y
 RM = rm -v
-COPY = cp -v
+COPY = cp -vdp
 
 prefix		= /opt/local
 exec_prefix	= ${prefix}
@@ -233,7 +233,7 @@ tgz:
 	test -d ../Archiv && mv -v $(TARGET)_*.tgz ../Archiv
 	test -d Entwickeln && \
 	test `pwd` != `(cd Entwickeln; pwd)` && \
-	#rm -R Entwickeln
+	rm -R Entwickeln
 
 targz:
 	mkdir icc_examin_$(VERSION)
