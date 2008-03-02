@@ -84,7 +84,9 @@ void                    xyYto_XYZ (std::vector<double> & xyYXYZ);
 
 std::string         renderingIntentName ( int intent);
 int                 getColorSpaceChannels(icColorSpaceSignature color);
+icColorSpaceSignature getColorSpaceGeneric( int channels );
 std::string         getColorSpaceName   ( icColorSpaceSignature color);
+std::vector<std::string> getChannelNamesShort( icColorSpaceSignature color);
 std::vector<std::string> getChannelNames( icColorSpaceSignature color);
 std::string         getDeviceClassName  ( icProfileClassSignature cl);
 std::string         getPlatformName     ( icPlatformSignature platform);

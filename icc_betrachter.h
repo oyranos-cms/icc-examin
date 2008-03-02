@@ -255,11 +255,13 @@ public:
   TagDrawings *mft_viewer;
   TagTexts *mft_text;
   Fl_Group *mft_gl_group;
-private:
-  void cb_o_i(Fl_Button*, void*);
-  static void cb_o(Fl_Button*, void*);
-public:
   GL_Ansicht *mft_gl;
+  Fl_Pack *mft_gl_button_pack;
+  Fl_Button *mft_gl_alltables_button;
+private:
+  void cb_mft_gl_alltables_button_i(Fl_Button*, void*);
+  static void cb_mft_gl_alltables_button(Fl_Button*, void*);
+public:
   Fl_Pack *twoD_pack;
   TagTexts *tag_text;
   TagDrawings *tag_viewer;
@@ -271,6 +273,10 @@ public:
   void quit(void);
   void zeig_mich_(void* widget);
   void measurement(bool has_measurement);
+private:
+  Fl_Button ** mft_gl_tables_buttons; 
+public:
+  void mft_gl_boxAdd( const char ** names_short, const char** names, int n, int actual );
 };
 void dHaendler(void* o);
 void initHilfe();

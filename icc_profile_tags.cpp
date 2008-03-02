@@ -374,7 +374,24 @@ ICCtag::getText                     (void)
     count = icValue(count);
     DBG_PROG_V( count <<" "<< data_+12 )
 
-    text.append ((const char*)(data_+12), count);
+    if((int)count > size_- 8)
+    {
+      int diff = count - size_ - 8;
+      char nt[128];
+      snprintf( nt, 128, "%d", diff );
+
+      text.append (_("Error in ICC profile tag found!"));
+      text.append ("\n Wrong \"desc\" tag count. Difference is :\n   ");
+      text.append (nt);
+      text.append ("\n Try ordinary tag length instead (?):\n   ");
+      char * txt = new char [size_ - 8];
+      memcpy (txt, &data_[12], size_ - 12);
+      txt[size_ - 12] = 0;
+      text.append (txt);
+      delete [] txt;
+    }
+    else
+      text.append ((const char*)(data_+12), count);
 # ifdef DEBUG_ICCTAG
     DBG_NUM_S ( &data_[12] << "|" << "|" << text )
 # endif
@@ -1056,6 +1073,31 @@ ICCtag::getText                     (MftChain typ)
 
   DBG_PROG_ENDE
   return texte;
+}
+
+icColorSpaceSignature
+ICCtag::colorSpace               (MftChain typ)
+{ DBG_PROG_START
+
+  // TODO: check for icColorSpaceSignature <-> channel count
+    // What is requested?
+    switch (typ) {
+    case TABLE:
+    case MATRIX:
+         return (icColorSpaceSignature)0;
+         break;
+    case CURVE_IN:
+    case TABLE_IN:
+         return _color_in;
+         break;
+    case TABLE_OUT:
+    case CURVE_OUT:
+         return _color_out;
+         break;
+    }
+
+  DBG_PROG_ENDE
+  return (icColorSpaceSignature)0;
 }
 
 

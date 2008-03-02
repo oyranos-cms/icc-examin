@@ -111,6 +111,7 @@ class ICCtag {
     std::vector<std::vector<std::vector<std::vector<double> > > >
                         getTable     (MftChain typ);
     std::vector<double> getNumbers   (MftChain typ);
+    icColorSpaceSignature colorSpace (MftChain typ);
 
     std::vector<std::string> getText ();
     std::vector<std::string> getText (MftChain typ);

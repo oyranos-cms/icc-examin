@@ -150,6 +150,10 @@ int My_Fl_Box::handle( int event ) {
   return ergebnis;
 }
 
+static void mft_gl_menueCb_(Fl_Widget * w, void * data) {
+  icc_examin->icc_betrachter->mft_gl->menueAufruf( (intptr_t) data );
+}
+
 void ICCfltkBetrachter::cb_ja_i(Fl_Button*, void*) {
   ueber->hide();
 }
@@ -568,18 +572,18 @@ void ICCfltkBetrachter::cb_mft_choice(MftChoice* o, void* v) {
   ((ICCfltkBetrachter*)(o->parent()->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_mft_choice_i(o,v);
 }
 
-void ICCfltkBetrachter::cb_o_i(Fl_Button*, void*) {
+void ICCfltkBetrachter::cb_mft_gl_alltables_button_i(Fl_Button*, void*) {
   icc_examin->zeigMftTabellen();
 }
-void ICCfltkBetrachter::cb_o(Fl_Button* o, void* v) {
-  ((ICCfltkBetrachter*)(o->parent()->parent()->parent()->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_o_i(o,v);
+void ICCfltkBetrachter::cb_mft_gl_alltables_button(Fl_Button* o, void* v) {
+  ((ICCfltkBetrachter*)(o->parent()->parent()->parent()->parent()->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_mft_gl_alltables_button_i(o,v);
 }
 
 icc_examin_ns::MyFl_Double_Window* ICCfltkBetrachter::init(int argc, char** argv) {
   DBG_PROG_START
   fullscreen = false;
   setTitleUrl = true;
-  { icc_examin_ns::MyFl_Double_Window* o = ueber = new icc_examin_ns::MyFl_Double_Window(365, 305, _("About ICC Examin"));
+  { icc_examin_ns::MyFl_Double_Window* o = ueber = new icc_examin_ns::MyFl_Double_Window(365, 295, _("About ICC Examin"));
     ueber->box(FL_FLAT_BOX);
     ueber->color(FL_BACKGROUND_COLOR);
     ueber->selection_color(FL_BACKGROUND_COLOR);
@@ -596,7 +600,6 @@ icc_examin_ns::MyFl_Double_Window* ICCfltkBetrachter::init(int argc, char** argv
           ueber_html->box(FL_THIN_UP_BOX);
           ueber_html->color(FL_BACKGROUND_COLOR);
           ueber_html->selection_color(FL_DARK1);
-          ueber_html->hide();
         } // Fl_Help_View* ueber_html
         { hilfe_html = new Fl_Help_View(0, 25, 365, 235, _("Help"));
           hilfe_html->box(FL_THIN_UP_BOX);
@@ -622,11 +625,12 @@ icc_examin_ns::MyFl_Double_Window* ICCfltkBetrachter::init(int argc, char** argv
           links_text->box(FL_THIN_DOWN_BOX);
           links_text->color(FL_BACKGROUND_COLOR);
           links_text->selection_color(FL_DARK1);
+          links_text->hide();
         } // Fl_Output* links_text
         o->end();
         Fl_Group::current()->resizable(o);
       } // Fl_Tabs* o
-      { ja = new Fl_Button(130, 270, 110, 25, _("Yes"));
+      { ja = new Fl_Button(130, 264, 110, 25, _("Yes"));
         ja->callback((Fl_Callback*)cb_ja);
       } // Fl_Button* ja
       o->end();
@@ -849,12 +853,7 @@ ard"));
                 o->box(FL_FLAT_BOX);
                 o->align(FL_ALIGN_LEFT);
                 } // Fl_Box* o
-                { Fl_Button* o = new Fl_Button(340, 185, 20, 20, _("o"));
-                o->tooltip(_("Show all channels of this table a own window."));
-                o->callback((Fl_Callback*)cb_o);
-                o->show();
-                } // Fl_Button* o
-                { GL_Ansicht* o = mft_gl = new GL_Ansicht(0, 185, 340, 310, _("mft_gl_invisible"));
+                { GL_Ansicht* o = mft_gl = new GL_Ansicht(0, 185, 360, 310, _("mft_gl_invisible"));
                 mft_gl->box(FL_NO_BOX);
                 mft_gl->color(FL_BACKGROUND_COLOR);
                 mft_gl->selection_color(FL_BACKGROUND_COLOR);
@@ -868,6 +867,14 @@ ard"));
                 o->hide();
                 o->typ( 2 ); // bleibt zumeist im Hauptfenster
                 } // GL_Ansicht* mft_gl
+                { mft_gl_button_pack = new Fl_Pack(360, 185, 25, 310);
+                { Fl_Button* o = mft_gl_alltables_button = new Fl_Button(360, 185, 25, 25, _("o"));
+                mft_gl_alltables_button->tooltip(_("Show all channels of this table a own window."));
+                mft_gl_alltables_button->callback((Fl_Callback*)cb_mft_gl_alltables_button);
+                o->show();
+                } // Fl_Button* mft_gl_alltables_button
+                mft_gl_button_pack->end();
+                } // Fl_Pack* mft_gl_button_pack
                 mft_gl_group->end();
                 Fl_Group::current()->resizable(mft_gl_group);
                 } // Fl_Group* mft_gl_group
@@ -1106,6 +1113,58 @@ void ICCfltkBetrachter::measurement(bool has_measurement) {
     menueintrag_html_speichern->deactivate();
     menueintrag_zeigcgats->deactivate();
   }
+}
+
+void ICCfltkBetrachter::mft_gl_boxAdd( const char ** names_short, const char** names, int n, int actual ) {
+  DBG_PROG_START
+  int i;
+    int h = mft_gl_alltables_button->h(),
+        w = mft_gl_alltables_button->w();
+    Fl_Button * o;
+
+    mft_gl_group->begin();
+    if(mft_gl_tables_buttons)
+      for(i = 1; i <= (intptr_t)mft_gl_tables_buttons[0] + 1; ++i)
+      {
+        mft_gl_tables_buttons[i]->hide();
+        mft_gl_button_pack->remove( mft_gl_tables_buttons[i] );
+        if(mft_gl_tables_buttons[i])
+          delete mft_gl_tables_buttons[i];
+      }
+
+    mft_gl_button_pack->begin();
+    mft_gl_button_pack->size( mft_gl_button_pack->w(), mft_gl_group->h() );
+
+    mft_gl_tables_buttons = new Fl_Button* [n+2];
+    mft_gl_tables_buttons[0] = (Fl_Button*)(intptr_t) n;
+
+    for(i = 1; i <= (intptr_t)mft_gl_tables_buttons[0]; ++i)
+    {
+      int kanal = i - 1;
+
+      mft_gl_tables_buttons[i] = o = 
+        new Fl_Button( mft_gl_alltables_button->x(),
+                       mft_gl_alltables_button->y() + i*h,
+                       w,h );
+      o->copy_label( names_short[ kanal ] );
+      o->callback( (Fl_Callback*)mft_gl_menueCb_ );
+      o->user_data( (void*)(intptr_t)(GL_Ansicht::MENU_MAX + kanal) );
+      o->tooltip( strdup( names[ kanal ] ) );
+      o->when(FL_WHEN_RELEASE);
+      if(i-1 == actual)
+        o->take_focus();
+    }
+    int oh = mft_gl_button_pack->y() + mft_gl_group->h() - (mft_gl_tables_buttons[i-1]->y() + h);
+
+    mft_gl_tables_buttons[i] = o = new Fl_Button( mft_gl_alltables_button->x(),
+                       mft_gl_alltables_button->y() + i*h,
+                       w,oh );
+    o->box(FL_NO_BOX);
+    mft_gl_button_pack->end();
+    mft_gl_button_pack->resizable(o);
+  mft_gl_group->end();
+  
+  DBG_PROG_ENDE
 }
 
 void dHaendler(void* o) {

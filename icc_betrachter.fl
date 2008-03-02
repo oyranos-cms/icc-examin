@@ -218,7 +218,7 @@ class MftChoice {: {public Fl_Choice}
   }
 } 
 
-class My_Fl_Box {open : {public Fl_Box}
+class My_Fl_Box {: {public Fl_Box}
 } {
   Function {My_Fl_Box(int X,int Y,int W, int H, const char* title = 0) : Fl_Box(X,Y,W,H,title)} {open
   } {}
@@ -229,6 +229,11 @@ class My_Fl_Box {open : {public Fl_Box}
     ;//ergebnis = Fl_Box::handle(event);
   return ergebnis;} {}
   }
+} 
+
+Function {mft_gl_menueCb_(Fl_Widget * w, void * data)} {open private
+} {
+  code {icc_examin->icc_betrachter->mft_gl->menueAufruf( (intptr_t) data );} {}
 } 
 
 class ICCfltkBetrachter {open
@@ -249,7 +254,7 @@ class ICCfltkBetrachter {open
   setTitleUrl = true;} {}
     Fl_Window ueber {
       label {About ICC Examin} open
-      xywh {789 537 365 305} type Double resizable
+      xywh {819 663 365 295} type Double resizable
       code0 {o->hide();}
       code1 {o->use_escape_hide = true;}
       class {icc_examin_ns::MyFl_Double_Window} visible
@@ -262,7 +267,7 @@ class ICCfltkBetrachter {open
         } {
           Fl_Help_View ueber_html {
             label About
-            xywh {0 25 365 235} box THIN_UP_BOX color 49 selection_color 47 hide
+            xywh {0 25 365 235} box THIN_UP_BOX color 49 selection_color 47
           }
           Fl_Help_View hilfe_html {
             label Help
@@ -277,20 +282,20 @@ class ICCfltkBetrachter {open
             xywh {0 25 365 235} box THIN_UP_BOX color 49 selection_color 47 hide
           }
           Fl_Output links_text {
-            label Links selected
-            xywh {10 35 345 215} type Multiline box THIN_DOWN_BOX color 49 selection_color 47
+            label Links
+            xywh {10 35 345 215} type Multiline box THIN_DOWN_BOX color 49 selection_color 47 hide
           }
         }
         Fl_Button ja {
           label Yes
           callback {ueber->hide();}
-          xywh {130 270 110 25}
+          xywh {130 264 110 25}
         }
       }
     }
     Fl_Window vcgt {
       label {Grafic Card Gamma Table} open
-      xywh {168 547 370 405} type Double resizable
+      xywh {198 639 370 405} type Double resizable
       code0 {o->hide();}
       code1 {o->use_escape_hide = true;}
       class {icc_examin_ns::MyFl_Double_Window} visible
@@ -327,7 +332,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window DD {
       label Gamut open
-      xywh {763 101 385 520} type Double box NO_BOX resizable
+      xywh {871 116 385 520} type Double box NO_BOX resizable
       class {icc_examin_ns::MyFl_Double_Window} visible
     } {
       Fl_Group {} {open
@@ -481,7 +486,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window details {
       label {ICC Examin} open
-      xywh {280 77 385 520} type Double box NO_BOX
+      xywh {350 373 385 520} type Double box NO_BOX
       code0 {o->main_win = o;}
       class {icc_examin_ns::MyFl_Double_Window} visible
     } {
@@ -737,18 +742,22 @@ icc_examin->testZeigen();}
                         label mft_gl_box_invisible
                         xywh {0 185 385 310} box FLAT_BOX align 4
                       }
-                      Fl_Button {} {
-                        label o
-                        callback {icc_examin->zeigMftTabellen();}
-                        tooltip {Show all channels of this table a own window.} xywh {340 185 20 20}
-                        code0 {o->show();}
-                      }
                       Fl_Box mft_gl {
                         label mft_gl_invisible
-                        xywh {0 185 340 310} align 4 resizable
+                        xywh {0 185 360 310} align 4 resizable
                         code0 {o->hide();}
                         code1 {o->typ( 2 ); // bleibt zumeist im Hauptfenster}
                         class GL_Ansicht
+                      }
+                      Fl_Pack mft_gl_button_pack {open
+                        xywh {360 185 25 310}
+                      } {
+                        Fl_Button mft_gl_alltables_button {
+                          label o
+                          callback {icc_examin->zeigMftTabellen();}
+                          tooltip {Show all channels of this table a own window.} xywh {360 185 25 25}
+                          code0 {o->show();}
+                        }
                       }
                     }
                   }
@@ -954,6 +963,61 @@ icc_examin->testZeigen();}
     menueintrag_html_speichern->deactivate();
     menueintrag_zeigcgats->deactivate();
   }} {}
+  }
+  decl {Fl_Button ** mft_gl_tables_buttons;} {global
+  }
+  Function {mft_gl_boxAdd( const char ** names_short, const char** names, int n, int actual )} {open
+  } {
+    code DBG_PROG_START {}
+    code {int i;
+    int h = mft_gl_alltables_button->h(),
+        w = mft_gl_alltables_button->w();
+    Fl_Button * o;
+
+    mft_gl_group->begin();
+    if(mft_gl_tables_buttons)
+      for(i = 1; i <= (intptr_t)mft_gl_tables_buttons[0] + 1; ++i)
+      {
+        mft_gl_tables_buttons[i]->hide();
+        mft_gl_button_pack->remove( mft_gl_tables_buttons[i] );
+        if(mft_gl_tables_buttons[i])
+          delete mft_gl_tables_buttons[i];
+      }
+
+    mft_gl_button_pack->begin();
+    mft_gl_button_pack->size( mft_gl_button_pack->w(), mft_gl_group->h() );
+
+    mft_gl_tables_buttons = new Fl_Button* [n+2];
+    mft_gl_tables_buttons[0] = (Fl_Button*)(intptr_t) n;
+
+    for(i = 1; i <= (intptr_t)mft_gl_tables_buttons[0]; ++i)
+    {
+      int kanal = i - 1;
+
+      mft_gl_tables_buttons[i] = o = 
+        new Fl_Button( mft_gl_alltables_button->x(),
+                       mft_gl_alltables_button->y() + i*h,
+                       w,h );
+      o->copy_label( names_short[ kanal ] );
+      o->callback( (Fl_Callback*)mft_gl_menueCb_ );
+      o->user_data( (void*)(intptr_t)(GL_Ansicht::MENU_MAX + kanal) );
+      o->tooltip( strdup( names[ kanal ] ) );
+      o->when(FL_WHEN_RELEASE);
+      if(i-1 == actual)
+        o->take_focus();
+    }
+    int oh = mft_gl_button_pack->y() + mft_gl_group->h() - (mft_gl_tables_buttons[i-1]->y() + h);
+
+    mft_gl_tables_buttons[i] = o = new Fl_Button( mft_gl_alltables_button->x(),
+                       mft_gl_alltables_button->y() + i*h,
+                       w,oh );
+    o->box(FL_NO_BOX);
+    mft_gl_button_pack->end();
+    mft_gl_button_pack->resizable(o);
+  mft_gl_group->end();
+  
+  DBG_PROG_ENDE} {selected
+    }
   }
 } 
 

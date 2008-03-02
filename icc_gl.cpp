@@ -2716,6 +2716,9 @@ GL_Ansicht::menueAufruf ( int value )
     icc_examin->alle_gl_fenster->benachrichtigen(ICCexamin::GL_AUFFRISCHEN);
   }
 
+  if(value >= 100)
+    agv_->agvSwitchMoveMode (value);
+
   DBG_PROG_V( value<<" "<<id_ )
   DBG_PROG_ENDE
 }
@@ -2880,9 +2883,6 @@ GL_Ansicht::c_ ( Fl_Widget* w, void* daten )
   if (gl_obj)
   {
     gl_obj->menueAufruf(value);
-
-    if(value >= 100)
-      gl_obj->agv_ ->agvSwitchMoveMode (value);
   }
   else
     WARN_S("could not find a suitable program structure")

@@ -284,10 +284,38 @@ ICCexamin::waehleMft (int item)
     break;
   case 3: // 3D table
     DBG_PROG_S("show table")
-    icc_betrachter->mft_gl->hineinTabelle (
+    {
+      std::vector<std::string> nach_farb_namen = profile.profil()->getTagChannelNames (icc_betrachter->tag_nummer, ICCtag::TABLE_OUT);
+      icColorSpaceSignature sig_out = profile.profil()->getTag( icc_betrachter->tag_nummer ).colorSpace( ICCtag::TABLE_OUT );
+      std::vector<std::string> nach_farben_snamen =  getChannelNamesShort( sig_out );
+
+      icc_betrachter->mft_gl->hineinTabelle (
                      profile.profil()->getTagTable (icc_betrachter->tag_nummer, ICCtag::TABLE),
                      profile.profil()->getTagChannelNames (icc_betrachter->tag_nummer, ICCtag::TABLE_IN),
-                     profile.profil()->getTagChannelNames (icc_betrachter->tag_nummer, ICCtag::TABLE_OUT) ); DBG_PROG_S( "3D table" )
+                     nach_farb_namen ); DBG_PROG_S( "3D table" )
+
+      int      n = (int)nach_farb_namen.size();
+      if(n != (int)nach_farben_snamen.size())
+      {
+        sig_out = getColorSpaceGeneric( n );
+        nach_farben_snamen =  getChannelNamesShort( sig_out );
+      }
+
+      if(n == (int)nach_farben_snamen.size())
+      {
+        const char ** pp = new const char* [n];
+        const char ** sn = new const char* [n];
+        for (int i = 0; i < n; i++)
+        {
+          pp[i] = nach_farb_namen[i].c_str();
+          sn[i] = nach_farben_snamen[i].c_str();
+        }
+        icc_examin->icc_betrachter->mft_gl_boxAdd( sn, pp, n, icc_betrachter->mft_gl->kanal );
+
+      } else {
+        icc_examin->icc_betrachter->mft_gl_boxAdd( NULL, NULL, 0, 0 );
+      }
+    }
     icc_betrachterNeuzeichnen(icc_betrachter->mft_gl_group);
     break;
   case 4: // output curves

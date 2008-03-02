@@ -89,6 +89,7 @@ class GL_Ansicht : public Fl_Gl_Window, /*, public Fl_Slot*/
 
   typedef enum {NOTALLOWED, AXES, RASTER, PUNKTE , SPEKTRUM, HELFER, UMRISSE, DL_MAX } DisplayLists;
   int gl_listen[DL_MAX];
+public:
   typedef enum {
    MENU_AXES,
    MENU_QUIT,
@@ -113,7 +114,7 @@ class GL_Ansicht : public Fl_Gl_Window, /*, public Fl_Slot*/
    MENU_SCHWARZ,
    MENU_MAX
   } MenuChoices;
-
+private:
   int hintergrundfarbeZuMenueeintrag( float farbe );
 
   int DrawAxes;

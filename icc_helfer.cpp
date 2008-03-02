@@ -399,6 +399,30 @@ getColorSpaceChannels (icColorSpaceSignature color)
   return n;
 }
 
+icColorSpaceSignature getColorSpaceGeneric( int channels )
+{
+  icColorSpaceSignature cs = (icColorSpaceSignature)0;
+  switch (channels) {
+    case 2: return icSig2colorData; break;
+    case 3: return icSig3colorData; break;
+    case 4: return icSig4colorData; break;
+    case 5: return icSig5colorData; break;
+    case 6: return icSig6colorData; break;
+    case 7: return icSig7colorData; break;
+    case 8: return icSig8colorData; break;
+    case 9: return icSig9colorData; break;
+    case 10: return icSig10colorData; break;
+    case 11: return icSig11colorData; break;
+    case 12: return icSig12colorData; break;
+    case 13: return icSig13colorData; break;
+    case 14: return icSig14colorData; break;
+    case 15: return icSig15colorData; break;
+    default: break;
+  }
+  return cs;
+}
+
+
 std::string
 getColorSpaceName (icColorSpaceSignature color)
 {
@@ -443,13 +467,90 @@ getColorSpaceName (icColorSpaceSignature color)
 }
 
 std::vector<std::string>
+getChannelNamesShort (icColorSpaceSignature color)
+{
+  std::vector<std::string> texte;
+  std::stringstream s;
+# define nFARBEN(n) for (int i = 1; i <= n; i++) \
+                       { s << i; \
+                         texte.push_back (s.str()); s.str(""); \
+                       }
+
+  switch (color) {
+    case icSigXYZData: texte.push_back ("X");
+                       texte.push_back ("Y");
+                       texte.push_back ("Z"); break;
+    case icSigLabData: texte.push_back ("*L");
+                       texte.push_back ("*a");
+                       texte.push_back ("*b"); break;
+    case icSigLuvData: texte.push_back ("*L");
+                       texte.push_back ("*u");
+                       texte.push_back ("*v"); break;
+    case icSigYCbCrData: texte.push_back ("Y");
+                       texte.push_back ("b");
+                       texte.push_back ("r"); break;
+    case icSigYxyData: texte.push_back ("Y");
+                       texte.push_back ("x");
+                       texte.push_back ("y"); break;
+    case icSigRgbData: texte.push_back ("R");
+                       texte.push_back ("G");
+                       texte.push_back ("B"); break;
+    case icSigGrayData: texte.push_back ("K"); break;
+    case icSigHsvData: texte.push_back ("H");
+                       texte.push_back ("S");
+                       texte.push_back ("V"); break;
+    case icSigHlsData: texte.push_back ("H");
+                       texte.push_back ("L");
+                       texte.push_back ("S"); break;
+    case icSigCmykData: texte.push_back ("C");
+                       texte.push_back ("M");
+                       texte.push_back ("Y");
+                       texte.push_back ("K"); break;
+    case icSigCmyData: texte.push_back ("C");
+                       texte.push_back ("M");
+                       texte.push_back ("Y"); break;
+//    case icSigMCH2Data:
+    case icSig2colorData: nFARBEN(2) break;
+//    case icSigMCH3Data:
+    case icSig3colorData: nFARBEN(3) break;
+//    case icSigMCH4Data:
+    case icSig4colorData: nFARBEN(4) break;
+    case icSigMCH5Data:
+    case icSig5colorData: nFARBEN(5) break;
+    case icSigMCH6Data:
+    case icSig6colorData: nFARBEN(6) break;
+    case icSigMCH7Data:
+    case icSig7colorData: nFARBEN(7) break;
+    case icSigMCH8Data:
+    case icSig8colorData: nFARBEN(8) break;
+    case icSigMCH9Data:
+    case icSig9colorData: nFARBEN(9) break;
+    case icSigMCHAData:
+    case icSig10colorData: nFARBEN(10) break;
+    case icSigMCHBData:
+    case icSig11colorData: nFARBEN(11) break;
+    case icSigMCHCData:
+    case icSig12colorData: nFARBEN(12) break;
+    case icSigMCHDData:
+    case icSig13colorData: nFARBEN(13) break;
+    case icSigMCHEData:
+    case icSig14colorData: nFARBEN(14) break;
+    case icSigMCHFData:
+    case icSig15colorData: nFARBEN(15) break;
+    default: texte.push_back ("-"); break;
+  }
+# undef nFARBEN
+  return texte;
+}
+
+std::vector<std::string>
 getChannelNames (icColorSpaceSignature color)
 {
   std::vector<std::string> texte;
   std::stringstream s;
 # define nFARBEN(n) for (int i = 0; i < n; i++) \
                        { s << i << ". " << _("Colour"); \
-                         texte.push_back (s.str()); \
+                         texte.push_back (s.str()); s.str(""); \
                        }
 
   switch (color) {
@@ -501,10 +602,10 @@ getChannelNames (icColorSpaceSignature color)
     case icSig15colorData: nFARBEN(15) break;
     default: texte.push_back (_("No Colour")); break;
   }
+# undef nFARBEN
   return texte;
 }
 
-#undef nFARBEN
 
 std::string
 getDeviceClassName (icProfileClassSignature deviceClass)
