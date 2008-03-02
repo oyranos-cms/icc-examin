@@ -1,4 +1,6 @@
-include config
+# Abhaengigkeiten
+-include config
+
 
 BINTARGET = iccexamin
 
@@ -11,7 +13,7 @@ CXX = c++
 endif
 COLLECT = ar cru
 RANLIB = ranlib
-MAKEDEPEND	= makedepend -Y
+MAKEDEPEND	= $(CXX) -MM
 LINK = ln -s
 RM = rm -vf
 ifdef LINUX
@@ -51,7 +53,7 @@ ifdef APPLE
   INCL=-I$(includedir) -I/usr/X11R6/include -I./ -I/usr/include/gcc/darwin/default/c++
   REZ = \
       fltk-config --post $(BINTARGET);
-  MAKEDEPEND = /usr/X11R6/bin/makedepend -Y
+  #MAKEDEPEND = /usr/X11R6/bin/makedepend -Y
   DBG_LIBS = #-lMallocDebug
   MSGMERGE = msgmerge
   XGETTEXT_OPTIONS = \
@@ -60,7 +62,8 @@ ifdef APPLE
 	--keyword=N_
 else
   SO = .so
-    MSGMERGE = msgmerge --update
+    MSGMERGE = msgmerge
+    MSGMERG_OPTS = --update
     XGETTEXT_OPTIONS = \
 	--keyword=gettext --flag=gettext:1:pass-c-format \
 	--keyword=_ --flag=_:1:pass-c-format \
@@ -100,7 +103,7 @@ ifdef X11
 endif
 
 INCL_DEP = $(INCL) $(X_H) $(OSX_H) $(OYRANOS_H) \
-			$(FLU_H) $(FLTK_H) $(FTGL_H) $(LCMS_H) $(SOURCES)
+			$(FLU_H) $(FLTK_H) $(FTGL_H) $(LCMS_H) $(ALL_SOURCEFILES)
 ALL_INCL = $(INCL) \
 			$(FLU_H) $(FLTK_H) $(X_H) $(OSX_H) $(OYRANOS_H) $(LCMS_H) $(FTGL_H)
 
@@ -186,8 +189,10 @@ COMMON_CPPFILES = \
 	icc_vrml_parser.cpp \
 	threads.cpp
 
-LINGUAS = \
-	de eo #en_GB
+LINGUAS := \
+	$(shell ls po/*.po 2> /dev/null | sed -n 's/\.po//p' | sed -n 's%po\/%%p')
+LING := \
+	$(shell ls po/*.po 2> /dev/null)
 
 COMMON_CFILES = 
 CFILES = \
@@ -200,8 +205,9 @@ CPPFILES = \
 CXXFILES = \
 	icc_betrachter.cxx \
 	fl_oyranos.cxx
-TEST = \
-	dE2000_test.cpp \
+TEST_CPP = \
+	dE2000_test.cpp
+TEST_H = \
 	ciede2000testdata.h
 
 ALL_SOURCEFILES = \
@@ -212,11 +218,12 @@ ALL_SOURCEFILES = \
 	$(FLTK_CPPFILES) \
 	$(I18N_CXXFILES) \
 	$(CXXFILES) \
-	$(TEST)
+	$(TEST_CPP)
 
 ALL_HEADERFILES = \
 	$(CPP_HEADERS) \
-	$(I18N_HEADERS)
+	$(I18N_HEADERS) \
+	$(TEST_H)
 
 DOKU = \
 	TODO \
@@ -239,6 +246,7 @@ FONT = FreeSans.ttf
 SOURCES = $(ALL_SOURCEFILES) $(ALL_HEADERFILES)
 OBJECTS = $(CPPFILES:.cpp=.o) $(CXXFILES:.cxx=.o)
 I18N_OBJECTS =  $(I18N_CXXFILES:.cxx=.o)
+LINGUAS_SRC = $(LING:.po=.gmo)
 
 POT_FILE = po/$(TARGET).pot
 
@@ -261,7 +269,7 @@ mtime   := $(shell find $(timedir) -prune -printf %Ty%Tm%Td.%TT | sed s/://g)
 
 all:	dynamic
 	
-base:	config mkdepend 
+BASE = config mkdepend 
 	
 release:	icc_alles.o
 	echo Verknuepfen $@...
@@ -271,10 +279,10 @@ release:	icc_alles.o
 	$(REZ)
 	$(RM) icc_alles.o
 
-$(TARGET):	base $(OBJECTS) pot $(LIBNAME) $(LIBSONAMEFULL)
-	
-dynamic:	$(TARGET)
-	echo Verknuepfen $@...
+dynamic:	$(BINTARGET)
+
+$(BINTARGET):	$(BASE) $(OBJECTS) $(LINGUAS_SRC) $(I18N_OBJECTS) $(LIBNAME) $(LIBSONAMEFULL)
+	echo Verknuepfen $@ ... $(OBJECTS)
 	$(CXX) $(OPTS) -o $(BINTARGET) \
 	$(OBJECTS) \
 	$(LDLIBS) $(LINK_LIB_PATH) $(LINK_SRC_PATH)
@@ -295,7 +303,7 @@ $(LIBNAME):	$(I18N_OBJECTS)
 	$(COLLECT) $(LIBNAME) $(I18N_OBJECTS)
 	$(RANLIB) $(LIBNAME)
 
-static:	$(TARGET)
+static:	$(BINTARGET)
 	echo Verknuepfen $@ ...
 	$(CXX) $(OPTS) -o $(BINTARGET) $(OBJECTS) \
 	-L./ \
@@ -313,9 +321,9 @@ static:	$(TARGET)
 	      (pkg-config --libs lcms)))` #/usr/lib/libelektra.a # Hack for static lcms
 	$(REZ)
 
-strip: $(TARGET)
-	echo strip iccexamin
-	strip iccexamin
+strip: $(BINTARGET)
+	echo strip $(BINTARGET)
+	strip $(BINTARGET)
 
 static_static:	$(OBJECTS)
 	$(CXX) $(OPTS) -o $(BINTARGET) \
@@ -331,42 +339,45 @@ test:	icc_formeln.o icc_utils.o
 	-L$(libdir) -llcms
 	$(REZ)
 
-pot:	$(POT_FILE)
-	echo Linguas ...
-	for ling in $(LINGUAS); do \
-	  echo "update po/$${ling}.gmo ..."; \
-	  test -f po/$${ling}.po \
-        && ($(MSGFMT) -o po/$${ling}.gmo po/$${ling}.po; \
-            if [ ! -d po/$${ling} ]; then \
-              mkdir po/$${ling}; \
+$(LINGUAS_SRC):	$(POT_FILE)
+	echo Linguas ... $(@:.gmo=)
+	for ling in $(@:.gmo=); do \
+      lingua=`echo $${ling} | sed s%po\/%%g`; \
+	  echo "update $${ling}.gmo ..."; \
+	  test -f $${ling}.po \
+        && ($(MSGFMT) -o $${ling}.gmo $${ling}.po; \
+            if [ ! -d $${ling} ]; then \
+              mkdir $${ling}; \
             fi; \
-            if [ ! -d po/$${ling}/LC_MESSAGES ]; then \
-              mkdir po/$${ling}/LC_MESSAGES; \
+            if [ ! -d ./$${ling}/LC_MESSAGES ]; then \
+              mkdir -v $${ling}/LC_MESSAGES; \
             fi; \
-            test -f po/$${ling}/LC_MESSAGES/$(TARGET).mo && $(RM) po/$${ling}/LC_MESSAGES/$(TARGET).mo; \
-            ln -s ../../$${ling}.gmo po/$${ling}/LC_MESSAGES/$(TARGET).mo;) \
+            test -L $${ling}/LC_MESSAGES/$(TARGET).mo \
+              && $(RM) $${ling}/LC_MESSAGES/$(TARGET).mo \
+              || echo $${ling}/LC_MESSAGES/$(TARGET).mo nicht gefunden; \
+            ln -s ../../$${ling}.gmo $$lingua/LC_MESSAGES/$(TARGET).mo;) \
         || (echo $${ling}.po is not yet ready ... skipping) \
 	done;
 
-potfile:
+$(POT_FILE):	$(ALL_SOURCEFILES)
 	test `which xgettext` && xgettext --force-po $(XGETTEXT_OPTIONS) \
 	-d $(TARGET) \
 	-o $(POT_FILE) \
 	$(SOURCES) || echo -e "\c"
 	for ling in $(LINGUAS); do \
-            test `which $(MSGMERGE)` && $(MSGMERGE) po/$${ling}.po \
+            test `which $(MSGMERGE)` && \
+                 $(MSGMERGE) $(MSGMERG_OPTS) po/$${ling}.po \
                  $(POT_FILE) || \
-	         echo -e "\c"; \
+	        echo -e "\c"; \
 	done;
 
-$(POT_FILE):	potfile
 
 clean:	unbundle unpkg
 	echo mache sauber $@ ...
-	$(RM) mkdepend config config.h
-	$(RM) $(OBJECTS) $(I18N_OBJECTS) $(BINTARGET) \
+	-$(RM) mkdepend config config.h
+	-$(RM) $(OBJECTS) $(I18N_OBJECTS) $(BINTARGET) \
 	$(LIBNAME) $(LIBSO) $(LIBSONAME) $(LIBSONAMEFULL)
-	for ling in $(LINGUAS); do \
+	-for ling in $(LINGUAS); do \
 	  test -f po/$${ling}.gmo \
         && $(RM) po/$${ling}.gmo; \
 	done;
@@ -375,12 +386,11 @@ clean:	unbundle unpkg
 config:
 	./configure
 
-depend:
+mkdepend:	config $(ALL_HEADERFILES)
 	echo "schaue nach Abhaengikeiten ..."
 	echo "MAKEDEPEND_ISUP = 1" > mkdepend
-	$(MAKEDEPEND) -f mkdepend \
-	-s "#nicht editieren/dont edit - automatisch generiert" \
-	-I. $(INCL_DEP)
+	echo "#nicht editieren/dont edit - automatisch generiert" >> mkdepend
+	-$(MAKEDEPEND) -I./ $(INCL_DEP) >> mkdepend
 
 
 # The extension to use for executables...
@@ -388,11 +398,6 @@ EXEEXT		=
 
 # Build commands and filename extensions...
 .SUFFIXES:	.0 .1 .3 .c .cxx .h .fl .man .o .z $(EXEEXT)
-
-.o$(EXEEXT):
-	echo Linking $@ ...
-	$(CXX) $(CXXFLAGS) $< $(LINKFLTK) $(LDLIBS) -o $@
-	$(POSTBUILD) $@ ../FL/mac.r
 
 .c.o:
 	echo Compiling $< ...
@@ -436,6 +441,7 @@ targz:
 	mkdir $(TARGET)_$(VERSION)/po
 	$(COPY) $(POT_FILE) $(TARGET)_$(VERSION)/po
 	for ling in $(LINGUAS); do \
+      echo $${ling}; \
 	  test -f po/$${ling}.po \
         && $(COPY) po/$${ling}.po $(TARGET)_$(VERSION)/po/; \
 	done;
@@ -446,7 +452,7 @@ targz:
 	$(RM) -R $(TARGET)_$(VERSION) 
 	test -d ../Archiv && mv -v $(TARGET)_*.tgz ../Archiv || echo no copy
 
-dist: targz base
+dist: $(BASE) targz
 	test -f && $(COPY) ../Archiv/$(TARGET)_$(mtime).tgz $(TARGET)_$(VERSION).tar.gz || $(COPY) $(TARGET)_$(mtime).tgz $(TARGET)_$(VERSION).tar.gz
 
 $(TARGET).spec:
@@ -550,11 +556,5 @@ unpkg:
 	$(RM) -R installation/
 	echo ... $@ fertig
 
-
-# Abhaengigkeiten
-include mkdepend
-
-ifndef MAKEDEPEND_ISUP
-mkdepend: depend
-endif
+-include mkdepend
 

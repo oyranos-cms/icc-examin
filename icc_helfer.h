@@ -35,7 +35,6 @@
 
 #include "icc_utils.h"
 #include "icc_icc.h"
-#include "fl_i18n.H"
 
 // File macros / teilweise aus config.h
 #ifdef __WIN32__

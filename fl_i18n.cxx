@@ -25,20 +25,30 @@
  * 
  */
 
+// LOCALEDIR + SRC_LOCALEDIR
+#include "config.h"
 
-#include <string>
+#include "fl_i18n.H"
+
 #include <locale.h>
 #include <libintl.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
-#include "config.h"
-#include "icc_helfer.h"
 
 #ifdef __APPLE__
 #include <CoreFoundation/CoreFoundation.h>
 #endif
 
+#ifdef DEBUG
+#include "icc_utils.h"
+#endif
 #ifndef DBG_PROG_START
 #define DBG_PROG_START
+#endif
+#ifndef DBG_PROG
+#define DBG_PROG
 #endif
 #ifndef DBG_PROG_V
 #define DBG_PROG_V(text)
@@ -50,14 +60,16 @@
 #define DBG_PROG_ENDE
 #endif
 
+#define TEXTLEN 48
 
+//extern int icc_debug;
 
 void
 initialiseI18N()
-{
+{ icc_debug = 2;
+#ifdef USE_GETTEXT
   DBG_PROG_START
-
-  std::string locale;
+  char locale[TEXTLEN];
   int set_zero_locale = 1;
 
 # ifdef __APPLE__
@@ -75,18 +87,18 @@ initialiseI18N()
 
   if(fehler) {
       DBG_PROG_S( _("osX locale obtained: ") << text )
-    locale = text;
+    snprintf(locale,TEXTLEN, text);
   } else {
       DBG_PROG_S( _("osX locale not obtained") )
   }
-  DBG_PROG_V( locale.c_str() )
+  DBG_PROG_V( locale )
 
   // set the locale info
   const char* tmp = 0;
-  if(locale.size())
-     setlocale (LC_MESSAGES, locale.c_str());
+  if(strlen(locale))
+     setlocale (LC_MESSAGES, locale);
   if (tmp)
-    locale = tmp; 
+    snprintf(locale,TEXTLEN, tmp);
   set_zero_locale = 0;
 # else
   DBG_PROG
@@ -94,32 +106,31 @@ initialiseI18N()
   // 1. get default locale info ..
   const char *tmp = setlocale (LC_MESSAGES, "");
   if(tmp) {
-    locale = tmp;
+    snprintf(locale,TEXTLEN, tmp);
     DBG_PROG_V( locale )
   }
 
     // .. or take locale info from environment
   if(getenv("LANG"))
-    locale = getenv("LANG");
+    snprintf(locale,TEXTLEN, getenv("LANG"));
 # endif
 
   char codeset[24] = "ISO-8859-1";
 
 #   define SetCodesetForLocale( lang, codeset_ ) \
-    if( locale.size() ) { \
-      std::string::size_type pos = locale.find( lang ,0); \
-      if(pos == 0) \
+    if( strlen(locale) ) { \
+      char* pos = strstr(locale, lang); \
+      if(pos != 0) \
       { \
         /* 1 a. select an appropriate charset (needed for non UTF-8 fltk/gtk1)*/ \
         sprintf (codeset, codeset_); \
         \
           /* merge charset with locale string */ \
-        if((pos = locale.find_first_of(".")) != std::string::npos) \
+        if((pos = strchr(locale,'.')) == 0) \
         { \
-          locale.erase( pos, locale.size()-pos ); \
+          *pos = 0; DBG_PROG_V( pos ) \
         } \
-        locale += "."; \
-        locale += codeset; \
+        snprintf(locale, TEXTLEN, ".%s",codeset); \
         \
         DBG_PROG_V( locale ) \
         \
@@ -128,7 +139,7 @@ initialiseI18N()
         \
         /* 1c. set the locale info after LANG */ \
         if(set_zero_locale) \
-          locale = setlocale (LC_MESSAGES, ""); \
+          snprintf( locale, TEXTLEN, setlocale (LC_MESSAGES, "")); \
       } \
     }
 
@@ -194,7 +205,7 @@ initialiseI18N()
 
     SetCodesetForLocale( "ja", "SJIS" ) // Japan ; eucJP, ujis, EUC, PCK, jis7, SJIS
 
-  if(locale.size())
+  if(strlen(locale))
     DBG_PROG_S( locale );
 
 
@@ -208,12 +219,12 @@ initialiseI18N()
 
   } else {
 
-    DBG_PROG_S( _("try to set LANG") )
+    DBG_PROG_S( _("try to set LANG") );
 
       // set LANG
 #   ifdef __APPLE__
-    if (locale.size())
-      setenv("LANG", locale.c_str(), 0);
+    if (strlen(locale))
+      setenv("LANG", locale, 0);
 #   endif
 
       // good?
@@ -222,28 +233,30 @@ initialiseI18N()
   }
 
   DBG_PROG_V( system("set | grep LANG") )
-  if(locale.size())
+  if(strlen(locale))
     DBG_PROG_S( locale );
 
   // 3. our translations
   textdomain ("icc_examin");
 
   char test[1024];
-  std::string localedir = LOCALEDIR;
+  char localedir[1024] = { LOCALEDIR };
 # if __APPLE__
-  std::string temp = icc_examin_ns::holeBundleResource("locale","");
-  if(temp.size()) {
-    localedir = temp;
+  char temp[1024] = { icc_examin_ns::holeBundleResource("locale","") };
+  if(strlen(temp)) {
+    snprintf(localedir, 1024, temp);
     DBG_PROG_V( localedir )
   }
 # endif
-  sprintf(test, "%s%s", localedir.c_str(), "/de/LC_MESSAGES/icc_examin.mo");
+  snprintf(test, 1024, "%s%s", localedir, "/de/LC_MESSAGES/icc_examin.mo");
   char* bdtd = 0;
 
   // 4. where to find the MO file? select an appropriate directory
-  if( holeDateiModifikationsZeit(test) ) {
+  FILE *fp = fopen(test, "r");
+  if( fp != 0 ) {
+    fclose(fp);
       // installation directory ..
-    bdtd = bindtextdomain ("icc_examin", localedir.c_str());
+    bdtd = bindtextdomain ("icc_examin", localedir);
 
     DBG_PROG_S( _("fine with: ") << bdtd );
   } else {
@@ -259,19 +272,21 @@ initialiseI18N()
   char* cs = bind_textdomain_codeset("icc_examin", codeset);
 
   if(cs)
-    DBG_PROG_S( _("set codeset for \"icc_examin\" to ") << cs )
+    DBG_PROG_S( _("set codeset for \"icc_examin\" to ") << cs );
 
   // gettext initialisation end
 
   DBG_PROG_ENDE
+#endif
+  icc_debug = 0;
 }
 
 
-#ifdef HAVE_FLTK
 #include <FL/Fl_Menu_Item.H>
 void
 menue_translate( Fl_Menu_Item* menueleiste )
 {
+#ifdef USE_GETTEXT
   DBG_PROG_START
   int size = menueleiste->size();
   DBG_PROG_V( size )
@@ -282,12 +297,14 @@ menue_translate( Fl_Menu_Item* menueleiste )
     if(text)
       DBG_PROG_V( text <<" "<< _(text) );
   }
+#endif
 }
 
 #include <Fl/Fl_File_Chooser.H>
 void
 file_chooser_translate( )
 {
+#ifdef USE_GETTEXT
   DBG_PROG_START
     Fl_File_Chooser::add_favorites_label = _("Add to Favorites");
     Fl_File_Chooser::all_files_label = _("All Files (*)");
@@ -303,10 +320,43 @@ file_chooser_translate( )
 #   endif
     Fl_File_Chooser::new_directory_label = _("New Directory?");
     Fl_File_Chooser::preview_label = _("Preview");
+    // How to test?
     //Fl_File_Chooser::save_label = _("Save"); // since 1.1.7?
     Fl_File_Chooser::show_label = _("Show:");
   DBG_PROG_ENDE
-}
 #endif
+}
+
+const char*
+threadGettext( const char* text)
+{
+  const char *translation = text;
+#ifdef USE_GETTEXT
+# ifdef HAVE_PTHREAD_H
+  static pthread_mutex_t translation_mutex_         = PTHREAD_MUTEX_INITIALIZER;
+  static Fl_Thread       translation_mutex_thread_  = (Fl_Thread)THREAD_HAUPT;
+  static int             translation_mutex_threads_ = 0;
+  // im selben Zweig gesperrten Rat ausschliesen
+  if( translation_mutex_thread_ != wandelThreadId( pthread_self() ) ||
+      translation_mutex_threads_ == 0 )
+    // Warten bis der Rat von einem anderen Zweig freigegeben wird
+    while (pthread_mutex_trylock( &translation_mutex_ )) {
+      icc_examin_ns::sleep(0.001);
+    }
+  translation_mutex_threads_++ ;
+  if(translation_mutex_threads_ == 1)
+     translation_mutex_thread_ = wandelThreadId( pthread_self() );
+
+  translation = gettext( text );
+
+  --translation_mutex_threads_;
+  if(!translation_mutex_threads_)
+    pthread_mutex_unlock( &translation_mutex_ );
+# else
+  translation = gettext( text );
+# endif
+#endif
+  return translation;
+}
 
 

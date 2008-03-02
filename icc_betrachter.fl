@@ -52,7 +52,9 @@ decl {\#include "icc_examin.h"} {public
 
 decl {\#include "icc_draw.h"
 \#include "icc_kette.h"
-\#include "icc_oyranos_extern.h"} {} 
+\#include "icc_oyranos_extern.h"
+\#include "fl_i18n.H"} {selected
+} 
 
 decl {\#include "icc_profile.h"
 \#include "icc_utils.h"
@@ -318,11 +320,10 @@ class ICCfltkBetrachter {open
     dateiwahl = new Fl_File_Chooser(ptr, _("ICC colour profiles (*.{I,i}{C,c}{M,m,C,c})	Measurement (*.{txt,it8,IT8,RGB,CMYK,ti*,CIE,cie,nCIE,oRPT,DLY,LAB,Q60})	Argyll Gamuts (*.{wrl,vrml}"), Fl_File_Chooser::MULTI, _("Which ICC profile?"));
     dateiwahl->callback(dateiwahl_cb);
     dateiwahl->preview(true);
-  \#endif} {selected
-    }
+  \#endif} {}
     Fl_Window ueber {
       label {About ICC Examin}
-      xywh {897 404 366 241} type Double resizable
+      xywh {902 425 366 241} type Double resizable
       code0 {o->hide();} non_modal visible
     } {
       Fl_Group {} {open
@@ -340,7 +341,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window vcgt {
       label {Grafic Card Gamma Table}
-      xywh {114 139 370 390} type Double resizable
+      xywh {119 160 370 390} type Double resizable
       code0 {o->hide();} visible
     } {
       Fl_Group {} {open
@@ -380,7 +381,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window details {
       label {ICC Examin} open
-      xywh {1065 210 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
+      xywh {1070 231 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
     } {
       Fl_Group {} {open
         xywh {0 0 385 520}

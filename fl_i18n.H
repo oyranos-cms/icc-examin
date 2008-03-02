@@ -30,11 +30,17 @@
 #ifndef FL_I18N_H
 #define FL_I18N_H
 
-#include <string>
-#include <vector>
+#ifndef USE_GETTEXT
+#define USE_GETTEXT
+#endif
+#ifdef USE_GETTEXT
+# include <libintl.h>
+# define _(text) threadGettext(text)
+const char* threadGettext( const char* text);
+#else
+# define _(text) text
+#endif
 
-#include "icc_utils.h"
-#include "icc_icc.h"
 
 // I18N
 void initialiseI18N();

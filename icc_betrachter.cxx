@@ -5,6 +5,7 @@
 #include "icc_draw.h"
 #include "icc_kette.h"
 #include "icc_oyranos_extern.h"
+#include "fl_i18n.H"
 #include "icc_gl.h"
 using namespace icc_examin_ns;
 

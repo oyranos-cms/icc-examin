@@ -30,6 +30,7 @@
 #include "icc_helfer.h"
 #include "icc_examin.h"
 #include "icc_kette.h"
+#include "fl_i18n.H"
 
 //#include <FL/Fl.H>
 //#include <FL/Fl_Double_Window.H>

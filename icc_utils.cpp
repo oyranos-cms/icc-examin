@@ -158,42 +158,6 @@ dbgThreadId(Fl_Thread id)
   //return s;
 }
 
-const char*
-threadGettext( const char* text)
-{
-  //printf("START %s:%d %s()\n", __FILE__,__LINE__,__func__);
-  const char *translation = text;
-# ifdef HAVE_PTHREAD_H
-  static pthread_mutex_t translation_mutex_         = PTHREAD_MUTEX_INITIALIZER;
-  static Fl_Thread       translation_mutex_thread_  = (Fl_Thread)THREAD_HAUPT;
-  static int             translation_mutex_threads_ = 0;
-  // im selben Zweig gesperrten Rat ausschliesen
-  if( translation_mutex_thread_ != wandelThreadId( pthread_self() ) ||
-      translation_mutex_threads_ == 0 )
-    // Warten bis der Rat von einem anderen Zweig freigegeben wird
-    while (pthread_mutex_trylock( &translation_mutex_ )) {
-      //printf("translation_mutex_ nicht verfügbar\n");
-      icc_examin_ns::sleep(0.001);
-    }
-  translation_mutex_threads_++ ;
-  if(translation_mutex_threads_ == 1)
-     translation_mutex_thread_ = wandelThreadId( pthread_self() );
-  //printf("translation_mutex_ ist lock\n");
-
-  translation = gettext( text );
-
-  --translation_mutex_threads_;
-  if(!translation_mutex_threads_)
-    pthread_mutex_unlock( &translation_mutex_ );
-  //printf("translation_mutex_ ist unlock %d\n", translation_mutex_threads_);
-# else
-  translation = gettext( text );
-# endif
-  //printf("ENDE  %s:%d %s()\n", __FILE__,__LINE__,__func__);
-  //DBG_PROG_ENDE
-  return translation;
-}
-
 int
 iccLevel_PROG(int plus_minus_null)
 {
