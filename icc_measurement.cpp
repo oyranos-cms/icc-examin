@@ -50,6 +50,8 @@
 #include "icc_helfer.h"
 #include "icc_cgats_filter.h"
 #include "icc_examin.h"
+#include "icc_info.h"
+using namespace icc_examin_ns;
 
 #define g_message printf
 
@@ -767,7 +769,7 @@ ICCmeasurement::init_umrechnen                     (void)
     // ein passendes Bildschirm- / Darstellungsprofil aussuchen
     if(!export_farben)
     {
-#     ifdef HAVE_OY_
+#     ifdef HAVE_OY
       size_t groesse = 0;
       const char* block = 0;
       int x = 0;
@@ -781,7 +783,10 @@ ICCmeasurement::init_umrechnen                     (void)
     } else { DBG_PROG_S( "Export Farben" ); }
 
     if(!hsRGB)
+    {
       hsRGB = cmsCreate_sRGBProfile ();
+      WARN_S( _("use sRGB") )
+    }
     hLab = cmsCreateLabProfile (cmsD50_xyY());
     hXYZ = cmsCreateXYZProfile ();
 #   if 0
@@ -822,25 +827,29 @@ ICCmeasurement::init_umrechnen                     (void)
       if( !hCOLOUR )
         WARN_S("hCOLOUR ist leer")
 
+      fortschritt(0.2);
       // Wie sieht das Profil die Messfarbe? -> XYZ
       hCOLOURtoXYZ =  cmsCreateTransform (hCOLOUR, TYPE_nCOLOUR_DBL,
                                     hXYZ, TYPE_XYZ_DBL,
                                     INTENT_ABSOLUTE_COLORIMETRIC,
                                     PRECALC|BW_COMP);
+      fortschritt(0.4);
       // Wie sieht das Profil die Messfarbe? -> Lab
       hCOLOURtoLab =  cmsCreateTransform (hCOLOUR, TYPE_nCOLOUR_DBL,
                                     hLab, TYPE_Lab_DBL,
                                     INTENT_ABSOLUTE_COLORIMETRIC,
                                     PRECALC|BW_COMP);
+      fortschritt(0.6);
       // Wie sieht das Profil die Messfarbe? -> Bildschirmdarstellung
       hCOLOURtoRGB =  cmsCreateProofingTransform (hCOLOUR, TYPE_nCOLOUR_DBL,
                                     hsRGB, TYPE_RGB_DBL,
                                     hsRGB,
                                     INTENT_ABSOLUTE_COLORIMETRIC,
-                                    INTENT_ABSOLUTE_COLORIMETRIC,
+                                    INTENT_RELATIVE_COLORIMETRIC,
                                     (icc_examin?icc_examin->gamutwarn():0) ?
                                     cmsFLAGS_GAMUTCHECK : 0  |
                                     PRECALC|BW_COMP);
+      fortschritt(0.8);
     }
     Kein_Profil:
     if (XYZ_measurement_)
@@ -863,6 +872,7 @@ ICCmeasurement::init_umrechnen                     (void)
                                     cmsFLAGS_GAMUTCHECK : 0  |
                                     PRECALC|BW_COMP);
     }
+    fortschritt(0.9);
     double Farbe[channels_], RGB[3], XYZ[3], Lab[3];
     bool vcgt = false;
     std::vector<std::vector<double> > vcgt_kurven;
@@ -997,6 +1007,7 @@ ICCmeasurement::init_umrechnen                     (void)
   for (unsigned int i = 0; i < Lab_Differenz_.size(); i++) {
     Lab_Differenz_Durchschnitt_ += Lab_Differenz_[i];
   }
+  fortschritt(1.1);
   Lab_Differenz_Durchschnitt_ /= (double)Lab_Differenz_.size();
   for (unsigned int i = 0; i < DE00_Differenz_.size(); i++) {
     DE00_Differenz_Durchschnitt_ += DE00_Differenz_[i];

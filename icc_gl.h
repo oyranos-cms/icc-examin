@@ -114,6 +114,8 @@ class GL_Ansicht : public Fl_Gl_Window, /*, public Fl_Slot*/
    MENU_MAX
   } MenuChoices;
 
+  int hintergrundfarbeZuMenueeintrag( float farbe );
+
   int DrawAxes;
 
 public:

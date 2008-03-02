@@ -1,5 +1,48 @@
+2006-11-17
+	* neu: "Quit" in 3D Gamut window
+	* fix: fix mft_choice empty entry
+	* neu: preferences saving for 3D gamut and mft CLUT views
+
+2006-11-16
+	* und: move darf_bewegen_ from GL_Ansicht to Agviewer
+	* und: add hotspot() call to help dialogs showing for twm
+	* und: move dateiwahl initialisation from ICCbetrachter to ICCexamin
+	* und: renaming fenster_id to typ in GL_Ansicht
+	* neu: new class EinModell to object all GL_Asicht in alle_gl_fenster
+		fixes GL context switches bug for menu handling
+	* und: handle Fl_Window::xclass setting in MyFl_Double_Window
+	* fix: show icon for all windows
+	* neu: handle MyFl_Double_Window::is_toolbox; not _NET_WM_WINDOW_TYPE,
+		for icc_waehler_
+	* fix: update fl_translate_file_chooser() to MyFl_File_Chooser
+	* fix: fix empty measurements crash
+	* fix: empty observer list crash in Modell::beobachterFort
+
+2006-11-15
+	* neu: "Show Main Window" in 3D Gamut window
+	* fix: fix empty icc_waehler_ calling crashes
+
+2006-11-14
+	* und: reduce to a more apropriate authors list
+	* neu: save configuration to config.log
+	* neu: include CFLAGS, CXXFLAGS and LDFLAGS
+	* fix: fix configure for Solaris shell syntax
+	* und: update configure.sh from Oyranos
+	* und: clean up zeigMftTabellen() syntax
+	* und: more clean ups for the positioning code in icc_examin.h/cpp
+	* und: move title setting into setzeFensterTitel()
+	* und: new setzMesswerte() for updating the report table
+	* und: move the oeffnen() code from ICCbetrachter to ICCexamin
+	* und: change GL timing from Fl::add_timeout() to
+		smoother Fl::repeat_timeout()
+	* und: override show() and hide() in GL_Ansicht to better control
+	* fix: fix warnings for non -DDEBUG compiling
+	* neu: flstring.c and vsnprintf.c from fltk project
+
 2006-11-13
 	* und: GL timing makes more sense
+	* und: change DYLD_LIBRARY_PATH to DYLD_FALLBACK_LIBRARY_PATH for Tiger
+	* neu: add label() to MyFl_Double_Window for handling the title name
 
 2006-11-11
 	* neu: MyFl_Double_Window to handle iconization

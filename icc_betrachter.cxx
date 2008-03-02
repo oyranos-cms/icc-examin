@@ -204,6 +204,13 @@ void ICCfltkBetrachter::cb_Show(Fl_Menu_* o, void* v) {
   ((ICCfltkBetrachter*)(o->parent()->parent()->user_data()))->cb_Show_i(o,v);
 }
 
+void ICCfltkBetrachter::cb_Quit_i(Fl_Menu_*, void*) {
+  quit();
+}
+void ICCfltkBetrachter::cb_Quit(Fl_Menu_* o, void* v) {
+  ((ICCfltkBetrachter*)(o->parent()->parent()->user_data()))->cb_Quit_i(o,v);
+}
+
 void ICCfltkBetrachter::cb_menueintrag_gamutwarn_i(Fl_Menu_* o, void*) {
   Fl_Menu_* mw = (Fl_Menu_*)o;
   const Fl_Menu_Item* m = mw->mvalue();
@@ -288,7 +295,8 @@ void ICCfltkBetrachter::cb_menueintrag_bpc(Fl_Menu_* o, void* v) {
 Fl_Menu_Item ICCfltkBetrachter::menu_DD_menueleiste[] = {
  {_("View"), 0,  0, 0, 64, FL_NORMAL_LABEL, 0, 14, 0},
  {_("Whole Screen on/off"), 0x40076,  (Fl_Callback*)ICCfltkBetrachter::cb_DD_menueintrag_Voll, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
- {_("Show Main Window"), 0x4006d,  (Fl_Callback*)ICCfltkBetrachter::cb_Show, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {_("Show Main Window"), 0x4006d,  (Fl_Callback*)ICCfltkBetrachter::cb_Show, 0, 128, FL_NORMAL_LABEL, 0, 14, 0},
+ {_("Quit"), 0x40071,  (Fl_Callback*)ICCfltkBetrachter::cb_Quit, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
  {0,0,0,0,0,0,0,0,0},
  {_("Options"), 0,  0, 0, 64, FL_NORMAL_LABEL, 0, 14, 0},
  {_("Gamut Warning"), 0x40077,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_gamutwarn, 0, 2, FL_NORMAL_LABEL, 0, 14, 0},
@@ -300,11 +308,11 @@ Fl_Menu_Item ICCfltkBetrachter::menu_DD_menueleiste[] = {
  {0,0,0,0,0,0,0,0,0}
 };
 Fl_Menu_Item* ICCfltkBetrachter::DD_menueintrag_Voll = ICCfltkBetrachter::menu_DD_menueleiste + 1;
-Fl_Menu_Item* ICCfltkBetrachter::menueintrag_gamutwarn = ICCfltkBetrachter::menu_DD_menueleiste + 5;
-Fl_Menu_Item* ICCfltkBetrachter::menueintrag_phot_intent = ICCfltkBetrachter::menu_DD_menueleiste + 6;
-Fl_Menu_Item* ICCfltkBetrachter::menueintrag_rel_col_intent = ICCfltkBetrachter::menu_DD_menueleiste + 7;
-Fl_Menu_Item* ICCfltkBetrachter::menueintrag_abs_col_intent = ICCfltkBetrachter::menu_DD_menueleiste + 8;
-Fl_Menu_Item* ICCfltkBetrachter::menueintrag_bpc = ICCfltkBetrachter::menu_DD_menueleiste + 9;
+Fl_Menu_Item* ICCfltkBetrachter::menueintrag_gamutwarn = ICCfltkBetrachter::menu_DD_menueleiste + 6;
+Fl_Menu_Item* ICCfltkBetrachter::menueintrag_phot_intent = ICCfltkBetrachter::menu_DD_menueleiste + 7;
+Fl_Menu_Item* ICCfltkBetrachter::menueintrag_rel_col_intent = ICCfltkBetrachter::menu_DD_menueleiste + 8;
+Fl_Menu_Item* ICCfltkBetrachter::menueintrag_abs_col_intent = ICCfltkBetrachter::menu_DD_menueleiste + 9;
+Fl_Menu_Item* ICCfltkBetrachter::menueintrag_bpc = ICCfltkBetrachter::menu_DD_menueleiste + 10;
 
 void ICCfltkBetrachter::cb_Open_i(Fl_Menu_*, void*) {
   icc_examin->oeffnen();
@@ -346,11 +354,11 @@ void ICCfltkBetrachter::cb_menueintrag_gamut_vrml_speichern(Fl_Menu_* o, void* v
   ((ICCfltkBetrachter*)(o->parent()->parent()->user_data()))->cb_menueintrag_gamut_vrml_speichern_i(o,v);
 }
 
-void ICCfltkBetrachter::cb_Quit_i(Fl_Menu_*, void*) {
+void ICCfltkBetrachter::cb_Quit1_i(Fl_Menu_*, void*) {
   quit();
 }
-void ICCfltkBetrachter::cb_Quit(Fl_Menu_* o, void* v) {
-  ((ICCfltkBetrachter*)(o->parent()->parent()->user_data()))->cb_Quit_i(o,v);
+void ICCfltkBetrachter::cb_Quit1(Fl_Menu_* o, void* v) {
+  ((ICCfltkBetrachter*)(o->parent()->parent()->user_data()))->cb_Quit1_i(o,v);
 }
 
 void ICCfltkBetrachter::cb_Oyranos_i(Fl_Menu_*, void*) {
@@ -491,7 +499,7 @@ Fl_Menu_Item ICCfltkBetrachter::menu_menueleiste[] = {
  {_("Save Report"), 0,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_html_speichern, 0, 129, FL_NORMAL_LABEL, 0, 14, 0},
  {_("Save Gamut as Profile"), 0,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_gamut_speichern, 0, 1, FL_NORMAL_LABEL, 0, 14, 0},
  {_("Save Gamut as VRML"), 0,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_gamut_vrml_speichern, 0, 129, FL_NORMAL_LABEL, 0, 14, 0},
- {_("Quit"), 0x40071,  (Fl_Callback*)ICCfltkBetrachter::cb_Quit, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {_("Quit"), 0x40071,  (Fl_Callback*)ICCfltkBetrachter::cb_Quit1, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
  {0,0,0,0,0,0,0,0,0},
  {_("Edit"), 0,  0, 0, 80, FL_NORMAL_LABEL, 0, 14, 0},
  {_("Oyranos Settings"), 0,  (Fl_Callback*)ICCfltkBetrachter::cb_Oyranos, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
@@ -677,6 +685,9 @@ ard"));
       { Fl_Menu_Bar* o = DD_menueleiste = new Fl_Menu_Bar(0, 0, 385, 25);
         o->align(FL_ALIGN_LEFT|FL_ALIGN_INSIDE);
         o->when(3);
+        { Fl_Menu_Item* o = &menu_DD_menueleiste[6];
+          if(icc_examin->gamutwarn()) o->set();
+        }
         o->menu(menu_DD_menueleiste);
       }
       { Fl_Tile* o = new Fl_Tile(0, 25, 385, 495);

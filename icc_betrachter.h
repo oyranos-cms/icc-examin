@@ -120,6 +120,8 @@ private:
   static void cb_DD_menueintrag_Voll(Fl_Menu_*, void*);
   void cb_Show_i(Fl_Menu_*, void*);
   static void cb_Show(Fl_Menu_*, void*);
+  void cb_Quit_i(Fl_Menu_*, void*);
+  static void cb_Quit(Fl_Menu_*, void*);
 public:
   static Fl_Menu_Item *menueintrag_gamutwarn;
 private:
@@ -169,8 +171,8 @@ public:
 private:
   void cb_menueintrag_gamut_vrml_speichern_i(Fl_Menu_*, void*);
   static void cb_menueintrag_gamut_vrml_speichern(Fl_Menu_*, void*);
-  void cb_Quit_i(Fl_Menu_*, void*);
-  static void cb_Quit(Fl_Menu_*, void*);
+  void cb_Quit1_i(Fl_Menu_*, void*);
+  static void cb_Quit1(Fl_Menu_*, void*);
   void cb_Oyranos_i(Fl_Menu_*, void*);
   static void cb_Oyranos(Fl_Menu_*, void*);
 public:

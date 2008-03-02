@@ -124,6 +124,7 @@ FTFont *font = NULL, *ortho_font = NULL;
                                    glScalef(1.0/scal,1.0/(scal*w()/(double)h()),1.0/scal); \
                                  }
 
+
 int GL_Ansicht::ref_ = 0;
 
 
@@ -172,15 +173,6 @@ GL_Ansicht::GL_Ansicht(int X,int Y,int W,int H)
       glListen[i] = 0;
   gl_list_init_ = 0;
 
-  Fl_Preferences gl( Fl_Preferences::USER, "oyranos.org", "iccexamin");
-
-  gl.get("spektralband", spektralband, 0 );
-  gl.get("hintergrundfarbe", hintergrundfarbe, MENU_HELLGRAU );
-  gl.get("zeige_helfer", zeige_helfer, true );
-  gl.get("schalen", schalen, 5 );
-
-  DBG_V( spektralband )
-
   DBG_PROG_ENDE
 }
 
@@ -218,25 +210,31 @@ GL_Ansicht::~GL_Ansicht()
 
   --ref_;
 
-  if(typ_ == 2)
+  Fl_Preferences gl( Fl_Preferences::USER, "oyranos.org", "iccexamin");
+  switch (typ_)
   {
-    Fl_Preferences gl( Fl_Preferences::USER, "oyranos.org", "iccexamin");
+    case 1:
+    {
+      Fl_Preferences gl_cube(gl, "gl_cube");
+      gl_cube.set("spektralband", spektralband );
+      int eintrag = hintergrundfarbeZuMenueeintrag(hintergrundfarbe);
+      gl_cube.set("hintergrundfarbe", eintrag );
+      gl_cube.set("zeige_helfer", zeige_helfer );
+      gl_cube.set("schalen", schalen );
 
-    gl.set("spektralband", spektralband );
-    if(hintergrundfarbe == 1.0)
-      gl.set("hintergrundfarbe", MENU_WEISS );
-    if(hintergrundfarbe == 0.75)
-      gl.set("hintergrundfarbe", MENU_HELLGRAU );
-    if(hintergrundfarbe == 0.5)
-      gl.set("hintergrundfarbe", MENU_GRAUGRAU );
-    if(hintergrundfarbe == 0.25)
-      gl.set("hintergrundfarbe", MENU_DUNKELGRAU );
-    if(hintergrundfarbe == 0.0)
-      gl.set("hintergrundfarbe", MENU_SCHWARZ );
-    gl.set("zeige_helfer", zeige_helfer );
-    gl.set("schalen", schalen );
+      DBG_PROG_V( spektralband )
+    } break;
+    case 2:
+    {
+      Fl_Preferences gl_gamut(gl, "gl_gamut");
+      gl_gamut.set("spektralband", spektralband );
+      int eintrag = hintergrundfarbeZuMenueeintrag(hintergrundfarbe);
+      gl_gamut.set("hintergrundfarbe", eintrag );
+      gl_gamut.set("zeige_helfer", zeige_helfer );
+      gl_gamut.set("schalen", schalen );
 
-    DBG_V( spektralband )
+      DBG_PROG_V( spektralband )
+    } break;
   }
 
   DBG_PROG_ENDE
@@ -301,6 +299,30 @@ GL_Ansicht::init(int ty)
   typ_ = ty;
 
   DBG_PROG
+
+  Fl_Preferences gl( Fl_Preferences::USER, "oyranos.org", "iccexamin");
+
+  switch(typ_)
+  {
+    case 1:
+    {
+      Fl_Preferences gl_cube(gl, "gl_cube");
+      gl_cube.get("spektralband", spektralband, 0 );
+      gl_cube.get("hintergrundfarbe", hintergrundfarbe, MENU_HELLGRAU );
+      gl_cube.get("zeige_helfer", zeige_helfer, true );
+      gl_cube.get("schalen", schalen, 5 );
+    } break;
+    case 2:
+    {
+      Fl_Preferences gl_gamut(gl, "gl_gamut");
+      gl_gamut.get("spektralband", spektralband, 0 );
+      gl_gamut.get("hintergrundfarbe", hintergrundfarbe, MENU_HELLGRAU );
+      gl_gamut.get("zeige_helfer", zeige_helfer, true );
+      gl_gamut.get("schalen", schalen, 5 );
+    } break;
+  }
+
+  DBG_PROG_V( spektralband )
 
   resizable(0);
 
@@ -494,7 +516,7 @@ void
 GL_Ansicht::nachricht(icc_examin_ns::Modell* modell, int info)
 {
   DBG_PROG_START
-  DBG_NUM_V( info<<" "<<window()->visible()<<" "<<visible()<<" "<<shown()<<" "<<id_ )
+  DBG_PROG_V( info<<" "<<window()->visible()<<" "<<visible()<<" "<<shown()<<" "<<id_ )
 
   if( visible() && shown() && !agv_->parent->visible() )
     agv_->reparent(this);
@@ -530,7 +552,7 @@ GL_Ansicht::draw()
 {
   DBG_PROG_START
   --zahl;
-  DBG_NUM_S( "Eintritt ist_bewegt_|darfBewegen(): "
+  DBG_PROG_S( "Eintritt ist_bewegt_|darfBewegen(): "
                << ist_bewegt_ << "|" << darfBewegen()<<" "<<id_<<" "<<hintergrundfarbe )
   Fl_Thread thread = wandelThreadId(pthread_self());
   if(thread != (Fl_Thread)THREAD_HAUPT) {
@@ -542,7 +564,7 @@ GL_Ansicht::draw()
   if(!icc_examin->frei()) {
     if(ist_bewegt_) {
       stupps_(false); DBG_NUM_S( "stoppen" )
-    } else DBG;
+    } else DBG_NUM_S( "Uuch nicht bewegt" );
     DBG_PROG_ENDE
     return;
   } else if(!ist_bewegt_ && darfBewegen()) {
@@ -2417,7 +2439,7 @@ GL_Ansicht::zeichnen()
       }
     }
     if(strich_neu) {
-      zeigeSpektralband_();
+      //zeigeSpektralband_();
       garnieren_();
     }
 
@@ -2604,7 +2626,7 @@ GL_Ansicht::hineinNetze       (const std::vector<ICCnetz> & d_n)
 
   frei(false);
   if(d_n.size()) {
-    DBG_V( dreiecks_netze.size() )
+    DBG_NUM_V( dreiecks_netze.size() )
     dreiecks_netze = d_n;
   } else
     dreiecks_netze.resize(0);
@@ -2816,13 +2838,26 @@ GL_Ansicht::c_ ( Fl_Widget* w, void* daten )
   DBG_PROG_ENDE
 }
 
-/*int
-GL_Ansicht::dID (int display_list)
-{ DBG_ICCGL_V( id_ )
-  return id_ *DL_MAX + display_list;
-}*/
 
 
+int
+GL_Ansicht::hintergrundfarbeZuMenueeintrag( float farbe )
+{
+  int eintrag = MENU_HELLGRAU;
+
+  if(hintergrundfarbe == 1.0)
+    eintrag = MENU_WEISS;
+  if(hintergrundfarbe == 0.75)
+    eintrag = MENU_HELLGRAU;
+  if(hintergrundfarbe == 0.5)
+    eintrag = MENU_GRAUGRAU;
+  if(hintergrundfarbe == 0.25)
+    eintrag = MENU_DUNKELGRAU;
+  if(hintergrundfarbe == 0.0)
+    eintrag = MENU_SCHWARZ;
+
+  return eintrag;
+}
 
 #undef ZeichneText
 #undef FARBE

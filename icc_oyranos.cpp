@@ -33,7 +33,9 @@
 #include "icc_profile.h"
 #include "icc_utils.h"
 #include "icc_fenster.h"
+#include "icc_info.h"
 #include "config.h"
+using namespace icc_examin_ns;
 
 #define BOOL LCMS_BOOL
 #include <lcms.h>
@@ -792,9 +794,11 @@ Oyranos::gamutCheckAbstract(Speicher & s, Speicher & abstract,
 
   DBG_MEM_V( (int*) block <<" "<<groesse )
 
+      fortschritt(0.2);
       hLab  = cmsCreateLabProfile(cmsD50_xyY());
       if(!hLab)  WARN_S( "hLab Profil nicht geoeffnet" )
 
+      fortschritt(0.3);
       profil = cmsOpenProfileFromMem(const_cast<char*>(block), groesse);
       cmsHTRANSFORM tr1 = cmsCreateProofingTransform  (hLab, TYPE_Lab_DBL,
                                                hLab, TYPE_Lab_DBL,
@@ -816,12 +820,14 @@ Oyranos::gamutCheckAbstract(Speicher & s, Speicher & abstract,
 
       // Wir berechnen die Farbhuellwarnung fuer ein abstraktes Profil
       cmsHPROFILE tmp = cmsTransform2DeviceLink(tr1,0);
+      fortschritt(0.4);
       LPLUT gmt_lut = cmsAllocLUT(),
             lut = cmsReadICCLut( tmp, icSigAToB0Tag);
       cmsAlloc3DGrid( gmt_lut, lut->cLutPoints, 3, 3);
       DBG_PROG_V( lut->cLutPoints )
       cmsSample3DGrid( gmt_lut, icc_examin_ns::gamutCheckSampler, tr1, 0 );
 
+      fortschritt(0.5);
       cmsHPROFILE gmt = _cmsCreateProfilePlaceholder();
       cmsSetDeviceClass( gmt, icSigAbstractClass );
       cmsSetColorSpace( gmt, icSigLabData );
@@ -832,13 +838,15 @@ Oyranos::gamutCheckAbstract(Speicher & s, Speicher & abstract,
       char* mem = (char*) calloc( sizeof(char), groesse);
       _cmsSaveProfileToMem ( gmt, mem, &groesse );
       abstract.ladeUndFreePtr (&mem, groesse); DBG
+      fortschritt(1.);
       if(gmt) cmsCloseProfile( gmt );
       if(hLab) cmsCloseProfile( hLab );
       if(tmp) cmsCloseProfile( tmp );
       if(tr1) cmsDeleteTransform( tr1 );
       if(gmt_lut) cmsFreeLUT( gmt_lut );
       if(lut) cmsFreeLUT( lut );
-  
+      fortschritt(1.1);
+ 
   DBG_PROG_ENDE
 }
 
@@ -855,24 +863,42 @@ Oyranos::wandelLabNachBildschirmFarben(double *Lab_Speicher, // 0.0 - 1.0
     cmsHPROFILE hsRGB = 0,
                 hLab = 0;
     static cmsHTRANSFORM hLabtoRGB = 0;
+    static cmsHTRANSFORM h_lab_to_RGB_teuer = 0;
+    cmsHTRANSFORM form = 0;
     double *RGB_Speicher = 0;
-    
+    static  char digest[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}, dig[16];
     static int flags_ = 0;
 
-    if(flags_ != flags && hLabtoRGB) {
-      cmsDeleteTransform(hLabtoRGB);
-      hLabtoRGB = 0;
-      flags_ = flags;
-    }
+    size_t groesse = 0;
+    char*  block = (char*) moni(0,0, groesse);
 
-    // Initialisierung für lcms
-    if(!hLabtoRGB)
+    oyProfileGetMD5(block, groesse, dig);
+
+    if(flags & cmsFLAGS_GAMUTCHECK)
+      form = h_lab_to_RGB_teuer;
+    else
+      form = hLabtoRGB;
+
+
+    if(flags_ != (flags & ~cmsFLAGS_GAMUTCHECK) ||
+       memcmp(digest, dig, 16) != 0 ||
+       !form )
     {
-      size_t groesse = 0;
-      char* block = 0;
-      block = (char*) moni(0,0, groesse);
+      flags_ = flags & ~cmsFLAGS_GAMUTCHECK;
+      memcpy( digest, dig, 16 );
+
+      fortschritt(0.05);
+
+      if (form)
+      {
+        cmsDeleteTransform(form);
+        form = 0;
+      }
+
+      // Initialisierung fuer lcms
       DBG_MEM_V( (int*) block <<" "<<groesse )
 
+      fortschritt(0.2);
       if(groesse)
         hsRGB = cmsOpenProfileFromMem(const_cast<char*>(block), groesse);
       else
@@ -881,15 +907,23 @@ Oyranos::wandelLabNachBildschirmFarben(double *Lab_Speicher, // 0.0 - 1.0
       hLab  = cmsCreateLabProfile(cmsD50_xyY());
       if(!hLab)  WARN_S( "hLab Profil nicht geoeffnet" )
 
-      hLabtoRGB = cmsCreateProofingTransform  (hLab, TYPE_Lab_DBL,
+      fortschritt(0.5);
+      form = cmsCreateProofingTransform  (hLab, TYPE_Lab_DBL,
                                                hsRGB, TYPE_RGB_DBL,
-                                               hsRGB,
+                                               hsRGB, // TODO Simulationsprofil
                                                intent,
                                                INTENT_RELATIVE_COLORIMETRIC,
                                                PRECALC|BW_COMP|flags);
+      if (!form) WARN_S( "keine hXYZtoRGB Transformation gefunden" )
 
-      if (!hLabtoRGB) WARN_S( "keine hXYZtoRGB Transformation gefunden" )
+      if(flags & cmsFLAGS_GAMUTCHECK)
+        h_lab_to_RGB_teuer = form;
+      else
+        hLabtoRGB = form;
     }
+
+
+    fortschritt(0.9);
 
     RGB_Speicher = new double[size*3];
     if(!RGB_Speicher)  WARN_S( "RGB_speicher Speicher nicht verfuegbar" )
@@ -897,13 +931,14 @@ Oyranos::wandelLabNachBildschirmFarben(double *Lab_Speicher, // 0.0 - 1.0
     double *cielab = (double*) malloc (sizeof(double)*3*size);
     LabToCIELab (Lab_Speicher, cielab, size);
 
-    cmsDoTransform (hLabtoRGB, cielab, RGB_Speicher, size);
+    cmsDoTransform (form, cielab, RGB_Speicher, size);
 
-    //if(hLabtoRGB) cmsDeleteTransform(hLabtoRGB);
     if(hsRGB)     cmsCloseProfile(hsRGB);
     if(hLab)      cmsCloseProfile(hLab);
 
     if(cielab)    free (cielab);
+
+  fortschritt(1.1);
 
   DBG_PROG_ENDE
   return RGB_Speicher;

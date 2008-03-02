@@ -77,11 +77,6 @@ ICCexamin::ICCexamin ()
 
   //Fl::scheme("plastic");
 
-  alle_gl_fenster = new icc_examin_ns::EinModell;
-  icc_betrachter = new ICCfltkBetrachter;
-  io_ = new ICCexaminIO;
-  profile.init();
-
   _item = -1;
   _mft_item = -1;
   for(int i = 0; i < 4; ++i)
@@ -95,6 +90,17 @@ ICCexamin::ICCexamin ()
   bpc_alt_ = bpc_;
   gamutwarn_ = 0;
   vcgt_cb_laeuft_b_ = 0;
+
+  Fl_Preferences vor( Fl_Preferences::USER, "oyranos.org", "iccexamin");
+  Fl_Preferences gl_gamut(vor, "gl_gamut");
+  gl_gamut.get("gamutwarn", gamutwarn_, 0 );
+  DBG_PROG_V( gamutwarn_ )
+
+  alle_gl_fenster = new icc_examin_ns::EinModell;
+  icc_betrachter = new ICCfltkBetrachter;
+  io_ = new ICCexaminIO;
+  profile.init();
+
   DBG_PROG_ENDE
 }
 
@@ -107,6 +113,13 @@ ICCexamin::quit ()
   delete icc_betrachter;
   delete io_;
   delete alle_gl_fenster;
+
+  Fl_Preferences vor( Fl_Preferences::USER, "oyranos.org", "iccexamin");
+  Fl_Preferences gl_gamut(vor, "gl_gamut");
+  gl_gamut.set("gamutwarn", gamutwarn_ );
+  gl_gamut.flush();
+  DBG_PROG_V( gamutwarn_ )
+
   DBG_PROG_ENDE
   exit(0);
 }
@@ -427,7 +440,6 @@ ICCexamin::zeigMftTabellen ()
     gl->damage(FL_DAMAGE_ALL);
   }
 
-  icc_betrachter->mft_choice->value(0);
   waehleMft(0);
 
   DBG_PROG_ENDE
@@ -477,7 +489,7 @@ ICCexamin::nachricht( Modell* modell , int info )
           else
             farbraum (info);
           intent_alt_ = intentGet(NULL);
-          icc_examin->fortschrittThreaded(0.5);
+          fortschritt(0.5);
         }
 
         if(k->aktiv(info)) // momentan nicht genutzt
@@ -489,7 +501,7 @@ ICCexamin::nachricht( Modell* modell , int info )
         }
 
           // Oberflaechenpflege - Aktualisieren
-        icc_examin->fortschrittThreaded(0.6);
+        fortschritt(0.6);
         if(profile[info]->tagCount() <= _item)
           _item = (-1);
         DBG_PROG_V( _item )
@@ -503,11 +515,11 @@ ICCexamin::nachricht( Modell* modell , int info )
         if(icc_betrachter->inspekt_html->visible_r())
           setzMesswerte();
 
-        icc_examin->fortschrittThreaded(0.7);
+        fortschritt(0.7);
         if(icc_betrachter->examin->visible())
           waehleTag(_item);
 
-        icc_examin->fortschrittThreaded(0.9);
+        fortschritt(0.9);
         if(icc_betrachter->DD_farbraum->visible())
           icc_betrachter->DD_farbraum->damage(FL_DAMAGE_ALL);
 
@@ -519,8 +531,8 @@ ICCexamin::nachricht( Modell* modell , int info )
   }
 
   Beobachter::nachricht(modell, info);
-  icc_examin->fortschrittThreaded(1.0);
-  icc_examin->fortschrittThreaded(1.1);
+  fortschritt(1.0);
+  fortschritt(1.1);
   DBG_PROG_ENDE
 }
 
@@ -1193,6 +1205,14 @@ ICCexamin::fortschrittThreaded(double f)
   }
   icc_betrachter->load_progress-> damage(FL_DAMAGE_ALL);
   icc_examin_ns::unlock(this, __FILE__,__LINE__);
+  DBG_PROG_ENDE
+}
+
+void 
+ICCexamin::gamutwarn (int warn)
+{ DBG_PROG_START
+  gamutwarn_ = warn;
+  erneuern( profile );
   DBG_PROG_ENDE
 }
 

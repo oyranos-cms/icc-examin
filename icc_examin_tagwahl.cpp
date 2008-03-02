@@ -290,6 +290,10 @@ ICCexamin::waehleMft (int item)
   }
 
   icc_betrachter->mft_choice->gewaehlter_eintrag = item;
+  if(item <= 0)
+    icc_betrachter->mft_choice->value(0);
+  DBG_NUM_V( item )
+
   frei(true);
   DBG_PROG_ENDE
 }

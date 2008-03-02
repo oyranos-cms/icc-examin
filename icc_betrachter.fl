@@ -234,12 +234,12 @@ class ICCfltkBetrachter {open
     code {fullscreen = false;
   setTitleUrl = true;} {}
     Fl_Window {} {open
-      xywh {1184 547 100 100} type Double resizable
+      xywh {1184 589 100 100} type Double resizable
       code0 {//o->show();} visible
     } {}
     Fl_Window ueber {
       label {About ICC Examin} open
-      xywh {900 256 365 289} type Double resizable
+      xywh {910 298 365 289} type Double resizable
       code0 {o->hide();}
       code1 {o->use_escape_hide = true;}
       class {icc_examin_ns::MyFl_Double_Window} visible
@@ -280,7 +280,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window vcgt {
       label {Grafic Card Gamma Table} open
-      xywh {93 635 370 390} type Double resizable
+      xywh {103 654 370 390} type Double resizable
       code0 {o->hide();}
       code1 {o->use_escape_hide = true;}
       class {icc_examin_ns::MyFl_Double_Window} visible
@@ -317,13 +317,13 @@ class ICCfltkBetrachter {open
     }
     Fl_Window DD {
       label Gamut open
-      xywh {899 418 385 520} type Double box NO_BOX color 53 resizable
+      xywh {899 460 385 520} type Double box NO_BOX color 53 resizable
       class {icc_examin_ns::MyFl_Double_Window} visible
     } {
       Fl_Group {} {open
         xywh {0 0 390 525}
       } {
-        Fl_Menu_Bar DD_menueleiste {
+        Fl_Menu_Bar DD_menueleiste {open
           xywh {0 0 385 25} align 20 when 3
         } {
           Submenu {} {
@@ -353,7 +353,12 @@ class ICCfltkBetrachter {open
               callback {DBG_PROG_START
   details->show();
   DBG_PROG_ENDE}
-              xywh {60 60 100 20} shortcut 0x4006d
+              xywh {60 60 100 20} shortcut 0x4006d divider
+            }
+            MenuItem {} {
+              label Quit
+              callback {quit()}
+              xywh {25 25 100 20} shortcut 0x40071
             }
           }
           Submenu {} {
@@ -367,8 +372,9 @@ class ICCfltkBetrachter {open
 
   DBG_PROG_S (m->value())
 
-  icc_examin->gamutwarn(m->value());}
+  icc_examin->gamutwarn(m->value());} selected
               tooltip {Gamut Warning will gray out all colours not in your monitors gamut.} xywh {35 35 100 20} type Toggle shortcut 0x40077
+              code0 {if(icc_examin->gamutwarn()) o->set();}
             }
             MenuItem menueintrag_phot_intent {
               label Photometric
@@ -603,7 +609,7 @@ icc_examin->testZeigen();}
   /* set visible */
   Fl_Tabs *tb = dynamic_cast<Fl_Tabs*>(hilfe_html->parent());
   if(tb)
-    tb->value(icc_examin->icc_betrachter->ueber_html);} selected
+    tb->value(icc_examin->icc_betrachter->ueber_html);}
               xywh {5 5 100 20}
             }
             MenuItem {} {

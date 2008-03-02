@@ -129,7 +129,7 @@ class ICCexamin : public icc_examin_ns::Beobachter,
     int  bpc ()  { return bpc_; }              //!< globale BPC
     void bpc (int i);                          //!< setze BPC
     int  gamutwarn ()  { return gamutwarn_; }  //!< Farbraumwarnung?
-    void gamutwarn (int warn) { gamutwarn_ = warn; }
+    void gamutwarn (int warn);
     void gamutAnsichtZeigen ();                //!< DD_farbraum zeigen
 
   public:
