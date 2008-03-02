@@ -351,6 +351,14 @@ void agvSwitchMoveMode(int move)
       agvSwitchMoveMode( FLYING );
       status(_("senkrechter Schnitt von vorn; linker Mausklick setzt zurück"));
       break;
+    case ICCPOLAR:
+      move = POLAR;
+      EyeDist = 4.2; // der Schnittabstand
+      //EyeAz   = 0;
+      EyeEl   = 0;
+      AzSpin  = 1.0;
+      ElSpin  = INIT_EL_SPIN;
+      break;
     case POLAR:
       EyeDist = INIT_DIST;
       EyeAz   = INIT_POLAR_AZ;

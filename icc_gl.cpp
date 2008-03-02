@@ -461,6 +461,7 @@ void GL_Ansicht::MenuInit() {
   glutAddMenuEntry(_("a Schnitt"),  ICCFLY_a);
   glutAddMenuEntry(_("b Schnitt"),  ICCFLY_b);
   glutAddMenuEntry(_("Schnitt"),    FLYING); /* agvSwitchMoveMode() */
+  glutAddMenuEntry(_("Drehen um L-Schnitt"),  ICCPOLAR);
 //  glutAddMenuEntry(_("Betrachten"),   POLAR);
 
   int sub3 = glutCreateMenu(handlemenu);

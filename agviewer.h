@@ -64,7 +64,7 @@ void agvSetAllowIdle(int allowidle);
  /*
   * Set which movement mode you are in.
   */
-typedef enum { FLYING, POLAR , ICCFLY_L, ICCFLY_a, ICCFLY_b, AGV_STOP } MovementType;
+typedef enum { FLYING, POLAR , ICCPOLAR , ICCFLY_L, ICCFLY_a, ICCFLY_b, AGV_STOP } MovementType;
 void agvSwitchMoveMode(int move);
 
  /*
