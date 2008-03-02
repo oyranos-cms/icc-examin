@@ -17,7 +17,7 @@ else
   prefix=/opt/local
 fi
 
-src_dir="`(cd ..;pwd)`/$TARGET_$VERSION"
+src_dir="`(cd ..;pwd)`/""$TARGET"_"$VERSION"
 srcdir="`pwd`"
 
 test -f error.txt && rm -v error.txt

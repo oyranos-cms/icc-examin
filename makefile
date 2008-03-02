@@ -323,8 +323,7 @@ clean:
 	echo "mache sauber"
 	$(RM) mkdepend config config.h
 	$(RM) $(OBJECTS) $(CLIB_OBJECTS) $(TARGET) \
-	$(LIBSO) $(LIBSONAME) $(LIBSONAMEFULL) \
-	$(POT_FILE)
+	$(LIBSO) $(LIBSONAME) $(LIBSONAMEFULL)
 
 config:
 	configure.sh
@@ -387,7 +386,7 @@ targz:
 	$(COPY) \
 	$(ALL_FILES) \
 	$(TARGET)_$(VERSION)
-	mkdir $(TARGET)_$(VERSION)$(TARGET)_$(VERSION)/po
+	mkdir $(TARGET)_$(VERSION)/po
 	$(COPY) $(POT_FILE) $(TARGET)_$(VERSION)/po
 	for ling in $(LINGUAS); do \
 	  test -f po/$${ling}.po \
