@@ -11,6 +11,7 @@ CONF=makefile
 CONF_I18N=fl_i18n/makefile
 SPEC=$TARGET.spec
 VERS="$TARGET"_version.h
+zeile="$0 $@"
 
 export CONF_H CONF CONF_I18N
 
@@ -89,6 +90,10 @@ if [ $# -gt 0 ]; then
     if [ "`echo \"$1\" | sed s/\"--$switch=\"//`" != "$1" ]; then
       desktopdir="`echo $1 | sed s/--$switch=//`"
     fi
+    switch=with-fltk-config
+    if [ "`echo \"$1\" | sed s/\"--$switch=\"//`" != "$1" ]; then
+      fltkconfig="`echo $1 | sed s/--$switch=//`"
+    fi
     switch=enable-cwdebug
     if [ "`echo \"$1\" | sed s/\"--$switch=\"//`" != "$1" ]; then
       cwdebug="`echo $1 | sed s/--$switch=//`"
@@ -111,7 +116,8 @@ if [ $# -gt 0 ]; then
       echo "   --pixmapdir=[\$datadir/pixmaps]       icon installation path"
       echo "   --desktopdir=[\$datadir/applications] xdg installation path"
       echo ""
-      echo "   --enable-cwdebug[=\$cwdebugdir]       deploy cwlibary for debugging"
+      echo "   --with-fltk-config=[fltk-config]     alternative fltk version"
+      echo "   --enable-cwdebug=[\$cwdebugdir]       deploy cwlibary for debugging"
       echo "   --help"
       echo ""
       echo " Optionally set the CC and CXX environment variables."
@@ -121,6 +127,9 @@ if [ $# -gt 0 ]; then
     shift
   done
 fi
+
+echo "$zeile" > config.log
+chmod 0755 config.log
 
 src_dir="`(cd ..;pwd)`/""$TARGET"-"$VERSION"
 srcdir="`pwd`"
@@ -252,7 +261,7 @@ else
 fi
 export prefix exec_prefix bindir sbindir libdir includedir datadir mandir
 export pixmapdir desktopdir
-export cwdebug
+export fltkconfig cwdebug
 
 PATH=$bindir:$PATH
 export PATH
@@ -382,13 +391,16 @@ echo "CXX = $CXX" >> $CONF
 echo "CC = $CC" >> $CONF
 echo "CXX = $CXX" > $CONF_I18N
 echo "CC = $CC" >> $CONF_I18N
-cat $CONF_I18N.in >> $CONF_I18N
-echo $CONF_I18N prepared
+
+CFLAGS_COMMON="$CFLAGS \$(INCL) \$(FLTK_H)"
+CXXFLAGS_COMMON="$CXXFLAGS \$(INCL) \$(FLU_H) \$(FLTK_H)"
+
 
 echo "RM = rm -vf" >> $CONF
 if [ $OSUNAME = "Darwin" ]; then
   echo "" >> $CONF
   echo "COPY = cp -pv" >> $CONF
+  LDFLAGS="$LDFLAGS -dynamiclib  -L."
   echo "DBG_LIBS = #-lMallocDebug" >> $CONF
   echo "I18N_LIB = -lintl \$(LIBNAME)" >> $CONF
   echo "I18N_LIBSTAT = /opt/local/lib/libintl.a \$(LIBNAME) #-liconv" >> $CONF
@@ -397,8 +409,9 @@ if [ $OSUNAME = "Darwin" ]; then
   echo "LINK_FLAGS = -dynamiclib -L." >> $CONF
   echo "MAKEDEPEND	= /usr/X11R6/bin/makedepend -Y" >> $CONF
   echo "MSGMERGE = msgmerge" >> $CONF
+  CFLAGS="$CFLAGS_COMMON -Wall -g \$(DEBUG) -DPIC -Wunused -fno-exceptions"
+  CXXFLAGS="$CXXFLAGS_COMMON -Wall -g \$(DEBUG) -DPIC -fno-exceptions"
   echo "REZ = fltk-config --post \$@" >> $CONF
-  echo "OPTS = -Wall -g \$(DEBUG) -DPIC -Wunused -fno-exceptions" >> $CONF
   echo "OSX_CPP = \$(OSX_CPPFILES)" >> $CONF
   echo "REZ = \
       fltk-config --post \$(BINTARGET);" >> $CONF
@@ -420,32 +433,45 @@ else
   if [ $OSUNAME = "Linux" ]; then
     echo "" >> $CONF
     echo "COPY = cp -vdpa" >> $CONF
+    LDFLAGS="$LDFLAGS -shared -L."
     echo "I18N_LIB = \$(LIBNAME)" >> $CONF
     echo "I18N_LIBSTAT = \$(LIBNAME)" >> $CONF
     echo "INCL=-I\$(includedir) -I/usr/X11R6/include -I. -I/usr/include/g++ -I/usr/include" >> $CONF
-    echo "LINK_FLAGS = -shared -ldl -fPIC -L." >> $CONF
+    echo "LINK_FLAGS = -shared -ldl -fPIC -L. -lpthread" >> $CONF
     echo "LIBNAMEV = lib\$(TARGET)\$(LIBMID).\$(VERSION_A)" >> $CONF
-    echo "LINK_FLAGS_STATIC = q" >> $CONF
+    echo "LINK_FLAGS_STATIC = $LDFLAGS q" >> $CONF
     echo "LINK_NAME = -Wl,-soname -Wl,\$(LIBNAMEFULL)" >> $CONF
     echo "LINK_LIB_PATH = -Wl,--rpath -Wl,\$(libdir)" >> $CONF
     echo "LINK_SRC_PATH = -Wl,--rpath -Wl,\$(srcdir)" >> $CONF
     echo "MAKEDEPEND	= makedepend -Y" >> $CONF
-    echo "OPTS= -Wall -g \$(DEBUG) -Wunused -fPIC -fno-exceptions #-Os -fomit-frame-pointer \$(CWD)" >> $CONF
+    CFLAGS="$CFLAGS_COMMON"
+    CXXFLAGS="$CXXFLAGS_COMMON"
     echo "INSTALL = install -v" >> $CONF
   else
     echo "COPY = cp -p" >> $CONF
     echo "INCL=-I\$(includedir) -I/usr/X11R6/include -I. -I/usr/include/g++ -I/usr/include" >> $CONF
     if [ $OSUNAME = "BSD" ]; then
+      LDFLAGS="$LDFLAGS -shared \$(ICONV)"
+      INSTALL="install -v"
       echo "LINK_FLAGS = -shared \$(ICONV)" >> $CONF
       echo "INSTALL = install -v" >> $CONF
+    fi
+    if [ $OSUNAME = "SunOS" ]; then
+      echo "ICONV = -liconv" >> $CONF
+      LDFLAGS="$LDFLAGS -shared -mimpure-text -ldl \$(ICONV)"
+      INSTALL="install -v"
     else
+      echo "ICONV = -liconv" >> $CONF
+      LDFLAGS="$LDFLAGS -shared -mimpure-text -ldl \$(ICONV)"
+      INSTALL="install"
       echo "LINK_FLAGS = -shared -ldl \$(ICONV)" >> $CONF
       echo "INSTALL = install" >> $CONF
     fi
     echo "I18N_LIB = \$(ICONV) -lintl \$(LIBNAMEV)" >> $CONF
     echo "I18N_LIBSTAT = \$(ICONV) -lintl \$(LIBNAMEV)" >> $CONF
     echo "MAKEDEPEND	= makedepend -Y" >> $CONF
-    echo "OPTS = -Wall -g \$(DEBUG) -L. -fPIC" >> $CONF
+    CFLAGS="$CFLAGS_COMMON -Wall -g -L. -fPIC"
+    CXXFLAGS="$CXXFLAGS_COMMON -Wall -g -L. -fPIC"
     echo "RM = rm -f" >> $CONF
   fi
 fi
@@ -457,11 +483,17 @@ if [ -n "$cwdebug" ]; then
   echo "#define CWDEBUG 1" >> $CONF_H
 fi
 
+echo "CFLAGS = $CFLAGS"   >> $CONF
+echo "CXXFLAGS = $CXXFLAGS">>$CONF
+echo "LDFLAGS = $LDFLAGS" >> $CONF
 
 echo "" >> $CONF
 echo "" >> $CONF
 echo ""
 echo ""
+
+cat $CONF_I18N.in >> $CONF_I18N
+echo $CONF_I18N prepared
 
 echo "" > mkdepend
 

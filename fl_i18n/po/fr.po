@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: fl_i18n-0.0.1\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2006-11-11 18:34+0100\n"
+"POT-Creation-Date: 2006-11-13 22:32+0100\n"
 "PO-Revision-Date: 2005-08-13 17:35+0200\n"
 "Last-Translator: Kai-Uwe Behrmann\n"
 "Language-Team:  <de@li.org>\n"
@@ -24,15 +24,15 @@ msgstr ""
 msgid "osX locale not obtained"
 msgstr ""
 
-#: fl_i18n.cxx:281
+#: fl_i18n.cxx:284
 msgid "try to set LANG"
 msgstr ""
 
-#: fl_i18n.cxx:301
+#: fl_i18n.cxx:304
 msgid "try locale in "
 msgstr ""
 
-#: fl_i18n.cxx:310
+#: fl_i18n.cxx:315
 msgid "set codeset for"
 msgstr ""
 

@@ -374,14 +374,15 @@ GL_Ansicht::bewegenStatisch_ (void* gl_a)
       if (zeit - gl_ansicht->zeit_ < 1./25.) {
         zeichnen_schlaf = 1./25. - gl_ansicht->zeit_;
       } else
+      {
         gl_ansicht->redraw();
+        zahl++;
+      }
 
       // kurze Pause 
-      Fl::add_timeout( zeichnen_schlaf>0.001?zeichnen_schlaf:0.001,
-                       bewegenStatisch_, gl_a );
+      Fl::repeat_timeout( 0.04, bewegenStatisch_, gl_a );
       
-      //DBG_NUM_S( "Pause " << gl_ansicht->zeit_diff_<<" "<<zeichnen_schlaf <<" "<< gl_ansicht->ist_bewegt_ <<" "<< gl_ansicht->fenster_id_ <<" "<<zahl)
-      zahl++;
+      DBG_PROG_S( "Pause " << gl_ansicht->zeit_diff_<<" "<<zeichnen_schlaf <<" "<< gl_ansicht->ist_bewegt_ <<" "<< gl_ansicht->fenster_id_ <<" "<<zahl)
     }
   } 
   DBG_PROG_ENDE
@@ -395,7 +396,7 @@ GL_Ansicht::stupps_ (bool lauf)
   if(lauf) {
     DBG_NUM_S( "anstuppsen " << fenster_id_ )
     if(darf_bewegen_)
-      Fl::add_timeout(0.05, bewegenStatisch_,this);
+      Fl::add_timeout(0.04, bewegenStatisch_,this);
   } else {
     DBG_NUM_S( "stoppen " << fenster_id_ )
   }
@@ -429,6 +430,7 @@ void
 GL_Ansicht::nachricht(icc_examin_ns::Modell* modell, int info)
 {
   DBG_PROG_START
+  DBG_PROG_V( info )
   if( info )
     Fl_Gl_Window::redraw();
   DBG_PROG_ENDE
@@ -448,6 +450,7 @@ void
 GL_Ansicht::draw()
 {
   DBG_PROG_START
+  --zahl;
   DBG_PROG_S( "draw() Eintritt ist_bewegt_|darf_bewegen_: "
                << ist_bewegt_ << "|" << darf_bewegen_ )
   Fl_Thread thread = wandelThreadId(pthread_self());
@@ -2328,7 +2331,7 @@ GL_Ansicht::zeichnen()
 
     // Geschwindigkeit
     static double zeit_alt = 0;
-    sprintf(t, "zeit_: %.01f f/s: %.03f theorethisch f/s: %.03f",
+    sprintf(t, "zeit_: %.01f f/s: %.03f theoretisch f/s: %.03f",
             zeit_, 1/(zeit_ - zeit_alt), 1./dzeit);
     zeit_alt = zeit_;
     DBG_NUM_V( t )

@@ -505,14 +505,18 @@ ICCexamin::setzeFensterTitel()
 {
   DBG_PROG_START
   char* t = (char*) malloc(256);
+  const char* title = NULL;
 
-  const char* title = dateiName(profile.profil()->filename());
+
+  if(profile.profil())
+    title = dateiName(profile.profil()->filename());
+
 
   Fl_Window * window = icc_betrachter->inspekt_html->window();
   if(window != icc_betrachter->details &&
      window->shown() )
   {
-    if(profile.profil()->hasMeasurement() && title)
+    if(title && profile.profil()->hasMeasurement())
       snprintf(t, 256, "ICC Examin: %s - %s", title,
               _("Compare Measurement <-> Profile Colours"));
     else

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ICC Examin 0.41\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2006-11-13 12:11+0100\n"
+"POT-Creation-Date: 2006-11-13 22:27+0100\n"
 "PO-Revision-Date: 2006-06-29 19:31+0200\n"
 "Last-Translator: Pascal LACROIX <lacroixpascal at vfemail.net>\n"
 "Language-Team: ALL <ku.b@gmx.de>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: agviewer.cpp:312 icc_gl.cpp:2547 icc_gl.cpp:2566 icc_gl.cpp:2685
+#: agviewer.cpp:312 icc_gl.cpp:2550 icc_gl.cpp:2569 icc_gl.cpp:2688
 msgid "left-/middle-/right mouse button -> rotate/cut/menu"
 msgstr ""
 
@@ -23,8 +23,8 @@ msgstr ""
 msgid "Pause"
 msgstr ""
 
-#: agviewer.cpp:349 agviewer.cpp:357 icc_gl.cpp:2651 icc_gl.cpp:2662
-#: icc_gl.cpp:2667 icc_gl.cpp:2672
+#: agviewer.cpp:349 agviewer.cpp:357 icc_gl.cpp:2654 icc_gl.cpp:2665
+#: icc_gl.cpp:2670 icc_gl.cpp:2675
 msgid "left mouse button -> go back"
 msgstr ""
 
@@ -139,7 +139,7 @@ msgstr "Vert"
 msgid "Blue"
 msgstr "Bleu"
 
-#: icc_draw.cpp:663 icc_gl.cpp:1976 icc_helfer.cpp:355 icc_waehler.h:131
+#: icc_draw.cpp:663 icc_gl.cpp:1979 icc_helfer.cpp:355 icc_waehler.h:131
 msgid "Gray"
 msgstr "Gris"
 
@@ -155,7 +155,7 @@ msgstr "Magenta"
 msgid "Yellow"
 msgstr "Jaune"
 
-#: icc_draw.cpp:676 icc_gl.cpp:1978 icc_helfer.cpp:415 icc_helfer.cpp:425
+#: icc_draw.cpp:676 icc_gl.cpp:1981 icc_helfer.cpp:415 icc_helfer.cpp:425
 msgid "Black"
 msgstr "Noir"
 
@@ -193,13 +193,13 @@ msgid "CIE *L"
 msgstr "CIE *L"
 
 #: icc_draw.cpp:694 icc_examin_farbraum.cpp:211 icc_examin_io.cpp:216
-#: icc_gl.cpp:974 icc_gl.cpp:1048 icc_gl.cpp:1074 icc_gl.cpp:1082
+#: icc_gl.cpp:977 icc_gl.cpp:1051 icc_gl.cpp:1077 icc_gl.cpp:1085
 #: icc_helfer.cpp:401
 msgid "CIE *a"
 msgstr "CIE *a"
 
 #: icc_draw.cpp:696 icc_examin_farbraum.cpp:212 icc_examin_io.cpp:217
-#: icc_gl.cpp:987 icc_gl.cpp:1090 icc_gl.cpp:1110 icc_gl.cpp:1117
+#: icc_gl.cpp:990 icc_gl.cpp:1093 icc_gl.cpp:1113 icc_gl.cpp:1120
 #: icc_helfer.cpp:402
 msgid "CIE *b"
 msgstr "CIE *b"
@@ -232,7 +232,7 @@ msgstr " avec un entrée pour gamma: "
 msgid "Gamut selector"
 msgstr ""
 
-#: icc_examin.cpp:232 icc_examin.cpp:937
+#: icc_examin.cpp:232 icc_examin.cpp:941
 msgid "loaded"
 msgstr ""
 
@@ -240,44 +240,44 @@ msgstr ""
 msgid "Ready"
 msgstr ""
 
-#: icc_examin.cpp:517 icc_examin.cpp:520
+#: icc_examin.cpp:521 icc_examin.cpp:524
 msgid "Compare Measurement <-> Profile Colours"
 msgstr ""
 
-#: icc_examin.cpp:519
+#: icc_examin.cpp:523
 msgid "none"
 msgstr ""
 
-#: icc_examin.cpp:533 icc_examin.cpp:535
+#: icc_examin.cpp:537 icc_examin.cpp:539
 #, fuzzy
 msgid "Gamut View"
 msgstr "Gamut"
 
-#: icc_examin.cpp:578
+#: icc_examin.cpp:582
 msgid "not available"
 msgstr ""
 
-#: icc_examin.cpp:879
+#: icc_examin.cpp:883
 msgid "Filename (ICC data type)"
 msgstr ""
 
-#: icc_examin.cpp:882
+#: icc_examin.cpp:886
 msgid "Filename (other data type)"
 msgstr ""
 
-#: icc_examin.cpp:884
+#: icc_examin.cpp:888
 msgid "Filename (corrupted ICC data type)"
 msgstr ""
 
-#: icc_examin.cpp:889
+#: icc_examin.cpp:893
 msgid "found no content for"
 msgstr ""
 
-#: icc_examin.cpp:892
+#: icc_examin.cpp:896
 msgid "Internal error"
 msgstr ""
 
-#: icc_examin.cpp:894
+#: icc_examin.cpp:898
 msgid "No. Tag   Type   Size Description"
 msgstr ""
 
@@ -337,118 +337,118 @@ msgstr ""
 msgid "Information:"
 msgstr ""
 
-#: icc_gl.cpp:674 icc_gl.cpp:677 icc_gl.cpp:680 icc_gl.cpp:686 icc_gl.cpp:690
-#: icc_gl.cpp:705
+#: icc_gl.cpp:677 icc_gl.cpp:680 icc_gl.cpp:683 icc_gl.cpp:689 icc_gl.cpp:693
+#: icc_gl.cpp:708
 msgid "Could not open font in:"
 msgstr ""
 
-#: icc_gl.cpp:859
+#: icc_gl.cpp:862
 #, c-format
 msgid "0,0,0"
 msgstr ""
 
-#: icc_gl.cpp:1950 icc_gl.cpp:1960 icc_gl.cpp:1962 icc_gl.cpp:1964
+#: icc_gl.cpp:1953 icc_gl.cpp:1963 icc_gl.cpp:1965 icc_gl.cpp:1967
 msgid "Slice"
 msgstr ""
 
-#: icc_gl.cpp:1951
+#: icc_gl.cpp:1954
 msgid "Rotate around slice"
 msgstr ""
 
-#: icc_gl.cpp:1966
+#: icc_gl.cpp:1969
 msgid "Rotate around"
 msgstr ""
 
-#: icc_gl.cpp:1966
+#: icc_gl.cpp:1969
 msgid "axis"
 msgstr ""
 
-#: icc_gl.cpp:1971
+#: icc_gl.cpp:1974
 msgid "Slice plane"
 msgstr ""
 
-#: icc_gl.cpp:1974
+#: icc_gl.cpp:1977
 msgid "White"
 msgstr "Blanc"
 
-#: icc_gl.cpp:1975
+#: icc_gl.cpp:1978
 msgid "Light gray"
 msgstr ""
 
-#: icc_gl.cpp:1977
+#: icc_gl.cpp:1980
 msgid "Dark gray"
 msgstr "Gris sombre"
 
-#: icc_gl.cpp:1981
+#: icc_gl.cpp:1984
 msgid "Background colour"
 msgstr "Couleur Arrière-plan"
 
-#: icc_gl.cpp:1986
+#: icc_gl.cpp:1989
 msgid "gray"
 msgstr "gris"
 
-#: icc_gl.cpp:1987
+#: icc_gl.cpp:1990
 msgid "coloured"
 msgstr ""
 
-#: icc_gl.cpp:1988
+#: icc_gl.cpp:1991
 msgid "high contrast"
 msgstr ""
 
-#: icc_gl.cpp:1989
+#: icc_gl.cpp:1992
 msgid "shells"
 msgstr ""
 
-#: icc_gl.cpp:1990
+#: icc_gl.cpp:1993
 #, fuzzy
 msgid "Colour line"
 msgstr "Couleur r"
 
-#: icc_gl.cpp:1995
+#: icc_gl.cpp:1998
 msgid "Sphere 1dE"
 msgstr ""
 
-#: icc_gl.cpp:1996
+#: icc_gl.cpp:1999
 msgid "Sphere 2dE"
 msgstr ""
 
-#: icc_gl.cpp:1997
+#: icc_gl.cpp:2000
 msgid "Sphere 4dE"
 msgstr ""
 
-#: icc_gl.cpp:2000
+#: icc_gl.cpp:2003
 msgid "Star"
 msgstr ""
 
-#: icc_gl.cpp:2003
+#: icc_gl.cpp:2006
 msgid "Point"
 msgstr "Point"
 
-#: icc_gl.cpp:2006
+#: icc_gl.cpp:2009
 msgid "without markers"
 msgstr ""
 
-#: icc_gl.cpp:2007
+#: icc_gl.cpp:2010
 msgid "Spektral line"
 msgstr ""
 
-#: icc_gl.cpp:2010 icc_betrachter.cxx:922
+#: icc_gl.cpp:2013 icc_betrachter.cxx:922
 msgid "Texts"
 msgstr ""
 
-#: icc_gl.cpp:2012
+#: icc_gl.cpp:2015
 msgid "Texts/Arrows on/off"
 msgstr ""
 
-#: icc_gl.cpp:2014
+#: icc_gl.cpp:2017
 msgid "Illustration"
 msgstr ""
 
-#: icc_gl.cpp:2276
+#: icc_gl.cpp:2279
 msgid "Pos"
 msgstr ""
 
-#: icc_gl.cpp:2360 icc_profile_tags.cpp:302
+#: icc_gl.cpp:2363 icc_profile_tags.cpp:302
 msgid "Channel"
 msgstr "Canal"
 
@@ -1754,7 +1754,7 @@ msgstr ""
 msgid "Preview"
 msgstr ""
 
-#: icc_helfer_fltk.cpp:309 my_file_chooser.cxx:287
+#: icc_helfer_fltk.cpp:309 my_file_chooser.cxx:287 my_file_chooser.cxx:289
 msgid "Save"
 msgstr ""
 
@@ -1898,7 +1898,8 @@ msgstr ""
 msgid "Yes"
 msgstr "Oui"
 
-#: icc_betrachter.cxx:582 my_file_chooser.cxx:237 my_file_chooser.cxx:283
+#: icc_betrachter.cxx:582 my_file_chooser.cxx:237 my_file_chooser.cxx:239
+#: my_file_chooser.cxx:283 my_file_chooser.cxx:285
 msgid "Cancel"
 msgstr "Annuler"
 
@@ -2119,7 +2120,7 @@ msgstr ""
 msgid "Filename:"
 msgstr "Fichier"
 
-#: my_file_chooser.cxx:233
+#: my_file_chooser.cxx:233 my_file_chooser.cxx:235
 msgid "OK"
 msgstr ""
 

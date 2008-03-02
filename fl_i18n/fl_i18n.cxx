@@ -198,8 +198,10 @@ fl_initialise_locale( const char *domain, const char *locale_path )
 # endif
 
   char codeset[24] = "ISO-8859-1";
+  int set_codeset = 1;
 
-
+  if(set_codeset)
+  {
       // add more LINGUAS here
       // borrowed from http://czyborra.com/charsets/iso8859.html
     fl_set_codeset_( "af", "ISO-8859-1", locale, codeset, set_zero_locale ); // Afrikaans
@@ -263,6 +265,7 @@ fl_initialise_locale( const char *domain, const char *locale_path )
     fl_set_codeset_( "zh", "ISO-8859-15", locale, codeset, set_zero_locale ); // Chinese
 
     fl_set_codeset_( "ja", "EUC", locale, codeset, set_zero_locale ); // Japan ; eucJP, ujis, EUC, PCK, jis7, SJIS
+  }
 
   if(strlen(locale))
     DBG_PROG_S( locale );
@@ -301,7 +304,9 @@ fl_initialise_locale( const char *domain, const char *locale_path )
   DBG_PROG_S( _("try locale in ") << bdtd );
 
   // 4. set our charset
-  char* cs = bind_textdomain_codeset(domain, codeset);
+  char* cs = NULL;
+  if(set_codeset)
+    cs = bind_textdomain_codeset(domain, codeset);
 
   // 5. our translations
   textdomain (domain);

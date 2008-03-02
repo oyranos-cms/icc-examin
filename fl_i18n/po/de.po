@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2006-11-11 18:34+0100\n"
+"POT-Creation-Date: 2006-11-13 22:32+0100\n"
 "PO-Revision-Date: 2005-08-13 17:35+0200\n"
 "Last-Translator: Kai-Uwe Behrmann\n"
 "Language-Team:  <de@li.org>\n"
@@ -25,21 +25,21 @@ msgstr "os X locale erhalten: "
 msgid "osX locale not obtained"
 msgstr "os X locale nicht erhalten"
 
-#: fl_i18n.cxx:281
+#: fl_i18n.cxx:284
 msgid "try to set LANG"
 msgstr "versuche LANG zu setzen"
 
-#: fl_i18n.cxx:301
+#: fl_i18n.cxx:304
 msgid "try locale in "
 msgstr "versuche locale in "
 
-#: fl_i18n.cxx:310
+#: fl_i18n.cxx:315
 msgid "set codeset for"
 msgstr "setze Zeichensatz für"
 
 #: fl_i18n_example.cxx:25 fl_i18n_example.cxx:28
 msgid "Hello, world!"
-msgstr "Hallo, Welt!"
+msgstr "Hallo, Welt! äöüÄÖÜß"
 
 #: fl_i18n_example.cxx:26
 msgid "fl_i18n_example"

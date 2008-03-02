@@ -33,9 +33,6 @@ INCL_DEP = $(INCL) $(X_H) $(OSX_H) $(OYRANOS_H) \
 ALL_INCL = $(INCL) \
 			$(FLU_H) $(FLTK_H) $(X_H) $(OSX_H) $(OYRANOS_H) $(LCMS_H) $(FTGL_H)
 
-CXXFLAGS=$(OPTS) $(ALL_INCL)
-CFLAGS = $(OPTS) $(ALL_INCL)
-
 LDLIBS = -L$(libdir) -L./ $(FLTK_LIBS) $(FLU_LIBS) \
 	$(X11_LIBS) -llcms -L/lib $(OYRANOS_LIBS) $(LCMS_LIBS) \
 	$(FTGL_LIBS) $(I18N_LIB) $(DBG_LIBS) $(LIBNAME) $(LIBFL_I18N) $(CWLIB)
@@ -210,7 +207,7 @@ BASE =
 	
 release:	icc_alles.o
 	echo Verknuepfen $@...
-	$(CXX) $(OPTS) -o $(BINTARGET) \
+	$(CXX) $(CXXFLAGS) -o $(BINTARGET) \
 	icc_alles.o \
 	$(LDLIBS)
 	$(REZ)
@@ -220,14 +217,14 @@ dynamic:	$(BINTARGET)
 
 $(BINTARGET):	$(BASE) $(OBJECTS) $(LINGUAS_SRC) $(I18N_OBJECTS) $(LIBNAME) $(LIBFL_I18N)
 	echo Verknuepfen $@ ...
-	$(CXX) $(OPTS) -o $(BINTARGET) \
+	$(CXX) $(CXXFLAGS) -o $(BINTARGET) \
 	$(OBJECTS) \
 	$(LDLIBS) $(LINK_LIB_PATH) $(LINK_SRC_PATH)
 	$(REZ)
 
 $(LIBSONAMEFULL):	$(I18N_OBJECTS)
 	echo Verknuepfen $@ ...
-	$(CXX) $(OPTS) $(LINK_FLAGS) $(LINK_NAME) -o $(LIBSONAMEFULL) \
+	$(CXX) $(OPTS) $(LDFLAGS) $(LINK_NAME) -o $(LIBSONAMEFULL) \
 	$(I18N_OBJECTS)  icc_utils.o icc_helfer.o icc_speicher.o
 	$(REZ)
 	$(RM)  $(LIBSONAME)
@@ -247,8 +244,8 @@ static:	$(BINTARGET)
 	echo Verknuepfen $@ ...
 	$(CXX) $(OPTS) -o $(BINTARGET) $(OBJECTS) \
 	-L./ \
-	`test -f /opt/local/lib/libfltk_images.a && echo /opt/local/lib/libfltk_images.a \
-    /opt/local/lib/libpng.a /opt/local/lib/libjpeg.a -lz || \
+	`test -f /opt/local/lib/libfltk_images.a && (echo /opt/local/lib/libfltk_images.a; \
+	    (test -f /opt/local/lib/libpng.a && echo /opt/local/lib/libpng.a || echo "-lpng"); (test -f /opt/local/lib/libjpeg.a && echo /opt/local/lib/libjpeg.a || echo "-ljpeg"); echo -lz) || \
 	fltk-config --use-gl --use-images --ldstaticflags` \
 	`fltk-config --use-gl --ldstaticflags` \
 	-L/opt/local/lib \
@@ -271,7 +268,7 @@ strip: $(BINTARGET)
 	strip $(BINTARGET)
 
 static_static:	$(OBJECTS)
-	$(CXX) $(OPTS) -o $(BINTARGET) \
+	$(CXX) $(CXXFLAGS) -o $(BINTARGET) \
 	$(OBJECTS) \
 	$(LDLIBS) -static -ljpeg -lpng -lX11 -lpthread -lz -ldl \
 	-lfreetype -lfontconfig -lXrender -lGLU -lXext -lexpat \
@@ -279,8 +276,8 @@ static_static:	$(OBJECTS)
 	$(REZ)
 
 test:	icc_formeln.o icc_utils.o
-	$(CXX) $(OPTS) $(INCL) -o dE2000_test.o -c tests/dE2000_test.cpp
-	$(CXX) $(OPTS) -o dE2000_test dE2000_test.o icc_formeln.o icc_utils.o \
+	$(CXX) $(CXXFLAGS) $(INCL) -o dE2000_test.o -c tests/dE2000_test.cpp
+	$(CXX) $(CXXFLAGS) -o dE2000_test dE2000_test.o icc_formeln.o icc_utils.o \
 	-L$(libdir) -llcms
 	$(REZ)
 
@@ -456,7 +453,7 @@ uninstall:
 	done;
 	echo ... $@ fertig
 
-bundle:
+bundle:	static
 	echo bündeln ...
 	test -d ICC\ Examin.app/Contents/Resources/lib/ || mkdir -p ICC\ Examin.app/ ICC\ Examin.app/Contents/ ICC\ Examin.app/Contents/MacOS/ ICC\ Examin.app/Contents/Resources/  ICC\ Examin.app/Contents/Resources/bin/ ICC\ Examin.app/Contents/Resources/lib/ ICC\ Examin.app/Contents/Resources/share/
 	$(INSTALL) -m 644 Info.plist ICC\ Examin.app/Contents/Info.plist

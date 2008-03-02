@@ -1,3 +1,6 @@
+2006-11-13
+	* und: GL timing makes more sense
+
 2006-11-11
 	* neu: MyFl_Double_Window to handle iconization
 	* neu: MyFl_File_Chooser to better bring in sync with MyFl_Double_Window
