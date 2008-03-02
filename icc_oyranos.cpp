@@ -345,19 +345,25 @@ Oyranos::netzVonProfil (ICCprofile & profil, int intent)
       DBG_NUM_V( groesse );
   }
 
-  if(s.size()) {
+  if(s.size())
+  {
     std::string vrml;
     vrml = icc_create_vrml ( s,s.size(), intent );
     netz = netzAusVRML (vrml);
-    size_t groesse = 0;
-    double* band = iccGrenze( profil, intent, groesse );
-    DBG_PROG_V( (int*) band <<" "<< groesse )
 
-    netz[0].umriss.resize( groesse );
-    for(int i = 0; i < (int)groesse; ++i)
-      for(int j = 0; j < 3; ++j)
-        netz[0].umriss[i].koord[j] = band[i*3+j];
-    if(band) delete [] band;
+    if(netz.size())
+    {
+      size_t groesse = 0;
+      double* band = icc_examin_ns::iccGrenze( profil, intent, groesse );
+      DBG_PROG_V( (int*) band <<" "<< groesse )
+
+      netz[0].umriss.resize( groesse );
+      DBG
+      for(int i = 0; i < (int)groesse; ++i)
+        for(int j = 0; j < 3; ++j)
+          netz[0].umriss[i].koord[j] = band[i*3+j];
+      if(band) delete [] band;
+    }
   }
   DBG_PROG_ENDE
   return netz;

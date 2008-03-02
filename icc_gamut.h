@@ -34,7 +34,10 @@
 class ICCprofile;
 #include <cstddef>
 
+namespace icc_examin_ns {
+
 double* iccGrenze(ICCprofile & profil, int intent, size_t & groesse);
 
+}
 
 #endif //ICC_GAMUT_H

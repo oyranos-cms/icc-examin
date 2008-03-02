@@ -55,7 +55,7 @@
 //#define Beleuchtung
 //#define Lab_STERN 1
 
-#define DEBUG_ICCGL
+//#define DEBUG_ICCGL
 #ifdef DEBUG_ICCGL
 #define DBG_ICCGL_START DBG_PROG_START
 #define DBG_ICCGL_ENDE DBG_PROG_ENDE
@@ -243,6 +243,21 @@ GL_Ansicht::draw()
     auffrischen();
   }
 
+  // aktualisiere Schatten
+  static char aktive[64];
+  static char grau[64];
+  char aktualisiert = false;
+  for(int i = 0; i < (int)dreiecks_netze.size(); ++i)
+    if( dreiecks_netze[i].aktiv != aktive[i] ||
+        dreiecks_netze[i].grau != grau[i]  ) {
+      aktive[i] = dreiecks_netze[i].aktiv;
+      grau[i] = dreiecks_netze[i].grau;
+      if(!aktualisiert) {
+        zeigeUmrisse_();
+        aktualisiert = true;
+      }
+    }
+  
   zeichnen();
 
   DBG_PROG_V( dreiecks_netze.size() )
@@ -909,7 +924,7 @@ GL_Ansicht::netzeAuffrischen()
        double abstand;
        for( j = 0; j < dreiecks_netze.size(); j++ )
        {
-         double schattierung = .93 - .8/dreiecks_netze.size()*j;
+         dreiecks_netze[j].schattierung = .93 - .8/dreiecks_netze.size()*j;
          if(dreiecks_netze[j].aktiv && dreiecks_netze[j].transparenz)
          {
              // ich hoffe das dauert nicht zu lange
@@ -919,9 +934,9 @@ GL_Ansicht::netzeAuffrischen()
              // den Punkten im neuen Netz die Transparenz zuweisen
            for( k = punkte_n; k < netz.punkte.size(); ++k) {
              if(dreiecks_netze[j].grau) {
-               netz.punkte[k].farbe[0] = schattierung;
-               netz.punkte[k].farbe[1] = schattierung;
-               netz.punkte[k].farbe[2] = schattierung;
+               netz.punkte[k].farbe[0] = dreiecks_netze[j].schattierung;
+               netz.punkte[k].farbe[1] = dreiecks_netze[j].schattierung;
+               netz.punkte[k].farbe[2] = dreiecks_netze[j].schattierung;
              }
              netz.punkte[k].farbe[3] = dreiecks_netze[j].transparenz;
              netz.punkte[k].koord[1] *= a_darstellungs_breite;
@@ -1228,7 +1243,7 @@ GL_Ansicht::zeigeUmrisse_()
   glListen[UMRISSE] = 0;
 
   //if (spektralband == MENU_SPEKTRALBAND)
-  for (unsigned int i=0; i < dreiecks_netze.size(); ++i)
+  for (unsigned int d=0; d < dreiecks_netze.size(); ++d)
   {
     double *RGB_Speicher = 0,
            *RGBSchatten_Speicher = 0,
@@ -1236,8 +1251,8 @@ GL_Ansicht::zeigeUmrisse_()
            *Lab_Speicher_schatten = 0;
 
     // Umrechnung
-    int n = dreiecks_netze[i].umriss.size();
-    DBG_V( n )
+    int n = dreiecks_netze[d].umriss.size();
+    DBG_PROG_V( n )
     if(!n) continue;
 
     Lab_Speicher = (double*) alloca (sizeof(double) * n*3);
@@ -1245,7 +1260,7 @@ GL_Ansicht::zeigeUmrisse_()
 
     for ( int j = 0; j < n; ++j)
       for(int k = 0; k < 3 ; ++k)
-        Lab_Speicher[j*3+k] = dreiecks_netze[i].umriss[j].koord[k];
+        Lab_Speicher[j*3+k] = dreiecks_netze[d].umriss[j].koord[k];
 
     RGB_Speicher = icc_oyranos.wandelLabNachBildschirmFarben( Lab_Speicher,
                                  (size_t)n, icc_examin->intent(), 0);
@@ -1261,54 +1276,76 @@ GL_Ansicht::zeigeUmrisse_()
     }
 
     RGBSchatten_Speicher = icc_oyranos.wandelLabNachBildschirmFarben(
-                               Lab_Speicher_schatten, n, icc_examin->intent(), 0);
+                             Lab_Speicher_schatten, n, icc_examin->intent(), 0);
     if(!RGB_Speicher)  WARN_S( _("RGB_speicher Ergebnis nicht verfuegbar") )
     if(!RGBSchatten_Speicher)  WARN_S( _("RGB_speicher Ergebnis nicht verfuegbar") )
 
-    GLfloat farbe[] =   { pfeilfarbe[0],pfeilfarbe[1],pfeilfarbe[2], 1.0 };
-
-    glListen[UMRISSE] = glGenLists(1);
-    glNewList( glListen[UMRISSE], GL_COMPILE );
-    DBG_PROG_V( glListen[UMRISSE] ) 
-
-      glDisable (GL_LIGHTING);
-      glDisable (GL_BLEND);
-      glDisable (GL_ALPHA_TEST_FUNC);
-      glEnable  (GL_LINE_SMOOTH);
-
-      glLineWidth(6.0*strichmult);
-      glColor4f(0.5, 1.0, 1.0, 1.0);
-      glBegin(GL_LINE_STRIP);
-        for (int z=0 ; z <= (n - 1); z++) {
-          DBG_ICCGL_S( z<<" "<<Lab_Speicher[z*3]<<"|"<<Lab_Speicher[z*3+1]<<"|"<<Lab_Speicher[z*3+2] )
-          DBG_ICCGL_S( z<<" "<<RGB_Speicher[z*3]<<"|"<<RGB_Speicher[z*3+1]<<"|"<<RGB_Speicher[z*3+2] )
-          FARBE(RGB_Speicher[z*3],RGB_Speicher[z*3+1],RGB_Speicher[z*3+2]);
-          glVertex3d( 
-         (Lab_Speicher[z*3+2]*b_darstellungs_breite - b_darstellungs_breite/2.),
-         (Lab_Speicher[z*3+0] - 0.5),
-         (Lab_Speicher[z*3+1]*a_darstellungs_breite - a_darstellungs_breite/2.)
-          );
-        }
-      glEnd();
-      // Schatten
-      glLineWidth(2.0*strichmult);
-      glBegin(GL_LINE_STRIP);
-        for (int z=0 ; z <= (n - 1); z++) {
-          FARBE(RGBSchatten_Speicher[z*3],RGBSchatten_Speicher[z*3+1],RGBSchatten_Speicher[z*3+2])
-          glVertex3d( 
-         (Lab_Speicher[z*3+2]*b_darstellungs_breite - b_darstellungs_breite/2.),
-         (- 0.5),
-         (Lab_Speicher[z*3+1]*a_darstellungs_breite - a_darstellungs_breite/2.)
-          );
-        }
-      glEnd();
-
-    glEndList();
+    for ( int j = 0; j < n; ++j)
+      for(int k = 0; k < 3 ; ++k)
+        dreiecks_netze[d].umriss[j].farbe[k] = RGBSchatten_Speicher[j*3+k];
 
     if (RGB_Speicher) delete [] RGB_Speicher;
     //if (Lab_Speicher) delete [] Lab_Speicher;
 
   }
+    GLfloat farbe[] =   { pfeilfarbe[0],pfeilfarbe[1],pfeilfarbe[2], 1.0 };
+
+  glListen[UMRISSE] = glGenLists(1);
+  glNewList( glListen[UMRISSE], GL_COMPILE );
+  DBG_PROG_V( glListen[UMRISSE] ) 
+
+    glDisable (GL_LIGHTING);
+    glDisable (GL_BLEND);
+    glDisable (GL_ALPHA_TEST_FUNC);
+    glEnable  (GL_LINE_SMOOTH);
+
+    for (unsigned int i=0; i < dreiecks_netze.size(); ++i)
+    {
+      if(dreiecks_netze[i].umriss.size() &&
+         dreiecks_netze[i].aktiv &&
+         dreiecks_netze[i].transparenz)
+      {
+        #if 0
+        glLineWidth(6.0*strichmult);
+        glColor4f(1., 1.0, 1.0, 1.0);
+        glBegin(GL_LINE_STRIP);
+        for (int z=0 ; z < (int)dreiecks_netze[i].umriss.size(); z++) {
+          glVertex3d( 
+         (dreiecks_netze[i].umriss[z*3].koord[2]*b_darstellungs_breite - b_darstellungs_breite/2.),
+         (dreiecks_netze[i].umriss[z*3].koord[0] - 0.5),
+         (dreiecks_netze[i].umriss[z*3].koord[1]*a_darstellungs_breite - a_darstellungs_breite/2.)
+          );
+        }
+        glEnd();
+        #endif
+        // Schatten
+        int n = dreiecks_netze[i].umriss.size();
+        if(!dreiecks_netze[i].schattierung)
+          netzeAuffrischen();
+        DBG_PROG_V( n )
+        glLineWidth(2.0*strichmult);
+        glBegin(GL_LINE_STRIP);
+        for (int z=0 ; z < n; z++)
+        {
+          if(dreiecks_netze[i].grau) {
+            FARBE(dreiecks_netze[i].schattierung,
+                  dreiecks_netze[i].schattierung,dreiecks_netze[i].schattierung)
+          } else {
+            FARBE(dreiecks_netze[i].umriss[z].farbe[0],
+                  dreiecks_netze[i].umriss[z].farbe[1],
+                  dreiecks_netze[i].umriss[z].farbe[2])
+          }
+          glVertex3d(dreiecks_netze[i].umriss[z].koord[2]*b_darstellungs_breite
+                      - b_darstellungs_breite/2.,
+                     -0.5,
+                     dreiecks_netze[i].umriss[z].koord[1]*a_darstellungs_breite
+                      - a_darstellungs_breite/2.);
+        }
+        glEnd();
+      }
+    }
+
+  glEndList();
   DBG_PROG_ENDE
 }
 

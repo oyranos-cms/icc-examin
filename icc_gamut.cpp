@@ -32,53 +32,48 @@
 #include "icc_profile.h"
 #include "icc_utils.h"
 
+namespace icc_examin_ns {
+
 void
 holeRGBRampen( icUInt16Number *block, size_t & zahl )
 {
   DBG_PROG_START
-  int schritte = 10,
-      k = 3,
-      max = 65535;
+  int k = 3;
+  double schritte = 10.,
+         max = 65535.;
 
-  zahl = schritte*k*2 + 1;
+  zahl = (int)schritte*k*2 + 1;
+
+  for(int i = 0; i < (int)zahl*k; ++i)
+    block[i] = 0;
 
   for(int i = 0; i < (int)zahl; ++i) {
     // Rot
     if(i >= schritte * 5 && i < schritte * 6)
-      block[k*i+0] = max/schritte*(i-5*schritte);
+      block[k*i+0] = (int)(max/schritte*(i-5*schritte));
     if(i >= schritte * 0 && i < schritte * 2)
-      block[k*i+0] = max;
+      block[k*i+0] = (int)max;
     if(i >= schritte * 2 && i < schritte * 3)
-      block[k*i+0] = max/schritte*(3*schritte-i);
+      block[k*i+0] = (int)(max/schritte*(3*schritte-i));
     // Grün
     if(i >= schritte * 1 && i < schritte * 2)
-      block[k*i+1] = max/schritte*(i-1*schritte);
+      block[k*i+1] = (int)(max/schritte*(i-1*schritte));
     if(i >= schritte * 2 && i < schritte * 4)
-      block[k*i+1] = max;
+      block[k*i+1] = (int)max;
     if(i >= schritte * 4 && i < schritte * 5)
-      block[k*i+1] = max/schritte*(5*schritte-i);
+      block[k*i+1] = (int)(max/schritte*(5*schritte-i));
     // Blau
     if(i >= schritte * 3 && i < schritte * 4)
-      block[k*i+2] = max/schritte*(i-3*schritte);
+      block[k*i+2] = (int)(max/schritte*(i-3*schritte));
     if(i >= schritte * 4 && i < schritte * 6)
-      block[k*i+2] = max;
+      block[k*i+2] = (int)max;
     if(i >= schritte * 0 && i < schritte * 1)
-      block[k*i+2] = max/schritte*(1*schritte-i);
+      block[k*i+2] = (int)(max/schritte*(1*schritte-i));
   }
 
-      std::vector<double> q;
-      static std::vector<double> q_alt;
-      if(!q_alt.size()) q_alt.resize(zahl);
-      for(int i = 0; i < (int)zahl; ++i) {
-        q.push_back(block[i]);
-        if(q[i] != q_alt[i])
-          DBG_S( block[i] );
-      }
-      q_alt = q;
-
-  block[zahl*3-3+0] = max/schritte*(schritte-1/schritte);
+  block[zahl*3-3+0] = (int)(max/schritte*(schritte-1/schritte));
   block[zahl*3-3+1] = 0;
-  block[zahl*3-3+2] = max;
+  block[zahl*3-3+2] = (int)max;
   DBG_PROG_ENDE
 }
 
@@ -86,42 +81,43 @@ void
 holeCMYKRampen( icUInt16Number *block, size_t & zahl )
 {
   DBG_PROG_START
-  int schritte = 10,
-      k = 4,
-      max = 65535;
+  int k = 4;
+  double schritte = 10.,
+         max = 65535.;
 
-  zahl = schritte*k*2;
+  zahl = (int)schritte*(k-1)*2 + 1;
+
+  for(int i = 0; i < (int)zahl*k; ++i) {
+    block[i] = 0;
+  }
 
   for(int i = 0; i < (int)zahl; ++i) {
     // Zyan
-    if(i >= schritte * 6 && i < schritte * 7)
-      block[k*i+0] = max/schritte*(i-6*schritte);
+    if(i >= schritte * 5 && i < schritte * 6)
+      block[k*i+0] = (int)(max/schritte*(i-5*schritte));
     if(i >= schritte * 0 && i < schritte * 2)
-      block[k*i+0] = max;
+      block[k*i+0] = (int)max;
     if(i >= schritte * 2 && i < schritte * 3)
-      block[k*i+0] = max/schritte*(3*schritte-i);
+      block[k*i+0] = (int)(max/schritte*(3*schritte-i));
     // Magenta
     if(i >= schritte * 1 && i < schritte * 2)
-      block[k*i+1] = max/schritte*(i-1*schritte);
+      block[k*i+1] = (int)(max/schritte*(i-1*schritte));
     if(i >= schritte * 2 && i < schritte * 4)
-      block[k*i+1] = max;
+      block[k*i+1] = (int)max;
     if(i >= schritte * 4 && i < schritte * 5)
-      block[k*i+1] = max/schritte*(5*schritte-i);
+      block[k*i+1] = (int)(max/schritte*(5*schritte-i));
     // Gelb
     if(i >= schritte * 3 && i < schritte * 4)
-      block[k*i+2] = max/schritte*(i-3*schritte);
+      block[k*i+2] = (int)(max/schritte*(i-3*schritte));
     if(i >= schritte * 4 && i < schritte * 6)
-      block[k*i+2] = max;
-    if(i >= schritte * 6 && i < schritte * 7)
-      block[k*i+2] = max/schritte*(7*schritte-i);
-    // Schwarz
-    if(i >= schritte * 5 && i < schritte * 6)
-      block[k*i+2] = max/schritte*(i-5*schritte);
-    if(i >= schritte * 6 && i < schritte * 7)
-      block[k*i+2] = max;
+      block[k*i+2] = (int)max;
     if(i >= schritte * 0 && i < schritte * 1)
-      block[k*i+2] = max/schritte*(1*schritte-i);
+      block[k*i+2] = (int)(max/schritte*(1*schritte-i));
   }
+
+  block[zahl*k-k+0] = (int)(max/schritte*(schritte-1/schritte));
+  block[zahl*k-k+1] = 0;
+  block[zahl*k-k+2] = (int)max;
   DBG_PROG_ENDE
 }
 
@@ -133,20 +129,22 @@ iccGrenze(ICCprofile & profil, int intent, size_t & groesse)
   icColorSpaceSignature csp = profil.colorSpace();
   if(csp == icSigRgbData ||
      csp == icSigCmykData) {
-    icUInt16Number *block = (icUInt16Number*) alloca(1000000);
-    icUInt16Number *lab_block = (icUInt16Number*) alloca(1000000);
+    icUInt16Number *block = (icUInt16Number*) alloca(200*4*sizeof(double));
+    icUInt16Number *lab_block = (icUInt16Number*) alloca(200*4*sizeof(double));
     size_t size=0;
     char  *p_block = 0;
     p_block = profil.saveProfileToMem(&size);
+    #if 0 
     static int num = 0;
     char text[24]; 
     sprintf (text, "Übung%d.icc", num++);
     saveMemToFile( text, p_block, size );
+    #endif
     // hier den Farbumfang abtasten
     cmsHPROFILE lab = cmsCreateLabProfile(cmsD50_xyY());
     cmsHPROFILE p = cmsOpenProfileFromMem(p_block, size);
     cmsHTRANSFORM xform = 0;
-    if(csp == icSigRgbData) {
+    if(csp == icSigRgbData || csp == icSigCmyData) {
       xform = cmsCreateTransform(p, TYPE_RGB_16, lab, TYPE_Lab_16,
                                                intent, cmsFLAGS_NOTPRECALC);
     } else if(csp == icSigCmykData) {
@@ -177,4 +175,4 @@ iccGrenze(ICCprofile & profil, int intent, size_t & groesse)
 }
 
 
-
+}

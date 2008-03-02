@@ -130,12 +130,14 @@ ICCexamin::netzLese (int n,
       DBG_PROG_V( netz->size() <<" "<< netz_temp.size() )
       (*netz)[n] = netz_temp[0];
       (*netz)[n].name = profile[n]->filename();
-      DBG_NUM_V( (*netz)[n].transparenz )
+      DBG_NUM_V( (*netz)[n].transparenz <<" "<< (*netz)[n].umriss.size() )
     } else {
       (*netz)[n].punkte.clear();
       (*netz)[n].indexe.clear();
     }
   }
+  for(int i = 0; i < (int)netz->size(); ++i)
+    DBG_PROG_V( (*netz)[i].transparenz <<" "<< (*netz)[i].umriss.size() )
   DBG_PROG_ENDE
 }
 

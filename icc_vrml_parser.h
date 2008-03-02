@@ -49,6 +49,7 @@ struct ICCnetz {
   std::string name;
   double transparenz;
   char grau;
+  double schattierung;
   char aktiv;
 };
 
