@@ -36,7 +36,7 @@ void GL_Ansicht::init() {
   glutInitWindowSize(W,H); DBG_PROG_V( X << Y )
   glutInitWindowPosition(X,Y); DBG_PROG_V( W << H )
   glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH | GLUT_MULTISAMPLE); DBG_PROG
-  glutCreateWindow("GL Ansicht"); DBG_PROG
+  GLfensterNr = glutCreateWindow(_("GL Ansicht")); DBG_PROG
 
   details->end(); DBG_PROG
   details->resizable(glut_window);
@@ -100,6 +100,7 @@ void GL_Ansicht::MakeDisplayLists() {
     glTranslatef(-2, 0, 3);
     glRotatef(-90, 1, 0, 0);
     glutSolidCone(0.5, 1.0, 8, 8);
+    glutWireTeapot (1.0);
   glPopMatrix();
   glEndList();
 
@@ -112,24 +113,27 @@ void GL_Ansicht::MakeDisplayLists() {
 void GL_Ansicht::MenuInit() {
   DBG_PROG_START
   int sub2 = glutCreateMenu(agvSwitchMoveMode);   /* pass these right to */
-  glutAddMenuEntry("Flying move",  FLYING);       /* agvSwitchMoveMode() */
-  glutAddMenuEntry("Polar move",   POLAR);
+  glutAddMenuEntry(_("Fliegen"),  FLYING); /* agvSwitchMoveMode() */
+  glutAddMenuEntry(_("Betrachten"),   POLAR);
 
   glutCreateMenu(handlemenu);
-  glutAddSubMenu("Movement", sub2);
-  glutAddMenuEntry("Toggle Axes", MENU_AXES);
-  glutAddMenuEntry("Toggle ring rotation", MENU_RING);
-//  glutAddMenuEntry("Quit", MENU_QUIT);
+  glutAddSubMenu(_("Bewegung"), sub2);
+  glutAddMenuEntry(_("Achsen ein/aus"), MENU_AXES);
+  glutAddMenuEntry(_("Ring Rotation an/aus"), MENU_RING);
+  glutAddMenuEntry(_("Beenden"), MENU_QUIT);
   glutAttachMenu(GLUT_RIGHT_BUTTON);
   DBG_PROG_ENDE
 }
+
+double seitenverhaeltnis;
 
 void reshape(int w, int h) {
   DBG_PROG_START
   glViewport(0,0,w,h); DBG_PROG_V( w << h )
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
-  gluPerspective(60.0, (GLdouble)w/h, 0.01, 100);
+  //gluPerspective(45.0, (GLdouble)w/(GLdouble)h, 0.01, 100); DBG_PROG_V( (double)w / h )
+  seitenverhaeltnis = (GLdouble)w/(GLdouble)h;
   glPushMatrix();
   glMatrixMode(GL_MODELVIEW);
   glFlush();
@@ -144,9 +148,9 @@ void display() {
   glPopMatrix();
   glPushMatrix();  /* clear of last viewing xform, leaving perspective */
 
-  //glLoadIdentity();
+  glLoadIdentity();
 
-  //gluPerspective(60, 1, 0.01, 100);
+  gluPerspective(60, seitenverhaeltnis, 0.01, 100);
 
     /* so this replaces gluLookAt or equiv */
   agvViewTransform();
@@ -179,12 +183,9 @@ void GL_Ansicht::draw() {
   DBG_PROG_S( punkte.size() << "/" << kurven.size() <<" "<< texte.size() )
 
   if (punkte.size() >= 3) {
-    wiederholen = true;
     //draw_cie_shoe(x(),y(),w(),h(),texte,punkte,false);
-    Fl::add_timeout( 3.0, (void(*)(void*))d_haendler ,(void*)this);
 
   } else {
-    wiederholen = false;
     //draw_kurve   (x(),y(),w(),h(),texte,kurven);
   }
   DBG_PROG
@@ -274,7 +275,9 @@ void handlemenu(int value)
       DrawAxes = !DrawAxes;
       break;
     case MENU_QUIT:
-      exit(0);
+      DBG_PROG_V( glutGetWindow() )
+      glutHideWindow();
+      //exit(0);
       break;
     case MENU_RING:
       Rotating = !Rotating;

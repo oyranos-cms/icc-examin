@@ -10,7 +10,7 @@
 class GL_Ansicht : public Fl_Widget {
   int X; int Y; int W; int H; std::vector<std::string>texte; std::vector<double>punkte; std::vector<std::vector<double> >kurven;
 public:
-  int wiederholen; bool first;
+  int GLfensterNr; bool first;
   GL_Ansicht(int X,int Y,int W,int H) ;
   void init();
   void myGLinit();
@@ -20,6 +20,8 @@ public:
   void hinein_punkt(std::vector<double> vect, std::vector<std::string> txt);
   void hinein_kurven(std::vector<std::vector<double> >vect, std::vector<std::string> txt);
   void ruhig_neuzeichnen(void);
+  void zeigen()     {if (!first) {glutSetWindow(GLfensterNr); glutShowWindow(); glutPostRedisplay(); DBG_PROG_V( glutGetWindow() )} }
+  void verstecken() {if (!first) {glutSetWindow(GLfensterNr); glutHideWindow(); glutPostRedisplay(); DBG_PROG_V( glutGetWindow() )} }
 };
 
 void reshape(int w, int h);
