@@ -266,9 +266,12 @@ inline void ICCfltkBetrachter::cb_menueintrag_huelle_i(Fl_Menu_* o, void*) {
 
   DBG_PROG_S (m->value())
   if (m->value()) {
+    widget_oben = WID_3D;
     ((Fl_Menu_Item*)menueintrag_3D)->set();
-  } else
+  } else {
+    widget_oben = WID_0;
     ((Fl_Menu_Item*)menueintrag_3D)->clear();
+  }
   icc_examin->neuzeichnen(DD_histogram);
 }
 void ICCfltkBetrachter::cb_menueintrag_huelle(Fl_Menu_* o, void* v) {

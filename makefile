@@ -1,6 +1,7 @@
 include config
 
-CC=c++
+CC=cc
+CXX = c++
 MAKEDEPEND	= makedepend -Y
 RM = rm -v
 ifdef LINUX
@@ -24,7 +25,6 @@ srcdir		= .
 
 DEBUG = -DDEBUG
 DL = --ldflags # --ldstaticflags
-GLUT = -lglut
 
 X_CPPFILES = icc_helfer_x.cpp
 OSX_CPPFILES = icc_helfer_osx.cpp
@@ -32,7 +32,6 @@ FLTK_CPPFILES = icc_helfer_fltk.cpp
 
 ifdef APPLE
   OPTS=-Wall -g $(DEBUG)
-  GLUT = -framework GLUT -lobjc
   OSX_CPP = $(OSX_CPPFILES)
   INCL=-I$(includedir) -I/usr/X11R6/include -I./ -I/usr/include/gcc/darwin/default/c++
 endif
@@ -41,9 +40,9 @@ ifdef LINUX
   INCL=-I$(includedir) -I/usr/X11R6/include -I./
 else
   OPTS=-Wall -O2 -g -fpic -L.
-  GLUT = -lglut
   RM = rm -f
 endif
+
 
 ifdef FLTK
   TOOLKIT_FILES = $(FLTK_CPPFILES)
@@ -54,12 +53,14 @@ ifdef X11
   X11_LIBS=-L/usr/X11R6/lib -lX11 -lXxf86vm -lXext
 endif
 
+INCL_DEP = $(INCL) $(X_H) $(OSX_H) $(OYRANOS_H) $(SOURCES)
 ALL_INCL = $(INCL) \
 			$(FLU_H) $(FLTK_H) $(X_H) $(OSX_H) $(OYRANOS_H) $(LCMS_H)
+
 CXXFLAGS=$(OPTS) $(ALL_INCL)
 
 LDLIBS = -L$(libdir) -L./ $(FLTK_LIBS) \
-	$(X11_LIBS) -llcms $(OYRANOS_LIBS) $(GLUT) $(FLU_LIBS) $(LCMS_LIBS)
+	$(X11_LIBS) -llcms $(OYRANOS_LIBS) $(FLU_LIBS) $(LCMS_LIBS)
 
 CPP_HEADERS = \
 	agviewer.h \
@@ -122,6 +123,17 @@ COMMON_CPPFILES = \
 	icc_utils.cpp \
 	icc_vrml.cpp \
 	icc_vrml_parser.cpp
+FREEGLUT_FILES = \
+	freeglut_stroke_mono_roman.c \
+	freeglut_stroke_roman.c \
+	freeglut_glutfont_definitions.c \
+	freeglut_font.c \
+	freeglut_font_data.c \
+	freeglut_geometry.c
+COMMON_CFILES = \
+	$(FREEGLUT_FILES)
+CFILES = \
+	$(COMMON_CFILES)
 CPPFILES = \
 	$(COMMON_CPPFILES) \
 	$(TOOLKIT_FILES) \
@@ -133,7 +145,8 @@ CXXFILES = \
 TEST = \
 	dE2000_test.cpp \
 	ciede2000testdata.h
-ALL_CPPFILES = \
+ALL_SOURCEFILES = \
+	$(COMMON_CFILES) \
 	$(COMMON_CPPFILES) \
 	$(OSX_CPPFILES) \
 	$(X_CPPFILES) \
@@ -151,8 +164,8 @@ FLUID = \
 	icc_betrachter.fl \
 	fl_oyranos.fl
 
-SOURCES = $(ALL_CPPFILES) $(CPP_HEADERS)
-OBJECTS = $(CPPFILES:.cpp=.o) $(CXXFILES:.cxx=.o)
+SOURCES = $(ALL_SOURCEFILES) $(CPP_HEADERS)
+OBJECTS = $(CPPFILES:.cpp=.o) $(CXXFILES:.cxx=.o) $(CFILES:.c=.o)
 TARGET  = icc_examin
 
 ifdef APPLE
@@ -162,13 +175,13 @@ endif
 timedir = .
 mtime   = `find $(timedir) -prune -printf %Ty%Tm%Td.%TT | sed s/://g`
 
-.SILENT:
+#.SILENT:
 
 all:	mkdepend $(TARGET)
 
 release:	icc_alles.o
 	echo Linking $@...
-	$(CC) $(OPTS) -o $(TARGET) \
+	$(CXX) $(OPTS) -o $(TARGET) \
 	icc_alles.o \
 	$(LDLIBS)
 	$(REZ)
@@ -176,22 +189,22 @@ release:	icc_alles.o
 
 $(TARGET):	$(OBJECTS)
 	echo Linking $@...
-	$(CC) $(OPTS) -o $(TARGET) \
+	$(CXX) $(OPTS) -o $(TARGET) \
 	$(OBJECTS) \
 	$(LDLIBS)
 	$(REZ)
 
 static:		$(OBJECTS)
 	echo Linking $@...
-	$(CC) $(OPTS) -o $(TARGET) \
+	$(CXX) $(OPTS) -o $(TARGET) \
 	$(OBJECTS) \
 	$(LDLIBS) -static -ljpeg -lpng -lX11 -lpthread -lz -ldl \
 	-lfreetype -lfontconfig -lXrender -lGLU -lXext -lexpat
 	$(REZ)
 
 test:	icc_formeln.o icc_utils.o
-	$(CC) $(OPTS) $(INCL) -o dE2000_test.o -c dE2000_test.cpp
-	$(CC) $(OPTS) -o dE2000_test dE2000_test.o icc_formeln.o icc_utils.o \
+	$(CXX) $(OPTS) $(INCL) -o dE2000_test.o -c dE2000_test.cpp
+	$(CXX) $(OPTS) -o dE2000_test dE2000_test.o icc_formeln.o icc_utils.o \
 	-L$(libdir) -llcms
 	$(REZ)
 
@@ -209,10 +222,12 @@ clean:
 config:
 	configure.sh
 
-mkdepend:
+depend:
 	echo "" > mkdepend
-	$(MAKEDEPEND) -f mkdepend -s "#Bitte stehen lassen" -I. \
-	$(ALL_INCL) $(SOURCES)
+	$(MAKEDEPEND) -f mkdepend -s "#nicht editier/dont edit - automatisch generiert" -I. \
+	$(INCL_DEP)
+mkdepend:
+	make depend
 
 
 # The extension to use for executables...

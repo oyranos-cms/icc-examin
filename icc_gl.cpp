@@ -41,6 +41,10 @@
 #include "icc_helfer.h"
 #include <FL/Fl_Menu_Button.H>
 
+#include "freeglut_internal.h"
+extern void* glutStrokeRoman;
+extern void* glutStrokeMonoRoman;
+
 #include <cmath>
 
 //#define Beleuchtung
@@ -345,7 +349,7 @@ GL_Ansicht::tastatur(int e)
       glTranslatef(.0,0,0.01); \
         glScalef(0.001,0.001,0.001); \
           for (const char* p = Zeiger; *p; p++) { \
-             glutStrokeCharacter(Font, *p); \
+             icc_gl::glutStrokeCharacter(Font, *p); \
           } \
           for (const char* p = Zeiger; *p; p++) { \
             glTranslatef(0.0 - glutStrokeWidth(Font, *p),0,0); \
@@ -363,8 +367,8 @@ GL_Ansicht::tastatur(int e)
 
 #define ZeichneBuchstaben(Font,Buchstabe) { \
         glScalef(0.001,0.001,0.001); \
-          glutStrokeCharacter(Font, Buchstabe); \
-          glTranslatef(0.0 - glutStrokeWidth(Font, Buchstabe),0,0); \
+          icc_gl::glutStrokeCharacter(Font, Buchstabe); \
+          glTranslatef(0.0 - icc_gl::glutStrokeWidth(Font, Buchstabe),0,0); \
         glScalef(1000,1000,1000); }
 
 void
@@ -396,7 +400,7 @@ zeichneKoordinaten(float strichmult)
     glTranslatef(.1,0,0);
       FARBE(1,0,1)
       glRotatef (90,0.0,1.0,.0);
-        glutSolidCone(0.01, 0.025, 8, 2);
+        icc_gl::glutSolidCone(0.01, 0.025, 8, 2);
       glRotatef (-90,0.0,1.0,.0);
       FARBE(1,1,1)
       glTranslatef(.02,0,0);
@@ -407,7 +411,7 @@ zeichneKoordinaten(float strichmult)
     glTranslatef(.0,.1,0);
       glRotatef (270,1.0,.0,.0);
         FARBE(1,1,0)
-        glutSolidCone(0.01, 0.025, 8, 2);
+        icc_gl::glutSolidCone(0.01, 0.025, 8, 2);
       glRotatef (90,1.0,.0,.0);
       glRotatef (90,0.0,.0,1.0);
         FARBE(1,1,1)
@@ -417,7 +421,7 @@ zeichneKoordinaten(float strichmult)
 
     glTranslatef(0,0,.1);
       FARBE(0,1,1)
-      glutSolidCone(0.01, 0.025, 8, 2);
+      icc_gl::glutSolidCone(0.01, 0.025, 8, 2);
       glRotatef (90,0.0,.5,.0);
         glTranslatef(-.1,0,0);
           FARBE(1,1,1)
@@ -469,7 +473,7 @@ GL_Ansicht::garnieren_()
   char text[256];
   char* ptr = 0;
 
-  #define PFEILSPITZE glutSolidCone(0.02, 0.05, 16, 4);
+  #define PFEILSPITZE icc_gl::glutSolidCone(0.02, 0.05, 16, 4);
 
   DBG_PROG_V( id() )
   // Pfeile und Text
@@ -703,8 +707,8 @@ GL_Ansicht::tabelleAuffrischen()
                 glEnd();
                 }
                 break;
-                case MENU_WUERFEL: glutSolidCube(groesse*0.995); break;
-                case MENU_KUGEL:   glutSolidSphere (groesse*.75, 12, 12); break;
+                case MENU_WUERFEL: icc_gl::glutSolidCube(groesse*0.995); break;
+                case MENU_KUGEL:   icc_gl::glutSolidSphere (groesse*.75, 12, 12); break;
               }
             }
           }
@@ -1040,9 +1044,9 @@ GL_Ansicht::punkteAuffrischen()
                glEnd();
                #endif
             break;
-          case MENU_dE1KUGEL: glutSolidSphere (0.005, 5, 5); break;
-          case MENU_dE2KUGEL: glutSolidSphere (0.01, 8, 8); break;
-          case MENU_dE4KUGEL: glutSolidSphere (0.02, 12, 12);
+          case MENU_dE1KUGEL: icc_gl::glutSolidSphere (0.005, 5, 5); break;
+          case MENU_dE2KUGEL: icc_gl::glutSolidSphere (0.01, 8, 8); break;
+          case MENU_dE4KUGEL: icc_gl::glutSolidSphere (0.02, 12, 12);
                break;
           case MENU_DIFFERENZ_LINIE:
                break;

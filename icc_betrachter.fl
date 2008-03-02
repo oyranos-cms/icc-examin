@@ -48,8 +48,7 @@ decl {\#include "icc_examin.h"} {public
 
 decl {\#include "icc_draw.h"
 \#include "icc_kette.h"
-\#include "icc_oyranos_extern.h"} {selected
-} 
+\#include "icc_oyranos_extern.h"} {} 
 
 decl {\#include "icc_profile.h"
 \#include "icc_utils.h"
@@ -378,7 +377,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window vcgt {
       label {Grafikkarten Gamma Tabellen}
-      xywh {703 146 370 390} type Double resizable
+      xywh {708 167 370 390} type Double resizable
       code0 {o->hide();} non_modal visible
     } {
       Fl_Group {} {open
@@ -413,7 +412,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window details {
       label {ICC Details} open
-      xywh {810 338 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
+      xywh {815 359 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
     } {
       Fl_Group {} {open
         xywh {0 0 385 520}
@@ -462,10 +461,13 @@ class ICCfltkBetrachter {open
 
   DBG_PROG_S (m->value())
   if (m->value()) {
+    widget_oben = WID_3D;
     ((Fl_Menu_Item*)menueintrag_3D)->set();
-  } else
+  } else {
+    widget_oben = WID_0;
     ((Fl_Menu_Item*)menueintrag_3D)->clear();
-  icc_examin->neuzeichnen(DD_histogram);}
+  }
+  icc_examin->neuzeichnen(DD_histogram);} selected
             xywh {60 60 100 20} type Toggle shortcut 0x40068
           }
           submenu {} {
