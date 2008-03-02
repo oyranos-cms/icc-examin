@@ -403,8 +403,8 @@ selectTextsLine( int * line )
           oyNamedColour_s * colour = oyNamedColourCreate(
                               l, c,
                               profile.profil()->colorSpace(), 0, 
-                              0, 0, name.c_str(),
-                              0,0, profile.profil()->filename(), malloc, free );
+                              NULL, NULL, name.c_str(),
+                              NULL,0, profile.profil()->filename(), malloc, free );
           icc_examin->icc_betrachter->DD_farbraum->emphasizePoint( colour );
           // very simple approach, but enough to see the line
           icc_examin->icc_betrachter->inspekt_html->topline( name.c_str() );
@@ -429,8 +429,8 @@ selectTextsLine( int * line )
               colour = oyNamedColourCreate(
                               l, c,
                               profile.profil()->colorSpace(), 0, 
-                              0, 0, name.c_str(),
-                              0,0, profile.profil()->filename(), malloc, free );
+                              NULL, NULL, name.c_str(),
+                              NULL,0, profile.profil()->filename(), malloc, free );
               icc_examin->icc_betrachter->DD_farbraum->emphasizePoint( colour );
               oyNamedColourRelease( &colour );
             } else

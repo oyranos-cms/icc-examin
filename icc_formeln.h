@@ -84,25 +84,25 @@ void FarbeZuDouble (CMYK_s *cmyk, double* d_cmyk);
 // colour functions
 // colour difference
 double        dE2000 (const Lab_s & Lab1, const Lab_s & Lab2,
-                      double kL, double kC, double kH);
-double        dE     ( Lab_s Lab1, Lab_s Lab2 );
-double        dE     ( double* Lab1, Lab_s Lab2 );
-double        dE     ( double* Lab1, double* Lab2 );
+                      const double kL, const double kC, const double kH);
+double        dE     ( const Lab_s Lab1, const Lab_s Lab2 );
+double        dE     ( const double* Lab1, const Lab_s Lab2 );
+double        dE     ( const double* Lab1, const double* Lab2 );
 
 // standard colour transformations
-void          XYZtoLab (XYZ_s & xyz, Lab_s & lab);
-void          XYZtoLab (double* xyz, double* lab, int n);
-void          LabtoXYZ (Lab_s &lab, XYZ_s &XYZ);
+void          XYZtoLab (const XYZ_s & xyz, Lab_s & lab);
+void          XYZtoLab (const double* xyz, double* lab, int n);
+void          LabtoXYZ (const Lab_s &lab, XYZ_s &XYZ);
 
 // normalising  CIELab L 0...100 a/b -127...+127 // lab 0...1
-void          CIELabToLab (double* cielab, double* lab, int n);
-void          CIELabToLab (double* cielab, Lab_s & lab);
-void          LabToCIELab (double* lab, double* cielab, int n);
-void          LabToCIELab (Lab_s & lab, double* cielab);
+void          CIELabToLab (const double* cielab, double* lab, int n);
+void          CIELabToLab (const double* cielab, Lab_s & lab);
+void          LabToCIELab (const double* lab, double* cielab, int n);
+void          LabToCIELab (const Lab_s & lab, double* cielab);
 // normalising OYLab L 0...1 a/b -1.27...+1.27 // lab 0...1
-void          OyLabToLab (double* oylab, double* lab, int n);
-void          OyLabToLab (double* oylab, Lab_s & lab);
-void          LabToOyLab (double* lab, double* oylab, int n);
-void          LabToOyLab (Lab_s & lab, double* oylab);
+void          OyLabToLab (const double* oylab, double* lab, int n);
+void          OyLabToLab (const double* oylab, Lab_s & lab);
+void          LabToOyLab (const double* lab, double* oylab, int n);
+void          LabToOyLab (const Lab_s & lab, double* oylab);
 
 #endif //ICC_FORMELN_H

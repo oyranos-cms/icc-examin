@@ -34,6 +34,7 @@
 #include "config.h"
 #include <oyranos/oyranos.h>
 #include <oyranos/oyranos_icc.h>
+#include <oyranos/oyranos_alpha.h>
 #include "icc_icc.h"
 
 #include "icc_utils.h"
@@ -63,8 +64,11 @@ icTagSignature          oyValueTagSig   (icTagSignature val);
 typedef enum {
   oyOBJECT_TYPE_NONE,
   oyOBJECT_TYPE_DISPLAY_S,
-  oyOBJECT_TYPE_NAMED_COLOUR_S
+  oyOBJECT_TYPE_NAMED_COLOUR_S,
+  oyOBJECT_TYPE_NAMED_COLOURS_S,
+  oyOBJECT_TYPE_COLOUR_PROFILE
 } oyOBJECT_TYPE;
+
 
 /** @brief colour patch with meta informations
  *
@@ -79,55 +83,106 @@ typedef enum {
  */
 typedef struct {
   oyOBJECT_TYPE type;           /*!< internal struct type */
-  double       lab[3];     /*!< Lab  L: 0...1  a/b: -1.28...1.28 */
-  double       channels[32];    /*!< eigther parsed or calculated otherwise */
-  double       moni_rgb[3];     /*!< monitor colours */
-  icColorSpaceSignature sig;    /*!< ICC colour space signature */
-  char * names_chan[32];        /*!< user visible channel description */
+  double *     channels;        /*!< eigther parsed or calculated otherwise */
+  int          channels_n;      /*!< number of channels */
+  char   **    names_chan;      /*!< user visible channel description */
   char * name;                  /*!< normal user visible name (A1-MySys) */
   char * name_long;        /*!< full user description (A1-MySys from Oyranos) */
   char * nick_name;             /*!< few letters for mass representation (A1) */
   char * blob;                  /*!< advanced CGATS / ICC ? */
   size_t blob_len;              /*!< advanced CGATS / ICC ? */
-  char * ref_file;              /*!< ICC */
+  oyProfile_s *profile;         /*!< ICC */
   oyAllocFunc_t allocateFunc;
   oyDeAllocFunc_t deallocateFunc;
+  oyPointer * backdoor;
 } oyNamedColour_s;
 
-oyNamedColour_s* oyNamedColourCreate ( double      * lab,
-                                       double      * chan,
-                                       icColorSpaceSignature sig,
-                                       const char ** names_chan,
-                                       const char  * name,
-                                       const char  * name_long,
-                                       const char  * nick,
-                                       const char  * blob,
-                                       int           blob_len,
-                                       const char  * icc_ref,
-                                       oyAllocFunc_t allocateFunc,
-                                       oyDeAllocFunc_t deallocateFunc);
-void             oyNamedColourRelease( oyNamedColour_s ** colour );
-oyNamedColour_s* oyNamedColourCopy   ( oyNamedColour_s  * colour,
-                                       oyAllocFunc_t      allocateFunc,
-                                       oyDeAllocFunc_t    deallocateFunc);
+oyNamedColour_s*  oyNamedColourCreate ( const double      * chan,
+                                        int           channels_n,
+                                        const char  * name,
+                                        const char  * name_long,
+                                        const char  * nick,
+                                        const char  * blob,
+                                        int           blob_len,
+                                        oyProfile_s * profile_ref,
+                                        oyAllocFunc_t allocateFunc,
+                                        oyDeAllocFunc_t deallocateFunc);
+void              oyNamedColourRelease( oyNamedColour_s ** colour );
+oyNamedColour_s*  oyNamedColourCopy   ( const oyNamedColour_s  * colour,
+                                        oyAllocFunc_t      allocateFunc,
+                                        oyDeAllocFunc_t    deallocateFunc);
 
-void             oyNamedColourSetLab ( oyNamedColour_s * colour,
-                                       double * lab );
-void             oyNamedColourGetLab ( oyNamedColour_s * colour,
-                                       double * lab );
-const char *     oyNamedColourGetName( oyNamedColour_s * colour );
-void             oyNamedColourSetName( oyNamedColour_s * colour );
-const char *     oyNamedColourGetNick( oyNamedColour_s * colour );
-void             oyNamedColourSetNick( oyNamedColour_s * colour );
-const char *     oyNamedColourGetDescription( oyNamedColour_s * colour );
-void             oyNamedColourSetDescription( oyNamedColour_s * colour );
+oyProfile_s*      oyNamedColourGetSpace( oyNamedColour_s * colour );
+int               oyNamedColourSetSpace( oyNamedColour_s * colour,
+                                        oyProfile_s      * profile_ref );
+void              oyNamedColourSetChannels( oyNamedColour_s * colour,
+                                        const double     * channels,
+                                        int                channels_n );
+const double *    oyNamedColourGetChannelsConst(oyNamedColour_s * colour);
+int               oyNamedColourGetChannelsCount(oyNamedColour_s * colour);
+void              oyNamedColourSetChannelNames( oyNamedColour_s * colour,
+                                        const char      ** names_chan );
+const char **     oyNamedColourGetChannelNames( const oyNamedColour_s * colour);
+const char *      oyNamedColourGetName( oyNamedColour_s  * colour );
+void              oyNamedColourSetName( oyNamedColour_s  * colour );
+const char *      oyNamedColourGetNick( oyNamedColour_s  * colour );
+void              oyNamedColourSetNick( oyNamedColour_s  * colour );
+const char *      oyNamedColourGetDescription( oyNamedColour_s * colour );
+void              oyNamedColourSetDescription( oyNamedColour_s * colour );
 
-void             oyCopyColour            ( double * from, double * to, int n,
-                                           icColorSpaceSignature sig );
+/** @brief list of colour patches
+ *
+ *  Data management on library side.
+ *  User can control memory management at creation time.
+ *
+ *  It has the complexity of a object, and should not be accessed directly.
+ *
+ *  since: (ICC Examin: version 0.45)
+ *
+ *  TODO: make the object non visible
+ */
+typedef struct {
+  oyOBJECT_TYPE type;           /*!< internal struct type */
+  char * name;                  /*!< normal user visible name (autumn) */
+  char * name_long;        /*!< full user description (My autumn swatches ) */
+  int    size;                  /*!< list entries */
+  oyNamedColour_s ** colours;   /*!< colour list */
+  oyAllocFunc_t allocateFunc;
+  oyDeAllocFunc_t deallocateFunc;
+  oyPointer * backdoor;
+} oyNamedColours_s;
 
-/* convenient functions */
-int              oyColourSpaceGetChannelCount ( icColorSpaceSignature sig );
-const char *     oyColourSpaceGetName( icColorSpaceSignature sig );
+oyNamedColours_s* oyNamedColoursCreate( const char  * name,
+                                        const char  * name_long,
+                                        oyAllocFunc_t allocateFunc,
+                                        oyDeAllocFunc_t deallocateFunc);
+int               oyNamedColoursSize  ( oyNamedColours_s * swatch );
+oyNamedColour_s*  oyNamedColoursGet   ( oyNamedColours_s * swatch,
+                                        int           position );
+int               oyNamedColoursAdd   ( oyNamedColours_s * swatch,
+                                        oyNamedColour_s  * patch,
+                                        int           position );
+int               oyNamedColoursRemove( oyNamedColours_s * swatch,
+                                        int           position );
+int               oyNamedColoursRelease( oyNamedColours_s ** swatch );
+oyNamedColours_s* oyNamedColoursCopy  ( const oyNamedColours_s * colours,
+                                        oyAllocFunc_t      allocateFunc,
+                                        oyDeAllocFunc_t    deallocateFunc);
+const char *      oyNamedColoursGetName( const oyNamedColours_s * colours );
+void              oyNamedColoursSetName( oyNamedColours_s * colours );
+const char *      oyNamedColoursGetDescription(const oyNamedColours_s *colours);
+void              oyNamedColoursSetDescription( oyNamedColours_s * colours );
+
+
+void              oyCopyColour        ( const double * from, double * to, int n,
+                                        oyProfile_s       * profile_ref,
+                                        int                 channels_n );
+
+/* ICC functions */
+int              oyColourSpaceGetChannelCount ( oyProfile_s * profile_ref );
+const char *     oyColourSpaceGetName ( oyProfile_s       * profile_ref );
+const char *     oyColourSpaceGetChannelName( oyProfile_s * profile_ref,
+                                        int                 channel );
 
 
 #ifdef __cplusplus

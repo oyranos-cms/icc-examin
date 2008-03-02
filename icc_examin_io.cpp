@@ -154,7 +154,7 @@ ICCexaminIO::oeffnenThread_ ()
 
   // load
   icc_examin->clear();
-  icc_examin->icc_betrachter->DD_farbraum->punkte_clear();
+  icc_examin->icc_betrachter->DD_farbraum->namedColoursRelease();
   profile.clear();
   icc_examin->fortschritt( -.1 , 1.0  );
   for (unsigned int i = 0; i < speicher_vect_.size(); ++i)
@@ -217,7 +217,7 @@ ICCexaminIO::oeffnenThread_ ()
         texte.push_back(_("CIE *a"));
         texte.push_back(_("CIE *b"));
         icc_examin->icc_betrachter->DD_farbraum->achsNamen(texte);
-        icc_examin->icc_betrachter->DD_farbraum->punkte_clear();
+        icc_examin->icc_betrachter->DD_farbraum->namedColoursRelease();
         icc_examin->gamutAnsichtZeigen();
         icc_examin_ns::unlock(this, __FILE__,__LINE__);
       } else

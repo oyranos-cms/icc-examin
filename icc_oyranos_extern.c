@@ -45,7 +45,7 @@ void myCDeAllocFunc(void * buf)
  *  since: (ICC Examin: version 0.45)
  */
 int
-oyColourSpaceGetChannelCount ( icColorSpaceSignature color )
+oyColourSpaceGetChannelCountFromSig ( icColorSpaceSignature color )
 {
   int n;
 
@@ -102,12 +102,23 @@ oyColourSpaceGetChannelCount ( icColorSpaceSignature color )
   return n;
 }
 
+/** @brief number of channels in a colour space
+ *
+ *  since: (ICC Examin: version 0.45)
+ */
+int
+oyColourSpaceGetChannelCount( oyProfile_s * ref )
+{
+  icColorSpaceSignature sig = oyProfileGetSig ( ref );
+  return oyColourSpaceGetChannelCountFromSig( sig );
+}
+
 /** @brief name of a colour space
  *
  *  since: (ICC Examin: version 0.45)
  */
 const char *
-oyColourSpaceGetName( icColorSpaceSignature sig )
+oyColourSpaceGetNameFromSig( icColorSpaceSignature sig )
 {
   const char * text;
 
@@ -160,6 +171,17 @@ oyColourSpaceGetName( icColorSpaceSignature sig )
   return text;
 }
 
+/** @brief name of a colour space
+ *
+ *  since: (ICC Examin: version 0.45)
+ */
+const char *
+oyColourSpaceGetName( oyProfile_s * ref )
+{
+  icColorSpaceSignature sig = oyProfileGetSig ( ref );
+  return oyColourSpaceGetNameFromSig( sig );
+}
+
 /** @brief copy pure colours
 
     handle colour only, without from set to -1 default
@@ -167,17 +189,30 @@ oyColourSpaceGetName( icColorSpaceSignature sig )
  *  since: (ICC Examin: version 0.45)
  */
 void
-oyCopyColour ( double * from, double * to, int n, icColorSpaceSignature sig )
+oyCopyColour ( const double * from,
+               double       * to,
+               int            n,
+               oyProfile_s  * ref,
+               int            channels_n )
 {
   int i, j;
-  int c = oyColourSpaceGetChannelCount( sig );
+  icColorSpaceSignature sig = oyProfileGetSig ( ref );
+  int c = oyColourSpaceGetChannelCountFromSig( sig );
 
   if(!n || !to)
     return;
 
   if(from)
     memcpy( to, from, sizeof(double) * n * c );
+
   else
+  {
+    if(!channels_n && c)
+      channels_n = c;
+    else if(channels_n && !c)
+      c = channels_n;
+
+    if(channels_n)
     switch(sig)
     {
       case icSigLabData:
@@ -186,17 +221,32 @@ oyCopyColour ( double * from, double * to, int n, icColorSpaceSignature sig )
       case icSigHlsData:
       case icSigYCbCrData:
            for( i = 0; i < n; ++i )
-             for( j = 0; j < c; ++j )
-               to[i*c+0] = -1;
-               to[i*c+1] = 0;
-               to[i*c+2] = 0;
+           {
+             to[i*channels_n+0] = -1;
+             to[i*channels_n+1] = 0;
+             to[i*channels_n+2] = 0;
+             for( j = c; j < channels_n; ++j )
+               if(j==c)
+                 to[i*channels_n+j] = 1; /* set alpha */
+               else
+                 to[i*channels_n+j] = 0;
+           }
            break;
       case icSigRgbData:
       default:
-           for( i = 0; i < n*c; ++i )
-             to[i] = -1;
+           for( i = 0; i < n; ++i )
+           {
+             for( j = 0; j < channels_n; ++j )
+               if(j < c)
+                 to[i*channels_n+j] = -1;
+               else if(j==c)
+                 to[i*channels_n+j] = 1; /* set alpha */
+               else
+                 to[i*channels_n+j] = 0;
+           }
            break;
     }
+  }
 }
 
 /* Has to go to oyranos_texts.x */
@@ -218,18 +268,30 @@ oyStringCopy_       ( const char    * text,
 /** @brief manage complex oyNamedColour_s inside Oyranos
  *
  *  since: (ICC Examin: version 0.45)
+ *
+ *  @param[in]  chan        pointer to channel data with a number of elements specified in sig or channels_n
+ *  @param[in]  sig         ICC colour space signature http://www.color.org
+ *  @param[in]  channels_n  elements of channels including alpha ...
+ *  @param[in]  names_chan  needed if sig provides no glue about the channel colour or you use more than one extra (non colour) channel. The first deteted extra channel is by default considered alpha.
+ *  @param[in]  name        of the colour
+ *  @param[in]  name_long   description
+ *  @param[in]  nick_name   very short, only a few letters
+ *  @param[in]  blob        CGATS or other reference data
+ *  @param[in]  blob_len    length of the data blob
+ *  @param[in]  ref_file    possibly a ICC profile, allowed abreviations are 'sRGB' 'XYZ' 'Lab'(D50)
+ *  @param[in]  allocateFunc   user controled memory allocation
+ *  @param[in]  deallocateFunc user controled memory deallocation
+ * 
  */
 oyNamedColour_s*
-oyNamedColourCreate( double      * lab,
-                     double      * chan,
-                     icColorSpaceSignature sig,
-                     const char ** names_chan,
+oyNamedColourCreate( const double* chan,
+                     int           channels_n,
                      const char  * name,
                      const char  * name_long,
                      const char  * nick_name,
                      const char  * blob,
                      int           blob_len,
-                     const char  * ref_file,
+                     oyProfile_s * ref,
                      oyAllocFunc_t   allocateFunc,
                      oyDeAllocFunc_t deallocateFunc )
 {
@@ -254,14 +316,22 @@ oyNamedColourCreate( double      * lab,
   else
     colour->allocateFunc = myCAllocFunc;
 
-  colour->sig = sig;
-  oyCopyColour( lab, &colour->lab[0], 1, icSigLabData );
-  oyCopyColour( chan, &colour->channels[0], 1, sig );
+  if(channels_n)
+    colour->channels_n = channels_n;
+  else if(ref)
+    colour->channels_n = oyColourSpaceGetChannelCount( ref ) + 1;
+  else
+    colour->channels_n = 0;
+
+  if(colour->channels_n)
+    colour->channels = colour->allocateFunc( colour->channels_n );
+  oyCopyColour( chan, &colour->channels[0], 1, ref, colour->channels_n );
 
   colour->name      = oyStringCopy_( name, colour->allocateFunc );
   colour->name_long = oyStringCopy_( name_long, colour->allocateFunc );
   colour->nick_name = oyStringCopy_( nick_name, colour->allocateFunc );
-  colour->ref_file  = oyStringCopy_( ref_file, colour->allocateFunc );
+
+  colour->profile   = oyProfileCopy( ref, colour->allocateFunc );
 
   if(blob && blob_len)
   {
@@ -272,16 +342,55 @@ oyNamedColourCreate( double      * lab,
   return colour;
 }
 
+/** @brief set channel names
+ *
+ *  The function should be used to specify extra channels or unusual colour
+ *  layouts like CMYKRB. The number of elements in names_chan should fit to the
+ *  channels count or to the colour space signature.
+ *
+ *  You can let single entries empty if they are understandable by the
+ *  colour space signature. Oyranos will set them for you on request.
+ *
+ *  @param[in] colour   address of a Oyranos named colour structure
+ *  @param[in] names    pointer to channel names 
+ *
+ *  since: (ICC Examin: version 0.45)
+ */
+void
+oyNamedColourSetChannelNames          ( oyNamedColour_s  * colour,
+                                        const char      ** names_chan )
+{
+  oyNamedColour_s * c = colour;
+  if(names_chan && c->channels_n)
+  {
+    int i = 0;
+    c->names_chan = c->allocateFunc( (c->channels_n + 1 ) * sizeof(char*) );
+    c->names_chan[ c->channels_n ] = NULL;
+    for( ; i < c->channels_n; ++i )
+    {
+      int len = 0;
+      if(names_chan[i])
+        len = strlen(names_chan[i]);
+      if(len)
+      {
+        c->names_chan[i] = c->allocateFunc((len + 1 ) * sizeof(char));
+        sprintf( c->names_chan[i], "%s", names_chan[i] );
+      }
+    }
+  }
+}
+
 /** @brief copy
  *
  *  
  *
- *  @param[in]    adress of Oyranos colour struct pointer
+ *  @param[in] colour    address of Oyranos colour struct
+ *  @return              copy
  *
  *  since: (ICC Examin: version 0.45)
  */
 oyNamedColour_s*
-oyNamedColourCopy  ( oyNamedColour_s * colour,
+oyNamedColourCopy  ( const oyNamedColour_s * colour,
                      oyAllocFunc_t   allocateFunc,
                      oyDeAllocFunc_t deallocateFunc )
 {
@@ -290,56 +399,57 @@ oyNamedColourCopy  ( oyNamedColour_s * colour,
   if(!colour)
     return c;
 
-  c = oyNamedColourCreate( colour->lab,
-                     colour->channels,
-                     colour->sig,
-                     (const char**)colour->names_chan,
+  c = oyNamedColourCreate( colour->channels,
+                     colour->channels_n,
                      colour->name,
                      colour->name_long,
                      colour->nick_name,
                      colour->blob,
                      colour->blob_len,
-                     colour->ref_file,
-                     allocateFunc  ?allocateFunc  :colour->allocateFunc,
-                     deallocateFunc?deallocateFunc:colour->deallocateFunc );
+                     colour->profile,
+                     allocateFunc   ? allocateFunc   : colour->allocateFunc,
+                     deallocateFunc ? deallocateFunc : colour->deallocateFunc );
+
+  oyNamedColourSetChannelNames( c, (const char**)colour->names_chan );
 
   return c;
 }
 
 
-void
-oyNamedColourGetLab ( oyNamedColour_s * colour,
-                      double * lab )
+/*  @return                 pointer to D50 Lab doubles with L 0.0...1.0 a/b -1.27...1.27 */
+
+int
+oyNamedColourSetSpace ( oyNamedColour_s * colour,
+                        oyProfile_s     * profile )
 {
-  int i;
-  if(lab)
-    for(i=0;i<3;++i) 
-    {
-      if(colour)
-        lab[i] = colour->lab[i];
-      else
-        oyCopyColour( 0, lab, 1, icSigLabData );
-    }
+  WARN_S("not implemented");
+  return 1;
 }
 
-void
-oyNamedColourSetLab ( oyNamedColour_s * colour,
-                      double * lab )
-{
-  int i;
-  if(!colour)
-    return;
+int
+oyNamedColourConvert  ( oyNamedColour_s * colour,
+                        oyProfile_s     * profile,
+                        oyPointer       * buf,
+                        oyDATATYPE_e      buf_type )
+{                        
+  oyImage_s * in  = NULL,
+            * out = NULL;
+  oyColourConversion_s * conv = NULL;
+  int ret = 0;
 
-  if(lab)
-  {
-    for(i=0;i<3;++i)
-    {
-      colour->lab[i] = lab[i];
-      colour->moni_rgb[i] = -1.f;
-    }
-    for(i=0;i<32;++i)
-      colour->channels[i] = -1.f;
-  }
+  in    = oyImageCreate( 1,1, 
+                         (oyPointer*) colour->channels ,oyDOUBLE,
+                         colour->profile,
+                         0,0 );
+  out   = oyImageCreate( 1,1, 
+                         buf ,buf_type,
+                         profile,
+                         0,0 );
+
+  conv = oyColourConversionCreate( 0,0,0, in,out );
+  ret = oyColourConversionRun( conv );
+  oyColourConversionRelease( conv );
+  return ret;
 }
 
 /** @brief get associated colour name
@@ -352,21 +462,26 @@ oyNamedColourSetLab ( oyNamedColour_s * colour,
 const char *
 oyNamedColourGetName( oyNamedColour_s * colour )
 {
-  icColorSpaceSignature sig = 0;
+  double lab[3];
+  oyProfile_s * profile;
 
   if(!colour)
     return NULL;
 
-  sig = colour->sig;
-
   if(colour->name)
     return colour->name;
+
+  profile = oyProfileCreate ( icSigLabData, NULL, 0,NULL );
+  oyProfileRelease ( profile );
+  profile = oyProfileCreate ( 0, "Lab", 0,NULL );
+  oyNamedColourConvert  ( colour, profile, (oyPointer*)lab, oyDOUBLE );
+  oyProfileRelease ( profile );
 
   colour->name = (char*) colour->allocateFunc(80);
   snprintf( colour->name, 80, "%s%sLab: %.02f %.02f %.02f",
             colour->nick_name ? colour->nick_name : "",
             colour->nick_name ? " - " : "",
-            colour->lab[0], colour->lab[1], colour->lab[2]
+            lab[0], lab[1], lab[2]
              );
     
   return colour->name;
@@ -407,15 +522,15 @@ oyNamedColourGetDescription( oyNamedColour_s * colour )
   if(colour->name_long)
     return colour->name_long;
 
-  c = oyColourSpaceGetChannelCount( colour->sig );
+  c = oyColourSpaceGetChannelCount( colour->profile );
   tmp = oyStringCopy_( oyNamedColourGetName( colour ), colour->allocateFunc );
   colour->name_long = (char*) colour->allocateFunc(80);
   sprintf(colour->name_long, "%s", tmp);
-  if(colour->sig)
+  if(colour->profile)
   {
     int len = strlen(colour->name_long);
     snprintf(&colour->name_long[len], 80-len, " %s:",
-             oyColourSpaceGetName( colour->sig ) );
+             oyColourSpaceGetName( colour->profile ) );
     for(i=0; i < c && c < 32; ++i)
     {
       len = strlen(colour->name_long);
@@ -433,7 +548,7 @@ oyNamedColourGetDescription( oyNamedColour_s * colour )
  *  set pointer to zero
  *  should walk to a general oyFree(void* oy_struct) function
  *
- *  @param[in]    adress of Oyranos colour struct pointer
+ *  @param[in]    address of Oyranos colour struct pointer
  *
  *  since: (ICC Examin: version 0.45)
  */
@@ -464,8 +579,8 @@ oyNamedColourRelease( oyNamedColour_s ** colour )
     c->deallocateFunc( c->nick_name );
   if(c->blob) /* c->bloblen */
     c->deallocateFunc( c->blob );
-  if(c->ref_file)
-    c->deallocateFunc( c->ref_file );
+
+  oyProfileRelease( c->profile );
 
   c->deallocateFunc( c );
 

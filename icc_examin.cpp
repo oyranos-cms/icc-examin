@@ -664,12 +664,11 @@ ICCexamin::nachricht( Modell* modell , int info )
 
         oyNamedColour_s * colour = oyNamedColourCreate(
                               oylab, c,
-                              profile.profil()->colorSpace()/*(icColorSpaceSignature)0*/, 0, 0, 0,
-                              name.c_str(),
-                              0,0, profile.profil()->filename(), malloc, free );
+                              profile.profil()->colorSpace(), 0,
+                              NULL, NULL, name.c_str(),
+                              NULL,0, profile.profil()->filename(), malloc, free );
         icc_betrachter->DD_farbraum->emphasizePoint( colour );
         oyNamedColourRelease( &colour );
-        //lab_dv, rgb, name);
       }
 
     } else if( profile.profil()->hasTagName("ncl2") ) {
@@ -712,8 +711,8 @@ ICCexamin::nachricht( Modell* modell , int info )
         oyNamedColour_s * colour = oyNamedColourCreate(
                               oylab, chan,
                               profile.profil()->colorSpace(), 0,
-                              0, 0, names[min_pos].c_str(),
-                              0,0, profile.profil()->filename(), malloc, free );
+                              NULL, NULL, names[min_pos].c_str(),
+                              NULL,0, profile.profil()->filename(), malloc, free );
         if(!names[min_pos].size())
           WARN_S( "no name found" )
         icc_betrachter->DD_farbraum->emphasizePoint( colour );

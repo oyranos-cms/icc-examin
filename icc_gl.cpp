@@ -192,11 +192,13 @@ GL_Ansicht::init_()
   valid_ = false;
   zeit_ = 0;
   text[0] = 0;
+  colours_ = 0;
   epoint_ = 0;
   mouse_3D_hit = oyNamedColourCreate(
-                              0, 0,
-                              (icColorSpaceSignature)0, 0, _("mouse"), 0, 0,
-                              0,0, "", malloc, free );
+                              NULL, NULL,
+                              (icColorSpaceSignature)0, 0,
+                              _("mouse"), NULL, NULL,
+                              NULL,0, NULL, malloc, free );
 
   for(int i = 0; i <= DL_MAX; ++i)
     gl_listen[i] = 0;
@@ -235,6 +237,10 @@ GL_Ansicht::~GL_Ansicht()
   //if(font) delete font;
   //if(ortho_font) delete ortho_font;
 # endif
+
+  namedColoursRelease();
+  oyNamedColourRelease( &epoint_ );
+  oyNamedColourRelease( &mouse_3D_hit );
 
   --ref_;
 
@@ -308,9 +314,7 @@ GL_Ansicht::copy (const GL_Ansicht & gl)
   tabelle_ = gl. tabelle_;
   nach_farb_namen_ = gl. nach_farb_namen_;
   von_farb_namen_ = gl. von_farb_namen_;
-  farb_namen_ = gl. farb_namen_;
-  punkte_ = gl. punkte_;
-  farben_ = gl. farben_;
+  colours_ = oyNamedColoursCopy( gl.colours_,0,0 );
 
   DBG_PROG_ENDE
   return *this;
@@ -1462,13 +1466,9 @@ GL_Ansicht::punkteAuffrischen()
   }
 
   //coordinates  in CIE*b CIE*L CIE*a 
-  if (punkte_.size()) {
-    if( punkte_.size() )
-      DBG_PROG_V( punkte_.size() );
-    if( farben_.size() )
-      DBG_PROG_V( farben_.size() );
-    if( farb_namen_.size() )
-      DBG_PROG_V( farb_namen_.size() );
+  if (oyNamedColoursSize( colours_ )) {
+    if( oyNamedColoursSize( colours_ ) )
+      DBG_PROG_V( oyNamedColoursSize( colours_ ) )
 
     gl_listen[PUNKTE] = glGenLists(1);
     glNewList( gl_listen[PUNKTE], GL_COMPILE); DBG_PROG_V( gl_listen[PUNKTE] )
@@ -1489,27 +1489,34 @@ GL_Ansicht::punkteAuffrischen()
         // positioning
         glTranslated( -b_darstellungs_breite/2,-.5,-a_darstellungs_breite/2 );
 
-        size_t n = punkte_.size()/6;
+        size_t n = oyNamedColoursSize( colours_ );
+        oyNamedColour_s * c = NULL;
+        const double *lab = 0;
         if(zeig_punkte_als_paare)
-          for (unsigned i = 0; i < n*6; i+=6)
+          for (unsigned i = 0; i < n; i+=2) /* 6 */
           {
+            c = oyNamedColoursGet( colours_, i );
+
             glLineWidth(strich2*strichmult);
             glBegin(GL_LINES);
               if(!zeig_punkte_als_messwerte)
+              if(!zeig_punkte_als_messwerte)
                 glColor4d(.97, .97, .97, 1. );
-              else
-                glColor4d(farben_[i/3*4+0], farben_[i/3*4+1],
-                          farben_[i/3*4+2], farben_[i/3*4+3] );
+              else {
+                glColor4dv( oyNamedColourGetDisplayConst( c ) );
+              }
+              lab = oyNamedColourGetLabConst( c );
+              glVertex3d( lab[2], lab[0], lab[1] );
 
-              glVertex3d(punkte_[i+2], punkte_[i+0], punkte_[i+1]);
-
+              c = oyNamedColoursGet( colours_, i + 1 );
               if(!zeig_punkte_als_messwerte)
                 glColor4d(1., .6, .6, 1.0 );
-              else
-                glColor4d(farben_[i/3*4+4], farben_[i/3*4+5],
-                          farben_[i/3*4+6], farben_[i/3*4+7] );
+              else {
+                glColor4dv( oyNamedColourGetDisplayConst( c ) );
+              }
 
-              glVertex3d(punkte_[i+5], punkte_[i+3], punkte_[i+4] );
+              lab = oyNamedColourGetLabConst( c );
+              glVertex3d( lab[2], lab[0], lab[1] );
             glEnd();
           }
 
@@ -1527,20 +1534,20 @@ GL_Ansicht::punkteAuffrischen()
              glBegin(GL_POINTS);
                if(zeig_punkte_als_paare && !zeig_punkte_als_messwerte)
                {
-                 for (unsigned i = 0; i < n*6; i+=6)
+                 for (unsigned i = 0; i < n; i+=2)
                  {
-                   if (!dreiecks_netze[0].grau && farben_.size())
-                     glColor4f(farben_[i/3*4+0], farben_[i/3*4+1],
-                               farben_[i/3*4+2], farben_[i/3*4+3] );
-                   glVertex3d( punkte_[i+2], punkte_[i+0], punkte_[i+1] );
+                   oyNamedColour_s * c = oyNamedColoursGet( colours_, i );
+                   glColor4dv( oyNamedColourGetDisplayConst( c ) );
+                   lab = oyNamedColourGetLabConst( c );
+                   glVertex3d( lab[2], lab[0], lab[1] );
                  }
                } else {
-                 for (unsigned i = 0; i < punkte_.size(); i+=3)
+                 for (unsigned i = 0; i < n; ++i)
                  {
-                   if (!dreiecks_netze[0].grau && farben_.size())
-                     glColor4f(farben_[i/3*4+0], farben_[i/3*4+1],
-                               farben_[i/3*4+2], farben_[i/3*4+3] );
-                   glVertex3d( punkte_[i+2], punkte_[i+0], punkte_[i+1] );
+                   c = oyNamedColoursGet( colours_, i );
+                   glColor4dv( oyNamedColourGetDisplayConst( c ) );
+                   lab = oyNamedColourGetLabConst( c );
+                   glVertex3d( lab[2], lab[0], lab[1] );
                  }
                }
              glEnd();
@@ -1548,8 +1555,12 @@ GL_Ansicht::punkteAuffrischen()
              glColor4f( schatten, schatten, schatten, 1. );
              glPointSize((punktgroesse/2-1)>0?(punktgroesse/2-1):1);
              glBegin(GL_POINTS);
-               for (unsigned i = 0; i < punkte_.size(); i+=3)
-                 glVertex3d( punkte_[i+2], 0, punkte_[i+1] );
+               for (unsigned i = 0; i < n; i+=1)
+               {
+                 c = oyNamedColoursGet( colours_, i );
+                 lab = oyNamedColourGetLabConst( c );
+                 glVertex3d( lab[2], 0, lab[1] );
+               }
              glEnd();
             break;
           case MENU_dE1KUGEL: rad = 0.005;dim = 5; kugeln_zeichnen = true;break;
@@ -1560,12 +1571,12 @@ GL_Ansicht::punkteAuffrischen()
                break;
         }
         if(kugeln_zeichnen) 
-               for (unsigned i = 0; i < punkte_.size(); i+=3) {
+               for (unsigned i = 0; i < n; ++i) {
                  glPushMatrix();
-                   if (farben_.size())
-                     glColor4f(farben_[i/3*4+0], farben_[i/3*4+1],
-                               farben_[i/3*4+2], farben_[i/3*4+3] );
-                   glTranslated( punkte_[i+2], punkte_[i+0], punkte_[i+1] );
+                   c = oyNamedColoursGet( colours_, i );
+                   glColor4dv( oyNamedColourGetDisplayConst( c ) );
+                   lab = oyNamedColourGetLabConst( c );
+                   glTranslated( lab[2], lab[0], lab[1] );
                    gluSphere( quad, rad, dim, dim );
                  glPopMatrix();
                }
@@ -2120,12 +2131,12 @@ GL_Ansicht::zeichnen()
       // localisate
       if( epoint_ && Fl::belowmouse() != this )
       {
-        double l[3];
+        const double *l;
         Lab_s lab;
         const char * temp = oyNamedColourGetNick( epoint_ );
         if(temp)
           sprintf( text, "%s", temp );
-        oyNamedColourGetLab ( epoint_, l );
+        l = oyNamedColourGetLabConst ( epoint_ );
         OyLabToLab( l, lab );
         oY = LNachY( lab.L );
         oZ = aNachZ( lab.a );
@@ -2152,9 +2163,9 @@ GL_Ansicht::zeichnen()
           benachrichtigen( ICCexamin::GL_MOUSE_HIT3D );
           if(epoint_)
           {
-            double l[3];
+            const double *l;
             Lab_s lab;
-            oyNamedColourGetLab ( epoint_, l );
+            l = oyNamedColourGetLabConst ( epoint_ );
             OyLabToLab( l, lab );
             oY = LNachY( lab.L );
             oZ = aNachZ( lab.a );
@@ -2366,7 +2377,12 @@ GL_Ansicht::zeichnen()
        if(typ() == 1) {
          kanalname.append(_("Channel"));
          kanalname.append(": ");
-         kanalname.append(kanalName());
+         kanalname.append( 
+              oyColourSpaceGetChannelName( 
+                oyNamedColoursGet( colours_, 0 ) ? 
+                  oyNamedColourGetSpace( oyNamedColoursGet( colours_, 0 ) ) :
+                  (icColorSpaceSignature)0,
+                                           kanal) );
 
 #        ifdef HAVE_FTGL
          if(ortho_font)
@@ -2429,20 +2445,40 @@ GL_Ansicht::achsNamen    (std::vector<std::string> achs_namen)
   DBG_PROG_ENDE
 }
 
-void
-GL_Ansicht::herausNormalPunkte (std::vector<double>    & p,
-                                std::vector<float>     & f)
+oyNamedColours_s*
+GL_Ansicht::namedColours       ()
 {
-  p = punkte_,
-  f = farben_;
-  unsigned int n = (unsigned int)p.size()/3;
-  for (unsigned int i = 0; i < n; ++i)
-  {
-    p[i*3+1] = p[i*3+1]/a_darstellungs_breite;
-    p[i*3+2] = p[i*3+2]/b_darstellungs_breite;
-  }
+  oyNamedColours_s * colours;
+
+  DBG_PROG_START
+  colours = oyNamedColoursCopy( colours_, 0, 0 );
+
+  DBG_PROG_ENDE
+  return colours;
 }
 
+void
+GL_Ansicht::namedColours       (oyNamedColours_s       * colours)
+{
+  DBG_PROG_START
+  MARK( frei(false); )
+             oyNamedColoursRelease( &colours_ );
+  colours_ = oyNamedColoursCopy( colours, 0, 0 );
+
+  MARK( frei(true); )
+  DBG_PROG_ENDE
+}
+
+void
+GL_Ansicht::namedColoursRelease()
+{
+  frei(false); 
+  oyNamedColoursRelease( &colours_ );
+  frei(true);
+}
+
+
+#if 0
 void
 GL_Ansicht::hineinPunkte       (std::vector<double>      &vect,
                                 std::vector<std::string> &achs_namen)
@@ -2523,6 +2559,7 @@ GL_Ansicht::hineinPunkte      (std::vector<double> &vect,
 
   DBG_PROG_ENDE
 }
+#endif
 
 void
 GL_Ansicht::emphasizePoint    (oyNamedColour_s * colour)
@@ -2534,9 +2571,9 @@ GL_Ansicht::emphasizePoint    (oyNamedColour_s * colour)
     oyNamedColourRelease( &epoint_ );
     epoint_ = oyNamedColourCopy( colour, 0, 0 );
 
-    double l[3];
+    const double *l;
     Lab_s lab;
-    oyNamedColourGetLab( colour, l );
+    l = oyNamedColourGetLabConst( colour );
     OyLabToLab( l, lab );
 
     icc_examin->statusFarbe( lab.L, lab.a, lab.b );
@@ -2592,9 +2629,10 @@ GL_Ansicht::hineinTabelle (std::vector<std::vector<std::vector<std::vector<doubl
   nach_farb_namen_ = nach; DBG_PROG
 
   achsNamen(achs_namen);
-  punkte_.clear(); DBG_PROG
 
   MARK( frei(true); )
+
+  namedColoursRelease();
 
   valid_=false;
   redraw();

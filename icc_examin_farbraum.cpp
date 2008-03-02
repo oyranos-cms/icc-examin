@@ -336,7 +336,8 @@ ICCexamin::farbraum (int n)
   std::vector<double> p;
   std::vector<float>  f;
   std::vector<std::string> names;
-  icc_betrachter->DD_farbraum->herausNormalPunkte( p, f );
+  oyNamedColours_s * namedColours = 0;
+  namedColours = icc_betrachter->DD_farbraum->namedColours();
 
   DBG_PROG_V( n <<" "<< profile.size()<<" "<<profile.aktuell() )
   DBG_PROG_V( profile[n]->filename() )
@@ -373,7 +374,7 @@ ICCexamin::farbraum (int n)
     neues_netz = true;
 
   if(n == 0)
-    icc_betrachter->DD_farbraum->hineinPunkte( p, f, namen, texte );
+    icc_betrachter->DD_farbraum->namedColours( namedColours );
 
   do {
     icc_examin_ns::sleep(0.05);
