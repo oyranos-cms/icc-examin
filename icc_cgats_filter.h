@@ -40,7 +40,7 @@ class CgatsFilter
 {
     const static double pi = M_PI;           // integral type
 
-    // Hilfsobjekte
+    // statische Hilfsobjekte
     const static char *cgats_alnum_;         // non-integral type
     const static char *cgats_alpha_;
     const static char *cgats_numerisch_;
@@ -52,6 +52,9 @@ class CgatsFilter
     { DBG_PROG_START
         // Initialisierung konstanter Typen
         typ_ = LCMS;
+        kopf = "ICCEXAM";
+        spektral = "SPECTRAL_";
+        anfuehrungsstriche_setzen = false;
         DBG_PROG_ENDE
     }
     ~CgatsFilter () {; }
@@ -62,15 +65,26 @@ class CgatsFilter
            s_woerter_.resize(STD_CGATS_FIELDS);
            for(unsigned i = 0; i < STD_CGATS_FIELDS; ++i)
              s_woerter_[i] = ss_woerter_[i]; }
-    enum {
-      LCMS,
-      MAX_KORRIGIEREN
-    };
     // Ausgeben
     std::string lcms_gefiltert() { typ_ = LCMS; cgats_korrigieren();
                                    return data_; }
+    // basICColor Modus
     std::string max_korrigieren(){ typ_ = MAX_KORRIGIEREN; cgats_korrigieren(); 
                                    return data_; }
+
+    
+    // frei wählbarer Kopf ( standardgemäß 7 Zeichen lang )
+    std::string kopf;
+    // frei wählbarer Kommentar ( wird nach Kopfzeile eingefügt )
+    std::string kommentar;
+    // frei wählbarer Bezeichner für Spektraldaten (standard ist SPECTRAL_)
+    std::string spektral;
+    bool        anfuehrungsstriche_setzen; // für ausgegebene Worte
+
+    // Liste von Blöcken + Feldbezeichnern
+    //   v- Feld/Block v- Zeilen   v- Inhalt
+    std::vector<  std::vector<std::string> > felder;
+    std::vector<  std::vector<std::string> > bloecke;
 
 private:
     // --- Hauptfunktion ---
@@ -96,12 +110,15 @@ private:
     // vector Bearbeitung fürs zeilenweise Editieren
     void suchenLoeschen_      ( std::vector<std::string> &zeilen,
                                 std::string               text );
+    // doppelte Zeilen löschen
     int  zeilenOhneDuplikate_ ( std::vector<std::string> &zeilen );
-    void unterscheideZiffernWorte_ ( std::string &zeile );
+    // Buchstabenworte von Zahlen unterscheiden
+    std::vector<std::string> unterscheideZiffernWorte_ ( std::string &zeile );
+    // Zeile von pos bis Ende in Anführungszeichen setzen
     void setzeWortInAnfuehrungszeichen_ ( std::string &zeile,
                                 std::string::size_type pos );
 
-    // Schlüsselwort passende Korrekturen
+    // Schlüsselwort -> passende Korrekturen
     enum {
     BELASSEN,
     KEYWORD,
@@ -113,12 +130,15 @@ private:
     CMYK_DATEN
     };
 
-    // benötigte Daten
+    // benötigte dynamische Hilfsobjekte
     std::string              data_;      // der korrigierte CGATS Text
     std::string              data_orig_; // eine Kopie vom Original
     std::vector<std::string> s_woerter_; // Schlüsselwörter
     int                      typ_;       // Art des Filterns
-
+    enum {                   // enum passend zu typ_
+      LCMS,
+      MAX_KORRIGIEREN
+    };
 };
 
 
