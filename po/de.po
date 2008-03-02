@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ICC Examin 0.28\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2005-06-09 14:28+0200\n"
+"POT-Creation-Date: 2005-06-14 14:03+0200\n"
 "PO-Revision-Date: 2005-04-22 15:09+0200\n"
 "Last-Translator: Kai-Uwe Behrmann <ku.b@gmx.de>\n"
 "Language-Team: German\n"
@@ -23,7 +23,7 @@ msgstr ""
 msgid "GL Fenster nicht frei"
 msgstr ""
 
-#: agviewer.cpp:377 icc_gl.cpp:2030 icc_gl.cpp:2049 icc_gl.cpp:2163
+#: agviewer.cpp:377 icc_gl.cpp:2032 icc_gl.cpp:2051 icc_gl.cpp:2165
 msgid "left-/middle-/right mouse button -> rotate/cut/menu"
 msgstr "linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menue"
 
@@ -31,8 +31,8 @@ msgstr "linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menue"
 msgid "Pause"
 msgstr "Pause"
 
-#: agviewer.cpp:410 agviewer.cpp:418 icc_gl.cpp:2129 icc_gl.cpp:2140
-#: icc_gl.cpp:2145 icc_gl.cpp:2150
+#: agviewer.cpp:410 agviewer.cpp:418 icc_gl.cpp:2131 icc_gl.cpp:2142
+#: icc_gl.cpp:2147 icc_gl.cpp:2152
 msgid "left mouse button -> go back"
 msgstr "linke Maustaste -> zurueck"
 
@@ -155,7 +155,7 @@ msgstr "Grün"
 msgid "Blue"
 msgstr "Blau"
 
-#: icc_draw.cpp:643 icc_gl.cpp:1477 icc_helfer.cpp:324 icc_waehler.h:127
+#: icc_draw.cpp:643 icc_gl.cpp:1479 icc_helfer.cpp:324 icc_waehler.h:127
 msgid "Gray"
 msgstr "Grau"
 
@@ -171,7 +171,7 @@ msgstr ""
 msgid "Yellow"
 msgstr "Gelb"
 
-#: icc_draw.cpp:656 icc_gl.cpp:1479 icc_helfer.cpp:384 icc_helfer.cpp:394
+#: icc_draw.cpp:656 icc_gl.cpp:1481 icc_helfer.cpp:384 icc_helfer.cpp:394
 msgid "Black"
 msgstr "Schwarz"
 
@@ -342,127 +342,127 @@ msgstr ""
 msgid "Kanalauswahl geaendert: "
 msgstr ""
 
-#: icc_gl.cpp:1220 icc_gl.cpp:1350
+#: icc_gl.cpp:1222 icc_gl.cpp:1352
 msgid "Lab_speicher Speicher nicht verfuegbar"
 msgstr ""
 
-#: icc_gl.cpp:1241 icc_gl.cpp:1242 icc_gl.cpp:1368 icc_gl.cpp:1369
+#: icc_gl.cpp:1243 icc_gl.cpp:1244 icc_gl.cpp:1370 icc_gl.cpp:1371
 msgid "RGB_speicher Ergebnis nicht verfuegbar"
 msgstr ""
 
-#: icc_gl.cpp:1341
+#: icc_gl.cpp:1343
 msgid "XYZ_speicher Speicher nicht verfuegbar"
 msgstr ""
 
-#: icc_gl.cpp:1451 icc_gl.cpp:1461 icc_gl.cpp:1463 icc_gl.cpp:1465
+#: icc_gl.cpp:1453 icc_gl.cpp:1463 icc_gl.cpp:1465 icc_gl.cpp:1467
 msgid "Slice"
 msgstr "Schnitt"
 
-#: icc_gl.cpp:1452
+#: icc_gl.cpp:1454
 msgid "Rotate around slice"
 msgstr "Drehen um Schnitt"
 
-#: icc_gl.cpp:1467
+#: icc_gl.cpp:1469
 msgid "Rotate around"
 msgstr "Drehen um"
 
-#: icc_gl.cpp:1467
+#: icc_gl.cpp:1469
 msgid "axis"
 msgstr "Achse"
 
-#: icc_gl.cpp:1472
+#: icc_gl.cpp:1474
 msgid "Slice plane"
 msgstr "Querschnitt"
 
-#: icc_gl.cpp:1475
+#: icc_gl.cpp:1477
 msgid "White"
 msgstr "Weiß"
 
-#: icc_gl.cpp:1476
+#: icc_gl.cpp:1478
 msgid "Light gray"
 msgstr "Hellgrau"
 
-#: icc_gl.cpp:1478
+#: icc_gl.cpp:1480
 msgid "Dark gray"
 msgstr "Dunkelgrau"
 
-#: icc_gl.cpp:1482
+#: icc_gl.cpp:1484
 msgid "Background colour"
 msgstr "Hintergrundfarbe"
 
-#: icc_gl.cpp:1487
+#: icc_gl.cpp:1489
 msgid "gray"
 msgstr "grau"
 
-#: icc_gl.cpp:1488
+#: icc_gl.cpp:1490
 msgid "coloured"
 msgstr "farbig"
 
-#: icc_gl.cpp:1489
+#: icc_gl.cpp:1491
 msgid "high contrast"
 msgstr "kontrastreich"
 
-#: icc_gl.cpp:1490
+#: icc_gl.cpp:1492
 msgid "shells"
 msgstr "schalen"
 
-#: icc_gl.cpp:1495
+#: icc_gl.cpp:1497
 msgid "Sphere 1dE"
 msgstr "Kugel 1dE"
 
-#: icc_gl.cpp:1496
+#: icc_gl.cpp:1498
 msgid "Sphere 2dE"
 msgstr "Kugel 2dE"
 
-#: icc_gl.cpp:1497
+#: icc_gl.cpp:1499
 msgid "Sphere 4dE"
 msgstr "Kugel 4dE"
 
-#: icc_gl.cpp:1500
+#: icc_gl.cpp:1502
 msgid "Star"
 msgstr "Stern"
 
-#: icc_gl.cpp:1503
+#: icc_gl.cpp:1505
 msgid "Point"
 msgstr "Punkt"
 
-#: icc_gl.cpp:1506
+#: icc_gl.cpp:1508
 msgid "without markers"
 msgstr "ohne Farborte"
 
-#: icc_gl.cpp:1507
+#: icc_gl.cpp:1509
 msgid "Spektral line"
 msgstr "Spektrallinie"
 
-#: icc_gl.cpp:1510 icc_betrachter.cxx:644
+#: icc_gl.cpp:1512 icc_betrachter.cxx:644
 msgid "Texts"
 msgstr "Texte"
 
-#: icc_gl.cpp:1512
+#: icc_gl.cpp:1514
 msgid "Texts/Arrows on/off"
 msgstr "Texte/Pfeile an/aus"
 
-#: icc_gl.cpp:1514
+#: icc_gl.cpp:1516
 msgid "Illustration"
 msgstr "Darstellung"
 
-#: icc_gl.cpp:1632 icc_profile_tags.cpp:291
+#: icc_gl.cpp:1634 icc_profile_tags.cpp:291
 msgid "Channel"
 msgstr "Kanal"
 
-#: icc_gl.cpp:1806
+#: icc_gl.cpp:1808
 msgid "RGB Ergebnis nicht verfuegbar"
 msgstr ""
 
-#: icc_gl.cpp:1880
+#: icc_gl.cpp:1882
 msgid "Pos"
 msgstr ""
 
-#: icc_gl.cpp:2188
+#: icc_gl.cpp:2190
 msgid "Konnte keine Eltern finden"
 msgstr ""
 
-#: icc_gl.cpp:2197
+#: icc_gl.cpp:2199
 msgid "Konnte keine passende Programmstruktur finden"
 msgstr ""
 
@@ -1263,22 +1263,6 @@ msgstr ""
 msgid "Profil konnte nicht geladen werden"
 msgstr ""
 
-#: icc_oyranos.cpp:425
-msgid "hsRGB Profil nicht geoeffnet"
-msgstr ""
-
-#: icc_oyranos.cpp:427
-msgid "hLab Profil nicht geoeffnet"
-msgstr ""
-
-#: icc_oyranos.cpp:455
-msgid "keine hXYZtoRGB Transformation gefunden"
-msgstr ""
-
-#: icc_oyranos.cpp:460
-msgid "RGB_speicher Speicher nicht verfuegbar"
-msgstr ""
-
 #: icc_oyranos_extern.cpp:54
 msgid ""
 "Could not find\n"
@@ -1604,6 +1588,22 @@ msgstr "Gerätefarben"
 #: icc_profile_tags.cpp:982 icc_profile_tags.cpp:989
 msgid "Colour"
 msgstr "Farbe"
+
+#: icc_schnell.cpp:100
+msgid "hsRGB Profil nicht geoeffnet"
+msgstr ""
+
+#: icc_schnell.cpp:102
+msgid "hLab Profil nicht geoeffnet"
+msgstr ""
+
+#: icc_schnell.cpp:192
+msgid "keine hXYZtoRGB Transformation gefunden"
+msgstr ""
+
+#: icc_schnell.cpp:197
+msgid "RGB_speicher Speicher nicht verfuegbar"
+msgstr ""
 
 #: icc_ueber.cpp:53
 msgid "About ICC_Examin"

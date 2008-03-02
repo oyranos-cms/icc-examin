@@ -75,7 +75,7 @@
 #endif
 
 typedef enum {NOTALLOWED, AXES, RASTER, PUNKTE , SPEKTRUM, HELFER, UMRISSE, DL_MAX } DisplayLists;
-int glListen[DL_MAX] = {0,0,0,0,0,0,0};
+int glListen[DL_MAX+1];
 
 
 #define bNachX(b) (b*b_darstellungs_breite - b_darstellungs_breite/2.)
@@ -119,7 +119,7 @@ GL_Ansicht::GL_Ansicht(int X,int Y,int W,int H)
   maus_x_ = 0;
   maus_y_ = 0;
 
-  for(int i = 0; i < DL_MAX; ++i)
+  for(int i = 0; i <= DL_MAX; ++i)
     glListen[i] = 0;
 
   #ifdef HAVE_FTGL
@@ -1199,9 +1199,11 @@ GL_Ansicht::zeigeUmrisse_()
 {
   DBG_PROG_START
 
-  if (glListen[UMRISSE])
-    glDeleteLists (glListen[UMRISSE], 1);
-  glListen[UMRISSE] = 0;
+  if (glListen[UMRISSE]) {
+    DBG_PROG_S( "delete glListe " << glListen[UMRISSE] )
+    glDeleteLists (glListen[UMRISSE],1);
+    glListen[UMRISSE] = 0;
+  }
 
   //if (spektralband == MENU_SPEKTRALBAND)
   for (unsigned int d=0; d < dreiecks_netze.size(); ++d)

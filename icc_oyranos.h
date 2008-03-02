@@ -110,8 +110,13 @@ class Oyranos
 
   public:
     // Uebergangsweise
-    double* wandelLabNachBildschirmFarben(double *Lab_Speicher, // 0.0 - 1.0
-                                          size_t  size, int intent, int flags);
+    double*  wandelLabNachBildschirmFarben(double *Lab_Speicher, // 0.0 - 1.0
+                                           size_t  size, int intent, int flags);
+    // Create an abstract profile containing GamutCheck + Proof
+    // from a device profile s; return the abstract profile
+    Speicher gamutCheckAbstract(  Speicher    s,
+                                  int         intent,
+                                  int         flags);
 
     // Farbtransformationen
     ColourTransformKey erzeugeTrafo (
