@@ -1,41 +1,15 @@
-# Abhaengigkeiten
--include config
 
-
-BINTARGET = iccexamin
-
-ifdef BUILD64_
-CC =  cc-64
-CXX = c++-64
-else
-CC = cc
-CXX = c++
-endif
 COLLECT = ar cru
 RANLIB = ranlib
 MAKEDEPEND	= $(CXX) -MM
 LINK = ln -s
 RM = rm -vf
-ifdef LINUX
-COPY = cp -vdpa
-else
-  ifdef APPLE
-  COPY = cp -v
-  else
-  COPY = cp
-  endif
-endif
 INSTALL = install -v
 
 exec_prefix	= ${prefix}
 bindir		= ${exec_prefix}/bin
 datadir		= ${prefix}/share
 includedir	= ${prefix}/include
-ifdef BUILD_64
-  libdir		= ${exec_prefix}/lib64
-else
-  libdir		= ${exec_prefix}/lib
-endif
 mandir		= ${prefix}/man
 
 DEBUG = -DDEBUG
@@ -49,88 +23,18 @@ I18N_HEADERS = #fl_i18n.H
 MSGFMT = msgfmt -c --statistics
 RPMARCH = `rpmbuild --showrc | awk '/^build arch/ {print $$4}'`
 
-ifdef FLU
-  FLU_FLTK_LIBS = $(FLU_LIBS) $(FLTK_LIBS)
-else
-  FLU_FLTK_LIBS = $(FLTK_LIBS)
-endif
-
-LIB_LIBS = -L$(libdir) -L./ $(FLU_FLTK_LIBS) \
+LIB_LIBS = -L$(libdir) -L./ $(FLTK_LIBS) $(FLU_LIBS) \
 	-llcms -L/lib \
 	$(DBG_LIBS) -lintl
 
-ifdef APPLE
-  LIBEXT = .dylib
-  OPTS=-Wall -g $(DEBUG) -DPIC -Wunused -fno-exceptions
-  LIBLINK_FLAGS = -dynamiclib $(LIB_LIBS) 
-  I18N_LIB = -lintl $(LIBNAME) #-liconv
-  I18N_LIBSTAT = /opt/local/lib/libintl.a $(LIBNAME) #-liconv
-  OSX_CPP = $(OSX_CPPFILES)
-  INCL=-I$(includedir) -I/usr/X11R6/include -I./ -I/usr/include/gcc/darwin/default/c++
-  REZ = \
-      fltk-config --post $(BINTARGET);
-  #MAKEDEPEND = /usr/X11R6/bin/makedepend -Y
-  DBG_LIBS = #-lMallocDebug
-  MSGMERGE = msgmerge
-  XGETTEXT_OPTIONS = \
-	--keyword=gettext \
-	--keyword=_ \
-	--keyword=N_
-else
-  SO = .so
-    MSGMERGE = msgmerge
-    MSGMERG_OPTS = --update
-    XGETTEXT_OPTIONS = \
-	--keyword=gettext --flag=gettext:1:pass-c-format \
-	--keyword=_ --flag=_:1:pass-c-format \
-	--keyword=N_ --flag=N_:1:pass-c-format \
-	--copyright-holder='Kai-Uwe Behrmann' \
-	--msgid-bugs-address='ku.b@gmx.de' \
-	--from-code=utf-8
-  ifdef LINUX
-    OPTS = -Wall -g $(DEBUG) -Wunused -fPIC -fno-exceptions #-Os -fomit-frame-pointer
-    INCL=-I$(includedir) -I/usr/X11R6/include -I. -I/usr/include/g++ -I/usr/include
-    LIBLINK_FLAGS = -shared -ldl -L.
-    LIBSONAME = lib$(TARGET)$(SO).$(VERSION_A)
-    LINK_NAME = -Wl,-soname -Wl,$(LIBSONAME)
-    LINK_LIB_PATH = -Wl,--rpath -Wl,$(libdir)
-    LINK_SRC_PATH = -Wl,--rpath -Wl,$(srcdir)
-    I18N_LIB = $(LIBNAME)
-    I18N_LIBSTAT = $(LIBNAME)
-  else
-    OPTS=-Wall -O2 -g $(DEBUG) -L. -Wunused -fno-exceptions -lc -lm
-    RM = rm -f
-    LIBLINK_FLAGS = -shared -ldl
-    I18N_LIB = $(ICONV) -lintl $(LIBNAME)
-    I18N_LIBSTAT = $(ICONV) -lintl $(LIBNAME)
-  endif
-endif
 
-LIBSONAMEFULL = lib$(TARGET)$(SO).$(VERSION_L)$(LIBEXT)
-LIBSONAME = lib$(TARGET)$(SO).$(VERSION_A)$(LIBEXT)
-LIBSO = lib$(TARGET)$(SO)$(LIBEXT)
-LIBNAME = 
+LIBSONAMEFULL = lib$(TARGET)$(LIBMID).$(VERSION_A).$(VERSION_B).$(VERSION_C)$(LIBEXT)
+LIBSONAME = lib$(TARGET)$(LIBMID).$(VERSION_A)$(LIBEXT)
+LIBSO = lib$(TARGET)$(LIBMID)$(LIBEXT)
 LIBFL_I18N = fl_i18n/libfl_i18n.a
 
-ifdef FLTK
-  TOOLKIT_FILES = $(FLTK_CPPFILES)
-endif
+TOOLKIT_FILES = $(FLTK_CPPFILES)
 
-ifdef X11
-  X_CPP = $(X_CPPFILES)
-  ifdef BUILD_64
-    X11_LIB_PATH=-L/usr/X11R6/lib64
-  else
-    X11_LIB_PATH=-L/usr/X11R6/lib
-  endif
-  ifdef XF86VMODE
-  XF86VMODE_LIB = -lXxf86vm
-  endif
-  ifdef XIN
-  XINERAMA_LIB = -lXinerama
-  endif
-  X11_LIBS=$(X11_LIB_PATH) -lX11 $(XF86VMODE_LIB) -lXext -lXpm $(XINERAMA_LIB)
-endif
 
 INCL_DEP = $(INCL) $(X_H) $(OSX_H) $(OYRANOS_H) \
 			$(FLU_H) $(FLTK_H) $(FTGL_H) $(LCMS_H) $(ALL_SOURCEFILES)
@@ -140,7 +44,7 @@ ALL_INCL = $(INCL) \
 CXXFLAGS=$(OPTS) $(ALL_INCL)
 CFLAGS = $(OPTS) $(ALL_INCL)
 
-LDLIBS = -L$(libdir) -L./ $(FLU_FLTK_LIBS) \
+LDLIBS = -L$(libdir) -L./ $(FLTK_LIBS) $(FLU_LIBS) \
 	$(X11_LIBS) -llcms -L/lib $(OYRANOS_LIBS) $(LCMS_LIBS) \
 	$(FTGL_LIBS) $(I18N_LIB) $(DBG_LIBS) $(LIBNAME) $(LIBFL_I18N)
 
@@ -213,10 +117,6 @@ COMMON_CPPFILES = \
 	icc_vrml_parser.cpp \
 	threads.cpp
 
-LINGUAS := \
-	$(shell ls po/*.po 2> /dev/null | sed -n 's/\.po//p' | sed -n 's%po\/%%p')
-LING := \
-	$(shell ls po/*.po 2> /dev/null)
 
 COMMON_CFILES = 
 CFILES = \
@@ -280,21 +180,20 @@ APPL_FILES = \
 	Info.plist
 
 ALL_FILES =	$(SOURCES) \
-	makefile \
+	makefile.in \
 	configure \
+	configure.sh \
 	$(DOKU) \
 	$(FONT) \
 	$(APPL_FILES) \
 	$(FLUID)
 
-timedir = .
-mtime   := $(shell find $(timedir) -prune -printf %Ty%Tm%Td.%TT | sed s/://g)
 
-.SILENT:
+#.SILENT:
 
 all:	dynamic
 	
-BASE = config mkdepend 
+BASE = mkdepend 
 	
 release:	icc_alles.o
 	echo Verknuepfen $@...
@@ -315,7 +214,7 @@ $(BINTARGET):	$(BASE) $(OBJECTS) $(LINGUAS_SRC) $(I18N_OBJECTS) $(LIBNAME) $(LIB
 
 $(LIBSONAMEFULL):	$(I18N_OBJECTS)
 	echo Verknuepfen $@ ...
-	$(CXX) $(OPTS) $(LIBLINK_FLAGS) $(LINK_NAME) -o $(LIBSONAMEFULL) \
+	$(CXX) $(OPTS) $(LINK_FLAGS) $(LINK_NAME) -o $(LIBSONAMEFULL) \
 	$(I18N_OBJECTS)  icc_utils.o icc_helfer.o icc_speicher.o
 	$(REZ)
 	$(RM)  $(LIBSONAME)
@@ -408,7 +307,7 @@ $(POT_FILE):	$(ALL_SOURCEFILES)
 
 clean:	unbundle unpkg
 	echo mache sauber $@ ...
-	-$(RM) mkdepend config config.h
+	-$(RM) mkdepend config.h
 	-$(RM) $(OBJECTS) $(I18N_OBJECTS) $(BINTARGET) \
 	$(LIBNAME) $(LIBSO) $(LIBSONAME) $(LIBSONAMEFULL)
 	-for ling in $(LINGUAS); do \
@@ -420,7 +319,7 @@ clean:	unbundle unpkg
 config:
 	./configure
 
-mkdepend:	config $(ALL_HEADERFILES)
+depend:	$(ALL_HEADERFILES)
 	echo "schaue nach Abhaengikeiten ..."
 	echo "MAKEDEPEND_ISUP = 1" > mkdepend
 	echo "#nicht editieren/dont edit - automatisch generiert" >> mkdepend
@@ -456,7 +355,7 @@ EXEEXT		=
 tgz:
 	make DESTDIR=Entwickeln copy_files
 	tar cf - Entwickeln/ \
-	| gzip > $(TARGET)_$(mtime).tgz
+	| gzip > $(TARGET)_$(MTIME).tgz
 	test -d Entwickeln && \
 	test `pwd` != `(cd Entwickeln; pwd)` && \
 	$(RM) -R Entwickeln
@@ -465,7 +364,7 @@ tgz:
 targz:
 	make DESTDIR=$(TARGET)-$(VERSION) copy_files
 	tar cf - $(TARGET)-$(VERSION)/ \
-	| gzip > $(TARGET)_$(mtime).tgz
+	| gzip > $(TARGET)_$(MTIME).tgz
 	test -d $(TARGET)-$(VERSION) && \
 	test `pwd` != `(cd $(TARGET)-$(VERSION); pwd)` && \
 	$(RM) -R $(TARGET)-$(VERSION) 
@@ -488,7 +387,7 @@ copy_files:
 
 
 dist: $(BASE) targz
-	test -f && $(COPY) ../Archiv/$(TARGET)_$(mtime).tgz $(TARGET)-$(VERSION).tar.gz || $(COPY) $(TARGET)_$(mtime).tgz $(TARGET)-$(VERSION).tar.gz
+	test -f && $(COPY) ../Archiv/$(TARGET)_$(MTIME).tgz $(TARGET)-$(VERSION).tar.gz || $(COPY) $(TARGET)_$(MTIME).tgz $(TARGET)-$(VERSION).tar.gz
 
 $(TARGET).spec:
 	./configure
@@ -605,5 +504,10 @@ unpkg:
 	$(RM) -R installation/
 	echo ... $@ fertig
 
--include mkdepend
+# mkdepend
+#include mkdepend
+
+#ifndef MAKEDEPEND_ISUP
+mkdepend: depend
+#endif
 

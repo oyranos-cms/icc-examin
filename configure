@@ -1,31 +1,120 @@
 #!/bin/sh
 
 TARGET=icc_examin
+BINTARGET="`echo $TARGET | sed s/_//g`"
+ERROR=0
 
 CONF_H=config.h
-CONF=config
+CONF=makefile
 SPEC=$TARGET.spec
+VERS="$TARGET"_version.h
+
+export CONF_H CONF
 
 VERSION_A=0
 VERSION_B=4
 VERSION_C=0
 RELEASE=0
 VERSION=$VERSION_A.$VERSION_B$VERSION_C
-VERSION_L=$VERSION_A.$VERSION_B.$VERSION_C
-ZEIT="May 2004 - March 2006"
+if [ $VERSION_A -gt 9 ]; then
+  VERSION_L="$VERSION_A"
+else
+  VERSION_L="0$VERSION_A"
+fi
+if [ $VERSION_B -gt 9 ]; then
+  VERSION_L="$VERSION_L$VERSION_B"
+else
+  VERSION_L="${VERSION_L}0$VERSION_B"
+fi
+if [ $VERSION_C -gt 9 ]; then
+  VERSION_L="$VERSION_L$VERSION_C"
+else
+  VERSION_L="${VERSION_L}0$VERSION_C"
+fi
+VERSION_L=`echo $VERSION_L | sed s/^0*//g`
+ZEIT="May 2004 - May 2006"
 
 src_dir="`(cd ..;pwd)`/""$TARGET"-"$VERSION"
 srcdir="`pwd`"
 
-prefix=""
-if [ $# -gt 0 ]; then
-  while [ $# -gt 0 ]; do
-    if [ "$1" == "--help" ]; then
-      echo "configure option:"
-      echo "   --prefix=\"/usr/local\""
-      echo ""
-      exit 0;
+test -f error.txt && rm error.txt
+test -f mkdepend && rm mkdepend config.h
+
+
+echo "# automatically generated file by configure - do not edit" > $CONF
+echo "/* automatically generated file by configure - do not edit */" > $CONF_H
+echo "" >> $CONF
+echo "TARGET = $TARGET" >> $CONF
+echo "BINTARGET = $BINTARGET" >> $CONF
+echo "" >> $CONF
+
+echo ""
+
+
+# detect System
+
+UNAME_=`uname`
+OSUNAME=BSD
+if [ $? = 0 ] && [ $UNAME_ = "Darwin" ]; then
+  echo "Darwin PPC              detected"
+  echo "APPLE = 1" >> $CONF
+  echo "#define APPLE 1" >> $CONF_H
+  echo "OSX_H =" >> $CONF
+  OSUNAME=Darwin
+else
+  if [ $UNAME_ = "Linux" ]; then
+    echo "LINUX = 1" >> $CONF
+    echo "#define LINUX 1" >> $CONF_H
+    OSUNAME=Linux
+    echo "Linux system            detected"
+  else
+    if [ $UNAME_ = "SunOS" ]; then
+      echo "SOLARIS = 1" >> $CONF
+      echo "#define SOLARIS 1" >> $CONF_H
+      echo "SunOS                   detected"
+      OSUNAME=SunOS
+    else
+      if [ $UNAME_ = "OpenBSD" ] || [ $UNAME_ = "NetBSD" ] || [ $UNAME_ = "FreeBSD" ]; then
+        OSUNAME=BSD
+      else
+        echo "ICC Examin may or may not compile on your $UNAME_ system"
+      fi
     fi
+  fi
+fi
+MACH_=`uname -m`
+MACH=BUILD_32
+if [ $? = 0 ]; then
+  if [ $MACH_ = "i686" ]; then
+    echo "32-bit system           detected"
+  else
+    if [ $MACH_ = "x86_64" ]; then
+      MACH=BUILD_64
+      echo "BUILD_64 = 1" >> $CONF
+      echo "X86_64                  will build in 64 bit mode"
+    else
+      if [ $MACH_ = "sun4u" ]; then
+        MACH=BUILD_64
+        echo "BUILD_64 = 1" >> $CONF
+        echo "spark ultra 4           will build in 64 bit mode"
+      fi
+    fi
+  fi
+fi
+
+if [ $MACH = "BUILD_64" ]; then
+  BARCH="64"
+  LINE_ARCH="-64"
+else
+  BARCH=""
+  LINE_ARCH=""
+fi
+LIBDIR="lib"$BARCH
+export LIBDIR BARCH
+
+if [ $# -gt 0 ]; then
+  prefix=""
+  while [ $# -gt 0 ]; do
     if [ "${1%--prefix=*}" != "$1" ]; then
       teste="${1#--prefix=*}"
       #echo "test: $teste $1"
@@ -35,51 +124,6 @@ if [ $# -gt 0 ]; then
     fi
     shift
   done
-fi
-
-test -f error.txt && rm -v error.txt
-test -f config && rm config config.h
-
-echo "# automatically generated file by configure - do not edit" > $CONF
-echo "/* automatically generated file by configure - do not edit */" > $CONF_H
-echo "" >> $CONF
-echo "TARGET = $TARGET" >> $CONF
-
-echo ""
-
-UNAME_=`uname`
-if [ $? = 0 ] && [ $UNAME_ = "Darwin" ]; then
-  echo "Darwin PPC              detected"
-  echo "APPLE = 1" >> $CONF
-  echo "#define APPLE 1" >> $CONF_H
-  echo "OSX_H =" >> $CONF
-else
-  if [ $UNAME_ = "Linux" ]; then
-    echo "LINUX = 1" >> $CONF
-    echo "#define LINUX 1" >> $CONF_H
-    if [ `uname -m` = x86_64 ]; then
-        echo "BUILD_64 = 1" >> $CONF
-        echo "X86_64          will build in 64 bit mode"
-      fi
-    echo "Linux system            detected"
-  else
-    if [ $UNAME_ = "SunOS" ]; then
-      echo "SOLARIS = 1" >> $CONF
-      echo "#define SOLARIS 1" >> $CONF_H
-      echo "SunOS                   detected"
-      if [ `uname -m` = sun4u ]; then
-        sync
-        echo "BUILD_64 = 1" >> $CONF
-        echo "spark ultra 4           will build in 64 bit mode"
-      fi
-    else
-      echo "ICC Examin may or may not compile on your $UNAME_ system"
-    fi
-  fi
-fi
-
-if [ "$prefix" != "" ]; then
-  echo -e "\c"
 else
   if [ $UNAME_ = "Darwin" ]; then
     prefix=/opt/local
@@ -87,118 +131,36 @@ else
     prefix=/usr/local
   fi
 fi
-echo "prefix =                $prefix"
-
-echo "prefix = $prefix" >> $CONF
-echo "" >> $CONF
-echo "#define PREFIX         \"$prefix\"" >> $CONF_H
-echo "#define DATADIR        \"$prefix/share/\"" >> $CONF_H
-echo "#define LOCALEDIR      \"$prefix/share/locale\"" >> $CONF_H
-echo "#define SRCDIR         \"$srcdir\"" >> $CONF_H
-echo "#define SRC_LOCALEDIR  \"$srcdir/po\"" >> $CONF_H
 
 
 
-FLTK_=`fltk-config --cxxflags 2>>error.txt`
-if [ $? = 0 ] && [ -n "$FLTK_" ]; then
-  echo "FLTK `fltk-config --version`              detected"
-  echo "#define HAVE_FLTK 1" >> $CONF_H
-  echo "FLTK = 1" >> $CONF
-  echo "FLTK_H = `fltk-config --cxxflags`" >> $CONF
-  echo "FLTK_LIBS = `fltk-config --use-images --use-gl --use-glut --ldflags`" >> $CONF
-else
-  echo "FLTK is not found; download: www.fltk.org"
+# detect Libraries
+
+echo "LIB=/"$LIBDIR >> $CONF
+
+
+#export ELEKTRA=1
+export OYRANOS=1
+export LCMS=1
+export FTGL=2
+export FLTK=1
+export LIBPNG=2
+#export FLU=2
+export X11=1
+export XINERAMA=1
+export XF86VMODE=1
+export PO=1
+./configure.sh
+if [ $? -gt 0 ]; then
+  ERROR=1
 fi
 
-
-#FLU_=`flu-config --cxxflags 2>>error.txt`
-#if [ `fltk-config --version` == "1.1.7" ]; then
- # echo -e "\c" #echo "FLTK version 1.1.7 is not supported by FLU"
-#else
-  if [ -n "$FLU_" ] && [ -n "$FLTK_" ]; then
-    echo "FLU                     detected"
-    echo "#define HAVE_FLU 1" >> $CONF_H
-    echo "FLU = 1" >> $CONF
-    echo "FLU_H = `flu-config --cxxflags`" >> $CONF
-    echo "FLU_LIBS = `flu-config --ldflags --use-gl`" >> $CONF
-  #else
-    #"no FLU found, will not use it"
-  fi
-#fi
-
-if [ -f /usr/X11R6/include/X11/Xlib.h ] ||
-   [ -f /usr/include/X11/Xlib.h ]; then
-  echo "X11                     detected"
-  echo "#define HAVE_X 1" >> $CONF_H
-  echo "X11 = 1" >> $CONF
-  echo "X_H = -I/usr/X11R6/include/X11 -I/usr/include/X11" >> $CONF
-else
-  if [ $UNAME_ = "Linux" ]; then
-    echo "X11 header not found in /usr/X11R6/include/X11/Xlib.h or"
-    echo "/usr/include/X11/Xlib.h"
-  fi
-fi
-
-if [ -f /usr/X11R6/include/X11/extensions/xf86vmode.h ] ||
-   [ -f /usr/include/X11/extensions/xf86vmode.h ]; then
-  echo "X VidMode extension     detected"
-  echo "#define HAVE_XF86VMODE 1" >> $CONF_H
-  echo "XF86VMODE = 1" >> $CONF
-else
-  if [ $UNAME_ = "Linux" ]; then
-    echo "X VidMode extension not found in /usr/X11R6/include/X11/extensions/xf86vmode.h or"
-    echo "/usr/include/X11/extensions/xf86vmode.h"
-  fi
-fi
-
-if [ -f /usr/X11R6/include/X11/extensions/Xinerama.h ] ||
-   [ -f /usr/include/X11/extensions/Xinerama.h ]; then
-  echo "X Xinerama              detected"
-  echo "#define HAVE_XIN 1" >> $CONF_H
-  echo "XIN = 1" >> $CONF
-else
-  if [ $UNAME_ = "Linux" ]; then
-    echo "X Xinerma not found in /usr/X11R6/include/X11/extensions/Xinerama.h"
-  fi
-fi
+echo ""
+echo ""
 
 
-OY_=`oyranos-config 2>>error.txt`
-if [ $? = 0 ] && [ -n $OY_ ]; then
-  echo "Oyranos `oyranos-config --version`           detected"
-  echo "#define HAVE_OY 1" >> $CONF_H
-  echo "OY = 1" >> $CONF
-  echo "OYRANOS_H = `oyranos-config --cflags`" >> $CONF
-  if [ -f /usr/X11R6/include/X11/extensions/xf86vmode.h ]; then
-    echo "OYRANOS_LIBS = `oyranos-config --ld_x_flags`" >> $CONF
-  else
-    echo "OYRANOS_LIBS = `oyranos-config --ld_x_flags`" >> $CONF
-  fi
-else
-  echo "no Oyranos found"
-fi
 
-`pkg-config  --atleast-version=1.14 lcms`
-if [ $? = 0 ]; then
-  echo "littleCMS `pkg-config --modversion lcms`          detected"
-  echo "#define HAVE_LCMS 1" >> $CONF_H
-  echo "LCMS = 1" >> $CONF
-  echo "LCMS_H = `pkg-config --cflags lcms`" >> $CONF
-  echo "LCMS_LIBS = `pkg-config --libs lcms`" >> $CONF
-else
-  echo "no or too old LCMS found,\n  need at least version 1.14, download: www.littlecms.com"
-fi
-
-`pkg-config  --atleast-version=1.0 ftgl`
-if [ $? = 0 ]; then
-  echo "FTGL      `pkg-config --modversion ftgl`         detected"
-  echo "#define HAVE_FTGL 1" >> $CONF_H
-  echo "FTGL = 1" >> $CONF
-  echo "FTGL_H = `pkg-config --cflags ftgl`" >> $CONF
-  echo "FTGL_LIBS = `pkg-config --libs ftgl`" >> $CONF
-else
-  echo "  no or too old FTGL found, need FTGL to render text in OpenGL"
-fi
+# Alle ifdefs landen hier
 
 echo "" >> $CONF
 echo "VERSION_A = $VERSION_A" >> $CONF
@@ -207,20 +169,18 @@ echo "VERSION_C = $VERSION_C" >> $CONF
 echo "VERSION   = $VERSION" >> $CONF
 echo "VERSION_L = $VERSION_L" >> $CONF
 echo "" >> $CONF
-echo "src_dir = $src_dir" >> $CONF
-echo "srcdir = $srcdir" >> $CONF
 
-echo "#ifndef ICC_VERSION_H" > icc_version.h
-echo "#define ICC_VERSION_H" >> icc_version.h
-echo "" >> icc_version.h
-echo "#define ICC_EXAMIN_VERSION_A $VERSION_A" >> icc_version.h
-echo "#define ICC_EXAMIN_VERSION_B $VERSION_B" >> icc_version.h
-echo "#define ICC_EXAMIN_VERSION_C $VERSION_C" >> icc_version.h
-echo "#define ICC_EXAMIN_VERSION $VERSION" >> icc_version.h
-echo "#define ICC_EXAMIN_V \"$VERSION\"" >> icc_version.h
-echo "#define ICC_EXAMIN_D _(\"$ZEIT\")" >> icc_version.h
-echo "" >> icc_version.h
-echo "#endif //ICC_VERSION_H" >> icc_version.h
+echo "#ifndef ICC_VERSION_H" > $VERS
+echo "#define ICC_VERSION_H" >> $VERS
+echo "" >> $VERS
+echo "#define ICC_EXAMIN_VERSION_A $VERSION_A" >> $VERS
+echo "#define ICC_EXAMIN_VERSION_B $VERSION_B" >> $VERS
+echo "#define ICC_EXAMIN_VERSION_C $VERSION_C" >> $VERS
+echo "#define ICC_EXAMIN_VERSION $VERSION_L" >> $VERS
+echo "#define ICC_EXAMIN_V \"$VERSION\"" >> $VERS
+echo "#define ICC_EXAMIN_D _(\"$ZEIT\")" >> $VERS
+echo "" >> $VERS
+echo "#endif //ICC_VERSION_H" >> $VERS
 
 echo "Version: $VERSION" > $SPEC
 echo "Source:  $TARGET"-"$VERSION".tar.gz >> $SPEC
@@ -228,10 +188,123 @@ echo "Release: $RELEASE" >> $SPEC
 cat  $SPEC.in >> $SPEC
 echo $SPEC generated
 
+
+echo "prefix =                $prefix"
+
+echo "prefix = $prefix" >> $CONF
+echo "libdir = \${prefix}/lib$BARCH" >> $CONF
+echo "src_dir = $src_dir" >> $CONF
+echo "srcdir = $srcdir" >> $CONF
+echo "" >> $CONF
+echo "#define PREFIX         \"$prefix\"" >> $CONF_H
+echo "#define DATADIR        \"$prefix/share/\"" >> $CONF_H
+echo "#define LOCALEDIR      \"$prefix/share/locale\"" >> $CONF_H
+echo "#define SRCDIR         \"$srcdir\"" >> $CONF_H
+echo "#define SRC_LOCALEDIR  \"$srcdir/po\"" >> $CONF_H
+
+echo "" >> $CONF
+
+echo "CXX = c++$LINE_ARCH" >> $CONF
+echo "CC = cc$LINE_ARCH" >> $CONF
+echo "RM = rm -vf" >> $CONF
+if [ $OSUNAME = "Darwin" ]; then
+  echo "" >> $CONF
+  echo "COPY = cp -pv" >> $CONF
+  echo "DBG_LIBS = #-lMallocDebug" >> $CONF
+  echo "I18N_LIB = -lintl \$(LIBNAME)" >> $CONF
+  echo "I18N_LIBSTAT = /opt/local/lib/libintl.a \$(LIBNAME) #-liconv" >> $CONF
+  echo "INCL=-I\$(includedir) -I/usr/X11R6/include -I./ -I/usr/include/gcc/darwin/default/c++" >> $CONF
+  echo "LIBEXT = .dylib" >> $CONF
+  echo "LINK_FLAGS = -dynamiclib" >> $CONF
+  echo "MAKEDEPEND	= /usr/X11R6/bin/makedepend -Y" >> $CONF
+  echo "MSGMERGE = msgmergeMSGMERGE = msgmerge" >> $CONF
+  echo "/Developer/Tools/Rez -t APPL mac.r -o \$@" >> $CONF
+  echo "OPTS = -Wall -g \$(DEBUG) -DPIC -L. -Wunused -fno-exceptions" >> $CONF
+  echo "OSX_CPP = \$(OSX_CPPFILES)" >> $CONF
+  echo "REZ = \
+      fltk-config --post \$(BINTARGET);" >> $CONF
+  echo "XGETTEXT_OPTIONS = \ 
+        --keyword=gettext \
+        --keyword=_ \
+        --keyword=N_" >> $CONF
+else
+  echo "LIBMID = .so" >> $CONF
+  echo "LIBNAMEFULL = lib\$(TARGET)\$(LIBMID).\$(VERSION_A).\$(VERSION_B).\$(VERSION_C)" >> $CONF
+  echo "MSGMERGE = msgmerge" >> $CONF
+  echo "MSGMERG_OPTS = --update" >> $CONF
+  echo "XGETTEXT_OPTIONS = \
+        --keyword=gettext --flag=gettext:1:pass-c-format \
+        --keyword=_ --flag=_:1:pass-c-format \
+        --keyword=N_ --flag=N_:1:pass-c-format \
+        --copyright-holder='Kai-Uwe Behrmann' \
+        --msgid-bugs-address='ku.b@gmx.de' \
+        --from-code=utf-8" >> $CONF
+  if [ $OSUNAME = "Linux" ]; then
+    echo "" >> $CONF
+    echo "COPY = cp -vdpa" >> $CONF
+    echo "I18N_LIB = \$(LIBNAME)" >> $CONF
+    echo "I18N_LIBSTAT = \$(LIBNAME)" >> $CONF
+    echo "INCL=-I\$(includedir) -I/usr/X11R6/include -I. -I/usr/include/g++ -I/usr/include" >> $CONF
+    echo "LINK_FLAGS = -shared -ldl -fPIC -L." >> $CONF
+    echo "LIBNAMEV = lib\$(TARGET)\$(LIBMID).\$(VERSION_A)" >> $CONF
+    echo "LINK_FLAGS_STATIC = q" >> $CONF
+    echo "LINK_NAME = -Wl,-soname -Wl,\$(LIBNAMEFULL)" >> $CONF
+    echo "LINK_LIB_PATH = -Wl,--rpath -Wl,\$(libdir)" >> $CONF
+    echo "LINK_SRC_PATH = -Wl,--rpath -Wl,\$(srcdir)" >> $CONF
+    echo "MAKEDEPEND	= makedepend -Y" >> $CONF
+    echo "OPTS= -Wall -g \$(DEBUG) -Wunused -fPIC -fno-exceptions #-Os -fomit-frame-pointer" >> $CONF
+  else
+    echo "COPY = cp -p" >> $CONF
+    if [ $OSUNAME = "BSD" ]; then
+      echo "LINK_FLAGS = -shared \$(ICONV)" >> $CONF
+    else
+      echo "LINK_FLAGS = -shared -ldl \$(ICONV)" >> $CONF
+    fi
+    echo "I18N_LIB = \$(ICONV) -lintl \$(LIBNAMEV)" >> $CONF
+    echo "I18N_LIBSTAT = \$(ICONV) -lintl \$(LIBNAMEV)" >> $CONF
+    echo "MAKEDEPEND	= makedepend -Y" >> $CONF
+    echo "OPTS = -Wall -O2 -g -fpic -L." >> $CONF
+    echo "RM = rm -f" >> $CONF
+  fi
+fi
+
+
+
+
+# get time stamp
+C=`date +%C`
+TIME=`date +%Y%m%e.%H%M%S | sed s/$C//`
+echo "MTIME   =$TIME" >> $CONF
+
+echo "" >> $CONF
+echo "" >> $CONF
+
+
+if [ $OSUNAME = "BSD" ]; then
+  cat  makefile.in | sed 's/^\#if/.if/g ; s/^\#end/.end/g ; s/^\#include\ mkdepend/.include "mkdepend"/g'  >> $CONF
+else
+  cat  makefile.in | sed 's/^\#if/if/g ; s/^\#end/end/g ; s/^\#include/include/g'  >> $CONF
+fi
+echo $CONF generated
 echo ""
 echo ""
+
+if [ $ERROR != 0 ]; then
+  echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+  echo "!!!                     An ERROR occured                     !!!"
+  echo "!!!                     See Log above                        !!!"
+  echo "!!!                     remove  $CONF                     !!!"
+  echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+  echo ""
+  rm $CONF $CONF_H $CONF_SH $SPEC $PKGC $MPKG
+  exit
+fi
+
+echo "" > mkdepend
 
 
 if [ `cat error.txt | wc -l` -lt 1 ]; then
   rm error.txt
 fi
+
+

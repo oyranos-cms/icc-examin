@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2006-05-23 10:21+0200\n"
+"POT-Creation-Date: 2006-05-27 14:34+0200\n"
 "PO-Revision-Date: 2005-08-13 17:35+0200\n"
 "Last-Translator: Kai-Uwe Behrmann\n"
 "Language-Team:  <eo@li.org>\n"
@@ -2131,10 +2131,6 @@ msgstr ""
 
 #: icc_utils.h:220 icc_utils.h:221 icc_utils.h:222
 msgid "!!! Warnung !!!"
-msgstr ""
-
-#: icc_version.h:9
-msgid "May 2004 - March 2006"
 msgstr ""
 
 #: icc_waehler.h:70

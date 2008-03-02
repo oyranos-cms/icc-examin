@@ -45,7 +45,7 @@
 #include <lcms.h> // für CGATS lesen
 #include "icc_profile.h"
 #include "icc_oyranos.h"
-#include "icc_version.h"
+#include "icc_examin_version.h"
 #include "icc_helfer.h"
 #include "icc_cgats_filter.h"
 #include "icc_examin.h"
