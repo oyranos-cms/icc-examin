@@ -169,7 +169,7 @@ dbgThreadId(Fl_Thread id)
 int
 iccLevel_PROG(int plus_minus_null)
 {
-  int pth = (int)wandelThreadId( pthread_self() );
+  Fl_Thread pth = wandelThreadId( pthread_self() );
   if(pth < DBG_MAX_THREADS) {
     level_PROG_ [pth] = level_PROG_[pth] + plus_minus_null;
     if(level_PROG_ [pth] < 0)

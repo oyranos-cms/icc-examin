@@ -52,7 +52,7 @@ class  icc_examin_ns::EinModell;
 namespace icc_examin_ns {
     enum IccGamutFormat {
       ICC_ABSTRACT,
-      ICC_VRML,
+      ICC_VRML
     };
 }
 

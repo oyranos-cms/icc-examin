@@ -206,6 +206,7 @@ const char          * MyFl_Double_Window::my_xclass = NULL;
 MyFl_Double_Window::MyFl_Double_Window(int W, int H, const char* title)
   : Fl_Double_Window(W,H,title)
 {
+  desktop_ = 0;
   init_object_();
 }
 
@@ -279,7 +280,8 @@ void MyFl_Double_Window::show()
   if(this->my_xclass)
     Fl_Double_Window::xclass(my_xclass);
 
-  Fl_Double_Window::show();
+  if(!this->visible())
+    Fl_Double_Window::show();
 
   if(/*this == main_win &&*/ icon)
     setzeIcon( this, icon );
@@ -312,12 +314,14 @@ void MyFl_Double_Window::show()
 
   user_hide = true;
 
-  DBG_PROG_S( id_<<" "<<(user_hide?"u":" ")<<" "<<(visible()?"v":" ")<<" "<<(shown()?"s":" ") )
+  DBG_PROG_S( id_<<" "<<(user_hide?"u":" ")<<" "<<(visible()?"v":" ")<<" "<<
+              (shown()?"s":" ") )
 }
 
 void MyFl_Double_Window::hide()
 {
-  DBG_PROG_S( id_<<" "<<(user_hide?"u":" ")<<" "<<(visible()?"v":" ")<<" "<<(shown()?"s":" ") )
+  DBG_PROG_S( id_<<" "<<(user_hide?"u":" ")<<" "<<(visible()?"v":" ")<<" "<<
+              (shown()?"s":" ") )
   if(!only_with)
     only_with = main_win;
 
@@ -335,20 +339,24 @@ void MyFl_Double_Window::hide()
   else
     Fl_Double_Window::hide();
   user_hide = true;
-  DBG_PROG_S( id_<<" "<<(user_hide?"u":" ")<<" "<<(visible()?"v":" ")<<" "<<(shown()?"s":" ") )
+  DBG_PROG_S( id_<<" "<<(user_hide?"u":" ")<<" "<<(visible()?"v":" ")<<" "<<
+              (shown()?"s":" ") )
 }
 
 void MyFl_Double_Window::hide(MyFl_Double_Window * by)
 {
-  DBG_PROG_S( id_<<" "<<(user_hide?"u":" ")<<" "<<(visible()?"v":" ")<<" "<<(shown()?"s":" ") )
+  DBG_PROG_S( id_<<" "<<(user_hide?"u":" ")<<" "<<(visible()?"v":" ")<<" "<<
+              (shown()?"s":" ") )
   hide();
   user_hide = false;
-  DBG_PROG_S( id_<<" "<<(user_hide?"u":" ")<<" "<<(visible()?"v":" ")<<" "<<(shown()?"s":" ") )
+  DBG_PROG_S( id_<<" "<<(user_hide?"u":" ")<<" "<<(visible()?"v":" ")<<" "<<
+              (shown()?"s":" ") )
 }
 
 void MyFl_Double_Window::iconize()
 {
-  DBG_PROG_S( id_<<" "<<(user_hide?"u":" ")<<" "<<(visible()?"v":" ")<<" "<<(shown()?"s":" ") )
+  DBG_PROG_S( id_<<" "<<(user_hide?"u":" ")<<" "<<(visible()?"v":" ")<<" "<<
+              (shown()?"s":" ") )
   if(!only_with)
     only_with = main_win;
 
@@ -363,26 +371,56 @@ void MyFl_Double_Window::iconize()
 
   Fl_Double_Window::iconize();
   user_hide = true;
-  DBG_PROG_S( id_<<" "<<(user_hide?"u":" ")<<" "<<(visible()?"v":" ")<<" "<<(shown()?"s":" ") )
+  DBG_PROG_S( id_<<" "<<(user_hide?"u":" ")<<" "<<(visible()?"v":" ")<<" "<<
+              (shown()?"s":" ") )
 }
 
 void MyFl_Double_Window::iconize(MyFl_Double_Window * by)
 {
-  DBG_PROG_S( id_<<" "<<(user_hide?"u":" ")<<" "<<(visible()?"v":" ")<<" "<<(shown()?"s":" ") )
+  DBG_PROG_S( id_<<" "<<(user_hide?"u":" ")<<" "<<(visible()?"v":" ")<<" "<<
+              (shown()?"s":" ") )
   if(this == main_win)
     Fl_Double_Window::iconize();
   else
     iconize();
   user_hide = false;
-  DBG_PROG_S( id_<<" "<<(user_hide?"u":" ")<<" "<<(visible()?"v":" ")<<" "<<(shown()?"s":" ") )
+  DBG_PROG_S( id_<<" "<<(user_hide?"u":" ")<<" "<<(visible()?"v":" ")<<
+              " "<<(shown()?"s":" ") )
 }
 
 int MyFl_Double_Window::handle( int e )
 {
   int ergebnis = tastatur(e);
 
+  int x_,y_,w_,h_,wx,wy;
+  x_=y_=w_=h_=wx=wy=0;
+#if (FL_MAJOR_VERSION > 0) && (FL_MINOR_VERSION > 6)
+  Fl::screen_xywh(x_,y_,w_,h_);
+#endif
+  wx = this->x();
+  wy = this->y();
+
   if(!ergebnis)
     ;
+
+  int net_desktop = -1;
+#if HAVE_X
+  if(fl_display)
+  {
+    Atom atom = XInternAtom (fl_display, "_NET_CURRENT_DESKTOP", 0), a;
+    Window w = RootWindow( fl_display, DefaultScreen(fl_display));
+    int actual_format_return;
+    unsigned long nitems_return=0, bytes_after_return=0;
+    unsigned char* prop_return=0;
+    if(atom)
+      XGetWindowProperty(fl_display, w, atom, 0, 32, 0, AnyPropertyType, &a,
+                     &actual_format_return, &nitems_return, &bytes_after_return,
+                     &prop_return );
+
+    if(prop_return)
+      net_desktop = prop_return[0];
+  }
+#endif
 
   int fl_window_events = 1;
   switch(e)
@@ -390,6 +428,8 @@ int MyFl_Double_Window::handle( int e )
     case FL_HIDE:
          if(user_hide)
          {
+           if(net_desktop >= 0 && net_desktop != desktop_)
+             break;
            if(this->shown())
              iconize();
            else
@@ -403,15 +443,21 @@ int MyFl_Double_Window::handle( int e )
          fl_window_events = 0;
          break;
     case FL_SHOW:
+         if(net_desktop >= 0 && net_desktop != desktop_)
+           break;
          show();
          fl_window_events = 0;
          break;
   }
-  DBG_PROG_S( id_<<" "<<(user_hide?"u":" ")<<" "<<(visible()?"v":" ")<<" "<<(shown()?"s":" ")<<" "<<dbgFltkEvent(e) )
+  DBG_PROG_S( id_<<" "<<(user_hide?"u":" ")<<" "<<(visible()?"v":" ")<<" "<<
+              (shown()?"s":" ")<<" "<<dbgFltkEvent(e) )
 
   if(use_escape_hide)
   if(e == FL_SHORTCUT && Fl::event_key() == FL_Escape)
     hide();
+
+  if(net_desktop >= 0 && this->shown() && this->visible())
+    desktop_ = net_desktop;
 
   if(fl_window_events)
     return Fl_Double_Window::handle(e);

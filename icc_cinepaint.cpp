@@ -44,7 +44,7 @@
 #define PLUG_IN_DESCRIPTION   "Loads an assigned ICC profil from image to ICC Examin."
 #define PLUG_IN_DESCRIPTION2  "Loads an assigned ICC proof profil from image to ICC Examin."
 #define PLUG_IN_DESCRIPTION3  "Shows some colours of the image in a ICC Examin including profile gamut"
-#define PLUG_IN_VERSION       "0.3.9 - 10 Februar 2006"
+#define PLUG_IN_VERSION       version()
 #define PLUG_IN_AUTHOR        "Kai-Uwe Behrmann <ku.b@gmx.de>"
 #define PLUG_IN_COPYRIGHT     "2004-2006 Kai-Uwe Behrmann"
 
@@ -64,6 +64,10 @@
 #include "icc_helfer.h"
 #include "icc_examin.h"
 #include "icc_kette.h"
+#include "icc_examin_version.h"
+
+char* version() { static char t[80];
+                  sprintf(t, "%s - %s", ICC_EXAMIN_V, ICC_EXAMIN_D); return t; }
 
 
 using namespace std;
@@ -600,9 +604,10 @@ doExamin (gint32 image_ID, CMSProfileType typ)
       profil_temp_name << getenv("TMPDIR") << "/icc_examin_temp_" << dateiname << "_" << typ << ".icc";
     else
       profil_temp_name << "/tmp/icc_examin_temp_" << dateiname << "_" << typ << ".icc";
-    schreibeDatei(mem_profile, size, profil_temp_name.str());
+    std::string tname = profil_temp_name.str();
+    schreibeDatei(mem_profile, size, tname.c_str());
     std::string tn = "export PATH=$PATH:/opt/local/bin; iccexamin '";
-    tn += profil_temp_name.str();
+    tn += tname;
     tn += "'";
 
 #if 0
@@ -611,12 +616,12 @@ doExamin (gint32 image_ID, CMSProfileType typ)
     const char *args_c[2];
 
     args_c[0] = argv[0];
-    args_c[1] = profil_temp_name.str().c_str();
+    args_c[1] = tname.c_str();
 
     startWithArgs(2, (char**)args_c);
 #endif
 
-    remove( profil_temp_name.str().c_str() );
+    remove( tname.c_str() );
   } else
     g_message (_("Profil not written."));
 

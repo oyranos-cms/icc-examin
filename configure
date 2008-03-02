@@ -12,6 +12,7 @@ CONF_I18N=fl_i18n/makefile
 SPEC=$TARGET.spec
 VERS="$TARGET"_version.h
 zeile="$0 $@"
+MAKEFILE_DIR=". fl_i18n"; export MAKEFILE_DIR
 
 export CONF_H CONF CONF_I18N
 
@@ -19,7 +20,7 @@ VERSION_A=0
 VERSION_B=4
 VERSION_C=3
 RELEASE=0
-ZEIT="May 2004 - November 2006"
+ZEIT="May 2004 - December 2006"
 VERSION=$VERSION_A.$VERSION_B$VERSION_C
 if [ $VERSION_A -gt 9 ]; then
   VERSION_L="$VERSION_A"
@@ -39,10 +40,14 @@ fi
 VERSION_L=`echo $VERSION_L | sed 's/^0*//g'`
 
 cwdebug=0
+debug=0
 
 echo ""
-echo "Welcome to $TARGET_NAME Version $VERSION configurator"
-echo ""
+echo "################################################################"
+echo "#                                                              #"
+echo "        Welcome to $TARGET_NAME Version $VERSION configurator"
+echo "#                                                              #"
+echo "#                       Configuration                          #"
 
 if [ $# -gt 0 ]; then
   prefix=""
@@ -102,6 +107,10 @@ if [ $# -gt 0 ]; then
     if [ "`echo \"$1\" | sed s/\"--$switch\"//`" != "$1" ]; then
       cwdebug="1"
     fi
+    switch=enable-debug
+    if [ "`echo \"$1\" | sed s/\"--$switch\"//`" != "$1" ]; then
+      debug="1"
+    fi
     switch=help
     if [ "`echo \"$1\" | sed s/\"--$switch\"//`" != "$1" ]; then
       echo "Usage:"
@@ -117,6 +126,7 @@ if [ $# -gt 0 ]; then
       echo "   --desktopdir=[\$datadir/applications] xdg installation path"
       echo ""
       echo "   --with-fltk-config=[fltk-config]     alternative fltk version"
+      echo "   --enable-debug                       debug version"
       echo "   --enable-cwdebug=[\$cwdebugdir]       deploy cwlibary for debugging"
       echo "   --help"
       echo ""
@@ -196,7 +206,7 @@ else
     fi
   fi
 fi
-echo "MAKEFILE_ARCH = makefile$ARCH"  >> $CONF
+echo "MAKEFILE_ARCH = Makefile$ARCH"  >> $CONF
 MACH_=`uname -m`
 MACH=BUILD_32
 if [ $? = 0 ]; then
@@ -285,7 +295,7 @@ else
 fi
 export prefix exec_prefix bindir sbindir libdir includedir datadir mandir
 export pixmapdir desktopdir
-export fltkconfig cwdebug
+export fltkconfig cwdebug debug
 
 PATH=$bindir:$PATH
 export PATH
@@ -312,6 +322,7 @@ fi
 XINERAMA=1; export XINERAMA
 XF86VMODE=1; export XF86VMODE
 PO=1; export PO
+DEBUG=1; export DEBUG
 ./configure.sh
 ELEKTRA=0; export ELEKTRA
 OYRANOS=0; export OYRANOS
@@ -325,12 +336,13 @@ X11=0; export X11
 XINERAMA=0; export XINERAMA
 XF86VMODE=0; export XF86VMODE
 PO=0; export PO
+DEBUG=0; export DEBUG
 
 if [ -d ../../../plug-ins/icc_examin/ ]; then
   build_plug_in_only=1
   CP_CONFIG=../../../cinepainttool
-  CP_FLAGS="-I../../../lib -I../../.. `$CP_CONFIG --cflags`"
-  CP_LIBS="-L../../../lib/.libs `$CP_CONFIG --libs`"
+  CP_FLAGS="$CP_CONFIG --cflags-local"
+  CP_LIBS="$CP_CONFIG --libs-local"
   CP_VERSION=`$CP_CONFIG --version`
   echo "CP_DIR=`$CP_CONFIG --install-dir`" >> $CONF
   echo "INSTALL_TARGET=install_cp" >> $CONF
@@ -342,8 +354,8 @@ fi
 if [ -z "$CP_CONFIG" ]; then
   CP_CONFIG=`which cinepainttool 2>/dev/null`
   if [ -n "$CP_CONFIG" ]; then
-    CP_FLAGS=`cinepainttool --cflags`
-    CP_LIBS=`cinepainttool --libs`
+    CP_FLAGS="cinepainttool --cflags"
+    CP_LIBS="cinepainttool --libs"
     CP_VERSION=`cinepainttool --version`
     echo "CINEPAINT = icc_examin_cp" >> $CONF
     echo "Gtk CinePaint $CP_VERSION    detected"
@@ -391,8 +403,8 @@ echo "Source:  $TARGET"-"$VERSION".tar.gz >> $SPEC
 echo "Release: $RELEASE" >> $SPEC
 echo "%define pixmapdir       $pixmapdir" >> $SPEC
 echo "%define desktopdir      $desktopdir" >> $SPEC
-cat  $SPEC.in >> $SPEC
-echo $SPEC generated
+cat  "$SPEC.in" >> $SPEC
+echo generated $SPEC from "$SPEC.in"
 
 
 echo "prefix =                $prefix"
@@ -441,10 +453,10 @@ echo "" >> $CONF
 
 
 
-echo "RM = rm -vf" >> $CONF
+echo "RM = rm -f $DEBUG_SWITCH" >> $CONF
 if [ $OSUNAME = "Darwin" ]; then
   echo "" >> $CONF
-  echo "COPY = cp -pv" >> $CONF
+  echo "COPY = cp -p $DEBUG_SWITCH" >> $CONF
   LDFLAGS="$LDFLAGS -dynamiclib  -L."
   echo "DBG_LIBS = #-lMallocDebug" >> $CONF
   echo "I18N_LIB = -lintl \$(LIBNAME)" >> $CONF
@@ -463,7 +475,7 @@ if [ $OSUNAME = "Darwin" ]; then
   echo "XGETTEXT_OPTIONS = --keyword=gettext \
         --keyword=_ \
         --keyword=N_" >> $CONF
-  echo "INSTALL = install -v" >> $CONF
+  echo "INSTALL = install $DEBUG_SWITCH" >> $CONF
 else
   echo "LIBMID = .so" >> $CONF
   echo "LIBNAMEFULL = lib\$(TARGET)\$(LIBMID).\$(VERSION_A).\$(VERSION_B).\$(VERSION_C)" >> $CONF
@@ -477,34 +489,34 @@ else
         --from-code=utf-8" >> $CONF
   if [ $OSUNAME = "Linux" ]; then
     echo "" >> $CONF
-    echo "COPY = cp -vdpa" >> $CONF
+    echo "COPY = cp $DEBUG_SWITCH -dpa" >> $CONF
     LDFLAGS="$LDFLAGS -shared -L."
     echo "I18N_LIB = \$(LIBNAME)" >> $CONF
     echo "I18N_LIBSTAT = \$(LIBNAME)" >> $CONF
     echo "INCL=-I\$(includedir) -I/usr/X11R6/include -I. -I/usr/include/g++ -I/usr/include" >> $CONF
     echo "LINK_FLAGS = -shared -ldl -fPIC -L. -lpthread" >> $CONF
     echo "LIBNAMEV = lib\$(TARGET)\$(LIBMID).\$(VERSION_A)" >> $CONF
-    echo "LINK_FLAGS_STATIC = $LDFLAGS q" >> $CONF
+    echo "LINK_FLAGS_STATIC = $LDFLAGS" >> $CONF
     echo "LINK_NAME = -Wl,-soname -Wl,\$(LIBNAMEFULL)" >> $CONF
     echo "LINK_LIB_PATH = -Wl,--rpath -Wl,\$(libdir)" >> $CONF
     echo "LINK_SRC_PATH = -Wl,--rpath -Wl,\$(srcdir)" >> $CONF
     echo "MAKEDEPEND	= makedepend -Y" >> $CONF
     CFLAGS="$CFLAGS_COMMON"
     CXXFLAGS="$CXXFLAGS_COMMON"
-    echo "INSTALL = install -v" >> $CONF
+    echo "INSTALL = install $DEBUG_SWITCH" >> $CONF
   else
     echo "COPY = cp -p" >> $CONF
     echo "INCL=-I\$(includedir) -I/usr/X11R6/include -I. -I/usr/include/g++ -I/usr/include" >> $CONF
     if [ $OSUNAME = "BSD" ]; then
       LDFLAGS="$LDFLAGS -shared \$(ICONV)"
-      INSTALL="install -v"
+      INSTALL="install $DEBUG_SWITCH"
       echo "LINK_FLAGS = -shared \$(ICONV)" >> $CONF
-      echo "INSTALL = install -v" >> $CONF
+      echo "INSTALL = install $DEBUG_SWITCH" >> $CONF
     fi
     if [ $OSUNAME = "SunOS" ]; then
       echo "ICONV = -liconv" >> $CONF
       LDFLAGS="$LDFLAGS -shared -mimpure-text -ldl \$(ICONV)"
-      INSTALL="install -v"
+      INSTALL="install $DEBUG_SWITCH"
     else
       echo "ICONV = -liconv" >> $CONF
       LDFLAGS="$LDFLAGS -shared -mimpure-text -ldl \$(ICONV)"
@@ -537,14 +549,15 @@ echo "" >> $CONF
 echo ""
 echo ""
 
-cat $CONF_I18N.in >> $CONF_I18N
-echo $CONF_I18N prepared
+cat "$CONF_I18N.in" >> $CONF_I18N
+echo generated $CONF_I18N from "$CONF_I18N.in"
 
 echo "" > mkdepend
 
+# prepare makefile from MAKEFILE_DIR
 PREPARE_MAKEFILES=1; export PREPARE_MAKEFILES
-MAKEFILES="makefile"; export MAKEFILES
 ./configure.sh
+PREPARE_MAKEFILES=0; export PREPARE_MAKEFILES
 
 echo "" >> $CONF_H
 echo "#endif /* ICCEXAMIN_CONFIG_H */" >> $CONF_H

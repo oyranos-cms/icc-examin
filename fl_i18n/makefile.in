@@ -17,17 +17,17 @@ COLLECT = ar cru
 RANLIB = ranlib
 MAKEDEPEND	= $(CXX) -MM
 LINK = ln -s
-RM = rm -vf
+RM = rm -f $(DEBUG_SWITCH)
 ifdef LINUX
-COPY = cp -vdpa
+COPY = cp -dpa $(DEBUG_SWITCH)
 else
   ifdef APPLE
-  COPY = cp -v
+  COPY = cp $(DEBUG_SWITCH)
   else
   COPY = cp
   endif
 endif
-INSTALL = install -v
+INSTALL = install $(DEBUG_SWITCH)
 
 #DEBUG = -DDEBUG
 DL = --ldflags # --ldstaticflags
@@ -149,7 +149,7 @@ POT_FILE = po/$(TARGET).pot
 
 
 ALL_FILES =	$(SOURCES) \
-	makefile \
+	Makefile \
 	makefile.bsd \
 	makefile.in \
 	$(DOKU)
@@ -202,7 +202,7 @@ $(LINGUAS_SRC):	$(POT_FILE)
               mkdir $${ling}; \
             fi; \
             if [ ! -d ./$${ling}/LC_MESSAGES ]; then \
-              mkdir -v $${ling}/LC_MESSAGES; \
+              mkdir $(DEBUG_SWITCH) $${ling}/LC_MESSAGES; \
             fi; \
             test -L $${ling}/LC_MESSAGES/$(TARGET).mo \
               && $(RM) $${ling}/LC_MESSAGES/$(TARGET).mo \
@@ -265,7 +265,7 @@ tgz:
 	test -d Entwickeln && \
 	test `pwd` != `(cd Entwickeln; pwd)` && \
 	$(RM) -R Entwickeln
-	test -d ../../Archiv && mv -v $(TARGET)_*.tgz ../../Archiv
+	test -d ../../Archiv && mv $(DEBUG_SWITCH) $(TARGET)_*.tgz ../../Archiv
 
 targz:
 	make DESTDIR=$(TARGET)_$(VERSION) copy_files
@@ -274,7 +274,7 @@ targz:
 	test -d $(TARGET)_$(VERSION) && \
 	test `pwd` != `(cd $(TARGET)_$(VERSION); pwd)` && \
 	$(RM) -R $(TARGET)_$(VERSION) 
-	test -d ../../Archiv && mv -v $(TARGET)_*.tgz ../../Archiv || echo no copy
+	test -d ../../Archiv && mv $(DEBUG_SWITCH) $(TARGET)_*.tgz ../../Archiv || echo no copy
 
 copy_files:
 	echo Copy all fl_i18n files ...

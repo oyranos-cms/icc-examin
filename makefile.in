@@ -4,7 +4,6 @@ RANLIB = ranlib
 MAKEDEPEND	= $(CXX) -MM
 LINK = ln -s
 
-DEBUG = -DDEBUG
 DL = --ldflags # --ldstaticflags
 
 X_CPPFILES = icc_helfer_x.cpp
@@ -32,8 +31,8 @@ INCL_DEP = $(INCL) $(X_H) $(OSX_H) $(OYRANOS_H) \
 			$(FLU_H) $(FLTK_H) $(FTGL_H) $(LCMS_H) $(ALL_SOURCEFILES)
 ALL_INCL = $(INCL) \
 			$(FLU_H) $(FLTK_H) $(X_H) $(OSX_H) $(OYRANOS_H) $(LCMS_H) $(FTGL_H)
-CFLAGS_ = $(CFLAGS) $(ALL_INCL)
-CXXFLAGS_ = $(CXXFLAGS) $(ALL_INCL)
+CFLAGS_ = $(CFLAGS) $(DEBUG) $(ALL_INCL)
+CXXFLAGS_ = $(CXXFLAGS) $(DEBUG) $(ALL_INCL)
 
 LDLIBS = -L$(libdir) -L./ $(FLTK_LIBS) $(FLU_LIBS) \
 	$(X11_LIBS) -llcms -L/lib $(OYRANOS_LIBS) $(LCMS_LIBS) \
@@ -236,13 +235,13 @@ $(BINTARGET):	$(BASE) $(OBJECTS) $(MAIN_OBJECTS) $(LINGUAS_SRC) $(I18N_OBJECTS) 
 
 $(CINEPAINT_OBJECTS):	$(CINEPAINT_SOURCES)
 	echo Compiling Gtk CinePaint plug-in ...
-	$(CXX) $(CXXFLAGS_) $(CP_FLAGS) -c $(CINEPAINT_SOURCES)
+	$(CXX) $(CXXFLAGS_) `$(CP_FLAGS)` -c $(CINEPAINT_SOURCES)
 
 $(CINEPAINT):	$(BASE) $(CINEPAINT_OBJECTS) $(OBJECTS) $(LINGUAS_SRC) $(I18N_OBJECTS) $(LIBNAME) $(LIBFL_I18N)
 	echo Verknuepfen $@ ...
-	$(CXX) $(CXXFLAGS_) $(CP_FLAGS) -o $@ \
+	$(CXX) $(CXXFLAGS_) `$(CP_FLAGS)` -o $@ \
 	$(CINEPAINT_OBJECTS) $(OBJECTS) \
-	$(LDLIBS) $(CP_LIBS) $(LINK_LIB_PATH) $(LINK_SRC_PATH)
+	`$(CP_LIBS)` $(LDLIBS) $(LINK_LIB_PATH) $(LINK_SRC_PATH)
 	$(REZ)
 
 
@@ -262,7 +261,7 @@ $(LIBNAME):	$(I18N_OBJECTS)
 	$(RANLIB) $(LIBNAME)
 
 $(LIBFL_I18N):
-	(cd fl_i18n/; make -f $(MAKEFILE_ARCH))
+	cd fl_i18n/ && $(MAKE) -f $(MAKEFILE_ARCH)
 
 static:	$(BINTARGET)
 	echo Verknuepfen $@ ...
@@ -313,10 +312,10 @@ $(LINGUAS_SRC):	$(POT_FILE)
 	  test -f $${ling}.po \
         && ($(MSGFMT) -o $${ling}.gmo $${ling}.po; \
             if [ ! -d $${ling} ]; then \
-              mkdir $${ling}; \
+              mkdir -p $${ling}; \
             fi; \
             if [ ! -d ./$${ling}/LC_MESSAGES ]; then \
-              mkdir $${ling}/LC_MESSAGES; \
+              mkdir -p $${ling}/LC_MESSAGES; \
             fi; \
             test -L $${ling}/LC_MESSAGES/$(TARGET).mo \
               && $(RM) $${ling}/LC_MESSAGES/$(TARGET).mo \
@@ -347,7 +346,7 @@ clean:	unbundle unpkg
 	  test -f po/$${ling}.gmo \
         && $(RM) po/$${ling}.gmo; \
 	done;
-	(cd fl_i18n/; make -f $(MAKEFILE_ARCH) clean)
+	cd fl_i18n/ && $(MAKE) -f $(MAKEFILE_ARCH) clean
 	echo ... $@ fertig
 
 config:
@@ -387,7 +386,7 @@ EXEEXT		=
 	msgfmt $<
 
 tgz:
-	make DESTDIR="`pwd`/Entwickeln" copy_files
+	$(MAKE) DESTDIR="`pwd`/Entwickeln" copy_files
 	tar cf - Entwickeln/ \
 	| gzip > $(TARGET)_$(MTIME).tgz
 	test -d Entwickeln && \
@@ -396,7 +395,7 @@ tgz:
 	test -d ../Archiv && mv -v $(TARGET)_*.tgz ../Archiv
 
 targz:
-	make DESTDIR="`pwd`/$(TARGET)-$(VERSION)" copy_files
+	$(MAKE) DESTDIR="`pwd`/$(TARGET)-$(VERSION)" copy_files
 	tar cf - $(TARGET)-$(VERSION)/ \
 	| gzip > $(TARGET)_$(MTIME).tgz
 	test -d $(TARGET)-$(VERSION) && \
@@ -404,17 +403,23 @@ targz:
 	$(RM) -R $(TARGET)-$(VERSION) 
 	test -d ../Archiv && mv -v $(TARGET)_*.tgz ../Archiv || echo no copy
 
+# ein automake Ziel
+distdir:
+	cd . && $(MAKE) DESTDIR=$(distdir) copy_files
+	# tar acepts only 99 chars for filenames
+	$(RM) -R $(distdir)/ICC\ Examin.app/
+	mkdir -p $(distdir)/ICC\ Examin.app/
+
 copy_files:
-	mkdir $(DESTDIR)
-	(cd fl_i18n; \
-	 make DESTDIR=$(DESTDIR)/fl_i18n -f $(MAKEFILE_ARCH) copy_files; \
-	 cd ..)
+	mkdir -p $(DESTDIR)
+	cd fl_i18n && \
+	  $(MAKE) DESTDIR=$(DESTDIR)/fl_i18n -f $(MAKEFILE_ARCH) copy_files
 	$(COPY) -R \
 	$(ALL_FILES) \
 	$(DESTDIR)
-	mkdir $(DESTDIR)/tests
+	mkdir -p $(DESTDIR)/tests
 	$(COPY) $(TEST_FILES) $(DESTDIR)/tests
-	mkdir $(DESTDIR)/po
+	mkdir -p $(DESTDIR)/po
 	$(COPY) $(POT_FILE) $(DESTDIR)/po
 	for ling in $(LINGUAS); do \
 	  test -f po/$${ling}.po \
@@ -447,6 +452,8 @@ install_cp:
 	mkdir -p $(DESTDIR)$(CP_DIR)
 	$(INSTALL) -m 755 $(CINEPAINT) $(DESTDIR)$(CP_DIR)
 	#strip $(DESTDIR)$(bindir)/$(CINEPAINT)
+	mkdir -p $(DESTDIR)$(datadir)/fonts/
+	$(INSTALL) -m 644 $(FONT) $(DESTDIR)$(datadir)/fonts/$(FONT)
 	fltk-config --post $(DESTDIR)$(CP_DIR)/$(CINEPAINT)
 	mkdir -p $(DESTDIR)$(datadir)/fonts/
 	echo  Linguas ...
@@ -487,7 +494,11 @@ install_global:
 
 uninstall:
 	echo deinstalliere ...
-	$(RM) $(DESTDIR)$(bindir)/$(BINTARGET)
+	if [ "$(INSTALL_TARGET)" = "install_global" ]; then \
+	  $(DESTDIR)$(bindir)/$(BINTARGET); \
+	else \
+	  $(RM) $(DESTDIR)$(CP_DIR)/$(CINEPAINT); \
+	fi
 	$(RM) $(DESTDIR)$(desktopdir)/icc_examin.desktop
 	$(RM) $(DESTDIR)$(datadir)/mime/packages/icc.xml
 	$(RM) $(DESTDIR)$(pixmapdir)/icc_examin.png
@@ -543,10 +554,10 @@ unbundle:
 pkg:	bundle
 	echo Vorbereiten des osX Packetes ...
 	$(RM) -r installation/*
-	make DESTDIR=`pwd`/installation install
+	$(MAKE) DESTDIR=`pwd`/installation install
 	mkdir -p installation/Applications/
 	$(COPY) -R ICC\ Examin.app installation/Applications/
-	make DESTDIR=`pwd`/installation/Applications/ unbundle
+	$(MAKE) DESTDIR=`pwd`/installation/Applications/ unbundle
 	test -f ~/bin/iccgamut \
 	  && $(INSTALL) -m 755 ~/bin/iccgamut installation$(bindir) \
 	  || test -f iccgamut && $(INSTALL) -m 755 iccgamut installation$(bindir) \

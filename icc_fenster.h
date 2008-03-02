@@ -53,6 +53,7 @@ namespace icc_examin_ns {
      static int n_;              //!< verfuegbare Plaetze in list_
      static int ref_;            //!< genutzte Plaetze in list_
      int    id_;                 //!< Identifikationsnummer
+     int    desktop_;            //!< Dekstopnummer - _NET_CURRENT_DESKTOP 
      void   init_class_();       //!< Initialisierung der statischen Elemente
      void   init_object_();      //!< Initialisierung des dynamischen Objektes
      char   titel_[256];         //!< Fenstertitel

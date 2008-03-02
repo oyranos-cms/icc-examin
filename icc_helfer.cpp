@@ -67,11 +67,11 @@ icValue (icUInt16Number val)
 
 # ifdef DEBUG_ICCFUNKT
 # if 0
-  cout << *erg << " Größe nach Wandlung " << (int)korb[0] << " "
+  cout << *erg << " Groesse nach Wandlung " << (int)korb[0] << " "
        << (int)korb[1] << " " << (int)korb[2] << " " <<(int)korb[3]
        << " "; DBG_PROG
 # else
-  cout << *erg << " Größe nach Wandlung " << (int)temp[0] << " " << (int)temp[1]
+  cout << *erg << " Groesse nach Wandlung " << (int)temp[0] << " " << (int)temp[1]
        << " "; DBG_PROG
 # endif
 # endif
@@ -99,7 +99,7 @@ icValue (icUInt32Number val)
   unsigned int *erg = (unsigned int*) &uint32[0];
 
 # ifdef DEBUG_ICCFUNKT
-  cout << *erg << " Größe nach Wandlung " << (int)temp[0] << " "
+  cout << *erg << " Groesse nach Wandlung " << (int)temp[0] << " "
        << (int)temp[1] << " " << (int)temp[2] << " " <<(int)temp[3]
        << " "; DBG_PROG
 # endif
@@ -130,7 +130,7 @@ icValue (icUInt64Number val)
   unsigned long *erg = (unsigned long*) &uint64[0];
 
 # ifdef DEBUG_ICCFUNKT
-  cout << *erg << " Größe nach Wandlung " << (int)temp[0] << " "
+  cout << *erg << " Groesse nach Wandlung " << (int)temp[0] << " "
        << (int)temp[1] << " " << (int)temp[2] << " " <<(int)temp[3]
        << " "; DBG_PROG
 # endif
@@ -159,7 +159,7 @@ icValue (icInt32Number val)
   signed int *erg = (signed int*) &korb[0];
 
 # ifdef DEBUG_ICCFUNKT
-  cout << *erg << " Größe nach Wandlung " << (int)korb[0] << " "
+  cout << *erg << " Groesse nach Wandlung " << (int)korb[0] << " "
        << (int)korb[1] << " " << (int)korb[2] << " " <<(int)korb[3]
        << " "; DBG_PROG
 # endif
@@ -189,7 +189,7 @@ icValue (icInt16Number val)
 
   signed int *erg = (signed int*) &korb[0];
 # ifdef DEBUG_ICCFUNKT
-  cout << *erg << " Größe nach Wandlung " << (int)korb[0] << " "
+  cout << *erg << " Groesse nach Wandlung " << (int)korb[0] << " "
        << (int)korb[1] << " " << (int)korb[2] << " " <<(int)korb[3]
        << " "; DBG_PROG
 # endif
@@ -1169,7 +1169,7 @@ getExecPath(const char *filename)
 void
 setI18N( const char *exename )
 {
-  const char *locale_paths[3] = {0,0,0};
+  const char *locale_paths[4] = {0,0,0,0};
   signed int is_path = -1;
   int num_paths = 0;
 # if __APPLE__
@@ -1193,7 +1193,7 @@ setI18N( const char *exename )
 # else
   locale_paths[0] = LOCALEDIR; ++num_paths;
 
-  DBG_NUM_V( argc <<" "<< exename )
+  DBG_NUM_V( exename )
 
   { const char *reloc_path = {"../share/locale"};
     int len = (strlen(exename) + strlen(reloc_path)) * 2 + 128;
@@ -1208,14 +1208,30 @@ setI18N( const char *exename )
     if (text) free (text);
   }
 # endif
-  is_path = fl_search_locale_path (num_paths, locale_paths, "de", "icc_examin");
-  if(is_path < 0)
-    is_path = fl_search_locale_path (num_paths, locale_paths, "de",
-              strrchr(exename, DIR_SEPARATOR_C)+1 );
+  const char* tdd = getenv("TEXTDOMAINDIR");
+  if(tdd)
+  {
+    locale_paths[num_paths] = tdd;
+    DBG_V( num_paths <<" "<< tdd );
+    ++num_paths;
+  }
 
+  is_path = fl_search_locale_path (num_paths, locale_paths, "de", "icc_examin");
   if(is_path >= 0) {
     fl_initialise_locale ( "icc_examin", locale_paths[is_path] );
     DBG_NUM_S( "locale gefunden in: " << locale_paths[is_path] )
+  } else {
+    if(is_path < 0)
+    {
+      is_path = fl_search_locale_path (num_paths, locale_paths, "de",
+                strrchr(exename, DIR_SEPARATOR_C)+1 );
+
+      if(is_path >= 0) {
+        fl_initialise_locale ( strrchr(exename, DIR_SEPARATOR_C)+1,
+                               locale_paths[is_path] );
+        DBG_NUM_S( "locale gefunden in: " << locale_paths[is_path] )
+      }
+    }
   }
 }
 
@@ -1274,7 +1290,7 @@ suchenErsetzen          (std::string &text,
 std::vector<std::string>
 zeilenNachVector(std::string &text)
 { DBG_PROG_START
-  // füilen aus einen Text in einen Vector
+  // fueilen aus einen Text in einen Vector
   std::vector <std::string> texte;
 
       int len = strlen(text.c_str());
@@ -1290,7 +1306,7 @@ zeilenNachVector(std::string &text)
         } else
           text_line += c;
       }
-      if (text_line.size() > 0) // falls was übrig bleibt
+      if (text_line.size() > 0) // falls was uebrig bleibt
         texte.push_back(text_line.c_str());
 
   DBG_PROG_ENDE
@@ -1308,7 +1324,7 @@ sucheWort         ( std::string            &text,
   while( !fertig )
   { // vielleicht etwas viel Aufwand ...
     if( (pos = text.find( wort, pos )) != std::string::npos )
-    { // Bestätige das Ende des Wortes
+    { // Bestaetige das Ende des Wortes
       //DBG_NUM_V( (pos + wort.size()) <<" "<< text.size() )
       if( (text[pos + wort.size()] == 0    ||  // NUL
            text[pos + wort.size()] == ' '  ||  // SP
@@ -1369,7 +1385,7 @@ unterscheideZiffernWorte ( std::string &zeile,
     if( (pos = zeile.find_first_of( alnum, pos )) != std::string::npos )
     {
       bool anf_zaehlen = true;
-      // erstes Anführungszeichen suchen
+      // erstes Anfuehrungszeichen suchen
       if( zeile.find_first_of( "\"", pos2 ) != std::string::npos &&
           zeile.find_first_of( "\"", pos2 ) < pos )
         pos2 = zeile.find_first_of( "\"", pos2 );
@@ -1377,7 +1393,7 @@ unterscheideZiffernWorte ( std::string &zeile,
         anf_zaehlen = false;
       DBG_PARSER_V( pos2 )
 
-      // Anführungszeichen zählen [ ""  " "  ABC ] - zeichenweise
+      // Anfuehrungszeichen zaehlen [ ""  " "  ABC ] - zeichenweise
       int letzes_anf_zeichen = -1;
       if( anf_zaehlen )
         for( pos3 = pos2; pos3 < pos; ++pos3)
@@ -1387,7 +1403,7 @@ unterscheideZiffernWorte ( std::string &zeile,
           else
             letzes_anf_zeichen = pos3;
 
-      // falls ein Anführungszeichen vor dem Wort ungerade sind // ["" " ABC ]
+      // falls ein Anfuehrungszeichen vor dem Wort ungerade sind // ["" " ABC ]
       if( letzes_anf_zeichen >= 0 )
       {
         in_anfuehrung = true;
@@ -1423,12 +1439,12 @@ unterscheideZiffernWorte ( std::string &zeile,
       if( txt.find_first_of( numerisch ) != std::string::npos &&
           txt.find( "." ) != std::string::npos &&
           txt.find_first_of( alpha ) == std::string::npos )
-      { // ist Fließkommazahl
+      { // ist Fliesskommazahl
         pos += txt.size();
         sprintf( text, "%f", atof( zeile.substr( pos, ende-pos ).c_str() ) );
-        DBG_PARSER_S( "Fließkommazahl: " << txt )
+        DBG_PARSER_S( "Fliesskommazahl: " << txt )
         ergebnis.push_back( zifferWort((double)atof(txt.c_str())) );
-        DBG_PARSER_S( "prüfen: "<< ergebnis[ergebnis.size()-1].zahl.first <<" "<< ergebnis[ergebnis.size()-1].zahl.second )
+        DBG_PARSER_S( "pruefen: "<< ergebnis[ergebnis.size()-1].zahl.first <<" "<< ergebnis[ergebnis.size()-1].zahl.second )
       } else
       if( txt.find_first_of( ziffer ) != std::string::npos &&
           txt.find( "." ) == std::string::npos &&
@@ -1446,7 +1462,7 @@ unterscheideZiffernWorte ( std::string &zeile,
         ergebnis.push_back( zifferWort(txt) );
         DBG_PARSER_S( "Text: " << txt )
         DBG_PARSER_V( in_anfuehrung )
-        // Anführungszeichen Beginn
+        // Anfuehrungszeichen Beginn
         if( !in_anfuehrung && anfuehrungsstriche_setzen )
         {
           zeile.insert( pos, "\"" );
@@ -1461,7 +1477,7 @@ unterscheideZiffernWorte ( std::string &zeile,
         if( (pos2 = zeile.find_first_of( trenner, pos ))
             == std::string::npos)
           pos2 = zeile.size();
-        // Es folgt ein Anführungszeichen
+        // Es folgt ein Anfuehrungszeichen
         if( pos2 > zeile.find_first_of( "\"", pos ) &&
             zeile.find_first_of( "\"", pos ) != std::string::npos &&
             !neusetzen )

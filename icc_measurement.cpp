@@ -883,7 +883,7 @@ ICCmeasurement::init_umrechnen                     (void)
                                     PRECALC|BW_COMP);
     }
     fortschritt(0.9);
-    double Farbe[channels_], RGB[3], XYZ[3], Lab[3];
+    double Farbe[64], RGB[3], XYZ[3], Lab[3];
     bool vcgt = false;
     std::vector<std::vector<double> > vcgt_kurven;
     //TODO

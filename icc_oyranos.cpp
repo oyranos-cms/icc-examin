@@ -914,13 +914,17 @@ Oyranos::wandelLabNachBildschirmFarben(double *Lab_Speicher, // 0.0 - 1.0
     static cmsHTRANSFORM h_lab_to_RGB_teuer = 0;
     cmsHTRANSFORM form = 0;
     double *RGB_Speicher = 0;
-    static  char digest[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}, dig[16];
     static int flags_ = 0;
 
     size_t groesse = 0;
     char*  block = (char*) moni(0,0, groesse);
-
+#ifndef OYRANOS_VERSION
+#define OYRANOS_VERSION 0
+#endif
+#if OYRANOS_VERSION > 106
+    static  char digest[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}, dig[16];
     oyProfileGetMD5(block, groesse, dig);
+#endif
 
     if(flags & cmsFLAGS_GAMUTCHECK)
       form = h_lab_to_RGB_teuer;
@@ -929,11 +933,15 @@ Oyranos::wandelLabNachBildschirmFarben(double *Lab_Speicher, // 0.0 - 1.0
 
 
     if(flags_ != (flags & ~cmsFLAGS_GAMUTCHECK) ||
+#if OYRANOS_VERSION > 106
        memcmp(digest, dig, 16) != 0 ||
+#endif
        !form )
     {
       flags_ = flags & ~cmsFLAGS_GAMUTCHECK;
+#if OYRANOS_VERSION > 106
       memcpy( digest, dig, 16 );
+#endif
 
       fortschritt(0.05);
 

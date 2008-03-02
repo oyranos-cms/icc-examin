@@ -263,15 +263,26 @@ if [ -n "$PO" ] && [ $PO -gt 0 ]; then
 fi
 
 if [ -n "$PREPARE_MAKEFILES" ] && [ $PREPARE_MAKEFILES -gt 0 ]; then
-  if [ -n "$MAKEFILES" ]; then
-    for i in $MAKEFILES; do
-      echo preparing "$i"
+  if [ -n "$MAKEFILE_DIR" ]; then
+    for i in $MAKEFILE_DIR; do
+      echo preparing Makefile in "$i/"
       if [ $OSUNAME = "BSD" ]; then
-        cat  "$i".in | sed 's/^\#if/.if/g ; s/^\#end/.end/g '  >> "$i"
+        test -f "$i/makefile".in && cat  "$i/makefile".in | sed 's/^\#if/.if/g ; s/^\#end/.end/g '  >> "$i/makefile"
       else
-        cat  "$i".in | sed 's/^\#if/if/g ; s/^\#elif/elif/g ; s/^\#else/else/g ; s/^\ \ \#if/\ \ if/g ; s/^\#end/end/g '  >> "$i"
+        test -f "$i/makefile".in && cat  "$i/makefile".in | sed 's/^\#if/if/g ; s/^\#elif/elif/g ; s/^\#else/else/g ; s/^\ \ \#if/\ \ if/g ; s/^\#end/end/g '  >> "$i/makefile"
       fi
+      mv "$i/makefile" "$i/Makefile"
     done
+  fi
+fi
+
+
+if [ -n "$DEBUG" ] && [ $DEBUG -gt 0 ]; then
+  if [ "$debug" -eq "1" ]; then
+    DEBUG_="-Wall -g -DDEBUG --pedantic"
+    echo "DEBUG = $DEBUG_" >> $CONF
+    echo "DEBUG_SWITCH = -v" >> $CONF
+    echo "DEBUG_SWITCH = -v" >> $CONF_I18N
   fi
 fi
 
