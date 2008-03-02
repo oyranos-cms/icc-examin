@@ -1116,12 +1116,15 @@ ICCmeasurement::init_umrechnen                     (void)
             Farbe[3] = CMYK_Satz_[i].K*100.0;
           }
 
+          if(hCOLOURtoXYZ)
           cmsDoTransform (hCOLOURtoXYZ, &Farbe[0], &XYZ[0], 1);
           FarbeZuDouble ( &XYZ_Ergebnis_[i], &XYZ[0] );
 
+          if(hCOLOURtoLab)
           cmsDoTransform (hCOLOURtoLab, &Farbe[0], &CIELab[0], 1);
           CIELabToLab ( &CIELab[0], Lab_Ergebnis_[i] );
-        
+
+          if(hCOLOURtoRGB)
           cmsDoTransform (hCOLOURtoRGB, &Farbe[0], &RGB[0], 1);
           FarbeZuDouble ( &RGB_ProfilFarben_[i], &RGB[0] );
 

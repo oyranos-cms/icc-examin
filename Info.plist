@@ -70,7 +70,7 @@
 	<key>CFBundleExecutable</key>
 	<string>ICC Examin</string>
 	<key>CFBundleGetInfoString</key>
-	<string>Copyright 2004-2006, Kai-Uwe Behrmann
+	<string>Copyright 2004-2008, Kai-Uwe Behrmann
 	www.behrmann.name</string>
 	<key>CFBundleIconFile</key>
 	<string>icc_examin.icns</string>
@@ -83,7 +83,7 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>0.39</string>
+	<string>0.45rc6</string>
 	<key>CSResourcesFileMapped</key>
 	<true/>
 </dict>

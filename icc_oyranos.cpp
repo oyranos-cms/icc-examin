@@ -729,79 +729,79 @@ Oyranos::netzVonProfil_ (ICCnetz & netz,
       netz.indexe. insert( index_p );
     }
 
-    int off = 4 * a * (a + 1);
-          // 1 0 0 (L a b)
-          index_p.second.i[0] = 4*a-1;   index_p.second.i[1] = off;
-          index_p.second.i[2] = 0;
-          netz.indexe. insert( index_p );
+  int off = 4 * a * (a + 1);
+  // 1 0 0 (L a b)
+  index_p.second.i[0] = 4*a-1;   index_p.second.i[1] = off;
+  index_p.second.i[2] = 0;
+  netz.indexe. insert( index_p );
 
-                                         index_p.second.i[0] = off;
-          index_p.second.i[2] = 0;       index_p.second.i[1] = 1;
-          netz.indexe. insert( index_p );
+                                 index_p.second.i[0] = off;
+  index_p.second.i[2] = 0;       index_p.second.i[1] = 1;
+  netz.indexe. insert( index_p );
 
-          // 0 0 0
-          index_p.second.i[1] = off-1;   index_p.second.i[0] = off+a-1;
-          index_p.second.i[2] = off-4*a;
-          netz.indexe. insert( index_p );
+  // 0 0 0
+  index_p.second.i[1] = off-1;   index_p.second.i[0] = off+a-1;
+  index_p.second.i[2] = off-4*a;
+  netz.indexe. insert( index_p );
 
-                                         index_p.second.i[1] = off+a-1;
-          index_p.second.i[2] = off-4*a; index_p.second.i[0] = off - 4*a+1;
-          netz.indexe. insert( index_p );
+                                 index_p.second.i[1] = off+a-1;
+  index_p.second.i[2] = off-4*a; index_p.second.i[0] = off - 4*a+1;
+  netz.indexe. insert( index_p );
 
-          // 0 0 1
-          index_p.second.i[2] = off-a; index_p.second.i[1] = off-a-1;
-                                    index_p.second.i[0] = off+2*(a-1)*(a-1)-a+1;
-          netz.indexe. insert( index_p );
+  // 0 0 1
+  index_p.second.i[2] = off-a; index_p.second.i[1] = off-a-1;
+                               index_p.second.i[0] = off+2*(a-1)*(a-1)-a+1;
+  netz.indexe. insert( index_p );
 
-          index_p.second.i[0] = off-a;
-          index_p.second.i[1] = off-a+1; index_p.second.i[2] = off+2*(a-1)*(a-1)-a+1;
-          netz.indexe. insert( index_p );
+  index_p.second.i[0] = off-a;
+  index_p.second.i[1] = off-a+1; index_p.second.i[2] = off+2*(a-1)*(a-1)-a+1;
+  netz.indexe. insert( index_p );
 
-          // 0 1 1
-          index_p.second.i[0] = off-2*a+1; index_p.second.i[2] = off-2*a;
-          index_p.second.i[1] = off+2*(a-1)*(a-1)-1;
-          netz.indexe. insert( index_p );
+  // 0 1 1
+  index_p.second.i[0] = off-2*a+1; index_p.second.i[2] = off-2*a;
+  index_p.second.i[1] = off+2*(a-1)*(a-1)-1;
+  netz.indexe. insert( index_p );
 
-                                         index_p.second.i[1] = off-2*a;
-          index_p.second.i[2] = off+2*(a-1)*(a-1)-1; index_p.second.i[0] = off-2*a-1;
-          netz.indexe. insert( index_p );
+                                             index_p.second.i[1] = off-2*a;
+  index_p.second.i[2] = off+2*(a-1)*(a-1)-1; index_p.second.i[0] = off-2*a-1;
+  netz.indexe. insert( index_p );
 
 
-          // 1 1 1
-          index_p.second.i[0] = 2*a-1;   index_p.second.i[2] = 2*a;
-          index_p.second.i[1] = off+2*(a-1)*(a-1)-a;
-          netz.indexe. insert( index_p );
+  // 1 1 1
+  index_p.second.i[0] = 2*a-1;   index_p.second.i[2] = 2*a;
+  index_p.second.i[1] = off+2*(a-1)*(a-1)-a;
+  netz.indexe. insert( index_p );
 
-                                         index_p.second.i[1] = 2*a;
-          index_p.second.i[2] = off+2*(a-1)*(a-1)-a;index_p.second.i[0] = 2*a+1;
-          netz.indexe. insert( index_p );
+                                             index_p.second.i[1] = 2*a;
+  index_p.second.i[2] = off+2*(a-1)*(a-1)-a; index_p.second.i[0] = 2*a+1;
+  netz.indexe. insert( index_p );
 
-          // 1 0 1
-          index_p.second.i[2] = 3*a;   index_p.second.i[0] = 3*a-1;
-                                  index_p.second.i[1] = off+2*(a-1)*(a-1)-2*a+2;
-          netz.indexe. insert( index_p );
+  // 1 0 1
+  index_p.second.i[2] = 3*a;   index_p.second.i[0] = 3*a-1;
+                               index_p.second.i[1] = off+2*(a-1)*(a-1)-2*a+2;
+  netz.indexe. insert( index_p );
 
-          index_p.second.i[2] = 3*a;
-          index_p.second.i[1] = 3*a+1; index_p.second.i[0] = off+2*(a-1)*(a-1)-2*a+2;
-          netz.indexe. insert( index_p );
+  index_p.second.i[2] = 3*a;
+  index_p.second.i[1] = 3*a+1; index_p.second.i[0] = off+2*(a-1)*(a-1)-2*a+2;
+  netz.indexe. insert( index_p );
 
-          // 1 1 0
-          index_p.second.i[0] = off+a-2; index_p.second.i[1] = a + 1;
-          index_p.second.i[2] = a - 1;
-          netz.indexe. insert( index_p );
+  // 1 1 0
+  index_p.second.i[0] = off+a-2; index_p.second.i[1] = a + 1;
+  index_p.second.i[2] = a - 1;
+  netz.indexe. insert( index_p );
 
-                                         index_p.second.i[0] = a + 1;
-          index_p.second.i[2] = a - 1;   index_p.second.i[1] = a;
-          netz.indexe. insert( index_p );
+                                 index_p.second.i[0] = a + 1;
+  index_p.second.i[2] = a - 1;   index_p.second.i[1] = a;
+  netz.indexe. insert( index_p );
 
-          // 0 1 0
-          index_p.second.i[0] = off+2*(a-1)-1;
-          index_p.second.i[1] = off-3*a-1; index_p.second.i[2] = off-3*a;
-          netz.indexe. insert( index_p );
+  // 0 1 0
+  index_p.second.i[0] = off+2*(a-1)-1;
+  index_p.second.i[1] = off-3*a-1; index_p.second.i[2] = off-3*a;
+  netz.indexe. insert( index_p );
 
-          index_p.second.i[1] = off+2*(a-1)-1; index_p.second.i[0] = off-3*a+1;
-                                         index_p.second.i[2] = off-3*a+0;
-          netz.indexe. insert( index_p );
+  index_p.second.i[1] = off+2*(a-1)-1; index_p.second.i[0] = off-3*a+1;
+                                       index_p.second.i[2] = off-3*a+0;
+  netz.indexe. insert( index_p );
 
   for(int y = 0; y < a; ++y)
   {

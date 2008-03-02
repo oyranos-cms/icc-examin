@@ -3007,12 +3007,14 @@ void getFacesFromICCnetz ( const ICCnetz & netz, icc_examin_ns::FACE **fList,
   }
 
   if (vList != 0) { /* process last face (or only) */
+      err = 0;
       appendVertex(&vList,&vListTail, /* append duplicate 1st vertex */
                    allocVertex(vList->xx,vList->yy,vList->zz,&color));
-      computePlane(vList->xx,vList->yy,vList->zz,vList->vnext->xx,
+      err = computePlane(vList->xx,vList->yy,vList->zz,vList->vnext->xx,
                    vList->vnext->yy,vList->vnext->zz,vList->vnext->vnext->xx,
                    vList->vnext->vnext->yy,vList->vnext->vnext->zz,&plane);
-      appendFace(fList,&fListTail,allocFace(vList,&plane));
+      if(!err)
+        appendFace(fList,&fListTail,allocFace(vList,&plane));
   }
 }
 
@@ -3221,7 +3223,7 @@ GL_Ansicht::hineinNetze_       (const icc_examin_ns::ICCThreadList<ICCnetz> & d_
     {
       bsp = icc_examin_ns::BSPconstructTree(&faceList);
       icc_examin_ns::freeFaceList( &faceList );
-    } else
+    } else if (0)
       for(unsigned i = 0; i < d_n.size(); ++i)
         netz.insert( d_n[i] );
 

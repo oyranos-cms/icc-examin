@@ -156,13 +156,14 @@ static VERTEX *findNextIntersection(VERTEX *vstart,const PLANE *plane,
 #define HYP3(a,b,c) sqrt( (a)*(a) + (b)*(b) + (c)*(c) )
 static void interpolateColour (VERTEX * a, VERTEX * b, VERTEX * ab)
 {
-  return;
+#if 0
   float a_ab = HYP3( a->xx - ab->xx, a->yy - ab->yy, a->zz - ab->zz );
   float b_ab = HYP3( b->xx - ab->xx, b->yy - ab->yy, b->zz - ab->zz );
   float r = a_ab / (a_ab + b_ab);
   ab->color.rr = a->color.rr * (1.-r) + b->color.rr * (r);
   ab->color.gg = a->color.gg * (1.-r) + b->color.gg * (r);
   ab->color.bb = a->color.bb * (1.-r) + b->color.bb * (r);
+#endif
 }
 
 

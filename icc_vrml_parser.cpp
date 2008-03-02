@@ -492,7 +492,10 @@ std::string netzNachVRML( icc_examin_ns::ICCThreadList<ICCnetz> & netze )
         temp.append( num );
         sprintf(num," %.03f", (netz.punkte[j].koord[0] -.5 ) * 100.0 );
         temp.append( num );
-        temp.append( ",\n" );
+        temp.append( ", " );
+        sprintf(num, "# %d", j);
+        temp.append( num );
+        temp.append( "\n" );
       }
                                  
       temp.append("\
@@ -534,7 +537,10 @@ std::string netzNachVRML( icc_examin_ns::ICCThreadList<ICCnetz> & netze )
           sprintf(num," %.03f", netz.punkte[j].farbe[k] );
           temp.append( num );
         }
-        temp.append( ",\n" );
+        temp.append( ", " );
+        sprintf(num, "# %d", j);
+        temp.append( num );
+        temp.append( "\n" );
       }
                                  
       temp.append("\

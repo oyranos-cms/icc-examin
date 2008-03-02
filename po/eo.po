@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2008-02-23 00:10+0100\n"
+"POT-Creation-Date: 2008-02-23 17:08+0100\n"
 "PO-Revision-Date: 2005-08-13 17:35+0200\n"
 "Last-Translator: Kai-Uwe Behrmann\n"
 "Language-Team:  <eo@li.org>\n"
@@ -117,7 +117,7 @@ msgstr "14koloroj"
 msgid "15color"
 msgstr "15koloroj"
 
-#: agviewer.cpp:311 icc_gl.cpp:3264 icc_gl.cpp:3283 icc_gl.cpp:3402
+#: agviewer.cpp:311 icc_gl.cpp:3266 icc_gl.cpp:3285 icc_gl.cpp:3404
 msgid "left-/middle-/right mouse button -> rotate/cut/menu"
 msgstr ""
 
@@ -125,8 +125,8 @@ msgstr ""
 msgid "Pause"
 msgstr ""
 
-#: agviewer.cpp:348 agviewer.cpp:356 icc_gl.cpp:3368 icc_gl.cpp:3379
-#: icc_gl.cpp:3384 icc_gl.cpp:3389
+#: agviewer.cpp:348 agviewer.cpp:356 icc_gl.cpp:3370 icc_gl.cpp:3381
+#: icc_gl.cpp:3386 icc_gl.cpp:3391
 msgid "left mouse button -> go back"
 msgstr ""
 

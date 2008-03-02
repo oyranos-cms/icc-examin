@@ -534,15 +534,15 @@ uninstall:
 	done;
 	echo ... $@ fertig
 
-bundle:	static
+bundle:	#static
 	echo bündeln ...
-	test -d ICC\ Examin.app/Contents/Resources/lib/ || mkdir -p ICC\ Examin.app/ ICC\ Examin.app/Contents/ ICC\ Examin.app/Contents/MacOS/ ICC\ Examin.app/Contents/Resources/  ICC\ Examin.app/Contents/Resources/bin/ ICC\ Examin.app/Contents/Resources/lib/ ICC\ Examin.app/Contents/Resources/share/
+	test -d ICC\ Examin.app/Contents/Resources/lib/color/cmms/ || mkdir -p ICC\ Examin.app/ ICC\ Examin.app/Contents/ ICC\ Examin.app/Contents/MacOS/ ICC\ Examin.app/Contents/Resources/  ICC\ Examin.app/Contents/Resources/bin/ ICC\ Examin.app/Contents/Resources/lib/color/cmms/ ICC\ Examin.app/Contents/Resources/share/
 	$(INSTALL) -m 644 Info.plist ICC\ Examin.app/Contents/Info.plist
 	$(INSTALL) -m 755 ICC\ Examin.sh ICC\ Examin.app/Contents/MacOS/ICC\ Examin
 	$(INSTALL) -m 755 $(BINTARGET) ICC\ Examin.app/Contents/MacOS/
 	strip ICC\ Examin.app/Contents/MacOS/$(BINTARGET)
 	echo  Bibliotheken ...
-	for bib in jpeg png lcms dl intl iconv fltk freetype; do \
+	for bib in jpeg png lcms dl intl iconv fltk freetype oyranos elektra; do \
 	  echo "bündele lib$${bib}$(LIBEXT) ..."; \
       test -f $(libdir)/lib$${bib}$(LIBEXT) \
 		&& ($(COPY) -R $(libdir)/lib$${bib}*$(LIBEXT) 'ICC Examin.app/Contents/Resources/lib/' ) \
@@ -550,6 +550,7 @@ bundle:	static
 		    && ($(COPY) -R /usr/X11R6/lib/lib$${bib}*$(LIBEXT) 'ICC Examin.app/Contents/Resources/lib/' ) \
 	        || (echo lib$${bib}$(LIBEXT) not found ... skipping)); \
 	done;
+	-$(COPY) $(libdir)/color/cmms/lib* ICC\ Examin.app/Contents/Resources/lib/color/cmms/
 	test -f ~/bin/iccgamut \
 	  && $(INSTALL) -m 755 ~/bin/iccgamut ICC\ Examin.app/Contents/Resources/bin/ \
 	  || test -f iccgamut && $(INSTALL) -m 755 iccgamut ICC\ Examin.app/Contents/Resources/bin/ \
@@ -564,6 +565,8 @@ bundle:	static
             $(INSTALL) -m 644 po/$${ling}.gmo ICC\ Examin.app/Contents/Resources/locale/$${ling}/LC_MESSAGES/$(TARGET).mo ) \
 		|| (echo $${ling}.gmo is not yet ready ... skipping); \
 	done;
+	test -f $(DESTDIR)$(datadir)/locale/de/LC_MESSAGES/oyranos.mo && \
+	  $(COPY) $(DESTDIR)$(datadir)/locale/de/LC_MESSAGES/oyranos.mo ICC\ Examin.app/Contents/Resources/locale/de/LC_MESSAGES || echo no Oyranos DE i18n;
 	echo ... bündeln beendet
 
 unbundle:

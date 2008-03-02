@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cinepaint_icc-examin_eu\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2008-02-23 00:10+0100\n"
+"POT-Creation-Date: 2008-02-23 17:08+0100\n"
 "PO-Revision-Date: 2007-11-07 11:11+0100\n"
 "Last-Translator: Iñaki Larrañaga Murgoitio <dooteo@zundan.com>\n"
 "Language-Team: Basque <itzulpena@euskalgnu.org>\n"
@@ -118,7 +118,7 @@ msgstr "14kolorea"
 msgid "15color"
 msgstr "15kolorea"
 
-#: agviewer.cpp:311 icc_gl.cpp:3264 icc_gl.cpp:3283 icc_gl.cpp:3402
+#: agviewer.cpp:311 icc_gl.cpp:3266 icc_gl.cpp:3285 icc_gl.cpp:3404
 msgid "left-/middle-/right mouse button -> rotate/cut/menu"
 msgstr "saguaren ezkerreko/erdiko/eskuineko botoia -> biratu/ebaki/menua"
 
@@ -126,8 +126,8 @@ msgstr "saguaren ezkerreko/erdiko/eskuineko botoia -> biratu/ebaki/menua"
 msgid "Pause"
 msgstr "Pausarazi"
 
-#: agviewer.cpp:348 agviewer.cpp:356 icc_gl.cpp:3368 icc_gl.cpp:3379
-#: icc_gl.cpp:3384 icc_gl.cpp:3389
+#: agviewer.cpp:348 agviewer.cpp:356 icc_gl.cpp:3370 icc_gl.cpp:3381
+#: icc_gl.cpp:3386 icc_gl.cpp:3391
 msgid "left mouse button -> go back"
 msgstr "saguaren ezkerreko botoia -> joan atzera"
 

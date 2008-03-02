@@ -52,7 +52,13 @@ typedef struct bspnodeTag {
 } BSPNODE;
 #define NULL_BSPNODE ((BSPNODE *) NULL)
 
+
+#ifdef __APPLE__
+/* ku.b for ICC Examin */
+#define TOLER 0.000076
+#else
 #define TOLER 0.0000076
+#endif
 #define IS_EQ(a,b) ((fabs((double)(a)-(b)) >= (double) TOLER) ? 0 : 1)
 typedef enum {NEGATIVE= -1, ZERO= 0, POSITIVE= 1} SIGN;
 #define FSIGN(f) (((f) < -TOLER) ? NEGATIVE : ((f) > TOLER ? POSITIVE : ZERO))
