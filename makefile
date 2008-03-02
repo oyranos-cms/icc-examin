@@ -345,12 +345,14 @@ pot:	$(POT_FILE)
 	done;
 
 potfile:
-	xgettext --force-po $(XGETTEXT_OPTIONS) \
+	test `which xgettext` && xgettext --force-po $(XGETTEXT_OPTIONS) \
 	-d $(TARGET) \
 	-o $(POT_FILE) \
-	$(SOURCES)
+	$(SOURCES) || echo -e "\c"
 	for ling in $(LINGUAS); do \
-            $(MSGMERGE) po/$${ling}.po $(POT_FILE); \
+            test `which $(MSGMERGE)` && $(MSGMERGE) po/$${ling}.po \
+                 $(POT_FILE) || \
+	         echo -e "\c"; \
 	done;
 
 $(POT_FILE):	potfile
@@ -536,7 +538,7 @@ pkg:	bundle
 	    || echo iccgamut nicht gefunden
 	$(LINK) $(bindir)/$(BINTARGET) installation/Applications/ICC\ Examin.app/Contents/MacOS/ICC\ Examin
 	open /Developer/Applications/Utilities/PackageMaker.app ICC\ Examin.pmsp
-	echo sudo: chown -R root:admin installation  -- bitte nicht vergessen
+	echo sudo: chown -R root:admin `pwd`/installation  -- bitte nicht vergessen
 	echo ... Packet vorbereitet
 
 unpkg:

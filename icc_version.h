@@ -3,9 +3,9 @@
 
 #define ICC_EXAMIN_VERSION_A 0
 #define ICC_EXAMIN_VERSION_B 3
-#define ICC_EXAMIN_VERSION_C 8
-#define ICC_EXAMIN_VERSION 0.38
-#define ICC_EXAMIN_V 0.38
+#define ICC_EXAMIN_VERSION_C 9
+#define ICC_EXAMIN_VERSION 0.39
+#define ICC_EXAMIN_V 0.39
 #define ICC_EXAMIN_D _("May 2004 - October 2005")
 
 #endif //ICC_VERSION_H

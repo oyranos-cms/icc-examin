@@ -10,7 +10,7 @@ ICC Examin depends on following libraries:
     --enable-shared is sometimes a good choice for smaller executables
   # lcms version >= 1.14; 1.15 is recommended due to CGATS parsing is better
   # FLU version >= 2.14 for a convenient file browser (optionally)
-  # FTGL for a text inside OpenGL (optionally)
+  # FTGL version >= 2.1.2 for a text inside OpenGL (optionally)
   # argyll for 3D gamut visualisations (optionally, external, binaries see above)
   # Oyranos for setting options (optionally)
   # for osX only (since version 0.30) install GNU gettext (and libiconv?)

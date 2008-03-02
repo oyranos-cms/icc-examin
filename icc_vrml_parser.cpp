@@ -129,11 +129,13 @@ ICCvrmlParser::lesen_ ()
 
     DBG_VRML_PARSER_S( "IndexedFaceSet gefunden auf Position " << netz_pos <<"-"<< netz_ende );
 
-    arbeit_ = original_.substr (netz_pos, netz_ende-netz_pos+1);
+    arbeit_ = original_.substr (netz_pos-1, netz_ende-netz_pos+1);
     zeilen = zeilenNachVector (arbeit_);
     DBG_PROG_V( zeilen.size() <<"|"<< arbeit_.size() )
 
     // ab nun zeilenweise
+    int flaeche_klammer = false;
+    //int in_coordinate = false;
     bool in_punkte = false;
     bool in_farben = false;
     bool in_indexe = false; DBG_MEM_V( netze_.size() )
@@ -173,13 +175,25 @@ ICCvrmlParser::lesen_ ()
         schalter = false; \
       }
 
-      if(geschweifte_klammer >= 1) {
-        VRMLBereichsTest ( in_punkte, "point", "]" )
-        VRMLBereichsTest ( in_farben, "Color", "}" )
-        VRMLBereichsTest ( in_indexe, "coordIndex", "]" )
+      //if(geschweifte_klammer >= 1) 
+      {
+        if( flaeche_klammer < geschweifte_klammer ) {
+          if( zeile.find("IndexedFaceSet") != std::string::npos ) {
+            DBG_VRML_PARSER_S( z << " IndexedFaceSet " << flaeche_klammer )
+            flaeche_klammer = geschweifte_klammer;
+          }
+        }
+        if( flaeche_klammer > geschweifte_klammer )
+          flaeche_klammer = false;
+        if( flaeche_klammer ) {
+          VRMLBereichsTest ( in_punkte, "point", "]" )
+          VRMLBereichsTest ( in_farben, "Color", "}" )
+          VRMLBereichsTest ( in_indexe, "coordIndex", "]" )
+        }
       }
-      DBG_VRML_PARSER_S( z <<" "<< geschweifte_klammer <<" "<< in_punkte <<" "<< in_farben <<" "<< in_indexe )
+      DBG_VRML_PARSER_S( z <<" "<< geschweifte_klammer <<" "<< flaeche_klammer <<" "<< in_punkte <<" "<< in_farben <<" "<< in_indexe )
       achse = 0;
+
       if( in_punkte )
       {
         werte =

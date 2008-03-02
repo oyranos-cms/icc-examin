@@ -71,7 +71,7 @@ ICCkette::init ()
   {
     WARN_S( _("Waechter Thread nicht gestartet Fehler: ")  << fehler );
   } else
-# if !APPLE && !WIN32
+# if !APPLE && !WIN32 && PTHREAD_THREADS_MAX
   if( fehler == PTHREAD_THREADS_MAX )
   {
     WARN_S( _("zu viele Waechter Threads Fehler: ") << fehler );
