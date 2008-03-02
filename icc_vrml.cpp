@@ -52,12 +52,12 @@ erase_file (char *file)
   return (0);
 }
 
-#define lp {l+=0.1; load_progress->value(l); details->flush();}
+#define lp {l+=0.1; icc_examin->icc_betrachter->load_progress->value(l); icc_examin->icc_betrachter->details->flush();}
 int 
 create_vrml              ( const char *profilA, char *profilB, char *vrml)
 {
   char systemBefehl[1024];
-  float l = load_progress->value();
+  float l = icc_examin->icc_betrachter->load_progress->value();
 
   if (!vrml || (!profilA && !profilB))
   return (0);

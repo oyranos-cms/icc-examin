@@ -30,14 +30,23 @@
 #ifndef ICC_EXAMIN_H
 #define ICC_EXAMIN_H
 
+//#include "icc_betrachter.h"
+class ICCfltkBetrachter;
+
 class ICCexamin
 {
   public:
                  ICCexamin ();
+                 ~ICCexamin ();
 
     void         start(int argc, char** argv);
+    void         open (int interaktiv);
+
+//  private:
+    ICCfltkBetrachter* icc_betrachter;
 };
 
+extern ICCexamin *icc_examin;
 
 #endif //ICC_EXAMIN_H
 

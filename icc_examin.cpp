@@ -30,12 +30,25 @@
 #include "icc_betrachter.h"
 
 ICCexamin::ICCexamin ()
-{}
+{
+  icc_betrachter = new ICCfltkBetrachter [1];
+}
+
+ICCexamin::~ICCexamin ()
+{
+  delete icc_betrachter;
+}
 
 void
 ICCexamin::start (int argc, char** argv)
 {
-  icc_betrachter(argc, argv);
+  icc_betrachter->start(argc, argv);
+}
+
+void
+ICCexamin::open (int interaktiv)
+{
+  icc_betrachter->open( interaktiv );
 }
 
 

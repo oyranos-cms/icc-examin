@@ -28,49 +28,12 @@ class TagTexts;
 class MftChoice;
 class GL_Ansicht;
 #define _(text) text
-#define status(_texte) {std::stringstream s; s << _texte; box_stat->label(s.str().c_str());}
+#define status(_texte) {std::stringstream s; s << _texte; icc_examin->icc_betrachter->box_stat->label(s.str().c_str());}
+#include "icc_examin.h"
 #include "icc_profile.h"
 #include "icc_utils.h"
 
 #include "icc_ueber.h"
-#include <FL/Fl_Double_Window.H>
-extern Fl_Double_Window *ueber;
-#include <FL/Fl_Group.H>
-#include <FL/Fl_Help_View.H>
-extern Fl_Help_View *ueber_html;
-#include <FL/Fl_Button.H>
-extern Fl_Button *ja;
-extern Fl_Double_Window *details;
-#include <FL/Fl_Menu_Bar.H>
-extern Fl_Group *inspekt;
-extern Fl_Help_View *inspekt_html;
-#include <FL/Fl_Tile.H>
-extern Fl_Tile *examin;
-extern TagBrowser *tag_browser;
-extern Fl_Group *ansichtsgruppe;
-extern Fl_Group *tabellengruppe;
-extern MftChoice *mft_choice;
-extern TagDrawings *mft_viewer;
-extern TagTexts *mft_text;
-extern GL_Ansicht *mft_gl;
-extern Fl_Group *tag_3D;
-extern TagDrawings *tag_viewer;
-extern TagTexts *tag_text;
-extern Fl_Group *group_histogram;
-#include <FL/Fl_Box.H>
-extern Fl_Box *DD_histogram;
-extern Fl_Box *box_stat;
-#include <FL/Fl_Progress.H>
-extern Fl_Progress *load_progress;
-Fl_Double_Window* icc_betrachter(int argc, char** argv);
-extern Fl_Menu_Item menu_[];
-#define menueintrag_html_speichern (menu_+2)
-#define menueintrag_Voll (menu_+9)
-#define menueintrag_inspekt (menu_+10)
-#define menueintrag_3D (menu_+11)
-#define menu_hilfe (menu_+13)
-void open(int interaktiv);
-void quit(void);
 char* icc_read_info(char* filename);
 
 class TagBrowser : public Fl_Hold_Browser {
@@ -106,7 +69,89 @@ public:
   void profil_tag(int _tag);
   void auswahl_cb(void);
 };
-void d_haendler(void* o);
-void zeig_mich(void* widget);
+#include <FL/Fl_Double_Window.H>
+#include <FL/Fl_Group.H>
+#include <FL/Fl_Help_View.H>
+#include <FL/Fl_Button.H>
+#include <FL/Fl_Menu_Bar.H>
+#include <FL/Fl_Tile.H>
+#include <FL/Fl_Box.H>
+#include <FL/Fl_Progress.H>
+
+class ICCfltkBetrachter {
+public:
+  Fl_Double_Window* start(int argc, char** argv);
+  Fl_Double_Window *ueber;
+  Fl_Help_View *ueber_html;
+  Fl_Button *ja;
+private:
+  inline void cb_ja_i(Fl_Button*, void*);
+  static void cb_ja(Fl_Button*, void*);
+public:
+  Fl_Double_Window *details;
+  static Fl_Menu_Item menu_[];
+private:
+  inline void cb_ffnen_i(Fl_Menu_*, void*);
+  static void cb_ffnen(Fl_Menu_*, void*);
+public:
+  static Fl_Menu_Item *menueintrag_html_speichern;
+private:
+  inline void cb_menueintrag_html_speichern_i(Fl_Menu_*, void*);
+  static void cb_menueintrag_html_speichern(Fl_Menu_*, void*);
+  inline void cb_Beenden_i(Fl_Menu_*, void*);
+  static void cb_Beenden(Fl_Menu_*, void*);
+  inline void cb_Voreinstellungen_i(Fl_Menu_*, void*);
+  static void cb_Voreinstellungen(Fl_Menu_*, void*);
+public:
+  static Fl_Menu_Item *menueintrag_Voll;
+private:
+  inline void cb_menueintrag_Voll_i(Fl_Menu_*, void*);
+  static void cb_menueintrag_Voll(Fl_Menu_*, void*);
+public:
+  static Fl_Menu_Item *menueintrag_inspekt;
+private:
+  inline void cb_menueintrag_inspekt_i(Fl_Menu_*, void*);
+  static void cb_menueintrag_inspekt(Fl_Menu_*, void*);
+public:
+  static Fl_Menu_Item *menueintrag_3D;
+private:
+  inline void cb_menueintrag_3D_i(Fl_Menu_*, void*);
+  static void cb_menueintrag_3D(Fl_Menu_*, void*);
+public:
+  static Fl_Menu_Item *menu_hilfe;
+private:
+  inline void cb_ber_i(Fl_Menu_*, void*);
+  static void cb_ber(Fl_Menu_*, void*);
+public:
+  Fl_Group *inspekt;
+  Fl_Help_View *inspekt_html;
+  Fl_Tile *examin;
+  TagBrowser *tag_browser;
+private:
+  inline void cb_tag_browser_i(TagBrowser*, void*);
+  static void cb_tag_browser(TagBrowser*, void*);
+public:
+  Fl_Group *ansichtsgruppe;
+  Fl_Group *tabellengruppe;
+  MftChoice *mft_choice;
+private:
+  inline void cb_mft_choice_i(MftChoice*, void*);
+  static void cb_mft_choice(MftChoice*, void*);
+public:
+  TagDrawings *mft_viewer;
+  TagTexts *mft_text;
+  GL_Ansicht *mft_gl;
+  Fl_Group *tag_3D;
+  TagDrawings *tag_viewer;
+  TagTexts *tag_text;
+  Fl_Group *group_histogram;
+  Fl_Box *DD_histogram;
+  Fl_Box *box_stat;
+  Fl_Progress *load_progress;
+  void open(int interaktiv);
+  void quit(void);
+  void zeig_mich(void* widget);
+};
 std::vector<std::string> zeilenNachVector(std::string text);
+void d_haendler(void* o);
 #endif

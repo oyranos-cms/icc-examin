@@ -26,7 +26,8 @@ static void dateiwahl_cb(const char *dateiname, int typ, void *arg) {
     return;
   }
 
-    if (dateiname) {
+    if (dateiname)
+    {
       filenamen_alt.resize(1);
       filenamen_alt[0] = dateiname;
 
@@ -34,8 +35,7 @@ static void dateiwahl_cb(const char *dateiname, int typ, void *arg) {
       filenamen_alt[0] = dateiwahl->get_current_directory();
       filenamen_alt[0].append( dateiname );
       DBG_NUM_V( filenamen_alt[0] )
-
-      open(false);
+      icc_examin->open(false);
     }
 
   DBG_PROG_ENDE
@@ -74,30 +74,387 @@ static void dateiwahl_cb(Fl_File_Chooser *f,void *data) {
         filenamen_alt[i] = fl->value(i);
       }
       DBG_NUM_V( filenamen_alt.size() << filename )
-      open(false);
+      icc_examin->open(false);
     }
 
   DBG_PROG_ENDE
 }
 #endif
 
-Fl_Double_Window *ueber=(Fl_Double_Window *)0;
+char* icc_read_info(char* filename) {
+  DBG_PROG_START
+  char systemBefehl[1024];
+  char *textfile = "/tmp/icc_temp.txt";
 
-Fl_Help_View *ueber_html=(Fl_Help_View *)0;
 
-Fl_Button *ja=(Fl_Button *)0;
+  sprintf (systemBefehl, "iccdump \"%s\" > %s",
+                                    filename, textfile);
+  system (systemBefehl);
 
-static void cb_ja(Fl_Button*, void*) {
+  return textfile;
+  DBG_PROG_ENDE
+}
+
+TagBrowser::TagBrowser(int X,int Y,int W,int H,char* start_info) : Fl_Hold_Browser(X,Y,W,H,start_info), X(X), Y(Y), W(W), H(H) {
+}
+
+void TagBrowser::reopen() {
+  DBG_PROG_START
+  //open and preparing the first selected item
+  std::stringstream s;
+  std::string text;
+  std::vector<std::string> tag_list = profile[0].printTags();
+
+  #define add_s(stream) s << stream; add (s.str().c_str()); s.str("");
+  #define add_          s << " ";
+
+  clear();
+  add_s ("@fDateiname:")
+  add_s ("@b    " << profile[0].filename() )
+  add_s ("")
+  if (tag_list.size() == 0) {
+    add_s ("keine Inhalte gefunden für \"" << profile[0].filename() << "\"")
+    return;
+  }
+  add_s ("@B26@tNr. Bezeichner  Typ         Größe Beschreibung")
+  add_s ("@t" << profile[0].printHeader() )
+  DBG_PROG
+  std::vector<std::string>::iterator it;
+  for (it = tag_list.begin() ; it != tag_list.end(); ++it) {
+    s << "@t";
+    // Nummer
+    int Nr = atoi((*it).c_str()) + 1;
+    std::stringstream t; t << Nr;
+    for (int i = t.str().size(); i < 3; i++) {s << " ";} s << Nr; *it++; s << " "; 
+    // Name/Bezeichnung
+    s << *it; for (int i = (*it++).size(); i < 12; i++) {s << " ";}
+    // Typ
+    s << *it; for (int i = (*it++).size(); i < 12; i++) {s << " ";}
+    // Größe
+    for (int i = (*it).size(); i < 5; i++) {s << " ";} s << *it++; s << " ";
+    // Beschreibung
+    add_s (*it)
+  }
+  DBG_PROG
+  if (value())
+    select_item (value()); // Anzeigen
+  else
+    select_item (1);
+
+  if (profile[0].hasTagName (selectedTagName)) {
+    int item = profile[0].getTagByName (selectedTagName) + 6;
+    select_item (item);
+    value(item);
+  }
+
+  std::string::size_type pos=0 , max = 0;
+  std::string data = profile[0].filename(); DBG_NUM_S( data )
+  while ((pos = data.find ("/", pos)) != std::string::npos) {
+    if (pos > max) max = pos; pos++; max++;
+  }
+  data.erase (0, max); DBG_NUM_S( max << data )
+
+  s.clear(); s << "ICC Details: " << data;
+  status ((const char*) s.str().c_str() );
+  DBG_PROG_ENDE
+}
+
+void TagBrowser::select_item(int item) {
+  DBG_PROG_START
+  //Auswahl aus tag_browser
+
+  status("")
+
+  std::string text = _("Leer");
+  //tag_text->hinein(text);
+  item -= 6;
+  cout << item << ". Tag "; DBG_PROG
+  std::vector<std::string> rgb_tags;
+  rgb_tags.push_back("rXYZ");
+  rgb_tags.push_back("gXYZ");
+  rgb_tags.push_back("bXYZ");
+
+  if (item < 0) {
+    select(5);
+    text = profile[0].printLongHeader(); DBG_PROG
+    icc_examin->icc_betrachter->tag_text->hinein(text);    
+  } else if (item >= 0) {
+    std::vector<std::string> TagInfo = profile[0].printTagInfo(item);
+    DBG_PROG_S( TagInfo.size() << " " << TagInfo[0] << " " << TagInfo[1] )
+
+    if        ( TagInfo[1] == "text"
+             || TagInfo[1] == "cprt?"
+             || TagInfo[1] == "meas"
+             || TagInfo[1] == "sig"
+             || TagInfo[1] == "dtim") {
+      icc_examin->icc_betrachter->tag_text->hinein ( (profile[0].getTagText (item))[0] ); DBG_PROG
+    } else if ( TagInfo[1] == "desc" ) {
+      icc_examin->icc_betrachter->tag_text->hinein( (profile[0].getTagDescription (item))[0] ); DBG_PROG
+    } else if ( TagInfo[0] == "rXYZ" || TagInfo[0] == "gXYZ" || TagInfo[0] == "bXYZ" ) {
+      std::vector<double> alle_punkte, punkte;
+      std::vector<std::string> alle_texte;
+      std::string TagName;
+      for (unsigned int i_name = 0; i_name < rgb_tags.size(); i_name++) {
+        if (profile[0].hasTagName (rgb_tags[i_name])) {
+          punkte = profile[0].getTagCIEXYZ (profile[0].getTagByName(rgb_tags[i_name]));
+          for (unsigned int i = 0; i < 3; i++)
+            alle_punkte.push_back (punkte[i]);
+          TagInfo = profile[0].printTagInfo (profile[0].getTagByName(rgb_tags[i_name]));
+          for (unsigned int i = 0; i < 2; i++)
+            alle_texte.push_back (TagInfo[i]);
+        }
+      }
+      icc_examin->icc_betrachter->tag_viewer->hinein_punkt( alle_punkte, alle_texte );
+    } else if ( TagInfo[1] == "curv"
+             || TagInfo[1] == "bfd" ) {
+      std::vector<std::vector<double> > kurven;
+      std::vector<double> kurve;
+      std::vector<std::string> texte;
+      std::string TagName;
+      for (int i_name = 0; i_name < profile[0].tagCount(); i_name++) {
+        if ( (profile[0].printTagInfo(i_name))[1] == "curv"
+          || (profile[0].printTagInfo(i_name))[1] == "bfd" ) {
+          kurve = profile[0].getTagCurve (i_name);
+          kurven.push_back (kurve);
+          TagInfo = profile[0].printTagInfo (i_name);
+          //for (unsigned int i = 0; i < 2; i++)
+          texte.push_back (TagInfo[0]);
+        }
+      }
+      texte.push_back ("curv");
+      icc_examin->icc_betrachter->tag_viewer->hinein_kurven( kurven, texte );
+    } else if ( TagInfo[1] == "chrm" ) {
+      icc_examin->icc_betrachter->tag_viewer->hinein_punkt( profile[0].getTagCIEXYZ(item), profile[0].getTagText(item) );
+    } else if ( TagInfo[1] == "XYZ" ) {
+      icc_examin->icc_betrachter->tag_viewer->hinein_punkt( profile[0].getTagCIEXYZ(item), TagInfo );
+    } else if ( TagInfo[1] == "mft2"
+             || TagInfo[1] == "mft1" ) {
+      icc_examin->icc_betrachter->mft_choice->profil_tag (item);
+      //mft_text->hinein ( (profile[0].getTagText (item))[0] ); DBG_PROG
+    } else if ( TagInfo[1] == "vcgt" ) { DBG_PROG
+      icc_examin->icc_betrachter->tag_viewer->hinein_kurven ( profile[0].getTagCurves (item, ICCtag::CURVE_IN),
+                                  profile[0].getTagText (item) ); cout << "vcgt "; DBG_PROG
+
+    /*} else if ( TagInfo[1] == "chad" ) {
+      std::vector<int> zahlen = profile[0].getTagNumbers (tag_nummer, ICCtag::MATRIX);
+      cout << zahlen.size() << endl; DBG_PROG
+      assert (9 == zahlen.size());
+      s << endl <<
+      "  " << zahlen[0] << ", " << zahlen[1] << ", " << zahlen[2] << ", " << endl <<
+      "  " << zahlen[3] << ", " << zahlen[4] << ", " << zahlen[5] << ", " << endl <<
+      "  " << zahlen[6] << ", " << zahlen[7] << ", " << zahlen[8] << ", " << endl;
+      icc_examin->icc_betrachter->tag_text->hinein ( s.str() ); DBG_PROG
+*/
+    } else {
+      icc_examin->icc_betrachter->tag_text->hinein ( (profile[0].getTagText (item))[0] ); DBG_PROG
+    }
+    selectedTagName = TagInfo[0];
+  }DBG_PROG
+  DBG_PROG_ENDE
+}
+
+TagTexts::TagTexts(int X,int Y,int W,int H,char* start_info) : Fl_Hold_Browser(X,Y,W,H,start_info), X(X), Y(Y), W(W), H(H) {
+}
+
+void TagTexts::hinein(std::string text) {
+  DBG_PROG_START
+  //Text aus tag_browser anzeigen
+
+  icc_examin->icc_betrachter->zeig_mich(this); DBG_PROG
+
+      this->clear();
+
+      std::vector <std::string> texte = zeilenNachVector( text );
+      for (unsigned int i = 0; i < texte.size(); i++)
+        this->add( texte[i].c_str(), 0);
+
+
+      this->topline(0);
+      this->textfont(FL_COURIER);
+      this->textsize(14);
+  DBG_PROG_ENDE
+}
+
+TagDrawings::TagDrawings(int X,int Y,int W,int H) : Fl_Widget(X,Y,W,H), X(X), Y(Y), W(W), H(H) {
+}
+
+void TagDrawings::draw() {
+  DBG_PROG_START
+  // Kurven oder Punkte malen
+  DBG_PROG_S( punkte.size() << "/" << kurven.size() <<" "<< texte.size() )
+
+  //DBG_PROG_V( wiederholen )
+
+  if (punkte.size() >= 3)
+  {
+    if (wiederholen)
+    { draw_cie_shoe(x(),y(),w(),h(),texte,punkte,false);
+      Fl::add_timeout( 1.2, (void(*)(void*))d_haendler ,(void*)this);
+    } else {
+      draw_cie_shoe(x(),y(),w(),h(),texte,punkte,true);
+    }
+    wiederholen = true;
+  } else {
+    wiederholen = false;
+    draw_kurve   (x(),y(),w(),h(),texte,kurven);
+  }
+  DBG_PROG
+  DBG_PROG_ENDE
+}
+
+void TagDrawings::hinein_punkt(std::vector<double> vect, std::vector<std::string> txt) {
+  DBG_PROG_START
+  //CIExyY aus tag_browser anzeigen
+  punkte.clear();
+  for (unsigned int i = 0; i < vect.size(); i++)
+    punkte.push_back (vect[i]);
+  texte.clear();
+  for (unsigned int i = 0; i < txt.size(); i++)
+    texte.push_back (txt[i]);
+  kurven.clear();
+  wiederholen = false;
+
+  icc_examin->icc_betrachter->zeig_mich(this);
+  DBG_PROG_ENDE
+}
+
+void TagDrawings::hinein_kurven(std::vector<std::vector<double> >vect, std::vector<std::string> txt) {
+  DBG_PROG_START
+  //Kurve aus tag_browser anzeigen
+  kurven = vect;
+  texte = txt;
+  punkte.clear();
+  wiederholen = false;
+
+  icc_examin->icc_betrachter->zeig_mich(this);
+  DBG_PROG
+  DBG_PROG_ENDE
+}
+
+void TagDrawings::ruhig_neuzeichnen(void) {
+  DBG_PROG_START
+  draw_cie_shoe(x(),y(),w(),h(),texte,punkte,true);
+  DBG_PROG_ENDE
+}
+#include <FL/fl_draw.H>
+
+MftChoice::MftChoice(int X,int Y,int W,int H,char* start_info) : Fl_Choice(X,Y,W,H,start_info), X(X), Y(Y), W(W), H(H) {
+  gewaehlter_eintrag = 0;
+}
+
+void MftChoice::profil_tag(int _tag) {
+  DBG_PROG_START
+  tag_nummer = _tag;
+
+// = profile[0].printTagInfo(tag_nummer);
+    sprintf (&typ[0], profile[0].printTagInfo(tag_nummer)[1].c_str());
+
+    Info = zeilenNachVector (profile[0].getTagText (tag_nummer)[0]);
+
+    if ( strstr (typ,"mft2") != 0 )
+    {
+      Fl_Menu_Item *mft_menue = (Fl_Menu_Item *)calloc (sizeof (Fl_Menu_Item), 6);
+
+      mft_menue[0].text = Info[0].c_str();
+      mft_menue[1].text = Info[4].c_str();
+      mft_menue[2].text = Info[5].c_str();
+      mft_menue[3].text = Info[6].c_str();
+      mft_menue[4].text = Info[7].c_str();
+      mft_menue[5].text = 0;
+      icc_examin->icc_betrachter->mft_choice->menu(mft_menue);
+    } else {
+      Fl_Menu_Item *mft_menue = (Fl_Menu_Item *)calloc (sizeof (Fl_Menu_Item), 6);
+
+      mft_menue[0].text = Info[0].c_str();
+      mft_menue[1].text = Info[4].c_str();
+      mft_menue[2].text = "lineare Eingangskurve mit 256 Stufungen";
+      mft_menue[3].text = Info[5].c_str();
+      mft_menue[4].text = "lineare Ausgangskurve mit 256 Stufungen";
+      mft_menue[5].text = 0;
+      icc_examin->icc_betrachter->mft_choice->menu(mft_menue);
+    }
+
+    icc_examin->icc_betrachter->mft_choice->value( gewaehlter_eintrag );
+
+  //zeig_mich (this);
+  auswahl_cb();
+  DBG_PROG_ENDE
+}
+
+void MftChoice::auswahl_cb(void) {
+  DBG_PROG_START
+  //Auswahl aus mft_choice
+
+  status("")
+
+  Fl_Menu_* mw = (Fl_Menu_*)this;
+  const Fl_Menu_Item* m = mw->mvalue();
+  if (!m) {
+    DBG_PROG_S("NULL \n")
+  } else if (m->shortcut()) {
+    DBG_PROG_S("%s - %s \n" << m->label() << fl_shortcut_label(m->shortcut()))
+  } else {
+    DBG_PROG_S("%s \n" << m->label())
+  }
+
+  std::stringstream s;
+  std::vector<double> zahlen;
+
+  switch (mw->value()) {
+  case 0: // Überblick
+    { for (unsigned int i = 1; i < Info.size(); i++) // erste Zeile weglassen
+        s << Info [i] << endl;
+      icc_examin->icc_betrachter->mft_text->hinein ( s.str() ); DBG_PROG // anzeigen
+    } break;
+  case 1: // Matriz
+    zahlen = profile[0].getTagNumbers (tag_nummer, ICCtag::MATRIX);
+    cout << zahlen.size() << endl; DBG_PROG
+    assert (9 == zahlen.size());
+    s << endl <<
+    "  " << zahlen[0] << ", " << zahlen[1] << ", " << zahlen[2] << ", " << endl <<
+    "  " << zahlen[3] << ", " << zahlen[4] << ", " << zahlen[5] << ", " << endl <<
+    "  " << zahlen[6] << ", " << zahlen[7] << ", " << zahlen[8] << ", " << endl;
+    icc_examin->icc_betrachter->mft_text->hinein ( s.str() ); DBG_PROG
+    break;
+  case 2: // Eingangskurven
+    DBG_PROG
+    icc_examin->icc_betrachter->mft_viewer->hinein_kurven (
+                     profile[0].getTagCurves (tag_nummer, ICCtag::CURVE_IN),
+                     profile[0].getTagChannelNames (tag_nummer, ICCtag::CURVE_IN) ); DBG_PROG
+    break;
+  case 3: // 3D Tabelle
+    DBG_PROG
+    icc_examin->icc_betrachter->mft_gl->hinein_tabelle (
+                     profile[0].getTagTable (tag_nummer, ICCtag::TABLE),
+                     profile[0].getTagChannelNames (tag_nummer, ICCtag::TABLE_IN),
+                     profile[0].getTagChannelNames (tag_nummer, ICCtag::TABLE_OUT) ); DBG_PROG
+    break;
+  case 4: // Ausgangskurven
+    icc_examin->icc_betrachter->mft_viewer->hinein_kurven (
+                     profile[0].getTagCurves (tag_nummer, ICCtag::CURVE_OUT),
+                     profile[0].getTagChannelNames (tag_nummer, ICCtag::CURVE_OUT) ); DBG_PROG
+    break;
+  }
+
+  gewaehlter_eintrag = mw->value();
+  DBG_PROG_ENDE
+}
+
+inline void ICCfltkBetrachter::cb_ja_i(Fl_Button*, void*) {
   ueber->hide();
 }
-
-Fl_Double_Window *details=(Fl_Double_Window *)0;
-
-static void cb_ffnen(Fl_Menu_*, void*) {
-  open(true);
+void ICCfltkBetrachter::cb_ja(Fl_Button* o, void* v) {
+  ((ICCfltkBetrachter*)(o->parent()->parent()->user_data()))->cb_ja_i(o,v);
 }
 
-static void cb_menueintrag_html_speichern(Fl_Menu_*, void*) {
+inline void ICCfltkBetrachter::cb_ffnen_i(Fl_Menu_*, void*) {
+  open(true);
+}
+void ICCfltkBetrachter::cb_ffnen(Fl_Menu_* o, void* v) {
+  ((ICCfltkBetrachter*)(o->parent()->parent()->user_data()))->cb_ffnen_i(o,v);
+}
+
+inline void ICCfltkBetrachter::cb_menueintrag_html_speichern_i(Fl_Menu_*, void*) {
   DBG_PROG_START
   std::string filename = filenamen_alt[0];  DBG_PROG_V( filename )
 
@@ -151,16 +508,25 @@ static void cb_menueintrag_html_speichern(Fl_Menu_*, void*) {
 
   DBG_PROG_ENDE;
 }
+void ICCfltkBetrachter::cb_menueintrag_html_speichern(Fl_Menu_* o, void* v) {
+  ((ICCfltkBetrachter*)(o->parent()->parent()->user_data()))->cb_menueintrag_html_speichern_i(o,v);
+}
 
-static void cb_Beenden(Fl_Menu_*, void*) {
+inline void ICCfltkBetrachter::cb_Beenden_i(Fl_Menu_*, void*) {
   quit();
 }
-
-static void cb_Voreinstellungen(Fl_Menu_*, void*) {
-  voreinstellungen();
+void ICCfltkBetrachter::cb_Beenden(Fl_Menu_* o, void* v) {
+  ((ICCfltkBetrachter*)(o->parent()->parent()->user_data()))->cb_Beenden_i(o,v);
 }
 
-static void cb_menueintrag_Voll(Fl_Menu_*, void*) {
+inline void ICCfltkBetrachter::cb_Voreinstellungen_i(Fl_Menu_*, void*) {
+  voreinstellungen();
+}
+void ICCfltkBetrachter::cb_Voreinstellungen(Fl_Menu_* o, void* v) {
+  ((ICCfltkBetrachter*)(o->parent()->parent()->user_data()))->cb_Voreinstellungen_i(o,v);
+}
+
+inline void ICCfltkBetrachter::cb_menueintrag_Voll_i(Fl_Menu_*, void*) {
   Fl_Window *w = (Fl_Window *)details;
 
   if (!fullscreen) {
@@ -176,8 +542,11 @@ static void cb_menueintrag_Voll(Fl_Menu_*, void*) {
     fullscreen = false;
   };
 }
+void ICCfltkBetrachter::cb_menueintrag_Voll(Fl_Menu_* o, void* v) {
+  ((ICCfltkBetrachter*)(o->parent()->parent()->user_data()))->cb_menueintrag_Voll_i(o,v);
+}
 
-static void cb_menueintrag_inspekt(Fl_Menu_* o, void*) {
+inline void ICCfltkBetrachter::cb_menueintrag_inspekt_i(Fl_Menu_* o, void*) {
   Fl_Menu_* mw = (Fl_Menu_*)o;
   const Fl_Menu_Item* m = mw->mvalue();
 
@@ -194,8 +563,11 @@ static void cb_menueintrag_inspekt(Fl_Menu_* o, void*) {
     inspekt_topline = inspekt_html->topline();
   };
 }
+void ICCfltkBetrachter::cb_menueintrag_inspekt(Fl_Menu_* o, void* v) {
+  ((ICCfltkBetrachter*)(o->parent()->parent()->user_data()))->cb_menueintrag_inspekt_i(o,v);
+}
 
-static void cb_menueintrag_3D(Fl_Menu_* o, void*) {
+inline void ICCfltkBetrachter::cb_menueintrag_3D_i(Fl_Menu_* o, void*) {
   Fl_Menu_* mw = (Fl_Menu_*)o;
   const Fl_Menu_Item* m = mw->mvalue();
 
@@ -212,75 +584,58 @@ static void cb_menueintrag_3D(Fl_Menu_* o, void*) {
     inspekt_topline = inspekt_html->topline();
   };
 }
+void ICCfltkBetrachter::cb_menueintrag_3D(Fl_Menu_* o, void* v) {
+  ((ICCfltkBetrachter*)(o->parent()->parent()->user_data()))->cb_menueintrag_3D_i(o,v);
+}
 
-static void cb_ber(Fl_Menu_*, void*) {
+inline void ICCfltkBetrachter::cb_ber_i(Fl_Menu_*, void*) {
   ueber->show();
 ueber_html->value(getUeberHtml().c_str());
 }
+void ICCfltkBetrachter::cb_ber(Fl_Menu_* o, void* v) {
+  ((ICCfltkBetrachter*)(o->parent()->parent()->user_data()))->cb_ber_i(o,v);
+}
 
-Fl_Menu_Item menu_[] = {
+Fl_Menu_Item ICCfltkBetrachter::menu_[] = {
  {"Daten", 0,  0, 0, 64, 0, 0, 14, 56},
- {"\326""ffnen", 0x4006f,  (Fl_Callback*)cb_ffnen, 0, 0, 0, 0, 14, 56},
- {"Bericht Speichern", 0,  (Fl_Callback*)cb_menueintrag_html_speichern, 0, 129, 0, 0, 14, 56},
- {"Beenden", 0x40071,  (Fl_Callback*)cb_Beenden, 0, 0, 0, 0, 14, 56},
+ {"\326""ffnen", 0x4006f,  (Fl_Callback*)ICCfltkBetrachter::cb_ffnen, 0, 0, 0, 0, 14, 56},
+ {"Bericht Speichern", 0,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_html_speichern, 0, 129, 0, 0, 14, 56},
+ {"Beenden", 0x40071,  (Fl_Callback*)ICCfltkBetrachter::cb_Beenden, 0, 0, 0, 0, 14, 56},
  {0},
  {"Bearbeiten", 0,  0, 0, 64, 0, 0, 14, 56},
- {"Voreinstellungen", 0,  (Fl_Callback*)cb_Voreinstellungen, 0, 0, 0, 0, 14, 56},
+ {"Voreinstellungen", 0,  (Fl_Callback*)ICCfltkBetrachter::cb_Voreinstellungen, 0, 0, 0, 0, 14, 56},
  {0},
  {"Ansicht", 0,  0, 0, 192, 0, 0, 14, 56},
- {"Ganzer Bildschirm an/aus", 0x40076,  (Fl_Callback*)cb_menueintrag_Voll, 0, 0, 0, 0, 14, 56},
- {"Pr\374""fansicht", 0x40062,  (Fl_Callback*)cb_menueintrag_inspekt, 0, 3, 0, 0, 14, 56},
- {"3D Ansicht", 0x40062,  (Fl_Callback*)cb_menueintrag_3D, 0, 130, 0, 0, 14, 56},
+ {"Ganzer Bildschirm an/aus", 0x40076,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_Voll, 0, 0, 0, 0, 14, 56},
+ {"Pr\374""fansicht", 0x40062,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_inspekt, 0, 3, 0, 0, 14, 56},
+ {"3D Ansicht", 0x40062,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_3D, 0, 130, 0, 0, 14, 56},
  {0},
  {"Hilfe", 0,  0, 0, 64, 0, 0, 14, 56},
- {"\334""ber", 0,  (Fl_Callback*)cb_ber, 0, 0, 0, 0, 14, 56},
+ {"\334""ber", 0,  (Fl_Callback*)ICCfltkBetrachter::cb_ber, 0, 0, 0, 0, 14, 56},
  {0},
  {0}
 };
+Fl_Menu_Item* ICCfltkBetrachter::menueintrag_html_speichern = ICCfltkBetrachter::menu_ + 2;
+Fl_Menu_Item* ICCfltkBetrachter::menueintrag_Voll = ICCfltkBetrachter::menu_ + 9;
+Fl_Menu_Item* ICCfltkBetrachter::menueintrag_inspekt = ICCfltkBetrachter::menu_ + 10;
+Fl_Menu_Item* ICCfltkBetrachter::menueintrag_3D = ICCfltkBetrachter::menu_ + 11;
+Fl_Menu_Item* ICCfltkBetrachter::menu_hilfe = ICCfltkBetrachter::menu_ + 13;
 
-Fl_Group *inspekt=(Fl_Group *)0;
-
-Fl_Help_View *inspekt_html=(Fl_Help_View *)0;
-
-Fl_Tile *examin=(Fl_Tile *)0;
-
-TagBrowser *tag_browser=(TagBrowser *)0;
-
-static void cb_tag_browser(TagBrowser* o, void*) {
+inline void ICCfltkBetrachter::cb_tag_browser_i(TagBrowser* o, void*) {
   o->select_item( o->value() );
 }
-
-Fl_Group *ansichtsgruppe=(Fl_Group *)0;
-
-Fl_Group *tabellengruppe=(Fl_Group *)0;
-
-MftChoice *mft_choice=(MftChoice *)0;
-
-static void cb_mft_choice(MftChoice* o, void*) {
-  o->auswahl_cb();
+void ICCfltkBetrachter::cb_tag_browser(TagBrowser* o, void* v) {
+  ((ICCfltkBetrachter*)(o->parent()->parent()->parent()->user_data()))->cb_tag_browser_i(o,v);
 }
 
-TagDrawings *mft_viewer=(TagDrawings *)0;
+inline void ICCfltkBetrachter::cb_mft_choice_i(MftChoice* o, void*) {
+  o->auswahl_cb();
+}
+void ICCfltkBetrachter::cb_mft_choice(MftChoice* o, void* v) {
+  ((ICCfltkBetrachter*)(o->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_mft_choice_i(o,v);
+}
 
-TagTexts *mft_text=(TagTexts *)0;
-
-GL_Ansicht *mft_gl=(GL_Ansicht *)0;
-
-Fl_Group *tag_3D=(Fl_Group *)0;
-
-TagDrawings *tag_viewer=(TagDrawings *)0;
-
-TagTexts *tag_text=(TagTexts *)0;
-
-Fl_Group *group_histogram=(Fl_Group *)0;
-
-Fl_Box *DD_histogram=(Fl_Box *)0;
-
-Fl_Box *box_stat=(Fl_Box *)0;
-
-Fl_Progress *load_progress=(Fl_Progress *)0;
-
-Fl_Double_Window* icc_betrachter(int argc, char** argv) {
+Fl_Double_Window* ICCfltkBetrachter::start(int argc, char** argv) {
   Fl_Double_Window* w;
   DBG_PROG_START
   statlabel = (char*)calloc (sizeof (char), 1024);
@@ -356,6 +711,7 @@ Fl_Double_Window* icc_betrachter(int argc, char** argv) {
   #endif
   { Fl_Double_Window* o = ueber = new Fl_Double_Window(366, 241, "\334""ber ICC examin");
     w = o;
+    o->user_data((void*)(this));
     { Fl_Group* o = new Fl_Group(0, 0, 365, 240);
       { Fl_Help_View* o = ueber_html = new Fl_Help_View(0, 0, 365, 205);
         Fl_Group::current()->resizable(o);
@@ -374,6 +730,7 @@ Fl_Double_Window* icc_betrachter(int argc, char** argv) {
     w = o;
     o->box(FL_NO_BOX);
     o->color((Fl_Color)53);
+    o->user_data((void*)(this));
     { Fl_Group* o = new Fl_Group(0, 0, 385, 520);
       { Fl_Menu_Bar* o = new Fl_Menu_Bar(0, 0, 385, 25);
         o->align(FL_ALIGN_LEFT|FL_ALIGN_INSIDE);
@@ -543,7 +900,7 @@ Fl_Double_Window* icc_betrachter(int argc, char** argv) {
   return w;
 }
 
-void open(int interaktiv) {
+void ICCfltkBetrachter::open(int interaktiv) {
   DBG_PROG_START
   #include "icc_vrml.h"
 
@@ -645,7 +1002,7 @@ void open(int interaktiv) {
   DBG_PROG_ENDE
 }
 
-void quit(void) {
+void ICCfltkBetrachter::quit(void) {
   DBG_PROG_START
   /*Fl::remove_timeout((void (*)(void *))timeIT, (void *)viewer);
   delete viewer;
@@ -656,382 +1013,7 @@ void quit(void) {
   DBG_PROG_ENDE
 }
 
-char* icc_read_info(char* filename) {
-  DBG_PROG_START
-  char systemBefehl[1024];
-  char *textfile = "/tmp/icc_temp.txt";
-
-
-  sprintf (systemBefehl, "iccdump \"%s\" > %s",
-                                    filename, textfile);
-  system (systemBefehl);
-
-  return textfile;
-  DBG_PROG_ENDE
-}
-
-TagBrowser::TagBrowser(int X,int Y,int W,int H,char* start_info) : Fl_Hold_Browser(X,Y,W,H,start_info), X(X), Y(Y), W(W), H(H) {
-}
-
-void TagBrowser::reopen() {
-  DBG_PROG_START
-  //open and preparing the first selected item
-  std::stringstream s;
-  std::string text;
-  std::vector<std::string> tag_list = profile[0].printTags();
-
-  #define add_s(stream) s << stream; add (s.str().c_str()); s.str("");
-  #define add_          s << " ";
-
-  clear();
-  add_s ("@fDateiname:")
-  add_s ("@b    " << profile[0].filename() )
-  add_s ("")
-  if (tag_list.size() == 0) {
-    add_s ("keine Inhalte gefunden für \"" << profile[0].filename() << "\"")
-    return;
-  }
-  add_s ("@B26@tNr. Bezeichner  Typ         Größe Beschreibung")
-  add_s ("@t" << profile[0].printHeader() )
-  DBG_PROG
-  std::vector<std::string>::iterator it;
-  for (it = tag_list.begin() ; it != tag_list.end(); ++it) {
-    s << "@t";
-    // Nummer
-    int Nr = atoi((*it).c_str()) + 1;
-    std::stringstream t; t << Nr;
-    for (int i = t.str().size(); i < 3; i++) {s << " ";} s << Nr; *it++; s << " "; 
-    // Name/Bezeichnung
-    s << *it; for (int i = (*it++).size(); i < 12; i++) {s << " ";}
-    // Typ
-    s << *it; for (int i = (*it++).size(); i < 12; i++) {s << " ";}
-    // Größe
-    for (int i = (*it).size(); i < 5; i++) {s << " ";} s << *it++; s << " ";
-    // Beschreibung
-    add_s (*it)
-  }
-  DBG_PROG
-  if (value())
-    select_item (value()); // Anzeigen
-  else
-    select_item (1);
-
-  if (profile[0].hasTagName (selectedTagName)) {
-    int item = profile[0].getTagByName (selectedTagName) + 6;
-    select_item (item);
-    value(item);
-  }
-
-  std::string::size_type pos=0 , max = 0;
-  std::string data = profile[0].filename(); DBG_NUM_S( data )
-  while ((pos = data.find ("/", pos)) != std::string::npos) {
-    if (pos > max) max = pos; pos++; max++;
-  }
-  data.erase (0, max); DBG_NUM_S( max << data )
-
-  s.clear(); s << "ICC Details: " << data;
-  details->label( (const char*) s.str().c_str() );
-  DBG_PROG_ENDE
-}
-
-void TagBrowser::select_item(int item) {
-  DBG_PROG_START
-  //Auswahl aus tag_browser
-
-  status("")
-
-  std::string text = _("Leer");
-  //tag_text->hinein(text);
-  item -= 6;
-  cout << item << ". Tag "; DBG_PROG
-  std::vector<std::string> rgb_tags;
-  rgb_tags.push_back("rXYZ");
-  rgb_tags.push_back("gXYZ");
-  rgb_tags.push_back("bXYZ");
-
-  if (item < 0) {
-    select(5);
-    text = profile[0].printLongHeader(); DBG_PROG
-    tag_text->hinein(text);    
-  } else if (item >= 0) {
-    std::vector<std::string> TagInfo = profile[0].printTagInfo(item);
-    DBG_PROG_S( TagInfo.size() << " " << TagInfo[0] << " " << TagInfo[1] )
-
-    if        ( TagInfo[1] == "text"
-             || TagInfo[1] == "cprt?"
-             || TagInfo[1] == "meas"
-             || TagInfo[1] == "sig"
-             || TagInfo[1] == "dtim") {
-      tag_text->hinein ( (profile[0].getTagText (item))[0] ); DBG_PROG
-    } else if ( TagInfo[1] == "desc" ) {
-      tag_text->hinein( (profile[0].getTagDescription (item))[0] ); DBG_PROG
-    } else if ( TagInfo[0] == "rXYZ" || TagInfo[0] == "gXYZ" || TagInfo[0] == "bXYZ" ) {
-      std::vector<double> alle_punkte, punkte;
-      std::vector<std::string> alle_texte;
-      std::string TagName;
-      for (unsigned int i_name = 0; i_name < rgb_tags.size(); i_name++) {
-        if (profile[0].hasTagName (rgb_tags[i_name])) {
-          punkte = profile[0].getTagCIEXYZ (profile[0].getTagByName(rgb_tags[i_name]));
-          for (unsigned int i = 0; i < 3; i++)
-            alle_punkte.push_back (punkte[i]);
-          TagInfo = profile[0].printTagInfo (profile[0].getTagByName(rgb_tags[i_name]));
-          for (unsigned int i = 0; i < 2; i++)
-            alle_texte.push_back (TagInfo[i]);
-        }
-      }
-      tag_viewer->hinein_punkt( alle_punkte, alle_texte );
-    } else if ( TagInfo[1] == "curv"
-             || TagInfo[1] == "bfd" ) {
-      std::vector<std::vector<double> > kurven;
-      std::vector<double> kurve;
-      std::vector<std::string> texte;
-      std::string TagName;
-      for (int i_name = 0; i_name < profile[0].tagCount(); i_name++) {
-        if ( (profile[0].printTagInfo(i_name))[1] == "curv"
-          || (profile[0].printTagInfo(i_name))[1] == "bfd" ) {
-          kurve = profile[0].getTagCurve (i_name);
-          kurven.push_back (kurve);
-          TagInfo = profile[0].printTagInfo (i_name);
-          //for (unsigned int i = 0; i < 2; i++)
-          texte.push_back (TagInfo[0]);
-        }
-      }
-      texte.push_back ("curv");
-      tag_viewer->hinein_kurven( kurven, texte );
-    } else if ( TagInfo[1] == "chrm" ) {
-      tag_viewer->hinein_punkt( profile[0].getTagCIEXYZ(item), profile[0].getTagText(item) );
-    } else if ( TagInfo[1] == "XYZ" ) {
-      tag_viewer->hinein_punkt( profile[0].getTagCIEXYZ(item), TagInfo );
-    } else if ( TagInfo[1] == "mft2"
-             || TagInfo[1] == "mft1" ) {
-      mft_choice->profil_tag (item);
-      //mft_text->hinein ( (profile[0].getTagText (item))[0] ); DBG_PROG
-    } else if ( TagInfo[1] == "vcgt" ) { DBG_PROG
-      tag_viewer->hinein_kurven ( profile[0].getTagCurves (item, ICCtag::CURVE_IN),
-                                  profile[0].getTagText (item) ); cout << "vcgt "; DBG_PROG
-
-    /*} else if ( TagInfo[1] == "chad" ) {
-      std::vector<int> zahlen = profile[0].getTagNumbers (tag_nummer, ICCtag::MATRIX);
-      cout << zahlen.size() << endl; DBG_PROG
-      assert (9 == zahlen.size());
-      s << endl <<
-      "  " << zahlen[0] << ", " << zahlen[1] << ", " << zahlen[2] << ", " << endl <<
-      "  " << zahlen[3] << ", " << zahlen[4] << ", " << zahlen[5] << ", " << endl <<
-      "  " << zahlen[6] << ", " << zahlen[7] << ", " << zahlen[8] << ", " << endl;
-      tag_text->hinein ( s.str() ); DBG_PROG
-*/
-    } else {
-      tag_text->hinein ( (profile[0].getTagText (item))[0] ); DBG_PROG
-    }
-    selectedTagName = TagInfo[0];
-  }DBG_PROG
-  DBG_PROG_ENDE
-}
-
-TagTexts::TagTexts(int X,int Y,int W,int H,char* start_info) : Fl_Hold_Browser(X,Y,W,H,start_info), X(X), Y(Y), W(W), H(H) {
-}
-
-void TagTexts::hinein(std::string text) {
-  DBG_PROG_START
-  //Text aus tag_browser anzeigen
-
-  zeig_mich(this); DBG_PROG
-
-      this->clear();
-
-      std::vector <std::string> texte = zeilenNachVector( text );
-      for (unsigned int i = 0; i < texte.size(); i++)
-        this->add( texte[i].c_str(), 0);
-
-
-      this->topline(0);
-      this->textfont(FL_COURIER);
-      this->textsize(14);
-  DBG_PROG_ENDE
-}
-
-TagDrawings::TagDrawings(int X,int Y,int W,int H) : Fl_Widget(X,Y,W,H), X(X), Y(Y), W(W), H(H) {
-}
-
-void TagDrawings::draw() {
-  DBG_PROG_START
-  // Kurven oder Punkte malen
-  DBG_PROG_S( punkte.size() << "/" << kurven.size() <<" "<< texte.size() )
-
-  if (punkte.size() >= 3)
-  {
-    if (wiederholen)
-    { draw_cie_shoe(x(),y(),w(),h(),texte,punkte,false);
-      Fl::add_timeout( 1.2, (void(*)(void*))d_haendler ,(void*)this);
-    } else {
-      draw_cie_shoe(x(),y(),w(),h(),texte,punkte,true);
-    }
-    wiederholen = true;
-  } else {
-    wiederholen = false;
-    draw_kurve   (x(),y(),w(),h(),texte,kurven);
-  }
-  DBG_PROG
-  DBG_PROG_ENDE
-}
-
-void TagDrawings::hinein_punkt(std::vector<double> vect, std::vector<std::string> txt) {
-  DBG_PROG_START
-  //CIExyY aus tag_browser anzeigen
-  punkte.clear();
-  for (unsigned int i = 0; i < vect.size(); i++)
-    punkte.push_back (vect[i]);
-  texte.clear();
-  for (unsigned int i = 0; i < txt.size(); i++)
-    texte.push_back (txt[i]);
-  kurven.clear();
-  wiederholen = false;
-
-  zeig_mich(this);
-  DBG_PROG_ENDE
-}
-
-void TagDrawings::hinein_kurven(std::vector<std::vector<double> >vect, std::vector<std::string> txt) {
-  DBG_PROG_START
-  //Kurve aus tag_browser anzeigen
-  kurven = vect;
-  texte = txt;
-  punkte.clear();
-  wiederholen = false;
-
-  zeig_mich(this);
-  DBG_PROG
-  DBG_PROG_ENDE
-}
-
-void TagDrawings::ruhig_neuzeichnen(void) {
-  DBG_PROG_START
-  draw_cie_shoe(x(),y(),w(),h(),texte,punkte,true);
-  DBG_PROG_ENDE
-}
-#include <FL/fl_draw.H>
-
-MftChoice::MftChoice(int X,int Y,int W,int H,char* start_info) : Fl_Choice(X,Y,W,H,start_info), X(X), Y(Y), W(W), H(H) {
-  gewaehlter_eintrag = 0;
-}
-
-void MftChoice::profil_tag(int _tag) {
-  DBG_PROG_START
-  tag_nummer = _tag;
-
-// = profile[0].printTagInfo(tag_nummer);
-    sprintf (&typ[0], profile[0].printTagInfo(tag_nummer)[1].c_str());
-
-    Info = zeilenNachVector (profile[0].getTagText (tag_nummer)[0]);
-
-    if ( strstr (typ,"mft2") != 0 )
-    {
-      Fl_Menu_Item *mft_menue = (Fl_Menu_Item *)calloc (sizeof (Fl_Menu_Item), 6);
-
-      mft_menue[0].text = Info[0].c_str();
-      mft_menue[1].text = Info[4].c_str();
-      mft_menue[2].text = Info[5].c_str();
-      mft_menue[3].text = Info[6].c_str();
-      mft_menue[4].text = Info[7].c_str();
-      mft_menue[5].text = 0;
-      mft_choice->menu(mft_menue);
-    } else {
-      Fl_Menu_Item *mft_menue = (Fl_Menu_Item *)calloc (sizeof (Fl_Menu_Item), 6);
-
-      mft_menue[0].text = Info[0].c_str();
-      mft_menue[1].text = Info[4].c_str();
-      mft_menue[2].text = "lineare Eingangskurve mit 256 Stufungen";
-      mft_menue[3].text = Info[5].c_str();
-      mft_menue[4].text = "lineare Ausgangskurve mit 256 Stufungen";
-      mft_menue[5].text = 0;
-      mft_choice->menu(mft_menue);
-    }
-
-    mft_choice->value( gewaehlter_eintrag );
-
-  //zeig_mich (this);
-  auswahl_cb();
-  DBG_PROG_ENDE
-}
-
-void MftChoice::auswahl_cb(void) {
-  DBG_PROG_START
-  //Auswahl aus mft_choice
-
-  status("")
-
-  Fl_Menu_* mw = (Fl_Menu_*)this;
-  const Fl_Menu_Item* m = mw->mvalue();
-  if (!m) {
-    DBG_PROG_S("NULL \n")
-  } else if (m->shortcut()) {
-    DBG_PROG_S("%s - %s \n" << m->label() << fl_shortcut_label(m->shortcut()))
-  } else {
-    DBG_PROG_S("%s \n" << m->label())
-  }
-
-  std::stringstream s;
-  std::vector<double> zahlen;
-
-  switch (mw->value()) {
-  case 0: // Überblick
-    { for (unsigned int i = 1; i < Info.size(); i++) // erste Zeile weglassen
-        s << Info [i] << endl;
-      mft_text->hinein ( s.str() ); DBG_PROG // anzeigen
-    } break;
-  case 1: // Matriz
-    zahlen = profile[0].getTagNumbers (tag_nummer, ICCtag::MATRIX);
-    cout << zahlen.size() << endl; DBG_PROG
-    assert (9 == zahlen.size());
-    s << endl <<
-    "  " << zahlen[0] << ", " << zahlen[1] << ", " << zahlen[2] << ", " << endl <<
-    "  " << zahlen[3] << ", " << zahlen[4] << ", " << zahlen[5] << ", " << endl <<
-    "  " << zahlen[6] << ", " << zahlen[7] << ", " << zahlen[8] << ", " << endl;
-    mft_text->hinein ( s.str() ); DBG_PROG
-    break;
-  case 2: // Eingangskurven
-    DBG_PROG
-    mft_viewer->hinein_kurven (
-                     profile[0].getTagCurves (tag_nummer, ICCtag::CURVE_IN),
-                     profile[0].getTagChannelNames (tag_nummer, ICCtag::CURVE_IN) ); DBG_PROG
-    break;
-  case 3: // 3D Tabelle
-    DBG_PROG
-    mft_gl->hinein_tabelle (
-                     profile[0].getTagTable (tag_nummer, ICCtag::TABLE),
-                     profile[0].getTagChannelNames (tag_nummer, ICCtag::TABLE_IN),
-                     profile[0].getTagChannelNames (tag_nummer, ICCtag::TABLE_OUT) ); DBG_PROG
-    break;
-  case 4: // Ausgangskurven
-    mft_viewer->hinein_kurven (
-                     profile[0].getTagCurves (tag_nummer, ICCtag::CURVE_OUT),
-                     profile[0].getTagChannelNames (tag_nummer, ICCtag::CURVE_OUT) ); DBG_PROG
-    break;
-  }
-
-  gewaehlter_eintrag = mw->value();
-  DBG_PROG_ENDE
-}
-
-void d_haendler(void* o) {
-  DBG_PROG_START
-  Fl::remove_timeout( (void(*)(void*))d_haendler, 0 );
-
-  if (!Fl::has_timeout( (void(*)(void*))d_haendler, 0 )
-   && ((TagDrawings*)o)->active()
-   && ((TagDrawings*)o)->visible_r()
-   && ((TagDrawings*)o)->wiederholen)
-  {
-    ((TagDrawings*)o)->ruhig_neuzeichnen();
-
-    #ifdef DEBUG
-    DBG_PROG_V( ((TagDrawings*)o)->wiederholen )
-    #endif
-  }
-  DBG_PROG_ENDE
-}
-
-void zeig_mich(void* widget) {
+void ICCfltkBetrachter::zeig_mich(void* widget) {
   DBG_PROG_START
   // zeigt das ausgewählte Fenster (widget)
 
@@ -1077,4 +1059,22 @@ std::vector<std::string> zeilenNachVector(std::string text) {
 
   DBG_PROG_ENDE
   return texte;
+}
+
+void d_haendler(void* o) {
+  DBG_PROG_START
+  Fl::remove_timeout( (void(*)(void*))d_haendler, 0 );
+
+  if (!Fl::has_timeout( (void(*)(void*))d_haendler, 0 )
+   && ((TagDrawings*)o)->active()
+   && ((TagDrawings*)o)->visible_r()
+   && ((TagDrawings*)o)->wiederholen)
+  {
+    ((TagDrawings*)o)->ruhig_neuzeichnen();
+
+    #ifdef DEBUG
+    DBG_PROG_V( ((TagDrawings*)o)->wiederholen )
+    #endif
+  }
+  DBG_PROG_ENDE
 }

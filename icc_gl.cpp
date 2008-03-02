@@ -571,8 +571,8 @@ double seitenverhaeltnis;
 
 void reshape(int w, int h) {
   DBG_PROG_START
-  glViewport(0,0,w,h); DBG_PROG_V( mft_gl->x()<<" "<<mft_gl->y()<<" "<<w<<" "<<h )
-  glutPositionWindow(mft_gl->x(), mft_gl->y());
+  glViewport(0,0,w,h); DBG_PROG_V( icc_examin->icc_betrachter->mft_gl->x()<<" "<<icc_examin->icc_betrachter->mft_gl->y()<<" "<<w<<" "<<h )
+  glutPositionWindow(icc_examin->icc_betrachter->mft_gl->x(), icc_examin->icc_betrachter->mft_gl->y());
   //mft_gl->zeigen();
   seitenverhaeltnis = (GLdouble)w/(GLdouble)h;
   glFlush();
@@ -591,7 +591,7 @@ void display() {
    // Text
    glPushMatrix();
    glLoadIdentity();
-   glOrtho(0,mft_gl->w(),0,mft_gl->h(),-10.0,10.0);
+   glOrtho(0,icc_examin->icc_betrachter->mft_gl->w(),0,icc_examin->icc_betrachter->mft_gl->h(),-10.0,10.0);
 
    glDisable(GL_TEXTURE_2D);
    glDisable(GL_LIGHTING);
@@ -618,7 +618,7 @@ void display() {
    }
    #endif
 
-   sprintf(&text[0],"%s: %s", _("sichtbarer Kanal"),mft_gl->kanalName());
+   sprintf(&text[0],"%s: %s", _("sichtbarer Kanal"),icc_examin->icc_betrachter->mft_gl->kanalName());
    glTranslatef(0,zeilenversatz,0);
    ZeichneOText (GLUT_STROKE_ROMAN, scal, text) 
 
@@ -677,7 +677,7 @@ void GL_Ansicht::hinein_punkt(std::vector<double> vect, std::vector<std::string>
     nachFarbNamen.push_back (txt[i]);
   kurven.clear();
 
-  zeig_mich(this);
+  icc_examin->icc_betrachter->zeig_mich(this);
   DBG_PROG_ENDE
 }
 
@@ -688,7 +688,7 @@ void GL_Ansicht::hinein_kurven(std::vector<std::vector<double> >vect, std::vecto
   nachFarbNamen = txt;
   punkte.clear();
 
-  zeig_mich(this); DBG_PROG_V( first )
+  icc_examin->icc_betrachter->zeig_mich(this); DBG_PROG_V( first )
 
   if (first)
     init();
@@ -716,7 +716,7 @@ GL_Ansicht::hinein_tabelle(std::vector<std::vector<std::vector<std::vector<doubl
   kurven.clear(); DBG_PROG
   punkte.clear(); DBG_PROG
 
-  zeig_mich(this); DBG_PROG_V( first )
+  icc_examin->icc_betrachter->zeig_mich(this); DBG_PROG_V( first )
 
 
   if (first)
@@ -781,7 +781,7 @@ void handlemenu(int value)
     case MENU_QUIT:
       DBG_PROG_V( glutGetWindow() )
       glutDestroyWindow(glutGetWindow());
-      mft_gl->first = true;
+      icc_examin->icc_betrachter->mft_gl->first = true;
       break;
     case MENU_RING:
       Rotating = !Rotating;
@@ -794,23 +794,23 @@ void handlemenu(int value)
       }
       break;
     case MENU_KUGEL:
-      mft_gl-> Punktform = MENU_KUGEL;
-      mft_gl->MakeDisplayLists();
+      icc_examin->icc_betrachter->mft_gl-> Punktform = MENU_KUGEL;
+      icc_examin->icc_betrachter->mft_gl->MakeDisplayLists();
       break;
     case MENU_WUERFEL:
-      mft_gl-> Punktform = MENU_WUERFEL;
-      mft_gl->MakeDisplayLists();
+      icc_examin->icc_betrachter->mft_gl-> Punktform = MENU_WUERFEL;
+      icc_examin->icc_betrachter->mft_gl->MakeDisplayLists();
       break;
     case MENU_STERN:
-      mft_gl-> Punktform = MENU_STERN;
-      mft_gl->MakeDisplayLists();
+      icc_examin->icc_betrachter->mft_gl-> Punktform = MENU_STERN;
+      icc_examin->icc_betrachter->mft_gl->MakeDisplayLists();
       break;
     }
 
   if (value >= MENU_MAX) {
     kanal = value - MENU_MAX; DBG_PROG_V( kanal )
     status(_("linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menü"))
-    mft_gl->MakeDisplayLists();
+    icc_examin->icc_betrachter->mft_gl->MakeDisplayLists();
   }
 
   DBG_PROG_V( value )

@@ -28,10 +28,14 @@
 
 #include "icc_examin.h"
 
+ICCexamin *icc_examin;
+
 int
 main (int argc, char** argv)
 {
   ICCexamin hauptprogramm;
+
+  icc_examin = &hauptprogramm;
 
   hauptprogramm.start(argc, argv);
 
