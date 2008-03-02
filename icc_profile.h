@@ -220,6 +220,9 @@ class ICCmeasurement {
     std::vector<RGB>    _RGB_MessFarben;
     std::vector<RGB>    _RGB_ProfilFarben;
     std::vector<std::vector<std::string> > _reportTabelle;
+  private:
+    std::string         ascii_korrigieren ();
+    void                lcms_parse (std::string data);
   public:
     void                load (ICCprofile* profil , ICCtag& tag);
     void                load (ICCprofile* profil , char *data, size_t size);

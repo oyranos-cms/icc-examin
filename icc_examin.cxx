@@ -68,6 +68,10 @@ Fl_Menu_Item menu_Fl_lookat_MenuBar[] = {
  {0}
 };
 
+Fl_Group *inspekt=(Fl_Group *)0;
+
+Fl_Help_View *inspekt_html=(Fl_Help_View *)0;
+
 Fl_Tile *examin=(Fl_Tile *)0;
 
 TagBrowser *tag_browser=(TagBrowser *)0;
@@ -79,10 +83,6 @@ static void cb_tag_browser(TagBrowser* o, void*) {
 Fl_Group *ansichtsgruppe=(Fl_Group *)0;
 
 Fl_Group *tag_3D=(Fl_Group *)0;
-
-TagDrawings *tag_viewer=(TagDrawings *)0;
-
-TagTexts *tag_text=(TagTexts *)0;
 
 Fl_Group *tabellengruppe=(Fl_Group *)0;
 
@@ -98,9 +98,9 @@ TagTexts *mft_text=(TagTexts *)0;
 
 Fl_Box *mft_gl=(Fl_Box *)0;
 
-Fl_Group *inspekt=(Fl_Group *)0;
+TagDrawings *tag_viewer=(TagDrawings *)0;
 
-Fl_Help_View *inspekt_html=(Fl_Help_View *)0;
+TagTexts *tag_text=(TagTexts *)0;
 
 Fl_Box *stat=(Fl_Box *)0;
 
@@ -121,6 +121,13 @@ int main(int argc, char **argv) {
         o->when(3);
         o->menu(menu_Fl_lookat_MenuBar);
       }
+      { Fl_Group* o = inspekt = new Fl_Group(0, 25, 385, 470);
+        { Fl_Help_View* o = inspekt_html = new Fl_Help_View(0, 25, 385, 470, "Inspect");
+          o->align(FL_ALIGN_CENTER|FL_ALIGN_INSIDE);
+        }
+        o->hide();
+        o->end();
+      }
       { Fl_Tile* o = examin = new Fl_Tile(0, 25, 385, 470);
         { TagBrowser* o = tag_browser = new TagBrowser(0, 25, 385, 135, "Bitte w\344hlen Sie ein Profilmerkmal aus");
           o->box(FL_NO_BOX);
@@ -140,29 +147,6 @@ int main(int argc, char **argv) {
           { Fl_Group* o = tag_3D = new Fl_Group(0, 160, 385, 335);
             o->hide();
             o->end();
-          }
-          { TagDrawings* o = tag_viewer = new TagDrawings(0, 160, 385, 335);
-            o->box(FL_NO_BOX);
-            o->color(FL_BACKGROUND_COLOR);
-            o->selection_color(FL_BACKGROUND_COLOR);
-            o->labeltype(FL_NORMAL_LABEL);
-            o->labelfont(0);
-            o->labelsize(14);
-            o->labelcolor(FL_BLACK);
-            o->align(FL_ALIGN_CENTER);
-            o->when(FL_WHEN_RELEASE);
-            o->hide();
-          }
-          { TagTexts* o = tag_text = new TagTexts(0, 160, 385, 335, "Der Text");
-            o->box(FL_NO_BOX);
-            o->color((Fl_Color)53);
-            o->selection_color(FL_SELECTION_COLOR);
-            o->labeltype(FL_NORMAL_LABEL);
-            o->labelfont(0);
-            o->labelsize(14);
-            o->labelcolor(FL_BLACK);
-            o->align(FL_ALIGN_BOTTOM|FL_ALIGN_INSIDE);
-            o->when(FL_WHEN_RELEASE_ALWAYS);
           }
           { Fl_Group* o = tabellengruppe = new Fl_Group(0, 160, 385, 335);
             { MftChoice* o = mft_choice = new MftChoice(0, 160, 385, 25, "W\344hlen Sie ein Kettenmerkmal");
@@ -203,17 +187,33 @@ int main(int argc, char **argv) {
             mft_gl = new Fl_Box(0, 185, 385, 310);
             o->end();
           }
+          { TagDrawings* o = tag_viewer = new TagDrawings(0, 160, 385, 335);
+            o->box(FL_NO_BOX);
+            o->color(FL_BACKGROUND_COLOR);
+            o->selection_color(FL_BACKGROUND_COLOR);
+            o->labeltype(FL_NORMAL_LABEL);
+            o->labelfont(0);
+            o->labelsize(14);
+            o->labelcolor(FL_BLACK);
+            o->align(FL_ALIGN_CENTER);
+            o->when(FL_WHEN_RELEASE);
+            o->hide();
+          }
+          { TagTexts* o = tag_text = new TagTexts(0, 160, 385, 335, "Der Text");
+            o->box(FL_NO_BOX);
+            o->color((Fl_Color)53);
+            o->selection_color(FL_SELECTION_COLOR);
+            o->labeltype(FL_NORMAL_LABEL);
+            o->labelfont(0);
+            o->labelsize(14);
+            o->labelcolor(FL_BLACK);
+            o->align(FL_ALIGN_BOTTOM|FL_ALIGN_INSIDE);
+            o->when(FL_WHEN_RELEASE_ALWAYS);
+          }
           o->end();
         }
         o->end();
         Fl_Group::current()->resizable(o);
-      }
-      { Fl_Group* o = inspekt = new Fl_Group(0, 25, 385, 470);
-        { Fl_Help_View* o = inspekt_html = new Fl_Help_View(0, 25, 385, 470, "Inspect");
-          o->align(FL_ALIGN_CENTER|FL_ALIGN_INSIDE);
-        }
-        o->hide();
-        o->end();
       }
       { Fl_Group* o = new Fl_Group(0, 494, 385, 25);
         { Fl_Box* o = stat = new Fl_Box(0, 494, 385, 25, "No wrl file loaded.");

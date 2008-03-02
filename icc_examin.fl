@@ -88,7 +88,7 @@ Function {} {open C return_type int
   fullscreen = false;} {}
   Fl_Window details {
     label {ICC Details} open
-    xywh {648 406 385 520} type Double box NO_BOX color 53
+    xywh {653 430 385 520} type Double box NO_BOX color 53
     code1 {DBG
     if (argc>1) {
 
@@ -161,7 +161,16 @@ Function {} {open C return_type int
           }
         }
       }
-      Fl_Tile examin {
+      Fl_Group inspekt {open
+        xywh {0 25 385 470}
+        code0 {o->hide();}
+      } {
+        Fl_Help_View inspekt_html {
+          label Inspect
+          xywh {0 25 385 470} align 16
+        }
+      }
+      Fl_Tile examin {open
         xywh {0 25 385 470} resizable
       } {
         Fl_Browser tag_browser {
@@ -179,17 +188,7 @@ Function {} {open C return_type int
             xywh {0 160 385 335}
             code0 {o->hide();}
           } {}
-          Fl_Box tag_viewer {
-            xywh {0 160 385 335}
-            code0 {o->hide();}
-            class TagDrawings
-          }
-          Fl_Browser tag_text {
-            label {Der Text}
-            xywh {0 160 385 335} color 53 align 18
-            class TagTexts
-          }
-          Fl_Group tabellengruppe {open
+          Fl_Group tabellengruppe {selected
             xywh {0 160 385 335}
           } {
             Fl_Choice mft_choice {
@@ -211,15 +210,16 @@ Function {} {open C return_type int
               xywh {0 185 385 310}
             }
           }
-        }
-      }
-      Fl_Group inspekt {open
-        xywh {0 25 385 470}
-        code0 {o->hide();}
-      } {
-        Fl_Help_View inspekt_html {
-          label Inspect
-          xywh {0 25 385 470} align 16
+          Fl_Box tag_viewer {
+            xywh {0 160 385 335}
+            code0 {o->hide();}
+            class TagDrawings
+          }
+          Fl_Browser tag_text {
+            label {Der Text}
+            xywh {0 160 385 335} color 53 align 18
+            class TagTexts
+          }
         }
       }
       Fl_Group {} {open
@@ -312,8 +312,7 @@ Function {open(int interaktiv)} {open return_type {std::string}
   if (inspekt_zeigen)
     inspekt_html->value(profile.report().c_str());
 
-  return filename;} {selected
-  }
+  return filename;} {}
 } 
 
 Function {quit(void)} {} {

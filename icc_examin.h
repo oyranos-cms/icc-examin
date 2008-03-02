@@ -35,22 +35,22 @@ extern Fl_Double_Window *details;
 #include <FL/Fl_Group.H>
 #include <FL/Fl_Menu_Bar.H>
 extern Fl_Menu_Bar *Fl_lookat_MenuBar;
+extern Fl_Group *inspekt;
+#include <FL/Fl_Help_View.H>
+extern Fl_Help_View *inspekt_html;
 #include <FL/Fl_Tile.H>
 extern Fl_Tile *examin;
 extern TagBrowser *tag_browser;
 extern Fl_Group *ansichtsgruppe;
 extern Fl_Group *tag_3D;
-extern TagDrawings *tag_viewer;
-extern TagTexts *tag_text;
 extern Fl_Group *tabellengruppe;
 extern MftChoice *mft_choice;
 extern TagDrawings *mft_viewer;
 extern TagTexts *mft_text;
 #include <FL/Fl_Box.H>
 extern Fl_Box *mft_gl;
-extern Fl_Group *inspekt;
-#include <FL/Fl_Help_View.H>
-extern Fl_Help_View *inspekt_html;
+extern TagDrawings *tag_viewer;
+extern TagTexts *tag_text;
 extern Fl_Box *stat;
 #include <FL/Fl_Progress.H>
 extern Fl_Progress *load_progress;
