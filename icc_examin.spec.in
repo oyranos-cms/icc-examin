@@ -34,7 +34,7 @@ used components and libraries (partitial statically linked):
 
 %build
 %configure
-make %{_smp_mflags} static
+make %{_smp_mflags} static || make
 make strip
 
 %install
