@@ -70,7 +70,7 @@ class FL_EXPORT MyFl_File_Chooser {open
 fileList->deselect();
 Fl::remove_timeout((Fl_Timeout_Handler)previewCB, this);
 window->hide();} open
-      xywh {794 191 490 380} type Double resizable
+      xywh {881 149 490 380} type Double resizable
       code0 {if (title) window->label(title);}
       code1 {\#include <stdio.h>}
       code2 {\#include <stdlib.h>}
@@ -104,8 +104,8 @@ window->hide();} open
         private xywh {10 45 470 225} resizable
       } {
         Fl_File_Browser fileList {
-          callback {fileListCB();} selected
-          private xywh {10 45 295 225} type Hold when 3 hotspot
+          callback {fileListCB();}
+          private xywh {10 45 295 225} type Hold hotspot
           code0 {\#include <FL/Fl_File_Browser.H>}
         }
         Fl_Box previewBox {
@@ -162,7 +162,7 @@ window->hide();}
   fileName->value("");
   fileList->deselect();
   Fl::remove_timeout((Fl_Timeout_Handler)previewCB, this);
-  window->hide();}
+  window->hide();} selected
             private xywh {380 345 100 25}
             code0 {//o->label(fl_cancel);}
           }
@@ -174,7 +174,7 @@ window->hide();}
     }
     Fl_Window favWindow {
       label {Manage Favorites}
-      xywh {126 256 355 150} type Double resizable
+      xywh {116 214 355 150} type Double resizable
       code0 {favWindow->label(manage_favorites_label);}
       class {icc_examin_ns::MyFl_Double_Window} modal size_range {181 150 0 0} visible
     } {

@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2007  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2006  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -59,304 +59,9 @@ using namespace oyranos;
 #endif
 
 void* myAllocFunc(size_t size)
-{
+{ 
   return new char [size];
 }
-
-void myDeAllocFunc(void * buf)
-{
-  delete [] (char*)buf;
-}
-
-/** @brief number of channels in a colour space
- *
- *  since: (ICC Examin: version 0.45)
- */
-int
-oyColourSpaceGetChannelCount ( icColorSpaceSignature color )
-{
-  int n;
-
-  switch (color) {
-    case icSigXYZData: n = 3; break;
-    case icSigLabData: n = 3; break;
-    case icSigLuvData: n = 3; break;
-    case icSigYCbCrData: n = 3; break;
-    case icSigYxyData: n = 3; break;
-    case icSigRgbData: n = 3; break;
-    case icSigGrayData: n = 1; break;
-    case icSigHsvData: n = 3; break;
-    case icSigHlsData: n = 3; break;
-    case icSigCmykData: n = 4; break;
-    case icSigCmyData: n = 3; break;
-    case icSig2colorData: n = 2; break;
-    case icSig3colorData: n = 3; break;
-    case icSig4colorData: n = 4; break;
-    case icSig5colorData:
-    case icSigMCH5Data:
-          n = 5; break;
-    case icSig6colorData:
-    case icSigMCH6Data:
-         n = 6; break;
-    case icSig7colorData:
-    case icSigMCH7Data:
-         n = 7; break;
-    case icSig8colorData:
-    case icSigMCH8Data:
-         n = 8; break;
-    case icSig9colorData:
-    case icSigMCH9Data:
-         n = 9; break;
-    case icSig10colorData:
-    case icSigMCHAData:
-         n = 10; break;
-    case icSig11colorData:
-    case icSigMCHBData:
-         n = 11; break;
-    case icSig12colorData:
-    case icSigMCHCData:
-         n = 12; break;
-    case icSig13colorData:
-    case icSigMCHDData:
-         n = 13; break;
-    case icSig14colorData:
-    case icSigMCHEData:
-         n = 14; break;
-    case icSig15colorData:
-    case icSigMCHFData:
-         n = 15; break;
-    default: n = 0; break;
-  }
-  return n;
-}
-
-/** @brief name of a colour space
- *
- *  since: (ICC Examin: version 0.45)
- */
-const char *
-oyColourSpaceGetName( icColorSpaceSignature sig )
-{
-  const char * text;
-
-  switch (color) {
-    case icSigXYZData: text =_("XYZ"); break;
-    case icSigLabData: text =_("Lab"); break;
-    case icSigLuvData: text =_("Luv"); break;
-    case icSigYCbCrData: text =_("YCbCr"); break;
-    case icSigYxyData: text =_("Yxy"); break;
-    case icSigRgbData: text =_("Rgb"); break;
-    case icSigGrayData: text =_("Gray"); break;
-    case icSigHsvData: text =_("Hsv"); break;
-    case icSigHlsData: text =_("Hls"); break;
-    case icSigCmykData: text =_("Cmyk"); break;
-    case icSigCmyData: text =_("Cmy"); break;
-    case icSig2colorData: text =_("2color"); break;
-    case icSig3colorData: text =_("3color"); break;
-    case icSig4colorData: text =_("4color"); break;
-    case icSigMCH5Data:
-    case icSig5colorData: text =_("5color"); break;
-    case icSigMCH6Data:
-    case icSig6colorData: text =_("6color"); break;
-    case icSigMCH7Data:
-    case icSig7colorData: text =_("7color"); break;
-    case icSigMCH8Data:
-    case icSig8colorData: text =_("8color"); break;
-    case icSigMCH9Data:
-    case icSig9colorData: text =_("9color"); break;
-    case icSigMCHAData:
-    case icSig10colorData: text =_("10color"); break;
-    case icSigMCHBData:
-    case icSig11colorData: text =_("11color"); break;
-    case icSigMCHCData:
-    case icSig12colorData: text =_("12color"); break;
-    case icSigMCHDData:
-    case icSig13colorData: text =_("13color"); break;
-    case icSigMCHEData:
-    case icSig14colorData: text =_("14color"); break;
-    case icSigMCHFData:
-    case icSig15colorData: text =_("15color"); break;
-    default: { icUInt32Number i = icValue(color);
-               char t[8];
-               memcpy (t,(char*)&i, 4);
-               t[4] = '?';
-               t[5] = 0;
-               text = &t[0];
-               break;
-             }
-  }
-  return text;
-}
-
-/** @brief copy pure colours
-
-    handle colour only, without from set to -1 default
- *
- *  since: (ICC Examin: version 0.45)
- */
-void
-oyCopyColour ( double * from, double * to, int n, icColorSpaceSignature sig )
-{
-  int i, j;
-  int c = oyColourSpaceGetChannelCount( sig );
-
-  if(!n || !to)
-    return;
-
-  if(from)
-    memcpy( to, from, sizeof(double) * n * c );
-  else
-    switch(sig)
-    {
-      case icSigLabData:
-      case icSigLuvData:
-      case icSigHsvData:
-      case icSigHlsData:
-      case icSigYCbCrData:
-           for( i = 0; i < n; ++i )
-             for( j = 0; j < c; ++j )
-               to[i*c+0] = -1;
-               to[i*c+1] = 0;
-               to[i*c+2] = 0;
-           break;
-      case icSigRgbData:
-      default:
-           for( i = 0; i < n*c; ++i )
-             to[i] = -1;
-           break;
-    }
-}
-
-/** @brief manage complex oyNamedColour_s inside Oyranos
- *
- *  since: (ICC Examin: version 0.45)
- */
-oyNamedColour_s*
-oyNamedColourCreate( double * lab, double * chan, icColorSpaceSignature sig,
-                     const char **names_chan, const char *name,
-                     const char *name_long, char *nick,
-                     const char  *blob, int blob_len, const char *ref_file,
-                     oyAllocFunc_t allocateFunc,
-                     oyDeAllocFunc_t deallocateFunc )
-{
-  oyNamedColour_s * colour = (oyNamedColour_s*)allocateFunc(sizeof(oyNamedColour_s));
-  int i;
-
-  if(!colour)
-  {
-    WARN_S("MEM Error.")
-    return NULL;
-  }
-
-  colour->sig = sig;
-
-  if(deallocateFunc)
-    colour->deallocateFunc = deallocateFunc;
-  else
-    colour->deallocateFunc = myDeAllocFunc;
-
-  if(allocateFunc)
-    colour->allocateFunc = allocateFunc;
-  else
-    colour->allocateFunc = myAllocFunc;
-
-  oyCopyColour( lab, &colour->lab[0], 1, icSigLabData );
-
-  return colour;
-}
-
-void
-oyNamedColourGetLab ( oyNamedColour_s * colour,
-                      double * lab )
-{
-  int i;
-  if(lab)
-    for(i=0;i<3;++i) lab[i] = colour->lab[i];
-}
-
-void
-oyNamedColourSetLab ( oyNamedColour_s * colour,
-                      double * lab )
-{
-  int i;
-  if(lab)
-  {
-    for(i=0;i<3;++i)
-    {
-      colour->lab[i] = lab[i];
-      colour->moni_rgb[i] = -1f;
-    }
-    for(i=0;i<32;++i)
-      colour->channels[i] = -1f;
-  }
-}
-
-/** @brief get associated colour name
- *
- *
- *  @param[in]    Oyranos colour struct pointer
- *
- *  since: (ICC Examin: version 0.45)
- */
-const char *
-oyNamedColourGetName( oyNamedColour_s * colour )
-{
-  icColorSpaceSignature sig = colour->sig;
-
-  if(colour->name)
-    return colour->name;
-
-  colour->name = colour->allocateFunc(80);
-  snprintf( colour->name, 80, "%s: %.02f %.02f %.02f",
-            oyColourSpaceGetName(sig),
-            colour->lab[0], colour->lab[1], colour->lab[2] );
-    
-  return colour->name;
-}
-
-/** @brief get associated colour nick name
- *
- *
- *  @param[in]    Oyranos colour struct pointer
- *
- *  since: (ICC Examin: version 0.45)
- */
-const char *
-oyNamedColourGetNick( oyNamedColour_s * colour )
-{
-  return colour->nick_name;
-}
-
-/** @brief get associated colour description
- *
- *
- *  @param[in]    Oyranos colour struct pointer
- *
- *  since: (ICC Examin: version 0.45)
- */
-const char *
-oyNamedColourGetDescription( oyNamedColour_s * colour )
-{
-  return colour->name_long;
-}
-
-/** @brief release correctly
- *
- *  set pointer to zero
- *
- *  @param[in]    adress of Oyranos colour struct pointer
- *
- *  since: (ICC Examin: version 0.45)
- */
-void
-oyNamedColourRelease( oyNamedColour_s ** colour )
-{
-  //TODO
-  *colour->deallocate_func( *colour );
-  *colour = NULL;
-}
-
-
 
 Oyranos icc_oyranos;
 
@@ -542,7 +247,7 @@ typedef  void* (oyAllocFunc_t)(size_t size);
 #endif
 
 int
-oyGetProfileBlockOSX (CMProfileRef prof, char *block, size_t *size, oyAllocFunc_t allocateFunc)
+oyGetProfileBlockOSX (CMProfileRef prof, char *block, size_t *size, oyAllocFunc_t allocate_func)
 {
   DBG_PROG_START
     CMProfileLocation loc;
@@ -578,7 +283,7 @@ oyGetProfileBlockOSX (CMProfileRef prof, char *block, size_t *size, oyAllocFunc_
     refcon ref = {0,0};
     Boolean bol;
     // only the size
-    if(!allocateFunc) {
+    if(*size == 0) {
       CMError err = CMFlattenProfile ( prof, 0, MyFlattenProfileProcSize, &ref, &bol);
       *size = ref.size;
       return err;
@@ -595,7 +300,6 @@ oyGetProfileBlockOSX (CMProfileRef prof, char *block, size_t *size, oyAllocFunc_
     if(ref.size && ref.data)
     {
         *size = ref.size;
-        block = allocateFunc( *size );
         memcpy(block, ref.data, ref.size);
           DBG_MEM_V( size )
     }
@@ -796,6 +500,10 @@ Oyranos::rgb_test_ ()
   char *block = 0;
   size_t groesse = 0;
   oyGetProfileBlockOSX(prof, block, &groesse, myAllocFunc);
+  if(groesse) {
+    block = (char*)malloc(groesse);
+    oyGetProfileBlockOSX(prof, block, &groesse, myAllocFunc);
+  }
   Speicher *v_block = &rgb_;
   v_block->lade(block,groesse);
 # endif
@@ -1007,20 +715,20 @@ Oyranos::moniInfo (int x, int y, int *num)
 
   if( manufacturer && strlen( manufacturer ) )
   {
-    infos[2 * *num] = strdup(_("Manufacturer:"));
-    infos[2 * *num + 1] = strdup( manufacturer );
+    infos[2 * *num] = icc_strdup_m(_("Manufacturer:"));
+    infos[2 * *num + 1] = icc_strdup_m( manufacturer );
     *num += 1;
   }
   if( model && strlen( model ) )
   {
-    infos[2 * *num] = strdup(_("Model:"));
-    infos[2 * *num + 1] = strdup( model );
+    infos[2 * *num] = icc_strdup_m(_("Model:"));
+    infos[2 * *num + 1] = icc_strdup_m( model );
     *num += 1;
   }
   if( serial && strlen( serial ) )
   {
-    infos[2 * *num] = strdup(_("Serial:"));
-    infos[2 * *num + 1] = strdup( serial );
+    infos[2 * *num] = icc_strdup_m(_("Serial:"));
+    infos[2 * *num + 1] = icc_strdup_m( serial );
     *num += 1;
   }
     
@@ -1035,9 +743,9 @@ Oyranos::moniInfo (int x, int y, int *num)
 
 /** generates a gamut hull */
 std::string
-Oyranos::netzVonProfil_ (std::vector<ICCnetz> & netze,
-               Speicher & profil,
-               int intent, int bpc)
+Oyranos::netzVonProfil_ (ICCnetz & netz,
+                         Speicher & profil,
+                         int intent, int bpc)
 {
   DBG_PROG_START
   // a cubus from six squares with the range of the Lab cube
@@ -1094,18 +802,16 @@ Oyranos::netzVonProfil_ (std::vector<ICCnetz> & netze,
     return  std::string("oyranos");
   double * rgb = wandelLabNachBildschirmFarben( lab, size, 0, 0 );
 
-  // initialise mesh
-  netze.resize(1);
   // collect colour points
-  netze[0].punkte. resize( size );
+  netz.punkte. resize( size );
   for(size_t i = 0; i < size; ++i)
   {
     for(int k = 0; k < kanaele; ++k)
     {
-      netze[0].punkte[i].koord[k] = lab [i*kanaele+k];
-      netze[0].punkte[i].farbe[k] = rgb [i*kanaele+k];
+      netz.punkte[i].koord[k] = lab [i*kanaele+k];
+      netz.punkte[i].farbe[k] = rgb [i*kanaele+k];
     }
-    netze[0].punkte[i].farbe[kanaele] = 1.0;
+    netz.punkte[i].farbe[kanaele] = 1.0;
   }
   // build mesh
   char *liste = new char [size];
@@ -1118,11 +824,11 @@ Oyranos::netzVonProfil_ (std::vector<ICCnetz> & netze,
       int x_ = (x == 4 * a - 1) ? -1 : x;
       index_p.second.i[0] =  y *  4*a+x; index_p.second.i[1] =  y *  4*a+x_+1;
       index_p.second.i[2] = (y+1)*4*a+x;
-      netze[0].indexe. insert( index_p );
+      netz.indexe. insert( index_p );
 
                                          index_p.second.i[0] =  y *  4*a+x_+1;
       index_p.second.i[2] = (y+1)*4*a+x; index_p.second.i[1] = (y+1)*4*a+x_+1;
-      netze[0].indexe. insert( index_p );
+      netz.indexe. insert( index_p );
     }
 
   for(int y = 0; y < a; ++y)
@@ -1133,38 +839,38 @@ Oyranos::netzVonProfil_ (std::vector<ICCnetz> & netze,
       // 0 0 .
       index_p.second.i[2] = off-y;  index_p.second.i[0] = off+(y+1)*2*(a-1)-a+1;
       index_p.second.i[1] = off-y-1;
-      netze[0].indexe. insert( index_p );
+      netz.indexe. insert( index_p );
 
                                     index_p.second.i[0] = off+(y+0)*2*(a-1)-a+1;
       index_p.second.i[2] = off-y;  index_p.second.i[1] = off+(y+1)*2*(a-1)-a+1;
-      netze[0].indexe. insert( index_p );
+      netz.indexe. insert( index_p );
 
       // 0 1 .
       index_p.second.i[1] = off+(y+1)*2*(a-1)-1; index_p.second.i[0] =off-3*a+y+1;
       index_p.second.i[2] = off+(y)*2*(a-1)-1;
-      netze[0].indexe. insert( index_p );
+      netz.indexe. insert( index_p );
 
                                                index_p.second.i[1] =off-3*a+y+1;
       index_p.second.i[2] = off+(y)*2*(a-1)-1; index_p.second.i[0] = off-3*a+y;
-      netze[0].indexe. insert( index_p );
+      netz.indexe. insert( index_p );
 
       // 1 0 .
                           index_p.second.i[0] = off+2*(a-1)*(a-1)-(y+1)*2*(a-1);
       index_p.second.i[1] = 3*a+y+1; index_p.second.i[2] = off+2*(a-1)*(a-1)-y*2*(a-1);
-      netze[0].indexe. insert( index_p );
+      netz.indexe. insert( index_p );
 
       index_p.second.i[0] = 3*a+y+1;  index_p.second.i[2] = off+2*(a-1)*(a-1)-y*2*(a-1);
       index_p.second.i[1] = 3*a+y;
-      netze[0].indexe. insert( index_p );
+      netz.indexe. insert( index_p );
 
       // 1 1 .
       index_p.second.i[0] = off+2*(a-1)*(a-1)-(y+1)*2*(a-1)+a-2;
       index_p.second.i[1] = off+2*(a-1)*(a-1)-(y+0)*2*(a-1)+a-2; index_p.second.i[2] = 2*a-y;
-      netze[0].indexe. insert( index_p );
+      netz.indexe. insert( index_p );
 
                                          index_p.second.i[0] = 2*a-y-1;
       index_p.second.i[1] = off+2*(a-1)*(a-1)-(y+1)*2*(a-1)+a-2; index_p.second.i[2] = 2*a-y;
-      netze[0].indexe. insert( index_p );
+      netz.indexe. insert( index_p );
     }
 
     for(int x = 0; x < 2 * a; ++x)
@@ -1175,75 +881,75 @@ Oyranos::netzVonProfil_ (std::vector<ICCnetz> & netze,
           // 1 0 0 (L a b)
           index_p.second.i[0] = 4*a-1;   index_p.second.i[1] = off;
           index_p.second.i[2] = 0;
-          netze[0].indexe. insert( index_p );
+          netz.indexe. insert( index_p );
 
                                          index_p.second.i[0] = off;
           index_p.second.i[2] = 0;       index_p.second.i[1] = 1;
-          netze[0].indexe. insert( index_p );
+          netz.indexe. insert( index_p );
 
           // 0 0 0
           index_p.second.i[1] = off-1;   index_p.second.i[0] = off+a-1;
           index_p.second.i[2] = off-4*a;
-          netze[0].indexe. insert( index_p );
+          netz.indexe. insert( index_p );
 
                                          index_p.second.i[1] = off+a-1;
           index_p.second.i[2] = off-4*a; index_p.second.i[0] = off - 4*a+1;
-          netze[0].indexe. insert( index_p );
+          netz.indexe. insert( index_p );
 
           // 0 0 1
           index_p.second.i[2] = off-a; index_p.second.i[1] = off-a-1;
                                     index_p.second.i[0] = off+2*(a-1)*(a-1)-a+1;
-          netze[0].indexe. insert( index_p );
+          netz.indexe. insert( index_p );
 
           index_p.second.i[0] = off-a;
           index_p.second.i[1] = off-a+1; index_p.second.i[2] = off+2*(a-1)*(a-1)-a+1;
-          netze[0].indexe. insert( index_p );
+          netz.indexe. insert( index_p );
 
           // 0 1 1
           index_p.second.i[0] = off-2*a+1; index_p.second.i[2] = off-2*a;
           index_p.second.i[1] = off+2*(a-1)*(a-1)-1;
-          netze[0].indexe. insert( index_p );
+          netz.indexe. insert( index_p );
 
                                          index_p.second.i[1] = off-2*a;
           index_p.second.i[2] = off+2*(a-1)*(a-1)-1; index_p.second.i[0] = off-2*a-1;
-          netze[0].indexe. insert( index_p );
+          netz.indexe. insert( index_p );
 
 
           // 1 1 1
           index_p.second.i[0] = 2*a-1;   index_p.second.i[2] = 2*a;
           index_p.second.i[1] = off+2*(a-1)*(a-1)-a;
-          netze[0].indexe. insert( index_p );
+          netz.indexe. insert( index_p );
 
                                          index_p.second.i[1] = 2*a;
           index_p.second.i[2] = off+2*(a-1)*(a-1)-a;index_p.second.i[0] = 2*a+1;
-          netze[0].indexe. insert( index_p );
+          netz.indexe. insert( index_p );
 
           // 1 0 1
           index_p.second.i[2] = 3*a;   index_p.second.i[0] = 3*a-1;
                                   index_p.second.i[1] = off+2*(a-1)*(a-1)-2*a+2;
-          netze[0].indexe. insert( index_p );
+          netz.indexe. insert( index_p );
 
           index_p.second.i[2] = 3*a;
           index_p.second.i[1] = 3*a+1; index_p.second.i[0] = off+2*(a-1)*(a-1)-2*a+2;
-          netze[0].indexe. insert( index_p );
+          netz.indexe. insert( index_p );
 
           // 1 1 0
           index_p.second.i[0] = off+a-2; index_p.second.i[1] = a + 1;
           index_p.second.i[2] = a - 1;
-          netze[0].indexe. insert( index_p );
+          netz.indexe. insert( index_p );
 
                                          index_p.second.i[0] = a + 1;
           index_p.second.i[2] = a - 1;   index_p.second.i[1] = a;
-          netze[0].indexe. insert( index_p );
+          netz.indexe. insert( index_p );
 
           // 0 1 0
           index_p.second.i[0] = off+2*(a-1)-1;
           index_p.second.i[1] = off-3*a-1; index_p.second.i[2] = off-3*a;
-          netze[0].indexe. insert( index_p );
+          netz.indexe. insert( index_p );
 
           index_p.second.i[1] = off+2*(a-1)-1; index_p.second.i[0] = off-3*a+1;
                                          index_p.second.i[2] = off-3*a+0;
-          netze[0].indexe. insert( index_p );
+          netz.indexe. insert( index_p );
 
       // lower border
       if( y == 0 )
@@ -1254,39 +960,39 @@ Oyranos::netzVonProfil_ (std::vector<ICCnetz> & netze,
           // 1 . 0
           index_p.second.i[0] = off + x - 1; index_p.second.i[1] = off + x;
           index_p.second.i[2] = x;
-          netze[0].indexe. insert( index_p );
+          netz.indexe. insert( index_p );
 
                                          index_p.second.i[0] = off + x;
           index_p.second.i[2] = x;       index_p.second.i[1] = x + 1;
-          netze[0].indexe. insert( index_p );
+          netz.indexe. insert( index_p );
 
           // 0 . 1
           index_p.second.i[0] = off-a-x; index_p.second.i[2] = off-a-x-1;
           index_p.second.i[1] = off+2*(a-1)*(a-1)-a+x;
-          netze[0].indexe. insert( index_p );
+          netz.indexe. insert( index_p );
 
                                          index_p.second.i[2] = off-a-x-1;
           index_p.second.i[0] = off+2*(a-1)*(a-1)-a+x; index_p.second.i[1] = off+2*(a-1)*(a-1)-a+x+1;
-          netze[0].indexe. insert( index_p );
+          netz.indexe. insert( index_p );
 
           // 1 . 1
           index_p.second.i[0] = 3*a - x; index_p.second.i[1] = 3*a - x-1;
           index_p.second.i[2] = off+2*(a-1)*(a-1)-2*(a-1)+x-1;
-          netze[0].indexe. insert( index_p );
+          netz.indexe. insert( index_p );
 
                                          index_p.second.i[0] = 3*a - x-1;
           index_p.second.i[2] = off+2*(a-1)*(a-1)-2*(a-1)+x-1; index_p.second.i[1] = off+2*(a-1)*(a-1)-2*(a-1)+x;
-          netze[0].indexe. insert( index_p );
+          netz.indexe. insert( index_p );
 
         } else if (x > a + 1) {
           // 0 . 0
           index_p.second.i[0] = off+x-3; index_p.second.i[2] = off+x-3+1;
           index_p.second.i[1] = 4*a*(a+1)-4*a + x-a-1;
-          netze[0].indexe. insert( index_p );
+          netz.indexe. insert( index_p );
 
                                          index_p.second.i[1] = off+x-3+1;
           index_p.second.i[2] = 4*a*(a+1)-4*a + x-a-1; index_p.second.i[0] = 4*a*(a+1)-4*a + x-a;
-          netze[0].indexe. insert( index_p );
+          netz.indexe. insert( index_p );
         }
       // upper border
       } else if( y == a - 1 )
@@ -1298,26 +1004,26 @@ Oyranos::netzVonProfil_ (std::vector<ICCnetz> & netze,
         // upper middle field (*L=0.0)
         index_p.second.i[0] = (y-1) *  2*(a-1)+x_; index_p.second.i[2] =  (y-1)*2*(a-1)+x_+1;
         index_p.second.i[1] = (y+0)*2*(a-1)+x_;
-        netze[0].indexe. insert( index_p );
+        netz.indexe. insert( index_p );
 
                                                 index_p.second.i[2] = (y-1)*2*(a-1)+x_+1;
         index_p.second.i[0] = (y+0)*2*(a-1)+x_; index_p.second.i[1] = (y+0)*2*(a-1)+x_+1;
-        netze[0].indexe. insert( index_p );
+        netz.indexe. insert( index_p );
 
       } else if(b * (a - b) <= x && x < ++b * a - b - 1) {
         // lower middle field (*L=1.0)
         index_p.second.i[0] = (y-1) *  2*(a-1)+x_; index_p.second.i[1] =  (y-1)*2*(a-1)+x_+1;
         index_p.second.i[2] = (y+0)*2*(a-1)+x_;
-        netze[0].indexe. insert( index_p );
+        netz.indexe. insert( index_p );
 
                                                 index_p.second.i[0] = (y-1)*2*(a-1)+x_+1;
         index_p.second.i[2] = (y+0)*2*(a-1)+x_; index_p.second.i[1] = (y+0)*2*(a-1)+x_+1;
-        netze[0].indexe. insert( index_p );
+        netz.indexe. insert( index_p );
       }
     }
   }
 
-  netze[0].kubus = 1;
+  netz.kubus = 1;
 
   delete [] rgb;
   delete [] lab;
@@ -1329,12 +1035,11 @@ Oyranos::netzVonProfil_ (std::vector<ICCnetz> & netze,
 
 #include "icc_vrml.h"
 #include "icc_gamut.h"
-std::vector<ICCnetz>
-Oyranos::netzVonProfil (ICCprofile & profil, int intent, int bpc)
+void
+Oyranos::netzVonProfil (ICCprofile & profil, int intent, int bpc, ICCnetz & netz)
 {
   DBG_PROG_START
   Speicher s;
-  std::vector<ICCnetz> netz;
 
   if(profil.valid()) {
       size_t groesse = 0;
@@ -1346,31 +1051,44 @@ Oyranos::netzVonProfil (ICCprofile & profil, int intent, int bpc)
   if(s.size())
   {
     std::string vrml;
-    vrml = icc_create_vrml ( s,s.size(), intent );
-    netz = netzAusVRML (vrml);
-    std::string t;
-    if(!netz.size())
+
+    vrml = iccCreateVrml ( s,(int)s.size(), intent );
+	std::vector<ICCnetz> netze;
+
+    if(vrml.size())
     {
-      t = netzVonProfil_(netz, s, intent, bpc);
-      WARN_S("Fall back to internal hull generation. Argyll is not installed?");
+      netzAusVRML (vrml, netze);
     }
 
-    if(netz.size())
+    std::string t;
+
+    if(netze.size())
+    {
+      netz = netze[0];
+    } else {
+      t = netzVonProfil_(netz, s, intent, bpc);
+#ifdef USE_ARGYLL
+      DBG_PROG_S("Fall back to internal hull generation.");
+#else
+      WARN_S("Fall back to internal hull generation. Argyll is not installed?");
+#endif
+    }
+
+    if(netz.punkte.size())
     {
       size_t groesse = 0;
       double* band = icc_examin_ns::iccGrenze( profil, intent, groesse );
       DBG_PROG_V( (int*) band <<" "<< groesse )
 
-      netz[0].umriss.resize( groesse );
+      netz.umriss.resize( groesse );
 
       for(int i = 0; i < (int)groesse; ++i)
         for(int j = 0; j < 3; ++j)
-          netz[0].umriss[i].koord[j] = band[i*3+j];
+          netz.umriss[i].koord[j] = band[i*3+j];
       if(band) delete [] band;
     }
   }
   DBG_PROG_ENDE
-  return netz;
 }
 
 std::string
@@ -1389,7 +1107,7 @@ Oyranos::vrmlVonProfil (ICCprofile & profil, int intent)
 
   if(s.size())
   {
-    vrml = icc_create_vrml ( s, s.size(), intent );
+    vrml = iccCreateVrml ( s, (int)s.size(), intent );
   }
   DBG_PROG_ENDE
   return vrml;
@@ -1452,7 +1170,7 @@ Oyranos::gamutCheckAbstract(Speicher & s, Speicher & abstract,
       if(!hLab)  WARN_S( "hLab profil not opened" )
 
       fortschritt(0.2, 0.2);
-      profil = cmsOpenProfileFromMem(const_cast<char*>(block), groesse);
+      profil = cmsOpenProfileFromMem(const_cast<char*>(block), (DWORD)groesse);
       cmsHTRANSFORM tr1 = cmsCreateProofingTransform  (hLab, TYPE_Lab_DBL,
                                                hLab, TYPE_Lab_DBL,
                                                profil,
@@ -1531,7 +1249,7 @@ Oyranos::wandelProfilNachLabUndZurueck(double *lab, // 0.0 - 1.0
       DBG_MEM_V( (int*) block <<" "<<groesse )
 
       if(groesse)
-        hProfil = cmsOpenProfileFromMem(const_cast<char*>(block), groesse);
+        hProfil = cmsOpenProfileFromMem(const_cast<char*>(block), (DWORD)groesse);
       else
         WARN_S("no profile found");
 
@@ -1546,16 +1264,30 @@ Oyranos::wandelProfilNachLabUndZurueck(double *lab, // 0.0 - 1.0
       hLab  = cmsCreateLabProfile(cmsD50_xyY());
       if(!hLab) { WARN_S( "hLab Profil not opened" ); return 1; }
 
-      kanaele = oyColourSpaceGetChannelCount( cmsGetColorSpace( hProfil ) );
+      kanaele = getColorSpaceChannels( cmsGetColorSpace( hProfil ) );
       format = COLORSPACE_SH(PT_ANY) |
                CHANNELS_SH(kanaele) |
                BYTES_SH(0); // lcms_bytes;
 
+#     if HAVE_EXCEPTION
+      try {
+#     endif
       form = cmsCreateTransform               (hLab, TYPE_Lab_DBL,
                                                hProfil, format,
                                                intent,
-                                               PRECALC|flags);
+                                               PRECALC|flags);		  
+#     if HAVE_EXCEPTION
+      }
+      catch (std::exception & e) { // catches all from exception
+        WARN_S (_("Std-exception occured: ") << e.what());
+      }
+      catch (...) {       // catches all from exception
+        WARN_S (_("Huch, unknown exception"));
+      }
+#endif
+
       if (!form) {
+        WARN_S( "no transformation found" );
         if(device == icSigInputClass && 
            kanaele == 3)
         {
@@ -1574,11 +1306,11 @@ Oyranos::wandelProfilNachLabUndZurueck(double *lab, // 0.0 - 1.0
 
     double *cielab = new double [size * 3];
 
-    LabToCIELab (lab, cielab, size);
+    LabToCIELab (lab, cielab, (int)size);
 
     if(!input_ausnahme)
     {
-      cmsDoTransform (form, cielab, farben, size);
+      cmsDoTransform (form, cielab, farben, (unsigned int)size);
       cmsDeleteTransform (form);
     } else {
       memcpy( farben, cielab, size * kanaele * sizeof(double)); // why cielab?
@@ -1590,10 +1322,10 @@ Oyranos::wandelProfilNachLabUndZurueck(double *lab, // 0.0 - 1.0
                                                PRECALC|flags);
     if (!form) { WARN_S( "no transformation found" ); return 1; }
 
-    cmsDoTransform (form, farben, cielab, size);
+    cmsDoTransform (form, farben, cielab, (unsigned int)size);
     cmsDeleteTransform (form);
 
-    CIELabToLab (cielab, lab, size);
+    CIELabToLab (cielab, lab, (int)size);
 
     if(hProfil)   cmsCloseProfile(hProfil);
     if(hLab)      cmsCloseProfile(hLab);
@@ -1669,7 +1401,7 @@ Oyranos::wandelLabNachBildschirmFarben(double *Lab_Speicher, // 0.0 - 1.0
 
       fortschritt(0.2,0.2);
       if(groesse)
-        hMoni = cmsOpenProfileFromMem(block, groesse);
+        hMoni = cmsOpenProfileFromMem(block, (DWORD)groesse);
       else
         hMoni = cmsCreate_sRGBProfile();
       if(!hMoni) WARN_S( "hMoni profile nicht opened" )
@@ -1679,7 +1411,7 @@ Oyranos::wandelLabNachBildschirmFarben(double *Lab_Speicher, // 0.0 - 1.0
       if(flags & cmsFLAGS_GAMUTCHECK)
       {
         block = const_cast<char*>( proof(groesse) );
-        hProof = cmsOpenProfileFromMem(block, groesse);
+        hProof = cmsOpenProfileFromMem(block, (DWORD)groesse);
       }
 
       fortschritt(0.5,0.2);
@@ -1703,9 +1435,9 @@ Oyranos::wandelLabNachBildschirmFarben(double *Lab_Speicher, // 0.0 - 1.0
     if(!RGB_Speicher)  WARN_S( "RGB_speicher Speicher not available" )
 
     double *cielab = (double*) malloc (sizeof(double)*3*size);
-    LabToCIELab (Lab_Speicher, cielab, size);
+    LabToCIELab (Lab_Speicher, cielab, (int)size);
 
-    cmsDoTransform (*form, cielab, RGB_Speicher, size);
+    cmsDoTransform (*form, cielab, RGB_Speicher, (unsigned int)size);
 
     if(start <= 0.0)
       fortschritt(1.1);

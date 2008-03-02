@@ -109,7 +109,7 @@ class ICCkette : public icc_examin_ns::ThreadDaten,
     operator int ()  {
                return aktuelles_profil_; }
 
-    int          size      () {return profile_.size(); }
+    int          size      () {return (int)profile_.size(); }
 };
 
 

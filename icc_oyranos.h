@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2007  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2005  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -34,17 +34,12 @@
 #include "icc_speicher.h"
 #include "icc_vrml_parser.h"
 
-#include <oyranos/oyranos.h>
-#include <oyranos/oyranos_icc.h>
-
 #include <string>
 #include <list>
 #include <map>
 class Oyranos;
 class Speicher;
 class ICCprofile;
-
-void* myAllocFunc(size_t size);
 
 struct ColourTransformKey
 {
@@ -64,75 +59,6 @@ struct ColourTransform
     size_t size;
 };
 
-#ifndef HAVE_OY
-namespace oyranos {
-typedef void* (*oyAllocFunc_t)         (size_t size);
-typedef void  (*oyDeAllocFunc_t)       (void *data);
-}
-#endif
-
-/** @brief colour patch with meta informations
- *
- *  Data management on library side.
- *  User can control memory management at creation time.
- *
- *  It has the complexity of a object, and should not be accessed directly.
- *
- *  since: (ICC Examin: version 0.45)
- *
- *  TODO: needs to be Xatom compatible
- */
-struct oyNamedColour_s {
-  double       lab[3];     //!< Lab  L: 0...1  a/b: -1.28...1.28
-  double       channels[32];    //!< eigther parsed or calculated otherwise
-  double       moni_rgb[3];     //!< monitor colours
-  icColorSpaceSignature sig;    //!< ICC colour space signature
-  char * names_chan[32];        //!< user visible channel description
-  char * name;                  //!< normal user visible name (A1-MySys)
-  char * name_long;        //!< full user description (A1-MySys from Oyranos)
-  char * nick_name;             //!< few letters for mass representation (A1)
-  char * cgats;                 //!< advanced CGATS / ICC ?
-  oyranos::oyAllocFunc_t allocateFunc;
-  oyranos::oyDeAllocFunc_t deallocateFunc;
-};
-
-/** @brief internal used structure
- *
- *  in C++ members would be almost protected
- */
-typedef oyNamedColour_s oyNamedColour_s;
-
-oyNamedColour_s* oyNamedColourCreate ( double      * lab,
-                                       double      * chan,
-                                       icColorSpaceSignature sig,
-                                       const char ** names_chan,
-                                       const char  * name,
-                                       const char  * name_long,
-                                       const char  * nick,
-                                       const char  * blob,
-                                       int           blob_len,
-                                       const char  * icc_ref,
-                                       oyranos::oyAllocFunc_t allocateFunc,
-                                       oyranos::oyDeAllocFunc_t deallocateFunc);
-void             oyNamedColourRelease( oyNamedColour_s ** colour );
-
-void             oyNamedColourSetLab ( oyNamedColour_s * colour,
-                                       double * lab );
-void             oyNamedColourGetLab ( oyNamedColour_s * colour,
-                                       double * lab );
-const char *     oyNamedColourGetName( oyNamedColour_s * colour );
-void             oyNamedColourSetName( oyNamedColour_s * colour );
-const char *     oyNamedColourGetNick( oyNamedColour_s * colour );
-void             oyNamedColourSetNick( oyNamedColour_s * colour );
-const char *     oyNamedColourGetDescription( oyNamedColour_s * colour );
-void             oyNamedColourSetDescription( oyNamedColour_s * colour );
-
-void             oyCopyColour            ( double * from, double * to, int n,
-                                           icColorSpaceSignature sig );
-
-/* convenient functions */
-int              oyColourSpaceGetChannelCount ( icColorSpaceSignature sig );
-const char *     oyColourSpaceGetName( icColorSpaceSignature sig );
 
 class Oyranos
 {
@@ -170,11 +96,11 @@ class Oyranos
     const char* profil (const char* n, size_t &g) { return profil_(n,g); }
 
 //    char*       holeMonitorProfil      (const char *display_name, size_t *size );
-    std::vector<ICCnetz> netzAusVRML   (std::string & vrml)
-                                { return extrahiereNetzAusVRML (vrml); }
-    std::vector<ICCnetz> netzVonProfil (ICCprofile & p, int intent, int bpc);
+    void        netzAusVRML   (std::string & vrml, std::vector<ICCnetz> & netz)
+                                { netz = extrahiereNetzAusVRML (vrml); }
+    void        netzVonProfil (ICCprofile & p, int intent, int bpc, ICCnetz & netz);
   private:
-    std::string netzVonProfil_      (std::vector<ICCnetz> & netz,
+    std::string netzVonProfil_      (ICCnetz  & netz,
                                      Speicher & profil,
                                      int intent, int bpc);
   public:
@@ -217,32 +143,32 @@ class Oyranos
     // colour transformations
     ColourTransformKey erzeugeTrafo (
                                   const char* eingangs_profil__geraet,
-                                  int         byte,
-                                  int         kanaele,
+                                  int         byte_in,
+                                  int         kanaele_in,
                                   const char* ausgangs_profil__geraet,
-                                  int         byte,
-                                  int         kanaele,
+                                  int         byte_out,
+                                  int         kanaele_out,
                                   int         farb_intent,
                                   const char* cmm, // 4 bytes 'lcms' 'APPL'
                                   int         cmm_optionen); // BPC, precission
     ColourTransformKey erzeugeTrafo (
                                   const char* eingangs_profil__geraet,
-                                  int         byte,
-                                  int         kanaele,
+                                  int         byte_in,
+                                  int         kanaele_in,
                                   const char* ausgangs_profil__geraet,
-                                  int         byte,
-                                  int         kanaele,
+                                  int         byte_out,
+                                  int         kanaele_out,
                                   int         farb_intent,
                                   const char* cmm, // 4 bytes 'lcms' 'APPL'
                                   int         cmm_optionen,
                                   std::list<const char*> &profile );
     ColourTransformKey erzeugeTrafo (
                                   const char* eingangs_profil__geraet,
-                                  int         byte,
-                                  int         kanaele,
+                                  int         byte_in,
+                                  int         kanaele_in,
                                   const char* ausgangs_profil__geraet,
-                                  int         byte,
-                                  int         kanaele,
+                                  int         byte_out,
+                                  int         kanaele_out,
                                   int         farb_intent,
                                   const char* cmm, // 4 bytes 'lcms' 'APPL'
                                   int         cmm_optionen,
@@ -256,11 +182,11 @@ class Oyranos
   private:
     ColourTransformKey erzeugeSchluessel_ (
                                   const char* eingangs_profil__geraet,
-                                  int         byte,
-                                  int         kanaele,
+                                  int         byte_in,
+                                  int         kanaele_in,
                                   const char* ausgangs_profil__geraet,
-                                  int         byte,
-                                  int         kanaele,
+                                  int         byte_out,
+                                  int         kanaele_out,
                                   int         farb_intent,
                                   int         cmm_optionen,
                                   const char* simulations_profil,

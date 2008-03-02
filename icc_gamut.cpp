@@ -144,7 +144,7 @@ iccGrenze(ICCprofile & profil, int intent, size_t & groesse)
 #   endif
     // scan here the colour space border
     cmsHPROFILE lab = cmsCreateLabProfile(cmsD50_xyY());
-    cmsHPROFILE p = cmsOpenProfileFromMem(p_block, size);
+    cmsHPROFILE p = cmsOpenProfileFromMem(p_block, (DWORD)size);
     cmsHTRANSFORM xform = 0;
     if(csp == icSigRgbData || csp == icSigCmyData) {
       xform = cmsCreateTransform(p, TYPE_RGB_16, lab, TYPE_Lab_16,
@@ -159,7 +159,7 @@ iccGrenze(ICCprofile & profil, int intent, size_t & groesse)
         holeRGBRampen( (icUInt16Number*)block, zahl );
       else if(csp == icSigCmykData)
         holeCMYKRampen( (icUInt16Number*)block, zahl );
-      cmsDoTransform(xform, block, lab_block, zahl);
+      cmsDoTransform(xform, block, lab_block, (unsigned int)zahl);
       groesse = zahl;
       lab_erg = new double [groesse*3];
       for(int i = 0; i < (int)groesse*3; ++i) {

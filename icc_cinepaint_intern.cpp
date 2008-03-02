@@ -329,12 +329,10 @@ dialog_ (gint32 image_ID)
 static void
 startWithArgs( int argc, char **argv )
 {
-# if HAVE_PTHREAD_H
   registerThreadId( pthread_self(), THREAD_HAUPT );
 # ifdef CWDEBUG
   Debug(myproject::debug::init_thread());	// This is a custom function defined
   						// in example-project/debug.cc.
-# endif
 # endif
 
     if(getenv("ICCEXAMIN_DEBUG") && atoi(getenv("ICCEXAMIN_DEBUG"))>0)
