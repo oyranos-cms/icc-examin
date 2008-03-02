@@ -88,7 +88,7 @@ Function {} {open C return_type int
   fullscreen = false;} {}
   Fl_Window details {
     label {ICC Details} open
-    xywh {658 282 385 520} type Double box NO_BOX color 53
+    xywh {668 330 385 520} type Double box NO_BOX color 53
     code0 {//browser = new openvrml::browser(cout, cerr);}
     code1 {DBG
     if (argc>1) {
@@ -259,7 +259,7 @@ Function {} {open C return_type int
     open (false);} {}
 } 
 
-Function {open(int interaktiv)} {return_type {std::string}
+Function {open(int interaktiv)} {open return_type {std::string}
 } {
   code {\#include "icc_vrml.h"
 
@@ -271,7 +271,7 @@ Function {open(int interaktiv)} {return_type {std::string}
 
   if (interaktiv)
     filename=fl_file_chooser("Wähle ICC Profil?", "ICC Farbprofile (*.[I,i][C,c][M,m,C,c])", filename_alt.c_str());
-  DBG cout << filename_alt << endl;
+  DBG cout << filename_alt << "|" << filename << endl;
 
   if (filename == "") {
     load_progress->hide ();
@@ -438,16 +438,14 @@ class TagBrowser {open : {public Fl_Hold_Browser}
       }
       tag_viewer->hinein_punkt( alle_punkte, alle_texte );
     } else if ( TagInfo[1] == "curv"
-             || TagInfo[1] == "bfd"
-             || TagInfo[1] == "vcgt" ) {
+             || TagInfo[1] == "bfd" ) {
       std::vector<std::vector<double> > kurven;
       std::vector<double> kurve;
       std::vector<std::string> texte;
       std::string TagName;
       for (int i_name = 0; i_name < profile.tagCount(); i_name++) {
         if ( (profile.printTagInfo(i_name))[1] == "curv"
-          || (profile.printTagInfo(i_name))[1] == "bfd"
-          || (profile.printTagInfo(i_name))[1] == "vcgt" ) {
+          || (profile.printTagInfo(i_name))[1] == "bfd" ) {
           kurve = profile.getTagCurve (i_name);
           kurven.push_back (kurve);
           TagInfo = profile.printTagInfo (i_name);
@@ -465,6 +463,9 @@ class TagBrowser {open : {public Fl_Hold_Browser}
              || TagInfo[1] == "mft1" ) {
       mft_choice->profil_tag (item);
       //mft_text->hinein ( (profile.getTagText (item))[0] ); DBG
+    } else if ( TagInfo[1] == "vcgt" ) { DBG
+      tag_viewer->hinein_kurven ( profile.getTagCurves (item, ICCtag::CURVE_IN),
+                                  profile.getTagText (item) ); cout << "vcgt "; DBG
     }
     selectedTagName = TagInfo[0];
   }DBG} {selected
@@ -496,7 +497,7 @@ class TagTexts {: {public Fl_Hold_Browser}
   }
 } 
 
-class TagDrawings {: {public Fl_Widget}
+class TagDrawings {open : {public Fl_Widget}
 } {
   decl {int X; int Y; int W; int H; std::vector<std::string>texte; std::vector<double>punkte; std::vector<std::vector<double> >kurven;} {}
   decl {int wiederholen;} {public
@@ -538,7 +539,8 @@ class TagDrawings {: {public Fl_Widget}
   texte = txt;
   punkte.clear();
 
-  zeig_mich(this);} {}
+  zeig_mich(this);
+  DBG} {}
   }
   Function {ruhig_neuzeichnen(void)} {open return_type void
   } {
@@ -548,7 +550,7 @@ class TagDrawings {: {public Fl_Widget}
 
 decl {\#include <FL/fl_draw.H>} {} 
 
-class MftChoice {: {public Fl_Choice}
+class MftChoice {open : {public Fl_Choice}
 } {
   decl {int X; int Y; int W; int H; char* start_info; char typ[5]; std::vector<std::string> Info; int gewaehlter_eintrag;} {}
   Function {MftChoice(int X,int Y,int W,int H,char* start_info) : Fl_Choice(X,Y,W,H,start_info), X(X), Y(Y), W(W), H(H)} {open
@@ -650,7 +652,7 @@ class MftChoice {: {public Fl_Choice}
   }
 } 
 
-Function {d_haendler(void* o)} {return_type {static void}
+Function {d_haendler(void* o)} {open return_type {static void}
 } {
   code {Fl::remove_timeout( (void(*)(void*))d_haendler, 0 );
   if (!Fl::has_timeout( (void(*)(void*))d_haendler, 0 )
@@ -703,7 +705,7 @@ Function {zeilenNachVector(std::string text)} {return_type {std::vector<std::str
   return texte;} {}
 } 
 
-class GL_Ansicht {open : {public Fl_Widget}
+class GL_Ansicht {: {public Fl_Widget}
 } {
   decl {int X; int Y; int W; int H; std::vector<std::string>texte; std::vector<double>punkte; std::vector<std::vector<double> >kurven;} {}
   decl {int wiederholen;} {public
@@ -717,7 +719,7 @@ class GL_Ansicht {open : {public Fl_Widget}
   if (punkte.size() >= 3) {
     wiederholen = true;
     draw_cie_shoe(x(),y(),w(),h(),texte,punkte,false);
-    Fl::add_timeout( 1.2, (void(*)(void*))d_haendler ,(void*)this);
+    Fl::add_timeout( 3.0, (void(*)(void*))d_haendler ,(void*)this);
 
   } else {
     wiederholen = false;
@@ -738,8 +740,7 @@ class GL_Ansicht {open : {public Fl_Widget}
 
   zeig_mich(this);} {}
   }
-  Function {hinein_kurven(std::vector<std::vector<double> >vect, std::vector<std::string> txt)} {open
-  } {
+  Function {hinein_kurven(std::vector<std::vector<double> >vect, std::vector<std::string> txt)} {} {
     code {//Kurve aus tag_browser anzeigen
   kurven = vect;
   texte = txt;
@@ -747,7 +748,7 @@ class GL_Ansicht {open : {public Fl_Widget}
 
   zeig_mich(this);} {}
   }
-  Function {ruhig_neuzeichnen(void)} {open return_type void
+  Function {ruhig_neuzeichnen(void)} {return_type void
   } {
     code {draw_cie_shoe(x(),y(),w(),h(),texte,punkte,true);} {}
   }

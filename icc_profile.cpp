@@ -2,7 +2,7 @@
 // Copyright: Kai-Uwe Behrmann <ku.b@gmx.de>
 // Date:      04. 05. 2004
 
-#if 0
+#if 1
   #ifndef DEBUG
    #define DEBUG
   #endif
@@ -989,6 +989,11 @@ ICCtag::getText                     (void)
     };
   #endif
     texte.push_back( text );
+
+  } else if ( getTypName() == "vcgt" ) {
+    texte.push_back( _("Rot") );
+    texte.push_back( _("Grün") );
+    texte.push_back( _("Blau") );
   } else {
     texte.push_back( getTypName() + " | <- iss'n das?" );
   }
@@ -1182,6 +1187,27 @@ ICCtag::getCurves                                 (MftChain typ)
          }
          break;
     } 
+  } else if (getTypName() == "vcgt") {
+    icUInt16Number nkurven  = icValue(*(icUInt16Number*) &_data[12]);
+    icUInt16Number segmente = icValue(*(icUInt16Number*) &_data[14]);
+    icUInt16Number mult     = icValue(*(icUInt16Number*) &_data[16]);
+    int start = 18,
+        byte  = 2;
+    cout << _data << " nkurven " << nkurven << " segmente " << segmente << " mult " << mult << " "; DBG
+    double div   = 65536.0;
+         for (int j = 0; j < nkurven; j++)
+         { kurve.clear();
+           #ifdef DEBUG_ICCTAG
+           cout << kurve.size() << " Start "; DBG
+           #endif
+           for (int i = segmente * j; i < segmente * (j+1); i++)
+             kurve.push_back( (double) icValue (*(icUInt16Number*)&_data[start + byte*i])
+                              / div );
+           kurven.push_back (kurve);
+           #ifdef DEBUG_ICCTAG
+           cout << kurve.size() << " Einträge "; DBG
+           #endif
+         }
   }
 
   #ifdef DEBUG_ICCTAG
@@ -1542,6 +1568,7 @@ ICCprofile::getTagText                                  (int item)
    && name != "mft2"
    && name != "sig"
    && name != "text"
+   && name != "vcgt"
    && name != "XYZ")
     return v;
 
@@ -1594,8 +1621,7 @@ ICCprofile::getTagCurve                                 (int item)
 {
   // Prüfen
   std::vector<double> leer;
-  if (tags[item].getTypName() != "curv"
-   && tags[item].getTypName() != "vcgt")
+  if (tags[item].getTypName() != "curv")
   {
     #ifdef DEBUG_ICCPROFILE
     cout << tags[item].getTypName() << " "; DBG
@@ -1612,7 +1638,8 @@ ICCprofile::getTagCurves                                (int item,ICCtag::MftCha
   // Prüfen
   std::vector<std::vector<double> > leer;
   if (tags[item].getTypName() != "mft2"
-   && tags[item].getTypName() != "mft1")
+   && tags[item].getTypName() != "mft1"
+   && tags[item].getTypName() != "vcgt")
   {
     #ifdef DEBUG_ICCPROFILE
     cout << "gibt nix für " << tags[item].getTypName() << " "; DBG

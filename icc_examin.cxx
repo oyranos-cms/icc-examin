@@ -278,7 +278,7 @@ std::string open(int interaktiv) {
 
   if (interaktiv)
     filename=fl_file_chooser("Wähle ICC Profil?", "ICC Farbprofile (*.[I,i][C,c][M,m,C,c])", filename_alt.c_str());
-  DBG cout << filename_alt << endl;
+  DBG cout << filename_alt << "|" << filename << endl;
 
   if (filename == "") {
     load_progress->hide ();
@@ -442,16 +442,14 @@ void TagBrowser::select_item(int item) {
       }
       tag_viewer->hinein_punkt( alle_punkte, alle_texte );
     } else if ( TagInfo[1] == "curv"
-             || TagInfo[1] == "bfd"
-             || TagInfo[1] == "vcgt" ) {
+             || TagInfo[1] == "bfd" ) {
       std::vector<std::vector<double> > kurven;
       std::vector<double> kurve;
       std::vector<std::string> texte;
       std::string TagName;
       for (int i_name = 0; i_name < profile.tagCount(); i_name++) {
         if ( (profile.printTagInfo(i_name))[1] == "curv"
-          || (profile.printTagInfo(i_name))[1] == "bfd"
-          || (profile.printTagInfo(i_name))[1] == "vcgt" ) {
+          || (profile.printTagInfo(i_name))[1] == "bfd" ) {
           kurve = profile.getTagCurve (i_name);
           kurven.push_back (kurve);
           TagInfo = profile.printTagInfo (i_name);
@@ -469,6 +467,9 @@ void TagBrowser::select_item(int item) {
              || TagInfo[1] == "mft1" ) {
       mft_choice->profil_tag (item);
       //mft_text->hinein ( (profile.getTagText (item))[0] ); DBG
+    } else if ( TagInfo[1] == "vcgt" ) { DBG
+      tag_viewer->hinein_kurven ( profile.getTagCurves (item, ICCtag::CURVE_IN),
+                                  profile.getTagText (item) ); cout << "vcgt "; DBG
     }
     selectedTagName = TagInfo[0];
   }DBG
@@ -533,6 +534,7 @@ void TagDrawings::hinein_kurven(std::vector<std::vector<double> >vect, std::vect
   punkte.clear();
 
   zeig_mich(this);
+  DBG
 }
 
 void TagDrawings::ruhig_neuzeichnen(void) {
@@ -699,7 +701,7 @@ void GL_Ansicht::draw() {
   if (punkte.size() >= 3) {
     wiederholen = true;
     draw_cie_shoe(x(),y(),w(),h(),texte,punkte,false);
-    Fl::add_timeout( 1.2, (void(*)(void*))d_haendler ,(void*)this);
+    Fl::add_timeout( 3.0, (void(*)(void*))d_haendler ,(void*)this);
 
   } else {
     wiederholen = false;

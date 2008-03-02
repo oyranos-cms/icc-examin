@@ -127,7 +127,7 @@ draw_cie_shoe (int X, int Y, int W, int H,
     // Hintergrund zeichnen (lcms)
     cmsDoTransform(xform, XYZ, RGB, n_pixel);
     fl_draw_image(RGB, x(0), y(n), wi, hi, 3, 0);
-    free ((void*)RGB);
+    free (RGB);
   }
 
   // Dauer des Neuzeichnens bestimmen
@@ -174,10 +174,24 @@ draw_cie_shoe (int X, int Y, int W, int H,
   fl_color(FL_YELLOW);
   #endif
   fl_begin_polygon();
-  fl_vertex (x(.065), Y);
-  for (int i=(int)(nano_max*.45+0.5) ; i<=(int)(nano_max*.457+0.5); i++)
-    fl_vertex( x(x_xyY), y(y_xyY) );
+  {
+  int i = (int)(nano_max*.457+0.5)-2;
+  fl_vertex( x(x_xyY), y(y_xyY) );
+  i = (int)(nano_max*.457+0.5)-1;
+  fl_vertex( x(x_xyY), y(y_xyY) );
   fl_vertex (x(.1), Y);
+  fl_vertex (x(.065), Y);
+  for (i=(int)(nano_max*.45+0.5); i<=(int)(nano_max*.457+0.5)-3; i++) {
+    fl_vertex( x(x_xyY), y(y_xyY) );
+    }
+  fl_end_polygon();
+  fl_begin_polygon();
+  i = (int)(nano_max*.457+0.5)-1;
+  fl_vertex( x(x_xyY), y(y_xyY) );
+  i = (int)(nano_max*.457+0.5);
+  fl_vertex( x(x_xyY), y(y_xyY) );
+  fl_vertex (x(.1), Y);
+  }
   fl_end_polygon();
   #ifdef DEBUG_DRAW
   fl_color(FL_BLUE);
