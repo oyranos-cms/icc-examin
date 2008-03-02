@@ -49,8 +49,8 @@ using namespace icc_examin_ns;
 #else
 #endif
 // TODO: beseitige Hack
-//static int frei_tuen = 0;
-//#define frei_ frei_tuen
+static int frei_tuen = 0;
+#define frei_ frei_tuen
 
 //#define DEBUG_EXAMIN
 #ifdef DEBUG_EXAMIN
@@ -137,9 +137,9 @@ ICCexamin::start (int argc, char** argv)
 # endif
 
   icc_betrachter->init( argc, argv );
-  DBG_PROG
-  icc_betrachter->mft_gl->init(1); DBG_PROG
-  icc_betrachter->DD_farbraum->init(2); DBG_PROG
+
+  icc_betrachter->mft_gl->init(1);
+  icc_betrachter->DD_farbraum->init(2);
   icc_waehler_ = new  ICCwaehler(485, 186, _("Gamut selector"));
   if(!icc_waehler_) WARN_S( _("icc_waehler_ nicht reservierbar") )
   icc_waehler_->hide();
@@ -165,6 +165,7 @@ ICCexamin::start (int argc, char** argv)
 # endif
 
 # if APPLE
+  // osX Rsourcen
   IBNibRef nibRef;
   OSStatus err;
   err = CreateNibReference(CFSTR("main"), &nibRef);
@@ -772,7 +773,7 @@ tastatur(int e)
     {
       //if(Fl::event_length())
         dbgFltkEvents(e);
-        DBG_PROG_S( Fl::event_length() << " bei: "<<Fl::event_x()<<","<<Fl::event_y() );
+        DBG_MEM_S( Fl::event_length() << " bei: "<<Fl::event_x()<<","<<Fl::event_y() );
     }
     break;
   }
