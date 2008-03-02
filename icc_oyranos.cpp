@@ -306,7 +306,7 @@ Oyranos::moni_test_ ()
     char* moni_profil = oyGetMonitorProfile( display_name, &size );
     Speicher v_block = moni_;
       DBG_MEM_V( v_block.size() )
-    const char *profil_name="dummy";
+    const char *profil_name=_("memory based");
       DBG_PROG_V( (int*)profil_name << profil_name )
     // Wir holen das Profil wenn es sich geändert hat.
     // a) neuer Name  - schwierig zu identifizieren über oyDeviceProfil

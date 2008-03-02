@@ -38,8 +38,14 @@
 #include <new>			// bad_alloc()
 #include <iostream>
 #include <sstream>
+#include <cmath>
 
 #include "config.h"
+
+#include <errno.h>
+#ifndef EAGAIN
+#define EAGAIN 11
+#endif
 
 #define USE_GETTEXT
 #ifdef USE_GETTEXT

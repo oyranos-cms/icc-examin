@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2005-09-01 12:09+0200\n"
+"POT-Creation-Date: 2005-09-02 19:43+0200\n"
 "PO-Revision-Date: 2005-08-13 17:35+0200\n"
 "Last-Translator: Kai-Uwe Behrmann\n"
 "Language-Team:  <de@li.org>\n"
@@ -1293,6 +1293,10 @@ msgstr ""
 msgid "Profil konnte nicht geladen werden"
 msgstr ""
 
+#: icc_oyranos.cpp:309
+msgid "memory based"
+msgstr ""
+
 #: icc_oyranos.cpp:701 icc_oyranos.cpp:787
 msgid "hLab Profil nicht geoeffnet"
 msgstr ""
@@ -2155,12 +2159,12 @@ msgstr "Pfade:"
 msgid "Gibts nicht"
 msgstr ""
 
-#: icc_utils.h:214 icc_utils.h:215 icc_utils.h:216
+#: icc_utils.h:220 icc_utils.h:221 icc_utils.h:222
 msgid "!!! Warnung !!!"
 msgstr ""
 
 #: icc_version.h:9
-msgid "Mai 2004 - Aug 2005"
+msgid "May 2004 - Aug 2005"
 msgstr ""
 
 #: icc_waehler.h:68
