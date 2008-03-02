@@ -12,8 +12,11 @@ Categories=Application;Graphics;
 
 Encoding=UTF-8
 
+TryExec=icc_examin
 Exec=icc_examin %U
 #Icon=icc_examin.png
 StartupNotify=true
 Terminal=false
+
+MimeType=application/x-icc;
 

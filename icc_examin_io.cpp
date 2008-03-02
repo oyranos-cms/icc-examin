@@ -80,14 +80,6 @@ ICCexamin::oeffnen (std::vector<Speicher> profil_vect)
     {
         // Oberflaechenpflege
       gamutAnsichtZeigen();
-      #if 0
-      icc_betrachter->menueintrag_3D->set();
-      icc_betrachter->menueintrag_huelle->set();
-      icc_betrachter->widget_oben = ICCfltkBetrachter::WID_3D;
-      farbraum_angezeigt_ = true;
-      neuzeichnen(icc_betrachter->DD_farbraum);
-      DBG_PROG_S("neuzeichnen DD_farbraum")
-      #endif
 
       profile.oeffnen(icc_oyranos.moni(),-1);
       profile.oeffnen(icc_oyranos.cmyk(),-1);
@@ -179,12 +171,7 @@ ICCexamin::oeffnen (std::vector<std::string> dateinamen)
     if(farbraumModus())
     {
         // Oberflaechenpflege
-      icc_betrachter->menueintrag_3D->set();
-      icc_betrachter->menueintrag_huelle->set();
-      icc_betrachter->widget_oben = ICCfltkBetrachter::WID_3D;
-      farbraum_angezeigt_ = true;
-      neuzeichnen(icc_betrachter->DD_farbraum);
-      DBG_PROG_S("neuzeichnen DD_farbraum")
+      gamutAnsichtZeigen();
 
       profile.oeffnen(icc_oyranos.moni(),-1);
       profile.oeffnen(icc_oyranos.cmyk(),-1);

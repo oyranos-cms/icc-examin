@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2005-07-13 10:51+0200\n"
+"POT-Creation-Date: 2005-07-13 11:01+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -204,18 +204,18 @@ msgstr ""
 msgid "Value"
 msgstr ""
 
-#: icc_draw.cpp:672 icc_examin_farbraum.cpp:181 icc_examin_io.cpp:229
+#: icc_draw.cpp:672 icc_examin_farbraum.cpp:181 icc_examin_io.cpp:216
 #: icc_helfer.cpp:369 icc_helfer.cpp:372
 msgid "CIE *L"
 msgstr ""
 
-#: icc_draw.cpp:674 icc_examin_farbraum.cpp:182 icc_examin_io.cpp:230
+#: icc_draw.cpp:674 icc_examin_farbraum.cpp:182 icc_examin_io.cpp:217
 #: icc_gl.cpp:640 icc_gl.cpp:710 icc_gl.cpp:734 icc_gl.cpp:742
 #: icc_helfer.cpp:370
 msgid "CIE *a"
 msgstr ""
 
-#: icc_draw.cpp:676 icc_examin_farbraum.cpp:183 icc_examin_io.cpp:231
+#: icc_draw.cpp:676 icc_examin_farbraum.cpp:183 icc_examin_io.cpp:218
 #: icc_gl.cpp:653 icc_gl.cpp:750 icc_gl.cpp:768 icc_gl.cpp:775
 #: icc_helfer.cpp:371
 msgid "CIE *b"
@@ -281,55 +281,55 @@ msgstr ""
 msgid "zeige     "
 msgstr ""
 
-#: icc_examin_io.cpp:105 icc_examin_io.cpp:252
+#: icc_examin_io.cpp:97 icc_examin_io.cpp:239
 msgid "Anzahl gabs schon mal"
 msgstr ""
 
-#: icc_examin_io.cpp:131 icc_examin_io.cpp:278
+#: icc_examin_io.cpp:123 icc_examin_io.cpp:265
 msgid "Gebe irritiert auf. Kein Netz gefunden. Ist Argyll installiert?"
 msgstr ""
 
-#: icc_examin_io.cpp:237
+#: icc_examin_io.cpp:224
 msgid "kein Netz gefunden in VRML Datei"
 msgstr ""
 
-#: icc_examin_io.cpp:329 icc_betrachter.cxx:453
+#: icc_examin_io.cpp:316 icc_betrachter.cxx:453
 msgid "Filename"
 msgstr ""
 
-#: icc_examin_io.cpp:333
+#: icc_examin_io.cpp:320
 msgid "found no content for"
 msgstr ""
 
-#: icc_examin_io.cpp:336
+#: icc_examin_io.cpp:323
 msgid "Internal error"
 msgstr ""
 
-#: icc_examin_io.cpp:338
+#: icc_examin_io.cpp:325
 msgid "No. Tag   Type   Size Description"
 msgstr ""
 
-#: icc_examin_io.cpp:405
+#: icc_examin_io.cpp:392
 msgid "HTML Documents (*.htm*)"
 msgstr ""
 
-#: icc_examin_io.cpp:409 icc_betrachter.cxx:374
+#: icc_examin_io.cpp:396 icc_betrachter.cxx:374
 msgid "Save Report"
 msgstr ""
 
-#: icc_examin_io.cpp:482 icc_betrachter.cxx:483
+#: icc_examin_io.cpp:469 icc_betrachter.cxx:483
 msgid "ICC colour profiles (*.ic*)"
 msgstr ""
 
-#: icc_examin_io.cpp:483 icc_betrachter.cxx:375
+#: icc_examin_io.cpp:470 icc_betrachter.cxx:375
 msgid "Save Gamut as Profile"
 msgstr ""
 
-#: icc_examin_io.cpp:485
+#: icc_examin_io.cpp:472
 msgid "VRML Files (*.wrl)"
 msgstr ""
 
-#: icc_examin_io.cpp:486 icc_betrachter.cxx:376
+#: icc_examin_io.cpp:473 icc_betrachter.cxx:376
 msgid "Save Gamut as VRML"
 msgstr ""
 
