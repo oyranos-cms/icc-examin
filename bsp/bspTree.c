@@ -106,7 +106,7 @@ void BSPfreeTree(BSPNODE **bspNode)
 static void BSPchoosePlane(FACE *faceList,PLANE *plane)
 {
    FACE *rootrav; int ii;
-   int minCount= MAXINT; 
+   int minCount= 100000000; 
    FACE *chosenRoot= faceList;	/* pick first face for now */
 
    assert(faceList != NULL_FACE);

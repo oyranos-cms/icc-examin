@@ -8,7 +8,7 @@
 #include <stdlib.h>		/* exit() */
 #include <assert.h>		/* assert() */
 #include <math.h>		/* fabs() */
-#include <values.h>		/* MAXINT */
+#include <stdint.h>		/* MAXINT */
 #include "GGems.h"
 
 #ifdef __cplusplus

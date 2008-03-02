@@ -1431,7 +1431,7 @@ ICCexamin::fortschritt()
 void
 ICCexamin::fortschritt(double f, double anteil)
 { DBG_PROG_START
-  
+#ifndef __APPLE__ /* FLTK has problems to events from different threads on osX*/
   int thread = wandelThreadId(iccThreadSelf());
   if(thread != THREAD_HAUPT)
     icc_examin_ns::lock(__FILE__,__LINE__);
@@ -1458,7 +1458,7 @@ ICCexamin::fortschritt(double f, double anteil)
   
   if(thread != THREAD_HAUPT)
     icc_examin_ns::unlock(icc_betrachter->load_progress, __FILE__,__LINE__);
-
+#endif
   DBG_PROG_ENDE
 }
 

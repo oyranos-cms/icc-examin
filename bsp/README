@@ -1,2 +1,7 @@
-See:
-<http://www.behrmann.name/index.php?option=com_content&task=view&id=32&Itemid=70>
+# Instructions for making/compiling the BSP-tree code
+# as appearing throughout "A Walk Through BSP Trees",
+# in _Graphics Gems V_, pages 121-138.
+
+$ rm *.o
+$ make -f bsp.make
+$ bsp foo.dat

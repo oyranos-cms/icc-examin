@@ -609,6 +609,10 @@ if [ -n "$PREPARE_MAKEFILES" ] && [ $PREPARE_MAKEFILES -gt 0 ]; then
   if [ -n "$MAKEFILE_DIR" ]; then
     for i in $MAKEFILE_DIR; do
       echo_="preparing Makefile in $i/"; echo "$echo_" >> $CONF_LOG; test -n "$ECHO" && $ECHO "$echo_"
+      echo "" >> "$i/makefile"
+      echo "### End of automatic generated options ###" >> "$i/makefile"
+      echo "" >> "$i/makefile"
+      echo "" >> "$i/makefile"
       if [ $OSUNAME = "BSD" ]; then
         test -f "$i/makefile".in && cat  "$i/makefile".in | sed 's/#if/.if/g ; s/#end/.end/g ; s/#else/.else/g '  >> "$i/makefile"
       else

@@ -15,7 +15,7 @@ RPMARCH = `rpmbuild --showrc | awk '/^build arch/ {print $$4}'`
 
 LIB_LIBS = -L$(libdir) -L./ $(FLTK_LIBS) $(FLU_LIBS) \
 	-llcms -L/lib \
-	$(DBG_LIBS) -lintl
+	$(DBG_LIBS) -lintl $(dl) $(m) $(c)
 
 
 LIBSONAMEFULL = lib$(TARGET)$(LIBMID).$(VERSION_A).$(VERSION_B).$(VERSION_C)$(LIBEXT)
@@ -23,6 +23,7 @@ LIBSONAME = lib$(TARGET)$(LIBMID).$(VERSION_A)$(LIBEXT)
 LIBSO = lib$(TARGET)$(LIBMID)$(LIBEXT)
 LIBFL_I18N = fl_i18n/libfl_i18n.a
 LIBBSP = bsp/libbsp.a
+LIBOYRANOS_EXTRA = -loyranos_alpha
 
 TOOLKIT_FILES = $(FLTK_CPPFILES)
 
@@ -35,7 +36,8 @@ CFLAGS_ = $(CFLAGS) $(DEBUG) $(ALL_INCL)
 CXXFLAGS_ = $(CXXFLAGS) $(DEBUG) $(ALL_INCL)
 
 LDLIBS = $(LDFLAGS) -L$(libdir) -L./ $(LIBFL_I18N) $(FLTK_LIBS) \
-	$(X11_LIBS) -llcms -L/lib $(OYRANOS_LIBS) $(LCMS_LIBS) \
+	$(X11_LIBS) -llcms -L/lib \
+	$(LIBOYRANOS_EXTRA) $(OYRANOS_LIBS) $(LCMS_LIBS) \
 	$(FTGL_LIBS) $(I18N_LIB) $(DBG_LIBS) $(LIBNAME) $(LIBBSP) $(CWLIB)
 
 CPP_HEADERS = \
@@ -112,24 +114,6 @@ COMMON_CPPFILES = \
 	icc_vrml.cpp \
 	icc_vrml_parser.cpp \
 	threads.cpp
-
-BSP_C = \
-	bsp/bspAlloc.c \
-	bsp/bspCollide.c \
-	bsp/bspMemory.c \
-	bsp/bspPartition.c \
-	bsp/bspTree.c \
-	bsp/bspUtility.c \
-	bsp/mainBsp.c
-BSP_H = \
-	bsp/GGems.h \
-	bsp/GraphicsGems.h \
-	bsp/bsp.h
-BSP_TEXT = \
-	README \
-	bsp/foo.dat \
-	bsp/makefile.bsp.make
-	
 
 DEBUG_CC = debug.cc
 DEBUG_H  = sys.h debug.h
@@ -287,7 +271,7 @@ $(LIBFL_I18N):
 	cd fl_i18n/ && $(MAKE) -f $(MAKEFILE_ARCH)
 
 $(LIBBSP):
-	cd bsp/ && $(MAKE) -f makefile.bsp.make
+	cd bsp/ && $(MAKE)
 
 static:	$(BINTARGET)
 	echo Verknuepfen $@ ...
@@ -299,7 +283,7 @@ static:	$(BINTARGET)
 	`$(fltkconfig) --use-gl --ldstaticflags` \
 	-L/opt/local/lib \
 	`oyranos-config --ld_x_staticflags` -L/$(libdir) \
-	-lftgl \
+	-lftgl $(LIBBSP) `test -f /opt/local/lib/liboyranos_alpha.a && echo /opt/local/lib/liboyranos_alpha.a || echo -loyranos_alpha` \
 	`test -f /usr/X11R6/lib/libfreetype.a \
 	  && echo /usr/X11R6/lib/libfreetype.a || (test -f /usr/lib/libfreetype.a \
 	    && echo /usr/lib/libfreetype.a || echo -lfreetype)` \
@@ -375,6 +359,7 @@ clean:	unbundle unpkg
         && $(RM) po/$${ling}.gmo; \
 	done;
 	cd fl_i18n/ && $(MAKE) -f $(MAKEFILE_ARCH) clean
+	cd bsp/ && $(MAKE) clean
 	echo ... $@ fertig
 
 config:
@@ -446,11 +431,11 @@ copy_files:
 	mkdir -p $(DESTDIR)
 	cd fl_i18n && \
 	  $(MAKE) DESTDIR=$(DESTDIR)/fl_i18n -f $(MAKEFILE_ARCH) copy_files
+	cd bsp && \
+	  $(MAKE) DESTDIR=$(DESTDIR)/bsp copy_files
 	$(COPY) -R \
 	$(ALL_FILES) \
 	$(DESTDIR)
-	mkdir -p $(DESTDIR)/bsp
-	$(COPY) $(BSP_FILES) $(DESTDIR)/bsp
 	mkdir -p $(DESTDIR)/po
 	$(COPY) $(POT_FILE) $(DESTDIR)/po
 	mkdir -p $(DESTDIR)/tests

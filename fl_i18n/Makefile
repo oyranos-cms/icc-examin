@@ -1,11 +1,44 @@
 # automatically generated file by configure - do not edit
+
 LINUX = 1
-CXX = c++
+OSX_H = 
+EXEC_END = 
+MAKEFILE_ARCH = Makefile
+
 CC = cc
+CXX = c++
+LIB=/lib
+MAKEDEPEND	= cc -MM
+COPY = cp  -dpa
+RM = rm -f 
+INSTALL = install 
+COLLECT = ar cru
+RANLIB = ranlib
+LINK = ln -s
+
+MSGMERGE = msgmerge
+MSGMERG_OPTS = --update
+XGETTEXT_OPTIONS = --keyword=gettext --flag=gettext:1:pass-c-format         --keyword=_ --flag=_:1:pass-c-format         --keyword=N_ --flag=N_:1:pass-c-format         --copyright-holder='Kai-Uwe Behrmann'         --msgid-bugs-address='ku.b@gmx.de'         --from-code=utf-8
+REZ = 
+
+
+LIBMID = .so
+LIBEXT = 
+LINK_LIB_PATH = 
+LINK_SRC_PATH = 
+I18N_LIB = $(LIBNAME)
+I18N_LIBSTAT = $(LIBNAME)
+INCL = -I$(includedir) -I/usr/X11R6/include -I. -I/usr/include/g++ -I/usr/include
+OSX_CPP = 
+LINK_FLAGS = -shared $(dl) -fPIC -L. -lpthread
 CFLAGS   =   $(INCL) $(ARGYLL_H) $(DEBUG)
 CXXFLAGS =   $(INCL) $(ARGYLL_H) $(DEBUG)
-LDFLAGS  = -L.  -loyranos_alpha $(dl) $(iconv)
+LDFLAGS  = -L.  $(dl) $(iconv)
+
+
 dl = -ldl
+c = -lc
+m = -lm
 XF86VMODE = 1
 XF86VMODE_INC = -I/usr/X11R6/include
 XF86VMODE_LIB = -lXxf86vm
@@ -25,6 +58,23 @@ GETTEXT = -DUSE_GETTEXT
 DEBUG = -Wall -g -DDEBUG --pedantic
 DEBUG_SWITCH = -v
 .SILENT:
+src_dir = /home/kuwe/programme/icc_examin/icc_examin-0.45
+srcdir = /home/kuwe/programme/icc_examin/Entwickeln
+prefix=/opt/kai-uwe
+exec_prefix=/opt/kai-uwe
+bindir=/opt/kai-uwe/bin
+sbindir=/opt/kai-uwe/sbin
+libdir=/opt/kai-uwe/lib
+includedir=/opt/kai-uwe/include
+datadir=/opt/kai-uwe/share
+mandir=/opt/kai-uwe/share/man
+pixmapdir=/opt/kai-uwe/share/pixmaps
+desktopdir=/opt/kai-uwe/share/applications
+
+
+### End of automatic generated options ###
+
+
 TARGET=fl_i18n
 VERSION=0.0.2
 COMPILE_OPTIONS=-DUSE_THREADS $(GETTEXT)

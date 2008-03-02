@@ -443,7 +443,7 @@ Oyranos::moni_test_ (int x, int y)
           {
               DBG_MEM_V( (int*)ref.data <<"|"<< size )
             char * block = (char*) new char [size];
-            memcpy( block, ref.data, size )
+            memcpy( block, ref.data, size );
             v_block.ladeNew(block, size);
           }
         } else
@@ -1080,7 +1080,7 @@ Oyranos::netzVonProfil (ICCprofile & profil, int intent, int bpc,
       if(v < 4 && native)
       {
       WARN_S("Fall back to internal hull generation. Argyll is not installed?");
-      } else {
+      } else if(native) {
       DBG_S("Fall back to internal hull generation. "<< v);
       }
 #endif

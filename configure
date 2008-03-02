@@ -13,7 +13,7 @@ CONF_I18N=fl_i18n/makefile
 SPEC=$TARGET.spec
 VERS="$TARGET"_version.h
 zeile="$0 $@"
-MAKEFILE_DIR=". fl_i18n"; export MAKEFILE_DIR
+MAKEFILE_DIR=". fl_i18n bsp"; export MAKEFILE_DIR
 
 
 export CONF_H CONF CONF_I18N CONF_TEMP_SH CONF_LOG
@@ -218,16 +218,18 @@ if [ -z "$quick" ]; then
   test -f mkdepend && rm mkdepend config.h
 fi
 
-echo "# automatically generated file by configure - do not edit" > $CONF
-echo "# automatically generated file by configure - do not edit" > $CONF_I18N
+for i in $MAKEFILE_DIR; do
+  test -n "$ECHO" && $ECHO "# automatically generated file by configure - do not edit" > "$i/makefile"
+  test -n "$ECHO" && $ECHO "" >> "$i/makefile"
+done
 echo "/* automatically generated file by configure - do not edit */" > $CONF_H
 echo "#ifndef ICCEXAMIN_CONFIG_H" >> $CONF_H
 echo "#define ICCEXAMIN_CONFIG_H" >> $CONF_H
 echo "" >> $CONF_H
-echo "" >> $CONF
-echo "TARGET = $TARGET" >> $CONF
-echo "BINTARGET = $BINTARGET" >> $CONF
-echo "" >> $CONF
+
+test -n "$ECHO" && $ECHO "TARGET = $TARGET" >> "$CONF"
+test -n "$ECHO" && $ECHO "BINTARGET = $BINTARGET" >> "$CONF"
+test -n "$ECHO" && $ECHO "" >> "$i/makefile"
 
 echo_=""; echo "$echo_" >> $CONF_LOG; echo "$echo_"
 
@@ -238,9 +240,9 @@ UNAME_=`uname`
 OSUNAME=BSD
 if [ $? = 0 ] && [ $UNAME_ = "Darwin" ]; then
   echo_="Darwin PPC              detected"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
-  echo "APPLE = 1" >> $CONF
+  osuname="APPLE = 1"
   echo "#define APPLE 1" >> $CONF_H
-  echo "OSX_H =" >> $CONF
+  OSX_H=""
   OSUNAME=Darwin
 else
   if [ $UNAME_ = "Linux" ]; then
@@ -266,8 +268,8 @@ else
           osuname="WIN32 = 1"
           echo "#define WIN32 1" >> $CONF_H
           echo_="Windows $UNAME_             detected"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
-          echo "EXEC_END = .exe" >> $CONF
-          EXEC_END=.exe; export EXEC_END
+          EXEC_END=".exe"
+          export EXEC_END
           OSUNAME=Windows
         else
           echo_="ICC Examin may or may not compile on your $UNAME_ system"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
@@ -276,9 +278,13 @@ else
     fi
   fi
 fi
-echo "$osuname" >> $CONF
-echo "$osuname" >> $CONF_I18N
-echo "MAKEFILE_ARCH = Makefile$OS_EXT"  >> $CONF
+for i in $MAKEFILE_DIR; do
+  test -n "$ECHO" && $ECHO "$osuname" >> "$i/makefile"
+  test -n "$ECHO" && $ECHO "OSX_H = $OSX_H" >> "$i/makefile"
+  test -n "$ECHO" && $ECHO "EXEC_END = $EXEC_END" >> "$i/makefile"
+  test -n "$ECHO" && $ECHO "MAKEFILE_ARCH = Makefile$OS_EXT" >> "$i/makefile"
+done
+
 MACH_=`uname -m`
 MACH=BUILD_32
 if [ $? = 0 ]; then
@@ -287,13 +293,13 @@ if [ $? = 0 ]; then
   else
     if [ "$MACH_" = "x86_64" ]; then
       MACH=BUILD_64
-      echo "BUILD_64 = 1" >> $CONF
+      BUILD_64="BUILD_64 = 1"
       echo_="X86_64                  try build in 64 bit mode"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
       BARCH="64"
     else
       if [ "$MACH_" = "sun4u" ]; then
         MACH=BUILD_64
-        echo "BUILD_64 = 1" >> $CONF
+        BUILD_64="BUILD_64 = 1"
         echo_="spark ultra 4           try build in 64 bit mode"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
         BARCH="64"
         LINE_ARCH="-64"
@@ -301,6 +307,9 @@ if [ $? = 0 ]; then
     fi
   fi
 fi
+for i in $MAKEFILE_DIR; do
+  test -n "$ECHO" && $ECHO "$BUILD_64" >> "$i/makefile"
+done
 LIBDIR="lib"$BARCH
 export MACH OSUNAME LIBDIR BARCH LINE_ARCH
 
@@ -328,15 +337,15 @@ if [ -z "$CXX" ]; then
 #$LINE_ARCH
 fi
 
-echo "CXX = $CXX" >> $CONF
-echo "CC = $CC" >> $CONF
-echo "CXX = $CXX" >> $CONF_I18N
-echo "CC = $CC" >> $CONF_I18N
+for i in $MAKEFILE_DIR; do
+  test -n "$ECHO" && $ECHO "CC = $CC" >> "$i/makefile"
+  test -n "$ECHO" && $ECHO "CXX = $CXX" >> "$i/makefile"
+done
 export CC CXX
 
 CFLAGS_COMMON="$CFLAGS"
 CXXFLAGS_COMMON="$CXXFLAGS"
-LDFLAGS_COMMON="$LDFLAGS -loyranos_alpha"
+LDFLAGS_COMMON="$LDFLAGS"
 MAKE_CFLAGS="\$(INCL) \$(ARGYLL_H) \$(DEBUG)"
 MAKE_CXXFLAGS="\$(INCL) \$(ARGYLL_H) \$(DEBUG)"
 MAKE_LDFLAGS="\$(ARGYLL_LIBS)"
@@ -423,73 +432,71 @@ else
   GCC_MM="$CC -MM"
 fi
 
-echo "LIB=/"$LIBDIR >> $CONF
+for i in $MAKEFILE_DIR; do
+  test -n "$ECHO" && $ECHO "LIB=/"$LIBDIR >> "$i/makefile"
+  test -n "$ECHO" && $ECHO "MAKEDEPEND	= $GCC_MM" >> "$i/makefile"
+done
 
 # set some compiler and linker options
 
-echo "RM = rm -f $DEBUG_SWITCH" >> $CONF
-echo "MAKEDEPEND	= $GCC_MM" >> $CONF
+RM="rm -f $DEBUG_SWITCH"
 if [ $OSUNAME = "Darwin" ]; then
-  echo "" >> $CONF
-  echo "COPY = cp -p $DEBUG_SWITCH" >> $CONF
+  COPY="cp -p $DEBUG_SWITCH"
   LDFLAGS="-L."
   MAKE_LDFLAGS="\$(dl) \$(iconv)"
   echo "DBG_LIBS = #-lMallocDebug" >> $CONF
-  echo "I18N_LIB = \$(intl) \$(LIBNAME)" >> $CONF
-  echo "I18N_LIBSTAT = /opt/local/lib/libintl.a \$(LIBNAME) \$(iconv)" >> $CONF
-  echo "INCL=-I\$(includedir) -I/usr/X11R6/include -I./ -I/usr/include/gcc/darwin/default/c++" >> $CONF
-  echo "LIBEXT = .dylib" >> $CONF
-  echo "LINK_FLAGS = -dynamiclib -L." >> $CONF
-  echo "MSGMERGE = msgmerge" >> $CONF
+  I18N_LIB="\$(intl) \$(LIBNAME)"
+  I18N_LIBSTAT="/opt/local/lib/libintl.a \$(LIBNAME) \$(iconv)"
+  INCL="-I\$(includedir) -I/usr/X11R6/include -I./ -I/usr/include/gcc/darwin/default/c++"
+  LIBEXT=".dylib"
+  LINK_FLAGS="-dynamiclib -L."
+  MSGMERGE="msgmerge"
   CFLAGS="-Wall -g -DPIC -Wunused"
   CXXFLAGS="-Wall -g -DPIC"
-  echo "REZ = \$(fltkconfig) --post \$@" >> $CONF
-  echo "OSX_CPP = \$(OSX_CPPFILES)" >> $CONF
-  echo "XGETTEXT_OPTIONS = --keyword=gettext \
+  REZ="\$(fltkconfig) --post \$@"
+  OSX_CPP="\$(OSX_CPPFILES)"
+  XGETTEXT_OPTIONS="--keyword=gettext \
         --keyword=_ \
-        --keyword=N_" >> $CONF
-  echo "INSTALL = install $DEBUG_SWITCH" >> $CONF
+        --keyword=N_"
+  INSTALL="install $DEBUG_SWITCH"
 else
-  echo "LIBMID = .so" >> $CONF
-  echo "LIBNAMEFULL = lib\$(TARGET)\$(LIBMID).\$(VERSION_A).\$(VERSION_B).\$(VERSION_C)" >> $CONF
-  echo "MSGMERGE = msgmerge" >> $CONF
-  echo "MSGMERG_OPTS = --update" >> $CONF
-  echo "XGETTEXT_OPTIONS = --keyword=gettext --flag=gettext:1:pass-c-format \
+  LIBMID=".so"
+  LIBNAMEFULL="lib\$(TARGET)\$(LIBMID).\$(VERSION_A).\$(VERSION_B).\$(VERSION_C)"
+  MSGMERGE="msgmerge"
+  MSGMERG_OPTS="--update"
+  XGETTEXT_OPTIONS="--keyword=gettext --flag=gettext:1:pass-c-format \
         --keyword=_ --flag=_:1:pass-c-format \
         --keyword=N_ --flag=N_:1:pass-c-format \
         --copyright-holder='Kai-Uwe Behrmann' \
         --msgid-bugs-address='ku.b@gmx.de' \
-        --from-code=utf-8" >> $CONF
+        --from-code=utf-8"
   if [ $OSUNAME = "Linux" ]; then
-    echo "" >> $CONF
-    echo "COPY = cp $DEBUG_SWITCH -dpa" >> $CONF
+    COPY="cp $DEBUG_SWITCH -dpa"
     LDFLAGS="-L."
     MAKE_LDFLAGS="\$(dl) \$(iconv)"
-    echo "I18N_LIB = \$(LIBNAME)" >> $CONF
-    echo "I18N_LIBSTAT = \$(LIBNAME)" >> $CONF
-    echo "INCL=-I\$(includedir) -I/usr/X11R6/include -I. -I/usr/include/g++ -I/usr/include" >> $CONF
-    echo "LINK_FLAGS = -shared \$(dl) -fPIC -L. -lpthread" >> $CONF
-    echo "LIBNAMEV = lib\$(TARGET)\$(LIBMID).\$(VERSION_A)" >> $CONF
-    echo "LINK_FLAGS_STATIC = $LDFLAGS_COMMON" >> $CONF
-    echo "LINK_NAME = -Wl,-soname -Wl,\$(LIBNAMEFULL)" >> $CONF
+    I18N_LIB="\$(LIBNAME)"
+    I18N_LIBSTAT="\$(LIBNAME)"
+    INCL="-I\$(includedir) -I/usr/X11R6/include -I. -I/usr/include/g++ -I/usr/include"
+    LINK_FLAGS="-shared \$(dl) -fPIC -L. -lpthread"
+    LIBNAMEV="lib\$(TARGET)\$(LIBMID).\$(VERSION_A)"
     if [ -n "$rpath" ]; then
-      echo "LINK_LIB_PATH = -Wl,--rpath -Wl,\$(libdir)" >> $CONF
-      echo "LINK_SRC_PATH = -Wl,--rpath -Wl,\$(srcdir)" >> $CONF
+      LINK_LIB_PATH="-Wl,--rpath -Wl,\$(libdir)"
+      LINK_SRC_PATH="-Wl,--rpath -Wl,\$(srcdir)"
     fi
-    echo "INSTALL = install $DEBUG_SWITCH" >> $CONF
+    INSTALL="install $DEBUG_SWITCH"
   else
-    echo "COPY = cp -p" >> $CONF
-    echo "INCL=-I\$(includedir) -I/usr/X11R6/include -I. -I/usr/include/g++ -I/usr/include" >> $CONF
+    COPY="cp -p"
+    INCL="-I\$(includedir) -I/usr/X11R6/include -I. -I/usr/include/g++ -I/usr/include"
     PIC=-fPIC
     if [ $OSUNAME = "BSD" ]; then
       MAKE_LDFLAGS="\$(iconv)"
       INSTALL="install $DEBUG_SWITCH"
-      test -n "$ECHO" && $ECHO "LINK_FLAGS = -shared \$(iconv)" >> $CONF
+      LINK_FLAGS="-shared \$(iconv)"
       if [ -n "$rpath" ]; then
-        test -n "$ECHO" && $ECHO "LINK_LIB_PATH = -Wl,--rpath -Wl,\$(libdir)" >> $CONF
-        test -n "$ECHO" && $ECHO "LINK_SRC_PATH = -Wl,--rpath -Wl,\$(srcdir)" >> $CONF
+        LINK_LIB_PATH="-Wl,--rpath -Wl,\$(libdir)"
+        LINK_SRC_PATH="-Wl,--rpath -Wl,\$(srcdir)"
       fi
-      test -n "$ECHO" && $ECHO "INSTALL = install $DEBUG_SWITCH" >> $CONF
+      INSTALL="install $DEBUG_SWITCH"
     fi
     if [ $OSUNAME = "SunOS" ]; then
       LDFLAGS="-mimpure-text -lrt"
@@ -499,8 +506,7 @@ else
       LDFLAGS="-mimpure-text"
       MAKE_LDFLAGS="\$(dl) \$(iconv)"
       INSTALL="install"
-      echo "LINK_FLAGS = -shared \$(dl) \$(iconv)" >> $CONF
-      echo "INSTALL = install" >> $CONF
+      LINK_FLAGS="-shared \$(dl) \$(iconv)"
     fi
     CFLAGS="-L. -fPIC"
     CXXFLAGS="-L. $PIC"
@@ -510,36 +516,67 @@ else
       CFLAGS="-L."
       CXXFLAGS="-L."
     fi
-    echo "I18N_LIB = \$(iconv) \$(intl) \$(LIBNAMEV)" >> $CONF
-    echo "I18N_LIBSTAT = \$(iconv) \$(intl) \$(LIBNAMEV)" >> $CONF
-    echo "RM = rm -f" >> $CONF
+    I18N_LIB="\$(iconv) \$(intl) \$(LIBNAMEV)"
+    I18N_LIBSTAT="\$(iconv) \$(intl) \$(LIBNAMEV)"
+    RM="rm -f"
   fi
 fi
-if [ -n "$cwdebug" ]; then
-  echo "" >> $CONF
-  echo "cwdebug = $cwdebug" >> $CONF
-  echo "CWLIB = -L$cwdebug -lcwd"  >> $CONF
-  echo "CCFILES = \$(DEBUG_CC)" >> $CONF
-  echo "#define CWDEBUG 1" >> $CONF_H
-fi
+
+CFLAGS="$CFLAGS $CFLAGS_COMMON $MAKE_CFLAGS"
+CXXFLAGS="$CXXFLAGS $CXXFLAGS_COMMON $MAKE_CXXFLAGS"
+LDFLAGS="$LDFLAGS $LDFLAGS_COMMON $MAKE_LDFLAGS"
+
+for i in $MAKEFILE_DIR; do
+  #test -n "$ECHO" && $ECHO " = $" >> "$i/makefile"
+  test -n "$ECHO" && $ECHO "COPY = $COPY" >> "$i/makefile"
+  test -n "$ECHO" && $ECHO "RM = $RM" >> "$i/makefile"
+  test -n "$ECHO" && $ECHO "INSTALL = $INSTALL" >> "$i/makefile"
+  test -n "$ECHO" && $ECHO "COLLECT = ar cru" >> "$i/makefile"
+  test -n "$ECHO" && $ECHO "RANLIB = ranlib" >> "$i/makefile"
+  test -n "$ECHO" && $ECHO "LINK = ln -s" >> "$i/makefile"
+  test -n "$ECHO" && $ECHO "" >> "$i/makefile"
+  test -n "$ECHO" && $ECHO "MSGMERGE = $MSGMERGE" >> "$i/makefile"
+  test -n "$ECHO" && $ECHO "MSGMERG_OPTS = $MSGMERG_OPTS" >> "$i/makefile"
+  test -n "$ECHO" && $ECHO "XGETTEXT_OPTIONS = $XGETTEXT_OPTIONS" >> "$i/makefile"
+  test -n "$ECHO" && $ECHO "REZ = $REZ" >> "$i/makefile"
+  test -n "$ECHO" && $ECHO "" >> "$i/makefile"
+  test -n "$ECHO" && $ECHO "" >> "$i/makefile"
+  test -n "$ECHO" && $ECHO "LIBMID = $LIBMID" >> "$i/makefile"
+  test -n "$ECHO" && $ECHO "LIBEXT = $LIBEXT" >> "$i/makefile"
+  test -n "$ECHO" && $ECHO "LINK_LIB_PATH = $LINK_LIB_PATH" >> "$i/makefile"
+  test -n "$ECHO" && $ECHO "LINK_SRC_PATH = $LINK_SRC_PATH" >> "$i/makefile"
+  test -n "$ECHO" && $ECHO "I18N_LIB = $I18N_LIB" >> "$i/makefile"
+  test -n "$ECHO" && $ECHO "I18N_LIBSTAT = $I18N_LIBSTAT" >> "$i/makefile"
+  test -n "$ECHO" && $ECHO "INCL = $INCL" >> "$i/makefile"
+  test -n "$ECHO" && $ECHO "OSX_CPP = $OSX_CPP" >> "$i/makefile"
+  test -n "$ECHO" && $ECHO "LINK_FLAGS = $LINK_FLAGS" >> "$i/makefile"
+  test -n "$ECHO" && $ECHO "CFLAGS   = $CFLAGS"       >> "$i/makefile"
+  test -n "$ECHO" && $ECHO "CXXFLAGS = $CXXFLAGS" >> "$i/makefile"
+  test -n "$ECHO" && $ECHO "LDFLAGS  = $LDFLAGS"    >> "$i/makefile"
+  test -n "$ECHO" && $ECHO "" >> "$i/makefile"
+  test -n "$ECHO" && $ECHO "" >> "$i/makefile"
+done
+test -n "$ECHO" && $ECHO "LIBNAMEFULL = $LIBNAMEFULL" >> "$CONF"
+test -n "$ECHO" && $ECHO "LIBNAMEV = $LIBNAMEV" >> "$CONF"
 
 CFLAGS="$CFLAGS $CFLAGS_COMMON"
 CXXFLAGS="$CXXFLAGS $CXXFLAGS_COMMON"
 LDFLAGS="$LDFLAGS $LDFLAGS_COMMON"
 
-echo "CFLAGS   = $CFLAGS $MAKE_CFLAGS"       >> $CONF
-echo "CXXFLAGS = $CXXFLAGS $MAKE_CXXFLAGS" >> $CONF
-echo "LDFLAGS  = $LDFLAGS $MAKE_LDFLAGS"    >> $CONF
-echo "CFLAGS   = $CFLAGS $MAKE_CFLAGS"       >> $CONF_I18N
-echo "CXXFLAGS = $CXXFLAGS $MAKE_CXXFLAGS" >> $CONF_I18N
-echo "LDFLAGS  = $LDFLAGS $MAKE_LDFLAGS"    >> $CONF_I18N
+if [ -n "$cwdebug" ]; then
+  for i in $MAKEFILE_DIR; do
+    echo "" >> "$i/makefile"
+    echo "cwdebug = $cwdebug" >> "$i/makefile"
+    echo "CWLIB = -L$cwdebug -lcwd"  >> "$i/makefile"
+    echo "CCFILES = \$(DEBUG_CC)" >> "$i/makefile"
+  done
+  echo "#define CWDEBUG 1" >> $CONF_H
+fi
 
-echo "" >> $CONF
-echo "" >> $CONF
 echo_=""; echo "$echo_" >> $CONF_LOG; echo "$echo_"
 echo_=""; echo "$echo_" >> $CONF_LOG; echo "$echo_"
 
-LIBS_TEST="dl iconv intl"; export LIBS_TEST
+LIBS_TEST="dl iconv intl c m"; export LIBS_TEST
 X_ADD="Xpm Xext"; export X_ADD
 
 
@@ -684,19 +721,21 @@ echo_="INCL            =       $INCL"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
 echo_="################################################################"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
 echo_=""; echo "$echo_" >> $CONF_LOG; echo "$echo_"
 
-echo "src_dir = $src_dir" >> $CONF
-echo "srcdir = $srcdir" >> $CONF
-echo "prefix=$prefix" >> $CONF
-echo "exec_prefix=$exec_prefix" >> $CONF
-echo "bindir=$bindir" >> $CONF
-echo "sbindir=$sbindir" >> $CONF
-echo "libdir=$libdir" >> $CONF
-echo "includedir=$includedir" >> $CONF
-echo "datadir=$datadir" >> $CONF
-echo "mandir=$mandir" >> $CONF
-echo "pixmapdir=$pixmapdir" >> $CONF
-echo "desktopdir=$desktopdir" >> $CONF
-echo "" >> $CONF
+for i in $MAKEFILE_DIR; do
+  test -n "$ECHO" && $ECHO "src_dir = $src_dir" >> "$i/makefile"
+  test -n "$ECHO" && $ECHO "srcdir = $srcdir" >> "$i/makefile"
+  test -n "$ECHO" && $ECHO "prefix=$prefix" >> "$i/makefile"
+  test -n "$ECHO" && $ECHO "exec_prefix=$exec_prefix" >> "$i/makefile"
+  test -n "$ECHO" && $ECHO "bindir=$bindir" >> "$i/makefile"
+  test -n "$ECHO" && $ECHO "sbindir=$sbindir" >> "$i/makefile"
+  test -n "$ECHO" && $ECHO "libdir=$libdir" >> "$i/makefile"
+  test -n "$ECHO" && $ECHO "includedir=$includedir" >> "$i/makefile"
+  test -n "$ECHO" && $ECHO "datadir=$datadir" >> "$i/makefile"
+  test -n "$ECHO" && $ECHO "mandir=$mandir" >> "$i/makefile"
+  test -n "$ECHO" && $ECHO "pixmapdir=$pixmapdir" >> "$i/makefile"
+  test -n "$ECHO" && $ECHO "desktopdir=$desktopdir" >> "$i/makefile"
+  test -n "$ECHO" && $ECHO "" >> "$i/makefile"
+done
 
 echo "#define PREFIX         \"$prefix\"" >> $CONF_H
 echo "#define ICCEXAMIN_DATADIR        \"$datadir\"" >> $CONF_H

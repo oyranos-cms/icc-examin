@@ -97,8 +97,14 @@ while (ftrav != NULL_FACE) {
 	 if (IS_EQ(ftrav->plane.aa,plane->aa) && 
 	     IS_EQ(ftrav->plane.bb,plane->bb) &&
 	     IS_EQ(ftrav->plane.cc,plane->cc)) 
+         {
             PREPEND_FACE(ftrav,*faceSameDir);
-	 else PREPEND_FACE(ftrav,*faceOppDir);
+  if(*faceSameDir == NULL_FACE || ftrav == 0)
+  {
+    int stop_variable = 0;
+    stop_variable ++;
+  }
+	 } else PREPEND_FACE(ftrav,*faceOppDir);
       }
    }
    ftrav= nextFtrav;		/* get next */
@@ -108,6 +114,12 @@ while (ftrav != NULL_FACE) {
     * set this to null.
     */
    *faceList= NULL_FACE;		
+
+  if(*faceSameDir == NULL_FACE || ftrav == 0)
+  {
+    int stop_variable = 0;
+    stop_variable ++;
+  }
 #if 0 /* only true for BSPconstructTree() */
    /* there's at least one face embedded in the partitioning plane */
    assert(*faceSameDir != NULL_FACE); 
