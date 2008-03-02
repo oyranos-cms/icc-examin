@@ -50,7 +50,6 @@ ifdef APPLE
       $(COPY) Info.plist ICC\ Examin.app/Contents/Info.plist; \
       $(COPY) $(TARGET) ICC\ Examin.app/Contents/MacOS/ICC\ Examin; \
       $(COPY) $(TARGET) ICC\ Examin/build/ICC\ Examin.app/Contents/MacOS/ICC\ Examin; \
-      $(COPY) $(TARGET).icns ICC\ Examin.app/Contents/Resources/; \
       fltk-config --post $(TARGET);
   MAKEDEPEND = /usr/X11R6/bin/makedepend -Y
   DBG_LIBS = #-lMallocDebug
@@ -242,7 +241,9 @@ CLIB_OBJECTS =  $(CFILES:.c=.o)
 
 POT_FILE = po/$(TARGET).pot
 
-APPL_FILES = ICC\ Examin.app/
+APPL_FILES = \
+	ICC\ Examin.app/ \
+	Info.plist
 
 ALL_FILES =	$(SOURCES) \
 	makefile \
@@ -447,7 +448,7 @@ tgz:
 
 targz:
 	mkdir $(TARGET)_$(VERSION)
-	$(COPY) \
+	$(COPY) -R \
 	$(ALL_FILES) \
 	$(TARGET)_$(VERSION)
 	mkdir $(TARGET)_$(VERSION)/po

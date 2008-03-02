@@ -175,7 +175,7 @@ typedef struct {
 } refcon;
 
 OSErr
-MyFlattenProc (
+MyFlattenProfileProc (
    SInt32 command, 
    SInt32 *size, 
    void *data, 
@@ -281,7 +281,7 @@ Oyranos::moni_test_ ()
 
     refcon ref = {0,0};
     Boolean bol;
-    CMError err = CMFlattenProfile ( prof, 0, MyFlattenProc, &ref, &bol);
+    CMError err = CMFlattenProfile ( prof, 0, MyFlattenProfileProc, &ref, &bol);
     
     Str255 str;
     ScriptCode code;

@@ -172,7 +172,7 @@ ICCexamin::start (int argc, char** argv)
   frei_ = true;
 
   // receive events
-  #if 1
+  #if 0
   Fl_Widget* w = dynamic_cast<Fl_Widget*>(icc_betrachter->details);
   if (w) {
       Fl::pushed(w);
@@ -624,7 +624,6 @@ tastatur(int e)
   switch (e)
   {
   case FL_SHORTCUT:
-    {
       if(Fl::event_key() == FL_Escape) {
         gefunden = 1;
         DBG_NUM_S("FL_Escape")
@@ -635,27 +634,20 @@ tastatur(int e)
         icc_examin->quit();
         gefunden = 1;
       }
-    }
     break;
   case FL_DND_ENTER:
-    {
     DBG_PROG_S( "FL_DND_ENTER" )
     fortschritt(0.01);
     return 1;
-    }
     break;
   case FL_DND_DRAG:
-    {
     DBG_PROG_S( "FL_DND_DRAG dnd_text_ops(" <<Fl::dnd_text_ops() <<")" )
     return 1;
-    }
     break;
   case FL_DND_LEAVE:
-    {
     DBG_PROG_S( "FL_DND_LEAVE" )
     fortschritt(1.1);
     return 1;
-    }
     break;
   case FL_DND_RELEASE:
     {
@@ -668,6 +660,7 @@ tastatur(int e)
   case FL_PASTE:
     {
     DBG_PROG_S( "FL_PASTE " << Fl::event_length() )
+      #if APPLE_
       if(dnd_kommt &&
          Fl::event_length())
       {
@@ -685,22 +678,11 @@ tastatur(int e)
         icc_examin->oeffnen(profilnamen);
       }
       dnd_kommt = false;
-    }
-    break;
-  case FL_RELEASE:
-    {
-    DBG_PROG_S( "FL_RELEASE " << Fl::event_length() )
-    }
-    break;
-  case FL_DRAG:
-    {
-      DBG_PROG_S( "FL_DRAG "<< Fl::event_length() )
-      #if LINUX // TODO: korrektes DnD
-      static int dnd_naechstes_ereignis = false;
+      #else
       if(dnd_kommt &&
          Fl::event_length())
       {
-        if(dnd_naechstes_ereignis) {
+        {
           DBG_PROG_S( Fl::event_text() );
           char *temp = (char*)alloca(Fl::event_length()+1),
                *text;
@@ -729,16 +711,21 @@ tastatur(int e)
           }
           icc_examin->oeffnen(profilnamen);
           dnd_kommt = false;
-          dnd_naechstes_ereignis = false;
-        } else
-          dnd_naechstes_ereignis = true;
+        }
       }
       #endif
     }
     break;
+  case FL_RELEASE:
+    DBG_PROG_S( "FL_RELEASE " << Fl::event_length() )
+    break;
+  case FL_DRAG:
+    DBG_PROG_S( "FL_DRAG "<< Fl::event_length() )
+    break;
   default: 
     {
-      DBG_PROG_S( "Event - "<< e <<" "<< Fl::event_length() )
+      if(Fl::event_length())
+        ;//DBG_PROG_S( "Event - "<< e <<" "<< Fl::event_length() );
     }
     break;
   }

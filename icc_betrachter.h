@@ -54,6 +54,12 @@ public:
   void profilTag(int _tag, std::string text);
   void auswahlCb(void);
 };
+
+class My_Fl_Box : public Fl_Box {
+public:
+  My_Fl_Box(int X,int Y,int W, int H, const char* title = 0) ;
+  int handle( int event );
+};
 #include <FL/Fl_Double_Window.H>
 #include <FL/Fl_Group.H>
 #include <FL/Fl_Help_View.H>
@@ -189,12 +195,12 @@ public:
   TagTexts *tag_text;
   Fl_Box *box_stat;
   Fl_Progress *load_progress;
+  My_Fl_Box *no_box;
   void run();
   std::vector<std::string> open(std::vector<std::string> dateinamen);
   void quit(void);
   void zeig_mich_(void* widget);
   void measurement(bool has_measurement);
-  int handle(int event);
 };
 void dHaendler(void* o);
 #endif

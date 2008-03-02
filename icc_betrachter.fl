@@ -214,6 +214,22 @@ class MftChoice {: {public Fl_Choice}
   }
 } 
 
+class My_Fl_Box {open : {public Fl_Box}
+} {
+  Function {My_Fl_Box(int X,int Y,int W, int H, const char* title = 0) : Fl_Box(X,Y,W,H,title)} {open
+  } {}
+  Function {handle( int event )} {open return_type int
+  } {
+    code {//zeigFltkEvents( event);
+
+  int ergebnis = tastatur(event);
+  if(!ergebnis)
+    ;//Fl_No_Box::handle(event);
+  return ergebnis;} {selected
+    }
+  }
+} 
+
 class ICCfltkBetrachter {open
 } {
   decl {bool setTitleUrl;
@@ -225,7 +241,8 @@ class ICCfltkBetrachter {open
   
  enum{ WID_0, WID_3D, WID_INSPEKT }; int widget_oben;} {public
   }
-  Function {init(int argc, char** argv)} {} {
+  Function {init(int argc, char** argv)} {open
+  } {
     code DBG_PROG_START {}
     code {fullscreen = false;
   setTitleUrl = true;
@@ -301,7 +318,7 @@ class ICCfltkBetrachter {open
   \#endif} {}
     Fl_Window ueber {
       label {About ICC Examin}
-      xywh {647 538 366 241} type Double resizable
+      xywh {672 643 366 241} type Double resizable
       code0 {o->hide();} non_modal visible
     } {
       Fl_Group {} {open
@@ -318,8 +335,8 @@ class ICCfltkBetrachter {open
       }
     }
     Fl_Window vcgt {
-      label {Grafic Card Gamma Table} open
-      xywh {684 60 370 390} type Double resizable
+      label {Grafic Card Gamma Table}
+      xywh {853 262 370 390} type Double resizable
       code0 {o->hide();} visible
     } {
       Fl_Group {} {open
@@ -359,7 +376,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window details {
       label {ICC Examin} open
-      xywh {818 454 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
+      xywh {740 351 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
     } {
       Fl_Group {} {open
         xywh {0 0 385 520}
@@ -632,6 +649,11 @@ ueber_html->value(getUeberHtml().c_str());}
           }
         }
       }
+      Fl_Box no_box {
+        xywh {0 0 385 520}
+        code0 {o->box(FL_NO_BOX);}
+        class My_Fl_Box
+      }
     }
     code {tag_text->inspekt_topline = 0;
 
@@ -713,7 +735,8 @@ ueber_html->value(getUeberHtml().c_str());}
   icc_examin->quit();} {}
     code DBG_PROG_ENDE {}
   }
-  Function {zeig_mich_(void* widget)} {} {
+  Function {zeig_mich_(void* widget)} {open
+  } {
     code DBG_PROG_START {}
     code {// zeigt das ausgewählte Fenster (widget)
 
@@ -759,7 +782,8 @@ ueber_html->value(getUeberHtml().c_str());}
   }} {}
     code DBG_PROG_ENDE {}
   }
-  Function {measurement(bool has_measurement)} {} {
+  Function {measurement(bool has_measurement)} {open
+  } {
     code {if (has_measurement) {
     DBG_PROG_S(menueintrag_inspekt->value())
     if (menueintrag_inspekt->value()) {
@@ -778,14 +802,9 @@ ueber_html->value(getUeberHtml().c_str());}
     menueintrag_zeigcgats->deactivate();
   }} {}
   }
-  Function {handle(int event)} {open return_type int
-  } {
-    code {return tastatur(event);} {selected
-    }
-  }
 } 
 
-Function {dHaendler(void* o)} {open return_type {static void}
+Function {dHaendler(void* o)} {return_type {static void}
 } {
   code DBG_PROG_START {}
   code {Fl::remove_timeout( (void(*)(void*))dHaendler, 0 );

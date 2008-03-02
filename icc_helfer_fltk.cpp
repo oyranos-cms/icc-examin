@@ -114,4 +114,37 @@ getChannel_flColours (icColorSpaceSignature color)
 
 #undef nFARBEN
 
+void
+zeigFltkEvents(int event)
+{
+  switch(event) {
+  case FL_NO_EVENT: DBG_PROG_S( "FL_NO_EVENT" ) break;
+  case FL_PUSH: DBG_PROG_S( "FL_PUSH" ) break;
+  case FL_RELEASE: DBG_PROG_S( "FL_RELEASE" ) break;
+  case FL_ENTER: DBG_PROG_S( "FL_ENTER" ) break;
+  case FL_LEAVE: DBG_PROG_S( "FL_LEAVE" ) break;
+  case FL_DRAG: DBG_PROG_S( "FL_DRAG" ) break;
+  case FL_FOCUS: DBG_PROG_S( "FL_FOCUS" ) break;
+  case FL_UNFOCUS: DBG_PROG_S( "FL_UNFOCUS" ) break;
+  case FL_KEYDOWN: DBG_PROG_S( "FL_KEYDOWN" ) break;
+  case FL_KEYUP: DBG_PROG_S( "FL_KEYUP" ) break;
+  case FL_CLOSE: DBG_PROG_S( "FL_CLOSE" ) break;
+  case FL_MOVE: DBG_PROG_S( "FL_MOVE" ) break;
+  case FL_SHORTCUT: DBG_PROG_S( "FL_SHORTCUT" ) break;
+  case FL_DEACTIVATE: DBG_PROG_S( "FL_DEACTIVATE" ) break;
+  case FL_ACTIVATE: DBG_PROG_S( "FL_ACTIVATE" ) break;
+  case FL_HIDE: DBG_PROG_S( "FL_HIDE" ) break;
+  case FL_SHOW: DBG_PROG_S( "FL_SHOW" ) break;
+  case FL_PASTE: DBG_PROG_S( "FL_PASTE" ) break;
+  case FL_SELECTIONCLEAR: DBG_PROG_S( "FL_SELECTIONCLEAR" ) break;
+  case FL_MOUSEWHEEL: DBG_PROG_S( "FL_MOUSEWHEEL" ) break;
+  case FL_DND_ENTER: DBG_PROG_S( "FL_DND_ENTER" ) break;
+  case FL_DND_DRAG: DBG_PROG_S( "FL_DND_DRAG" ) break;
+  case FL_DND_LEAVE: DBG_PROG_S( "FL_DND_LEAVE" ) break;
+  case FL_DND_RELEASE: DBG_PROG_S( "FL_DND_RELEASE" ) break;
+  default: DBG_PROG_S( "event: " << event ) break;
+  }
+}
+
+
 #endif

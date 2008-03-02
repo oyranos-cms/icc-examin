@@ -137,6 +137,18 @@ void MftChoice::auswahlCb(void) {
   DBG_PROG_ENDE
 }
 
+My_Fl_Box::My_Fl_Box(int X,int Y,int W, int H, const char* title ) : Fl_Box(X,Y,W,H,title) {
+}
+
+int My_Fl_Box::handle( int event ) {
+  //zeigFltkEvents( event);
+
+  int ergebnis = tastatur(event);
+  if(!ergebnis)
+    ;//Fl_No_Box::handle(event);
+  return ergebnis;
+}
+
 inline void ICCfltkBetrachter::cb_ja_i(Fl_Button*, void*) {
   ueber->hide();
 }
@@ -710,6 +722,18 @@ ard"));
       }
       o->end();
     }
+    { My_Fl_Box* o = no_box = new My_Fl_Box(0, 0, 385, 520);
+      o->box(FL_NO_BOX);
+      o->color(FL_BACKGROUND_COLOR);
+      o->selection_color(FL_BACKGROUND_COLOR);
+      o->labeltype(FL_NORMAL_LABEL);
+      o->labelfont(0);
+      o->labelsize(14);
+      o->labelcolor(FL_BLACK);
+      o->align(FL_ALIGN_CENTER);
+      o->when(FL_WHEN_RELEASE);
+      o->box(FL_NO_BOX);
+    }
     o->end();
   }
   tag_text->inspekt_topline = 0;
@@ -861,10 +885,6 @@ void ICCfltkBetrachter::measurement(bool has_measurement) {
     menueintrag_html_speichern->deactivate();
     menueintrag_zeigcgats->deactivate();
   }
-}
-
-int ICCfltkBetrachter::handle(int event) {
-  return tastatur(event);
 }
 
 void dHaendler(void* o) {
