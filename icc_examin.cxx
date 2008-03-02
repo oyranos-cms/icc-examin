@@ -16,8 +16,6 @@ ICCprofile profile;
 
 Fl_Double_Window *details=(Fl_Double_Window *)0;
 
-Fl_Menu_Bar *Fl_lookat_MenuBar=(Fl_Menu_Bar *)0;
-
 static void cb_Offnen(Fl_Menu_*, void*) {
   open(true);
 }
@@ -58,15 +56,15 @@ static void cb_menueintrag_inspekt(Fl_Menu_*, void*) {
   };
 }
 
-Fl_Menu_Item menu_Fl_lookat_MenuBar[] = {
+Fl_Menu_Item menu_[] = {
  {"Daten", 0,  0, 0, 64, 0, 0, 14, 56},
  {"Offnen", 0x4006f,  (Fl_Callback*)cb_Offnen, 0, 0, 0, 0, 14, 56},
  {"Beenden", 0x40071,  (Fl_Callback*)cb_Beenden, 0, 0, 0, 0, 14, 56},
  {0},
  {"Ansicht", 0,  0, 0, 64, 0, 0, 14, 56},
  {"Ganzer Bildschirm an/aus", 0,  (Fl_Callback*)cb_menueintrag_Voll, 0, 0, 0, 0, 14, 56},
- {"Pr\374""fansicht an/aus", 0,  (Fl_Callback*)cb_menueintrag_inspekt, 0, 0, 0, 0, 14, 56},
  {0},
+ {"Pr\374""fansicht", 0,  (Fl_Callback*)cb_menueintrag_inspekt, 0, 0, 0, 0, 14, 56},
  {0}
 };
 
@@ -113,16 +111,16 @@ int main(int argc, char **argv) {
   statlabel = (char*)calloc (sizeof (char), 1024);
   fullscreen = false;
   inspekt_topline = 0;
-  { Fl_Double_Window* o = details = new Fl_Double_Window(385, 520, "ICC Details");
+  { Fl_Double_Window* o = details = new Fl_Double_Window(385, 515, "ICC Details");
     w = o;
     o->box(FL_NO_BOX);
     o->color((Fl_Color)53);
     { Fl_Group* o = new Fl_Group(0, 0, 385, 520);
-      { Fl_Menu_Bar* o = Fl_lookat_MenuBar = new Fl_Menu_Bar(0, 0, 385, 25);
+      { Fl_Menu_Bar* o = new Fl_Menu_Bar(0, 0, 385, 25);
         o->color((Fl_Color)53);
         o->align(FL_ALIGN_LEFT|FL_ALIGN_INSIDE);
         o->when(3);
-        o->menu(menu_Fl_lookat_MenuBar);
+        o->menu(menu_);
       }
       { Fl_Group* o = inspekt = new Fl_Group(0, 25, 385, 470);
         { Fl_Help_View* o = inspekt_html = new Fl_Help_View(0, 25, 385, 470, "Inspect");
@@ -311,10 +309,23 @@ std::string open(int interaktiv) {
 
   tag_browser->reopen ();
 
-  inspekt_topline = inspekt_html->topline();
-  if (inspekt_zeigen)
-    inspekt_html->value(profile.report().c_str());
-  inspekt_html->topline (inspekt_topline);
+  if (profile.hasMeasurement()) {
+    inspekt_topline = inspekt_html->topline();
+    if (inspekt_zeigen) {
+      inspekt_html->value(profile.report().c_str());
+      cout << inspekt_html->size() << " " << inspekt_topline; DBG
+      if (inspekt_html->size() -75 < inspekt_topline)
+        inspekt_html->topline (inspekt_html->size() - 75);
+      else
+        inspekt_html->topline (inspekt_topline);
+    }
+    menueintrag_inspekt->activate();
+  } else {
+    menueintrag_inspekt->deactivate();
+    inspekt->hide();
+    examin->show();
+    inspekt_zeigen = false;
+  }
 
   return filename;
 }

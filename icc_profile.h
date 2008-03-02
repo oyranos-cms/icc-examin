@@ -36,6 +36,12 @@ typedef struct {
 } XYZ;
 
 typedef struct {
+    double L;
+    double a;
+    double b;
+} Lab;
+
+typedef struct {
     double R;
     double G;
     double B;
@@ -212,13 +218,21 @@ class ICCmeasurement {
     bool                _CMYK_measurement;
 
     std::vector<XYZ>    _XYZ_Satz;
+    std::vector<Lab>    _Lab_Satz;
     std::vector<RGB>    _RGB_Satz;
     std::vector<CMYK>   _CMYK_Satz;
 
     std::vector<std::string> _Feldnamen;
     std::vector<XYZ>    _XYZ_Ergebnis;
+    std::vector<Lab>    _Lab_Ergebnis;
     std::vector<RGB>    _RGB_MessFarben;
     std::vector<RGB>    _RGB_ProfilFarben;
+
+    std::vector<double> _Lab_Differenz;
+    double              _Lab_Differenz_max;
+    double              _Lab_Differenz_min;
+    double              _Lab_Differenz_Durchschnitt;
+
     std::vector<std::vector<std::string> > _reportTabelle;
   private:
     std::string         ascii_korrigieren ();

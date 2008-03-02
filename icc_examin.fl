@@ -89,7 +89,7 @@ Function {} {open C return_type int
   inspekt_topline = 0;} {}
   Fl_Window details {
     label {ICC Details} open
-    xywh {836 338 385 520} type Double box NO_BOX color 53
+    xywh {841 362 385 515} type Double box NO_BOX color 53
     code1 {DBG
     if (argc>1) {
 
@@ -106,7 +106,7 @@ Function {} {open C return_type int
     Fl_Group {} {open
       xywh {0 0 385 520}
     } {
-      Fl_Menu_Bar Fl_lookat_MenuBar {open
+      Fl_Menu_Bar {} {open
         xywh {0 0 385 25} color 53 align 20 when 3
       } {
         submenu {} {
@@ -146,9 +146,10 @@ Function {} {open C return_type int
   }}
             xywh {15 15 100 20}
           }
-          menuitem menueintrag_inspekt {
-            label {Prüfansicht an/aus}
-            callback {if (inspekt_zeigen) {
+        }
+        menuitem menueintrag_inspekt {
+          label {Prüfansicht}
+          callback {if (inspekt_zeigen) {
     inspekt_zeigen = false;
     inspekt->hide();
     examin->show();
@@ -160,8 +161,7 @@ Function {} {open C return_type int
     inspekt_html->value(profile.report().c_str());
     inspekt_html->topline(inspekt_topline);
   }}
-            xywh {25 25 100 20}
-          }
+          xywh {30 30 100 20}
         }
       }
       Fl_Group inspekt {open
@@ -304,10 +304,23 @@ Function {open(int interaktiv)} {open return_type {std::string}
 
   tag_browser->reopen ();
 
-  inspekt_topline = inspekt_html->topline();
-  if (inspekt_zeigen)
-    inspekt_html->value(profile.report().c_str());
-  inspekt_html->topline (inspekt_topline);
+  if (profile.hasMeasurement()) {
+    inspekt_topline = inspekt_html->topline();
+    if (inspekt_zeigen) {
+      inspekt_html->value(profile.report().c_str());
+      cout << inspekt_html->size() << " " << inspekt_topline; DBG
+      if (inspekt_html->size() -75 < inspekt_topline)
+        inspekt_html->topline (inspekt_html->size() - 75);
+      else
+        inspekt_html->topline (inspekt_topline);
+    }
+    menueintrag_inspekt->activate();
+  } else {
+    menueintrag_inspekt->deactivate();
+    inspekt->hide();
+    examin->show();
+    inspekt_zeigen = false;
+  }
 
   return filename;} {selected
   }

@@ -34,7 +34,6 @@ extern ICCprofile profile;
 extern Fl_Double_Window *details;
 #include <FL/Fl_Group.H>
 #include <FL/Fl_Menu_Bar.H>
-extern Fl_Menu_Bar *Fl_lookat_MenuBar;
 extern Fl_Group *inspekt;
 #include <FL/Fl_Help_View.H>
 extern Fl_Help_View *inspekt_html;
@@ -54,9 +53,9 @@ extern TagTexts *tag_text;
 extern Fl_Box *stat;
 #include <FL/Fl_Progress.H>
 extern Fl_Progress *load_progress;
-extern Fl_Menu_Item menu_Fl_lookat_MenuBar[];
-#define menueintrag_Voll (menu_Fl_lookat_MenuBar+5)
-#define menueintrag_inspekt (menu_Fl_lookat_MenuBar+6)
+extern Fl_Menu_Item menu_[];
+#define menueintrag_Voll (menu_+5)
+#define menueintrag_inspekt (menu_+7)
 std::string open(int interaktiv);
 void quit(void);
 char* icc_read_info(char* filename);
