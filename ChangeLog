@@ -1,4 +1,13 @@
 
+2004-12-27
+	* neu: ICCfltkBetrachter als fltk Klasse geformt (Fenster und Garnitur)
+	* und: Öffnen nach icc_examin verschoben
+	* und: Statuszeile ist string in icc_examin
+	* neu: ICCfltkBetrachter: aus start() wurden init() und eine run()
+	* und: agv: Tastatur Signale ausgeschalten
+	* und: icc_betrachter: globale Variablen -> ICCfltkBetrachter
+	* und: icc_draw() Variablen -> icc_examin TODO
+
 2004-12-14
 	* fix: mft GL Untermenü: Kanalnamen mit jedem Tagwechsel aktualisiert
 	* neu: Fl::run aus main entfernt, Oberfläche nun in icc_betrachter

@@ -81,6 +81,12 @@ public:
 
 class ICCfltkBetrachter {
 public:
+  bool setTitleUrl;
+
+ int px,py,pw,ph;
+ int fullscreen;
+  
+ int tag_nummer;
   Fl_Double_Window* init();
   Fl_Double_Window *ueber;
   Fl_Help_View *ueber_html;

@@ -46,13 +46,21 @@ class ICCexamin
 
     void         oeffnen (std::vector<std::string> dateinamen);
     void         oeffnen ();	// interaktiv
-    std::string  selected_tag (int item);
 
+    std::string  selectTag (int item);
+    void         drawKurve   (int x,int y,int w,int h) {; }
+private:
+    std::vector<std::vector<double> > _kurven;
+    std::vector<double> _punkte;
+    std::vector<std::string> _texte;
+
+public:
 	// Liste der geladenen Profile
 	std::vector<std::string> profilnamen;
 
 //  private:
     ICCfltkBetrachter* icc_betrachter;
+    std::string statlabel;
 };
 
 extern ICCexamin *icc_examin;

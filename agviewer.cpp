@@ -53,7 +53,7 @@ agviewer::agvInit(int window)
 { DBG_PROG_START
   glutMouseFunc(agvHandleButton);
   glutMotionFunc(agvHandleMotion);
-  glutKeyboardFunc(agvHandleKeys);
+  //glutKeyboardFunc(agvHandleKeys);
   RedisplayWindow = glutGetWindow(); DBG_PROG_V( RedisplayWindow )
   agvSetAllowIdle(window);
   DBG_PROG_ENDE

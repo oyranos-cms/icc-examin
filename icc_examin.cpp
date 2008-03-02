@@ -78,17 +78,17 @@ ICCexamin::oeffnen (std::vector<std::string> dateinamen)
   for (unsigned int i = 0; i < dateinamen.size(); i++)
     profile[i].load (dateinamen[i]);
 
-  std::vector<std::string> url;
-  std::vector<std::string> param;
-
   if (dateinamen.size()) { DBG_PROG
     for (unsigned int i = 0; i < profile.size(); i++) {
       //create_vrml ( dateiname.c_str(), "/usr/share/color/icc/sRGB.icm", &vrmlDatei[0]);
 
       icc_betrachter->load_progress->value (0.8);
+
+      std::vector<std::string> url;
+      std::vector<std::string> param;
       //url.push_back (&vrmlDatei[0]);
       //browser->load_url(url, param);
-        std::string statlabel = dateinamen[i].c_str();
+        statlabel = dateinamen[i].c_str();
         statlabel.append (" ");
         statlabel.append (_("geladen"));
         status(statlabel.c_str());
@@ -111,13 +111,20 @@ ICCexamin::oeffnen (std::vector<std::string> dateinamen)
 void
 ICCexamin::oeffnen ()
 { DBG_PROG_START
-  icc_betrachter->open( profilnamen );
+
+  profilnamen = icc_betrachter->open( profilnamen );
+  oeffnen( profilnamen );
+
   DBG_PROG_ENDE
 }
 
 std::string
-ICCexamin::selected_tag (int item)
+ICCexamin::selectTag (int item)
 { DBG_PROG_START
+
+  _kurven.clear();
+  _punkte.clear();
+  _texte.clear();
 
   std::string text = _("Leer");
 
@@ -145,49 +152,52 @@ ICCexamin::selected_tag (int item)
     } else if ( TagInfo[1] == "desc" ) {
       icc_examin->icc_betrachter->tag_text->hinein( (profile[0].getTagDescription (item))[0] ); DBG_PROG
     } else if ( TagInfo[0] == "rXYZ" || TagInfo[0] == "gXYZ" || TagInfo[0] == "bXYZ" ) {
-      std::vector<double> alle_punkte, punkte;
-      std::vector<std::string> alle_texte;
       std::string TagName;
+      std::vector<double> punkte;
       for (unsigned int i_name = 0; i_name < rgb_tags.size(); i_name++) {
         if (profile[0].hasTagName (rgb_tags[i_name])) {
           punkte = profile[0].getTagCIEXYZ (profile[0].getTagByName(rgb_tags[i_name]));
           for (unsigned int i = 0; i < 3; i++)
-            alle_punkte.push_back (punkte[i]);
+            _punkte.push_back (punkte[i]);
           TagInfo = profile[0].printTagInfo (profile[0].getTagByName(rgb_tags[i_name]));
           for (unsigned int i = 0; i < 2; i++)
-            alle_texte.push_back (TagInfo[i]);
+            _texte.push_back (TagInfo[i]);
         }
       }
-      icc_examin->icc_betrachter->tag_viewer->hinein_punkt( alle_punkte, alle_texte );
+      icc_examin->icc_betrachter->tag_viewer->hinein_punkt( _punkte, _texte );
     } else if ( TagInfo[1] == "curv"
              || TagInfo[1] == "bfd" ) {
-      std::vector<std::vector<double> > kurven;
       std::vector<double> kurve;
-      std::vector<std::string> texte;
       std::string TagName;
       for (int i_name = 0; i_name < profile[0].tagCount(); i_name++) {
         if ( (profile[0].printTagInfo(i_name))[1] == "curv"
           || (profile[0].printTagInfo(i_name))[1] == "bfd" ) {
           kurve = profile[0].getTagCurve (i_name);
-          kurven.push_back (kurve);
+          _kurven.push_back (kurve);
           TagInfo = profile[0].printTagInfo (i_name);
           //for (unsigned int i = 0; i < 2; i++)
-          texte.push_back (TagInfo[0]);
+          _texte.push_back (TagInfo[0]);
         }
       }
-      texte.push_back ("curv");
-      icc_examin->icc_betrachter->tag_viewer->hinein_kurven( kurven, texte );
+      _texte.push_back ("curv");
+      icc_examin->icc_betrachter->tag_viewer->hinein_kurven( _kurven, _texte );
     } else if ( TagInfo[1] == "chrm" ) {
-      icc_examin->icc_betrachter->tag_viewer->hinein_punkt( profile[0].getTagCIEXYZ(item), profile[0].getTagText(item) );
+      _punkte = profile[0].getTagCIEXYZ(item);
+      _texte = profile[0].getTagText(item);
+      icc_examin->icc_betrachter->tag_viewer->hinein_punkt( _punkte, _texte );
     } else if ( TagInfo[1] == "XYZ" ) {
-      icc_examin->icc_betrachter->tag_viewer->hinein_punkt( profile[0].getTagCIEXYZ(item), TagInfo );
+      _punkte = profile[0].getTagCIEXYZ(item);
+      _texte = TagInfo;
+      icc_examin->icc_betrachter->tag_viewer->hinein_punkt( _punkte, _texte );
     } else if ( TagInfo[1] == "mft2"
              || TagInfo[1] == "mft1" ) {
       icc_examin->icc_betrachter->mft_choice->profil_tag (item);
       //mft_text->hinein ( (profile[0].getTagText (item))[0] ); DBG_PROG
     } else if ( TagInfo[1] == "vcgt" ) { DBG_PROG
-      icc_examin->icc_betrachter->tag_viewer->hinein_kurven ( profile[0].getTagCurves (item, ICCtag::CURVE_IN),
-                                  profile[0].getTagText (item) ); cout << "vcgt "; DBG_PROG
+      _kurven = profile[0].getTagCurves (item, ICCtag::CURVE_IN);
+      _texte = profile[0].getTagText (item);
+      icc_examin->icc_betrachter->tag_viewer->hinein_kurven ( _kurven, _texte );
+      cout << "vcgt "; DBG_PROG
 
     /*} else if ( TagInfo[1] == "chad" ) {
       std::vector<int> zahlen = profile[0].getTagNumbers (tag_nummer, ICCtag::MATRIX);

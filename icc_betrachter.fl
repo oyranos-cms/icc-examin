@@ -45,15 +45,6 @@ decl {\#ifdef HAVE_FLU
 \#include <FL/Fl_PNM_Image.H>} {public
 } 
 
-decl {char *statlabel;
-
- bool setTitleUrl = true;
-
- int px,py,pw,ph;
- int fullscreen;
-  
- int tag_nummer;} {} 
-
 decl {class TagDrawings;
 class TagBrowser;
 class TagTexts;
@@ -167,7 +158,7 @@ Function {icc_read_info(char* filename)} {return_type {char*}
   code DBG_PROG_ENDE {}
 } 
 
-class TagBrowser {open : {public Fl_Hold_Browser}
+class TagBrowser {: {public Fl_Hold_Browser}
 } {
   decl {int X; int Y; int W; int H; char* start_info; std::string selectedTagName;} {}
   Function {TagBrowser(int X,int Y,int W,int H,char* start_info) : Fl_Hold_Browser(X,Y,W,H,start_info), X(X), Y(Y), W(W), H(H)} {} {}
@@ -233,7 +224,8 @@ class TagBrowser {open : {public Fl_Hold_Browser}
   status ((const char*) s.str().c_str() );} {}
     code DBG_PROG_ENDE {}
   }
-  Function {select_item(int item)} {} {
+  Function {select_item(int item)} {open
+  } {
     code DBG_PROG_START {}
     code {//Auswahl aus tag_browser
 
@@ -242,7 +234,7 @@ class TagBrowser {open : {public Fl_Hold_Browser}
   item -= 6;
   cout << item << ". Tag "; DBG_PROG
   
-  std::string text = icc_examin->selected_tag(item);
+  std::string text = icc_examin->selectTag(item);
   if (text != "")
     selectedTagName = text;} {}
     code DBG_PROG_ENDE {}
@@ -277,7 +269,7 @@ class TagTexts {: {public Fl_Hold_Browser}
   }
 } 
 
-class TagDrawings {: {public Fl_Widget}
+class TagDrawings {open : {public Fl_Widget}
 } {
   decl {int X; int Y; int W; int H; std::vector<std::string>texte; std::vector<double>punkte; std::vector<std::vector<double> >kurven;} {}
   decl {int wiederholen;} {public
@@ -303,9 +295,10 @@ class TagDrawings {: {public Fl_Widget}
     wiederholen = true;
   } else {
     wiederholen = false;
-    draw_kurve   (x(),y(),w(),h(),texte,kurven);
+    icc_examin->drawKurve   (x(),y(),w(),h()/*,texte,kurven*/);
   }
-  DBG_PROG} {}
+  DBG_PROG} {selected
+    }
     code DBG_PROG_ENDE {}
   }
   Function {hinein_punkt(std::vector<double> vect, std::vector<std::string> txt)} {open
@@ -357,12 +350,12 @@ class MftChoice {: {public Fl_Choice}
   Function {profil_tag(int _tag)} {open
   } {
     code DBG_PROG_START {}
-    code {tag_nummer = _tag;
+    code {icc_examin->icc_betrachter->tag_nummer = _tag;
 
-// = profile[0].printTagInfo(tag_nummer);
-    sprintf (&typ[0], profile[0].printTagInfo(tag_nummer)[1].c_str());
+// = profile[0].printTagInfo(icc_examin->icc_betrachter->tag_nummer);
+    sprintf (&typ[0], profile[0].printTagInfo(icc_examin->icc_betrachter->tag_nummer)[1].c_str());
 
-    Info = zeilenNachVector (profile[0].getTagText (tag_nummer)[0]);
+    Info = zeilenNachVector (profile[0].getTagText (icc_examin->icc_betrachter->tag_nummer)[0]);
 
     if ( strstr (typ,"mft2") != 0 )
     {
@@ -420,7 +413,7 @@ class MftChoice {: {public Fl_Choice}
       icc_examin->icc_betrachter->mft_text->hinein ( s.str() ); DBG_PROG // anzeigen
     } break;
   case 1: // Matriz
-    zahlen = profile[0].getTagNumbers (tag_nummer, ICCtag::MATRIX);
+    zahlen = profile[0].getTagNumbers (icc_examin->icc_betrachter->tag_nummer, ICCtag::MATRIX);
     cout << zahlen.size() << endl; DBG_PROG
     assert (9 == zahlen.size());
     s << endl <<
@@ -432,20 +425,20 @@ class MftChoice {: {public Fl_Choice}
   case 2: // Eingangskurven
     DBG_PROG
     icc_examin->icc_betrachter->mft_viewer->hinein_kurven (
-                     profile[0].getTagCurves (tag_nummer, ICCtag::CURVE_IN),
-                     profile[0].getTagChannelNames (tag_nummer, ICCtag::CURVE_IN) ); DBG_PROG
+                     profile[0].getTagCurves (icc_examin->icc_betrachter->tag_nummer, ICCtag::CURVE_IN),
+                     profile[0].getTagChannelNames (icc_examin->icc_betrachter->tag_nummer, ICCtag::CURVE_IN) ); DBG_PROG
     break;
   case 3: // 3D Tabelle
     DBG_PROG
     icc_examin->icc_betrachter->mft_gl->hinein_tabelle (
-                     profile[0].getTagTable (tag_nummer, ICCtag::TABLE),
-                     profile[0].getTagChannelNames (tag_nummer, ICCtag::TABLE_IN),
-                     profile[0].getTagChannelNames (tag_nummer, ICCtag::TABLE_OUT) ); DBG_PROG
+                     profile[0].getTagTable (icc_examin->icc_betrachter->tag_nummer, ICCtag::TABLE),
+                     profile[0].getTagChannelNames (icc_examin->icc_betrachter->tag_nummer, ICCtag::TABLE_IN),
+                     profile[0].getTagChannelNames (icc_examin->icc_betrachter->tag_nummer, ICCtag::TABLE_OUT) ); DBG_PROG
     break;
   case 4: // Ausgangskurven
     icc_examin->icc_betrachter->mft_viewer->hinein_kurven (
-                     profile[0].getTagCurves (tag_nummer, ICCtag::CURVE_OUT),
-                     profile[0].getTagChannelNames (tag_nummer, ICCtag::CURVE_OUT) ); DBG_PROG
+                     profile[0].getTagCurves (icc_examin->icc_betrachter->tag_nummer, ICCtag::CURVE_OUT),
+                     profile[0].getTagChannelNames (icc_examin->icc_betrachter->tag_nummer, ICCtag::CURVE_OUT) ); DBG_PROG
     break;
   }
 
@@ -454,12 +447,19 @@ class MftChoice {: {public Fl_Choice}
   }
 } 
 
-class ICCfltkBetrachter {open
-} {
-  Function {init()} {} {
+class ICCfltkBetrachter {} {
+  decl {bool setTitleUrl;
+
+ int px,py,pw,ph;
+ int fullscreen;
+  
+ int tag_nummer;} {public
+  }
+  Function {init()} {open
+  } {
     code DBG_PROG_START {}
-    code {statlabel = (char*)calloc (sizeof (char), 1024);
-  fullscreen = false;
+    code {fullscreen = false;
+  setTitleUrl = true;
 
   \#ifdef HAVE_FLU
     Flu_File_Chooser::favoritesTxt = _("Lesezeichen");
@@ -548,7 +548,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window details {
       label {ICC Details} open
-      xywh {673 313 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
+      xywh {683 361 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
     } {
       Fl_Group {} {open
         xywh {0 0 385 520}
@@ -814,8 +814,8 @@ ueber_html->value(getUeberHtml().c_str());}
   }
   Function {run()} {open
   } {
-    code {DBG_PROG_ENDE
-  Fl::run();} {}
+    code DBG_PROG_START {}
+    code {DBG_PROG_ENDE;  Fl::run();} {}
   }
   Function {open(std::vector<std::string> dateinamen)} {open return_type {std::vector<std::string>}
   } {
@@ -857,8 +857,7 @@ ueber_html->value(getUeberHtml().c_str());}
   }
 
   DBG_PROG_ENDE
-  return dateinamen;} {selected
-    }
+  return dateinamen;} {}
   }
   Function {quit(void)} {} {
     code DBG_PROG_START {}

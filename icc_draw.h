@@ -34,7 +34,8 @@
 
 void draw_kurve    (int X, int Y, int W, int H,
                     std::vector<std::string>          texte,
-                    std::vector<std::vector<double> > kurven);
+                    std::vector<std::vector<double> > kurven,
+                    bool tauschen);
 
 void draw_cie_shoe (int X, int Y, int W, int H,
                     std::vector<std::string> texte,
