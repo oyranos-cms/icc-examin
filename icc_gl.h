@@ -59,6 +59,8 @@ class GL_Ansicht : public Fl_Gl_Window /*, public Fl_Slot*/ {
   void erstelleGLListen_();
   void textGarnieren_();
   void garnieren_();
+  void auffrischen_();      //!< Erneuerung ohne init()
+
   // Menüs
   Fl_Menu_Button  *menue_;
   Fl_Menu_Button  *menue_button_;
@@ -149,7 +151,6 @@ public:
 
   // Darstellungsfunktionen
   void setzePerspektive();  //!< Perspektive aktualisieren
-  void auffrischen();       //!< Erneuerung ohne init()
   void tabelleAuffrischen();//!< glCompile für Tabelle
   void punkteAuffrischen(); //!< glCompile für Punkte
   void netzeAuffrischen();  //!< Sortieren und Zeichnen

@@ -175,7 +175,7 @@ GL_Ansicht::~GL_Ansicht()
     glListen[HELFER] = 0;
   }
   if (glListen[PUNKTE]) {
-    DBG_PROG_S( "delete glListe " << glListen[HELFER] )
+    DBG_PROG_S( "delete glListe " << glListen[PUNKTE] )
     glDeleteLists (glListen[PUNKTE],1);
     glListen[PUNKTE] = 0;
   }
@@ -357,7 +357,7 @@ GL_Ansicht::bewegen (bool setze)
 }
 
 void
-GL_Ansicht::auffrischen()
+GL_Ansicht::auffrischen_()
 {
   DBG_PROG_START
   menueErneuern_();
@@ -394,7 +394,7 @@ GL_Ansicht::draw()
   if(!valid()) {
     GLinit_();  DBG_PROG
     fensterForm();
-    auffrischen();
+    auffrischen_();
   }
 
   // aktualisiere Schatten
@@ -624,7 +624,7 @@ GL_Ansicht::tastatur(int e)
       case '-':
         if(punktgroesse > 1) {
           --punktgroesse;
-          auffrischen();
+          auffrischen_();
           redraw();
         }
         DBG_PROG_V( Fl::event_key() <<" "<< punktgroesse )
@@ -632,7 +632,7 @@ GL_Ansicht::tastatur(int e)
       case '+':
         if(punktgroesse < 21) {
           ++punktgroesse;
-          auffrischen();
+          auffrischen_();
           redraw();
         }
         DBG_PROG_V( Fl::event_key()  <<" "<< punktgroesse )
@@ -866,10 +866,13 @@ GL_Ansicht::garnieren_()
 
   DBG_PROG_V( id() )
   // Pfeile und Text
+DBG
   if (glListen[HELFER]) {
     glDeleteLists (glListen[HELFER], 1);
   }
-  glListen[HELFER] = glGenLists(1);
+DBG
+  GL_Ansicht::glListen[HELFER] = glGenLists(1);
+DBG
   glNewList( glListen[HELFER], GL_COMPILE); DBG_PROG_V( glListen[HELFER] )
     GLfloat farbe[] =   { pfeilfarbe[0],pfeilfarbe[1],pfeilfarbe[2], 1.0 };
     glLineWidth(strich3*strichmult);
@@ -1928,7 +1931,7 @@ GL_Ansicht::zeichnen()
   if(!valid_) {
     GLinit_();  DBG_PROG
     fensterForm();
-    auffrischen();
+    auffrischen_();
     valid_ = true;
   }
 

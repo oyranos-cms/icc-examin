@@ -181,7 +181,6 @@ ICCexamin::oeffnenThread_ ()
         texte.push_back(_("CIE *b"));
         icc_betrachter->DD_farbraum->achsNamen(texte);
         icc_betrachter->DD_farbraum->punkte_clear();
-        icc_betrachter->DD_farbraum->auffrischen();
         gamutAnsichtZeigen();
         icc_examin_ns::unlock(this, __FILE__,__LINE__);
       } else
@@ -189,7 +188,6 @@ ICCexamin::oeffnenThread_ ()
     } else {
       DBG_PROG
       //farbraum();
-      //icc_betrachter->DD_farbraum->auffrischen();
     }
 
     fortschrittThreaded( 2./3.+ 2./6. );

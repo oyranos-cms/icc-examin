@@ -370,6 +370,7 @@ $(POT_FILE):	$(ALL_SOURCEFILES)
                  $(POT_FILE) || \
 	        echo -e "\c"; \
 	done;
+	echo $(POT_FILE) fertig
 
 
 clean:	unbundle unpkg
