@@ -38,6 +38,10 @@ Voraussetzungen:
     http://www.fltk.org
 
 
+Konfiguration:
+
+    für osX in "makefile": #APPLE = 1  auskommentieren
+
 Zusätze:
 
     Profile gibt es zum Beispiel auf der Adobe Webseite:

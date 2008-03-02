@@ -1,5 +1,5 @@
 # data file for the Fltk User Interface Designer (fluid)
-version 1.0104 
+version 1.0200 
 header_name {.h} 
 code_name {.cxx}
 decl {\#define DEBUG} {public
@@ -30,13 +30,14 @@ decl {\#include <FL/Fl_Box.H>} {public
 } 
 
 decl {\#include <FL/Fl_File_Chooser.H> 
+\#include <FLU/Flu_File_Chooser.h> 
 \#include <FL/Fl_Hold_Browser.H> 
 \#include <FL/Fl_File_Icon.H> 
 \#include <FL/Fl_Shared_Image.H> 
 \#include <FL/Fl_PNM_Image.H>} {public
 } 
 
-decl {Fl_File_Chooser *dateiwahl;} {} 
+decl {Flu_File_Chooser *dateiwahl;} {} 
 
 decl {char *statlabel;
  std::string filename_alt;
@@ -76,18 +77,20 @@ decl {ICCprofile profile;} {public
 
 decl {/* */ int level_PROG = -1;} {} 
 
-Function {dateiwahl_cb(Fl_File_Chooser *f,void *data)} {open private
+Function {dateiwahl_cb(Fl_Widget *f,void *data)} {open private
 } {
   code {DBG_PROG_START
 
   const char *filename;
 
+  Flu_File_Chooser* fl = (Flu_File_Chooser*)f;
+
   DBG_NUM_V( data )
-  filename = f->value();
+  filename = fl->value();
   
 
-  if (f->count() && f->value(0) && dateiwahl->preview()) {
-    filename_alt = f->value(0);
+  if (fl->count() && fl->value(0) && dateiwahl->preview()) {
+    filename_alt = fl->value(0);
 
     DBG_NUM_V( filename )
     open(false);
@@ -104,7 +107,7 @@ Function {} {open C return_type int
   inspekt_topline = 0;} {}
   Fl_Window ueber {
     label {Über ICC examin} open
-    xywh {580 181 366 241} type Double resizable
+    xywh {585 202 366 241} type Double resizable
     code0 {o->hide();} non_modal visible
   } {
     Fl_Group {} {open
@@ -121,8 +124,8 @@ Function {} {open C return_type int
     }
   }
   Fl_Window details {
-    label {ICC Details} open selected
-    xywh {847 388 385 520} type Double box NO_BOX color 53
+    label {ICC Details} open
+    xywh {852 409 385 520} type Double box NO_BOX color 53
     code0 {filename_alt = ".";}
     code1 {DBG_PROG
 
@@ -330,12 +333,13 @@ ueber_html->value(getUeberHtml().c_str());}
   Fl::scheme(NULL);
   Fl_File_Icon::load_system_icons();
 
-  dateiwahl = new Fl_File_Chooser(filename_alt.c_str(), "ICC Farbprofile (*.[I,i][C,c][M,m,C,c])", Fl_File_Chooser::SINGLE, "Wähle ICC Profil?");
+  dateiwahl = new Flu_File_Chooser(filename_alt.c_str(), "ICC Farbprofile (*.[I,i][C,c][M,m,C,c])", Fl_File_Chooser::SINGLE, "Wähle ICC Profil?");
   dateiwahl->callback(dateiwahl_cb);
-  dateiwahl->preview_label = _("Vorschau");
+  //dateiwahl->preview_label = _("Vorschau");
 
   if (argc > 1)
-    open (false);} {}
+    open (false);} {selected
+  }
   code DBG_PROG_ENDE {}
 } 
 

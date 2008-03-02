@@ -11,6 +11,7 @@ libdir		= ${exec_prefix}/lib
 mandir		= ${prefix}/man
 srcdir		= .
 
+#APPLE = 1
 
 CXXFLAGS=$(OPTS) $(INCL)
 INCL=-I$(includedir) -I/usr/X11R6/include -I./
@@ -18,11 +19,17 @@ INCL=-I$(includedir) -I/usr/X11R6/include -I./
 VRML_LIBS=$(FLTK_GL_LIBS) -lGL -lopenvrml -lopenvrml-gl -lpng -ljpeg
 X11_LIBS=-L/usr/X11R6/lib -lXinerama -lXft
 FLTK_LIBS=`fltk-config --use-images --use-gl --use-glut --ldstaticflags`
+FLU_LIBS=`flu-config --ldstaticflags`
 FLTK_GL_LIBS=-lfltk_gl
+ifdef APPLE
+  GLUT = -framework GLUT -lobjc
+else
+  GLUT = -lglut
+endif
 LDLIBS = -L$(libdir) -L./ $(FLTK_LIBS) \
-	$(X11_LIBS) -llcms -lglut
-#	$(VRML_LIBS) \
-# -llprof
+	$(X11_LIBS) -llcms $(GLUT) $(FLU_LIBS)
+
+#	$(VRML_LIBS)
 
 CPP_HEADERS = \
 	agviewer.h \
@@ -63,7 +70,9 @@ OBJECTS = $(CPPFILES:.cpp=.o) $(CXXFILES:.cxx=.o)
 TARGET  = icc_examin
 
 REZ     = /Developer/Tools/Rez -t APPL -o $(TARGET) /opt/local/include/FL/mac.r
-APPLE   = #$(REZ)
+ifdef APPLE
+APPLE   = $(REZ)
+endif
 
 topdir  = ..
 dir     = Entwickeln
