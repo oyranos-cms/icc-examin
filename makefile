@@ -40,8 +40,8 @@ DL = --ldflags # --ldstaticflags
 X_CPPFILES = icc_helfer_x.cpp
 OSX_CPPFILES = icc_helfer_osx.cpp
 FLTK_CPPFILES = icc_helfer_fltk.cpp
-I18N_CXXFILES = fl_i18n.cxx fl_i18n_fl.cxx
-I18N_HEADERS = fl_i18n.H
+I18N_CXXFILES = #fl_i18n.cxx fl_i18n_fl.cxx
+I18N_HEADERS = #fl_i18n.H
 MSGFMT = msgfmt -c --statistics
 RPMARCH = `rpmbuild --showrc | awk '/^build arch/ {print $$4}'`
 
@@ -105,7 +105,8 @@ endif
 LIBSONAMEFULL = lib$(TARGET)$(SO).$(VERSION_L)$(LIBEXT)
 LIBSONAME = lib$(TARGET)$(SO).$(VERSION_A)$(LIBEXT)
 LIBSO = lib$(TARGET)$(SO)$(LIBEXT)
-LIBNAME = lib$(TARGET).a
+LIBNAME = 
+LIBFL_I18N = fl_i18n/libfl_i18n.a
 
 ifdef FLTK
   TOOLKIT_FILES = $(FLTK_CPPFILES)
@@ -126,7 +127,7 @@ CFLAGS = $(OPTS) $(ALL_INCL)
 
 LDLIBS = -L$(libdir) -L./ $(FLU_FLTK_LIBS) \
 	$(X11_LIBS) -llcms -L/lib $(OYRANOS_LIBS) $(LCMS_LIBS) \
-	$(FTGL_LIBS) $(I18N_LIB) $(DBG_LIBS) $(LIBNAME)
+	$(FTGL_LIBS) $(I18N_LIB) $(DBG_LIBS) $(LIBNAME) $(LIBFL_I18N)
 
 CPP_HEADERS = \
 	agviewer.h \
@@ -290,7 +291,7 @@ release:	icc_alles.o
 
 dynamic:	$(BINTARGET)
 
-$(BINTARGET):	$(BASE) $(OBJECTS) $(LINGUAS_SRC) $(I18N_OBJECTS) $(LIBNAME) #$(LIBSONAMEFULL)
+$(BINTARGET):	$(BASE) $(OBJECTS) $(LINGUAS_SRC) $(I18N_OBJECTS) $(LIBNAME) $(LIBFL_I18N)
 	echo Verknuepfen $@ ... $(OBJECTS)
 	$(CXX) $(OPTS) -o $(BINTARGET) \
 	$(OBJECTS) \
@@ -311,6 +312,9 @@ $(LIBNAME):	$(I18N_OBJECTS)
 	echo Verknuepfen $@ ...
 	$(COLLECT) $(LIBNAME) $(I18N_OBJECTS)
 	$(RANLIB) $(LIBNAME)
+
+$(LIBFL_I18N):
+	(cd fl_i18n/; make)
 
 static:	$(BINTARGET)
 	echo Verknuepfen $@ ...
@@ -433,16 +437,8 @@ EXEEXT		=
 	msgfmt $<
 
 tgz:
-	mkdir Entwickeln
-	$(COPY) -R \
-	$(ALL_FILES) \
-	Entwickeln
-	mkdir Entwickeln/po
-	$(COPY) $(POT_FILE) Entwickeln/po
-	for ling in $(LINGUAS); do \
-	  test -f po/$${ling}.po \
-        && $(COPY) po/$${ling}.po Entwickeln/po/; \
-	done;
+	make DESTDIR=Entwickeln copy_files
+	(cd fl_i18n; make DESTDIR=../Entwickeln/fl_i18n copy_files)
 	tar cf - Entwickeln/ \
 	| gzip > $(TARGET)_$(mtime).tgz
 	test -d Entwickeln && \
@@ -451,23 +447,26 @@ tgz:
 	test -d ../Archiv && mv -v $(TARGET)_*.tgz ../Archiv
 
 targz:
-	mkdir $(TARGET)_$(VERSION)
-	$(COPY) -R \
-	$(ALL_FILES) \
-	$(TARGET)_$(VERSION)
-	mkdir $(TARGET)_$(VERSION)/po
-	$(COPY) $(POT_FILE) $(TARGET)_$(VERSION)/po
-	for ling in $(LINGUAS); do \
-      echo $${ling}; \
-	  test -f po/$${ling}.po \
-        && $(COPY) po/$${ling}.po $(TARGET)_$(VERSION)/po/; \
-	done;
+	make DESTDIR=$(TARGET)_$(VERSION) copy_files
 	tar cf - $(TARGET)_$(VERSION)/ \
 	| gzip > $(TARGET)_$(mtime).tgz
 	test -d $(TARGET)_$(VERSION) && \
 	test `pwd` != `(cd $(TARGET)_$(VERSION); pwd)` && \
 	$(RM) -R $(TARGET)_$(VERSION) 
 	test -d ../Archiv && mv -v $(TARGET)_*.tgz ../Archiv || echo no copy
+
+copy_files:
+	mkdir $(DESTDIR)
+	$(COPY) -R \
+	$(ALL_FILES) \
+	$(DESTDIR)
+	mkdir $(DESTDIR)/po
+	$(COPY) $(POT_FILE) $(DESTDIR)/po
+	for ling in $(LINGUAS); do \
+	  test -f po/$${ling}.po \
+        && $(COPY) po/$${ling}.po $(DESTDIR)/po/; \
+	done;
+
 
 dist: $(BASE) targz
 	test -f && $(COPY) ../Archiv/$(TARGET)_$(mtime).tgz $(TARGET)_$(VERSION).tar.gz || $(COPY) $(TARGET)_$(mtime).tgz $(TARGET)_$(VERSION).tar.gz

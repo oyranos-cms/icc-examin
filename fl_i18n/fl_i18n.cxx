@@ -33,15 +33,21 @@
 #include <cstdlib>
 #include <cstring>
 
+/* include pthread.h here for threads support */
+#ifdef USE_THREADS
+#include "threads.h"
+#endif
 
 #ifdef __APPLE__
 #include <CoreFoundation/CoreFoundation.h>
 #endif
 
+
+/* The following macros belong to Kai-Uwe's debug environment. */
 #ifdef DEBUG
 #include "icc_utils.h"
 #else
-extern int icc_debug;
+/*extern int icc_debug;*/
 #endif
 #ifndef DBG_PROG_START
 #define DBG_PROG_START
@@ -59,12 +65,13 @@ extern int icc_debug;
 #define DBG_PROG_ENDE
 #endif
 
+
 #define TEXTLEN 48
 
 #ifdef USE_GETTEXT
 void
 fl_set_codeset_    ( const char* lang, const char* codeset_,
-                     char* codeset, char* locale,
+                     char* locale, char* codeset,
                      int set_zero_locale )
 {
     if( strlen(locale) )
@@ -79,7 +86,8 @@ fl_set_codeset_    ( const char* lang, const char* codeset_,
         if((pos = strrchr(locale,'.')) != 0)
         {
           *pos = 0; DBG_PROG_V( locale )
-        }
+        } else
+          pos = & locale[strlen(locale)];
         snprintf(pos, TEXTLEN-strlen(locale), ".%s",codeset);
 
         DBG_PROG_V( locale )
@@ -130,7 +138,7 @@ fl_search_locale_path (int n_places, const char **locale_paths,
 }
 
 void
-fl_initialise_locale( const char *locale_path )
+fl_initialise_locale( const char *domain, const char *locale_path )
 {
 #ifdef USE_GETTEXT
   DBG_PROG_START
@@ -182,33 +190,6 @@ fl_initialise_locale( const char *locale_path )
 
   char codeset[24] = "ISO-8859-1";
 
-#if 0
-#   define SetCodesetForLocale( lang, codeset_ ) \
-    if( strlen(locale) ) { \
-      char* pos = strstr(locale, lang); \
-      if(pos != 0) \
-      { \
-        /* 1 a. select an appropriate charset (needed for non UTF-8 fltk/gtk1)*/ \
-        sprintf (codeset, codeset_); DBG_PROG_V( locale <<" "<< strrchr(locale,'.')) \
-        \
-          /* merge charset with locale string */ \
-        if((pos = strrchr(locale,'.')) != 0) \
-        { \
-          *pos = 0; DBG_PROG_V( locale ) \
-        } \
-        snprintf(pos, TEXTLEN-strlen(locale), ".%s",codeset); \
-        \
-        DBG_PROG_V( locale ) \
-        \
-        /* 1b. set correct environment variable LANG */ \
-        /*setenv("LANG", locale.c_str(), 1);*/ /* setenv is not standard C */ \
-        \
-        /* 1c. set the locale info after LANG */ \
-        if(set_zero_locale) \
-          snprintf( locale, TEXTLEN, setlocale (LC_MESSAGES, "")); DBG_PROG_V( locale )\
-      } \
-    }
-#endif
 
       // add more LINGUAS here
       // borrowed from http://czyborra.com/charsets/iso8859.html
@@ -304,18 +285,18 @@ fl_initialise_locale( const char *locale_path )
     DBG_PROG_S( locale );
 
   // 3. our translations
-  textdomain ("icc_examin");
+  textdomain (domain);
 
   // 4. where to find the MO file? select an appropriate directory
   char* bdtd = 0;
-  bdtd = bindtextdomain ("icc_examin", locale_path);
+  bdtd = bindtextdomain (domain, locale_path);
   DBG_PROG_S( _("try locale in ") << bdtd );
 
   // 5. set our charset
-  char* cs = bind_textdomain_codeset("icc_examin", codeset);
+  char* cs = bind_textdomain_codeset(domain, codeset);
 
   if(cs)
-    DBG_PROG_S( _("set codeset for \"icc_examin\" to ") << cs );
+    DBG_PROG_S( _("set codeset for") << domain << " to " << cs );
 
   // gettext initialisation end
 
@@ -324,6 +305,52 @@ fl_initialise_locale( const char *locale_path )
 }
 
 
+#include <FL/Fl_Menu_Item.H>
+void
+fl_translate_menue( Fl_Menu_Item* menueleiste )
+{
+#ifdef USE_GETTEXT
+  DBG_PROG_START
+  int size = menueleiste->size();
+  DBG_PROG_V( size )
+  for(int i = 0; i < size ; ++i) {
+    const char* text = menueleiste[i].label();
+    menueleiste[i].label( _(text) );
+    DBG_PROG_V( i )
+    if(text)
+      DBG_PROG_V( text <<" "<< _(text) );
+  }
+#endif
+}
+
+#include <Fl/Fl_File_Chooser.H>
+void
+fl_translate_file_chooser( )
+{
+#ifdef USE_GETTEXT
+  DBG_PROG_START
+    Fl_File_Chooser::add_favorites_label = _("Add to Favorites");
+    Fl_File_Chooser::all_files_label = _("All Files (*)");
+    Fl_File_Chooser::custom_filter_label = _("Custom Filter");
+    Fl_File_Chooser::existing_file_label = _("Please choose an existing file!");
+    Fl_File_Chooser::favorites_label = _("Favorites");
+    Fl_File_Chooser::filename_label = _("Filename");
+    Fl_File_Chooser::manage_favorites_label = _("Manage Favorites");
+#   ifdef WIN32
+    Fl_File_Chooser::filesystems_label = _("My Computer");
+#   else
+    Fl_File_Chooser::filesystems_label = _("Filesystems");
+#   endif
+    Fl_File_Chooser::new_directory_label = _("New Directory?");
+    Fl_File_Chooser::preview_label = _("Preview");
+#   if (FL_MAJOR_VERSION == 1 && FL_MINOR_VERSION >= 1 && FL_PATCH_VERSION >= 7)
+    Fl_File_Chooser::save_label = _("Save"); // since 1.1.7?
+#   endif
+    Fl_File_Chooser::show_label = _("Show:");
+  DBG_PROG_ENDE
+#endif
+}
+
 const char*
 threadGettext( const char* text)
 {
@@ -331,18 +358,18 @@ threadGettext( const char* text)
 #ifdef USE_GETTEXT
 # ifdef HAVE_PTHREAD_H
   static pthread_mutex_t translation_mutex_         = PTHREAD_MUTEX_INITIALIZER;
-  static Fl_Thread       translation_mutex_thread_  = (Fl_Thread)THREAD_HAUPT;
+  static Fl_Thread       translation_mutex_thread_  = (Fl_Thread)pthread_self();
   static int             translation_mutex_threads_ = 0;
   // im selben Zweig gesperrten Rat ausschliesen
-  if( translation_mutex_thread_ != wandelThreadId( pthread_self() ) ||
+  if( translation_mutex_thread_ != pthread_self() ||
       translation_mutex_threads_ == 0 )
     // Warten bis der Rat von einem anderen Zweig freigegeben wird
     while (pthread_mutex_trylock( &translation_mutex_ )) {
-      icc_examin_ns::sleep(0.001);
+      Fl::wait(0.001);
     }
   translation_mutex_threads_++ ;
   if(translation_mutex_threads_ == 1)
-     translation_mutex_thread_ = wandelThreadId( pthread_self() );
+     translation_mutex_thread_ = pthread_self() ;
 
   translation = gettext( text );
 

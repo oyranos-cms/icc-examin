@@ -38,7 +38,7 @@
 #include "icc_info.h"
 #include "icc_kette.h"
 #include "icc_waehler.h"
-#include "fl_i18n.H"
+#include "fl_i18n/fl_i18n.H"
 
 #if APPLE
 #include <Carbon/Carbon.h>

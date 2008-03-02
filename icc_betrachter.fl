@@ -53,7 +53,7 @@ decl {\#include "icc_examin.h"} {public
 decl {\#include "icc_draw.h"
 \#include "icc_kette.h"
 \#include "icc_oyranos_extern.h"
-\#include "fl_i18n.H"} {} 
+\#include "fl_i18n/fl_i18n.H"} {} 
 
 decl {\#include "icc_profile.h"
 \#include "icc_utils.h"

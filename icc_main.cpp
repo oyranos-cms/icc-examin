@@ -30,7 +30,7 @@
 #include "icc_helfer.h"
 #include "icc_examin.h"
 #include "icc_kette.h"
-#include "fl_i18n.H"
+#include "fl_i18n/fl_i18n.H"
 
 //#include <FL/Fl.H>
 //#include <FL/Fl_Double_Window.H>
@@ -57,8 +57,10 @@ main (int argc, char** argv)
 
   const char *locale_paths[3] = {0,0,0};
   int is_path = -1;
+  int num_paths = 2;
 # if __APPLE__
   std::string bdr;
+  // RESOURCESPATH is set in the bundle by "Contents/MacOS/ICC Examin.sh"
   if(getenv("RESOURCESPATH")) {
     bdr = getenv("RESOURCESPATH");
     bdr += "/locale";
@@ -70,15 +72,41 @@ main (int argc, char** argv)
       locale_paths[0] = bdr.c_str();
   } 
   locale_paths[1] = LOCALEDIR;
-  locale_paths[2] = SRC_LOCALEDIR;
-  is_path = fl_search_locale_path (3, locale_paths, "de", "icc_examin");
+  locale_paths[2] = SRC_LOCALEDIR; ++num_paths;
 # else
   locale_paths[0] = LOCALEDIR;
-  locale_paths[1] = SRC_LOCALEDIR;
-  is_path = fl_search_locale_path (2, locale_paths, "de", "icc_examin");
+#ifdef WIN32
+#define DIR_SEPARATOR_C '\\'
+#define DIR_SEPARATOR "\\"
+#else
+#define DIR_SEPARATOR_C '/'
+#define DIR_SEPARATOR "/"
+#endif
+  DBG_NUM_V( argc <<" "<< argv[0] )
+  if (argc)
+  { const char *reloc_path = {"../share/locale"};
+    int len = (strlen(argv[0]) + strlen(reloc_path)) * 2;
+    char *path = (char*) malloc( len ); // small one time leak
+    char *text = (char*) malloc( len );
+    // whats the path for the executeable ?
+    snprintf (text, len-1, argv[0]);
+    if (strrchr(text, DIR_SEPARATOR_C)) {
+      char *tmp = strrchr(text, DIR_SEPARATOR_C);
+      *tmp = 0;
+    } else
+      sprintf( text,"");
+    snprintf (path, len-1, "%s%s%s",text,DIR_SEPARATOR,reloc_path);
+    locale_paths[1] = path;
+    locale_paths[2] = SRC_LOCALEDIR; ++num_paths;
+    DBG_NUM_V( path );
+    if (text) free (text);
+  } else
+    locale_paths[1] = SRC_LOCALEDIR;
 # endif
+  is_path = fl_search_locale_path (num_paths, locale_paths, "de", "icc_examin");
+
   if(is_path >= 0) {
-    fl_initialise_locale ( locale_paths[is_path] );
+    fl_initialise_locale ( "icc_examin", locale_paths[is_path] );
     DBG_NUM_S( "locale gefunden in: " << locale_paths[is_path] )
   }
 

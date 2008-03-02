@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2006-02-22 11:28+0100\n"
+"POT-Creation-Date: 2006-03-06 14:11+0100\n"
 "PO-Revision-Date: 2005-08-13 17:35+0200\n"
 "Last-Translator: Kai-Uwe Behrmann\n"
 "Language-Team:  <eo@li.org>\n"
@@ -302,7 +302,7 @@ msgstr ""
 msgid "Stop loading "
 msgstr ""
 
-#: icc_examin_io.cpp:414 fl_i18n_fl.cxx:90 icc_betrachter.cxx:474
+#: icc_examin_io.cpp:414 icc_betrachter.cxx:474
 msgid "Filename"
 msgstr ""
 
@@ -468,7 +468,7 @@ msgstr ""
 msgid "Spektral line"
 msgstr "spektra linio"
 
-#: icc_gl.cpp:1865 icc_betrachter.cxx:726
+#: icc_gl.cpp:1865 icc_betrachter.cxx:725
 msgid "Texts"
 msgstr ""
 
@@ -1764,74 +1764,6 @@ msgstr ""
 msgid "Kein Gammagradient Information erhalten"
 msgstr ""
 
-#: fl_i18n.cxx:154
-msgid "osX locale obtained: "
-msgstr ""
-
-#: fl_i18n.cxx:157
-msgid "osX locale not obtained"
-msgstr ""
-
-#: fl_i18n.cxx:289
-msgid "try to set LANG"
-msgstr ""
-
-#: fl_i18n.cxx:312
-msgid "try locale in "
-msgstr ""
-
-#: fl_i18n.cxx:318
-msgid "set codeset for \"icc_examin\" to "
-msgstr ""
-
-#: fl_i18n_fl.cxx:85
-msgid "Add to Favorites"
-msgstr ""
-
-#: fl_i18n_fl.cxx:86 icc_betrachter.cxx:481
-msgid "All Files (*)"
-msgstr ""
-
-#: fl_i18n_fl.cxx:87
-msgid "Custom Filter"
-msgstr ""
-
-#: fl_i18n_fl.cxx:88
-msgid "Please choose an existing file!"
-msgstr ""
-
-#: fl_i18n_fl.cxx:89 icc_betrachter.cxx:455
-msgid "Favorites"
-msgstr ""
-
-#: fl_i18n_fl.cxx:91
-msgid "Manage Favorites"
-msgstr ""
-
-#: fl_i18n_fl.cxx:93
-msgid "My Computer"
-msgstr ""
-
-#: fl_i18n_fl.cxx:95
-msgid "Filesystems"
-msgstr ""
-
-#: fl_i18n_fl.cxx:97
-msgid "New Directory?"
-msgstr ""
-
-#: fl_i18n_fl.cxx:98
-msgid "Preview"
-msgstr ""
-
-#: fl_i18n_fl.cxx:100
-msgid "Save"
-msgstr ""
-
-#: fl_i18n_fl.cxx:102
-msgid "Show:"
-msgstr ""
-
 #: icc_betrachter.cxx:108
 msgid "lineare entrance curve with 256 steps"
 msgstr ""
@@ -1904,6 +1836,10 @@ msgstr ""
 msgid "About"
 msgstr ""
 
+#: icc_betrachter.cxx:455
+msgid "Favorites"
+msgstr ""
+
 #: icc_betrachter.cxx:456
 msgid "Home"
 msgstr ""
@@ -1956,7 +1892,7 @@ msgstr ""
 msgid "RAM Disk"
 msgstr ""
 
-#: icc_betrachter.cxx:475 icc_betrachter.cxx:554
+#: icc_betrachter.cxx:475 icc_betrachter.cxx:553
 msgid "Yes"
 msgstr ""
 
@@ -1974,6 +1910,10 @@ msgstr ""
 
 #: icc_betrachter.cxx:479
 msgid "File Types"
+msgstr ""
+
+#: icc_betrachter.cxx:481
+msgid "All Files (*)"
 msgstr ""
 
 #: icc_betrachter.cxx:484
@@ -2070,77 +2010,77 @@ msgstr ""
 msgid "Links"
 msgstr ""
 
-#: icc_betrachter.cxx:564
+#: icc_betrachter.cxx:563
 msgid "Grafic Card Gamma Table"
 msgstr ""
 
-#: icc_betrachter.cxx:580
+#: icc_betrachter.cxx:579
 msgid "Set"
 msgstr ""
 
-#: icc_betrachter.cxx:581
+#: icc_betrachter.cxx:580
 msgid ""
 "Set the current profile as monitor profile and upload vcgt tag to the video "
 "card"
 msgstr ""
 
-#: icc_betrachter.cxx:586
+#: icc_betrachter.cxx:585
 msgid "Reset"
 msgstr ""
 
-#: icc_betrachter.cxx:587
+#: icc_betrachter.cxx:586
 msgid "reset to standard gamma"
 msgstr ""
 
-#: icc_betrachter.cxx:591
+#: icc_betrachter.cxx:590
 msgid "Load"
 msgstr ""
 
-#: icc_betrachter.cxx:592
+#: icc_betrachter.cxx:591
 msgid "Load the current monitor profile"
 msgstr ""
 
-#: icc_betrachter.cxx:596 fl_oyranos.cxx:36
+#: icc_betrachter.cxx:595 fl_oyranos.cxx:36
 msgid "Refresh"
 msgstr ""
 
-#: icc_betrachter.cxx:597
+#: icc_betrachter.cxx:596
 msgid "refresh gamma table from video card"
 msgstr ""
 
-#: icc_betrachter.cxx:601
+#: icc_betrachter.cxx:600
 msgid "Close"
 msgstr ""
 
-#: icc_betrachter.cxx:610
+#: icc_betrachter.cxx:609
 msgid "ICC Examin"
 msgstr ""
 
-#: icc_betrachter.cxx:636
+#: icc_betrachter.cxx:635
 msgid "Inspect"
 msgstr ""
 
-#: icc_betrachter.cxx:641
+#: icc_betrachter.cxx:640
 msgid "Tags"
 msgstr ""
 
-#: icc_betrachter.cxx:642
+#: icc_betrachter.cxx:641
 msgid "Choose one profile tag"
 msgstr ""
 
-#: icc_betrachter.cxx:659
+#: icc_betrachter.cxx:658
 msgid "Chain selection"
 msgstr ""
 
-#: icc_betrachter.cxx:660
+#: icc_betrachter.cxx:659
 msgid "Choose a attribute"
 msgstr ""
 
-#: icc_betrachter.cxx:686
+#: icc_betrachter.cxx:685
 msgid "Chain -texts"
 msgstr ""
 
-#: icc_betrachter.cxx:749
+#: icc_betrachter.cxx:748
 msgid "Loading .."
 msgstr ""
 
