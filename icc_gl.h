@@ -43,6 +43,7 @@ class Fl_Menu_Button;
 
 class GL_Ansicht : public Fl_Gl_Window , public Fl_Slot {
   // Datenhaltung
+    // Position: Farbe1, Farbe2, Farbe3, Farbkanal Nr., Wert
   std::vector<std::vector<std::vector<std::vector<double> > > > tabelle_;
   std::vector<std::string>nach_farb_namen_;
   std::vector<std::string>von_farb_namen_;

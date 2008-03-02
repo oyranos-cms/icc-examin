@@ -491,6 +491,9 @@ GL_Ansicht::garnieren_()
       FARBE(textfarbe[0],textfarbe[1],textfarbe[2])
       if (nach_farb_namen_.size())
       {
+        // Kanalauswahl korrigieren
+        if(tabelle_[0][0].size() <= kanal)
+          kanal = tabelle_[0][0][0].size()-1;
         ptr = (char*) nach_farb_namen_[kanal].c_str();
         sprintf (&text[0], ptr);
         //ZeichneText(GLUT_STROKE_ROMAN,&text[0])
