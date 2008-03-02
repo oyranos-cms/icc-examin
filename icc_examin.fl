@@ -48,7 +48,8 @@ decl {char *statlabel;
 decl {class TagDrawings;
 class TagBrowser;
 class TagTexts;
-class MftChoice;} {public
+class MftChoice;
+class GL_Ansicht;} {public
 } 
 
 decl {\#define _(text) text} {public
@@ -60,6 +61,8 @@ decl {\#include "icc_profile.h"
 \#include "icc_utils.h"
 \#include "icc_profilierer.h"} {public
 } 
+
+decl {\#include "agviewer.h"} {} 
 
 decl {ICCprofile profile;} {public
 } 
@@ -74,7 +77,7 @@ Function {} {open C return_type int
   inspekt_topline = 0;} {}
   Fl_Window details {
     label {ICC Details} open
-    xywh {332 410 385 515} type Double box NO_BOX color 53
+    xywh {467 391 385 515} type Double box NO_BOX color 53
     code1 {DBG_PROG
     if (argc>1) {
 
@@ -200,17 +203,18 @@ matrix.saveProfileToFile("/tmp/icc_examin_test.icc");}
         Fl_Group ansichtsgruppe {open
           xywh {0 160 385 335}
         } {
-          Fl_Group tag_3D {open
+          Fl_Group tag_3D {
             xywh {0 160 385 335}
             code0 {o->hide();}
           } {}
-          Fl_Group tabellengruppe {
+          Fl_Group tabellengruppe {open
             xywh {0 160 385 335}
           } {
             Fl_Choice mft_choice {
               label {Wählen Sie ein Kettenmerkmal}
-              callback {o->auswahl_cb();} open
+              callback {o->auswahl_cb();} open selected
               xywh {0 160 385 25} box NO_BOX down_box BORDER_BOX
+              code0 {w->show();}
               class MftChoice
             } {}
             Fl_Box mft_viewer {
@@ -224,6 +228,7 @@ matrix.saveProfileToFile("/tmp/icc_examin_test.icc");}
             }
             Fl_Box mft_gl {
               xywh {0 185 385 310}
+              class GL_Ansicht
             }
           }
           Fl_Box tag_viewer {
@@ -343,8 +348,7 @@ Function {open(int interaktiv)} {open return_type {std::string}
   code DBG_PROG_ENDE {}
 } 
 
-Function {quit(void)} {open
-} {
+Function {quit(void)} {} {
   code DBG_PROG_START {}
   code {/*Fl::remove_timeout((void (*)(void *))timeIT, (void *)viewer);
   delete viewer;
@@ -355,7 +359,7 @@ Function {quit(void)} {open
   code DBG_PROG_ENDE {}
 } 
 
-Function {icc_read_info(char* filename)} {open return_type {char*}
+Function {icc_read_info(char* filename)} {return_type {char*}
 } {
   code DBG_PROG_START {}
   code {char systemBefehl[1024];
@@ -370,7 +374,7 @@ Function {icc_read_info(char* filename)} {open return_type {char*}
   code DBG_PROG_ENDE {}
 } 
 
-class TagBrowser {open : {public Fl_Hold_Browser}
+class TagBrowser {: {public Fl_Hold_Browser}
 } {
   decl {int X; int Y; int W; int H; char* start_info; std::string selectedTagName;} {}
   Function {TagBrowser(int X,int Y,int W,int H,char* start_info) : Fl_Hold_Browser(X,Y,W,H,start_info), X(X), Y(Y), W(W), H(H)} {} {}
@@ -508,7 +512,7 @@ class TagBrowser {open : {public Fl_Hold_Browser}
   }
 } 
 
-class TagTexts {open : {public Fl_Hold_Browser}
+class TagTexts {: {public Fl_Hold_Browser}
 } {
   decl {int X; int Y; int W; int H; char* start_info;} {}
   Function {TagTexts(int X,int Y,int W,int H,char* start_info) : Fl_Hold_Browser(X,Y,W,H,start_info), X(X), Y(Y), W(W), H(H)} {open
@@ -602,7 +606,7 @@ class TagDrawings {: {public Fl_Widget}
 
 decl {\#include <FL/fl_draw.H>} {} 
 
-class MftChoice {: {public Fl_Choice}
+class MftChoice {open : {public Fl_Choice}
 } {
   decl {int X; int Y; int W; int H; char* start_info; char typ[5]; std::vector<std::string> Info; int gewaehlter_eintrag;} {}
   Function {MftChoice(int X,int Y,int W,int H,char* start_info) : Fl_Choice(X,Y,W,H,start_info), X(X), Y(Y), W(W), H(H)} {open
@@ -688,6 +692,9 @@ class MftChoice {: {public Fl_Choice}
     break;
   case 3: // 3D Tabelle
     DBG_PROG
+    mft_gl->hinein_kurven (
+                     profile.getTagCurves (tag_nummer, ICCtag::CURVE_IN),
+                     profile.getTagChannelNames (tag_nummer, ICCtag::CURVE_IN) ); DBG_PROG
     break;
   case 4: // Ausgangskurven
     mft_viewer->hinein_kurven (
@@ -701,7 +708,7 @@ class MftChoice {: {public Fl_Choice}
   }
 } 
 
-Function {d_haendler(void* o)} {open return_type {static void}
+Function {d_haendler(void* o)} {return_type {static void}
 } {
   code DBG_PROG_START {}
   code {Fl::remove_timeout( (void(*)(void*))d_haendler, 0 );
@@ -725,17 +732,17 @@ Function {zeig_mich(void* widget)} {open
   tabellengruppe->hide();
   mft_viewer->hide();
   mft_text->hide();
+  mft_gl->hide();
   
   tag_viewer->hide(); DBG_PROG
   tag_viewer->clear_visible(); DBG_PROG
   tag_text->hide();
   ((Fl_Widget*)widget)->parent()->show(); DBG_PROG
-  ((Fl_Widget*)widget)->show(); DBG_PROG} {selected
-  }
+  ((Fl_Widget*)widget)->show(); DBG_PROG} {}
   code DBG_PROG_ENDE {}
 } 
 
-Function {zeilenNachVector(std::string text)} {open return_type {std::vector<std::string>}
+Function {zeilenNachVector(std::string text)} {return_type {std::vector<std::string>}
 } {
   code DBG_PROG_START {}
   code {// fügt Zeilen aus einen Text in einen Vector
@@ -761,12 +768,21 @@ Function {zeilenNachVector(std::string text)} {open return_type {std::vector<std
   return texte;} {}
 } 
 
-class GL_Ansicht {: {public Fl_Widget}
+class GL_Ansicht {open : {public Fl_Widget}
 } {
   decl {int X; int Y; int W; int H; std::vector<std::string>texte; std::vector<double>punkte; std::vector<std::vector<double> >kurven;} {}
   decl {int wiederholen;} {public
   }
-  Function {GL_Ansicht(int X,int Y,int W,int H) : Fl_Widget(X,Y,W,H), X(X), Y(Y), W(W), H(H)} {} {}
+  Function {GL_Ansicht(int X,int Y,int W,int H) : Fl_Widget(X,Y,W,H), X(X), Y(Y), W(W), H(H)} {open
+  } {
+    code {details->begin();
+  glutInitWindowSize(X,Y);
+  glutInitWindowPosition(W,H);
+  glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH | GLUT_MULTISAMPLE);
+  glutCreateWindow("GL");
+  details->end();
+  details->resizable(glut_window);} {}
+  }
   Function {draw()} {open
   } {
     code DBG_PROG_START {}

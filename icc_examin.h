@@ -21,6 +21,7 @@ class TagDrawings;
 class TagBrowser;
 class TagTexts;
 class MftChoice;
+class GL_Ansicht;
 #define _(text) text
 #include "icc_profile.h"
 #include "icc_utils.h"
@@ -37,15 +38,15 @@ extern Fl_Help_View *inspekt_html;
 extern Fl_Tile *examin;
 extern TagBrowser *tag_browser;
 extern Fl_Group *ansichtsgruppe;
-extern Fl_Group *tag_3D;
 extern Fl_Group *tabellengruppe;
 extern MftChoice *mft_choice;
 extern TagDrawings *mft_viewer;
 extern TagTexts *mft_text;
-#include <FL/Fl_Box.H>
-extern Fl_Box *mft_gl;
+extern TagDrawings *mft_gl;
+extern Fl_Group *tag_3D;
 extern TagDrawings *tag_viewer;
 extern TagTexts *tag_text;
+#include <FL/Fl_Box.H>
 extern Fl_Box *stat;
 #include <FL/Fl_Progress.H>
 extern Fl_Progress *load_progress;
@@ -97,8 +98,9 @@ std::vector<std::string> zeilenNachVector(std::string text);
 class GL_Ansicht : public Fl_Widget {
   int X; int Y; int W; int H; std::vector<std::string>texte; std::vector<double>punkte; std::vector<std::vector<double> >kurven;
 public:
-  int wiederholen;
+  int wiederholen; bool first;
   GL_Ansicht(int X,int Y,int W,int H) ;
+  void init();
   void draw();
   void hinein_punkt(std::vector<double> vect, std::vector<std::string> txt);
   void hinein_kurven(std::vector<std::vector<double> >vect, std::vector<std::string> txt);

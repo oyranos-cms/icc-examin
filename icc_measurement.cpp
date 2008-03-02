@@ -481,6 +481,13 @@ ICCmeasurement::init_umrechnen                     (void)
                                     INTENT_ABSOLUTE_COLORIMETRIC,
                                     PRECALC|cmsFLAGS_WHITEBLACKCOMPENSATION);
     double RGB[3], sRGB[3], XYZ[3], Lab[3];
+    bool vcgt = false;
+    std::vector<std::vector<double> > vcgt_kurven;
+    if (_profil && _profil->hasTagName ("vcgt")) {
+      vcgt = true;
+      vcgt_kurven = _profil->getTagCurves( _profil->getTagByName("vcgt"),
+                                                                ICCtag::MATRIX);
+    }
 
     _RGB_MessFarben.resize(_nFelder);
     _RGB_ProfilFarben.resize(_nFelder);
@@ -505,9 +512,17 @@ ICCmeasurement::init_umrechnen                     (void)
         _RGB_MessFarben[i].B = sRGB[2];
 
         // Profilfarben
-        RGB[0] = _RGB_Satz[i].R;
-        RGB[1] = _RGB_Satz[i].G;
-        RGB[2] = _RGB_Satz[i].B;
+        if (!vcgt) {
+          RGB[0] = _RGB_Satz[i].R;
+          RGB[1] = _RGB_Satz[i].G;
+          RGB[2] = _RGB_Satz[i].B;
+        } else { // TODO für parametrische Kurven
+          DBG_NUM_V( _RGB_Satz[i].R <<" "<< vcgt_kurven[0][(int)(_RGB_Satz[i].R*255.0+0.5)] )
+          // TODO: wiese gibt es so grosse dE Abweichungen mit vcgt Tag?
+          RGB[0] = vcgt_kurven[0][(int)(_RGB_Satz[i].R*255.0+0.5)];
+          RGB[1] = vcgt_kurven[1][(int)(_RGB_Satz[i].G*255.0+0.5)];
+          RGB[2] = vcgt_kurven[2][(int)(_RGB_Satz[i].B*255.0+0.5)];
+        }
         cmsDoTransform (hRGBtoXYZ, &RGB[0], &XYZ[0], 1);
         _XYZ_Ergebnis[i].X = XYZ[0];
         _XYZ_Ergebnis[i].Y = XYZ[1];

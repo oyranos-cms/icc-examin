@@ -10,6 +10,7 @@ static char *statlabel;
   int inspekt_topline;
  int tag_nummer;
 #include "icc_draw.h"
+#include "agviewer.h"
 ICCprofile profile;
 /* */ int level_PROG = -1;
 
@@ -109,8 +110,6 @@ static void cb_tag_browser(TagBrowser* o, void*) {
 
 Fl_Group *ansichtsgruppe=(Fl_Group *)0;
 
-Fl_Group *tag_3D=(Fl_Group *)0;
-
 Fl_Group *tabellengruppe=(Fl_Group *)0;
 
 MftChoice *mft_choice=(MftChoice *)0;
@@ -123,7 +122,9 @@ TagDrawings *mft_viewer=(TagDrawings *)0;
 
 TagTexts *mft_text=(TagTexts *)0;
 
-Fl_Box *mft_gl=(Fl_Box *)0;
+TagDrawings *mft_gl=(TagDrawings *)0;
+
+Fl_Group *tag_3D=(Fl_Group *)0;
 
 TagDrawings *tag_viewer=(TagDrawings *)0;
 
@@ -139,7 +140,7 @@ int main(int argc, char **argv) {
   statlabel = (char*)calloc (sizeof (char), 1024);
   fullscreen = false;
   inspekt_topline = 0;
-  { Fl_Double_Window* o = details = new Fl_Double_Window(385, 515, "ICC Details");
+  { Fl_Double_Window* o = details = new Fl_Double_Window(385, 520, "ICC Details");
     w = o;
     o->box(FL_NO_BOX);
     o->color((Fl_Color)53);
@@ -173,10 +174,6 @@ int main(int argc, char **argv) {
           cout << lines << endl; DBG_PROG
         }
         { Fl_Group* o = ansichtsgruppe = new Fl_Group(0, 160, 385, 335);
-          { Fl_Group* o = tag_3D = new Fl_Group(0, 160, 385, 335);
-            o->hide();
-            o->end();
-          }
           { Fl_Group* o = tabellengruppe = new Fl_Group(0, 160, 385, 335);
             { MftChoice* o = mft_choice = new MftChoice(0, 160, 385, 25, "W\344hlen Sie ein Kettenmerkmal");
               o->box(FL_NO_BOX);
@@ -190,6 +187,7 @@ int main(int argc, char **argv) {
               o->callback((Fl_Callback*)cb_mft_choice);
               o->align(FL_ALIGN_LEFT);
               o->when(FL_WHEN_RELEASE);
+              w->show();
             }
             { TagDrawings* o = mft_viewer = new TagDrawings(0, 185, 385, 310);
               o->box(FL_NO_BOX);
@@ -201,6 +199,7 @@ int main(int argc, char **argv) {
               o->labelcolor(FL_BLACK);
               o->align(FL_ALIGN_CENTER);
               o->when(FL_WHEN_RELEASE);
+              o->show();
             }
             { TagTexts* o = mft_text = new TagTexts(0, 185, 385, 310, "Der Text");
               o->box(FL_NO_BOX);
@@ -213,7 +212,23 @@ int main(int argc, char **argv) {
               o->align(FL_ALIGN_BOTTOM|FL_ALIGN_INSIDE);
               o->when(FL_WHEN_RELEASE_ALWAYS);
             }
-            mft_gl = new Fl_Box(0, 185, 385, 310);
+            { TagDrawings* o = mft_gl = new TagDrawings(0, 185, 385, 310);
+              o->box(FL_NO_BOX);
+              o->color(FL_BACKGROUND_COLOR);
+              o->selection_color(FL_BACKGROUND_COLOR);
+              o->labeltype(FL_NORMAL_LABEL);
+              o->labelfont(0);
+              o->labelsize(14);
+              o->labelcolor(FL_BLACK);
+              o->align(FL_ALIGN_BOTTOM|FL_ALIGN_INSIDE);
+              o->when(FL_WHEN_RELEASE);
+              //o->first = true;
+            }
+            o->show();
+            o->end();
+          }
+          { Fl_Group* o = tag_3D = new Fl_Group(0, 160, 385, 335);
+            o->hide();
             o->end();
           }
           { TagDrawings* o = tag_viewer = new TagDrawings(0, 160, 385, 335);
@@ -244,13 +259,13 @@ int main(int argc, char **argv) {
         o->end();
         Fl_Group::current()->resizable(o);
       }
-      { Fl_Group* o = new Fl_Group(0, 494, 385, 25);
-        { Fl_Box* o = stat = new Fl_Box(0, 494, 385, 25, "No wrl file loaded.");
+      { Fl_Group* o = new Fl_Group(0, 495, 385, 25);
+        { Fl_Box* o = stat = new Fl_Box(0, 495, 385, 25, "No wrl file loaded.");
           o->box(FL_THIN_DOWN_BOX);
           o->color((Fl_Color)53);
           o->align(FL_ALIGN_LEFT|FL_ALIGN_INSIDE);
         }
-        { Fl_Progress* o = load_progress = new Fl_Progress(0, 494, 385, 25, "Laden ..");
+        { Fl_Progress* o = load_progress = new Fl_Progress(0, 495, 385, 25, "Laden ..");
           o->color((Fl_Color)53);
           o->hide();
           o->maximum(1.0);
@@ -690,6 +705,9 @@ void MftChoice::auswahl_cb(void) {
     break;
   case 3: // 3D Tabelle
     DBG_PROG
+    mft_gl->hinein_kurven (
+                     profile.getTagCurves (tag_nummer, ICCtag::CURVE_IN),
+                     profile.getTagChannelNames (tag_nummer, ICCtag::CURVE_IN) ); DBG_PROG
     break;
   case 4: // Ausgangskurven
     mft_viewer->hinein_kurven (
@@ -724,6 +742,7 @@ void zeig_mich(void* widget) {
   tabellengruppe->hide();
   mft_viewer->hide();
   mft_text->hide();
+  //mft_gl->hide();
   
   tag_viewer->hide(); DBG_PROG
   tag_viewer->clear_visible(); DBG_PROG
@@ -761,10 +780,28 @@ std::vector<std::string> zeilenNachVector(std::string text) {
 GL_Ansicht::GL_Ansicht(int X,int Y,int W,int H) : Fl_Widget(X,Y,W,H), X(X), Y(Y), W(W), H(H) {
 }
 
+void GL_Ansicht::init() {
+  DBG_PROG_START
+  details->begin();
+/*  glutInitWindowSize(X,Y);
+  glutInitWindowPosition(W,H);
+  glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH | GLUT_MULTISAMPLE);
+  glutCreateWindow("GL");
+*/
+  details->end();
+  //details->resizable(glut_window);
+
+  first = false;
+  DBG_PROG_ENDE
+}
+
 void GL_Ansicht::draw() {
   DBG_PROG_START
   // Kurven oder Punkte malen
   DBG_PROG_S( punkte.size() << "/" << kurven.size() <<" "<< texte.size() )
+
+  if (first)
+    init();
 
   if (punkte.size() >= 3) {
     wiederholen = true;
