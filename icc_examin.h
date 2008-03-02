@@ -51,6 +51,14 @@ void worldChangedCB( const openvrml::browser::cb_reason reason );
 void timeIT();
 char* icc_read_info(char* filename);
 
+class TagBrowser : public Fl_Hold_Browser {
+  int X; int Y; int W; int H; char* start_info; std::string selectedTagName;
+public:
+  TagBrowser(int X,int Y,int W,int H,char* start_info) ;
+  void reopen();
+  void select_item(int item);
+};
+
 class TagTexts : public Fl_Hold_Browser {
   int X; int Y; int W; int H; char* start_info;
 public:
@@ -67,14 +75,6 @@ public:
   void hinein_punkt(std::vector<double> vect, std::vector<std::string> txt);
   void hinein_kurve(std::vector<double> vect, std::vector<std::string> txt);
   void ruhig_neuzeichnen(void);
-};
-
-class TagBrowser : public Fl_Hold_Browser {
-  int X; int Y; int W; int H; char* start_info;
-public:
-  TagBrowser(int X,int Y,int W,int H,char* start_info) ;
-  void reopen();
-  void select_item(int item);
 };
 void d_haendler(void* o);
 #endif

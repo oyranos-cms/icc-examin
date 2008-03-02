@@ -43,6 +43,7 @@ icPlatformSignature     icValue   (icPlatformSignature val);
 icProfileClassSignature icValue   (icProfileClassSignature val);
 icTagSignature          icValue   (icTagSignature val);
 
+double*                 XYZto_xyY (double* XYZ);
 
 class ICCheader {
   public:
@@ -168,12 +169,14 @@ class ICCprofile {
     int                 version  ()        {return (int) header.version(); }
     std::string         printHeader     () {return header.print(); }
     std::string         printLongHeader () {return header.print_long(); }
-    std::vector<std::string> printTags  (); // Liste der einzelnen Tags
+    std::vector<std::string> printTags  (); // Liste der einzelnen Tags (5)
     std::vector<std::string> printTagInfo (int item); // Name,Typ
     std::string         getTagText      (int item);    // Inhalt
     std::vector<double> getTagCIExy  (int item);
     std::vector<double> getTagCurve  (int item);
     char*               getProfileInfo  ();
+    bool                hasTagName   (std::string name); // Name
+    int                 getTagByName (std::string name); // Name
 
     int                 getTagCount     () {return icValue(_data->count); }
 

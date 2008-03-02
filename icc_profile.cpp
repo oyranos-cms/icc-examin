@@ -210,6 +210,21 @@ icValue_to_icUInt32Number(icProfileClassSignature)
 icValue_to_icUInt32Number(icTagSignature)
 icValue_to_icUInt32Number(icTagTypeSignature)
 
+// Farbkonvertierungen
+
+double*
+XYZto_xyY (double* XYZ)
+{
+  static double xyY[3];
+  double summe = (XYZ[0] + XYZ[1] + XYZ[2]) + 0.0000001;
+
+  xyY[0] = XYZ[0] / summe;
+  xyY[1] = XYZ[1] / summe;
+  xyY[2] = XYZ[2] / summe;
+
+  return &xyY[0];
+}
+
 
 /**
   *  @brief ICCheader Funktionen
@@ -1095,6 +1110,50 @@ ICCprofile::getProfileInfo                   ( )
 
  
   return profile_info;
+}
+
+int
+ICCprofile::getTagByName            (std::string name)
+{
+  if (!tags.size()) { DBG
+    return -1;
+  } DBG
+
+  int item = 0;
+  for (std::vector<ICCtag>::iterator it = tags.begin(); it != tags.end(); it++){
+    if ( (*it).getTagName() == name
+      && (*it).getSize()            ) {
+      #ifdef DEBUG_ICCPROFILE
+      cout << item << "=" << (*it).getTagName() << " gefunden "; DBG
+      #endif
+      return item;
+    }
+    item++;
+  }
+
+  return -1;
+}
+
+bool
+ICCprofile::hasTagName            (std::string name)
+{
+  if (!tags.size()) { DBG
+    return false;
+  } DBG
+
+  int item = 0;
+  for (std::vector<ICCtag>::iterator it = tags.begin(); it != tags.end(); it++){
+    if ( (*it).getTagName() == name
+      && (*it).getSize()            ) {
+      #ifdef DEBUG_ICCPROFILE
+      cout << (*it).getTagName() << " gefunden "; DBG
+      #endif
+      return true;
+    }
+    item++;
+  }
+
+  return false;
 }
 
 int

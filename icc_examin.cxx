@@ -308,6 +308,106 @@ char* icc_read_info(char* filename) {
   return textfile;
 }
 
+TagBrowser::TagBrowser(int X,int Y,int W,int H,char* start_info) : Fl_Hold_Browser(X,Y,W,H,start_info), X(X), Y(Y), W(W), H(H) {
+}
+
+void TagBrowser::reopen() {
+  //open and preparing the first selected item
+  std::stringstream s;
+  std::string text;
+  std::vector<std::string> tag_list = profile.printTags();
+
+  #define add_s(stream) s << stream; add (s.str().c_str()); s.str("");
+  #define add_          s << " ";
+
+  clear();
+  add_s ("@fDateiname:")
+  add_s ("@b    " << profile.filename() )
+  add_s ("")
+  if (tag_list.size() == 0) {
+    add_s ("keine Inhalte gefunden fŸr \"" << profile.filename() << "\"")
+    return;
+  }
+  add_s ("@B26@tNr. Bezeichner  Typ         Größe Beschreibung")
+  add_s ("@t" << profile.printHeader() )
+  DBG
+  std::vector<std::string>::iterator it;
+  for (it = tag_list.begin() ; it != tag_list.end(); ++it) {
+    s << "@t";
+    // Nummer
+    int Nr = atoi((*it).c_str()) + 1;
+    stringstream t; t << Nr;
+    for (int i = t.str().size(); i < 3; i++) {s << " ";} s << Nr; *it++; s << " "; 
+    // Name/Bezeichnung
+    s << *it; for (int i = (*it++).size(); i < 12; i++) {s << " ";}
+    // Typ
+    s << *it; for (int i = (*it++).size(); i < 12; i++) {s << " ";}
+    // Gršße
+    for (int i = (*it).size(); i < 5; i++) {s << " ";} s << *it++; s << " ";
+    // Beschreibung
+    add_s (*it)
+  }
+  DBG
+  if (value())
+    select_item (value()); // Anzeigen
+  else
+    select_item (1);
+
+  if (profile.hasTagName (selectedTagName)) {
+    int item = profile.getTagByName (selectedTagName) + 6;
+    select_item (item);
+    value(item);
+  }
+
+  s.clear(); s << "ICC Details: " << profile.filename();
+  details->label( (const char*) s.str().c_str() );
+}
+
+void TagBrowser::select_item(int item) {
+  //Auswahl aus tag_browser
+  std::string text = _("Leer");
+  tag_texts->hinein(text);
+  item -= 6;
+  cout << item << ". Tag "; DBG
+  std::vector<std::string> rgb_tags;
+  rgb_tags.push_back("rXYZ");
+  rgb_tags.push_back("gXYZ");
+  rgb_tags.push_back("bXYZ");
+
+  if (item < 0) {
+    select(5);
+    text = profile.printLongHeader(); DBG
+    tag_texts->hinein(text);    
+  } else if (item >= 0) {
+    std::vector<std::string> TagInfo = profile.printTagInfo(item);
+    cout << TagInfo.size() << " " << TagInfo[0] << TagInfo[1] << " "; DBG
+
+    if        ( TagInfo[1] == "text" ) {
+      tag_texts->hinein ( profile.getTagText (item));
+    } else if ( TagInfo[0] == "rXYZ" || TagInfo[0] == "gXYZ" || TagInfo[0] == "bXYZ" ) {
+      std::vector<double> alle_punkte, punkte;
+      std::vector<std::string> alle_texte;
+      std::string TagName;
+      for (unsigned int i_name = 0; i_name < rgb_tags.size(); i_name++) {
+        if (profile.hasTagName (rgb_tags[i_name])) {
+          punkte = profile.getTagCIExy (profile.getTagByName(rgb_tags[i_name]));
+          for (unsigned int i = 0; i < 3; i++)
+            alle_punkte.push_back (punkte[i]);
+          TagInfo = profile.printTagInfo (profile.getTagByName(rgb_tags[i_name]));
+          for (unsigned int i = 0; i < 2; i++)
+            alle_texte.push_back (TagInfo[i]);
+        }
+      }
+      tag_viewer->hinein_punkt( alle_punkte, alle_texte );
+    } else if ( TagInfo[1] == "curv" ) {
+      tag_viewer->hinein_kurve( profile.getTagCurve(item), TagInfo );
+    } else if ( TagInfo[1] == "XYZ" ) {
+      tag_viewer->hinein_punkt( profile.getTagCIExy(item), TagInfo );
+    }
+    selectedTagName = TagInfo[0];
+  }DBG
+}
+
 TagTexts::TagTexts(int X,int Y,int W,int H,char* start_info) : Fl_Hold_Browser(X,Y,W,H,start_info), X(X), Y(Y), W(W), H(H) {
 }
 
@@ -362,8 +462,12 @@ void TagDrawings::draw() {
 
 void TagDrawings::hinein_punkt(std::vector<double> vect, std::vector<std::string> txt) {
   //CIExyY aus tag_browser anzeigen
-  punkte = vect;
-  texte = txt;
+  punkte.clear();
+  for (unsigned int i = 0; i < vect.size(); i++)
+    punkte.push_back (vect[i]);
+  texte.clear();
+  for (unsigned int i = 0; i < txt.size(); i++)
+    texte.push_back (txt[i]);
   kurven.clear();
 
   canvas->hide(); DBG
@@ -385,81 +489,6 @@ void TagDrawings::hinein_kurve(std::vector<double> vect, std::vector<std::string
 
 void TagDrawings::ruhig_neuzeichnen(void) {
   draw_cie_shoe(x(),y(),w(),h(),texte,punkte,true);
-}
-
-TagBrowser::TagBrowser(int X,int Y,int W,int H,char* start_info) : Fl_Hold_Browser(X,Y,W,H,start_info), X(X), Y(Y), W(W), H(H) {
-}
-
-void TagBrowser::reopen() {
-  //open and preparing the first selected item
-  std::stringstream s;
-  std::string text;
-  std::vector<std::string> tag_list = profile.printTags();
-
-  #define add_s(stream) s << stream; add (s.str().c_str()); s.str("");
-  #define add_          s << " ";
-
-  clear();
-  add_s ("@fDateiname:")
-  add_s ("@b    " << profile.filename() )
-  add_s ("")
-  if (tag_list.size() == 0) {
-    add_s ("keine Inhalte gefunden fŸr \"" << profile.filename() << "\"")
-    return;
-  }
-  add_s ("@B26@tNr. Bezeichner  Typ         Größe Beschreibung")
-  add_s ("@t" << profile.printHeader() )
-  DBG
-  std::vector<std::string>::iterator it;
-  for (it = tag_list.begin() ; it != tag_list.end(); ++it) {
-    s << "@t";
-    // Nummer
-    int Nr = atoi((*it).c_str()) + 1;
-    stringstream t; t << Nr;
-    for (int i = t.str().size(); i < 3; i++) {s << " ";} s << Nr; *it++; s << " "; 
-    // Name/Bezeichnung
-    s << *it; for (int i = (*it++).size(); i < 12; i++) {s << " ";}
-    // Typ
-    s << *it; for (int i = (*it++).size(); i < 12; i++) {s << " ";}
-    // Gršße
-    for (int i = (*it).size(); i < 5; i++) {s << " ";} s << *it++; s << " ";
-    // Beschreibung
-    add_s (*it)
-  }
-  DBG
-  if (value())
-    select_item (value()); // Anzeigen
-  else
-    select_item (1);
-
-  s.clear(); s << "ICC Details: " << profile.filename();
-  details->label( (const char*) s.str().c_str() );
-}
-
-void TagBrowser::select_item(int item) {
-  //Auswahl aus tag_browser
-  std::string text = _("Leer");
-  tag_texts->hinein(text);
-  item -= 6;
-  cout << item << ". Tag "; DBG
-
-  if (item < 0) {
-    select(5);
-    text = profile.printLongHeader(); DBG
-    tag_texts->hinein(text);    
-  } else if (item >= 0) {
-    std::vector<std::string> TagInfo = profile.printTagInfo(item);
-    cout << TagInfo.size() << " " << TagInfo[0] << TagInfo[1] << " "; DBG
-
-    if        ( TagInfo[1] == "text" ) {
-      tag_texts->hinein ( profile.getTagText (item));
-    } else if ( TagInfo[1] == "XYZ"  ) {
-      tag_viewer->hinein_punkt( profile.getTagCIExy(item), TagInfo );
-    } else if ( TagInfo[1] == "curv" ) {
-      tag_viewer->hinein_kurve( profile.getTagCurve(item), TagInfo );
-    } else if ( TagInfo[0] == "text" ) {
-    }
-  }DBG
 }
 
 void d_haendler(void* o) {

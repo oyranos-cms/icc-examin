@@ -2,7 +2,7 @@
 // Copyright: Kai-Uwe Behrmann
 // Date:      Mai 2004
 
-#define DEBUG_DRAW_
+//#define DEBUG_DRAW
 
 #include "icc_examin.h"
 //#include "icc_vrml.h"
@@ -15,6 +15,15 @@
 #include <lcms.h>
 #include "cccie64.h"
 #include "ciexyz64_1.h"
+
+// Zeichenbereich
+float w,h, xO, yO;
+// Zeichenbereichvariablen
+int tab_border_x=30;
+int tab_border_y=30;
+// Diagrammvariablen
+float n = 0.85; 
+
 
 int raster = 4;
 int init_s = FALSE;
@@ -40,8 +49,6 @@ draw_cie_shoe (int X, int Y, int W, int H,
                     std::vector<double>                    punkte,
                     int                                    repeated)
 {
-  float w,h, xO, yO;
-
   if (!init_s)
     init_shoe();
   init_s = TRUE;
@@ -55,12 +62,6 @@ draw_cie_shoe (int X, int Y, int W, int H,
   // Zeichenflaeche
   fl_color(FL_GRAY);
   fl_rectf(X,Y,W,H);
-
-  // Zeichenbereichvariablen
-  int tab_border_x=30;
-  int tab_border_y=30;
-  // Diagrammvariablen
-  float n = 0.85; 
 
   xO = X + tab_border_x + 10;     // Ursprung
   yO = Y + H - tab_border_y - 10; // Ursprung
@@ -235,26 +236,69 @@ draw_cie_shoe (int X, int Y, int W, int H,
   
 
   // Weisspunkt
-  if (texte.size() < 1) {
-    fl_color (fl_rgb_color (255,255,255));
-    fl_circle (x(WhitePt.x), y(WhitePt.y), 5.0);
-  } else {
+  {
   // Primärfarben
     register char RGB[3];
     register cmsCIEXYZ XYZ;
+    std::vector<double> pos;
+    for (unsigned int i = 0; i < texte.size(); i++) {
+        double _XYZ[3] = {punkte[i*3+0], punkte[i*3+1], punkte[i*3+2]};
+        double* xyY = XYZto_xyY ( _XYZ );
+        pos.push_back ( x (xyY[0]) + 0.5 );
+        pos.push_back ( y (xyY[1]) + 0.5 );
+        #ifdef DEBUG_DRAW
+        cout << texte[i] << " " << punkte.size(); DBG
+        #endif
+    }
+
+    fl_color(FL_GRAY);
+    if (punkte.size() == 9) {
+        for (int k = 0; k <= 3; k+=2) {
+            fl_line( (int)(pos[k+0] +0.5), (int)(pos[k+1] +0.5),
+                     (int)(pos[k+2] +0.5), (int)(pos[k+3] +0.5));
+            cout << "Linie "; DBG
+        }
+        fl_line( (int)(pos[0] +0.5), (int)(pos[1] +0.5),
+                 (int)(pos[4] +0.5), (int)(pos[5] +0.5));
+        cout << "Linie "; DBG
+    }
+
     int j = 0;
     for (unsigned int i = 0; i < texte.size(); i++) {
+        #ifdef DEBUG_DRAW
         cout << punkte[j] << " ";
+        #endif
         XYZ.X = punkte[j++]; 
+        #ifdef DEBUG_DRAW
         cout << punkte[j] << " ";
+        #endif
         XYZ.Y = punkte[j++];
+        #ifdef DEBUG_DRAW
         cout << punkte[j] << " " << texte[i] << " " << punkte.size(); DBG
+        #endif
         XYZ.Z = punkte[j++]; //1 - ( punkte[i][0] +  punkte[i][1] );
 
         cmsDoTransform (xform, &XYZ, RGB, 1);
 
+        double _XYZ[3] = {XYZ.X, XYZ.Y, XYZ.Z};
+        double* xyY = XYZto_xyY ( _XYZ );
+        double pos_x = x(xyY[0])+0.5;
+        double pos_y = y(xyY[1])+0.5;
+
+        fl_color(FL_GRAY);
+        fl_circle ( pos_x+0.5 , pos_y+0.5 , 9.0);
         fl_color (fl_rgb_color (RGB[0],RGB[1],RGB[2]));
-        fl_circle ( x(XYZ.X)+0.5 , y(XYZ.Y)+0.5 , 8.0);
+        fl_circle ( pos_x+0.5 , pos_y+0.5 , 7.0);
+        // etwas Erklärung
+        fl_font (FL_HELVETICA, 12);
+        std::stringstream s;
+        s << texte[i] << " = " << _XYZ[0] <<","<< _XYZ[1] <<","<< _XYZ[2];
+        int _w = 0, _h = 0;
+        fl_measure (s.str().c_str(), _w, _h, 1);
+        fl_color(FL_WHITE);
+        fl_draw ( s.str().c_str(),
+                  (int)(pos_x +9 + _w > x(n) ? x(n) - _w : pos_x +9), 
+                  (int)(pos_y -9 - _h < y(n) ? y(n) + _h : pos_y -9)  );
         i++;
       }
   }
@@ -269,17 +313,12 @@ void draw_kurve    (int X, int Y, int W, int H,
                     std::vector<std::string> texte,
                     std::vector<std::vector<double> > kurven)
 {
-  float w,h, xO, yO;
-
   // Zeichenflaeche
   fl_color(FL_GRAY);
   fl_rectf(X,Y,W,H);
 
-  // Zeichenbereichvariablen
-  int tab_border_x=30;
-  int tab_border_y=30;
   // Diagrammvariablen
-  float n = 1.0;                  // maximale Hoehe 
+  n = 1.0;                  // maximale Hoehe 
 
   xO = X + tab_border_x + 10;     // Ursprung
   yO = Y + H - tab_border_y - 10; // Ursprung

@@ -130,4 +130,5 @@ tgz:
 	$(dir)/makefile \
 	$(dir)/$(TARGET).fl \
 	| gzip > $(TARGET)_$(mtime).tgz
+	mv -v $(TARGET)_*.tgz ../Archiv
 
