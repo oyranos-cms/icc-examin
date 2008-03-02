@@ -725,7 +725,8 @@ ICCmeasurement::init_umrechnen                     (void)
 #            if 0
              cmsCIE2000DeltaE( (cmsCIELab*)&Lab_Ergebnis_[i], (cmsCIELab*)&Lab_Satz_[i] , 1.0, 1.0, 1.0);
 #            else
-             dE2000(Lab_Ergebnis_[i], Lab_Satz_[i] , 1.0, 1.0, 1.0);
+             // 2 1 1 is a recomendation of Marti
+             dE2000(Lab_Ergebnis_[i], Lab_Satz_[i] , 2.0, 1.0, 1.0);
 #            endif
           if (DE00_Differenz_max_ < DE00_Differenz_[i])
             DE00_Differenz_max_ = DE00_Differenz_[i];

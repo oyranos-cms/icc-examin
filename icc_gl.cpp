@@ -56,10 +56,12 @@
 
 #include <cmath>
 
-//#define Beleuchtung
+#define Beleuchtung
 //#define Lab_STERN 1
 
 void zeichneKegel( GLdouble breite, GLdouble hoehe, GLint seiten );
+void zeichneKegel( GLdouble breite, GLdouble hoehe, GLint seiten,
+                   GLdouble x, GLdouble y, GLdouble z );
 
 //#define DEBUG_ICCGL
 #ifdef DEBUG_ICCGL
@@ -90,6 +92,33 @@ const double GL_Ansicht::std_vorder_schnitt = 4.2;
 #ifdef HAVE_FTGL
 FTFont *font, *ortho_font;
 #endif
+
+// Materialfarben setzen
+#define FARBE(r,g,b) {farbe [0] = (r); farbe [1] = (g); farbe [2] = (b); \
+                      glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, farbe); \
+                      glColor4f(farbe[0],farbe[1],farbe[2],farbe[3]); }
+
+// Text zeichnen
+#ifdef HAVE_FTGL
+#  define ZeichneText(Font, Zeiger) { \
+   glLineWidth(strichmult); \
+    if(blend) glDisable(GL_BLEND); \
+      glTranslatef(.0,0,0.01); \
+        glScalef(0.002,0.002,0.002); \
+          if(Font) Font->Render(Zeiger); \
+        glScalef(500,500,500); \
+      glTranslatef(.0,0,-.01); \
+    if(blend) glEnable(GL_BLEND); \
+   glLineWidth(strichmult); }
+#else
+# define ZeichneText(Font, Zeiger)
+#endif
+
+#define ZeichneOText(Font, scal, buffer) { \
+                                   glScalef(scal,scal*w()/(double)h(),scal); \
+                                   ZeichneText(Font, buffer); \
+                                   glScalef(1.0/scal,1.0/(scal*w()/(double)h()),1.0/scal); \
+                                 }
 
 
 GL_Ansicht::GL_Ansicht(int X,int Y,int W,int H)
@@ -477,22 +506,33 @@ GL_Ansicht::GLinit_()
   GLfloat mat_ambuse[] = { 0.2, 0.2, 0.2, 1.0 };
   GLfloat mat_specular[] = { 0.6, 0.6, 0.6, 1.0 };
 
-  GLfloat light0_position[] = { 2.4, 1.6, 1.2, 0.0 };
-
+# ifdef Beleuchtung
+  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, mat_ambuse);
+  glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
+  glMaterialf(GL_FRONT, GL_SHININESS, 25.0);
+# if 0
+  GLfloat light0_position[] = { -2.4, -1.6, -1.2, 0.0 };
   glLightfv(GL_LIGHT0, GL_POSITION, light0_position);
   //GLfloat light1_position[] = { -2.4, -1.6, -1.2, 0.0 };
   //glLightfv(GL_LIGHT1, GL_POSITION, light1_position);
   glEnable(GL_LIGHTING);
   glEnable(GL_LIGHT0);
+# else
+  GLfloat light0_position[] = { -2.4, -1.6, -1.2, 0.0 };
+  glLightfv(GL_LIGHT0, GL_POSITION, light0_position);
+  glDisable(GL_LIGHT0);
+
+  glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);
+  glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
+
+  glEnable(GL_LIGHTING);
+# endif
+# endif
   //glEnable(GL_LIGHT1);
 # ifndef Beleuchtung
   glDisable(GL_LIGHTING);
 # endif
 
-  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, mat_ambuse);
-  glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
-  glMaterialf(GL_FRONT, GL_SHININESS, 25.0);
-  
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
   glMatrixMode(GL_MODELVIEW);
@@ -605,33 +645,6 @@ GL_Ansicht::tastatur(int e)
   DBG_ICCGL_ENDE
 }
 
-// Materialfarben setzen
-#define FARBE(r,g,b) {farbe [0] = (r); farbe [1] = (g); farbe [2] = (b); \
-                      glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, farbe); \
-                      glColor4f(farbe[0],farbe[1],farbe[2],1.0); }
-
-// Text zeichnen
-#ifdef HAVE_FTGL
-#  define ZeichneText(Font, Zeiger) { \
-   glLineWidth(strichmult); \
-    if(blend) glDisable(GL_BLEND); \
-      glTranslatef(.0,0,0.01); \
-        glScalef(0.002,0.002,0.002); \
-          if(Font) Font->Render(Zeiger); \
-        glScalef(500,500,500); \
-      glTranslatef(.0,0,-.01); \
-    if(blend) glEnable(GL_BLEND); \
-   glLineWidth(strichmult); }
-#else
-# define ZeichneText(Font, Zeiger)
-#endif
-
-#define ZeichneOText(Font, scal, buffer) { \
-                                   glScalef(scal,scal*w()/(double)h(),scal); \
-                                   ZeichneText(Font, buffer); \
-                                   glScalef(1.0/scal,1.0/(scal*w()/(double)h()),1.0/scal); \
-                                 }
-
 void
 zeichneKegel( GLdouble breite, GLdouble hoehe, GLint seiten )
 { DBG_ICCGL_START
@@ -654,6 +667,35 @@ zeichneKegel( GLdouble breite, GLdouble hoehe, GLint seiten )
       glNormal3d( x, y, hn );
       glVertex3d( x, y, 0 );
       glVertex3d( 0, 0, hoehe );
+    }
+  glEnd();
+
+  DBG_ICCGL_ENDE
+}
+
+void
+zeichneKegel( GLdouble breite, GLdouble hoehe, GLint seiten ,
+              GLdouble x, GLdouble y, GLdouble z )
+{ DBG_ICCGL_START
+  GLdouble xk, yk,
+           s = 2*M_PI/(GLdouble)seiten, // statische Variable
+           hn = breite*tan(breite/2./hoehe); // Normalenhoehe
+  // Boden
+  glBegin(GL_TRIANGLE_FAN);
+    glNormal3d( 0, 0, -1 );
+    glVertex3d( x, y, z );
+    for(int i = 0; i <= seiten; ++i)
+      glVertex3d( x+cos(i*s)*breite, y+sin(i*s)*breite, z );
+  glEnd();
+  // Kegel
+  glBegin(GL_TRIANGLE_STRIP);
+    for(int i = 0; i <= seiten; ++i)
+    {
+      xk = cos(i*s)*breite;
+      yk = sin(i*s)*breite;
+      glNormal3d( xk, yk, hn );
+      glVertex3d( x+xk, y+yk, z+hoehe );
+      glVertex3d( x, y, z );
     }
   glEnd();
 
@@ -851,9 +893,11 @@ GL_Ansicht::garnieren_()
       PFEILSPITZE
     glPopMatrix(); DBG_PROG
     glPushMatrix();
+    glDisable(GL_LIGHTING);
       glBegin(GL_LINES);
         glVertex3f(0, .5, 0); glVertex3f(0, -.5, 0);
       glEnd();
+    glEnable(GL_LIGHTING);
     glPopMatrix();
 
 #   define ZEIG_GITTER 1
@@ -868,6 +912,7 @@ GL_Ansicht::garnieren_()
       start = - floor (a_darstellungs_breite/2./schritt) * schritt;
       ende = floor (a_darstellungs_breite/2./schritt) * schritt;
       // Gitter
+      glDisable(GL_LIGHTING);
       for(float i = start; i <= ende; i+=schritt) {
 
         if(i/Schritt == floor(i/Schritt))
@@ -880,6 +925,7 @@ GL_Ansicht::garnieren_()
           glVertex3f( i, 0, -a_darstellungs_breite/2.);
         glEnd();
       }
+      glEnable(GL_LIGHTING);
 
       glTranslatef(0.0,0.0,a_darstellungs_breite/2.);
       glRotatef (180,0.0,.5,.0);
@@ -905,6 +951,7 @@ GL_Ansicht::garnieren_()
         glTranslatef(0,-0.5,0);
       FARBE(pfeilfarbe[0],pfeilfarbe[1],pfeilfarbe[2])
       // Gitter
+      glDisable(GL_LIGHTING);
       for(float i = start; i <= ende; i+=schritt) {
 
         if(i/Schritt == floor(i/Schritt))
@@ -917,6 +964,7 @@ GL_Ansicht::garnieren_()
           glVertex3f(-b_darstellungs_breite/2., 0, i);
         glEnd();
       }
+      glEnable(GL_LIGHTING);
       glTranslatef(b_darstellungs_breite/2.,0,0);
       if (von_farb_namen_.size() &&
           von_farb_namen_[2] == _("CIE *b"))
@@ -974,7 +1022,7 @@ GL_Ansicht::tabelleAuffrischen()
       DBG_NUM_V( schnitttiefe );
       start_x = start_y = start_z = x = y = z = 0.5; start_y = y = -0.5;
       glPushMatrix();
-#     ifndef Beleuchtung
+#     ifndef Beleuchtung_
       glDisable(GL_LIGHTING);
 #     endif
       DBG_PROG_V( tabelle_.size() <<" "<< tabelle_[0].size() )
@@ -988,7 +1036,7 @@ GL_Ansicht::tabelleAuffrischen()
           for (int b = 0; b < (int)n_b; b++) {
             z = start_z + b * dim_x;
             wert = tabelle_[L][a][b][kanal]; //DBG_PROG_V( L << a << b << kanal )
-#           ifdef Beleuchtung
+#           ifdef Beleuchtung_
             FARBE(wert, wert, wert)
             //glColor3f(wert, wert, wert);
 #           else
@@ -1035,7 +1083,7 @@ GL_Ansicht::tabelleAuffrischen()
         }
       } DBG_PROG
       glPopMatrix();
-#     ifndef Beleuchtung
+#     ifndef Beleuchtung_
       glEnable(GL_LIGHTING);
 #     endif
     glEndList();
@@ -1065,18 +1113,69 @@ GL_Ansicht::netzeAuffrischen()
        float EyeAz = agv_.eyeAzimuth(),
              EyeEl = agv_.eyeElevation(),
              EyeDist = agv_.eyeDist(),
-             X = EyeDist*sin(TORAD(EyeAz))*cos(TORAD(EyeEl)),   // CIE*b
+             X = -EyeDist*sin(TORAD(EyeAz))*cos(TORAD(EyeEl)),  // CIE*b
              Y = EyeDist*sin(TORAD(EyeEl)),                     // CIE*L
              Z = EyeDist*cos(TORAD(EyeAz))*cos(TORAD(EyeEl));   // CIE*a
+
+       float lX = -EyeDist*sin(TORAD(EyeAz-30))*cos(TORAD(EyeEl)),
+             lY = Y,
+             lZ = EyeDist*cos(TORAD(EyeAz-30))*cos(TORAD(EyeEl));
+       glEnable(GL_LIGHTING);
+       glEnable(GL_DEPTH_TEST);
+#      if 1
+       GLfloat lmodel_ambient[] = {hintergrundfarbe, hintergrundfarbe,
+                                   hintergrundfarbe, 1.0};
+       glLightModelfv(GL_LIGHT_MODEL_AMBIENT, lmodel_ambient);
+#      endif
+
+       GLfloat light1_position[] = { lX, lY, lZ, 1.0 };
+       GLfloat light_ambient[] = {0.1, 0.1, 0.1, 1.0};
+       GLfloat light_diffuse[] = {1.0, 1.0, 1.0, 1.0};
+       GLfloat light_specular[] = {1.0, 1.0, 1.0, 1.0};
+       glLightfv(GL_LIGHT1, GL_POSITION, light1_position);
+       glLightfv(GL_LIGHT1, GL_AMBIENT, light_ambient);
+       glLightfv(GL_LIGHT1, GL_DIFFUSE, light_diffuse);
+       glLightfv(GL_LIGHT1, GL_SPECULAR, light_specular);
+       //glLightf(GL_LIGHT1, GL_LINEAR_ATTENUATION, 0.0);
+       //glLightf(GL_LIGHT1, GL_QUADRATIC_ATTENUATION, 0.2);
+
+       glEnable (GL_LIGHT1);
+#      if 0
+       GLfloat light2_ambient[] = {0.2, 0.2, 0.2, 1.0};
+       GLfloat light2_diffuse[] = {1.0, 1.0, 1.0, 1.0};
+       GLfloat light2_specular[] = {1.0, 1.0, 1.0, 1.0};
+       GLfloat light2_position[] = {X, Y, Z, 1.0};
+       GLfloat spot_direction[] = {-X, -Y, -Z};
+
+       glLightfv(GL_LIGHT2, GL_AMBIENT, light2_ambient);
+       glLightfv(GL_LIGHT2, GL_DIFFUSE, light2_diffuse);
+       glLightfv(GL_LIGHT2, GL_SPECULAR, light2_specular);
+       glLightfv(GL_LIGHT2, GL_POSITION, light2_position);
+       //glLightf(GL_LIGHT2, GL_CONSTANT_ATTENUATION, 1.5);
+       //glLightf(GL_LIGHT2, GL_LINEAR_ATTENUATION, 0.5);
+       //glLightf(GL_LIGHT2, GL_QUADRATIC_ATTENUATION, 0.2);
+
+       glLightf(GL_LIGHT2, GL_SPOT_CUTOFF, 45.0);
+       glLightfv(GL_LIGHT2, GL_SPOT_DIRECTION, spot_direction);
+       glLightf(GL_LIGHT2, GL_SPOT_EXPONENT, 2.0);
+
+       glEnable (GL_LIGHT2);
+#      endif
+       glDisable(GL_LIGHT0);
+       glEnable(GL_LIGHTING);
+
+       zeichneKegel(0.02, 0.05, 16, lX, 0, lZ);
+
 
        if(icc_debug == 14) {
        strichmult = 3;
        DBG_ICCGL_S( "dist:"<<EyeDist<<" elevation:"<<EyeEl<<" azimuth:"<<EyeAz )
        glMatrixMode(GL_MODELVIEW);
        glLoadIdentity();
-       glTranslatef(-X/1.2,Y/1.2,Z/1.2);
+       glTranslatef(X/1.2,Y/1.2,Z/1.2);
        DBG_ICCGL_S( "X:"<<X<<" Y:"<<Y<<" Z:"<<Z )
        zeichneKoordinaten_();
+       glTranslatef(-X/1.2,-Y/1.2,-Z/1.2);
        }
       
        static ICCnetz netz;
@@ -1132,8 +1231,8 @@ GL_Ansicht::netzeAuffrischen()
                     (  (netz.punkte[index_p.second.i[0]].koord[1]+Z)
                      + (netz.punkte[index_p.second.i[1]].koord[1]+Z))/2.0;
              seitenhalbierende[2] =
-                    (  (netz.punkte[index_p.second.i[0]].koord[2]-X)
-                     + (netz.punkte[index_p.second.i[1]].koord[2]-X))/2.0;
+                    (  (netz.punkte[index_p.second.i[0]].koord[2]+X)
+                     + (netz.punkte[index_p.second.i[1]].koord[2]+X))/2.0;
              double mittelpunkt[3];
              mittelpunkt[0] = (  2.0 * seitenhalbierende[0]
                                 + netz.punkte[index_p.second.i[2]].koord[0]+Y)
@@ -1142,7 +1241,7 @@ GL_Ansicht::netzeAuffrischen()
                                 + netz.punkte[index_p.second.i[2]].koord[1]+Z)
                               / 3.0;
              mittelpunkt[2] = (  2.0 * seitenhalbierende[2]
-                                + netz.punkte[index_p.second.i[2]].koord[2]-X)
+                                + netz.punkte[index_p.second.i[2]].koord[2]+X)
                               / 3.0;
              abstand = HYP3( mittelpunkt[0], mittelpunkt[1], mittelpunkt[2] );
              index_p.first = abstand;
@@ -1163,6 +1262,8 @@ GL_Ansicht::netzeAuffrischen()
 
 #     ifndef Beleuchtung
       glDisable(GL_LIGHTING);
+#     else
+      glEnable(GL_LIGHTING);
 #     endif
 
 #     if 0
@@ -1196,13 +1297,47 @@ GL_Ansicht::netzeAuffrischen()
         {
           glBegin(GL_TRIANGLES);
           int index;
+          double normale[3], len, v1[3], v2[3];
           for( int l = 2; l >= 0; --l)
           {
+            if(l == 2) {
+              v1[0] = netz.punkte[it->second.i[1]].koord[0]-
+                      netz.punkte[it->second.i[0]].koord[0];
+              v1[1] = netz.punkte[it->second.i[1]].koord[1]-
+                      netz.punkte[it->second.i[0]].koord[1];
+              v1[2] = netz.punkte[it->second.i[1]].koord[2]-
+                      netz.punkte[it->second.i[0]].koord[2];
+              v2[0] = netz.punkte[it->second.i[2]].koord[0]-
+                      netz.punkte[it->second.i[0]].koord[0];
+              v2[1] = netz.punkte[it->second.i[2]].koord[1]-
+                      netz.punkte[it->second.i[0]].koord[1];
+              v2[2] = netz.punkte[it->second.i[2]].koord[2]-
+                      netz.punkte[it->second.i[0]].koord[2];
+               
+              normale[0] =   v1[2]*v2[1] - v1[1]*v2[2];
+              normale[1] =   v1[0]*v2[2] - v1[2]*v2[0];
+              normale[2] =   v1[1]*v2[0] - v1[0]*v2[1];
+              len = HYP3( normale[0],normale[1],normale[2] );
+              glNormal3d( normale[2]/len,
+                          normale[0]/len,
+                          normale[1]/len );
+            }
             index = it->second.i[l];
+#           ifdef Beleuchtung
+            GLfloat farbe[] =   { netz.punkte[index].farbe[0],
+                                  netz.punkte[index].farbe[1],
+                                  netz.punkte[index].farbe[2],
+                                  netz.punkte[index].farbe[3] };
+ 
+            FARBE (    netz.punkte[index].farbe[0],
+                       netz.punkte[index].farbe[1],
+                       netz.punkte[index].farbe[2]);
+#           else
             glColor4d( netz.punkte[index].farbe[0],
                        netz.punkte[index].farbe[1],
                        netz.punkte[index].farbe[2],
                        netz.punkte[index].farbe[3]);
+#           endif
 
             // Punktkoordinaten setzen
             glVertex3d( netz.punkte[index].koord[2],
@@ -1210,6 +1345,19 @@ GL_Ansicht::netzeAuffrischen()
                         netz.punkte[index].koord[1] );
           }
           glEnd();
+          //DBG_V( index <<" "<< len <<" "<< normale[0] <<" "<< v1[0] <<" "<< v2[0] );
+          if(1 ||  icc_debug != 0)
+          {
+          glLineWidth(strich1*strichmult);
+          glBegin(GL_LINES);
+            glVertex3d( netz.punkte[index].koord[2],
+                        netz.punkte[index].koord[0],
+                        netz.punkte[index].koord[1] );
+            glVertex3d( netz.punkte[index].koord[2]+normale[2]/len*.1,
+                        netz.punkte[index].koord[0]+normale[0]/len*.1,
+                        netz.punkte[index].koord[1]+normale[1]/len*.1 );
+          glEnd();
+          }
         }
 #else
       for( j = 0; j < dreiecks_netze.size(); j++ )
@@ -1268,7 +1416,7 @@ GL_Ansicht::punkteAuffrischen()
 
     glListen[PUNKTE] = glGenLists(1);
     glNewList( glListen[PUNKTE], GL_COMPILE); DBG_PROG_V( glListen[PUNKTE] )
-#     ifndef Beleuchtung
+#     ifndef Beleuchtung_
       glDisable(GL_LIGHTING);
 #     endif
 
@@ -1344,7 +1492,7 @@ GL_Ansicht::punkteAuffrischen()
                  glPopMatrix();
                }
       glPopMatrix();
-#     ifndef Beleuchtung
+#     ifndef Beleuchtung_
       glEnable(GL_LIGHTING);
 #     endif
     glEndList();
@@ -1453,13 +1601,19 @@ GL_Ansicht::zeigeUmrisse_()
         // Schatten
         int n = dreiecks_netze[i].umriss.size();
         if(!dreiecks_netze[i].schattierung)
-          netzeAuffrischen();
+          ;//netzeAuffrischen();
         DBG_PROG_V( n )
         glLineWidth(strich2*strichmult);
+#       if 1
         GLfloat fv[3] = {dreiecks_netze[i].schattierung,
                          dreiecks_netze[i].schattierung,
                          dreiecks_netze[i].schattierung};
         glColor4fv(fv);
+#       else
+        FARBE (          dreiecks_netze[i].schattierung,
+                         dreiecks_netze[i].schattierung,
+                         dreiecks_netze[i].schattierung);
+#       endif
         glBegin(GL_LINE_STRIP);
         for (int z=0 ; z < n; z++)
         {
@@ -1866,7 +2020,7 @@ GL_Ansicht::zeichnen()
                                  icc_examin->gamutwarn()?cmsFLAGS_GAMUTCHECK:0);
                         if(!rgb)  WARN_S( _("RGB Ergebnis nicht verfuegbar") )
                         else {
-#                         ifndef Beleuchtung
+#                         ifndef Beleuchtung_
                           glDisable(GL_LIGHTING);
 #                         endif
                           glPushMatrix();
@@ -1878,7 +2032,7 @@ GL_Ansicht::zeichnen()
                             glEnd();
                           glPopMatrix();
                           DBG_PROG_V( rgb[0] <<" "<< rgb[1] <<" "<< rgb[2] )
-#                         ifndef Beleuchtung
+#                         ifndef Beleuchtung_
                           glEnable(GL_LIGHTING);
 #                         endif
                         }
@@ -2221,9 +2375,9 @@ GL_Ansicht::menueAufruf ( int value )
       icc_examin_ns::status_info(_("left-/middle-/right mouse button -> rotate/cut/menu"));
     }
 #   if APPLE
-    double farb_faktor = 0.6666;
+    double farb_faktor = 0.6666*0.8;
 #   else
-    double farb_faktor = 1.0;
+    double farb_faktor = 1.*.8;
 #   endif
 
     switch (value) {

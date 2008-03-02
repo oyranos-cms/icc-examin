@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2005-12-14 09:29+0100\n"
+"POT-Creation-Date: 2005-12-20 14:19+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,7 +20,7 @@ msgstr ""
 msgid "GL Fenster nicht frei"
 msgstr ""
 
-#: agviewer.cpp:312 icc_gl.cpp:2202 icc_gl.cpp:2221 icc_gl.cpp:2340
+#: agviewer.cpp:312 icc_gl.cpp:2356 icc_gl.cpp:2375 icc_gl.cpp:2494
 msgid "left-/middle-/right mouse button -> rotate/cut/menu"
 msgstr ""
 
@@ -28,8 +28,8 @@ msgstr ""
 msgid "Pause"
 msgstr ""
 
-#: agviewer.cpp:349 agviewer.cpp:357 icc_gl.cpp:2306 icc_gl.cpp:2317
-#: icc_gl.cpp:2322 icc_gl.cpp:2327
+#: agviewer.cpp:349 agviewer.cpp:357 icc_gl.cpp:2460 icc_gl.cpp:2471
+#: icc_gl.cpp:2476 icc_gl.cpp:2481
 msgid "left mouse button -> go back"
 msgstr ""
 
@@ -152,7 +152,7 @@ msgstr ""
 msgid "Blue"
 msgstr ""
 
-#: icc_draw.cpp:662 icc_gl.cpp:1643 icc_helfer.cpp:342 icc_waehler.h:128
+#: icc_draw.cpp:662 icc_gl.cpp:1797 icc_helfer.cpp:342 icc_waehler.h:128
 msgid "Gray"
 msgstr ""
 
@@ -168,7 +168,7 @@ msgstr ""
 msgid "Yellow"
 msgstr ""
 
-#: icc_draw.cpp:675 icc_gl.cpp:1645 icc_helfer.cpp:402 icc_helfer.cpp:412
+#: icc_draw.cpp:675 icc_gl.cpp:1799 icc_helfer.cpp:402 icc_helfer.cpp:412
 msgid "Black"
 msgstr ""
 
@@ -206,13 +206,13 @@ msgid "CIE *L"
 msgstr ""
 
 #: icc_draw.cpp:693 icc_examin_farbraum.cpp:203 icc_examin_io.cpp:180
-#: icc_gl.cpp:794 icc_gl.cpp:864 icc_gl.cpp:888 icc_gl.cpp:896
+#: icc_gl.cpp:836 icc_gl.cpp:908 icc_gl.cpp:934 icc_gl.cpp:942
 #: icc_helfer.cpp:388
 msgid "CIE *a"
 msgstr ""
 
 #: icc_draw.cpp:695 icc_examin_farbraum.cpp:204 icc_examin_io.cpp:181
-#: icc_gl.cpp:807 icc_gl.cpp:904 icc_gl.cpp:922 icc_gl.cpp:929
+#: icc_gl.cpp:849 icc_gl.cpp:950 icc_gl.cpp:970 icc_gl.cpp:977
 #: icc_helfer.cpp:389
 msgid "CIE *b"
 msgstr ""
@@ -281,7 +281,7 @@ msgstr ""
 msgid "zeige     "
 msgstr ""
 
-#: icc_examin_farbraum.cpp:179 icc_gl.cpp:1867
+#: icc_examin_farbraum.cpp:179 icc_gl.cpp:2021
 msgid "RGB Ergebnis nicht verfuegbar"
 msgstr ""
 
@@ -349,149 +349,149 @@ msgstr ""
 msgid "RGB primaries"
 msgstr ""
 
-#: icc_gl.cpp:198
+#: icc_gl.cpp:227
 msgid "OpenGL mode: "
 msgstr ""
 
-#: icc_gl.cpp:282
+#: icc_gl.cpp:311
 msgid "redraw nicht ausgefuehrt"
 msgstr ""
 
-#: icc_gl.cpp:521 icc_gl.cpp:524 icc_gl.cpp:527 icc_gl.cpp:533 icc_gl.cpp:537
-#: icc_gl.cpp:552
+#: icc_gl.cpp:561 icc_gl.cpp:564 icc_gl.cpp:567 icc_gl.cpp:573 icc_gl.cpp:577
+#: icc_gl.cpp:592
 msgid "Konnte Font nicht oeffnen:"
 msgstr ""
 
-#: icc_gl.cpp:556 icc_gl.cpp:558
+#: icc_gl.cpp:596 icc_gl.cpp:598
 msgid "Fontgroesse nicht setzbar"
 msgstr ""
 
-#: icc_gl.cpp:684
+#: icc_gl.cpp:726
 #, c-format
 msgid "0,0,0"
 msgstr ""
 
-#: icc_gl.cpp:952
+#: icc_gl.cpp:1000
 msgid "Kanalauswahl geaendert: "
 msgstr ""
 
-#: icc_gl.cpp:1385 icc_gl.cpp:1516
+#: icc_gl.cpp:1533 icc_gl.cpp:1670
 msgid "Lab_speicher Speicher nicht verfuegbar"
 msgstr ""
 
-#: icc_gl.cpp:1406 icc_gl.cpp:1407 icc_gl.cpp:1534 icc_gl.cpp:1535
+#: icc_gl.cpp:1554 icc_gl.cpp:1555 icc_gl.cpp:1688 icc_gl.cpp:1689
 msgid "RGB_speicher Ergebnis nicht verfuegbar"
 msgstr ""
 
-#: icc_gl.cpp:1507
+#: icc_gl.cpp:1661
 msgid "XYZ_speicher Speicher nicht verfuegbar"
 msgstr ""
 
-#: icc_gl.cpp:1617 icc_gl.cpp:1627 icc_gl.cpp:1629 icc_gl.cpp:1631
+#: icc_gl.cpp:1771 icc_gl.cpp:1781 icc_gl.cpp:1783 icc_gl.cpp:1785
 msgid "Slice"
 msgstr ""
 
-#: icc_gl.cpp:1618
+#: icc_gl.cpp:1772
 msgid "Rotate around slice"
 msgstr ""
 
-#: icc_gl.cpp:1633
+#: icc_gl.cpp:1787
 msgid "Rotate around"
 msgstr ""
 
-#: icc_gl.cpp:1633
+#: icc_gl.cpp:1787
 msgid "axis"
 msgstr ""
 
-#: icc_gl.cpp:1638
+#: icc_gl.cpp:1792
 msgid "Slice plane"
 msgstr ""
 
-#: icc_gl.cpp:1641
+#: icc_gl.cpp:1795
 msgid "White"
 msgstr ""
 
-#: icc_gl.cpp:1642
+#: icc_gl.cpp:1796
 msgid "Light gray"
 msgstr ""
 
-#: icc_gl.cpp:1644
+#: icc_gl.cpp:1798
 msgid "Dark gray"
 msgstr ""
 
-#: icc_gl.cpp:1648
+#: icc_gl.cpp:1802
 msgid "Background colour"
 msgstr ""
 
-#: icc_gl.cpp:1653
+#: icc_gl.cpp:1807
 msgid "gray"
 msgstr ""
 
-#: icc_gl.cpp:1654
+#: icc_gl.cpp:1808
 msgid "coloured"
 msgstr ""
 
-#: icc_gl.cpp:1655
+#: icc_gl.cpp:1809
 msgid "high contrast"
 msgstr ""
 
-#: icc_gl.cpp:1656
+#: icc_gl.cpp:1810
 msgid "shells"
 msgstr ""
 
-#: icc_gl.cpp:1661
+#: icc_gl.cpp:1815
 msgid "Sphere 1dE"
 msgstr ""
 
-#: icc_gl.cpp:1662
+#: icc_gl.cpp:1816
 msgid "Sphere 2dE"
 msgstr ""
 
-#: icc_gl.cpp:1663
+#: icc_gl.cpp:1817
 msgid "Sphere 4dE"
 msgstr ""
 
-#: icc_gl.cpp:1666
+#: icc_gl.cpp:1820
 msgid "Star"
 msgstr ""
 
-#: icc_gl.cpp:1669
+#: icc_gl.cpp:1823
 msgid "Point"
 msgstr ""
 
-#: icc_gl.cpp:1672
+#: icc_gl.cpp:1826
 msgid "without markers"
 msgstr ""
 
-#: icc_gl.cpp:1673
+#: icc_gl.cpp:1827
 msgid "Spektral line"
 msgstr ""
 
-#: icc_gl.cpp:1676 icc_betrachter.cxx:697
+#: icc_gl.cpp:1830 icc_betrachter.cxx:697
 msgid "Texts"
 msgstr ""
 
-#: icc_gl.cpp:1678
+#: icc_gl.cpp:1832
 msgid "Texts/Arrows on/off"
 msgstr ""
 
-#: icc_gl.cpp:1680
+#: icc_gl.cpp:1834
 msgid "Illustration"
 msgstr ""
 
-#: icc_gl.cpp:1941
+#: icc_gl.cpp:2095
 msgid "Pos"
 msgstr ""
 
-#: icc_gl.cpp:2036 icc_profile_tags.cpp:291
+#: icc_gl.cpp:2190 icc_profile_tags.cpp:291
 msgid "Channel"
 msgstr ""
 
-#: icc_gl.cpp:2365
+#: icc_gl.cpp:2519
 msgid "Konnte keine Eltern finden"
 msgstr ""
 
-#: icc_gl.cpp:2375
+#: icc_gl.cpp:2529
 msgid "Konnte keine passende Programmstruktur finden"
 msgstr ""
 
@@ -1160,143 +1160,143 @@ msgstr ""
 msgid "CMYK_Satz_.size() und nFelder_ sind ungleich"
 msgstr ""
 
-#: icc_measurement.cpp:796
+#: icc_measurement.cpp:797
 msgid "Report about ICC profile"
 msgstr ""
 
-#: icc_measurement.cpp:832
+#: icc_measurement.cpp:833
 msgid "Meas colour"
 msgstr ""
 
-#: icc_measurement.cpp:834
+#: icc_measurement.cpp:835
 msgid "Profile colour"
 msgstr ""
 
-#: icc_measurement.cpp:906
+#: icc_measurement.cpp:907
 msgid "no measurment data available"
 msgstr ""
 
-#: icc_measurement.cpp:913
+#: icc_measurement.cpp:914
 msgid "Measurment- and profile colours from <b>"
 msgstr ""
 
-#: icc_measurement.cpp:915
+#: icc_measurement.cpp:916
 msgid "RGB"
 msgstr ""
 
-#: icc_measurement.cpp:917
+#: icc_measurement.cpp:918
 msgid "CMYK"
 msgstr ""
 
-#: icc_measurement.cpp:918
+#: icc_measurement.cpp:919
 msgid "</b> Measurement"
 msgstr ""
 
-#: icc_measurement.cpp:920
+#: icc_measurement.cpp:921
 msgid "CMM: <b>lcms</b>"
 msgstr ""
 
-#: icc_measurement.cpp:922
+#: icc_measurement.cpp:923
 msgid "averaging deviations (dE CIE*Lab):<b> "
 msgstr ""
 
-#: icc_measurement.cpp:922
+#: icc_measurement.cpp:923
 msgid "</b>  maximum: "
 msgstr ""
 
-#: icc_measurement.cpp:922
+#: icc_measurement.cpp:923
 msgid "  minimum: "
 msgstr ""
 
-#: icc_measurement.cpp:922
+#: icc_measurement.cpp:923
 msgid "  (dE CIE 2000) averaging: "
 msgstr ""
 
-#: icc_measurement.cpp:922
+#: icc_measurement.cpp:923
 msgid "  maximum: "
 msgstr ""
 
-#: icc_measurement.cpp:952
+#: icc_measurement.cpp:953
 msgid "Measurement patch"
 msgstr ""
 
-#: icc_measurement.cpp:953
+#: icc_measurement.cpp:954
 msgid "dE Lab"
 msgstr ""
 
-#: icc_measurement.cpp:954
+#: icc_measurement.cpp:955
 msgid "dE2000"
 msgstr ""
 
-#: icc_measurement.cpp:955
+#: icc_measurement.cpp:956
 msgid "L"
 msgstr ""
 
-#: icc_measurement.cpp:956
+#: icc_measurement.cpp:957
 msgid "a"
 msgstr ""
 
-#: icc_measurement.cpp:957
+#: icc_measurement.cpp:958
 msgid "b"
 msgstr ""
 
-#: icc_measurement.cpp:958
+#: icc_measurement.cpp:959
 msgid "L'"
 msgstr ""
 
-#: icc_measurement.cpp:959
+#: icc_measurement.cpp:960
 msgid "a'"
 msgstr ""
 
-#: icc_measurement.cpp:960
+#: icc_measurement.cpp:961
 msgid "b'"
 msgstr ""
 
-#: icc_measurement.cpp:961
+#: icc_measurement.cpp:962
 msgid "X"
 msgstr ""
 
-#: icc_measurement.cpp:962 icc_measurement.cpp:976
+#: icc_measurement.cpp:963 icc_measurement.cpp:977
 msgid "Y"
 msgstr ""
 
-#: icc_measurement.cpp:963
+#: icc_measurement.cpp:964
 msgid "Z"
 msgstr ""
 
-#: icc_measurement.cpp:965
+#: icc_measurement.cpp:966
 msgid "X'"
 msgstr ""
 
-#: icc_measurement.cpp:966
+#: icc_measurement.cpp:967
 msgid "Y'"
 msgstr ""
 
-#: icc_measurement.cpp:967
+#: icc_measurement.cpp:968
 msgid "Z'"
 msgstr ""
 
-#: icc_measurement.cpp:970
+#: icc_measurement.cpp:971
 msgid "R"
 msgstr ""
 
-#: icc_measurement.cpp:971
+#: icc_measurement.cpp:972
 msgid "G"
 msgstr ""
 
-#: icc_measurement.cpp:972
+#: icc_measurement.cpp:973
 msgid "B"
 msgstr ""
 
-#: icc_measurement.cpp:974
+#: icc_measurement.cpp:975
 msgid "C"
 msgstr ""
 
-#: icc_measurement.cpp:975
+#: icc_measurement.cpp:976
 msgid "M"
 msgstr ""
 
-#: icc_measurement.cpp:977
+#: icc_measurement.cpp:978
 msgid "K"
 msgstr ""
 
