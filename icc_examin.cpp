@@ -30,6 +30,7 @@
 #include "icc_betrachter.h"
 #include "icc_draw.h"
 #include "icc_examin.h"
+#include "icc_examin_io.h"
 #include "icc_gl.h"
 #include "icc_helfer.h"
 #include "icc_helfer_ui.h"
@@ -78,12 +79,10 @@ ICCexamin::ICCexamin ()
 
   icc_betrachter = new ICCfltkBetrachter;
   profile.init();
+  io_ = new ICCexaminIO;
 
-  lade_ = false;
-  neu_laden_ = true;
   _item = -1;
   _mft_item = -1;
-  farbraum_modus_ = false;
   statlabel = "";
   status_ = false;
   intent_ = 3;
@@ -98,6 +97,7 @@ void
 ICCexamin::quit ()
 { DBG_PROG_START
   delete icc_betrachter;
+  delete io_;
   profile.clear();
   DBG_PROG_ENDE
   exit(0);
@@ -231,7 +231,7 @@ ICCexamin::start (int argc, char** argv)
 # if USE_THREADS
   static Fl_Thread fl_t;
   DBG_THREAD_V( fl_t )
-  int fehler = fl_create_thread( fl_t, &oeffnenStatisch_, (void *)this );
+  int fehler = fl_create_thread( fl_t, &ICCexaminIO::oeffnenStatisch_, (void *)this );
 # if HAVE_PTHREAD_H
   icc_thread_liste[THREAD_LADEN] = fl_t;
 # ifdef CWDEBUG
@@ -253,7 +253,7 @@ ICCexamin::start (int argc, char** argv)
     WARN_S( _("unbekannter Fehler beim Start eines Waechter Threads Fehler: ") << fehler );
   }
 # else
-  Fl::add_timeout( 0.01, /*(void(*)(void*))*/oeffnenStatisch_ ,(void*)this);
+  Fl::add_timeout( 0.01, /*(void(*)(void*))*/ICCexaminIO::oeffnenStatisch_ ,(void*)this);
 # endif
 
   icc_betrachter->run();
@@ -350,31 +350,6 @@ ICCexamin::nachricht( Modell* modell , int info )
   Beobachter::nachricht(modell, info);
   icc_examin->fortschrittThreaded(1.0);
   icc_examin->fortschrittThreaded(1.1);
-  DBG_PROG_ENDE
-}
-
-int
-ICCexamin::erneuern()
-{
-  if(erneuern_.size()) {
-    DBG_PROG_START
-    int i = *erneuern_.begin();
-    std::set<int>::const_iterator it = erneuern_.begin();
-    DBG_NUM_V( *it )
-    erneuern_.erase(it);
-    DBG_PROG_ENDE
-    return i;
-  } else {
-    return -1;
-  }
-}
-
-void
-ICCexamin::erneuern(int pos)
-{
-  DBG_PROG_START
-  erneuern_.insert( pos );
-  DBG_NUM_V( *erneuern_.begin() <<" "<< erneuern_.size() )
   DBG_PROG_ENDE
 }
 
@@ -492,6 +467,39 @@ ICCexamin::vcgtZeigen ()
   DBG_PROG_ENDE
 }
 
+bool
+ICCexamin::berichtSpeichern (void)
+{ return io_->berichtSpeichern();
+}
+bool
+ICCexamin::gamutSpeichern (icc_examin_ns::IccGamutFormat format)
+{ return io_->gamutSpeichern(format);
+}
+void
+ICCexamin::oeffnen ()
+{ io_->oeffnen();
+}
+void
+ICCexamin::oeffnen (std::vector<std::string> dateinamen)
+{ io_->oeffnen( dateinamen );
+}
+bool
+ICCexamin::lade ()
+{ return io_->lade();
+}
+void
+ICCexamin::lade (std::vector<Speicher> & neu)
+{ io_->lade(neu);
+}
+int
+ICCexamin::erneuern()
+{ return io_->erneuern();
+}
+void
+ICCexamin::erneuern(int pos)
+{ io_->erneuern(pos);
+}
+
 void
 ICCexamin::moniHolen ()
 { DBG_PROG_START
@@ -513,7 +521,7 @@ ICCexamin::moniHolen ()
 
   int erfolg = false;
   while(!erfolg) {
-    if(kannLaden()) {
+    if(!lade()) {
       lade(ss);
       erfolg = true;
     } else {
@@ -615,6 +623,85 @@ ICCexamin::bpc( int bpc_neu )
     oeffnen( profilnamen );
   }
   bpc_ = bpc_neu;
+}
+
+void
+ICCexamin::erneuerTagBrowserText_ (void)
+{
+  DBG_PROG_START
+  //open and preparing the first selected item
+
+  TagBrowser *b = icc_betrachter->tag_browser;
+
+  std::stringstream s;
+  std::string text;
+  std::vector<std::string> tag_list = profile.profil()->printTags();
+  DBG_PROG_V( tag_list.size() <<" "<< (int*) b )
+
+# define add_s(stream) s << stream; b->add (s.str().c_str()); s.str("");
+# define add_          s << " ";
+
+  b->clear();
+  const char *file_type_name = _("Filename (ICC data type)");
+  DBG_PROG_V( profile.profil()->data_type )
+  if(profile.profil()->data_type != ICCprofile::ICCprofileDATA)
+    file_type_name = _("Filename (other data type)");
+  if(profile.profil()->data_type == ICCprofile::ICCcorruptedprofileDATA)
+    file_type_name = _("Filename (corrupted ICC data type)");
+  add_s ("@f" << file_type_name << ":" )
+  add_s ("@b    " << profile.profil()->filename() )
+  add_s ("")
+  if (tag_list.size() == 0) {
+    add_s (_("found no content for") <<" \"" << profile.profil()->filename() << "\"")
+    return;
+  } else if ((int)tag_list.size() != profile.profil()->tagCount()*5 ) {
+    add_s (_("Internal error") )
+  }
+  add_s ("@B26@t" << _("No. Tag   Type   Size Description") )
+  if(profile.profil()->data_type == ICCprofile::ICCprofileDATA ||
+     profile.profil()->data_type == ICCprofile::ICCcorruptedprofileDATA) {
+    add_s ("@t" << profile.profil()->printHeader() )
+  } else {
+    add_s("")
+  }
+  std::vector<std::string>::iterator it;
+  for(int i = 0; i < (int)tag_list.size(); ++i)
+    ;//DBG_PROG_V( i <<" "<< tag_list[i] )
+  int anzahl = 0;
+  for (it = tag_list.begin() ; it != tag_list.end(); ++it) {
+    s << "@t";
+    // Nummer
+    int Nr = atoi((*it).c_str()) + 1;
+    std::stringstream t; t << Nr;
+    for (int i = t.str().size(); i < 3; i++) {s << " ";} s << Nr; *it++; ++anzahl; s << " ";
+    // Name/Bezeichnung
+    s << *it; for (int i = (*it++).size(); i < 6; i++) {s << " ";} ++anzahl;
+    // Typ
+    s << *it; for (int i = (*it++).size(); i < 5; i++) {s << " ";} ++anzahl;
+    // Größe
+    for (int i = (*it).size(); i < 6; i++) {s << " ";} s << *it++; s << " "; ++anzahl;
+    // Beschreibung
+    add_s (*it)
+  }
+  DBG_PROG_V( anzahl )
+  if (b->value())
+    b->selectItem (b->value()); // Anzeigen
+  else
+    if(profile.profil()->data_type == ICCprofile::ICCprofileDATA ||
+       profile.profil()->data_type == ICCprofile::ICCcorruptedprofileDATA) {
+      b->selectItem (1);
+    } else {
+      b->selectItem (6);
+    }
+
+  if (profile.profil()->hasTagName (b->selectedTagName)) {
+    int item = profile.profil()->getTagByName (b->selectedTagName) + 6;
+    b->selectItem (item);
+    b->value(item);
+  }
+
+  status ( dateiName( profile.profil()->filename() ) << " " << _("loaded")  )
+  DBG_PROG_ENDE
 }
 
 void

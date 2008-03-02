@@ -23,6 +23,7 @@ if [ -n "$ELEKTRA" ] && [ "$ELEKTRA" -gt "0" ]; then
       echo "ELEKTRA = 1" >> $CONF
       echo "ELEKTRA_H = `pkg-config --cflags elektra`" >> $CONF
       echo "ELEKTRA_LIBS = `pkg-config --libs elektra`" >> $CONF
+      echo "ELEKTRA_SW = `pkg-config --cflags-only-I  elektra | sed 's/\-I// ; s%/include%/etc/kdb/%'`" >> $CONF
       ELEKTRA_FOUND=1
     else
       echo "Elektra:"
@@ -64,7 +65,8 @@ if [ -n "$LCMS" ] && [ $LCMS -gt 0 ]; then
     echo "LCMS_H = `pkg-config --cflags lcms`" >> $CONF
     echo "LCMS_LIBS = `pkg-config --libs lcms`" >> $CONF
   else
-    echo "ERROR: no or too old LCMS found,\n  need at least version 1.14, download: www.littlecms.com"
+    echo "ERROR: no or too old LCMS found,"
+    echo "  need at least version 1.14, download: www.littlecms.com"
     ERROR=1
   fi
 fi
@@ -114,7 +116,7 @@ if [ "$X11" = 1 ] && [ $X11 -gt 0 ]; then
     fi
   fi
   echo "X_CPP = \$(X_CPPFILES)" >> $CONF
-  echo "X11_LIB_PATH = -L/usr/X11R6/lib\$(BARCH) -L/usr/lib\$(BARCH) -L\$libdir" >> $CONF
+  echo "X11_LIB_PATH = -L/usr/X11R6/lib\$(BARCH) -L/usr/lib\$(BARCH) -L\$(libdir)" >> $CONF
   echo "X11_LIBS=\$(X11_LIB_PATH) -lX11 \$(XF86VMODE_LIB) -lXpm -lXext \$(XINERAMA_LIB)" >> $CONF
 fi
 
@@ -147,7 +149,7 @@ if [ -n "$FLTK" ] && [ $FLTK -gt 0 ]; then
     echo "FLTK_H = `fltk-config --cxxflags | sed 's/-O[0-9]//'`" >> $CONF
     echo "FLTK_LIBS = `fltk-config --use-images --use-gl --ldflags`" >> $CONF
   else
-    echo "ERROR:\n"
+    echo "ERROR:"
     echo "           FLTK is not found; download: www.fltk.org"
     ERROR=1
   fi
@@ -155,7 +157,7 @@ fi
 
 if [ -n "$FLU" ] && [ $FLU -gt 0 ]; then
   FLU_=`flu-config --cxxflags 2>>error.txt`
-  if [ `fltk-config --version` == "1.1.7" ]; then
+  if [ `fltk-config --version` = "1.1.7" ]; then
     echo -e "\c"
     echo "FLTK version 1.1.7 is not supported by FLU"
     if [ "$FLU" = 1 ]; then
@@ -202,7 +204,8 @@ if [ -n "$LIBPNG" ] && [ $LIBPNG -gt 0 ]; then
     echo "PNG_H = `pkg-config --cflags $LIBPNG`" >> $CONF
     echo "PNG_LIBS = `pkg-config --libs $LIBPNG`" >> $CONF
   else
-    echo "no or too old libpng found,\n  need at least version 1.0, download: www.libpng.org"
+    echo "no or too old libpng found,"
+    echo "  need at least version 1.0, download: www.libpng.org"
   fi
 fi
 

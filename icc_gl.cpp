@@ -149,7 +149,6 @@ GL_Ansicht::GL_Ansicht(int X,int Y,int W,int H)
   maus_y_ = 0;
   darf_bewegen_ = false;
   ist_bewegt_ = false;
-  frei_ = true;
   valid_ = false;
   zeit_diff_ = 0;
 
@@ -785,24 +784,6 @@ GL_Ansicht::zeichneKoordinaten_()
     glTranslatef(0,0,-.1);
   DBG_ICCGL_ENDE
 }
-
-// Sperren mit Warten/Freigeben
-void
-GL_Ansicht::frei(int freigeben)
-{ DBG_PROG_START
-  static int zahl = 0;
-  if(freigeben) {
-    frei_ = true;
-    --zahl;
-    DBG_THREAD_S( "freigeben " << zahl )
-  } else {
-    while(!frei_) icc_examin_ns::sleep(0.01);
-    frei_ = false;
-    ++zahl;
-    DBG_THREAD_S( "sperren   " << zahl )
-  } 
-  DBG_PROG_ENDE
-}     
 
 void
 GL_Ansicht::erstelleGLListen_()
@@ -1900,7 +1881,7 @@ GL_Ansicht::menueErneuern_()
   // -> (Hauptmenue)
   for (int i = 0; i < (int)nach_farb_namen_.size(); i++) {
     char* p = (char*) nach_farb_namen_[i].c_str();
-    menue_->add( p, 0,c_, (void*)(MENU_MAX + i), 0 );
+    menue_->add( p, 0,c_, (void*)((intptr_t)(MENU_MAX + i)), 0 );
     DBG_PROG_V( MENU_MAX + i <<" "<< nach_farb_namen_[i] )
   }
 

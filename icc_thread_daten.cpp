@@ -22,37 +22,29 @@
  * -----------------------------------------------------------------------------
  */
 
-/** @brief eine Klasse mit thread Ueberwachungsmöglichkeit
+/*  eine Klasse mit thread Ueberwachungsmöglichkeit
  * 
  */
 
- //! @date      11. 09. 2006
+ // date      11. 09. 2006
 
 
-#ifndef ICC_THREAD_DATEN_H
-#define ICC_THREAD_DATEN_H
+#include "icc_thread_daten.h"
 
-#include "icc_utils.h"
-
-/** @brief * Die Klasse mit Anmeldung und Freigabe
- *
- *  erlaubt threadsicheren Datenzugang
- */
-
-namespace icc_examin_ns {
-
-class ThreadDaten
-{
-    bool frei_;               //!<@brief wird nicht von weiterem Prozess benutzt
-    int  zahl_;               //!<@breif Anzahl der Wartenden
-protected:
-    ThreadDaten() { frei_ = true; zahl_ = 0; }
-    ~ThreadDaten() {;}
-public:
-    bool frei()     { return frei_; }          //!<@brief ist nicht gesperrt
-    void frei(int freigeben); //!@brief Sperren mit Warten/Freigeben
-};
-
+void
+icc_examin_ns::ThreadDaten::frei(int freigeben)
+{ DBG_PROG_START
+  if(freigeben) {
+    frei_ = true;
+    --zahl_;
+    DBG_THREAD_S( "freigeben " << zahl_ )
+  } else {
+    while(!frei_)
+      icc_examin_ns::sleep(0.01);
+    frei_ = false;
+    ++zahl_;
+    DBG_THREAD_S( "sperren   " << zahl_ )
+  }
+  DBG_PROG_ENDE
 }
 
-#endif //ICC_THREAD_DATEN_H

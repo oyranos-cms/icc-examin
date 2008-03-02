@@ -51,6 +51,7 @@ CPP_HEADERS = \
 	icc_fenster.h \
 	icc_formeln.h \
 	icc_examin.h \
+	icc_examin_io.h \
 	icc_examin_version.h \
 	icc_gamut.h \
 	icc_gl.h \
@@ -104,6 +105,7 @@ COMMON_CPPFILES = \
 	icc_profile_tags.cpp \
 	icc_schnell.cpp \
 	icc_speicher.cpp \
+	icc_thread_daten.cpp \
 	icc_ueber.cpp \
 	icc_utils.cpp \
 	icc_vrml.cpp \

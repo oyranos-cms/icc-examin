@@ -225,7 +225,7 @@ ICCexamin::farbraum (int n)
   int ncl2_profil = profile[n]->hasTagName("ncl2");
 
   // Oeffnen
-  if(lade_)
+  if(lade())
   {
     farbraumModus( profile.aktuell() );
     if(farbraumModus())

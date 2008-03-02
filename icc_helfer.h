@@ -126,6 +126,9 @@ void      speicherNachDatei          ( std::string & dateiname,
                                        Speicher & s );
 
 double    holeDateiModifikationsZeit ( const char *fullFileName );
+// Dateihelfer
+const char* dateiName(const char* name);
+const char* dateiName(std::string name);
 
 
 // Texthelfer

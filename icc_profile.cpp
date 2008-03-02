@@ -577,7 +577,7 @@ ICCprofile::hasTagName            (std::string name)
   int item = 0;
   DBG_PROG_V( tags.size() )
   for (std::vector<ICCtag>::iterator it = tags.begin(); it != tags.end(); it++){
-    DBG_PROG_V((int)(&it))
+    DBG_PROG_V((intptr_t)(&it))
     if ( (*it).getTagName() == name
       && (*it).getSize()            ) {
 #     ifdef DEBUG_ICCPROFILE

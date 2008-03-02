@@ -39,7 +39,9 @@ VERSION_L=`echo $VERSION_L | sed 's/^0*//g'`
 
 cwdebug=0
 
+echo ""
 echo "Welcome to $TARGET_NAME Version $VERSION configurator"
+echo ""
 
 if [ $# -gt 0 ]; then
   prefix=""
@@ -182,21 +184,17 @@ if [ $? = 0 ]; then
       MACH=BUILD_64
       echo "BUILD_64 = 1" >> $CONF
       echo "X86_64                  will build in 64 bit mode"
+      BARCH="64"
     else
       if [ "$MACH_" = "sun4u" ]; then
         MACH=BUILD_64
         echo "BUILD_64 = 1" >> $CONF
         echo "spark ultra 4           will build in 64 bit mode"
+        BARCH="64"
+        LINE_ARCH="-64"
       fi
     fi
   fi
-fi
-if [ $MACH = "BUILD_64" ]; then
-  BARCH="64"
-  LINE_ARCH="-64"
-else
-  BARCH=""
-  LINE_ARCH=""
 fi
 LIBDIR="lib"$BARCH
 export MACH OSUNAME LIBDIR BARCH LINE_ARCH
@@ -467,7 +465,8 @@ PREPARE_MAKEFILES=1; export PREPARE_MAKEFILES
 MAKEFILES="makefile"; export MAKEFILES
 ./configure.sh
 
-test -f error.tmp && ( ERROR=1; rm error.tmp )
+test -f error.tmp && ERROR=1
+test -f error.tmp && rm error.tmp
 if [ "$ERROR" -ne "0" ]; then
   echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
   echo "!!!                     An ERROR occured                     !!!"

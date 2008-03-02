@@ -35,6 +35,7 @@
 #include "icc_utils.h"
 #include "agviewer.h"
 #include "icc_vrml_parser.h"
+#include "icc_thread_daten.h"
 //#include "Fl_Slot.H"
 
 #include <FL/Fl_Gl_Window.H>
@@ -42,7 +43,8 @@
 
 class Fl_Menu_Button;
 
-class GL_Ansicht : public Fl_Gl_Window /*, public Fl_Slot*/ {
+class GL_Ansicht : public Fl_Gl_Window, /*, public Fl_Slot*/
+                   public icc_examin_ns::ThreadDaten {
   // Datenhaltung
     // Position: Farbe1, Farbe2, Farbe3, Farbkanal Nr., Wert
   std::vector<std::vector<std::vector<std::vector<double> > > > tabelle_;
@@ -184,10 +186,6 @@ private:
   static void bewegenStatisch_(void* GL_Ansicht);
   bool darf_bewegen_;
   bool ist_bewegt_;
-  bool frei_;
-public:
-  bool frei()     { return frei_; }          //!< ist nicht gesperrt
-  void frei(int bool_);                      //!< Sperren mit Warten/Freigeben
 private:
   double zeit_diff_;        //!< Bilder pro Sekunde
   int  valid_;              //!< notiert ob in draw() valid() false war

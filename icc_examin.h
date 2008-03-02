@@ -46,6 +46,7 @@ class  ICCfltkBetrachter;
 class  ICCwaehler;
 class  ICCexamin;
 extern ICCexamin *icc_examin;
+class  ICCexaminIO;
 
 namespace icc_examin_ns {
     enum IccGamutFormat {
@@ -54,9 +55,15 @@ namespace icc_examin_ns {
     };
 }
 
+/** @brief zentrale Programminstanz
+ *
+ *  Die Klasse uebernimmt die Abstimmung von Oberflaechen und Datenereignissen,
+ *  den Start der (fltk-)Warteschleife und der Threads.
+ */
 class ICCexamin : public icc_examin_ns::Beobachter,
                   public icc_examin_ns::ThreadDaten
 {
+  friend class ICCexaminIO;
   enum {
     TAG_VIEWER,
     MFT_VIEWER,
@@ -71,27 +78,14 @@ class ICCexamin : public icc_examin_ns::Beobachter,
     void         quit(void);
 
   private:
-    bool         lade_;
-    bool         neu_laden_;
-    std::set<int> erneuern_;
+    ICCexaminIO *io_;
   public:
     int          erneuern();
     void         erneuern(int pos);
-  private:
-    std::vector<Speicher> speicher_vect_;
-    static
-#if USE_THREADS
-    void*
-#else
-    void
-#endif
-                 oeffnenStatisch_ ( void* ICCexamina );
-    void         oeffnenThread_ ();            //!< nur einmal pro ICCexamin
-    void         oeffnenThread_ (int erneuern__); 
   public:
     void         oeffnen ();                   //!< interaktiv
     void         oeffnen (std::vector<std::string> dateinamen);
-    bool         kannLaden () {return !lade_; };
+    bool         lade ();
     void         lade (std::vector<Speicher> & neu);
 
   private:
@@ -108,7 +102,7 @@ class ICCexamin : public icc_examin_ns::Beobachter,
     void         waehleMft (int item);
     std::vector<int> kurve_umkehren;
   private:
-    int  _item,  _mft_item;
+    int  _item,  _mft_item;    //!< @brief ausgewaehlte Profilbestandteile
     int  _zeig_prueftabelle,
          farbraum_angezeigt_;
     int  status_,
