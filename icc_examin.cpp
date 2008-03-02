@@ -1477,8 +1477,8 @@ ICCexamin::statusFarbe(double & L, double & a, double & b)
          *rgb = 0;
   DBG_PROG_V( lab[0]<<" "<<lab[1]<<" "<<lab[2] )
   rgb = icc_oyranos. wandelLabNachBildschirmFarben(
-                                icc_betrachter->DD_box_stat->x(),
-                                icc_betrachter->DD_box_stat->y(),
+                                icc_betrachter->DD_box_stat->window()->x() + icc_betrachter->DD_box_stat->window()->w()/2,
+                                icc_betrachter->DD_box_stat->window()->y() + icc_betrachter->DD_box_stat->window()->h()/2,
                                 lab, 1,
                                 icc_examin->intentGet(NULL),
                                 (icc_examin->gamutwarn()?cmsFLAGS_GAMUTCHECK:0)|

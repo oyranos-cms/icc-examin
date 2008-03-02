@@ -1585,29 +1585,10 @@ GL_Ansicht::punkteAuffrischen()
         // positioning
         glTranslated( -b_darstellungs_breite/2,-.5,-a_darstellungs_breite/2 );
 
-        int x = this->x() + this->w()/2;
-        int y = this->y() + this->h()/2;
-        char * disp_name = oyGetDisplayNameFromPosition( 0, x,y, malloc );
-        oyProfile_s * disp_prof = 0;
-        if(disp_name)
-        {
-          char * moni_profile_name = oyGetMonitorProfileName(disp_name, malloc);
-          if(moni_profile_name)
-          {
-            disp_prof = oyProfile_FromFile( moni_profile_name, 0, 0 );
+        int x = this->window()->x() + this->window()->w()/2;
+        int y = this->window()->y() + this->window()->h()/2;
 
-          } else {
-
-            size_t size = 0;
-            char * buf = oyGetMonitorProfile( disp_name, &size, malloc );
-            if(size && buf)
-            {
-              disp_prof = oyProfile_FromMem( size, buf, 0, 0 );
-              free(buf); size = 0;
-            }
-          }
-          free(disp_name);
-        }
+        oyProfile_s * disp_prof = icc_oyranos.oyMoni(x,y);
 
         int n = oyNamedColours_Count( colours_ );
         if(zeig_punkte_als_paare)

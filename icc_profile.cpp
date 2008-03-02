@@ -918,8 +918,13 @@ bool
 ICCprofile::tagBelongsToMeasurement( int tag )
 {
   DBG_PROG
-  if(tag >= (int)tags.size())
-    WARN_S("wrong tag "<<tag<<"["<<tags.size()<<"]");
+  if(0 > tag || tag >= (int)tags.size())
+  {
+    if(tag >= 0)
+      WARN_S("wrong tag "<<tag<<"["<<tags.size()<<"]");
+    return 0;
+  }
+
   std::string name = tags[tag].getTagName();
   int s = tags[tag].getSize();
   return ( (name == "targ" ||

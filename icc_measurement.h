@@ -121,7 +121,8 @@ class ICCmeasurement {
     int                 maxFeld;
     double              XYZmax[3];      /**< CIE absolute black point */
     double              XYZmin[3];      /**< CIE absolute media white */
-    double              XYZWP[3];       /**< illumination white */
+    double              XYZWP[3];       /**< media white */
+    double              XYZBP[3];       /**< media black */
 
     std::vector<std::vector<std::string> > reportTabelle_;
     std::vector<int>    layout;

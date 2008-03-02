@@ -140,6 +140,8 @@ ICCmeasurement::defaults ()
   XYZWP[0] = X_D50;
   XYZWP[1] = Y_D50;
   XYZWP[2] = Z_D50;
+  XYZBP[0] = XYZBP[1] = XYZBP[2] = 0;
+
   minFeld = -1;
   maxFeld = -1;
   DBG_PROG_ENDE
@@ -199,6 +201,7 @@ ICCmeasurement::copy (const ICCmeasurement& m)
   memcpy( XYZmax, m.XYZmax, 3*sizeof(double) );
   memcpy( XYZmin, m.XYZmin, 3*sizeof(double) );
   memcpy( XYZWP, m.XYZWP, 3*sizeof(double) );
+  memcpy( XYZBP, m.XYZBP, 3*sizeof(double) );
   minFeld = m.minFeld;
   maxFeld = m.maxFeld;
 
@@ -296,13 +299,13 @@ ICCmeasurement::leseTag (void)
 
   
   // locale - differentiate commas (Attention: CgatsFilter changes LC_NUMERIC)
-  doLocked_m( const char* loc_alt = setlocale(LC_NUMERIC, NULL);,NULL) //getenv("LANG");
-  if(loc_alt) {
+  doLocked_m( std::string loc_alt = setlocale(LC_NUMERIC, NULL);,NULL) //getenv("LANG");
+  if(loc_alt.size()) {
     DBG_NUM_V( loc_alt )
   } else {
     DBG_NUM_S( "LANG variable not found" )
   }
-  setlocale(LC_NUMERIC,"C");
+  doLocked_m( setlocale(LC_NUMERIC,"C");,NULL);
 
   if(data.size())
   {  
@@ -562,8 +565,8 @@ ICCmeasurement::leseTag (void)
 #   endif
   }
 
-  if(loc_alt)
-    setlocale(LC_NUMERIC,loc_alt);
+  if(loc_alt.size())
+    doLocked_m( setlocale(LC_NUMERIC,loc_alt.c_str()) , NULL);
 
   DBG_PROG_ENDE
 }
@@ -799,18 +802,6 @@ ICCmeasurement::init_umrechnen                     (void)
 
   XYZmax[0] = XYZmax[1] = XYZmax[2] = -100000;
   XYZmin[0] = XYZmin[1] = XYZmin[2] = 100000;
-  {
-    std::vector<double> wp;
-    if (profile_) wp = profile_->getWhitePkt();
-    if (wp.size() == 3)
-    { for (int i = 0; i < 3; i++)
-        XYZWP[i] = wp[i];
-    } else
-    { XYZWP[0] = X_D50;
-      XYZWP[1] = Y_D50;
-      XYZWP[2] = Z_D50;
-    }
-  }
   { int maxFeld=0, minFeld=0;
     const char *maxFN=0, *minFN=0;
     if (nFelder_ != (int)XYZ_Satz_.size()) {
@@ -845,6 +836,34 @@ ICCmeasurement::init_umrechnen                     (void)
     if( minFN ) {
       DBG_PROG_S( minFN << " Nr. " << minFeld << endl << " X_min = "<< XYZmin[0] <<" Y_min = "<< XYZmin[1] <<" Z_min = "<< XYZmin[2] );
     }
+  }
+
+  {
+    int bkpt_pos = -1;
+    std::vector<double> wp, bp;
+    if (profile_)
+    {
+      wp = profile_->getWhitePkt();
+      bkpt_pos = profile_->getTagIDByName("bkpt");
+      if(bkpt_pos >= 0)
+        bp = profile_->getTagCIEXYZ(bkpt_pos);
+    }
+    if (wp.size() == 3)
+    { for (int i = 0; i < 3; i++)
+        XYZWP[i] = wp[i];
+    } else
+    { XYZWP[0] = X_D50;
+      XYZWP[1] = Y_D50;
+      XYZWP[2] = Z_D50;
+    }
+
+    if (bp.size() == 3 &&
+        bp[0] != 0.0 && bp[1] != 0.0 && bp[2] != 0.0)
+      for (int i = 0; i < 3; i++)
+        XYZBP[i] = 0.0;
+    else
+      for (int i = 0; i < 3; i++)
+        XYZBP[i] = XYZmin[i];
   }
 
 
@@ -1027,10 +1046,10 @@ ICCmeasurement::init_umrechnen                     (void)
           if (XYZ_measurement_)
           {
           if (isICCDisplay_) {
-            double d_xyz[3];
-            FarbeZuDouble( d_xyz, XYZ_Satz_[i] );
+            double CIEXYZ[3];
+            FarbeZuDouble( CIEXYZ, XYZ_Satz_[i] );
             // scale measurement to ICC white and black
-            oyCIEabsXYZ2ICCrelXYZ( d_xyz, XYZ, XYZmin, XYZmax, XYZWP);
+            oyCIEabsXYZ2ICCrelXYZ( CIEXYZ, XYZ, XYZBP, XYZmax, XYZWP);
           } else
             FarbeZuDouble( &XYZ[0], XYZ_Satz_[i] );
 
@@ -1633,7 +1652,7 @@ ICCmeasurement::getMessColour (int patch)
   CIEXYZ = (double*)&XYZ_Satz_[i];
   if (isICCDisplay_)
   {
-    oyCIEabsXYZ2ICCrelXYZ( CIEXYZ, ICCXYZ, XYZmin, XYZmax, XYZWP);
+    oyCIEabsXYZ2ICCrelXYZ( CIEXYZ, ICCXYZ, XYZBP, XYZmax, XYZWP);
     XYZ = ICCXYZ;
   } else
     XYZ = CIEXYZ;

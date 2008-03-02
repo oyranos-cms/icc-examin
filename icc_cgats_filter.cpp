@@ -605,8 +605,8 @@ CgatsFilter::cgats_korrigieren_               ()
   DBG_PROG_V( typ_ )
 
   // locale - Kommas unterscheiden
-  doLocked_m( const char* loc_alt = setlocale(LC_NUMERIC, NULL), NULL )
-  if(loc_alt) {
+  doLocked_m( std::string loc_alt = setlocale(LC_NUMERIC, NULL), NULL )
+  if(loc_alt.size()) {
     DBG_NUM_V( loc_alt )
   } else {
     DBG_NUM_S( "keine LANG Variable gefunden" )
@@ -972,8 +972,8 @@ CgatsFilter::cgats_korrigieren_               ()
     data_.append( "\n" );
   }
 
-  if(loc_alt)
-    doLocked_m( setlocale(LC_NUMERIC,loc_alt) , NULL);
+  if(loc_alt.size())
+    doLocked_m( setlocale(LC_NUMERIC,loc_alt.c_str()) , NULL);
 
   //DBG_NUM_S (data_)
 

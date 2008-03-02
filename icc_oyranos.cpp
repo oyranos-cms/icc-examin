@@ -332,133 +332,17 @@ void
 Oyranos::moni_test_ (int x, int y)
 {
   DBG_PROG_START
-# if HAVE_OY && !defined(APPLE)
-  {
-    size_t size = 0;
-
-    const char *display_name = 0;
-    
-    display_name = XDisplayString( fl_display );  // gehoert X
-    DBG_PROG_V( display_name )
-    int screen = oyGetScreenFromPosition( display_name, x,y );
-    char *new_display_name = changeScreenName_( display_name, screen );
-    char* moni_profil = oyGetMonitorProfile( new_display_name, &size, malloc );
-    if(new_display_name) { delete [] new_display_name; new_display_name = 0; }
-
-    Speicher v_block = moni_;
-      DBG_MEM_V( v_block.size() )
-    const char *profil_name=_("Monitor Profile");
-      DBG_PROG_V( (int*)profil_name <<" "<< profil_name )
-    // We take the profile only if it had changed.
-    // a) new name  - difficult to identify with oyDeviceProfil
-    // b) notification  - provided Oyranos (X?) changes the profile
-    { 
-        if (size)
-        {
-          char* block = moni_profil; moni_profil = 0;
-          if( oyCheckProfileMem( block, size, 0 ) )
-            WARN_S(_("WARNING: Could not load corrupt or damaged profile."))
-          else {
-              DBG_MEM_V( (int*)block <<"|"<< size )
-            v_block.ladeUndFreePtr(&block, size);
-          }
-        } else
-          DBG_S("Could not load profile.")
-        v_block = (const char*)profil_name;
-        DBG_MEM
-    }
-  }
-  DBG_NUM_S( "monitor profile = "<< moni_.name() <<" "<< moni_.size() <<"\n" )
-
-# else
-#   ifdef APPLE
-    CMProfileRef prof=NULL;
-    DisplayIDType screenID=0;
-    GDHandle device = DMGetFirstScreenDevice(true); //GetDeviceList();
-    DMGetDisplayIDByGDevice(device, &screenID, false);
-    CMGetProfileByAVID(screenID, &prof);
-    CMProfileLocation loc;
-    CMGetProfileLocation(prof, &loc);
-    switch(loc.locType)
-    {
-      case cmNoProfileBase:
-             DBG_PROG_S("Das Monitorprofil ist ein temporaeres Profil.")
-             break;
-      case cmFileBasedProfile:
-             DBG_PROG_S("Das Monitorprofil ist ein Datei Profil.")
-             break;
-      case cmHandleBasedProfile:
-             DBG_PROG_S("Das Monitorprofil ist ein Haendling Profil.")
-             break;
-      case cmPtrBasedProfile:
-             DBG_PROG_S("Das Monitorprofil ist ein Zeiger Profil.")
-             break;
-      case cmProcedureBasedProfile:
-             DBG_PROG_S("Das Monitorprofil ist ein prozedurales Profil.")
-             break;
-      case cmPathBasedProfile:
-             DBG_PROG_S("Das Monitorprofil ist ein Pfad Profil.")
-             break;
-      case cmBufferBasedProfile:
-             DBG_PROG_S("Das Monitorprofil ist ein Speicherblock Profil.")
-             break;
-      default:
-             DBG_PROG_S("kein Profil gefunden?")
-             break;
-    }
-
-    refcon ref = {0,0};
-    Boolean bol;
-    CMError err = CMFlattenProfile ( prof, 0, MyFlattenProfileProc, &ref, &bol);
-    err = 0;
-    Str255 str;
-    ScriptCode code;
-    CMGetScriptProfileDescription(prof, str, &code);
-    //CFStringRef cfstring;
-    //CFStringGetPascalString( cfstring, str, 255, kCFStringEncodingASCII);
-    //cfstring = CFStringCreateWithPascalString( NULL, str, kCFStringEncodingASCII);
-    DBG_PROG_V( (int)str[0] )
-	if (prof) CMCloseProfile(prof);
-    //const char *profil_name = CFStringGetCStringPtr(cfstring, kCFStringEncodingASCII);
-    const char *profil_name = (const char*) str; ++profil_name;
-    DBG_PROG_V( screenID )
-
-    //char* profil_name = (char*)malloc(strlen(str));
-    //sprintf(profil_name, str);
-    Speicher v_block = moni_;
-      DBG_MEM_V( v_block.size() )
-      DBG_PROG_V( (int*)profil_name <<" "<< profil_name )
-    if( profil_name &&
-        v_block != profil_name )
-    { 
-        size_t size = ref.size;;
-          DBG_MEM_V( size )
-        if (size)
-        {
-#         ifdef HAVE_OY
-          if( oyCheckProfileMem( ref.data, size, 0 ) )
-            WARN_S(_("WARNING: Could not load profile."))
-          else
-#         endif
-          {
-              DBG_MEM_V( (int*)ref.data <<"|"<< size )
-            char * block = (char*) new char [size];
-            memcpy( block, ref.data, size );
-            v_block.ladeNew(block, size);
-          }
-        } else
-          WARN_S(_("WARNING: Could not load profile."))
-        // "Monitor Profile" will be handled special on other places
-        v_block = _("Monitor Profile");//profil_name;
-        //if(profil_name) free(profil_name);
-        DBG_PROG_V( v_block.name() )
-
-        DBG_MEM
-    }
-    //CFRelease(cfstring);
-#   endif
-# endif
+  size_t size = 0;
+  Speicher v_block = moni_;
+  oyProfile_s * oy_moni = oyMoni(x,y);
+  char* block = (char*) oyProfile_GetMem ( oy_moni, &size, 0, malloc );
+  v_block.ladeUndFreePtr(&block, size);
+  const char* oy_moni_name = oyProfile_GetText( oy_moni, oyNAME_NAME );
+  if(oy_moni_name)
+    v_block = oy_moni_name;
+  oyProfile_Release( &oy_moni );
   DBG_PROG_ENDE
+  return;
 }
 
 void
@@ -1399,14 +1283,16 @@ Oyranos::wandelLabNachProfilUndZurueck(double *lab, // 0.0 - 1.0
 
 oyProfile_s * Oyranos::oyMoni (int x, int y)
 {
-  char * disp_name = oyGetDisplayNameFromPosition( 0, x,y, malloc );
+  char * disp_name = 0;
   oyProfile_s * disp_prof = 0;
 
   static int x_alt = -1, y_alt = -1;
   static oyProfile_s * prof_alt = 0;
 
   if(x == x_alt && y == y_alt && prof_alt)
-    return prof_alt;
+    return oyProfile_Copy( prof_alt, 0 );
+
+  disp_name = oyGetDisplayNameFromPosition( 0, x,y, malloc );
 
   if(disp_name)
   {
@@ -1423,6 +1309,10 @@ oyProfile_s * Oyranos::oyMoni (int x, int y)
       {
         disp_prof = oyProfile_FromMem( size, buf, 0, 0 );
         free(buf); size = 0;
+      } else
+      {
+        DBG_S("Could not load profile. Use sRGB instead.")
+        disp_prof = oyProfile_FromStd( oyASSUMED_WEB, 0 );
       }
     }
     if(disp_name)
@@ -1438,7 +1328,7 @@ oyProfile_s * Oyranos::oyMoni (int x, int y)
     prof_alt = disp_prof;
   }
 
-  return disp_prof;
+  return oyProfile_Copy( disp_prof, 0 );
 }
 
 

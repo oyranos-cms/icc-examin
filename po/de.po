@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2008-01-23 12:55+0100\n"
+"POT-Creation-Date: 2008-01-25 11:31+0100\n"
 "PO-Revision-Date: 2005-08-13 17:35+0200\n"
 "Last-Translator: Kai-Uwe Behrmann\n"
 "Language-Team:  <ku.b@gmx.de>\n"
@@ -41,7 +41,7 @@ msgstr ""
 msgid "Rgb"
 msgstr ""
 
-#: icc_oyranos_extern.c:137 icc_draw.cpp:666 icc_gl.cpp:2049 icc_waehler.h:129
+#: icc_oyranos_extern.c:137 icc_draw.cpp:666 icc_gl.cpp:2030 icc_waehler.h:129
 msgid "Gray"
 msgstr "Grau"
 
@@ -117,7 +117,7 @@ msgstr "14farbig"
 msgid "15color"
 msgstr "15farbig"
 
-#: agviewer.cpp:311 icc_gl.cpp:3091 icc_gl.cpp:3110 icc_gl.cpp:3229
+#: agviewer.cpp:311 icc_gl.cpp:3072 icc_gl.cpp:3091 icc_gl.cpp:3210
 msgid "left-/middle-/right mouse button -> rotate/cut/menu"
 msgstr "linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menue"
 
@@ -125,8 +125,8 @@ msgstr "linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menue"
 msgid "Pause"
 msgstr "Pause"
 
-#: agviewer.cpp:348 agviewer.cpp:356 icc_gl.cpp:3195 icc_gl.cpp:3206
-#: icc_gl.cpp:3211 icc_gl.cpp:3216
+#: agviewer.cpp:348 agviewer.cpp:356 icc_gl.cpp:3176 icc_gl.cpp:3187
+#: icc_gl.cpp:3192 icc_gl.cpp:3197
 msgid "left mouse button -> go back"
 msgstr "linke Maustaste -> zurueck"
 
@@ -165,7 +165,7 @@ msgstr ""
 msgid "Yellow"
 msgstr "Gelb"
 
-#: icc_draw.cpp:679 icc_gl.cpp:2051 icc_helfer.cpp:415 icc_helfer.cpp:425
+#: icc_draw.cpp:679 icc_gl.cpp:2032 icc_helfer.cpp:415 icc_helfer.cpp:425
 msgid "Black"
 msgstr "Schwarz"
 
@@ -365,107 +365,107 @@ msgstr "Konnte Font nicht öffnen in:"
 msgid "0,0,0"
 msgstr ""
 
-#: icc_gl.cpp:2023 icc_gl.cpp:2033 icc_gl.cpp:2035 icc_gl.cpp:2037
+#: icc_gl.cpp:2004 icc_gl.cpp:2014 icc_gl.cpp:2016 icc_gl.cpp:2018
 msgid "Slice"
 msgstr "Schnitt"
 
-#: icc_gl.cpp:2024
+#: icc_gl.cpp:2005
 msgid "Rotate around slice"
 msgstr "Drehen um Schnitt"
 
-#: icc_gl.cpp:2039
+#: icc_gl.cpp:2020
 msgid "Rotate around"
 msgstr "Drehen um"
 
-#: icc_gl.cpp:2039
+#: icc_gl.cpp:2020
 msgid "axis"
 msgstr "Achse"
 
-#: icc_gl.cpp:2044
+#: icc_gl.cpp:2025
 msgid "Slice plane"
 msgstr "Querschnitt"
 
-#: icc_gl.cpp:2047
+#: icc_gl.cpp:2028
 msgid "White"
 msgstr "Weiß"
 
-#: icc_gl.cpp:2048
+#: icc_gl.cpp:2029
 msgid "Light gray"
 msgstr "Hellgrau"
 
-#: icc_gl.cpp:2050
+#: icc_gl.cpp:2031
 msgid "Dark gray"
 msgstr "Dunkelgrau"
 
-#: icc_gl.cpp:2054
+#: icc_gl.cpp:2035
 msgid "Background colour"
 msgstr "Hintergrundfarbe"
 
-#: icc_gl.cpp:2059
+#: icc_gl.cpp:2040
 msgid "gray"
 msgstr "grau"
 
-#: icc_gl.cpp:2060
+#: icc_gl.cpp:2041
 msgid "coloured"
 msgstr "farbig"
 
-#: icc_gl.cpp:2061
+#: icc_gl.cpp:2042
 msgid "high contrast"
 msgstr "kontrastreich"
 
-#: icc_gl.cpp:2063
+#: icc_gl.cpp:2044
 msgid "Onion skins"
 msgstr "Zwiebelhäutchen"
 
-#: icc_gl.cpp:2064
+#: icc_gl.cpp:2045
 msgid "Colour line"
 msgstr "Farbkreis"
 
-#: icc_gl.cpp:2069
+#: icc_gl.cpp:2050
 msgid "Sphere 1dE"
 msgstr "Kugel 1dE"
 
-#: icc_gl.cpp:2070
+#: icc_gl.cpp:2051
 msgid "Sphere 2dE"
 msgstr "Kugel 2dE"
 
-#: icc_gl.cpp:2071
+#: icc_gl.cpp:2052
 msgid "Sphere 4dE"
 msgstr "Kugel 4dE"
 
-#: icc_gl.cpp:2074
+#: icc_gl.cpp:2055
 msgid "Star"
 msgstr "Stern"
 
-#: icc_gl.cpp:2077
+#: icc_gl.cpp:2058
 msgid "Point"
 msgstr "Punkt"
 
-#: icc_gl.cpp:2080
+#: icc_gl.cpp:2061
 msgid "without markers"
 msgstr "ohne Farborte"
 
-#: icc_gl.cpp:2081
+#: icc_gl.cpp:2062
 msgid "Spektral line"
 msgstr "Spektrallinie"
 
-#: icc_gl.cpp:2084
+#: icc_gl.cpp:2065
 msgid "Texts"
 msgstr "Texte"
 
-#: icc_gl.cpp:2086
+#: icc_gl.cpp:2067
 msgid "Texts/Arrows on/off"
 msgstr "Texte/Pfeile an/aus"
 
-#: icc_gl.cpp:2088
+#: icc_gl.cpp:2069
 msgid "Illustration"
 msgstr "Darstellung"
 
-#: icc_gl.cpp:2438
+#: icc_gl.cpp:2419
 msgid "Pos"
 msgstr ""
 
-#: icc_gl.cpp:2523 icc_profile_tags.cpp:319
+#: icc_gl.cpp:2504 icc_profile_tags.cpp:319
 msgid "Channel"
 msgstr "Kanal"
 
@@ -958,7 +958,7 @@ msgstr "Uhr"
 msgid "seconds"
 msgstr "Sekunden"
 
-#: icc_helfer.cpp:1027 icc_oyranos.cpp:350 icc_oyranos.cpp:452
+#: icc_helfer.cpp:1027
 msgid "Monitor Profile"
 msgstr "Bildschirmprofil"
 
@@ -974,177 +974,177 @@ msgstr "kein Name"
 msgid "File not loaded!"
 msgstr "Datei nicht geladen!"
 
-#: icc_measurement.cpp:887
+#: icc_measurement.cpp:906
 msgid "use sRGB"
 msgstr "benutze sRGB"
 
-#: icc_measurement.cpp:1178
+#: icc_measurement.cpp:1197
 msgid "Report about ICC profile"
 msgstr "Report zum Farbprofil"
 
-#: icc_measurement.cpp:1216
+#: icc_measurement.cpp:1235
 msgid "Meas colour"
 msgstr "Messfarbe"
 
-#: icc_measurement.cpp:1218
+#: icc_measurement.cpp:1237
 msgid "Profile colour"
 msgstr "Profilfarbe"
 
-#: icc_measurement.cpp:1295
+#: icc_measurement.cpp:1314
 msgid "no measurment data or correct profile conversion available"
 msgstr "keine Messdaten oder korrekte Farbtransformation verfügbar"
 
-#: icc_measurement.cpp:1302
+#: icc_measurement.cpp:1321
 msgid "Measurment- and profile colours from <b>"
 msgstr "Mess- und Profilfarben aus <b>"
 
-#: icc_measurement.cpp:1304
+#: icc_measurement.cpp:1323
 msgid "RGB"
 msgstr ""
 
-#: icc_measurement.cpp:1306
+#: icc_measurement.cpp:1325
 msgid "CMYK"
 msgstr ""
 
-#: icc_measurement.cpp:1307
+#: icc_measurement.cpp:1326
 msgid "</b> Measurement"
 msgstr "</b> Messdaten"
 
-#: icc_measurement.cpp:1309
+#: icc_measurement.cpp:1328
 msgid "CMM: <b>lcms</b>"
 msgstr ""
 
-#: icc_measurement.cpp:1311
+#: icc_measurement.cpp:1330
 msgid "averaging deviations (dE CIE*Lab):<b> "
 msgstr "Abweichungen (dE CIE*Lab) durchschnittlich:<b> "
 
-#: icc_measurement.cpp:1311
+#: icc_measurement.cpp:1330
 msgid "</b>  maximum: "
 msgstr "</b>  maximal: "
 
-#: icc_measurement.cpp:1311
+#: icc_measurement.cpp:1330
 msgid "  minimum: "
 msgstr "  minimal: "
 
-#: icc_measurement.cpp:1311
+#: icc_measurement.cpp:1330
 msgid "  (dE CIE 2000) averaging: "
 msgstr "  (dE CIE 2000) durchschnittlich: "
 
-#: icc_measurement.cpp:1311
+#: icc_measurement.cpp:1330
 msgid "  maximum: "
 msgstr "  maximal: "
 
-#: icc_measurement.cpp:1341
+#: icc_measurement.cpp:1360
 msgid "Measurement patch"
 msgstr "Messfeld"
 
-#: icc_measurement.cpp:1342
+#: icc_measurement.cpp:1361
 msgid "dE Lab"
 msgstr ""
 
-#: icc_measurement.cpp:1343
+#: icc_measurement.cpp:1362
 msgid "dE2000"
 msgstr ""
 
-#: icc_measurement.cpp:1344
+#: icc_measurement.cpp:1363
 msgid "L"
 msgstr ""
 
-#: icc_measurement.cpp:1345
+#: icc_measurement.cpp:1364
 msgid "a"
 msgstr ""
 
-#: icc_measurement.cpp:1346
+#: icc_measurement.cpp:1365
 msgid "b"
 msgstr ""
 
-#: icc_measurement.cpp:1347
+#: icc_measurement.cpp:1366
 msgid "L'"
 msgstr ""
 
-#: icc_measurement.cpp:1348
+#: icc_measurement.cpp:1367
 msgid "a'"
 msgstr ""
 
-#: icc_measurement.cpp:1349
+#: icc_measurement.cpp:1368
 msgid "b'"
 msgstr ""
 
-#: icc_measurement.cpp:1350 my_file_chooser.cxx:276
+#: icc_measurement.cpp:1369 my_file_chooser.cxx:276
 msgid "X"
 msgstr ""
 
-#: icc_measurement.cpp:1351 icc_measurement.cpp:1365
+#: icc_measurement.cpp:1370 icc_measurement.cpp:1384
 msgid "Y"
 msgstr ""
 
-#: icc_measurement.cpp:1352
+#: icc_measurement.cpp:1371
 msgid "Z"
 msgstr ""
 
-#: icc_measurement.cpp:1354
+#: icc_measurement.cpp:1373
 msgid "X'"
 msgstr ""
 
-#: icc_measurement.cpp:1355
+#: icc_measurement.cpp:1374
 msgid "Y'"
 msgstr ""
 
-#: icc_measurement.cpp:1356
+#: icc_measurement.cpp:1375
 msgid "Z'"
 msgstr ""
 
-#: icc_measurement.cpp:1359
+#: icc_measurement.cpp:1378
 msgid "R"
 msgstr ""
 
-#: icc_measurement.cpp:1360
+#: icc_measurement.cpp:1379
 msgid "G"
 msgstr ""
 
-#: icc_measurement.cpp:1361
+#: icc_measurement.cpp:1380
 msgid "B"
 msgstr ""
 
-#: icc_measurement.cpp:1363
+#: icc_measurement.cpp:1382
 msgid "C"
 msgstr ""
 
-#: icc_measurement.cpp:1364
+#: icc_measurement.cpp:1383
 msgid "M"
 msgstr ""
 
-#: icc_measurement.cpp:1366
+#: icc_measurement.cpp:1385
 msgid "K"
 msgstr ""
 
-#: icc_oyranos.cpp:172 icc_oyranos.cpp:360
+#: icc_oyranos.cpp:172
 msgid "WARNING: Could not load corrupt or damaged profile."
 msgstr "WARNUNG: Konnte koruptes oder beschädigtes Profil nicht laden."
 
-#: icc_oyranos.cpp:178 icc_oyranos.cpp:440 icc_oyranos.cpp:450
-#: icc_oyranos.cpp:485 icc_oyranos.cpp:491 icc_oyranos.cpp:537
-#: icc_oyranos.cpp:543 icc_oyranos.cpp:582 icc_oyranos.cpp:588
+#: icc_oyranos.cpp:178 icc_oyranos.cpp:369 icc_oyranos.cpp:375
+#: icc_oyranos.cpp:421 icc_oyranos.cpp:427 icc_oyranos.cpp:466
+#: icc_oyranos.cpp:472
 msgid "WARNING: Could not load profile."
 msgstr "WARNUNG: Konnte Profil nicht laden."
 
-#: icc_oyranos.cpp:718 icc_profile_header.cpp:250 icc_helfer_x.cpp:180
+#: icc_oyranos.cpp:602 icc_profile_header.cpp:250 icc_helfer_x.cpp:180
 msgid "Manufacturer:"
 msgstr "Hersteller:  "
 
-#: icc_oyranos.cpp:724
+#: icc_oyranos.cpp:608
 msgid "Model:"
 msgstr "Modell:"
 
-#: icc_oyranos.cpp:730
+#: icc_oyranos.cpp:614
 msgid "Serial:"
 msgstr "Serien Nr.:"
 
-#: icc_oyranos.cpp:1299 icc_vrml.cpp:151
+#: icc_oyranos.cpp:1183 icc_vrml.cpp:151
 msgid "Std-exception occured: "
 msgstr "Std-Ausnahme: "
 
-#: icc_oyranos.cpp:1302 icc_vrml.cpp:154
+#: icc_oyranos.cpp:1186 icc_vrml.cpp:154
 msgid "Huch, unknown exception"
 msgstr "Huch, unbekannte Ausnahme"
 
