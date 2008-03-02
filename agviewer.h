@@ -33,7 +33,7 @@
 #ifndef AGVIEWER_H
 #define AGVIEWER_H
 
-#include <FL/glut.H>
+//#include <FL/glut.H>
 #ifdef __APPLE__
 #  include <OpenGL/glu.h>
 #else

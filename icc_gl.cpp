@@ -40,10 +40,15 @@
 #include "icc_gl.h"
 #include "icc_helfer.h"
 #include <FL/Fl_Menu_Button.H>
+#include <FL/Fl.H>
+#include <FL/gl.h>
+#include <FTGL/FTFont.h>
+#include <FTGL/FTGLTextureFont.h>
+#include <FTGL/FTGLPixmapFont.h>
+#include <FTGL/FTGLPolygonFont.h>
+#include <FTGL/FTGLExtrdFont.h>
 
 #include "freeglut_internal.h"
-extern void* glutStrokeRoman;
-extern void* glutStrokeMonoRoman;
 
 #include <cmath>
 
@@ -64,34 +69,8 @@ extern void* glutStrokeMonoRoman;
 #endif
 
 typedef enum {NOTALLOWED, AXES, RASTER, PUNKTE , SPEKTRUM, HELFER, DL_MAX } DisplayLists;
-bool gl_voll[DL_MAX] = {false,false,false,false,false,false};
+int glListen[DL_MAX] = {0,0,0,0,0,0};
 
-typedef enum {
- MENU_AXES,
- MENU_QUIT,
- MENU_KUGEL,           // Formen der 3DLut-darstellung
- MENU_WUERFEL,
- MENU_STERN,
- MENU_GRAU,            // Die Farbdarstellung der 3DLut
- MENU_FARBIG,
- MENU_KONTRASTREICH,
- MENU_SCHALEN,         // Aussparen der 3DLut
- MENU_dE1KUGEL,        // Mess-/Profilwertdifferenzen mit Farborten
- MENU_dE2KUGEL,
- MENU_dE4KUGEL,
- MENU_dE1STERN,
- MENU_DIFFERENZ_LINIE, // Mess-/Profilwertdifferenzen mit Geraden pur
- MENU_SPEKTRALBAND,    // Darstellung der Spektralfarben als Band
- MENU_HELFER,          // Texte und Pfeile darstellen
- MENU_WEISS,           // Hintergrundfarben
- MENU_HELLGRAU,
- MENU_GRAUGRAU,
- MENU_DUNKELGRAU,
- MENU_SCHWARZ,
- MENU_MAX
-} MenuChoices;
-
-int DrawAxes = 0;
 
 #define bNachX(b) (b*b_darstellungs_breite - b_darstellungs_breite/2.)
 #define LNachY(L) (L - 0.5)
@@ -102,6 +81,8 @@ int DrawAxes = 0;
          (a*a_darstellungs_breite - a_darstellungs_breite/2.)
 
 const double GL_Ansicht::std_vorder_schnitt = 4.2;
+static FTFont* font, *ortho_font;
+
 
 GL_Ansicht::GL_Ansicht(int X,int Y,int W,int H)
   : Fl_Gl_Window(X,Y,W,H), agv_(this)
@@ -121,23 +102,35 @@ GL_Ansicht::GL_Ansicht(int X,int Y,int W,int H)
   zeig_punkte_als_messwerte = false;
   id_ = -1;
   strichmult = 1.0;
+
+  for(int i = 0; i < DL_MAX; ++i)
+    glListen[i] = 0;
+  //DrawAxes = 0;
+  font = ortho_font = 0;
+
   DBG_PROG_ENDE
 }
 
 GL_Ansicht::~GL_Ansicht()
 { DBG_PROG_START
-  if (gl_voll[RASTER]) {
-    glDeleteLists (id()*DL_MAX + RASTER, 1);
+  if (glListen[RASTER]) {
+    glDeleteLists (glListen[RASTER],1);
+    glListen[RASTER] = 0;
     DBG_PROG_S( "delete glListe " << id()*DL_MAX + RASTER ) }
-  if (gl_voll[HELFER]) {
-    glDeleteLists (id()*DL_MAX + HELFER, 1);
+  if (glListen[HELFER]) {
+    glDeleteLists (glListen[HELFER],1);
+    glListen[HELFER] = 0;
     DBG_PROG_S( "delete glListe " << id()*DL_MAX + HELFER ) }
-  if (gl_voll[PUNKTE]) {
-    glDeleteLists (id()*DL_MAX + PUNKTE, 1);
+  if (glListen[PUNKTE]) {
+    glDeleteLists (glListen[PUNKTE],1);
+    glListen[PUNKTE] = 0;
     DBG_PROG_S( "delete glListe " << id()*DL_MAX + PUNKTE ) }
-  if (gl_voll[SPEKTRUM]) {
-    glDeleteLists (id()*DL_MAX + SPEKTRUM, 1);
+  if (glListen[SPEKTRUM]) {
+    glDeleteLists (glListen[SPEKTRUM],1);
+    glListen[SPEKTRUM] = 0;
     DBG_PROG_S( "delete glListe " << id()*DL_MAX + SPEKTRUM ) }
+  if(font) delete font;
+  if(ortho_font) delete ortho_font;
   DBG_PROG_ENDE
 }
 
@@ -179,8 +172,10 @@ GL_Ansicht::init(int init_id)
     agv_.eyeDist (agv_.dist()*2.0);
   }
 
-  agv_.agvMakeAxesList(AXES); DBG_PROG
+  glListen[AXES] = glGenLists(1);
+  agv_.agvMakeAxesList( glListen[AXES] ); DBG_PROG
 
+  gl_font( FL_HELVETICA, 10 );
 
   // Initialisieren
   menueInit_(); DBG_PROG
@@ -240,7 +235,7 @@ GL_Ansicht::handle( int event )
   switch(event)
   {
     case FL_PUSH:
-         if(mausknopf == FL_BUTTON3) {
+         if(mausknopf & FL_BUTTON3) {
            menue_button_->popup();
            break;
          }
@@ -320,6 +315,18 @@ GL_Ansicht::GLinit_()
 
   //glShadeModel(GL_SMOOTH);
   glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+  if(font) delete font;
+  if(ortho_font) delete ortho_font;
+
+  //font = new FTGLTextureFont( "/usr/X11R6/lib/X11/fonts/truetype/FreeSans.ttf" );
+  //font = new FTGLPolygonFont( "/usr/X11R6/lib/X11/fonts/truetype/FreeSans.ttf" );
+  font = new FTGLExtrdFont( "/usr/X11R6/lib/X11/fonts/truetype/FreeSans.ttf" );
+  ortho_font = new FTGLPixmapFont( "/usr/X11R6/lib/X11/fonts/truetype/FreeSans.ttf" );
+  font->CharMap( ft_encoding_unicode );
+  font->Depth(12);
+  if(!font->FaceSize(72)) WARN_S(_("Fontgröße nicht setzbar")); \
+  ortho_font->CharMap( ft_encoding_unicode );
+  if(!ortho_font->FaceSize(16)) WARN_S(_("Fontgröße nicht setzbar")); \
 
   glFlush();
   DBG_PROG_ENDE
@@ -351,6 +358,7 @@ GL_Ansicht::tastatur(int e)
                       glColor4f(farbe[0],farbe[1],farbe[2],1.0); }
 
 // Text zeichnen
+#if 0
 #define ZeichneText(Font,Zeiger) { \
    glDisable(GL_TEXTURE_2D); \
    glDisable(GL_LIGHTING); \
@@ -371,17 +379,24 @@ GL_Ansicht::tastatur(int e)
    glEnable(GL_TEXTURE_2D); \
    glEnable(GL_LIGHTING); \
    glLineWidth(strichmult); }
+#else
+#define ZeichneText(Font, Zeiger) { \
+   glLineWidth(strichmult); \
+    glDisable(GL_BLEND); \
+      glTranslatef(.0,0,0.01); \
+        glScalef(0.002,0.002,0.002); \
+            Font->Render(Zeiger); \
+        glScalef(500,500,500); \
+      glTranslatef(.0,0,-.01); \
+    glEnable(GL_BLEND); \
+   glLineWidth(strichmult); }
+#endif
 
-#define ZeichneOText(font, scal, buffer) \
+#define ZeichneOText(Font, scal, buffer) \
                                    glScalef(scal,scal,scal); \
-                                   ZeichneText(font,buffer); \
+                                   ZeichneText(Font, buffer); \
                                    glScalef(1.0/scal,1.0/scal,1.0/scal);
 
-#define ZeichneBuchstaben(Font,Buchstabe) { \
-        glScalef(0.001,0.001,0.001); \
-          icc_gl::glutStrokeCharacter(Font, Buchstabe); \
-          glTranslatef(0.0 - icc_gl::glutStrokeWidth(Font, Buchstabe),0,0); \
-        glScalef(1000,1000,1000); }
 
 void
 zeichneKoordinaten(float strichmult)
@@ -404,7 +419,7 @@ zeichneKoordinaten(float strichmult)
       glMatrixMode(GL_MODELVIEW);
       glTranslatef((0.0-0.3),(0.0-0.1),(0.0-0.05));
         sprintf (&text[0],_("0,0,0"));
-        ZeichneText(GLUT_STROKE_ROMAN,text)
+        ZeichneText(font, text)
       glTranslatef(0.3,0.1,0.05);
     glRotatef (-90,0.0,0,1.0);
 
@@ -416,7 +431,7 @@ zeichneKoordinaten(float strichmult)
       glRotatef (-90,0.0,1.0,.0);
       FARBE(1,1,1)
       glTranslatef(.02,0,0);
-        ZeichneBuchstaben(GLUT_STROKE_ROMAN, 'X')
+        ZeichneText(font, "X")
       glTranslatef((-0.02),0,0);
     glTranslatef((-0.1),0,0);
 
@@ -427,7 +442,7 @@ zeichneKoordinaten(float strichmult)
       glRotatef (90,1.0,.0,.0);
       glRotatef (90,0.0,.0,1.0);
         FARBE(1,1,1)
-        ZeichneBuchstaben(GLUT_STROKE_ROMAN, 'Y')
+        ZeichneText(font, "Y")
       glRotatef (270,0.0,.0,1.0);
     glTranslatef(.0,(-0.1),0);
 
@@ -437,7 +452,7 @@ zeichneKoordinaten(float strichmult)
       glRotatef (90,0.0,.5,.0);
         glTranslatef(-.1,0,0);
           FARBE(1,1,1)
-          ZeichneBuchstaben(GLUT_STROKE_ROMAN, 'Z')
+          ZeichneText(font, "Z")
         glTranslatef(.1,0,0);
       glRotatef (270,0.0,.5,.0);
     glTranslatef(0,0,-.1);
@@ -480,26 +495,18 @@ GL_Ansicht::erstelleGLListen_()
 }
 
 void
-GL_Ansicht::garnieren_()
-{ DBG_PROG_START
+GL_Ansicht::textGarnieren_()
+{
+  DBG_PROG_START
   char text[256];
   char* ptr = 0;
+  GLfloat farbe[] =   { 1.0, 1.0, 1.0, 1.0 };
 
-  #define PFEILSPITZE icc_gl::glutSolidCone(0.02, 0.05, 16, 4);
-
-  DBG_PROG_V( id() )
-  // Pfeile und Text
-  if (gl_voll[HELFER])
-    glDeleteLists (id()*DL_MAX + HELFER, 1);
-  glNewList(id()*DL_MAX + HELFER, GL_COMPILE); DBG_PROG_V( id()*DL_MAX + HELFER)
-    gl_voll[HELFER] = true;
-    GLfloat farbe[] =   { textfarbe[0],textfarbe[1],textfarbe[2], 1.0 };
-
-    // Farbkanalname
-    //glEnable(GL_BLEND);
-    //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_LINE_SMOOTH);
     glEnable(GL_LIGHTING);
+  #define PFEILSPITZE icc_gl::glutSolidCone(0.02, 0.05, 16, 4);
 
     glPushMatrix();
       glMatrixMode(GL_MODELVIEW);
@@ -511,7 +518,7 @@ GL_Ansicht::garnieren_()
       {
         ptr = (char*) nach_farb_namen_[kanal].c_str();
         sprintf (&text[0], ptr);
-        //ZeichneText(GLUT_STROKE_ROMAN,&text[0])
+        //ZeichneText(font, text)
       }
     glPopMatrix(); DBG_PROG
 
@@ -520,7 +527,6 @@ GL_Ansicht::garnieren_()
       FARBE(pfeilfarbe[0],pfeilfarbe[1],pfeilfarbe[2])
       glTranslatef(0,.5,0);
       glRotatef (270,1.0,0.0,.0);
-      PFEILSPITZE
       glRotatef (270,0.0,0.0,1.0);
       glTranslatef(.02,0,0);
       FARBE(textfarbe[0],textfarbe[1],textfarbe[2])
@@ -528,8 +534,93 @@ GL_Ansicht::garnieren_()
       {
         ptr = (char*) von_farb_namen_[0].c_str();
         sprintf (&text[0], ptr);
-        ZeichneText(GLUT_STROKE_ROMAN,text)
+        ZeichneText(font, text)
       }
+    glPopMatrix(); DBG_PROG
+
+    // CIE*a - rechts
+    glPushMatrix();
+      if (von_farb_namen_.size() &&
+          von_farb_namen_[1] == _("CIE *a"))
+        glTranslatef(0,-.5,0);
+      glBegin(GL_LINES);
+        glVertex3f(0, 0,  a_darstellungs_breite/2.);
+        glVertex3f(0, 0, -a_darstellungs_breite/2.);
+      glEnd();
+      glTranslatef(0.0,0.0,a_darstellungs_breite/2.);
+      glRotatef (180,0.0,.5,.0);
+      glTranslatef(.0,0.0,a_darstellungs_breite);
+      glTranslatef(.0,0.0,-a_darstellungs_breite);
+      glRotatef (180,0.0,.5,.0);
+      FARBE(textfarbe[0],textfarbe[1],textfarbe[2])
+      if (von_farb_namen_.size())
+      {
+        ptr = (char*) von_farb_namen_[1].c_str();
+        sprintf (&text[0], ptr);
+        ZeichneText(font, text)
+      }
+      if (von_farb_namen_.size() &&
+          von_farb_namen_[1] == _("CIE *a"))
+        glTranslatef(0,0.5,0);
+    glPopMatrix(); DBG_PROG
+
+    // CIE*b - links
+    glPushMatrix();
+      if (von_farb_namen_.size() &&
+          von_farb_namen_[2] == _("CIE *b"))
+        glTranslatef(0,-0.5,0);
+      glTranslatef(b_darstellungs_breite/2.,0,0);
+      glRotatef (90,0.0,.5,.0);
+      glRotatef (180,.0,.5,.0);
+      glTranslatef(.0,.0,b_darstellungs_breite);
+      glTranslatef(.0,.0,-b_darstellungs_breite);
+      glRotatef (180,0.0,.5,.0);
+      FARBE(textfarbe[0],textfarbe[1],textfarbe[2])
+      if (von_farb_namen_.size())
+      {
+        ptr = (char*) von_farb_namen_[2].c_str();
+        sprintf (&text[0], ptr);
+        ZeichneText(font, text)
+      }
+      if (von_farb_namen_.size() &&
+          von_farb_namen_[2] == _("CIE *b"))
+        glTranslatef(0,0.5,0);
+    glPopMatrix();
+    glLineWidth(1.0*strichmult);
+
+  DBG_PROG_ENDE
+}
+
+void
+GL_Ansicht::garnieren_()
+{
+  DBG_PROG_START
+  char text[256];
+  char* ptr = 0;
+
+  #define PFEILSPITZE icc_gl::glutSolidCone(0.02, 0.05, 16, 4);
+
+  DBG_PROG_V( id() )
+  // Pfeile und Text TODO: trennen
+  if (glListen[HELFER]) {
+    glDeleteLists (glListen[HELFER], 1);
+  }
+  glListen[HELFER] = glGenLists(1);
+  glNewList( glListen[HELFER], GL_COMPILE); DBG_PROG_V( glListen[HELFER] )
+    GLfloat farbe[] =   { textfarbe[0],textfarbe[1],textfarbe[2], 1.0 };
+
+    // Farbkanalname
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_LINE_SMOOTH);
+    glEnable(GL_LIGHTING);
+
+    // CIE*L - oben
+    glPushMatrix();
+      FARBE(pfeilfarbe[0],pfeilfarbe[1],pfeilfarbe[2])
+      glTranslatef(0,.5,0);
+      glRotatef (270,1.0,0.0,.0);
+      PFEILSPITZE
     glPopMatrix(); DBG_PROG
     glPushMatrix();
       glBegin(GL_LINES);
@@ -542,6 +633,7 @@ GL_Ansicht::garnieren_()
       if (von_farb_namen_.size() &&
           von_farb_namen_[1] == _("CIE *a"))
         glTranslatef(0,-.5,0);
+      FARBE(pfeilfarbe[0],pfeilfarbe[1],pfeilfarbe[2])
       glBegin(GL_LINES);
         glVertex3f(0, 0,  a_darstellungs_breite/2.);
         glVertex3f(0, 0, -a_darstellungs_breite/2.);
@@ -561,16 +653,6 @@ GL_Ansicht::garnieren_()
           von_farb_namen_[1] == _("CIE *a"))
         FARBE(.9,0.2,0.5)
       PFEILSPITZE
-      FARBE(textfarbe[0],textfarbe[1],textfarbe[2])
-      if (von_farb_namen_.size())
-      {
-        ptr = (char*) von_farb_namen_[1].c_str();
-        sprintf (&text[0], ptr);
-        ZeichneText(GLUT_STROKE_ROMAN,text)
-      }
-      if (von_farb_namen_.size() &&
-          von_farb_namen_[1] == _("CIE *a"))
-        glTranslatef(0,0.5,0);
     glPopMatrix(); DBG_PROG
 
     // CIE*b - links
@@ -578,6 +660,7 @@ GL_Ansicht::garnieren_()
       if (von_farb_namen_.size() &&
           von_farb_namen_[2] == _("CIE *b"))
         glTranslatef(0,-0.5,0);
+      FARBE(textfarbe[0],textfarbe[1],textfarbe[2])
       glBegin(GL_LINES);
         glVertex3f( b_darstellungs_breite/2., 0, 0);
         glVertex3f(-b_darstellungs_breite/2., 0, 0);
@@ -595,23 +678,12 @@ GL_Ansicht::garnieren_()
       {
         FARBE(.7,.8,1.0)
         PFEILSPITZE
-        FARBE(textfarbe[0],textfarbe[1],textfarbe[2])
       }
-      glTranslatef(.0,.0,-b_darstellungs_breite);
-      glRotatef (180,0.0,.5,.0);
-      if (von_farb_namen_.size())
-      {
-        ptr = (char*) von_farb_namen_[2].c_str();
-        sprintf (&text[0], ptr);
-        ZeichneText(GLUT_STROKE_ROMAN,text)
-      }
-      if (von_farb_namen_.size() &&
-          von_farb_namen_[2] == _("CIE *b"))
-        glTranslatef(0,0.5,0);
     glPopMatrix();
     glLineWidth(1.0*strichmult);
 
   glEndList();
+
   DBG_PROG_ENDE
 }
 
@@ -630,13 +702,15 @@ GL_Ansicht::tabelleAuffrischen()
   }
 
   // Tabelle
-  if (gl_voll[RASTER])
-    glDeleteLists (id()*DL_MAX + RASTER, 1);
+  if (glListen[RASTER]) {
+    glDeleteLists ( glListen[RASTER], 1);
+    glListen[RASTER] = 0;
+  }
 
   if (tabelle_.size())
   {
-    glNewList(id()*DL_MAX + RASTER, GL_COMPILE); DBG_PROG_V( id()*DL_MAX + RASTER )
-      gl_voll[RASTER] = true;
+    glListen[RASTER] = glGenLists(1);
+    glNewList( glListen[RASTER], GL_COMPILE); DBG_PROG_V( glListen[RASTER] )
       int n_L = tabelle_.size(), n_a=tabelle_[0].size(), n_b=tabelle_[0][0].size();
       double dim_x = 1.0/(n_b); DBG_PROG_V( dim_x )
       double dim_y = 1.0/(n_L); DBG_PROG_V( dim_y )
@@ -853,11 +927,13 @@ GL_Ansicht::netzeAuffrischen()
       glPopMatrix();
 
 
-  if (gl_voll[RASTER])
-    glDeleteLists (id()*DL_MAX + RASTER, 1);
+  if (glListen[RASTER]) {
+    glDeleteLists (glListen[RASTER], 1);
+    glListen[RASTER] = 0;
+  }
 
       //glNewList(id()*DL_MAX + RASTER, GL_COMPILE); DBG_PROG_V( id()*DL_MAX + RASTER )
-      //gl_voll[RASTER] = true;
+      //glListen[RASTER] = true;
 
       #ifndef Beleuchtung
       glDisable(GL_LIGHTING);
@@ -951,8 +1027,10 @@ void
 GL_Ansicht::punkteAuffrischen()
 { DBG_PROG_START
 
-  if (gl_voll[PUNKTE])
-    glDeleteLists (id()*DL_MAX + PUNKTE, 1);
+  if (glListen[PUNKTE]) {
+    glDeleteLists (glListen[PUNKTE], 1);
+    glListen[PUNKTE] = 0;
+  }
 
   //Koordinaten  in CIE*b CIE*L CIE*a Reihenfolge 
   if (punkte_.size()) {
@@ -964,8 +1042,8 @@ GL_Ansicht::punkteAuffrischen()
     if( farb_namen_.size() )
       DBG_PROG_V( farb_namen_.size() )
 
-    glNewList(id()*DL_MAX + PUNKTE, GL_COMPILE); DBG_PROG_V( id()*DL_MAX + PUNKTE ) 
-      gl_voll[PUNKTE] = true;
+    glListen[PUNKTE] = glGenLists(1);
+    glNewList( glListen[PUNKTE], GL_COMPILE); DBG_PROG_V( glListen[PUNKTE] )
       #ifndef Beleuchtung
       glDisable(GL_LIGHTING);
       #endif
@@ -1090,8 +1168,9 @@ void
 GL_Ansicht::zeigeSpektralband_()
 { DBG_PROG_START
 
-  if (gl_voll[SPEKTRUM])
-    glDeleteLists (id()*DL_MAX + SPEKTRUM, 1);
+  if (glListen[SPEKTRUM])
+    glDeleteLists (glListen[SPEKTRUM], 1);
+  glListen[SPEKTRUM] = 0;
   if (spektralband == MENU_SPEKTRALBAND)
   {
     // lcms Typen
@@ -1151,11 +1230,11 @@ GL_Ansicht::zeigeSpektralband_()
 
     GLfloat farbe[] =   { pfeilfarbe[0],pfeilfarbe[1],pfeilfarbe[2], 1.0 };
 
-    DBG_PROG_V( id()*DL_MAX + SPEKTRUM ) 
-    glNewList(id()*DL_MAX + SPEKTRUM, GL_COMPILE);
-      gl_voll[SPEKTRUM] = true;
+    glListen[SPEKTRUM] = glGenLists(1);
+    glNewList( glListen[SPEKTRUM], GL_COMPILE );
+    DBG_PROG_V( glListen[SPEKTRUM] ) 
 
-      glDisable(GL_LIGHTING);
+      glDisable (GL_LIGHTING);
       glDisable (GL_BLEND);
       glDisable (GL_ALPHA_TEST_FUNC);
       glEnable  (GL_LINE_SMOOTH);
@@ -1364,20 +1443,24 @@ GL_Ansicht::zeichnen()
        glLoadIdentity();
        glOrtho(0,w(),0,h(),-10.0,10.0);
 
-       glDisable(GL_TEXTURE_2D);
-       glDisable(GL_LIGHTING);
-       //glEnable(GL_BLEND);
-       //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+       glEnable(GL_TEXTURE_2D);
+       glEnable(GL_LIGHTING);
+       glEnable(GL_BLEND);
+       glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
        glDisable(GL_LINE_SMOOTH);
 
        glColor4f(textfarbe[0],
                  textfarbe[1],
                  textfarbe[2], 1.0);
+       //glTranslatef(0,12,0);
+       //ZeichneOText(ortho_font, 250,"OpenGL");
+       GLfloat farbe[] =   { textfarbe[0],textfarbe[1],textfarbe[2], 1.0 };
+       FARBE(textfarbe[0],textfarbe[1],textfarbe[2])
 
-       glTranslatef(5,-12,8.8 - schnitttiefe*3);
+       glTranslatef(5,-12,0/*8.8 - schnitttiefe*3*/);
 
-       int scal = 120, zeilenversatz = (int)(scal/6.0);
-       float strichmult = 1.0;
+       int scal = 1, zeilenversatz = (int)(scal/6.0);
+       //float strichmult = 1.0;
        std::string text;
        if(id() == 1) {
          text.append(_("Kanal:"));
@@ -1385,7 +1468,7 @@ GL_Ansicht::zeichnen()
          text.append(kanalName());
          glTranslatef(0,zeilenversatz,0);
 
-         ZeichneOText (GLUT_STROKE_ROMAN, scal, (char*)text.c_str()) 
+         ZeichneOText (ortho_font, scal, (char*)text.c_str()) 
        } else {
          for (unsigned int i=0;
                 i < dreiecks_netze.size();
@@ -1393,8 +1476,8 @@ GL_Ansicht::zeichnen()
          {
            text = dreiecks_netze[i].name.c_str();
            DBG_PROG_V( dreiecks_netze[i].name )
-           glTranslatef(0,zeilenversatz,0);
-           ZeichneOText (GLUT_STROKE_ROMAN, scal, text.c_str())
+           ZeichneOText (ortho_font, scal, text.c_str())
+           glRasterPos2f(0,font->LineHeight()/5*i+25);
          }
        }
 
@@ -1406,31 +1489,34 @@ GL_Ansicht::zeichnen()
 
     glPushMatrix();  /* clear of last viewing xform, leaving perspective */
 
-    glLoadIdentity();
+      glLoadIdentity();
 
-    setzePerspektive();
+      setzePerspektive();
 
-    /* so this replaces gluLookAt or equiv */
-    agv_.agvViewTransform();
+      /* so this replaces gluLookAt or equiv */
+      agv_.agvViewTransform();
 
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
+      glMatrixMode(GL_MODELVIEW);
+      glLoadIdentity();
 
-    if (DrawAxes)
-      glCallList(AXES);
+      if (DrawAxes)
+        glCallList( glListen[AXES] );
 
-    glCallList(dID(SPEKTRUM)); DBG_ICCGL_V( dID(SPEKTRUM) )
-    if (zeige_helfer)
-      glCallList(dID(HELFER)); DBG_ICCGL_V( dID(HELFER) )
-    glCallList(dID(RASTER)); DBG_ICCGL_V( dID(RASTER) )
+      glCallList( glListen[SPEKTRUM] ); DBG_ICCGL_V( glListen[SPEKTRUM] )
+      if (zeige_helfer) {
+        textGarnieren_();
+        glCallList( glListen[HELFER] ); DBG_ICCGL_V( glListen[HELFER] )
+      }
+      glCallList( glListen[RASTER] ); DBG_ICCGL_V( glListen[RASTER] )
 
-    if(punktform == MENU_dE1STERN)
-      punkteAuffrischen();
-    glCallList(dID(PUNKTE)); DBG_ICCGL_V( dID(UNKTE) )
+      if(punktform == MENU_dE1STERN)
+        glCallList( glListen[PUNKTE] ); //punkteAuffrischen();
+      glCallList( glListen[PUNKTE] ); DBG_ICCGL_V( glListen[PUNKTE] )
 
-    if(dreiecks_netze.size())
-      netzeAuffrischen();
+      if(dreiecks_netze.size())
+        netzeAuffrischen();
 
+    glPopMatrix();
 
     #if 0
     glFlush();
@@ -1747,6 +1833,5 @@ GL_Ansicht::dID (int display_list)
 
 #undef ZeichneText
 #undef FARBE
-#undef ZeichneBuchstaben
 #undef implementGlutFunktionen
 

@@ -174,8 +174,8 @@ Agviewer::agvMove_(void)
       Ey += EyeMove*sin(TORAD(EyeEl));
       Ez -= EyeMove*cos(TORAD(EyeAz))*cos(TORAD(EyeEl));
       if(fabs(EyeDist+0.01) < fabs(EyeDist)) {
-        int button = FL_BUTTON1/*GLUT_LEFT_BUTTON*/,
-            event = FL_PUSH/*GLUT_DOWN*/,
+        int button = FL_BUTTON1,
+            event = FL_PUSH,
             x=0, y=0;
         agvHandleButton(button,event,x,y);;
       }
@@ -379,8 +379,8 @@ Agviewer::agvHandleButton(int button, int event, int x, int y)
     lasty = downy = y;
     downb = button;    
 
-    switch (button) {
-      case FL_BUTTON1: //GLUT_LEFT_BUTTON:
+    if (button & FL_BUTTON1)
+    {
         if (MoveMode == FLYING)
           EyeEl = -EyeEl;
         lastEl = downEl = EyeEl;
@@ -392,9 +392,9 @@ Agviewer::agvHandleButton(int button, int event, int x, int y)
           icc_examin_ns::status_info(_("linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menü"));
         duenn = false;
         MoveMode = POLAR;
-        break;
-
-      case FL_BUTTON2: //GLUT_MIDDLE_BUTTON:
+    } else
+      if(button & FL_BUTTON2)
+    {
         downDist = EyeDist;
 	downEx = Ex;
 	downEy = Ey;
@@ -403,14 +403,13 @@ Agviewer::agvHandleButton(int button, int event, int x, int y)
 	EyeMove = 0;
         if (MoveMode == FLYING)
           icc_examin_ns::status_info(_("Pause"));
-        break;
     }
 
-  } else if (event == FL_RELEASE/*GLUT_UP*/ && /*button ==*/ downb) {
+  } else if (event == FL_RELEASE && /*button ==*/ downb) {
     DBG_PROG
 
-    switch (downb) {
-      case FL_BUTTON1: //GLUT_LEFT_BUTTON:
+    if (downb & FL_BUTTON1)
+      {
         if (MoveMode != FLYING) {
           AzSpin =  -dAz;
           if (AzSpin < min_azspin && AzSpin > -min_azspin)
@@ -425,18 +424,16 @@ Agviewer::agvHandleButton(int button, int event, int x, int y)
           icc_examin_ns::status_info(_("linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menü"));
           duenn = false;
         }
-        break;
-
-      case FL_BUTTON2: //GLUT_MIDDLE_BUTTON:
+      } else
+      if(downb & FL_BUTTON2)
+      {
         EyeMove = downEyeMove;
         if (MoveMode == FLYING) {
           icc_examin_ns::status_info(_("linke Maustaste -> zurück"));
           duenn = true;
         }
-        break;
-      default:
+      } else
         WARN_S( _("nicht erkennbare Maustaste: ") << button )
-      }
 
     downb = -1;
 
@@ -452,11 +449,10 @@ Agviewer::agvHandleButton(int button, int event, int x, int y)
 void
 Agviewer::agvHandleMotion(int x, int y)
 { DBG_PROG_START
-  //glutSetWindow(RedisplayWindow);
   int deltax = x - downx, deltay = y - downy;
 
-  switch (downb) {
-    case FL_BUTTON1: //GLUT_LEFT_BUTTON:
+  if (downb & FL_BUTTON1)
+  {
       DBG_PROG_S( "FL_BUTTON1" )
       EyeEl  = downEl + el_sens * deltay;
       ConstrainEl();
@@ -465,16 +461,15 @@ Agviewer::agvHandleMotion(int x, int y)
       dEl    = prev_del*dEl + cur_del*(lastEl - EyeEl);
       lastAz = EyeAz;
       lastEl = EyeEl;
-      break;
-    case FL_BUTTON2: //GLUT_MIDDLE_BUTTON:
+  } else
+  if (downb & FL_BUTTON2)
+  {
       DBG_PROG_S( "FL_BUTTON2" )
       EyeDist = downDist + dist_sens*deltay;
       Ex = downEx - e_sens*deltay*sin(TORAD(EyeAz))*cos(TORAD(EyeEl));
       Ey = downEy - e_sens*deltay*sin(TORAD(EyeEl));
       Ez = downEz + e_sens*deltay*cos(TORAD(EyeAz))*cos(TORAD(EyeEl));
-      break;
   }
-  //glutPostRedisplay();
   parent->redraw();
   DBG_PROG_ENDE
 }

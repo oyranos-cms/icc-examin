@@ -129,6 +129,8 @@ ICCexamin::netzLese (int n,
       intent = profile.profil()->intent();
 
     netz_temp = icc_oyranos. netzVonProfil( s, intent );
+    netz_temp[0].transparenz = (*netz)[n].transparenz;
+    netz_temp[0].grau = (*netz)[n].grau;
     if(netz_temp.size())
     {
       if(n >= (int)netz->size())
@@ -204,6 +206,10 @@ ICCexamin::histogram (int n)
     farbenLese(n, p,f);
   }
 
+  bool neues_netz = false;
+  if( n >= (int)icc_betrachter->DD_histogram-> dreiecks_netze.size() )
+    neues_netz = true;
+
   if(p.size())
     icc_betrachter->DD_histogram->hineinPunkte( p, f, namen, texte );
 
@@ -213,12 +219,13 @@ ICCexamin::histogram (int n)
   std::vector<ICCnetz> *netz = &icc_betrachter->DD_histogram->dreiecks_netze;
   DBG_PROG_V( icc_betrachter->DD_histogram-> dreiecks_netze.size() <<" "<< n )
 
+
   if( profile.size() > n && !ncl2_profil )
     netzLese(n, netz);
 
   DBG_PROG_V( n <<" "<< netz->size() <<" "<< ncl2_profil )
 
-  if(netz->size())
+  if(netz->size() && neues_netz)
   {
     if((n == 0 && ncl2_profil)
     || (n == 1 && histogramModus())

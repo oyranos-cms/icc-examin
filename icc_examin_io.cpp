@@ -80,6 +80,7 @@ ICCexamin::oeffnen (std::vector<std::string> dateinamen)
       icc_betrachter->DD_histogram->show();
       icc_waehler_->show();
       icc_betrachter->menueintrag_3D->set();
+      icc_betrachter->menueintrag_huelle->set();
       histogram_angezeigt_ = true;
 
       profile.oeffnen(icc_oyranos.moni(),-1);

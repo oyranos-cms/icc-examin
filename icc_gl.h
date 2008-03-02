@@ -57,6 +57,7 @@ class GL_Ansicht : public Fl_Gl_Window , public Fl_Slot {
   // inner Strukturen bei Datenwechsel anpassen
   void menueErneuern_();
   void erstelleGLListen_();
+  void textGarnieren_();
   void garnieren_();
   // Menüs
   Fl_Menu_Button  *menue_;
@@ -72,6 +73,35 @@ class GL_Ansicht : public Fl_Gl_Window , public Fl_Slot {
   // gibt den Initalstatus an
   void GLinit_();
   void menueInit_();
+
+  typedef enum {NOTALLOWED, AXES, RASTER, PUNKTE , SPEKTRUM, HELFER, DL_MAX } DisplayLists;
+  int glListen[DL_MAX];
+  typedef enum {
+   MENU_AXES,
+   MENU_QUIT,
+   MENU_KUGEL,           // Formen der 3DLut-darstellung
+   MENU_WUERFEL,
+   MENU_STERN,
+   MENU_GRAU,            // Die Farbdarstellung der 3DLut
+   MENU_FARBIG,
+   MENU_KONTRASTREICH,
+   MENU_SCHALEN,         // Aussparen der 3DLut
+   MENU_dE1KUGEL,        // Mess-/Profilwertdifferenzen mit Farborten
+   MENU_dE2KUGEL,
+   MENU_dE4KUGEL,
+   MENU_dE1STERN,
+   MENU_DIFFERENZ_LINIE, // Mess-/Profilwertdifferenzen mit Geraden pur
+   MENU_SPEKTRALBAND,    // Darstellung der Spektralfarben als Band
+   MENU_HELFER,          // Texte und Pfeile darstellen
+   MENU_WEISS,           // Hintergrundfarben
+   MENU_HELLGRAU,
+   MENU_GRAUGRAU,
+   MENU_DUNKELGRAU,
+   MENU_SCHWARZ,
+   MENU_MAX
+  } MenuChoices;
+
+  int DrawAxes;
 
 public:
   GL_Ansicht(int X,int Y,int W,int H);
