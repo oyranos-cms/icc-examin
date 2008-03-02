@@ -909,7 +909,7 @@ namespace icc_examin_ns {
   }
   void sleep(double sekunden)
   {
-#            if defined(LINUX) || defined(APPLE)
+#            if defined(__GCC__) || defined(__APPLE__)
              timespec ts;
              double ganz;
              double rest = modf(sekunden, &ganz);

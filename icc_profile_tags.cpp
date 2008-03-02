@@ -387,7 +387,7 @@ ICCtag::getText                     (void)
     int groesse = icValue( *(icUInt32Number*)&data_[12] ); // 12
     char a = 'e';
     char b = 'n';
-    const char *locale = getenv("LANG");
+    doLocked_m(const char *locale = getenv("LANG");,NULL)
     if(locale)
       DBG_NUM_V( locale )
     else

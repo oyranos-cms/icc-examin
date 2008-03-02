@@ -2522,7 +2522,7 @@ GL_Ansicht::hineinNetze       (const std::vector<ICCnetz> & d_n)
     DBG_NUM_V( dreiecks_netze[i].name );
 
   valid_=false;
-  redraw();
+  //redraw();
   DBG_PROG_ENDE
 }
 
@@ -2544,7 +2544,7 @@ GL_Ansicht::hineinTabelle (std::vector<std::vector<std::vector<std::vector<doubl
   MARK( frei(true); )
 
   valid_=false;
-  redraw();
+  //redraw();
 
   glStatus(_("left-/middle-/right mouse button -> rotate/cut/menu"), typ_);
 

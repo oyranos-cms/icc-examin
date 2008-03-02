@@ -596,13 +596,13 @@ CgatsFilter::cgats_korrigieren_               ()
   DBG_PROG_V( typ_ )
 
   // locale - Kommas unterscheiden
-  const char* loc_alt = setlocale(LC_NUMERIC, NULL); //getenv("LANG");
+  doLocked_m( const char* loc_alt = setlocale(LC_NUMERIC, NULL), NULL )
   if(loc_alt) {
     DBG_NUM_V( loc_alt )
   } else {
     DBG_NUM_S( "keine LANG Variable gefunden" )
   }
-  setlocale(LC_NUMERIC,"C");
+  doLocked_m( setlocale(LC_NUMERIC,"C");, NULL )
 
   // Zeilenumbrueche reparieren
   // LF CR
@@ -955,7 +955,7 @@ CgatsFilter::cgats_korrigieren_               ()
   }
 
   if(loc_alt)
-    setlocale(LC_NUMERIC,loc_alt);
+    doLocked_m( setlocale(LC_NUMERIC,loc_alt) , NULL);
 
   //DBG_NUM_S (data_)
   DBG_PROG_ENDE

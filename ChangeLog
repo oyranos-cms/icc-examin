@@ -1,16 +1,65 @@
+2007-01-00
+	* fix: plastic workaround for X11, call Fl_Window::show() in
+		MyFl_Double_Window::show()
+	* neu: configure: add -lrt for nanosleep in Solaris
+	* und: adapt icc_betrachter.fl to FLTK-1.1.(8) and -scheme plastic
+	* und: reactivate My_Fl_Box to allow DnD on Linux
+		submit www.fltk.org/str.php?L1577
+	* neu: ICCexamin::oyranos_einstellunigen ICCexamin::auffrischen
+	* neu: ncl2: track old colour places
+	* neu: show net lines of internal gamut hull (map Lab cubus to profile)
+		Oyranos::netzVonProfil_
+	* neu: add bpc option to colour space hull generation
+	* neu: icc_helfer.cpp getColorSpaceChannels()
+	* und: optimise GL drawing
+	* neu: GL herausNormalPunkte
+	* und: remove GL_Ansicht::stupps_
+	* fix: bugfix in CIELab2Lab
+	* und: move plug-in stuff to icc_cinepaint_internal.cpp for i18n
+	* fix: CP plug-in: bugfix for 1 byte proof profile size
+	* neu: add event type info to my_file_chooser callback_
+	* und: configure: rename ARCH to OS_EXT to avoid name collision
+
+2006-12-29
+	* neu: ICCereignisManager
+	* und: move darf_bewegen_ from GL_Ansicht to Agviewer
+
+2006-12-24
+	* und: check _NET_CURRENT_DESKTOP for X11 window iconification
+
+2006-12-22
+	* und: beautify configure output
+	* und: allow silent configure operation
+
+2006-12-05
+	* neu: add libtiff check
+	* neu: integrate CinePaint plug-in
+	* und: move some functions out of icc_main to icc_helfer
+
+2006-12-04
+	* und: avoid Lab,XYZ... nameclash in icc_formeln.*, rename to *_s
+
+2006-11-20
+	* und: reduce to a more apropriate authors list
+
 2006-11-20
 	* fix: switched from XYZ gamut rendering to intermediate over Lab,
 		still does not match argylls gamut
+	* fix: fix some memory leaks in icc_gl.cpp
 
 2006-11-19
-	* neu: out of gamut colours are rendered with the Oyranos proof profile
+	* neu: add the Oyranos proof profile
+	* neu: create and use oyProfileGetMD5 in Oyranos and icc_oyranos
 	* neu: the Lab to monitor now better checks for changes and recalculates
 	* neu: preferences saving for marking out of gamut colours
 
 2006-11-17
 	* neu: "Quit" in 3D Gamut window
 	* fix: fix mft_choice empty entry
+	* neu: new registering of threads to be posix conform
 	* neu: preferences saving for 3D gamut and mft CLUT views
+	* und: merge into fortschritt and omit fortschrittThreaded
+	* neu: gamut warning option
 
 2006-11-16
 	* und: move darf_bewegen_ from GL_Ansicht to Agviewer

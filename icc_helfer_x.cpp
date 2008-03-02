@@ -32,6 +32,7 @@
 #include "icc_utils.h"
 #include "icc_icc.h"
 #include "icc_helfer_x.h"
+#include "icc_helfer.h"
 #include "icc_oyranos.h"
 
 #undef BOOL
@@ -98,7 +99,7 @@ leseGrafikKartenGamma        (std::string display_name,
   if( ScreenCount( display ) > 1 )
   {
     int scr_nr = -1;
-    char *display_name = getenv("DISPLAY");
+    doLocked_m( char *display_name = getenv("DISPLAY");, NULL)
     char *ptr = NULL;
 
     if(display_name &&

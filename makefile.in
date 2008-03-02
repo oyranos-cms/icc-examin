@@ -34,7 +34,7 @@ ALL_INCL = $(INCL) \
 CFLAGS_ = $(CFLAGS) $(DEBUG) $(ALL_INCL)
 CXXFLAGS_ = $(CXXFLAGS) $(DEBUG) $(ALL_INCL)
 
-LDLIBS = -L$(libdir) -L./ $(FLTK_LIBS) $(FLU_LIBS) \
+LDLIBS = $(LDFLAGS) -L$(libdir) -L./ $(FLTK_LIBS) $(FLU_LIBS) \
 	$(X11_LIBS) -llcms -L/lib $(OYRANOS_LIBS) $(LCMS_LIBS) \
 	$(FTGL_LIBS) $(I18N_LIB) $(DBG_LIBS) $(LIBNAME) $(LIBFL_I18N) $(CWLIB)
 
@@ -210,8 +210,6 @@ ALL_FILES =	$(SOURCES) \
 # get time stamp
 MTIME   := $(shell date +%y%m%d.%H%M%S)
 
-
-.SILENT:
 
 all:	dynamic
 	

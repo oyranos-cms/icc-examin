@@ -114,6 +114,12 @@ namespace icc_examin_ns {
 #endif
 }
 
+#define doLocked_m( a, widget ) \
+  icc_examin_ns::lock(__FILE__,__LINE__); \
+  a; \
+  icc_examin_ns::unlock( widget, __FILE__,__LINE__); 
+
+
 // Datendarstellung
 std::string         zeig_bits_bin      (const void* speicher, int groesse);
 

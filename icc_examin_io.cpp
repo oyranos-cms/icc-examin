@@ -35,10 +35,6 @@ using namespace icc_examin_ns;
 
 #if USE_THREADS
 #include "threads.h"
-#else
-// TODO: beseitige Hack
-static int frei_tuen = 0;
-#define frei_ frei_tuen
 #endif
 
 //#define DEBUG_EXAMIN
@@ -253,6 +249,7 @@ ICCexaminIO::oeffnenThread_ ()
       DBG_PROG_V( anzahl )
       double undurchsicht;
       bool grau;
+      bool waehlbar;
       std::vector<int> aktiv = profile.aktiv();
       DBG_PROG_V( aktiv.size() )
       for(int i = 0; i < anzahl; ++i) {
@@ -266,10 +263,11 @@ ICCexaminIO::oeffnenThread_ ()
         undurchsicht= icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze[i].undurchsicht;
         DBG_PROG_V( undurchsicht )
         grau = icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze[i].grau;
+        waehlbar = profile[i]->size() > 128 ? 1 : 0;
 
         if(icc_examin->icc_waehler_)
           icc_examin->icc_waehler_->push_back(dateiName(profile.name(i)),
-                                undurchsicht, grau , aktiv[i]);
+                                undurchsicht, grau , aktiv[i], waehlbar);
       }
       icc_examin_ns::unlock(this, __FILE__,__LINE__);
     }

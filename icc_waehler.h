@@ -164,6 +164,8 @@ public:
  }
 };
 
+// ----------------------------------------------------------------------------
+
 class ICCwaehler : public icc_examin_ns::MyFl_Double_Window
 {
     Fl_Scroll *scroll_profile;
@@ -176,9 +178,9 @@ public:
   for(int i = 0; i < 128; ++i)
     profile_[i] = 0;
 
-  { Fl_Scroll* o = scroll_profile = new Fl_Scroll(5, 5, w()-14, h()-21);
+  { Fl_Scroll* o = scroll_profile = new Fl_Scroll(5, 5, w()-14, h()-10);
       //o->box(FL_THIN_DOWN_BOX);
-      { Fl_Pack* o = hbox = new Fl_Pack(6, 6, w()-16, h()-25);
+      { Fl_Pack* o = hbox = new Fl_Pack(6, 6, w()-16, h()-12);
         o->end();
       }   
       o->end();
@@ -210,13 +212,14 @@ private:
 
 public:
  void         push_back (const char* name, double undurchsicht, 
-                            bool grau, bool aktiv)
+                            bool grau, bool aktiv, int waehlbar_)
  {
   DBG_PROG_START
   int pos = size();
   hbox->begin();
   profile_[pos] = new ICCwaehlerProfil( name, undurchsicht, grau, aktiv, pos );
   hbox->end();
+  profile_[pos]->waehlbar( waehlbar_ );
   redraw();
   DBG_PROG_ENDE
  }

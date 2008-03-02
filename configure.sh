@@ -283,6 +283,9 @@ if [ -n "$DEBUG" ] && [ $DEBUG -gt 0 ]; then
     echo "DEBUG = $DEBUG_" >> $CONF
     echo "DEBUG_SWITCH = -v" >> $CONF
     echo "DEBUG_SWITCH = -v" >> $CONF_I18N
+  else
+    echo ".SILENT:" >> $CONF
+    echo ".SILENT:" >> $CONF_I18N
   fi
 fi
 

@@ -259,13 +259,9 @@ namespace icc_examin_ns {
     //Fl::awake();
     DBG_THREAD_S( "locks: "<<icc_thread_lock_zaehler_ <<" angehalten bei: "<<file<<":"<<line )
   }
+
   void unlock(void *widget, const char *file, int line)
-  { // hinausgehen und Tuere offen lassen
-    if(widget) { DBG_THREAD
-      Fl::awake(widget); DBG_THREAD
-      // Ereignisse entlocken
-      //Fl::wait(0); DBG_THREAD
-    }
+  {
 # if 0
     --icc_thread_lock_zaehler_;
     DBG_THREAD_S( "locks: "<<icc_thread_lock_zaehler_ <<" Aufruf bei: "<<file<<":"<<line )
@@ -281,6 +277,14 @@ namespace icc_examin_ns {
 # else
       Fl::unlock();
 # endif
+
+    // hinausgehen und Tuere offen lassen
+    if(widget) { DBG_THREAD
+      Fl::awake(widget); DBG_THREAD
+      // Ereignisse entlocken
+      //Fl::wait(0); DBG_THREAD
+    }
+
     icc_thread_lock_besitzer_ = 0;
     icc_thread_lock_zaehler_ = 0;
 

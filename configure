@@ -457,7 +457,7 @@ echo "RM = rm -f $DEBUG_SWITCH" >> $CONF
 if [ $OSUNAME = "Darwin" ]; then
   echo "" >> $CONF
   echo "COPY = cp -p $DEBUG_SWITCH" >> $CONF
-  LDFLAGS="$LDFLAGS -dynamiclib  -L."
+  LDFLAGS="$LDFLAGS -L."
   echo "DBG_LIBS = #-lMallocDebug" >> $CONF
   echo "I18N_LIB = -lintl \$(LIBNAME)" >> $CONF
   echo "I18N_LIBSTAT = /opt/local/lib/libintl.a \$(LIBNAME) -liconv" >> $CONF
@@ -490,7 +490,7 @@ else
   if [ $OSUNAME = "Linux" ]; then
     echo "" >> $CONF
     echo "COPY = cp $DEBUG_SWITCH -dpa" >> $CONF
-    LDFLAGS="$LDFLAGS -shared -L."
+    LDFLAGS="$LDFLAGS -L."
     echo "I18N_LIB = \$(LIBNAME)" >> $CONF
     echo "I18N_LIBSTAT = \$(LIBNAME)" >> $CONF
     echo "INCL=-I\$(includedir) -I/usr/X11R6/include -I. -I/usr/include/g++ -I/usr/include" >> $CONF
@@ -508,18 +508,18 @@ else
     echo "COPY = cp -p" >> $CONF
     echo "INCL=-I\$(includedir) -I/usr/X11R6/include -I. -I/usr/include/g++ -I/usr/include" >> $CONF
     if [ $OSUNAME = "BSD" ]; then
-      LDFLAGS="$LDFLAGS -shared \$(ICONV)"
+      LDFLAGS="$LDFLAGS \$(ICONV)"
       INSTALL="install $DEBUG_SWITCH"
       echo "LINK_FLAGS = -shared \$(ICONV)" >> $CONF
       echo "INSTALL = install $DEBUG_SWITCH" >> $CONF
     fi
     if [ $OSUNAME = "SunOS" ]; then
       echo "ICONV = -liconv" >> $CONF
-      LDFLAGS="$LDFLAGS -shared -mimpure-text -ldl \$(ICONV)"
-      INSTALL="install $DEBUG_SWITCH"
+      LDFLAGS="$LDFLAGS -mimpure-text -ldl -lrt \$(ICONV)"
+      INSTALL="install"
     else
       echo "ICONV = -liconv" >> $CONF
-      LDFLAGS="$LDFLAGS -shared -mimpure-text -ldl \$(ICONV)"
+      LDFLAGS="$LDFLAGS -mimpure-text -ldl \$(ICONV)"
       INSTALL="install"
       echo "LINK_FLAGS = -shared -ldl \$(ICONV)" >> $CONF
       echo "INSTALL = install" >> $CONF

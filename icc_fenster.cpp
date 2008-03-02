@@ -36,8 +36,8 @@
 
 #include <FL/Fl.H>
 #if HAVE_X
-#include <X11/Xutil.h>
 #include <FL/x.H>
+#include <X11/Xutil.h>
 #endif
 #include <FL/Fl_Double_Window.H>
 #include <FL/Fl_Return_Button.H>

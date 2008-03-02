@@ -171,7 +171,7 @@ ICCexamin::start (int argc, char** argv)
   icc_betrachter->mft_gl->init(1);
   icc_betrachter->DD_farbraum->init(2);
   {
-    icc_waehler_ = new ICCwaehler(485, 110, _("Gamut selector"));
+    icc_waehler_ = new ICCwaehler(485, 116, _("Gamut selector"));
     if(!icc_waehler_) WARN_S( "icc_waehler_ not reservable" )
     // gehoert zum DD_farbraum fenster
     icc_waehler_->only_with = dynamic_cast<icc_examin_ns::MyFl_Double_Window*>(icc_betrachter->DD_farbraum->window());

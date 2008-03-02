@@ -27,7 +27,7 @@
 
 // Date:      Mai 2005
 
-#if 1
+#if 0
 #include <lcms.h>
 
 #ifdef HAVE_OY

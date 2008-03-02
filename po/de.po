@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2007-01-31 15:14+0100\n"
+"POT-Creation-Date: 2007-02-01 15:59+0100\n"
 "PO-Revision-Date: 2005-08-13 17:35+0200\n"
 "Last-Translator: Kai-Uwe Behrmann\n"
 "Language-Team:  <ku.b@gmx.de>\n"
@@ -127,17 +127,17 @@ msgid "unbekannte Farbe"
 msgstr ""
 
 #: icc_draw.cpp:654 icc_draw.cpp:665 icc_helfer.cpp:449
-#: icc_profile_tags.cpp:435 icc_helfer_osx.cpp:68 icc_helfer_x.cpp:63
+#: icc_profile_tags.cpp:435 icc_helfer_osx.cpp:68 icc_helfer_x.cpp:64
 msgid "Red"
 msgstr "Rot"
 
 #: icc_draw.cpp:657 icc_draw.cpp:667 icc_helfer.cpp:450
-#: icc_profile_tags.cpp:436 icc_helfer_osx.cpp:69 icc_helfer_x.cpp:64
+#: icc_profile_tags.cpp:436 icc_helfer_osx.cpp:69 icc_helfer_x.cpp:65
 msgid "Green"
 msgstr "Grün"
 
 #: icc_draw.cpp:660 icc_draw.cpp:669 icc_helfer.cpp:451
-#: icc_profile_tags.cpp:437 icc_helfer_osx.cpp:70 icc_helfer_x.cpp:65
+#: icc_profile_tags.cpp:437 icc_helfer_osx.cpp:70 icc_helfer_x.cpp:66
 msgid "Blue"
 msgstr "Blau"
 
@@ -189,18 +189,18 @@ msgstr "Helligkeit"
 msgid "Value"
 msgstr "Wert"
 
-#: icc_draw.cpp:693 icc_examin_farbraum.cpp:269 icc_examin_io.cpp:217
+#: icc_draw.cpp:693 icc_examin_farbraum.cpp:269 icc_examin_io.cpp:213
 #: icc_helfer.cpp:437 icc_helfer.cpp:440
 msgid "CIE *L"
 msgstr ""
 
-#: icc_draw.cpp:695 icc_examin_farbraum.cpp:270 icc_examin_io.cpp:218
+#: icc_draw.cpp:695 icc_examin_farbraum.cpp:270 icc_examin_io.cpp:214
 #: icc_gl.cpp:926 icc_gl.cpp:1000 icc_gl.cpp:1026 icc_gl.cpp:1034
 #: icc_helfer.cpp:438
 msgid "CIE *a"
 msgstr ""
 
-#: icc_draw.cpp:697 icc_examin_farbraum.cpp:271 icc_examin_io.cpp:219
+#: icc_draw.cpp:697 icc_examin_farbraum.cpp:271 icc_examin_io.cpp:215
 #: icc_gl.cpp:939 icc_gl.cpp:1042 icc_gl.cpp:1062 icc_gl.cpp:1069
 #: icc_helfer.cpp:439
 msgid "CIE *b"
@@ -299,43 +299,43 @@ msgstr "Nr. Teil  Typ   Größe Beschreibung"
 msgid "RGB Ergebnis nicht verfuegbar"
 msgstr ""
 
-#: icc_examin_io.cpp:225
+#: icc_examin_io.cpp:221
 msgid "kein Netz gefunden in VRML Datei"
 msgstr ""
 
-#: icc_examin_io.cpp:240
+#: icc_examin_io.cpp:236
 msgid "Anzahl gabs schon mal"
 msgstr ""
 
-#: icc_examin_io.cpp:262
+#: icc_examin_io.cpp:259
 msgid "Kein Netz gefunden. Ist Argyll installiert?"
 msgstr ""
 
-#: icc_examin_io.cpp:421
+#: icc_examin_io.cpp:419
 msgid "Stop loading "
 msgstr "Laden angehalten: "
 
-#: icc_examin_io.cpp:516
+#: icc_examin_io.cpp:514
 msgid "HTML Documents (*.htm*)"
 msgstr "HTML Dokumente (*.htm*)"
 
-#: icc_examin_io.cpp:520 icc_betrachter.cxx:513
+#: icc_examin_io.cpp:518 icc_betrachter.cxx:513
 msgid "Save Report"
 msgstr "Bericht Speichern"
 
-#: icc_examin_io.cpp:591
+#: icc_examin_io.cpp:589
 msgid "ICC colour profiles (*.ic*)"
 msgstr "ICC Farbprofile (*.ic*)"
 
-#: icc_examin_io.cpp:592 icc_betrachter.cxx:514
+#: icc_examin_io.cpp:590 icc_betrachter.cxx:514
 msgid "Save Gamut as Profile"
 msgstr "Speichere Farbhülle als Profil"
 
-#: icc_examin_io.cpp:594
+#: icc_examin_io.cpp:592
 msgid "VRML Files (*.wrl)"
 msgstr "VRML Dateien (*.wrl)"
 
-#: icc_examin_io.cpp:595 icc_betrachter.cxx:515
+#: icc_examin_io.cpp:593 icc_betrachter.cxx:515
 msgid "Save Gamut as VRML"
 msgstr "Speichere Farbhülle als VRML"
 
@@ -1225,7 +1225,7 @@ msgstr "WARNUNG: Konnte koruptes oder beschädigtes Profil nicht laden."
 msgid "WARNING: Could not load profile."
 msgstr "WARNUNG: Konnte Profil nicht laden."
 
-#: icc_oyranos.cpp:718 icc_profile_header.cpp:237 icc_helfer_x.cpp:176
+#: icc_oyranos.cpp:718 icc_profile_header.cpp:237 icc_helfer_x.cpp:177
 msgid "Manufacturer:"
 msgstr "Hersteller:  "
 
@@ -1439,7 +1439,7 @@ msgstr "Plattform:   "
 msgid "Flags:       "
 msgstr "Optionen:    "
 
-#: icc_profile_header.cpp:238 icc_helfer_x.cpp:178
+#: icc_profile_header.cpp:238 icc_helfer_x.cpp:179
 msgid "Model:       "
 msgstr "Modell:      "
 
@@ -1729,7 +1729,7 @@ msgstr ""
 msgid "Model:      "
 msgstr "Modell:     "
 
-#: icc_helfer_osx.cpp:87 icc_helfer_x.cpp:193
+#: icc_helfer_osx.cpp:87 icc_helfer_x.cpp:194
 msgid "Gamma Red:   "
 msgstr "Gamma Rot:   "
 
@@ -1737,87 +1737,87 @@ msgstr "Gamma Rot:   "
 msgid "Gamma Green: "
 msgstr "Gamma Grün:  "
 
-#: icc_helfer_osx.cpp:99 icc_helfer_x.cpp:205
+#: icc_helfer_osx.cpp:99 icc_helfer_x.cpp:206
 msgid "Gamma Blue:  "
 msgstr "Gamma Blau:  "
 
-#: icc_helfer_x.cpp:85
+#: icc_helfer_x.cpp:86
 msgid "open X Display failed"
 msgstr ""
 
-#: icc_helfer_x.cpp:125
+#: icc_helfer_x.cpp:126
 msgid "Screen:"
 msgstr "Bildschirm:"
 
-#: icc_helfer_x.cpp:149
+#: icc_helfer_x.cpp:150
 msgid "XineramaScreen:"
 msgstr "XineramaSchirm:"
 
-#: icc_helfer_x.cpp:183
+#: icc_helfer_x.cpp:184
 msgid "Keine Monitor Information erhalten"
 msgstr ""
 
-#: icc_helfer_x.cpp:188
+#: icc_helfer_x.cpp:189
 msgid "Keine Gamma Information erhalten"
 msgstr ""
 
-#: icc_helfer_x.cpp:199
+#: icc_helfer_x.cpp:200
 msgid "Gamma Green:"
 msgstr "Gamma Grün: "
 
-#: icc_helfer_x.cpp:214 icc_helfer_x.cpp:223
+#: icc_helfer_x.cpp:215 icc_helfer_x.cpp:224
 msgid "Kein Gammagradient Information erhalten"
 msgstr ""
 
-#: icc_helfer_fltk.cpp:308
+#: icc_helfer_fltk.cpp:312
 msgid "Add to Favorites"
 msgstr "Lesezeichen hinzufügen"
 
-#: icc_helfer_fltk.cpp:309
+#: icc_helfer_fltk.cpp:313
 msgid "All Files (*)"
 msgstr "Alle Dateien (*)"
 
-#: icc_helfer_fltk.cpp:310
+#: icc_helfer_fltk.cpp:314
 msgid "Custom Filter"
 msgstr "Eigener Filter"
 
-#: icc_helfer_fltk.cpp:311
+#: icc_helfer_fltk.cpp:315
 msgid "Please choose an existing file!"
 msgstr "Bitte wählen Sie eine existierende Datei!"
 
-#: icc_helfer_fltk.cpp:312 my_file_chooser.cxx:180
+#: icc_helfer_fltk.cpp:316 my_file_chooser.cxx:180
 msgid "Favorites"
 msgstr "Lesezeichen"
 
-#: icc_helfer_fltk.cpp:313
+#: icc_helfer_fltk.cpp:317
 msgid "Filename"
 msgstr "Dateiname"
 
-#: icc_helfer_fltk.cpp:314 my_file_chooser.cxx:253
+#: icc_helfer_fltk.cpp:318 my_file_chooser.cxx:253
 msgid "Manage Favorites"
 msgstr "Lesezeichen bearbeiten"
 
-#: icc_helfer_fltk.cpp:316
+#: icc_helfer_fltk.cpp:320
 msgid "My Computer"
 msgstr "Mein Rechner"
 
-#: icc_helfer_fltk.cpp:318
+#: icc_helfer_fltk.cpp:322
 msgid "File Systems"
 msgstr "Dateisysteme"
 
-#: icc_helfer_fltk.cpp:320
+#: icc_helfer_fltk.cpp:324
 msgid "New Directory?"
 msgstr "Verzeichnis erstellen"
 
-#: icc_helfer_fltk.cpp:321 my_file_chooser.cxx:210
+#: icc_helfer_fltk.cpp:325 my_file_chooser.cxx:210
 msgid "Preview"
 msgstr "Vorschau"
 
-#: icc_helfer_fltk.cpp:323 my_file_chooser.cxx:288
+#: icc_helfer_fltk.cpp:327 my_file_chooser.cxx:288
 msgid "Save"
 msgstr "Sichern"
 
-#: icc_helfer_fltk.cpp:325 my_file_chooser.cxx:173
+#: icc_helfer_fltk.cpp:329 my_file_chooser.cxx:173
 msgid "Show:"
 msgstr "Zeige:"
 

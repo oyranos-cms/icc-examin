@@ -266,7 +266,7 @@ ICCmeasurement::leseTag (void)
 
   
   // locale - Kommas unterscheiden (Vorsicht: CgatsFilter veraendert LC_NUMERIC)
-  const char* loc_alt = setlocale(LC_NUMERIC, NULL); //getenv("LANG");
+  doLocked_m( const char* loc_alt = setlocale(LC_NUMERIC, NULL);,NULL) //getenv("LANG");
   if(loc_alt) {
     DBG_NUM_V( loc_alt )
   } else {

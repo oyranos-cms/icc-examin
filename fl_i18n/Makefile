@@ -1,6 +1,6 @@
 CXX = c++
 CC = cc
-DEBUG_SWITCH = -v
+.SILENT:
 TARGET=fl_i18n
 VERSION=0.0.2
 COMPILE_OPTIONS=-DUSE_THREADS -DUSE_GETTEXT
@@ -14,6 +14,9 @@ else
 ifeq ($(strip $(UNAME)),Darwin)
 APPLE=1
 endif
+endif
+ifeq ($(strip $(UNAME)),SunOS)
+SunOS=1
 endif
 
 COLLECT = ar cru
@@ -30,6 +33,10 @@ else
   COPY = cp
   endif
 endif
+ifdef SunOS
+  RT = -lrt
+endif
+
 INSTALL = install $(DEBUG_SWITCH)
 
 #DEBUG = -DDEBUG
@@ -74,7 +81,7 @@ else
     INCL=-I$(includedir) -I/usr/X11R6/include -I. -I/usr/include/g++ -I/usr/include
     I18N_LIB = $(LIBNAME)
   else
-    OPTS=-Wall -g $(DEBUG) -Wunused -fno-exceptions -lc -lm $(COMPILE_OPTIONS)
+    OPTS=-Wall -g $(DEBUG) -Wunused -fno-exceptions -lc -lm $(COMPILE_OPTIONS) $(RT)
     INCL= -I./
     RM = rm -f
     LIBLINK_FLAGS = -shared -ldl -L./

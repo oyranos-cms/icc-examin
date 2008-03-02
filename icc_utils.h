@@ -106,7 +106,7 @@ extern int             debug_s_mutex_threads_;
   if( !pthread_equal(debug_s_mutex_thread_, pthread_self()) || \
       debug_s_mutex_threads_ == 0 ) \
     while (pthread_mutex_trylock( &debug_s_mutex_ )) { \
-    /*printf("%s:%d %s() debug_s_mutex_ nicht verfügbar\n",__FILE__,__LINE__,__func__);*/ \
+    /*printf("%s:%d %s() debug_s_mutex_ nicht verfuegbar\n",__FILE__,__LINE__,__func__);*/ \
       icc_examin_ns::sleep(.001); \
     } \
   debug_s_mutex_threads_++ ; \
@@ -146,7 +146,7 @@ extern int icc_debug;
  *   9: DBG_PROG_START & DBG_PROG_ENDE
  *
  *   [1,2,...,9]    diese und alle kleineren Kategorien
- *   10+[1,2,...,9] einzig diese Kategorie , z.B. ICCEXAMIN_DEBUG=13 wählt alle
+ *   10+[1,2,...,9] einzig diese Kategorie , z.B. ICCEXAMIN_DEBUG=13 waehlt alle
  *                                                Speicherinformationen aus
  *
  */
@@ -262,7 +262,7 @@ public:
     virtual const char* what() const throw()	{ return "Datei I/O"; }
     virtual void report () const throw() {
       DBG_PROG_S ("Ausnahme-Report:\n");
-      DBG_PROG_S ("\tDatei \""<< fname <<"\" war nicht zu öffnen\n");//testweise
+      DBG_PROG_S ("\tDatei \""<< fname <<"\" war nicht zu oeffnen\n");//testweise
     };
 };
 #endif
