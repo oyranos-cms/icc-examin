@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2007  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2008  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -120,7 +120,8 @@ class ICCexamin : public icc_examin_ns::Beobachter,
     int  status_,
          intent_,              //!< rendering intent / de: Uebertragungsart
          bpc_,                 //!< black point compensation / de: Schwarzpunktkompensation
-         gamutwarn_;           //!< gamut warning / de: Farbraumwarnung
+         gamutwarn_,           //!< gamut warning / de: Farbraumwarnung
+         nativeGamut_;         //*< native versus separation gamut
     bool intent_selection_,    //!< interactive selected rendering intent
          farbraum_modus_;      //!< profile.profil() contains ncl2 named colours
     ICCwaehler *icc_waehler_;
@@ -136,6 +137,8 @@ class ICCexamin : public icc_examin_ns::Beobachter,
     int  gamutwarn ()  { return gamutwarn_; }  //!< gamut warning?
     void gamutwarn (int warn);
     void gamutAnsichtZeigen ();                //!< show DD_farbraum
+    int  nativeGamut() { return nativeGamut_; }
+    void nativeGamut( int select );            //*< default is separation gamut
 
   public:
     ICCfltkBetrachter* icc_betrachter;
@@ -163,7 +166,7 @@ class ICCexamin : public icc_examin_ns::Beobachter,
                          std::vector<std::string> & namen*/);
     void setzMesswerte ( );
     void netzLese      ( int n,
-                         std::vector<ICCnetz> * netz);
+                         icc_examin_ns::ICCThreadList<ICCnetz> * netz);
     void farbenLese    ( int n,
                          oyNamedColours_s ** list );
     void farbenLese    ( int n,

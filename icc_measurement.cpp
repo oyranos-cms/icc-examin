@@ -133,6 +133,15 @@ ICCmeasurement::defaults ()
   for(i=2;i<6;i+=2) { range_Lab[i] = -128.f; range_Lab[i+1] = 127.f; }
   for(i=0;i<6;i+=2) { range_RGB[i] = 0.f; range_RGB[i+1] = 255.f; }
   for(i=0;i<8;i+=2) { range_CMYK[i] = 0.f; range_CMYK[i+1] = 100.f; }
+
+  XYZmax[0] = XYZmax[1] = XYZmax[2] = -100000;
+  XYZmin[0] = XYZmin[1] = XYZmin[2] = 100000;
+
+  XYZWP[0] = X_D50;
+  XYZWP[1] = Y_D50;
+  XYZWP[2] = Z_D50;
+  minFeld = -1;
+  maxFeld = -1;
   DBG_PROG_ENDE
 }
 
@@ -181,10 +190,17 @@ ICCmeasurement::copy (const ICCmeasurement& m)
   DE00_Differenz_max_ = m.DE00_Differenz_max_;
   DE00_Differenz_min_ = m.DE00_Differenz_min_;
   DE00_Differenz_Durchschnitt_ = m.DE00_Differenz_Durchschnitt_;
+
   memcpy( range_XYZ, m.range_XYZ, 6*sizeof(double) );
   memcpy( range_Lab, m.range_Lab, 6*sizeof(double) );
   memcpy( range_RGB, m.range_RGB, 6*sizeof(double) );
   memcpy( range_CMYK, m.range_CMYK, 8*sizeof(double) );
+
+  memcpy( XYZmax, m.XYZmax, 3*sizeof(double) );
+  memcpy( XYZmin, m.XYZmin, 3*sizeof(double) );
+  memcpy( XYZWP, m.XYZWP, 3*sizeof(double) );
+  minFeld = m.minFeld;
+  maxFeld = m.maxFeld;
 
   export_farben = m.export_farben;
   
@@ -781,19 +797,18 @@ ICCmeasurement::init_umrechnen                     (void)
                                       // SLOW ON TRANSFORMING, very fast on creating transform.
                                       // Maximum accurancy.
 
-  double max[3], min[3], WP[3];
-  max[0] = max[1] = max[2] = 0;
-  min[0] = min[1] = min[2] = 100;
+  XYZmax[0] = XYZmax[1] = XYZmax[2] = -100000;
+  XYZmin[0] = XYZmin[1] = XYZmin[2] = 100000;
   {
     std::vector<double> wp;
     if (profile_) wp = profile_->getWhitePkt();
     if (wp.size() == 3)
     { for (int i = 0; i < 3; i++)
-        WP[i] = wp[i];
+        XYZWP[i] = wp[i];
     } else
-    { WP[0] = X_D50;
-      WP[1] = Y_D50;
-      WP[2] = Z_D50;
+    { XYZWP[0] = X_D50;
+      XYZWP[1] = Y_D50;
+      XYZWP[2] = Z_D50;
     }
   }
   { int maxFeld=0, minFeld=0;
@@ -809,26 +824,26 @@ ICCmeasurement::init_umrechnen                     (void)
 
     for (int i = 0; i < m; i++)
     { 
-      if (max[1] < XYZ_Satz_[i].Y)
-      { max[0] = XYZ_Satz_[i].X;
-        max[1] = XYZ_Satz_[i].Y;
-        max[2] = XYZ_Satz_[i].Z;
+      if (XYZmax[1] < XYZ_Satz_[i].Y)
+      { XYZmax[0] = XYZ_Satz_[i].X;
+        XYZmax[1] = XYZ_Satz_[i].Y;
+        XYZmax[2] = XYZ_Satz_[i].Z;
         maxFeld = i;
         maxFN = Feldnamen_[i].c_str();
       }
-      if (min[1] > XYZ_Satz_[i].Y)
-      { min[0] = XYZ_Satz_[i].X;
-        min[1] = XYZ_Satz_[i].Y;
-        min[2] = XYZ_Satz_[i].Z;
+      if (XYZmin[1] > XYZ_Satz_[i].Y)
+      { XYZmin[0] = XYZ_Satz_[i].X;
+        XYZmin[1] = XYZ_Satz_[i].Y;
+        XYZmin[2] = XYZ_Satz_[i].Z;
         minFeld = i;
         minFN = Feldnamen_[i].c_str();
       }
     }
     if( maxFN ) {
-      DBG_PROG_S( maxFN << " Nr. " << maxFeld << endl << " X_max = "<< max[0] <<" Y_max = "<< max[1] <<" Z_max = "<< max[2] );
+      DBG_PROG_S( maxFN << " Nr. " << maxFeld << endl << " X_max = "<< XYZmax[0] <<" Y_max = "<< XYZmax[1] <<" Z_max = "<< XYZmax[2] );
     }
     if( minFN ) {
-      DBG_PROG_S( minFN << " Nr. " << minFeld << endl << " X_min = "<< min[0] <<" Y_min = "<< min[1] <<" Z_min = "<< min[2] );
+      DBG_PROG_S( minFN << " Nr. " << minFeld << endl << " X_min = "<< XYZmin[0] <<" Y_min = "<< XYZmin[1] <<" Z_min = "<< XYZmin[2] );
     }
   }
 
@@ -1012,10 +1027,10 @@ ICCmeasurement::init_umrechnen                     (void)
           if (XYZ_measurement_)
           {
           if (isICCDisplay_) {
-            // adapt measurement to white and black
-            XYZ[0] = (XYZ_Satz_[i].X-min[0])/(max[0]-min[0])*WP[0];
-            XYZ[1] = (XYZ_Satz_[i].Y-min[1])/(max[1]-min[1])*WP[1];
-            XYZ[2] = (XYZ_Satz_[i].Z-min[2])/(max[2]-min[2])*WP[2];
+            double d_xyz[3];
+            FarbeZuDouble( d_xyz, XYZ_Satz_[i] );
+            // scale measurement to ICC white and black
+            oyCIEabsXYZ2ICCrelXYZ( d_xyz, XYZ, XYZmin, XYZmax, XYZWP);
           } else
             FarbeZuDouble( &XYZ[0], XYZ_Satz_[i] );
 
@@ -1545,7 +1560,17 @@ ICCmeasurement::getCmmColour (int patch)
     return nc;
   }
 
-  oyProfile_s * prof = oyProfile_FromFile( profile_->filename(), 0, 0 );
+  oyProfile_s * prof = 0;
+
+  if(profile_->data_type == ICCprofile::ICCprofileDATA)
+    prof = oyProfile_FromFile( profile_->filename(), 0, 0 );
+  else
+  {
+    if(CMYK_measurement_)
+      prof = oyProfile_FromStd( oyEDITING_CMYK, 0 );
+    else
+      prof = oyProfile_FromStd( oyEDITING_RGB, 0 );
+  }
 
   if(CMYK_measurement_)
     channels = (double*)&CMYK_Satz_[i];
@@ -1574,7 +1599,10 @@ ICCmeasurement::getMessColour (int patch)
 { DBG_MESS_START
   oyNamedColour_s * nc = 0;
   int i = patch;
-  double * channels = 0, * XYZ = 0;
+  double * channels = 0;
+  const double * CIEXYZ = 0,
+               * XYZ = 0;
+  double ICCXYZ[3];
 
   if (XYZ_Satz_.size() == 0)
     init ();
@@ -1602,7 +1630,13 @@ ICCmeasurement::getMessColour (int patch)
   else if(RGB_measurement_)
     channels = (double*)&RGB_Satz_[i];
 
-  XYZ = (double*)&XYZ_Satz_[i];
+  CIEXYZ = (double*)&XYZ_Satz_[i];
+  if (isICCDisplay_)
+  {
+    oyCIEabsXYZ2ICCrelXYZ( CIEXYZ, ICCXYZ, XYZmin, XYZmax, XYZWP);
+    XYZ = ICCXYZ;
+  } else
+    XYZ = CIEXYZ;
 
   nc = oyNamedColour_CreateWithName( Feldnamen_[i].c_str(),0,0,
                                      channels, XYZ, 0,0, prof, 0 );

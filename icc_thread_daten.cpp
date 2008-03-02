@@ -39,19 +39,21 @@ icc_examin_ns::ThreadDaten::frei(int freigeben)
 
   if(freigeben)
   {
+    iccThreadMutexUnLock_m( &mutex_ );
     frei_ = true;
     --zahl_;
     DBG_THREAD_S( "unlock " << zahl_ )
 
   } else {
 
-    Fl_Thread pth_alt = pth;
+    Fl_Thread pth_old = pth;
+    Fl_Thread pth_current = iccThreadSelf();
 
     int x = 0;
 
     while(!frei_)
     {
-      if(pth == pth_alt)
+      if(pth_current == pth_old)
       {
         DBG_PROG_S( dbgThreadId(pth) << " request from same thread " << zahl_ )
         break;
@@ -64,8 +66,22 @@ icc_examin_ns::ThreadDaten::frei(int freigeben)
       }
     }
 
+#if defined(DEBUG) && defined(__unix__)
+    int count = 0;
+    while (pthread_mutex_trylock( &mutex_ ))
+    {
+      DBG_S("mutex not available");
+      icc_examin_ns::sleep(1.0);
+      ++count;
+      if(count > 9)
+        break;
+    }
+#else
+    iccThreadMutexLock_m( &mutex_ );
+#endif
+
     frei_ = false;
-    pth = iccThreadSelf();
+    pth = pth_current;
     ++zahl_;
     DBG_THREAD_S( "lock   " << zahl_ )
   }

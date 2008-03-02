@@ -71,6 +71,7 @@ CPP_HEADERS = \
 	icc_profile_header.h \
 	icc_profile_tags.h \
 	icc_speicher.h \
+	icc_threads.h \
 	icc_thread_daten.h \
 	icc_ueber.h \
 	icc_utils.h \
@@ -104,6 +105,7 @@ COMMON_CPPFILES = \
 	icc_profile_tags.cpp \
 	icc_schnell.cpp \
 	icc_speicher.cpp \
+	icc_threads.cpp \
 	icc_thread_daten.cpp \
 	icc_ueber.cpp \
 	icc_utils.cpp \

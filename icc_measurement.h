@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2007  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2008  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -116,6 +116,12 @@ class ICCmeasurement {
     double              range_Lab[6];
     double              range_RGB[6];
     double              range_CMYK[8];
+    // maintain CIE absolute intent
+    int                 minFeld;
+    int                 maxFeld;
+    double              XYZmax[3];      /**< CIE absolute black point */
+    double              XYZmin[3];      /**< CIE absolute media white */
+    double              XYZWP[3];       /**< illumination white */
 
     std::vector<std::vector<std::string> > reportTabelle_;
     std::vector<int>    layout;

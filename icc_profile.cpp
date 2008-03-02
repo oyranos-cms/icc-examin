@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2005  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2008  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -918,6 +918,8 @@ bool
 ICCprofile::tagBelongsToMeasurement( int tag )
 {
   DBG_PROG
+  if(tag >= (int)tags.size())
+    WARN_S("wrong tag "<<tag<<"["<<tags.size()<<"]");
   std::string name = tags[tag].getTagName();
   int s = tags[tag].getSize();
   return ( (name == "targ" ||

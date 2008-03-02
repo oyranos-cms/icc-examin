@@ -1,5 +1,5 @@
 # data file for the Fltk User Interface Designer (fluid)
-version 1.0108 
+version 1.0107 
 i18n_type 1 
 i18n_include <libintl.h> 
 i18n_function _ 
@@ -83,13 +83,13 @@ Function {iccReadInfo(char* filename)} {return_type {const char*}
   code DBG_PROG_ENDE {}
 } 
 
-class TagBrowser {open : {public Fl_Hold_Browser}
+class TagBrowser {: {public Fl_Hold_Browser}
 } {
   decl {int X; int Y; int W; int H; const char* start_info; std::string selectedTagName;} {public
   }
   Function {TagBrowser(int X,int Y,int W,int H,const char* start_info) : Fl_Hold_Browser(X,Y,W,H,start_info), X(X), Y(Y), W(W), H(H)} {open
   } {}
-  Function {TagBrowser(int X,int Y,int W,int H) : Fl_Hold_Browser(X,Y,W,H), X(X), Y(Y), W(W), H(H)} {open selected
+  Function {TagBrowser(int X,int Y,int W,int H) : Fl_Hold_Browser(X,Y,W,H), X(X), Y(Y), W(W), H(H)} {open
   } {}
   Function {reopen_nicht()} {open
   } {
@@ -119,7 +119,7 @@ class TagBrowser {open : {public Fl_Hold_Browser}
   }
 } 
 
-decl {typedef const char* (*tagTextsCB_f)(int * line);} {public global
+decl {typedef const char* (*tagTextsCB_f)(int * line);} {public
 } 
 
 class TagTexts {: {public Fl_Hold_Browser}
@@ -184,7 +184,7 @@ class TagTexts {: {public Fl_Hold_Browser}
 this->hinein( text, patches );} {}
     code DBG_PROG_ENDE {}
   }
-  decl {tagTextsCB_f cb;} {public global
+  decl {tagTextsCB_f cb;} {public
   }
   Function {selectItem(int item)} {open
   } {
@@ -299,7 +299,8 @@ Function {mft_gl_menueCb_(Fl_Widget * w, void * data)} {private
   code {icc_examin->icc_betrachter->mft_gl->menueAufruf( (intptr_t) data );} {}
 } 
 
-class ICCfltkBetrachter {} {
+class ICCfltkBetrachter {open
+} {
   decl {bool setTitleUrl;
 
  int px,py,pw,ph;
@@ -316,7 +317,7 @@ class ICCfltkBetrachter {} {
   setTitleUrl = true;} {}
     Fl_Window ueber {
       label {About ICC Examin} open
-      xywh {854 749 365 295} type Double resizable
+      xywh {869 749 365 295} type Double resizable
       code0 {o->hide();}
       code1 {o->use_escape_hide = true;}
       class {icc_examin_ns::MyFl_Double_Window} visible
@@ -357,7 +358,7 @@ class ICCfltkBetrachter {} {
     }
     Fl_Window vcgt {
       label {Grafic Card Gamma Table} open
-      xywh {233 639 370 405} type Double resizable
+      xywh {248 639 370 405} type Double resizable
       code0 {o->hide();}
       code1 {o->use_escape_hide = true;}
       class {icc_examin_ns::MyFl_Double_Window} visible
@@ -394,13 +395,13 @@ class ICCfltkBetrachter {} {
     }
     Fl_Window DD {
       label Gamut open
-      xywh {899 263 385 520} type Double box NO_BOX resizable
+      xywh {868 266 385 520} type Double box NO_BOX resizable
       class {icc_examin_ns::MyFl_Double_Window} visible
     } {
       Fl_Group {} {open
         xywh {0 0 385 520}
       } {
-        Fl_Menu_Bar DD_menueleiste {
+        Fl_Menu_Bar DD_menueleiste {open
           xywh {0 0 385 25} align 20 when 3
         } {
           Submenu {} {
@@ -507,10 +508,24 @@ class ICCfltkBetrachter {} {
   DBG_PROG_S (m->value())
 
   if(m->value())
-    icc_examin->bpc(0);
+    icc_examin->bpc(1);
   else
-    icc_examin->bpc(1);}
+    icc_examin->bpc(0);}
               tooltip {Black Point Compensation} xywh {65 65 100 20} type Toggle shortcut 0x40062
+            }
+            MenuItem menueintrag_nativeGamut {
+              label {Native Gamut}
+              callback {Fl_Menu_* mw = (Fl_Menu_*)o;
+  const Fl_Menu_Item* m = mw->mvalue();
+
+  DBG_PROG_S (m->value())
+
+  if(m->value())
+    icc_examin->nativeGamut(1);
+  else
+    icc_examin->nativeGamut(0);} selected
+              tooltip {Native - or Separation Gamut} xywh {75 75 100 20} type Toggle shortcut 0x40062
+              code0 {if(icc_examin->nativeGamut()) o->set();}
             }
           }
           Submenu {} {
@@ -548,7 +563,7 @@ class ICCfltkBetrachter {} {
     }
     Fl_Window details {
       label {ICC Examin} open
-      xywh {385 520 385 520} type Double box NO_BOX
+      xywh {555 407 385 520} type Double box NO_BOX
       code0 {o->main_win = o;}
       class {icc_examin_ns::MyFl_Double_Window} visible
     } {
@@ -1010,8 +1025,7 @@ icc_examin->testZeigen();}
     menueintrag_zeigcgats->deactivate();
   }} {}
   }
-  decl {Fl_Button ** mft_gl_tables_buttons;} {global
-  }
+  decl {Fl_Button ** mft_gl_tables_buttons;} {}
   Function {mft_gl_boxAdd( const char ** names_short, const char** names, int n, int actual )} {open
   } {
     code DBG_PROG_START {}

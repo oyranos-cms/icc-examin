@@ -52,10 +52,10 @@ class ICCvrmlParser
 {
     std::string original_;
     std::string arbeit_;
-    std::vector<ICCnetz> netze_;
+    icc_examin_ns::ICCThreadList<ICCnetz> netze_;
   public:
     void lade ( std::string & vrml );
-    std::vector<ICCnetz> zeigeNetze ();
+    icc_examin_ns::ICCThreadList<ICCnetz> zeigeNetze ();
   private:
     void lesen_ ();
 
@@ -70,7 +70,7 @@ ICCvrmlParser::lade( std::string & vrml )
   DBG_PROG_ENDE
 }
 
-std::vector<ICCnetz>
+icc_examin_ns::ICCThreadList<ICCnetz>
 ICCvrmlParser::zeigeNetze ()
 {
   DBG_PROG_START
@@ -352,7 +352,7 @@ ICCvrmlParser::lesen_ ()
 }
 
 
-std::vector<ICCnetz>
+icc_examin_ns::ICCThreadList<ICCnetz>
 extrahiereNetzAusVRML (std::string & vrml)
 {
   ICCvrmlParser vrml_parser;

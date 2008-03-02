@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2007  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2008  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -890,7 +890,7 @@ CgatsFilter::cgats_korrigieren_               ()
         logEintrag_( "fehlende NUMBER_OF_SETS eingefuegt",
                      zeile_letztes_BEGIN_DATA, "", s.str() );
       } else // NUMBER_OF_SETS Parsen und Vergleichen
-      {
+      if(zeile_letztes_NUMBER_OF_SETS > 0) {
         std::string t = zeilen_[zeile_letztes_NUMBER_OF_SETS].
                  substr( 0, zeilen_[zeile_letztes_NUMBER_OF_SETS].find( "#" ) );
         DBG_PROG_V( t )

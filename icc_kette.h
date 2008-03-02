@@ -50,8 +50,10 @@ class ICCkette : public icc_examin_ns::ThreadDaten,
                  ICCkette  ();
     void         init ();
                  ~ICCkette () {; }
-    void         clear()      {profile_.clear(); profilnamen_.clear();
-                               aktiv_.clear(); profil_mzeit_.clear(); }
+    void         clear()      {frei(false);
+                               profile_.clear(); profilnamen_.clear();
+                               aktiv_.clear(); profil_mzeit_.clear();
+                               frei(true); }
   private:
     int                      aktuelles_profil_;
     /** list of loaded profiles */

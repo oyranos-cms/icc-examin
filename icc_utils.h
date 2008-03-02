@@ -49,7 +49,9 @@
 #include <new>			/* bad_alloc() */
 #if defined(WIN32)
 # define iccThreadSelf  GetCurrentThreadId
-# define iccThreadEqual(a,b) ((a) == (b)) 
+# define iccThreadEqual(a,b) ((a) == (b))
+# define iccThreadMutex_m    int
+# define iccThreadMutexInit_m(m) 
 # define icc_popen_m    _popen
 # define icc_pclose_m   _pclose
   char * icc_strdup(const char*);
@@ -57,6 +59,11 @@
 #else
 # define iccThreadSelf  pthread_self 
 # define iccThreadEqual(a,b) pthread_equal((a),(b)) 
+# define iccThreadMutex_m    pthread_mutex_t
+# define iccThreadMutexInit_m(m,a) pthread_mutex_init(m,a)
+# define iccThreadMutexLock_m(m) pthread_mutex_lock(m)
+# define iccThreadMutexUnLock_m(m) pthread_mutex_unlock(m)
+# define iccThreadMutexDestroy_m(m) pthread_mutex_destroy(m)
 # define icc_popen_m    popen
 # define icc_pclose_m   pclose
 # define icc_strdup_m(text_) strdup(text_)

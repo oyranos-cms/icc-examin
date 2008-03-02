@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2007  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2008  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -55,6 +55,7 @@ using namespace icc_examin_ns;
 
 #if USE_THREADS
 #include "threads.h"
+#include "icc_threads.h"
 #else
 #endif
 
@@ -71,7 +72,7 @@ using namespace icc_examin_ns;
 #define DBG_EXAMIN_S( texte )
 #endif
 
-ICCexamin *icc_examin;
+ICCexamin * icc_examin = 0;
 
 
 ICCexamin::ICCexamin ()
@@ -93,12 +94,16 @@ ICCexamin::ICCexamin ()
   farbraum_modus_ = 0;
   bpc_ = 0;
   gamutwarn_ = 0;
+  nativeGamut_ = 0;
   vcgt_cb_laeuft_b_ = 0;
 
   Fl_Preferences vor( Fl_Preferences::USER, "oyranos.org", "iccexamin");
   Fl_Preferences gl_gamut(vor, "gl_gamut");
   gl_gamut.get("gamutwarn", gamutwarn_, 0 );
+  gl_gamut.get("native_gamut", nativeGamut_, 0 );
   DBG_PROG_V( gamutwarn_ )
+
+  oyThreadLockingSet( iccStruct_LockCreate, iccLockRelease, iccLock, iccUnLock);
 
   alle_gl_fenster = new icc_examin_ns::EinModell;
   icc_betrachter = new ICCfltkBetrachter;
@@ -123,6 +128,7 @@ ICCexamin::quit ()
   Fl_Preferences vor( Fl_Preferences::USER, "oyranos.org", "iccexamin");
   Fl_Preferences gl_gamut(vor, "gl_gamut");
   gl_gamut.set("gamutwarn", gamutwarn_ );
+  gl_gamut.set("native_gamut", nativeGamut_ );
   gl_gamut.flush();
   DBG_PROG_V( gamutwarn_ )
 
@@ -134,8 +140,14 @@ void
 ICCexamin::clear ()
 { DBG_PROG_START
 
+  icc_betrachter->DD_farbraum->namedColoursRelease();
+  icc_betrachter->DD_farbraum->frei(false);
   profile.clear();
+  icc_betrachter->DD_farbraum->frei(true);
+  icc_betrachter->DD_farbraum->dreiecks_netze.frei(false);
   icc_betrachter->DD_farbraum->dreiecks_netze.clear();
+  icc_betrachter->DD_farbraum->dreiecks_netze.frei(true);
+
   icc_betrachter->DD_farbraum->clearNet ();
 
   DBG_PROG_ENDE
@@ -504,10 +516,13 @@ ICCexamin::nachricht( Modell* modell , int info )
         DBG_PROG_V( _item )
  
         if((*k)[info]->size() > 128)
-          ;//icc_examin->waehlbar( info, true );
+          icc_examin->waehlbar( info, true );
         else {
           icc_examin->waehlbar( info, false );
-          icc_betrachter->DD_farbraum->dreiecks_netze[info].aktiv = false;
+          icc_betrachter->DD_farbraum->dreiecks_netze.frei(false);
+          if(icc_betrachter->DD_farbraum->dreiecks_netze.size() > (size_t)info)
+            icc_betrachter->DD_farbraum->dreiecks_netze[info].aktiv = false;
+          icc_betrachter->DD_farbraum->dreiecks_netze.frei(true);
         }
       }
 
@@ -543,6 +558,12 @@ ICCexamin::nachricht( Modell* modell , int info )
     // find a CGATS/ncl2 tag_text / inspect_html line from a 3D(Lab) mouse hit
     // it's the inverse from selectTextsLine(int * line)
     int item = icc_examin->tag_nr();
+    profile.frei(false);
+    if(!profile.profil())
+    {
+      profile.frei(true);
+      return;
+    }
     std::vector<std::string> TagInfo = profile.profil()->printTagInfo(item),
                              names;
     std::vector<double> chan_dv;
@@ -680,6 +701,7 @@ ICCexamin::nachricht( Modell* modell , int info )
         oyNamedColour_Release( &colour );
       }
     }
+    profile.frei(true);
   }
 
   DBG_PROG_ENDE
@@ -916,11 +938,18 @@ ICCexamin::lade (std::vector<Speicher> & neu)
 }
 int
 ICCexamin::erneuern()
-{ return io_->erneuern();
+{
+  frei(false);
+  int i = io_->erneuern();
+  frei(true);
+  return i;
 }
 void
 ICCexamin::erneuern(int pos)
-{ io_->erneuern(pos);
+{
+  frei(false);
+  io_->erneuern(pos);
+  frei(true);
 }
 
 /** Auffrischen des Programmes (Neuladen) */
@@ -1078,11 +1107,17 @@ ICCexamin::intent( int intent_neu )
 void
 ICCexamin::bpc( int bpc_neu )
 {
-  if(bpc_ != bpc_neu) {
-    std::vector<std::string> profilnamen = profile;
-    oeffnen( profilnamen );
-  }
+  if(bpc_ != bpc_neu)
+    auffrischen( PROGRAMM );
   bpc_ = bpc_neu;
+}
+
+void
+ICCexamin::nativeGamut( int nativeGamut_neu )
+{
+  if(nativeGamut_ != nativeGamut_neu)
+    auffrischen( PROGRAMM );
+  nativeGamut_ = nativeGamut_neu;
 }
 
 void

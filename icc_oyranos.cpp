@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2007  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2008  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -750,7 +750,7 @@ Oyranos::netzVonProfil_ (ICCnetz & netz,
   DBG_PROG_START
   // a cubus from six squares with the range of the Lab cube
   // will be transformed to a profile colour space and converted to a mesh
-  int a = 12; // resolution : 10 - more quick; 20 - more precise
+  int a = 10; // resolution : 10 - more quick; 20 - more precise
   size_t  size = 4*a*(a+1) + 2*(a-1)*(a-1);
   int     kanaele = 3;
   double *lab = new double [size*kanaele];
@@ -762,7 +762,8 @@ Oyranos::netzVonProfil_ (ICCnetz & netz,
       int b = 0; // area
       int pos = (y * 4 * a + x) * kanaele;
 
-      lab[pos + 0] = 1.0 - (double)y/(double)a;
+      // see http://www.behrmann.name/wind/oyranos/icc_examin_2008.01.21.html
+      lab[pos + 0] = pow(.9999 - (double)y/(double)a, 2.0) + 0.0001;
 
       if       (b * a <= x && x < ++b * a) {
         lab[pos + 1] = min + (x - (b - 1) * a)/(double)a * (max-min);
@@ -792,15 +793,16 @@ Oyranos::netzVonProfil_ (ICCnetz & netz,
         lab[pos + 1] = min + (x_pos - (b - 1) * (a - 1))/(double)a * (max-min);
         lab[pos + 2] = min + val;
       } else if(b * (a - b) <= x && x < ++b * a - b) {
-        lab[pos + 0] = 0.0;
         lab[pos + 1] = min + (x_pos - (b - 1) * (a - 1))/(double)a * (max-min);
         lab[pos + 2] = min + val;
+        // see http://www.behrmann.name/wind/oyranos/icc_examin_2008.01.21.html
+        lab[pos + 0] = HYP( lab[pos + 1] - 0.5, lab[pos + 2] - 0.5)/100.;//0.0
       }
     }
 
-  if(wandelProfilNachLabUndZurueck( lab, size, intent, bpc, profil ))
+  if(wandelLabNachProfilUndZurueck( lab, size, intent, bpc, profil ))
     return  std::string("oyranos");
-  double * rgb = wandelLabNachBildschirmFarben( 0,0, lab, size, 0, 0 );
+  //double * rgb = wandelLabNachBildschirmFarben( 0,0, lab, size, 0, 0 );
 
   // collect colour points
   netz.punkte. resize( size );
@@ -809,7 +811,7 @@ Oyranos::netzVonProfil_ (ICCnetz & netz,
     for(int k = 0; k < kanaele; ++k)
     {
       netz.punkte[i].koord[k] = lab [i*kanaele+k];
-      netz.punkte[i].farbe[k] = rgb [i*kanaele+k];
+      netz.punkte[i].farbe[k] = 0;//rgb [i*kanaele+k];
     }
     netz.punkte[i].farbe[kanaele] = 1.0;
   }
@@ -1025,7 +1027,7 @@ Oyranos::netzVonProfil_ (ICCnetz & netz,
 
   netz.kubus = 1;
 
-  delete [] rgb;
+  //delete [] rgb;
   delete [] lab;
 
   DBG_PROG_ENDE
@@ -1036,7 +1038,8 @@ Oyranos::netzVonProfil_ (ICCnetz & netz,
 #include "icc_vrml.h"
 #include "icc_gamut.h"
 void
-Oyranos::netzVonProfil (ICCprofile & profil, int intent, int bpc, ICCnetz & netz)
+Oyranos::netzVonProfil (ICCprofile & profil, int intent, int bpc,
+                        int native, ICCnetz & netz)
 {
   DBG_PROG_START
   Speicher s;
@@ -1054,10 +1057,10 @@ Oyranos::netzVonProfil (ICCprofile & profil, int intent, int bpc, ICCnetz & netz
 
     double v = profil.getHeader().versionD();
 
-    if(v < 4)
+    if(native && v < 4)
       vrml = iccCreateVrml ( s,(int)s.size(), intent );
 
-    std::vector<ICCnetz> netze;
+    icc_examin_ns::ICCThreadList<ICCnetz> netze;
 
     if(vrml.size())
     {
@@ -1074,7 +1077,7 @@ Oyranos::netzVonProfil (ICCprofile & profil, int intent, int bpc, ICCnetz & netz
 #ifdef USE_ARGYLL
       DBG_PROG_S("Fall back to internal hull generation.");
 #else
-      if(v < 4)
+      if(v < 4 && native)
       {
       WARN_S("Fall back to internal hull generation. Argyll is not installed?");
       } else {
@@ -1185,7 +1188,7 @@ Oyranos::gamutCheckAbstract(Speicher & s, Speicher & abstract,
                                                profil,
                                                intent,
                                                INTENT_RELATIVE_COLORIMETRIC,
-                                               flags|cmsFLAGS_HIGHRESPRECALC);
+                                               PRECALC|flags|cmsFLAGS_HIGHRESPRECALC);
      
 #if 0 // Gamut tag
       LPLUT lut = _cmsPrecalculateGamutCheck( tr1 ); DBG
@@ -1232,7 +1235,7 @@ Oyranos::gamutCheckAbstract(Speicher & s, Speicher & abstract,
 
 
 int
-Oyranos::wandelProfilNachLabUndZurueck(double *lab, // 0.0 - 1.0
+Oyranos::wandelLabNachProfilUndZurueck(double *lab, // 0.0 - 1.0
                                        size_t  size, int intent, int flags,
                                        Speicher & p )
 {
@@ -1250,6 +1253,9 @@ Oyranos::wandelProfilNachLabUndZurueck(double *lab, // 0.0 - 1.0
     int flags_ = 0;
     int kanaele, format;
     int input_ausnahme = 0;
+    oyProfile_s * profile = oyProfile_FromMem( groesse, (void*)block, 0, 0 );
+    oyProfile_s * lab_profile = oyProfile_FromStd( oyEDITING_LAB, 0 );
+    
 
     {
       flags_ = flags & ~cmsFLAGS_GAMUTCHECK;
@@ -1271,6 +1277,8 @@ Oyranos::wandelProfilNachLabUndZurueck(double *lab, // 0.0 - 1.0
         return 1;
 
       hLab  = cmsCreateLabProfile(cmsD50_xyY());
+      cmsSetColorSpace( hLab, icSigRgbData );
+      cmsSetDeviceClass( hLab, icSigInputClass );
       if(!hLab) { WARN_S( "hLab Profil not opened" ); return 1; }
 
       kanaele = _cmsChannelsOf( cmsGetColorSpace( hProfil ) );
@@ -1281,7 +1289,7 @@ Oyranos::wandelProfilNachLabUndZurueck(double *lab, // 0.0 - 1.0
 #     if HAVE_EXCEPTION
       try {
 #     endif
-      form = cmsCreateTransform               (hLab, TYPE_Lab_DBL,
+      form = cmsCreateTransform               (hLab, TYPE_RGB_DBL,
                                                hProfil, format,
                                                intent,
                                                PRECALC|flags);
@@ -1313,17 +1321,25 @@ Oyranos::wandelProfilNachLabUndZurueck(double *lab, // 0.0 - 1.0
     if(!farben) { WARN_S( "not enough memory available" ); return 1; }
 
     double *cielab = new double [size * 3];
+#ifdef DEBUG
+    double *cielab_tmp = new double [size * 3];
+#endif
 
-    LabToCIELab (lab, cielab, (int)size);
 
     if(!input_ausnahme)
     {
-      cmsDoTransform (form, cielab, farben, (unsigned int)size);
+      cmsDoTransform (form, lab, farben, (unsigned int)size);
       cmsDeleteTransform (form);
+#ifdef DEBUG
+      memcpy( cielab_tmp, lab, size * 3 * sizeof(double));
+#endif
     } else {
+      LabToCIELab (lab, cielab, (int)size);
       memcpy( farben, cielab, size * kanaele * sizeof(double)); // why cielab?
     }
 
+    cmsSetColorSpace( hLab, icSigLabData );
+    cmsSetDeviceClass( hLab, icSigOutputClass );
     form = cmsCreateTransform                 (hProfil, format,
                                                hLab, TYPE_Lab_DBL,
                                                intent,
@@ -1333,10 +1349,45 @@ Oyranos::wandelProfilNachLabUndZurueck(double *lab, // 0.0 - 1.0
     cmsDoTransform (form, farben, cielab, (unsigned int)size);
     cmsDeleteTransform (form);
 
+#ifdef DEBUG
+    if(kanaele == 4)
+    {
+      if(icc_debug > 1)
+      {
+        oyProfile_s * prof = oyProfile_FromStd( oyEDITING_LAB, 0 );
+        char * txt = oyDumpColourToCGATS( cielab_tmp, size, prof, malloc,
+                                          __FILE__ );
+        if(txt)
+        {
+          saveMemToFile( "icc_oyranos.lab1.cgats", txt, strlen(txt) );
+          free(txt);
+        }
+        txt = oyDumpColourToCGATS( farben, size, profile, malloc,
+                                          __FILE__ );
+        if(txt)
+        {
+          saveMemToFile( "icc_oyranos.cmyk.cgats", txt, strlen(txt) );
+          free(txt);
+        }
+        txt = oyDumpColourToCGATS( cielab, size, prof, malloc,
+                                          __FILE__ );
+        if(txt)
+        {
+          saveMemToFile( "icc_oyranos.lab2.cgats", txt, strlen(txt) );
+          free(txt);
+        }
+        oyProfile_Release( &prof );
+      }
+    }
+    DBG_V(kanaele)
+#endif
+
     CIELabToLab (cielab, lab, (int)size);
 
     if(hProfil)   cmsCloseProfile(hProfil);
     if(hLab)      cmsCloseProfile(hLab);
+    oyProfile_Release( &profile );
+    oyProfile_Release( &lab_profile );
 
     if(cielab)    delete [] cielab;
     if(farben)    delete [] farben;

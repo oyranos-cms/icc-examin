@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2005-2007  Kai-Uwe Behrmann 
+ * Copyright (C) 2005-2008  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -33,7 +33,7 @@
 #include <vector>
 #include <map>
 #include "icc_helfer.h"
-#include "icc_list.h"
+#include "icc_thread_daten.h"
 
 /** a point in space with calculated colour */
 struct ICCnetzPunkt {
@@ -182,7 +182,7 @@ struct ICCnetz {
 };
 
 
-std::vector<ICCnetz> extrahiereNetzAusVRML (std::string & vrml);
+icc_examin_ns::ICCThreadList<ICCnetz> extrahiereNetzAusVRML (std::string &vrml);
 
 
 

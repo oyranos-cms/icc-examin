@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2008  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -167,16 +167,16 @@ getHilfeHtml()
 <p><a href=\"#File_opening\">2.1 File opening</a><br /> \
 <a href=\"#Main_window\">2.2 Main window</a><br /> \
 <a href=\"#Complex_tags_navigation\">2.3 Complex tags navigation</a><br /> \
-<a href=\"#3D_navigation\">2.4 3D navigation</a><br /> \
-<a href=\"#Windows_and_Views\">2.5 Windows and Views</a><br /> \
+<a href=\"#Windows_and_Views\">2.4 Windows and Views</a><br /> \
 </p> \
 <div class=\"tocindent\"> \
-<p><a href=\"#Gamut\">2.5.1 Gamut</a><br /> \
-<a href=\"#Report_View\">2.5.2 Report View</a><br /> \
+<p><a href=\"#Gamut\">2.4.1 Gamut</a><br /> \
+<a href=\"#3D_navigation\">2.4.1.1 3D navigation</a><br /> \
+<a href=\"#Report_View\">2.4.2 Report View</a><br /> \
  \
-<a href=\"#CGATS_view\">2.5.3 CGATS view</a><br /> \
-<a href=\"#Grafic_card_gamma_tables\">2.5.4 Grafic card gamma tables</a><br /> \
-<a href=\"#Help\">2.5.5 Help</a><br /> \
+<a href=\"#CGATS_view\">2.4.3 CGATS view</a><br /> \
+<a href=\"#Grafic_card_gamma_tables\">2.4.4 Grafic card gamma tables</a><br /> \
+<a href=\"#Help\">2.4.5 Help</a><br /> \
 </p> \
 </div> \
 </div> \
@@ -212,9 +212,13 @@ getHilfeHtml()
 <p>ICC Examin can be launched from the Application folder or Dock on osX and from the Graphics menu on Linux. \
 </p> \
 <a name=\"File_opening\"></a><h3> File opening </h3> \
-<p>From the application windows menubar you can select File-&gt;Open and to show file dialog. Select one or more files for gamut comparision as you like. On top right side of the FLTK file selector resides the bookmark alias Favourites button. If you frequently visit directories you will find it usefull to append these directories to your bookmark / favourites list. To do this, go to an directory with the file selector and choose from the bookmark button the add entry. The added directory appears in the bookmark list and is available for later use. \
+<p>From the application windows menubar you can select File-&gt;Open and to show file dialog. Select one or more files for gamut comparision as you like. The selection order should be preserved. On top right side of the FLTK file selector resides the bookmark alias Favourites button. If you frequently visit directories you will find it usefull to append these directories to your bookmark / favourites list. To do this, go to an directory with the file selector and choose from the bookmark button the add entry. The added directory appears in the bookmark list and is available for later use. \
  \
-</p><p>You have selected one file and pressed ok. ICC Examin starts to parse the file, showing the yellow progressbar. Depending on the complexity of the file it may take some time to finish. \
+</p><p>ICC Examin's file selector is designed to work like a browser. Every new selected file is instantly shown in the aaplication for quick comparisions. When ICC Examin starts to parse files, it shows the yellow progressbar. Depending on the complexity of the file it may take some time to finish. The open gamut view takes extra time.\
+</p><p> VRML file are selectable alone. ICC Examin will not accept mixing with other files. The VRML gamut hull's from ArgyllCMS are the only knoen supported ones. \
+</p><p> ICC profiles can be loaded many for gamut comparisions. A named colour profile will only be accepted in the first position. Loading a CGATS measurement file after the belonging profile allowes to create the ICC Examin quality report. Some profiles, most of the standard CMYK ones, have the measurements already included. \
+</p><p> CGATS measurement files are only supported in single quantities and as mentioned above in konjunction with belonging ICC profiles. \
+</p><p> Files once loaded are observed by ICC Examin. The view will be actualised upon a modification. \
 </p> \
 <a name=\"Main_window\"></a><h3> Main window </h3> \
 <p>In normal mode ICC Examin shows first the tag list with the tag viewer below. Over the tag list resides the applications menubar. \
@@ -225,7 +229,12 @@ getHilfeHtml()
  \
 <p>Some tags contain complex data. For such tags may appear a choicebutton below the tag list. There you can select detailed views of a complex tags endities. \
 </p> \
-<a name=\"3D_navigation\"></a><h3> 3D navigation </h3> \
+<a name=\"Windows_and_Views\"></a><h3> Windows and Views  </h3> \
+<a name=\"Gamut\"></a><h4> Gamut </h4> \
+ \
+<p>First to call is the 3D gamut viewer. You can select it from the menu bar. It shows the gamut of the device described by the profile. If such a description is not appropriate, the external used Argyll iccgamut utility may not deliver a vrml gamut file and thus the 3D gamut view may remain empty.  \
+</p><p>The colour space shown is allways in CIE*Lab coordinates.  \
+</p><a name=\"3D_navigation\"></a><h5> 3D navigation </h5> \
 <p>To navigate arround in a 3D view use the: \
 </p> \
 <ul><li> left mouse button to rotate \
@@ -238,15 +247,21 @@ getHilfeHtml()
 </li></ul> \
 </li></ul> \
 </li></ul> \
-<a name=\"Windows_and_Views\"></a><h3> Windows and Views  </h3> \
-<a name=\"Gamut\"></a><h4> Gamut </h4> \
- \
-<p>First to call is the 3D gamut viewer. You can select it from the menu bar. It shows the gamut of the device described by the profile. If such a description is not appropriate, the external used Argyll iccgamut utility may not deliver a vrml gamut file and thus the 3D gamut view may remain empty.  \
-</p><p>The colour space shown is allways in CIE*Lab coordinates.  \
-</p><p>From the context menu (ctrl+left mouse button or right mouse button) you can select the average human (CIE standard observer) visible spectral colours as a line. \
-</p><p>If meashurements are shown, theyr radius can be selected from the context menu. This is handy to easily detect dE's of above 2 or 4. The connection line goes from the measurement (white) to the deviation by the profile (red). \
-</p><p>ncl2 colour spots can be enlarged or made smaller by pressing + or -. \
+<p>From the context menu (ctrl+left mouse button or right mouse button) you can select the average human (CIE standard observer) visible spectral colours as a line. \
+</p><p>If meashurements are shown, the spot radius can be selected from the context menu. This is handy to easily detect dE's of above 2 or 4. The connection line goes from the measurement (white) to the deviation by the profile (red). \
+</p><p>Colour spots can be enlarged or made smaller by pressing + or -. \
+</p><p> \
+The Gamut Menus:\
 </p> \
+File: \
+<ul><li>Quit - allowes for exiting the application</li></ul> \
+View: \
+<ul><li>Full screen mode</li></ul> \
+Settings: \
+<ul><li>4 rendering intents + BPC</li> \
+<li>Native or separation Gamut. The later is the inbuild default. The native colour gamut can only be created when iccgamut from ArgyllCMS is available.</li></ul> \
+Windows: \
+<ul><li>Show main application window, in case it is a icon.</li></ul> \
 <a name=\"Report_View\"></a><h4> Report View </h4> \
 <p>If the profile contains measurements a report is generated. You reach this by selecting from the top menu View-&gt;Report. These measurement data are compared to what is calculated with the profile by littleCMS - the internal used CMM. \
 </p><p>Such a comparision from device colours + measurements colours on the one side and device + profile/CMM colours on the other side are just one possible quality checking method. \
@@ -258,9 +273,7 @@ getHilfeHtml()
 <p>The measurement data is taken from the profile, if available, and transformed to fit in the CGATS standard. A window can be called from the View menu to show the corrected measurement output. \
 </p> \
 <a name=\"Grafic_card_gamma_tables\"></a><h4> Grafic card gamma tables </h4> \
-<p>The gamma tables in the grafic card are shown in an external window, callable from the View menu. It shows on osX/XFree86/Xorg the RGB curves. The monitor profile can be loaded from this window in the main profile viewer window for further examination.  \
-</p><p>Under Linux Oyranos support must be compiled in to do so. \
- \
+<p>The gamma tables in the grafic card are shown in an external window, callable from the View menu. It shows on osX/XFree86/Xorg the RGB curves. The monitor profile can be loaded from this window in the main profile viewer window for further examination. The grafic card is observed during the window being open. The window is sensible to positioning on multi monitor setups. The profiles equivalent is the vcgt tag. \
 </p> \
 <a name=\"Help\"></a><h4> Help </h4> \
 <p>The Help menus About button shows a short overview, license and other programers acknowledgement, who helped with providing theyre code for free. \
@@ -284,7 +297,7 @@ getHilfeHtml()
 <a name=\"Tags\"></a><h3> Tags </h3> \
 <p>Below the header, which behaves like a fixed tag, are the variable tags listed. They appear in the same order as in the file. Starting withe the tag number, then the tag signature and the type of content in the tag. The size of the tag follows and a small description gives you an idea af what the tag may be intended for. \
 </p> \
-<a name=\"text_.2F_desc_.2F_targ\"></a><h4> text / desc / targ </h4> \
+<a name=\"text_.2F_desc_.2F_targ\"></a><h4> text / desc / targ / mluc</h4> \
  \
 <p>Tags of type text are the most simple ones. they include informations about the profile like License informations, Description for displaying on behalf of the whole profile, Measurement data , in CGATS text formet and more. \
 </p> \
@@ -806,6 +819,15 @@ getDankHtml()
   // HTML
   html << _(
 "  agv 3D Navigation: Philip Winston<br>\n");
+  html << " \
+</p>\n \
+<p>";
+  // HTML
+  html << _(
+"  bsp rendering: Norman Chin<br>\n");
+  html << " \
+</p>\n \
+<br>\n";
   html << " \
 </p>\n \
 <p>";

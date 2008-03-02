@@ -32,9 +32,12 @@
 #ifndef ICC_THREAD_DATEN_H
 #define ICC_THREAD_DATEN_H
 
+#define USE_THREADS 1
+
 #include "icc_utils.h"
 #include "icc_helfer.h"
 #include "icc_list.h"
+#include "threads.h"
 
 /** @brief * the class with locking
  *
@@ -48,13 +51,15 @@ class ThreadDaten
     bool frei_;               //!<@brief is not used from further process
     int  zahl_;               //!<@brief count of waiters
     Fl_Thread pth;
+    iccThreadMutex_m mutex_;
 protected:
-    ThreadDaten() { frei_ = true; zahl_ = 0; pth = 0; report_owner = 0; }
+    ThreadDaten() { frei_ = true; zahl_ = 0; pth = 0; report_owner = 0;
+                    iccThreadMutexInit_m( &mutex_, 0 ); }
     ~ThreadDaten() {;}
 public:
     bool frei();              //!<@brief is not locked
     void frei(int freigeben); //!<@brief lock with wait/unlock
-    bool report_owner; 
+    bool report_owner;
 };
 
 /** @brief a thread save list
@@ -65,13 +70,15 @@ template <typename T>
 class ICCThreadList : public ICClist<T>,
                       public icc_examin_ns::ThreadDaten
 {
+public:
   /** @brief index access operator 
    *
    *  no check in this basic class
    */
   T &      operator [] (size_t i) {
     //if(i < n_)
-      return *((ICClist<T>*)(this))[i];
+      return ICClist<T>::operator[](i);
+      //return *((ICClist<T>*)this)[i];
     /*else
       DBG_PROG_S("out of range");
     return list_[reserve_ + 1000000000]; // create exception */
@@ -80,7 +87,7 @@ class ICCThreadList : public ICClist<T>,
   /** @brief constant index access operator */
   const T& operator [] (const size_t i) const {
     //if(i < n_)
-      return *((const ICClist<T>*)(this))[i];
+      return ICClist<T>::operator[](i);
     /*else
       DBG_PROG_S("out of range");
     return list_[reserve_ + 1000000000]; // create exception */

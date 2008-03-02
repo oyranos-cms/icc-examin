@@ -151,13 +151,20 @@ public:
   redraw();
  }
 
+ bool  waehlbar(void)
+ {
+  return (gruppe_->active() && aktiv_knopf_->active());
+ }
+
  void  aktivieren(bool wert)
  {
   DBG_PROG_START
 
   aktiv_knopf_->value(wert);
 
+  //icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze.frei(false);
   icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze[pos_].aktiv = wert;
+  //icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze.frei(true);
 
   redraw();
 
@@ -171,7 +178,9 @@ public:
  void  undurchsicht(double wert)
  {
   undurchsicht_->value(wert);
+  //icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze.frei(false);
   icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze[pos_].undurchsicht = wert;
+  //icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze.frei(true);
  }
  double undurchsicht()
  {
@@ -181,7 +190,9 @@ public:
  void  grau(bool wert)
  {
   grau_->value(wert);
+  //icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze.frei(false);
   icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze[pos_].grau = wert;
+  //icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze.frei(true);
  }
  bool  grau()
  {
@@ -266,6 +277,7 @@ public:
   {
     undurchsicht( pos, profile_[pos]->undurchsicht() );
     grau( pos, profile_[pos]->grau() );
+    waehlbar( pos, profile_[pos]->waehlbar() );
     aktiv( pos, profile_[pos]->aktiv() );
     icc_examin->icc_betrachter->DD_farbraum->invalidate();
   }

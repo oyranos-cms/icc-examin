@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2007  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2008  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -181,7 +181,7 @@ ICCexamin::messwertLese (int n,
 
 void
 ICCexamin::netzLese (int n,
-                     std::vector<ICCnetz> *netz)
+                     icc_examin_ns::ICCThreadList<ICCnetz> *netz)
 {
   DBG_PROG_START
   if( profile.size() == 0 && farbraumModus()) {
@@ -198,7 +198,8 @@ ICCexamin::netzLese (int n,
       intent = profile[n]->intent();
 
     if(profile[n]->data_type == ICCprofile::ICCprofileDATA)
-      icc_oyranos.netzVonProfil( *(profile[n]), intent, bpc(), netz_temp );
+      icc_oyranos.netzVonProfil( *(profile[n]), intent, bpc(), nativeGamut(),
+                                 netz_temp );
       
     if(netz_temp.punkte.size())
     {
@@ -469,20 +470,21 @@ ICCexamin::farbraum (int n)
 
   if(profile[0]->data_type != ICCprofile::ICCvrmlDATA)
   {
-  MARK( icc_betrachter->DD_farbraum->frei(false); )
+  //MARK( icc_betrachter->DD_farbraum->frei(false); )
 
+    icc_betrachter->DD_farbraum->dreiecks_netze.frei(false);
     if((int)icc_betrachter->DD_farbraum->dreiecks_netze .size() <= n)
       icc_betrachter->DD_farbraum->dreiecks_netze .resize( n + 1 );
 
-    std::vector<ICCnetz> *netze = &icc_betrachter->DD_farbraum->dreiecks_netze;
+    icc_examin_ns::ICCThreadList<ICCnetz> *netze = &icc_betrachter->DD_farbraum->dreiecks_netze;
     DBG_PROG_V( icc_betrachter->DD_farbraum->dreiecks_netze.size() <<" "<< n )
 
 
     if( profile.size() > n && !ncl2_profil )
     {
-      icc_betrachter->DD_farbraum->frei(false);
+      //icc_betrachter->DD_farbraum->frei(true);
       netzLese(n, netze);
-      icc_betrachter->DD_farbraum->frei(true);
+      //icc_betrachter->DD_farbraum->frei(false);
     }
 
     DBG_PROG_V( n <<" "<< netze->size() <<" "<< ncl2_profil )
@@ -517,6 +519,13 @@ ICCexamin::farbraum (int n)
         (*netze)[n].grau = true;
       }
 
+      if(profile[n]->filename() == icc_examin->moniName())
+      {
+        profile.passiv(n);
+        (*netze)[n].aktiv = false;
+      }
+
+
       icc_betrachter->DD_farbraum->achsNamen( texte );
 
       DBG_PROG_V( n <<" "<< profile.aktiv(n) )
@@ -539,8 +548,9 @@ ICCexamin::farbraum (int n)
       icc_betrachter->DD_farbraum->hineinNetze(
                                   icc_betrachter->DD_farbraum->dreiecks_netze );
 #endif
+    icc_betrachter->DD_farbraum->dreiecks_netze.frei(true);
 
-  MARK( icc_betrachter->DD_farbraum->frei(true); )
+  //MARK( icc_betrachter->DD_farbraum->frei(true); )
   }
 
   DBG_PROG_ENDE
@@ -552,12 +562,10 @@ ICCexamin::farbraum ()
   DBG_PROG_START
   MARK( frei(false); )
 
+  MARK( icc_betrachter->DD_farbraum->dreiecks_netze.frei(false); )
   if((int)icc_betrachter->DD_farbraum->dreiecks_netze.size() > profile.size())
-  {
-    MARK( icc_betrachter->DD_farbraum->frei(false); )
     icc_betrachter->DD_farbraum->dreiecks_netze.resize(profile.size());
-    MARK( icc_betrachter->DD_farbraum->frei(true); )
-  }
+  MARK( icc_betrachter->DD_farbraum->dreiecks_netze.frei(true); )
   DBG_PROG_V( icc_betrachter->DD_farbraum->dreiecks_netze.size() )
   MARK( frei(true); )
 
@@ -567,6 +575,7 @@ ICCexamin::farbraum ()
       icc_examin_ns::sleep(0.05);
     farbraum(i);
   }
+  icc_betrachter->DD_farbraum->clearNet();
 
   /*if(icc_betrachter->DD_farbraum -> dreiecks_netze.size())
     icc_betrachter->DD_farbraum ->
@@ -585,7 +594,8 @@ ICCexamin::farbraumModus (int profil)
   MARK( frei(false); )
 
   farbraum_modus_ = false;
-  if(profile.size() && profile.profil()->hasTagName("ncl2")) {
+  if(profile.size() && profile.profil()->hasTagName("ncl2"))
+  {
     farbraum_modus_ = true;
     intent( -1 );
     DBG_PROG_S( "set colour space mode" )

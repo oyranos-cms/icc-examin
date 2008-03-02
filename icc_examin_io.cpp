@@ -159,7 +159,13 @@ ICCexaminIO::oeffnenThread_ (int pos)
       // UI handling
     icc_examin_ns::lock(__FILE__,__LINE__);
     //erneuerTagBrowserText_ ();
-    if( icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze[pos].indexe.size() )
+    icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze.frei(false);
+    int has_mesh = 0;
+    if( icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze.size() > (size_t)pos )
+      has_mesh = icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze[pos].indexe.size();
+    icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze.frei(true);
+
+    if(has_mesh)
       icc_examin->icc_betrachter->DD_farbraum->clearNet();
 
     if(icc_examin->icc_betrachter->DD_farbraum->visible() &&
@@ -196,7 +202,6 @@ ICCexaminIO::oeffnenThread_ ()
 
   // load
   icc_examin->clear();
-  icc_examin->icc_betrachter->DD_farbraum->namedColoursRelease();
 
   icc_examin->fortschritt( -.1 , 1.0  );
   for (unsigned int i = 0; i < speicher_vect_.size(); ++i)
@@ -204,6 +209,9 @@ ICCexaminIO::oeffnenThread_ ()
     DBG_PROG_V( speicher_vect_[i].size()<<" "<<speicher_vect_[i].name() )
     icc_examin->fortschritt( 1./3.+ (double)(i)/speicher_vect_.size()/3.0 , 1.);
     profile.einfuegen( speicher_vect_[i], -1 );
+
+    if(i == 0)
+      icc_examin->farbraumModus(0);
 
     icc_examin->fortschritt( 1./3.+ (double)(i+1)/speicher_vect_.size()/3.0 ,1);
     DBG_THREAD
@@ -253,13 +261,13 @@ ICCexaminIO::oeffnenThread_ ()
       if(icc_examin->icc_waehler_)
         icc_examin->icc_waehler_->clear();
 
-      std::vector<ICCnetz> netze;
+      icc_examin_ns::ICCThreadList<ICCnetz> netze;
 
       for(int i = 0; i < anzahl; ++i)
       {
         std::string d (speicher_vect_[i], speicher_vect_[i].size());
         //DBG_NUM_V( d <<" "<< size )
-        std::vector<ICCnetz> net = extrahiereNetzAusVRML (d);
+        icc_examin_ns::ICCThreadList<ICCnetz> net = extrahiereNetzAusVRML (d);
 
         int netze_n = net.size();
         for(unsigned int j = 0; j < net.size(); ++j)
@@ -293,7 +301,9 @@ ICCexaminIO::oeffnenThread_ ()
           DBG_V(i<<" "<<netze[i].schattierung)
         }
 
+        icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze.frei(false);
         icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze = netze;
+        icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze.frei(true);
 
         for(int i = 0; i < netze_n; ++i )
         {
@@ -355,6 +365,7 @@ ICCexaminIO::oeffnenThread_ ()
         std::vector<int> aktiv = profile.aktiv();
         DBG_PROG_V( aktiv.size() )
 
+        icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze.frei(false);
         for(int i = 0; i < anzahl; ++i)
         {
           DBG_PROG_V( i )
@@ -382,9 +393,10 @@ ICCexaminIO::oeffnenThread_ ()
           {
             name = profile.name(i).c_str();
             icc_examin->icc_waehler_->push_back( dateiName( name ),
-                                  undurchsicht, grau , active, waehlbar);
+                                          undurchsicht, grau, active, waehlbar);
           }
         }
+        icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze.frei(true);
 
       }
       icc_examin_ns::unlock(this, __FILE__,__LINE__);
@@ -549,7 +561,11 @@ ICCexaminIO::oeffnen (std::vector<std::string> dateinamen)
       return;
     }
     if (dateinamen[i] == icc_oyranos.moni_name( x,y ))
+    {
+      if(!ss[i].size())
+        ss[i] = icc_oyranos.moni( x,y );
       moni_dabei = true;
+    }
   }
   DBG_PROG
 

@@ -922,9 +922,9 @@ namespace icc_examin_ns {
              nanosleep(&ts, 0);
 #          else
 #            if defined( WIN32 ) 
-               Sleep((DWORD)(sekunden/(double)CLOCKS_PER_SEC));
+               Sleep((DWORD)(sekunden*(double)CLOCKS_PER_SEC));
 #            else
-               usleep((time_t)(sekunden/(double)CLOCKS_PER_SEC));
+               usleep((time_t)(sekunden*(double)CLOCKS_PER_SEC));
 #            endif
 #          endif
   }

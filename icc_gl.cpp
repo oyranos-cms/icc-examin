@@ -905,10 +905,42 @@ GL_Ansicht::erstelleGLListen_()
 
   tabelleAuffrischen();
 
-  updateNet_();
+  // actualise shodow
+  static char aktive[64];
+  static char grau[64];
+  char aktualisiert = false;
 
+  dreiecks_netze.frei(false);
+  for(int i = 0; i < (int)dreiecks_netze.size(); ++i)
+  {
+    double netze_n = dreiecks_netze.size();
+    double schattierung = .93 - .8/netze_n*i;
+    schattierung = 1.0 - i/(double)netze_n;
+    if(dreiecks_netze[i].schattierung < 0)
+      dreiecks_netze[i].schattierung = schattierung;
+
+    if( dreiecks_netze[i].aktiv != aktive[i] ||
+        dreiecks_netze[i].grau != grau[i]  )
+    {
+      aktive[i] = dreiecks_netze[i].aktiv;
+      grau[i] = dreiecks_netze[i].grau;
+      if(!aktualisiert)
+      {
+        //zeigeUmrisse_();
+        aktualisiert = true;
+      }
+    }
+  }
+  dreiecks_netze.frei(true);
+
+  MARK( frei(true); )
+  updateNet_();
+  MARK( frei(false); )
+
+  dreiecks_netze.frei(false);
   if(dreiecks_netze.size())
     zeigeUmrisse_();
+  dreiecks_netze.frei(true);
  
   zeigeSpektralband_();
 
@@ -1241,6 +1273,7 @@ void
 GL_Ansicht::netzeAuffrischen()
 {
   DBG_PROG_START
+  MARK( frei(false); )
     if( dreiecks_netze.size() )
     {
       DBG_ICCGL_V( dreiecks_netze.size() )
@@ -1478,6 +1511,7 @@ GL_Ansicht::netzeAuffrischen()
       glEnable(GL_LIGHTING);
 #     endif
 
+  MARK( frei(true); )
   DBG_PROG_ENDE
 }
 
@@ -2156,32 +2190,6 @@ GL_Ansicht::zeichnen()
 
   zeit_ = icc_examin_ns::zeitSekunden();
 
-  // actualise shodow
-  static char aktive[64];
-  static char grau[64];
-  char aktualisiert = false;
-  for(int i = 0; i < (int)dreiecks_netze.size(); ++i)
-  {
-    double netze_n = dreiecks_netze.size();
-    double schattierung = .93 - .8/netze_n*i;
-    schattierung = 1.0 - i/(double)netze_n;
-    if(dreiecks_netze[i].schattierung < 0)
-      dreiecks_netze[i].schattierung = schattierung;
-
-    if( dreiecks_netze[i].aktiv != aktive[i] ||
-        dreiecks_netze[i].grau != grau[i]  )
-    {
-      aktive[i] = dreiecks_netze[i].aktiv;
-      grau[i] = dreiecks_netze[i].grau;
-      if(!aktualisiert)
-      {
-        zeigeUmrisse_();
-        aktualisiert = true;
-      }
-    }
-
-  }
-
 
   int scal = 1;
   GLfloat farbe[] =   { textfarbe[0],textfarbe[1],textfarbe[2], 1.0 };
@@ -2273,7 +2281,9 @@ GL_Ansicht::zeichnen()
 
           oyNamedColour_SetColourStd ( mouse_3D_hit, oyEDITING_XYZ,
                                        (oyPointer)d, oyDOUBLE, 0 );
+          MARK( frei(true); )
           benachrichtigen( ICCexamin::GL_MOUSE_HIT3D );
+          MARK( frei(false); )
           if(epoint_)
           {
             Lab_s lab;
@@ -2343,8 +2353,23 @@ GL_Ansicht::zeichnen()
         if(rgb_) delete [] rgb_;
       }
 
+
       if(dreiecks_netze.size())
-        netzeAuffrischen();
+      {
+        MARK( frei(true); )
+        dreiecks_netze.frei(false);
+
+        int some_active = 0;
+        for(size_t i = 0; i < dreiecks_netze.size(); ++i)
+          if(dreiecks_netze[i].aktiv)
+            some_active = 1;
+
+        if(some_active)
+          netzeAuffrischen();
+
+        dreiecks_netze.frei(true);
+        MARK( frei(false); )
+      }
 
     glPopMatrix();
     // End of drawing
@@ -2519,7 +2544,10 @@ GL_Ansicht::zeichnen()
            glRasterPos3d(0,ortho_font->LineHeight()/5+20,9.99);
 #        endif
          ZeichneOText (ortho_font, scal, kanalname.c_str()) 
-       } else {
+       } else
+       {
+         MARK( frei(true); )
+         dreiecks_netze.frei(false);
          for (unsigned int i=0;
                 i < dreiecks_netze.size();
                   ++i)
@@ -2535,6 +2563,8 @@ GL_Ansicht::zeichnen()
            if(dreiecks_netze[i].aktiv)
              ZeichneOText (ortho_font, scal, text.c_str())
          }
+         dreiecks_netze.frei(true);
+         MARK( frei(false); )
        }
 
        if(icc_debug)
@@ -2611,12 +2641,23 @@ GL_Ansicht::namedColours       (oyNamedColours_s       * colours)
 void
 GL_Ansicht::namedColoursRelease()
 {
-  frei(false); 
+  MARK( frei(false); )
   oyNamedColours_Release( &colours_ );
   oyNamedColour_Release( &mouse_3D_hit );
-  frei(true);
+  MARK( frei(true); )
 }
 
+void
+GL_Ansicht::clearNet ()
+{
+  MARK( frei(false); )
+  icc_examin_ns::BSPfreeTree(&bsp);
+  MARK( frei(true); )
+
+  valid_ = false;
+  damage(FL_DAMAGE_ALL);
+  redraw();
+}
 
 #if 0
 void
@@ -2836,17 +2877,20 @@ void drawGLFaceList(FILE *fp,const icc_examin_ns::FACE *faceList)
       glEnd();
     }
 
-    glBegin(GL_TRIANGLE_FAN /*S*/);
-      glNormal3f( ftrav->plane.cc, ftrav->plane.aa, ftrav->plane.bb );
+    if(ftrav->vhead->color.aa > 0.0)
+    {
+      glBegin(GL_TRIANGLE_FAN /*S*/);
+        glNormal3f( ftrav->plane.cc, ftrav->plane.aa, ftrav->plane.bb );
 
-      for (vtrav= ftrav->vhead; vtrav->vnext != 0;
+        for (vtrav= ftrav->vhead; vtrav->vnext != 0;
              vtrav= vtrav->vnext)
-      {
-        FARBEN (    vtrav->color.rr, vtrav->color.gg, vtrav->color.bb,
-                    vtrav->color.aa );
-        glVertex3f( vtrav->zz, vtrav->xx, vtrav->yy );
-      }
-    glEnd();
+        {
+          FARBEN (    vtrav->color.rr, vtrav->color.gg, vtrav->color.bb,
+                      vtrav->color.aa );
+          glVertex3f( vtrav->zz, vtrav->xx, vtrav->yy );
+        }
+      glEnd();
+    }
   }
 }
 
@@ -2860,9 +2904,9 @@ GL_Ansicht::setBspFaceProperties_( icc_examin_ns::FACE *faceList )
 
   if(faceList == 0) return;
 
-
+//#define USE_OY_NC
   double lab[3];
-#if 0
+#ifdef USE_OY_NC
   oyProfile_s * prof = oyProfile_FromStd( oyEDITING_LAB, 0 );
   oyProfile_s * disp_prof = icc_oyranos.oyMoni(
               window()->x() + window()->w()/2, window()->y() + window()->h()/2
@@ -2870,6 +2914,7 @@ GL_Ansicht::setBspFaceProperties_( icc_examin_ns::FACE *faceList )
   oyNamedColour_s * c = oyNamedColour_Create( 0, 0, 0, prof, 0 );
 #endif
 
+  /* updateNet_ takes care of dreiecks_netze.frei */
   for( ftrav = faceList; ftrav != 0; ftrav = ftrav->fnext )
   {
     int pos = ftrav->id;
@@ -2882,21 +2927,7 @@ GL_Ansicht::setBspFaceProperties_( icc_examin_ns::FACE *faceList )
         vtrav->color.rr = vtrav->color.gg = vtrav->color.bb = netz.schattierung;
       } else {
 
-#if 1
-        lab[0] = vtrav->xx;
-        lab[1] = vtrav->yy/a_darstellungs_breite;
-        lab[2] = vtrav->zz/b_darstellungs_breite;
-
-        double * rgb = icc_oyranos.wandelLabNachBildschirmFarben( 
-               window()->x() + window()->w()/2, window()->y() + window()->h()/2,
-                                 lab, 1, icc_examin->intentGet(NULL),
-                                 icc_examin->gamutwarn()?cmsFLAGS_GAMUTCHECK:0);
-
-        vtrav->color.rr = rgb[0];
-        vtrav->color.gg = rgb[1];
-        vtrav->color.bb = rgb[2];
-        delete [] rgb;
-#else
+#if USE_OY_NC
         double rgba[4] = {0,0,0,1};
         lab[0] = vtrav->xx; 
         lab[1] = vtrav->yy/a_darstellungs_breite;
@@ -2910,6 +2941,20 @@ GL_Ansicht::setBspFaceProperties_( icc_examin_ns::FACE *faceList )
         vtrav->color.rr = rgba[0];
         vtrav->color.gg = rgba[1];
         vtrav->color.bb = rgba[2];
+#else
+        lab[0] = vtrav->xx;
+        lab[1] = vtrav->yy/a_darstellungs_breite;
+        lab[2] = vtrav->zz/b_darstellungs_breite;
+
+        double * rgb = icc_oyranos.wandelLabNachBildschirmFarben( 
+               window()->x() + window()->w()/2, window()->y() + window()->h()/2,
+                                 lab, 1, icc_examin->intentGet(NULL),
+                                 icc_examin->gamutwarn()?cmsFLAGS_GAMUTCHECK:0);
+
+        vtrav->color.rr = rgb[0];
+        vtrav->color.gg = rgb[1];
+        vtrav->color.bb = rgb[2];
+        delete [] rgb;
 #endif
       }
       if(netz.aktiv)
@@ -2919,11 +2964,14 @@ GL_Ansicht::setBspFaceProperties_( icc_examin_ns::FACE *faceList )
     }
   }
 
-  //oyNamedColour_Release( &c );
+#ifdef USE_OY_NC
+  oyNamedColour_Release( &c );
+#endif
 
   DBG_PROG_ENDE
 }
 
+/* updateNet_ takes care of dreiecks_netze.frei */
 void
 GL_Ansicht::setBspProperties_( icc_examin_ns::BSPNODE *bsp )
 {
@@ -2953,18 +3001,22 @@ GL_Ansicht::updateNet_()
   if(!bsp)
     hineinNetze_( dreiecks_netze );
 
+  MARK( frei(false); )
   if(bsp)
     setBspProperties_(bsp);
+  MARK( frei(true); )
 
   DBG_PROG_ENDE
 }
 
 void
-GL_Ansicht::hineinNetze_       (const std::vector<ICCnetz> & d_n)
+GL_Ansicht::hineinNetze_       (const icc_examin_ns::ICCThreadList<ICCnetz> & d_n)
 {
   DBG_PROG_START
 
   MARK( frei(false); )
+  dreiecks_netze.frei(false);
+
   netz.clear();
 
     // used by BSPtraverseTreeAndRender
@@ -2972,8 +3024,6 @@ GL_Ansicht::hineinNetze_       (const std::vector<ICCnetz> & d_n)
 
   if(d_n.size())
   {
-    DBG_NUM_V( dreiecks_netze.size() )
-
     icc_examin_ns::BSPfreeTree(&bsp);
 
     icc_examin_ns::FACE *faceList = 0;
@@ -3008,13 +3058,10 @@ GL_Ansicht::hineinNetze_       (const std::vector<ICCnetz> & d_n)
       netz.punkte[k].koord[2] *= b_darstellungs_breite;
     }
 
-  } else
-    dreiecks_netze.resize(0);
-  MARK( frei(true); )
+  }
 
-  DBG_NUM_V( dreiecks_netze.size() )
-  for(unsigned i = 0; i < dreiecks_netze.size(); ++i)
-    DBG_NUM_V( dreiecks_netze[i].name );
+  dreiecks_netze.frei(true);
+  MARK( frei(true); )
 
   valid_=false;
   redraw();

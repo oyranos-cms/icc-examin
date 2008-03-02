@@ -144,6 +144,7 @@ static VERTEX *findNextIntersection(VERTEX *vstart,const PLANE *plane,
 #define HYP3(a,b,c) sqrt( (a)*(a) + (b)*(b) + (c)*(c) )
 static void interpolateColour (VERTEX * a, VERTEX * b, VERTEX * ab)
 {
+  return;
   float a_ab = HYP3( a->xx - ab->xx, a->yy - ab->yy, a->zz - ab->zz );
   float b_ab = HYP3( b->xx - ab->xx, b->yy - ab->yy, b->zz - ab->zz );
   float r = a_ab / (a_ab + b_ab);
@@ -180,8 +181,6 @@ static FACE *createOtherFace(FACE *face,
    interpolateColour(v2, v2->vnext, i2p1);
    i1p2= allocVertex(ixx1,iyy1,izz1,&i1p1->color);
    i2p2= allocVertex(ixx2,iyy2,izz2,&i2p1->color);
-
-   /* ku.b for ICC Examin */
 
    /* duplicate 1st vertex of 2nd list to close it up */
    p2end= allocVertex(v2->xx,v2->yy,v2->zz,&v2->color);

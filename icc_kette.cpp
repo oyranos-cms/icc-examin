@@ -245,6 +245,7 @@ ICCkette::waechter (void* zeiger)
         if( obj->profil_mzeit_[i] != 0 ) {
           // load in LADEN and wait for result
           icc_examin->erneuern(i);
+          DBG_S(name)
         }
         obj->profil_mzeit_[i] = m_zeit;
       }

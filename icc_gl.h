@@ -52,6 +52,11 @@
 class Fl_Menu_Button;
 class Agviewer;
 
+/*template <typename T>
+class ICCnetzList: public ICClist,
+                   public icc_examin_ns::ThreadDaten {
+};*/
+
 class GL_Ansicht : public Fl_Gl_Window,
                    public icc_examin_ns::ThreadDaten,
                    public icc_examin_ns::Beobachter,
@@ -152,7 +157,7 @@ private:
   int  waiting_;       //!< dont generate and display new movement
   ICCnetz netz;             //!< internal net representation, thread entry
   icc_examin_ns::BSPNODE *bsp;   //**< BSP tree root
-  void hineinNetze_  (const std::vector<ICCnetz> & dreiecks_netze);
+  void hineinNetze_  (const icc_examin_ns::ICCThreadList<ICCnetz> & dreiecks_netze);
   void setBspProperties_( icc_examin_ns::BSPNODE * bsp );
   void setBspFaceProperties_( icc_examin_ns::FACE * faceList );
   void updateNet_    ();
@@ -177,8 +182,8 @@ public:
   oyNamedColours_s* namedColours ();
   void              namedColoursRelease ();
   void emphasizePoint (oyNamedColour_s  * colour);  //!< a named colour
-  void clearNet    () { icc_examin_ns::BSPfreeTree(&bsp); }
-  std::vector<ICCnetz> dreiecks_netze;
+  void              clearNet ();
+  icc_examin_ns::ICCThreadList<ICCnetz> dreiecks_netze;
   void achsNamen    (std::vector<std::string> achs_namen);
 
   void hineinTabelle(std::vector<std::vector<std::vector<std::vector<double> > > >vect,

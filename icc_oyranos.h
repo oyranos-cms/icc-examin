@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2007  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2008  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -83,9 +83,10 @@ class Oyranos
     const char* profil (const char* n, size_t &g) { return profil_(n,g); }
 
 //    char*       holeMonitorProfil      (const char *display_name, size_t *size );
-    void        netzAusVRML   (std::string & vrml, std::vector<ICCnetz> & netz)
+    void        netzAusVRML   (std::string & vrml, icc_examin_ns::ICCThreadList<ICCnetz> & netz)
                                 { netz = extrahiereNetzAusVRML (vrml); }
-    void        netzVonProfil (ICCprofile & p, int intent, int bpc, ICCnetz & netz);
+    void        netzVonProfil (ICCprofile & p, int intent, int bpc,
+                               int native, ICCnetz & netz);
   private:
     std::string netzVonProfil_      (ICCnetz  & netz,
                                      Speicher & profil,
@@ -112,7 +113,7 @@ class Oyranos
   public:
     void     clear();
     // intermediate
-    int      wandelProfilNachLabUndZurueck(double *lab, // 0.0 - 1.0
+    int      wandelLabNachProfilUndZurueck(double *lab, // 0.0 - 1.0
                                            size_t  size, int intent, int flags,
                                            Speicher & profil);
     double*  wandelLabNachBildschirmFarben(int x, int y, 

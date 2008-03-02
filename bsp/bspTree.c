@@ -111,7 +111,7 @@ static void BSPchoosePlane(FACE *faceList,PLANE *plane)
 
    assert(faceList != NULL_FACE);
    /* for all candidates... */
-#define MAX_CANDIDATES 100
+#define MAX_CANDIDATES 1
    for (rootrav= faceList, ii= 0; rootrav != NULL_FACE && ii< MAX_CANDIDATES;
 	rootrav= rootrav->fnext, ii++) {
       FACE *ftrav; int count= 0;
