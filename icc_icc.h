@@ -34,6 +34,10 @@
 
 // additionals - not defined in icc34.h
 
+#ifndef icSigProfileSequenceIdentifierTag
+#define icSigProfileSequenceIdentifierTag 0x70736964 // psid
+#endif
+
 #ifndef icSigChromaticityType
 #define icSigChromaticityType 0x6368726D // chrm
 #endif

@@ -222,7 +222,7 @@ MyFlattenProfileProc (
   DBG_PROG_V(command<<" "<<*size)
 
   return 0;
-};
+}
 
 OSErr
 MyFlattenProfileProcSize (
@@ -240,7 +240,7 @@ MyFlattenProfileProcSize (
   DBG_PROG_V(command<<" "<<*size)
 
   return 0;
-};
+}
 
 #ifndef HAVE_OY
 typedef  void* (oyAllocFunc_t)(size_t size);
@@ -422,7 +422,7 @@ Oyranos::moni_test_ (int x, int y)
     DBG_PROG_V( (int)str[0] )
 	if (prof) CMCloseProfile(prof);
     //const char *profil_name = CFStringGetCStringPtr(cfstring, kCFStringEncodingASCII);
-    const char *profil_name = str; ++profil_name;
+    const char *profil_name = (const char*) str; ++profil_name;
     DBG_PROG_V( screenID )
 
     //char* profil_name = (char*)malloc(strlen(str));

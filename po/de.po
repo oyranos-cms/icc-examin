@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2007-04-23 19:31+0200\n"
+"POT-Creation-Date: 2007-04-25 17:12+0200\n"
 "PO-Revision-Date: 2005-08-13 17:35+0200\n"
 "Last-Translator: Kai-Uwe Behrmann\n"
 "Language-Team:  <ku.b@gmx.de>\n"
@@ -1056,7 +1056,7 @@ msgstr "Sekunden"
 msgid "Monitor Profile"
 msgstr "Bildschirmprofil"
 
-#: icc_helfer.cpp:1063
+#: icc_helfer.cpp:1063 icc_utils.cpp:81
 msgid "file size 0 for "
 msgstr ""
 
@@ -1222,10 +1222,6 @@ msgstr "WARNUNG: Konnte koruptes oder beschädigtes Profil nicht laden."
 msgid "WARNING: Could not load profile."
 msgstr "WARNUNG: Konnte Profil nicht laden."
 
-#: icc_oyranos.cpp:368
-msgid "Could not load profile."
-msgstr "Konnte Profil nicht laden."
-
 #: icc_oyranos.cpp:718 icc_profile_header.cpp:237 icc_helfer_x.cpp:177
 msgid "Manufacturer:"
 msgstr "Hersteller:  "
@@ -1281,8 +1277,9 @@ msgstr ""
 "ist nicht verfügbar."
 
 #: icc_profile.cpp:165 icc_profile.cpp:183
-msgid "Kein Profil"
-msgstr ""
+#, fuzzy
+msgid "no profile"
+msgstr "Profil öffnen"
 
 #: icc_profile.cpp:165
 msgid "Size"
@@ -1300,7 +1297,7 @@ msgstr "die Elementliste ist beschädigt für Element"
 msgid "not inside memory block"
 msgstr "nicht innerhalb des Speicherblocks"
 
-#: icc_profile.cpp:407
+#: icc_profile.cpp:407 icc_profile.cpp:432
 msgid " typ - no text output"
 msgstr " Typ - keine Textausgabe"
 
@@ -1464,7 +1461,7 @@ msgstr "erzeugt von: "
 msgid "File header invalid"
 msgstr "Dateikopf ungültig"
 
-#: icc_profile_header.cpp:257
+#: icc_profile_header.cpp:258
 msgid "    head  head    128 File header"
 msgstr "    Kopf  Kopf    128 Dateikopf"
 
@@ -1702,28 +1699,16 @@ msgstr "Dokumente"
 msgid "no filename given"
 msgstr "kein Dateiname angegeben"
 
-#: icc_utils.cpp:81
-msgid "Dateigroesse 0 fuer "
-msgstr ""
-
-#: icc_vrml.cpp:56
-msgid "Datei "
-msgstr ""
-
-#: icc_vrml.cpp:56
-msgid " konnte nicht geloescht werden"
-msgstr ""
-
 #: icc_vrml.cpp:139
-msgid "Ausnahme aufgetreten: "
+msgid "exception occured: "
 msgstr ""
 
 #: icc_vrml.cpp:143
-msgid "Std-Ausnahme aufgetreten: "
+msgid "Std-exception occured: "
 msgstr ""
 
 #: icc_vrml.cpp:146
-msgid "Huch, unbekannte Ausnahme"
+msgid "Huch, unknown exception"
 msgstr ""
 
 #: icc_helfer_osx.cpp:73
@@ -2151,6 +2136,9 @@ msgstr ""
 msgid "kein Fl_Widget??"
 msgstr ""
 
+#~ msgid "Could not load profile."
+#~ msgstr "Konnte Profil nicht laden."
+
 #~ msgid "Inspect"
 #~ msgstr "Inspektor"
 
@@ -2282,9 +2270,6 @@ msgstr ""
 
 #~ msgid "Unable to rename '%s' to '%s'"
 #~ msgstr "Konnte '%s' nicht nach '%s' umbenennen"
-
-#~ msgid "Open Profile"
-#~ msgstr "Profil öffnen"
 
 #~ msgid "Open Measurement"
 #~ msgstr "Messdatei öffnen"

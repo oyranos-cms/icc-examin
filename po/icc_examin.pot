@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2007-04-24 17:02+0200\n"
+"POT-Creation-Date: 2007-05-04 13:56+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1050,7 +1050,7 @@ msgstr ""
 msgid "Monitor Profile"
 msgstr ""
 
-#: icc_helfer.cpp:1063
+#: icc_helfer.cpp:1063 icc_utils.cpp:81
 msgid "file size 0 for "
 msgstr ""
 
@@ -1216,10 +1216,6 @@ msgstr ""
 msgid "WARNING: Could not load profile."
 msgstr ""
 
-#: icc_oyranos.cpp:368
-msgid "Could not load profile."
-msgstr ""
-
 #: icc_oyranos.cpp:718 icc_profile_header.cpp:237 icc_helfer_x.cpp:177
 msgid "Manufacturer:"
 msgstr ""
@@ -1262,7 +1258,7 @@ msgid ""
 msgstr ""
 
 #: icc_profile.cpp:165 icc_profile.cpp:183
-msgid "Kein Profil"
+msgid "no profile"
 msgstr ""
 
 #: icc_profile.cpp:165
@@ -1281,7 +1277,7 @@ msgstr ""
 msgid "not inside memory block"
 msgstr ""
 
-#: icc_profile.cpp:407
+#: icc_profile.cpp:407 icc_profile.cpp:432
 msgid " typ - no text output"
 msgstr ""
 
@@ -1445,7 +1441,7 @@ msgstr ""
 msgid "File header invalid"
 msgstr ""
 
-#: icc_profile_header.cpp:257
+#: icc_profile_header.cpp:258
 msgid "    head  head    128 File header"
 msgstr ""
 
@@ -1659,28 +1655,16 @@ msgstr ""
 msgid "no filename given"
 msgstr ""
 
-#: icc_utils.cpp:81
-msgid "Dateigroesse 0 fuer "
-msgstr ""
-
-#: icc_vrml.cpp:56
-msgid "Datei "
-msgstr ""
-
-#: icc_vrml.cpp:56
-msgid " konnte nicht geloescht werden"
-msgstr ""
-
 #: icc_vrml.cpp:139
-msgid "Ausnahme aufgetreten: "
+msgid "exception occured: "
 msgstr ""
 
 #: icc_vrml.cpp:143
-msgid "Std-Ausnahme aufgetreten: "
+msgid "Std-exception occured: "
 msgstr ""
 
 #: icc_vrml.cpp:146
-msgid "Huch, unbekannte Ausnahme"
+msgid "Huch, unknown exception"
 msgstr ""
 
 #: icc_helfer_osx.cpp:73
