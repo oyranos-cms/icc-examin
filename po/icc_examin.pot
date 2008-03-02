@@ -1,17 +1,19 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR Free Software Foundation, Inc.
+# Copyright (C) YEAR Kai-Uwe Behrmann
+# This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2005-08-30 12:48+0200\n"
+"Report-Msgid-Bugs-To: ku.b@gmx.de\n"
+"POT-Creation-Date: 2005-09-01 12:09+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: agviewer.cpp:180
@@ -135,18 +137,18 @@ msgstr ""
 msgid "unbekannte Farbe"
 msgstr ""
 
-#: icc_draw.cpp:638 icc_draw.cpp:649 icc_helfer.cpp:381 icc_helfer_osx.cpp:67
-#: icc_helfer_x.cpp:56 icc_profile_tags.cpp:391
+#: icc_draw.cpp:638 icc_draw.cpp:649 icc_helfer.cpp:381
+#: icc_profile_tags.cpp:391 icc_helfer_osx.cpp:67 icc_helfer_x.cpp:56
 msgid "Red"
 msgstr ""
 
-#: icc_draw.cpp:641 icc_draw.cpp:651 icc_helfer.cpp:382 icc_helfer_osx.cpp:68
-#: icc_helfer_x.cpp:57 icc_profile_tags.cpp:392
+#: icc_draw.cpp:641 icc_draw.cpp:651 icc_helfer.cpp:382
+#: icc_profile_tags.cpp:392 icc_helfer_osx.cpp:68 icc_helfer_x.cpp:57
 msgid "Green"
 msgstr ""
 
-#: icc_draw.cpp:644 icc_draw.cpp:653 icc_helfer.cpp:383 icc_helfer_osx.cpp:69
-#: icc_helfer_x.cpp:58 icc_profile_tags.cpp:393
+#: icc_draw.cpp:644 icc_draw.cpp:653 icc_helfer.cpp:383
+#: icc_profile_tags.cpp:393 icc_helfer_osx.cpp:69 icc_helfer_x.cpp:58
 msgid "Blue"
 msgstr ""
 
@@ -275,15 +277,15 @@ msgstr ""
 msgid "Auffrischen von Profil Nr.: "
 msgstr ""
 
-#: icc_examin.cpp:402
+#: icc_examin.cpp:404
 msgid "Keine Kurve gefunden"
 msgstr ""
 
-#: icc_examin.cpp:515
+#: icc_examin.cpp:517
 msgid "verstecke "
 msgstr ""
 
-#: icc_examin.cpp:519
+#: icc_examin.cpp:521
 msgid "zeige     "
 msgstr ""
 
@@ -303,7 +305,7 @@ msgstr ""
 msgid "Stop loading "
 msgstr ""
 
-#: icc_betrachter.cxx:467 icc_examin_io.cpp:365
+#: icc_examin_io.cpp:365 icc_betrachter.cxx:467
 msgid "Filename"
 msgstr ""
 
@@ -323,15 +325,15 @@ msgstr ""
 msgid "HTML Documents (*.htm*)"
 msgstr ""
 
-#: icc_betrachter.cxx:386 icc_examin_io.cpp:437
+#: icc_examin_io.cpp:437 icc_betrachter.cxx:386
 msgid "Save Report"
 msgstr ""
 
-#: icc_betrachter.cxx:497 icc_examin_io.cpp:509
+#: icc_examin_io.cpp:509 icc_betrachter.cxx:497
 msgid "ICC colour profiles (*.ic*)"
 msgstr ""
 
-#: icc_betrachter.cxx:387 icc_examin_io.cpp:510
+#: icc_examin_io.cpp:510 icc_betrachter.cxx:387
 msgid "Save Gamut as Profile"
 msgstr ""
 
@@ -339,7 +341,7 @@ msgstr ""
 msgid "VRML Files (*.wrl)"
 msgstr ""
 
-#: icc_betrachter.cxx:388 icc_examin_io.cpp:513
+#: icc_examin_io.cpp:513 icc_betrachter.cxx:388
 msgid "Save Gamut as VRML"
 msgstr ""
 
@@ -365,6 +367,7 @@ msgid "Fontgroesse nicht setzbar"
 msgstr ""
 
 #: icc_gl.cpp:655
+#, c-format
 msgid "0,0,0"
 msgstr ""
 
@@ -464,7 +467,7 @@ msgstr ""
 msgid "Spektral line"
 msgstr ""
 
-#: icc_betrachter.cxx:696 icc_gl.cpp:1635
+#: icc_gl.cpp:1635 icc_betrachter.cxx:696
 msgid "Texts"
 msgstr ""
 
@@ -656,7 +659,7 @@ msgstr ""
 msgid "Abstract"
 msgstr ""
 
-#: icc_helfer.cpp:431 icc_profile.cpp:781
+#: icc_helfer.cpp:431 icc_profile.cpp:784
 msgid "Colour Space"
 msgstr ""
 
@@ -1116,12 +1119,16 @@ msgstr ""
 msgid "colour adjust"
 msgstr ""
 
-#: icc_measurement.cpp:552
-msgid "kein passendes voreingestelltes Profile gefunden"
+#: icc_measurement.cpp:551
+msgid "kein passendes voreingestelltes Profil gefunden"
 msgstr ""
 
-#: icc_measurement.cpp:558
+#: icc_measurement.cpp:557
 msgid "hCOLOUR ist leer"
+msgstr ""
+
+#: icc_measurement.cpp:582
+msgid "hXYZ ist leer"
 msgstr ""
 
 #: icc_measurement.cpp:583
@@ -1144,160 +1151,160 @@ msgstr ""
 msgid "Report about ICC profile"
 msgstr ""
 
-#: icc_measurement.cpp:796
+#: icc_measurement.cpp:798
 msgid "Meas colour"
 msgstr ""
 
-#: icc_measurement.cpp:798
+#: icc_measurement.cpp:800
 msgid "Profile colour"
 msgstr ""
 
-#: icc_measurement.cpp:869
+#: icc_measurement.cpp:872
 msgid "no measurment data available"
 msgstr ""
 
-#: icc_measurement.cpp:876
+#: icc_measurement.cpp:879
 msgid "Measurment- and profile colours from <b>"
 msgstr ""
 
-#: icc_measurement.cpp:878
+#: icc_measurement.cpp:881
 msgid "RGB"
 msgstr ""
 
-#: icc_measurement.cpp:880
+#: icc_measurement.cpp:883
 msgid "CMYK"
 msgstr ""
 
-#: icc_measurement.cpp:881
+#: icc_measurement.cpp:884
 msgid "</b> Measurement"
 msgstr ""
 
-#: icc_measurement.cpp:883
+#: icc_measurement.cpp:886
 msgid "CMM: <b>lcms</b>"
 msgstr ""
 
-#: icc_measurement.cpp:885
+#: icc_measurement.cpp:888
 msgid "averaging deviations (dE CIE*Lab):<b> "
 msgstr ""
 
-#: icc_measurement.cpp:885
+#: icc_measurement.cpp:888
 msgid "</b>  maximum: "
 msgstr ""
 
-#: icc_measurement.cpp:885
+#: icc_measurement.cpp:888
 msgid "  minimum: "
 msgstr ""
 
-#: icc_measurement.cpp:885
+#: icc_measurement.cpp:888
 msgid "  (dE CIE 2000) averaging: "
 msgstr ""
 
-#: icc_measurement.cpp:885
+#: icc_measurement.cpp:888
 msgid "  maximum: "
 msgstr ""
 
-#: icc_measurement.cpp:915
+#: icc_measurement.cpp:918
 msgid "Measurement patch"
 msgstr ""
 
-#: icc_measurement.cpp:916
+#: icc_measurement.cpp:919
 msgid "dE Lab"
 msgstr ""
 
-#: icc_measurement.cpp:917
+#: icc_measurement.cpp:920
 msgid "dE2000"
 msgstr ""
 
-#: icc_measurement.cpp:918
+#: icc_measurement.cpp:921
 msgid "L"
 msgstr ""
 
-#: icc_measurement.cpp:919
+#: icc_measurement.cpp:922
 msgid "a"
 msgstr ""
 
-#: icc_measurement.cpp:920
+#: icc_measurement.cpp:923
 msgid "b"
 msgstr ""
 
-#: icc_measurement.cpp:921
+#: icc_measurement.cpp:924
 msgid "L'"
 msgstr ""
 
-#: icc_measurement.cpp:922
+#: icc_measurement.cpp:925
 msgid "a'"
 msgstr ""
 
-#: icc_measurement.cpp:923
+#: icc_measurement.cpp:926
 msgid "b'"
 msgstr ""
 
-#: icc_measurement.cpp:924
+#: icc_measurement.cpp:927
 msgid "X"
 msgstr ""
 
-#: icc_measurement.cpp:925 icc_measurement.cpp:939
+#: icc_measurement.cpp:928 icc_measurement.cpp:942
 msgid "Y"
 msgstr ""
 
-#: icc_measurement.cpp:926
+#: icc_measurement.cpp:929
 msgid "Z"
 msgstr ""
 
-#: icc_measurement.cpp:928
+#: icc_measurement.cpp:931
 msgid "X'"
 msgstr ""
 
-#: icc_measurement.cpp:929
+#: icc_measurement.cpp:932
 msgid "Y'"
 msgstr ""
 
-#: icc_measurement.cpp:930
+#: icc_measurement.cpp:933
 msgid "Z'"
 msgstr ""
 
-#: icc_measurement.cpp:933
+#: icc_measurement.cpp:936
 msgid "R"
 msgstr ""
 
-#: icc_measurement.cpp:934
+#: icc_measurement.cpp:937
 msgid "G"
 msgstr ""
 
-#: icc_measurement.cpp:935
+#: icc_measurement.cpp:938
 msgid "B"
 msgstr ""
 
-#: icc_measurement.cpp:937
+#: icc_measurement.cpp:940
 msgid "C"
 msgstr ""
 
-#: icc_measurement.cpp:938
+#: icc_measurement.cpp:941
 msgid "M"
 msgstr ""
 
-#: icc_measurement.cpp:940
+#: icc_measurement.cpp:943
 msgid "K"
 msgstr ""
 
-#: icc_oyranos.cpp:155 icc_oyranos.cpp:310 icc_oyranos.cpp:392
-#: icc_oyranos.cpp:432 icc_oyranos.cpp:483
+#: icc_oyranos.cpp:163 icc_oyranos.cpp:319 icc_oyranos.cpp:399
+#: icc_oyranos.cpp:439 icc_oyranos.cpp:490
 msgid "Profil konnte nicht geladen werden"
 msgstr ""
 
-#: icc_oyranos.cpp:699 icc_oyranos.cpp:785
+#: icc_oyranos.cpp:701 icc_oyranos.cpp:787
 msgid "hLab Profil nicht geoeffnet"
 msgstr ""
 
-#: icc_oyranos.cpp:783
+#: icc_oyranos.cpp:785
 msgid "hsRGB Profil nicht geoeffnet"
 msgstr ""
 
-#: icc_oyranos.cpp:794
+#: icc_oyranos.cpp:796
 msgid "keine hXYZtoRGB Transformation gefunden"
 msgstr ""
 
-#: icc_oyranos.cpp:798
+#: icc_oyranos.cpp:800
 msgid "RGB_speicher Speicher nicht verfuegbar"
 msgstr ""
 
@@ -1330,51 +1337,51 @@ msgid ""
 "is not available."
 msgstr ""
 
-#: icc_profile.cpp:157 icc_profile.cpp:173
+#: icc_profile.cpp:158 icc_profile.cpp:175
 msgid "Kein Profil"
 msgstr ""
 
-#: icc_betrachter.cxx:455 icc_profile.cpp:157
+#: icc_profile.cpp:158 icc_betrachter.cxx:455
 msgid "Size"
 msgstr ""
 
-#: icc_profile.cpp:360
+#: icc_profile.cpp:363
 msgid " typ - no text output"
 msgstr ""
 
-#: icc_profile.cpp:717
+#: icc_profile.cpp:720
 msgid "Work Space"
 msgstr ""
 
-#: icc_profile.cpp:731
+#: icc_profile.cpp:734
 msgid "Your"
 msgstr ""
 
-#: icc_profile.cpp:732
+#: icc_profile.cpp:735
 msgid "Profile\" is designed for an other device"
 msgstr ""
 
-#: icc_profile.cpp:737
+#: icc_profile.cpp:740
 msgid "Separation"
 msgstr ""
 
-#: icc_profile.cpp:750 icc_profile.cpp:773
+#: icc_profile.cpp:753 icc_profile.cpp:776
 msgid "Device class"
 msgstr ""
 
-#: icc_profile.cpp:752 icc_profile.cpp:775 icc_profile.cpp:783
+#: icc_profile.cpp:755 icc_profile.cpp:778 icc_profile.cpp:786
 msgid "is not valid for an"
 msgstr ""
 
-#: icc_profile.cpp:754 icc_profile.cpp:777
+#: icc_profile.cpp:757 icc_profile.cpp:780
 msgid "Profile\"."
 msgstr ""
 
-#: icc_profile.cpp:760
+#: icc_profile.cpp:763
 msgid "Linearisation"
 msgstr ""
 
-#: icc_profile.cpp:785
+#: icc_profile.cpp:788
 msgid "Profile at the moment\"."
 msgstr ""
 
@@ -1478,11 +1485,11 @@ msgstr ""
 msgid "Flags:       "
 msgstr ""
 
-#: icc_helfer_x.cpp:82 icc_profile_header.cpp:226
+#: icc_profile_header.cpp:226 icc_helfer_x.cpp:82
 msgid "Manufacturer:"
 msgstr ""
 
-#: icc_helfer_x.cpp:84 icc_profile_header.cpp:227
+#: icc_profile_header.cpp:227 icc_helfer_x.cpp:84
 msgid "Model:       "
 msgstr ""
 
@@ -1582,7 +1589,7 @@ msgstr ""
 msgid "Number of colours:"
 msgstr ""
 
-#: icc_betrachter.cxx:453 icc_profile_tags.cpp:422
+#: icc_profile_tags.cpp:422 icc_betrachter.cxx:453
 msgid "Name"
 msgstr ""
 
@@ -1598,7 +1605,7 @@ msgstr ""
 msgid "Colour"
 msgstr ""
 
-#: icc_betrachter.cxx:516 icc_ueber.cpp:53
+#: icc_ueber.cpp:53 icc_betrachter.cxx:516
 msgid "About ICC Examin"
 msgstr ""
 
@@ -1606,7 +1613,7 @@ msgstr ""
 msgid "ICC Examin Version"
 msgstr ""
 
-#: icc_betrachter.cxx:456 icc_ueber.cpp:84
+#: icc_ueber.cpp:84 icc_betrachter.cxx:456
 msgid "Date"
 msgstr ""
 
@@ -2038,7 +2045,7 @@ msgstr ""
 msgid "Load the current monitor profile"
 msgstr ""
 
-#: fl_oyranos.cxx:36 icc_betrachter.cxx:565
+#: icc_betrachter.cxx:565 fl_oyranos.cxx:36
 msgid "Refresh"
 msgstr ""
 

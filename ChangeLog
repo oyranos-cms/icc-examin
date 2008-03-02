@@ -1,3 +1,17 @@
+2005-09-01
+	* fix: more cout << (char*) 0; in icc_oyranos.cpp
+	* fix: Darstellen einer Messtabelle mit null Länge ; noch einen
+
+2005-08-31
+	* und: www Seite
+	* und: v0.37
+	* fix: cout << (char*) 0; in icc_oyranos.cpp
+	* fix: Darstellen einer Messtabelle mit null Länge
+
+2005-08-30
+	* neu: makefile Ziel pkg/unpkg (osX)
+	* und: Release 0.36
+
 2005-08-28
 	* fix: Gamut Warnung wählbar auch für Messungen TODO: update
 	* neu: X icon

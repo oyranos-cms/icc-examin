@@ -1,10 +1,8 @@
+Release: 1
 Summary: ICC profile viewer and colour visualisation
 Name: icc_examin
-Version: 0.36
-Release: 1
 License: GPL,LGPL
 Group: Productivity/Graphics/Other
-Source: icc_examin_0.36.tar.gz
 #Source: http://www.behrmann.name/index.php?option=com_content&task=view&id=33&Itemid=69
 URL: http://www.behrmann.name
 Vendor: Kai-Uwe Behrmann

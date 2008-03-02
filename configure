@@ -1,15 +1,17 @@
 #/bin/bash
 
+TARGET=icc_examin
+
 CONF_H=config.h
 CONF=config
+SPEC=$TARGET.spec
 
-TARGET=icc_examin
 VERSION_A=0
 VERSION_B=3
-VERSION_C=6
+VERSION_C=7
 VERSION=$VERSION_A.$VERSION_B$VERSION_C
 VERSION_L=$VERSION_A.$VERSION_B.$VERSION_C
-ZEIT="Mai 2004 - Aug 2005"
+ZEIT="May 2004 - Aug 2005"
 
 if [ $# -gt 1 ] && [ $1 == "--prefix" ]; then
   prefix=$2
@@ -160,6 +162,11 @@ echo "#define ICC_EXAMIN_V $VERSION" >> icc_version.h
 echo "#define ICC_EXAMIN_D _(\"$ZEIT\")" >> icc_version.h
 echo "" >> icc_version.h
 echo "#endif //ICC_VERSION_H" >> icc_version.h
+
+echo "Version: $VERSION" > $SPEC
+echo "Source:  $TARGET"_"$VERSION".tar.gz >> $SPEC
+cat  $SPEC.in >> $SPEC
+echo $SPEC generated
 
 echo ""
 echo ""

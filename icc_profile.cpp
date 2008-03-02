@@ -149,6 +149,7 @@ ICCprofile::load (const Speicher & prof)
     DBG_MEM_V( (int*)data_ <<" "<< (int*)z )
   } else {
     DBG_PROG_ENDE
+    changing_ = false;
     return ICCnullDATA;
   }
 
@@ -157,6 +158,7 @@ ICCprofile::load (const Speicher & prof)
     WARN_S( _("Kein Profil")<<" "<<_("Size")<<" "<<size_ )
     measurement.load( this, data_, size_ );
     DBG_PROG_ENDE
+    changing_ = false;
     return ICCmeasurementDATA;
   }
 
@@ -199,6 +201,7 @@ ICCprofile::load (const Speicher & prof)
 
     measurement.load( this, tag );
     DBG_PROG_ENDE
+    changing_ = false;
     return ICCmeasurementDATA;
   }
    

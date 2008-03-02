@@ -191,7 +191,7 @@ ICCkette::waechter (void* zeiger)
     {
       DBG_MEM_V( obj->profilnamen_[i] );
       double m_zeit = holeDateiModifikationsZeit( obj->profilnamen_[i].c_str());
-      DBG_MEM_V( m_zeit <<" "<< obj->profil_mzeit_[i] )
+      DBG_MEM_V( m_zeit <<" "<< obj->profil_mzeit_[i] << obj->profilnamen_[i] )
       if( m_zeit &&
           obj->aktiv_[i] &&
           obj->profil_mzeit_[i] != m_zeit
@@ -200,6 +200,7 @@ ICCkette::waechter (void* zeiger)
 #      endif
         )
       {
+        DBG_PROG_V( obj->profil_mzeit_[i] )
         if( obj->profil_mzeit_[i] == 0 ) {
           obj->profil_mzeit_[i] = m_zeit;
         } else {
@@ -214,7 +215,7 @@ ICCkette::waechter (void* zeiger)
       }
     }
     DBG_THREAD
-    icc_examin_ns::sleep(1.0/3.0);
+    icc_examin_ns::sleep(1.0/10.0);
   }
 
 # if USE_THREADS

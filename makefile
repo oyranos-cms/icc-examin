@@ -65,7 +65,7 @@ else
 	--msgid-bugs-address='ku.b@gmx.de' \
 	--from-code=utf-8
   ifdef LINUX
-    OPTS = -Wall -g $(DEBUG) -Wunused -fPIC -fno-exceptions #-Os -fomit-frame-pointer -g
+    OPTS = -Wall -g $(DEBUG) -Wunused -fPIC -fno-exceptions #-Os -fomit-frame-pointer
     INCL=-I$(includedir) -I/usr/X11R6/include -I. -I/usr/include/g++ -I/usr/include
     LIBLINK_FLAGS = -shared -ldl -L.
     LIBSONAME = lib$(TARGET)$(SO).$(VERSION_A)
@@ -228,7 +228,7 @@ DOKU = \
 	icc_examin.desktop \
 	icc_examin.png \
 	icc_examin.xpm \
-	icc_examin.spec \
+	icc_examin.spec.in \
 	icc.xml
 FLUID = \
 	icc_betrachter.fl \
@@ -306,7 +306,7 @@ static:	$(TARGET)
 	`pkg-config --libs ftgl`  -lsupc++ \
 	$(I18N_LIB) $(X11_LIBS) \
 	$(DBG_LIBS) \
-	`test -f /opt/kai-uwe/lib/liblcms.a && echo /opt/kai-uwe/lib/liblcms.a || pkg-config --libs lcms` #/usr/lib/libkdb.a # Hack for static lcms
+	`test -f /opt/kai-uwe/lib/liblcms.a && echo /opt/kai-uwe/lib/liblcms.a || pkg-config --libs lcms` #/usr/lib/libelektra.a # Hack for static lcms
 	$(REZ)
 
 static_static:	$(OBJECTS)

@@ -48,6 +48,14 @@ using namespace oyranos;
 #include <Carbon/Carbon.h>
 #endif
 
+#ifdef HAVE_X
+#include <X11/Xlib.h>
+# ifdef HAVE_FLTK
+# include <FL/x.H>
+# endif
+#endif
+
+
 Oyranos icc_oyranos;
 
 
@@ -290,22 +298,23 @@ Oyranos::moni_test_ ()
   DBG_PROG_START
 # if HAVE_OY
   {
+    size_t size = 0;
+
     const char *display_name = 0;
-    char* profil_name =
-     oyGetMonitorProfileName (display_name);
+    display_name = XDisplayString( fl_display );  // gehoert X
     DBG_PROG_V( display_name )
+    char* moni_profil = oyGetMonitorProfile( display_name, &size );
     Speicher v_block = moni_;
       DBG_MEM_V( v_block.size() )
+    const char *profil_name="dummy";
       DBG_PROG_V( (int*)profil_name << profil_name )
-    if( profil_name &&
-        v_block != profil_name )
+    // Wir holen das Profil wenn es sich ge‰ndert hat.
+    // a) neuer Name  - schwierig zu identifizieren ¸ber oyDeviceProfil
+    // b) Benachrichtigung  - vorausgesetzt Oyranos (X?) ‰ndert das Profil
     { 
-        size_t size = oyGetProfileSize ( profil_name );
-          DBG_MEM_V( size )
         if (size)
         {
-          char* block =
-           (char*)oyGetProfileBlock( profil_name, &size);
+          char* block = moni_profil;
           if( oyCheckProfileMem( block, size, 0 ) )
             WARN_S ( _("Profil konnte nicht geladen werden") )
           else {
@@ -314,8 +323,6 @@ Oyranos::moni_test_ ()
           }
         }
         v_block = (const char*)profil_name;
-
-      if(profil_name) free(profil_name);
         DBG_MEM
     }
   }
@@ -431,7 +438,7 @@ Oyranos::rgb_test_ ()
           if( oyCheckProfileMem( block, size, 0 ) )
             WARN_S ( _("Profil konnte nicht geladen werden") )
           else {
-            DBG_PROG_V( (int*)block <<"|"<< size <<" "<<(int) (*rgb_) )
+            DBG_PROG_V( (int*)block <<"|"<< size )
             v_block->ladeUndFreePtr(&block, size);
           }
         }
@@ -463,7 +470,7 @@ Oyranos::cmyk_test_ ()
 {
   DBG_PROG_START
 # if HAVE_OY
-  Speicher *v_block = &rgb_;
+  Speicher *v_block = &cmyk_;
   if( !v_block->size() )
   { DBG_PROG_V( v_block->size() )
     char* profil_name = oyGetDefaultCmykInputProfileName();
@@ -482,7 +489,7 @@ Oyranos::cmyk_test_ ()
           if( oyCheckProfileMem( block, size, 0 ) )
             WARN_S ( _("Profil konnte nicht geladen werden") )
           else {
-            DBG_PROG_V( (int*)block <<"|"<< size <<" "<<(int) (*cmyk_) )
+            DBG_PROG_V( (int*)block <<"|"<< size )
             v_block->ladeUndFreePtr(&block, size);
           }
         }
@@ -499,13 +506,6 @@ Oyranos::cmyk_test_ ()
   DBG_PROG_ENDE
 }
 
-#ifdef HAVE_X
-#include <X11/Xlib.h>
-#endif
-#ifdef HAVE_FLTK
-#include <FL/x.H>
-#endif
-
 #if 0
 char*
 Oyranos::holeMonitorProfil (const char* display_name, size_t* size )
@@ -518,6 +518,8 @@ Oyranos::holeMonitorProfil (const char* display_name, size_t* size )
 
 # ifdef HAVE_X
   static Display *display=0;
+  if(display_name)
+    display = XOpenDisplay(display_name);
 
 # ifdef HAVE_FLTK
   if( !display )
@@ -526,7 +528,7 @@ Oyranos::holeMonitorProfil (const char* display_name, size_t* size )
   if( !display )
     display = XOpenDisplay(0);
 
-  display_name = XDisplayString( display );  // geh√∂rt X
+  display_name = XDisplayString( display );  // gehoert X
   DBG_PROG_V( display_name <<" "<< strlen(display_name) )
 
 # ifndef HAVE_FLTK
@@ -562,14 +564,14 @@ Oyranos::setzeMonitorProfil (const char* profil_name )
   if( !display )
     ;//display = fl_display;
 # endif
-  if( !display )
-    display = XOpenDisplay(0);
+  //if( !display )
+    //display = XOpenDisplay(0);
 
-  display_name = XDisplayString( display );  // gehoert X
+  display_name = XDisplayString( fl_display );  // gehoert X
   DBG_PROG_V( display_name <<" "<< strlen(display_name) )
 
 # ifndef HAVE_FLTK
-    XCloseDisplay( display ); DBG_PROG
+    //XCloseDisplay( display ); DBG_PROG
 # endif
 
 # endif

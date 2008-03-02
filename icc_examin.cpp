@@ -279,7 +279,8 @@ ICCexamin::nachricht( Modell* modell , int info )
     {
       ICCprofile *p = (*k)[info];
       DBG_PROG_V( (int*)p )
-      if (p && !p->changing())
+      if (p)
+      if (!p->changing())
       { DBG_PROG
         if(k->aktiv(info)) // momentan nicht genutzt
         {
@@ -319,7 +320,8 @@ ICCexamin::nachricht( Modell* modell , int info )
         else if(icc_betrachter->examin->visible())
           waehleTag(_item);
         icc_examin->fortschrittThreaded(0.9);
-      }
+      } else
+        DBG_PROG_S( "verändert sich gerade" )
     }
   }
 
@@ -665,6 +667,7 @@ ICCexamin::fortschrittThreaded(double f)
     if(!icc_betrachter->load_progress->visible())
       icc_betrachter->load_progress-> show();
     icc_betrachter->load_progress-> value( f );
+    wait();
     DBG_PROG_V( f )
   } else if (1.0 < f) {
     icc_betrachter->load_progress-> hide();
