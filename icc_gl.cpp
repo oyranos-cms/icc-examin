@@ -54,12 +54,12 @@
 #include <FTGL/FTGLExtrdFont.h>
 #endif
 
-#include "freeglut_internal.h"
-
 #include <cmath>
 
 //#define Beleuchtung
 //#define Lab_STERN 1
+
+void zeichneKegel( GLdouble breite, GLdouble hoehe, GLint seiten );
 
 //#define DEBUG_ICCGL
 #ifdef DEBUG_ICCGL
@@ -227,6 +227,7 @@ GL_Ansicht::init(int init_id)
   DBG_PROG_ENDE
 }
 
+/** @brief den Ort lokalisieren */
 void
 GL_Ansicht::mausPunkt_( GLdouble &oX, GLdouble &oY, GLdouble &oZ,
                         GLdouble &X, GLdouble &Y, GLdouble &Z )
@@ -631,6 +632,34 @@ GL_Ansicht::tastatur(int e)
                                    glScalef(1.0/scal,1.0/(scal*w()/(double)h()),1.0/scal); \
                                  }
 
+void
+zeichneKegel( GLdouble breite, GLdouble hoehe, GLint seiten )
+{ DBG_ICCGL_START
+  GLdouble x, y,
+           s = 2*M_PI/(GLdouble)seiten, // statische Variable
+           hn = breite*tan(breite/2./hoehe); // Normalenhoehe
+  // Boden
+  glBegin(GL_TRIANGLE_FAN);
+    glNormal3d( 0, 0, -1 );
+    glVertex3d( 0, 0, 0 );
+    for(int i = 0; i <= seiten; ++i)
+      glVertex3d( cos(i*s)*breite, sin(i*s)*breite, 0 );
+  glEnd();
+  // Kegel
+  glBegin(GL_TRIANGLE_STRIP);
+    for(int i = 0; i <= seiten; ++i)
+    {
+      x = cos(i*s)*breite;
+      y = sin(i*s)*breite;
+      glNormal3d( x, y, hn );
+      glVertex3d( x, y, 0 );
+      glVertex3d( 0, 0, hoehe );
+    }
+  glEnd();
+
+  DBG_ICCGL_ENDE
+}
+
 
 void
 GL_Ansicht::zeichneKoordinaten_()
@@ -661,7 +690,7 @@ GL_Ansicht::zeichneKoordinaten_()
     glTranslatef(.1,0,0);
       FARBE(1,0,1)
       glRotatef (90,0.0,1.0,.0);
-        icc_gl::glutSolidCone(0.01, 0.025, 8, 2);
+        zeichneKegel(0.01, 0.025, 8);
       glRotatef (-90,0.0,1.0,.0);
       FARBE(1,1,1)
       glTranslatef(.02,0,0);
@@ -672,7 +701,7 @@ GL_Ansicht::zeichneKoordinaten_()
     glTranslatef(.0,.1,0);
       glRotatef (270,1.0,.0,.0);
         FARBE(1,1,0)
-        icc_gl::glutSolidCone(0.01, 0.025, 8, 2);
+        zeichneKegel(0.01, 0.025, 8);
       glRotatef (90,1.0,.0,.0);
       glRotatef (90,0.0,.0,1.0);
         FARBE(1,1,1)
@@ -682,7 +711,7 @@ GL_Ansicht::zeichneKoordinaten_()
 
     glTranslatef(0,0,.1);
       FARBE(0,1,1)
-      icc_gl::glutSolidCone(0.01, 0.025, 8, 2);
+      zeichneKegel(0.01, 0.025, 8);
       glRotatef (90,0.0,.5,.0);
         glTranslatef(-.1,0,0);
           FARBE(1,1,1)
@@ -791,7 +820,7 @@ GL_Ansicht::garnieren_()
 {
   DBG_PROG_START
 
-# define PFEILSPITZE icc_gl::glutSolidCone(0.02, 0.05, 16, 4);
+# define PFEILSPITZE zeichneKegel(0.02, 0.05, 16);
 
   DBG_PROG_V( id() )
   // Pfeile und Text
@@ -1367,7 +1396,7 @@ GL_Ansicht::zeigeUmrisse_()
     for (int i = 0; i < n*2; ++i)
       Lab_Speicher_schatten[i] = Lab_Speicher[i];
     for (int i = 0; i < n; ++i) {
-      Lab_Speicher_schatten[i*3] = hintergrundfarbe*.60+.35;
+      Lab_Speicher_schatten[i*3] = hintergrundfarbe*.40+.35;
       Lab_Speicher_schatten[i*3+1] = (Lab_Speicher[i*3+1]-.5)*.25+0.5;
       Lab_Speicher_schatten[i*3+2] = (Lab_Speicher[i*3+2]-.5)*.25+0.5;
     }
@@ -1493,7 +1522,7 @@ GL_Ansicht::zeigeSpektralband_()
     for (int i = 0; i < nano_max*2; ++i)
       Lab_Speicher_schatten[i] = Lab_Speicher[i];
     for (int i = 0; i < nano_max; ++i) {
-      Lab_Speicher_schatten[i*3] = hintergrundfarbe*.60+.35;
+      Lab_Speicher_schatten[i*3] = hintergrundfarbe*.40+.35;
       Lab_Speicher_schatten[i*3+1] = (Lab_Speicher[i*3+1]-.5)*.25+0.5;
       Lab_Speicher_schatten[i*3+2] = (Lab_Speicher[i*3+2]-.5)*.25+0.5;
     }

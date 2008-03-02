@@ -181,13 +181,16 @@ ICCexamin::start (int argc, char** argv)
 
   // Behandle Kommandozeilenargumente
       if (argc>1) {
-        status( argv[1] << " " << _("loaded") )
         std::vector<std::string>profilnamen;
         for (int i = 1; i < argc; i++) {
           DBG_PROG_S( i <<" "<< argv[i] )
           // keine process serial number in osX
           if(std::string(argv[i]).find("-psn_") == std::string::npos)
+          {
+            if(i == 1)
+              status( argv[1] << " " << _("loaded") )
             profilnamen.push_back( argv[i] );
+          }
         }
         oeffnen (profilnamen);
       } else {

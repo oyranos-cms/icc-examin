@@ -263,11 +263,19 @@ ICCexamin::farbraum (int n)
 
   if(netz->size() && neues_netz)
   {
-    if(((n == 0 && ncl2_profil)
-        || (n == 1 && farbraumModus())
-        || profile.size() == 1 ) &&
+    if((n == 0 && ncl2_profil) &&
        !messwerte )
     {
+      (*netz)[n].transparenz = 0.0;
+      (*netz)[n].grau = false;
+    } else if ( farbraumModus() &&
+       !messwerte ) {
+      if(n == 1)
+        (*netz)[n].transparenz = 0.15;
+      else
+        (*netz)[n].transparenz = 0.10;
+      (*netz)[n].grau = true;
+    } else if ( profile.size() == 1 ) {
       (*netz)[n].transparenz = 0.25;
       (*netz)[n].grau = false;
     } else {

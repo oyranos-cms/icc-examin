@@ -38,11 +38,13 @@
 #include "icc_profile_tags.h"
 
 /**
-  *   @brief Messdaten 
+  *   @brief liest CGATS aus einem Profil 
+  *
+  *   Typischerweise wird ICCmeasurement einem ICCprofile zugeordnet.
+  *   CIE* Lab, CIE* XYZ, RGB und CMYK werden unterstützt.
   **/
 
 
-// definiert in icc_measurement.cpp
 class ICCmeasurement {
                         ICCmeasurement     (); 
                         ICCmeasurement     (ICCprofile* profil);

@@ -110,7 +110,7 @@ else
   FLU_FLTK_LIBS = $(FLTK_LIBS)
 endif
 
-LDLIBS = -L$(libdir) -L./ $(FLU_FLTK_LIBS) -licc_examin \
+LDLIBS = -L$(libdir) -L./ $(FLU_FLTK_LIBS) \
 	$(X11_LIBS) -llcms -L/lib $(OYRANOS_LIBS) $(LCMS_LIBS) \
 	$(FTGL_LIBS) $(I18N_LIB) $(DBG_LIBS)
 
@@ -183,16 +183,11 @@ COMMON_CPPFILES = \
 	icc_vrml.cpp \
 	icc_vrml_parser.cpp \
 	threads.cpp
-FREEGLUT_HFILES = \
-	freeglut_internal.h
-FREEGLUT_CFILES = \
-	freeglut_geometry.c
 
 LINGUAS = \
 	de eo #en_GB
 
-COMMON_CFILES = \
-	$(FREEGLUT_CFILES)
+COMMON_CFILES = 
 CFILES = \
 	$(COMMON_CFILES)
 CPPFILES = \
@@ -217,8 +212,7 @@ ALL_SOURCEFILES = \
 	$(TEST)
 
 ALL_HEADERFILES = \
-	$(CPP_HEADERS) \
-	$(FREEGLUT_HFILES)
+	$(CPP_HEADERS)
 
 DOKU = \
 	TODO \
@@ -272,7 +266,7 @@ release:	icc_alles.o
 	$(REZ)
 	$(RM) icc_alles.o
 
-$(TARGET):	base $(OBJECTS) $(LIBNAME) pot #$(LIBSONAMEFULL)
+$(TARGET):	base $(OBJECTS) pot #$(LIBNAME) $(LIBSONAMEFULL)
 	
 dynamic:	$(TARGET)
 	echo Verknuepfen $@...
@@ -299,7 +293,7 @@ $(LIBNAME):	$(CLIB_OBJECTS)
 static:	$(TARGET)
 	echo Verknuepfen $@ ...
 	$(CXX) $(OPTS) -o $(BINTARGET) $(OBJECTS) \
-	-L./  -licc_examin \
+	-L./ \
 	`flu-config --ldstaticflags` \
 	`fltk-config --use-gl --use-images --ldstaticflags` \
 	-L/usr/X11R6/lib -lX11 -lXxf86vm -lXext -L/opt/local/lib \

@@ -176,14 +176,6 @@ getUeberHtml()
 "  agv 3D Navigation: Philip Winston<br>\n");
   html << " \
 </p>\n \
-</p>\n \
-<p>";
-  html << _(
-"  freeglut: freeglut.sf.net<br>\n"
-"   (partialy used) <br>");
-  html << " \
-<br>\
-</p>\n \
 <p>";
   html << _(
 "For the visualisation of gamut (external):<br>\n");

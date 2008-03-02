@@ -234,11 +234,6 @@ class Speicher
                               DBG_MEM_ENDE
                               return *groesse_;
                             }
-    operator Speicher &  () {
-                              DBG_MEM_START
-                              DBG_MEM_ENDE
-                              return *this;
-                            }
     Speicher&           operator = (const Speicher& s) {
                               DBG_MEM_START
                               DBG_MEM_ENDE

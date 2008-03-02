@@ -6,6 +6,6 @@
 #define ICC_EXAMIN_VERSION_C 8
 #define ICC_EXAMIN_VERSION 0.38
 #define ICC_EXAMIN_V 0.38
-#define ICC_EXAMIN_D _("May 2004 - September 2005")
+#define ICC_EXAMIN_D _("May 2004 - October 2005")
 
 #endif //ICC_VERSION_H

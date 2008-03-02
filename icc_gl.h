@@ -78,21 +78,21 @@ class GL_Ansicht : public Fl_Gl_Window /*, public Fl_Slot*/ {
   typedef enum {
    MENU_AXES,
    MENU_QUIT,
-   MENU_KUGEL,           // Formen der 3DLut-darstellung
+   MENU_KUGEL,           //!< Formen der 3DLut-darstellung
    MENU_WUERFEL,
    MENU_STERN,
-   MENU_GRAU,            // Die Farbdarstellung der 3DLut
+   MENU_GRAU,            //!< Die Farbdarstellung der 3DLut
    MENU_FARBIG,
    MENU_KONTRASTREICH,
-   MENU_SCHALEN,         // Aussparen der 3DLut
-   MENU_dE1KUGEL,        // Mess-/Profilwertdifferenzen mit Farborten
+   MENU_SCHALEN,         //!< Aussparen der 3DLut
+   MENU_dE1KUGEL,        //!< Mess-/Profilwertdifferenzen mit Farborten
    MENU_dE2KUGEL,
    MENU_dE4KUGEL,
    MENU_dE1STERN,
-   MENU_DIFFERENZ_LINIE, // Mess-/Profilwertdifferenzen mit Geraden pur
-   MENU_SPEKTRALBAND,    // Darstellung der Spektralfarben als Band
-   MENU_HELFER,          // Texte und Pfeile darstellen
-   MENU_WEISS,           // Hintergrundfarben
+   MENU_DIFFERENZ_LINIE, //!< Mess-/Profilwertdifferenzen mit Geraden pur
+   MENU_SPEKTRALBAND,    //!< Darstellung der Spektralfarben als Band
+   MENU_HELFER,          //!< Texte und Pfeile darstellen
+   MENU_WEISS,           //!< Hintergrundfarben
    MENU_HELLGRAU,
    MENU_GRAUGRAU,
    MENU_DUNKELGRAU,
@@ -108,7 +108,7 @@ public:
   void init(int id);
 
   // welches Fenster wird verwaltet?
-  int  id()          {return id_; } // gleich zu agviewer::RedisplayWindow
+  int  id()          {return id_; } //!< gleich zu agviewer::RedisplayWindow
   // fltk virtual
   void draw();
   int  handle(int event);
@@ -119,10 +119,10 @@ public:
   void hineinPunkte (std::vector<double> &vect, 
                      std::vector<float>  &farben_,
                      std::vector<std::string> &achsNamen);
-  void hineinPunkte (std::vector<double> &punktKoordinaten, // XYZ
-                     std::vector<float>  &punktFarben,      // RGBA
-                     std::vector<std::string> &farb_namen_, // pro Punkt
-                     std::vector<std::string> &achsNamen);  // 3*
+  void hineinPunkte (std::vector<double> &punktKoordinaten, //!< XYZ
+                     std::vector<float>  &punktFarben,      //!< RGBA
+                     std::vector<std::string> &farb_namen_, //!< pro Punkt
+                     std::vector<std::string> &achsNamen);  //!< 3*
   void punkte_clear () { punkte_.clear(); farben_.clear(); }
   void hineinNetze  (const std::vector<ICCnetz> & dreiecks_netze);
   std::vector<ICCnetz> dreiecks_netze;
@@ -133,36 +133,36 @@ public:
                                std::vector<std::string> nachFarben);
 
   // transparente Darstellung
-  int  kanal;               // gewählter Kanal
+  int  kanal;               //!< gewählter Kanal
        // Darstellung der Gitterpunkte der Transformationstabelle
-  int  punktform;           // MENU_KUGEL MENU_WUERFEL MENU_STERN
-  int  punktfarbe;          // MENU_GRAU MENU_FARBIG MENU_KONTRASTREICH
-  int  punktgroesse;        // Größe in Pixel
+  int  punktform;           //!< MENU_KUGEL MENU_WUERFEL MENU_STERN
+  int  punktfarbe;          //!< MENU_GRAU MENU_FARBIG MENU_KONTRASTREICH
+  int  punktgroesse;        //!< Größe in Pixel
 
-  float hintergrundfarbe;   // Hintergrundfarben Farbschema
+  float hintergrundfarbe;   //!< Hintergrundfarben Farbschema
   float textfarbe[3];
   float pfeilfarbe[3];
   float schatten;
-  float strichmult;         // Strichmultiplikator
+  float strichmult;         //!< Strichmultiplikator
   char  strich1, strich2, strich3;
-  int   schalen;            // MENU_SCHALEN
+  int   schalen;            //!< MENU_SCHALEN
 
   // Darstellungsfunktionen
-  void setzePerspektive();  // Perspektive aktualisieren
-  void auffrischen();       // Erneuerung ohne init()
-  void tabelleAuffrischen();// glCompile für Tabelle
-  void punkteAuffrischen(); // glCompile für Punkte
-  void netzeAuffrischen();  // Sortieren und Zeichnen
-  double seitenverhaeltnis; // Proportion des Fensters
+  void setzePerspektive();  //!< Perspektive aktualisieren
+  void auffrischen();       //!< Erneuerung ohne init()
+  void tabelleAuffrischen();//!< glCompile für Tabelle
+  void punkteAuffrischen(); //!< glCompile für Punkte
+  void netzeAuffrischen();  //!< Sortieren und Zeichnen
+  double seitenverhaeltnis; //!< Proportion des Fensters
   static const double std_vorder_schnitt;
-  double vorder_schnitt;    // Entfernung der ersten Schnittebene
-  double schnitttiefe;      // Dicke der GL Schnitttiefe
-  double a_darstellungs_breite; // Richtung CIE*a   für Zoom und Pfeillängen
-  double b_darstellungs_breite; // ~        CIE*b ; wobei CIE*L immer 1.0
+  double vorder_schnitt;    //!< Entfernung der ersten Schnittebene
+  double schnitttiefe;      //!< Dicke der GL Schnitttiefe
+  double a_darstellungs_breite; //!< Richtung CIE*a   für Zoom und Pfeillängen
+  double b_darstellungs_breite; //!< ~        CIE*b ; wobei CIE*L immer 1.0
   bool zeig_punkte_als_messwert_paare;
   bool zeig_punkte_als_messwerte;
-  int  spektralband;        // stelle die spektral gesättigten Farben dar
-  int  zeige_helfer;        // zeige Pfeile und Text
+  int  spektralband;        //!< stelle die spektral gesättigten Farben dar
+  int  zeige_helfer;        //!< zeige Pfeile und Text
 private:
   void zeigeSpektralband_();
   void zeigeUmrisse_();
@@ -171,7 +171,7 @@ private:
 
 public:
   // Darstellungsfunktionen
-  void zeichnen();          // gl Zeichnen
+  void zeichnen();          //!< gl Zeichnen
   int  dID (int display_liste);
   void tastatur(int e);
   void menueAufruf(int value);
@@ -184,18 +184,18 @@ private:
   bool darf_bewegen_;
   bool ist_bewegt_;
 private:
-  double zeit_diff_;        // Bilder pro Sekunde
-  int  valid_;              // notiert ob in draw() valid() false war
-  char t[128];              // Text zur Fehlersuche
+  double zeit_diff_;        //!< Bilder pro Sekunde
+  int  valid_;              //!< notiert ob in draw() valid() false war
+  char t[128];              //!< Text zur Fehlersuche
   int  maus_x_;
   int  maus_y_;
   void mausPunkt_( GLdouble & oX, GLdouble & oY, GLdouble & oZ,
                   GLdouble & X, GLdouble & Y, GLdouble & Z );
 public:
   // Geschwindigkeit
-  int  smooth;                    // glatt zeichnen
-  int  blend;                     //   -"-
-  int  wiederholen;               // bezogen auf smooth/blend
+  int  smooth;                    //!< glatt zeichnen
+  int  blend;                     //!<   -"-
+  int  wiederholen;               //!< bezogen auf smooth/blend
 
   // Daten Informationen
   const char* kanalName() const {

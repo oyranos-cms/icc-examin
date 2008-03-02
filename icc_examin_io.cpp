@@ -356,7 +356,7 @@ ICCexamin::oeffnen (std::vector<std::string> dateinamen)
     ss.push_back(Speicher());
 
     ss[i] = dateiNachSpeicher(dateinamen[i]);
-    if(ss[i].size() == 0) {
+    if(i == 0 && ss[i].size() == 0) {
       status( _("Stop loading ") << dateinamen[i] )
       fortschritt( 1.1 );
       return;

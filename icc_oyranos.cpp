@@ -80,18 +80,12 @@ Oyranos icc_oyranos;
 Oyranos::Oyranos()
 {
   DBG_PROG_START
-# if HAVE_OY
-  oyOpen();
-# endif
   DBG_PROG_ENDE
 }
 
 Oyranos::~Oyranos()
 {
   DBG_PROG_START
-# if HAVE_OY
-  oyClose();
-# endif
   DBG_PROG_ENDE
 }
 

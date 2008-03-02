@@ -11,7 +11,7 @@ VERSION_B=3
 VERSION_C=8
 VERSION=$VERSION_A.$VERSION_B$VERSION_C
 VERSION_L=$VERSION_A.$VERSION_B.$VERSION_C
-ZEIT="May 2004 - September 2005"
+ZEIT="May 2004 - October 2005"
 
 src_dir="`(cd ..;pwd)`/""$TARGET"_"$VERSION"
 srcdir="`pwd`"
@@ -54,7 +54,6 @@ else
 fi
 
 if [ $# -gt 0 ]; then
-  echo "prefix =                ${1#*=}"
   prefix=${1#*=}
 else
   if [ $UNAME_ = "Darwin" ]; then
@@ -63,6 +62,7 @@ else
     prefix=/usr
   fi
 fi
+echo "prefix =                $prefix"
 
 echo "prefix = $prefix" >> $CONF
 echo "" >> $CONF
