@@ -38,9 +38,9 @@
 #include "icc_helfer.h"
 #include "config.h"
 
-#ifdef LINUX
+//#ifdef LINUX
 #include <sys/time.h>
-#endif
+//#endif
 
 #include <FL/Fl_Menu_Button.H>
 #include <FL/Fl.H>
@@ -301,7 +301,9 @@ GL_Ansicht::handle( int event )
          break;
     case FL_DRAG:
          DBG_ICCGL_S( "FL_DRAG bei: " << Fl::event_x() << "," << Fl::event_y() )
-         agv_.agvHandleMotion(Fl::event_x(), Fl::event_y());
+         maus_x = Fl::event_x();
+         maus_y = Fl::event_y();
+         agv_.agvHandleMotion(maus_x, maus_y);
          break;
     case FL_KEYDOWN:
          DBG_ICCGL_S( "FL_KEYDOWN bei: " << Fl::event_x() << "," << Fl::event_y() )
@@ -679,7 +681,6 @@ GL_Ansicht::garnieren_()
           von_farb_namen_[1] == _("CIE *a"))
         glTranslatef(0,-.5,0);
       FARBE(pfeilfarbe[0],pfeilfarbe[1],pfeilfarbe[2])
-      #if ZEIG_GITTER
       float schritt = .25, Schritt = 1., start, ende;
       start = - floor (a_darstellungs_breite/2./schritt) * schritt;
       ende = floor (a_darstellungs_breite/2./schritt) * schritt;
@@ -696,13 +697,7 @@ GL_Ansicht::garnieren_()
           glVertex3f( i, 0, -a_darstellungs_breite/2.);
         glEnd();
       }
-      #else
-      // Achslinie
-      glBegin(GL_LINES);
-        glVertex3f(0, 0,  a_darstellungs_breite/2.);
-        glVertex3f(0, 0, -a_darstellungs_breite/2.);
-      glEnd();
-      #endif
+
       glTranslatef(0.0,0.0,a_darstellungs_breite/2.);
       glRotatef (180,0.0,.5,.0);
       glTranslatef(.0,0.0,a_darstellungs_breite);
@@ -726,7 +721,6 @@ GL_Ansicht::garnieren_()
           von_farb_namen_[2] == _("CIE *b"))
         glTranslatef(0,-0.5,0);
       FARBE(pfeilfarbe[0],pfeilfarbe[1],pfeilfarbe[2])
-      #if ZEIG_GITTER
       // Gitter
       for(float i = start; i <= ende; i+=schritt) {
 
@@ -740,13 +734,6 @@ GL_Ansicht::garnieren_()
           glVertex3f(-b_darstellungs_breite/2., 0, i);
         glEnd();
       }
-      #else
-      // Achslinie
-      glBegin(GL_LINES);
-        glVertex3f( b_darstellungs_breite/2., 0, 0);
-        glVertex3f(-b_darstellungs_breite/2., 0, 0);
-      glEnd();
-      #endif
       glTranslatef(b_darstellungs_breite/2.,0,0);
       if (von_farb_namen_.size() &&
           von_farb_namen_[2] == _("CIE *b"))
@@ -798,39 +785,25 @@ GL_Ansicht::tabelleAuffrischen()
       double dim_y = 1.0/(n_L); DBG_PROG_V( dim_y )
       double dim_z = 1.0/(n_a); DBG_PROG_V( dim_z )
       double start_x,start_y,start_z, x,y,z;
-      double groesse = (dim_x + dim_y + dim_z)/ 3;
       double wert;
-              switch (punktform) {
-                case MENU_STERN:   
-                schnitttiefe= HYP3(dim_x,dim_y,dim_z);
-                break;
-                case MENU_WUERFEL: schnitttiefe = HYP3(groesse,groesse,groesse);
-                break;
-                case MENU_KUGEL:   schnitttiefe = groesse;
-                break;
-              } DBG_NUM_V( schnitttiefe );
+
+      schnitttiefe= HYP3(dim_x,dim_y,dim_z);
+      DBG_NUM_V( schnitttiefe );
       start_x = start_y = start_z = x = y = z = 0.5; start_y = y = -0.5;
       glPushMatrix();
       #ifndef Beleuchtung
       glDisable(GL_LIGHTING);
       #endif
-      glTranslatef(start_x + dim_x/2.0, start_y + dim_y/2.0, start_z + dim_z/2.0);
       DBG_PROG_V( tabelle_.size() <<" "<< tabelle_[0].size() )
-      glTranslatef(-dim_x,-dim_y,-dim_z);
-      for (int L = 0; L < (int)n_L; L++) { //DBG_PROG_V( L )
-        double y_versatz = (double)L/(n_L-1)*dim_y-n_L/((n_L-0.0)*2.0)*dim_y;
+      float korr = 0.995/2.0;
+      glTranslatef(-0.5/0.995+dim_x/2,-0.5/0.995+dim_y/2,-0.5/0.995+dim_z/2);
+      for (int L = 0; L < (int)n_L; L++) {
         x = start_x + L * dim_y;
-        glTranslatef(0.0,dim_y,0.0);
-        glTranslatef(0.0,0.0,-1.0);
-        for (int a = 0; a < (int)n_a; a++) { //DBG_PROG_V( a )
-          double z_versatz = (double)a/(n_a-1)*dim_z-n_a/((n_a-0.0)*2.0)*dim_z;
+        for (int a = 0; a < (int)n_a; a++)
+        {
           y = start_y + a * dim_z;
-          glTranslatef(0.0,0.0,dim_z);
-          glTranslatef(-1,0.0,0.0);
-          for (int b = 0; b < (int)n_b; b++) { //DBG_PROG_V( k )
-            z = start_z + b * dim_x; //DBG_PROG_V( dim_x )
-            double x_versatz= (double)b/(n_b-1)*dim_x-n_b/((n_b-0.0)*2.0)*dim_z;
-            glTranslatef(dim_x,0.0,0.0); //DBG_PROG_V( dim_x )
+          for (int b = 0; b < (int)n_b; b++) {
+            z = start_z + b * dim_x;
             wert = tabelle_[L][a][b][kanal]; //DBG_PROG_V( L << a << b << kanal )
             #ifdef Beleuchtung
             FARBE(wert, wert, wert)
@@ -851,33 +824,29 @@ GL_Ansicht::tabelleAuffrischen()
                                 } else glColor4f( wert, wert, wert, 1.0);
                                                                    break;
             }
+            #endif
             if (wert) {
-              #endif
-              switch (punktform) {
-                case MENU_STERN: {
-                glBegin(GL_QUADS);
-                  glVertex3f( dim_x/2,  dim_y/2, z_versatz);
-                  glVertex3f( dim_x/2, -dim_y/2, z_versatz);
-                  glVertex3f(-dim_x/2, -dim_y/2, z_versatz);
-                  glVertex3f(-dim_x/2,  dim_y/2, z_versatz);
+                glBegin(GL_TRIANGLE_FAN);
+                  glVertex3f(dim_x*b+ dim_x*korr,dim_y*L+ dim_y*korr,dim_z*a+ dim_z*korr);
+                  glVertex3f(dim_x*b+ dim_x*korr,dim_y*L+-dim_y*korr,dim_z*a+ dim_z*korr);
+                  glVertex3f(dim_x*b+-dim_x*korr,dim_y*L+-dim_y*korr,dim_z*a+ dim_z*korr);
+                  glVertex3f(dim_x*b+-dim_x*korr,dim_y*L+ dim_y*korr,dim_z*a+ dim_z*korr);
+                  glVertex3f(dim_x*b+-dim_x*korr,dim_y*L+ dim_y*korr,dim_z*a+-dim_z*korr);
+                  glVertex3f(dim_x*b+ dim_x*korr,dim_y*L+ dim_y*korr,dim_z*a+-dim_z*korr);
+                  glVertex3f(dim_x*b+ dim_x*korr,dim_y*L+-dim_y*korr,dim_z*a+-dim_z*korr);
+                  glVertex3f(dim_x*b+ dim_x*korr,dim_y*L+-dim_y*korr,dim_z*a+ dim_z*korr);
+
                 glEnd();
-                glBegin(GL_QUADS);
-                  glVertex3f(x_versatz,  dim_y/2,-dim_z/2);
-                  glVertex3f(x_versatz, -dim_y/2,-dim_z/2);
-                  glVertex3f(x_versatz, -dim_y/2, dim_z/2);
-                  glVertex3f(x_versatz,  dim_y/2, dim_z/2);
+                glBegin(GL_TRIANGLE_FAN);
+                  glVertex3f(dim_x*b+-dim_x*korr,dim_y*L+-dim_y*korr,dim_z*a+-dim_z*korr);
+                  glVertex3f(dim_x*b+ dim_x*korr,dim_y*L+-dim_y*korr,dim_z*a+-dim_z*korr);
+                  glVertex3f(dim_x*b+ dim_x*korr,dim_y*L+-dim_y*korr,dim_z*a+ dim_z*korr);
+                  glVertex3f(dim_x*b+-dim_x*korr,dim_y*L+-dim_y*korr,dim_z*a+ dim_z*korr);
+                  glVertex3f(dim_x*b+-dim_x*korr,dim_y*L+ dim_y*korr,dim_z*a+ dim_z*korr);
+                  glVertex3f(dim_x*b+-dim_x*korr,dim_y*L+ dim_y*korr,dim_z*a+-dim_z*korr);
+                  glVertex3f(dim_x*b+ dim_x*korr,dim_y*L+ dim_y*korr,dim_z*a+-dim_z*korr);
+                  glVertex3f(dim_x*b+ dim_x*korr,dim_y*L+-dim_y*korr,dim_z*a+-dim_z*korr);
                 glEnd();
-                glBegin(GL_QUADS);
-                  glVertex3f( dim_x/2, y_versatz,-dim_z/2);
-                  glVertex3f(-dim_x/2, y_versatz,-dim_z/2);
-                  glVertex3f(-dim_x/2, y_versatz, dim_z/2);
-                  glVertex3f( dim_x/2, y_versatz, dim_z/2);
-                glEnd();
-                }
-                break;
-                case MENU_WUERFEL: icc_gl::glutSolidCube(groesse*0.995); break;
-                case MENU_KUGEL:   icc_gl::glutSolidSphere (groesse*.75, 12, 12); break;
-              }
             }
           }
         }
@@ -961,20 +930,6 @@ GL_Ansicht::netzeAuffrischen()
        /*B*/ for( k = 0; k < 3; ++k)
                index_p.second.i[k] += punkte_n;
        /*C*/
-             #if 0
-               // das wird der Mittelpunkt des umschließenden Quaders
-             abstand =
-                ( HYP3(netz.punkte[index_p.second.i[0]].koord[0]+Y,
-                       netz.punkte[index_p.second.i[0]].koord[1]+Z,
-                       netz.punkte[index_p.second.i[0]].koord[2]-X)
-                + HYP3(netz.punkte[index_p.second.i[1]].koord[0]+Y,
-                       netz.punkte[index_p.second.i[1]].koord[1]+Z,
-                       netz.punkte[index_p.second.i[1]].koord[2]-X)
-                + HYP3(netz.punkte[index_p.second.i[2]].koord[0]+Y,
-                       netz.punkte[index_p.second.i[2]].koord[1]+Z,
-                       netz.punkte[index_p.second.i[2]].koord[2]-X)
-                ) / 3.0;
-             #else
                // Mittelpunkt des Dreiecks
              double seitenhalbierende[3];
              seitenhalbierende[0] =
@@ -997,7 +952,6 @@ GL_Ansicht::netzeAuffrischen()
                                 + netz.punkte[index_p.second.i[2]].koord[2]-X)
                               / 3.0;
              abstand = HYP3( mittelpunkt[0], mittelpunkt[1], mittelpunkt[2] );
-             #endif  
              index_p.first = abstand;
                // der Behälter std::map übernimmt die Sortierung
        /*D*/ netz.indexe.insert(index_p);
@@ -1135,99 +1089,69 @@ GL_Ansicht::punkteAuffrischen()
       #endif
 
       //glColor3f(0.9, 0.9, 0.9);
-      for (unsigned j = 0; j < punkte_.size(); j+=3)
-      {
-        unsigned i = j;
-        glPushMatrix();
-          // zurecht setzen
-          glTranslatef( -b_darstellungs_breite/2,-.5,-a_darstellungs_breite/2 );
-          // Punktkoordinaten setzen
-          glTranslatef( punkte_[i+2]*b_darstellungs_breite,
-                        punkte_[i+0], punkte_[i+1]*a_darstellungs_breite );
-          if(zeig_punkte_als_messwert_paare &&
-             i%6 == 0)
+      glPushMatrix();
+        // zurecht setzen
+        glTranslatef( -b_darstellungs_breite/2,-.5,-a_darstellungs_breite/2 );
+
+        if(zeig_punkte_als_messwert_paare)
+          for (unsigned i = 0; i < punkte_.size(); i+=6)
           {
             glLineWidth(strich2*strichmult);
             glColor4f(.97, .97, .97, 1. );
             glBegin(GL_LINES);
-              glVertex3f(0, 0, 0);
+              glVertex3f(punkte_[i+2], punkte_[i+0], punkte_[i+1]);
               glColor4f(1., .6, .6, 1.0 );
-              glVertex3f((punkte_[i+5]*b_darstellungs_breite)
-                          -(punkte_[i+2]*b_darstellungs_breite),
-                         punkte_[i+3]-punkte_[i+0],
-                         (punkte_[i+4]*a_darstellungs_breite)
-                          -(punkte_[i+1]*a_darstellungs_breite) );
+              glVertex3f(punkte_[i+5], punkte_[i+3], punkte_[i+4] );
             glEnd();
-            #if 0
-            glColor4f(0.1, 0.1, 0.1, 1.0 );
-            glBegin(GL_POINTS);
-              glVertex3f((punkte_[i+5]*b_darstellungs_breite)
-                          -(punkte_[i+2]*b_darstellungs_breite),
-                         punkte_[i+3]-punkte_[i+0],
-                         (punkte_[i+4]*a_darstellungs_breite)
-                          -(punkte_[i+1]*a_darstellungs_breite) );
-            glEnd();
-            #endif
           }
 
-          if (farben_.size())
-          {
-            if ( farben_[i/3*4+3] < 1.0 )
-            {
-              //glEnable (GL_BLEND);
-              //glBlendFunc (GL_SRC_COLOR, GL_DST_ALPHA);
-            }
-            glColor4f(farben_[i/3*4+0], farben_[i/3*4+1], farben_[i/3*4+2],
-                      farben_[i/3*4+3] );
-          }
-
-          switch (punktform)
-          {
+        GLUquadricObj *quad;
+        quad = gluNewQuadric();
+        //gluQuadricTexture( quad, GL_TRUE );
+        double rad = .02;
+        int dim = 12;
+        int kugeln_zeichnen = false;
+        switch (punktform)
+        {
           case MENU_dE1STERN:
-               #ifdef Lab_STERN
-               {
-               double groesse = 0.01;
-               glBegin(GL_QUADS);
-                 glVertex3d(  groesse/2, 0, -groesse/2 );
-                 glVertex3d( -groesse/2, 0, -groesse/2 );
-                 glVertex3d( -groesse/2, 0,  groesse/2 );
-                 glVertex3d(  groesse/2, 0,  groesse/2 );
-               glEnd();
-               glBegin(GL_QUADS);
-                 glVertex3d(  groesse/2, -groesse/2, 0 );
-                 glVertex3d( -groesse/2, -groesse/2, 0 );
-                 glVertex3d( -groesse/2,  groesse/2, 0 );
-                 glVertex3d(  groesse/2,  groesse/2, 0 );
-               glEnd();
-               glBegin(GL_QUADS);
-                 glVertex3d( 0,  groesse/2, -groesse/2 );
-                 glVertex3d( 0, -groesse/2, -groesse/2 );
-                 glVertex3d( 0, -groesse/2,  groesse/2 );
-                 glVertex3d( 0,  groesse/2,  groesse/2 );
-               glEnd();
-               }
-               #else
-               glPointSize(punktgroesse);
-               glBegin(GL_POINTS);
-                 glVertex2d( 0,0 );
-               glEnd();
-               glColor4f( schatten, schatten, schatten, 1. );
-               glPointSize(3);
-               glTranslatef( 0, -punkte_[i+0], 0 );
-               glBegin(GL_POINTS);
-                 glVertex2d( 0,0 );
-               glEnd();
-               #endif
+             glPointSize(punktgroesse);
+             glColor4f(.97, .97, .97, 1. );
+             glBegin(GL_POINTS);
+             for (unsigned i = 0; i < punkte_.size(); i+=3)
+             {
+               if (farben_.size())
+                 glColor4f(farben_[i/3*4+0], farben_[i/3*4+1], farben_[i/3*4+2],
+                           farben_[i/3*4+3] );
+
+               glVertex3d( punkte_[i+2], punkte_[i+0], punkte_[i+1] );
+             }
+             glEnd();
+             // Schatten
+             glColor4f( schatten, schatten, schatten, 1. );
+             glPointSize(3);
+             glBegin(GL_POINTS);
+               for (unsigned i = 0; i < punkte_.size(); i+=3)
+                 glVertex3d( punkte_[i+2], 0, punkte_[i+1] );
+             glEnd();
             break;
-          case MENU_dE1KUGEL: icc_gl::glutSolidSphere (0.005, 5, 5); break;
-          case MENU_dE2KUGEL: icc_gl::glutSolidSphere (0.01, 8, 8); break;
-          case MENU_dE4KUGEL: icc_gl::glutSolidSphere (0.02, 12, 12);
+          case MENU_dE1KUGEL: rad = 0.005;dim = 5; kugeln_zeichnen = true;break;
+          case MENU_dE2KUGEL: rad = 0.01; dim = 8; kugeln_zeichnen = true;break;
+          case MENU_dE4KUGEL: rad = 0.02; dim =12; kugeln_zeichnen = true;break;
                break;
-          case MENU_DIFFERENZ_LINIE:
+          case MENU_DIFFERENZ_LINIE: // die werden sowieso gezeichnet
                break;
-          }
-        glPopMatrix();
-      }
+        }
+        if(kugeln_zeichnen) 
+               for (unsigned i = 0; i < punkte_.size(); i+=3) {
+                 glPushMatrix();
+                   if (farben_.size())
+                     glColor4f(farben_[i/3*4+0], farben_[i/3*4+1],
+                               farben_[i/3*4+2], farben_[i/3*4+3] );
+                   glTranslated( punkte_[i+2], punkte_[i+0], punkte_[i+1] );
+                   gluSphere( quad, rad, dim, dim );
+                 glPopMatrix();
+               }
+      glPopMatrix();
       #ifndef Beleuchtung
       glEnable(GL_LIGHTING);
       #endif
@@ -1337,13 +1261,14 @@ GL_Ansicht::zeigeUmrisse_()
           netzeAuffrischen();
         DBG_PROG_V( n )
         glLineWidth(strich2*strichmult);
+        GLfloat fv[3] = {dreiecks_netze[i].schattierung,
+                         dreiecks_netze[i].schattierung,
+                         dreiecks_netze[i].schattierung};
+        glColor4fv(fv);
         glBegin(GL_LINE_STRIP);
         for (int z=0 ; z < n; z++)
         {
-          if(dreiecks_netze[i].grau) {
-            FARBE(dreiecks_netze[i].schattierung,
-                  dreiecks_netze[i].schattierung,dreiecks_netze[i].schattierung)
-          } else {
+          if(!dreiecks_netze[i].grau) {
             FARBE(dreiecks_netze[i].umriss[z].farbe[0],
                   dreiecks_netze[i].umriss[z].farbe[1],
                   dreiecks_netze[i].umriss[z].farbe[2])
@@ -1698,24 +1623,24 @@ GL_Ansicht::zeichnen()
        }
 
        // Geschwindigkeit
-       bool schluss = false;
+       bool maus_steht = false;
        if(1) // agv_.agvMoving)
        {
            static char t[128];
            static time_t zeit_alt;
            time_t z, teiler;
-           #ifdef LINUX
+           #if 1 //#if LINUX || APPLE
            struct timeval tv;
            teiler = 1000;
            gettimeofday( &tv, NULL );
            z = tv.tv_usec/1000 + tv.tv_sec*1000;
-           #else
+           #else // WINDOWS
            teiler = CLOCKS_PER_SEC;
            z = clock();
            #endif
            time_t dz = z-zeit_alt;
            static double zeit_sum = 0.0;
-           static int n = 0;
+           static int n = 90;
            bool strich_neu = false;
            double fps,
                   zeit = dz / (double)teiler;
@@ -1781,7 +1706,7 @@ GL_Ansicht::zeichnen()
 
            static int maus_x_alt, maus_y_alt;
            if(maus_x_alt != maus_x || maus_y_alt != maus_y)
-             schluss = true;
+             maus_steht = true;
            maus_x_alt = maus_x;
            maus_y_alt = maus_y;
        }
@@ -1789,10 +1714,8 @@ GL_Ansicht::zeichnen()
        glEnable(GL_TEXTURE_2D);
        glEnable(GL_LIGHTING);
       glPopMatrix();
-      if(!agv_.agvMoving && schluss) {
+      if(!agv_.agvMoving && maus_steht) {
         redraw();
-        DBG_ICCGL_ENDE
-        return;
       }
     }
 
@@ -1966,8 +1889,8 @@ GL_Ansicht::achsNamen    (std::vector<std::string> achs_namen)
 }
 
 void
-GL_Ansicht::hineinPunkte       (std::vector<double>      vect,
-                                std::vector<std::string> achs_namen)
+GL_Ansicht::hineinPunkte       (std::vector<double>      &vect,
+                                std::vector<std::string> &achs_namen)
 { DBG_PROG_START
 
   DBG_PROG_V( vect.size() )
@@ -1977,7 +1900,13 @@ GL_Ansicht::hineinPunkte       (std::vector<double>      vect,
 
   achsNamen(achs_namen);
 
-  punkte_ = vect;
+  punkte_.resize( vect.size() );
+  for (unsigned int i = 0; i < punkte_.size()/3; ++i)
+  {
+    punkte_[i*3+0] = vect[i*3+0];
+    punkte_[i*3+1] = vect[i*3+1]*a_darstellungs_breite;
+    punkte_[i*3+2] = vect[i*3+2]*b_darstellungs_breite;
+  }
   
   DBG_PROG_V( zeig_punkte_als_messwert_paare<<"|"<<punktform<<"|"<<punkte_.size() )
 
@@ -1996,9 +1925,9 @@ GL_Ansicht::hineinPunkte       (std::vector<double>      vect,
 }
 
 void
-GL_Ansicht::hineinPunkte      (std::vector<double>      vect,
-                               std::vector<float>       punkt_farben,
-                               std::vector<std::string> achsNamen)
+GL_Ansicht::hineinPunkte      (std::vector<double>      &vect,
+                               std::vector<float>       &punkt_farben,
+                               std::vector<std::string> &achsNamen)
 { DBG_PROG_START
   //Kurve aus tag_browser anzeigen
   farben_.clear();
@@ -2011,10 +1940,10 @@ GL_Ansicht::hineinPunkte      (std::vector<double>      vect,
 }
 
 void
-GL_Ansicht::hineinPunkte      (std::vector<double> vect,
-                               std::vector<float> punkt_farben,
-                               std::vector<std::string> farb_namen,
-                               std::vector<std::string> achs_namen)
+GL_Ansicht::hineinPunkte      (std::vector<double> &vect,
+                               std::vector<float>  &punkt_farben,
+                               std::vector<std::string> &farb_namen,
+                               std::vector<std::string> &achs_namen)
 { DBG_PROG_START
   //Kurve aus tag_browser anzeigen
   DBG_NUM_V( farb_namen.size() <<"|"<< punkt_farben.size() )
@@ -2086,14 +2015,8 @@ GL_Ansicht::menueAufruf ( int value )
       break;
     case MENU_QUIT:
       break;
-    case MENU_KUGEL:
-      punktform = MENU_KUGEL;
-      break;
     case MENU_WUERFEL:
       punktform = MENU_WUERFEL;
-      break;
-    case MENU_STERN:
-      punktform = MENU_STERN;
       break;
     case MENU_GRAU:
       punktfarbe = MENU_GRAU;

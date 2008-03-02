@@ -27,4 +27,12 @@
 
 // Date:      Mai 2005
 
+#include "icc_gl.h"
+#include "freeglut_internal.h"
+
+// Materialfarben setzen
+#define FARBE(r,g,b) {farbe [0] = (r); farbe [1] = (g); farbe [2] = (b); \
+                      glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, farbe); \
+                      glColor4f(farbe[0],farbe[1],farbe[2],1.0); }
+
 

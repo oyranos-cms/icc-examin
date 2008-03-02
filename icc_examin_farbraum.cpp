@@ -158,12 +158,11 @@ ICCexamin::farbenLese (int n,
     DBG_PROG
     p = profile[n]->getTagNumbers (profile[n]->getTagByName("ncl2"),
                                          ICCtag::MATRIX);
-    DBG_NUM_V( p[0] )
+    DBG_NUM_V( p[0] <<" "<< p.size() )
     f.resize( (int)p[0] * 4);
     DBG_NUM_V( f.size() )
     for(unsigned i = 0; i < f.size(); ++i)
       f[i] = 1.0;
-    p.erase( p.begin() );
     icc_betrachter->DD_farbraum->zeig_punkte_als_messwert_paare = false;
     icc_betrachter->DD_farbraum->zeig_punkte_als_messwerte = false;
   }

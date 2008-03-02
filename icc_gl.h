@@ -114,15 +114,15 @@ public:
   int  handle(int event);
 
   // Daten Laden
-  void hineinPunkte (std::vector<double> vect,
-                     std::vector<std::string> achsNamen);
-  void hineinPunkte (std::vector<double> vect, 
-                     std::vector<float> farben_,
-                     std::vector<std::string> achsNamen);
-  void hineinPunkte (std::vector<double> punktKoordinaten, // XYZ
-                     std::vector<float>  punktFarben,      // RGBA
-                     std::vector<std::string> farb_namen_, // pro Punkt
-                     std::vector<std::string> achsNamen);  // 3*
+  void hineinPunkte (std::vector<double> &vect,
+                     std::vector<std::string> &achsNamen);
+  void hineinPunkte (std::vector<double> &vect, 
+                     std::vector<float>  &farben_,
+                     std::vector<std::string> &achsNamen);
+  void hineinPunkte (std::vector<double> &punktKoordinaten, // XYZ
+                     std::vector<float>  &punktFarben,      // RGBA
+                     std::vector<std::string> &farb_namen_, // pro Punkt
+                     std::vector<std::string> &achsNamen);  // 3*
   void punkte_clear () { punkte_.clear(); farben_.clear(); }
   void hineinNetze  (const std::vector<ICCnetz> & dreiecks_netze);
   std::vector<ICCnetz> dreiecks_netze;
