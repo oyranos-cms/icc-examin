@@ -86,7 +86,7 @@ static void cb_menueintrag_inspekt(Fl_Menu_* o, void*) {
 Fl_Menu_Item menu_[] = {
  {"Daten", 0,  0, 0, 64, 0, 0, 14, 56},
  {"\326""ffnen", 0x4006f,  (Fl_Callback*)cb_ffnen, 0, 0, 0, 0, 14, 56},
- {"Bericht Speichern", 0,  (Fl_Callback*)cb_menueintrag_html_speichern, 0, 128, 0, 0, 14, 56},
+ {"Bericht Speichern", 0,  (Fl_Callback*)cb_menueintrag_html_speichern, 0, 129, 0, 0, 14, 56},
  {"Beenden", 0x40071,  (Fl_Callback*)cb_Beenden, 0, 0, 0, 0, 14, 56},
  {0},
  {"Ansicht", 0,  0, 0, 64, 0, 0, 14, 56},

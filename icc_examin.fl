@@ -78,7 +78,7 @@ Function {} {open C return_type int
   inspekt_topline = 0;} {}
   Fl_Window details {
     label {ICC Details} open
-    xywh {845 206 385 520} type Double box NO_BOX color 53
+    xywh {899 288 385 520} type Double box NO_BOX color 53
     code1 {DBG_PROG
     if (argc>1) {
 
@@ -122,7 +122,7 @@ Function {} {open C return_type int
   std::ofstream f ( filename.c_str(),  std::ios::out );
   f.write ( bericht.c_str(), bericht.size() );
   f.close();}
-            xywh {0 0 100 20} divider
+            xywh {0 0 100 20} deactivate divider
           }
           menuitem {} {
             label Beenden
@@ -226,7 +226,7 @@ matrix.saveProfileToFile("/tmp/icc_examin_test.icc");}
               code0 {o->show();}
               class TagTexts
             }
-            Fl_Box mft_gl {
+            Fl_Box mft_gl {selected
               xywh {0 185 385 310} align 18
               code0 {o->first = true;}
               code1 {o->hide();}
@@ -749,12 +749,11 @@ Function {zeig_mich(void* widget)} {open
     ((Fl_Widget*)widget)->show(); DBG_PROG
   } else {
     DBG_PROG_S( "GL Fenster belassen." )
-  }} {selected
-  }
+  }} {}
   code DBG_PROG_ENDE {}
 } 
 
-Function {zeilenNachVector(std::string text)} {return_type {std::vector<std::string>}
+Function {zeilenNachVector(std::string text)} {open return_type {std::vector<std::string>}
 } {
   code DBG_PROG_START {}
   code {// fügt Zeilen aus einen Text in einen Vector
