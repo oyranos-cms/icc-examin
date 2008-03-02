@@ -165,6 +165,8 @@ ICCexamin::oeffnen (std::vector<std::string> dateinamen)
   if (weiter) { DBG_PROG
     icc_betrachter->tag_browser->reopen ();
     icc_betrachter->measurement( profile.profil()->hasMeasurement() );
+    if(profile.profil()->hasTagName("ncl2"))
+      icc_betrachter->DD_histogram->zeigen();
   }
 
   profile.oeffnen(icc_oyranos.moni(),-1);
@@ -638,9 +640,9 @@ ICCexamin::histogram (int n)
 
     icc_betrachter->DD_histogram->dreiecks_netze[n] = netz[n];
     icc_betrachter->DD_histogram->achsNamen( texte );
+    icc_betrachter->DD_histogram->draw();
   }
 
-  icc_betrachter->DD_histogram->draw();
 
   frei_ = true;
   DBG_PROG_ENDE
@@ -655,9 +657,10 @@ ICCexamin::histogram ()
   for(int i = 0; i < profile.size(); ++i)
     histogram(i);
 
-  icc_betrachter->DD_histogram ->
-    dreiecks_netze [icc_betrachter->DD_histogram->dreiecks_netze.size()-1]
-      . transparenz = 0.7;
+  if(icc_betrachter->DD_histogram -> dreiecks_netze.size())
+    icc_betrachter->DD_histogram ->
+      dreiecks_netze [icc_betrachter->DD_histogram->dreiecks_netze.size()-1]
+        . transparenz = 0.7;
 
   DBG_PROG_V( profile.size() )
 

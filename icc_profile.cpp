@@ -215,7 +215,7 @@ ICCprofile::fload ()
     icTag ic_tag;
     ICCtag tag;
 
-    ic_tag.size = icValue ((icUInt32Number)groesse); DBG_V( groesse )
+    ic_tag.size = icValue ((icUInt32Number)groesse); DBG_MEM_V( groesse )
     ic_tag.offset = 0;
 
     if( _filename.size() &&
@@ -329,7 +329,7 @@ ICCprofile::load (const Speicher & prof)
     icTag ic_tag;
     ICCtag tag;
 
-    ic_tag.size = icValue ((icUInt32Number)groesse); DBG_V( groesse )
+    ic_tag.size = icValue ((icUInt32Number)groesse); DBG_MEM_V( groesse )
     ic_tag.offset = 0;
 
     if( _filename.size() &&
@@ -765,7 +765,7 @@ ICCprofile::saveProfileToFile  (char* filename)
   data_ = (char*)calloc (sizeof (char) , size_); //new char (sizeof(icHeader) );
   writeTagTable ();
   writeTags ();
-  header.size(size_); DBG_V (size_ )
+  header.size(size_); DBG_MEM_V (size_ )
   writeHeader ();
 
   std::ofstream f ( filename,  std::ios::out );
@@ -778,11 +778,11 @@ int
 ICCprofile::getProfileSize  ()
 { DBG_PROG_START
   if (data_ && size_) free(data_);//delete []data_;
-  size_ = sizeof (icHeader) + sizeof (icUInt32Number); DBG_V(size_ <<" "<<sizeof (icProfile))
+  size_ = sizeof (icHeader) + sizeof (icUInt32Number); DBG_MEM_V(size_ <<" "<<sizeof (icProfile))
   data_ = (char*)calloc (sizeof (char) , size_); //new char (sizeof(icHeader) );
   writeTagTable ();
   writeTags ();
-  header.size(size_); DBG_V (size_ )
+  header.size(size_); DBG_PROG_V (size_ )
   writeHeader ();
 
   DBG_MEM_V( size_ )
@@ -794,11 +794,11 @@ char*
 ICCprofile::saveProfileToMem  (int *size)
 { DBG_PROG_START
   if (data_ && size_) free(data_);//delete []data_;
-  size_ = sizeof (icHeader) + sizeof (icUInt32Number); DBG_V(size_ <<" "<<sizeof (icProfile))
+  size_ = sizeof (icHeader) + sizeof (icUInt32Number); DBG_PROG_V(size_ <<" "<<sizeof (icProfile))
   data_ = (char*)calloc (sizeof (char) , size_); //new char (sizeof(icHeader) );
   writeTagTable ();
   writeTags ();
-  header.size(size_); DBG_V (size_ )
+  header.size(size_); DBG_PROG_V (size_ )
   writeHeader ();
 
   char *block = (char*)calloc (sizeof (char) , size_);
