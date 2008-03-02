@@ -1356,8 +1356,8 @@ ICCmeasurement::getText                     (void)
       s << Lab_Satz_[i].a * (range_Lab[3]-range_Lab[2]) + range_Lab[2]; tabelle[z+i][sp++] = s.str().c_str(); s.str("");
       s << Lab_Satz_[i].b * (range_Lab[5]-range_Lab[4]) + range_Lab[4]; tabelle[z+i][sp++] = s.str().c_str(); s.str("");
       s << Lab_Ergebnis_[i].L * (range_Lab[1]-range_Lab[0]) + range_Lab[0]; tabelle[z+i][sp++] = s.str().c_str(); s.str("");
-      s << Lab_Ergebnis_[i].a * (range_Lab[3]-range_Lab[2]) + range_Lab[0]; tabelle[z+i][sp++] = s.str().c_str(); s.str("");
-      s << Lab_Ergebnis_[i].b * (range_Lab[5]-range_Lab[4]) + range_Lab[0]; tabelle[z+i][sp++] = s.str().c_str(); s.str("");
+      s << Lab_Ergebnis_[i].a * (range_Lab[3]-range_Lab[2]) + range_Lab[2]; tabelle[z+i][sp++] = s.str().c_str(); s.str("");
+      s << Lab_Ergebnis_[i].b * (range_Lab[5]-range_Lab[4]) + range_Lab[4]; tabelle[z+i][sp++] = s.str().c_str(); s.str("");
       s << XYZ_Satz_[i].X * (range_XYZ[5]-range_XYZ[4]) + range_XYZ[0]; tabelle[z+i][sp++] = s.str().c_str(); s.str("");
       s << XYZ_Satz_[i].Y * (range_XYZ[3]-range_XYZ[2]) + range_XYZ[2]; tabelle[z+i][sp++] = s.str().c_str(); s.str("");
       s << XYZ_Satz_[i].Z * (range_XYZ[5]-range_XYZ[4]) + range_XYZ[4]; tabelle[z+i][sp++] = s.str().c_str(); s.str("");
