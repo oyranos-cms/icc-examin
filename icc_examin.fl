@@ -1,0 +1,299 @@
+# data file for the Fltk User Interface Designer (fluid)
+version 1.0104 
+header_name {.h} 
+code_name {.cxx}
+decl {\#include <stdio.h>} {public
+} 
+
+decl {\#include <iostream>} {public
+} 
+
+decl {\#include <sstream>} {public
+} 
+
+decl {\#include <FL/Fl.H>} {public
+} 
+
+decl {\#include <FL/Fl_Window.H>} {public
+} 
+
+decl {\#include <FL/Fl_Menu_Bar.H>} {public
+} 
+
+decl {\#include <FL/Fl_Box.H>} {public
+} 
+
+decl {\#include <FL/Fl_File_Chooser.H> 
+\#include <FL/Fl_Hold_Browser.H> 
+\#include <FL/Fl_File_Icon.H> 
+\#include <FL/Fl_Shared_Image.H> 
+\#include <FL/Fl_PNM_Image.H>} {public
+} 
+
+decl {char *statlabel;
+ char *filename_alt;
+ bool setTitleUrl = true;
+ using namespace std;
+ int px,py,pw,ph;} {} 
+
+decl {\#include <openvrml/browser.h>} {public
+} 
+
+decl {\#include <openvrml/gl/viewer.h>} {public
+} 
+
+decl {\#include "vFLGLWidget.h"} {public
+} 
+
+decl {\#include "ViewerFLTK.h"} {public
+} 
+
+decl {openvrml::browser *browser = 0;} {} 
+
+decl {ViewerFLTK  *viewer = 0;} {} 
+
+decl {\#define DBG //cout << __FILE__<<":"<<__LINE__ <<" "<< __func__ << "()" << endl;} {} 
+
+Function {} {open C return_type int
+} {
+  code {filename_alt = (char*)calloc (sizeof (char), 1024);
+  statlabel = (char*)calloc (sizeof (char), 1024);} {}
+  Fl_Window details {
+    label {ICC Details} open
+    xywh {329 519 385 410} type Double box NO_BOX color 53 resizable
+    code0 {browser = new openvrml::browser(cout, cerr);}
+    code1 {DBG
+    if (argc>1) {
+      std::vector<std::string> url;
+      std::vector<std::string> param;
+
+      if (browser && argc>1) {
+        url.push_back (argv[1]);
+        browser->load_url(url, param);
+        sprintf (statlabel, "%s geladen", argv[1]);
+        stat->label(statlabel);
+        sprintf(filename_alt, argv[1]);
+      } else {
+        stat->label("Error loading file!");
+      }
+    } // if}
+    code2 {DBG
+    browser->add_world_changed_callback( worldChangedCB );
+    worldChangedCB( openvrml::browser::replace_world_id );}
+    code3 {DBG
+    viewer = new ViewerFLTK( *browser, canvas );
+    canvas->setViewerPtr( viewer );} visible
+  } {
+    Fl_Group {} {open
+      xywh {0 0 385 410} resizable
+    } {
+      Fl_Menu_Bar Fl_lookat_MenuBar {
+        xywh {0 0 385 25} color 53 align 20 when 3
+      } {
+        submenu {} {
+          label Daten open
+          xywh {15 15 100 20}
+        } {
+          menuitem {} {
+            label Offnen
+            callback {open()}
+            xywh {15 15 100 20} shortcut 0x4006f
+          }
+          menuitem {} {
+            label Beenden
+            callback {quit()}
+            xywh {15 15 100 20} shortcut 0x40071
+          }
+        }
+        submenu {} {
+          label Ansicht open
+          xywh {15 15 100 20}
+        } {
+          menuitem Voll {
+            label {Ganzer Bildschirm}
+            callback {Fl_Window *w = (Fl_Window *)details;
+
+    px = w->x();
+    py = w->y();
+    pw = w->w();
+    ph = w->h();
+
+    w->fullscreen();}
+            xywh {15 15 100 20}
+          }
+          menuitem normal_ansicht {
+            label {normales Fenster}
+            callback {Fl_Window *w = (Fl_Window *)details;
+
+    w->fullscreen_off(px,py,pw,ph);}
+            xywh {25 25 100 20}
+          }
+        }
+      }
+      Fl_Group {} {open
+        xywh {0 385 385 25}
+      } {
+        Fl_Box stat {
+          label {No wrl file loaded.}
+          xywh {0 385 385 25} box THIN_DOWN_BOX color 53 align 20
+        }
+        Fl_Progress load_progress {
+          label {Laden ..}
+          xywh {0 385 385 25} color 53
+          code0 {o->hide();}
+          code1 {o->maximum(1.0);}
+          code2 {o->minimum(0.0);}
+        }
+      }
+      Fl_Tile {} {open
+        xywh {0 25 385 360} resizable
+      } {
+        Fl_Browser tag_browser {
+          label {Bitte wählen Sie ein Profilmerkmal aus} selected
+          xywh {0 25 385 135} color 53 align 17
+          code0 {int lines = tag_browser->size();}
+          class Fl_Hold_Browser
+        }
+        Fl_Group {} {open
+          xywh {0 160 385 225}
+        } {
+          Fl_Box tag_viewer {
+            xywh {0 160 385 225}
+          }
+          Fl_Text_Display tag_texts {
+            label Texts
+            xywh {0 160 385 225} align 16
+          }
+          Fl_Box canvas {
+            label OpenVRML
+            xywh {0 160 385 225} align 16 hide
+            class vFLGLWidget
+          }
+        }
+      }
+    }
+  }
+  code {w->show();
+  canvas->show();
+  viewer->Hok=1;
+  viewer->Hdraw=1;
+  viewer->timerUpdate();
+  viewer->handleRedraw();
+  Fl::add_timeout(0.01, (void (*)(void *))timeIT, (void *)viewer);
+
+  Fl::scheme(NULL);
+  Fl_File_Icon::load_system_icons();} {}
+} 
+
+Function {open(void)} {return_type {const char*}
+} {
+  code {\#include "icc_vrml.h"
+
+  char *filename;
+  //Fl_File_Icon	*icon;	// New file icon
+  DBG
+  load_progress->show ();    load_progress->value (0.0);
+  char vrmlDatei[] = "/tmp/tmp_vrml.wrl";
+
+  filename=fl_file_chooser("Wähle ICC Profil?", "ICC Farbprofile (*.[I,i][C,c][M,m,C,c])", filename_alt);
+  DBG printf (filename_alt); printf ("\\n");
+
+  // Register the ICC type ...
+  //Fl_Shared_Image::add_handler(icc_check);
+  //Fl_Shared_Image::add_handler(ps_check);
+
+  std::vector<std::string> url;
+  std::vector<std::string> param;
+
+  if (browser && filename) { DBG
+
+    create_vrml ( filename, "/usr/share/color/icc/sRGB.icm", &vrmlDatei[0]);
+
+    load_progress->value (0.8);
+    sprintf (filename_alt, "%s", filename);
+    url.push_back (&vrmlDatei[0]);
+    browser->load_url(url, param);
+    sprintf (statlabel, "%s geladen", filename);
+    cout << statlabel << endl;
+    stat->label(statlabel);
+    DBG
+  } else {
+    stat->label("Error loading file!");
+  } DBG
+
+  stat->hide();
+  stat->show();
+  load_progress->value (1.0);
+  viewer->timerUpdate();
+  viewer->handleRedraw();
+  load_progress->value (0.0);
+  load_progress->hide();
+  DBG
+
+  tag_browser->load ( icc_read_info(filename) );
+
+  return filename;} {}
+} 
+
+Function {quit(void)} {} {
+  code {Fl::remove_timeout((void (*)(void *))timeIT, (void *)viewer);
+  delete viewer;
+  delete browser;
+  delete canvas;
+  details->hide();
+  exit(0);} {}
+} 
+
+Function {worldChangedCB( const openvrml::browser::cb_reason reason )} {} {
+  code {switch (reason)
+    {
+        case openvrml::browser::destroy_world_id:
+            delete browser;
+            delete viewer;
+            Fl::remove_timeout((void (*)(void *))timeIT, (void *)viewer);
+            exit(0);
+            break;
+        case openvrml::browser::replace_world_id: DBG
+            if (setTitleUrl) { DBG
+                stat->label(statlabel);//browser->world_url().c_str());
+            }
+            //buildViewpointMenu();
+            break;
+            DBG
+    }} {}
+} 
+
+Function {timeIT()} {} {
+  code {if (canvas->LeftViewer == 0) {
+    viewer->timerUpdate();
+    viewer->handleRedraw();
+  }
+  Fl::add_timeout(0.01, (void (*)(void *))timeIT, (void *)viewer);} {}
+} 
+
+Function {icc_read_info(char* filename)} {open return_type {char*}
+} {
+  code {char systemBefehl[1024];
+  char *textfile = "/tmp/icc_temp.txt";
+
+
+  sprintf (systemBefehl, "iccdump \\"%s\\" > %s",
+                                    filename, textfile);
+  system (systemBefehl);
+
+  return textfile;} {}
+} 
+
+class IccProfile {open
+} {
+  decl {char *data;} {public
+  }
+  decl {char *filename;} {public
+  }
+  decl {int size;} {public
+  }
+  Function {getChar(int type)} {open
+  } {}
+  Function {read_header()} {open private return_type {char*}
+  } {}
+} 

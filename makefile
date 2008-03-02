@@ -37,14 +37,13 @@ CPPFILES = \
 CXXFILES = \
 	icc_examin.cxx
 SOURCES = $(CPPFILES) $(CXXFILES) $(CPP_HEADERS)
-OBJECTS = $(CPPFILES:.cxx=.o) $(CXXFILES:.cxx=.o)
+OBJECTS = $(CPPFILES:.cpp=.o) $(CXXFILES:.cxx=.o)
 TARGET  = icc_examin
 
 topdir  = ..
 dir     = $(TARGET)
 timedir = $(topdir)/$(TARGET)
 mtime   = `find $(timedir) -prune -printf %Ty%Tm%Td.%TT | sed s/://g`
-DISTRIBUTE = $(CPPFILES)
 
 .SILENT:
 
@@ -109,5 +108,6 @@ tgz:
 	tar cf - -C $(topdir) \
 	$(addprefix $(dir)/,$(SOURCES)) \
 	$(dir)/makefile \
+	$(dir)/$(TARGET).fl \
 	| gzip > $(TARGET)_$(mtime).tgz
 
