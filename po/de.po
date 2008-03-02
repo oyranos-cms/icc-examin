@@ -2187,9 +2187,8 @@ msgid "Paths:"
 msgstr "Pfade:"
 
 #: icc_examin_version.h:9
-#, fuzzy
 msgid "May 2004 - September 2006"
-msgstr "Mai 2004 - Juni 2006"
+msgstr "Mai 2004 - September 2006"
 
 #: icc_gl.h:213
 msgid "Gibts nicht"

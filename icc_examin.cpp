@@ -305,7 +305,7 @@ ICCexamin::nachricht( Modell* modell , int info )
       DBG_PROG_V( (int*)(*k)[info] )
       if ((*k)[info])
       if((*k)[info]->changing()) {
-        DBG_PROG_S( "verändert sich gerade: " << info )
+        DBG_PROG_S( "veraendert sich gerade: " << info )
         //icc_examin_ns::sleep( 0.1 );
       }
       DBG_PROG_S( "lade: " << info )
