@@ -223,9 +223,9 @@ extern int icc_debug;
 #define DBG_THREAD_S(txt) ;
 #define DBG_THREAD_V(txt) ;
 #endif
-#define WARN { dbgWrite (_("!!! Warnung !!!")); DBG_ }
-#define WARN_S(txt) { dbgWrite (_("!!! Warnung !!!")); DBG_S_(txt) }
-#define WARN_V(txt) { dbgWrite (_("!!! Warnung !!!")); DBG_V_(txt) }
+#define WARN { dbgWrite (_("!!! Warning !!!")); DBG_ }
+#define WARN_S(txt) { dbgWrite (_("!!! Warning !!!")); DBG_S_(txt) }
+#define WARN_V(txt) { dbgWrite (_("!!! Warning !!!")); DBG_V_(txt) }
 
 namespace icc_examin_ns {
   // Zeit / Uhr

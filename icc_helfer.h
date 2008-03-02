@@ -21,7 +21,7 @@
  *
  * -----------------------------------------------------------------------------
  *
- * ICC Helfer
+ * ICC helpers
  * 
  */
 
@@ -36,7 +36,7 @@
 #include <string>
 #include <vector>
 
-// File macros / teilweise aus config.h
+// file macros / partitialy from config.h
 #ifdef __WIN32__
 #define PATH_SHELLSTRING ""
 #else
@@ -53,13 +53,13 @@ void        setzeIcon      ( Fl_Window    *fenster,
 void        fl_delayed_redraw ( void *Fl_Widget);
 #endif
 
-// interne Funktionen
+// internal funktions
 
 const char* cp_nchar (char* text, int n);
 
 
-// Helferfunktionen
-// ICC Helfer definiert in icc_helfer.cpp
+// helper functions
+// ICC helpers defined in icc_helfer.cpp
 icUInt16Number          icValue   (icUInt16Number val);
 icUInt32Number          icValue   (icUInt32Number val);
 unsigned long           icValue   (icUInt64Number val);
@@ -100,7 +100,7 @@ std::string         getMeasurementFlare( icMeasurementFlare flare );
 std::string         printDatum( icDateTimeNumber date );
 
 namespace icc_examin_ns {
-  // Fl_Thread's sperren / freigeben
+  // Fl_Thread's lock / release
   void lock(const char *file, int line);
   void unlock(void *widget, const char *file, int line);
   double zeitSekunden();
@@ -120,10 +120,10 @@ namespace icc_examin_ns {
   icc_examin_ns::unlock( widget, __FILE__,__LINE__); 
 
 
-// Datendarstellung
+// displaying
 std::string         zeig_bits_bin      (const void* speicher, int groesse);
 
-// Datei E/A
+// file I/O
 char*     ladeDatei                  ( std::string dateiname,
                                        size_t     *size );
 void      saveMemToFile              ( const char *filename,
@@ -137,16 +137,16 @@ void      speicherNachDatei          ( std::string & dateiname,
                                        Speicher & s );
 
 double    holeDateiModifikationsZeit ( const char *fullFileName );
-// Dateihelfer
+// file helpers
 const char* dateiName(const char* name);
 const char* dateiName(std::string name);
 
 
-// Allgemein
+// common
 char* getExecPath               ( const char *filename );
 void  setI18N                   ( const char *exename );
 
-// Texthelfer
+// text helper
 namespace icc_parser {
   extern const char *alnum;
   extern const char *alpha;
@@ -178,7 +178,7 @@ namespace icc_parser {
                                                  const char *trennzeichen );
 }
 
-// Callback Struktur
+// Callback structure
 typedef struct StructVoidInt
 {
   void* data;

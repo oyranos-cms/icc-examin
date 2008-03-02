@@ -163,6 +163,7 @@ int
 create_vrml              ( const char *profilA, char *profilB, char *vrml)
 {
   char system_befehl[1024];
+  int r;
 
   if (!vrml || (!profilA && !profilB))
   return (0);
@@ -174,13 +175,13 @@ create_vrml              ( const char *profilA, char *profilB, char *vrml)
   if (profilA) {
   if (!erase_file ("/tmp/tmpA.icc")) remove ("/tmp/tmpA.icc");
   sprintf (system_befehl, "ln -s \"%s\" /tmp/tmpA.icc", profilA);
-  system (system_befehl);
-  system ("iccgamut -n -w -d 6.0 /tmp/tmpA.icc");
+  r = system (system_befehl);
+  r = system ("iccgamut -n -w -d 6.0 /tmp/tmpA.icc");
   erase_file ("/tmp/tmpA.wrl");
   erase_file ("/tmp/tmpA.icc");
-  system ("viewgam -n -c n /tmp/tmpA.gam /tmp/tmp.wrl");
+  r = system ("viewgam -n -c n /tmp/tmpA.gam /tmp/tmp.wrl");
   sprintf (system_befehl ,"cat /tmp/tmp.wrl >> \"%s\"", vrml);
-  system (system_befehl);
+  r = system (system_befehl);
   erase_file ("/tmp/tmp.wrl");
   }
 
@@ -188,21 +189,21 @@ create_vrml              ( const char *profilA, char *profilB, char *vrml)
   if (profilB) {
   if (!erase_file ("/tmp/tmpB.icc")) remove ("/tmp/tmpB.icc");
   sprintf (system_befehl, "ln -s \"%s\" /tmp/tmpB.icc", profilB);
-  system (system_befehl);
-  system ("iccgamut -n -w -d 6.0 /tmp/tmpB.icc");
+  r = system (system_befehl);
+  r = system ("iccgamut -n -w -d 6.0 /tmp/tmpB.icc");
   erase_file ("/tmp/tmpB.wrl");
   erase_file ("/tmp/tmpB.icc");
-  system ("viewgam -n -t 0.5 -c w /tmp/tmpB.gam /tmp/tmp.wrl");
+  r = system ("viewgam -n -t 0.5 -c w /tmp/tmpB.gam /tmp/tmp.wrl");
   sprintf (system_befehl ,"cat /tmp/tmp.wrl >> \"%s\"", vrml);
-  system (system_befehl);
+  r = system (system_befehl);
   erase_file ("/tmp/tmp.wrl");
   }
 
   // Unterschiede
   if (profilA && profilB) {
-  system ("smthtest /tmp/tmpA.gam /tmp/tmpB.gam /tmp/tmp.wrl");
+  r = system ("smthtest /tmp/tmpA.gam /tmp/tmpB.gam /tmp/tmp.wrl");
   sprintf (system_befehl ,"cat /tmp/tmp.wrl >> \"%s\"", vrml);
-  system (system_befehl);
+  r = system (system_befehl);
   erase_file ("/tmp/tmp.wrl");
   erase_file ("/tmp/tmpA.gam");
   erase_file ("/tmp/tmpB.gam");

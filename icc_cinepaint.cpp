@@ -117,7 +117,7 @@ static int n_return_vals_;
 #endif
 /** @} */
 
-/** alle Variablen -> icc_examin_cp */
+/** all variables -> icc_examin_cp */
 
 /*** declaration of local functions ***/
 
@@ -126,7 +126,7 @@ static int n_return_vals_;
 
 MAIN()
 
-/** @brief plug-in Anmeldung */
+/** @brief plug-in registration */
 static void
 query ()
 {
@@ -201,10 +201,10 @@ query ()
 /** @brief plug-in Start
 
  *  @param name					Plug-in Name
- *  @param[in] nparams			Argumente Anzahl
- *  @param[in] param			Argumente
- *  @param[out] nreturn_vals	R&uuml;ckgabewerte Anzahl
- *  @param[out] return_vals		R&uuml;ckgabewerte
+ *  @param[in] nparams			Argument number
+ *  @param[in] param			Arguments
+ *  @param[out] nreturn_vals		return argument number
+ *  @param[out] return_vals		return arguments
  */
 static void
 run (char    *name,
@@ -234,17 +234,17 @@ run (char    *name,
     switch (run_mode)
     {
     case RUN_INTERACTIVE:
-      // gespeicherte Daten abholen
+      // get saved plug-in settings
       gimp_get_data (PLUG_IN_NAME, &bvals);
 
-      // einen Dialog oeffnen
+      // open a dialog
       if (! dialog_ (param[1].data.d_image))
         return;
       image_ID = doExamin (param[1].data.d_image, typ);
       break;
 
     case RUN_NONINTERACTIVE:
-      // das Ganze automatisch
+      // now automatic
       if (nparams != n_args_) 
         status = STATUS_CALLING_ERROR;
       if (status == STATUS_SUCCESS)
@@ -260,7 +260,7 @@ run (char    *name,
       break;
 
     case RUN_WITH_LAST_VALS:
-      // gespeicherte Daten abholen
+      // get saved settings
       gimp_get_data (PLUG_IN_NAME, &bvals);
       break;
 
@@ -276,17 +276,17 @@ run (char    *name,
   switch (run_mode)
     {
     case RUN_INTERACTIVE:
-      // gespeicherte Daten abholen
+      // get saved plug-in settings
       gimp_get_data (PLUG_IN_NAME3, &bvals);
 
-      // einen Dialog oeffnen
+      // open a dialog
       if (! dialog_ (param[1].data.d_image))
         return;
       image_ID = doWatch (param[1].data.d_image);
       break;
 
     case RUN_NONINTERACTIVE:
-      // das Ganze automatisch
+      // now automatic
       if (nparams != n_args_) 
 	status = STATUS_CALLING_ERROR;
       if (status == STATUS_SUCCESS)
@@ -302,7 +302,7 @@ run (char    *name,
       break;
 
     case RUN_WITH_LAST_VALS:
-      // gespeicherte Daten abholen
+      // get saved plug-in settings
       gimp_get_data (PLUG_IN_NAME, &bvals);
       break;
 

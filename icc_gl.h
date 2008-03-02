@@ -21,7 +21,7 @@
  *
  * -----------------------------------------------------------------------------
  * 
- * Der 3D Betrachter.
+ * the 3D viewer.
  * 
  */
 
@@ -53,8 +53,8 @@ class Agviewer;
 class GL_Ansicht : public Fl_Gl_Window, /*, public Fl_Slot*/
                    public icc_examin_ns::ThreadDaten,
                    public icc_examin_ns::Beobachter {
-  // Datenhaltung
-    // Position: Farbe1, Farbe2, Farbe3, Farbkanal Nr., Wert
+  // internal data
+    // position: colour1, colour2, colour3, colour channel No., value
   std::vector<std::vector<std::vector<std::vector<double> > > > tabelle_;
   std::vector<std::string>nach_farb_namen_;
   std::vector<std::string>von_farb_namen_;
@@ -64,14 +64,14 @@ class GL_Ansicht : public Fl_Gl_Window, /*, public Fl_Slot*/
 
   void fensterForm();
 
-  // inner Strukturen bei Datenwechsel anpassen
+  // adapt inner struktures at data change
   void menueErneuern_();
   int  erstelleGLListen_();
   void textGarnieren_();
   void garnieren_();
-  int  auffrischen_();      //!< Erneuerung ohne init()
+  int  auffrischen_();      //!< refresh without init()
 
-  // Menues
+  // menues
   Fl_Menu_Button  *menue_;
   Fl_Menu_Button  *menue_button_;
   Fl_Menu_Button  *menue_schnitt_;
@@ -92,21 +92,21 @@ class GL_Ansicht : public Fl_Gl_Window, /*, public Fl_Slot*/
   typedef enum {
    MENU_AXES,
    MENU_QUIT,
-   MENU_KUGEL,           //!< Formen der 3DLut-darstellung
+   MENU_KUGEL,           //!< form of 3DLut-representation
    MENU_WUERFEL,
    MENU_STERN,
-   MENU_GRAU,            //!< Die Farbdarstellung der 3DLut
+   MENU_GRAU,            //!< the colour displaying of the 3DLut
    MENU_FARBIG,
    MENU_KONTRASTREICH,
-   MENU_SCHALEN,         //!< Aussparen der 3DLut
-   MENU_dE1KUGEL,        //!< Mess-/Profilwertdifferenzen mit Farborten
+   MENU_SCHALEN,         //!< sparce of the 3DLut / plug-in candidate
+   MENU_dE1KUGEL,        //!< meashurement-/profile differences with colour location
    MENU_dE2KUGEL,
    MENU_dE4KUGEL,
    MENU_dE1STERN,
-   MENU_DIFFERENZ_LINIE, //!< Mess-/Profilwertdifferenzen mit Geraden pur
-   MENU_SPEKTRALBAND,    //!< Darstellung der Spektralfarben als Band
-   MENU_HELFER,          //!< Texte und Pfeile darstellen
-   MENU_WEISS,           //!< Hintergrundfarben
+   MENU_DIFFERENZ_LINIE, //!< meashurement-/profile differences with put lines
+   MENU_SPEKTRALBAND,    //!< spectral colours as lines
+   MENU_HELFER,          //!< show texts and arrows
+   MENU_WEISS,           //!< background colour
    MENU_HELLGRAU,
    MENU_GRAUGRAU,
    MENU_DUNKELGRAU,
@@ -131,9 +131,9 @@ private:
 public:
   void init(int fenster);
 
-  // welches Fenster wird verwaltet?
-  int  id()          {return id_; } //!< gleich zu agviewer::RedisplayWindow
-  int  typ()   {return typ_; } //!< Fenster ID / Darstellungsart
+  // which window is managed?
+  int  id()          {return id_; } //!< equal to agviewer::RedisplayWindow
+  int  typ()   {return typ_; } //!< window ID / display mode
   void typ(int t_)   { typ_ = t_; }
 
   static Agviewer* getAgv(GL_Ansicht *me, GL_Ansicht *referenz);
@@ -143,14 +143,14 @@ public:
   int  handle(int event);
   void redraw();
 private:
-  int  waiting_;       //!< keine neue Bewegung erzeugen und anzeigen
+  int  waiting_;       //!< dont generate and display new movement
 public:
   void show();
   void hide();
-  // redraw Aufforderung von agv_
+  // redraw request from agv_
   void nachricht( icc_examin_ns::Modell* modell, int info );
 
-  // Daten Laden
+  // import data
   void hineinPunkte (std::vector<double> &vect,
                      std::vector<std::string> &achsNamen);
   void hineinPunkte (std::vector<double> &vect, 
@@ -158,7 +158,7 @@ public:
                      std::vector<std::string> &achsNamen);
   void hineinPunkte (std::vector<double> &punktKoordinaten, //!< Lab
                      std::vector<float>  &punktFarben,      //!< RGBA
-                     std::vector<std::string> &farb_namen_, //!< pro Punkt
+                     std::vector<std::string> &farb_namen_, //!< per point
                      std::vector<std::string> &achsNamen);  //!< 3*
   void punkte_clear () { punkte_.clear(); farben_.clear(); }
   void herausNormalPunkte (std::vector<double> & p, std::vector<float> & f);
@@ -170,37 +170,37 @@ public:
                                std::vector<std::string> vonFarben,
                                std::vector<std::string> nachFarben);
 
-  // transparente Darstellung
-  int  kanal;               //!< gewaehlter Kanal
-       // Darstellung der Gitterpunkte der Transformationstabelle
+  // transparent displaying
+  int  kanal;               //!< selected channel
+       // displaying of grid points of the transformation table
   int  punktform;           //!< MENU_KUGEL MENU_WUERFEL MENU_STERN
   int  punktfarbe;          //!< MENU_GRAU MENU_FARBIG MENU_KONTRASTREICH
-  int  punktgroesse;        //!< Groesse in Pixel
+  int  punktgroesse;        //!< size in pixel
   int  punkt_zahl_alt;
 
-  float hintergrundfarbe;   //!< Hintergrundfarben Farbschema
+  float hintergrundfarbe;   //!< background colour / colour sheme
   float textfarbe[3];
   float pfeilfarbe[3];
   float schatten;
-  float strichmult;         //!< Strichmultiplikator
+  float strichmult;         //!< multiplicator
   char  strich1, strich2, strich3;
   int   schalen;            //!< MENU_SCHALEN
 
-  // Darstellungsfunktionen
-  void setzePerspektive();  //!< Perspektive aktualisieren
-  void tabelleAuffrischen();//!< glCompile fuer Tabelle
-  void punkteAuffrischen(); //!< glCompile fuer Punkte
-  void netzeAuffrischen();  //!< Sortieren und Zeichnen
-  double seitenverhaeltnis; //!< Proportion des Fensters
+  // drawing functions
+  void setzePerspektive();  //!< actualise perspektive
+  void tabelleAuffrischen();//!< glCompile for table
+  void punkteAuffrischen(); //!< glCompile for points
+  void netzeAuffrischen();  //!< sort and drawing
+  double seitenverhaeltnis; //!< proportion of window
   static const double std_vorder_schnitt;
-  double vorder_schnitt;    //!< Entfernung der ersten Schnittebene
-  double schnitttiefe;      //!< Dicke der GL Schnitttiefe
-  double a_darstellungs_breite; //!< Richtung CIE*a   fuer Zoom und Pfeillaengen
-  double b_darstellungs_breite; //!< ~        CIE*b ; wobei CIE*L immer 1.0
+  double vorder_schnitt;    //!< front cut plane
+  double schnitttiefe;      //!< thickness of the GL slice
+  double a_darstellungs_breite; //!< direction CIE*a   for stretching
+  double b_darstellungs_breite; //!< ~         CIE*b ; where CIE*L max is 1.0
   bool zeig_punkte_als_paare;
   bool zeig_punkte_als_messwerte;
-  int  spektralband;        //!< stelle die spektral gesaettigten Farben dar
-  int  zeige_helfer;        //!< zeige Pfeile und Text
+  int  spektralband;        //!< show spectral saturated colour line
+  int  zeige_helfer;        //!< show arrows and text
 private:
   void zeigeSpektralband_();
   void zeigeUmrisse_();
@@ -208,8 +208,8 @@ private:
   void zeichneKoordinaten_();
 
 public:
-  // Darstellungsfunktionen
-  void zeichnen();          //!< gl Zeichnen
+  // display functions
+  void zeichnen();          //!< gl drawing
   void tastatur(int e);
   void menueAufruf(int value);
   // Bewegungsfunktionen
@@ -219,10 +219,10 @@ public:
 private:
   static void bewegenStatisch_(void* GL_Ansicht);
 private:
-  double zeit_diff_;        //!< Sekunde pro Bild
+  double zeit_diff_;        //!< seconds per frame
   double zeit_;
-  int  valid_;              //!< notiert ob in draw() valid() false war
-  char t[128];              //!< Text zur Fehlersuche
+  int  valid_;              //!< remembers valid() from within draw()
+  char t[128];              //!< text for searching errors
   int  maus_x_;
   int  maus_y_;
   int  maus_x_alt, maus_y_alt;
@@ -230,11 +230,11 @@ private:
   void mausPunkt_( GLdouble & oX, GLdouble & oY, GLdouble & oZ,
                   GLdouble & X, GLdouble & Y, GLdouble & Z );
 public:
-  // Geschwindigkeit
-  int  smooth;                    //!< glatt zeichnen
+  // speed
+  int  smooth;                    //!< smooth drawing
   int  blend;                     //!<   -"-
 
-  // Daten Informationen
+  // data informations
   const char* kanalName() const {
                       if (nach_farb_namen_.size() &&
                           (int)nach_farb_namen_.size() > kanal) {
@@ -244,7 +244,7 @@ public:
   const char* kanalName(unsigned int i) const {
                       if (nach_farb_namen_.size()>i) 
                         return (const char*)nach_farb_namen_[i].c_str();
-                      else  return _("Gibts nicht"); }
+                      else  return _("not available"); }
   unsigned int kanaele() {return nach_farb_namen_.size(); }
 };
 

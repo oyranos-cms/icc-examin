@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2007-03-23 07:28+0100\n"
+"POT-Creation-Date: 2007-04-21 11:05+0200\n"
 "PO-Revision-Date: 2005-08-13 17:35+0200\n"
 "Last-Translator: Kai-Uwe Behrmann\n"
 "Language-Team:  <eo@li.org>\n"
@@ -119,193 +119,190 @@ msgid "NUMBER_OF_SETS stimmt nicht ueberein: gefunden, berechnet "
 msgstr ""
 
 #: icc_draw.cpp:241
-msgid " zu frueh benutzt!"
+msgid " used too early!"
 msgstr ""
 
-#: icc_draw.cpp:645
-msgid "unbekannte Farbe"
-msgstr ""
+#: icc_draw.cpp:647
+#, fuzzy
+msgid "unknown Colour"
+msgstr "kolora"
 
-#: icc_draw.cpp:654 icc_draw.cpp:665 icc_helfer.cpp:471
+#: icc_draw.cpp:656 icc_draw.cpp:667 icc_helfer.cpp:471
 #: icc_profile_tags.cpp:435 icc_helfer_osx.cpp:68 icc_helfer_x.cpp:64
 msgid "Red"
 msgstr "Ruĝa"
 
-#: icc_draw.cpp:657 icc_draw.cpp:667 icc_helfer.cpp:472
+#: icc_draw.cpp:659 icc_draw.cpp:669 icc_helfer.cpp:472
 #: icc_profile_tags.cpp:436 icc_helfer_osx.cpp:69 icc_helfer_x.cpp:65
 msgid "Green"
 msgstr "Verda"
 
-#: icc_draw.cpp:660 icc_draw.cpp:669 icc_helfer.cpp:473
+#: icc_draw.cpp:662 icc_draw.cpp:671 icc_helfer.cpp:473
 #: icc_profile_tags.cpp:437 icc_helfer_osx.cpp:70 icc_helfer_x.cpp:66
 msgid "Blue"
 msgstr "Blua"
 
-#: icc_draw.cpp:664 icc_gl.cpp:1982 icc_helfer.cpp:414 icc_waehler.h:131
+#: icc_draw.cpp:666 icc_gl.cpp:1983 icc_helfer.cpp:414 icc_waehler.h:131
 msgid "Gray"
 msgstr "Griza"
 
-#: icc_draw.cpp:671 icc_helfer.cpp:481 icc_helfer.cpp:485
+#: icc_draw.cpp:673 icc_helfer.cpp:481 icc_helfer.cpp:485
 msgid "Cyan"
 msgstr "Cejana"
 
-#: icc_draw.cpp:673 icc_helfer.cpp:482 icc_helfer.cpp:486
+#: icc_draw.cpp:675 icc_helfer.cpp:482 icc_helfer.cpp:486
 msgid "Magenta"
 msgstr "Fuksina"
 
-#: icc_draw.cpp:675 icc_helfer.cpp:483 icc_helfer.cpp:487
+#: icc_draw.cpp:677 icc_helfer.cpp:483 icc_helfer.cpp:487
 msgid "Yellow"
 msgstr "Flava"
 
-#: icc_draw.cpp:677 icc_gl.cpp:1984 icc_helfer.cpp:474 icc_helfer.cpp:484
+#: icc_draw.cpp:679 icc_gl.cpp:1985 icc_helfer.cpp:474 icc_helfer.cpp:484
 msgid "Black"
 msgstr "Nigra"
 
-#: icc_draw.cpp:679 icc_helfer.cpp:659
+#: icc_draw.cpp:681 icc_helfer.cpp:659
 msgid "Luminance"
 msgstr ""
 
-#: icc_draw.cpp:681 icc_helfer.cpp:465
+#: icc_draw.cpp:683 icc_helfer.cpp:465
 msgid "Luminance Y"
 msgstr ""
 
-#: icc_draw.cpp:683 icc_helfer.cpp:456
+#: icc_draw.cpp:685 icc_helfer.cpp:456
 msgid "CIE X"
 msgstr ""
 
-#: icc_draw.cpp:685 icc_helfer.cpp:457 icc_helfer.cpp:468
+#: icc_draw.cpp:687 icc_helfer.cpp:457 icc_helfer.cpp:468
 msgid "CIE Y (Luminance)"
 msgstr ""
 
-#: icc_draw.cpp:687 icc_helfer.cpp:458
+#: icc_draw.cpp:689 icc_helfer.cpp:458
 msgid "CIE Z"
 msgstr ""
 
-#: icc_draw.cpp:689 icc_helfer.cpp:479
+#: icc_draw.cpp:691 icc_helfer.cpp:479
 msgid "Lightness"
 msgstr ""
 
-#: icc_draw.cpp:691 icc_helfer.cpp:477
+#: icc_draw.cpp:693 icc_helfer.cpp:477
 msgid "Value"
 msgstr ""
 
-#: icc_draw.cpp:693 icc_examin_farbraum.cpp:269 icc_examin_io.cpp:213
+#: icc_draw.cpp:695 icc_examin_farbraum.cpp:269 icc_examin_io.cpp:213
 #: icc_helfer.cpp:459 icc_helfer.cpp:462
 msgid "CIE *L"
 msgstr ""
 
-#: icc_draw.cpp:695 icc_examin_farbraum.cpp:270 icc_examin_io.cpp:214
-#: icc_gl.cpp:945 icc_gl.cpp:1019 icc_gl.cpp:1045 icc_gl.cpp:1053
+#: icc_draw.cpp:697 icc_examin_farbraum.cpp:270 icc_examin_io.cpp:214
+#: icc_gl.cpp:947 icc_gl.cpp:1021 icc_gl.cpp:1047 icc_gl.cpp:1055
 #: icc_helfer.cpp:460
 msgid "CIE *a"
 msgstr ""
 
-#: icc_draw.cpp:697 icc_examin_farbraum.cpp:271 icc_examin_io.cpp:215
-#: icc_gl.cpp:958 icc_gl.cpp:1061 icc_gl.cpp:1081 icc_gl.cpp:1088
+#: icc_draw.cpp:699 icc_examin_farbraum.cpp:271 icc_examin_io.cpp:215
+#: icc_gl.cpp:960 icc_gl.cpp:1063 icc_gl.cpp:1083 icc_gl.cpp:1090
 #: icc_helfer.cpp:461
 msgid "CIE *b"
 msgstr ""
 
-#: icc_draw.cpp:699 icc_helfer.cpp:466
+#: icc_draw.cpp:701 icc_helfer.cpp:466
 msgid "Colour b"
 msgstr "Koloro b"
 
-#: icc_draw.cpp:701 icc_helfer.cpp:467
+#: icc_draw.cpp:703 icc_helfer.cpp:467
 msgid "Colour r"
 msgstr "Koloro r"
 
-#: icc_draw.cpp:740 icc_draw.cpp:801
+#: icc_draw.cpp:742 icc_draw.cpp:803
 msgid " with "
 msgstr " kaj "
 
-#: icc_draw.cpp:740 icc_draw.cpp:801
+#: icc_draw.cpp:742 icc_draw.cpp:803
 msgid " points"
 msgstr "punktoj"
 
-#: icc_draw.cpp:747
+#: icc_draw.cpp:749
 msgid " with Gamma: 1.0"
 msgstr ""
 
-#: icc_draw.cpp:760 icc_draw.cpp:779
+#: icc_draw.cpp:762 icc_draw.cpp:781
 msgid " with one entry for gamma: "
 msgstr ""
 
-#: icc_examin.cpp:175
+#: icc_examin.cpp:176
 msgid "Gamut selector"
 msgstr ""
 
-#: icc_examin.cpp:262 icc_examin.cpp:1017
+#: icc_examin.cpp:263 icc_examin.cpp:1019
 msgid "loaded"
 msgstr ""
 
-#: icc_examin.cpp:268
+#: icc_examin.cpp:269
 msgid "Ready"
 msgstr ""
 
-#: icc_examin.cpp:317
+#: icc_examin.cpp:318
 msgid ""
 "ICC colour profiles (*.{I,i}{C,c}{M,m,C,c})\tMeasurement (*.{txt,it8,IT8,RGB,"
 "CMYK,ti*,cgats,CIE,cie,nCIE,oRPT,DLY,LAB,Q60})\tArgyll Gamuts (*.{wrl,vrml}"
 msgstr ""
 
-#: icc_examin.cpp:317
+#: icc_examin.cpp:318
 msgid "Which ICC profile?"
 msgstr ""
 
-#: icc_examin.cpp:578 icc_examin.cpp:581
+#: icc_examin.cpp:579 icc_examin.cpp:582
 msgid "Compare Measurement <-> Profile Colours"
 msgstr ""
 
-#: icc_examin.cpp:580
+#: icc_examin.cpp:581
 msgid "none"
 msgstr ""
 
-#: icc_examin.cpp:594 icc_examin.cpp:596
+#: icc_examin.cpp:595 icc_examin.cpp:597
 msgid "Gamut View"
 msgstr ""
 
-#: icc_examin.cpp:638
+#: icc_examin.cpp:639 icc_gl.h:247
 msgid "not available"
 msgstr ""
 
-#: icc_examin.cpp:959
+#: icc_examin.cpp:960
 msgid "Filename (ICC data type)"
 msgstr ""
 
-#: icc_examin.cpp:962
+#: icc_examin.cpp:963
 msgid "Filename (other data type)"
 msgstr ""
 
-#: icc_examin.cpp:964
+#: icc_examin.cpp:965
 msgid "Filename (corrupted ICC data type)"
 msgstr ""
 
-#: icc_examin.cpp:969
+#: icc_examin.cpp:970
 msgid "found no content for"
 msgstr ""
 
-#: icc_examin.cpp:972
+#: icc_examin.cpp:973
 msgid "Internal error"
 msgstr ""
 
-#: icc_examin.cpp:974
+#: icc_examin.cpp:976
 msgid "No. Tag   Type   Size Description"
 msgstr ""
 
 #: icc_examin_farbraum.cpp:232
-msgid "RGB Ergebnis nicht verfuegbar"
+msgid "RGB result not available"
 msgstr ""
 
 #: icc_examin_io.cpp:221
-msgid "kein Netz gefunden in VRML Datei"
-msgstr ""
-
-#: icc_examin_io.cpp:236
-msgid "Anzahl gabs schon mal"
+msgid "no net found in VRML file"
 msgstr ""
 
 #: icc_examin_io.cpp:259
-msgid "Kein Netz gefunden. Ist Argyll installiert?"
+msgid "no net found. Is Argyll installed?"
 msgstr ""
 
 #: icc_examin_io.cpp:419
@@ -352,118 +349,118 @@ msgstr ""
 msgid "Yes"
 msgstr "Jes"
 
-#: icc_gl.cpp:699 icc_gl.cpp:702 icc_gl.cpp:705 icc_gl.cpp:711 icc_gl.cpp:715
-#: icc_gl.cpp:730
+#: icc_gl.cpp:701 icc_gl.cpp:704 icc_gl.cpp:707 icc_gl.cpp:713 icc_gl.cpp:717
+#: icc_gl.cpp:732
 msgid "Could not open font in:"
 msgstr ""
 
-#: icc_gl.cpp:822
+#: icc_gl.cpp:824
 #, c-format
 msgid "0,0,0"
 msgstr ""
 
-#: icc_gl.cpp:1956 icc_gl.cpp:1966 icc_gl.cpp:1968 icc_gl.cpp:1970
+#: icc_gl.cpp:1957 icc_gl.cpp:1967 icc_gl.cpp:1969 icc_gl.cpp:1971
 msgid "Slice"
 msgstr ""
 
-#: icc_gl.cpp:1957
+#: icc_gl.cpp:1958
 msgid "Rotate around slice"
 msgstr ""
 
-#: icc_gl.cpp:1972
+#: icc_gl.cpp:1973
 msgid "Rotate around"
 msgstr ""
 
-#: icc_gl.cpp:1972
+#: icc_gl.cpp:1973
 msgid "axis"
 msgstr ""
 
-#: icc_gl.cpp:1977
+#: icc_gl.cpp:1978
 msgid "Slice plane"
 msgstr ""
 
-#: icc_gl.cpp:1980
+#: icc_gl.cpp:1981
 msgid "White"
 msgstr "Blanka"
 
-#: icc_gl.cpp:1981
+#: icc_gl.cpp:1982
 msgid "Light gray"
 msgstr ""
 
-#: icc_gl.cpp:1983
+#: icc_gl.cpp:1984
 msgid "Dark gray"
 msgstr ""
 
-#: icc_gl.cpp:1987
+#: icc_gl.cpp:1988
 msgid "Background colour"
 msgstr ""
 
-#: icc_gl.cpp:1992
+#: icc_gl.cpp:1993
 msgid "gray"
 msgstr "Griza"
 
-#: icc_gl.cpp:1993
+#: icc_gl.cpp:1994
 msgid "coloured"
 msgstr ""
 
-#: icc_gl.cpp:1994
+#: icc_gl.cpp:1995
 msgid "high contrast"
 msgstr ""
 
-#: icc_gl.cpp:1995
+#: icc_gl.cpp:1996
 msgid "shells"
 msgstr ""
 
-#: icc_gl.cpp:1996
+#: icc_gl.cpp:1997
 #, fuzzy
 msgid "Colour line"
 msgstr "kolora"
 
-#: icc_gl.cpp:2001
+#: icc_gl.cpp:2002
 msgid "Sphere 1dE"
 msgstr ""
 
-#: icc_gl.cpp:2002
+#: icc_gl.cpp:2003
 msgid "Sphere 2dE"
 msgstr ""
 
-#: icc_gl.cpp:2003
+#: icc_gl.cpp:2004
 msgid "Sphere 4dE"
 msgstr ""
 
-#: icc_gl.cpp:2006
+#: icc_gl.cpp:2007
 msgid "Star"
 msgstr ""
 
-#: icc_gl.cpp:2009
+#: icc_gl.cpp:2010
 msgid "Point"
 msgstr ""
 
-#: icc_gl.cpp:2012
+#: icc_gl.cpp:2013
 msgid "without markers"
 msgstr ""
 
-#: icc_gl.cpp:2013
+#: icc_gl.cpp:2014
 msgid "Spektral line"
 msgstr "spektra linio"
 
-#: icc_gl.cpp:2016
+#: icc_gl.cpp:2017
 msgid "Texts"
 msgstr ""
 
-#: icc_gl.cpp:2018
+#: icc_gl.cpp:2019
 msgid "Texts/Arrows on/off"
 msgstr ""
 
-#: icc_gl.cpp:2020
+#: icc_gl.cpp:2021
 msgid "Illustration"
 msgstr ""
 
-#: icc_gl.cpp:2293
+#: icc_gl.cpp:2294
 msgid "Pos"
 msgstr ""
 
-#: icc_gl.cpp:2377 icc_profile_tags.cpp:302
+#: icc_gl.cpp:2378 icc_profile_tags.cpp:302
 msgid "Channel"
 msgstr "kanalo"
 
@@ -1057,8 +1054,8 @@ msgstr ""
 msgid "Monitor Profile"
 msgstr ""
 
-#: icc_helfer.cpp:1063 icc_utils.cpp:81
-msgid "Dateigroesse 0 fuer "
+#: icc_helfer.cpp:1063
+msgid "file size 0 for "
 msgstr ""
 
 #: icc_kette.cpp:174
@@ -1666,6 +1663,10 @@ msgstr ""
 msgid "no filename given"
 msgstr ""
 
+#: icc_utils.cpp:81
+msgid "Dateigroesse 0 fuer "
+msgstr ""
+
 #: icc_vrml.cpp:56
 msgid "Datei "
 msgstr ""
@@ -2077,7 +2078,7 @@ msgstr ""
 msgid "Watch Colours 3D.2..."
 msgstr ""
 
-#: icc_cinepaint_intern.cpp:374 icc_cinepaint_intern.cpp:1015
+#: icc_cinepaint_intern.cpp:374 icc_cinepaint_intern.cpp:1014
 msgid "No profil assigned to image."
 msgstr ""
 
@@ -2085,19 +2086,19 @@ msgstr ""
 msgid "Profil not written."
 msgstr ""
 
-#: icc_cinepaint_intern.cpp:1070
+#: icc_cinepaint_intern.cpp:1069
 msgid "Wrong profil assigned to image."
 msgstr ""
 
-#: icc_cinepaint_intern.cpp:1284
+#: icc_cinepaint_intern.cpp:1281
 msgid "No active drawable found."
 msgstr ""
 
-#: icc_cinepaint_intern.cpp:1590
+#: icc_cinepaint_intern.cpp:1587
 msgid "What kind of image is this?"
 msgstr ""
 
-#: icc_cinepaint_intern.cpp:1684
+#: icc_cinepaint_intern.cpp:1681
 msgid "What kind of image is this?\n"
 msgstr ""
 
@@ -2105,12 +2106,8 @@ msgstr ""
 msgid "May 2004 - February 2007"
 msgstr ""
 
-#: icc_gl.h:247
-msgid "Gibts nicht"
-msgstr ""
-
 #: icc_utils.h:226 icc_utils.h:227 icc_utils.h:228
-msgid "!!! Warnung !!!"
+msgid "!!! Warning !!!"
 msgstr ""
 
 #: icc_waehler.h:71

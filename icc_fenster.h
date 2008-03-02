@@ -21,7 +21,7 @@
  * 
  * -----------------------------------------------------------------------------
  *
- * Dateiwahl und andere Fenster
+ * file selector and other windows
  * 
  */
 
@@ -50,13 +50,13 @@ namespace icc_examin_ns {
   {
 
      static MyFl_Double_Window ** list_;
-     static int n_;              //!< verfuegbare Plaetze in list_
-     static int ref_;            //!< genutzte Plaetze in list_
-     int    id_;                 //!< Identifikationsnummer
-     int    desktop_;            //!< Dekstopnummer - _NET_CURRENT_DESKTOP 
-     void   init_class_();       //!< Initialisierung der statischen Elemente
-     void   init_object_();      //!< Initialisierung des dynamischen Objektes
-     char   titel_[256];         //!< Fenstertitel
+     static int n_;              //!< available entries in list_
+     static int ref_;            //!< used entries in list_
+     int    id_;                 //!< identification number
+     int    desktop_;            //!< Dekstop number - _NET_CURRENT_DESKTOP 
+     void   init_class_();       //!< initialisation if the static elements
+     void   init_object_();      //!< initialisation of the dynamic objects
+     char   titel_[256];         //!< window title
 
    public:
 
@@ -66,31 +66,31 @@ namespace icc_examin_ns {
 
      static char ** icon;                   //!< Icon (X11 - xpm)
      static const char * my_xclass;         //!< Fl_Window::xclass string
-     static MyFl_Double_Window *  main_win; //!< das Programmhauptfenster
-     MyFl_Double_Window * only_with;        //!< beobachtetes Fenster (WM_TRANSIENT_FOR ?)
+     static MyFl_Double_Window *  main_win; //!< the main window
+     MyFl_Double_Window * only_with;        //!< observed window (WM_TRANSIENT_FOR ?)
 
-     //! Benutzer ausgeloestes Verstecken : hide() -> true : hide(*) -> false
-     int user_hide;              //!< mit hide(void) versteckt
-     int use_escape_hide;        //!< erlaubt mit Escape zu verkleinern
-     int is_toolbox;             //!< Werkzeugkasten
+     //! user generated hide : hide() -> true : hide(*) -> false
+     int user_hide;              //!< hidden with hide(void)
+     int use_escape_hide;        //!< allow to hide with Escape
+     int is_toolbox;             //!< toolbox
 
-     void hide (void);           //!< Verstecken fuer Benutzer 
-     void hide (MyFl_Double_Window * by); //!< Verstecken automatisch
-     void iconize (void);        //!< Verkleinern fuer benutzer
-     void iconize (MyFl_Double_Window * by); //!< Verkleinern automatisch
-     void show (void);           //!< Zeigen fuer alle
-     void show (int, char**);    //!< Zeigen fuer alle
+     void hide (void);           //!< hide for user
+     void hide (MyFl_Double_Window * by); //!< hide automatic
+     void iconize (void);        //!< minimise for user
+     void iconize (MyFl_Double_Window * by); //!< minimise automatic
+     void show (void);           //!< show for all
+     void show (int, char**);    //!< show for all
   private:
      enum {HIDE, SHOW, ICONIZE, HANDLE, FUNC_MAX};
-     int in_middle_of_[FUNC_MAX];      //!< Statusvariable
+     int in_middle_of_[FUNC_MAX];      //!< status variable
   public:
-     void label (const char * t); //!< Fenstertitel setzen
+     void label (const char * t); //!< set window title
      const char* label() { return Fl_Double_Window::label(); }
 
-     int  handle (int e);        //!< Ereignisse abfangen (Tastatur, FL_HIDE...)
+     int  handle (int e);        //!< query events (keys, FL_HIDE...)
   };
 
-  //! Fenster mit Nachrichten
+  //! window with news
   MyFl_Double_Window* nachricht(std::string text);
 
 }

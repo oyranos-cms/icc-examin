@@ -1,6 +1,7 @@
 #!/bin/sh
 
 ERROR=0
+STRIPOPT="sed s/-O.//"
 
 if [ -n "$PKG_CONFIG_PATH" ]; then
   PKG_CONFIG_PATH=$PKG_CONFIG_PATH:$libdir/pkgconfig
@@ -47,21 +48,31 @@ if [ -n "$ELEKTRA" ] && [ "$ELEKTRA" -gt "0" ]; then
         echo "ELEKTRA_SW = `pkg-config --cflags-only-I  elektra | sed 's/\-I// ; s%/include%/etc/kdb/%'`" >> $CONF
         ELEKTRA_FOUND=1
       else
-        test -n "$ECHO" && $ECHO "!!! Elektra: !!!"
+        if [ $ELEKTRA -eq 1 ]; then
+          ERROR=1
+          test -n "$ECHO" && $ECHO "!!! Elektra: !!!"
+        else
+          test -n "$ECHO" && $ECHO "    Elektra:"
+        fi
         test -n "$ECHO" && $ECHO "  too new Elektra found,"
         test -n "$ECHO" && $ECHO "  need a version not greater than $elektra_max, download: elektra.sf.net"
-        ERROR=1
       fi
     else
-      test -n "$ECHO" && $ECHO "!!! ERROR Elektra: !!!"
+      if [ $ELEKTRA -eq 1 ]; then
+        test -n "$ECHO" && $ECHO "!!! ERROR Elektra: !!!"
+        ERROR=1
+      else
+        test -n "$ECHO" && $ECHO "    Warning Elektra:"
+      fi
       test -n "$ECHO" && $ECHO "  no or too old elektra found,"
       test -n "$ECHO" && $ECHO "  need at least version $elektra_min, download: elektra.sf.net"
-      ERROR=1
     fi
   fi
   if [ -z "$ELEKTRA_FOUND" ]; then
       test -n "$ECHO" && $ECHO $elektra_mod
-      ERROR=1
+      if [ $ELEKTRA -eq 1 ]; then
+        ERROR=1
+      fi
   fi
 fi
 
@@ -88,12 +99,16 @@ if [ -n "$LCMS" ] && [ $LCMS -gt 0 ]; then
     test -n "$ECHO" && $ECHO "littleCMS `pkg-config --modversion lcms`          detected"
     echo "#define HAVE_LCMS 1" >> $CONF_H
     echo "LCMS = 1" >> $CONF
-    echo "LCMS_H = `pkg-config --cflags lcms`" >> $CONF
-    echo "LCMS_LIBS = `pkg-config --libs lcms`" >> $CONF
+    echo "LCMS_H = `pkg-config --cflags lcms | $STRIPOPT`" >> $CONF
+    echo "LCMS_LIBS = `pkg-config --libs lcms | $STRIPOPT`" >> $CONF
   else
-    test -n "$ECHO" && $ECHO "!!! ERROR: no or too old LCMS found, !!!"
+    if [ $LCMS -eq 1 ]; then
+      test -n "$ECHO" && $ECHO "!!! ERROR: no or too old LCMS found, !!!"
+      ERROR=1
+    else
+      test -n "$ECHO" && $ECHO "    Warning: no or too old LCMS found,"
+    fi
     test -n "$ECHO" && $ECHO "  need at least version 1.14, download: www.littlecms.com"
-    ERROR=1
   fi
 fi
 
@@ -105,7 +120,7 @@ if [ -n "$X11" ] && [ $X11 -gt 0 ]; then
     echo "#define HAVE_X 1" >> $CONF_H
     if [ -n "$MAKEFILE_DIR" ]; then
       for i in $MAKEFILE_DIR; do
-        test -f "$i/makefile".in && echo "X11 = 1" >> "$i/makefile"
+        test -f "$i/makefile".in && echo "X11 = X11" >> "$i/makefile"
         test -f "$i/makefile".in && echo "X_H = -I/usr/X11R6/include -I/usr/include" >> "$i/makefile"
       done
     fi
@@ -115,7 +130,7 @@ if [ -n "$X11" ] && [ $X11 -gt 0 ]; then
     X11=0
   fi
 fi
-if [ "$X11" = 1 ] && [ $X11 -gt 0 ]; then
+if [ -n "$X11" ] && [ $X11 -gt 0 ]; then
   if [ -n "$XF86VMODE" ] && [ $XF86VMODE -gt 0 ]; then
     if [ -f /usr/X11R6/include/X11/extensions/xf86vmode.h ] ||
        [ -f /usr/include/X11/extensions/xf86vmode.h ] ||
@@ -184,8 +199,12 @@ if [ "$X11" = 1 ] && [ $X11 -gt 0 ]; then
           fi
           rm tests/libtest
       else
-        test -n "$ECHO" && $ECHO "!!! ERROR lib$l is missed"
-        ERROR=1
+        if [ $X11 -eq 1 ]; then
+          test -n "$ECHO" && $ECHO "!!! ERROR lib$l is missed"
+          ERROR=1
+        else
+          test -n "$ECHO" && $ECHO "  Warning lib$l is missed"
+        fi
       fi
     done
   fi
@@ -221,8 +240,8 @@ if [ -n "$FTGL" ] && [ $FTGL -gt 0 ]; then
     test -n "$ECHO" && $ECHO "FTGL      `pkg-config --modversion ftgl`         detected"
     echo "#define HAVE_FTGL 1" >> $CONF_H
     echo "FTGL = 1" >> $CONF
-    echo "FTGL_H = `pkg-config --cflags ftgl`" >> $CONF
-    echo "FTGL_LIBS = `pkg-config --libs ftgl`" >> $CONF
+    echo "FTGL_H = `pkg-config --cflags ftgl | $STRIPOPT`" >> $CONF
+    echo "FTGL_LIBS = `pkg-config --libs ftgl | $STRIPOPT`" >> $CONF
   else
     test -n "$ECHO" && $ECHO "  no or too old FTGL found, need FTGL to render text in OpenGL"
   fi
@@ -232,7 +251,7 @@ if [ -z "$fltkconfig" ]; then
   fltkconfig="fltk-config"
 fi
 if [ -n "$FLTK" ] && [ $FLTK -gt 0 ]; then
-  FLTK_=`$fltkconfig --cxxflags 2>>error.txt`
+  FLTK_=`$fltkconfig --cxxflags 2>>error.txt | $STRIPOPT`
   if [ $? = 0 ] && [ -n "$FLTK_" ]; then
     test -n "$ECHO" && $ECHO "FLTK `$fltkconfig --version`              detected"
     if [ "0" -ne "`$fltkconfig --compile tests/fltk_test.cxx 2>&1 | grep lock | wc -l`" ]; then
@@ -245,14 +264,18 @@ if [ -n "$FLTK" ] && [ $FLTK -gt 0 ]; then
     echo "#define HAVE_FLTK 1" >> $CONF_H
     echo "FLTK = 1" >> $CONF
     echo "FLTK_H = `$fltkconfig --cxxflags | sed 's/-O[0-9]//'`" >> $CONF
-    echo "FLTK_LIBS = `$fltkconfig --use-images --use-gl --ldflags`" >> $CONF
+    echo "FLTK_LIBS = `$fltkconfig --use-images --use-gl --ldflags | $STRIPOPT`" >> $CONF
     echo "FLTK = 1" >> $CONF_I18N
     echo "FLTK_H = `$fltkconfig --cxxflags | sed 's/-O[0-9]//'`" >> $CONF_I18N
-    echo "FLTK_LIBS = `$fltkconfig --use-images --use-gl --ldflags`" >> $CONF_I18N
+    echo "FLTK_LIBS = `$fltkconfig --use-images --use-gl --ldflags | $STRIPOPT`" >> $CONF_I18N
   else
-    test -n "$ECHO" && $ECHO "!!! ERROR !!!"
+    if [ $FLTK -eq 1 ]; then
+      ERROR=1
+      test -n "$ECHO" && $ECHO "!!! ERROR !!!"
+    else
+      test -n "$ECHO" && $ECHO "    Warning"
+    fi
     test -n "$ECHO" && $ECHO "           FLTK is not found; download: www.fltk.org"
-    ERROR=1
   fi
 fi
 
@@ -260,6 +283,7 @@ if [ -n "$FLU" ] && [ $FLU -gt 0 ]; then
   FLU_=`flu-config --cxxflags 2>>error.txt`
   if [ "`$fltkconfig --version`" = "1.1.7" ]; then
     echo -e "\c"
+    #"
     test -n "$ECHO" && $ECHO "FLTK version 1.1.7 is not supported by FLU"
     if [ "$FLU" = 1 ]; then
       ERROR=1
@@ -269,8 +293,8 @@ if [ -n "$FLU" ] && [ $FLU -gt 0 ]; then
       test -n "$ECHO" && $ECHO "FLU                     detected"
       echo "#define HAVE_FLU 1" >> $CONF_H
       echo "FLU = 1" >> $CONF
-      echo "FLU_H = `flu-config --cxxflags`" >> $CONF
-      echo "FLU_LIBS = `flu-config --ldflags --use-gl`" >> $CONF
+      echo "FLU_H = `flu-config --cxxflags | $STRIPOPT`" >> $CONF
+      echo "FLU_LIBS = `flu-config --ldflags --use-gl | $STRIPOPT`" >> $CONF
     else
       if [ "$FLU" -gt 1 ]; then
         test -n "$ECHO" && $ECHO "   no FLU found, will not use it"
@@ -302,8 +326,8 @@ if [ -n "$LIBPNG" ] && [ $LIBPNG -gt 0 ]; then
     test -n "$ECHO" && $ECHO "PNG `pkg-config --modversion $LIBPNG`               detected"
     echo "#define HAVE_PNG 1" >> $CONF_H
     echo "PNG = 1" >> $CONF
-    echo "PNG_H = `pkg-config --cflags $LIBPNG`" >> $CONF
-    echo "PNG_LIBS = `pkg-config --libs $LIBPNG`" >> $CONF
+    echo "PNG_H = `pkg-config --cflags $LIBPNG | $STRIPOPT`" >> $CONF
+    echo "PNG_LIBS = `pkg-config --libs $LIBPNG | $STRIPOPT`" >> $CONF
   else
     test -n "$ECHO" && $ECHO "no or too old libpng found,"
     test -n "$ECHO" && $ECHO "  need at least version 1.0, download: www.libpng.org"

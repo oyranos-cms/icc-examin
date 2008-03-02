@@ -116,25 +116,25 @@ typedef int ChanModE;
 
 /** alle Layer relevanten Informationen */
 struct Channel {
-  gint32        display_ID;      //!< die Ansicht
+  gint32        display_ID;      //!< view
   gint32        ID;              //!< drawable_ID
   GimpDrawable *drawable;
   GDrawableType/*GimpDrawableType*/ drawable_type;
-  GimpPixelRgn  srcRgn;          //!< Ausgangsbild
-  //GimpPixelRgn  dstRgn;          //!< Schattenbild
+  GimpPixelRgn  srcRgn;          //!< start image
+  //GimpPixelRgn  dstRgn;          //!< shadow image
 //  guchar       *pixels,          //!< raw pixel buffer for colors
 //               *pixel;           //!< pointer to actual position in pixels
-  int           precision,       //!< Pr&auml;zission gimp_drawable_precision (layer->ID);
-                samplesperpixel, //!< Kan&auml;le pro Pixel
-                alpha;           //!< Existenz
-  int           width, height;   //!< Gesamtbreite und -hoehe
-  int           offx, offy;      //!< Ebenenversaetze
-  gint          sel_x1, sel_y1, sel_x2, sel_y2; //!< Auswahlmaske
-  gint          sel_w, sel_h;    //!< Dimension der Auswahlmaske
-  icUInt32Number intent;         //!< CinePaint &Uuml;bertragungsart
-  icUInt32Number intent_proof;   //!< CinePaint Simulations &Uuml;bertragungsart
-  int           flags;           //!< CinePaint CMM Schalter
-  ChanModE      status;          //!< Aufgaben f&uuml;r sp&auml;ter
+  int           precision,       //!< precision gimp_drawable_precision (layer->ID);
+                samplesperpixel, //!< channels per pixel
+                alpha;           //!< existence
+  int           width, height;   //!< total dimensions
+  int           offx, offy;      //!< layer offsets
+  gint          sel_x1, sel_y1, sel_x2, sel_y2; //!< selection mask
+  gint          sel_w, sel_h;    //!< dimension of mask
+  icUInt32Number intent;         //!< CinePaint rendering intent
+  icUInt32Number intent_proof;   //!< CinePaint simulation intent
+  int           flags;           //!< CinePaint CMM switches
+  ChanModE      status;          //!< tasks to do later
   Channel() {
     display_ID = 0;
     ID = 0;
@@ -157,7 +157,7 @@ struct Channel {
 };
 typedef Channel channel;
 
-/** ncl2 Profilrumpf */
+/** ncl2 profilbody */
 char data[320] =
   {
     0,0,1,64,108,99,109,115,
@@ -202,14 +202,14 @@ char data[320] =
     0,0,0,0,0,0,0,0
   };
 
-/** einzelner ncl2 Schnipsel - eine Farbe */
+/** ncl2 snipet - one colour */
 struct Ncl2Farbe {
   char name[32];
-  icUInt16Number pcsfarbe[3]; // PCS Lab oder XYZ
+  icUInt16Number pcsfarbe[3]; // PCS Lab or XYZ
   icUInt16Number geraetefarbe[16];
 };
 
-/** der ncl2 Profiltag */
+/** ncl2 profiletag */
 struct Ncl2 {
   char vendor_flag[4];
   icUInt32Number anzahl;
@@ -223,43 +223,43 @@ struct Ncl2 {
 
 /**   global variables   */
 
-cmsHPROFILE hl;                //!< lcms CIE*Lab Profil
-cmsHPROFILE hp;                //!< lcms Bildprofil
-cmsHPROFILE hs;                //!< lcms Simulationsprofil
-cmsHTRANSFORM transf = 0;      //!< lcms &Uuml;bertragungstabelle
-long format;                   //!< lcms Farblayout
-int farb_kanaele;              //!< Farbkanaele wie im Bildprofil angegeben
-double *colour = 0;            //!< gemessene Farben : 0.0 -> 1.0 ==farb_kanaele
-double *outbuf = 0;            //!< nach Lab umgewandelte Farben
-char* colour_profile = 0;      //!< Messfarbprofile (Schmuckfarben)
-char *image_profile = NULL;    //!< Bildprofil
-char *proof_profile = NULL;    //!< Simulationsprofil
-std::vector<double>       pcsfarbe;       //!< -> ungerechnete Farben: CIE*Lab 
-std::vector<double>       geraetefarbe;   //!< Bildfarben
-std::vector<std::string>  name;           //!< Farbnamen
-std::string an,                //!< Bildprofil
-            bn,                //!< Farben
-            pn,                //!< Proofprofil
-            tn;                //!< Dateinamen und Befehlszeile
-size_t tag_size;               //!< ncl2 Abschnittsgroesse
-int x_num;                     //!< Anzahl Messpunkte in x/y Richtung
+cmsHPROFILE hl;                //!< lcms CIE*Lab profile
+cmsHPROFILE hp;                //!< lcms image profile
+cmsHPROFILE hs;                //!< lcms simulation profile
+cmsHTRANSFORM transf = 0;      //!< lcms device link
+long format;                   //!< lcms colour layout
+int farb_kanaele;              //!< colour channels as in image profile
+double *colour = 0;            //!< measured colours : 0.0 -> 1.0 ==farb_kanaele
+double *outbuf = 0;            //!< colours converted to Lab
+char* colour_profile = 0;      //!< measurement colours profile (named colours)
+char *image_profile = NULL;    //!< image profile
+char *proof_profile = NULL;    //!< simulation profile
+std::vector<double>       pcsfarbe;       //!< -> CIE*Lab 
+std::vector<double>       geraetefarbe;   //!< image colours
+std::vector<std::string>  name;           //!< colour names
+std::string an,                //!< image profile name
+            bn,                //!< colour profile
+            pn,                //!< proof profile
+            tn;                //!< file name and command line
+size_t tag_size;               //!< ncl2 tag size
+int x_num;                     //!< number of measurement points in x/y
 int y_num;
-int l = 30;                    //!< Rasterpunkte in einer Dimension
-double x_diff;                 //!< Raster Abstaende
+int l = 30;                    //!< raster points in one dimension
+double x_diff;                 //!< raster distance
 double y_diff;
-int x_start;                   //!< Startpunkte des Messrasters
+int x_start;                   //!< start point of measurement raster
 int y_start;
-int min_x, min_y, max_x, max_y;//!< Intensitaets Maxima und Minima
-gint32 nlayers = 0;            //!< beteiligte Ebenen
-int    n_points;               //!< Anzahl Messpunkte
-gint32 image_ID;               //!< CinePaint Bildnummer
+int min_x, min_y, max_x, max_y;//!< intensity Max and Min
+gint32 nlayers = 0;            //!< layer count
+int    n_points;               //!< measurement point count
+gint32 image_ID;               //!< CinePaint image number
 
-bool farben_sind_gleich = true;//!< Pr&uuml;fschalter
-int  intent_alt = -12;         //!< Test auf ver&auml;nderte &Uuml;bertragung
-int  intent_alt_proof = -12;   //!< Test auf ver&auml;nderte &Uuml;bertragung
-int  flags_alt = -12;          //!< Test auf Schwarzpunktkompensation ...
-static bool erstes_mal = true; //!< Programmzweig identifizieren
-static bool farbe_pruefen_laeuft = false; //!< Vetoschalter
+bool farben_sind_gleich = true;//!< test switch
+int  intent_alt = -12;         //!< test for changed intent
+int  intent_alt_proof = -12;   //!< test for changed proof intent
+int  flags_alt = -12;          //!< test for bpc ...
+static bool erstes_mal = true; //!< identify programm thread
+static bool farbe_pruefen_laeuft = false; //!< veto switch
 }
 
 using namespace icc_examin_cp;
@@ -268,7 +268,7 @@ using namespace icc_examin_cp;
 /*** declaration of local functions ***/
 
 
-/** \addtogroup internal_plug_in_api Interne Plug-in Funktionen
+/** \addtogroup internal_plug_in_api Interne Plug-in Funktions
  *  @{ */
 static int      doExamin  (gint32   image_ID, CMSProfileType typ);
 static int      doWatch   (gint32   image_ID);
@@ -279,7 +279,7 @@ int             setzeRaster(channel*layer);
 int             reserviereSpeicher(channel & layer);
 const char*     dateiName(const char* name);
 /** @} */
-/** \addtogroup colour_api Farbinformationen API
+/** \addtogroup colour_api Colour Information API
 
  *  @{ */
 static void     minMax    (gint32   image_ID, int & min_x, int & min_y,
@@ -292,9 +292,9 @@ static void     getColour (channel* layers, int n,
                            const int & x, const int & y );
 /** @} */
 
-/** \addtogroup profil_api ICC Profil API
+/** \addtogroup profil_api ICC Profile API
 
- *  Die Begriffe ncl2 and Einzelfarben werden hier synonym verwendet.
+ *  The terms ncl2 and named colour are considered synonym.
 
  *  @{ */
 void            schreibeProfil (icUInt32Number intent);
@@ -310,7 +310,7 @@ gint            drawableColourLayoutToLcms( channel    & layer,
 void*           waechter (void* zeiger);
 void            pthreatFehler (int fehler);
 /** @} */
-/** \addtogroup io_api Datei API
+/** \addtogroup io_api File API
  *  @{ */
 void            schreibeDatei(const void *data, gint groesse, std::string name);
 /** @} */
@@ -318,7 +318,7 @@ void            schreibeDatei(const void *data, gint groesse, std::string name);
 
 /*** functions ***/
 
-/** @brief ungenutzt */
+/** @brief not used */
 static int
 dialog_ (gint32 image_ID)
 {
@@ -353,17 +353,17 @@ startWithArgs( int argc, char **argv )
     hauptprogramm.start(argc, argv);
 }
 
-/** @brief Farbprofil in ICC Examin ansehen
+/** @brief watch colour profile in ICC Examin
 
- *  ben&ouml;tigt ICC Examin
+ *  needs ICC Examin
 
- *  @param image_ID			CinePaint Bildnummer
- *  @param typ				CinePaint Profiltyp (Bild/Simulation)
+ *  @param image_ID			CinePaint image number
+ *  @param typ				CinePaint profile typ (image/simulation)
  */
 static gint32
 doExamin (gint32 image_ID, CMSProfileType typ)
 {
-  DBG_PROG_S( "Bild: " << image_ID )
+  DBG_PROG_S( "image: " << image_ID )
 
   char   *mem_profile=NULL;
   gint  size;
@@ -412,10 +412,10 @@ doExamin (gint32 image_ID, CMSProfileType typ)
 }
 
 
-/** @brief &Uuml;bertragungsart in Profilkopf schreiben
+/** @brief write rendering intent in profile header
 
- *  @param header		Profilkopf
- *  @param intent		&Uuml;bertragungsart
+ *  @param header		of profile
+ *  @param intent		of profile
  */
 void
 setzeRenderingIntent (char *header, icUInt32Number intent)
@@ -425,10 +425,10 @@ setzeRenderingIntent (char *header, icUInt32Number intent)
 }
 
 
-/** @brief Vorbereitung f&uuml;r ncl2 - Gr&ouml;&szlig;e Berechnen
+/** @brief preparation for ncl2 - compute size
 
- *  @param farben_n		Anzahl der Farben
- *  @param farb_kanaele	Anzahl der Farbekan&auml;le
+ *  @param farben_n		count of colours
+ *  @param farb_kanaele	number of colour channels
  */
 size_t
 berechneTagGroesse (int farben_n, int farb_kanaele)
@@ -438,14 +438,14 @@ berechneTagGroesse (int farben_n, int farb_kanaele)
   return groesse;
 }
 
-/** @brief Einzelfarben in einen ncl2 Block schreiben
+/** @brief write ncl2 colours in a block
 
- *  @param pcsfarbe		Farbe im PCS Farbraum
- *  @param geraetefarbe	Farbe im Ger&auml;te Farbraum
- *  @param farb_kanaele	Anzahl der Farbekan&auml;le
- *  @param vorname		f&uuml;r alle Farben g&uuml;ltiger Vorname
- *  @param name			Namen der einzelnen Farben
- *  @param nachname		f&uuml;r alle Farben g&uuml;ltiger Nachname
+ *  @param pcsfarbe		colours in PCS colour space
+ *  @param geraetefarbe	        colours in device colour space
+ *  @param farb_kanaele	        count of colour channels
+ *  @param vorname		sur name for all colours
+ *  @param name			individual colour name
+ *  @param nachname		common family name for all colours
  */
 char*
 schreibeNcl2Tag              ( std::vector<double>       pcsfarbe,
@@ -467,8 +467,8 @@ schreibeNcl2Tag              ( std::vector<double>       pcsfarbe,
   for(size_t i = 0; i < groesse; ++i)
     tag_block[i] = 0;
 
-  // 0: Anzahl Farben
-  // 1...n: CIE*Lab Farbwerte
+  // 0: count of colours
+  // 1...n: CIE*Lab colour values
   // n = 3 * FarbAnzahl
 
   Ncl2 *ncl2 = (Ncl2*) &tag_block[8];
@@ -484,9 +484,9 @@ schreibeNcl2Tag              ( std::vector<double>       pcsfarbe,
 
   for (int i = 0; i < farben_n; ++i)
   {
-    Ncl2Farbe *f = (Ncl2Farbe*) ((char*)ncl2 + 76 + // Basisgroesse von Ncl2
-                   (i * (38 +                 // Basisgroesse von Ncl2Farbe
-                         farb_kanaele         // Anzahl Geraetefarben
+    Ncl2Farbe *f = (Ncl2Farbe*) ((char*)ncl2 + 76 + // base size of Ncl2
+                   (i * (38 +                 // base size of Ncl2Farbe
+                         farb_kanaele         // number of device colours
                          * sizeof(icUInt16Number))));//Ncl2Farbe::geraetefarbe
     f->pcsfarbe[0] = icValue((icUInt16Number)(pcsfarbe[3*i+0]*65280.0));
     f->pcsfarbe[1] = icValue((icUInt16Number)(pcsfarbe[3*i+1]*65535.0));
@@ -494,7 +494,7 @@ schreibeNcl2Tag              ( std::vector<double>       pcsfarbe,
     for(int j=0; j < farb_kanaele; ++j)
       f->geraetefarbe[j] = icValue((icUInt16Number)
                                    (geraetefarbe[farb_kanaele*i+j]*65535.0));
-    // TODO Zeiger hier markieren
+    // TODO mark pointer here
     if (name.size() && name[i].size() < 32)
       sprintf(f->name, name[i].c_str());
 
@@ -523,9 +523,9 @@ schreibeNcl2Tag              ( std::vector<double>       pcsfarbe,
 }
 
 
-/** @brief &Uuml;bertragungstabelle anlegen
+/** @brief create device link
 
- *  @param layer		Ebeneninformationen
+ *  @param layer		informations
  */
 void
 transformAnlegen( channel & layer )
@@ -557,13 +557,12 @@ transformAnlegen( channel & layer )
            out2[0]<<" "<<out2[1]<<" "<<out2[2] )
 }
 
-/** @brief sucht nach sich ver&auml;ndernden Farben
+/** @brief search for changing colours
 
- *  da keine R&uuml;ckmeldung &uuml;ber ein sich veraenderndes Bild m&ouml;glich ist
- *  wird best&auml;ndig auf Ver&auml;nderungen gepr&uuml;ft, und ein
- *  neues ncl2 erzeugt.
+ *  as there is no information about changing in image,
+ *  the image is polled for changes, and a new ncl2 will be generated.
 
- *  @param zeiger		Ebenenstapel
+ *  @param zeiger		layer stack
  */
 bool
 vergleicheFarben(void* zeiger)
@@ -575,7 +574,7 @@ vergleicheFarben(void* zeiger)
 
   DBG_PLUG_S( "layer "<< (int*)layer )
 
-  // Farbgedaechtnis - static ist vielleicht gefaehrlich?
+  // colour memory - static is perhaps dangerous?
   static std::vector<double> vorherige_farben;
 
   DBG_PLUG_S( "zeiger " << (int*)zeiger )
@@ -585,13 +584,13 @@ vergleicheFarben(void* zeiger)
     return true;
   }
 
-  pcsfarbe.clear();       // -> ungerechnete Farben: CIE*Lab 
-  geraetefarbe.clear();   // Bildfarben
-  name.clear();           // Farbnamen
+  pcsfarbe.clear();       // -> unchanged colours: CIE*Lab 
+  geraetefarbe.clear();   // image colours
+  name.clear();           // colour names
 
-  // Das Bild befragen im Gitterraster
-  guchar buf[128]; // Punktspeicher
-  int colour_x = 0; // Zaehler
+  // ask the image in raster distance
+  guchar buf[128]; // point cache
+  int colour_x = 0; // counter
   int x_punkt = 0 , y_punkt = 0;
   int n = 0;
 
@@ -599,7 +598,7 @@ vergleicheFarben(void* zeiger)
 
   holeLayerInfo( *layer );
 
-  // Speichern des eingebetteten Bildprofiles -> a
+  // save of the embeded image profile -> a
   if (bearbeiteEingebetteteProfile( layer ))
     return -1;
 
@@ -607,10 +606,10 @@ vergleicheFarben(void* zeiger)
   }
   if( GET_GEOMETRY(layer->status)) {
     setzeRaster( layer );
-	DBG_PROG_S("gerastert")
+	DBG_PROG_S("raster")
   }
 
-  // &Uuml;bertragungstabelle anlegen
+  // create device link
   if( GET_TRANSFORM(layer->status) ||
       GET_PROFIL(layer->status) ||
       GET_CHANNELS(layer->status) ||
@@ -622,7 +621,7 @@ vergleicheFarben(void* zeiger)
       GET_CHANNELS(layer->status) ||
       GET_BITDEPTH(layer->status)) {
     reserviereSpeicher( *layer );
-	DBG_PROG_S("reserviert")
+	DBG_PROG_S("reserved")
   }
 
   DBG_PLUG_S( "nlayers: " << nlayers )
@@ -777,7 +776,7 @@ waechter (void* zeiger)
 
   static bool freilauf = true;
 
-  // Bild beobachten
+  // observe image
   if(bin_erste)
   {
     int sl = 1000000;
@@ -804,15 +803,15 @@ waechter (void* zeiger)
     DBG_PROG_S( "bin_erste: " << bin_erste )
   }
 
-  // ICC Examin starten
+  // start ICC Examin
   if(!bin_erste)
   {
     tn = "iccexamin ";
-    tn += bn;  // die Farben
+    tn += bn;  // the colours
     tn += " ";
-    tn += an;  // das Bildprofil
+    tn += an;  // the image profile
     tn += " '";
-    tn += pn;  // das Proofprofil
+    tn += pn;  // the proof profile
     tn += "'";
 
     DBG_PROG_S( tn )
@@ -878,9 +877,9 @@ pthreatFehler (int fehler)
   }
 }
 
-/** @brief Ebenen aufr&auml;men
+/** @brief clean layers
 
- *  @param layer		Ebenenstapel
+ *  @param layer		stack
  */
 void
 aufraeumen(channel *layer)
@@ -890,7 +889,7 @@ aufraeumen(channel *layer)
       DBG_PROG_S( "farbe_pruefen_laeuft " << farbe_pruefen_laeuft )
       sleep(1);
     }
-    // Aufraeumen
+    // clean
     remove(an.c_str());
     remove(bn.c_str());
     remove(pn.c_str());
@@ -909,11 +908,11 @@ aufraeumen(channel *layer)
 }
 
 
-/** @brief Speicherblock -> Datei
+/** @brief memory block -> file
 
- *  @param data		Speicherblock
- *  @param groesse	Gr&ouml;&szlig;e
- *  @param name		Dateiname
+ *  @param data		memory block
+ *  @param groesse	size
+ *  @param name		file name
  */
 void
 schreibeDatei(const void *data, gint groesse, std::string name)
@@ -930,14 +929,14 @@ schreibeDatei(const void *data, gint groesse, std::string name)
         DBG_MEM_S( "Profile %s written " << name.c_str() )
     }
     f.close();
-    DBG_PROG_S("Profil geschrieben")
+    DBG_PROG_S("Profile written")
   } else
     g_print ("Profile %s not written.", name.c_str());
 }
 
-/** @brief Ebenenlayout -> lcms Farblayout
+/** @brief layer layout -> lcms colour layout
  
- *  folgende Aspekte sind zu behandeln:\n
+ *  following cariables are to handle:\n
     T_COLORSPACE(s) \n
     T_SWAPFIRST(s) \n
     T_FLAVOR(s) \n
@@ -946,11 +945,11 @@ schreibeDatei(const void *data, gint groesse, std::string name)
     T_DOSWAP(e) \n
     T_EXTRA(e) \n
     T_CHANNELS(c) \n
-    T_BYTES(b) - immer 0, da nach float gewandelt wird.\n
+    T_BYTES(b) - always 0, as we convert to float.\n
 
 
- *  @param layer	Ebene
- *  @param p		lcms Farbprofil
+ *  @param layer	layers
+ *  @param p		lcms colour profile
  */
 gint
 drawableColourLayoutToLcms( channel    & layer,
@@ -1001,16 +1000,16 @@ drawableColourLayoutToLcms( channel    & layer,
   return success;
 }
 
-/** @brief eingebettetes Profil behandeln
+/** @brief handle embeded profile
 
- *  ein Mix aus Pr&uuml;fen und Bearbeiten von Profilinformationen
+ *  a Mix from ichecking and processing of profile informations
 
- *  @param layer	Ebenen
+ *  @param layer	layer
  */
 int
 bearbeiteEingebetteteProfile( channel *layer )
 {
-  // hat sich der Profilname geaendert?
+  // has the profile name changed?
   if (!gimp_image_has_icc_profile(image_ID, ICC_IMAGE_PROFILE)) {
     g_message (_("No profil assigned to image."));
     return 1;
@@ -1039,7 +1038,7 @@ bearbeiteEingebetteteProfile( channel *layer )
   if(pprofil_name)
     DBG_PLUG_S( image_ID <<": "<< pprofil_name <<" "<< old_pprofil_name )
 
-  // Test auf Veraenderung des Profiles
+  // Test for changes in profile
   if( strcmp(old_profil_name.c_str(), profil_name) == 0/* &&
       (pprofil_name ?
        (strcmp(old_pprofil_name.c_str(), pprofil_name) == 0) : old_pprofil_name.size()) */)
@@ -1050,7 +1049,7 @@ bearbeiteEingebetteteProfile( channel *layer )
     layer->status |= PROFIL_NEU(1);
 
   //DBG_PROG_S( "hp = " << hp )
-  // Speichern des eingebetteten Profiles
+  // save of embeded profiles
   if(strcmp(old_profil_name.c_str(), profil_name) != 0 ||
      (int)layer->intent != intent_alt)
   {
@@ -1060,7 +1059,7 @@ bearbeiteEingebetteteProfile( channel *layer )
     setzeRenderingIntent ( image_profile, layer->intent );
     schreibeDatei( image_profile, size, an );
 //sleep(10);
-    // Berechnung -> CIE*Lab vorbereiten
+    // calculate -> CIE*Lab prepare
     if(hl)cmsCloseProfile (hl);
     if(hp)cmsCloseProfile (hp);
     hl   = cmsCreateLabProfile( cmsD50_xyY() );
@@ -1074,7 +1073,7 @@ bearbeiteEingebetteteProfile( channel *layer )
     //DBG_PROG_S( "hp = " << hp << " status:"<< layer->status )
   }
 
-  // Speichern des eingebetteten Proofprofiles
+  // save of embeded profiles
   int        new_proofing = 
                  gimp_display_get_cms_flags (image_ID) & cmsFLAGS_SOFTPROOFING;
   static int old_proofing = 0;
@@ -1095,7 +1094,7 @@ bearbeiteEingebetteteProfile( channel *layer )
       setzeRenderingIntent ( proof_profile, layer->intent_proof );
       schreibeDatei( proof_profile, psize, pn );
     } else {
-      DBG_MEM_S( "schreibe 1 byte\n" )
+      DBG_MEM_S( "wrote 1 byte\n" )
       schreibeDatei( "", 1, pn );
     }
     layer->status |= PROFIL_NEU(1);
@@ -1110,19 +1109,18 @@ bearbeiteEingebetteteProfile( channel *layer )
   if(profil_name) free(profil_name);
   if(pprofil_name) free(pprofil_name);
 
-  // Intent anpassen
+  // check
   if((int)layer->intent != intent_alt) {
     intent_alt = layer->intent;
     layer->status |= TRANSFORM_NEU(1);
   }
 
-  // Intent anpassen
   if((int)layer->intent_proof != intent_alt_proof) {
     intent_alt_proof = layer->intent_proof;
     layer->status |= TRANSFORM_NEU(1);
   }
 
-  // Schalter anpassen
+  // adapt switch
   if((int)layer->flags != flags_alt) {
     flags_alt = layer->flags;
     layer->status |= TRANSFORM_NEU(1);
@@ -1131,11 +1129,11 @@ bearbeiteEingebetteteProfile( channel *layer )
   return 0;
 }
 
-/** @brief Farben in 3D ansehen
+/** @brief watch colours in 3D
 
- *  ben&ouml;tigt ICC Examin
+ *  needs ICC Examin
 
- *  @param image_ID_		CinePaint Bildnummer
+ *  @param image_ID_		CinePaint image number
  */
 static int
 doWatch (gint32 image_ID_)
@@ -1169,14 +1167,14 @@ doWatch (gint32 image_ID_)
 
   DBG_PROG_S( "layer: " << (int*)layer ) 
 
-  // Min/Max bestimmen
+  // determine Min/Max
   minMax( image_ID, min_x, min_y, max_x, max_y );
 
-  // Farben Messen und in bestimmten Zeitabstaenden wiederholen
+  // measure colours and repeat in certain intervals
   //
-  // Es gibt zwei threads.
-  // Der erste Neben-thread started eine while Schleife zum Beobachten
-  // des Bildes. Der Haupthread beobachtet ICC Examin.
+  // We have two threads.
+  // The first one is starting a while condition for observation
+  // of image. The main thread watches ICC Examin.
 
   pthread_t p_t;
   int fehler = false;
@@ -1190,7 +1188,7 @@ doWatch (gint32 image_ID_)
     }
   }
 
-  // starte iccexamin und warte auf seine Beendigung 
+  // start iccexamin and wait for its end 
   if(!fehler) {
     waechter(layer);
   }
@@ -1200,13 +1198,13 @@ doWatch (gint32 image_ID_)
   return image_ID;
 }
 
-/** @brief Holt einen Farbpunkt
- *  @param layer	Ebene
- *  @param x_punkt	Koordinate
- *  @param y_punkt	Koordinate
- *  @param buf		generischer Speicher zu Ablegen der Farbe
- *  @param n		Layernummer
- *  @param colour_x	gibt die Farbnummer an in welche die Farbe in colour[] soll
+/** @brief takes a colour point
+ *  @param layer	layer
+ *  @param x_punkt	koordinate
+ *  @param y_punkt	koordinate
+ *  @param buf		generic memory for saving the colour
+ *  @param n		layer number
+ *  @param colour_x	tells the position to write in the colour in colour[]
  */
 static void
 holeFarbPunkt (channel* layer, int & x_punkt, int & y_punkt,
@@ -1237,9 +1235,9 @@ holeFarbPunkt (channel* layer, int & x_punkt, int & y_punkt,
         #endif
 }
 
-/** @brief Einzelfarbenprofil schreiben
+/** @brief write ncl2
 
- *  @param intent		&Uuml;bertragungsart
+ *  @param intent		rendering intent
  */
 void
 schreibeProfil (icUInt32Number intent)
@@ -1251,25 +1249,24 @@ schreibeProfil (icUInt32Number intent)
   memcpy (&colour_profile[236], tag, tag_size);
   if(tag)    delete [] tag;
 
-  // Intent setzen
+  // set intent
   setzeRenderingIntent ( colour_profile, intent );
 
-  // Speichern des Farbprofiles
+  // save the colour profile
   if(colour_profile && tag_size)
     schreibeDatei( colour_profile, 236 + tag_size , bn );
 }
 
 
-/** @brief Ebeneninformationen aktualisieren
+/** @brief actualise layer informations
 
- *  Es wird wie sonst &uuml;blich an einer Ebene gearbeitet
+ *  One layer is active at time as usual.
 
- *  holeLayerInfo holt die Informationen in channel*.\n
- *  Sp&auml;ter kann entschieden werden ob alle Informationen g&uuml;ltig
- *  sind.
+ *  holeLayerInfo takes the information in channel*.\n
+ *  Later it can be decided whether all informationen are valid.
 
- *  @param layer		Ebenenstapel
- *  @return 			ge&auml;ndert
+ *  @param layer		stack
+ *  @return 			changed
  */
 int
 holeLayerInfo    (channel & layer)
@@ -1283,7 +1280,7 @@ holeLayerInfo    (channel & layer)
   if(drawable_ID < 0)
     g_message(_("No active drawable found."));
 
-  // Durchlauf
+  // run
   {
       // ID
       if(layer.ID != drawable_ID) {
@@ -1298,14 +1295,14 @@ holeLayerInfo    (channel & layer)
         layer.status |= GEOMETRY_NEU(1);
         layer.drawable_type = drawable_type;
       }
-      // Dimension
+      // dimension
       if(layer.width != (int)layer.drawable->width ||
          layer.height != (int)layer.drawable->height) {
         layer.status |= GEOMETRY_NEU(1);
         layer.width  = layer.drawable->width;
         layer.height = layer.drawable->height;
       }
-      // Auswahl oder sichtbarer Bereich
+      // selection or visible area
       gimp_drawable_mask_bounds(layer.drawable->id, &var1,&var2, &var3,&var4);
       if(layer.sel_x1 != var1 ||
          layer.sel_x2 != var3 ||
@@ -1319,7 +1316,7 @@ holeLayerInfo    (channel & layer)
         layer.sel_w = layer.sel_x2-layer.sel_x1;
         layer.sel_h = layer.sel_y2-layer.sel_y1;
       }
-      // Versatz
+      // offset
       gimp_drawable_offsets( layer.ID, &var1, &var2);
       if(layer.offx != var1 ||
          layer.offy != var2) {
@@ -1327,7 +1324,7 @@ holeLayerInfo    (channel & layer)
         layer.offx = var1;
         layer.offy = var2;
       }
-      // Kanaele
+      // channels
       var = gimp_drawable_num_channels(layer.ID);
       if(layer.samplesperpixel != var) {
         layer.status |= CHANNELS_NEU(1);
@@ -1359,12 +1356,12 @@ holeLayerInfo    (channel & layer)
   return 0;
 }
 
-/** @brief Rasterparameter festlegen
+/** @brief Raster parameter
 
- *  und gleichzeitig nach ICC Examin schauen
+ *  and look at ICC Examin
 
- *  @param layer		Ebenenstapel
- *  @todo Auswahl ber&uuml;cksichtigen
+ *  @param layer		stack
+ *  @todo consider selection
  */
 int
 setzeRaster( channel *layer )
@@ -1397,7 +1394,7 @@ setzeRaster( channel *layer )
   return 0;
 }
 
-/** @brief reserviere Farbspeicher
+/** @brief reserve colour memory
  */
 int
 reserviereSpeicher( channel & layer )
@@ -1409,10 +1406,10 @@ reserviereSpeicher( channel & layer )
   outbuf = (double*) new double [n_points*3];
   if(!outbuf) return 1;
 
-  // weiter Aufbereiten
+  // continue preparation
   tag_size  = berechneTagGroesse( n_points, farb_kanaele );
   if(colour_profile) delete [] colour_profile;
-  // tag_size * 3 sollte fuer sich aendernde Kanalzahlen ausreichen
+  // tag_size * 3 should be enough for changing channel numbers
   colour_profile = (char*) new char [320 + tag_size * 3];
 
   DBG_NUM_S( "320 + tag_size: " << 320 + tag_size )
@@ -1427,15 +1424,15 @@ reserviereSpeicher( channel & layer )
   return 0;
 }
 
-/** @brief Extreme heraussuchen
+/** @brief search for extremes
 
-    @todo zu dick, sollte vorhandene Funktionen besser nutzen
+    @todo too thick, should better use available functions
  */
 static void
 minMax(gint32 image_ID, int & min_x, int & min_y,
                       int & max_x, int & max_y )
 {
-  DBG_PROG_S( "Bild: " << image_ID )
+  DBG_PROG_S( "image_ID: " << image_ID )
 
   gint32  *layers;
   gint32   nlayers;

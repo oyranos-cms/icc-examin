@@ -21,7 +21,7 @@
  * 
  * -----------------------------------------------------------------------------
  *
- * Inhalt für das informative "Über" Fenster.
+ * some mathematical formulas
  * 
  */
 
@@ -66,7 +66,7 @@ double
 dE2000 (const Lab_s & Lab1_n, const Lab_s & Lab2_n,
         double kL, double kC, double kH)             // (1)
 {
-  // nach CIE*Lab uebertragen
+  // convert to CIE*Lab
   Lab_s Lab1, Lab2; 
   Lab1.L = Lab1_n.L * 100.;
   Lab2.L = Lab2_n.L * 100.;
@@ -234,7 +234,7 @@ XYZtoLab (XYZ_s &xyz, Lab_s &lab)
       else
          xyz_.Z = k * xyz_.Z + (16.0/116.0);
 
-      // auf 0.0-1.0 normalisieren ------v
+      // auf 0.0-1.0 normalise ------v
       lab.L = (116.0*  xyz_.Y -  16.0)   / 100.0;
       lab.a = (500.0*( xyz_.X -  xyz_.Y) + 128.0) / 256.0 ;
       lab.b = (200.0*( xyz_.Y -  xyz_.Z) + 128.0) / 256.0 ;

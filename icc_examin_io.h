@@ -21,7 +21,7 @@
  * 
  * -----------------------------------------------------------------------------
  *
- * E/A der zentralen Klasse
+ * I/O of the central class
  * 
  */
 
@@ -48,9 +48,9 @@ class  ICCexamin;
 extern ICCexamin *icc_examin;
 
 
-/** @brief Datei E/A der zentrale Programminstanz
+/** @brief file I/O of the central program instance
  *
- *  Die Klasse uebernimmt die Abstimmung von Dateiereignissen
+ *  This class manages the coordination with file events
  */
 class ICCexaminIO /*: public icc_examin_ns::Beobachter,
                     public icc_examin_ns::ThreadDaten*/
@@ -76,18 +76,18 @@ class ICCexaminIO /*: public icc_examin_ns::Beobachter,
     void
 #endif
                  oeffnenStatisch_ ( void* ICCexamina );
-    void         oeffnenThread_ ();            //!< nur einmal pro ICCexamin
+    void         oeffnenThread_ ();            //!< only one time pro ICCexamin
     void         oeffnenThread_ (int erneuern__); 
   public:
-    void         oeffnen ();                   //!< interaktiv
+    void         oeffnen ();                   //!< interactive
     void         oeffnen (std::vector<std::string> dateinamen);
     bool         lade () {return lade_; };
     void         lade (std::vector<Speicher> & neu);
 
   public:
-    bool         berichtSpeichern (void);      //!< GCATS Auswertung -> html Datei
+    bool         berichtSpeichern (void);      //!< GCATS report -> html file
 
-    bool         gamutSpeichern (icc_examin_ns::IccGamutFormat format); //!< Farbraumhuelle
+    bool         gamutSpeichern (icc_examin_ns::IccGamutFormat format); //!< gamut
 };
 
 #endif //ICC_EXAMIN_IO_H

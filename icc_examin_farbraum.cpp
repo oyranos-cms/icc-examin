@@ -21,7 +21,7 @@
  *
  * -----------------------------------------------------------------------------
  *
- * Die zentrale Klasse.
+ * the central class. colour space parts
  * 
  */
 
@@ -80,7 +80,7 @@ ICCexamin::messwertLese (int n,
       if(messung.validHalf())
       {
         for (j = 0; j < (unsigned) n; ++j)
-        { // zuerst die Messwerte ...
+        { // first the measurments ...
           std::vector<double> daten;
           if(messung.hasXYZ() || messung.hasLab())
             daten = messung.getMessLab(j);
@@ -88,7 +88,7 @@ ICCexamin::messwertLese (int n,
             daten = messung.getCmmLab(j);
           for (unsigned i = 0; i < daten.size(); ++i)
             p.push_back(daten[i]);
-          // ... dann die ueber das Profil errechneten Lab Werte
+          // ... then the calculated profile Lab values
           if (icc_betrachter->DD_farbraum->zeig_punkte_als_paare) {
             daten = messung.getCmmLab(j);
             for (unsigned i = 0; i < daten.size(); ++i)
@@ -145,14 +145,14 @@ ICCexamin::netzLese (int n,
       DBG_PROG_V( netz->size() <<" "<< netz_temp.size() )
       (*netz)[n] = netz_temp[0];
       (*netz)[n].name = profile[n]->filename();
-      // Dateiname extrahieren
+      // extract the file name
       std::string & dateiname = (*netz)[n].name;
       if( dateiname.find_last_of("/") != std::string::npos)
         dateiname = dateiname.substr( dateiname.find_last_of("/")+1,
                                     dateiname.size() );
       DBG_NUM_V( (*netz)[n].undurchsicht <<" "<< (*netz)[n].umriss.size() )
     }
-# if 0  // sollte beim Laden geprueft werden
+# if 0  // should be checked on load time
     else {
       (*netz)[n].punkte.clear();
       (*netz)[n].indexe.clear();
@@ -172,7 +172,7 @@ ICCexamin::farbenLese (int n,
                        std::vector<float>  & f)
 {
   DBG_PROG_START
-  // benannte Farben darstellen
+  // show named colours
   if( profile.size() > n )
   {
     DBG_PROG
@@ -202,7 +202,7 @@ ICCexamin::farbenLese (int n,
       s = i*mult*3;
       if(mult == 2 && !neu)
       {
-        // alte Farben kopieren
+        // copy old colours
         p[s+3] = p[s+0];
         p[s+4] = p[s+1];
         p[s+5] = p[s+2];
@@ -212,7 +212,7 @@ ICCexamin::farbenLese (int n,
       p[s+2] = p_neu[i*3+2];
       if(mult == 2 && neu)
       {
-        // neue Farben verdoppeln
+        // double of new colours
         p[s+3] = p[s+0];
         p[s+4] = p[s+1];
         p[s+5] = p[s+2];
@@ -220,7 +220,7 @@ ICCexamin::farbenLese (int n,
     }
 
     DBG_NUM_V( f.size() )
-    // ncl2 Farben -> Bildschirm
+    // ncl2 colours -> monitor colours
     double *lab = new double [n_farben*mult*3],
            *rgb=0;
     for(unsigned i = 0; i < n_farben * 3; ++i)
@@ -229,7 +229,7 @@ ICCexamin::farbenLese (int n,
                                  intentGet(NULL),
                                  gamutwarn()?cmsFLAGS_GAMUTCHECK:0);
     DBG_NUM_V( n_farben )
-    if(!rgb)  WARN_S( _("RGB Ergebnis nicht verfuegbar") )
+    if(!rgb)  WARN_S( _("RGB result not available") )
     for(unsigned i = 0; i < n_farben; ++i)
     {
       s = i*mult*4;
@@ -277,7 +277,7 @@ ICCexamin::farbraum (int n)
   DBG_PROG_V( n <<" "<< profile.size()<<" "<<profile.aktuell() )
   DBG_PROG_V( profile[n]->filename() )
 
-  // Messwerte
+  // measurements
   int messwerte=false;
   bool has_mess = profile[n]->hasMeasurement();
   MARK( frei(false); )
@@ -293,11 +293,11 @@ ICCexamin::farbraum (int n)
 
   int ncl2_profil = profile[n]->hasTagName("ncl2");
 
-  // Oeffnen
+  // open
   if(lade())
     farbraumModus( profile.aktuell() );
 
-  // benannte Farben darstellen
+  // show named colours
   if( profile.size() > n && ncl2_profil )
   {
     DBG_PROG
@@ -330,7 +330,7 @@ ICCexamin::farbraum (int n)
 
     DBG_PROG_V( n <<" "<< netz->size() <<" "<< ncl2_profil )
 
-    // Setzen einiger Standardwerte
+    // set some standard values
     if(netz->size() && neues_netz)
     {
       if((n == 0 && ncl2_profil) &&
@@ -362,7 +362,7 @@ ICCexamin::farbraum (int n)
 
       icc_betrachter->DD_farbraum->achsNamen( texte );
 
-      // da das einfuegen nicht genau abgebildet wird ist passiv am sichersten
+      // as the including is not that exactly a passive is more appropriate
       if(profile[n]->filename() == moniName())
         profile.passiv(n);
       DBG_PROG_V( n <<" "<< profile.aktiv(n) )
@@ -371,7 +371,7 @@ ICCexamin::farbraum (int n)
     {
       icc_betrachter->DD_farbraum->dreiecks_netze[n].name =
                                                          profile[n]->filename();
-      // Dateiname extrahieren
+      // extract file name
       std::string & dateiname = icc_betrachter->DD_farbraum->dreiecks_netze[n].name;
       if( dateiname.find_last_of("/") != std::string::npos)
         dateiname = dateiname.substr( dateiname.find_last_of("/")+1,
@@ -428,9 +428,9 @@ ICCexamin::farbraumModus (int profil)
   if(profile.size() && profile.profil()->hasTagName("ncl2")) {
     farbraum_modus_ = true;
     intent( -1 );
-    DBG_PROG_S( "setzte Farbraum Modus" )
+    DBG_PROG_S( "set colour space mode" )
   } else if(!profile.size()) {
-    WARN_S( "zu frueh mit " << profile.size() << " Profilen" )
+    WARN_S( "too early with " << profile.size() << " profiles" )
   }
 
   DBG_PROG_V( farbraum_modus_ )

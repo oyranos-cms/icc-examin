@@ -33,7 +33,7 @@ void TagBrowser::reopen_nicht() {
 
 void TagBrowser::selectItem(int item) {
   DBG_PROG_START
-  //Auswahl aus tag_browser
+  // selection from tag_browser
 
   status("")
 
@@ -56,7 +56,7 @@ TagTexts::TagTexts(int X,int Y,int W,int H,const char* start_info) : Fl_Hold_Bro
 
 void TagTexts::hinein(std::string text) {
   DBG_PROG_START
-  //Text aus tag_browser anzeigen
+  //show text from tag_browser
 
       inspekt_topline = this->topline();
 
@@ -788,7 +788,7 @@ ard"));
           o->align(FL_ALIGN_LEFT);
           { TagBrowser* o = tag_browser = new TagBrowser(0, 25, 385, 135, _("tag_browser_invisible"));
             o->tooltip(_("Choose one profile tag"));
-            o->box(FL_FLAT_BOX);
+            o->box(FL_THIN_DOWN_BOX);
             o->color(FL_BACKGROUND_COLOR);
             o->selection_color(FL_SELECTION_COLOR);
             o->labeltype(FL_NORMAL_LABEL);
@@ -1069,7 +1069,7 @@ void ICCfltkBetrachter::zeig_mich_(void* widget) {
 
   // start
   if( widget == inspekt_html )
-  { DBG_PROG_S("inspekt_html behandeln")
+  { DBG_PROG_S("inspekt_html handling")
     if( menueintrag_inspekt->value() )
       inspekt_html->show();
     else
@@ -1084,10 +1084,10 @@ void ICCfltkBetrachter::zeig_mich_(void* widget) {
         !menueintrag_3D->value() )
       ;//selectItem(icc_examin->tag_nr()+6);
   } else if (widget == mft_gl) {
-    DBG_PROG_S( "mft GL Fenster belassen." )
+    DBG_PROG_S( "leave mft GL window." )
     mft_gl->show();
   } else if (widget == DD_farbraum) {
-    DBG_PROG_S( "3D GL Fenster belassen." )
+    DBG_PROG_S( "leave 3D GL window." )
     DD_farbraum->show();
   }
   DBG_PROG_ENDE

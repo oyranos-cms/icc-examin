@@ -21,7 +21,7 @@
  *
  * -----------------------------------------------------------------------------
  *
- * Die zentrale Klasse.
+ * the centrale class. tag selection part
  * 
  */
 
@@ -235,7 +235,7 @@ void
 ICCexamin::waehleMft (int item)
 { DBG_PROG_START
   frei(false);
-  //Auswahl aus mft_choice
+  //selection from mft_choice
 
   kurven[MFT_VIEWER].clear();
   punkte[MFT_VIEWER].clear();
@@ -255,17 +255,17 @@ ICCexamin::waehleMft (int item)
 
   DBG_PROG_V( _mft_item )
   switch (_mft_item) {
-  case 0: // Überblick
+  case 0: // overview
     { std::vector<std::string> Info = icc_betrachter->mft_choice->Info;
       //profile.profil()->getTagText (icc_betrachter->tag_nummer)[0];
-      for (unsigned int i = 1; i < Info.size(); i++) // erste Zeile weglassen
+      for (unsigned int i = 1; i < Info.size(); i++) // leave out first line
         s << Info [i] << endl;
-      icc_betrachter->mft_text->hinein ( s.str() ); DBG_PROG_S("Text anzeigen")
+      icc_betrachter->mft_text->hinein ( s.str() ); DBG_PROG_S("show text")
       icc_betrachterNeuzeichnen(icc_betrachter->mft_text);
     } break;
-  case 1: // Matrix
+  case 1: // matrix
     zahlen = profile.profil()->getTagNumbers (icc_betrachter->tag_nummer, ICCtag::MATRIX);
-    DBG_PROG_S("Zahlen in mft_text anzeigen")
+    DBG_PROG_S("show numbers in mft_text")
     assert (9 == zahlen.size());
     s << endl <<
     "  " << zahlen[0] << ", " << zahlen[1] << ", " << zahlen[2] << ", " << endl <<
@@ -274,24 +274,24 @@ ICCexamin::waehleMft (int item)
     icc_betrachter->mft_text->hinein ( s.str() ); DBG_PROG
     icc_betrachterNeuzeichnen(icc_betrachter->mft_text);
     break;
-  case 2: // Eingangskurven
-    DBG_PROG_S("Kurven in anzeigen")
+  case 2: // input curves
+    DBG_PROG_S("show curves")
     kurven[MFT_VIEWER] =  profile.profil()->getTagCurves (icc_betrachter->tag_nummer, ICCtag::CURVE_IN);
     texte[MFT_VIEWER] = profile.profil()->getTagChannelNames (icc_betrachter->tag_nummer, ICCtag::CURVE_IN);
     icc_betrachter->mft_viewer->hineinKurven ( kurven[MFT_VIEWER], texte[MFT_VIEWER] );
     icc_betrachterNeuzeichnen(icc_betrachter->mft_viewer);
     DBG_PROG
     break;
-  case 3: // 3D Tabelle
-    DBG_PROG_S("Tabelle in anzeigen")
+  case 3: // 3D table
+    DBG_PROG_S("show table")
     icc_betrachter->mft_gl->hineinTabelle (
                      profile.profil()->getTagTable (icc_betrachter->tag_nummer, ICCtag::TABLE),
                      profile.profil()->getTagChannelNames (icc_betrachter->tag_nummer, ICCtag::TABLE_IN),
-                     profile.profil()->getTagChannelNames (icc_betrachter->tag_nummer, ICCtag::TABLE_OUT) ); DBG_PROG_S( "3D Tabelle" )
+                     profile.profil()->getTagChannelNames (icc_betrachter->tag_nummer, ICCtag::TABLE_OUT) ); DBG_PROG_S( "3D table" )
     icc_betrachterNeuzeichnen(icc_betrachter->mft_gl_group);
     break;
-  case 4: // Ausgangskurven
-    DBG_PROG_S("Kurven in anzeigen")
+  case 4: // output curves
+    DBG_PROG_S("show curves")
     kurven[MFT_VIEWER] = profile.profil()->getTagCurves (icc_betrachter->tag_nummer, ICCtag::CURVE_OUT);
     texte[MFT_VIEWER] = profile.profil()->getTagChannelNames (icc_betrachter->tag_nummer, ICCtag::CURVE_OUT);
     icc_betrachter->mft_viewer->hineinKurven ( kurven[MFT_VIEWER], texte[MFT_VIEWER] );

@@ -21,7 +21,7 @@
  * 
  * -----------------------------------------------------------------------------
  *
- * Die zentrale Klasse
+ * the central class
  * 
  */
 
@@ -56,10 +56,10 @@ namespace icc_examin_ns {
     };
 }
 
-/** @brief zentrale Programminstanz
+/** @brief central program instance
  *
- *  Die Klasse uebernimmt die Abstimmung von Oberflaechen und Datenereignissen,
- *  den Start der (fltk-)Warteschleife und der Threads.
+ *  The class coordinates the user interface (UI) and data events,
+ *  the start of the (fltk-)main loop and the threads.
  */
 class ICCexamin : public icc_examin_ns::Beobachter,
                   public icc_examin_ns::ThreadDaten
@@ -90,54 +90,54 @@ class ICCexamin : public icc_examin_ns::Beobachter,
     };
     void         auffrischen(int schalter);
   public:
-    void         oeffnen ();                   //!< interaktiv
+    void         oeffnen ();                   //!< interactive
     void         oeffnen (std::vector<std::string> dateinamen);
     bool         lade ();
     void         lade (std::vector<Speicher> & neu);
     void         oyranos_einstellungen();
 
   private:
-    void         erneuerTagBrowserText_ (void);//!< Profil Text in browserText
+    void         erneuerTagBrowserText_ (void);//!< profile text in browserText
   public:
-    bool         berichtSpeichern (void);      //!< GCATS Auswertung -> html Datei
+    bool         berichtSpeichern (void);      //!< GCATS report -> html file
 
-    bool         gamutSpeichern (icc_examin_ns::IccGamutFormat format); //!< Farbraumhuelle
-    void         zeig3D ();                    //!< 3D Farbraumansicht
-    void         zeigPrueftabelle ();          //!< Bericht anzeigen
-    void         zeigCGATS();                  //!< korrigiertes CGATS zeigen
-    void         zeigMftTabellen();            //!< oeffnen aller Kanaele
-    void         icc_betrachterNeuzeichnen (void* widget); //!< Oberflaechenpflege
+    bool         gamutSpeichern (icc_examin_ns::IccGamutFormat format); //!< colour space hull / gamut
+    void         zeig3D ();                    //!< 3D colour space view
+    void         zeigPrueftabelle ();          //!< show controlling report
+    void         zeigCGATS();                  //!< show corrected CGATS
+    void         zeigMftTabellen();            //!< open all channels
+    void         icc_betrachterNeuzeichnen (void* widget); //!< redraw UI
 
     std::string  waehleTag (int item);
     void         waehleMft (int item);
     std::vector<int> kurve_umkehren;
-    enum { GL_STOP, GL_ZEICHNEN, GL_AUFFRISCHEN }; //!< GL Warten
-    icc_examin_ns::EinModell  * alle_gl_fenster;   //!< alle Gl Fenster
+    enum { GL_STOP, GL_ZEICHNEN, GL_AUFFRISCHEN }; //!< GL waiting
+    icc_examin_ns::EinModell  * alle_gl_fenster;   //!< all Gl windows
   private:
-    int  _item,  _mft_item;    //!< @brief ausgewaehlte Profilbestandteile
+    int  _item,  _mft_item;    //!< @brief selected profil items
     int  _zeig_prueftabelle,
          farbraum_angezeigt_;
     int  status_,
-         intent_,              //!< Uebertragungsart
-         bpc_,                 //!< Schwarzpunktkompensation
-         intent_alt_,          //!< Uebertragungsart
-         bpc_alt_,             //!< Schwarzpunktkompensation
-         gamutwarn_;           //!< Farbraumwarnung
-    bool intent_selection_,    //!< interaktiv gewaehlte Uebertragungsart
-         farbraum_modus_;      //!< profile.profil() enthaelt ncl2 Schmuckfarben
+         intent_,              //!< rendering intent / de: Uebertragungsart
+         bpc_,                 //!< black point compensation / de: Schwarzpunktkompensation
+         intent_alt_,          //!< old rendering intent / de: Uebertragungsart
+         bpc_alt_,             //!< old black point compensation / de: Schwarzpunktkompensation
+         gamutwarn_;           //!< gamut warning / de: Farbraumwarnung
+    bool intent_selection_,    //!< interactive selected rendering intent
+         farbraum_modus_;      //!< profile.profil() contains ncl2 named colours
     ICCwaehler *icc_waehler_;
   public:
-    void waehlbar ( int pos, int v );//!< ICCwaehler Eintrag waehlbar oder nicht
-    int  laeuft ()  { return status_; }        //!< kann bei >1 genutzt werden
+    void waehlbar ( int pos, int v );//!< ICCwaehler item selectable or not
+    int  laeuft ()  { return status_; }        //!< can be used with values > 1
     int  intentGet(int *interaktiv){ if(interaktiv)
                                        *interaktiv = (int)intent_selection_;
-                                     return intent_; }        //!< die globale Uebertragungsart; siehe auch @see: ICCprofile.intent()
-    void intent (int i);                       //!< setze eine Uebertragungsart
-    int  bpc ()  { return bpc_; }              //!< globale BPC
-    void bpc (int i);                          //!< setze BPC
-    int  gamutwarn ()  { return gamutwarn_; }  //!< Farbraumwarnung?
+                                     return intent_; }        //!< the global rendering intent; see as well @see: ICCprofile.intent()
+    void intent (int i);                       //!< set a rendering intent
+    int  bpc ()  { return bpc_; }              //!< global BPC
+    void bpc (int i);                          //!< set BPC
+    int  gamutwarn ()  { return gamutwarn_; }  //!< gamut warning?
     void gamutwarn (int warn);
-    void gamutAnsichtZeigen ();                //!< DD_farbraum zeigen
+    void gamutAnsichtZeigen ();                //!< show DD_farbraum
 
   public:
     ICCfltkBetrachter* icc_betrachter;
@@ -153,7 +153,7 @@ class ICCexamin : public icc_examin_ns::Beobachter,
     std::vector<std::vector<double> >               punkte;
     std::vector<std::vector<std::string> >          texte;
 
-    // Farbraeume laden
+    // loading of colour spaces
     void farbraum();
     void farbraum(int erneuere_nummer_in_profile_kette);
     bool farbraumModus( ) { /*DBG_PROG_V( farbraum_modus_ );*/ return farbraum_modus_; }
@@ -173,7 +173,7 @@ class ICCexamin : public icc_examin_ns::Beobachter,
     void vcgtZeigen ();
     void vcgtStoppen ();
   private:
-    int  vcgt_cb_laeuft_b_;  //!< erzaehlt ob der vcgt Fenster cp laeuft
+    int  vcgt_cb_laeuft_b_;  //!< tells whether the vcgt window callback runs
   public:
     void testZeigen ();
     void moniHolen ();
@@ -181,14 +181,14 @@ class ICCexamin : public icc_examin_ns::Beobachter,
     std::string moniName();
     void standardGamma ();
   public:
-      //! virtual aus icc_examin_ns::Beobachter::
+      //! virtual from icc_examin_ns::Beobachter::
     void nachricht( icc_examin_ns::Modell* modell , int infos );
 
-    // Oberflaechenfunktionen (GUI)
+    // GUI functions
     double fortschritt( void );
     void fortschritt(double f, double anteil);
 
-    void statusAktualisieren();  //!< benutze das "status" Makro
+    void statusAktualisieren();  //!< use the "status" macro
 
 };
 

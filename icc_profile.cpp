@@ -126,7 +126,7 @@ ICCprofile::clear (void)
   tags.clear();
   measurement.clear();
 
-  DBG_NUM_S( "data_, tags und measurement gelöscht" )
+  DBG_NUM_S( "data_, tags und measurement geloescht" )
   DBG_PROG_ENDE
 }
 
@@ -189,7 +189,7 @@ ICCprofile::load (const Speicher & prof)
     return ICCnullDATA;
 #   endif
 
-    // "targ"  Messdaten als Block hinzufügen
+    // "targ"  add measurement as block
     int groesse = 8 + size_ + 1;
     char* tag_block = (char*) calloc (sizeof (char), groesse);
     icTag ic_tag;
@@ -402,7 +402,7 @@ ICCprofile::printTags            ()
 std::vector<std::string>
 ICCprofile::getTagText                                  (int item)
 { DBG_PROG_START
-  // Prüfen
+  // check
   std::string name = tags[item].getTypName();
   std::string leer = name + _(" typ - no text output");
   std::vector<std::string> v;
@@ -428,12 +428,12 @@ std::vector<std::string>
 ICCprofile::getTagChannelNames                          (int item,
                                                          ICCtag::MftChain typ)
 { DBG_PROG_START
-  // Prüfen
+  // check
   std::string leer = tags[item].getTypName() + " Typ - keine Textausgabe";
   std::vector<std::string> v;
   v.push_back( leer );
 
-  // Prüfen
+  // check
   if (tags[item].getTypName() != "mft2"
    && tags[item].getTypName() != "mft1")
   { DBG_PROG_ENDE
@@ -447,7 +447,7 @@ ICCprofile::getTagChannelNames                          (int item,
 std::vector<std::string>
 ICCprofile::getTagDescription                    (int item)
 { DBG_PROG_START
-  // Prüfen
+  // check
   std::vector<std::string> leer;
   if (tags[item].getTypName() != "desc") { DBG_PROG_ENDE return leer; }
 
@@ -458,7 +458,7 @@ ICCprofile::getTagDescription                    (int item)
 std::vector<double>
 ICCprofile::getTagCIEXYZ                         (int item)
 { DBG_PROG_START
-  // Prüfen
+  // check
   std::vector<double> XYZ;
 
   if ( tags[item].getTypName() == "XYZ"
@@ -472,7 +472,7 @@ ICCprofile::getTagCIEXYZ                         (int item)
 std::vector<double>
 ICCprofile::getTagCurve                          (int item)
 { DBG_PROG_START
-  // Prüfen
+  // check
   std::vector<double> leer;
   if (tags[item].getTypName() != "curv")
   {
@@ -490,14 +490,14 @@ ICCprofile::getTagCurve                          (int item)
 std::vector<std::vector<double> >
 ICCprofile::getTagCurves                         (int item,ICCtag::MftChain typ)
 { DBG_PROG_START
-  // Prüfen
+  // check
   std::vector<std::vector<double> > leer;
   if (tags[item].getTypName() != "mft2"
    && tags[item].getTypName() != "mft1"
    && tags[item].getTypName() != "vcgt")
   {
 #   ifdef DEBUG_ICCPROFILE
-    DBG_NUM_S( "gibt nix für " << tags[item].getTypName() )
+    DBG_NUM_S( "nothing found for " << tags[item].getTypName() )
 #   endif
     DBG_PROG_ENDE
     return leer;
@@ -510,13 +510,13 @@ ICCprofile::getTagCurves                         (int item,ICCtag::MftChain typ)
 std::vector<std::vector<std::vector<std::vector<double> > > >
 ICCprofile::getTagTable                         (int item,ICCtag::MftChain typ)
 { DBG_PROG_START
-  // Prüfen
+  // check
   std::vector<std::vector<std::vector<std::vector<double> > > > leer;
   if (tags[item].getTypName() != "mft2"
    && tags[item].getTypName() != "mft1")
   {
 #   ifdef DEBUG_ICCPROFILE
-    DBG_NUM_S( "gibt nix für " << tags[item].getTypName() )
+    DBG_NUM_S( "nothing found: " << tags[item].getTypName() )
 #   endif
     DBG_PROG_ENDE
     return leer;
@@ -529,7 +529,7 @@ ICCprofile::getTagTable                         (int item,ICCtag::MftChain typ)
 std::vector<double>
 ICCprofile::getTagNumbers                        (int item,ICCtag::MftChain typ)
 { DBG_PROG_START
-  // Prüfen
+  // check
   std::vector<double> leer;
   if (tags[item].getTypName() != "mft2"
    && tags[item].getTypName() != "mft1"

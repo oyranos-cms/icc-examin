@@ -21,7 +21,7 @@
  * 
  * -----------------------------------------------------------------------------
  *
- * interne Typen und Formeln
+ * internal types and formulas
  * 
  */
 
@@ -45,7 +45,7 @@
 #define Y_D50 1.0000
 #define Z_D50 0.8249
 
-// interne Typen
+// internal types
 typedef struct {
     double X;
     double Y;
@@ -71,7 +71,7 @@ typedef struct {
     double K;
 } CMYK_s;
 
-// Typumwandlungen
+// type conversions
 void FarbeZuDouble (double* d_xyz, XYZ_s xyz);
 void FarbeZuDouble (double* d_rgb, RGB_s rgb);
 void FarbeZuDouble (double* d_lab, Lab_s lab);
@@ -81,17 +81,17 @@ void FarbeZuDouble (RGB_s *rgb, double* d_rgb);
 void FarbeZuDouble (Lab_s *lab, double* d_lab);
 void FarbeZuDouble (CMYK_s *cmyk, double* d_cmyk);
 
-// Farbfunktionen
-// Farbdifferenzen
+// colour functions
+// colour difference
 double        dE2000 (const Lab_s & Lab1, const Lab_s & Lab2,
                       double kL, double kC, double kH);
 
-// Farbumwandlungen
+// standard colour transformations
 void          XYZtoLab (XYZ_s & xyz, Lab_s & lab);
 void          XYZtoLab (double* xyz, double* lab, int n);
 void          LabtoXYZ (Lab_s &lab, XYZ_s &XYZ);
 
-// Normalisierung  CIELab L 0...100 a/b -127...+127 // lab 0...1
+// normalising  CIELab L 0...100 a/b -127...+127 // lab 0...1
 void          CIELabToLab (double* cielab, double* lab, int n);
 void          CIELabToLab (double* cielab, Lab_s & lab);
 void          LabToCIELab (double* lab, double* cielab, int n);

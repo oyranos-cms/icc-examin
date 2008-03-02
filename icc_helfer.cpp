@@ -21,7 +21,7 @@
  * 
  * -----------------------------------------------------------------------------
  *
- * Aufbereitung von ICC internen Informationen
+ * preparation of ICC inner informations
  * 
  */
 
@@ -52,7 +52,7 @@ icValue (icUInt16Number val)
   unsigned char        *temp  = (unsigned char*) &val;
   static unsigned char  korb[KORB];
   for (int i = 0; i < KORB ; i++ )
-    korb[i] = (int) 0;  // leeren
+    korb[i] = (int) 0;  // empty
 
   int klein = 0,
       gross = BYTES - 1;
@@ -71,7 +71,7 @@ icValue (icUInt16Number val)
        << (int)korb[1] << " " << (int)korb[2] << " " <<(int)korb[3]
        << " "; DBG_PROG
 # else
-  cout << *erg << " Groesse nach Wandlung " << (int)temp[0] << " " << (int)temp[1]
+  cout << *erg << " size after conversion " << (int)temp[0] << " " << (int)temp[1]
        << " "; DBG_PROG
 # endif
 # endif
@@ -99,7 +99,7 @@ icValue (icUInt32Number val)
   unsigned int *erg = (unsigned int*) &uint32[0];
 
 # ifdef DEBUG_ICCFUNKT
-  cout << *erg << " Groesse nach Wandlung " << (int)temp[0] << " "
+  cout << *erg << " size after conversion " << (int)temp[0] << " "
        << (int)temp[1] << " " << (int)temp[2] << " " <<(int)temp[3]
        << " "; DBG_PROG
 # endif
@@ -130,7 +130,7 @@ icValue (icUInt64Number val)
   unsigned long *erg = (unsigned long*) &uint64[0];
 
 # ifdef DEBUG_ICCFUNKT
-  cout << *erg << " Groesse nach Wandlung " << (int)temp[0] << " "
+  cout << *erg << " size after conversion " << (int)temp[0] << " "
        << (int)temp[1] << " " << (int)temp[2] << " " <<(int)temp[3]
        << " "; DBG_PROG
 # endif
@@ -159,7 +159,7 @@ icValue (icInt32Number val)
   signed int *erg = (signed int*) &korb[0];
 
 # ifdef DEBUG_ICCFUNKT
-  cout << *erg << " Groesse nach Wandlung " << (int)korb[0] << " "
+  cout << *erg << " size after conversion " << (int)korb[0] << " "
        << (int)korb[1] << " " << (int)korb[2] << " " <<(int)korb[3]
        << " "; DBG_PROG
 # endif
@@ -189,7 +189,7 @@ icValue (icInt16Number val)
 
   signed int *erg = (signed int*) &korb[0];
 # ifdef DEBUG_ICCFUNKT
-  cout << *erg << " Groesse nach Wandlung " << (int)korb[0] << " "
+  cout << *erg << " size after conversion " << (int)korb[0] << " "
        << (int)korb[1] << " " << (int)korb[2] << " " <<(int)korb[3]
        << " "; DBG_PROG
 # endif
@@ -271,7 +271,7 @@ void
 xyYto_XYZ (std::vector<double> & Y)
 {
   if( (Y.size()%3) || Y.size() == 0 ) {
-    WARN_S( "xyY ist kein Vielfaches von 3" )
+    WARN_S( "xyY is not a multiply of 3" )
     return;
   }
   for(unsigned int i = 0; i < Y.size()/3; ++i)
@@ -288,7 +288,7 @@ void
 XYZto_xyY (std::vector<double> & Y)
 {
   if( (Y.size()%3) || Y.size() == 0 ) {
-    WARN_S( "XYZ ist kein Vielfaches von 3" )
+    WARN_S( "XYZ is not a multiply of 3" )
     return;
   }
   for(unsigned int i = 0; i < Y.size()/3; ++i)
@@ -1035,9 +1035,9 @@ ladeDatei ( std::string dateiname, size_t *size )
     { DBG_MEM
       if(dateiname != _("Monitor Profile")) 
       {
-        if(dateiname == "") WARN_S( "kein Dateiname" );
-        if(!isFileFull(dateiname.c_str())) WARN_S( "keine Datei: " << dateiname );
-        if(!f) WARN_S( "fehlerhafte Datei: " << dateiname );
+        if(dateiname == "") WARN_S( "no file name" );
+        if(!isFileFull(dateiname.c_str())) WARN_S( "no file: " << dateiname );
+        if(!f) WARN_S( "erroneous file: " << dateiname );
 #       if HAVE_EXCEPTION
         DBG_PROG_ENDE
         throw ausn_file_io (dateiname.c_str());
@@ -1060,7 +1060,7 @@ ladeDatei ( std::string dateiname, size_t *size )
       f.close();
     } else {
       data = 0;
-      WARN_S( _("Dateigroesse 0 fuer ") << dateiname )
+      WARN_S( _("file size 0 for ") << dateiname )
     }
 
   ERROR:
@@ -1291,7 +1291,7 @@ setI18N( const char *exename )
     if(err) {
       WARN_S("i18n initialisation failed");
     } else {
-      DBG_NUM_S( "locale gefunden in: " << locale_paths[is_path] );
+      DBG_NUM_S( "locale found in: " << locale_paths[is_path] );
     }
   } else {
     if(is_path < 0)
@@ -1309,7 +1309,7 @@ setI18N( const char *exename )
         int err = fl_initialise_locale ( strrchr(exename, DIR_SEPARATOR_C)+1,
                                locale_paths[is_path], 1 );
         if(!err) {
-          DBG_NUM_S( "locale gefunden in: " << locale_paths[is_path] );
+          DBG_NUM_S( "locale found in: " << locale_paths[is_path] );
         } else {
           WARN_S( "No locale initialised from: " << locale_paths[is_path] );
         }
@@ -1458,17 +1458,17 @@ unterscheideZiffernWorte ( std::string &zeile,
     suchenErsetzen( zeile, ",", ".", 0 );
   }
 
-  // Worte Suchen und von Zahlen scheiden
+  // search words and detect numbers
   for( pos = 0; pos < zeile.size() ; ++pos )
   { DBG_PARSER_V( pos <<" "<< zeile.size() )
     in_anfuehrung = false;
     pos2 = pos;
 
-    // erstes Zeichen suchen
+    // search first sign
     if( (pos = zeile.find_first_of( alnum, pos )) != std::string::npos )
     {
       bool anf_zaehlen = true;
-      // erstes Anfuehrungszeichen suchen
+      // search first quotation sign
       if( zeile.find_first_of( "\"", pos2 ) != std::string::npos &&
           zeile.find_first_of( "\"", pos2 ) < pos )
         pos2 = zeile.find_first_of( "\"", pos2 );
@@ -1476,7 +1476,7 @@ unterscheideZiffernWorte ( std::string &zeile,
         anf_zaehlen = false;
       DBG_PARSER_V( pos2 )
 
-      // Anfuehrungszeichen zaehlen [ ""  " "  ABC ] - zeichenweise
+      // count quotation sign [ ""  " "  ABC ] - pice wise
       int letzes_anf_zeichen = -1;
       if( anf_zaehlen )
         for( pos3 = pos2; pos3 < pos; ++pos3)
@@ -1486,7 +1486,7 @@ unterscheideZiffernWorte ( std::string &zeile,
           else
             letzes_anf_zeichen = pos3;
 
-      // falls ein Anfuehrungszeichen vor dem Wort ungerade sind // ["" " ABC ]
+      // in case a quotation mark in front of a word is odd // ["" " ABC ]
       if( letzes_anf_zeichen >= 0 )
       {
         in_anfuehrung = true;
@@ -1494,7 +1494,7 @@ unterscheideZiffernWorte ( std::string &zeile,
         pos = letzes_anf_zeichen+1;
       }
       DBG_PARSER_V( pos )
-      // das Ende des Wortes finden
+      // find the end of the word
       if( in_anfuehrung )
         ende = zeile.find_first_of( "\"", pos + 1 );
       else
@@ -1502,11 +1502,11 @@ unterscheideZiffernWorte ( std::string &zeile,
             == std::string::npos )
           ende = zeile.size();
 
-      // bitte das erste Wort einbeziehen
+      // include the first word
       if( zeile.find_first_of( alnum, pos ) > ende )
         ende = zeile.find_first_of( trenner,
                                 zeile.find_first_of( alnum, pos ) + 1 );
-      // das Wort extrahieren
+      // extract the word
       txt = zeile.substr( pos, ende-pos );
       DBG_PARSER_V( pos <<" "<< ende )
 #     ifdef PARSER_DEBUG
@@ -1518,34 +1518,34 @@ unterscheideZiffernWorte ( std::string &zeile,
           cout << "^";
       cout << "\n";
 #     endif
-      // das Wort untersuchen
+      // inspect the word
       if( txt.find_first_of( numerisch ) != std::string::npos &&
           txt.find( "." ) != std::string::npos &&
           txt.find_first_of( alpha ) == std::string::npos )
-      { // ist Fliesskommazahl
+      { // is floating point number
         pos += txt.size();
         sprintf( text, "%f", atof( zeile.substr( pos, ende-pos ).c_str() ) );
-        DBG_PARSER_S( "Fliesskommazahl: " << txt )
+        DBG_PARSER_S( "floating point number: " << txt )
         ergebnis.push_back( zifferWort((double)atof(txt.c_str())) );
-        DBG_PARSER_S( "pruefen: "<< ergebnis[ergebnis.size()-1].zahl.first <<" "<< ergebnis[ergebnis.size()-1].zahl.second )
+        DBG_PARSER_S( "check: "<< ergebnis[ergebnis.size()-1].zahl.first <<" "<< ergebnis[ergebnis.size()-1].zahl.second )
       } else
       if( txt.find_first_of( ziffer ) != std::string::npos &&
           txt.find( "." ) == std::string::npos &&
           txt.find_first_of( alpha ) == std::string::npos )
-      { // ist Ganzzahl
+      { // is whole number
         pos += txt.size();
         sprintf( text, "%d", atoi( zeile.substr( pos, ende-pos ).c_str() ) );
         ergebnis.push_back( zifferWort(atoi(txt.c_str())) );
-        DBG_PARSER_S( "Ganzzahl: " << txt )
+        DBG_PARSER_S( "whole number: " << txt )
       } else
       if( txt.find_first_of( alnum ) != std::string::npos )
-      { // ist Text
+      { // is text
         bool neusetzen = false;
         int anf = 0;
         ergebnis.push_back( zifferWort(txt) );
-        DBG_PARSER_S( "Text: " << txt )
+        DBG_PARSER_S( "text: " << txt )
         DBG_PARSER_V( in_anfuehrung )
-        // Anfuehrungszeichen Beginn
+        // quotation sign start
         if( !in_anfuehrung && anfuehrungsstriche_setzen )
         {
           zeile.insert( pos, "\"" );
@@ -1556,11 +1556,11 @@ unterscheideZiffernWorte ( std::string &zeile,
         }
         if( anf_zaehlen )
           in_anfuehrung = false;
-        // Ende des Wortes
+        // end of word
         if( (pos2 = zeile.find_first_of( trenner, pos ))
             == std::string::npos)
           pos2 = zeile.size();
-        // Es folgt ein Anfuehrungszeichen
+        // a quotation sign follows
         if( pos2 > zeile.find_first_of( "\"", pos ) &&
             zeile.find_first_of( "\"", pos ) != std::string::npos &&
             !neusetzen )
@@ -1576,7 +1576,7 @@ unterscheideZiffernWorte ( std::string &zeile,
         pos = ende;
       }
       DBG_PARSER_V( pos << zeile.size() )
-      // Schleife beenden
+      // end the loop
       if( zeile.find_first_of( alnum, pos ) == std::string::npos )
       {
         DBG_PARSER_V( zeile.find_first_of( alnum, pos ) )

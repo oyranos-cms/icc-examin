@@ -1,6 +1,6 @@
 CXX = c++
 CC = cc
-X11 = 1
+X11 = X11
 X_H = -I/usr/X11R6/include -I/usr/include
 XF86VMODE = 1
 XF86VMODE_LIB = -lXxf86vm

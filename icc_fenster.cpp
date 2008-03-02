@@ -21,7 +21,7 @@
  *
  * -----------------------------------------------------------------------------
  *
- * Dateiwahl
+ * file selection
  * 
  */
 
@@ -59,9 +59,9 @@ void
 dateiwahl_cb (const char *dateiname, int typ, void *arg)
 { DBG_PROG_START
 
-  // kein Profile Dialog
+  // no profile dialog
   if (strstr( dateiwahl->pattern(), "*.ic*") == 0 &&
-      // potentielle Messdaten
+      // potential measurements
       strstr( dateiwahl->pattern(), "*.txt") == 0 &&
       strstr( dateiwahl->pattern(), "*.TXT") == 0 &&
       strstr( dateiwahl->pattern(), "*.it8") == 0 &&
@@ -107,7 +107,7 @@ dateiwahl_cb (MyFl_File_Chooser *f, void *data, int finish)
     DBG_NUM_V( data )
     filename = fl->value();
   
-    // kein Profile Dialog
+    // no profile dialog
     if (0 && strstr(fl->filter(), "Profile [*.{I,i}{C,c}]") == 0) {
       if (filename)
         DBG_PROG_V( filename )
@@ -140,9 +140,9 @@ MyFl_Double_Window* nachricht_ (std::string text);
 #if 1
 MyFl_Double_Window*
 nachricht (std::string text) {
-  // Fuer Fl_Scroll wird keine vtable erzeugt:
+  // for Fl_Scroll no vtable created:
   // icc_fenster.cpp:162: undefined reference to `icc_examin_ns::Fl_Scroll::Fl_Scroll[in-charge](int, int, int, int, char const*)'
-  // Nun ist die eigentliche Funtion ausserhalb von icc_examin_ns::
+  // Now the funtion is outside of icc_examin_ns::
   return nachricht_(text);
 }
 
@@ -314,7 +314,7 @@ void MyFl_Double_Window::show(int argc, char** argv)
   if( is_toolbox )
   {
 #if 0
-    // scheint nicht zuverlässig unter KDE
+    // seems not to be correct under KDE
     Atom type = XInternAtom (fl_display, "_NET_WM_WINDOW_TYPE", 0);
     Atom value = XInternAtom (fl_display, "_NET_WM_WINDOW_TYPE_UTILITY", 0);
     XChangeProperty (fl_display, fl_xid(this), type, XA_ATOM, 32,

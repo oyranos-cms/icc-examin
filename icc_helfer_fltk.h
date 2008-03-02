@@ -21,7 +21,7 @@
  *
  * -----------------------------------------------------------------------------
  *
- * ICC Helfer - werkzeugabhängig
+ * ICC helper - toolkit dependent
  * 
  */
 
@@ -35,8 +35,8 @@
 #include <FL/Fl_Menu_Item.H>
 #include <FL/Fl_Menu_.H>
 
-// Helferfunktionen
-// definiert in icc_helfer_fltk.cpp
+// helper functions
+// definied in icc_helfer_fltk.cpp
 
 int* getChannel_flColours(icColorSpaceSignature color);
 void        my_fl_translate_file_chooser ();

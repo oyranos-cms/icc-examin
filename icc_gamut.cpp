@@ -21,7 +21,7 @@
  * 
  * -----------------------------------------------------------------------------
  *
- * Der Gamut Rechner.
+ * the gamut calculator.
  * 
  */
 
@@ -34,7 +34,7 @@
 
 namespace icc_examin_ns {
 
-/** @brief holt eine Farbverlauf für RGB Farben */
+/** @brief creates a colour gradient for RGB colours */
 void
 holeRGBRampen( icUInt16Number *block, size_t & zahl )
 {
@@ -49,21 +49,21 @@ holeRGBRampen( icUInt16Number *block, size_t & zahl )
     block[i] = 0;
 
   for(int i = 0; i < (int)zahl; ++i) {
-    // Rot
+    // red
     if(i >= schritte * 5 && i < schritte * 6)
       block[k*i+0] = (int)(max/schritte*(i-5*schritte));
     if(i >= schritte * 0 && i < schritte * 2)
       block[k*i+0] = (int)max;
     if(i >= schritte * 2 && i < schritte * 3)
       block[k*i+0] = (int)(max/schritte*(3*schritte-i));
-    // Grün
+    // green
     if(i >= schritte * 1 && i < schritte * 2)
       block[k*i+1] = (int)(max/schritte*(i-1*schritte));
     if(i >= schritte * 2 && i < schritte * 4)
       block[k*i+1] = (int)max;
     if(i >= schritte * 4 && i < schritte * 5)
       block[k*i+1] = (int)(max/schritte*(5*schritte-i));
-    // Blau
+    // blue
     if(i >= schritte * 3 && i < schritte * 4)
       block[k*i+2] = (int)(max/schritte*(i-3*schritte));
     if(i >= schritte * 4 && i < schritte * 6)
@@ -93,21 +93,21 @@ holeCMYKRampen( icUInt16Number *block, size_t & zahl )
   }
 
   for(int i = 0; i < (int)zahl; ++i) {
-    // Zyan
+    // cyan
     if(i >= schritte * 5 && i < schritte * 6)
       block[k*i+0] = (int)(max/schritte*(i-5*schritte));
     if(i >= schritte * 0 && i < schritte * 2)
       block[k*i+0] = (int)max;
     if(i >= schritte * 2 && i < schritte * 3)
       block[k*i+0] = (int)(max/schritte*(3*schritte-i));
-    // Magenta
+    // magenta
     if(i >= schritte * 1 && i < schritte * 2)
       block[k*i+1] = (int)(max/schritte*(i-1*schritte));
     if(i >= schritte * 2 && i < schritte * 4)
       block[k*i+1] = (int)max;
     if(i >= schritte * 4 && i < schritte * 5)
       block[k*i+1] = (int)(max/schritte*(5*schritte-i));
-    // Gelb
+    // yellow
     if(i >= schritte * 3 && i < schritte * 4)
       block[k*i+2] = (int)(max/schritte*(i-3*schritte));
     if(i >= schritte * 4 && i < schritte * 6)
@@ -122,7 +122,7 @@ holeCMYKRampen( icUInt16Number *block, size_t & zahl )
   DBG_PROG_ENDE
 }
 
-/** @brief creiert eine Linie um die satten Farben in Cmyk und Rgb Profilen */
+/** @brief creates a linie around the saturated colours of Cmyk and Rgb profiles */
 double*
 iccGrenze(ICCprofile & profil, int intent, size_t & groesse)
 {
@@ -142,7 +142,7 @@ iccGrenze(ICCprofile & profil, int intent, size_t & groesse)
     sprintf (text, "Übung%d.icc", num++);
     saveMemToFile( text, p_block, size );
 #   endif
-    // hier den Farbumfang abtasten
+    // scan here the colour space border
     cmsHPROFILE lab = cmsCreateLabProfile(cmsD50_xyY());
     cmsHPROFILE p = cmsOpenProfileFromMem(p_block, size);
     cmsHTRANSFORM xform = 0;

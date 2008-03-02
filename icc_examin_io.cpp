@@ -21,7 +21,7 @@
  *
  * -----------------------------------------------------------------------------
  *
- * iE/A der zentralen Klasse
+ * file I/O of the central class
  * 
  */
 
@@ -98,10 +98,10 @@ ICCexaminIO::oeffnenThread_ (int pos)
     return;
   }
 
-  // Laden
+  // load
   icc_examin->fortschritt( .1 , 1.0 );
   if((int)speicher_vect_.size() < (pos+1))
-    WARN_S( "Speicher nicht besetzt" )
+    WARN_S( "memory not used" )
 
   dateiNachSpeicher( speicher_vect_[pos], profile.name(pos) );
   
@@ -117,7 +117,7 @@ ICCexaminIO::oeffnenThread_ (int pos)
 
   if (profile.size())
   {
-      // Oberflaechenpflege
+      // UI handling
     icc_examin_ns::lock(__FILE__,__LINE__);
     //erneuerTagBrowserText_ ();
     if(icc_examin->icc_betrachter->DD_farbraum->visible() &&
@@ -149,7 +149,7 @@ ICCexaminIO::oeffnenThread_ ()
     return;
   }
 
-  // Laden
+  // load
   icc_examin->clear();
   icc_examin->icc_betrachter->DD_farbraum->punkte_clear();
   profile.clear();
@@ -168,7 +168,7 @@ ICCexaminIO::oeffnenThread_ ()
 
   if (profile.size())
   {
-      // Oberflaechenpflege
+      // UI handling
     icc_examin_ns::lock(__FILE__,__LINE__);
     icc_examin->erneuerTagBrowserText_ ();
     if(icc_examin->icc_betrachter->DD_farbraum->visible() &&
@@ -181,7 +181,7 @@ ICCexaminIO::oeffnenThread_ ()
 
     icc_examin->icc_betrachter->measurement( profile.profil()->hasMeasurement() );
 
-      // Oberflaechenpflege
+      // UI handling
     if(icc_examin->farbraumModus())
       icc_examin->gamutAnsichtZeigen();
     else if(!icc_examin->icc_betrachter->details->visible_r())
@@ -192,7 +192,7 @@ ICCexaminIO::oeffnenThread_ ()
 
     icc_examin_ns::unlock(this, __FILE__,__LINE__);
 
-      // Sortieren
+      // sort
     if( dateinamen.size() &&
         (dateinamen[0].find( "wrl",  dateinamen[0].find_last_of(".") )
          != std::string::npos) )
@@ -218,7 +218,7 @@ ICCexaminIO::oeffnenThread_ ()
         icc_examin->gamutAnsichtZeigen();
         icc_examin_ns::unlock(this, __FILE__,__LINE__);
       } else
-        WARN_S(_("kein Netz gefunden in VRML Datei"))
+        WARN_S(_("no net found in VRML file"))
     } else {
       DBG_PROG
       //farbraum();
@@ -226,14 +226,14 @@ ICCexaminIO::oeffnenThread_ ()
 
     icc_examin->fortschritt( 2./3.+ 2./6. , 1.0 );
     // ICCwaehler
-      // erneuern
+      // refresh
     static std::vector<std::string> namen_neu, namen_alt;
     bool namensgleich = false;
     namen_neu = profile;
     DBG_PROG_V( namen_neu.size() <<" "<< namen_alt.size() )
     if(namen_alt.size() == namen_neu.size()) {
       namensgleich = true;
-      DBG_NUM_S( _("Anzahl gabs schon mal") )
+      DBG_NUM_S( "name was allready there" )
       for(int i = 0; i < (int)namen_neu.size(); ++i)
         if(namen_neu[i] != namen_alt[i])
           namensgleich = false;
@@ -256,7 +256,7 @@ ICCexaminIO::oeffnenThread_ ()
         DBG_PROG_V( i )
 
         if( i >= (int)icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze.size() ) {
-          WARN_S( _("Kein Netz gefunden. Ist Argyll installiert?") )
+          WARN_S( _("no net found. Is Argyll installed?") )
           break;
         }
 
@@ -272,7 +272,7 @@ ICCexaminIO::oeffnenThread_ ()
       icc_examin_ns::unlock(this, __FILE__,__LINE__);
     }
 
-    // Fenstername setzen
+    // set window name
     if(0) {
       icc_examin->detaillabel = "ICC Examin: ";
       icc_examin->detaillabel.insert( icc_examin->detaillabel.size(), dateiName(dateinamen[0]) );
@@ -288,15 +288,15 @@ ICCexaminIO::oeffnenThread_ ()
   DBG_PROG_ENDE
 }
 
-/** @brief gibt den Dateinamen ohne Pfad zurueck
- *  @param name                 langer Dateiname
- *  @return                             Dateiname
+/** @brief gives the file name without path back
+ *  @param name                 long file name
+ *  @return                     file name
  */
 const char*
 dateiName(const char* name)
 {
   const char* dateiname=0;
-        // Datainame extahieren
+        // extract file name
         if(name)
           dateiname = strrchr(name,'/');
 
@@ -321,11 +321,11 @@ ICCexaminIO::lade (std::vector<Speicher> & neu)
     speicher_vect_ = neu;
     lade_ = true;
   } else {
-    DBG_THREAD_S( "muss warten" )
+    DBG_THREAD_S( "must wait" )
   }
 }
 
-// Dieses Spalten in Threads fuer eine fluessige Oberflaeche
+// split in threads for a liquid UI
 #if USE_THREADS
 void*
 #else
@@ -335,20 +335,20 @@ ICCexaminIO::oeffnenStatisch_ (void* ie)
 {
   DBG_PROG_START
 
-  // Laufzeitfehler erkennen
+  // detect run time errors
   {
     static int erster = true;
     if(!erster)
-      WARN_S("Programmierfehler: " <<__func__<<" thread darf\n" <<
-             "nur einmal gestartet werden.")
+      WARN_S("programing error: " <<__func__<<" thread must\n" <<
+             "run only one time.")
     erster = false;
   }
-  if(!ie) WARN_S( "keine ICCexaminIO Klasse verfuegbar" )
+  if(!ie) WARN_S( "no ICCexaminIO class available" )
 
-  // Bezug herstellen
+  // connect to main class
   ICCexamin* examin = (ICCexamin*) ie;
 
-  // Schleife starten die diesen thread laufen laesst
+  // start loop for this thread
   while(1) {
     if(icc_examin->status_) {
       if(examin->io_->lade_) {
@@ -362,7 +362,7 @@ ICCexaminIO::oeffnenStatisch_ (void* ie)
           examin->io_->oeffnenThread_( e );
           examin->io_->lade_ = false;
         } else {
-          // kurze Pause 
+          // short pause 
           icc_examin_ns::sleep(0.2); DBG_THREAD
         }
       }
@@ -392,7 +392,7 @@ ICCexaminIO::oeffnen (std::vector<std::string> dateinamen)
 { DBG_PROG_START
 # if 1
   if(!dateinamen.size()) {
-    WARN_S("keine Dateinamen angegeben")
+    WARN_S("no file name specified")
     icc_examin->fortschritt( 1.1 , 1.0 );
     DBG_PROG_ENDE
     return;
@@ -405,10 +405,10 @@ ICCexaminIO::oeffnen (std::vector<std::string> dateinamen)
 
   icc_examin->fortschritt( 0.0 , 1.0 );
 
-  // Laden
+  // loading
   std::vector<Speicher> ss;
-  // resize benutzt copy, und erzeugt damit Referenzen auf das
-  // selbe Objekt ; wir benoetigen aber neue Objekte => push_back()
+  // resize uses copy, and creates a reference by this to the
+  // same object ; instead we need a new object => push_back()
   int moni_dabei = 0;
   for (unsigned int i = 0; i < dateinamen.size(); ++i)
   {
@@ -425,7 +425,7 @@ ICCexaminIO::oeffnen (std::vector<std::string> dateinamen)
   }
   DBG_PROG
 
-  // Das Monitorprofil immer dabei 
+  // the monitor profile is allways included for comparisions 
   if (!moni_dabei && ss.size())
     ss.push_back(icc_oyranos.moni( x,y ));
 
@@ -495,14 +495,14 @@ ICCexaminIO::berichtSpeichern (void)
   bool erfolgreich = true;
   std::string dateiname = profile.name();  DBG_PROG_V( dateiname )
 
-  // Profilnamen ersetzen
+  // substitute profile name
   std::string::size_type pos=0;
   if ((pos = dateiname.find_last_of(".", dateiname.size())) != std::string::npos)
   { DBG_PROG
-    dateiname.replace (pos, 5, ".html"); DBG_NUM_S( ".html gesetzt" )
+    dateiname.replace (pos, 5, ".html"); DBG_NUM_S( ".html set" )
   } DBG_PROG_V( dateiname )
 
-  // FLTK Dateidialog aufrufen
+  // call FLTK file dialog
   DBG_PROG_V( dateiwahl->filter() )
 
   std::string muster = dateiwahl->filter(); DBG_PROG
@@ -544,10 +544,10 @@ ICCexaminIO::berichtSpeichern (void)
     return false;
   }
 
-  // Bericht erzeugen
+  // generate report
   bool export_html = true;
   std::string bericht = profile.profil()->report(export_html);
-  // Speichern
+  // save
   std::ofstream f ( dateiname.c_str(),  std::ios::out );
   f.write ( bericht.c_str(), bericht.size() );
   f.close();
@@ -563,7 +563,7 @@ ICCexaminIO::gamutSpeichern (IccGamutFormat format)
   bool erfolgreich = true;
   std::string dateiname = profile.name();  DBG_PROG_V( dateiname )
 
-  // Profilnamen ersetzen
+  // set profile name
   std::string::size_type pos=0;
   if ((pos = dateiname.find_last_of(".", dateiname.size())) != std::string::npos)
   {   DBG_PROG
@@ -574,7 +574,7 @@ ICCexaminIO::gamutSpeichern (IccGamutFormat format)
     }
   } DBG_PROG_V( dateiname )
 
-  // FLTK Dateidialog aufrufen
+  // call FLTK file dialog
     DBG_PROG_V( dateiwahl->filter() )
   std::string muster = dateiwahl->filter(); DBG_PROG
   std::string datei;
@@ -627,20 +627,20 @@ ICCexaminIO::gamutSpeichern (IccGamutFormat format)
   daten = profile.profil()->saveProfileToMem( &groesse );
   profil.ladeNew( daten, groesse );
   if(format == ICC_ABSTRACT) {
-    // Gamutprofil erzeugen
+    // generate Gamut profile
     Speicher speicher;
     icc_oyranos.gamutCheckAbstract( profil, speicher,
                                     icc_examin->intentGet(NULL),
                                     /*cmsFLAGS_GAMUTCHECK |*/ cmsFLAGS_SOFTPROOFING );
 
-    // Speichern
+    // save
     saveMemToFile ( dateiname.c_str(), (const char*)speicher, speicher.size() );
     speicher.clear();
   } else if(format == ICC_VRML) {
     std::string vrml;
     vrml = icc_oyranos.vrmlVonProfil ( *profile.profil(),
                                        icc_examin->intentGet(NULL) );
-    // Speichern
+    // save
     saveMemToFile ( dateiname.c_str(), vrml.c_str(), vrml.size() );
   }
   profil.clear();

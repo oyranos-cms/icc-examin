@@ -97,7 +97,7 @@ class TagBrowser {: {public Fl_Hold_Browser}
   Function {selectItem(int item)} {open
   } {
     code DBG_PROG_START {}
-    code {//Auswahl aus tag_browser
+    code {// selection from tag_browser
 
   status("")
 
@@ -126,7 +126,7 @@ class TagTexts {: {public Fl_Hold_Browser}
   Function {hinein(std::string text)} {open
   } {
     code DBG_PROG_START {}
-    code {//Text aus tag_browser anzeigen
+    code {//show text from tag_browser
 
       inspekt_topline = this->topline();
 
@@ -249,7 +249,7 @@ class ICCfltkBetrachter {open
   setTitleUrl = true;} {}
     Fl_Window ueber {
       label {About ICC Examin} open
-      xywh {919 759 365 285} type Double resizable
+      xywh {914 747 365 285} type Double resizable
       code0 {o->hide();}
       code1 {o->use_escape_hide = true;}
       class {icc_examin_ns::MyFl_Double_Window} visible
@@ -290,7 +290,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window vcgt {
       label {Grafic Card Gamma Table} open
-      xywh {31 654 370 390} type Double resizable
+      xywh {31 642 370 390} type Double resizable
       code0 {o->hide();}
       code1 {o->use_escape_hide = true;}
       class {icc_examin_ns::MyFl_Double_Window} visible
@@ -327,7 +327,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window DD {
       label Gamut open
-      xywh {899 280 385 520} type Double box NO_BOX resizable
+      xywh {894 289 385 520} type Double box NO_BOX resizable
       class {icc_examin_ns::MyFl_Double_Window} visible
     } {
       Fl_Group {} {open
@@ -481,7 +481,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window details {
       label {ICC Examin} open
-      xywh {899 100 385 520} type Double box NO_BOX
+      xywh {894 109 385 520} type Double box NO_BOX
       code0 {o->main_win = o;}
       class {icc_examin_ns::MyFl_Double_Window} visible
     } {
@@ -580,7 +580,7 @@ class ICCfltkBetrachter {open
 \# ifdef USE_GETTEXT
   printf("domain     : %s\\n",textdomain(NULL));
   printf("domain_path: %s\\n",bindtextdomain(NULL,NULL));
-\# endif} selected
+\# endif}
               tooltip {test LANG} xywh {80 80 100 20} hide deactivate
             }
           }
@@ -687,8 +687,8 @@ icc_examin->testZeigen();}
           } {
             Fl_Browser tag_browser {
               label tag_browser_invisible
-              callback {o->selectItem( o->value() );}
-              tooltip {Choose one profile tag} xywh {0 25 385 135} box FLAT_BOX color 49 align 4
+              callback {o->selectItem( o->value() );} selected
+              tooltip {Choose one profile tag} xywh {0 25 385 135} box THIN_DOWN_BOX color 49 align 4
               code0 {int lines = tag_browser->size();}
               code1 {DBG_PROG_V( lines )}
               class TagBrowser
@@ -912,7 +912,7 @@ icc_examin->testZeigen();}
 
   // start
   if( widget == inspekt_html )
-  { DBG_PROG_S("inspekt_html behandeln")
+  { DBG_PROG_S("inspekt_html handling")
     if( menueintrag_inspekt->value() )
       inspekt_html->show();
     else
@@ -927,10 +927,10 @@ icc_examin->testZeigen();}
         !menueintrag_3D->value() )
       ;//selectItem(icc_examin->tag_nr()+6);
   } else if (widget == mft_gl) {
-    DBG_PROG_S( "mft GL Fenster belassen." )
+    DBG_PROG_S( "leave mft GL window." )
     mft_gl->show();
   } else if (widget == DD_farbraum) {
-    DBG_PROG_S( "3D GL Fenster belassen." )
+    DBG_PROG_S( "leave 3D GL window." )
     DD_farbraum->show();
   }} {}
     code DBG_PROG_ENDE {}

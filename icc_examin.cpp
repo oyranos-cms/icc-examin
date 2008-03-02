@@ -21,7 +21,7 @@
  *
  * -----------------------------------------------------------------------------
  *
- * Die zentrale Klasse.
+ * the central class.
  * 
  */
 
@@ -76,6 +76,7 @@ ICCexamin::ICCexamin ()
 { DBG_PROG_START
   icc_examin_ns::lock(__FILE__,__LINE__);
 
+  // set a nice GUI surface
   Fl::scheme("plastic"); // gtk+
 
   _item = -1;
@@ -203,9 +204,9 @@ ICCexamin::start (int argc, char** argv)
   setzeIcon( icc_betrachter->details, icc_examin_xpm );
 # endif
 
-  DBG_PROG_S( "Zeige vcgt" )
+  DBG_PROG_S( "Show vcgt" )
 # else
-  DBG_PROG_S( "Zeige vcgt nicht" )
+  DBG_PROG_S( "Show vcgt not" )
 # endif
 
   FILE *out = popen("oyranos-config", "r");
@@ -291,17 +292,17 @@ ICCexamin::start (int argc, char** argv)
 # endif
   if( fehler == EAGAIN)
   {
-    WARN_S( "Waechter Thread nicht gestartet Fehler: "  << fehler );
+    WARN_S( "observer thread not started. Error: "  << fehler );
   } else
 # if !APPLE && !WIN32 && PTHREAD_THREADS_MAX
   if( fehler == (int)PTHREAD_THREADS_MAX )
   {
-    WARN_S( "zu viele Waechter Threads Fehler: " << fehler );
+    WARN_S( "Too many observer threads. Error: " << fehler );
   } else
 # endif
   if( fehler != 0 )
   {
-    WARN_S( "unbekannter Fehler beim Start eines Waechter Threads Fehler: " << fehler );
+    WARN_S( "unknown Error at start of a observer thread. Fehler: " << fehler );
   }
 # else
   Fl::add_timeout( 0.01, /*(void(*)(void*))*/ICCexaminIO::oeffnenStatisch_ ,(void*)this);
@@ -393,7 +394,7 @@ ICCexamin::zeigCGATS()
 {
   DBG_PROG_START
   icc_examin_ns::lock(__FILE__,__LINE__);
-  // CGATS in Fenster praesentieren
+  // represent CGATS in window
   icc_examin_ns::nachricht(profile.profil()->cgats_max());
   icc_examin_ns::unlock(0, __FILE__,__LINE__);
   DBG_PROG_ENDE
@@ -460,34 +461,34 @@ ICCexamin::zeigMftTabellen ()
   DBG_PROG_ENDE
 }
 
-/** virtual aus icc_examin_ns::Beobachter:: */
+/** virtual from icc_examin_ns::Beobachter:: */
 void
 ICCexamin::nachricht( Modell* modell , int info )
 {
   DBG_PROG_START
 
   if(!frei()) {
-    WARN_S("icc_examin ist nicht frei")
+    WARN_S("icc_examin is not free")
     //DBG_PROG_ENDE
     //return;
   }
 
   DBG_THREAD_V( info )
-  // Modell identifizieren
+  // identify Modell
   ICCkette* k = dynamic_cast<ICCkette*>(modell);
   if(k && (k->size() > info))
   {
-    DBG_PROG_S( "Nachricht von ICCkette" )
-    DBG_PROG_S( "Auffrischen von Profil Nr.: " << info )
+    DBG_PROG_S( "news from ICCkette" )
+    DBG_PROG_S( "refresh of profile Nr.: " << info )
     if(info>=0)
     {
       DBG_PROG_V( (int*)(*k)[info] )
       if ((*k)[info])
       if((*k)[info]->changing()) {
-        DBG_PROG_S( "veraendert sich gerade: " << info )
+        DBG_PROG_S( "just changing: " << info )
         //icc_examin_ns::sleep( 0.1 );
       }
-      DBG_PROG_S( "lade: " << info )
+      DBG_PROG_S( "load: " << info )
 
       { DBG_PROG
         {
@@ -507,7 +508,7 @@ ICCexamin::nachricht( Modell* modell , int info )
           fortschritt(0.5 , 1.0);
         }
 
-        if(k->aktiv(info)) // momentan nicht genutzt
+        if(k->aktiv(info)) // not useable at the moment
         { if (info < (int)icc_betrachter->DD_farbraum->dreiecks_netze.size())
             icc_betrachter->DD_farbraum->dreiecks_netze[info].aktiv = true;
 
@@ -515,7 +516,7 @@ ICCexamin::nachricht( Modell* modell , int info )
           icc_betrachter->DD_farbraum->dreiecks_netze[info].aktiv = false;
         }
 
-          // Oberflaechenpflege - Aktualisieren
+          // handle user interface - actualise
         fortschritt(0.6 , 1.0);
         if(profile[info]->tagCount() <= _item)
           _item = (-1);
@@ -666,8 +667,8 @@ ICCexamin::testZeigen ()
     }
   std::vector<std::string> txt;
   txt.resize(8);
-  txt[0] = "ein Bild";
-  txt[1] = "Gemaelde";
+  txt[0] = "a image";
+  txt[1] = "paint";
   txt[2] = "fast HDR";
   txt[3] = "2 fast HDR";
   txt[4] = "3 fast HDR";
@@ -821,7 +822,7 @@ ICCexamin::moniHolen ()
       erfolg = true;
     } else {
       // kurze Pause 
-      DBG_THREAD_S( "muss warten" )
+      DBG_THREAD_S( "musst wait" )
       icc_examin_ns::sleep(0.05);
     }
   }
@@ -971,6 +972,7 @@ ICCexamin::erneuerTagBrowserText_ (void)
   } else if ((int)tag_list.size() != profile.profil()->tagCount()*5 ) {
     add_s (_("Internal error") )
   }
+  // this string is sensible to formatting in the tag browser GUI
   add_s ("@B26@t" << _("No. Tag   Type   Size Description") )
   if(profile.profil()->data_type == ICCprofile::ICCprofileDATA ||
      profile.profil()->data_type == ICCprofile::ICCcorruptedprofileDATA) {
@@ -984,22 +986,22 @@ ICCexamin::erneuerTagBrowserText_ (void)
   int anzahl = 0;
   for (it = tag_list.begin() ; it != tag_list.end(); ++it) {
     s << "@t";
-    // Nummer
+    // Number
     int Nr = atoi((*it).c_str()) + 1;
     std::stringstream t; t << Nr;
     for (int i = t.str().size(); i < 3; i++) {s << " ";} s << Nr; *it++; ++anzahl; s << " ";
-    // Name/Bezeichnung
+    // Name/title
     s << *it; for (int i = (*it++).size(); i < 6; i++) {s << " ";} ++anzahl;
     // Typ
     s << *it; for (int i = (*it++).size(); i < 5; i++) {s << " ";} ++anzahl;
-    // Größe
+    // Size
     for (int i = (*it).size(); i < 6; i++) {s << " ";} s << *it++; s << " "; ++anzahl;
-    // Beschreibung
+    // description
     add_s (*it)
   }
   DBG_PROG_V( anzahl )
   if (b->value())
-    b->selectItem (b->value()); // Anzeigen
+    b->selectItem (b->value()); // show
   else
     if(profile.profil()->data_type == ICCprofile::ICCprofileDATA ||
        profile.profil()->data_type == ICCprofile::ICCcorruptedprofileDATA) {
@@ -1131,13 +1133,13 @@ ICCexamin::icc_betrachterNeuzeichnen (void* z)
 
 # endif
 
-  // Bereinigen - hier?
+  // clean up - here?
   if (wid == icc_betrachter->tag_viewer ||
       wid == icc_betrachter->mft_viewer) {
     wid->clear_visible(); DBG_PROG_V( item << _item )
   }
 
-  // Tabellenkompanion
+  // table companion
   if (wid == icc_betrachter->mft_text ||
       wid == icc_betrachter->mft_gl_group ||
       wid == icc_betrachter->mft_viewer)
@@ -1161,11 +1163,11 @@ ICCexamin::icc_betrachterNeuzeichnen (void* z)
       } \
     } else if(w == wid) \
     { DBG_PROG_S( #widget << " zeigen" ) \
-      /* verstecke alle anderen Zweige */ \
+      /* hide all other branches */ \
       for(int i = 0; i < wids_n; ++i) { \
         if(i != oberst) \
           wids[i]->hide(); \
-      /* nur all uns uebergeordneten Zweige sind sichtbar */ \
+      /* only all of our higher hierarchy branches are visible */ \
       if(!wids[oberst]->visible()) \
         wids[oberst]->show(); \
       } \
@@ -1231,8 +1233,8 @@ ICCexamin::waehlbar( int pos, int wert )
 }
 
 
-/**  0...1 fuer den sichtbaren aktuellen Wert,
-    -1...0 fuer unsichtbaren Balken */
+/**  0...1 for the visible actual value,
+    -1...0 for invisible progress bar */
 double
 ICCexamin::fortschritt()
 {
@@ -1242,7 +1244,7 @@ ICCexamin::fortschritt()
     return icc_betrachter->load_progress-> value() * -1;
 }
 
-//! Fortschritt: f<0-Start f=Wert f>1-Ende  a>=1 komplett a=0.1 10%
+//! Progress bar: f<0-Start f=Wert f>1-Ende  a>=1 komplett a=0.1 10%
 void
 ICCexamin::fortschritt(double f, double anteil)
 { DBG_PROG_START
@@ -1428,7 +1430,7 @@ tastatur(int e)
                *text;
           memcpy(temp, Fl::event_text(), Fl::event_length());
           temp[len]=0;
-          // sprintf macht Probleme
+          // sprintf makes problems
           //sprintf(temp, Fl::event_text());
           DBG_PROG_V( Fl::event_text() )
           DBG_PROG_V( temp )
@@ -1440,7 +1442,7 @@ tastatur(int e)
             text[0] = 0;
           }
           profilnamen.push_back(temp);
-          // Korrekturen
+          // corrections
           for(unsigned int i = 0; i < profilnamen.size(); ++i) {
             const char *filter_a = "file:";
             DBG_PROG_V( profilnamen[i] )
@@ -1450,7 +1452,7 @@ tastatur(int e)
               memcpy(txt, &(profilnamen[i].c_str())[strlen(filter_a)],
                      len_neu);
               txt[len_neu]=0;
-              // Wagenruecklauf beseitigen
+              // remove some bits
               char *zeiger = strchr(txt, '\r');
               if(zeiger)
                 zeiger[0] = 0;
@@ -1458,7 +1460,7 @@ tastatur(int e)
               free(txt);
             }
             DBG_PROG_V( profilnamen[i] )
-            // Leerzeichen filtern
+            // filter empty sign
             pos = i;
             if(profilnamen[pos].size())
               icc_parser::suchenErsetzen(profilnamen[pos], suchen, ersetzen, 0);
