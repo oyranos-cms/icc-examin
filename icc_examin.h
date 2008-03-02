@@ -73,13 +73,15 @@ class ICCexamin : public icc_examin_ns::Beobachter
     int  _item,  _mft_item;
     int  _zeig_prueftabelle,
          farbraum_angezeigt_;
-    int  status_;
+    int  status_,
+         intent_;                // RI
     bool frei_,                  // wird nicht von weiterem Prozess benutzt
          farbraum_modus_;        // profile.profil() enthaelt ncl2 Schmuckfarben
     ICCwaehler *icc_waehler_;
   public:
     int  laeuft ()  { return status_; }          // kann bei >1 genutzt werden
     bool frei()     { return frei_; }            // ist nicht gesperrt
+    int  intent ()  { return intent_; }          // 
 
 
   public:

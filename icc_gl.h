@@ -127,8 +127,6 @@ public:
   void hineinNetze  (const std::vector<ICCnetz> & dreiecks_netze);
   std::vector<ICCnetz> dreiecks_netze;
   void achsNamen    (std::vector<std::string> achs_namen);
-  void hineinKurven(std::vector<std::vector<double> >vect,
-                     std::vector<std::string> txt);
 
   void hineinTabelle(std::vector<std::vector<std::vector<std::vector<double> > > >vect,
                                std::vector<std::string> vonFarben,
@@ -166,6 +164,7 @@ public:
   int  zeige_helfer;        // zeige Pfeile und Text
 private:
   void zeigeSpektralband_();
+  void zeigeUmrisse_();
 
 public:
   // Darstellungsfunktionen

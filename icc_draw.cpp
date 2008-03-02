@@ -731,9 +731,9 @@ TagDrawings::drawKurve_    ()
       double segmente = 256;
       double gamma = kurven[j][0]; DBG_NUM_V( gamma )
       for (int i = 1; i < segmente; i++)
-        fl_line (xNachBild( pow( (double)(i-1.0)/segmente, gamma ) * max_x ),
+        fl_line (xNachBild( pow( (double)(i-1.0)/segmente, 1./gamma ) * max_x ),
                  yNachBild( (i-1) / ((segmente-1) / max_y) ),
-                 xNachBild( pow( (double)i/segmente, gamma ) * max_x ),
+                 xNachBild( pow( (double)i/segmente, 1./gamma ) * max_x ),
                  yNachBild( (i) / ((segmente-1) / max_y) ) );
       // Infos einblenden 
       s << name << _(" with one entry for gamma: ") << gamma; DBG_NUM_V( gamma )
@@ -747,10 +747,10 @@ TagDrawings::drawKurve_    ()
       double ende  = kurven[j][2]; DBG_NUM_V( ende )
       double mult  = (ende - start); DBG_NUM_V( mult )
       for (int i = 1; i < segmente; i++) {
-        fl_line (xNachBild( (pow( (double)(i-1.0)/segmente, gamma)
+        fl_line (xNachBild( (pow( (double)(i-1.0)/segmente, 1./gamma)
                             * mult + start) * max_x ),
                  yNachBild( (i-1) / ((segmente-1) / max_y) ),
-                 xNachBild( (pow( (double)i/segmente, gamma ) * mult + start)
+                 xNachBild( (pow( (double)i/segmente, 1./gamma ) * mult + start)
                             * max_x ),
                  yNachBild( (i) / ((segmente-1) / max_y) ) );
       }

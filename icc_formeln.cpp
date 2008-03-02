@@ -169,26 +169,29 @@ XYZtoLab (XYZ &xyz, Lab &lab)
      *         7.787*t + (16/116)          0 <= t <= 0.008856
      */
 
-      float gamma = 1.0/3.0; // standard is 1.0/3.0
+      double gamma = 1.0/3.0; // standard is 1.0/3.0
       static XYZ xyz_;
+      double K = 24389./27.;
+      double k = K/116.;      // 0.008856
+      double e = 216./24389.; // 7.787
 
       // CIE XYZ -> CIE*Lab (D50)
       xyz_.X = xyz.X * 0.964294;
       xyz_.Y = xyz.Y * 1.000000;
       xyz_.Z = xyz.Z * 0.825104;
 
-      if (xyz_.X > 0.008856)
+      if ( xyz_.X > e)
         xyz_.X = pow (xyz_.X, gamma);
       else
-         xyz_.X = 7.787*xyz_.X + (16.0/116.0);
-      if ( xyz_.Y > 0.008856)
+         xyz_.X = k*xyz_.X + (16.0/116.0);
+      if ( xyz_.Y > e)
          xyz_.Y = pow ( xyz_.Y, gamma);
       else
-         xyz_.Y = 7.787* xyz_.Y + (16.0/116.0);
-      if ( xyz_.Z > 0.008856)
+         xyz_.Y = k* xyz_.Y + (16.0/116.0);
+      if ( xyz_.Z > e)
          xyz_.Z = pow ( xyz_.Z, gamma);
       else
-         xyz_.Z = 7.787* xyz_.Z + (16.0/116.0);
+         xyz_.Z = k* xyz_.Z + (16.0/116.0);
 
       // auf 0.0-1.0 normalisieren ------v
       lab.L = (116.0* xyz_.Y - 16.0)     /100.0 ;

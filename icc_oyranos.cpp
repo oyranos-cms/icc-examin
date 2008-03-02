@@ -28,13 +28,17 @@
 // Date:      25. 11. 2004
 
 
+#include <lcms.h>
+
 #ifdef HAVE_OY
 #include "oyranos/oyranos.h"
 #include "oyranos/oyranos_monitor.h"
 using namespace oyranos;
 #endif
 
+#include "icc_formeln.h"
 #include "icc_oyranos.h"
+#include "icc_profile.h"
 #include "icc_utils.h"
 
 
@@ -110,7 +114,7 @@ Oyranos::profil_test_ (const char* profil_name)
       }
     } else // Profil in Liste
     {
-      Speicher *v_block = &pspeicher_[profil_name];
+      //Speicher *v_block = &pspeicher_[profil_name];
       // ...
     }
   }
@@ -326,18 +330,109 @@ Oyranos::setzeMonitorProfil (const char* profil_name )
 }
 
 #include "icc_vrml.h"
+#include "icc_gamut.h"
 std::vector<ICCnetz>
-Oyranos::netzVonProfil (const Speicher & p, int intent)
+Oyranos::netzVonProfil (ICCprofile & profil, int intent)
 {
   DBG_PROG_START
-  std::string vrml;
-  const char* b = p;
-  DBG_PROG_V( (int*)b )
-  vrml = icc_create_vrml ( p,p.size(), intent );
-  std::vector<ICCnetz> netz = extrahiereNetzAusVRML (vrml);
+  Speicher s;
+  std::vector<ICCnetz> netz;
+
+  if(profil.valid()) {
+      size_t groesse = 0;
+      char* daten = profil.saveProfileToMem(&groesse); 
+      s.lade(daten, groesse);
+      DBG_NUM_V( groesse );
+  }
+
+  if(s.size()) {
+    std::string vrml;
+    vrml = icc_create_vrml ( s,s.size(), intent );
+    netz = netzAusVRML (vrml);
+    size_t groesse = 0;
+    double* band = iccGrenze( profil, intent, groesse );
+    DBG_PROG_V( (int*) band <<" "<< groesse )
+
+    netz[0].umriss.resize( groesse );
+    for(int i = 0; i < (int)groesse; ++i)
+      for(int j = 0; j < 3; ++j)
+        netz[0].umriss[i].koord[j] = band[i*3+j];
+    if(band) delete [] band;
+  }
   DBG_PROG_ENDE
   return netz;
 }
+
+std::vector<double>
+Oyranos::bandVonProfil (const Speicher & p, int intent)
+{
+  DBG_PROG_START
+  const char* b = p;
+  DBG_MEM_V( (int*)b )
+  std::vector<double> band;
+  DBG_PROG_ENDE
+  return band;
+}
+
+
+#define PRECALC cmsFLAGS_NOTPRECALC 
+#if 0
+#define BW_COMP cmsFLAGS_WHITEBLACKCOMPENSATION
+#else
+#define BW_COMP 0
+#endif
+
+double*
+Oyranos::wandelLabNachBildschirmFarben(double *Lab_Speicher, // 0.0 - 1.0
+                                       size_t  size, int intent, int flags)
+{
+  DBG_PROG_START
+
+  DBG_PROG_V( size <<" "<< intent <<" "<< flags )
+
+    // lcms Typen
+    cmsHPROFILE hsRGB = 0,
+                hLab = 0;
+    cmsHTRANSFORM hLabtoRGB = 0;
+    double *RGB_Speicher = 0;
+
+    // Initialisierung für lcms
+    size_t groesse = 0;
+    const char* block = 0;
+    block = moni(groesse);
+    DBG_MEM_V( (int*) block <<" "<<groesse )
+
+    if(groesse)
+      hsRGB = cmsOpenProfileFromMem(const_cast<char*>(block), groesse);
+    else
+      hsRGB = cmsCreate_sRGBProfile();
+    if(!hsRGB) WARN_S( _("hsRGB Profil nicht geoeffnet") )
+    hLab  = cmsCreateLabProfile(cmsD50_xyY());
+    if(!hLab)  WARN_S( _("hLab Profil nicht geoeffnet") )
+
+    hLabtoRGB = cmsCreateTransform          (hLab, TYPE_Lab_DBL,
+                                             hsRGB, TYPE_RGB_DBL,
+                                             intent,
+                                             PRECALC|BW_COMP|flags);
+    if (!hLabtoRGB) WARN_S( _("keine hXYZtoRGB Transformation gefunden") )
+
+    RGB_Speicher = new double [size*3];
+    if(!RGB_Speicher)  WARN_S( _("RGB_speicher Speicher nicht verfuegbar") )
+
+    double *cielab = new double[size*3];
+    LabToCIELab (Lab_Speicher, cielab, size);
+
+    cmsDoTransform (hLabtoRGB, cielab, RGB_Speicher, size);
+
+    if(cielab)    delete [] cielab;
+    if(hLabtoRGB) cmsDeleteTransform(hLabtoRGB);
+    if(hsRGB)     cmsCloseProfile(hsRGB);
+    if(hLab)      cmsCloseProfile(hLab);
+
+  return RGB_Speicher;
+  DBG_PROG_ENDE
+}
+
 
 
 

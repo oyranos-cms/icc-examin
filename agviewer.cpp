@@ -144,7 +144,7 @@ Agviewer::ConstrainEl(void)
 void
 Agviewer::setIdle(bool set)
 {
-  DBG_V( set )
+  DBG_PROG_V( set )
   if(set) {
     Fl::add_idle(agvMove_statisch,this);
     AllowIdle = true;
@@ -172,6 +172,8 @@ Agviewer::agvMove_statisch(void* agv)
 void
 Agviewer::agvMove_(void)
 { DBG_PROG_START
+  int sl = 0;
+  static double rz = 0;
   DBG_PROG_V(redisplayWindow())
   if(icc_examin->frei())
   {
@@ -207,6 +209,22 @@ Agviewer::agvMove_(void)
 
     if (AllowIdle) {
       parent->redraw();
+
+      // 50 fps TODO: missing precission
+      // clock_gettime is not available
+/*__uint64_t readTSC (void)
+{
+  struct timespec tp;
+  clock_gettime (CLOCK_SGI_CYCLE, &tp);
+  return (__uint64_t)(tp.tv_sec * (__uint64_t)1000000000) + (__uint64_t)tp.tv_nsec;
+}*/
+      double tmp = (double)clock()/(double)CLOCKS_PER_SEC;
+      double z = tmp - rz;
+      rz = tmp;
+      sl = 25000-(int)(z*1000000.0);
+      if (sl>5000)
+        ;//usleep(sl);
+      DBG_PROG_S( clock() << "z: " << z*1000000. << " sl " << sl )
       DBG_PROG_S( "AllowIdle: " << AllowIdle )
     }
   } else

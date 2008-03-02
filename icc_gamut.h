@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2005  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2005  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -21,39 +21,20 @@
  * 
  * -----------------------------------------------------------------------------
  *
- * Farbumfang betrachten im WWW-3D Format vrml: Parser
+ * Der Gamut Rechner
  * 
  */
 
-// Beginn Datum:      Februar 2005
-
-#ifndef ICC_VRML_PARSER_H
-#define ICC_VRML_PARSER_H
-
-#include <vector>
-#include <map>
-
-struct ICCnetzPunkt {
-  double koord[3]; // immer CIE*Lab
-  double farbe[4];
-};
-
-struct DreiecksIndexe {
-  int i[4];
-};
-
-struct ICCnetz {
-  std::vector<ICCnetzPunkt> punkte;
-  std::multimap<double,DreiecksIndexe> indexe;
-  std::vector<ICCnetzPunkt> umriss;
-  std::string name;
-  double transparenz;
-  char grau;
-  char aktiv;
-};
-
-std::vector<ICCnetz> extrahiereNetzAusVRML (std::string & vrml);
+// Date:      20. 05. 2005
 
 
+#ifndef ICC_GAMUT_H
+#define ICC_GAMUT_H
 
-#endif // ICC_VRML_PARSER_H
+class ICCprofile;
+#include <cstddef>
+
+double* iccGrenze(ICCprofile & profil, int intent, size_t & groesse);
+
+
+#endif //ICC_GAMUT_H

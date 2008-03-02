@@ -112,23 +112,14 @@ ICCexamin::netzLese (int n,
   }
 
   std::vector<ICCnetz> netz_temp;
-  Speicher s;
 
-  if(profile.size() > n)
-    if(profile[n]->valid()) {
-      size_t groesse = 0;
-      char* daten = profile[n]->saveProfileToMem(&groesse); 
-      s.lade(daten, groesse);
-      DBG_NUM_V( groesse );
-    }
-
-  if(s.size())
   {
-    int intent = 3;
     if(farbraumModus())
-      intent = profile.profil()->intent();
+      intent_ = profile.profil()->intent();
+    else
+      intent_ = 3;
 
-    netz_temp = icc_oyranos. netzVonProfil( s, intent );
+    netz_temp = icc_oyranos. netzVonProfil(  *(profile[n]), intent_ );
     if(netz_temp.size())
     {
       netz_temp[0].transparenz = (*netz)[n].transparenz;
@@ -144,9 +135,7 @@ ICCexamin::netzLese (int n,
       (*netz)[n].punkte.clear();
       (*netz)[n].indexe.clear();
     }
-  } else
-    WARN_S(_("kein Profil im Speicher"))
-
+  }
   DBG_PROG_ENDE
 }
 

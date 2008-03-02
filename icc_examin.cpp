@@ -60,6 +60,7 @@ ICCexamin::ICCexamin ()
   farbraum_modus_ = false;
   statlabel = "";
   status_ = false;
+  intent_ = 3;
   DBG_PROG_ENDE
 }
 
@@ -184,14 +185,13 @@ ICCexamin::nachricht( Modell* modell , int info )
         if(k->aktiv(info)) // momentan nicht genutzt
         {
           icc_examin_ns::fortschritt(0.1);
-          static int intent_alt;
           // ncl2 ?
           DBG_PROG_V( profile.aktuell() );
           int intent_neu = profile.profil()->intent();
-          DBG_PROG_V( intent_neu <<" "<< intent_alt )
-          if(intent_alt != intent_neu) {
+          DBG_PROG_V( intent_neu <<" "<< intent_ )
+          if(intent_ != intent_neu) {
             farbraum ();
-            intent_alt = intent_neu;
+            intent_ = intent_neu;
           } else
             farbraum (info);
           icc_examin_ns::fortschritt(0.5);

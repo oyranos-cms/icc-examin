@@ -55,7 +55,7 @@
 //#define Beleuchtung
 //#define Lab_STERN 1
 
-//#define DEBUG_ICCGL
+#define DEBUG_ICCGL
 #ifdef DEBUG_ICCGL
 #define DBG_ICCGL_START DBG_PROG_START
 #define DBG_ICCGL_ENDE DBG_PROG_ENDE
@@ -68,8 +68,8 @@
 #define DBG_ICCGL_S( texte )
 #endif
 
-typedef enum {NOTALLOWED, AXES, RASTER, PUNKTE , SPEKTRUM, HELFER, DL_MAX } DisplayLists;
-int glListen[DL_MAX] = {0,0,0,0,0,0};
+typedef enum {NOTALLOWED, AXES, RASTER, PUNKTE , SPEKTRUM, HELFER, UMRISSE, DL_MAX } DisplayLists;
+int glListen[DL_MAX] = {0,0,0,0,0,0,0};
 
 
 #define bNachX(b) (b*b_darstellungs_breite - b_darstellungs_breite/2.)
@@ -136,6 +136,11 @@ GL_Ansicht::~GL_Ansicht()
     DBG_PROG_S( "delete glListe " << glListen[SPEKTRUM] )
     glDeleteLists (glListen[SPEKTRUM],1);
     glListen[SPEKTRUM] = 0;
+  }
+  if (glListen[UMRISSE]) {
+    DBG_PROG_S( "delete glListe " << glListen[UMRISSE] )
+    glDeleteLists (glListen[UMRISSE],1);
+    glListen[UMRISSE] = 0;
   }
   #ifdef HAVE_FTGL
   if(font) delete font;
@@ -503,6 +508,9 @@ GL_Ansicht::erstelleGLListen_()
   garnieren_();
 
   tabelleAuffrischen();
+
+  if(dreiecks_netze.size())
+    zeigeUmrisse_();
  
   zeigeSpektralband_();
 
@@ -1209,53 +1217,116 @@ GL_Ansicht::punkteAuffrischen()
 }
 
 extern float cieXYZ [471][3]; // in 
-#include <lcms.h>
 
-// TODO: -> Oyranos
-#define PRECALC cmsFLAGS_NOTPRECALC 
-#if 0
-#define BW_COMP cmsFLAGS_WHITEBLACKCOMPENSATION
-#else
-#define BW_COMP 0
-#endif
+void
+GL_Ansicht::zeigeUmrisse_()
+{
+  DBG_PROG_START
+
+  if (glListen[UMRISSE])
+    glDeleteLists (glListen[UMRISSE], 1);
+  glListen[UMRISSE] = 0;
+
+  //if (spektralband == MENU_SPEKTRALBAND)
+  for (unsigned int i=0; i < dreiecks_netze.size(); ++i)
+  {
+    double *RGB_Speicher = 0,
+           *RGBSchatten_Speicher = 0,
+           *Lab_Speicher = 0,
+           *Lab_Speicher_schatten = 0;
+
+    // Umrechnung
+    int n = dreiecks_netze[i].umriss.size();
+    DBG_V( n )
+    if(!n) continue;
+
+    Lab_Speicher = (double*) alloca (sizeof(double) * n*3);
+    if(!Lab_Speicher)  WARN_S( _("Lab_speicher Speicher nicht verfuegbar") )
+
+    for ( int j = 0; j < n; ++j)
+      for(int k = 0; k < 3 ; ++k)
+        Lab_Speicher[j*3+k] = dreiecks_netze[i].umriss[j].koord[k];
+
+    RGB_Speicher = icc_oyranos.wandelLabNachBildschirmFarben( Lab_Speicher,
+                                 (size_t)n, icc_examin->intent(), 0);
+    DBG_PROG_V( n )
+    // Schatten erzeugen
+    Lab_Speicher_schatten = (double*) alloca (sizeof(double) * n*3);
+    for (int i = 0; i < n*2; ++i)
+      Lab_Speicher_schatten[i] = Lab_Speicher[i];
+    for (int i = 0; i < n; ++i) {
+      Lab_Speicher_schatten[i*3] = hintergrundfarbe*.60+.35;
+      Lab_Speicher_schatten[i*3+1] = (Lab_Speicher[i*3+1]-.5)*.25+0.5;
+      Lab_Speicher_schatten[i*3+2] = (Lab_Speicher[i*3+2]-.5)*.25+0.5;
+    }
+
+    RGBSchatten_Speicher = icc_oyranos.wandelLabNachBildschirmFarben(
+                               Lab_Speicher_schatten, n, icc_examin->intent(), 0);
+    if(!RGB_Speicher)  WARN_S( _("RGB_speicher Ergebnis nicht verfuegbar") )
+    if(!RGBSchatten_Speicher)  WARN_S( _("RGB_speicher Ergebnis nicht verfuegbar") )
+
+    GLfloat farbe[] =   { pfeilfarbe[0],pfeilfarbe[1],pfeilfarbe[2], 1.0 };
+
+    glListen[UMRISSE] = glGenLists(1);
+    glNewList( glListen[UMRISSE], GL_COMPILE );
+    DBG_PROG_V( glListen[UMRISSE] ) 
+
+      glDisable (GL_LIGHTING);
+      glDisable (GL_BLEND);
+      glDisable (GL_ALPHA_TEST_FUNC);
+      glEnable  (GL_LINE_SMOOTH);
+
+      glLineWidth(6.0*strichmult);
+      glColor4f(0.5, 1.0, 1.0, 1.0);
+      glBegin(GL_LINE_STRIP);
+        for (int z=0 ; z <= (n - 1); z++) {
+          DBG_ICCGL_S( z<<" "<<Lab_Speicher[z*3]<<"|"<<Lab_Speicher[z*3+1]<<"|"<<Lab_Speicher[z*3+2] )
+          DBG_ICCGL_S( z<<" "<<RGB_Speicher[z*3]<<"|"<<RGB_Speicher[z*3+1]<<"|"<<RGB_Speicher[z*3+2] )
+          FARBE(RGB_Speicher[z*3],RGB_Speicher[z*3+1],RGB_Speicher[z*3+2]);
+          glVertex3d( 
+         (Lab_Speicher[z*3+2]*b_darstellungs_breite - b_darstellungs_breite/2.),
+         (Lab_Speicher[z*3+0] - 0.5),
+         (Lab_Speicher[z*3+1]*a_darstellungs_breite - a_darstellungs_breite/2.)
+          );
+        }
+      glEnd();
+      // Schatten
+      glLineWidth(2.0*strichmult);
+      glBegin(GL_LINE_STRIP);
+        for (int z=0 ; z <= (n - 1); z++) {
+          FARBE(RGBSchatten_Speicher[z*3],RGBSchatten_Speicher[z*3+1],RGBSchatten_Speicher[z*3+2])
+          glVertex3d( 
+         (Lab_Speicher[z*3+2]*b_darstellungs_breite - b_darstellungs_breite/2.),
+         (- 0.5),
+         (Lab_Speicher[z*3+1]*a_darstellungs_breite - a_darstellungs_breite/2.)
+          );
+        }
+      glEnd();
+
+    glEndList();
+
+    if (RGB_Speicher) delete [] RGB_Speicher;
+    //if (Lab_Speicher) delete [] Lab_Speicher;
+
+  }
+  DBG_PROG_ENDE
+}
 
 void
 GL_Ansicht::zeigeSpektralband_()
-{ DBG_PROG_START
+{
+  DBG_PROG_START
 
   if (glListen[SPEKTRUM])
     glDeleteLists (glListen[SPEKTRUM], 1);
   glListen[SPEKTRUM] = 0;
   if (spektralband == MENU_SPEKTRALBAND)
   {
-    // lcms Typen
-    cmsHPROFILE hsRGB,
-                hLab;
-    cmsHTRANSFORM hLabtoRGB;
     double *RGB_Speicher = 0,
            *RGBSchatten_Speicher = 0,
            *XYZ_Speicher = 0,
-           *Lab_Speicher = 0;
-
-    // Initialisierung für lcms
-    size_t groesse = 0;
-    const char* block = 0;
-    block = icc_oyranos.moni(groesse);
-    DBG_MEM_V( (int*) block <<" "<<groesse )
-
-    if(groesse)
-      hsRGB = cmsOpenProfileFromMem(const_cast<char*>(block), groesse);
-    else
-      hsRGB = cmsCreate_sRGBProfile();
-    if(!hsRGB) WARN_S( _("hsRGB Profil nicht geoeffnet") )
-    hLab  = cmsCreateLabProfile(cmsD50_xyY());
-    if(!hLab)  WARN_S( _("hLab Profil nicht geoeffnet") )
-
-    hLabtoRGB = cmsCreateTransform          (hLab, TYPE_Lab_DBL,
-                                             hsRGB, TYPE_RGB_DBL,
-                                             INTENT_ABSOLUTE_COLORIMETRIC,
-                                             PRECALC|BW_COMP);
-    if (!hLabtoRGB) WARN_S( _("keine hXYZtoRGB Transformation gefunden") )
+           *Lab_Speicher = 0,
+           *Lab_Speicher_schatten = 0;
 
     // Spektrumvariablen
     //int nano_min = 63; // 420 nm
@@ -1263,33 +1334,35 @@ GL_Ansicht::zeigeSpektralband_()
 
     // Umrechnung
     XYZ_Speicher = new double [nano_max*3];
+    if(!XYZ_Speicher)  WARN_S( _("XYZ_speicher Speicher nicht verfuegbar") )
     for (int i = 0; i < nano_max; ++i)
     { for(int j = 0; j < 3 ; ++j)
       { XYZ_Speicher[i*3+j] = (double)cieXYZ[i][j];
       }
     }
     Lab_Speicher = new double [nano_max*3];
-    RGB_Speicher = new double [nano_max*3];
-    RGBSchatten_Speicher = new double [nano_max*3];
-    if(!XYZ_Speicher)  WARN_S( _("XYZ_speicher Speicher nicht verfuegbar") )
+    Lab_Speicher_schatten = new double [nano_max*3];
+
     if(!Lab_Speicher)  WARN_S( _("Lab_speicher Speicher nicht verfuegbar") )
-    if(!RGB_Speicher)  WARN_S( _("RGB_speicher Speicher nicht verfuegbar") )
-    if(!RGBSchatten_Speicher)  WARN_S( _("RGB_speicher Speicher nicht verfuegbar") )
 
     XYZtoLab (XYZ_Speicher, Lab_Speicher, nano_max);
 
+    RGB_Speicher = icc_oyranos.wandelLabNachBildschirmFarben( Lab_Speicher,
+                                 (size_t)nano_max, icc_examin->intent(), 0);
     DBG_PROG_V( nano_max )
-    double *cielab = new double[nano_max*3];
-    LabToCIELab (Lab_Speicher, cielab, nano_max);
-    cmsDoTransform (hLabtoRGB, cielab, RGB_Speicher, nano_max);
+    // Schatten erzeugen
+    for (int i = 0; i < nano_max*2; ++i)
+      Lab_Speicher_schatten[i] = Lab_Speicher[i];
     for (int i = 0; i < nano_max; ++i) {
-      cielab[i*3] = hintergrundfarbe*60.+35;
-      cielab[i*3+1] = (cielab[i*3+1])*.25;
-      cielab[i*3+2] = (cielab[i*3+2])*.25;
+      Lab_Speicher_schatten[i*3] = hintergrundfarbe*.60+.35;
+      Lab_Speicher_schatten[i*3+1] = (Lab_Speicher[i*3+1]-.5)*.25+0.5;
+      Lab_Speicher_schatten[i*3+2] = (Lab_Speicher[i*3+2]-.5)*.25+0.5;
     }
-    cmsDoTransform (hLabtoRGB, cielab, RGBSchatten_Speicher, nano_max);
-    if (cielab) delete [] cielab;
 
+    RGBSchatten_Speicher = icc_oyranos.wandelLabNachBildschirmFarben(
+                               Lab_Speicher_schatten, nano_max, icc_examin->intent(), 0);
+    if(!RGB_Speicher)  WARN_S( _("RGB_speicher Ergebnis nicht verfuegbar") )
+    if(!RGBSchatten_Speicher)  WARN_S( _("RGB_speicher Ergebnis nicht verfuegbar") )
 
     GLfloat farbe[] =   { pfeilfarbe[0],pfeilfarbe[1],pfeilfarbe[2], 1.0 };
 
@@ -1335,6 +1408,7 @@ GL_Ansicht::zeigeSpektralband_()
     if (XYZ_Speicher) delete [] XYZ_Speicher;
     if (RGB_Speicher) delete [] RGB_Speicher;
     if (Lab_Speicher) delete [] Lab_Speicher;
+    if (Lab_Speicher_schatten) delete [] Lab_Speicher_schatten;
 
   }
   DBG_PROG_ENDE
@@ -1581,6 +1655,7 @@ GL_Ansicht::zeichnen()
       glLoadIdentity();
 
       glCallList( glListen[SPEKTRUM] ); DBG_ICCGL_V( glListen[SPEKTRUM] )
+      glCallList( glListen[UMRISSE] ); DBG_ICCGL_V( glListen[UMRISSE] )
 
       if (zeige_helfer) {
         textGarnieren_();

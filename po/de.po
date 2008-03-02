@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ICC Examin 0.28\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2005-05-19 12:44+0200\n"
+"POT-Creation-Date: 2005-05-26 00:50+0200\n"
 "PO-Revision-Date: 2005-04-22 15:09+0200\n"
 "Last-Translator: Kai-Uwe Behrmann <ku.b@gmx.de>\n"
 "Language-Team: German\n"
@@ -19,28 +19,28 @@ msgstr ""
 msgid "kein Agviewer uebergeben; kann agvMove_ nicht ausfuehren"
 msgstr ""
 
-#: agviewer.cpp:213
+#: agviewer.cpp:231
 msgid "GL Fenster nicht frei"
 msgstr ""
 
-#: agviewer.cpp:359 icc_gl.cpp:1720 icc_gl.cpp:1739 icc_gl.cpp:1859
+#: agviewer.cpp:377 icc_gl.cpp:1795 icc_gl.cpp:1814 icc_gl.cpp:1934
 msgid "left-/middle-/right mouse button -> rotate/cut/menu"
 msgstr "linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menue"
 
-#: agviewer.cpp:373
+#: agviewer.cpp:391
 msgid "Pause"
 msgstr "Pause"
 
-#: agviewer.cpp:392 agviewer.cpp:400 icc_gl.cpp:1825 icc_gl.cpp:1836
-#: icc_gl.cpp:1841 icc_gl.cpp:1846
+#: agviewer.cpp:410 agviewer.cpp:418 icc_gl.cpp:1900 icc_gl.cpp:1911
+#: icc_gl.cpp:1916 icc_gl.cpp:1921
 msgid "left mouse button -> go back"
 msgstr "linke Maustaste -> zurueck"
 
-#: agviewer.cpp:404
+#: agviewer.cpp:422
 msgid "nicht erkennbare Maustaste: "
 msgstr ""
 
-#: agviewer.cpp:409
+#: agviewer.cpp:427
 msgid "keine Anweisung erkennbar"
 msgstr ""
 
@@ -155,7 +155,7 @@ msgstr "Grün"
 msgid "Blue"
 msgstr "Blau"
 
-#: icc_draw.cpp:643 icc_gl.cpp:1394 icc_helfer.cpp:318 icc_waehler.h:127
+#: icc_draw.cpp:643 icc_gl.cpp:1468 icc_helfer.cpp:318 icc_waehler.h:127
 msgid "Gray"
 msgstr "Grau"
 
@@ -171,7 +171,7 @@ msgstr ""
 msgid "Yellow"
 msgstr "Gelb"
 
-#: icc_draw.cpp:656 icc_gl.cpp:1396 icc_helfer.cpp:378 icc_helfer.cpp:388
+#: icc_draw.cpp:656 icc_gl.cpp:1470 icc_helfer.cpp:378 icc_helfer.cpp:388
 msgid "Black"
 msgstr "Schwarz"
 
@@ -203,19 +203,19 @@ msgstr "Helligkeit"
 msgid "Value"
 msgstr "Wert"
 
-#: icc_draw.cpp:672 icc_examin_farbraum.cpp:186 icc_examin_io.cpp:124
+#: icc_draw.cpp:672 icc_examin_farbraum.cpp:175 icc_examin_io.cpp:124
 #: icc_helfer.cpp:363 icc_helfer.cpp:366
 msgid "CIE *L"
 msgstr ""
 
-#: icc_draw.cpp:674 icc_examin_farbraum.cpp:187 icc_examin_io.cpp:125
-#: icc_gl.cpp:578 icc_gl.cpp:648 icc_gl.cpp:679 icc_gl.cpp:687
+#: icc_draw.cpp:674 icc_examin_farbraum.cpp:176 icc_examin_io.cpp:125
+#: icc_gl.cpp:586 icc_gl.cpp:656 icc_gl.cpp:687 icc_gl.cpp:695
 #: icc_helfer.cpp:364
 msgid "CIE *a"
 msgstr ""
 
-#: icc_draw.cpp:676 icc_examin_farbraum.cpp:188 icc_examin_io.cpp:126
-#: icc_gl.cpp:592 icc_gl.cpp:695 icc_gl.cpp:721 icc_gl.cpp:728
+#: icc_draw.cpp:676 icc_examin_farbraum.cpp:177 icc_examin_io.cpp:126
+#: icc_gl.cpp:600 icc_gl.cpp:703 icc_gl.cpp:729 icc_gl.cpp:736
 #: icc_helfer.cpp:365
 msgid "CIE *b"
 msgstr ""
@@ -244,27 +244,27 @@ msgstr " mit Gamma: 1.0"
 msgid " with one entry for gamma: "
 msgstr " mit einem Eintrag für Gamma: "
 
-#: icc_examin.cpp:88
+#: icc_examin.cpp:89
 msgid "Gamut selector"
 msgstr "Darstellungsoptionen"
 
-#: icc_examin.cpp:89
+#: icc_examin.cpp:90
 msgid "icc_waehler_ nicht reservierbar"
 msgstr ""
 
-#: icc_examin.cpp:116
+#: icc_examin.cpp:117
 msgid "loaded"
 msgstr "geladen"
 
-#: icc_examin.cpp:126
+#: icc_examin.cpp:127
 msgid "Ready"
 msgstr "Bereit"
 
-#: icc_examin.cpp:176
+#: icc_examin.cpp:177
 msgid "Nachricht von ICCkette"
 msgstr ""
 
-#: icc_examin.cpp:177
+#: icc_examin.cpp:178
 msgid "Auffrischen von Profil Nr.: "
 msgstr ""
 
@@ -278,10 +278,6 @@ msgstr ""
 
 #: icc_examin.cpp:365
 msgid "zeige     "
-msgstr ""
-
-#: icc_examin_farbraum.cpp:148
-msgid "kein Profil im Speicher"
 msgstr ""
 
 #: icc_examin_io.cpp:131
@@ -324,153 +320,141 @@ msgstr "Bericht Speichern"
 msgid "Leer"
 msgstr ""
 
-#: icc_gl.cpp:175
+#: icc_gl.cpp:180
 msgid "OpenGL mode: "
 msgstr ""
 
-#: icc_gl.cpp:346 icc_gl.cpp:349 icc_gl.cpp:352 icc_gl.cpp:358 icc_gl.cpp:362
-#: icc_gl.cpp:377
+#: icc_gl.cpp:351 icc_gl.cpp:354 icc_gl.cpp:357 icc_gl.cpp:363 icc_gl.cpp:367
+#: icc_gl.cpp:382
 msgid "Konnte Font nicht oeffnen:"
 msgstr ""
 
-#: icc_gl.cpp:381 icc_gl.cpp:383
+#: icc_gl.cpp:386 icc_gl.cpp:388
 msgid "Fontgroesse nicht setzbar"
 msgstr ""
 
-#: icc_gl.cpp:458
+#: icc_gl.cpp:463
 #, c-format
 msgid "0,0,0"
 msgstr ""
 
-#: icc_gl.cpp:751
+#: icc_gl.cpp:759
 msgid "Kanalauswahl geaendert: "
 msgstr ""
 
-#: icc_gl.cpp:1250
-msgid "hsRGB Profil nicht geoeffnet"
-msgstr ""
-
-#: icc_gl.cpp:1252
-msgid "hLab Profil nicht geoeffnet"
-msgstr ""
-
-#: icc_gl.cpp:1258
-msgid "keine hXYZtoRGB Transformation gefunden"
-msgstr ""
-
-#: icc_gl.cpp:1274
-msgid "XYZ_speicher Speicher nicht verfuegbar"
-msgstr ""
-
-#: icc_gl.cpp:1275
+#: icc_gl.cpp:1244 icc_gl.cpp:1346
 msgid "Lab_speicher Speicher nicht verfuegbar"
 msgstr ""
 
-#: icc_gl.cpp:1276 icc_gl.cpp:1277
-msgid "RGB_speicher Speicher nicht verfuegbar"
+#: icc_gl.cpp:1265 icc_gl.cpp:1266 icc_gl.cpp:1364 icc_gl.cpp:1365
+msgid "RGB_speicher Ergebnis nicht verfuegbar"
 msgstr ""
 
-#: icc_gl.cpp:1368 icc_gl.cpp:1378 icc_gl.cpp:1380 icc_gl.cpp:1382
+#: icc_gl.cpp:1337
+msgid "XYZ_speicher Speicher nicht verfuegbar"
+msgstr ""
+
+#: icc_gl.cpp:1442 icc_gl.cpp:1452 icc_gl.cpp:1454 icc_gl.cpp:1456
 msgid "Slice"
 msgstr "Schnitt"
 
-#: icc_gl.cpp:1369
+#: icc_gl.cpp:1443
 msgid "Rotate around slice"
 msgstr "Drehen um Schnitt"
 
-#: icc_gl.cpp:1384
+#: icc_gl.cpp:1458
 msgid "Rotate around"
 msgstr "Drehen um"
 
-#: icc_gl.cpp:1384
+#: icc_gl.cpp:1458
 msgid "axis"
 msgstr "Achse"
 
-#: icc_gl.cpp:1389
+#: icc_gl.cpp:1463
 msgid "Slice plane"
 msgstr "Querschnitt"
 
-#: icc_gl.cpp:1392
+#: icc_gl.cpp:1466
 msgid "White"
 msgstr "Weiß"
 
-#: icc_gl.cpp:1393
+#: icc_gl.cpp:1467
 msgid "Light gray"
 msgstr "Hellgrau"
 
-#: icc_gl.cpp:1395
+#: icc_gl.cpp:1469
 msgid "Dark gray"
 msgstr "Dunkelgrau"
 
-#: icc_gl.cpp:1399
+#: icc_gl.cpp:1473
 msgid "Background colour"
 msgstr "Hintergrundfarbe"
 
-#: icc_gl.cpp:1404
+#: icc_gl.cpp:1478
 msgid "gray"
 msgstr "grau"
 
-#: icc_gl.cpp:1405
+#: icc_gl.cpp:1479
 msgid "coloured"
 msgstr "farbig"
 
-#: icc_gl.cpp:1406
+#: icc_gl.cpp:1480
 msgid "high contrast"
 msgstr "kontrastreich"
 
-#: icc_gl.cpp:1407
+#: icc_gl.cpp:1481
 msgid "shells"
 msgstr "schalen"
 
-#: icc_gl.cpp:1412
+#: icc_gl.cpp:1486
 msgid "Sphere 1dE"
 msgstr "Kugel 1dE"
 
-#: icc_gl.cpp:1413
+#: icc_gl.cpp:1487
 msgid "Sphere 2dE"
 msgstr "Kugel 2dE"
 
-#: icc_gl.cpp:1414
+#: icc_gl.cpp:1488
 msgid "Sphere 4dE"
 msgstr "Kugel 4dE"
 
-#: icc_gl.cpp:1417
+#: icc_gl.cpp:1491
 msgid "Star"
 msgstr "Stern"
 
-#: icc_gl.cpp:1420
+#: icc_gl.cpp:1494
 msgid "Point"
 msgstr "Punkt"
 
-#: icc_gl.cpp:1423
+#: icc_gl.cpp:1497
 msgid "without markers"
 msgstr "ohne Farborte"
 
-#: icc_gl.cpp:1424
+#: icc_gl.cpp:1498
 msgid "Spektral line"
 msgstr "Spektrallinie"
 
-#: icc_gl.cpp:1427 icc_betrachter.cxx:630
+#: icc_gl.cpp:1501 icc_betrachter.cxx:630
 msgid "Texts"
 msgstr "Texte"
 
-#: icc_gl.cpp:1429
+#: icc_gl.cpp:1503
 msgid "Texts/Arrows on/off"
 msgstr "Texte/Pfeile an/aus"
 
-#: icc_gl.cpp:1431
+#: icc_gl.cpp:1505
 msgid "Illustration"
 msgstr "Darstellung"
 
-#: icc_gl.cpp:1540 icc_profile_tags.cpp:291
+#: icc_gl.cpp:1614 icc_profile_tags.cpp:291
 msgid "Channel"
 msgstr "Kanal"
 
-#: icc_gl.cpp:1884
+#: icc_gl.cpp:1959
 msgid "Konnte keine Eltern finden"
 msgstr ""
 
-#: icc_gl.cpp:1893
+#: icc_gl.cpp:1968
 msgid "Konnte keine passende Programmstruktur finden"
 msgstr ""
 
@@ -732,7 +716,7 @@ msgstr "Schwarze Wiedergabekurve"
 
 #: icc_helfer.cpp:561
 msgid "Green Colorant"
-msgstr "grüne Grundfarbe"
+msgstr "Grüne Grundfarbe"
 
 #: icc_helfer.cpp:562
 msgid "Green tone reproduction curve"
@@ -1266,9 +1250,25 @@ msgstr ""
 msgid "K"
 msgstr ""
 
-#: icc_oyranos.cpp:146 icc_oyranos.cpp:185 icc_oyranos.cpp:225
-#: icc_oyranos.cpp:264
+#: icc_oyranos.cpp:150 icc_oyranos.cpp:189 icc_oyranos.cpp:229
+#: icc_oyranos.cpp:268
 msgid "Profil konnte nicht geladen werden"
+msgstr ""
+
+#: icc_oyranos.cpp:409
+msgid "hsRGB Profil nicht geoeffnet"
+msgstr ""
+
+#: icc_oyranos.cpp:411
+msgid "hLab Profil nicht geoeffnet"
+msgstr ""
+
+#: icc_oyranos.cpp:417
+msgid "keine hXYZtoRGB Transformation gefunden"
+msgstr ""
+
+#: icc_oyranos.cpp:420
+msgid "RGB_speicher Speicher nicht verfuegbar"
 msgstr ""
 
 #: icc_oyranos_extern.cpp:54
@@ -2093,7 +2093,7 @@ msgstr "Neu"
 msgid "Paths:"
 msgstr "Pfade:"
 
-#: icc_gl.h:189
+#: icc_gl.h:188
 msgid "Gibts nicht"
 msgstr ""
 

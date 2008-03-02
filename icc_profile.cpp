@@ -60,7 +60,7 @@ ICCprofile::copy_ ( const ICCprofile & p )
   data_ = (char*) calloc (sizeof(char), p.size_);
   size_ = p.size_;
   memcpy(data_, p.data_, size_);
-  _filename = p._filename;
+  filename_ = p.filename_;
   changing_ = p.changing_;
   measurement = p.measurement;
   measurement._profil = this;
@@ -86,14 +86,14 @@ ICCprofile::operator=  ( const ICCprofile & p )
 }
 
 ICCprofile::ICCprofile (const char *filename)
-  : _filename (filename)
+  : filename_ (filename)
 { DBG_PROG_START
   if (data_ && size_) free(data_);//delete [] data_;
   data_ = NULL;
   size_ = 0;
 
   // delegieren
-  _filename = filename;
+  filename_ = filename;
   fload ();
   DBG_PROG_ENDE
 }
@@ -117,7 +117,7 @@ ICCprofile::clear (void)
   data_ = NULL;
   size_ = 0;
 
-  _filename = "";
+  filename_ = "";
   header.load(NULL);
 
   tags.clear();
@@ -131,7 +131,7 @@ void
 ICCprofile::load (std::string filename)
 { DBG_PROG_START
   // delegieren
-  _filename = filename;
+  filename_ = filename;
   fload ();
   DBG_PROG_ENDE
 }
@@ -140,7 +140,7 @@ void
 ICCprofile::load (char* filename)
 { DBG_PROG_START
   // delegieren
-  _filename = filename;
+  filename_ = filename;
   fload();
   DBG_PROG_ENDE
 }
@@ -150,7 +150,7 @@ ICCprofile::fload ()
 {
   DBG_PROG_START // ICC Profil laden
  
-  std::string file = _filename;
+  std::string file = filename_;
   changing_ = true;
 
   try {
@@ -160,15 +160,15 @@ ICCprofile::fload ()
     catch (Ausnahme & a) {	// fängt alles von Ausnahme Abstammende
         DBG_NUM_V( _("Ausnahme aufgetreten: ") << a.what() );
         a.report();
-        _filename = "";
+        filename_ = "";
     }
     catch (std::exception & e) { // fängt alles von exception Abstammende
         DBG_NUM_V( _("Std-Ausnahme aufgetreten: ") << e.what() );
-        _filename = "";
+        filename_ = "";
     }
     catch (...) {		// fängt alles Übriggebliebene
         DBG_NUM_V( _("Huch, unbekannte Ausnahme") );
-        _filename = "";
+        filename_ = "";
     }
 
   DBG_MEM_V( (int*)data_ <<" "<< size_ )
@@ -178,7 +178,7 @@ ICCprofile::fload ()
     clear();
     // zweites mal Laden nach clear() ; könnte optimiert werden
     data_ = ladeDatei (file, &size_);
-    _filename = file;
+    filename_ = file;
 
     Speicher s ((const char*)data_, size_);
     s = file;
@@ -208,8 +208,8 @@ ICCprofile::load (const Speicher & prof)
     data_ = (char*)calloc (sizeof (char), size_+1);
     const char* z = prof;
     memcpy(data_, z, size_);
-    _filename = file;
-    DBG_MEM_V( _filename )
+    filename_ = file;
+    DBG_MEM_V( filename_ )
     DBG_MEM_V( size_ )
     DBG_MEM_V( (int*)data_ )
   } else {
@@ -247,8 +247,8 @@ ICCprofile::load (const Speicher & prof)
     ic_tag.size = icValue ((icUInt32Number)groesse); DBG_MEM_V( groesse )
     ic_tag.offset = 0;
 
-    if( _filename.size() &&
-        (_filename.find( "wrl",  _filename.find_last_of(".") )
+    if( filename_.size() &&
+        (filename_.find( "wrl",  filename_.find_last_of(".") )
          != std::string::npos) )
       memcpy (&ic_tag.sig, "vrml", 4);
     else
@@ -312,7 +312,7 @@ ICCprofile::load (const Speicher & prof)
   DBG_NUM_S( "TagCount: " << getTagCount() << " / " << tags.size() )
   #endif
  
-  DBG_NUM_V( _filename )
+  DBG_NUM_V( filename_ )
 
   changing_ = false;
   DBG_PROG_ENDE
@@ -323,13 +323,13 @@ const char*
 ICCprofile::filename ()
 {
   DBG_PROG
-  return _filename.c_str();
+  return filename_.c_str();
 }
 
 void
 ICCprofile::filename (const char* s)
 {
-  DBG_PROG _filename = s;
+  DBG_PROG filename_ = s;
 }
 
 size_t
@@ -684,7 +684,7 @@ ICCprofile::getWhitePkt           (void)
 }
 
 void
-ICCprofile::saveProfileToFile  (char* filename)
+ICCprofile::saveProfileToFile  (const char* filename)
 { DBG_PROG_START
   if (data_ && size_) free(data_);//delete []data_;
   size_ = sizeof (icHeader) + sizeof (icUInt32Number); DBG_MEM_V(size_ <<" "<<sizeof (icProfile))

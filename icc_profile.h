@@ -186,7 +186,7 @@ class ICCprofile {
   private:
     bool                changing_;
     void                fload ();
-    std::string         _filename;
+    std::string         filename_;
 
     // icc34.h Definitionen
     char*               data_;
@@ -207,6 +207,7 @@ class ICCprofile {
     //const char*         creator  ()        {DBG_PROG return header.creatorName(); }
     int                 intent   ()     {return icValue(((const icHeader*)header
                                            .header_raw())-> renderingIntent ); }
+    icColorSpaceSignature colorSpace()  {return header.colorSpace(); }
 
     std::string         printHeader     ();
     std::string         printLongHeader ();
@@ -254,7 +255,7 @@ class ICCprofile {
     ICCtag&             getTag             (int item);
     void                removeTag          (int item);
     void                removeTagByName    (std::string name);
-    void                saveProfileToFile  (char* filename);
+    void                saveProfileToFile  (const char* filename);
     size_t              getProfileSize     (void);
     char*               saveProfileToMem   (size_t* size);
   private:

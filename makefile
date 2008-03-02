@@ -118,6 +118,7 @@ CPP_HEADERS = \
 	icc_fenster.h \
 	icc_formeln.h \
 	icc_examin.h \
+	icc_gamut.h \
 	icc_gl.h \
 	icc_helfer.h \
 	icc_helfer_fltk.h \
@@ -153,6 +154,7 @@ COMMON_CPPFILES = \
 	icc_examin_tagwahl.cpp \
 	icc_fenster.cpp \
 	icc_formeln.cpp \
+	icc_gamut.cpp \
 	icc_gl.cpp \
 	icc_helfer.cpp \
     icc_helfer_i18n.cpp \
@@ -325,7 +327,7 @@ clean:
 	echo "mache sauber"
 	$(RM) mkdepend config config.h
 	$(RM) $(OBJECTS) $(CLIB_OBJECTS) $(TARGET) \
-	$(LIBSO) $(LIBSONAME) $(LIBSONAMEFULL)
+	$(LIBNAME) $(LIBSO) $(LIBSONAME) $(LIBSONAMEFULL)
 	for ling in $(LINGUAS); do \
 	  test -f po/$${ling}.gmo \
         && $(RM) po/$${ling}.gmo; \
