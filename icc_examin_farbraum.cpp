@@ -234,14 +234,7 @@ ICCexamin::farbraum (int n)
 
   // Oeffnen
   if(lade())
-  {
     farbraumModus( profile.aktuell() );
-    if(farbraumModus())
-    {
-        // Oberflaechenpflege
-      gamutAnsichtZeigen();
-    }
-  }
 
   // benannte Farben darstellen
   if( profile.size() > n && ncl2_profil )
@@ -272,12 +265,13 @@ ICCexamin::farbraum (int n)
 
     DBG_PROG_V( n <<" "<< netz->size() <<" "<< ncl2_profil )
 
+    // Setzen einiger Standardwerte
     if(netz->size() && neues_netz)
     {
       if((n == 0 && ncl2_profil) &&
          !messwerte )
       {
-        (*netz)[n].transparenz = 0.0;
+        (*netz)[n].transparenz = 0.15;
         (*netz)[n].grau = false;
       }
       else

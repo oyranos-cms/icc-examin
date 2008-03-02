@@ -344,12 +344,12 @@ class ICCfltkBetrachter {open
     dateiwahl->preview(true);
   \#endif} {}
     Fl_Window {} {open
-      xywh {1171 295 100 100} type Double resizable
+      xywh {1184 358 100 100} type Double resizable
       code0 {//o->show();} visible
     } {}
     Fl_Window ueber {
-      label {About ICC Examin}
-      xywh {875 149 365 289} type Double resizable
+      label {About ICC Examin} open
+      xywh {855 67 365 289} type Double resizable
       code0 {o->hide();}
       class My_Fl_Window non_modal visible
     } {
@@ -389,15 +389,15 @@ class ICCfltkBetrachter {open
     }
     Fl_Window vcgt {
       label {Grafic Card Gamma Table} open
-      xywh {139 246 370 390} type Double resizable
+      xywh {80 305 370 390} type Double resizable
       code0 {o->hide();}
-      class My_Fl_Window visible
+      class My_Fl_Window non_modal visible
     } {
       Fl_Group {} {open
         xywh {0 0 370 390}
       } {
         Fl_Box vcgt_viewer {
-          xywh {0 0 370 360}
+          xywh {0 0 370 360} resizable
           code0 {o->show();}
           class TagDrawings
         }
@@ -423,66 +423,44 @@ class ICCfltkBetrachter {open
         }
       }
     }
-    Fl_Window details {
-      label {ICC Examin} open
-      xywh {844 300 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
+    Fl_Window DD {
+      label Gamut open
+      xywh {793 471 385 520} type Double box NO_BOX color 53 resizable non_modal xclass Fl_Window visible
     } {
       Fl_Group {} {open
         xywh {0 0 385 520}
       } {
-        Fl_Menu_Bar menueleiste {
+        Fl_Menu_Bar DD_menueleiste {open
           xywh {0 0 385 25} align 20 when 3
         } {
           Submenu {} {
-            label File open
-            xywh {15 15 100 20}
+            label View open
+            xywh {25 25 100 20}
           } {
-            MenuItem {} {
-              label Open
-              callback {icc_examin->oeffnen()}
-              xywh {15 15 100 20} shortcut 0x4006f
-            }
-            MenuItem menueintrag_html_speichern {
-              label {Save Report}
-              callback {DBG_PROG_START
+            MenuItem DD_menueintrag_Voll {
+              label {Whole Screen on/off}
+              callback {Fl_Window *w = o->window();
 
-  icc_examin->berichtSpeichern ();
+  if (!fullscreen) {
+    px = w->x();
+    py = w->y();
+    pw = w->w();
+    ph = w->h();
 
-  DBG_PROG_ENDE}
-              xywh {0 0 100 20} deactivate divider
-            }
-            MenuItem menueintrag_gamut_speichern {
-              label {Save Gamut as Profile}
-              callback {DBG_PROG_START
-
-  icc_examin->gamutSpeichern (icc_examin_ns::ICC_ABSTRACT);
-
-  DBG_PROG_ENDE}
-              tooltip {Save gamut as abstract profile useful for proofing} xywh {10 10 100 20} deactivate
-            }
-            MenuItem menueintrag_gamut_vrml_speichern {
-              label {Save Gamut as VRML}
-              callback {DBG_PROG_START
-
-  icc_examin->gamutSpeichern (icc_examin_ns::ICC_VRML);
-
-  DBG_PROG_ENDE}
-              tooltip {Save gamut as VRML useful for visualisation.} xywh {20 20 100 20} deactivate divider
+    w->fullscreen();
+    fullscreen = true;
+  } else {
+    w->fullscreen_off(px,py,pw,ph);
+    fullscreen = false;
+  }}
+              xywh {25 25 100 20} shortcut 0x40076
             }
             MenuItem {} {
-              label Quit
-              callback {quit()}
-              xywh {15 15 100 20} shortcut 0x40071
-            }
-          }
-          Submenu {} {
-            label Edit open
-            xywh {25 25 100 20} hide
-          } {
-            MenuItem {} {
-              label {Oyranos Settings}
-              callback {oyranos_einstellungen()}
-              xywh {25 25 100 20}
+              label {Show Main Window}
+              callback {DBG_PROG_START
+  details->show();
+  DBG_PROG_ENDE}
+              xywh {60 60 100 20} shortcut 0x4006d
             }
           }
           Submenu {} {
@@ -560,6 +538,98 @@ class ICCfltkBetrachter {open
     icc_examin->bpc(1);}
               tooltip {Black Point Compensation} xywh {65 65 100 20} type Toggle shortcut 0x40062
             }
+          }
+        }
+        Fl_Group {} {open
+          xywh {0 25 385 470} resizable
+        } {
+          Fl_Box DD_farbraum {
+            xywh {0 25 385 470}
+            code0 {o->hide();}
+            code1 {o->fensterId( 1 ); // wandert ins 1. Nebenfenster}
+            class GL_Ansicht
+          }
+        }
+        Fl_Group {} {open
+          xywh {0 495 385 25}
+        } {
+          Fl_Box DD_box_stat {
+            xywh {0 495 385 25} box THIN_DOWN_BOX align 20
+          }
+        }
+      }
+      Fl_Box DD_no_box {
+        xywh {0 0 385 520}
+        code0 {o->box(FL_NO_BOX);}
+        class My_Fl_Box
+      }
+    }
+    Fl_Window details {
+      label {ICC Examin} open
+      xywh {914 338 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
+    } {
+      Fl_Group {} {open
+        xywh {0 0 385 520}
+      } {
+        Fl_Menu_Bar menueleiste {open
+          xywh {0 0 385 25} align 20 when 3
+        } {
+          Submenu {} {
+            label File open
+            xywh {15 15 100 20}
+          } {
+            MenuItem {} {
+              label Open
+              callback {icc_examin->oeffnen()}
+              xywh {15 15 100 20} shortcut 0x4006f
+            }
+            MenuItem menueintrag_html_speichern {
+              label {Save Report}
+              callback {DBG_PROG_START
+
+  icc_examin->berichtSpeichern ();
+
+  DBG_PROG_ENDE}
+              xywh {0 0 100 20} deactivate divider
+            }
+            MenuItem menueintrag_gamut_speichern {
+              label {Save Gamut as Profile}
+              callback {DBG_PROG_START
+
+  icc_examin->gamutSpeichern (icc_examin_ns::ICC_ABSTRACT);
+
+  DBG_PROG_ENDE}
+              tooltip {Save gamut as abstract profile useful for proofing} xywh {10 10 100 20} deactivate
+            }
+            MenuItem menueintrag_gamut_vrml_speichern {
+              label {Save Gamut as VRML}
+              callback {DBG_PROG_START
+
+  icc_examin->gamutSpeichern (icc_examin_ns::ICC_VRML);
+
+  DBG_PROG_ENDE}
+              tooltip {Save gamut as VRML useful for visualisation.} xywh {20 20 100 20} deactivate divider
+            }
+            MenuItem {} {
+              label Quit
+              callback {quit()}
+              xywh {15 15 100 20} shortcut 0x40071
+            }
+          }
+          Submenu {} {
+            label Edit open
+            xywh {25 25 100 20} hide
+          } {
+            MenuItem {} {
+              label {Oyranos Settings}
+              callback {oyranos_einstellungen()}
+              xywh {25 25 100 20}
+            }
+          }
+          Submenu {} {
+            label Options open
+            xywh {35 35 100 20} hide
+          } {
             MenuItem menueintrag_lang {
               label LANG
               callback {system("echo $LANG");
@@ -571,23 +641,9 @@ class ICCfltkBetrachter {open
           MenuItem menueintrag_huelle {
             label Gamut
             callback {DBG_PROG_START
-  Fl_Menu_* mw = (Fl_Menu_*)o;
-  const Fl_Menu_Item* m = mw->mvalue();
-
-  DBG_PROG_S (m->value())
-  if (m->value()) {
-    widget_oben = WID_3D;
-    ((Fl_Menu_Item*)menueintrag_3D)->set();
-  } else {
-    widget_oben = WID_0;
-    ((Fl_Menu_Item*)menueintrag_3D)->clear();
-  }
-  DBG_PROG_V( widget_oben )
-  DBG_PROG_V( menueintrag_3D->value() )
-  DBG_PROG_V( menueintrag_huelle->value() )
-  icc_examin->icc_betrachterNeuzeichnen(icc_examin->icc_betrachter->DD_farbraum);
+  icc_examin->zeig3D();
   DBG_PROG_ENDE}
-            xywh {60 60 100 20} type Toggle shortcut 0x40068
+            xywh {60 60 100 20} shortcut 0x40068
           }
           Submenu {} {
             label View open
@@ -614,42 +670,14 @@ class ICCfltkBetrachter {open
             MenuItem menueintrag_3D {
               label Gamut
               callback {DBG_PROG_START
-  Fl_Menu_* mw = (Fl_Menu_*)o;
-  const Fl_Menu_Item* m = mw->mvalue();
-
-  DBG_PROG_S (m->value())
-  if (m->value()) {
-    widget_oben = WID_3D;
-    ((Fl_Menu_Item*)menueintrag_huelle)->set();
-  } else {
-    widget_oben = WID_0;
-    ((Fl_Menu_Item*)menueintrag_huelle)->clear();
-  }
-  DBG_PROG_V( widget_oben )
-  DBG_PROG_V( menueintrag_3D->value() )
-  DBG_PROG_V( menueintrag_huelle->value() )
-  icc_examin->icc_betrachterNeuzeichnen(icc_examin->icc_betrachter->DD_farbraum);
+  icc_examin->zeig3D();
   DBG_PROG_ENDE}
-              xywh {50 50 100 20} type Toggle shortcut 0x40068 divider
+              xywh {50 50 100 20} shortcut 0x40068 divider
             }
             MenuItem menueintrag_inspekt {
               label {Report View}
-              callback {Fl_Menu_* mw = (Fl_Menu_*)o;
-  const Fl_Menu_Item* m = mw->mvalue();
-
-  DBG_PROG_S (m->value())
-
-  if (m->value())
-  { bool export_html = false;
-    widget_oben = WID_INSPEKT;
-    inspekt_html->value(profile.profil()->report(export_html).c_str());
-    inspekt_html->topline(tag_text->inspekt_topline);
-  } else {
-    widget_oben = WID_0;
-    tag_text->inspekt_topline = inspekt_html->topline();
-  }
-  icc_examin->icc_betrachterNeuzeichnen(inspekt_html);}
-              xywh {40 40 100 20} type Toggle shortcut 0x40062 deactivate
+              callback {icc_examin->zeigPrueftabelle();}
+              xywh {40 40 100 20} shortcut 0x40062 deactivate
             }
             MenuItem menueintrag_zeigcgats {
               label {CGATS View}
@@ -688,7 +716,7 @@ initHilfe();
   /* set visible */
   Fl_Tabs *tb = dynamic_cast<Fl_Tabs*>(hilfe_html->parent());
   if(tb)
-    tb->value(icc_examin->icc_betrachter->ueber_html);}
+    tb->value(icc_examin->icc_betrachter->ueber_html);} selected
               xywh {5 5 100 20}
             }
             MenuItem {} {
@@ -718,17 +746,16 @@ initHilfe();
         Fl_Group {} {open
           xywh {0 25 385 470} resizable
         } {
-          Fl_Box DD_farbraum {
+          Fl_Group {} {open
             xywh {0 25 385 470}
-            code0 {o->hide();}
-            class GL_Ansicht
+          } {
+            Fl_Help_View inspekt_html {
+              label Inspect
+              xywh {0 25 385 470} align 16 resizable
+              code0 {o->hide();}
+            }
           }
-          Fl_Help_View inspekt_html {
-            label Inspect
-            xywh {0 25 385 470} align 16
-            code0 {o->hide();}
-          }
-          Fl_Tile examin {
+          Fl_Tile examin {open
             xywh {0 25 385 470}
           } {
             Fl_Browser tag_browser {
@@ -756,50 +783,30 @@ initHilfe();
                     code0 {o->show();}
                     class MftChoice
                   } {}
-                  Fl_Group {} {
+                  Fl_Group {} {open
                     xywh {0 185 385 310} resizable
                   } {
-                    Fl_Group {} {
+                    Fl_Group mft_gl_group {open
                       xywh {0 185 385 310}
                     } {
                       Fl_Box mft_gl {
-                        xywh {0 185 385 310} align 18
+                        xywh {0 185 340 310} align 18 resizable
                         code0 {o->hide();}
+                        code1 {o->fensterId( 0 ); // bleibt im Hauptfenster}
                         class GL_Ansicht
+                      }
+                      Fl_Box {} {
+                        xywh {0 185 385 310} box FLAT_BOX
                       }
                       Fl_Button {} {
                         label o
-                        callback {int lx = o->parent()->x(),
-      ly = o->parent()->y(),
-      lw = o->parent()->w(),
-      lh = o->parent()->h();
-  const char* title = o->window()->label();
-  char* t = (char*) malloc(strlen(title)+20);
-  int   item = icc_examin->tag_nr();
-  std::vector<std::string> tag_info =
-       profile.profil()->printTagInfo(item);
+                        callback {int lx = details->x() + mft_gl->w(),
+      ly = details->y(),
+      lw = mft_gl->w(),
+      lh = mft_gl->h();
 
-  sprintf(t, "%d:%s - %s", item + 1,
-          tag_info[0].c_str(),
-          title);
-
-  Fl_Double_Window *w = 
-  new Fl_Double_Window(
-          lx, ly,
-          lw, lh,
-          t);
-    w->user_data((void*)(0));
-    Fl_Group *g = new Fl_Group(0,0,lw,lh);
-      GL_Ansicht *gl = 
-        new GL_Ansicht (*mft_gl); //(0,0,lw,lh);
-
-      GL_Ansicht::getAgv(gl, mft_gl);
-      gl->init( mft_gl->id() );
-    g->end();
-  w->end();
-  w->resizable(w);
-  w->show();}
-                        tooltip {Make this view a own window.} xywh {0 185 20 20}
+  icc_examin->zeigMftTabellen( lx, ly, lw,lh );}
+                        tooltip {Show all channels of this table a own window.} xywh {340 185 20 20}
                         code0 {o->show();}
                       }
                     }
@@ -831,7 +838,7 @@ initHilfe();
             }
           }
         }
-        Fl_Group {} {selected
+        Fl_Group {} {
           xywh {0 495 385 25}
         } {
           Fl_Box box_stat {
@@ -894,12 +901,11 @@ initHilfe();
     {
       ptr = getenv("HOME");
     }
-    if(ptr)
-      dateiwahl->value(ptr);
 
     dateiwahl->show();
 
-    
+    if(ptr)
+      dateiwahl->value(ptr);
 
 
     while (dateiwahl->visible())

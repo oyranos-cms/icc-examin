@@ -82,6 +82,7 @@ class GL_Ansicht : public Fl_Gl_Window, /*, public Fl_Slot*/
   // IDs
   Agviewer *agv_;
   int  id_;
+  int  fenster_id_;
   void GLinit_();
   void menueInit_();
 
@@ -125,6 +126,8 @@ public:
 
   // welches Fenster wird verwaltet?
   int  id()          {return id_; } //!< gleich zu agviewer::RedisplayWindow
+  int  fensterId()   {return fenster_id_; } //!< Fenster ID
+  void fensterId(int fenster_id)   { fenster_id_ = fenster_id; }
 
   static Agviewer* getAgv(GL_Ansicht *me, GL_Ansicht *referenz);
 
@@ -160,6 +163,7 @@ public:
   int  punktform;           //!< MENU_KUGEL MENU_WUERFEL MENU_STERN
   int  punktfarbe;          //!< MENU_GRAU MENU_FARBIG MENU_KONTRASTREICH
   int  punktgroesse;        //!< Groesse in Pixel
+  int  punkt_zahl_alt;
 
   float hintergrundfarbe;   //!< Hintergrundfarben Farbschema
   float textfarbe[3];
@@ -205,11 +209,14 @@ private:
   bool darf_bewegen_;
   bool ist_bewegt_;
 private:
-  double zeit_diff_;        //!< Bilder pro Sekunde
+  double zeit_diff_;        //!< Sekunde pro Bild
+  double zeit_;
   int  valid_;              //!< notiert ob in draw() valid() false war
   char t[128];              //!< Text zur Fehlersuche
   int  maus_x_;
   int  maus_y_;
+  int maus_x_alt, maus_y_alt;
+  bool maus_steht;
   void mausPunkt_( GLdouble & oX, GLdouble & oY, GLdouble & oZ,
                   GLdouble & X, GLdouble & Y, GLdouble & Z );
 public:

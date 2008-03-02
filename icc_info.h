@@ -34,7 +34,7 @@ namespace icc_examin_ns {
 
   void fortschritt(const double d);
   void info(const char* text);
-  void status_info(const char*);
+  void status_info(const char* text, int fenster);
   int  laeuft();
 
 }

@@ -152,6 +152,7 @@ ICCexaminIO::oeffnenThread_ ()
   }
 
   // Laden
+  icc_examin->clear();
   icc_examin->icc_betrachter->DD_farbraum->punkte_clear();
   profile.clear();
   icc_examin->fortschrittThreaded( -.1 );
@@ -181,12 +182,16 @@ ICCexaminIO::oeffnenThread_ ()
     icc_examin->fortschritt( 2./3.+ 1./6. );
 
     icc_examin->icc_betrachter->measurement( profile.profil()->hasMeasurement() );
+
+      // Oberflaechenpflege
     if(icc_examin->farbraumModus())
+      icc_examin->gamutAnsichtZeigen();
+    else if(!icc_examin->icc_betrachter->details->visible_r())
     {
-        // Oberflaechenpflege
-      // siehe ICCexamin::farbraum(int n)
-      //gamutAnsichtZeigen();
+      icc_examin->icc_betrachterNeuzeichnen( icc_examin->icc_betrachter->tag_viewer);
+      icc_examin->waehleTag( icc_examin->tag_nr() );
     }
+
     icc_examin_ns::unlock(this, __FILE__,__LINE__);
 
       // Sortieren
@@ -306,7 +311,6 @@ ICCexaminIO::lade (std::vector<Speicher> & neu)
   if(!lade())
   {
     speicher_vect_ = neu;
-    if(!icc_examin->icc_betrachter->details->visible()) icc_examin->icc_betrachter->details->show();
     lade_ = true;
   } else {
     DBG_THREAD_S( "muss warten" )
@@ -338,21 +342,24 @@ ICCexaminIO::oeffnenStatisch_ (void* ie)
 
   // Schleife starten die diesen thread laufen laesst
   while(1) {
-    if(examin->io_->lade_) {
-      examin->io_->oeffnenThread_();
-      examin->io_->lade_ = false;
-      //examin->erneuern(-1);
-    } else {
-      int e = examin->erneuern();
-      if(e >= 0 &&
-         e < profile.size()) {
-        examin->io_->oeffnenThread_( e );
+    if(icc_examin->status_) {
+      if(examin->io_->lade_) {
+        examin->io_->oeffnenThread_();
         examin->io_->lade_ = false;
+        //examin->erneuern(-1);
       } else {
-        // kurze Pause 
-        icc_examin_ns::sleep(0.2); DBG_THREAD
+        int e = examin->erneuern();
+        if(e >= 0 &&
+           e < profile.size()) {
+          examin->io_->oeffnenThread_( e );
+          examin->io_->lade_ = false;
+        } else {
+          // kurze Pause 
+          icc_examin_ns::sleep(0.2); DBG_THREAD
+        }
       }
-    }
+    } else
+      icc_examin_ns::sleep(0.2);
   }
 
   DBG_PROG_ENDE

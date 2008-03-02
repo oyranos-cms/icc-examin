@@ -177,7 +177,7 @@ Agviewer::agvMove_(void)
     }
 
   } else
-    WARN_S( _("GL Fenster nicht frei") )
+    WARN_S( "GL Fenster nicht frei" )
 
   DBG_PROG_ENDE
 }
@@ -309,7 +309,7 @@ Agviewer::agvHandleButton(int button, int event, int x, int y)
         AdjustingAzEl = 1;
         MoveOn(0); //ICC stop
         //if (MoveMode == FLYING)
-          icc_examin_ns::status_info(_("left-/middle-/right mouse button -> rotate/cut/menu"));
+          icc_examin_ns::status_info(_("left-/middle-/right mouse button -> rotate/cut/menu"),parent->fensterId());
         duenn = false;
         MoveMode = POLAR;
     } else
@@ -322,7 +322,7 @@ Agviewer::agvHandleButton(int button, int event, int x, int y)
         downEyeMove = EyeMove;
         EyeMove = 0;
         if (MoveMode == FLYING)
-          icc_examin_ns::status_info(_("Pause"));
+          icc_examin_ns::status_info(_("Pause"),parent->fensterId());
     }
 
   } else if (event == FL_RELEASE && /*button ==*/ downb) {
@@ -346,7 +346,7 @@ Agviewer::agvHandleButton(int button, int event, int x, int y)
         AdjustingAzEl = 0;
         MoveOn(1);
         if (MoveMode == FLYING) {
-          icc_examin_ns::status_info(_("left mouse button -> go back"));
+          icc_examin_ns::status_info(_("left mouse button -> go back"),parent->fensterId());
           duenn = false;
         }
       } else
@@ -354,16 +354,16 @@ Agviewer::agvHandleButton(int button, int event, int x, int y)
       {
         EyeMove = downEyeMove;
         if (MoveMode == FLYING) {
-          icc_examin_ns::status_info(_("left mouse button -> go back"));
+          icc_examin_ns::status_info(_("left mouse button -> go back"),parent->fensterId());
           duenn = true;
         }
       } else
-        WARN_S( _("nicht erkennbare Maustaste: ") << button )
+        WARN_S( "nicht erkennbare Maustaste: " << button )
 
     downb = -1;
 
   } else
-    WARN_S( _("keine Anweisung erkennbar") )
+    WARN_S( "keine Anweisung erkennbar" )
 
   DBG_PROG_ENDE
 }

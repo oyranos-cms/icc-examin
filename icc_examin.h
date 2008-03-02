@@ -76,6 +76,7 @@ class ICCexamin : public icc_examin_ns::Beobachter,
 
     void         start(int argc, char** argv);
     void         quit(void);
+    void         clear(void);
 
   private:
     ICCexaminIO *io_;
@@ -94,8 +95,11 @@ class ICCexamin : public icc_examin_ns::Beobachter,
     bool         berichtSpeichern (void);      //!< GCATS Auswertung -> html Datei
 
     bool         gamutSpeichern (icc_examin_ns::IccGamutFormat format); //!< Farbraumhuelle
+    void         zeig3D ();
     void         zeigPrueftabelle ();
     void         zeigCGATS();                  //!< korrigiertes CGATS zeigen
+    void         zeigMftTabellen(int x, int y,
+                                 int w, int h);//!< oeffnen aller Kanaele
     void         icc_betrachterNeuzeichnen (void* widget); //!< Oberflaechenpflege
 
     std::string  waehleTag (int item);
@@ -128,7 +132,7 @@ class ICCexamin : public icc_examin_ns::Beobachter,
 
   public:
     ICCfltkBetrachter* icc_betrachter;
-    std::string statlabel;
+    std::string statlabel[4];
     void        statusFarbe(double & CIEL, double & CIEa, double & CIEb);
     std::string detaillabel;
   public:
@@ -180,7 +184,7 @@ class ICCexamin : public icc_examin_ns::Beobachter,
 
 int tastatur(int e);
 
-#define status(texte) {std::stringstream s; s << texte; icc_examin->statlabel = s.str(); icc_examin->statusAktualisieren();}
+#define status(texte) {std::stringstream s; s << texte; icc_examin->statlabel[0] = s.str(); icc_examin->statusAktualisieren();}
 
 #endif //ICC_EXAMIN_H
 

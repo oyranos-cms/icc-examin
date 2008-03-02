@@ -32,6 +32,7 @@
 #include "icc_oyranos.h"
 #include "icc_profile.h"
 #include "icc_utils.h"
+#include "icc_fenster.h"
 #include "config.h"
 
 #define BOOL LCMS_BOOL
@@ -159,12 +160,13 @@ Oyranos::lab_test_ ()
         if (size)
         { char *block = (char*)oyGetProfileBlock( profil_name, &size, myAllocFunc);
           if( oyCheckProfileMem( block, size, 0 ) )
-            WARN_S ( _("Profil konnte nicht geladen werden") )
+            WARN_S ( _("WARNING: Could not load corrupt or damaged profile.") )
           else {
             DBG_PROG_V( (intptr_t)block <<"|"<< size )
             v_block->ladeNew(block, size);
           }
-        }
+        } else
+          WARN_S(_("WARNING: Could not load profile."));
     }
   }
   
@@ -343,12 +345,13 @@ Oyranos::moni_test_ (int x, int y)
         {
           char* block = moni_profil;
           if( oyCheckProfileMem( block, size, 0 ) )
-            WARN_S ( _("Profil konnte nicht geladen werden") )
+            WARN_S(_("WARNING: Could not load corrupt or damaged profile."))
           else {
               DBG_MEM_V( (int*)block <<"|"<< size )
             v_block.ladeNew(block, size);
           }
-        }
+        } else
+          WARN_S(_("WARNING: Could not load profile."))
         v_block = (const char*)profil_name;
         DBG_MEM
     }
@@ -422,14 +425,15 @@ Oyranos::moni_test_ (int x, int y)
         {
 #         ifdef HAVE_OY
           if( oyCheckProfileMem( ref.data, size, 0 ) )
-            WARN_S ( _("Could not load profile") )
+            WARN_S(_("WARNING: Could not load profile."))
           else
 #         endif
           {
               DBG_MEM_V( (int*)ref.data <<"|"<< size )
             v_block.lade((const char*)ref.data, size);
           }
-        }
+        } else
+          WARN_S(_("WARNING: Could not load profile."))
         v_block = profil_name;
         //if(profil_name) free(profil_name);
         DBG_PROG_V( v_block.name() )
@@ -463,12 +467,13 @@ Oyranos::rgb_test_ ()
         if (size)
         { char *block = (char*)oyGetProfileBlock( profil_name, &size, myAllocFunc);
           if( oyCheckProfileMem( block, size, 0 ) )
-            WARN_S ( _("Profil konnte nicht geladen werden") )
+            WARN_S(_("WARNING: Could not load profile."))
           else {
             DBG_PROG_V( (int*)block <<"|"<< size )
             v_block->ladeNew(block, size);
           }
-        }
+        } else
+          WARN_S(_("WARNING: Could not load profile."))
     }
   }
 
@@ -514,12 +519,13 @@ Oyranos::cmyk_test_ ()
         if (size)
         { char *block = (char*)oyGetProfileBlock( profil_name, &size, myAllocFunc);
           if( oyCheckProfileMem( block, size, 0 ) )
-            WARN_S ( _("Profil konnte nicht geladen werden") )
+            WARN_S(_("WARNING: Could not load profile."))
           else {
             DBG_PROG_V( (int*)block <<"|"<< size )
             v_block->ladeNew(block, size);
           }
-        }
+        } else
+          WARN_S(_("WARNING: Could not load profile."));
     }
   }
 
@@ -785,7 +791,7 @@ Oyranos::gamutCheckAbstract(Speicher & s, Speicher & abstract,
   DBG_MEM_V( (int*) block <<" "<<groesse )
 
       hLab  = cmsCreateLabProfile(cmsD50_xyY());
-      if(!hLab)  WARN_S( _("hLab Profil nicht geoeffnet") )
+      if(!hLab)  WARN_S( "hLab Profil nicht geoeffnet" )
 
       profil = cmsOpenProfileFromMem(const_cast<char*>(block), groesse);
       cmsHTRANSFORM tr1 = cmsCreateProofingTransform  (hLab, TYPE_Lab_DBL,
@@ -869,9 +875,9 @@ Oyranos::wandelLabNachBildschirmFarben(double *Lab_Speicher, // 0.0 - 1.0
         hsRGB = cmsOpenProfileFromMem(const_cast<char*>(block), groesse);
       else
         hsRGB = cmsCreate_sRGBProfile();
-      if(!hsRGB) WARN_S( _("hsRGB Profil nicht geoeffnet") )
+      if(!hsRGB) WARN_S( "hsRGB Profil nicht geoeffnet" )
       hLab  = cmsCreateLabProfile(cmsD50_xyY());
-      if(!hLab)  WARN_S( _("hLab Profil nicht geoeffnet") )
+      if(!hLab)  WARN_S( "hLab Profil nicht geoeffnet" )
 
       hLabtoRGB = cmsCreateProofingTransform  (hLab, TYPE_Lab_DBL,
                                                hsRGB, TYPE_RGB_DBL,
@@ -880,11 +886,11 @@ Oyranos::wandelLabNachBildschirmFarben(double *Lab_Speicher, // 0.0 - 1.0
                                                INTENT_RELATIVE_COLORIMETRIC,
                                                PRECALC|BW_COMP|flags);
 
-      if (!hLabtoRGB) WARN_S( _("keine hXYZtoRGB Transformation gefunden") )
+      if (!hLabtoRGB) WARN_S( "keine hXYZtoRGB Transformation gefunden" )
     }
 
     RGB_Speicher = new double[size*3];
-    if(!RGB_Speicher)  WARN_S( _("RGB_speicher Speicher nicht verfuegbar") )
+    if(!RGB_Speicher)  WARN_S( "RGB_speicher Speicher nicht verfuegbar" )
 
     double *cielab = (double*) malloc (sizeof(double)*3*size);
     LabToCIELab (Lab_Speicher, cielab, size);

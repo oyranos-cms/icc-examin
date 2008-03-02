@@ -55,9 +55,12 @@ ICCexamin::waehleTag (int item)
 
   DBG_PROG_V( item )
 
-  std::string text = _("Leer");
+  std::string text = _("empty");
 
-  if(!profile.size()) {
+  if(!profile.size() ||
+     !icc_betrachter->examin->visible_r() ||
+     !icc_betrachter->examin->visible() )
+  {
     DBG_PROG_ENDE
     return text;
   }
@@ -274,7 +277,7 @@ ICCexamin::waehleMft (int item)
                      profile.profil()->getTagTable (icc_betrachter->tag_nummer, ICCtag::TABLE),
                      profile.profil()->getTagChannelNames (icc_betrachter->tag_nummer, ICCtag::TABLE_IN),
                      profile.profil()->getTagChannelNames (icc_betrachter->tag_nummer, ICCtag::TABLE_OUT) ); DBG_PROG_S( "3D Tabelle" )
-    icc_betrachterNeuzeichnen(icc_betrachter->mft_gl);
+    icc_betrachterNeuzeichnen(icc_betrachter->mft_gl_group);
     break;
   case 4: // Ausgangskurven
     DBG_PROG_S("Kurven in anzeigen")

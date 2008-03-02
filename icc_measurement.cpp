@@ -811,13 +811,13 @@ ICCmeasurement::init_umrechnen                     (void)
         DBG_PROG_V( groesse )
 
         if( !groesse ) {
-          WARN_S(_("kein passendes voreingestelltes Profil gefunden"))
+          WARN_S("kein passendes voreingestelltes Profil gefunden")
           goto Kein_Profil; //TODO
         } else
           hCOLOUR = cmsOpenProfileFromMem(const_cast<char*>(block), groesse);
       }
       if( !hCOLOUR )
-        WARN_S(_("hCOLOUR ist leer"))
+        WARN_S("hCOLOUR ist leer")
 
       // Wie sieht das Profil die Messfarbe? -> XYZ
       hCOLOURtoXYZ =  cmsCreateTransform (hCOLOUR, TYPE_nCOLOUR_DBL,
@@ -842,8 +842,8 @@ ICCmeasurement::init_umrechnen                     (void)
     Kein_Profil:
     if (XYZ_measurement_)
     {
-      if( !hXYZ ) WARN_S(_("hXYZ ist leer"))
-      if( !hsRGB ) WARN_S(_("hsRGB ist leer"))
+      if( !hXYZ ) WARN_S("hXYZ ist leer")
+      if( !hsRGB ) WARN_S("hsRGB ist leer")
 
       // Wie sieht das Messgeraet die Messfarbe? -> Lab
       hXYZtoLab = cmsCreateTransform (hXYZ, TYPE_XYZ_DBL,
@@ -883,11 +883,11 @@ ICCmeasurement::init_umrechnen                     (void)
       RGB_ProfilFarben_.resize(nFelder_);
 
       if( (int)XYZ_Satz_.size() != nFelder_ )
-        DBG_PROG_S(_("XYZ_Satz_.size() und nFelder_ sind ungleich"))
+        DBG_PROG_S("XYZ_Satz_.size() und nFelder_ sind ungleich")
       if( RGB_Satz_.size() && (int)RGB_Satz_.size() != nFelder_ )
-        WARN_S(_("RGB_Satz_.size() und nFelder_ sind ungleich"))
+        WARN_S("RGB_Satz_.size() und nFelder_ sind ungleich")
       if( CMYK_Satz_.size() && (int)CMYK_Satz_.size() != nFelder_ )
-        WARN_S(_("CMYK_Satz_.size() und nFelder_ sind ungleich"))
+        WARN_S("CMYK_Satz_.size() und nFelder_ sind ungleich")
       for (int i = 0; i < nFelder_; i++)
       {
         if (XYZ_measurement_)
@@ -1045,8 +1045,10 @@ ICCmeasurement::getHtmlReport                     (bool aussen)
   if (reportTabelle_.size() <= 1)
     tkopf = 0;
   // Allgemeine Informationen
+  html << dateiName( profile_->filename() ) << ":<br>";
   for (int i = 0; i < kopf - tkopf ; i++) { DBG_NUM_S (nFelder_<<"|"<<kopf<<"|"<<i)
     //if (i == 0) html << "<h2>";
+
     html << reportTabelle_[i][0];
     //if (i == 0) html << "</h2>";
     html <<     "<br>\n\n";

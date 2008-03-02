@@ -163,7 +163,7 @@ static Fl_Output *output_info=(Fl_Output *)0;
 Fl_Double_Window*
 nachricht_ (std::string text) {
   Fl_Double_Window* w;
-  { Fl_Double_Window* o = new Fl_Double_Window(275, 326, "Information:");
+  { Fl_Double_Window* o = new Fl_Double_Window(275, 326, _("Information:"));
     w = o;
     w->hotspot(o);
     { Fl_Return_Button* o = new Fl_Return_Button(60, 295, 160, 25, "Gut");
@@ -178,6 +178,7 @@ nachricht_ (std::string text) {
         o->value(text.c_str());
         Fl_Group::current()->resizable(o);
       }
+    o->set_non_modal();
     o->show();
     o->end();
   }

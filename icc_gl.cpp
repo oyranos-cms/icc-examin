@@ -124,6 +124,7 @@ FTFont *font, *ortho_font;
 GL_Ansicht::GL_Ansicht(int X,int Y,int W,int H)
   : Fl_Gl_Window(X,Y,W,H)
 { DBG_PROG_START
+  agv_ = NULL;
   agv_ = this->getAgv(this, NULL);
 
   kanal = 0;
@@ -134,12 +135,14 @@ GL_Ansicht::GL_Ansicht(int X,int Y,int W,int H)
   schalen = 5;
   punktform = MENU_dE1STERN;
   punktgroesse = 8;
+  punkt_zahl_alt = 0;
   hintergrundfarbe = MENU_HELLGRAU;
   spektralband = 0;
   zeige_helfer = true;
   zeig_punkte_als_messwert_paare = false;
   zeig_punkte_als_messwerte = false;
   id_ = -1;
+  fenster_id_ = -1;
   strichmult = 1.0;
   strich1 = 1;
   strich2 = 2;
@@ -149,17 +152,17 @@ GL_Ansicht::GL_Ansicht(int X,int Y,int W,int H)
   wiederholen = 0;
   maus_x_ = 0;
   maus_y_ = 0;
+  maus_steht = false;
   darf_bewegen_ = false;
   ist_bewegt_ = false;
   valid_ = false;
-  zeit_diff_ = 0;
+  zeit_ = 0;
 
-  for(int i = 0; i <= DL_MAX; ++i)
-    glListen[i] = 0;
-
-# ifdef HAVE_FTGL
-  font = ortho_font = 0;
-# endif
+  static int gl_list_init_ = 1;
+  if(gl_list_init_)
+    for(int i = 0; i <= DL_MAX; ++i)
+      glListen[i] = 0;
+  gl_list_init_ = 0;
 
   DBG_PROG_ENDE
 }
@@ -210,12 +213,14 @@ GL_Ansicht::copy (const GL_Ansicht & gl)
   schalen = gl.schalen;
   punktform = gl.punktform;
   punktgroesse = gl.punktgroesse;
+  punkt_zahl_alt = gl.punkt_zahl_alt;
   hintergrundfarbe = gl.hintergrundfarbe;
   spektralband = gl.spektralband;
   zeige_helfer = gl.zeige_helfer;
   zeig_punkte_als_messwert_paare = gl.zeig_punkte_als_messwert_paare;
   zeig_punkte_als_messwerte = gl.zeig_punkte_als_messwerte;
   id_ = gl.id_;
+  fenster_id_ = gl.fenster_id_;
   strichmult = gl.strichmult;
   strich1 = gl.strich1;
   strich2 = gl.strich2;
@@ -225,10 +230,11 @@ GL_Ansicht::copy (const GL_Ansicht & gl)
   wiederholen = gl.wiederholen;
   maus_x_ = gl.maus_x_;
   maus_y_ = gl.maus_y_;
+  maus_steht = gl.maus_steht;
   darf_bewegen_ = gl.darf_bewegen_;
   ist_bewegt_ = gl.ist_bewegt_;
   valid_ = gl.valid_;
-  zeit_diff_ = gl.zeit_diff_;
+  zeit_ = gl.zeit_;
 
   for(int i = 0; i <= DL_MAX; ++i)
     glListen[i] = 0;
@@ -252,6 +258,7 @@ void
 GL_Ansicht::init(int init_id)
 { DBG_PROG_START
 
+  // 1 fuer mft_gl und 2 fuer DD_farbraum
   id_ = init_id;
 
   DBG_PROG
@@ -276,7 +283,7 @@ GL_Ansicht::init(int init_id)
   TEST_GL(FL_DEPTH)
   TEST_GL(FL_MULTISAMPLE)
   mode(mod);
-  DBG_PROG_S( _("OpenGL mode: ") << mode() )
+  DBG_PROG_S( "OpenGL mode: " << mode() )
 
   DBG_PROG
 
@@ -305,6 +312,8 @@ GL_Ansicht::init(int init_id)
   schatten = 0.1;
   if (id() == 1) menueAufruf (MENU_WUERFEL);
 
+  maus_steht = false;
+
   DBG_PROG_ENDE
 }
 
@@ -318,8 +327,9 @@ GL_Ansicht::mausPunkt_( GLdouble &oX, GLdouble &oY, GLdouble &oZ,
   // wie weit ist das naechste Objekt in diese Richtung, sehr aufwendig
   GLfloat zBuffer;
   glReadPixels((GLint)maus_x_,(GLint)h()-maus_y_,1,1,GL_DEPTH_COMPONENT, GL_FLOAT, &zBuffer);
-  GLdouble modell_matrix[16], projektions_matrix[16];
-  GLint bildschirm[4];
+  GLdouble modell_matrix[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+           projektions_matrix[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+  GLint bildschirm[4] = {0,0,0,0};
   glGetDoublev(GL_MODELVIEW_MATRIX, modell_matrix);
   glGetDoublev(GL_PROJECTION_MATRIX, projektions_matrix);
   glGetIntegerv(GL_VIEWPORT, bildschirm);
@@ -328,7 +338,7 @@ GL_Ansicht::mausPunkt_( GLdouble &oX, GLdouble &oY, GLdouble &oZ,
                &oX, &oY, &oZ);
 
 
-  DBG_PROG_V( "X: "<<oX<<" Y: "<<oY<<" Z: "<<oZ )
+  DBG_PROG_V( "X: "<<oX<<" Y: "<<oY<<" Z: "<<oZ<<" "<<fenster_id_ )
 
   gluProject( oX, oY, oZ,
               modell_matrix, projektions_matrix, bildschirm,
@@ -336,47 +346,44 @@ GL_Ansicht::mausPunkt_( GLdouble &oX, GLdouble &oY, GLdouble &oZ,
   DBG_PROG_ENDE
 }
 
+static int zahl = 0;
 void
 GL_Ansicht::bewegenStatisch_ (void* gl_a)
 {
   DBG_PROG_START
+
   GL_Ansicht *gl_ansicht = (GL_Ansicht*)gl_a;
+
   if (!gl_ansicht) {
-      WARN_S( "keine GL_Ansicht uebergeben" )
+      WARN_S( "keine GL_Ansicht uebergeben " << gl_ansicht->fenster_id_ )
       return;
   }
 
-  static int zahl = 0;
-  if(zahl) {
-    WARN_S( "zu viele Nutzer: " << zahl )
-    return;
-  }
-  ++zahl;
-
-  bool lauf = true;
-  while(lauf)
   {
     if(!gl_ansicht->visible() || !icc_examin->frei() ||
-       !gl_ansicht->ist_bewegt_ || !gl_ansicht->darf_bewegen_) {
+       !gl_ansicht->ist_bewegt_ || !gl_ansicht->darf_bewegen_)
+    {
       gl_ansicht->stupps_(false);
-      lauf = false;
-      DBG_PROG_S( _("redraw nicht ausgefuehrt") )
+      gl_ansicht->ist_bewegt_ = false;
+      zahl = 0;
+      DBG_PROG_S( "redraw nicht ausgefuehrt " << gl_ansicht->fenster_id_ )
     } else {
-      gl_ansicht->agv_->agvMove_();
       double zeichnen_schlaf = 0;  // keine endlos Warteschlangen
+      double zeit = icc_examin_ns::zeitSekunden();
 
-      if (gl_ansicht->zeit_diff_ < 1./25.) {
-        zeichnen_schlaf = 1./25. - gl_ansicht->zeit_diff_;
-      }
+      if (zeit - gl_ansicht->zeit_ < 1./25.) {
+        zeichnen_schlaf = 1./25. - gl_ansicht->zeit_;
+      } else
+        gl_ansicht->redraw();
 
-      gl_ansicht->redraw();
       // kurze Pause 
-      Fl::wait(zeichnen_schlaf);
-      DBG_PROG_S( "Pause " << zeichnen_schlaf <<" "<< gl_ansicht->ist_bewegt_ )
+      Fl::add_timeout( zeichnen_schlaf>0.001?zeichnen_schlaf:0.001,
+                       bewegenStatisch_, gl_a );
+      
+      //DBG_NUM_S( "Pause " << gl_ansicht->zeit_diff_<<" "<<zeichnen_schlaf <<" "<< gl_ansicht->ist_bewegt_ <<" "<< gl_ansicht->fenster_id_ <<" "<<zahl)
+      zahl++;
     }
-  }
-  
-  --zahl;
+  } 
   DBG_PROG_ENDE
 }
 
@@ -386,11 +393,11 @@ GL_Ansicht::stupps_ (bool lauf)
   DBG_PROG_START
   ist_bewegt_ = lauf;
   if(lauf) {
-    DBG_PROG_S( "anstuppsen" )
+    DBG_NUM_S( "anstuppsen " << fenster_id_ )
     if(darf_bewegen_)
       Fl::add_timeout(0.05, bewegenStatisch_,this);
   } else {
-    DBG_PROG_S( "stoppen" )
+    DBG_NUM_S( "stoppen " << fenster_id_ )
   }
   DBG_PROG_ENDE
 }
@@ -417,6 +424,7 @@ GL_Ansicht::auffrischen_()
   DBG_PROG_ENDE
 }
 
+/** Empfang einer Zeichennachricht */
 void
 GL_Ansicht::nachricht(icc_examin_ns::Modell* modell, int info)
 {
@@ -426,6 +434,7 @@ GL_Ansicht::nachricht(icc_examin_ns::Modell* modell, int info)
   DBG_PROG_ENDE
 }
 
+/** senden einer Zeichennachricht an alle Beobachter des Agviewer */
 void
 GL_Ansicht::redraw()
 {
@@ -459,6 +468,9 @@ GL_Ansicht::draw()
   } else if(ist_bewegt_ && !darf_bewegen_) {
     stupps_(false); DBG_NUM_S( "stoppen" )
   }
+  if(ist_bewegt_)
+    agv_->agvMove_();
+
 
 # if 0
   if(!valid()) {
@@ -505,6 +517,7 @@ GL_Ansicht::handle( int event )
 {
   DBG_ICCGL_START
   int mausknopf = Fl::event_state();
+  int schluss = 1;
   DBG_MEM_V( dbgFltkEvent(event) )
   switch(event)
   {
@@ -567,7 +580,7 @@ GL_Ansicht::handle( int event )
   }
 
   DBG_ICCGL_ENDE
-  return 1;
+  return schluss;
 }
 
 Agviewer*
@@ -693,9 +706,9 @@ GL_Ansicht::GLinit_()
   } else {
     font->CharMap( ft_encoding_unicode );
     font->Depth(12);
-    if(!font->FaceSize(72)) WARN_S(_("Fontgroesse nicht setzbar")); \
+    if(!font->FaceSize(72)) WARN_S("Fontgroesse nicht setzbar"); \
     ortho_font->CharMap( ft_encoding_unicode );
-    if(!ortho_font->FaceSize(16)) WARN_S(_("Fontgroesse nicht setzbar"));
+    if(!ortho_font->FaceSize(16)) WARN_S("Fontgroesse nicht setzbar");
   }
 # endif
 
@@ -1124,7 +1137,7 @@ GL_Ansicht::tabelleAuffrischen()
   if(tabelle_.size()) {
     if( (int)tabelle_[0][0][0].size() <= kanal) {
       kanal = tabelle_[0][0][0].size()-1;
-      DBG_PROG_S( _("Kanalauswahl geaendert: ") << kanal )
+      DBG_PROG_S( "Kanalauswahl geaendert: " << kanal )
     }
   }
 
@@ -1309,7 +1322,6 @@ GL_Ansicht::netzeAuffrischen()
        static ICCnetz netz;
        netz.punkte.clear();
        netz.indexe.clear();
-       static int punkt_zahl_alt = 0;
        int punkt_zahl = 0;
        for (unsigned int i = 0; i < dreiecks_netze.size(); ++i)
          punkt_zahl += dreiecks_netze[i].punkte.size();
@@ -1321,7 +1333,7 @@ GL_Ansicht::netzeAuffrischen()
        double abstand;
        for( j = 0; j < dreiecks_netze.size(); j++ )
        {
-         dreiecks_netze[j].schattierung = .93 - .8/dreiecks_netze.size()*j;
+         double schattierung = dreiecks_netze[j].schattierung;
          if(dreiecks_netze[j].aktiv && dreiecks_netze[j].transparenz)
          {
              // ich hoffe das dauert nicht zu lange
@@ -1331,9 +1343,9 @@ GL_Ansicht::netzeAuffrischen()
              // den Punkten im neuen Netz die Transparenz zuweisen
            for( k = punkte_n; k < netz.punkte.size(); ++k) {
              if(dreiecks_netze[j].grau) {
-               netz.punkte[k].farbe[0] = dreiecks_netze[j].schattierung;
-               netz.punkte[k].farbe[1] = dreiecks_netze[j].schattierung;
-               netz.punkte[k].farbe[2] = dreiecks_netze[j].schattierung;
+               netz.punkte[k].farbe[0] = schattierung;
+               netz.punkte[k].farbe[1] = schattierung;
+               netz.punkte[k].farbe[2] = schattierung;
              }
              netz.punkte[k].farbe[3] = dreiecks_netze[j].transparenz;
              netz.punkte[k].koord[1] *= a_darstellungs_breite;
@@ -1651,6 +1663,12 @@ GL_Ansicht::zeigeUmrisse_()
 {
   DBG_PROG_START
 
+  for( unsigned int j = 0; j < dreiecks_netze.size(); j++ )
+  {
+    double schattierung = .93 - .8/dreiecks_netze.size()*j;
+    dreiecks_netze[j].schattierung = schattierung;
+  }
+
   if (glListen[UMRISSE]) {
     DBG_PROG_S( "delete glListe " << glListen[UMRISSE] )
     glDeleteLists (glListen[UMRISSE],1);
@@ -1671,7 +1689,7 @@ GL_Ansicht::zeigeUmrisse_()
     if(!n) continue;
 
     Lab_Speicher = (double*) malloc (sizeof(double) * n*3);
-    if(!Lab_Speicher)  WARN_S( _("Lab_speicher Speicher nicht verfuegbar") )
+    if(!Lab_Speicher)  WARN_S( "Lab_speicher Speicher nicht verfuegbar" )
 
     for ( int j = 0; j < n; ++j)
       for(int k = 0; k < 3 ; ++k)
@@ -1691,8 +1709,8 @@ GL_Ansicht::zeigeUmrisse_()
 
     RGBSchatten_Speicher = icc_oyranos.wandelLabNachBildschirmFarben(
                              Lab_Speicher_schatten, n, icc_examin->intentGet(NULL), 0);
-    if(!RGB_Speicher)  WARN_S( _("RGB_speicher Ergebnis nicht verfuegbar") )
-    if(!RGBSchatten_Speicher)  WARN_S( _("RGB_speicher Ergebnis nicht verfuegbar") )
+    if(!RGB_Speicher)  WARN_S( "RGB_speicher Ergebnis nicht verfuegbar" )
+    if(!RGBSchatten_Speicher)  WARN_S( "RGB_speicher Ergebnis nicht verfuegbar" )
 
     for ( int j = 0; j < n; ++j)
       for(int k = 0; k < 3 ; ++k)
@@ -1786,42 +1804,65 @@ GL_Ansicht::zeigeSpektralband_()
            *XYZ_Speicher = 0,
            *Lab_Speicher = 0,
            *Lab_Speicher_schatten = 0;
+    int n_punkte = 471;//341; // 700 nm
 
-    // Spektrumvariablen
-    //int nano_min = 63; // 420 nm
-    int nano_max = 471;//341; // 700 nm
+    if(id_ > 1)
+    {
+      // Spektrumvariablen
+      //int nano_min = 63; // 420 nm
 
-    // Umrechnung
-    XYZ_Speicher = new double [nano_max*3];
-    if(!XYZ_Speicher)  WARN_S( _("XYZ_speicher Speicher nicht verfuegbar") )
-    for (int i = 0; i < nano_max; ++i)
-    { for(int j = 0; j < 3 ; ++j)
-      { XYZ_Speicher[i*3+j] = (double)cieXYZ[i][j];
+      // Umrechnung
+      XYZ_Speicher = new double [n_punkte*3];
+      if(!XYZ_Speicher)  WARN_S( "XYZ_speicher Speicher nicht verfuegbar" )
+      for (int i = 0; i < n_punkte; ++i)
+      { for(int j = 0; j < 3 ; ++j)
+        { XYZ_Speicher[i*3+j] = (double)cieXYZ[i][j];
+        }
+      }
+      Lab_Speicher = new double [n_punkte*3];
+      Lab_Speicher_schatten = new double [n_punkte*3];
+      if(!Lab_Speicher)  WARN_S( "Lab_speicher Speicher nicht verfuegbar" )
+
+      XYZtoLab (XYZ_Speicher, Lab_Speicher, n_punkte);
+
+    } else
+    {
+      //Farbkreis
+      n_punkte = 90;
+      Lab_Speicher = new double [n_punkte*3];
+      Lab_Speicher_schatten = new double [n_punkte*3];
+      if(!Lab_Speicher)  WARN_S( "Lab_speicher Speicher nicht verfuegbar" )
+
+      for (int i = 0; i < n_punkte; ++i)
+      {
+          Lab_Speicher[i*3+0] = (double)0.666;
+          Lab_Speicher[i*3+1] = (double)cos(i*2*M_PI/(n_punkte-1))*.714 + .5;
+          Lab_Speicher[i*3+2] = (double)sin(i*2*M_PI/(n_punkte-1))*.714 + .5;
       }
     }
-    Lab_Speicher = new double [nano_max*3];
-    Lab_Speicher_schatten = new double [nano_max*3];
-
-    if(!Lab_Speicher)  WARN_S( _("Lab_speicher Speicher nicht verfuegbar") )
-
-    XYZtoLab (XYZ_Speicher, Lab_Speicher, nano_max);
 
     RGB_Speicher = icc_oyranos.wandelLabNachBildschirmFarben( Lab_Speicher,
-                                 (size_t)nano_max, icc_examin->intentGet(NULL), 0);
-    DBG_PROG_V( nano_max )
+                                 (size_t)n_punkte, icc_examin->intentGet(NULL), 0);
+
+    if(id_ == 1)
+      for (int i = 0; i < n_punkte; ++i)
+        Lab_Speicher[i*3+0] = (double).0;
+
+
+    DBG_PROG_V( n_punkte )
     // Schatten erzeugen
-    for (int i = 0; i < nano_max*2; ++i)
+    for (int i = 0; i < n_punkte*2; ++i)
       Lab_Speicher_schatten[i] = Lab_Speicher[i];
-    for (int i = 0; i < nano_max; ++i) {
+    for (int i = 0; i < n_punkte; ++i) {
       Lab_Speicher_schatten[i*3] = hintergrundfarbe*.40+.35;
       Lab_Speicher_schatten[i*3+1] = (Lab_Speicher[i*3+1]-.5)*.25+0.5;
       Lab_Speicher_schatten[i*3+2] = (Lab_Speicher[i*3+2]-.5)*.25+0.5;
     }
 
     RGBSchatten_Speicher = icc_oyranos.wandelLabNachBildschirmFarben(
-                               Lab_Speicher_schatten, nano_max, icc_examin->intentGet(NULL), 0);
-    if(!RGB_Speicher)  WARN_S( _("RGB_speicher Ergebnis nicht verfuegbar") )
-    if(!RGBSchatten_Speicher)  WARN_S( _("RGB_speicher Ergebnis nicht verfuegbar") )
+                               Lab_Speicher_schatten, n_punkte, icc_examin->intentGet(NULL), 0);
+    if(!RGB_Speicher)  WARN_S( "RGB_speicher Ergebnis nicht verfuegbar" )
+    if(!RGBSchatten_Speicher)  WARN_S( "RGB_speicher Ergebnis nicht verfuegbar" )
 
     GLfloat farbe[] =   { pfeilfarbe[0],pfeilfarbe[1],pfeilfarbe[2], 1.0 };
 
@@ -1842,7 +1883,7 @@ GL_Ansicht::zeigeSpektralband_()
       glLineWidth(strich3*strichmult);
       glColor4f(0.5, 1.0, 1.0, 1.0);
       glBegin(GL_LINE_STRIP);
-        for (int i=0 ; i <= (nano_max - 1); i++) {
+        for (int i=0 ; i <= (n_punkte - 1); i++) {
           DBG_ICCGL_S( i<<" "<<Lab_Speicher[i*3]<<"|"<<Lab_Speicher[i*3+1]<<"|"<<Lab_Speicher[i*3+2] )
           DBG_ICCGL_S( i<<" "<<RGB_Speicher[i*3]<<"|"<<RGB_Speicher[i*3+1]<<"|"<<RGB_Speicher[i*3+2] )
           FARBE(RGB_Speicher[i*3],RGB_Speicher[i*3+1],RGB_Speicher[i*3+2]);
@@ -1854,10 +1895,12 @@ GL_Ansicht::zeigeSpektralband_()
         }
       glEnd();
       // Schatten
+      if(id_ > 1)
+      {
       glLineWidth(strich2*strichmult);
       glBegin(GL_LINE_STRIP);
       //#define S * .25 + textfarbe[0] - schatten
-        for (int i=0 ; i <= (nano_max - 1); i++) {
+        for (int i=0 ; i <= (n_punkte - 1); i++) {
           FARBE(RGBSchatten_Speicher[i*3],RGBSchatten_Speicher[i*3+1],RGBSchatten_Speicher[i*3+2])
           glVertex3d( 
          (Lab_Speicher[i*3+2]*b_darstellungs_breite - b_darstellungs_breite/2.),
@@ -1866,6 +1909,7 @@ GL_Ansicht::zeigeSpektralband_()
           );
         }
       glEnd();
+      }
 
     glEndList();
 
@@ -1943,6 +1987,7 @@ GL_Ansicht::menueErneuern_()
     menue_form_->add( _("coloured"), 0,c_, (void*)MENU_FARBIG, 0 );
     menue_form_->add( _("high contrast"), 0,c_, (void*)MENU_KONTRASTREICH, 0 );
     menue_form_->add( _("shells"), 0,c_, (void*)MENU_SCHALEN, 0 );
+    menue_form_->add( _("Colour line"), 0,c_, (void*)MENU_SPEKTRALBAND, 0 );
   } else {
     // Kugeln mit ihrem Radius symbolisieren Messfarben
     if(zeig_punkte_als_messwerte)
@@ -1982,7 +2027,7 @@ GL_Ansicht::menueErneuern_()
   menue_button_->copy(menue_->menu());
   menue_button_->callback(c_);
 
-  //icc_examin_ns::status_info(_("left-/middle-/right mouse button -> rotate/cut/menu"));
+  //icc_examin_ns::status_info(_("left-/middle-/right mouse button -> rotate/cut/menu"), fenster_id_);
 
   DBG_PROG_ENDE
 }
@@ -2059,7 +2104,7 @@ GL_Ansicht::zeichnen()
 
   frei(false);
 
-  double rechen_zeit = icc_examin_ns::zeitSekunden();
+  zeit_ = icc_examin_ns::zeitSekunden();
 
   // aktualisiere Schatten
   static char aktive[64];
@@ -2087,7 +2132,6 @@ GL_Ansicht::zeichnen()
   if(visible() &&
      icc_examin->frei() )
   {
-    static bool maus_steht = false;
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
@@ -2150,7 +2194,7 @@ GL_Ansicht::zeichnen()
                         rgb = icc_oyranos. wandelLabNachBildschirmFarben(lab, 1,
                                  icc_examin->intentGet(NULL),
                                  icc_examin->gamutwarn()?cmsFLAGS_GAMUTCHECK:0);
-                        if(!rgb)  WARN_S( _("RGB Ergebnis nicht verfuegbar") )
+                        if(!rgb)  WARN_S( "RGB Ergebnis nicht verfuegbar" )
                         else {
 #                         ifndef Beleuchtung_
                           glDisable(GL_LIGHTING);
@@ -2240,12 +2284,12 @@ GL_Ansicht::zeichnen()
                      if (i != (int)tabelle_[L][a][b].size()-1)
                        sprintf(&text[strlen(text)], " ");
                    }
-                   icc_examin_ns::status_info( text );
+                   icc_examin_ns::status_info( text, fenster_id_ );
                    ZeichneOText (ortho_font, scal, text)
                  }}}
                }
             } else {
-              icc_examin_ns::status_info( text );
+              icc_examin_ns::status_info( text, fenster_id_ );
               ZeichneOText (ortho_font, scal, text)
             }
             if(icc_debug == 14) {
@@ -2260,8 +2304,8 @@ GL_Ansicht::zeichnen()
     }
 
     bool strich_neu = false;
-    rechen_zeit = icc_examin_ns::zeitSekunden() - rechen_zeit;
-    if(rechen_zeit > 1./15. )
+    double dzeit = icc_examin_ns::zeitSekunden() - zeit_;
+    if(dzeit > 1./15. )
     {
       if(smooth)
       {
@@ -2269,7 +2313,7 @@ GL_Ansicht::zeichnen()
         strich_neu = true;
       }
     }
-    if(rechen_zeit < 1./40.)
+    if(dzeit < 1./40.)
     {
       if(!smooth)
       {
@@ -2284,26 +2328,16 @@ GL_Ansicht::zeichnen()
 
     // Geschwindigkeit
     static double zeit_alt = 0;
-    double zeit = icc_examin_ns::zeitSekunden();
-    double dzeit = zeit - zeit_alt;
-    if(dzeit < 0.001)
-      dzeit = 0.001;
-    zeit_diff_ = dzeit;;
-
-    zeit_alt = zeit;
-    sprintf(t, "zeit_diff_:%01f zeit:%f dzeit:%f",
-            zeit_diff_, zeit, dzeit);
-    DBG_PROG_V( t )
+    sprintf(t, "zeit_: %.01f f/s: %.03f theorethisch f/s: %.03f",
+            zeit_, 1/(zeit_ - zeit_alt), 1./dzeit);
+    zeit_alt = zeit_;
+    DBG_NUM_V( t )
 
 
 #   ifdef HAVE_FTGL
     if(ortho_font)
       glRasterPos2f(0, h() -10 );
 #   endif
-    if(icc_debug)
-      ZeichneOText (ortho_font, scal, t)
-
-    static int maus_x_alt, maus_y_alt;
     if(maus_x_alt != maus_x_ || maus_y_alt != maus_y_)
     maus_steht = true;
     maus_x_alt = maus_x_;
@@ -2349,6 +2383,9 @@ GL_Ansicht::zeichnen()
              ZeichneOText (ortho_font, scal, text.c_str())
          }
        }
+
+       if(icc_debug)
+         ZeichneOText (ortho_font, scal, t)
 
        glEnable(GL_TEXTURE_2D);
        glEnable(GL_LIGHTING);
@@ -2469,13 +2506,14 @@ void
 GL_Ansicht::hineinNetze       (const std::vector<ICCnetz> & d_n)
 {
   DBG_PROG_START
+
+  frei(false);
   if(d_n.size()) {
-    frei(false);
-    dreiecks_netze.resize(0);
     DBG_V( dreiecks_netze.size() )
     dreiecks_netze = d_n;
-    frei(true);
-  }
+  } else
+    dreiecks_netze.resize(0);
+  frei(true);
 
   DBG_NUM_V( dreiecks_netze.size() )
   for(unsigned i = 0; i < dreiecks_netze.size(); ++i)
@@ -2506,7 +2544,7 @@ GL_Ansicht::hineinTabelle (std::vector<std::vector<std::vector<std::vector<doubl
   valid_=false;
   redraw();
 
-  icc_examin_ns::status_info(_("left-/middle-/right mouse button -> rotate/cut/menu"));
+  icc_examin_ns::status_info(_("left-/middle-/right mouse button -> rotate/cut/menu"), fenster_id_);
 
   DBG_PROG_ENDE
 }
@@ -2525,7 +2563,7 @@ GL_Ansicht::menueAufruf ( int value )
     if (value >= MENU_MAX &&
         value < 100) {
       kanal = value - MENU_MAX; DBG_PROG_V( kanal )
-      icc_examin_ns::status_info(_("left-/middle-/right mouse button -> rotate/cut/menu"));
+      icc_examin_ns::status_info(_("left-/middle-/right mouse button -> rotate/cut/menu"), fenster_id_);
     }
 #   if APPLE
     double farb_faktor = 1./*0.6666*/ *0.8;
@@ -2610,7 +2648,7 @@ GL_Ansicht::menueAufruf ( int value )
       for (int i=0; i < 3 ; ++i) textfarbe[i] = 0.5*farb_faktor;
       break;
     case Agviewer::FLYING:
-      icc_examin_ns::status_info(_("left mouse button -> go back"));
+      icc_examin_ns::status_info(_("left mouse button -> go back"), fenster_id_);
       agv_->duenn = true;
       break;
     case Agviewer::ICCFLY_L:
@@ -2621,17 +2659,17 @@ GL_Ansicht::menueAufruf ( int value )
         agv_->eyeDist( agv_->dist() );
         vorder_schnitt = std_vorder_schnitt;
       }
-      icc_examin_ns::status_info(_("left mouse button -> go back"));
+      icc_examin_ns::status_info(_("left mouse button -> go back"), fenster_id_);
       agv_->duenn = true;
       break;
     case Agviewer::ICCFLY_a:
       vorder_schnitt = std_vorder_schnitt;
-      icc_examin_ns::status_info(_("left mouse button -> go back"));
+      icc_examin_ns::status_info(_("left mouse button -> go back"), fenster_id_);
       agv_->duenn = true;
       break;
     case Agviewer::ICCFLY_b:
       vorder_schnitt = std_vorder_schnitt;
-      icc_examin_ns::status_info(_("left mouse button -> go back"));
+      icc_examin_ns::status_info(_("left mouse button -> go back"), fenster_id_);
       agv_->duenn = true;
       break;
     case Agviewer::ICCPOLAR:
@@ -2644,7 +2682,7 @@ GL_Ansicht::menueAufruf ( int value )
       break;
     case Agviewer::AGV_STOP:
       agv_->duenn = false;
-      icc_examin_ns::status_info(_("left-/middle-/right mouse button -> rotate/cut/menu"));
+      icc_examin_ns::status_info(_("left-/middle-/right mouse button -> rotate/cut/menu"), fenster_id_);
       break;
     }
   }
@@ -2669,7 +2707,7 @@ GL_Ansicht::c_ ( Fl_Widget* w, void* daten )
   DBG_MEM_V( (intptr_t)gl_obj )
   DBG_MEM_V( (intptr_t)w->parent() )
   if(!w->parent())
-    WARN_S(_("Konnte keine Eltern finden"))
+    WARN_S("Konnte keine Eltern finden")
   else
   if (gl_obj)
   {
@@ -2679,7 +2717,7 @@ GL_Ansicht::c_ ( Fl_Widget* w, void* daten )
       gl_obj->agv_ ->agvSwitchMoveMode (value);
   }
   else
-    WARN_S(_("Konnte keine passende Programmstruktur finden"))
+    WARN_S("Konnte keine passende Programmstruktur finden")
 
   DBG_PROG_ENDE
 }

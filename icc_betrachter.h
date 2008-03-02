@@ -79,9 +79,9 @@ public:
 #include <FL/Fl_Output.H>
 #include <FL/Fl_Button.H>
 #include <FL/Fl_Menu_Bar.H>
+#include <FL/Fl_Box.H>
 #include <FL/Fl_Tile.H>
 #include <FL/Fl_Pack.H>
-#include <FL/Fl_Box.H>
 #include <FL/Fl_Progress.H>
 
 class ICCfltkBetrachter {
@@ -128,31 +128,15 @@ private:
   void cb_vcgt_close_button_i(Fl_Button*, void*);
   static void cb_vcgt_close_button(Fl_Button*, void*);
 public:
-  Fl_Double_Window *details;
-  Fl_Menu_Bar *menueleiste;
-  static Fl_Menu_Item menu_menueleiste[];
+  Fl_Double_Window *DD;
+  Fl_Menu_Bar *DD_menueleiste;
+  static Fl_Menu_Item menu_DD_menueleiste[];
+  static Fl_Menu_Item *DD_menueintrag_Voll;
 private:
-  void cb_Open_i(Fl_Menu_*, void*);
-  static void cb_Open(Fl_Menu_*, void*);
-public:
-  static Fl_Menu_Item *menueintrag_html_speichern;
-private:
-  void cb_menueintrag_html_speichern_i(Fl_Menu_*, void*);
-  static void cb_menueintrag_html_speichern(Fl_Menu_*, void*);
-public:
-  static Fl_Menu_Item *menueintrag_gamut_speichern;
-private:
-  void cb_menueintrag_gamut_speichern_i(Fl_Menu_*, void*);
-  static void cb_menueintrag_gamut_speichern(Fl_Menu_*, void*);
-public:
-  static Fl_Menu_Item *menueintrag_gamut_vrml_speichern;
-private:
-  void cb_menueintrag_gamut_vrml_speichern_i(Fl_Menu_*, void*);
-  static void cb_menueintrag_gamut_vrml_speichern(Fl_Menu_*, void*);
-  void cb_Quit_i(Fl_Menu_*, void*);
-  static void cb_Quit(Fl_Menu_*, void*);
-  void cb_Oyranos_i(Fl_Menu_*, void*);
-  static void cb_Oyranos(Fl_Menu_*, void*);
+  void cb_DD_menueintrag_Voll_i(Fl_Menu_*, void*);
+  static void cb_DD_menueintrag_Voll(Fl_Menu_*, void*);
+  void cb_Show_i(Fl_Menu_*, void*);
+  static void cb_Show(Fl_Menu_*, void*);
 public:
   static Fl_Menu_Item *menueintrag_gamutwarn;
 private:
@@ -178,6 +162,35 @@ public:
 private:
   void cb_menueintrag_bpc_i(Fl_Menu_*, void*);
   static void cb_menueintrag_bpc(Fl_Menu_*, void*);
+public:
+  GL_Ansicht *DD_farbraum;
+  Fl_Box *DD_box_stat;
+  My_Fl_Box *DD_no_box;
+  Fl_Double_Window *details;
+  Fl_Menu_Bar *menueleiste;
+  static Fl_Menu_Item menu_menueleiste[];
+private:
+  void cb_Open_i(Fl_Menu_*, void*);
+  static void cb_Open(Fl_Menu_*, void*);
+public:
+  static Fl_Menu_Item *menueintrag_html_speichern;
+private:
+  void cb_menueintrag_html_speichern_i(Fl_Menu_*, void*);
+  static void cb_menueintrag_html_speichern(Fl_Menu_*, void*);
+public:
+  static Fl_Menu_Item *menueintrag_gamut_speichern;
+private:
+  void cb_menueintrag_gamut_speichern_i(Fl_Menu_*, void*);
+  static void cb_menueintrag_gamut_speichern(Fl_Menu_*, void*);
+public:
+  static Fl_Menu_Item *menueintrag_gamut_vrml_speichern;
+private:
+  void cb_menueintrag_gamut_vrml_speichern_i(Fl_Menu_*, void*);
+  static void cb_menueintrag_gamut_vrml_speichern(Fl_Menu_*, void*);
+  void cb_Quit_i(Fl_Menu_*, void*);
+  static void cb_Quit(Fl_Menu_*, void*);
+  void cb_Oyranos_i(Fl_Menu_*, void*);
+  static void cb_Oyranos(Fl_Menu_*, void*);
 public:
   static Fl_Menu_Item *menueintrag_lang;
 private:
@@ -228,7 +241,6 @@ private:
   void cb_License_i(Fl_Menu_*, void*);
   static void cb_License(Fl_Menu_*, void*);
 public:
-  GL_Ansicht *DD_farbraum;
   Fl_Help_View *inspekt_html;
   Fl_Tile *examin;
   TagBrowser *tag_browser;
@@ -243,6 +255,7 @@ private:
   void cb_mft_choice_i(MftChoice*, void*);
   static void cb_mft_choice(MftChoice*, void*);
 public:
+  Fl_Group *mft_gl_group;
   GL_Ansicht *mft_gl;
 private:
   void cb_o_i(Fl_Button*, void*);

@@ -83,7 +83,8 @@ ICCexamin::ICCexamin ()
 
   _item = -1;
   _mft_item = -1;
-  statlabel = "";
+  for(int i = 0; i < 4; ++i)
+    statlabel[i] = "";
   status_ = false;
   intent_ = 3;
   intent_selection_ = 0;
@@ -99,12 +100,25 @@ ICCexamin::ICCexamin ()
 void
 ICCexamin::quit ()
 { DBG_PROG_START
+  status_ = false;
   delete icc_betrachter;
   delete io_;
-  profile.clear();
   DBG_PROG_ENDE
   exit(0);
 }
+
+void
+ICCexamin::clear ()
+{ DBG_PROG_START
+
+  std::vector<ICCnetz> d_n;
+  profile.clear();
+  icc_betrachter->DD_farbraum->hineinNetze (d_n);
+  DBG
+
+  DBG_PROG_ENDE
+}
+
 
 void
 resize_fuer_menubar(Fl_Widget* w)
@@ -130,16 +144,20 @@ ICCexamin::start (int argc, char** argv)
   kurve_umkehren.resize(MAX_VIEWER);
 
   fl_translate_menue( icc_betrachter->menu_menueleiste );
+  fl_translate_menue( icc_betrachter->menu_DD_menueleiste );
 
   icc_betrachter->init( argc, argv );
 
   icc_betrachter->mft_gl->init(1);
   icc_betrachter->DD_farbraum->init(2);
   icc_waehler_ = new  ICCwaehler(485, 110, _("Gamut selector"));
-  icc_waehler_->resize(icc_waehler_->x(), icc_waehler_->y(),
+  icc_waehler_->resize(icc_betrachter->details->x(),
+                       icc_betrachter->details->y() - icc_waehler_->h(),
                        icc_waehler_->w()+20, icc_waehler_->h());
-  if(!icc_waehler_) WARN_S( _("icc_waehler_ nicht reservierbar") )
-  //icc_waehler_->set_non_modal(); // gehoert zum "details" Hauptfenster
+  if(!icc_waehler_) WARN_S( "icc_waehler_ nicht reservierbar" )
+  icc_betrachter->DD_farbraum->begin();
+    icc_waehler_->set_non_modal(); // gehoert zum "details" Hauptfenster
+  icc_betrachter->DD_farbraum->end();
   icc_waehler_->hide();
 
   // Die TagViewers registrieren und ihre Variablen initialisieren
@@ -191,7 +209,10 @@ ICCexamin::start (int argc, char** argv)
 # endif // APPLE
 
   if(!icc_debug)
+  {
     icc_betrachter->menueintrag_testkurven->hide();
+    icc_betrachter->menueintrag_lang->hide();
+  }
 
   DBG_PROG
 
@@ -243,17 +264,17 @@ ICCexamin::start (int argc, char** argv)
 # endif
   if( fehler == EAGAIN)
   {
-    WARN_S( _("Waechter Thread nicht gestartet Fehler: ")  << fehler );
+    WARN_S( "Waechter Thread nicht gestartet Fehler: "  << fehler );
   } else
 # if !APPLE && !WIN32 && PTHREAD_THREADS_MAX
   if( fehler == PTHREAD_THREADS_MAX )
   {
-    WARN_S( _("zu viele Waechter Threads Fehler: ") << fehler );
+    WARN_S( "zu viele Waechter Threads Fehler: " << fehler );
   } else
 # endif
   if( fehler != 0 )
   {
-    WARN_S( _("unbekannter Fehler beim Start eines Waechter Threads Fehler: ") << fehler );
+    WARN_S( "unbekannter Fehler beim Start eines Waechter Threads Fehler: " << fehler );
   }
 # else
   Fl::add_timeout( 0.01, /*(void(*)(void*))*/ICCexaminIO::oeffnenStatisch_ ,(void*)this);
@@ -265,9 +286,87 @@ ICCexamin::start (int argc, char** argv)
 }
 
 void
+ICCexamin::zeig3D ()
+{ DBG_PROG_START
+
+  Fl_Double_Window *w = icc_betrachter->DD;
+  Fl_Widget *wid = icc_betrachter->DD_farbraum;
+
+  int lx = wid->x(),
+      ly = wid->y(),
+      lw = wid->w(),
+      lh = wid->h();
+
+  const char* title = icc_betrachter->details->label();
+  char* t = (char*) malloc(strlen(title)+128);
+
+  sprintf(t, "%s - %s", title, _("Gamut View"));
+
+  if(!w)
+  {
+  w =
+    new Fl_Double_Window( lx+lw, ly, lw, lh, t );
+    w->user_data((void*)(0));
+      Fl_Group *g = new Fl_Group(0,0,lw,lh);
+      g->end();
+      //wid->resize(0,0, lw,lh);
+      g->add(wid);
+    w->end();
+    w->resizable(g);
+  }
+  w->label(t);
+  w->show();
+  wid->show();
+
+  if(!icc_waehler_->visible())
+    icc_waehler_->show();
+
+  DBG_PROG_ENDE
+}
+
+void
 ICCexamin::zeigPrueftabelle ()
 { DBG_PROG_START
-  icc_betrachterNeuzeichnen(icc_betrachter->inspekt_html);
+
+  Fl_Double_Window *details = icc_betrachter->details;
+  Fl_Help_View *inspekt_html = icc_betrachter->inspekt_html;
+
+  { bool export_html = false;
+    icc_betrachter->tag_text->inspekt_topline = inspekt_html->topline();
+    inspekt_html->value( profile.profil()->report(export_html).c_str());
+    inspekt_html->topline( icc_betrachter->tag_text->inspekt_topline);
+  }
+
+  Fl_Widget *wid = inspekt_html;
+  if(wid->window() != details &&
+     wid->window()->visible())
+    return;
+
+  int lx = details->x(),
+      ly = details->y(),
+      lw = details->w(),
+      lh = details->h();
+
+  const char* title = details->label();
+  char* t = (char*) malloc(strlen(title)+128);
+
+  sprintf(t, "%s - %s", title, _("Compare Measurement <-> Profile Colours"));
+
+  Fl_Double_Window *w =
+    new Fl_Double_Window( lx+lw, ly, lw, lh, t );
+    w->user_data((void*)(0));
+      Fl_Group *g = new Fl_Group(0,0,lw,lh);
+      g->end();
+      wid->resize(0,0, lw,lh);
+      g->add( wid );
+      wid->show();
+    w->end();
+    w->set_non_modal();
+    w->xclass("Fl_Window");
+    w->resizable(w);
+    //w->resizable(g);
+    w->show();
+
   DBG_PROG_ENDE
 }
 
@@ -279,6 +378,48 @@ ICCexamin::zeigCGATS()
   // CGATS in Fenster praesentieren
   icc_examin_ns::nachricht(profile.profil()->cgats_max());
   icc_examin_ns::unlock(this, __FILE__,__LINE__);
+  DBG_PROG_ENDE
+}
+
+void
+ICCexamin::zeigMftTabellen (int lx, int ly, int lw, int lh)
+{ DBG_PROG_START
+  const char* title = icc_betrachter->mft_gl->window()->label();
+  char* t = (char*) malloc(strlen(title)+20);
+  int   item = tag_nr();
+  std::vector<std::string> tag_info =
+       profile.profil()->printTagInfo(item);
+
+  sprintf(t, "%d:%s - %s", item + 1,
+          tag_info[0].c_str(),
+          title);
+
+  std::vector<std::string> out_names =
+      profile.profil()->getTagChannelNames (icc_betrachter->tag_nummer,
+                                            ICCtag::TABLE_OUT);
+  Fl_Double_Window *w = NULL;
+  for(int i = 0; i < (int)out_names.size(); ++i)
+  {
+    if(!w)
+      w = new Fl_Double_Window( lx, ly, lw, lh, t);
+    else
+      w = new Fl_Double_Window( w->x()+lw, w->y(), lw, lh, t);
+
+      w->user_data((void*)(0));
+      Fl_Group *g = new Fl_Group(0,0,lw,lh);
+        GL_Ansicht *gl = 
+          new GL_Ansicht (*icc_betrachter->mft_gl); //(0,0,lw,lh);
+
+        GL_Ansicht::getAgv(gl, icc_betrachter->mft_gl);
+        gl->init( icc_betrachter->mft_gl->id() );
+        gl->kanal = i;
+      g->end();
+    w->end();
+    w->set_non_modal();
+    w->xclass("Fl_Window");
+    w->resizable(w);
+    w->show();
+  }
   DBG_PROG_ENDE
 }
 
@@ -610,6 +751,10 @@ ICCexamin::gamutAnsichtZeigen ()
       icc_betrachter->widget_oben = ICCfltkBetrachter::WID_3D;
       farbraum_angezeigt_ = true;
       icc_betrachterNeuzeichnen(icc_betrachter->DD_farbraum);
+
+      if(icc_betrachter->DD_farbraum->window() != icc_betrachter->details)
+        icc_betrachter->details->hide();
+
       icc_examin_ns::unlock(this, __FILE__,__LINE__);
       DBG_PROG_S("icc_betrachterNeuzeichnen DD_farbraum")
 }
@@ -651,6 +796,9 @@ ICCexamin::erneuerTagBrowserText_ (void)
 {
   DBG_PROG_START
   //open and preparing the first selected item
+
+  if(!icc_betrachter->details->visible())
+    return;
 
   TagBrowser *b = icc_betrachter->tag_browser;
 
@@ -739,22 +887,23 @@ ICCexamin::icc_betrachterNeuzeichnen (void* z)
   DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->tag_viewer)->visible() )
   DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->mft_choice)->visible() )
   DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->mft_text)->visible() )
-  DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->mft_gl)->visible() )
+  DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->mft_gl_group)->visible() )
   DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->mft_viewer)->visible() )
 
   enum {ZEIGEN, VERSTECKEN, NACHRICHT, KEINEn};
 # define widZEIG(zeigen,widget,dbg) { \
      if        (zeigen ==                  VERSTECKEN && widget->visible()) { \
          widget->                          hide(); \
-         if(dbg==NACHRICHT) DBG_PROG_S( _("verstecke ") << #widget ); \
+         if(dbg==NACHRICHT) DBG_PROG_S( "verstecke " << #widget ); \
   \
      } else if (zeigen ==                  ZEIGEN     && !widget->visible()) { \
          widget->                          show(); \
-         if(dbg==NACHRICHT) DBG_PROG_S( _("zeige     ") << #widget ); \
+         if(dbg==NACHRICHT) DBG_PROG_S( "zeige     " << #widget ); \
      } \
   }
 
   // oberstes Widget testen
+# if 0
   DBG_PROG_V( icc_betrachter->widget_oben )
   enum { DD_ZEIGEN, INSPEKT_ZEIGEN, TAG_ZEIGEN };
   int oben;
@@ -802,10 +951,13 @@ ICCexamin::icc_betrachterNeuzeichnen (void* z)
 #   endif
   }
 
-  if(oben == INSPEKT_ZEIGEN)
-    widZEIG(ZEIGEN, icc_betrachter->inspekt_html ,NACHRICHT)
-  else
-    widZEIG(VERSTECKEN, icc_betrachter->inspekt_html ,NACHRICHT)
+  if(icc_betrachter->inspekt_html->window() == icc_betrachter->details)
+  {
+    if(oben == INSPEKT_ZEIGEN)
+      widZEIG(ZEIGEN, icc_betrachter->inspekt_html ,NACHRICHT)
+    else
+      widZEIG(VERSTECKEN, icc_betrachter->inspekt_html ,NACHRICHT)
+  }
 
   if(oben == TAG_ZEIGEN) {
     widZEIG(ZEIGEN, icc_betrachter->examin ,NACHRICHT)
@@ -816,6 +968,23 @@ ICCexamin::icc_betrachterNeuzeichnen (void* z)
     widZEIG(VERSTECKEN, icc_betrachter->tag_browser ,NACHRICHT)
     widZEIG(VERSTECKEN, icc_betrachter->ansichtsgruppe ,NACHRICHT)
   }
+# else
+
+  if(wid == icc_betrachter->DD_farbraum) { 
+    if(!icc_betrachter->DD_farbraum->visible_r()) {
+      zeig3D();
+    }
+  }
+  if(!icc_betrachter->DD_farbraum->visible_r()) {
+      if(icc_waehler_->visible())
+#   ifdef APPLE
+        icc_waehler_->hide();
+#   else
+        icc_waehler_->iconize();
+#   endif
+  }
+
+# endif
 
   // Bereinigen - hier?
   if (wid == icc_betrachter->tag_viewer ||
@@ -825,7 +994,7 @@ ICCexamin::icc_betrachterNeuzeichnen (void* z)
 
   // Tabellenkompanion
   if (wid == icc_betrachter->mft_text ||
-      wid == icc_betrachter->mft_gl ||
+      wid == icc_betrachter->mft_gl_group ||
       wid == icc_betrachter->mft_viewer)
   { icc_betrachter->mft_choice->show(); DBG_PROG_S( "mft_choice zeigen" ) 
   } else
@@ -833,30 +1002,45 @@ ICCexamin::icc_betrachterNeuzeichnen (void* z)
 
 # define SichtbarkeitsWechsel(widget) \
   { Fl_Widget *w = dynamic_cast<Fl_Widget*> (icc_betrachter->widget); \
-    if (w != wid && w->visible()) { DBG_PROG_S( #widget << " verstecken" ) \
+    if (w != wid && w->visible()) \
+    { DBG_PROG_S( #widget << " verstecken" ) \
       w->hide(); \
+      Fl_Group *g = dynamic_cast<Fl_Group*> (w); \
+      if( g ) \
+        for(int i = 0; i < g->children(); ++i) \
+          g->child(i)->hide(); \
       if(w->visible()) { \
         WARN_S( #widget << " ist noch sichbar" ); \
         w->hide(); \
       } \
-    } else if(w == wid && !w->visible()) { DBG_PROG_S( #widget << " zeigen" ) \
-      w->show(); \
-      item = _item; \
+    } else if(w == wid) \
+    { DBG_PROG_S( #widget << " zeigen" ) \
+      if (!w->visible_r()) \
+      { \
+        w->show(); \
+        Fl_Group *g = dynamic_cast<Fl_Group*> (w); \
+        if( g ) \
+          for(int i = 0; i < g->children(); ++i) \
+            g->child(i)->show(); \
+        item = _item; \
+      } \
+      if (!w->visible_r()) \
+        w->window()->show(); \
     } \
   }
 
   SichtbarkeitsWechsel(mft_viewer)
-  SichtbarkeitsWechsel(mft_gl)
+  SichtbarkeitsWechsel(mft_gl_group)
   SichtbarkeitsWechsel(mft_text)
   SichtbarkeitsWechsel(tag_viewer)
   SichtbarkeitsWechsel(tag_text)
 
+# if 0
   // wenigstens ein Widget zeigen
   if(oben == TAG_ZEIGEN &&
      !icc_betrachter->mft_choice ->visible() &&
      !icc_betrachter->tag_viewer ->visible() )
     icc_betrachter->tag_text->show();
-
 
   DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->DD_farbraum)->visible())
   DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->inspekt_html)->visible())
@@ -867,7 +1051,7 @@ ICCexamin::icc_betrachterNeuzeichnen (void* z)
   DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->tag_viewer)->visible() )
   DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->mft_choice)->visible() )
   DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->mft_text)->visible() )
-  DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->mft_gl)->visible() )
+  DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->mft_gl_group)->visible() )
   DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->mft_viewer)->visible() )
 
   // Inhalte Erneuern
@@ -876,6 +1060,7 @@ ICCexamin::icc_betrachterNeuzeichnen (void* z)
     waehleTag(_item);
     //icc_examin_ns::lock(__FILE__,__LINE__);
   }
+# endif
 
   DBG_PROG_ENDE
 }
@@ -932,13 +1117,13 @@ ICCexamin::statusFarbe(double & CIEL, double & CIEa, double & CIEb)
   Fl_Color colour = fl_rgb_color( (int)(rgb[0]*255),
                                   (int)(rgb[1]*255), (int)(rgb[2]*255) );
   if (CIEL < .5)
-    icc_betrachter->box_stat->labelcolor( fl_rgb_color( VG ) );
+    icc_betrachter->DD_box_stat->labelcolor( fl_rgb_color( VG ) );
   else
-    icc_betrachter->box_stat->labelcolor(FL_BLACK);
-  icc_betrachter->box_stat->color(colour);
-  icc_betrachter->box_stat->damage(FL_DAMAGE_ALL);
-  //Fl::add_timeout(0.2, fl_delayed_redraw, icc_betrachter->box_stat);
-  Fl::add_idle(fl_delayed_redraw, icc_betrachter->box_stat);
+    icc_betrachter->DD_box_stat->labelcolor(FL_BLACK);
+  icc_betrachter->DD_box_stat->color(colour);
+  icc_betrachter->DD_box_stat->damage(FL_DAMAGE_ALL);
+  //Fl::add_timeout(0.2, fl_delayed_redraw, icc_betrachter->DD_box_stat);
+  Fl::add_idle(fl_delayed_redraw, icc_betrachter->DD_box_stat);
   Fl::awake();
   DBG_PROG_ENDE
 }
@@ -946,7 +1131,8 @@ ICCexamin::statusFarbe(double & CIEL, double & CIEa, double & CIEb)
 void
 ICCexamin::statusAktualisieren()
 { DBG_PROG_START
-  icc_betrachter->box_stat->label(statlabel.c_str());
+  icc_betrachter->box_stat->label(statlabel[0].c_str());
+  icc_betrachter->DD_box_stat->label(statlabel[1].c_str());
   DBG_PROG_ENDE
 }
 

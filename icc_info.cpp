@@ -16,9 +16,9 @@ info(const char* text)
 }
 
 void
-status_info(const char* text)
+status_info(const char* text, int fenster)
 {
-  icc_examin->statlabel = text;
+  icc_examin->statlabel[fenster] = text;
   icc_examin->statusAktualisieren();
 }
 

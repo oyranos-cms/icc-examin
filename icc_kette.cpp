@@ -68,17 +68,17 @@ ICCkette::init ()
 
   if( fehler == EAGAIN)
   {
-    WARN_S( _("Waechter Thread nicht gestartet Fehler: ")  << fehler );
+    WARN_S( "Waechter Thread nicht gestartet Fehler: "  << fehler );
   } else
 # if !APPLE && !WIN32 && PTHREAD_THREADS_MAX
   if( fehler == PTHREAD_THREADS_MAX )
   {
-    WARN_S( _("zu viele Waechter Threads Fehler: ") << fehler );
+    WARN_S( "zu viele Waechter Threads Fehler: " << fehler );
   } else
 # endif
   if( fehler != 0 )
   {
-    WARN_S( _("unbekannter Fehler beim Start eines Waechter Threads Fehler: ") << fehler );
+    WARN_S( "unbekannter Fehler beim Start eines Waechter Threads Fehler: " << fehler );
   }
 
 # else
@@ -191,7 +191,7 @@ ICCkette::einfuegen (const Speicher & prof, int pos)
     DBG_PROG_V( aktuell() )
     erfolg = true;
   } else { DBG_PROG
-    icc_examin_ns::status_info(_("File not loaded!"));
+    icc_examin_ns::status_info(_("File not loaded!"), 0);
   }
 
 
