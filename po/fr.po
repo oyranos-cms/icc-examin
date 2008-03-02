@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ICC Examin 0.41\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2007-02-12 20:15+0100\n"
+"POT-Creation-Date: 2007-02-15 12:10+0100\n"
 "PO-Revision-Date: 2006-06-29 19:31+0200\n"
 "Last-Translator: Pascal LACROIX <lacroixpascal at vfemail.net>\n"
 "Language-Team: ALL <ku.b@gmx.de>\n"
@@ -315,7 +315,7 @@ msgstr ""
 msgid "HTML Documents (*.htm*)"
 msgstr ""
 
-#: icc_examin_io.cpp:518 icc_betrachter.cxx:513
+#: icc_examin_io.cpp:518 icc_betrachter.cxx:515
 msgid "Save Report"
 msgstr ""
 
@@ -323,7 +323,7 @@ msgstr ""
 msgid "ICC colour profiles (*.ic*)"
 msgstr "ICC couleur profile (*.ic*)"
 
-#: icc_examin_io.cpp:590 icc_betrachter.cxx:514
+#: icc_examin_io.cpp:590 icc_betrachter.cxx:516
 msgid "Save Gamut as Profile"
 msgstr ""
 
@@ -331,7 +331,7 @@ msgstr ""
 msgid "VRML Files (*.wrl)"
 msgstr "VRML Fichier (*.wrl)"
 
-#: icc_examin_io.cpp:593 icc_betrachter.cxx:515
+#: icc_examin_io.cpp:593 icc_betrachter.cxx:517
 msgid "Save Gamut as VRML"
 msgstr ""
 
@@ -347,7 +347,7 @@ msgstr ""
 msgid "Information:"
 msgstr ""
 
-#: icc_fenster.cpp:173 icc_betrachter.cxx:629
+#: icc_fenster.cpp:173 icc_betrachter.cxx:631
 msgid "Yes"
 msgstr "Oui"
 
@@ -1538,7 +1538,7 @@ msgstr ""
 msgid "Device Colours"
 msgstr ""
 
-#: icc_ueber.cpp:67 icc_betrachter.cxx:581
+#: icc_ueber.cpp:67 icc_betrachter.cxx:583
 msgid "About ICC Examin"
 msgstr "À propos ICC Examin"
 
@@ -1587,12 +1587,12 @@ msgid ""
 "the littleCMS program library."
 msgstr ""
 
-#: icc_ueber.cpp:147 icc_betrachter.cxx:533 icc_betrachter.cxx:535
-#: icc_betrachter.cxx:601
+#: icc_ueber.cpp:147 icc_betrachter.cxx:535 icc_betrachter.cxx:537
+#: icc_betrachter.cxx:603
 msgid "Help"
 msgstr "Aide"
 
-#: icc_ueber.cpp:326 icc_betrachter.cxx:536 icc_betrachter.cxx:607
+#: icc_ueber.cpp:326 icc_betrachter.cxx:538 icc_betrachter.cxx:609
 msgid "License"
 msgstr ""
 
@@ -1792,23 +1792,23 @@ msgstr ""
 msgid "lineare exit curve with 256 steps"
 msgstr ""
 
-#: icc_betrachter.cxx:306 icc_betrachter.cxx:511
+#: icc_betrachter.cxx:306 icc_betrachter.cxx:513
 msgid "File"
 msgstr "Fichier"
 
-#: icc_betrachter.cxx:307 icc_betrachter.cxx:516
+#: icc_betrachter.cxx:307 icc_betrachter.cxx:518
 msgid "Quit"
 msgstr "Quitter"
 
-#: icc_betrachter.cxx:309 icc_betrachter.cxx:519
+#: icc_betrachter.cxx:309 icc_betrachter.cxx:521
 msgid "View"
 msgstr "Vue"
 
-#: icc_betrachter.cxx:310 icc_betrachter.cxx:520
+#: icc_betrachter.cxx:310 icc_betrachter.cxx:522
 msgid "Whole Screen on/off"
 msgstr ""
 
-#: icc_betrachter.cxx:312 icc_betrachter.cxx:522
+#: icc_betrachter.cxx:312 icc_betrachter.cxx:524
 #, fuzzy
 msgid "Settings"
 msgstr "Oyranos Préférences"
@@ -1821,7 +1821,7 @@ msgstr "Avertissement Gamut"
 msgid "BPC"
 msgstr ""
 
-#: icc_betrachter.cxx:319 icc_betrachter.cxx:526
+#: icc_betrachter.cxx:319 icc_betrachter.cxx:528
 msgid "Windows"
 msgstr ""
 
@@ -1829,205 +1829,205 @@ msgstr ""
 msgid "Show Main Window"
 msgstr ""
 
-#: icc_betrachter.cxx:512
+#: icc_betrachter.cxx:514
 msgid "Open"
 msgstr "Ouvrir"
 
-#: icc_betrachter.cxx:518 icc_betrachter.cxx:527 icc_betrachter.cxx:691
+#: icc_betrachter.cxx:520 icc_betrachter.cxx:529 icc_betrachter.cxx:693
 msgid "Gamut"
 msgstr "Gamut"
 
-#: icc_betrachter.cxx:523
+#: icc_betrachter.cxx:525
 msgid "Oyranos Settings"
 msgstr "Oyranos Préférences"
 
-#: icc_betrachter.cxx:524
+#: icc_betrachter.cxx:526
 msgid "LANG"
 msgstr ""
 
-#: icc_betrachter.cxx:528
+#: icc_betrachter.cxx:530
 msgid "Report View"
 msgstr ""
 
-#: icc_betrachter.cxx:529
+#: icc_betrachter.cxx:531
 msgid "CGATS View"
 msgstr ""
 
-#: icc_betrachter.cxx:530
+#: icc_betrachter.cxx:532
 msgid "Videocard Gamma"
 msgstr ""
 
-#: icc_betrachter.cxx:531
+#: icc_betrachter.cxx:533
 msgid "Test Curves"
 msgstr ""
 
-#: icc_betrachter.cxx:534 icc_betrachter.cxx:595
+#: icc_betrachter.cxx:536 icc_betrachter.cxx:597
 msgid "About"
 msgstr "À propos"
 
-#: icc_betrachter.cxx:614
+#: icc_betrachter.cxx:616
 msgid "Acknowlegement"
 msgstr ""
 
-#: icc_betrachter.cxx:619
+#: icc_betrachter.cxx:621
 msgid "Links"
 msgstr ""
 
-#: icc_betrachter.cxx:639
+#: icc_betrachter.cxx:641
 msgid "Grafic Card Gamma Table"
 msgstr ""
 
-#: icc_betrachter.cxx:665
+#: icc_betrachter.cxx:667
 msgid "Set"
 msgstr "Définir"
 
-#: icc_betrachter.cxx:666
+#: icc_betrachter.cxx:668
 msgid ""
 "Set the current profile as monitor profile and upload vcgt tag to the video "
 "card"
 msgstr ""
 
-#: icc_betrachter.cxx:671
+#: icc_betrachter.cxx:673
 msgid "Reset"
 msgstr "Réinitialiser"
 
-#: icc_betrachter.cxx:672
+#: icc_betrachter.cxx:674
 msgid "reset to standard gamma"
 msgstr ""
 
-#: icc_betrachter.cxx:676
+#: icc_betrachter.cxx:678
 msgid "Load"
 msgstr "Ouvrir"
 
-#: icc_betrachter.cxx:677
+#: icc_betrachter.cxx:679
 msgid "Load the current monitor profile"
 msgstr ""
 
-#: icc_betrachter.cxx:681
+#: icc_betrachter.cxx:683
 msgid "Close"
 msgstr "Fermer"
 
-#: icc_betrachter.cxx:751
+#: icc_betrachter.cxx:753
 msgid "ICC Examin"
 msgstr ""
 
-#: icc_betrachter.cxx:763
+#: icc_betrachter.cxx:765
 msgid "all_invisible"
 msgstr ""
 
-#: icc_betrachter.cxx:764
+#: icc_betrachter.cxx:766
 msgid "menuleiste_invisible"
 msgstr ""
 
-#: icc_betrachter.cxx:772
+#: icc_betrachter.cxx:774
 msgid "tags_group_invisible"
 msgstr ""
 
-#: icc_betrachter.cxx:774
+#: icc_betrachter.cxx:776
 msgid "inspect_html_group_invisible"
 msgstr ""
 
-#: icc_betrachter.cxx:776
+#: icc_betrachter.cxx:778
 msgid "Inspect_html_invisible"
 msgstr ""
 
-#: icc_betrachter.cxx:785
+#: icc_betrachter.cxx:787
 msgid "examin_invisible"
 msgstr ""
 
-#: icc_betrachter.cxx:787
+#: icc_betrachter.cxx:789
 msgid "tag_browser_invisible"
 msgstr ""
 
-#: icc_betrachter.cxx:788
+#: icc_betrachter.cxx:790
 msgid "Choose one profile tag"
 msgstr ""
 
-#: icc_betrachter.cxx:802
+#: icc_betrachter.cxx:804
 msgid "ansichtsgruppe_invisible"
 msgstr ""
 
-#: icc_betrachter.cxx:804
+#: icc_betrachter.cxx:806
 msgid "tabellengruppe_invisible"
 msgstr ""
 
-#: icc_betrachter.cxx:806
+#: icc_betrachter.cxx:808
 msgid "tabellenpack_invisible"
 msgstr ""
 
-#: icc_betrachter.cxx:808
+#: icc_betrachter.cxx:810
 msgid "Chain selection"
 msgstr ""
 
-#: icc_betrachter.cxx:809
+#: icc_betrachter.cxx:811
 msgid "Choose a attribute"
 msgstr ""
 
-#: icc_betrachter.cxx:823
+#: icc_betrachter.cxx:825
 msgid "tabellengruppe2_invisible"
 msgstr ""
 
-#: icc_betrachter.cxx:825
+#: icc_betrachter.cxx:827
 msgid "mft_viewer_invisible"
 msgstr ""
 
-#: icc_betrachter.cxx:837
+#: icc_betrachter.cxx:839
 msgid "mft_text_invisible"
 msgstr ""
 
-#: icc_betrachter.cxx:849
+#: icc_betrachter.cxx:851
 msgid "mft_gl_group_invisible"
 msgstr ""
 
-#: icc_betrachter.cxx:851
+#: icc_betrachter.cxx:853
 msgid "mft_gl_box_invisible"
 msgstr ""
 
-#: icc_betrachter.cxx:855
+#: icc_betrachter.cxx:857
 msgid "o"
 msgstr ""
 
-#: icc_betrachter.cxx:856
+#: icc_betrachter.cxx:858
 msgid "Show all channels of this table a own window."
 msgstr ""
 
-#: icc_betrachter.cxx:860
+#: icc_betrachter.cxx:862
 msgid "mft_gl_invisible"
 msgstr ""
 
-#: icc_betrachter.cxx:886
+#: icc_betrachter.cxx:888
 msgid "tag_pack_invisible"
 msgstr ""
 
-#: icc_betrachter.cxx:888
+#: icc_betrachter.cxx:890
 msgid "tag_box_invisible"
 msgstr ""
 
-#: icc_betrachter.cxx:892
+#: icc_betrachter.cxx:894
 msgid "tag_group_invisible"
 msgstr ""
 
-#: icc_betrachter.cxx:894
+#: icc_betrachter.cxx:896
 msgid " tag_text_invisible"
 msgstr ""
 
-#: icc_betrachter.cxx:906
+#: icc_betrachter.cxx:908
 msgid "tag_viewer_invisible"
 msgstr ""
 
-#: icc_betrachter.cxx:931
+#: icc_betrachter.cxx:933
 msgid "status_group_invisible"
 msgstr ""
 
-#: icc_betrachter.cxx:933
+#: icc_betrachter.cxx:935
 msgid "..."
 msgstr ""
 
-#: icc_betrachter.cxx:936
+#: icc_betrachter.cxx:938
 msgid "Loading .."
 msgstr ""
 
-#: icc_betrachter.cxx:947
+#: icc_betrachter.cxx:949
 msgid "no_box_invisible"
 msgstr ""
 

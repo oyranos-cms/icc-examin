@@ -413,8 +413,10 @@ void ICCfltkBetrachter::cb_menueintrag_oyranos(Fl_Menu_* o, void* v) {
 
 void ICCfltkBetrachter::cb_menueintrag_lang_i(Fl_Menu_*, void*) {
   system("echo $LANG");
+# ifdef USE_GETTEXT
   printf("domain     : %s\n",textdomain(NULL));
   printf("domain_path: %s\n",bindtextdomain(NULL,NULL));
+# endif
 }
 void ICCfltkBetrachter::cb_menueintrag_lang(Fl_Menu_* o, void* v) {
   ((ICCfltkBetrachter*)(o->parent()->parent()->user_data()))->cb_menueintrag_lang_i(o,v);

@@ -249,7 +249,7 @@ class ICCfltkBetrachter {open
   setTitleUrl = true;} {}
     Fl_Window ueber {
       label {About ICC Examin} open
-      xywh {2019 744 365 285} type Double resizable
+      xywh {919 759 365 285} type Double resizable
       code0 {o->hide();}
       code1 {o->use_escape_hide = true;}
       class {icc_examin_ns::MyFl_Double_Window} visible
@@ -290,7 +290,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window vcgt {
       label {Grafic Card Gamma Table} open
-      xywh {26 650 370 390} type Double resizable
+      xywh {31 654 370 390} type Double resizable
       code0 {o->hide();}
       code1 {o->use_escape_hide = true;}
       class {icc_examin_ns::MyFl_Double_Window} visible
@@ -327,7 +327,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window DD {
       label Gamut open
-      xywh {2129 259 385 520} type Double box NO_BOX resizable
+      xywh {899 280 385 520} type Double box NO_BOX resizable
       class {icc_examin_ns::MyFl_Double_Window} visible
     } {
       Fl_Group {} {open
@@ -481,7 +481,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window details {
       label {ICC Examin} open
-      xywh {1697 79 385 520} type Double box NO_BOX
+      xywh {899 100 385 520} type Double box NO_BOX
       code0 {o->main_win = o;}
       class {icc_examin_ns::MyFl_Double_Window} visible
     } {
@@ -577,8 +577,10 @@ class ICCfltkBetrachter {open
             MenuItem menueintrag_lang {
               label LANG
               callback {system("echo $LANG");
+\# ifdef USE_GETTEXT
   printf("domain     : %s\\n",textdomain(NULL));
-  printf("domain_path: %s\\n",bindtextdomain(NULL,NULL));}
+  printf("domain_path: %s\\n",bindtextdomain(NULL,NULL));
+\# endif} selected
               tooltip {test LANG} xywh {80 80 100 20} hide deactivate
             }
           }
@@ -753,7 +755,7 @@ icc_examin->testZeigen();}
                 }
               }
               Fl_Pack twoD_pack {
-                label tag_pack_invisible open selected
+                label tag_pack_invisible open
                 xywh {0 160 385 335} align 4
               } {
                 Fl_Box {} {

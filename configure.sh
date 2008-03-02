@@ -103,8 +103,12 @@ if [ -n "$X11" ] && [ $X11 -gt 0 ]; then
      [ -f $includedir/X11/Xlib.h ]; then
     test -n "$ECHO" && $ECHO "X11                     detected"
     echo "#define HAVE_X 1" >> $CONF_H
-    echo "X11 = 1" >> $CONF
-    echo "X_H = -I/usr/X11R6/include -I/usr/include" >> $CONF
+    if [ -n "$MAKEFILE_DIR" ]; then
+      for i in $MAKEFILE_DIR; do
+        test -f "$i/makefile".in && echo "X11 = 1" >> "$i/makefile"
+        test -f "$i/makefile".in && echo "X_H = -I/usr/X11R6/include -I/usr/include" >> "$i/makefile"
+      done
+    fi
   elif [ $OSUNAME = "Linux" ]; then
     test -n "$ECHO" && $ECHO "X11 header not found in /usr/X11R6/include/X11/Xlib.h or"
     test -n "$ECHO" && $ECHO "/usr/include/X11/Xlib.h"
@@ -118,8 +122,12 @@ if [ "$X11" = 1 ] && [ $X11 -gt 0 ]; then
        [ -f $includedir/X11/extensions/xf86vmode.h ]; then
       test -n "$ECHO" && $ECHO "X VidMode extension     detected"
       echo "#define HAVE_XF86VMODE 1" >> $CONF_H
-      echo "XF86VMODE = 1" >> $CONF
-      echo "XF86VMODE_LIB = -lXxf86vm" >> $CONF
+      if [ -n "$MAKEFILE_DIR" ]; then
+        for i in $MAKEFILE_DIR; do
+          test -f "$i/makefile".in && echo "XF86VMODE = 1" >> "$i/makefile"
+          test -f "$i/makefile".in && echo "XF86VMODE_LIB = -lXxf86vm" >> "$i/makefile"
+        done
+      fi
     elif [ $OSUNAME = "Linux" ]; then
       test -n "$ECHO" && $ECHO "X VidMode extension not found in /usr/X11R6/include/X11/extensions/xf86vmode.h or"
       test -n "$ECHO" && $ECHO "/usr/include/X11/extensions/xf86vmode.h"
@@ -132,8 +140,12 @@ if [ "$X11" = 1 ] && [ $X11 -gt 0 ]; then
        [ -f $includedir/X11/extensions/Xinerama.h ]; then
       test -n "$ECHO" && $ECHO "X Xinerama              detected"
       echo "#define HAVE_XIN 1" >> $CONF_H
-      echo "XIN = 1" >> $CONF
-      echo "XINERAMA_LIB = -lXinerama" >> $CONF
+      if [ -n "$MAKEFILE_DIR" ]; then
+        for i in $MAKEFILE_DIR; do
+          test -f "$i/makefile".in && echo "XIN = 1" >> "$i/makefile"
+          test -f "$i/makefile".in && echo "XINERAMA_LIB = -lXinerama" >> "$i/makefile"
+        done
+      fi
     else
       if [ $OSUNAME = "Linux" ]; then
         test -n "$ECHO" && $ECHO "X Xinerma not found in /usr/X11R6/include/X11/extensions/Xinerama.h or"
@@ -142,7 +154,11 @@ if [ "$X11" = 1 ] && [ $X11 -gt 0 ]; then
     fi
   fi
   echo "X_CPP = \$(X_CPPFILES)" >> $CONF
-  echo "X11_LIB_PATH = -L/usr/X11R6/lib\$(BARCH) -L/usr/lib\$(BARCH) -L\$(libdir)" >> $CONF
+  if [ -n "$MAKEFILE_DIR" ]; then
+    for i in $MAKEFILE_DIR; do
+      test -f "$i/makefile".in && echo "X11_LIB_PATH = -L/usr/X11R6/lib\$(BARCH) -L/usr/lib\$(BARCH) -L\$(libdir)" >> "$i/makefile"
+    done
+  fi
 
   if [ -n "$X_ADD" ]; then
     for l in $X_ADD; do
@@ -163,7 +179,29 @@ if [ "$X11" = 1 ] && [ $X11 -gt 0 ]; then
       fi
     done
   fi
-  echo "X11_LIBS=\$(X11_LIB_PATH) -lX11 \$(XF86VMODE_LIB) $X_ADD_LIBS \$(XINERAMA_LIB)" >> $CONF
+  if [ -n "$X_ADD_2" ]; then
+    for l in $X_ADD_2; do
+      rm -f tests/libtest
+      $CXX $CFLAGS -I$includedir tests/lib_test.cxx $LDFLAGS -L/usr/X11R6/lib$BARCH -L/usr/lib$BARCH -L$libdir -l$l -o tests/libtest 2>/dev/null
+      if [ -f tests/libtest ]; then
+          test -n "$ECHO" && $ECHO "lib$l is available"
+          if [ -z "$X_ADD_LIBS" ]; then
+            X_ADD_LIBS="-l$l"
+          else
+            X_ADD_LIBS="$X_ADD_LIBS -l$l"
+          fi
+          echo "#define HAVE_$l 1"  >> $CONF_H
+          rm tests/libtest
+      else
+        test -n "$ECHO" && $ECHO "lib$l not found"
+      fi
+    done
+  fi
+  if [ -n "$MAKEFILE_DIR" ]; then
+    for i in $MAKEFILE_DIR; do
+      test -f "$i/makefile".in && echo "X11_LIBS=\$(X11_LIB_PATH) -lX11 \$(XF86VMODE_LIB) $X_ADD_LIBS \$(XINERAMA_LIB)" >> "$i/makefile"
+    done
+  fi
 fi
 
 if [ -n "$FTGL" ] && [ $FTGL -gt 0 ]; then
@@ -209,7 +247,7 @@ fi
 
 if [ -n "$FLU" ] && [ $FLU -gt 0 ]; then
   FLU_=`flu-config --cxxflags 2>>error.txt`
-  if [ `$fltkconfig --version` = "1.1.7" ]; then
+  if [ "`$fltkconfig --version`" = "1.1.7" ]; then
     echo -e "\c"
     test -n "$ECHO" && $ECHO "FLTK version 1.1.7 is not supported by FLU"
     if [ "$FLU" = 1 ]; then
