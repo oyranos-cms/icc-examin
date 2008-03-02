@@ -92,6 +92,7 @@ GL_Ansicht::verstecken()
   if (!first) {
     agviewers[agv].agvSwitchMoveMode (agviewer::AGV_STOP);
     GLFenster->size(1,1);
+    DBG_PROG_S("-------------- GL Fenster auf 1x1 verkleinert ----------------")
   }
   DBG_PROG_V( w() <<" "<< h() )
   GLfenster_zeigen = false; DBG_PROG
@@ -151,6 +152,7 @@ void GL_Ansicht::draw() {
     GLFenster->size(w(),h());
   } else {
     GLFenster->size(1,1);
+    DBG_PROG_S("-------------- GL Fenster auf 1x1 verkleinert ----------------")
   }
 
   DBG_PROG_V( GLfenster_zeigen )
@@ -714,6 +716,8 @@ GL_Ansicht::hinein_tabelle(std::vector<std::vector<std::vector<std::vector<doubl
   }
 
   status(_("linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menü"))
+
+  glutPostRedisplay();
 
   DBG_PROG_ENDE
 }

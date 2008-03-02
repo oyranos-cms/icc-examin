@@ -745,7 +745,7 @@ void TagBrowser::select_item(int item) {
   status("")
 
   std::string text = _("Leer");
-  tag_text->hinein(text);
+  //tag_text->hinein(text);
   item -= 6;
   cout << item << ". Tag "; DBG_PROG
   std::vector<std::string> rgb_tags;
@@ -955,7 +955,7 @@ void MftChoice::profil_tag(int _tag) {
 
     mft_choice->value( gewaehlter_eintrag );
 
-  zeig_mich (this);
+  //zeig_mich (this);
   auswahl_cb();
   DBG_PROG_ENDE
 }
