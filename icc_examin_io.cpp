@@ -334,20 +334,20 @@ ICCexaminIO::oeffnenStatisch_ (void* ie)
   if(!ie) WARN_S( "keine ICCexaminIO Klasse verfuegbar" )
 
   // Bezug herstellen
-  ICCexaminIO* examin = (ICCexaminIO*) ie;
+  ICCexamin* examin = (ICCexamin*) ie;
 
   // Schleife starten die diesen thread laufen laesst
   while(1) {
-    if(examin->lade_) {
-      examin->oeffnenThread_();
-      examin->lade_ = false;
+    if(examin->io_->lade_) {
+      examin->io_->oeffnenThread_();
+      examin->io_->lade_ = false;
       //examin->erneuern(-1);
     } else {
       int e = examin->erneuern();
       if(e >= 0 &&
          e < profile.size()) {
-        examin->oeffnenThread_( e );
-        examin->lade_ = false;
+        examin->io_->oeffnenThread_( e );
+        examin->io_->lade_ = false;
       } else {
         // kurze Pause 
         icc_examin_ns::sleep(0.2); DBG_THREAD

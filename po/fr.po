@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ICC Examin 0.41\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2006-09-14 13:41+0200\n"
+"POT-Creation-Date: 2006-09-14 15:31+0200\n"
 "PO-Revision-Date: 2006-06-29 19:31+0200\n"
 "Last-Translator: Pascal LACROIX <lacroixpascal at vfemail.net>\n"
 "Language-Team: ALL <ku.b@gmx.de>\n"
@@ -248,7 +248,7 @@ msgstr ""
 msgid "icc_waehler_ nicht reservierbar"
 msgstr ""
 
-#: icc_examin.cpp:208 icc_examin.cpp:703
+#: icc_examin.cpp:208 icc_examin.cpp:714
 msgid "loaded"
 msgstr ""
 
@@ -268,35 +268,35 @@ msgstr ""
 msgid "unbekannter Fehler beim Start eines Waechter Threads Fehler: "
 msgstr ""
 
-#: icc_examin.cpp:645
+#: icc_examin.cpp:656
 msgid "Filename (ICC data type)"
 msgstr ""
 
-#: icc_examin.cpp:648
+#: icc_examin.cpp:659
 msgid "Filename (other data type)"
 msgstr ""
 
-#: icc_examin.cpp:650
+#: icc_examin.cpp:661
 msgid "Filename (corrupted ICC data type)"
 msgstr ""
 
-#: icc_examin.cpp:655
+#: icc_examin.cpp:666
 msgid "found no content for"
 msgstr ""
 
-#: icc_examin.cpp:658
+#: icc_examin.cpp:669
 msgid "Internal error"
 msgstr ""
 
-#: icc_examin.cpp:660
+#: icc_examin.cpp:671
 msgid "No. Tag   Type   Size Description"
 msgstr ""
 
-#: icc_examin.cpp:728
+#: icc_examin.cpp:739
 msgid "verstecke "
 msgstr ""
 
-#: icc_examin.cpp:732
+#: icc_examin.cpp:743
 msgid "zeige     "
 msgstr ""
 
@@ -1091,7 +1091,7 @@ msgstr ""
 msgid "noName"
 msgstr ""
 
-#: icc_kette.cpp:191
+#: icc_kette.cpp:192
 msgid "File not loaded!"
 msgstr ""
 

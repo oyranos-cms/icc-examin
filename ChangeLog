@@ -1,3 +1,6 @@
+2006-09-14
+	* und: monitor profile is passive on load time
+
 2006-09-11
 	* neu: class ThreadDaten - secure data access in threaded environments
 

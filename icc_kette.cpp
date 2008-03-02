@@ -179,7 +179,8 @@ ICCkette::einfuegen (const Speicher & prof, int pos)
       name = profile_[pos].getTagText( profile_[pos].getTagByName("desc"))[0];
   profilnamen_[pos] = name ;
 
-  aktiv_[pos] = true;
+  if(profile[pos]->filename() != icc_examin->moniName())
+    aktiv_[pos] = true;
   profil_mzeit_[pos] = holeDateiModifikationsZeit( name.c_str() );
   DBG_PROG
 

@@ -162,6 +162,7 @@ class ICCexamin : public icc_examin_ns::Beobachter,
     void testZeigen ();
     void moniHolen ();
     void moniSetzen ();
+    std::string moniName();
     void standardGamma ();
   public:
       //! virtual aus icc_examin_ns::Beobachter::

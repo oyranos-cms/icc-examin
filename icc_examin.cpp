@@ -78,8 +78,8 @@ ICCexamin::ICCexamin ()
   //Fl::scheme("plastic");
 
   icc_betrachter = new ICCfltkBetrachter;
-  profile.init();
   io_ = new ICCexaminIO;
+  profile.init();
 
   _item = -1;
   _mft_item = -1;
@@ -541,6 +541,17 @@ ICCexamin::moniHolen ()
 
   fortschritt( 1.1 );
   DBG_PROG_ENDE
+}
+
+std::string
+ICCexamin::moniName ()
+{ DBG_PROG_START
+  //frei(false);
+  int x = icc_betrachter->vcgt->x() + icc_betrachter->vcgt->w()/2;
+  int y = icc_betrachter->vcgt->y() + icc_betrachter->vcgt->h()/2;
+
+  DBG_PROG_ENDE
+  return icc_oyranos.moni_name( x,y );
 }
 
 void
