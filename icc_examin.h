@@ -30,6 +30,8 @@
 #ifndef ICC_EXAMIN_H
 #define ICC_EXAMIN_H
 
+#include <string>
+
 //#include "icc_betrachter.h"
 class ICCfltkBetrachter;
 
@@ -40,7 +42,10 @@ class ICCexamin
                  ~ICCexamin ();
 
     void         start(int argc, char** argv);
+
     void         open (int interaktiv);
+    std::string  selected_tag (int item);
+
 
 //  private:
     ICCfltkBetrachter* icc_betrachter;
