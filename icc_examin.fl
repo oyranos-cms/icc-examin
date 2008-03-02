@@ -103,8 +103,8 @@ Function {} {open C return_type int
   fullscreen = false;
   inspekt_topline = 0;} {}
   Fl_Window ueber {
-    label {Über ICC examin} open selected
-    xywh {575 160 366 241} type Double resizable
+    label {Über ICC examin} open
+    xywh {580 181 366 241} type Double resizable
     code0 {o->hide();} non_modal visible
   } {
     Fl_Group {} {open
@@ -121,9 +121,11 @@ Function {} {open C return_type int
     }
   }
   Fl_Window details {
-    label {ICC Details} open
-    xywh {842 367 385 520} type Double box NO_BOX color 53
+    label {ICC Details} open selected
+    xywh {847 388 385 520} type Double box NO_BOX color 53
+    code0 {filename_alt = ".";}
     code1 {DBG_PROG
+
     if (argc>1) {
 
       if (argc>1) {
@@ -626,7 +628,7 @@ class TagTexts {: {public Fl_Hold_Browser}
   }
 } 
 
-class TagDrawings {: {public Fl_Widget}
+class TagDrawings {open : {public Fl_Widget}
 } {
   decl {int X; int Y; int W; int H; std::vector<std::string>texte; std::vector<double>punkte; std::vector<std::vector<double> >kurven;} {}
   decl {int wiederholen;} {public
@@ -638,7 +640,7 @@ class TagDrawings {: {public Fl_Widget}
     code {// Kurven oder Punkte malen
   DBG_PROG_S( punkte.size() << "/" << kurven.size() <<" "<< texte.size() )
 
-  DBG_PROG_V( wiederholen )
+  //DBG_PROG_V( wiederholen )
 
   if (punkte.size() >= 3) {
     if (wiederholen) {

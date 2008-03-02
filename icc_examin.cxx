@@ -334,7 +334,9 @@ int main(int argc, char **argv) {
       }
       o->end();
     }
+    filename_alt = ".";
     DBG_PROG
+
     if (argc>1) {
 
       if (argc>1) {
@@ -652,7 +654,7 @@ void TagDrawings::draw() {
   // Kurven oder Punkte malen
   DBG_PROG_S( punkte.size() << "/" << kurven.size() <<" "<< texte.size() )
 
-  DBG_PROG_V( wiederholen )
+  //DBG_PROG_V( wiederholen )
 
   if (punkte.size() >= 3) {
     if (wiederholen) {

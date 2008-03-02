@@ -164,11 +164,11 @@ Profilierer::RGB_Gamma_anpassen (std::vector<std::map<double,XYZ> > tonwertskale
 
   kurveTag->base.sig = (icTagTypeSignature)icValue( icSigCurveType );
   // Werte eintragen
-  kurveTag->curve.count = icValue( tonwertskalen[0].size() );
+  kurveTag->curve.count = icValue( (icUInt32Number)tonwertskalen[0].size() );
   ic_tag.size = icValue ((icUInt32Number)k_size);
 
   if (vcgt) {
-    vcgt_tag.size= icValue ((icUInt32Number)18 + 2 * tonwertskalen[0].size()*3);
+    vcgt_tag.size= icValue ((icUInt32Number)(18 + 2*tonwertskalen[0].size()*3));
     vcgt_tag.sig = icValue ((icTagSignature)1986226036);
     v_size = 18 + sizeof (icUInt16Number) * 3 * tonwertskalen[0].size();
     vcgtTag = (VCGT_Tag*)calloc (sizeof (char), v_size);

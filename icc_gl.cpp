@@ -50,7 +50,7 @@ int     Rotating = 0;
 
 
 GL_Ansicht::GL_Ansicht(int X,int Y,int W,int H) : Fl_Group(X,Y,W,H)
-{ DBG_PROG_V( first )
+{ DBG_PROG_START
   first = true;
   MenueKanalEintraege = 0;
   Punktform = MENU_WUERFEL;
