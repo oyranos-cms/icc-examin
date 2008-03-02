@@ -324,6 +324,10 @@ clean:
 	$(RM) mkdepend config config.h
 	$(RM) $(OBJECTS) $(CLIB_OBJECTS) $(TARGET) \
 	$(LIBSO) $(LIBSONAME) $(LIBSONAMEFULL)
+	for ling in $(LINGUAS); do \
+	  test -f po/$${ling}.gmo \
+        && $(RM) po/$${ling}.gmo; \
+	done;
 
 config:
 	configure.sh
