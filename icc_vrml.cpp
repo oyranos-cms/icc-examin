@@ -60,7 +60,7 @@ erase_file (const char *file)
 
 
 std::string
-icc_create_vrml( const char* p, int size )
+icc_create_vrml( const char* p, int size, int intent )
 {
   DBG_PROG_START
   std::string vrml;
@@ -68,7 +68,7 @@ icc_create_vrml( const char* p, int size )
   if (!p || !size)
     return vrml;
 
-  std::stringstream profil_temp_name;
+  std::stringstream profil_temp_name, s;
   if(getenv("TMPDIR"))
     profil_temp_name << getenv("TMPDIR") << "/oyranos_" << time(0) ;
   else
@@ -94,7 +94,19 @@ icc_create_vrml( const char* p, int size )
   icc_examin_ns::fortschritt(l);
   lp
   int ret;
-  sprintf(system_befehl,"iccgamut -n -w %s", ptn.c_str());
+  s.str("");
+  s << "iccgamut -n ";
+  if(intent == 0)
+    s << "-i p ";
+  else if(intent == 1)
+    s << "-i r ";
+  else if(intent == 2)
+    s << "-i s ";
+  else if(intent == 3)
+    s << "-i a ";
+  s << "-w " << ptn;
+  
+  sprintf(system_befehl,s.str().c_str());
   ret = system (system_befehl); lp DBG_PROG
   ptn = profil_temp_name.str(); ptn.append(".icc");
   erase_file (ptn.c_str());

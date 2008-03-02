@@ -53,7 +53,7 @@ class ICCheader {
     icHeader    header;
   public:
     const char* header_raw () const
-                  { DBG_PROG return /*cp_nchar (*/(char*)&header/*,
+                  { DBG_PROG return /*cp_nchar (*/(const char*)&header/*,
                     sizeof (icHeader))*/; }
     void        header_raw (void* h)
                   { DBG_PROG memcpy ((void*)&header, h, sizeof (icHeader)); }

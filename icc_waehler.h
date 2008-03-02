@@ -48,7 +48,7 @@
 class ICCwaehlerProfil : public Fl_Pack
 {
   Fl_Button *aktiv_knopf_;
-  void aktiv_knopf_cb_(int aktiv) {
+  void aktiv_knopf_cb_() {
                 if(aktiv_knopf_->value()) {DBG_PROG_START
                   aktivieren(true);
                   icc_examin->icc_betrachter->DD_histogram->dreiecks_netze[parent()->find(this)].aktiv = true;
@@ -63,7 +63,7 @@ class ICCwaehlerProfil : public Fl_Pack
   static void aktiv_knopf_cb_statisch_(Fl_Widget* w, void* data) {DBG_PROG_START
                 ICCwaehlerProfil* obj = dynamic_cast<ICCwaehlerProfil*>(w->parent());
                 if(obj) 
-                  obj->aktiv_knopf_cb_( (int)data );
+                  obj->aktiv_knopf_cb_();
                 else WARN_S( _("kein ICCwaehlerProfil??") )
                 if(!w) WARN_S( _("kein Fl_Widget??") )
                 DBG_PROG_ENDE
@@ -71,7 +71,7 @@ class ICCwaehlerProfil : public Fl_Pack
   Fl_Pack   *gruppe_;
   Fl_Output *name_;
   Fl_Value_Slider *transparenz_;
-  void transparenz_cb_(double wert) {
+  void transparenz_cb_() {
                 icc_examin->icc_betrachter->DD_histogram->dreiecks_netze[parent()->find(this)].transparenz = transparenz_->value();
                 icc_examin->icc_betrachter->DD_histogram->draw();
                 icc_examin->icc_betrachter->DD_histogram->flush();
@@ -79,10 +79,10 @@ class ICCwaehlerProfil : public Fl_Pack
   static void transparenz_cb_statisch_(Fl_Widget* w, void* data) {
                 ICCwaehlerProfil* obj = dynamic_cast<ICCwaehlerProfil*>(w->parent()->parent());
                 if(obj)
-                  obj->transparenz_cb_( *(double*)data );
+                  obj->transparenz_cb_();
               }
   Fl_Light_Button *grau_;
-  void grau_cb_(int aktiv) {
+  void grau_cb_() {
                 icc_examin->icc_betrachter->DD_histogram->dreiecks_netze[parent()->find(this)].grau = grau_->value();
                 icc_examin->icc_betrachter->DD_histogram->draw();
                 icc_examin->icc_betrachter->DD_histogram->flush();
@@ -90,7 +90,7 @@ class ICCwaehlerProfil : public Fl_Pack
   static void grau_cb_statisch_(Fl_Widget* w, void* data) {
                 ICCwaehlerProfil* obj = dynamic_cast<ICCwaehlerProfil*>(w->parent()->parent());
                 if(obj) 
-                  obj->grau_cb_( (int)data );
+                  obj->grau_cb_();
               }
   public:
   ICCwaehlerProfil(const char* name, double transparenz, 

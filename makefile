@@ -86,6 +86,9 @@ COMMON_CPPFILES = \
 	icc_cgats_filter.cpp \
 	icc_draw.cpp \
 	icc_examin.cpp \
+	icc_examin_histogram.cpp \
+	icc_examin_io.cpp \
+	icc_examin_tagwahl.cpp \
 	icc_fenster.cpp \
 	icc_formeln.cpp \
 	icc_gl.cpp \

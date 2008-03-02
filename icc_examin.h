@@ -73,7 +73,8 @@ class ICCexamin : public icc_examin_ns::Beobachter
     int  _zeig_prueftabelle,
          histogram_angezeigt_;
     int  status_;
-    bool frei_;
+    bool frei_,                  // wird nicht von weiterem Prozess benutzt
+         histogram_modus_;       // profile.profil() enthält ncl2 Schmuckfarben
     ICCwaehler *icc_waehler_;
   public:
     int  laeuft ()  { return status_; }          // kann bei >1 genutzt werden
@@ -93,12 +94,15 @@ class ICCexamin : public icc_examin_ns::Beobachter
 
     void histogram();
     void histogram(int erneuere_nummer_in_profile_kette);
+    bool histogramModus( ) { return histogram_modus_; }
+    void histogramModus( int profil );
     void messwertLese  ( int n,
                          std::vector<double> & p,
                          std::vector<float>  & f,
                          std::vector<std::string> & namen);
+    void setzMesswerte ( );
     void netzLese      ( int n,
-                         std::vector<ICCnetz> & netz);
+                         std::vector<ICCnetz> * netz);
     void farbenLese    ( int n,
                          std::vector<double> & p,
                          std::vector<float>  & f);

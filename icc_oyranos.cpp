@@ -324,13 +324,13 @@ Oyranos::setzeMonitorProfil (const char* profil_name )
 
 #include "icc_vrml.h"
 std::vector<ICCnetz>
-Oyranos::netzVonProfil (const Speicher & p)
+Oyranos::netzVonProfil (const Speicher & p, int intent)
 {
   DBG_PROG_START
   std::string vrml;
   const char* b = p;
   DBG_PROG_V( (int*)b )
-  vrml = icc_create_vrml ( p,p.size() );
+  vrml = icc_create_vrml ( p,p.size(), intent );
   std::vector<ICCnetz> netz = extrahiereNetzAusVRML (vrml);
   DBG_PROG_ENDE
   return netz;

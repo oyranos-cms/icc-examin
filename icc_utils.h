@@ -51,10 +51,12 @@ extern int icc_debug;
  *   2: DBG_PROG
  *   3: DBG_MEM
  *   4: Datei E/A
+ *   9: DBG_PROG_START & DBG_PROG_ENDE
  *
  *   [1,2,...,9]    diese und alle kleineren Kategorien
  *   10+[1,2,...,9] einzig diese Kategorie , z.B. ICCEXAMIN_DEBUG=13 wählt alle
  *                                                Speicherinformationen aus
+ *
  */
 
 
@@ -73,6 +75,7 @@ extern int icc_debug;
 
 #ifdef DEBUG
 #define DBG_BED(n) if (icc_debug >= n && icc_debug < 10 || icc_debug == 1##n)
+#define DBG_BED2(n1,n2) if (icc_debug >= n1 && icc_debug < 10 || icc_debug == 1##n1 || icc_debug >= n2 && icc_debug < 10 || icc_debug == 1##n2 )
 #define DBG_NUM        DBG_BED(1) DBG
 #define DBG_NUM_S(txt) DBG_BED(1) DBG_S(txt)
 #define DBG_NUM_V(txt) DBG_BED(1) DBG_V(txt)
@@ -83,8 +86,8 @@ extern int icc_debug;
 #endif
 #ifdef DEBUG
 #define DBG_PROG        DBG_BED(2) DBG
-#define DBG_PROG_START  DBG_BED(2) DBG_START
-#define DBG_PROG_ENDE   DBG_BED(2) DBG_ENDE
+#define DBG_PROG_START  DBG_BED2(2,9) DBG_START
+#define DBG_PROG_ENDE   DBG_BED2(2,9) DBG_ENDE
 #define DBG_PROG_S(txt) DBG_BED(2) DBG_S(txt)
 #define DBG_PROG_V(txt) DBG_BED(2) DBG_V(txt)
 #else

@@ -115,14 +115,13 @@ ICCkette::oeffnen (std::string dateiname, int pos)
     aktiv_.insert (aktiv_.begin()+pos, true);
     profil_mzeit_.insert (profil_mzeit_.begin()+pos,
                             holeDateiModifikationsZeit( dateiname.c_str() ));
-    /*Modell::*/benachrichtigen( pos );
   } else {
     profile_.resize(profile_.size()+1);
     profile_[profile_.size()-1].load(dateiname.c_str());
     profilnamen_.push_back( dateiname );
     aktiv_.push_back(true);
     profil_mzeit_.push_back(holeDateiModifikationsZeit( dateiname.c_str() ));
-    /*Modell::*/benachrichtigen( profile_.size()-1 );
+    pos = profile_.size()-1;
   }
 
 
@@ -132,6 +131,8 @@ ICCkette::oeffnen (std::string dateiname, int pos)
   } else { DBG_PROG
     icc_examin_ns::status_info(_("Datei nicht geladen!"));
   }
+
+  /*Modell::*/benachrichtigen( pos );
 
   DBG_PROG_ENDE
   return erfolgreich;

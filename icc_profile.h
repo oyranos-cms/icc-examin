@@ -205,6 +205,8 @@ class ICCprofile {
     //void                cmm      (const char* s) {DBG_PROG header.cmmName (s); }
     //int                 version  ()        {DBG_PROG return (int) header.version(); }
     //const char*         creator  ()        {DBG_PROG return header.creatorName(); }
+    int                 intent   ()     {return icValue(((const icHeader*)header
+                                           .header_raw())-> renderingIntent ); }
 
     std::string         printHeader     ();
     std::string         printLongHeader ();

@@ -1,4 +1,8 @@
 
+2005-04-01
+	* neu: aktualisieren der Ansichten nach ICCkette::benachrichtigen ->
+		   setzMesswerte
+
 2005-03-31
 	* neu: agviewer ist nun glut frei
 	* neu: profile werden in einem eigenen Fenster angezeigt

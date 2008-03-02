@@ -217,6 +217,8 @@ GL_Ansicht::draw()
 
   zeichnen();
 
+  DBG_PROG_V( dreiecks_netze.size() )
+
   DBG_PROG_ENDE
 }
 
