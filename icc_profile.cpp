@@ -1006,7 +1006,7 @@ ICCtag::getText                     (MftChain typ)
 { DBG_PROG_START
   std::vector<std::string> texte;
   std::vector<double> kanaele;
-  char n[4];
+  char n[6];
 
 
   // TODO: prüfen auf icColorSpaceSignature <-> Kanalanzahl
@@ -1033,12 +1033,14 @@ ICCtag::getText                     (MftChain typ)
   if (kanaele.size()
    && (texte.size() < (unsigned int)kanaele[0]))
   {
+    // falls "keine Farbe" zu erwarten währe
            if (texte.size() == 1)
            {
              sprintf(n,"%d",1);
              texte[0] = _("Farbe");
              texte[0] = texte[0] + n;
            }
+    // Auffüllen
            for (int i = texte.size(); i < kanaele[0]; i++)
            {
              sprintf(n,"%d",i+1);
@@ -1467,6 +1469,55 @@ ICCprofile::hasTagName            (std::string name)
   }
   DBG_PROG_ENDE
   return false;
+}
+
+int
+ICCprofile::hasCLUT(void)
+{ DBG_PROG_START
+  int has_LUTS = false;
+
+       if(this->hasTagName("A2B0"))
+    has_LUTS = true;
+  else if(this->hasTagName("A2B1"))
+    has_LUTS = true;
+  else if(this->hasTagName("A2B2"))
+    has_LUTS = true;
+  else if(this->hasTagName("B2A0"))
+    has_LUTS = true;
+  else if(this->hasTagName("B2A1"))
+    has_LUTS = true;
+  else if(this->hasTagName("B2A2"))
+    has_LUTS = true;
+ 
+  DBG_PROG_ENDE
+  return has_LUTS;
+}
+
+int
+ICCprofile::getColourChannelsCount(void)
+{ DBG_PROG_START
+  int channels = 0;
+       if(this->hasTagName("A2B0"))
+    channels = (int)tags[getTagByName("A2B0")].getNumbers(ICCtag::TABLE_IN)[0];
+  else if(this->hasTagName("A2B1"))
+    channels = (int)tags[getTagByName("A2B1")].getNumbers(ICCtag::TABLE_IN)[0];
+  else if(this->hasTagName("A2B2"))
+    channels = (int)tags[getTagByName("A2B2")].getNumbers(ICCtag::TABLE_IN)[0];
+  else if(this->hasTagName("B2A0"))
+    channels = (int)tags[getTagByName("B2A0")].getNumbers(ICCtag::TABLE_OUT)[0];
+  else if(this->hasTagName("B2A1"))
+    channels = (int)tags[getTagByName("B2A1")].getNumbers(ICCtag::TABLE_OUT)[0];
+  else if(this->hasTagName("B2A2"))
+    channels = (int)tags[getTagByName("B2A2")].getNumbers(ICCtag::TABLE_OUT)[0];
+  else if(this->hasTagName("kTRC"))
+    channels = 1;
+  else if(this->hasTagName("rTRC") &&
+          this->hasTagName("gTRC") &&
+          this->hasTagName("bTRC"))
+    channels = 3;
+ 
+  DBG_PROG_ENDE
+  return channels;
 }
 
 std::vector<double>

@@ -123,7 +123,13 @@ ICCmeasurement::init (void)
   if (_RGB_MessFarben.size() != 0)
     DBG_NUM_V( _RGB_MessFarben.size() )
 
-  init_umrechnen(); DBG
+  if (_profil)
+  {
+    _channels = _profil->getColourChannelsCount();
+    _isMatrix = !(_profil->hasCLUT());
+  }
+
+  init_umrechnen();
   DBG_PROG_ENDE
 }
 
@@ -137,7 +143,10 @@ ICCmeasurement::ascii_korrigieren               (void)
       ptr = strchr(_data, 13);
       if (ptr > 0) {
         if (*(ptr+1) == '\n')
-          *ptr = ' ';
+        {
+          *ptr = '\n';
+          *(ptr+1) = ' ';
+        }
         else
           *ptr = '\n';
       }
@@ -146,11 +155,19 @@ ICCmeasurement::ascii_korrigieren               (void)
   // char* -> std::string
   std::string data (_data, 0, _size);
 
-  // reparieren: Sample_Name , SampleID, "" , LF FF
+  // reparieren: Sample_Name , SampleID, ""
   std::string::size_type pos=0;
   std::string::size_type ende;
   while ((pos = data.find ("SampleID", pos)) != std::string::npos) {
       data.replace (pos, 8, "SAMPLE_ID"); DBG_NUM_S( "SampleID ersetzt" )
+  }
+  pos = 0;
+  while ((pos = data.find ("Sample_ID", pos)) != std::string::npos) {
+      data.replace (pos, strlen("Sample_ID"), "SAMPLE_NAME"); DBG_NUM_S( "Sample_ID ersetzt" )
+  }
+  pos = 0;
+  while ((pos = data.find ("SampleName", pos)) != std::string::npos) {
+      data.replace (pos, strlen("SampleName"), "SAMPLE_NAME"); DBG_NUM_S( "SampleName ersetzt" )
   }
   pos = 0;
   while ((pos = data.find ("Sample_Name", pos)) != std::string::npos) {
@@ -199,7 +216,8 @@ ICCmeasurement::ascii_korrigieren               (void)
     }
   }
   // NUMBER_OF_FIELDS reparieren
-  if ((data.find ("NUMBER_OF_FIELDS", 0)) == std::string::npos) {
+  if ((data.find ("NUMBER_OF_FIELDS", 0)) == std::string::npos)
+  {
     pos = data.find ("BEGIN_DATA_FORMAT\n", 0); DBG_NUM_S (pos)
     count = 0; pos++;
     if (data.find ("SAMPLE_ID", pos) != std::string::npos) count ++;
@@ -246,7 +264,7 @@ ICCmeasurement::ascii_korrigieren               (void)
     if (data.find ("CHI_SQD_PAR", pos) != std::string::npos) count ++;
     static char zahl[64];
     pos = data.find ("BEGIN_DATA_FORMAT\n", 0);
-    sprintf (&zahl[0], "NUMBER_OF_FIELDS %d\n", count);
+    sprintf (&zahl[0], "NUMBER_OF_FIELDS %d\n", count); DBG_PROG_V( zahl )
     data.insert (pos, &zahl[0]);
     DBG_NUM_S( "NUMBER_OF_FIELDS " << count << " eingefügt" )
   }
@@ -282,7 +300,7 @@ ICCmeasurement::ascii_korrigieren               (void)
       data.insert (0, "ICCEXAM\n"); DBG_NUM_S( "Beschreibung eingeführt" )
   }
 
-  //DBG_NUM_S (data)
+  DBG_NUM_S (data)
   DBG_PROG_ENDE
   return data;
 }
@@ -425,7 +443,7 @@ ICCmeasurement::lcms_parse                   (void)
   }
   if (has_CMYK) { DBG_PROG // keine Umrechnung nötig
     _CMYK_Satz.resize(_nFelder);
-    for (int i = 0; i < _nFelder; i++) { //cout << _Feldnamen[i] << " " << i << " "; DBG
+    for (int i = 0; i < _nFelder; i++) {
         _CMYK_Satz[i].C = cmsIT8GetDataDbl (_lcms_it8, _Feldnamen[i].c_str(),
                                            "CMYK_C") /100.0;
         _CMYK_Satz[i].M = cmsIT8GetDataDbl (_lcms_it8, _Feldnamen[i].c_str(),
@@ -508,14 +526,16 @@ ICCmeasurement::init_umrechnen                     (void)
   }
 
 
-  if (_RGB_measurement && _XYZ_measurement) {DBG_PROG // keine Umrechnung nötig
-    cmsHTRANSFORM hRGBtoSRGB, hXYZtoSRGB, hRGBtoXYZ, hXYZtoLab, hRGBtoLab;
-    cmsHPROFILE hRGB, hsRGB, hLab, hXYZ;
-    hRGB = cmsOpenProfileFromMem (_profil->_data, _profil->_size);
-    if (getColorSpaceName(_profil->header.colorSpace()) != "Rgb") {
+  if ((_RGB_measurement ||
+       _CMYK_measurement) && _XYZ_measurement) {// keine Umrechnung nötig
+    cmsHTRANSFORM hCOLOURtoSRGB, hXYZtoSRGB, hCOLOURtoXYZ, hXYZtoLab, hCOLOURtoLab;
+    cmsHPROFILE hCOLOUR, hsRGB, hLab, hXYZ;
+    hCOLOUR = cmsOpenProfileFromMem (_profil->_data, _profil->_size);
+    if (getColorSpaceName(_profil->header.colorSpace()) != "Rgb"
+     || getColorSpaceName(_profil->header.colorSpace()) != "Cmyk") {
       WARN_S("unterschiedliche Messdaten und Profilfarbraum ") 
-      this->clear();
-      return;
+      //this->clear();
+      //return;
     }
 
     hsRGB = cmsCreate_sRGBProfile ();
@@ -526,13 +546,14 @@ ICCmeasurement::init_umrechnen                     (void)
     #else
     #define BW_COMP 0
     #endif
+    #define TYPE_COLOUR_DBL (COLORSPACE_SH(PT_ANY)|CHANNELS_SH(_channels)|BYTES_SH(0))
     // Wie sieht das Profil die Messfarbe? -> XYZ
-    hRGBtoXYZ =  cmsCreateTransform (hRGB, TYPE_RGB_DBL,
+    hCOLOURtoXYZ =  cmsCreateTransform (hCOLOUR, TYPE_COLOUR_DBL,
                                     hXYZ, TYPE_XYZ_DBL,
                                     INTENT_ABSOLUTE_COLORIMETRIC,
-                                    PRECALC | BW_COMP);
+                                    PRECALC|BW_COMP);
     // Wie sieht das Profil die Messfarbe? -> Lab
-    hRGBtoLab =  cmsCreateTransform (hRGB, TYPE_RGB_DBL,
+    hCOLOURtoLab =  cmsCreateTransform (hCOLOUR, TYPE_COLOUR_DBL,
                                     hLab, TYPE_Lab_DBL,
                                     INTENT_ABSOLUTE_COLORIMETRIC,
                                     PRECALC|BW_COMP);
@@ -542,7 +563,7 @@ ICCmeasurement::init_umrechnen                     (void)
                                     INTENT_ABSOLUTE_COLORIMETRIC,
                                     PRECALC|BW_COMP);
     // Wie sieht das Profil die Messfarbe? -> Bildschirmdarstellung
-    hRGBtoSRGB = cmsCreateTransform (hRGB, TYPE_RGB_DBL,
+    hCOLOURtoSRGB = cmsCreateTransform (hCOLOUR, TYPE_COLOUR_DBL,
                                     hsRGB, TYPE_RGB_DBL,
                                     INTENT_ABSOLUTE_COLORIMETRIC,
                                     PRECALC|BW_COMP);
@@ -551,7 +572,7 @@ ICCmeasurement::init_umrechnen                     (void)
                                     hsRGB, TYPE_RGB_DBL,
                                     INTENT_ABSOLUTE_COLORIMETRIC,
                                     PRECALC|BW_COMP);
-    double RGB[3], sRGB[3], XYZ[3], Lab[3];
+    double Farbe[_channels], RGB[3], XYZ[3], Lab[3];
     bool vcgt = false;
     std::vector<std::vector<double> > vcgt_kurven;
     //TODO
@@ -569,46 +590,53 @@ ICCmeasurement::init_umrechnen                     (void)
     _Lab_Differenz.resize(_nFelder); DBG_V( _Lab_Differenz.size() )
     _DE00_Differenz.resize(_nFelder);
     for (int i = 0; i < _nFelder; i++) {
-        // Messfarben auf Weiss und Schwarz addaptiert
-        XYZ[0] = (_XYZ_Satz[i].X-min[0])/(max[0]-min[0])*WP[0];
-        XYZ[1] = (_XYZ_Satz[i].Y-min[1])/(max[1]-min[1])*WP[1];
-        XYZ[2] = (_XYZ_Satz[i].Z-min[2])/(max[2]-min[2])*WP[2];
+        if (_isMatrix) {
+          // Messfarben auf Weiss und Schwarz addaptiert
+          XYZ[0] = (_XYZ_Satz[i].X-min[0])/(max[0]-min[0])*WP[0];
+          XYZ[1] = (_XYZ_Satz[i].Y-min[1])/(max[1]-min[1])*WP[1];
+          XYZ[2] = (_XYZ_Satz[i].Z-min[2])/(max[2]-min[2])*WP[2];
+        } else {
+          XYZ[0] = _XYZ_Satz[i].X;
+          XYZ[1] = _XYZ_Satz[i].Y;
+          XYZ[2] = _XYZ_Satz[i].Z;
+        }
         cmsDoTransform (hXYZtoLab, &XYZ[0], &Lab[0], 1);
         _Lab_Satz[i].L = Lab[0];
         _Lab_Satz[i].a = Lab[1];
         _Lab_Satz[i].b = Lab[2];
 
-        cmsDoTransform (hXYZtoSRGB, &XYZ[0], &sRGB[0], 1);
-        _RGB_MessFarben[i].R = sRGB[0];
-        _RGB_MessFarben[i].G = sRGB[1];
-        _RGB_MessFarben[i].B = sRGB[2];
+        cmsDoTransform (hXYZtoSRGB, &XYZ[0], &RGB[0], 1);
+        _RGB_MessFarben[i].R = RGB[0];
+        _RGB_MessFarben[i].G = RGB[1];
+        _RGB_MessFarben[i].B = RGB[2];
 
         // Profilfarben
-        if (1/*!vcgt*/) {
-          RGB[0] = _RGB_Satz[i].R;
-          RGB[1] = _RGB_Satz[i].G;
-          RGB[2] = _RGB_Satz[i].B;
-        } else { // TODO für parametrische Kurven
-          DBG_NUM_V( _RGB_Satz[i].R <<" "<< vcgt_kurven[0][(int)(_RGB_Satz[i].R*255.0+0.5)] )
-          // TODO: wiese gibt es so grosse dE Abweichungen mit vcgt Tag?
-          RGB[0] = vcgt_kurven[0][(int)(_RGB_Satz[i].R*255.0+0.5)];
-          RGB[1] = vcgt_kurven[1][(int)(_RGB_Satz[i].G*255.0+0.5)];
-          RGB[2] = vcgt_kurven[2][(int)(_RGB_Satz[i].B*255.0+0.5)];
+        if (_RGB_measurement) {
+          //for (int n = 0; n < _channels; n++)
+          Farbe[0] = _RGB_Satz[i].R*100.0; DBG_PROG_V( _RGB_Satz[i].R )
+          Farbe[1] = _RGB_Satz[i].G*100.0;
+          Farbe[2] = _RGB_Satz[i].B*100.0;
+        } else {
+          Farbe[0] = _CMYK_Satz[i].C*100.0; DBG_PROG_V( _CMYK_Satz[i].C )
+          Farbe[1] = _CMYK_Satz[i].M*100.0;
+          Farbe[2] = _CMYK_Satz[i].Y*100.0;
+          Farbe[3] = _CMYK_Satz[i].K*100.0;
         }
-        cmsDoTransform (hRGBtoXYZ, &RGB[0], &XYZ[0], 1);
-        _XYZ_Ergebnis[i].X = XYZ[0];
+
+        cmsDoTransform (hCOLOURtoXYZ, &Farbe[0], &XYZ[0], 1);
+        _XYZ_Ergebnis[i].X = XYZ[0]; DBG_PROG_V( _XYZ_Ergebnis[i].Y )
         _XYZ_Ergebnis[i].Y = XYZ[1];
         _XYZ_Ergebnis[i].Z = XYZ[2];
 
-        cmsDoTransform (hRGBtoLab, &RGB[0], &Lab[0], 1);
+        cmsDoTransform (hCOLOURtoLab, &Farbe[0], &Lab[0], 1);
         _Lab_Ergebnis[i].L = Lab[0];
         _Lab_Ergebnis[i].a = Lab[1];
         _Lab_Ergebnis[i].b = Lab[2];
         
-        cmsDoTransform (hRGBtoSRGB, &RGB[0], &sRGB[0], 1);
-        _RGB_ProfilFarben[i].R = sRGB[0];
-        _RGB_ProfilFarben[i].G = sRGB[1];
-        _RGB_ProfilFarben[i].B = sRGB[2];
+        cmsDoTransform (hCOLOURtoSRGB, &Farbe[0], &RGB[0], 1);
+        _RGB_ProfilFarben[i].R = RGB[0];
+        _RGB_ProfilFarben[i].G = RGB[1];
+        _RGB_ProfilFarben[i].B = RGB[2];
 
         // geometrische Farbortdifferenz - dE CIE*Lab
         _Lab_Differenz[i] = HYP3( _Lab_Ergebnis[i].L - _Lab_Satz[i].L ,
@@ -625,23 +653,23 @@ ICCmeasurement::init_umrechnen                     (void)
         if (_DE00_Differenz_min > _DE00_Differenz[i])
           _DE00_Differenz_min = _DE00_Differenz[i];
     }
-    cmsDeleteTransform (hRGBtoSRGB);
+    cmsDeleteTransform (hCOLOURtoSRGB);
     cmsDeleteTransform (hXYZtoSRGB);
-    cmsDeleteTransform (hRGBtoXYZ);
+    cmsDeleteTransform (hCOLOURtoXYZ);
     cmsDeleteTransform (hXYZtoLab);
-    cmsDeleteTransform (hRGBtoLab);
-    cmsCloseProfile (hRGB);
+    cmsDeleteTransform (hCOLOURtoLab);
+    cmsCloseProfile (hCOLOUR);
     cmsCloseProfile (hsRGB);
     cmsCloseProfile (hLab);
     cmsCloseProfile (hXYZ);
-  } else
-  if (_CMYK_measurement && _XYZ_measurement) { DBG // keine Umrechnung nötig
+  }/* else
+  if (_CMYK_measurement && _XYZ_measurement) { // keine Umrechnung nötig
     cmsHTRANSFORM hCMYKtoSRGB, hXYZtoSRGB, hCMYKtoXYZ, hXYZtoLab, hCMYKtoLab;
     cmsHPROFILE hCMYK, hsRGB, hLab, hXYZ;
     hCMYK = cmsOpenProfileFromMem (_profil->_data, _profil->_size);
     if (getColorSpaceName(_profil->header.colorSpace()) != "Cmyk") {
       WARN_S("unterschiedliche Messdaten und Profilfarbraum ")
-      return;
+      //return;
     }
 
     hsRGB = cmsCreate_sRGBProfile ();
@@ -743,7 +771,7 @@ ICCmeasurement::init_umrechnen                     (void)
     cmsCloseProfile (hsRGB);
     cmsCloseProfile (hLab);
     cmsCloseProfile (hXYZ);
-  } else
+  }*/ else
     WARN_S("keine RGB/CMYK und XYZ Messdaten gefunden")
   for (unsigned int i = 0; i < _Lab_Differenz.size(); i++) {
     _Lab_Differenz_Durchschnitt += _Lab_Differenz[i];
@@ -756,6 +784,7 @@ ICCmeasurement::init_umrechnen                     (void)
   DBG_V( _Lab_Satz.size() )
   DBG_V( _Lab_Ergebnis.size() )
   DBG_V( _Lab_Differenz.size() )
+  DBG_V( _RGB_Satz.size() )
   DBG_V( _CMYK_Satz.size() )
   DBG_V( _RGB_MessFarben.size() )
   DBG_PROG_ENDE
@@ -775,7 +804,7 @@ ICCmeasurement::getHtmlReport                     (void)
   if (_RGB_MessFarben.size() == 0)
     init ();
 
-  DBG
+
   if (_reportTabelle.size() == 0)
     _reportTabelle = getText();
   std::vector<int> layout = getLayout(); DBG_PROG
@@ -804,7 +833,7 @@ ICCmeasurement::getHtmlReport                     (void)
 
   html <<       "<table align=left cellpadding=\"2\" cellspacing=\"0\" border=\"0\" width=\"90%\" bgcolor=\"" << SF << "\">\n";
   html <<       "<thead> \n";
-  html <<       "  <tr> \n"; DBG
+  html <<       "  <tr> \n";
   // Tabellenkopf
   int s = 0;           // Spalten
   int f = 0;           // Spalten für Farben

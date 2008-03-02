@@ -271,6 +271,8 @@ class ICCmeasurement {
                              }
 
                              _nFelder = m._nFelder;
+                             _channels = m._channels;
+                             _isMatrix = m._isMatrix;
                              _profil = m._profil;
                              _XYZ_measurement = m._XYZ_measurement;
                              _RGB_measurement = m._RGB_measurement;
@@ -305,6 +307,8 @@ class ICCmeasurement {
 
                             _nFelder = 0;
 
+                            _channels = 0;
+                            _isMatrix = 0;
                             _profil = NULL;
                             _XYZ_measurement = false;
                             _RGB_measurement = false;
@@ -364,9 +368,12 @@ class ICCmeasurement {
     int                 _size;
     char*               _data;
 
+    ICCprofile*         _profil;
+    int                 _channels;
+    int                 _isMatrix;
+
     int                 _nFelder;
 
-    ICCprofile*         _profil;
     bool                _XYZ_measurement;
     bool                _RGB_measurement;
     bool                _CMYK_measurement;
@@ -492,6 +499,8 @@ class ICCprofile {
     // Profil Infos
     char*               getProfileInfo  ();
     std::vector<double> getWhitePkt   (void);
+    int                 getColourChannelsCount ();
+    int                 hasCLUT ();
 
   public: // Datei I/O
     int                 checkProfileDevice (char* type,

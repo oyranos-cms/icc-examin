@@ -1,10 +1,22 @@
 
+2004-12-6
+	* neu: CLUT Koordinaten besser positioniert 
+	* fix: CLUT A2B nicht mehr dargestellt
+	* neu: CLUT B2A alle Kanäle wählbar
+	* und: bessere Beschriftung namenloser Farbkanäle
+	* und: RGB und CMYK Messdaten gemeinsam berechnet
+	* neu: Graudarstellung begonnen, noch fehlerhaft
+	* neu: Funktionen für Farbkanalanzahl und Test ob CLUT vorhanden
+	* und: Optimierung für die Entwicklung ausgeschaltet
+	* und: nicht benötigte Bibliotheken aus make entfernt 
+
 2004-12-5
 	* bug: Weisspunkt für RGB Messdaten berücksichtigt
 	* bug: Dunkelablgleich für RGB Messdaten
+	* bug: GL Fenster wird nicht mehr bei Tagwechsel auf 1x1 verkleinert
 
 2004-12-1
-	* and: DEBUG geändert
+	* und: DEBUG geändert
 	* bug: Hellabgleich XYZ Messdaten
 	* bug: A2B versus B2A Tabellen besser verstanden
 

@@ -1,6 +1,6 @@
 CC=c++
 MAKEDEPEND	= /usr/X11R6//bin/makedepend -Y
-OPTS=-Wall -g -O2
+OPTS=-Wall -g #-O2
 
 prefix		= /opt/local
 exec_prefix	= ${prefix}
