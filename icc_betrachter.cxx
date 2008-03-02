@@ -273,7 +273,7 @@ inline void ICCfltkBetrachter::cb_menueintrag_huelle_i(Fl_Menu_* o, void*) {
   DBG_PROG_V( widget_oben )
   DBG_PROG_V( menueintrag_3D->value() )
   DBG_PROG_V( menueintrag_huelle->value() )
-  icc_examin->neuzeichnen(icc_examin->icc_betrachter->DD_farbraum);
+  icc_examin->icc_betrachterNeuzeichnen(icc_examin->icc_betrachter->DD_farbraum);
   DBG_PROG_ENDE;
 }
 void ICCfltkBetrachter::cb_menueintrag_huelle(Fl_Menu_* o, void* v) {
@@ -316,7 +316,7 @@ inline void ICCfltkBetrachter::cb_menueintrag_3D_i(Fl_Menu_* o, void*) {
   DBG_PROG_V( widget_oben )
   DBG_PROG_V( menueintrag_3D->value() )
   DBG_PROG_V( menueintrag_huelle->value() )
-  icc_examin->neuzeichnen(icc_examin->icc_betrachter->DD_farbraum);
+  icc_examin->icc_betrachterNeuzeichnen(icc_examin->icc_betrachter->DD_farbraum);
   DBG_PROG_ENDE;
 }
 void ICCfltkBetrachter::cb_menueintrag_3D(Fl_Menu_* o, void* v) {
@@ -338,7 +338,7 @@ inline void ICCfltkBetrachter::cb_menueintrag_inspekt_i(Fl_Menu_* o, void*) {
     widget_oben = WID_0;
     tag_text->inspekt_topline = inspekt_html->topline();
   }
-  icc_examin->neuzeichnen(inspekt_html);
+  icc_examin->icc_betrachterNeuzeichnen(inspekt_html);
 }
 void ICCfltkBetrachter::cb_menueintrag_inspekt(Fl_Menu_* o, void* v) {
   ((ICCfltkBetrachter*)(o->parent()->parent()->user_data()))->cb_menueintrag_inspekt_i(o,v);

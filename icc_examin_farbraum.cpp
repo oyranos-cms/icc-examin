@@ -169,8 +169,8 @@ ICCexamin::farbenLese (int n,
     // ncl2 Farben -> Bildschirm
     unsigned int n_farben = p.size()/3;
     double *lab = new double [n_farben*3],
-           *rgb;
-    for(unsigned i = 1; i <= n_farben*3; ++i)
+           *rgb=0;
+    for(unsigned i = 1; i < n_farben*3; ++i)
       lab[i] = p[i];
     rgb = icc_oyranos. wandelLabNachBildschirmFarben(lab, n_farben,
                                  icc_examin->intent(),
@@ -196,7 +196,6 @@ void
 ICCexamin::farbraum (int n)
 {
   DBG_PROG_START
-  frei_ = false;
 
   std::vector<std::string> texte, namen;
 
@@ -211,6 +210,7 @@ ICCexamin::farbraum (int n)
 
   // Messwerte
   bool messwerte;
+  FREI_(false);
   if(profile.size() > n &&
      profile.aktuell() == n &&
      profile[n]->hasMeasurement() &&
@@ -220,6 +220,7 @@ ICCexamin::farbraum (int n)
       messwertLese(n, p,f,namen);
       messwerte = true;
     }
+  FREI_(true);
 
   bool ncl2_profil = profile[n]->hasTagName("ncl2");
 
@@ -287,7 +288,7 @@ ICCexamin::farbraum (int n)
     DBG_PROG_V( icc_betrachter->DD_farbraum->dreiecks_netze[n].name )
   }
 
-  frei_ = true;
+  FREI_(true);
   DBG_PROG_ENDE
 }
 
@@ -295,14 +296,20 @@ void
 ICCexamin::farbraum ()
 {
   DBG_PROG_START
-  frei_ = false;
+  DBG_V( frei_ )
+  FREI_(false);
 
   if((int)icc_betrachter->DD_farbraum -> dreiecks_netze.size() > profile.size())
     icc_betrachter->DD_farbraum -> dreiecks_netze.resize(profile.size());
   DBG_PROG_V( icc_betrachter->DD_farbraum -> dreiecks_netze.size() )
+  FREI_(true);
 
   for(int i = 0; i < profile.size(); ++i)
+  {
+    while(!profile[i] || profile[i]->changing())
+      icc_examin_ns::sleep(0.05);
     farbraum(i);
+  }
 
   /*if(icc_betrachter->DD_farbraum -> dreiecks_netze.size())
     icc_betrachter->DD_farbraum ->
@@ -311,7 +318,6 @@ ICCexamin::farbraum ()
 
   DBG_PROG_V( profile.size() )
 
-  frei_ = true;
   DBG_PROG_ENDE
 }
 
@@ -319,7 +325,7 @@ void
 ICCexamin::farbraumModus (int profil)
 {
   DBG_PROG_START
-  frei_ = false;
+  FREI_(false);
 
   farbraum_modus_ = false;
   if(profile.size() && profile.profil()->hasTagName("ncl2")) {
@@ -331,7 +337,7 @@ ICCexamin::farbraumModus (int profil)
 
   DBG_PROG_V( farbraum_modus_ )
 
-  frei_ = true;
+  FREI_(true);
   DBG_PROG_ENDE
 }
 

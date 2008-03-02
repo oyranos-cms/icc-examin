@@ -436,9 +436,9 @@ TagDrawings::drawCieShoe_ ( int repeated)
     register char RGB[3];
     register cmsCIEXYZ XYZ;
     std::vector<double> pos;
-    for (unsigned int i = 0; i < texte.size(); i++) {
+    for (unsigned int i = 0; i < punkte.size()/3; i++) {
         double _XYZ[3] = {punkte[i*3+0], punkte[i*3+1], punkte[i*3+2]};
-        double* xyY = XYZto_xyY ( _XYZ );
+        const double* xyY = XYZto_xyY ( _XYZ );
         pos.push_back ( xNachBild (xyY[0]) );
         pos.push_back ( yNachBild (xyY[1]) );
 #       ifdef DEBUG_DRAW
@@ -447,12 +447,15 @@ TagDrawings::drawCieShoe_ ( int repeated)
     }
 
     if (texte[0] != "wtpt") { // markiert den Weisspunkt nur
-      double* xyY = XYZto_xyY ( profile.profil()->getWhitePkt() );
+      std::vector<double> xyY = profile.profil()->getWhitePkt();
+      XYZto_xyY ( xyY );
       int g = 2;
 
       fl_color (FL_WHITE);
-      fl_line ( xNachBild(xyY[0])-g, yNachBild(xyY[1])-g, xNachBild(xyY[0])+g, yNachBild(xyY[1])+g );
-      fl_line ( xNachBild(xyY[0])-g, yNachBild(xyY[1])+g, xNachBild(xyY[0])+g, yNachBild(xyY[1])-g );
+      fl_line ( xNachBild(xyY[0])-g, yNachBild(xyY[1])-g,
+                xNachBild(xyY[0])+g, yNachBild(xyY[1])+g );
+      fl_line ( xNachBild(xyY[0])-g, yNachBild(xyY[1])+g,
+                xNachBild(xyY[0])+g, yNachBild(xyY[1])-g );
     }
 
     fl_color(BG);
@@ -470,27 +473,29 @@ TagDrawings::drawCieShoe_ ( int repeated)
         cout << "Linie "; DBG_PROG
 #       endif
     }
-
-    int j = 0;
-    for (unsigned int i = 0; i < texte.size(); i++) {
+    DBG_V( punkte.size() )
+    unsigned int i;
+    for (i = 0; i < punkte.size()/3; i++)
+    {
+        DBG_V( i )
 #       ifdef DEBUG_DRAW
-        cout << punkte[j] << " ";
+        cout << punkte[i*3+0] << " ";
 #       endif
-        XYZ.X = punkte[j++]; 
+        XYZ.X = punkte[i*3+0]; 
 #       ifdef DEBUG_DRAW
-        cout << punkte[j] << " ";
+        cout << punkte[i*3+1] << " ";
 #       endif
-        XYZ.Y = punkte[j++];
+        XYZ.Y = punkte[i*3+1];
 #       ifdef DEBUG_DRAW
-        cout << punkte[j] << " " << texte[i] << " " << punkte.size(); DBG_PROG
+        cout << punkte[i*3+2] << " " << texte[i] << " " << punkte.size(); DBG_PROG
 #       endif
-        XYZ.Z = punkte[j++]; //1 - ( punkte[i][0] +  punkte[i][1] );
+        XYZ.Z = punkte[i*3+2]; //1 - ( punkte[i][0] +  punkte[i][1] );
 
         // Farbe für Darstellung konvertieren (lcms)
         cmsDoTransform (xform, &XYZ, RGB, 1);
 
         double _XYZ[3] = {XYZ.X, XYZ.Y, XYZ.Z};
-        double* xyY = XYZto_xyY ( _XYZ );
+        const double* xyY = XYZto_xyY ( _XYZ );
         double pos_x = xNachBild(xyY[0]);
         double pos_y = yNachBild(xyY[1]);
 
@@ -503,22 +508,31 @@ TagDrawings::drawCieShoe_ ( int repeated)
         std::stringstream s;
         std::stringstream t;
         // lcms hilft bei Weisspunkbeschreibung aus
-        if (texte[i] == "wtpt") {
-          static char txt[1024] = {'\000'};
-          _cmsIdentifyWhitePoint (&txt[0], &XYZ);
-          t << " (" << &txt[12] << ")";
-        }
+        if (texte.size()>i)
+        { if (texte[i] == "wtpt") {
+            static char txt[1024] = {'\000'};
+            _cmsIdentifyWhitePoint (&txt[0], &XYZ);
+            t << " (" << &txt[12] << ")";
+          }
           
-        s << texte[i] << t.str() << " = " << _XYZ[0] <<", "<< _XYZ[1] <<", "<< _XYZ[2];
-        int _w = 0, _h = 0;
-        // Text einpassen
-        fl_measure (s.str().c_str(), _w, _h, 1);
-        fl_color(FL_WHITE);
-        fl_draw ( s.str().c_str(),
-                  (int)(pos_x +9 + _w > xNachBild(max_x) ? xNachBild(max_x) - _w : pos_x +9), 
-                  (int)(pos_y -9 - _h < yNachBild(max_x) ? yNachBild(max_x) + _h : pos_y -9)  );
-        i++;
-      }
+          s << texte[i] << t.str() << " = " <<
+               _XYZ[0] <<", "<< _XYZ[1] <<", "<< _XYZ[2];
+          int _w = 0, _h = 0;
+          // Text einpassen
+          fl_measure (s.str().c_str(), _w, _h, 1);
+          fl_color(FL_WHITE);
+          fl_draw ( s.str().c_str(),
+                    (int)(pos_x +9 + _w > xNachBild(max_x) ?
+                          xNachBild(max_x) - _w : pos_x +9), 
+                    (int)(pos_y -9 - _h < yNachBild(max_x) ?
+                          yNachBild(max_x) + _h : pos_y -9)  );
+        }
+    }
+    int j = 0;
+    for( ; i < texte.size()-1; ++i) {
+      fl_draw ( texte[i].c_str(), xNachBild(min_x) + 2, yNachBild(max_y) + j*16 +12);
+      ++j;
+    }
   }
 
   fl_pop_clip();

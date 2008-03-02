@@ -196,24 +196,69 @@ setzeIcon      ( Fl_Window *fenster, char   **xpm_daten )
 }
 
 
+  /** Programmstraenge - threads
+
+      mögliche Szenarien: \n
+      A: \n
+         - Stränge A und B greifen nacheinander zu \n
+         - A erhält das Recht des Ersteren, B wartet \n
+         - B kann nachdem A freigegeben hat auch mal
+
+      B: \n
+         - A und B und C wollen \n
+         - Strang A darf, B wartet und C auch \n
+         - nachdem A nicht mehr mag, können B und C streiten sich
+   */
+
 namespace icc_examin_ns {
 
+  // Prüfvariablen
   static int icc_thread_lock_zaehler_ = 0;
+  Fl_Thread icc_thread_lock_besitzer_ = 0;
+
   void lock(const char *file, int line)
   {
-    ++icc_thread_lock_zaehler_;
-    DBG_THREAD_S( "locks: "<<icc_thread_lock_zaehler_ <<" Aufruf bei: "<<file<<":"<<line )
-    Fl::lock();
-    DBG_THREAD_S( "weiter" )
+    // Fuer Ungezählte, Ausserhäusige und Besitzlose
+    if(icc_thread_lock_zaehler_ == 0 ||
+       (pthread_self() != icc_thread_lock_besitzer_ ||
+        icc_thread_lock_besitzer_ == 0))
+    { // Fehlersuche
+      if(icc_thread_lock_besitzer_) {
+        dbgThreadId(icc_thread_lock_besitzer_); DBG_THREAD_S( " Besitzer/Aufrufer locks: "<<icc_thread_lock_zaehler_ <<" Aufruf bei: "<<file<<":"<<line )
+      } else {
+        DBG_THREAD_S( "locks: "<<icc_thread_lock_zaehler_ <<" Aufruf bei: "<<file<<":"<<line )
+      }
+      // ... ins Haus gehen
+      Fl::lock();
+      // ... Prüfnummer im Haus
+      ++icc_thread_lock_zaehler_;
+      // ... in Besitz nehmen
+      icc_thread_lock_besitzer_ = pthread_self();
+    }
+    Fl::awake();
+    DBG_THREAD_S( "locks: "<<icc_thread_lock_zaehler_ <<" angehalten bei: "<<file<<":"<<line )
   }
   void unlock(void *widget, const char *file, int line)
-  {
+  { // hinausgehen und Türe offen lassen
     --icc_thread_lock_zaehler_;
     DBG_THREAD_S( "locks: "<<icc_thread_lock_zaehler_ <<" Aufruf bei: "<<file<<":"<<line )
-    Fl::unlock();
-    Fl::awake(widget);
-    DBG_THREAD_S( "weiter" )
+    // Fehlersuche
+    if(pthread_self() != icc_thread_lock_besitzer_ &&
+       icc_thread_lock_besitzer_ != 0) {
+      dbgThreadId(icc_thread_lock_besitzer_);DBG_THREAD_S( "locks: " << icc_thread_lock_zaehler_ << " Besitzer/Aufrufer" )
+    } // Oberflaeche erneuern
+    if(widget) {
+      Fl::awake(widget); DBG_THREAD
+      // Ereignisse entlocken
+      Fl::wait(0); DBG_THREAD
+    }
+    // drausen nichts unternehmen, da die offene Tür "gut" ist 
+    if(icc_thread_lock_zaehler_ >= 0)
+      Fl::unlock();
+    // zurücksetzen, da das Schloss nun offen ist
+    icc_thread_lock_besitzer_ = 0;
     icc_thread_lock_zaehler_ = 0;
+    DBG_THREAD_S( ": " << icc_thread_lock_zaehler_ << " weiter" )
   }
 }
 
@@ -222,7 +267,7 @@ void
 fl_delayed_redraw(void *w)
 {
   ((Fl_Widget*)w)->redraw();
-  DBG
+  DBG_PROG
   Fl::remove_idle(fl_delayed_redraw, w);
 }
 

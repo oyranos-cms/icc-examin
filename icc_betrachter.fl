@@ -317,7 +317,7 @@ class ICCfltkBetrachter {open
   \#endif} {}
     Fl_Window ueber {
       label {About ICC Examin}
-      xywh {667 580 366 241} type Double resizable
+      xywh {672 601 366 241} type Double resizable
       code0 {o->hide();} non_modal visible
     } {
       Fl_Group {} {open
@@ -335,7 +335,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window vcgt {
       label {Grafic Card Gamma Table}
-      xywh {663 346 370 390} type Double resizable
+      xywh {495 78 370 390} type Double resizable
       code0 {o->hide();} visible
     } {
       Fl_Group {} {open
@@ -374,8 +374,8 @@ class ICCfltkBetrachter {open
       }
     }
     Fl_Window details {
-      label {ICC Examin}
-      xywh {612 165 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
+      label {ICC Examin} open
+      xywh {335 23 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
     } {
       Fl_Group {} {open
         xywh {0 0 385 520}
@@ -467,8 +467,8 @@ class ICCfltkBetrachter {open
   DBG_PROG_V( widget_oben )
   DBG_PROG_V( menueintrag_3D->value() )
   DBG_PROG_V( menueintrag_huelle->value() )
-  icc_examin->neuzeichnen(icc_examin->icc_betrachter->DD_farbraum);
-  DBG_PROG_ENDE}
+  icc_examin->icc_betrachterNeuzeichnen(icc_examin->icc_betrachter->DD_farbraum);
+  DBG_PROG_ENDE} selected
             xywh {60 60 100 20} type Toggle shortcut 0x40068
           }
           submenu {} {
@@ -510,7 +510,7 @@ class ICCfltkBetrachter {open
   DBG_PROG_V( widget_oben )
   DBG_PROG_V( menueintrag_3D->value() )
   DBG_PROG_V( menueintrag_huelle->value() )
-  icc_examin->neuzeichnen(icc_examin->icc_betrachter->DD_farbraum);
+  icc_examin->icc_betrachterNeuzeichnen(icc_examin->icc_betrachter->DD_farbraum);
   DBG_PROG_ENDE}
               xywh {50 50 100 20} type Toggle shortcut 0x40068 divider
             }
@@ -530,7 +530,7 @@ class ICCfltkBetrachter {open
     widget_oben = WID_0;
     tag_text->inspekt_topline = inspekt_html->topline();
   }
-  icc_examin->neuzeichnen(inspekt_html);}
+  icc_examin->icc_betrachterNeuzeichnen(inspekt_html);}
               xywh {40 40 100 20} type Toggle shortcut 0x40062 deactivate
             }
             menuitem menueintrag_zeigcgats {
@@ -668,8 +668,7 @@ ueber_html->value(getUeberHtml().c_str());}
   Fl_File_Icon::load_system_icons();
   Fl::get_system_colors();
   w->show(/*argc,argv*/);
-  DBG_PROG} {selected
-    }
+  DBG_PROG} {}
     code DBG_PROG_ENDE {}
   }
   Function {run()} {} {

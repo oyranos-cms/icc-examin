@@ -31,8 +31,8 @@
 #include "icc_examin.h"
 #include "icc_kette.h"
 
-#include <FL/Fl.H>
-#include <FL/Fl_Double_Window.H>
+//#include <FL/Fl.H>
+//#include <FL/Fl_Double_Window.H>
 
 ICCexamin *icc_examin;
 

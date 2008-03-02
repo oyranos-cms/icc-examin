@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2005-09-15 10:54+0200\n"
+"POT-Creation-Date: 2005-09-24 22:39+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -133,159 +133,159 @@ msgstr ""
 msgid " zu frueh benutzt!"
 msgstr ""
 
-#: icc_draw.cpp:629
+#: icc_draw.cpp:643
 msgid "unbekannte Farbe"
 msgstr ""
 
-#: icc_draw.cpp:638 icc_draw.cpp:649 icc_helfer.cpp:381
-#: icc_profile_tags.cpp:391 icc_helfer_osx.cpp:67 icc_helfer_x.cpp:56
+#: icc_draw.cpp:652 icc_draw.cpp:663 icc_helfer.cpp:399
+#: icc_profile_tags.cpp:403 icc_helfer_osx.cpp:67 icc_helfer_x.cpp:56
 msgid "Red"
 msgstr ""
 
-#: icc_draw.cpp:641 icc_draw.cpp:651 icc_helfer.cpp:382
-#: icc_profile_tags.cpp:392 icc_helfer_osx.cpp:68 icc_helfer_x.cpp:57
+#: icc_draw.cpp:655 icc_draw.cpp:665 icc_helfer.cpp:400
+#: icc_profile_tags.cpp:404 icc_helfer_osx.cpp:68 icc_helfer_x.cpp:57
 msgid "Green"
 msgstr ""
 
-#: icc_draw.cpp:644 icc_draw.cpp:653 icc_helfer.cpp:383
-#: icc_profile_tags.cpp:393 icc_helfer_osx.cpp:69 icc_helfer_x.cpp:58
+#: icc_draw.cpp:658 icc_draw.cpp:667 icc_helfer.cpp:401
+#: icc_profile_tags.cpp:405 icc_helfer_osx.cpp:69 icc_helfer_x.cpp:58
 msgid "Blue"
 msgstr ""
 
-#: icc_draw.cpp:648 icc_gl.cpp:1602 icc_helfer.cpp:324 icc_waehler.h:128
+#: icc_draw.cpp:662 icc_gl.cpp:1602 icc_helfer.cpp:342 icc_waehler.h:128
 msgid "Gray"
 msgstr ""
 
-#: icc_draw.cpp:655 icc_helfer.cpp:391 icc_helfer.cpp:395
+#: icc_draw.cpp:669 icc_helfer.cpp:409 icc_helfer.cpp:413
 msgid "Cyan"
 msgstr ""
 
-#: icc_draw.cpp:657 icc_helfer.cpp:392 icc_helfer.cpp:396
+#: icc_draw.cpp:671 icc_helfer.cpp:410 icc_helfer.cpp:414
 msgid "Magenta"
 msgstr ""
 
-#: icc_draw.cpp:659 icc_helfer.cpp:393 icc_helfer.cpp:397
+#: icc_draw.cpp:673 icc_helfer.cpp:411 icc_helfer.cpp:415
 msgid "Yellow"
 msgstr ""
 
-#: icc_draw.cpp:661 icc_gl.cpp:1604 icc_helfer.cpp:384 icc_helfer.cpp:394
+#: icc_draw.cpp:675 icc_gl.cpp:1604 icc_helfer.cpp:402 icc_helfer.cpp:412
 msgid "Black"
 msgstr ""
 
-#: icc_draw.cpp:663 icc_helfer.cpp:569
+#: icc_draw.cpp:677 icc_helfer.cpp:587
 msgid "Luminance"
 msgstr ""
 
-#: icc_draw.cpp:665 icc_helfer.cpp:375
+#: icc_draw.cpp:679 icc_helfer.cpp:393
 msgid "Luminance Y"
 msgstr ""
 
-#: icc_draw.cpp:667 icc_helfer.cpp:366
+#: icc_draw.cpp:681 icc_helfer.cpp:384
 msgid "CIE X"
 msgstr ""
 
-#: icc_draw.cpp:669 icc_helfer.cpp:367 icc_helfer.cpp:378
+#: icc_draw.cpp:683 icc_helfer.cpp:385 icc_helfer.cpp:396
 msgid "CIE Y (Luminance)"
 msgstr ""
 
-#: icc_draw.cpp:671 icc_helfer.cpp:368
+#: icc_draw.cpp:685 icc_helfer.cpp:386
 msgid "CIE Z"
 msgstr ""
 
-#: icc_draw.cpp:673 icc_helfer.cpp:389
+#: icc_draw.cpp:687 icc_helfer.cpp:407
 msgid "Lightness"
 msgstr ""
 
-#: icc_draw.cpp:675 icc_helfer.cpp:387
+#: icc_draw.cpp:689 icc_helfer.cpp:405
 msgid "Value"
 msgstr ""
 
-#: icc_draw.cpp:677 icc_examin_farbraum.cpp:203 icc_examin_io.cpp:141
-#: icc_helfer.cpp:369 icc_helfer.cpp:372
+#: icc_draw.cpp:691 icc_examin_farbraum.cpp:202 icc_examin_io.cpp:189
+#: icc_helfer.cpp:387 icc_helfer.cpp:390
 msgid "CIE *L"
 msgstr ""
 
-#: icc_draw.cpp:679 icc_examin_farbraum.cpp:204 icc_examin_io.cpp:142
+#: icc_draw.cpp:693 icc_examin_farbraum.cpp:203 icc_examin_io.cpp:190
 #: icc_gl.cpp:765 icc_gl.cpp:835 icc_gl.cpp:859 icc_gl.cpp:867
-#: icc_helfer.cpp:370
+#: icc_helfer.cpp:388
 msgid "CIE *a"
 msgstr ""
 
-#: icc_draw.cpp:681 icc_examin_farbraum.cpp:205 icc_examin_io.cpp:143
+#: icc_draw.cpp:695 icc_examin_farbraum.cpp:204 icc_examin_io.cpp:191
 #: icc_gl.cpp:778 icc_gl.cpp:875 icc_gl.cpp:893 icc_gl.cpp:900
-#: icc_helfer.cpp:371
+#: icc_helfer.cpp:389
 msgid "CIE *b"
 msgstr ""
 
-#: icc_draw.cpp:683 icc_helfer.cpp:376
+#: icc_draw.cpp:697 icc_helfer.cpp:394
 msgid "Colour b"
 msgstr ""
 
-#: icc_draw.cpp:685 icc_helfer.cpp:377
+#: icc_draw.cpp:699 icc_helfer.cpp:395
 msgid "Colour r"
 msgstr ""
 
-#: icc_draw.cpp:724 icc_draw.cpp:785
+#: icc_draw.cpp:738 icc_draw.cpp:799
 msgid " with "
 msgstr ""
 
-#: icc_draw.cpp:724 icc_draw.cpp:785
+#: icc_draw.cpp:738 icc_draw.cpp:799
 msgid " points"
 msgstr ""
 
-#: icc_draw.cpp:731
+#: icc_draw.cpp:745
 msgid " with Gamma: 1.0"
 msgstr ""
 
-#: icc_draw.cpp:744 icc_draw.cpp:763
+#: icc_draw.cpp:758 icc_draw.cpp:777
 msgid " with one entry for gamma: "
 msgstr ""
 
-#: icc_examin.cpp:126 icc_kette.cpp:72
-msgid "Waechter Thread nicht gestartet Fehler: "
-msgstr ""
-
-#: icc_examin.cpp:131 icc_kette.cpp:77
-msgid "zu viele Waechter Threads Fehler: "
-msgstr ""
-
-#: icc_examin.cpp:136 icc_kette.cpp:82
-msgid "unbekannter Fehler beim Start eines Waechter Threads Fehler: "
-msgstr ""
-
-#: icc_examin.cpp:146
+#: icc_examin.cpp:122
 msgid "Gamut selector"
 msgstr ""
 
-#: icc_examin.cpp:149
+#: icc_examin.cpp:125
 msgid "icc_waehler_ nicht reservierbar"
 msgstr ""
 
-#: icc_examin.cpp:208 icc_examin_io.cpp:416
+#: icc_examin.cpp:184 icc_examin_io.cpp:482
 msgid "loaded"
 msgstr ""
 
-#: icc_examin.cpp:217
+#: icc_examin.cpp:193
 msgid "Ready"
 msgstr ""
 
-#: icc_examin.cpp:277
+#: icc_examin.cpp:218 icc_kette.cpp:72
+msgid "Waechter Thread nicht gestartet Fehler: "
+msgstr ""
+
+#: icc_examin.cpp:223 icc_kette.cpp:77
+msgid "zu viele Waechter Threads Fehler: "
+msgstr ""
+
+#: icc_examin.cpp:228 icc_kette.cpp:82
+msgid "unbekannter Fehler beim Start eines Waechter Threads Fehler: "
+msgstr ""
+
+#: icc_examin.cpp:291
 msgid "Nachricht von ICCkette"
 msgstr ""
 
-#: icc_examin.cpp:278
+#: icc_examin.cpp:292
 msgid "Auffrischen von Profil Nr.: "
 msgstr ""
 
-#: icc_examin.cpp:405
+#: icc_examin.cpp:419
 msgid "Keine Kurve gefunden"
 msgstr ""
 
-#: icc_examin.cpp:518
+#: icc_examin.cpp:533
 msgid "verstecke "
 msgstr ""
 
-#: icc_examin.cpp:522
+#: icc_examin.cpp:537
 msgid "zeige     "
 msgstr ""
 
@@ -293,64 +293,72 @@ msgstr ""
 msgid "RGB Ergebnis nicht verfuegbar"
 msgstr ""
 
-#: icc_examin_io.cpp:150
+#: icc_examin_io.cpp:129 icc_oyranos.cpp:314
+msgid "Monitor Profile"
+msgstr ""
+
+#: icc_examin_io.cpp:198
 msgid "kein Netz gefunden in VRML Datei"
 msgstr ""
 
-#: icc_examin_io.cpp:166
+#: icc_examin_io.cpp:214
 msgid "Anzahl gabs schon mal"
 msgstr ""
 
-#: icc_examin_io.cpp:186
+#: icc_examin_io.cpp:235
 msgid "Kein Netz gefunden. Ist Argyll installiert?"
 msgstr ""
 
-#: icc_examin_io.cpp:313
+#: icc_examin_io.cpp:376
 msgid "Stop loading "
 msgstr ""
 
-#: icc_examin_io.cpp:374 icc_betrachter.cxx:467
+#: icc_examin_io.cpp:440 icc_betrachter.cxx:467
 msgid "Filename"
 msgstr ""
 
-#: icc_examin_io.cpp:378
+#: icc_examin_io.cpp:444
 msgid "found no content for"
 msgstr ""
 
-#: icc_examin_io.cpp:381
+#: icc_examin_io.cpp:447
 msgid "Internal error"
 msgstr ""
 
-#: icc_examin_io.cpp:383
+#: icc_examin_io.cpp:449
 msgid "No. Tag   Type   Size Description"
 msgstr ""
 
-#: icc_examin_io.cpp:442
+#: icc_examin_io.cpp:508
 msgid "HTML Documents (*.htm*)"
 msgstr ""
 
-#: icc_examin_io.cpp:446 icc_betrachter.cxx:386
+#: icc_examin_io.cpp:512 icc_betrachter.cxx:386
 msgid "Save Report"
 msgstr ""
 
-#: icc_examin_io.cpp:518 icc_betrachter.cxx:497
+#: icc_examin_io.cpp:584 icc_betrachter.cxx:497
 msgid "ICC colour profiles (*.ic*)"
 msgstr ""
 
-#: icc_examin_io.cpp:519 icc_betrachter.cxx:387
+#: icc_examin_io.cpp:585 icc_betrachter.cxx:387
 msgid "Save Gamut as Profile"
 msgstr ""
 
-#: icc_examin_io.cpp:521
+#: icc_examin_io.cpp:587
 msgid "VRML Files (*.wrl)"
 msgstr ""
 
-#: icc_examin_io.cpp:522 icc_betrachter.cxx:388
+#: icc_examin_io.cpp:588 icc_betrachter.cxx:388
 msgid "Save Gamut as VRML"
 msgstr ""
 
-#: icc_examin_tagwahl.cpp:59
+#: icc_examin_tagwahl.cpp:58
 msgid "Leer"
+msgstr ""
+
+#: icc_examin_tagwahl.cpp:127
+msgid "RGB primaries"
 msgstr ""
 
 #: icc_gl.cpp:198
@@ -499,583 +507,600 @@ msgstr ""
 msgid "Konnte keine passende Programmstruktur finden"
 msgstr ""
 
-#: icc_helfer.cpp:297
+#: icc_helfer.cpp:315
 msgid "Photometric"
 msgstr ""
 
-#: icc_helfer.cpp:300
+#: icc_helfer.cpp:318
 msgid "Relative Colorimetric"
 msgstr ""
 
-#: icc_helfer.cpp:303 icc_helfer.cpp:386 icc_helfer.cpp:390
+#: icc_helfer.cpp:321 icc_helfer.cpp:404 icc_helfer.cpp:408
 msgid "Saturation"
 msgstr ""
 
-#: icc_helfer.cpp:306
+#: icc_helfer.cpp:324
 msgid "Absolute Colorimetric"
 msgstr ""
 
-#: icc_helfer.cpp:318
+#: icc_helfer.cpp:336
 msgid "XYZ"
 msgstr ""
 
-#: icc_helfer.cpp:319
+#: icc_helfer.cpp:337
 msgid "Lab"
 msgstr ""
 
-#: icc_helfer.cpp:320
+#: icc_helfer.cpp:338
 msgid "Luv"
 msgstr ""
 
-#: icc_helfer.cpp:321
+#: icc_helfer.cpp:339
 msgid "YCbCr"
 msgstr ""
 
-#: icc_helfer.cpp:322
+#: icc_helfer.cpp:340
 msgid "Yxy"
 msgstr ""
 
-#: icc_helfer.cpp:323
+#: icc_helfer.cpp:341
 msgid "Rgb"
 msgstr ""
 
-#: icc_helfer.cpp:325
+#: icc_helfer.cpp:343
 msgid "Hsv"
 msgstr ""
 
-#: icc_helfer.cpp:326
+#: icc_helfer.cpp:344
 msgid "Hls"
 msgstr ""
 
-#: icc_helfer.cpp:327
+#: icc_helfer.cpp:345
 msgid "Cmyk"
 msgstr ""
 
-#: icc_helfer.cpp:328
+#: icc_helfer.cpp:346
 msgid "Cmy"
 msgstr ""
 
-#: icc_helfer.cpp:329
+#: icc_helfer.cpp:347
 msgid "2color"
 msgstr ""
 
-#: icc_helfer.cpp:330
+#: icc_helfer.cpp:348
 msgid "3color"
 msgstr ""
 
-#: icc_helfer.cpp:331
+#: icc_helfer.cpp:349
 msgid "4color"
 msgstr ""
 
-#: icc_helfer.cpp:332
+#: icc_helfer.cpp:350
 msgid "5color"
 msgstr ""
 
-#: icc_helfer.cpp:333
+#: icc_helfer.cpp:351
 msgid "6color"
 msgstr ""
 
-#: icc_helfer.cpp:334
+#: icc_helfer.cpp:352
 msgid "7color"
 msgstr ""
 
-#: icc_helfer.cpp:335
+#: icc_helfer.cpp:353
 msgid "8color"
 msgstr ""
 
-#: icc_helfer.cpp:336
+#: icc_helfer.cpp:354
 msgid "9color"
 msgstr ""
 
-#: icc_helfer.cpp:337
+#: icc_helfer.cpp:355
 msgid "10color"
 msgstr ""
 
-#: icc_helfer.cpp:338
+#: icc_helfer.cpp:356
 msgid "11color"
 msgstr ""
 
-#: icc_helfer.cpp:339
+#: icc_helfer.cpp:357
 msgid "12color"
 msgstr ""
 
-#: icc_helfer.cpp:340
+#: icc_helfer.cpp:358
 msgid "13color"
 msgstr ""
 
-#: icc_helfer.cpp:341
+#: icc_helfer.cpp:359
 msgid "14color"
 msgstr ""
 
-#: icc_helfer.cpp:342
+#: icc_helfer.cpp:360
 msgid "15color"
 msgstr ""
 
-#: icc_helfer.cpp:361 icc_profile_tags.cpp:984 icc_profile_tags.cpp:991
+#: icc_helfer.cpp:379 icc_profile_tags.cpp:998 icc_profile_tags.cpp:1005
 msgid "Colour"
 msgstr ""
 
-#: icc_helfer.cpp:373
+#: icc_helfer.cpp:391
 msgid "CIE *u"
 msgstr ""
 
-#: icc_helfer.cpp:374
+#: icc_helfer.cpp:392
 msgid "CIE *v"
 msgstr ""
 
-#: icc_helfer.cpp:379
+#: icc_helfer.cpp:397
 msgid "CIE x"
 msgstr ""
 
-#: icc_helfer.cpp:380
+#: icc_helfer.cpp:398
 msgid "CIE y"
 msgstr ""
 
-#: icc_helfer.cpp:385 icc_helfer.cpp:388
+#: icc_helfer.cpp:403 icc_helfer.cpp:406
 msgid "Hue"
 msgstr ""
 
-#: icc_helfer.cpp:412
+#: icc_helfer.cpp:430
 msgid "No Colour"
 msgstr ""
 
-#: icc_helfer.cpp:426
+#: icc_helfer.cpp:444
 msgid "Input"
 msgstr ""
 
-#: icc_helfer.cpp:427
+#: icc_helfer.cpp:445
 msgid "Display"
 msgstr ""
 
-#: icc_helfer.cpp:428
+#: icc_helfer.cpp:446
 msgid "Output"
 msgstr ""
 
-#: icc_helfer.cpp:429
+#: icc_helfer.cpp:447
 msgid "Link"
 msgstr ""
 
-#: icc_helfer.cpp:430
+#: icc_helfer.cpp:448
 msgid "Abstract"
 msgstr ""
 
-#: icc_helfer.cpp:431 icc_profile.cpp:784
+#: icc_helfer.cpp:449 icc_profile.cpp:784
 msgid "Colour Space"
 msgstr ""
 
-#: icc_helfer.cpp:432
+#: icc_helfer.cpp:450
 msgid "Named Colour"
 msgstr ""
 
-#: icc_helfer.cpp:452
+#: icc_helfer.cpp:470
 msgid "Macintosh"
 msgstr ""
 
-#: icc_helfer.cpp:453
+#: icc_helfer.cpp:471
 msgid "Microsoft"
 msgstr ""
 
-#: icc_helfer.cpp:454
+#: icc_helfer.cpp:472
 msgid "Solaris"
 msgstr ""
 
-#: icc_helfer.cpp:455
+#: icc_helfer.cpp:473
 msgid "SGI"
 msgstr ""
 
-#: icc_helfer.cpp:456
+#: icc_helfer.cpp:474
 msgid "Taligent"
 msgstr ""
 
-#: icc_helfer.cpp:548
+#: icc_helfer.cpp:566
 msgid "Description"
 msgstr ""
 
-#: icc_helfer.cpp:551
+#: icc_helfer.cpp:569
 msgid "Lockup table, device to PCS, intent photometric"
 msgstr ""
 
-#: icc_helfer.cpp:552
+#: icc_helfer.cpp:570
 msgid "Lockup table, device to PCS, intent relative colorimetric"
 msgstr ""
 
-#: icc_helfer.cpp:553
+#: icc_helfer.cpp:571
 msgid "Lockup table, device to PCS, intent saturation"
 msgstr ""
 
-#: icc_helfer.cpp:554
+#: icc_helfer.cpp:572
 msgid "Blue Colorant"
 msgstr ""
 
-#: icc_helfer.cpp:555
+#: icc_helfer.cpp:573
 msgid "Blue tone reproduction curve"
 msgstr ""
 
-#: icc_helfer.cpp:556
+#: icc_helfer.cpp:574
 msgid "Lockup table, PCS to device, intent photometric"
 msgstr ""
 
-#: icc_helfer.cpp:557
+#: icc_helfer.cpp:575
 msgid "Lockup table, PCS to device, intent relative colorimetric"
 msgstr ""
 
-#: icc_helfer.cpp:558
+#: icc_helfer.cpp:576
 msgid "Lockup table, PCS to device, intent saturation"
 msgstr ""
 
-#: icc_helfer.cpp:559
+#: icc_helfer.cpp:577
 msgid "Calibration date"
 msgstr ""
 
-#: icc_helfer.cpp:560
+#: icc_helfer.cpp:578
 msgid "Colour measurement data"
 msgstr ""
 
-#: icc_helfer.cpp:561
+#: icc_helfer.cpp:579
 msgid "Copyright"
 msgstr ""
 
-#: icc_helfer.cpp:562
+#: icc_helfer.cpp:580
 msgid "crdi"
 msgstr ""
 
-#: icc_helfer.cpp:563
+#: icc_helfer.cpp:581
 msgid "Device manufacturerer description"
 msgstr ""
 
-#: icc_helfer.cpp:564
+#: icc_helfer.cpp:582
 msgid "Device model description"
 msgstr ""
 
-#: icc_helfer.cpp:565
+#: icc_helfer.cpp:583
 msgid "gamut"
 msgstr ""
 
-#: icc_helfer.cpp:566
+#: icc_helfer.cpp:584
 msgid "Gray tone reproduction curve"
 msgstr ""
 
-#: icc_helfer.cpp:567
+#: icc_helfer.cpp:585
 msgid "Green Colorant"
 msgstr ""
 
-#: icc_helfer.cpp:568
+#: icc_helfer.cpp:586
 msgid "Green tone reproduction curve"
 msgstr ""
 
-#: icc_helfer.cpp:570
+#: icc_helfer.cpp:588
 msgid "Measurement"
 msgstr ""
 
-#: icc_helfer.cpp:571
+#: icc_helfer.cpp:589
 msgid "Media black point"
 msgstr ""
 
-#: icc_helfer.cpp:572
+#: icc_helfer.cpp:590
 msgid "Media white point"
 msgstr ""
 
-#: icc_helfer.cpp:573
+#: icc_helfer.cpp:591
 msgid "Named Coulor"
 msgstr ""
 
-#: icc_helfer.cpp:574
+#: icc_helfer.cpp:592
 msgid "Named Coulor 2"
 msgstr ""
 
-#: icc_helfer.cpp:575
+#: icc_helfer.cpp:593
 msgid "Preview, photografic"
 msgstr ""
 
-#: icc_helfer.cpp:576
+#: icc_helfer.cpp:594
 msgid "Preview, relative colorimetric"
 msgstr ""
 
-#: icc_helfer.cpp:577
+#: icc_helfer.cpp:595
 msgid "Preview, saturated"
 msgstr ""
 
-#: icc_helfer.cpp:578
+#: icc_helfer.cpp:596
 msgid "Profile description"
 msgstr ""
 
-#: icc_helfer.cpp:579
+#: icc_helfer.cpp:597
 msgid "Profile description, multilingual"
 msgstr ""
 
-#: icc_helfer.cpp:580
+#: icc_helfer.cpp:598
 msgid "Profile sequence description"
 msgstr ""
 
-#: icc_helfer.cpp:581
+#: icc_helfer.cpp:599
 msgid "psd0"
 msgstr ""
 
-#: icc_helfer.cpp:582
+#: icc_helfer.cpp:600
 msgid "psd1"
 msgstr ""
 
-#: icc_helfer.cpp:583
+#: icc_helfer.cpp:601
 msgid "psd2"
 msgstr ""
 
-#: icc_helfer.cpp:584
+#: icc_helfer.cpp:602
 msgid "psd3"
 msgstr ""
 
-#: icc_helfer.cpp:585
+#: icc_helfer.cpp:603
 msgid "ps2s"
 msgstr ""
 
-#: icc_helfer.cpp:586
+#: icc_helfer.cpp:604
 msgid "ps2i"
 msgstr ""
 
-#: icc_helfer.cpp:587
+#: icc_helfer.cpp:605
 msgid "Red Colorant"
 msgstr ""
 
-#: icc_helfer.cpp:588
+#: icc_helfer.cpp:606
 msgid "Red tone reproduction curve"
 msgstr ""
 
-#: icc_helfer.cpp:589
+#: icc_helfer.cpp:607
 msgid "scrd"
 msgstr ""
 
-#: icc_helfer.cpp:590
+#: icc_helfer.cpp:608
 msgid "scrn"
 msgstr ""
 
-#: icc_helfer.cpp:591
+#: icc_helfer.cpp:609
 msgid "Technologie"
 msgstr ""
 
-#: icc_helfer.cpp:592
+#: icc_helfer.cpp:610
 msgid "bfd"
 msgstr ""
 
-#: icc_helfer.cpp:593
+#: icc_helfer.cpp:611
 msgid "Viewing conditions description"
 msgstr ""
 
-#: icc_helfer.cpp:594
+#: icc_helfer.cpp:612
 msgid "Viewing Conditions"
 msgstr ""
 
-#: icc_helfer.cpp:595
+#: icc_helfer.cpp:613
 msgid "Device colours"
 msgstr ""
 
-#: icc_helfer.cpp:596
+#: icc_helfer.cpp:614
 msgid "Measured colours"
 msgstr ""
 
-#: icc_helfer.cpp:597
+#: icc_helfer.cpp:615
 msgid "Profiling parameters"
 msgstr ""
 
-#: icc_helfer.cpp:598
+#: icc_helfer.cpp:616
 msgid "VideoCardGammaTable"
 msgstr ""
 
-#: icc_helfer.cpp:599
+#: icc_helfer.cpp:617
 msgid "Colour adaption matrix"
 msgstr ""
 
-#: icc_helfer.cpp:600
+#: icc_helfer.cpp:618
 msgid "Chromaticity"
 msgstr ""
 
-#: icc_helfer.cpp:601
+#: icc_helfer.cpp:619
 msgid "Named colour order"
 msgstr ""
 
-#: icc_helfer.cpp:602
+#: icc_helfer.cpp:620
 msgid "Named colour names"
 msgstr ""
 
-#: icc_helfer.cpp:603 icc_helfer.cpp:689
+#: icc_helfer.cpp:621 icc_helfer.cpp:707
 msgid "----"
 msgstr ""
 
-#: icc_helfer.cpp:667
+#: icc_helfer.cpp:685
 msgid "Digital camera"
 msgstr ""
 
-#: icc_helfer.cpp:668
+#: icc_helfer.cpp:686
 msgid "Film scanner"
 msgstr ""
 
-#: icc_helfer.cpp:669
+#: icc_helfer.cpp:687
 msgid "Reflective scanner"
 msgstr ""
 
-#: icc_helfer.cpp:670
+#: icc_helfer.cpp:688
 msgid "InkJet printer"
 msgstr ""
 
-#: icc_helfer.cpp:671
+#: icc_helfer.cpp:689
 msgid "Thermal wax printer"
 msgstr ""
 
-#: icc_helfer.cpp:672
+#: icc_helfer.cpp:690
 msgid "Electrophotographic printer"
 msgstr ""
 
-#: icc_helfer.cpp:673
+#: icc_helfer.cpp:691
 msgid "Electrostatic printer"
 msgstr ""
 
-#: icc_helfer.cpp:674
+#: icc_helfer.cpp:692
 msgid "Dye sublimation printer"
 msgstr ""
 
-#: icc_helfer.cpp:675
+#: icc_helfer.cpp:693
 msgid "Photographic paper printer"
 msgstr ""
 
-#: icc_helfer.cpp:676
+#: icc_helfer.cpp:694
 msgid "Film writer"
 msgstr ""
 
-#: icc_helfer.cpp:677
+#: icc_helfer.cpp:695
 msgid "Video Monitor"
 msgstr ""
 
-#: icc_helfer.cpp:678
+#: icc_helfer.cpp:696
 msgid "Video camera"
 msgstr ""
 
-#: icc_helfer.cpp:679
+#: icc_helfer.cpp:697
 msgid "Projection Television"
 msgstr ""
 
-#: icc_helfer.cpp:680
+#: icc_helfer.cpp:698
 msgid "Cathode ray tube display"
 msgstr ""
 
-#: icc_helfer.cpp:681
+#: icc_helfer.cpp:699
 msgid "Passive matrix monitor"
 msgstr ""
 
-#: icc_helfer.cpp:682
+#: icc_helfer.cpp:700
 msgid "Active matrix monitor"
 msgstr ""
 
-#: icc_helfer.cpp:683
+#: icc_helfer.cpp:701
 msgid "Photo CD"
 msgstr ""
 
-#: icc_helfer.cpp:684
+#: icc_helfer.cpp:702
 msgid "PhotoImageSetter"
 msgstr ""
 
-#: icc_helfer.cpp:685
+#: icc_helfer.cpp:703
 msgid "Gravure"
 msgstr ""
 
-#: icc_helfer.cpp:686
+#: icc_helfer.cpp:704
 msgid "Offset Lithography"
 msgstr ""
 
-#: icc_helfer.cpp:687
+#: icc_helfer.cpp:705
 msgid "Silkscreen"
 msgstr ""
 
-#: icc_helfer.cpp:688
+#: icc_helfer.cpp:706
 msgid "Flexography"
 msgstr ""
 
-#: icc_helfer.cpp:707
-msgid "Illuminant unknown"
+#: icc_helfer.cpp:726
+msgid "ITU-R BT.709"
 msgstr ""
 
-#: icc_helfer.cpp:708
-msgid "Illuminant D50"
+#: icc_helfer.cpp:727
+msgid "SMPTE RP145-1994"
 msgstr ""
 
-#: icc_helfer.cpp:709
-msgid "Illuminant D65"
-msgstr ""
-
-#: icc_helfer.cpp:710
-msgid "Illuminant D93"
-msgstr ""
-
-#: icc_helfer.cpp:711
-msgid "Illuminant F2"
-msgstr ""
-
-#: icc_helfer.cpp:712
-msgid "Illuminant D55"
-msgstr ""
-
-#: icc_helfer.cpp:713
-msgid "Illuminant A"
-msgstr ""
-
-#: icc_helfer.cpp:714
-msgid "Illuminant with equal energy E"
-msgstr ""
-
-#: icc_helfer.cpp:715
-msgid "Illuminant F8"
-msgstr ""
-
-#: icc_helfer.cpp:716
-msgid "Illuminant ---"
-msgstr ""
-
-#: icc_helfer.cpp:718 icc_helfer.cpp:735 icc_helfer.cpp:750 icc_helfer.cpp:764
-msgid "???"
-msgstr ""
-
-#: icc_helfer.cpp:728 icc_helfer.cpp:745
-msgid "unknown"
+#: icc_helfer.cpp:728
+msgid "EBU Tech.3213-E"
 msgstr ""
 
 #: icc_helfer.cpp:729
-msgid "2 degree (1931)"
+msgid "P22"
 msgstr ""
 
-#: icc_helfer.cpp:731
-msgid "10 degree (1964)"
+#: icc_helfer.cpp:731 icc_helfer.cpp:752 icc_helfer.cpp:769 icc_helfer.cpp:784
+#: icc_helfer.cpp:798
+msgid "???"
 msgstr ""
 
-#: icc_helfer.cpp:733 icc_helfer.cpp:748 icc_helfer.cpp:762
-msgid "---"
+#: icc_helfer.cpp:741
+msgid "Illuminant unknown"
+msgstr ""
+
+#: icc_helfer.cpp:742
+msgid "Illuminant D50"
+msgstr ""
+
+#: icc_helfer.cpp:743
+msgid "Illuminant D65"
+msgstr ""
+
+#: icc_helfer.cpp:744
+msgid "Illuminant D93"
+msgstr ""
+
+#: icc_helfer.cpp:745
+msgid "Illuminant F2"
 msgstr ""
 
 #: icc_helfer.cpp:746
-msgid "0/45, 45/0"
+msgid "Illuminant D55"
 msgstr ""
 
 #: icc_helfer.cpp:747
-msgid "0/d or d/0"
+msgid "Illuminant A"
 msgstr ""
 
-#: icc_helfer.cpp:760
-msgid "0"
+#: icc_helfer.cpp:748
+msgid "Illuminant with equal energy E"
 msgstr ""
 
-#: icc_helfer.cpp:761
-msgid "100"
+#: icc_helfer.cpp:749
+msgid "Illuminant F8"
+msgstr ""
+
+#: icc_helfer.cpp:750
+msgid "Illuminant ---"
+msgstr ""
+
+#: icc_helfer.cpp:762 icc_helfer.cpp:779
+msgid "unknown"
+msgstr ""
+
+#: icc_helfer.cpp:763
+msgid "2 degree (1931)"
+msgstr ""
+
+#: icc_helfer.cpp:765
+msgid "10 degree (1964)"
+msgstr ""
+
+#: icc_helfer.cpp:767 icc_helfer.cpp:782 icc_helfer.cpp:796
+msgid "---"
 msgstr ""
 
 #: icc_helfer.cpp:780
-msgid "o'clock"
+msgid "0/45, 45/0"
 msgstr ""
 
 #: icc_helfer.cpp:781
+msgid "0/d or d/0"
+msgstr ""
+
+#: icc_helfer.cpp:794
+msgid "0"
+msgstr ""
+
+#: icc_helfer.cpp:795
+msgid "100"
+msgstr ""
+
+#: icc_helfer.cpp:814
+msgid "o'clock"
+msgstr ""
+
+#: icc_helfer.cpp:815
 msgid "seconds"
 msgstr ""
 
-#: icc_helfer.cpp:870 icc_utils.cpp:61
+#: icc_helfer.cpp:904 icc_utils.cpp:61
 msgid "no filename given"
 msgstr ""
 
-#: icc_helfer.cpp:897
+#: icc_helfer.cpp:931
 msgid "Dateigröße 0 für "
 msgstr ""
 
@@ -1119,181 +1144,177 @@ msgstr ""
 msgid "colour adjust"
 msgstr ""
 
-#: icc_measurement.cpp:551
+#: icc_measurement.cpp:556
 msgid "kein passendes voreingestelltes Profil gefunden"
 msgstr ""
 
-#: icc_measurement.cpp:557
+#: icc_measurement.cpp:562
 msgid "hCOLOUR ist leer"
 msgstr ""
 
-#: icc_measurement.cpp:582
+#: icc_measurement.cpp:587
 msgid "hXYZ ist leer"
 msgstr ""
 
-#: icc_measurement.cpp:583
+#: icc_measurement.cpp:588
 msgid "hsRGB ist leer"
 msgstr ""
 
-#: icc_measurement.cpp:621
-msgid "_XYZ_Satz.size() und _nFelder sind ungleich"
+#: icc_measurement.cpp:626
+msgid "XYZ_Satz_.size() und nFelder_ sind ungleich"
 msgstr ""
 
-#: icc_measurement.cpp:623
-msgid "_RGB_Satz.size() und _nFelder sind ungleich"
+#: icc_measurement.cpp:628
+msgid "RGB_Satz_.size() und nFelder_ sind ungleich"
 msgstr ""
 
-#: icc_measurement.cpp:625
-msgid "_CMYK_Satz.size() und _nFelder sind ungleich"
+#: icc_measurement.cpp:630
+msgid "CMYK_Satz_.size() und nFelder_ sind ungleich"
 msgstr ""
 
-#: icc_measurement.cpp:762
+#: icc_measurement.cpp:767
 msgid "Report about ICC profile"
 msgstr ""
 
-#: icc_measurement.cpp:798
+#: icc_measurement.cpp:803
 msgid "Meas colour"
 msgstr ""
 
-#: icc_measurement.cpp:800
+#: icc_measurement.cpp:805
 msgid "Profile colour"
 msgstr ""
 
-#: icc_measurement.cpp:872
+#: icc_measurement.cpp:877
 msgid "no measurment data available"
 msgstr ""
 
-#: icc_measurement.cpp:879
+#: icc_measurement.cpp:884
 msgid "Measurment- and profile colours from <b>"
 msgstr ""
 
-#: icc_measurement.cpp:881
+#: icc_measurement.cpp:886
 msgid "RGB"
 msgstr ""
 
-#: icc_measurement.cpp:883
+#: icc_measurement.cpp:888
 msgid "CMYK"
 msgstr ""
 
-#: icc_measurement.cpp:884
+#: icc_measurement.cpp:889
 msgid "</b> Measurement"
 msgstr ""
 
-#: icc_measurement.cpp:886
+#: icc_measurement.cpp:891
 msgid "CMM: <b>lcms</b>"
 msgstr ""
 
-#: icc_measurement.cpp:888
+#: icc_measurement.cpp:893
 msgid "averaging deviations (dE CIE*Lab):<b> "
 msgstr ""
 
-#: icc_measurement.cpp:888
+#: icc_measurement.cpp:893
 msgid "</b>  maximum: "
 msgstr ""
 
-#: icc_measurement.cpp:888
+#: icc_measurement.cpp:893
 msgid "  minimum: "
 msgstr ""
 
-#: icc_measurement.cpp:888
+#: icc_measurement.cpp:893
 msgid "  (dE CIE 2000) averaging: "
 msgstr ""
 
-#: icc_measurement.cpp:888
+#: icc_measurement.cpp:893
 msgid "  maximum: "
 msgstr ""
 
-#: icc_measurement.cpp:918
+#: icc_measurement.cpp:923
 msgid "Measurement patch"
 msgstr ""
 
-#: icc_measurement.cpp:919
+#: icc_measurement.cpp:924
 msgid "dE Lab"
 msgstr ""
 
-#: icc_measurement.cpp:920
+#: icc_measurement.cpp:925
 msgid "dE2000"
 msgstr ""
 
-#: icc_measurement.cpp:921
+#: icc_measurement.cpp:926
 msgid "L"
 msgstr ""
 
-#: icc_measurement.cpp:922
+#: icc_measurement.cpp:927
 msgid "a"
 msgstr ""
 
-#: icc_measurement.cpp:923
+#: icc_measurement.cpp:928
 msgid "b"
 msgstr ""
 
-#: icc_measurement.cpp:924
+#: icc_measurement.cpp:929
 msgid "L'"
 msgstr ""
 
-#: icc_measurement.cpp:925
+#: icc_measurement.cpp:930
 msgid "a'"
 msgstr ""
 
-#: icc_measurement.cpp:926
+#: icc_measurement.cpp:931
 msgid "b'"
 msgstr ""
 
-#: icc_measurement.cpp:927
+#: icc_measurement.cpp:932
 msgid "X"
 msgstr ""
 
-#: icc_measurement.cpp:928 icc_measurement.cpp:942
+#: icc_measurement.cpp:933 icc_measurement.cpp:947
 msgid "Y"
 msgstr ""
 
-#: icc_measurement.cpp:929
+#: icc_measurement.cpp:934
 msgid "Z"
 msgstr ""
 
-#: icc_measurement.cpp:931
+#: icc_measurement.cpp:936
 msgid "X'"
 msgstr ""
 
-#: icc_measurement.cpp:932
+#: icc_measurement.cpp:937
 msgid "Y'"
 msgstr ""
 
-#: icc_measurement.cpp:933
+#: icc_measurement.cpp:938
 msgid "Z'"
 msgstr ""
 
-#: icc_measurement.cpp:936
+#: icc_measurement.cpp:941
 msgid "R"
 msgstr ""
 
-#: icc_measurement.cpp:937
+#: icc_measurement.cpp:942
 msgid "G"
 msgstr ""
 
-#: icc_measurement.cpp:938
+#: icc_measurement.cpp:943
 msgid "B"
 msgstr ""
 
-#: icc_measurement.cpp:940
+#: icc_measurement.cpp:945
 msgid "C"
 msgstr ""
 
-#: icc_measurement.cpp:941
+#: icc_measurement.cpp:946
 msgid "M"
 msgstr ""
 
-#: icc_measurement.cpp:943
+#: icc_measurement.cpp:948
 msgid "K"
 msgstr ""
 
 #: icc_oyranos.cpp:168 icc_oyranos.cpp:324 icc_oyranos.cpp:404
 #: icc_oyranos.cpp:445 icc_oyranos.cpp:496
 msgid "Profil konnte nicht geladen werden"
-msgstr ""
-
-#: icc_oyranos.cpp:314
-msgid "Monitor Profile"
 msgstr ""
 
 #: icc_oyranos.cpp:707 icc_oyranos.cpp:793
@@ -1589,19 +1610,19 @@ msgstr ""
 msgid "Conversion table with 8-bit precission:"
 msgstr ""
 
-#: icc_profile_tags.cpp:421
+#: icc_profile_tags.cpp:433
 msgid "Number of colours:"
 msgstr ""
 
-#: icc_profile_tags.cpp:422 icc_betrachter.cxx:453
+#: icc_profile_tags.cpp:434 icc_betrachter.cxx:453
 msgid "Name"
 msgstr ""
 
-#: icc_profile_tags.cpp:422
+#: icc_profile_tags.cpp:434
 msgid "CIE*Lab"
 msgstr ""
 
-#: icc_profile_tags.cpp:423
+#: icc_profile_tags.cpp:435
 msgid "Device Colours"
 msgstr ""
 

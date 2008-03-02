@@ -63,7 +63,7 @@ ICCprofile::copy_ ( const ICCprofile & p )
   filename_ = p.filename_;
   changing_ = p.changing_;
   measurement = p.measurement;
-  measurement._profil = this;
+  measurement.profile_ = this;
   tags = p.tags;
   header = p.header;
   

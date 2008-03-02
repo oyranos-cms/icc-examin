@@ -286,15 +286,27 @@ ICCtag::getText                     (void)
 #   ifdef DEBUG_ICCTAG
     DBG_NUM_S( count )
 #   endif
-    for (int i = 0; i < count ; i++) { // Table 35 -- chromaticityType encoding
+    for (int i = 0; i < count ; ++i) { // Table 35 -- chromaticityType encoding
       std::stringstream s;
       s << _("Channel") << " "<< i;
       texte.push_back( s.str() );
-      texte.push_back( "chrm" );
 #     ifdef DEBUG_ICCTAG
       DBG_NUM_S(  cout << s.str() )
 #     endif
     }
+    std::vector<double> xy = getCIEXYZ(); XYZto_xyY(xy);
+    if( icValue(*(icUInt16Number*)&data_[10]) ) 
+      texte.push_back( getChromaticityColorantType( icValue(*(icUInt16Number*)&data_[10])) );
+    else if(!(xy.size()%3))
+    {
+      std::stringstream s;
+      for(unsigned int i = 0; i < xy.size()/3; ++i) {
+        s << texte[i] << " " << "xy: "<< xy[i*3+0] <<" "<< xy[i*3+1];
+        texte.push_back(s.str()); s.str("");
+      }
+    }
+    DBG_V( xy.size()%3 )
+    texte.push_back( "chrm" );
 
   } else  if (text == "text"
            || text == "cprt?" ) { // text
@@ -348,10 +360,10 @@ ICCtag::getText                     (void)
     char a = 'e';
     char b = 'n';
     const char *locale = getenv("LANG");
-  if(locale)
-    DBG_NUM_V( locale )
-  else
-    DBG_NUM_S( "keine LANG Variable gefunden" )
+    if(locale)
+      DBG_NUM_V( locale )
+    else
+      DBG_NUM_S( "keine LANG Variable gefunden" )
     
     if(locale && strlen(locale) >= 2 )
     {
@@ -501,24 +513,26 @@ ICCtag::getCIEXYZ                                 (void)
 
   if ((base->sig) == (icTagTypeSignature)icValue( icSigChromaticityType )) {
     int count = icValue(*(icUInt16Number*)&data_[8]);
-    if (count == 0)
-      count = 3;
 #   ifdef DEBUG_ICCTAG
     DBG_NUM_S( count )
 #   endif
-    for (int i = 0; i < count ; i++) { // Table 35 -- chromaticityType encoding
+    DBG_S(getChromaticityColorantType( icValue(*(icUInt16Number*)&data_[10])))
+    for (int i = 0; i < count ; ++i) { // Table 35 -- chromaticityType encoding
       // TODO lcms braucht einen 16 Byte Offset (statt 12 Byte)
-      icU16Fixed16Number* channel = (icU16Fixed16Number*)&data_[12+(4*i)];
-      double xyz[3] = { icUFValue( channel[0] ),
+      icU16Fixed16Number* channel = (icU16Fixed16Number*)&data_[12+(8*i)];
+      double xyY[3] = { icUFValue( channel[0] ),
                         icUFValue( channel[1] ),
-                        1.0 - (icUFValue(channel[0]) + icUFValue(channel[1])) };
-      punkte.push_back( xyz[0] );
-      punkte.push_back( xyz[1] );
-      punkte.push_back( xyz[2] );
+                        1.0 };
+      punkte.push_back( xyY[0] );
+      punkte.push_back( xyY[1] );
+      punkte.push_back( xyY[2] );
 #     ifdef DEBUG_ICCTAG
-      DBG_NUM_S( xyz[0] << ", " << xyz[1] << ", " << xyz[2] )
+      DBG_NUM_S( xyY[0] << ", " << xyY[1] << ", " << xyY[2] )
 #     endif
+      DBG_S( xyY[0] << ", " << xyY[1] << ", " << xyY[2] )
     }
+    DBG_V( punkte.size() )
+    xyYto_XYZ(punkte);
   } else if (base->sig == (icTagTypeSignature)icValue( icSigXYZType )) {
     icXYZType *daten = (icXYZType*) &data_[0];
     punkte.push_back( icSFValue( (daten->data.data[0].X) ) );

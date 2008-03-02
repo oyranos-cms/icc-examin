@@ -66,7 +66,7 @@ using namespace icc_examin_ns;
 
 ICCexamin::ICCexamin ()
 { DBG_PROG_START
-  icc_examin_ns::lock(__FILE__,__LINE__);
+  //icc_examin_ns::lock(__FILE__,__LINE__);
   icc_betrachter = new ICCfltkBetrachter;
   profile.init();
 
@@ -79,6 +79,7 @@ ICCexamin::ICCexamin ()
   status_ = false;
   intent_ = 3;
   gamutwarn_ = 0;
+  frei_zahl = 0;
   DBG_PROG_ENDE
 }
 
@@ -114,31 +115,6 @@ ICCexamin::start (int argc, char** argv)
 
   menue_translate( icc_betrachter->menu_menueleiste );
 
-# if USE_THREADS
-  static Fl_Thread fl_t;
-  DBG_THREAD_V( fl_t )
-  int fehler = fl_create_thread( fl_t, &oeffnenStatisch_, (void *)this );
-# if HAVE_PTHREAD_H
-  icc_thread_liste[THREAD_LADEN] = fl_t;
-# endif
-  if( fehler == EAGAIN)
-  {
-    WARN_S( _("Waechter Thread nicht gestartet Fehler: ")  << fehler );
-  } else
-# if !APPLE && !WIN32
-  if( fehler == PTHREAD_THREADS_MAX )
-  {
-    WARN_S( _("zu viele Waechter Threads Fehler: ") << fehler );
-  } else
-# endif
-  if( fehler != 0 )
-  {
-    WARN_S( _("unbekannter Fehler beim Start eines Waechter Threads Fehler: ") << fehler );
-  }
-# else
-  Fl::add_timeout( 0.01, /*(void(*)(void*))*/oeffnenStatisch_ ,(void*)this);
-# endif
-
   icc_betrachter->init( argc, argv );
 
   icc_betrachter->mft_gl->init(1);
@@ -147,7 +123,7 @@ ICCexamin::start (int argc, char** argv)
   icc_waehler_->resize(icc_waehler_->x(), icc_waehler_->y(),
                        icc_waehler_->w()+20, icc_waehler_->h());
   if(!icc_waehler_) WARN_S( _("icc_waehler_ nicht reservierbar") )
-  icc_waehler_->set_non_modal(); // gehört zum "details" Hauptfenster
+  //icc_waehler_->set_non_modal(); // gehört zum "details" Hauptfenster
   icc_waehler_->hide();
 
   // Die TagViewers registrieren und ihre Variablen initialisieren
@@ -219,7 +195,7 @@ ICCexamin::start (int argc, char** argv)
 
   // zur Benutzung freigeben
   status_ = 1;
-  frei_ = true;
+  FREI_(true);
 
   // receive events
 # if 0
@@ -230,19 +206,58 @@ ICCexamin::start (int argc, char** argv)
   }
 # endif
 
+# if USE_THREADS
+  static Fl_Thread fl_t;
+  DBG_THREAD_V( fl_t )
+  int fehler = fl_create_thread( fl_t, &oeffnenStatisch_, (void *)this );
+# if HAVE_PTHREAD_H
+  icc_thread_liste[THREAD_LADEN] = fl_t;
+# endif
+  if( fehler == EAGAIN)
+  {
+    WARN_S( _("Waechter Thread nicht gestartet Fehler: ")  << fehler );
+  } else
+# if !APPLE && !WIN32
+  if( fehler == PTHREAD_THREADS_MAX )
+  {
+    WARN_S( _("zu viele Waechter Threads Fehler: ") << fehler );
+  } else
+# endif
+  if( fehler != 0 )
+  {
+    WARN_S( _("unbekannter Fehler beim Start eines Waechter Threads Fehler: ") << fehler );
+  }
+# else
+  Fl::add_timeout( 0.01, /*(void(*)(void*))*/oeffnenStatisch_ ,(void*)this);
+# endif
+
   icc_betrachter->run();
 
   DBG_PROG_ENDE
 }
 
-// TODO: beseitige Hack
-static int frei_tuen = 0;
-#define frei_ frei_tuen
+// Sperren mit Warten/Freigeben
+void
+ICCexamin::frei(int freigeben)
+{ DBG_PROG_START
+  static int zahl = 0;
+  if(freigeben) {
+    frei_ = true;
+    --zahl;
+    DBG_THREAD_S( "freigeben " << zahl )
+  } else {
+    while(!frei_) icc_examin_ns::sleep(0.01);
+    frei_ = false;
+    ++zahl;
+    DBG_THREAD_S( "sperren   " << zahl )
+  }
+  DBG_PROG_ENDE
+}
 
 void
 ICCexamin::zeigPrueftabelle ()
 { DBG_PROG_START
-  neuzeichnen(icc_betrachter->inspekt_html);
+  icc_betrachterNeuzeichnen(icc_betrachter->inspekt_html);
   DBG_PROG_ENDE
 }
 
@@ -268,8 +283,7 @@ ICCexamin::nachricht( Modell* modell , int info )
     //return;
   }
 
-  frei_ = false;
-  DBG_PROG_V( info )
+  DBG_THREAD_V( info )
   // Modell identifizieren
   ICCkette* k = dynamic_cast<ICCkette*>(modell);
   if(k && (k->size() > info))
@@ -278,10 +292,9 @@ ICCexamin::nachricht( Modell* modell , int info )
     DBG_PROG_S( _("Auffrischen von Profil Nr.: ") << info )
     if(info>=0)
     {
-      ICCprofile *p = (*k)[info];
-      DBG_PROG_V( (int*)p )
-      if (p)
-      if (!p->changing())
+      DBG_PROG_V( (int*)(*k)[info] )
+      if ((*k)[info])
+      if (!(*k)[info]->changing())
       { DBG_PROG
         if(k->aktiv(info)) // momentan nicht genutzt
         {
@@ -329,7 +342,6 @@ ICCexamin::nachricht( Modell* modell , int info )
   Beobachter::nachricht(modell, info);
   icc_examin->fortschrittThreaded(1.0);
   icc_examin->fortschrittThreaded(1.1);
-  frei_ = true;
   DBG_PROG_ENDE
 }
 
@@ -339,8 +351,10 @@ ICCexamin::setzMesswerte()
   DBG_PROG_START
   bool export_html = false;
   if(icc_betrachter->menueintrag_inspekt->active()) {
+    icc_examin_ns::lock(__FILE__,__LINE__);
     icc_betrachter->inspekt_html->value(profile.profil()->report(export_html).c_str());
     icc_betrachter->inspekt_html->topline(icc_betrachter->tag_text->inspekt_topline);
+    icc_examin_ns::unlock(this, __FILE__,__LINE__);
   }
   DBG_PROG_ENDE
 }
@@ -389,7 +403,7 @@ ICCexamin::testZeigen ()
 void
 ICCexamin::vcgtZeigen ()
 { DBG_PROG_START
-  frei_ = false;
+  FREI_(false);
   kurve_umkehren[VCGT_VIEWER] = true;
 
 # if HAVE_X || APPLE
@@ -407,7 +421,7 @@ ICCexamin::vcgtZeigen ()
   }
 # endif
 
-  frei_ = true;
+  FREI_(true);
   // TODO: osX
   DBG_PROG_ENDE
 }
@@ -415,7 +429,7 @@ ICCexamin::vcgtZeigen ()
 void
 ICCexamin::moniHolen ()
 { DBG_PROG_START
-  //frei_ = false;
+  //FREI_(false);
   fortschritt( 0.01 );
 
   static std::vector<Speicher> ss;
@@ -424,7 +438,7 @@ ICCexamin::moniHolen ()
   size_t size = ss[0].size();
   const char *moni_profil = ss[0];
   if(!moni_profil || !size) {
-    frei_ = true;
+    //FREI_(true);
     DBG_PROG_ENDE
     return;
   }
@@ -450,27 +464,26 @@ ICCexamin::moniHolen ()
   vcgtZeigen();
 
   fortschritt( 1.1 );
-  //frei_ = true;
   DBG_PROG_ENDE
 }
 
 void
 ICCexamin::moniSetzen ()
 { DBG_PROG_START
-  frei_ = false;
+  FREI_(false);
   if( profile.size() && profile.profil()->filename() &&
       strlen( profile.profil()->filename() ) ) { DBG_PROG
     icc_oyranos.setzeMonitorProfil( profile.profil()->filename() );
     vcgtZeigen();
   }
-  frei_ = true;
+  FREI_(true);
   DBG_PROG_ENDE
 }
 
 void
 ICCexamin::standardGamma ()
 { DBG_PROG_START
-  frei_ = false;
+  FREI_(false);
 
 # if HAVE_X
   system("xgamma -gamma 1.0");
@@ -479,23 +492,25 @@ ICCexamin::standardGamma ()
 # endif
 
   // TODO: osX
-  frei_ = true;
+  FREI_(true);
   DBG_PROG_ENDE
 }
 
 void
 ICCexamin::gamutAnsichtZeigen ()
 {
+      icc_examin_ns::lock(__FILE__,__LINE__);
       icc_betrachter->menueintrag_3D->set();
       icc_betrachter->menueintrag_huelle->set();
       icc_betrachter->widget_oben = ICCfltkBetrachter::WID_3D;
       farbraum_angezeigt_ = true;
-      neuzeichnen(icc_betrachter->DD_farbraum);
-      DBG_PROG_S("neuzeichnen DD_farbraum")
+      icc_betrachterNeuzeichnen(icc_betrachter->DD_farbraum);
+      icc_examin_ns::unlock(this, __FILE__,__LINE__);
+      DBG_PROG_S("icc_betrachterNeuzeichnen DD_farbraum")
 }
 
 void
-ICCexamin::neuzeichnen (void* z)
+ICCexamin::icc_betrachterNeuzeichnen (void* z)
 { DBG_PROG_START
   Fl_Widget *wid = (Fl_Widget*)z;
   static int item;
@@ -545,6 +560,7 @@ ICCexamin::neuzeichnen (void* z)
       (icc_betrachter->DD_farbraum->visible()
     || icc_betrachter->inspekt_html->visible()) )
     waehle_tag = true;
+
 
   // die oberste Ebene zeigen/verstecken
   if(oben == DD_ZEIGEN) {
@@ -625,6 +641,7 @@ ICCexamin::neuzeichnen (void* z)
      !icc_betrachter->tag_viewer ->visible() )
     icc_betrachter->tag_text->show();
 
+
   DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->DD_farbraum)->visible())
   DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->inspekt_html)->visible())
   DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->examin)->visible() )
@@ -638,8 +655,11 @@ ICCexamin::neuzeichnen (void* z)
   DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->mft_viewer)->visible() )
 
   // Inhalte Erneuern
-  if(waehle_tag)
+  if(waehle_tag) {
+    //icc_examin_ns::unlock(this, __FILE__,__LINE__);
     waehleTag(_item);
+    //icc_examin_ns::lock(__FILE__,__LINE__);
+  }
 
   DBG_PROG_ENDE
 }
@@ -665,9 +685,8 @@ ICCexamin::fortschritt(double f)
 void
 ICCexamin::fortschrittThreaded(double f)
 { DBG_PROG_START
-  frei_ = false;
   icc_examin_ns::lock(__FILE__,__LINE__);
-  if(0.0 < f && f <= 1.0) {
+  /*if(0.0 < f && f <= 1.0) {
     if(!icc_betrachter->load_progress->visible())
       icc_betrachter->load_progress-> show();
     icc_betrachter->load_progress-> value( f );
@@ -678,10 +697,9 @@ ICCexamin::fortschrittThreaded(double f)
   } else {
     icc_betrachter->load_progress-> show();
     DBG_PROG_V( f )
-  }
-  icc_examin_ns::unlock(this, __FILE__,__LINE__);
-  frei_ = true;
+  }*/
   icc_betrachter->load_progress-> damage(FL_DAMAGE_ALL);
+  icc_examin_ns::unlock(this, __FILE__,__LINE__);
   DBG_PROG_ENDE
 }
 

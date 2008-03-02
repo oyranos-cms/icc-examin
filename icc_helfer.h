@@ -79,8 +79,9 @@ icProfileClassSignature icValue   (icProfileClassSignature val);
 icTagSignature          icValue   (icTagSignature val);
 void                    icValueXYZ(icXYZNumber*, double X, double Y, double Z);
 
-double*                 XYZto_xyY (double* XYZ);
-double*                 XYZto_xyY (std::vector<double> XYZ);
+const double*           XYZto_xyY (double* XYZ);
+void                    XYZto_xyY (std::vector<double> & XYZxyY);
+void                    xyYto_XYZ (std::vector<double> & xyYXYZ);
 
 std::string         renderingIntentName ( int intent);
 std::string         getColorSpaceName   ( icColorSpaceSignature color);
@@ -91,6 +92,7 @@ std::string         getSigTagName( icTagSignature  sig );
 std::string         getSigTagDescription( icTagSignature  sig );
 std::string         getSigTypeName( icTagTypeSignature  sig );
 std::string         getSigTechnology( icTechnologySignature sig );
+std::string         getChromaticityColorantType( int type );
 std::string         getIlluminant( icIlluminant illu );
 std::string         getStandardObserver( icStandardObserver obsv );
 std::string         getMeasurementGeometry( icMeasurementGeometry measgeo );
@@ -159,6 +161,19 @@ namespace icc_parser {
   std::vector<ZifferWort>       unterscheideZiffernWorte ( std::string &zeile,
                                                  bool anfuehrungsstriche_setzen,
                                                  const char *trennzeichen );
+}
+
+#define FREI_(freigeben) \
+{ if(freigeben) { \
+    frei_ = true; \
+    frei_zahl = 0; \
+    DBG_THREAD_S( "freigeben " << frei_zahl ) \
+  } else { DBG_THREAD_V( frei_ ) \
+    while (!frei_) icc_examin_ns::sleep(0.01); \
+    frei_ = false; \
+    ++frei_zahl; \
+    DBG_THREAD_S( "sperren   " << frei_zahl ) \
+  } \
 }
 
 // Callback Struktur

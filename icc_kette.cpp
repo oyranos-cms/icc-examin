@@ -104,7 +104,7 @@ ICCkette::einfuegen (const Speicher & prof, int pos)
         icc_examin_ns::sleep(0.05);
     }
   }
-  frei(false);
+  while(!frei()) icc_examin_ns::sleep(0.05); frei(false);
 
   // Ist das Profile eventuell schon geladen? -> Abbruch
   for(unsigned int i = 0; i < profile_.size(); ++i)
@@ -162,10 +162,11 @@ ICCkette::einfuegen (const Speicher & prof, int pos)
   }
 
 
-  icc_examin_ns::lock(__FILE__,__LINE__);
-  /*Modell::*/benachrichtigen( pos );
-  icc_examin_ns::unlock(icc_examin, __FILE__,__LINE__);
   frei(true);
+  DBG_V( frei() )
+  //icc_examin_ns::lock(__FILE__,__LINE__);
+  /*Modell::*/benachrichtigen( pos );
+  //icc_examin_ns::unlock(icc_examin, __FILE__,__LINE__);
   DBG_PROG_ENDE
   return erfolg;
 }
@@ -183,7 +184,7 @@ ICCkette::waechter (void* zeiger)
   DBG_PROG_START
   ICCkette* obj = (ICCkette*) zeiger;
   // Haupt Thread freigeben
-  //icc_examin_ns::unlock(icc_examin, __FILE__,__LINE__);
+  icc_examin_ns::unlock(0,__FILE__,__LINE__);
 
   while(1)
   {
@@ -204,8 +205,11 @@ ICCkette::waechter (void* zeiger)
         if( obj->profil_mzeit_[i] == 0 ) {
           obj->profil_mzeit_[i] = m_zeit;
         } else {
-          obj->frei(false);
-          obj->profile_[i].load( dateiNachSpeicher(obj->profilnamen_[i]) );
+          // TODO
+          while(!obj->frei()) icc_examin_ns::sleep(0.05); obj->frei(false);
+          // lade in LADEN und warte auf Ergebnis
+          icc_examin->erneuern(i);
+          //obj->profile_[i].load( dateiNachSpeicher(obj->profilnamen_[i]) );
           icc_examin_ns::lock(__FILE__,__LINE__);
           obj->/*Modell::*/benachrichtigen( i );
           icc_examin_ns::unlock(icc_examin, __FILE__,__LINE__);
@@ -215,7 +219,7 @@ ICCkette::waechter (void* zeiger)
       }
     }
     DBG_THREAD
-    icc_examin_ns::sleep(1.0/10.0);
+    icc_examin_ns::sleep(1.0/2.0);
   }
 
 # if USE_THREADS

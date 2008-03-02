@@ -253,7 +253,42 @@ icValueXYZ (icXYZNumber* ic_xyz,double X, double Y, double Z)
 
 // Farbkonvertierungen
 
-double*
+void
+xyYto_XYZ (std::vector<double> & Y)
+{
+  if( (Y.size()%3) || Y.size() == 0 ) {
+    WARN_S( "xyY ist kein Vielfaches von 3" )
+    return;
+  }
+  for(unsigned int i = 0; i < Y.size()/3; ++i)
+  {
+    double xyY[3] = {Y[i*3+0],  Y[i*3+1], Y[i*3+2] };
+    Y[i*3+0] = xyY[0]/*x*/ * xyY[2]/*Y*/ / xyY[1]/*y*/;
+    Y[i*3+1] = xyY[2];
+    Y[i*3+2] = (1-xyY[0]-xyY[1]) * xyY[2] / xyY[1];
+    DBG_PROG_S( Y[i*3+0] << ", " << Y[i*3+1] << ", " << Y[i*3+2] )
+  }
+}
+
+void
+XYZto_xyY (std::vector<double> & Y)
+{
+  if( (Y.size()%3) || Y.size() == 0 ) {
+    WARN_S( "XYZ ist kein Vielfaches von 3" )
+    return;
+  }
+  for(unsigned int i = 0; i < Y.size()/3; ++i)
+  {
+    double XYZ[3] = {Y[i*3+0],  Y[i*3+1], Y[i*3+2] };
+    double summe = (XYZ[0] + XYZ[1] + XYZ[2]) + 0.0000001;
+    Y[i*3+0] = XYZ[0] / summe;
+    Y[i*3+1] = XYZ[1] / summe;
+    Y[i*3+2] = XYZ[1];
+    DBG_PROG_S( Y[i*3+0] << ", " << Y[i*3+1] << ", " << Y[i*3+2] )
+  }
+}
+
+const double*
 XYZto_xyY (double* XYZ)
 {
   static double xyY[3];
@@ -261,28 +296,11 @@ XYZto_xyY (double* XYZ)
 
   xyY[0] = XYZ[0] / summe;
   xyY[1] = XYZ[1] / summe;
-  xyY[2] = XYZ[2] / summe;
+  xyY[2] = XYZ[1];
 
   return &xyY[0];
 }
 
-double*
-XYZto_xyY (std::vector<double> XYZ)
-{
-  static double xyY[3];
-  for (int i = 0 ; i < 3 ; i++)
-    xyY[i] = 0.0;
-
-  if (XYZ.size() == 3) {
-    double summe = (XYZ[0] + XYZ[1] + XYZ[2]) + 0.0000001;
-
-    xyY[0] = XYZ[0] / summe;
-    xyY[1] = XYZ[1] / summe;
-    xyY[2] = XYZ[2] / summe;
-  }
-
-  return &xyY[0];
-}
 
 // Namen
 
@@ -700,6 +718,22 @@ getSigTechnology             ( icTechnologySignature sig )
 }
 
 std::string
+getChromaticityColorantType( int type )
+{
+  std::string text;
+  switch (type) {
+    case 0: text = ""; break;
+    case 1: text = _("ITU-R BT.709"); break;
+    case 2: text = _("SMPTE RP145-1994"); break;
+    case 3: text = _("EBU Tech.3213-E"); break;
+    case 4: text = _("P22"); break;
+
+    default: DBG text = _("???"); break;
+  }
+  return text;
+}
+
+std::string
 getIlluminant             ( icIlluminant sig )
 {
   std::string text;
@@ -809,8 +843,8 @@ namespace icc_examin_ns {
            zeit_ = tv.tv_usec/(1000000/(time_t)teiler)
                    + (time_t)(modf( (double)tv.tv_sec / teiler,&tmp_d )
                      * teiler*teiler);
-           DBG_THREAD_V( modf(tv.tv_sec/teiler,&tmp_d)*teiler*teiler<<","<<
-                         tv.tv_usec/(1000000/teiler) )
+           //DBG_THREAD_V( modf(tv.tv_sec/teiler,&tmp_d)*teiler*teiler<<","<<
+             //            tv.tv_usec/(1000000/teiler) )
 #          else // WINDOWS TODO
            zeit_ = clock();
 #          endif

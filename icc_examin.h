@@ -70,6 +70,11 @@ class ICCexamin : public icc_examin_ns::Beobachter
   private:
     bool         lade_;
     bool         neu_laden_;
+    int          erneuern_;
+  public:
+    int          erneuern() { return erneuern_; }
+    void         erneuern(int pos) { DBG_PROG_V( erneuern_ ) erneuern_ = pos; }
+  private:
     std::vector<Speicher> speicher_vect_;
     static
 #if USE_THREADS
@@ -79,6 +84,7 @@ class ICCexamin : public icc_examin_ns::Beobachter
 #endif
                  oeffnenStatisch_ ( void* ICCexamina );
     void         oeffnenThread_ ();            // nur einmal pro ICCexamin
+    void         oeffnenThread_ (int erneuern_); 
   public:
     void         oeffnen ();                   // interaktiv
     void         oeffnen (std::vector<std::string> dateinamen);
@@ -93,7 +99,7 @@ class ICCexamin : public icc_examin_ns::Beobachter
     bool         gamutSpeichern (icc_examin_ns::IccGamutFormat format); // Farbraumhuelle
     void         zeigPrueftabelle ();
     void         zeigCGATS();                  // korrigiertes CGATS zeigen
-    void         neuzeichnen (void* widget);   // Oberflaeche neuzeichnen
+    void         icc_betrachterNeuzeichnen (void* widget); // Oberflaechenpflege
 
     std::string  waehleTag (int item);
     void         waehleMft (int item);
@@ -111,6 +117,8 @@ class ICCexamin : public icc_examin_ns::Beobachter
   public:
     int  laeuft ()  { return status_; }          // kann bei >1 genutzt werden
     bool frei()     { return frei_; }            // ist nicht gesperrt
+    void frei(int bool_);                        // Sperren mit Warten/Freigeben
+    int  frei_zahl;
     int  intent ()  { return intent_; }          // 
     int  gamutwarn ()  { return gamutwarn_; }    // 
     void gamutwarn (int warn) { gamutwarn_ = warn; }

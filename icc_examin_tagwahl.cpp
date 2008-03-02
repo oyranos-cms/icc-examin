@@ -52,7 +52,6 @@ using namespace icc_examin_ns;
 std::string
 ICCexamin::waehleTag (int item)
 { DBG_PROG_START
-  frei_ = false;
 
   DBG_PROG_V( item )
 
@@ -63,25 +62,31 @@ ICCexamin::waehleTag (int item)
     return text;
   }
 
+
+  FREI_(false);
   kurven[TAG_VIEWER].clear();
   punkte[TAG_VIEWER].clear();
   texte[TAG_VIEWER].clear();
+  FREI_(true);
 
   std::vector<std::string> rgb_tags;
   rgb_tags.push_back("rXYZ");
   rgb_tags.push_back("gXYZ");
   rgb_tags.push_back("bXYZ");
 
+  icc_examin_ns::lock(__FILE__,__LINE__);
   if (item < 0) {
     icc_betrachter->tag_browser->select(5);
     text = profile.profil()->printLongHeader(); DBG_PROG
+    FREI_(false);
     icc_betrachter->tag_text->hinein(text);
+    FREI_(true);
 
     if(farbraumModus())
       _item = item;
 
     text = "";
-    neuzeichnen(icc_betrachter->tag_text);
+    icc_betrachterNeuzeichnen(icc_betrachter->tag_text);
   } else if (item >= 0) {
     std::vector<std::string> TagInfo = profile.profil()->printTagInfo(item);
 
@@ -96,11 +101,15 @@ ICCexamin::waehleTag (int item)
              || TagInfo[1] == "meas"
              || TagInfo[1] == "sig"
              || TagInfo[1] == "dtim") {
+      FREI_(false);
       icc_betrachter->tag_text->hinein ( (profile.profil()->getTagText (item))[0] );
-      neuzeichnen(icc_betrachter->tag_text);
+      FREI_(true);
+      icc_betrachterNeuzeichnen(icc_betrachter->tag_text);
     } else if ( TagInfo[1] == "desc" ) {
+      FREI_(false);
       icc_betrachter->tag_text->hinein( (profile.profil()->getTagDescription (item))[0] ); DBG_PROG
-      neuzeichnen(icc_betrachter->tag_text);
+      FREI_(true);
+      icc_betrachterNeuzeichnen(icc_betrachter->tag_text);
     } else if ( TagInfo[0] == "rXYZ"
              || TagInfo[0] == "gXYZ"
              || TagInfo[0] == "bXYZ" ) {
@@ -112,12 +121,15 @@ ICCexamin::waehleTag (int item)
           for (unsigned int i = 0; i < 3; i++)
             punkte[TAG_VIEWER].push_back (punkt[i]);
           TagInfo = profile.profil()->printTagInfo (profile.profil()->getTagByName(rgb_tags[i_name]));
-          for (unsigned int i = 0; i < 2; i++)
-            texte[TAG_VIEWER].push_back (TagInfo[i]);
+          texte[TAG_VIEWER].push_back (TagInfo[0]);
         }
       }
+      texte[TAG_VIEWER].push_back (_("RGB primaries"));
+      texte[TAG_VIEWER].push_back ("XYZ");
+      FREI_(false);
       icc_betrachter->tag_viewer->hineinPunkt( punkte[TAG_VIEWER], texte[TAG_VIEWER] );
-      neuzeichnen(icc_betrachter->tag_viewer);
+      FREI_(true);
+      icc_betrachterNeuzeichnen(icc_betrachter->tag_viewer);
     } else if ( TagInfo[1] == "curv"
              || TagInfo[1] == "bfd" ) {
       std::vector<double> kurve;
@@ -128,37 +140,46 @@ ICCexamin::waehleTag (int item)
           kurve = profile.profil()->getTagCurve (i_name);
           kurven[TAG_VIEWER].push_back (kurve);
           TagInfo = profile.profil()->printTagInfo (i_name);
-          //for (unsigned int i = 0; i < 2; i++)
           texte[TAG_VIEWER].push_back (TagInfo[0]);
         }
       }
       texte[TAG_VIEWER].push_back ("curv");
+      FREI_(false);
       icc_betrachter->tag_viewer->hineinKurven( kurven[TAG_VIEWER], texte[TAG_VIEWER] );
-      neuzeichnen(icc_betrachter->tag_viewer);
+      FREI_(true);
+      icc_betrachterNeuzeichnen(icc_betrachter->tag_viewer);
     } else if ( TagInfo[1] == "chrm" ) {
       punkte[TAG_VIEWER] = profile.profil()->getTagCIEXYZ(item);
       texte [TAG_VIEWER] = profile.profil()->getTagText(item);
+      FREI_(false);
       icc_betrachter->tag_viewer->hineinPunkt( punkte[TAG_VIEWER], texte[TAG_VIEWER] );
-      neuzeichnen(icc_betrachter->tag_viewer);
+      FREI_(true);
+      icc_betrachterNeuzeichnen(icc_betrachter->tag_viewer);
     } else if ( TagInfo[1] == "XYZ" ) {
       punkte[TAG_VIEWER] = profile.profil()->getTagCIEXYZ(item);
       texte[TAG_VIEWER] = TagInfo;
+      FREI_(false);
       icc_betrachter->tag_viewer->hineinPunkt( punkte[TAG_VIEWER], texte[TAG_VIEWER] );
-      neuzeichnen(icc_betrachter->tag_viewer);
+      FREI_(true);
+      icc_betrachterNeuzeichnen(icc_betrachter->tag_viewer);
     } else if ( TagInfo[1] == "mft2"
              || TagInfo[1] == "mft1" ) { DBG_PROG_S("mft1/2")
       std::string t = profile.profil()->getTagText (item)[0];
+      FREI_(false);
       icc_betrachter->mft_choice->profilTag (item, t);
+      FREI_(true);
       waehleMft (_mft_item);
     } else if ( TagInfo[1] == "vcgt" ) { DBG_PROG_S("vcgt")
       kurve_umkehren[TAG_VIEWER] = true;
       kurven[TAG_VIEWER] = profile.profil()->getTagCurves (item, ICCtag::CURVE_IN);
       texte[TAG_VIEWER] = profile.profil()->getTagText (item);
+      FREI_(false);
       icc_betrachter->tag_viewer->hineinKurven ( kurven[TAG_VIEWER], texte[TAG_VIEWER] );
       icc_betrachter->tag_viewer->kurve_umkehren = true;
+      FREI_(true);
       DBG_PROG_S( "vcgt" )
 
-      neuzeichnen(icc_betrachter->tag_viewer);
+      icc_betrachterNeuzeichnen(icc_betrachter->tag_viewer);
 /*    } else if ( TagInfo[1] == "chad" ) {
       std::vector<double> zahlen = profile.profil()->getTagNumbers (icc_betrachter->tag_nummer, ICCtag::MATRIX);
       cout << zahlen.size() << endl; DBG_PROG
@@ -170,16 +191,18 @@ ICCexamin::waehleTag (int item)
       "  " << zahlen[6] << ", " << zahlen[7] << ", " << zahlen[8] << ", " << endl;
       icc_betrachter->tag_text->hinein ( s.str() ); DBG_PROG
 
-      neuzeichnen(icc_betrachter->tag_text); */
+      icc_betrachterNeuzeichnen(icc_betrachter->tag_text); */
     } else {
+      FREI_(false);
       icc_betrachter->tag_text->hinein ( (profile.profil()->getTagText (item))[0] ); DBG_PROG
-      neuzeichnen(icc_betrachter->tag_text);
+      FREI_(true);
+      icc_betrachterNeuzeichnen(icc_betrachter->tag_text);
     }
 
     text = TagInfo[0];
   }
 
-  frei_ = true;
+  icc_examin_ns::unlock(this, __FILE__,__LINE__);
   DBG_PROG_ENDE
   return text;
 }
@@ -188,7 +211,7 @@ ICCexamin::waehleTag (int item)
 void
 ICCexamin::waehleMft (int item)
 { DBG_PROG_START
-  frei_ = false;
+  FREI_(false);
   //Auswahl aus mft_choice
 
   kurven[MFT_VIEWER].clear();
@@ -215,7 +238,7 @@ ICCexamin::waehleMft (int item)
       for (unsigned int i = 1; i < Info.size(); i++) // erste Zeile weglassen
         s << Info [i] << endl;
       icc_betrachter->mft_text->hinein ( s.str() ); DBG_PROG_S("Text anzeigen")
-      neuzeichnen(icc_betrachter->mft_text);
+      icc_betrachterNeuzeichnen(icc_betrachter->mft_text);
     } break;
   case 1: // Matrix
     zahlen = profile.profil()->getTagNumbers (icc_betrachter->tag_nummer, ICCtag::MATRIX);
@@ -226,14 +249,14 @@ ICCexamin::waehleMft (int item)
     "  " << zahlen[3] << ", " << zahlen[4] << ", " << zahlen[5] << ", " << endl <<
     "  " << zahlen[6] << ", " << zahlen[7] << ", " << zahlen[8] << ", " << endl;
     icc_betrachter->mft_text->hinein ( s.str() ); DBG_PROG
-    neuzeichnen(icc_betrachter->mft_text);
+    icc_betrachterNeuzeichnen(icc_betrachter->mft_text);
     break;
   case 2: // Eingangskurven
     DBG_PROG_S("Kurven in anzeigen")
     kurven[MFT_VIEWER] =  profile.profil()->getTagCurves (icc_betrachter->tag_nummer, ICCtag::CURVE_IN);
     texte[MFT_VIEWER] = profile.profil()->getTagChannelNames (icc_betrachter->tag_nummer, ICCtag::CURVE_IN);
     icc_betrachter->mft_viewer->hineinKurven ( kurven[MFT_VIEWER], texte[MFT_VIEWER] );
-    neuzeichnen(icc_betrachter->mft_viewer);
+    icc_betrachterNeuzeichnen(icc_betrachter->mft_viewer);
     DBG_PROG
     break;
   case 3: // 3D Tabelle
@@ -242,20 +265,20 @@ ICCexamin::waehleMft (int item)
                      profile.profil()->getTagTable (icc_betrachter->tag_nummer, ICCtag::TABLE),
                      profile.profil()->getTagChannelNames (icc_betrachter->tag_nummer, ICCtag::TABLE_IN),
                      profile.profil()->getTagChannelNames (icc_betrachter->tag_nummer, ICCtag::TABLE_OUT) ); DBG_PROG_S( "3D Tabelle" )
-    neuzeichnen(icc_betrachter->mft_gl);
+    icc_betrachterNeuzeichnen(icc_betrachter->mft_gl);
     break;
   case 4: // Ausgangskurven
     DBG_PROG_S("Kurven in anzeigen")
     kurven[MFT_VIEWER] = profile.profil()->getTagCurves (icc_betrachter->tag_nummer, ICCtag::CURVE_OUT);
     texte[MFT_VIEWER] = profile.profil()->getTagChannelNames (icc_betrachter->tag_nummer, ICCtag::CURVE_OUT);
     icc_betrachter->mft_viewer->hineinKurven ( kurven[MFT_VIEWER], texte[MFT_VIEWER] );
-    neuzeichnen(icc_betrachter->mft_viewer);
+    icc_betrachterNeuzeichnen(icc_betrachter->mft_viewer);
     DBG_PROG
     break;
   }
 
   icc_betrachter->mft_choice->gewaehlter_eintrag = item;
-  frei_ = true;
+  FREI_(true);
   DBG_PROG_ENDE
 }
 

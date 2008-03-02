@@ -1,6 +1,6 @@
 Release: 1
 Summary: ICC profile viewer and colour visualisation
-Name: icc_examin
+Name: iccexamin
 License: GPL,LGPL
 Group: Productivity/Graphics/Other
 #Source: http://www.behrmann.name/index.php?option=com_content&task=view&id=33&Itemid=69
@@ -56,7 +56,7 @@ update-mime-database %{_datadir}/mime/
 %files
 %defattr(-, root, root)
 %doc AUTHORS COPYING ChangeLog README
-%{_bindir}/icc_examin
+%{_bindir}/iccexamin
 %{_datadir}/applications/icc_examin.desktop
 %{_datadir}/mime/packages/icc.xml
 %{_datadir}/pixmaps/icc_examin.png

@@ -27,35 +27,24 @@
 
 // Date:      Mai 2004
 
-#ifndef ICC_PROFILE_H
-#define ICC_PROFILE_H
+#ifndef ICC_MEASUREMENT_H
+#define ICC_MEASUREMENT_H
 
 
-#include <icc34.h>
 #include <string>
-#include <iostream>
-#include <sstream>
-#include <map>
 #include <vector>
-#include <fstream>
 #include "icc_utils.h"
-#include "icc_formeln.h"
-#include "icc_helfer.h"
 
-#include "icc_measurement.h"
-#include "icc_profile_header.h"
 #include "icc_profile_tags.h"
 
-
 /**
-  *   @brief interne ICC Profilstruktur
+  *   @brief Messdaten 
   **/
-
-class ICCprofile;
 
 
 // definiert in icc_measurement.cpp
 class ICCmeasurement {
+  friend class ICCprofile;
     void                copy (const ICCmeasurement& m);
     void                defaults ();
 
@@ -81,68 +70,69 @@ class ICCmeasurement {
     void                lcms_parse ();
 
   private:
-    icTagSignature      _sig;
-    int                 _size;
-    char*               _data;
+    icTagSignature      sig_;
+    size_t              size_;
+    char*               data_;
 
-    ICCprofile*         _profil;
-    int                 _channels;
-    int                 _isMatrix;
+    ICCprofile*         profile_;
+    int                 channels_;
+    int                 isMatrix_;
 
-    int                 _nFelder;
+    int                 nFelder_;
 
-    bool                _XYZ_measurement;
-    bool                _RGB_measurement;
-    bool                _CMYK_measurement;
+    bool                XYZ_measurement_;
+    bool                RGB_measurement_;
+    bool                CMYK_measurement_;
     // Messwerte
-    std::vector<XYZ>    _XYZ_Satz;
-    std::vector<Lab>    _Lab_Satz;
-    std::vector<RGB>    _RGB_Satz;
-    std::vector<CMYK>   _CMYK_Satz;
+    std::vector<XYZ>    XYZ_Satz_;
+    std::vector<Lab>    Lab_Satz_;
+    std::vector<RGB>    RGB_Satz_;
+    std::vector<CMYK>   CMYK_Satz_;
     // Profilwerte
-    std::vector<std::string> _Feldnamen;
-    std::vector<XYZ>    _XYZ_Ergebnis;
-    std::vector<Lab>    _Lab_Ergebnis;
-    std::vector<RGB>    _RGB_MessFarben;
-    std::vector<RGB>    _RGB_ProfilFarben;
+    std::vector<std::string> Feldnamen_;
+    std::vector<XYZ>    XYZ_Ergebnis_;
+    std::vector<Lab>    Lab_Ergebnis_;
+    std::vector<RGB>    RGB_MessFarben_;
+    std::vector<RGB>    RGB_ProfilFarben_;
     // Ergebnisse
-    std::vector<double> _Lab_Differenz;
-    double              _Lab_Differenz_max;
-    double              _Lab_Differenz_min;
-    double              _Lab_Differenz_Durchschnitt;
-    std::vector<double> _DE00_Differenz;
-    double              _DE00_Differenz_max;
-    double              _DE00_Differenz_min;
-    double              _DE00_Differenz_Durchschnitt;
+    std::vector<double> Lab_Differenz_;
+    double              Lab_Differenz_max_;
+    double              Lab_Differenz_min_;
+    double              Lab_Differenz_Durchschnitt_;
+    std::vector<double> DE00_Differenz_;
+    double              DE00_Differenz_max_;
+    double              DE00_Differenz_min_;
+    double              DE00_Differenz_Durchschnitt_;
 
-    std::vector<std::vector<std::string> > _reportTabelle;
+    std::vector<std::vector<std::string> > reportTabelle_;
     std::vector<int>    layout;
   // I/O
   public:
     void                load (ICCprofile* profil , ICCtag& tag);
-    void                load (ICCprofile* profil , char *data, size_t size);
+    void                load (ICCprofile* profil ,
+                              const char *data, size_t size);
   public:
     // grundlegende Infos
-    bool                has_data (void)    {DBG_PROG return (_XYZ_Satz.size() ||
-                                                    ( _data && _size ) ); }
-    bool                valid (void)       {DBG_PROG return (_XYZ_measurement
-                                                 && (_RGB_measurement
-                                                  || _CMYK_measurement)); }
-    bool                hasRGB ()          {DBG_PROG return _RGB_measurement; }
-    bool                hasCMYK ()         {DBG_PROG return _CMYK_measurement; }
-    bool                hasXYZ ()          {DBG_PROG return _XYZ_measurement; }
-    int                 getSize()          {DBG_PROG return _size; }
-    int                 getPatchCount()    {DBG_PROG return _nFelder; }
+    bool                has_data (void)    {DBG_PROG return (XYZ_Satz_.size() ||
+                                                    ( data_ && size_ ) ); }
+    bool                valid (void)       {DBG_PROG return (XYZ_measurement_
+                                                 && (RGB_measurement_
+                                                  || CMYK_measurement_)); }
+    bool                hasRGB ()          {DBG_PROG return RGB_measurement_; }
+    bool                hasCMYK ()         {DBG_PROG return CMYK_measurement_; }
+    bool                hasXYZ ()          {DBG_PROG return XYZ_measurement_; }
+    size_t              getSize()          {DBG_PROG return size_; }
+    int                 getPatchCount()    {DBG_PROG return nFelder_; }
     // Werte
     std::vector<double> getMessRGB (int patch); // Darstellungsfarben
     std::vector<double> getCmmRGB (int patch);  // Darstellungsfarben
     std::vector<double> getMessLab (int patch);
     std::vector<double> getCmmLab (int patch);
-    std::vector<XYZ>    getMessXYZ ()      {DBG_PROG return _XYZ_Satz; }
-    std::vector<Lab>    getMessLab ()      {DBG_PROG return _Lab_Satz; }
-    std::vector<RGB>    getMessRGB ()      {DBG_PROG return _RGB_Satz; }
-    std::vector<CMYK>   getMessCMYK ()     {DBG_PROG return _CMYK_Satz; }
-    std::vector<std::string> getFeldNamen () {DBG_PROG return _Feldnamen; }
+    std::vector<XYZ>    getMessXYZ ()      {DBG_PROG return XYZ_Satz_; }
+    std::vector<Lab>    getMessLab ()      {DBG_PROG return Lab_Satz_; }
+    std::vector<RGB>    getMessRGB ()      {DBG_PROG return RGB_Satz_; }
+    std::vector<CMYK>   getMessCMYK ()     {DBG_PROG return CMYK_Satz_; }
+    std::vector<std::string> getFeldNamen () {DBG_PROG return Feldnamen_; }
 
     // Report
     std::vector<std::vector<std::string> > getText ();
@@ -153,8 +143,8 @@ class ICCmeasurement {
     std::string         getMaxCGATS ();
 
     // Herkunft
-    std::string         getTagName()       {return getSigTagName (_sig); }
-    std::string         getInfo()          {DBG_PROG return getSigTagDescription(_sig); }
+    std::string         getTagName()       {return getSigTagName (sig_); }
+    std::string         getInfo()          {DBG_PROG return getSigTagDescription(sig_); }
 
     // Schalter
     bool                export_farben;
@@ -162,96 +152,5 @@ class ICCmeasurement {
 };
 
 
-// definiert in icc_profile.cpp
-class ICCprofile {
-  friend class ICCtag;
-  friend class ICCmeasurement;
-  public:
-                        ICCprofile ();
-                        ICCprofile (const char *filename);
-    virtual             ~ICCprofile (void);
-    void                clear (void);
 
-  public:
-    void                load (std::string filename);
-    void                load (char* filename);
-
-  private:
-    void                fload ();
-    std::string         _filename;
-
-    // icc34.h Definitionen
-    char*               _data;
-    unsigned int        _size;
-
-    ICCheader           header;
-    std::vector<ICCtag> tags;
-  private: // cgats via lcms
-    ICCmeasurement      measurement;
-
-  public: // Informationen
-    const char*         filename ();
-    void                filename (const char* s);
-    int                 size     ();
-    //const char*         cmm      ()        {DBG_PROG return header.cmmName(); }
-    //void                cmm      (const char* s) {DBG_PROG header.cmmName (s); }
-    //int                 version  ()        {DBG_PROG return (int) header.version(); }
-    //const char*         creator  ()        {DBG_PROG return header.creatorName(); }
-
-    std::string         printHeader     ();
-    std::string         printLongHeader ();
-    std::vector<std::string> getPCSNames();
-
-    // Tag Infos
-    int                      tagCount();
-    std::vector<std::string> printTags  (); // Liste der einzelnen Tags (5)
-    std::vector<std::string> printTagInfo      (int item); // Name,Typ
-    std::vector<std::string> getTagText        (int item);    // Inhalt
-    std::vector<std::string> getTagDescription (int item);
-
-    std::vector<double>      getTagCIEXYZ      (int item);
-    std::vector<double>      getTagCurve       (int item);
-    std::vector<std::vector<double> >
-                             getTagCurves      (int item, ICCtag::MftChain typ);
-    std::vector<std::vector<std::vector<std::vector<double> > > >
-                             getTagTable       (int item, ICCtag::MftChain typ);
-    std::vector<double>      getTagNumbers     (int item, ICCtag::MftChain typ);
-    std::vector<std::string> getTagChannelNames(int item, ICCtag::MftChain typ);
-    bool                hasTagName   (std::string name); // Name
-    int                 getTagByName (std::string name); // Name
-    int                 getTagCount     (); 
-
-    // Profil Infos
-    char*               getProfileInfo  ();
-    std::vector<double> getWhitePkt   (void);
-    int                 getColourChannelsCount ();
-    int                 hasCLUT ();
-    bool                valid ();
-  public: // Datei I/O
-    int                 checkProfileDevice (char* type,
-                                           icProfileClassSignature deviceClass);
- 
-  public: // Messwertinfos
-    bool                hasMeasurement ();
-    std::string         report         (bool auss);
-    ICCmeasurement&     getMeasurement ();
-    std::string         cgats          ();
-    std::string         cgats_max      ();
-
-  public: // Profilerstellung
-    void                setHeader          (void* h);
-    void                addTag             (ICCtag tag);
-    ICCtag&             getTag             (int item);
-    void                removeTag          (int item);
-    void                removeTagByName    (std::string name);
-    void                saveProfileToFile  (char* filename);
-    int                 getProfileSize     (void);
-    char*               saveProfileToMem   (int* size);
-  private:
-    void                writeTags     (void);
-    void                writeHeader   (void);
-    void                writeTagTable (void);
-};
-
-
-#endif //ICC_PROFILE_H
+#endif //ICC_MEASUREMENT_H

@@ -139,7 +139,7 @@ CgatsFilter::setzeWortInAnfuehrungszeichen_( std::string &zeile,
     if( (ende = zeile.find_last_of( cgats_alnum_ ))
         == std::string::npos )
     {
-      WARN_S( _("Leere Zeile ? : ") << zeile )
+      DBG_PROG_S( _("Leere Zeile ? : ") << zeile )
       DBG_CGATS_ENDE
       return;
     }
@@ -766,7 +766,7 @@ CgatsFilter::cgats_korrigieren_               ()
         DBG_NUM_S( j<<" "<<messungen[messungen.size()-1].felder[j] )
       // Markieren und Warnen
       if( im_data_format_block )
-        WARN_S( _("oops zwei mal BEGIN_DATA_FORMAT  Zeile: ") << i )
+        DBG_PROG_S( _("oops zwei mal BEGIN_DATA_FORMAT  Zeile: ") << i )
       else
         im_data_format_block = true;
 
@@ -782,7 +782,7 @@ CgatsFilter::cgats_korrigieren_               ()
       for( unsigned j = 0; j < messungen[messungen.size()-1].felder.size(); ++j )
         DBG_CGATS_S( j<<" "<<messungen[messungen.size()-1].felder[j] );
       if( !im_data_format_block )
-        WARN_S( _("oops END_DATA_FORMAT ohne BEGIN_DATA_FORMAT  Zeile: ") << i )
+        DBG_PROG_S( _("oops END_DATA_FORMAT ohne BEGIN_DATA_FORMAT  Zeile: ") << i )
 
       s.str("");
       s << "NUMBER_OF_FIELDS " << zaehler_FIELDS;
@@ -852,7 +852,7 @@ CgatsFilter::cgats_korrigieren_               ()
     if( sucheWort (gtext, "END_DATA", 0 ) != std::string::npos )
     {
       if( !im_data_block )
-        WARN_S( _("oops END_DATA ohne BEGIN_DATA  Zeile ") << i )
+        DBG_PROG_S( _("oops END_DATA ohne BEGIN_DATA  Zeile ") << i )
 
       s.str("");
       s << "NUMBER_OF_SETS " << zaehler_SETS;
@@ -984,7 +984,7 @@ CgatsFilter::logEintrag_ (std::string meldung, int zeile_n,
     log[l].ausgabe.push_back( ausgabe );
   log[l].meldung = meldung;
   log[l].original_zeile = zeile_n;
-  WARN_S( zeile_n << ": " << meldung )
+  DBG_PROG_S( zeile_n << ": " << meldung )
   DBG_PROG_ENDE
   return l;
 }
