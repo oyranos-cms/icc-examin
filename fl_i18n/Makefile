@@ -2,9 +2,9 @@
 LINUX = 1
 CXX = c++
 CC = cc
-CFLAGS   =   $(INCL) $(ARGYLL_H) $(DEBUG)
-CXXFLAGS =   $(INCL) $(ARGYLL_H) $(DEBUG)
-LDFLAGS  = -L.  $(dl) $(iconv)
+CFLAGS   = -O2 -pipe -Wall -g -I/opt/local/include -pipe -Wall -g -I/opt/local/include $(INCL) $(ARGYLL_H) $(DEBUG)
+CXXFLAGS = -O2 -pipe -Wall -g -I/opt/local/include -pipe -Wall -g -I/opt/local/include $(INCL) $(ARGYLL_H) $(DEBUG)
+LDFLAGS  = -L. -Wall -g -L/usr/X11R6/lib -L/opt/local/lib $(dl) $(iconv)
 dl = -ldl
 X11 = X11
 X_H = -I/usr/X11R6/include -I/usr/include
@@ -14,14 +14,12 @@ XIN = 1
 XINERAMA_LIB = -lXinerama
 X11_LIB_PATH = -L/usr/X11R6/lib$(BARCH) -L/usr/lib$(BARCH) -L$(libdir)
 X11_LIBS=$(X11_LIB_PATH) -lX11 $(XF86VMODE_LIB) -lXpm -lXext $(XINERAMA_LIB)
-HAVE_FLTK_UTF8 = -DHAVE_FLTK_UTF8
 FLTK = 1
-FLTK_H = -I/data3/CD/programme/fltk118-utf8-2007-07-14 -I/usr/include/freetype2 -Wall -g -I/usr/X11R6/include -D_THREAD_SAFE -D_REENTRANT
-FLTK_LIBS = -L/data3/CD/programme/fltk118-utf8-2007-07-14/lib -L/usr/X11R6/lib -Wall -g -L/usr/X11R6/lib -lfltk-utf8_images -lpng -lz -ljpeg -lfltk-utf8_gl -lGLU -lGL -lfltk-utf8 -lfltk_xutf8 -lXft -lXinerama -lpthread -ldl -lm -lXext -lX11 
-fltkconfig = /data3/CD/programme/fltk118-utf8-2007-07-14/fltk-utf8-config
+FLTK_H = -I/usr/include/freetype2 -march=i586 -mtune=i686 -fmessage-length=0 -D_FORTIFY_SOURCE=2  -fno-strict-aliasing
+FLTK_LIBS = -lfltk_images -lpng -lz -ljpeg -lfltk_gl -lGLU -lGL -lfltk -lXft -lXinerama -lpthread -lm -lXext -lX11
+fltkconfig = /usr/bin/fltk-config
 GETTEXT = -DUSE_GETTEXT
-DEBUG = -Wall -g -DDEBUG --pedantic
-DEBUG_SWITCH = -v
+.SILENT:
 TARGET=fl_i18n
 VERSION=0.0.2
 COMPILE_OPTIONS=-DUSE_THREADS $(GETTEXT)

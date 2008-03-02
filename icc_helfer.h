@@ -202,11 +202,12 @@ namespace icc_parser {
 // partitial in icc_speicher.h
 /** @brief list class template
  */
-template <class T>
+template <typename T>
 class ICClist {
-  size_t     n_;          //!< the exposed number of elements
+  size_t     n_;          //!< the exposed or valid number of elements
   size_t     reserve_;    //!< the allocated elements in list_
-  T        * list_;       //!< the array of T
+  T        * list_;       //!< the data array of type T elements
+  /** @brief set to defaults, ignore allocations */
   void       init() {
     zero();
     reserve_step = 10000/sizeof(T);
@@ -224,7 +225,9 @@ public:
     init();
     reserve(n + reserve_step);
   }
-  size_t reserve_step; //!< reserve of elements on some allocations
+  size_t reserve_step; //!< reservation of elements on some allocations
+
+  /** @brief a copy this class object */
   ICClist&   copy    (const ICClist & l) {
     if(l.n_ > n_)
       list_ = new T[l.n_];
@@ -236,6 +239,7 @@ public:
     reserve_ = n_;
     return *this;
   }
+  /** @brief free and reset */
   void       clear   () {
     if(n_ && list_)
       delete [] (list_);
@@ -250,9 +254,16 @@ public:
   operator const size_t & () const {
     return n_;
   }
+
+  /** @brief same as copy */
   ICClist& operator = (const ICClist& l) {
     return copy(l);
   }
+
+  /** @brief index access operator 
+   *
+   *  no check in this basic class
+   */
   T &      operator [] (size_t i) {
     //if(i < n_)
       return list_[i];
@@ -260,6 +271,8 @@ public:
       DBG_PROG_S("out of range");
     return list_[reserve_ + 1000000000]; // create exception */
   }
+
+  /** @brief constant index access operator */
   const T& operator [] (const size_t i) const {
     //if(i < n_)
       return list_[i];
@@ -267,12 +280,18 @@ public:
       DBG_PROG_S("out of range");
     return list_[reserve_ + 1000000000]; // create exception */
   }
+
+  /** @brief add one element
+
+   *  allocate new mem, once the limit is reached
+   */
   void     push_back( T x ) {
     if(n_ >= reserve_)
       reserve( n_ + 1 + reserve_step );
     list_[n_] = x;
     ++n_;
   }
+
   T *      begin() {
     return &list_[0];
   }
@@ -291,10 +310,13 @@ public:
     else
       return NULL;
   }
+
+  /** @brief reserve if needed */
   void       reserve (size_t x) {
     if ( n_ == 0 && !reserve_ ) {
       list_ = new T[x];
       reserve_ = x;
+    /* only enlarge */
     } else if( reserve_ < x ) {
       T* tmp = new T[x];
       reserve_ = x;
@@ -304,6 +326,8 @@ public:
       list_ = tmp;
     }
   }
+
+  /** @brief insert allocating automatically */
   void     insert( T* start_, const T* begin_, const T* end_ ) {
     size_t news = (size_t)((intptr_t)(end_ - begin_)) + 1;
     size_t begin_i = 0;
@@ -329,6 +353,8 @@ public:
     if( n_ < begin_i + news )
       n_ = begin_i + news;
   }
+
+  /** @brief ignore unused elements, avoid reallocation as possible */
   void     resize( size_t n ) {
     if(n > reserve_)
       reserve (n + reserve_step);
@@ -336,7 +362,38 @@ public:
   }
 };
 
+#include "icc_thread_daten.h"
 
+/** @brief a thread save list
+ *
+ *  this safty makes the structure as well expensive
+ */
+template <typename T>
+class ICCThreadList : public ICClist<T>,
+                      public icc_examin_ns::ThreadDaten
+{
+  /** @brief index access operator 
+   *
+   *  no check in this basic class
+   */
+  T &      operator [] (size_t i) {
+    //if(i < n_)
+      return ICClist<T>::[i];
+    /*else
+      DBG_PROG_S("out of range");
+    return list_[reserve_ + 1000000000]; // create exception */
+  }
+
+  /** @brief constant index access operator */
+  const T& operator [] (const size_t i) const {
+    //if(i < n_)
+      return const ICClist::[i];
+    /*else
+      DBG_PROG_S("out of range");
+    return list_[reserve_ + 1000000000]; // create exception */
+  }
+
+}
 
 // Callback structure
 /*typedef struct StructVoidInt

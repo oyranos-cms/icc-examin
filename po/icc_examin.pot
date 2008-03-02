@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2007-09-21 11:53+0200\n"
+"POT-Creation-Date: 2007-09-21 14:53+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1924,19 +1924,19 @@ msgstr ""
 msgid "@2>"
 msgstr ""
 
-#: icc_cinepaint.cpp:195
+#: icc_cinepaint.cpp:189
 msgid "Image Profile..."
 msgstr ""
 
-#: icc_cinepaint.cpp:196
+#: icc_cinepaint.cpp:190
 msgid "Proof Profile..."
 msgstr ""
 
-#: icc_cinepaint.cpp:197
+#: icc_cinepaint.cpp:191
 msgid "Watch Colours 3D..."
 msgstr ""
 
-#: icc_cinepaint.cpp:198
+#: icc_cinepaint.cpp:192
 msgid "Watch Colours 3D.2..."
 msgstr ""
 
