@@ -498,7 +498,7 @@ class ICCprofile {
                                            int size);
  
   public: // Messwertinfos
-    bool                hasMeasurement () {DBG_PROG return (hasTagName("targ") ||
+    bool                hasMeasurement() {DBG_PROG return (hasTagName("targ") ||
                                     (hasTagName("CIED")&&hasTagName("DevD"))); }
     std::string         report ()         {DBG_PROG return measurement.getHtmlReport(); }
     ICCmeasurement&     getMeasurement () {DBG_PROG if (hasMeasurement())

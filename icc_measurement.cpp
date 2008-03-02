@@ -468,19 +468,45 @@ ICCmeasurement::init_umrechnen                     (void)
                                       // SLOW ON TRANSFORMING, very fast on creating transform.
                                       // Maximum accurancy.
 
-  double X_max, Y_max, Z_max;
-  X_max = Y_max = Z_max = 0;
+  double max[3], min[3], WP[3];
+  max[0] = max[1] = max[2] = 0;
+  min[0] = min[1] = min[2] = 100;
   {
-    if (_nFelder != _XYZ_Satz.size()) DBG_PROG_S("Messfeldanzahl divergiert")
+    std::vector<double> wp;
+    if (_profil) wp = _profil->getWhitePkt();
+    if (wp.size() == 3)
+    { for (int i = 0; i < 3; i++)
+        WP[i] = wp[i];
+    } else
+    { WP[0] = X_D50;
+      WP[1] = Y_D50;
+      WP[2] = Z_D50;
+    }
+  }
+  { int maxFeld=0, minFeld=0;
+    const char *maxFN=0, *minFN=0;
+    if (_nFelder != (int)_XYZ_Satz.size()) DBG_PROG_S("Messfeldanzahl divergiert")
     for (int i = 0; i < _nFelder; i++)
     { 
-      if (Y_max < _XYZ_Satz[i].Y)
-      { X_max = _XYZ_Satz[i].X;
-        Y_max = _XYZ_Satz[i].Y;
-        Z_max = _XYZ_Satz[i].Z;
+      if (max[1] < _XYZ_Satz[i].Y)
+      { max[0] = _XYZ_Satz[i].X;
+        max[1] = _XYZ_Satz[i].Y;
+        max[2] = _XYZ_Satz[i].Z;
+        maxFeld = i;
+        maxFN = _Feldnamen[i].c_str();
+      }
+      if (min[1] > _XYZ_Satz[i].Y)
+      { min[0] = _XYZ_Satz[i].X;
+        min[1] = _XYZ_Satz[i].Y;
+        min[2] = _XYZ_Satz[i].Z;
+        minFeld = i;
+        minFN = _Feldnamen[i].c_str();
       }
     } 
-  } DBG_PROG_S( "X_max = "<< X_max <<" Y_max = "<< Y_max <<" Z_max = "<< Z_max )
+    DBG_PROG_S( maxFN << " Nr. " << maxFeld << endl << " X_max = "<< max[0] <<" Y_max = "<< max[1] <<" Z_max = "<< max[2] )
+    DBG_PROG_S( minFN << " Nr. " << minFeld << endl << " X_min = "<< min[0] <<" Y_min = "<< min[1] <<" Z_min = "<< min[2] )
+  }
+
 
   if (_RGB_measurement && _XYZ_measurement) {DBG_PROG // keine Umrechnung nötig
     cmsHTRANSFORM hRGBtoSRGB, hXYZtoSRGB, hRGBtoXYZ, hXYZtoLab, hRGBtoLab;
@@ -528,6 +554,7 @@ ICCmeasurement::init_umrechnen                     (void)
     double RGB[3], sRGB[3], XYZ[3], Lab[3];
     bool vcgt = false;
     std::vector<std::vector<double> > vcgt_kurven;
+    //TODO
     if (_profil && _profil->hasTagName ("vcgt")) {
       vcgt = true;
       vcgt_kurven = _profil->getTagCurves( _profil->getTagByName("vcgt"),
@@ -542,10 +569,10 @@ ICCmeasurement::init_umrechnen                     (void)
     _Lab_Differenz.resize(_nFelder); DBG_V( _Lab_Differenz.size() )
     _DE00_Differenz.resize(_nFelder);
     for (int i = 0; i < _nFelder; i++) {
-        // Messfarben
-        XYZ[0] = _XYZ_Satz[i].X;
-        XYZ[1] = _XYZ_Satz[i].Y;
-        XYZ[2] = _XYZ_Satz[i].Z;
+        // Messfarben auf Weiss und Schwarz addaptiert
+        XYZ[0] = (_XYZ_Satz[i].X-min[0])/(max[0]-min[0])*WP[0];
+        XYZ[1] = (_XYZ_Satz[i].Y-min[1])/(max[1]-min[1])*WP[1];
+        XYZ[2] = (_XYZ_Satz[i].Z-min[2])/(max[2]-min[2])*WP[2];
         cmsDoTransform (hXYZtoLab, &XYZ[0], &Lab[0], 1);
         _Lab_Satz[i].L = Lab[0];
         _Lab_Satz[i].a = Lab[1];
@@ -927,11 +954,12 @@ ICCmeasurement::getText                     (void)
     z++;
     // Messwerte
     s.str("");
+    #define DBG_TAB_V(txt)
     for (int i = 0; i < _nFelder; i++) { 
       sp = 0;
       tabelle[z+i].resize( spalten );
-      tabelle[z+i][sp++] =  _Feldnamen[i]; DBG_V ( z <<" "<< sp <<" "<< _Lab_Differenz.size() )
-      s << _Lab_Differenz[i]; tabelle[z+i][sp++] = s.str().c_str(); s.str(""); DBG
+      tabelle[z+i][sp++] =  _Feldnamen[i]; DBG_TAB_V ( z <<" "<< sp <<" "<< _Lab_Differenz.size() )
+      s << _Lab_Differenz[i]; tabelle[z+i][sp++] = s.str().c_str(); s.str("");
       s << _DE00_Differenz[i]; tabelle[z+i][sp++] = s.str().c_str(); s.str("");
       s << _Lab_Satz[i].L; tabelle[z+i][sp++] = s.str().c_str(); s.str("");
       s << _Lab_Satz[i].a; tabelle[z+i][sp++] = s.str().c_str(); s.str("");
@@ -946,12 +974,12 @@ ICCmeasurement::getText                     (void)
       s << _XYZ_Ergebnis[i].X*100; tabelle[z+i][sp++]=s.str().c_str();s.str("");
       s << _XYZ_Ergebnis[i].Y*100; tabelle[z+i][sp++]=s.str().c_str();s.str("");
       s << _XYZ_Ergebnis[i].Z*100; tabelle[z+i][sp++]=s.str().c_str();s.str("");
-      } DBG_V( i )
-      if (_RGB_measurement) { DBG
+      } DBG_TAB_V( i )
+      if (_RGB_measurement) {
         s << _RGB_Satz[i].R*255; tabelle[z+i][sp++]= s.str().c_str(); s.str("");
         s << _RGB_Satz[i].G*255; tabelle[z+i][sp++]= s.str().c_str(); s.str("");
         s << _RGB_Satz[i].B*255; tabelle[z+i][sp++]= s.str().c_str(); s.str("");
-      } else { DBG
+      } else {
         s << _CMYK_Satz[i].C*100; tabelle[z+i][sp++]=s.str().c_str(); s.str("");
         s << _CMYK_Satz[i].M*100; tabelle[z+i][sp++]=s.str().c_str(); s.str("");
         s << _CMYK_Satz[i].Y*100; tabelle[z+i][sp++]=s.str().c_str(); s.str("");

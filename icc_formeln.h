@@ -43,6 +43,10 @@
 
 
 
+#define X_D50 0.9642
+#define Y_D50 1.0000
+#define Z_D50 0.8249
+
 // interne Typen
 typedef struct {
     double X;
