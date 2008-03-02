@@ -10,8 +10,8 @@
 
 #define DEBUG_ICCGL
 
-typedef enum {NOTALLOWED, AXES, RASTER, RING } DisplayLists;
-typedef enum { MENU_AXES, MENU_QUIT, MENU_RING, MENU_MAX } MenuChoices;
+typedef enum {NOTALLOWED, AXES, RASTER, RING , HELFER} DisplayLists;
+typedef enum { MENU_AXES, MENU_QUIT, MENU_RING, MENU_KUGEL, MENU_WUERFEL, MENU_MAX } MenuChoices;
 
 int DrawAxes = 0;
 int kanal = 0;
@@ -27,6 +27,12 @@ GL_Ansicht::GL_Ansicht(int X,int Y,int W,int H) : Fl_Group(X,Y,W,H)
 { DBG_PROG_V( first )
   first = true;
   MenueKanalEintraege = 0;
+  DBG_PROG_ENDE
+}
+
+GL_Ansicht::~GL_Ansicht()
+{ DBG_PROG_START
+  glDeleteLists (RASTER, 1);
   DBG_PROG_ENDE
 }
 
@@ -117,11 +123,13 @@ void GL_Ansicht::myGLinit() {
   GLfloat mat_ambuse[] = { 0.95, 0.0, 0.0, 1.0 };
   GLfloat mat_specular[] = { 0.4, 0.4, 0.4, 1.0 };
 
-  GLfloat light0_position[] = { 0.6, 0.4, 0.3, 0.0 };
+  GLfloat light0_position[] = { 2.4, 1.6, 1.2, 0.0 };
 
   glLightfv(GL_LIGHT0, GL_POSITION, light0_position);
   glEnable(GL_LIGHTING);
   glEnable(GL_LIGHT0);
+  glDisable(GL_LIGHTING);
+
 
   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, mat_ambuse);
   glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
@@ -146,22 +154,107 @@ void GL_Ansicht::myGLinit() {
 #define FARBE(r,g,b) farbe [0] = (r); farbe [1] = (g); farbe [2] = (b); \
                      glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, farbe); 
 
-void GL_Ansicht::MakeDisplayLists() {
-  char text[256];
+#define ZeichneText(Font,Zeiger) { \
+        glScalef(0.001,0.001,0.001); \
+          for (char* p = Zeiger; *p; p++) { \
+             glutStrokeCharacter(Font, *p); \
+          } \
+          for (char* p = Zeiger; *p; p++) { \
+            glTranslatef(0.0 - glutStrokeWidth(Font, *p),0,0); \
+          } \
+        glScalef(1000,1000,1000); }
+#define ZeichneBuchstaben(Font,Buchstabe) { \
+        glScalef(0.001,0.001,0.001); \
+          glutStrokeCharacter(Font, Buchstabe); \
+          glTranslatef(0.0 - glutStrokeWidth(Font, Buchstabe),0,0); \
+        glScalef(1000,1000,1000); }
+
+void
+zeichneKoordinaten()
+{
   DBG_PROG_START
-  glNewList(RASTER, GL_COMPILE);
+  char text[256];
   GLfloat farbe[] =   { 1.0, 1.0, 1.0, 1.0 };
+
   // Koordinaten
-  #ifdef DEBUG_ICCGL
+    glBegin(GL_LINES);
+        glVertex3f(.1, 0, 0); glVertex3f(0, 0, 0);
+    glEnd();
+    glBegin(GL_LINES);
+        glVertex3f(0, 0, .1); glVertex3f(0, 0, 0);
+    glEnd();
+    glBegin(GL_LINES);
+        glVertex3f(0, .1, 0); glVertex3f(0, 0, 0);
+    glEnd();
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   glEnable(GL_LINE_SMOOTH);
   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, farbe);
+
+    glRotatef (90,0.0,0,1.0);
+      glMatrixMode(GL_MODELVIEW);
+      glTranslatef((0.0-0.3),(0.0-0.1),(0.0-0.05));
+        sprintf (&text[0],_("0,0,0"));
+        ZeichneText(GLUT_STROKE_ROMAN,&text[0])
+      glTranslatef(0.3,0.1,0.05);
+    glRotatef (-90,0.0,0,1.0);
+
+    FARBE(1,1,1)
+    glTranslatef(.1,0,0);
+      FARBE(1,0,1)
+      glRotatef (90,0.0,1.0,.0);
+        glutSolidCone(0.01, 0.025, 8, 2);
+      glRotatef (-90,0.0,1.0,.0);
+      FARBE(1,1,1)
+      glTranslatef(.02,0,0);
+        ZeichneBuchstaben(GLUT_STROKE_ROMAN, 'X')
+      glTranslatef((-0.02),0,0);
+    glTranslatef((-0.1),0,0);
+
+    glTranslatef(.0,.1,0);
+      glRotatef (270,1.0,.0,.0);
+        FARBE(1,1,0)
+        glutSolidCone(0.01, 0.025, 8, 2);
+      glRotatef (90,1.0,.0,.0);
+      glRotatef (90,0.0,.0,1.0);
+        FARBE(1,1,1)
+        ZeichneBuchstaben(GLUT_STROKE_ROMAN, 'Y')
+      glRotatef (270,0.0,.0,1.0);
+    glTranslatef(.0,(-0.1),0);
+
+    glTranslatef(0,0,.1);
+      FARBE(0,1,1)
+      glutSolidCone(0.01, 0.025, 8, 2);
+      FARBE(1,1,1)
+      glRotatef (90,0.0,.5,.0);
+        glTranslatef(-.1,0,0);
+          ZeichneBuchstaben(GLUT_STROKE_ROMAN, 'Z')
+        glTranslatef(.1,0,0);
+      glRotatef (270,0.0,.5,.0);
+    glTranslatef(0,0,-.1);
+  DBG_PROG_ENDE
+}
+
+void GL_Ansicht::MakeDisplayLists() {
+  DBG_PROG_START
+  char text[256];
+  glColor3f(1,1,1);
+  glDeleteLists (RASTER, 1);
+  glNewList(RASTER, GL_COMPILE);
+  GLfloat farbe[] =   { 1.0, 1.0, 1.0, 1.0 };
+
+      zeichneKoordinaten();
+      zeichneKoordinaten();
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_LINE_SMOOTH);
+    glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, farbe);
     glPushMatrix();
       glMatrixMode(GL_MODELVIEW);
       glLineWidth(3.0);
-      glTranslatef(-0.3,-0.1,-0.05);
-      sprintf (&text[0],_("0,0,0"));
+      glTranslatef(.5,0.52,.5);
+      char* ptr = (char*) texte[kanal].c_str();
+      sprintf (&text[0], ptr);
       glScalef(0.001,0.001,0.001);
       for (char* p = &text[0]; *p; p++) {
         glutStrokeCharacter(GLUT_STROKE_ROMAN, *p);
@@ -171,49 +264,61 @@ void GL_Ansicht::MakeDisplayLists() {
     glPushMatrix();
       FARBE(1,1,1)
       glBegin(GL_LINES);
-        glVertex3f(.1, 0, 0); glVertex3f(0, 0, 0);
+        glVertex3f(0, .5, 0); glVertex3f(0, -.5, 0);
+      glEnd();
+      glTranslatef(0,-.5,0);
+      glBegin(GL_LINES);
+        glVertex3f(0, 0, .5); glVertex3f(0, 0, -.5);
       glEnd();
       glBegin(GL_LINES);
-        glVertex3f(0, 0, .1); glVertex3f(0, 0, 0);
+        glVertex3f(.5, 0, 0); glVertex3f(-.5, 0, 0);
       glEnd();
-      glBegin(GL_LINES);
-        glVertex3f(0, .1, 0); glVertex3f(0, 0, 0);
-      glEnd();
-      glTranslatef(.1,0,0);
-      FARBE(1,0,1)
-      glRotatef (90,0.0,1.0,.0);
+      glTranslatef(0,1.0,0);
+      FARBE(1,1,1)
+      glRotatef (270,1.0,0.0,.0);
       glutSolidCone(0.01, 0.025, 8, 2);
-      glRotatef (-90,0.0,1.0,.0);
+      //glRotatef (90,0.0,1.0,.0);
+      //glRotatef (90,1.0,.0,.0);
       FARBE(1,1,1)
       glTranslatef(.02,0,0);
       glScalef(0.001,0.001,0.001);
-      glutStrokeCharacter(GLUT_STROKE_ROMAN, 'X');
+      sprintf (&text[0], _("CIE*L"));
+      for (char* p = &text[0]; *p; p++) {
+        glutStrokeCharacter(GLUT_STROKE_ROMAN, *p);
+      }
     glPopMatrix();
 
     glPushMatrix();
-      glTranslatef(0,.1,0);
+      glTranslatef(-.5,0,0);
+      glTranslatef(0,.5,0);
       glRotatef (270,1.0,.0,.0);
-      FARBE(1,1,0)
+      FARBE(.9,0,0)
       glutSolidCone(0.01, 0.025, 8, 2);
       glRotatef (90,1.0,.0,.0);
       glRotatef (90,0.0,.0,1.0);
       glScalef(0.001,0.001,0.001);
       FARBE(1,1,1)
-      glutStrokeCharacter(GLUT_STROKE_ROMAN, 'Y');
+      sprintf (&text[0], _("CIE*a"));
+      for (char* p = &text[0]; *p; p++) {
+        glutStrokeCharacter(GLUT_STROKE_ROMAN, *p);
+      }
     glPopMatrix();
 
     glPushMatrix();
-      glTranslatef(0,0,.1);
-      FARBE(0,1,1)
+      glTranslatef(-.5,0,0);
+      glTranslatef(0,0,.5);
+      FARBE(0,.9,0)
       glutSolidCone(0.01, 0.025, 8, 2);
       FARBE(1,1,1)
       glRotatef (90,0.0,.5,.0);
-      glTranslatef(-.1,0,0);
+      glTranslatef(.8,0,0);
       glScalef(0.001,0.001,0.001);
-      glutStrokeCharacter(GLUT_STROKE_ROMAN, 'Z');
+      sprintf (&text[0], _("CIE*b"));
+      for (char* p = &text[0]; *p; p++) {
+        glutStrokeCharacter(GLUT_STROKE_ROMAN, *p);
+      }
     glPopMatrix();
     glLineWidth(1.0);
-    #endif
 
     DBG_PROG_V( tabelle.size() )
 
@@ -223,39 +328,56 @@ void GL_Ansicht::MakeDisplayLists() {
       double dim_y = 1.0/(tabelle[0].size()); DBG_PROG_V( dim_y )
       double dim_z = 1.0/(tabelle[0][0].size()); DBG_PROG_V( dim_z )
       double start_x,start_y,start_z, x,y,z;
-      double groesse = (dim_x + dim_y + dim_z)/ 24.0;
-      start_x = start_y = start_z = x = y = z = 0.5; start_x = x = -0.5;
+      double groesse = (dim_x + dim_y + dim_z)/ 3;
+      double wert;
+      start_x = start_y = start_z = x = y = z = 0.5; start_y = y = -0.5;
       glPushMatrix();
 
+      glDisable(GL_LIGHTING);
       glTranslatef(start_x,start_y,start_z);
       DBG_PROG_V( tabelle.size() <<" "<< tabelle[0].size() )
       glTranslatef(-dim_x/2.0,-dim_y/2.0,-dim_z/2.0);
       for (int i = 0; i < (int)tabelle.size(); i++) { //DBG_PROG_V( i )
         x = start_x + i * dim_x;
-        glTranslatef(dim_x,0.0,0.0);
-        glTranslatef(0,-1.0,0.0);
+        glTranslatef(0.0,dim_x,0.0);
+        glTranslatef(-1.0,0.0,0.0);
         for (int j = 0; j < (int)tabelle[i].size(); j++) { //DBG_PROG_V( j )
           y = start_y + j * dim_y;
-          glTranslatef(0.0, dim_y,0.0);
+          glTranslatef(dim_y,0.0,0.0);
           glTranslatef(0,0.0,-1.0);
           for (int k = 0; k < (int)tabelle[i][j].size(); k++) { //DBG_PROG_V( k )
             z = start_z + k * dim_z;
             glTranslatef(0.0,0.0,dim_z); //DBG_PROG_S( "xyz: "<< x <<" "<< y <<" "<< z )
-            glutSolidCube(tabelle[i][j][k][kanal] * groesse);
+            wert = tabelle[i][j][k][kanal];
+            glColor3f(wert/0.9, wert/0.9, wert);
+            switch (Punktform) {
+              case MENU_WUERFEL:
+                glutSolidCube(groesse);
+                break;
+              case MENU_KUGEL:
+                glutSolidSphere (groesse*0.75, 12, 12);
+                break;
+            }
           }
         }
       } DBG_PROG
+      glEnable(GL_LIGHTING);
     }
     glPopMatrix();
   glEndList();
 
   glNewList(RING, GL_COMPILE);
-    glutSolidDodecahedron();
+    //glutSolidDodecahedron();
   glEndList();
 
   //Hintergrund
+  #if 0
   glClearColor(.75,.75,.75,1.0);
+  #else
+  glClearColor(.0,.0,.1,1.0);
+  #endif
 
+  glPopMatrix();
   DBG_PROG_ENDE
 }
 
@@ -291,11 +413,17 @@ void GL_Ansicht::MenuInit() {
   glutAddMenuEntry(_("Fliegen"),  FLYING); /* agvSwitchMoveMode() */
   glutAddMenuEntry(_("Betrachten"),   POLAR);
 
+  int sub3 = glutCreateMenu(handlemenu);
+  glutAddMenuEntry(_("Kugel"),  MENU_KUGEL); 
+  glutAddMenuEntry(_("Würfel"),   MENU_WUERFEL);
+
   glutCreateMenu(handlemenu);
   glutAddSubMenu(_("Bewegung"), sub2);
   glutAddMenuEntry(_("Achsen ein/aus"), MENU_AXES);
   glutAddMenuEntry(_("Rotation an/aus"), MENU_RING);
   glutAddMenuEntry(_("Beenden"), MENU_QUIT);
+  glutAddSubMenu(_("Formen"), sub3);
+
 
   //MenueErneuern();
 
@@ -323,7 +451,7 @@ void display() {
 
   glLoadIdentity();
 
-  gluPerspective(45, seitenverhaeltnis, 0.01, 100);
+  gluPerspective(45, seitenverhaeltnis, .2, 10);
 
     /* so this replaces gluLookAt or equiv */
   agvViewTransform();
@@ -468,6 +596,14 @@ void handlemenu(int value)
 	glutIdleFunc(NULL);    /* uninstall our idle function      */
 	agvSetAllowIdle(1);    /* and tell AGV it can mess with it */
       }
+      break;
+    case MENU_KUGEL:
+      mft_gl-> Punktform = MENU_KUGEL;
+      mft_gl->MakeDisplayLists();
+      break;
+    case MENU_WUERFEL:
+      mft_gl-> Punktform = MENU_WUERFEL;
+      mft_gl->MakeDisplayLists();
       break;
     }
 

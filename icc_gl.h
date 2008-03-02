@@ -21,12 +21,15 @@ class GL_Ansicht : public Fl_Group {
 public:
   bool GLfenster_zeigen,
        first;
-  GL_Ansicht(int X,int Y,int W,int H) ;
+  GL_Ansicht(int X,int Y,int W,int H);
+  ~GL_Ansicht();
   void draw();
   void hinein_punkt(std::vector<double> vect, std::vector<std::string> txt);
   void hinein_kurven(std::vector<std::vector<double> >vect, std::vector<std::string> txt);
   void hinein_tabelle(std::vector<std::vector<std::vector<std::vector<double> > > >vect, std::vector<std::string> txt);
   void ruhig_neuzeichnen(void);
+
+  int  Punktform;                // Form der Gitterpunkte der Transformationstabelle
   void MakeDisplayLists();
   void zeigen();
   void verstecken();
