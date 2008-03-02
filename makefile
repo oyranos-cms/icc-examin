@@ -229,7 +229,7 @@ mtime   = `find $(timedir) -prune -printf %Ty%Tm%Td.%TT | sed s/://g`
 
 .SILENT:
 
-all:	mkdepend $(TARGET)
+all:	config mkdepend $(TARGET)
 
 release:	icc_alles.o
 	echo Linking $@...
@@ -289,8 +289,8 @@ pot:	$(POT_FILE)
         && (msgfmt -c --statistics -o po/$${ling}.gmo po/$${ling}.po; \
             !(test -d po/$${ling}) && mkdir po/$${ling}; \
             !(test -d po/$${ling}/LC_MESSAGES) && mkdir po/$${ling}/LC_MESSAGES; \
-            test -f po/$${ling}/LC_MESSAGES/$(TARGET).gmo && rm po/$${ling}/LC_MESSAGES/$(TARGET).gmo; \
-            ln -s ../../$${ling}.gmo po/$${ling}/LC_MESSAGES/$(TARGET).gmo;) \
+            test -f po/$${ling}/LC_MESSAGES/$(TARGET).mo && rm po/$${ling}/LC_MESSAGES/$(TARGET).mo; \
+            ln -s ../../$${ling}.gmo po/$${ling}/LC_MESSAGES/$(TARGET).mo;) \
         || (echo $${ling}.po is not yet available ... skipping) \
 	done;
 
@@ -377,9 +377,8 @@ targz:
 	mkdir $(TARGET)_$(VERSION)$(TARGET)_$(VERSION)/po
 	$(COPY) $(POT_FILE) $(TARGET)_$(VERSION)/po
 	for ling in $(LINGUAS); do \
-	   \
 	  test -f po/$${ling}.po \
-        && $(COPY) po/$${ling}.po $(TARGET)_$(VERSION)/po/$${ling}.po \
+        && $(COPY) po/$${ling}.po $(TARGET)_$(VERSION)/po/$${ling}.po; \
 	done;
 	tar cf - $(TARGET)_$(VERSION)/ \
 	| gzip > $(TARGET)_$(mtime).tgz

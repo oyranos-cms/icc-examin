@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ICC Examin 0.28\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2005-04-24 23:12+0200\n"
+"POT-Creation-Date: 2005-04-25 06:39+0200\n"
 "PO-Revision-Date: 2005-04-22 15:09+0200\n"
 "Last-Translator: Kai-Uwe Behrmann <ku.b@gmx.de>\n"
 "Language-Team: German\n"
@@ -1304,7 +1304,7 @@ msgstr ""
 msgid "100"
 msgstr ""
 
-#: icc_helfer.cpp:767 icc_betrachter.cxx:462
+#: icc_helfer.cpp:767 icc_betrachter.cxx:471
 msgid "Datum"
 msgstr ""
 
@@ -1348,15 +1348,15 @@ msgstr ""
 msgid "unbekannter Fehler beim Start eines Wächter Threads Fehler: "
 msgstr ""
 
-#: icc_main.cpp:67 icc_betrachter.cxx:513
+#: icc_main.cpp:67 icc_betrachter.cxx:522
 msgid "Yes"
 msgstr "Ja"
 
-#: icc_main.cpp:68 icc_betrachter.cxx:379
+#: icc_main.cpp:68 icc_betrachter.cxx:388
 msgid "Files"
-msgstr ""
+msgstr "Dateien"
 
-#: icc_main.cpp:69 icc_betrachter.cxx:506
+#: icc_main.cpp:69 icc_betrachter.cxx:515
 msgid "About ICC Examin"
 msgstr "Über ICC Examin"
 
@@ -1811,7 +1811,7 @@ msgstr ""
 msgid "Anzahl Farben:"
 msgstr ""
 
-#: icc_profile_tags.cpp:417 icc_betrachter.cxx:459
+#: icc_profile_tags.cpp:417 icc_betrachter.cxx:468
 msgid "Name"
 msgstr ""
 
@@ -1875,262 +1875,257 @@ msgstr ""
 msgid "Kein Gammagradient Information erhalten"
 msgstr ""
 
-#: icc_betrachter.cxx:380
+#: icc_betrachter.cxx:389
 msgid "Open"
 msgstr "Öffnen"
 
-#: icc_betrachter.cxx:381
+#: icc_betrachter.cxx:390
 msgid "Save Report"
 msgstr "Bericht Speichern"
 
-#: icc_betrachter.cxx:382
+#: icc_betrachter.cxx:391
 msgid "Quit"
 msgstr "Beenden"
 
-#: icc_betrachter.cxx:384
+#: icc_betrachter.cxx:393
 msgid "Edit"
 msgstr "Bearbeiten"
 
-#: icc_betrachter.cxx:385
+#: icc_betrachter.cxx:394
 msgid "Oyranos Settings"
-msgstr "Oyrsnoa Einstellungen"
+msgstr "Oyranos Einstellungen"
 
-#: icc_betrachter.cxx:387
+#: icc_betrachter.cxx:396 icc_betrachter.cxx:400
 msgid "Gamut"
 msgstr "Farbhülle"
 
-#: icc_betrachter.cxx:388
+#: icc_betrachter.cxx:397
 msgid "View"
 msgstr "Ansicht"
 
-#: icc_betrachter.cxx:389
+#: icc_betrachter.cxx:398
 msgid "Whole Screen on/off"
 msgstr "Ganzer Bildschirm an/aus"
 
-#: icc_betrachter.cxx:390
+#: icc_betrachter.cxx:399
 msgid "Report View"
 msgstr "Qualitäts Bericht"
 
-#: icc_betrachter.cxx:391
-msgid "3D Gamut"
-msgstr "3D Hüllfläche"
-
-#: icc_betrachter.cxx:392
+#: icc_betrachter.cxx:401
 msgid "CGATS View"
 msgstr "CGATS Ansicht"
 
-#: icc_betrachter.cxx:393
+#: icc_betrachter.cxx:402
 msgid "Videocard Gamma"
 msgstr "Grafikkarten Gamma"
 
-#: icc_betrachter.cxx:394
+#: icc_betrachter.cxx:403
 msgid "Test Curves"
 msgstr ""
 
-#: icc_betrachter.cxx:396
+#: icc_betrachter.cxx:405
 msgid "Help"
 msgstr "Hilfe"
 
-#: icc_betrachter.cxx:397
+#: icc_betrachter.cxx:406
 msgid "About"
 msgstr "Über"
 
-#: icc_betrachter.cxx:432
+#: icc_betrachter.cxx:441
 msgid "Lesezeichen"
 msgstr ""
 
-#: icc_betrachter.cxx:433
+#: icc_betrachter.cxx:442
 msgid "Heimverzeichnis"
 msgstr ""
 
-#: icc_betrachter.cxx:434
+#: icc_betrachter.cxx:443
 msgid "Dokumente"
 msgstr ""
 
-#: icc_betrachter.cxx:435
+#: icc_betrachter.cxx:444
 msgid "Desktop"
 msgstr ""
 
-#: icc_betrachter.cxx:437
+#: icc_betrachter.cxx:446
 msgid "Dateiname"
 msgstr ""
 
-#: icc_betrachter.cxx:438
+#: icc_betrachter.cxx:447
 msgid "Ja"
 msgstr ""
 
-#: icc_betrachter.cxx:439
+#: icc_betrachter.cxx:448
 msgid "Abbrechen"
 msgstr ""
 
-#: icc_betrachter.cxx:440
+#: icc_betrachter.cxx:449
 msgid "Ordner"
 msgstr ""
 
-#: icc_betrachter.cxx:441
+#: icc_betrachter.cxx:450
 msgid "zeige versteckte Dateien"
 msgstr ""
 
-#: icc_betrachter.cxx:442
+#: icc_betrachter.cxx:451
 msgid "Datei Typen"
 msgstr ""
 
-#: icc_betrachter.cxx:443
+#: icc_betrachter.cxx:452
 msgid "Verzeichnis"
 msgstr ""
 
-#: icc_betrachter.cxx:444
+#: icc_betrachter.cxx:453
 msgid "Alle Dateien (*)"
 msgstr ""
 
-#: icc_betrachter.cxx:445
+#: icc_betrachter.cxx:454
 msgid "Neues Verzeichnis"
 msgstr ""
 
-#: icc_betrachter.cxx:447
+#: icc_betrachter.cxx:456
 msgid "vorheriges Verzeichnis"
 msgstr ""
 
-#: icc_betrachter.cxx:448
+#: icc_betrachter.cxx:457
 msgid "nchstes Verzeichnis"
 msgstr ""
 
-#: icc_betrachter.cxx:449
+#: icc_betrachter.cxx:458
 msgid "nchsthheres Verzeichnis"
 msgstr ""
 
-#: icc_betrachter.cxx:450
+#: icc_betrachter.cxx:459
 msgid "Auffrischen"
 msgstr ""
 
-#: icc_betrachter.cxx:451 icc_betrachter.cxx:465
+#: icc_betrachter.cxx:460 icc_betrachter.cxx:474
 msgid "Lschen"
 msgstr ""
 
-#: icc_betrachter.cxx:452
+#: icc_betrachter.cxx:461
 msgid "Verzeichnis erstellen"
 msgstr ""
 
-#: icc_betrachter.cxx:453
+#: icc_betrachter.cxx:462
 msgid "zu Lesezeichen"
 msgstr ""
 
-#: icc_betrachter.cxx:454 icc_betrachter.cxx:504
+#: icc_betrachter.cxx:463 icc_betrachter.cxx:513
 msgid "Vorschau"
 msgstr ""
 
-#: icc_betrachter.cxx:455
+#: icc_betrachter.cxx:464
 msgid "Standard Anzeige"
 msgstr ""
 
-#: icc_betrachter.cxx:456
+#: icc_betrachter.cxx:465
 msgid "weite Anzeige"
 msgstr ""
 
-#: icc_betrachter.cxx:457
+#: icc_betrachter.cxx:466
 msgid "detailierte Informationen"
 msgstr ""
 
-#: icc_betrachter.cxx:460
+#: icc_betrachter.cxx:469
 msgid "Typ"
 msgstr ""
 
-#: icc_betrachter.cxx:461
+#: icc_betrachter.cxx:470
 msgid "Grsse"
 msgstr ""
 
-#: icc_betrachter.cxx:463
+#: icc_betrachter.cxx:472
 msgid "contextMenuTxt 0"
 msgstr ""
 
-#: icc_betrachter.cxx:464
+#: icc_betrachter.cxx:473
 msgid "Umbenennen"
 msgstr ""
 
-#: icc_betrachter.cxx:466
+#: icc_betrachter.cxx:475
 msgid "Typ1"
 msgstr ""
 
-#: icc_betrachter.cxx:467
+#: icc_betrachter.cxx:476
 msgid "Typ2"
 msgstr ""
 
-#: icc_betrachter.cxx:468
+#: icc_betrachter.cxx:477
 msgid "Typ3"
 msgstr ""
 
-#: icc_betrachter.cxx:469
+#: icc_betrachter.cxx:478
 msgid "Typ4"
 msgstr ""
 
-#: icc_betrachter.cxx:470
+#: icc_betrachter.cxx:479
 msgid "Typ5"
 msgstr ""
 
-#: icc_betrachter.cxx:471
+#: icc_betrachter.cxx:480
 msgid "Typ6"
 msgstr ""
 
-#: icc_betrachter.cxx:473
+#: icc_betrachter.cxx:482
 msgid "Ordner konnte nicht erstellt werden"
 msgstr ""
 
-#: icc_betrachter.cxx:474
+#: icc_betrachter.cxx:483
 msgid "konnte Datei nicht lschen"
 msgstr ""
 
-#: icc_betrachter.cxx:475
+#: icc_betrachter.cxx:484
 msgid "Datei existiert"
 msgstr ""
 
-#: icc_betrachter.cxx:476
+#: icc_betrachter.cxx:485
 msgid "kontte nicht umbenennen"
 msgstr ""
 
-#: icc_betrachter.cxx:487
+#: icc_betrachter.cxx:496
 msgid "ICC Farbprofile (*.ic*)"
 msgstr ""
 
-#: icc_betrachter.cxx:487 icc_betrachter.cxx:502
+#: icc_betrachter.cxx:496 icc_betrachter.cxx:511
 msgid "Welches ICC Profil?"
 msgstr ""
 
-#: icc_betrachter.cxx:488 icc_betrachter.cxx:489
+#: icc_betrachter.cxx:497 icc_betrachter.cxx:498
 msgid "Profil ffnen"
 msgstr ""
 
-#: icc_betrachter.cxx:490 icc_betrachter.cxx:491 icc_betrachter.cxx:492
-#: icc_betrachter.cxx:493 icc_betrachter.cxx:494 icc_betrachter.cxx:495
-#: icc_betrachter.cxx:496 icc_betrachter.cxx:497
+#: icc_betrachter.cxx:499 icc_betrachter.cxx:500 icc_betrachter.cxx:501
+#: icc_betrachter.cxx:502 icc_betrachter.cxx:503 icc_betrachter.cxx:504
+#: icc_betrachter.cxx:505 icc_betrachter.cxx:506
 msgid "Messdatei ffnen"
 msgstr ""
 
-#: icc_betrachter.cxx:502
+#: icc_betrachter.cxx:511
 msgid "ICC Farbprofile (*.{I,i}{C,c}{M,m,C,c})"
 msgstr ""
 
-#: icc_betrachter.cxx:523
+#: icc_betrachter.cxx:532
 msgid "Grafic Card Gamma Table"
 msgstr "Grafik Karten Gamma Tabelle (vcgt)"
 
-#: icc_betrachter.cxx:539
+#: icc_betrachter.cxx:548
 msgid "Close"
-msgstr ""
+msgstr "Schliessen"
 
-#: icc_betrachter.cxx:542 fl_oyranos.cxx:36
+#: icc_betrachter.cxx:551 fl_oyranos.cxx:36
 msgid "Refresh"
 msgstr "Erneuern"
 
-#: icc_betrachter.cxx:543
+#: icc_betrachter.cxx:552
 msgid "refresh gamma table from video card"
 msgstr ""
 
-#: icc_betrachter.cxx:547
-#, fuzzy
+#: icc_betrachter.cxx:556
 msgid "Monitorprofile"
-msgstr "Setze Monitorprofil"
+msgstr "Monitorprofil"
 
-#: icc_betrachter.cxx:548
+#: icc_betrachter.cxx:557
 msgid ""
 "Set the current profile as monitor profile and upload vcgt tag to the video "
 "card"
@@ -2138,47 +2133,47 @@ msgstr ""
 "Das aktuelle Profile als Monitorprofil setzen und die Gamma Tabelle in die "
 "Grafikkarte laden"
 
-#: icc_betrachter.cxx:553
+#: icc_betrachter.cxx:562
 msgid "Standard"
 msgstr ""
 
-#: icc_betrachter.cxx:554
+#: icc_betrachter.cxx:563
 msgid "reset to standard gamma"
 msgstr ""
 
-#: icc_betrachter.cxx:565
+#: icc_betrachter.cxx:574
 msgid "ICC Details"
 msgstr ""
 
-#: icc_betrachter.cxx:591
+#: icc_betrachter.cxx:600
 msgid "Inspect"
 msgstr "Inspektor"
 
-#: icc_betrachter.cxx:596
+#: icc_betrachter.cxx:605
 msgid "Tags"
 msgstr "Baustein"
 
-#: icc_betrachter.cxx:597
+#: icc_betrachter.cxx:606
 msgid "Choose one profile tag"
 msgstr "Wählen Sie einen Profilbaustein"
 
-#: icc_betrachter.cxx:614
+#: icc_betrachter.cxx:623
 msgid "Chain selection"
 msgstr "Kettenauswahl"
 
-#: icc_betrachter.cxx:615
+#: icc_betrachter.cxx:624
 msgid "Choose a attribute"
 msgstr "Wählen Sie ein Bestandteil"
 
-#: icc_betrachter.cxx:641
+#: icc_betrachter.cxx:650
 msgid "Chain -texts"
 msgstr ""
 
-#: icc_betrachter.cxx:681
+#: icc_betrachter.cxx:690
 msgid "Texts"
 msgstr "Texte"
 
-#: icc_betrachter.cxx:704
+#: icc_betrachter.cxx:713
 msgid "Loading .."
 msgstr "Lade ..."
 
@@ -2221,3 +2216,4 @@ msgstr ""
 #: icc_waehler.h:68
 msgid "kein Fl_Widget??"
 msgstr ""
+

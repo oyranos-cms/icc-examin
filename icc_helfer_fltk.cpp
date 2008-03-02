@@ -115,16 +115,22 @@ getChannel_flColours (icColorSpaceSignature color)
 #undef nFARBEN
 
 #include <FL/Fl_Menu_Button.H>
-const Fl_Menu_Item* menue_uebersetzen( Fl_Menu_* menueleiste )
+const Fl_Menu_* menue_uebersetzen( Fl_Menu_* menueleiste )
 {
+  DBG_PROG_START
   int size = menueleiste->size();
-  Fl_Menu_Button menueintraege (0,0,0,0,0);
-  menueintraege.copy (menueleiste->menu());
+  DBG_PROG_V( size )
+  Fl_Menu_Button* menueintraege = new Fl_Menu_Button(0,0,0,0,0);
+  menueintraege->copy (menueleiste->menu());
   for(int i = 0; i < size ; ++i) {
-    const char* text = menueintraege.text(i);
-    menueintraege.replace( i, _(text) );
+    const char* text = menueintraege->text(i);
+    menueintraege->replace( i, _(text) );
+    DBG_PROG_V( i )
+    if(text)
+      DBG_PROG_V( text <<" "<< _(text) );
   }
-  return menueintraege.menu();
+  DBG_PROG_ENDE
+  return menueintraege;
 }
 
 

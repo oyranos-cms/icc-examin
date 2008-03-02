@@ -1,3 +1,8 @@
+2005-04-25
+	* fix: Objekt scope Fehler in icc_betrachter/icc_helfer_fltk
+
+2005-04-22
+	* neu: gettext Übersetzung in fluid und makefile
 
 2005-04-18
 	* neu: Fonts mit FTGL: nicht innerhalb anderer glLists benutzen

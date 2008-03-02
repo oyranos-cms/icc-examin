@@ -31,7 +31,7 @@ echo "prefix = $prefix" >> $CONF
 echo "#define PREFIX         \"$prefix\"" >> $CONF_H
 echo "#define LOCALEDIR      \"$prefix/share/locale\"" >> $CONF_H
 echo "#define SRCDIR         \"$srcdir\"" >> $CONF_H
-echo "#define SRC_LOCALEDIR  \"$srcdir/locale\"" >> $CONF_H
+echo "#define SRC_LOCALEDIR  \"$srcdir/po\"" >> $CONF_H
 echo "" >> $CONF
 
 
