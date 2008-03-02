@@ -101,7 +101,9 @@ ICCmeasurement::load                ( ICCprofile *profil,
 void
 ICCmeasurement::leseTag (void)
 { DBG_PROG_START
-  std::string data = cgats_korrigieren (_data, _size); DBG_V( (int*)_data )
+  CgatsFilter cgats;
+  cgats.lade( _data, _size );
+  std::string data = cgats.lcms_gefiltert (); DBG_V( (int*)_data )
 
   // korrigierte CGATS Daten -> _data
   if (_data != NULL) free (_data);

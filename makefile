@@ -11,7 +11,7 @@ libdir		= ${exec_prefix}/lib
 mandir		= ${prefix}/man
 srcdir		= .
 
-APPLE = 1
+#APPLE = 1
 FLTK = 1
 ifdef FLTK
 FLU = 1
@@ -62,6 +62,7 @@ CPP_HEADERS = \
 	cccie64.h \
 	ciexyz64_1.h \
 	icc_betrachter.h \
+	icc_cgats_filter.h \
 	icc_draw.h \
 	icc_draw_fltk.h \
 	icc_fenster.h \

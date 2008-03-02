@@ -78,9 +78,6 @@ std::string         getMeasurementGeometry( icMeasurementGeometry measgeo );
 std::string         getMeasurementFlare( icMeasurementFlare flare );
 std::string         printDatum( icDateTimeNumber date );
 
-// CGATS
-std::string         cgats_korrigieren(char* _data, size_t _size);
-
 // Datendarstellung
 std::string         zeig_bits_bin      (void* speicher, int groesse);
 

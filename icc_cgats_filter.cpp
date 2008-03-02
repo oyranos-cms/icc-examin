@@ -26,9 +26,26 @@
  */
 
 
+/* TODO
+	o verschmelzen
+	o einzelne Blöcke herausschreiben
+    o Number_of_FIELDS immer korrigieren falls differiert
+	o über return Wert zurückgeben struct zeiennummer + 2 geänderte Zeilen
+    o Header Keywort parsen -> Liste von legalen + neuen Schlüsselworten 
+    o NUMBER_OF_FIELDS: unbekannte FIELDS als KEYWORD deklarieren und mitzählen 
+      für Exportmodus
+    o im DATA_BLOCK nach Ziffer und Worten unterscheiden und Worte in
+      Anführungszeichen , abschaltbar
+*/
+
 /*
    ChangeLog
 
+2005-01-24
+	* <- 10:30
+	* Telefon Ulm 11:30 - 12:30
+	* neu: Klasse <- 12:30
+	* -> 14:00
 2005-01-23
 	* neu: CB Anpassungen <- 8:00
 	* neu: Schlüsselworte suchen <- 9:30
@@ -61,56 +78,73 @@
 	* start: 6:00
 	* neu: Kopie des vorhandenen Textes und Test <- 6:30
 	* Brief schreiben <- 7:00
-	* 
 
- */
+*/
 
 #include "icc_utils.h"
 #include "icc_helfer.h"
+#include "icc_cgats_filter.h"
 
 #include <fstream>
 #include <sstream>
 
 
-
-// --- Hauptfunktion ---
-// Konvertierung in Standard unix Dateiformat mit LF
-// Suchen und Ersetzen bekannnter Abweichungen (in einem std::string)
-// zeilenweises lesen und editieren (in einem vector aus strings)
-// verdecken der Kommentare
-// kontrollieren der Blöckanfänge und -enden
-// die Dateisignatur reparieren (7 / 14 byte lang)
-// zwischen den Blöcken die Keywords erkennen und entsprechend bearbeiten
-// die Zeilen wieder zusamenfügen und als einen std::string zurückgeben
-std::string cgats_korrigieren               (char* _data, size_t _size);
-
-// - Hilfsfunktionen -
-// Auszählen der Formate(Farbkanäle) im DATA_FORMAT Block
-int sucheInDATA_FORMAT_( std::string &zeile );
-// klassifiziert CGATS Keywords; sinnvoll ausserhalb der Blöcke
-int sucheSchluesselwort_( std::string zeile );
-// eine Zeile ausserhalb der beiden DATA und FORMAT Blöcke nach
-//  Klassifizierungsangabe bearbeiten
-int editZeile_( std::vector<std::string> &zeilen, int zeile_n, int editieren,
-                bool cmy );
-// vector Bearbeitung fürs zeilenweise Editieren
-void zeileEinfuegen_( std::vector<std::string> &zeilen,
-                      int                       pos_n,
-                      std::string               neue_zeile );
-
-
-// TODO in Klasse einbauen
-  char cgats_alnum[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_|/-+=()[]{}<>&?!:;,.0123456789";
-  char leer_zeichen[] = { 0, 32, '\t', '\n', '\v', '\f', '\r' };
-
 int
-sucheInDATA_FORMAT_( std::string &zeile )
+CgatsFilter::sucheInDATA_FORMAT_( std::string &zeile )
 {
   std::string::size_type pos=0;
   int n = 0;
 
   {
-    #define \
+    s_woerter_.push_back( "SAMPLE_ID" );
+    s_woerter_.push_back( "SAMPLE_NAME" );
+    s_woerter_.push_back( "CMYK_C" );
+    s_woerter_.push_back( "CMYK_M" );
+    s_woerter_.push_back( "CMYK_Y" );
+    s_woerter_.push_back( "CMYK_K" );
+    s_woerter_.push_back( "RGB_R" );
+    s_woerter_.push_back( "RGB_G" );
+    s_woerter_.push_back( "RGB_B" );
+    s_woerter_.push_back( "XYZ_X" );
+    s_woerter_.push_back( "XYZ_Y" );
+    s_woerter_.push_back( "XYZ_Z" );
+    s_woerter_.push_back( "XYY_X" );
+    s_woerter_.push_back( "XYY_Y" );
+    s_woerter_.push_back( "XYY_CAPY" );
+    s_woerter_.push_back( "LAB_L" );
+    s_woerter_.push_back( "LAB_A" );
+    s_woerter_.push_back( "LAB_B" );
+    s_woerter_.push_back( "D_RED" );
+    s_woerter_.push_back( "D_GREEN" );
+    s_woerter_.push_back( "D_BLUE" );
+    s_woerter_.push_back( "D_VIS" );
+    s_woerter_.push_back( "D_MAJOR_FILTER" );
+    s_woerter_.push_back( "SPECTRAL_PCT" );
+    s_woerter_.push_back( "SPECTRAL_DEC" );
+    s_woerter_.push_back( "SPECTRAL_" );
+    s_woerter_.push_back( "nm" );  // nicht standard
+    s_woerter_.push_back( "SPECTRUM_" ); // nicht standard
+    s_woerter_.push_back( "R_" ); // nicht standard
+    s_woerter_.push_back( "LAB_C" );
+    s_woerter_.push_back( "LAB_H" );
+    s_woerter_.push_back( "LAB_DE" );
+    s_woerter_.push_back( "LAB_DE_94" );
+    s_woerter_.push_back( "LAB_DE_CMC" );
+    s_woerter_.push_back( "LAB_DE_2000" );
+    s_woerter_.push_back( "MEAN_DE" );
+    s_woerter_.push_back( "STDEV_X" );
+    s_woerter_.push_back( "STDEV_Y" );
+    s_woerter_.push_back( "STDEV_Z" );
+    s_woerter_.push_back( "STDEV_L" );
+    s_woerter_.push_back( "STDEV_A" );
+    s_woerter_.push_back( "STDEV_B" );
+    s_woerter_.push_back( "STDEV_DE" );
+    s_woerter_.push_back( "CHI_SQD_PAR" );
+  }
+
+  zeilenOhneDuplikate_( s_woerter_ );
+
+  #define \
     DF_Suche(suche, pos_) /* pos spielt nur bei SPECTRAL_ eine Rolle */ \
     { pos = pos_; \
       if ((pos = zeile.find (suche, pos)) != std::string::npos) \
@@ -120,80 +154,53 @@ sucheInDATA_FORMAT_( std::string &zeile )
         pos = pos + strlen( suche ); \
       } \
     }
-    DF_Suche( "SAMPLE_ID", 0 )
-    DF_Suche( "SAMPLE_NAME", 0 )
-    DF_Suche( "CMYK_C", 0 )
-    DF_Suche( "CMYK_M", 0 )
-    DF_Suche( "CMYK_Y", 0 )
+
+  for( unsigned int i = 0; i < s_woerter_.size() ; ++i )
+  { 
     pos = 0;
-    while( pos < zeile.size() )
-      DF_Suche( "CMYK_K", pos )
-    DF_Suche( "RGB_R", 0 )
-    DF_Suche( "RGB_G", 0 )
-    DF_Suche( "RGB_B", 0 )
-    DF_Suche( "XYZ_X", 0 )
-    DF_Suche( "XYZ_Y", 0 )
-    DF_Suche( "XYZ_Z", 0 )
-    DF_Suche( "XYY_X", 0 )
-    DF_Suche( "XYY_Y", 0 )
-    DF_Suche( "XYY_CAPY", 0 )
-    DF_Suche( "LAB_L", 0 )
-    DF_Suche( "LAB_A", 0 )
-    DF_Suche( "LAB_B", 0 )
-    DF_Suche( "D_RED", 0 )
-    DF_Suche( "D_GREEN", 0 )
-    DF_Suche( "D_BLUE", 0 )
-    DF_Suche( "D_VIS", 0 )
-    DF_Suche( "D_MAJOR_FILTER", 0 )
-    DF_Suche( "SPECTRAL_PCT", pos )
-    DF_Suche( "SPECTRAL_DEC", pos )
-    // sich wiederholende Zeichen
-    pos = 0;
-    while( pos < zeile.size() )
-      DF_Suche( "SPECTRAL_", pos )
-    pos = 0;
-    while( pos < zeile.size() )
-      DF_Suche( "nm", pos )  // nicht standard
-    pos = 0;
-    while( pos < zeile.size() )
-      DF_Suche( "SPECTRUM_", pos ) // nicht standard
-    pos = 0;
-    while( pos < zeile.size() )
-      DF_Suche( "R_", pos ) // nicht standard
-    DF_Suche( "LAB_C", 0 )
-    DF_Suche( "LAB_H", 0 )
-    DF_Suche( "LAB_DE", 0 )
-    DF_Suche( "LAB_DE_94", 0 )
-    DF_Suche( "LAB_DE_CMC", 0 )
-    DF_Suche( "LAB_DE_2000", 0 )
-    DF_Suche( "MEAN_DE", 0 )
-    DF_Suche( "STDEV_X", 0 )
-    DF_Suche( "STDEV_Y", 0 )
-    DF_Suche( "STDEV_Z", 0 )
-    DF_Suche( "STDEV_L", 0 )
-    DF_Suche( "STDEV_A", 0 )
-    DF_Suche( "STDEV_B", 0 )
-    DF_Suche( "STDEV_DE", 0 )
-    DF_Suche( "CHI_SQD_PAR", 0 )
+    while( (pos = sucheWort( zeile, s_woerter_[i], pos )) != std::string::npos )
+    {
+      ++pos;
+      ++n;
+    }
   }
 
   return n;
 }
 
 int
-sucheSchluesselwort_( std::string zeile )
+CgatsFilter::zeilenOhneDuplikate_ ( std::vector<std::string> &zeilen )
+{
+  int n = 0;
+
+  // Duplikate löschen
+  #if 0
+  for( unsigned int i = 0; i < zeilen.size(); ++i)
+    for( unsigned int j = i+1; j < zeilen.size(); ++j)
+      if( zeilen[i] == zeilen[j] )
+      {
+        DBG_NUM_S( "Zeile " << j << " : " << zeilen[j] << " gelöscht" )
+        zeilen.erase( zeilen.begin() + i );
+        ++n;
+      }
+  #else
+  sort( zeilen.begin(), zeilen.end() );
+  std::vector<std::string> ::iterator pos; 
+  for( unsigned int i = 0; i < zeilen.size(); ++i)
+    while ( zeilen[i] == zeilen[i+1] )
+    {
+      zeilen.erase( zeilen.begin()+i+1 );
+      DBG_NUM_S( zeilen[i] << " gelöscht" )
+      ++n;
+    }
+  #endif
+  return n;
+}
+
+int
+CgatsFilter::sucheSchluesselwort_( std::string zeile )
 {
   std::string::size_type pos=0;
-
-  enum {
-    BELASSEN,
-    ANFUEHRUNGSSTRICHE,
-    DATA_FORMAT_ZEILE,
-    AUSKOMMENTIEREN,
-    LINEARISIERUNG,
-    CMY_DATEN,
-    CMYK_DATEN
-  };
 
   {
     #define \
@@ -232,7 +239,7 @@ sucheSchluesselwort_( std::string zeile )
 }
 
 void
-zeileEinfuegen_( std::vector<std::string> &zeilen,
+CgatsFilter::zeileEinfuegen_( std::vector<std::string> &zeilen,
                 int                       pos_n,
                 std::string               neue_zeile )
 {
@@ -249,25 +256,26 @@ zeileEinfuegen_( std::vector<std::string> &zeilen,
 }
 
 int
-editZeile_( std::vector<std::string> &zeilen, int i, int editieren, bool cmy )
+CgatsFilter::editZeile_( std::vector<std::string> &zeilen,
+                         int i, int editieren, bool cmy )
 {
   DBG_PROG_START
   int zeilendifferenz = 0;
   std::string::size_type ende, pos;
   if( (ende = zeilen[i].find( "#", 0 )) == std::string::npos )
     ende = zeilen[i].size();
-  pos = zeilen[i].find_first_not_of( cgats_alnum );
-  
+  pos = zeilen[i].find_first_not_of( cgats_alnum_ );
+
   DBG_NUM_V( pos <<" "<< zeilen[i] )
   switch( editieren )
   {
-    case 0: break; //BELASSEN
-    case 1: { //ANFUEHRUNGSSTRICHE,
+    case BELASSEN: break;
+    case ANFUEHRUNGSSTRICHE: {
               bool in_anfuehrung = false;
               int letze_anfuehrungsstriche = -1;
               // das erste Zeichen nach dem Schlüsselwort
-              //while ( strchr( cgats_alnum, zeilen[i][pos] )
-              pos = zeilen[i].find_first_not_of( cgats_alnum ,pos, ende );
+              //while ( strchr( cgats_alnum_, zeilen[i][pos] )
+              pos = zeilen[i].find_first_not_of( cgats_alnum_ ,pos, ende );
               DBG_NUM_V( pos )
               for( ; pos < ende; ++pos )
               { DBG_NUM_V( pos )
@@ -281,7 +289,7 @@ editZeile_( std::vector<std::string> &zeilen, int i, int editieren, bool cmy )
                     in_anfuehrung = true;
                     letze_anfuehrungsstriche = pos;
                   }
-                } else if( strchr( cgats_alnum, zeilen[i][pos] ) &&//ein Zeichen
+                } else if( strchr( cgats_alnum_, zeilen[i][pos] )&&//ein Zeichen
                            !in_anfuehrung )                     // .. ausserhalb
                 { DBG_NUM_V( zeilen[i].substr( pos, ende-pos ) )
                   zeilen[i].insert( pos, "\"" );
@@ -293,9 +301,9 @@ editZeile_( std::vector<std::string> &zeilen, int i, int editieren, bool cmy )
                 }
 #if 0
                 if(!( zeilen[i].find( "\"" ) <
-                      zeilen[i].find_first_of( cgats_alnum ,pos, ende ) ))
+                      zeilen[i].find_first_of( cgats_alnum_ ,pos, ende ) ))
                   zeilen[i].insert( pos+1, "\"" );
-                if( zeilen[i].find_last_of( cgats_alnum ) < zeile.find( "\"" ) )
+                if( zeilen[i].find_last_of( cgats_alnum_ ) < zeile.find( "\"" ))
                 {
                   zeilen[i].insert( ende-1, "\"" );
                 }
@@ -305,7 +313,7 @@ editZeile_( std::vector<std::string> &zeilen, int i, int editieren, bool cmy )
                 zeilen[i].insert( ende-1, "\"" );
             }
             break;
-    case 2: //DATA_FORMAT_ZEILE, einige CGATS Dateien kennen nur:
+    case DATA_FORMAT_ZEILE: // einige CGATS Dateien kennen nur:
             // SAMPLE_ID C M Y K         / auch  L A B C H ?
             {
               // C M Y und K suchen und ersetzen
@@ -318,8 +326,8 @@ editZeile_( std::vector<std::string> &zeilen, int i, int editieren, bool cmy )
                 suchenErsetzen ( zeilen[i], "\tC\t", "\tCMYK_C\t", 0 );
                 suchenErsetzen ( zeilen[i], "\tM\t", "\tCMYK_M\t", 0 );
                 suchenErsetzen ( zeilen[i], "\tY", "\tCMYK_Y", 0 );
-                suchenErsetzen ( zeilen[i], "\tO", "\tD_RED", 0 );
-                suchenErsetzen ( zeilen[i], "\tG", "\tD_GREEN", 0 );
+                suchenErsetzen ( zeilen[i], "\tO", "\tRGB_R", 0 );
+                suchenErsetzen ( zeilen[i], "\tG", "\tRGB_G", 0 );
                 suchenErsetzen ( zeilen[i], "\tB", "\tD_BLUE", 0 );
                 suchenErsetzen ( zeilen[i], "\tK", "\tCMYK_K", 0 );
               }
@@ -334,14 +342,14 @@ editZeile_( std::vector<std::string> &zeilen, int i, int editieren, bool cmy )
               ++zeilendifferenz;
             }
             break;
-    case 5: // CMY Target
-    case 6: // CMYK Target
-    case 3: //AUSKOMMENTIEREN,
+    case CMY_DATEN:
+    case CMYK_DATEN:
+    case AUSKOMMENTIEREN:
             if( zeilen[i].size() &&
                 zeilen[i][0] != '#' )
               zeilen[i].insert( 0, "# " );
             break;
-    case 4: //LINEARISIERUNG
+    case LINEARISIERUNG:
             if( cmy )
               zeilendifferenz += 9;
             else
@@ -354,13 +362,12 @@ editZeile_( std::vector<std::string> &zeilen, int i, int editieren, bool cmy )
 }
 
 std::string
-cgats_korrigieren               (char* _data, size_t _size)
+CgatsFilter::cgats_korrigieren               ()
 { DBG_PROG_START
   std::string::size_type pos=0;
   std::string::size_type ende;
 
-  // char* -> std::string
-  std::string data (_data, 0, _size);
+  data_ = data_orig_;
 
   // Zeilenumbrüche reparieren
   // LF CR
@@ -369,13 +376,13 @@ cgats_korrigieren               (char* _data, size_t _size)
   char LF[2];
   sprintf (CRLF , "\r\n");
   sprintf (LF , "\n");
-  if(suchenErsetzen (data,CRLF,LF,pos) != std::string::npos)
+  if(suchenErsetzen (data_,CRLF,LF,pos) != std::string::npos)
   {
       DBG_NUM_S( "LF CR ersetzt" )
   }
   char CR[2];
   sprintf (CR , "\r");
-  if(suchenErsetzen (data,CR,LF,pos) != std::string::npos)
+  if(suchenErsetzen (data_,CR,LF,pos) != std::string::npos)
   {
       DBG_NUM_S( "CR ersetzt" )
   }
@@ -383,7 +390,7 @@ cgats_korrigieren               (char* _data, size_t _size)
   #if 0
   // testweises Speichern
   std::ofstream f ( "AtestCGATS.vim",  std::ios::out );
-  f.write ( data.c_str(), data.size() );
+  f.write ( data_.c_str(), data_.size() );
   f.close();
   #endif
 
@@ -391,7 +398,7 @@ cgats_korrigieren               (char* _data, size_t _size)
   // reparieren: Sample_Name , SampleID, ""
   #define SUCHENundERSETZEN( suchen, ersetzen ) \
   pos = 0; \
-  if(suchenErsetzen ( data, suchen, ersetzen, pos ) != std::string::npos) \
+  if(suchenErsetzen ( data_, suchen, ersetzen, pos ) != std::string::npos) \
   { \
       DBG_NUM_S( suchen " ersetzt" ) \
   }
@@ -413,7 +420,7 @@ cgats_korrigieren               (char* _data, size_t _size)
 
 
   // zeilenweise
-  std::vector<std::string> zeilen = zeilenNachVector(data);
+  std::vector<std::string> zeilen = zeilenNachVector(data_);
 
   // Zahlen
   // es gibt zwei Blöcke  BEGIN_DATA / END_DATA und BEGIN_DATA_FORMAT / END_...
@@ -453,7 +460,7 @@ cgats_korrigieren               (char* _data, size_t _size)
     if( im_data_block )
     {
       // SETS zählen
-      if( gtext.find_first_of( cgats_alnum ) != std::string::npos )
+      if( gtext.find_first_of( cgats_alnum_ ) != std::string::npos )
         ++zaehler_SETS;
 
       // in gtext , durch . ersetzen und danach in zeilen[i] zurückschreiben
@@ -553,9 +560,9 @@ cgats_korrigieren               (char* _data, size_t _size)
     // Datei Signatur reparieren
     if( i == 0 )
     {
-      pos  = gtext.find_first_of( cgats_alnum );
-      if((ende = gtext.find_first_not_of( cgats_alnum )) == std::string::npos ||
-          gtext.find_first_not_of( cgats_alnum ) > ende )
+      pos  = gtext.find_first_of( cgats_alnum_ );
+      if((ende = gtext.find_first_not_of( cgats_alnum_ )) == std::string::npos||
+          gtext.find_first_not_of( cgats_alnum_ ) > ende )
       {
         ende = gtext.size();
       }
@@ -585,16 +592,26 @@ cgats_korrigieren               (char* _data, size_t _size)
   }
 
   // Text neu aus Zeilen zusammenstellen
-  data.clear();
+  data_.clear();
   for( unsigned int i = 0; i < zeilen.size(); ++i)
   {
-    data.append( zeilen[i] );
-    data.append( "\n" );
+    data_.append( zeilen[i] );
+    data_.append( "\n" );
   }
 
-  //DBG_NUM_S (data)
+  //DBG_NUM_S (data_)
   DBG_PROG_ENDE
-  return data;
+  return data_;
 }
 
+
+std::string
+cgats_korrigieren( char* data, size_t size )
+{ DBG_PROG_START
+  CgatsFilter cgats;
+  cgats.lade( data, size );
+  std::string text = cgats.lcms_gefiltert ();
+  DBG_PROG_ENDE
+  return text;
+}
 

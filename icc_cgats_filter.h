@@ -1,0 +1,117 @@
+/*
+ * ICC Examin ist eine ICC Profil Betrachter
+ * 
+ * Copyright (C) 2005  Kai-Uwe Behrmann 
+ *
+ * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ * 
+ * -----------------------------------------------------------------------------
+ *
+ * cgats Fehlerkorrekturen
+ * 
+ */
+
+#ifndef ICC_CGATS_FILTER_H
+#define ICC_CGATS_FILTER_H
+
+#include "icc_utils.h"
+#include "icc_cgats_filter.h"
+
+#include <vector>
+#include <string>
+
+class CgatsFilter
+{
+  public:
+    CgatsFilter () {
+        sprintf (cgats_alnum_, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_|/-+=()[]{}<>&?!:;,.0123456789");
+        sprintf (leer_zeichen_, "\t\n\v\f\r");
+        typ_ = LCMS;
+    }
+    ~CgatsFilter () {; }
+    void lade (char* data, size_t size) { clear();
+                                          data_orig_.assign( data,0,size ); }
+    void lade (std::string &data)       { clear(); data_orig_ = data; }
+    void clear()                        { data_.resize(0); data_orig_.resize(0);
+                                          s_woerter_.resize(0); }
+    enum {
+      LCMS,
+      MAX_BELASSEN
+    };
+    // Ausgeben
+    std::string lcms_gefiltert() { typ_ = LCMS; cgats_korrigieren();
+                                   return data_; }
+    std::string max_belassen()   { typ_ = MAX_BELASSEN; cgats_korrigieren(); 
+                                   return data_; }
+
+private:
+    // --- Hauptfunktion ---
+    // Konvertierung in Standard unix Dateiformat mit LF
+    // Suchen und Ersetzen bekannnter Abweichungen (in einem std::string)
+    // zeilenweises lesen und editieren (in einem vector aus strings)
+    // verdecken der Kommentare
+    // kontrollieren der Blöckanfänge und -enden
+    // die Dateisignatur reparieren (7 / 14 byte lang)
+    // zwischen den Blöcken die Keywords erkennen und entsprechend bearbeiten
+    // die Zeilen wieder zusamenfügen und als einen std::string zurückgeben
+    std::string cgats_korrigieren               ();
+
+    // - Hilfsfunktionen -
+    // Auszählen der Formate(Farbkanäle) im DATA_FORMAT Block
+    int sucheInDATA_FORMAT_( std::string &zeile );
+    // klassifiziert CGATS Keywords; sinnvoll ausserhalb der Blöcke
+    int sucheSchluesselwort_( std::string zeile );
+    // eine Zeile ausserhalb der beiden DATA und FORMAT Blöcke nach
+    //  Klassifizierungsangabe bearbeiten
+    int editZeile_( std::vector<std::string> &zeilen, int zeile_n, int editieren,
+                bool cmy );
+    // vector Bearbeitung fürs zeilenweise Editieren
+    void zeileEinfuegen_      ( std::vector<std::string> &zeilen,
+                                int                       pos_n,
+                                std::string               neue_zeile );
+    void suchenLoeschen_      ( std::vector<std::string> &zeilen,
+                                std::string               text );
+    int  zeilenOhneDuplikate_ ( std::vector<std::string> &zeilen );
+
+    // Schlüsselwort passende korrekturen
+    enum {
+    BELASSEN,
+    ANFUEHRUNGSSTRICHE,
+    DATA_FORMAT_ZEILE,
+    AUSKOMMENTIEREN,
+    LINEARISIERUNG,
+    CMY_DATEN,
+    CMYK_DATEN
+    };
+
+    // benötigte Daten
+    std::string              data_;      // der korrigierte CGATS Text
+    std::string              data_orig_; // eine Kopie vom Original
+    std::vector<std::string> s_woerter_; // Schlüsselwörter
+    int                      typ_;       // Art des Filterns
+
+    // Hilfsobjekte
+    char cgats_alnum_[128];
+    char leer_zeichen_[12];
+};
+
+
+// fertig zum Anwenden
+std::string  cgats_korrigieren( char* data, size_t size );
+
+#endif // ICC_CGATS_FILTER_H
+
