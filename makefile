@@ -28,6 +28,8 @@ X11_LIBS=-L/usr/X11R6/lib -lXinerama -lXft
 
 FLTK_LIBS=`fltk-config --use-images --use-gl --use-glut $(DL)`
 
+KDB_LIBS=-lkdb
+
 ifdef FLU
 FLU_LIBS=`flu-config $(DL)`
 endif
@@ -41,7 +43,7 @@ else
 endif
 
 LDLIBS = -L$(libdir) -L./ $(FLTK_LIBS) \
-	$(X11_LIBS) -llcms $(GLUT) $(FLU_LIBS)
+	$(X11_LIBS) -llcms $(KDB_LIBS) $(GLUT) $(FLU_LIBS)
 
 #	$(VRML_LIBS)
 
@@ -68,6 +70,7 @@ CPPFILES = \
         icc_gl.cpp \
 	icc_helfer.cpp \
 	icc_measurement.cpp \
+	icc_oyranos.cpp \
 	icc_profile.cpp \
 	icc_ueber.cpp \
 	icc_utils.cpp \

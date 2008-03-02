@@ -11,6 +11,7 @@ static char *statlabel;
  int tag_nummer;
 #include "icc_draw.h"
 #include "icc_oyranos.h"
+#include "fl_oyranos.h"
 #include "agviewer.h"
 #include "icc_gl.h"
 std::vector<ICCprofile> profile;

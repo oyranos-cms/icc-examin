@@ -19,64 +19,25 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  * 
- * Der 3D Betrachter.
+ * -----------------------------------------------------------------------------
+ *
+ * Der CMS Sortierer
  * 
  */
 
-// Date:      12. 09. 2004
+// Date:      25. 11. 2004
 
 
-#ifndef ICC_GL_H
-#define ICC_GL_H
+#ifndef ICC_OYRANOS_H
+#define ICC_OYRANOS_H
 #define _(text) text
 
-extern int kanal;
-extern bool duenn;
 
-class GL_Ansicht : public Fl_Group {
-  std::vector<std::vector<std::vector<std::vector<double> > > > tabelle;
-  std::vector<std::string>texte;
-  std::vector<std::string>pcsNamen;
-  std::vector<double>punkte;
-  std::vector<std::vector<double> >kurven;
-  Fl_Group *GLFenster;
-  void MenueErneuern();
-  int  MenueKanalEintraege;
-  void init();
-  void myGLinit();
-  void MenuInit();
-public:
-  int agv;
-  bool GLfenster_zeigen,
-       first;
-  GL_Ansicht(int X,int Y,int W,int H);
-  ~GL_Ansicht();
-  void draw();
-  void hinein_punkt(std::vector<double> vect, std::vector<std::string> txt);
-  void hinein_kurven(std::vector<std::vector<double> >vect, std::vector<std::string> txt);
-  void hinein_tabelle(std::vector<std::vector<std::vector<std::vector<double> > > >vect,
-                               std::vector<std::string> txt,
-                               std::vector<std::string> pcs);
-  void ruhig_neuzeichnen(void);
-
-  int  Punktform;                // Form der Gitterpunkte der Transformationstabelle
-  void MakeDisplayLists();
-  void zeigen();
-  void verstecken();
-  void stop() {if (!first) { agvSwitchMoveMode (agviewer::AGV_STOP); } }
-
-  char* kanalName() {return (char*)texte[kanal].c_str(); }
-  char* kanalName(unsigned int i) { if (texte.size()>i) 
-                                      return (char*)texte[i].c_str();  
-                                    else  return _("Gibts nicht"); }
-  unsigned int kanaele() {return texte.size(); }
-};
-
-void reshape(int w, int h);
-void display();
-void sichtbar(int v);
-void menuuse(int v);
-void handlemenu(int value);
+void	oyranos_pfade_einlesen();
+void	oyranos_pfade_auffrischen();
+void	oyranos_pfade_loeschen();
+void	oyranos_pfad_dazu();
 
 
-#endif //ICC_GL_H
+
+#endif //ICC_OYRANOS_H

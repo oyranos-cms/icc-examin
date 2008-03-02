@@ -62,7 +62,8 @@ decl {\#define status(_texte) {std::stringstream s; s << _texte; box_stat->label
 } 
 
 decl {\#include "icc_draw.h"
-\#include "icc_oyranos.h"} {selected
+\#include "icc_oyranos.h"
+\#include "fl_oyranos.h"} {selected
 } 
 
 decl {\#include "icc_profile.h"
@@ -239,7 +240,7 @@ Function {} {open C return_type int
   }
   Fl_Window details {
     label {ICC Details} open
-    xywh {746 157 385 520} type Double box NO_BOX color 53
+    xywh {633 157 385 520} type Double box NO_BOX color 53
     code1 {DBG_PROG
 
     if (argc>1) {
