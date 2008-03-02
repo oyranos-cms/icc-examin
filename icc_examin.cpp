@@ -158,6 +158,8 @@ ICCexamin::start (int argc, char** argv)
 void
 ICCexamin::oeffnen (std::vector<std::string> dateinamen)
 { DBG_PROG_START
+  if(!dateinamen.size())
+    return;
   // Laden
   frei_ = false;
   icc_betrachter->DD_histogram->punkte_clear();

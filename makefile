@@ -130,7 +130,7 @@ FLUID = \
 	icc_betrachter.fl \
 	fl_oyranos.fl
 
-SOURCES = $(ALL_CPPFILES) $(CXXFILES) $(CPP_HEADERS)
+SOURCES = $(ALL_CPPFILES) $(CPP_HEADERS)
 OBJECTS = $(CPPFILES:.cpp=.o) $(CXXFILES:.cxx=.o)
 TARGET  = icc_examin
 
@@ -218,6 +218,22 @@ EXEEXT		=
 	$(CXX) -I.. $(CXXFLAGS) -c $<
 
 tgz:
+	mkdir Entwickeln
+	$(COPY) \
+	$(SOURCES) \
+	makefile \
+	configure.sh \
+	$(DOKU) \
+	$(FLUID) \
+	Entwickeln
+	tar cf - Entwickeln/ \
+	| gzip > $(TARGET)_$(mtime).tgz
+	test -d ../Archiv && mv -v $(TARGET)_*.tgz ../Archiv
+	test -d Entwickeln && \
+	test `pwd` != `(cd Entwickeln; pwd)` && \
+	rm -R Entwickeln
+
+targz:
 	mkdir icc_examin_$(VERSION)
 	$(COPY) \
 	$(SOURCES) \
