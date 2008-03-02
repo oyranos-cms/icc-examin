@@ -10,7 +10,6 @@ URL: http://www.behrmann.name
 Vendor: Kai-Uwe Behrmann
 Packager: Kai-Uwe Behrmann <ku.b@gmx.de>
 BuildRoot: %{_tmppath}/%{name}-root
-#Requires: /sbin/ldconfig FIXME: Find dependencies
 Prefix:    %{_prefix}
 
 %description

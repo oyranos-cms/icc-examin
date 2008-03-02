@@ -6,7 +6,7 @@ CONF=config
 TARGET=icc_examin
 VERSION_A=0
 VERSION_B=3
-VERSION_C=2
+VERSION_C=3
 VERSION=$VERSION_A.$VERSION_B$VERSION_C
 VERSION_L=$VERSION_A.$VERSION_B.$VERSION_C
 ZEIT="Mai 2004 - Mai 2005"
@@ -41,14 +41,17 @@ UNAME_=`uname`
 if [ $? = 0 ] && [ $UNAME_ = "Darwin" ]; then
   echo "Darwin PPC              detected"
   echo "APPLE = 1" >> $CONF
+  echo "#define APPLE 1" >> $CONF_H
   echo "OSX_H = -DHAVE_OSX" >> $CONF
 else
   if [ $UNAME_ = "Linux" ]; then
     echo "LINUX = 1" >> $CONF
+    echo "#define LINUX 1" >> $CONF_H
     echo "Linux system            detected"
   else
     if [ $UNAME_ = "SunOS" ]; then
       echo "SOLARIS = 1" >> $CONF
+      echo "#define SOLARIS 1" >> $CONF_H
       echo "SunOS                   detected"
       if [ `uname -m` = sun4u ]; then
         sync

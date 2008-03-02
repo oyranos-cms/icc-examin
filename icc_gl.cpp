@@ -36,6 +36,12 @@
 #include "agviewer.h"
 #include "icc_gl.h"
 #include "icc_helfer.h"
+#include "config.h"
+
+#ifdef LINUX
+#include <sys/time.h>
+#endif
+
 #include <FL/Fl_Menu_Button.H>
 #include <FL/Fl.H>
 #include <FL/gl.h>
@@ -82,7 +88,7 @@ int glListen[DL_MAX] = {0,0,0,0,0,0,0};
 
 const double GL_Ansicht::std_vorder_schnitt = 4.2;
 #ifdef HAVE_FTGL
-static FTFont* font, *ortho_font;
+FTFont* font, *ortho_font;
 #endif
 
 
@@ -104,6 +110,12 @@ GL_Ansicht::GL_Ansicht(int X,int Y,int W,int H)
   zeig_punkte_als_messwerte = false;
   id_ = -1;
   strichmult = 1.0;
+  strich1 = 1;
+  strich2 = 2;
+  strich3 = 3;
+  blend = false;
+  smooth = false;
+  wiederholen = 0;
 
   for(int i = 0; i < DL_MAX; ++i)
     glListen[i] = 0;
@@ -299,10 +311,18 @@ GL_Ansicht::handle( int event )
          break;
     case FL_MOVE:
          DBG_ICCGL_S( "FL_MOVE bei: " << Fl::event_x() << "," << Fl::event_y() )
+         maus_x = Fl::event_x();
+         maus_y = Fl::event_y();
+         if(visible() && !agv_.agvMoving && agv_.AllowIdle) {
+           zeichnen();
+         }
          break;
     case FL_MOUSEWHEEL:
          DBG_ICCGL_S( "FL_MOUSEWHEEL" << Fl::event_dx() << "," << Fl::event_dy() )
          break;
+    case FL_LEAVE:
+         DBG_ICCGL_S( "FL_LEAVE" )
+    case FL_NO_EVENT:
     default:
          DBG_ICCGL_S( "default" )
          DBG_ICCGL_ENDE
@@ -437,26 +457,27 @@ GL_Ansicht::tastatur(int e)
 #ifdef HAVE_FTGL
  #define ZeichneText(Font, Zeiger) { \
    glLineWidth(strichmult); \
-    glDisable(GL_BLEND); \
+    if(blend) glDisable(GL_BLEND); \
       glTranslatef(.0,0,0.01); \
         glScalef(0.002,0.002,0.002); \
           if(Font) Font->Render(Zeiger); \
         glScalef(500,500,500); \
       glTranslatef(.0,0,-.01); \
-    glEnable(GL_BLEND); \
+    if(blend) glEnable(GL_BLEND); \
    glLineWidth(strichmult); }
 #else
  #define ZeichneText(Font, Zeiger)
 #endif
 
-#define ZeichneOText(Font, scal, buffer) \
-                                   glScalef(scal,scal,scal); \
+#define ZeichneOText(Font, scal, buffer) { \
+                                   glScalef(scal,scal*w()/(double)h(),scal); \
                                    ZeichneText(Font, buffer); \
-                                   glScalef(1.0/scal,1.0/scal,1.0/scal);
+                                   glScalef(1.0/scal,1.0/(scal*w()/(double)h()),1.0/scal); \
+                                 }
 
 
 void
-zeichneKoordinaten(float strichmult)
+GL_Ansicht::zeichneKoordinaten_()
 { DBG_ICCGL_START
   char text[256];
   GLfloat farbe[] =   { 1.0, 1.0, 1.0, 1.0 };
@@ -561,66 +582,48 @@ GL_Ansicht::textGarnieren_()
   DBG_PROG_START
   char text[256];
   char* ptr = 0;
+  GLfloat ueber = 0.035;
   GLfloat farbe[] =   { 1.0, 1.0, 1.0, 1.0 };
 
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glEnable(GL_LINE_SMOOTH);
-    glEnable(GL_LIGHTING);
+    glDisable(GL_TEXTURE_2D);
+    glDisable(GL_LIGHTING);
     FARBE(textfarbe[0],textfarbe[1],textfarbe[2])
-
-    glPushMatrix();
-      glMatrixMode(GL_MODELVIEW);
-      glTranslatef(.5,0.62,.5);
-      glRotatef (270,0.0,1.0,.0);
-      if (nach_farb_namen_.size())
-      {
-        ptr = (char*) nach_farb_namen_[kanal].c_str();
-        sprintf (&text[0], ptr);
-        //ZeichneText(font, text)
-      }
-    glPopMatrix(); DBG_PROG
 
     // CIE*L - oben
     glPushMatrix();
-      glTranslatef(0,.5,0);
-      glRotatef (270,1.0,0.0,.0);
-      glRotatef (270,0.0,0.0,1.0);
-      glTranslatef(.02,0,0);
+      glLoadIdentity();
       if (von_farb_namen_.size())
       {
         ptr = (char*) von_farb_namen_[0].c_str();
         sprintf (&text[0], ptr);
-        ZeichneText(font, text)
+        glRasterPos3f (0, .5+ueber, 0);
+        ZeichneOText(ortho_font, 1, text)
       }
-    glPopMatrix(); DBG_PROG
 
     // CIE*a - rechts
-    glPushMatrix();
-      if (von_farb_namen_.size() &&
-          von_farb_namen_[1] == _("CIE *a"))
-        glTranslatef(0,-.5,0);
-      glTranslatef(0.0,0.0,a_darstellungs_breite/2.);
       if (von_farb_namen_.size())
       {
         ptr = (char*) von_farb_namen_[1].c_str();
         sprintf (&text[0], ptr);
-        ZeichneText(font, text)
+        if (von_farb_namen_.size() &&
+            von_farb_namen_[1] == _("CIE *a"))
+          glRasterPos3f (.0, -.5, a_darstellungs_breite/2.+ueber);
+        else
+          glRasterPos3f (.0, .0, a_darstellungs_breite/2.+ueber);
+        ZeichneOText(ortho_font, 1, text)
       }
-    glPopMatrix(); DBG_PROG
 
     // CIE*b - links
-    glPushMatrix();
-      if (von_farb_namen_.size() &&
-          von_farb_namen_[2] == _("CIE *b"))
-        glTranslatef(0,-0.5,0);
-      glTranslatef(b_darstellungs_breite/2.,0,0);
-      glRotatef (90,0.0,.5,.0);
       if (von_farb_namen_.size())
       {
         ptr = (char*) von_farb_namen_[2].c_str();
         sprintf (&text[0], ptr);
-        ZeichneText(font, text)
+        if (von_farb_namen_.size() &&
+            von_farb_namen_[2] == _("CIE *b"))
+          glRasterPos3f (b_darstellungs_breite/2.+ueber, -.5, .0);
+        else
+          glRasterPos3f (b_darstellungs_breite/2.+ueber, .0, .0);
+        ZeichneOText(ortho_font, 1, text)
       }
     glPopMatrix();
 
@@ -642,12 +645,17 @@ GL_Ansicht::garnieren_()
   glListen[HELFER] = glGenLists(1);
   glNewList( glListen[HELFER], GL_COMPILE); DBG_PROG_V( glListen[HELFER] )
     GLfloat farbe[] =   { pfeilfarbe[0],pfeilfarbe[1],pfeilfarbe[2], 1.0 };
-    glLineWidth(3.0*strichmult);
+    glLineWidth(strich3*strichmult);
 
     // Farbkanalname
-    glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glEnable(GL_LINE_SMOOTH);
+    if(!smooth) {
+      glDisable(GL_BLEND);
+      glDisable(GL_LINE_SMOOTH);
+    } else {
+      glEnable(GL_BLEND);
+      glEnable(GL_LINE_SMOOTH);
+    }
     glEnable(GL_LIGHTING);
 
     // CIE*L - oben
@@ -679,9 +687,9 @@ GL_Ansicht::garnieren_()
       for(float i = start; i <= ende; i+=schritt) {
 
         if(i/Schritt == floor(i/Schritt))
-          glLineWidth(3.0*strichmult);
+          glLineWidth(strich3*strichmult);
         else
-          glLineWidth(1.0*strichmult);
+          glLineWidth(strich1*strichmult);
 
         glBegin(GL_LINES);
           glVertex3f( i, 0,  a_darstellungs_breite/2.);
@@ -723,9 +731,9 @@ GL_Ansicht::garnieren_()
       for(float i = start; i <= ende; i+=schritt) {
 
         if(i/Schritt == floor(i/Schritt))
-          glLineWidth(3.0*strichmult);
+          glLineWidth(strich3*strichmult);
         else
-          glLineWidth(1.0*strichmult);
+          glLineWidth(strich1*strichmult);
 
         glBegin(GL_LINES);
           glVertex3f( b_darstellungs_breite/2., 0, i);
@@ -754,7 +762,7 @@ GL_Ansicht::garnieren_()
         PFEILSPITZE
       }
     glPopMatrix();
-    glLineWidth(1.0*strichmult);
+    glLineWidth(strich1*strichmult);
 
   glEndList();
 
@@ -916,7 +924,7 @@ GL_Ansicht::netzeAuffrischen()
        glLoadIdentity();
        glTranslatef(-X/1.2,Y/1.2,Z/1.2);
        DBG_ICCGL_S( "X:"<<X<<" Y:"<<Y<<" Z:"<<Z )
-       zeichneKoordinaten(strichmult);
+       zeichneKoordinaten_();
        }
       
        ICCnetz netz;
@@ -1139,7 +1147,7 @@ GL_Ansicht::punkteAuffrischen()
           if(zeig_punkte_als_messwert_paare &&
              i%6 == 0)
           {
-            glLineWidth(2.0*strichmult);
+            glLineWidth(strich2*strichmult);
             glColor4f(.97, .97, .97, 1. );
             glBegin(GL_LINES);
               glVertex3f(0, 0, 0);
@@ -1295,9 +1303,14 @@ GL_Ansicht::zeigeUmrisse_()
   DBG_PROG_V( glListen[UMRISSE] ) 
 
     glDisable (GL_LIGHTING);
-    glDisable (GL_BLEND);
     glDisable (GL_ALPHA_TEST_FUNC);
-    glEnable  (GL_LINE_SMOOTH);
+    if(!smooth) {
+      glDisable(GL_BLEND);
+      glDisable(GL_LINE_SMOOTH);
+    } else {
+      glEnable(GL_BLEND);
+      glEnable(GL_LINE_SMOOTH);
+    }
 
     for (unsigned int i=0; i < dreiecks_netze.size(); ++i)
     {
@@ -1323,7 +1336,7 @@ GL_Ansicht::zeigeUmrisse_()
         if(!dreiecks_netze[i].schattierung)
           netzeAuffrischen();
         DBG_PROG_V( n )
-        glLineWidth(2.0*strichmult);
+        glLineWidth(strich2*strichmult);
         glBegin(GL_LINE_STRIP);
         for (int z=0 ; z < n; z++)
         {
@@ -1408,11 +1421,16 @@ GL_Ansicht::zeigeSpektralband_()
     DBG_PROG_V( glListen[SPEKTRUM] ) 
 
       glDisable (GL_LIGHTING);
-      glDisable (GL_BLEND);
       glDisable (GL_ALPHA_TEST_FUNC);
-      glEnable  (GL_LINE_SMOOTH);
+      if(!smooth) {
+        glDisable(GL_BLEND);
+        glDisable(GL_LINE_SMOOTH);
+      } else {
+        glEnable(GL_BLEND);
+        glEnable(GL_LINE_SMOOTH);
+      }
 
-      glLineWidth(3.0*strichmult);
+      glLineWidth(strich3*strichmult);
       glColor4f(0.5, 1.0, 1.0, 1.0);
       glBegin(GL_LINE_STRIP);
         for (int i=0 ; i <= (nano_max - 1); i++) {
@@ -1427,7 +1445,7 @@ GL_Ansicht::zeigeSpektralband_()
         }
       glEnd();
       // Schatten
-      glLineWidth(2.0*strichmult);
+      glLineWidth(strich2*strichmult);
       glBegin(GL_LINE_STRIP);
       //#define S * .25 + textfarbe[0] - schatten
         for (int i=0 ; i <= (nano_max - 1); i++) {
@@ -1585,7 +1603,7 @@ GL_Ansicht::menueInit_()
 }
 
 
-inline void
+/*inline*/ void
 GL_Ansicht::setzePerspektive()
 { //DBG_ICCGL_START
     if (agv_.duenn)
@@ -1614,6 +1632,9 @@ void
 GL_Ansicht::zeichnen()
 {
   DBG_ICCGL_START
+  int scal = 1;
+  GLfloat farbe[] =   { textfarbe[0],textfarbe[1],textfarbe[2], 1.0 };
+  std::string kanalname;
   if(visible() && agv_.agvMoving && !agv_.AllowIdle)
   {
     agv_.setIdle(visible());
@@ -1630,8 +1651,13 @@ GL_Ansicht::zeichnen()
 
     glEnable(GL_TEXTURE_2D);
     glDisable(GL_LIGHTING);
-    glDisable(GL_BLEND);
-    glDisable(GL_LINE_SMOOTH);
+    if(!smooth) {
+      glDisable(GL_BLEND);
+      glDisable(GL_LINE_SMOOTH);
+    } else {
+      glEnable(GL_BLEND);
+      glEnable(GL_LINE_SMOOTH);
+    }
 
     // Farbkanalname
     // Text
@@ -1640,28 +1666,26 @@ GL_Ansicht::zeichnen()
        glLoadIdentity();
        glOrtho(0,w(),0,h(),-10.0,10.0);
 
-       GLfloat farbe[] =   { textfarbe[0],textfarbe[1],textfarbe[2], 1.0 };
        FARBE(textfarbe[0],textfarbe[1],textfarbe[2])
 
        glTranslatef(5,-12,0/*8.8 - schnitttiefe*3*/);
 
-       int scal = 1;
-       std::string text;
        if(id() == 1) {
-         text.append(_("Channel"));
-         text.append(": ");
-         text.append(kanalName());
+         kanalname.append(_("Channel"));
+         kanalname.append(": ");
+         kanalname.append(kanalName());
 
          #ifdef HAVE_FTGL
          if(ortho_font)
            glRasterPos2f(0,ortho_font->LineHeight()/5+20);
          #endif
-         ZeichneOText (ortho_font, scal, text.c_str()) 
+         ZeichneOText (ortho_font, scal, kanalname.c_str()) 
        } else {
          for (unsigned int i=0;
                 i < dreiecks_netze.size();
                   ++i)
          {
+           std::string text;
            text = dreiecks_netze[i].name.c_str();
            DBG_PROG_V( dreiecks_netze[i].name )
            #ifdef HAVE_FTGL
@@ -1673,9 +1697,103 @@ GL_Ansicht::zeichnen()
          }
        }
 
+       // Geschwindigkeit
+       bool schluss = false;
+       if(1) // agv_.agvMoving)
+       {
+           static char t[128];
+           static time_t zeit_alt;
+           time_t z, teiler;
+           #ifdef LINUX
+           struct timeval tv;
+           teiler = 1000;
+           gettimeofday( &tv, NULL );
+           z = tv.tv_usec/1000 + tv.tv_sec*1000;
+           #else
+           teiler = CLOCKS_PER_SEC;
+           z = clock();
+           #endif
+           time_t dz = z-zeit_alt;
+           static double zeit_sum = 0.0;
+           static int n = 0;
+           bool strich_neu = false;
+           double fps,
+                  zeit = dz / (double)teiler;
+           if(zeit < 0.002)
+             zeit = 0.01;
+           zeit_sum += zeit;
+           fps = n / zeit_sum;
+           if(n > 1/zeit)
+           {
+             n = (int)(0.6*1/zeit);
+             zeit_sum = 1/fps * n;
+           } else
+             ++n;
+
+           if(fps < 10 &&
+              !wiederholen)
+           {
+             if(smooth)
+             {
+               smooth = 0;
+               strich_neu = true;
+             }
+           }
+           if(fps > 100. &&
+              !wiederholen && agv_.agvMoving)
+           {
+             if(!smooth)
+             {
+               smooth = 1;
+               strich_neu = true;
+             }
+           } else if (fps > 25) {
+             DBG_PROG_V( 1./fps <<" "<< 1./20.-1/fps <<" "<< 1./20. )
+             timespec ts;
+             ts.tv_sec = 0;
+             ts.tv_nsec = (time_t)((1./20.-1./fps) * 1000000000);
+             nanosleep(&ts, 0);
+             //usleep((1/25.-1/fps)*1000000);
+           }
+
+           if(strich_neu || wiederholen) {
+             bool smooth_neu = false;
+             if(wiederholen && !smooth) {
+               smooth = 1;
+             }
+             zeigeSpektralband_();
+             garnieren_();
+             if(smooth_neu)
+               smooth = 0;
+             wiederholen = 0;
+           }
+
+           zeit_alt = z;
+           sprintf(t, "fps:%01f %01f %d %ld %01f", fps, zeit, n, dz, zeit_sum);
+           DBG_PROG_V( t )
+
+           #ifdef HAVE_FTGL
+           if(ortho_font)
+             glRasterPos2f(0, h() -10 );
+           #endif
+           if(icc_debug)
+             ZeichneOText (ortho_font, scal, t)
+
+           static int maus_x_alt, maus_y_alt;
+           if(maus_x_alt != maus_x || maus_y_alt != maus_y)
+             schluss = true;
+           maus_x_alt = maus_x;
+           maus_y_alt = maus_y;
+       }
+
        glEnable(GL_TEXTURE_2D);
        glEnable(GL_LIGHTING);
       glPopMatrix();
+      if(!agv_.agvMoving && schluss) {
+        redraw();
+        DBG_ICCGL_ENDE
+        return;
+      }
     }
 
 
@@ -1683,7 +1801,7 @@ GL_Ansicht::zeichnen()
 
       glLoadIdentity();
 
-      setzePerspektive();
+      GL_Ansicht::setzePerspektive();
 
       /* so this replaces gluLookAt or equiv */
       agv_.agvViewTransform();
@@ -1695,7 +1813,7 @@ GL_Ansicht::zeichnen()
       glCallList( glListen[UMRISSE] ); DBG_ICCGL_V( glListen[UMRISSE] )
 
       if (zeige_helfer) {
-        textGarnieren_();
+        //textGarnieren_();
         glCallList( glListen[HELFER] ); DBG_ICCGL_V( glListen[HELFER] )
       }
 
@@ -1711,6 +1829,118 @@ GL_Ansicht::zeichnen()
 
     glPopMatrix();
 
+  // den Ort lokalisieren
+                    // wie weit ist das nächste Objekt in diese Richtung, sehr aufwendig
+                  GLfloat zBuffer;
+                  glReadPixels((GLint)maus_x,(GLint)h()-maus_y,1,1,GL_DEPTH_COMPONENT, GL_FLOAT, &zBuffer);
+                  GLdouble oX=0.0,oY=.0,oZ=0.;
+                  GLdouble modell_matrix[16], projektions_matrix[16];
+                  GLint bildschirm[4];
+                  glGetDoublev(GL_MODELVIEW_MATRIX, modell_matrix);
+                  glGetDoublev(GL_PROJECTION_MATRIX, projektions_matrix);
+                  glGetIntegerv(GL_VIEWPORT, bildschirm);
+                  gluUnProject(maus_x, h()-maus_y, zBuffer, modell_matrix, projektions_matrix, bildschirm, &oX, &oY, &oZ);
+
+
+                    //std::cout << "X: "<<x<<" Y: "<<y<<" Z: "<<z<<std::endl;
+
+                glPushMatrix();
+                  GLdouble X=0.0,Y=.0,Z=0.;
+                  gluProject( oX, oY, oZ,
+                              modell_matrix, projektions_matrix,
+                              bildschirm, &X,&Y,&Z);
+
+  //glTranslatef(-2, 1, -2);
+
+                  // Text
+                  FARBE(textfarbe[0],textfarbe[1],textfarbe[2])
+
+                  if(1)
+                  {
+                    static char text[128] = {""};
+                    GLfloat grenze = 3.2;
+                    if(von_farb_namen_.size() &&
+                       -grenze < oY && oY < grenze &&
+                       -grenze < oX && oX < grenze &&
+                       -grenze < oZ && oZ < grenze)
+                      sprintf( text,"%s:%.01f %s:%.01f %s:%.01f",
+                               von_farb_namen_[0].c_str(), oY*100+50.,
+                               von_farb_namen_[1].c_str(), oZ*100,
+                               von_farb_namen_[2].c_str(), oX*100 );
+                    else
+                      text[0] = 0;
+
+                  glPushMatrix(); 
+                    // Text in der Szene
+                    glDisable(GL_TEXTURE_2D);
+                    glDisable(GL_LIGHTING);
+                    glLoadIdentity();
+                    glMatrixMode(GL_MODELVIEW);
+                    glOrtho( 0, w(), 0, h(), 0.1, 100.0);
+
+                    if (zeige_helfer)
+                      textGarnieren_();
+                    //ZeichneOText (ortho_font, scal, text)
+
+                    // Kann aus der Zeichenfunktion auswandern
+                    if(strlen(text))
+                    {
+                      DBG_ICCGL_V( X<<" "<<Y<<" "<<Z )
+                      DBG_ICCGL_V( oX<<" "<<oY<<" "<<oZ )
+
+                      // Text über der Szene
+                      glLoadIdentity();
+                      glMatrixMode(GL_PROJECTION);
+
+                      glLoadIdentity();
+                      glOrtho(0,w(),0,h(),-10.0,10.0);
+
+                      glRasterPos3f (X, Y, 9.999);
+                      
+                      if(id() == 1) {
+                        DBG_PROG_V( oY<<" "<<oZ<<" "<<oX )
+                        /*if(-0.505 <= oY && oY <= 0.505 &&
+                           -0.505 <= oZ && oZ <= 0.505 &&
+                           -0.505 <= oX && oX <= 0.505)*/
+                        if(tabelle_.size())
+                        {
+                          int L = (int)((oY+0.5)*tabelle_.size());
+                          if(0 <= L && L < (int)tabelle_.size()) {
+                          int a = (int)((oZ+0.5)*tabelle_[L].size());
+                          if(0 <= a && a < (int)tabelle_[L].size()) {
+                          int b = (int)((oX+0.5)*tabelle_[L][a].size());
+                          if(0 <= b && b < (int)tabelle_[L][a].size()) {
+                          double wert = tabelle_[L][a][b][kanal];
+                          DBG_PROG_V( L<<" "<<a<<" "<<b<<" "<<wert )
+                          DBG_PROG_V( tabelle_.size()<<" "<<tabelle_[L].size()<<" "<<tabelle_[L][a].size()<<" "<<kanal )
+                          sprintf( text,"%s[%d][%d][%d]: ", _("Pos"),
+                                   (int)((oY+0.5)*tabelle_.size()),
+                                   (int)((oZ+0.5)*tabelle_[L].size()),
+                                   (int)((oX+0.5)*tabelle_[L][a].size()));
+                          for (int i = 0 ; i < (int)tabelle_[L][a][b].size(); ++i) {
+                            if(i == kanal) sprintf(&text[strlen(text)], "[");
+                            sprintf(&text[strlen(text)], "%.5f", tabelle_[L][a][b][i]);
+                            if(i == kanal) sprintf(&text[strlen(text)], "]");
+                            if (i != (int)tabelle_[L][a][b].size()-1)
+                              sprintf(&text[strlen(text)], " ");
+                          }
+                          icc_examin_ns::status_info( text );
+                          ZeichneOText (ortho_font, scal, text)
+                          }}}
+                       }
+                      } else {
+                        icc_examin_ns::status_info( text );
+                        ZeichneOText (ortho_font, scal, text)
+                      }
+                      //zeichneKoordinaten_();
+                      DBG_ICCGL_V( maus_x-x() <<" "<< -maus_y+h() )
+                    }
+
+                    glMatrixMode(GL_MODELVIEW);
+                  glPopMatrix();
+                  }
+                glPopMatrix();
+
     #if 0
     glFlush();
     #else
@@ -1719,7 +1949,6 @@ GL_Ansicht::zeichnen()
   }
   DBG_ICCGL_ENDE
 }
-
 
 void
 GL_Ansicht::achsNamen    (std::vector<std::string> achs_namen)

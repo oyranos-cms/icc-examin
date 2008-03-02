@@ -912,7 +912,7 @@ suchenErsetzen          (std::string &text,
   int n = 0;
   while ((pos = text.find (suchen, pos)) != std::string::npos) {
     text.replace (pos, suchen.size(), ersetzen);
-    pos = pos + suchen.size();
+    pos = pos + ersetzen.size();
     ++n;
   }
 

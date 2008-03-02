@@ -169,6 +169,7 @@ COMMON_CPPFILES = \
 	icc_profile.cpp \
 	icc_profile_header.cpp \
 	icc_profile_tags.cpp \
+	icc_schnell.cpp \
 	icc_ueber.cpp \
 	icc_utils.cpp \
 	icc_vrml.cpp \

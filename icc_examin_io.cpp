@@ -161,7 +161,13 @@ ICCexamin::oeffnen (std::vector<std::string> dateinamen)
       DBG_PROG_V( aktiv.size() )
       for(int i = 0; i < anzahl; ++i) {
         DBG_PROG_V( i )
-        const char* name = profile.name(i).c_str();
+        // Datainame extahieren
+        std::string dateiname;
+        if( profile.name(i).find_last_of("/") != std::string::npos)
+          dateiname = profile.name(i).substr( profile.name(i).find_last_of("/")+1, profile.name(i).size() );
+        else
+          dateiname = profile.name(i);
+
         if( i >= (int)icc_betrachter->DD_farbraum->dreiecks_netze.size() ) {
           WARN_S( _("Gebe irritiert auf. Kein Netz gefunden. Ist Argyll installiert?") )
           break;
@@ -169,7 +175,7 @@ ICCexamin::oeffnen (std::vector<std::string> dateinamen)
         transparenz = icc_betrachter->DD_farbraum->dreiecks_netze[i].transparenz;
         DBG_PROG_V( transparenz )
         grau = icc_betrachter->DD_farbraum->dreiecks_netze[i].grau;
-        icc_waehler_->push_back(name, transparenz, grau , aktiv[i]);
+        icc_waehler_->push_back(dateiname.c_str(), transparenz, grau , aktiv[i]);
       }
     }
 

@@ -144,6 +144,7 @@ public:
   float pfeilfarbe[3];
   float schatten;
   float strichmult;         // Strichmultiplikator
+  char  strich1, strich2, strich3;
   int  schalen;             // MENU_SCHALEN
 
   // Darstellungsfunktionen
@@ -165,6 +166,8 @@ public:
 private:
   void zeigeSpektralband_();
   void zeigeUmrisse_();
+  // Debug
+  void zeichneKoordinaten_();
 
 public:
   // Darstellungsfunktionen
@@ -174,6 +177,12 @@ public:
   void menueAufruf(int value);
   // Bewegungsfunktionen
   void stop(); 
+  int  maus_x;
+  int  maus_y;
+  // Geschwindigkeit
+  int  smooth;
+  int  blend;
+  int  wiederholen;
 
   // Daten Informationen
   const char* kanalName() const {

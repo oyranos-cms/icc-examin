@@ -130,6 +130,11 @@ ICCexamin::netzLese (int n,
       DBG_PROG_V( netz->size() <<" "<< netz_temp.size() )
       (*netz)[n] = netz_temp[0];
       (*netz)[n].name = profile[n]->filename();
+      // Dateiname extrahieren
+      std::string & dateiname = (*netz)[n].name;
+      if( dateiname.find_last_of("/") != std::string::npos)
+        dateiname = dateiname.substr( dateiname.find_last_of("/")+1,
+                                    dateiname.size() );
       DBG_NUM_V( (*netz)[n].transparenz <<" "<< (*netz)[n].umriss.size() )
     } else {
       (*netz)[n].punkte.clear();
@@ -237,9 +242,16 @@ ICCexamin::farbraum (int n)
   }
   if(ncl2_profil)
     icc_betrachter->DD_farbraum->dreiecks_netze[n].transparenz = 1.0;
-  if(icc_betrachter->DD_farbraum->dreiecks_netze[n].name == "")
+  if(icc_betrachter->DD_farbraum->dreiecks_netze[n].name == "") {
     icc_betrachter->DD_farbraum->dreiecks_netze[n].name =
                                                          profile[n]->filename();
+    // Dateiname extrahieren
+    std::string & dateiname = icc_betrachter->DD_farbraum->dreiecks_netze[n].name;
+    if( dateiname.find_last_of("/") != std::string::npos)
+      dateiname = dateiname.substr( dateiname.find_last_of("/")+1,
+                                    dateiname.size() );
+    DBG_V( icc_betrachter->DD_farbraum->dreiecks_netze[n].name )
+  }
 
   frei_ = true;
   DBG_PROG_ENDE
