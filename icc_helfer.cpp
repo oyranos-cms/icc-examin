@@ -40,6 +40,8 @@
 #include "icc_formeln.h"
 #include "icc_helfer.h"
 #include "icc_oyranos.h"
+#include "icc_profile.h"
+#include "icc_examin_version.h"
 
 #define g_message printf
 
@@ -1044,12 +1046,174 @@ isFileFull (const char* fullFileName)
 }
 
 
+/** @func    guessFileType
+ *  @internal
+ *  @brief   analyse a given filename for defacing compression
+ *
+ *  @version ICC Examin: 0.45
+ *  @date    2008/02/27
+ *  @since   2008/02/27 (ICC Examin: 0.45)
+ */
+ICCprofile::ICCDataType guessFileType( const char        * filename )
+{
+  ICCprofile::ICCDataType type = ICCprofile::ICCnullDATA;
+  static char file_name_[1024];
+  char suffix[8] = {0,0,0,0,0,0,0,0};;
+  char * pos = 0;
+  int i = 0;
+
+  if(filename && strlen(filename) > 0 && strlen(filename) < 1023)
+    sprintf( file_name_, "%s", filename );
+  else
+    return type;
+
+  if( filename && strlen(filename) &&
+      (memcmp(&filename[strlen(filename)-3],".gz", 3 )==0 ||
+       memcmp(&filename[strlen(filename)-4],".bz2", 4 )==0 ) )
+  {
+    pos = strrchr( file_name_, '.' );
+
+    if(pos)
+      *pos = 0;
+  }
+
+  pos = strrchr( file_name_, '.' );
+  if(pos && strlen(pos) < 8)
+    sprintf(suffix, "%s", pos + 1);
+
+  if(strlen(suffix))
+    for(i = 0; i < (int)strlen(suffix); ++i)
+      suffix[i] = (char) tolower( suffix[i] );
+
+  if(strcmp(suffix, "icc")==0 ||
+     strcmp(suffix, "icm")==0 )
+    type = ICCprofile::ICCprofileDATA; 
+  else
+  if(strcmp(suffix, "wrl")==0 ||
+     strcmp(suffix, "vrml")==0 )
+    type = ICCprofile::ICCvrmlDATA; 
+  else
+  if(strcmp(suffix, "cgats")==0 ||
+     strcmp(suffix, "cie")==0 ||
+     strcmp(suffix, "it8")==0 ||
+     strcmp(suffix, "q60")==0 ||
+     strcmp(suffix, "rgb")==0 ||
+     strcmp(suffix, "cmyk")==0 ||
+     strcmp(suffix, "lab")==0 ||
+     strcmp(suffix, "xyz")==0 ||
+     strcmp(suffix, "ti1")==0 ||
+     strcmp(suffix, "ti2")==0 ||
+     strcmp(suffix, "ti3")==0 ||
+     strcmp(suffix, "dly")==0 ||
+     strcmp(suffix, "ncie")==0 ||
+     strcmp(suffix, "orpt")==0 ||
+     strcmp(suffix, "meas")==0 ||
+     strcmp(suffix, "txt")==0 )
+    type = ICCprofile::ICCmeasurementDATA; 
+
+  return type;
+}
+
+/** @func    preLoadFile
+ *  @internal
+ *  @brief   virtualise a given filename for web content and compression
+ *
+ *  @version ICC Examin: 0.45
+ *  @date    2008/02/26
+ *  @since   2008/02/26 (ICC Examin: 0.45)
+ */
+const char * preLoadFile             ( const char        * filename )
+{
+  char *list[12] = {"icc_examin_preload0.www","icc_examin_preload1.gunzip",
+                    "icc_examin_preload2.bunzip2",0,0,0,0,0,0,0,0,0};
+  const char * commands[12] = {
+#if !defined(__APPLE__)
+ "wget -U \"ICC Examin " ICC_EXAMIN_V "\" -O"
+#else
+ "curl -o"
+#endif
+  , "gzip -dc", "bzip2 -dc", 0 };
+  const char * name = filename;
+  int error = 0;
+  char * command = 0;
+  char * tmp = "tmp";
+  static char file_name_[1024];
+  int typ = -1; 
+  
+  if(filename && strlen(filename) > 0 && strlen(filename) < 1023)
+    sprintf( file_name_, "%s", filename );
+  else
+    return filename;
+
+  command = (char*) malloc(strlen(file_name_)+128);
+  if(!command)
+    return filename;
+
+  if(getenv("TMP") && strlen(getenv("TMP")))
+    tmp = getenv("TMP");
+  else
+  if(getenv("TEMP") && strlen(getenv("TEMP")))
+    tmp = getenv("TEMP");
+  else
+  if(getenv("TMPDIR") && strlen(getenv("TMPDIR")))
+    tmp = getenv("TMPDIR");
+
+  // web content
+  if( filename && strlen(filename) &&
+      (memcmp(filename,"http://", 7 )==0 || memcmp(filename,"ftp://", 6 )==0 ||
+       memcmp(filename,"https://", 8 )==0 ) )
+  {
+    typ = 0;
+
+    sprintf(command,"%s %s/%s \"%s\"", 
+            commands[typ], tmp, list[typ], filename);
+
+    fprintf(stderr, "ICC Examin %s: %s\n", ICC_EXAMIN_V, command);
+    error = system(command);
+
+    if(!error)
+    {
+      sprintf( file_name_, "%s/%s", tmp, list[typ] );
+      name = file_name_;
+    }
+  }
+
+  // compressed content
+  if( filename && strlen(filename) &&
+      (memcmp(&filename[strlen(filename)-3],".gz", 3 )==0 ||
+       memcmp(&filename[strlen(filename)-4],".bz2", 4 )==0 ) )
+  {
+    if(memcmp(&filename[strlen(filename)-3],".gz", 3)==0)
+      typ = 1;
+    else if(memcmp(&filename[strlen(filename)-4],".bz2", 4 )==0)
+      typ = 2;
+    
+    sprintf(command,"%s \"%s\" > %s/%s", 
+            commands[typ], file_name_,  tmp, list[typ]);
+
+    fprintf(stderr, "ICC Examin %s: %s\n", ICC_EXAMIN_V, command);
+    error = system(command);
+
+    if(!error)
+    {
+      sprintf( file_name_, "%s/%s", tmp, list[typ] );
+      name = file_name_;
+    }
+  }
+
+  free(command); command = 0;
+
+  return name;
+}
+
 char*
 ladeDatei ( std::string dateiname, size_t *size )
 { DBG_PROG_START
 
     char* data = 0;
     *size = 0;
+
+    dateiname = preLoadFile(dateiname.c_str());
 
     std::ifstream f ( dateiname.c_str(), std::ios::binary | std::ios::ate );
 

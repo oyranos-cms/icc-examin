@@ -55,10 +55,7 @@ using namespace icc_examin_ns;
 
 void
 ICCexamin::messwertLese (int n,
-                         oyNamedColours_s ** list
-                         /*std::vector<double> & p,
-                         std::vector<double>  & f,
-                         std::vector<std::string> & namen*/)
+                         oyNamedColours_s ** list)
 {
   DBG_PROG_START
   if(profile.size() > n &&
@@ -66,7 +63,7 @@ ICCexamin::messwertLese (int n,
     { DBG_NUM_S( "nutze Messdaten" )
       ICCmeasurement messung = profile[n]->getMeasurement();
 
-      if(messung.valid() && profile[n]->size())
+      if(messung.validHalf() && profile[n]->size())
         icc_betrachter->DD_farbraum->zeig_punkte_als_paare = true;
       else
         icc_betrachter->DD_farbraum->zeig_punkte_als_paare = false;
@@ -92,36 +89,6 @@ ICCexamin::messwertLese (int n,
       {
         for (j = 0; j < n_farben; ++j)
         { // first the measurments ...
-# if 0
-          std::vector<double> daten;
-          if(messung.hasXYZ() || messung.hasLab())
-            daten = messung.getMessLab(j);
-          else
-            daten = messung.getCmmLab(j);
-          for (unsigned i = 0; i < daten.size(); ++i)
-            p.push_back(daten[i]);
-          // ... then the calculated profile Lab values
-          if (icc_betrachter->DD_farbraum->zeig_punkte_als_paare) {
-            daten = messung.getCmmLab(j);
-            for (unsigned i = 0; i < daten.size(); ++i)
-              p.push_back(daten[i]);
-          } 
-
-          if(messung.hasXYZ() || messung.hasLab())
-            daten = messung.getMessRGB(j);
-          else
-            daten = messung.getCmmRGB(j);
-          for (unsigned i = 0; i < daten.size(); ++i) {
-            f.push_back(daten[i]);
-          }
-          f.push_back(1.0);
-          if (icc_betrachter->DD_farbraum->zeig_punkte_als_paare)
-          { daten = messung.getCmmRGB(j);
-            for (unsigned i = 0; i < daten.size(); ++i)
-              f.push_back(daten[i]);
-           f.push_back(1.0);
-          } 
-#else
           if(messung.hasXYZ() || messung.hasLab())
             c = messung.getMessColour(j);
           else
@@ -129,7 +96,6 @@ ICCexamin::messwertLese (int n,
 
           if (c)
             nl = oyNamedColours_MoveIn( nl, &c, -1 );
-#endif
         }
 
         unsigned int n_old = oyNamedColours_Count( *list );
@@ -172,7 +138,6 @@ ICCexamin::messwertLese (int n,
         *list = nl; nl = 0;
 
       }
-      //namen = messung.getFeldNamen();
     }
 
   DBG_PROG_ENDE

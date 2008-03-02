@@ -40,6 +40,7 @@
 #include <string>
 #include <list>
 #include <map>
+#include <cstring>
 class Oyranos;
 class Speicher;
 class ICCprofile;

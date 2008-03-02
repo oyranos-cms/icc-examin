@@ -33,6 +33,8 @@
 
 #include "icc_utils.h"
 #include <string>
+#include <cstdlib>
+#include <cstring>
 #include <icc_helfer_time.h> // icc_examin_ns::zeitSekunden()
 
 #define DBG_SPEICHER_START   if(icc_debug >= 3) DBG_PROG_START

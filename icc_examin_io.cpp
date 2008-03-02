@@ -248,10 +248,8 @@ ICCexaminIO::oeffnenThread_ ()
     ICCprofile::ICCDataType type = ICCprofile::ICCprofileDATA;
 
       // sort
-    if( dateinamen.size() &&
-        (dateinamen[0].find( "wrl",  dateinamen[0].find_last_of(".") )
-         != std::string::npos) )
-      type = ICCprofile::ICCvrmlDATA;
+    if( dateinamen.size() )
+      type = guessFileType( dateinamen[0].c_str() );
 
     int anzahl = profile.size();
 

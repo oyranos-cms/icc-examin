@@ -275,7 +275,7 @@ public:
   DBG_PROG_ENDE
  }
 
- void draw () { DBG_S(hbox->x()<<","<<hbox->y()<<" "<<hbox->w()<<"x"<<hbox->h())
+ void draw () { DBG_PROG_S(hbox->x()<<","<<hbox->y()<<" "<<hbox->w()<<"x"<<hbox->h())
                 icc_examin_ns::MyFl_Double_Window::draw(); };
 
  void         expose ( int pos )

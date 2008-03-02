@@ -144,6 +144,9 @@ ICCprofile::load (const Speicher & prof)
 
   this->clear();
 
+  if( file.size() )
+    data_type = guessFileType( file.c_str() );
+
   // check minimum size for plausible data
   if (prof.size() > 64) {
     //WARN_S( _("!!!! Profil wird wiederbenutzt !!!! ") )
@@ -200,15 +203,12 @@ ICCprofile::load (const Speicher & prof)
     ic_tag.size = icValue ((icUInt32Number)groesse); DBG_MEM_V( groesse )
     ic_tag.offset = 0;
 
-    data_type = ICCmeasurementDATA;
+    if(data_type == ICCprofileDATA)
+      data_type = ICCmeasurementDATA;
 
-    if( filename_.size() &&
-        (filename_.find( "wrl",  filename_.find_last_of(".") )
-         != std::string::npos) )
-    {
+    if( data_type == ICCvrmlDATA )
       memcpy (&ic_tag.sig, "vrml", 4);
-      data_type = ICCvrmlDATA;
-    } else
+    else
       ic_tag.sig = icValue (icSigCharTargetTag);
 
     memcpy (&tag_block[0], "text", 4); DBG_NUM_S( tag_block )
@@ -252,6 +252,7 @@ ICCprofile::load (const Speicher & prof)
   if(tag_count != (int)tags.size())
     WARN_S(_("wrong tag size in profile ") << tag_count <<" "<< tags.size() <<" :"<< file);
 
+  // our guess
   data_type = ICCprofileDATA;
 
   DBG_MEM

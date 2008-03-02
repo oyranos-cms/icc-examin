@@ -16,7 +16,6 @@
 #include "icc_utils.h"
 #include "icc_info.h"
 
-#  include <FL/glut.H>
 #  ifdef __APPLE__
 #    include <OpenGL/glu.h>
 #  else

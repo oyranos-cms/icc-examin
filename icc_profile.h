@@ -168,4 +168,7 @@ class ICCprofile {
 };
 
 
+ICCprofile::ICCDataType guessFileType( const char        * filename );
+
+
 #endif //ICC_PROFILE_H

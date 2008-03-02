@@ -3510,6 +3510,7 @@ GL_Ansicht::tastatur(int e)
     DBG_ICCGL_S("e = " << e << " " << Fl::event_key() )
     if(e == FL_SHORTCUT)
     {
+      double clip_old = vorder_schnitt;
       if(Fl::event_key() == FL_Up) {
         vorder_schnitt += 0.01;
       } else if(Fl::event_key() == FL_Down) {
@@ -3519,6 +3520,10 @@ GL_Ansicht::tastatur(int e)
       } else if(Fl::event_key() == FL_End) {
         vorder_schnitt = agv_->eyeDist();
       }
+      if(vorder_schnitt - clip_old != 0 &&
+         !darfBewegen())
+        redraw();
+
       switch (Fl::event_key()) {
       case 45: // '-' this is not conform on all consoles; use FLTK native key codes?
         if(punktform >= MENU_dE1KUGEL && punktform <= MENU_dE4KUGEL)
@@ -3612,5 +3617,4 @@ GL_Ansicht::hintergrundfarbeZuMenueeintrag( float farbe )
 
 #undef ZeichneText
 #undef FARBE
-#undef implementGlutFunktionen
 

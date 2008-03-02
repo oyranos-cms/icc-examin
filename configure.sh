@@ -167,15 +167,20 @@ fi
 
 if [ -n "$OYRANOS" ] && [ "$OYRANOS" != "0" ]; then
   OY_=`oyranos-config 2>>$CONF_LOG`
+# OY_=`pkg-config --exists oyranos_monitor 2>>error.txt`
   if [ $? = 0 ]; then
     echo_="Oyranos `oyranos-config --version`           detected"; echo "$echo_" >> $CONF_LOG; test -n "$ECHO" && $ECHO "$echo_"
+#    echo_="Oyranos `pkg-config --modversion oyranos`           detected"; echo "$echo_" >> $CONF_LOG; test -n "$ECHO" && $ECHO "$echo_"
     echo "#define HAVE_OY 1" >> $CONF_H
     echo "OY = 1" >> $CONF
     echo "OYRANOS_H = `oyranos-config --cflags`" >> $CONF
+#   echo "OYRANOS_H = `pkg-config --cflags oyranos_monitor`" >> $CONF
     if [ -f /usr/X11R6/include/X11/extensions/xf86vmode.h ]; then
       echo "OYRANOS_LIBS = `oyranos-config --ld_x_flags`" >> $CONF
+#     echo "OYRANOS_LIBS = `pkg-config --libs oyranos_monitor`" >> $CONF
     else
       echo "OYRANOS_LIBS = `oyranos-config --ld_x_flags`" >> $CONF
+#     echo "OYRANOS_LIBS = `pkg-config --libs oyranos_monitor`" >> $CONF
     fi
   else
     echo_="no Oyranos found"; echo "$echo_" >> $CONF_LOG; test -n "$ECHO" && $ECHO "$echo_"

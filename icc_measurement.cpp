@@ -360,14 +360,14 @@ ICCmeasurement::leseTag (void)
 
         WARN_S( "number of measurements should correspond! " << nFelder_ << "|" << (int)cgats->messungen[m].block_zeilen )
         clear();
-        return;
+        goto finish;
       }
 
       if(cgats->messungen[m].felder.size() != 1)
       {
         WARN_S( "There are unadequate field declarations: "
                 << cgats->messungen[m].felder.size() )
-        return;
+        goto finish;
       }
 
       int _nKanaele = (int)cgats->messungen[m].felder[0].size();
@@ -579,6 +579,7 @@ ICCmeasurement::leseTag (void)
   #   endif
   }
 
+  finish:
   if(loc_alt.size())
     doLocked_m( setlocale(LC_NUMERIC,loc_alt.c_str()) , NULL);
 
@@ -954,7 +955,8 @@ ICCmeasurement::init_umrechnen                     (void)
         channels_ = 4;
 
 #   define TYPE_nCOLOUR_DBL (COLORSPACE_SH(PT_ANY)|CHANNELS_SH(channels_)|BYTES_SH(0))
-      if( profile_->size() )
+      if( profile_->size() &&
+          profile_->data_type == ICCprofile::ICCprofileDATA)
         hCOLOUR = cmsOpenProfileFromMem (const_cast<char*>(profile_->data_),
                                          (DWORD)profile_->size_);
 

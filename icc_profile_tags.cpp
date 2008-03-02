@@ -609,7 +609,10 @@ ICCtag::getText                     (std::string text)
     } else {
       for (int i = 0; i < texts_n; ++i)
       {
-        texte[0].append (texts[i], strlen(texts[i]));
+        if(texts[i] && strlen(texts[i]))
+          texte[0].append (texts[i], strlen(texts[i]));
+        else
+          texte[0].append ("", 0);
         texte[0].append ("\n", 1);
       }
     }

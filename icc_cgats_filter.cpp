@@ -761,10 +761,23 @@ CgatsFilter::cgats_korrigieren_               ()
       // Mitschreiben in felder
       if(size && zaehler_FIELDS)
       {
-        messungen[messungen.size()-1].felder.push_back( 
-                     unterscheideZiffernWorte_(zeilen_[i] ) );
-        messungen[messungen.size()-1].feld_spalten = zaehler_FIELDS;
+        if(!messungen[messungen.size()-1].felder.size())
+        {
+          messungen[messungen.size()-1].felder.push_back( 
+                       unterscheideZiffernWorte_(zeilen_[i] ) );
+          messungen[messungen.size()-1].feld_spalten = 0;
+        } else {
+
+          // Roger Breton had an example with a splitted DATA_FORMAT line
+          const std::vector<std::string> texts = unterscheideZiffernWorte_( zeilen_[i] );
+          messungen[messungen.size()-1].felder[0].insert(
+                       messungen[messungen.size()-1].felder[0].end(),
+                       texts.begin(), texts.end() );
+        }
+
+        messungen[messungen.size()-1].feld_spalten += zaehler_FIELDS;
       }
+
       DBG_NUM_S( "zaehler_FIELDS " << zaehler_FIELDS << " Zeile " << i )
     }
 
