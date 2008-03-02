@@ -31,6 +31,8 @@
 #include "agviewer.h"
 #include "icc_gl.h"
 
+#include <cmath>
+
 #define DEBUG_ICCGL
 //#define Beleuchtung
 

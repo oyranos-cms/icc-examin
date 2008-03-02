@@ -35,6 +35,8 @@
 #include "icc_formeln.h"
 #include "icc_utils.h"
 
+#include <cmath>
+
 #ifdef DEBUG_ICCFORMELN
   #define DBG_v(x) DBG_NUM_V(x)
 #else

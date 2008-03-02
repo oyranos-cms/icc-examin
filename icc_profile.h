@@ -28,7 +28,6 @@
 #ifndef ICC_PROFILE_H
 #define ICC_PROFILE_H
 
-#define ICC_EXAMIN_V 0.12
 
 #include <icc34.h>
 #include <string>

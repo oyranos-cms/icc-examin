@@ -75,7 +75,7 @@ decl {\#include "agviewer.h"
 decl {std::vector<ICCprofile> profile;} {public
 } 
 
-declblock {\#ifdef HAVE_FLU} {open after {\#endif}
+declblock {\#ifdef HAVE_FLU} {after {\#endif}
 } {
   decl {Flu_File_Chooser *dateiwahl;} {}
   Function {dateiwahl_cb(const char *dateiname, int typ, void *arg)} {open private
@@ -143,7 +143,7 @@ declblock {\#ifdef HAVE_FLU} {open after {\#endif}
   }
 } 
 
-Function {} {open C return_type int
+Function {} {C return_type int
 } {
   code DBG_PROG_START {}
   code {statlabel = (char*)calloc (sizeof (char), 1024);
@@ -237,7 +237,7 @@ Function {} {open C return_type int
   }
   Fl_Window details {
     label {ICC Details}
-    xywh {797 343 385 520} type Double box NO_BOX color 53
+    xywh {802 367 385 520} type Double box NO_BOX color 53
     code1 {DBG_PROG
 
     if (argc>1) {
@@ -509,8 +509,7 @@ ueber_html->value(getUeberHtml().c_str());}
   code DBG_PROG_ENDE {}
 } 
 
-Function {open(int interaktiv)} {open
-} {
+Function {open(int interaktiv)} {} {
   code DBG_PROG_START {}
   code {\#include "icc_vrml.h"
 
@@ -638,7 +637,7 @@ Function {icc_read_info(char* filename)} {return_type {char*}
   code DBG_PROG_ENDE {}
 } 
 
-class TagBrowser {open : {public Fl_Hold_Browser}
+class TagBrowser {: {public Fl_Hold_Browser}
 } {
   decl {int X; int Y; int W; int H; char* start_info; std::string selectedTagName;} {}
   Function {TagBrowser(int X,int Y,int W,int H,char* start_info) : Fl_Hold_Browser(X,Y,W,H,start_info), X(X), Y(Y), W(W), H(H)} {} {}
@@ -794,8 +793,7 @@ class TagBrowser {open : {public Fl_Hold_Browser}
       tag_text->hinein ( (profile[0].getTagText (item))[0] ); DBG_PROG
     }
     selectedTagName = TagInfo[0];
-  }DBG_PROG} {selected
-    }
+  }DBG_PROG} {}
     code DBG_PROG_ENDE {}
   }
 } 
@@ -826,12 +824,13 @@ class TagTexts {: {public Fl_Hold_Browser}
   }
 } 
 
-class TagDrawings {: {public Fl_Widget}
+class TagDrawings {open : {public Fl_Widget}
 } {
   decl {int X; int Y; int W; int H; std::vector<std::string>texte; std::vector<double>punkte; std::vector<std::vector<double> >kurven;} {}
-  decl {int wiederholen;} {public
+  decl {int wiederholen;} {selected public
   }
-  Function {TagDrawings(int X,int Y,int W,int H) : Fl_Widget(X,Y,W,H), X(X), Y(Y), W(W), H(H)} {} {}
+  Function {TagDrawings(int X,int Y,int W,int H) : Fl_Widget(X,Y,W,H), X(X), Y(Y), W(W), H(H)} {open
+  } {}
   Function {draw()} {open
   } {
     code DBG_PROG_START {}
@@ -840,9 +839,10 @@ class TagDrawings {: {public Fl_Widget}
 
   //DBG_PROG_V( wiederholen )
 
-  if (punkte.size() >= 3) {
-    if (wiederholen) {
-      draw_cie_shoe(x(),y(),w(),h(),texte,punkte,false);
+  if (punkte.size() >= 3)
+  {
+    if (wiederholen)
+    { draw_cie_shoe(x(),y(),w(),h(),texte,punkte,false);
       Fl::add_timeout( 1.2, (void(*)(void*))d_haendler ,(void*)this);
     } else {
       draw_cie_shoe(x(),y(),w(),h(),texte,punkte,true);
@@ -894,7 +894,7 @@ class TagDrawings {: {public Fl_Widget}
 
 decl {\#include <FL/fl_draw.H>} {} 
 
-class MftChoice {open : {public Fl_Choice}
+class MftChoice {: {public Fl_Choice}
 } {
   decl {int X; int Y; int W; int H; char* start_info; char typ[5]; std::vector<std::string> Info; int gewaehlter_eintrag;} {}
   Function {MftChoice(int X,int Y,int W,int H,char* start_info) : Fl_Choice(X,Y,W,H,start_info), X(X), Y(Y), W(W), H(H)} {open
@@ -1001,15 +1001,18 @@ class MftChoice {open : {public Fl_Choice}
   }
 } 
 
-Function {d_haendler(void* o)} {return_type {static void}
+Function {d_haendler(void* o)} {open return_type {static void}
 } {
   code DBG_PROG_START {}
   code {Fl::remove_timeout( (void(*)(void*))d_haendler, 0 );
+
   if (!Fl::has_timeout( (void(*)(void*))d_haendler, 0 )
    && ((TagDrawings*)o)->active()
    && ((TagDrawings*)o)->visible_r()
-   && ((TagDrawings*)o)->wiederholen) {
+   && ((TagDrawings*)o)->wiederholen)
+  {
     ((TagDrawings*)o)->ruhig_neuzeichnen();
+
     \#ifdef DEBUG
     DBG_PROG_V( ((TagDrawings*)o)->wiederholen )
     \#endif
@@ -1017,8 +1020,7 @@ Function {d_haendler(void* o)} {return_type {static void}
   code DBG_PROG_ENDE {}
 } 
 
-Function {zeig_mich(void* widget)} {open
-} {
+Function {zeig_mich(void* widget)} {} {
   code DBG_PROG_START {}
   code {// zeigt das ausgewählte Fenster (widget)
 

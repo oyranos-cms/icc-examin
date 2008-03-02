@@ -852,9 +852,10 @@ void TagDrawings::draw() {
 
   //DBG_PROG_V( wiederholen )
 
-  if (punkte.size() >= 3) {
-    if (wiederholen) {
-      draw_cie_shoe(x(),y(),w(),h(),texte,punkte,false);
+  if (punkte.size() >= 3)
+  {
+    if (wiederholen)
+    { draw_cie_shoe(x(),y(),w(),h(),texte,punkte,false);
       Fl::add_timeout( 1.2, (void(*)(void*))d_haendler ,(void*)this);
     } else {
       draw_cie_shoe(x(),y(),w(),h(),texte,punkte,true);
@@ -1009,11 +1010,14 @@ void MftChoice::auswahl_cb(void) {
 void d_haendler(void* o) {
   DBG_PROG_START
   Fl::remove_timeout( (void(*)(void*))d_haendler, 0 );
+
   if (!Fl::has_timeout( (void(*)(void*))d_haendler, 0 )
    && ((TagDrawings*)o)->active()
    && ((TagDrawings*)o)->visible_r()
-   && ((TagDrawings*)o)->wiederholen) {
+   && ((TagDrawings*)o)->wiederholen)
+  {
     ((TagDrawings*)o)->ruhig_neuzeichnen();
+
     #ifdef DEBUG
     DBG_PROG_V( ((TagDrawings*)o)->wiederholen )
     #endif

@@ -39,6 +39,8 @@
 #include "icc_examin.h"
 #include "icc_utils.h"
 
+#include <cmath>
+
 #define _(text) text
 #define g_message printf
 
@@ -473,7 +475,7 @@ ICCtag::getText                     (void)
     { if (_data[16+ i*groesse] == 'd' && _data[17+ i*groesse] == 'e')
       { int g =        icValue(*(icUInt32Number*)&_data[20+ i*groesse]),
             dversatz = icValue(*(icUInt32Number*)&_data[24+ i*groesse]);
-        char *t = (char*) new char [g] (0);
+        char *t = (char*) new char [g];
         int n;
         for (n = 1; n < g ; n = n+2)
           t[n/2] = _data[dversatz + n];
@@ -485,7 +487,7 @@ ICCtag::getText                     (void)
     if (!texte.size()) // erster Eintrag
     { int g =        icValue(*(icUInt32Number*)&_data[20]),
           dversatz = icValue(*(icUInt32Number*)&_data[24]);
-      char *t = (char*) new char [g] (0);
+      char *t = (char*) new char [g];
       int n;
       for (n = 1; n < g ; n = n+2)
         t[n/2] = _data[dversatz + n];

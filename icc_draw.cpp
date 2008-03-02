@@ -18,7 +18,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- * 
+ *
+ * -----------------------------------------------------------------------------
+ *
  * Zeichenroutinen für Diagramme.
  * 
  */
@@ -70,6 +72,9 @@ cmsHPROFILE hXYZ;
 cmsHPROFILE hsRGB;
 cmsHTRANSFORM xform;
 double rechenzeit = 0.1;
+static unsigned char* RGB_speicher = 0;
+static cmsCIEXYZ* XYZ_speicher = 0;
+static int n_speicher = 0;
 
 void
 init_shoe() {
@@ -150,22 +155,30 @@ draw_cie_shoe (int X, int Y, int W, int H,
     int hi = y(0.01)-y(n);
 
     int    n_pixel = wi * hi, i = 0;
-    unsigned char* RGB = (unsigned char*) calloc (3*n_pixel, sizeof(char));
-    cmsCIEXYZ* XYZ = (cmsCIEXYZ*) calloc (n_pixel, sizeof(cmsCIEXYZ));
+    if ((n_speicher > 3*n_pixel * 2)
+     || (n_speicher < 3*n_pixel))
+    { if (RGB_speicher)
+      { delete [] RGB_speicher;
+        delete [] XYZ_speicher;
+      }
+      int multi = 2;
+      n_speicher = 3*n_pixel;
+      RGB_speicher = (unsigned char*) new char [n_speicher * multi];
+      XYZ_speicher = (cmsCIEXYZ*) new cmsCIEXYZ [n_pixel * multi];
+    }
 
     for (float cie_y=y(n) ; cie_y < y(0.01) ; cie_y ++) {
       for (float cie_x=x(0) ; cie_x < x(0.73) ; cie_x ++) {
 
-        XYZ[i].X = x2cie(cie_x);
-        XYZ[i].Y = y2cie(cie_y);
-        XYZ[i].Z = 1 - (XYZ[i].X +  XYZ[i].Y);
+        XYZ_speicher[i].X = x2cie(cie_x);
+        XYZ_speicher[i].Y = y2cie(cie_y);
+        XYZ_speicher[i].Z = 1 - (XYZ_speicher[i].X +  XYZ_speicher[i].Y);
         i++;
       }
     }
     // Hintergrund zeichnen (lcms)
-    cmsDoTransform(xform, XYZ, RGB, n_pixel);
-    fl_draw_image(RGB, x(0), y(n), wi, hi, 3, 0);
-    free (RGB);
+    cmsDoTransform(xform, XYZ_speicher, RGB_speicher, n_pixel);
+    fl_draw_image(RGB_speicher, x(0), y(n), wi, hi, 3, 0);
   }
 
   // Dauer des Neuzeichnens bestimmen
@@ -184,7 +197,7 @@ draw_cie_shoe (int X, int Y, int W, int H,
     raster = raster_alt;
   }
 
-  // Verdecke den Rest des cie_xy
+  // Verdecke den Rest des cie_xy - scheußlich umständlich
   //fl_push_no_clip();
   fl_color(BG);
   #define x_xyY cieXYZ[i][0]/(cieXYZ[i][0]+cieXYZ[i][1]+cieXYZ[i][2])
