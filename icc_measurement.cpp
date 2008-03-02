@@ -242,7 +242,7 @@ ICCmeasurement::lcms_parse                   (void)
 
   // vorläufige lcms Farbnamen listen
     _Feldnamen.resize(_nFelder);
-    DBG_PROG
+    DBG_PROG_V( _nFelder )
     for (int k = 0; k < _nFelder; k++) {
       if (_id_vor_name
        && (getTagName() != "DevD")) {// Name ignorieren
@@ -255,7 +255,8 @@ ICCmeasurement::lcms_parse                   (void)
         _Feldnamen[k] = constr;
       }
     }
-  DBG_NUM_S (_Feldnamen[0] << " bis " << _Feldnamen[_nFelder-1])
+  if(_nFelder)
+    DBG_NUM_S (_Feldnamen[0] << " bis " << _Feldnamen[_nFelder-1])
 
   DBG_NUM_V( has_XYZ << has_RGB << has_CMYK )
  

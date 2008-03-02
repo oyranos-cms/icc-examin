@@ -757,21 +757,22 @@ ladeDatei ( std::string dateiname, size_t *size )
 
     std::ifstream f ( dateiname.c_str(), std::ios::binary | std::ios::ate );
 
-    DBG_PROG
+    DBG_MEM_V( dateiname )
     if (dateiname == "")
-      throw ausn_file_io ("kein Dateiname angegeben");
-    DBG_PROG
+      throw ausn_file_io (_("kein Dateiname angegeben"));
+    DBG_MEM
     if (!f) {
-      throw ausn_file_io ("keine lesbare Datei gefunden");
+      throw ausn_file_io (dateiname.c_str());
       dateiname = "";
     }
 
-    *size = (unsigned int)f.tellg();         f.seekg(0);
-    char* data = (char*)calloc (sizeof (char), *size);
-  
+    *size = (unsigned int)f.tellg();
+    DBG_MEM_V ( *size << "|" << f.tellg() )
+    f.seekg(0);
+    char* data = (char*)calloc (sizeof (char), *size+1);
 
     f.read ((char*)data, *size);
-    DBG_PROG_V ( *size << "|" << f.tellg() )
+    DBG_MEM_V ( *size << "|" << f.tellg() <<" "<< (int*)data <<" "<< strlen(data) )
     f.close();
 
   DBG_PROG_ENDE

@@ -31,15 +31,20 @@
 #define ICC_VRML_PARSER_H
 
 #include <vector>
+#include <map>
 
 struct ICCnetzPunkt {
   double koord[3];
   double farbe[4];
 };
 
+struct DreiecksIndexe {
+  int i[4];
+};
+
 struct ICCnetz {
   std::vector<ICCnetzPunkt> punkte;
-  std::vector<int> indexe;  // 4 je Punkt 
+  std::map<double,DreiecksIndexe> indexe;
   std::string name;
   double transparenz;
 };

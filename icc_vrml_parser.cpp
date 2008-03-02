@@ -231,12 +231,31 @@ class ICCvrmlParser
       {
         werte =
           unterscheideZiffernWorte( zeile, anfuehrungstriche, trennzeichen );
-        dimensionen = 4;
 
         // ausgelesene Werte sortieren
         for(unsigned int w = 0; w < werte.size(); ++w)
+        {
           if(werte[w].ganz_zahl.first)
-            netze_[endnetz].indexe. push_back (werte[w].ganz_zahl.second);
+          {
+            dimensionen = 4;
+            achse = wert_n % dimensionen;
+            if(achse == 0)
+            {
+              if(netze_[endnetz].indexe.size() <= wert_n/dimensionen)
+                netze_[endnetz].indexe.
+                insert( std::pair<double,DreiecksIndexe>(wert_n,DreiecksIndexe()) );
+
+              punkt_n = wert_n/dimensionen;
+            }
+            DBG_VRML_PARSER_S( "w " << w <<" "<< werte[w].ganz_zahl.second )
+            DBG_VRML_PARSER_V( netze_[endnetz].indexe.size() )
+
+            netze_[endnetz].indexe[punkt_n].i[achse] =
+                werte[w].ganz_zahl.second;
+
+            ++wert_n;
+          }
+        }
       } // in_indexe
     }
     netz_n++;

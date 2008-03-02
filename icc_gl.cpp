@@ -110,7 +110,7 @@ int     Rotating = 0;
 GL_Ansicht::GL_Ansicht(int X,int Y,int W,int H) : Fl_Group(X,Y,W,H)
 { DBG_PROG_START
   kanal = 0;
-  schnitttiefe = 0.1;
+  schnitttiefe = 0.01;
   beruehrt_ = false;
   auffrischen_ = true;
   menue_kanal_eintraege_ = 0;
@@ -720,66 +720,7 @@ GL_Ansicht::makeDisplayLists_()
       glEndList();
   } else if ( dreiecks_netze.size() )
   {
-    if( dreiecks_netze.size() )
-    {
-      DBG_NUM_V( dreiecks_netze.size() )
-      DBG_NUM_V( dreiecks_netze[0].name )
-      DBG_NUM_V( dreiecks_netze[0].punkte.size() )
-      DBG_NUM_V( dreiecks_netze[0].indexe.size() )
-      DBG_NUM_V( dreiecks_netze[0].transparenz )
-    }
-
-      glNewList(id()*DL_MAX + RASTER, GL_COMPILE); DBG_PROG_V( id()*DL_MAX + RASTER )
-      gl_voll[RASTER] = true;
-      #ifndef Beleuchtung
-      glDisable(GL_LIGHTING);
-      #endif
-
-      #if 1
-      glEnable (GL_BLEND);
-      glEnable (GL_DEPTH_TEST);
-      glBlendFunc (GL_SRC_COLOR, GL_DST_ALPHA);
-      glEnable (GL_ALPHA_TEST_FUNC);
-      glAlphaFunc (GL_ALPHA_TEST, GL_ONE_MINUS_DST_ALPHA);
-      #else
-      glDisable (GL_BLEND);
-      glEnable (GL_DEPTH_TEST);
-      //glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-      glDisable/*Enable*/ (GL_ALPHA_TEST_FUNC);
-      //glAlphaFunc (GL_ALPHA_TEST, GL_ONE_MINUS_DST_ALPHA);
-      #endif
-
-      //glColor3f(0.9, 0.9, 0.9);
-      glPushMatrix();
-      // zurecht setzen
-      glTranslatef( -b_darstellungs_breite/2, -.5, -a_darstellungs_breite/2 );
-      for(unsigned int j = 0; j < dreiecks_netze.size(); j++ )
-      { glBegin(GL_TRIANGLES);
-        DBG_PROG_V( j )
-        for(unsigned int i = 0; i < dreiecks_netze[j].indexe.size()-3; i=i+4 )
-        {
-          int index;
-          for(int k = 2; k >= 0; --k)
-          {
-            index = dreiecks_netze[j].indexe[i+ k ];
-            glColor4f( dreiecks_netze[j].punkte[index].farbe[0],
-                       dreiecks_netze[j].punkte[index].farbe[1],
-                       dreiecks_netze[j].punkte[index].farbe[2],
-                       dreiecks_netze[j].transparenz);
-
-            // Punktkoordinaten setzen
-            glVertex3d( dreiecks_netze[j].punkte[index].koord[2]*b_darstellungs_breite,
-                        dreiecks_netze[j].punkte[index].koord[0],
-                        dreiecks_netze[j].punkte[index].koord[1]*a_darstellungs_breite );
-          }
-        }
-        glEnd();
-      }
-      glPopMatrix();
-      #ifndef Beleuchtung
-      glEnable(GL_LIGHTING);
-      #endif
-      glEndList();
+    netzeAuffrischen();
   }
  
   if (gl_voll[SPEKTRUM])
@@ -814,6 +755,75 @@ GL_Ansicht::makeDisplayLists_()
   glutPostRedisplay();
   DBG_PROG_ENDE
 }
+
+void
+GL_Ansicht::netzeAuffrischen()
+{
+  DBG_PROG_START
+    if( dreiecks_netze.size() )
+    {
+      DBG_NUM_V( dreiecks_netze.size() )
+      DBG_NUM_V( dreiecks_netze[0].name )
+      DBG_NUM_V( dreiecks_netze[0].punkte.size() )
+      DBG_NUM_V( dreiecks_netze[0].indexe.size() )
+      DBG_NUM_V( dreiecks_netze[0].transparenz )
+    }
+
+      glNewList(id()*DL_MAX + RASTER, GL_COMPILE); DBG_PROG_V( id()*DL_MAX + RASTER )
+      gl_voll[RASTER] = true;
+      #ifndef Beleuchtung
+      glDisable(GL_LIGHTING);
+      #endif
+
+      #if 0
+      glEnable (GL_BLEND);
+      glEnable (GL_DEPTH_TEST);
+      glBlendFunc (GL_SRC_COLOR, GL_DST_ALPHA);
+      glEnable (GL_ALPHA_TEST_FUNC);
+      //glAlphaFunc (GL_ALPHA_TEST, GL_ONE_MINUS_DST_ALPHA);
+      #else
+      glEnable (GL_BLEND);
+      glEnable (GL_DEPTH_TEST);
+      glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+      glEnable (GL_ALPHA_TEST_FUNC);
+      glAlphaFunc (GL_ALPHA_TEST, GL_ONE_MINUS_DST_ALPHA);
+      #endif
+
+      glColor3f(0.9, 0.9, 0.9);
+      glPushMatrix();
+      // zurecht setzen
+      glTranslatef( -b_darstellungs_breite/2, -.5, -a_darstellungs_breite/2 );
+      for(unsigned int j = 0; j < dreiecks_netze.size(); j++ )
+      { glBegin(GL_TRIANGLES);
+        DBG_PROG_V( j )
+        for(unsigned int i = 0; i < dreiecks_netze[j].indexe.size(); ++i )
+        {
+          int index;
+          for(int k = 0; k < 3; ++k)
+          {
+            index = dreiecks_netze[j].indexe[i].i[k];
+            glColor4f( dreiecks_netze[j].punkte[index].farbe[0],
+                       dreiecks_netze[j].punkte[index].farbe[1],
+                       dreiecks_netze[j].punkte[index].farbe[2],
+                       dreiecks_netze[j].transparenz);
+
+            // Punktkoordinaten setzen
+            glVertex3d( dreiecks_netze[j].punkte[index].koord[2]*b_darstellungs_breite,
+                        dreiecks_netze[j].punkte[index].koord[0],
+                        dreiecks_netze[j].punkte[index].koord[1]*a_darstellungs_breite );
+          }
+        }
+        glEnd();
+      }
+      glPopMatrix();
+      #ifndef Beleuchtung
+      glEnable(GL_LIGHTING);
+      #endif
+      glEndList();
+
+  DBG_PROG_ENDE
+}
+
 
 void
 GL_Ansicht::punkteAuffrischen()
@@ -1355,10 +1365,14 @@ void
 GL_Ansicht::hineinNetze       (const std::vector<ICCnetz> & d_n)
 {
   DBG_PROG_START
-  dreiecks_netze = d_n;
-  netz_namen_.resize(0);
-  for(unsigned i = 0; i < dreiecks_netze.size(); ++i)
-    netz_namen_.push_back( dreiecks_netze[i].name );
+  if(d_n.size())
+  {
+    dreiecks_netze = d_n;
+    netz_namen_.resize(0);
+    for(unsigned i = 0; i < dreiecks_netze.size(); ++i)
+      netz_namen_.push_back( dreiecks_netze[i].name );
+  }
+  DBG_NUM_V( dreiecks_netze.size() )
   DBG_PROG_ENDE
 }
 

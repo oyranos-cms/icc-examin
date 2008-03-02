@@ -100,21 +100,29 @@ icc_create_vrml( const char* p, int size )
   // Datei öffnen
   {
     ptn = profil_temp_name.str(); ptn.append(".wrl");
-    std::ifstream f ( ptn.c_str(), std::ios::binary | std::ios::ate );
 
     DBG_PROG
 
-    size_t size = (unsigned int)f.tellg();         f.seekg(0);
-    ++size;
-    char* data = (char*)calloc (sizeof (char), size);
+    size_t size;
+    char *data = 0;
+    try {
+      data = ladeDatei (profil_temp_name.str(), &size);
+    }
+      catch (Ausnahme & a) {  // fängt alles von Ausnahme Abstammende
+        printf (_("Ausnahme aufgetreten: %s\n"), a.what());
+        a.report();
+      }
+      catch (std::exception & e) { // fängt alles von exception Abstammende
+        printf (_("Std-Ausnahme aufgetreten: %s\n"), e.what());
+      }
+      catch (...) {       // fängt alles Übriggebliebene
+        printf (_("Huch, unbekannte Ausnahme\n"));
+      }
 
-
-    f.read ((char*)data, size);
-    DBG_PROG_V ( size << "|" << f.tellg() )
-    f.close();
-    vrml = data;
+    if(data)
+      vrml = data;
     erase_file (ptn.c_str());
-    free (data);
+    if(data) free(data);
   }
 
   icc_examin->fortschritt(1.1);

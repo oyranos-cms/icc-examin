@@ -129,6 +129,7 @@ public:
   // Darstellungsfunktionen
   void auffrischen();       // Erneuerung ohne init()
   void punkteAuffrischen(); // glCompile für Punkte
+  void netzeAuffrischen();    // Sortieren und Zeichnen
   double seitenverhaeltnis; // Proportion des Fensters
   double schnitttiefe;      // Dicke der GL Schnitttiefe
   double a_darstellungs_breite; // Richtung CIE*a   für Zoom und Pfeillängen

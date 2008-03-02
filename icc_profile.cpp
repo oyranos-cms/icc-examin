@@ -64,22 +64,7 @@ ICCprofile::ICCprofile (const char *filename)
 
   // delegieren
   _filename = filename;
-  try {
-    fload ();
-  }
-    catch (Ausnahme & a) {	// fängt alles von Ausnahme Abstammende
-        printf ("Ausnahme aufgetreten: %s\n", a.what());
-        a.report();
-        _filename = "";
-    }
-    catch (std::exception & e) { // fängt alles von exception Abstammende
-        printf ("Std-Ausnahme aufgetreten: %s\n", e.what());
-        _filename = "";
-    }
-    catch (...) {		// fängt alles Übriggebliebene
-        printf ("Huch, unbekannte Ausnahme\n");
-        _filename = "";
-    }
+  fload ();
   DBG_PROG_ENDE
 }
 
@@ -98,22 +83,17 @@ ICCprofile::clear (void)
 { DBG_PROG_START
   DBG_PROG_S( "Profil wird geleert" )
 
-  if (_data && _size)
-    free(_data);
-
+  if (_data && _size) free(_data);
   _data = NULL;
   _size = 0;
+
   _filename = "";
   header.load(NULL);
 
   tags.clear();
-  if (_data != NULL && _size) free(_data);
-
   measurement.clear();
 
-  #ifdef DEBUG_PROFILE
-  DBG_S( "_data, tags und measurement gelöscht" )
-  #endif
+  DBG_NUM_S( "_data, tags und measurement gelöscht" )
   DBG_PROG_ENDE
 }
 
@@ -122,22 +102,7 @@ ICCprofile::load (std::string filename)
 { DBG_PROG_START
   // delegieren
   _filename = filename;
-  try {
-    fload ();
-  }
-    catch (Ausnahme & a) {	// fängt alles von Ausnahme Abstammende
-        printf ("Ausnahme aufgetreten: %s\n", a.what());
-        a.report();
-        _filename = "";
-    }
-    catch (std::exception & e) { // fängt alles von exception Abstammende
-        printf ("Std-Ausnahme aufgetreten: %s\n", e.what());
-        _filename = "";
-    }
-    catch (...) {		// fängt alles Übriggebliebene
-        printf ("Huch, unbekannte Ausnahme\n");
-        _filename = "";
-    }
+  fload ();
   DBG_PROG_ENDE
 }
 
@@ -146,8 +111,18 @@ ICCprofile::load (char* filename)
 { DBG_PROG_START
   // delegieren
   _filename = filename;
+  fload();
+  DBG_PROG_ENDE
+}
+
+void
+ICCprofile::fload ()
+{ DBG_PROG_START // ICC Profil laden
+  std::string file = _filename;
+
   try {
-    fload ();
+    _data = ladeDatei (file, &_size);
+    DBG_MEM
   }
     catch (Ausnahme & a) {	// fängt alles von Ausnahme Abstammende
         printf ("Ausnahme aufgetreten: %s\n", a.what());
@@ -162,42 +137,20 @@ ICCprofile::load (char* filename)
         printf ("Huch, unbekannte Ausnahme\n");
         _filename = "";
     }
-  DBG_PROG_ENDE
-}
 
-void
-ICCprofile::fload ()
-{ DBG_PROG_START // ICC Profil laden
-  std::string file = _filename;
-  std::ifstream f ( _filename.c_str(), std::ios::binary | std::ios::ate );
+  DBG_MEM_V( (int*)_data <<" "<< _size )
 
-  DBG_PROG
-  if (_filename == "")
-    throw ausn_file_io ("kein Dateiname angegeben");
-  DBG_PROG
-  if (!f) {
-    throw ausn_file_io ("keine lesbare Datei gefunden");
-    _filename = "";
-  }
-
-  if (_data != NULL && _size) {
-    cout << "!!!! Profil wird wiederbenutzt !!!! "; DBG_PROG
+  if (_data && _size) {
+    WARN_S( _("!!!! Profil wird wiederbenutzt !!!! ") )
     clear();
+    // zweites mal Laden nach clear() ; könnte optimiert werden
+    _data = ladeDatei (file, &_size);
     _filename = file;
   }
-  _size = (unsigned int)f.tellg();         f.seekg(0);
-  _data = (char*)calloc (sizeof (char), _size);
-  
-
-  f.read ((char*)_data, _size);
-  #ifdef DEBUG_ICCPROFILE
-  cout << _size << "|" << f.tellg() << endl;
-  #endif
-  f.close();
 
   // Test   > 132 byte
   if (_size < 132) {
-    WARN_S( _("Kein Profil") )
+    WARN_S( _("Kein Profil")<<_(" Größe ")<<_size )
     measurement.load( this, _data, _size );
     DBG_PROG_ENDE
     return;

@@ -162,10 +162,12 @@ ICCexamin::oeffnen (std::vector<std::string> dateinamen)
   if( dateinamen.size() &&
       (dateinamen[0].find( "wrl",  dateinamen[0].find_last_of(".") )
          != std::string::npos) )
-  { size_t size;
+  {
+    size_t size;
     char *data = ladeDatei (dateinamen[0], &size);
-    std::string d = data;
-    if(data) free( data );
+    std::string d (data,size);
+    //DBG_NUM_V( d <<" "<< size )
+    if(data) free( data ); // übernimmt std::string einfach den Speicherblock?
     std::vector<ICCnetz> netze = extrahiereNetzAusVRML (d);
     if( netze.size() )
     { DBG_NUM_V( netze.size() )
@@ -183,12 +185,15 @@ ICCexamin::oeffnen (std::vector<std::string> dateinamen)
         }
         DBG_NUM_V( netze[n].indexe.size()/4.0 )
         for(unsigned int i = 0; i < 10; i+=4) {
-         cout << netze[n].indexe[i+0] << " ";
-         cout << netze[n].indexe[i+1] << " ";
-         cout << netze[n].indexe[i+2] << " ";
-         cout << netze[n].indexe[i+3] << endl;
+         cout << netze[n].indexe[i].i[0] << " ";
+         cout << netze[n].indexe[i].i[1] << " ";
+         cout << netze[n].indexe[i].i[2] << " ";
+         cout << netze[n].indexe[i].i[3] << endl;
         }
       }
+      for(unsigned int i = 0; i < netze.size(); ++i )
+        netze[i].transparenz = 0.6;
+      icc_betrachter->DD_histogram->hineinNetze(netze);
     } else
       WARN_S(_("kein Netz gefunden in VRML Datei"))
   }
@@ -535,9 +540,9 @@ ICCexamin::histogram ()
   if(netz.size())
   {
     DBG_NUM_V( netz[0].transparenz )
-    netz[0].transparenz = 1.0;
+    netz[0].transparenz = 0.4;
     netz[0].name = icc_oyranos.moni_name();
-    icc_betrachter->DD_histogram->hineinNetze( netz );
+    //icc_betrachter->DD_histogram->hineinNetze( netz );
   }
 
   DBG_PROG_ENDE
