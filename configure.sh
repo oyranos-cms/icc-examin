@@ -177,6 +177,9 @@ if [ -n "$FLTK" ] && [ $FLTK -gt 0 ]; then
     echo "FLTK = 1" >> $CONF
     echo "FLTK_H = `$fltkconfig --cxxflags | sed 's/-O[0-9]//'`" >> $CONF
     echo "FLTK_LIBS = `$fltkconfig --use-images --use-gl --ldflags`" >> $CONF
+    echo "FLTK = 1" >> $CONF_I18N
+    echo "FLTK_H = `$fltkconfig --cxxflags | sed 's/-O[0-9]//'`" >> $CONF_I18N
+    echo "FLTK_LIBS = `$fltkconfig --use-images --use-gl --ldflags`" >> $CONF_I18N
   else
     test -n "$ECHO" && $ECHO "!!! ERROR !!!"
     test -n "$ECHO" && $ECHO "           FLTK is not found; download: www.fltk.org"
@@ -238,9 +241,27 @@ if [ -n "$LIBPNG" ] && [ $LIBPNG -gt 0 ]; then
   fi
 fi
 
+if [ -n "$LIBS" ] && [ $LIBS -gt 0 ]; then
+  if [ -n "$LIBS_TEST" ]; then
+    for l in $LIBS_TEST; do
+      rm -f tests/libtest
+      $CXX $CFLAGS -I$includedir tests/lib_test.cxx $LDFLAGS -L$libdir -l$l -o tests/libtest
+      if [ -f tests/libtest ]; then
+          test -n "$ECHO" && $ECHO "lib$l is available"
+          if [ -n "$MAKEFILE_DIR" ]; then
+            for i in $MAKEFILE_DIR; do
+              test -f "$i/makefile".in && echo "$l = -l$l" >> "$i/makefile"
+            done
+          fi
+          rm tests/libtest
+      fi
+    done
+  fi
+fi
+
 if [ -n "$LIBTIFF" ] && [ $LIBTIFF -gt 0 ]; then
   rm -f tests/libtest
-  $CXX $CFLAGS -I$includedir tests/tiff_test.cxx $LDFLAGS -L$libdir -ltiff -o tests/libtest
+  $CXX $CFLAGS -I$includedir tests/lib_test.cxx $LDFLAGS -L$libdir -ltiff -o tests/libtest
     if [ -f tests/libtest ]; then
       test -n "$ECHO" && $ECHO "`tests/libtest`
                         detected"
@@ -252,6 +273,23 @@ if [ -n "$LIBTIFF" ] && [ $LIBTIFF -gt 0 ]; then
     fi
 fi
 
+if [ -n "$GETTEXT" ] && [ $GETTEXT -gt 0 ]; then
+  rm -f tests/libtest
+    $CXX $CFLAGS -I$includedir tests/gettext_test.cxx $LDFLAGS -L$libdir -o tests/libtest
+    if [ ! -f tests/libtest ]; then
+      $CXX $CFLAGS -I$includedir tests/gettext_test.cxx $LDFLAGS -L$libdir -lintl -o tests/libtest
+    fi
+    if [ -f tests/libtest ]; then
+      test -n "$ECHO" && $ECHO "Gettext                 detected"
+      echo "#define USE_GETTEXT 1" >> $CONF_H
+      echo "GETTEXT = -DUSE_GETTEXT" >> $CONF
+      echo "GETTEXT = -DUSE_GETTEXT" >> $CONF_I18N
+      rm tests/libtest
+    else
+      test -n "$ECHO" && $ECHO "no or too old Gettext found,"
+    fi
+fi
+
 if [ -n "$PO" ] && [ $PO -gt 0 ]; then
   pos_dir="`ls po/*.po 2> /dev/null`"
   LING="`echo $pos_dir`"
@@ -259,7 +297,7 @@ if [ -n "$PO" ] && [ $PO -gt 0 ]; then
   echo "LINGUAS = $LINGUAS" >> $CONF
   echo "translations available: $LINGUAS"
   echo "LING = $LING" >> $CONF
-  echo "#define USE_GETTEXT 1" >> $CONF_H
+  #echo "#define USE_GETTEXT 1" >> $CONF_H
 fi
 
 if [ -n "$PREPARE_MAKEFILES" ] && [ $PREPARE_MAKEFILES -gt 0 ]; then
@@ -267,9 +305,9 @@ if [ -n "$PREPARE_MAKEFILES" ] && [ $PREPARE_MAKEFILES -gt 0 ]; then
     for i in $MAKEFILE_DIR; do
       echo preparing Makefile in "$i/"
       if [ $OSUNAME = "BSD" ]; then
-        test -f "$i/makefile".in && cat  "$i/makefile".in | sed 's/^\#if/.if/g ; s/^\#end/.end/g '  >> "$i/makefile"
+        test -f "$i/makefile".in && cat  "$i/makefile".in | sed 's/#if/.if/g ; s/#end/.end/g ; s/#else/.else/g '  >> "$i/makefile"
       else
-        test -f "$i/makefile".in && cat  "$i/makefile".in | sed 's/^\#if/if/g ; s/^\#elif/elif/g ; s/^\#else/else/g ; s/^\ \ \#if/\ \ if/g ; s/^\#end/end/g '  >> "$i/makefile"
+        test -f "$i/makefile".in && cat  "$i/makefile".in | sed 's/#if/if/g ; s/#elif/elif/g ; s/#else/else/g ; s/#end/end/g '  >> "$i/makefile"
       fi
       mv "$i/makefile" "$i/Makefile"
     done

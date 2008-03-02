@@ -306,8 +306,10 @@ export PATH
 
 echo "LIB=/"$LIBDIR >> $CONF
 
+export LIBS_TEST="dl iconv intl"
 
 ECHO="echo"; export ECHO
+LIBS=1; export LIBS
 #export ELEKTRA=1
 OYRANOS=1; export OYRANOS
 LCMS=1; export LCMS
@@ -321,9 +323,11 @@ X11=1;   export X11
 fi
 XINERAMA=1; export XINERAMA
 XF86VMODE=1; export XF86VMODE
-PO=1; export PO
 DEBUG=1; export DEBUG
+PO=1; export PO
+GETTEXT=1; export GETTEXT
 ./configure.sh
+LIBS=0; export LIBS
 ELEKTRA=0; export ELEKTRA
 OYRANOS=0; export OYRANOS
 LCMS=0; export LCMS
@@ -335,8 +339,9 @@ FLU=0; export FLU
 X11=0; export X11
 XINERAMA=0; export XINERAMA
 XF86VMODE=0; export XF86VMODE
-PO=0; export PO
 DEBUG=0; export DEBUG
+PO=0; export PO
+GETTEXT=0; export GETTEXT
 
 if [ -d ../../../plug-ins/icc_examin/ ]; then
   build_plug_in_only=1
@@ -459,8 +464,8 @@ if [ $OSUNAME = "Darwin" ]; then
   echo "COPY = cp -p $DEBUG_SWITCH" >> $CONF
   LDFLAGS="$LDFLAGS -L."
   echo "DBG_LIBS = #-lMallocDebug" >> $CONF
-  echo "I18N_LIB = -lintl \$(LIBNAME)" >> $CONF
-  echo "I18N_LIBSTAT = /opt/local/lib/libintl.a \$(LIBNAME) -liconv" >> $CONF
+  echo "I18N_LIB = \$(lintl) \$(LIBNAME)" >> $CONF
+  echo "I18N_LIBSTAT = /opt/local/lib/libintl.a \$(LIBNAME) \$(iconv)" >> $CONF
   echo "INCL=-I\$(includedir) -I/usr/X11R6/include -I./ -I/usr/include/gcc/darwin/default/c++" >> $CONF
   echo "LIBEXT = .dylib" >> $CONF
   echo "LINK_FLAGS = -dynamiclib -L." >> $CONF
@@ -494,7 +499,7 @@ else
     echo "I18N_LIB = \$(LIBNAME)" >> $CONF
     echo "I18N_LIBSTAT = \$(LIBNAME)" >> $CONF
     echo "INCL=-I\$(includedir) -I/usr/X11R6/include -I. -I/usr/include/g++ -I/usr/include" >> $CONF
-    echo "LINK_FLAGS = -shared -ldl -fPIC -L. -lpthread" >> $CONF
+    echo "LINK_FLAGS = -shared \$(dl) -fPIC -L. -lpthread" >> $CONF
     echo "LIBNAMEV = lib\$(TARGET)\$(LIBMID).\$(VERSION_A)" >> $CONF
     echo "LINK_FLAGS_STATIC = $LDFLAGS" >> $CONF
     echo "LINK_NAME = -Wl,-soname -Wl,\$(LIBNAMEFULL)" >> $CONF
@@ -508,24 +513,22 @@ else
     echo "COPY = cp -p" >> $CONF
     echo "INCL=-I\$(includedir) -I/usr/X11R6/include -I. -I/usr/include/g++ -I/usr/include" >> $CONF
     if [ $OSUNAME = "BSD" ]; then
-      LDFLAGS="$LDFLAGS \$(ICONV)"
+      LDFLAGS="$LDFLAGS \$(iconv)"
       INSTALL="install $DEBUG_SWITCH"
-      echo "LINK_FLAGS = -shared \$(ICONV)" >> $CONF
+      echo "LINK_FLAGS = -shared \$(iconv)" >> $CONF
       echo "INSTALL = install $DEBUG_SWITCH" >> $CONF
     fi
     if [ $OSUNAME = "SunOS" ]; then
-      echo "ICONV = -liconv" >> $CONF
-      LDFLAGS="$LDFLAGS -mimpure-text -ldl -lrt \$(ICONV)"
+      LDFLAGS="$LDFLAGS -mimpure-text \$(dl) -lrt \$(iconv)"
       INSTALL="install"
     else
-      echo "ICONV = -liconv" >> $CONF
-      LDFLAGS="$LDFLAGS -mimpure-text -ldl \$(ICONV)"
+      LDFLAGS="$LDFLAGS -mimpure-text \$(dl) \$(iconv)"
       INSTALL="install"
-      echo "LINK_FLAGS = -shared -ldl \$(ICONV)" >> $CONF
+      echo "LINK_FLAGS = -shared \$(dl) \$(iconv)" >> $CONF
       echo "INSTALL = install" >> $CONF
     fi
-    echo "I18N_LIB = \$(ICONV) -lintl \$(LIBNAMEV)" >> $CONF
-    echo "I18N_LIBSTAT = \$(ICONV) -lintl \$(LIBNAMEV)" >> $CONF
+    echo "I18N_LIB = \$(iconv) \$(lintl) \$(LIBNAMEV)" >> $CONF
+    echo "I18N_LIBSTAT = \$(iconv) \$(lintl) \$(LIBNAMEV)" >> $CONF
     echo "MAKEDEPEND	= makedepend -Y" >> $CONF
     CFLAGS="$CFLAGS_COMMON -Wall -g -L. -fPIC"
     CXXFLAGS="$CXXFLAGS_COMMON -Wall -g -L. -fPIC"
