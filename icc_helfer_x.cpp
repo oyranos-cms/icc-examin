@@ -21,40 +21,36 @@
  * 
  * -----------------------------------------------------------------------------
  *
- * Aufbereitung von osX internen Informationen - werkzeugabhängig
+ * Aufbereitung von X internen Informationen - werkzeugabhängig
  * 
  */
 
-// Date:      14. 01. 2005
+// Date:      11. 01. 2005
+
+# define BOOL   LCMS_BOOL
 
 #include "icc_utils.h"
 #include "icc_icc.h"
 #include "icc_helfer_x.h"
 
-#ifdef HAVE_OSX
- #include <Carbon/Carbon.h>
- #ifdef HAVE_FLTK
-  //#include <FL/osx.H>
- #endif
+#undef BOOL
+
+#include <X11/Xutil.h>
+#include <X11/extensions/xf86vmode.h>
+#ifdef HAVE_FLTK
+#include <FL/x.H>
 #endif
 
 std::vector<std::vector<double> >
-getGrafikKartenGamma  (std::string display_name,
-                       std::vector<std::string> &texte )
+leseGrafikKartenGamma        (std::string display_name,
+                              std::vector<std::string> &texte )
 { DBG_PROG_START
+
+  Display *display;
+  XF86VidModeGamma gamma;
+  XF86VidModeMonitor monitor;
+  int screen = 0;  // TODO
   std::vector<std::vector<double> > kurven;
-  #ifdef HAVE_OSX
-
-  DisplayIDType         id;
-  OSStatus              theErr;
-  UInt32                size;
-  CMVideoCardGamma*     gamma = nil;
-
-  theErr = CMGetGammaByAVID(id, nil, &size);
-/*  require_noerr(theErr, bail);
-
-  gamma = (CMVideoCardGamma*) NewPtrClear(size);
-
 
   texte.resize(4);
   texte[0] = _("Rot");
@@ -63,35 +59,36 @@ getGrafikKartenGamma  (std::string display_name,
   texte[3] = "gamma_start_ende";
 
   if(display_name.size())
-    ;//display = XOpenDisplay(display_name.c_str());
+    display = XOpenDisplay(display_name.c_str());
   else
   {
     #ifdef HAVE_FLTK
-    //display = fl_display;
+    display = fl_display;
     #else
-    //display = XOpenDisplay(0);
+    display = XOpenDisplay(0);
     #endif
   }
 
-  //if (!display) {
-    //WARN_S( XDisplayName (display_name.c_str()) )
-    //DBG_PROG_ENDE
-    //return kurven;
-  //}
-  //DBG_PROG_V( XDisplayName (display_name.c_str()) )
+  if (!display) {
+    WARN_S( XDisplayName (display_name.c_str()) )
+    DBG_PROG_ENDE
+    return kurven;
+  }
+  DBG_PROG_V( XDisplayName (display_name.c_str()) )
 
-  //if (!XF86VidModeGetMonitor(display, screen, &monitor))
+  if (!XF86VidModeGetMonitor(display, screen, &monitor))
     WARN_S( _("Keine Monitor Information erhalten") )
-  //else {
+  else {
     texte.push_back(_("Hersteller: "));
-    //texte[texte.size()-1].append(monitor.vendor);
+    texte[texte.size()-1].append(monitor.vendor);
     texte.push_back(_("Model:      "));
-    //texte[texte.size()-1].append(monitor.model);
-  //}
-  //if (!XF86VidModeGetGamma(display, screen, &gamma))
+    texte[texte.size()-1].append(monitor.model);
+  }
+  DBG_PROG_V( monitor.vendor )
+  DBG_PROG_V( monitor.model )
+  if (!XF86VidModeGetGamma(display, screen, &gamma))
     WARN_S( _("Keine Gamma Information erhalten") )
-  //else {
-
+  else {
     char t[24];
     if( gamma.red != 1.0 ) {
       texte.push_back("");
@@ -114,21 +111,20 @@ getGrafikKartenGamma  (std::string display_name,
     DBG_NUM_V( gamma.blue )
   }
 
-  int size, kanaele, groesse;
-  //if (!XF86VidModeGetGammaRampSize(display, screen, &size))
-    WARN_S( _("Kein Gammagradient Information erhalten") )
+  int size;
+  if (!XF86VidModeGetGammaRampSize(display, screen, &size))
+    WARN_S( _("Kein Gammagradient Information erhalten") );
 
-  if (gamma->tagType == cmVideoCardGammaTableType)
-  { if (gamma->u.table.channels == 3)
-    kanaele = gamma->u.table.channels;
-    size = gamma->u.table.entryCount; 
-  }
   DBG_PROG_V( size )
   if (size)
   {
+    unsigned short *red   = new unsigned short [size],
+                   *green = new unsigned short [size],
+                   *blue  = new unsigned short [size];
+    if (!XF86VidModeGetGammaRamp(display, screen, size, red, green, blue))
       WARN_S( _("Kein Gammagradient Information erhalten") )
 
-    kurven.resize();
+    kurven.resize(3);
     for( int i = 0; i < 3; ++i) {
       kurven[i].resize(size);
     }
@@ -141,11 +137,10 @@ getGrafikKartenGamma  (std::string display_name,
     delete [] red;
     delete [] green;
     delete [] blue;
-  } else DBG_NUM_S( "kein vcgt in X anzeigbar" )
+  } else DBG_NUM_S( "kein vcgt in X anzeigbar" );
 
   //XCloseDisplay(display);
-*/
-  #endif
+
   DBG_PROG_ENDE
   return kurven;
 }

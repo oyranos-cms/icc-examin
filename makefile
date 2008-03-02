@@ -1,3 +1,5 @@
+include config
+
 CC=c++
 MAKEDEPEND	= /usr/X11R6/bin/makedepend -Y
 RM = rm -v
@@ -12,17 +14,11 @@ mandir		= ${prefix}/man
 srcdir		= .
 
 DEBUG = -DDEBUG
-APPLE = 1
-FLTK = 1
 ifdef FLTK
-FLU = 1
 FLTK_H = -DHAVE_FLTK
 endif
 DL = --ldflags # --ldstaticflags
 
-ifdef FLU
-FLU_H = -DHAVE_FLU
-endif
 
 VRML_LIBS=$(FLTK_GL_LIBS) -lGL -lopenvrml -lopenvrml-gl -lpng -ljpeg \
  -lXinerama -lXft
@@ -31,7 +27,6 @@ X11_LIBS=-L/usr/X11R6/lib
 
 FLTK_LIBS=`fltk-config --use-images --use-gl --use-glut $(DL)`
 
-OYRANOS_LIBS=-lkdb -loyranos
 
 ifdef FLU
 FLU_LIBS=`flu-config $(DL)`
@@ -43,16 +38,20 @@ ifdef APPLE
   OPTS=-Wall -g $(DEBUG)
   GLUT = -framework GLUT -lobjc
   OSX_CPP = icc_helfer_osx.cpp
-  OSX_H  = -DHAVE_OSX
   INCL=-I$(includedir) -I/usr/X11R6/include -I./ -I/opt/kai-uwe/include -I/usr/include/gcc/darwin/default/c++
 else
   OPTS = -Wall  -Os -g $(DEBUG) #-fomit-frame-pointer -g
   GLUT = -lglut
-  X_H  = -DHAVE_X
-  X_CPP = icc_helfer_x.cpp
-  OY_H = -DHAVE_OY
-  OY_LIBS = -loyranos -loyranos_moni
   INCL=-I$(includedir) -I/usr/X11R6/include -I./ -I/opt/kai-uwe/include
+endif
+
+ifdef X11
+  X_CPP = icc_helfer_x.cpp
+endif
+
+ifdef OY
+  OY_LIBS = -loyranos -loyranos_moni
+  OYRANOS_LIBS=-lkdb -loyranos
 endif
 
 CXXFLAGS=$(OPTS) $(INCL) $(FLU_H) $(FLTK_H) $(X_H) $(OSX_H) $(OY_H)
@@ -152,7 +151,7 @@ dir     = Entwickeln
 timedir = $(topdir)/$(dir)
 mtime   = `find $(timedir) -prune -printf %Ty%Tm%Td.%TT | sed s/://g`
 
-.SILENT:
+#.SILENT:
 
 all:	$(TARGET)
 
@@ -255,6 +254,7 @@ tgz:
 	$(addprefix $(dir)/,$(SOURCES)) \
 	$(addprefix $(dir)/,$(CPPFLTKFILES)) \
 	$(dir)/makefile \
+	$(dir)/configure.sh \
 	$(addprefix $(dir)/,$(TEST)) \
 	$(addprefix $(dir)/,$(DOKU)) \
 	$(addprefix $(dir)/,$(FLUID)) \

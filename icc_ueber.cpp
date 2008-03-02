@@ -130,7 +130,7 @@ Für die Visualisation des Farbumfangs (extern):<br>\n \
 </p>\n \
 </p>\n \
 <p> \
-3D Visualisierung:<br>\n \
+3D Navigation:<br>\n \
 <p> \
   agv openGL Betrachter: Philip Winston<br>\n \
 </p>\n \

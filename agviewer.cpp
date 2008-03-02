@@ -257,15 +257,21 @@ Agviewer::agvSwitchMoveMode(int move)
       break;
     case ICCFLY_L:
       MoveMode = POLAR;
-      EyeDist = 2*init_dist;
+      if(RedisplayWindow == 2) {
+        EyeDist = 2*init_dist;
+        icc_examin->glAnsicht(RedisplayWindow)->vorder_schnitt = 
+         icc_examin->glAnsicht(RedisplayWindow)->std_vorder_schnitt + init_dist;
+      } else {
+        EyeDist = init_dist;
+        icc_examin->glAnsicht(RedisplayWindow)->vorder_schnitt = 
+         icc_examin->glAnsicht(RedisplayWindow)->std_vorder_schnitt;
+      }
       EyeAz   = init_polar_az;
       EyeEl   = init_polar_el;
       AzSpin  = init_az_spin;
       ElSpin  = init_el_spin;
       move = FLYING;
       this->agvSwitchMoveMode( FLYING );
-      icc_examin->glAnsicht(RedisplayWindow)->vorder_schnitt = 
-         icc_examin->glAnsicht(RedisplayWindow)->std_vorder_schnitt + init_dist;
       icc_examin_ns::status_info(_("waagerechter Schnitt; linker Mausklick setzt zurück"));
       duenn = true;
       break;
