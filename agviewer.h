@@ -71,14 +71,14 @@ class Agviewer : public icc_examin_ns::Modell
           Ex = 0.0;             /* flying parameters */
           Ey = -2.0;
           Ez = -2.0;
-          EyeMove = init_move;
+          EyeMove = (GLfloat)init_move;
 
-          EyeDist = init_dist;      /* polar params */
-          AzSpin  = init_az_spin;
-          ElSpin  = init_el_spin;
+          EyeDist = (GLfloat)init_dist;      /* polar params */
+          AzSpin  = (GLfloat)init_az_spin;
+          ElSpin  = (GLfloat)init_el_spin;
 
-          EyeAz = init_polar_az;    /* used by both */
-          EyeEl = init_polar_el;
+          EyeAz = (GLfloat)init_polar_az;    /* used by both */
+          EyeEl = (GLfloat)init_polar_el;
 
   /* Multiply EyeMove by (1+-movefraction) when +/- hit in FLYING mode */
           movefraction = 0.25;
@@ -267,7 +267,7 @@ public:
   float eyeY () const { return Ey; } // ICC Examin
   float eyeZ () const { return Ez; } // ICC Examin
   float eyeDist () const { return EyeDist; } // ICC Examin
-  void  eyeDist(double d) { EyeDist = d; }
+  void  eyeDist(double d) { EyeDist = (GLfloat)d; }
   float eyeAzimuth () const { return EyeAz; } // ICC Examin
   float eyeElevation () const { return EyeEl; } // ICC Examin
 

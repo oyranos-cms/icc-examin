@@ -604,7 +604,7 @@ MyFl_File_Chooser::fileNameCB()
 
     // Other key pressed - do filename completion as possible...
     num_files  = fileList->size();
-    min_match  = strlen(filename);
+    min_match  = (int)strlen(filename);
     max_match  = min_match + 1;
     first_line = 0;
 
@@ -620,7 +620,7 @@ MyFl_File_Chooser::fileNameCB()
 	if (!first_line) {
 	  // First match; copy stuff over...
 	  strlcpy(matchname, file, sizeof(matchname));
-	  max_match = strlen(matchname);
+	  max_match = (int)strlen(matchname);
 
           // Strip trailing /, if any...
 	  if (matchname[max_match - 1] == '/') {
@@ -658,14 +658,14 @@ MyFl_File_Chooser::fileNameCB()
       fileList->redraw();
     } else if (max_match > min_match && first_line) {
       // Add the matching portion...
-      fileName->replace(filename - pathname, filename - pathname + min_match,
+      fileName->replace((int)(filename - pathname), (int)(filename - pathname + min_match),
                         matchname);
 
       // Highlight it with the cursor at the end of the selection so
       // s/he can press the right arrow to accept the selection
       // (Tab and End also do this for both cases.)
-      fileName->position(filename - pathname + max_match,
-	                 filename - pathname + min_match);
+      fileName->position((int)(filename - pathname + max_match),
+	                     (int)(filename - pathname + min_match));
     } else if (max_match == 0) {
       fileList->deselect(0);
       fileList->redraw();
@@ -710,7 +710,7 @@ MyFl_File_Chooser::filter(const char *p)		// I - Pattern(s)
   if (!p || !*p) p = "*";
 
   // Copy the pattern string...
-  copyp = strdup(p);
+  copyp = icc_strdup_m(p);
 
   // Separate the pattern string as necessary...
   showChoice->clear();
@@ -979,7 +979,7 @@ MyFl_File_Chooser::update_preview()
 
     if (fp != NULL) {
       // Try reading the first 1k of data for a label...
-      bytes = fread(preview_text_, 1, sizeof(preview_text_) - 1, fp);
+      bytes = fread(preview_text_, 1, (int)sizeof(preview_text_) - 1, fp);
       preview_text_[bytes] = '\0';
       fclose(fp);
     } else {
@@ -1177,8 +1177,8 @@ compare_dirnames(const char *a, const char *b) {
   int alen, blen;
 
   // Get length of each string...
-  alen = strlen(a) - 1;
-  blen = strlen(b) - 1;
+  alen = (int)strlen(a) - 1;
+  blen = (int)strlen(b) - 1;
 
   if (alen < 0 || blen < 0) return alen - blen;
 

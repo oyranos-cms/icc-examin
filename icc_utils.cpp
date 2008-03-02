@@ -135,15 +135,15 @@ wandelThreadId( Fl_Thread id )
 {
   int pos = -1;
   {
-    if      (pthread_equal( icc_thread_liste[THREAD_HAUPT], id ))
+    if      (iccThreadEqual( icc_thread_liste[THREAD_HAUPT], id ))
       pos = THREAD_HAUPT;
-    else if (pthread_equal( icc_thread_liste[THREAD_GL1], id ))
+    else if (iccThreadEqual( icc_thread_liste[THREAD_GL1], id ))
       pos = THREAD_GL1;
-    else if (pthread_equal( icc_thread_liste[THREAD_GL2], id ))
+    else if (iccThreadEqual( icc_thread_liste[THREAD_GL2], id ))
       pos = THREAD_GL2;
-    else if (pthread_equal( icc_thread_liste[THREAD_LADEN], id ))
+    else if (iccThreadEqual( icc_thread_liste[THREAD_LADEN], id ))
       pos = THREAD_LADEN;
-    else if (pthread_equal( icc_thread_liste[THREAD_WACHE], id ))
+    else if (iccThreadEqual( icc_thread_liste[THREAD_WACHE], id ))
       pos = THREAD_WACHE;
   }
   return pos;
@@ -153,7 +153,7 @@ void//std::string
 dbgThreadId()
 {
   //std::string s("??");
-  int dbg_id = wandelThreadId ( pthread_self() );
+  int dbg_id = wandelThreadId ( iccThreadSelf() );
   //printf("%d\n", (int*)s.c_str());
   switch (dbg_id)
   {
@@ -178,7 +178,7 @@ dbgThreadId()
 int
 iccLevel_PROG(int plus_minus_null)
 {
-  int pth = wandelThreadId( pthread_self() );
+  int pth = wandelThreadId( iccThreadSelf() );
   if(0 <= pth && pth < DBG_MAX_THREADS) {
     level_PROG_ [pth] = level_PROG_[pth] + plus_minus_null;
     if(level_PROG_ [pth] < 0)
@@ -190,3 +190,21 @@ iccLevel_PROG(int plus_minus_null)
   }
 }
 
+
+
+char*
+icc_strdup (const char* t)
+{
+  size_t len = 0;
+  char *temp = NULL;
+
+  if(t)
+     len = strlen(t);
+  if(len)
+  {
+    temp = (char*) malloc(len+1);
+    memcpy( temp, t, len );
+    temp[len] = 0;
+  }
+  return temp;
+}

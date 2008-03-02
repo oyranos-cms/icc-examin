@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2007  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2005  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -47,7 +47,6 @@ using namespace icc_examin_ns;
 #define DBG_EXAMIN_S( texte )
 #endif
 
-const char * selectTextsLine( int * line );
 
 
 std::string
@@ -77,11 +76,6 @@ ICCexamin::waehleTag (int item)
     return text;
   }
 
-  if(!icc_betrachter->tag_text->cb)
-  {
-    tagTextsCB_f cb = &selectTextsLine;
-    icc_betrachter->tag_text->cb = cb;
-  }
 
   frei(false);
   kurven[TAG_VIEWER].clear();
@@ -129,13 +123,7 @@ ICCexamin::waehleTag (int item)
       if( texte_l.size() )
       {
         std::string text_l = texte_l[0];
-        if( profile.profil()->tagBelongsToMeasurement(item) )
-        {
-          icc_betrachter->tag_text->hinein ( text_l,
-          profile.profil()->getMeasurement().getPatchLines(TagInfo[0].c_str()));
-
-        } else
-          icc_betrachter->tag_text->hinein ( text_l );
+        icc_betrachter->tag_text->hinein ( text_l );
       }
       frei(true);
 
@@ -226,25 +214,8 @@ ICCexamin::waehleTag (int item)
       frei(false);
       std::vector<std::string> texte = profile.profil()->getTagText (item);
       if(texte.size())
-      {
-        if(TagInfo[0] == "ncl2")
-        {
-            ICCprofile * pr = profile.profil();
-            std::vector<double> p_neu = pr->getTagNumbers(item, ICCtag::MATRIX);
-            int n = p_neu.size()/3;
-
-            std::vector<int> patches;
-            patches.resize( n );
-            for(int i = 0; i < n; ++i)
-            {
-              patches[i] = i+5;
-            }
-          icc_betrachter->tag_text->hinein ( texte[0], patches );
-
-        } else
-          icc_betrachter->tag_text->hinein ( texte[0] );
-
-      } else
+        icc_betrachter->tag_text->hinein ( texte[0] );
+      else
         icc_betrachter->tag_text->hinein ( "" );
         
       frei(true);
@@ -366,82 +337,4 @@ ICCexamin::waehleMft (int item)
   DBG_PROG_ENDE
 }
 
-const char *
-selectTextsLine( int * line )
-{
-  int i = 0;
-  const char * txt = "--";
-
-  if(line)
-  {
-    int item = icc_examin->tag_nr();
-    i = *line;
-    //*line = 1;
-    txt = icc_examin->icc_betrachter->tag_text->text(i);
-
-    std::vector<std::string> TagInfo = profile.profil()->printTagInfo(item);
-    if( TagInfo.size() == 2 )
-    {
-      std::vector<float> v;
-      std::string name;
-      std::vector<double> lab;
-      double l[3];
-      double c[32];
-
-      if(profile.profil()->tagBelongsToMeasurement(item) &&
-         icc_examin->icc_betrachter->tag_browser->value() > 5)
-      {
-        lab = profile.profil()->getMeasurement().getPatchLine( i-1,
-                                                        TagInfo[0].c_str(),
-                                                        v, name );
-        for(unsigned int i = 0; i < lab.size(); ++i) l[i] = lab[i];
-        for(unsigned int i = 0; i < v.size() && i < 32; ++i) c[i] = v[i];
-
-        if(lab.size() == 3)
-        {
-          LabToOyLab( l, l, 1 );
-          oyNamedColour_s * colour = oyNamedColourCreate(
-                              l, c,
-                              profile.profil()->colorSpace(), 0, 
-                              name.c_str(), 0, name.c_str(),
-                              0,0, profile.profil()->filename(), malloc, free );
-          icc_examin->icc_betrachter->DD_farbraum->emphasizePoint( colour );
-          // very simple approach, but enough to see the line
-          icc_examin->icc_betrachter->inspekt_html->topline( name.c_str() );
-
-          DBG_PROG_S( txt <<" "<< TagInfo[0] <<" "<< TagInfo[1] <<" L "<< lab[0] <<" a "<< lab[1] <<" b "<< lab[2] )
-          oyNamedColourRelease( &colour );
-        } 
-
-      } else if( profile.profil()->hasTagName("ncl2") &&
-                 TagInfo[0] == "ncl2" ) {
-          oyNamedColour_s * colour = 0;
-          if( icc_examin->icc_betrachter->tag_text->value() > 5 )
-          {
-            std::vector<std::string> names;
-            icc_examin->farbenLese(-(i-5), lab,v,names);
-            name = names.size() ? names[0] : 0;
-            if( lab.size() )
-            {
-              for(unsigned int i = 0; i < 3; ++i) l[i] = lab[i];
-              for(unsigned int i = 0; i < v.size() && i < 32; ++i) c[i] = v[i];
-              LabToOyLab( l, l, 1 );
-              colour = oyNamedColourCreate(
-                              l, c,
-                              profile.profil()->colorSpace(), 0, 
-                              name.c_str(), 0, name.c_str(),
-                              0,0, profile.profil()->filename(), malloc, free );
-              icc_examin->icc_betrachter->DD_farbraum->emphasizePoint( colour );
-              oyNamedColourRelease( &colour );
-            } else
-              icc_examin->icc_betrachter->DD_farbraum->emphasizePoint( NULL );
-          } else {
-            icc_examin->icc_betrachter->DD_farbraum->emphasizePoint( NULL );
-          }
-      }
-    }
-  }
-
-  return txt;
-}
 

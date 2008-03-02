@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2007  Kai-Uwe Behrmann 
+ * Copyright (C) 2004  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -90,7 +90,7 @@ dE2000 (const Lab_s & Lab1_n, const Lab_s & Lab2_n,
   double Cs1ab = sqrt( QUAD(Lab1.a) + QUAD(Lab1.b)); DBG_v (Cs1ab)
   double Cs2ab = sqrt( QUAD(Lab2.a) + QUAD(Lab2.b)); DBG_v (Cs2ab)       // (2)
   double Cab   = (Cs1ab + Cs2ab) / 2;                DBG_v (Cab)         // (3)
-  double G     = 0.5 * (1.0 - sqrt( pow(Cab,7) / (pow(Cab,7) + pow(25,7)))); DBG_v (G)
+  double G     = 0.5 * (1.0 - sqrt( pow(Cab,7) / (pow(Cab,7) + pow((double)25,7)))); DBG_v (G)
                                                                          // (4)
   double a1    = (1.0+G) * Lab1.a; DBG_v (a1)
   double a2    = (1.0+G) * Lab2.a; DBG_v (a2)                            // (5)
@@ -143,7 +143,7 @@ dE2000 (const Lab_s & Lab1_n, const Lab_s & Lab2_n,
                      - 0.20 * cos (nachRAD(4.0 * mean_h - 63.0));DBG_v (T)//(15)
   double dTheta= 30.0 * exp (- QUAD((mean_h - 275.0)/25.0)); DBG_v (dTheta)
                                                                          // (16) 
-  double RC    = 2.0 * sqrt( pow(aC,7)/(pow(aC,7) + pow(25, 7))); DBG_v (RC)
+  double RC    = 2.0 * sqrt( pow(aC,7)/(pow(aC,7) + pow((double)25, 7))); DBG_v (RC)
                                                                          // (17)
   double SL    = 1.0 + (0.015 * QUAD(aL - 50.0))
                      / sqrt(20.0 + QUAD(aL - 50.0)); DBG_v (SL)          // (18)
@@ -160,30 +160,6 @@ dE2000 (const Lab_s & Lab1_n, const Lab_s & Lab2_n,
                  );                                                      // (22)
   DBG_v ( de2000 )
   return de2000;
-}
-
-double
-dE ( Lab_s Lab1, Lab_s Lab2 )
-{
-  double l1[3], l2[3];
-  LabToCIELab( Lab1, l1 );
-  LabToCIELab( Lab2, l2 );
-
-  return dE( l1, l2 );
-}
-
-double
-dE ( double * l1, Lab_s Lab2 )
-{
-  double l2[3];
-  LabToCIELab( Lab2, l2 );
-  return dE( l1, l2 );
-}
-
-double
-dE ( double * l1, double * l2 )
-{
-  return HYP3( l1[0]-l2[0], l1[1]-l2[1], l1[2]-l2[2] );
 }
 
 void
@@ -323,43 +299,6 @@ LabToCIELab (Lab_s & lab, double* cielab)
       cielab[2] = (lab.b * 256.0) - 128.0;
 }
 
-void
-OyLabToLab (double* oylab, Lab_s & lab)
-{
-      lab.L =  oylab[0]          / 1.0;
-      lab.a = (oylab[1] + 1.28f) / 2.56f;
-      lab.b = (oylab[2] + 1.28f) / 2.56f;
-}
-
-void
-OyLabToLab (double* oylab, double* lab, int n)
-{
-    for(int i = 0; i < n; ++i)
-    {
-      lab[i*3+0] =  oylab[i*3+0]          / 1.0;
-      lab[i*3+1] = (oylab[i*3+1] + 1.28f) / 2.56f;
-      lab[i*3+2] = (oylab[i*3+2] + 1.28f) / 2.56f;
-    }
-}
-
-void
-LabToOyLab (double* lab, double* oylab, int n)
-{
-    for(int i = 0; i < n; ++i)
-    {
-      oylab[i*3+0] =  lab[i*3+0];
-      oylab[i*3+1] = (lab[i*3+1] * 2.56f) - 1.28f;
-      oylab[i*3+2] = (lab[i*3+2] * 2.56f) - 1.28f;
-    }
-}
-
-void
-LabToOyLab (Lab_s & lab, double* cielab)
-{
-      cielab[0] =  lab.L * 1.0f;
-      cielab[1] = (lab.a * 2.56f) - 1.28f;
-      cielab[2] = (lab.b * 2.56f) - 1.28f;
-}
 
 void
 FarbeZuDouble (double* d_xyz, XYZ_s xyz)

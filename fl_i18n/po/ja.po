@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GNU hello-c 0.13.1\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2007-09-03 17:38+0200\n"
+"POT-Creation-Date: 2007-09-18 11:18+0200\n"
 "PO-Revision-Date: 2003-12-20 00:24+0900\n"
 "Last-Translator: Masahito Yamaga <ma@yama-ga.com>\n"
 "Language-Team: Japanese <translation-team-ja@lists.sourceforge.net>\n"
@@ -14,82 +14,82 @@ msgstr ""
 "Content-Type: text/plain; charset=EUC-JP\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: fl_i18n.c:211
+#: fl_i18n.cxx:236
 msgid "osX locale obtained: "
 msgstr ""
 
-#: fl_i18n.c:214
+#: fl_i18n.cxx:239
 msgid "osX locale not obtained"
 msgstr ""
 
-#: fl_i18n.c:335
+#: fl_i18n.cxx:360
 msgid "try to set LANG"
 msgstr ""
 
-#: fl_i18n.c:354
+#: fl_i18n.cxx:379
 msgid "try locale in "
 msgstr ""
 
-#: fl_i18n.c:364
+#: fl_i18n.cxx:389
 msgid "set codeset for"
 msgstr ""
 
-#: fl_i18n_fltk.cxx:88
+#: fl_i18n.cxx:425
 msgid "Add to Favorites"
 msgstr ""
 
-#: fl_i18n_fltk.cxx:89
+#: fl_i18n.cxx:426
 msgid "All Files (*)"
 msgstr ""
 
-#: fl_i18n_fltk.cxx:90
+#: fl_i18n.cxx:427
 msgid "Custom Filter"
 msgstr ""
 
-#: fl_i18n_fltk.cxx:91
+#: fl_i18n.cxx:428
 msgid "Please choose an existing file!"
 msgstr ""
 
-#: fl_i18n_fltk.cxx:92
+#: fl_i18n.cxx:429
 msgid "Favorites"
 msgstr ""
 
-#: fl_i18n_fltk.cxx:93
+#: fl_i18n.cxx:430
 msgid "Filename"
 msgstr ""
 
-#: fl_i18n_fltk.cxx:94
+#: fl_i18n.cxx:431
 msgid "Manage Favorites"
 msgstr ""
 
-#: fl_i18n_fltk.cxx:96
+#: fl_i18n.cxx:433
 msgid "My Computer"
 msgstr ""
 
-#: fl_i18n_fltk.cxx:98
+#: fl_i18n.cxx:435
 msgid "Filesystems"
 msgstr ""
 
-#: fl_i18n_fltk.cxx:100
+#: fl_i18n.cxx:437
 msgid "New Directory?"
 msgstr ""
 
-#: fl_i18n_fltk.cxx:101
+#: fl_i18n.cxx:438
 msgid "Preview"
 msgstr ""
 
-#: fl_i18n_fltk.cxx:103
+#: fl_i18n.cxx:440
 msgid "Save"
 msgstr ""
 
-#: fl_i18n_fltk.cxx:105
+#: fl_i18n.cxx:442
 msgid "Show:"
 msgstr ""
 
-#: fl_i18n_example.cxx:14 fl_i18n_example.cxx:53 fl_i18n_example.cxx:56
+#: fl_i18n_example.cxx:14 fl_i18n_example.cxx:54 fl_i18n_example.cxx:57
 msgid "Hello, world!"
 msgstr "世界よ, こんにちは!"
 
-#: fl_i18n_example.cxx:54
+#: fl_i18n_example.cxx:55
 msgid "fl_i18n_example"
 msgstr ""

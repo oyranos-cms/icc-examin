@@ -30,12 +30,15 @@ INCL_DEP = $(INCL) $(X_H) $(OSX_H) $(OYRANOS_H) \
 			$(FLU_H) $(FLTK_H) $(FTGL_H) $(LCMS_H) $(ALL_SOURCEFILES)
 ALL_INCL = $(INCL) \
 			$(FLU_H) $(FLTK_H) $(X_H) $(OSX_H) $(OYRANOS_H) $(LCMS_H) $(FTGL_H)
+#CFLAGS_ = -DHAVE_EXCEPTION $(CFLAGS) $(DEBUG) $(ALL_INCL)
+#CXXFLAGS_ = -DHAVE_EXCEPTION $(CXXFLAGS) $(DEBUG) $(ALL_INCL)
 CFLAGS_ = $(CFLAGS) $(DEBUG) $(ALL_INCL)
 CXXFLAGS_ = $(CXXFLAGS) $(DEBUG) $(ALL_INCL)
 
-LDLIBS = $(LDFLAGS) -L$(libdir) -L./ $(LIBFL_I18N) $(FLTK_LIBS) $(FLU_LIBS) \
+LDLIBS = $(LDFLAGS) -L$(libdir) -L./ $(LIBFL_I18N) $(FTGL_LIBS) $(FLTK_LIBS) \
+	$(FLU_LIBS) \
 	$(X11_LIBS) -llcms -L/lib $(OYRANOS_LIBS) $(LCMS_LIBS) \
-	$(FTGL_LIBS) $(I18N_LIB) $(DBG_LIBS) $(LIBNAME) $(CWLIB)
+	$(I18N_LIB) $(DBG_LIBS) $(LIBNAME) $(CWLIB)
 
 CPP_HEADERS = \
 	agviewer.h \
@@ -97,6 +100,7 @@ COMMON_CPPFILES = \
 	icc_measurement.cpp \
 	icc_modell_beobachter.cpp \
 	icc_oyranos.cpp \
+	icc_oyranos_extern.cpp \
 	icc_profile.cpp \
 	icc_profile_header.cpp \
 	icc_profile_tags.cpp \
@@ -117,9 +121,9 @@ MAIN_SOURCES = icc_main.cpp
 CINEPAINT_SOURCES = icc_cinepaint.cpp
 
 COMMON_CFILES =  \
-	icc_oyranos_extern.c \
 	flstring.c \
-	vsnprintf.c
+	vsnprintf.c \
+	icc_argyll.c
 CFILES = \
 	$(COMMON_CFILES)
 CPPFILES = \
@@ -319,7 +323,9 @@ $(LINGUAS_SRC):	$(POT_FILE)
             test -L $${ling}/LC_MESSAGES/$(TARGET).mo \
               && $(RM) $${ling}/LC_MESSAGES/$(TARGET).mo \
               || echo $${ling}/LC_MESSAGES/$(TARGET).mo nicht gefunden; \
-            ln -s ../../$${lingua}.gmo $$ling/LC_MESSAGES/$(TARGET).mo;) \
+	    cd $$ling/LC_MESSAGES$; \
+            ln -s ../../$${lingua}.gmo $(TARGET).mo; \
+	    cd ../.. ) \
         || (echo $${ling}.po is not yet ready ... skipping) \
 	done;
 
@@ -377,10 +383,6 @@ EXEEXT		=
 	$(CXX) $(CXXFLAGS_) -c $<
 
 .fl.cxx:
-	echo Expanding $< ...
-	fluid -c $<
-
-.fl.h:
 	echo Expanding $< ...
 	fluid -c $<
 
@@ -575,9 +577,6 @@ unpkg:
 	echo mache sauber $@ ...
 	$(RM) -R installation/
 	echo ... $@ fertig
-
-fltkconfig:
-	echo $(fltkconfig)
 
 # mkdepend
 include mkdepend

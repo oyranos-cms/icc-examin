@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2007  Kai-Uwe Behrmann 
+ * Copyright (C) 2004  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -50,26 +50,26 @@ typedef struct {
     double X;
     double Y;
     double Z;
-} XYZ_s; //!< 0...1
+} XYZ_s;
 
 typedef struct {
     double L;
     double a;
     double b;
-} Lab_s; //!< 0...1
+} Lab_s;
 
 typedef struct {
     double R;
     double G;
     double B;
-} RGB_s; //!< 0...1
+} RGB_s;
 
 typedef struct {
     double C;
     double M;
     double Y;
     double K;
-} CMYK_s; //!< 0...1
+} CMYK_s;
 
 // type conversions
 void FarbeZuDouble (double* d_xyz, XYZ_s xyz);
@@ -85,9 +85,6 @@ void FarbeZuDouble (CMYK_s *cmyk, double* d_cmyk);
 // colour difference
 double        dE2000 (const Lab_s & Lab1, const Lab_s & Lab2,
                       double kL, double kC, double kH);
-double        dE     ( Lab_s Lab1, Lab_s Lab2 );
-double        dE     ( double* Lab1, Lab_s Lab2 );
-double        dE     ( double* Lab1, double* Lab2 );
 
 // standard colour transformations
 void          XYZtoLab (XYZ_s & xyz, Lab_s & lab);
@@ -99,10 +96,6 @@ void          CIELabToLab (double* cielab, double* lab, int n);
 void          CIELabToLab (double* cielab, Lab_s & lab);
 void          LabToCIELab (double* lab, double* cielab, int n);
 void          LabToCIELab (Lab_s & lab, double* cielab);
-// normalising OYLab L 0...1 a/b -1.27...+1.27 // lab 0...1
-void          OyLabToLab (double* oylab, double* lab, int n);
-void          OyLabToLab (double* oylab, Lab_s & lab);
-void          LabToOyLab (double* lab, double* oylab, int n);
-void          LabToOyLab (Lab_s & lab, double* oylab);
+
 
 #endif //ICC_FORMELN_H

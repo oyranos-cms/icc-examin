@@ -52,12 +52,16 @@ LIB_LIBS = -L./ $(FLTK_LIBS) \
     I18N_LIB = $(LIBNAME)
     COPY = cp -vdpa
 #else
+#ifdef WIN32
+    OPTS=-Wall -g $(DEBUG) -Wunused -fno-exceptions  -lm $(COMPILE_OPTIONS)
+#else
     OPTS=-Wall -g $(DEBUG) -Wunused -fno-exceptions -lc -lm $(COMPILE_OPTIONS)
+#endif
     INCL= -I./
     RM = rm -f
     COPY = cp
     LIBLINK_FLAGS = -shared $(dl) -L./
-    I18N_LIB = $(iconv) $(intl) $(LIBNAME)
+    I18N_LIB = $(LIBNAME) $(iconv) $(intl)
 #endif
 #endif
 

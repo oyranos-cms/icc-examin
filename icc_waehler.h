@@ -60,7 +60,7 @@ class ICCwaehlerProfil : public Fl_Pack
                   icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze[parent()->find(this)].aktiv = false;
                 }
                 redraw();
-                icc_examin->icc_betrachter->DD_farbraum->draw();
+                icc_examin->icc_betrachter->DD_farbraum->invalidate();
                 icc_examin->icc_betrachter->DD_farbraum->flush();
                 DBG_PROG_ENDE
               }
@@ -77,7 +77,7 @@ class ICCwaehlerProfil : public Fl_Pack
   Fl_Value_Slider *undurchsicht_;
   void undurchsicht_cb_() {
                 icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze[parent()->find(this)].undurchsicht = undurchsicht_->value();
-                icc_examin->icc_betrachter->DD_farbraum->draw();
+                icc_examin->icc_betrachter->DD_farbraum->invalidate();
                 icc_examin->icc_betrachter->DD_farbraum->flush();
               }
   static void undurchsicht_cb_statisch_(Fl_Widget* w, void* data) {
@@ -88,7 +88,7 @@ class ICCwaehlerProfil : public Fl_Pack
   Fl_Light_Button *grau_;
   void grau_cb_() {
                 icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze[parent()->find(this)].grau = grau_->value();
-                icc_examin->icc_betrachter->DD_farbraum->draw();
+                icc_examin->icc_betrachter->DD_farbraum->invalidate();
                 icc_examin->icc_betrachter->DD_farbraum->flush();
               }
   static void grau_cb_statisch_(Fl_Widget* w, void* data) {
@@ -219,7 +219,7 @@ public:
   hbox->begin();
   profile_[pos] = new ICCwaehlerProfil( name, undurchsicht, grau, aktiv, pos );
   hbox->end();
-  profile_[pos]->waehlbar( waehlbar_ );
+  profile_[pos]->waehlbar( waehlbar_?true:false );
   redraw();
   DBG_PROG_ENDE
  }
@@ -245,7 +245,7 @@ public:
  void         waehlbar  ( int pos, int wert )
  { DBG_PROG_START
    if(0 <= pos && pos < size())
-     profile_[pos]->waehlbar( wert );
+	   profile_[pos]->waehlbar( wert?true:false );
    DBG_PROG_ENDE
  }
 };

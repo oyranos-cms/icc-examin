@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2007  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2005  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -52,6 +52,8 @@
 #include "icc_examin.h"
 #include "icc_info.h"
 using namespace icc_examin_ns;
+
+#define g_message printf
 
 
 /**
@@ -127,12 +129,6 @@ ICCmeasurement::defaults ()
   DE00_Differenz_min_ = 1000;
   DE00_Differenz_Durchschnitt_ = 0;
   export_farben = false;
-  int i;
-  for(i=0;i<6;i+=2) { range_XYZ[i] = 0.f; range_XYZ[i+1] = 100.f; }
-  range_Lab[0] = 0.f; range_Lab[1] = 100.f;
-  for(i=2;i<6;i+=2) { range_Lab[i] = -128.f; range_Lab[i+1] = 127.f; }
-  for(i=0;i<6;i+=2) { range_RGB[i] = 0.f; range_RGB[i+1] = 255.f; }
-  for(i=0;i<8;i+=2) { range_CMYK[i] = 0.f; range_CMYK[i+1] = 100.f; }
   DBG_PROG_ENDE
 }
 
@@ -171,7 +167,6 @@ ICCmeasurement::copy (const ICCmeasurement& m)
   Lab_Ergebnis_ = m.Lab_Ergebnis_;
   RGB_MessFarben_ = m.RGB_MessFarben_;
   RGB_ProfilFarben_ = m.RGB_ProfilFarben_;
-  patch_src_lines_ = m.patch_src_lines_;
   // results
   Lab_Differenz_ = m.Lab_Differenz_;
   Lab_Differenz_max_ = m.Lab_Differenz_max_;
@@ -181,13 +176,7 @@ ICCmeasurement::copy (const ICCmeasurement& m)
   DE00_Differenz_max_ = m.DE00_Differenz_max_;
   DE00_Differenz_min_ = m.DE00_Differenz_min_;
   DE00_Differenz_Durchschnitt_ = m.DE00_Differenz_Durchschnitt_;
-  memcpy( range_XYZ, m.range_XYZ, 6*sizeof(double) );
-  memcpy( range_Lab, m.range_Lab, 6*sizeof(double) );
-  memcpy( range_RGB, m.range_RGB, 6*sizeof(double) );
-  memcpy( range_CMYK, m.range_CMYK, 8*sizeof(double) );
-
   export_farben = m.export_farben;
-  
   DBG_PROG_ENDE
 }
 
@@ -207,7 +196,6 @@ ICCmeasurement::clear (void)
   Lab_Ergebnis_.clear();
   RGB_MessFarben_.clear();
   RGB_ProfilFarben_.clear();
-  patch_src_lines_.clear();
   Lab_Differenz_.clear();
   DE00_Differenz_.clear();
   reportTabelle_.clear();
@@ -297,25 +285,12 @@ ICCmeasurement::leseTag (void)
     size_ = data.size();
     memcpy (data_, data.c_str(), size_); DBG_NUM_V( (int*)data_ )
 
-    if(strstr(data.c_str(), "\nDESCRIPTOR \"Argyll Calibration Target chart"))
-    {
-      range_RGB[0] = range_RGB[2] = range_RGB[4] = 0.f;
-      range_RGB[1] = range_RGB[3] = range_RGB[5] = 100.f;
-    } else {
-      range_RGB[0] = range_RGB[2] = range_RGB[4] = 0.f;
-      range_RGB[1] = range_RGB[3] = range_RGB[5] = 255.f;
-    }
-
 #   if 0
     // lcms liest ein
     lcms_parse();
 #   else
 
     //LCMSHANDLE _lcms_it8 = cmsIT8LoadFromMem ( data_, size_ ); DBG_MEM_V( (int*)data_)
-
-    int ps = patch_src_lines_.size();
-    patch_src_lines_.resize( ps + 1 );
-    patch_src_lines_[ps].first = getSigTagName( sig_ );
 
     const char **SampleNames; DBG_MEM
     int m = 0; // actual measurement
@@ -325,7 +300,6 @@ ICCmeasurement::leseTag (void)
      || nFelder_ == cgats.messungen[m].block_zeilen)
     { DBG_NUM
       nFelder_ = cgats.messungen[m].block_zeilen; DBG_NUM
-      patch_src_lines_[ps].second.resize( nFelder_ );
     } else {
       WARN_S( "number of measurements should corespond! " << nFelder_ << "|" << (int)cgats.messungen[m].block_zeilen )
       clear();
@@ -339,7 +313,7 @@ ICCmeasurement::leseTag (void)
       return;
     }
 
-    int _nKanaele = cgats.messungen[m].felder[0].size();
+    int _nKanaele = (int)cgats.messungen[m].felder[0].size();
     bool _sample_name = false;
     bool _sample_id = false;
     bool _id_vor_name = false;
@@ -438,50 +412,38 @@ ICCmeasurement::leseTag (void)
         snprintf(n,8,"%d",k);
         Feldnamen_[k] = n;
       }
-      patch_src_lines_[ps].second[k] = cgats.messungen[m].line[k];
     }
   if(nFelder_)
-    DBG_NUM_S (Feldnamen_[0] << " bis " << Feldnamen_[nFelder_-1])
+    DBG_NUM_S (Feldnamen_[0] << " bis " << Feldnamen_[nFelder_-1]);
 
   DBG_NUM_V( has_XYZ << has_Lab << has_RGB << has_CMYK )
 
   // read colours
-  int c = 0;
   if (has_XYZ)
   { DBG_PROG // no calculation required
     XYZ_Satz_.resize(nFelder_);
     for (int i = 0; i < nFelder_; i++) {
       for (int j = 0; j < _nKanaele; ++j) {
-        c = 0;
         if( strcmp(SampleNames[j], "XYZ_X") == 0 )
-          XYZ_Satz_[i].X = (atof(cgats.messungen[m].block[i][j].c_str()) - range_XYZ[c]) / (range_XYZ[c+1] - range_XYZ[c]);
-          //XYZ_Satz_[i].X = atof(cgats.messungen[m].block[i][j].c_str()) / 100.0;
-        c+=2;
+          XYZ_Satz_[i].X = atof(cgats.messungen[m].block[i][j].c_str()) / 100.0;
         if( strcmp(SampleNames[j], "XYZ_Y") == 0 )
-          XYZ_Satz_[i].Y = (atof(cgats.messungen[m].block[i][j].c_str()) - range_XYZ[c]) / (range_XYZ[c+1] - range_XYZ[c]);
-          //XYZ_Satz_[i].Y = atof(cgats.messungen[m].block[i][j].c_str()) / 100.0;
-        c+=2;
+          XYZ_Satz_[i].Y = atof(cgats.messungen[m].block[i][j].c_str()) / 100.0;
         if( strcmp(SampleNames[j], "XYZ_Z") == 0 )
-          XYZ_Satz_[i].Z = (atof(cgats.messungen[m].block[i][j].c_str()) - range_XYZ[c]) / (range_XYZ[c+1] - range_XYZ[c]);
-          //XYZ_Satz_[i].Z = atof(cgats.messungen[m].block[i][j].c_str()) / 100.0;
+          XYZ_Satz_[i].Z = atof(cgats.messungen[m].block[i][j].c_str()) / 100.0;
       }
     }
   }
   if (has_Lab)
-  {
-    DBG_PROG // no calculation required
+  { DBG_PROG // no calculation required
     Lab_Satz_.resize(nFelder_);
     for (int i = 0; i < nFelder_; i++) {
       for (int j = 0; j < _nKanaele; ++j) {
-        c = 0;
         if( strcmp(SampleNames[j], "LAB_L") == 0 )
-          Lab_Satz_[i].L = (atof(cgats.messungen[m].block[i][j].c_str()) - range_Lab[c]) / (range_Lab[c+1] - range_Lab[c]);
-        c+=2;
+          Lab_Satz_[i].L = atof(cgats.messungen[m].block[i][j].c_str()) / 100.0;
         if( strcmp(SampleNames[j], "LAB_A") == 0 )
-          Lab_Satz_[i].a = (atof(cgats.messungen[m].block[i][j].c_str()) - range_Lab[c]) / (range_Lab[c+1] - range_Lab[c]);
-        c+=2;
+          Lab_Satz_[i].a = (atof(cgats.messungen[m].block[i][j].c_str()) + 128.0) / 256.0;
         if( strcmp(SampleNames[j], "LAB_B") == 0 )
-          Lab_Satz_[i].b = (atof(cgats.messungen[m].block[i][j].c_str()) - range_Lab[c]) / (range_Lab[c+1] - range_Lab[c]);
+          Lab_Satz_[i].b = (atof(cgats.messungen[m].block[i][j].c_str()) + 128.0) / 256.0;
       }
     }
   }
@@ -489,18 +451,12 @@ ICCmeasurement::leseTag (void)
     RGB_Satz_.resize(nFelder_);
     for (int i = 0; i < nFelder_; i++) {
       for (int j = 0; j < _nKanaele; ++j) {
-        c = 0;
         if( strcmp(SampleNames[j], "RGB_R") == 0 )
-          RGB_Satz_[i].R = (atof(cgats.messungen[m].block[i][j].c_str()) - range_RGB[c]) / (range_RGB[c+1] - range_RGB[c]);
-          //RGB_Satz_[i].R = atof(cgats.messungen[m].block[i][j].c_str()) / 255.0;
-        c+=2;
+          RGB_Satz_[i].R = atof(cgats.messungen[m].block[i][j].c_str()) / 255.0;
         if( strcmp(SampleNames[j], "RGB_G") == 0 )
-          RGB_Satz_[i].G = (atof(cgats.messungen[m].block[i][j].c_str()) - range_RGB[c]) / (range_RGB[c+1] - range_RGB[c]);
-          //RGB_Satz_[i].G = atof(cgats.messungen[m].block[i][j].c_str()) / 255.0;
-        c+=2;
+          RGB_Satz_[i].G = atof(cgats.messungen[m].block[i][j].c_str()) / 255.0;
         if( strcmp(SampleNames[j], "RGB_B") == 0 )
-          RGB_Satz_[i].B = (atof(cgats.messungen[m].block[i][j].c_str()) - range_RGB[c]) / (range_RGB[c+1] - range_RGB[c]);
-          //RGB_Satz_[i].B = atof(cgats.messungen[m].block[i][j].c_str()) / 255.0;
+          RGB_Satz_[i].B = atof(cgats.messungen[m].block[i][j].c_str()) / 255.0;
       }
     }
   }
@@ -508,22 +464,14 @@ ICCmeasurement::leseTag (void)
     CMYK_Satz_.resize(nFelder_);
     for (int i = 0; i < nFelder_; i++) {
       for (int j = 0; j < _nKanaele; ++j) {
-        c = 0;
         if( strcmp(SampleNames[j], "CMYK_C") == 0 )
-          CMYK_Satz_[i].C = (atof(cgats.messungen[m].block[i][j].c_str()) - range_CMYK[c]) / (range_CMYK[c+1] - range_CMYK[c]);
-          //CMYK_Satz_[i].C = atof(cgats.messungen[m].block[i][j].c_str()) /100.0;
-        c+=2;
+          CMYK_Satz_[i].C = atof(cgats.messungen[m].block[i][j].c_str()) /100.0;
         if( strcmp(SampleNames[j], "CMYK_M") == 0 )
-          CMYK_Satz_[i].M = (atof(cgats.messungen[m].block[i][j].c_str()) - range_CMYK[c]) / (range_CMYK[c+1] - range_CMYK[c]);
-          //CMYK_Satz_[i].M = atof(cgats.messungen[m].block[i][j].c_str()) /100.0;
-        c+=2;
+          CMYK_Satz_[i].M = atof(cgats.messungen[m].block[i][j].c_str()) /100.0;
         if( strcmp(SampleNames[j], "CMYK_Y") == 0 )
-          CMYK_Satz_[i].Y = (atof(cgats.messungen[m].block[i][j].c_str()) - range_CMYK[c]) / (range_CMYK[c+1] - range_CMYK[c]);
-          //CMYK_Satz_[i].Y = atof(cgats.messungen[m].block[i][j].c_str()) /100.0;
-        c+=2;
+          CMYK_Satz_[i].Y = atof(cgats.messungen[m].block[i][j].c_str()) /100.0;
         if( strcmp(SampleNames[j], "CMYK_K") == 0 )
-          CMYK_Satz_[i].K = (atof(cgats.messungen[m].block[i][j].c_str()) - range_CMYK[c]) / (range_CMYK[c+1] - range_CMYK[c]);
-          //CMYK_Satz_[i].K = atof(cgats.messungen[m].block[i][j].c_str()) /100.0;
+          CMYK_Satz_[i].K = atof(cgats.messungen[m].block[i][j].c_str()) /100.0;
       }
     } DBG_PROG
   }
@@ -575,7 +523,7 @@ ICCmeasurement::init (void)
     leseTag ();
   }
   if (RGB_MessFarben_.size() != 0)
-    DBG_NUM_V( RGB_MessFarben_.size() )
+    DBG_NUM_V( RGB_MessFarben_.size() );
 
   if (profile_ &&
       profile_->data_type == ICCprofile::ICCprofileDATA )
@@ -883,7 +831,7 @@ ICCmeasurement::init_umrechnen                     (void)
       size_t groesse = 0;
       const char* block = 0;
       block = const_cast<char*>( icc_oyranos.proof(groesse) );
-      hProof = cmsOpenProfileFromMem(const_cast<char*>(block), groesse);
+      hProof = cmsOpenProfileFromMem(const_cast<char*>(block), (DWORD)groesse);
       if( !hProof ) WARN_S("hProof is empty")
     }
 
@@ -898,7 +846,7 @@ ICCmeasurement::init_umrechnen                     (void)
 #   define TYPE_nCOLOUR_DBL (COLORSPACE_SH(PT_ANY)|CHANNELS_SH(channels_)|BYTES_SH(0))
       if( profile_->size() )
         hCOLOUR = cmsOpenProfileFromMem (const_cast<char*>(profile_->data_),
-                                         profile_->size_);
+                                         (DWORD)profile_->size_);
       else { // alternative
         size_t groesse = 0;
         const char* block = 0;
@@ -915,7 +863,7 @@ ICCmeasurement::init_umrechnen                     (void)
           WARN_S("no suitable default profile found")
           goto Kein_Profil; //TODO
         } else
-          hCOLOUR = cmsOpenProfileFromMem(const_cast<char*>(block), groesse);
+          hCOLOUR = cmsOpenProfileFromMem(const_cast<char*>(block), (DWORD)groesse);
       }
       if( !hCOLOUR )
         WARN_S("hCOLOUR is empty")
@@ -990,13 +938,13 @@ ICCmeasurement::init_umrechnen                     (void)
       RGB_ProfilFarben_.resize(nFelder_);
 
       if( (int)XYZ_Satz_.size() != nFelder_ )
-        DBG_PROG_S("XYZ_Satz_.size() and nFelder_ are unequal")
+        DBG_PROG_S("XYZ_Satz_.size() and nFelder_ are unequal");
       if( (int)Lab_Satz_.size() != nFelder_ )
-        DBG_PROG_S("Lab_Satz_.size() and nFelder_ are unequal")
+        DBG_PROG_S("Lab_Satz_.size() and nFelder_ are unequal");
       if( RGB_Satz_.size() && (int)RGB_Satz_.size() != nFelder_ )
-        WARN_S("RGB_Satz_.size() and nFelder_ are unequal")
+        WARN_S("RGB_Satz_.size() and nFelder_ are unequal");
       if( CMYK_Satz_.size() && (int)CMYK_Satz_.size() != nFelder_ )
-        WARN_S("CMYK_Satz_.size() and nFelder_ are unequal")
+        WARN_S("CMYK_Satz_.size() and nFelder_ are unequal");
       for (int i = 0; i < nFelder_; i++)
       {
         if (XYZ_measurement_ || LAB_measurement_)
@@ -1132,7 +1080,7 @@ ICCmeasurement::getHtmlReport                     (bool aussen)
 { DBG_PROG_START
   char SF[] = "#cccccc";  // standard background colours
   char HF[] = "#aaaaaa";  // emphasised
-# define LAYOUTFARBE  if (layout[l++] == true) \
+# define LAYOUTFARBE  if (layout[l++]) \
                         html << HF; \
                       else \
                         html << SF; // select colour after layout option
@@ -1217,15 +1165,10 @@ ICCmeasurement::getHtmlReport                     (bool aussen)
   for (int z = 0; z < nFelder_; z++) {
     html <<     "  <tr>\n";
     l = 0;
-    for (s = 0; s < (int)reportTabelle_[kopf - tkopf].size() + f; s++)
-    {
-      if (s < f)
-      { // colour representation
-        if(s == 0)
-          html << "    <a name=\"" << Feldnamen_[z] << "\">\n";
+    for (s = 0; s < (int)reportTabelle_[kopf - tkopf].size() + f; s++) {
+      if (s < f) { // colour representation
         html << "    <td width=\"20\" bgcolor=\"#"; 
         farbe[0] = 0;
-
         if (s == 0) {
           NACH_HTML (RGB_MessFarben_, R)
           NACH_HTML (RGB_MessFarben_, G)
@@ -1297,7 +1240,7 @@ ICCmeasurement::getText                     (void)
     int h = false;
     if (XYZ_Ergebnis_.size() == XYZ_Satz_.size())
       xyz_erg_sp = 3;
-#   define HI (h == true) ? h-- : h++ // invert
+#   define HI (h) ? h-- : h++ // invert
     layout.clear();
     layout.push_back (HI); // measurement
     layout.push_back (HI); // dE Lab
@@ -1352,29 +1295,29 @@ ICCmeasurement::getText                     (void)
       tabelle[z+i][sp++] =  Feldnamen_[i]; DBG_TAB_V ( z <<" "<< sp <<" "<< Lab_Differenz_.size() )
       s << Lab_Differenz_[i]; tabelle[z+i][sp++] = s.str().c_str(); s.str("");
       s << DE00_Differenz_[i]; tabelle[z+i][sp++] = s.str().c_str(); s.str("");
-      s << Lab_Satz_[i].L * (range_Lab[1]-range_Lab[0]) + range_Lab[0]; tabelle[z+i][sp++] = s.str().c_str(); s.str("");
-      s << Lab_Satz_[i].a * (range_Lab[3]-range_Lab[2]) + range_Lab[2]; tabelle[z+i][sp++] = s.str().c_str(); s.str("");
-      s << Lab_Satz_[i].b * (range_Lab[5]-range_Lab[4]) + range_Lab[4]; tabelle[z+i][sp++] = s.str().c_str(); s.str("");
-      s << Lab_Ergebnis_[i].L * (range_Lab[1]-range_Lab[0]) + range_Lab[0]; tabelle[z+i][sp++] = s.str().c_str(); s.str("");
-      s << Lab_Ergebnis_[i].a * (range_Lab[3]-range_Lab[2]) + range_Lab[2]; tabelle[z+i][sp++] = s.str().c_str(); s.str("");
-      s << Lab_Ergebnis_[i].b * (range_Lab[5]-range_Lab[4]) + range_Lab[4]; tabelle[z+i][sp++] = s.str().c_str(); s.str("");
-      s << XYZ_Satz_[i].X * (range_XYZ[5]-range_XYZ[4]) + range_XYZ[0]; tabelle[z+i][sp++] = s.str().c_str(); s.str("");
-      s << XYZ_Satz_[i].Y * (range_XYZ[3]-range_XYZ[2]) + range_XYZ[2]; tabelle[z+i][sp++] = s.str().c_str(); s.str("");
-      s << XYZ_Satz_[i].Z * (range_XYZ[5]-range_XYZ[4]) + range_XYZ[4]; tabelle[z+i][sp++] = s.str().c_str(); s.str("");
+      s << Lab_Satz_[i].L * 100.; tabelle[z+i][sp++] = s.str().c_str(); s.str("");
+      s << Lab_Satz_[i].a * 256. - 128.; tabelle[z+i][sp++] = s.str().c_str(); s.str("");
+      s << Lab_Satz_[i].b * 256. - 128.; tabelle[z+i][sp++] = s.str().c_str(); s.str("");
+      s << Lab_Ergebnis_[i].L * 100.; tabelle[z+i][sp++] = s.str().c_str(); s.str("");
+      s << Lab_Ergebnis_[i].a * 256. - 128.; tabelle[z+i][sp++] = s.str().c_str(); s.str("");
+      s << Lab_Ergebnis_[i].b * 256. - 128.; tabelle[z+i][sp++] = s.str().c_str(); s.str("");
+      s << XYZ_Satz_[i].X*100; tabelle[z+i][sp++] = s.str().c_str(); s.str("");
+      s << XYZ_Satz_[i].Y*100; tabelle[z+i][sp++] = s.str().c_str(); s.str("");
+      s << XYZ_Satz_[i].Z*100; tabelle[z+i][sp++] = s.str().c_str(); s.str("");
       if (xyz_erg_sp) {
-      s << XYZ_Ergebnis_[i].X * (range_XYZ[1]-range_XYZ[0]) + range_XYZ[0]; tabelle[z+i][sp++]=s.str().c_str();s.str("");
-      s << XYZ_Ergebnis_[i].Y * (range_XYZ[3]-range_XYZ[2]) + range_XYZ[2]; tabelle[z+i][sp++]=s.str().c_str();s.str("");
-      s << XYZ_Ergebnis_[i].Z * (range_XYZ[5]-range_XYZ[4]) + range_XYZ[4]; tabelle[z+i][sp++]=s.str().c_str();s.str("");
+      s << XYZ_Ergebnis_[i].X*100; tabelle[z+i][sp++]=s.str().c_str();s.str("");
+      s << XYZ_Ergebnis_[i].Y*100; tabelle[z+i][sp++]=s.str().c_str();s.str("");
+      s << XYZ_Ergebnis_[i].Z*100; tabelle[z+i][sp++]=s.str().c_str();s.str("");
       } DBG_TAB_V( i )
       if (RGB_measurement_) {
-        s << RGB_Satz_[i].R * (range_RGB[1]-range_RGB[0]) + range_RGB[0]; tabelle[z+i][sp++]= s.str().c_str(); s.str("");
-        s << RGB_Satz_[i].G * (range_RGB[3]-range_RGB[2]) + range_RGB[2]; tabelle[z+i][sp++]= s.str().c_str(); s.str("");
-        s << RGB_Satz_[i].B * (range_RGB[5]-range_RGB[4]) + range_RGB[4]; tabelle[z+i][sp++]= s.str().c_str(); s.str("");
+        s << RGB_Satz_[i].R*255; tabelle[z+i][sp++]= s.str().c_str(); s.str("");
+        s << RGB_Satz_[i].G*255; tabelle[z+i][sp++]= s.str().c_str(); s.str("");
+        s << RGB_Satz_[i].B*255; tabelle[z+i][sp++]= s.str().c_str(); s.str("");
       } else {
-        s << CMYK_Satz_[i].C * (range_CMYK[1]-range_CMYK[0]) + range_CMYK[0]; tabelle[z+i][sp++]=s.str().c_str(); s.str("");
-        s << CMYK_Satz_[i].M * (range_CMYK[3]-range_CMYK[2]) + range_CMYK[2]; tabelle[z+i][sp++]=s.str().c_str(); s.str("");
-        s << CMYK_Satz_[i].Y * (range_CMYK[5]-range_CMYK[4]) + range_CMYK[4]; tabelle[z+i][sp++]=s.str().c_str(); s.str("");
-        s << CMYK_Satz_[i].K * (range_CMYK[7]-range_CMYK[6]) + range_CMYK[6]; tabelle[z+i][sp++]=s.str().c_str(); s.str("");
+        s << CMYK_Satz_[i].C*100; tabelle[z+i][sp++]=s.str().c_str(); s.str("");
+        s << CMYK_Satz_[i].M*100; tabelle[z+i][sp++]=s.str().c_str(); s.str("");
+        s << CMYK_Satz_[i].Y*100; tabelle[z+i][sp++]=s.str().c_str(); s.str("");
+        s << CMYK_Satz_[i].K*100; tabelle[z+i][sp++]=s.str().c_str(); s.str("");
       }
     }
   }
@@ -1507,131 +1450,6 @@ ICCmeasurement::getCmmLab                   (int patch)
   punkte[0] = Lab_Ergebnis_[patch].L;
   punkte[1] = Lab_Ergebnis_[patch].a;
   punkte[2] = Lab_Ergebnis_[patch].b;
-
-  DBG_MESS_ENDE
-  return punkte;
-}
-
-
-/** get infos about a CGATS tag
-
-    The info becomes available during parsing a CGATS tag
-
-    @param[in]   tag_name    take the according tag : CIED <-> DevD
-
-    @return                  list of patch lines, size() is patch count
- */
-std::vector<int>
-ICCmeasurement::getPatchLines              ( const char       * tag_name )
-{ DBG_MESS_START
-
-  if (Lab_Ergebnis_.size() == 0)
-    init ();
-
-  std::vector<int> patches;
-
-  for(int j = 0; j < (int)patch_src_lines_.size(); ++j)
-  {
-    if( patch_src_lines_[j].first == tag_name )
-    {
-      int n = patch_src_lines_[j].second.size();
-      patches.resize( n );
-
-      for(int i = 0; i < nFelder_; ++i)
-        patches[ i ] = patch_src_lines_[j].second[i];
-    }
-  }
-
-  DBG_MESS_ENDE
-  return patches;
-}
-
-/** Get information about a text line in a measurement tag.
- */
-std::vector<double>
-ICCmeasurement::getPatchLine                (int line, const char * tag_name,
-                                             std::vector<float> & channels,
-                                             std::string & name )
-{ DBG_MESS_START
-  std::vector<double> punkte;
-  int patch = -1;
-
-  if (Lab_Ergebnis_.size() == 0)
-    init ();
-
-  for(int j = 0; j < (int)patch_src_lines_.size(); ++j)
-  {
-    if( patch_src_lines_[j].first == tag_name )
-    {
-      for(int i = 0; i < nFelder_; ++i)
-      {
-        if( patch_src_lines_[j].second[i] == line )
-        {
-          patch = i;
-          break;
-        }
-      }
-      break;
-    }
-  }
-
-  if (patch > nFelder_) {
-    WARN_S( "Patch Nr: " << patch << " outside the measurement set" )
-    DBG_MESS_ENDE
-    return punkte;
-  }
-  if( patch == -1 ) {
-    DBG_PROG_S( "Line Nr: " << line << " outside the measurement size" )
-    DBG_MESS_ENDE
-    return punkte;
-  }
-
-  punkte.resize(3);
-  if(hasRGB())
-  {
-    channels.resize(3);
-  }
-  if(hasCMYK())
-  {
-    channels.resize(4);
-  }
-  std::vector<float> & c = channels;  
-          if(hasRGB())
-          {
-            RGB_s rgb;
-            getTargRGB( patch, &rgb );
-            c[0] = rgb.R;
-            c[1] = rgb.G;
-            c[2] = rgb.B;
-          }
-          if(hasCMYK())
-          {
-            CMYK_s cmyk;
-            getTargCMYK( patch, &cmyk );
-            c[0] = cmyk.C;
-            c[1] = cmyk.M;
-            c[2] = cmyk.Y;
-            c[3] = cmyk.K;
-          }
-
-  if( std::string(tag_name) == "DevD" ||
-      ( !Lab_Satz_.size() &&
-        Lab_Ergebnis_.size() ) )
-  {
-    punkte[0] = Lab_Ergebnis_[patch].L;
-    punkte[1] = Lab_Ergebnis_[patch].a;
-    punkte[2] = Lab_Ergebnis_[patch].b;
-  } else if (Lab_Satz_.size() && RGB_MessFarben_.size())
-  {
-    punkte[0] = Lab_Satz_[patch].L;
-    punkte[1] = Lab_Satz_[patch].a;
-    punkte[2] = Lab_Satz_[patch].b;
-  } else {
-    punkte.resize(0);
-    channels.resize(0);
-    name.resize(0);
-  }
-  name = Feldnamen_[patch];
 
   DBG_MESS_ENDE
   return punkte;

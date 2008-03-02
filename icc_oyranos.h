@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2007  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2005  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -34,17 +34,12 @@
 #include "icc_speicher.h"
 #include "icc_vrml_parser.h"
 
-
-#include "icc_oyranos_extern.h"
-using namespace oyranos;
-
 #include <string>
 #include <list>
 #include <map>
 class Oyranos;
 class Speicher;
 class ICCprofile;
-
 
 struct ColourTransformKey
 {
@@ -63,6 +58,7 @@ struct ColourTransform
     char  *block;
     size_t size;
 };
+
 
 class Oyranos
 {
@@ -100,11 +96,11 @@ class Oyranos
     const char* profil (const char* n, size_t &g) { return profil_(n,g); }
 
 //    char*       holeMonitorProfil      (const char *display_name, size_t *size );
-    std::vector<ICCnetz> netzAusVRML   (std::string & vrml)
-                                { return extrahiereNetzAusVRML (vrml); }
-    std::vector<ICCnetz> netzVonProfil (ICCprofile & p, int intent, int bpc);
+    void        netzAusVRML   (std::string & vrml, std::vector<ICCnetz> & netz)
+                                { netz = extrahiereNetzAusVRML (vrml); }
+    void        netzVonProfil (ICCprofile & p, int intent, int bpc, ICCnetz & netz);
   private:
-    std::string netzVonProfil_      (std::vector<ICCnetz> & netz,
+    std::string netzVonProfil_      (ICCnetz  & netz,
                                      Speicher & profil,
                                      int intent, int bpc);
   public:
@@ -147,32 +143,32 @@ class Oyranos
     // colour transformations
     ColourTransformKey erzeugeTrafo (
                                   const char* eingangs_profil__geraet,
-                                  int         byte,
-                                  int         kanaele,
+                                  int         byte_in,
+                                  int         kanaele_in,
                                   const char* ausgangs_profil__geraet,
-                                  int         byte,
-                                  int         kanaele,
+                                  int         byte_out,
+                                  int         kanaele_out,
                                   int         farb_intent,
                                   const char* cmm, // 4 bytes 'lcms' 'APPL'
                                   int         cmm_optionen); // BPC, precission
     ColourTransformKey erzeugeTrafo (
                                   const char* eingangs_profil__geraet,
-                                  int         byte,
-                                  int         kanaele,
+                                  int         byte_in,
+                                  int         kanaele_in,
                                   const char* ausgangs_profil__geraet,
-                                  int         byte,
-                                  int         kanaele,
+                                  int         byte_out,
+                                  int         kanaele_out,
                                   int         farb_intent,
                                   const char* cmm, // 4 bytes 'lcms' 'APPL'
                                   int         cmm_optionen,
                                   std::list<const char*> &profile );
     ColourTransformKey erzeugeTrafo (
                                   const char* eingangs_profil__geraet,
-                                  int         byte,
-                                  int         kanaele,
+                                  int         byte_in,
+                                  int         kanaele_in,
                                   const char* ausgangs_profil__geraet,
-                                  int         byte,
-                                  int         kanaele,
+                                  int         byte_out,
+                                  int         kanaele_out,
                                   int         farb_intent,
                                   const char* cmm, // 4 bytes 'lcms' 'APPL'
                                   int         cmm_optionen,
@@ -186,11 +182,11 @@ class Oyranos
   private:
     ColourTransformKey erzeugeSchluessel_ (
                                   const char* eingangs_profil__geraet,
-                                  int         byte,
-                                  int         kanaele,
+                                  int         byte_in,
+                                  int         kanaele_in,
                                   const char* ausgangs_profil__geraet,
-                                  int         byte,
-                                  int         kanaele,
+                                  int         byte_out,
+                                  int         kanaele_out,
                                   int         farb_intent,
                                   int         cmm_optionen,
                                   const char* simulations_profil,
