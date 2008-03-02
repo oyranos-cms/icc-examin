@@ -56,6 +56,9 @@ using namespace icc_examin_ns;
 ICCexamin::ICCexamin ()
 { DBG_PROG_START
   icc_betrachter = new ICCfltkBetrachter [1];
+  icc_waehler_ = new  ICCwaehler(485, 186, _("Ansichtsw\212hler"));
+  if(!icc_waehler_) WARN_S( _("icc_waehler_ nicht reservierbar") )
+  icc_waehler_->hide();
   _item = -1;
   _mft_item = -1;
   _zeig_histogram = 0;
@@ -140,7 +143,7 @@ ICCexamin::start (int argc, char** argv)
 
   Fl::add_handler(tastatur);
 
-  modellDazu( &profile ); // wird in nachricht ausgewertet
+  modellDazu( /*ICCkette*/&profile ); // wird in nachricht ausgewertet
 
   // zur Benutzung freigeben
   status_ = 1;
@@ -471,11 +474,33 @@ ICCexamin::nachricht( Modell* modell , int infos )
   ICCkette* k = dynamic_cast<ICCkette*>(modell);
   if(k)
   {
-    if(!(*k)[infos]->changing())
-    {
+    DBG_PROG_S( _("Nachricht von ICCkette") )
+    if(infos>=0 && !(*k)[infos]->changing())
+    { DBG_PROG
       histogram (infos);
     }
     DBG_PROG_S( _("Auffrischen von Profil Nr.: ") << infos )
+
+    // ICCwaehler
+    icc_waehler_->clear();
+    int anzahl = k->size();
+    DBG_PROG_V( anzahl )
+    double transparenz;
+    bool grau;
+    std::vector<int> aktiv = profile.aktiv();
+    DBG_PROG_V( aktiv.size() )
+    for(int i = 0; i < anzahl; ++i) {
+      DBG_PROG_V( i )
+      const char* name = profile.name(i).c_str();
+      if( i >= (int)icc_betrachter->DD_histogram->dreiecks_netze.size() ) {
+        WARN_S( _("Gebe irritiert auf. Kein Netz gefunden. Ist Argyll installiert?") )
+        break;
+      }
+      transparenz = icc_betrachter->DD_histogram->dreiecks_netze[i].transparenz;
+      DBG_PROG
+      grau = icc_betrachter->DD_histogram->dreiecks_netze[i].grau;
+      icc_waehler_->push_back(name, transparenz, grau , aktiv[i]);
+    }
   }
   Beobachter::nachricht(modell, infos);
   frei_ = true;
@@ -860,10 +885,12 @@ ICCexamin::neuzeichnen (void* z)
       icc_betrachter->DD_histogram->show();
 
     icc_betrachter->DD_histogram->zeigen();
+    icc_waehler_->show();
     _zeig_histogram = true;
   } else if (_zeig_histogram) { DBG_PROG_S( "3D hist ausschalten" )
     icc_betrachter->DD_histogram->verstecken();
     _zeig_histogram = false;
+    icc_waehler_->iconize();
 
     if(!icc_betrachter->menueintrag_inspekt->value()) {
       waehleTag(_item);
@@ -969,7 +996,8 @@ ICCexamin::initReihenfolgeGL_Ansicht(GL_Ansicht* gl_ansicht)
       icc_betrachter->DD_histogram->show();
     }
     icc_betrachter->DD_histogram->init(2);
-    icc_waehler_ = new  ICCwaehler(485, 186, _("Ansichtsw\212hler"));
+    if(profile.size())
+      nachricht(&profile,0);
   }
   DBG_PROG_ENDE
 }

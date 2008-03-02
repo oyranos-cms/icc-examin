@@ -74,12 +74,14 @@ ICCkette::oeffnen (const Speicher & prof, int pos)
     profilnamen_.insert (profilnamen_.begin()+pos, prof.name() );
     aktiv_.insert (aktiv_.begin()+pos, true);
     profil_mzeit_.insert (profil_mzeit_.begin()+pos, (double)prof.zeit() );
+    /*Modell::*/benachrichtigen( pos );
   } else {
     profile_.resize(profile_.size()+1);
     profile_[profile_.size()-1].load(prof);
     profilnamen_.push_back( prof.name() );
     aktiv_.push_back(true);
     profil_mzeit_.push_back( (double)prof.zeit() );
+    /*Modell::*/benachrichtigen( profile_.size()-1 );
   }
 
 
@@ -113,12 +115,14 @@ ICCkette::oeffnen (std::string dateiname, int pos)
     aktiv_.insert (aktiv_.begin()+pos, true);
     profil_mzeit_.insert (profil_mzeit_.begin()+pos,
                             holeDateiModifikationsZeit( dateiname.c_str() ));
+    /*Modell::*/benachrichtigen( pos );
   } else {
     profile_.resize(profile_.size()+1);
     profile_[profile_.size()-1].load(dateiname.c_str());
     profilnamen_.push_back( dateiname );
     aktiv_.push_back(true);
     profil_mzeit_.push_back(holeDateiModifikationsZeit( dateiname.c_str() ));
+    /*Modell::*/benachrichtigen( profile_.size()-1 );
   }
 
 

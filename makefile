@@ -3,7 +3,6 @@ include config
 CC=c++
 MAKEDEPEND	= /usr/X11R6/bin/makedepend -Y
 RM = rm -v
-COPY = cp -v
 
 prefix		= /opt/local
 exec_prefix	= ${prefix}
@@ -15,41 +14,53 @@ mandir		= ${prefix}/man
 srcdir		= .
 
 DEBUG = -DDEBUG
+ifdef FLTK
+FLTK_H = -DHAVE_FLTK
+endif
 DL = --ldflags # --ldstaticflags
 
-X_CPPFILES = icc_helfer_x.cpp
-OSX_CPPFILES = icc_helfer_osx.cpp
-FLTK_CPPFILES = icc_helfer_fltk.cpp
+
+VRML_LIBS=$(FLTK_GL_LIBS) -lGL -lopenvrml -lopenvrml-gl -lpng -ljpeg \
+ -lXinerama -lXft
+
+X11_LIBS=-L/usr/X11R6/lib -lX11 -lXxf86vm -lXext
+
+FLTK_LIBS=`fltk-config --use-images --use-gl --use-glut $(DL)`
+
+
+ifdef FLU
+FLU_LIBS=`flu-config $(DL)`
+endif
+
+FLTK_GL_LIBS=-lfltk_gl
 
 ifdef APPLE
   OPTS=-Wall -g $(DEBUG)
   GLUT = -framework GLUT -lobjc
-  OSX_CPP = $(OSX_CPPFILES)
-  INCL=-I$(includedir) -I/usr/X11R6/include -I./ -I/usr/include/gcc/darwin/default/c++
+  OSX_CPP = icc_helfer_osx.cpp
+  INCL=-I$(includedir) -I/usr/X11R6/include -I./ -I/opt/kai-uwe/include -I/usr/include/gcc/darwin/default/c++
 else
   OPTS = -Wall  -Os -g $(DEBUG) #-fomit-frame-pointer -g
   GLUT = -lglut
-  INCL=-I$(includedir) -I/usr/X11R6/include -I./
-endif
-
-ifdef FLTK
-  TOOLKIT_FILES = $(FLTK_CPPFILES)
+  INCL=-I$(includedir) -I/usr/X11R6/include -I./ -I/opt/kai-uwe/include
 endif
 
 ifdef X11
-  X_CPP = $(X_CPPFILES)
-  X11_LIBS=-L/usr/X11R6/lib -lX11 -lXxf86vm -lXext
+  X_CPP = icc_helfer_x.cpp
 endif
 
-CXXFLAGS=$(OPTS) $(INCL) \
-			$(FLU_H) $(FLTK_H) $(X_H) $(OSX_H) $(OYRANOS_H) $(LCMS_H)
+ifdef OY
+  OY_LIBS = -loyranos -loyranos_moni
+  OYRANOS_LIBS=-lkdb -loyranos
+endif
+
+CXXFLAGS=$(OPTS) $(INCL) $(FLU_H) $(FLTK_H) $(X_H) $(OSX_H) $(OY_H)
 
 LDLIBS = -L$(libdir) -L./ -L/opt/kai-uwe/lib $(FLTK_LIBS) \
-	$(X11_LIBS) -llcms $(OYRANOS_LIBS) $(GLUT) $(FLU_LIBS) $(LCMS_LIBS)
+	$(X11_LIBS) -llcms $(OY_LIBS) $(GLUT) $(FLU_LIBS)
 
 CPP_HEADERS = \
 	agviewer.h \
-	Fl_Slot.H \
 	icc_betrachter.h \
 	cccie64.h \
 	ciexyz64_1.h \
@@ -79,9 +90,8 @@ CPP_HEADERS = \
 	icc_utils.h \
 	icc_version.h \
 	icc_vrml.h \
-	icc_vrml_parser.h \
-	icc_waehler.h
-COMMON_CPPFILES = \
+	icc_vrml_parser.h
+CPPFILES = \
 	icc_cgats_filter.cpp \
 	icc_draw.cpp \
 	icc_examin.cpp \
@@ -91,6 +101,8 @@ COMMON_CPPFILES = \
 	icc_helfer.cpp \
 	icc_info.cpp \
 	icc_kette.cpp \
+	$(X_CPP) \
+	$(OSX_CPP) \
 	icc_main.cpp \
 	icc_measurement.cpp \
 	icc_modell_beobachter.cpp \
@@ -103,24 +115,14 @@ COMMON_CPPFILES = \
 	icc_vrml.cpp \
 	icc_vrml_parser.cpp \
 	agviewer.cpp
-CPPFILES = \
-	$(COMMON_CPPFILES) \
-	$(TOOLKIT_FILES) \
-	$(X_CPP) \
-	$(OSX_CPP)
+CPPFLTKFILES = \
+	icc_helfer_fltk.cpp
 CXXFILES = \
 	icc_betrachter.cxx \
 	fl_oyranos.cxx
 TEST = \
 	dE2000_test.cpp \
 	ciede2000testdata.h
-ALL_CPPFILES = \
-	$(COMMON_CPPFILES) \
-	$(OSX_CPPFILES) \
-	$(X_CPPFILES) \
-	$(FLTK_CPPFILES) \
-	$(CXXFILES) \
-	$(TEST)
 DOKU = \
 	TODO \
 	README \
@@ -132,8 +134,11 @@ FLUID = \
 	icc_betrachter.fl \
 	fl_oyranos.fl
 
-SOURCES = $(ALL_CPPFILES) $(CPP_HEADERS)
-OBJECTS = $(CPPFILES:.cpp=.o) $(CXXFILES:.cxx=.o)
+ifdef FLTK
+TOOLKIT_FILES = $(CPPFLTKFILES)
+endif
+SOURCES = $(CPPFILES) $(CXXFILES) $(CPP_HEADERS)
+OBJECTS = $(CPPFILES:.cpp=.o) $(CXXFILES:.cxx=.o) $(TOOLKIT_FILES:.cpp=.o)
 TARGET  = icc_examin
 
 REZ     = /Developer/Tools/Rez -t APPL -o $(TARGET) /opt/local/include/FL/mac.r
@@ -141,12 +146,14 @@ ifdef APPLE
 APPLE   = $(REZ)
 endif
 
-timedir = .
+topdir  = ..
+dir     = Entwickeln
+timedir = $(topdir)/$(dir)
 mtime   = `find $(timedir) -prune -printf %Ty%Tm%Td.%TT | sed s/://g`
 
 #.SILENT:
 
-all:	mkdepend $(TARGET)
+all:	$(TARGET)
 
 release:	icc_alles.o
 	echo Linking $@...
@@ -163,6 +170,12 @@ $(TARGET):	$(OBJECTS)
 	$(LDLIBS)
 	$(APPLE)
 
+prof:	icc_profile.o icc_profilierer.o
+	echo "Kopiliere icc_measurement_pur.o ..."
+	c++ -I.. -Wall  -Os -DDEBUG  -I/opt/local/include -I/usr/X11R6/include -I./ -I/opt/kai-uwe/include -c icc_measurement.cpp -o icc_measurement_pur.o
+	echo "Kopiliere icc_profilieren ..."
+	c++ icc_profilieren.cpp -o icc_profilieren icc_profile_header.o icc_profile_tags.o icc_profile.o icc_cgats_filter.o icc_profilierer.o icc_helfer.o icc_utils.o icc_measurement_pur.o icc_formeln.o -llcms
+
 static:		$(OBJECTS)
 	echo Linking $@...
 	$(CC) $(OPTS) -o $(TARGET) \
@@ -177,16 +190,37 @@ test:	icc_formeln.o icc_utils.o
 	-L$(libdir) -llcms
 	$(APPLE)
 
+test1:	icc_draw.o
+	$(CC) $(OPTS) $(INCL) -o horseshoe.o -c horseshoe.cxx
+	$(CC) $(OPTS) -o horseshoe horseshoe.o icc_draw.o \
+	`fltk-config --ldstaticflags` -L$(libdir) -llcms
+	$(APPLE)
+
+t3:
+	$(RM) test3
+	make test3
+
+test3:  ViewerFLTK.o vFLGLWidget.o
+	$(CC) $(OPTS) $(INCL) test3.cxx -o test3 $(FLTK_LIBS) \
+	ViewerFLTK.o vFLGLWidget.o \
+	$(VRML_LIBS) $(X11_LIBS)
+#vFLGLWidget.o
+
+agv:    agviewer.o agv_example.o
+	$(CC) $(OPTS) $(INCL) -o agv \
+	agviewer.o  agv_example.o $(FLTK_LIBS) $(X11_LIBS) -lglut
+
+cgats:	icc_utils.h icc_utils.cpp icc_cgats_filter.cpp icc_cgats_parser.cpp
+	$(CC) $(OPTS) -o cgats icc_cgats_parser.cpp icc_utils.o icc_cgats_filter.o
+
+
 install:	$(TARGET)
-	$(COPY) icc_examin $(bindir)
-
-uninstall:
-	$(RM) $(bindir)/icc_examin
-
+	cp icc_examin $(bindir)
 clean:
-	echo "mache sauber"
-	$(RM) mkdepend config config.h
 	$(RM) $(OBJECTS) $(TARGET)
+
+it3:	t3
+	cp test3 /opt/kai-uwe/bin/icc_examin
 
 config:
 	configure.sh
@@ -207,50 +241,30 @@ EXEEXT		=
 	$(CXX) -I.. $(CXXFLAGS) $< $(LINKFLTK) $(LDLIBS) -o $@
 	$(POSTBUILD) $@ ../FL/mac.r
 
-.c.o:
+.c.o:	mkdepend
 	echo Compiling $<...
 	$(CC) -I.. $(CFLAGS) -c $<
 
-.cxx.o:
+.cxx.o:	mkdepend
 	echo Compiling $<...
 	$(CXX) -I.. $(CXXFLAGS) -c $<
 
-.cpp.o:
+.cpp.o:	mkdepend
 	echo Compiling $<...
 	$(CXX) -I.. $(CXXFLAGS) -c $<
 
 tgz:
-	mkdir Entwickeln
-	$(COPY) \
-	$(SOURCES) \
-	makefile \
-	configure.sh \
-	$(DOKU) \
-	$(FLUID) \
-	Entwickeln
-	tar cf - Entwickeln/ \
+	tar cf - -C $(topdir) \
+	$(addprefix $(dir)/,$(SOURCES)) \
+	$(addprefix $(dir)/,$(CPPFLTKFILES)) \
+	$(dir)/makefile \
+	$(dir)/configure.sh \
+	$(addprefix $(dir)/,$(TEST)) \
+	$(addprefix $(dir)/,$(DOKU)) \
+	$(addprefix $(dir)/,$(FLUID)) \
 	| gzip > $(TARGET)_$(mtime).tgz
-	test -d ../Archiv && mv -v $(TARGET)_*.tgz ../Archiv
-	test -d Entwickeln && \
-	test `pwd` != `(cd Entwickeln; pwd)` && \
-	rm -R Entwickeln
+	mv -v $(TARGET)_*.tgz ../Archiv
 
-targz:
-	mkdir icc_examin_$(VERSION)
-	$(COPY) \
-	$(SOURCES) \
-	makefile \
-	configure.sh \
-	$(DOKU) \
-	$(FLUID) \
-	icc_examin_$(VERSION)
-	tar cf - icc_examin_$(VERSION)/ \
-	| gzip > $(TARGET)_$(mtime).tgz
-	test -d ../Archiv && mv -v $(TARGET)_*.tgz ../Archiv
-	test -d icc_examin_$(VERSION) && \
-	test `pwd` != `(cd icc_examin_$(VERSION); pwd)` && \
-	rm -R icc_examin_$(VERSION) 
-
-# Abh‰ngigkeiten
+# Abh√§ngigkeiten
 include mkdepend
 

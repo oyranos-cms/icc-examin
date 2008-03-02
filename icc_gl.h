@@ -57,7 +57,7 @@ class GL_Ansicht : public Fl_Group , public Fl_Slot {
   //                   Die Klasse gl_fenster_ behält ihre volle Größe.
   //                   Die GL_Ansicht kann in gl_fenster_ eingepasst oder
   //                   auf 1x1 verkleinert werden.
-  Fl_Group *gl_fenster_;
+  Fl_Gl_Window *gl_fenster_;
   // GL_Ansicht an gl_fenster_ anpassen oder Größe 1x1
   bool gl_fenster_zeigen_;
   void fensterForm();

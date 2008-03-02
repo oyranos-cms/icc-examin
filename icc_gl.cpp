@@ -174,7 +174,7 @@ GL_Ansicht::init(int init_id)
 
   beruehrt_ = true;
   this->begin();
-  gl_fenster_ = new Fl_Group (x(),y(),w(),h());
+  gl_fenster_ = new Fl_Gl_Window (x(),y(),w(),h());
   this->end();
   gl_fenster_->end();
   DBG_PROG
@@ -186,9 +186,13 @@ GL_Ansicht::init(int init_id)
   gl_fenster_->show();
   gl_fenster_->resizable(0);
 
+  gl_fenster_->mode(FL_RGB |FL_DOUBLE |FL_ALPHA |FL_DEPTH |FL_MULTISAMPLE);
+  if(!gl_fenster_->can_do())
+    WARN_S( _("OpenGL eventuell nicht korrekt gesetzt von ICC Examin "<< gl_fenster_->mode()) )
 
   DBG_PROG
-  #if USE_GLUT
+
+#if USE_GLUT
   gl_fenster_->begin(); DBG_PROG
   glutInitWindowSize(w(),h()); DBG_PROG_V( w() << h() )
   glutInitWindowPosition(x(),y()); DBG_PROG_V( x() << y() )
@@ -204,20 +208,20 @@ GL_Ansicht::init(int init_id)
   glutDisplayFunc(display##n); DBG_PROG \
   /*glutVisibilityFunc(sichtbar##n); DBG_PROG*/ \
   glutMenuStateFunc(menuuse##n); DBG_PROG
-  #endif
+#endif
 
   agv_.agvInit(glut_id_);
 
   if (glut_id_ == 1) { DBG_PROG_S("mft_gl " << glut_id_)
-  #if USE_GLUT
+#if USE_GLUT
     SetzeGlutFunktionen(1)
-  #else
+#else
     ;
-  #endif
+#endif
   } else { DBG_PROG_S("gl Fenster " << glut_id_)
-  #if USE_GLUT
+#if USE_GLUT
     SetzeGlutFunktionen(2)
-  #endif
+#endif
     a_darstellungs_breite = 2.55;
     b_darstellungs_breite = 2.55;
     agv_.distA (agv_.distA()
@@ -229,9 +233,11 @@ GL_Ansicht::init(int init_id)
 
   agv_.agvMakeAxesList(AXES); DBG_PROG
 
+#if 0
   GLinit_();  DBG_PROG
   menueInit_(); DBG_PROG
   erstelleGLListen_(); DBG_PROG_V( id() )
+#endif
 
   //icc_examin->glAnsicht (this);
 
@@ -240,8 +246,9 @@ GL_Ansicht::init(int init_id)
   menueAufruf (MENU_GRAU);     // CLUT Farbschema
   if (id() == 1) menueAufruf (MENU_WUERFEL);
 
+#if USE_GLUT
   //glutMainLoop(); // you could use Fl::run() instead
-
+#endif
   DBG_PROG_ENDE
 }
 
@@ -334,6 +341,13 @@ void
 GL_Ansicht::draw()
 {
   DBG_PROG_START
+
+  if(!gl_fenster_->valid()) {
+    GLinit_();  DBG_PROG
+    menueInit_(); DBG_PROG
+    erstelleGLListen_(); DBG_PROG_V( id() )
+  }
+
   if (gl_fenster_zeigen_)
   { DBG_PROG
     gl_fenster_->size(w(),h());
