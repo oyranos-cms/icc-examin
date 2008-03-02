@@ -875,6 +875,9 @@ namespace icc_examin_ns {
 #          endif
 
 # include <sys/time.h>
+#include <time.h>
+#include <unistd.h>
+#include <math.h>
   double zeitSekunden()
   {
            time_t zeit_ = zeit();
@@ -886,7 +889,7 @@ namespace icc_examin_ns {
   {
            time_t zeit_;
            double teiler = ZEIT_TEILER;
-#          if defined(LINUX) || defined(APPLE) || defined(SOLARIS) || defined(BSD)
+#          if defined(__GNUC__) || defined(APPLE) || defined(SOLARIS) || defined(BSD)
            struct timeval tv;
            gettimeofday( &tv, NULL );
            double tmp_d;
@@ -917,6 +920,12 @@ namespace icc_examin_ns {
 #            else
              usleep((time_t)(sekunden/(double)CLOCKS_PER_SEC));
 #            endif
+  }
+  void wait(double sekunden, int aktualisieren)
+  {
+    icc_examin_ns::sleep(sekunden);
+    if(aktualisieren && waitFunc)
+      waitFunc();
   }
 }
 

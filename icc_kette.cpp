@@ -251,7 +251,7 @@ ICCkette::waechter (void* zeiger)
   }
 
 # if USE_THREADS
-  Fl::wait();
+  icc_examin_ns::wait( 0.0, true );
 # endif
 
   DBG_PROG_ENDE

@@ -339,7 +339,10 @@ fl_translate_menue( Fl_Menu_Item* menueleiste )
 #endif
 }
 
-#include <FL/Fl.H>
+#include <sys/time.h>
+#include <time.h>
+#include <unistd.h>
+#include <math.h>
 const char*
 threadGettext( const char* text)
 {
@@ -354,7 +357,18 @@ threadGettext( const char* text)
       translation_mutex_threads_ == 0 )
     // Warten bis der Rat von einem anderen Zweig freigegeben wird
     while (pthread_mutex_trylock( &translation_mutex_ )) {
-      Fl::wait(0.001);
+      float sekunden = 0.001;
+#            if defined(__GNUC__) || defined(__APPLE__)
+             timespec ts;
+             double ganz;
+             double rest = modf(sekunden, &ganz);
+             ts.tv_sec = (time_t)ganz;
+             ts.tv_nsec = (time_t)(rest * 1000000000);
+             //DBG_PROG_V( sekunden<<" "<<ts.tv_sec<<" "<<ganz<<" "<<rest )
+             nanosleep(&ts, 0);
+#            else
+             usleep((time_t)(sekunden/(double)CLOCKS_PER_SEC));
+#            endif
     }
   translation_mutex_threads_++ ;
   if(translation_mutex_threads_ == 1)

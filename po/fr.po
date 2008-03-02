@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ICC Examin 0.41\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2007-01-23 15:06+0100\n"
+"POT-Creation-Date: 2007-01-26 14:38+0100\n"
 "PO-Revision-Date: 2006-06-29 19:31+0200\n"
 "Last-Translator: Pascal LACROIX <lacroixpascal at vfemail.net>\n"
 "Language-Team: ALL <ku.b@gmx.de>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: agviewer.cpp:313 icc_gl.cpp:2785 icc_gl.cpp:2804 icc_gl.cpp:2923
+#: agviewer.cpp:313 icc_gl.cpp:2599 icc_gl.cpp:2618 icc_gl.cpp:2737
 msgid "left-/middle-/right mouse button -> rotate/cut/menu"
 msgstr ""
 
@@ -23,8 +23,8 @@ msgstr ""
 msgid "Pause"
 msgstr ""
 
-#: agviewer.cpp:350 agviewer.cpp:358 icc_gl.cpp:2889 icc_gl.cpp:2900
-#: icc_gl.cpp:2905 icc_gl.cpp:2910
+#: agviewer.cpp:350 agviewer.cpp:358 icc_gl.cpp:2703 icc_gl.cpp:2714
+#: icc_gl.cpp:2719 icc_gl.cpp:2724
 msgid "left mouse button -> go back"
 msgstr ""
 
@@ -139,7 +139,7 @@ msgstr "Vert"
 msgid "Blue"
 msgstr "Bleu"
 
-#: icc_draw.cpp:663 icc_gl.cpp:2188 icc_helfer.cpp:392 icc_waehler.h:131
+#: icc_draw.cpp:663 icc_gl.cpp:2010 icc_helfer.cpp:392 icc_waehler.h:131
 msgid "Gray"
 msgstr "Gris"
 
@@ -155,7 +155,7 @@ msgstr "Magenta"
 msgid "Yellow"
 msgstr "Jaune"
 
-#: icc_draw.cpp:676 icc_gl.cpp:2190 icc_helfer.cpp:452 icc_helfer.cpp:462
+#: icc_draw.cpp:676 icc_gl.cpp:2012 icc_helfer.cpp:452 icc_helfer.cpp:462
 msgid "Black"
 msgstr "Noir"
 
@@ -193,13 +193,13 @@ msgid "CIE *L"
 msgstr "CIE *L"
 
 #: icc_draw.cpp:694 icc_examin_farbraum.cpp:268 icc_examin_io.cpp:218
-#: icc_gl.cpp:1103 icc_gl.cpp:1177 icc_gl.cpp:1203 icc_gl.cpp:1211
+#: icc_gl.cpp:925 icc_gl.cpp:999 icc_gl.cpp:1025 icc_gl.cpp:1033
 #: icc_helfer.cpp:438
 msgid "CIE *a"
 msgstr "CIE *a"
 
 #: icc_draw.cpp:696 icc_examin_farbraum.cpp:269 icc_examin_io.cpp:219
-#: icc_gl.cpp:1116 icc_gl.cpp:1219 icc_gl.cpp:1239 icc_gl.cpp:1246
+#: icc_gl.cpp:938 icc_gl.cpp:1041 icc_gl.cpp:1061 icc_gl.cpp:1068
 #: icc_helfer.cpp:439
 msgid "CIE *b"
 msgstr "CIE *b"
@@ -347,118 +347,118 @@ msgstr ""
 msgid "Information:"
 msgstr ""
 
-#: icc_gl.cpp:800 icc_gl.cpp:803 icc_gl.cpp:806 icc_gl.cpp:812 icc_gl.cpp:816
-#: icc_gl.cpp:831
+#: icc_gl.cpp:684 icc_gl.cpp:687 icc_gl.cpp:690 icc_gl.cpp:696 icc_gl.cpp:700
+#: icc_gl.cpp:715
 msgid "Could not open font in:"
 msgstr ""
 
-#: icc_gl.cpp:985
+#: icc_gl.cpp:807
 #, c-format
 msgid "0,0,0"
 msgstr ""
 
-#: icc_gl.cpp:2162 icc_gl.cpp:2172 icc_gl.cpp:2174 icc_gl.cpp:2176
+#: icc_gl.cpp:1984 icc_gl.cpp:1994 icc_gl.cpp:1996 icc_gl.cpp:1998
 msgid "Slice"
 msgstr ""
 
-#: icc_gl.cpp:2163
+#: icc_gl.cpp:1985
 msgid "Rotate around slice"
 msgstr ""
 
-#: icc_gl.cpp:2178
+#: icc_gl.cpp:2000
 msgid "Rotate around"
 msgstr ""
 
-#: icc_gl.cpp:2178
+#: icc_gl.cpp:2000
 msgid "axis"
 msgstr ""
 
-#: icc_gl.cpp:2183
+#: icc_gl.cpp:2005
 msgid "Slice plane"
 msgstr ""
 
-#: icc_gl.cpp:2186
+#: icc_gl.cpp:2008
 msgid "White"
 msgstr "Blanc"
 
-#: icc_gl.cpp:2187
+#: icc_gl.cpp:2009
 msgid "Light gray"
 msgstr ""
 
-#: icc_gl.cpp:2189
+#: icc_gl.cpp:2011
 msgid "Dark gray"
 msgstr "Gris sombre"
 
-#: icc_gl.cpp:2193
+#: icc_gl.cpp:2015
 msgid "Background colour"
 msgstr "Couleur Arrière-plan"
 
-#: icc_gl.cpp:2198
+#: icc_gl.cpp:2020
 msgid "gray"
 msgstr "gris"
 
-#: icc_gl.cpp:2199
+#: icc_gl.cpp:2021
 msgid "coloured"
 msgstr ""
 
-#: icc_gl.cpp:2200
+#: icc_gl.cpp:2022
 msgid "high contrast"
 msgstr ""
 
-#: icc_gl.cpp:2201
+#: icc_gl.cpp:2023
 msgid "shells"
 msgstr ""
 
-#: icc_gl.cpp:2202
+#: icc_gl.cpp:2024
 #, fuzzy
 msgid "Colour line"
 msgstr "Couleur r"
 
-#: icc_gl.cpp:2207
+#: icc_gl.cpp:2029
 msgid "Sphere 1dE"
 msgstr ""
 
-#: icc_gl.cpp:2208
+#: icc_gl.cpp:2030
 msgid "Sphere 2dE"
 msgstr ""
 
-#: icc_gl.cpp:2209
+#: icc_gl.cpp:2031
 msgid "Sphere 4dE"
 msgstr ""
 
-#: icc_gl.cpp:2212
+#: icc_gl.cpp:2034
 msgid "Star"
 msgstr ""
 
-#: icc_gl.cpp:2215
+#: icc_gl.cpp:2037
 msgid "Point"
 msgstr "Point"
 
-#: icc_gl.cpp:2218
+#: icc_gl.cpp:2040
 msgid "without markers"
 msgstr ""
 
-#: icc_gl.cpp:2219
+#: icc_gl.cpp:2041
 msgid "Spektral line"
 msgstr ""
 
-#: icc_gl.cpp:2222 icc_betrachter.cxx:864
+#: icc_gl.cpp:2044 icc_betrachter.cxx:864
 msgid "Texts"
 msgstr ""
 
-#: icc_gl.cpp:2224
+#: icc_gl.cpp:2046
 msgid "Texts/Arrows on/off"
 msgstr ""
 
-#: icc_gl.cpp:2226
+#: icc_gl.cpp:2048
 msgid "Illustration"
 msgstr ""
 
-#: icc_gl.cpp:2499
+#: icc_gl.cpp:2321
 msgid "Pos"
 msgstr ""
 
-#: icc_gl.cpp:2583 icc_profile_tags.cpp:302
+#: icc_gl.cpp:2405 icc_profile_tags.cpp:302
 msgid "Channel"
 msgstr "Canal"
 
@@ -1047,11 +1047,11 @@ msgstr ""
 msgid "seconds"
 msgstr ""
 
-#: icc_helfer.cpp:1005 icc_oyranos.cpp:352
+#: icc_helfer.cpp:1014 icc_oyranos.cpp:352
 msgid "Monitor Profile"
 msgstr "Écran Profil"
 
-#: icc_helfer.cpp:1032 icc_utils.cpp:81
+#: icc_helfer.cpp:1041 icc_utils.cpp:81
 msgid "Dateigroesse 0 fuer "
 msgstr ""
 
@@ -1725,55 +1725,55 @@ msgstr "Gamma Vert:"
 msgid "Kein Gammagradient Information erhalten"
 msgstr ""
 
-#: icc_helfer_fltk.cpp:294
+#: icc_helfer_fltk.cpp:299
 msgid "Add to Favorites"
 msgstr ""
 
-#: icc_helfer_fltk.cpp:295
+#: icc_helfer_fltk.cpp:300
 msgid "All Files (*)"
 msgstr ""
 
-#: icc_helfer_fltk.cpp:296
+#: icc_helfer_fltk.cpp:301
 msgid "Custom Filter"
 msgstr ""
 
-#: icc_helfer_fltk.cpp:297
+#: icc_helfer_fltk.cpp:302
 msgid "Please choose an existing file!"
 msgstr ""
 
-#: icc_helfer_fltk.cpp:298 my_file_chooser.cxx:178
+#: icc_helfer_fltk.cpp:303 my_file_chooser.cxx:178
 msgid "Favorites"
 msgstr ""
 
-#: icc_helfer_fltk.cpp:299
+#: icc_helfer_fltk.cpp:304
 msgid "Filename"
 msgstr ""
 
-#: icc_helfer_fltk.cpp:300 my_file_chooser.cxx:251
+#: icc_helfer_fltk.cpp:305 my_file_chooser.cxx:251
 msgid "Manage Favorites"
 msgstr ""
 
-#: icc_helfer_fltk.cpp:302
+#: icc_helfer_fltk.cpp:307
 msgid "My Computer"
 msgstr ""
 
-#: icc_helfer_fltk.cpp:304
+#: icc_helfer_fltk.cpp:309
 msgid "File Systems"
 msgstr ""
 
-#: icc_helfer_fltk.cpp:306
+#: icc_helfer_fltk.cpp:311
 msgid "New Directory?"
 msgstr ""
 
-#: icc_helfer_fltk.cpp:307 my_file_chooser.cxx:208
+#: icc_helfer_fltk.cpp:312 my_file_chooser.cxx:208
 msgid "Preview"
 msgstr ""
 
-#: icc_helfer_fltk.cpp:309 my_file_chooser.cxx:287
+#: icc_helfer_fltk.cpp:314 my_file_chooser.cxx:287
 msgid "Save"
 msgstr ""
 
-#: icc_helfer_fltk.cpp:311 my_file_chooser.cxx:171
+#: icc_helfer_fltk.cpp:316 my_file_chooser.cxx:171
 msgid "Show:"
 msgstr ""
 
@@ -2000,45 +2000,45 @@ msgstr ""
 msgid "@2>"
 msgstr ""
 
-#: icc_cinepaint.cpp:422
+#: icc_cinepaint.cpp:195
 #, fuzzy
 msgid "Image Profile..."
 msgstr "ICC Profils"
 
-#: icc_cinepaint.cpp:423
+#: icc_cinepaint.cpp:196
 #, fuzzy
 msgid "Proof Profile..."
 msgstr "Écran Profil"
 
-#: icc_cinepaint.cpp:424
+#: icc_cinepaint.cpp:197
 msgid "Watch Colours 3D..."
 msgstr ""
 
-#: icc_cinepaint.cpp:425
+#: icc_cinepaint.cpp:198
 msgid "Watch Colours 3D.2..."
 msgstr ""
 
-#: icc_cinepaint.cpp:596 icc_cinepaint.cpp:1237
+#: icc_cinepaint_intern.cpp:374 icc_cinepaint_intern.cpp:1015
 msgid "No profil assigned to image."
 msgstr ""
 
-#: icc_cinepaint.cpp:631
+#: icc_cinepaint_intern.cpp:409
 msgid "Profil not written."
 msgstr ""
 
-#: icc_cinepaint.cpp:1291
+#: icc_cinepaint_intern.cpp:1069
 msgid "Wrong profil assigned to image."
 msgstr ""
 
-#: icc_cinepaint.cpp:1503
+#: icc_cinepaint_intern.cpp:1281
 msgid "No active drawable found."
 msgstr ""
 
-#: icc_cinepaint.cpp:1809
+#: icc_cinepaint_intern.cpp:1587
 msgid "What kind of image is this?"
 msgstr ""
 
-#: icc_cinepaint.cpp:1903
+#: icc_cinepaint_intern.cpp:1681
 msgid "What kind of image is this?\n"
 msgstr ""
 
@@ -2046,7 +2046,7 @@ msgstr ""
 msgid "May 2004 - January 2007"
 msgstr ""
 
-#: icc_gl.h:246
+#: icc_gl.h:241
 msgid "Gibts nicht"
 msgstr ""
 

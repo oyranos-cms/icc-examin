@@ -106,6 +106,8 @@ namespace icc_examin_ns {
   double zeitSekunden();
   time_t zeit();
   time_t zeitProSekunde();
+  void wait (double sekunden, int update_ui);
+  extern int  (*waitFunc)(void);
 #if APPLE
   std::string holeBundleResource (const char* Dateiname_ohne_Endung,
                                   const char* Endung);

@@ -210,11 +210,16 @@ setzeIcon      ( Fl_Window *fenster, char   **xpm_daten )
          - nachdem A nicht mehr mag, können B und C streiten sich
    */
 
+#include "icc_examin.h"
+#include "icc_betrachter.h"
 namespace icc_examin_ns {
 
   // Prüfvariablen
   static int icc_thread_lock_zaehler_ = 0;
   Fl_Thread icc_thread_lock_besitzer_ = 0;
+
+  int  awake(void) { Fl::awake(icc_examin->icc_betrachter->details); return 0; }
+  int  (*waitFunc)(void) = Fl::check;//awake;
 
   void lock(const char *file, int line)
   {

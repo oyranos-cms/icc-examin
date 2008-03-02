@@ -1380,10 +1380,10 @@ Oyranos::wandelLabNachBildschirmFarben(double *Lab_Speicher, // 0.0 - 1.0
         h_lab_to_RGB_teuer = *form;
       else
         hLabtoRGB = *form;
+
+      fortschritt(1.1);
     }
 
-
-    fortschritt(0.9);
 
     RGB_Speicher = new double[size*3];
     if(!RGB_Speicher)  WARN_S( "RGB_speicher Speicher nicht verfuegbar" )
@@ -1397,8 +1397,6 @@ Oyranos::wandelLabNachBildschirmFarben(double *Lab_Speicher, // 0.0 - 1.0
     if(hLab)      cmsCloseProfile(hLab);
 
     if(cielab)    free (cielab);
-
-  fortschritt(1.1);
 
   DBG_PROG_ENDE
   return RGB_Speicher;

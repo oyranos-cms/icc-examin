@@ -6,7 +6,7 @@ namespace icc_examin_ns {
 void
 fortschritt(const double f)
 {
-  icc_examin->fortschrittThreaded(f);
+  icc_examin->fortschritt(f);
 }
 
 void

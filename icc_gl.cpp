@@ -171,7 +171,6 @@ GL_Ansicht::GL_Ansicht(int X,int Y,int W,int H)
   maus_x_alt = -1;
   maus_y_alt = -1;
   maus_steht = false;
-  ist_bewegt_ = false;
   valid_ = false;
   zeit_ = 0;
 
@@ -277,7 +276,6 @@ GL_Ansicht::copy (const GL_Ansicht & gl)
   maus_x_ = gl.maus_x_;
   maus_y_ = gl.maus_y_;
   maus_steht = gl.maus_steht;
-  ist_bewegt_ = gl.ist_bewegt_;
   valid_ = gl.valid_;
   zeit_ = gl.zeit_;
 
@@ -430,19 +428,17 @@ GL_Ansicht::bewegenStatisch_ (void* gl_a)
 
   {
     if(!icc_examin->frei() ||
-       !gl_ansicht->ist_bewegt_ || !gl_ansicht->darfBewegen())
+       !gl_ansicht->darfBewegen())
     {
-      gl_ansicht->stupps_(false);
       zahl = 0;
-      DBG_PROG_S( "redraw nicht ausgefuehrt " << gl_ansicht->id_ )
+      DBG_PROG_S( "redraw nicht erlaubt " << gl_ansicht->id_ )
     } else {
       double zeichnen_schlaf = 0;  // keine endlos Warteschlangen
       double zeit = icc_examin_ns::zeitSekunden();
 
       if (zeit - gl_ansicht->zeit_ < 1./25.) {
         zeichnen_schlaf = 1./25. - gl_ansicht->zeit_;
-      } else
-      {
+      } else {
         gl_ansicht->redraw();
         zahl++;
       }
@@ -450,28 +446,18 @@ GL_Ansicht::bewegenStatisch_ (void* gl_a)
       // kurze Pause 
       Fl::repeat_timeout( 0.04, bewegenStatisch_, gl_a );
       
-      DBG_PROG_S( "Pause " << gl_ansicht->zeit_diff_<<" "<<zeichnen_schlaf <<" "<< gl_ansicht->ist_bewegt_ <<" "<< gl_ansicht->id_ <<" "<<zahl)
+      DBG_PROG_S( "Pause " << gl_ansicht->zeit_diff_<<" "<<zeichnen_schlaf <<" "<< " "<< gl_ansicht->id_ <<" "<<zahl)
     }
   } 
   DBG_PROG_ENDE
 }
 
 bool GL_Ansicht::darfBewegen()        { return agv_->darf_bewegen_; }
-void GL_Ansicht::darfBewegen(int d)   { agv_->darf_bewegen_ = d; }
-
-void
-GL_Ansicht::stupps_ (bool lauf)
+void GL_Ansicht::darfBewegen(int d)
 {
-  DBG_PROG_START
-  ist_bewegt_ = lauf;
-  if(lauf) {
-    DBG_NUM_S( "anstuppsen " << id_ )
-    if(darfBewegen())
-      Fl::add_timeout(0.04, bewegenStatisch_,this);
-  } else {
-    DBG_NUM_S( "stoppen " << id_ )
-  }
-  DBG_PROG_ENDE
+  agv_->darf_bewegen_ = d; 
+  if (d)
+    Fl::add_timeout(0.04, bewegenStatisch_,this);
 }
 
 void
@@ -480,7 +466,6 @@ GL_Ansicht::bewegen (bool setze)
   DBG_PROG_START
   darfBewegen( setze );
   DBG_PROG_V( setze )
-  stupps_(setze);
   if(!setze) {
     agv_->agvSwitchMoveMode (Agviewer::AGV_STOP);
     agv_->benachrichtigen(ICCexamin::GL_STOP);
@@ -541,13 +526,17 @@ GL_Ansicht::nachricht(icc_examin_ns::Modell* modell, int info)
     erstelleGLListen_();
     redraw();
   }
+
   if( info && visible() )
     Fl_Gl_Window::redraw();
   if(info == ICCexamin::GL_STOP)
   {
-    stupps_(false);
     darfBewegen( false );
   }
+
+  // Oberflaeche aktualisieren
+  icc_examin_ns::wait( 0.0, true );
+
   DBG_PROG_ENDE
 }
 
@@ -556,6 +545,14 @@ void
 GL_Ansicht::redraw()
 {
   DBG_PROG_START
+
+  int thread = wandelThreadId(pthread_self());
+  if(thread != THREAD_HAUPT) {
+    WARN_S( ": falscher Thread" );
+    DBG_PROG_ENDE
+    return;
+  }
+
   if(agv_)
     agv_->benachrichtigen(ICCexamin::GL_ZEICHNEN);
   DBG_PROG_ENDE
@@ -566,8 +563,8 @@ GL_Ansicht::draw()
 {
   DBG_PROG_START
   --zahl;
-  DBG_PROG_S( "Eintritt ist_bewegt_|darfBewegen(): "
-               << ist_bewegt_ << "|" << darfBewegen()<<" "<<id_<<" "<<hintergrundfarbe )
+  DBG_PROG_S( "Eintritt darfBewegen(): "
+               << darfBewegen()<<" "<<id_<<" "<<hintergrundfarbe )
   int thread = wandelThreadId(pthread_self());
   if(thread != THREAD_HAUPT) {
     WARN_S( ": falscher Thread" );
@@ -575,135 +572,22 @@ GL_Ansicht::draw()
     return;
   }
 
-  if(!icc_examin->frei()) {
-    if(ist_bewegt_) {
-      stupps_(false); DBG_NUM_S( "stoppen" )
-    } else DBG_NUM_S( "Uuch nicht bewegt" );
+  agv_->agvMove_();
+
+  if(!visible() || !shown() || !icc_examin->frei())
+  {
     DBG_PROG_ENDE
     return;
-  } else if(!ist_bewegt_ && darfBewegen()) {
-    stupps_(true); DBG_NUM_S( "anstuppsen" )
-  } else if(ist_bewegt_ && !darfBewegen()) {
-    stupps_(false); DBG_NUM_S( "stoppen" )
   }
 
-  if(ist_bewegt_)
-    agv_->agvMove_();
-
-  if(!visible() || !shown())
-    return;
-
-
-# if 0
-  if(!valid()) {
-    GLinit_();  DBG_PROG
-    fensterForm();
-    auffrischen_();
-  }
-
-  // aktualisiere Schatten
-  static char aktive[64];
-  static char grau[64];
-  char aktualisiert = false;
-  for(int i = 0; i < (int)dreiecks_netze.size(); ++i)
-    if( dreiecks_netze[i].aktiv != aktive[i] ||
-        dreiecks_netze[i].grau != grau[i]  ) {
-      aktive[i] = dreiecks_netze[i].aktiv;
-      grau[i] = dreiecks_netze[i].grau;
-      if(!aktualisiert) {
-        zeigeUmrisse_();
-        aktualisiert = true;
-      }
-    }
-# else
   if(!valid())
     valid_ = false;
-# endif
 
   zeichnen();
 
   DBG_PROG_V( dreiecks_netze.size() )
 
   DBG_PROG_ENDE
-}
-
-#define DBG_BUTTON 0
-#if DBG_BUTTON
-# define DBG_BUTTON_S(text) DBG_S(text)
-#else
-# define DBG_BUTTON_S(text)
-#endif
-
-int
-GL_Ansicht::handle( int event )
-{
-  DBG_ICCGL_START
-  int mausknopf = Fl::event_state();
-  int schluss = 1;
-  DBG_MEM_V( dbgFltkEvent(event) )
-
-  switch(event)
-  {
-    case FL_PUSH:
-         if(mausknopf & FL_BUTTON3 ||
-           (mausknopf & FL_BUTTON1 && mausknopf & FL_CTRL) ) {
-           menue_button_->popup();
-           break;
-         }
-         if(mausknopf & FL_BUTTON1 && mausknopf & FL_SHIFT)
-           mausknopf = FL_BUTTON2;
-         agv_->agvHandleButton( mausknopf, event, Fl::event_x(),Fl::event_y());
-         DBG_BUTTON_S( "FL_PUSH bei: " << Fl::event_x() << "," << Fl::event_y() )
-         break;
-    case FL_RELEASE:
-         agv_->agvHandleButton(Fl::event_state(),event, Fl::event_x(),Fl::event_y());
-         DBG_BUTTON_S( "FL_RELEASE bei: " << Fl::event_x() << "," << Fl::event_y() )
-         break;
-    case FL_DRAG:
-         DBG_BUTTON_S( "FL_DRAG bei: " << Fl::event_x() << "," << Fl::event_y() )
-         maus_x_ = Fl::event_x();
-         maus_y_ = Fl::event_y();
-         agv_->agvHandleMotion(maus_x_, maus_y_);
-         redraw();
-         break;
-    case FL_KEYDOWN:
-         DBG_BUTTON_S( "FL_KEYDOWN bei: " << Fl::event_x() << "," << Fl::event_y() )
-         break;
-    case FL_KEYUP:
-         DBG_BUTTON_S( "FL_KEYUP bei: " << Fl::event_x() << "," << Fl::event_y() )
-         break;
-    case FL_ENTER:
-    case FL_MOVE:
-         DBG_BUTTON_S( "FL_MOVE bei: " << Fl::event_x() << "," << Fl::event_y() )
-         maus_x_ = Fl::event_x();
-         maus_y_ = Fl::event_y();
-         if(visible() && !ist_bewegt_) {
-           redraw();
-         }
-         break;
-    case FL_MOUSEWHEEL:
-         DBG_BUTTON_S( "FL_MOUSEWHEEL" << Fl::event_dx() << "," << Fl::event_dy() )
-         break;
-    case FL_LEAVE:
-         DBG_BUTTON_S( "FL_LEAVE" )
-    case FL_NO_EVENT:
-    default:
-         DBG_BUTTON_S( "default" )
-         DBG_ICCGL_ENDE
-         return Fl_Gl_Window::handle(event);
-  }
-  if(mausknopf)
-  {
-    switch(Fl::event_state()) {
-      case FL_BUTTON1: DBG_BUTTON_S("FL_BUTTON1") break;
-      case FL_BUTTON2: DBG_BUTTON_S("FL_BUTTON2") break;
-      case FL_BUTTON3: DBG_BUTTON_S("FL_BUTTON3") break;
-      default: DBG_BUTTON_S("unbekanner event_state()") break;
-    }
-  }
-
-  DBG_ICCGL_ENDE
-  return schluss;
 }
 
 Agviewer*
@@ -840,68 +724,6 @@ GL_Ansicht::GLinit_()
 
   glFlush();
   DBG_PROG_ENDE
-}
-
-void
-GL_Ansicht::tastatur(int e)
-{ DBG_ICCGL_START
-  if(visible())
-  {
-    //e = Fl::get_key(e);
-    if(Fl::event_key() == FL_Up) {
-      vorder_schnitt += 0.01;
-    } else if(Fl::event_key() == FL_Down) {
-      vorder_schnitt -= 0.01;
-    } else if(Fl::event_key() == FL_Home) {
-      vorder_schnitt = 4.2;
-    } else if(Fl::event_key() == FL_End) {
-      vorder_schnitt = agv_->eyeDist();
-    }
-    DBG_ICCGL_S("e = " << e << " " << Fl::event_key() )
-    if(e == FL_SHORTCUT)
-    switch (Fl::event_key()) {
-      case 45: // '-' Dies ist nicht konform auf allen Tastaturen; benutzt FLTK native Tastaturkodes?
-        if(punktform >= MENU_dE1KUGEL && punktform <= MENU_dE4KUGEL)
-        {
-          if (punktform > MENU_dE1KUGEL) {
-            --punktform;
-          }
-        }
-        else if (punktform == MENU_DIFFERENZ_LINIE)
-          punktform = MENU_dE1KUGEL;
-        else if(punktgroesse > 1)
-        {
-          --punktgroesse;
-          auffrischen_();
-          redraw();
-        }
-        DBG_PROG_V( Fl::event_key() <<" "<< punktgroesse )
-        break;
-      case 43: // '+'
-        if (punktform >= MENU_dE1KUGEL && punktform <= MENU_dE4KUGEL)
-        {
-          if (punktform < MENU_dE4KUGEL) {
-            ++punktform;
-          }
-        }
-        else if (punktform == MENU_DIFFERENZ_LINIE)
-        {
-          punktform = MENU_dE4KUGEL;
-        }
-        else if (punktgroesse < 61)
-        {
-          ++punktgroesse;
-          auffrischen_();
-          redraw();
-        }
-        DBG_PROG_V( Fl::event_key()  <<" "<< punktgroesse <<" "<< punktform <<" "<< MENU_DIFFERENZ_LINIE )
-        break;
-      default:
-        dbgFltkEvents(e);
-        DBG_MEM_V( Fl::event_key() )
-    }
-  }
-  DBG_ICCGL_ENDE
 }
 
 void
@@ -1967,7 +1789,7 @@ GL_Ansicht::zeigeUmrisse_()
         }
         glEnd();
         }
-        // farbbandschatten
+        // Farbbandschatten
         int n = dreiecks_netze[i].umriss.size();
         if(!dreiecks_netze[i].schattierung)
           ;//netzeAuffrischen();
@@ -2613,16 +2435,8 @@ GL_Ansicht::zeichnen()
        glEnable(GL_TEXTURE_2D);
        glEnable(GL_LIGHTING);
       glPopMatrix();
-      if(!ist_bewegt_ && maus_steht) {
-        //redraw();
-      }
     }
 
-#   if 0
-    glFlush();
-#   else
-    //glFinish();
-#   endif
   } else
     DBG
 
@@ -2932,6 +2746,149 @@ GL_Ansicht::menueAufruf ( int value )
   DBG_PROG_V( value<<" "<<id_ )
   DBG_PROG_ENDE
 }
+
+
+#define DBG_BUTTON 0
+#if DBG_BUTTON
+# define DBG_BUTTON_S(text) DBG_S(text)
+#else
+# define DBG_BUTTON_S(text)
+#endif
+
+int
+GL_Ansicht::handle( int event )
+{
+  DBG_ICCGL_START
+  int mausknopf = Fl::event_state();
+  int schluss = 1;
+  DBG_MEM_V( dbgFltkEvent(event) )
+
+  switch(event)
+  {
+    case FL_PUSH:
+         if(mausknopf & FL_BUTTON3 ||
+           (mausknopf & FL_BUTTON1 && mausknopf & FL_CTRL) ) {
+           menue_button_->popup();
+           break;
+         }
+         if(mausknopf & FL_BUTTON1 && mausknopf & FL_SHIFT)
+           mausknopf = FL_BUTTON2;
+         agv_->agvHandleButton( mausknopf, event, Fl::event_x(),Fl::event_y());
+         DBG_BUTTON_S( "FL_PUSH bei: " << Fl::event_x() << "," << Fl::event_y() )
+         break;
+    case FL_RELEASE:
+         agv_->agvHandleButton(Fl::event_state(),event, Fl::event_x(),Fl::event_y());
+         DBG_BUTTON_S( "FL_RELEASE bei: " << Fl::event_x() << "," << Fl::event_y() )
+         break;
+    case FL_DRAG:
+         DBG_BUTTON_S( "FL_DRAG bei: " << Fl::event_x() << "," << Fl::event_y() )
+         maus_x_ = Fl::event_x();
+         maus_y_ = Fl::event_y();
+         agv_->agvHandleMotion(maus_x_, maus_y_);
+         redraw();
+         break;
+    case FL_KEYDOWN:
+         DBG_BUTTON_S( "FL_KEYDOWN bei: " << Fl::event_x() << "," << Fl::event_y() )
+         break;
+    case FL_KEYUP:
+         DBG_BUTTON_S( "FL_KEYUP bei: " << Fl::event_x() << "," << Fl::event_y() )
+         break;
+    case FL_ENTER:
+    case FL_MOVE:
+         DBG_BUTTON_S( "FL_MOVE bei: " << Fl::event_x() << "," << Fl::event_y() )
+         maus_x_ = Fl::event_x();
+         maus_y_ = Fl::event_y();
+         if(visible() && !darfBewegen()) {
+           redraw();
+         }
+         break;
+    case FL_MOUSEWHEEL:
+         DBG_BUTTON_S( "FL_MOUSEWHEEL" << Fl::event_dx() << "," << Fl::event_dy() )
+         break;
+    case FL_LEAVE:
+         DBG_BUTTON_S( "FL_LEAVE" )
+    case FL_NO_EVENT:
+    default:
+         DBG_BUTTON_S( "default" )
+         DBG_ICCGL_ENDE
+         return Fl_Gl_Window::handle(event);
+  }
+  if(mausknopf)
+  {
+    switch(Fl::event_state()) {
+      case FL_BUTTON1: DBG_BUTTON_S("FL_BUTTON1") break;
+      case FL_BUTTON2: DBG_BUTTON_S("FL_BUTTON2") break;
+      case FL_BUTTON3: DBG_BUTTON_S("FL_BUTTON3") break;
+      default: DBG_BUTTON_S("unbekanner event_state()") break;
+    }
+  }
+
+  DBG_ICCGL_ENDE
+  return schluss;
+}
+
+void
+GL_Ansicht::tastatur(int e)
+{ DBG_ICCGL_START
+  if(visible())
+  {
+    //e = Fl::get_key(e);
+    if(Fl::event_key() == FL_Up) {
+      vorder_schnitt += 0.01;
+    } else if(Fl::event_key() == FL_Down) {
+      vorder_schnitt -= 0.01;
+    } else if(Fl::event_key() == FL_Home) {
+      vorder_schnitt = 4.2;
+    } else if(Fl::event_key() == FL_End) {
+      vorder_schnitt = agv_->eyeDist();
+    }
+    DBG_ICCGL_S("e = " << e << " " << Fl::event_key() )
+    if(e == FL_SHORTCUT)
+    switch (Fl::event_key()) {
+      case 45: // '-' Dies ist nicht konform auf allen Tastaturen; benutzt FLTK native Tastaturkodes?
+        if(punktform >= MENU_dE1KUGEL && punktform <= MENU_dE4KUGEL)
+        {
+          if (punktform > MENU_dE1KUGEL) {
+            --punktform;
+          }
+        }
+        else if (punktform == MENU_DIFFERENZ_LINIE)
+          punktform = MENU_dE1KUGEL;
+        else if(punktgroesse > 1)
+        {
+          --punktgroesse;
+          auffrischen_();
+          redraw();
+        }
+        DBG_PROG_V( Fl::event_key() <<" "<< punktgroesse )
+        break;
+      case 43: // '+'
+        if (punktform >= MENU_dE1KUGEL && punktform <= MENU_dE4KUGEL)
+        {
+          if (punktform < MENU_dE4KUGEL) {
+            ++punktform;
+          }
+        }
+        else if (punktform == MENU_DIFFERENZ_LINIE)
+        {
+          punktform = MENU_dE4KUGEL;
+        }
+        else if (punktgroesse < 61)
+        {
+          ++punktgroesse;
+          auffrischen_();
+          redraw();
+        }
+        DBG_PROG_V( Fl::event_key()  <<" "<< punktgroesse <<" "<< punktform <<" "<< MENU_DIFFERENZ_LINIE )
+        break;
+      default:
+        dbgFltkEvents(e);
+        DBG_MEM_V( Fl::event_key() )
+    }
+  }
+  DBG_ICCGL_ENDE
+}
+
 
 void
 GL_Ansicht::c_ ( Fl_Widget* w, void* daten )

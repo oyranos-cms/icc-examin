@@ -1217,39 +1217,28 @@ ICCexamin::waehlbar( int pos, int wert )
 void
 ICCexamin::fortschritt(double f)
 { DBG_PROG_START
-  if(0.0 < f && f <= 1.0) {
-    if(!icc_betrachter->load_progress->visible())
-      icc_betrachter->load_progress-> show();
-    icc_betrachter->load_progress-> value( f );
-    DBG_PROG_V( f )
-  } else if (1.0 < f) {
-    icc_betrachter->load_progress-> hide();
-    DBG_PROG_V( f )
-  } else {
-    icc_betrachter->load_progress-> show();
-    DBG_PROG_V( f )
-  }
-  DBG_PROG_ENDE
-}
+  
+  int thread = wandelThreadId(pthread_self());
+  if(thread != THREAD_HAUPT)
+    icc_examin_ns::lock(__FILE__,__LINE__);
 
-void
-ICCexamin::fortschrittThreaded(double f)
-{ DBG_PROG_START
-  icc_examin_ns::lock(__FILE__,__LINE__);
-  if(0.0 < f && f <= 1.0) {
-    if(!icc_betrachter->load_progress->visible())
+    if(0.0 < f && f <= 1.0) {
+      if(!icc_betrachter->load_progress->visible())
+        icc_betrachter->load_progress-> show();
+      icc_betrachter->load_progress-> value( f );
+      DBG_PROG_V( f )
+    } else if (1.0 < f) {
+      icc_betrachter->load_progress-> hide();
+      DBG_PROG_V( f )
+    } else {
       icc_betrachter->load_progress-> show();
-    icc_betrachter->load_progress-> value( f );
-    DBG_PROG_V( f )
-  } else if (1.0 < f) {
-    icc_betrachter->load_progress-> hide();
-    DBG_PROG_V( f )
-  } else {
-    icc_betrachter->load_progress-> show();
-    DBG_PROG_V( f )
-  }
-  icc_betrachter->load_progress-> damage(FL_DAMAGE_ALL);
-  icc_examin_ns::unlock(this, __FILE__,__LINE__);
+      DBG_PROG_V( f )
+    }
+    icc_betrachter->load_progress-> damage(FL_DAMAGE_ALL);
+  
+  if(thread != THREAD_HAUPT)
+    icc_examin_ns::unlock(icc_betrachter->load_progress, __FILE__,__LINE__);
+
   DBG_PROG_ENDE
 }
 
@@ -1273,15 +1262,24 @@ ICCexamin::statusFarbe(double & CIEL, double & CIEa, double & CIEb)
                                 (icc_examin->bpc()?cmsFLAGS_BLACKPOINTCOMPENSATION:0));
   Fl_Color colour = fl_rgb_color( (int)(rgb[0]*255),
                                   (int)(rgb[1]*255), (int)(rgb[2]*255) );
-  if (CIEL < .5)
-    icc_betrachter->DD_box_stat->labelcolor( fl_rgb_color( VG ) );
-  else
-    icc_betrachter->DD_box_stat->labelcolor(FL_BLACK);
-  icc_betrachter->DD_box_stat->color(colour);
-  icc_betrachter->DD_box_stat->damage(FL_DAMAGE_ALL);
-  //Fl::add_timeout(0.2, fl_delayed_redraw, icc_betrachter->DD_box_stat);
-  Fl::add_idle(fl_delayed_redraw, icc_betrachter->DD_box_stat);
-  Fl::awake();
+
+  int thread = wandelThreadId(pthread_self());
+  if(thread != THREAD_HAUPT)
+    icc_examin_ns::lock(__FILE__,__LINE__);
+
+    if (CIEL < .5)
+      icc_betrachter->DD_box_stat->labelcolor( fl_rgb_color( VG ) );
+    else
+      icc_betrachter->DD_box_stat->labelcolor(FL_BLACK);
+    icc_betrachter->DD_box_stat->color(colour);
+    icc_betrachter->DD_box_stat->damage(FL_DAMAGE_ALL);
+    //Fl::add_timeout(0.2, fl_delayed_redraw, icc_betrachter->DD_box_stat);
+    Fl::add_idle(fl_delayed_redraw, icc_betrachter->DD_box_stat);
+    Fl::awake();
+
+  if(thread != THREAD_HAUPT)
+    icc_examin_ns::unlock(icc_betrachter->DD_box_stat, __FILE__,__LINE__);
+
   DBG_PROG_ENDE
 }
 

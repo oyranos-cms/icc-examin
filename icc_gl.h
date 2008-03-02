@@ -203,7 +203,6 @@ private:
 public:
   // Darstellungsfunktionen
   void zeichnen();          //!< gl Zeichnen
-//  int  dID (int display_liste);
   void tastatur(int e);
   void menueAufruf(int value);
   // Bewegungsfunktionen
@@ -211,11 +210,7 @@ public:
   bool darfBewegen();
   void darfBewegen(int d);
 private:
-  void stupps_(bool lauf);
   static void bewegenStatisch_(void* GL_Ansicht);
-  //bool darf_bewegen_;
-  //! Ist es zu drehen möglich? Fenster sichtbar?
-  bool ist_bewegt_;
 private:
   double zeit_diff_;        //!< Sekunde pro Bild
   double zeit_;

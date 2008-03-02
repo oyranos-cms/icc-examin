@@ -186,7 +186,6 @@ class ICCexamin : public icc_examin_ns::Beobachter,
 
     // Oberflaechenfunktionen (GUI)
     void fortschritt(double f);  //!< Fortschritt: f<0-Start f=Wert f>1-Ende
-    void fortschrittThreaded(double f);  //!< inclusive aller Thread Funktionen
 
     void statusAktualisieren();  //!< benutze das "status" Makro
 
