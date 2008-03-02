@@ -37,12 +37,19 @@
 #define USE_GETTEXT 1
 #endif
 
+#ifdef _
+#undef _
+#endif
 #ifdef USE_GETTEXT
 # include <libintl.h>
 #include <FL/x.H>
-# define _(text) threadGettext(text)
+# ifndef _
+#  define _(text) threadGettext(text)
+# endif
 #else
-# define _(text) text
+# ifndef _
+#  define _(text) text
+# endif
 #endif
 
 const char* threadGettext( const char* text);

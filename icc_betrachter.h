@@ -35,6 +35,7 @@ class TagBrowser : public Fl_Hold_Browser {
 public:
   int X; int Y; int W; int H; const char* start_info; std::string selectedTagName; 
   TagBrowser(int X,int Y,int W,int H,const char* start_info) ;
+  TagBrowser(int X,int Y,int W,int H) ;
   void reopen_nicht();
   void selectItem(int item);
   int visible();
@@ -46,6 +47,7 @@ class TagTexts : public Fl_Hold_Browser {
 public:
   int inspekt_topline; 
   TagTexts(int X,int Y,int W,int H,const char* start_info) ;
+  TagTexts(int X,int Y,int W,int H) ;
   void hinein(std::string text, std::vector<int> patches);
   void hinein(std::string text);
   tagTextsCB_f cb; 

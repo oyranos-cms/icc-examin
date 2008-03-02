@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2005  Kai-Uwe Behrmann 
+ * Copyright (C) 2005-2007  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -51,46 +51,44 @@ class ICCwaehlerProfil : public Fl_Pack
 {
   int pos_;
   Fl_Button *aktiv_knopf_;
-  void aktiv_knopf_cb_() {
-                if(aktiv_knopf_->value()) {DBG_PROG_START
-                  aktivieren(true);
-                  icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze[parent()->find(this)].aktiv = true;
-                } else {
-                  aktivieren(false);
-                  icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze[parent()->find(this)].aktiv = false;
-                }
-                redraw();
-                icc_examin->icc_betrachter->DD_farbraum->invalidate();
-                icc_examin->icc_betrachter->DD_farbraum->flush();
-                DBG_PROG_ENDE
-              }
-  static void aktiv_knopf_cb_statisch_(Fl_Widget* w, void* data) {DBG_PROG_START
+ void aktiv_knopf_cb_()
+ {
+  bool a = aktiv();
+  aktivieren( a );
+  icc_examin->icc_betrachter->DD_farbraum->invalidate();
+  icc_examin->icc_betrachter->DD_farbraum->flush();
+ }
+ static void aktiv_knopf_cb_statisch_(Fl_Widget* w, void* data) {DBG_PROG_START
                 ICCwaehlerProfil* obj = dynamic_cast<ICCwaehlerProfil*>(w->parent());
                 if(obj) 
                   obj->aktiv_knopf_cb_();
-                else WARN_S( _("kein ICCwaehlerProfil??") )
-                if(!w) WARN_S( _("kein Fl_Widget??") )
+                else WARN_S( "not a ICCwaehlerProfil class??" )
+                if(!w) WARN_S( "not a Fl_Widget class??" )
                 DBG_PROG_ENDE
               }
   Fl_Pack   *gruppe_;
   Fl_Output *name_;
   Fl_Value_Slider *undurchsicht_;
-  void undurchsicht_cb_() {
-                icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze[parent()->find(this)].undurchsicht = undurchsicht_->value();
-                icc_examin->icc_betrachter->DD_farbraum->invalidate();
-                icc_examin->icc_betrachter->DD_farbraum->flush();
-              }
+ void undurchsicht_cb_()
+ {
+  double u = undurchsicht();
+  undurchsicht( u );
+  icc_examin->icc_betrachter->DD_farbraum->invalidate();
+  icc_examin->icc_betrachter->DD_farbraum->flush();
+ }
   static void undurchsicht_cb_statisch_(Fl_Widget* w, void* data) {
                 ICCwaehlerProfil* obj = dynamic_cast<ICCwaehlerProfil*>(w->parent()->parent());
                 if(obj)
                   obj->undurchsicht_cb_();
               }
   Fl_Light_Button *grau_;
-  void grau_cb_() {
-                icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze[parent()->find(this)].grau = grau_->value();
-                icc_examin->icc_betrachter->DD_farbraum->invalidate();
-                icc_examin->icc_betrachter->DD_farbraum->flush();
-              }
+ void grau_cb_()
+ {
+  bool g = grau();
+  grau( g );
+  icc_examin->icc_betrachter->DD_farbraum->invalidate();
+  icc_examin->icc_betrachter->DD_farbraum->flush();
+ }
   static void grau_cb_statisch_(Fl_Widget* w, void* data) {
                 ICCwaehlerProfil* obj = dynamic_cast<ICCwaehlerProfil*>(w->parent()->parent());
                 if(obj) 
@@ -155,12 +153,39 @@ public:
 
  void  aktivieren(bool wert)
  {
+  DBG_PROG_START
+
   aktiv_knopf_->value(wert);
-  if(wert) { gruppe_->activate();
-    profile.setzAktiv( pos_ );
-  } else {   gruppe_->deactivate();
-    profile.passiv( pos_ );
-  }
+
+  icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze[pos_].aktiv = wert;
+
+  redraw();
+
+  DBG_PROG_ENDE
+ }
+ bool aktiv()
+ {
+  return aktiv_knopf_->value();
+ }
+
+ void  undurchsicht(double wert)
+ {
+  undurchsicht_->value(wert);
+  icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze[pos_].undurchsicht = wert;
+ }
+ double undurchsicht()
+ {
+  return undurchsicht_->value();
+ }
+
+ void  grau(bool wert)
+ {
+  grau_->value(wert);
+  icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze[pos_].grau = wert;
+ }
+ bool  grau()
+ {
+  return grau_->value();
  }
 };
 
@@ -211,24 +236,39 @@ private:
     ICCwaehlerProfil* profile_[128];
 
 public:
- void         push_back (const char* name, double undurchsicht, 
-                            bool grau, bool aktiv, int waehlbar_)
+ void         push_back (const char* name, double undurchsicht_, 
+                         bool grau_, bool aktiv_, int waehlbar_)
  {
   DBG_PROG_START
   int pos = size();
   hbox->begin();
-  profile_[pos] = new ICCwaehlerProfil( name, undurchsicht, grau, aktiv, pos );
+  profile_[pos] = new ICCwaehlerProfil( name, 
+                                        undurchsicht_, grau_, aktiv_, pos );
   hbox->end();
-  profile_[pos]->waehlbar( waehlbar_?true:false );
+  waehlbar( pos, waehlbar_ );
+  undurchsicht( pos, undurchsicht_ );
+  grau( pos, grau_ );
+  aktiv( pos, aktiv_ );
   redraw();
   DBG_PROG_ENDE
  }
- void         aktiv  (int pos)
+
+ void         expose ( int pos )
  {
-  if(pos < size())
-    profile_[pos]->aktivieren(true);
-  else
-   profile_[pos]->aktivieren(false); }
+  if(0 <= pos && pos < size())
+  {
+    undurchsicht( pos, profile_[pos]->undurchsicht() );
+    grau( pos, profile_[pos]->grau() );
+    aktiv( pos, profile_[pos]->aktiv() );
+    icc_examin->icc_betrachter->DD_farbraum->invalidate();
+  }
+ }
+
+ void         aktiv  ( int pos, int wert )
+ {
+  if(0 <= pos && pos < size())
+    profile_[pos]->aktivieren( wert?true:false );
+ }
 
  int          size      ()
  {
@@ -246,6 +286,20 @@ public:
  { DBG_PROG_START
    if(0 <= pos && pos < size())
 	   profile_[pos]->waehlbar( wert?true:false );
+   DBG_PROG_ENDE
+ }
+
+ void         undurchsicht ( int pos, double wert )
+ { DBG_PROG_START
+   if(0 <= pos && pos < size())
+	   profile_[pos]->undurchsicht( wert );
+   DBG_PROG_ENDE
+ }
+
+ void         grau ( int pos, int wert )
+ { DBG_PROG_START
+   if(0 <= pos && pos < size())
+	   profile_[pos]->grau( wert?true:false );
    DBG_PROG_ENDE
  }
 };

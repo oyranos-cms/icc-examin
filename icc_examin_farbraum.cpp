@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2005  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2007  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -55,9 +55,10 @@ using namespace icc_examin_ns;
 
 void
 ICCexamin::messwertLese (int n,
-                         std::vector<double> & p,
-                         std::vector<float>  & f,
-                         std::vector<std::string> & namen)
+                         oyNamedColours_s ** list
+                         /*std::vector<double> & p,
+                         std::vector<double>  & f,
+                         std::vector<std::string> & namen*/)
 {
   DBG_PROG_START
   if(profile.size() > n &&
@@ -84,12 +85,15 @@ ICCexamin::messwertLese (int n,
         DBG_NUM_V( icc_betrachter->DD_farbraum->zeig_punkte_als_messwerte )
 
       unsigned int j;
-      int n = messung.getPatchCount(); DBG_PROG_V( messung.getPatchCount() )
+      unsigned int n_farben = messung.getPatchCount(); DBG_PROG_V( messung.getPatchCount() )
+      oyNamedColour_s * c = 0;
+      oyNamedColours_s * nl = 0;
 
       if(messung.validHalf())
       {
-        for (j = 0; j < (unsigned) n; ++j)
+        for (j = 0; j < n_farben; ++j)
         { // first the measurments ...
+# if 0
           std::vector<double> daten;
           if(messung.hasXYZ() || messung.hasLab())
             daten = messung.getMessLab(j);
@@ -109,18 +113,67 @@ ICCexamin::messwertLese (int n,
           else
             daten = messung.getCmmRGB(j);
           for (unsigned i = 0; i < daten.size(); ++i) {
-            f.push_back((float)daten[i]);
+            f.push_back(daten[i]);
           }
           f.push_back(1.0);
           if (icc_betrachter->DD_farbraum->zeig_punkte_als_paare)
           { daten = messung.getCmmRGB(j);
             for (unsigned i = 0; i < daten.size(); ++i)
-              f.push_back((float)daten[i]);
+              f.push_back(daten[i]);
            f.push_back(1.0);
           } 
+#else
+          if(messung.hasXYZ() || messung.hasLab())
+            c = messung.getMessColour(j);
+          else
+            c = messung.getCmmColour(j);
+
+          if (c)
+            nl = oyNamedColours_MoveIn( nl, &c, -1 );
+#endif
         }
+
+        unsigned int n_old = oyNamedColours_Count( *list );
+
+        if(n_old != n_farben * 2)
+          oyNamedColours_Release( list );
+
+        if(icc_betrachter->DD_farbraum->zeig_punkte_als_paare)
+        {
+          if(n_old == n_farben * 2 && *list)
+          {
+            for(unsigned int i = 0; i < n_farben; ++i)
+            {
+              if(profile[n]->data_type == ICCprofile::ICCmeasurementDATA)
+                c = oyNamedColours_GetRef( *list, i );
+              else
+                c = messung.getCmmColour(i);
+
+              if(c)
+                nl = oyNamedColours_MoveIn( nl, &c, -1 );
+            }
+          }
+          else
+          {
+            for(unsigned int i = 0; i < n_farben; ++i)
+            {
+              if(profile[n]->data_type == ICCprofile::ICCmeasurementDATA)
+                c = oyNamedColours_GetRef( nl, i );
+              else
+                c = messung.getCmmColour(i);
+
+              if(c)
+                nl = oyNamedColours_MoveIn( nl, &c, -1 );
+            }
+          }
+        }
+
+        oyNamedColours_Release( list );
+
+        *list = nl; nl = 0;
+
       }
-      namen = messung.getFeldNamen();
+      //namen = messung.getFeldNamen();
     }
 
   DBG_PROG_ENDE
@@ -144,7 +197,9 @@ ICCexamin::netzLese (int n,
     if(farbraumModus())
       intent = profile[n]->intent();
 
-    icc_oyranos. netzVonProfil( *(profile[n]), intent, bpc(), netz_temp );
+    if(profile[n]->data_type == ICCprofile::ICCprofileDATA)
+      icc_oyranos.netzVonProfil( *(profile[n]), intent, bpc(), netz_temp );
+      
     if(netz_temp.punkte.size())
     {
       /*netz_temp[0].undurchsicht = (*netz)[n].undurchsicht;
@@ -182,10 +237,10 @@ ICCexamin::netzLese (int n,
    @return             nothing
  */
 void
-ICCexamin::farbenLese (int n,
-                       std::vector<double> & p,
-                       std::vector<float>  & f,
-                       std::vector<std::string> & names)
+ICCexamin::farbenLese  ( int n,
+                         std::vector<double> & p,
+                         std::vector<double>  & f,
+                         std::vector<std::string> & names )
 {
   DBG_PROG_START
   // show named colours
@@ -207,21 +262,17 @@ ICCexamin::farbenLese (int n,
 
     int item = pr->getTagIDByName("ncl2");
     std::vector<double> p_neu = pr->getTagNumbers (item, ICCtag::MATRIX);
-    unsigned int n_farben = 0;
+    int channels_n = pr->getColourChannelsCount();
+    unsigned int n_farben = p_neu.size()/(3+channels_n);
+
 
     names = pr->getTag(item).getText("ncl2_names");
 
     int mult = 1;
     int neu = 0;
 
-    if( !single )
+    if( single )
     {
-      n_farben = p_neu.size()/3;
-      icc_betrachter->DD_farbraum->zeig_punkte_als_messwerte = true;
-      icc_betrachter->DD_farbraum->zeig_punkte_als_paare = true;
-      if(icc_betrachter->DD_farbraum->zeig_punkte_als_paare)
-        mult = 2;
-    } else {
       if( patch > (int)p_neu.size() )
         WARN_S( "inadequate patch requested" << patch<<">"<< p_neu.size() )
       n_farben = 1;
@@ -232,7 +283,7 @@ ICCexamin::farbenLese (int n,
       DBG_PROG_S( "resize " << n_farben <<" "<<
               p_neu.size() / 3 <<" "<< p.size() / 3 / mult )
       p.resize( n_farben * 3 * mult );
-      f.resize( n_farben * 4 * mult );
+      f.resize( n_farben * channels_n * mult );
       neu = 1;
     }
 
@@ -270,47 +321,105 @@ ICCexamin::farbenLese (int n,
       }
     }
 
-    DBG_NUM_V( f.size() )
-    // ncl2 colours -> monitor colours
-    double *lab = new double [n_farben*mult*3],
-           *rgb=0;
-    if(single) {
-      for(unsigned i = 0; i < n_farben * 3; ++i)
-        lab[i] = p_neu[patch*3 + i];
-    } else 
-      for(unsigned i = 0; i < n_farben * 3; ++i)
-        lab[i] = p_neu[i];
+    if(n_farben != f.size() / channels_n / mult)
+      neu = 1;
+    else
+      neu = 0;
 
-    rgb = icc_oyranos. wandelLabNachBildschirmFarben(lab, n_farben*mult,
-                                 intentGet(NULL),
-                                 gamutwarn()?cmsFLAGS_GAMUTCHECK:0);
-    DBG_NUM_V( n_farben )
-    if(!rgb)  WARN_S( _("RGB result not available") )
+    DBG_NUM_V( f.size() )
     for(unsigned i = 0; i < n_farben; ++i)
     {
-      s = i*mult*4;
+      s = i*mult*channels_n;
       if(mult == 2 && !neu)
-      {
-        f[s+4] = f[s+0];
-        f[s+5] = f[s+1];
-        f[s+6] = f[s+2];
-        f[s+7] = 0.;
-      }
-      f[s+0] = rgb[i*3+0];
-      f[s+1] = rgb[i*3+1];
-      f[s+2] = rgb[i*3+2];
-      f[s+3] = 1.0;
+        for(int j = 0; j < channels_n; ++j)
+          f[s+channels_n + j] = f[s + j];
+
+      for(int j = 0; j < channels_n; ++j)
+        f[s + j] = p_neu[3*n_farben + i*channels_n + j];
+
       if(mult == 2 && neu)
-      {
-        f[s+4] = f[s+0];
-        f[s+5] = f[s+1];
-        f[s+6] = f[s+2];
-        f[s+7] = f[s+3];
-      }
+        for(int j = 0; j < channels_n; ++j)
+          f[s + channels_n + j] = f[i + j];
     }
-    if(lab) delete [] lab;
-    if(rgb) delete [] rgb;
   }
+
+  DBG_PROG_ENDE
+}
+
+void
+ICCexamin::farbenLese  ( int n,
+                         oyNamedColours_s ** list )
+{
+  DBG_PROG_START
+  int single = (n < 0);
+  oyNamedColours_s * nl = 0;
+
+  std::vector<double> p;
+  std::vector<double>  f;  // colour
+  std::vector<std::string> names;
+  oyNamedColour_s * c = 0;
+  oyProfile_s * prof = oyProfile_FromFile( profile[n]->filename(), 0, 0 );
+  int channels_n = oyProfile_GetChannelsCount( prof );
+
+
+  farbenLese(n, p, f, names);
+  unsigned int n_farben = p.size()/3;
+  unsigned int n_old = oyNamedColours_Count( *list );
+
+  if(n_old != n_farben * 2)
+    oyNamedColours_Release( list );
+
+  if( !single )
+  {
+    icc_betrachter->DD_farbraum->zeig_punkte_als_messwerte = true;
+    icc_betrachter->DD_farbraum->zeig_punkte_als_paare = true;
+  } else {
+    n_farben = 1;
+  }
+
+  for (unsigned int i = 0; i < n_farben; ++i)
+  {
+    double XYZ[3];
+    double cielab[3];
+    double * channels = &f[channels_n*i];
+    const char * name = 0;
+    unsigned int names_n = names.size();
+
+    if(i >= names_n)
+    {
+      if(names_n*2 == n_farben)
+        name = names[i-names_n].c_str();
+    } else
+      name = names[i].c_str();
+
+    LabToCIELab( &p[3*i], cielab, 1 );
+    oyLab2XYZ( cielab, XYZ );
+
+    c = oyNamedColour_CreateWithName( name,0,0, channels, XYZ, 0,0, prof, 0 );
+
+    if(c)
+      nl = oyNamedColours_MoveIn( nl, &c, -1 );
+  }
+  oyProfile_Release( &prof );
+
+  if(n_old == n_farben * 2 && *list)
+    for(unsigned int i = 0; i < n_farben; ++i)
+    {
+      c = oyNamedColours_GetRef( *list, i );
+      if(c)
+        nl = oyNamedColours_MoveIn( nl, &c, -1 );
+    }
+  else
+    for(unsigned int i = 0; i < n_farben; ++i)
+    {
+      c = oyNamedColours_GetRef( nl, i );
+      if(c)
+        nl = oyNamedColours_MoveIn( nl, &c, -1 );
+    }
+
+  oyNamedColours_Release( list );
+
+  *list = nl;
 
   DBG_PROG_ENDE
 }
@@ -327,9 +436,10 @@ ICCexamin::farbraum (int n)
   texte.push_back(_("CIE *b"));
 
   std::vector<double> p;
-  std::vector<float>  f;
+  std::vector<double> f;
   std::vector<std::string> names;
-  icc_betrachter->DD_farbraum->herausNormalPunkte( p, f );
+  oyNamedColours_s * namedColours = 0;
+  namedColours = icc_betrachter->DD_farbraum->namedColours();
 
   DBG_PROG_V( n <<" "<< profile.size()<<" "<<profile.aktuell() )
   DBG_PROG_V( profile[n]->filename() )
@@ -343,8 +453,26 @@ ICCexamin::farbraum (int n)
      has_mess )
     {
       DBG_PROG
-      messwertLese(n, p,f,namen);
+      messwertLese(n, &namedColours);
       messwerte = true;
+#if 0
+      oyNamedColours_Release( &namedColours );
+      oyProfile_s * prof = oyProfile_FromFile( profile[n]->filename(), 0, 0 );
+      oyNamedColour_s * nc = 0, * tmp;
+      for(size_t i = 0; i < namen.size(); ++i)
+      {
+        
+        tmp = nc = oyNamedColour_CreateWithName( 0,namen[i].c_str(),0,
+                                           &f[4*i], 0, 0,0, prof, 0 );
+        namedColours = oyNamedColours_MoveIn( namedColours, &nc, -1 );
+        /*tmp = nc = oyNamedColours_GetRef( namedColours, 
+                                    oyNamedColours_Count(namedColours)-1);
+        oyNamedColour_Release( &nc );
+        tmp = nc = oyNamedColours_GetRef( namedColours, 0 );
+        oyNamedColour_Release( &nc );*/
+      }
+      oyProfile_Release( &prof );
+#endif
     }
   MARK( frei(true); )
 
@@ -358,7 +486,7 @@ ICCexamin::farbraum (int n)
   if( profile.size() > n && ncl2_profil )
   {
     DBG_PROG
-    farbenLese(n, p,f,names);
+    farbenLese(n, &namedColours );//p,f,names);
   }
 
   bool neues_netz = false;
@@ -366,7 +494,8 @@ ICCexamin::farbraum (int n)
     neues_netz = true;
 
   if(n == 0)
-    icc_betrachter->DD_farbraum->hineinPunkte( p, f, namen, texte );
+    icc_betrachter->DD_farbraum->namedColours( namedColours );
+  oyNamedColours_Release( &namedColours );
 
   do {
     icc_examin_ns::sleep(0.05);

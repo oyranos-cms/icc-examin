@@ -4,24 +4,28 @@ TARGET=icc_examin
 TARGET_NAME="ICC Examin"
 BINTARGET="`echo $TARGET | sed s/_//g`"
 ERROR=0
-test -f error.tmp && rm error.tmp
-test -f config.sh && rm config.sh
 
 CONF_H=config.h
 CONF=makefile
+CONF_TEMP_SH=config.tmp.sh
+CONF_LOG=config.log
 CONF_I18N=fl_i18n/makefile
 SPEC=$TARGET.spec
 VERS="$TARGET"_version.h
 zeile="$0 $@"
 MAKEFILE_DIR=". fl_i18n"; export MAKEFILE_DIR
 
-export CONF_H CONF CONF_I18N
+
+export CONF_H CONF CONF_I18N CONF_TEMP_SH CONF_LOG
+
+test -f error.tmp && rm error.tmp
+test -f $CONF_TEMP_SH && rm $CONF_TEMP_SH
 
 VERSION_A=0
 VERSION_B=4
 VERSION_C=5
 RELEASE=0
-ZEIT="May 2004 - September 2007"
+ZEIT="May 2004 - December 2007"
 VERSION=$VERSION_A.$VERSION_B$VERSION_C
 if [ $VERSION_A -gt 9 ]; then
   VERSION_L="$VERSION_A"
@@ -40,10 +44,10 @@ else
 fi
 VERSION_L=`echo $VERSION_L | sed 's/^0*//g'`
 
-INFOECHO="echo"
 
 cwdebug=0
 debug=0
+verbose=0
 nodeps=0
 
 # find a suitable fltk-config script
@@ -62,13 +66,6 @@ if [ -n "$fltkconfig_" ]; then
   fltkconfig="$fltkconfig_"
 fi
 IFS=$old_IFS
-
-echo ""
-echo "################################################################"
-echo "#                                                              #"
-echo "        Welcome to $TARGET_NAME Version $VERSION configurator"
-echo "#                                                              #"
-echo "#                       Configuration                          #"
 
 if [ $# -gt 0 ]; then
   prefix=""
@@ -119,6 +116,7 @@ if [ $# -gt 0 ]; then
     switch=with-fltk-config
     if [ "`echo \"$1\" | sed s/\"--$switch=\"//`" != "$1" ]; then
       fltkconfig="`echo $1 | sed s/--$switch=//`"
+      fltkldflags="--ldstaticflags"
     fi
     switch=argyll-internal
     if [ "`echo \"$1\" | sed s/\"--$switch=\"//`" != "$1" ]; then
@@ -132,6 +130,10 @@ if [ $# -gt 0 ]; then
     if [ "`echo \"$1\" | sed s/\"--$switch\"//`" != "$1" ]; then
       cwdebug="1"
     fi
+    switch=with-rpath
+    if [ "`echo \"$1\" | sed s/\"--$switch\"//`" != "$1" ]; then
+      rpath=1
+    fi
     switch=quick
     if [ "`echo \"$1\" | sed s/\"--$switch\"//`" != "$1" ]; then
       quick="1"
@@ -139,6 +141,10 @@ if [ $# -gt 0 ]; then
     switch=enable-debug
     if [ "`echo \"$1\" | sed s/\"--$switch\"//`" != "$1" ]; then
       debug="1"
+    fi
+    switch=enable-verbose
+    if [ "`echo \"$1\" | sed s/\"--$switch\"//`" != "$1" ]; then
+      verbose="1"
     fi
     switch=disable-dependency-tracking
     if [ "`echo \"$1\" | sed s/\"--$switch\"//`" != "$1" ]; then
@@ -160,31 +166,33 @@ if [ $# -gt 0 ]; then
       echo ""
       echo "   --with-fltk-config=[fltk-config]     alternative fltk version"
       echo "   --enable-debug                       debug version"
+      echo "   --enable-verbose                     verbose compiling"
       echo "   --disable-dependency-tracking        no dependencies [default check]"
       echo "   --enable-cwdebug=[\$cwdebugdir]       deploy cwlibary for debugging"
+      echo "   --with-rpath                         use rpath for ELF linking"
       echo "   --quick                              generate config files only"
       echo "   --help"
       echo ""
       echo " Optionally set the CC, CXX, CFLAGS, CXXFLAGS and LDFLAGS environment variables."
       echo ""
-      exit
+      exit 0
     fi
     shift
   done
 fi
 
+INFOECHO="&2"
+echo -e "$zeile \$@\n\nexit 0\n\n" > $CONF_LOG
+chmod 0755 $CONF_LOG
+
+echo_=""; echo -e "$echo_" >> $CONF_LOG; echo "$echo_"
+echo_="################################################################"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
+echo_="#                                                              #"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
+echo_="        Welcome to $TARGET_NAME Version $VERSION configurator"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
+echo_="#                                                              #"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
+echo_="#                       Configuration                          #"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
+
 ECHO="echo";
-
-echo ""
-echo "################################################################"
-echo "#                                                              #"
-echo "        Welcome to $TARGET_NAME Version $VERSION configurator"
-echo "#                                                              #"
-echo "#                       Configuration                          #"
-
-
-echo "$zeile \$@" > config.log
-chmod 0755 config.log
 
 src_dir="`(cd ..;pwd)`/""$TARGET"-"$VERSION"
 
@@ -194,9 +202,15 @@ if [ -z "$prefix" ]; then
 fi
 
 if [ -z "$datadir" ]; then
-  test -f $prefix/share/config.site && . $prefix/share/config.site
+  if [ -f $prefix/share/config.site ]; then
+    . $prefix/share/config.site
+    (. $prefix/share/config.site >> $CONF_LOG )
+  fi
 else
-  test -f $datadir/config.site && . $datadir/config.site
+  if [ -f $datadir/config.site ]; then
+    . $datadir/config.site
+    (. $datadir/share/config.site >> $CONF_LOG )
+  fi
 fi
 
 test -f error.txt && rm error.txt
@@ -215,7 +229,7 @@ echo "TARGET = $TARGET" >> $CONF
 echo "BINTARGET = $BINTARGET" >> $CONF
 echo "" >> $CONF
 
-echo ""
+echo_=""; echo "$echo_" >> $CONF_LOG; echo "$echo_"
 
 
 # detect System
@@ -223,7 +237,7 @@ echo ""
 UNAME_=`uname`
 OSUNAME=BSD
 if [ $? = 0 ] && [ $UNAME_ = "Darwin" ]; then
-  echo "Darwin PPC              detected"
+  echo_="Darwin PPC              detected"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
   echo "APPLE = 1" >> $CONF
   echo "#define APPLE 1" >> $CONF_H
   echo "OSX_H =" >> $CONF
@@ -232,31 +246,31 @@ else
   if [ $UNAME_ = "Linux" ]; then
     osuname="LINUX = 1"
     echo "#define LINUX 1" >> $CONF_H
-    echo "Linux system            detected"
+    echo_="Linux system            detected"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
     OSUNAME=Linux
   else
     if [ $UNAME_ = "SunOS" ]; then
       osuname="SOLARIS = 1"
       echo "#define SOLARIS 1" >> $CONF_H
-      echo "SunOS                   detected"
+      echo_="SunOS                   detected"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
       OSUNAME=SunOS
     else
       if [ $UNAME_ = "OpenBSD" ] || [ $UNAME_ = "NetBSD" ] || [ $UNAME_ = "FreeBSD" ]; then
         osuname="BSD = 1"
         OS_EXT=.bsd
         echo "#define BSD 1" >> $CONF_H
-        echo "BSD $UNAME_             detected"
+        echo_="BSD $UNAME_             detected"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
         OSUNAME=BSD
       else
         if [ `uname -a | grep W32 | wc -l` -gt 0 ];then
           osuname="WIN32 = 1"
           echo "#define WIN32 1" >> $CONF_H
-          echo "Windows $UNAME_             detected"
+          echo_="Windows $UNAME_             detected"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
           echo "EXEC_END = .exe" >> $CONF
           EXEC_END=.exe; export EXEC_END
           OSUNAME=Windows
         else
-          echo "ICC Examin may or may not compile on your $UNAME_ system"
+          echo_="ICC Examin may or may not compile on your $UNAME_ system"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
         fi
       fi
     fi
@@ -269,18 +283,18 @@ MACH_=`uname -m`
 MACH=BUILD_32
 if [ $? = 0 ]; then
   if [ "$MACH_" = "i686" ]; then
-    echo "32-bit system           detected"
+    echo_="32-bit system           detected"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
   else
     if [ "$MACH_" = "x86_64" ]; then
       MACH=BUILD_64
       echo "BUILD_64 = 1" >> $CONF
-      echo "X86_64                  try build in 64 bit mode"
+      echo_="X86_64                  try build in 64 bit mode"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
       BARCH="64"
     else
       if [ "$MACH_" = "sun4u" ]; then
         MACH=BUILD_64
         echo "BUILD_64 = 1" >> $CONF
-        echo "spark ultra 4           try build in 64 bit mode"
+        echo_="spark ultra 4           try build in 64 bit mode"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
         BARCH="64"
         LINE_ARCH="-64"
       fi
@@ -296,7 +310,7 @@ if [ $OSUNAME = Windows ]; then
 #  srcdir=`echo $srcdir | sed s%$USERNAME/%%`
 #  srcdir=`echo $srcdir | sed s%/%%1`
   srcdir=`echo $srcdir | sed s%/%\\\\\\\\\\\\\\\\\\%g`
-  test -z "$srcdir" && echo srcdir not detected in `pwd`
+  test -z "$srcdir" && echo_="srcdir not detected in `pwd`"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
 else
   srcdir="`pwd`"
 fi
@@ -322,7 +336,7 @@ export CC CXX
 
 CFLAGS_COMMON="$CFLAGS"
 CXXFLAGS_COMMON="$CXXFLAGS"
-LDFLAGS_COMMON="$LDFLAGS"
+LDFLAGS_COMMON="$LDFLAGS -loyranos_alpha"
 MAKE_CFLAGS="\$(INCL) \$(ARGYLL_H) \$(DEBUG)"
 MAKE_CXXFLAGS="\$(INCL) \$(ARGYLL_H) \$(DEBUG)"
 MAKE_LDFLAGS="\$(ARGYLL_LIBS)"
@@ -334,7 +348,7 @@ fi
 if [ "`echo $exec_prefix | grep 64 | wc -l`" -eq "1" ]; then
   BARCH=""
   LIBDIR="lib"
-  echo unset BARCH LIBDIR
+  echo_="unset BARCH LIBDIR"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
   export BARCH LIBDIR
 fi
 if [ -z "$bindir" ]; then
@@ -373,7 +387,7 @@ else
 fi
 export prefix exec_prefix bindir sbindir libdir includedir datadir mandir
 export pixmapdir desktopdir
-export fltkconfig cwdebug debug
+export fltkconfig fltkldflags cwdebug debug verbose
 
 PATH=$bindir:$PATH
 export PATH
@@ -394,7 +408,7 @@ if [ -n "$ECHO" ]; then
     if [ -d $ARGYLL_VERSION ]; then
       cd $ARGYLL_VERSION
       if [ -n "$ECHO" ]; then
-        test -n "$INFOECHO" && $INFOECHO ./configure --enable-static $nodeps_config_opt --prefix=$prefix
+        echo_="./configure --enable-static $nodeps_config_opt --prefix=$prefix"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
       fi
       ./configure --enable-static $nodeps_config_opt --prefix=$prefix
       cd $srcdir
@@ -458,8 +472,10 @@ else
     echo "LIBNAMEV = lib\$(TARGET)\$(LIBMID).\$(VERSION_A)" >> $CONF
     echo "LINK_FLAGS_STATIC = $LDFLAGS_COMMON" >> $CONF
     echo "LINK_NAME = -Wl,-soname -Wl,\$(LIBNAMEFULL)" >> $CONF
-    echo "LINK_LIB_PATH = -Wl,--rpath -Wl,\$(libdir)" >> $CONF
-    echo "LINK_SRC_PATH = -Wl,--rpath -Wl,\$(srcdir)" >> $CONF
+    if [ -n "$rpath" ]; then
+      echo "LINK_LIB_PATH = -Wl,--rpath -Wl,\$(libdir)" >> $CONF
+      echo "LINK_SRC_PATH = -Wl,--rpath -Wl,\$(srcdir)" >> $CONF
+    fi
     echo "INSTALL = install $DEBUG_SWITCH" >> $CONF
   else
     echo "COPY = cp -p" >> $CONF
@@ -469,8 +485,10 @@ else
       MAKE_LDFLAGS="\$(iconv)"
       INSTALL="install $DEBUG_SWITCH"
       test -n "$ECHO" && $ECHO "LINK_FLAGS = -shared \$(iconv)" >> $CONF
-      test -n "$ECHO" && $ECHO "LINK_LIB_PATH = -Wl,--rpath -Wl,\$(libdir)" >> $CONF
-      test -n "$ECHO" && $ECHO "LINK_SRC_PATH = -Wl,--rpath -Wl,\$(srcdir)" >> $CONF
+      if [ -n "$rpath" ]; then
+        test -n "$ECHO" && $ECHO "LINK_LIB_PATH = -Wl,--rpath -Wl,\$(libdir)" >> $CONF
+        test -n "$ECHO" && $ECHO "LINK_SRC_PATH = -Wl,--rpath -Wl,\$(srcdir)" >> $CONF
+      fi
       test -n "$ECHO" && $ECHO "INSTALL = install $DEBUG_SWITCH" >> $CONF
     fi
     if [ $OSUNAME = "SunOS" ]; then
@@ -518,8 +536,8 @@ echo "LDFLAGS  = $LDFLAGS $MAKE_LDFLAGS"    >> $CONF_I18N
 
 echo "" >> $CONF
 echo "" >> $CONF
-echo ""
-echo ""
+echo_=""; echo "$echo_" >> $CONF_LOG; echo "$echo_"
+echo_=""; echo "$echo_" >> $CONF_LOG; echo "$echo_"
 
 LIBS_TEST="dl iconv intl"; export LIBS_TEST
 X_ADD="Xpm Xext"; export X_ADD
@@ -571,7 +589,7 @@ if [ -d ../../../plug-ins/icc_examin/ ]; then
   CP_VERSION=`$CP_CONFIG --version`
   echo "CP_DIR=`$CP_CONFIG --install-dir`" >> $CONF
   echo "INSTALL_TARGET=install_cp" >> $CONF
-  echo "local CinePaint $CP_VERSION  detected"
+  echo_="local CinePaint $CP_VERSION  detected"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
   echo "CINEPAINT = icc_examin_cp" >> $CONF
 else
   echo "INSTALL_TARGET=install_global" >> $CONF
@@ -583,12 +601,12 @@ if [ -z "$CP_CONFIG" ]; then
     CP_LIBS="cinepainttool --libs"
     CP_VERSION=`cinepainttool --version`
     CP_N_VERSION=`cinepainttool --version | sed "s/\.// ; s/-.//"`
-    echo "Gtk CinePaint $CP_VERSION    detected"
+    echo_="Gtk CinePaint $CP_VERSION    detected"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
     cp_reqired=22
     if [ "$CP_N_VERSION" -ge $cp_reqired ]; then
       echo "CINEPAINT = icc_examin_cp" >> $CONF
     else
-      echo "too old CinePaint version - need at least 0.$cp_reqired"
+      echo_="too old CinePaint version - need at least 0.$cp_reqired"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
     fi
   fi
 fi
@@ -599,8 +617,8 @@ if [ -n "$CP_VERSION" ]; then
   echo "#define ICC_CINEPAINT_VERSION \"Gtk CinePaint $CP_VERSION\"" >> $VERS
 fi
 
-echo ""
-echo ""
+echo_=""; echo "$echo_" >> $CONF_LOG; echo "$echo_"
+echo_=""; echo "$echo_" >> $CONF_LOG; echo "$echo_"
 
 
 
@@ -635,36 +653,36 @@ echo "Release: $RELEASE" >> $SPEC
 echo "%define pixmapdir       $pixmapdir" >> $SPEC
 echo "%define desktopdir      $desktopdir" >> $SPEC
 cat  "$SPEC.in" >> $SPEC
-echo generated $SPEC from "$SPEC.in"
+echo_="generated $SPEC from \"$SPEC.in\""; echo "$echo_" >> $CONF_LOG; echo "$echo_"
 
 
-echo "prefix =                $prefix"
+echo_="prefix =                $prefix"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
 
-echo ""
-echo "################################################################"
-echo "#                       Configuration                          #"
-echo "prefix          =       $prefix"
-echo "exec_prefix     =       $exec_prefix"
-echo "bindir          =       $bindir"
-echo "sbindir         =       $sbindir"
-echo "libdir          =       $libdir"
-echo "includedir      =       $includedir"
-echo "datadir         =       $datadir"
-echo "mandir          =       $mandir"
-echo "pixmapdir       =       $pixmapdir"
-echo "desktopdir      =       $desktopdir"
-echo "srcdir          =       $srcdir" 
+echo_=""; echo "$echo_" >> $CONF_LOG; echo "$echo_"
+echo_="################################################################"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
+echo_="#                       Configuration                          #"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
+echo_="prefix          =       $prefix"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
+echo_="exec_prefix     =       $exec_prefix"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
+echo_="bindir          =       $bindir"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
+echo_="sbindir         =       $sbindir"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
+echo_="libdir          =       $libdir"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
+echo_="includedir      =       $includedir"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
+echo_="datadir         =       $datadir"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
+echo_="mandir          =       $mandir"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
+echo_="pixmapdir       =       $pixmapdir"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
+echo_="desktopdir      =       $desktopdir"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
+echo_="srcdir          =       $srcdir" ; echo "$echo_" >> $CONF_LOG; echo "$echo_"
 if [ -n "$cwdebug" ]; then
-echo "cwdebug         =       $cwdebug"
+echo_="cwdebug         =       $cwdebug"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
 fi
-echo "CC              =       $CC"
-echo "CXX             =       $CXX"
-echo "CFLAGS          =       $CFLAGS"
-echo "CXXFLAGS        =       $CXXFLAGS"
-echo "LDFLAGS         =       $LDFLAGS"
-echo "INCL            =       $INCL"
-echo "################################################################"
-echo ""
+echo_="CC              =       $CC"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
+echo_="CXX             =       $CXX"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
+echo_="CFLAGS          =       $CFLAGS"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
+echo_="CXXFLAGS        =       $CXXFLAGS"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
+echo_="LDFLAGS         =       $LDFLAGS"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
+echo_="INCL            =       $INCL"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
+echo_="################################################################"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
+echo_=""; echo "$echo_" >> $CONF_LOG; echo "$echo_"
 
 echo "src_dir = $src_dir" >> $CONF
 echo "srcdir = $srcdir" >> $CONF
@@ -709,12 +727,12 @@ echo "#endif /* ICCEXAMIN_CONFIG_H */" >> $CONF_H
 test -f error.tmp && ERROR=1
 test -f error.tmp && rm error.tmp
 if [ "$ERROR" -ne "0" ]; then
-  echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-  echo "!!!                     An ERROR occured                     !!!"
-  echo "!!!                     See Log above                        !!!"
-  echo "!!!                     remove  $CONF                     !!!"
-  echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-  echo ""
+  echo_="!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
+  echo_="!!!                     An ERROR occured                     !!!"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
+  echo_="!!!                     See Log above                        !!!"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
+  echo_="!!!                     remove  $CONF                     !!!"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
+  echo_="!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
+  echo_=""; echo "$echo_" >> $CONF_LOG; echo "$echo_"
   rm Makefile $CONF_H $CONF_SH $SPEC $PKGC $MPKG
   exit
 else
@@ -723,9 +741,5 @@ else
   fi
 fi
 
-
-if [ `cat error.txt | wc -l` -lt 1 ]; then
-  rm error.txt
-fi
 
 

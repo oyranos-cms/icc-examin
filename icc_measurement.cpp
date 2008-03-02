@@ -334,7 +334,7 @@ ICCmeasurement::leseTag (void)
 
     if(cgats.messungen[m].felder.size() != 1)
     {
-      WARN_S( "There are unadequate field declarations: "
+      WARN_S( "There are unadequate field deflarations: "
               << cgats.messungen[m].felder.size() )
       return;
     }
@@ -567,6 +567,10 @@ ICCmeasurement::init (void)
     load (profile_, profile_->getTag(profile_->getTagIDByName("targ")));
     leseTag ();
   }
+  else if (profile_->hasTagName("b015")) {
+    load (profile_, profile_->getTag(profile_->getTagIDByName("b015")));
+    leseTag ();
+  }
   else if (profile_->hasTagName("DevD") && (profile_->hasTagName("CIED"))) {
     load (profile_, profile_->getTag(profile_->getTagIDByName("DevD")));
     leseTag ();
@@ -574,6 +578,7 @@ ICCmeasurement::init (void)
     load (profile_, profile_->getTag(profile_->getTagIDByName("CIED")));
     leseTag ();
   }
+
   if (RGB_MessFarben_.size() != 0)
     DBG_NUM_V( RGB_MessFarben_.size() );
 
@@ -899,7 +904,9 @@ ICCmeasurement::init_umrechnen                     (void)
       if( profile_->size() )
         hCOLOUR = cmsOpenProfileFromMem (const_cast<char*>(profile_->data_),
                                          (DWORD)profile_->size_);
-      else { // alternative
+
+      if(!hCOLOUR)
+      { // alternative
         size_t groesse = 0;
         const char* block = 0;
 #       ifdef HAVE_OY
@@ -917,6 +924,7 @@ ICCmeasurement::init_umrechnen                     (void)
         } else
           hCOLOUR = cmsOpenProfileFromMem(const_cast<char*>(block), (DWORD)groesse);
       }
+
       if( !hCOLOUR )
         WARN_S("hCOLOUR is empty")
 
@@ -1512,6 +1520,96 @@ ICCmeasurement::getCmmLab                   (int patch)
   return punkte;
 }
 
+/** @func  getCmmColour
+ *  @brief get a measured colour as Oyranos struct
+ *
+ *  The XYZ colour is calculated from the contained original channels over 
+ *  the profile.
+ *
+ *  @since ICC Examin 0.45
+ *  @date  28 december 2007 (ICC Examin 0.45)
+ */
+oyNamedColour_s *
+ICCmeasurement::getCmmColour (int patch)
+{ DBG_MESS_START
+  oyNamedColour_s * nc = 0;
+  int i = patch;
+  double * channels = 0, * XYZ = 0;
+
+  if (XYZ_Ergebnis_.size() == 0)
+    init ();
+
+  if (patch > nFelder_) {
+    WARN_S( "Patch Nr: " << patch << " outside the measurement set" )
+    DBG_MESS_ENDE
+    return nc;
+  }
+
+  oyProfile_s * prof = oyProfile_FromFile( profile_->filename(), 0, 0 );
+
+  if(CMYK_measurement_)
+    channels = (double*)&CMYK_Satz_[i];
+  else if(RGB_measurement_)
+    channels = (double*)&RGB_Satz_[i];
+
+  XYZ = (double*)&XYZ_Ergebnis_[i];
+
+  nc = oyNamedColour_CreateWithName( Feldnamen_[i].c_str(),0,0,
+                                     channels, XYZ, 0,0, prof, 0 );
+  DBG_MESS_ENDE
+  return nc;
+}
+
+/** @func  getMessColour
+ *  @brief get a measured colour as Oyranos struct
+ *
+ *  The XYZ colour and the device channels are preserved from the measurement.
+ *  The profile is provided informational.
+ *
+ *  @since ICC Examin 0.45
+ *  @date  28 december 2007 (ICC Examin 0.45)
+ */
+oyNamedColour_s *
+ICCmeasurement::getMessColour (int patch)
+{ DBG_MESS_START
+  oyNamedColour_s * nc = 0;
+  int i = patch;
+  double * channels = 0, * XYZ = 0;
+
+  if (XYZ_Satz_.size() == 0)
+    init ();
+
+  if (patch > nFelder_) {
+    WARN_S( "Patch Nr: " << patch << " outside the measurement set" )
+    DBG_MESS_ENDE
+    return nc;
+  }
+
+  oyProfile_s * prof = 0;
+
+  if(profile_->data_type == ICCprofile::ICCprofileDATA)
+    prof = oyProfile_FromFile( profile_->filename(), 0, 0 );
+  else
+  {
+    if(CMYK_measurement_)
+      prof = oyProfile_FromStd( oyEDITING_CMYK, 0 );
+    else
+      prof = oyProfile_FromStd( oyEDITING_RGB, 0 );
+  }
+
+  if(CMYK_measurement_)
+    channels = (double*)&CMYK_Satz_[i];
+  else if(RGB_measurement_)
+    channels = (double*)&RGB_Satz_[i];
+
+  XYZ = (double*)&XYZ_Satz_[i];
+
+  nc = oyNamedColour_CreateWithName( Feldnamen_[i].c_str(),0,0,
+                                     channels, XYZ, 0,0, prof, 0 );
+  DBG_MESS_ENDE
+  return nc;
+}
+
 
 /** get infos about a CGATS tag
 
@@ -1546,14 +1644,13 @@ ICCmeasurement::getPatchLines              ( const char       * tag_name )
   return patches;
 }
 
+
 /** Get information about a text line in a measurement tag.
  */
-std::vector<double>
-ICCmeasurement::getPatchLine                (int line, const char * tag_name,
-                                             std::vector<float> & channels,
-                                             std::string & name )
+oyNamedColour_s *
+ICCmeasurement::getPatchLine  ( int line, const char * tag_name )
 { DBG_MESS_START
-  std::vector<double> punkte;
+  oyNamedColour_s * nc = 0;
   int patch = -1;
 
   if (Lab_Ergebnis_.size() == 0)
@@ -1578,63 +1675,23 @@ ICCmeasurement::getPatchLine                (int line, const char * tag_name,
   if (patch > nFelder_) {
     WARN_S( "Patch Nr: " << patch << " outside the measurement set" )
     DBG_MESS_ENDE
-    return punkte;
+    return nc;
   }
   if( patch == -1 ) {
     DBG_PROG_S( "Line Nr: " << line << " outside the measurement size" )
     DBG_MESS_ENDE
-    return punkte;
+    return nc;
   }
-
-  punkte.resize(3);
-  if(hasRGB())
-  {
-    channels.resize(3);
-  }
-  if(hasCMYK())
-  {
-    channels.resize(4);
-  }
-  std::vector<float> & c = channels;  
-          if(hasRGB())
-          {
-            RGB_s rgb;
-            getTargRGB( patch, &rgb );
-            c[0] = rgb.R;
-            c[1] = rgb.G;
-            c[2] = rgb.B;
-          }
-          if(hasCMYK())
-          {
-            CMYK_s cmyk;
-            getTargCMYK( patch, &cmyk );
-            c[0] = cmyk.C;
-            c[1] = cmyk.M;
-            c[2] = cmyk.Y;
-            c[3] = cmyk.K;
-          }
 
   if( std::string(tag_name) == "DevD" ||
       ( !Lab_Satz_.size() &&
         Lab_Ergebnis_.size() ) )
-  {
-    punkte[0] = Lab_Ergebnis_[patch].L;
-    punkte[1] = Lab_Ergebnis_[patch].a;
-    punkte[2] = Lab_Ergebnis_[patch].b;
-  } else if (Lab_Satz_.size() && RGB_MessFarben_.size())
-  {
-    punkte[0] = Lab_Satz_[patch].L;
-    punkte[1] = Lab_Satz_[patch].a;
-    punkte[2] = Lab_Satz_[patch].b;
-  } else {
-    punkte.resize(0);
-    channels.resize(0);
-    name.resize(0);
-  }
-  name = Feldnamen_[patch];
+    nc = getCmmColour( patch );
+  else if (Lab_Satz_.size() && RGB_MessFarben_.size())
+    nc = getMessColour( patch );
 
   DBG_MESS_ENDE
-  return punkte;
+  return nc;
 }
 
 

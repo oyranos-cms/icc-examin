@@ -74,6 +74,9 @@
 #define EAGAIN 11
 #endif
 
+#ifdef _
+#undef _
+#endif
 #ifdef USE_GETTEXT
 # include <libintl.h>
 # define _(text) threadGettext(text)
@@ -286,7 +289,9 @@ namespace icc_examin_ns {
 
 /* mathematische Helfer */
 
+#ifndef MIN
 #define MIN(a,b)    (((a) <= (b)) ? (a) : (b))
+#endif
 #define MAX(a,b)    (((a) > (b)) ? (a) : (b))
 #define HYP(a,b)    sqrt( (a)*(a) + (b)*(b) )
 #define HYP3(a,b,c) sqrt( (a)*(a) + (b)*(b) + (c)*(c) )

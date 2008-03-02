@@ -277,6 +277,7 @@ ICCprofile::load (const Speicher & prof)
 
     // known tags with measurements
     if (tags[i].getTagName() == "targ"
+     || tags[i].getTagName() == "b015"
      || tags[i].getTagName() == "DevD"
      || tags[i].getTagName() == "CIED"
      && data_type == ICCprofileDATA) {
@@ -315,7 +316,13 @@ size_t
 ICCprofile::size     ()
 {
   DBG_PROG
-  return header.size();
+  size_t size = header.size();
+
+  // needed to load non profile vrml's
+  if(!size && data_ && size_)
+    size = size_;
+
+  return size;
 }
     //const char*         cmm      ()        {DBG_PROG return header.cmmName(); }
     //void                cmm      (const char* s) {DBG_PROG header.cmmName (s); }
@@ -629,8 +636,12 @@ ICCprofile::valid ()
       magic[1] == 'c' &&
       magic[2] == 's' &&
       magic[3] == 'p')
+  {
     return true;
-  else
+  /*} else if(data_type == ICCvrmlDATA || data_type == ICCmeasurementDATA &&
+            data_ && size_) {
+    return true;
+  */} else
     return false;
 }
 
@@ -666,6 +677,8 @@ ICCprofile::getColourChannelsCount(void)
           this->hasTagName("gTRC") &&
           this->hasTagName("bTRC")) {
     channels = 3;
+  } else {
+    channels = getColorSpaceChannels(colorSpace());
   }
 
   DBG_PROG_ENDE
@@ -724,6 +737,21 @@ ICCprofile::getProfileSize  ()
 char*
 ICCprofile::saveProfileToMem  (size_t *size)
 { DBG_PROG_START
+  char *block = 0;
+
+  // vrml part
+  /*if(data_type == ICCvrmlDATA || data_type == ICCmeasurementDATA &&
+     data_ && size_)
+  {
+    block = (char*)calloc (sizeof (char) , size_);
+    memcpy (block, data_, size_);
+    if(size) {
+      *size = size_;
+    }
+    DBG_PROG_ENDE
+    return block;
+  }*/
+
   if (data_ && size_) free(data_);//delete []data_;
   size_ = sizeof (icHeader) + sizeof (icUInt32Number); DBG_PROG_V(size_ <<" "<<sizeof (icProfile))
   data_ = (char*)calloc (sizeof (char) , size_); //new char (sizeof(icHeader) );
@@ -732,7 +760,7 @@ ICCprofile::saveProfileToMem  (size_t *size)
   header.size(size_); DBG_PROG_V (size_ )
   writeHeader ();
 
-  char *block = (char*)calloc (sizeof (char) , size_);
+  block = (char*)calloc (sizeof (char) , size_);
   memcpy (block, data_, size_);
   if(size) {
     *size = size_;
@@ -881,7 +909,9 @@ bool
 ICCprofile::hasMeasurement()
 {
   DBG_PROG
-  return (hasTagName("targ") || (hasTagName("CIED")&&hasTagName("DevD")));
+  return (hasTagName("targ") ||
+          hasTagName("b015") ||
+          (hasTagName("CIED")&&hasTagName("DevD")));
 }
 
 bool
@@ -891,6 +921,7 @@ ICCprofile::tagBelongsToMeasurement( int tag )
   std::string name = tags[tag].getTagName();
   int s = tags[tag].getSize();
   return ( (name == "targ" ||
+            name == "b015" ||
             (name == "CIED"&&hasTagName("DevD")) ||
             (hasTagName("CIED")&&name == "DevD"))
            && s );

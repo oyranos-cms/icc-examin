@@ -134,11 +134,13 @@ fl_set_codeset_    ( const char* lang, const char* codeset_,
             return 1;
           }
           snprintf( settxt, 63, "LANG=%s", locale );
-          //putenv( settxt );
+#ifdef __APPLE__
+          putenv( settxt );
+#endif
           free(settxt);
         }
 #ifdef _POSIX_C_SOURCE
-#if 0
+#ifdef __APPLE__
         setenv("LANG", locale, 1); /* setenv is Posix, but might be ignored */
 #endif
 #endif
@@ -255,7 +257,7 @@ fl_initialise_locale( const char *domain, const char *locale_path,
   // set the locale info
   if(strlen(locale) && set_codeset == FL_I18N_SETCODESET_SELECT)
   {
-     setlocale (LC_MESSAGES, locale);
+     tmp = setlocale (LC_MESSAGES, locale);
   }
   if (tmp)
     snprintf(locale,TEXTLEN, tmp);

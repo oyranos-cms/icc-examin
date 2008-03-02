@@ -61,6 +61,7 @@ CPP_HEADERS = \
 	icc_info.h \
 	icc_icc.h \
 	icc_kette.h \
+	icc_list.h \
 	icc_measurement.h \
 	icc_modell_beobachter.h \
 	icc_oyranos.h \

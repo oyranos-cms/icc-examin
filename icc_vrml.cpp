@@ -123,7 +123,7 @@ iccCreateVrml( const char* p, int size, int intent )
 #endif /* USE_ARGYLL */
 
   ptn = profil_temp_name; oyStrAdd( ptn, ".icc");
-# ifndef DEBUG
+# ifndef DEBUG_
   eraseFile (ptn.c_str());
 # endif
   ptn = profil_temp_name; oyStrAdd( ptn, ".gam");

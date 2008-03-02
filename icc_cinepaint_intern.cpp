@@ -19,8 +19,10 @@
  */
 
 /* 
- * copies an assigned ICC profil to $TMP_DIR and call iccexamin
+ * copies an assigned ICC profil to $TMP_DIR and calls the dialog
  *
+ * internal linking of iccexamin in the icc_examin_cp plug-in
+ *  2006(?)
  * add writing of image samples out to an profile - name: plug_in_icc_watch
  *  2005-02-28
  * bugfixes
@@ -36,15 +38,6 @@
 
 
 /***   includes   ***/
-
-#include <string>
-#include <sstream>
-#include <iostream>
-#include <fstream>
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <vector>
 
 #include "icc_utils.h"
 #include "config.h"
@@ -62,16 +55,6 @@
 #endif
 
 
-
-using namespace std;
-
-
-extern "C" {
-#include <libgimp/gimp.h>
-#include <libgimp/stdplugins-intl.h>
-#include <lcms.h>
-#include <icc34.h>
-}
 
 
 /*** local macros ***/
@@ -239,8 +222,7 @@ std::vector<double>       geraetefarbe;   //!< image colours
 std::vector<std::string>  name;           //!< colour names
 std::string an,                //!< image profile name
             bn,                //!< colour profile
-            pn,                //!< proof profile
-            tn;                //!< file name and command line
+            pn;                //!< proof profile
 size_t tag_size;               //!< ncl2 tag size
 int x_num;                     //!< number of measurement points in x/y
 int y_num;
@@ -284,7 +266,7 @@ const char*     dateiName(const char* name);
  *  @{ */
 static void     minMax    (gint32   image_ID, int & min_x, int & min_y,
                                     int & max_x, int & max_y );
-static void     holeFarbPunkt ( channel* layers, int & x, int & y,
+static std::string holeFarbPunkt ( channel* layers, int & x, int & y,
                                 unsigned char *buf, int &n,
                                 int &colour_x);
 static void     getColour (channel* layers, int n,
@@ -349,6 +331,7 @@ startWithArgs( int argc, char **argv )
     ICCexamin hauptprogramm;
 
     icc_examin = &hauptprogramm;
+    icc_examin->scheme("gtk+");
 
     hauptprogramm.start(argc, argv);
 }
@@ -389,20 +372,12 @@ doExamin (gint32 image_ID, CMSProfileType typ)
       profil_temp_name << "/tmp/icc_examin_temp_" << dateiname << "_" << typ << ".icc";
     std::string tname = profil_temp_name.str();
     schreibeDatei(mem_profile, size, tname.c_str());
-    std::string tn = "export PATH=$PATH:/opt/local/bin; iccexamin '";
-    tn += tname;
-    tn += "'";
-
-#if 0
-    system (tn.c_str());
-#else
     const char *args_c[2];
 
     args_c[0] = argv[0];
     args_c[1] = tname.c_str();
 
     startWithArgs(2, (char**)args_c);
-#endif
 
     remove( tname.c_str() );
   } else
@@ -625,26 +600,31 @@ vergleicheFarben(void* zeiger)
   }
 
   DBG_PLUG_S( "nlayers: " << nlayers )
+ 
+  name.resize(x_num*y_num+2);
+ 
   if(nlayers)
+  {
     for( int x = 0; x < x_num; ++x )
       for( int y = 0; y < y_num; ++y )
       {
         x_punkt = (int)(x_start + x*x_diff);
         y_punkt = (int)(y_start + y*y_diff);
 
-        holeFarbPunkt(layer, x_punkt, y_punkt,
+        name[colour_x] = holeFarbPunkt(layer, x_punkt, y_punkt,
                       buf, n, colour_x);
         ++colour_x;
       }
+  }
 
     // Maximalwerte
   int x = MAX(MIN(min_x, layer->sel_w + layer->sel_x1), layer->sel_x1);
   int y = MAX(MIN(min_y, layer->sel_h + layer->sel_y1), layer->sel_y1);
-  holeFarbPunkt(layer, x, y, buf, n, colour_x);
+  name[colour_x] = holeFarbPunkt(layer, x, y, buf, n, colour_x);
   ++colour_x;
   x = MAX(MIN(max_x, layer->sel_w + layer->sel_x1), layer->sel_x1);
   y = MAX(MIN(max_y, layer->sel_h + layer->sel_y1), layer->sel_y1);
-  holeFarbPunkt(layer, x, y, buf, n, colour_x);
+  name[colour_x] = holeFarbPunkt(layer, x, y, buf, n, colour_x);
 
   {
     // Vergleich der vorherigen Auslese
@@ -734,6 +714,10 @@ vergleicheFarben(void* zeiger)
     // Abschnittsgroesse
   *((icUInt32Number*)zahl) = icValue((icUInt32Number)tag_size);
   memcpy(&colour_profile[164], zahl, 4);
+    // Farbraum
+  *((icUInt32Number*)zahl) = icValue((icUInt32Number)
+                                     cmsGetColorSpace( hp ));
+  memcpy(&colour_profile[16], zahl, 4);
 
   DBG_PROG_S( (int*)image_profile << " " << tag_size )
 
@@ -806,19 +790,6 @@ waechter (void* zeiger)
   // start ICC Examin
   if(!bin_erste)
   {
-    tn = "iccexamin ";
-    tn += bn;  // the colours
-    tn += " ";
-    tn += an;  // the image profile
-    tn += " '";
-    tn += pn;  // the proof profile
-    tn += "'";
-
-    DBG_PROG_S( tn )
-
-#if 0
-    system (tn.c_str());
-#else
     const char *args_c[4];
 
     args_c[0] = argv[0];
@@ -827,7 +798,6 @@ waechter (void* zeiger)
     args_c[3] = pn.c_str();
 
     startWithArgs(4, (char**)args_c);
-#endif
 
     DBG_PROG_S( "bin_erste: " << bin_erste )
     freilauf = false;
@@ -1206,10 +1176,11 @@ doWatch (gint32 image_ID_)
  *  @param n		layer number
  *  @param colour_x	tells the position to write in the colour in colour[]
  */
-static void
+static std::string
 holeFarbPunkt (channel* layer, int & x_punkt, int & y_punkt,
                unsigned char *buf, int & n, int &colour_x)
 {
+    char txt[80] = {0};
 
         #ifdef DEBUG_
         DBG_CINE_S( n <<": " << x_punkt <<","<< y_punkt << " " )
@@ -1224,6 +1195,7 @@ holeFarbPunkt (channel* layer, int & x_punkt, int & y_punkt,
         colour[colour_x*farb_kanaele+2] *= 100.0;
         if(farb_kanaele == 4)
         colour[colour_x*farb_kanaele+3] *= 100.0;
+        sprintf( txt, "%d,%d", x_punkt, y_punkt );
         #ifdef DEBUG_
         cout << colour_x <<": "<<
                 colour[colour_x*farb_kanaele+0] <<" "<< 
@@ -1233,6 +1205,7 @@ holeFarbPunkt (channel* layer, int & x_punkt, int & y_punkt,
         cout << colour[colour_x*farb_kanaele+3] <<" ";
         DBG
         #endif
+    return std::string(txt);
 }
 
 /** @brief write ncl2

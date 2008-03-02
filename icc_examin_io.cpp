@@ -154,7 +154,7 @@ ICCexaminIO::oeffnenThread_ ()
 
   // load
   icc_examin->clear();
-  icc_examin->icc_betrachter->DD_farbraum->punkte_clear();
+  icc_examin->icc_betrachter->DD_farbraum->namedColoursRelease();
   profile.clear();
   icc_examin->fortschritt( -.1 , 1.0  );
   for (unsigned int i = 0; i < speicher_vect_.size(); ++i)
@@ -211,13 +211,14 @@ ICCexaminIO::oeffnenThread_ ()
           netze[i].aktiv = true;
         }
         icc_examin_ns::lock(__FILE__,__LINE__);
+        icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze = netze;
         icc_examin->icc_betrachter->DD_farbraum->hineinNetze(netze);
         std::vector<std::string> texte;
         texte.push_back(_("CIE *L"));
         texte.push_back(_("CIE *a"));
         texte.push_back(_("CIE *b"));
         icc_examin->icc_betrachter->DD_farbraum->achsNamen(texte);
-        icc_examin->icc_betrachter->DD_farbraum->punkte_clear();
+        icc_examin->icc_betrachter->DD_farbraum->namedColoursRelease();
         icc_examin->gamutAnsichtZeigen();
         icc_examin_ns::unlock(this, __FILE__,__LINE__);
       } else
@@ -243,16 +244,18 @@ ICCexaminIO::oeffnenThread_ ()
     }
     namen_alt = namen_neu;
     DBG_NUM_V( "#################### " << namensgleich << " ##############")
+    int anzahl = profile.size();
     if(!namensgleich)
     {
       icc_examin_ns::lock(__FILE__,__LINE__);
       if(icc_examin->icc_waehler_)
         icc_examin->icc_waehler_->clear();
-      int anzahl = profile.size();
       DBG_PROG_V( anzahl )
       double undurchsicht;
       bool grau;
       bool waehlbar;
+      bool active;
+      const char * name = 0;
       std::vector<int> aktiv = profile.aktiv();
       DBG_PROG_V( aktiv.size() )
       for(int i = 0; i < anzahl; ++i) {
@@ -267,16 +270,20 @@ ICCexaminIO::oeffnenThread_ ()
         DBG_PROG_V( undurchsicht )
         grau = icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze[i].grau?true:false;
         waehlbar = profile[i]->size() > 128 ? true : false;
+        active = aktiv[i];
+        active = icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze[i].aktiv;
 
         if(icc_examin->icc_waehler_)
         {
-          std::string name = profile.name(i);
-          icc_examin->icc_waehler_->push_back( dateiName( name.c_str() ),
-                                undurchsicht, grau , aktiv[i], waehlbar);
+          name = profile.name(i).c_str();
+          icc_examin->icc_waehler_->push_back( dateiName( name ),
+                                undurchsicht, grau , active, waehlbar);
         }
       }
       icc_examin_ns::unlock(this, __FILE__,__LINE__);
-    }
+    } else
+      for(int i = 0; i < anzahl; ++i)
+        icc_examin->icc_waehler_->expose(i);
 
     // set window name
     if(0) {

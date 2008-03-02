@@ -1,3 +1,6 @@
+2007-11-08
+	* neu: add --with-rpath configure option
+
 2007-09-11
 	* fix: #1792127 quality report not savable  in new file
 

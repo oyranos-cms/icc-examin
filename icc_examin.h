@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2005  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2007  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -159,16 +159,19 @@ class ICCexamin : public icc_examin_ns::Beobachter,
     bool farbraumModus( ) { /*DBG_PROG_V( farbraum_modus_ );*/ return farbraum_modus_; }
     void farbraumModus( int profil );
     void messwertLese  ( int n,
-                         std::vector<double> & p,
-                         std::vector<float>  & f,
-                         std::vector<std::string> & namen);
+                         oyNamedColours_s ** list
+                         /*std::vector<double> & p,
+                         std::vector<double> & f,
+                         std::vector<std::string> & namen*/);
     void setzMesswerte ( );
     void netzLese      ( int n,
                          std::vector<ICCnetz> * netz);
     void farbenLese    ( int n,
+                         oyNamedColours_s ** list );
+    void farbenLese    ( int n,
                          std::vector<double> & p,
-                         std::vector<float>  & f,
-                         std::vector<std::string> & names);
+                         std::vector<double> & f,
+                         std::vector<std::string> & names );
 
 
     void vcgtZeigen ();
@@ -191,6 +194,7 @@ class ICCexamin : public icc_examin_ns::Beobachter,
 
     void statusAktualisieren();  //!< use the "status" macro
 
+    void scheme(const char* plastic_or_gtk); //!< "plastic" "gtk+"
 };
 
 int tastatur(int e);

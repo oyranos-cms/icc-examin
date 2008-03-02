@@ -42,6 +42,8 @@
 #include <sys/time.h>
 #endif
 
+#include <oyranos/oyranos_monitor.h>
+
 #include <FL/Fl_Menu_Button.H>
 #include <FL/Fl.H>
 #include <FL/gl.h>
@@ -72,7 +74,7 @@ void zeichneKegel( GLdouble breite, GLdouble hoehe, GLint seiten,
                    GLdouble x, GLdouble y, GLdouble z );
 
 #ifdef DEBUG
-#define DEBUG_ICCGL_
+#define DEBUG_ICCGL
 #endif
 #ifdef DEBUG_ICCGL
 #define DBG_ICCGL_START DBG_NUM_START
@@ -192,11 +194,11 @@ GL_Ansicht::init_()
   valid_ = false;
   zeit_ = 0;
   text[0] = 0;
+  colours_ = 0;
   epoint_ = 0;
-  mouse_3D_hit = oyNamedColourCreate(
-                              0, 0,
-                              (icColorSpaceSignature)0, 0, _("mouse"), 0, 0,
-                              0,0, "", malloc, free );
+  oyProfile_s * prof = oyProfile_FromStd( oyEDITING_XYZ, NULL );
+  mouse_3D_hit = oyNamedColour_Create( NULL, NULL,0, prof, 0 );
+  oyProfile_Release( &prof );
 
   for(int i = 0; i <= DL_MAX; ++i)
     gl_listen[i] = 0;
@@ -235,6 +237,8 @@ GL_Ansicht::~GL_Ansicht()
   //if(font) delete font;
   //if(ortho_font) delete ortho_font;
 # endif
+
+  namedColoursRelease();
 
   --ref_;
 
@@ -308,9 +312,7 @@ GL_Ansicht::copy (const GL_Ansicht & gl)
   tabelle_ = gl. tabelle_;
   nach_farb_namen_ = gl. nach_farb_namen_;
   von_farb_namen_ = gl. von_farb_namen_;
-  farb_namen_ = gl. farb_namen_;
-  punkte_ = gl. punkte_;
-  farben_ = gl. farben_;
+  colours_ = oyNamedColours_Copy( gl.colours_, NULL );
 
   DBG_PROG_ENDE
   return *this;
@@ -713,17 +715,17 @@ GL_Ansicht::GLinit_()
   }
 # endif
   if(!holeDateiModifikationsZeit(font_name)) {
-    DBG_S( _("Could not open font in:") << font_name )
+    DBG_PROG_S( _("Could not open font in:") << font_name )
     font_name = "/usr/X11R6/lib/X11/fonts/truetype/arial.ttf";
     if(!holeDateiModifikationsZeit(font_name)) {
-      DBG_S( _("Could not open font in:") << font_name )
+      DBG_PROG_S( _("Could not open font in:") << font_name )
 #ifdef  WIN32
       font_name = "C:\\Windows\\Fonts\\arial.ttf";
 #else
       font_name = "/Library/Fonts/Arial.ttf";
 #endif
       if(!holeDateiModifikationsZeit(font_name)) {
-        DBG_S( _("Could not open font in:") << font_name )
+        DBG_PROG_S( _("Could not open font in:") << font_name )
         char *n = (char*) calloc(sizeof(char), 1024);
 #ifdef  WIN32
         sprintf (n, "%s%s.fonts%sarial.ttf", getenv("HOME"),
@@ -734,11 +736,11 @@ GL_Ansicht::GLinit_()
         font_name = n;
         DBG_PROG_V( holeDateiModifikationsZeit(font_name) )
         if(!holeDateiModifikationsZeit(font_name)) {
-          DBG_S( _("Could not open font in:") << font_name )
+          DBG_PROG_S( _("Could not open font in:") << font_name )
           //sprintf (n, "%s/fonts/FreeSans.ttf", ICCEXAMIN_DATADIR);
           font_name = n;
           if(!holeDateiModifikationsZeit(font_name)) {
-            DBG_S( _("Could not open font in:") << font_name )
+            DBG_PROG_S( _("Could not open font in:") << font_name )
             sprintf (n, "%s/FreeSans.ttf", SRCDIR);
             font_name = n;
           }
@@ -1244,8 +1246,6 @@ GL_Ansicht::netzeAuffrischen()
       DBG_ICCGL_V( dreiecks_netze[0].undurchsicht )
     }
 
-  unsigned int j,k;
-
       // sort meshes
       glPushMatrix();
          // orientate the matrix to the camera
@@ -1380,7 +1380,7 @@ GL_Ansicht::netzeAuffrischen()
 
       glLineWidth(strich1*strichmult);
       int index[7];
-      double normale[3], len=1.0, v1[3], v2[3];
+      double normale[3], len=1.0;
 
       // all material colours obtian here their transparency
       glColorMaterial( GL_FRONT_AND_BACK, GL_SPECULAR );
@@ -1414,7 +1414,7 @@ GL_Ansicht::netzeAuffrischen()
                           netz.punkte[index[l]].koord[1] );
             }
           glEnd();
-          //DBG_V( index <<" "<< len <<" "<< normale[0] <<" "<< v1[0] <<" "<< v2[0] );
+          //DBG_V( index <<" "<< len <<" "<< normale[0] );
           if(icc_debug != 0)
           {
           glLineWidth(strich1*strichmult);
@@ -1455,6 +1455,42 @@ GL_Ansicht::netzeAuffrischen()
 
 
 void
+GL_Ansicht::iccPoint3d               ( oyPROFILE_e         projection,
+                                       double            * vertex,
+                                       double              radius )
+{
+  double d3[3];
+
+  switch (projection)
+  {
+    case oyEDITING_LAB:
+         CIELabToLab( vertex, d3, 1 );
+         d3[2] *= b_darstellungs_breite;
+         d3[1] *= a_darstellungs_breite;
+         break;
+    default:
+         memcpy( d3, vertex, sizeof(double) * 3 );
+  }
+
+  if(radius)
+  {
+    int dim = 12;
+    GLUquadricObj *quad;
+    quad = gluNewQuadric();
+
+    if(radius <= 0.005)
+      dim = 5;
+    else if (radius <= 0.01)
+      dim = 8;
+     glTranslated( d3[2], d3[0], d3[1] );
+     gluSphere( quad, radius, dim, dim );
+  }
+  else
+    glVertex3d( d3[2], d3[0], d3[1] );
+  
+}
+
+void
 GL_Ansicht::punkteAuffrischen()
 { DBG_PROG_START
 
@@ -1464,13 +1500,9 @@ GL_Ansicht::punkteAuffrischen()
   }
 
   //coordinates  in CIE*b CIE*L CIE*a 
-  if (punkte_.size()) {
-    if( punkte_.size() )
-      DBG_PROG_V( punkte_.size() );
-    if( farben_.size() )
-      DBG_PROG_V( farben_.size() );
-    if( farb_namen_.size() )
-      DBG_PROG_V( farb_namen_.size() );
+  if (oyNamedColours_Count( colours_ )) {
+    if( oyNamedColours_Count( colours_ ) )
+      DBG_PROG_V( oyNamedColours_Count( colours_ ) )
 
     gl_listen[PUNKTE] = glGenLists(1);
     glNewList( gl_listen[PUNKTE], GL_COMPILE); DBG_PROG_V( gl_listen[PUNKTE] )
@@ -1491,27 +1523,64 @@ GL_Ansicht::punkteAuffrischen()
         // positioning
         glTranslated( -b_darstellungs_breite/2,-.5,-a_darstellungs_breite/2 );
 
-        size_t n = punkte_.size()/6;
+        int x = this->x() + this->w()/2;
+        int y = this->y() + this->h()/2;
+        char * disp_name = oyGetDisplayNameFromPosition( 0, x,y, malloc );
+        oyProfile_s * disp_prof = 0;
+        if(disp_name)
+        {
+          char * moni_profile_name = oyGetMonitorProfileName(disp_name, malloc);
+          if(moni_profile_name)
+          {
+            disp_prof = oyProfile_FromFile( moni_profile_name, 0, 0 );
+
+          } else {
+
+            size_t size = 0;
+            char * buf = oyGetMonitorProfile( disp_name, &size, malloc );
+            if(size && buf)
+            {
+              disp_prof = oyProfile_FromMem( size, buf, 0, 0 );
+              free(buf); size = 0;
+            }
+          }
+          free(disp_name);
+        }
+
+        int n = oyNamedColours_Count( colours_ );
         if(zeig_punkte_als_paare)
-          for (unsigned i = 0; i < n*6; i+=6)
+          n /= 2;
+        oyNamedColour_s * c = NULL;
+        double lab[3];
+        double rgba[4] = {0,0,0,1};
+        oyPROFILE_e projection = oyEDITING_LAB;
+        if(zeig_punkte_als_paare)
+          for (int i = 0; i < n; ++i) /* 6 */
           {
             glLineWidth(strich2*strichmult);
             glBegin(GL_LINES);
+              c = oyNamedColours_GetRef( colours_, i );
               if(!zeig_punkte_als_messwerte)
                 glColor4d(.97, .97, .97, 1. );
-              else
-                glColor4d(farben_[i/3*4+0], farben_[i/3*4+1],
-                          farben_[i/3*4+2], farben_[i/3*4+3] );
+              else {
+                oyNamedColour_GetColour( c, disp_prof, rgba, oyDOUBLE, 0 );
+                glColor4dv( rgba );
+              }
+              oyNamedColour_GetColourStd( c, projection, lab, oyDOUBLE, 0 );
+              iccPoint3d ( projection, lab, 0 );
+              oyNamedColour_Release( &c );
 
-              glVertex3d(punkte_[i+2], punkte_[i+0], punkte_[i+1]);
-
+              c = oyNamedColours_GetRef( colours_, n + i );
               if(!zeig_punkte_als_messwerte)
                 glColor4d(1., .6, .6, 1.0 );
-              else
-                glColor4d(farben_[i/3*4+4], farben_[i/3*4+5],
-                          farben_[i/3*4+6], farben_[i/3*4+7] );
+              else {
+                oyNamedColour_GetColour( c, disp_prof, rgba, oyDOUBLE, 0 );
+                glColor4dv( rgba );
+              }
 
-              glVertex3d(punkte_[i+5], punkte_[i+3], punkte_[i+4] );
+              oyNamedColour_GetColourStd( c, projection, lab, oyDOUBLE, 0 );
+              iccPoint3d ( projection, lab, 0 );
+              oyNamedColour_Release( &c );
             glEnd();
           }
 
@@ -1527,31 +1596,30 @@ GL_Ansicht::punkteAuffrischen()
              glPointSize(punktgroesse);
              glColor4d(.97, .97, .97, 1. );
              glBegin(GL_POINTS);
-               if(zeig_punkte_als_paare && !zeig_punkte_als_messwerte)
+               for (int i = 0; i < n; ++i)
                {
-                 for (unsigned i = 0; i < n*6; i+=6)
-                 {
-                   if (!dreiecks_netze[0].grau && farben_.size())
-                     glColor4f(farben_[i/3*4+0], farben_[i/3*4+1],
-                               farben_[i/3*4+2], farben_[i/3*4+3] );
-                   glVertex3d( punkte_[i+2], punkte_[i+0], punkte_[i+1] );
-                 }
-               } else {
-                 for (unsigned i = 0; i < punkte_.size(); i+=3)
-                 {
-                   if (!dreiecks_netze[0].grau && farben_.size())
-                     glColor4f(farben_[i/3*4+0], farben_[i/3*4+1],
-                               farben_[i/3*4+2], farben_[i/3*4+3] );
-                   glVertex3d( punkte_[i+2], punkte_[i+0], punkte_[i+1] );
-                 }
+                   c = oyNamedColours_GetRef( colours_, i );
+                   oyNamedColour_GetColour( c, disp_prof, rgba, oyDOUBLE, 0 );
+                   glColor4dv( rgba );
+                   oyNamedColour_GetColourStd( c, projection, lab,
+                                               oyDOUBLE, 0 );
+                   iccPoint3d ( projection, lab, 0 );
+                   oyNamedColour_Release( &c );
                }
              glEnd();
              // shadow
              glColor4f( schatten, schatten, schatten, 1. );
              glPointSize((punktgroesse/2-1)>0?(punktgroesse/2-1):1);
              glBegin(GL_POINTS);
-               for (unsigned i = 0; i < punkte_.size(); i+=3)
-                 glVertex3d( punkte_[i+2], 0, punkte_[i+1] );
+               for (int i = 0; i < n; ++i)
+               {
+                 c = oyNamedColours_GetRef( colours_, i );
+                 oyNamedColour_GetColourStd( c, projection, lab,
+                                             oyDOUBLE, 0 );
+                 lab[0] = 0;
+                 iccPoint3d ( projection, lab, 0 );
+                 oyNamedColour_Release( &c );
+               }
              glEnd();
             break;
           case MENU_dE1KUGEL: rad = 0.005;dim = 5; kugeln_zeichnen = true;break;
@@ -1561,16 +1629,24 @@ GL_Ansicht::punkteAuffrischen()
           case MENU_DIFFERENZ_LINIE: // they are drawn anyway
                break;
         }
-        if(kugeln_zeichnen) 
-               for (unsigned i = 0; i < punkte_.size(); i+=3) {
+
+        if(kugeln_zeichnen)
+        {
+          if(zeig_punkte_als_paare)
+            n *= 2; 
+            for (int i = 0; i < n; ++i)
+            {
                  glPushMatrix();
-                   if (farben_.size())
-                     glColor4f(farben_[i/3*4+0], farben_[i/3*4+1],
-                               farben_[i/3*4+2], farben_[i/3*4+3] );
-                   glTranslated( punkte_[i+2], punkte_[i+0], punkte_[i+1] );
-                   gluSphere( quad, rad, dim, dim );
+                   c = oyNamedColours_GetRef( colours_, i );
+                   oyNamedColour_GetColour( c, disp_prof, rgba, oyDOUBLE, 0);
+                   glColor4dv( rgba );
+                   oyNamedColour_GetColourStd( c, projection, lab,
+                                               oyDOUBLE, 0 );
+                   iccPoint3d( projection, lab, rad );
+                   oyNamedColour_Release( &c );
                  glPopMatrix();
-               }
+            }
+        }
       glPopMatrix();
 #     ifndef Beleuchtung_
       glEnable(GL_LIGHTING);
@@ -1622,7 +1698,8 @@ GL_Ansicht::zeigeUmrisse_()
       for(int k = 0; k < 3 ; ++k)
         Lab_Speicher[j*3+k] = dreiecks_netze[d].umriss[j].koord[k];
 
-    RGB_Speicher = icc_oyranos.wandelLabNachBildschirmFarben( Lab_Speicher,
+    RGB_Speicher = icc_oyranos.wandelLabNachBildschirmFarben( x(),y(),
+                                 Lab_Speicher,
                                  (size_t)n, icc_examin->intentGet(NULL), 0);
     DBG_PROG_V( n )
     // create shadow
@@ -1634,7 +1711,7 @@ GL_Ansicht::zeigeUmrisse_()
       Lab_Speicher_schatten[i*3+2] = (Lab_Speicher[i*3+2]-.5)*.25+0.5;
     }
 
-    RGBSchatten_Speicher = icc_oyranos.wandelLabNachBildschirmFarben(
+    RGBSchatten_Speicher = icc_oyranos.wandelLabNachBildschirmFarben( x(),y(),
                              Lab_Speicher_schatten, n, icc_examin->intentGet(NULL), 0);
     if(!RGB_Speicher)  WARN_S( "RGB_speicher result is not available" )
     if(!RGBSchatten_Speicher)  WARN_S( "RGB_speicher result is not available" )
@@ -1778,7 +1855,8 @@ GL_Ansicht::zeigeSpektralband_()
       }
     }
 
-    RGB_Speicher = icc_oyranos.wandelLabNachBildschirmFarben( Lab_Speicher,
+    RGB_Speicher = icc_oyranos.wandelLabNachBildschirmFarben( x(),y(),
+                                 Lab_Speicher,
                                  (size_t)n_punkte, icc_examin->intentGet(NULL), 0);
 
     if(typ_ == 1)
@@ -1796,7 +1874,7 @@ GL_Ansicht::zeigeSpektralband_()
       Lab_Speicher_schatten[i*3+2] = (Lab_Speicher[i*3+2]-.5)*.25+0.5;
     }
 
-    RGBSchatten_Speicher = icc_oyranos.wandelLabNachBildschirmFarben(
+    RGBSchatten_Speicher = icc_oyranos.wandelLabNachBildschirmFarben( x(),y(),
                                Lab_Speicher_schatten, n_punkte, icc_examin->intentGet(NULL), 0);
     if(!RGB_Speicher)  WARN_S( "RGB_speicher result not available" )
     if(!RGBSchatten_Speicher)  WARN_S( "RGB_speicher result not available" )
@@ -1925,7 +2003,8 @@ GL_Ansicht::menueErneuern_()
     menue_form_->add( _("gray"), 0,c_, (void*)MENU_GRAU, 0 );
     menue_form_->add( _("coloured"), 0,c_, (void*)MENU_FARBIG, 0 );
     menue_form_->add( _("high contrast"), 0,c_, (void*)MENU_KONTRASTREICH, 0 );
-    menue_form_->add( _("shells"), 0,c_, (void*)MENU_SCHALEN, 0 );
+    // Shells alike displaying, alternatves are "Membranes" or "Shells"
+    menue_form_->add( _("Onion skins"), 0,c_, (void*)MENU_SCHALEN, 0 );
     menue_form_->add( _("Colour line"), 0,c_, (void*)MENU_SPEKTRALBAND, 0 );
   } else {
     // spheres with their radius symbolise measurement colours
@@ -2124,11 +2203,11 @@ GL_Ansicht::zeichnen()
       {
         double l[3];
         Lab_s lab;
-        const char * temp = oyNamedColourGetNick( epoint_ );
+        const char * temp = oyNamedColour_GetName( epoint_, oyNAME_NICK, 0 );
         if(temp)
           sprintf( text, "%s", temp );
-        oyNamedColourGetLab ( epoint_, l );
-        OyLabToLab( l, lab );
+        oyNamedColour_GetColourStd( epoint_, oyEDITING_LAB, l, oyDOUBLE, 0 );
+        CIELabToLab( l, lab );
         oY = LNachY( lab.L );
         oZ = aNachZ( lab.a );
         oX = bNachX( lab.b );
@@ -2145,30 +2224,49 @@ GL_Ansicht::zeichnen()
                        -grenze < oX && oX < grenze &&
                        -grenze < oZ && oZ < grenze)
         {
-          double l[3];
-          l[0] = YNachL(oY);
-          l[1] = Znacha(oZ);
-          l[2] = Xnachb(oX);
-          LabToOyLab( l, l, 1 );
-          oyNamedColourSetLab ( mouse_3D_hit, l );
+          double d[3];
+          d[0] = YNachL(oY);
+          d[1] = Znacha(oZ);
+          d[2] = Xnachb(oX);
+          LabToCIELab( d, d, 1 );
+          oyLab2XYZ(d, d);
+
+          if(!mouse_3D_hit)
+          {
+            oyProfile_s * prof = oyProfile_FromStd( oyEDITING_XYZ, NULL );
+            mouse_3D_hit = oyNamedColour_Create( NULL, NULL,0, prof, 0 );
+            oyProfile_Release( &prof );
+          }
+
+          oyNamedColour_SetColourStd ( mouse_3D_hit, oyEDITING_XYZ,
+                                       (oyPointer)d, oyDOUBLE, 0 );
           benachrichtigen( ICCexamin::GL_MOUSE_HIT3D );
           if(epoint_)
           {
-            double l[3];
             Lab_s lab;
-            oyNamedColourGetLab ( epoint_, l );
-            OyLabToLab( l, lab );
+            oyNamedColour_GetColourStd( epoint_, oyEDITING_LAB, d, oyDOUBLE, 0);
+            CIELabToLab( d, lab );
             oY = LNachY( lab.L );
             oZ = aNachZ( lab.a );
             oX = bNachX( lab.b );
             mausPunkt_( oX, oY, oZ, X, Y, Z, 0 );
-            const char * temp = oyNamedColourGetNick( epoint_ );
-            sprintf( text, "%s", temp );
-          } else {
+            const char * temp = oyNamedColour_GetName( epoint_, oyNAME_NICK, 0 );
+            if(temp)
+              sprintf( text, "%s", temp );
+            else
+              text[0] = 0;
+          } 
+          if(!strlen(text))
+          {
+            double d[3];
+            d[0] = YNachL(oY);
+            d[1] = Znacha(oZ);
+            d[2] = Xnachb(oX);
+            LabToCIELab( d, d, 1 );
             sprintf( text,"%s:%.02f %s:%.02f %s:%.02f",
-                               von_farb_namen_[0].c_str(), oY*1.00+.50,
-                               von_farb_namen_[1].c_str(), oZ*1.00,
-                               von_farb_namen_[2].c_str(), oX*1.00 );
+                               von_farb_namen_[0].c_str(), d[0],
+                               von_farb_namen_[1].c_str(), d[1],
+                               von_farb_namen_[2].c_str(), d[2] );
           }
         } else {
           if(!epoint_)
@@ -2187,7 +2285,7 @@ GL_Ansicht::zeichnen()
         /*if(epoint_ && epoint_->sig == icSigRgbData)
           rgb = &epoint_->channels[0];
         else*/
-          rgb_ = rgb = icc_oyranos.wandelLabNachBildschirmFarben(lab,
+          rgb_ = rgb = icc_oyranos.wandelLabNachBildschirmFarben( x(),y(),lab,
                                  1, icc_examin->intentGet(NULL),
                                  icc_examin->gamutwarn()?cmsFLAGS_GAMUTCHECK:0);
         {
@@ -2277,6 +2375,7 @@ GL_Ansicht::zeichnen()
                    DBG_PROG_V( L<<" "<<a<<" "<<b<<" "<<wert )
                    DBG_PROG_V( tabelle_.size()<<" "<<tabelle_[L].size()<<" "<<
                                tabelle_[L][a].size()<<" "<<kanal )
+                   // "Pos" is a abreviation to position and will be visible in the small statusline with position coordinates
                    sprintf( text,"%s[%d][%d][%d]: ", _("Pos"),
                             (int)((oY+0.5)*tabelle_.size()),
                             (int)((oZ+0.5)*tabelle_[L].size()),
@@ -2366,6 +2465,21 @@ GL_Ansicht::zeichnen()
          kanalname.append(": ");
          kanalname.append(kanalName());
 
+/*         oyNamedColour_s   * c = oyNamedColours_GetRef( colours_, 0 );
+         const char* chan_name = 0;
+         if(c)
+         {
+           chan_name = oyProfile_GetChannelName( c->profile_,
+                                                           kanal, oyNAME_NAME );
+           kanalname.append( chan_name );
+           oyNamedColour_Release( &c );
+  
+         } else if(von_farb_namen_.size() > kanal) {
+
+             kanalname.append( von_farb_namen_[kanal] );
+         }
+  */
+
 #        ifdef HAVE_FTGL
          if(ortho_font)
            glRasterPos3d(0,ortho_font->LineHeight()/5+20,9.99);
@@ -2399,12 +2513,12 @@ GL_Ansicht::zeichnen()
 
     if( epoint_ && Fl::belowmouse() == this )
       // allow other colours to appear
-      oyNamedColourRelease( &epoint_ );
+      oyNamedColour_Release( &epoint_ );
 
 
   } else
     if(!icc_examin->frei())
-      DBG_S("icc_examin not free")
+      DBG_PROG_S("icc_examin not free")
   icc_examin->report_owner = 0;
 
   MARK( frei(true); )
@@ -2427,20 +2541,50 @@ GL_Ansicht::achsNamen    (std::vector<std::string> achs_namen)
   DBG_PROG_ENDE
 }
 
-void
-GL_Ansicht::herausNormalPunkte (std::vector<double>    & p,
-                                std::vector<float>     & f)
+oyNamedColours_s*
+GL_Ansicht::namedColours       ()
 {
-  p = punkte_,
-  f = farben_;
-  unsigned int n = (unsigned int)p.size()/3;
-  for (unsigned int i = 0; i < n; ++i)
-  {
-    p[i*3+1] = p[i*3+1]/a_darstellungs_breite;
-    p[i*3+2] = p[i*3+2]/b_darstellungs_breite;
-  }
+  oyNamedColours_s * colours;
+
+  DBG_PROG_START
+  colours = oyNamedColours_Copy( colours_, NULL );
+
+  DBG_PROG_ENDE
+  return colours;
 }
 
+void
+GL_Ansicht::namedColours       (oyNamedColours_s       * colours)
+{
+  DBG_PROG_START
+  MARK( frei(false); )
+             oyNamedColours_Release( &colours_ );
+  colours_ = oyNamedColours_Copy( colours, NULL );
+
+  if (!zeig_punkte_als_messwerte &&
+      punktform == MENU_dE1STERN &&
+      colours_)
+    punktform = MENU_dE1KUGEL;
+
+  MARK( frei(true); )
+
+  valid_=false;
+  redraw();
+
+  DBG_PROG_ENDE
+}
+
+void
+GL_Ansicht::namedColoursRelease()
+{
+  frei(false); 
+  oyNamedColours_Release( &colours_ );
+  oyNamedColour_Release( &mouse_3D_hit );
+  frei(true);
+}
+
+
+#if 0
 void
 GL_Ansicht::hineinPunkte       (std::vector<double>      &vect,
                                 std::vector<std::string> &achs_namen)
@@ -2521,6 +2665,7 @@ GL_Ansicht::hineinPunkte      (std::vector<double> &vect,
 
   DBG_PROG_ENDE
 }
+#endif
 
 void
 GL_Ansicht::emphasizePoint    (oyNamedColour_s * colour)
@@ -2529,17 +2674,19 @@ GL_Ansicht::emphasizePoint    (oyNamedColour_s * colour)
   MARK( frei(false); )
   if(colour)
   {
-    oyNamedColourRelease( &epoint_ );
-    epoint_ = oyNamedColourCopy( colour, 0, 0 );
+    oyNamedColour_Release( &epoint_ );
+    epoint_ = oyNamedColour_Copy( colour, 0 );
 
     double l[3];
     Lab_s lab;
-    oyNamedColourGetLab( colour, l );
-    OyLabToLab( l, lab );
+    oyNamedColour_GetColourStd( colour, oyEDITING_LAB, l, oyDOUBLE, 0 );
+    CIELabToLab( l, lab );
 
     icc_examin->statusFarbe( lab.L, lab.a, lab.b );
+    uint32_t create = 1;
+    glStatus( oyNamedColour_GetName( colour, oyNAME_DESCRIPTION, create ),
+              typ_ );
   }
-  glStatus( oyNamedColourGetDescription( colour ), typ_ );
   MARK( frei(true); )
 
   //valid_=false;
@@ -2590,9 +2737,10 @@ GL_Ansicht::hineinTabelle (std::vector<std::vector<std::vector<std::vector<doubl
   nach_farb_namen_ = nach; DBG_PROG
 
   achsNamen(achs_namen);
-  punkte_.clear(); DBG_PROG
 
   MARK( frei(true); )
+
+  namedColoursRelease();
 
   valid_=false;
   redraw();
@@ -2752,7 +2900,7 @@ GL_Ansicht::menueAufruf ( int value )
 }
 
 
-#define DBG_BUTTON 0
+#define DBG_BUTTON 1
 #if DBG_BUTTON
 # define DBG_BUTTON_S(text) DBG_NUM_S(text)
 #else

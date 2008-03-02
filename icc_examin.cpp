@@ -79,7 +79,9 @@ ICCexamin::ICCexamin ()
   icc_examin_ns::lock(__FILE__,__LINE__);
 
   // set a nice GUI surface
-  //Fl::scheme("plastic"); // gtk+
+#ifdef __APPLE__
+  Fl::scheme("plastic"); // gtk+
+#endif
 
   _item = -1;
   _mft_item = -1;
@@ -529,7 +531,7 @@ ICCexamin::nachricht( Modell* modell , int info )
         DBG_PROG_V( _item )
  
         if((*k)[info]->size() > 128)
-          icc_examin->waehlbar( info, true );
+          ;//icc_examin->waehlbar( info, true );
         else {
           icc_examin->waehlbar( info, false );
           icc_betrachter->DD_farbraum->dreiecks_netze[info].aktiv = false;
@@ -570,10 +572,10 @@ ICCexamin::nachricht( Modell* modell , int info )
     int item = icc_examin->tag_nr();
     std::vector<std::string> TagInfo = profile.profil()->printTagInfo(item),
                              names;
-    std::vector<float> rgb;
+    std::vector<double> chan_dv;
     std::vector<double> lab_dv;
     double min = DBL_MAX, len;
-    double cielab1[3], cielab2[3], oylab[3];
+    double cielab1[3], cielab2[3];
     double chan[32];
     int min_pos = -1,
         n;
@@ -586,7 +588,8 @@ ICCexamin::nachricht( Modell* modell , int info )
     if(profile.profil()->hasMeasurement())
     {
       ICCmeasurement & m = profile.profil()->getMeasurement();
-      LabToCIELab( &gl->mouse_3D_hit->lab[0], &cielab1[0], 1 );
+      oyNamedColour_GetColourStd ( gl->mouse_3D_hit, oyEDITING_LAB, cielab1,
+                                   oyDOUBLE, 0 );
 
       DBG_PROG_S( cielab1[0] <<" "<< cielab1[1] <<" "<< cielab1[2] )
 
@@ -603,7 +606,6 @@ ICCexamin::nachricht( Modell* modell , int info )
       n =  lab_v.size();
       for(int i = 0; i < n; ++i)
       {
-        for(int k=0; k<3; ++k) cielab1[k] = gl->mouse_3D_hit->lab[k] * 100.f;
         LabToCIELab( lab_v[i], cielab2 );
         len = fabs( dE( cielab1, cielab2 ) );
         
@@ -620,9 +622,8 @@ ICCexamin::nachricht( Modell* modell , int info )
         std::vector<int> pl;
 
         if(icc_betrachter->inspekt_html->visible())
-        {
           icc_betrachter->inspekt_html->topline( name.c_str() );
-        }
+
         if(profile.profil()->tagBelongsToMeasurement(item))
         {
           pl = m.getPatchLines ( TagInfo[0].c_str() );
@@ -631,56 +632,31 @@ ICCexamin::nachricht( Modell* modell , int info )
         }
         DBG_PROG_V(min <<" "<< min_pos)
 
-        LabToOyLab( lab_v[min_pos], oylab );
-        std::vector<float> v;
-        std::string p_name;
-        double l[3];
-        double c[32];
+        oyNamedColour_s * colour = 0;
 
         if(pl.size() && (signed)pl.size() > min_pos)
-        {
-          lab_dv = m.getPatchLine( pl[min_pos], TagInfo[0].c_str(), v, p_name );
-          for(unsigned int i = 0; i < lab_dv.size(); ++i) l[i] = lab_dv[i];
-          for(unsigned int i = 0; i < v.size() && i < 32; ++i) c[i] = v[i];
-        } else {
-          if(m.hasRGB())
-          {
-            RGB_s rgb;
-            m.getTargRGB( min_pos, &rgb );
-            c[0] = rgb.R;
-            c[1] = rgb.G;
-            c[2] = rgb.B;
-          }
-          if(m.hasCMYK())
-          {
-            CMYK_s cmyk;
-            m.getTargCMYK( min_pos, &cmyk );
-            c[0] = cmyk.C;
-            c[1] = cmyk.M;
-            c[2] = cmyk.Y;
-            c[3] = cmyk.K;
-          }
-        }
+          colour = m.getPatchLine( pl[min_pos], TagInfo[0].c_str() );
+        else
+          colour = m.getMessColour( min_pos );
 
-        oyNamedColour_s * colour = oyNamedColourCreate(
-                              oylab, c,
-                              profile.profil()->colorSpace()/*(icColorSpaceSignature)0*/, 0, 0, 0,
-                              name.c_str(),
-                              0,0, profile.profil()->filename(), malloc, free );
         icc_betrachter->DD_farbraum->emphasizePoint( colour );
-        oyNamedColourRelease( &colour );
-        //lab_dv, rgb, name);
+        oyNamedColour_Release( &colour );
       }
 
     } else if( profile.profil()->hasTagName("ncl2") ) {
 
-      farbenLese( profile.aktuell(), lab_dv, rgb, names );
+      farbenLese( profile.aktuell(), lab_dv, chan_dv, names );
       n = names.size();
       int mult = lab_dv.size()/3/names.size();
       int n_ = n*3*mult;
+
+      //double lab[3];
+      oyNamedColour_GetColourStd ( gl->mouse_3D_hit, oyEDITING_LAB, cielab1,
+                                   oyDOUBLE, 0);
+      //LabToCIELab( lab, cielab1, 1 );
+
       for(int i = 0; i < n_; i+=3*mult)
       {
-        for(int k=0; k<3; ++k) cielab1[k] = gl->mouse_3D_hit->lab[k] * 100.f;
         LabToCIELab( &lab_dv[i], cielab2, 1 );
         len = fabs( dE( cielab1, cielab2 ) );
         if(len < min)
@@ -705,22 +681,30 @@ ICCexamin::nachricht( Modell* modell , int info )
         lab_dv[1] = lab_dv[min_pos*3*mult+1];
         lab_dv[2] = lab_dv[min_pos*3*mult+2];
         lab_dv.resize(3);
-        LabToOyLab( &lab_dv[min_pos], oylab, 1 );
-        chan[0] = rgb[0] = rgb[min_pos*4*mult+0];
-        chan[1] = rgb[1] = rgb[min_pos*4*mult+1];
-        chan[2] = rgb[2] = rgb[min_pos*4*mult+2];
-        chan[3] = rgb[3] = 1.0;
-        rgb.resize(4);
-        oyNamedColour_s * colour = oyNamedColourCreate(
-                              oylab, chan,
-                              profile.profil()->colorSpace(),
-                              0, 0, 0,
-                              names[min_pos].c_str(),
-                              0,0, profile.profil()->filename(), malloc, free );
+        LabToCIELab( &lab_dv[0], cielab1, 1 );
+        double XYZ[3];
+        oyLab2XYZ( cielab1, XYZ );
+        memset(chan, 0, sizeof(double)*32);
+
+        oyProfile_s * prof = oyProfile_FromFile
+                                      ( profile.profil()->filename(), 0,NULL );
+        if(!prof)
+          prof = oyProfile_FromStd( oyASSUMED_WEB, NULL );
+        int channels_n = oyProfile_GetChannelsCount( prof );
+
+        for(int k = 0; k < channels_n; ++k)
+          chan[k] = chan_dv[min_pos*channels_n*mult+k];
+
+        const char * name = names[min_pos].c_str();
+
+        oyNamedColour_s * colour = 
+          oyNamedColour_CreateWithName( name, NULL, NULL,
+                                        chan, XYZ, NULL,0, prof, 0 );
+        oyProfile_Release( &prof );
         if(!names[min_pos].size())
           WARN_S( "no name found" )
         icc_betrachter->DD_farbraum->emphasizePoint( colour );
-        oyNamedColourRelease( &colour );
+        oyNamedColour_Release( &colour );
       }
     }
   }
@@ -1163,7 +1147,7 @@ ICCexamin::erneuerTagBrowserText_ (void)
   } else if ((int)tag_list.size() != profile.profil()->tagCount()*5 ) {
     add_s (_("Internal error") )
   }
-  // this string is sensible to formatting in the tag browser GUI
+  // this string is sensible to formatting in the tag browser GUI, please keep a mono spaced formatting
   add_s ("@B26@t" << _("No. Tag   Type   Size Description") )
   if(profile.profil()->data_type == ICCprofile::ICCprofileDATA ||
      profile.profil()->data_type == ICCprofile::ICCcorruptedprofileDATA) {
@@ -1484,7 +1468,10 @@ ICCexamin::statusFarbe(double & L, double & a, double & b)
   double lab[3] = {L, a, b},
          *rgb = 0;
   DBG_PROG_V( lab[0]<<" "<<lab[1]<<" "<<lab[2] )
-  rgb = icc_oyranos. wandelLabNachBildschirmFarben(lab, 1,
+  rgb = icc_oyranos. wandelLabNachBildschirmFarben(
+                                icc_betrachter->DD_box_stat->x(),
+                                icc_betrachter->DD_box_stat->y(),
+                                lab, 1,
                                 icc_examin->intentGet(NULL),
                                 (icc_examin->gamutwarn()?cmsFLAGS_GAMUTCHECK:0)|
                                 (icc_examin->bpc()?cmsFLAGS_BLACKPOINTCOMPENSATION:0));
@@ -1503,7 +1490,7 @@ ICCexamin::statusFarbe(double & L, double & a, double & b)
     icc_betrachter->DD_box_stat->damage(FL_DAMAGE_ALL);
     //Fl::add_timeout(0.2, fl_delayed_redraw, icc_betrachter->DD_box_stat);
     Fl::add_idle(fl_delayed_redraw, icc_betrachter->DD_box_stat);
-    Fl::awake();
+    Fl::awake((void*)0);
 
   if(thread != THREAD_HAUPT)
     icc_examin_ns::unlock(icc_betrachter->DD_box_stat, __FILE__,__LINE__);
@@ -1516,6 +1503,14 @@ ICCexamin::statusAktualisieren()
 { DBG_PROG_START
   icc_betrachter->box_stat->label(statlabel[0].c_str());
   icc_betrachter->DD_box_stat->label(statlabel[1].c_str());
+  DBG_PROG_ENDE
+}
+
+void
+ICCexamin::scheme(const char *name)
+{ DBG_PROG_START
+  // set a nice GUI surface
+  Fl::scheme(name);
   DBG_PROG_ENDE
 }
 

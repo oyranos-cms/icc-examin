@@ -59,17 +59,6 @@
 #include <cstring>
 #include <vector>
 
-#include "icc_utils.h"
-#include "config.h"
-#include "icc_helfer.h"
-#include "icc_examin.h"
-#include "icc_kette.h"
-#include "icc_examin_version.h"
-#include "icc_cinepaint_intern.cpp"
-
-char* version() { static char t[80];
-                  sprintf(t, "%s - %s", ICC_EXAMIN_V, ICC_EXAMIN_D); return t; }
-
 
 using namespace std;
 
@@ -80,6 +69,11 @@ extern "C" {
 #include <lcms.h>
 #include <icc34.h>
 }
+
+#include "icc_cinepaint_intern.cpp"
+
+char* version() { static char t[80];
+                  sprintf(t, "%s - %s", ICC_EXAMIN_V, ICC_EXAMIN_D); return t; }
 
 
 /*** local macros ***/

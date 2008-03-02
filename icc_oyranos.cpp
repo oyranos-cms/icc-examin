@@ -297,7 +297,7 @@ oyGetProfileBlockOSX (CMProfileRef prof, char *block, size_t *size, oyAllocFunc_
     if(ref.size && ref.data)
     {
         *size = ref.size;
-        block = allocateFunc( *size );
+        block = (char*) allocateFunc( *size );
         memcpy(block, ref.data, ref.size);
           DBG_MEM_V( size )
     }
@@ -798,7 +798,7 @@ Oyranos::netzVonProfil_ (ICCnetz & netz,
 
   if(wandelProfilNachLabUndZurueck( lab, size, intent, bpc, profil ))
     return  std::string("oyranos");
-  double * rgb = wandelLabNachBildschirmFarben( lab, size, 0, 0 );
+  double * rgb = wandelLabNachBildschirmFarben( 0,0, lab, size, 0, 0 );
 
   // collect colour points
   netz.punkte. resize( size );
@@ -1042,8 +1042,8 @@ Oyranos::netzVonProfil (ICCprofile & profil, int intent, int bpc, ICCnetz & netz
   if(profil.valid()) {
       size_t groesse = 0;
       char* daten = profil.saveProfileToMem(&groesse);
-      DBG_NUM_V( groesse );
       s.ladeUndFreePtr(&daten, groesse);
+      DBG_NUM_V( groesse );
   }
 
   if(s.size())
@@ -1335,8 +1335,51 @@ Oyranos::wandelProfilNachLabUndZurueck(double *lab, // 0.0 - 1.0
 }
 
 
+oyProfile_s * Oyranos::oyMoni (int x, int y)
+{
+  char * disp_name = oyGetDisplayNameFromPosition( 0, x,y, malloc );
+  oyProfile_s * disp_prof = 0;
+
+  static int x_alt = -1, y_alt = -1;
+  static oyProfile_s * prof_alt = 0;
+
+  if(x == x_alt && y == y_alt && prof_alt)
+    return prof_alt;
+
+  if(disp_name)
+  {
+    char * moni_profile_name = oyGetMonitorProfileName(disp_name, malloc);
+    if(moni_profile_name)
+    {
+      disp_prof = oyProfile_FromFile( moni_profile_name, 0, 0 );
+
+    } else {
+
+      size_t size = 0;
+      char * buf = oyGetMonitorProfile( disp_name, &size, malloc );
+      if(size && buf)
+      {
+        disp_prof = oyProfile_FromMem( size, buf, 0, 0 );
+        free(buf); size = 0;
+      }
+    }
+    free(disp_name);
+  }
+
+  if (disp_prof)
+  {
+    x_alt = x;
+    y_alt = y;
+    prof_alt = disp_prof;
+  }
+
+  return disp_prof;
+}
+
+
 double*
-Oyranos::wandelLabNachBildschirmFarben(double *Lab_Speicher, // 0.0 - 1.0
+Oyranos::wandelLabNachBildschirmFarben(int x, int y,
+                                       double *Lab_Speicher, // 0.0 - 1.0
                                        size_t  size, int intent, int flags)
 {
   DBG_PROG_START
@@ -1355,7 +1398,7 @@ Oyranos::wandelLabNachBildschirmFarben(double *Lab_Speicher, // 0.0 - 1.0
     static int intent_ = 0;
 
     size_t groesse = 0;
-    char*  block = (char*) moni(0,0, groesse);
+    char*  block = (char*) moni(x,y, groesse);
 #ifndef OYRANOS_VERSION
 #define OYRANOS_VERSION 0
 #endif

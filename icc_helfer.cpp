@@ -271,7 +271,7 @@ renderingIntentName (int intent)
 int
 getColorSpaceChannels (icColorSpaceSignature color)
 {
-  return oyColourSpaceGetChannelCount( color );
+  return oyColourSpaceGetChannelCountFromSig( color );
 }
 
 icColorSpaceSignature getColorSpaceGeneric( int channels )
@@ -302,7 +302,7 @@ std::string
 getColorSpaceName (icColorSpaceSignature sig)
 {
   std::string text;
-  text = oyColourSpaceGetName( sig );
+  text = oyColourSpaceGetNameFromSig( sig );
   return text;
 }
 
@@ -555,6 +555,7 @@ getSigTagName               ( icTagSignature  sig )
     case icSigChromaticityType: text = "chrm"; break;
     case 1668051567: text = "clro"; break;
     case 1668051572: text = "clrt"; break;
+    case 0x62303135: text = "b015"; break; // binuscan targ data
     case 0: text = "----"; break;
     default: { icUInt32Number i = icValue(sig);
                char t[5];

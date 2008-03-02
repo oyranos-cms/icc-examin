@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2005  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2007  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -60,12 +60,10 @@ class GL_Ansicht : public Fl_Gl_Window,
   std::vector<std::vector<std::vector<std::vector<double> > > > tabelle_;
   std::vector<std::string>nach_farb_namen_;
   std::vector<std::string>von_farb_namen_;
-  std::vector<std::string>farb_namen_;
-  std::vector<double> punkte_;        //!<                (n*3)
-  std::vector<float>  farben_;        //!< rgba 0.0 - 1.0 (n*4)
-  oyNamedColour_s * epoint_;            //!< emphasize point
+  oyNamedColours_s * colours_;
+  oyNamedColour_s  * epoint_;            //!< emphasize point
 public:
-  oyNamedColour_s * mouse_3D_hit;       //!< a point recently hit by the mouse
+  oyNamedColour_s  * mouse_3D_hit;       //!< a point recently hit by the mouse
 
 private:
   void fensterForm();
@@ -158,7 +156,7 @@ public:
   void nachricht( icc_examin_ns::Modell* modell, int info );
 
   // import data
-  void hineinPunkte (std::vector<double> &vect,
+/*  void hineinPunkte (std::vector<double> &vect,
                      std::vector<std::string> &achsNamen);
   void hineinPunkte (std::vector<double> &vect, 
                      std::vector<float>  &farben_,
@@ -166,10 +164,12 @@ public:
   void hineinPunkte (std::vector<double> &punktKoordinaten, //!< Lab
                      std::vector<float>  &punktFarben,      //!< RGBA
                      std::vector<std::string> &farb_namen_, //!< per point
-                     std::vector<std::string> &achsNamen);  //!< 3*
-  void emphasizePoint (oyNamedColour_s * colour);  //!< a named colour
-  void punkte_clear () { punkte_.clear(); farben_.clear(); }
-  void herausNormalPunkte (std::vector<double> & p, std::vector<float> & f);
+                     std::vector<std::string> &achsNamen);  //!< 3* */
+  //TODO: Punkte auf oyNamedColour_s umstellen
+  void              namedColours (oyNamedColours_s * colours);
+  oyNamedColours_s* namedColours ();
+  void              namedColoursRelease ();
+  void emphasizePoint (oyNamedColour_s  * colour);  //!< a named colour
   void hineinNetze  (const std::vector<ICCnetz> & dreiecks_netze);
   std::vector<ICCnetz> dreiecks_netze;
   void achsNamen    (std::vector<std::string> achs_namen);
@@ -210,6 +210,9 @@ public:
   int  spektralband;        //!< show spectral saturated colour line
   int  zeige_helfer;        //!< show arrows and text
   char text[128];           //!< Status line text
+  void iccPoint3d                    ( oyPROFILE_e         projection,
+                                       double            * vertex,
+                                       double              radius );
 private:
   void zeigeSpektralband_();
   void zeigeUmrisse_();
@@ -225,6 +228,7 @@ public:
   void bewegen(bool setze);
   bool darfBewegen();
   void darfBewegen(int d);
+  void invalidate(void) { Fl_Gl_Window::invalidate(); valid_ = 0; }
 private:
   static void bewegenStatisch_(void* GL_Ansicht);
 private:

@@ -33,6 +33,7 @@
 #include <vector>
 #include <map>
 #include "icc_helfer.h"
+#include "icc_list.h"
 
 /** a point in space with calculated colour */
 struct ICCnetzPunkt {

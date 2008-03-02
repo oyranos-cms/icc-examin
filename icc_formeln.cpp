@@ -45,7 +45,7 @@
 #endif
 
 double
-gradATAN(double b, double a)
+gradATAN(const double b, const double a)
 {
   if ((b) == 0 && (a) == 0) {
     return 0.0;
@@ -64,7 +64,7 @@ gradATAN(double b, double a)
 
 double
 dE2000 (const Lab_s & Lab1_n, const Lab_s & Lab2_n,
-        double kL, double kC, double kH)             // (1)
+        const double kL, const double kC, const double kH)             // (1)
 {
   // convert to CIE*Lab
   Lab_s Lab1, Lab2; 
@@ -163,7 +163,7 @@ dE2000 (const Lab_s & Lab1_n, const Lab_s & Lab2_n,
 }
 
 double
-dE ( Lab_s Lab1, Lab_s Lab2 )
+dE ( const Lab_s Lab1, const Lab_s Lab2 )
 {
   double l1[3], l2[3];
   LabToCIELab( Lab1, l1 );
@@ -173,7 +173,7 @@ dE ( Lab_s Lab1, Lab_s Lab2 )
 }
 
 double
-dE ( double * l1, Lab_s Lab2 )
+dE ( const double * l1, const Lab_s Lab2 )
 {
   double l2[3];
   LabToCIELab( Lab2, l2 );
@@ -181,13 +181,13 @@ dE ( double * l1, Lab_s Lab2 )
 }
 
 double
-dE ( double * l1, double * l2 )
+dE ( const double * l1, const double * l2 )
 {
   return HYP3( l1[0]-l2[0], l1[1]-l2[1], l1[2]-l2[2] );
 }
 
 void
-LabtoXYZ (Lab_s &lab, XYZ_s &XYZ)
+LabtoXYZ (const Lab_s &lab, XYZ_s &XYZ)
 {
   double l[3];
   //double e = 216./24389.;             // 0.0088565
@@ -219,7 +219,7 @@ LabtoXYZ (Lab_s &lab, XYZ_s &XYZ)
 }
 
 void
-XYZtoLab (XYZ_s &xyz, Lab_s &lab)
+XYZtoLab (const XYZ_s &xyz, Lab_s &lab)
 {
     /* white point D50 [0.964294 , 1.000000 , 0.825104]
      * XYZ->Lab is defined as (found with the help of Marti Maria):
@@ -265,7 +265,7 @@ XYZtoLab (XYZ_s &xyz, Lab_s &lab)
 }
 
 void
-XYZtoLab (double* xyz, double* lab, int n)
+XYZtoLab (const double* xyz, double* lab, int n)
 {
     XYZ_s xyz_;
     Lab_s lab_;
@@ -284,7 +284,7 @@ XYZtoLab (double* xyz, double* lab, int n)
 }
 
 void
-CIELabToLab (double* cielab, double* lab, int n)
+CIELabToLab (const double* cielab, double* lab, int n)
 {
     for(int i = 0; i < n; ++i)
     {
@@ -295,7 +295,7 @@ CIELabToLab (double* cielab, double* lab, int n)
 }
 
 void
-CIELabToLab (double* cielab, Lab_s & lab)
+CIELabToLab (const double* cielab, Lab_s & lab)
 {
       lab.L =  cielab[0]          / 100.0;
       lab.a = (cielab[1] + 128.0) / 256.0;
@@ -303,7 +303,7 @@ CIELabToLab (double* cielab, Lab_s & lab)
 }
 
 void
-LabToCIELab (double* lab, double* cielab, int n)
+LabToCIELab (const double* lab, double* cielab, int n)
 {
     for(int i = 0; i < n; ++i)
     {
@@ -316,7 +316,7 @@ LabToCIELab (double* lab, double* cielab, int n)
 }
 
 void
-LabToCIELab (Lab_s & lab, double* cielab)
+LabToCIELab (const Lab_s & lab, double* cielab)
 {
       cielab[0] =  lab.L * 100.0;
       cielab[1] = (lab.a * 256.0) - 128.0;
@@ -324,7 +324,7 @@ LabToCIELab (Lab_s & lab, double* cielab)
 }
 
 void
-OyLabToLab (double* oylab, Lab_s & lab)
+OyLabToLab (const double* oylab, Lab_s & lab)
 {
       lab.L =  oylab[0]          / 1.0;
       lab.a = (oylab[1] + 1.28f) / 2.56f;
@@ -332,7 +332,7 @@ OyLabToLab (double* oylab, Lab_s & lab)
 }
 
 void
-OyLabToLab (double* oylab, double* lab, int n)
+OyLabToLab (const double* oylab, double* lab, int n)
 {
     for(int i = 0; i < n; ++i)
     {
@@ -343,7 +343,7 @@ OyLabToLab (double* oylab, double* lab, int n)
 }
 
 void
-LabToOyLab (double* lab, double* oylab, int n)
+LabToOyLab (const double* lab, double* oylab, int n)
 {
     for(int i = 0; i < n; ++i)
     {
@@ -354,7 +354,7 @@ LabToOyLab (double* lab, double* oylab, int n)
 }
 
 void
-LabToOyLab (Lab_s & lab, double* cielab)
+LabToOyLab (const Lab_s & lab, double* cielab)
 {
       cielab[0] =  lab.L * 1.0f;
       cielab[1] = (lab.a * 2.56f) - 1.28f;

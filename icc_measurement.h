@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2005  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2007  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -36,6 +36,7 @@
 #include "icc_utils.h"
 
 #include "icc_profile_tags.h"
+#include "icc_oyranos.h"
 
 /**
   *   @brief reads CGATS from a profile 
@@ -146,10 +147,10 @@ class ICCmeasurement {
     std::vector<double> getCmmRGB (int patch);  //!< displaying colours
     std::vector<double> getMessLab (int patch);
     std::vector<double> getCmmLab (int patch);
+    oyNamedColour_s *   getMessColour (int patch);
+    oyNamedColour_s *   getCmmColour (int patch);
     std::vector<int>    getPatchLines ( const char       * tag_name );
-    std::vector<double> getPatchLine  ( int line, const char * tag_name,
-                                        std::vector<float> & channels,
-                                        std::string & name );
+    oyNamedColour_s *   getPatchLine  ( int line, const char * tag_name );
     std::vector<XYZ_s>    getMessXYZ ()      {DBG_PROG return XYZ_Satz_; }
     std::vector<Lab_s>    getMessLab ()      {DBG_PROG return Lab_Satz_; }
     std::vector<RGB_s>    getMessRGB ()      {DBG_PROG return RGB_Satz_; }
