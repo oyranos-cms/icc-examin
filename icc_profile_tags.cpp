@@ -345,9 +345,14 @@ ICCtag::getText                     (void)
 
     int anzahl = icValue( *(icUInt32Number*)&data_[8] );
     int groesse = icValue( *(icUInt32Number*)&data_[12] ); // 12
-    char a = 'd';
-    char b = 'e';
+    char a = 'e';
+    char b = 'n';
     const char *locale = getenv("LANG");
+  if(locale)
+    DBG_NUM_V( locale )
+  else
+    DBG_NUM_S( "keine LANG Variable gefunden" )
+    
     if(locale && strlen(locale) >= 2 )
     {
       a = locale[0];

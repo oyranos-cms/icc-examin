@@ -141,9 +141,10 @@ public:
   int  punktfarbe;          // MENU_GRAU MENU_FARBIG MENU_KONTRASTREICH
   int  punktgroesse;        // Größe in Pixel
 
-  int  hintergrundfarbe;    // Hintergrundfarben Farbschema
+  float hintergrundfarbe;    // Hintergrundfarben Farbschema
   float textfarbe[3];
   float pfeilfarbe[3];
+  float schatten;
   float strichmult;         // Strichmultiplikator
   int  schalen;             // MENU_SCHALEN
 

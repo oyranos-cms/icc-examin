@@ -1,4 +1,11 @@
 
+2005-04-30
+	* und: Schalter hintergrundfarbe in Farbwert umgestaltet
+	* und: set charset to iso-8859-1 for 'de' in unix
+
+2005-04-29
+	* und: set LANG variable in osX for i18n
+
 2005-04-28
 	* und: Layout im Tagwähler nach links gerückt
 	* fix: Profile bleiben gewählt wie im Profilewähler eingestellt

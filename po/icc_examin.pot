@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2005-04-29 07:34+0200\n"
+"POT-Creation-Date: 2005-04-30 15:32+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -32,7 +32,7 @@ msgstr ""
 msgid "Pause"
 msgstr ""
 
-#: agviewer.cpp:375 icc_gl.cpp:1398 icc_gl.cpp:1667 icc_gl.cpp:1801
+#: agviewer.cpp:375 icc_gl.cpp:1402 icc_gl.cpp:1671 icc_gl.cpp:1805
 msgid "left-/middle-/right mouse button -> rotate/cut/menu"
 msgstr ""
 
@@ -68,67 +68,67 @@ msgstr ""
 msgid "DATA_FORMAT_ZEILE eigefügt"
 msgstr ""
 
-#: icc_cgats_filter.cpp:604
+#: icc_cgats_filter.cpp:612
 msgid "LF CR ersetzt"
 msgstr ""
 
-#: icc_cgats_filter.cpp:609
+#: icc_cgats_filter.cpp:617
 msgid "CR ersetzt"
 msgstr ""
 
-#: icc_cgats_filter.cpp:685
+#: icc_cgats_filter.cpp:693
 msgid ", ersetzt"
 msgstr ""
 
-#: icc_cgats_filter.cpp:721
+#: icc_cgats_filter.cpp:729
 msgid "Mehr Feldblöcke als Datenblöcke: lösche"
 msgstr ""
 
-#: icc_cgats_filter.cpp:730
+#: icc_cgats_filter.cpp:738
 msgid "oops zwei mal BEGIN_DATA_FORMAT  Zeile: "
 msgstr ""
 
-#: icc_cgats_filter.cpp:738
+#: icc_cgats_filter.cpp:746
 msgid "BEGIN_DATA_FORMAT Zeile "
 msgstr ""
 
-#: icc_cgats_filter.cpp:746
+#: icc_cgats_filter.cpp:754
 msgid "oops END_DATA_FORMAT ohne BEGIN_DATA_FORMAT  Zeile: "
 msgstr ""
 
-#: icc_cgats_filter.cpp:757
+#: icc_cgats_filter.cpp:765
 msgid "fehlendes NUMBER_OF_FIELDS eingefügt"
 msgstr ""
 
-#: icc_cgats_filter.cpp:759
+#: icc_cgats_filter.cpp:767
 msgid " eingefügt"
 msgstr ""
 
-#: icc_cgats_filter.cpp:782
+#: icc_cgats_filter.cpp:790
 msgid "NUMBER_OF_FIELDS stimmt nicht überein: gefunden, berechnet: "
 msgstr ""
 
-#: icc_cgats_filter.cpp:793
+#: icc_cgats_filter.cpp:801
 msgid "END_DATA_FORMAT Zeile "
 msgstr ""
 
-#: icc_cgats_filter.cpp:802
+#: icc_cgats_filter.cpp:810
 msgid "oops zwei mal BEGIN_DATA  Zeile"
 msgstr ""
 
-#: icc_cgats_filter.cpp:816
+#: icc_cgats_filter.cpp:824
 msgid "oops END_DATA ohne BEGIN_DATA  Zeile "
 msgstr ""
 
-#: icc_cgats_filter.cpp:828
+#: icc_cgats_filter.cpp:836
 msgid "fehlende NUMBER_OF_SETS eingefügt"
 msgstr ""
 
-#: icc_cgats_filter.cpp:851
+#: icc_cgats_filter.cpp:859
 msgid "NUMBER_OF_SETS stimmt nicht überein: gefunden, berechnet "
 msgstr ""
 
-#: icc_cgats_filter.cpp:890
+#: icc_cgats_filter.cpp:898
 msgid "Dateisignatur eingeführt"
 msgstr ""
 
@@ -141,21 +141,21 @@ msgid "unbekannte Farbe"
 msgstr ""
 
 #: icc_draw.cpp:633 icc_draw.cpp:644 icc_helfer.cpp:375
-#: icc_profile_tags.cpp:386 icc_helfer_x.cpp:56
+#: icc_profile_tags.cpp:391 icc_helfer_x.cpp:56
 msgid "Red"
 msgstr ""
 
 #: icc_draw.cpp:636 icc_draw.cpp:646 icc_helfer.cpp:376
-#: icc_profile_tags.cpp:387 icc_helfer_x.cpp:57
+#: icc_profile_tags.cpp:392 icc_helfer_x.cpp:57
 msgid "Green"
 msgstr ""
 
 #: icc_draw.cpp:639 icc_draw.cpp:648 icc_helfer.cpp:377
-#: icc_profile_tags.cpp:388 icc_helfer_x.cpp:58
+#: icc_profile_tags.cpp:393 icc_helfer_x.cpp:58
 msgid "Blue"
 msgstr ""
 
-#: icc_draw.cpp:643 icc_gl.cpp:1346 icc_helfer.cpp:318 icc_waehler.h:127
+#: icc_draw.cpp:643 icc_gl.cpp:1350 icc_helfer.cpp:318 icc_waehler.h:127
 msgid "Gray"
 msgstr ""
 
@@ -171,7 +171,7 @@ msgstr ""
 msgid "Yellow"
 msgstr ""
 
-#: icc_draw.cpp:656 icc_gl.cpp:1348 icc_helfer.cpp:378 icc_helfer.cpp:388
+#: icc_draw.cpp:656 icc_gl.cpp:1352 icc_helfer.cpp:378 icc_helfer.cpp:388
 msgid "Black"
 msgstr ""
 
@@ -209,13 +209,13 @@ msgid "CIE *L"
 msgstr ""
 
 #: icc_draw.cpp:674 icc_examin_farbraum.cpp:184 icc_examin_io.cpp:124
-#: icc_gl.cpp:592 icc_gl.cpp:660 icc_gl.cpp:671 icc_gl.cpp:679
+#: icc_gl.cpp:594 icc_gl.cpp:662 icc_gl.cpp:673 icc_gl.cpp:681
 #: icc_helfer.cpp:364
 msgid "CIE *a"
 msgstr ""
 
 #: icc_draw.cpp:676 icc_examin_farbraum.cpp:185 icc_examin_io.cpp:125
-#: icc_gl.cpp:606 icc_gl.cpp:687 icc_gl.cpp:696 icc_gl.cpp:703
+#: icc_gl.cpp:608 icc_gl.cpp:689 icc_gl.cpp:698 icc_gl.cpp:705
 #: icc_helfer.cpp:365
 msgid "CIE *b"
 msgstr ""
@@ -328,165 +328,165 @@ msgstr ""
 msgid "OpenGL eventuell nicht korrekt gesetzt von ICC Examin "
 msgstr ""
 
-#: icc_gl.cpp:338 icc_gl.cpp:341 icc_gl.cpp:344 icc_gl.cpp:350 icc_gl.cpp:354
-#: icc_gl.cpp:369
+#: icc_gl.cpp:339 icc_gl.cpp:342 icc_gl.cpp:345 icc_gl.cpp:351 icc_gl.cpp:355
+#: icc_gl.cpp:370
 msgid "Konnte Font nicht oeffnen:"
 msgstr ""
 
-#: icc_gl.cpp:373 icc_gl.cpp:375
+#: icc_gl.cpp:374 icc_gl.cpp:376
 msgid "Fontgroesse nicht setzbar"
 msgstr ""
 
-#: icc_gl.cpp:473
+#: icc_gl.cpp:474
 #, c-format
 msgid "0,0,0"
 msgstr ""
 
-#: icc_gl.cpp:726
+#: icc_gl.cpp:728
 msgid "Kanalauswahl geaendert: "
 msgstr ""
 
-#: icc_gl.cpp:1222
+#: icc_gl.cpp:1226
 msgid "hsRGB Profil nicht geoeffnet"
 msgstr ""
 
-#: icc_gl.cpp:1224
+#: icc_gl.cpp:1228
 msgid "hLab Profil nicht geoeffnet"
 msgstr ""
 
-#: icc_gl.cpp:1230
+#: icc_gl.cpp:1234
 msgid "keine hXYZtoRGB Transformation gefunden"
 msgstr ""
 
-#: icc_gl.cpp:1245
+#: icc_gl.cpp:1249
 msgid "XYZ_speicher Speicher nicht verfuegbar"
 msgstr ""
 
-#: icc_gl.cpp:1246
+#: icc_gl.cpp:1250
 msgid "Lab_speicher Speicher nicht verfuegbar"
 msgstr ""
 
-#: icc_gl.cpp:1247
+#: icc_gl.cpp:1251
 msgid "RGB_speicher Speicher nicht verfuegbar"
 msgstr ""
 
-#: icc_gl.cpp:1320 icc_gl.cpp:1330 icc_gl.cpp:1332 icc_gl.cpp:1334
+#: icc_gl.cpp:1324 icc_gl.cpp:1334 icc_gl.cpp:1336 icc_gl.cpp:1338
 msgid "Slice"
 msgstr ""
 
-#: icc_gl.cpp:1321
+#: icc_gl.cpp:1325
 msgid "Rotate around slice"
 msgstr ""
 
-#: icc_gl.cpp:1336
+#: icc_gl.cpp:1340
 msgid "Rotate around"
 msgstr ""
 
-#: icc_gl.cpp:1336
+#: icc_gl.cpp:1340
 msgid "axis"
 msgstr ""
 
-#: icc_gl.cpp:1341
+#: icc_gl.cpp:1345
 msgid "Slice plane"
 msgstr ""
 
-#: icc_gl.cpp:1344
+#: icc_gl.cpp:1348
 msgid "White"
 msgstr ""
 
-#: icc_gl.cpp:1345
+#: icc_gl.cpp:1349
 msgid "Light gray"
 msgstr ""
 
-#: icc_gl.cpp:1347
+#: icc_gl.cpp:1351
 msgid "Dark gray"
 msgstr ""
 
-#: icc_gl.cpp:1351
+#: icc_gl.cpp:1355
 msgid "Background colour"
 msgstr ""
 
-#: icc_gl.cpp:1356
+#: icc_gl.cpp:1360
 msgid "gray"
 msgstr ""
 
-#: icc_gl.cpp:1357
+#: icc_gl.cpp:1361
 msgid "coloured"
 msgstr ""
 
-#: icc_gl.cpp:1358
+#: icc_gl.cpp:1362
 msgid "high contrast"
 msgstr ""
 
-#: icc_gl.cpp:1359
+#: icc_gl.cpp:1363
 msgid "shells"
 msgstr ""
 
-#: icc_gl.cpp:1364
+#: icc_gl.cpp:1368
 msgid "Sphere 1dE"
 msgstr ""
 
-#: icc_gl.cpp:1365
+#: icc_gl.cpp:1369
 msgid "Sphere 2dE"
 msgstr ""
 
-#: icc_gl.cpp:1366
+#: icc_gl.cpp:1370
 msgid "Sphere 4dE"
 msgstr ""
 
-#: icc_gl.cpp:1369
+#: icc_gl.cpp:1373
 msgid "Star"
 msgstr ""
 
-#: icc_gl.cpp:1372
+#: icc_gl.cpp:1376
 msgid "Point"
 msgstr ""
 
-#: icc_gl.cpp:1375
+#: icc_gl.cpp:1379
 msgid "without markers"
 msgstr ""
 
-#: icc_gl.cpp:1376
+#: icc_gl.cpp:1380
 msgid "Spektral line"
 msgstr ""
 
-#: icc_gl.cpp:1379 icc_betrachter.cxx:627
+#: icc_gl.cpp:1383 icc_betrachter.cxx:627
 msgid "Texts"
 msgstr ""
 
-#: icc_gl.cpp:1381
+#: icc_gl.cpp:1385
 msgid "Texts/Arrows on/off"
 msgstr ""
 
-#: icc_gl.cpp:1383
+#: icc_gl.cpp:1387
 msgid "Illustration"
 msgstr ""
 
-#: icc_gl.cpp:1487 icc_profile_tags.cpp:291
+#: icc_gl.cpp:1491 icc_profile_tags.cpp:291
 msgid "Channel"
 msgstr ""
 
-#: icc_gl.cpp:1766
+#: icc_gl.cpp:1770
 msgid "Schnitt; linker Mausklick setzt zurueck"
 msgstr ""
 
-#: icc_gl.cpp:1777
+#: icc_gl.cpp:1781
 msgid "waagerechter Schnitt; linker Mausklick setzt zurueck"
 msgstr ""
 
-#: icc_gl.cpp:1782
+#: icc_gl.cpp:1786
 msgid "senkrechter Schnitt von rechts; linker Mausklick setzt zurueck"
 msgstr ""
 
-#: icc_gl.cpp:1787
+#: icc_gl.cpp:1791
 msgid "senkrechter Schnitt von vorn; linker Mausklick setzt zurueck"
 msgstr ""
 
-#: icc_gl.cpp:1826
+#: icc_gl.cpp:1830
 msgid "Konnte keine Eltern finden"
 msgstr ""
 
-#: icc_gl.cpp:1835
+#: icc_gl.cpp:1839
 msgid "Konnte keine passende Programmstruktur finden"
 msgstr ""
 
@@ -1070,6 +1070,34 @@ msgstr ""
 msgid "Dateigröße 0 für "
 msgstr ""
 
+#: icc_helfer_i18n.cpp:67
+msgid "osX locale obtained: "
+msgstr ""
+
+#: icc_helfer_i18n.cpp:73
+msgid "osX locale not obtained"
+msgstr ""
+
+#: icc_helfer_i18n.cpp:129
+msgid "try to set LANG"
+msgstr ""
+
+#: icc_helfer_i18n.cpp:156
+msgid "fine with: "
+msgstr ""
+
+#: icc_helfer_i18n.cpp:158
+msgid "failed with: "
+msgstr ""
+
+#: icc_helfer_i18n.cpp:163
+msgid "try locale in "
+msgstr ""
+
+#: icc_helfer_i18n.cpp:170
+msgid "set codeset for \"icc_examin\" to "
+msgstr ""
+
 #: icc_kette.cpp:92 icc_kette.cpp:134
 msgid "File not loaded!"
 msgstr ""
@@ -1552,23 +1580,23 @@ msgstr ""
 msgid "Conversion table with 8-bit precission:"
 msgstr ""
 
-#: icc_profile_tags.cpp:416
+#: icc_profile_tags.cpp:421
 msgid "Number of colours:"
 msgstr ""
 
-#: icc_profile_tags.cpp:417 icc_betrachter.cxx:389
+#: icc_profile_tags.cpp:422 icc_betrachter.cxx:389
 msgid "Name"
 msgstr ""
 
-#: icc_profile_tags.cpp:417
+#: icc_profile_tags.cpp:422
 msgid "CIE*Lab"
 msgstr ""
 
-#: icc_profile_tags.cpp:418
+#: icc_profile_tags.cpp:423
 msgid "Device Colours"
 msgstr ""
 
-#: icc_profile_tags.cpp:977 icc_profile_tags.cpp:984
+#: icc_profile_tags.cpp:982 icc_profile_tags.cpp:989
 msgid "Colour"
 msgstr ""
 
@@ -2032,7 +2060,7 @@ msgstr ""
 msgid "Paths:"
 msgstr ""
 
-#: icc_gl.h:188
+#: icc_gl.h:189
 msgid "Gibts nicht"
 msgstr ""
 

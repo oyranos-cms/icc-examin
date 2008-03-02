@@ -593,6 +593,14 @@ CgatsFilter::cgats_korrigieren_               ()
 
   DBG_PROG_V( typ_ )
 
+  // locale - Kommas unterscheiden
+  const char* loc_alt = getenv("LANG");
+  if(loc_alt)
+    DBG_NUM_V( loc_alt )
+  else
+    DBG_NUM_S( "keine LANG Variable gefunden" )
+  setlocale(LC_NUMERIC,"en_GB");
+
   // Zeilenumbrüche reparieren
   // LF CR
   pos = 0;
@@ -940,6 +948,9 @@ CgatsFilter::cgats_korrigieren_               ()
     data_.append( zeilen_[i] );
     data_.append( "\n" );
   }
+
+  if(loc_alt)
+    setlocale(LC_NUMERIC,loc_alt);
 
   //DBG_NUM_S (data_)
   DBG_PROG_ENDE

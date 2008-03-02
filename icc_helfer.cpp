@@ -1029,10 +1029,6 @@ unterscheideZiffernWorte ( std::string &zeile,
     suchenErsetzen( zeile, ",", ".", 0 );
   }
 
-  // Kommas erkennen
-  char* loc_alt = getenv("LANG");
-  setlocale(LC_ALL,"en_GB");
-
   // Worte Suchen und von Zahlen scheiden
   for( pos = 0; pos < zeile.size() ; ++pos )
   { DBG_PARSER_V( pos <<" "<< zeile.size() )
@@ -1163,9 +1159,6 @@ unterscheideZiffernWorte ( std::string &zeile,
   }
   for( unsigned i = 0; i < worte.size(); i++)
     DBG_PARSER_V( worte[i] );
-
-  if(loc_alt)
-    setlocale(LC_ALL,loc_alt);
 
   DBG_PARSER_ENDE
   return ergebnis;

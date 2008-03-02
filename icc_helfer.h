@@ -36,6 +36,14 @@
 #include "icc_icc.h"
 
 
+// I18N
+void initialiseI18N();
+
+#ifdef HAVE_FLTK
+#include <FL/Fl_Menu_Item.H>
+void menue_translate( Fl_Menu_Item* menueleiste );
+#endif
+
 
 // interne Funktionen
 

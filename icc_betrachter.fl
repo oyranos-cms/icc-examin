@@ -603,7 +603,7 @@ ueber_html->value(getUeberHtml().c_str());}
   w->show(argc,argv);
   Fl::scheme(NULL);
   Fl_File_Icon::load_system_icons();
-  menue_uebersetzen( menu_menueleiste );
+  menue_translate( menu_menueleiste );
   DBG_PROG} {selected
     }
     code DBG_PROG_ENDE {}

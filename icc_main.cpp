@@ -27,12 +27,8 @@
 
 
 #include "config.h"
+#include "icc_helfer.h"
 #include "icc_examin.h"
-#include <vector>
-
-
-#include <locale.h>
-#include <libintl.h>
 
 
 ICCexamin *icc_examin;
@@ -46,35 +42,9 @@ main (int argc, char** argv)
   else
     icc_debug = 0;
 
-  // i18n
-  std::string locale = setlocale (LC_MESSAGES, "");
-  if(locale.size())
-    DBG_PROG_S( locale );
-  
-  std::string::size_type pos = locale.find("de",0);
-  if(pos == 0) { // de
-    if((pos = locale.find_first_of(".")) != std::string::npos) {
-      locale.erase( pos, locale.size()-pos );
-    }
-    locale += ".ISO-8859-1";
-    setlocale (LC_MESSAGES, locale.c_str());
-    system("export LANG=ISO-8859-1");
-    DBG_PROG_V( locale )
-  }
+  DBG_PROG_START
 
-  textdomain ("icc_examin");
-  char test[1024];
-  sprintf(test, "%s%s", LOCALEDIR, "/de/LC_MESSAGES/icc_examin.mo");
-  char* bdtd = 0;
-  if( holeDateiModifikationsZeit(test) ) {
-    bdtd = bindtextdomain ("icc_examin", LOCALEDIR);
-    DBG_PROG_S( "Hat geklappt: " << bdtd );
-  } else {
-    DBG_PROG_S( "daneben: " << test );
-    bdtd = bindtextdomain ("icc_examin", SRC_LOCALEDIR);
-    DBG_PROG_S( "Versuche locale in " << bdtd );
-  }
-  // i18n Ende
+  initialiseI18N();
 
   ICCexamin hauptprogramm;
 
@@ -82,6 +52,7 @@ main (int argc, char** argv)
 
   hauptprogramm.start(argc, argv);
 
+  DBG_PROG_ENDE
   return false;
 }
 

@@ -107,6 +107,14 @@ ICCvrmlParser::lesen_ ()
   }
   #endif
 
+  // locale - Kommas unterscheiden
+  char* loc_alt = getenv("LANG");
+  if(loc_alt)
+    DBG_NUM_V( loc_alt )
+  else
+    DBG_NUM_S( "keine LANG Variable gefunden" )
+  setlocale(LC_NUMERIC,"en_GB");
+
   // nach Netzen in der vrml Datei suchen
   while( (netz_pos = original_.find( "IndexedFaceSet", netz_pos )) !=
         std::string::npos )
@@ -292,6 +300,9 @@ ICCvrmlParser::lesen_ ()
     DBG_VRML_PARSER_S( "Farbe ["<<i<<"]: "<<min_farbe[i]<<" - "<< max_farbe[i]);
   }
   #endif
+
+  if(loc_alt)
+    setlocale(LC_NUMERIC,loc_alt);
 
   DBG_PROG_ENDE
   icc_debug = debug_alt;

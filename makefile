@@ -153,6 +153,7 @@ COMMON_CPPFILES = \
 	icc_formeln.cpp \
 	icc_gl.cpp \
 	icc_helfer.cpp \
+    icc_helfer_i18n.cpp \
 	icc_info.cpp \
 	icc_kette.cpp \
 	icc_main.cpp \

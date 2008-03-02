@@ -191,6 +191,7 @@ GL_Ansicht::init(int init_id)
   menueInit_(); DBG_PROG
   menueAufruf (MENU_HELLGRAU); // Farbschema
   menueAufruf (MENU_GRAU);     // CLUT Farbschema
+  schatten = 0.1;
   if (id() == 1) menueAufruf (MENU_WUERFEL);
 
   DBG_PROG_ENDE
@@ -525,7 +526,8 @@ GL_Ansicht::erstelleGLListen_()
   punkteAuffrischen();
 
   //Hintergrund
-  switch (hintergrundfarbe) {
+  glClearColor(hintergrundfarbe,hintergrundfarbe,hintergrundfarbe,1.);
+  /*switch (hintergrundfarbe) {
     case MENU_WEISS:
       glClearColor(1.,1.,1.,1.0);
       break;
@@ -541,7 +543,7 @@ GL_Ansicht::erstelleGLListen_()
     case MENU_SCHWARZ:
       glClearColor(.0,.0,.0,1.0);
       break;
-  }
+  }*/
 
   DBG_PROG_ENDE
 }
@@ -1151,10 +1153,12 @@ GL_Ansicht::punkteAuffrischen()
                glEnd();
                }
                #else
+               glPointSize(punktgroesse);
                glBegin(GL_POINTS);
                  glVertex2d( 0,0 );
                glEnd();
-               glColor4f(0.1, 0.1, 0.1, 1. );
+               glColor4f( schatten, schatten, schatten, 1. );
+               glPointSize(3);
                glTranslatef( 0, -punkte_[i+0], 0 );
                glBegin(GL_POINTS);
                  glVertex2d( 0,0 );
@@ -1738,27 +1742,27 @@ GL_Ansicht::menueAufruf ( int value )
          zeige_helfer = 0;
       break;
     case MENU_WEISS:
-      hintergrundfarbe = MENU_WEISS;
+      hintergrundfarbe = 1.;//MENU_WEISS;
       for (int i=0; i < 3 ; ++i) pfeilfarbe[i] = 1.;
       for (int i=0; i < 3 ; ++i) textfarbe[i] = .75;
       break;
     case MENU_HELLGRAU:
-      hintergrundfarbe = MENU_HELLGRAU;
+      hintergrundfarbe = 0.75;//MENU_HELLGRAU;
       for (int i=0; i < 3 ; ++i) pfeilfarbe[i] = 1.0;
       for (int i=0; i < 3 ; ++i) textfarbe[i] = 0.5;
       break;
     case MENU_GRAUGRAU:
-      hintergrundfarbe = MENU_GRAUGRAU;
+      hintergrundfarbe = 0.5;//MENU_GRAUGRAU;
       for (int i=0; i < 3 ; ++i) pfeilfarbe[i] = .75;
       for (int i=0; i < 3 ; ++i) textfarbe[i] = 0.25;
       break;
     case MENU_DUNKELGRAU:
-      hintergrundfarbe = MENU_DUNKELGRAU;
+      hintergrundfarbe = 0.25;//MENU_DUNKELGRAU;
       for (int i=0; i < 3 ; ++i) pfeilfarbe[i] = 0.5;
       for (int i=0; i < 3 ; ++i) textfarbe[i] = 0.75;
       break;
     case MENU_SCHWARZ:
-      hintergrundfarbe = MENU_SCHWARZ;
+      hintergrundfarbe = 0.0;//MENU_SCHWARZ;
       for (int i=0; i < 3 ; ++i) pfeilfarbe[i] = .25;
       for (int i=0; i < 3 ; ++i) textfarbe[i] = 0.5;
       break;

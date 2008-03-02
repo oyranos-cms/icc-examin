@@ -114,26 +114,4 @@ getChannel_flColours (icColorSpaceSignature color)
 
 #undef nFARBEN
 
-#include <FL/Fl_Menu_Button.H>
-void
-menue_uebersetzen( Fl_Menu_Item* menueleiste )
-{
-  DBG_PROG_START
-  int size = menueleiste->size();
-  DBG_PROG_V( size )
-  for(int i = 0; i < size ; ++i) {
-    const char* text = menueleiste[i].label();
-    menueleiste[i].label( _(text) );
-    DBG_PROG_V( i )
-    if(text)
-      DBG_PROG_V( text <<" "<< _(text) );
-  }
-  DBG_PROG_ENDE
-}
-
-
 #endif
-
-
-
-
