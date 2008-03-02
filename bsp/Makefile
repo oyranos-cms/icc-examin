@@ -84,7 +84,7 @@ TARGET_CFILES = mainBsp.c
 LIBNAME = lib$(TARGET).a
 
 CXXFLAGS_= $(CXXFLAGS)
-CFLAG_   = $(CFLAGS)
+CFLAGS_  = $(CFLAGS)
 
 LDLIBS_ = -L./ $(LDFLAGS) \
 	-L/lib \
@@ -174,7 +174,7 @@ static_static:	$(OBJECTS)
 
 
 clean:
-	echo clean $@ ...
+	echo clean $(TARGET) ...
 	-$(RM) $(OBJECTS) $(TARGET_OBJECTS) $(BINTARGET) \
 	$(LIBNAME)
 	echo ... $@ done
