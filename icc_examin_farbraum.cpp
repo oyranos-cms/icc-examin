@@ -170,7 +170,7 @@ ICCexamin::farbenLese (int n,
     unsigned int n_farben = p.size()/3;
     double *lab = new double [n_farben*3],
            *rgb=0;
-    for(unsigned i = 1; i < n_farben*3; ++i)
+    for(unsigned i = 0; i < n_farben*3; ++i)
       lab[i] = p[i];
     rgb = icc_oyranos. wandelLabNachBildschirmFarben(lab, n_farben,
                                  icc_examin->intent(),

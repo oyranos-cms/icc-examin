@@ -32,6 +32,7 @@
 
 #include <string>
 #include <vector>
+#include <set>
 #include "icc_utils.h"
 #include "icc_gl.h"
 #include "icc_kette.h"
@@ -70,10 +71,10 @@ class ICCexamin : public icc_examin_ns::Beobachter
   private:
     bool         lade_;
     bool         neu_laden_;
-    int          erneuern_;
+    std::set<int> erneuern_;
   public:
-    int          erneuern() { return erneuern_; }
-    void         erneuern(int pos) { erneuern_ = pos; DBG_PROG_V( erneuern_ ) }
+    int          erneuern();
+    void         erneuern(int pos);
   private:
     std::vector<Speicher> speicher_vect_;
     static

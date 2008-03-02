@@ -2,9 +2,8 @@ o Weisspunktvergleich mit idealem schwarzem Koerper
 o interne Farbberechnung
 o AGV Ersatz
 o Farbraum Menues in obere Menueleiste -> ::neuzeichnen
-o ein meta Packet für osX mit libpng und ähnlichem wird gewünscht
 
 erledigt:
 o Intent beeinflusst gamut Ansicht
 o Uebersetzungen
-
+o ein meta Packet für osX mit libpng und ähnlichem wird gewünscht

@@ -82,13 +82,16 @@ Beobachter::modellFort(Modell* modell)
   DBG_PROG_ENDE
 }
 
+/** @brief Empf&auml;nger von Modell
+
+    Diese Funktion übernimmt die Informationen aus dem Modell und veranlasst
+    eine entsprechende Reaktion. \n
+    in der abgeleiteten Klasse konkretisieren
+ */
 void
 Beobachter::nachricht ( Modell* modell , int infos )
 {
   DBG_PROG;
-  // Diese Funktion übernimmt die Informationen aus dem Modell und veranlasst
-  // eine entsprechende Reaktion.
-  // in der abgeleiteten Klasse konkretisieren
 }
 
 
@@ -129,11 +132,12 @@ Modell::beobachterFort(Beobachter* beo)
   DBG_PROG_ENDE
 }
 
+
+/** @brief alle meine Beobachter informieren */
 void
 Modell::benachrichtigen(int infos)
 {
   DBG_PROG_START
-  // alle meine Beobachter informieren
   std::list<Beobachter*>::iterator it;
   for(it = beobachter_.begin(); it != beobachter_.end(); ++it)
   {

@@ -109,14 +109,15 @@ ICCkette::einfuegen (const Speicher & prof, int pos)
   while(!frei()) icc_examin_ns::sleep(0.05); frei(false);
 
   // Ist das Profile eventuell schon geladen? -> Abbruch
+  /*
   for(unsigned int i = 0; i < profile_.size(); ++i)
     if((icc_examin->erneuern() != (int)i) &&
        prof.name() == profile_[i].filename()) {
+      DBG_S( "- abgebrochen" )
       frei(true);
       return erfolg;
     }
-  icc_examin->erneuern(-1);
-
+  */
   if(!prof.size()) {
     frei(true);
     return false;
@@ -213,7 +214,7 @@ ICCkette::waechter (void* zeiger)
 #      endif
         )
       {
-        DBG_PROG_V( obj->profil_mzeit_[i] )
+        DBG_MEM_V( obj->profil_mzeit_[i] )
         if( obj->profil_mzeit_[i] != 0 ) {
           // lade in LADEN und warte auf Ergebnis
           icc_examin->erneuern(i);

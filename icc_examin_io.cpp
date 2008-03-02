@@ -64,7 +64,7 @@ ICCexamin::oeffnenThread_ (int pos)
 { DBG_PROG_START
   if(wandelThreadId(pthread_self()) != (Fl_Thread)THREAD_LADEN) WARN_S("THREAD_LADEN???");
 
-  if(erneuern_ < 0) {
+  if(erneuern_.size() < 0) {
     fortschritt( 1.1 );
     DBG_PROG_ENDE
     return;
@@ -77,8 +77,9 @@ ICCexamin::oeffnenThread_ (int pos)
 
   dateiNachSpeicher( speicher_vect_[pos], profile.name(pos) );
   
-  for (unsigned int i = 0; i < speicher_vect_.size(); ++i)
+  //for (unsigned int i = 0; i < speicher_vect_.size(); ++i)
   {
+    int i = pos;
     DBG_PROG_V( speicher_vect_[i].size()<<" "<<speicher_vect_[i].name() )
     fortschrittThreaded( 1./3.+ (double)(i)/speicher_vect_.size()/3.0 );
     profile.einfuegen( speicher_vect_[pos], pos );
@@ -311,15 +312,18 @@ ICCexamin::oeffnenStatisch_ (void* ie)
     if(examin->lade_) {
       examin->oeffnenThread_();
       examin->lade_ = false;
-      examin->erneuern(-1);
-    } else if(examin->erneuern() >= 0 &&
-              examin->erneuern() < profile.size()) {
-      examin->oeffnenThread_(examin->erneuern());
-      examin->lade_ = false;
-      examin->erneuern(-1);
-    } else
-      // kurze Pause 
-      icc_examin_ns::sleep(0.2); DBG_THREAD
+      //examin->erneuern(-1);
+    } else {
+      int e = examin->erneuern();
+      if(e >= 0 &&
+         e < profile.size()) {
+        examin->oeffnenThread_( e );
+        examin->lade_ = false;
+      } else {
+        // kurze Pause 
+        icc_examin_ns::sleep(0.2); DBG_THREAD
+      }
+    }
   }
 
   DBG_PROG_ENDE

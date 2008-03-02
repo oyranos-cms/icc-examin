@@ -75,8 +75,8 @@ class ICCkette : public icc_examin_ns::Modell
 
     bool         einfuegen (const Speicher & profil, int pos);
 
-    void         setzAktiv (int pos) { DBG_PROG aktiv_[pos]=true; benachrichtigen(pos);}
-    void         passiv    (int pos) { DBG_PROG aktiv_[pos]=false; benachrichtigen(pos);}
+    void         setzAktiv (int pos) { DBG_PROG aktiv_[pos]=true;}// benachrichtigen(pos);}
+    void         passiv    (int pos) { DBG_PROG aktiv_[pos]=false;}// benachrichtigen(pos);}
     std::vector<int> aktiv () { return aktiv_; }
     int          aktiv (int pos) { return aktiv_[pos]; }
     void         aktuell   (int pos) {

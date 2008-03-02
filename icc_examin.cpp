@@ -273,7 +273,7 @@ ICCexamin::zeigCGATS()
   DBG_PROG_ENDE
 }
 
-// virtual aus icc_examin_ns::Beobachter::
+/** virtual aus icc_examin_ns::Beobachter:: */
 void
 ICCexamin::nachricht( Modell* modell , int info )
 {
@@ -295,7 +295,12 @@ ICCexamin::nachricht( Modell* modell , int info )
     {
       DBG_PROG_V( (int*)(*k)[info] )
       if ((*k)[info])
-      if (!(*k)[info]->changing())
+      if((*k)[info]->changing()) {
+        DBG_PROG_S( "verändert sich gerade: " << info )
+        //icc_examin_ns::sleep( 0.1 );
+      }
+      DBG_PROG_S( "lade: " << info )
+
       { DBG_PROG
         {
           // ncl2 ?
@@ -337,14 +342,38 @@ ICCexamin::nachricht( Modell* modell , int info )
         else if(icc_betrachter->examin->visible())
           waehleTag(_item);
         icc_examin->fortschrittThreaded(0.9);
-      } else
-        DBG_PROG_S( "verändert sich gerade" )
+      }
     }
   }
 
   Beobachter::nachricht(modell, info);
   icc_examin->fortschrittThreaded(1.0);
   icc_examin->fortschrittThreaded(1.1);
+  DBG_PROG_ENDE
+}
+
+int
+ICCexamin::erneuern()
+{
+  if(erneuern_.size()) {
+    DBG_PROG_START
+    int i = *erneuern_.begin();
+    std::set<int>::const_iterator it = erneuern_.begin();
+    DBG_NUM_V( *it )
+    erneuern_.erase(it);
+    DBG_PROG_ENDE
+    return i;
+  } else {
+    return -1;
+  }
+}
+
+void
+ICCexamin::erneuern(int pos)
+{
+  DBG_PROG_START
+  erneuern_.insert( pos );
+  DBG_NUM_V( *erneuern_.begin() <<" "<< erneuern_.size() )
   DBG_PROG_ENDE
 }
 
