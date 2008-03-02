@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2005-10-14 14:37+0200\n"
+"POT-Creation-Date: 2005-10-14 17:47+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1300,28 +1300,28 @@ msgstr ""
 msgid "K"
 msgstr ""
 
-#: icc_oyranos.cpp:168 icc_oyranos.cpp:326 icc_oyranos.cpp:406
-#: icc_oyranos.cpp:447 icc_oyranos.cpp:498
+#: icc_oyranos.cpp:162 icc_oyranos.cpp:320 icc_oyranos.cpp:400
+#: icc_oyranos.cpp:441 icc_oyranos.cpp:492
 msgid "Profil konnte nicht geladen werden"
 msgstr ""
 
-#: icc_oyranos.cpp:316
+#: icc_oyranos.cpp:310
 msgid "Monitor Profile"
 msgstr ""
 
-#: icc_oyranos.cpp:709 icc_oyranos.cpp:795
+#: icc_oyranos.cpp:703 icc_oyranos.cpp:789
 msgid "hLab Profil nicht geoeffnet"
 msgstr ""
 
-#: icc_oyranos.cpp:793
+#: icc_oyranos.cpp:787
 msgid "hsRGB Profil nicht geoeffnet"
 msgstr ""
 
-#: icc_oyranos.cpp:804
+#: icc_oyranos.cpp:798
 msgid "keine hXYZtoRGB Transformation gefunden"
 msgstr ""
 
-#: icc_oyranos.cpp:808
+#: icc_oyranos.cpp:802
 msgid "RGB_speicher Speicher nicht verfuegbar"
 msgstr ""
 
@@ -1703,22 +1703,16 @@ msgstr ""
 msgid "  agv 3D Navigation: Philip Winston<br>\n"
 msgstr ""
 
-#: icc_ueber.cpp:182
-msgid ""
-"  freeglut: freeglut.sf.net<br>\n"
-"   (partialy used) <br>"
-msgstr ""
-
-#: icc_ueber.cpp:189
+#: icc_ueber.cpp:181
 msgid "For the visualisation of gamut (external):<br>\n"
 msgstr ""
 
-#: icc_ueber.cpp:193
+#: icc_ueber.cpp:185
 msgid ""
 "  argyll: Greame Gill web.access.net.au/argyll/argyllcms.html<br<br><br>\n"
 msgstr ""
 
-#: icc_ueber.cpp:202
+#: icc_ueber.cpp:194
 msgid ""
 "    all icc_* files are licensed under the GPL.<br>    The other files may "
 "contain deverine licenses which are detectable from file headers. "
