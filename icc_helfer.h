@@ -78,6 +78,9 @@ std::string         getMeasurementGeometry( icMeasurementGeometry measgeo );
 std::string         getMeasurementFlare( icMeasurementFlare flare );
 std::string         printDatum( icDateTimeNumber date );
 
+// CGATS
+std::string         cgats_korrigieren(char* _data, size_t _size);
+
 // Datendarstellung
 std::string         zeig_bits_bin      (void* speicher, int groesse);
 
@@ -86,6 +89,11 @@ std::string::size_type suchenErsetzen  (std::string            &text,
                                         std::string            &suchen,
                                         std::string            &ersetzen,
                                         std::string::size_type  pos);
+std::string::size_type suchenErsetzen  (std::string            &text,
+                                        const char             *suchen,
+                                        const char             *ersetzen,
+                                        std::string::size_type  pos);
+std::vector<std::string> zeilenNachVector (std::string &text);
 
 
 

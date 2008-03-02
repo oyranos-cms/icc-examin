@@ -84,6 +84,7 @@ CPP_HEADERS = \
 #	vFLGLWidget.h \
 	ViewerFLTK.h 
 CPPFILES = \
+	icc_cgats_filter.cpp \
 	icc_draw.cpp \
 	icc_examin.cpp \
 	icc_fenster.cpp \
@@ -187,8 +188,8 @@ agv:    agviewer.o agv_example.o
 	$(CC) $(OPTS) $(INCL) -o agv \
 	agviewer.o  agv_example.o $(FLTK_LIBS) $(X11_LIBS) -lglut
 
-cgats:	icc_utils.h icc_utils.cpp icc_cgats_parser.cpp
-	$(CC) $(OPTS) -o cgats icc_cgats_parser.cpp icc_utils.o
+cgats:	icc_utils.h icc_utils.cpp icc_cgats_filter.cpp icc_cgats_parser.cpp
+	$(CC) $(OPTS) -o cgats icc_cgats_parser.cpp icc_utils.o icc_cgats_filter.o
 
 
 install:	$(TARGET)

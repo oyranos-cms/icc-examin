@@ -107,6 +107,9 @@ dateiwahl_cb (Fl_File_Chooser *f,void *data)
 void
 nachricht(std::string text)
 { DBG_PROG_START
+  fl_message_icon()->resize(1,1,1,1);
+  fl_message_icon()->hide();
+  DBG_PROG
   fl_message(text.c_str());
   DBG_PROG_ENDE
 }

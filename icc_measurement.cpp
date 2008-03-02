@@ -46,6 +46,7 @@
 #include "icc_profile.h"
 #include "icc_examin.h"
 #include "icc_version.h"
+#include "icc_helfer.h"
 
 #define _(text) text
 #define g_message printf
@@ -100,7 +101,7 @@ ICCmeasurement::load                ( ICCprofile *profil,
 void
 ICCmeasurement::leseTag (void)
 { DBG_PROG_START
-  std::string data = ascii_korrigieren (); DBG_V( (int*)_data )
+  std::string data = cgats_korrigieren (_data, _size); DBG_V( (int*)_data )
 
   // korrigierte CGATS Daten -> _data
   if (_data != NULL) free (_data);
@@ -142,179 +143,6 @@ ICCmeasurement::init (void)
   init_umrechnen();
   DBG_PROG_ENDE
 }
-
-std::string
-ICCmeasurement::ascii_korrigieren               (void)
-{ DBG_PROG_START
-  // Reparieren
-  // LF FF
-  char* ptr = 0; DBG_V( (int*) _data )
-  while (strchr(_data, 13) > 0) { // \r 013 0x0d
-      ptr = strchr(_data, 13);
-      if (ptr > 0) {
-        if (*(ptr+1) == '\n')
-        {
-          *ptr = '\n';
-          *(ptr+1) = ' ';
-        }
-        else
-          *ptr = '\n';
-      }
-  };
-
-  // char* -> std::string
-  std::string data (_data, 0, _size);
-
-  // reparieren: Sample_Name , SampleID, ""
-  std::string::size_type pos=0;
-  std::string::size_type ende;
-  while ((pos = data.find ("SampleID", pos)) != std::string::npos) {
-      data.replace (pos, 8, "SAMPLE_ID"); DBG_NUM_S( "SampleID ersetzt" )
-  }
-  pos = 0;
-  while ((pos = data.find ("Sample_ID", pos)) != std::string::npos) {
-      data.replace (pos, strlen("Sample_ID"), "SAMPLE_NAME"); DBG_NUM_S( "Sample_ID ersetzt" )
-  }
-  pos = 0;
-  while ((pos = data.find ("SampleName", pos)) != std::string::npos) {
-      data.replace (pos, strlen("SampleName"), "SAMPLE_NAME"); DBG_NUM_S( "SampleName ersetzt" )
-  }
-  pos = 0;
-  while ((pos = data.find ("Sample_Name", pos)) != std::string::npos) {
-      data.replace (pos, strlen("Sample_Name"), "SAMPLE_NAME"); DBG_NUM_S( "Sample_Name ersetzt" )
-  }
-  pos = 0;
-  while ((pos = data.find ("Lab_L", pos)) != std::string::npos) {
-      data.replace (pos, strlen("Lab_L"), "LAB_L"); DBG_NUM_S( "Lab_L ersetzt" )
-  }
-  pos = 0;
-  while ((pos = data.find ("Lab_a", pos)) != std::string::npos) {
-      data.replace (pos, strlen("Lab_a"), "LAB_A"); DBG_NUM_S( "Lab_a ersetzt" )
-  }
-  pos = 0;
-  while ((pos = data.find ("Lab_b", pos)) != std::string::npos) {
-      data.replace (pos, strlen("Lab_b"), "LAB_B"); DBG_NUM_S( "Lab_b ersetzt" )
-  }
-  pos = 0;
-  while ((pos = data.find ("\"\"", pos)) != std::string::npos) {
-      data.replace (pos, strlen("\"\""), "\""); DBG_NUM_S( "\"\" ersetzt" )
-  }
-  pos = 0;
-  while ((pos = data.find ("Date:", pos)) != std::string::npos) {
-      data.replace (pos, strlen("Date:"), "CREATED \"\" #"); DBG_NUM_S( "Date: ersetzt" )
-  }
-  pos = data.find ("BEGIN_DATA\n", 0); // Kommentarzeilen löschen
-  while ((pos = data.find ("\n#", pos)) != std::string::npos
-       && (ende = data.find ("END_DATA\n", pos+2)) != std::string::npos) {
-      ende = data.find ("\n", pos+2);
-      data.erase (pos, ende - pos); DBG_NUM_S( "Kommentarzeile gelöscht" )
-  }
-  // fehlendes SAMPLE_ID einführen und jeder Zeile einen Zähler voransetzen
-  int count;
-  if ((data.find ("SAMPLE_ID", 0)) == std::string::npos) {
-    pos = data.find ("BEGIN_DATA_FORMAT\n", 0);
-    data.insert (pos+strlen("BEGIN_DATA_FORMAT\n"), "SAMPLE_ID   ");
-    pos = data.find ("BEGIN_DATA\n", 0); DBG_NUM_V(pos)
-    count = 1; pos++;
-    while ((pos = data.find ("\n", pos)) != std::string::npos
-         && (ende = data.find ("END_DATA\n", pos+2)) != std::string::npos) {
-      static char zahl[12];
-      sprintf (&zahl[0], "%d   ", count); count++; //DBG_S(count << " " << pos)
-      data.insert (pos+1, &zahl[0]);
-      pos += strlen (&zahl[0]);
-      //DBG_NUM_S( data )
-    }
-  }
-  // NUMBER_OF_FIELDS reparieren
-  if ((data.find ("NUMBER_OF_FIELDS", 0)) == std::string::npos)
-  {
-    pos = data.find ("BEGIN_DATA_FORMAT\n", 0); DBG_NUM_S (pos)
-    count = 0; pos++;
-    if (data.find ("SAMPLE_ID", pos) != std::string::npos) count ++;
-    if (data.find ("SAMPLE_NAME", pos) != std::string::npos) count ++;
-    if (data.find ("CMYK_C", pos) != std::string::npos) count ++;
-    if (data.find ("CMYK_M", pos) != std::string::npos) count ++;
-    if (data.find ("CMYK_Y", pos) != std::string::npos) count ++;
-    if (data.find ("CMYK_K", pos) != std::string::npos) count ++;
-    if (data.find ("RGB_R", pos) != std::string::npos) count ++;
-    if (data.find ("RGB_G", pos) != std::string::npos) count ++;
-    if (data.find ("RGB_B", pos) != std::string::npos) count ++;
-    if (data.find ("XYZ_X", pos) != std::string::npos) count ++;
-    if (data.find ("XYZ_Y", pos) != std::string::npos) count ++;
-    if (data.find ("XYZ_Z", pos) != std::string::npos) count ++;
-    if (data.find ("XYY_X", pos) != std::string::npos) count ++;
-    if (data.find ("XYY_Y", pos) != std::string::npos) count ++;
-    if (data.find ("XYY_CAPY", pos) != std::string::npos) count ++;
-    if (data.find ("LAB_L", pos) != std::string::npos) count ++;
-    if (data.find ("LAB_A", pos) != std::string::npos) count ++;
-    if (data.find ("LAB_B", pos) != std::string::npos) count ++;
-    if (data.find ("D_RED", pos) != std::string::npos) count ++;
-    if (data.find ("D_GREEN", pos) != std::string::npos) count ++;
-    if (data.find ("D_BLUE", pos) != std::string::npos) count ++;
-    if (data.find ("D_VIS", pos) != std::string::npos) count ++;
-    if (data.find ("D_MAJOR_FILTER", pos) != std::string::npos) count ++;
-    if (data.find ("SPECTRAL_NM", pos) != std::string::npos) count ++;
-    if (data.find ("SPECTRAL_PCT", pos) != std::string::npos) count ++;
-    if (data.find ("SPECTRAL_DEC", pos) != std::string::npos) count ++;
-    if (data.find ("XYY_CAPY", pos) != std::string::npos) count ++;
-    if (data.find ("LAB_C", pos) != std::string::npos) count ++;
-    if (data.find ("LAB_H", pos) != std::string::npos) count ++;
-    if (data.find ("LAB_DE", pos) != std::string::npos) count ++;
-    if (data.find ("LAB_DE_94", pos) != std::string::npos) count ++;
-    if (data.find ("LAB_DE_CMC", pos) != std::string::npos) count ++;
-    if (data.find ("LAB_DE_2000", pos) != std::string::npos) count ++;
-    if (data.find ("MEAN_DE", pos) != std::string::npos) count ++;
-    if (data.find ("STDEV_X", pos) != std::string::npos) count ++;
-    if (data.find ("STDEV_Y", pos) != std::string::npos) count ++;
-    if (data.find ("STDEV_Z", pos) != std::string::npos) count ++;
-    if (data.find ("STDEV_L", pos) != std::string::npos) count ++;
-    if (data.find ("STDEV_A", pos) != std::string::npos) count ++;
-    if (data.find ("STDEV_B", pos) != std::string::npos) count ++;
-    if (data.find ("STDEV_DE", pos) != std::string::npos) count ++;
-    if (data.find ("CHI_SQD_PAR", pos) != std::string::npos) count ++;
-    static char zahl[64];
-    pos = data.find ("BEGIN_DATA_FORMAT\n", 0);
-    sprintf (&zahl[0], "NUMBER_OF_FIELDS %d\n", count); DBG_PROG_V( zahl )
-    data.insert (pos, &zahl[0]);
-    DBG_NUM_S( "NUMBER_OF_FIELDS " << count << " eingefügt" )
-  }
-  // NUMBER_OF_SETS reparieren
-  if ((data.find ("NUMBER_OF_SETS", 0)) == std::string::npos) {
-    pos = data.find ("BEGIN_DATA\n", 0); DBG_S (pos)
-    count = 0; pos++;
-    while ((pos = data.find ("\n", pos)) != std::string::npos
-         && (ende = data.find ("END_DATA\n", pos+2)) != std::string::npos) {
-      count ++; //DBG_S( pos << " " << count)
-      pos++;
-    }
-    static char zahl[64];
-    pos = data.find ("BEGIN_DATA\n", 0);
-    sprintf (&zahl[0], "NUMBER_OF_SETS %d\n", count);
-    data.insert (pos, &zahl[0]);
-    DBG_S( "NUMBER_OF_SETS " << count << " eingefügt" )
-  }
-  // Signatur reparieren
-  pos = 0;
-  int pos_alt = 0, diff = 0;
-  count = 0;
-  while (diff <= 1) {
-    count ++;
-    pos = data.find ("\n", pos);
-    diff = pos - pos_alt;
-    pos_alt = pos;
-    if (count == 12) // 12 ist länger als die erlaubten 7 Zeichen
-      diff = count;
-    DBG_S (diff)
-  }
-  if (diff > 10) {
-      data.insert (0, "ICCEXAM\n"); DBG_NUM_S( "Beschreibung eingeführt" )
-  }
-
-  DBG_NUM_S (data)
-  DBG_PROG_ENDE
-  return data;
-}
-
 
 void
 ICCmeasurement::lcms_parse                   (void)

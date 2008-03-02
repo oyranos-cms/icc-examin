@@ -56,7 +56,8 @@ decl {\#include "icc_draw.h"
 
 decl {\#include "icc_profile.h"
 \#include "icc_utils.h"
-\#include "icc_ueber.h"} {public
+\#include "icc_ueber.h"
+\#include "icc_helfer.h"} {public
 } 
 
 decl {\#include "agviewer.h"
@@ -317,8 +318,7 @@ class MftChoice {: {public Fl_Choice}
   }
 } 
 
-class ICCfltkBetrachter {open
-} {
+class ICCfltkBetrachter {} {
   decl {bool setTitleUrl;
 
  int px,py,pw,ph;
@@ -425,7 +425,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window vcgt {
       label {Grafikkarten Gamma Tabellen} open
-      xywh {721 272 370 390} type Double labeltype NORMAL_LABEL resizable
+      xywh {731 314 370 390} type Double labeltype NORMAL_LABEL resizable
       code0 {o->hide();} non_modal visible
     } {
       Fl_Group {} {open
@@ -450,7 +450,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window details {
       label {ICC Details} open
-      xywh {606 427 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
+      xywh {616 469 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
     } {
       Fl_Group {} {open
         xywh {0 0 385 520}
@@ -537,7 +537,7 @@ class ICCfltkBetrachter {open
 
   DBG_PROG_S (m->value())
 
-  icc_examin->zeigCGATS();} selected
+  icc_examin->zeigCGATS();}
               tooltip {Mess- und Profilwerte bildlich und in Zahlen dargestellt; Ctrl+b} xywh {50 50 100 20} shortcut 0x40067 deactivate
             }
             menuitem menueintrag_3D {
@@ -764,7 +764,8 @@ ueber_html->value(getUeberHtml().c_str());}
   }} {}
     code DBG_PROG_ENDE {}
   }
-  Function {measurement(bool has_measurement)} {} {
+  Function {measurement(bool has_measurement)} {open
+  } {
     code {if (has_measurement) {
     DBG_PROG_S(menueintrag_inspekt->value())
     if (menueintrag_inspekt->value()) {
@@ -773,45 +774,16 @@ ueber_html->value(getUeberHtml().c_str());}
         inspekt_html->topline (inspekt_html->size() - 75);
       else
         inspekt_html->topline (tag_text->inspekt_topline);
-      //inspekt->show();
-      //examin->hide();
     }
     menueintrag_inspekt->activate();
     menueintrag_html_speichern->activate();
+    menueintrag_zeigcgats->activate();
   } else {
     menueintrag_inspekt->deactivate();
     menueintrag_html_speichern->deactivate();
-    //inspekt->hide();
-    //examin->show();
-    //menueintrag_inspekt->value( false );
+    menueintrag_zeigcgats->deactivate();
   }} {}
   }
-} 
-
-Function {zeilenNachVector(std::string text)} {return_type {std::vector<std::string>}
-} {
-  code DBG_PROG_START {}
-  code {// fügt Zeilen aus einen Text in einen Vector
-  std::vector <std::string> texte;
-
-      int len = strlen(text.c_str());
-      std::string text_line;
-      char c;
-      const char *chars = text.c_str();
-      for (int zeichen = 0; zeichen < len; zeichen++) {
-        c = chars[zeichen];
-        if (c == '\\n' || (int)c == 0) { // LF oder 0
-          text_line += '\\0';
-          texte.push_back(text_line.c_str());
-          text_line.clear();
-        } else
-          text_line += c;
-      }
-      if (text_line.size() > 0) // falls was übrig bleibt
-        texte.push_back(text_line.c_str());
-
-  DBG_PROG_ENDE
-  return texte;} {}
 } 
 
 Function {dHaendler(void* o)} {return_type {static void}

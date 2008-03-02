@@ -764,4 +764,42 @@ suchenErsetzen          (std::string &text,
   return pos;
 }
 
+std::string::size_type
+suchenErsetzen          (std::string &text,
+                         const char  *suchen,
+                         const char  *ersetzen,
+                         std::string::size_type  pos)
+{
+  static std::string such, ersetz;
+  such = suchen;
+  ersetz = ersetzen;
+  pos = suchenErsetzen(text, such, ersetz, pos);
+  return pos;
+}
 
+
+std::vector<std::string>
+zeilenNachVector(std::string &text)
+{ DBG_PROG_START
+  // füilen aus einen Text in einen Vector
+  std::vector <std::string> texte;
+
+      int len = strlen(text.c_str());
+      std::string text_line;
+      char c;
+      const char *chars = text.c_str();
+      for (int zeichen = 0; zeichen < len; zeichen++) {
+        c = chars[zeichen];
+        if (c == '\n' || (int)c == 0) { // LF oder 0
+          text_line += '\0';
+          texte.push_back(text_line.c_str());
+          text_line.clear();
+        } else
+          text_line += c;
+      }
+      if (text_line.size() > 0) // falls was übrig bleibt
+        texte.push_back(text_line.c_str());
+
+  DBG_PROG_ENDE
+  return texte;
+}

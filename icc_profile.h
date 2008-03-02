@@ -360,8 +360,6 @@ class ICCmeasurement {
     void                init_umrechnen (void);
     // ??
     void                pruefen (void);
-    // vorbereiten -> cgats
-    std::string         ascii_korrigieren ();
     // lcms cgats Leser
     void                lcms_parse ();
 
@@ -435,8 +433,8 @@ class ICCmeasurement {
     std::string         getHtmlReport ();
     std::vector<int>    getLayout ()       {DBG_PROG return layout; }
     std::string         getCGATS()         {DBG_PROG if(has_data())
-                                                     return ascii_korrigieren();
-                                                     else return ""; }
+                                          return cgats_korrigieren(_data,_size);
+                                          else return ""; }
 
     // Herkunft
     std::string         getTagName()       {DBG_PROG return getSigTagName (_sig); }

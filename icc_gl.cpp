@@ -817,9 +817,7 @@ GL_Ansicht::punkteAuffrischen()
                         -(punkte_[i+1]*a_darstellungs_breite) );
           glEnd();
           #endif
-        } else
-          if (punktform == MENU_DIFFERENZ_LINIE)
-            punktform = MENU_dE1STERN;
+        }
 
         if (farben_.size())
         {
@@ -1255,6 +1253,11 @@ GL_Ansicht::hineinPunkte       (std::vector<double>      vect,
 
   punkte_ = vect;
   DBG_PROG_V( punkte_.size() )
+
+  if (!zeig_punkte_als_messwert_paare &&
+      punktform == MENU_DIFFERENZ_LINIE &&
+      punkte_.size())
+    punktform = MENU_dE1STERN;
 
   //icc_examin->neuzeichnen(this);
   DBG_PROG_ENDE

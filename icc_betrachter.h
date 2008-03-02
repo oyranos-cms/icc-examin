@@ -25,6 +25,7 @@ class GL_Ansicht;
 #include "icc_profile.h"
 #include "icc_utils.h"
 #include "icc_ueber.h"
+#include "icc_helfer.h"
 char* icc_read_info(char* filename);
 
 class TagBrowser : public Fl_Hold_Browser {
@@ -168,6 +169,5 @@ public:
   void zeig_mich_(void* widget);
   void measurement(bool has_measurement);
 };
-std::vector<std::string> zeilenNachVector(std::string text);
 void dHaendler(void* o);
 #endif
