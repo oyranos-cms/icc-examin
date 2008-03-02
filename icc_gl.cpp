@@ -1270,14 +1270,14 @@ GL_Ansicht::punkteAuffrischen()
              glPointSize(punktgroesse);
              glColor4f(.97, .97, .97, 1. );
              glBegin(GL_POINTS);
-             for (unsigned i = 0; i < punkte_.size(); i+=3)
-             {
-               if (farben_.size() == punkte_.size())
-                 glColor4f(farben_[i/3*4+0], farben_[i/3*4+1], farben_[i/3*4+2],
-                           farben_[i/3*4+3] );
+               for (unsigned i = 0; i < punkte_.size(); i+=3)
+               {
+                 if (!dreiecks_netze[0].grau && farben_.size())
+                   glColor4f(farben_[i/3*4+0], farben_[i/3*4+1],
+                             farben_[i/3*4+2], farben_[i/3*4+3] );
 
-               glVertex3d( punkte_[i+2], punkte_[i+0], punkte_[i+1] );
-             }
+                 glVertex3d( punkte_[i+2], punkte_[i+0], punkte_[i+1] );
+               }
              glEnd();
              // Schatten
              glColor4f( schatten, schatten, schatten, 1. );
@@ -1624,7 +1624,7 @@ GL_Ansicht::menueErneuern_()
 #   ifdef Lab_STERN
       menue_form_->add( _("Star"), 0,c_, (void*)MENU_dE1STERN, 0 );
 #   else
-      // Punkte werden für Bildfarben reserviert
+      // Punkte werden fuer Bildfarben reserviert
       menue_form_->add( _("Point"), 0,c_, (void*)MENU_dE1STERN, 0 );
 #   endif
     }
@@ -1739,6 +1739,7 @@ GL_Ansicht::zeichnen()
       grau[i] = dreiecks_netze[i].grau;
       if(!aktualisiert) {
         zeigeUmrisse_();
+        punkteAuffrischen();
         aktualisiert = true;
       }
     }
@@ -1817,6 +1818,7 @@ GL_Ansicht::zeichnen()
                     {
                         double lab[3] = {oY+0.5, oZ/2.55+0.5, oX/2.55+0.5},
                               *rgb = 0;
+                        icc_examin->statusFarbe(lab[0],lab[1],lab[2]);
                         DBG_PROG_V( lab[0]<<" "<<lab[1]<<" "<<lab[2] )
                         rgb = icc_oyranos. wandelLabNachBildschirmFarben(lab, 1,
                                  icc_examin->intent(),
@@ -2327,7 +2329,8 @@ GL_Ansicht::c_ ( Fl_Widget* w, void* daten )
 
     if(value >= 100)
       gl_obj->agv_ .agvSwitchMoveMode (value);
-  } else
+  }
+  else
     WARN_S(_("Konnte keine passende Programmstruktur finden"))
 
   DBG_PROG_ENDE

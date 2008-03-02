@@ -47,6 +47,7 @@ initialiseI18N()
   DBG_PROG_START
 
   std::string locale;
+  int set_zero_locale = 1;
 
 # if APPLE
   // 1. get the locale info
@@ -70,9 +71,9 @@ initialiseI18N()
 
   // set the locale info
   locale = setlocale (LC_MESSAGES, locale.c_str());
+  set_zero_locale = 0;
 # else
 
-  char codeset[24] = "ISO-8859-1";
 
   // 1. get default locale info ..
   locale = setlocale (LC_MESSAGES, "");
@@ -80,6 +81,9 @@ initialiseI18N()
     // .. or take locale info from environment
   if(getenv("LANG"))
     locale = getenv("LANG");
+# endif
+
+  char codeset[24] = "ISO-8859-1";
 
 #   define SetCodesetForLocale( lang, codeset_ ) \
     { \
@@ -103,7 +107,8 @@ initialiseI18N()
         /*setenv("LANG", locale.c_str(), 1);*/ /* setenv is not standard C */ \
         \
         /* 1c. set the locale info after LANG */ \
-        locale = setlocale (LC_MESSAGES, ""); \
+        if(set_zero_locale) \
+          locale = setlocale (LC_MESSAGES, ""); \
       } \
     }
 
@@ -168,7 +173,6 @@ initialiseI18N()
     SetCodesetForLocale( "th", "ISO-8859-11" ) // Thai
 
     SetCodesetForLocale( "ja", "SJIS" ) // Japan ; eucJP, ujis, EUC, PCK, jis7, SJIS
-# endif
 
   if(locale.size())
     DBG_PROG_S( locale );
@@ -230,13 +234,12 @@ initialiseI18N()
 
     DBG_PROG_S( _("try locale in ") << bdtd );
   }
-# ifndef APPLE
+
   // 5. set our charset
   char* cs = bind_textdomain_codeset("icc_examin", codeset);
 
   if(cs)
     DBG_PROG_S( _("set codeset for \"icc_examin\" to ") << cs )
-# endif
 
   // gettext initialisation end
 

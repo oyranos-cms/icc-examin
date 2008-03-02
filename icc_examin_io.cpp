@@ -234,6 +234,7 @@ ICCexamin::lade (std::vector<Speicher> & neu)
   if(kannLaden())
   {
     speicher_vect_ = neu;
+    if(!icc_betrachter->details->visible()) icc_betrachter->details->show();
     lade_ = true;
   } else {
     DBG_THREAD_S( "muss warten" )

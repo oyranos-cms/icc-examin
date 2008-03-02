@@ -119,6 +119,7 @@ class ICCexamin : public icc_examin_ns::Beobachter
   public:
     ICCfltkBetrachter* icc_betrachter;
     std::string statlabel;
+    void        statusFarbe(double & CIEL, double & CIEa, double & CIEb);
     std::string detaillabel;
   public:
     int  tag_nr () { return _item; }

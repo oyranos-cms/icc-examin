@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2005-09-11 10:13+0200\n"
+"POT-Creation-Date: 2005-09-14 15:38+0200\n"
 "PO-Revision-Date: 2005-08-13 17:35+0200\n"
 "Last-Translator: Kai-Uwe Behrmann\n"
 "Language-Team:  <eo@li.org>\n"
@@ -21,7 +21,7 @@ msgstr ""
 msgid "GL Fenster nicht frei"
 msgstr ""
 
-#: agviewer.cpp:312 icc_gl.cpp:2159 icc_gl.cpp:2178 icc_gl.cpp:2297
+#: agviewer.cpp:312 icc_gl.cpp:2161 icc_gl.cpp:2180 icc_gl.cpp:2299
 msgid "left-/middle-/right mouse button -> rotate/cut/menu"
 msgstr ""
 
@@ -29,8 +29,8 @@ msgstr ""
 msgid "Pause"
 msgstr ""
 
-#: agviewer.cpp:349 agviewer.cpp:357 icc_gl.cpp:2263 icc_gl.cpp:2274
-#: icc_gl.cpp:2279 icc_gl.cpp:2284
+#: agviewer.cpp:349 agviewer.cpp:357 icc_gl.cpp:2265 icc_gl.cpp:2276
+#: icc_gl.cpp:2281 icc_gl.cpp:2286
 msgid "left mouse button -> go back"
 msgstr ""
 
@@ -131,7 +131,7 @@ msgid "NUMBER_OF_SETS stimmt nicht überein: gefunden, berechnet "
 msgstr ""
 
 #: icc_draw.cpp:239
-msgid " zu früh benutzt!"
+msgid " zu frueh benutzt!"
 msgstr ""
 
 #: icc_draw.cpp:629
@@ -201,18 +201,18 @@ msgstr ""
 msgid "Value"
 msgstr ""
 
-#: icc_draw.cpp:677 icc_examin_farbraum.cpp:186 icc_examin_io.cpp:141
+#: icc_draw.cpp:677 icc_examin_farbraum.cpp:203 icc_examin_io.cpp:141
 #: icc_helfer.cpp:369 icc_helfer.cpp:372
 msgid "CIE *L"
 msgstr ""
 
-#: icc_draw.cpp:679 icc_examin_farbraum.cpp:187 icc_examin_io.cpp:142
+#: icc_draw.cpp:679 icc_examin_farbraum.cpp:204 icc_examin_io.cpp:142
 #: icc_gl.cpp:765 icc_gl.cpp:835 icc_gl.cpp:859 icc_gl.cpp:867
 #: icc_helfer.cpp:370
 msgid "CIE *a"
 msgstr ""
 
-#: icc_draw.cpp:681 icc_examin_farbraum.cpp:188 icc_examin_io.cpp:143
+#: icc_draw.cpp:681 icc_examin_farbraum.cpp:205 icc_examin_io.cpp:143
 #: icc_gl.cpp:778 icc_gl.cpp:875 icc_gl.cpp:893 icc_gl.cpp:900
 #: icc_helfer.cpp:371
 msgid "CIE *b"
@@ -242,52 +242,56 @@ msgstr ""
 msgid " with one entry for gamma: "
 msgstr ""
 
-#: icc_examin.cpp:125 icc_kette.cpp:72
+#: icc_examin.cpp:126 icc_kette.cpp:72
 msgid "Waechter Thread nicht gestartet Fehler: "
 msgstr ""
 
-#: icc_examin.cpp:130 icc_kette.cpp:77
+#: icc_examin.cpp:131 icc_kette.cpp:77
 msgid "zu viele Waechter Threads Fehler: "
 msgstr ""
 
-#: icc_examin.cpp:135 icc_kette.cpp:82
+#: icc_examin.cpp:136 icc_kette.cpp:82
 msgid "unbekannter Fehler beim Start eines Waechter Threads Fehler: "
 msgstr ""
 
-#: icc_examin.cpp:145
+#: icc_examin.cpp:146
 msgid "Gamut selector"
 msgstr ""
 
-#: icc_examin.cpp:148
+#: icc_examin.cpp:149
 msgid "icc_waehler_ nicht reservierbar"
 msgstr ""
 
-#: icc_examin.cpp:207 icc_examin_io.cpp:407
+#: icc_examin.cpp:208 icc_examin_io.cpp:408
 msgid "loaded"
 msgstr ""
 
-#: icc_examin.cpp:216
+#: icc_examin.cpp:217
 msgid "Ready"
 msgstr ""
 
-#: icc_examin.cpp:276
+#: icc_examin.cpp:277
 msgid "Nachricht von ICCkette"
 msgstr ""
 
-#: icc_examin.cpp:277
+#: icc_examin.cpp:278
 msgid "Auffrischen von Profil Nr.: "
 msgstr ""
 
-#: icc_examin.cpp:404
+#: icc_examin.cpp:405
 msgid "Keine Kurve gefunden"
 msgstr ""
 
-#: icc_examin.cpp:517
+#: icc_examin.cpp:518
 msgid "verstecke "
 msgstr ""
 
-#: icc_examin.cpp:521
+#: icc_examin.cpp:522
 msgid "zeige     "
+msgstr ""
+
+#: icc_examin_farbraum.cpp:179 icc_gl.cpp:1826
+msgid "RGB Ergebnis nicht verfuegbar"
 msgstr ""
 
 #: icc_examin_io.cpp:150
@@ -302,47 +306,47 @@ msgstr ""
 msgid "Kein Netz gefunden. Ist Argyll installiert?"
 msgstr ""
 
-#: icc_examin_io.cpp:311
+#: icc_examin_io.cpp:312
 msgid "Stop loading "
 msgstr ""
 
-#: icc_examin_io.cpp:365 icc_betrachter.cxx:467
+#: icc_examin_io.cpp:366 icc_betrachter.cxx:467
 msgid "Filename"
 msgstr ""
 
-#: icc_examin_io.cpp:369
+#: icc_examin_io.cpp:370
 msgid "found no content for"
 msgstr ""
 
-#: icc_examin_io.cpp:372
+#: icc_examin_io.cpp:373
 msgid "Internal error"
 msgstr ""
 
-#: icc_examin_io.cpp:374
+#: icc_examin_io.cpp:375
 msgid "No. Tag   Type   Size Description"
 msgstr ""
 
-#: icc_examin_io.cpp:433
+#: icc_examin_io.cpp:434
 msgid "HTML Documents (*.htm*)"
 msgstr ""
 
-#: icc_examin_io.cpp:437 icc_betrachter.cxx:386
+#: icc_examin_io.cpp:438 icc_betrachter.cxx:386
 msgid "Save Report"
 msgstr ""
 
-#: icc_examin_io.cpp:509 icc_betrachter.cxx:497
+#: icc_examin_io.cpp:510 icc_betrachter.cxx:497
 msgid "ICC colour profiles (*.ic*)"
 msgstr ""
 
-#: icc_examin_io.cpp:510 icc_betrachter.cxx:387
+#: icc_examin_io.cpp:511 icc_betrachter.cxx:387
 msgid "Save Gamut as Profile"
 msgstr ""
 
-#: icc_examin_io.cpp:512
+#: icc_examin_io.cpp:513
 msgid "VRML Files (*.wrl)"
 msgstr ""
 
-#: icc_examin_io.cpp:513 icc_betrachter.cxx:388
+#: icc_examin_io.cpp:514 icc_betrachter.cxx:388
 msgid "Save Gamut as VRML"
 msgstr ""
 
@@ -468,7 +472,7 @@ msgstr ""
 msgid "Spektral line"
 msgstr "spektra linio"
 
-#: icc_gl.cpp:1635 icc_betrachter.cxx:696
+#: icc_gl.cpp:1635 icc_betrachter.cxx:695
 msgid "Texts"
 msgstr ""
 
@@ -480,23 +484,19 @@ msgstr ""
 msgid "Illustration"
 msgstr ""
 
-#: icc_gl.cpp:1824
-msgid "RGB Ergebnis nicht verfuegbar"
-msgstr ""
-
-#: icc_gl.cpp:1898
+#: icc_gl.cpp:1900
 msgid "Pos"
 msgstr ""
 
-#: icc_gl.cpp:1993 icc_profile_tags.cpp:291
+#: icc_gl.cpp:1995 icc_profile_tags.cpp:291
 msgid "Channel"
 msgstr "kanalo"
 
-#: icc_gl.cpp:2322
+#: icc_gl.cpp:2324
 msgid "Konnte keine Eltern finden"
 msgstr ""
 
-#: icc_gl.cpp:2331
+#: icc_gl.cpp:2334
 msgid "Konnte keine passende Programmstruktur finden"
 msgstr ""
 
@@ -1080,31 +1080,31 @@ msgstr ""
 msgid "Dateigröße 0 für "
 msgstr ""
 
-#: icc_helfer_i18n.cpp:65
+#: icc_helfer_i18n.cpp:66
 msgid "osX locale obtained: "
 msgstr ""
 
-#: icc_helfer_i18n.cpp:68
+#: icc_helfer_i18n.cpp:69
 msgid "osX locale not obtained"
 msgstr ""
 
-#: icc_helfer_i18n.cpp:187
+#: icc_helfer_i18n.cpp:191
 msgid "try to set LANG"
 msgstr ""
 
-#: icc_helfer_i18n.cpp:224
+#: icc_helfer_i18n.cpp:228
 msgid "fine with: "
 msgstr ""
 
-#: icc_helfer_i18n.cpp:226
+#: icc_helfer_i18n.cpp:230
 msgid "failed with: "
 msgstr ""
 
-#: icc_helfer_i18n.cpp:231
+#: icc_helfer_i18n.cpp:235
 msgid "try locale in "
 msgstr ""
 
-#: icc_helfer_i18n.cpp:238
+#: icc_helfer_i18n.cpp:242
 msgid "set codeset for \"icc_examin\" to "
 msgstr ""
 
@@ -1721,7 +1721,7 @@ msgid "Datei "
 msgstr ""
 
 #: icc_vrml.cpp:56
-msgid " konnte nicht gelöscht werden"
+msgid " konnte nicht geloescht werden"
 msgstr ""
 
 #: icc_vrml.cpp:137
@@ -2058,35 +2058,35 @@ msgstr ""
 msgid "Close"
 msgstr ""
 
-#: icc_betrachter.cxx:580
+#: icc_betrachter.cxx:579
 msgid "ICC Examin"
 msgstr ""
 
-#: icc_betrachter.cxx:606
+#: icc_betrachter.cxx:605
 msgid "Inspect"
 msgstr ""
 
-#: icc_betrachter.cxx:611
+#: icc_betrachter.cxx:610
 msgid "Tags"
 msgstr ""
 
-#: icc_betrachter.cxx:612
+#: icc_betrachter.cxx:611
 msgid "Choose one profile tag"
 msgstr ""
 
-#: icc_betrachter.cxx:629
+#: icc_betrachter.cxx:628
 msgid "Chain selection"
 msgstr ""
 
-#: icc_betrachter.cxx:630
+#: icc_betrachter.cxx:629
 msgid "Choose a attribute"
 msgstr ""
 
-#: icc_betrachter.cxx:656
+#: icc_betrachter.cxx:655
 msgid "Chain -texts"
 msgstr ""
 
-#: icc_betrachter.cxx:719
+#: icc_betrachter.cxx:718
 msgid "Loading .."
 msgstr ""
 

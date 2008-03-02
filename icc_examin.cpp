@@ -32,6 +32,7 @@
 #include "icc_gl.h"
 #include "icc_helfer.h"
 #include "icc_helfer_ui.h"
+#include "icc_draw_fltk.h"
 #include "icc_helfer_fltk.h"
 #include "icc_fenster.h"
 #include "icc_info.h"
@@ -538,7 +539,7 @@ ICCexamin::neuzeichnen (void* z)
     oben = TAG_ZEIGEN;
   DBG_PROG_V( oben )
 
-  // inhaltliches Zurückschalten auf tiefere Ebene
+  // inhaltliches Zurueckschalten auf tiefere Ebene
   bool waehle_tag = false;
   if( oben == TAG_ZEIGEN &&
       (icc_betrachter->DD_farbraum->visible()
@@ -557,6 +558,9 @@ ICCexamin::neuzeichnen (void* z)
     if(icc_betrachter->DD_farbraum->visible()) {
       DBG_PROG_S( "3D hist verstecken" )
       icc_betrachter->DD_farbraum->hide();
+      icc_betrachter->box_stat->color(VG);
+      icc_betrachter->box_stat->labelcolor(FL_BLACK);
+      icc_betrachter->box_stat->redraw();
     }
     if(icc_waehler_->visible())
 #   ifdef APPLE
@@ -667,7 +671,6 @@ ICCexamin::fortschrittThreaded(double f)
     if(!icc_betrachter->load_progress->visible())
       icc_betrachter->load_progress-> show();
     icc_betrachter->load_progress-> value( f );
-    wait();
     DBG_PROG_V( f )
   } else if (1.0 < f) {
     icc_betrachter->load_progress-> hide();
@@ -678,6 +681,25 @@ ICCexamin::fortschrittThreaded(double f)
   }
   icc_examin_ns::unlock(this, __FILE__,__LINE__);
   frei_ = true;
+  icc_betrachter->load_progress-> damage(FL_DAMAGE_ALL);
+  DBG_PROG_ENDE
+}
+
+void
+ICCexamin::statusFarbe(double & CIEL, double & CIEa, double & CIEb)
+{ DBG_PROG_START
+  double lab[3] = {CIEL, CIEa, CIEb},
+         *rgb = 0;
+  DBG_PROG_V( lab[0]<<" "<<lab[1]<<" "<<lab[2] )
+  rgb = icc_oyranos. wandelLabNachBildschirmFarben(lab, 1,
+                                 icc_examin->intent(),
+                                 icc_examin->gamutwarn()?cmsFLAGS_GAMUTCHECK:0);
+  Fl_Color colour = fl_rgb_color(rgb[0]*255, rgb[1]*255,rgb[2]*255);
+  if (CIEL < .5)
+    icc_betrachter->box_stat->labelcolor(VG);
+  else
+    icc_betrachter->box_stat->labelcolor(FL_BLACK);
+  icc_betrachter->box_stat->color(colour);
   DBG_PROG_ENDE
 }
 

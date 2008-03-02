@@ -1,3 +1,12 @@
+2005-09-14
+	* fix: kein direckter Fl Zeichenaufruf in nicht Nebensträngen
+	       ICCexamin::fortschrittThreaded() wait(0) -> damage(FL_DAMAGE_ALL)
+
+2005-09-13
+	* fix: i18n codeset for osX with newer gettext
+	* fix: Proofprofil wird immer relativ colorimetrisch dargestellt
+	* neu: Auswahlfarben in Statuszeile
+
 2005-09-07
 	* fix: sprintf durch memcpy ersetzt für URLs; sprintf kann keine %20 Zeichen
 

@@ -573,7 +573,6 @@ ard"));
       o->end();
     }
     o->hide();
-    o->set_non_modal();
     o->end();
     o->resizable(o);
   }

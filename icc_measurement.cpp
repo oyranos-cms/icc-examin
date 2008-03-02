@@ -27,7 +27,7 @@
 
 // Date:      20. 08. 2004
 
-#if 1
+#if 0
 # ifndef DEBUG
 #  define DEBUG
 # endif

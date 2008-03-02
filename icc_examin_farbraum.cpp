@@ -163,11 +163,28 @@ ICCexamin::farbenLese (int n,
     if(p.size())
     {
       DBG_NUM_V( p[0] <<" "<< p.size() )
-      f.resize( (int)p[0] * 4);
+      f.resize( p.size() * 4/3);
     }
     DBG_NUM_V( f.size() )
-    for(unsigned i = 0; i < f.size(); ++i)
-      f[i] = 1.0;
+    // ncl2 Farben -> Bildschirm
+    unsigned int n_farben = p.size()/3;
+    double *lab = new double [n_farben*3],
+           *rgb;
+    for(unsigned i = 1; i <= n_farben*3; ++i)
+      lab[i] = p[i];
+    rgb = icc_oyranos. wandelLabNachBildschirmFarben(lab, n_farben,
+                                 icc_examin->intent(),
+                                 icc_examin->gamutwarn()?cmsFLAGS_GAMUTCHECK:0);
+    DBG_V( n_farben )
+    if(!rgb)  WARN_S( _("RGB Ergebnis nicht verfuegbar") )
+    for(unsigned i = 0; i < n_farben; ++i) {
+      f[i*4+0] = rgb[i*3+0];
+      f[i*4+1] = rgb[i*3+1];
+      f[i*4+2] = rgb[i*3+2];
+      f[i*4+3] = 1.0;
+    }
+    if(lab) delete [] lab;
+    if(rgb) delete [] rgb;
     icc_betrachter->DD_farbraum->zeig_punkte_als_messwert_paare = false;
     icc_betrachter->DD_farbraum->zeig_punkte_als_messwerte = false;
   }
@@ -192,6 +209,8 @@ ICCexamin::farbraum (int n)
   DBG_PROG_V( n <<" "<< profile.size()<<" "<<profile.aktuell() )
   DBG_PROG_V( profile[n]->filename() )
 
+  // Messwerte
+  bool messwerte;
   if(profile.size() > n &&
      profile.aktuell() == n &&
      profile[n]->hasMeasurement() &&
@@ -199,6 +218,7 @@ ICCexamin::farbraum (int n)
     {
       DBG_PROG
       messwertLese(n, p,f,namen);
+      messwerte = true;
     }
 
   bool ncl2_profil = profile[n]->hasTagName("ncl2");
@@ -242,9 +262,10 @@ ICCexamin::farbraum (int n)
 
   if(netz->size() && neues_netz)
   {
-    if((n == 0 && ncl2_profil)
-    || (n == 1 && farbraumModus())
-    || profile.size() == 1 )
+    if(((n == 0 && ncl2_profil)
+        || (n == 1 && farbraumModus())
+        || profile.size() == 1 ) &&
+       !messwerte )
     {
       (*netz)[n].transparenz = 0.25;
       (*netz)[n].grau = false;
@@ -255,8 +276,6 @@ ICCexamin::farbraum (int n)
 
     icc_betrachter->DD_farbraum->achsNamen( texte );
   }
-  if(ncl2_profil)
-    icc_betrachter->DD_farbraum->dreiecks_netze[n].transparenz = 1.0;
   if(icc_betrachter->DD_farbraum->dreiecks_netze[n].name == "") {
     icc_betrachter->DD_farbraum->dreiecks_netze[n].name =
                                                          profile[n]->filename();
