@@ -172,6 +172,7 @@ Oyranos::moni_test_ ()
     const char *display_name = 0;
     char* profil_name =
      oyGetMonitorProfileName (display_name);
+    DBG_V( display_name )
     Speicher v_block = moni_;
       DBG_MEM_V( v_block.size() )
       DBG_PROG_V( (int*)profil_name << profil_name )

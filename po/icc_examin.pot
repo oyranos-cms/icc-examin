@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2005-06-30 06:47+0200\n"
+"POT-Creation-Date: 2005-06-30 12:48+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1271,24 +1271,24 @@ msgstr ""
 msgid "K"
 msgstr ""
 
-#: icc_oyranos.cpp:149 icc_oyranos.cpp:188 icc_oyranos.cpp:228
-#: icc_oyranos.cpp:267
+#: icc_oyranos.cpp:149 icc_oyranos.cpp:189 icc_oyranos.cpp:229
+#: icc_oyranos.cpp:268
 msgid "Profil konnte nicht geladen werden"
 msgstr ""
 
-#: icc_oyranos.cpp:459 icc_oyranos.cpp:545
+#: icc_oyranos.cpp:460 icc_oyranos.cpp:546
 msgid "hLab Profil nicht geoeffnet"
 msgstr ""
 
-#: icc_oyranos.cpp:543
+#: icc_oyranos.cpp:544
 msgid "hsRGB Profil nicht geoeffnet"
 msgstr ""
 
-#: icc_oyranos.cpp:554
+#: icc_oyranos.cpp:555
 msgid "keine hXYZtoRGB Transformation gefunden"
 msgstr ""
 
-#: icc_oyranos.cpp:558
+#: icc_oyranos.cpp:559
 msgid "RGB_speicher Speicher nicht verfuegbar"
 msgstr ""
 
