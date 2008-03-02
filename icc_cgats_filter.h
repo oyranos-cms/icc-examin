@@ -44,6 +44,7 @@ class CgatsFilter
     const static char *cgats_alnum_;         // non-integral type
     const static char *cgats_alpha_;
     const static char *cgats_numerisch_;
+    const static char *cgats_ziffer_;
     const static char *leer_zeichen_;
     const static char ss_woerter_[STD_CGATS_FIELDS][16];// Standard Schlüsselwö.
   public:
@@ -63,12 +64,12 @@ class CgatsFilter
              s_woerter_[i] = ss_woerter_[i]; }
     enum {
       LCMS,
-      MAX_BELASSEN
+      MAX_KORRIGIEREN
     };
     // Ausgeben
     std::string lcms_gefiltert() { typ_ = LCMS; cgats_korrigieren();
                                    return data_; }
-    std::string max_belassen()   { typ_ = MAX_BELASSEN; cgats_korrigieren(); 
+    std::string max_korrigieren(){ typ_ = MAX_KORRIGIEREN; cgats_korrigieren(); 
                                    return data_; }
 
 private:
@@ -123,6 +124,7 @@ private:
 
 // fertig zum Anwenden
 std::string  cgats_korrigieren( char* data, size_t size );
+std::string  cgats_max_korrigieren( char* data, size_t size );
 
 #endif // ICC_CGATS_FILTER_H
 

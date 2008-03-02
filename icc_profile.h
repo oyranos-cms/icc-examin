@@ -440,9 +440,12 @@ class ICCmeasurement {
     std::string         getCGATS()         {DBG_PROG if(has_data())
                                           return cgats_korrigieren(_data,_size);
                                           else return ""; }
+    std::string         getMaxCGATS (){DBG_PROG if(has_data())
+                                      return cgats_max_korrigieren(_data,_size);
+                                      else return ""; }
 
     // Herkunft
-    std::string         getTagName()       {DBG_PROG return getSigTagName (_sig); }
+    std::string         getTagName()       {return getSigTagName (_sig); }
     std::string         getInfo()          {DBG_PROG return getSigTagDescription(_sig); }
 
 };
@@ -528,6 +531,7 @@ class ICCprofile {
                                                  measurement.init();
                                                return measurement; }
     std::string         cgats() {DBG_PROG return measurement.getCGATS(); }
+    std::string         cgats_max() {DBG_PROG return measurement.getMaxCGATS();}
 
   public: // Profilerstellung
     void                setHeader (void* h) {DBG_PROG header.header_raw(h); }

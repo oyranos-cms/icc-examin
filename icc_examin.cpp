@@ -374,7 +374,7 @@ ICCexamin::zeigPrueftabelle ()
 void
 ICCexamin::zeigCGATS()
 { DBG_PROG_START
-  nachricht(profile.profil()->cgats());
+  nachricht(profile.profil()->cgats_max());
   DBG_PROG_ENDE
 }
 

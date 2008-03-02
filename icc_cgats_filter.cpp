@@ -41,6 +41,12 @@
 /*
    ChangeLog
 
+2005-01-26
+	* <- 6:45
+	* fix: Textbearbeitung -> 8:00
+	* fix: setzeWortInAnfuehrungszeichen_ <- 9:00 -> 9:45
+	* und: unterscheideZiffernWorte_ -> 13:30
+	* modi erstellen
 2005-01-25
 	* und: insert umstellen <- 9:00
 	* neu: KEYWORD in Schlüsselwortliste aufnehmen -> 12:00
@@ -103,8 +109,9 @@
 
 const char *CgatsFilter::cgats_alnum_ = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_|/-+=()[]{}<>&?!:;,.0123456789";
 const char *CgatsFilter::cgats_numerisch_ = "-+,.0123456789";
+const char *CgatsFilter::cgats_ziffer_ = "0123456789";
 const char *CgatsFilter::cgats_alpha_ = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_|/=()[]{}<>&?!:;";
-const char *CgatsFilter::leer_zeichen_ = "\t\n\v\f\r";
+const char *CgatsFilter::leer_zeichen_ = " \t\n\v\f\r";
 const char CgatsFilter::ss_woerter_[STD_CGATS_FIELDS][16] =
   { "SAMPLE_ID",
     "SAMPLE_NAME",
@@ -155,18 +162,31 @@ const char CgatsFilter::ss_woerter_[STD_CGATS_FIELDS][16] =
 
 void
 CgatsFilter::setzeWortInAnfuehrungszeichen_( std::string &zeile,
-                                        std::string::size_type pos )
+                                             std::string::size_type pos )
 { DBG_PROG_START
-  std::string::size_type ende = zeile.size();
+  std::string::size_type ende;
               bool in_anfuehrung = false;
               int letze_anfuehrungsstriche = -1;
-              // das erste Zeichen nach dem Schlüsselwort
-              pos = zeile.find_first_not_of( cgats_alnum_ ,pos, ende );
-              DBG_NUM_V( pos )
-              for( ; pos < ende; ++pos )
+              if( (ende = zeile.find_last_of( cgats_alnum_ ))
+                  == std::string::npos )
+              {
+                WARN_S( "Leere Zeile ? : " << zeile )
+                DBG_PROG_ENDE
+                return;
+              }
+              // Steht dieses Wort bereits in Anführungszeichen
+              if( zeile.find_last_of( "\"" ) > ende &&
+                  zeile.find_last_of( "\"" ) != std::string::npos )
+              {
+                ende = zeile.find_last_of( "\"" );
+              }
+              DBG_NUM_V( pos <<" "<< ende <<" "<< zeile )
+              DBG_NUM_V( zeile.substr( pos, ende-pos+1 ) )
+              // zeilenweise
+              for( ; pos <= ende; ++pos )
               {
                 if( zeile[pos] == '\"' )
-                { DBG_NUM_S( pos <<" "<< zeile.substr( pos, ende-pos ) )
+                { DBG_NUM_S( pos <<" "<< zeile.substr( pos, ende-pos+1 ) )
                   if( in_anfuehrung ) // hinaus
                   {
                     in_anfuehrung = false;
@@ -177,20 +197,18 @@ CgatsFilter::setzeWortInAnfuehrungszeichen_( std::string &zeile,
                   }
                 } else if( strchr( cgats_alnum_, zeile[pos] ) &&// ein Zeichen
                            !in_anfuehrung )                     // .. ausserhalb
-                { DBG_NUM_V( zeile.substr( pos, ende-pos ) )
+                { DBG_NUM_V( zeile.substr( pos, ende-pos+1 ) )
                   zeile.insert( pos, "\"" );
                   ++ende;
                   ++pos;
                   in_anfuehrung = true;
                   letze_anfuehrungsstriche = pos-1;
-                  DBG_NUM_S( zeile.substr( pos, ende-pos ) )
+                  DBG_NUM_S( zeile.substr( pos, ende-pos+1 ) )
                 }
               }
+              DBG_NUM_V( in_anfuehrung )
               if( in_anfuehrung )
-                if( ende == zeile.size() )
-                  zeile.insert( ende, "\"" );
-                else
-                  zeile.insert( ende-1, "\"" );
+                zeile.insert( ende+1, "\"" );
 
   DBG_PROG_ENDE
 }
@@ -198,34 +216,116 @@ CgatsFilter::setzeWortInAnfuehrungszeichen_( std::string &zeile,
 void
 CgatsFilter::unterscheideZiffernWorte_( std::string &zeile )
 { DBG_PROG_START
-  std::string::size_type pos = 0, ende = 0;
+  std::string::size_type pos = 0, ende = 0, pos2, pos3;
   static char text[64];
+  bool in_anfuehrung = false;
+  std::string txt;
 
   suchenErsetzen ( zeile, ",", ".", 0 );
 
   // Worte Suchen und von Zahlen scheiden
-  for( unsigned int i = 0; i < zeile.size() ; ++i )
-  { 
-    pos = 0;
-    if( (pos = zeile.find_first_of( cgats_alnum_ )) != std::string::npos )
+  for( pos = 0; pos < zeile.size() ; ++pos )
+  { DBG_NUM_V( pos <<" "<< zeile.size() )
+    in_anfuehrung = false;
+    pos2 = pos;
+
+    // erstes Zeichen suchen
+    if( (pos = zeile.find_first_of( cgats_alnum_, pos )) != std::string::npos )
     {
-      if( (ende = zeile.find_first_not_of( cgats_alnum_ )) == std::string::npos)
-        ende = zeile.size();
-      sprintf( text, "%f", atof( zeile.substr( pos, ende-pos ).c_str() ) );
-      
-      if( strlen( text ) ) // ist Fließkommazahl
+      bool anf_zaehlen = true;
+      // erstes Anführungszeichen suchen
+      if( zeile.find_first_of( "\"", pos2 ) != std::string::npos &&
+          zeile.find_first_of( "\"", pos2 ) < pos )
+        pos2 = zeile.find_first_of( "\"", pos2 );
+      else
+        anf_zaehlen = false;
+      DBG_NUM_V( pos2 )
+
+      // Anführungszeichen zählen [ ""  " "  ABC ] - zeichenweise
+      int letzes_anf_zeichen = -1;
+      if( anf_zaehlen )
+        for( pos3 = pos2; pos3 < pos; ++pos3)
+          if( zeile[pos3] == '"' &&
+              letzes_anf_zeichen >= 0 )
+            letzes_anf_zeichen = -1;
+          else
+            letzes_anf_zeichen = pos3;
+
+      // falls ein Anführungszeichen vor dem Wort ungerade sind // ["" " ABC ]
+      if( letzes_anf_zeichen >= 0 )
       {
-        i += pos;
-      } else {
-        sprintf( text, "%d", atoi( zeile.substr( pos, ende-pos ).c_str() ) );
-        if( strlen( text ) ) // ist Ganzzahl
-        {
-          i += pos;
-        } else { // Text
-          setzeWortInAnfuehrungszeichen_( zeile, pos );
-          i += pos;
-        }
+        in_anfuehrung = true;
+        pos2 = pos;
+        pos = pos3;
       }
+      // das Ende des Wortes finden
+      if( (ende = zeile.find_first_of( leer_zeichen_, pos2 + 1 ))
+          == std::string::npos )
+        ende = zeile.size();
+      // bitte das erste Wort einbeziehen
+      if( zeile.find_first_of( cgats_alnum_, pos ) > ende )
+        ende = zeile.find_first_of( leer_zeichen_,
+                                zeile.find_first_of( cgats_alnum_, pos ) + 1 );
+      // das Wort extrahieren
+      txt = zeile.substr( pos, ende-pos );
+      DBG_NUM_V( pos <<" "<< ende )
+      #ifdef DEBUG
+      cout << zeile << endl;
+      for(unsigned int j = 0; j < zeile.size();    ++j)
+        if( j != pos && j != ende )
+          cout << " ";
+        else
+          cout << "^";
+      cout << "\n";
+      #endif
+      // das Wort untersuchen
+      if( txt.find_first_of( cgats_numerisch_ ) != std::string::npos &&
+          txt.find( "." ) != std::string::npos &&
+          txt.find_first_of( cgats_alpha_ ) == std::string::npos )
+      { // ist Fließkommazahl
+        pos += txt.size();
+        sprintf( text, "%f", atof( zeile.substr( pos, ende-pos ).c_str() ) );
+        DBG_NUM_S( "Fließkommazahl: " << txt )
+      } else
+      if( txt.find_first_of( cgats_ziffer_ ) != std::string::npos &&
+          txt.find( "." ) == std::string::npos &&
+          txt.find_first_of( cgats_alpha_ ) == std::string::npos )
+      { // ist Ganzzahl
+        pos += txt.size();
+        sprintf( text, "%d", atoi( zeile.substr( pos, ende-pos ).c_str() ) );
+        DBG_NUM_S( "Ganzzahl: " << txt )
+      } else
+      if( txt.find_first_of( cgats_alnum_ ) != std::string::npos )
+      { // ist Text
+        bool neusetzen = false;
+        DBG_NUM_S( "Text: " << txt )
+        DBG_NUM_V( in_anfuehrung )
+        // Anführungszeichen Beginn
+        if( !in_anfuehrung )
+        {
+          zeile.insert( pos, "\"" );
+          in_anfuehrung = true;
+          neusetzen = true;
+          ++pos;
+        }
+        // Ende des Wortes
+        if( (pos2 = zeile.find_first_of( leer_zeichen_, pos ))
+            == std::string::npos)
+          pos2 = zeile.size();
+        // Es folgt ein Anführungszeichen
+        if( pos2 > zeile.find_first_of( "\"", pos ) &&
+            zeile.find_first_of( "\"", pos ) != std::string::npos &&
+            !neusetzen )
+          pos2 = zeile.find_first_of( "\"", pos );
+        
+        if( in_anfuehrung )
+        {
+          zeile.insert( pos2, "\"" );
+          in_anfuehrung = false;
+        }
+        pos = pos2;
+      }
+      DBG_NUM_V( zeile )
     }
   }
   DBG_PROG_ENDE
@@ -247,6 +347,7 @@ CgatsFilter::sucheInDATA_FORMAT_( std::string &zeile )
       ++pos;
       ++n;
     }
+    DBG_NUM_V( s_woerter_[i] )
   }
 
   return n;
@@ -336,15 +437,18 @@ CgatsFilter::editZeile_( std::vector<std::string> &zeilen,
                                          pos + 1, ende - pos - 1) );
                    DBG_NUM_S( "neues Schlüsselwort: " << s_woerter_[0] )
                    break;
-    case ANFUEHRUNGSSTRICHE: {
+    case ANFUEHRUNGSSTRICHE:
+            {
               std::string gtext = zeilen[i].substr( 0, zeilen[i].find( "#" ) );
+              DBG_NUM_V( gtext )
               // das erste Zeichen nach dem Schlüsselwort
-              //while ( strchr( cgats_alnum_, zeilen[i][pos] )
-              pos = gtext.find_first_not_of( cgats_alnum_ ,pos, ende );
+              pos = gtext.find_first_of( cgats_alnum_ ,0 );
               DBG_NUM_V( pos )
-              if( (ende = gtext.find( "#", 0 )) == std::string::npos )
-                ende = gtext.size();
-
+              pos = gtext.find_first_of( leer_zeichen_ ,pos );
+              // ende for dem Kommentar
+              ende = gtext.size()-1;
+              DBG_NUM_V( pos<<" "<<ende )
+              DBG_NUM_V( gtext.substr( pos, ende-pos ) )
               int size = gtext.size();
               zeilen[i].erase( 0, size );
               setzeWortInAnfuehrungszeichen_( gtext, pos );
@@ -352,7 +456,7 @@ CgatsFilter::editZeile_( std::vector<std::string> &zeilen,
             }
             break;
     case DATA_FORMAT_ZEILE: // einige CGATS Dateien kennen nur:
-            // SAMPLE_ID C M Y K         / auch  L A B C H ?
+            // SAMPLE_ID C M Y K       / auch  L A B C H ?  als Formatbezeichner
             {
               // C M Y und K suchen und ersetzen
               if( 0 ) // cmy
@@ -549,7 +653,7 @@ CgatsFilter::cgats_korrigieren               ()
       }
 
       DBG_NUM_S( "END_DATA Zeile " << i << " mit " << zaehler_SETS << " Messfeldern" )
-      im_data_format_block = false;
+      im_data_block = false;
       zeile_letztes_NUMBER_OF_SETS = -1;
       zaehler_SETS = -1;
     }
@@ -607,7 +711,7 @@ CgatsFilter::cgats_korrigieren               ()
       DBG_NUM_V( pos <<" "<< ende <<" "<< gtext )
       if( ((ende - pos) != 7 &&
            (ende - pos) != 14 ) ||
-          sucheSchluesselwort_( gtext ) != 3 )
+          sucheSchluesselwort_( gtext ) != AUSKOMMENTIEREN )
       {
         zeilen.insert( zeilen.begin(), "ICCEXAM" );
         DBG_NUM_S( "Beschreibung eingeführt" )
@@ -625,6 +729,17 @@ CgatsFilter::cgats_korrigieren               ()
       if( editieren )
       { // ... zuschlüsseln (bearbeiten ;) - dabei Zeilendifferenz hinzuzählen
         i = i + editZeile_( zeilen, i, editieren, cmy_daten );
+      }
+    } else
+      if( im_data_block && !im_data_format_block &&
+          zeile_letztes_BEGIN_DATA != (int)i )
+    {
+      if( typ_ == MAX_KORRIGIEREN )
+      {
+        int size = gtext.size();
+        zeilen[i].erase( 0, size );
+        unterscheideZiffernWorte_( gtext );
+        zeilen[i].insert( 0, gtext );
       }
     }
   }
@@ -649,6 +764,16 @@ cgats_korrigieren( char* data, size_t size )
   CgatsFilter cgats;
   cgats.lade( data, size );
   std::string text = cgats.lcms_gefiltert ();
+  DBG_PROG_ENDE
+  return text;
+}
+
+std::string
+cgats_max_korrigieren( char* data, size_t size )
+{ DBG_PROG_START
+  CgatsFilter cgats;
+  cgats.lade( data, size );
+  std::string text = cgats.max_korrigieren ();
   DBG_PROG_ENDE
   return text;
 }
