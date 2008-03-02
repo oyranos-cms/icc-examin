@@ -100,6 +100,7 @@ ICCvrmlParser::lesen_ ()
   std::string::size_type pos=0, netz_pos=0;
   std::string::size_type netz_ende;
 
+
 # if DEBUG_VRML_PARSER
   double max_farbe[3],  min_farbe[3], min_pos[3], max_pos[3];
   for(int i = 0; i < 3; ++i) {
@@ -134,6 +135,8 @@ ICCvrmlParser::lesen_ ()
     arbeit_ = original_.substr (netz_pos-1, netz_ende-netz_pos+1);
     zeilen = zeilenNachVector (arbeit_);
     DBG_PROG_V( zeilen.size() <<"|"<< arbeit_.size() )
+
+    int index_max = - 1, index_min = 1000000000;
 
     // from now row wise
     int flaeche_klammer = false;
@@ -220,7 +223,7 @@ ICCvrmlParser::lesen_ ()
             DBG_VRML_PARSER_S( "w " << w <<" "<< werte[w].zahl.second )
             if(achse == 2)
               netze_[endnetz].punkte[punkt_n].koord[0] =
-                  werte[w].zahl.second / 100.0 +0.5;
+                  werte[w].zahl.second / 100.0 + 0.5;
             else
               netze_[endnetz].punkte[punkt_n].koord[achse+1] =
                   werte[w].zahl.second / 255.0 + 0.5;
@@ -297,6 +300,11 @@ ICCvrmlParser::lesen_ ()
             index_p.second.i[achse] =
                 werte[w].ganz_zahl.second;
 
+            if(index_min > index_p.second.i[achse] && w < 3)
+              index_min = index_p.second.i[achse];
+            else if(index_max < index_p.second.i[achse])
+              index_max = index_p.second.i[achse]; 
+
             if(achse == (int)dimensionen - 1)
               if(netze_[endnetz].indexe.size() <= wert_n/dimensionen)
                 netze_[endnetz].indexe.  insert( index_p );
@@ -329,6 +337,12 @@ ICCvrmlParser::lesen_ ()
           }
       } // emissiveColor
     }
+
+    if(index_min < 0)
+      netze_[endnetz].clear();
+    if(index_max > (int)netze_[endnetz].punkte.size())
+      netze_[endnetz].clear();
+
     netz_n++;
   }
 # if DEBUG_VRML_PARSER
@@ -361,4 +375,147 @@ extrahiereNetzAusVRML (std::string & vrml)
 }
 
 
+std::string netzNachVRML( icc_examin_ns::ICCThreadList<ICCnetz> & netze )
+{
+  std::string vrml, temp;
+
+  size_t n = netze.size();
+  doLocked_m( std::string loc_alt = setlocale(LC_NUMERIC, NULL);,NULL)
+  doLocked_m( setlocale(LC_NUMERIC,"C");,NULL);
+
+  for(size_t i = 0; i < n; ++i)
+  {
+    ICCnetz & netz = netze[i];
+    char num[24];
+
+    temp.append("    Transform {\n\
+      translation 0 0 0\n\
+      children [\n\
+        Shape {\n\
+          geometry IndexedFaceSet {\n\
+            ccw FALSE\n\
+            convex TRUE\n\
+\n\
+");
+
+    // write
+    if(netz.punkte.size())
+    {
+      int p_n = (int)netz.punkte.size();
+
+      temp.append("            coord Coordinate {\n\
+              point [\n\
+");
+
+      for(int j = 0; j < p_n; ++j)
+      {
+        temp.append( "               " );
+        sprintf(num," %.03f", (netz.punkte[j].koord[1] -.5 ) * 255.0);
+        temp.append( num );
+        sprintf(num," %.03f", (netz.punkte[j].koord[2] -.5 ) * 255.0);
+        temp.append( num );
+        sprintf(num," %.03f", (netz.punkte[j].koord[0] -.5 ) * 100.0 );
+        temp.append( num );
+        temp.append( ",\n" );
+      }
+                                 
+      temp.append("              ] # point\n\
+            } #coord Coordinate\n\
+\n");
+
+      {
+        temp.append("            coordIndex [\n\
+");
+        std::multimap<double,DreiecksIndexe>::const_iterator it;
+        for( it = netz.indexe.begin(); it != netz.indexe.end(); ++it )
+        {
+          std::pair<double,DreiecksIndexe> index_p( *it );
+
+          temp.append( "             " );
+          for(int k = 0; k < 3; ++k)
+          {
+            sprintf(num," %d,", index_p.second.i[k] );
+            temp.append( num );
+          }
+          temp.append( " -1\n" );
+        }
+        temp.append("            ] # coordIndex\n\
+");
+      }
+
+      temp.append("\n\
+         colorPerVertex TRUE\n\
+            color Color {\n\
+              color [\n\
+");
+
+      for(int j = 0; j < p_n; ++j)
+      {
+        temp.append( "                " );
+        for(int k = 0; k < 3; ++k)
+        {
+          sprintf(num," %.03f", netz.punkte[j].farbe[k] );
+          temp.append( num );
+        }
+        temp.append( ",\n" );
+      }
+                                 
+      temp.append("              ] # color\n\
+            } # Color \n\
+");
+    }
+
+    
+
+    temp.append("          } # IndexedFaceSet\n\
+          appearance Appearance { \n\
+            material Material {\n");
+    if(0 < netz.undurchsicht && netz.undurchsicht < 1.0)
+    {
+      sprintf(num," %.03f\n", 1.0 - netz.undurchsicht );
+      temp.append("              transparency");
+      temp.append( num );
+    }
+    temp.append("              ambientIntensity 0.3\n\
+              shininess 0.5\n");
+
+    if(netz.grau && netz.schattierung > 0)
+    {
+      sprintf(num," %.03f", netz.schattierung );
+      temp.append("              emissiveColor");
+      temp.append( num ); temp.append( num ); temp.append( num );
+      temp.append("\n");
+    }
+
+    temp.append("            }\n\
+          } \n\
+        } # Shape\n\
+      ] # children\n\
+    } # Transform\n\
+\n\
+");
+  }
+
+  if(temp.size())
+  {
+    vrml.append("#VRML V2.0 utf8\n\
+\n\
+# Created by ICC Examin\n\
+Transform {\n\
+  children [\n\
+    NavigationInfo {\n\
+      type \"EXAMINE\"\n\
+    }\n\
+\n\
+");
+    vrml.append(temp);
+    vrml.append("  ] # children\n\
+}");
+  }
+
+  if(loc_alt.size())
+    doLocked_m( setlocale(LC_NUMERIC,loc_alt.c_str()) , NULL);
+
+  return vrml;
+}
 

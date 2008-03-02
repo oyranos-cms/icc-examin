@@ -794,7 +794,9 @@ ICCexaminIO::gamutSpeichern (IccGamutFormat format)
   } else if(format == ICC_VRML) {
     std::string vrml;
     vrml = icc_oyranos.vrmlVonProfil ( *profile.profil(),
-                                       icc_examin->intentGet(NULL) );
+                                       icc_examin->intentGet(NULL),
+                                       icc_examin->bpc(),
+                                       icc_examin->nativeGamut() );
     // save
     saveMemToFile ( dateiname.c_str(), vrml.c_str(), vrml.size() );
   }

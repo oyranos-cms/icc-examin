@@ -127,7 +127,9 @@ class Oyranos
                                   int         flags);
     // Create VMRL from Profile
     std::string vrmlVonProfil (   ICCprofile &profil,
-                                  int         intent);
+                                  int         intent,
+                                  int         bpc,
+                                  int         native );
 
 };
 

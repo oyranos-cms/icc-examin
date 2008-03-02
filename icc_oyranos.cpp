@@ -988,12 +988,39 @@ Oyranos::netzVonProfil (ICCprofile & profil, int intent, int bpc,
 }
 
 std::string
-Oyranos::vrmlVonProfil (ICCprofile & profil, int intent)
+Oyranos::vrmlVonProfil (ICCprofile & profil, int intent, int bpc,
+                        int native)
 {
   DBG_PROG_START
   Speicher s;
   std::string vrml;
+  icc_examin_ns::ICCThreadList<ICCnetz> netze;
 
+  netze.resize(1);
+
+  netzVonProfil( profil, intent, bpc, native,
+                                 netze[0] );
+
+  int p_n = netze[0].punkte.size();
+      for(int j = 0; j < p_n; ++j)
+      {
+        double lab[3];
+
+        for(int k = 0; k < 3 ; ++k)
+          lab[k] = netze[0].punkte[j].koord[k];
+
+        double * rgb = icc_oyranos.wandelLabNachBildschirmFarben( 0, 0,
+                                 lab, 1, 3,
+                                 0);
+        for(int k = 0; k < 3 ; ++k)
+          netze[0].punkte[j].farbe[k] = rgb[k];
+
+        delete [] rgb;
+      }
+
+  vrml = netzNachVRML( netze );
+
+  if(!vrml.size())
   if(profil.valid()) {
       size_t groesse = 0;
       char* daten = profil.saveProfileToMem(&groesse); 
@@ -1003,7 +1030,10 @@ Oyranos::vrmlVonProfil (ICCprofile & profil, int intent)
 
   if(s.size())
   {
-    vrml = iccCreateVrml ( s, (int)s.size(), intent );
+    double v = profil.getHeader().versionD();
+
+    if(native && v < 4)
+      vrml = iccCreateVrml ( s, (int)s.size(), intent );
   }
   DBG_PROG_ENDE
   return vrml;

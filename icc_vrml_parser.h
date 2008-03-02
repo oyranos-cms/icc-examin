@@ -183,6 +183,7 @@ struct ICCnetz {
 
 
 icc_examin_ns::ICCThreadList<ICCnetz> extrahiereNetzAusVRML (std::string &vrml);
+std::string netzNachVRML( icc_examin_ns::ICCThreadList<ICCnetz> & netze );
 
 
 

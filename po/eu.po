@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cinepaint_icc-examin_eu\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2008-01-28 14:48+0100\n"
+"POT-Creation-Date: 2008-01-28 19:36+0100\n"
 "PO-Revision-Date: 2007-11-07 11:11+0100\n"
 "Last-Translator: Iñaki Larrañaga Murgoitio <dooteo@zundan.com>\n"
 "Language-Team: Basque <itzulpena@euskalgnu.org>\n"
@@ -1141,11 +1141,11 @@ msgstr "Modeloa:"
 msgid "Serial:"
 msgstr "Seriekoa:"
 
-#: icc_oyranos.cpp:1183 icc_vrml.cpp:151
+#: icc_oyranos.cpp:1213 icc_vrml.cpp:151
 msgid "Std-exception occured: "
 msgstr "STD salbuespena gertatu da: "
 
-#: icc_oyranos.cpp:1186 icc_vrml.cpp:154
+#: icc_oyranos.cpp:1216 icc_vrml.cpp:154
 msgid "Huch, unknown exception"
 msgstr "Salbuespen ezezaguna"
 

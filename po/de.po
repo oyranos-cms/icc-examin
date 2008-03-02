@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2008-01-28 14:48+0100\n"
+"POT-Creation-Date: 2008-01-28 19:36+0100\n"
 "PO-Revision-Date: 2005-08-13 17:35+0200\n"
 "Last-Translator: Kai-Uwe Behrmann\n"
 "Language-Team:  <ku.b@gmx.de>\n"
@@ -1140,11 +1140,11 @@ msgstr "Modell:"
 msgid "Serial:"
 msgstr "Serien Nr.:"
 
-#: icc_oyranos.cpp:1183 icc_vrml.cpp:151
+#: icc_oyranos.cpp:1213 icc_vrml.cpp:151
 msgid "Std-exception occured: "
 msgstr "Std-Ausnahme: "
 
-#: icc_oyranos.cpp:1186 icc_vrml.cpp:154
+#: icc_oyranos.cpp:1216 icc_vrml.cpp:154
 msgid "Huch, unknown exception"
 msgstr "Huch, unbekannte Ausnahme"
 
