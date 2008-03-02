@@ -114,7 +114,8 @@ ICCexamin::start (int argc, char** argv)
         std::vector<std::string>profilnamen;
         profilnamen.resize(argc-1);
         for (int i = 1; i < argc; i++) {
-          DBG_PROG_V( i ) profilnamen[i-1] = argv[i];
+          DBG_PROG_S( i <<" "<< argv[i] )
+          profilnamen[i-1] = argv[i];
         }
         oeffnen (profilnamen);
       } else {
@@ -158,6 +159,7 @@ ICCexamin::nachricht( Modell* modell , int info )
     //DBG_PROG_ENDE
     //return;
   }
+  Fl::lock();
 
   frei_ = false;
   DBG_PROG_V( info )
@@ -202,6 +204,7 @@ ICCexamin::nachricht( Modell* modell , int info )
     }
   }
   Beobachter::nachricht(modell, info);
+  Fl::unlock();
   frei_ = true;
   DBG_PROG_ENDE
 }

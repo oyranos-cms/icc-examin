@@ -145,9 +145,6 @@ GL_Ansicht::init(int init_id)
 
   DBG_PROG
 
-  if (!this->visible())
-    WARN_S("Diese GL_Ansicht ist nicht sichtbar")
-
   resizable(0);
 
   mode(FL_RGB |FL_DOUBLE |FL_ALPHA |FL_DEPTH |FL_MULTISAMPLE);

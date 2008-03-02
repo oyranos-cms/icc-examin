@@ -234,7 +234,7 @@ TagDrawings::draw ()
       wiederholen = true; 
     }
   } else
-    WARN_S( __func__ << " zu früh benutzt!" )
+    DBG_PROG_S( __func__ << _(" zu früh benutzt!") )
   DBG_PROG_ENDE
 }
 

@@ -100,11 +100,13 @@ bool
 ICCkette::oeffnen (std::string dateiname, int pos)
 { DBG_PROG_START
   bool erfolgreich = false;
-
+  DBG_PROG_V( dateiname <<" "<< pos )
   // Ist das Profile eventuell schon geladen? -> Abbruch
   for(unsigned int i = 0; i < profile_.size(); ++i)
-    if(dateiname == profile_[i].filename())
+    if(dateiname == profile_[i].filename()) {
+      DBG_PROG_S( _("Datei bereits geladen")<< i <<": "<< dateiname )
       return false;
+    }
 
   // Laden TODO: test auf Existenz der Datei (oyranos?)
   if (pos >= 0 && pos < (int)profile_.size()) {
