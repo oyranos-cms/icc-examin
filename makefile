@@ -311,6 +311,10 @@ static:	$(TARGET)
 	`test -f /opt/kai-uwe/lib/liblcms.a && echo /opt/kai-uwe/lib/liblcms.a || pkg-config --libs lcms` #/usr/lib/libelektra.a # Hack for static lcms
 	$(REZ)
 
+strip: $(TARGET)
+	echo strip iccexamin
+	strip iccexamin
+
 static_static:	$(OBJECTS)
 	$(CXX) $(OPTS) -o $(BINTARGET) \
 	$(OBJECTS) \
@@ -441,7 +445,10 @@ targz:
 dist: targz
 	$(COPY) ../Archiv/$(TARGET)_$(mtime).tgz $(TARGET)_$(VERSION).tar.gz
 
-rpm:	dist
+$(TARGET).spec:
+	./configure
+
+rpm:	$(TARGET).spec dist
 	mkdir -p rpmdir/BUILD \
 	rpmdir/SPECS \
 	rpmdir/SOURCES \

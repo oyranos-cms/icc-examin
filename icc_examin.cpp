@@ -871,10 +871,13 @@ tastatur(int e)
   case FL_DRAG:
     DBG_PROG_S( "FL_DRAG "<< Fl::event_length() )
     break;
+  case FL_CLOSE:
+    DBG_S( "FL_CLOSE " )
+    break;
   default: 
     {
       //if(Fl::event_length())
-        dbgFltkEvents(e);
+        DBG_MEM_S( dbgFltkEvent(e) )
         DBG_MEM_S( Fl::event_length() << " bei: "<<Fl::event_x()<<","<<Fl::event_y() );
     }
     break;

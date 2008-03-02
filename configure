@@ -13,12 +13,6 @@ VERSION=$VERSION_A.$VERSION_B$VERSION_C
 VERSION_L=$VERSION_A.$VERSION_B.$VERSION_C
 ZEIT="May 2004 - September 2005"
 
-if [ $# -gt 1 ] && [ $1 == "--prefix" ]; then
-  prefix=$2
-else
-  prefix=/opt/local
-fi
-
 src_dir="`(cd ..;pwd)`/""$TARGET"_"$VERSION"
 srcdir="`pwd`"
 
@@ -29,14 +23,6 @@ echo "# automatically generated file by configure - do not edit" > $CONF
 echo "/* automatically generated file by configure - do not edit */" > $CONF_H
 echo "" >> $CONF
 echo "TARGET = $TARGET" >> $CONF
-echo "prefix = $prefix" >> $CONF
-echo "" >> $CONF
-echo "#define PREFIX         \"$prefix\"" >> $CONF_H
-echo "#define DATADIR        \"$prefix/share/\"" >> $CONF_H
-echo "#define LOCALEDIR      \"$prefix/share/locale\"" >> $CONF_H
-echo "#define SRCDIR         \"$srcdir\"" >> $CONF_H
-echo "#define SRC_LOCALEDIR  \"$srcdir/po\"" >> $CONF_H
-
 
 echo ""
 
@@ -66,6 +52,27 @@ else
     fi
   fi
 fi
+
+if [ $# -gt 0 ]; then
+  echo "prefix =                ${1#*=}"
+  prefix=${1#*=}
+else
+  if [ $UNAME_ = "Darwin" ]; then
+    prefix=/opt/local
+  else
+    prefix=/usr
+  fi
+fi
+
+echo "prefix = $prefix" >> $CONF
+echo "" >> $CONF
+echo "#define PREFIX         \"$prefix\"" >> $CONF_H
+echo "#define DATADIR        \"$prefix/share/\"" >> $CONF_H
+echo "#define LOCALEDIR      \"$prefix/share/locale\"" >> $CONF_H
+echo "#define SRCDIR         \"$srcdir\"" >> $CONF_H
+echo "#define SRC_LOCALEDIR  \"$srcdir/po\"" >> $CONF_H
+
+
 
 FLTK_=`fltk-config --cxxflags 2>>error.txt`
 if [ $? = 0 ] && [ -n "$FLTK_" ]; then

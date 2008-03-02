@@ -137,7 +137,7 @@ Oyranos::profil_test_ (const char* profil_name)
     }
   }
   
-  DBG_NUM_S( "Standard " OY_DEFAULT_LAB_INPUT_PROFILE " Profil = "<< *lab_ <<" "<< lab_.size() <<"\n" )
+  DBG_NUM_S( "Standard " OY_DEFAULT_ASSUMED_LAB_PROFILE " Profil = "<< *lab_ <<" "<< lab_.size() <<"\n" )
 
 # endif
   return fehler;
@@ -152,7 +152,7 @@ Oyranos::lab_test_ ()
   Speicher *v_block = &lab_;
   if( !v_block->size() )
   { DBG_PROG_V( v_block->size() )
-    char* profil_name = oyGetDefaultProfileName( oyranos::oyINPUT_LAB, myAllocFunc );
+    char* profil_name = oyGetDefaultProfileName( oyranos::oyASSUMED_LAB, myAllocFunc );
     if(profil_name)
       DBG_PROG_V( (int*)profil_name << profil_name );
     if( profil_name &&
@@ -174,7 +174,7 @@ Oyranos::lab_test_ ()
     }
   }
   
-  DBG_NUM_S( "Standard " OY_DEFAULT_LAB_INPUT_PROFILE " Profil = "<< *lab_ <<" "<< lab_.size() <<"\n" )
+  DBG_NUM_S( "Standard " OY_DEFAULT_ASSUMED_LAB_PROFILE " Profil = "<< *lab_ <<" "<< lab_.size() <<"\n" )
 
   
 # endif
@@ -431,7 +431,7 @@ Oyranos::rgb_test_ ()
   Speicher *v_block = &rgb_;
   if( !v_block->size() )
   { DBG_PROG_V( v_block->size() )
-    const char* profil_name = oyGetDefaultProfileName( oyranos::oyINPUT_RGB, myAllocFunc );
+    const char* profil_name = oyGetDefaultProfileName( oyranos::oyASSUMED_RGB, myAllocFunc );
     if(profil_name)
       DBG_PROG_V( (int)profil_name << profil_name );
     if( profil_name &&
@@ -454,7 +454,7 @@ Oyranos::rgb_test_ ()
   }
 
   if(rgb_.size())
-    DBG_NUM_S( "Standard " OY_DEFAULT_RGB_INPUT_PROFILE " Profil = "<< *rgb_ <<" "<< rgb_.size() <<"\n" );
+    DBG_NUM_S( "Standard " OY_DEFAULT_ASSUMED_RGB_PROFILE " Profil = "<< *rgb_ <<" "<< rgb_.size() <<"\n" );
 # else
 # if APPLE
   CMProfileRef prof=NULL;
@@ -481,7 +481,7 @@ Oyranos::cmyk_test_ ()
   Speicher *v_block = &cmyk_;
   if( !v_block->size() )
   { DBG_PROG_V( v_block->size() )
-    char* profil_name = oyGetDefaultProfileName( oyranos::oyINPUT_CMYK, myAllocFunc );
+    char* profil_name = oyGetDefaultProfileName( oyranos::oyASSUMED_CMYK, myAllocFunc );
     if(profil_name) {DBG_PROG_V( profil_name );
     } else {         DBG_PROG_V( (int)profil_name );}
 
@@ -505,7 +505,7 @@ Oyranos::cmyk_test_ ()
   }
 
   if(cmyk_.size())
-    DBG_NUM_S( "Standard " OY_DEFAULT_CMYK_INPUT_PROFILE " Profil = "<< *cmyk_ <<" "<< cmyk_.size() <<"\n" );
+    DBG_NUM_S( "Standard " OY_DEFAULT_ASSUMED_CMYK_PROFILE " Profil = "<< *cmyk_ <<" "<< cmyk_.size() <<"\n" );
 # else
 # if APPLE
 # endif

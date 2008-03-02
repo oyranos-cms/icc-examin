@@ -1,6 +1,6 @@
 Release: 1
 Summary: ICC profile viewer and colour visualisation
-Name: iccexamin
+Name: icc_examin
 License: GPL,LGPL
 Group: Productivity/Graphics/Other
 #Source: http://www.behrmann.name/index.php?option=com_content&task=view&id=33&Itemid=69
@@ -21,7 +21,7 @@ Authors:
 --------
     ICC Examin  Kai-Uwe Behrmann <www.behrmann.name>
 
-used components and libraries (partitial statically):
+used components and libraries (partitial statically linked):
     agv         Philip Winston
     freeglut    Pawel W. Olszta
     littleCMS   Marti Maria
@@ -37,8 +37,9 @@ used components and libraries (partitial statically):
 
 %build
 %configure
-configure --prefix %{_prefix}
+configure --prefix=%{_prefix}
 make %{_smp_mflags} static
+make strip
 
 %install
 rm -rf %{buildroot}
