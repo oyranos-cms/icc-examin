@@ -128,6 +128,7 @@
 
 #include <fstream>
 #include <sstream>
+#include <algorithm>
 
 using namespace icc_parser;
 
@@ -497,7 +498,7 @@ CgatsFilter::zeilenOhneDuplikate_ ( std::vector<std::string> &zeilen )
   int n = 0;
   DBG_CGATS_V( zeilen.size() )
 
-  sort( zeilen.begin(), zeilen.end() );
+  std::sort( zeilen.begin(), zeilen.end() );
   std::vector<std::string> ::iterator pos; 
   for( unsigned int i = 0; i < zeilen.size()-1; ++i)
     while ( (i < zeilen.size()-1) &&
