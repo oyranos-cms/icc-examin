@@ -89,16 +89,16 @@ class ICCmeasurement {
     bool                RGB_measurement_;
     bool                CMYK_measurement_;
     // Messwerte
-    std::vector<XYZ>    XYZ_Satz_;
-    std::vector<Lab>    Lab_Satz_;
-    std::vector<RGB>    RGB_Satz_;
-    std::vector<CMYK>   CMYK_Satz_;
+    std::vector<XYZ_s>    XYZ_Satz_;
+    std::vector<Lab_s>    Lab_Satz_;
+    std::vector<RGB_s>    RGB_Satz_;
+    std::vector<CMYK_s>   CMYK_Satz_;
     // Profilwerte
     std::vector<std::string> Feldnamen_;
-    std::vector<XYZ>    XYZ_Ergebnis_;
-    std::vector<Lab>    Lab_Ergebnis_;
-    std::vector<RGB>    RGB_MessFarben_;
-    std::vector<RGB>    RGB_ProfilFarben_;
+    std::vector<XYZ_s>    XYZ_Ergebnis_;
+    std::vector<Lab_s>    Lab_Ergebnis_;
+    std::vector<RGB_s>    RGB_MessFarben_;
+    std::vector<RGB_s>    RGB_ProfilFarben_;
     // Ergebnisse
     std::vector<double> Lab_Differenz_;
     double              Lab_Differenz_max_;
@@ -136,10 +136,10 @@ class ICCmeasurement {
     std::vector<double> getCmmRGB (int patch);  //!< Darstellungsfarben
     std::vector<double> getMessLab (int patch);
     std::vector<double> getCmmLab (int patch);
-    std::vector<XYZ>    getMessXYZ ()      {DBG_PROG return XYZ_Satz_; }
-    std::vector<Lab>    getMessLab ()      {DBG_PROG return Lab_Satz_; }
-    std::vector<RGB>    getMessRGB ()      {DBG_PROG return RGB_Satz_; }
-    std::vector<CMYK>   getMessCMYK ()     {DBG_PROG return CMYK_Satz_; }
+    std::vector<XYZ_s>    getMessXYZ ()      {DBG_PROG return XYZ_Satz_; }
+    std::vector<Lab_s>    getMessLab ()      {DBG_PROG return Lab_Satz_; }
+    std::vector<RGB_s>    getMessRGB ()      {DBG_PROG return RGB_Satz_; }
+    std::vector<CMYK_s>   getMessCMYK ()     {DBG_PROG return CMYK_Satz_; }
     std::vector<std::string> getFeldNamen () {DBG_PROG return Feldnamen_; }
 
     // Report

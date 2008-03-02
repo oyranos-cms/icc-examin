@@ -222,6 +222,22 @@ fi
 LIBDIR="lib"$BARCH
 export MACH OSUNAME LIBDIR BARCH LINE_ARCH
 
+if [ -z "$CC" ]; then
+  CC=cc$LINE_ARCH
+fi
+if [ -z "$CXX" ]; then
+  CXX=c++$LINE_ARCH
+fi
+
+echo "CXX = $CXX" >> $CONF
+echo "CC = $CC" >> $CONF
+echo "CXX = $CXX" > $CONF_I18N
+echo "CC = $CC" >> $CONF_I18N
+export CC CXX
+
+
+CFLAGS_COMMON="$CFLAGS \$(INCL)"
+CXXFLAGS_COMMON="$CXXFLAGS \$(INCL)"
 
 # exec_prefix bindir sbindir libdir includedir datadir
 if [ -z "$exec_prefix" ]; then
@@ -288,6 +304,7 @@ LCMS=1; export LCMS
 FTGL=2; export FTGL
 FLTK=1; export FLTK
 LIBPNG=2; export LIBPNG
+LIBTIFF=1; export LIBTIFF
 #FLU=2; export FLU
 if [ $OSUNAME != "Darwin" ]; then
 X11=1;   export X11
@@ -302,11 +319,25 @@ LCMS=0; export LCMS
 FTGL=0; export FTGL
 FLTK=0; export FLTK
 LIBPNG=0; export LIBPNG
+LIBTIFF=0; export LIBTIFF
 FLU=0; export FLU
 X11=0; export X11
 XINERAMA=0; export XINERAMA
 XF86VMODE=0; export XF86VMODE
 PO=0; export PO
+
+CP_CONFIG=`which cinepainttool 2>/dev/null`
+if [ -n "$CP_CONFIG" ]; then
+  CP_FLAGS=`cinepainttool --cflags`
+  CP_LIBS=`cinepainttool --libs`
+  CP_VERSION=`cinepainttool --version`
+fi
+if [ -n "$CP_VERSION" ]; then
+  echo "CINEPAINT = icc_cinepaint" >> $CONF
+  echo "CP_FLAGS=$CP_FLAGS" >> $CONF
+  echo "CP_LIBS=$CP_LIBS" >> $CONF
+  echo "Gtk CinePaint $CP_VERSION    detected"
+fi
 
 echo ""
 echo ""
@@ -388,20 +419,6 @@ echo "#define SRC_LOCALEDIR  \"$srcdir/po\"" >> $CONF_H
 
 echo "" >> $CONF
 
-if [ -z "$CC" ]; then
-  CC=cc$LINE_ARCH
-fi
-if [ -z "$CXX" ]; then
-  CXX=c++$LINE_ARCH
-fi
-
-echo "CXX = $CXX" >> $CONF
-echo "CC = $CC" >> $CONF
-echo "CXX = $CXX" > $CONF_I18N
-echo "CC = $CC" >> $CONF_I18N
-
-CFLAGS_COMMON="$CFLAGS \$(INCL)"
-CXXFLAGS_COMMON="$CXXFLAGS \$(INCL)"
 
 
 echo "RM = rm -vf" >> $CONF

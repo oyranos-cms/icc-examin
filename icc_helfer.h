@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2005  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2006  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -132,6 +132,10 @@ double    holeDateiModifikationsZeit ( const char *fullFileName );
 const char* dateiName(const char* name);
 const char* dateiName(std::string name);
 
+
+// Allgemein
+char* getExecPath               ( const char *filename );
+void  setI18N                   ( const char *exename );
 
 // Texthelfer
 namespace icc_parser {

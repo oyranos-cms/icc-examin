@@ -50,42 +50,42 @@ typedef struct {
     double X;
     double Y;
     double Z;
-} XYZ;
+} XYZ_s;
 
 typedef struct {
     double L;
     double a;
     double b;
-} Lab;
+} Lab_s;
 
 typedef struct {
     double R;
     double G;
     double B;
-} RGB;
+} RGB_s;
 
 typedef struct {
     double C;
     double M;
     double Y;
     double K;
-} CMYK;
+} CMYK_s;
 
 // Umwandlungen
-void FarbeZuDouble (double* d_xyz, XYZ xyz);
-void FarbeZuDouble (double* d_rgb, RGB rgb);
-void FarbeZuDouble (double* d_lab, Lab lab);
-void FarbeZuDouble (double* d_cmyk, CMYK cmyk);
-void FarbeZuDouble (XYZ *xyz, double* d_xyz);
-void FarbeZuDouble (RGB *rgb, double* d_rgb);
-void FarbeZuDouble (Lab *lab, double* d_lab);
-void FarbeZuDouble (CMYK *cmyk, double* d_cmyk);
+void FarbeZuDouble (double* d_xyz, XYZ_s xyz);
+void FarbeZuDouble (double* d_rgb, RGB_s rgb);
+void FarbeZuDouble (double* d_lab, Lab_s lab);
+void FarbeZuDouble (double* d_cmyk, CMYK_s cmyk);
+void FarbeZuDouble (XYZ_s *xyz, double* d_xyz);
+void FarbeZuDouble (RGB_s *rgb, double* d_rgb);
+void FarbeZuDouble (Lab_s *lab, double* d_lab);
+void FarbeZuDouble (CMYK_s *cmyk, double* d_cmyk);
 
 
 // Farbfunktionen
-double        dE2000 (const Lab & Lab1, const Lab & Lab2,
+double        dE2000 (const Lab_s & Lab1, const Lab_s & Lab2,
                       double kL, double kC, double kH);
-void          XYZtoLab (XYZ & xyz, Lab & lab);
+void          XYZtoLab (XYZ_s & xyz, Lab_s & lab);
 void          XYZtoLab (double* xyz, double* lab, int n);
 void          CIELabToLab (double* cielab, double* lab, int n);
 void          LabToCIELab (double* lab, double* cielab, int n);

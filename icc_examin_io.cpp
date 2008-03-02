@@ -287,6 +287,10 @@ ICCexaminIO::oeffnenThread_ ()
   DBG_PROG_ENDE
 }
 
+/** @brief gibt den Dateinamen ohne Pfad zurueck
+ *  @param name                 langer Dateiname
+ *  @return                             Dateiname
+ */
 const char*
 dateiName(const char* name)
 {

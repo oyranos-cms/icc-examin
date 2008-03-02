@@ -97,7 +97,6 @@ COMMON_CPPFILES = \
 	icc_helfer.cpp \
 	icc_info.cpp \
 	icc_kette.cpp \
-	icc_main.cpp \
 	icc_measurement.cpp \
 	icc_modell_beobachter.cpp \
 	icc_oyranos.cpp \
@@ -118,6 +117,9 @@ COMMON_CPPFILES = \
 DEBUG_CC = debug.cc
 DEBUG_H  = sys.h debug.h
 
+MAIN_SOURCES = icc_main.cpp
+CINEPAINT_SOURCES = icc_cinepaint.cpp
+
 COMMON_CFILES =  \
 	flstring.c \
 	vsnprintf.c
@@ -135,7 +137,8 @@ CXXFILES = \
 	my_file_chooser2.cxx
 TEST_CPP = \
 	tests/dE2000_test.cpp \
-	tests/fltk_test.cxx
+	tests/fltk_test.cxx \
+	tests/tiff_test.cxx
 TEST_H = \
 	tests/ciede2000testdata.h
 TEST_FILES = $(TEST_CPP) $(TEST_H)
@@ -147,7 +150,9 @@ ALL_SOURCEFILES = \
 	$(X_CPPFILES) \
 	$(FLTK_CPPFILES) \
 	$(I18N_CXXFILES) \
-	$(CXXFILES)
+	$(CXXFILES) \
+	$(MAIN_SOURCES) \
+	$(CINEPAINT_SOURCES)
 
 ALL_HEADERFILES = \
 	$(CPP_HEADERS) \
@@ -173,9 +178,14 @@ FLUID = \
 FONT = FreeSans.ttf
 
 SOURCES = $(ALL_SOURCEFILES) $(ALL_HEADERFILES)
+
 OBJECTS = $(CFILES:.c=.o) $(CPPFILES:.cpp=.o) $(CXXFILES:.cxx=.o) $(CCFILES:.cc=.o)
+MAIN_OBJECTS = $(MAIN_SOURCES:.cpp=.o)
+CINEPAINT_OBJECTS = $(CINEPAINT_SOURCES:.cpp=.o)
 I18N_OBJECTS =  $(I18N_CXXFILES:.cxx=.o)
 LINGUAS_SRC = $(LING:.po=.gmo)
+ALL_OBJECTS = $(OBJECTS) $(MAIN_OBJECTS) $(CINEPAINT_OBJECTS) $(I18N_OBJECTS) \
+	$(LINGUAS_SRC)
 
 POT_FILE = po/$(TARGET).pot
 
@@ -215,14 +225,26 @@ release:	icc_alles.o
 	$(REZ)
 	$(RM) icc_alles.o
 
-dynamic:	$(BINTARGET)
+dynamic:	$(BINTARGET) $(CINEPAINT)
 
-$(BINTARGET):	$(BASE) $(OBJECTS) $(LINGUAS_SRC) $(I18N_OBJECTS) $(LIBNAME) $(LIBFL_I18N)
+$(BINTARGET):	$(BASE) $(OBJECTS) $(MAIN_OBJECTS) $(LINGUAS_SRC) $(I18N_OBJECTS) $(LIBNAME) $(LIBFL_I18N)
 	echo Verknuepfen $@ ...
-	$(CXX) $(CXXFLAGS_) -o $(BINTARGET) \
-	$(OBJECTS) \
+	$(CXX) $(CXXFLAGS_) -o $@ \
+	$(MAIN_OBJECTS) $(OBJECTS) \
 	$(LDLIBS) $(LINK_LIB_PATH) $(LINK_SRC_PATH)
 	$(REZ)
+
+$(CINEPAINT_OBJECTS):	$(CINEPAINT_SOURCES)
+	echo Compiling Gtk CinePaint plug-in ...
+	$(CXX) $(CXXFLAGS_) $(CP_FLAGS) -c $(CINEPAINT).cpp
+
+$(CINEPAINT):	$(BASE) $(CINEPAINT_OBJECTS) $(OBJECTS) $(LINGUAS_SRC) $(I18N_OBJECTS) $(LIBNAME) $(LIBFL_I18N)
+	echo Verknuepfen $@ ...
+	$(CXX) $(CXXFLAGS_) $(CP_FLAGS) -o $@ \
+	$(CINEPAINT_OBJECTS) $(OBJECTS) \
+	$(LDLIBS) $(CP_LIBS) $(LINK_LIB_PATH) $(LINK_SRC_PATH)
+	$(REZ)
+
 
 $(LIBSONAMEFULL):	$(I18N_OBJECTS)
 	echo Verknuepfen $@ ...
@@ -319,7 +341,7 @@ $(POT_FILE):	$(ALL_SOURCEFILES)
 
 clean:	unbundle unpkg
 	echo mache sauber $@ ...
-	-$(RM) $(OBJECTS) $(I18N_OBJECTS) $(BINTARGET) \
+	-$(RM) $(ALL_OBJECTS)$(BINTARGET) \
 	$(LIBNAME) $(LIBSO) $(LIBSONAME) $(LIBSONAMEFULL)
 	-for ling in $(LINGUAS); do \
 	  test -f po/$${ling}.gmo \

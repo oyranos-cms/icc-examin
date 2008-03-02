@@ -238,6 +238,20 @@ if [ -n "$LIBPNG" ] && [ $LIBPNG -gt 0 ]; then
   fi
 fi
 
+if [ -n "$LIBTIFF" ] && [ $LIBTIFF -gt 0 ]; then
+  rm -f tests/libtest
+  $CXX $CFLAGS -I$includedir tests/tiff_test.cxx $LDFLAGS -L$libdir -ltiff -o tests/libtest
+    if [ -f tests/libtest ]; then
+      test -n "$ECHO" && $ECHO "`tests/libtest`
+                        detected"
+      echo "#define HAVE_TIFF 1" >> $CONF_H
+      echo "TIFF = 1" >> $CONF
+      rm tests/libtest
+    else
+      test -n "$ECHO" && $ECHO "no or too old libtiff found,"
+    fi
+fi
+
 if [ -n "$PO" ] && [ $PO -gt 0 ]; then
   pos_dir="`ls po/*.po 2> /dev/null`"
   LING="`echo $pos_dir`"

@@ -232,7 +232,9 @@ MyFlattenProfileProcSize (
   return 0;
 };
 
+#ifndef HAVE_OY
 typedef  void* (oyAllocFunc_t)(size_t size);
+#endif
 
 int
 oyGetProfileBlockOSX (CMProfileRef prof, char *block, size_t *size, oyAllocFunc_t allocate_func)
@@ -322,7 +324,7 @@ void
 Oyranos::moni_test_ (int x, int y)
 {
   DBG_PROG_START
-# if HAVE_OY
+# if HAVE_OY && !defined(APPLE)
   {
     size_t size = 0;
 

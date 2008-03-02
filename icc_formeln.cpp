@@ -63,7 +63,7 @@ gradATAN(double b, double a)
 }
 
 double
-dE2000 (const Lab & Lab1, const Lab & Lab2,
+dE2000 (const Lab_s & Lab1, const Lab_s & Lab2,
         double kL, double kC, double kH)             // (1)
 {
   /*
@@ -155,7 +155,7 @@ dE2000 (const Lab & Lab1, const Lab & Lab2,
 
 
 void
-XYZtoLab (XYZ &xyz, Lab &lab)
+XYZtoLab (XYZ_s &xyz, Lab_s &lab)
 {
     /* white point D50 [0.964294 , 1.000000 , 0.825104]
      * XYZ->Lab is defined as (found with the help of Marti Maria):
@@ -171,7 +171,7 @@ XYZtoLab (XYZ &xyz, Lab &lab)
      */
 
       double gamma = 1.0/3.0; // standard is 1.0/3.0
-      static XYZ xyz_;
+      static XYZ_s xyz_;
       double K = 24389./27.;
       double k = K/116.;      // 0.008856
       double e = 216./24389.; // 7.787
@@ -204,8 +204,8 @@ void
 XYZtoLab (double* xyz, double* lab, int n)
 {
     for(int i = 0; i < n; ++i) {
-      static XYZ xyz_;
-      static Lab lab_;
+      static XYZ_s xyz_;
+      static Lab_s lab_;
 
       xyz_.X = xyz[i*3+0];
       xyz_.Y = xyz[i*3+1];
@@ -245,7 +245,7 @@ LabToCIELab (double* lab, double* cielab, int n)
 
 
 void
-FarbeZuDouble (double* d_xyz, XYZ xyz)
+FarbeZuDouble (double* d_xyz, XYZ_s xyz)
 { DBG_PROG
   d_xyz[0] = xyz.X;
   d_xyz[1] = xyz.Y;
@@ -253,7 +253,7 @@ FarbeZuDouble (double* d_xyz, XYZ xyz)
 }
 
 void
-FarbeZuDouble (XYZ *xyz, double* d_xyz)
+FarbeZuDouble (XYZ_s *xyz, double* d_xyz)
 { DBG_PROG
   xyz->X = d_xyz[0];
   xyz->Y = d_xyz[1];
@@ -261,7 +261,7 @@ FarbeZuDouble (XYZ *xyz, double* d_xyz)
 }
 
 void
-FarbeZuDouble (double* d_lab, Lab lab)
+FarbeZuDouble (double* d_lab, Lab_s lab)
 { DBG_PROG
   d_lab[0] = lab.L;
   d_lab[1] = lab.a;
@@ -269,7 +269,7 @@ FarbeZuDouble (double* d_lab, Lab lab)
 }
 
 void
-FarbeZuDouble (Lab *lab, double* d_lab)
+FarbeZuDouble (Lab_s *lab, double* d_lab)
 { DBG_PROG
   lab->L = d_lab[0];
   lab->a = d_lab[1];
@@ -277,7 +277,7 @@ FarbeZuDouble (Lab *lab, double* d_lab)
 }
 
 void
-FarbeZuDouble (double* d_rgb, RGB rgb)
+FarbeZuDouble (double* d_rgb, RGB_s rgb)
 { DBG_PROG
   d_rgb[0] = rgb.R;
   d_rgb[1] = rgb.G;
@@ -285,7 +285,7 @@ FarbeZuDouble (double* d_rgb, RGB rgb)
 }
 
 void
-FarbeZuDouble (RGB *rgb, double* d_rgb)
+FarbeZuDouble (RGB_s *rgb, double* d_rgb)
 { DBG_PROG
   rgb->R = d_rgb[0];
   rgb->G = d_rgb[1];
@@ -293,7 +293,7 @@ FarbeZuDouble (RGB *rgb, double* d_rgb)
 }
 
 void
-FarbeZuDouble (double* d_cmyk, CMYK cmyk)
+FarbeZuDouble (double* d_cmyk, CMYK_s cmyk)
 { DBG_PROG
   d_cmyk[0] = cmyk.C;
   d_cmyk[1] = cmyk.M;
@@ -302,7 +302,7 @@ FarbeZuDouble (double* d_cmyk, CMYK cmyk)
 }
 
 void
-FarbeZuDouble (CMYK *cmyk, double* d_cmyk)
+FarbeZuDouble (CMYK_s *cmyk, double* d_cmyk)
 { DBG_PROG
   cmyk->C = d_cmyk[0];
   cmyk->M = d_cmyk[1];
