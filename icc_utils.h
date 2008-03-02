@@ -40,10 +40,16 @@
 #define endl std::endl
 
 extern int level_PROG;
+extern int icc_debug;
 
-#define DBG cout << __FILE__<<":"<<__LINE__ <<" "<< __func__ << "()" << endl;
-#define DBG_S(txt) cout << __FILE__<<":"<<__LINE__ <<" "<< __func__ << "() " << txt << endl;
-#define DBG_V(txt) cout << __FILE__<<":"<<__LINE__ <<" "<< __func__ << "() " << #txt << " " << txt << endl;
+#define DBG_UHR_ (double)clock()/(double)CLOCKS_PER_SEC
+
+#define DBG_T_     cout << __FILE__<<":"<<__LINE__ <<" "<< __func__ << "() " << DBG_UHR_ << " ";
+#define LEVEL      { for (int i = 0; i < level_PROG; i++) cout << " "; }
+#define DBG        if (icc_debug){ LEVEL cout << "        "; DBG_T_ cout << endl; }
+#define DBG_S(txt) if (icc_debug) { LEVEL cout << "  "; DBG_T_ cout << txt << endl; }
+#define DBG_V(txt) if (icc_debug) { LEVEL cout << "  "; DBG_T_ cout << #txt << " " << txt << endl;}
+
 #if 1
 #define DBG_MEM DBG
 #define DBG_MEM_S(txt) DBG_S(txt)
@@ -64,8 +70,8 @@ extern int level_PROG;
 #endif
 #if 1
 #define DBG_PROG DBG
-#define DBG_PROG_START level_PROG++; { for (int i = 0; i < level_PROG; i++) cout << "+"; cout << " Start: "; DBG }
-#define DBG_PROG_ENDE { for (int i = 0; i < level_PROG; i++) cout << "+"; cout << " Ende:  "; DBG level_PROG--; }
+#define DBG_PROG_START if (icc_debug) {level_PROG++; for (int i = 0; i < level_PROG; i++) cout << "+"; cout << " Start: "; DBG_T_ cout << endl; }
+#define DBG_PROG_ENDE if (icc_debug) { for (int i = 0; i < level_PROG; i++) cout << "+"; cout << " Ende:  "; DBG_T_ level_PROG--; cout << endl; }
 #define DBG_PROG_S(txt) DBG_S(txt)
 #define DBG_PROG_V(txt) DBG_V(txt)
 #else

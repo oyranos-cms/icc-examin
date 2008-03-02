@@ -71,12 +71,15 @@ GL_Ansicht::~GL_Ansicht()
 }
 
 void GL_Ansicht::zeigen() {
+  icc_debug = 1;
   if (first)
     init();
   else
-    GLFenster->size(w(),h());
+    GLFenster->resize(x(),y(),w(),h());
 
-  DBG_PROG_V( w() <<" "<< h() )
+  DBG_PROG_V( x() <<" "<< y() <<" "<< w() <<" "<< h() )
+  //draw();
+
   agviewers[agv].agvSetAllowIdle (1);
   GLfenster_zeigen = true;
   DBG_PROG
@@ -130,8 +133,8 @@ void GL_Ansicht::init() {
   agviewers[agv].agvMakeAxesList(AXES); DBG_PROG
 
   myGLinit();  DBG_PROG
-  MakeDisplayLists(); DBG_PROG
   MenuInit(); DBG_PROG
+  MakeDisplayLists(); DBG_PROG
 
   //glutMainLoop(); // you could use Fl::run() instead
 
@@ -218,6 +221,7 @@ void GL_Ansicht::myGLinit() {
       glTranslatef(.0,0,-.01); \
    glEnable(GL_TEXTURE_2D); \
    glEnable(GL_LIGHTING); }
+
 #define ZeichneBuchstaben(Font,Buchstabe) { \
         glScalef(0.001,0.001,0.001); \
           glutStrokeCharacter(Font, Buchstabe); \
@@ -553,7 +557,9 @@ double seitenverhaeltnis;
 
 void reshape(int w, int h) {
   DBG_PROG_START
-  glViewport(0,0,w,h); DBG_PROG_V( w <<" "<< h )
+  glViewport(0,0,w,h); DBG_PROG_V( mft_gl->x()<<" "<<mft_gl->y()<<" "<<w<<" "<<h )
+  glutPositionWindow(mft_gl->x(), mft_gl->y());
+  //mft_gl->zeigen();
   seitenverhaeltnis = (GLdouble)w/(GLdouble)h;
   glFlush();
   DBG_PROG_ENDE

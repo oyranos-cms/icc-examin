@@ -28,7 +28,7 @@ X11_LIBS=-L/usr/X11R6/lib -lXinerama -lXft
 
 FLTK_LIBS=`fltk-config --use-images --use-gl --use-glut $(DL)`
 
-KDB_LIBS=-lkdb
+KDB_LIBS=#-lkdb
 
 ifdef FLU
 FLU_LIBS=`flu-config $(DL)`

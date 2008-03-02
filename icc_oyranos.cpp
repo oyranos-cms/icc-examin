@@ -50,13 +50,13 @@ oyranos_pfade_einlesen()
 void
 oyranos_pfad_dazu (char* pfad)
 {
-  KeySet myConfig;
+/*  KeySet myConfig;
   ksInit(&myConfig);
   kdbOpen();
 
   int rc = kdbGetChildKeys("user/sw/oyanos/paths", &myConfig, KDB_O_RECURSIVE);
 	
-  /* Close the Key database */
+  // Close the Key database 
   kdbClose();
 
   Key *current;
@@ -70,20 +70,20 @@ oyranos_pfad_dazu (char* pfad)
 		
     printf("Key %s was %s. ", keyName, value);
 		
-    /* Add "- modified" to the end of the string */
+    // Add "- modified" to the end of the string
     //strcat(value,"- modified");
     //sprintf (value, pfad);
 		
-    /* change the key value */
+    // change the key value
     keySetString(current,value);
 		
-    /* reget it, just as an example */
+    // reget it, just as an example
     keyGetString(current,value,sizeof(value));
 		
     printf("Now is %s\n", value);
   }
 
-  kdbClose();
+  kdbClose(); */
 }
 
 
