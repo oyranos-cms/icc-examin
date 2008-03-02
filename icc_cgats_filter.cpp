@@ -127,18 +127,20 @@
 
 //#define CGATS_DEBUG
 #ifdef CGATS_DEBUG
+#define DBG_CGATS DBG_PROG
 #define DBG_CGATS_START DBG_PROG_START
 #define DBG_CGATS_ENDE DBG_PROG_ENDE
 #define DBG_CGATS_S( text ) DBG_PROG_S( text )
 #define DBG_CGATS_V( text ) DBG_PROG_V( text )
 #else
+#define DBG_CGATS
 #define DBG_CGATS_START
 #define DBG_CGATS_ENDE
 #define DBG_CGATS_S( text ) 
 #define DBG_CGATS_V( text )
 #endif
 
-// Initialisierungen
+// statische Initialisierungen
 
 const char *CgatsFilter::cgats_alnum_ = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_|/-+=()[]{}<>&?!:;,.0123456789";
 const char *CgatsFilter::cgats_numerisch_ = "-+,.0123456789";
@@ -566,8 +568,9 @@ CgatsFilter::editZeile_( std::vector<std::string> &zeilen,
               s << "NUMBER_OF_FIELDS " << zaehler_FIELDS;
               zeilen.insert( zeilen.begin() + i, s.str() );
               DBG_CGATS_V( felder.size() )
-              if( felder.size() < bloecke.size() )
+              if( felder.size() <= bloecke.size() )
                 felder.resize( felder.size()+1 );
+              DBG_CGATS_V( felder.size() <<"|"<< bloecke.size() )
               felder[felder.size()-1].push_back( s.str() );
               log[l].ausgabe.push_back( s.str() );
               ++zeilendifferenz;
@@ -580,6 +583,7 @@ CgatsFilter::editZeile_( std::vector<std::string> &zeilen,
               felder[felder.size()-1].push_back( "END_DATA_FORMAT" );
               log[l].ausgabe.push_back( "END_DATA_FORMAT" );
               ++zeilendifferenz;
+              DBG_CGATS
             }
             break;
     case CMY_DATEN:
@@ -590,10 +594,17 @@ CgatsFilter::editZeile_( std::vector<std::string> &zeilen,
               zeilen[i].insert( 0, "# " );
             break;
     case LINEARISIERUNG:
-            if( cmy )
-              zeilendifferenz += 9;
-            else
-              zeilendifferenz += 12;
+            DBG_PROG_V( typ_ )
+            if( typ_ == MAX_KORRIGIEREN )
+            {
+              if( cmy ) {
+                zeilendifferenz += 9;
+              } else {
+                zeilendifferenz += 12;
+              }
+            } else { // LCMS
+              editZeile_( zeilen, i, AUSKOMMENTIEREN, false );
+            }
             break;
   }
   DBG_CGATS_V( zeilen[i] )
@@ -602,12 +613,14 @@ CgatsFilter::editZeile_( std::vector<std::string> &zeilen,
 }
 
 std::string
-CgatsFilter::cgats_korrigieren               ()
+CgatsFilter::cgats_korrigieren_               ()
 { DBG_PROG_START
   std::string::size_type pos=0;
   std::string::size_type ende;
 
   data_ = data_orig_;
+
+  DBG_PROG_V( typ_ )
 
   // Zeilenumbrüche reparieren
   // LF CR

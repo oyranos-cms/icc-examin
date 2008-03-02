@@ -1,6 +1,6 @@
 CC=c++
 MAKEDEPEND	= /usr/X11R6//bin/makedepend -Y
-OPTS=-Wall -g #-O2
+OPTS=-Wall -g -Os
 
 prefix		= /opt/local
 exec_prefix	= ${prefix}
@@ -47,14 +47,14 @@ else
   X_H  = -DHAVE_X
   X_CPP = icc_helfer_x.cpp
   OY_H = -DHAVE_OY
-  OY_LIBS = -loyranos
+  OY_LIBS = -loyranos -loyranos_moni
 endif
 
 CXXFLAGS=$(OPTS) $(INCL) $(FLU_H) $(FLTK_H) $(X_H) $(OSX_H) $(OY_H)
 INCL=-I$(includedir) -I/usr/X11R6/include -I./ -I/opt/kai-uwe/include
 
-LDLIBS = -L$(libdir) -L./ $(FLTK_LIBS) \
-	$(X11_LIBS) -llcms $(OY_LIBS) $(GLUT) $(FLU_LIBS) -L/opt/kai-uwe/lib
+LDLIBS = -L$(libdir) -L./ -L/opt/kai-uwe/lib $(FLTK_LIBS) \
+	$(X11_LIBS) -llcms $(OY_LIBS) $(GLUT) $(FLU_LIBS)
 
 #	$(VRML_LIBS)
 

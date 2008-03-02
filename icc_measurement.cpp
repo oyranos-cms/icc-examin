@@ -344,7 +344,9 @@ ICCmeasurement::init_umrechnen                     (void)
   { int maxFeld=0, minFeld=0;
     const char *maxFN=0, *minFN=0;
     if (_nFelder != (int)_XYZ_Satz.size()) DBG_PROG_S("Messfeldanzahl divergiert")
-    for (int i = 0; i < _nFelder; i++)
+    int m = _nFelder < (int)_XYZ_Satz.size() ? _nFelder : (int)_XYZ_Satz.size();
+    DBG_PROG_S( "Felder: " << m )
+    for (int i = 0; i < m; i++)
     { 
       if (max[1] < _XYZ_Satz[i].Y)
       { max[0] = _XYZ_Satz[i].X;
@@ -360,8 +362,10 @@ ICCmeasurement::init_umrechnen                     (void)
         minFeld = i;
         minFN = _Feldnamen[i].c_str();
       }
-    } 
-    DBG_PROG_S( maxFN << " Nr. " << maxFeld << endl << " X_max = "<< max[0] <<" Y_max = "<< max[1] <<" Z_max = "<< max[2] )
+    }
+    if( maxFN )
+      DBG_PROG_S( maxFN << " Nr. " << maxFeld << endl << " X_max = "<< max[0] <<" Y_max = "<< max[1] <<" Z_max = "<< max[2] )
+    if( minFN )
     DBG_PROG_S( minFN << " Nr. " << minFeld << endl << " X_min = "<< min[0] <<" Y_min = "<< min[1] <<" Z_min = "<< min[2] )
   }
 
@@ -397,16 +401,19 @@ ICCmeasurement::init_umrechnen                     (void)
       if( _profil->size() )
         hCOLOUR = cmsOpenProfileFromMem (_profil->_data, _profil->_size);
       else { // Alternative
-        int size;
-        char* block;
+        size_t groesse = 0;
+        char* block = 0;
         if( _CMYK_measurement )
-          block = oyranos.cmyk(size);
-        //else
-          //block = oyranos.rgb(size);
+          block = oyranos.cmyk(groesse);
+        else
+        if( _RGB_measurement )
+          block = oyranos.rgb(groesse);
+        DBG_PROG_V( groesse )
 
-        hCOLOUR = cmsOpenProfileFromMem (block, size);
-        // block gehört oyranos
+        hCOLOUR = cmsOpenProfileFromMem (block, groesse);
       }
+      if( !hCOLOUR )
+        WARN_S(_("hCOLOUR ist leer"))
 
       // Wie sieht das Profil die Messfarbe? -> XYZ
       hCOLOURtoXYZ =  cmsCreateTransform (hCOLOUR, TYPE_COLOUR_DBL,
@@ -425,8 +432,11 @@ ICCmeasurement::init_umrechnen                     (void)
                                     PRECALC|BW_COMP);
     }
     if (_XYZ_measurement) {
+      if( !hsRGB )
+        WARN_S(_("hsRGB ist leer"))
+
       // Wie sieht das Messgerät die Messfarbe? -> Lab
-      hXYZtoLab =  cmsCreateTransform (hXYZ, TYPE_XYZ_DBL,
+      hXYZtoLab = cmsCreateTransform (hXYZ, TYPE_XYZ_DBL,
                                     hLab, TYPE_Lab_DBL,
                                     INTENT_ABSOLUTE_COLORIMETRIC,
                                     PRECALC|BW_COMP);
@@ -456,6 +466,12 @@ ICCmeasurement::init_umrechnen                     (void)
       _Lab_Differenz.resize(_nFelder); DBG_V( _Lab_Differenz.size() )
       _DE00_Differenz.resize(_nFelder);
 
+      if( (int)_XYZ_Satz.size() != _nFelder )
+        WARN_S(_("_XYZ_Satz.size() und _nFelder sind ungleich"))
+      if( (int)_RGB_Satz.size() != _nFelder )
+        WARN_S(_("_RGB_Satz.size() und _nFelder sind ungleich"))
+      if( (int)_CMYK_Satz.size() != _nFelder )
+        WARN_S(_("_CMYK_Satz.size() und _nFelder sind ungleich"))
       for (int i = 0; i < _nFelder; i++)
       {
         if (_isMatrix) {

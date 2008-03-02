@@ -30,6 +30,7 @@
 
 #ifdef HAVE_OY
 #include "oyranos/oyranos.h"
+#include "oyranos/oyranos_monitor.h"
 #endif
 #include "icc_oyranos.h"
 #include "icc_utils.h"
@@ -51,6 +52,98 @@ Oyranos oyranos;
          */
 
 
+Oyranos::Oyranos()
+{
+  DBG_PROG_START
+  oyOpen();
+  DBG_PROG_ENDE
+}
+
+Oyranos::~Oyranos()
+{
+  DBG_PROG_START
+  oyClose();
+  DBG_PROG_ENDE
+}
+
+void
+Oyranos::lab_test_ ()
+{
+  DBG_PROG_START
+  Speicher *v_block = &lab_;
+  char* block;
+
+  if( !v_block->size() )
+  { DBG_PROG_V( v_block->size() )
+    char* profil_name = oyGetDefaultLabProfileName();
+    DBG_PROG_V( (int)profil_name << oyGetDefaultLabProfileName() )
+    if( profil_name &&
+        v_block->name != profil_name )
+    { 
+        v_block->name = profil_name;
+
+        int size = oyGetProfileSize ( profil_name );
+        DBG_PROG_V( size )
+        if (size)
+        { block = (char*)oyGetProfileBlock( profil_name, &size);
+          if( oyCheckProfileMem( block, size, 0 ) )
+            WARN_S ( _("Profil konnte nicht geladen werden,") )
+          else {
+            DBG_PROG_V( (int)block <<"|"<< size )
+            v_block->lade(block, size);
+          }
+        }
+    }
+  }
+
+  DBG_NUM_S( "default " OY_DEFAULT_LAB_PROFILE " profile = "<< lab_.name <<" "<< lab_.size() <<"\n" )
+
+  
+  char       *manufacturer,
+             *model,
+             *serial;
+  const char *x;
+  char* profil_name =
+  oyGetMonitorProfile            (x, manufacturer, model, serial );
+
+
+
+  DBG_PROG_ENDE
+}
+
+void
+Oyranos::rgb_test_ ()
+{
+  DBG_PROG_START
+  Speicher *v_block = &rgb_;
+  char* block;
+
+  if( !v_block->size() )
+  { DBG_PROG_V( v_block->size() )
+    char* profil_name = oyGetDefaultRGBProfileName();
+    DBG_PROG_V( (int)profil_name << oyGetDefaultRGBProfileName() )
+    if( profil_name &&
+        v_block->name != profil_name )
+    { 
+        v_block->name = profil_name;
+
+        int size = oyGetProfileSize ( profil_name );
+        DBG_PROG_V( size )
+        if (size)
+        { block = (char*)oyGetProfileBlock( profil_name, &size);
+          if( oyCheckProfileMem( block, size, 0 ) )
+            WARN_S ( _("Profil konnte nicht geladen werden,") )
+          else {
+            DBG_PROG_V( (int)block <<"|"<< size )
+            v_block->lade(block, size);
+          }
+        }
+    }
+  }
+
+  DBG_NUM_S( "default " OY_DEFAULT_RGB_PROFILE " profile = "<< rgb_.name <<" "<< rgb_.size() <<"\n" )
+  DBG_PROG_ENDE
+}
 
 void
 Oyranos::cmyk_test_ ()
@@ -61,26 +154,28 @@ Oyranos::cmyk_test_ ()
 
   if( !v_block->size() )
   { DBG_PROG_V( v_block->size() )
-    oy_debug = 1;
     char* profil_name = oyGetDefaultCmykProfileName();
     DBG_PROG_V( (int)profil_name << oyGetDefaultCmykProfileName() )
     if( profil_name &&
-        cmyk_.name != profil_name )
+        v_block->name != profil_name )
     { 
-        cmyk_.name = profil_name;
+        v_block->name = profil_name;
 
         int size = oyGetProfileSize ( profil_name );
         DBG_PROG_V( size )
         if (size)
         { block = (char*)oyGetProfileBlock( profil_name, &size);
-          DBG_PROG_V( (int)block )
-          v_block->lade(block, size);
+          if( oyCheckProfileMem( block, size, 0 ) )
+            WARN_S ( _("Profil konnte nicht geladen werden,") )
+          else {
+            DBG_PROG_V( (int)block <<"|"<< size )
+            v_block->lade(block, size);
+          }
         }
-        oy_debug = 0;
     }
   }
 
-  DBG_NUM_S( "default " OY_DEFAULT_CMYK_PROFILE " profile = "<< cmyk_.name <<"\n" )
+  DBG_NUM_S( "default " OY_DEFAULT_CMYK_PROFILE " profile = "<< cmyk_.name <<" "<< cmyk_.size() <<"\n" )
   DBG_PROG_ENDE
 }
 

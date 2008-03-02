@@ -1252,7 +1252,7 @@ GL_Ansicht::hineinPunkte       (std::vector<double>      vect,
   }
 
   punkte_ = vect;
-  DBG_PROG_V( punkte_.size() )
+  DBG_PROG_V( zeig_punkte_als_messwert_paare<<"|"<<punktform<<"|"<<punkte_.size() )
 
   if (!zeig_punkte_als_messwert_paare &&
       punktform == MENU_DIFFERENZ_LINIE &&

@@ -67,10 +67,10 @@ class CgatsFilter
                                     s_woerter_[i] = ss_woerter_[i];
                               }
     // Ausgeben
-    std::string lcms_gefiltert() { typ_ = LCMS; cgats_korrigieren();
+    std::string lcms_gefiltert() { typ_ = LCMS; cgats_korrigieren_();
                                    return data_; }
     // basICColor Modus
-    std::string max_korrigieren(){ typ_ = MAX_KORRIGIEREN; cgats_korrigieren(); 
+    std::string max_korrigieren(){ typ_ = MAX_KORRIGIEREN; cgats_korrigieren_();
                                    return data_; }
 
     
@@ -80,32 +80,34 @@ class CgatsFilter
     std::string kommentar;
     // frei wählbarer Bezeichner für Spektraldaten (standard ist SPECTRAL_)
     std::string spektral;
-    bool        anfuehrungsstriche_setzen; // für ausgegebene Worte
+    bool        anfuehrungsstriche_setzen; // für ausgegebene Worte in DATA
 
     // Liste von Blöcken + Feldbezeichnern
     //   v- Feld/Block v- Zeilen   v- Inhalt
     std::vector<  std::vector<std::string> > felder;
     std::vector<  std::vector<std::string> > bloecke;
 
+    // Die Liste von Mitteilungen und Auffälligkeiten
+    // Anm.: bei zusammengefassten Vorgängen ist eventuell nur "meldung" gültig
     struct Log {
-      std::vector<std::string> eingabe;
-      std::vector<std::string> ausgabe;
-      std::string meldung;
-      int original_zeile;
+      std::vector<std::string> eingabe; // die bearbeiteten Zeilen (>=0)
+      std::vector<std::string> ausgabe; // die resultierenden Zeilen (>=0)
+      std::string meldung;              // eine Mitteilung für den Vorgang
+      int original_zeile;               // Zeilennummer der Eingabe
     };
     std::vector<Log> log;
 
   private:
     // --- Hauptfunktion ---
-    // Konvertierung in Standard unix Dateiformat mit LF
-    // Suchen und Ersetzen bekannnter Abweichungen (in einem std::string)
-    // zeilenweises lesen und editieren (in einem vector aus strings)
-    // verdecken der Kommentare
-    // kontrollieren der Blöckanfänge und -enden
-    // die Dateisignatur reparieren (7 / 14 byte lang)
-    // zwischen den Blöcken die Keywords erkennen und entsprechend bearbeiten
-    // die Zeilen wieder zusamenfügen und als einen std::string zurückgeben
-    std::string cgats_korrigieren               ();
+    // o Konvertierung in Standard unix Dateiformat mit LF
+    // o Suchen und Ersetzen bekannnter Abweichungen (in einem std::string)
+    // o zeilenweises lesen und editieren (in einem vector aus strings)
+    // o verdecken der Kommentare
+    // o kontrollieren der Blöckanfänge und -enden
+    // o die Dateisignatur reparieren (7 / 14 byte lang)
+    // o zwischen den Blöcken die Keywords erkennen und entsprechend bearbeiten
+    // o die Zeilen wieder zusamenfügen und als einen std::string zurückgeben
+    std::string cgats_korrigieren_               ();
 
     // - Hilfsfunktionen -
     // Auszählen der Formate(Farbkanäle) im DATA_FORMAT Block
@@ -113,9 +115,10 @@ class CgatsFilter
     // klassifiziert CGATS Keywords; sinnvoll ausserhalb der Blöcke
     int sucheSchluesselwort_( std::string zeile );
     // eine Zeile ausserhalb der beiden DATA und FORMAT Blöcke nach
-    //  Klassifizierungsangabe bearbeiten
-    int editZeile_( std::vector<std::string> &zeilen, int zeile_n, int editieren,
-                bool cmy );
+    //  Klassifizierungsschlüssel bearbeiten
+    int editZeile_( std::vector<std::string> &zeilen,
+                    int zeile_n, int editieren, bool cmy );
+
     // vector Bearbeitung fürs zeilenweise Editieren
     void suchenLoeschen_      ( std::vector<std::string> &zeilen,
                                 std::string               text );

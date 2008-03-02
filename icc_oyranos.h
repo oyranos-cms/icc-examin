@@ -52,7 +52,7 @@ class Speicher
                         groesse_ = groesse; }
     Speicher       (char* zeiger, int groesse) { lade (zeiger, groesse); }
 
-    size_t size    () { return groesse_; }
+    size_t size          () { return groesse_; }
     std::string name;
     operator char*       () { return zeiger_; }
     operator std::string () { return name; }
@@ -62,18 +62,26 @@ class Speicher
 class Oyranos
 {
   public:
-    Oyranos()      {; }
-    ~Oyranos()     {; }
+    Oyranos() ;
+    ~Oyranos();
     void    init() {; }
 
+    std::string lab  ()                { lab_test_(); return lab_.name; }
+    char*       lab  (size_t &g)       { lab_test_(); g = lab_.size();
+                                         return lab_; }
+    std::string rgb  ()                { rgb_test_(); return rgb_.name; }
+    char*       rgb  (size_t &g)       { rgb_test_(); g = rgb_.size();
+                                         return rgb_; }
     std::string cmyk ()                { cmyk_test_(); return cmyk_.name; }
-    char*       cmyk (int &size)       { cmyk_test_(); return cmyk_; }
-    std::string lab  ();
-    char*       lab  (int &size);
+    char*       cmyk (size_t &g)       { cmyk_test_(); g = cmyk_.size();
+                                         return cmyk_; }
   private:
+    void lab_test_();
+    void rgb_test_();
     void cmyk_test_();
-    Speicher cmyk_;
     Speicher lab_;
+    Speicher rgb_;
+    Speicher cmyk_;
 };
 
 extern Oyranos oyranos;

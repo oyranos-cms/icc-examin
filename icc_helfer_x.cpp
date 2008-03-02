@@ -38,8 +38,8 @@
 #endif
 
 std::vector<std::vector<double> >
-getGrafikKartenGamma        (std::string display_name,
-                             std::vector<std::string> &texte )
+leseGrafikKartenGamma        (std::string display_name,
+                              std::vector<std::string> &texte )
 { DBG_PROG_START
 
   Display *display;

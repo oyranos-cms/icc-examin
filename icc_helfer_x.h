@@ -36,7 +36,7 @@
 // Helferfunktionen
 // definiert in icc_helfer_x.cpp / icc_helfer_osx.cpp
 
-std::vector<std::vector<double> >getGrafikKartenGamma (std::string display_name,
+std::vector<std::vector<double> >leseGrafikKartenGamma(std::string display_name,
                                               std::vector<std::string> &texte ); 
 
 

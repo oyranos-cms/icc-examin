@@ -102,7 +102,7 @@ ICCexamin::start (int argc, char** argv)
 
   DBG_PROG
 
-  #ifdef HAVE_X || HAVE_OSX
+  #if HAVE_X || HAVE_OSX
   icc_betrachter->menueintrag_vcgt->show();
   #endif
 
@@ -430,11 +430,12 @@ ICCexamin::histogram ()
   std::vector<float>  f;
 
   if(profile.profil() &&
-     profile.profil()->hasMeasurement())
+     profile.profil()->hasMeasurement() &&
+     profile.profil()->getMeasurement().hasXYZ() )
     { DBG_PROG_S( "nutze Messdaten" )
       ICCmeasurement messung = profile.profil()->getMeasurement();
 
-      if(messung.valid())
+      if(messung.valid() && profile.profil()->size())
         icc_betrachter->DD_histogram->zeig_punkte_als_messwert_paare = true;
       else
         icc_betrachter->DD_histogram->zeig_punkte_als_messwert_paare = false;
@@ -478,9 +479,9 @@ ICCexamin::vcgtZeigen ()
 { DBG_PROG_START
   kurve_umkehren[VCGT_VIEWER] = true;
 
-  #ifdef HAVE_X || HAVE_OSX
+  #if HAVE_X || HAVE_OSX
   std::string display_name = "";
-  kurven[VCGT_VIEWER] = getGrafikKartenGamma (display_name, texte[VCGT_VIEWER]);
+  kurven[VCGT_VIEWER] = leseGrafikKartenGamma (display_name,texte[VCGT_VIEWER]);
   if (kurven[VCGT_VIEWER].size()) {
     icc_betrachter->vcgt_viewer->hide();
     icc_betrachter->vcgt_viewer->show();
