@@ -700,6 +700,10 @@ ICCexamin::statusFarbe(double & CIEL, double & CIEa, double & CIEb)
   else
     icc_betrachter->box_stat->labelcolor(FL_BLACK);
   icc_betrachter->box_stat->color(colour);
+  icc_betrachter->box_stat->damage(FL_DAMAGE_ALL);
+  //Fl::add_timeout(0.2, fl_delayed_redraw, icc_betrachter->box_stat);
+  Fl::add_idle(fl_delayed_redraw, icc_betrachter->box_stat);
+  Fl::awake();
   DBG_PROG_ENDE
 }
 

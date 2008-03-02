@@ -53,6 +53,7 @@ void        dbgFltkEvents  ( int           event);
 std::string dbgFltkEvent   ( int           event);
 void        setzeIcon      ( Fl_Window    *fenster,
                              char        **xpm_daten );
+void        fl_delayed_redraw ( void *Fl_Widget);
 #endif
 
 // interne Funktionen

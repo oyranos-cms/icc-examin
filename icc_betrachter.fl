@@ -317,7 +317,7 @@ class ICCfltkBetrachter {open
   \#endif} {}
     Fl_Window ueber {
       label {About ICC Examin}
-      xywh {662 559 366 241} type Double resizable
+      xywh {667 580 366 241} type Double resizable
       code0 {o->hide();} non_modal visible
     } {
       Fl_Group {} {open
@@ -335,7 +335,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window vcgt {
       label {Grafic Card Gamma Table}
-      xywh {658 325 370 390} type Double resizable
+      xywh {663 346 370 390} type Double resizable
       code0 {o->hide();} visible
     } {
       Fl_Group {} {open
@@ -374,8 +374,8 @@ class ICCfltkBetrachter {open
       }
     }
     Fl_Window details {
-      label {ICC Examin} selected
-      xywh {607 144 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
+      label {ICC Examin}
+      xywh {612 165 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
     } {
       Fl_Group {} {open
         xywh {0 0 385 520}
@@ -666,8 +666,10 @@ ueber_html->value(getUeberHtml().c_str());}
   //Fl::background(255,255,255);
   //Fl::scheme(NULL);
   Fl_File_Icon::load_system_icons();
-  w->show(argc,argv);
-  DBG_PROG} {}
+  Fl::get_system_colors();
+  w->show(/*argc,argv*/);
+  DBG_PROG} {selected
+    }
     code DBG_PROG_ENDE {}
   }
   Function {run()} {} {

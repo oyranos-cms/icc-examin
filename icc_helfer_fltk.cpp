@@ -218,4 +218,13 @@ namespace icc_examin_ns {
 }
 
 
+void
+fl_delayed_redraw(void *w)
+{
+  ((Fl_Widget*)w)->redraw();
+  DBG
+  Fl::remove_idle(fl_delayed_redraw, w);
+}
+
+
 #endif

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2005-09-14 16:00+0200\n"
+"POT-Creation-Date: 2005-09-15 10:54+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -261,7 +261,7 @@ msgstr ""
 msgid "icc_waehler_ nicht reservierbar"
 msgstr ""
 
-#: icc_examin.cpp:208 icc_examin_io.cpp:408
+#: icc_examin.cpp:208 icc_examin_io.cpp:416
 msgid "loaded"
 msgstr ""
 
@@ -305,47 +305,47 @@ msgstr ""
 msgid "Kein Netz gefunden. Ist Argyll installiert?"
 msgstr ""
 
-#: icc_examin_io.cpp:312
+#: icc_examin_io.cpp:313
 msgid "Stop loading "
 msgstr ""
 
-#: icc_examin_io.cpp:366 icc_betrachter.cxx:467
+#: icc_examin_io.cpp:374 icc_betrachter.cxx:467
 msgid "Filename"
 msgstr ""
 
-#: icc_examin_io.cpp:370
+#: icc_examin_io.cpp:378
 msgid "found no content for"
 msgstr ""
 
-#: icc_examin_io.cpp:373
+#: icc_examin_io.cpp:381
 msgid "Internal error"
 msgstr ""
 
-#: icc_examin_io.cpp:375
+#: icc_examin_io.cpp:383
 msgid "No. Tag   Type   Size Description"
 msgstr ""
 
-#: icc_examin_io.cpp:434
+#: icc_examin_io.cpp:442
 msgid "HTML Documents (*.htm*)"
 msgstr ""
 
-#: icc_examin_io.cpp:438 icc_betrachter.cxx:386
+#: icc_examin_io.cpp:446 icc_betrachter.cxx:386
 msgid "Save Report"
 msgstr ""
 
-#: icc_examin_io.cpp:510 icc_betrachter.cxx:497
+#: icc_examin_io.cpp:518 icc_betrachter.cxx:497
 msgid "ICC colour profiles (*.ic*)"
 msgstr ""
 
-#: icc_examin_io.cpp:511 icc_betrachter.cxx:387
+#: icc_examin_io.cpp:519 icc_betrachter.cxx:387
 msgid "Save Gamut as Profile"
 msgstr ""
 
-#: icc_examin_io.cpp:513
+#: icc_examin_io.cpp:521
 msgid "VRML Files (*.wrl)"
 msgstr ""
 
-#: icc_examin_io.cpp:514 icc_betrachter.cxx:388
+#: icc_examin_io.cpp:522 icc_betrachter.cxx:388
 msgid "Save Gamut as VRML"
 msgstr ""
 
@@ -1293,7 +1293,7 @@ msgid "Profil konnte nicht geladen werden"
 msgstr ""
 
 #: icc_oyranos.cpp:314
-msgid "memory based"
+msgid "Monitor Profile"
 msgstr ""
 
 #: icc_oyranos.cpp:707 icc_oyranos.cpp:793

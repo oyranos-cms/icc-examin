@@ -745,7 +745,8 @@ ard"));
   //Fl::background(255,255,255);
   //Fl::scheme(NULL);
   Fl_File_Icon::load_system_icons();
-  w->show(argc,argv);
+  Fl::get_system_colors();
+  w->show(/*argc,argv*/);
   DBG_PROG
   DBG_PROG_ENDE
   return w;

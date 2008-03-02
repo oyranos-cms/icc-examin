@@ -1,6 +1,7 @@
 2005-09-14
 	* fix: kein direckter Fl Zeichenaufruf in nicht Nebensträngen
 	       ICCexamin::fortschrittThreaded() wait(0) -> damage(FL_DAMAGE_ALL)
+	* neu: ncl2 und Messfarben auch farbig darstellbar
 
 2005-09-13
 	* fix: i18n codeset for osX with newer gettext

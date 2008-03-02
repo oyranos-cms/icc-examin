@@ -71,9 +71,9 @@ class ICCkette : public icc_examin_ns::Modell
   public:
     void         frei(bool f) {frei_ = f; };
     bool         frei()       {return frei_; };
-    //bool         einfuegen (std::vector<std::string> dateinamen);
-    //bool         einfuegen (std::string dateiname, int pos);
+
     bool         einfuegen (const Speicher & profil, int pos);
+
     void         setzAktiv (int pos) { aktiv_[pos]=true; benachrichtigen(pos);}
     void         passiv    (int pos) { aktiv_[pos]=false; benachrichtigen(pos);}
     std::vector<int> aktiv () { return aktiv_; }

@@ -303,6 +303,7 @@ ICCexamin::oeffnen (std::vector<std::string> dateinamen)
   // resize benutzt copy, und erzeugt damit Referenzen auf das
   // selbe Objekt ; wir benoetigen aber neue Objekte
   // ss.resize(dateinamen.size());
+  int moni_dabei = 0;
   for (unsigned int i = 0; i < dateinamen.size(); ++i)
   {
     ss.push_back(Speicher());
@@ -313,6 +314,8 @@ ICCexamin::oeffnen (std::vector<std::string> dateinamen)
       fortschritt( 1.1 );
       return;
     }
+    if (dateinamen[i] == icc_oyranos.moni_name())
+      moni_dabei = true;
   }
   DBG_PROG
 
@@ -331,6 +334,11 @@ ICCexamin::oeffnen (std::vector<std::string> dateinamen)
     }
   }
 # endif
+  
+  // Das Monitorprofil immer dabei 
+  if (!moni_dabei)
+    ss.push_back(icc_oyranos.moni());
+
   lade (ss);
 
   DBG_PROG_ENDE
