@@ -1,4 +1,4 @@
-#include <Fl/Fl.H>
+#include <FL/Fl.H>
 
 int main(void)
 {

@@ -176,6 +176,7 @@ fl_initialise_locale( const char *domain, const char *locale_path,
   char *codeset = (char*) calloc(sizeof(char), TEXTLEN);
   const char *loc = NULL;
   char* bdtd = 0;
+  char *txd = 0;
   char* cs = NULL;
   int ret = 0;
 
@@ -347,10 +348,11 @@ fl_initialise_locale( const char *domain, const char *locale_path,
   DBG_PROG_S( _("try locale in ") << bdtd );
 
   // 4. set our charset
-  cs = bind_textdomain_codeset(domain, codeset);
+  if(set_codeset)
+    cs = bind_textdomain_codeset(domain, codeset);
 
   // 5. our translations
-  textdomain (domain);
+  txd = textdomain (domain);
 
   if(cs)
     DBG_PROG_S( _("set codeset for") << domain << " to " << cs );
@@ -383,7 +385,7 @@ fl_translate_menue( Fl_Menu_Item* menueleiste )
 #endif
 }
 
-#include <Fl/Fl_File_Chooser.H>
+#include <FL/Fl_File_Chooser.H>
 void
 fl_translate_file_chooser( )
 {

@@ -1,5 +1,5 @@
 # data file for the Fltk User Interface Designer (fluid)
-version 1.0107 
+version 1.0108 
 i18n_type 1 
 i18n_include <libintl.h> 
 i18n_function _ 
@@ -249,13 +249,13 @@ class ICCfltkBetrachter {open
   setTitleUrl = true;} {}
     Fl_Window ueber {
       label {About ICC Examin} open
-      xywh {914 747 365 285} type Double resizable
+      xywh {789 537 365 305} type Double resizable
       code0 {o->hide();}
       code1 {o->use_escape_hide = true;}
       class {icc_examin_ns::MyFl_Double_Window} visible
     } {
       Fl_Group {} {open
-        xywh {0 0 375 285}
+        xywh {0 0 375 295}
       } {
         Fl_Tabs {} {open
           xywh {0 0 365 260} resizable
@@ -274,29 +274,29 @@ class ICCfltkBetrachter {open
           }
           Fl_Help_View dank_html {
             label Acknowlegement
-            xywh {0 25 365 235} box THIN_UP_BOX color 49 selection_color 47
+            xywh {0 25 365 235} box THIN_UP_BOX color 49 selection_color 47 hide
           }
           Fl_Output links_text {
-            label Links
-            xywh {10 35 345 215} type Multiline box EMBOSSED_BOX color 49 selection_color 47 hide
+            label Links selected
+            xywh {10 35 345 215} type Multiline box THIN_DOWN_BOX color 49 selection_color 47
           }
         }
         Fl_Button ja {
           label Yes
           callback {ueber->hide();}
-          xywh {130 260 110 25}
+          xywh {130 270 110 25}
         }
       }
     }
     Fl_Window vcgt {
       label {Grafic Card Gamma Table} open
-      xywh {31 642 370 390} type Double resizable
+      xywh {168 547 370 405} type Double resizable
       code0 {o->hide();}
       code1 {o->use_escape_hide = true;}
       class {icc_examin_ns::MyFl_Double_Window} visible
     } {
       Fl_Group {} {open
-        xywh {0 0 370 390}
+        xywh {0 0 370 395}
       } {
         Fl_Box vcgt_viewer {
           xywh {0 0 370 360} resizable
@@ -306,28 +306,28 @@ class ICCfltkBetrachter {open
         Fl_Button vcgt_set_button {
           label Set
           callback {icc_examin->moniSetzen();}
-          tooltip {Set the current profile as monitor profile and upload vcgt tag to the video card} xywh {10 360 85 25} hotspot
+          tooltip {Set the current profile as monitor profile and upload vcgt tag to the video card} xywh {10 370 85 25} hotspot
         }
         Fl_Button vcgt_reset_button {
           label Reset
           callback {icc_examin->standardGamma();}
-          tooltip {reset to standard gamma} xywh {95 360 90 25} hotspot
+          tooltip {reset to standard gamma} xywh {95 370 90 25} hotspot
         }
         Fl_Button vcgt_load_button {
           label Load
           callback {icc_examin->moniHolen();}
-          tooltip {Load the current monitor profile} xywh {185 360 90 25} hotspot
+          tooltip {Load the current monitor profile} xywh {185 370 90 25} hotspot
         }
         Fl_Button vcgt_close_button {
           label Close
           callback {icc_examin->vcgtStoppen();}
-          xywh {275 360 90 25}
+          xywh {275 370 90 25}
         }
       }
     }
     Fl_Window DD {
       label Gamut open
-      xywh {894 289 385 520} type Double box NO_BOX resizable
+      xywh {763 101 385 520} type Double box NO_BOX resizable
       class {icc_examin_ns::MyFl_Double_Window} visible
     } {
       Fl_Group {} {open
@@ -481,7 +481,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window details {
       label {ICC Examin} open
-      xywh {894 109 385 520} type Double box NO_BOX
+      xywh {280 77 385 520} type Double box NO_BOX
       code0 {o->main_win = o;}
       class {icc_examin_ns::MyFl_Double_Window} visible
     } {
@@ -687,7 +687,7 @@ icc_examin->testZeigen();}
           } {
             Fl_Browser tag_browser {
               label tag_browser_invisible
-              callback {o->selectItem( o->value() );} selected
+              callback {o->selectItem( o->value() );}
               tooltip {Choose one profile tag} xywh {0 25 385 135} box THIN_DOWN_BOX color 49 align 4
               code0 {int lines = tag_browser->size();}
               code1 {DBG_PROG_V( lines )}

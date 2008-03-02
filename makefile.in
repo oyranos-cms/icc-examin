@@ -1,7 +1,6 @@
 
 COLLECT = ar cru
 RANLIB = ranlib
-MAKEDEPEND	= $(CXX) -MM
 LINK = ln -s
 
 DL = --ldflags # --ldstaticflags
@@ -154,12 +153,13 @@ ALL_SOURCEFILES = \
 	$(CXXFILES) \
 	$(MAIN_SOURCES) \
 	$(CINEPAINT_SOURCES) \
-	$(TEST_FILES) \
+	$(TEST_CPP) \
 	$(EXTRA_CPPFILES)
 
 ALL_HEADERFILES = \
 	$(CPP_HEADERS) \
-	$(I18N_HEADERS)
+	$(I18N_HEADERS) \
+	$(TEST_H)
 
 DOKU = \
 	TODO \

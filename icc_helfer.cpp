@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2005  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2007  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -1287,7 +1287,13 @@ setI18N( const char *exename )
 
   is_path = fl_search_locale_path (num_paths, locale_paths, "de", "icc_examin");
   if(is_path >= 0) {
-    int err = fl_initialise_locale ( "icc_examin", locale_paths[is_path], 1 );
+#if defined(_Xutf8_h) || HAVE_FLTK_UTF8
+    int set_charset = 0;
+#else
+    int set_charset = 1;
+#endif
+    int err = fl_initialise_locale ( "icc_examin", locale_paths[is_path],
+                                     set_charset );
     if(err) {
       WARN_S("i18n initialisation failed");
     } else {

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2007-06-13 18:56+0200\n"
+"POT-Creation-Date: 2007-06-21 07:56+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -27,94 +27,6 @@ msgstr ""
 #: agviewer.cpp:350 agviewer.cpp:358 icc_gl.cpp:2676 icc_gl.cpp:2687
 #: icc_gl.cpp:2692 icc_gl.cpp:2697
 msgid "left mouse button -> go back"
-msgstr ""
-
-#: icc_cgats_filter.cpp:121
-msgid "Ersetzung: Suchwort, n mal, Ersatzwort \""
-msgstr ""
-
-#: icc_cgats_filter.cpp:143
-msgid "Leere Zeile ? : "
-msgstr ""
-
-#: icc_cgats_filter.cpp:389
-msgid "neues Schluesselwort hinzugefuegt: "
-msgstr ""
-
-#: icc_cgats_filter.cpp:413
-msgid " geloescht"
-msgstr ""
-
-#: icc_cgats_filter.cpp:500
-msgid "neues Schluesselwort gefunden: "
-msgstr ""
-
-#: icc_cgats_filter.cpp:528
-msgid "DATA_FORMAT_ZEILE eigefuegt"
-msgstr ""
-
-#: icc_cgats_filter.cpp:615
-msgid "LF CR ersetzt"
-msgstr ""
-
-#: icc_cgats_filter.cpp:620
-msgid "CR ersetzt"
-msgstr ""
-
-#: icc_cgats_filter.cpp:693
-msgid "Dateisignatur eingefuehrt"
-msgstr ""
-
-#: icc_cgats_filter.cpp:725
-msgid ", ersetzt"
-msgstr ""
-
-#: icc_cgats_filter.cpp:763
-msgid "Mehr Feldbloecke als Datenbloecke: loesche"
-msgstr ""
-
-#: icc_cgats_filter.cpp:772
-msgid "oops zwei mal BEGIN_DATA_FORMAT  Zeile: "
-msgstr ""
-
-#: icc_cgats_filter.cpp:781
-msgid "BEGIN_DATA_FORMAT Zeile "
-msgstr ""
-
-#: icc_cgats_filter.cpp:790
-msgid "oops END_DATA_FORMAT ohne BEGIN_DATA_FORMAT  Zeile: "
-msgstr ""
-
-#: icc_cgats_filter.cpp:801
-msgid "fehlendes NUMBER_OF_FIELDS eingefuegt"
-msgstr ""
-
-#: icc_cgats_filter.cpp:803
-msgid " eingefuegt"
-msgstr ""
-
-#: icc_cgats_filter.cpp:826
-msgid "NUMBER_OF_FIELDS stimmt nicht ueberein: gefunden, berechnet: "
-msgstr ""
-
-#: icc_cgats_filter.cpp:837
-msgid "END_DATA_FORMAT Zeile "
-msgstr ""
-
-#: icc_cgats_filter.cpp:846
-msgid "oops zwei mal BEGIN_DATA  Zeile"
-msgstr ""
-
-#: icc_cgats_filter.cpp:860
-msgid "oops END_DATA ohne BEGIN_DATA  Zeile "
-msgstr ""
-
-#: icc_cgats_filter.cpp:872
-msgid "fehlende NUMBER_OF_SETS eingefuegt"
-msgstr ""
-
-#: icc_cgats_filter.cpp:895
-msgid "NUMBER_OF_SETS stimmt nicht ueberein: gefunden, berechnet "
 msgstr ""
 
 #: icc_draw.cpp:241
@@ -343,7 +255,7 @@ msgstr ""
 msgid "Information:"
 msgstr ""
 
-#: icc_fenster.cpp:175 icc_betrachter.cxx:631
+#: icc_fenster.cpp:175 icc_betrachter.cxx:629
 msgid "Yes"
 msgstr ""
 
@@ -1529,29 +1441,29 @@ msgstr ""
 msgid "Device Colours"
 msgstr ""
 
-#: icc_ueber.cpp:67 icc_betrachter.cxx:583
+#: icc_ueber.cpp:67 icc_betrachter.cxx:582
 msgid "About ICC Examin"
 msgstr ""
 
-#: icc_ueber.cpp:76
+#: icc_ueber.cpp:77
 msgid "ICC Examin Version"
 msgstr ""
 
-#: icc_ueber.cpp:94
+#: icc_ueber.cpp:96
 msgid "Date"
 msgstr ""
 
-#: icc_ueber.cpp:98
+#: icc_ueber.cpp:101
 msgid "internet: www.behrmann.name <br>"
 msgstr ""
 
-#: icc_ueber.cpp:103
+#: icc_ueber.cpp:107
 msgid ""
 "ICC Examin is a viewer for colour profiles according to ICC standard  - www."
 "color.org . At the moment version 2 profiles are supported."
 msgstr ""
 
-#: icc_ueber.cpp:109
+#: icc_ueber.cpp:114
 msgid ""
 "The appliance of colour profiles shall help to achive an easy colour data "
 "exchange, regardless which application or what kind of operating system is "
@@ -1562,7 +1474,7 @@ msgid ""
 "creation."
 msgstr ""
 
-#: icc_ueber.cpp:120
+#: icc_ueber.cpp:126
 msgid ""
 "Colour profiles are often available from manufacturers of optical devices "
 "(digital camera, scanner, printer). With ICC Examin you can get an "
@@ -1572,82 +1484,82 @@ msgid ""
 "three dimensional gamut viewer.<br>"
 msgstr ""
 
-#: icc_ueber.cpp:130
+#: icc_ueber.cpp:137
 msgid ""
 "The internal colour transformations are currently realised with functions of "
 "the littleCMS program library."
 msgstr ""
 
-#: icc_ueber.cpp:147 icc_betrachter.cxx:535 icc_betrachter.cxx:537
-#: icc_betrachter.cxx:603
+#: icc_ueber.cpp:155 icc_betrachter.cxx:535 icc_betrachter.cxx:537
+#: icc_betrachter.cxx:601
 msgid "Help"
 msgstr ""
 
-#: icc_ueber.cpp:326 icc_betrachter.cxx:538 icc_betrachter.cxx:609
+#: icc_ueber.cpp:334 icc_betrachter.cxx:538 icc_betrachter.cxx:607
 msgid "License"
 msgstr ""
 
-#: icc_ueber.cpp:331
+#: icc_ueber.cpp:340
 msgid ""
 "    ICC Examin is licensed under the GPL version 2.    Especially all icc_* "
 "files are licensed under the GPL.<br>    The other source files may contain "
 "devergine licenses, which are detectable from file headers. "
 msgstr ""
 
-#: icc_ueber.cpp:735
+#: icc_ueber.cpp:745
 msgid "Acknowledgement"
 msgstr ""
 
-#: icc_ueber.cpp:740
+#: icc_ueber.cpp:751
 msgid ""
 "My cordially thank is especially dedicated to Marti Maria and the many "
 "writers of the Lcms-user email list."
 msgstr ""
 
-#: icc_ueber.cpp:753
+#: icc_ueber.cpp:765
 msgid "ICC Examin uses following libraries:<br>\n"
 msgstr ""
 
-#: icc_ueber.cpp:757
+#: icc_ueber.cpp:770
 msgid "  FLTK: Bill Spitzack and others www.fltk.org<br>\n"
 msgstr ""
 
-#: icc_ueber.cpp:763
+#: icc_ueber.cpp:777
 msgid "  FLU: Jason Bryan www.osc.edu/~jbryan/FLU/<br>\n"
 msgstr ""
 
-#: icc_ueber.cpp:769
+#: icc_ueber.cpp:784
 msgid "  littleCMS: Marti Maria www.littlecms.com<br>\n"
 msgstr ""
 
-#: icc_ueber.cpp:779
+#: icc_ueber.cpp:795
 msgid ""
 "  FTGL: Henry Maddocks homepages.paradise.net.nz/henryj/code/#FTGL<br>\n"
 msgstr ""
 
-#: icc_ueber.cpp:786
+#: icc_ueber.cpp:803
 msgid ""
 "integrated sources, lock at the according files for licence conditions:<br>\n"
 msgstr ""
 
-#: icc_ueber.cpp:790
+#: icc_ueber.cpp:808
 msgid "  agv 3D Navigation: Philip Winston<br>\n"
 msgstr ""
 
-#: icc_ueber.cpp:795
+#: icc_ueber.cpp:814
 msgid "For the visualisation of gamut (external):<br>\n"
 msgstr ""
 
-#: icc_ueber.cpp:799
+#: icc_ueber.cpp:819
 msgid ""
 "  argyll: Greame Gill web.access.net.au/argyll/argyllcms.html<br<br><br>\n"
 msgstr ""
 
-#: icc_ueber.cpp:812
+#: icc_ueber.cpp:833
 msgid "Project"
 msgstr ""
 
-#: icc_ueber.cpp:813
+#: icc_ueber.cpp:835
 msgid "Documentation"
 msgstr ""
 
@@ -1807,7 +1719,7 @@ msgstr ""
 msgid "Open"
 msgstr ""
 
-#: icc_betrachter.cxx:520 icc_betrachter.cxx:529 icc_betrachter.cxx:693
+#: icc_betrachter.cxx:520 icc_betrachter.cxx:529 icc_betrachter.cxx:690
 msgid "Gamut"
 msgstr ""
 
@@ -1835,173 +1747,173 @@ msgstr ""
 msgid "Test Curves"
 msgstr ""
 
-#: icc_betrachter.cxx:536 icc_betrachter.cxx:597
+#: icc_betrachter.cxx:536 icc_betrachter.cxx:595
 msgid "About"
 msgstr ""
 
-#: icc_betrachter.cxx:616
+#: icc_betrachter.cxx:614
 msgid "Acknowlegement"
 msgstr ""
 
-#: icc_betrachter.cxx:621
+#: icc_betrachter.cxx:620
 msgid "Links"
 msgstr ""
 
-#: icc_betrachter.cxx:641
+#: icc_betrachter.cxx:639
 msgid "Grafic Card Gamma Table"
 msgstr ""
 
-#: icc_betrachter.cxx:667
+#: icc_betrachter.cxx:664
 msgid "Set"
 msgstr ""
 
-#: icc_betrachter.cxx:668
+#: icc_betrachter.cxx:665
 msgid ""
 "Set the current profile as monitor profile and upload vcgt tag to the video "
 "card"
 msgstr ""
 
-#: icc_betrachter.cxx:673
+#: icc_betrachter.cxx:670
 msgid "Reset"
 msgstr ""
 
-#: icc_betrachter.cxx:674
+#: icc_betrachter.cxx:671
 msgid "reset to standard gamma"
 msgstr ""
 
-#: icc_betrachter.cxx:678
+#: icc_betrachter.cxx:675
 msgid "Load"
 msgstr ""
 
-#: icc_betrachter.cxx:679
+#: icc_betrachter.cxx:676
 msgid "Load the current monitor profile"
 msgstr ""
 
-#: icc_betrachter.cxx:683
+#: icc_betrachter.cxx:680
 msgid "Close"
 msgstr ""
 
-#: icc_betrachter.cxx:753
+#: icc_betrachter.cxx:749
 msgid "ICC Examin"
 msgstr ""
 
-#: icc_betrachter.cxx:765
+#: icc_betrachter.cxx:760
 msgid "all_invisible"
 msgstr ""
 
-#: icc_betrachter.cxx:766
+#: icc_betrachter.cxx:761
 msgid "menuleiste_invisible"
 msgstr ""
 
-#: icc_betrachter.cxx:774
+#: icc_betrachter.cxx:769
 msgid "tags_group_invisible"
 msgstr ""
 
-#: icc_betrachter.cxx:776
+#: icc_betrachter.cxx:771
 msgid "inspect_html_group_invisible"
 msgstr ""
 
-#: icc_betrachter.cxx:778
+#: icc_betrachter.cxx:773
 msgid "Inspect_html_invisible"
 msgstr ""
 
-#: icc_betrachter.cxx:787
+#: icc_betrachter.cxx:782
 msgid "examin_invisible"
 msgstr ""
 
-#: icc_betrachter.cxx:789
+#: icc_betrachter.cxx:784
 msgid "tag_browser_invisible"
 msgstr ""
 
-#: icc_betrachter.cxx:790
+#: icc_betrachter.cxx:785
 msgid "Choose one profile tag"
 msgstr ""
 
-#: icc_betrachter.cxx:804
+#: icc_betrachter.cxx:799
 msgid "ansichtsgruppe_invisible"
 msgstr ""
 
-#: icc_betrachter.cxx:806
+#: icc_betrachter.cxx:801
 msgid "tabellengruppe_invisible"
 msgstr ""
 
-#: icc_betrachter.cxx:808
+#: icc_betrachter.cxx:803
 msgid "tabellenpack_invisible"
 msgstr ""
 
-#: icc_betrachter.cxx:810
+#: icc_betrachter.cxx:805
 msgid "Chain selection"
 msgstr ""
 
-#: icc_betrachter.cxx:811
+#: icc_betrachter.cxx:806
 msgid "Choose a attribute"
 msgstr ""
 
-#: icc_betrachter.cxx:825
+#: icc_betrachter.cxx:820
 msgid "tabellengruppe2_invisible"
 msgstr ""
 
-#: icc_betrachter.cxx:827
+#: icc_betrachter.cxx:822
 msgid "mft_viewer_invisible"
 msgstr ""
 
-#: icc_betrachter.cxx:839
+#: icc_betrachter.cxx:834
 msgid "mft_text_invisible"
 msgstr ""
 
-#: icc_betrachter.cxx:851
+#: icc_betrachter.cxx:846
 msgid "mft_gl_group_invisible"
 msgstr ""
 
-#: icc_betrachter.cxx:853
+#: icc_betrachter.cxx:848
 msgid "mft_gl_box_invisible"
 msgstr ""
 
-#: icc_betrachter.cxx:857
+#: icc_betrachter.cxx:852
 msgid "o"
 msgstr ""
 
-#: icc_betrachter.cxx:858
+#: icc_betrachter.cxx:853
 msgid "Show all channels of this table a own window."
 msgstr ""
 
-#: icc_betrachter.cxx:862
+#: icc_betrachter.cxx:857
 msgid "mft_gl_invisible"
 msgstr ""
 
-#: icc_betrachter.cxx:888
+#: icc_betrachter.cxx:883
 msgid "tag_pack_invisible"
 msgstr ""
 
-#: icc_betrachter.cxx:890
+#: icc_betrachter.cxx:885
 msgid "tag_box_invisible"
 msgstr ""
 
-#: icc_betrachter.cxx:894
+#: icc_betrachter.cxx:889
 msgid "tag_group_invisible"
 msgstr ""
 
-#: icc_betrachter.cxx:896
+#: icc_betrachter.cxx:891
 msgid " tag_text_invisible"
 msgstr ""
 
-#: icc_betrachter.cxx:908
+#: icc_betrachter.cxx:903
 msgid "tag_viewer_invisible"
 msgstr ""
 
-#: icc_betrachter.cxx:933
+#: icc_betrachter.cxx:928
 msgid "status_group_invisible"
 msgstr ""
 
-#: icc_betrachter.cxx:935
+#: icc_betrachter.cxx:930
 msgid "..."
 msgstr ""
 
-#: icc_betrachter.cxx:938
+#: icc_betrachter.cxx:933
 msgid "Loading .."
 msgstr ""
 
-#: icc_betrachter.cxx:949
+#: icc_betrachter.cxx:944
 msgid "no_box_invisible"
 msgstr ""
 
@@ -2074,7 +1986,7 @@ msgid "What kind of image is this?\n"
 msgstr ""
 
 #: icc_examin_version.h:9
-msgid "May 2004 - February 2007"
+msgid "May 2004 - June 2007"
 msgstr ""
 
 #: icc_utils.h:226 icc_utils.h:227 icc_utils.h:228

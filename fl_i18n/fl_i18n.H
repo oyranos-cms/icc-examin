@@ -35,6 +35,7 @@
 
 #ifdef USE_GETTEXT
 # include <libintl.h>
+#include <FL/x.H>
 # define _(text) threadGettext(text)
 #else
 # define _(text) text

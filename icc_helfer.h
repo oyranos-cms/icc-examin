@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2006  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2007  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -44,7 +44,7 @@
 #endif
 
 #if HAVE_FLTK
-#include <Fl/Fl_Widget.H>
+#include <FL/Fl_Widget.H>
 // in icc_helfer_fltk.cpp
 void        dbgFltkEvents  ( int           event);
 std::string dbgFltkEvent   ( int           event);

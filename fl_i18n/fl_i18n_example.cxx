@@ -7,7 +7,6 @@
 
 void MyBox::draw() {
   fl_font( FL_HELVETICA, 24);
-  Fl::set_font( FL_HELVETICA," Tahoma" );
   
   int tw,th;
   fl_measure("Hallo", tw, th);
@@ -28,18 +27,26 @@ int main(int argc, char **argv) {
   const char *locale_paths[1] = {"./po"};
   const char *domain = {"fl_i18n"};
 
-  Fl::set_font( FL_HELVETICA," Tahoma" );
-  Fl::set_font( FL_COURIER," Tahoma" );
   fl_font( FL_HELVETICA, 24);
   fl_font( FL_COURIER, 24);
+  printf("%s %s\n", Fl::get_font((Fl_Font)0), Fl::get_font_name((Fl_Font)0,0));
 
   if ( fl_search_locale_path  ( 1,
                                 locale_paths,
                                 "de",
                                 domain) >= 0 )
   {
-    fl_initialise_locale( domain, locale_paths[0], 0 );
-    printf("Locale found in %s\n", locale_paths[0]);
+#if defined(_Xutf8_h) || HAVE_FLTK_UTF8
+    int set_charset = 0;
+#else
+    int set_charset = 1;
+#endif
+    int err = fl_initialise_locale ( domain, locale_paths[0],
+                                     set_charset );
+    if(err) {
+      printf("i18n initialisation failed");
+    } else
+      printf("Locale found in %s\n", locale_paths[0]);
   } else
     printf("Locale not found in %s\n", locale_paths[0]);
 
@@ -62,7 +69,6 @@ int main(int argc, char **argv) {
     o->end();
   } // Fl_Double_Window* o
   /*fl_font( FL_COURIER, 24);
-  Fl::set_font( FL_HELVETICA," Tahoma" );
   
   int tw,th;
   fl_meashure("Hallo", &tw, &th);

@@ -1,7 +1,7 @@
 #!/bin/sh
 
 ERROR=0
-STRIPOPT="sed s/-O.//"
+STRIPOPT='s/-O.// ; s/-isysroot [[:graph:]]*//'
 
 if [ -n "$PKG_CONFIG_PATH" ]; then
   PKG_CONFIG_PATH=$PKG_CONFIG_PATH:$libdir/pkgconfig
@@ -9,6 +9,27 @@ else
   PKG_CONFIG_PATH=$libdir/pkgconfig
 fi
 export PKG_CONFIG_PATH
+
+# let it affect all other tests
+if [ -n "$LIBS" ] && [ $LIBS -gt 0 ]; then
+  if [ -n "$LIBS_TEST" ]; then
+    for l in $LIBS_TEST; do
+      rm -f tests/libtest
+      $CXX $CFLAGS -I$includedir tests/lib_test.cxx $LDFLAGS -L$libdir -l$l -o tests/libtest 2>/dev/null
+      if [ -f tests/libtest ]; then
+          echo "$l=-l$l" >> "config.sh"
+          LDFLAGS="$LDFLAGS -l$l"
+          test -n "$ECHO" && $ECHO "lib$l is available"
+          if [ -n "$MAKEFILE_DIR" ]; then
+            for i in $MAKEFILE_DIR; do
+              test -f "$i/makefile".in && echo "$l = -l$l" >> "$i/makefile"
+            done
+          fi
+          rm tests/libtest
+      fi
+    done
+  fi
+fi
 
 if [ -n "$ELEKTRA" ] && [ "$ELEKTRA" -gt "0" ]; then
   if [ -z "$elektra_min" ]; then
@@ -99,8 +120,8 @@ if [ -n "$LCMS" ] && [ $LCMS -gt 0 ]; then
     test -n "$ECHO" && $ECHO "littleCMS `pkg-config --modversion lcms`          detected"
     echo "#define HAVE_LCMS 1" >> $CONF_H
     echo "LCMS = 1" >> $CONF
-    echo "LCMS_H = `pkg-config --cflags lcms | $STRIPOPT`" >> $CONF
-    echo "LCMS_LIBS = `pkg-config --libs lcms | $STRIPOPT`" >> $CONF
+    echo "LCMS_H = `pkg-config --cflags lcms | sed \"$STRIPOPT\"`" >> $CONF
+    echo "LCMS_LIBS = `pkg-config --libs lcms | sed \"$STRIPOPT\"`" >> $CONF
   else
     if [ $LCMS -eq 1 ]; then
       test -n "$ECHO" && $ECHO "!!! ERROR: no or too old LCMS found, !!!"
@@ -240,8 +261,8 @@ if [ -n "$FTGL" ] && [ $FTGL -gt 0 ]; then
     test -n "$ECHO" && $ECHO "FTGL      `pkg-config --modversion ftgl`         detected"
     echo "#define HAVE_FTGL 1" >> $CONF_H
     echo "FTGL = 1" >> $CONF
-    echo "FTGL_H = `pkg-config --cflags ftgl | $STRIPOPT`" >> $CONF
-    echo "FTGL_LIBS = `pkg-config --libs ftgl | $STRIPOPT`" >> $CONF
+    echo "FTGL_H = `pkg-config --cflags ftgl | sed \"$STRIPOPT\"`" >> $CONF
+    echo "FTGL_LIBS = `pkg-config --libs ftgl | sed \"$STRIPOPT\"`" >> $CONF
   else
     test -n "$ECHO" && $ECHO "  no or too old FTGL found, need FTGL to render text in OpenGL"
   fi
@@ -253,7 +274,7 @@ if [ -z "$fltkconfig" ]; then
   PATH=$PATH:/usr/X11R6/bin; export PATH
 fi
 if [ -n "$FLTK" ] && [ $FLTK -gt 0 ]; then
-  FLTK_=`$fltkconfig --cxxflags 2>>error.txt | $STRIPOPT`
+  FLTK_="`$fltkconfig --cxxflags 2>>error.txt | sed \"$STRIPOPT\"`"
   if [ $? = 0 ] && [ -n "$FLTK_" ]; then
     test -n "$ECHO" && $ECHO "FLTK `$fltkconfig --version`              detected"
     if [ "0" -ne "`$fltkconfig --compile tests/fltk_test.cxx 2>&1 | grep lock | wc -l`" ]; then
@@ -265,12 +286,12 @@ if [ -n "$FLTK" ] && [ $FLTK -gt 0 ]; then
     fi
     echo "#define HAVE_FLTK 1" >> $CONF_H
     echo "FLTK = 1" >> $CONF
-    echo "FLTK_H = `$fltkconfig --cxxflags | sed 's/-O[0-9]//'`" >> $CONF
-    echo "FLTK_LIBS = `$fltkconfig --use-images --use-gl --ldflags | $STRIPOPT`" >> $CONF
+    echo "FLTK_H = `$fltkconfig --cxxflags | sed \"$STRIPOPT\"`" >> $CONF
+    echo "FLTK_LIBS = `$fltkconfig --use-images --use-gl --ldflags | sed \"$STRIPOPT\"`" >> $CONF
     echo "fltkconfig = $fltkconfig" >> $CONF
     echo "FLTK = 1" >> $CONF_I18N
-    echo "FLTK_H = `$fltkconfig --cxxflags | sed 's/-O[0-9]//'`" >> $CONF_I18N
-    echo "FLTK_LIBS = `$fltkconfig --use-images --use-gl --ldflags | $STRIPOPT`" >> $CONF_I18N
+    echo "FLTK_H = `$fltkconfig --cxxflags | sed \"$STRIPOPT\"`" >> $CONF_I18N
+    echo "FLTK_LIBS = `$fltkconfig --use-images --use-gl --ldflags | sed \"$STRIPOPT\"`" >> $CONF_I18N
     echo "fltkconfig = $fltkconfig" >> $CONF_I18N
   else
     if [ $FLTK -eq 1 ]; then
@@ -297,8 +318,8 @@ if [ -n "$FLU" ] && [ $FLU -gt 0 ]; then
       test -n "$ECHO" && $ECHO "FLU                     detected"
       echo "#define HAVE_FLU 1" >> $CONF_H
       echo "FLU = 1" >> $CONF
-      echo "FLU_H = `flu-config --cxxflags | $STRIPOPT`" >> $CONF
-      echo "FLU_LIBS = `flu-config --ldflags --use-gl | $STRIPOPT`" >> $CONF
+      echo "FLU_H = `flu-config --cxxflags | sed \"$STRIPOPT\"`" >> $CONF
+      echo "FLU_LIBS = `flu-config --ldflags --use-gl | sed \"$STRIPOPT\"`" >> $CONF
     else
       if [ "$FLU" -gt 1 ]; then
         test -n "$ECHO" && $ECHO "   no FLU found, will not use it"
@@ -330,36 +351,17 @@ if [ -n "$LIBPNG" ] && [ $LIBPNG -gt 0 ]; then
     test -n "$ECHO" && $ECHO "PNG `pkg-config --modversion $LIBPNG`               detected"
     echo "#define HAVE_PNG 1" >> $CONF_H
     echo "PNG = 1" >> $CONF
-    echo "PNG_H = `pkg-config --cflags $LIBPNG | $STRIPOPT`" >> $CONF
-    echo "PNG_LIBS = `pkg-config --libs $LIBPNG | $STRIPOPT`" >> $CONF
+    echo "PNG_H = `pkg-config --cflags $LIBPNG | sed \"$STRIPOPT\"`" >> $CONF
+    echo "PNG_LIBS = `pkg-config --libs $LIBPNG | sed \"$STRIPOPT\"`" >> $CONF
   else
     test -n "$ECHO" && $ECHO "no or too old libpng found,"
     test -n "$ECHO" && $ECHO "  need at least version 1.0, download: www.libpng.org"
   fi
 fi
 
-if [ -n "$LIBS" ] && [ $LIBS -gt 0 ]; then
-  if [ -n "$LIBS_TEST" ]; then
-    for l in $LIBS_TEST; do
-      rm -f tests/libtest
-      $CXX $CFLAGS -I$includedir tests/lib_test.cxx $LDFLAGS -L$libdir -l$l -o tests/libtest 2>/dev/null
-      if [ -f tests/libtest ]; then
-          echo "$l=-l$l" >> "config.sh"
-          test -n "$ECHO" && $ECHO "lib$l is available"
-          if [ -n "$MAKEFILE_DIR" ]; then
-            for i in $MAKEFILE_DIR; do
-              test -f "$i/makefile".in && echo "$l = -l$l" >> "$i/makefile"
-            done
-          fi
-          rm tests/libtest
-      fi
-    done
-  fi
-fi
-
 if [ -n "$LIBTIFF" ] && [ $LIBTIFF -gt 0 ]; then
   rm -f tests/libtest
-  $CXX $CFLAGS -I$includedir tests/lib_test.cxx $LDFLAGS -L$libdir -ltiff -o tests/libtest 2>/dev/null
+  $CXX $CFLAGS -I$includedir tests/tiff_test.cxx $LDFLAGS -L$libdir -ltiff -ljpeg -o tests/libtest 2>error.txt
     if [ -f tests/libtest ]; then
       test -n "$ECHO" && $ECHO "`tests/libtest`
                         detected"
@@ -375,7 +377,7 @@ if [ -n "$GETTEXT" ] && [ $GETTEXT -gt 0 ]; then
   rm -f tests/libtest
     $CXX $CFLAGS -I$includedir tests/gettext_test.cxx $LDFLAGS -L$libdir -o tests/libtest 2>/dev/null
     if [ ! -f tests/libtest ]; then
-      $CXX $CFLAGS -I$includedir tests/gettext_test.cxx $LDFLAGS -L$libdir -lintl -o tests/libtest 2>/dev/null
+      $CXX $CFLAGS -I$includedir tests/gettext_test.cxx $LDFLAGS -L$libdir -lintl -o tests/libtest 2>error.txt
     fi
     if [ -f tests/libtest ]; then
       test -n "$ECHO" && $ECHO "Gettext                 detected"

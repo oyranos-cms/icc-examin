@@ -38,7 +38,7 @@
 #include "icc_helfer_fltk.h"
 #include "icc_helfer.h"
 #include "icc_icc.h"
-#include <Fl/Fl.H>
+#include <FL/Fl.H>
 #if HAVE_X
 #include <X11/xpm.h>
 #include <X11/extensions/shape.h>

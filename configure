@@ -488,7 +488,7 @@ echo "MAKEDEPEND	= $GCC_MM" >> $CONF
 if [ $OSUNAME = "Darwin" ]; then
   echo "" >> $CONF
   echo "COPY = cp -p $DEBUG_SWITCH" >> $CONF
-  LDFLAGS="$LDFLAGS -L."
+  LDFLAGS="$LDFLAGS -L. \$(dl) \$(iconv)"
   echo "DBG_LIBS = #-lMallocDebug" >> $CONF
   echo "I18N_LIB = \$(intl) \$(LIBNAME)" >> $CONF
   echo "I18N_LIBSTAT = /opt/local/lib/libintl.a \$(LIBNAME) \$(iconv)" >> $CONF
@@ -498,10 +498,8 @@ if [ $OSUNAME = "Darwin" ]; then
   echo "MSGMERGE = msgmerge" >> $CONF
   CFLAGS="$CFLAGS_COMMON -Wall -g \$(DEBUG) -DPIC -Wunused -fno-exceptions"
   CXXFLAGS="$CXXFLAGS_COMMON -Wall -g \$(DEBUG) -DPIC -fno-exceptions"
-  echo "REZ = fltk-config --post \$@" >> $CONF
+  echo "REZ = \$(fltkconfig) --post \$@" >> $CONF
   echo "OSX_CPP = \$(OSX_CPPFILES)" >> $CONF
-  echo "REZ = \
-      fltk-config --post \$(BINTARGET);" >> $CONF
   echo "XGETTEXT_OPTIONS = --keyword=gettext \
         --keyword=_ \
         --keyword=N_" >> $CONF
@@ -520,7 +518,7 @@ else
   if [ $OSUNAME = "Linux" ]; then
     echo "" >> $CONF
     echo "COPY = cp $DEBUG_SWITCH -dpa" >> $CONF
-    LDFLAGS="$LDFLAGS -L."
+    LDFLAGS="$LDFLAGS -L. \$(dl) \$(iconv)"
     echo "I18N_LIB = \$(LIBNAME)" >> $CONF
     echo "I18N_LIBSTAT = \$(LIBNAME)" >> $CONF
     echo "INCL=-I\$(includedir) -I/usr/X11R6/include -I. -I/usr/include/g++ -I/usr/include" >> $CONF

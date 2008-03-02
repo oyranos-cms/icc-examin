@@ -1,5 +1,6 @@
 CXX = c++
 CC = cc
+dl = -ldl
 X11 = X11
 X_H = -I/usr/X11R6/include -I/usr/include
 XF86VMODE = 1
@@ -9,9 +10,9 @@ XINERAMA_LIB = -lXinerama
 X11_LIB_PATH = -L/usr/X11R6/lib$(BARCH) -L/usr/lib$(BARCH) -L$(libdir)
 X11_LIBS=$(X11_LIB_PATH) -lX11 $(XF86VMODE_LIB) -lXpm -lXext $(XINERAMA_LIB)
 FLTK = 1
-FLTK_H = -I/opt/kai-uwe/include -I/usr/include/freetype2 -Wall -g -I/usr/X11R6/include
-FLTK_LIBS = -L/opt/kai-uwe/lib -L/usr/X11R6/lib -Wall -g -L/usr/X11R6/lib -lfltk-utf8_images -lpng -lz -ljpeg -lfltk-utf8_gl -lGLU -lGL -lfltk-utf8 -lfltk_xutf8 -lXft -lXinerama -lpthread -ldl -lm -lXext -lX11
-dl = -ldl
+FLTK_H = -I/tmp/RPMS/fltk/fltk118-utf8-2007-06-20 -I/usr/include/freetype2 -I/usr/X11R6/include -D_THREAD_SAFE -D_REENTRANT
+FLTK_LIBS = -L/tmp/RPMS/fltk/fltk118-utf8-2007-06-20/lib -L/usr/X11R6/lib -lfltk-utf8_images -lpng -lz -ljpeg -lfltk-utf8_gl -lGLU -lGL -lfltk-utf8 -lfltk_xutf8 -lXft -lXinerama -lpthread -ldl -lm -lXext -lX11 
+fltkconfig = /tmp/RPMS/fltk/fltk118-utf8-2007-06-20/fltk-utf8-config
 GETTEXT = -DUSE_GETTEXT
 DEBUG = -Wall -g -DDEBUG --pedantic
 DEBUG_SWITCH = -v
@@ -46,7 +47,7 @@ ifdef APPLE
   I18N_LIB = $(intl) $(LIBNAME) #-liconv
   I18N_LIBSTAT = /opt/local/lib/libintl.a $(LIBNAME) #-liconv
   INCL=-I$(includedir) -I/usr/X11R6/include -I./ -I/usr/include/gcc/darwin/default/c++
-  REZ = fltk-config --post $@;
+  REZ = $(fltkconfig) --post $@;
   DBG_LIBS = #-lMallocDebug
   MSGMERGE := msgmerge
   XGETTEXT_OPTIONS = --keyword=gettext \

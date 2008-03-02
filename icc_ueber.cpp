@@ -73,6 +73,7 @@ getUeberHtml()
     <td bgcolor=\"" << SF << "\"> \
     <center> \
     <h2>"
+       // HTML
        << "  " << _("ICC Examin Version") << " " << ICC_EXAMIN_V  << " \
     </h2> \
     </center><br><br><br>. \
@@ -91,20 +92,24 @@ getUeberHtml()
         </tr> \
       </table> \
 <br>";
+  // HTML
   html << _("Date") << ": " << ICC_EXAMIN_D; html << " \
 <br> \
 <p>";
+  // HTML
   html << _(
 "internet: www.behrmann.name <br>");
   html << " \
 </p>\n \
 <p>";
+  // HTML
   html << _(
 "ICC Examin is a viewer for colour profiles according to ICC "
 "standard  - www.color.org . At the moment version 2 profiles are supported.");
   html << " \
 </p>\n \
 <p>";
+  // HTML
   html << _(
 "The appliance of colour profiles shall help to achive an easy colour data "
 "exchange, regardless which application or what kind of operating system is "
@@ -116,6 +121,7 @@ getUeberHtml()
   html << " \
 </p>\n \
 <p>";
+  // HTML
   html << _(
 "Colour profiles are often available from manufacturers of optical devices "
 "(digital camera, scanner, printer). With ICC Examin you can get an impression "
@@ -126,6 +132,7 @@ getUeberHtml()
   html << " \
 </p>\n\
 <p>";
+  // HTML
   html << _(
 "The internal colour transformations are currently realised with functions "
 "of the littleCMS program library.");
@@ -144,6 +151,7 @@ getHilfeHtml()
 {
   DBG_PROG_START
   std::stringstream html;
+  // HTML
   html << getHtmlKopf( _("Help") );
 
   html << " \
@@ -327,6 +335,7 @@ getLizenzHtml()
 
   html << " \
 <p>\n";
+  // HTML
   html << _(
 "    ICC Examin is licensed under the GPL version 2."
 "    Especially all icc_* files are licensed under the GPL.<br>"     
@@ -732,10 +741,12 @@ getDankHtml()
 {
   DBG_PROG_START
   std::stringstream html;
+  // HTML
   html << getHtmlKopf( _("Acknowledgement") );
 
   html << "\
 <p>";
+  // HTML
   html << _(
 "My cordially thank is especially dedicated to Marti Maria and the many "
 "writers of the Lcms-user email list.");
@@ -749,22 +760,26 @@ getDankHtml()
   </tr> \
 </table>\
 <p>\n";
+  // HTML
   html << _(
 "ICC Examin uses following libraries:<br>\n");
   html << " \
 <p>";
+  // HTML
   html << _(
 "  FLTK: Bill Spitzack and others www.fltk.org<br>\n");
 #ifdef HAVE_FLU
   html << " \
 </p>\n \
 <p>";
+  // HTML
   html << _(
 "  FLU: Jason Bryan www.osc.edu/~jbryan/FLU/<br>\n");
 #endif
   html << " \
 </p>\n \
 <p>";
+  // HTML
   html << _(
 "  littleCMS: Marti Maria www.littlecms.com<br>\n");
   html << " \
@@ -775,6 +790,7 @@ getDankHtml()
 #ifdef HAVE_FTGL
   html << " \
 <p>";
+  // HTML
   html << _(
 "  FTGL: Henry Maddocks homepages.paradise.net.nz/henryj/code/#FTGL<br>\n");
   html << " \
@@ -782,19 +798,23 @@ getDankHtml()
 #endif
   html << " \
 <p>";
+  // HTML
   html << _(
 "integrated sources, lock at the according files for licence conditions:<br>\n");
   html << " \
 <p>";
+  // HTML
   html << _(
 "  agv 3D Navigation: Philip Winston<br>\n");
   html << " \
 </p>\n \
 <p>";
+  // HTML
   html << _(
 "For the visualisation of gamut (external):<br>\n");
   html << " \
 <p>";
+  // HTML
   html << _( 
 "  argyll: Greame Gill web.access.net.au/argyll/argyllcms.html<br<br><br>\n");
   html << " \
@@ -809,8 +829,10 @@ getLinksText()
 {
   DBG_PROG_START
   std::stringstream text;
-  text << _( "Project" ) <<"     : "<< "http://www.behrmann.name/index.php?option=com_content&task=view&id=32&Itemid=1" << "\n";
-  text << _( "Documentation" )<<": "<< "http://www.oyranos.org/wiki/index.php?title=ICC_Examin";
+  // HTML
+  text << _( "Project" ) <<"     :\n"<< "  http://www.behrmann.name/index.php?option=com_content&task=view&id=32&Itemid=1" << "\n";
+  // HTML
+  text << _( "Documentation" )<<":\n"<< "  http://www.oyranos.org/wiki/index.php?title=ICC_Examin";
 
   DBG_PROG_ENDE
   return text.str();
