@@ -685,7 +685,7 @@ ICCexamin::fortschritt(double f)
 void
 ICCexamin::fortschrittThreaded(double f)
 { DBG_PROG_START
-  icc_examin_ns::lock(__FILE__,__LINE__);
+  //icc_examin_ns::lock(__FILE__,__LINE__);
   /*if(0.0 < f && f <= 1.0) {
     if(!icc_betrachter->load_progress->visible())
       icc_betrachter->load_progress-> show();
@@ -699,7 +699,7 @@ ICCexamin::fortschrittThreaded(double f)
     DBG_PROG_V( f )
   }*/
   icc_betrachter->load_progress-> damage(FL_DAMAGE_ALL);
-  icc_examin_ns::unlock(this, __FILE__,__LINE__);
+  //icc_examin_ns::unlock(this, __FILE__,__LINE__);
   DBG_PROG_ENDE
 }
 

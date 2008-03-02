@@ -230,12 +230,12 @@ namespace icc_examin_ns {
       }
       // ... ins Haus gehen
       Fl::lock();
-      // ... Prüfnummer im Haus
-      ++icc_thread_lock_zaehler_;
       // ... in Besitz nehmen
       icc_thread_lock_besitzer_ = pthread_self();
-    }
-    Fl::awake();
+    } DBG_THREAD
+    // ... Prüfnummer im Haus
+    ++icc_thread_lock_zaehler_;
+    //Fl::awake();
     DBG_THREAD_S( "locks: "<<icc_thread_lock_zaehler_ <<" angehalten bei: "<<file<<":"<<line )
   }
   void unlock(void *widget, const char *file, int line)
@@ -246,11 +246,6 @@ namespace icc_examin_ns {
     if(pthread_self() != icc_thread_lock_besitzer_ &&
        icc_thread_lock_besitzer_ != 0) {
       dbgThreadId(icc_thread_lock_besitzer_);DBG_THREAD_S( "locks: " << icc_thread_lock_zaehler_ << " Besitzer/Aufrufer" )
-    } // Oberflaeche erneuern
-    if(widget) {
-      Fl::awake(widget); DBG_THREAD
-      // Ereignisse entlocken
-      Fl::wait(0); DBG_THREAD
     }
     // drausen nichts unternehmen, da die offene Tür "gut" ist 
     if(icc_thread_lock_zaehler_ >= 0)
@@ -258,6 +253,13 @@ namespace icc_examin_ns {
     // zurücksetzen, da das Schloss nun offen ist
     icc_thread_lock_besitzer_ = 0;
     icc_thread_lock_zaehler_ = 0;
+
+    // Oberflaeche erneuern
+    if(widget) {
+      Fl::awake(widget); DBG_THREAD
+      // Ereignisse entlocken
+      //Fl::wait(0); DBG_THREAD
+    }
     DBG_THREAD_S( ": " << icc_thread_lock_zaehler_ << " weiter" )
   }
 }

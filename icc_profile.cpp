@@ -229,8 +229,10 @@ ICCprofile::load (const Speicher & prof)
   for (int i = 0 ; i < tag_count; i++)
   {
     DBG_MEM
-    tags[i].load( this, &tagList[i] ,
-              &((char*)data_)[ icValue(tagList[i].offset) ]);
+    icTag *ic_tag = &tagList[i];
+    int offset = icValue(tagList[i].offset);
+    char *tag_block = &((char*)data_)[offset];
+    tags[i].load( this, ic_tag, tag_block );
 #   ifdef DEBUG_ICCPROFILE
     DBG_PROG_S( " sig: " << tags[i].getTagName() << " " << i )
 #   endif

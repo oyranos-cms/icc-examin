@@ -646,7 +646,6 @@ CgatsFilter::cgats_korrigieren_               ()
     // Sonstiges
   suchenUndErsetzen_( data_, "Date:" , "CREATED \"\" #", pos ); // GMB
 
-
   // Zerlegen
   zeilen_ = zeilenNachVector(data_);
 
@@ -765,10 +764,11 @@ CgatsFilter::cgats_korrigieren_               ()
       for( unsigned j = 0; j < messungen[messungen.size()-1].felder.size(); ++j)
         DBG_NUM_S( j<<" "<<messungen[messungen.size()-1].felder[j] )
       // Markieren und Warnen
-      if( im_data_format_block )
+      if( im_data_format_block ) {
         DBG_PROG_S( _("oops zwei mal BEGIN_DATA_FORMAT  Zeile: ") << i )
-      else
+      } else {
         im_data_format_block = true;
+      }
 
       if( zeile_letztes_NUMBER_OF_FIELDS >= 0)
         fehlendes_NUMBER_OF_FIELDS = false;
@@ -782,7 +782,7 @@ CgatsFilter::cgats_korrigieren_               ()
       for( unsigned j = 0; j < messungen[messungen.size()-1].felder.size(); ++j )
         DBG_CGATS_S( j<<" "<<messungen[messungen.size()-1].felder[j] );
       if( !im_data_format_block )
-        DBG_PROG_S( _("oops END_DATA_FORMAT ohne BEGIN_DATA_FORMAT  Zeile: ") << i )
+        DBG_PROG_S( _("oops END_DATA_FORMAT ohne BEGIN_DATA_FORMAT  Zeile: ") << i );
 
       s.str("");
       s << "NUMBER_OF_FIELDS " << zaehler_FIELDS;
@@ -797,7 +797,7 @@ CgatsFilter::cgats_korrigieren_               ()
                      zeile_letztes_BEGIN_DATA_FORMAT, "", s.str() );
         DBG_PROG_S( zeilen_[zeile_letztes_BEGIN_DATA_FORMAT] << _(" eingefügt") )
       } else // NUMBER_OF_FIELDS Parsen und Vergleichen
-      {
+      { DBG_PROG_V( zeile_letztes_NUMBER_OF_FIELDS )
         std::string t = zeilen_[zeile_letztes_NUMBER_OF_FIELDS].
                substr( 0, zeilen_[zeile_letztes_NUMBER_OF_FIELDS].find( "#" ) );
         DBG_CGATS_V( t )
@@ -852,7 +852,7 @@ CgatsFilter::cgats_korrigieren_               ()
     if( sucheWort (gtext, "END_DATA", 0 ) != std::string::npos )
     {
       if( !im_data_block )
-        DBG_PROG_S( _("oops END_DATA ohne BEGIN_DATA  Zeile ") << i )
+        DBG_PROG_S( _("oops END_DATA ohne BEGIN_DATA  Zeile ") << i );
 
       s.str("");
       s << "NUMBER_OF_SETS " << zaehler_SETS;
