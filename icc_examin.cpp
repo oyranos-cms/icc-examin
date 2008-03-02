@@ -558,7 +558,9 @@ ICCexamin::moniSetzen ()
   if( profile.size() && profile.profil()->filename() &&
       strlen( profile.profil()->filename() ) ) { DBG_PROG
     icc_oyranos.setzeMonitorProfil( profile.profil()->filename(), x,y );
+    FREI_(true);
     vcgtZeigen();
+    FREI_(false);
   }
   FREI_(true);
   DBG_PROG_ENDE
@@ -568,12 +570,14 @@ void
 ICCexamin::standardGamma ()
 { DBG_PROG_START
   FREI_(false);
+# if HAVE_X
   int x = icc_betrachter->vcgt->x() + icc_betrachter->vcgt->w()/2;
   int y = icc_betrachter->vcgt->y() + icc_betrachter->vcgt->h()/2;
 
-# if HAVE_X
-  system("xgamma -gamma 1.0");
+  system("xgamma -gamma 1.0&");
+  FREI_(true);
   vcgtZeigen();
+  FREI_(false);
   icc_oyranos.setzeMonitorProfil( 0, x,y );
 # endif
 

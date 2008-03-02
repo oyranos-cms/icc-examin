@@ -47,7 +47,7 @@ MSGFMT = msgfmt -c --statistics
 FLTK_H    := $(shell fltk-config --cxxflags)
 FLTK_LIBS := $(shell fltk-config --use-images --use-gl --use-glut --ldflags)
 
-LIB_LIBS = -L$(libdir) -L./ $(FLTK_LIBS) \
+LIB_LIBS = -L./ $(FLTK_LIBS) \
 	-L/lib \
 	$(DBG_LIBS)
 
@@ -58,20 +58,17 @@ ifdef APPLE
   I18N_LIB = -lintl $(LIBNAME) #-liconv
   I18N_LIBSTAT = /opt/local/lib/libintl.a $(LIBNAME) #-liconv
   INCL=-I$(includedir) -I/usr/X11R6/include -I./ -I/usr/include/gcc/darwin/default/c++
-  REZ = \
-      fltk-config --post $(BINTARGET);
+  REZ = fltk-config --post $@;
   DBG_LIBS = #-lMallocDebug
-  MSGMERGE = msgmerge
-  XGETTEXT_OPTIONS = \
-	--keyword=gettext \
+  MSGMERGE := msgmerge
+  XGETTEXT_OPTIONS = --keyword=gettext \
 	--keyword=_ \
 	--keyword=N_
 else
   SO = .so
     MSGMERGE = msgmerge
     MSGMERG_OPTS = --update
-    XGETTEXT_OPTIONS = \
-	--keyword=gettext --flag=gettext:1:pass-c-format \
+    XGETTEXT_OPTIONS = --keyword=gettext --flag=gettext:1:pass-c-format \
 	--keyword=_ --flag=_:1:pass-c-format \
 	--keyword=N_ --flag=N_:1:pass-c-format \
 	--copyright-holder='Kai-Uwe Behrmann' \
@@ -80,9 +77,6 @@ else
   ifdef LINUX
     OPTS = -Wall -g $(DEBUG) -Wunused -fPIC -fno-exceptions $(COMPILE_OPTIONS)
     INCL=-I$(includedir) -I/usr/X11R6/include -I. -I/usr/include/g++ -I/usr/include
-    LIBLINK_FLAGS = -shared -ldl -L.
-    LINK_LIB_PATH = -Wl,--rpath -Wl,$(libdir)
-    LINK_SRC_PATH = -Wl,--rpath -Wl,$(srcdir)
     I18N_LIB = $(LIBNAME)
   else
     OPTS=-Wall -g $(DEBUG) -L. -Wunused -fno-exceptions -lc -lm $(COMPILE_OPTIONS)
@@ -104,7 +98,7 @@ ALL_INCL = $(INCL) $(FLTK_H)
 CXXFLAGS=$(OPTS) $(ALL_INCL)
 CFLAGS = $(OPTS) $(ALL_INCL)
 
-LDLIBS = -L$(libdir) -L./ $(I18N_LIB) $(FLTK_LIBS) \
+LDLIBS = -L./ $(I18N_LIB) $(FLTK_LIBS) \
 	-L/lib \
 	$(DBG_LIBS)
 

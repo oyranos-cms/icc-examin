@@ -544,9 +544,9 @@ ICCmeasurement::init_umrechnen                     (void)
     // ein passendes Bildschirm- / Darstellungsprofil aussuchen
     if(!export_farben)
     {
+#     ifdef HAVE_OY
       size_t groesse = 0;
       const char* block = 0;
-#     ifdef HAVE_OY
       int x = 0;
       int y = 0;
 

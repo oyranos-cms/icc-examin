@@ -90,15 +90,15 @@ echo "MAKEFILE_ARCH = makefile$ARCH"  >> $CONF
 MACH_=`uname -m`
 MACH=BUILD_32
 if [ $? = 0 ]; then
-  if [ $MACH_ = "i686" ]; then
+  if [ "$MACH_" = "i686" ]; then
     echo "32-bit system           detected"
   else
-    if [ $MACH_ = "x86_64" ]; then
+    if [ "$MACH_" = "x86_64" ]; then
       MACH=BUILD_64
       echo "BUILD_64 = 1" >> $CONF
       echo "X86_64                  will build in 64 bit mode"
     else
-      if [ $MACH_ = "sun4u" ]; then
+      if [ "$MACH_" = "sun4u" ]; then
         MACH=BUILD_64
         echo "BUILD_64 = 1" >> $CONF
         echo "spark ultra 4           will build in 64 bit mode"
@@ -150,7 +150,9 @@ export FTGL=2
 export FLTK=1
 export LIBPNG=2
 #export FLU=2
-export X11=1
+if [ $OSUNAME != "Darwin" ]; then
+  export X11=1
+fi
 export XINERAMA=1
 export XF86VMODE=1
 export PO=1
@@ -230,16 +232,15 @@ if [ $OSUNAME = "Darwin" ]; then
   echo "I18N_LIBSTAT = /opt/local/lib/libintl.a \$(LIBNAME) #-liconv" >> $CONF
   echo "INCL=-I\$(includedir) -I/usr/X11R6/include -I./ -I/usr/include/gcc/darwin/default/c++" >> $CONF
   echo "LIBEXT = .dylib" >> $CONF
-  echo "LINK_FLAGS = -dynamiclib" >> $CONF
+  echo "LINK_FLAGS = -dynamiclib -L." >> $CONF
   echo "MAKEDEPEND	= /usr/X11R6/bin/makedepend -Y" >> $CONF
-  echo "MSGMERGE = msgmergeMSGMERGE = msgmerge" >> $CONF
-  echo "/Developer/Tools/Rez -t APPL mac.r -o \$@" >> $CONF
-  echo "OPTS = -Wall -g \$(DEBUG) -DPIC -L. -Wunused -fno-exceptions" >> $CONF
+  echo "MSGMERGE = msgmerge" >> $CONF
+  echo "REZ = fltk-config --post \$@" >> $CONF
+  echo "OPTS = -Wall -g \$(DEBUG) -DPIC -Wunused -fno-exceptions" >> $CONF
   echo "OSX_CPP = \$(OSX_CPPFILES)" >> $CONF
   echo "REZ = \
       fltk-config --post \$(BINTARGET);" >> $CONF
-  echo "XGETTEXT_OPTIONS = \ 
-        --keyword=gettext \
+  echo "XGETTEXT_OPTIONS = --keyword=gettext \
         --keyword=_ \
         --keyword=N_" >> $CONF
 else
@@ -247,8 +248,7 @@ else
   echo "LIBNAMEFULL = lib\$(TARGET)\$(LIBMID).\$(VERSION_A).\$(VERSION_B).\$(VERSION_C)" >> $CONF
   echo "MSGMERGE = msgmerge" >> $CONF
   echo "MSGMERG_OPTS = --update" >> $CONF
-  echo "XGETTEXT_OPTIONS = \
-        --keyword=gettext --flag=gettext:1:pass-c-format \
+  echo "XGETTEXT_OPTIONS = --keyword=gettext --flag=gettext:1:pass-c-format \
         --keyword=_ --flag=_:1:pass-c-format \
         --keyword=N_ --flag=N_:1:pass-c-format \
         --copyright-holder='Kai-Uwe Behrmann' \

@@ -280,7 +280,7 @@ oyGetProfileBlockOSX (CMProfileRef prof, char *block, size_t *size, oyAllocFunc_
     CMGetScriptProfileDescription(prof, str, &code);
     DBG_PROG_V( (int)str[0] )
 	if (prof) CMCloseProfile(prof);
-    const char *profil_name = str; ++profil_name;
+    const unsigned char *profil_name = str; ++profil_name;
     if(ref.size && ref.data)
     {
         *size = ref.size;
