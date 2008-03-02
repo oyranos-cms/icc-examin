@@ -68,60 +68,23 @@ Profilierer::RGB_TRC_Kurven (void)
   std::vector<XYZ> xyz = _measurement.getMessXYZ();
   std::vector<RGB> rgb = _measurement.getMessRGB();
 
-  std::vector<double> r,g,b;
-  std::vector<XYZ> r_xyz, g_xyz, b_xyz;
+  std::map<double,XYZ> r_map;
+  std::map<double,XYZ> g_map;
+  std::map<double,XYZ> b_map;
   // Kanaltests
   for (int i = 0; i < (int)rgb.size(); i++) {
     if (rgb[i].G == 0.0 && rgb[i].B == 0.0) {
-      r.push_back(rgb[i].R);
-      r_xyz.push_back (xyz[i]);
+      r_map[rgb[i].R] = xyz[i];
     }
     if (rgb[i].R == 0.0 && rgb[i].B == 0.0) {
-      g.push_back(rgb[i].G);
-      g_xyz.push_back (xyz[i]);
+      g_map[rgb[i].G] = xyz[i];
     }
     if (rgb[i].R == 0.0 && rgb[i].G == 0.0) {
-      b.push_back(rgb[i].B);
-      b_xyz.push_back (xyz[i]);
+      b_map[rgb[i].B] = xyz[i];
     }
-   } DBG_V( r.size() )
-  DBG_V( g.size() )
-  DBG_V( b.size() )
-
-  std::map<std::vector<double>,std::vector<XYZ> > r_map;
-
-  // Sortieren 
-  /*XYZ temp;
-  double demp, min, max;
-  int i, begin = 0, ende = r.size() - 1, pos_min = 0, pos_max = 0;
-  bool sortieren = true;
-  while (sortieren) {
-    min  = +100000; max = -100000;
-    for (i = begin; i <= ende; i++) {
-      if (r[i] < min) {min = r[i]; pos_min = i;  DBG_S(begin<<"-"<<pos_min<<"-"<<ende << " : " <<r[i]) }
-    }
-    // Tauschen
-    demp = r[begin]; DBG_V(demp)
-    temp = r_xyz[begin];
-    r[begin] = r[pos_min]; DBG_V(r[begin])
-    r_xyz[begin] = r_xyz[pos_min];
-    r[pos_min] = demp; DBG_V(r[pos_min]) 
-    r_xyz[pos_min] = temp; 
-    for (i = begin; i <= ende; i++) {
-      if (r[i] > max) {max = r[i]; pos_max = i; DBG_S(begin<<"-"<<pos_max<<"-"<<ende << " : " <<r[i]) }
-    }
-    demp = r[ende]; DBG_V(demp)
-    temp = r_xyz[ende];
-    r[ende] = r[pos_max]; DBG_V(r[ende])
-    r_xyz[ende] = r_xyz[pos_max];
-    r[pos_max] = demp; DBG_V(r[pos_max])
-    r_xyz[pos_max] = temp;
-    // Suchbereich einengen
-    begin ++; ende --;
-    // Fertig?
-    if (begin >= ende) sortieren = false;
-  }*/
-
+   } DBG_V( r_map.size() )
+  DBG_V( g_map.size() )
+  DBG_V( b_map.size() )
   
 
   icTag ic_tag;
@@ -131,26 +94,43 @@ Profilierer::RGB_TRC_Kurven (void)
 
   if (kurveTag && size)
     { free (kurveTag); size = 0; }
-  size = 8 + 4 + r.size() * 2;
+  size = 8 + 4 + r_map.size() * 2;
   kurveTag = (icCurveType*) calloc (sizeof (char), size);
 
   kurveTag->base.sig = (icTagTypeSignature)icValue( icSigCurveType );
   // Werte eintragen
-  kurveTag->curve.count = icValue( r.size() );
-  for (int i = 0; i < (int) r.size(); i++) { DBG_S (i)
-    kurveTag->curve.data[i] = icValue( (icUInt16Number)((double)r[i]*257.0+0.5) ); DBG_V ( i << " " << kurveTag->curve.data[i] << " " << r[i] )
-  }
+  kurveTag->curve.count = icValue( r_map.size() );
+  std::map<double,XYZ>::const_iterator i;
+  int zahl = 0;
+  for (i = r_map.begin(); r_map.end() != i; i++) {
+    kurveTag->curve.data[zahl] = icValue( (icUInt16Number)(i->second.Y*655.36));
+    zahl++;
+  } zahl = 0;
   // Tagbeschreibung mitgeben
   ic_tag.sig = icValue (icSigRedTRCTag);
   ic_tag.size = icValue (size);
   // Tag kreieren
-  ICCtag rTRC; DBG
-  DBG_V( &_profil )
-  DBG_V( icValue(ic_tag.size) << &ic_tag )
-  DBG_V( kurveTag )
-  rTRC.load( &_profil, &ic_tag, (char*)kurveTag );
+  ICCtag TRC;
+  DBG_V( &_profil ) DBG_V( icValue(ic_tag.size) << &ic_tag ) DBG_V( kurveTag )
+  TRC.load( &_profil, &ic_tag, (char*)kurveTag );
   // hinzufügen
-  _profil.addTag( rTRC );
+  _profil.addTag( TRC ); TRC.clear(); 
+
+  for (i = g_map.begin(); g_map.end() != i; i++) { DBG_V( i->first )
+    kurveTag->curve.data[zahl] = icValue( (icUInt16Number)(i->second.Y*655.36));
+    zahl++;
+  } zahl = 0;
+  ic_tag.sig = icValue (icSigGreenTRCTag);
+  TRC.load( &_profil, &ic_tag, (char*)kurveTag );
+  _profil.addTag( TRC ); TRC.clear();
+
+  for (i = b_map.begin(); b_map.end() != i; i++) {
+    kurveTag->curve.data[zahl] = icValue( (icUInt16Number)(i->second.Y*655.36));
+    zahl++;
+  } zahl = 0;
+  ic_tag.sig = icValue (icSigBlueTRCTag);
+  TRC.load( &_profil, &ic_tag, (char*)kurveTag );
+  _profil.addTag( TRC );
 
 }
 
