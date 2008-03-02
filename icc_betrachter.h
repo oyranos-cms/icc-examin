@@ -5,6 +5,7 @@
 #include <FL/Fl.H>
 #include "icc_examin.h"
 #include "icc_profile.h"
+#include "config.h"
 #include "icc_utils.h"
 #include "icc_ueber.h"
 #include "icc_helfer.h"

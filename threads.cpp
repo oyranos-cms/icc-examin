@@ -39,12 +39,34 @@
 // redraw them).
 
 #include "threads.h"
+#include <iostream>
 #  if HAVE_PTHREAD_H
 // Use POSIX threading...
 
 int fl_create_thread(Fl_Thread& t, void *(*f) (void *), void* p)
 {
-  return pthread_create((pthread_t*)&t, 0, f, p);
+  pthread_attr_t tattr;
+  int ret;
+
+  size_t size = 0;
+
+  /* initialized with default attributes */
+  ret = pthread_attr_init( &tattr );
+
+  /* reading the size of the stack */
+  //ret = pthread_attr_setstacksize(&tattr, size);
+  ret = pthread_attr_getstacksize( &tattr,  &size );
+
+  /* setting the size of the stack also */
+  size = size + 0x400000;
+  std::cout<<("neue Stackgröße: %d\n", 0x400000)<<std::endl;
+  ret = pthread_attr_setstacksize(&tattr, size);
+  
+
+  /* only size specified in tattr*/
+  ret = pthread_create((pthread_t*)&t, &tattr, f, p); 
+
+  return ret;
 }
 
 #  elif defined(WIN32) && !defined(__WATCOMC__) // Use Windows threading...

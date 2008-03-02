@@ -26,6 +26,7 @@
  */
 
 
+#include "config.h"
 #include "icc_utils.h"
 #include "icc_betrachter.h"
 #include "icc_draw.h"

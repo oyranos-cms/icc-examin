@@ -9,6 +9,7 @@ decl {\#include "icc_examin.h"} {public
 } 
 
 decl {\#include "icc_profile.h"
+\#include "config.h"
 \#include "icc_utils.h"
 \#include "icc_ueber.h"
 \#include "icc_helfer.h"

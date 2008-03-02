@@ -135,7 +135,9 @@ CXXFILES = \
 TEST_CPP = \
 	tests/dE2000_test.cpp \
 	tests/fltk_test.cxx \
-	tests/tiff_test.cxx
+	tests/tiff_test.cxx \
+	tests/gettext_test.cxx \
+	tests/lib_test.cxx
 TEST_H = \
 	tests/ciede2000testdata.h
 TEST_FILES = $(TEST_CPP) $(TEST_H)

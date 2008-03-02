@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2007-02-02 23:28+0100\n"
+"POT-Creation-Date: 2007-02-04 19:29+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -229,65 +229,65 @@ msgstr ""
 msgid " with one entry for gamma: "
 msgstr ""
 
-#: icc_examin.cpp:174
+#: icc_examin.cpp:175
 msgid "Gamut selector"
 msgstr ""
 
-#: icc_examin.cpp:261 icc_examin.cpp:1014
+#: icc_examin.cpp:262 icc_examin.cpp:1015
 msgid "loaded"
 msgstr ""
 
-#: icc_examin.cpp:267
+#: icc_examin.cpp:268
 msgid "Ready"
 msgstr ""
 
-#: icc_examin.cpp:316
+#: icc_examin.cpp:317
 msgid ""
 "ICC colour profiles (*.{I,i}{C,c}{M,m,C,c})\tMeasurement (*.{txt,it8,IT8,RGB,"
 "CMYK,ti*,cgats,CIE,cie,nCIE,oRPT,DLY,LAB,Q60})\tArgyll Gamuts (*.{wrl,vrml}"
 msgstr ""
 
-#: icc_examin.cpp:316
+#: icc_examin.cpp:317
 msgid "Which ICC profile?"
 msgstr ""
 
-#: icc_examin.cpp:575 icc_examin.cpp:578
+#: icc_examin.cpp:576 icc_examin.cpp:579
 msgid "Compare Measurement <-> Profile Colours"
 msgstr ""
 
-#: icc_examin.cpp:577
+#: icc_examin.cpp:578
 msgid "none"
 msgstr ""
 
-#: icc_examin.cpp:591 icc_examin.cpp:593
+#: icc_examin.cpp:592 icc_examin.cpp:594
 msgid "Gamut View"
 msgstr ""
 
-#: icc_examin.cpp:635
+#: icc_examin.cpp:636
 msgid "not available"
 msgstr ""
 
-#: icc_examin.cpp:956
+#: icc_examin.cpp:957
 msgid "Filename (ICC data type)"
 msgstr ""
 
-#: icc_examin.cpp:959
+#: icc_examin.cpp:960
 msgid "Filename (other data type)"
 msgstr ""
 
-#: icc_examin.cpp:961
+#: icc_examin.cpp:962
 msgid "Filename (corrupted ICC data type)"
 msgstr ""
 
-#: icc_examin.cpp:966
+#: icc_examin.cpp:967
 msgid "found no content for"
 msgstr ""
 
-#: icc_examin.cpp:969
+#: icc_examin.cpp:970
 msgid "Internal error"
 msgstr ""
 
-#: icc_examin.cpp:971
+#: icc_examin.cpp:972
 msgid "No. Tag   Type   Size Description"
 msgstr ""
 
@@ -1951,7 +1951,7 @@ msgstr ""
 msgid "Filename:"
 msgstr ""
 
-#: my_file_chooser.cxx:235
+#: my_file_chooser.cxx:235 tests/gettext_test.cxx:5
 msgid "OK"
 msgstr ""
 
