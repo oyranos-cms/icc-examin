@@ -182,6 +182,9 @@ class Speicher
                               DBG_MEM_ENDE
                               return *groesse_;
                             }
+    time_t      zeit     () const {
+                              return *letze_aen_zeit_;
+                            }
 
     operator const Speicher & () const {
                               DBG_MEM_START

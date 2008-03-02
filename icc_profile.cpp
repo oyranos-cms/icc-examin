@@ -49,17 +49,46 @@
 
 ICCprofile::ICCprofile (void)
 { DBG_PROG_START
-  _data = NULL;
-  _size = 0;
+  data_ = NULL;
+  size_ = 0;
   DBG_PROG_ENDE
+}
+
+ICCprofile &
+ICCprofile::copy_ ( const ICCprofile & p )
+{ DBG_PROG_START
+  data_ = (char*) calloc (sizeof(char), p.size_);
+  size_ = p.size_;
+  memcpy(data_, p.data_, size_);
+  _filename = p._filename;
+  changing_ = p.changing_;
+  measurement = p.measurement;
+  tags = p.tags;
+  header = p.header;
+  DBG_PROG_ENDE
+  return *this;
+}
+
+ICCprofile::ICCprofile ( const ICCprofile & p )
+{ DBG_PROG_START
+  copy_(p);
+  DBG_PROG_ENDE
+}
+
+ICCprofile &
+ICCprofile::operator=  ( const ICCprofile & p )
+{ DBG_PROG_START
+  copy_(p);
+  DBG_PROG_ENDE
+  return *this;
 }
 
 ICCprofile::ICCprofile (const char *filename)
   : _filename (filename)
 { DBG_PROG_START
-  if (_data && _size) free(_data);//delete [] _data;
-  _data = NULL;
-  _size = 0;
+  if (data_ && size_) free(data_);//delete [] data_;
+  data_ = NULL;
+  size_ = 0;
 
   // delegieren
   _filename = filename;
@@ -82,9 +111,9 @@ ICCprofile::clear (void)
 { DBG_PROG_START
   DBG_PROG_S( "Profil wird geleert" )
 
-  if (_data && _size) free(_data);
-  _data = NULL;
-  _size = 0;
+  if (data_ && size_) free(data_);
+  data_ = NULL;
+  size_ = 0;
 
   _filename = "";
   header.load(NULL);
@@ -92,7 +121,7 @@ ICCprofile::clear (void)
   tags.clear();
   measurement.clear();
 
-  DBG_NUM_S( "_data, tags und measurement gelöscht" )
+  DBG_NUM_S( "data_, tags und measurement gelöscht" )
   DBG_PROG_ENDE
 }
 
@@ -121,7 +150,7 @@ ICCprofile::fload ()
   changing_ = true;
 
   try {
-    _data = ladeDatei (file, &_size);
+    data_ = ladeDatei (file, &size_);
     DBG_MEM
   }
     catch (Ausnahme & a) {	// fängt alles von Ausnahme Abstammende
@@ -138,13 +167,13 @@ ICCprofile::fload ()
         _filename = "";
     }
 
-  DBG_MEM_V( (int*)_data <<" "<< _size )
+  DBG_MEM_V( (int*)data_ <<" "<< size_ )
 
-  if (_data && _size) {
+  if (data_ && size_) {
     WARN_S( _("!!!! Profil wird wiederbenutzt !!!! ") )
     clear();
     // zweites mal Laden nach clear() ; könnte optimiert werden
-    _data = ladeDatei (file, &_size);
+    data_ = ladeDatei (file, &size_);
     _filename = file;
   } else {
     DBG_PROG_ENDE
@@ -152,16 +181,16 @@ ICCprofile::fload ()
   }
 
   // Test   > 132 byte
-  if (_size < 132) {
-    WARN_S( _("Kein Profil")<<_(" Größe ")<<_size )
-    measurement.load( this, _data, _size );
+  if (size_ < 132) {
+    WARN_S( _("Kein Profil")<<_(" Größe ")<<size_ )
+    measurement.load( this, data_, size_ );
     DBG_PROG_ENDE
     return;
   }
 
   DBG_PROG
   //Kopf
-  header.load ((void*)_data); DBG_PROG
+  header.load ((void*)data_); DBG_PROG
 
   // Test acsp
   char magic[5];
@@ -172,7 +201,7 @@ ICCprofile::fload ()
     header.clear();
 
     // "targ"  Messdaten als Block hinzufügen
-    int groesse = 8 + _size + 1;
+    int groesse = 8 + size_ + 1;
     char* tag_block = (char*) calloc (sizeof (char), groesse);
     icTag ic_tag;
     ICCtag tag;
@@ -188,7 +217,7 @@ ICCprofile::fload ()
       ic_tag.sig = icValue (icSigCharTargetTag);
 
     memcpy (&tag_block[0], "text", 4); DBG_S( tag_block )
-    memcpy (&tag_block[8], _data, _size);
+    memcpy (&tag_block[8], data_, size_);
 
     tag.load( this, &ic_tag, tag_block );
     addTag( tag );
@@ -202,15 +231,15 @@ ICCprofile::fload ()
    
   //Profilabschnitte
   // TagTabelle bei 132 abholen
-  icTag *tagList = (icTag*)&((char*)_data)[132];
+  icTag *tagList = (icTag*)&((char*)data_)[132];
   //(icTag*) new char ( getTagCount() * sizeof (icTag));
-  //memcpy (tagList , &((char*)_data)[132], sizeof (icTag) * getTagCount());
+  //memcpy (tagList , &((char*)data_)[132], sizeof (icTag) * getTagCount());
   DBG_PROG
   tags.resize(getTagCount()); DBG_PROG
   for (int i = 0 ; i < getTagCount() ; i++)
   { DBG_PROG
     tags[i].load( this, &tagList[i] ,
-              &((char*)_data)[ icValue(tagList[i].offset) ]); DBG_PROG
+              &((char*)data_)[ icValue(tagList[i].offset) ]); DBG_PROG
     #ifdef DEBUG_ICCPROFILE
     cout << " sig: " << tags[i].getTagName() << " " << i << " "; DBG_PROG
     #endif
@@ -239,6 +268,123 @@ ICCprofile::fload ()
   changing_ = false;
   DBG_PROG_ENDE
 }
+
+void
+ICCprofile::load (const Speicher & prof)
+{
+  DBG_PROG_START // ICC Profil laden
+  std::string file = prof.name();
+  changing_ = true;
+
+  size_ = prof.size();
+  data_ = (char*)calloc (sizeof (char), size_+1);
+  const char* z = prof;
+  memcpy(data_, z, size_);
+  DBG_MEM
+
+  DBG_MEM_V( (int*)data_ <<" "<< size_ )
+
+  if (data_ && size_) {
+    WARN_S( _("!!!! Profil wird wiederbenutzt !!!! ") )
+    clear();
+    // zweites mal Laden nach clear() ; könnte optimiert werden
+    data_ = (char*)calloc (sizeof (char), size_+1);
+    memcpy(data_, z, size_);
+    _filename = file;
+  } else {
+    DBG_PROG_ENDE
+    return;
+  }
+
+  // Test   > 132 byte
+  if (size_ < 132) {
+    WARN_S( _("Kein Profil")<<_(" Größe ")<<size_ )
+    measurement.load( this, data_, size_ );
+    DBG_PROG_ENDE
+    return;
+  }
+
+  DBG_PROG
+  //Kopf
+  header.load ((void*)data_); DBG_PROG
+
+  // Test acsp
+  char magic[5];
+  memcpy( magic, header.magicName(), 4); magic[4] = 0;
+  if (strstr(magic, "acsp") == 0)
+  {
+    WARN_S( _("Kein Profil") )
+    header.clear();
+
+    // "targ"  Messdaten als Block hinzufügen
+    int groesse = 8 + size_ + 1;
+    char* tag_block = (char*) calloc (sizeof (char), groesse);
+    icTag ic_tag;
+    ICCtag tag;
+
+    ic_tag.size = icValue ((icUInt32Number)groesse); DBG_V( groesse )
+    ic_tag.offset = 0;
+
+    if( _filename.size() &&
+        (_filename.find( "wrl",  _filename.find_last_of(".") )
+         != std::string::npos) )
+      memcpy (&ic_tag.sig, "vrml", 4);
+    else
+      ic_tag.sig = icValue (icSigCharTargetTag);
+
+    memcpy (&tag_block[0], "text", 4); DBG_S( tag_block )
+    memcpy (&tag_block[8], data_, size_);
+
+    tag.load( this, &ic_tag, tag_block );
+    addTag( tag );
+
+    free (tag_block);
+
+    measurement.load( this, tag );
+    DBG_PROG_ENDE
+    return;
+  }
+   
+  //Profilabschnitte
+  // TagTabelle bei 132 abholen
+  icTag *tagList = (icTag*)&((char*)data_)[132];
+  //(icTag*) new char ( getTagCount() * sizeof (icTag));
+  //memcpy (tagList , &((char*)data_)[132], sizeof (icTag) * getTagCount());
+  DBG_PROG
+  tags.resize(getTagCount()); DBG_PROG
+  for (int i = 0 ; i < getTagCount() ; i++)
+  { DBG_PROG
+    tags[i].load( this, &tagList[i] ,
+              &((char*)data_)[ icValue(tagList[i].offset) ]); DBG_PROG
+    #ifdef DEBUG_ICCPROFILE
+    cout << " sig: " << tags[i].getTagName() << " " << i << " "; DBG_PROG
+    #endif
+
+    DBG_PROG
+    // bekannte Tags mit Messdaten
+    if (tags[i].getTagName() == "targ"
+     || tags[i].getTagName() == "DevD"
+     || tags[i].getTagName() == "CIED") {
+      DBG_PROG
+      #ifdef DEBUG_ICCPROFILE
+      DBG_S( "Messdaten gefunden " << tags[i].getTagName() )
+      #endif
+      measurement.load( this, tags[i] );
+      DBG_PROG
+    }
+    DBG_PROG
+  }
+  DBG_PROG
+  #ifdef DEBUG_ICCPROFILE
+  DBG_S( "TagCount: " << getTagCount() << " / " << tags.size() )
+  #endif
+ 
+  DBG_NUM_V( _filename )
+
+  changing_ = false;
+  DBG_PROG_ENDE
+}
+
 
 const char*
 ICCprofile::filename ()
@@ -289,7 +435,7 @@ int
 ICCprofile::getTagCount     ()
 {
   DBG_PROG
-  return icValue(((icProfile*)_data)-> count);
+  return icValue(((icProfile*)data_)-> count);
 }
 
 int
@@ -607,16 +753,16 @@ ICCprofile::getWhitePkt           (void)
 void
 ICCprofile::saveProfileToFile  (char* filename)
 { DBG_PROG_START
-  if (_data && _size) free(_data);//delete []_data;
-  _size = sizeof (icHeader) + sizeof (icUInt32Number); DBG_MEM_V(_size <<" "<<sizeof (icProfile))
-  _data = (char*)calloc (sizeof (char) , _size); //new char (sizeof(icHeader) );
+  if (data_ && size_) free(data_);//delete []data_;
+  size_ = sizeof (icHeader) + sizeof (icUInt32Number); DBG_MEM_V(size_ <<" "<<sizeof (icProfile))
+  data_ = (char*)calloc (sizeof (char) , size_); //new char (sizeof(icHeader) );
   writeTagTable ();
   writeTags ();
-  header.size(_size); DBG_V (_size )
+  header.size(size_); DBG_V (size_ )
   writeHeader ();
 
   std::ofstream f ( filename,  std::ios::out );
-  f.write ( (char*)_data, _size );
+  f.write ( (char*)data_, size_ );
   f.close();
   DBG_PROG_ENDE
 }
@@ -624,35 +770,35 @@ ICCprofile::saveProfileToFile  (char* filename)
 int
 ICCprofile::getProfileSize  ()
 { DBG_PROG_START
-  if (_data && _size) free(_data);//delete []_data;
-  _size = sizeof (icHeader) + sizeof (icUInt32Number); DBG_V(_size <<" "<<sizeof (icProfile))
-  _data = (char*)calloc (sizeof (char) , _size); //new char (sizeof(icHeader) );
+  if (data_ && size_) free(data_);//delete []data_;
+  size_ = sizeof (icHeader) + sizeof (icUInt32Number); DBG_V(size_ <<" "<<sizeof (icProfile))
+  data_ = (char*)calloc (sizeof (char) , size_); //new char (sizeof(icHeader) );
   writeTagTable ();
   writeTags ();
-  header.size(_size); DBG_V (_size )
+  header.size(size_); DBG_V (size_ )
   writeHeader ();
 
-  DBG_MEM_V( _size )
+  DBG_MEM_V( size_ )
   DBG_PROG_ENDE
-  return _size;
+  return size_;
 }
 
 char*
 ICCprofile::saveProfileToMem  (int *size)
 { DBG_PROG_START
-  if (_data && _size) free(_data);//delete []_data;
-  _size = sizeof (icHeader) + sizeof (icUInt32Number); DBG_V(_size <<" "<<sizeof (icProfile))
-  _data = (char*)calloc (sizeof (char) , _size); //new char (sizeof(icHeader) );
+  if (data_ && size_) free(data_);//delete []data_;
+  size_ = sizeof (icHeader) + sizeof (icUInt32Number); DBG_V(size_ <<" "<<sizeof (icProfile))
+  data_ = (char*)calloc (sizeof (char) , size_); //new char (sizeof(icHeader) );
   writeTagTable ();
   writeTags ();
-  header.size(_size); DBG_V (_size )
+  header.size(size_); DBG_V (size_ )
   writeHeader ();
 
-  char *block = (char*)calloc (sizeof (char) , _size);
-  memcpy (block, _data, _size);
+  char *block = (char*)calloc (sizeof (char) , size_);
+  memcpy (block, data_, size_);
   if(size)
-    *size = _size;
-  DBG_MEM_V( _size )
+    *size = size_;
+  DBG_MEM_V( size_ )
   DBG_PROG_ENDE
   return block;
 }
@@ -665,45 +811,45 @@ ICCprofile::writeTags (void)
     DBG_NUM_S ( i << ": " << tags[i].getTypName() )
     int size;
     const char* data = tags[i].write(&size);
-    icTagList* list = (icTagList*)&((char*)_data)[128];
+    icTagList* list = (icTagList*)&((char*)data_)[128];
     
     list->tags[i].sig = icValue((icTagSignature)tags[i].getSignature());
-    list->tags[i].offset = icValue((icUInt32Number)_size); DBG_MEM_V (icValue(list->tags[i].offset))
-    list->tags[i].size = icValue((icUInt32Number)size); DBG_MEM_V(_size)
-    char* temp = (char*) calloc (sizeof(char), _size + size + 
+    list->tags[i].offset = icValue((icUInt32Number)size_); DBG_MEM_V (icValue(list->tags[i].offset))
+    list->tags[i].size = icValue((icUInt32Number)size); DBG_MEM_V(size_)
+    char* temp = (char*) calloc (sizeof(char), size_ + size + 
                                                (size%4 ? 4 - size%4 : 0));
-    memcpy (temp, _data, _size); DBG_MEM_V( _size<<" "<< size<<" "<<size%4 )
-    memcpy (&temp[_size], data, size);
-    _size = _size + size + (size%4 ? 4 - size%4 : 0);
-    free(_data);//delete [] _data;
-    _data = temp;
+    memcpy (temp, data_, size_); DBG_MEM_V( size_<<" "<< size<<" "<<size%4 )
+    memcpy (&temp[size_], data, size);
+    size_ = size_ + size + (size%4 ? 4 - size%4 : 0);
+    free(data_);//delete [] data_;
+    data_ = temp;
     list = (icTagList*)&temp[128];
     DBG_MEM_V (icValue(list->tags[i].offset))
     DBG_MEM_V (icValue(list->tags[i].sig))
-    DBG_MEM_V (icValue(list->tags[i].size) << " " << (int)&_data[0])
+    DBG_MEM_V (icValue(list->tags[i].size) << " " << (int)&data_[0])
   }
-  DBG_MEM_V( _size )
+  DBG_MEM_V( size_ )
   DBG_PROG_ENDE
 }
 
 void
 ICCprofile::writeTagTable (void)
 { DBG_PROG_START
-  icProfile* p = (icProfile*) _data;
+  icProfile* p = (icProfile*) data_;
   p->count = icValue((icUInt32Number)tags.size());
   int size = sizeof (icTag) * tags.size();
-  char* data = (char*) calloc (sizeof(char), size + _size);
-  memcpy (data, _data, _size);
-  _size = _size + size;
-  free(_data);//delete [] _data;
-  _data = data;
+  char* data = (char*) calloc (sizeof(char), size + size_);
+  memcpy (data, data_, size_);
+  size_ = size_ + size;
+  free(data_);//delete [] data_;
+  data_ = data;
   DBG_PROG_ENDE
 }
 
 void
 ICCprofile::writeHeader (void)
 { DBG_PROG_START
-  memcpy (_data, header.header_raw(), 128);
+  memcpy (data_, header.header_raw(), 128);
   DBG_PROG_ENDE
 }
 

@@ -35,6 +35,7 @@
 #include "icc_profile.h"
 #include "icc_utils.h"
 #include "icc_modell_beobachter.h"
+#include "icc_speicher.h"
 
 class ICCkette;
 extern ICCkette profile;
@@ -44,7 +45,8 @@ class ICCkette : public icc_examin_ns::Modell
   public:
                  ICCkette  ();
                  ~ICCkette () {; }
-    void         clear()      {profile_.resize(0); profilnamen_.resize(0); }
+    void         clear()      {profile_.clear(); profilnamen_.clear();
+                               aktiv_.clear(); profil_mzeit_.clear(); }
   private:
     int                      aktuelles_profil_;
     // Liste der geladenen Profile
@@ -60,6 +62,7 @@ class ICCkette : public icc_examin_ns::Modell
     bool         oeffnen   (std::vector<std::string> dateinamen);
     //void         oeffnen   ();	// interaktiv
     bool         oeffnen   (std::string dateiname, int pos);
+    bool         oeffnen   (const Speicher & profil, int pos);
     void         setzAktiv (int pos);
     void         passiv    (int pos);
     std::vector<int> aktiv () { return aktiv_; }

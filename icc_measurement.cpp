@@ -67,14 +67,14 @@ void
 ICCmeasurement::copy (const ICCmeasurement& m)
 {
   _sig = m._sig; DBG_PROG_START
-  _size = m._size;
-  if (_size && m._data) {
-    _data = (char*)calloc(sizeof(char),_size);
-    memcpy (_data , m._data , _size);
-    DBG_MEM_S((int*)m._data << " -> " << (int*)_data)
+  size_ = m.size_;
+  if (size_ && m.data_) {
+    data_ = (char*)calloc(sizeof(char),size_);
+    memcpy (data_ , m.data_ , size_);
+    DBG_MEM_S((int*)m.data_ << " -> " << (int*)data_)
   } else {
-    _data = NULL;
-    _size = 0;
+    data_ = NULL;
+    size_ = 0;
   }
 
   _nFelder = m._nFelder;
@@ -113,8 +113,8 @@ ICCmeasurement::defaults ()
 {
   DBG_PROG
   _sig = icMaxEnumTag;
-  _size = 0;
-  _data = NULL;
+  size_ = 0;
+  data_ = NULL;
 
   _nFelder = 0;
 
@@ -143,7 +143,7 @@ void
 ICCmeasurement::clear (void)
 {
   DBG_PROG
-  if (_data != NULL) free(_data);
+  if (data_ != NULL) free(data_);
   defaults();
   _XYZ_Satz.clear();
   _Lab_Satz.clear();
@@ -186,12 +186,12 @@ ICCmeasurement::load                ( ICCprofile *profil,
   _profil = profil;
 
   _sig    = tag._sig;
-  _size   = tag._size - 8;
-  DBG_PROG_V( _size )
+  size_   = tag.size_ - 8;
+  DBG_PROG_V( size_ )
   // einfach austauschen
-  if (_data != NULL) free (_data); 
-  _data = (char*) calloc ( _size , sizeof (char) );
-  memcpy ( _data , &(tag._data)[8] , _size );
+  if (data_ != NULL) free (data_); 
+  data_ = (char*) calloc ( size_ , sizeof (char) );
+  memcpy ( data_ , &(tag.data_)[8] , size_ );
 
   DBG_PROG_ENDE
 }
@@ -206,11 +206,11 @@ ICCmeasurement::load                ( ICCprofile *profil,
   if (_sig != icMaxEnumTag)
     _sig = icSigCharTargetTag;
 
-  _size   = size;
+  size_   = size;
   // einfach austauschen
-  if (!_data) free (_data);
-  _data = (char*) calloc ( _size , sizeof (char) );
-  memcpy ( _data , data , _size );
+  if (!data_) free (data_);
+  data_ = (char*) calloc ( size_ , sizeof (char) );
+  memcpy ( data_ , data , size_ );
 
   DBG_PROG_ENDE
 }
@@ -219,14 +219,14 @@ void
 ICCmeasurement::leseTag (void)
 { DBG_PROG_START
   CgatsFilter cgats;
-  cgats.lade( _data, _size );
-  std::string data = cgats.lcms_gefiltert (); DBG_NUM_V( (int*)_data )
+  cgats.lade( data_, size_ );
+  std::string data = cgats.lcms_gefiltert (); DBG_NUM_V( (int*)data_ )
 
-  // korrigierte CGATS Daten -> _data
-  if (_data != NULL) free (_data);
-  _data = (char*) calloc (sizeof(char), data.size());
-  _size = data.size();
-  memcpy (_data, data.c_str(), _size); DBG_NUM_V( (int*)_data )
+  // korrigierte CGATS Daten -> data_
+  if (data_ != NULL) free (data_);
+  data_ = (char*) calloc (sizeof(char), data.size());
+  size_ = data.size();
+  memcpy (data_, data.c_str(), size_); DBG_NUM_V( (int*)data_ )
 
   // lcms liest ein
   lcms_parse();
@@ -235,7 +235,7 @@ ICCmeasurement::leseTag (void)
 
 void
 ICCmeasurement::init (void)
-{ DBG_PROG_START DBG_MEM_V( (int*)_data )
+{ DBG_PROG_START DBG_MEM_V( (int*)data_ )
   if (valid())
     return;
 
@@ -266,7 +266,7 @@ ICCmeasurement::init (void)
 void
 ICCmeasurement::lcms_parse                   (void)
 { DBG_PROG_START
-  LCMSHANDLE _lcms_it8 = cmsIT8LoadFromMem ( _data, _size ); DBG_MEM_V( (int*)_data)
+  LCMSHANDLE _lcms_it8 = cmsIT8LoadFromMem ( data_, size_ ); DBG_MEM_V( (int*)data_)
 
   char **SampleNames; DBG_MEM
 
@@ -534,8 +534,8 @@ ICCmeasurement::init_umrechnen                     (void)
          _CMYK_measurement))
     {
       if( _profil->size() )
-        hCOLOUR = cmsOpenProfileFromMem (const_cast<char*>(_profil->_data),
-                                         _profil->_size);
+        hCOLOUR = cmsOpenProfileFromMem (const_cast<char*>(_profil->data_),
+                                         _profil->size_);
       else { // Alternative
         size_t groesse = 0;
         const char* block = 0;
@@ -974,7 +974,7 @@ ICCmeasurement::getCGATS              (void)
   std::string text =  "";
 
   if(has_data())
-    text = cgats_korrigieren(_data,_size);
+    text = cgats_korrigieren(data_,size_);
   else
     text = "";
 
@@ -988,7 +988,7 @@ ICCmeasurement::getMaxCGATS           (void)
   std::string text =  "";
 
   if(has_data())
-    text = cgats_max_korrigieren(_data,_size);
+    text = cgats_max_korrigieren(data_,size_);
   else
     text = "";
 

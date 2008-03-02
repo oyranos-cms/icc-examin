@@ -75,15 +75,15 @@ void
 ICCtag::copy                        ( const ICCtag& tag)
 {
   _sig = tag._sig;
-  _size = tag._size;
-  DBG_PROG_S("ICCtag::ICCtag <- Kopie _size: " << _size )
-  if (_size && tag._data) {
-    _data = (char*)calloc(sizeof(char),_size);
-    memcpy (_data , tag._data , _size);
-    DBG_MEM_S((int*)tag._data << " -> " << (int*)_data)
+  size_ = tag.size_;
+  DBG_PROG_S("ICCtag::ICCtag <- Kopie size_: " << size_ )
+  if (size_ && tag.data_) {
+    data_ = (char*)calloc(sizeof(char),size_);
+    memcpy (data_ , tag.data_ , size_);
+    DBG_MEM_S((int*)tag.data_ << " -> " << (int*)data_)
   } else {
-    _data = NULL;
-    _size = 0;
+    data_ = NULL;
+    size_ = 0;
   }
 
   _intent = tag._intent;
@@ -98,22 +98,22 @@ ICCtag::defaults ()
 {
   DBG_PROG
   _sig = icMaxEnumTag;
-  _size = 0;
-  _data = NULL;
+  size_ = 0;
+  data_ = NULL;
   _intent = 0;
   _color_in = icMaxEnumData;
   _color_out = icMaxEnumData;
   _profil = NULL;
-  if (_size) DBG_MEM_V ((int*)_data) ;
+  if (size_) DBG_MEM_V ((int*)data_) ;
 }
 
 void
 ICCtag::clear              ()
 {
   DBG_PROG
-  if (_data && _size) {
-    DBG_MEM_S("lösche: "<<(int*)_data)
-    free (_data);
+  if (data_ && size_) {
+    DBG_MEM_S("lösche: "<<(int*)data_)
+    free (data_);
   }
   defaults();
 }
@@ -179,23 +179,23 @@ ICCtag::load                        ( ICCprofile *profil,
 
   DBG_PROG
 
-  if (_data != NULL && _size) { DBG_MEM
+  if (data_ != NULL && size_) { DBG_MEM
     DBG_MEM_S( "ICCtag wiederverwendet: " << (char*)tag->sig << " " )
     DBG_MEM
-    free(_data); DBG_MEM // delete [] _data;
+    free(data_); DBG_MEM // delete [] data_;
     DBG_MEM_S( "ICCtag wiederverwendet: " << (char*)tag->sig << " " )
   } DBG_PROG
-  _size   = icValue(tag->size); DBG_MEM_V( _size )
+  size_   = icValue(tag->size); DBG_MEM_V( size_ )
 
-  _data = (char*) calloc(sizeof(char),_size); // new char (_size);
-  memcpy ( _data , data , _size );
-  DBG_MEM_V((int*)_data)
+  data_ = (char*) calloc(sizeof(char),size_); // new char (size_);
+  memcpy ( data_ , data , size_ );
+  DBG_MEM_V((int*)data_)
 
   #ifdef DEBUG_ICCTAG_
-  char* text = _data;
+  char* text = data_;
   if (icc_debug)
   {
-    cout << _sig << "=" << tag->sig << " offset " << icValue(tag->offset) << " size " << _size << " nächster tag " << _size + icValue(tag->offset) << " " << text << " "; DBG_PROG
+    cout << _sig << "=" << tag->sig << " offset " << icValue(tag->offset) << " size " << size_ << " nächster tag " << size_ + icValue(tag->offset) << " " << text << " "; DBG_PROG
   }
   #endif
   DBG_PROG_ENDE
@@ -210,26 +210,26 @@ ICCtag::getText                     (void)
 
   if (text == "sig") {
 
-    if (_size < 12) { DBG_PROG_ENDE return texte; }
+    if (size_ < 12) { DBG_PROG_ENDE return texte; }
     icTechnologySignature tech;
-    memcpy (&tech, &_data[8] , 4);
+    memcpy (&tech, &data_[8] , 4);
     text = getSigTechnology( (icTechnologySignature) icValue(tech) );
     texte.push_back( text );
 
   } else if (text == "dtim") {
 
-    if (_size < 20) { DBG_PROG_ENDE return texte; }
+    if (size_ < 20) { DBG_PROG_ENDE return texte; }
     DBG_PROG
     icDateTimeNumber date;
-    memcpy (&date, &_data[8] , 12);
+    memcpy (&date, &data_[8] , 12);
     texte.push_back( printDatum(date) );
 
   } else if (text == "meas") {
 
-    if (_size < 36) { DBG_PROG_ENDE return texte; }
+    if (size_ < 36) { DBG_PROG_ENDE return texte; }
     std::stringstream s;
     icMeasurement meas;
-    memcpy (&meas, &_data[8] , 28);
+    memcpy (&meas, &data_[8] , 28);
     s << _("Standard Betrachter") << ": " <<
     getStandardObserver( (icStandardObserver)icValue( meas.stdObserver) ) <<endl
       << _("Rückseite") << ": X = " << icSFValue(meas.backing.X)
@@ -245,7 +245,7 @@ ICCtag::getText                     (void)
 
   } else if (text == "mft2") {
 
-    icLut16* lut16 = (icLut16*) &_data[8];
+    icLut16* lut16 = (icLut16*) &data_[8];
     int inputChan, outputChan, clutPoints, inputEnt, outputEnt;
 
     inputChan = (int)lut16->inputChan;
@@ -266,7 +266,7 @@ ICCtag::getText                     (void)
 
   } else if (text == "mft1") {
 
-    icLut8* lut8 = (icLut8*) &_data[8];
+    icLut8* lut8 = (icLut8*) &data_[8];
     int inputChan, outputChan, clutPoints;//, inputEnt, outputEnt;
     inputChan = (int)lut8->inputChan;
     outputChan = (int)lut8->outputChan;
@@ -281,9 +281,9 @@ ICCtag::getText                     (void)
          _("3D Farbtabelle mit") << " " <<  (int)clutPoints << " " << _("Punkten Seitenlänge") << endl;
     texte.push_back( s.str() );
 
-  } else if (((icTagBase*)&_data[0])->sig == (icTagTypeSignature)icValue( icSigChromaticityType )) {
+  } else if (((icTagBase*)&data_[0])->sig == (icTagTypeSignature)icValue( icSigChromaticityType )) {
 
-    int count = icValue(*(icUInt16Number*)&_data[8]);
+    int count = icValue(*(icUInt16Number*)&data_[8]);
     if (count == 0)
       count = 3;
     #ifdef DEBUG_ICCTAG
@@ -304,8 +304,8 @@ ICCtag::getText                     (void)
 
     text = ""; DBG_PROG
   #if 1
-    char* txt = (char*)calloc (_size-8, sizeof(char));
-    memcpy (txt, &_data[8], _size - 8);
+    char* txt = (char*)calloc (size_-8, sizeof(char));
+    memcpy (txt, &data_[8], size_ - 8);
     char* pos = 0;
     #ifdef DEBUG_ICCTAG
     DBG_NUM_S ((int)strchr(txt, 13))
@@ -326,7 +326,7 @@ ICCtag::getText                     (void)
     text = txt;
     free (txt);
   #else
-    text.append (&_data[8], _size - 8);
+    text.append (&data_[8], size_ - 8);
     int pos = 0;
     #ifdef DEBUG_ICCTAG
     DEB_S( (int)text.find('\r') )
@@ -346,8 +346,8 @@ ICCtag::getText                     (void)
 
   } else if ( text == "mluc" ) {
 
-    int anzahl = icValue( *(icUInt32Number*)&_data[8] );
-    int groesse = icValue( *(icUInt32Number*)&_data[12] ); // 12
+    int anzahl = icValue( *(icUInt32Number*)&data_[8] );
+    int groesse = icValue( *(icUInt32Number*)&data_[12] ); // 12
     char a = 'd';
     char b = 'e';
     const char *locale = getenv("LANG");
@@ -359,26 +359,26 @@ ICCtag::getText                     (void)
 
     for (int i = 0; i < anzahl; i++)
     {
-      if (_data[16+ i*groesse] == a && _data[17+ i*groesse] == b)
+      if (data_[16+ i*groesse] == a && data_[17+ i*groesse] == b)
       {
-        int g =        icValue(*(icUInt32Number*)&_data[20+ i*groesse]),
-            dversatz = icValue(*(icUInt32Number*)&_data[24+ i*groesse]);
+        int g =        icValue(*(icUInt32Number*)&data_[20+ i*groesse]),
+            dversatz = icValue(*(icUInt32Number*)&data_[24+ i*groesse]);
         char *t = (char*) new char [g];
         int n;
         for (n = 1; n < g ; n = n+2)
-          t[n/2] = _data[dversatz + n];
+          t[n/2] = data_[dversatz + n];
         t[n/2] = 0;
         texte.push_back( t );
         delete [] t; DBG_PROG_V( g <<" "<< dversatz )
       }
     }
     if (!texte.size()) // erster Eintrag
-    { int g =        icValue(*(icUInt32Number*)&_data[20]),
-          dversatz = icValue(*(icUInt32Number*)&_data[24]);
+    { int g =        icValue(*(icUInt32Number*)&data_[20]),
+          dversatz = icValue(*(icUInt32Number*)&data_[24]);
       char *t = (char*) new char [g];
       int n;
       for (n = 1; n < g ; n = n+2)
-        t[n/2] = _data[dversatz + n];
+        t[n/2] = data_[dversatz + n];
       t[n/2] = 0;
       texte.push_back( t );
       delete [] t; DBG_PROG_V( g <<" "<< dversatz )
@@ -396,8 +396,8 @@ ICCtag::getText                     (void)
     texte .resize(1);
     texte[0].append ("\n\n  ",4);
     char t[16];
-    for (int i = 0; i < _size-8; i = i + 4)
-    { sprintf (t, "%f ", icSFValue (*(icS15Fixed16Number*)(&_data[8+i]) ) );
+    for (int i = 0; i < size_-8; i = i + 4)
+    { sprintf (t, "%f ", icSFValue (*(icS15Fixed16Number*)(&data_[8+i]) ) );
       if (t[0] != '-')
         texte[0].append (" ", 1);
       texte[0].append (t, strlen(t));
@@ -409,7 +409,7 @@ ICCtag::getText                     (void)
 
   } else if ( text == "ncl2" ) {
 
-    Ncl2 *ncl2 = (Ncl2*) &_data[8];
+    Ncl2 *ncl2 = (Ncl2*) &data_[8];
     std::stringstream s;
 
     texte .resize(1);
@@ -449,17 +449,17 @@ ICCtag::getText                     (void)
     texte .resize(1);
     texte[0].append ("\n\n",2);
 
-    for (int i = 0; i < _size-8; i = i + 4)
+    for (int i = 0; i < size_-8; i = i + 4)
     { texte[0].append (" ", 1);
-      text = zeig_bits_bin(&_data[8+i], MIN(4,_size-8-i));
+      text = zeig_bits_bin(&data_[8+i], MIN(4,size_-8-i));
       texte[0].append (text.data(), text.size());
-      for (int k = 0; k <  MIN(4,_size-8-i); k++)
-        if (isprint(_data[8+i+k]))
-          text[k] = _data[8+i+k];
+      for (int k = 0; k <  MIN(4,size_-8-i); k++)
+        if (isprint(data_[8+i+k]))
+          text[k] = data_[8+i+k];
         else
           text[k] = '.';
-      //text[MIN(4,_size-8-i)] = 0;
-      texte[0].append (text.data(), MIN(4,_size-8-i));//text.size());
+      //text[MIN(4,size_-8-i)] = 0;
+      texte[0].append (text.data(), MIN(4,size_-8-i));//text.size());
       texte[0].append ("\n", 1);
     }
     DBG_PROG
@@ -480,12 +480,12 @@ ICCtag::getDescription              (void)
 { DBG_PROG_START
   std::vector<std::string> texte;
   std::string text =  "";
-  icUInt32Number count = *(icUInt32Number*)(_data+8);
+  icUInt32Number count = *(icUInt32Number*)(data_+8);
 
-  text.append ((const char*)(_data+12), icValue(count));
+  text.append ((const char*)(data_+12), icValue(count));
   texte.push_back (text);
   #ifdef DEBUG_ICCTAG
-  DBG_NUM_S ( &_data[12] << "|" << "|" << text )
+  DBG_NUM_S ( &data_[12] << "|" << "|" << text )
   #endif
   DBG_PROG_ENDE
   return texte;
@@ -495,10 +495,10 @@ std::vector<double>
 ICCtag::getCIEXYZ                                 (void)
 { DBG_PROG_START
   std::vector<double> punkte;
-  icTagBase *base  = (icTagBase*)(&_data[0]);
+  icTagBase *base  = (icTagBase*)(&data_[0]);
 
   if ((base->sig) == (icTagTypeSignature)icValue( icSigChromaticityType )) {
-    int count = icValue(*(icUInt16Number*)&_data[8]);
+    int count = icValue(*(icUInt16Number*)&data_[8]);
     if (count == 0)
       count = 3;
     #ifdef DEBUG_ICCTAG
@@ -506,7 +506,7 @@ ICCtag::getCIEXYZ                                 (void)
     #endif
     for (int i = 0; i < count ; i++) { // Table 35 -- chromaticityType encoding
       // TODO lcms braucht einen 16 Byte Offset (statt 12 Byte)
-      icU16Fixed16Number* channel = (icU16Fixed16Number*)&_data[12+(4*i)];
+      icU16Fixed16Number* channel = (icU16Fixed16Number*)&data_[12+(4*i)];
       double xyz[3] = { icUFValue( channel[0] ),
                         icUFValue( channel[1] ),
                         1.0 - (icUFValue(channel[0]) + icUFValue(channel[1])) };
@@ -518,7 +518,7 @@ ICCtag::getCIEXYZ                                 (void)
       #endif
     }
   } else if (base->sig == (icTagTypeSignature)icValue( icSigXYZType )) {
-    icXYZType *daten = (icXYZType*) &_data[0];
+    icXYZType *daten = (icXYZType*) &data_[0];
     punkte.push_back( icSFValue( (daten->data.data[0].X) ) );
     punkte.push_back( icSFValue( (daten->data.data[0].Y) ) );
     punkte.push_back( icSFValue( (daten->data.data[0].Z) ) );
@@ -532,7 +532,7 @@ std::vector<double>
 ICCtag::getCurve                                  (void)
 { DBG_PROG_START
   std::vector<double> punkte;
-  icCurveType *daten = (icCurveType*) &_data[0];
+  icCurveType *daten = (icCurveType*) &data_[0];
   int count = icValue(daten->curve.count);
 
   if (count == 1) { // icU16Fixed16Number
@@ -553,7 +553,7 @@ ICCtag::getCurves                                 (MftChain typ)
   std::vector<std::vector<double> > kurven; DBG_PROG
   // Wer sind wir?
   if (getTypName() == "mft2") {
-    icLut16* lut16 = (icLut16*) &_data[8];
+    icLut16* lut16 = (icLut16*) &data_[8];
     int inputChan, outputChan, clutPoints, inputEnt, outputEnt;
     inputChan = (int)lut16->inputChan;
     outputChan = (int)lut16->outputChan;
@@ -579,10 +579,10 @@ ICCtag::getCurves                                 (MftChain typ)
            DBG_NUM_S( kurve.size() << " Start" )
            #endif
            for (int i = inputEnt * j; i < inputEnt * (j+1); i++) {
-             kurve.push_back( (double)icValue (*(icUInt16Number*)&_data[start + byte*i])
+             kurve.push_back( (double)icValue (*(icUInt16Number*)&data_[start + byte*i])
                               / div );
              #ifdef DEBUG_ICCTAG
-             DBG_NUM_S( icValue (*(icUInt16Number*)&_data[start + byte*i]) )
+             DBG_NUM_S( icValue (*(icUInt16Number*)&data_[start + byte*i]) )
              #endif
            }
            kurven.push_back (kurve);
@@ -596,7 +596,7 @@ ICCtag::getCurves                                 (MftChain typ)
     case TABLE: DBG_PROG
          start += (inputChan * inputEnt) * byte;
          for (int i = 0; i < feldPunkte * outputChan; i++)
-           kurve.push_back( (double)icValue (*(icUInt16Number*)&_data[start + byte*i])
+           kurve.push_back( (double)icValue (*(icUInt16Number*)&data_[start + byte*i])
                             / div );
          break;
     case CURVE_OUT: DBG_PROG
@@ -604,7 +604,7 @@ ICCtag::getCurves                                 (MftChain typ)
          for (int j = 0; j < outputChan; j++)
          { kurve.clear();
            for (int i = outputEnt * j; i < outputEnt * (j+1); i++)
-             kurve.push_back( (double)icValue (*(icUInt16Number*)&_data[start + byte*i])
+             kurve.push_back( (double)icValue (*(icUInt16Number*)&data_[start + byte*i])
                               / div );
            kurven.push_back (kurve);
            #ifdef DEBUG_ICCTAG
@@ -614,7 +614,7 @@ ICCtag::getCurves                                 (MftChain typ)
          break;
     } 
   } else if (getTypName() == "mft1") {
-    icLut8* lut8 = (icLut8*) &_data[8];
+    icLut8* lut8 = (icLut8*) &data_[8];
     int inputChan, outputChan, clutPoints, inputEnt=256, outputEnt=256;
     inputChan = (int)lut8->inputChan;
     outputChan = (int)lut8->outputChan;
@@ -635,7 +635,7 @@ ICCtag::getCurves                                 (MftChain typ)
            DBG_NUM_S( kurve.size() << " Start" )
            #endif
            for (int i = inputEnt * j; i < inputEnt * (j+1); i++)
-             kurve.push_back( (double) *(icUInt8Number*)&_data[start + byte*i]
+             kurve.push_back( (double) *(icUInt8Number*)&data_[start + byte*i]
                               / div );
            kurven.push_back (kurve);
            #ifdef DEBUG_ICCTAG
@@ -648,7 +648,7 @@ ICCtag::getCurves                                 (MftChain typ)
     case TABLE:
          start += (inputChan * inputEnt) * byte;
          for (int i = 0; i < feldPunkte * outputChan; i++)
-           kurve.push_back( (double) *(icUInt8Number*)&_data[start + byte*i]
+           kurve.push_back( (double) *(icUInt8Number*)&data_[start + byte*i]
                             / div );
          break;
     case CURVE_OUT:
@@ -659,7 +659,7 @@ ICCtag::getCurves                                 (MftChain typ)
            DBG_NUM_S( kurve.size() << " Start" )
            #endif
            for (int i = outputEnt * j; i < outputEnt * (j+1); i++)
-             kurve.push_back( (double) *(icUInt8Number*)&_data[start + byte*i]
+             kurve.push_back( (double) *(icUInt8Number*)&data_[start + byte*i]
                               / div );
            kurven.push_back (kurve);
            #ifdef DEBUG_ICCTAG
@@ -669,25 +669,25 @@ ICCtag::getCurves                                 (MftChain typ)
          break;
     } 
   } else if (getTypName() == "vcgt") {
-    int parametrisch        = icValue(*(icUInt32Number*) &_data[8]);
-    icUInt16Number nkurven  = icValue(*(icUInt16Number*) &_data[12]);
-    icUInt16Number segmente = icValue(*(icUInt16Number*) &_data[14]);
-    icUInt16Number byte     = icValue(*(icUInt16Number*) &_data[16]);
+    int parametrisch        = icValue(*(icUInt32Number*) &data_[8]);
+    icUInt16Number nkurven  = icValue(*(icUInt16Number*) &data_[12]);
+    icUInt16Number segmente = icValue(*(icUInt16Number*) &data_[14]);
+    icUInt16Number byte     = icValue(*(icUInt16Number*) &data_[16]);
     
     #ifdef DEBUG_ICCTAG
-    DBG_NUM_S( _data << " parametrisch " << parametrisch << " nkurven " << nkurven << " segmente " << segmente << " byte " << byte )
+    DBG_NUM_S( data_ << " parametrisch " << parametrisch << " nkurven " << nkurven << " segmente " << segmente << " byte " << byte )
     #endif
 
     if (parametrisch) { //icU16Fixed16Number
-      double r_gamma = 1.0/icValue(*(icUInt32Number*)&_data[12])*65536.0;
-      double start_r = icValue(*(icUInt32Number*)&_data[16])/65536.0;
-      double ende_r = icValue(*(icUInt32Number*)&_data[20])/65536.0;
-      double g_gamma = 1.0/icValue(*(icUInt32Number*)&_data[24])*65536.0;
-      double start_g = icValue(*(icUInt32Number*)&_data[28])/65536.0;
-      double ende_g = icValue(*(icUInt32Number*)&_data[32])/65536.0;
-      double b_gamma = 1.0/icValue(*(icUInt32Number*)&_data[36])*65536.0;
-      double start_b = icValue(*(icUInt32Number*)&_data[40])/65536.0;
-      double ende_b = icValue(*(icUInt32Number*)&_data[44])/65536.0;
+      double r_gamma = 1.0/icValue(*(icUInt32Number*)&data_[12])*65536.0;
+      double start_r = icValue(*(icUInt32Number*)&data_[16])/65536.0;
+      double ende_r = icValue(*(icUInt32Number*)&data_[20])/65536.0;
+      double g_gamma = 1.0/icValue(*(icUInt32Number*)&data_[24])*65536.0;
+      double start_g = icValue(*(icUInt32Number*)&data_[28])/65536.0;
+      double ende_g = icValue(*(icUInt32Number*)&data_[32])/65536.0;
+      double b_gamma = 1.0/icValue(*(icUInt32Number*)&data_[36])*65536.0;
+      double start_b = icValue(*(icUInt32Number*)&data_[40])/65536.0;
+      double ende_b = icValue(*(icUInt32Number*)&data_[44])/65536.0;
       kurve.clear();
       kurve.push_back(r_gamma);
       kurve.push_back(start_r);
@@ -707,7 +707,7 @@ ICCtag::getCurves                                 (MftChain typ)
              DBG_NUM_S( kurve.size() << " Start" )
              #endif
              for (int i = segmente * j; i < segmente * (j+1); i++)
-               kurve.push_back( (double) icValue (*(icUInt16Number*)&_data[start + byte*i])
+               kurve.push_back( (double) icValue (*(icUInt16Number*)&data_[start + byte*i])
                                 / div );
              kurven.push_back (kurve);
              //#ifdef DEBUG_ICCTAG
@@ -731,7 +731,7 @@ ICCtag::getTable                                 (MftChain typ)
   std::vector<double> Farbe; DBG_PROG
   // Wer sind wir?
   if (getTypName() == "mft2") {
-    icLut16* lut16 = (icLut16*) &_data[8];
+    icLut16* lut16 = (icLut16*) &data_[8];
     int inputChan, outputChan, clutPoints, inputEnt, outputEnt;
     inputChan = (int)lut16->inputChan;
     outputChan = (int)lut16->outputChan;
@@ -771,7 +771,7 @@ ICCtag::getTable                                 (MftChain typ)
                for (int k = 0; k < clutPoints; k++) {
                  Tabelle[i][j][k].resize(outputChan);
                  for (int l = 0; l < outputChan; l++) {
-                   Tabelle[i][j][k][l] = (double)icValue (*(icUInt16Number*)&_data[start + byte*n++])
+                   Tabelle[i][j][k][l] = (double)icValue (*(icUInt16Number*)&data_[start + byte*n++])
                               / div;
                  }
                }
@@ -786,7 +786,7 @@ ICCtag::getTable                                 (MftChain typ)
       }
     } 
   } else if (getTypName() == "mft1") {
-    icLut8* lut8 = (icLut8*) &_data[8];
+    icLut8* lut8 = (icLut8*) &data_[8];
     int inputChan, outputChan, clutPoints, inputEnt=256;//, outputEnt=256;
     inputChan = (int)lut8->inputChan;
     outputChan = (int)lut8->outputChan;
@@ -824,7 +824,7 @@ ICCtag::getTable                                 (MftChain typ)
                for (int k = 0; k < clutPoints; k++) {
                  Tabelle[i][j][k].resize(outputChan);
                  for (int l = 0; l < outputChan; l++) {
-                   Tabelle[i][j][k][l] = (double) *(icUInt8Number*)&_data[start + byte*n++]
+                   Tabelle[i][j][k][l] = (double) *(icUInt8Number*)&data_[start + byte*n++]
                               / div;
                  }
                }
@@ -852,7 +852,7 @@ ICCtag::getNumbers                                 (MftChain typ)
   std::vector<double> nummern;
   // Wer sind wir?
   if (getTypName() == "mft2") {
-    icLut16* lut16 = (icLut16*) &_data[8];
+    icLut16* lut16 = (icLut16*) &data_[8];
     int inputChan, outputChan, clutPoints, inputEnt, outputEnt;
     inputChan = (int)lut16->inputChan;
     outputChan = (int)lut16->outputChan;
@@ -864,7 +864,7 @@ ICCtag::getNumbers                                 (MftChain typ)
     switch (typ) {
     case MATRIX:
          for (int i = 0; i < 9; i++) {
-           icS15Fixed16Number *n = (icS15Fixed16Number*)&_data[12 + 4*i];
+           icS15Fixed16Number *n = (icS15Fixed16Number*)&data_[12 + 4*i];
            nummern.push_back( icSFValue (*n) );
          }
          break;
@@ -880,7 +880,7 @@ ICCtag::getNumbers                                 (MftChain typ)
          break;
     } 
   } else if (getTypName() == "mft1") {
-    icLut8* lut8 = (icLut8*) &_data[8];
+    icLut8* lut8 = (icLut8*) &data_[8];
     int inputChan, outputChan, clutPoints;//, inputEnt, outputEnt;
     inputChan = (int)lut8->inputChan;
     outputChan = (int)lut8->outputChan;
@@ -890,7 +890,7 @@ ICCtag::getNumbers                                 (MftChain typ)
     switch (typ) {
     case MATRIX:
          for (int i = 0; i < 9; i++) {
-           icS15Fixed16Number *n = (icS15Fixed16Number*)&_data[12 + 4*i];
+           icS15Fixed16Number *n = (icS15Fixed16Number*)&data_[12 + 4*i];
            nummern.push_back( icSFValue (*n) );
          }
          break;
@@ -912,7 +912,7 @@ ICCtag::getNumbers                                 (MftChain typ)
     // 1...n: CIE*Lab Farbwerte
     // n = 3 * FarbAnzahl
 
-    Ncl2 *ncl2 = (Ncl2*) &_data[8];
+    Ncl2 *ncl2 = (Ncl2*) &data_[8];
 
     int farben_n        = icValue(ncl2->anzahl);
     int geraetefarben_n = icValue(ncl2->koord);

@@ -66,8 +66,8 @@ class ICCtag {
                           { DBG_PROG_S("::ICCtag~") clear(); }
   private:
     icTagSignature      _sig;
-    int                 _size;
-    char*               _data;
+    int                 size_;
+    char*               data_;
 
     int                 _intent; // für mft1/2
     icColorSpaceSignature _color_in;
@@ -86,12 +86,12 @@ class ICCtag {
                           { DBG_PROG  return getSigTagDescription(_sig); }
     std::string         getTypName()
                           { DBG_PROG
-                            icTagTypeSignature sig = ((icTagBase*)_data) -> sig;
+                            icTagTypeSignature sig = ((icTagBase*)data_) -> sig;
                             DBG_PROG
                             return getSigTypeName(
                                             (icTagTypeSignature)icValue(sig)); }
     int                 getSize()
-                          { DBG_PROG  return _size; }
+                          { DBG_PROG  return size_; }
 
     std::vector<double> getCIEXYZ();
     std::vector<double> getCurve();
@@ -115,8 +115,8 @@ class ICCtag {
     std::string         getVrml();
   public:  // I/O
     const char*         write(int* size)
-                          { DBG_PROG  *size = _size;
-                            return (const char*)_data; }
+                          { DBG_PROG  *size = size_;
+                            return (const char*)data_; }
 };
 
 

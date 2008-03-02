@@ -211,6 +211,7 @@ GL_Ansicht::init()
                            + a_darstellungs_breite/2.0 - 0.5);
     agviewers[agv_].distB (agviewers[agv_].distB()
                            + b_darstellungs_breite/2.0 - 0.5);
+    agviewers[agv_].eyeDist (agviewers[agv_].dist()*2.0);
   }
 
   agviewers[agv_].agvMakeAxesList(AXES); DBG_PROG
@@ -789,6 +790,7 @@ GL_Ansicht::netzeAuffrischen()
              Z = EyeDist*cos(TORAD(EyeAz))*cos(TORAD(EyeEl));   // CIE*a
 
        if(icc_debug == 14) {
+       strichmult = 3;
        DBG_ICCGL_S( "dist:"<<EyeDist<<" elevation:"<<EyeEl<<" azimuth:"<<EyeAz )
        glMatrixMode(GL_MODELVIEW);
        glLoadIdentity();

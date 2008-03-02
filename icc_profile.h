@@ -41,6 +41,7 @@
 #include "icc_utils.h"
 #include "icc_formeln.h"
 #include "icc_helfer.h"
+#include "icc_speicher.h"
 
 #include "icc_measurement.h"
 #include "icc_profile_header.h"
@@ -82,8 +83,8 @@ class ICCmeasurement {
 
   private:
     icTagSignature      _sig;
-    int                 _size;
-    char*               _data;
+    int                 size_;
+    char*               data_;
 
     ICCprofile*         _profil;
     int                 _channels;
@@ -124,14 +125,14 @@ class ICCmeasurement {
   public:
     // grundlegende Infos
     bool                has_data (void)    {DBG_PROG return (_XYZ_Satz.size() ||
-                                                    ( _data && _size ) ); }
+                                                    ( data_ && size_ ) ); }
     bool                valid (void)       {DBG_PROG return (_XYZ_measurement
                                                  && (_RGB_measurement
                                                   || _CMYK_measurement)); }
     bool                hasRGB ()          {DBG_PROG return _RGB_measurement; }
     bool                hasCMYK ()         {DBG_PROG return _CMYK_measurement; }
     bool                hasXYZ ()          {DBG_PROG return _XYZ_measurement; }
-    int                 getSize()          {DBG_PROG return _size; }
+    int                 getSize()          {DBG_PROG return size_; }
     int                 getPatchCount()    {DBG_PROG return _nFelder; }
     // Werte
     std::vector<double> getMessRGB (int patch); // Darstellungsfarben
@@ -166,14 +167,19 @@ class ICCmeasurement {
 class ICCprofile {
   friend class ICCtag;
   friend class ICCmeasurement;
+
+    ICCprofile &        copy_      ( const ICCprofile & p );
   public:
                         ICCprofile ();
                         ICCprofile (const char *filename);
+                        ICCprofile ( const ICCprofile & p );
+    ICCprofile &        operator=  (const ICCprofile & );
     virtual             ~ICCprofile (void);
     void                clear (void);
 
     void                load (std::string filename);
     void                load (char* filename);
+    void                load (const Speicher & profil);
     bool                changing()             { return changing_; }
 
   private:
@@ -182,8 +188,8 @@ class ICCprofile {
     std::string         _filename;
 
     // icc34.h Definitionen
-    char*               _data;
-    unsigned int        _size;
+    char*               data_;
+    unsigned int        size_;
 
     ICCheader           header;
     std::vector<ICCtag> tags;

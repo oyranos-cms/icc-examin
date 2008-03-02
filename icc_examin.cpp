@@ -160,6 +160,7 @@ ICCexamin::oeffnen (std::vector<std::string> dateinamen)
 { DBG_PROG_START
   // Laden
   frei_ = false;
+  icc_betrachter->DD_histogram->punkte_clear();
   bool weiter = profile.oeffnen(dateinamen);
   if (weiter) { DBG_PROG
     icc_betrachter->tag_browser->reopen ();
@@ -210,6 +211,8 @@ ICCexamin::oeffnen (std::vector<std::string> dateinamen)
     } else
     if (icc_betrachter->DD_histogram->beruehrt())
     { DBG_PROG
+      profile.oeffnen(icc_oyranos.moni(),-1);
+      profile.oeffnen(icc_oyranos.cmyk(),-1);
       histogram();
       icc_betrachter->DD_histogram->auffrischen();
     }
@@ -445,6 +448,7 @@ void
 ICCexamin::zeigCGATS()
 {
   DBG_PROG_START
+  // CGATS in Fenster präsentieren
   icc_examin_ns::nachricht(profile.profil()->cgats_max());
   DBG_PROG_ENDE
 }
@@ -484,7 +488,7 @@ ICCexamin::histogram (int n)
   std::vector<double> p;
   std::vector<float>  f;
 
-  if(profile.profil() &&
+  if(profile.size() > n &&
      profile[n]->hasMeasurement() &&
      profile[n]->getMeasurement().hasXYZ() )
     { DBG_NUM_S( "nutze Messdaten" )
@@ -528,7 +532,7 @@ ICCexamin::histogram (int n)
     }
 
   // benannte Farben darstellen
-  if( profile.profil() &&
+  if( profile.size() > n &&
       profile[n]->getTagByName("ncl2") >= 0 )
   {
     DBG_PROG
@@ -549,7 +553,7 @@ ICCexamin::histogram (int n)
 
   std::vector<ICCnetz> netz, netz_temp;
   Speicher s;
-  if(profile.size())
+  if(profile.size() > n)
     if(profile[n]->valid())
       s.lade(profile[n]->saveProfileToMem(0),
              profile[n]->getProfileSize());
@@ -581,8 +585,18 @@ ICCexamin::histogram (int n)
 
 void
 ICCexamin::histogram ()
-{ DBG_PROG_START
+{
+  DBG_PROG_START
   frei_ = false;
+
+  for(int i = 0; i < profile.size(); ++i)
+    histogram(i);
+  DBG_PROG
+
+  frei_ = true;
+/*
+  Speicher s;
+  std::vector<ICCnetz> netz, netz_temp;
   std::vector<std::string> texte, namen;
 
   texte.push_back(_("CIE *L"));
@@ -705,8 +719,21 @@ ICCexamin::histogram ()
       icc_betrachter->DD_histogram->hineinNetze( netz );
       icc_betrachter->DD_histogram->achsNamen( texte );
   }
+  if(s.size())
+  {
+      netz.push_back( (icc_oyranos. netzVonProfil( s ))[0] );
+      netz[netz.size()-1].transparenz = 0.333;
+      netz[netz.size()-1].name = icc_oyranos.moni_name();
+      DBG_NUM_V( netz[netz.size()-1].transparenz )
+  }
+  DBG_NUM
+  if(netz.size())
+  {
+      icc_betrachter->DD_histogram->hineinNetze( netz );
+      //icc_betrachter->DD_histogram->achsNamen( texte );
+  }
 
-  frei_ = true;
+*/
   DBG_PROG_ENDE
 }
 

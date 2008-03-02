@@ -50,10 +50,105 @@ ICCkette::ICCkette  ()
 }
 
 bool
+ICCkette::oeffnen (const Speicher & prof, int pos)
+{ DBG_PROG_START
+  bool erfolgreich = false;
+
+  // Ist das Profile eventuell schon geladen? -> Abbruch
+  for(unsigned int i = 0; i < profile_.size(); ++i)
+    if(prof.name() == profile_[i].filename())
+      return false;
+
+  // Laden TODO: test auf Existenz der Datei (oyranos?)
+  if (pos >= 0 && pos < (int)profile_.size()) {
+    profile_.insert (profile_.begin()+pos, ICCprofile());
+    profile_[pos].load(prof);
+    DBG_PROG_V( prof.name() )
+    profilnamen_.insert (profilnamen_.begin()+pos, prof.name() );
+    aktiv_.insert (aktiv_.begin()+pos, true);
+    profil_mzeit_.insert (profil_mzeit_.begin()+pos, (double)prof.zeit() );
+  } else {
+    profile_.resize(profile_.size()+1);
+    profile_[profile_.size()-1].load(prof);
+    profilnamen_.push_back( prof.name() );
+    aktiv_.push_back(true);
+    profil_mzeit_.push_back( (double)prof.zeit() );
+  }
+
+
+  if( profile_.size() ) {
+    aktuelles_profil_ = 0;
+    erfolgreich = true;
+  } else { DBG_PROG
+    icc_examin_ns::status_info(_("Datei nicht geladen!"));
+  }
+
+  DBG_PROG_ENDE
+  return erfolgreich;
+}
+
+bool
+ICCkette::oeffnen (std::string dateiname, int pos)
+{ DBG_PROG_START
+  bool erfolgreich = false;
+
+  // Ist das Profile eventuell schon geladen? -> Abbruch
+  for(unsigned int i = 0; i < profile_.size(); ++i)
+    if(dateiname == profile_[i].filename())
+      return false;
+
+  // Laden TODO: test auf Existenz der Datei (oyranos?)
+  if (pos >= 0 && pos < (int)profile_.size()) {
+    profile_.insert (profile_.begin()+pos, ICCprofile());
+    profile_[pos].load(dateiname.c_str());
+    DBG_PROG_V( dateiname )
+    profilnamen_.insert (profilnamen_.begin()+pos, dateiname );
+    aktiv_.insert (aktiv_.begin()+pos, true);
+    profil_mzeit_.insert (profil_mzeit_.begin()+pos,
+                            holeDateiModifikationsZeit( dateiname.c_str() ));
+  } else {
+    profile_.resize(profile_.size()+1);
+    profile_[profile_.size()-1].load(dateiname.c_str());
+    profilnamen_.push_back( dateiname );
+    aktiv_.push_back(true);
+    profil_mzeit_.push_back(holeDateiModifikationsZeit( dateiname.c_str() ));
+  }
+
+
+  if( profile_.size() ) {
+    aktuelles_profil_ = 0;
+    erfolgreich = true;
+  } else { DBG_PROG
+    icc_examin_ns::status_info(_("Datei nicht geladen!"));
+  }
+
+  DBG_PROG_ENDE
+  return erfolgreich;
+}
+
+bool
 ICCkette::oeffnen (std::vector<std::string> dateinamen)
 { DBG_PROG_START
   bool erfolgreich = false;
 
+  profile_.clear();
+  profilnamen_.clear();
+  aktiv_.clear();
+  profil_mzeit_.clear();
+
+  for (unsigned int i = 0; i < dateinamen.size(); ++i)
+  {
+    erfolgreich = oeffnen (dateinamen[i], -1);
+    DBG_PROG_V( dateinamen[i] )
+    icc_examin_ns::fortschritt (1.0);
+    icc_examin_ns::fortschritt (1.1);
+  }
+
+  if( profile_.size() )
+    aktuelles_profil_ = 0;
+
+  erfolgreich = true;
+#if 0
   // Laden TODO: test auf Existenz der Datei (oyranos?)
   profile_.resize(dateinamen.size());
   for (unsigned int i = 0; i < dateinamen.size(); i++)
@@ -95,7 +190,7 @@ ICCkette::oeffnen (std::vector<std::string> dateinamen)
   } else { DBG_PROG
     icc_examin_ns::status_info(_("Datei nicht geladen!"));
   }
-
+#endif
   DBG_PROG_ENDE
   return erfolgreich;
 }

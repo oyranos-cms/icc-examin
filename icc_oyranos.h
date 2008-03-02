@@ -64,9 +64,11 @@ class Oyranos
     std::string rgb  ()                { rgb_test_(); return rgb_.name(); }
     const char* rgb  (size_t &g)       { rgb_test_(); g = rgb_.size();
                                          return rgb_; }
-    std::string cmyk ()                { cmyk_test_(); return cmyk_.name(); }
+    std::string cmyk_name ()           { cmyk_test_(); return cmyk_.name(); }
     const char* cmyk (size_t &g)       { cmyk_test_(); g = cmyk_.size();
                                          return cmyk_; }
+    const Speicher & cmyk ()           { cmyk_test_(); return cmyk_; }
+
     // Geräte Profile
     std::string moni_name ()           { moni_test_(); return moni_.name(); }
     const char* moni (size_t &g)       { moni_test_(); g = moni_.size();

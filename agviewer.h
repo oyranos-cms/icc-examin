@@ -257,6 +257,7 @@ public:
   float eyeY () const { return Ey; } // ICC Examin
   float eyeZ () const { return Ez; } // ICC Examin
   float eyeDist () const { return EyeDist; } // ICC Examin
+  void  eyeDist(double d) { EyeDist = d; }
   float eyeAzimuth () const { return EyeAz; } // ICC Examin
   float eyeElevation () const { return EyeEl; } // ICC Examin
 
@@ -264,6 +265,7 @@ public:
   void distB(double b) { init_dist_b = b; }
   double distA()       { return init_dist_a; }
   double distB()       { return init_dist_b; }
+  double dist()        { return init_dist; }
 
   int AllowIdle,
       RedisplayWindow;                      // glutWindow
