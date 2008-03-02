@@ -72,6 +72,8 @@ ICCexamin::messwertLese (int n,
         icc_betrachter->DD_farbraum->zeig_punkte_als_paare = false;
 
         DBG_NUM_V( icc_betrachter->DD_farbraum->zeig_punkte_als_paare )
+      icc_betrachter->DD_farbraum->zeig_punkte_als_messwerte = true;
+        DBG_NUM_V( icc_betrachter->DD_farbraum->zeig_punkte_als_messwerte )
 
       if(profile.profil()->data_type == ICCprofile::ICCmeasurementDATA || 
          profile.profil()->hasTagName("ncl2") )
@@ -113,7 +115,7 @@ ICCexamin::messwertLese (int n,
           if (icc_betrachter->DD_farbraum->zeig_punkte_als_paare)
           { daten = messung.getCmmRGB(j);
             for (unsigned i = 0; i < daten.size(); ++i)
-              f.push_back(daten[i]);
+              f.push_back((float)daten[i]);
            f.push_back(1.0);
           } 
         }
@@ -134,30 +136,29 @@ ICCexamin::netzLese (int n,
     return;
   }
 
-  std::vector<ICCnetz> netz_temp;
+  ICCnetz & netz_temp = (*netz)[n];
 
   
   {
     int intent = intentGet(NULL);
     if(farbraumModus())
       intent = profile[n]->intent();
-    netz_temp = icc_oyranos. netzVonProfil( *(profile[n]), intent, bpc() );
-    if(netz_temp.size())
+
+    icc_oyranos. netzVonProfil( *(profile[n]), intent, bpc(), netz_temp );
+    if(netz_temp.punkte.size())
     {
-      netz_temp[0].undurchsicht = (*netz)[n].undurchsicht;
+      /*netz_temp[0].undurchsicht = (*netz)[n].undurchsicht;
       netz_temp[0].grau = (*netz)[n].grau;
       netz_temp[0].aktiv = (*netz)[n].aktiv;
       if(n >= (int)netz->size())
-        netz->resize( n+1 );
-      DBG_PROG_V( netz->size() <<" "<< netz_temp.size() )
-      (*netz)[n] = netz_temp[0];
-      (*netz)[n].name = profile[n]->filename();
+        netz->resize( n+1 );*/
+      netz_temp.name = profile[n]->filename();
       // extract the file name
-      std::string & dateiname = (*netz)[n].name;
-      if( dateiname.find_last_of("/") != std::string::npos)
-        dateiname = dateiname.substr( dateiname.find_last_of("/")+1,
+      std::string & dateiname = netz_temp.name;
+      if( dateiname.find_last_of(ICC_DIR_SEPARATOR) != std::string::npos)
+        dateiname = dateiname.substr( dateiname.find_last_of(ICC_DIR_SEPARATOR)+1,
                                     dateiname.size() );
-      DBG_NUM_V( (*netz)[n].undurchsicht <<" "<< (*netz)[n].umriss.size() )
+      DBG_NUM_V( netz_temp.undurchsicht <<" "<< netz_temp.umriss.size() )
     }
 # if 0  // should be checked on load time
     else {
@@ -168,8 +169,8 @@ ICCexamin::netzLese (int n,
     }
 #endif
   }
-  for(int i = 0; i < (int)netz->size(); ++i)
-    DBG_PROG_V( (*netz)[n].aktiv <<" "<< (*netz)[i].undurchsicht <<" "<< (*netz)[i].umriss.size() );
+  /*for(int i = 0; i < (int)netz->size(); ++i)
+    DBG_PROG_V( (*netz)[n].aktiv <<" "<< (*netz)[i].undurchsicht <<" "<< (*netz)[i].umriss.size() );*/
   DBG_PROG_ENDE
 }
 
@@ -361,7 +362,7 @@ ICCexamin::farbraum (int n)
   }
 
   bool neues_netz = false;
-  if( n >= (int)icc_betrachter->DD_farbraum-> dreiecks_netze.size() )
+  if( n >= (int)icc_betrachter->DD_farbraum->dreiecks_netze.size() )
     neues_netz = true;
 
   if(n == 0)
@@ -369,51 +370,57 @@ ICCexamin::farbraum (int n)
 
   do {
     icc_examin_ns::sleep(0.05);
-  } while(!icc_betrachter->DD_farbraum-> frei());
+  } while(!icc_betrachter->DD_farbraum->frei());
 
   {
-  MARK( icc_betrachter->DD_farbraum-> frei(false); )
+  MARK( icc_betrachter->DD_farbraum->frei(false); )
 
-    if((int)icc_betrachter->DD_farbraum-> dreiecks_netze .size() <= n)
-      icc_betrachter->DD_farbraum-> dreiecks_netze .resize( n + 1 );
+    if((int)icc_betrachter->DD_farbraum->dreiecks_netze .size() <= n)
+      icc_betrachter->DD_farbraum->dreiecks_netze .resize( n + 1 );
 
-    std::vector<ICCnetz> *netz = &icc_betrachter->DD_farbraum->dreiecks_netze;
-    DBG_PROG_V( icc_betrachter->DD_farbraum-> dreiecks_netze.size() <<" "<< n )
+    std::vector<ICCnetz> *netze = &icc_betrachter->DD_farbraum->dreiecks_netze;
+    DBG_PROG_V( icc_betrachter->DD_farbraum->dreiecks_netze.size() <<" "<< n )
 
 
     if( profile.size() > n && !ncl2_profil )
-      netzLese(n, netz);
+    {
+      icc_betrachter->DD_farbraum->frei(false);
+      netzLese(n, netze);
+      icc_betrachter->DD_farbraum->frei(true);
+      icc_betrachter->DD_farbraum->hineinNetze(
+          icc_betrachter->DD_farbraum->dreiecks_netze );
+    }
 
-    DBG_PROG_V( n <<" "<< netz->size() <<" "<< ncl2_profil )
+    DBG_PROG_V( n <<" "<< netze->size() <<" "<< ncl2_profil )
 
     // set some standard values
-    if(netz->size() && neues_netz)
+    if(netze->size() && neues_netz)
     {
       if((n == 0 && ncl2_profil) &&
          !messwerte )
       {
-        (*netz)[n].undurchsicht = 0.15;
-        (*netz)[n].grau = false;
+        (*netze)[n].undurchsicht = 0.15;
+        (*netze)[n].grau = false;
       }
       else
       if ( farbraumModus() && !messwerte )
       {
         if(n == 1)
-          (*netz)[n].undurchsicht = 0.15;
+          (*netze)[n].undurchsicht = 0.15;
         else
-          (*netz)[n].undurchsicht = 0.10;
-        (*netz)[n].grau = true;
+          (*netze)[n].undurchsicht = 0.10;
+        (*netze)[n].grau = true;
       }
       else
       if ( profile.size() == 1 )
       {
-        (*netz)[n].undurchsicht = 0.25;
-        (*netz)[n].grau = false;
+        (*netze)[n].undurchsicht = 0.25;
+        (*netze)[n].grau = false;
       }
       else
       {
-        (*netz)[n].undurchsicht = 0.3;
-        (*netz)[n].grau = true;
+        (*netze)[n].undurchsicht = 0.3;
+        (*netze)[n].grau = true;
       }
 
       icc_betrachter->DD_farbraum->achsNamen( texte );
@@ -435,10 +442,9 @@ ICCexamin::farbraum (int n)
       DBG_PROG_V( icc_betrachter->DD_farbraum->dreiecks_netze[n].name )
     }
 
-  MARK( icc_betrachter->DD_farbraum-> frei(true); )
+  MARK( icc_betrachter->DD_farbraum->frei(true); )
   }
 
-  MARK( frei(true); )
   DBG_PROG_ENDE
 }
 
@@ -448,13 +454,13 @@ ICCexamin::farbraum ()
   DBG_PROG_START
   MARK( frei(false); )
 
-  if((int)icc_betrachter->DD_farbraum -> dreiecks_netze.size() > profile.size())
+  if((int)icc_betrachter->DD_farbraum->dreiecks_netze.size() > profile.size())
   {
-    MARK( icc_betrachter->DD_farbraum ->frei(false); )
-    icc_betrachter->DD_farbraum -> dreiecks_netze.resize(profile.size());
-    MARK( icc_betrachter->DD_farbraum ->frei(true); )
+    MARK( icc_betrachter->DD_farbraum->frei(false); )
+    icc_betrachter->DD_farbraum->dreiecks_netze.resize(profile.size());
+    MARK( icc_betrachter->DD_farbraum->frei(true); )
   }
-  DBG_PROG_V( icc_betrachter->DD_farbraum -> dreiecks_netze.size() )
+  DBG_PROG_V( icc_betrachter->DD_farbraum->dreiecks_netze.size() )
   MARK( frei(true); )
 
   for(int i = 0; i < profile.size(); ++i)

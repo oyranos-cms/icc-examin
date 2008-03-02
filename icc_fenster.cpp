@@ -486,8 +486,8 @@ int MyFl_Double_Window::handle( int e )
   wx = this->x();
   wy = this->y();
 
-  if(!ergebnis)
-    ;
+  /*if(!ergebnis)
+    ;*/
 
   int net_desktop = -1;
 #if HAVE_X

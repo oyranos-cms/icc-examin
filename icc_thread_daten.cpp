@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2006  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2007  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -31,6 +31,7 @@
 
 #include "icc_thread_daten.h"
 #include "threads.h"
+#include "icc_utils.h"
 
 void
 icc_examin_ns::ThreadDaten::frei(int freigeben)
@@ -45,7 +46,6 @@ icc_examin_ns::ThreadDaten::frei(int freigeben)
   } else {
 
     Fl_Thread pth_alt = pth;
-    pth = pthread_self();
 
     int x = 0;
 
@@ -53,7 +53,7 @@ icc_examin_ns::ThreadDaten::frei(int freigeben)
     {
       if(pth == pth_alt)
       {
-        WARN_S( (intptr_t)pth << " request from same thread" )
+        WARN_S( dbgThreadId(pth) << " request from same thread " << zahl_ )
         break;
       }
       icc_examin_ns::sleep(0.01);
@@ -65,10 +65,19 @@ icc_examin_ns::ThreadDaten::frei(int freigeben)
     }
 
     frei_ = false;
+    pth = iccThreadSelf();
     ++zahl_;
     DBG_THREAD_S( "lock   " << zahl_ )
   }
 
   DBG_PROG_ENDE
+}
+
+bool
+icc_examin_ns::ThreadDaten::frei()
+{
+  if(report_owner && !frei_)
+    DBG_S( "not free, owner is: " << dbgThreadId(pth) );
+  return frei_;
 }
 

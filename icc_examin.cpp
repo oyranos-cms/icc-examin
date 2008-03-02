@@ -211,15 +211,17 @@ ICCexamin::start (int argc, char** argv)
   DBG_PROG_S( "Show vcgt not" )
 # endif
 
-  FILE *out = popen("oyranos-config", "r");
+#if !defined(WIN32)
+  FILE *out = icc_popen_m("oyranos-config", "r");
   if(out)
   {  
     char name[64];
     size_t r = fscanf( out, "%12s", name ); r=r;
     if( strcmp(name, "oyranos") == 0 )
       icc_betrachter->menu_einstellungen->show();
-    pclose(out);
+    icc_pclose_m(out);
   } 
+#endif
 
 # if APPLE
   // osX Resourcen
@@ -319,8 +321,9 @@ ICCexamin::start (int argc, char** argv)
     if (profile.size())
       ptr = profile.name().c_str();
     dateiwahl = new MyFl_File_Chooser(ptr, _("ICC colour profiles (*.{I,i}{C,c}{M,m,C,c})	Measurement (*.{txt,it8,IT8,RGB,CMYK,ti*,cgats,CIE,cie,nCIE,oRPT,DLY,LAB,Q60})	Argyll Gamuts (*.{wrl,vrml}"), MyFl_File_Chooser::MULTI, _("Which ICC profile?"));
+    dateiwahl->callback(dateiwahl_cb);
+    dateiwahl->preview(true);
     icc_examin_ns::MyFl_Double_Window *w = dateiwahl->window;
-    //w->set_modal();
     w->use_escape_hide = true;
   }
 
@@ -731,7 +734,11 @@ ICCexamin::setzeFensterTitel()
   DBG_PROG_START
   char* t = (char*) malloc(256);
   const char* title = NULL;
+  unsigned int t_len = 256;
 
+#ifdef WIN32
+  t_len = 30;
+#endif
 
   if(profile.profil())
     title = dateiName(profile.profil()->filename());
@@ -749,7 +756,10 @@ ICCexamin::setzeFensterTitel()
               _("Compare Measurement <-> Profile Colours"));
 
     icc_examin_ns::lock(__FILE__,__LINE__);
+	// TODO: ???
+#ifndef WIN32
     window->label(t);
+#endif
     icc_examin_ns::unlock(window, __FILE__,__LINE__);
   }
 
@@ -758,13 +768,19 @@ ICCexamin::setzeFensterTitel()
      window->shown() )
   {
     if(title)
-      snprintf(t, 256, "ICC Examin: %s - %s", title,
+	{
+      snprintf(t, t_len, "ICC Examin: %s - %s", title,
               _("Gamut View"));
-    else
-      snprintf(t, 256, "ICC Examin: - %s", _("Gamut View"));
+	  if(strlen(title) > t_len)
+	    sprintf( &t[t_len], "..." );
+    } else
+      snprintf(t, t_len, "ICC Examin: - %s", _("Gamut View"));
 
     icc_examin_ns::lock(__FILE__,__LINE__);
+	// TODO: ???
+#ifndef WIN32
     window->label(t);
+#endif
     icc_examin_ns::unlock(window, __FILE__,__LINE__);
   }
 
@@ -772,12 +788,18 @@ ICCexamin::setzeFensterTitel()
   if(window->shown() )
   {
     if(title)
-      snprintf(t, 256, "ICC Examin: %s", title);
-    else
-      snprintf(t, 256, "ICC Examin: -");
+	{
+      snprintf(t, t_len, "ICC Examin: %s", title);
+	  if(strlen(title) > t_len)
+	    sprintf( &t[t_len], "..." );
+	} else
+      snprintf(t, t_len, "ICC Examin: -");
 
     icc_examin_ns::lock(__FILE__,__LINE__);
+	// TODO: ???
+#ifndef WIN32
     window->label(t);
+#endif
     icc_examin_ns::unlock(window, __FILE__,__LINE__);
   }
 
@@ -1064,8 +1086,10 @@ ICCexamin::gamutAnsichtZeigen ()
       farbraum_angezeigt_ = true;
       icc_betrachterNeuzeichnen(icc_betrachter->DD_farbraum);
 
+#ifndef WIN32
       if(icc_betrachter->DD_farbraum->window() != icc_betrachter->details)
         icc_betrachter->details->iconize(icc_betrachter->details);
+#endif
 
       icc_examin_ns::unlock(icc_betrachter->details, __FILE__,__LINE__);
       DBG_PROG_S("icc_betrachterNeuzeichnen DD_farbraum")
@@ -1156,13 +1180,13 @@ ICCexamin::erneuerTagBrowserText_ (void)
     // Number
     int Nr = atoi((*it).c_str()) + 1;
     std::stringstream t; t << Nr;
-    for (int i = t.str().size(); i < 3; i++) {s << " ";} s << Nr; *it++; ++anzahl; s << " ";
+    for (int i = (int)t.str().size(); i < 3; i++) {s << " ";} s << Nr; *it++; ++anzahl; s << " ";
     // Name/title
-    s << *it; for (int i = (*it++).size(); i < 6; i++) {s << " ";} ++anzahl;
+    s << *it; for (int i = (int)(*it++).size(); i < 6; i++) {s << " ";} ++anzahl;
     // Typ
-    s << *it; for (int i = (*it++).size(); i < 5; i++) {s << " ";} ++anzahl;
+    s << *it; for (int i = (int)(*it++).size(); i < 5; i++) {s << " ";} ++anzahl;
     // Size
-    for (int i = (*it).size(); i < 6; i++) {s << " ";} s << *it++; s << " "; ++anzahl;
+    for (int i = (int)(*it).size(); i < 6; i++) {s << " ";} s << *it++; s << " "; ++anzahl;
     // description
     add_s (*it)
   }
@@ -1416,7 +1440,7 @@ void
 ICCexamin::fortschritt(double f, double anteil)
 { DBG_PROG_START
   
-  int thread = wandelThreadId(pthread_self());
+  int thread = wandelThreadId(iccThreadSelf());
   if(thread != THREAD_HAUPT)
     icc_examin_ns::lock(__FILE__,__LINE__);
 
@@ -1425,10 +1449,10 @@ ICCexamin::fortschritt(double f, double anteil)
          anteil > 0.0 )
         icc_betrachter->load_progress-> show();
       if(fabs(anteil) >= 1.0)
-        icc_betrachter->load_progress-> value( f );
+        icc_betrachter->load_progress-> value( (float)f );
       else
-        icc_betrachter->load_progress-> value( 1.0 -
-                    icc_betrachter->load_progress->value() / fabs(anteil) * f );
+        icc_betrachter->load_progress-> value( (float)(1.0 -
+                    icc_betrachter->load_progress->value() / fabs(anteil) * f) );
       DBG_PROG_V( f )
     } else if (1.0 < f &&
                anteil > 0.0) {
@@ -1467,7 +1491,7 @@ ICCexamin::statusFarbe(double & L, double & a, double & b)
   Fl_Color colour = fl_rgb_color( (int)(rgb[0]*255),
                                   (int)(rgb[1]*255), (int)(rgb[2]*255) );
 
-  int thread = wandelThreadId(pthread_self());
+  int thread = wandelThreadId(iccThreadSelf());
   if(thread != THREAD_HAUPT)
     icc_examin_ns::lock(__FILE__,__LINE__);
 
@@ -1614,7 +1638,7 @@ tastatur(int e)
             const char *filter_a = "file:";
             DBG_PROG_V( profilnamen[i] )
             if(strstr(profilnamen[i].c_str(), filter_a)) {
-              int len_neu = len-strlen(filter_a);
+              int len_neu = (int)(len-strlen(filter_a));
               char *txt = (char*)malloc(profilnamen[i].size()+1);
               memcpy(txt, &(profilnamen[i].c_str())[strlen(filter_a)],
                      len_neu);

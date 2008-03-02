@@ -255,16 +255,16 @@ ICCtag::getText                     (std::string text)
     icMeasurement meas;
     memcpy (&meas, &data_[8] , 28);
     s << _("Standard Observer") << ": " <<
-    getStandardObserver( (icStandardObserver)icValue( meas.stdObserver) ) <<endl
+    getStandardObserver( icValue( meas.stdObserver) ) <<endl
       << _("Backsite") << ": X = " << icSFValue(meas.backing.X)
                         << ", Y = " << icSFValue(meas.backing.Y)
                         << ", Z = " << icSFValue(meas.backing.Z) << endl
       << _("Geometrie") << ": "<< 
-    getMeasurementGeometry ((icMeasurementGeometry)icValue(meas.geometry))<<endl
+    getMeasurementGeometry (icValue(meas.geometry))<<endl
       << _("Flare")     << ": "<< 
-    getMeasurementFlare ((icMeasurementFlare)icValue(meas.flare)) << endl
+    getMeasurementFlare (icValue(meas.flare)) << endl
       << _("Illuminant Type") << ": " <<
-    getIlluminant ((icIlluminant)icValue(meas.illuminant)) <<endl;
+    getIlluminant (icValue(meas.illuminant)) <<endl;
     texte.push_back( s.str() );
 
   } else if (text == "mft2") {
@@ -455,7 +455,7 @@ ICCtag::getText                     (std::string text)
         DBG_V( size<<" "<<&data_[dversatz]<<" "<<&data_[dversatz+1]<<" "<< t );
 
         for (n = 0; n < g ; n = n+2)
-          t[n/2] = icValue( *(icUInt16Number*)&data_[dversatz + n] );
+          t[n/2] = (char)icValue( *(icUInt16Number*)&data_[dversatz + n] );
         t[n/2] = 0;
 #endif
         texte.push_back( t );

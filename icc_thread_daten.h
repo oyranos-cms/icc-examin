@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2006  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2007  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -47,11 +47,12 @@ class ThreadDaten
     int  zahl_;               //!<@brief count of waiters
     Fl_Thread pth;
 protected:
-    ThreadDaten() { frei_ = true; zahl_ = 0; pth = 0; }
+    ThreadDaten() { frei_ = true; zahl_ = 0; pth = 0; report_owner = 0; }
     ~ThreadDaten() {;}
 public:
-    bool frei()     { return frei_; }          //!<@brief is not locked
-    void frei(int freigeben); //!@brief lock with wait/unlock
+    bool frei();              //!<@brief is not locked
+    void frei(int freigeben); //!<@brief lock with wait/unlock
+    bool report_owner; 
 };
 
 }

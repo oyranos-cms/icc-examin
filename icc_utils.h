@@ -30,7 +30,9 @@
 #ifndef ICC_UTILS_H
 #define ICC_UTILS_H
 
+#ifndef ICC_EXTERN
 #include "config.h"
+#endif
 
 #ifdef CWDEBUG
 # include "sys.h"
@@ -42,8 +44,23 @@
 #ifdef HAVE_EXCEPTION
 #  include <exception>		/* class expeption */
 #endif
+
 #include "threads.h"
 #include <new>			/* bad_alloc() */
+#if defined(WIN32)
+# define iccThreadSelf  GetCurrentThreadId
+# define iccThreadEqual(a,b) ((a) == (b)) 
+# define icc_popen_m    _popen
+# define icc_pclose_m   _pclose
+  char * icc_strdup(const char*);
+# define icc_strdup_m(text_) icc_strdup(text_)
+#else
+# define iccThreadSelf  pthread_self 
+# define iccThreadEqual(a,b) pthread_equal((a),(b)) 
+# define icc_popen_m    popen
+# define icc_pclose_m   pclose
+# define icc_strdup_m(text_) strdup(text_)
+#endif 
 #include <iostream>
 #include <sstream>
 #include <cmath>
@@ -72,6 +89,26 @@
 #ifndef LITTLE_ENDIAN
 # define LITTLE_ENDIAN 1234
 #endif
+
+#ifdef WIN32
+/*#include <WinSock2.h>*/
+#if BIGENDIAN 
+# ifdef BYTE_ORDER
+#   undef BYTE_ORDER
+# endif
+# define BYTE_ORDER BIG_ENDIAN
+#endif
+#if LITTLEENDIAN 
+# ifdef BYTE_ORDER
+#   undef BYTE_ORDER
+# endif
+# define BYTE_ORDER LITTLE_ENDIAN
+#endif
+#ifndef BYTE_ORDER
+# define BYTE_ORDER LITTLE_ENDIAN
+#endif
+#endif
+
 #ifdef _BIG_ENDIAN
 # ifdef BYTE_ORDER
 #   undef BYTE_ORDER
@@ -91,6 +128,7 @@
 enum { THREAD_HAUPT, THREAD_GL1, THREAD_GL2, THREAD_WACHE, THREAD_LADEN,
   THREAD_ICCEXAMIN_MAX };
 void        dbgThreadId ();
+std::string dbgThreadId(Fl_Thread thread);
 int         wandelThreadId (Fl_Thread id);
 Fl_Thread & getThreadId ( int pos );
 void        registerThreadId ( Fl_Thread id, int pos );
@@ -107,7 +145,7 @@ extern int             debug_s_mutex_threads_;
 
 #ifdef HAVE_PTHREAD_H
 #define dbgWrite(ss) { \
-  if( !pthread_equal(debug_s_mutex_thread_, pthread_self()) || \
+  if( !iccThreadEqual(debug_s_mutex_thread_, iccThreadSelf()) || \
       debug_s_mutex_threads_ == 0 ) \
     while (pthread_mutex_trylock( &debug_s_mutex_ )) { \
     /*printf("%s:%d %s() debug_s_mutex_ nicht verfuegbar\n",__FILE__,__LINE__,__func__);*/ \
@@ -115,7 +153,7 @@ extern int             debug_s_mutex_threads_;
     } \
   debug_s_mutex_threads_++ ; \
   if(debug_s_mutex_threads_ == 1) \
-    debug_s_mutex_thread_ = pthread_self(); \
+    debug_s_mutex_thread_ = iccThreadSelf(); \
   debug_s_.str(""); \
   debug_s_ << ss; \
   dbgWriteF(); \
@@ -125,7 +163,7 @@ extern int             debug_s_mutex_threads_;
 }
 #else
 #define dbgWrite(ss) { \
- debug_s_ << ss; dbgWriteF(debug_s_); \
+ debug_s_ << ss; dbgWriteF(); \
 }
 #endif
 /* look in icc_utils.cpp for the WRITE_DBG definition */
@@ -140,6 +178,7 @@ int    iccLevel_PROG(int plus_minus_null);
 #define icc_level_PROG_minus iccLevel_PROG(-1)
 extern int icc_debug;
 
+#include <time.h>
 /*  icc_debug is controled be the environment variale ICCEXAMIN_DEBUG in main()
  *  levels:
  *   0: DBG              // use only intermediate and then remove, standard
@@ -158,7 +197,11 @@ extern int icc_debug;
 
 #define DBG_UHR_ (double)clock()/(double)CLOCKS_PER_SEC
 
+#ifndef WIN32
 #define DBG_T_     dbgWrite ( __FILE__<<":"<<__LINE__ <<" "<< __func__ << "() " ); dbgThreadId(); dbgWrite ( " "<< DBG_UHR_ <<" " );
+#else
+#define DBG_T_     dbgWrite ( __FILE__<<":"<<__LINE__ <<" " ); dbgThreadId(); dbgWrite ( " "<< DBG_UHR_ <<" " );
+#endif
 #define LEVEL      { for (int i = 0; i < icc_level_PROG; i++) dbgWrite (" "); }
 #define DBG_       { LEVEL dbgWrite ("        "); DBG_T_ dbgWrite (endl); }
 #define DBG_S_(txt){ LEVEL dbgWrite ("        "); DBG_T_ dbgWrite (txt << endl); }
@@ -181,10 +224,14 @@ extern int icc_debug;
 #define DBG_BED(n) if (icc_debug >= n && icc_debug < 10 || icc_debug == 1##n)
 #define DBG_BED2(n1,n2) if ((icc_debug >= n1 && icc_debug < 10) || icc_debug == 1##n1 || (icc_debug >= n2 && icc_debug < 10) || icc_debug == 1##n2 )
 #define DBG_NUM        DBG_BED(1) DBG
+#define DBG_NUM_START  DBG_BED2(1,9) DBG_START
+#define DBG_NUM_ENDE   DBG_BED2(1,9) DBG_ENDE
 #define DBG_NUM_S(txt) DBG_BED(1) DBG_S(txt)
 #define DBG_NUM_V(txt) DBG_BED(1) DBG_V(txt)
 #else
 #define DBG_NUM ;
+#define DBG_NUM_START
+#define DBG_NUM_ENDE
 #define DBG_NUM_S(txt) ;
 #define DBG_NUM_V(txt) ;
 #endif
@@ -237,6 +284,24 @@ namespace icc_examin_ns {
 }
 
 
+/* mathematische Helfer */
+
+#define MIN(a,b)    (((a) <= (b)) ? (a) : (b))
+#define MAX(a,b)    (((a) > (b)) ? (a) : (b))
+#define HYP(a,b)    sqrt( (a)*(a) + (b)*(b) )
+#define HYP3(a,b,c) sqrt( (a)*(a) + (b)*(b) + (c)*(c) )
+#define RUND(a)     ((a) + 0.5)
+
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
+
+#ifdef min
+#undef min
+#endif
+#ifdef max
+#undef max
+#endif
 
 /* ============================================================ */
 /* Provisorische Ausnahme-Klasse; von std::exception abstammend: */
@@ -267,15 +332,5 @@ public:
 #define WARN_S(txt) { printf ("%s:%d %s %s\n", __FILE__,__LINE__,_("!!! Warning !!!"), txt); }
 #define WARN_V(txt) { printf ("%s:%d %s %s %s\n", __FILE__,__LINE__,_("!!! Warning !!!"), #txt, txt); }
 #endif /* __cplusplus */
-
-
-/* mathematische Helfer */
-
-#define MIN(a,b)    (((a) <= (b)) ? (a) : (b))
-#define MAX(a,b)    (((a) > (b)) ? (a) : (b))
-#define HYP(a,b)    sqrt( (a)*(a) + (b)*(b) )
-#define HYP3(a,b,c) sqrt( (a)*(a) + (b)*(b) + (c)*(c) )
-#define RUND(a)     ((a) + 0.5)
-
 
 #endif /* ICC_UTILS_H */

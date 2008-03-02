@@ -468,8 +468,8 @@ void ICCfltkBetrachter::cb_menueintrag_oyranos(Fl_Menu_* o, void* v) {
 void ICCfltkBetrachter::cb_menueintrag_lang_i(Fl_Menu_*, void*) {
   system("echo $LANG");
 # ifdef USE_GETTEXT
-  printf("domain     : %s\n",textdomain(NULL));
-  printf("domain_path: %s\n",bindtextdomain(NULL,NULL));
+  DBG_S( "domain     : " << textdomain(NULL) );
+  DBG_S( "domain_path: " << bindtextdomain(NULL,NULL) );
 # endif
 }
 void ICCfltkBetrachter::cb_menueintrag_lang(Fl_Menu_* o, void* v) {
@@ -1038,6 +1038,11 @@ ard"));
   Fl_File_Icon::load_system_icons();
   Fl::get_system_colors();
   details->show((int)argc, (char**)argv);
+  { // plastic sets a background image, for others unset a transparent box
+    const char* style = Fl::scheme();
+    if(!style || (style && strstr(style,"plastic") == 0))
+      box_stat->box(FL_FLAT_BOX);
+  }
   DBG_PROG
   DBG_PROG_ENDE
   return details;
@@ -1215,7 +1220,7 @@ void ICCfltkBetrachter::mft_gl_boxAdd( const char ** names_short, const char** n
       o->copy_label( names_short[ kanal ] );
       o->callback( (Fl_Callback*)mft_gl_menueCb_ );
       o->user_data( (void*)(intptr_t)(GL_Ansicht::MENU_MAX + kanal) );
-      o->tooltip( strdup( names[ kanal ] ) );
+      o->tooltip( icc_strdup_m( names[ kanal ] ) );
       o->when(FL_WHEN_RELEASE);
       if(i-1 == actual)
         o->take_focus();

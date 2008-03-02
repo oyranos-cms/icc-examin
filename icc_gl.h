@@ -146,10 +146,10 @@ public:
   static Agviewer* getAgv(GL_Ansicht *me, GL_Ansicht *referenz);
 
   // fltk virtual
-  void draw();
-  int  handle(int event);
   void redraw();
 private:
+  void draw();
+  int  handle(int event);
   int  waiting_;       //!< dont generate and display new movement
 public:
   void show();
@@ -184,7 +184,7 @@ public:
   int  punktform;           //!< MENU_KUGEL MENU_WUERFEL MENU_STERN
   int  punktfarbe;          //!< MENU_GRAU MENU_FARBIG MENU_KONTRASTREICH
   int  punktgroesse;        //!< size in pixel
-  int  punkt_zahl_alt;
+  ICCnetz netz;             //!< internal net representation, thread entry
 
   float hintergrundfarbe;   //!< background colour / colour sheme
   float textfarbe[3];
@@ -254,7 +254,7 @@ public:
                       if (nach_farb_namen_.size()>i) 
                         return (const char*)nach_farb_namen_[i].c_str();
                       else  return _("not available"); }
-  unsigned int kanaele() {return nach_farb_namen_.size(); }
+  unsigned int kanaele() {return (unsigned int)nach_farb_namen_.size(); }
 };
 
 

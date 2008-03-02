@@ -26,12 +26,16 @@
  * 
  */
 
-/* Date:      Januar 2006 */
+/* Date:      Januar 2006-2007 */
 
 #ifndef FL_I18N_H
 #define FL_I18N_H
 
 #define FL_I18N_VERSION 101
+
+#if defined(WIN32) && !defined(__MINGW32__)
+#define USE_GETTEXT 1
+#endif
 
 #ifdef USE_GETTEXT
 # include <libintl.h>
@@ -44,10 +48,15 @@
 const char* threadGettext( const char* text);
 
 
+typedef enum {
+  FL_I18N_SETCODESET_NO,
+  FL_I18N_SETCODESET_SELECT,
+  FL_I18N_SETCODESET_UTF8
+} FL_I18N_SETCODESET;
 /** tell about the locale path and select locale from environment */
 int         fl_initialise_locale   ( const char   *domain,
                                      const char   *locale_paths,
-                                     int           set_codeset );
+                                     FL_I18N_SETCODESET set_codeset );
 /** help with searching for the right locale path */
 int         fl_search_locale_path  ( int           n_locale_paths,
                                      const char  **locale_paths,

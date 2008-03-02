@@ -30,6 +30,15 @@
 #ifndef ICC_ICC_H
 #define ICC_ICC_H
 
+#if defined(WIN32)
+#define LCMS_WIN_TYPES_ALREADY_DEFINED 1
+typedef char *LPSTR;
+typedef void *LPVOID;
+typedef void* LCMSHANDLE;
+
+#define cdecl
+#endif
+
 #include <lcms.h>
 
 /* additionals - not defined in icc34.h */

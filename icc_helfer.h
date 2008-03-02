@@ -35,13 +35,22 @@
 
 #include <string>
 #include <vector>
+#include <stddef.h> // size_t
 
 // file macros / partitialy from config.h
-#ifdef __WIN32__
+#ifdef WIN32
+#define ICC_DIR_SEPARATOR_C '\\'
+#define ICC_DIR_SEPARATOR "\\"
 #define PATH_SHELLSTRING ""
+#define my_uint64_t unsigned long long
 #else
+#define ICC_DIR_SEPARATOR_C '/'
+#define ICC_DIR_SEPARATOR "/" 
 #define PATH_SHELLSTRING "export PATH=$PATH:" PREFIX "/bin:~/bin; "
+#include <stdint.h>
+#define my_uint64_t uint64_t
 #endif
+
 
 #if HAVE_FLTK
 #include <FL/Fl_Widget.H>
@@ -58,12 +67,13 @@ void        fl_delayed_redraw ( void *Fl_Widget);
 const char* cp_nchar (char* text, int n);
 void *      myAllocFunc( size_t size );
 void        myDeAllocFunc( void * buf );
+void        oyStrAdd( std::string & text, const char * add );
 
 // helper functions
 // ICC helpers defined in icc_helfer.cpp
 icUInt16Number          icValue   (icUInt16Number val);
 icUInt32Number          icValue   (icUInt32Number val);
-unsigned long           icValue   (icUInt64Number val);
+my_uint64_t             icValue   (icUInt64Number val);
 double                  icSFValue (icS15Fixed16Number val);
 double                  icUFValue (icU16Fixed16Number val);
 double                  icUI16Value         (icUInt16Number val);
@@ -77,6 +87,12 @@ icColorSpaceSignature   icValue   (icColorSpaceSignature val);
 icPlatformSignature     icValue   (icPlatformSignature val);
 icProfileClassSignature icValue   (icProfileClassSignature val);
 icTagSignature          icValue   (icTagSignature val);
+icTagTypeSignature      icValue   (icTagTypeSignature val);
+icTechnologySignature   icValue   (icTechnologySignature val);
+icStandardObserver      icValue   (icStandardObserver val);
+icMeasurementGeometry   icValue   (icMeasurementGeometry);
+icMeasurementFlare      icValue   (icMeasurementFlare);
+icIlluminant            icValue   (icIlluminant);
 void                    icValueXYZ(icXYZNumber*, double X, double Y, double Z);
 
 const double*           XYZto_xyY (double* XYZ);
@@ -131,7 +147,7 @@ char*     ladeDatei                  ( std::string dateiname,
                                        size_t     *size );
 void      saveMemToFile              ( const char *filename,
                                        const char *block,
-                                       int         size );
+                                       size_t      size );
 #include "icc_speicher.h"
 Speicher  dateiNachSpeicher          ( const std::string & dateiname );
 void      dateiNachSpeicher          ( Speicher & s,
@@ -143,6 +159,7 @@ double    holeDateiModifikationsZeit ( const char *fullFileName );
 // file helpers
 const char* dateiName(const char* name);
 const char* dateiName(std::string name);
+std::string tempFileName ();
 
 
 // common
@@ -181,11 +198,151 @@ namespace icc_parser {
                                                  const char *trennzeichen );
 }
 
+// data structures
+// partitial in icc_speicher.h
+/** @brief list class template
+ */
+template <class T>
+class ICClist {
+  size_t     n_;          //!< the exposed number of elements
+  size_t     reserve_;    //!< the allocated elements in list_
+  T        * list_;       //!< the array of T
+  void       init() {
+    zero();
+    reserve_step = 10000/sizeof(T);
+  }
+  void       zero() {
+    list_ = NULL;
+    n_ = 0;
+    reserve_ = 0;
+  }
+public:
+             ICClist () {
+    init();
+  }
+             ICClist (int n) {
+    init();
+    reserve(n + reserve_step);
+  }
+  size_t reserve_step; //!< reserve of elements on some allocations
+  ICClist&   copy    (const ICClist & l) {
+    if(l.n_ > n_)
+      list_ = new T[l.n_];
+    if(l.n_)
+      for(size_t i = 0; i < l.n_; ++i)
+        list_[i] = l.list_[i];
+      //memcpy( list_, l.list_, l.n_ * sizeof(T*) );
+    n_ = l.n_;
+    reserve_ = n_;
+    return *this;
+  }
+  void       clear   () {
+    if(n_ && list_)
+      delete [] (list_);
+    zero();
+  }
+  const size_t size() const {
+    return n_;
+  }
+  operator const size_t () const {
+    return n_;
+  }
+  operator const size_t & () const {
+    return n_;
+  }
+  ICClist& operator = (const ICClist& l) {
+    return copy(l);
+  }
+  T &      operator [] (size_t i) {
+    //if(i < n_)
+      return list_[i];
+    /*else
+      DBG_PROG_S("out of range");
+    return list_[reserve_ + 1000000000]; // create exception */
+  }
+  const T& operator [] (const size_t i) const {
+    //if(i < n_)
+      return list_[i];
+    /*else
+      DBG_PROG_S("out of range");
+    return list_[reserve_ + 1000000000]; // create exception */
+  }
+  void     push_back( T x ) {
+    if(n_ >= reserve_)
+      reserve( n_ + 1 + reserve_step );
+    list_[n_] = x;
+    ++n_;
+  }
+  T *      begin() {
+    return &list_[0];
+  }
+  const T* begin() const {
+    return &list_[0];
+  }
+  T *      end() {
+    if(n_)
+      return &list_[n_ - 1];
+    else
+      return NULL;
+  }
+  const T* end() const {
+    if(n_)
+      return &list_[n_ - 1];
+    else
+      return NULL;
+  }
+  void       reserve (size_t x) {
+    if ( n_ == 0 && !reserve_ ) {
+      list_ = new T[x];
+      reserve_ = x;
+    } else if( reserve_ < x ) {
+      T* tmp = new T[x];
+      reserve_ = x;
+      for(size_t i = 0; i < n_; ++i)
+        tmp[i] = list_[i];
+      delete [] list_;
+      list_ = tmp;
+    }
+  }
+  void     insert( T* start_, const T* begin_, const T* end_ ) {
+    size_t news = (size_t)((intptr_t)(end_ - begin_)) + 1;
+    size_t begin_i = 0;
+    if(&list_[n_] < start_)
+      return;
+    if(begin_ > end_ || !begin_)
+      return;
+
+    if(start_)
+      begin_i =(size_t)((intptr_t)(start_ - begin()));
+    else
+      begin_i = 0;
+
+    reserve( begin_i + news + reserve_step );
+
+    if(start_)
+      start_ = &list_[begin_i];
+    else
+      start_ = &list_[0];
+
+    for(size_t i = 0; i < news; ++i)
+      start_[i] = begin_[i];
+    if( n_ < begin_i + news )
+      n_ = begin_i + news;
+  }
+  void     resize( size_t n ) {
+    if(n > reserve_)
+      reserve (n + reserve_step);
+    n_ = n;
+  }
+};
+
+
+
 // Callback structure
-typedef struct StructVoidInt
+/*typedef struct StructVoidInt
 {
   void* data;
   int   wert;
-};
+};*/
 
 #endif //ICC_HELFER_H

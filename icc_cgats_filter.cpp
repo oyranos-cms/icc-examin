@@ -167,7 +167,7 @@ CgatsFilter::setzeWortInAnfuehrungszeichen_( std::string &zeile,
           letze_anfuehrungsstriche = -1;
         } else {            // hinein
           in_anfuehrung = true;
-          letze_anfuehrungsstriche = pos;
+          letze_anfuehrungsstriche = (int)pos;
         }
       } else if( strchr( cgats_alnum_, zeile[pos] ) &&// ein Zeichen
                  !in_anfuehrung )                     // .. ausserhalb
@@ -177,7 +177,7 @@ CgatsFilter::setzeWortInAnfuehrungszeichen_( std::string &zeile,
         ++ende;
         ++pos;
         in_anfuehrung = true;
-        letze_anfuehrungsstriche = pos-1;
+        letze_anfuehrungsstriche = (int)pos-1;
         DBG_CGATS_S( zeile.substr( pos, ende-pos+1 ) )
       }
     }
@@ -233,7 +233,7 @@ CgatsFilter::unterscheideZiffernWorte_( std::string &zeile )
               letzes_anf_zeichen >= 0 )
             letzes_anf_zeichen = -1;
           else
-            letzes_anf_zeichen = pos3;
+            letzes_anf_zeichen = (int)pos3;
 
       // falls ein Anfuehrungszeichen vor dem Wort ungerade sind // ["" " ABC ]
       if( letzes_anf_zeichen >= 0 )
@@ -390,7 +390,7 @@ CgatsFilter::sucheInDATA_FORMAT_( std::string &zeile , int &zeile_n )
     }
   }
 
-  n = (unterscheideZiffernWorte_ (zeile)).size();
+  n = (int)(unterscheideZiffernWorte_ (zeile)).size();
 
   anfuehrungsstriche_setzen = anf_setzen;
 
@@ -413,7 +413,7 @@ CgatsFilter::zeilenOhneDuplikate_ ( std::vector<std::string> &zeilen )
       DBG_NUM_S( zeilen[i] <<"="<< zeilen[i+1] << " geloescht" )
       zeilen.erase( zeilen.begin()+i+1 );
       if( i+1 < zeilen.size() )
-        DBG_NUM_S( zeilen[i+1] )
+        DBG_NUM_S( zeilen[i+1] );
       ++n;
     }
   DBG_CGATS_V( zeilen.size() )
@@ -523,7 +523,7 @@ CgatsFilter::editZeile_( std::vector<std::string> &zeilen,
               ende = gtext.size()-1;
               DBG_CGATS_V( pos<<" "<<ende )
               DBG_CGATS_V( gtext.substr( pos, ende-pos +1 ) )
-              int size = gtext.size();
+              int size = (int)gtext.size();
               zeilen[i].erase( 0, size );
               setzeWortInAnfuehrungszeichen_( gtext, pos );
               zeilen[i].insert( 0, gtext );
@@ -632,7 +632,7 @@ CgatsFilter::cgats_korrigieren_               ()
   {
     // testweises Speichern
     std::ofstream f ( "AtestCGATS.txt",  std::ios::out );
-    f.write ( data_.c_str(), data_.size() );
+	f.write ( data_.c_str(), (std::streamsize)data_.size() );
     f.close();
   }
 
@@ -751,7 +751,7 @@ CgatsFilter::cgats_korrigieren_               ()
     if( im_data_format_block &&
         sucheWort (gtext, "END_DATA_FORMAT", 0 ) == std::string::npos )
     {
-      int size = gtext.size();
+      int size = (int)gtext.size();
       zeilen_[i].erase( 0, size );
       zaehler_FIELDS += sucheInDATA_FORMAT_( gtext, i );
       zeilen_[i].insert( 0, gtext );
@@ -829,7 +829,7 @@ CgatsFilter::cgats_korrigieren_               ()
           // Logbuch
           std::string alt = zeilen_[zeile_letztes_NUMBER_OF_FIELDS];
           // Hole eine kommentarfreie Zeile
-          int size = t.size();
+          int size = (int)t.size();
           zeilen_[zeile_letztes_NUMBER_OF_FIELDS].erase( 0, size );
           t = s.str();
           zeilen_[zeile_letztes_NUMBER_OF_FIELDS].insert( 0, t );
@@ -899,7 +899,7 @@ CgatsFilter::cgats_korrigieren_               ()
           // Logbuch
           std::string alt = zeilen_[zeile_letztes_NUMBER_OF_SETS];
           // Hole eine kommentarfreie Zeile
-          int size = t.size();
+          int size = (int)t.size();
           zeilen_[zeile_letztes_NUMBER_OF_SETS].erase( 0, size );
           t = s.str();
           zeilen_[zeile_letztes_NUMBER_OF_SETS].insert( 0, t );
@@ -948,7 +948,7 @@ CgatsFilter::cgats_korrigieren_               ()
       {
         if( typ_ == MAX_KORRIGIEREN )
         {
-          int size = gtext.size();
+          int size = (int)gtext.size();
           zeilen_[i].erase( 0, size );
           unterscheideZiffernWorte_( gtext );
           zeilen_[i].insert( 0, gtext );
@@ -993,7 +993,7 @@ CgatsFilter::logEintrag_ (std::string meldung, int zeile_n,
 {
   DBG_PROG_START
   // Logbuch
-  unsigned int l = log.size();
+  unsigned int l = (unsigned int)log.size();
   log.resize(l+1);
   if( eingabe != "" )
     log[l].eingabe.push_back( eingabe );

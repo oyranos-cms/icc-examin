@@ -135,50 +135,57 @@ wandelThreadId( Fl_Thread id )
 {
   int pos = -1;
   {
-    if      (pthread_equal( icc_thread_liste[THREAD_HAUPT], id ))
+    if      (iccThreadEqual( icc_thread_liste[THREAD_HAUPT], id ))
       pos = THREAD_HAUPT;
-    else if (pthread_equal( icc_thread_liste[THREAD_GL1], id ))
+    else if (iccThreadEqual( icc_thread_liste[THREAD_GL1], id ))
       pos = THREAD_GL1;
-    else if (pthread_equal( icc_thread_liste[THREAD_GL2], id ))
+    else if (iccThreadEqual( icc_thread_liste[THREAD_GL2], id ))
       pos = THREAD_GL2;
-    else if (pthread_equal( icc_thread_liste[THREAD_LADEN], id ))
+    else if (iccThreadEqual( icc_thread_liste[THREAD_LADEN], id ))
       pos = THREAD_LADEN;
-    else if (pthread_equal( icc_thread_liste[THREAD_WACHE], id ))
+    else if (iccThreadEqual( icc_thread_liste[THREAD_WACHE], id ))
       pos = THREAD_WACHE;
   }
   return pos;
 }
 
-void//std::string
-dbgThreadId()
+std::string
+dbgThreadId(Fl_Thread thread)
 {
-  //std::string s("??");
-  int dbg_id = wandelThreadId ( pthread_self() );
+  std::string s("??");
+  int dbg_id = wandelThreadId ( thread );
   //printf("%d\n", (int*)s.c_str());
   switch (dbg_id)
   {
     // in icc_thread_liste registred Fl_Thread's can be identified
     case THREAD_HAUPT:
-      dbgWrite( "\033[30m\033[1m[HAUPT]\033[m" ); break;
+      s = ( "\033[30m\033[1m[HAUPT]\033[m" ); break;
     case THREAD_GL1:
-      dbgWrite( "\033[33m\033[1m[GL  1]\033[m" ); break;
+      s = ( "\033[33m\033[1m[GL  1]\033[m" ); break;
     case THREAD_GL2:
-      dbgWrite( "\033[35m\033[1m[GL  2]\033[m" ); break;
+      s = ( "\033[35m\033[1m[GL  2]\033[m" ); break;
     case THREAD_LADEN:
-      dbgWrite( "\033[32m\033[1m[LADEN]\033[m" ); break;
+      s = ( "\033[32m\033[1m[LADEN]\033[m" ); break;
     case THREAD_WACHE:
-      dbgWrite( "\033[34m\033[1m[WACHE]\033[m" ); break;
+      s = ( "\033[34m\033[1m[WACHE]\033[m" ); break;
     default:
-      dbgWrite( "\033[31m\033[1m[" ); dbgWrite(/*s +=*/ dbg_id ); dbgWrite( "]\033[m" ); break;
+      s = ( "\033[31m\033[1m[" ); dbgWrite(/*s +=*/ dbg_id ); dbgWrite( "]\033[m" ); break;
   }
   //dbgWrite( s;
-  //return s;
+  return s;
+}
+
+void//std::string
+dbgThreadId()
+{
+  std::string s = dbgThreadId( iccThreadSelf() );
+  dbgWrite( s );
 }
 
 int
 iccLevel_PROG(int plus_minus_null)
 {
-  int pth = wandelThreadId( pthread_self() );
+  int pth = wandelThreadId( iccThreadSelf() );
   if(0 <= pth && pth < DBG_MAX_THREADS) {
     level_PROG_ [pth] = level_PROG_[pth] + plus_minus_null;
     if(level_PROG_ [pth] < 0)
@@ -190,3 +197,21 @@ iccLevel_PROG(int plus_minus_null)
   }
 }
 
+
+
+char*
+icc_strdup (const char* t)
+{
+  size_t len = 0;
+  char *temp = NULL;
+
+  if(t)
+     len = strlen(t);
+  if(len)
+  {
+    temp = (char*) malloc(len+1);
+    memcpy( temp, t, len );
+    temp[len] = 0;
+  }
+  return temp;
+}

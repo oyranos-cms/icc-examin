@@ -168,8 +168,7 @@ class TagTexts {open : {public Fl_Hold_Browser}
 
       this->topline(inspekt_topline);
       this->textfont(FL_COURIER);
-      this->textsize(14);} {selected
-    }
+      this->textsize(14);} {}
     code DBG_PROG_ENDE {}
   }
   Function {hinein(std::string text)} {open
@@ -312,7 +311,7 @@ class ICCfltkBetrachter {open
   setTitleUrl = true;} {}
     Fl_Window ueber {
       label {About ICC Examin} open
-      xywh {839 747 365 295} type Double resizable
+      xywh {844 749 365 295} type Double resizable
       code0 {o->hide();}
       code1 {o->use_escape_hide = true;}
       class {icc_examin_ns::MyFl_Double_Window} visible
@@ -353,7 +352,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window vcgt {
       label {Grafic Card Gamma Table} open
-      xywh {218 639 370 405} type Double resizable
+      xywh {223 639 370 405} type Double resizable
       code0 {o->hide();}
       code1 {o->use_escape_hide = true;}
       class {icc_examin_ns::MyFl_Double_Window} visible
@@ -390,7 +389,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window DD {
       label Gamut open
-      xywh {891 200 385 520} type Double box NO_BOX resizable
+      xywh {896 221 385 520} type Double box NO_BOX resizable
       class {icc_examin_ns::MyFl_Double_Window} visible
     } {
       Fl_Group {} {open
@@ -544,7 +543,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window details {
       label {ICC Examin} open
-      xywh {370 457 385 520} type Double box NO_BOX
+      xywh {375 478 385 520} type Double box NO_BOX
       code0 {o->main_win = o;}
       class {icc_examin_ns::MyFl_Double_Window} visible
     } {
@@ -641,8 +640,8 @@ class ICCfltkBetrachter {open
               label LANG
               callback {system("echo $LANG");
 \# ifdef USE_GETTEXT
-  printf("domain     : %s\\n",textdomain(NULL));
-  printf("domain_path: %s\\n",bindtextdomain(NULL,NULL));
+  DBG_S( "domain     : " << textdomain(NULL) );
+  DBG_S( "domain_path: " << bindtextdomain(NULL,NULL) );
 \# endif}
               tooltip {test LANG} xywh {80 80 100 20} hide deactivate
             }
@@ -857,7 +856,7 @@ icc_examin->testZeigen();}
           xywh {0 495 385 25} align 4
         } {
           Fl_Box box_stat {
-            label {...}
+            label {...} selected
             xywh {0 495 385 25} align 20
           }
           Fl_Progress load_progress {
@@ -885,6 +884,11 @@ icc_examin->testZeigen();}
   Fl_File_Icon::load_system_icons();
   Fl::get_system_colors();
   details->show((int)argc, (char**)argv);
+  { // plastic sets a background image, for others unset a transparent box
+    const char* style = Fl::scheme();
+    if(!style || (style && strstr(style,"plastic") == 0))
+      box_stat->box(FL_FLAT_BOX);
+  }
   DBG_PROG} {}
     code DBG_PROG_ENDE {}
   }
@@ -1061,7 +1065,7 @@ icc_examin->testZeigen();}
       o->copy_label( names_short[ kanal ] );
       o->callback( (Fl_Callback*)mft_gl_menueCb_ );
       o->user_data( (void*)(intptr_t)(GL_Ansicht::MENU_MAX + kanal) );
-      o->tooltip( strdup( names[ kanal ] ) );
+      o->tooltip( icc_strdup_m( names[ kanal ] ) );
       o->when(FL_WHEN_RELEASE);
       if(i-1 == actual)
         o->take_focus();

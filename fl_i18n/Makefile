@@ -1,5 +1,10 @@
+# automatically generated file by configure - do not edit
+LINUX = 1
 CXX = c++
 CC = cc
+CFLAGS   =   $(INCL) $(ARGYLL_H) $(DEBUG)
+CXXFLAGS =   $(INCL) $(ARGYLL_H) $(DEBUG)
+LDFLAGS  = -L.  $(dl) $(iconv)
 dl = -ldl
 X11 = X11
 X_H = -I/usr/X11R6/include -I/usr/include
@@ -17,9 +22,6 @@ fltkconfig = /data3/CD/programme/fltk118-utf8-2007-07-14/fltk-utf8-config
 GETTEXT = -DUSE_GETTEXT
 DEBUG = -Wall -g -DDEBUG --pedantic
 DEBUG_SWITCH = -v
-CFLAGS = -pipe -Wall -g -I/opt/local/include $(INCL)
-CXXFLAGS = -pipe -Wall -g -I/opt/local/include $(INCL)
-LDFLAGS = -Wall -g -L/usr/X11R6/lib -L/opt/local/lib -L. $(dl) $(iconv)
 TARGET=fl_i18n
 VERSION=0.0.2
 COMPILE_OPTIONS=-DUSE_THREADS $(GETTEXT)
@@ -74,12 +76,16 @@ ifdef LINUX
     I18N_LIB = $(LIBNAME)
     COPY = cp -vdpa
 else
+ifdef WIN32
+    OPTS=-Wall -g $(DEBUG) -Wunused -fno-exceptions  -lm $(COMPILE_OPTIONS)
+else
     OPTS=-Wall -g $(DEBUG) -Wunused -fno-exceptions -lc -lm $(COMPILE_OPTIONS)
+endif
     INCL= -I./
     RM = rm -f
     COPY = cp
     LIBLINK_FLAGS = -shared $(dl) -L./
-    I18N_LIB = $(iconv) $(intl) $(LIBNAME)
+    I18N_LIB = $(LIBNAME) $(iconv) $(intl)
 endif
 endif
 
@@ -209,9 +215,11 @@ $(LINGUAS_SRC):	$(POT_FILE)
               mkdir -v $${ling}/LC_MESSAGES; \
             fi; \
             test -L $${ling}/LC_MESSAGES/$(TARGET).mo \
-              && $(RM) $${ling}/LC_MESSAGES/$(TARGET).mo \
-              || echo $${ling}/LC_MESSAGES/$(TARGET).mo nicht gefunden; \
-            ln -s ../../$${lingua}.gmo $$ling/LC_MESSAGES/$(TARGET).mo;) \
+              && $(RM) $${ling}/LC_MESSAGES/$(TARGET).mo; \
+	    cd $${ling}/LC_MESSAGES; \
+            ln -s ../../$${lingua}.gmo $(TARGET).mo; \
+	    cd ../.. \
+	   ) \
         || (echo $${ling}.po is not yet ready ... skipping) \
 	done;
 

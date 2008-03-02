@@ -313,10 +313,12 @@ oyNamedColourGetLab ( oyNamedColour_s * colour,
   int i;
   if(lab)
     for(i=0;i<3;++i) 
+    {
       if(colour)
         lab[i] = colour->lab[i];
       else
         oyCopyColour( 0, lab, 1, icSigLabData );
+    }
 }
 
 void
@@ -360,11 +362,10 @@ oyNamedColourGetName( oyNamedColour_s * colour )
     return colour->name;
 
   colour->name = (char*) colour->allocateFunc(80);
-  snprintf( colour->name, 80, "L:%.02f a:%.02f b:%.02f %s%s%s",
-            colour->lab[0], colour->lab[1], colour->lab[2],
-            colour->nick_name ? "[" : "",
+  snprintf( colour->name, 80, "%s%sLab: %.02f %.02f %.02f",
             colour->nick_name ? colour->nick_name : "",
-            colour->nick_name ? "] " : ""
+            colour->nick_name ? " - " : "",
+            colour->lab[0], colour->lab[1], colour->lab[2]
              );
     
   return colour->name;
@@ -412,7 +413,7 @@ oyNamedColourGetDescription( oyNamedColour_s * colour )
   if(colour->sig)
   {
     int len = strlen(colour->name_long);
-    snprintf(&colour->name_long[len], 80-len, " %s: {",
+    snprintf(&colour->name_long[len], 80-len, " %s:",
              oyColourSpaceGetName( colour->sig ) );
     for(i=0; i < c && c < 32; ++i)
     {
@@ -420,7 +421,7 @@ oyNamedColourGetDescription( oyNamedColour_s * colour )
       snprintf(&colour->name_long[len], 80-len, " %.02f", colour->channels[i]);
     }
     len = strlen(colour->name_long);
-    snprintf(&colour->name_long[len], 80-len, "}");
+    /*snprintf(&colour->name_long[len], 80-len, "");*/
   }
 
   return colour->name_long;

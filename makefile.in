@@ -33,7 +33,7 @@ ALL_INCL = $(INCL) \
 CFLAGS_ = $(CFLAGS) $(DEBUG) $(ALL_INCL)
 CXXFLAGS_ = $(CXXFLAGS) $(DEBUG) $(ALL_INCL)
 
-LDLIBS = $(LDFLAGS) -L$(libdir) -L./ $(LIBFL_I18N) $(FLTK_LIBS) $(FLU_LIBS) \
+LDLIBS = $(LDFLAGS) -L$(libdir) -L./ $(LIBFL_I18N) $(FLTK_LIBS) \
 	$(X11_LIBS) -llcms -L/lib $(OYRANOS_LIBS) $(LCMS_LIBS) \
 	$(FTGL_LIBS) $(I18N_LIB) $(DBG_LIBS) $(LIBNAME) $(CWLIB)
 
@@ -119,7 +119,8 @@ CINEPAINT_SOURCES = icc_cinepaint.cpp
 COMMON_CFILES =  \
 	icc_oyranos_extern.c \
 	flstring.c \
-	vsnprintf.c
+	vsnprintf.c \
+	icc_argyll.c
 CFILES = \
 	$(COMMON_CFILES)
 CPPFILES = \
@@ -317,9 +318,11 @@ $(LINGUAS_SRC):	$(POT_FILE)
               mkdir -p $${ling}/LC_MESSAGES; \
             fi; \
             test -L $${ling}/LC_MESSAGES/$(TARGET).mo \
-              && $(RM) $${ling}/LC_MESSAGES/$(TARGET).mo \
-              || echo $${ling}/LC_MESSAGES/$(TARGET).mo nicht gefunden; \
-            ln -s ../../$${lingua}.gmo $$ling/LC_MESSAGES/$(TARGET).mo;) \
+              && $(RM) $${ling}/LC_MESSAGES/$(TARGET).mo; \
+	    cd $${ling}/LC_MESSAGES; \
+            ln -s ../../$${lingua}.gmo $(TARGET).mo; \
+	    cd ../.. \
+	   ) \
         || (echo $${ling}.po is not yet ready ... skipping) \
 	done;
 

@@ -72,7 +72,7 @@ class ICCheader {
                                      sizeof (icSignature)); }
     const char* cmmName () const
                   { DBG_PROG  return cp_nchar((char*)&(header.cmmId),
-                                              sizeof (icSignature)+1); }
+                                              sizeof (icSignature)); }
     int         version () const
                   { DBG_PROG  return icValue(header.version); }
     void        version (icUInt32Number v)
@@ -94,7 +94,7 @@ class ICCheader {
     std::string dateTime() const;
     const char* magicName () const
                   { DBG_PROG  return cp_nchar ((char*)&(header.  magic),
-                                                      sizeof (icSignature)+1); }
+                                                      sizeof (icSignature)); }
     void        set_magic ()
                   { DBG_PROG const char* m= {"acsp"};
                                                 header.magic= *(icSignature*)m;}
@@ -117,13 +117,13 @@ class ICCheader {
                                               ((char*)&header.flags)[0] & 0xbf;}
     const char* manufacturerName() const
                   { DBG_PROG  return cp_nchar ((char*)&(header. manufacturer),
-                                                      sizeof (icSignature)+1); }
+                                                      sizeof (icSignature)); }
     void        set_manufacturer () 
                   { DBG_PROG  const char* m= {"none"};
                     header.manufacturer= *(icSignature*)m; }
     const char* modelName () const
                   { DBG_PROG  return cp_nchar ((char*)&(header.  model),
-                                                sizeof (icSignature)+1); }
+                                                sizeof (icSignature)); }
     void        set_model ()
                   { DBG_PROG  const char* m={"none"}; header.model= *(icSignature*)m;}
     std::string attributes () const;
@@ -163,7 +163,7 @@ class ICCheader {
                                                   0.9642, 1.0000,0.8249); }
     const char* creatorName () const
                   { DBG_PROG return cp_nchar((char*)&(header.  creator),
-                                                      sizeof (icSignature)+1); }
+                                                      sizeof (icSignature)); }
     void        set_creator ()
                   { DBG_PROG const char* m = {"Oyra"};
                     header.creator = *(icSignature*)m; }

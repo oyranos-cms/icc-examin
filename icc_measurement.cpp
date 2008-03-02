@@ -339,7 +339,7 @@ ICCmeasurement::leseTag (void)
       return;
     }
 
-    int _nKanaele = cgats.messungen[m].felder[0].size();
+    int _nKanaele = (int)cgats.messungen[m].felder[0].size();
     bool _sample_name = false;
     bool _sample_id = false;
     bool _id_vor_name = false;
@@ -575,7 +575,7 @@ ICCmeasurement::init (void)
     leseTag ();
   }
   if (RGB_MessFarben_.size() != 0)
-    DBG_NUM_V( RGB_MessFarben_.size() )
+    DBG_NUM_V( RGB_MessFarben_.size() );
 
   if (profile_ &&
       profile_->data_type == ICCprofile::ICCprofileDATA )
@@ -883,7 +883,7 @@ ICCmeasurement::init_umrechnen                     (void)
       size_t groesse = 0;
       const char* block = 0;
       block = const_cast<char*>( icc_oyranos.proof(groesse) );
-      hProof = cmsOpenProfileFromMem(const_cast<char*>(block), groesse);
+      hProof = cmsOpenProfileFromMem(const_cast<char*>(block), (DWORD)groesse);
       if( !hProof ) WARN_S("hProof is empty")
     }
 
@@ -898,7 +898,7 @@ ICCmeasurement::init_umrechnen                     (void)
 #   define TYPE_nCOLOUR_DBL (COLORSPACE_SH(PT_ANY)|CHANNELS_SH(channels_)|BYTES_SH(0))
       if( profile_->size() )
         hCOLOUR = cmsOpenProfileFromMem (const_cast<char*>(profile_->data_),
-                                         profile_->size_);
+                                         (DWORD)profile_->size_);
       else { // alternative
         size_t groesse = 0;
         const char* block = 0;
@@ -915,7 +915,7 @@ ICCmeasurement::init_umrechnen                     (void)
           WARN_S("no suitable default profile found")
           goto Kein_Profil; //TODO
         } else
-          hCOLOUR = cmsOpenProfileFromMem(const_cast<char*>(block), groesse);
+          hCOLOUR = cmsOpenProfileFromMem(const_cast<char*>(block), (DWORD)groesse);
       }
       if( !hCOLOUR )
         WARN_S("hCOLOUR is empty")
@@ -990,13 +990,13 @@ ICCmeasurement::init_umrechnen                     (void)
       RGB_ProfilFarben_.resize(nFelder_);
 
       if( (int)XYZ_Satz_.size() != nFelder_ )
-        DBG_PROG_S("XYZ_Satz_.size() and nFelder_ are unequal")
+        DBG_PROG_S("XYZ_Satz_.size() and nFelder_ are unequal");
       if( (int)Lab_Satz_.size() != nFelder_ )
-        DBG_PROG_S("Lab_Satz_.size() and nFelder_ are unequal")
+        DBG_PROG_S("Lab_Satz_.size() and nFelder_ are unequal");
       if( RGB_Satz_.size() && (int)RGB_Satz_.size() != nFelder_ )
-        WARN_S("RGB_Satz_.size() and nFelder_ are unequal")
+        WARN_S("RGB_Satz_.size() and nFelder_ are unequal");
       if( CMYK_Satz_.size() && (int)CMYK_Satz_.size() != nFelder_ )
-        WARN_S("CMYK_Satz_.size() and nFelder_ are unequal")
+        WARN_S("CMYK_Satz_.size() and nFelder_ are unequal");
       for (int i = 0; i < nFelder_; i++)
       {
         if (XYZ_measurement_ || LAB_measurement_)

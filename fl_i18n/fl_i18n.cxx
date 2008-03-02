@@ -37,6 +37,14 @@
 #include <cstdlib>
 #include <cstring>
 
+#if !defined(WIN32) || (defined(WIN32) && defined(__MINGW32__))
+#define fl_i18n_printf(text) printf text
+static int lc = LC_MESSAGES;
+#else
+#define fl_i18n_printf(text)
+static int lc = LC_ALL;
+#endif
+
 /* include pthread.h here for threads support */
 #ifdef USE_THREADS
 #include "threads.h"
@@ -52,7 +60,21 @@
 #include "../icc_utils.h"
 #else
 #ifndef icc_strdup_m
-#define icc_strdup_m strdup
+char* icc_strdup_m (const char* t)
+{
+  size_t len = 0;
+  char *temp = NULL;
+
+  if(t)
+    len = strlen(t);
+  if(len)
+  {
+    temp = (char*) malloc(len+1);
+    memcpy( temp, t, len );
+    temp[len] = 0;
+  }
+  return temp;
+}
 #endif
 /*extern int icc_debug;*/
 #endif
@@ -79,7 +101,7 @@
 int
 fl_set_codeset_    ( const char* lang, const char* codeset_,
                      char* locale, char* codeset,
-                     int set_codeset )
+                     FL_I18N_SETCODESET set_codeset )
 {
     if( strlen(locale) )
     {
@@ -90,14 +112,17 @@ fl_set_codeset_    ( const char* lang, const char* codeset_,
         sprintf (codeset, codeset_); DBG_PROG_V( locale <<" "<< strrchr(locale,'.'))
  
           /* merge charset with locale string */
-        if(set_codeset)
+        if(set_codeset != FL_I18N_SETCODESET_NO)
         {
           if((pos = strrchr(locale,'.')) != 0)
           {
             *pos = 0; DBG_PROG_V( locale )
           } else
             pos = & locale[strlen(locale)];
-          snprintf(pos, TEXTLEN-strlen(locale), ".%s",codeset);
+          if(set_codeset == FL_I18N_SETCODESET_SELECT)
+            snprintf(pos, TEXTLEN-strlen(locale), ".%s",codeset);
+          else if(set_codeset == FL_I18N_SETCODESET_UTF8)
+            snprintf(pos, TEXTLEN-strlen(locale), ".%s","UTF-8");
         }
         DBG_PROG_V( locale )
 
@@ -105,7 +130,7 @@ fl_set_codeset_    ( const char* lang, const char* codeset_,
         {
           char *settxt = (char*)calloc(sizeof(char), TEXTLEN);
           if(!settxt) {
-            printf("%s:%d %s() no memory available",__FILE__,__LINE__,__func__);
+            fl_i18n_printf(("%s:%d no memory available",__FILE__,__LINE__));
             return 1;
           }
           snprintf( settxt, 63, "LANG=%s", locale );
@@ -119,10 +144,19 @@ fl_set_codeset_    ( const char* lang, const char* codeset_,
 #endif
 
         /* 1c. set the locale info after LANG */
-        if(set_codeset)
         {
-          char *ptr = setlocale (LC_MESSAGES, "");
-          if(ptr) snprintf( locale, TEXTLEN, ptr); DBG_PROG_V( locale )
+        char* ptr = NULL;
+        switch(set_codeset)
+        {
+        case FL_I18N_SETCODESET_SELECT:
+            ptr = setlocale (lc, "");
+            break;
+        case FL_I18N_SETCODESET_UTF8:
+            ptr = setlocale (lc, locale);
+            break;
+        default: break;
+        }
+        if(ptr) snprintf( locale, TEXTLEN, ptr); DBG_PROG_V( locale )
         }
       }
     }
@@ -148,8 +182,8 @@ fl_search_locale_path (int n_places, const char **locale_paths,
       char *test = (char*) calloc(sizeof(char), 1024);
       FILE *fp = 0;
       if(!test) {
-        printf("%s:%d Could not allocate enough memory.",
-            __FILE__,__LINE__);
+        fl_i18n_printf(("%s:%d Could not allocate enough memory.",
+            __FILE__,__LINE__));
         return -1;
       }
       /* construct the full path to a possibly valid locale file */
@@ -173,7 +207,7 @@ fl_search_locale_path (int n_places, const char **locale_paths,
 
 int
 fl_initialise_locale( const char *domain, const char *locale_path,
-                      int set_codeset )
+                      FL_I18N_SETCODESET set_codeset )
 {
 
 #ifdef USE_GETTEXT
@@ -190,8 +224,8 @@ fl_initialise_locale( const char *domain, const char *locale_path,
   int ret = 0;
 
   if(!locale || !codeset) {
-    printf("%s:%d %s() Could not allocate enough memory.",
-            __FILE__,__LINE__,__func__);
+    fl_i18n_printf(("%s:%d Could not allocate enough memory.",
+            __FILE__,__LINE__));
     return 1;
   }
 
@@ -219,7 +253,7 @@ fl_initialise_locale( const char *domain, const char *locale_path,
   DBG_PROG_V( locale )
 
   // set the locale info
-  if(strlen(locale) && set_codeset)
+  if(strlen(locale) && set_codeset == FL_I18N_SETCODESET_SELECT)
   {
      setlocale (LC_MESSAGES, locale);
   }
@@ -232,16 +266,16 @@ fl_initialise_locale( const char *domain, const char *locale_path,
   // 1. get default locale info ..
     // use the standard way
     // this is dangerous
-  char *temp = setlocale (LC_MESSAGES, NULL);
+  char *temp = setlocale (lc, NULL);
   char *previous_locale = temp ? icc_strdup_m(temp) : NULL;
-  temp = setlocale (LC_MESSAGES, "");
+  temp = setlocale (lc, "");
   char *tmp = temp ? icc_strdup_m(temp) : NULL;
   if(tmp) {
     snprintf(locale,TEXTLEN, tmp);
     DBG_PROG_V( locale )
   }
   /*if(!set_codeset)
-    setlocale (LC_MESSAGES, previous_locale);*/
+    setlocale (lc, previous_locale);*/
   if(previous_locale) free(previous_locale); previous_locale = NULL;
   if(tmp) free(tmp); tmp = NULL;
 
@@ -357,8 +391,16 @@ fl_initialise_locale( const char *domain, const char *locale_path,
   DBG_PROG_S( _("try locale in ") << bdtd );
 
   // 4. set our charset
-  if(set_codeset)
-    cs = bind_textdomain_codeset(domain, codeset);
+  switch(set_codeset)
+  {
+  case FL_I18N_SETCODESET_SELECT:
+       cs = bind_textdomain_codeset(domain, codeset);
+       break;
+  case FL_I18N_SETCODESET_UTF8:
+       cs = bind_textdomain_codeset(domain, "UTF-8");
+       break;
+  default: break;
+  }
 
   // 5. our translations
   txd = textdomain (domain);

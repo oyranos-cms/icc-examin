@@ -39,9 +39,11 @@
 
 #include <cmath>
 
-#define g_message printf
-
-
+#if (!defined(WIN32) || (defined(WIN32) && defined(__MINGW32__)))
+# define g_message printf
+#else
+# define g_message(text) 
+#endif
 
 /**
   *  @brief ICCprofile functions

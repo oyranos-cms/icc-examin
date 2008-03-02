@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2005  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2007  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -36,13 +36,14 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include <string.h>
+//#include <string.h>
 
-
-void dump_vrml_header (char *vrml);
+extern "C" {
+int iccCreateArgyllVrml( const char* prof_name, int intent, double * volume );
+}
 
 int
-erase_file (const char *file)
+eraseFile (const char *file)
 {
   FILE *fp;
 
@@ -57,9 +58,8 @@ erase_file (const char *file)
   return 1;
 }
 
-
 std::string
-icc_create_vrml( const char* p, int size, int intent )
+iccCreateVrml( const char* p, int size, int intent )
 {
   DBG_PROG_START
   std::string vrml;
@@ -67,13 +67,10 @@ icc_create_vrml( const char* p, int size, int intent )
   if (!p || !size)
     return vrml;
 
-  std::stringstream profil_temp_name, s;
-  if(getenv("TMPDIR"))
-    profil_temp_name << getenv("TMPDIR") << "/oyranos_" << time(0) ;
-  else
-    profil_temp_name << "/tmp/oyranos_" << time(0) ;
-  DBG_PROG_V( profil_temp_name.str() )
-  std::string ptn = profil_temp_name.str(); ptn.append(".icc");
+  std::string profil_temp_name = tempFileName();
+  std::stringstream s;
+  DBG_PROG_V( profil_temp_name )
+  std::string ptn = profil_temp_name; oyStrAdd( ptn, ".icc");
 
   // save
   {
@@ -87,8 +84,15 @@ icc_create_vrml( const char* p, int size, int intent )
     }
     f.close();
   }
-  // generate vrml - argyll variant
+
   int ret;
+#ifdef USE_ARGYLL
+  double volume = 0;
+  ret = iccCreateArgyllVrml( ptn.c_str(), intent, &volume );
+  DBG_V(volume)
+
+#else
+  // generate vrml - argyll external variant
 # if APPLE
   std::string argyll_bundle_pfad = icc_examin_ns::holeBundleResource("iccgamut",
                                                                      "");
@@ -96,7 +100,7 @@ icc_create_vrml( const char* p, int size, int intent )
     icc_parser::suchenErsetzen(argyll_bundle_pfad," ","\\ ",0);
     s << argyll_bundle_pfad;
   } else
-# endif
+# endif /* __APPLE__ */
   {
     DBG_PROG_V( PATH_SHELLSTRING )
     s.str("");
@@ -116,14 +120,18 @@ icc_create_vrml( const char* p, int size, int intent )
   DBG_PROG_V( s.str() )
   std::string icc_sys_c = s.str();
   ret = system (icc_sys_c.c_str()); DBG_PROG
-  ptn = profil_temp_name.str(); ptn.append(".icc");
-  erase_file (ptn.c_str());
-  ptn = profil_temp_name.str(); ptn.append(".gam");
-  erase_file (ptn.c_str());
+#endif /* USE_ARGYLL */
+
+  ptn = profil_temp_name; oyStrAdd( ptn, ".icc");
+# ifndef DEBUG
+  eraseFile (ptn.c_str());
+# endif
+  ptn = profil_temp_name; oyStrAdd( ptn, ".gam");
+  eraseFile (ptn.c_str());
 
   // open file
   {
-    ptn = profil_temp_name.str(); ptn.append(".wrl");
+    ptn = profil_temp_name; oyStrAdd( ptn, ".wrl" );
 
     DBG_PROG
 
@@ -152,68 +160,85 @@ icc_create_vrml( const char* p, int size, int intent )
       vrml = data;
       free(data);
     }
-    erase_file (ptn.c_str());
+    eraseFile (ptn.c_str());
   }
 
   DBG_PROG_ENDE
   return vrml;
 }
 
+#if 0
+void dumpVrmlHeader (char *vrml);
+
 int 
 create_vrml              ( const char *profilA, char *profilB, char *vrml)
 {
-  char system_befehl[1024];
+  char *system_befehl = NULL;
   int r;
 
   if (!vrml || (!profilA && !profilB))
   return (0);
 
-  erase_file (vrml);
-  dump_vrml_header (vrml);
+  eraseFile (vrml);
+  dumpVrmlHeader (vrml);
+  std::string profil_temp_name = tempFileName();
+  std::string icc = profil_temp_name; icc += ".icc";
+  std::string wrl = profil_temp_name; wrl += ".wrl";
+  std::string gam = profil_temp_name; gam += ".gam";
 
   // gamut A
   if (profilA) {
-  if (!erase_file ("/tmp/tmpA.icc")) remove ("/tmp/tmpA.icc");
-  sprintf (system_befehl, "ln -s \"%s\" /tmp/tmpA.icc", profilA);
+  if (!eraseFile (icc.c_str())) remove (icc.c_str());
+  char * system_befehl = (char*) malloc( strlen(profilA) + icc.size()*3 + 64 );
+  sprintf (system_befehl, "ln -s \"%s\" \"%s\"", profilA, icc.c_str());
   r = system (system_befehl);
-  r = system ("iccgamut -n -w -d 6.0 /tmp/tmpA.icc");
-  erase_file ("/tmp/tmpA.wrl");
-  erase_file ("/tmp/tmpA.icc");
-  r = system ("viewgam -n -c n /tmp/tmpA.gam /tmp/tmp.wrl");
-  sprintf (system_befehl ,"cat /tmp/tmp.wrl >> \"%s\"", vrml);
+  sprintf (system_befehl, "iccgamut -n -w -d 6.0 \"%s\"", icc.c_str());
   r = system (system_befehl);
-  erase_file ("/tmp/tmp.wrl");
+  eraseFile (wrl.c_str());
+  eraseFile (icc.c_str());
+  sprintf (system_befehl, "viewgam -n -c n \"%s\" \"%s\"", gam.c_str(), wrl.c_str());
+  r = system (system_befehl);
+  sprintf (system_befehl ,"cat \"%s\" >> \"%s\"", wrl.c_str(),  vrml);
+  r = system (system_befehl);
+  eraseFile (wrl.c_str());
   }
 
+  profil_temp_name = tempFileName();
+  std::string icc2 = profil_temp_name; icc2 += ".icc";
+  std::string wrl2 = profil_temp_name; wrl2 += ".wrl";
+  std::string gam2 = profil_temp_name; gam2 += ".gam";
   // gamut B transparent
   if (profilB) {
-  if (!erase_file ("/tmp/tmpB.icc")) remove ("/tmp/tmpB.icc");
-  sprintf (system_befehl, "ln -s \"%s\" /tmp/tmpB.icc", profilB);
+  if (!eraseFile (icc2.c_str())) remove (icc2.c_str());
+  sprintf (system_befehl, "ln -s \"%s\" \"%s\"", profilB, icc2.c_str());
   r = system (system_befehl);
-  r = system ("iccgamut -n -w -d 6.0 /tmp/tmpB.icc");
-  erase_file ("/tmp/tmpB.wrl");
-  erase_file ("/tmp/tmpB.icc");
-  r = system ("viewgam -n -t 0.5 -c w /tmp/tmpB.gam /tmp/tmp.wrl");
-  sprintf (system_befehl ,"cat /tmp/tmp.wrl >> \"%s\"", vrml);
+  sprintf (system_befehl, "iccgamut -n -w -d 6.0 \"%s\"", icc2.c_str());
   r = system (system_befehl);
-  erase_file ("/tmp/tmp.wrl");
+  eraseFile (wrl2.c_str());
+  eraseFile (icc2.c_str());
+  sprintf (system_befehl, "viewgam -n -t 0.5 -c w \"%s\" \"%s\"", gam2.c_str(), wrl.c_str() );
+  r = system (system_befehl);
+  sprintf (system_befehl ,"cat \"%s\" >> \"%s\"", wrl.c_str(), vrml);
+  r = system (system_befehl);
+  eraseFile (wrl.c_str());
   }
 
   // differences
   if (profilA && profilB) {
-  r = system ("smthtest /tmp/tmpA.gam /tmp/tmpB.gam /tmp/tmp.wrl");
-  sprintf (system_befehl ,"cat /tmp/tmp.wrl >> \"%s\"", vrml);
+  sprintf (system_befehl, "smthtest \"%s\" \"%s\" \"%s\"", gam.c_str(), gam2.c_str(), wrl.c_str());
   r = system (system_befehl);
-  erase_file ("/tmp/tmp.wrl");
-  erase_file ("/tmp/tmpA.gam");
-  erase_file ("/tmp/tmpB.gam");
+  sprintf (system_befehl ,"cat \"%s\" >> \"%s\"", wrl.c_str(), vrml);
+  r = system (system_befehl);
+  eraseFile (wrl.c_str());
+  eraseFile (gam.c_str());
+  eraseFile (gam2.c_str());
   }
 
   return 0;  
 }
 
 void
-dump_vrml_header (char *vrml)
+dumpVrmlHeader (char *vrml)
 {
   FILE *fp;
   char vrml_text[] = "#VRML V2.0 utf8 \nTransform { children [ DirectionalLight { color 0.500000 0.500000 0.500000 } Viewpoint { position 0 0 255 } ] } Transform { children [ NavigationInfo { avatarSize [ 0.250000 1.600000 0.750000 ] type [ \"EXAMINE\" ] } Transform { children [ Shape { appearance 	  Appearance { material 	    Material { diffuseColor 0.495000 0 0 } } geometry 	  Box { size 100 2 2 } } ] scale 1 0.500000 0.500000 translation 50 0 -50 } Transform { children [ Shape { appearance 	  Appearance { material 	    Material { diffuseColor 0 0 0.504998 } } geometry 	  Box { size 2 100 2 } } ] scale 0.500000 1 0.500000 translation 0 -50 -50 } Transform { children [ Shape { appearance 	  Appearance { material 	    Material { diffuseColor 0 0.504998 0 } } geometry 	  Box { size 100 2 2 } } ] scale 1 0.500000 0.500000 translation -50 0 -50 } Transform { children [ Shape { appearance 	  Appearance { material 	    Material { diffuseColor 1 1 0 } } geometry 	  Box { size 2 100 2 } } ] scale 0.500000 1 0.500000 translation 0 50 -50 } Shape { appearance       Appearance { material 	Material { diffuseColor 0.699998 0.699998 0.699998 } } geometry       Box { size 1 1 100 } } ] } Group { children [ Transform { children [ Billboard { axisOfRotation 0 0 0 children [ Shape { appearance 	      Appearance { material 		Material { } } geometry 	      Text { string [ \"*L=100\" ] } } ] } ] scale 5 5 5 translation 0 0 52 } Transform { children [ Billboard { axisOfRotation 0 0 0 children [ Shape { appearance 	      Appearance { material 		Material { } } geometry 	      Text { string [ \"*L= 0\" ] } } ] bboxSize 1 1 1 } ] scale 5 5 5 translation 0 0 -57 } ] } Viewpoint { fieldOfView 0.790000 orientation 0.999990 1.788147e-3 -3.940986e-3 1.515311 position 0 -340 20 } Background { groundColor [ 0.500000 0.500000 0.500000 ] skyColor [ 0.500000 0.500000 0.500000 ] } ";
@@ -228,4 +253,5 @@ dump_vrml_header (char *vrml)
   }
 }
 
+#endif
 
