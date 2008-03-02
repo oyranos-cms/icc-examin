@@ -46,12 +46,13 @@ static void cb_menueintrag_Voll(Fl_Menu_*, void*) {
 static void cb_menueintrag_inspekt(Fl_Menu_*, void*) {
   if (inspekt_zeigen) {
     inspekt_zeigen = false;
-    /*inspekt->hide();
-    examin->show();*/
+    inspekt->hide();
+    examin->show();
   } else {
     inspekt_zeigen = true;
-    /*inspekt->show();
-    examin->hide();*/
+    inspekt->show();
+    examin->hide();
+    inspekt_html->value(profile.report().c_str());
   };
 }
 
@@ -98,6 +99,8 @@ TagTexts *mft_text=(TagTexts *)0;
 Fl_Box *mft_gl=(Fl_Box *)0;
 
 Fl_Group *inspekt=(Fl_Group *)0;
+
+Fl_Help_View *inspekt_html=(Fl_Help_View *)0;
 
 Fl_Box *stat=(Fl_Box *)0;
 
@@ -206,16 +209,19 @@ int main(int argc, char **argv) {
         Fl_Group::current()->resizable(o);
       }
       { Fl_Group* o = inspekt = new Fl_Group(0, 25, 385, 470);
+        { Fl_Help_View* o = inspekt_html = new Fl_Help_View(0, 25, 385, 470, "Inspect");
+          o->align(FL_ALIGN_CENTER|FL_ALIGN_INSIDE);
+        }
         o->hide();
         o->end();
       }
-      { Fl_Group* o = new Fl_Group(0, 495, 385, 25);
-        { Fl_Box* o = stat = new Fl_Box(0, 495, 385, 25, "No wrl file loaded.");
+      { Fl_Group* o = new Fl_Group(0, 494, 385, 25);
+        { Fl_Box* o = stat = new Fl_Box(0, 494, 385, 25, "No wrl file loaded.");
           o->box(FL_THIN_DOWN_BOX);
           o->color((Fl_Color)53);
           o->align(FL_ALIGN_LEFT|FL_ALIGN_INSIDE);
         }
-        { Fl_Progress* o = load_progress = new Fl_Progress(0, 495, 385, 25, "Laden ..");
+        { Fl_Progress* o = load_progress = new Fl_Progress(0, 494, 385, 25, "Laden ..");
           o->color((Fl_Color)53);
           o->hide();
           o->maximum(1.0);
@@ -309,6 +315,9 @@ std::string open(int interaktiv) {
   DBG
 
   tag_browser->reopen ();
+
+  if (inspekt_zeigen)
+    inspekt_html->value(profile.report().c_str());
 
   return filename;
 }

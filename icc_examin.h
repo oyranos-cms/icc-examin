@@ -49,6 +49,8 @@ extern TagTexts *mft_text;
 #include <FL/Fl_Box.H>
 extern Fl_Box *mft_gl;
 extern Fl_Group *inspekt;
+#include <FL/Fl_Help_View.H>
+extern Fl_Help_View *inspekt_html;
 extern Fl_Box *stat;
 #include <FL/Fl_Progress.H>
 extern Fl_Progress *load_progress;

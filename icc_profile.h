@@ -19,8 +19,9 @@
 
 // Zusätze - nicht definiert in icc34.h
 
+#ifndef icSigChromaticityType
 #define icSigChromaticityType 0x6368726D
-
+#endif
 
 // interne Funktionen
 
@@ -196,6 +197,8 @@ class ICCmeasurement {
     void                clear(void);
   private:
     void                init_meas (void);
+    void                init_umrechnen (void);
+    void                pruefen (void);
     icTagSignature      _sig;
     int                 _size;
     char*               _data;
@@ -207,11 +210,16 @@ class ICCmeasurement {
     bool                _XYZ_measurement;
     bool                _RGB_measurement;
     bool                _CMYK_measurement;
+
     std::vector<XYZ>    _XYZ_Satz;
     std::vector<RGB>    _RGB_Satz;
     std::vector<CMYK>   _CMYK_Satz;
-    std::vector<std::string> _Feldnamen;
 
+    std::vector<std::string> _Feldnamen;
+    std::vector<XYZ>    _XYZ_Ergebnis;
+    std::vector<RGB>    _RGB_MessFarben;
+    std::vector<RGB>    _RGB_ProfilFarben;
+    std::vector<std::vector<std::string> > _reportTabelle;
   public:
     void                load (ICCprofile* profil , ICCtag& tag);
     void                load (ICCprofile* profil , char *data, size_t size);
@@ -220,20 +228,23 @@ class ICCmeasurement {
     std::string         getInfo()          {return getSigTagDescription(_sig); }
     int                 getSize()          {return _size; }
     int                 getPatchCount()    {return _nFelder; }
-    int                 getTableCount()    {return cmsIT8TableCount(_lcms_it8);}
 
-    std::vector<double> getCIEXYZ(int patch);
-    std::vector<double> getColor (int patch);
+    std::vector<double> getMessRGB (int patch);
+    std::vector<double> getCmmRGB (int patch);
 
-    std::vector<std::string> getText ();
-    std::vector<std::string> getText (int patch);
+    std::vector<std::vector<std::string> > getText ();
     std::vector<std::string> getDescription();
+    std::string         getHtmlReport ();
+    bool                valid (void)       {return (_XYZ_measurement
+                                                 && (_RGB_measurement
+                                                  || _CMYK_measurement)); }
 };
 
 
 // definiert in icc_profile.cpp
 class ICCprofile {
   friend class ICCtag;
+  friend class ICCmeasurement;
   public:
                         ICCprofile ();
                         ICCprofile (const char *filename);
@@ -292,7 +303,8 @@ class ICCprofile {
     int                 checkProfileDevice (char* type,
                                            icProfileClassSignature deviceClass);
 
-    bool                hasMeasurement () {return getTagByName("targ"); }
+    bool                hasMeasurement () {return measurement.valid(); }
+    std::string         report ()         {return measurement.getHtmlReport(); }
 };
 
 
