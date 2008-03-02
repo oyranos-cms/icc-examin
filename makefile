@@ -72,6 +72,7 @@ else
     OPTS=-Wall -O2 -g -fpic -L.
     RM = rm -f
     LIBLINK_FLAGS = -shared -ldl $(ICONV) -lintl
+    I18N_LIB = $(ICONV) -lintl
   endif
 endif
 
@@ -288,8 +289,12 @@ pot:	$(POT_FILE)
 	  echo "update po/$${ling}.gmo ..."; \
 	  test -f po/$${ling}.po \
         && ($(MSGFMT) -o po/$${ling}.gmo po/$${ling}.po; \
-            !(test -d po/$${ling}) && mkdir po/$${ling}; \
-            !(test -d po/$${ling}/LC_MESSAGES) && mkdir po/$${ling}/LC_MESSAGES; \
+            if [ ! -d po/$${ling} ]; then \
+              mkdir po/$${ling}; \
+            fi; \
+            if [ ! -d po/$${ling}/LC_MESSAGES ]; then \
+              mkdir po/$${ling}/LC_MESSAGES; \
+            fi; \
             test -f po/$${ling}/LC_MESSAGES/$(TARGET).mo && rm po/$${ling}/LC_MESSAGES/$(TARGET).mo; \
             ln -s ../../$${ling}.gmo po/$${ling}/LC_MESSAGES/$(TARGET).mo;) \
         || (echo $${ling}.po is not yet ready ... skipping) \

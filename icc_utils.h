@@ -43,6 +43,27 @@
   #define _(text) text
 #endif
 
+// ByteOrder on Solaris
+#ifndef BIG_ENDIAN
+  #define BIG_ENDIAN 4321
+#endif
+#ifndef LITTLE_ENDIAN
+  #define LITTLE_ENDIAN 1234
+#endif
+#ifdef _BIG_ENDIAN
+  #ifdef BYTE_ORDER
+    #undef BYTE_ORDER
+  #endif
+  #define BYTE_ORDER BIG_ENDIAN
+#endif
+#ifdef _LITTLE_ENDIAN
+  #ifdef BYTE_ORDER
+    #undef BYTE_ORDER
+  #endif
+  #define BYTE_ORDER LITTLE_ENDIAN
+#endif
+
+
 #define cout std::cout
 #define endl std::endl
 
@@ -85,9 +106,9 @@ extern int icc_debug;
 #define DBG_NUM_S(txt) DBG_BED(1) DBG_S(txt)
 #define DBG_NUM_V(txt) DBG_BED(1) DBG_V(txt)
 #else
-#define DBG_NUM
-#define DBG_NUM_S(txt)
-#define DBG_NUM_V(txt)
+#define DBG_NUM ;
+#define DBG_NUM_S(txt) ;
+#define DBG_NUM_V(txt) ;
 #endif
 #ifdef DEBUG
 #define DBG_PROG        DBG_BED(2) DBG
@@ -96,11 +117,11 @@ extern int icc_debug;
 #define DBG_PROG_S(txt) DBG_BED(2) DBG_S(txt)
 #define DBG_PROG_V(txt) DBG_BED(2) DBG_V(txt)
 #else
-#define DBG_PROG
-#define DBG_PROG_START
-#define DBG_PROG_ENDE
-#define DBG_PROG_S(txt)
-#define DBG_PROG_V(txt)
+#define DBG_PROG ;
+#define DBG_PROG_START ;
+#define DBG_PROG_ENDE ;
+#define DBG_PROG_S(txt) ;
+#define DBG_PROG_V(txt) ;
 #endif
 #ifdef DEBUG
 #define DBG_MEM        DBG_BED(3) DBG
@@ -109,11 +130,11 @@ extern int icc_debug;
 #define DBG_MEM_S(txt) DBG_BED(3) DBG_S(txt)
 #define DBG_MEM_V(txt) DBG_BED(3) DBG_V(txt)
 #else
-#define DBG_MEM
-#define DBG_MEM_START
-#define DBG_MEM_ENDE
-#define DBG_MEM_S(txt)
-#define DBG_MEM_V(txt)
+#define DBG_MEM ;
+#define DBG_MEM_START ;
+#define DBG_MEM_ENDE ;
+#define DBG_MEM_S(txt) ;
+#define DBG_MEM_V(txt) ;
 #endif
 #define WARN { cout << _("!!! Warnung !!!"); DBG_ }
 #define WARN_S(txt) { cout << _("!!! Warnung !!!"); DBG_S_(txt) }

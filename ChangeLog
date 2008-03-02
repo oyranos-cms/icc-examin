@@ -1,4 +1,11 @@
 
+2005-05-03
+	* fix: tag selection crash 
+	* und: Darstellungoptionen werden versteckt (__APPLE__)
+	       und unter unix versteckt
+	* fix: Endianes für Solaris korrigiert
+	* fix: setenv unter Solaris nicht verfügbar
+
 2005-05-02
 	* fix: GL zeichnen wenn ansichtig
 	* fix: Infos in Statusleiste

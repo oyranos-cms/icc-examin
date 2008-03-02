@@ -232,6 +232,7 @@ ICCprofile::load (const Speicher & prof)
   // Test acsp
   char magic[5];
   memcpy( magic, header.magicName(), 4); magic[4] = 0;
+  DBG_MEM
   if (strstr(magic, "acsp") == 0)
   {
     WARN_S( _("Kein Profil") )
@@ -266,15 +267,31 @@ ICCprofile::load (const Speicher & prof)
     return;
   }
    
+  DBG_MEM
   //Profilabschnitte
   // TagTabelle bei 132 abholen
   icTag *tagList = (icTag*)&((char*)data_)[132];
   //(icTag*) new char ( getTagCount() * sizeof (icTag));
   //memcpy (tagList , &((char*)data_)[132], sizeof (icTag) * getTagCount());
 
-  tags.resize(getTagCount());
+  #if BYTE_ORDER == LITTLE_ENDIAN
+    DBG_PROG_S("LITTLE_ENDIAN")
+  #else
+    DBG_PROG_S("BIG_ENDIAN")
+  #endif
+  #ifdef _BIG_ENDIAN
+    DBG_PROG_S( "BIG_ENDIAN" )
+  #endif
+  #ifdef _LITTLE_ENDIAN
+    DBG_PROG_S( "LITTLE_ENDIAN" )
+  #endif
+  DBG_MEM_V( getTagCount() <<" "<< tags.size() )
+  if(getTagCount() || tags.size())
+    tags.resize(getTagCount());
+  DBG_MEM
   for (int i = 0 ; i < getTagCount() ; i++)
   {
+    DBG_MEM
     tags[i].load( this, &tagList[i] ,
               &((char*)data_)[ icValue(tagList[i].offset) ]);
     #ifdef DEBUG_ICCPROFILE

@@ -595,10 +595,11 @@ CgatsFilter::cgats_korrigieren_               ()
 
   // locale - Kommas unterscheiden
   const char* loc_alt = getenv("LANG");
-  if(loc_alt)
+  if(loc_alt) {
     DBG_NUM_V( loc_alt )
-  else
+  } else {
     DBG_NUM_S( "keine LANG Variable gefunden" )
+  }
   setlocale(LC_NUMERIC,"en_GB");
 
   // Zeilenumbrüche reparieren

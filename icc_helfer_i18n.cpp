@@ -104,7 +104,7 @@ initialiseI18N()
         DBG_PROG_V( locale ) \
         \
         /* 1b. set correct environment variable LANG */ \
-        setenv("LANG", locale.c_str(), 1); \
+        /*setenv("LANG", locale.c_str(), 1);*/ /* setenv is not standard C */ \
         \
         /* 1c. set the locale info after LANG */ \
         locale = setlocale (LC_MESSAGES, ""); \
@@ -133,8 +133,10 @@ initialiseI18N()
     DBG_PROG_S( _("try to set LANG") )
 
       // set LANG
+    #ifdef __APPLE__
     if (locale.size())
       setenv("LANG", locale.c_str(), 0);
+    #endif
 
       // good?
     if(getenv("LANG"))

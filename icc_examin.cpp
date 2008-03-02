@@ -26,12 +26,13 @@
  */
 
 
-#include "icc_kette.h"
-#include "icc_examin.h"
 #include "icc_betrachter.h"
 #include "icc_draw.h"
+#include "icc_examin.h"
 #include "icc_gl.h"
 #include "icc_helfer_ui.h"
+#include "icc_info.h"
+#include "icc_kette.h"
 #include "icc_waehler.h"
 
 using namespace icc_examin_ns;
@@ -164,6 +165,8 @@ ICCexamin::nachricht( Modell* modell , int info )
   }
   Fl::lock();
 
+  icc_examin_ns::fortschritt(-0.1);
+
   frei_ = false;
   DBG_PROG_V( info )
   // Modell identifizieren
@@ -180,6 +183,7 @@ ICCexamin::nachricht( Modell* modell , int info )
       { DBG_PROG
         if(k->aktiv(info)) // momentan nicht genutzt
         {
+          icc_examin_ns::fortschritt(0.1);
           static int intent_alt;
           // ncl2 ?
           DBG_PROG_V( profile.aktuell() );
@@ -190,6 +194,7 @@ ICCexamin::nachricht( Modell* modell , int info )
             intent_alt = intent_neu;
           } else
             farbraum (info);
+          icc_examin_ns::fortschritt(0.5);
 
           if (info < (int)icc_betrachter->DD_farbraum->dreiecks_netze.size())
             icc_betrachter->DD_farbraum->dreiecks_netze[info].aktiv = true;
@@ -198,19 +203,28 @@ ICCexamin::nachricht( Modell* modell , int info )
           icc_betrachter->DD_farbraum->dreiecks_netze[info].aktiv = false;
         }
           // Oberflaechenpflege - Aktualisieren
+        icc_examin_ns::fortschritt(0.6);
+        if(profile[info]->tagCount() <= _item)
+          _item = (-1);
+        DBG_PROG_V( _item )
+ 
         if(icc_betrachter->DD_farbraum->visible())
         {
           icc_betrachter->DD_farbraum->flush();
         }
+        icc_examin_ns::fortschritt(0.7);
         if(icc_betrachter->menueintrag_inspekt->active() &&
            profile[info]->hasMeasurement() )
           setzMesswerte();
         else if(icc_betrachter->examin->visible())
           waehleTag(_item);
+        icc_examin_ns::fortschritt(0.9);
       }
     }
   }
   Beobachter::nachricht(modell, info);
+  icc_examin_ns::fortschritt(1.0);
+  icc_examin_ns::fortschritt(1.1);
   Fl::unlock();
   frei_ = true;
   DBG_PROG_ENDE
@@ -389,7 +403,11 @@ ICCexamin::neuzeichnen (void* z)
       icc_betrachter->DD_farbraum->hide();
     }
     if(icc_waehler_->visible())
+    #ifdef __APPLE__
       icc_waehler_->hide();
+    #else
+      icc_waehler_->iconize();
+    #endif
   }
 
   if(oben == INSPEKT_ZEIGEN)
@@ -466,6 +484,7 @@ void
 ICCexamin::fortschritt(double f)
 { DBG_PROG_START
 
+  DBG_PROG_V( f )
   if(0.0 < f && f <= 1.0)
     icc_betrachter->load_progress-> value(f);
   else if (1.0 < f)

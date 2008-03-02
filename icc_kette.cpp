@@ -156,9 +156,9 @@ ICCkette::oeffnen (std::vector<std::string> dateinamen)
     if (erfolgreich && i == 0)
       icc_examin->farbraumModus(0);
     DBG_PROG_V( dateinamen[i] )
-    icc_examin_ns::fortschritt (1.0/i);
+    //icc_examin_ns::fortschritt (1.0/i);
   }
-  icc_examin_ns::fortschritt (1.1);
+  //icc_examin_ns::fortschritt (1.1);
 
   if( profile_.size() )
     aktuelles_profil_ = 0;

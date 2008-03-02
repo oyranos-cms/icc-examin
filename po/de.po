@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ICC Examin 0.28\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2005-05-02 23:37+0200\n"
+"POT-Creation-Date: 2005-05-03 13:09+0200\n"
 "PO-Revision-Date: 2005-04-22 15:09+0200\n"
 "Last-Translator: Kai-Uwe Behrmann <ku.b@gmx.de>\n"
 "Language-Team: German\n"
@@ -23,7 +23,7 @@ msgstr ""
 msgid "GL Fenster nicht frei"
 msgstr ""
 
-#: agviewer.cpp:359 icc_gl.cpp:1661 icc_gl.cpp:1680 icc_gl.cpp:1800
+#: agviewer.cpp:359 icc_gl.cpp:1660 icc_gl.cpp:1679 icc_gl.cpp:1799
 msgid "left-/middle-/right mouse button -> rotate/cut/menu"
 msgstr "linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menue"
 
@@ -31,8 +31,8 @@ msgstr "linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menue"
 msgid "Pause"
 msgstr "Pause"
 
-#: agviewer.cpp:392 agviewer.cpp:400 icc_gl.cpp:1766 icc_gl.cpp:1777
-#: icc_gl.cpp:1782 icc_gl.cpp:1787
+#: agviewer.cpp:392 agviewer.cpp:400 icc_gl.cpp:1765 icc_gl.cpp:1776
+#: icc_gl.cpp:1781 icc_gl.cpp:1786
 msgid "left mouse button -> go back"
 msgstr "linke Maustaste -> zurueck"
 
@@ -68,67 +68,67 @@ msgstr ""
 msgid "DATA_FORMAT_ZEILE eigefügt"
 msgstr ""
 
-#: icc_cgats_filter.cpp:612
+#: icc_cgats_filter.cpp:613
 msgid "LF CR ersetzt"
 msgstr ""
 
-#: icc_cgats_filter.cpp:617
+#: icc_cgats_filter.cpp:618
 msgid "CR ersetzt"
 msgstr ""
 
-#: icc_cgats_filter.cpp:693
+#: icc_cgats_filter.cpp:694
 msgid ", ersetzt"
 msgstr ""
 
-#: icc_cgats_filter.cpp:729
+#: icc_cgats_filter.cpp:730
 msgid "Mehr Feldblöcke als Datenblöcke: lösche"
 msgstr ""
 
-#: icc_cgats_filter.cpp:738
+#: icc_cgats_filter.cpp:739
 msgid "oops zwei mal BEGIN_DATA_FORMAT  Zeile: "
 msgstr ""
 
-#: icc_cgats_filter.cpp:746
+#: icc_cgats_filter.cpp:747
 msgid "BEGIN_DATA_FORMAT Zeile "
 msgstr ""
 
-#: icc_cgats_filter.cpp:754
+#: icc_cgats_filter.cpp:755
 msgid "oops END_DATA_FORMAT ohne BEGIN_DATA_FORMAT  Zeile: "
 msgstr ""
 
-#: icc_cgats_filter.cpp:765
+#: icc_cgats_filter.cpp:766
 msgid "fehlendes NUMBER_OF_FIELDS eingefügt"
 msgstr ""
 
-#: icc_cgats_filter.cpp:767
+#: icc_cgats_filter.cpp:768
 msgid " eingefügt"
 msgstr ""
 
-#: icc_cgats_filter.cpp:790
+#: icc_cgats_filter.cpp:791
 msgid "NUMBER_OF_FIELDS stimmt nicht überein: gefunden, berechnet: "
 msgstr ""
 
-#: icc_cgats_filter.cpp:801
+#: icc_cgats_filter.cpp:802
 msgid "END_DATA_FORMAT Zeile "
 msgstr ""
 
-#: icc_cgats_filter.cpp:810
+#: icc_cgats_filter.cpp:811
 msgid "oops zwei mal BEGIN_DATA  Zeile"
 msgstr ""
 
-#: icc_cgats_filter.cpp:824
+#: icc_cgats_filter.cpp:825
 msgid "oops END_DATA ohne BEGIN_DATA  Zeile "
 msgstr ""
 
-#: icc_cgats_filter.cpp:836
+#: icc_cgats_filter.cpp:837
 msgid "fehlende NUMBER_OF_SETS eingefügt"
 msgstr ""
 
-#: icc_cgats_filter.cpp:859
+#: icc_cgats_filter.cpp:860
 msgid "NUMBER_OF_SETS stimmt nicht überein: gefunden, berechnet "
 msgstr ""
 
-#: icc_cgats_filter.cpp:898
+#: icc_cgats_filter.cpp:899
 msgid "Dateisignatur eingeführt"
 msgstr ""
 
@@ -244,39 +244,39 @@ msgstr " mit Gamma: 1.0"
 msgid " with one entry for gamma: "
 msgstr " mit einem Eintrag für Gamma: "
 
-#: icc_examin.cpp:87
+#: icc_examin.cpp:88
 msgid "Gamut selector"
 msgstr "Darstellungsoptionen"
 
-#: icc_examin.cpp:88
+#: icc_examin.cpp:89
 msgid "icc_waehler_ nicht reservierbar"
 msgstr ""
 
-#: icc_examin.cpp:115
+#: icc_examin.cpp:116
 msgid "loaded"
 msgstr "geladen"
 
-#: icc_examin.cpp:125
+#: icc_examin.cpp:126
 msgid "Ready"
 msgstr "Bereit"
 
-#: icc_examin.cpp:173
+#: icc_examin.cpp:176
 msgid "Nachricht von ICCkette"
 msgstr ""
 
-#: icc_examin.cpp:174
+#: icc_examin.cpp:177
 msgid "Auffrischen von Profil Nr.: "
 msgstr ""
 
-#: icc_examin.cpp:288
+#: icc_examin.cpp:302
 msgid "Keine Kurve gefunden"
 msgstr ""
 
-#: icc_examin.cpp:347
+#: icc_examin.cpp:361
 msgid "verstecke "
 msgstr ""
 
-#: icc_examin.cpp:351
+#: icc_examin.cpp:365
 msgid "zeige     "
 msgstr ""
 
@@ -462,15 +462,15 @@ msgstr "Texte/Pfeile an/aus"
 msgid "Illustration"
 msgstr "Darstellung"
 
-#: icc_gl.cpp:1481 icc_profile_tags.cpp:291
+#: icc_gl.cpp:1480 icc_profile_tags.cpp:291
 msgid "Channel"
 msgstr "Kanal"
 
-#: icc_gl.cpp:1825
+#: icc_gl.cpp:1824
 msgid "Konnte keine Eltern finden"
 msgstr ""
 
-#: icc_gl.cpp:1834
+#: icc_gl.cpp:1833
 msgid "Konnte keine passende Programmstruktur finden"
 msgstr ""
 
@@ -634,7 +634,7 @@ msgstr "Verknüpfung"
 msgid "Abstract"
 msgstr "Abstrakter Farbraum"
 
-#: icc_helfer.cpp:425 icc_profile.cpp:846
+#: icc_helfer.cpp:425 icc_profile.cpp:863
 msgid "Colour Space"
 msgstr "Farbraum"
 
@@ -1329,7 +1329,7 @@ msgstr ""
 msgid "!!!! Profil wird wiederbenutzt !!!! "
 msgstr ""
 
-#: icc_profile.cpp:222 icc_profile.cpp:237
+#: icc_profile.cpp:222 icc_profile.cpp:238
 msgid "Kein Profil"
 msgstr ""
 
@@ -1337,43 +1337,43 @@ msgstr ""
 msgid "Size"
 msgstr "Größe"
 
-#: icc_profile.cpp:408
+#: icc_profile.cpp:425
 msgid " typ - no text output"
 msgstr " Typ - keine Textausgabe"
 
-#: icc_profile.cpp:782
+#: icc_profile.cpp:799
 msgid "Work Space"
 msgstr "Arbeitsfarbraum"
 
-#: icc_profile.cpp:796
+#: icc_profile.cpp:813
 msgid "Your"
 msgstr "Ihr"
 
-#: icc_profile.cpp:797
+#: icc_profile.cpp:814
 msgid "Profile\" is designed for an other device"
 msgstr "Profil\" ist für eine anderes Gerät bestimmt"
 
-#: icc_profile.cpp:802
+#: icc_profile.cpp:819
 msgid "Separation"
 msgstr "Separation"
 
-#: icc_profile.cpp:815 icc_profile.cpp:838
+#: icc_profile.cpp:832 icc_profile.cpp:855
 msgid "Device class"
 msgstr "Geräteklasse"
 
-#: icc_profile.cpp:817 icc_profile.cpp:840 icc_profile.cpp:848
+#: icc_profile.cpp:834 icc_profile.cpp:857 icc_profile.cpp:865
 msgid "is not valid for an"
 msgstr "ist nocht gültig für ein"
 
-#: icc_profile.cpp:819 icc_profile.cpp:842
+#: icc_profile.cpp:836 icc_profile.cpp:859
 msgid "Profile\"."
 msgstr "ICC Profil\"."
 
-#: icc_profile.cpp:825
+#: icc_profile.cpp:842
 msgid "Linearisation"
 msgstr "Linearisierung"
 
-#: icc_profile.cpp:850
+#: icc_profile.cpp:867
 msgid "Profile at the moment\"."
 msgstr "Profil im Moment\"."
 
@@ -2089,12 +2089,12 @@ msgstr "Pfade:"
 msgid "Gibts nicht"
 msgstr ""
 
-#: icc_utils.h:118 icc_utils.h:119 icc_utils.h:120
+#: icc_utils.h:139 icc_utils.h:140 icc_utils.h:141
 msgid "!!! Warnung !!!"
 msgstr ""
 
 #: icc_version.h:9
-msgid "Mai 2004 - April 2005"
+msgid "Mai 2004 - Mai 2005"
 msgstr ""
 
 #: icc_waehler.h:67

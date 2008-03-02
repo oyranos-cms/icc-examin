@@ -6,10 +6,10 @@ CONF=config
 TARGET=icc_examin
 VERSION_A=0
 VERSION_B=3
-VERSION_C=0
+VERSION_C=1
 VERSION=$VERSION_A.$VERSION_B$VERSION_C
 VERSION_L=$VERSION_A.$VERSION_B.$VERSION_C
-ZEIT="Mai 2004 - April 2005"
+ZEIT="Mai 2004 - Mai 2005"
 
 if [ $# -gt 1 ] && [ $1 == "--prefix" ]; then
   prefix=$2
