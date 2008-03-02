@@ -36,8 +36,11 @@
 	* 
 
 2005-01-21
-    * char Bearbeitung LF FF nach string umstellen -> 9:00
-
+	* und: char Bearbeitung LF FF nach string umstellen <- 9:00
+	* neu: zeilenorientierte Kommentarkorrektur -> 14:00
+	* neu: sucheWort <- 15:00
+	* : -> 16:30
+	* : <- 21:30
  */
 
 #include "icc_utils.h"
@@ -52,48 +55,32 @@ cgats_korrigieren               (char* _data, size_t _size)
   std::string::size_type ende;
 
   // Reparieren
-  // LF FF
-  #if 0
-  char* ptr = 0; DBG_V( (int*) _data )
-  while (strchr(_data, 13) > 0) { // \r 013 0x0d
-      ptr = strchr(_data, 13);
-      if (ptr > 0) {
-        if (*(ptr+1) == '\n')
-        {
-          *ptr = '\n';
-          *(ptr+1) = ' ';
-        }
-        else
-          *ptr = '\n';
-      }
-  };
-  // char* -> std::string
-  std::string data (_data, 0, _size);
-  #else
+  // LF CR
   // char* -> std::string
   std::string data (_data, 0, _size);
 
   pos = 0;
-  char LFFF[3]; LFFF[0] = 13; LFFF[1] = 10; LFFF[2] = 0;
-  char FF[2];
-  sprintf (LFFF , "\r\n");
-  sprintf (FF , "\n");
-  if(suchenErsetzen (data,LFFF,FF,pos) != std::string::npos)
-  {
-      DBG_NUM_S( "LF FF ersetzt" )
-  }
+  char CRLF[3];
   char LF[2];
-  sprintf (LF , "\r");
-  if(suchenErsetzen (data,LF,FF,pos) != std::string::npos)
+  sprintf (CRLF , "\r\n");
+  sprintf (LF , "\n");
+  if(suchenErsetzen (data,CRLF,LF,pos) != std::string::npos)
   {
-      DBG_NUM_S( "LF ersetzt" )
+      DBG_NUM_S( "LF CR ersetzt" )
+  }
+  char CR[2];
+  sprintf (CR , "\r");
+  if(suchenErsetzen (data,CR,LF,pos) != std::string::npos)
+  {
+      DBG_NUM_S( "CR ersetzt" )
   }
   // testweises Speichern
+  #if 0
   std::ofstream f ( "AtestCGATS.vim",  std::ios::out );
   f.write ( data.c_str(), data.size() );
   f.close();
-
   #endif
+
 
   // reparieren: Sample_Name , SampleID, ""
   pos = 0;
@@ -128,42 +115,51 @@ cgats_korrigieren               (char* _data, size_t _size)
   // zeilenweise
   std::vector<std::string> zeilen = zeilenNachVector(data);
   // es gibt zwei Blöcke  BEGIN_DATA / END_DATA und BEGIN_DATA_FORMAT / END_...
+  bool im_data_format_block = false;
+  bool im_data_block = false;
   for (unsigned i = 0; i < zeilen.size(); ++i)
   {
-    bool im_data_block = false;
-    if( pos = zeilen[i].find( "BEGIN_DATA", 0 ) != std::string::npos &&
-        (zeilen[i].find( (1,'_'), pos + strlen("BEGIN_DATA") ) - 1) > pos ) // kein nachfolgender "_"
-    { DBG_NUM_V( pos << zeilen[i].find( "_", pos ) )
-      if( im_data_block ) WARN_S( "oops zwei mal BEGIN_DATA  Zeile " << i )
-      else im_data_block = true;
+    if( (pos = sucheWort (zeilen[i], "BEGIN_DATA", 0 )) != std::string::npos )
+    {
+      if( im_data_block )
+        WARN_S( "oops zwei mal BEGIN_DATA  Zeile " << i )
+      else
+        im_data_block = true;
+
       DBG_NUM_S( "BEGIN_DATA Zeile " << i )
     }
 
-    if( zeilen[i].find( "END_DATA", 0 ) != std::string::npos &&
-        (zeilen[i].find( (1,'_'), pos ) - 1) > pos )
+    if( (pos = sucheWort (zeilen[i], "END_DATA", 0 )) != std::string::npos )
     {
-      if( !im_data_block ) WARN_S( "oops END_DATA ohne BEGIN_DATA  Zeile " << i )
+      if( !im_data_block )
+        WARN_S( "oops END_DATA ohne BEGIN_DATA  Zeile " << i )
+
       im_data_block = false;
       DBG_NUM_S( "END_DATA Zeile " << i )
     }
 
-    bool im_data_format_block = false;
-    if( zeilen[i].find( "BEGIN_DATA_FORMAT", 0 ) != std::string::npos )
-    { DBG_NUM_V( zeilen[i].find( "BEGIN_DATA_FORMAT", 0 ) )
-      if( im_data_format_block ) WARN_S( "oops zwei mal BEGIN_DATA_FORMAT  Zeile " << i )
-      else im_data_format_block = true;
+    if( (pos = sucheWort (zeilen[i], "BEGIN_DATA_FORMAT", 0 )) != std::string::npos )
+    {
+      if( im_data_format_block )
+        WARN_S( "oops zwei mal BEGIN_DATA_FORMAT  Zeile " << i )
+      else
+        im_data_format_block = true;
+
       DBG_NUM_S( "BEGIN_DATA_FORMAT Zeile " << i )
     }
 
-    if( zeilen[i].find( "END_DATA_FORMAT", 0 ) != std::string::npos )
+    if( (pos = sucheWort (zeilen[i], "END_DATA_FORMAT", 0 )) != std::string::npos )
     {
-      if( !im_data_format_block ) WARN_S( "oops END_DATA_FORMAT ohne BEGIN_DATA_FORMAT  Zeile " << i )
+      if( !im_data_format_block )
+        WARN_S( "oops END_DATA_FORMAT ohne BEGIN_DATA_FORMAT  Zeile " << i )
+
       im_data_format_block = false;
       DBG_NUM_S( "END_DATA_FORMAT Zeile " << i )
     }
 
-
-
+    if( im_data_block )
+      // Zählen
+      ++count;
 
 
 
@@ -229,9 +225,12 @@ cgats_korrigieren               (char* _data, size_t _size)
     if (data.find ("D_BLUE", pos) != std::string::npos) count ++;
     if (data.find ("D_VIS", pos) != std::string::npos) count ++;
     if (data.find ("D_MAJOR_FILTER", pos) != std::string::npos) count ++;
-    if (data.find ("SPECTRAL_NM", pos) != std::string::npos) count ++;
+    if (data.find ("SPECTRAL_", pos) != std::string::npos) count ++;
     if (data.find ("SPECTRAL_PCT", pos) != std::string::npos) count ++;
     if (data.find ("SPECTRAL_DEC", pos) != std::string::npos) count ++;
+    if (data.find ("nm_", pos) != std::string::npos) count ++; // nicht standard
+    if (data.find ("SPECTRUM_", pos) != std::string::npos) count ++;
+    if (data.find ("R_", pos) != std::string::npos) count ++;  // \ !standard
     if (data.find ("XYY_CAPY", pos) != std::string::npos) count ++;
     if (data.find ("LAB_C", pos) != std::string::npos) count ++;
     if (data.find ("LAB_H", pos) != std::string::npos) count ++;

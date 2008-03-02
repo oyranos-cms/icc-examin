@@ -758,7 +758,7 @@ suchenErsetzen          (std::string &text,
   //std::string::size_type ende;
   while ((pos = text.find (suchen, pos)) != std::string::npos) {
     text.replace (pos, suchen.size(), ersetzen);
-    DBG_NUM_S( suchen <<" ersetzt" )
+    //DBG_NUM_S( suchen <<" ersetzt" )
   }
 
   return pos;
@@ -803,3 +803,37 @@ zeilenNachVector(std::string &text)
   DBG_PROG_ENDE
   return texte;
 }
+
+std::string::size_type
+sucheWort         ( std::string            &text,
+                    std::string             wort,
+                    std::string::size_type  pos )
+{ //DBG_PROG_START
+  std::string::size_type pos_ = std::string::npos;
+  bool fertig = false;
+
+  while( !fertig )
+  { // vielleicht etwas viel Aufwand ...
+    if( (pos = text.find( wort, pos )) != std::string::npos )
+    { // Bestätige das Ende des Wortes
+      if( (text[pos + wort.size()] == 0    ||  // NUL
+           text[pos + wort.size()] == ' '  ||  // SP
+           text[pos + wort.size()] == '\t' ||  // HT
+           text[pos + wort.size()] == '\n' ||  // LF
+           text[pos + wort.size()] == '\v' ||  // VT
+           text[pos + wort.size()] == '\f' ||  // FF
+           text[pos + wort.size()] == '\r'  ) )// CR
+      {
+        pos_ = pos;
+        fertig = true;
+      } else
+        ++pos;
+    } else if( pos == std::string::npos )
+      fertig = true;
+  }
+
+  //DBG_PROG_ENDE
+  return pos_;
+}
+
+
