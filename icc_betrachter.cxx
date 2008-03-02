@@ -132,13 +132,13 @@ void TagBrowser::reopen() {
   }
   DBG_PROG
   if (value())
-    select_item (value()); // Anzeigen
+    selectItem (value()); // Anzeigen
   else
-    select_item (1);
+    selectItem (1);
 
   if (profile.profil()->hasTagName (selectedTagName)) {
     int item = profile.profil()->getTagByName (selectedTagName) + 6;
-    select_item (item);
+    selectItem (item);
     value(item);
   }
 
@@ -154,7 +154,7 @@ void TagBrowser::reopen() {
   DBG_PROG_ENDE
 }
 
-void TagBrowser::select_item(int item) {
+void TagBrowser::selectItem(int item) {
   DBG_PROG_START
   //Auswahl aus tag_browser
 
@@ -176,8 +176,6 @@ TagTexts::TagTexts(int X,int Y,int W,int H,char* start_info) : Fl_Hold_Browser(X
 void TagTexts::hinein(std::string text) {
   DBG_PROG_START
   //Text aus tag_browser anzeigen
-
-  //icc_examin->icc_betrachter->zeig_mich(this); DBG_PROG
 
       this->clear();
 
@@ -209,7 +207,7 @@ void TagDrawings::draw() {
   } else if (icc_examin->punkte.size()) {
     if (wiederholen)
     { draw_cie_shoe(x(),y(),w(),h(),false);
-      Fl::add_timeout( 1.2, (void(*)(void*))d_haendler ,(void*)this);
+      Fl::add_timeout( 1.2, (void(*)(void*))dHaendler ,(void*)this);
     } else {
       draw_cie_shoe(x(),y(),w(),h(),true);
     }
@@ -219,27 +217,25 @@ void TagDrawings::draw() {
   DBG_PROG_ENDE
 }
 
-void TagDrawings::hinein_punkt(std::vector<double> vect, std::vector<std::string> txt) {
+void TagDrawings::hineinPunkt(std::vector<double> vect, std::vector<std::string> txt) {
   DBG_PROG_START
   //CIExyY aus tag_browser anzeigen
 
   wiederholen = false;
-  //icc_examin->icc_betrachter->zeig_mich(this);
   DBG_PROG_ENDE
 }
 
-void TagDrawings::hinein_kurven(std::vector<std::vector<double> >vect, std::vector<std::string> txt) {
+void TagDrawings::hineinKurven(std::vector<std::vector<double> >vect, std::vector<std::string> txt) {
   DBG_PROG_START
   //Kurve aus tag_browser anzeigen
 
   wiederholen = false;
 
-  //icc_examin->icc_betrachter->zeig_mich(this);
   DBG_PROG
   DBG_PROG_ENDE
 }
 
-void TagDrawings::ruhig_neuzeichnen(void) {
+void TagDrawings::ruhigNeuzeichnen(void) {
   DBG_PROG_START
   draw_cie_shoe(x(),y(),w(),h(),true);
   DBG_PROG_ENDE
@@ -250,7 +246,7 @@ MftChoice::MftChoice(int X,int Y,int W,int H,char* start_info) : Fl_Choice(X,Y,W
   gewaehlter_eintrag = 0;
 }
 
-void MftChoice::profil_tag(int _tag, std::string text) {
+void MftChoice::profilTag(int _tag, std::string text) {
   DBG_PROG_START
   icc_examin->icc_betrachter->tag_nummer = _tag;
 
@@ -286,12 +282,11 @@ void MftChoice::profil_tag(int _tag, std::string text) {
 
     icc_examin->icc_betrachter->mft_choice->value( gewaehlter_eintrag );
 
-  //zeig_mich (this);
-  auswahl_cb();
+  auswahlCb();
   DBG_PROG_ENDE
 }
 
-void MftChoice::auswahl_cb(void) {
+void MftChoice::auswahlCb(void) {
   DBG_PROG_START
   //Auswahl aus mft_choice
 
@@ -466,18 +461,15 @@ inline void ICCfltkBetrachter::cb_menueintrag_inspekt_i(Fl_Menu_* o, void*) {
   Fl_Menu_* mw = (Fl_Menu_*)o;
   const Fl_Menu_Item* m = mw->mvalue();
 
-  //zeig_mich(inspekt_html);
-
   DBG_PROG_S (m->value())
 
   if (m->value())
   { inspekt_html->value(profile.profil()->report().c_str());
     inspekt_html->topline(tag_text->inspekt_topline);
-    icc_examin->neuzeichnen(inspekt_html);
   } else {
     tag_text->inspekt_topline = inspekt_html->topline();
-    icc_examin->neuzeichnen(0);
-  };
+  }
+  icc_examin->neuzeichnen(inspekt_html);
 }
 void ICCfltkBetrachter::cb_menueintrag_inspekt(Fl_Menu_* o, void* v) {
   ((ICCfltkBetrachter*)(o->parent()->parent()->user_data()))->cb_menueintrag_inspekt_i(o,v);
@@ -487,12 +479,11 @@ inline void ICCfltkBetrachter::cb_menueintrag_3D_i(Fl_Menu_* o, void*) {
   Fl_Menu_* mw = (Fl_Menu_*)o;
   const Fl_Menu_Item* m = mw->mvalue();
 
-  //zeig_mich(DD_histogram);
-
   DBG_PROG_S (m->value())
   if (m->value()) {
     icc_examin->histogram();
-  };
+  }
+  icc_examin->neuzeichnen(DD_histogram);
 }
 void ICCfltkBetrachter::cb_menueintrag_3D(Fl_Menu_* o, void* v) {
   ((ICCfltkBetrachter*)(o->parent()->parent()->user_data()))->cb_menueintrag_3D_i(o,v);
@@ -533,14 +524,14 @@ Fl_Menu_Item* ICCfltkBetrachter::menueintrag_3D = ICCfltkBetrachter::menu_ + 11;
 Fl_Menu_Item* ICCfltkBetrachter::menu_hilfe = ICCfltkBetrachter::menu_ + 13;
 
 inline void ICCfltkBetrachter::cb_tag_browser_i(TagBrowser* o, void*) {
-  o->select_item( o->value() );
+  o->selectItem( o->value() );
 }
 void ICCfltkBetrachter::cb_tag_browser(TagBrowser* o, void* v) {
   ((ICCfltkBetrachter*)(o->parent()->parent()->parent()->user_data()))->cb_tag_browser_i(o,v);
 }
 
 inline void ICCfltkBetrachter::cb_mft_choice_i(MftChoice* o, void*) {
-  o->auswahl_cb();
+  o->auswahlCb();
 }
 void ICCfltkBetrachter::cb_mft_choice(MftChoice* o, void* v) {
   ((ICCfltkBetrachter*)(o->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_mft_choice_i(o,v);
@@ -647,13 +638,6 @@ Fl_Double_Window* ICCfltkBetrachter::init() {
         o->when(3);
         o->menu(menu_);
       }
-      { Fl_Group* o = inspekt_nein = new Fl_Group(0, 25, 385, 470);
-        { Fl_Help_View* o = inspekt_html_nein = new Fl_Help_View(0, 25, 385, 470, "Inspect");
-          o->align(FL_ALIGN_CENTER|FL_ALIGN_INSIDE);
-        }
-        o->hide();
-        o->end();
-      }
       { Fl_Tile* o = examin = new Fl_Tile(0, 25, 385, 470);
         { TagBrowser* o = tag_browser = new TagBrowser(0, 25, 385, 135, "Bitte w\344hlen Sie ein Profilmerkmal aus");
           o->box(FL_NO_BOX);
@@ -727,10 +711,6 @@ Fl_Double_Window* ICCfltkBetrachter::init() {
             o->show();
             o->end();
           }
-          { Fl_Group* o = tag_3D = new Fl_Group(0, 160, 385, 335);
-            o->hide();
-            o->end();
-          }
           { TagDrawings* o = tag_viewer = new TagDrawings(0, 160, 385, 335);
             o->box(FL_NO_BOX);
             o->color(FL_BACKGROUND_COLOR);
@@ -762,10 +742,6 @@ Fl_Double_Window* ICCfltkBetrachter::init() {
           o->align(FL_ALIGN_CENTER|FL_ALIGN_INSIDE);
           o->hide();
         }
-        o->end();
-        Fl_Group::current()->resizable(o);
-      }
-      { Fl_Group* o = group_histogram = new Fl_Group(0, 25, 385, 470);
         { GL_Ansicht* o = DD_histogram = new GL_Ansicht(0, 25, 385, 470);
           o->box(FL_NO_BOX);
           o->color(FL_BACKGROUND_COLOR);
@@ -778,8 +754,8 @@ Fl_Double_Window* ICCfltkBetrachter::init() {
           o->when(FL_WHEN_RELEASE);
           o->hide();
         }
-        o->hide();
         o->end();
+        Fl_Group::current()->resizable(o);
       }
       { Fl_Group* o = new Fl_Group(0, 495, 385, 25);
         { Fl_Box* o = box_stat = new Fl_Box(0, 495, 385, 25, "No wrl file loaded.");
@@ -901,7 +877,7 @@ void ICCfltkBetrachter::zeig_mich_(void* widget) {
     ((Fl_Widget*)widget)->show(); DBG_PROG
     if( !menueintrag_inspekt->value() &&
         !menueintrag_3D->value() )
-      ;//select_item(icc_examin->tag_nr()+6);
+      ;//selectItem(icc_examin->tag_nr()+6);
   } else if (widget == mft_gl) {
     DBG_PROG_S( "mft GL Fenster belassen." )
     mft_gl->zeigen();
@@ -960,16 +936,16 @@ std::vector<std::string> zeilenNachVector(std::string text) {
   return texte;
 }
 
-void d_haendler(void* o) {
+void dHaendler(void* o) {
   DBG_PROG_START
-  Fl::remove_timeout( (void(*)(void*))d_haendler, 0 );
+  Fl::remove_timeout( (void(*)(void*))dHaendler, 0 );
 
-  if (!Fl::has_timeout( (void(*)(void*))d_haendler, 0 )
+  if (!Fl::has_timeout( (void(*)(void*))dHaendler, 0 )
    && ((TagDrawings*)o)->active()
    && ((TagDrawings*)o)->visible_r()
    && ((TagDrawings*)o)->wiederholen)
   {
-    ((TagDrawings*)o)->ruhig_neuzeichnen();
+    ((TagDrawings*)o)->ruhigNeuzeichnen();
 
     #ifdef DEBUG
     DBG_PROG_V( ((TagDrawings*)o)->wiederholen )

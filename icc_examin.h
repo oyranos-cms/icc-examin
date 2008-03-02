@@ -90,7 +90,7 @@ class ICCexamin
                                 _gl_ansicht = _gl_ansichten.size();
                                 _gl_ansichten.resize( _gl_ansicht + 1 );
                                 _gl_ansichten[_gl_ansicht] = dazu; DBG_PROG_ENDE
-                              }
+                              } DBG_PROG_ENDE
                             }
     GL_Ansicht* glAnsicht() { if(_gl_ansicht>=0)
                                 return _gl_ansichten[_gl_ansicht];

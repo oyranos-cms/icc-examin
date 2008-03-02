@@ -43,7 +43,7 @@
 #define DEBUG_ICCGL
 //#define Beleuchtung
 
-typedef enum {NOTALLOWED, AXES, RASTER, PUNKTE , HELFER } DisplayLists;
+typedef enum {NOTALLOWED, AXES, RASTER, PUNKTE , HELFER, DLMAX } DisplayLists;
 bool gl_voll[5] = {false,false,false,false,false};
 
 typedef enum { MENU_AXES, MENU_QUIT, MENU_RING, MENU_KUGEL, MENU_WUERFEL, MENU_STERN, MENU_MAX } MenuChoices;
@@ -64,8 +64,8 @@ int     Rotating = 0;
 
 GL_Ansicht::GL_Ansicht(int X,int Y,int W,int H) : Fl_Group(X,Y,W,H)
 { DBG_PROG_START
-  first = true;
-  MenueKanalEintraege = 0;
+  first_ = true;
+  menue_kanal_eintraege_ = 0;
   Punktform = MENU_WUERFEL;
   icc_examin->glAnsicht (this);
   DBG_PROG_ENDE
@@ -84,73 +84,82 @@ void GL_Ansicht::zeigen()
 { DBG_PROG_START
   icc_examin->glAnsicht (this);
 
-  if (first)
+  if (first_)
     init();
-  else
-    if (!GLfenster_zeigen)
-      GLFenster->resize(x(),y(),w(),h());
 
+  //glutSetWindow( agviewers[agv_].redisplayWindow() );
+ 
+  if (!gl_fenster_zeigen_) { DBG_PROG
+    gl_fenster_->resize(x(),y(),w(),h());
+  }
 
   DBG_PROG_V( x() <<" "<< y() <<" "<< w() <<" "<< h() )
-  //draw();
 
-  agviewers[agv].agvSetAllowIdle (1);
-  GLfenster_zeigen = true;
+  agviewers[agv_].agvSetAllowIdle (1);
+  gl_fenster_zeigen_ = true;
+  reshape(w(),h());
+  //glutPostRedisplay();
+  //draw();
   DBG_PROG_ENDE
 }
 
 void
 GL_Ansicht::verstecken()
 { DBG_PROG_START
-  if (!first) {
-    agviewers[agv].agvSwitchMoveMode (agviewer::AGV_STOP);
-    GLFenster->size(1,1);
+  if (!first_) {
+    agviewers[agv_].agvSwitchMoveMode (agviewer::AGV_STOP);
+    gl_fenster_->size(1,1);
     DBG_PROG_S("-------------- GL Fenster auf 1x1 verkleinert ----------------")
   }
   DBG_PROG_V( w() <<" "<< h() )
-  GLfenster_zeigen = false; DBG_PROG
+  gl_fenster_zeigen_ = false; DBG_PROG
+
+  stop();
   
   DBG_PROG_ENDE
 }
 
-void GL_Ansicht::init() {
+void
+GL_Ansicht::init()
+{
   DBG_PROG_START
 
-  agv = agviewers.size();
-  agviewers.resize (agv +1);
+  agv_ = agviewers.size();
+  agviewers.resize (agv_ +1);
 
-  first = false;
-  MenueKanalEintraege = 0;
+  first_ = false;
+  menue_kanal_eintraege_ = 0;
   this->begin();
-  GLFenster = new Fl_Group (x(),y(),w(),h());
+  gl_fenster_ = new Fl_Group (x(),y(),w(),h());
   this->end();
 
-  GLFenster->show();
+  gl_fenster_->show();
   this->show();
 
   DBG_PROG
-  GLFenster->begin(); DBG_PROG
+  gl_fenster_->begin(); DBG_PROG
   glutInitWindowSize(w(),h()); DBG_PROG_V( w() << h() )
   glutInitWindowPosition(x(),y()); DBG_PROG_V( x() << y() )
-  glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH | GLUT_MULTISAMPLE); DBG_PROG
+  glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH | GLUT_MULTISAMPLE);
+  DBG_PROG
   glutCreateWindow(_("GL Ansicht")); DBG_PROG
 
-  GLFenster->end(); DBG_PROG
-  GLFenster->resizable(glut_window);
+  gl_fenster_->end(); DBG_PROG
+  gl_fenster_->resizable(glut_window);
 
-  agviewers[agv].agvInit(1); DBG_PROG
-  DBG_PROG_V( agv <<" "<< agviewers[agv].redisplayWindow() )
+  agviewers[agv_].agvInit(1); DBG_PROG
+  DBG_PROG_V( agv_ <<" "<< agviewers[agv_].redisplayWindow() )
 
   glutReshapeFunc(reshape); DBG_PROG
   glutDisplayFunc(display); DBG_PROG
   //glutVisibilityFunc(sichtbar); DBG_PROG
   //glutMenuStateFunc(menuuse); DBG_PROG
 
-  agviewers[agv].agvMakeAxesList(AXES); DBG_PROG
+  agviewers[agv_].agvMakeAxesList(AXES); DBG_PROG
 
   myGLinit();  DBG_PROG
-  MenuInit(); DBG_PROG
-  MakeDisplayLists(); DBG_PROG
+  menuInit(); DBG_PROG
+  makeDisplayLists(); DBG_PROG
 
   //glutMainLoop(); // you could use Fl::run() instead
 
@@ -159,19 +168,20 @@ void GL_Ansicht::init() {
 
 void GL_Ansicht::draw() {
   DBG_PROG_START
-  if (GLfenster_zeigen) { DBG_PROG
-    GLFenster->size(w(),h());
+  if (gl_fenster_zeigen_) { DBG_PROG
+    gl_fenster_->size(w(),h());
   } else { DBG_PROG
-    GLFenster->size(1,1);
+    gl_fenster_->size(1,1);
     DBG_PROG_S("-------------- GL Fenster auf 1x1 verkleinert ----------------")
   }
-  DBG_PROG_V( GLfenster_zeigen << agv )
+  DBG_PROG_V( gl_fenster_zeigen_ <<"|"<< agv_ <<"|"<< (int)gl_fenster_ <<"|"<< agviewers[agv_].redisplayWindow() )
 
   DBG_PROG_ENDE
 }
 
-void GL_Ansicht::myGLinit() {
-  DBG_PROG_START
+void
+GL_Ansicht::myGLinit()
+{ DBG_PROG_START
   GLfloat mat_ambuse[] = { 0.2, 0.2, 0.2, 1.0 };
   GLfloat mat_specular[] = { 0.6, 0.6, 0.6, 1.0 };
 
@@ -236,8 +246,7 @@ void GL_Ansicht::myGLinit() {
 
 void
 zeichneKoordinaten()
-{
-  DBG_PROG_START
+{ DBG_PROG_START
   char text[256];
   GLfloat farbe[] =   { 1.0, 1.0, 1.0, 1.0 };
 
@@ -298,9 +307,9 @@ zeichneKoordinaten()
   DBG_PROG_ENDE
 }
 
-void GL_Ansicht::MakeDisplayLists()
-{
-  DBG_PROG_START
+void
+GL_Ansicht::makeDisplayLists()
+{ DBG_PROG_START
   char text[256];
   char* ptr = 0;
 
@@ -321,9 +330,9 @@ void GL_Ansicht::MakeDisplayLists()
       glLineWidth(3.0);
       glTranslatef(.5,0.62,.5);
       glRotatef (270,0.0,1.0,.0);
-      if (nachFarbNamen.size())
+      if (nach_farb_namen_.size())
       {
-        ptr = (char*) nachFarbNamen[kanal].c_str();
+        ptr = (char*) nach_farb_namen_[kanal].c_str();
         sprintf (&text[0], ptr);
         ZeichneText(GLUT_STROKE_ROMAN,&text[0])
       }
@@ -342,9 +351,9 @@ void GL_Ansicht::MakeDisplayLists()
       glRotatef (270,0.0,0.0,1.0);
       FARBE(1,1,1)
       glTranslatef(.02,0,0);
-      if (vonFarbNamen.size())
+      if (von_farb_namen_.size())
       {
-        ptr = (char*) vonFarbNamen[0].c_str();
+        ptr = (char*) von_farb_namen_[0].c_str();
         sprintf (&text[0], ptr);
         ZeichneText(GLUT_STROKE_ROMAN,&text[0])
       }
@@ -352,8 +361,8 @@ void GL_Ansicht::MakeDisplayLists()
 
     // CIE*a - rechts
     glPushMatrix();
-      if (vonFarbNamen.size() &&
-          vonFarbNamen[1] == _("CIE *a"))
+      if (von_farb_namen_.size() &&
+          von_farb_namen_[1] == _("CIE *a"))
         glTranslatef(0,-0.5,0);
       glBegin(GL_LINES);
         glVertex3f(0, 0, .5); glVertex3f(0, 0, -.5);
@@ -361,48 +370,48 @@ void GL_Ansicht::MakeDisplayLists()
       glTranslatef(0.0,0,0.5);
       glRotatef (180,0.0,.5,.0);
       glTranslatef(.0,0.0,1.0);
-      if (vonFarbNamen.size() &&
-          vonFarbNamen[1] == _("CIE *a"))
+      if (von_farb_namen_.size() &&
+          von_farb_namen_[1] == _("CIE *a"))
       {
         FARBE(.2,.9,0.7)
         PFEILSPITZE
       }
       glTranslatef(.0,0.0,-1.0);
       glRotatef (180,0.0,.5,.0);
-      if (vonFarbNamen.size() &&
-          vonFarbNamen[1] == _("CIE *a"))
+      if (von_farb_namen_.size() &&
+          von_farb_namen_[1] == _("CIE *a"))
         FARBE(.9,0.2,0.5)
       PFEILSPITZE
       FARBE(1,1,1)
-      if (vonFarbNamen.size())
+      if (von_farb_namen_.size())
       {
-        ptr = (char*) vonFarbNamen[1].c_str();
+        ptr = (char*) von_farb_namen_[1].c_str();
         sprintf (&text[0], ptr);
         ZeichneText(GLUT_STROKE_ROMAN,&text[0])
       }
-      if (vonFarbNamen.size() &&
-          vonFarbNamen[1] == _("CIE *a"))
+      if (von_farb_namen_.size() &&
+          von_farb_namen_[1] == _("CIE *a"))
         glTranslatef(0,0.5,0);
     glPopMatrix(); DBG_PROG
 
     // CIE*b - links
     glPushMatrix();
-      if (vonFarbNamen.size() &&
-          vonFarbNamen[2] == _("CIE *b"))
+      if (von_farb_namen_.size() &&
+          von_farb_namen_[2] == _("CIE *b"))
         glTranslatef(0,-0.5,0);
       glBegin(GL_LINES);
         glVertex3f(.5, 0, 0); glVertex3f(-.5, 0, 0);
       glEnd();
       glTranslatef(.5,0,0);
-      if (vonFarbNamen.size() &&
-          vonFarbNamen[2] == _("CIE *b"))
+      if (von_farb_namen_.size() &&
+          von_farb_namen_[2] == _("CIE *b"))
         FARBE(.9,.9,0.2)
       glRotatef (90,0.0,.5,.0);
       PFEILSPITZE
       glRotatef (180,.0,.5,.0);
       glTranslatef(.0,.0,1.0);
-      if (vonFarbNamen.size() &&
-          vonFarbNamen[2] == _("CIE *b"))
+      if (von_farb_namen_.size() &&
+          von_farb_namen_[2] == _("CIE *b"))
       {
         FARBE(.7,.8,1.0)
         PFEILSPITZE
@@ -410,31 +419,31 @@ void GL_Ansicht::MakeDisplayLists()
       }
       glTranslatef(.0,.0,-1.0);
       glRotatef (180,0.0,.5,.0);
-      if (vonFarbNamen.size())
+      if (von_farb_namen_.size())
       {
-        ptr = (char*) vonFarbNamen[2].c_str();
+        ptr = (char*) von_farb_namen_[2].c_str();
         sprintf (&text[0], ptr);
         ZeichneText(GLUT_STROKE_ROMAN,&text[0])
       }
-      if (vonFarbNamen.size() &&
-          vonFarbNamen[2] == _("CIE *b"))
+      if (von_farb_namen_.size() &&
+          von_farb_namen_[2] == _("CIE *b"))
         glTranslatef(0,0.5,0);
     glPopMatrix();
     glLineWidth(1.0);
 
   glEndList();
-  DBG_PROG_V( tabelle.size() )
+  DBG_PROG_V( tabelle_.size() )
 
 
   // Tabelle
   if (gl_voll[RASTER])
     glDeleteLists (RASTER, 1);
 
-  if (tabelle.size())
+  if (tabelle_.size())
   {
       glNewList(RASTER, GL_COMPILE);
       gl_voll[RASTER] = true;
-      int n_L = tabelle.size(), n_a=tabelle[0].size(), n_b=tabelle[0][0].size();
+      int n_L = tabelle_.size(), n_a=tabelle_[0].size(), n_b=tabelle_[0][0].size();
       double dim_x = 1.0/(n_b); DBG_PROG_V( dim_x )
       double dim_y = 1.0/(n_L); DBG_PROG_V( dim_y )
       double dim_z = 1.0/(n_a); DBG_PROG_V( dim_z )
@@ -456,7 +465,7 @@ void GL_Ansicht::MakeDisplayLists()
       glDisable(GL_LIGHTING);
       #endif
       glTranslatef(start_x + dim_x/2.0, start_y + dim_y/2.0, start_z + dim_z/2.0);
-      DBG_PROG_V( tabelle.size() <<" "<< tabelle[0].size() )
+      DBG_PROG_V( tabelle_.size() <<" "<< tabelle_[0].size() )
       glTranslatef(-dim_x,-dim_y,-dim_z);
       for (int L = 0; L < (int)n_L; L++) { //DBG_PROG_V( L )
         double y_versatz = (double)L/(n_L-1)*dim_y-n_L/((n_L-0.0)*2.0)*dim_y;
@@ -472,7 +481,7 @@ void GL_Ansicht::MakeDisplayLists()
             z = start_z + b * dim_x; //DBG_PROG_V( dim_x )
             double x_versatz= (double)b/(n_b-1)*dim_x-n_b/((n_b-0.0)*2.0)*dim_z;
             glTranslatef(dim_x,0.0,0.0); //DBG_PROG_V( dim_x )
-            wert = tabelle[L][a][b][kanal]; //DBG_PROG_V( L << a << b << kanal )
+            wert = tabelle_[L][a][b][kanal]; //DBG_PROG_V( L << a << b << kanal )
             if (wert) {
               #ifdef Beleuchtung
               FARBE(wert, wert, wert)
@@ -514,14 +523,14 @@ void GL_Ansicht::MakeDisplayLists()
       glEnable(GL_LIGHTING);
       #endif
       glEndList();
-  } else if (_dreiecksNetze.size()) {
+  } else if (dreiecks_netze_.size()) {
 
-    if( _dreiecksNetze.size() )
-      DBG_PROG_V( _dreiecksNetze[0].size() )
-    if( _dreiecksFarben.size() )
-      DBG_PROG_V( _dreiecksFarben[0].size() )
-    if( _netzNamen.size() )
-      DBG_PROG_V( _netzNamen[0].size() )
+    if( dreiecks_netze_.size() )
+      DBG_PROG_V( dreiecks_netze_[0].size() )
+    if( dreiecks_farben_.size() )
+      DBG_PROG_V( dreiecks_farben_[0].size() )
+    if( netz_namen_.size() )
+      DBG_PROG_V( netz_namen_[0].size() )
 
       glNewList(RASTER, GL_COMPILE);
       gl_voll[RASTER] = true;
@@ -540,29 +549,29 @@ void GL_Ansicht::MakeDisplayLists()
       glColor3f(0.9, 0.9, 0.9);
       glPushMatrix();
       glTranslatef( -.5, -.5, -.5 );
-      for(unsigned int j = 0; j < _dreiecksNetze.size(); j++ )
+      for(unsigned int j = 0; j < dreiecks_netze_.size(); j++ )
       { glBegin(GL_TRIANGLE_STRIP);
         DBG_PROG_V( j )
-        for(unsigned int i = 0; i < _dreiecksNetze[j].size()-5; i=i+6 )
-        { DBG_PROG_V( i )
-          if ( _dreiecksFarben.size() > j &&
-               _dreiecksFarben[j].size() > _dreiecksNetze[j].size() )
-          { DBG_PROG_V( i/6*4+3 )
-            glColor4f( _dreiecksFarben[j][i/6*4+0],_dreiecksFarben[j][i/6*4+1],
-                       _dreiecksFarben[j][i/6*4+2],_dreiecksFarben[j][i/6*4+3]);
+        for(unsigned int i = 0; i < dreiecks_netze_[j].size()-5; i=i+6 )
+        { //DBG_PROG_V( i )
+          if ( dreiecks_farben_.size() > j &&
+               dreiecks_farben_[j].size() > dreiecks_netze_[j].size() )
+          { //DBG_PROG_V( i/6*4+3 )
+            glColor4f( dreiecks_farben_[j][i/6*4+0],dreiecks_farben_[j][i/6*4+1],
+                       dreiecks_farben_[j][i/6*4+2],dreiecks_farben_[j][i/6*4+3]);
           }
-          glVertex3d( _dreiecksNetze[j][i+1],
-                      _dreiecksNetze[j][i+0],
-                      _dreiecksNetze[j][i+2] );
-          if ( _dreiecksFarben.size() > j &&
-               _dreiecksFarben[j].size() > _dreiecksNetze[j].size() )
-          { DBG_PROG_V( i/6*4+3 )
-            glColor4f( _dreiecksFarben[j][i/6*4+4],_dreiecksFarben[j][i/6*4+5],
-                       _dreiecksFarben[j][i/6*4+6],_dreiecksFarben[j][i/6*4+7]);
+          glVertex3d( dreiecks_netze_[j][i+1],
+                      dreiecks_netze_[j][i+0],
+                      dreiecks_netze_[j][i+2] );
+          if ( dreiecks_farben_.size() > j &&
+               dreiecks_farben_[j].size() > dreiecks_netze_[j].size() )
+          { //DBG_PROG_V( i/6*4+3 )
+            glColor4f( dreiecks_farben_[j][i/6*4+4],dreiecks_farben_[j][i/6*4+5],
+                       dreiecks_farben_[j][i/6*4+6],dreiecks_farben_[j][i/6*4+7]);
           }
-          glVertex3d( _dreiecksNetze[j][i+4],
-                      _dreiecksNetze[j][i+3],
-                      _dreiecksNetze[j][i+5] );
+          glVertex3d( dreiecks_netze_[j][i+4],
+                      dreiecks_netze_[j][i+3],
+                      dreiecks_netze_[j][i+5] );
         }
         glEnd();
       }
@@ -573,9 +582,9 @@ void GL_Ansicht::MakeDisplayLists()
       glEndList();
   }
  
-  if (punkte.size()) {
-    glNewList(PUNKTE, GL_COMPILE);
-    gl_voll[PUNKTE] = true;
+  if (punkte_.size()) {
+    glNewList(dID(PUNKTE), GL_COMPILE);
+    gl_voll[dID(PUNKTE)] = true;
       #ifndef Beleuchtung
       glDisable(GL_LIGHTING);
       #endif
@@ -589,14 +598,14 @@ void GL_Ansicht::MakeDisplayLists()
       #endif
 
       glColor3f(0.9, 0.9, 0.9);
-      for (unsigned i = 0; i < punkte.size(); i+=3)
+      for (unsigned i = 0; i < punkte_.size(); i+=3)
       {
         glPushMatrix();
         glTranslatef( -.5, -.5, -.5 );
-        glTranslatef( punkte[i+1], punkte[i+0], punkte[i+2] );
-        if (farben.size() > punkte.size())
-          glColor4f(farben[i/3*4+0], farben[i/3*4+1], farben[i/3*4+2],
-                    farben[i/3*4+3] );
+        glTranslatef( punkte_[i+1], punkte_[i+0], punkte_[i+2] );
+        if (farben_.size() > punkte_.size())
+          glColor4f(farben_[i/3*4+0], farben_[i/3*4+1], farben_[i/3*4+2],
+                    farben_[i/3*4+3] );
         double groesse = 0.02;
         switch (Punktform)
         {
@@ -649,56 +658,57 @@ void GL_Ansicht::MakeDisplayLists()
 }
 
 void
-GL_Ansicht::MenueErneuern()
+GL_Ansicht::menueErneuern()
 { DBG_PROG_START
-  DBG_PROG_V( MenueKanalEintraege << " "<< glutGet(GLUT_MENU_NUM_ITEMS) )
+  DBG_PROG_V( menue_kanal_eintraege_ << " "<< glutGet(GLUT_MENU_NUM_ITEMS) )
 
   int old_menue = glutGetMenu();
-  glutSetMenu (MenueSchnitt);
-  if (vonFarbNamen.size() >= 3)
+  glutSetMenu (menue_schnitt_);
+  if (von_farb_namen_.size() >= 3)
   {
     static char text_L[64];
     static char text_a[64];
     static char text_b[64];
     static char text_S[64];
-    sprintf (text_L, "%s %s", vonFarbNamen[0].c_str(), _("Schnitt"));
+    sprintf (text_L, "%s %s", von_farb_namen_[0].c_str(), _("Schnitt"));
     glutChangeToMenuEntry(1, text_L, agviewer::ICCFLY_L);
-    sprintf (text_a, "%s %s", vonFarbNamen[1].c_str(), _("Schnitt"));
+    sprintf (text_a, "%s %s", von_farb_namen_[1].c_str(), _("Schnitt"));
     glutChangeToMenuEntry(2, text_a, agviewer::ICCFLY_a);
-    sprintf (text_b, "%s %s", vonFarbNamen[2].c_str(), _("Schnitt"));
+    sprintf (text_b, "%s %s", von_farb_namen_[2].c_str(), _("Schnitt"));
     glutChangeToMenuEntry(3, text_b, agviewer::ICCFLY_b);
-    sprintf (text_S, "%s %s %s", _("Drehen um"),vonFarbNamen[0].c_str(), _("Achse"));
+    sprintf (text_S, "%s %s %s", _("Drehen um"),von_farb_namen_[0].c_str(), _("Achse"));
     glutChangeToMenuEntry(5,text_S,  agviewer::ICCPOLAR);
   }
   glutSetMenu (old_menue);
 
   int me = glutGet(GLUT_MENU_NUM_ITEMS);
-  for (int i = 0; i < MenueKanalEintraege; i++) {
+  for (int i = 0; i < menue_kanal_eintraege_; i++) {
     glutRemoveMenuItem (me - i);
     DBG_PROG_V( me - i )
   }
 
-  MenueKanalEintraege = 0;
+  menue_kanal_eintraege_ = 0;
 
-  for (int i = 0; i < (int)nachFarbNamen.size(); i++) {
-    char* p = (char*) nachFarbNamen[i].c_str();
+  for (int i = 0; i < (int)nach_farb_namen_.size(); i++) {
+    char* p = (char*) nach_farb_namen_[i].c_str();
     glutAddMenuEntry(p, MENU_MAX + i);
-    MenueKanalEintraege++;
-    DBG_PROG_V( MENU_MAX + i << nachFarbNamen[i] )
+    menue_kanal_eintraege_++;
+    DBG_PROG_V( MENU_MAX + i << nach_farb_namen_[i] )
   }
 
-  if (kanal >= MenueKanalEintraege)
-    kanal = MenueKanalEintraege - 1;
+  if (kanal >= menue_kanal_eintraege_)
+    kanal = menue_kanal_eintraege_ - 1;
 
-  DBG_PROG_V( MenueKanalEintraege << kanal )
+  DBG_PROG_V( menue_kanal_eintraege_ << kanal )
   status(_("linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menü"))
 
   DBG_PROG_ENDE
 }
 
-void GL_Ansicht::MenuInit() {
-  DBG_PROG_START
-  MenueSchnitt = glutCreateMenu(agvSwitchMoveMode);   /* pass these right to */
+void
+GL_Ansicht::menuInit()
+{ DBG_PROG_START
+  menue_schnitt_ = glutCreateMenu(agvSwitchMoveMode);   /* pass these right to */
   glutAddMenuEntry("text_L",  agviewer::ICCFLY_L);
   glutAddMenuEntry("text_a",  agviewer::ICCFLY_a);
   glutAddMenuEntry("text_b",  agviewer::ICCFLY_b);
@@ -710,11 +720,11 @@ void GL_Ansicht::MenuInit() {
   glutAddMenuEntry(_("Würfel"), MENU_WUERFEL);
   glutAddMenuEntry(_("Stern"),  MENU_STERN);
   glutCreateMenu(handlemenu);
-  glutAddSubMenu(_("Querschnitte"), MenueSchnitt);
+  glutAddSubMenu(_("Querschnitte"), menue_schnitt_);
   glutAddSubMenu(_("Formen"), sub3);
 
 
-  //MenueErneuern();
+  //menueErneuern();
 
   glutAttachMenu(GLUT_RIGHT_BUTTON);
   DBG_PROG_ENDE
@@ -722,8 +732,9 @@ void GL_Ansicht::MenuInit() {
 
 double seitenverhaeltnis;
 
-void reshape(int w, int h) {
-  DBG_PROG_START
+void
+reshape(int w, int h)
+{ DBG_PROG_START
   glViewport(0,0,w,h); DBG_PROG_V( icc_examin->glAnsicht()->x()<<" "<<icc_examin->glAnsicht()->y()<<" "<<w<<" "<<h )
   glutPositionWindow(icc_examin->glAnsicht()->x(),icc_examin->glAnsicht()->y());
   //icc_examin->glAnsicht()->zeigen();
@@ -732,8 +743,9 @@ void reshape(int w, int h) {
   DBG_PROG_ENDE
 }
 
-void display() {
-  //DBG_PROG_START
+void
+display()
+{ //DBG_PROG_START
   static char text[256];
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -802,9 +814,9 @@ void display() {
   if (DrawAxes)
     glCallList(AXES);
 
-  glCallList(HELFER);
-  glCallList(RASTER);
-  glCallList(PUNKTE);
+  glCallList(dID(HELFER));
+  glCallList(dID(RASTER));
+  glCallList(dID(PUNKTE));
 
 
   #if 0
@@ -817,62 +829,62 @@ void display() {
 }
 
 void
-GL_Ansicht::hinein_punkte      (std::vector<double>      vect,
+GL_Ansicht::hineinPunkte       (std::vector<double>      vect,
                                 std::vector<std::string> achsNamen)
 { DBG_PROG_START
 
   DBG_PROG_V( vect.size() )
 
-  tabelle.clear();DBG_PROG  
-  punkte.clear(); DBG_PROG
-  kurven.clear(); DBG_PROG
+  tabelle_.clear();DBG_PROG  
+  punkte_.clear(); DBG_PROG
+  kurven_.clear(); DBG_PROG
   if (achsNamen.size() == 3)
-    vonFarbNamen = achsNamen;
+    von_farb_namen_ = achsNamen;
   else
-  { vonFarbNamen.clear();
-    vonFarbNamen.push_back ("?");
-    vonFarbNamen.push_back ("?");
-    vonFarbNamen.push_back ("?");
+  { von_farb_namen_.clear();
+    von_farb_namen_.push_back ("?");
+    von_farb_namen_.push_back ("?");
+    von_farb_namen_.push_back ("?");
   }
 
-  punkte = vect;
-  DBG_PROG_V( punkte.size() )
+  punkte_ = vect;
+  DBG_PROG_V( punkte_.size() )
 
-  icc_examin->neuzeichnen(this);
+  //icc_examin->neuzeichnen(this);
   DBG_PROG_ENDE
 }
 
 void
-GL_Ansicht::hinein_punkte     (std::vector<double> vect,
-                               std::vector<float> f,
+GL_Ansicht::hineinPunkte      (std::vector<double>      vect,
+                               std::vector<float>       f,
                                std::vector<std::string> achsNamen)
 { DBG_PROG_START
   //Kurve aus tag_browser anzeigen
   if(vect.size() == (f.size()*4/3))
-    farben = f;
+    farben_ = f;
 
-  hinein_punkte(vect,achsNamen);
+  hineinPunkte(vect,achsNamen);
 
   DBG_PROG_ENDE
 }
 
 void
-GL_Ansicht::hinein_punkte     (std::vector<double> vect,
+GL_Ansicht::hineinPunkte      (std::vector<double> vect,
                                std::vector<float> f,
-                               std::vector<std::string> _farbNamen,
-                               std::vector<std::string> _achsNamen)
+                               std::vector<std::string> farb_namen,
+                               std::vector<std::string> achs_namen)
 { DBG_PROG_START
   //Kurve aus tag_browser anzeigen
-  if(_farbNamen.size() == (f.size()*4))
-    farbNamen = _farbNamen;
+  if(farb_namen.size() == (f.size()*4))
+    farb_namen_ = farb_namen;
 
-  hinein_punkte(vect,f,_achsNamen);
+  hineinPunkte(vect,f,achs_namen);
 
   DBG_PROG_ENDE
 }
 
 void
-GL_Ansicht::hinein_netze      (std::vector<std::vector<double> >dreiecksNetze, 
+GL_Ansicht::hineinNetze       (std::vector<std::vector<double> >dreiecksNetze, 
                                std::vector<std::vector<float> > dreiecksFarben,
                                std::vector<std::string> netzNamen,
                                std::vector<std::string> achsNamen)
@@ -880,75 +892,72 @@ GL_Ansicht::hinein_netze      (std::vector<std::vector<double> >dreiecksNetze,
   // Farbraumhülle laden
   DBG_PROG_V( dreiecksNetze.size() )
 
-  tabelle.clear();DBG_PROG  
-  _dreiecksNetze.clear(); DBG_PROG
-  kurven.clear(); DBG_PROG
+  tabelle_.clear();DBG_PROG  
+  dreiecks_netze_.clear(); DBG_PROG
+  kurven_.clear(); DBG_PROG
   if (achsNamen.size() == 3)
-    vonFarbNamen = achsNamen;
+    von_farb_namen_ = achsNamen;
   else
-  { vonFarbNamen.clear();
-    vonFarbNamen.push_back ("?");
-    vonFarbNamen.push_back ("?");
-    vonFarbNamen.push_back ("?");
+  { von_farb_namen_.clear();
+    von_farb_namen_.push_back ("?");
+    von_farb_namen_.push_back ("?");
+    von_farb_namen_.push_back ("?");
   }
 
-  _dreiecksNetze  = dreiecksNetze;
-  _dreiecksFarben = dreiecksFarben;
-  _netzNamen      = netzNamen;
-  if( _dreiecksNetze.size() )
-    DBG_PROG_V( _dreiecksNetze[0].size() )
-  if( _dreiecksFarben.size() )
-    DBG_PROG_V( _dreiecksFarben[0].size() )
-  if( _netzNamen.size() )
-    DBG_PROG_V( _netzNamen[0].size() )
+  dreiecks_netze_  = dreiecksNetze;
+  dreiecks_farben_ = dreiecksFarben;
+  netz_namen_      = netzNamen;
+  if( dreiecks_netze_.size() )
+    DBG_PROG_V( dreiecks_netze_[0].size() )
+  if( dreiecks_farben_.size() )
+    DBG_PROG_V( dreiecks_farben_[0].size() )
+  if( netz_namen_.size() )
+    DBG_PROG_V( netz_namen_[0].size() )
 
-  icc_examin->neuzeichnen(this);
+  //icc_examin->neuzeichnen(this);
   DBG_PROG_ENDE
 }
 
 
-void GL_Ansicht::hinein_kurven(std::vector<std::vector<double> >vect, std::vector<std::string> txt)
+void GL_Ansicht::hineinKurven(std::vector<std::vector<double> >vect, std::vector<std::string> txt)
 { DBG_PROG_START
   //Kurve aus tag_browser anzeigen
-  kurven = vect;
-  nachFarbNamen = txt;
-  punkte.clear();
+  kurven_ = vect;
+  nach_farb_namen_ = txt;
+  punkte_.clear();
 
-  icc_examin->neuzeichnen(this); DBG_PROG_V( first )
-
-  if (first)
-    init();
+  //icc_examin->neuzeichnen(this); DBG_PROG_V( first_ )
 
   DBG_PROG_ENDE
 }
 
 void
-GL_Ansicht::hinein_tabelle(std::vector<std::vector<std::vector<std::vector<double> > > > vect,
+GL_Ansicht::hineinTabelle (std::vector<std::vector<std::vector<std::vector<double> > > > vect,
                            std::vector<std::string> von,
                            std::vector<std::string> nach)
 { DBG_PROG_START
   //Kurve aus tag_browser anzeigen
-  tabelle = vect;  DBG_PROG
-  nachFarbNamen = nach; DBG_PROG
+  tabelle_ = vect;  DBG_PROG
+  nach_farb_namen_ = nach; DBG_PROG
   if (von.size() == 3)
-    vonFarbNamen = von;
+    von_farb_namen_ = von;
   else
-  { vonFarbNamen.clear();
-    vonFarbNamen.push_back ("?");
-    vonFarbNamen.push_back ("?");
-    vonFarbNamen.push_back ("?");
+  { von_farb_namen_.clear();
+    von_farb_namen_.push_back ("?");
+    von_farb_namen_.push_back ("?");
+    von_farb_namen_.push_back ("?");
   }
-  kurven.clear(); DBG_PROG
-  punkte.clear(); DBG_PROG
+  kurven_.clear(); DBG_PROG
+  punkte_.clear(); DBG_PROG
 
-  icc_examin->neuzeichnen(this); DBG_PROG_V( first )
+  //icc_examin->neuzeichnen(this); DBG_PROG_V( first_ )
 
 
-  if (first)
+  if (first_)
     init();
   else {
-    MenueErneuern();
-    MakeDisplayLists();
+    menueErneuern();
+    makeDisplayLists();
   }
 
   status(_("linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menü"))
@@ -1010,8 +1019,8 @@ handlemenu (int value)
       break;
     case MENU_QUIT:
       DBG_PROG_V( glutGetWindow() )
-      glutDestroyWindow(glutGetWindow());
-      icc_examin->glAnsicht()->first = true;
+      //glutDestroyWindow(glutGetWindow());
+      //icc_examin->glAnsicht()->first_ = true;
       break;
     case MENU_RING:
       Rotating = !Rotating;
@@ -1025,27 +1034,33 @@ handlemenu (int value)
       break;
     case MENU_KUGEL:
       icc_examin->glAnsicht()->Punktform = MENU_KUGEL;
-      icc_examin->glAnsicht()->MakeDisplayLists();
+      icc_examin->glAnsicht()->makeDisplayLists();
       break;
     case MENU_WUERFEL:
       icc_examin->glAnsicht()-> Punktform = MENU_WUERFEL;
-      icc_examin->glAnsicht()->MakeDisplayLists();
+      icc_examin->glAnsicht()->makeDisplayLists();
       break;
     case MENU_STERN:
       icc_examin->glAnsicht()-> Punktform = MENU_STERN;
-      icc_examin->glAnsicht()->MakeDisplayLists();
+      icc_examin->glAnsicht()->makeDisplayLists();
       break;
     }
 
   if (value >= MENU_MAX) {
     kanal = value - MENU_MAX; DBG_PROG_V( kanal )
     status(_("linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menü"))
-    icc_examin->glAnsicht()->MakeDisplayLists();
+    icc_examin->glAnsicht()->makeDisplayLists();
   }
 
   DBG_PROG_V( value )
   glutPostRedisplay();
   DBG_PROG_ENDE
+}
+
+int
+dID (int display_list)
+{
+  return display_list * icc_examin->glAnsicht()->id();
 }
 
 

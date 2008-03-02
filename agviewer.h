@@ -25,7 +25,7 @@
  */
 
 /*
- * move (mostly) all into one class - Kai-Uwe Behrmann 2004
+ * move (mostly) all into one class - Kai-Uwe Behrmann 2004 - 2005
  *
  */
 

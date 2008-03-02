@@ -40,7 +40,7 @@ class TagBrowser : public Fl_Hold_Browser {
 public:
   TagBrowser(int X,int Y,int W,int H,char* start_info) ;
   void reopen();
-  void select_item(int item);
+  void selectItem(int item);
 };
 
 class TagTexts : public Fl_Hold_Browser {
@@ -57,9 +57,9 @@ public:
   int wiederholen;
   TagDrawings(int X,int Y,int W,int H) ;
   void draw();
-  void hinein_punkt(std::vector<double> vect, std::vector<std::string> txt);
-  void hinein_kurven(std::vector<std::vector<double> >vect, std::vector<std::string> txt);
-  void ruhig_neuzeichnen(void);
+  void hineinPunkt(std::vector<double> vect, std::vector<std::string> txt);
+  void hineinKurven(std::vector<std::vector<double> >vect, std::vector<std::string> txt);
+  void ruhigNeuzeichnen(void);
 };
 
 class MftChoice : public Fl_Choice {
@@ -67,8 +67,8 @@ class MftChoice : public Fl_Choice {
 public:
   std::vector<std::string> Info; int gewaehlter_eintrag;
   MftChoice(int X,int Y,int W,int H,char* start_info) ;
-  void profil_tag(int _tag, std::string text);
-  void auswahl_cb(void);
+  void profilTag(int _tag, std::string text);
+  void auswahlCb(void);
 };
 #include <FL/Fl_Double_Window.H>
 #include <FL/Fl_Group.H>
@@ -130,8 +130,6 @@ private:
   inline void cb_ber_i(Fl_Menu_*, void*);
   static void cb_ber(Fl_Menu_*, void*);
 public:
-  Fl_Group *inspekt_nein;
-  Fl_Help_View *inspekt_html_nein;
   Fl_Tile *examin;
   TagBrowser *tag_browser;
 private:
@@ -148,11 +146,9 @@ public:
   TagDrawings *mft_viewer;
   TagTexts *mft_text;
   GL_Ansicht *mft_gl;
-  Fl_Group *tag_3D;
   TagDrawings *tag_viewer;
   TagTexts *tag_text;
   Fl_Help_View *inspekt_html;
-  Fl_Group *group_histogram;
   GL_Ansicht *DD_histogram;
   Fl_Box *box_stat;
   Fl_Progress *load_progress;
@@ -163,5 +159,5 @@ public:
   void measurement(bool has_measurement);
 };
 std::vector<std::string> zeilenNachVector(std::string text);
-void d_haendler(void* o);
+void dHaendler(void* o);
 #endif
