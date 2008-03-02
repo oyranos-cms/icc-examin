@@ -539,10 +539,9 @@ ICCmeasurement::init_umrechnen                     (void)
         _RGB_ProfilFarben[i].B = sRGB[2];
 
         // geometrische Farbortdifferenz - dE CIE*Lab
-        _Lab_Differenz[i] = pow (    pow(_Lab_Ergebnis[i].L - _Lab_Satz[i].L,2)
-                                   + pow(_Lab_Ergebnis[i].a - _Lab_Satz[i].a,2)
-                                   + pow(_Lab_Ergebnis[i].b - _Lab_Satz[i].b,2)
-                                 , 1.0/2.0);
+        _Lab_Differenz[i] = HYP3( _Lab_Ergebnis[i].L - _Lab_Satz[i].L ,
+                                  _Lab_Ergebnis[i].a - _Lab_Satz[i].a ,
+                                  _Lab_Ergebnis[i].b - _Lab_Satz[i].b  );
         if (_Lab_Differenz_max < _Lab_Differenz[i])
           _Lab_Differenz_max = _Lab_Differenz[i];
         if (_Lab_Differenz_min > _Lab_Differenz[i])
@@ -646,10 +645,9 @@ ICCmeasurement::init_umrechnen                     (void)
         _RGB_ProfilFarben[i].B = sRGB[2];
 
         // geometrische Farbortdifferenz
-        _Lab_Differenz[i] = pow (    pow(_Lab_Ergebnis[i].L - _Lab_Satz[i].L,2)
-                                   + pow(_Lab_Ergebnis[i].a - _Lab_Satz[i].a,2)
-                                   + pow(_Lab_Ergebnis[i].b - _Lab_Satz[i].b,2)
-                                 , 1.0/2.0);
+        _Lab_Differenz[i] = HYP3( _Lab_Ergebnis[i].L - _Lab_Satz[i].L ,
+                                  _Lab_Ergebnis[i].a - _Lab_Satz[i].a ,
+                                  _Lab_Ergebnis[i].b - _Lab_Satz[i].b  );
         if (_Lab_Differenz_max < _Lab_Differenz[i])
           _Lab_Differenz_max = _Lab_Differenz[i];
         if (_Lab_Differenz_min > _Lab_Differenz[i])

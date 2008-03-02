@@ -8,6 +8,7 @@
 #define _(text) text
 
 extern int kanal;
+extern bool duenn;
 
 class GL_Ansicht : public Fl_Group {
   std::vector<std::vector<std::vector<std::vector<double> > > > tabelle;
@@ -41,6 +42,10 @@ public:
   void stop() {if (!first) { agvSwitchMoveMode (AGV_STOP); } }
 
   char* kanalName() {return (char*)texte[kanal].c_str(); }
+  char* kanalName(unsigned int i) { if (texte.size()>i) 
+                                      return (char*)texte[i].c_str();  
+                                    else  return _("Gibts nicht"); }
+  unsigned int kanaele() {return texte.size(); }
 };
 
 void reshape(int w, int h);

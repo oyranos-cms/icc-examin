@@ -62,7 +62,8 @@ decl {\#include "icc_draw.h"} {}
 
 decl {\#include "icc_profile.h"
 \#include "icc_utils.h"
-\#include "icc_profilierer.h"} {public
+\#include "icc_profilierer.h"
+\#include "icc_ueber.h"} {public
 } 
 
 decl {\#include "agviewer.h"
@@ -79,9 +80,27 @@ Function {} {open C return_type int
   code {statlabel = (char*)calloc (sizeof (char), 1024);
   fullscreen = false;
   inspekt_topline = 0;} {}
+  Fl_Window ueber {
+    label {Über ICC examin} open
+    xywh {570 139 366 241} type Double resizable
+    code0 {o->hide();} non_modal visible
+  } {
+    Fl_Group {} {open
+      xywh {0 0 365 240}
+    } {
+      Fl_Help_View ueber_html {
+        xywh {0 0 365 205} resizable
+      }
+      Fl_Button ja {
+        label Gut
+        callback {ueber->hide();} selected
+        xywh {130 210 110 25}
+      }
+    }
+  }
   Fl_Window details {
     label {ICC Details} open
-    xywh {899 480 385 520} type Double box NO_BOX color 53
+    xywh {837 346 385 520} type Double box NO_BOX color 53
     code1 {DBG_PROG
     if (argc>1) {
 
@@ -135,7 +154,7 @@ Function {} {open C return_type int
         }
         submenu {} {
           label Ansicht open
-          xywh {15 15 100 20}
+          xywh {15 15 100 20} divider
         } {
           menuitem menueintrag_Voll {
             label {Ganzer Bildschirm an/aus}
@@ -181,8 +200,19 @@ matrix.saveProfileToFile("/tmp/icc_examin_test.icc");}
     inspekt->hide();
     examin->show();
     inspekt_topline = inspekt_html->topline();
-  }} selected
+  }}
           tooltip {Mess- und Profilwerte bildlich und in Zahlen dargestellt; Ctrl+b} xywh {30 30 100 20} type Toggle shortcut 0x40062 deactivate
+        }
+        submenu menu_hilfe {
+          label Hilfe open
+          xywh {0 0 100 20}
+        } {
+          menuitem {} {
+            label {Über}
+            callback {ueber->show();
+ueber_html->value(getUeberHtml().c_str());}
+            xywh {5 5 100 20}
+          }
         }
       }
       Fl_Group inspekt {open

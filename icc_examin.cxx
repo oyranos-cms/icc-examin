@@ -15,6 +15,16 @@ static char *statlabel;
 ICCprofile profile;
 /* */ int level_PROG = -1;
 
+Fl_Double_Window *ueber=(Fl_Double_Window *)0;
+
+Fl_Help_View *ueber_html=(Fl_Help_View *)0;
+
+Fl_Button *ja=(Fl_Button *)0;
+
+static void cb_ja(Fl_Button*, void*) {
+  ueber->hide();
+}
+
 Fl_Double_Window *details=(Fl_Double_Window *)0;
 
 static void cb_ffnen(Fl_Menu_*, void*) {
@@ -84,17 +94,25 @@ static void cb_menueintrag_inspekt(Fl_Menu_* o, void*) {
   };
 }
 
+static void cb_ber(Fl_Menu_*, void*) {
+  ueber->show();
+ueber_html->value(getUeberHtml().c_str());
+}
+
 Fl_Menu_Item menu_[] = {
  {"Daten", 0,  0, 0, 64, 0, 0, 14, 56},
  {"\326""ffnen", 0x4006f,  (Fl_Callback*)cb_ffnen, 0, 0, 0, 0, 14, 56},
  {"Bericht Speichern", 0,  (Fl_Callback*)cb_menueintrag_html_speichern, 0, 129, 0, 0, 14, 56},
  {"Beenden", 0x40071,  (Fl_Callback*)cb_Beenden, 0, 0, 0, 0, 14, 56},
  {0},
- {"Ansicht", 0,  0, 0, 64, 0, 0, 14, 56},
+ {"Ansicht", 0,  0, 0, 192, 0, 0, 14, 56},
  {"Ganzer Bildschirm an/aus", 0x40076,  (Fl_Callback*)cb_menueintrag_Voll, 0, 0, 0, 0, 14, 56},
  {"MatrixTestprofil schreiben", 0,  (Fl_Callback*)cb_MatrixTestprofil, 0, 0, 0, 0, 14, 56},
  {0},
  {"Pr\374""fansicht", 0x40062,  (Fl_Callback*)cb_menueintrag_inspekt, 0, 3, 0, 0, 14, 56},
+ {"Hilfe", 0,  0, 0, 64, 0, 0, 14, 56},
+ {"\334""ber", 0,  (Fl_Callback*)cb_ber, 0, 0, 0, 0, 14, 56},
+ {0},
  {0}
 };
 
@@ -142,6 +160,22 @@ int main(int argc, char **argv) {
   statlabel = (char*)calloc (sizeof (char), 1024);
   fullscreen = false;
   inspekt_topline = 0;
+  { Fl_Double_Window* o = ueber = new Fl_Double_Window(366, 241, "\334""ber ICC examin");
+    w = o;
+    { Fl_Group* o = new Fl_Group(0, 0, 365, 240);
+      { Fl_Help_View* o = ueber_html = new Fl_Help_View(0, 0, 365, 205);
+        Fl_Group::current()->resizable(o);
+      }
+      { Fl_Button* o = ja = new Fl_Button(130, 210, 110, 25, "Gut");
+        o->callback((Fl_Callback*)cb_ja);
+      }
+      o->end();
+    }
+    o->hide();
+    o->set_non_modal();
+    o->end();
+    o->resizable(o);
+  }
   { Fl_Double_Window* o = details = new Fl_Double_Window(385, 520, "ICC Details");
     w = o;
     o->box(FL_NO_BOX);

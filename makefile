@@ -44,6 +44,7 @@ CPPFILES = \
 	icc_profile.cpp \
 	icc_measurement.cpp \
 	icc_profilierer.cpp \
+	icc_ueber.cpp \
 	icc_vrml.cpp \
         icc_gl.cpp \
         agviewer.cpp

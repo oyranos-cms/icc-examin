@@ -11,11 +11,13 @@
 #define DEBUG_ICCGL
 //#define Beleuchtung
 
-typedef enum {NOTALLOWED, AXES, RASTER, RING , HELFER} DisplayLists;
+typedef enum {NOTALLOWED, AXES, RASTER, RING , HELFER } DisplayLists;
 typedef enum { MENU_AXES, MENU_QUIT, MENU_RING, MENU_KUGEL, MENU_WUERFEL, MENU_STERN, MENU_MAX } MenuChoices;
 
 int DrawAxes = 0;
 int kanal = 0;
+bool duenn = false;
+double Schnitttiefe = 0.1;
 
 #define ROTATEINC 2;
 
@@ -166,6 +168,8 @@ void GL_Ansicht::myGLinit() {
 
 // Text zeichnen
 #define ZeichneText(Font,Zeiger) { \
+   glDisable(GL_TEXTURE_2D); \
+   glDisable(GL_LIGHTING); \
       glTranslatef(.0,0,0.01); \
         glScalef(0.001,0.001,0.001); \
           for (char* p = Zeiger; *p; p++) { \
@@ -175,7 +179,9 @@ void GL_Ansicht::myGLinit() {
             glTranslatef(0.0 - glutStrokeWidth(Font, *p),0,0); \
           } \
         glScalef(1000,1000,1000); \
-      glTranslatef(.0,0,-.01); }
+      glTranslatef(.0,0,-.01); \
+   glEnable(GL_TEXTURE_2D); \
+   glEnable(GL_LIGHTING); }
 #define ZeichneBuchstaben(Font,Buchstabe) { \
         glScalef(0.001,0.001,0.001); \
           glutStrokeCharacter(Font, Buchstabe); \
@@ -346,6 +352,15 @@ void GL_Ansicht::MakeDisplayLists() {
       double start_x,start_y,start_z, x,y,z;
       double groesse = (dim_x + dim_y + dim_z)/ 3;
       double wert;
+              switch (Punktform) {
+                case MENU_STERN:   
+                Schnitttiefe= HYP3(dim_x,dim_y,dim_z);
+                break;
+                case MENU_WUERFEL: Schnitttiefe = HYP3(groesse,groesse,groesse);
+                break;
+                case MENU_KUGEL:   Schnitttiefe = groesse;
+                break;
+              } DBG_NUM_V( Schnitttiefe );
       start_x = start_y = start_z = x = y = z = 0.5; start_y = y = -0.5;
       glPushMatrix();
       #ifndef Beleuchtung
@@ -449,17 +464,26 @@ GL_Ansicht::MenueErneuern()
 
   if (kanal > MenueKanalEintraege)
     kanal = MenueKanalEintraege;
-  status((char*)(texte[kanal].c_str()) << _("; linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menü"))
+  status(_("linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menü"))
 
   DBG_PROG_ENDE
 }
 
 void GL_Ansicht::MenuInit() {
+  static char text_L[32];
+  static char text_a[32];
+  static char text_b[32];
   DBG_PROG_START
   int sub2 = glutCreateMenu(agvSwitchMoveMode);   /* pass these right to */
-  glutAddMenuEntry(_("L Schnitt"),  ICCFLY_L);
+  sprintf (text_L, "%s %s", pcsNamen[0].c_str(), _("Schnitt"));
+  glutAddMenuEntry(text_L,  ICCFLY_L);
+  sprintf (text_a, "%s %s", pcsNamen[1].c_str(), _("Schnitt"));
+  glutAddMenuEntry(text_a,  ICCFLY_a);
+  sprintf (text_b, "%s %s", pcsNamen[2].c_str(), _("Schnitt"));
+  glutAddMenuEntry(text_b,  ICCFLY_b); DBG_NUM_V( text_L )
+/*  glutAddMenuEntry(_("L Schnitt"),  ICCFLY_L);
   glutAddMenuEntry(_("a Schnitt"),  ICCFLY_a);
-  glutAddMenuEntry(_("b Schnitt"),  ICCFLY_b);
+  glutAddMenuEntry(_("b Schnitt"),  ICCFLY_b);*/
   glutAddMenuEntry(_("Schnitt"),    FLYING); /* agvSwitchMoveMode() */
   glutAddMenuEntry(_("Drehen um L-Schnitt"),  ICCPOLAR);
 //  glutAddMenuEntry(_("Betrachten"),   POLAR);
@@ -494,15 +518,63 @@ void reshape(int w, int h) {
 
 void display() {
   //DBG_PROG_START
+  static char text[256];
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  glMatrixMode(GL_PROJECTION);
+   glLoadIdentity();
+   glMatrixMode(GL_PROJECTION);
+   //glLineWidth(3.0);
+
+   // Text
+   glPushMatrix();
+   glLoadIdentity();
+   glOrtho(0,mft_gl->w(),0,mft_gl->h(),-10.0,10.0);
+
+   glDisable(GL_TEXTURE_2D);
+   glDisable(GL_LIGHTING);
+   glEnable(GL_BLEND);
+   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+   glDisable(GL_LINE_SMOOTH);
+
+   glColor4f(.0,0.0,.0,1.0);
+
+   // Start von unten links
+   glTranslatef(5,-12,8);
+
+   #define ZeichneOText(font, scal, buffer) glScalef(scal,scal,scal); \
+                                 ZeichneText(font,buffer); \
+                                 glScalef(1.0/scal,1.0/scal,1.0/scal);
+
+   int scal = 100, zeilenversatz = (int)(scal/6.0);
+
+   #if 0
+   for (unsigned int i=0; i < mft_gl->kanaele(); i++) {
+     sprintf(&text[0],"%s: %f", mft_gl->kanalName(i), 12.0);
+     glTranslatef(0,zeilenversatz,0);
+     ZeichneOText (GLUT_STROKE_ROMAN, scal, text)
+   }
+   #endif
+
+   sprintf(&text[0],"%s: %s", _("sichtbarer Kanal"),mft_gl->kanalName());
+   glTranslatef(0,zeilenversatz,0);
+   ZeichneOText (GLUT_STROKE_ROMAN, scal, text) 
+
+   glEnable(GL_TEXTURE_2D);
+   glEnable(GL_LIGHTING);
   glPopMatrix();
+
   glPushMatrix();  /* clear of last viewing xform, leaving perspective */
 
   glLoadIdentity();
 
-  gluPerspective(15, seitenverhaeltnis, 4.2, 15);
+  #define ForderSchnitt 4.2
+
+  if (duenn)
+    gluPerspective(15, seitenverhaeltnis, ForderSchnitt,
+                                          ForderSchnitt + Schnitttiefe);
+  else
+    gluPerspective(15, seitenverhaeltnis, ForderSchnitt, 15);
+                                        // ^-- vordere Schnittfläche
 
     /* so this replaces gluLookAt or equiv */
   agvViewTransform();
@@ -520,6 +592,7 @@ void display() {
   glTranslatef(-2, 1, -2);
   glRotatef(Rotation, 1, 0, 0);
   glCallList(RING);
+
 
   #if 0
   glutSwapBuffers();
@@ -582,7 +655,7 @@ GL_Ansicht::hinein_tabelle(std::vector<std::vector<std::vector<std::vector<doubl
 
   MenueErneuern();
 
-  status((char*)(texte[kanal].c_str()) << _("; linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menü"))
+  status(_("linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menü"))
 
   DBG_PROG_ENDE
 }
@@ -670,7 +743,7 @@ void handlemenu(int value)
 
   if (value >= MENU_MAX) {
     kanal = value - MENU_MAX; DBG_PROG_V( kanal )
-    status((mft_gl->kanalName()) << _("; linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menü"))
+    status(_("linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menü"))
     mft_gl->MakeDisplayLists();
   }
 

@@ -55,6 +55,15 @@ extern int level_PROG;
 #define WARN_S(txt) DBG_S(txt)
 #define WARN_V(txt) DBG_V(txt)
 
+
+// mathematische Helfer
+
+#define MAX(a,b)    (((a) > (b)) ? (a) : (b))
+#define MIN(a,b)    (((a) < (b)) ? (a) : (b))
+#define HYP(a,b)    pow((a)*(a) + (b)*(b),1.0/2.0)
+#define HYP3(a,b,c) pow( (a)*(a) + (b)*(b) + (c)*(c) , 1.0/2.0)
+
+
 class Wert
 {
     double _wert;
