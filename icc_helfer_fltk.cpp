@@ -173,12 +173,14 @@ setzeIcon      ( Fl_Window *fenster, char   **xpm_daten )
   fenster->make_current();
   DBG_PROG_V( (int*) fl_display <<" "<< fl_window )
   Pixmap pm, mask;
+# if HAVE_Xpm
   XpmCreatePixmapFromData(  fl_display,
                             DefaultRootWindow(fl_display),
                             xpm_daten,
                             &pm,
                             &mask,
                             NULL);
+# endif
 # if 0
   XShapeCombineMask(fl_display, fl_window,
                     ShapeBounding,0,0,

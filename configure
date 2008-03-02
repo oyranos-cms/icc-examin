@@ -364,8 +364,14 @@ if [ -z "$CP_CONFIG" ]; then
     CP_FLAGS="cinepainttool --cflags"
     CP_LIBS="cinepainttool --libs"
     CP_VERSION=`cinepainttool --version`
-    echo "CINEPAINT = icc_examin_cp" >> $CONF
+    CP_N_VERSION=`cinepainttool --version | sed "s/\.// ; s/-//"`
     echo "Gtk CinePaint $CP_VERSION    detected"
+    cp_reqired=22
+    if [ "$CP_N_VERSION" -ge $cp_reqired ]; then
+      echo "CINEPAINT = icc_examin_cp" >> $CONF
+    else
+      echo "too old CinePaint version - need at least 0.$cp_reqired"
+    fi
   fi
 fi
  

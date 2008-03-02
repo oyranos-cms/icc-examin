@@ -27,10 +27,10 @@ if [ -n "$ELEKTRA" ] && [ "$ELEKTRA" -gt "0" ]; then
         ELEKTRA_FOUND=1
    fi
   fi
-  if [ -z $ELEKTRA_FOUND ]; then
+  if [ -z "$ELEKTRA_FOUND" ]; then
     elektra_mod=`pkg-config --modversion elektra`
   fi
-  if [ $? = 0 ] && [ -z $ELEKTRA_FOUND ]; then
+  if [ $? = 0 ] && [ -z "$ELEKTRA_FOUND" ]; then
     pkg-config  --atleast-version=$elektra_min elektra 2>>error.txt
     if [ $? = 0 ]; then
       pkg-config --max-version=$elektra_max elektra 2>>error.txt
@@ -59,7 +59,7 @@ if [ -n "$ELEKTRA" ] && [ "$ELEKTRA" -gt "0" ]; then
       ERROR=1
     fi
   fi
-  if [ -z $ELEKTRA_FOUND ]; then
+  if [ -z "$ELEKTRA_FOUND" ]; then
       test -n "$ECHO" && $ECHO $elektra_mod
       ERROR=1
   fi
@@ -150,11 +150,12 @@ if [ "$X11" = 1 ] && [ $X11 -gt 0 ]; then
       $CXX $CFLAGS -I$includedir tests/lib_test.cxx $LDFLAGS -L/usr/X11R6/lib$BARCH -L/usr/lib$BARCH -L$libdir -l$l -o tests/libtest 2>/dev/null
       if [ -f tests/libtest ]; then
           test -n "$ECHO" && $ECHO "lib$l is available"
-          if [ -z $X_ADD_LIBS ]; then
+          if [ -z "$X_ADD_LIBS" ]; then
             X_ADD_LIBS="-l$l"
           else
             X_ADD_LIBS="$X_ADD_LIBS -l$l"
           fi
+          echo "#define HAVE_$l 1"  >> $CONF_H
           rm tests/libtest
       else
         test -n "$ECHO" && $ECHO "!!! ERROR lib$l is missed"

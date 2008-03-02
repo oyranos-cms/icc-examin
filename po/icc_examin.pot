@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2007-02-12 11:43+0100\n"
+"POT-Creation-Date: 2007-02-12 20:17+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1731,55 +1731,55 @@ msgstr ""
 msgid "Kein Gammagradient Information erhalten"
 msgstr ""
 
-#: icc_helfer_fltk.cpp:312
+#: icc_helfer_fltk.cpp:314
 msgid "Add to Favorites"
 msgstr ""
 
-#: icc_helfer_fltk.cpp:313
+#: icc_helfer_fltk.cpp:315
 msgid "All Files (*)"
 msgstr ""
 
-#: icc_helfer_fltk.cpp:314
+#: icc_helfer_fltk.cpp:316
 msgid "Custom Filter"
 msgstr ""
 
-#: icc_helfer_fltk.cpp:315
+#: icc_helfer_fltk.cpp:317
 msgid "Please choose an existing file!"
 msgstr ""
 
-#: icc_helfer_fltk.cpp:316 my_file_chooser.cxx:180
+#: icc_helfer_fltk.cpp:318 my_file_chooser.cxx:180
 msgid "Favorites"
 msgstr ""
 
-#: icc_helfer_fltk.cpp:317
+#: icc_helfer_fltk.cpp:319
 msgid "Filename"
 msgstr ""
 
-#: icc_helfer_fltk.cpp:318 my_file_chooser.cxx:253
+#: icc_helfer_fltk.cpp:320 my_file_chooser.cxx:253
 msgid "Manage Favorites"
 msgstr ""
 
-#: icc_helfer_fltk.cpp:320
+#: icc_helfer_fltk.cpp:322
 msgid "My Computer"
 msgstr ""
 
-#: icc_helfer_fltk.cpp:322
+#: icc_helfer_fltk.cpp:324
 msgid "File Systems"
 msgstr ""
 
-#: icc_helfer_fltk.cpp:324
+#: icc_helfer_fltk.cpp:326
 msgid "New Directory?"
 msgstr ""
 
-#: icc_helfer_fltk.cpp:325 my_file_chooser.cxx:210
+#: icc_helfer_fltk.cpp:327 my_file_chooser.cxx:210
 msgid "Preview"
 msgstr ""
 
-#: icc_helfer_fltk.cpp:327 my_file_chooser.cxx:288
+#: icc_helfer_fltk.cpp:329 my_file_chooser.cxx:288
 msgid "Save"
 msgstr ""
 
-#: icc_helfer_fltk.cpp:329 my_file_chooser.cxx:173
+#: icc_helfer_fltk.cpp:331 my_file_chooser.cxx:173
 msgid "Show:"
 msgstr ""
 

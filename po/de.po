@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2007-02-12 11:43+0100\n"
+"POT-Creation-Date: 2007-02-12 20:15+0100\n"
 "PO-Revision-Date: 2005-08-13 17:35+0200\n"
 "Last-Translator: Kai-Uwe Behrmann\n"
 "Language-Team:  <ku.b@gmx.de>\n"
@@ -1772,55 +1772,55 @@ msgstr "Gamma Grün: "
 msgid "Kein Gammagradient Information erhalten"
 msgstr ""
 
-#: icc_helfer_fltk.cpp:312
+#: icc_helfer_fltk.cpp:314
 msgid "Add to Favorites"
 msgstr "Lesezeichen hinzufügen"
 
-#: icc_helfer_fltk.cpp:313
+#: icc_helfer_fltk.cpp:315
 msgid "All Files (*)"
 msgstr "Alle Dateien (*)"
 
-#: icc_helfer_fltk.cpp:314
+#: icc_helfer_fltk.cpp:316
 msgid "Custom Filter"
 msgstr "Eigener Filter"
 
-#: icc_helfer_fltk.cpp:315
+#: icc_helfer_fltk.cpp:317
 msgid "Please choose an existing file!"
 msgstr "Bitte wählen Sie eine existierende Datei!"
 
-#: icc_helfer_fltk.cpp:316 my_file_chooser.cxx:180
+#: icc_helfer_fltk.cpp:318 my_file_chooser.cxx:180
 msgid "Favorites"
 msgstr "Lesezeichen"
 
-#: icc_helfer_fltk.cpp:317
+#: icc_helfer_fltk.cpp:319
 msgid "Filename"
 msgstr "Dateiname"
 
-#: icc_helfer_fltk.cpp:318 my_file_chooser.cxx:253
+#: icc_helfer_fltk.cpp:320 my_file_chooser.cxx:253
 msgid "Manage Favorites"
 msgstr "Lesezeichen bearbeiten"
 
-#: icc_helfer_fltk.cpp:320
+#: icc_helfer_fltk.cpp:322
 msgid "My Computer"
 msgstr "Mein Rechner"
 
-#: icc_helfer_fltk.cpp:322
+#: icc_helfer_fltk.cpp:324
 msgid "File Systems"
 msgstr "Dateisysteme"
 
-#: icc_helfer_fltk.cpp:324
+#: icc_helfer_fltk.cpp:326
 msgid "New Directory?"
 msgstr "Verzeichnis erstellen"
 
-#: icc_helfer_fltk.cpp:325 my_file_chooser.cxx:210
+#: icc_helfer_fltk.cpp:327 my_file_chooser.cxx:210
 msgid "Preview"
 msgstr "Vorschau"
 
-#: icc_helfer_fltk.cpp:327 my_file_chooser.cxx:288
+#: icc_helfer_fltk.cpp:329 my_file_chooser.cxx:288
 msgid "Save"
 msgstr "Sichern"
 
-#: icc_helfer_fltk.cpp:329 my_file_chooser.cxx:173
+#: icc_helfer_fltk.cpp:331 my_file_chooser.cxx:173
 msgid "Show:"
 msgstr "Zeige:"
 
