@@ -82,7 +82,7 @@ Function {} {C return_type int
   fullscreen = false;} {}
   Fl_Window details {
     label {ICC Details} open
-    xywh {682 357 385 520} type Double box NO_BOX color 53
+    xywh {687 381 385 520} type Double box NO_BOX color 53
     code0 {browser = new openvrml::browser(cout, cerr);}
     code1 {DBG
     if (argc>1) {
@@ -109,7 +109,7 @@ Function {} {C return_type int
     Fl_Group {} {open
       xywh {0 0 385 520}
     } {
-      Fl_Menu_Bar Fl_lookat_MenuBar {open
+      Fl_Menu_Bar Fl_lookat_MenuBar {
         xywh {0 0 385 25} color 53 align 20 when 3
       } {
         submenu {} {
@@ -156,23 +156,8 @@ Function {} {C return_type int
           }
         }
       }
-      Fl_Group {} {open
-        xywh {0 495 385 25}
-      } {
-        Fl_Box stat {
-          label {No wrl file loaded.}
-          xywh {0 495 385 25} box THIN_DOWN_BOX color 53 align 20
-        }
-        Fl_Progress load_progress {
-          label {Laden ..}
-          xywh {0 495 385 25} color 53
-          code0 {o->hide();}
-          code1 {o->maximum(1.0);}
-          code2 {o->minimum(0.0);}
-        }
-      }
-      Fl_Tile {} {open
-        xywh {0 25 385 470}
+      Fl_Tile {} {
+        xywh {0 25 385 470} resizable
       } {
         Fl_Browser tag_browser {
           label {Bitte wählen Sie ein Profilmerkmal aus}
@@ -203,11 +188,26 @@ Function {} {C return_type int
           }
         }
       }
+      Fl_Group {} {
+        xywh {0 495 385 25}
+      } {
+        Fl_Box stat {
+          label {No wrl file loaded.}
+          xywh {0 495 385 25} box THIN_DOWN_BOX color 53 align 20
+        }
+        Fl_Progress load_progress {
+          label {Laden ..}
+          xywh {0 495 385 25} color 53
+          code0 {o->hide();}
+          code1 {o->maximum(1.0);}
+          code2 {o->minimum(0.0);}
+        }
+      }
     }
   }
   code {w->resizable(tag_texts);
   w->show();
-  canvas->hide();
+  canvas->show();
   viewer->Hok=1;
   viewer->Hdraw=1;
   viewer->timerUpdate();
@@ -220,12 +220,12 @@ Function {} {C return_type int
     open (false);} {}
 } 
 
-Function {open(int interaktiv)} {return_type {std::string}
+Function {open(int interaktiv)} {open return_type {std::string}
 } {
   code {\#include "icc_vrml.h"
 
   std::string filename = filename_alt;
-  Fl_File_Icon	*icon;	// New file icon
+  //Fl_File_Icon	*icon;	// New file icon
   DBG
   load_progress->show ();    load_progress->value (0.0);
   char vrmlDatei[] = "/tmp/tmp_vrml.wrl";
@@ -275,7 +275,8 @@ Function {open(int interaktiv)} {return_type {std::string}
 
   tag_browser->reopen ();
 
-  return filename;} {}
+  return filename;} {selected
+  }
 } 
 
 Function {quit(void)} {} {
@@ -287,7 +288,8 @@ Function {quit(void)} {} {
   exit(0);} {}
 } 
 
-Function {worldChangedCB( const openvrml::browser::cb_reason reason )} {} {
+Function {worldChangedCB( const openvrml::browser::cb_reason reason )} {open
+} {
   code {switch (reason)
     {
         case openvrml::browser::destroy_world_id:
@@ -306,7 +308,8 @@ Function {worldChangedCB( const openvrml::browser::cb_reason reason )} {} {
     }} {}
 } 
 
-Function {timeIT()} {} {
+Function {timeIT()} {open
+} {
   code {if (canvas->LeftViewer == 0) {
     viewer->timerUpdate();
     viewer->handleRedraw();
@@ -327,7 +330,7 @@ Function {icc_read_info(char* filename)} {open return_type {char*}
   return textfile;} {}
 } 
 
-class TagBrowser {open : {public Fl_Hold_Browser}
+class TagBrowser {: {public Fl_Hold_Browser}
 } {
   decl {int X; int Y; int W; int H; char* start_info; std::string selectedTagName;} {}
   Function {TagBrowser(int X,int Y,int W,int H,char* start_info) : Fl_Hold_Browser(X,Y,W,H,start_info), X(X), Y(Y), W(W), H(H)} {open
@@ -441,10 +444,14 @@ class TagBrowser {open : {public Fl_Hold_Browser}
       tag_viewer->hinein_kurven( kurven, texte );
     } else if ( TagInfo[1] == "XYZ" ) {
       tag_viewer->hinein_punkt( profile.getTagCIExy(item), TagInfo );
+    } else if ( TagInfo[1] == "mft2"
+             || TagInfo[1] == "mft1" ) {
+      tag_viewer->hide();
+      tag_texts->hide();
+      canvas->show();
     }
     selectedTagName = TagInfo[0];
-  }DBG} {selected
-    }
+  }DBG} {}
   }
 } 
 
@@ -485,7 +492,7 @@ class TagTexts {: {public Fl_Hold_Browser}
   }
 } 
 
-class TagDrawings {open : {public Fl_Widget}
+class TagDrawings {: {public Fl_Widget}
 } {
   decl {int X; int Y; int W; int H; std::vector<std::string>texte; std::vector<double>punkte; std::vector<std::vector<double> >kurven;} {}
   decl {int wiederholen;} {public
@@ -532,7 +539,7 @@ class TagDrawings {open : {public Fl_Widget}
   tag_viewer->show(); DBG
   tag_texts->hide(); DBG} {}
   }
-  Function {ruhig_neuzeichnen(void)} {return_type void
+  Function {ruhig_neuzeichnen(void)} {open return_type void
   } {
     code {draw_cie_shoe(x(),y(),w(),h(),texte,punkte,true);} {}
   }
@@ -542,6 +549,7 @@ Function {d_haendler(void* o)} {open return_type {static void}
 } {
   code {Fl::remove_timeout( (void(*)(void*))d_haendler, 0 );
   if (!Fl::has_timeout( (void(*)(void*))d_haendler, 0 )
+   && ((TagDrawings*)o)->active()
    && ((TagDrawings*)o)->visible_r()
    && ((TagDrawings*)o)->wiederholen) {
     ((TagDrawings*)o)->ruhig_neuzeichnen();

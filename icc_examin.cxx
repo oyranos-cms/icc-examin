@@ -208,7 +208,7 @@ std::string open(int interaktiv) {
   #include "icc_vrml.h"
 
   std::string filename = filename_alt;
-  Fl_File_Icon	*icon;	// New file icon
+  //Fl_File_Icon	*icon;	// New file icon
   DBG
   load_progress->show ();    load_progress->value (0.0);
   char vrmlDatei[] = "/tmp/tmp_vrml.wrl";
@@ -240,9 +240,8 @@ std::string open(int interaktiv) {
     url.push_back (&vrmlDatei[0]);
     browser->load_url(url, param);
     sprintf (statlabel, "%s geladen", filename.c_str());
-    cout << statlabel << endl;
+    cout << statlabel << endl; DBG
     stat->label(statlabel);
-    DBG
   } else {
     stat->label("Error loading file!");
   } DBG
@@ -283,7 +282,7 @@ void worldChangedCB( const openvrml::browser::cb_reason reason ) {
             if (setTitleUrl) { DBG
                 stat->label(statlabel);//browser->world_url().c_str());
             }
-            buildViewpointMenu();
+            //buildViewpointMenu();
             break;
             DBG
     }

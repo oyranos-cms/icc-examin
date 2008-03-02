@@ -112,15 +112,9 @@ icValue (icInt32Number val)
   #define BYTES 4
   #define KORB  4
   unsigned char        *temp  = (unsigned char*) &val;
-  //unsigned char         maske = 0xf0;
   static unsigned char  korb[KORB];
   for (int i = 0; i < KORB ; i++ )
     korb[i] = (int) 0;
-  #ifdef DEBUG_ICCFUNKT_
-  cout << " Größe nach Wandlung " << (int)korb[0] << " "
-       << (int)korb[1] << " " << (int)korb[2] << " " <<(int)korb[3]
-       << " "; DBG
-  #endif
 
   int klein = 0,
       gross = BYTES - 1;
@@ -128,23 +122,6 @@ icValue (icInt32Number val)
       korb[klein] = temp[gross--];
 
   signed int *erg = (signed int*) &korb[0];
-  #ifdef DEBUG_ICCFUNKT_
-  cout << (double)*erg/65536.0 << " Größe nach Wandlung " << (int)korb[0] << " "
-       << (int)korb[1] << " " << (int)korb[2] << " " <<(int)korb[3]
-       << " "; printf ("0x%X ", *erg); DBG
-  #endif
-  #ifdef DEBUG_ICCFUNKT_
-  cout << (double)*erg/65536.0 << " Größe nach Wandlung " << (int)korb[0] << " "
-       << (int)korb[1] << " " << (int)korb[2] << " " <<(int)korb[3]
-       << " "; DBG
-  #endif
-  /*if (temp[0] & maske) {
-    cout << " negativer Wert " << (signed int)korb[4] << " maske " << (int)maske << " "; DBG
-    korb[4] = korb[4] | maske;
-    #ifdef DEBUG
-    cout << " negativer Wert " << (signed int)korb[4]; DBG
-    #endif
-  }*/
 
   #ifdef DEBUG_ICCFUNKT
   cout << *erg << " Größe nach Wandlung " << (int)korb[0] << " "
@@ -240,7 +217,7 @@ void
 ICCheader::load (void *data)
 {
   DBG
-  memcpy ((void*)&header, data,/* (void*)&header,*/ sizeof (icHeader));
+  memcpy ((void*)&header, data, sizeof (icHeader));
   #ifdef DEBUG_ICCHEADER
   cout << sizeof (icHeader) << " genommen" << " "; DBG
   #endif
@@ -493,50 +470,6 @@ ICCheader::getPlatformName (icPlatformSignature platform)
   return text;
 }
 
-/*int
-ICCheader::getLcmsGetColorSpace ( cmsHPROFILE   hProfile)
-{
-  int lcmsColorSpace;
-
-  #if (LCMS_VERSION >= 113)
-    lcmsColorSpace = _cmsLCMScolorSpace ( cmsGetColorSpace (hProfile) );
-  #else
-  switch (cmsGetColorSpace (hProfile))
-  {
-    case icSigXYZData: lcmsColorSpace = PT_XYZ; break;
-    case icSigLabData: lcmsColorSpace = PT_Lab; break;
-    case icSigLuvData: lcmsColorSpace = PT_YUV; break;
-    case icSigLuvKData: lcmsColorSpace = PT_YUVK; break;
-    case icSigYCbCrData: lcmsColorSpace = PT_YCbCr; break;
-    case icSigYxyData: lcmsColorSpace = PT_Yxy; break;
-    case icSigRgbData: lcmsColorSpace = PT_RGB; break;
-    case icSigGrayData: lcmsColorSpace = PT_GRAY; break;
-    case icSigHsvData: lcmsColorSpace = PT_HSV; break;
-    case icSigHlsData: lcmsColorSpace = PT_HLS; break;
-    case icSigCmykData: lcmsColorSpace = PT_CMYK; break;
-    case icSigCmyData: lcmsColorSpace = PT_CMY; break;
-    case icSig2colorData: lcmsColorSpace = PT_ANY; break;
-    case icSig3colorData: lcmsColorSpace = PT_ANY; break;
-    case icSig4colorData: lcmsColorSpace = PT_ANY; break;
-    case icSig5colorData: lcmsColorSpace = PT_ANY; break;
-    case icSig6colorData: lcmsColorSpace = PT_ANY; break;
-    case icSig7colorData: lcmsColorSpace = PT_ANY; break;
-    case icSig8colorData: lcmsColorSpace = PT_ANY; break;
-    case icSig9colorData: lcmsColorSpace = PT_ANY; break;
-    case icSig10colorData: lcmsColorSpace = PT_ANY; break;
-    case icSig11colorData: lcmsColorSpace = PT_ANY; break;
-    case icSig12colorData: lcmsColorSpace = PT_ANY; break;
-    case icSig13colorData: lcmsColorSpace = PT_ANY; break;
-    case icSig14colorData: lcmsColorSpace = PT_ANY; break;
-    case icSig15colorData: lcmsColorSpace = PT_ANY; break;
-    case icSigHexachromeData: lcmsColorSpace = PT_HiFi; break; // speculation
-    default: lcmsColorSpace = PT_ANY; break;
-  }
-  #endif
-  return lcmsColorSpace;
-}*/
-
-
 /**
   *  @brief ICCtag Funktionen
   */
@@ -764,40 +697,38 @@ ICCtag::getSigTagName               ( icTagSignature  sig )
 std::string
 ICCtag::getSigTypeName               ( icTagTypeSignature  sig )
 {
-  const char* name;
-  std::string string;
+  std::string text;
 
   switch (sig) {
-    case icSigCurveType: name = cp_char (_("curv")); break;
-    case icSigDataType: name = cp_char (_("data")); break;
-    case icSigDateTimeType: name = cp_char (_("dtim")); break;
-    case icSigLut16Type: name = cp_char (_("mft2")); break;
-    case icSigLut8Type: name = cp_char (_("mft1")); break;
-    case icSigMeasurementType: name = cp_char (_("meas")); break;
-    case icSigNamedColorType: name = cp_char (_("ncol")); break;
-    case icSigProfileSequenceDescType: name = cp_char (_("pseq")); break;
-    case icSigS15Fixed16ArrayType: name = cp_char (_("sf32")); break;
-    case icSigScreeningType: name = cp_char (_("scrn")); break;
-    case icSigSignatureType: name = cp_char (_("sig")); break;
-    case icSigTextType: name = cp_char (_("text")); break;
-    case icSigTextDescriptionType: name = cp_char (_("desc")); break;
-    case icSigU16Fixed16ArrayType: name = cp_char (_("uf32")); break;
-    case icSigUcrBgType: name = cp_char (_("bfd")); break;
-    case icSigUInt16ArrayType: name = cp_char (_("ui16")); break;
-    case icSigUInt32ArrayType: name = cp_char (_("ui32")); break;
-    case icSigUInt64ArrayType: name = cp_char (_("ui64")); break;
-    case icSigUInt8ArrayType: name = cp_char (_("ui08")); break;
-    case icSigViewingConditionsType: name = cp_char (_("view")); break;
-    case icSigXYZType: name = cp_char (_("XYZ")); break;
-    //case icSigXYZArrayType: name = cp_char (_("XYZ")); break;
-    case icSigNamedColor2Type: name = cp_char (_("ncl2")); break;
-    case icSigCrdInfoType: name = cp_char (_("crdi")); break;
-    case 1986226036: name = cp_char (_("vcgt")); break;
-    case icSigCopyrightTag: name = cp_char (_("cprt?")); break; //??? (Imacon)
-    default: name = cp_char (_("???")); break;
+    case icSigCurveType: text = _("curv"); break;
+    case icSigDataType: text = _("data"); break;
+    case icSigDateTimeType: text = _("dtim"); break;
+    case icSigLut16Type: text = _("mft2"); break;
+    case icSigLut8Type: text = _("mft1"); break;
+    case icSigMeasurementType: text = _("meas"); break;
+    case icSigNamedColorType: text = _("ncol"); break;
+    case icSigProfileSequenceDescType: text = _("pseq"); break;
+    case icSigS15Fixed16ArrayType: text = _("sf32"); break;
+    case icSigScreeningType: text = _("scrn"); break;
+    case icSigSignatureType: text = _("sig"); break;
+    case icSigTextType: text = _("text"); break;
+    case icSigTextDescriptionType: text = _("desc"); break;
+    case icSigU16Fixed16ArrayType: text = _("uf32"); break;
+    case icSigUcrBgType: text = _("bfd"); break;
+    case icSigUInt16ArrayType: text = _("ui16"); break;
+    case icSigUInt32ArrayType: text = _("ui32"); break;
+    case icSigUInt64ArrayType: text = _("ui64"); break;
+    case icSigUInt8ArrayType: text = _("ui08"); break;
+    case icSigViewingConditionsType: text = _("view"); break;
+    case icSigXYZType: text = _("XYZ"); break;
+    //case icSigXYZArrayType: text = _("XYZ"); break;
+    case icSigNamedColor2Type: text = _("ncl2"); break;
+    case icSigCrdInfoType: text = _("crdi"); break;
+    case 1986226036: text = _("vcgt"); break;
+    case icSigCopyrightTag: text = _("cprt?"); break; //??? (Imacon)
+    default: text = _("???"); break;
   }
-  string = name;
-  return string;
+  return text;
 }
 
 /*
@@ -972,7 +903,7 @@ ICCprofile::fload ()
   //(icTag*) calloc ( getTagCount() , sizeof (icTag));
   //memcpy (tagList , &((char*)_data)[132], sizeof (icTag) * getTagCount());
   for (int i = 0 ; i < getTagCount() ; i++) {
-    ICCtag tag;//( tagList[i] , &((char*)_data)[ tagList[i].offset ] );
+    ICCtag tag;
     DBG
     tag.load( &tagList[i] ,
               &((char*)_data)[ icValue(tagList[i].offset) ]); DBG
@@ -1070,75 +1001,6 @@ ICCprofile::getTagCurve                                 (int item)
     return leer;
 
   return tags.at(item).getCurve();
-}
-
-char*
-ICCprofile::getProfileInfo                              ( )
-{
-  static char text[128];
-  static char profile_info[2048];
-  icXYZNumber WhitePt;
-  int       first = false,
-            min_len = 24,
-            len, i, pos=17;
-
-    /* formatting */
-/*    if (cmsIsTag(hProfile, icSigCopyrightTag)) {
-        cmsReadICCText(hProfile, icSigCopyrightTag, &text[0]);
-        len = strlen (text) + 16;
-        if (len > min_len)
-            min_len = len + 1;
-    }
-    profile_info[0] = '\000';
-
-    if (cmsIsTag(hProfile, icSigProfileDescriptionTag)) {
-        sprintf (text,_("Description:     "));
-        cmsReadICCText(hProfile, icSigProfileDescriptionTag, &text[pos]);
-        sprintf (profile_info,"%s%s",profile_info,text);
-        if (!first) { // formatting for tooltips 
-            len = min_len - strlen (profile_info);
-
-            for (i=0; i < len * 2.2; i++) {
-                sprintf (&profile_info[strlen (&profile_info[0])] ," ");
-                //sprintf (profile_info,"%s ",profile_info);
-            }
-        }
-        sprintf (profile_info,"%s\n",profile_info);
-    }
-    if (cmsIsTag(hProfile, icSigDeviceMfgDescTag)) {
-        sprintf (text,_("Manufacturer:    "));
-        cmsReadICCText(hProfile, icSigDeviceMfgDescTag, &text[pos]);
-        sprintf (profile_info,"%s%s",profile_info,text);
-    }
-    if (cmsIsTag(hProfile, icSigDeviceModelDescTag)) {
-        sprintf (text,_("Model:           "));
-        cmsReadICCText(hProfile, icSigDeviceModelDescTag, &text[pos]);
-        sprintf (profile_info,"%s%s",profile_info,text);
-    }
-    if (cmsIsTag(hProfile, icSigCopyrightTag)) {
-        sprintf (text,_("Copyright:       "));
-        cmsReadICCText(hProfile, icSigCopyrightTag, &text[pos]);
-        sprintf (profile_info,"%s%s",profile_info,text);
-    }
-
-    sprintf (profile_info,"%s\n",profile_info);
-
-    cmsTakeMediaWhitePoint (&WhitePt, hProfile);
-    _cmsIdentifyWhitePoint (text, &WhitePt);
-    sprintf (profile_info, "%s%s\n", profile_info, text);
-*/
-    sprintf (text,_("Device Class:   "));
-    sprintf (profile_info,"%s%s %s\n",profile_info,text,
-                              header.getDeviceClassName(header.deviceClass()).c_str());
-    sprintf (text,_("Color Space:    "));
-    sprintf (profile_info,"%s%s %s\n",profile_info,text,
-                              header.getColorSpaceName(header.colorSpace()).c_str());
-    sprintf (text,_("PCS Space:      "));
-    sprintf (profile_info,"%s%s %s",profile_info,text,
-                              header.getColorSpaceName(header.pcs()).c_str());
-
- 
-  return profile_info;
 }
 
 int
@@ -1289,17 +1151,6 @@ void
 lcms_error (int ErrorCode, const char* ErrorText)
 {
    g_message ("LCMS error:%d %s", ErrorCode, ErrorText);
-}
-
-
-
-const char* cp_char (char* text)
-{
-  static char string[128];
-
-  sprintf(string, text);
-
-  return &string[0];
 }
 
 const char* cp_nchar (char* text, int n)

@@ -19,7 +19,6 @@ using namespace std;
 
 // interne Funktionen
 
-const char* cp_char (char* text);
 const char* cp_nchar (char* text, int n);
 
 /**
@@ -91,7 +90,6 @@ class ICCheader {
                                                       sizeof (icSignature)+1); }
     std::string         print ();
     std::string         print_long ();
-    //char*               getProfileInfo  ();
 
     std::string         getColorSpaceName  ( icColorSpaceSignature color);
     std::string         getDeviceClassName ( icProfileClassSignature cl);
@@ -128,10 +126,10 @@ class ICCtag {
     std::string         getText();
     std::vector<std::string> getDescription();
     std::string         getVrml();
-    int                 hasCurve();
+/*    int                 hasCurve();
     int                 hasCIExy();
     int                 hasText();
-    int                 hasVrml();
+    int                 hasVrml();*/
     std::string         getSigTagName( icTagSignature  sig );
     std::string         getSigTypeName( icTagTypeSignature  sig );
 //    void                printLut           (   LPLUT           Lut,
