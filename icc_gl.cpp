@@ -566,23 +566,23 @@ GL_Ansicht::GLinit_()
   }
 # endif
   if(!holeDateiModifikationsZeit(font_name)) {
-    WARN_S( _("Konnte Font nicht oeffnen:") << font_name )
+    WARN_S( _("Could not open font in:") << font_name )
     font_name = "/usr/X11R6/lib/X11/fonts/truetype/arial.ttf";
     if(!holeDateiModifikationsZeit(font_name)) {
-      WARN_S( _("Konnte Font nicht oeffnen:") << font_name )
+      WARN_S( _("Could not open font in:") << font_name )
       font_name = "/Library/Fonts/Arial.ttf";
       if(!holeDateiModifikationsZeit(font_name)) {
-        WARN_S( _("Konnte Font nicht oeffnen:") << font_name )
+        WARN_S( _("Could not open font in:") << font_name )
         char *n = (char*) calloc(sizeof(char), 1024);
         sprintf (n, "%s/.fonts/arial.ttf", getenv("HOME"));
         font_name = n;
         DBG_PROG_V( holeDateiModifikationsZeit(font_name) )
         if(!holeDateiModifikationsZeit(font_name)) {
-          WARN_S( _("Konnte Font nicht oeffnen:") << font_name )
+          WARN_S( _("Could not open font in:") << font_name )
           sprintf (n, "%s/fonts/FreeSans.ttf", DATADIR);
           font_name = n;
           if(!holeDateiModifikationsZeit(font_name)) {
-            WARN_S( _("Konnte Font nicht oeffnen:") << font_name )
+            WARN_S( _("Could not open font in:") << font_name )
             sprintf (n, "%s/FreeSans.ttf", SRCDIR);
             font_name = n;
           }
@@ -597,7 +597,7 @@ GL_Ansicht::GLinit_()
     delete font;
     delete ortho_font;
     font = ortho_font = 0;
-    WARN_S( _("Konnte Font nicht oeffnen:") << font_name )
+    WARN_S( _("Could not open font in:") << font_name )
   } else {
     font->CharMap( ft_encoding_unicode );
     font->Depth(12);
