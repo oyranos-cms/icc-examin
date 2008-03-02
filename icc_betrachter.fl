@@ -336,12 +336,12 @@ class ICCfltkBetrachter {open
     dateiwahl->callback(dateiwahl_cb);
     dateiwahl->preview(true);
   \#endif} {}
-    Fl_Window {} {open selected
-      xywh {2380 175 100 100} type Double visible
+    Fl_Window {} {open
+      xywh {1161 253 100 100} type Double hide
     } {}
     Fl_Window ueber {
-      label {About ICC Examin}
-      xywh {1242 90 365 289} type Double resizable
+      label {About ICC Examin} open
+      xywh {752 169 365 289} type Double resizable
       code0 {o->hide();}
       class My_Fl_Window non_modal visible
     } {
@@ -349,11 +349,11 @@ class ICCfltkBetrachter {open
         xywh {0 0 375 285}
       } {
         Fl_Tabs {} {open
-          xywh {0 0 365 260}
+          xywh {0 0 365 260} resizable
         } {
           Fl_Help_View ueber_html {
             label About
-            xywh {0 25 365 235} selection_color 47 hide
+            xywh {0 25 365 235} selection_color 47
           }
           Fl_Help_View hilfe_html {
             label Help
@@ -369,7 +369,7 @@ class ICCfltkBetrachter {open
           }
           Fl_Output links_text {
             label Links
-            xywh {10 35 345 215} type Multiline selection_color 47
+            xywh {10 35 345 215} type Multiline selection_color 47 hide
           }
         }
         Fl_Button ja {
@@ -381,7 +381,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window vcgt {
       label {Grafic Card Gamma Table}
-      xywh {466 21 370 390} type Double resizable
+      xywh {471 42 370 390} type Double resizable
       code0 {o->hide();}
       class My_Fl_Window visible
     } {
@@ -421,8 +421,8 @@ class ICCfltkBetrachter {open
       }
     }
     Fl_Window details {
-      label {ICC Examin}
-      xywh {847 191 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
+      label {ICC Examin} open
+      xywh {615 267 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
     } {
       Fl_Group {} {open
         xywh {0 0 385 520}
@@ -616,12 +616,35 @@ icc_examin->testZeigen();}
             MenuItem {} {
               label About
               callback {ueber->show();
-ueber_html->value(getUeberHtml().c_str());
-hilfe_html->value(getHilfeHtml().c_str());
-lizenz_html->value(getLizenzHtml().c_str());
-dank_html->value(getDankHtml().c_str());
-links_text->value(getLinksText().c_str());}
-              xywh {5 5 100 20} shortcut 0xffbe
+initHilfe();
+
+  /* set visible */
+  Fl_Tabs *tb = dynamic_cast<Fl_Tabs*>(hilfe_html->parent());
+  if(tb)
+    tb->value(icc_examin->icc_betrachter->ueber_html);}
+              xywh {5 5 100 20}
+            }
+            MenuItem {} {
+              label Help
+              callback {ueber->show();
+initHilfe();
+
+  /* set visible */
+  Fl_Tabs *tb = dynamic_cast<Fl_Tabs*>(hilfe_html->parent());
+  if(tb)
+    tb->value(icc_examin->icc_betrachter->hilfe_html);}
+              xywh {15 15 100 20} shortcut 0xffbe
+            }
+            MenuItem {} {
+              label License
+              callback {ueber->show();
+initHilfe();
+
+  /* set visible */
+  Fl_Tabs *tb = dynamic_cast<Fl_Tabs*>(hilfe_html->parent());
+  if(tb)
+    tb->value(icc_examin->icc_betrachter->lizenz_html);} selected
+              xywh {25 25 100 20}
             }
           }
         }
@@ -635,7 +658,7 @@ links_text->value(getLinksText().c_str());}
           xywh {0 25 385 470} align 16
           code0 {o->hide();}
         }
-        Fl_Tile examin {open
+        Fl_Tile examin {
           xywh {0 25 385 470} resizable
         } {
           Fl_Browser tag_browser {
@@ -690,7 +713,7 @@ links_text->value(getLinksText().c_str());}
             }
           }
         }
-        Fl_Group {} {open
+        Fl_Group {} {
           xywh {0 495 385 25}
         } {
           Fl_Box box_stat {
@@ -874,4 +897,14 @@ Function {dHaendler(void* o)} {return_type {static void}
     \#endif
   }} {}
   code DBG_PROG_ENDE {}
+} 
+
+Function {initHilfe()} {open
+} {
+  code {/* aktualisieren */
+  icc_examin->icc_betrachter->ueber_html->value(getUeberHtml().c_str());
+  icc_examin->icc_betrachter->hilfe_html->value(getHilfeHtml().c_str());
+  icc_examin->icc_betrachter->lizenz_html->value(getLizenzHtml().c_str());
+  icc_examin->icc_betrachter->dank_html->value(getDankHtml().c_str());
+  icc_examin->icc_betrachter->links_text->value(getLinksText().c_str());} {}
 } 

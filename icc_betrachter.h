@@ -197,6 +197,10 @@ public:
 private:
   void cb_About_i(Fl_Menu_*, void*);
   static void cb_About(Fl_Menu_*, void*);
+  void cb_Help_i(Fl_Menu_*, void*);
+  static void cb_Help(Fl_Menu_*, void*);
+  void cb_License_i(Fl_Menu_*, void*);
+  static void cb_License(Fl_Menu_*, void*);
 public:
   GL_Ansicht *DD_farbraum;
   Fl_Help_View *inspekt_html;
@@ -228,4 +232,5 @@ public:
   void measurement(bool has_measurement);
 };
 void dHaendler(void* o);
+void initHilfe();
 #endif

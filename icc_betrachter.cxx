@@ -391,14 +391,41 @@ void ICCfltkBetrachter::cb_menueintrag_testkurven(Fl_Menu_* o, void* v) {
 
 void ICCfltkBetrachter::cb_About_i(Fl_Menu_*, void*) {
   ueber->show();
-ueber_html->value(getUeberHtml().c_str());
-hilfe_html->value(getHilfeHtml().c_str());
-lizenz_html->value(getLizenzHtml().c_str());
-dank_html->value(getDankHtml().c_str());
-links_text->value(getLinksText().c_str());
+initHilfe();
+
+  /* set visible */
+  Fl_Tabs *tb = dynamic_cast<Fl_Tabs*>(hilfe_html->parent());
+  if(tb)
+    tb->value(icc_examin->icc_betrachter->ueber_html);
 }
 void ICCfltkBetrachter::cb_About(Fl_Menu_* o, void* v) {
   ((ICCfltkBetrachter*)(o->parent()->parent()->user_data()))->cb_About_i(o,v);
+}
+
+void ICCfltkBetrachter::cb_Help_i(Fl_Menu_*, void*) {
+  ueber->show();
+initHilfe();
+
+  /* set visible */
+  Fl_Tabs *tb = dynamic_cast<Fl_Tabs*>(hilfe_html->parent());
+  if(tb)
+    tb->value(icc_examin->icc_betrachter->hilfe_html);
+}
+void ICCfltkBetrachter::cb_Help(Fl_Menu_* o, void* v) {
+  ((ICCfltkBetrachter*)(o->parent()->parent()->user_data()))->cb_Help_i(o,v);
+}
+
+void ICCfltkBetrachter::cb_License_i(Fl_Menu_*, void*) {
+  ueber->show();
+initHilfe();
+
+  /* set visible */
+  Fl_Tabs *tb = dynamic_cast<Fl_Tabs*>(hilfe_html->parent());
+  if(tb)
+    tb->value(icc_examin->icc_betrachter->lizenz_html);
+}
+void ICCfltkBetrachter::cb_License(Fl_Menu_* o, void* v) {
+  ((ICCfltkBetrachter*)(o->parent()->parent()->user_data()))->cb_License_i(o,v);
 }
 
 Fl_Menu_Item ICCfltkBetrachter::menu_menueleiste[] = {
@@ -427,7 +454,9 @@ Fl_Menu_Item ICCfltkBetrachter::menu_menueleiste[] = {
  {0,0,0,0,0,0,0,0,0},
  {0,0,0,0,0,0,0,0,0},
  {_("Help"), 0,  0, 0, 64, FL_NORMAL_LABEL, 0, 14, 0},
- {_("About"), 0xffbe,  (Fl_Callback*)ICCfltkBetrachter::cb_About, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {_("About"), 0,  (Fl_Callback*)ICCfltkBetrachter::cb_About, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {_("Help"), 0xffbe,  (Fl_Callback*)ICCfltkBetrachter::cb_Help, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {_("License"), 0,  (Fl_Callback*)ICCfltkBetrachter::cb_License, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
  {0,0,0,0,0,0,0,0,0},
  {0,0,0,0,0,0,0,0,0}
 };
@@ -577,6 +606,7 @@ Fl_Double_Window* ICCfltkBetrachter::init(int argc, char** argv) {
           o->hide();
         }
         o->end();
+        Fl_Group::current()->resizable(o);
       }
       { Fl_Button* o = ja = new Fl_Button(130, 260, 110, 25, _("Yes"));
         o->callback((Fl_Callback*)cb_ja);
@@ -972,4 +1002,13 @@ void dHaendler(void* o) {
     #endif
   }
   DBG_PROG_ENDE
+}
+
+void initHilfe() {
+  /* aktualisieren */
+  icc_examin->icc_betrachter->ueber_html->value(getUeberHtml().c_str());
+  icc_examin->icc_betrachter->hilfe_html->value(getHilfeHtml().c_str());
+  icc_examin->icc_betrachter->lizenz_html->value(getLizenzHtml().c_str());
+  icc_examin->icc_betrachter->dank_html->value(getDankHtml().c_str());
+  icc_examin->icc_betrachter->links_text->value(getLinksText().c_str());
 }

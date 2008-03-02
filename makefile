@@ -445,6 +445,10 @@ EXEEXT		=
 	echo Compiling $< ...
 	$(CXX) $(CXXFLAGS) -c $<
 
+.fl.cxx:
+	echo Expanding $< ...
+	fluid -c $<
+
 .po:
 	echo Generating $@ ...
 	msgfmt $<
