@@ -27,6 +27,7 @@ float n = 0.85;
 
 int raster = 4;
 int init_s = FALSE;
+// lcms Typen
 cmsHPROFILE hXYZ;
 cmsHPROFILE hsRGB;
 cmsHTRANSFORM xform;
@@ -34,6 +35,7 @@ double rechenzeit = 0.1;
 
 void
 init_shoe() {
+  // Initialisierung für lcms
   hXYZ  = cmsCreateXYZProfile();
   hsRGB = cmsCreate_sRGBProfile();
 
@@ -82,13 +84,6 @@ draw_cie_shoe (int X, int Y, int W, int H,
   fl_color(FL_LIGHT1);
   fl_line(x(1), y(0), x(0), y(1));
 
-
-  cmsCIEXYZ xyz, MediaWhite;
-  cmsCIExyY xyY, WhitePt;
-
-  cmsTakeMediaWhitePoint(&MediaWhite, hsRGB);
-  cmsXYZ2xyY(&WhitePt, &MediaWhite);
-  
   // Farbfläche
   if (!repeated) {
     register char RGB[3];
@@ -101,6 +96,7 @@ draw_cie_shoe (int X, int Y, int W, int H,
         XYZ.Y = y2cie(cie_y);
         XYZ.Z = 1 - (XYZ.X +  XYZ.Y);
 
+        // Hintergrund zeichnen (lcms)
         cmsDoTransform(xform, &XYZ, RGB, 1);
 
         fl_color (fl_rgb_color (RGB[0],RGB[1],RGB[2]));
@@ -128,6 +124,7 @@ draw_cie_shoe (int X, int Y, int W, int H,
         i++;
       }
     }
+    // Hintergrund zeichnen (lcms)
     cmsDoTransform(xform, XYZ, RGB, n_pixel);
     fl_draw_image(RGB, x(0), y(n), wi, hi, 3, 0);
     free ((void*)RGB);
@@ -150,7 +147,7 @@ draw_cie_shoe (int X, int Y, int W, int H,
   }
 
   // Verdecke den Rest des cie_xy
-  fl_push_no_clip();
+  //fl_push_no_clip();
   fl_color(FL_GRAY);
   #define x_xyY cieXYZ[i][0]/(cieXYZ[i][0]+cieXYZ[i][1]+cieXYZ[i][2])
   #define y_xyY cieXYZ[i][1]/(cieXYZ[i][0]+cieXYZ[i][1]+cieXYZ[i][2])
@@ -213,7 +210,7 @@ draw_cie_shoe (int X, int Y, int W, int H,
   fl_vertex (X+W, Y+H);
   fl_end_polygon();
 
-  fl_pop_clip();
+  //fl_pop_clip();
 
 
   // Diagramm
@@ -256,11 +253,15 @@ draw_cie_shoe (int X, int Y, int W, int H,
         for (int k = 0; k <= 3; k+=2) {
             fl_line( (int)(pos[k+0] +0.5), (int)(pos[k+1] +0.5),
                      (int)(pos[k+2] +0.5), (int)(pos[k+3] +0.5));
+            #ifdef DEBUG_DRAW
             cout << "Linie "; DBG
+            #endif
         }
         fl_line( (int)(pos[0] +0.5), (int)(pos[1] +0.5),
                  (int)(pos[4] +0.5), (int)(pos[5] +0.5));
+        #ifdef DEBUG_DRAW
         cout << "Linie "; DBG
+        #endif
     }
 
     int j = 0;
@@ -278,6 +279,7 @@ draw_cie_shoe (int X, int Y, int W, int H,
         #endif
         XYZ.Z = punkte[j++]; //1 - ( punkte[i][0] +  punkte[i][1] );
 
+        // Farbe für Darstellung konvertieren (lcms)
         cmsDoTransform (xform, &XYZ, RGB, 1);
 
         double _XYZ[3] = {XYZ.X, XYZ.Y, XYZ.Z};
@@ -289,11 +291,19 @@ draw_cie_shoe (int X, int Y, int W, int H,
         fl_circle ( pos_x+0.5 , pos_y+0.5 , 9.0);
         fl_color (fl_rgb_color (RGB[0],RGB[1],RGB[2]));
         fl_circle ( pos_x+0.5 , pos_y+0.5 , 7.0);
-        // etwas Erklärung
+        // etwas Erklärung zu den Farbpunkten
         fl_font (FL_HELVETICA, 12);
         std::stringstream s;
-        s << texte[i] << " = " << _XYZ[0] <<","<< _XYZ[1] <<","<< _XYZ[2];
+        std::stringstream t;
+        // lcms hilft bei Weisspunkbeschreibung aus
+        if (texte[i] == "wtpt") {
+          static char txt[1024] = {'\000'};
+          _cmsIdentifyWhitePoint (&txt[0], &XYZ);
+          t << " (" << &txt[12] << ")";
+        }
+        s << texte[i] << t.str() << " = " << _XYZ[0] <<","<< _XYZ[1] <<","<< _XYZ[2];
         int _w = 0, _h = 0;
+        // Text einpassen
         fl_measure (s.str().c_str(), _w, _h, 1);
         fl_color(FL_WHITE);
         fl_draw ( s.str().c_str(),

@@ -3,6 +3,7 @@
 #ifndef icc_examin_h
 #define icc_examin_h
 #include <FL/Fl.H>
+#define DEBUG
 #include <stdio.h>
 #include <iostream>
 #include <sstream>

@@ -2,6 +2,9 @@
 version 1.0104 
 header_name {.h} 
 code_name {.cxx}
+decl {\#define DEBUG} {public
+} 
+
 decl {\#include <stdio.h>} {public
 } 
 
@@ -79,7 +82,7 @@ Function {} {C return_type int
   fullscreen = false;} {}
   Fl_Window details {
     label {ICC Details} open
-    xywh {582 290 385 520} type Double box NO_BOX color 53
+    xywh {587 314 385 520} type Double box NO_BOX color 53
     code0 {browser = new openvrml::browser(cout, cerr);}
     code1 {DBG
     if (argc>1) {
@@ -379,8 +382,7 @@ class TagBrowser {open : {public Fl_Hold_Browser}
   }
 
   s.clear(); s << "ICC Details: " << profile.filename();
-  details->label( (const char*) s.str().c_str() );} {selected
-    }
+  details->label( (const char*) s.str().c_str() );} {}
   }
   Function {select_item(int item)} {open
   } {
@@ -526,5 +528,9 @@ Function {d_haendler(void* o)} {open return_type {static void}
    && ((TagDrawings*)o)->visible_r()
    && ((TagDrawings*)o)->wiederholen) {
     ((TagDrawings*)o)->ruhig_neuzeichnen();
-  }} {}
+    \#ifdef DEBUG
+    cout << " wiederholen"; DBG
+    \#endif
+  }} {selected
+  }
 } 

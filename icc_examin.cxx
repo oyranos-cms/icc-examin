@@ -497,5 +497,8 @@ void d_haendler(void* o) {
    && ((TagDrawings*)o)->visible_r()
    && ((TagDrawings*)o)->wiederholen) {
     ((TagDrawings*)o)->ruhig_neuzeichnen();
+    #ifdef DEBUG
+    cout << " wiederholen"; DBG
+    #endif
   }
 }
