@@ -144,6 +144,18 @@ ICCmeasurement::init_meas (void)
       data.replace (pos, strlen("Sample_Name"), "SAMPLE_NAME"); DBG_S( "Sample_Name ersetzt" )
   }
   pos = 0;
+  while ((pos = data.find ("Lab_L", pos)) != std::string::npos) {
+      data.replace (pos, strlen("Lab_L"), "LAB_L"); DBG_S( "Lab_L ersetzt" )
+  }
+  pos = 0;
+  while ((pos = data.find ("Lab_a", pos)) != std::string::npos) {
+      data.replace (pos, strlen("Lab_a"), "LAB_A"); DBG_S( "Lab_a ersetzt" )
+  }
+  pos = 0;
+  while ((pos = data.find ("Lab_b", pos)) != std::string::npos) {
+      data.replace (pos, strlen("Lab_b"), "LAB_B"); DBG_S( "Lab_b ersetzt" )
+  }
+  pos = 0;
   while ((pos = data.find ("\"\"", pos)) != std::string::npos) {
       data.replace (pos, strlen("\"\""), "\""); DBG_S( "\"\" ersetzt" )
   }
@@ -161,7 +173,7 @@ ICCmeasurement::init_meas (void)
     while ((pos = data.find ("\n", pos)) != std::string::npos
          && (ende = data.find ("END_DATA\n", pos+2)) != std::string::npos) {
       static char zahl[12];
-      sprintf (&zahl[0], "%d   ", count); count++; DBG_S(count << " " << pos)
+      sprintf (&zahl[0], "%d   ", count); count++; //DBG_S(count << " " << pos)
       data.insert (pos+1, &zahl[0]);
       pos += strlen (&zahl[0]);
       //DBG_S( data )
@@ -201,7 +213,7 @@ ICCmeasurement::init_meas (void)
     count = 0; pos++;
     while ((pos = data.find ("\n", pos)) != std::string::npos
          && (ende = data.find ("END_DATA\n", pos+2)) != std::string::npos) {
-      count ++; DBG_S( pos << " " << count)
+      count ++; //DBG_S( pos << " " << count)
       pos++;
     }
     static char zahl[64];
@@ -224,12 +236,10 @@ ICCmeasurement::init_meas (void)
     DBG_S (diff)
   }
   if (diff != 8) {
-  //if (getTagName() == "CIED") {
       data.insert (0, "ICCEXAM\n"); DBG_S( "Beschreibung eingeführt" )
-      //DBG_S ( data );
   }
 
-  DBG_S (data)
+  //DBG_S (data)
   #if 0
   clear();
   return;
@@ -400,7 +410,7 @@ ICCmeasurement::init_meas (void)
   cmsIT8Free (_lcms_it8);
   _lcms_it8 = NULL;
 
-  #ifdef DEBUG_ICCMEASUREMENT
+  #ifdef DEBUG_ICCMEASUREMENT_
   // Infos für die Konsole
   DBG_S( "Anzahl Messfelder: " << getPatchCount() << " Samples " << _nKanaele )
 
