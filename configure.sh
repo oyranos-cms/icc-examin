@@ -25,7 +25,7 @@ if [ $? == 0 ] && [ -n "$FLTK_" ]; then
   echo "FLTK_H = -DHAVE_FLTK `fltk-config --cxxflags`" >> $CONF
   echo "FLTK_LIBS = `fltk-config --use-images --use-gl --use-glut --ldflags`" >> $CONF
 else
-  echo "FLTK is not found; you need to install or download from www.fltk.org"
+  echo "FLTK is not found; download: www.fltk.org"
 fi
 
 
@@ -94,7 +94,7 @@ if [ $? == 0 ]; then
   echo "LCMS_H = `pkg-config --cflags lcms`" >> $CONF
   echo "LCMS_LIBS = `pkg-config --libs lcms`" >> $CONF
 else
-  echo "no LCMS found, will not use it"
+  echo "no or too old LCMS found,\n  need at least version 1.14, download: www.littlecms.com"
 fi
 
 echo "" >> $CONF
