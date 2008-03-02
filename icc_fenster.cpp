@@ -34,6 +34,9 @@
 
 #ifdef HAVE_FLTK
 #ifdef HAVE_FLU
+
+namespace icc_examin_ns {
+
 Flu_File_Chooser *dateiwahl;
 
 void
@@ -157,6 +160,8 @@ nachricht(std::string text)
   DBG_PROG_ENDE
 }
 #endif
+
+}
 
 #endif
 

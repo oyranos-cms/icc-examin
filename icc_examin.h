@@ -36,12 +36,13 @@
 #include "icc_gl.h"
 #include "icc_kette.h"
 #include "icc_oyranos.h"
+#include "icc_modell_beobachter.h"
 
 class  ICCfltkBetrachter;
 class  ICCexamin;
 extern ICCexamin *icc_examin;
 
-class ICCexamin
+class ICCexamin : public icc_examin_ns::Beobachter
 {
   enum {
     TAG_VIEWER,
@@ -86,6 +87,7 @@ class ICCexamin
     std::vector<std::vector<std::string> >          texte;
 
     void histogram();
+    void histogram(int erneuere_nummer_in_profile_kette);
     void vcgtZeigen ();
     void testZeigen ();
     void moniSetzen ();
@@ -97,6 +99,8 @@ class ICCexamin
     void initReihenfolgeGL_Ansicht(GL_Ansicht*);
     void glAnsicht (GL_Ansicht* dazu);
     GL_Ansicht* glAnsicht(int id);
+      // virtual aus icc_examin_ns::Beobachter::
+    void nachricht( icc_examin_ns::Modell* modell , int infos );
 
     // Oberflächenfunktionen (GUI)
     void fortschritt(double f);  // Fortschritt: f<0-Start f=Wert f>1-Ende

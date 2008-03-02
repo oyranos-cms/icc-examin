@@ -1233,7 +1233,7 @@ GL_Ansicht::menueErneuern_()
     kanal = menue_kanal_eintraege_ - 1;
 
   DBG_PROG_V( menue_kanal_eintraege_ << kanal )
-  status_info(_("linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menü"));
+  icc_examin_ns::status_info(_("linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menü"));
 
   DBG_PROG_ENDE
 }
@@ -1571,7 +1571,7 @@ GL_Ansicht::hineinTabelle (std::vector<std::vector<std::vector<std::vector<doubl
   else
     auffrischen_ = true;
 
-  status_info(_("linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menü"));
+  icc_examin_ns::status_info(_("linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menü"));
 
   DBG_PROG_ENDE
 }
@@ -1716,7 +1716,7 @@ menueAufruf (int id, int value)
 
     if (value >= MENU_MAX) {
       icc_examin->glAnsicht(id)->kanal = value - MENU_MAX; DBG_PROG_V( icc_examin->glAnsicht(id)->kanal )
-      status_info(_("linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menü"));
+      icc_examin_ns::status_info(_("linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menü"));
     }
   }
 

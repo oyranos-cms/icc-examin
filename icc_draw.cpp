@@ -109,8 +109,8 @@ TagDrawings::~TagDrawings ()
 }
 
 void
-TagDrawings::hineinPunkt ( std::vector<double> &vect,
-                           std::vector<std::string> &txt)
+TagDrawings::hineinPunkt ( std::vector<double>      &vect,
+                           std::vector<std::string> &txt )
 {
   DBG_PROG_START
   clear();
@@ -211,7 +211,7 @@ TagDrawings::draw ()
 {
   DBG_PROG_START
   // Kurven oder Punkte malen
-  if (laeuft())
+  if (icc_examin_ns::laeuft())
   {
     // Diagramvariablen in Bildpunkten
     xO = x() +       tab_rand_x + linker_text_rand;     // Ursprung

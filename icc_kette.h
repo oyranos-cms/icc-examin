@@ -34,53 +34,64 @@
 #include <vector>
 #include "icc_profile.h"
 #include "icc_utils.h"
+#include "icc_modell_beobachter.h"
 
 class ICCkette;
 extern ICCkette profile;
 
-class ICCkette
+class ICCkette : public icc_examin_ns::Modell
 {
   public:
-                 ICCkette  () {_aktuelles_profil = -1; }
+                 ICCkette  ();
                  ~ICCkette () {; }
-    void         clear()      {_profile.resize(0); _profilnamen.resize(0); }
+    void         clear()      {profile_.resize(0); profilnamen_.resize(0); }
   private:
-    int                      _aktuelles_profil;
+    int                      aktuelles_profil_;
     // Liste der geladenen Profile
-    std::vector<ICCprofile>  _profile;
-    std::vector<std::string> _profilnamen;
-    std::vector<int>         _aktiv;
+    std::vector<ICCprofile>  profile_;
+    std::vector<std::string> profilnamen_;
+    std::vector<int>         aktiv_;
+    std::vector<double>      profil_mzeit_;
+
+    // Starte einen pthread Wächter und lasse Ihn alle unsere Beobachter
+    // informieren, welches Profile gerade geändert wurde.
+    static void* waechter (void*);
   public:
     bool         oeffnen   (std::vector<std::string> dateinamen);
     //void         oeffnen   ();	// interaktiv
     bool         oeffnen   (std::string dateiname, int pos);
     void         aktiv     (int pos);
     void         passiv    (int pos);
-    std::vector<int> aktiv () { return _aktiv; }
+    std::vector<int> aktiv () { return aktiv_; }
     void         aktuell   (int pos) {
-                                if(pos < (int)_profile.size())
-                                  _aktuelles_profil = (pos > -1) ? pos : -1; }
-    int          aktuell   () { return _aktuelles_profil; }
-    ICCprofile*  profil    () { if (_profile.size()) {
-                                  return &(_profile[_aktuelles_profil]);
+                                if(pos < (int)profile_.size())
+                                  aktuelles_profil_ = (pos > -1) ? pos : -1; }
+    int          aktuell   () { return aktuelles_profil_; }
+    ICCprofile*  profil    () { if (profile_.size()) {
+                                  return &(profile_[aktuelles_profil_]);
                                 } else return 0; }
     std::string  name      () {
-               if(_profilnamen.size()) return _profilnamen[_aktuelles_profil];
+               if(profilnamen_.size()) return profilnamen_[aktuelles_profil_];
                else return ""; }
+    ICCprofile*  operator [] (int n)
+             { if (profile_.size() && n >= 0 && n < (int)profile_.size()) {
+                 return &(profile_[n]);
+               } else return 0;
+             }
 
   public:
 /*    operator ICCprofile ()  {
-               if(_profile.size()) return _profile[_aktuelles_profil];
+               if(profile_.size()) return profile_[aktuelles_profil_];
                else return ICCprofile(); }
     operator std::string ()  {
-               if(_profilnamen.size()) return _profilnamen[_aktuelles_profil];
+               if(profilnamen_.size()) return profilnamen_[aktuelles_profil_];
                else return ""; }*/
     operator std::vector<std::string> ()  {
-               return _profilnamen; }
+               return profilnamen_; }
     operator int ()  {
-               return _aktuelles_profil; }
+               return aktuelles_profil_; }
 
-    int          size      () {return _profile.size(); }
+    int          size      () {return profile_.size(); }
 };
 
 

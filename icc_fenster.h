@@ -42,6 +42,9 @@
 #include <FL/Fl_PNM_Image.H>
 #include <FL/fl_ask.H>
 
+namespace icc_examin_ns {
+
+
 #ifdef HAVE_FLU
   extern Flu_File_Chooser *dateiwahl;
   void dateiwahl_cb(const char *dateiname, int typ, void *arg);
@@ -50,7 +53,9 @@
   void dateiwahl_cb(Fl_File_Chooser *f,void *data);
 #endif
 
-Fl_Double_Window* nachricht(std::string text);
+  Fl_Double_Window* nachricht(std::string text);
+
+}
 
 #endif
 

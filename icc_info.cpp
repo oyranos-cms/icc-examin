@@ -1,6 +1,8 @@
 #include "icc_examin.h"
 #include "icc_fenster.h"
 
+namespace icc_examin_ns {
+
 void
 fortschritt(const double f)
 {
@@ -24,4 +26,6 @@ int
 laeuft()
 {
   return icc_examin->laeuft();
+}
+
 }

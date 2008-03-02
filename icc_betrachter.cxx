@@ -6,6 +6,7 @@
 #include "icc_oyranos.h"
 #include "fl_oyranos.h"
 #include "icc_gl.h"
+using namespace icc_examin_ns;
 
 char* icc_read_info(char* filename) {
   DBG_PROG_START

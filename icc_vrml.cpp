@@ -40,7 +40,7 @@
 
 
 void dump_vrml_header (char *vrml);
-#define lp {l+=0.1; fortschritt(l);}
+#define lp {l+=0.1; icc_examin_ns::fortschritt(l);}
 
 int
 erase_file (const char *file)
@@ -91,7 +91,7 @@ icc_create_vrml( const char* p, int size )
   // vrml produzieren - argyll Variante
   char* system_befehl = (char*) new char [1024];
   double l = -0.1;
-  fortschritt(l);
+  icc_examin_ns::fortschritt(l);
   lp
   int ret;
   sprintf(system_befehl,"iccgamut -n -w %s", ptn.c_str());
@@ -132,7 +132,7 @@ icc_create_vrml( const char* p, int size )
     erase_file (ptn.c_str());
   }
 
-  fortschritt(1.1);
+  icc_examin_ns::fortschritt(1.1);
   DBG_PROG_ENDE
   return vrml;
 }
@@ -142,7 +142,7 @@ create_vrml              ( const char *profilA, char *profilB, char *vrml)
 {
   char system_befehl[1024];
   float l = -0.1;
-  fortschritt(l);
+  icc_examin_ns::fortschritt(l);
 
   if (!vrml || (!profilA && !profilB))
   return (0);

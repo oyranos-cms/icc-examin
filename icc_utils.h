@@ -71,7 +71,7 @@ extern int icc_debug;
 #define DBG_S(txt) DBG_S_(txt)
 #define DBG_V(txt) DBG_V_(txt)
 
-#if DEBUG
+#ifdef DEBUG
 #define DBG_BED(n) if (icc_debug >= n && icc_debug < 10 || icc_debug == 1##n)
 #define DBG_NUM        DBG_BED(1) DBG
 #define DBG_NUM_S(txt) DBG_BED(1) DBG_S(txt)
@@ -81,7 +81,7 @@ extern int icc_debug;
 #define DBG_NUM_S(txt)
 #define DBG_NUM_V(txt)
 #endif
-#if DEBUG
+#ifdef DEBUG
 #define DBG_PROG        DBG_BED(2) DBG
 #define DBG_PROG_START  DBG_BED(2) DBG_START
 #define DBG_PROG_ENDE   DBG_BED(2) DBG_ENDE
@@ -94,7 +94,7 @@ extern int icc_debug;
 #define DBG_PROG_S(txt)
 #define DBG_PROG_V(txt)
 #endif
-#if DEBUG
+#ifdef DEBUG
 #define DBG_MEM        DBG_BED(3) DBG
 #define DBG_MEM_START  DBG_BED(3) DBG_START
 #define DBG_MEM_ENDE   DBG_BED(3) DBG_ENDE

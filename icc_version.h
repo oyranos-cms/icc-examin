@@ -30,7 +30,7 @@
 #ifndef ICC_VERSION_H
 #define ICC_VERSION_H
 
-#define ICC_EXAMIN_V 0.21
+#define ICC_EXAMIN_V 0.22
 #define ICC_EXAMIN_D _("Mai 2004 - Februar 2005")
 
 

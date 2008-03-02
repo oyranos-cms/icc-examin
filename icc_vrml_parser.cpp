@@ -56,7 +56,12 @@ class ICCvrmlParser
     void lade ( std::string & vrml )   { DBG_PROG original_ = vrml; }
     std::vector<ICCnetz> zeigeNetze () { DBG_PROG lesen_(); return netze_; }
   private:
-    void lesen_()
+    void lesen_ ();
+
+};
+
+void
+ICCvrmlParser::lesen_ ()
 {
   int debug_alt = icc_debug;
   //icc_debug = 1;
@@ -261,18 +266,17 @@ class ICCvrmlParser
     netz_n++;
   }
   #if DEBUG_VRML_PARSER
-  for(int i = 0; i < 3; ++i)
-    DBG_VRML_PARSER_S( "Position ["<<i<<"]: " <<min_pos[i] <<" - "<< max_pos[i] )
-  for(int i = 0; i < 3; ++i)
-    DBG_VRML_PARSER_S( "Farbe ["<<i<<"]: " <<min_farbe[i] <<" - "<< max_farbe[i] )
+  for(int i = 0; i < 3; ++i) {
+    DBG_VRML_PARSER_S( "Position ["<<i<<"]: " <<min_pos[i] <<" - "<<max_pos[i]);
+  }
+  for(int i = 0; i < 3; ++i) {
+    DBG_VRML_PARSER_S( "Farbe ["<<i<<"]: "<<min_farbe[i]<<" - "<< max_farbe[i]);
+  }
   #endif
 
   DBG_PROG_ENDE
   icc_debug = debug_alt;
 }
-
-};
-
 
 
 std::vector<ICCnetz>

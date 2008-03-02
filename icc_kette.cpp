@@ -27,10 +27,16 @@
 
 #include "icc_kette.h"
 #include "icc_info.h"
-//#include "callback_simple.h"
+
+#include <pthread.h>
 
 ICCkette profile;
 
+ICCkette::ICCkette  ()
+{
+  aktuelles_profil_ = -1;
+  waechter(this);
+}
 
 bool
 ICCkette::oeffnen (std::vector<std::string> dateinamen)
@@ -38,44 +44,93 @@ ICCkette::oeffnen (std::vector<std::string> dateinamen)
   bool erfolgreich = false;
 
   // Laden TODO: test auf Existenz der Datei (oyranos?)
-  _profile.resize(dateinamen.size());
+  profile_.resize(dateinamen.size());
   for (unsigned int i = 0; i < dateinamen.size(); i++)
-    _profile[i].load (dateinamen[i]);
+    profile_[i].load (dateinamen[i]);
 
-  _profilnamen = dateinamen;
-  _aktiv.resize(_profile.size());
-  for(unsigned int i = 0; i < _aktiv.size(); i++)
-    _aktiv[i] = true;
+  profilnamen_ = dateinamen;
+  aktiv_.resize(profile_.size());
+  profil_mzeit_.resize(profile_.size());
+  for(unsigned int i = 0; i < aktiv_.size(); i++)
+  {
+    aktiv_[i] = true;
+    profil_mzeit_[i] = holeDateiModifikationsZeit( dateinamen[i].c_str() );
+  }
 
-  if( _profile.size() )
-    _aktuelles_profil = 0;
+  if( profile_.size() )
+    aktuelles_profil_ = 0;
 
   if (dateinamen.size()) { DBG_PROG
-    for (unsigned int i = 0; i < _profile.size(); i++) {
-      fortschritt (0.8);
+    for (unsigned int i = 0; i < profile_.size(); i++) {
+      icc_examin_ns::fortschritt (0.8);
 
       std::vector<std::string> url;
       std::vector<std::string> param;
         std::string st = dateinamen[i];
         st.append (" ");
         st.append (_("geladen"));
-        status_info(st.c_str());
+        icc_examin_ns::status_info(st.c_str());
     }
-    fortschritt (1.0);
-    fortschritt (1.1);
+    icc_examin_ns::fortschritt (1.0);
+    icc_examin_ns::fortschritt (1.1);
     DBG_PROG
 
-    //Button a( make_callback((Callback1<Button*>*)0, icc_examin->icc_betrachter->tag_browser, &TagBrowser::reopen) );
     //icc_examin->icc_betrachter->tag_browser->reopen ();
 
-    //icc_examin->icc_betrachter->measurement( _profile[_aktuelles_profil].hasMeasurement() );
+    //icc_examin->icc_betrachter->measurement( profile_[aktuelles_profil_].hasMeasurement() );
     erfolgreich = true;
   } else { DBG_PROG
-    status_info(_("Datei nicht geladen!"));
+    icc_examin_ns::status_info(_("Datei nicht geladen!"));
   }
 
   DBG_PROG_ENDE
   return erfolgreich;
+}
+
+
+void*
+ICCkette::waechter (void* zeiger)
+{
+  //DBG_PROG_START
+  // warte, starte einen pthread , teste alle Profile - ende 
+  // Es entsteht eine Kette von threads. Fällt einer aus
+  // ist die Überwachung beendet. - etwas labil vielleicht
+
+  ICCkette* obj = (ICCkette*) zeiger;
+
+  sleep(1);
+
+  pthread_t p_t;
+  int fehler = pthread_create(&p_t, NULL, &waechter, (void *)zeiger);
+  if( fehler == EAGAIN)
+  {
+    WARN_S( _("Wächter Thread nicht gestartet Fehler: ")  << fehler );
+  } else
+  if( fehler == PTHREAD_THREADS_MAX )
+  {
+    WARN_S( _("zu viele Wächter Threads Fehler: ") << fehler );
+  } else
+  if( fehler != 0 )
+  {
+    WARN_S( _("unbekannter Fehler beim Start eines Wächter Threads Fehler: ") << fehler );
+  }
+
+  for(unsigned i = 0; i < obj->profilnamen_.size(); ++i)
+  {
+    DBG_PROG_V( obj->profilnamen_[i] );
+    double m_zeit = holeDateiModifikationsZeit( obj->profilnamen_[i].c_str() );
+    DBG_PROG_V( m_zeit )
+    if( m_zeit &&
+        obj->aktiv_[i] &&
+        obj->profil_mzeit_[i] != m_zeit )
+    {
+      obj->profile_[i].load( obj->profilnamen_[i] );
+      obj->/*Modell::*/benachrichtigen( i );
+    }
+  }
+
+  //DBG_PROG_ENDE
+  return 0;
 }
 
 

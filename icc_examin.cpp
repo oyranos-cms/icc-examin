@@ -35,6 +35,8 @@
 #include "agviewer.h"
 #include "icc_helfer_ui.h"
 
+using namespace icc_examin_ns;
+
 
 //#define DEBUG_EXAMIN
 #ifdef DEBUG_EXAMIN
@@ -139,6 +141,8 @@ ICCexamin::start (int argc, char** argv)
       }
 
   Fl::add_handler(tastatur);
+
+  modellDazu( &profile ); // wird in nachricht ausgewertet
 
   // zur Benutzung freigeben
   status_ = 1;
@@ -431,11 +435,131 @@ ICCexamin::zeigPrueftabelle ()
 
 void
 ICCexamin::zeigCGATS()
-{ DBG_PROG_START
-  nachricht(profile.profil()->cgats_max());
+{
+  DBG_PROG_START
+  icc_examin_ns::nachricht(profile.profil()->cgats_max());
   DBG_PROG_ENDE
 }
 
+// virtual aus icc_examin_ns::Beobachter::
+void
+ICCexamin::nachricht( Modell* modell , int infos )
+{
+  DBG_PROG_START
+  DBG_PROG_V( infos )
+  // Modell identifizieren
+  if(dynamic_cast<ICCkette*>(modell))
+  {
+    histogram (infos);
+    DBG_PROG_S( _("Auffrischen von Profil Nr.: ") << infos )
+  }
+  Beobachter::nachricht(modell, infos);
+  DBG_PROG_ENDE
+}
+
+void
+ICCexamin::histogram (int n)
+{ DBG_PROG_START
+  std::vector<std::string> texte, namen;
+
+  texte.push_back(_("CIE *L"));
+  texte.push_back(_("CIE *a"));
+  texte.push_back(_("CIE *b"));
+
+  std::vector<double> p;
+  std::vector<float>  f;
+
+  if(profile.profil() &&
+     profile[n]->hasMeasurement() &&
+     profile[n]->getMeasurement().hasXYZ() )
+    { DBG_NUM_S( "nutze Messdaten" )
+      ICCmeasurement messung = profile[n]->getMeasurement();
+
+      if(messung.valid() && profile[n]->size())
+        icc_betrachter->DD_histogram->zeig_punkte_als_messwert_paare = true;
+      else
+        icc_betrachter->DD_histogram->zeig_punkte_als_messwert_paare = false;
+      DBG_NUM_V( icc_betrachter->DD_histogram->zeig_punkte_als_messwert_paare )
+      icc_betrachter->DD_histogram->zeig_punkte_als_messwerte = true;
+      DBG_NUM_V( icc_betrachter->DD_histogram->zeig_punkte_als_messwerte )
+
+      unsigned int j;
+      int n = messung.getPatchCount(); DBG_PROG_V( messung.getPatchCount() )
+      for (j = 0; j < (unsigned) n; ++j)
+      { // zuerst die Messwerte ...
+        std::vector<double> daten = messung.getMessLab(j);
+        for (unsigned i = 0; i < daten.size(); ++i)
+          p.push_back(daten[i]);
+        // ... dann die über das Profil errechneten Lab Werte
+        if (icc_betrachter->DD_histogram->zeig_punkte_als_messwert_paare) {
+          daten = messung.getCmmLab(j);
+          for (unsigned i = 0; i < daten.size(); ++i)
+            p.push_back(daten[i]);
+        } 
+
+        daten = messung.getMessRGB(j);
+        for (unsigned i = 0; i < daten.size(); ++i) {
+          f.push_back((float)daten[i]);
+        }
+        f.push_back(1.0);
+        if (icc_betrachter->DD_histogram->zeig_punkte_als_messwert_paare)
+        { daten = messung.getCmmRGB(j);
+          for (unsigned i = 0; i < daten.size(); ++i)
+            f.push_back(daten[i]);
+          f.push_back(1.0);
+        } 
+      }
+      namen = messung.getFeldNamen();
+    }
+
+  // benannte Farben darstellen
+  if( profile.profil() &&
+      profile[n]->getTagByName("ncl2") >= 0 )
+  {
+    DBG_PROG
+    p = profile[n]->getTagNumbers (profile[n]->getTagByName("ncl2"),
+                                         ICCtag::MATRIX);
+    DBG_NUM_V( p[0] )
+    f.resize( (int)p[0] * 4);
+    DBG_NUM_V( f.size() )
+    for(unsigned i = 0; i < f.size(); ++i)
+      f[i] = 1.0;
+    p.erase( p.begin() );
+    icc_betrachter->DD_histogram->zeig_punkte_als_messwert_paare = false;
+    icc_betrachter->DD_histogram->zeig_punkte_als_messwerte = false;
+  }
+
+  if(p.size())
+    icc_betrachter->DD_histogram->hineinPunkte( p, f, namen, texte );
+
+  std::vector<ICCnetz> netz, netz_temp;
+  Speicher s;
+  if(profile.size())
+    if(profile[n]->valid())
+      s.lade(profile[n]->saveProfileToMem(0),
+             profile[n]->getProfileSize());
+
+  if(s.size())
+  {
+    DBG_PROG
+    netz_temp = icc_oyranos. netzVonProfil( s );
+    if(netz_temp.size())
+    {
+      netz.push_back( netz_temp[0] );
+      netz[netz.size()-1].transparenz = 0.6;
+      netz[netz.size()-1].name = profile[n]->filename();
+      DBG_NUM_V( netz[netz.size()-1].transparenz )
+    }
+  }
+  DBG_PROG
+  if(netz.size())
+  {
+    icc_betrachter->DD_histogram->hineinNetze( netz );
+    icc_betrachter->DD_histogram->achsNamen( texte );
+  }
+
+  DBG_PROG_ENDE
+}
 
 void
 ICCexamin::histogram ()

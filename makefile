@@ -45,7 +45,7 @@ ifdef APPLE
   OSX_CPP = icc_helfer_osx.cpp
   OSX_H  = -DHAVE_OSX
 else
-  OPTS=-Wall -g -Os $(DEBUG) #-fomit-frame-pointer
+  OPTS = -Wall  -Os $(DEBUG) #-fomit-frame-pointer -g
   GLUT = -lglut
   X_H  = -DHAVE_X
   X_CPP = icc_helfer_x.cpp
@@ -61,10 +61,9 @@ LDLIBS = -L$(libdir) -L./ -L/opt/kai-uwe/lib $(FLTK_LIBS) \
 
 CPP_HEADERS = \
 	agviewer.h \
-	callback_simple.h \
 	cccie64.h \
 	ciexyz64_1.h \
-	icc_betrachter.h \
+	icc_beobachter.h \
 	icc_cgats_filter.h \
 	icc_draw.h \
 	icc_draw_fltk.h \
@@ -80,6 +79,7 @@ CPP_HEADERS = \
 	icc_icc.h \
 	icc_kette.h \
 	icc_measurement.h \
+	icc_modell_beobachter.h \
 	fl_oyranos.h \
 	icc_oyranos.h \
 	icc_profile.h \
@@ -105,6 +105,7 @@ CPPFILES = \
 	$(OSX_CPP) \
 	icc_main.cpp \
 	icc_measurement.cpp \
+	icc_modell_beobachter.cpp \
 	icc_oyranos.cpp \
 	icc_profile.cpp \
 	icc_profile_header.cpp \

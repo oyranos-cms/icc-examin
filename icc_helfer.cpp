@@ -853,6 +853,41 @@ saveMemToFile (char* filename, char *block, int size)
   DBG_PROG_ENDE
 }
 
+#include <sys/stat.h>
+
+double
+holeDateiModifikationsZeit (const char* fullFileName)
+{ DBG_PROG_START
+  struct stat status;
+  int r = 0;
+  const char* name = fullFileName;
+
+  status.st_mode = 0;
+  r = stat (name, &status);
+  r = !r &&
+       (   ((status.st_mode & S_IFMT) & S_IFREG)
+        || ((status.st_mode & S_IFMT) & S_IFLNK));
+
+  double m_zeit = 0.0;
+  if (r)
+  {
+    #if 1
+    m_zeit = status.st_mtim.tv_sec ;
+    DBG_PROG_V( status.st_mtim.tv_sec )
+    m_zeit += status.st_mtim.tv_nsec/1000000. ;
+    DBG_PROG_V( status.st_mtim.tv_nsec )
+    #else
+    m_zeit = status.st_mtime ;
+    m_zeit += status.st_mtimensec/1000000. ;
+    #endif
+  }
+
+  DBG_PROG_ENDE
+  return m_zeit;
+}
+
+
+
 
 namespace icc_parser {
 

@@ -670,12 +670,13 @@ ICCprofile::writeTags (void)
     list->tags[i].size = icValue((icUInt32Number)size); DBG_MEM_V(_size)
     char* temp = (char*) calloc (sizeof(char), _size + size + 
                                                (size%4 ? 4 - size%4 : 0));
-    memcpy (temp, _data, _size); DBG_V( _size<<" "<< size<<" "<<size%4 )
+    memcpy (temp, _data, _size); DBG_MEM_V( _size<<" "<< size<<" "<<size%4 )
     memcpy (&temp[_size], data, size);
     _size = _size + size + (size%4 ? 4 - size%4 : 0);
     free(_data);//delete [] _data;
     _data = temp;
-    list = (icTagList*)&temp[128]; DBG_V (icValue(list->tags[i].offset))
+    list = (icTagList*)&temp[128];
+    DBG_MEM_V (icValue(list->tags[i].offset))
     DBG_MEM_V (icValue(list->tags[i].sig))
     DBG_MEM_V (icValue(list->tags[i].size) << " " << (int)&_data[0])
   }
