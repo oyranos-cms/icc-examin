@@ -33,10 +33,6 @@
 
 #define FL_I18N_VERSION 101
 
-#if defined(WIN32) && !defined(__MINGW32__)
-#define USE_GETTEXT 1
-#endif
-
 #ifdef USE_GETTEXT
 # include <libintl.h>
 #include <FL/x.H>

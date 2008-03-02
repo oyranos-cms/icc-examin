@@ -121,6 +121,7 @@ class CgatsFilter
       std::vector<std::string> kommentare; //!< @brief KEYWORD ...
       std::vector<std::vector<std::string> > felder;     //!< @brief DATA_FIELD
       std::vector<std::vector<std::string> > block;      //!< @brief DATA
+      std::vector<int> line;               //!< @brief CGATS DATA line
       int feld_spalten;                    //!< @brief NUMBER_OF_FIELDS
       int block_zeilen;                    //!< @brief NUMBER_OF_SETS
     };
