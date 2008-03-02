@@ -390,11 +390,11 @@ ICCmeasurement::init_umrechnen                     (void)
     if(!export_farben)
     {
       size_t groesse = 0;
-      char* block = 0;
-      block = oyranos.moni(groesse);
+      const char* block = 0;
+      block = icc_oyranos.moni(groesse);
       if(groesse)
-        hsRGB = cmsOpenProfileFromMem(block, groesse);
-      DBG_PROG_S( oyranos.moni() << " Farben" )
+        hsRGB = cmsOpenProfileFromMem(const_cast<char*>(block), groesse);
+      DBG_PROG_S( icc_oyranos.moni() << " Farben" )
     } else DBG_PROG_S( "Export Farben" )
     if(!hsRGB)
       hsRGB = cmsCreate_sRGBProfile ();
@@ -410,22 +410,23 @@ ICCmeasurement::init_umrechnen                     (void)
          _CMYK_measurement))
     {
       if( _profil->size() )
-        hCOLOUR = cmsOpenProfileFromMem (_profil->_data, _profil->_size);
+        hCOLOUR = cmsOpenProfileFromMem (const_cast<char*>(_profil->_data),
+                                         _profil->_size);
       else { // Alternative
         size_t groesse = 0;
-        char* block = 0;
+        const char* block = 0;
         if( _CMYK_measurement )
-          block = oyranos.cmyk(groesse);
+          block = icc_oyranos.cmyk(groesse);
         else
         if( _RGB_measurement )
-          block = oyranos.rgb(groesse);
+          block = icc_oyranos.rgb(groesse);
         DBG_PROG_V( groesse )
 
         if( !groesse ) {
           WARN_S(_("kein passendes voreingestelltes Profile gefunden"))
           goto Kein_Profil;
         }
-        hCOLOUR = cmsOpenProfileFromMem (block, groesse);
+        hCOLOUR = cmsOpenProfileFromMem(const_cast<char*>(block), groesse);
       }
       if( !hCOLOUR )
         WARN_S(_("hCOLOUR ist leer"))

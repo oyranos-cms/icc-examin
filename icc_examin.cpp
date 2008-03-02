@@ -485,11 +485,33 @@ ICCexamin::vcgtZeigen ()
   if (kurven[VCGT_VIEWER].size()) {
     icc_betrachter->vcgt_viewer->hide();
     icc_betrachter->vcgt_viewer->show();
-    ;//icc_betrachter->vcgt_viewer->hineinKurven( kurven[VCGT_VIEWER], texte[VCGT_VIEWER]);
   } else {
     WARN_S(_("Keine Kurve gefunden")) //TODO kleines Fenster
     icc_betrachter->vcgt_viewer->hide();
   }
+  #endif
+
+  // TODO: osX
+  DBG_PROG_ENDE
+}
+
+void
+ICCexamin::moniSetzen ()
+{ DBG_PROG_START
+  if( profile.size() ) { DBG_PROG
+    icc_oyranos.setzeMonitorProfil( profile.profil()->filename() );
+    vcgtZeigen();
+  }
+  DBG_PROG_ENDE
+}
+
+void
+ICCexamin::standardGamma ()
+{ DBG_PROG_START
+
+  #if HAVE_X
+  system("xgamma -gamma 1.0");
+  vcgtZeigen();
   #endif
 
   // TODO: osX

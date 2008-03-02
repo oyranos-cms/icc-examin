@@ -33,13 +33,22 @@
 #define _(text) text
 
 #include <string>
-#include <vector>
+#include <list>
+
+class Oyranos;
+
+struct ColourTransformKey
+{
+  friend class Oyranos;
+    const char* show() { return text.data(); }
+  private:
+    std::string text; // Schluessel
+};
 
 class Speicher
 {
-    char* zeiger_;
+    char*  zeiger_;
     size_t groesse_;
-
   public:
     Speicher       () { zeiger_ = 0; groesse_ = 0; }
     ~Speicher      () { if( zeiger_ ) free (zeiger_); }
@@ -47,14 +56,16 @@ class Speicher
     Speicher& operator = (const Speicher& s) { zeiger_ = 0; groesse_ = 0;
                         return *this; }
 
-    void     lade  (char* zeiger, int groesse)
-                      { zeiger_ = zeiger;
-                        groesse_ = groesse; }
-    Speicher       (char* zeiger, int groesse) { lade (zeiger, groesse); }
+    void        lade     (char* zeiger, int groesse)
+                            { zeiger_ = zeiger;
+                              groesse_ = groesse; }
+                Speicher (char* zeiger, int groesse) { lade (zeiger, groesse); }
 
-    size_t size          () { return groesse_; }
+    size_t      size     () { return groesse_; }
     std::string name;
-    operator char*       () { return zeiger_; }
+    int         anzahl;
+
+    operator const char* () { return zeiger_; }
     operator std::string () { return name; }
     operator size_t      () { return groesse_; }
 };
@@ -66,18 +77,21 @@ class Oyranos
     ~Oyranos();
     void    init() {; }
 
+    // Standard Profile
     std::string lab  ()                { lab_test_(); return lab_.name; }
-    char*       lab  (size_t &g)       { lab_test_(); g = lab_.size();
+    const char* lab  (size_t &g)       { lab_test_(); g = lab_.size();
                                          return lab_; }
-    std::string moni ()                { moni_test_(); return moni_.name; }
-    char*       moni (size_t &g)       { moni_test_(); g = moni_.size();
-                                         return moni_; }
     std::string rgb  ()                { rgb_test_(); return rgb_.name; }
-    char*       rgb  (size_t &g)       { rgb_test_(); g = rgb_.size();
+    const char* rgb  (size_t &g)       { rgb_test_(); g = rgb_.size();
                                          return rgb_; }
     std::string cmyk ()                { cmyk_test_(); return cmyk_.name; }
-    char*       cmyk (size_t &g)       { cmyk_test_(); g = cmyk_.size();
+    const char* cmyk (size_t &g)       { cmyk_test_(); g = cmyk_.size();
                                          return cmyk_; }
+    // Geräte Profile
+    std::string moni ()                { moni_test_(); return moni_.name; }
+    const char* moni (size_t &g)       { moni_test_(); g = moni_.size();
+                                         return moni_; }
+    int         setzeMonitorProfil (const char* name );
   private:
     void lab_test_();
     void moni_test_();
@@ -87,10 +101,63 @@ class Oyranos
     Speicher moni_;
     Speicher rgb_;
     Speicher cmyk_;
+
+  public:
+    // Farbtransformationen
+    ColourTransformKey erzeugeTrafo (
+                                  const char* eingangs_profil__geraet,
+                                  int         byte,
+                                  int         kanaele,
+                                  const char* ausgangs_profil__geraet,
+                                  int         byte,
+                                  int         kanaele,
+                                  int         farb_intent,
+                                  int         cmm_optionen); // BPC, Präzission
+    ColourTransformKey erzeugeTrafo (
+                                  const char* eingangs_profil__geraet,
+                                  int         byte,
+                                  int         kanaele,
+                                  const char* ausgangs_profil__geraet,
+                                  int         byte,
+                                  int         kanaele,
+                                  int         farb_intent,
+                                  int         cmm_optionen,
+                                  std::list<const char*> &profile );
+    ColourTransformKey erzeugeTrafo (
+                                  const char* eingangs_profil__geraet,
+                                  int         byte,
+                                  int         kanaele,
+                                  const char* ausgangs_profil__geraet,
+                                  int         byte,
+                                  int         kanaele,
+                                  int         farb_intent,
+                                  int         cmm_optionen,
+                                  const char* simulations_profil,
+                                  int         simulations_intent );
+    // TODO: callback, cmm Auswahl, 
+    void               wandelFarben (
+                                  void* block,
+                                  ColourTransformKey& transformation );
+    std::string cmm;
+  private:
+    ColourTransformKey erzeugeSchluessel_ (
+                                  const char* eingangs_profil__geraet,
+                                  int         byte,
+                                  int         kanaele,
+                                  const char* ausgangs_profil__geraet,
+                                  int         byte,
+                                  int         kanaele,
+                                  int         farb_intent,
+                                  int         cmm_optionen,
+                                  const char* simulations_profil,
+                                  int         simulations_intent,
+                                  std::list<const char*> &profile );
+    std::list<std::pair<ColourTransformKey, Speicher> > trafos_;
 };
 
-extern Oyranos oyranos;
+extern Oyranos icc_oyranos;
 
+// Benutzeroberflächenfunktionen
 void	oyranos_pfade_einlesen();
 void	oyranos_pfade_auffrischen();
 void	oyranos_pfade_loeschen();

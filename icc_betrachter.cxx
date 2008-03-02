@@ -266,6 +266,20 @@ void ICCfltkBetrachter::cb_Auffrischen(Fl_Button* o, void* v) {
   ((ICCfltkBetrachter*)(o->parent()->parent()->user_data()))->cb_Auffrischen_i(o,v);
 }
 
+inline void ICCfltkBetrachter::cb_setze_i(Fl_Button*, void*) {
+  icc_examin->moniSetzen();
+}
+void ICCfltkBetrachter::cb_setze(Fl_Button* o, void* v) {
+  ((ICCfltkBetrachter*)(o->parent()->parent()->user_data()))->cb_setze_i(o,v);
+}
+
+inline void ICCfltkBetrachter::cb_Standard_i(Fl_Button*, void*) {
+  icc_examin->standardGamma();
+}
+void ICCfltkBetrachter::cb_Standard(Fl_Button* o, void* v) {
+  ((ICCfltkBetrachter*)(o->parent()->parent()->user_data()))->cb_Standard_i(o,v);
+}
+
 inline void ICCfltkBetrachter::cb_ffnen_i(Fl_Menu_*, void*) {
   icc_examin->oeffnen();
 }
@@ -536,11 +550,19 @@ Fl_Double_Window* ICCfltkBetrachter::init() {
         o->when(FL_WHEN_RELEASE);
         o->show();
       }
-      { Fl_Button* o = new Fl_Button(255, 360, 110, 25, "Gut");
+      { Fl_Button* o = new Fl_Button(290, 360, 75, 25, "Gut");
         o->callback((Fl_Callback*)cb_Gut);
       }
-      { Fl_Button* o = new Fl_Button(135, 360, 110, 25, "Auffrischen");
+      { Fl_Button* o = new Fl_Button(185, 360, 105, 25, "Auffrischen");
         o->callback((Fl_Callback*)cb_Auffrischen);
+        w->hotspot(o);
+      }
+      { Fl_Button* o = new Fl_Button(80, 360, 105, 25, "setze Gamma");
+        o->callback((Fl_Callback*)cb_setze);
+        w->hotspot(o);
+      }
+      { Fl_Button* o = new Fl_Button(5, 360, 75, 25, "Standard");
+        o->callback((Fl_Callback*)cb_Standard);
         w->hotspot(o);
       }
       o->end();

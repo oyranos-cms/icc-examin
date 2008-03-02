@@ -31,11 +31,12 @@
 #ifdef HAVE_OY
 #include "oyranos/oyranos.h"
 #include "oyranos/oyranos_monitor.h"
+using namespace oyranos;
 #endif
 #include "icc_oyranos.h"
 #include "icc_utils.h"
 
-Oyranos oyranos;
+Oyranos icc_oyranos;
 
 
         /* Konzepte:
@@ -91,7 +92,7 @@ Oyranos::lab_test_ ()
         if (size)
         { block = (char*)oyGetProfileBlock( profil_name, &size);
           if( oyCheckProfileMem( block, size, 0 ) )
-            WARN_S ( _("Profil konnte nicht geladen werden,") )
+            WARN_S ( _("Profil konnte nicht geladen werden") )
           else {
             DBG_PROG_V( (int)block <<"|"<< size )
             v_block->lade(block, size);
@@ -130,7 +131,7 @@ Oyranos::moni_test_ ()
         if (size)
         { block = (char*)oyGetProfileBlock( profil_name, &size);
           if( oyCheckProfileMem( block, size, 0 ) )
-            WARN_S ( _("Profil konnte nicht geladen werden,") )
+            WARN_S ( _("Profil konnte nicht geladen werden") )
           else {
             DBG_PROG_V( (int)block <<"|"<< size )
             v_block->lade(block, size);
@@ -166,7 +167,7 @@ Oyranos::rgb_test_ ()
         if (size)
         { block = (char*)oyGetProfileBlock( profil_name, &size);
           if( oyCheckProfileMem( block, size, 0 ) )
-            WARN_S ( _("Profil konnte nicht geladen werden,") )
+            WARN_S ( _("Profil konnte nicht geladen werden") )
           else {
             DBG_PROG_V( (int)block <<"|"<< size )
             v_block->lade(block, size);
@@ -201,7 +202,7 @@ Oyranos::cmyk_test_ ()
         if (size)
         { block = (char*)oyGetProfileBlock( profil_name, &size);
           if( oyCheckProfileMem( block, size, 0 ) )
-            WARN_S ( _("Profil konnte nicht geladen werden,") )
+            WARN_S ( _("Profil konnte nicht geladen werden") )
           else {
             DBG_PROG_V( (int)block <<"|"<< size )
             v_block->lade(block, size);
@@ -214,6 +215,81 @@ Oyranos::cmyk_test_ ()
   #endif
   DBG_PROG_ENDE
 }
+
+#ifdef HAVE_X
+#include <X11/Xlib.h>
+#endif
+#ifdef HAVE_FLTK
+#include <FL/x.H>
+#endif
+
+int
+Oyranos::setzeMonitorProfil (const char* profil_name )
+{
+  DBG_PROG_START
+  int fehler = false;
+
+  #if HAVE_OY
+  const char *display_name=0;
+
+  #ifdef HAVE_X
+  static Display *display=0;
+
+  #ifdef HAVE_FLTK
+  if( !display )
+    display = fl_display;
+  #else
+  if( !display )
+    display = XOpenDisplay(0);
+  #endif
+
+  display_name = XDisplayString( display );  // gehört X
+  DBG_PROG_V( display_name <<" "<< strlen(display_name) )
+
+  #ifndef HAVE_FLTK
+    XCloseDisplay( display ); DBG_PROG
+  #endif
+
+  #endif
+
+  DBG_PROG_V( profil_name )
+  fehler = oySetMonitorProfile( display_name, profil_name );
+
+  char *neues_profil = oyGetMonitorProfileName( display_name );
+  DBG_PROG_V( neues_profil )
+
+  if (neues_profil) free (neues_profil);
+  #endif
+
+  DBG_PROG_ENDE
+  return fehler;
+}
+
+
+#if 0
+const Speicher&
+Oyranos::zeigTrafo           ( const char *profilA, int ein_bytes, int kanaeleA,
+                               const char *profilB, int aus_bytes, int kanaeleB,
+                               int intent, int optionen,
+                               const char *proof_profil, int intent_p )
+{
+  DBG_PROG_START
+  Speicher   *v_block = &cmyk_;
+  const char *block;
+  // Schlüssel erzeugen
+  static char schluessel[1024];
+  
+  sprintf (schluessel, "%s-%d_%s-%d_%d", profilA, ein_bytes, kanaeleA,
+                                         profilB, aus_bytes, kanaeleB,
+                                         intent, optionen,
+                                         proof_profil, intent_p);
+
+  //trafos_.find(schluessel);
+  #if HAVE_OY
+  #endif
+  DBG_PROG_ENDE
+}
+#endif
 
 void
 oyranos_pfade_loeschen()
@@ -235,42 +311,6 @@ oyranos_pfad_dazu (char* pfad)
 {
   #ifdef HAVE_OY
 
-  #if 0
-  KeySet myConfig;
-  ksInit(&myConfig);
-  kdbOpen();
-
-  int rc = kdbGetChildKeys("user/sw/oyanos/paths", &myConfig, KDB_O_RECURSIVE);
-	
-  // Close the Key database 
-  kdbClose();
-
-  Key *current;
-	
-  for (current=myConfig.start; current; current=current->next) {
-    char keyName[200];
-    char value[300];
-		
-    keyGetFullName(current,keyName,sizeof(keyName));
-    keyGetString(current,value,sizeof(value));
-		
-    printf("Key %s was %s. ", keyName, value);
-		
-    // Add "- modified" to the end of the string
-    //strcat(value,"- modified");
-    //sprintf (value, pfad);
-		
-    // change the key value
-    keySetString(current,value);
-		
-    // reget it, just as an example
-    keyGetString(current,value,sizeof(value));
-		
-    printf("Now is %s\n", value);
-  }
-
-  kdbClose();
-  #endif
   #endif
 }
 

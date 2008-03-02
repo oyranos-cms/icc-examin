@@ -84,10 +84,10 @@ init_shoe() {
   hXYZ  = cmsCreateXYZProfile();
 
   size_t groesse = 0;
-  char* block = 0;
-  block = oyranos.moni(groesse);
+  const char* block = 0;
+  block = icc_oyranos.moni(groesse);
   if(groesse)
-    hsRGB = cmsOpenProfileFromMem(block, groesse);
+    hsRGB = cmsOpenProfileFromMem(const_cast <char*> (block), groesse);
   else
     hsRGB = cmsCreate_sRGBProfile();
 

@@ -87,6 +87,8 @@ class ICCexamin
 
     void histogram();
     void vcgtZeigen ();
+    void moniSetzen ();
+    void standardGamma ();
   private:
     int _gl_ansicht;                   // glutWindow
     std::vector<GL_Ansicht*> _gl_ansichten;

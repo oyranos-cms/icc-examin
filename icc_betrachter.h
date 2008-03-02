@@ -95,6 +95,10 @@ private:
   static void cb_Gut(Fl_Button*, void*);
   inline void cb_Auffrischen_i(Fl_Button*, void*);
   static void cb_Auffrischen(Fl_Button*, void*);
+  inline void cb_setze_i(Fl_Button*, void*);
+  static void cb_setze(Fl_Button*, void*);
+  inline void cb_Standard_i(Fl_Button*, void*);
+  static void cb_Standard(Fl_Button*, void*);
 public:
   Fl_Double_Window *details;
   static Fl_Menu_Item menu_[];

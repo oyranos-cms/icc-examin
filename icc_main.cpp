@@ -37,7 +37,13 @@ ICCkette profile;
 int
 main (int argc, char** argv)
 {
+  if(getenv("ICCEXAMIN_DEBUG") && atoi(getenv("ICCEXAMIN_DEBUG"))>0)
+    icc_debug = atoi(getenv("ICCEXAMIN_DEBUG"));
+  else
+    icc_debug = 0;
+
   ICCexamin hauptprogramm;
+
 
   icc_examin = &hauptprogramm;
 
