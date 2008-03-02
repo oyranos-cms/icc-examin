@@ -11,9 +11,10 @@
 #define DEBUG_ICCGL
 
 typedef enum {NOTALLOWED, AXES, RASTER, RING } DisplayLists;
-typedef enum { MENU_AXES, MENU_QUIT, MENU_RING } MenuChoices;
+typedef enum { MENU_AXES, MENU_QUIT, MENU_RING, MENU_MAX } MenuChoices;
 
 int DrawAxes = 0;
+int kanal = 0;
 
 #define ROTATEINC 2;
 
@@ -25,6 +26,7 @@ int     Rotating = 0;
 GL_Ansicht::GL_Ansicht(int X,int Y,int W,int H) : Fl_Group(X,Y,W,H)
 { DBG_PROG_V( first )
   first = true;
+  MenueKanalEintraege = 0;
   DBG_PROG_ENDE
 }
 
@@ -51,6 +53,7 @@ GL_Ansicht::verstecken()
 void GL_Ansicht::init() {
   DBG_PROG_START
   first = false;
+  MenueKanalEintraege = 0;
   this->begin();
   GLFenster = new Fl_Group (x(),y(),w(),h());
   this->end();
@@ -212,32 +215,36 @@ void GL_Ansicht::MakeDisplayLists() {
     glLineWidth(1.0);
     #endif
 
-    // Tabelle
-    double dim_x = 1.0/(tabelle.size()); DBG_PROG_V( dim_x )
-    double dim_y = 1.0/(tabelle[0].size()); DBG_PROG_V( dim_y )
-    double dim_z = 1.0/(tabelle[0][0].size()); DBG_PROG_V( dim_z )
-    double start_x,start_y,start_z, x,y,z;
-    double groesse = (dim_x + dim_y + dim_z)/ 24.0;
-    start_x = start_y = start_z = x = y = z = 0.5; start_x = x = -0.5;
-    glPushMatrix();
+    DBG_PROG_V( tabelle.size() )
 
-    glTranslatef(start_x,start_y,start_z);
-    DBG_PROG_V( tabelle.size() <<" "<< tabelle[0].size() )
-    glTranslatef(-dim_x/2.0,-dim_y/2.0,-dim_z/2.0);
-    for (int i = 0; i < (int)tabelle.size(); i++) { //DBG_PROG_V( i )
-      x = start_x + i * dim_x;
-      glTranslatef(dim_x,0.0,0.0);
-      glTranslatef(0,-1.0,0.0);
-      for (int j = 0; j < (int)tabelle[i].size(); j++) { //DBG_PROG_V( j )
-        y = start_y + j * dim_y;
-        glTranslatef(0.0, dim_y,0.0);
-        glTranslatef(0,0.0,-1.0);
-        for (int k = 0; k < (int)tabelle[i][j].size(); k++) { //DBG_PROG_V( k )
-          z = start_z + k * dim_z;
-          glTranslatef(0.0,0.0,dim_z); //DBG_PROG_S( "xyz: "<< x <<" "<< y <<" "<< z )
-          glutSolidCube(groesse);
+    // Tabelle
+    if (tabelle.size()) {
+      double dim_x = 1.0/(tabelle.size()); DBG_PROG_V( dim_x )
+      double dim_y = 1.0/(tabelle[0].size()); DBG_PROG_V( dim_y )
+      double dim_z = 1.0/(tabelle[0][0].size()); DBG_PROG_V( dim_z )
+      double start_x,start_y,start_z, x,y,z;
+      double groesse = (dim_x + dim_y + dim_z)/ 24.0;
+      start_x = start_y = start_z = x = y = z = 0.5; start_x = x = -0.5;
+      glPushMatrix();
+
+      glTranslatef(start_x,start_y,start_z);
+      DBG_PROG_V( tabelle.size() <<" "<< tabelle[0].size() )
+      glTranslatef(-dim_x/2.0,-dim_y/2.0,-dim_z/2.0);
+      for (int i = 0; i < (int)tabelle.size(); i++) { //DBG_PROG_V( i )
+        x = start_x + i * dim_x;
+        glTranslatef(dim_x,0.0,0.0);
+        glTranslatef(0,-1.0,0.0);
+        for (int j = 0; j < (int)tabelle[i].size(); j++) { //DBG_PROG_V( j )
+          y = start_y + j * dim_y;
+          glTranslatef(0.0, dim_y,0.0);
+          glTranslatef(0,0.0,-1.0);
+          for (int k = 0; k < (int)tabelle[i][j].size(); k++) { //DBG_PROG_V( k )
+            z = start_z + k * dim_z;
+            glTranslatef(0.0,0.0,dim_z); //DBG_PROG_S( "xyz: "<< x <<" "<< y <<" "<< z )
+            glutSolidCube(tabelle[i][j][k][kanal] * groesse);
+          }
         }
-      }
+      } DBG_PROG
     }
     glPopMatrix();
   glEndList();
@@ -245,6 +252,36 @@ void GL_Ansicht::MakeDisplayLists() {
   glNewList(RING, GL_COMPILE);
     glutSolidDodecahedron();
   glEndList();
+
+  //Hintergrund
+  glClearColor(.75,.75,.75,1.0);
+
+  DBG_PROG_ENDE
+}
+
+void
+GL_Ansicht::MenueErneuern()
+{ DBG_PROG_START
+  DBG_PROG_V( MenueKanalEintraege << " "<< glutGet(GLUT_MENU_NUM_ITEMS) )
+
+  int me = glutGet(GLUT_MENU_NUM_ITEMS);
+  for (int i = 0; i < MenueKanalEintraege; i++) {
+    glutRemoveMenuItem (me - i);
+    DBG_PROG_V( me - i )
+  }
+
+  MenueKanalEintraege = 0;
+
+  for (int i = 0; i < (int)texte.size(); i++) {
+    char* p = (char*) texte[i].c_str();
+    glutAddMenuEntry(p, MENU_MAX + i);
+    MenueKanalEintraege++;
+    DBG_PROG_V( MENU_MAX + i << texte[i] )
+  }
+
+  if (kanal > MenueKanalEintraege)
+    kanal = MenueKanalEintraege;
+
   DBG_PROG_ENDE
 }
 
@@ -259,6 +296,9 @@ void GL_Ansicht::MenuInit() {
   glutAddMenuEntry(_("Achsen ein/aus"), MENU_AXES);
   glutAddMenuEntry(_("Rotation an/aus"), MENU_RING);
   glutAddMenuEntry(_("Beenden"), MENU_QUIT);
+
+  //MenueErneuern();
+
   glutAttachMenu(GLUT_RIGHT_BUTTON);
   DBG_PROG_ENDE
 }
@@ -357,6 +397,8 @@ GL_Ansicht::hinein_tabelle(std::vector<std::vector<std::vector<std::vector<doubl
   if (first)
     init();
 
+  MenueErneuern();
+
   DBG_PROG_ENDE
 }
 
@@ -428,6 +470,13 @@ void handlemenu(int value)
       }
       break;
     }
+
+  if (value >= MENU_MAX) {
+    kanal = value - MENU_MAX;
+    mft_gl->MakeDisplayLists();
+  }
+
+  DBG_PROG_V( value )
   glutPostRedisplay();
   DBG_PROG_ENDE
 }

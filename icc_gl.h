@@ -13,19 +13,21 @@ class GL_Ansicht : public Fl_Group {
   std::vector<double>punkte;
   std::vector<std::vector<double> >kurven;
   Fl_Group *GLFenster;
+  void MenueErneuern();
+  int  MenueKanalEintraege;
+  void init();
+  void myGLinit();
+  void MenuInit();
 public:
   bool GLfenster_zeigen,
        first;
   GL_Ansicht(int X,int Y,int W,int H) ;
-  void init();
-  void myGLinit();
-  void MakeDisplayLists();
-  void MenuInit();
   void draw();
   void hinein_punkt(std::vector<double> vect, std::vector<std::string> txt);
   void hinein_kurven(std::vector<std::vector<double> >vect, std::vector<std::string> txt);
   void hinein_tabelle(std::vector<std::vector<std::vector<std::vector<double> > > >vect, std::vector<std::string> txt);
   void ruhig_neuzeichnen(void);
+  void MakeDisplayLists();
   void zeigen();
   void verstecken();
 };
