@@ -331,9 +331,6 @@ Oyranos::setzeMonitorProfil (const char* profil_name )
   DBG_PROG_START
   int fehler = false;
 
-  if(!profil_name || !strlen(profil_name))
-    return 0;
-
   DBG_PROG_V( profil_name )
   #if HAVE_OY
   const char *display_name=0;

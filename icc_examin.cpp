@@ -342,7 +342,8 @@ void
 ICCexamin::moniSetzen ()
 { DBG_PROG_START
   frei_ = false;
-  if( profile.size() ) { DBG_PROG
+  if( profile.size() && profile.profil()->filename() &&
+      strlen( profile.profil()->filename() ) ) { DBG_PROG
     icc_oyranos.setzeMonitorProfil( profile.profil()->filename() );
     vcgtZeigen();
   }
@@ -358,6 +359,7 @@ ICCexamin::standardGamma ()
   #if HAVE_X
   system("xgamma -gamma 1.0");
   vcgtZeigen();
+  icc_oyranos.setzeMonitorProfil( 0 );
   #endif
 
   // TODO: osX

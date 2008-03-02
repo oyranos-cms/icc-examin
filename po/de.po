@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ICC Examin 0.28\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2005-06-30 12:48+0200\n"
+"POT-Creation-Date: 2005-06-30 15:14+0200\n"
 "PO-Revision-Date: 2005-04-22 15:09+0200\n"
 "Last-Translator: Kai-Uwe Behrmann <ku.b@gmx.de>\n"
 "Language-Team: German\n"
@@ -272,11 +272,11 @@ msgstr ""
 msgid "Keine Kurve gefunden"
 msgstr ""
 
-#: icc_examin.cpp:390
+#: icc_examin.cpp:392
 msgid "verstecke "
 msgstr ""
 
-#: icc_examin.cpp:394
+#: icc_examin.cpp:396
 msgid "zeige     "
 msgstr ""
 
@@ -1275,19 +1275,19 @@ msgstr ""
 msgid "Profil konnte nicht geladen werden"
 msgstr ""
 
-#: icc_oyranos.cpp:460 icc_oyranos.cpp:546
+#: icc_oyranos.cpp:457 icc_oyranos.cpp:543
 msgid "hLab Profil nicht geoeffnet"
 msgstr ""
 
-#: icc_oyranos.cpp:544
+#: icc_oyranos.cpp:541
 msgid "hsRGB Profil nicht geoeffnet"
 msgstr ""
 
-#: icc_oyranos.cpp:555
+#: icc_oyranos.cpp:552
 msgid "keine hXYZtoRGB Transformation gefunden"
 msgstr ""
 
-#: icc_oyranos.cpp:559
+#: icc_oyranos.cpp:556
 msgid "RGB_speicher Speicher nicht verfuegbar"
 msgstr ""
 
