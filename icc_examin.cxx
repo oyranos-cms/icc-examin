@@ -193,7 +193,7 @@ TagDrawings *tag_viewer=(TagDrawings *)0;
 
 TagTexts *tag_text=(TagTexts *)0;
 
-Fl_Box *stat=(Fl_Box *)0;
+Fl_Box *box_stat=(Fl_Box *)0;
 
 Fl_Progress *load_progress=(Fl_Progress *)0;
 
@@ -342,7 +342,7 @@ int main(int argc, char **argv) {
         Fl_Group::current()->resizable(o);
       }
       { Fl_Group* o = new Fl_Group(0, 495, 385, 25);
-        { Fl_Box* o = stat = new Fl_Box(0, 495, 385, 25, "No wrl file loaded.");
+        { Fl_Box* o = box_stat = new Fl_Box(0, 495, 385, 25, "No wrl file loaded.");
           o->box(FL_THIN_DOWN_BOX);
           o->color((Fl_Color)53);
           o->align(FL_ALIGN_LEFT|FL_ALIGN_INSIDE);
@@ -365,7 +365,7 @@ int main(int argc, char **argv) {
       if (argc>1) {
 
         sprintf (statlabel, "%s geladen", argv[1]);
-        stat->label(statlabel);
+        box_stat->label(statlabel);
         filename_alt = argv[1];
       } else {
         status(_("Konnte Datei nicht laden!"));
@@ -471,13 +471,13 @@ std::string open(int interaktiv) {
     //browser->load_url(url, param);
     sprintf (statlabel, "%s geladen", filename.c_str());
     cout << statlabel << endl; DBG_PROG
-    stat->label(statlabel);
+    box_stat->label(statlabel);
   } else {
     status(_("Datei nicht geladen!"));
   } DBG_PROG
 
-  stat->hide();
-  stat->show();
+  box_stat->hide();
+  box_stat->show();
   load_progress->value (1.0);
   load_progress->value (0.0);
   load_progress->hide();

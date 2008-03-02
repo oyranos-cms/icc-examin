@@ -24,7 +24,7 @@ class TagTexts;
 class MftChoice;
 class GL_Ansicht;
 #define _(text) text
-#define status(_texte) {std::stringstream s; s << _texte; stat->label(s.str().c_str());}
+#define status(_texte) {std::stringstream s; s << _texte; box_stat->label(s.str().c_str());}
 #include "icc_profile.h"
 #include "icc_utils.h"
 #include "icc_profilierer.h"
@@ -54,7 +54,7 @@ extern Fl_Group *tag_3D;
 extern TagDrawings *tag_viewer;
 extern TagTexts *tag_text;
 #include <FL/Fl_Box.H>
-extern Fl_Box *stat;
+extern Fl_Box *box_stat;
 #include <FL/Fl_Progress.H>
 extern Fl_Progress *load_progress;
 extern Fl_Menu_Item menu_[];

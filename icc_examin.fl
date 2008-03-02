@@ -56,7 +56,7 @@ class GL_Ansicht;} {public
 decl {\#define _(text) text} {public
 } 
 
-decl {\#define status(_texte) {std::stringstream s; s << _texte; stat->label(s.str().c_str());}} {public
+decl {\#define status(_texte) {std::stringstream s; s << _texte; box_stat->label(s.str().c_str());}} {public
 } 
 
 decl {\#include "icc_draw.h"} {} 
@@ -155,7 +155,7 @@ Function {} {open C return_type int
       if (argc>1) {
 
         sprintf (statlabel, "%s geladen", argv[1]);
-        stat->label(statlabel);
+        box_stat->label(statlabel);
         filename_alt = argv[1];
       } else {
         status(_("Konnte Datei nicht laden!"));
@@ -335,7 +335,7 @@ ueber_html->value(getUeberHtml().c_str());}
       Fl_Group {} {open
         xywh {0 495 385 25}
       } {
-        Fl_Box stat {
+        Fl_Box box_stat {
           label {No wrl file loaded.}
           xywh {0 495 385 25} box THIN_DOWN_BOX color 53 align 20
         }
@@ -447,13 +447,13 @@ Function {open(int interaktiv)} {open return_type {std::string}
     //browser->load_url(url, param);
     sprintf (statlabel, "%s geladen", filename.c_str());
     cout << statlabel << endl; DBG_PROG
-    stat->label(statlabel);
+    box_stat->label(statlabel);
   } else {
     status(_("Datei nicht geladen!"));
   } DBG_PROG
 
-  stat->hide();
-  stat->show();
+  box_stat->hide();
+  box_stat->show();
   load_progress->value (1.0);
   load_progress->value (0.0);
   load_progress->hide();
