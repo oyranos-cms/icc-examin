@@ -103,6 +103,10 @@ void TagBrowser::selectItem(int item) {
   DBG_PROG_ENDE
 }
 
+int TagBrowser::visible() {
+  return Fl_Widget::visible();
+}
+
 TagTexts::TagTexts(int X,int Y,int W,int H,char* start_info) : Fl_Hold_Browser(X,Y,W,H,start_info), X(X), Y(Y), W(W), H(H) {
 }
 
@@ -289,6 +293,7 @@ inline void ICCfltkBetrachter::cb_menueintrag_inspekt_i(Fl_Menu_* o, void*) {
     inspekt_html->value(profile.profil()->report(export_html).c_str());
     inspekt_html->topline(tag_text->inspekt_topline);
   } else {
+    widget_oben = WID_0;
     tag_text->inspekt_topline = inspekt_html->topline();
   }
   icc_examin->neuzeichnen(inspekt_html);
@@ -305,7 +310,8 @@ inline void ICCfltkBetrachter::cb_menueintrag_3D_i(Fl_Menu_* o, void*) {
   if (m->value()) {
     widget_oben = WID_3D;
     //icc_examin->histogram();
-  }
+  } else
+    widget_oben = WID_0;
   icc_examin->neuzeichnen(icc_examin->icc_betrachter->DD_histogram);
 }
 void ICCfltkBetrachter::cb_menueintrag_3D(Fl_Menu_* o, void* v) {

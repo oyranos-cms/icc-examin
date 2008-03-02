@@ -79,19 +79,19 @@ class ICCtag {
   public:
     void                load (ICCprofile* profil ,icTag* tag, char* data);
   public:
-    icTagSignature      getSignature ()    {DBG_PROG return _sig; }
+    icTagSignature      getSignature ()    {DBG_MEM return _sig; }
     std::string         getTagName ()
-                          { /*DBG_PROG*/ return getSigTagName (_sig); }
+                          { DBG_MEM return getSigTagName (_sig); }
     std::string         getInfo ()
-                          { DBG_PROG  return getSigTagDescription(_sig); }
+                          { DBG_MEM  return getSigTagDescription(_sig); }
     std::string         getTypName()
-                          { DBG_PROG
+                          {
                             icTagTypeSignature sig = ((icTagBase*)data_) -> sig;
-                            DBG_PROG
+                            DBG_MEM
                             return getSigTypeName(
                                             (icTagTypeSignature)icValue(sig)); }
     int                 getSize()
-                          { DBG_PROG  return size_; }
+                          { DBG_MEM  return size_; }
 
     std::vector<double> getCIEXYZ();
     std::vector<double> getCurve();

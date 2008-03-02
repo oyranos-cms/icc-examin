@@ -357,31 +357,26 @@ ICCprofile::load (const Speicher & prof)
   icTag *tagList = (icTag*)&((char*)data_)[132];
   //(icTag*) new char ( getTagCount() * sizeof (icTag));
   //memcpy (tagList , &((char*)data_)[132], sizeof (icTag) * getTagCount());
-  DBG_PROG
-  tags.resize(getTagCount()); DBG_PROG
+
+  tags.resize(getTagCount());
   for (int i = 0 ; i < getTagCount() ; i++)
-  { DBG_PROG
+  {
     tags[i].load( this, &tagList[i] ,
-              &((char*)data_)[ icValue(tagList[i].offset) ]); DBG_PROG
+              &((char*)data_)[ icValue(tagList[i].offset) ]);
     #ifdef DEBUG_ICCPROFILE
     DBG_PROG_S( " sig: " << tags[i].getTagName() << " " << i )
     #endif
 
-    DBG_PROG
     // bekannte Tags mit Messdaten
     if (tags[i].getTagName() == "targ"
      || tags[i].getTagName() == "DevD"
      || tags[i].getTagName() == "CIED") {
-      DBG_PROG
       #ifdef DEBUG_ICCPROFILE
       DBG_NUM_S( "Messdaten gefunden " << tags[i].getTagName() )
       #endif
       measurement.load( this, tags[i] );
-      DBG_PROG
     }
-    DBG_PROG
   }
-  DBG_PROG
   #ifdef DEBUG_ICCPROFILE
   DBG_NUM_S( "TagCount: " << getTagCount() << " / " << tags.size() )
   #endif
@@ -666,7 +661,7 @@ ICCprofile::hasTagName            (std::string name)
   if (!tags.size()) {
     DBG_PROG_ENDE
     return false;
-  } DBG_PROG
+  }
 
   int item = 0;
   for (std::vector<ICCtag>::iterator it = tags.begin(); it != tags.end(); it++){

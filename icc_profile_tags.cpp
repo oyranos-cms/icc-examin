@@ -122,7 +122,7 @@ void
 ICCtag::load                        ( ICCprofile *profil,
                                       icTag      *tag,
                                       char       *data )
-{ DBG_PROG_START
+{ DBG_MEM_START
   DBG_MEM_V( profil )
   DBG_MEM_V( tag )
   DBG_MEM_V( data )
@@ -177,14 +177,14 @@ ICCtag::load                        ( ICCprofile *profil,
     break;
   }
 
-  DBG_PROG
+  DBG_MEM
 
   if (data_ != NULL && size_) { DBG_MEM
     DBG_MEM_S( "ICCtag wiederverwendet: " << (char*)tag->sig << " " )
     DBG_MEM
     free(data_); DBG_MEM // delete [] data_;
     DBG_MEM_S( "ICCtag wiederverwendet: " << (char*)tag->sig << " " )
-  } DBG_PROG
+  } DBG_MEM
   size_   = icValue(tag->size); DBG_MEM_V( size_ )
 
   data_ = (char*) calloc(sizeof(char),size_); // new char (size_);
@@ -193,12 +193,9 @@ ICCtag::load                        ( ICCprofile *profil,
 
   #ifdef DEBUG_ICCTAG_
   char* text = data_;
-  if (icc_debug)
-  {
-    cout << _sig << "=" << tag->sig << " offset " << icValue(tag->offset) << " size " << size_ << " nächster tag " << size_ + icValue(tag->offset) << " " << text << " "; DBG_PROG
-  }
+  DBG_MEM_S( _sig << "=" << tag->sig << " offset " << icValue(tag->offset) << " size " << size_ << " nächster tag " << size_ + icValue(tag->offset) << " " << text << " " )
   #endif
-  DBG_PROG_ENDE
+  DBG_MEM_ENDE
 }
 
 std::vector<std::string>

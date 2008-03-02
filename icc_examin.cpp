@@ -154,8 +154,10 @@ void
 ICCexamin::nachricht( Modell* modell , int info )
 {
   DBG_PROG_START
-  if(!frei())
-    return;
+  if(!frei()) {
+    //DBG_PROG_ENDE
+    //return;
+  }
 
   frei_ = false;
   DBG_PROG_V( info )
@@ -328,15 +330,29 @@ ICCexamin::neuzeichnen (void* z)
   DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->mft_gl)->visible() )
   DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->mft_viewer)->visible() )
 
+  enum {ZEIGEN, VERSTECKEN, NACHRICHT, KEINEn};
+  #define widZEIG(zeigen,widget,dbg) { \
+     if        (zeigen ==                  VERSTECKEN && widget->visible()) { \
+         widget->                          hide(); \
+         if(dbg==NACHRICHT) DBG_PROG_S( _("verstecke ") << #widget ); \
+  \
+     } else if (zeigen ==                  ZEIGEN     && !widget->visible()) { \
+         widget->                          show(); \
+         if(dbg==NACHRICHT) DBG_PROG_S( _("zeige     ") << #widget ); \
+     } \
+  }
+
   // oberstes Widget testen
   DBG_PROG_V( icc_betrachter->widget_oben )
   enum { DD_ZEIGEN, INSPEKT_ZEIGEN, TAG_ZEIGEN };
   int oben;
   if (icc_betrachter->menueintrag_3D->value() &&
-      icc_betrachter->widget_oben == ICCfltkBetrachter::WID_3D )
+      (   icc_betrachter->widget_oben == ICCfltkBetrachter::WID_3D
+       || icc_betrachter->widget_oben == ICCfltkBetrachter::WID_0) )
     oben = DD_ZEIGEN;
   else if (icc_betrachter->menueintrag_inspekt->value() &&
-             icc_betrachter->widget_oben == ICCfltkBetrachter::WID_INSPEKT)
+      (   icc_betrachter->widget_oben == ICCfltkBetrachter::WID_INSPEKT
+       || icc_betrachter->widget_oben == ICCfltkBetrachter::WID_0) )
     oben = INSPEKT_ZEIGEN;
   else
     oben = TAG_ZEIGEN;
@@ -354,37 +370,31 @@ ICCexamin::neuzeichnen (void* z)
     if(!icc_betrachter->DD_histogram->visible()) {
       DBG_PROG_S( "3D Histogramm zeigen" )
       icc_betrachter->DD_histogram->show();
-      icc_waehler_->show();
-      icc_betrachter->examin->hide();
+      widZEIG(ZEIGEN, icc_waehler_ ,NACHRICHT)
+      widZEIG(VERSTECKEN, icc_betrachter->examin ,NACHRICHT)
     }
   } else {
-    DBG_PROG_S( "3D hist verstecken" )
-    icc_betrachter->DD_histogram->hide();
-    icc_waehler_->iconize();
+    if(icc_betrachter->DD_histogram->visible()) {
+      DBG_PROG_S( "3D hist verstecken" )
+      icc_betrachter->DD_histogram->hide();
+    }
+    if(icc_waehler_->visible())
+      icc_waehler_->iconize();
   }
 
-  if(oben == INSPEKT_ZEIGEN) {
-    if(!icc_betrachter->inspekt_html->visible()) {
-      icc_betrachter->inspekt_html->show();
-      DBG_PROG_S( "inspekt_html zeigen" )
-    }
-  } else {
-    icc_betrachter->inspekt_html->hide();
-    DBG_PROG_S( "inspekt_html verstecken" )
-  }
+  if(oben == INSPEKT_ZEIGEN)
+    widZEIG(ZEIGEN, icc_betrachter->inspekt_html ,NACHRICHT)
+  else
+    widZEIG(VERSTECKEN, icc_betrachter->inspekt_html ,NACHRICHT)
 
   if(oben == TAG_ZEIGEN) {
-    if(!icc_betrachter->examin->visible()) {
-      DBG_PROG_S( "examin zeigen" )
-      icc_betrachter->examin->show();
-    }
-    icc_betrachter->tag_browser->show();
-    icc_betrachter->ansichtsgruppe->show();
+    widZEIG(ZEIGEN, icc_betrachter->examin ,NACHRICHT)
+    widZEIG(ZEIGEN, icc_betrachter->tag_browser ,NACHRICHT)
+    widZEIG(ZEIGEN, icc_betrachter->ansichtsgruppe ,NACHRICHT)
   } else {
-    icc_betrachter->examin->hide();
-    icc_betrachter->tag_browser->hide();
-    icc_betrachter->ansichtsgruppe->hide();
-    DBG_PROG_S( "examin verstecken" )
+    widZEIG(VERSTECKEN, icc_betrachter->examin ,NACHRICHT)
+    widZEIG(VERSTECKEN, icc_betrachter->tag_browser ,NACHRICHT)
+    widZEIG(VERSTECKEN, icc_betrachter->ansichtsgruppe ,NACHRICHT)
   }
 
   // Inhalte Erneuern
@@ -405,21 +415,21 @@ ICCexamin::neuzeichnen (void* z)
   } else
     icc_betrachter->mft_choice->hide();
 
-  #define zeig(widget) \
+  #define SichtbarkeitsWechsel(widget) \
   { Fl_Widget *w = dynamic_cast<Fl_Widget*> (icc_betrachter->widget); \
     if (w != wid && w->visible()) { DBG_PROG_S( #widget << " verstecken" ) \
       w->hide(); \
-    } else if(w == wid) { DBG_PROG_S( #widget << " zeigen" ) \
+    } else if(w == wid && !w->visible()) { DBG_PROG_S( #widget << " zeigen" ) \
       w->show(); \
       item = _item; \
     } \
   }
 
-  zeig(mft_viewer)
-  zeig(mft_gl)
-  zeig(mft_text)
-  zeig(tag_viewer)
-  zeig(tag_text)
+  SichtbarkeitsWechsel(mft_viewer)
+  SichtbarkeitsWechsel(mft_gl)
+  SichtbarkeitsWechsel(mft_text)
+  SichtbarkeitsWechsel(tag_viewer)
+  SichtbarkeitsWechsel(tag_text)
 
   // wenigstens ein Widget zeigen
   if(oben == TAG_ZEIGEN &&

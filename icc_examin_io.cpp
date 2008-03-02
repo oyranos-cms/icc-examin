@@ -139,9 +139,10 @@ ICCexamin::oeffnen (std::vector<std::string> dateinamen)
     // ICCwaehler
       // erneuern?
     static std::vector<std::string> namen_neu, namen_alt;
-    bool namensgleich = true;
+    bool namensgleich = false;
     namen_neu = profile;
     if(namen_alt.size() == namen_neu.size()) {
+      namensgleich = true;
       DBG_NUM_S( _("Anzahl gabs schon mal") )
       for(int i = 0; i < (int)namen_neu.size(); ++i) {
         if(namen_neu[i] != namen_alt[i]) {
@@ -199,40 +200,43 @@ ICCexamin::tag_browserText (void)
   std::stringstream s;
   std::string text;
   std::vector<std::string> tag_list = profile.profil()->printTags();
+  DBG_PROG_V( tag_list.size() <<" "<< (int*) b )
 
   #define add_s(stream) s << stream; b->add (s.str().c_str()); s.str("");
   #define add_          s << " ";
-
-  //neuzeichnen(b);
 
   b->clear();
   add_s ("@fDateiname:")
   add_s ("@b    " << profile.profil()->filename() )
   add_s ("")
   if (tag_list.size() == 0) {
-    add_s ("keine Inhalte gefunden für << profile.profil()->filename() \"" << profile.profil()->filename() << "\"")
+    add_s (_("keine Inhalte gefunden für") <<" \"" << profile.profil()->filename() << "\"")
     return;
+  } else if ((int)tag_list.size() != profile.profil()->tagCount()*5 ) {
+    add_s (_("interner Fehler") )
   }
   add_s ("@B26@tNr. Bezeichner  Typ         GröBeschreibung")
   add_s ("@t" << profile.profil()->printHeader() )
   std::vector<std::string>::iterator it;
-  DBG_PROG_V( tag_list.size() )
+  for(int i = 0; i < (int)tag_list.size(); ++i)
+    ;//DBG_PROG_V( i <<" "<< tag_list[i] )
+  int anzahl = 0;
   for (it = tag_list.begin() ; it != tag_list.end(); ++it) {
-    DBG_PROG
     s << "@t";
     // Nummer
     int Nr = atoi((*it).c_str()) + 1;
     std::stringstream t; t << Nr;
-    for (int i = t.str().size(); i < 3; i++) {s << " ";} s << Nr; *it++; s << " ";
+    for (int i = t.str().size(); i < 3; i++) {s << " ";} s << Nr; *it++; ++anzahl; s << " ";
     // Name/Bezeichnung
-    s << *it; //for (int i = (*it++).size(); i < 12; i++) {s << " ";}
+    s << *it; for (int i = (*it++).size(); i < 12; i++) {s << " ";} ++anzahl;
     // Typ
-    s << *it; //for (int i = (*it++).size(); i < 12; i++) {s << " ";}
-    // Größe  for (int i = (*it).size(); i < 5; i++) {s << " ";} s << *it++; s << " ";
+    s << *it; for (int i = (*it++).size(); i < 12; i++) {s << " ";} ++anzahl;
+    // Größe
+    for (int i = (*it).size(); i < 5; i++) {s << " ";} s << *it++; s << " "; ++anzahl;
     // Beschreibung
     add_s (*it)
   }
-  DBG_PROG
+  DBG_PROG_V( anzahl )
   if (b->value())
     b->selectItem (b->value()); // Anzeigen
   else

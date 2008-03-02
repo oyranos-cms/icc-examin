@@ -76,7 +76,7 @@ Function {iccReadInfo(char* filename)} {return_type {char*}
   code DBG_PROG_ENDE {}
 } 
 
-class TagBrowser {open : {public Fl_Hold_Browser}
+class TagBrowser {: {public Fl_Hold_Browser}
 } {
   decl {int X; int Y; int W; int H; char* start_info; std::string selectedTagName;} {public
   }
@@ -140,8 +140,7 @@ class TagBrowser {open : {public Fl_Hold_Browser}
 
   s.clear(); s << "ICC Details: " << data;
   status ((const char*) s.str().c_str() );
-  \#endif} {selected
-    }
+  \#endif} {}
     code DBG_PROG_ENDE {}
   }
   Function {selectItem(int item)} {open
@@ -159,6 +158,10 @@ class TagBrowser {open : {public Fl_Hold_Browser}
     selectedTagName = text;
   DBG_PROG_V( text );} {}
     code DBG_PROG_ENDE {}
+  }
+  Function {visible()} {return_type int
+  } {
+    code {return Fl_Widget::visible();} {}
   }
 } 
 
@@ -272,7 +275,7 @@ class ICCfltkBetrachter {open
   
  int tag_nummer;
   
- enum{ WID_3D, WID_INSPEKT }; int widget_oben;} {public
+ enum{ WID_0, WID_3D, WID_INSPEKT }; int widget_oben;} {public
   }
   Function {init()} {open
   } {
@@ -375,7 +378,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window vcgt {
       label {Grafikkarten Gamma Tabellen}
-      xywh {688 83 370 390} type Double resizable
+      xywh {693 104 370 390} type Double resizable
       code0 {o->hide();} non_modal visible
     } {
       Fl_Group {} {open
@@ -410,7 +413,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window details {
       label {ICC Details} open
-      xywh {618 141 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
+      xywh {623 162 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
     } {
       Fl_Group {} {open
         xywh {0 0 385 520}
@@ -487,6 +490,7 @@ class ICCfltkBetrachter {open
     inspekt_html->value(profile.profil()->report(export_html).c_str());
     inspekt_html->topline(tag_text->inspekt_topline);
   } else {
+    widget_oben = WID_0;
     tag_text->inspekt_topline = inspekt_html->topline();
   }
   icc_examin->neuzeichnen(inspekt_html);}
@@ -501,8 +505,9 @@ class ICCfltkBetrachter {open
   if (m->value()) {
     widget_oben = WID_3D;
     //icc_examin->histogram();
-  }
-  icc_examin->neuzeichnen(icc_examin->icc_betrachter->DD_histogram);}
+  } else
+    widget_oben = WID_0;
+  icc_examin->neuzeichnen(icc_examin->icc_betrachter->DD_histogram);} selected
               xywh {50 50 100 20} type Toggle shortcut 0x40068 divider
             }
             menuitem menueintrag_zeigcgats {

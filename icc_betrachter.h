@@ -33,6 +33,7 @@ public:
   TagBrowser(int X,int Y,int W,int H,char* start_info) ;
   void reopen();
   void selectItem(int item);
+  int visible();
 };
 
 class TagTexts : public Fl_Hold_Browser {
@@ -69,7 +70,7 @@ public:
   
  int tag_nummer;
   
- enum{ WID_3D, WID_INSPEKT }; int widget_oben;
+ enum{ WID_0, WID_3D, WID_INSPEKT }; int widget_oben;
   Fl_Double_Window* init();
   Fl_Double_Window *ueber;
   Fl_Help_View *ueber_html;
