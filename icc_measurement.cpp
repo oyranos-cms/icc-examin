@@ -758,6 +758,8 @@ ICCmeasurement::init_umrechnen                     (void)
                   hCOLOURtoLab=0;
     cmsHPROFILE   hCOLOUR=0, hsRGB=0, hLab=0, hXYZ=0, hProof = 0;
 
+    double start = fortschritt();
+
 
     if (getColorSpaceName(profile_->header.colorSpace()) != "Rgb"
      && getColorSpaceName(profile_->header.colorSpace()) != "Cmyk")
@@ -836,19 +838,19 @@ ICCmeasurement::init_umrechnen                     (void)
       if( !hCOLOUR )
         WARN_S("hCOLOUR ist leer")
 
-      fortschritt(0.2);
+      fortschritt(0.1 , 0.2);
       // Wie sieht das Profil die Messfarbe? -> XYZ
       hCOLOURtoXYZ =  cmsCreateTransform (hCOLOUR, TYPE_nCOLOUR_DBL,
                                     hXYZ, TYPE_XYZ_DBL,
                                     INTENT_ABSOLUTE_COLORIMETRIC,
                                     PRECALC|BW_COMP);
-      fortschritt(0.4);
+      fortschritt(0.1, 0.2);
       // Wie sieht das Profil die Messfarbe? -> Lab
       hCOLOURtoLab =  cmsCreateTransform (hCOLOUR, TYPE_nCOLOUR_DBL,
                                     hLab, TYPE_Lab_DBL,
                                     INTENT_ABSOLUTE_COLORIMETRIC,
                                     PRECALC|BW_COMP);
-      fortschritt(0.6);
+      fortschritt(0.15, 0.2);
       // Wie sieht das Profil die Messfarbe? -> Bildschirmdarstellung
       hCOLOURtoRGB =  cmsCreateProofingTransform (hCOLOUR, TYPE_nCOLOUR_DBL,
                                     hsRGB, TYPE_RGB_DBL,
@@ -858,7 +860,7 @@ ICCmeasurement::init_umrechnen                     (void)
                                     (icc_examin?icc_examin->gamutwarn():0) ?
                                     cmsFLAGS_GAMUTCHECK : 0  |
                                     PRECALC|BW_COMP);
-      fortschritt(0.8);
+      fortschritt(0.3, 0.2);
     }
     Kein_Profil:
     if (XYZ_measurement_)
@@ -882,7 +884,7 @@ ICCmeasurement::init_umrechnen                     (void)
                                     cmsFLAGS_GAMUTCHECK : 0  |
                                     PRECALC|BW_COMP);
     }
-    fortschritt(0.9);
+    fortschritt(0.5,0.2);
     double Farbe[64], RGB[3], XYZ[3], Lab[3];
     bool vcgt = false;
     std::vector<std::vector<double> > vcgt_kurven;
@@ -996,6 +998,8 @@ ICCmeasurement::init_umrechnen                     (void)
       }
     }
 
+    if(start <= 0.0)
+      fortschritt(1.1);
 
     if (XYZ_measurement_) {
       if(hXYZtoLab) cmsDeleteTransform (hXYZtoLab);
@@ -1018,7 +1022,6 @@ ICCmeasurement::init_umrechnen                     (void)
   for (unsigned int i = 0; i < Lab_Differenz_.size(); i++) {
     Lab_Differenz_Durchschnitt_ += Lab_Differenz_[i];
   }
-  fortschritt(1.1);
   Lab_Differenz_Durchschnitt_ /= (double)Lab_Differenz_.size();
   for (unsigned int i = 0; i < DE00_Differenz_.size(); i++) {
     DE00_Differenz_Durchschnitt_ += DE00_Differenz_[i];

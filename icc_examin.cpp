@@ -501,7 +501,7 @@ ICCexamin::nachricht( Modell* modell , int info )
           else
             farbraum (info);
           intent_alt_ = intentGet(NULL);
-          fortschritt(0.5);
+          fortschritt(0.5 , 1.0);
         }
 
         if(k->aktiv(info)) // momentan nicht genutzt
@@ -513,7 +513,7 @@ ICCexamin::nachricht( Modell* modell , int info )
         }
 
           // Oberflaechenpflege - Aktualisieren
-        fortschritt(0.6);
+        fortschritt(0.6 , 1.0);
         if(profile[info]->tagCount() <= _item)
           _item = (-1);
         DBG_PROG_V( _item )
@@ -533,11 +533,11 @@ ICCexamin::nachricht( Modell* modell , int info )
         if(icc_betrachter->inspekt_html->visible_r())
           setzMesswerte();
 
-        fortschritt(0.7);
+        fortschritt(0.7 , 1.0);
         if(icc_betrachter->examin->visible())
           waehleTag(_item);
 
-        fortschritt(0.9);
+        fortschritt(0.9 , 1.0);
         if(icc_betrachter->DD_farbraum->visible())
           icc_betrachter->DD_farbraum->damage(FL_DAMAGE_ALL);
 
@@ -549,8 +549,8 @@ ICCexamin::nachricht( Modell* modell , int info )
   }
 
   Beobachter::nachricht(modell, info);
-  fortschritt(1.0);
-  fortschritt(1.1);
+  fortschritt(1.0 , 1.0);
+  fortschritt(1.1 , 1.0);
   DBG_PROG_ENDE
 }
 
@@ -796,7 +796,7 @@ void
 ICCexamin::moniHolen ()
 { DBG_PROG_START
   //frei(false);
-  fortschritt( 0.01 );
+  fortschritt( 0.01 , 1.0 );
   int x = icc_betrachter->vcgt->x() + icc_betrachter->vcgt->w()/2;
   int y = icc_betrachter->vcgt->y() + icc_betrachter->vcgt->h()/2;
 
@@ -831,7 +831,7 @@ ICCexamin::moniHolen ()
 # endif
   vcgtZeigen();
 
-  fortschritt( 1.1 );
+  fortschritt( 1.1 , 1.0 );
   DBG_PROG_ENDE
 }
 
@@ -1215,8 +1215,20 @@ ICCexamin::waehlbar( int pos, int wert )
 }
 
 
+/**  0...1 fuer den sichtbaren aktuellen Wert,
+    -1...0 fuer unsichtbaren Balken */
+double
+ICCexamin::fortschritt()
+{
+  if(icc_betrachter->load_progress->visible())
+    return icc_betrachter->load_progress-> value();
+  else
+    return icc_betrachter->load_progress-> value() * -1;
+}
+
+//! Fortschritt: f<0-Start f=Wert f>1-Ende  a>=1 komplett a=0.1 10%
 void
-ICCexamin::fortschritt(double f)
+ICCexamin::fortschritt(double f, double anteil)
 { DBG_PROG_START
   
   int thread = wandelThreadId(pthread_self());
@@ -1224,14 +1236,20 @@ ICCexamin::fortschritt(double f)
     icc_examin_ns::lock(__FILE__,__LINE__);
 
     if(0.0 < f && f <= 1.0) {
-      if(!icc_betrachter->load_progress->visible())
+      if(!icc_betrachter->load_progress->visible() &&
+         anteil > 0.0 )
         icc_betrachter->load_progress-> show();
-      icc_betrachter->load_progress-> value( f );
+      if(fabs(anteil) >= 1.0)
+        icc_betrachter->load_progress-> value( f );
+      else
+        icc_betrachter->load_progress-> value( 1.0 -
+                    icc_betrachter->load_progress->value() / fabs(anteil) * f );
       DBG_PROG_V( f )
-    } else if (1.0 < f) {
+    } else if (1.0 < f &&
+               anteil > 0.0) {
       icc_betrachter->load_progress-> hide();
       DBG_PROG_V( f )
-    } else {
+    } else if(anteil > 0.0) {
       icc_betrachter->load_progress-> show();
       DBG_PROG_V( f )
     }
@@ -1333,7 +1351,7 @@ tastatur(int e)
     break;
   case FL_DND_ENTER:
     DBG_PROG_S( "FL_DND_ENTER" )
-    fortschritt(0.01);
+    fortschritt(0.01 , 1.0);
     return 1;
     break;
   case FL_DND_DRAG:
@@ -1342,7 +1360,7 @@ tastatur(int e)
     break;
   case FL_DND_LEAVE:
     DBG_PROG_S( "FL_DND_LEAVE" )
-    fortschritt(1.1);
+    fortschritt(1.1 , 1.0);
     return 1;
     break;
   case FL_DND_RELEASE:

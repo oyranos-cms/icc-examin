@@ -93,13 +93,13 @@ ICCexaminIO::oeffnenThread_ (int pos)
     WARN_S("THREAD_LADEN???");
 
   if(erneuern_.size() < 0) {
-    icc_examin->fortschritt( 1.1 );
+    icc_examin->fortschritt( 1.1 , 1.0 );
     DBG_PROG_ENDE
     return;
   }
 
   // Laden
-  icc_examin->fortschritt( .1 );
+  icc_examin->fortschritt( .1 , 1.0 );
   if((int)speicher_vect_.size() < (pos+1))
     WARN_S( "Speicher nicht besetzt" )
 
@@ -109,9 +109,9 @@ ICCexaminIO::oeffnenThread_ (int pos)
   {
     int i = pos;
     DBG_PROG_V( speicher_vect_[i].size()<<" "<<speicher_vect_[i].name() )
-    icc_examin->fortschritt( 1./3.+ (double)(i)/speicher_vect_.size()/3.0 );
+    icc_examin->fortschritt( 1./3.+ (double)(i)/speicher_vect_.size()/3.0 , 1 );
     profile.einfuegen( speicher_vect_[pos], pos );
-    icc_examin->fortschritt( 1./3.+ (double)(i+1)/speicher_vect_.size()/3.0 );
+    icc_examin->fortschritt( 1./3.+ (double)(i+1)/speicher_vect_.size()/3.0, 1);
     DBG_THREAD
   }
 
@@ -126,14 +126,14 @@ ICCexaminIO::oeffnenThread_ (int pos)
     icc_examin->icc_betrachter->menueintrag_gamut_speichern->activate();
     icc_examin->icc_betrachter->menueintrag_gamut_vrml_speichern->activate();
 
-    icc_examin->fortschritt( 2./3.+ 1./6. );
+    icc_examin->fortschritt( 2./3.+ 1./6. , 1.0 );
     if(profile.profil() == profile[pos])
       icc_examin->icc_betrachter->measurement( profile.profil()->hasMeasurement() );
     icc_examin_ns::unlock(this, __FILE__,__LINE__);
 
-    icc_examin->fortschritt( 2./3.+ 2./6. );
+    icc_examin->fortschritt( 2./3.+ 2./6. , 1.0 );
   }
-  icc_examin->fortschritt( 1.1 );
+  icc_examin->fortschritt( 1.1 , 1.0 );
   DBG_PROG_ENDE
 }
 
@@ -144,7 +144,7 @@ ICCexaminIO::oeffnenThread_ ()
     WARN_S("THREAD_LADEN???");
 
   if(!speicher_vect_.size()) {
-    icc_examin->fortschritt( 1.1 );
+    icc_examin->fortschritt( 1.1 , 1.0 );
     DBG_PROG_ENDE
     return;
   }
@@ -153,14 +153,14 @@ ICCexaminIO::oeffnenThread_ ()
   icc_examin->clear();
   icc_examin->icc_betrachter->DD_farbraum->punkte_clear();
   profile.clear();
-  icc_examin->fortschritt( -.1 );
+  icc_examin->fortschritt( -.1 , 1.0  );
   for (unsigned int i = 0; i < speicher_vect_.size(); ++i)
   {
     DBG_PROG_V( speicher_vect_[i].size()<<" "<<speicher_vect_[i].name() )
-    icc_examin->fortschritt( 1./3.+ (double)(i)/speicher_vect_.size()/3.0 );
+    icc_examin->fortschritt( 1./3.+ (double)(i)/speicher_vect_.size()/3.0 , 1.);
     profile.einfuegen( speicher_vect_[i], -1 );
 
-    icc_examin->fortschritt( 1./3.+ (double)(i+1)/speicher_vect_.size()/3.0 );
+    icc_examin->fortschritt( 1./3.+ (double)(i+1)/speicher_vect_.size()/3.0 ,1);
     DBG_THREAD
   }
 
@@ -177,7 +177,7 @@ ICCexaminIO::oeffnenThread_ ()
     icc_examin->icc_betrachter->menueintrag_gamut_speichern->activate();
     icc_examin->icc_betrachter->menueintrag_gamut_vrml_speichern->activate();
 
-    icc_examin->fortschritt( 2./3.+ 1./6. );
+    icc_examin->fortschritt( 2./3.+ 1./6. , 1.0 );
 
     icc_examin->icc_betrachter->measurement( profile.profil()->hasMeasurement() );
 
@@ -224,7 +224,7 @@ ICCexaminIO::oeffnenThread_ ()
       //farbraum();
     }
 
-    icc_examin->fortschritt( 2./3.+ 2./6. );
+    icc_examin->fortschritt( 2./3.+ 2./6. , 1.0 );
     // ICCwaehler
       // erneuern
     static std::vector<std::string> namen_neu, namen_alt;
@@ -284,7 +284,7 @@ ICCexaminIO::oeffnenThread_ ()
 
   }
 
-  icc_examin->fortschritt( 1.1 );
+  icc_examin->fortschritt( 1.1 , 1.0 );
   DBG_PROG_ENDE
 }
 
@@ -393,7 +393,7 @@ ICCexaminIO::oeffnen (std::vector<std::string> dateinamen)
 # if 1
   if(!dateinamen.size()) {
     WARN_S("keine Dateinamen angegeben")
-    icc_examin->fortschritt( 1.1 );
+    icc_examin->fortschritt( 1.1 , 1.0 );
     DBG_PROG_ENDE
     return;
   }
@@ -403,7 +403,7 @@ ICCexaminIO::oeffnen (std::vector<std::string> dateinamen)
   int y = icc_examin->icc_betrachter->vcgt->y() + icc_examin->icc_betrachter->vcgt->h()/2;
 
 
-  icc_examin->fortschritt( 0.0 );
+  icc_examin->fortschritt( 0.0 , 1.0 );
 
   // Laden
   std::vector<Speicher> ss;
@@ -417,7 +417,7 @@ ICCexaminIO::oeffnen (std::vector<std::string> dateinamen)
     ss[i] = dateiNachSpeicher(dateinamen[i]);
     if(i == 0 && ss[i].size() == 0) {
       status( _("Stop loading ") << dateinamen[i] )
-      icc_examin->fortschritt( 1.1 );
+      icc_examin->fortschritt( 1.1 , 1.0 );
       return;
     }
     if (dateinamen[i] == icc_oyranos.moni_name( x,y ))
@@ -437,7 +437,7 @@ ICCexaminIO::oeffnen (std::vector<std::string> dateinamen)
 void
 ICCexaminIO::oeffnen ()
 { DBG_PROG_START
-  icc_examin->fortschritt(0.01);
+  icc_examin->fortschritt(0.01 , 1.0);
   std::vector<std::string> dateinamen = profile;
 
   //Fl_File_Icon	*icon;	// New file icon
@@ -539,7 +539,7 @@ ICCexaminIO::berichtSpeichern (void)
   if (dateiname == "" ||
       dateiname == profile.name())
   { DBG_PROG_V( dateiwahl->count() << dateiname )
-    icc_examin->fortschritt (1.1);
+    icc_examin->fortschritt (1.1 , 1.0);
     DBG_PROG_ENDE
     return false;
   }
@@ -616,7 +616,7 @@ ICCexaminIO::gamutSpeichern (IccGamutFormat format)
   if (dateiname == "" ||
       dateiname == profile.name())
   { DBG_PROG_V( dateiwahl->count() << dateiname )
-    icc_examin->fortschritt (1.1);
+    icc_examin->fortschritt (1.1 , 1.0);
       DBG_PROG_ENDE
     return false;
   }

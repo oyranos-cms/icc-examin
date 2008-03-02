@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2007-02-01 16:06+0100\n"
+"POT-Creation-Date: 2007-02-01 20:22+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1066,147 +1066,147 @@ msgstr ""
 msgid "File not loaded!"
 msgstr ""
 
-#: icc_measurement.cpp:788
+#: icc_measurement.cpp:790
 msgid "use sRGB"
 msgstr ""
 
-#: icc_measurement.cpp:1061
+#: icc_measurement.cpp:1064
 msgid "Report about ICC profile"
 msgstr ""
 
-#: icc_measurement.cpp:1099
+#: icc_measurement.cpp:1102
 msgid "Meas colour"
 msgstr ""
 
-#: icc_measurement.cpp:1101
+#: icc_measurement.cpp:1104
 msgid "Profile colour"
 msgstr ""
 
-#: icc_measurement.cpp:1173
+#: icc_measurement.cpp:1176
 msgid "no measurment data or correct profile conversion available"
 msgstr ""
 
-#: icc_measurement.cpp:1180
+#: icc_measurement.cpp:1183
 msgid "Measurment- and profile colours from <b>"
 msgstr ""
 
-#: icc_measurement.cpp:1182
+#: icc_measurement.cpp:1185
 msgid "RGB"
 msgstr ""
 
-#: icc_measurement.cpp:1184
+#: icc_measurement.cpp:1187
 msgid "CMYK"
 msgstr ""
 
-#: icc_measurement.cpp:1185
+#: icc_measurement.cpp:1188
 msgid "</b> Measurement"
 msgstr ""
 
-#: icc_measurement.cpp:1187
+#: icc_measurement.cpp:1190
 msgid "CMM: <b>lcms</b>"
 msgstr ""
 
-#: icc_measurement.cpp:1189
+#: icc_measurement.cpp:1192
 msgid "averaging deviations (dE CIE*Lab):<b> "
 msgstr ""
 
-#: icc_measurement.cpp:1189
+#: icc_measurement.cpp:1192
 msgid "</b>  maximum: "
 msgstr ""
 
-#: icc_measurement.cpp:1189
+#: icc_measurement.cpp:1192
 msgid "  minimum: "
 msgstr ""
 
-#: icc_measurement.cpp:1189
+#: icc_measurement.cpp:1192
 msgid "  (dE CIE 2000) averaging: "
 msgstr ""
 
-#: icc_measurement.cpp:1189
+#: icc_measurement.cpp:1192
 msgid "  maximum: "
 msgstr ""
 
-#: icc_measurement.cpp:1219
+#: icc_measurement.cpp:1222
 msgid "Measurement patch"
 msgstr ""
 
-#: icc_measurement.cpp:1220
+#: icc_measurement.cpp:1223
 msgid "dE Lab"
 msgstr ""
 
-#: icc_measurement.cpp:1221
+#: icc_measurement.cpp:1224
 msgid "dE2000"
 msgstr ""
 
-#: icc_measurement.cpp:1222
+#: icc_measurement.cpp:1225
 msgid "L"
 msgstr ""
 
-#: icc_measurement.cpp:1223
+#: icc_measurement.cpp:1226
 msgid "a"
 msgstr ""
 
-#: icc_measurement.cpp:1224
+#: icc_measurement.cpp:1227
 msgid "b"
 msgstr ""
 
-#: icc_measurement.cpp:1225
+#: icc_measurement.cpp:1228
 msgid "L'"
 msgstr ""
 
-#: icc_measurement.cpp:1226
+#: icc_measurement.cpp:1229
 msgid "a'"
 msgstr ""
 
-#: icc_measurement.cpp:1227
+#: icc_measurement.cpp:1230
 msgid "b'"
 msgstr ""
 
-#: icc_measurement.cpp:1228 my_file_chooser.cxx:273
+#: icc_measurement.cpp:1231 my_file_chooser.cxx:273
 msgid "X"
 msgstr ""
 
-#: icc_measurement.cpp:1229 icc_measurement.cpp:1243
+#: icc_measurement.cpp:1232 icc_measurement.cpp:1246
 msgid "Y"
 msgstr ""
 
-#: icc_measurement.cpp:1230
+#: icc_measurement.cpp:1233
 msgid "Z"
 msgstr ""
 
-#: icc_measurement.cpp:1232
+#: icc_measurement.cpp:1235
 msgid "X'"
 msgstr ""
 
-#: icc_measurement.cpp:1233
+#: icc_measurement.cpp:1236
 msgid "Y'"
 msgstr ""
 
-#: icc_measurement.cpp:1234
+#: icc_measurement.cpp:1237
 msgid "Z'"
 msgstr ""
 
-#: icc_measurement.cpp:1237
+#: icc_measurement.cpp:1240
 msgid "R"
 msgstr ""
 
-#: icc_measurement.cpp:1238
+#: icc_measurement.cpp:1241
 msgid "G"
 msgstr ""
 
-#: icc_measurement.cpp:1239
+#: icc_measurement.cpp:1242
 msgid "B"
 msgstr ""
 
-#: icc_measurement.cpp:1241
+#: icc_measurement.cpp:1244
 msgid "C"
 msgstr ""
 
-#: icc_measurement.cpp:1242
+#: icc_measurement.cpp:1245
 msgid "M"
 msgstr ""
 
-#: icc_measurement.cpp:1244
+#: icc_measurement.cpp:1247
 msgid "K"
 msgstr ""
 

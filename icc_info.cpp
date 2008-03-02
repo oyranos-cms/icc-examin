@@ -3,10 +3,22 @@
 
 namespace icc_examin_ns {
 
+double
+fortschritt()
+{
+  return icc_examin->fortschritt();
+}
+
 void
 fortschritt(const double f)
 {
-  icc_examin->fortschritt(f);
+  icc_examin->fortschritt(f,1.0);
+}
+
+void
+fortschritt(const double f, const double anteil)
+{
+  icc_examin->fortschritt(f,anteil);
 }
 
 void
