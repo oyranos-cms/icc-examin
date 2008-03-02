@@ -270,7 +270,7 @@ ICCexaminIO::oeffnenThread_ ()
     }
 
     // Fenstername setzen
-    {
+    if(0) {
       icc_examin->detaillabel = "ICC Examin: ";
       icc_examin->detaillabel.insert( icc_examin->detaillabel.size(), dateiName(dateinamen[0]) );
       icc_examin_ns::lock(__FILE__,__LINE__);
@@ -430,8 +430,53 @@ void
 ICCexaminIO::oeffnen ()
 { DBG_PROG_START
   icc_examin->fortschritt(0.01);
-  std::vector<std::string> profilnamen = icc_examin->icc_betrachter->open( profile );
-  oeffnen( profilnamen );
+  std::vector<std::string> dateinamen = profile;
+
+  //Fl_File_Icon	*icon;	// New file icon
+  DBG_PROG
+
+    const char* ptr = NULL;
+    if (dateinamen.size()) {
+      ptr = dateinamen[0].c_str();
+      dateiwahl->value(ptr);
+      DBG_PROG_S( dateinamen[0])
+    } 
+      if(ptr) DBG_PROG_V( ptr );
+    if (!ptr)
+      ptr = getenv("PWD");
+
+      if(ptr) DBG_PROG_V( ptr )
+    if(( ptr &&
+        (ptr[0] == '/') &&
+        (strlen(ptr) == 1) ) ||
+        !ptr )
+    {
+      ptr = getenv("HOME");
+    }
+
+    dateiwahl->show();
+
+    if(ptr)
+      dateiwahl->value(ptr);
+
+
+    while (dateiwahl->visible())
+      Fl::wait();
+
+    DBG_NUM_V( dateiwahl->count() )
+    if (dateiwahl->count() && dateiwahl->value()) {
+      DBG_NUM_V( dateiwahl->value() )
+      dateinamen.resize(dateiwahl->count());
+      for (int i = 1; i <= dateiwahl->count(); i++)
+        dateinamen[i-1] = dateiwahl->value(i);
+    }
+  DBG_PROG
+
+
+  if (dateinamen.size() == 0) {
+  }
+
+  oeffnen( dateinamen );
   neu_laden_ = true;
   DBG_PROG_ENDE
 }

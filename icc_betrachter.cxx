@@ -976,7 +976,7 @@ void ICCfltkBetrachter::run() {
   DBG_PROG_ENDE;  Fl::run();
 }
 
-std::vector<std::string> ICCfltkBetrachter::open(std::vector<std::string> dateinamen) {
+std::vector<std::string> ICCfltkBetrachter::open_veraltet(std::vector<std::string> dateinamen) {
   DBG_PROG_START
   #include "icc_vrml.h"
 

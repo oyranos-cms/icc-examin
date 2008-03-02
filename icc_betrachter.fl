@@ -55,7 +55,7 @@ decl {\#include "icc_draw.h"
 decl {\#include "icc_fenster.h" 
 \#include "icc_dateiwahl.h" 
 \#include <FL/Fl_Hold_Browser.H>
-\#include <FL/Fl_Choice.H>} {selected public
+\#include <FL/Fl_Choice.H>} {public
 } 
 
 decl {class TagDrawings;
@@ -228,8 +228,7 @@ class ICCfltkBetrachter {open
   
  enum{ WID_0, WID_3D, WID_INSPEKT }; int widget_oben;} {public
   }
-  Function {init(int argc, char** argv)} {open
-  } {
+  Function {init(int argc, char** argv)} {} {
     code DBG_PROG_START {}
     code {fullscreen = false;
   setTitleUrl = true;
@@ -306,12 +305,12 @@ class ICCfltkBetrachter {open
     dateiwahl->preview(true);
   \#endif} {}
     Fl_Window {} {open
-      xywh {1184 379 100 100} type Double resizable
+      xywh {1184 400 100 100} type Double resizable
       code0 {//o->show();} visible
     } {}
     Fl_Window ueber {
       label {About ICC Examin} open
-      xywh {860 88 365 289} type Double resizable
+      xywh {865 109 365 289} type Double resizable
       code0 {o->hide();}
       code1 {o->use_escape_hide = true;}
       class {icc_examin_ns::MyFl_Double_Window} visible
@@ -352,7 +351,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window vcgt {
       label {Grafic Card Gamma Table} open
-      xywh {85 326 370 390} type Double resizable
+      xywh {90 347 370 390} type Double resizable
       code0 {o->hide();}
       code1 {o->use_escape_hide = true;}
       class {icc_examin_ns::MyFl_Double_Window} visible
@@ -389,7 +388,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window DD {
       label Gamut open
-      xywh {798 492 385 520} type Double box NO_BOX color 53 resizable
+      xywh {803 513 385 520} type Double box NO_BOX color 53 resizable
       class {icc_examin_ns::MyFl_Double_Window} xclass Fl_Window visible
     } {
       Fl_Group {} {open
@@ -526,7 +525,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window details {
       label {ICC Examin} open
-      xywh {888 413 385 520} type Double box NO_BOX color 53
+      xywh {893 434 385 520} type Double box NO_BOX color 53
       code0 {o->main_win = o;}
       class {icc_examin_ns::MyFl_Double_Window} xclass Fl_Window visible
     } {
@@ -832,7 +831,7 @@ initHilfe();
     code DBG_PROG_START {}
     code {DBG_PROG_ENDE;  Fl::run();} {}
   }
-  Function {open(std::vector<std::string> dateinamen)} {return_type {std::vector<std::string>}
+  Function {open_veraltet(std::vector<std::string> dateinamen)} {open return_type {std::vector<std::string>}
   } {
     code DBG_PROG_START {}
     code {\#include "icc_vrml.h"
@@ -940,7 +939,8 @@ initHilfe();
   }} {}
     code DBG_PROG_ENDE {}
   }
-  Function {measurement(bool has_measurement)} {} {
+  Function {measurement(bool has_measurement)} {open
+  } {
     code {if (has_measurement) {
     DBG_PROG_S(menueintrag_inspekt->value())
     if (menueintrag_inspekt->value()) {
@@ -961,7 +961,7 @@ initHilfe();
   }
 } 
 
-Function {dHaendler(void* o)} {return_type {static void}
+Function {dHaendler(void* o)} {open return_type {static void}
 } {
   code DBG_PROG_START {}
   code {Fl::remove_timeout( (void(*)(void*))dHaendler, 0 );
@@ -976,7 +976,8 @@ Function {dHaendler(void* o)} {return_type {static void}
     \#ifdef DEBUG
     DBG_PROG_V( ((TagDrawings*)o)->wiederholen )
     \#endif
-  }} {}
+  }} {selected
+  }
   code DBG_PROG_ENDE {}
 } 
 

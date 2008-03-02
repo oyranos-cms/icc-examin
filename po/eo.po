@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2006-11-11 18:34+0100\n"
+"POT-Creation-Date: 2006-11-13 12:11+0100\n"
 "PO-Revision-Date: 2005-08-13 17:35+0200\n"
 "Last-Translator: Kai-Uwe Behrmann\n"
 "Language-Team:  <eo@li.org>\n"
@@ -234,7 +234,7 @@ msgstr ""
 msgid "Gamut selector"
 msgstr ""
 
-#: icc_examin.cpp:232 icc_examin.cpp:868
+#: icc_examin.cpp:232 icc_examin.cpp:937
 msgid "loaded"
 msgstr ""
 
@@ -242,35 +242,43 @@ msgstr ""
 msgid "Ready"
 msgstr ""
 
-#: icc_examin.cpp:303
-msgid "Gamut View"
-msgstr ""
-
-#: icc_examin.cpp:353
+#: icc_examin.cpp:517 icc_examin.cpp:520
 msgid "Compare Measurement <-> Profile Colours"
 msgstr ""
 
-#: icc_examin.cpp:810
+#: icc_examin.cpp:519
+msgid "none"
+msgstr ""
+
+#: icc_examin.cpp:533 icc_examin.cpp:535
+msgid "Gamut View"
+msgstr ""
+
+#: icc_examin.cpp:578
+msgid "not available"
+msgstr ""
+
+#: icc_examin.cpp:879
 msgid "Filename (ICC data type)"
 msgstr ""
 
-#: icc_examin.cpp:813
+#: icc_examin.cpp:882
 msgid "Filename (other data type)"
 msgstr ""
 
-#: icc_examin.cpp:815
+#: icc_examin.cpp:884
 msgid "Filename (corrupted ICC data type)"
 msgstr ""
 
-#: icc_examin.cpp:820
+#: icc_examin.cpp:889
 msgid "found no content for"
 msgstr ""
 
-#: icc_examin.cpp:823
+#: icc_examin.cpp:892
 msgid "Internal error"
 msgstr ""
 
-#: icc_examin.cpp:825
+#: icc_examin.cpp:894
 msgid "No. Tag   Type   Size Description"
 msgstr ""
 
@@ -294,27 +302,27 @@ msgstr ""
 msgid "Stop loading "
 msgstr ""
 
-#: icc_examin_io.cpp:461
+#: icc_examin_io.cpp:506
 msgid "HTML Documents (*.htm*)"
 msgstr ""
 
-#: icc_examin_io.cpp:465 icc_betrachter.cxx:488
+#: icc_examin_io.cpp:510 icc_betrachter.cxx:488
 msgid "Save Report"
 msgstr ""
 
-#: icc_examin_io.cpp:536 icc_betrachter.cxx:610
+#: icc_examin_io.cpp:581 icc_betrachter.cxx:610
 msgid "ICC colour profiles (*.ic*)"
 msgstr ""
 
-#: icc_examin_io.cpp:537 icc_betrachter.cxx:489
+#: icc_examin_io.cpp:582 icc_betrachter.cxx:489
 msgid "Save Gamut as Profile"
 msgstr ""
 
-#: icc_examin_io.cpp:539
+#: icc_examin_io.cpp:584
 msgid "VRML Files (*.wrl)"
 msgstr ""
 
-#: icc_examin_io.cpp:540 icc_betrachter.cxx:490
+#: icc_examin_io.cpp:585 icc_betrachter.cxx:490
 msgid "Save Gamut as VRML"
 msgstr ""
 

@@ -250,7 +250,7 @@ public:
   Fl_Box *box_stat;
   Fl_Progress *load_progress;
   void run();
-  std::vector<std::string> open(std::vector<std::string> dateinamen);
+  std::vector<std::string> open_veraltet(std::vector<std::string> dateinamen);
   void quit(void);
   void zeig_mich_(void* widget);
   void measurement(bool has_measurement);

@@ -297,15 +297,10 @@ ICCexamin::zeig3D ()
       lw = wid->w(),
       lh = wid->h();
 
-  const char* title = icc_betrachter->details->label();
-  char* t = (char*) malloc(strlen(title)+128);
-
-  sprintf(t, "%s - %s", title, _("Gamut View"));
-
   if(!w)
   {
   w =
-    new MyFl_Double_Window( lx+lw, ly, lw, lh, t );
+    new MyFl_Double_Window( lx+lw, ly, lw, lh, "" );
     w->user_data((void*)(0));
       Fl_Group *g = new Fl_Group(0,0,lw,lh);
       g->end();
@@ -314,12 +309,13 @@ ICCexamin::zeig3D ()
     w->end();
     w->resizable(g);
   }
-  w->label(t);
   w->show();
   wid->show();
 
   if(!icc_waehler_->visible())
     icc_waehler_->show();
+
+  setzeFensterTitel();
 
   DBG_PROG_ENDE
 }
@@ -331,39 +327,33 @@ ICCexamin::zeigPrueftabelle ()
   MyFl_Double_Window *details = icc_betrachter->details;
   Fl_Help_View *inspekt_html = icc_betrachter->inspekt_html;
 
-  { bool export_html = false;
-    icc_betrachter->tag_text->inspekt_topline = inspekt_html->topline();
-    inspekt_html->value( profile.profil()->report(export_html).c_str());
-    inspekt_html->topline( icc_betrachter->tag_text->inspekt_topline);
+  Fl_Widget *wid = inspekt_html;
+
+  if(wid->window() == details)
+  {
+    int lx = details->x(),
+        ly = details->y(),
+        lw = details->w(),
+        lh = details->h();
+
+    MyFl_Double_Window *w =
+      new MyFl_Double_Window( lx+lw, ly, lw, lh, "" );
+      w->user_data((void*)(0));
+        Fl_Group *g = new Fl_Group(0,0,lw,lh);
+        g->end();
+        wid->resize(0,0, lw,lh);
+        g->add( wid );
+        wid->show();
+      w->end();
+      w->resizable(w);
+      //w->resizable(g);
+      w->show();
   }
 
-  Fl_Widget *wid = inspekt_html;
-  if(wid->window() != details &&
-     wid->window()->visible())
-    return;
+  if(!wid->window()->visible())
+    wid->window()->show();
 
-  int lx = details->x(),
-      ly = details->y(),
-      lw = details->w(),
-      lh = details->h();
-
-  const char* title = details->label();
-  char* t = (char*) malloc(strlen(title)+128);
-
-  sprintf(t, "%s - %s", title, _("Compare Measurement <-> Profile Colours"));
-
-  MyFl_Double_Window *w =
-    new MyFl_Double_Window( lx+lw, ly, lw, lh, t );
-    w->user_data((void*)(0));
-      Fl_Group *g = new Fl_Group(0,0,lw,lh);
-      g->end();
-      wid->resize(0,0, lw,lh);
-      g->add( wid );
-      wid->show();
-    w->end();
-    w->resizable(w);
-    //w->resizable(g);
-    w->show();
+  setzMesswerte();
 
   DBG_PROG_ENDE
 }
@@ -424,6 +414,7 @@ void
 ICCexamin::nachricht( Modell* modell , int info )
 {
   DBG_PROG_START
+
   if(!frei()) {
     WARN_S("icc_examin ist nicht frei")
     //DBG_PROG_ENDE
@@ -479,17 +470,26 @@ ICCexamin::nachricht( Modell* modell , int info )
           _item = (-1);
         DBG_PROG_V( _item )
  
-        if(icc_betrachter->DD_farbraum->visible())
-        {
-          icc_betrachter->DD_farbraum->damage(FL_DAMAGE_ALL);
-        }
-        icc_examin->fortschrittThreaded(0.7);
-        if(icc_betrachter->menueintrag_inspekt->active() &&
-           profile[info]->hasMeasurement() )
+      }
+
+      if(profile.profil() == profile[info])
+      {
+        icc_examin_ns::lock(__FILE__,__LINE__);
+
+        if(icc_betrachter->inspekt_html->visible_r())
           setzMesswerte();
-        else if(icc_betrachter->examin->visible())
+
+        icc_examin->fortschrittThreaded(0.7);
+        if(icc_betrachter->examin->visible())
           waehleTag(_item);
+
         icc_examin->fortschrittThreaded(0.9);
+        if(icc_betrachter->DD_farbraum->visible())
+          icc_betrachter->DD_farbraum->damage(FL_DAMAGE_ALL);
+
+        setzeFensterTitel();
+
+        icc_examin_ns::unlock(this, __FILE__,__LINE__);
       }
     }
   }
@@ -501,16 +501,85 @@ ICCexamin::nachricht( Modell* modell , int info )
 }
 
 void
+ICCexamin::setzeFensterTitel()
+{
+  DBG_PROG_START
+  char* t = (char*) malloc(256);
+
+  const char* title = dateiName(profile.profil()->filename());
+
+  Fl_Window * window = icc_betrachter->inspekt_html->window();
+  if(window != icc_betrachter->details &&
+     window->shown() )
+  {
+    if(profile.profil()->hasMeasurement() && title)
+      snprintf(t, 256, "ICC Examin: %s - %s", title,
+              _("Compare Measurement <-> Profile Colours"));
+    else
+      snprintf(t, 256, "ICC Examin: %s - %s", _("none"),
+              _("Compare Measurement <-> Profile Colours"));
+
+    icc_examin_ns::lock(__FILE__,__LINE__);
+    window->label(t);
+    icc_examin_ns::unlock(this, __FILE__,__LINE__);
+  }
+
+  window = icc_betrachter->DD_farbraum->window();
+  if(window != icc_betrachter->details &&
+     window->shown() )
+  {
+    if(title)
+      snprintf(t, 256, "ICC Examin: %s - %s", title,
+              _("Gamut View"));
+    else
+      snprintf(t, 256, "ICC Examin: - %s", _("Gamut View"));
+
+    icc_examin_ns::lock(__FILE__,__LINE__);
+    window->label(t);
+    icc_examin_ns::unlock(this, __FILE__,__LINE__);
+  }
+
+  window = icc_betrachter->details;
+  if(window->shown() )
+  {
+    if(title)
+      snprintf(t, 256, "ICC Examin: %s", title);
+    else
+      snprintf(t, 256, "ICC Examin: -");
+
+    icc_examin_ns::lock(__FILE__,__LINE__);
+    window->label(t);
+    icc_examin_ns::unlock(this, __FILE__,__LINE__);
+  }
+
+  if(t) free(t);
+  DBG_PROG_ENDE
+}
+
+
+void
 ICCexamin::setzMesswerte()
 {
   DBG_PROG_START
   bool export_html = false;
-  if(icc_betrachter->menueintrag_inspekt->active()) {
-    icc_examin_ns::lock(__FILE__,__LINE__);
-    icc_betrachter->inspekt_html->value(profile.profil()->report(export_html).c_str());
-    icc_betrachter->inspekt_html->topline(icc_betrachter->tag_text->inspekt_topline);
-    icc_examin_ns::unlock(this, __FILE__,__LINE__);
+
+  if(icc_betrachter->inspekt_html->window() != icc_betrachter->details &&
+     icc_betrachter->inspekt_html->window()->shown() )
+  {
+    if(profile.profil()->hasMeasurement())
+    {
+      icc_examin_ns::lock(__FILE__,__LINE__);
+      int topline = icc_betrachter->tag_text->inspekt_topline = icc_betrachter->inspekt_html->topline();
+      icc_betrachter->inspekt_html->value(profile.profil()->report(export_html).c_str());
+      icc_betrachter->inspekt_html->topline( topline );
+      icc_examin_ns::unlock(this, __FILE__,__LINE__);
+
+    } else
+      icc_betrachter->inspekt_html->value(_("not available"));
+
+    setzeFensterTitel();
   }
+
   DBG_PROG_ENDE
 }
 

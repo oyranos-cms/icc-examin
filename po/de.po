@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2006-11-11 18:34+0100\n"
+"POT-Creation-Date: 2006-11-13 12:11+0100\n"
 "PO-Revision-Date: 2005-08-13 17:35+0200\n"
 "Last-Translator: Kai-Uwe Behrmann\n"
 "Language-Team:  <ku.b@gmx.de>\n"
@@ -234,7 +234,7 @@ msgstr " mit einem Eintrag für Gamma: "
 msgid "Gamut selector"
 msgstr "Darstellungsoptionen"
 
-#: icc_examin.cpp:232 icc_examin.cpp:868
+#: icc_examin.cpp:232 icc_examin.cpp:937
 msgid "loaded"
 msgstr "geladen"
 
@@ -242,35 +242,44 @@ msgstr "geladen"
 msgid "Ready"
 msgstr "Bereit"
 
-#: icc_examin.cpp:303
-msgid "Gamut View"
-msgstr "Farbhüllansicht"
-
-#: icc_examin.cpp:353
+#: icc_examin.cpp:517 icc_examin.cpp:520
 msgid "Compare Measurement <-> Profile Colours"
 msgstr "Vergleich Mess- und Profilfarben"
 
-#: icc_examin.cpp:810
+#: icc_examin.cpp:519
+#, fuzzy
+msgid "none"
+msgstr "kein Name"
+
+#: icc_examin.cpp:533 icc_examin.cpp:535
+msgid "Gamut View"
+msgstr "Farbhüllansicht"
+
+#: icc_examin.cpp:578
+msgid "not available"
+msgstr ""
+
+#: icc_examin.cpp:879
 msgid "Filename (ICC data type)"
 msgstr "Dateiname (ICC Daten)"
 
-#: icc_examin.cpp:813
+#: icc_examin.cpp:882
 msgid "Filename (other data type)"
 msgstr "Dateiname (anderer Datentyp)"
 
-#: icc_examin.cpp:815
+#: icc_examin.cpp:884
 msgid "Filename (corrupted ICC data type)"
 msgstr "Dateiname (beschädigte ICC Daten)"
 
-#: icc_examin.cpp:820
+#: icc_examin.cpp:889
 msgid "found no content for"
 msgstr "keine Inhalte gefunden für"
 
-#: icc_examin.cpp:823
+#: icc_examin.cpp:892
 msgid "Internal error"
 msgstr "interner Fehler"
 
-#: icc_examin.cpp:825
+#: icc_examin.cpp:894
 msgid "No. Tag   Type   Size Description"
 msgstr "Nr. Teil  Typ   Größe Beschreibung"
 
@@ -294,27 +303,27 @@ msgstr ""
 msgid "Stop loading "
 msgstr "Laden angehalten: "
 
-#: icc_examin_io.cpp:461
+#: icc_examin_io.cpp:506
 msgid "HTML Documents (*.htm*)"
 msgstr "HTML Dokumente (*.htm*)"
 
-#: icc_examin_io.cpp:465 icc_betrachter.cxx:488
+#: icc_examin_io.cpp:510 icc_betrachter.cxx:488
 msgid "Save Report"
 msgstr "Bericht Speichern"
 
-#: icc_examin_io.cpp:536 icc_betrachter.cxx:610
+#: icc_examin_io.cpp:581 icc_betrachter.cxx:610
 msgid "ICC colour profiles (*.ic*)"
 msgstr "ICC Farbprofile (*.ic*)"
 
-#: icc_examin_io.cpp:537 icc_betrachter.cxx:489
+#: icc_examin_io.cpp:582 icc_betrachter.cxx:489
 msgid "Save Gamut as Profile"
 msgstr "Speichere Farbhülle als Profil"
 
-#: icc_examin_io.cpp:539
+#: icc_examin_io.cpp:584
 msgid "VRML Files (*.wrl)"
 msgstr "VRML Dateien (*.wrl)"
 
-#: icc_examin_io.cpp:540 icc_betrachter.cxx:490
+#: icc_examin_io.cpp:585 icc_betrachter.cxx:490
 msgid "Save Gamut as VRML"
 msgstr "Speichere Farbhülle als VRML"
 
@@ -2186,6 +2195,10 @@ msgstr ""
 #: icc_waehler.h:72
 msgid "kein Fl_Widget??"
 msgstr ""
+
+#, fuzzy
+#~ msgid "ICC Examin: Report"
+#~ msgstr "ICC Examin"
 
 #~ msgid "Could not load profile"
 #~ msgstr "Konnte Profil nicht laden"

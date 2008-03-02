@@ -135,6 +135,7 @@ class ICCexamin : public icc_examin_ns::Beobachter,
     std::string statlabel[4];
     void        statusFarbe(double & CIEL, double & CIEa, double & CIEb);
     std::string detaillabel;
+    void        setzeFensterTitel();
   public:
     int  tag_nr () { return _item; }
     int  mft_nr () { return _mft_item; }

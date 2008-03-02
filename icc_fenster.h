@@ -55,6 +55,7 @@ namespace icc_examin_ns {
      int    id_;                 //!< Identifikationsnummer
      void   init_class_();       //!< Initialisierung der statischen Elemente
      void   init_object_();      //!< Initialisierung des dynamischen Objektes
+     char   titel_[256];         //!< Fenstertitel
 
    public:
 
@@ -75,6 +76,8 @@ namespace icc_examin_ns {
      void iconize (void);        //!< Verkleinern fuer benutzer
      void iconize (MyFl_Double_Window * by); //!< Verkleinern automatisch
      void show (void);           //!< Zeigen fuer alle
+     void label (const char * t); //!< Fenstertitel setzen
+     const char* label() { return Fl_Double_Window::label(); }
 
      int  handle (int e);        //!< Ereignisse abfangen (Tastatur, FL_HIDE...)
   };

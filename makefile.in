@@ -119,7 +119,9 @@ COMMON_CPPFILES = \
 DEBUG_CC = debug.cc
 DEBUG_H  = sys.h debug.h
 
-COMMON_CFILES = 
+COMMON_CFILES =  \
+	flstring.c \
+	vsnprintf.c
 CFILES = \
 	$(COMMON_CFILES)
 CPPFILES = \
@@ -172,7 +174,7 @@ FLUID = \
 FONT = FreeSans.ttf
 
 SOURCES = $(ALL_SOURCEFILES) $(ALL_HEADERFILES)
-OBJECTS = $(CPPFILES:.cpp=.o) $(CXXFILES:.cxx=.o) $(CCFILES:.cc=.o)
+OBJECTS = $(CFILES:.c=.o) $(CPPFILES:.cpp=.o) $(CXXFILES:.cxx=.o) $(CCFILES:.cc=.o)
 I18N_OBJECTS =  $(I18N_CXXFILES:.cxx=.o)
 LINGUAS_SRC = $(LING:.po=.gmo)
 

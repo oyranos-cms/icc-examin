@@ -297,7 +297,7 @@ void MyFl_Double_Window::hide()
   }
 
   if(this == main_win)
-    Fl_Double_Window::iconize();
+    icc_examin->quit();
   else
     Fl_Double_Window::hide();
   user_hide = true;
@@ -385,5 +385,13 @@ int MyFl_Double_Window::handle( int e )
     return ergebnis;
 }
 
-
+void MyFl_Double_Window::label( const char *titel )
+{
+  if(titel)
+    snprintf(titel_,256, "%s", titel);
+  if(strlen(titel_))
+    Fl_Double_Window::label(titel_);
 }
+
+
+} // namespace icc_examin_ns
