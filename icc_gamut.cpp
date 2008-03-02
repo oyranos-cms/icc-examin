@@ -34,6 +34,7 @@
 
 namespace icc_examin_ns {
 
+/** @brief holt eine Farbverlauf für RGB Farben */
 void
 holeRGBRampen( icUInt16Number *block, size_t & zahl )
 {
@@ -121,6 +122,7 @@ holeCMYKRampen( icUInt16Number *block, size_t & zahl )
   DBG_PROG_ENDE
 }
 
+/** @brief creiert eine Linie um die satten Farben in Cmyk und Rgb Profilen */
 double*
 iccGrenze(ICCprofile & profil, int intent, size_t & groesse)
 {

@@ -43,10 +43,12 @@
 #include <FL/Fl_Value_Slider.H>
 #include <FL/Fl_Light_Button.H>
 
-// Einstellungen direkt in icc_examin->icc_betrachter->DD_farbraum
+// Einstellungen direkt in icc_examin->icc_betrachter->DD_farbraum und 
+// in ICCkette::profile syncronisieren
 
 class ICCwaehlerProfil : public Fl_Pack
 {
+  int pos_;
   Fl_Button *aktiv_knopf_;
   void aktiv_knopf_cb_() {
                 if(aktiv_knopf_->value()) {DBG_PROG_START
@@ -95,8 +97,8 @@ class ICCwaehlerProfil : public Fl_Pack
               }
   public:
   ICCwaehlerProfil(const char* name, double transparenz, 
-                   bool grau, bool aktiv)
-    : Fl_Pack( 0,0,470,25 )
+                   bool grau, bool aktiv, int pos)
+    : Fl_Pack( 0,0,470,25 ), pos_(pos)
 {
   DBG_PROG_START
   DBG_PROG_V( name )
@@ -141,7 +143,9 @@ class ICCwaehlerProfil : public Fl_Pack
 {
   aktiv_knopf_->value(wert);
   if(wert) { gruppe_->activate();
+    profile.setzAktiv( pos_ );
   } else {   gruppe_->deactivate();
+    profile.passiv( pos_ );
   }
 }
 };
@@ -195,7 +199,7 @@ class ICCwaehler : public Fl_Double_Window
   DBG_PROG_START
   int pos = size();
   hbox->begin();
-  profile_[pos] = new ICCwaehlerProfil( name, transparenz, grau, aktiv );
+  profile_[pos] = new ICCwaehlerProfil( name, transparenz, grau, aktiv, pos );
   hbox->end();
   redraw();
   DBG_PROG_ENDE

@@ -156,6 +156,10 @@ class ICCexamin : public icc_examin_ns::Beobachter
 
 
     void vcgtZeigen ();
+    void vcgtStoppen ();
+  private:
+    int  vcgt_cb_laeuft_b_;  //<@brief erzaehlt ob der vcgt Fenster cp laeuft
+  public:
     void testZeigen ();
     void moniHolen ();
     void moniSetzen ();

@@ -1,5 +1,5 @@
 # data file for the Fltk User Interface Designer (fluid)
-version 1.0106 
+version 1.0107 
 i18n_type 1 
 i18n_include <libintl.h> 
 i18n_function _ 
@@ -322,7 +322,7 @@ class ICCfltkBetrachter {open
   \#endif} {}
     Fl_Window ueber {
       label {About ICC Examin} open
-      xywh {593 317 365 289} type Double resizable
+      xywh {598 338 365 289} type Double resizable
       code0 {o->hide();} non_modal visible
     } {
       Fl_Group {} {open
@@ -361,7 +361,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window vcgt {
       label {Grafic Card Gamma Table}
-      xywh {359 104 370 390} type Double resizable
+      xywh {364 125 370 390} type Double resizable
       code0 {o->hide();} visible
     } {
       Fl_Group {} {open
@@ -394,14 +394,14 @@ class ICCfltkBetrachter {open
         }
         Fl_Button vcgt_close_button {
           label Close
-          callback {vcgt->hide();}
+          callback {icc_examin->vcgtStoppen();}
           xywh {290 360 75 25}
         }
       }
     }
     Fl_Window details {
       label {ICC Examin} open
-      xywh {633 185 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
+      xywh {638 206 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
     } {
       Fl_Group {} {open
         xywh {0 0 385 520}
@@ -409,16 +409,16 @@ class ICCfltkBetrachter {open
         Fl_Menu_Bar menueleiste {open
           xywh {0 0 385 25} align 20 when 3
         } {
-          submenu {} {
+          Submenu {} {
             label File open
             xywh {15 15 100 20}
           } {
-            menuitem {} {
+            MenuItem {} {
               label Open
               callback {icc_examin->oeffnen()}
               xywh {15 15 100 20} shortcut 0x4006f
             }
-            menuitem menueintrag_html_speichern {
+            MenuItem menueintrag_html_speichern {
               label {Save Report}
               callback {DBG_PROG_START
 
@@ -427,7 +427,7 @@ class ICCfltkBetrachter {open
   DBG_PROG_ENDE}
               xywh {0 0 100 20} deactivate divider
             }
-            menuitem menueintrag_gamut_speichern {
+            MenuItem menueintrag_gamut_speichern {
               label {Save Gamut as Profile}
               callback {DBG_PROG_START
 
@@ -436,7 +436,7 @@ class ICCfltkBetrachter {open
   DBG_PROG_ENDE}
               tooltip {Save gamut as abstract profile useful for proofing} xywh {10 10 100 20} deactivate
             }
-            menuitem menueintrag_gamut_vrml_speichern {
+            MenuItem menueintrag_gamut_vrml_speichern {
               label {Save Gamut as VRML}
               callback {DBG_PROG_START
 
@@ -445,27 +445,27 @@ class ICCfltkBetrachter {open
   DBG_PROG_ENDE}
               tooltip {Save gamut as VRML useful for visualisation.} xywh {20 20 100 20} deactivate divider
             }
-            menuitem {} {
+            MenuItem {} {
               label Quit
               callback {quit()}
               xywh {15 15 100 20} shortcut 0x40071
             }
           }
-          submenu {} {
+          Submenu {} {
             label Edit open
             xywh {25 25 100 20} hide
           } {
-            menuitem {} {
+            MenuItem {} {
               label {Oyranos Settings}
               callback {oyranos_einstellungen()}
               xywh {25 25 100 20}
             }
           }
-          submenu {} {
+          Submenu {} {
             label Options open
             xywh {35 35 100 20}
           } {
-            menuitem menueintrag_gamutwarn {
+            MenuItem menueintrag_gamutwarn {
               label {Gamut Warning}
               callback {Fl_Menu_* mw = (Fl_Menu_*)o;
   const Fl_Menu_Item* m = mw->mvalue();
@@ -476,7 +476,7 @@ class ICCfltkBetrachter {open
               tooltip {Gamut Warning will gray out all colours not in your monitors gamut.} xywh {35 35 100 20} type Toggle shortcut 0x40077
             }
           }
-          menuitem menueintrag_huelle {
+          MenuItem menueintrag_huelle {
             label Gamut
             callback {DBG_PROG_START
   Fl_Menu_* mw = (Fl_Menu_*)o;
@@ -497,11 +497,11 @@ class ICCfltkBetrachter {open
   DBG_PROG_ENDE}
             xywh {60 60 100 20} type Toggle shortcut 0x40068
           }
-          submenu {} {
+          Submenu {} {
             label View open
             xywh {15 15 100 20} divider
           } {
-            menuitem menueintrag_Voll {
+            MenuItem menueintrag_Voll {
               label {Whole Screen on/off}
               callback {Fl_Window *w = (Fl_Window *)details;
 
@@ -519,7 +519,7 @@ class ICCfltkBetrachter {open
   }}
               xywh {15 15 100 20} shortcut 0x40076
             }
-            menuitem menueintrag_3D {
+            MenuItem menueintrag_3D {
               label Gamut
               callback {DBG_PROG_START
   Fl_Menu_* mw = (Fl_Menu_*)o;
@@ -540,7 +540,7 @@ class ICCfltkBetrachter {open
   DBG_PROG_ENDE}
               xywh {50 50 100 20} type Toggle shortcut 0x40068 divider
             }
-            menuitem menueintrag_inspekt {
+            MenuItem menueintrag_inspekt {
               label {Report View}
               callback {Fl_Menu_* mw = (Fl_Menu_*)o;
   const Fl_Menu_Item* m = mw->mvalue();
@@ -559,7 +559,7 @@ class ICCfltkBetrachter {open
   icc_examin->icc_betrachterNeuzeichnen(inspekt_html);}
               xywh {40 40 100 20} type Toggle shortcut 0x40062 deactivate
             }
-            menuitem menueintrag_zeigcgats {
+            MenuItem menueintrag_zeigcgats {
               label {CGATS View}
               callback {Fl_Menu_* mw = (Fl_Menu_*)o;
   const Fl_Menu_Item* m = mw->mvalue();
@@ -569,36 +569,37 @@ class ICCfltkBetrachter {open
   icc_examin->zeigCGATS();}
               xywh {50 50 100 20} shortcut 0x40067 deactivate divider
             }
-            menuitem menueintrag_vcgt {
+            MenuItem menueintrag_vcgt {
               label {Videocard Gamma}
-              callback {vcgt->show();
-icc_examin->vcgtZeigen();}
+              callback {icc_examin->vcgtStoppen();
+vcgt->show();
+icc_examin->vcgtZeigen();} selected
               xywh {15 15 100 20} shortcut 0x40074
               code0 {o->hide();}
             }
-            menuitem menueintrag_testkurven {
+            MenuItem menueintrag_testkurven {
               label {Test Curves}
               callback {vcgt->show();
 icc_examin->testZeigen();}
               xywh {25 25 100 20} shortcut 0x50074 hide
             }
-            submenu untermenue_3D {
+            Submenu untermenue_3D {
               label 3D open
               xywh {0 0 100 20} hide
             } {}
           }
-          submenu menu_hilfe {
+          Submenu menu_hilfe {
             label Help open
             xywh {0 0 100 20}
           } {
-            menuitem {} {
+            MenuItem {} {
               label About
               callback {ueber->show();
 ueber_html->value(getUeberHtml().c_str());
 hilfe_html->value(getHilfeHtml().c_str());
 lizenz_html->value(getLizenzHtml().c_str());
 dank_html->value(getDankHtml().c_str());
-links_text->value(getLinksText().c_str());} selected
+links_text->value(getLinksText().c_str());}
               xywh {5 5 100 20} shortcut 0xffbe
             }
           }

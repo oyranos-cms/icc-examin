@@ -85,6 +85,7 @@ ICCexamin::ICCexamin ()
   intent_ = 3;
   gamutwarn_ = 0;
   frei_zahl = 0;
+  vcgt_cb_laeuft_b_ = 0;
   DBG_PROG_ENDE
 }
 
@@ -448,11 +449,37 @@ ICCexamin::testZeigen ()
 }
 
 void
+beobachte_vcgt(void *ICCexamina)
+{
+  ICCexamin *ie = (ICCexamin*) ICCexamina;
+
+  ie->vcgtZeigen();
+
+  if (ie->icc_betrachter->vcgt->visible())
+    Fl::add_timeout( 0.33, (void(*)(void*))beobachte_vcgt ,(void*)ie);
+  else
+    ie->vcgtStoppen();
+}  
+
+void
+ICCexamin::vcgtStoppen ()
+{ DBG_PROG_START
+  vcgt_cb_laeuft_b_ = false;
+  icc_betrachter->vcgt->hide();
+  DBG_PROG_ENDE
+}
+
+void
 ICCexamin::vcgtZeigen ()
 { DBG_PROG_START
-  FREI_(false);
   kurve_umkehren[VCGT_VIEWER] = true;
 
+  if (!vcgt_cb_laeuft_b_) {
+    vcgt_cb_laeuft_b_ = true;
+    beobachte_vcgt( (void*)this );
+  }
+
+  FREI_(false);
 # if HAVE_X || APPLE
   std::string display_name = "";
   kurven[VCGT_VIEWER] = leseGrafikKartenGamma (display_name,texte[VCGT_VIEWER]);

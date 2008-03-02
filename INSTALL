@@ -30,5 +30,11 @@ Optionally you can specifiy an other than the default prefix /opt/local by typin
 
 Install Oyranos before ICC Examin to get Oyranos support compiled in ICC Examin. Oyranos is available from my site too www.behrmann.name
 
+If a package is not found include the configuration scripts, like fltk-config in you executeable path with
+  PATH=$PATH;:/to/my/installation/bin
+As well the pkgconfig file like lcms.pc needs to be configured with the PKG_CONFIG_PATH variable like follows (bash):
+  PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/to/my/installation/lib/pkgconfig
+
+
 Source code packages need further compiling and installing to work as an executable program. osX should work but without Oyranos. There is no windows support currently. Sorry.
 

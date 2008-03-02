@@ -319,6 +319,7 @@ targz:
 	test -d ../../Archiv && mv -v $(TARGET)_*.tgz ../../Archiv || echo no copy
 
 copy_files:
+	echo Copy all fl_i18n files ...
 	mkdir $(DESTDIR)
 	$(COPY) -R \
 	$(ALL_FILES) \

@@ -188,7 +188,7 @@ void ICCfltkBetrachter::cb_vcgt_refresh_button(Fl_Button* o, void* v) {
 }
 
 void ICCfltkBetrachter::cb_vcgt_close_button_i(Fl_Button*, void*) {
-  vcgt->hide();
+  icc_examin->vcgtStoppen();
 }
 void ICCfltkBetrachter::cb_vcgt_close_button(Fl_Button* o, void* v) {
   ((ICCfltkBetrachter*)(o->parent()->parent()->user_data()))->cb_vcgt_close_button_i(o,v);
@@ -360,7 +360,8 @@ void ICCfltkBetrachter::cb_menueintrag_zeigcgats(Fl_Menu_* o, void* v) {
 }
 
 void ICCfltkBetrachter::cb_menueintrag_vcgt_i(Fl_Menu_*, void*) {
-  vcgt->show();
+  icc_examin->vcgtStoppen();
+vcgt->show();
 icc_examin->vcgtZeigen();
 }
 void ICCfltkBetrachter::cb_menueintrag_vcgt(Fl_Menu_* o, void* v) {

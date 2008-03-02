@@ -4,7 +4,7 @@
 
 BINTARGET = iccexamin
 
-ifdef BUILD64
+ifdef BUILD64_
 CC =  cc-64
 CXX = c++-64
 else
@@ -31,7 +31,11 @@ exec_prefix	= ${prefix}
 bindir		= ${exec_prefix}/bin
 datadir		= ${prefix}/share
 includedir	= ${prefix}/include
-libdir		= ${exec_prefix}/lib
+ifdef BUILD_64
+  libdir		= ${exec_prefix}/lib64
+else
+  libdir		= ${exec_prefix}/lib
+endif
 mandir		= ${prefix}/man
 
 DEBUG = -DDEBUG
@@ -114,7 +118,12 @@ endif
 
 ifdef X11
   X_CPP = $(X_CPPFILES)
-  X11_LIBS=-L/usr/X11R6/lib -lX11 -lXxf86vm -lXext -lXpm
+  ifdef BUILD_64
+    X11_LIB_PATH=-L/usr/X11R6/lib64
+  else
+    X11_LIB_PATH=-L/usr/X11R6/lib
+  endif
+  X11_LIBS=$(X11_LIB_PATH) -lX11 -lXxf86vm -lXext -lXpm
 endif
 
 INCL_DEP = $(INCL) $(X_H) $(OSX_H) $(OYRANOS_H) \
@@ -320,14 +329,12 @@ static:	$(BINTARGET)
 	echo Verknuepfen $@ ...
 	$(CXX) $(OPTS) -o $(BINTARGET) $(OBJECTS) \
 	-L./ \
-	`flu-config --ldstaticflags` \
 	`test -f /opt/local/lib/libfltk_images.a && echo /opt/local/lib/libfltk_images.a \
     /opt/local/lib/libpng.a /opt/local/lib/libjpeg.a -lz || \
 	fltk-config --use-gl --use-images --ldstaticflags` \
 	`fltk-config --use-gl --ldstaticflags` \
 	-L/opt/local/lib \
-	`oyranos-config --ld_x_staticflags` -L/$(prefix)/lib \
-	-L$(prefix)/lib \
+	`oyranos-config --ld_x_staticflags` -L/$(libdir) \
 	`test -f /usr/X11R6/lib/libfreetype.a \
 	  && echo /usr/X11R6/lib/libfreetype.a || (test -f /usr/lib/libfreetype.a \
 	    && echo /usr/lib/libfreetype.a || echo -lfreetype)` \
@@ -338,7 +345,7 @@ static:	$(BINTARGET)
 	  (test -f /usr/lib/liblcms.a && echo /usr/lib/liblcms.a || \
 	  (test -f /opt/local/lib/liblcms.a && echo /opt/local/lib/liblcms.a || \
         (test -f /usr/local/lib/liblcms.a && echo /usr/local/lib/liblcms.a || \
-	      (pkg-config --libs lcms))))` #/usr/lib/libelektra.a # Hack for static lcms
+	      (pkg-config --libs lcms))))` $(LIBFL_I18N) #/usr/lib/libelektra.a # Hack for static lcms
 	$(REZ)
 
 strip: $(BINTARGET)
@@ -457,6 +464,9 @@ targz:
 
 copy_files:
 	mkdir $(DESTDIR)
+	(cd fl_i18n; \
+	 make DESTDIR=../$(DESTDIR)/fl_i18n copy_files; \
+	 cd ..)
 	$(COPY) -R \
 	$(ALL_FILES) \
 	$(DESTDIR)

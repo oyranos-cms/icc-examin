@@ -161,7 +161,7 @@ Oyranos::lab_test_ ()
           if( oyCheckProfileMem( block, size, 0 ) )
             WARN_S ( _("Profil konnte nicht geladen werden") )
           else {
-            DBG_PROG_V( (int)block <<"|"<< size )
+            DBG_PROG_V( (intptr_t)block <<"|"<< size )
             v_block->ladeNew(block, size);
           }
         }
@@ -426,7 +426,7 @@ Oyranos::rgb_test_ ()
   { DBG_PROG_V( v_block->size() )
     const char* profil_name = oyGetDefaultProfileName( oyranos::oyASSUMED_RGB, myAllocFunc );
     if(profil_name)
-      DBG_PROG_V( (int)profil_name << profil_name );
+      DBG_PROG_V( (intptr_t)profil_name << profil_name );
     if( profil_name &&
         *v_block != profil_name )
     { 
@@ -476,7 +476,7 @@ Oyranos::cmyk_test_ ()
   { DBG_PROG_V( v_block->size() )
     char* profil_name = oyGetDefaultProfileName( oyranos::oyASSUMED_CMYK, myAllocFunc );
     if(profil_name) {DBG_PROG_V( profil_name );
-    } else {         DBG_PROG_V( (int)profil_name );}
+    } else {         DBG_PROG_V( (intptr_t)profil_name );}
 
     if( profil_name &&
         *v_block != profil_name )
@@ -657,7 +657,7 @@ Oyranos::bandVonProfil (const Speicher & p, int intent)
   DBG_PROG_START
   const char* b = p;
   DBG_MEM_V( (int*)b )
-  std::vector<double> band;
+  std::vector<double> band; // TODO
   DBG_PROG_ENDE
   return band;
 }

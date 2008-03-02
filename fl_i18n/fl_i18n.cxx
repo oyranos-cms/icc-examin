@@ -93,7 +93,7 @@ fl_set_codeset_    ( const char* lang, const char* codeset_,
         DBG_PROG_V( locale )
 
         /* 1b. set correct environment variable LANG */
-        /*setenv("LANG", locale, 1);*/ /* setenv is not standard C */
+          setenv("LANG", locale, 1); /* setenv is not standard C */
 
         /* 1c. set the locale info after LANG */
         if(set_zero_locale)
@@ -140,6 +140,8 @@ fl_search_locale_path (int n_places, const char **locale_paths,
 void
 fl_initialise_locale( const char *domain, const char *locale_path )
 {
+  setlocale (LC_ALL, "");
+
 #ifdef USE_GETTEXT
   DBG_PROG_START
   char locale[TEXTLEN];
@@ -251,7 +253,9 @@ fl_initialise_locale( const char *domain, const char *locale_path )
 
     fl_set_codeset_( "th", "ISO-8859-11", locale, codeset, set_zero_locale ); // Thai
 
-    fl_set_codeset_( "ja", "SJIS", locale, codeset, set_zero_locale ); // Japan ; eucJP, ujis, EUC, PCK, jis7, SJIS
+    fl_set_codeset_( "zh", "ISO-8859-15", locale, codeset, set_zero_locale ); // Chinese
+
+    fl_set_codeset_( "ja", "EUC", locale, codeset, set_zero_locale ); // Japan ; eucJP, ujis, EUC, PCK, jis7, SJIS
 
   if(strlen(locale))
     DBG_PROG_S( locale );
@@ -284,16 +288,16 @@ fl_initialise_locale( const char *domain, const char *locale_path )
   if(strlen(locale))
     DBG_PROG_S( locale );
 
-  // 3. our translations
-  textdomain (domain);
-
-  // 4. where to find the MO file? select an appropriate directory
+  // 3. where to find the MO file? select an appropriate directory
   char* bdtd = 0;
   bdtd = bindtextdomain (domain, locale_path);
   DBG_PROG_S( _("try locale in ") << bdtd );
 
-  // 5. set our charset
+  // 4. set our charset
   char* cs = bind_textdomain_codeset(domain, codeset);
+
+  // 5. our translations
+  textdomain (domain);
 
   if(cs)
     DBG_PROG_S( _("set codeset for") << domain << " to " << cs );

@@ -57,6 +57,10 @@ else
   if [ $UNAME_ = "Linux" ]; then
     echo "LINUX = 1" >> $CONF
     echo "#define LINUX 1" >> $CONF_H
+    if [ `uname -m` = x86_64 ]; then
+        echo "BUILD_64 = 1" >> $CONF
+        echo "X86_64          will build in 64 bit mode"
+      fi
     echo "Linux system            detected"
   else
     if [ $UNAME_ = "SunOS" ]; then
@@ -65,8 +69,8 @@ else
       echo "SunOS                   detected"
       if [ `uname -m` = sun4u ]; then
         sync
-        #echo "BUILD64 = 1" >> $CONF
-        #echo "spark ultra 4           will build in 64 bit mode"
+        echo "BUILD_64 = 1" >> $CONF
+        echo "spark ultra 4           will build in 64 bit mode"
       fi
     else
       echo "ICC Examin may or may not compile on your $UNAME_ system"

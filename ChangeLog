@@ -1,3 +1,11 @@
+2006-04-01
+	* neu: Darstellungsoptionen werden respektiert (aktiv/passiv)
+	* neu: Die ersten nachfolgende Messdaten gehen in das erste Profil ein.
+	* fix: Ansicht synchronisiert mit veränderter Profilkonstellation
+
+2006-03-06
+	* neu: Monitor Gamma wird kontinuierlich beobachtet
+
 2005-12-20
 	* neu: Beleuchtung für Farbkörper ein
 

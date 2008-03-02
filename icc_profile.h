@@ -75,6 +75,7 @@ class ICCprofile {
     void                clear (void);
 
     ICCDataType         load (const Speicher & profil);
+    ICCDataType         dataType;  //!< wird zumindest beim Laden gesetzt
     bool                changing()             { return changing_; }
 
   private:

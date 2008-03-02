@@ -2542,12 +2542,12 @@ void
 GL_Ansicht::c_ ( Fl_Widget* w, void* daten )
 { DBG_PROG_START
 
-  int value = (int) daten;
+  intptr_t value = (intptr_t) daten;
   DBG_PROG_V( value )
 
   GL_Ansicht *gl_obj = dynamic_cast<GL_Ansicht*>(w->parent());
-  DBG_MEM_V( (int)gl_obj )
-  DBG_MEM_V( (int)w->parent() )
+  DBG_MEM_V( (intptr_t)gl_obj )
+  DBG_MEM_V( (intptr_t)w->parent() )
   if(!w->parent())
     WARN_S(_("Konnte keine Eltern finden"))
   else

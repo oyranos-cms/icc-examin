@@ -145,10 +145,29 @@ ICCkette::einfuegen (const Speicher & prof, int pos)
   ICCprofile::ICCDataType type = profile_[pos].load(prof);
   profile_[pos].filename( prof.name().c_str() );
   DBG_PROG_V( type )
-  if(type == ICCprofile::ICCmeasurementDATA && pos != 0)
+  ICCprofile::ICCDataType dtype = profile_[0].dataType;
+  DBG_PROG_V( dtype )
+
+  int extra_benachrichtigen = -1;
+  // Messdaten sollten dem ersten Profil, so es normal ist, angehangen werden
+  if(profile_[0].dataType == ICCprofile::ICCprofileDATA)
   {
     //ICCmeasurement m;
     //m.load( profile.profil() , (const char*) prof, prof.size() );
+    for (unsigned int i = 1; i < profile_.size(); ++i)
+    {
+      if(profile_[i].dataType == ICCprofile::ICCmeasurementDATA)
+      {
+        ICCmeasurement & m = profile_[0].getMeasurement();
+        int tag_n = profile_[i].getTagByName( "targ" );
+        ICCtag & tag = profile_[i].getTag( tag_n );
+        m.load( &profile_[0], tag );
+        if( !profile_[0].hasTagName( "targ" ) )
+          profile_[0].addTag( tag );
+        extra_benachrichtigen = 0;
+        continue;
+      }
+    }
     DBG_PROG_V( profile.profil()->hasMeasurement() )
   }
   DBG_PROG_V( profile_[pos].size() )
@@ -178,6 +197,10 @@ ICCkette::einfuegen (const Speicher & prof, int pos)
   frei(true);
   //icc_examin_ns::lock(__FILE__,__LINE__);
   /*Modell::*/benachrichtigen( pos );
+  if( extra_benachrichtigen >= 0 )
+    /*Modell::*/benachrichtigen( extra_benachrichtigen );
+  else
+    /*Modell::*/benachrichtigen( pos );
   //icc_examin_ns::unlock(icc_examin, __FILE__,__LINE__);
   DBG_PROG_ENDE
   return erfolg;

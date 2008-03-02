@@ -46,7 +46,7 @@ leseGrafikKartenGamma        (std::string display_name,
                               std::vector<std::string> &texte )
 { DBG_PROG_START
 
-  Display *display;
+  Display *display = 0;
   XF86VidModeGamma gamma;
   XF86VidModeMonitor monitor;
   int screen = 0;  // TODO
@@ -139,7 +139,7 @@ leseGrafikKartenGamma        (std::string display_name,
     delete [] blue;
   } else DBG_NUM_S( "kein vcgt in X anzeigbar" );
 
-  //XCloseDisplay(display);
+  if (display) XCloseDisplay(display);
 
   DBG_PROG_ENDE
   return kurven;

@@ -105,6 +105,7 @@ ICCprofile::copy_ ( const ICCprofile & p )
   measurement.profile_ = this;
   tags = p.tags;
   header = p.header;
+  dataType = p.dataType;
   
   DBG_PROG_ENDE
   return *this;
@@ -153,6 +154,7 @@ ICCprofile::load (const Speicher & prof)
   } else {
     DBG_PROG_ENDE
     changing_ = false;
+    dataType = ICCnullDATA;
     return ICCnullDATA;
   }
 
@@ -162,6 +164,7 @@ ICCprofile::load (const Speicher & prof)
     measurement.load( this, data_, size_ );
     DBG_PROG_ENDE
     changing_ = false;
+    dataType = ICCmeasurementDATA;
     return ICCmeasurementDATA;
   }
 
@@ -211,6 +214,7 @@ ICCprofile::load (const Speicher & prof)
     measurement.load( this, tag );
     DBG_PROG_ENDE
     changing_ = false;
+    dataType = ICCmeasurementDATA;
     return ICCmeasurementDATA;
   }
    
@@ -264,6 +268,7 @@ ICCprofile::load (const Speicher & prof)
 
   changing_ = false;
   DBG_PROG_ENDE
+  dataType = ICCprofileDATA;
   return ICCprofileDATA;
 }
 
@@ -693,7 +698,7 @@ ICCprofile::writeTags (void)
     list = (icTagList*)&temp[128];
     DBG_MEM_V (icValue(list->tags[i].offset))
     DBG_MEM_V (icValue(list->tags[i].sig))
-    DBG_MEM_V (icValue(list->tags[i].size) << " " << (int)&data_[0])
+    DBG_MEM_V (icValue(list->tags[i].size) << " " << (intptr_t)&data_[0])
   }
   DBG_MEM_V( size_ )
   DBG_PROG_ENDE
@@ -921,7 +926,7 @@ const char* cp_nchar (char* text, int n)
   string[1023] = '\000';
 
 # ifdef DEBUG
-  DBG_MEM_V( n << " Buchstaben kopieren " <<  (int)text << " " << string)
+  DBG_MEM_V( n << " Buchstaben kopieren " <<  (intptr_t)text << " " << string)
 # endif
   DBG_MEM_ENDE
   return string;
