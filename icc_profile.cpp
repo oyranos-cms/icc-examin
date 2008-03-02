@@ -678,6 +678,8 @@ ICCtag::getCurves                                 (MftChain typ)
            #endif
          } DBG_PROG
          break;
+    case TABLE_IN:
+    case TABLE_OUT:
     case TABLE: DBG_PROG
          start += (inputChan * inputEnt) * byte;
          for (int i = 0; i < feldPunkte * outputChan; i++)
@@ -728,6 +730,8 @@ ICCtag::getCurves                                 (MftChain typ)
            #endif
          }
          break;
+    case TABLE_IN:
+    case TABLE_OUT:
     case TABLE:
          start += (inputChan * inputEnt) * byte;
          for (int i = 0; i < feldPunkte * outputChan; i++)
@@ -793,9 +797,9 @@ ICCtag::getCurves                                 (MftChain typ)
                kurve.push_back( (double) icValue (*(icUInt16Number*)&_data[start + byte*i])
                                 / div );
              kurven.push_back (kurve);
-             #ifdef DEBUG_ICCTAG
+             //#ifdef DEBUG_ICCTAG
              DBG_S( kurve.size() << " Einträge" )
-             #endif
+             //#endif
            }
     }
   }
@@ -830,38 +834,43 @@ ICCtag::getTable                                 (MftChain typ)
     double div   = 65536.0;
     DBG_PROG
     // Was wird verlangt?
-    switch (typ) {
-    case TABLE: { DBG_PROG
-         start += (inputChan * inputEnt) * byte;
-         Tabelle.resize(clutPoints);
-         for (int i = 0; i < clutPoints; i++) {
-           Tabelle[i].resize(clutPoints);
-           for (int j = 0; j < clutPoints; j++) {
-             Tabelle[i][j].resize(clutPoints);
-             for (int k = 0; k < clutPoints; k++)
-               Tabelle[i][j][k].resize(outputChan);
+    if (inputChan == 3)
+    {
+      switch (typ) {
+      case TABLE_IN:
+      case TABLE_OUT:
+      case TABLE: { DBG_PROG
+           start += (inputChan * inputEnt) * byte;
+           Tabelle.resize(clutPoints);
+           for (int i = 0; i < clutPoints; i++) {
+             Tabelle[i].resize(clutPoints);
+             for (int j = 0; j < clutPoints; j++) {
+               Tabelle[i][j].resize(clutPoints);
+               for (int k = 0; k < clutPoints; k++)
+                 Tabelle[i][j][k].resize(outputChan);
+             }
            }
-         }
-         int n = 0;
-         for (int i = 0; i < clutPoints; i++) {
-           Tabelle[i].resize(clutPoints);
-           for (int j = 0; j < clutPoints; j++) {
-             Tabelle[i][j].resize(clutPoints);
-             for (int k = 0; k < clutPoints; k++) {
-               Tabelle[i][j][k].resize(outputChan);
-               for (int l = 0; l < outputChan; l++) {
-                 Tabelle[i][j][k][l] = (double)icValue (*(icUInt16Number*)&_data[start + byte*n++])
-                            / div;
+           int n = 0;
+           for (int i = 0; i < clutPoints; i++) {
+             Tabelle[i].resize(clutPoints);
+             for (int j = 0; j < clutPoints; j++) {
+               Tabelle[i][j].resize(clutPoints);
+               for (int k = 0; k < clutPoints; k++) {
+                 Tabelle[i][j][k].resize(outputChan);
+                 for (int l = 0; l < outputChan; l++) {
+                   Tabelle[i][j][k][l] = (double)icValue (*(icUInt16Number*)&_data[start + byte*n++])
+                              / div;
+                 }
                }
              }
            }
          }
-         }
          break;
-    case MATRIX:
-    case CURVE_IN:
-    case CURVE_OUT: DBG_PROG
+      case MATRIX:
+      case CURVE_IN:
+      case CURVE_OUT: DBG_PROG
          break;
+      }
     } 
   } else if (getTypName() == "mft1") {
     icLut8* lut8 = (icLut8*) &_data[8];
@@ -879,31 +888,35 @@ ICCtag::getTable                                 (MftChain typ)
 
     // Was wird verlangt?
     switch (typ) {
-    case TABLE: { DBG_PROG
-         start += (inputChan * inputEnt) * byte;
-         Tabelle.resize(clutPoints);
-         for (int i = 0; i < clutPoints; i++) {
-           Tabelle[i].resize(clutPoints);
-           for (int j = 0; j < clutPoints; j++) {
-             Tabelle[i][j].resize(clutPoints);
-             for (int k = 0; k < clutPoints; k++)
-               Tabelle[i][j][k].resize(outputChan);
+    case TABLE_IN:
+    case TABLE_OUT:
+    case TABLE: DBG_PROG
+         if (inputChan == 3)
+         {
+           start += (inputChan * inputEnt) * byte;
+           Tabelle.resize(clutPoints);
+           for (int i = 0; i < clutPoints; i++) {
+             Tabelle[i].resize(clutPoints);
+             for (int j = 0; j < clutPoints; j++) {
+               Tabelle[i][j].resize(clutPoints);
+               for (int k = 0; k < clutPoints; k++)
+                 Tabelle[i][j][k].resize(outputChan);
+             }
            }
-         }
-         int n = 0;
-         for (int i = 0; i < clutPoints; i++) {
-           Tabelle[i].resize(clutPoints);
-           for (int j = 0; j < clutPoints; j++) {
-             Tabelle[i][j].resize(clutPoints);
-             for (int k = 0; k < clutPoints; k++) {
-               Tabelle[i][j][k].resize(outputChan);
-               for (int l = 0; l < outputChan; l++) {
-                 Tabelle[i][j][k][l] = (double) *(icUInt8Number*)&_data[start + byte*n++]
-                            / div;
+           int n = 0;
+           for (int i = 0; i < clutPoints; i++) {
+             Tabelle[i].resize(clutPoints);
+             for (int j = 0; j < clutPoints; j++) {
+               Tabelle[i][j].resize(clutPoints);
+               for (int k = 0; k < clutPoints; k++) {
+                 Tabelle[i][j][k].resize(outputChan);
+                 for (int l = 0; l < outputChan; l++) {
+                   Tabelle[i][j][k][l] = (double) *(icUInt8Number*)&_data[start + byte*n++]
+                              / div;
+                 }
                }
              }
            }
-         }
          }
          break;
     case MATRIX:
@@ -944,7 +957,13 @@ ICCtag::getNumbers                                 (MftChain typ)
          break;
     case CURVE_IN:
     case TABLE:
+    case TABLE_IN:
+         nummern.push_back( inputChan );
+         break;
     case CURVE_OUT:
+    case TABLE_OUT:
+         nummern.push_back( outputChan );
+         break;
          break;
     } 
   } else if (getTypName() == "mft1") {
@@ -964,6 +983,12 @@ ICCtag::getNumbers                                 (MftChain typ)
          break;
     case CURVE_IN:
     case TABLE:
+    case TABLE_IN:
+         nummern.push_back( inputChan );
+         break;
+    case TABLE_OUT:
+         nummern.push_back( outputChan );
+         break;
     case CURVE_OUT:
          break;
     } 
@@ -980,33 +1005,47 @@ std::vector<std::string>
 ICCtag::getText                     (MftChain typ)
 { DBG_PROG_START
   std::vector<std::string> texte;
+  std::vector<double> kanaele;
+  char n[4];
+
 
   // TODO: prüfen auf icColorSpaceSignature <-> Kanalanzahl
     // Was wird verlangt?
     switch (typ) {
+    case TABLE:
     case MATRIX:
          for (int i = 0; i < 9; i++) {
            texte.push_back( "" );
          }
          break;
     case CURVE_IN:
+    case TABLE_IN:
+         kanaele = getNumbers (TABLE_IN);
          texte = getChannelNames (_color_in);
          break;
-    case TABLE: {
-         /*icLut16* lut16 = (icLut16*) &_data[8];
-         int inputChan, outputChan, clutPoints, inputEnt, outputEnt;
-         inputChan = (int)lut16->inputChan;
-         outputChan = (int)lut16->outputChan;*/
-         if (_to_pcs)
-           texte = getChannelNames (_color_in);
-         else
-           texte = getChannelNames (_color_out);
-         }
-         break;
+    case TABLE_OUT:
     case CURVE_OUT:
          texte = getChannelNames (_color_out);
+         kanaele = getNumbers (TABLE_OUT);
          break;
     }
+
+  if (kanaele.size()
+   && (texte.size() < (unsigned int)kanaele[0]))
+  {
+           if (texte.size() == 1)
+           {
+             sprintf(n,"%d",1);
+             texte[0] = _("Farbe");
+             texte[0] = texte[0] + n;
+           }
+           for (int i = texte.size(); i < kanaele[0]; i++)
+           {
+             sprintf(n,"%d",i+1);
+             texte.push_back(_("Farbe"));
+             texte[i] = texte[i] + n;
+           }
+  }
 
   DBG_PROG_ENDE
   return texte;

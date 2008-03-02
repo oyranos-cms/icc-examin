@@ -1,7 +1,11 @@
 
+2004-12-5
+	* bug: Weisspunkt für RGB Messdaten berücksichtigt
+	* bug: Dunkelablgleich für RGB Messdaten
+
 2004-12-1
 	* and: DEBUG geändert
-	* bug: Weissabgleich XYZ Messdaten
+	* bug: Hellabgleich XYZ Messdaten
 	* bug: A2B versus B2A Tabellen besser verstanden
 
 2004/11/25

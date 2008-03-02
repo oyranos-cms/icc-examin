@@ -37,8 +37,8 @@ extern bool duenn;
 
 class GL_Ansicht : public Fl_Group {
   std::vector<std::vector<std::vector<std::vector<double> > > > tabelle;
-  std::vector<std::string>texte;
-  std::vector<std::string>pcsNamen;
+  std::vector<std::string>nachFarbNamen;
+  std::vector<std::string>vonFarbNamen;
   std::vector<double>punkte;
   std::vector<std::vector<double> >kurven;
   Fl_Group *GLFenster;
@@ -57,8 +57,8 @@ public:
   void hinein_punkt(std::vector<double> vect, std::vector<std::string> txt);
   void hinein_kurven(std::vector<std::vector<double> >vect, std::vector<std::string> txt);
   void hinein_tabelle(std::vector<std::vector<std::vector<std::vector<double> > > >vect,
-                               std::vector<std::string> txt,
-                               std::vector<std::string> pcs);
+                               std::vector<std::string> vonFarben,
+                               std::vector<std::string> nachFarben);
   void ruhig_neuzeichnen(void);
 
   int  Punktform;                // Form der Gitterpunkte der Transformationstabelle
@@ -67,11 +67,11 @@ public:
   void verstecken();
   void stop() {if (!first) { agvSwitchMoveMode (agviewer::AGV_STOP); } }
 
-  char* kanalName() {return (char*)texte[kanal].c_str(); }
-  char* kanalName(unsigned int i) { if (texte.size()>i) 
-                                      return (char*)texte[i].c_str();  
+  char* kanalName() {return (char*)nachFarbNamen[kanal].c_str(); }
+  char* kanalName(unsigned int i) { if (nachFarbNamen.size()>i) 
+                                      return (char*)nachFarbNamen[i].c_str();  
                                     else  return _("Gibts nicht"); }
-  unsigned int kanaele() {return texte.size(); }
+  unsigned int kanaele() {return nachFarbNamen.size(); }
 };
 
 void reshape(int w, int h);

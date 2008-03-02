@@ -469,9 +469,9 @@ void draw_kurve    (int X, int Y, int W, int H,
     } else if (name == _("Leuchtdichte Y")) {
       fl_color(FL_WHITE);
     } else if (name == _("CIE X")) {
-      fl_color(FL_MAGENTA);
+      fl_color(FL_RED);
     } else if (name == _("CIE Y (Leuchtdichte)")) {
-      fl_color(FL_WHITE);
+      fl_color(FL_GREEN);
     } else if (name == _("CIE Z")) {
       fl_color(FL_BLUE);
     } else if (name == _("Helligkeit")) {
@@ -501,6 +501,7 @@ void draw_kurve    (int X, int Y, int W, int H,
       // Infos einblenden 
       s << name << _(" mit Gamma: 1.0");
       fl_draw ( s.str().c_str(), x(0) + 2, y(n) + j*16 + 12);
+    // parametrischer Eintrag
     } else if (kurven[j].size() == 1
             && ist_kurve) {
       int segmente = 256;
@@ -513,6 +514,7 @@ void draw_kurve    (int X, int Y, int W, int H,
       // Infos einblenden 
       s << name << _(" mit einem Eintrag für Gamma: ") << gamma; DBG_V( gamma )
       fl_draw ( s.str().c_str(), x(0) + 2, y(n) + j*16 + 12);
+    // parametrischer Eintrag mit Wert für Minimum und Maximum 
     } else if (kurven[j].size() == 3
             && texte[texte.size()-1] == "gamma_start_ende") {
       int segmente = 256;
@@ -529,6 +531,7 @@ void draw_kurve    (int X, int Y, int W, int H,
       // Infos einblenden 
       s << name << _(" mit einem Eintrag für Gamma: ") << gamma;
       fl_draw ( s.str().c_str(), x(0) + 2, y(n) + j*16 + 12);
+    // segmentierte Kurve
     } else {
       for (unsigned int i = 1; i < kurven[j].size(); i++) {
         fl_line (x( kurven[j][i-1] ),

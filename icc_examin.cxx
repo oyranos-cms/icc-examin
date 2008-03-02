@@ -1005,8 +1005,8 @@ void MftChoice::auswahl_cb(void) {
     DBG_PROG
     mft_gl->hinein_tabelle (
                      profile[0].getTagTable (tag_nummer, ICCtag::TABLE),
-                     profile[0].getTagChannelNames (tag_nummer, ICCtag::TABLE),
-                     profile[0].getPCSNames () ); DBG_PROG
+                     profile[0].getTagChannelNames (tag_nummer, ICCtag::TABLE_IN),
+                     profile[0].getTagChannelNames (tag_nummer, ICCtag::TABLE_OUT) ); DBG_PROG
     break;
   case 4: // Ausgangskurven
     mft_viewer->hinein_kurven (

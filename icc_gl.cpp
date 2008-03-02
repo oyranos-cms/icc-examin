@@ -146,7 +146,7 @@ void GL_Ansicht::init() {
 void GL_Ansicht::draw() {
   DBG_PROG_START
   // Kurven oder Punkte malen
-  DBG_PROG_S( punkte.size() << "/" << kurven.size() <<" "<< texte.size() )
+  DBG_PROG_S( punkte.size() << "/" << kurven.size() <<" "<< nachFarbNamen.size() )
 
   if (GLfenster_zeigen) {
     GLFenster->size(w(),h());
@@ -158,10 +158,10 @@ void GL_Ansicht::draw() {
   DBG_PROG_V( GLfenster_zeigen )
 
   if (punkte.size() >= 3) {
-    //draw_cie_shoe(x(),y(),w(),h(),texte,punkte,false);
+    //draw_cie_shoe(x(),y(),w(),h(),nachFarbNamen,punkte,false);
 
   } else {
-    //draw_kurve   (x(),y(),w(),h(),texte,kurven);
+    //draw_kurve   (x(),y(),w(),h(),nachFarbNamen,kurven);
   }
   DBG_PROG
   DBG_PROG_ENDE
@@ -205,8 +205,8 @@ void GL_Ansicht::myGLinit() {
 }
 
 // Materialfarben setzen
-#define FARBE(r,g,b) farbe [0] = (r); farbe [1] = (g); farbe [2] = (b); \
-                     glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, farbe); 
+#define FARBE(r,g,b) {farbe [0] = (r); farbe [1] = (g); farbe [2] = (b); \
+                      glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, farbe); }
 
 // Text zeichnen
 #define ZeichneText(Font,Zeiger) { \
@@ -316,7 +316,7 @@ void GL_Ansicht::MakeDisplayLists() {
       glLineWidth(3.0);
       glTranslatef(.5,0.62,.5);
       glRotatef (270,0.0,1.0,.0);
-      char* ptr = (char*) texte[kanal].c_str();
+      char* ptr = (char*) nachFarbNamen[kanal].c_str();
       sprintf (&text[0], ptr);
       ZeichneText(GLUT_STROKE_ROMAN,&text[0])
     glPopMatrix(); DBG_PROG
@@ -327,58 +327,73 @@ void GL_Ansicht::MakeDisplayLists() {
       glBegin(GL_LINES);
         glVertex3f(0, .5, 0); glVertex3f(0, -.5, 0);
       glEnd();
-      glTranslatef(0,-.5,0);
-      glBegin(GL_LINES);
-        glVertex3f(0, 0, .5); glVertex3f(0, 0, -.5);
-      glEnd();
-      glBegin(GL_LINES);
-        glVertex3f(.5, 0, 0); glVertex3f(-.5, 0, 0);
-      glEnd();
-      glTranslatef(0,1.0,0);
+      glTranslatef(0,.5,0);
       FARBE(1,1,1)
       glRotatef (270,1.0,0.0,.0);
       PFEILSPITZE
       glRotatef (270,0.0,0.0,1.0);
       FARBE(1,1,1)
       glTranslatef(.02,0,0);
-      ptr = (char*) pcsNamen[0].c_str();
+      ptr = (char*) vonFarbNamen[0].c_str();
       sprintf (&text[0], ptr);
       ZeichneText(GLUT_STROKE_ROMAN,&text[0])
     glPopMatrix(); DBG_PROG
 
     // CIE*a - rechts
     glPushMatrix();
-      glTranslatef(0.0,-.5,0.5);
-      FARBE(.2,.9,0.7)
+      if (vonFarbNamen[1] == _("CIE *a"))
+        glTranslatef(0,-0.5,0);
+      glBegin(GL_LINES);
+        glVertex3f(0, 0, .5); glVertex3f(0, 0, -.5);
+      glEnd();
+      glTranslatef(0.0,0,0.5);
       glRotatef (180,0.0,.5,.0);
       glTranslatef(.0,0.0,1.0);
-      PFEILSPITZE
+      if (vonFarbNamen[1] == _("CIE *a"))
+      {
+        FARBE(.2,.9,0.7)
+        PFEILSPITZE
+      }
       glTranslatef(.0,0.0,-1.0);
       glRotatef (180,0.0,.5,.0);
-      FARBE(.9,0.2,0.5)
+      if (vonFarbNamen[1] == _("CIE *a"))
+        FARBE(.9,0.2,0.5)
       PFEILSPITZE
       FARBE(1,1,1)
-      ptr = (char*) pcsNamen[1].c_str();
+      ptr = (char*) vonFarbNamen[1].c_str();
       sprintf (&text[0], ptr);
       ZeichneText(GLUT_STROKE_ROMAN,&text[0])
+      if (vonFarbNamen[1] == _("CIE *a"))
+        glTranslatef(0,0.5,0);
     glPopMatrix(); DBG_PROG
 
     // CIE*b - links
     glPushMatrix();
-      glTranslatef(.5,-.5,0);
-      FARBE(.9,.9,0.2)
+      if (vonFarbNamen[2] == _("CIE *b"))
+        glTranslatef(0,-0.5,0);
+      glBegin(GL_LINES);
+        glVertex3f(.5, 0, 0); glVertex3f(-.5, 0, 0);
+      glEnd();
+      glTranslatef(.5,0,0);
+      if (vonFarbNamen[2] == _("CIE *b"))
+        FARBE(.9,.9,0.2)
       glRotatef (90,0.0,.5,.0);
       PFEILSPITZE
       glRotatef (180,.0,.5,.0);
       glTranslatef(.0,.0,1.0);
-      FARBE(.7,.8,1.0)
-      PFEILSPITZE
+      if (vonFarbNamen[2] == _("CIE *b"))
+      {
+        FARBE(.7,.8,1.0)
+        PFEILSPITZE
+        FARBE(1,1,1)
+      }
       glTranslatef(.0,.0,-1.0);
       glRotatef (180,0.0,.5,.0);
-      FARBE(1,1,1)
-      ptr = (char*) pcsNamen[2].c_str();
+      ptr = (char*) vonFarbNamen[2].c_str();
       sprintf (&text[0], ptr);
       ZeichneText(GLUT_STROKE_ROMAN,&text[0])
+      if (vonFarbNamen[2] == _("CIE *b"))
+        glTranslatef(0,0.5,0);
     glPopMatrix();
     glLineWidth(1.0);
 
@@ -503,11 +518,11 @@ GL_Ansicht::MenueErneuern()
 
   MenueKanalEintraege = 0;
 
-  for (int i = 0; i < (int)texte.size(); i++) {
-    char* p = (char*) texte[i].c_str();
+  for (int i = 0; i < (int)nachFarbNamen.size(); i++) {
+    char* p = (char*) nachFarbNamen[i].c_str();
     glutAddMenuEntry(p, MENU_MAX + i);
     MenueKanalEintraege++;
-    DBG_PROG_V( MENU_MAX + i << texte[i] )
+    DBG_PROG_V( MENU_MAX + i << nachFarbNamen[i] )
   }
 
   if (kanal >= MenueKanalEintraege)
@@ -525,11 +540,11 @@ void GL_Ansicht::MenuInit() {
   static char text_b[32];
   DBG_PROG_START
   int sub2 = glutCreateMenu(agvSwitchMoveMode);   /* pass these right to */
-  sprintf (text_L, "%s %s", pcsNamen[0].c_str(), _("Schnitt"));
+  sprintf (text_L, "%s %s", vonFarbNamen[0].c_str(), _("Schnitt"));
   glutAddMenuEntry(text_L,  agviewer::ICCFLY_L);
-  sprintf (text_a, "%s %s", pcsNamen[1].c_str(), _("Schnitt"));
+  sprintf (text_a, "%s %s", vonFarbNamen[1].c_str(), _("Schnitt"));
   glutAddMenuEntry(text_a,  agviewer::ICCFLY_a);
-  sprintf (text_b, "%s %s", pcsNamen[2].c_str(), _("Schnitt"));
+  sprintf (text_b, "%s %s", vonFarbNamen[2].c_str(), _("Schnitt"));
   glutAddMenuEntry(text_b,  agviewer::ICCFLY_b); DBG_NUM_V( text_L )
 /*  glutAddMenuEntry(_("L Schnitt"),  ICCFLY_L);
   glutAddMenuEntry(_("a Schnitt"),  ICCFLY_a);
@@ -661,9 +676,9 @@ void GL_Ansicht::hinein_punkt(std::vector<double> vect, std::vector<std::string>
   punkte.clear();
   for (unsigned int i = 0; i < vect.size(); i++)
     punkte.push_back (vect[i]);
-  texte.clear();
+  nachFarbNamen.clear();
   for (unsigned int i = 0; i < txt.size(); i++)
-    texte.push_back (txt[i]);
+    nachFarbNamen.push_back (txt[i]);
   kurven.clear();
 
   zeig_mich(this);
@@ -674,7 +689,7 @@ void GL_Ansicht::hinein_kurven(std::vector<std::vector<double> >vect, std::vecto
   DBG_PROG_START
   //Kurve aus tag_browser anzeigen
   kurven = vect;
-  texte = txt;
+  nachFarbNamen = txt;
   punkte.clear();
 
   zeig_mich(this); DBG_PROG_V( first )
@@ -687,20 +702,20 @@ void GL_Ansicht::hinein_kurven(std::vector<std::vector<double> >vect, std::vecto
 
 void
 GL_Ansicht::hinein_tabelle(std::vector<std::vector<std::vector<std::vector<double> > > > vect,
-                           std::vector<std::string> txt,
-                           std::vector<std::string> pcs)
+                           std::vector<std::string> von,
+                           std::vector<std::string> nach)
 {
   DBG_PROG_START
   //Kurve aus tag_browser anzeigen
   tabelle = vect;  DBG_PROG
-  texte = txt; DBG_PROG
-  if (pcs.size() == 3)
-    pcsNamen = pcs;
+  nachFarbNamen = nach; DBG_PROG
+  if (von.size() == 3)
+    vonFarbNamen = von;
   else
-  { pcsNamen.clear();
-    pcsNamen.push_back ("?");
-    pcsNamen.push_back ("?");
-    pcsNamen.push_back ("?");
+  { vonFarbNamen.clear();
+    vonFarbNamen.push_back ("?");
+    vonFarbNamen.push_back ("?");
+    vonFarbNamen.push_back ("?");
   }
   kurven.clear(); DBG_PROG
   punkte.clear(); DBG_PROG
@@ -724,7 +739,7 @@ GL_Ansicht::hinein_tabelle(std::vector<std::vector<std::vector<std::vector<doubl
 
 void GL_Ansicht::ruhig_neuzeichnen(void) {
   DBG_PROG_START
-  draw_cie_shoe(x(),y(),w(),h(),texte,punkte,true);
+  draw_cie_shoe(x(),y(),w(),h(),nachFarbNamen,punkte,true);
   DBG_PROG_ENDE
 }
 

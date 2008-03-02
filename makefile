@@ -12,7 +12,7 @@ mandir		= ${prefix}/man
 srcdir		= .
 
 #APPLE = 1
-#FLU = 1
+FLU = 1
 DL = --ldflags # --ldstaticflags
 
 ifdef FLU
@@ -22,9 +22,10 @@ endif
 CXXFLAGS=$(OPTS) $(INCL) $(FLU_H)
 INCL=-I$(includedir) -I/usr/X11R6/include -I./
 
-VRML_LIBS=$(FLTK_GL_LIBS) -lGL -lopenvrml -lopenvrml-gl -lpng -ljpeg
+VRML_LIBS=$(FLTK_GL_LIBS) -lGL -lopenvrml -lopenvrml-gl -lpng -ljpeg \
+ -lXinerama -lXft
 
-X11_LIBS=-L/usr/X11R6/lib -lXinerama -lXft
+X11_LIBS=-L/usr/X11R6/lib
 
 FLTK_LIBS=`fltk-config --use-images --use-gl --use-glut $(DL)`
 

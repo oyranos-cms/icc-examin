@@ -236,6 +236,8 @@ class ICCtag {
       MATRIX,
       CURVE_IN,
       TABLE,
+      TABLE_IN,
+      TABLE_OUT,
       CURVE_OUT
     } MftChain;
     std::vector<std::vector<double> >
