@@ -1678,7 +1678,8 @@ GL_Ansicht::menueAufruf ( int value )
 
   if(visible()) {
     auffrischen();
-  }
+  } else
+    redraw();
 
   DBG_PROG_V( value )
   DBG_PROG_ENDE

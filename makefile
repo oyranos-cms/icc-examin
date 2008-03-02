@@ -3,7 +3,7 @@ include config
 CC=c++
 MAKEDEPEND	= /usr/X11R6/bin/makedepend -Y
 RM = rm -v
-COPY = cp -vdp
+COPY = cp -vp
 
 prefix		= /opt/local
 exec_prefix	= ${prefix}

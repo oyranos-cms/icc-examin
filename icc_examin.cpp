@@ -562,6 +562,7 @@ ICCexamin::netzLese (int n,
   DBG_PROG_START
   std::vector<ICCnetz> netz_temp;
   Speicher s;
+
   if(profile.size() > n)
     if(profile[n]->valid())
       s.lade(profile[n]->saveProfileToMem(0),
@@ -569,13 +570,12 @@ ICCexamin::netzLese (int n,
 
   if(s.size())
   {
-    DBG_PROG
     netz_temp = icc_oyranos. netzVonProfil( s );
     if(netz_temp.size())
     {
-      if(n+1 > (int)netz.size())
+      if(n >= (int)netz.size())
         netz.resize( n+1 );
-      DBG_PROG_V( netz.size() )
+      DBG_PROG_V( netz.size() <<" "<< netz_temp.size() )
       netz[n] = netz_temp[0];
       netz[n].name = profile[n]->filename();
       DBG_NUM_V( netz[n].transparenz )
@@ -651,20 +651,22 @@ ICCexamin::histogram (int n)
   if( profile.size() > n )
     netzLese(n, netz);
 
-  DBG_PROG_V( netz.size() <<" "<< icc_betrachter->DD_histogram-> dreiecks_netze.size() <<" "<< n )
-  if((int)netz.size() <= n)
+  if((int)icc_betrachter->DD_histogram-> dreiecks_netze .size() <= n)
     icc_betrachter->DD_histogram-> dreiecks_netze .resize( n + 1 );
-  DBG_PROG
+  DBG_PROG_V( netz.size() <<" "<< icc_betrachter->DD_histogram-> dreiecks_netze.size() <<" "<< n )
+
   if(netz.size())
   {
-    if(icc_betrachter->DD_histogram->dreiecks_netze.size() < netz.size())
+    if((n == 0 &&
+        profile[0]->getTagByName("ncl2") >= 0 )
+    || (n == 1 &&
+        profile[0]->getTagByName("ncl2") >= 0  ) )
     {
+      netz[n].transparenz = 0.7;
+      netz[n].grau = false;
+    } else {
       netz[n].transparenz = 0.3;
       netz[n].grau = true;
-    } else {
-      netz[n].transparenz = icc_betrachter->DD_histogram->dreiecks_netze[n].
-                            transparenz;
-      netz[n].grau = false;
     }
 
     icc_betrachter->DD_histogram->dreiecks_netze[n] = netz[n];
