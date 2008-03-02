@@ -751,6 +751,34 @@ zeig_bits_bin(void* speicher, int groesse)
   return text;
 }
 
+char*
+ladeDatei ( std::string dateiname, size_t *size )
+{ DBG_PROG_START
+
+    std::ifstream f ( dateiname.c_str(), std::ios::binary | std::ios::ate );
+
+    DBG_PROG
+    if (dateiname == "")
+      throw ausn_file_io ("kein Dateiname angegeben");
+    DBG_PROG
+    if (!f) {
+      throw ausn_file_io ("keine lesbare Datei gefunden");
+      dateiname = "";
+    }
+
+    *size = (unsigned int)f.tellg();         f.seekg(0);
+    char* data = (char*)calloc (sizeof (char), *size);
+  
+
+    f.read ((char*)data, *size);
+    DBG_PROG_V ( *size << "|" << f.tellg() )
+    f.close();
+
+  DBG_PROG_ENDE
+  return data;
+}
+
+
 namespace icc_parser {
 
 const char *alnum = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_|/-+=()[]{}<>&?!:;,.0123456789";
@@ -875,7 +903,7 @@ std::vector<ZifferWort>
 unterscheideZiffernWorte ( std::string &zeile,
                            bool         anfuehrungsstriche_setzen,
                            const char  *trennzeichen )
-{
+{ DBG_PARSER_START
   std::string::size_type pos = 0, ende = 0, pos2, pos3;
   static char text[64];
   bool in_anfuehrung = false;
@@ -884,7 +912,7 @@ unterscheideZiffernWorte ( std::string &zeile,
   std::vector<std::string> worte;
   char trenner [16];
 
-  if( trennzeichen ) {
+  if( trennzeichen ) { DBG_PARSER
     sprintf (trenner, trennzeichen );
   } else {
     sprintf (trenner, leer_zeichen );
@@ -1021,6 +1049,7 @@ unterscheideZiffernWorte ( std::string &zeile,
   for( unsigned i = 0; i < worte.size(); i++)
     DBG_PARSER_V( worte[i] );
 
+  DBG_PARSER_ENDE
   return ergebnis;
 }
 

@@ -81,6 +81,9 @@ std::string         printDatum( icDateTimeNumber date );
 // Datendarstellung
 std::string         zeig_bits_bin      (void* speicher, int groesse);
 
+// Datei E/A
+char* ladeDatei ( std::string dateiname, size_t *size );
+
 // Texthelfer
 namespace icc_parser {
   extern const char *alnum;

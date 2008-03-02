@@ -25,7 +25,7 @@
  * 
  */
 
-// Date:      Februar 2004
+// Beginn Datum:      Februar 2005
 
 #include <sstream>
 #include <string>
@@ -44,97 +44,166 @@ class ICCvrmlParser
     std::string arbeit_;
     std::vector<ICCnetz> netze_;
   public:
-    void lade ( std::string & vrml )   { original_ = vrml; }
-    std::vector<ICCnetz> zeigeNetze () { lesen_(); return netze_; }
+    void lade ( std::string & vrml )   { DBG_PROG original_ = vrml; }
+    std::vector<ICCnetz> zeigeNetze () { DBG_PROG lesen_(); return netze_; }
   private:
     void lesen_()
 {
-  int netz_n = 0;
-  std::vector<std::string> zeilen;
+  int debug_alt = icc_debug;
+  icc_debug = 1;
+  DBG_PROG_START
+  int netz_n = 0;                       // das n-the Netz
+  std::vector<std::string> zeilen;      // Editierzeilen
+  std::vector<ZifferWort> werte;        // Zwischenrückgabewert
+  char trennzeichen[12];                // zu verwendende Trennzeichen
+  trennzeichen[0] = ',';
+  sprintf(&trennzeichen[1], leer_zeichen);
+  const bool anfuehrungstriche = false; // keine Anführungsstriche setzen
+  unsigned int dimensionen;             // Anzahl der zusammmengehörenden Werte
+  int achse;                            // ausgewählter Wert aus dimensionen
+  DBG_PROG_V( original_.size() )
+
   std::string::size_type pos=0, netz_pos=0;
   std::string::size_type ende, netz_ende;
 
-  // zeilenweises Bearbeiten
-  for (unsigned i = 0; i < zeilen.size(); ++i)
+  // nach Netzen in der vrml Datei suchen
+  while( (netz_pos = original_.find( "IndexedFaceSet", netz_pos )) !=
+        std::string::npos )
   {
     ++netz_pos;
     // Bereich des Netzes eingrenzen
-    netz_pos = original_.find( "IndexedFaceSet", netz_pos );
     if( (netz_ende = original_.find( "IndexedFaceSet", netz_pos )) ==
         std::string::npos )
-      ende = original_.size();
+      netz_ende = original_.size();
     if( netz_pos == std::string::npos )
       break;
+    DBG_NUM_S( "IndexedFaceSet gefunden auf Position " << netz_pos <<"-"<< netz_ende );
 
-    arbeit_ = original_.substr (netz_pos, netz_ende-pos+1);
+    arbeit_ = original_.substr (netz_pos, netz_ende-netz_pos+1);
     zeilen = zeilenNachVector (arbeit_);
+    DBG_PROG_V( zeilen.size() <<"|"<< arbeit_.size() )
 
     // ab nun zeilenweise
     bool in_punkte = false;
     bool in_farben = false;
     bool in_indexe = false;
     netze_.resize( netze_.size()+1 );
-    int netz_ende = netze_.size()-1;
+    int endnetz = netze_.size()-1;
     std::string zeile;
+    int geschweifte_klammer = 0;
+    int punkt_n = 0, wert_n;
     for(unsigned int z = 0; z < zeilen .size(); z++)
     {
       // Hole eine kommentarfreie Zeile
-      zeile = zeilen[i].substr( 0, zeilen[i].find( "#" ) );
+      zeile = zeilen[z].substr( 0, zeilen[z].find( "#" ) );
 
-      int geschweifte_klammer = 0; pos = 0;
-      while( (pos=zeile.find("{",pos)) != std::string::npos )
-        ++geschweifte_klammer;
       pos = 0;
-      while( (pos=zeile.find("}",pos)) != std::string::npos )
+      while( (pos = zeile.find("{",pos)) != std::string::npos ) {
+        //DBG_NUM_V( zeilen[z] )
+        ++geschweifte_klammer;
+        ++pos;
+      }
+      pos = 0;
+      while( (pos = zeile.find("}",pos)) != std::string::npos ) {
+        //DBG_NUM_V( zeilen[z] )
         --geschweifte_klammer;
+        ++pos;
+      }
 
       #define VRMLBereichsTest(schalter, schluesselauf, schluesselzu) \
-      if( zeile.find(schluesselauf) == std::string::npos ) \
-        schalter = true; \
-      if( zeile.find(schluesselzu) == std::string::npos && \
-          schalter ) \
-        schalter = false;
-      if(geschweifte_klammer > 1) {
-        VRMLBereichsTest ( in_punkte, "points", "]" )
+      if( zeile.find(schluesselauf) != std::string::npos ) { \
+        DBG_NUM_S( z << schluesselauf ) \
+        wert_n = punkt_n = 0; \
+        schalter = true; DBG_NUM_V( schalter ) \
+      } \
+      if( zeile.find(schluesselzu) != std::string::npos && \
+          schalter ) { \
+        DBG_NUM_S( z << schluesselzu ) \
+        schalter = false; \
+      }
+
+      if(geschweifte_klammer >= 1) {
+        VRMLBereichsTest ( in_punkte, "point", "]" )
         VRMLBereichsTest ( in_farben, "Color", "}" )
         VRMLBereichsTest ( in_indexe, "coordIndex", "]" )
       }
-
-      if( in_punkte ) {
-        char trennzeichen[12];
-        trennzeichen[0] = ',';
-        sprintf(&trennzeichen[1], leer_zeichen);
-        bool anfuehrungstriche = false;
-        std::vector<ZifferWort> werte =
+      //DBG_NUM_S( z <<" "<< geschweifte_klammer <<" "<< in_punkte <<" "<< in_farben <<" "<< in_indexe )
+      achse = 0;
+      if( in_punkte )
+      {
+        werte =
           unterscheideZiffernWorte( zeile, anfuehrungstriche, trennzeichen );
 
-        int punkte_n = 0;
+        // ausgelesene Werte sortieren
+        for(unsigned int w = 0; w < werte.size(); ++w)
+        { //DBG_NUM_S( "w [" << w <<"]" << werte.size() <<" Netz: "<< endnetz <<" punkte "<< netze_[endnetz].punkte.size() )
+          if(werte[w].zahl.first)
+          {
+            dimensionen = 3;
+            achse = wert_n%dimensionen;
+            //DBG_NUM_S( "w%3 " << wert_n%dimensionen <<" p_s "<< netze_[endnetz].punkte.size() <<" w/3 "<< wert_n/dimensionen )
+            if(achse == 0)
+            {
+              if(netze_[endnetz].punkte.size() <= wert_n/dimensionen)
+                netze_[endnetz].punkte. push_back (ICCnetzPunkt());
+
+              punkt_n = wert_n/dimensionen;
+            }
+
+            //DBG_NUM_S( "w " << w <<" "<< werte[w].zahl.second )
+            netze_[endnetz].punkte[punkt_n].koord[achse] =
+                werte[w].zahl.second;
+
+            //DBG_NUM_S( endnetz<<" punkt_n "<<punkt_n<<" achse "<<achse<<" "<< netze_[endnetz].punkte[punkt_n].koord[achse] )
+
+            ++wert_n;
+          } //else WARN_S(_("keine Zahl?? " << werte[w].zahl.second))
+        }
+      } else
+      if( in_farben )
+      {
+        werte =
+          unterscheideZiffernWorte( zeile, anfuehrungstriche, trennzeichen );
+
+        // ausgelesene Werte sortieren
         for(unsigned int w = 0; w < werte.size(); ++w)
         {
-          const unsigned int dimension = 3;
-          int achse = 0;
-          if(!punkte_n%dimension &&
-             netze_[netz_ende].punkte.size() < punkte_n/dimension) {
-            netze_[netz_ende].punkte.push_back(ICCnetzPunkt());
-            achse = 0;
-          }
+          if(werte[w].zahl.first)
+          {
+            dimensionen = 3;
+            achse = wert_n % dimensionen;
+            if(achse == 0)
+            {
+              if(netze_[endnetz].punkte.size() <= wert_n/dimensionen)
+                netze_[endnetz].punkte. push_back (ICCnetzPunkt());
 
-          if(werte[w].zahl.first) {
-            netze_[netz_ende].punkte[punkte_n].koord[achse] =
+              punkt_n = wert_n/dimensionen;
+            } else if (achse == 2)
+              netze_[endnetz].punkte[punkt_n].farbe[achse+1] = 1;
+
+            netze_[endnetz].punkte[punkt_n].farbe[achse] =
                 werte[w].zahl.second;
-            ++achse;
-          }
-          if(!punkte_n%dimension) {
-            netze_[netz_ende].punkte.push_back(ICCnetzPunkt());
-            ++punkte_n;
-          }
-        } 
-      }
 
+            ++wert_n;
+          } //else WARN_S(_("keine Zahl?? " << werte[w].zahl.second))
+        }
+      } else // in_farben
+      if( in_indexe )
+      {
+        werte =
+          unterscheideZiffernWorte( zeile, anfuehrungstriche, trennzeichen );
+        dimensionen = 4;
+
+        // ausgelesene Werte sortieren
+        for(unsigned int w = 0; w < werte.size(); ++w)
+          if(werte[w].ganz_zahl.first)
+            netze_[endnetz].indexe. push_back (werte[w].ganz_zahl.second);
+      } // in_indexe
     }
-
     netz_n++;
   }
+  DBG_PROG_ENDE
+  icc_debug = debug_alt;
 }
 
 };

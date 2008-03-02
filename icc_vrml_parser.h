@@ -25,7 +25,7 @@
  * 
  */
 
-// Date:      Mai 2004
+// Beginn Datum:      Februar 2005
 
 #ifndef ICC_VRML_PARSER_H
 #define ICC_VRML_PARSER_H

@@ -11,7 +11,7 @@ libdir		= ${exec_prefix}/lib
 mandir		= ${prefix}/man
 srcdir		= .
 
-#APPLE = 1
+APPLE = 1
 FLTK = 1
 ifdef FLTK
 FLU = 1
@@ -58,8 +58,6 @@ INCL=-I$(includedir) -I/usr/X11R6/include -I./ -I/opt/kai-uwe/include
 LDLIBS = -L$(libdir) -L./ -L/opt/kai-uwe/lib $(FLTK_LIBS) \
 	$(X11_LIBS) -llcms $(OY_LIBS) $(GLUT) $(FLU_LIBS)
 
-#	$(VRML_LIBS)
-
 CPP_HEADERS = \
 	agviewer.h \
 	callback_simple.h \
@@ -87,8 +85,6 @@ CPP_HEADERS = \
 	icc_version.h \
 	icc_vrml.h \
 	icc_vrml_parser.h
-#	vFLGLWidget.h \
-	ViewerFLTK.h 
 CPPFILES = \
 	icc_cgats_filter.cpp \
 	icc_draw.cpp \
@@ -111,8 +107,6 @@ CPPFILES = \
 	icc_vrml.cpp \
 	icc_vrml_parser.cpp \
 	agviewer.cpp
-#	vFLGLWidget.cpp \
-	ViewerFLTK.cpp 
 CPPFLTKFILES = \
 	icc_helfer_fltk.cpp
 CXXFILES = \

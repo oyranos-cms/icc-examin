@@ -135,7 +135,7 @@ ICCexamin::start (int argc, char** argv)
   DBG_PROG_ENDE
 }
 
-//#include "icc_vrml.h"
+#include "icc_vrml_parser.h"
 void
 ICCexamin::oeffnen (std::vector<std::string> dateinamen)
 { DBG_PROG_START
@@ -145,6 +145,42 @@ ICCexamin::oeffnen (std::vector<std::string> dateinamen)
     icc_betrachter->tag_browser->reopen ();
     icc_betrachter->measurement( profile.profil()->hasMeasurement() );
   }
+
+  // Sortieren
+  if( dateinamen.size() &&
+      (dateinamen[0].find( "wrl",  dateinamen[0].find_last_of(".") )
+         != std::string::npos) )
+  { size_t size;
+    char *data = ladeDatei (dateinamen[0], &size);
+    std::string d = data;
+    if(data) free( data );
+    std::vector<ICCnetz> netze = extrahiereNetzAusVRML (d);
+    if( netze.size() )
+    { DBG_NUM_V( netze.size() )
+      for(unsigned int n = 0; n< netze.size(); ++n)
+      {
+        DBG_NUM_V( netze[n].punkte.size() )
+        for(unsigned int i = 0; i < 10; ++i) {
+         cout << netze[n].punkte[i].koord[0] << " ";
+         cout << netze[n].punkte[i].koord[1] << " ";
+         cout << netze[n].punkte[i].koord[2] << "  ";
+         cout << netze[n].punkte[i].farbe[0] << " ";
+         cout << netze[n].punkte[i].farbe[1] << " ";
+         cout << netze[n].punkte[i].farbe[2] << " ";
+         cout << netze[n].punkte[i].farbe[3] << endl;
+        }
+        DBG_NUM_V( netze[n].indexe.size()/4.0 )
+        for(unsigned int i = 0; i < 10; i+=4) {
+         cout << netze[n].indexe[i+0] << " ";
+         cout << netze[n].indexe[i+1] << " ";
+         cout << netze[n].indexe[i+2] << " ";
+         cout << netze[n].indexe[i+3] << endl;
+        }
+      }
+    } else
+      WARN_S(_("kein Netz gefunden in VRML Datei"))
+  }
+
   DBG_PROG
   if (icc_betrachter->DD_histogram->beruehrt()) { DBG_PROG
     histogram();

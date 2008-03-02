@@ -48,9 +48,12 @@ extern int icc_debug;
 
 #define DBG_T_     cout << __FILE__<<":"<<__LINE__ <<" "<< __func__ << "() " << DBG_UHR_ << " ";
 #define LEVEL      { for (int i = 0; i < level_PROG; i++) cout << " "; }
-#define DBG        if (icc_debug) { LEVEL cout << "        "; DBG_T_ cout << endl; }
-#define DBG_S(txt) if (icc_debug) { LEVEL cout << "        "; DBG_T_ cout << txt << endl; }
-#define DBG_V(txt) if (icc_debug) { LEVEL cout << "        "; DBG_T_ cout << #txt << " " << txt << endl;}
+#define DBG_       { LEVEL cout << "        "; DBG_T_ cout << endl; }
+#define DBG_S_(txt){ LEVEL cout << "        "; DBG_T_ cout << txt << endl; }
+#define DBG_V_(txt){ LEVEL cout << "        "; DBG_T_ cout << #txt << " " << txt << endl;}
+#define DBG        if (icc_debug) { DBG_ }
+#define DBG_S(txt) if (icc_debug) { DBG_S_(txt) }
+#define DBG_V(txt) if (icc_debug) { DBG_V_(txt) }
 
 #if 1
 #define DBG_MEM DBG
@@ -83,9 +86,9 @@ extern int icc_debug;
 #define DBG_PROG_S(txt)
 #define DBG_PROG_V(txt)
 #endif
-#define WARN { cout << _("!!! Warnung !!!"); DBG }
-#define WARN_S(txt) { cout << _("!!! Warnung !!!"); DBG_S(txt) }
-#define WARN_V(txt) { cout << _("!!! Warnung !!!"); DBG_V(txt) }
+#define WARN { cout << _("!!! Warnung !!!"); DBG_ }
+#define WARN_S(txt) { cout << _("!!! Warnung !!!"); DBG_S_(txt) }
+#define WARN_V(txt) { cout << _("!!! Warnung !!!"); DBG_V_(txt) }
 
 
 // mathematische Helfer
