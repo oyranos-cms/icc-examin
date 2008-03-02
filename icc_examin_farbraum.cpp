@@ -114,7 +114,7 @@ ICCexamin::netzLese (int n,
   std::vector<ICCnetz> netz_temp;
 
   {
-    if(farbraumModus())
+    if(farbraumModus() && n == 1)
       intent_ = profile.profil()->intent();
     else
       intent_ = 3;

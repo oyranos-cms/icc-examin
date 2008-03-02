@@ -1,5 +1,7 @@
 include config
 
+BINTARGET = iccexamin
+
 ifdef BUILD64
 CC =  cc-64
 CXX = c++-64
@@ -46,7 +48,7 @@ ifdef APPLE
   OSX_CPP = $(OSX_CPPFILES)
   INCL=-I$(includedir) -I/usr/X11R6/include -I./ -I/usr/include/gcc/darwin/default/c++
   REZ = \
-      fltk-config --post $(TARGET);
+      fltk-config --post $(BINTARGET);
   MAKEDEPEND = /usr/X11R6/bin/makedepend -Y
   DBG_LIBS = #-lMallocDebug
   MSGMERGE = msgmerge
@@ -73,7 +75,7 @@ else
     LINK_LIB_PATH = -Wl,--rpath -Wl,$(libdir)
     LINK_SRC_PATH = -Wl,--rpath -Wl,$(srcdir)
   else
-    OPTS=-Wall -O2 -g $(DEBUG) -L. -Wunused -fno-exceptions
+    OPTS=-Wall -O2 -g $(DEBUG) -L. -Wunused -fno-exceptions -lc -lm
     RM = rm -f
     LIBLINK_FLAGS = -shared -ldl
     I18N_LIB = $(ICONV) -lintl
@@ -109,8 +111,8 @@ else
 endif
 
 LDLIBS = -L$(libdir) -L./ $(FLU_FLTK_LIBS) -licc_examin \
-	$(X11_LIBS) -llcms $(OYRANOS_LIBS) $(LCMS_LIBS) $(FTGL_LIBS) $(I18N_LIB) \
-	$(DBG_LIBS)
+	$(X11_LIBS) -llcms -L/lib $(OYRANOS_LIBS) $(LCMS_LIBS) \
+	$(FTGL_LIBS) $(I18N_LIB) $(DBG_LIBS)
 
 CPP_HEADERS = \
 	agviewer.h \
@@ -264,7 +266,7 @@ base:	config mkdepend
 	
 release:	icc_alles.o
 	echo Verknuepfen $@...
-	$(CXX) $(OPTS) -o $(TARGET) \
+	$(CXX) $(OPTS) -o $(BINTARGET) \
 	icc_alles.o \
 	$(LDLIBS)
 	$(REZ)
@@ -274,7 +276,7 @@ $(TARGET):	base $(OBJECTS) $(LIBNAME) pot #$(LIBSONAMEFULL)
 	
 dynamic:	$(TARGET)
 	echo Verknuepfen $@...
-	$(CXX) $(OPTS) -o $(TARGET) \
+	$(CXX) $(OPTS) -o $(BINTARGET) \
 	$(OBJECTS) \
 	$(LDLIBS) $(LINK_LIB_PATH) $(LINK_SRC_PATH)
 	$(REZ)
@@ -296,7 +298,7 @@ $(LIBNAME):	$(CLIB_OBJECTS)
 
 static:	$(TARGET)
 	echo Verknuepfen $@ ...
-	$(CXX) $(OPTS) -o $(TARGET) $(OBJECTS) \
+	$(CXX) $(OPTS) -o $(BINTARGET) $(OBJECTS) \
 	-L./  -licc_examin \
 	`flu-config --ldstaticflags` \
 	`fltk-config --use-gl --use-images --ldstaticflags` \
@@ -310,7 +312,7 @@ static:	$(TARGET)
 	$(REZ)
 
 static_static:	$(OBJECTS)
-	$(CXX) $(OPTS) -o $(TARGET) \
+	$(CXX) $(OPTS) -o $(BINTARGET) \
 	$(OBJECTS) \
 	$(LDLIBS) -static -ljpeg -lpng -lX11 -lpthread -lz -ldl \
 	-lfreetype -lfontconfig -lXrender -lGLU -lXext -lexpat \
@@ -354,7 +356,7 @@ $(POT_FILE):	potfile
 clean:	unbundle unpkg
 	echo mache sauber $@ ...
 	$(RM) mkdepend config config.h
-	$(RM) $(OBJECTS) $(CLIB_OBJECTS) $(TARGET) \
+	$(RM) $(OBJECTS) $(CLIB_OBJECTS) $(BINTARGET) \
 	$(LIBNAME) $(LIBSO) $(LIBSONAME) $(LIBSONAMEFULL)
 	for ling in $(LINGUAS); do \
 	  test -f po/$${ling}.gmo \
@@ -453,8 +455,8 @@ rpm:	dist
 install:
 	echo Installation ...
 	mkdir -p $(DESTDIR)$(bindir)
-	$(INSTALL) -m 755 $(TARGET) $(DESTDIR)$(bindir)
-	fltk-config --post $(DESTDIR)$(bindir)/$(TARGET)
+	$(INSTALL) -m 755 $(BINTARGET) $(DESTDIR)$(bindir)
+	fltk-config --post $(DESTDIR)$(bindir)/$(BINTARGET)
 	mkdir -p $(DESTDIR)$(datadir)/fonts/
 	$(INSTALL) -m 644 $(FONT) $(DESTDIR)$(datadir)/fonts/$(FONT)
 	mkdir -p $(DESTDIR)$(datadir)/applications/
@@ -476,7 +478,7 @@ install:
 
 uninstall:
 	echo deinstalliere ...
-	$(RM) $(DESTDIR)$(bindir)/$(TARGET)
+	$(RM) $(DESTDIR)$(bindir)/$(BINTARGET)
 	$(RM) $(DESTDIR)$(datadir)/applications/icc_examin.desktop
 	$(RM) $(DESTDIR)$(datadir)/mime/packages/icc.xml
 	$(RM) $(DESTDIR)$(datadir)/pixmaps/icc_examin.png
@@ -489,7 +491,7 @@ uninstall:
 bundle:	static
 	echo bündeln ...
 	test -d ICC\ Examin.app/Contents/MacOS/ || mkdir -p ICC\ Examin.app/ ICC\ Examin.app/Contents/ ICC\ Examin.app/Contents/MacOS/ ICC\ Examin.app/Contents/Resources/
-	$(INSTALL) -m 755 $(TARGET) ICC\ Examin.app/Contents/MacOS/ICC\ Examin
+	$(INSTALL) -m 755 $(BINTARGET) ICC\ Examin.app/Contents/MacOS/ICC\ Examin
 	strip ICC\ Examin.app/Contents/MacOS/ICC\ Examin
 	$(INSTALL) -m 644 Info.plist ICC\ Examin.app/Contents/Info.plist
 	$(INSTALL) -m 644 $(FONT) ICC\ Examin.app/Contents/Resources/
@@ -525,7 +527,7 @@ pkg:	bundle
 	  && $(INSTALL) -m 755 ~/bin/iccgamut installation$(bindir) \
 	  || test -f iccgamut && $(INSTALL) -m 755 iccgamut installation$(bindir) \
 	    || echo iccgamut nicht gefunden
-	$(LINK) $(bindir)/$(TARGET) installation/Applications/ICC\ Examin.app/Contents/MacOS/ICC\ Examin
+	$(LINK) $(bindir)/$(BINTARGET) installation/Applications/ICC\ Examin.app/Contents/MacOS/ICC\ Examin
 	open /Developer/Applications/Utilities/PackageMaker.app ICC\ Examin.pmsp
 	echo sudo: chown -R root:admin installation  -- bitte nicht vergessen
 	echo ... Packet vorbereitet

@@ -358,7 +358,7 @@ getChannelNames (icColorSpaceSignature color)
   std::vector<std::string> texte;
   std::stringstream s;
 # define nFARBEN(n) for (int i = 0; i < n; i++) \
-                       { s << i << ". " << _("Farbe"); \
+                       { s << i << ". " << _("Colour"); \
                          texte.push_back (s.str()); \
                        }
 

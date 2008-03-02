@@ -168,7 +168,7 @@ iccGrenze(ICCprofile & profil, int intent, size_t & groesse)
     if(xform) cmsDeleteTransform(xform);
     if(lab) cmsCloseProfile(lab);
     if(p) cmsCloseProfile(p);
-    if(p_block) free (p_block);
+    if(p_block) delete [] p_block;
   }
   DBG_PROG_ENDE
   return (double*)lab_erg;

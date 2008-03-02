@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2005-09-02 19:43+0200\n"
+"POT-Creation-Date: 2005-09-11 10:13+0200\n"
 "PO-Revision-Date: 2005-08-13 17:35+0200\n"
 "Last-Translator: Kai-Uwe Behrmann\n"
 "Language-Team:  <eo@li.org>\n"
@@ -612,9 +612,9 @@ msgstr ""
 msgid "15color"
 msgstr ""
 
-#: icc_helfer.cpp:361
-msgid "Farbe"
-msgstr ""
+#: icc_helfer.cpp:361 icc_profile_tags.cpp:984 icc_profile_tags.cpp:991
+msgid "Colour"
+msgstr "kolora"
 
 #: icc_helfer.cpp:373
 msgid "CIE *u"
@@ -1288,28 +1288,28 @@ msgstr ""
 msgid "K"
 msgstr ""
 
-#: icc_oyranos.cpp:163 icc_oyranos.cpp:319 icc_oyranos.cpp:399
-#: icc_oyranos.cpp:439 icc_oyranos.cpp:490
+#: icc_oyranos.cpp:168 icc_oyranos.cpp:324 icc_oyranos.cpp:404
+#: icc_oyranos.cpp:445 icc_oyranos.cpp:496
 msgid "Profil konnte nicht geladen werden"
 msgstr ""
 
-#: icc_oyranos.cpp:309
+#: icc_oyranos.cpp:314
 msgid "memory based"
 msgstr ""
 
-#: icc_oyranos.cpp:701 icc_oyranos.cpp:787
+#: icc_oyranos.cpp:707 icc_oyranos.cpp:793
 msgid "hLab Profil nicht geoeffnet"
 msgstr ""
 
-#: icc_oyranos.cpp:785
+#: icc_oyranos.cpp:791
 msgid "hsRGB Profil nicht geoeffnet"
 msgstr ""
 
-#: icc_oyranos.cpp:796
+#: icc_oyranos.cpp:802
 msgid "keine hXYZtoRGB Transformation gefunden"
 msgstr ""
 
-#: icc_oyranos.cpp:800
+#: icc_oyranos.cpp:806
 msgid "RGB_speicher Speicher nicht verfuegbar"
 msgstr ""
 
@@ -1605,10 +1605,6 @@ msgstr ""
 #: icc_profile_tags.cpp:423
 msgid "Device Colours"
 msgstr ""
-
-#: icc_profile_tags.cpp:984 icc_profile_tags.cpp:991
-msgid "Colour"
-msgstr "kolora"
 
 #: icc_ueber.cpp:53 icc_betrachter.cxx:516
 msgid "About ICC Examin"

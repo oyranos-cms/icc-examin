@@ -544,7 +544,7 @@ ICCexamin::gamutSpeichern (IccGamutFormat format)
   size_t groesse = 0;
   char* daten = 0;
   daten = profile.profil()->saveProfileToMem( &groesse );
-  profil.lade( daten, groesse );
+  profil.ladeNew( daten, groesse );
   if(format == ICC_ABSTRACT) {
     // Gamutprofil erzeugen
     Speicher speicher;

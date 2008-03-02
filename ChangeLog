@@ -1,3 +1,12 @@
+2005-09-07
+	* fix: sprintf durch memcpy ersetzt für URLs; sprintf kann keine %20 Zeichen
+
+2005-09-06
+	* und: Anpassen an Oyranos-0.1.2
+	* fix: statisches und dynamisches Verknüpfen mit Elektra
+	* und: Export einiger icc_oyranos Funktionen nach Oyranos
+	* fix: filtern von %20 in URLs
+
 2005-09-01
 	* fix: more cout << (char*) 0; in icc_oyranos.cpp
 	* fix: Darstellen einer Messtabelle mit null Länge ; noch einen

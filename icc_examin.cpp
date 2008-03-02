@@ -739,6 +739,8 @@ tastatur(int e)
   case FL_PASTE:
     {
     DBG_PROG_S( "FL_PASTE " << Fl::event_length() )
+      std::string adresse, suchen = "%20", ersetzen = " ";
+      int pos;
 #     if APPLE_
       if(dnd_kommt &&
          Fl::event_length())
@@ -751,9 +753,15 @@ tastatur(int e)
         while((text = strrchr(temp,'\n')) != 0)
         {
           profilnamen.push_back(text+1);
+          pos = profilnamen.size()-1;
+          if(profilnamen[pos].size())
+            icc_parser::suchenErsetzen(profilnamen[pos], suchen, ersetzen, 0);
           text[0] = 0;
         }
         profilnamen.push_back(temp);
+        pos = profilnamen.size()-1;
+        if(profilnamen[pos].size())
+          icc_parser::suchenErsetzen(profilnamen[pos], suchen, ersetzen, 0);
         icc_examin->oeffnen(profilnamen);
       }
       dnd_kommt = false;
@@ -762,13 +770,19 @@ tastatur(int e)
          Fl::event_length())
       {
         {
-          DBG_PROG_S( Fl::event_text() );
-          char *temp = (char*)alloca(Fl::event_length()+1),
+          int len = Fl::event_length();
+          DBG_PROG_V( len )
+          char *temp = (char*)alloca(MAX_PATH*64/*Fl::event_length()+1*/),
                *text;
-          sprintf(temp, Fl::event_text());
+          memcpy(temp, Fl::event_text(), Fl::event_length());
+          temp[len]=0;
+          // sprintf macht Probleme
+          //sprintf(temp, Fl::event_text());
+          DBG_PROG_V( Fl::event_text() )
+          DBG_PROG_V( temp )
           std::vector<std::string>profilnamen;
           while((text = strrchr(temp,'\n')) != 0)
-          {
+          { DBG_PROG_V( (int*)text<<" "<<text+1 )
             if(strlen(text+1))
               profilnamen.push_back(text+1);
             text[0] = 0;
@@ -777,15 +791,24 @@ tastatur(int e)
           // Korrekturen
           for(unsigned int i = 0; i < profilnamen.size(); ++i) {
             const char *filter_a = "file:";
+            DBG_PROG_V( profilnamen[i] )
             if(strstr(profilnamen[i].c_str(), filter_a)) {
+              int len_neu = len-strlen(filter_a);
               char *txt = (char*)alloca(profilnamen[i].size()+1);
-              sprintf(txt, &(profilnamen[i].c_str())[strlen(filter_a)]);
+              memcpy(txt, &(profilnamen[i].c_str())[strlen(filter_a)],
+                     len_neu);
+              txt[len_neu]=0;
               // Wagenruecklauf beseitigen
               char *zeiger = strchr(txt, '\r');
               if(zeiger)
                 zeiger[0] = 0;
               profilnamen[i] = txt;
             }
+            DBG_PROG_V( profilnamen[i] )
+            // Leerzeichen filtern
+            pos = i;
+            if(profilnamen[pos].size())
+              icc_parser::suchenErsetzen(profilnamen[pos], suchen, ersetzen, 0);
             DBG_PROG_S( i <<" "<< profilnamen[i] );
           }
           icc_examin->oeffnen(profilnamen);
