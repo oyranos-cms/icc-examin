@@ -1,5 +1,11 @@
 ERROR=0
 
+if [ -n "$PKG_CONFIG_PATH" ]; then
+  PKG_CONFIG_PATH=$PKG_CONFIG_PATH:$libdir/pkgconfig
+else
+  PKG_CONFIG_PATH=$libdir/pkgconfig
+fi
+export PKG_CONFIG_PATH
 
 if [ -n "$ELEKTRA" ] && [ $ELEKTRA -gt 0 ]; then
   if [ -z "$elektra_min" ]; then
@@ -19,11 +25,15 @@ if [ -n "$ELEKTRA" ] && [ $ELEKTRA -gt 0 ]; then
       echo "ELEKTRA_LIBS = `pkg-config --libs elektra`" >> $CONF
       ELEKTRA_FOUND=1
     else
-      echo -e "Elektra:\n  too new Elektra found,\n  need a version not greater than $elektra_max, download: elektra.sf.net"
+      echo "Elektra:"
+      echo "  too new Elektra found,"
+      echo "  need a version not greater than $elektra_max, download: elektra.sf.net"
       ERROR=1
     fi
   else
-    echo -e "no or too old elektra found,\n  need at least version $elektra_min, download: elektra.sf.net"
+    echo "Elektra:"
+    echo "  no or too old elektra found,"
+    echo "  need at least version $elektra_min, download: elektra.sf.net"
     ERROR=1
   fi
 fi
@@ -61,51 +71,50 @@ fi
 
 if [ -n "$X11" ] && [ $X11 -gt 0 ]; then
   if [ -f /usr/X11R6/include/X11/Xlib.h ] ||
-     [ -f /usr/include/X11/Xlib.h ]; then
+     [ -f /usr/include/X11/Xlib.h ] ||
+     [ -f $includedir/X11/Xlib.h ]; then
     echo "X11                     detected"
     echo "#define HAVE_X 1" >> $CONF_H
     echo "X11 = 1" >> $CONF
     echo "X_H = -I/usr/X11R6/include -I/usr/include" >> $CONF
-  else
-    if [ $UNAME_ = "Linux" ]; then
-      echo "X11 header not found in /usr/X11R6/include/X11/Xlib.h or"
-      echo "/usr/include/X11/Xlib.h"
-      X11=0
-    fi
+  elif [ $OSUNAME = "Linux" ]; then
+    echo "X11 header not found in /usr/X11R6/include/X11/Xlib.h or"
+    echo "/usr/include/X11/Xlib.h"
+    X11=0
   fi
 fi
 if [ "$X11" = 1 ] && [ $X11 -gt 0 ]; then
   if [ -n "$XF86VMODE" ] && [ $XF86VMODE -gt 0 ]; then
     if [ -f /usr/X11R6/include/X11/extensions/xf86vmode.h ] ||
-       [ -f /usr/include/X11/extensions/xf86vmode.h ]; then
+       [ -f /usr/include/X11/extensions/xf86vmode.h ] ||
+       [ -f $includedir/X11/extensions/xf86vmode.h ]; then
       echo "X VidMode extension     detected"
       echo "#define HAVE_XF86VMODE 1" >> $CONF_H
       echo "XF86VMODE = 1" >> $CONF
       echo "XF86VMODE_LIB = -lXxf86vm" >> $CONF
-    else
-      if [ $UNAME_ = "Linux" ]; then
-        echo "X VidMode extension not found in /usr/X11R6/include/X11/extensions/xf86vmode.h or"
-        echo "/usr/include/X11/extensions/xf86vmode.h"
-      fi
+    elif [ $OSUNAME = "Linux" ]; then
+      echo "X VidMode extension not found in /usr/X11R6/include/X11/extensions/xf86vmode.h or"
+      echo "/usr/include/X11/extensions/xf86vmode.h"
     fi
   fi
 
   if [ -n "$XINERAMA" ] && [ $XINERAMA -gt 0 ]; then
     if [ -f /usr/X11R6/include/X11/extensions/Xinerama.h ] ||
-       [ -f /usr/include/X11/extensions/Xinerama.h ]; then
+       [ -f /usr/include/X11/extensions/Xinerama.h ] ||
+       [ -f $includedir/X11/extensions/Xinerama.h ]; then
       echo "X Xinerama              detected"
       echo "#define HAVE_XIN 1" >> $CONF_H
       echo "XIN = 1" >> $CONF
       echo "XINERAMA_LIB = -lXinerama" >> $CONF
     else
-      if [ $UNAME_ = "Linux" ]; then
+      if [ $OSUNAME = "Linux" ]; then
         echo "X Xinerma not found in /usr/X11R6/include/X11/extensions/Xinerama.h or"
         echo "/usr/include/X11/extensions/Xinerama.h"
       fi
     fi
   fi
   echo "X_CPP = \$(X_CPPFILES)" >> $CONF
-  echo "X11_LIB_PATH = -L/usr/X11R6\$(LIB) -L/usr\$(LIB)" >> $CONF
+  echo "X11_LIB_PATH = -L/usr/X11R6/lib\$(BARCH) -L/usr/lib\$(BARCH) -L\$libdir" >> $CONF
   echo "X11_LIBS=\$(X11_LIB_PATH) -lX11 \$(XF86VMODE_LIB) -lXpm -lXext \$(XINERAMA_LIB)" >> $CONF
 fi
 

@@ -5,12 +5,6 @@ MAKEDEPEND	= $(CXX) -MM
 LINK = ln -s
 INSTALL = install -v
 
-exec_prefix	= ${prefix}
-bindir		= ${exec_prefix}/bin
-datadir		= ${prefix}/share
-includedir	= ${prefix}/include
-mandir		= ${prefix}/man
-
 DEBUG = -DDEBUG
 DL = --ldflags # --ldstaticflags
 
@@ -397,6 +391,7 @@ $(TARGET).spec:
 	./configure
 
 rpm:	$(TARGET).spec dist
+	./configure --prefix=/usr # for RedHat alike distributions
 	mkdir -p rpmdir/BUILD \
 	rpmdir/SPECS \
 	rpmdir/SOURCES \
@@ -415,12 +410,12 @@ install:
 	fltk-config --post $(DESTDIR)$(bindir)/$(BINTARGET)
 	mkdir -p $(DESTDIR)$(datadir)/fonts/
 	$(INSTALL) -m 644 $(FONT) $(DESTDIR)$(datadir)/fonts/$(FONT)
-	mkdir -p $(DESTDIR)$(datadir)/applications/
-	$(INSTALL) -m 644 icc_examin.desktop $(DESTDIR)$(datadir)/applications/icc_examin.desktop
+	mkdir -p $(DESTDIR)$(desktopdir)
+	$(INSTALL) -m 644 icc_examin.desktop $(DESTDIR)$(desktopdir)/icc_examin.desktop
 	mkdir -p $(DESTDIR)$(datadir)/mime/packages/
 	$(INSTALL) -m 644 icc.xml $(DESTDIR)$(datadir)/mime/packages/icc.xml
-	mkdir -p $(DESTDIR)$(datadir)/pixmaps/
-	$(INSTALL) -m 644 icc_examin.png $(DESTDIR)$(datadir)/pixmaps/icc_examin.png
+	mkdir -p $(DESTDIR)$(pixmapdir)
+	$(INSTALL) -m 644 icc_examin.png $(DESTDIR)$(pixmapdir)/icc_examin.png
 	echo  Linguas ...
 	for ling in $(LINGUAS); do \
 	  echo "installiere po/$${ling}.gmo ..."; \
@@ -435,9 +430,9 @@ install:
 uninstall:
 	echo deinstalliere ...
 	$(RM) $(DESTDIR)$(bindir)/$(BINTARGET)
-	$(RM) $(DESTDIR)$(datadir)/applications/icc_examin.desktop
+	$(RM) $(DESTDIR)$(desktopdir)/icc_examin.desktop
 	$(RM) $(DESTDIR)$(datadir)/mime/packages/icc.xml
-	$(RM) $(DESTDIR)$(datadir)/pixmaps/icc_examin.png
+	$(RM) $(DESTDIR)$(pixmapdir)/icc_examin.png
 	$(RM) $(DESTDIR)$(datadir)/fonts/$(FONT)
 	for ling in $(LINGUAS); do \
 	  $(RM) $(DESTDIR)$(datadir)/locale/$${ling}/LC_MESSAGES/$(TARGET).mo; \

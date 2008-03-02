@@ -54,9 +54,9 @@ update-mime-database %{_datadir}/mime/
 %defattr(-, root, root)
 %doc AUTHORS COPYING ChangeLog README
 %{_bindir}/iccexamin
-%{_datadir}/applications/icc_examin.desktop
+%{desktopdir}/icc_examin.desktop
 %{_datadir}/mime/packages/icc.xml
-%{_datadir}/pixmaps/icc_examin.png
+%{pixmapdir}/icc_examin.png
 %{_datadir}/fonts/FreeSans.ttf
 %{_datadir}/locale/de/LC_MESSAGES/icc_examin.mo
 %{_datadir}/locale/eo/LC_MESSAGES/icc_examin.mo

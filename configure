@@ -31,7 +31,7 @@ if [ $VERSION_C -gt 9 ]; then
 else
   VERSION_L="${VERSION_L}0$VERSION_C"
 fi
-VERSION_L=`echo $VERSION_L | sed s/^0*//g`
+VERSION_L=`echo $VERSION_L | sed 's/^0*//g'`
 ZEIT="May 2004 - May 2006"
 
 src_dir="`(cd ..;pwd)`/""$TARGET"-"$VERSION"
@@ -65,8 +65,8 @@ else
   if [ $UNAME_ = "Linux" ]; then
     echo "LINUX = 1" >> $CONF
     echo "#define LINUX 1" >> $CONF_H
-    OSUNAME=Linux
     echo "Linux system            detected"
+    OSUNAME=Linux
   else
     if [ $UNAME_ = "SunOS" ]; then
       echo "SOLARIS = 1" >> $CONF
@@ -116,25 +116,103 @@ fi
 LIBDIR="lib"$BARCH
 export MACH OSUNAME LIBDIR BARCH LINE_ARCH
 
+
 if [ $# -gt 0 ]; then
   prefix=""
   while [ $# -gt 0 ]; do
-    if [ "${1%--prefix=*}" != "$1" ]; then
-      teste="${1#--prefix=*}"
-      #echo "test: $teste $1"
+    arg=$1
+    # prefix exec_prefix bindir sbindir libdir includedir datadir mandir
+    switch=prefix
+    if [ "`echo \"$1\" | sed s/\"--$switch=\"//`" != "$1" ]; then
+      prefix="`echo \"$1\" | sed s/\"--$switch=\"//`"
     fi
-    if [ "$teste" != "" ]; then
-      prefix="$teste"
+    switch="exec-prefix"
+    if [ "`echo \"$1\" | sed s/\"--$switch=\"//`" != "$1" ]; then
+      exec_prefix="`echo $1 | sed s/--$switch=//`"
+    fi
+    switch=bindir
+    if [ "`echo \"$1\" | sed s/\"--$switch=\"//`" != "$1" ]; then
+      bindir="`echo $1 | sed s/--$switch=//`"
+    fi
+    switch=sbindir
+    if [ "`echo \"$1\" | sed s/\"--$switch=\"//`" != "$1" ]; then
+      sbindir="`echo $1 | sed s/--$switch=//`"
+    fi
+    switch=libdir
+    if [ "`echo \"$1\" | sed s/\"--$switch=\"//`" != "$1" ]; then
+      libdir="`echo $1 | sed s/--$switch=//`"
+    fi
+    switch=includedir
+    if [ "`echo \"$1\" | sed s/\"--$switch=\"//`" != "$1" ]; then
+      includedir="`echo $1 | sed s/--$switch=//`"
+    fi
+    switch=datadir
+    if [ "`echo \"$1\" | sed s/\"--$switch=\"//`" != "$1" ]; then
+      datadir="`echo $1 | sed s/--$switch=//`"
+    fi
+    switch=mandir
+    if [ "`echo \"$1\" | sed s/\"--$switch=\"//`" != "$1" ]; then
+      mandir="`echo $1 | sed s/--$switch=//`"
+    fi
+    # pixmapdir desktopdir
+    switch=pixmapdir
+    if [ "`echo \"$1\" | sed s/\"--$switch=\"//`" != "$1" ]; then
+      pixmapdir="`echo $1 | sed s/--$switch=//`"
+    fi
+    switch=desktopdir
+    if [ "`echo \"$1\" | sed s/\"--$switch=\"//`" != "$1" ]; then
+      desktopdir="`echo $1 | sed s/--$switch=//`"
     fi
     shift
   done
-else
+fi
+# prefix exec_prefix bindir sbindir libdir includedir datadir
+if [ -z "$prefix" ]; then
   if [ $UNAME_ = "Darwin" ]; then
     prefix=/opt/local
   else
     prefix=/usr/local
   fi
 fi
+if [ -z "$exec_prefix" ]; then
+  exec_prefix="$prefix"
+fi
+if [ "`echo $exec_prefix | grep 64 | wc -l`" -eq "1" ]; then
+  BARCH=""
+  LIBDIR="lib"
+  echo unset BARCH LIBDIR
+  export BARCH LIBDIR
+fi
+if [ -z "$bindir" ]; then
+  bindir="$exec_prefix/bin$BARCH"
+fi
+if [ -z "$sbindir" ]; then
+  sbindir="$exec_prefix/sbin$BARCH"
+fi
+if [ -z "$libdir" ]; then
+  libdir="$exec_prefix/$LIBDIR"
+fi
+if [ -z "$includedir" ]; then
+  includedir="$prefix/include"
+fi
+if [ -z "$datadir" ]; then
+  datadir="$prefix/share"
+fi
+if [ -z "$mandir" ]; then
+  mandir="$datadir/man"
+fi
+# pixmapdir desktopdir
+if [ -z "$pixmapdir" ]; then
+  pixmapdir="$datadir/pixmaps"
+fi
+if [ -z "$desktopdir" ]; then
+  desktopdir="$datadir/applications"
+fi
+export prefix exec_prefix bindir sbindir libdir includedir datadir mandir
+export pixmapdir desktopdir
+
+PATH=$bindir:$PATH
+export PATH
 
 
 
@@ -144,30 +222,30 @@ echo "LIB=/"$LIBDIR >> $CONF
 
 
 #export ELEKTRA=1
-export OYRANOS=1
-export LCMS=1
-export FTGL=2
-export FLTK=1
-export LIBPNG=2
-#export FLU=2
+OYRANOS=1; export OYRANOS
+LCMS=1; export LCMS
+FTGL=2; export FTGL
+FLTK=1; export FLTK
+LIBPNG=2; export LIBPNG
+#FLU=2; export FLU
 if [ $OSUNAME != "Darwin" ]; then
-  export X11=1
+X11=1;   export X11
 fi
-export XINERAMA=1
-export XF86VMODE=1
-export PO=1
+XINERAMA=1; export XINERAMA
+XF86VMODE=1; export XF86VMODE
+PO=1; export PO
 ./configure.sh
-export ELEKTRA=0
-export OYRANOS=0
-export LCMS=0
-export FTGL=0
-export FLTK=0
-export LIBPNG=0
-export FLU=0
-export X11=0
-export XINERAMA=0
-export XF86VMODE=0
-export PO=0
+ELEKTRA=0; export ELEKTRA
+OYRANOS=0; export OYRANOS
+LCMS=0; export LCMS
+FTGL=0; export FTGL
+FLTK=0; export FLTK
+LIBPNG=0; export LIBPNG
+FLU=0; export FLU
+X11=0; export X11
+XINERAMA=0; export XINERAMA
+XF86VMODE=0; export XF86VMODE
+PO=0; export PO
 if [ $? -gt 0 ]; then
   ERROR=1
 fi
@@ -202,20 +280,48 @@ echo "#endif //ICC_VERSION_H" >> $VERS
 echo "Version: $VERSION" > $SPEC
 echo "Source:  $TARGET"-"$VERSION".tar.gz >> $SPEC
 echo "Release: $RELEASE" >> $SPEC
+echo "%define pixmapdir       $pixmapdir" >> $SPEC
+echo "%define desktopdir      $desktopdir" >> $SPEC
 cat  $SPEC.in >> $SPEC
 echo $SPEC generated
 
 
 echo "prefix =                $prefix"
 
-echo "prefix = $prefix" >> $CONF
-echo "libdir = \${prefix}/lib$BARCH" >> $CONF
+echo ""
+echo "################################################################"
+echo "#                       Configuration                          #"
+echo "prefix          =       $prefix"
+echo "exec_prefix     =       $exec_prefix"
+echo "bindir          =       $bindir"
+echo "sbindir         =       $sbindir"
+echo "libdir          =       $libdir"
+echo "includedir      =       $includedir"
+echo "datadir         =       $datadir"
+echo "mandir          =       $mandir"
+echo "pixmapdir       =       $pixmapdir"
+echo "desktopdir      =       $desktopdir"
+echo "################################################################"
+echo ""
+
 echo "src_dir = $src_dir" >> $CONF
 echo "srcdir = $srcdir" >> $CONF
+echo "prefix=$prefix" >> $CONF
+echo "exec_prefix=$exec_prefix" >> $CONF
+echo "bindir=$bindir" >> $CONF
+echo "sbindir=$sbindir" >> $CONF
+echo "libdir=$libdir" >> $CONF
+echo "includedir=$includedir" >> $CONF
+echo "datadir=$datadir" >> $CONF
+echo "mandir=$mandir" >> $CONF
+echo "pixmapdir=$pixmapdir" >> $CONF
+echo "desktopdir=$desktopdir" >> $CONF
 echo "" >> $CONF
+
 echo "#define PREFIX         \"$prefix\"" >> $CONF_H
-echo "#define DATADIR        \"$prefix/share/\"" >> $CONF_H
-echo "#define LOCALEDIR      \"$prefix/share/locale\"" >> $CONF_H
+echo "#define DATADIR        \"$datadir\"" >> $CONF_H
+echo "#define LOCALEDIR      \"$datadir/locale\"" >> $CONF_H
+echo "#define PIXMAPDIR      \"$pixmapdir\"" >> $CONF_H
 echo "#define SRCDIR         \"$srcdir\"" >> $CONF_H
 echo "#define SRC_LOCALEDIR  \"$srcdir/po\"" >> $CONF_H
 
