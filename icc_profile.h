@@ -53,6 +53,8 @@ class ICCheader;
 class ICCtag;
 class ICCmeasurement;
 
+extern std::vector<ICCprofile> profile;
+
 // definiert in icc_profile.cpp
 class ICCheader {
   public:

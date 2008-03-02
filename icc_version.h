@@ -18,24 +18,20 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
+ * 
  * -----------------------------------------------------------------------------
  *
- * Start Funktion.
+ * Version
  * 
  */
 
+// Date:      September 2004
 
-#include "icc_examin.h"
+#ifndef ICC_VERSION_H
+#define ICC_VERSION_H
 
-int
-main (int argc, char** argv)
-{
-  ICCexamin hauptprogramm;
-
-  hauptprogramm.start(argc, argv);
-
-  return false;
-}
+#define ICC_EXAMIN_V 0.14
+#define ICC_EXAMIN_D _("November 2004")
 
 
+#endif //ICC_VERSION_H

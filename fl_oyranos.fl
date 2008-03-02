@@ -2,7 +2,7 @@
 version 1.0104 
 header_name {.h} 
 code_name {.cxx}
-decl {\#include "icc_examin.h"} {public
+decl {\#include "icc_betrachter.h"} {selected public
 } 
 
 decl {\#include <string>} {} 
@@ -13,7 +13,7 @@ Function {voreinstellungen()} {open
 } {
   Fl_Window {} {
     label Einstellungen open
-    xywh {816 515 375 205} type Double resizable
+    xywh {821 539 375 205} type Double resizable
     code0 {o->show();} visible
   } {
     Fl_Tabs {} {
@@ -63,6 +63,5 @@ Function {oyranos_pfade_waehlen()} {open
 
       fl_oyanos_pfade_browser->topline(0);
       fl_oyanos_pfade_browser->textfont(FL_COURIER);
-      fl_oyanos_pfade_browser->textsize(14);} {selected
-  }
+      fl_oyanos_pfade_browser->textsize(14);} {}
 } 

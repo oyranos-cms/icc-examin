@@ -28,7 +28,7 @@
 
 #ifndef ICC_UEBER_H
 #define ICC_UEBER_H
-#define _(text) text
+#include <string>
 
 std::string getUeberHtml();
 

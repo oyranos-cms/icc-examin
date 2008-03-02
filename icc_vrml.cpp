@@ -27,7 +27,7 @@
 
 // Date:      Mai 2004
 
-#include "icc_examin.h"
+#include "icc_betrachter.h"
 #include "icc_vrml.h"
 #include <stdio.h>
 #include <iostream>

@@ -14,7 +14,6 @@ static char *statlabel;
 #include "fl_oyranos.h"
 #include "agviewer.h"
 #include "icc_gl.h"
-std::vector<ICCprofile> profile;
 #ifdef HAVE_FLU
 static Flu_File_Chooser *dateiwahl;
 

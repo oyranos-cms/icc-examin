@@ -27,10 +27,11 @@
 
 //#define DEBUG_DRAW
 
-#include "icc_examin.h"
-//#include "icc_vrml.h"
+#include "icc_helfer.h"
+#include "icc_profile.h"
 #include <stdio.h>
 #include <iostream>
+#include <vector>
 #include <string.h>
 #include <FL/Fl.H>
 #include <FL/fl_draw.H>

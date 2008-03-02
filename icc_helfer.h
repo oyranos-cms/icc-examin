@@ -35,7 +35,7 @@
 //#include <iostream>
 //#include <sstream>
 //#include <map>
-//#include <vector>
+#include <vector>
 //#include <fstream>
 #include "icc_utils.h"
 

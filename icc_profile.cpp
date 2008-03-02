@@ -43,8 +43,9 @@
 
 #include <cmath>
 
-#define _(text) text
 #define g_message printf
+
+std::vector<ICCprofile> profile;
 
 
 /**

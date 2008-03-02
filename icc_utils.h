@@ -36,6 +36,8 @@
 #include <iostream>
 
 
+#define _(text) text
+
 #define cout std::cout
 #define endl std::endl
 

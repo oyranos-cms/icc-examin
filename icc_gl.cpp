@@ -30,6 +30,8 @@
 
 #include "icc_examin.h"
 #include "icc_draw.h"
+#include "icc_utils.h"
+#include "icc_betrachter.h"
 #include "agviewer.h"
 #include "icc_gl.h"
 

@@ -31,7 +31,8 @@
 #  include "agviewer.h"
 
 // ICC Kopfdateien und Definitionen
-#include "icc_examin.h"
+#include "icc_utils.h"
+#include "icc_betrachter.h"
 #include "icc_gl.h"
 #define _(text) text
 

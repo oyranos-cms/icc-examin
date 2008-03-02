@@ -5,16 +5,22 @@ code_name {.cxx}
 decl {\#define DEBUG} {public
 } 
 
-decl {\#include <stdio.h>} {public
+decl {\#include <cassert>} {public
 } 
 
 decl {\#include <iostream>} {public
 } 
 
-decl {//\#include <sstream>} {public
+decl {//\#include <sstream>} {selected public
 } 
 
-decl {\#include <cassert>} {public
+decl {\#include <stdio.h>} {public
+} 
+
+decl {\#include <string>} {public
+} 
+
+decl {\#include <vector>} {public
 } 
 
 decl {\#include <FL/Fl.H>} {public
@@ -73,9 +79,6 @@ decl {\#include "icc_profile.h"
 
 decl {\#include "agviewer.h"
 \#include "icc_gl.h"} {} 
-
-decl {std::vector<ICCprofile> profile;} {public
-} 
 
 declblock {\#ifdef HAVE_FLU} {after {\#endif}
 } {
@@ -239,7 +242,7 @@ Function {icc_betrachter(int argc, char** argv)} {open
   }
   Fl_Window details {
     label {ICC Details} open
-    xywh {368 111 385 520} type Double box NO_BOX color 53
+    xywh {170 332 385 520} type Double box NO_BOX color 53
     code1 {DBG_PROG
 
     if (argc>1) {
@@ -519,8 +522,7 @@ ueber_html->value(getUeberHtml().c_str());}
   if (argc > 1)
     open (false);} {}
   code {DBG_PROG_ENDE
-  Fl::run();} {selected
-  }
+  Fl::run();} {}
 } 
 
 Function {open(int interaktiv)} {} {

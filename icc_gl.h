@@ -30,7 +30,7 @@
 
 #ifndef ICC_GL_H
 #define ICC_GL_H
-#define _(text) text
+#include <vector>
 
 extern int kanal;
 extern bool duenn;

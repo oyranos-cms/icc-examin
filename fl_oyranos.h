@@ -3,7 +3,7 @@
 #ifndef fl_oyranos_h
 #define fl_oyranos_h
 #include <FL/Fl.H>
-#include "icc_examin.h"
+#include "icc_betrachter.h"
 #include <FL/Fl_Double_Window.H>
 #include <FL/Fl_Tabs.H>
 #include <FL/Fl_Group.H>

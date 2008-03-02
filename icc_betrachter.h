@@ -4,10 +4,12 @@
 #define icc_betrachter_h
 #include <FL/Fl.H>
 #define DEBUG
-#include <stdio.h>
+#include <cassert>
 #include <iostream>
 //#include <sstream>
-#include <cassert>
+#include <stdio.h>
+#include <string>
+#include <vector>
 #include <FL/Fl.H>
 #include <FL/Fl_Window.H>
 #include <FL/Fl_Menu_Bar.H>
@@ -31,7 +33,6 @@ class GL_Ansicht;
 #include "icc_utils.h"
 
 #include "icc_ueber.h"
-extern std::vector<ICCprofile> profile;
 #include <FL/Fl_Double_Window.H>
 extern Fl_Double_Window *ueber;
 #include <FL/Fl_Group.H>
