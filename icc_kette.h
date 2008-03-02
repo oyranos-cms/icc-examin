@@ -61,7 +61,9 @@ class ICCkette
                                 if(pos < (int)_profile.size())
                                   _aktuelles_profil = (pos > -1) ? pos : -1; }
     int          aktuell   () { return _aktuelles_profil; }
-    ICCprofile*  profil    () { return &(_profile[_aktuelles_profil]); }
+    ICCprofile*  profil    () { if (_profile.size()) {
+                                  return &(_profile[_aktuelles_profil]);
+                                } else return 0; }
     std::string  name      () {
                if(_profilnamen.size()) return _profilnamen[_aktuelles_profil];
                else return ""; }

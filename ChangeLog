@@ -1,8 +1,12 @@
 
+2005-01-15
+	* fix: aktualisiere GL nach Profilladen
+	* fix: Daten Übertragung (Farben)
+	* fix: Daten Skalierung
+
 version 0.17
 2005-01-14
-	* neu: Messdaten in GL darstellen
-	* fix: aktualisiere GL nach Profilladen
+	* neu: Messdaten im Histogramfenster darstellen 
 
 2005-01-13
 	* neu: drawCurve/CIE greift über id von TagDrawing auf Daten in icc_examin

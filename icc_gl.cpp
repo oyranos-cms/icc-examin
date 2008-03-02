@@ -48,6 +48,14 @@
 #define DEBUG_ICCGL
 //#define Beleuchtung
 
+#ifdef DEBUG_ICCGL
+#define DBG_ICCGL_START DBG_PROG_START
+#define DBG_ICCGL_ENDE DBG_PROG_ENDE
+#else
+#define DBG_ICCGL_START
+#define DBG_ICCGL_ENDE
+#endif
+
 typedef enum {NOTALLOWED, AXES, RASTER, PUNKTE , HELFER, DL_MAX } DisplayLists;
 bool gl_voll[5] = {false,false,false,false,false};
 
@@ -85,8 +93,11 @@ GL_Ansicht::GL_Ansicht(int X,int Y,int W,int H) : Fl_Group(X,Y,W,H)
   menue_kanal_eintraege_ = 0;
   punktform = MENU_WUERFEL;
   punktfarbe = MENU_GRAU;
+  a_darstellungs_breite = 1.0;
+  b_darstellungs_breite = 1.0;
   schalen = 5;
   gl_fenster_zeigen_ = false;
+  zeig_punkte_als_messwert_paare = false;
   glut_id_ = -1;
   DBG_PROG_ENDE
 }
@@ -155,9 +166,11 @@ GL_Ansicht::init()
   glutMenuStateFunc(menuuse##n); DBG_PROG */
 
   if (glut_id_ == 1) { DBG_PROG_S("mft_gl " << glut_id_)
-    setzeGlutFunktionen(1) 
+    setzeGlutFunktionen(1)
   } else { DBG_PROG_S("gl Fenster " << glut_id_)
     setzeGlutFunktionen(2)
+    a_darstellungs_breite = 2.55;
+    b_darstellungs_breite = 2.55;
   }
 
   agviewers[agv_].agvMakeAxesList(AXES); DBG_PROG
@@ -378,7 +391,7 @@ GL_Ansicht::makeDisplayLists_()
   char text[256];
   char* ptr = 0;
 
-  #define PFEILSPITZE glutSolidCone(0.02, 0.05, 8, 4);
+  #define PFEILSPITZE glutSolidCone(0.02, 0.05, 16, 4);
 
   if (gl_voll[HELFER])
     glDeleteLists (id()*DL_MAX + HELFER, 1);
@@ -420,6 +433,7 @@ GL_Ansicht::makeDisplayLists_()
       {
         ptr = (char*) von_farb_namen_[0].c_str();
         sprintf (&text[0], ptr);
+        glColor4f(0.0,0.0,0.0,1.0);
         ZeichneText(GLUT_STROKE_ROMAN,&text[0])
       }
     glPopMatrix(); DBG_PROG
@@ -428,20 +442,21 @@ GL_Ansicht::makeDisplayLists_()
     glPushMatrix();
       if (von_farb_namen_.size() &&
           von_farb_namen_[1] == _("CIE *a"))
-        glTranslatef(0,-0.5,0);
+        glTranslatef(0,-.5,0);
       glBegin(GL_LINES);
-        glVertex3f(0, 0, .5); glVertex3f(0, 0, -.5);
+        glVertex3f(0, 0,  a_darstellungs_breite/2.);
+        glVertex3f(0, 0, -a_darstellungs_breite/2.);
       glEnd();
-      glTranslatef(0.0,0,0.5);
+      glTranslatef(0.0,0.0,a_darstellungs_breite/2.);
       glRotatef (180,0.0,.5,.0);
-      glTranslatef(.0,0.0,1.0);
+      glTranslatef(.0,0.0,a_darstellungs_breite);
       if (von_farb_namen_.size() &&
           von_farb_namen_[1] == _("CIE *a"))
       {
         FARBE(.2,.9,0.7)
         PFEILSPITZE
       }
-      glTranslatef(.0,0.0,-1.0);
+      glTranslatef(.0,0.0,-a_darstellungs_breite);
       glRotatef (180,0.0,.5,.0);
       if (von_farb_namen_.size() &&
           von_farb_namen_[1] == _("CIE *a"))
@@ -465,16 +480,17 @@ GL_Ansicht::makeDisplayLists_()
           von_farb_namen_[2] == _("CIE *b"))
         glTranslatef(0,-0.5,0);
       glBegin(GL_LINES);
-        glVertex3f(.5, 0, 0); glVertex3f(-.5, 0, 0);
+        glVertex3f( b_darstellungs_breite/2., 0, 0);
+        glVertex3f(-b_darstellungs_breite/2., 0, 0);
       glEnd();
-      glTranslatef(.5,0,0);
+      glTranslatef(b_darstellungs_breite/2.,0,0);
       if (von_farb_namen_.size() &&
           von_farb_namen_[2] == _("CIE *b"))
         FARBE(.9,.9,0.2)
       glRotatef (90,0.0,.5,.0);
       PFEILSPITZE
       glRotatef (180,.0,.5,.0);
-      glTranslatef(.0,.0,1.0);
+      glTranslatef(.0,.0,b_darstellungs_breite);
       if (von_farb_namen_.size() &&
           von_farb_namen_[2] == _("CIE *b"))
       {
@@ -482,7 +498,7 @@ GL_Ansicht::makeDisplayLists_()
         PFEILSPITZE
         FARBE(1,1,1)
       }
-      glTranslatef(.0,.0,-1.0);
+      glTranslatef(.0,.0,-b_darstellungs_breite);
       glRotatef (180,0.0,.5,.0);
       if (von_farb_namen_.size())
       {
@@ -708,12 +724,17 @@ GL_Ansicht::punkteAuffrischen()
       #endif
 
       //glColor3f(0.9, 0.9, 0.9);
-      for (unsigned i = 0; i < punkte_.size(); i+=3)
+      for (unsigned j = 0; j < punkte_.size(); j+=3)
       {
+        unsigned i = j;
         glPushMatrix();
-        glTranslatef( -2.55/2, -.5, -2.55/2 );
-        glTranslatef( punkte_[i+2]*2.55, punkte_[i+0], punkte_[i+1]*2.55 );
-        if (farben_.size() > punkte_.size()) {
+        // zurecht setzen
+        glTranslatef( -b_darstellungs_breite/2, -.5, -a_darstellungs_breite/2 );
+        // Punktkoordinaten setzen
+        glTranslatef( punkte_[i+2]*b_darstellungs_breite,
+                      punkte_[i+0], punkte_[i+1]*a_darstellungs_breite );
+        if (farben_.size())
+        {
           if ( farben_[i/3*4+3] < 1.0 ) {
             glEnable (GL_BLEND);
             glEnable (GL_DEPTH_TEST);
@@ -721,6 +742,15 @@ GL_Ansicht::punkteAuffrischen()
           }
           glColor4f(farben_[i/3*4+0], farben_[i/3*4+1], farben_[i/3*4+2],
                     farben_[i/3*4+3] );
+        }
+        if(zeig_punkte_als_messwert_paare &&
+           i%6 == 0)
+        { glBegin(GL_LINES);
+            glVertex3f(0, 0, 0);
+            glVertex3f(punkte_[i+5]*b_darstellungs_breite-punkte_[i+2]*b_darstellungs_breite,
+                       punkte_[i+3]-punkte_[i+0],
+                       punkte_[i+4]*a_darstellungs_breite-punkte_[i+1]*a_darstellungs_breite);
+          glEnd();
         }
 
         double groesse = 0.02;
@@ -833,10 +863,12 @@ GL_Ansicht::menuInit_()
   glutAddMenuEntry(_("Kugel"),  MENU_KUGEL);   DBG_PROG_V( menue_form_ )
   glutAddMenuEntry(_("Würfel"), MENU_WUERFEL);
   glutAddMenuEntry(_("Stern"),  MENU_STERN);
-  glutAddMenuEntry(_("grau"),  MENU_GRAU);
-  glutAddMenuEntry(_("farbig"),  MENU_FARBIG);
-  glutAddMenuEntry(_("kontrastreich"),  MENU_KONTRASTREICH);
-  glutAddMenuEntry(_("schalen"),  MENU_SCHALEN);
+  if(glut_id_ == 1) {
+    glutAddMenuEntry(_("grau"),  MENU_GRAU);
+    glutAddMenuEntry(_("farbig"),  MENU_FARBIG);
+    glutAddMenuEntry(_("kontrastreich"),  MENU_KONTRASTREICH);
+    glutAddMenuEntry(_("schalen"),  MENU_SCHALEN);
+  }
 
   glutSetMenu(menue_);
   glutAddSubMenu(_("Querschnitte"), menue_schnitt_);
@@ -864,17 +896,19 @@ implementGlutFunktionen(2)
 void
 reshape(int id, int w, int h)
 { DBG_PROG_START
-  glutSetWindow(id);
-  glViewport(0,0,w,h); DBG_PROG_V( id <<"|"<< icc_examin->glAnsicht(id)->x()<<" "<<icc_examin->glAnsicht(id)->y()<<" "<<w<<" "<<h )
-  glutPositionWindow(icc_examin->glAnsicht(id)->x(),icc_examin->glAnsicht(id)->y());
-  icc_examin->glAnsicht(id)->seitenverhaeltnis = (GLdouble)w/(GLdouble)h;
-  glFlush();
+  if(icc_examin->glAnsicht(id)->sichtbar()) {
+    glutSetWindow(id);
+    glViewport(0,0,w,h); DBG_PROG_V( id <<"|"<< icc_examin->glAnsicht(id)->x()<<" "<<icc_examin->glAnsicht(id)->y()<<" "<<w<<" "<<h )
+    glutPositionWindow(icc_examin->glAnsicht(id)->x(),icc_examin->glAnsicht(id)->y());
+    icc_examin->glAnsicht(id)->seitenverhaeltnis = (GLdouble)w/(GLdouble)h;
+    glFlush();
+  }
   DBG_PROG_ENDE
 }
 
 void
 display(int id)
-{ //DBG_PROG_START
+{ DBG_ICCGL_START
   glutSetWindow(id);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -883,47 +917,49 @@ display(int id)
   //glLineWidth(3.0);
 
   // Text
-  glPushMatrix();
-   glLoadIdentity();
-   glOrtho(0,icc_examin->glAnsicht(id)->w(),0,icc_examin->glAnsicht(id)->h(),-10.0,10.0);
+  if (id == 1) {
+    glPushMatrix();
+     glLoadIdentity();
+     glOrtho(0,icc_examin->glAnsicht(id)->w(),0,icc_examin->glAnsicht(id)->h(),-10.0,10.0);
 
-   glDisable(GL_TEXTURE_2D);
-   glDisable(GL_LIGHTING);
-   //glEnable(GL_BLEND);
-   //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-   glDisable(GL_LINE_SMOOTH);
+     glDisable(GL_TEXTURE_2D);
+     glDisable(GL_LIGHTING);
+     //glEnable(GL_BLEND);
+     //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+     glDisable(GL_LINE_SMOOTH);
 
-   glColor4f(0.0,0.0,0.0,1.0);
+     glColor4f(0.0,0.0,0.0,1.0);
 
-   glTranslatef(5,-12,8.8-icc_examin->glAnsicht(id)->schnitttiefe*3);
+     glTranslatef(5,-12,8.8-icc_examin->glAnsicht(id)->schnitttiefe*3);
 
-   // Start von unten links
-   #define ZeichneOText(font, scal, buffer) glScalef(scal,scal,scal); \
+     // Start von unten links
+     #define ZeichneOText(font, scal, buffer) glScalef(scal,scal,scal); \
                                  ZeichneText(font,buffer); \
                                  glScalef(1.0/scal,1.0/scal,1.0/scal);
 
 
-   int scal = 120, zeilenversatz = (int)(scal/6.0);
-   #if 0
-   static char text[256];
-   for (unsigned int i=0; i < icc_examin->icc_betrachter->mft_gl->kanaele(); i++) {
-     sprintf(&text[0],"%s: %f", icc_examin->icc_betrachter->mft_gl->kanalName(i), 12.0);
+     int scal = 120, zeilenversatz = (int)(scal/6.0);
+     #if 0
+     static char text[256];
+     for (unsigned int i=0; i < icc_examin->icc_betrachter->mft_gl->kanaele(); i++) {
+       sprintf(&text[0],"%s: %f", icc_examin->icc_betrachter->mft_gl->kanalName(i), 12.0);
+       glTranslatef(0,zeilenversatz,0);
+       ZeichneOText (GLUT_STROKE_ROMAN, scal, text)
+     }
+     //sprintf(&text[0],"%s: %s", _("sichtbarer Kanal"),icc_examin->glAnsicht(id)->kanalName());
+     #endif
+     std::string text;
+     text.append(_("Kanal:"));
+     text.append(" ");
+     text.append(icc_examin->glAnsicht(id)->kanalName());
      glTranslatef(0,zeilenversatz,0);
-     ZeichneOText (GLUT_STROKE_ROMAN, scal, text)
-   }
-   //sprintf(&text[0],"%s: %s", _("sichtbarer Kanal"),icc_examin->glAnsicht(id)->kanalName());
-   #endif
-   std::string text;
-   text.append(_("Kanal:"));
-   text.append(" ");
-   text.append(icc_examin->glAnsicht(id)->kanalName());
-   glTranslatef(0,zeilenversatz,0);
 
-   ZeichneOText (GLUT_STROKE_ROMAN, scal, (char*)text.c_str()) 
+     ZeichneOText (GLUT_STROKE_ROMAN, scal, (char*)text.c_str()) 
 
-   glEnable(GL_TEXTURE_2D);
-   glEnable(GL_LIGHTING);
-  glPopMatrix();
+     glEnable(GL_TEXTURE_2D);
+     glEnable(GL_LIGHTING);
+    glPopMatrix();
+  }
 
   glPushMatrix();  /* clear of last viewing xform, leaving perspective */
 
@@ -960,7 +996,7 @@ display(int id)
   #else
   glFinish();
   #endif
-  //DBG_PROG_ENDE
+  DBG_ICCGL_ENDE
 }
 
 void

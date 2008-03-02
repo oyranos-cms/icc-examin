@@ -97,12 +97,16 @@ public:
   int  schalen;             // MENU_SCHALEN
   void auffrischen();       // Erneuerung ohne init()
   void punkteAuffrischen(); // glCompile für Punkte
-  double seitenverhaeltnis;
-  double schnitttiefe;
+  double seitenverhaeltnis; // Proportion des Fensters
+  double schnitttiefe;      // Dicke der GL Schnitttiefe
+  double a_darstellungs_breite; // Richtung CIE*a   für Zoom und Pfeillängen
+  double b_darstellungs_breite; // ~        CIE*b ; wobei CIE*L immer 1.0
+  bool zeig_punkte_als_messwert_paare;
 
-  void zeigen();
-  void verstecken();
-  void stop() {if (beruehrt_) { agvSwitchMoveMode (Agviewer::AGV_STOP); } }
+  void zeigen();            // diese Klasse anzeigen (fltk + glut + gl)
+  void verstecken();        //  ~           verstecken      ~
+  bool sichtbar() {return gl_fenster_zeigen_; } // angezeigt / versteckt
+  void stop() {if (beruehrt_) { agvSwitchMoveMode (Agviewer::AGV_STOP); } }//Bew
 
   char* kanalName() { DBG_PROG_START DBG_PROG_V( nach_farb_namen_.size() <<"|"<< kanal )
                       if (nach_farb_namen_.size() &&

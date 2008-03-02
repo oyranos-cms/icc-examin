@@ -389,22 +389,37 @@ ICCexamin::histogram ()
   std::vector<double> p;
   std::vector<float>  f;
 
-  if(profile.profil() && profile.profil()->hasMeasurement()) {
-    ICCmeasurement messung = profile.profil()->getMeasurement();
-    unsigned int j;
-    int n = messung.getPatchCount(); DBG_PROG_V( messung.getPatchCount() )
-    for (j = 0; j < (unsigned) n; ++j) {
-      std::vector<double> daten = messung.getMessLab(j);
-      for (unsigned i = 0; i < daten.size(); ++i) {
-        p.push_back(daten[i]);
+  if(profile.profil() &&
+     profile.profil()->hasMeasurement())
+    { DBG_PROG_S( "nutze Messdaten" )
+      icc_betrachter->DD_histogram->zeig_punkte_als_messwert_paare = true;
+      ICCmeasurement messung = profile.profil()->getMeasurement();
+      unsigned int j;
+      int n = messung.getPatchCount(); DBG_PROG_V( messung.getPatchCount() )
+      for (j = 0; j < (unsigned) n; ++j)
+      {
+        std::vector<double> daten = messung.getMessLab(j);
+        for (unsigned i = 0; i < daten.size(); ++i)
+          p.push_back(daten[i]);
+        if (icc_betrachter->DD_histogram->zeig_punkte_als_messwert_paare) {
+          daten = messung.getCmmLab(j);
+          for (unsigned i = 0; i < daten.size(); ++i)
+            p.push_back(daten[i]);
+        } 
+
+        daten = messung.getMessRGB(j);
+        for (unsigned i = 0; i < daten.size(); ++i) {
+          f.push_back((float)daten[i]);
+        }
+        f.push_back(1.0);
+        if (icc_betrachter->DD_histogram->zeig_punkte_als_messwert_paare)
+        { daten = messung.getCmmRGB(j);
+          for (unsigned i = 0; i < daten.size(); ++i)
+            f.push_back(daten[i]);
+          f.push_back(1.0);
+        } 
       }
-      daten = messung.getMessRGB(j);
-      for (unsigned i = 0; i < daten.size(); ++i) {
-        f.push_back((float)daten[i]);
-      }
-      f.push_back(1.0);
-    }
-    namen = messung.getFeldNamen();
+      namen = messung.getFeldNamen();
   }
   icc_betrachter->DD_histogram->hineinPunkte( p, f, namen, texte );
 
