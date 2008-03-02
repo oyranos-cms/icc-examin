@@ -193,8 +193,7 @@ class MftChoice {: {public Fl_Choice}
   //auswahlCb();} {}
     code DBG_PROG_ENDE {}
   }
-  Function {auswahlCb(void)} {open
-  } {
+  Function {auswahlCb(void)} {} {
     code DBG_PROG_START {}
     code {//Auswahl aus mft_choice
 
@@ -217,7 +216,7 @@ class MftChoice {: {public Fl_Choice}
   }
 } 
 
-class My_Fl_Box {open : {public Fl_Box}
+class My_Fl_Box {: {public Fl_Box}
 } {
   Function {My_Fl_Box(int X,int Y,int W, int H, const char* title = 0) : Fl_Box(X,Y,W,H,title)} {open
   } {}
@@ -230,7 +229,7 @@ class My_Fl_Box {open : {public Fl_Box}
   }
 } 
 
-class My_Fl_Window {open : {public Fl_Double_Window}
+class My_Fl_Window {: {public Fl_Double_Window}
 } {
   Function {My_Fl_Window(int W, int H, const char* title = 0) : Fl_Double_Window(W,H,title)} {open
   } {}
@@ -332,7 +331,7 @@ class ICCfltkBetrachter {open
     const char* ptr = NULL;
     if (profile.size())
       ptr = profile.name().c_str();
-    dateiwahl = new Fl_File_Chooser(ptr, _("ICC colour profiles (*.{I,i}{C,c}{M,m,C,c})	Measurement (*.{txt,it8,IT8,RGB,CMYK,ti*,CIE,cie,nCIE,oRPT,DLY,LAB,Q60})	Argyll Gamuts (*.{wrl,vrml}"), Fl_File_Chooser::MULTI, _("Which ICC profile?"));
+    dateiwahl = new Fl_File_Chooser(ptr, _("ICC colour profiles (*.{I,i}{C,c}{M,m,C,c})	Measurement (*.{txt,it8,IT8,RGB,CMYK,ti*,cgats,CIE,cie,nCIE,oRPT,DLY,LAB,Q60})	Argyll Gamuts (*.{wrl,vrml}"), Fl_File_Chooser::MULTI, _("Which ICC profile?"));
     dateiwahl->callback(dateiwahl_cb);
     dateiwahl->preview(true);
   \#endif} {}
@@ -340,8 +339,8 @@ class ICCfltkBetrachter {open
       xywh {1161 253 100 100} type Double hide
     } {}
     Fl_Window ueber {
-      label {About ICC Examin} open
-      xywh {797 358 365 289} type Double resizable
+      label {About ICC Examin}
+      xywh {870 128 365 289} type Double resizable
       code0 {o->hide();}
       class My_Fl_Window non_modal visible
     } {
@@ -381,7 +380,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window vcgt {
       label {Grafic Card Gamma Table}
-      xywh {262 418 370 390} type Double resizable
+      xywh {272 460 370 390} type Double resizable
       code0 {o->hide();}
       class My_Fl_Window visible
     } {
@@ -417,12 +416,12 @@ class ICCfltkBetrachter {open
     }
     Fl_Window details {
       label {ICC Examin} open
-      xywh {899 416 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
+      xywh {865 420 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
     } {
       Fl_Group {} {open
         xywh {0 0 385 520}
       } {
-        Fl_Menu_Bar menueleiste {open
+        Fl_Menu_Bar menueleiste {
           xywh {0 0 385 25} align 20 when 3
         } {
           Submenu {} {
@@ -667,10 +666,6 @@ icc_examin->vcgtZeigen();}
 icc_examin->testZeigen();}
               xywh {25 25 100 20} shortcut 0x50074 hide
             }
-            Submenu untermenue_3D {
-              label 3D open
-              xywh {0 0 100 20} hide
-            } {}
           }
           Submenu menu_hilfe {
             label Help open
@@ -721,7 +716,7 @@ initHilfe();
           xywh {0 25 385 470} align 16
           code0 {o->hide();}
         }
-        Fl_Tile examin {
+        Fl_Tile examin {open
           xywh {0 25 385 470} resizable
         } {
           Fl_Browser tag_browser {
@@ -739,28 +734,36 @@ initHilfe();
               xywh {0 160 385 335}
               code0 {o->show();}
             } {
-              Fl_Choice mft_choice {
-                label {Chain selection}
-                callback {o->auswahlCb();} open
-                tooltip {Choose a attribute} xywh {0 160 385 25} box NO_BOX down_box BORDER_BOX color 49
-                code0 {o->show();}
-                class MftChoice
-              } {}
-              Fl_Box mft_viewer {
-                xywh {0 185 385 310}
-                code0 {o->show();}
-                class TagDrawings
-              }
-              Fl_Browser mft_text {
-                label {Chain -texts}
-                xywh {0 185 385 310} color 48 align 18 textcolor 32
-                code0 {o->show();}
-                class TagTexts
-              }
-              Fl_Box mft_gl {
-                xywh {0 185 385 310} align 18
-                code0 {o->hide();}
-                class GL_Ansicht
+              Fl_Pack {} {open
+                xywh {0 160 385 335}
+              } {
+                Fl_Choice mft_choice {
+                  label {Chain selection}
+                  callback {o->auswahlCb();} open selected
+                  tooltip {Choose a attribute} xywh {0 160 385 25} box NO_BOX down_box BORDER_BOX color 49
+                  code0 {o->show();}
+                  class MftChoice
+                } {}
+                Fl_Group {} {open
+                  xywh {0 185 385 310} resizable
+                } {
+                  Fl_Box mft_viewer {
+                    xywh {0 185 385 310}
+                    code0 {o->show();}
+                    class TagDrawings
+                  }
+                  Fl_Browser mft_text {
+                    label {Chain -texts}
+                    xywh {0 185 385 310} color 48 align 18 textcolor 32
+                    code0 {o->show();}
+                    class TagTexts
+                  }
+                  Fl_Box mft_gl {
+                    xywh {0 185 385 310} align 18
+                    code0 {o->hide();}
+                    class GL_Ansicht
+                  }
+                }
               }
             }
             Fl_Box tag_viewer {
@@ -791,7 +794,7 @@ initHilfe();
           }
         }
       }
-      Fl_Box no_box {selected
+      Fl_Box no_box {
         xywh {0 0 385 520}
         code0 {o->box(FL_NO_BOX);}
         class My_Fl_Box
@@ -813,7 +816,7 @@ initHilfe();
     code DBG_PROG_START {}
     code {DBG_PROG_ENDE;  Fl::run();} {}
   }
-  Function {open(std::vector<std::string> dateinamen)} {open return_type {std::vector<std::string>}
+  Function {open(std::vector<std::string> dateinamen)} {return_type {std::vector<std::string>}
   } {
     code DBG_PROG_START {}
     code {\#include "icc_vrml.h"

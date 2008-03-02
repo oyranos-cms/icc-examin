@@ -210,7 +210,6 @@ ICCtag::getText                     (void)
 { DBG_PROG_START
   std::vector<std::string> texte;
   std::string text = getTypName();
-  int count = 0;
 
   if (data_ == NULL || !size_)
   { DBG_PROG_ENDE
@@ -324,6 +323,8 @@ ICCtag::getText                     (void)
            || text == "cprt?" ) { // text
 
     text = ""; DBG_PROG
+
+    int count = 0;
 # if 1
     char* txt = (char*)calloc (size_-8, sizeof(char));
     memcpy (txt, &data_[8], size_ - 8);
@@ -363,6 +364,21 @@ ICCtag::getText                     (void)
       count++;
     };
 # endif
+
+    texte.push_back( text );
+
+  } else if ( text == "desc" ) {
+
+    text =  "";
+    icUInt32Number count = *(icUInt32Number*)(data_+8);
+    count = icValue(count);
+    DBG_PROG_V( count <<" "<< data_+12 )
+
+    text.append ((const char*)(data_+12), count);
+# ifdef DEBUG_ICCTAG
+    DBG_NUM_S ( &data_[12] << "|" << "|" << text )
+# endif
+
     texte.push_back( text );
 
   } else if ( text == "mluc" ) { // i18n
@@ -505,6 +521,7 @@ ICCtag::getText                     (void)
 }
 
 
+/*
 std::vector<std::string>
 ICCtag::getDescription              (void)
 { DBG_PROG_START
@@ -512,14 +529,16 @@ ICCtag::getDescription              (void)
   std::string text =  "";
   icUInt32Number count = *(icUInt32Number*)(data_+8);
 
-  text.append ((const char*)(data_+12), icValue(count));
+  count = icValue(count);
+
+  text.append ((const char*)(data_+12), count);
   texte.push_back (text);
 # ifdef DEBUG_ICCTAG
   DBG_NUM_S ( &data_[12] << "|" << "|" << text )
 # endif
   DBG_PROG_ENDE
   return texte;
-}
+}*/
 
 std::vector<double>
 ICCtag::getCIEXYZ                                 (void)
@@ -900,8 +919,9 @@ ICCtag::getNumbers                                 (MftChain typ)
            nummern.push_back( icSFValue (*n) );
          }
          break;
-    case CURVE_IN:
     case TABLE:
+         break;
+    case CURVE_IN:
     case TABLE_IN:
          nummern.push_back( inputChan );
          break;

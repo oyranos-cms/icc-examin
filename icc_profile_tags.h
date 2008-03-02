@@ -79,8 +79,6 @@ class ICCtag {
     ICCprofile*         _profil;
 
   public:
-    void                load (ICCprofile* profil ,icTag* tag, char* data);
-  public:
     icTagSignature      getSignature ()    {DBG_MEM return _sig; }
     std::string         getTagName ()
                           { DBG_MEM return getSigTagName (_sig); }
@@ -116,9 +114,10 @@ class ICCtag {
 
     std::vector<std::string> getText ();
     std::vector<std::string> getText (MftChain typ);
-    std::vector<std::string> getDescription();
+    //std::vector<std::string> getDescription(); veraltet
     std::string         getVrml();
   public:  // I/O
+    void                load (ICCprofile* profil ,icTag* tag, char* data);
     const char*         write(int* size)
                           { DBG_PROG  *size = size_;
                             return (const char*)data_; }

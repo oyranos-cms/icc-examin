@@ -422,7 +422,7 @@ Oyranos::moni_test_ (int x, int y)
         {
 #         ifdef HAVE_OY
           if( oyCheckProfileMem( ref.data, size, 0 ) )
-            WARN_S ( _("Profil konnte nicht geladen werden") )
+            WARN_S ( _("Could not load profile") )
           else
 #         endif
           {

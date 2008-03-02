@@ -100,15 +100,19 @@ ICCexamin::waehleTag (int item)
              || TagInfo[1] == "cprt?"
              || TagInfo[1] == "meas"
              || TagInfo[1] == "sig"
-             || TagInfo[1] == "dtim") {
+             || TagInfo[1] == "dtim"
+             || TagInfo[1] == "desc"
+              ) {
+
       frei(false);
-      icc_betrachter->tag_text->hinein ( (profile.profil()->getTagText (item))[0] );
+      std::vector<std::string> texte_l = profile.profil()->getTagText (item);
+      if( texte_l.size() )
+      {
+        std::string text_l = texte_l[0];
+        icc_betrachter->tag_text->hinein ( text_l );
+      }
       frei(true);
-      icc_betrachterNeuzeichnen(icc_betrachter->tag_text);
-    } else if ( TagInfo[1] == "desc" ) {
-      frei(false);
-      icc_betrachter->tag_text->hinein( (profile.profil()->getTagDescription (item))[0] ); DBG_PROG
-      frei(true);
+
       icc_betrachterNeuzeichnen(icc_betrachter->tag_text);
     } else if ( TagInfo[0] == "rXYZ"
              || TagInfo[0] == "gXYZ"
@@ -117,10 +121,10 @@ ICCexamin::waehleTag (int item)
       std::vector<double> punkt;
       for (unsigned int i_name = 0; i_name < rgb_tags.size(); i_name++) {
         if (profile.profil()->hasTagName (rgb_tags[i_name])) {
-          punkt = profile.profil()->getTagCIEXYZ (profile.profil()->getTagByName(rgb_tags[i_name]));
+          punkt = profile.profil()->getTagCIEXYZ (profile.profil()->getTagIDByName(rgb_tags[i_name]));
           for (unsigned int i = 0; i < 3; i++)
             punkte[TAG_VIEWER].push_back (punkt[i]);
-          TagInfo = profile.profil()->printTagInfo (profile.profil()->getTagByName(rgb_tags[i_name]));
+          TagInfo = profile.profil()->printTagInfo (profile.profil()->getTagIDByName(rgb_tags[i_name]));
           texte[TAG_VIEWER].push_back (TagInfo[0]);
         }
       }

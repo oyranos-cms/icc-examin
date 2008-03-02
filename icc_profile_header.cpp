@@ -81,7 +81,7 @@ ICCheader::load (void *data)
 
 
 void
-ICCheader::set_current_date (void)
+ICCheader::setCurrentDate (void)
 { DBG_PROG_START
   struct tm *tm_;
   time_t t = time(0);
@@ -189,6 +189,17 @@ ICCheader::versionName (void) const
 
   DBG_PROG_ENDE
   return s.str();
+}
+
+std::string
+ICCheader::dateTime (void) const
+{ DBG_PROG_START
+  std::string s;
+  
+  s = printDatum(header.date);
+
+  DBG_PROG_ENDE
+  return s;
 }
 
 std::string

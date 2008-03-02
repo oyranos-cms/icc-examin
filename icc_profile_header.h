@@ -55,10 +55,10 @@ class ICCheader {
   private:
     icHeader    header;               //!<brief icc34.h Definition
   public:
-    const char* header_raw () const
+    const char* headerRaw () const
                   { DBG_PROG return /*cp_nchar (*/(const char*)&header/*,
                     sizeof (icHeader))*/; }
-    void        header_raw (void* h)
+    void        headerRaw (const void* h)
                   { DBG_PROG memcpy ((void*)&header, h, sizeof (icHeader)); }
     void        load  (void*);
 
@@ -90,7 +90,8 @@ class ICCheader {
                   { DBG_PROG  return icValue(header.pcs); }
     void        pcs (icColorSpaceSignature pcs)
                   { DBG_PROG  header.pcs = icValue(pcs); }
-    void        set_current_date ();
+    void        setCurrentDate ();
+    std::string dateTime() const;
     const char* magicName () const
                   { DBG_PROG  return cp_nchar ((char*)&(header.  magic),
                                                       sizeof (icSignature)+1); }

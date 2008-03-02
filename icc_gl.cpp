@@ -122,8 +122,10 @@ FTFont *font, *ortho_font;
 
 
 GL_Ansicht::GL_Ansicht(int X,int Y,int W,int H)
-  : Fl_Gl_Window(X,Y,W,H), agv_(this)
+  : Fl_Gl_Window(X,Y,W,H)
 { DBG_PROG_START
+  agv_ = this->getAgv(this, NULL);
+
   kanal = 0;
   schnitttiefe = 0.01;
   vorder_schnitt = std_vorder_schnitt;
@@ -228,21 +230,21 @@ GL_Ansicht::init(int init_id)
 
   DBG_PROG
 
-  agv_.agvInit(id_);
+  agv_->agvInit(id_);
 
   if (id_ > 1) {
     DBG_PROG_S("gl Fenster " << id_)
     a_darstellungs_breite = 2.55;
     b_darstellungs_breite = 2.55;
-    agv_.distA (agv_.distA()
+    agv_->distA (agv_->distA()
                            + a_darstellungs_breite/2.0 - 0.5);
-    agv_.distB (agv_.distB()
+    agv_->distB (agv_->distB()
                            + b_darstellungs_breite/2.0 - 0.5);
-    agv_.eyeDist (agv_.dist()*2.0);
+    agv_->eyeDist (agv_->dist()*2.0);
   }
 
   glListen[AXES] = glGenLists(1);
-  agv_.agvMakeAxesList( glListen[AXES] ); DBG_PROG
+  agv_->agvMakeAxesList( glListen[AXES] ); DBG_PROG
 
   gl_font( FL_HELVETICA, 10 );
 
@@ -310,7 +312,7 @@ GL_Ansicht::bewegenStatisch_ (void* gl_a)
       lauf = false;
       DBG_PROG_S( _("redraw nicht ausgefuehrt") )
     } else {
-      gl_ansicht->agv_.agvMove_();
+      gl_ansicht->agv_->agvMove_();
       double zeichnen_schlaf = 0;  // keine endlos Warteschlangen
 
       if (gl_ansicht->zeit_diff_ < 1./25.) {
@@ -351,7 +353,7 @@ GL_Ansicht::bewegen (bool setze)
   DBG_PROG_V( setze )
   stupps_(setze);
   if(!setze) {
-    agv_.agvSwitchMoveMode (Agviewer::AGV_STOP);
+    agv_->agvSwitchMoveMode (Agviewer::AGV_STOP);
   }
   DBG_PROG_ENDE
 }
@@ -446,18 +448,18 @@ GL_Ansicht::handle( int event )
          }
          if(mausknopf & FL_BUTTON1 && mausknopf & FL_SHIFT)
            mausknopf = FL_BUTTON2;
-         agv_.agvHandleButton( mausknopf, event, Fl::event_x(),Fl::event_y());
+         agv_->agvHandleButton( mausknopf, event, Fl::event_x(),Fl::event_y());
          DBG_BUTTON_S( "FL_PUSH bei: " << Fl::event_x() << "," << Fl::event_y() )
          break;
     case FL_RELEASE:
-         agv_.agvHandleButton(Fl::event_state(),event, Fl::event_x(),Fl::event_y());
+         agv_->agvHandleButton(Fl::event_state(),event, Fl::event_x(),Fl::event_y());
          DBG_BUTTON_S( "FL_RELEASE bei: " << Fl::event_x() << "," << Fl::event_y() )
          break;
     case FL_DRAG:
          DBG_BUTTON_S( "FL_DRAG bei: " << Fl::event_x() << "," << Fl::event_y() )
          maus_x_ = Fl::event_x();
          maus_y_ = Fl::event_y();
-         agv_.agvHandleMotion(maus_x_, maus_y_);
+         agv_->agvHandleMotion(maus_x_, maus_y_);
          redraw();
          break;
     case FL_KEYDOWN:
@@ -498,6 +500,28 @@ GL_Ansicht::handle( int event )
 
   DBG_ICCGL_ENDE
   return 1;
+}
+
+Agviewer*
+GL_Ansicht::getAgv( GL_Ansicht *ansicht, GL_Ansicht *referenz )
+{ DBG_PROG_START
+  Agviewer *agv = NULL;
+
+  if(!agv && referenz)
+    agv = referenz->agv_;
+
+  if(!agv)
+    agv = new Agviewer (ansicht);
+
+  if(ansicht->agv_)
+    ansicht->modellFort( ansicht->agv_ );
+
+  ansicht->agv_ = agv;
+
+  ansicht->modellDazu( ansicht->agv_ );
+
+  DBG_ICCGL_ENDE
+  return agv;
 }
 
 void
@@ -624,7 +648,7 @@ GL_Ansicht::tastatur(int e)
     } else if(Fl::event_key() == FL_Home) {
       vorder_schnitt = 4.2;
     } else if(Fl::event_key() == FL_End) {
-      vorder_schnitt = agv_.eyeDist();
+      vorder_schnitt = agv_->eyeDist();
     }
     DBG_ICCGL_S("e = " << e << " " << Fl::event_key() )
     if(e == FL_SHORTCUT)
@@ -1145,9 +1169,9 @@ GL_Ansicht::netzeAuffrischen()
       // Netze sortieren
       glPushMatrix();
          // Die Matrix auf die Kamera ausrichten
-       float EyeAz = agv_.eyeAzimuth(),
-             EyeEl = agv_.eyeElevation(),
-             EyeDist = agv_.eyeDist(),
+       float EyeAz = agv_->eyeAzimuth(),
+             EyeEl = agv_->eyeElevation(),
+             EyeDist = agv_->eyeDist(),
              X = -EyeDist*sin(TORAD(EyeAz))*cos(TORAD(EyeEl)),  // CIE*b
              Y = EyeDist*sin(TORAD(EyeEl)),                     // CIE*L
              Z = EyeDist*cos(TORAD(EyeAz))*cos(TORAD(EyeEl));   // CIE*a
@@ -1590,10 +1614,9 @@ GL_Ansicht::zeigeUmrisse_()
     DBG_PROG_V( n )
     // Schatten erzeugen
     Lab_Speicher_schatten = (double*) malloc (sizeof(double) * n*3);
-    for (int i = 0; i < n*2; ++i)
-      Lab_Speicher_schatten[i] = Lab_Speicher[i];
+
     for (int i = 0; i < n; ++i) {
-      Lab_Speicher_schatten[i*3] = hintergrundfarbe*.40+.35;
+      Lab_Speicher_schatten[i*3+0] = dreiecks_netze[d].schattierung; //hintergrundfarbe*.40+.35;
       Lab_Speicher_schatten[i*3+1] = (Lab_Speicher[i*3+1]-.5)*.25+0.5;
       Lab_Speicher_schatten[i*3+2] = (Lab_Speicher[i*3+2]-.5)*.25+0.5;
     }
@@ -1634,7 +1657,7 @@ GL_Ansicht::zeigeUmrisse_()
          dreiecks_netze[i].aktiv &&
          dreiecks_netze[i].transparenz)
       {
-#       if 0
+#       ifdef DRAW_UMRISS
         glLineWidth(6.0*strichmult);
         glColor4f(1., 1.0, 1.0, 1.0);
         glBegin(GL_LINE_STRIP);
@@ -1653,16 +1676,11 @@ GL_Ansicht::zeigeUmrisse_()
           ;//netzeAuffrischen();
         DBG_PROG_V( n )
         glLineWidth(strich2*strichmult);
-#       if 1
-        GLfloat fv[3] = {dreiecks_netze[i].schattierung,
-                         dreiecks_netze[i].schattierung,
-                         dreiecks_netze[i].schattierung};
-        glColor4fv(fv);
-#       else
+
         FARBE (          dreiecks_netze[i].schattierung,
                          dreiecks_netze[i].schattierung,
                          dreiecks_netze[i].schattierung);
-#       endif
+
         glBegin(GL_LINE_STRIP);
         for (int z=0 ; z < n; z++)
         {
@@ -1930,7 +1948,7 @@ GL_Ansicht::menueInit_()
 /*inline*/ void
 GL_Ansicht::setzePerspektive()
 { //DBG_ICCGL_START
-    if (agv_.duenn)
+    if (agv_->duenn)
       gluPerspective(15, seitenverhaeltnis,
                      vorder_schnitt,
                      vorder_schnitt + schnitttiefe);
@@ -2024,7 +2042,7 @@ GL_Ansicht::zeichnen()
       GL_Ansicht::setzePerspektive();
 
       /* so this replaces gluLookAt or equiv */
-      agv_.agvViewTransform();
+      agv_->agvViewTransform();
 
       glMatrixMode(GL_MODELVIEW);
       glLoadIdentity();
@@ -2525,39 +2543,39 @@ GL_Ansicht::menueAufruf ( int value )
       break;
     case Agviewer::FLYING:
       icc_examin_ns::status_info(_("left mouse button -> go back"));
-      agv_.duenn = true;
+      agv_->duenn = true;
       break;
     case Agviewer::ICCFLY_L:
       if(id() == 2) {
-        agv_.eyeDist( 2 * agv_.dist() );
-        vorder_schnitt = std_vorder_schnitt + agv_.dist();
+        agv_->eyeDist( 2 * agv_->dist() );
+        vorder_schnitt = std_vorder_schnitt + agv_->dist();
       } else {
-        agv_.eyeDist( agv_.dist() );
+        agv_->eyeDist( agv_->dist() );
         vorder_schnitt = std_vorder_schnitt;
       }
       icc_examin_ns::status_info(_("left mouse button -> go back"));
-      agv_.duenn = true;
+      agv_->duenn = true;
       break;
     case Agviewer::ICCFLY_a:
       vorder_schnitt = std_vorder_schnitt;
       icc_examin_ns::status_info(_("left mouse button -> go back"));
-      agv_.duenn = true;
+      agv_->duenn = true;
       break;
     case Agviewer::ICCFLY_b:
       vorder_schnitt = std_vorder_schnitt;
       icc_examin_ns::status_info(_("left mouse button -> go back"));
-      agv_.duenn = true;
+      agv_->duenn = true;
       break;
     case Agviewer::ICCPOLAR:
-      agv_.duenn = true;
+      agv_->duenn = true;
     case Agviewer::POLAR:
       if(id() == 1)
-        agv_.duenn = true;
+        agv_->duenn = true;
       else
-        agv_.duenn = false;
+        agv_->duenn = false;
       break;
     case Agviewer::AGV_STOP:
-      agv_.duenn = false;
+      agv_->duenn = false;
       icc_examin_ns::status_info(_("left-/middle-/right mouse button -> rotate/cut/menu"));
       break;
     }
@@ -2590,7 +2608,7 @@ GL_Ansicht::c_ ( Fl_Widget* w, void* daten )
     gl_obj->menueAufruf(value);
 
     if(value >= 100)
-      gl_obj->agv_ .agvSwitchMoveMode (value);
+      gl_obj->agv_ ->agvSwitchMoveMode (value);
   }
   else
     WARN_S(_("Konnte keine passende Programmstruktur finden"))

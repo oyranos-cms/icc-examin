@@ -526,8 +526,6 @@ Fl_Menu_Item ICCfltkBetrachter::menu_menueleiste[] = {
  {_("CGATS View"), 0x40067,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_zeigcgats, 0, 129, FL_NORMAL_LABEL, 0, 14, 0},
  {_("Videocard Gamma"), 0x40074,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_vcgt, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
  {_("Test Curves"), 0x50074,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_testkurven, 0, 16, FL_NORMAL_LABEL, 0, 14, 0},
- {_("3D"), 0,  0, 0, 80, FL_NORMAL_LABEL, 0, 14, 0},
- {0,0,0,0,0,0,0,0,0},
  {0,0,0,0,0,0,0,0,0},
  {_("Help"), 0,  0, 0, 64, FL_NORMAL_LABEL, 0, 14, 0},
  {_("About"), 0,  (Fl_Callback*)ICCfltkBetrachter::cb_About, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
@@ -552,8 +550,7 @@ Fl_Menu_Item* ICCfltkBetrachter::menueintrag_inspekt = ICCfltkBetrachter::menu_m
 Fl_Menu_Item* ICCfltkBetrachter::menueintrag_zeigcgats = ICCfltkBetrachter::menu_menueleiste + 23;
 Fl_Menu_Item* ICCfltkBetrachter::menueintrag_vcgt = ICCfltkBetrachter::menu_menueleiste + 24;
 Fl_Menu_Item* ICCfltkBetrachter::menueintrag_testkurven = ICCfltkBetrachter::menu_menueleiste + 25;
-Fl_Menu_Item* ICCfltkBetrachter::untermenue_3D = ICCfltkBetrachter::menu_menueleiste + 26;
-Fl_Menu_Item* ICCfltkBetrachter::menu_hilfe = ICCfltkBetrachter::menu_menueleiste + 28;
+Fl_Menu_Item* ICCfltkBetrachter::menu_hilfe = ICCfltkBetrachter::menu_menueleiste + 27;
 
 void ICCfltkBetrachter::cb_tag_browser_i(TagBrowser* o, void*) {
   o->selectItem( o->value() );
@@ -566,7 +563,7 @@ void ICCfltkBetrachter::cb_mft_choice_i(MftChoice* o, void*) {
   o->auswahlCb();
 }
 void ICCfltkBetrachter::cb_mft_choice(MftChoice* o, void* v) {
-  ((ICCfltkBetrachter*)(o->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_mft_choice_i(o,v);
+  ((ICCfltkBetrachter*)(o->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_mft_choice_i(o,v);
 }
 
 Fl_Double_Window* ICCfltkBetrachter::init(int argc, char** argv) {
@@ -642,7 +639,7 @@ Fl_Double_Window* ICCfltkBetrachter::init(int argc, char** argv) {
     const char* ptr = NULL;
     if (profile.size())
       ptr = profile.name().c_str();
-    dateiwahl = new Fl_File_Chooser(ptr, _("ICC colour profiles (*.{I,i}{C,c}{M,m,C,c})	Measurement (*.{txt,it8,IT8,RGB,CMYK,ti*,CIE,cie,nCIE,oRPT,DLY,LAB,Q60})	Argyll Gamuts (*.{wrl,vrml}"), Fl_File_Chooser::MULTI, _("Which ICC profile?"));
+    dateiwahl = new Fl_File_Chooser(ptr, _("ICC colour profiles (*.{I,i}{C,c}{M,m,C,c})	Measurement (*.{txt,it8,IT8,RGB,CMYK,ti*,cgats,CIE,cie,nCIE,oRPT,DLY,LAB,Q60})	Argyll Gamuts (*.{wrl,vrml}"), Fl_File_Chooser::MULTI, _("Which ICC profile?"));
     dateiwahl->callback(dateiwahl_cb);
     dateiwahl->preview(true);
   #endif
@@ -798,57 +795,64 @@ ard"));
         }
         { Fl_Group* o = ansichtsgruppe = new Fl_Group(0, 160, 385, 335);
           { Fl_Group* o = tabellengruppe = new Fl_Group(0, 160, 385, 335);
-            { MftChoice* o = mft_choice = new MftChoice(0, 160, 385, 25, _("Chain selection"));
-              o->tooltip(_("Choose a attribute"));
-              o->box(FL_NO_BOX);
-              o->down_box(FL_BORDER_BOX);
-              o->color(FL_BACKGROUND_COLOR);
-              o->selection_color(FL_SELECTION_COLOR);
-              o->labeltype(FL_NORMAL_LABEL);
-              o->labelfont(0);
-              o->labelsize(14);
-              o->labelcolor(FL_FOREGROUND_COLOR);
-              o->callback((Fl_Callback*)cb_mft_choice);
-              o->align(FL_ALIGN_LEFT);
-              o->when(FL_WHEN_RELEASE);
-              o->show();
-            }
-            { TagDrawings* o = mft_viewer = new TagDrawings(0, 185, 385, 310);
-              o->box(FL_NO_BOX);
-              o->color(FL_BACKGROUND_COLOR);
-              o->selection_color(FL_BACKGROUND_COLOR);
-              o->labeltype(FL_NORMAL_LABEL);
-              o->labelfont(0);
-              o->labelsize(14);
-              o->labelcolor(FL_FOREGROUND_COLOR);
-              o->align(FL_ALIGN_CENTER);
-              o->when(FL_WHEN_RELEASE);
-              o->show();
-            }
-            { TagTexts* o = mft_text = new TagTexts(0, 185, 385, 310, _("Chain -texts"));
-              o->box(FL_NO_BOX);
-              o->color((Fl_Color)48);
-              o->selection_color(FL_SELECTION_COLOR);
-              o->labeltype(FL_NORMAL_LABEL);
-              o->labelfont(0);
-              o->labelsize(14);
-              o->labelcolor(FL_FOREGROUND_COLOR);
-              o->textcolor(32);
-              o->align(FL_ALIGN_BOTTOM|FL_ALIGN_INSIDE);
-              o->when(FL_WHEN_RELEASE_ALWAYS);
-              o->show();
-            }
-            { GL_Ansicht* o = mft_gl = new GL_Ansicht(0, 185, 385, 310);
-              o->box(FL_NO_BOX);
-              o->color(FL_BACKGROUND_COLOR);
-              o->selection_color(FL_BACKGROUND_COLOR);
-              o->labeltype(FL_NORMAL_LABEL);
-              o->labelfont(0);
-              o->labelsize(14);
-              o->labelcolor(FL_FOREGROUND_COLOR);
-              o->align(FL_ALIGN_BOTTOM|FL_ALIGN_INSIDE);
-              o->when(FL_WHEN_RELEASE);
-              o->hide();
+            { Fl_Pack* o = new Fl_Pack(0, 160, 385, 335);
+              { MftChoice* o = mft_choice = new MftChoice(0, 160, 385, 25, _("Chain selection"));
+                o->tooltip(_("Choose a attribute"));
+                o->box(FL_NO_BOX);
+                o->down_box(FL_BORDER_BOX);
+                o->color(FL_BACKGROUND_COLOR);
+                o->selection_color(FL_SELECTION_COLOR);
+                o->labeltype(FL_NORMAL_LABEL);
+                o->labelfont(0);
+                o->labelsize(14);
+                o->labelcolor(FL_FOREGROUND_COLOR);
+                o->callback((Fl_Callback*)cb_mft_choice);
+                o->align(FL_ALIGN_LEFT);
+                o->when(FL_WHEN_RELEASE);
+                o->show();
+              }
+              { Fl_Group* o = new Fl_Group(0, 185, 385, 310);
+                { TagDrawings* o = mft_viewer = new TagDrawings(0, 185, 385, 310);
+                o->box(FL_NO_BOX);
+                o->color(FL_BACKGROUND_COLOR);
+                o->selection_color(FL_BACKGROUND_COLOR);
+                o->labeltype(FL_NORMAL_LABEL);
+                o->labelfont(0);
+                o->labelsize(14);
+                o->labelcolor(FL_FOREGROUND_COLOR);
+                o->align(FL_ALIGN_CENTER);
+                o->when(FL_WHEN_RELEASE);
+                o->show();
+                }
+                { TagTexts* o = mft_text = new TagTexts(0, 185, 385, 310, _("Chain -texts"));
+                o->box(FL_NO_BOX);
+                o->color((Fl_Color)48);
+                o->selection_color(FL_SELECTION_COLOR);
+                o->labeltype(FL_NORMAL_LABEL);
+                o->labelfont(0);
+                o->labelsize(14);
+                o->labelcolor(FL_FOREGROUND_COLOR);
+                o->textcolor(32);
+                o->align(FL_ALIGN_BOTTOM|FL_ALIGN_INSIDE);
+                o->when(FL_WHEN_RELEASE_ALWAYS);
+                o->show();
+                }
+                { GL_Ansicht* o = mft_gl = new GL_Ansicht(0, 185, 385, 310);
+                o->box(FL_NO_BOX);
+                o->color(FL_BACKGROUND_COLOR);
+                o->selection_color(FL_BACKGROUND_COLOR);
+                o->labeltype(FL_NORMAL_LABEL);
+                o->labelfont(0);
+                o->labelsize(14);
+                o->labelcolor(FL_FOREGROUND_COLOR);
+                o->align(FL_ALIGN_BOTTOM|FL_ALIGN_INSIDE);
+                o->when(FL_WHEN_RELEASE);
+                o->hide();
+                }
+                o->end();
+                Fl_Group::current()->resizable(o);
+              }
+              o->end();
             }
             o->show();
             o->end();

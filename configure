@@ -130,6 +130,8 @@ test -f mkdepend && rm mkdepend config.h
 
 echo "# automatically generated file by configure - do not edit" > $CONF
 echo "/* automatically generated file by configure - do not edit */" > $CONF_H
+echo "#ifndef ICCEXAMIN_CONFIG_H" > $CONF_H
+echo "#define ICCEXAMIN_CONFIG_H" > $CONF_H
 echo "" >> $CONF
 echo "TARGET = $TARGET" >> $CONF
 echo "BINTARGET = $BINTARGET" >> $CONF
@@ -465,6 +467,8 @@ echo "" > mkdepend
 PREPARE_MAKEFILES=1; export PREPARE_MAKEFILES
 MAKEFILES="makefile"; export MAKEFILES
 ./configure.sh
+
+echo "#endif" > $CONF_H
 
 test -f error.tmp && ERROR=1
 test -f error.tmp && rm error.tmp

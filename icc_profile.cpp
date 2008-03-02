@@ -447,7 +447,7 @@ ICCprofile::getTagDescription                    (int item)
   if (tags[item].getTypName() != "desc") { DBG_PROG_ENDE return leer; }
 
   DBG_PROG_ENDE
-  return tags.at(item).getDescription();
+  return tags.at(item).getText();
 }
 
 std::vector<double>
@@ -541,7 +541,7 @@ ICCprofile::getTagNumbers                        (int item,ICCtag::MftChain typ)
 }
 
 int
-ICCprofile::getTagByName            (std::string name)
+ICCprofile::getTagIDByName            (std::string name)
 { DBG_PROG_START
   if (!tags.size()) { DBG_PROG_ENDE 
     return -1;
@@ -650,7 +650,7 @@ ICCprofile::getColourChannelsCount(void)
 
   if(tag_name)
   {
-    nummern = tags[getTagByName(tag_name)].getNumbers(format);
+    nummern = tags[getTagIDByName(tag_name)].getNumbers(format);
     if(nummern.size())
       channels = (int)nummern[0];
   } else if(this->hasTagName("kTRC")) {
@@ -670,11 +670,33 @@ ICCprofile::getWhitePkt           (void)
 { DBG_PROG_START
   std::vector<double> XYZ;
   if (hasTagName ("wtpt"))
-    XYZ = getTagCIEXYZ (getTagByName ("wtpt"));
+    XYZ = getTagCIEXYZ (getTagIDByName ("wtpt"));
  
   DBG_PROG_ENDE
   return XYZ;
 }
+
+char*
+ICCprofile::getProfileDescription  ()
+{
+  char *text = NULL;
+  DBG_PROG_START
+
+  if(hasTagName("desc"))
+  {
+    int id = getTagIDByName("desc");
+    std::vector<std::string> texte = getTagText( id );
+    if(texte.size())
+    {
+      text = (char*) calloc( sizeof(char), strlen(texte[0].c_str()) * 4 );
+      sprintf( text, texte[0].c_str() );
+    }
+  }
+
+  DBG_PROG_ENDE
+  return text;
+}
+
 
 size_t
 ICCprofile::getProfileSize  ()
@@ -760,7 +782,7 @@ ICCprofile::writeTagTable (void)
 void
 ICCprofile::writeHeader (void)
 { DBG_PROG_START
-  memcpy (data_, header.header_raw(), 128);
+  memcpy (data_, header.headerRaw(), 128);
   DBG_PROG_ENDE
 }
 
@@ -885,16 +907,30 @@ ICCprofile::cgats_max()
 }
 
 void
-ICCprofile::setHeader (void* h)
+ICCprofile::setHeader (const void* h)
 {
   DBG_PROG
-  header.header_raw(h);
+  header.headerRaw(h);
 }
 
 void
-ICCprofile::addTag (ICCtag tag)
+ICCprofile::addTag (ICCtag & tag)
 {
-  DBG_PROG tags.push_back(tag);
+  int schonmal = 0;
+
+  for( int i = 0; i < (int)tags.size(); ++i )
+  {
+    if( tags[i].getSignature() == tag.getSignature() )
+    {
+      schonmal = 1;
+      tags[i] = tag; 
+      break;
+    }
+  }
+
+  DBG_PROG
+  if(!schonmal)
+    tags.push_back(tag);
 }
 
 ICCtag &
@@ -907,30 +943,49 @@ ICCprofile::getTag (int item)
     return tag;
 }
 
-void
-ICCprofile::removeTagByName (std::string name)
+ICCtag &
+ICCprofile::getTag (std::string name)
 {
-  DBG_PROG
-  if (hasTagName(name))
-    removeTag (getTagByName(name));
+  static ICCtag tag;
+  if( hasTagName( name ) )
+    return getTag( getTagIDByName( name ) );
+  else
+    return tag;
 }
 
-void
+int
+ICCprofile::removeTag (std::string name)
+{
+  int error = 0;
+  DBG_PROG
+  if (hasTagName(name))
+    removeTag (getTagIDByName(name));
+  else
+    error = 1;
+
+  return error;
+}
+
+int
 ICCprofile::removeTag (int item)
-{ DBG_PROG_START
-  if (item >= (int)tags.size() ) { DBG_PROG_ENDE return; }
+{
+  int error = 0;
+  DBG_PROG_START
+
+  if (item >= (int)tags.size() ) { DBG_PROG_ENDE return 1; }
 
   std::vector <ICCtag> t(tags.size()-1); DBG_PROG
-  DBG_PROG_V (tags.size())
+    DBG_PROG_V (tags.size())
   int i = 0,
       zahl = 0; DBG_PROG
   for (; i < (int)tags.size(); i++)
-    if (i != item) { DBG_PROG
+    if (i != item)
+    {   DBG_PROG
       t[zahl] = tags[i]; DBG_PROG_S("i: " << i << " -> zahl: " << zahl)
       zahl++; DBG_PROG
     }
 
-  DBG_PROG
+    DBG_PROG
 # if 0
   tags.resize(t.size());
   for (int i = 0; i < (int)t.size(); i++)
@@ -938,8 +993,10 @@ ICCprofile::removeTag (int item)
 # else
   tags = t;
 # endif
-  DBG_MEM_V( i << " " << tags.size())
+    DBG_MEM_V( i << " " << tags.size())
+
   DBG_PROG_ENDE
+  return error;
 }
 
 /**

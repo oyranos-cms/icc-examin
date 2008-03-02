@@ -74,6 +74,7 @@ public:
 #include <FL/Fl_Button.H>
 #include <FL/Fl_Menu_Bar.H>
 #include <FL/Fl_Tile.H>
+#include <FL/Fl_Pack.H>
 #include <FL/Fl_Box.H>
 #include <FL/Fl_Progress.H>
 
@@ -212,7 +213,6 @@ private:
   void cb_menueintrag_testkurven_i(Fl_Menu_*, void*);
   static void cb_menueintrag_testkurven(Fl_Menu_*, void*);
 public:
-  static Fl_Menu_Item *untermenue_3D;
   static Fl_Menu_Item *menu_hilfe;
 private:
   void cb_About_i(Fl_Menu_*, void*);

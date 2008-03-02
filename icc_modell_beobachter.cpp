@@ -129,6 +129,10 @@ Modell::beobachterFort(Beobachter* beo)
       break;
     }
   }
+
+  if(!beobachter_.size())
+    delete this;
+
   DBG_PROG_ENDE
 }
 

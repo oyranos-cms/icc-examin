@@ -716,7 +716,7 @@ ICCexamin::erneuerTagBrowserText_ (void)
     }
 
   if (profile.profil()->hasTagName (b->selectedTagName)) {
-    int item = profile.profil()->getTagByName (b->selectedTagName) + 6;
+    int item = profile.profil()->getTagIDByName (b->selectedTagName) + 6;
     b->selectItem (item);
     b->value(item);
   }

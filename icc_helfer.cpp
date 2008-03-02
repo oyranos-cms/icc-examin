@@ -212,6 +212,12 @@ icValueUF (double val)
   return icValue((icU16Fixed16Number)(val * 65536.0 + 0.5));
 }
 
+icUInt16Number
+icValueUI16 (double val)
+{
+  return icValue((icUInt16Number)(val * 65536.0 + 0.5));
+}
+
 double
 icSFValue (icS15Fixed16Number val)
 {
@@ -220,6 +226,12 @@ icSFValue (icS15Fixed16Number val)
 
 double
 icUFValue (icU16Fixed16Number val)
+{
+  return icValue(val) / 65536.0;
+}
+
+double
+icUI16Value (icUInt16Number val)
 {
   return icValue(val) / 65536.0;
 }

@@ -1,3 +1,25 @@
+2006-11-08
+	* fix: dont influence the locale settings; (in cgats, vrml ...)
+	* neu: give config the usual header macros
+	* fix: mft choice stretching behaviour
+	* neu: make agviewer a observable pointer in Gl_Ansicht
+	* neu: register Gl_Ansicht::agv_ to agviever's icc_examin_ns::Modell
+	* neu: add Gl_Ansicht::getAgv()
+	* und: delete Modell if no observers are attached
+
+2006-11-07
+	* neu: icValueUI16() and icUI16Value() in icc_helfer.h/cpp
+	* und: rename header_raw() to headerRaw() in ICCheader
+	* und: smart tag adding in ICCprofile::addTag()
+
+2006-11-05
+	* fix: Cmyk measurement remove on vrml net loading
+
+2006-11-04
+	* und: int    getTagByName("xxx") -> int getTagIDByName
+	* neu: ICCtag getTag("xxx")
+	* und: void removeTagByName (std::string) -> int removeTag (std::string)
+
 2006-09-14
 	* und: monitor profile is passive on load time
 

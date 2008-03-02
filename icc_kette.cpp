@@ -158,7 +158,7 @@ ICCkette::einfuegen (const Speicher & prof, int pos)
       if(profile_[i].data_type == ICCprofile::ICCmeasurementDATA)
       {
         ICCmeasurement & m = profile_[0].getMeasurement();
-        int tag_n = profile_[i].getTagByName( "targ" );
+        int tag_n = profile_[i].getTagIDByName( "targ" );
         ICCtag & tag = profile_[i].getTag( tag_n );
         m.load( &profile_[0], tag );
         if( !profile_[0].hasTagName( "targ" ) )
@@ -176,7 +176,7 @@ ICCkette::einfuegen (const Speicher & prof, int pos)
     name = prof.name();
   else
     if(profile_[pos].hasTagName("desc"))
-      name = profile_[pos].getTagText( profile_[pos].getTagByName("desc"))[0];
+      name = profile_[pos].getTagText( profile_[pos].getTagIDByName("desc"))[0];
   profilnamen_[pos] = name ;
 
   aktiv_[pos] = true;

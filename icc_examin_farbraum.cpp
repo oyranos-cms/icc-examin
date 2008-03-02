@@ -56,8 +56,7 @@ ICCexamin::messwertLese (int n,
   DBG_PROG_START
   if(profile.size() > n &&
      profile.aktuell() == n &&
-     profile[n]->hasMeasurement() &&
-     profile[n]->getMeasurement().hasXYZ() )
+     profile[n]->hasMeasurement() )
     { DBG_NUM_S( "nutze Messdaten" )
       ICCmeasurement messung = profile[n]->getMeasurement();
 
@@ -71,29 +70,40 @@ ICCexamin::messwertLese (int n,
 
       unsigned int j;
       int n = messung.getPatchCount(); DBG_PROG_V( messung.getPatchCount() )
-      for (j = 0; j < (unsigned) n; ++j)
-      { // zuerst die Messwerte ...
-        std::vector<double> daten = messung.getMessLab(j);
-        for (unsigned i = 0; i < daten.size(); ++i)
-          p.push_back(daten[i]);
-        // ... dann die über das Profil errechneten Lab Werte
-        if (icc_betrachter->DD_farbraum->zeig_punkte_als_messwert_paare) {
-          daten = messung.getCmmLab(j);
+
+      if(messung.validHalf())
+      {
+        for (j = 0; j < (unsigned) n; ++j)
+        { // zuerst die Messwerte ...
+          std::vector<double> daten;
+          if(messung.hasXYZ())
+            daten = messung.getMessLab(j);
+          else
+            daten = messung.getCmmLab(j);
           for (unsigned i = 0; i < daten.size(); ++i)
             p.push_back(daten[i]);
-        } 
+          // ... dann die über das Profil errechneten Lab Werte
+          if (icc_betrachter->DD_farbraum->zeig_punkte_als_messwert_paare) {
+            daten = messung.getCmmLab(j);
+            for (unsigned i = 0; i < daten.size(); ++i)
+              p.push_back(daten[i]);
+          } 
 
-        daten = messung.getMessRGB(j);
-        for (unsigned i = 0; i < daten.size(); ++i) {
-          f.push_back((float)daten[i]);
-        }
-        f.push_back(1.0);
-        if (icc_betrachter->DD_farbraum->zeig_punkte_als_messwert_paare)
-        { daten = messung.getCmmRGB(j);
-          for (unsigned i = 0; i < daten.size(); ++i)
-            f.push_back(daten[i]);
+          if(messung.hasXYZ())
+            daten = messung.getMessRGB(j);
+          else
+            daten = messung.getCmmRGB(j);
+          for (unsigned i = 0; i < daten.size(); ++i) {
+            f.push_back((float)daten[i]);
+          }
           f.push_back(1.0);
-        } 
+          if (icc_betrachter->DD_farbraum->zeig_punkte_als_messwert_paare)
+          { daten = messung.getCmmRGB(j);
+            for (unsigned i = 0; i < daten.size(); ++i)
+              f.push_back(daten[i]);
+           f.push_back(1.0);
+          } 
+        }
       }
       namen = messung.getFeldNamen();
     }
@@ -131,12 +141,15 @@ ICCexamin::netzLese (int n,
         dateiname = dateiname.substr( dateiname.find_last_of("/")+1,
                                     dateiname.size() );
       DBG_NUM_V( (*netz)[n].transparenz <<" "<< (*netz)[n].umriss.size() )
-    } else {
+    }
+# if 0  // sollte beim Laden geprueft werden
+    else {
       (*netz)[n].punkte.clear();
       (*netz)[n].indexe.clear();
       (*netz)[n].umriss.clear();
       (*netz)[n].name.clear();
     }
+#endif
   }
   for(int i = 0; i < (int)netz->size(); ++i)
     DBG_PROG_V( (*netz)[n].aktiv <<" "<< (*netz)[i].transparenz <<" "<< (*netz)[i].umriss.size() );
@@ -153,7 +166,7 @@ ICCexamin::farbenLese (int n,
   if( profile.size() > n )
   {
     DBG_PROG
-    p = profile[n]->getTagNumbers (profile[n]->getTagByName("ncl2"),
+    p = profile[n]->getTagNumbers (profile[n]->getTagIDByName("ncl2"),
                                          ICCtag::MATRIX);
     if(p.size())
     {
@@ -205,11 +218,11 @@ ICCexamin::farbraum (int n)
 
   // Messwerte
   int messwerte=false;
+  bool has_mess = profile[n]->hasMeasurement();
   frei(false);
   if(profile.size() > n &&
      profile.aktuell() == n &&
-     profile[n]->hasMeasurement() &&
-     profile[n]->getMeasurement().hasXYZ() )
+     has_mess )
     {
       DBG_PROG
       messwertLese(n, p,f,namen);

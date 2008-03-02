@@ -84,6 +84,7 @@ class ICCmeasurement {
 
     int                 nFelder_;
 
+    //! wird nur gesetzt wenn in CGATS vorhanden
     bool                XYZ_measurement_;
     bool                RGB_measurement_;
     bool                CMYK_measurement_;
@@ -122,14 +123,17 @@ class ICCmeasurement {
     bool                valid (void)       {DBG_PROG return (XYZ_measurement_
                                                  && (RGB_measurement_
                                                   || CMYK_measurement_)); }
+    bool                validHalf (void)   {DBG_PROG return (XYZ_measurement_
+                                                 || RGB_measurement_
+                                                 || CMYK_measurement_); }
     bool                hasRGB ()          {DBG_PROG return RGB_measurement_; }
     bool                hasCMYK ()         {DBG_PROG return CMYK_measurement_; }
     bool                hasXYZ ()          {DBG_PROG return XYZ_measurement_; }
     size_t              getSize()          {DBG_PROG return size_; }
     int                 getPatchCount()    {DBG_PROG return nFelder_; }
     // Werte
-    std::vector<double> getMessRGB (int patch); // Darstellungsfarben
-    std::vector<double> getCmmRGB (int patch);  // Darstellungsfarben
+    std::vector<double> getMessRGB (int patch); //!< Darstellungsfarben
+    std::vector<double> getCmmRGB (int patch);  //!< Darstellungsfarben
     std::vector<double> getMessLab (int patch);
     std::vector<double> getCmmLab (int patch);
     std::vector<XYZ>    getMessXYZ ()      {DBG_PROG return XYZ_Satz_; }

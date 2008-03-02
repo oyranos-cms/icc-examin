@@ -39,11 +39,11 @@
 #else
 #  include <GL/glu.h> // added for FLTK
 #endif
+#include "icc_modell_beobachter.h"
 
 class GL_Ansicht;
 
-class
-Agviewer
+class Agviewer : public icc_examin_ns::Modell
 {
   public:
   GL_Ansicht* parent;

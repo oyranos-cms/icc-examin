@@ -109,12 +109,12 @@ ICCvrmlParser::lesen_ ()
 # endif
 
   // locale - Kommas unterscheiden
-  char* loc_alt = getenv("LANG");
+  char* loc_alt = setlocale(LC_NUMERIC, NULL); //getenv("LANG");
   if(loc_alt)
     DBG_NUM_V( loc_alt )
   else
     DBG_NUM_S( "keine LANG Variable gefunden" )
-  setlocale(LC_NUMERIC,"en_GB");
+  setlocale(LC_NUMERIC,"C");
 
   // nach Netzen in der vrml Datei suchen
   while( (netz_pos = original_.find( "IndexedFaceSet", netz_pos )) !=

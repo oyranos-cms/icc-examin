@@ -106,7 +106,7 @@ class ICCprofile {
     //const char*         creator  ()        {DBG_PROG return header.creatorName(); }
     //! Uebertragungsart; siehe auch @see: ICCexamin.intent()
     int                 intent   ()     {return icValue(((const icHeader*)header
-                                           .header_raw())-> renderingIntent ); }
+                                           .headerRaw())-> renderingIntent ); }
     icColorSpaceSignature colorSpace()  {return header.colorSpace(); }
 
     std::string         printHeader     ();
@@ -129,11 +129,12 @@ class ICCprofile {
     std::vector<double>      getTagNumbers     (int item, ICCtag::MftChain typ);
     std::vector<std::string> getTagChannelNames(int item, ICCtag::MftChain typ);
     bool                hasTagName   (std::string name); //!< Name
-    int                 getTagByName (std::string name); //!< Name
+    int                 getTagIDByName (std::string name); //!< Name
     int                 getTagCount     (); 
 
     //! Profil Infos
-    char*               getProfileInfo  ();
+    //char*               getProfileInfo  ();
+    char*               getProfileDescription  ();
     std::vector<double> getWhitePkt   (void);
     int                 getColourChannelsCount ();
     int                 hasCLUT ();
@@ -150,12 +151,14 @@ class ICCprofile {
     std::string         cgats_max      ();
 
   public: // Profilerstellung
-    void                setHeader          (void* h);
-    void                addTag             (ICCtag tag);
+    void                setHeader          (const void* h);
+    ICCheader           getHeader          ()      { return header; };
+    void                addTag             (ICCtag & tag);
     ICCtag&             getTag             (int item);
-    void                removeTag          (int item);
-    void                removeTagByName    (std::string name);
-    size_t              getProfileSize     (void);
+    ICCtag&             getTag             (std::string name);
+    int                 removeTag          (int item);
+    int                 removeTag          (std::string name);
+    size_t              getProfileSize     ();
     char*               saveProfileToMem   (size_t* size);
   private:
     void                writeTags     (void);

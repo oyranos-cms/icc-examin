@@ -44,7 +44,8 @@
 class Fl_Menu_Button;
 
 class GL_Ansicht : public Fl_Gl_Window, /*, public Fl_Slot*/
-                   public icc_examin_ns::ThreadDaten {
+                   public icc_examin_ns::ThreadDaten,
+                   public icc_examin_ns::Beobachter {
   // Datenhaltung
     // Position: Farbe1, Farbe2, Farbe3, Farbkanal Nr., Wert
   std::vector<std::vector<std::vector<std::vector<double> > > > tabelle_;
@@ -63,7 +64,7 @@ class GL_Ansicht : public Fl_Gl_Window, /*, public Fl_Slot*/
   void garnieren_();
   void auffrischen_();      //!< Erneuerung ohne init()
 
-  // Menüs
+  // Menues
   Fl_Menu_Button  *menue_;
   Fl_Menu_Button  *menue_button_;
   Fl_Menu_Button  *menue_schnitt_;
@@ -72,7 +73,7 @@ class GL_Ansicht : public Fl_Gl_Window, /*, public Fl_Slot*/
   static void c_(Fl_Widget* w, void* daten);
   
   // IDs
-  Agviewer agv_;
+  Agviewer *agv_;
   int  id_;
   void GLinit_();
   void menueInit_();
@@ -113,6 +114,9 @@ public:
 
   // welches Fenster wird verwaltet?
   int  id()          {return id_; } //!< gleich zu agviewer::RedisplayWindow
+
+  static Agviewer* getAgv(GL_Ansicht *me, GL_Ansicht *referenz);
+
   // fltk virtual
   void draw();
   int  handle(int event);
@@ -137,11 +141,11 @@ public:
                                std::vector<std::string> nachFarben);
 
   // transparente Darstellung
-  int  kanal;               //!< gewählter Kanal
+  int  kanal;               //!< gewaehlter Kanal
        // Darstellung der Gitterpunkte der Transformationstabelle
   int  punktform;           //!< MENU_KUGEL MENU_WUERFEL MENU_STERN
   int  punktfarbe;          //!< MENU_GRAU MENU_FARBIG MENU_KONTRASTREICH
-  int  punktgroesse;        //!< Größe in Pixel
+  int  punktgroesse;        //!< Groesse in Pixel
 
   float hintergrundfarbe;   //!< Hintergrundfarben Farbschema
   float textfarbe[3];
@@ -153,18 +157,18 @@ public:
 
   // Darstellungsfunktionen
   void setzePerspektive();  //!< Perspektive aktualisieren
-  void tabelleAuffrischen();//!< glCompile für Tabelle
-  void punkteAuffrischen(); //!< glCompile für Punkte
+  void tabelleAuffrischen();//!< glCompile fuer Tabelle
+  void punkteAuffrischen(); //!< glCompile fuer Punkte
   void netzeAuffrischen();  //!< Sortieren und Zeichnen
   double seitenverhaeltnis; //!< Proportion des Fensters
   static const double std_vorder_schnitt;
   double vorder_schnitt;    //!< Entfernung der ersten Schnittebene
   double schnitttiefe;      //!< Dicke der GL Schnitttiefe
-  double a_darstellungs_breite; //!< Richtung CIE*a   für Zoom und Pfeillängen
+  double a_darstellungs_breite; //!< Richtung CIE*a   fuer Zoom und Pfeillaengen
   double b_darstellungs_breite; //!< ~        CIE*b ; wobei CIE*L immer 1.0
   bool zeig_punkte_als_messwert_paare;
   bool zeig_punkte_als_messwerte;
-  int  spektralband;        //!< stelle die spektral gesättigten Farben dar
+  int  spektralband;        //!< stelle die spektral gesaettigten Farben dar
   int  zeige_helfer;        //!< zeige Pfeile und Text
 private:
   void zeigeSpektralband_();
