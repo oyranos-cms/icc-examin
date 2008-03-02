@@ -478,9 +478,11 @@ ICCexamin::glAnsicht(int id)
     std::vector<GL_Ansicht*>::iterator it;
     for (it = _gl_ansichten.begin() ; it != _gl_ansichten.end(); ++it)
       if ((*it)->id()==id)
+      { DBG_PROG_ENDE
         return *it;
+      }
   }
-  return 0;
   DBG_PROG_ENDE
+  return 0;
 }
 #endif
