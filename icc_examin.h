@@ -30,15 +30,16 @@
 #ifndef ICC_EXAMIN_H
 #define ICC_EXAMIN_H
 
-#include <string>
-#include <vector>
-#include <set>
 #include "icc_utils.h"
 #include "icc_gl.h"
 #include "icc_kette.h"
 #include "icc_oyranos.h"
 #include "icc_modell_beobachter.h"
+#include "icc_thread_daten.h"
 
+#include <string>
+#include <vector>
+#include <set>
 #define USE_THREADS 1
 
 class  ICCfltkBetrachter;
@@ -53,7 +54,8 @@ namespace icc_examin_ns {
     };
 }
 
-class ICCexamin : public icc_examin_ns::Beobachter
+class ICCexamin : public icc_examin_ns::Beobachter,
+                  public icc_examin_ns::ThreadDaten
 {
   enum {
     TAG_VIEWER,
@@ -113,15 +115,11 @@ class ICCexamin : public icc_examin_ns::Beobachter
          intent_,              //!< Uebertragungsart
          bpc_,                 //!< Schwarzpunktkompensation
          gamutwarn_;           //!< Farbraumwarnung
-    bool frei_,                //!< wird nicht von weiterem Prozess benutzt
-         intent_selection_,    //!< interaktiv gewaehlte Uebertragungsart
+    bool intent_selection_,    //!< interaktiv gewaehlte Uebertragungsart
          farbraum_modus_;      //!< profile.profil() enthaelt ncl2 Schmuckfarben
     ICCwaehler *icc_waehler_;
   public:
     int  laeuft ()  { return status_; }        //!< kann bei >1 genutzt werden
-    bool frei()     { return frei_; }          //!< ist nicht gesperrt
-    void frei(int bool_);                      //!< Sperren mit Warten/Freigeben
-    int  frei_zahl;
     int  intentGet(int *interaktiv){ if(interaktiv)
                                        *interaktiv = (int)intent_selection_;
                                      return intent_; }        //!< die globale Uebertragungsart; siehe auch @see: ICCprofile.intent()

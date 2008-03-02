@@ -117,7 +117,7 @@ ICCexamin::netzLese (int n,
     int interactive = 0;
     intentGet(&interactive);
     if(farbraumModus() && n == 1 && !interactive)
-      intent( profile.profil()->intent() );
+      intent( -1 );
 
     netz_temp = icc_oyranos. netzVonProfil(  *(profile[n]), intentGet(NULL) );
     if(netz_temp.size())
@@ -210,7 +210,7 @@ ICCexamin::farbraum (int n)
 
   // Messwerte
   int messwerte=false;
-  FREI_(false);
+  frei(false);
   if(profile.size() > n &&
      profile.aktuell() == n &&
      profile[n]->hasMeasurement() &&
@@ -220,7 +220,7 @@ ICCexamin::farbraum (int n)
       messwertLese(n, p,f,namen);
       messwerte = true;
     }
-  FREI_(true);
+  frei(true);
 
   int ncl2_profil = profile[n]->hasTagName("ncl2");
 
@@ -249,61 +249,75 @@ ICCexamin::farbraum (int n)
   if(n == 0)
     icc_betrachter->DD_farbraum->hineinPunkte( p, f, namen, texte );
 
-  if((int)icc_betrachter->DD_farbraum-> dreiecks_netze .size() <= n)
-    icc_betrachter->DD_farbraum-> dreiecks_netze .resize( n + 1 );
-
-  std::vector<ICCnetz> *netz = &icc_betrachter->DD_farbraum->dreiecks_netze;
-  DBG_PROG_V( icc_betrachter->DD_farbraum-> dreiecks_netze.size() <<" "<< n )
-
-
-  if( profile.size() > n && !ncl2_profil )
-    netzLese(n, netz);
-
-  DBG_PROG_V( n <<" "<< netz->size() <<" "<< ncl2_profil )
-
-  if(netz->size() && neues_netz)
   {
-    if((n == 0 && ncl2_profil) &&
-       !messwerte )
+  icc_betrachter->DD_farbraum-> frei(false);
+
+    if((int)icc_betrachter->DD_farbraum-> dreiecks_netze .size() <= n)
+      icc_betrachter->DD_farbraum-> dreiecks_netze .resize( n + 1 );
+
+    std::vector<ICCnetz> *netz = &icc_betrachter->DD_farbraum->dreiecks_netze;
+    DBG_PROG_V( icc_betrachter->DD_farbraum-> dreiecks_netze.size() <<" "<< n )
+
+
+    if( profile.size() > n && !ncl2_profil )
+      netzLese(n, netz);
+
+    DBG_PROG_V( n <<" "<< netz->size() <<" "<< ncl2_profil )
+
+    if(netz->size() && neues_netz)
     {
-      (*netz)[n].transparenz = 0.0;
-      (*netz)[n].grau = false;
-    } else if ( farbraumModus() &&
-       !messwerte ) {
-      if(n == 1)
-        (*netz)[n].transparenz = 0.15;
+      if((n == 0 && ncl2_profil) &&
+         !messwerte )
+      {
+        (*netz)[n].transparenz = 0.0;
+        (*netz)[n].grau = false;
+      }
       else
-        (*netz)[n].transparenz = 0.10;
-      (*netz)[n].grau = true;
-    } else if ( profile.size() == 1 ) {
-      (*netz)[n].transparenz = 0.25;
-      (*netz)[n].grau = false;
-    } else {
-      (*netz)[n].transparenz = 0.3;
-      (*netz)[n].grau = true;
+      if ( farbraumModus() && !messwerte )
+      {
+        if(n == 1)
+          (*netz)[n].transparenz = 0.15;
+        else
+          (*netz)[n].transparenz = 0.10;
+        (*netz)[n].grau = true;
+      }
+      else
+      if ( profile.size() == 1 )
+      {
+        (*netz)[n].transparenz = 0.25;
+        (*netz)[n].grau = false;
+      }
+      else
+      {
+        (*netz)[n].transparenz = 0.3;
+        (*netz)[n].grau = true;
+      }
+
+      icc_betrachter->DD_farbraum->achsNamen( texte );
+
+      int x = icc_betrachter->vcgt->x() + icc_betrachter->vcgt->w()/2;
+      int y = icc_betrachter->vcgt->y() + icc_betrachter->vcgt->h()/2;
+      std::string moni = icc_oyranos.moni_name( x,y );
+      if(profile[n]->filename() == moni)
+        profile.passiv(n);
+      DBG_PROG_V( n <<" "<< profile.aktiv(n) )
+    }
+    if(icc_betrachter->DD_farbraum->dreiecks_netze[n].name == "")
+    {
+      icc_betrachter->DD_farbraum->dreiecks_netze[n].name =
+                                                         profile[n]->filename();
+      // Dateiname extrahieren
+      std::string & dateiname = icc_betrachter->DD_farbraum->dreiecks_netze[n].name;
+      if( dateiname.find_last_of("/") != std::string::npos)
+        dateiname = dateiname.substr( dateiname.find_last_of("/")+1,
+                                    dateiname.size() );
+      DBG_PROG_V( icc_betrachter->DD_farbraum->dreiecks_netze[n].name )
     }
 
-    icc_betrachter->DD_farbraum->achsNamen( texte );
-
-    int x = icc_betrachter->vcgt->x() + icc_betrachter->vcgt->w()/2;
-    int y = icc_betrachter->vcgt->y() + icc_betrachter->vcgt->h()/2;
-    std::string moni = icc_oyranos.moni_name( x,y );
-    if(profile[n]->filename() == moni)
-      profile.passiv(n);
-    DBG_PROG_V( n <<" "<< profile.aktiv(n) )
-  }
-  if(icc_betrachter->DD_farbraum->dreiecks_netze[n].name == "") {
-    icc_betrachter->DD_farbraum->dreiecks_netze[n].name =
-                                                         profile[n]->filename();
-    // Dateiname extrahieren
-    std::string & dateiname = icc_betrachter->DD_farbraum->dreiecks_netze[n].name;
-    if( dateiname.find_last_of("/") != std::string::npos)
-      dateiname = dateiname.substr( dateiname.find_last_of("/")+1,
-                                    dateiname.size() );
-    DBG_PROG_V( icc_betrachter->DD_farbraum->dreiecks_netze[n].name )
+  icc_betrachter->DD_farbraum-> frei(true);
   }
 
-  FREI_(true);
+  frei(true);
   DBG_PROG_ENDE
 }
 
@@ -311,12 +325,16 @@ void
 ICCexamin::farbraum ()
 {
   DBG_PROG_START
-  FREI_(false);
+  frei(false);
 
   if((int)icc_betrachter->DD_farbraum -> dreiecks_netze.size() > profile.size())
+  {
+    icc_betrachter->DD_farbraum ->frei(false);
     icc_betrachter->DD_farbraum -> dreiecks_netze.resize(profile.size());
+    icc_betrachter->DD_farbraum ->frei(true);
+  }
   DBG_PROG_V( icc_betrachter->DD_farbraum -> dreiecks_netze.size() )
-  FREI_(true);
+  frei(true);
 
   for(int i = 0; i < profile.size(); ++i)
   {
@@ -339,7 +357,7 @@ void
 ICCexamin::farbraumModus (int profil)
 {
   DBG_PROG_START
-  FREI_(false);
+  frei(false);
 
   farbraum_modus_ = false;
   if(profile.size() && profile.profil()->hasTagName("ncl2")) {
@@ -351,7 +369,7 @@ ICCexamin::farbraumModus (int profil)
 
   DBG_PROG_V( farbraum_modus_ )
 
-  FREI_(true);
+  frei(true);
   DBG_PROG_ENDE
 }
 

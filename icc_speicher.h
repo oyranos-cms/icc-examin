@@ -31,8 +31,8 @@
 #ifndef ICC_SPEICHER_H
 #define ICC_SPEICHER_H
 
-#include <string>
 #include "icc_utils.h"
+#include <string>
 
 #define DBG_SPEICHER_START   if(icc_debug >= 3) DBG_PROG_START
 #define DBG_SPEICHER_ENDE    if(icc_debug >= 3) DBG_PROG_ENDE

@@ -38,7 +38,7 @@ CFLAGS = $(OPTS) $(ALL_INCL)
 
 LDLIBS = -L$(libdir) -L./ $(FLTK_LIBS) $(FLU_LIBS) \
 	$(X11_LIBS) -llcms -L/lib $(OYRANOS_LIBS) $(LCMS_LIBS) \
-	$(FTGL_LIBS) $(I18N_LIB) $(DBG_LIBS) $(LIBNAME) $(LIBFL_I18N)
+	$(FTGL_LIBS) $(I18N_LIB) $(DBG_LIBS) $(LIBNAME) $(LIBFL_I18N) $(CWLIB)
 
 CPP_HEADERS = \
 	agviewer.h \
@@ -70,6 +70,7 @@ CPP_HEADERS = \
 	icc_profile_header.h \
 	icc_profile_tags.h \
 	icc_speicher.h \
+	icc_thread_daten.h \
 	icc_ueber.h \
 	icc_utils.h \
 	icc_vrml.h \
@@ -109,6 +110,9 @@ COMMON_CPPFILES = \
 	icc_vrml_parser.cpp \
 	threads.cpp
 
+
+DEBUG_CC = debug.cc
+DEBUG_H  = sys.h debug.h
 
 COMMON_CFILES = 
 CFILES = \
@@ -160,7 +164,7 @@ FLUID = \
 FONT = FreeSans.ttf
 
 SOURCES = $(ALL_SOURCEFILES) $(ALL_HEADERFILES)
-OBJECTS = $(CPPFILES:.cpp=.o) $(CXXFILES:.cxx=.o)
+OBJECTS = $(CPPFILES:.cpp=.o) $(CXXFILES:.cxx=.o) $(CCFILES:.cc=.o)
 I18N_OBJECTS =  $(I18N_CXXFILES:.cxx=.o)
 LINGUAS_SRC = $(LING:.po=.gmo)
 
@@ -171,6 +175,8 @@ APPL_FILES = \
 	ICC\ Examin.sh \
 	Info.plist
 
+CWDBUG_FILES = $(DEBUG_CC) $(DEBUG_H)
+
 ALL_FILES =	$(SOURCES) \
 	makefile.in \
 	configure \
@@ -178,6 +184,7 @@ ALL_FILES =	$(SOURCES) \
 	$(DOKU) \
 	$(FONT) \
 	$(APPL_FILES) \
+	$(CWDBUG_FILES) \
 	$(FLUID)
 
 

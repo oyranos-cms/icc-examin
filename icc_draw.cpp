@@ -27,6 +27,7 @@
 
 //#define DEBUG_DRAW
 
+#include "icc_utils.h"
 #include "icc_helfer.h"
 #include "icc_profile.h"
 #include "icc_helfer_ui.h"

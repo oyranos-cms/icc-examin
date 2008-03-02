@@ -30,6 +30,13 @@
 #ifndef ICC_UTILS_H
 #define ICC_UTILS_H
 
+#include "config.h"
+
+#ifdef CWDEBUG
+# include "sys.h"
+# include "debug.h"
+#endif
+
 #include <cstdio>		// printf()
 #ifdef HAVE_EXCEPTION
 #  include <exception>		// class expeption
@@ -39,8 +46,6 @@
 #include <iostream>
 #include <sstream>
 #include <cmath>
-
-#include "config.h"
 
 #include <errno.h>
 #ifndef EAGAIN

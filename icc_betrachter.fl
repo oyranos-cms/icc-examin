@@ -5,6 +5,16 @@ i18n_include <libintl.h>
 i18n_function _ 
 header_name {.h} 
 code_name {.cxx}
+decl {\#include "icc_examin.h"} {public
+} 
+
+decl {\#include "icc_profile.h"
+\#include "icc_utils.h"
+\#include "icc_ueber.h"
+\#include "icc_helfer.h"
+\#include "icc_helfer_fltk.h"} {public
+} 
+
 decl {\#include <cassert>} {public
 } 
 
@@ -35,6 +45,13 @@ decl {\#include <FL/Fl_Menu_Bar.H>} {public
 decl {\#include <FL/Fl_Box.H>} {public
 } 
 
+decl {\#include "icc_gl.h"} {} 
+
+decl {\#include "icc_draw.h"
+\#include "icc_kette.h"
+\#include "icc_oyranos_extern.h"
+\#include "fl_i18n/fl_i18n.H"} {} 
+
 decl {\#include "icc_fenster.h" 
 \#include <FL/Fl_Hold_Browser.H>
 \#include <FL/Fl_Choice.H>} {public
@@ -46,23 +63,6 @@ class TagTexts;
 class MftChoice;
 class GL_Ansicht;} {public
 } 
-
-decl {\#include "icc_examin.h"} {public
-} 
-
-decl {\#include "icc_draw.h"
-\#include "icc_kette.h"
-\#include "icc_oyranos_extern.h"
-\#include "fl_i18n/fl_i18n.H"} {} 
-
-decl {\#include "icc_profile.h"
-\#include "icc_utils.h"
-\#include "icc_ueber.h"
-\#include "icc_helfer.h"
-\#include "icc_helfer_fltk.h"} {public
-} 
-
-decl {\#include "icc_gl.h"} {} 
 
 decl {using namespace icc_examin_ns;} {} 
 

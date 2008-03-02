@@ -3,6 +3,12 @@
 #ifndef icc_betrachter_h
 #define icc_betrachter_h
 #include <FL/Fl.H>
+#include "icc_examin.h"
+#include "icc_profile.h"
+#include "icc_utils.h"
+#include "icc_ueber.h"
+#include "icc_helfer.h"
+#include "icc_helfer_fltk.h"
 #include <cassert>
 #include <iostream>
 //#include <sstream>
@@ -21,12 +27,6 @@ class TagBrowser;
 class TagTexts;
 class MftChoice;
 class GL_Ansicht;
-#include "icc_examin.h"
-#include "icc_profile.h"
-#include "icc_utils.h"
-#include "icc_ueber.h"
-#include "icc_helfer.h"
-#include "icc_helfer_fltk.h"
 char* iccReadInfo(char* filename);
 
 class TagBrowser : public Fl_Hold_Browser {

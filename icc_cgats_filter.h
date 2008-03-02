@@ -35,10 +35,10 @@
 
 #define STD_CGATS_FIELDS 44
 
-/*
+/**
  *  Arbeitsweise
  *
- *  Die Klasse CgatsFilter folgt dem Kontextmodell. Es können Eigenschaften
+ *  Die Klasse CgatsFilter folgt dem Kontextmodell. Es k&ouml;nnen Eigenschaften
  *  eingestellt werden, Daten geladen und die Auswertung erfolgt mit Hilfe der
  *  zuvor eingestellten Optionen.
  */
@@ -46,31 +46,31 @@
 class CgatsFilter
 {
     // statische Hilfsobjekte
-    static const char *cgats_alnum_;         // non-integral type
+    static const char *cgats_alnum_;         //!< @brief non-integral type
     static const char *cgats_alpha_;
     static const char *cgats_numerisch_;
     static const char *cgats_ziffer_;
     static const char *leer_zeichen_;
-      // Standard CGATS Schlüsselwörter
+      //! @brief Standard CGATS Schl&uuml;sselw&ouml;rter
     static const char ss_woerter_[STD_CGATS_FIELDS][16];
   public:
     CgatsFilter ()
     { DBG_PROG_START
-        // Initialisierung
+        //! @brief Initialisierung
         typ_ = LCMS;
-          // die Dateisignatur
+          //! @brief die Dateisignatur
         kopf = "ICCEXAM";
-          // das Ersetzungswort für spektrale Feldbezeichner
+          //! @brief das Ersetzungswort f&uuml;r spektrale Feldbezeichner
         spektral = "SPECTRAL_";
         anfuehrungsstriche_setzen = false;
-         // eine erste Messung wird benötigt
+         //! @brief eine erste Messung wird ben&ouml;tigt
         messungen.resize(1);
         DBG_PROG_ENDE
     }
     ~CgatsFilter () {; }
 
-    // Kopieren
   private:
+    //! @brief Kopieren
     CgatsFilter& copy (const CgatsFilter & o)
                               {
                                 typ_ = o.typ_;
@@ -86,11 +86,11 @@ class CgatsFilter
     CgatsFilter             (const CgatsFilter& o) { copy(o); }
     CgatsFilter& operator = (const CgatsFilter& o) { return copy (o); }
 
-    // Laden der CGATS ascii Daten
+    //! @brief Laden der CGATS ascii Daten
     void lade (char* text, size_t size) { clear();
                                           data_orig_.assign( text,0,size ); }
     void lade (std::string &text)       { clear(); data_orig_ = text; }
-    // Zurücksetzen der Datenstrukturen - keine neues Verhalten
+    //! @brief Zur&uuml;cksetzen der Datenstrukturen - keine neues Verhalten
     void clear()              { data_.resize(0); data_orig_.resize(0);
                                 messungen.resize(0); messungen.resize(1);
                                 log.clear();
@@ -99,123 +99,126 @@ class CgatsFilter
                                 for(unsigned i = 0; i < STD_CGATS_FIELDS; ++i)
                                     s_woerter_[i] = ss_woerter_[i];
                               }
-    // Ausgeben
+    //! @brief Ausgeben
     std::string lcms_gefiltert() { typ_ = LCMS; cgats_korrigieren_();
                                    return data_; }
-                // basICColor Modus
+                //! @brief Modus
     std::string max_korrigieren(){ typ_ = MAX_KORRIGIEREN; cgats_korrigieren_();
                                    return data_; }
 
     // Optionen
-                // frei wählbarer Kopf ( standardgemäß 7 Zeichen lang )
+                //! @brief frei w&auml;hlbarer Kopf ( standardgem&auml;&szlig; 7 Zeichen lang )
     std::string kopf;
-                // frei wählbarer Kommentar ( wird nach Kopfzeile eingefügt )
+                //! @brief frei w&auml;hlbarer Kommentar ( wird nach Kopfzeile eingef&uuml;gt )
     std::string kommentar;
-                // frei wählbarer Bezeichner für Spektraldaten (SPECTRAL_)
+                //! @brief frei w&auml;hlbarer Bezeichner f&uuml;r Spektraldaten (SPECTRAL_)
     std::string spektral;
-                // für ausgegebene Worte im DATA Block
+                //! @brief f&uuml;r ausgegebene Worte im DATA Block
     bool        anfuehrungsstriche_setzen;
 
-    // Messdaten
+    //! @brief Messdaten
     struct Messung {
-      std::vector<std::string> kommentare; // KEYWORD ...
-      std::vector<std::string> felder;     // DATA_FIELD
-      std::vector<std::string> block;      // DATA
-      int feld_spalten;                    // NUMBER_OF_FIELDS
-      int block_zeilen;                    // NUMBER_OF_SETS
+      std::vector<std::string> kommentare; //!< @brief KEYWORD ...
+      std::vector<std::vector<std::string> > felder;     //!< @brief DATA_FIELD
+      std::vector<std::vector<std::string> > block;      //!< @brief DATA
+      int feld_spalten;                    //!< @brief NUMBER_OF_FIELDS
+      int block_zeilen;                    //!< @brief NUMBER_OF_SETS
     };
-    std::vector<Messung> messungen;        // teilweise strukturierte Messdaten
+    std::vector<Messung> messungen;        //!< @brief teilweise strukturierte Messdaten
   private:
     void neuerAbschnitt_ ();
   public:
-    // Die Liste von Mitteilungen und Auffälligkeiten
-    // Anm.: bei zusammengefassten Vorgängen ist eventuell nur "meldung" gültig
+    /** @brief Die Liste von Mitteilungen und Auff&auml;lligkeiten
+     *
+     * Anm.: bei zusammengefassten Vorg&auml;ngen ist eventuell nur "meldung" g&uuml;ltig
+     */
     struct Log {
-      std::vector<std::string> eingabe; // die bearbeiteten Zeilen (>=0)
-      std::vector<std::string> ausgabe; // die resultierenden Zeilen (>=0)
-      std::string meldung;              // eine Mitteilung für den Vorgang
-      int original_zeile;               // Zeilennummer der Eingabe
+      std::vector<std::string> eingabe; //!< @brief die bearbeiteten Zeilen (>=0)
+      std::vector<std::string> ausgabe; //!< @brief die resultierenden Zeilen (>=0)
+      std::string meldung;              //!< @brief eine Mitteilung f&uuml;r den Vorgang
+      int original_zeile;               //!< @brief Zeilennummer der Eingabe
     };
     std::vector<Log> log;
 
   private:
-    /* --- Hauptfunktion ---
+    /** @brief --- Hauptfunktion ---
+
        o Konvertierung in Standard unix Dateiformat mit LF
        o Suchen und Ersetzen bekannnter Abweichungen (in data_)
        o zeilenweises lesen und editieren (in zeilen_)
        o verdecken der Kommentare (mit lokalem string gtext)
-       o kontrollieren der Blöckanfänge und -enden
+       o kontrollieren der Bl&ouml;ckanf&auml;nge und -enden
        o die Dateisignatur reparieren (7 / 14 byte lang)
-       o zwischen den Blöcken: Schlüsselworte erkennen und bearbeiten
-       o die Zeilen wieder zusamenfügen und als einen std::string zurückgeben
+       o zwischen den Bl&ouml;cken: Schl&uuml;sselworte erkennen und bearbeiten
+       o die Zeilen wieder zusamenf&uuml;gen und als einen std::string zur&uuml;ckgeben
     */
     std::string cgats_korrigieren_               ();
     
     // - Hilfsfunktionen -
 
-      /* Auszählen der Formate(Farbkanäle) im DATA_FORMAT Block
+      /** @brief Ausz&auml;hlen der Formate(Farbkan&auml;le) im DATA_FORMAT Block
        *
        *  zeile     : zu bearbeitende kommentarfreie Zeile
-       *  zeile_x   : Nummer der gewählten Zeile
+       *  zeile_x   : Nummer der gew&auml;hlten Zeile
        */
     int sucheInDATA_FORMAT_( std::string &zeile, int &zeile_x );
 
-      /* klassifiziert CGATS Schlüsselworte; sinnvoll ausserhalb der Blöcke
+      /** @brief klassifiziert CGATS Schl&uuml;sselworte; sinnvoll ausserhalb der Bl&ouml;cke
        *
        *  zeile     : zu bearbeitende kommentarfreie Zeile
        */
     int sucheSchluesselwort_( std::string zeile );
 
-      /* eine Zeile ausserhalb der beiden DATA und FORMAT Blöcke nach
-       * Klassifizierungsschlüssel bearbeiten
+      /** @brief eine Zeile ausserhalb der beiden DATA und FORMAT Bl&ouml;cke nach
+       * Klassifizierungsschl&uuml;ssel bearbeiten
        *
        *  zeilen    : Referenz auf alle Text Zeilen
-       *  zeile_x   : Nummer der gewählten Zeile
+       *  zeile_x   : Nummer der gew&auml;hlten Zeile
        *  editieren : Bearbeitungscode aus sucheSchluesselwort_()
-       *  cmy       : Schalter für CB CMY Feldbezeichner
+       *  cmy       : Schalter f&uuml;r CB CMY Feldbezeichner
        */
     int editZeile_( std::vector<std::string> &zeilen,
                     int zeile_x, int editieren, bool cmy );
 
     // allgemeine Textbearbeitung
-      /* Textvektor Bearbeitung fürs zeilenweise Editieren
+      /** @brief Textvektor Bearbeitung f&uuml;rs zeilenweise Editieren
        *
        *  zeilen    : Referenz auf alle Text Zeilen
-       *  zeile_x   : Nummer der gewählten Zeile
+       *  zeile_x   : Nummer der gew&auml;hlten Zeile
        */
     void suchenLoeschen_      ( std::vector<std::string> &zeilen,
                                 std::string               text );
 
-      /* doppelte Zeilen löschen
+      /** @brief doppelte Zeilen l&ouml;schen
        *
        *  zeilen    : Referenz auf alle Text Zeilen
        */
     int  zeilenOhneDuplikate_ ( std::vector<std::string> &zeilen );
 
-      /* Buchstabenworte von Zahlen unterscheiden
+      /** @brief Buchstabenworte von Zahlen unterscheiden
        *
        *  zeilen    : Referenz auf alle Text Zeilen
        */
     std::vector<std::string> unterscheideZiffernWorte_ ( std::string &zeile );
 
-      /* Zeile von pos bis Ende in Anführungszeichen setzen
+      /** @brief Zeile von pos bis Ende in Anf&uuml;hrungszeichen setzen
        *
        *  zeilen    : Referenz auf alle Text Zeilen
        */
     void setzeWortInAnfuehrungszeichen_ ( std::string &zeile,
                                           std::string::size_type pos );
 
-      /* bequem einen Eintrag zu log hinzufügen
+      /** @brief bequem einen Eintrag zu log hinzuf&uuml;gen
        *
        *  meldung   : Beschreibung
        *  zeile_x   : Zeile des Auftretens des Ereignisses
-       *  zeile1    : Ursprünglisch Zeilen
-       *  zeile2    : geänderte Zeilen
+       *  zeile1    : Urspr&uuml;nglisch Zeilen
+       *  zeile2    : ge&auml;nderte Zeilen
        */
     unsigned int logEintrag_ (std::string meldung, int zeile_x,
                               std::string zeile1,  std::string zeile2 );
 
-      /* angepasste Variante von suchenErsetzen()
+      /** @brief angepasste Variante von suchenErsetzen()
        *
        *  text      : Text Zeile
        *  suchen    : zu suchendes Wort
@@ -227,7 +230,7 @@ class CgatsFilter
                                   const char*            ersetzen,
                                   std::string::size_type pos );
 
-    // Schlüsselwort -> passende Korrekturen
+    //! @brief Schl&uuml;sselwort -> passende Korrekturen
     enum {
       BELASSEN,
       KEYWORD,
@@ -236,26 +239,29 @@ class CgatsFilter
       AUSKOMMENTIEREN,
       LINEARISIERUNG,
       CMY_DATEN,
-      CMYK_DATEN
+      CMYK_DATEN,
+      SAMPLE_KORRIGIEREN
     };
 
-    // benötigte dynamische Hilfsobjekte
-    std::string              data_;      // der korrigierte CGATS Text
-    std::string              data_orig_; // eine Kopie vom Original
-    std::vector<std::string> s_woerter_; // Schlüsselwörter
-    std::vector<std::string> zeilen_;    // Arbeitsspeicher
+    // ben&ouml;tigte dynamische Hilfsobjekte
+    std::string              data_;      //!< @brief der korrigierte CGATS Text
+    std::string              data_orig_; //!< @brief eine Kopie vom Original
+    std::vector<std::string> s_woerter_; //!< @brief Schl&uuml;sselw&ouml;rter
+    std::vector<std::string> felder_;    //!< @brief die Feldnamen
+    std::vector<std::string> zeilen_;    //!< @brief Arbeitsspeicher
     enum Typ_ {
       LCMS,
       MAX_KORRIGIEREN
     };
-    enum Typ_                typ_;       // Art des Filterns
+    enum Typ_                typ_;       //!< @brief Art des Filterns
     int zeile_letztes_NUMBER_OF_FIELDS;
 };
 
 
 
-// fertig zum Anwenden
+//! @brief fertig zum Anwenden
 std::string  cgats_korrigieren( char* data, size_t size );
+//! @brief fertig zum Anwenden
 std::string  cgats_max_korrigieren( char* data, size_t size );
 
 #endif // ICC_CGATS_FILTER_H

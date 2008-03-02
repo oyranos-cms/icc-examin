@@ -184,6 +184,10 @@ private:
   static void bewegenStatisch_(void* GL_Ansicht);
   bool darf_bewegen_;
   bool ist_bewegt_;
+  bool frei_;
+public:
+  bool frei()     { return frei_; }          //!< ist nicht gesperrt
+  void frei(int bool_);                      //!< Sperren mit Warten/Freigeben
 private:
   double zeit_diff_;        //!< Bilder pro Sekunde
   int  valid_;              //!< notiert ob in draw() valid() false war

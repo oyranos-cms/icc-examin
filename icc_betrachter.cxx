@@ -2,11 +2,11 @@
 
 #include <libintl.h>
 #include "icc_betrachter.h"
+#include "icc_gl.h"
 #include "icc_draw.h"
 #include "icc_kette.h"
 #include "icc_oyranos_extern.h"
 #include "fl_i18n/fl_i18n.H"
-#include "icc_gl.h"
 using namespace icc_examin_ns;
 
 char* iccReadInfo(char* filename) {

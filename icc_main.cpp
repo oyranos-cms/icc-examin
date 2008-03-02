@@ -25,8 +25,8 @@
  * 
  */
 
-#include "config.h"
 #include "icc_utils.h"
+#include "config.h"
 #include "icc_helfer.h"
 #include "icc_examin.h"
 #include "icc_kette.h"
@@ -40,9 +40,20 @@ void MallocDebug_CheckFreeList();
 int
 main (int argc, char** argv)
 {
+# ifdef CWDEBUG
+  Debug(myproject::debug::init());		// This is a custom function defined
+  						// in example-project/debug.cc.
+# endif
 # if HAVE_PTHREAD_H
   icc_thread_liste[THREAD_HAUPT] = pthread_self();
+
+# ifdef CWDEBUG
+  Debug(myproject::debug::init_thread());	// This is a custom function defined
+  						// in example-project/debug.cc.
 # endif
+# endif
+
+
 
 # if APPLE
   //MallocDebug_CheckFreeList();

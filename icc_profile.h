@@ -30,15 +30,6 @@
 #ifndef ICC_PROFILE_H
 #define ICC_PROFILE_H
 
-// need lcms.h for BSD
-#include <lcms.h>
-#include <icc34.h>
-#include <string>
-#include <iostream>
-#include <sstream>
-#include <map>
-#include <vector>
-#include <fstream>
 #include "icc_utils.h"
 #include "icc_formeln.h"
 #include "icc_helfer.h"
@@ -48,6 +39,15 @@
 #include "icc_profile_header.h"
 #include "icc_profile_tags.h"
 
+// need lcms.h for BSD
+#include <lcms.h>
+#include <icc34.h>
+#include <string>
+#include <iostream>
+#include <sstream>
+#include <map>
+#include <vector>
+#include <fstream>
 
 /**
   *   @brief interne ICC Profilstruktur

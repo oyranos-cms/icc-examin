@@ -1,3 +1,17 @@
+2006-09-11
+	* neu: class ThreadDaten - secure data access in threaded environments
+
+2006-09-10
+	* und: change CgatsFilter class inside to better handle special fields
+	* neu: parse CGATS internaly (class ICCmeasurement)
+
+2006-09-08
+	* neu: move tests files to tests
+	* neu: add threads test to fltk check
+
+2006-08-11
+	* und: v0.41
+
 2006-07-21
 	* fix: measurement scaling for CLUT Profiles
 

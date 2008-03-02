@@ -27,12 +27,13 @@
 
 // Beginn Datum:      Februar 2005
 
-#include <sstream>
-#include <string>
-#include <vector>
 
 #include "icc_helfer.h"
 #include "icc_vrml_parser.h"
+
+#include <sstream>
+#include <string>
+#include <vector>
 
 #define lp {l+=0.1; icc_examin->fortschritt(l);}
 

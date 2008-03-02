@@ -30,16 +30,16 @@
 #ifndef ICC_PROFILE_HEADER_H
 #define ICC_PROFILE_HEADER_H
 
+#include "icc_utils.h"
+#include "icc_helfer.h"
+
+
 
 // lcms.h for BSD compiling
 #include <lcms.h>
 #include <icc34.h>
 
 #include <string>
-
-#include "icc_utils.h"
-#include "icc_helfer.h"
-
 
 
 /**

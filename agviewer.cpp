@@ -12,6 +12,11 @@
  * http://www.cs.hmc.edu/people/pwinston
  */
 
+// ICC Kopfdateien und Definitionen
+#include "icc_utils.h"
+#include "icc_examin.h"
+#include "icc_info.h"
+
 #  include <FL/glut.H>
 #  ifdef __APPLE__
 #    include <OpenGL/glu.h>
@@ -35,11 +40,6 @@
 
 #include <cmath>
 #include <sstream>
-
-// ICC Kopfdateien und Definitionen
-#include "icc_utils.h"
-#include "icc_examin.h"
-#include "icc_info.h"
 
 /* Some <math.h> files do not define M_PI... */
 #ifndef M_PI

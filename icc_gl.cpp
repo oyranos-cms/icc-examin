@@ -149,6 +149,7 @@ GL_Ansicht::GL_Ansicht(int X,int Y,int W,int H)
   maus_y_ = 0;
   darf_bewegen_ = false;
   ist_bewegt_ = false;
+  frei_ = true;
   valid_ = false;
   zeit_diff_ = 0;
 
@@ -785,9 +786,30 @@ GL_Ansicht::zeichneKoordinaten_()
   DBG_ICCGL_ENDE
 }
 
+// Sperren mit Warten/Freigeben
+void
+GL_Ansicht::frei(int freigeben)
+{ DBG_PROG_START
+  static int zahl = 0;
+  if(freigeben) {
+    frei_ = true;
+    --zahl;
+    DBG_THREAD_S( "freigeben " << zahl )
+  } else {
+    while(!frei_) icc_examin_ns::sleep(0.01);
+    frei_ = false;
+    ++zahl;
+    DBG_THREAD_S( "sperren   " << zahl )
+  } 
+  DBG_PROG_ENDE
+}     
+
 void
 GL_Ansicht::erstelleGLListen_()
 { DBG_PROG_START
+
+
+  frei(false);
 
   garnieren_();
 
@@ -820,6 +842,8 @@ GL_Ansicht::erstelleGLListen_()
       glClearColor(.0,.0,.0,1.0);
       break;
   }*/
+
+  frei(true);
 
   DBG_PROG_ENDE
 }
@@ -1237,9 +1261,9 @@ GL_Ansicht::netzeAuffrischen()
            }
 
            std::multimap<double,DreiecksIndexe>::const_iterator it;
-           int s_dn = dreiecks_netze[j].indexe.size();
-           int s_n = netz.indexe.size();
-           DBG_V( j <<" "<< dreiecks_netze[j].indexe.size() <<" "<< netz.indexe.size() )
+           //int s_dn = dreiecks_netze[j].indexe.size();
+           //int s_n = netz.indexe.size();
+           DBG_PROG_V( j <<" "<< dreiecks_netze[j].indexe.size() <<" "<< netz.indexe.size() )
            for( it = dreiecks_netze[j].indexe.begin();
                 it != dreiecks_netze[j].indexe.end(); ++it )
            {
@@ -1951,12 +1975,15 @@ GL_Ansicht::zeichnen()
     DBG_PROG_ENDE
   }
 # endif
+
   if(!valid_) {
     GLinit_();  DBG_PROG
     fensterForm();
     auffrischen_();
     valid_ = true;
   }
+
+  frei(false);
 
   double rechen_zeit = icc_examin_ns::zeitSekunden();
 
@@ -2264,6 +2291,9 @@ GL_Ansicht::zeichnen()
 #   endif
   } else
     DBG
+
+  frei(true);
+
   DBG_ICCGL_ENDE
 }
 
@@ -2289,6 +2319,7 @@ GL_Ansicht::hineinPunkte       (std::vector<double>      &vect,
 
   DBG_PROG_V( vect.size() )
 
+  frei (false);
   if(!punkte_.size() &&
      vect.size() > (1000*3) )
     punktgroesse = 2;
@@ -2318,6 +2349,8 @@ GL_Ansicht::hineinPunkte       (std::vector<double>      &vect,
       punkte_.size())
     punktform = MENU_dE1KUGEL;
 
+  frei (true);
+
   valid_=false;
   DBG_PROG_ENDE
 }
@@ -2327,9 +2360,12 @@ GL_Ansicht::hineinPunkte      (std::vector<double>      &vect,
                                std::vector<float>       &punkt_farben,
                                std::vector<std::string> &achsNamen)
 { DBG_PROG_START
+
+  frei (false);
   //Kurve aus tag_browser anzeigen
   farben_.clear();
   farben_ = punkt_farben;
+  frei (true);
   DBG_PROG_S( farben_.size()/4 << " Farben" )
 
   hineinPunkte(vect,achsNamen);
@@ -2345,8 +2381,10 @@ GL_Ansicht::hineinPunkte      (std::vector<double> &vect,
 { DBG_PROG_START
   //Kurve aus tag_browser anzeigen
   DBG_NUM_V( farb_namen.size() <<"|"<< punkt_farben.size() )
+  frei(false);
   farb_namen_.clear();
   farb_namen_ = farb_namen;
+  frei(true);
 
   hineinPunkte(vect, punkt_farben, achs_namen);
 
@@ -2358,9 +2396,11 @@ GL_Ansicht::hineinNetze       (const std::vector<ICCnetz> & d_n)
 {
   DBG_PROG_START
   if(d_n.size()) {
+    frei(false);
     dreiecks_netze.resize(0);
     DBG_V( dreiecks_netze.size() )
     dreiecks_netze = d_n;
+    frei(true);
   }
 
   DBG_NUM_V( dreiecks_netze.size() )
@@ -2378,12 +2418,16 @@ GL_Ansicht::hineinTabelle (std::vector<std::vector<std::vector<std::vector<doubl
                            std::vector<std::string> achs_namen,
                            std::vector<std::string> nach)
 { DBG_PROG_START
+
+  frei(false);
   //Kurve aus tag_browser anzeigen
   tabelle_ = vect;  DBG_PROG
   nach_farb_namen_ = nach; DBG_PROG
 
   achsNamen(achs_namen);
   punkte_.clear(); DBG_PROG
+
+  frei(true);
 
   valid_=false;
   redraw();

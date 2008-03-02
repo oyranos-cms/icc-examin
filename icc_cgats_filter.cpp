@@ -20,8 +20,9 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  * 
  * -----------------------------------------------------------------------------
- *
- * cgats Fehlerkorrekturen
+ */
+
+ /** @brief cgats Fehlerkorrekturen
  * 
  */
 
@@ -52,7 +53,7 @@ using namespace icc_parser;
 #define DBG_CGATS_V( text )
 #endif
 
-// statische Initialisierungen
+//! statische Initialisierungen
 
 const char *CgatsFilter::cgats_alnum_ = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_|/-+=()[]{}<>&?!:;,.0123456789";
 const char *CgatsFilter::cgats_numerisch_ = "-+,.0123456789";
@@ -224,7 +225,7 @@ CgatsFilter::unterscheideZiffernWorte_( std::string &zeile )
         anf_zaehlen = false;
       DBG_CGATS_V( pos2 )
 
-      // Anfuehrungszeichen zählen [ ""  " "  ABC ] - zeichenweise
+      // Anfuehrungszeichen z&auml;hlen [ ""  " "  ABC ] - zeichenweise
       int letzes_anf_zeichen = -1;
       if( anf_zaehlen )
         for( pos3 = pos2; pos3 < pos; ++pos3)
@@ -271,10 +272,10 @@ CgatsFilter::unterscheideZiffernWorte_( std::string &zeile )
       if( txt.find_first_of( cgats_numerisch_ ) != std::string::npos &&
           txt.find( "." ) != std::string::npos &&
           txt.find_first_of( cgats_alpha_ ) == std::string::npos )
-      { // ist Fließkommazahl
+      { // ist Flie&szlig;kommazahl
         pos += txt.size();
         sprintf( text, "%f", atof( zeile.substr( pos, ende-pos ).c_str() ) );
-        DBG_CGATS_S( "Fließkommazahl: " << txt )
+        DBG_CGATS_S( "Flie&szlig;kommazahl: " << txt )
       } else
       if( txt.find_first_of( cgats_ziffer_ ) != std::string::npos &&
           txt.find( "." ) == std::string::npos &&
@@ -548,7 +549,8 @@ CgatsFilter::editZeile_( std::vector<std::string> &zeilen,
               zeilen.insert( zeilen.begin() + i + 1, "BEGIN_DATA_FORMAT" );
               log[l].ausgabe.push_back( "BEGIN_DATA_FORMAT" );
               ++zeilendifferenz;
-              messungen[messungen.size()-1].felder.push_back( zeilen[i] );
+              messungen[messungen.size()-1].felder.push_back(  
+                                       unterscheideZiffernWorte_( zeilen[i] ) );
               zeilen.insert( zeilen.begin() + i + 3, "END_DATA_FORMAT" );
               log[l].ausgabe.push_back( "END_DATA_FORMAT" );
               ++zeilendifferenz;
@@ -563,7 +565,7 @@ CgatsFilter::editZeile_( std::vector<std::string> &zeilen,
               zeilen[i].insert( 0, "# " );
             break;
     case LINEARISIERUNG:
-            // Übergehen
+            // &Uuml;bergehen
             DBG_PROG_V( typ_ )
             if( typ_ == MAX_KORRIGIEREN )
             {
@@ -649,7 +651,7 @@ CgatsFilter::cgats_korrigieren_               ()
   // Zerlegen
   zeilen_ = zeilenNachVector(data_);
 
-  // es gibt zwei Blöcke  BEGIN_DATA / END_DATA und BEGIN_DATA_FORMAT / END_...
+  // es gibt zwei Bl&ouml;cke  BEGIN_DATA / END_DATA und BEGIN_DATA_FORMAT / END_...
   bool im_data_format_block = false;
   bool im_data_block = false;
   int zeile_letztes_BEGIN_DATA = -1;
@@ -661,7 +663,7 @@ CgatsFilter::cgats_korrigieren_               ()
   int zaehler_SETS = 0;
   int zaehler_FIELDS = 0;
   std::stringstream s;
-  std::string gtext; // gültiger Text
+  std::string gtext; // g&uuml;ltiger Text
   bool cmy_daten = false;
 
   // zeilenweises Bearbeiten
@@ -716,23 +718,24 @@ CgatsFilter::cgats_korrigieren_               ()
     if( im_data_block &&
         sucheWort (gtext, "END_DATA", 0 ) == std::string::npos )
     {
-      // in gtext , durch . ersetzen und danach in zeilen_[i] zurückschreiben
+      // in gtext , durch . ersetzen und danach in zeilen_[i] zur&uuml;ckschreiben
       if(suchenUndErsetzen_ ( gtext, ",", ".", 0 ))
       {
         zeilen_[i].replace( 0, gtext.size(), gtext );
         DBG_NUM_S( _(", ersetzt") )
       }
 
-      // SETS zählen
+      // SETS z&auml;hlen
       if( gtext.find_first_of( cgats_alnum_ ) != std::string::npos )
       {
         ++zaehler_SETS;
-        messungen[messungen.size()-1].block.push_back( zeilen_[i] );
+        messungen[messungen.size()-1].block.push_back(  
+                                      unterscheideZiffernWorte_( zeilen_[i] ) );
         messungen[messungen.size()-1].block_zeilen = zaehler_SETS;
       }
     }
 
-    // FIELDS zählen
+    // FIELDS z&auml;hlen
     if( im_data_format_block &&
         sucheWort (gtext, "END_DATA_FORMAT", 0 ) == std::string::npos )
     {
@@ -741,7 +744,8 @@ CgatsFilter::cgats_korrigieren_               ()
       zaehler_FIELDS += sucheInDATA_FORMAT_( gtext, i );
       zeilen_[i].insert( 0, gtext );
       // Mitschreiben in felder
-      messungen[messungen.size()-1].felder.push_back( zeilen_[i] );
+      messungen[messungen.size()-1].felder.push_back( 
+                     unterscheideZiffernWorte_(zeilen_[i] ) );
       messungen[messungen.size()-1].feld_spalten = zaehler_FIELDS;
       DBG_NUM_S( "zaehler_FIELDS " << zaehler_FIELDS << " Zeile " << i )
     }
@@ -762,7 +766,7 @@ CgatsFilter::cgats_korrigieren_               ()
         
       }
       for( unsigned j = 0; j < messungen[messungen.size()-1].felder.size(); ++j)
-        DBG_NUM_S( j<<" "<<messungen[messungen.size()-1].felder[j] )
+        DBG_NUM_S( j<<" "<<messungen[messungen.size()-1].felder[j][0] )
       // Markieren und Warnen
       if( im_data_format_block ) {
         DBG_PROG_S( _("oops zwei mal BEGIN_DATA_FORMAT  Zeile: ") << i )
@@ -780,14 +784,15 @@ CgatsFilter::cgats_korrigieren_               ()
     if( sucheWort (gtext, "END_DATA_FORMAT", 0 ) != std::string::npos )
     {
       for( unsigned j = 0; j < messungen[messungen.size()-1].felder.size(); ++j )
-        DBG_CGATS_S( j<<" "<<messungen[messungen.size()-1].felder[j] );
+        for( unsigned k = 0; k < messungen[messungen.size()-1].felder[j].size(); ++k )
+          DBG_CGATS_S( "["j<<"]["<<k<<"] "<<messungen[messungen.size()-1].felder[j][k] );
       if( !im_data_format_block )
         DBG_PROG_S( _("oops END_DATA_FORMAT ohne BEGIN_DATA_FORMAT  Zeile: ") << i );
 
       s.str("");
       s << "NUMBER_OF_FIELDS " << zaehler_FIELDS;
       messungen[messungen.size()-1].feld_spalten = zaehler_FIELDS;
-      // NUMBER_OF_FIELDS einfügen
+      // NUMBER_OF_FIELDS einf&uuml;gen
       if( im_data_format_block &&
           fehlendes_NUMBER_OF_FIELDS )
       {
@@ -857,7 +862,7 @@ CgatsFilter::cgats_korrigieren_               ()
       s.str("");
       s << "NUMBER_OF_SETS " << zaehler_SETS;
       messungen[messungen.size()-1].block_zeilen = zaehler_SETS;
-      // NUMBER_OF_SETS einfügen
+      // NUMBER_OF_SETS einf&uuml;gen
       if( im_data_block &&
           fehlendes_NUMBER_OF_SETS )
       {
@@ -904,7 +909,7 @@ CgatsFilter::cgats_korrigieren_               ()
     }
     // ENDE DATA Block
 
-    // Schlüsselwörter aufschlüsseln (Keywords)
+    // Schl&uuml;sselw&ouml;rter aufschl&uuml;sseln (Keywords)
     if( i != 0 )
     {
       if( !im_data_block && !im_data_format_block &&
@@ -918,7 +923,7 @@ CgatsFilter::cgats_korrigieren_               ()
 
         int i_alt = i;
         if( editieren )
-        { // ... zuschlüsseln (bearbeiten ;) - dabei Zeilendifferenz hinzuzählen
+        { // ... zuschl&uuml;sseln (bearbeiten ;) - dabei Zeilendifferenz hinzuz&auml;hlen
           i = i + editZeile_( zeilen_, i, editieren, cmy_daten );
         }
         if(editieren != BELASSEN &&
@@ -1022,9 +1027,11 @@ cgats_max_korrigieren( char* data, size_t size )
       for( unsigned j = 0; j < cgats.messungen[i]. kommentare.size(); ++j )
         DBG_PROG_S( i<<" "<<j<<" "<<cgats.messungen[i]. kommentare[j] );
       for( unsigned j = 0; j < cgats.messungen[i]. felder.size(); ++j )
-        DBG_PROG_S( i<<" "<<j<<" "<<cgats.messungen[i]. felder[j] );
+        for( unsigned k = 0; k < cgats.messungen[i]. felder[j].size(); ++k )
+          DBG_PROG_S( i<<" ["<<j<<"]["<<k<<"] "<<cgats.messungen[i]. felder[j][k] );
       for( unsigned j = 0; j < cgats.messungen[i]. block.size(); ++j )
-        DBG_PROG_S( i<<" "<<j<<" "<<cgats.messungen[i]. block[j] );
+        for( unsigned k = 0; k < cgats.messungen[i]. block[j].size(); ++k )
+          DBG_PROG_S( i<<" ["<<j<<"]["<<k<<"] "<<cgats.messungen[i]. block[j][k] );
       DBG_PROG_V( cgats.messungen[i]. felder.size() <<" "<< cgats.messungen[i]. feld_spalten )
       DBG_PROG_V( cgats.messungen[i]. block.size() <<" "<< cgats.messungen[i]. block_zeilen )
     }

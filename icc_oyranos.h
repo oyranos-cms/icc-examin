@@ -31,12 +31,12 @@
 #ifndef ICC_OYRANOS_H
 #define ICC_OYRANOS_H
 
+#include "icc_speicher.h"
+#include "icc_vrml_parser.h"
+
 #include <string>
 #include <list>
 #include <map>
-#include "icc_vrml_parser.h"
-#include "icc_speicher.h"
-
 class Oyranos;
 class Speicher;
 class ICCprofile;

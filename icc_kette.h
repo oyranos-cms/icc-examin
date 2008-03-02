@@ -35,6 +35,7 @@
 #include "icc_profile.h"
 #include "icc_utils.h"
 #include "icc_modell_beobachter.h"
+#include "icc_thread_daten.h"
 #include "icc_speicher.h"
 
 #define USE_THREADS 1
@@ -42,7 +43,8 @@
 class ICCkette;
 extern ICCkette profile;
 
-class ICCkette : public icc_examin_ns::Modell
+class ICCkette : public icc_examin_ns::ThreadDaten,
+                 public icc_examin_ns::Modell
 {
   public:
                  ICCkette  ();
@@ -68,11 +70,7 @@ class ICCkette : public icc_examin_ns::Modell
     void
 #   endif
                  waechter (void*);
-    bool         frei_;
   public:
-    void         frei(bool f) {frei_ = f; };
-    bool         frei()       {return frei_; };
-
     bool         einfuegen (const Speicher & profil, int pos);
 
     void         setzAktiv (int pos) { DBG_PROG aktiv_[pos]=true;}// benachrichtigen(pos);}

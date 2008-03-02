@@ -35,7 +35,6 @@
 #endif
 
 #include "icc_formeln.h"
-#include "icc_utils.h"
 
 #include <cmath>
 

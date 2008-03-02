@@ -26,6 +26,7 @@
  */
 
 
+#include "icc_utils.h"
 #include "icc_betrachter.h"
 #include "icc_draw.h"
 #include "icc_examin.h"
@@ -89,7 +90,6 @@ ICCexamin::ICCexamin ()
   intent_selection_ = 0;
   bpc_ = 0;
   gamutwarn_ = 0;
-  frei_zahl = 0;
   vcgt_cb_laeuft_b_ = 0;
   DBG_PROG_ENDE
 }
@@ -217,7 +217,7 @@ ICCexamin::start (int argc, char** argv)
 
   // zur Benutzung freigeben
   status_ = 1;
-  FREI_(true);
+  frei(true);
 
   // receive events
 # if 0
@@ -234,6 +234,9 @@ ICCexamin::start (int argc, char** argv)
   int fehler = fl_create_thread( fl_t, &oeffnenStatisch_, (void *)this );
 # if HAVE_PTHREAD_H
   icc_thread_liste[THREAD_LADEN] = fl_t;
+# ifdef CWDEBUG
+  Debug(myproject::debug::init_thread());
+# endif
 # endif
   if( fehler == EAGAIN)
   {
@@ -255,24 +258,6 @@ ICCexamin::start (int argc, char** argv)
 
   icc_betrachter->run();
 
-  DBG_PROG_ENDE
-}
-
-// Sperren mit Warten/Freigeben
-void
-ICCexamin::frei(int freigeben)
-{ DBG_PROG_START
-  static int zahl = 0;
-  if(freigeben) {
-    frei_ = true;
-    --zahl;
-    DBG_THREAD_S( "freigeben " << zahl )
-  } else {
-    while(!frei_) icc_examin_ns::sleep(0.01);
-    frei_ = false;
-    ++zahl;
-    DBG_THREAD_S( "sperren   " << zahl )
-  }
   DBG_PROG_ENDE
 }
 
@@ -326,7 +311,10 @@ ICCexamin::nachricht( Modell* modell , int info )
         {
           // ncl2 ?
           DBG_PROG_V( profile.aktuell() );
-          farbraum (info);
+          if(info == 0 && farbraumModus())
+            farbraum();
+          else
+            farbraum (info);
           icc_examin->fortschrittThreaded(0.5);
         }
 
@@ -476,7 +464,7 @@ ICCexamin::vcgtZeigen ()
     beobachte_vcgt( (void*)this );
   }
 
-  FREI_(false);
+  frei(false);
 # if HAVE_X || APPLE
   std::string display_name = "";
   int x = icc_betrachter->vcgt->x() + icc_betrachter->vcgt->w()/2;
@@ -499,7 +487,7 @@ ICCexamin::vcgtZeigen ()
   }
 # endif
 
-  FREI_(true);
+  frei(true);
   // TODO: osX
   DBG_PROG_ENDE
 }
@@ -507,7 +495,7 @@ ICCexamin::vcgtZeigen ()
 void
 ICCexamin::moniHolen ()
 { DBG_PROG_START
-  //FREI_(false);
+  //frei(false);
   fortschritt( 0.01 );
   int x = icc_betrachter->vcgt->x() + icc_betrachter->vcgt->w()/2;
   int y = icc_betrachter->vcgt->y() + icc_betrachter->vcgt->h()/2;
@@ -518,7 +506,7 @@ ICCexamin::moniHolen ()
   size_t size = ss[0].size();
   const char *moni_profil = ss[0];
   if(!moni_profil || !size) {
-    //FREI_(true);
+    //frei(true);
     DBG_PROG_ENDE
     return;
   }
@@ -550,37 +538,37 @@ ICCexamin::moniHolen ()
 void
 ICCexamin::moniSetzen ()
 { DBG_PROG_START
-  FREI_(false);
+  frei(false);
   int x = icc_betrachter->vcgt->x() + icc_betrachter->vcgt->w()/2;
   int y = icc_betrachter->vcgt->y() + icc_betrachter->vcgt->h()/2;
 
   if( profile.size() && profile.profil()->filename() &&
       strlen( profile.profil()->filename() ) ) { DBG_PROG
     icc_oyranos.setzeMonitorProfil( profile.profil()->filename(), x,y );
-    FREI_(true);
+    frei(true);
     vcgtZeigen();
-    FREI_(false);
+    frei(false);
   }
-  FREI_(true);
+  frei(true);
   DBG_PROG_ENDE
 }
 
 void
 ICCexamin::standardGamma ()
 { DBG_PROG_START
-  FREI_(false);
+  frei(false);
 # if HAVE_X
   int x = icc_betrachter->vcgt->x() + icc_betrachter->vcgt->w()/2;
   int y = icc_betrachter->vcgt->y() + icc_betrachter->vcgt->h()/2;
 
-  FREI_(true);
+  frei(true);
   vcgtZeigen();
-  FREI_(false);
+  frei(false);
   icc_oyranos.setzeMonitorProfil( 0, x,y );
 # endif
 
   // TODO: osX
-  FREI_(true);
+  frei(true);
   DBG_PROG_ENDE
 }
 
@@ -603,8 +591,8 @@ ICCexamin::intent( int intent_neu )
   int intent_alt = intent_;
   if(intent_neu < 0)
   {
-    if(profile[0])
-      intent_ = profile[0]->intent();
+    if(farbraumModus())
+      intent_ = profile.profil()->intent();
     else
       intent_ = 3;
       intent_selection_ = 0;

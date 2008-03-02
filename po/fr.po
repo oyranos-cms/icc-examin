@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ICC Examin 0.41\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2006-09-07 10:44+0200\n"
+"POT-Creation-Date: 2006-09-12 11:51+0200\n"
 "PO-Revision-Date: 2006-06-29 19:31+0200\n"
 "Last-Translator: Pascal LACROIX <lacroixpascal at vfemail.net>\n"
 "Language-Team: ALL <ku.b@gmx.de>\n"
@@ -19,7 +19,7 @@ msgstr ""
 msgid "GL Fenster nicht frei"
 msgstr ""
 
-#: agviewer.cpp:312 icc_gl.cpp:2391 icc_gl.cpp:2410 icc_gl.cpp:2529
+#: agviewer.cpp:312 icc_gl.cpp:2435 icc_gl.cpp:2454 icc_gl.cpp:2573
 msgid "left-/middle-/right mouse button -> rotate/cut/menu"
 msgstr ""
 
@@ -27,8 +27,8 @@ msgstr ""
 msgid "Pause"
 msgstr ""
 
-#: agviewer.cpp:349 agviewer.cpp:357 icc_gl.cpp:2495 icc_gl.cpp:2506
-#: icc_gl.cpp:2511 icc_gl.cpp:2516
+#: agviewer.cpp:349 agviewer.cpp:357 icc_gl.cpp:2539 icc_gl.cpp:2550
+#: icc_gl.cpp:2555 icc_gl.cpp:2560
 msgid "left mouse button -> go back"
 msgstr ""
 
@@ -40,203 +40,203 @@ msgstr ""
 msgid "keine Anweisung erkennbar"
 msgstr ""
 
-#: icc_cgats_filter.cpp:120
+#: icc_cgats_filter.cpp:121
 msgid "Ersetzung: Suchwort, n mal, Ersatzwort \""
 msgstr ""
 
-#: icc_cgats_filter.cpp:142
+#: icc_cgats_filter.cpp:143
 msgid "Leere Zeile ? : "
 msgstr ""
 
-#: icc_cgats_filter.cpp:388
+#: icc_cgats_filter.cpp:389
 msgid "neues Schluesselwort hinzugefuegt: "
 msgstr ""
 
-#: icc_cgats_filter.cpp:412
+#: icc_cgats_filter.cpp:413
 msgid " geloescht"
 msgstr ""
 
-#: icc_cgats_filter.cpp:499
+#: icc_cgats_filter.cpp:500
 msgid "neues Schluesselwort gefunden: "
 msgstr ""
 
-#: icc_cgats_filter.cpp:527
+#: icc_cgats_filter.cpp:528
 msgid "DATA_FORMAT_ZEILE eigefuegt"
 msgstr ""
 
-#: icc_cgats_filter.cpp:613
+#: icc_cgats_filter.cpp:615
 msgid "LF CR ersetzt"
 msgstr ""
 
-#: icc_cgats_filter.cpp:618
+#: icc_cgats_filter.cpp:620
 msgid "CR ersetzt"
 msgstr ""
 
-#: icc_cgats_filter.cpp:691
+#: icc_cgats_filter.cpp:693
 msgid "Dateisignatur eingefuehrt"
 msgstr ""
 
-#: icc_cgats_filter.cpp:723
+#: icc_cgats_filter.cpp:725
 msgid ", ersetzt"
 msgstr ""
 
-#: icc_cgats_filter.cpp:759
+#: icc_cgats_filter.cpp:763
 msgid "Mehr Feldbloecke als Datenbloecke: loesche"
 msgstr ""
 
-#: icc_cgats_filter.cpp:768
+#: icc_cgats_filter.cpp:772
 msgid "oops zwei mal BEGIN_DATA_FORMAT  Zeile: "
 msgstr ""
 
-#: icc_cgats_filter.cpp:777
+#: icc_cgats_filter.cpp:781
 msgid "BEGIN_DATA_FORMAT Zeile "
 msgstr ""
 
-#: icc_cgats_filter.cpp:785
+#: icc_cgats_filter.cpp:790
 msgid "oops END_DATA_FORMAT ohne BEGIN_DATA_FORMAT  Zeile: "
 msgstr ""
 
-#: icc_cgats_filter.cpp:796
+#: icc_cgats_filter.cpp:801
 msgid "fehlendes NUMBER_OF_FIELDS eingefuegt"
 msgstr ""
 
-#: icc_cgats_filter.cpp:798
+#: icc_cgats_filter.cpp:803
 msgid " eingefuegt"
 msgstr ""
 
-#: icc_cgats_filter.cpp:821
+#: icc_cgats_filter.cpp:826
 msgid "NUMBER_OF_FIELDS stimmt nicht ueberein: gefunden, berechnet: "
 msgstr ""
 
-#: icc_cgats_filter.cpp:832
+#: icc_cgats_filter.cpp:837
 msgid "END_DATA_FORMAT Zeile "
 msgstr ""
 
-#: icc_cgats_filter.cpp:841
+#: icc_cgats_filter.cpp:846
 msgid "oops zwei mal BEGIN_DATA  Zeile"
 msgstr ""
 
-#: icc_cgats_filter.cpp:855
+#: icc_cgats_filter.cpp:860
 msgid "oops END_DATA ohne BEGIN_DATA  Zeile "
 msgstr ""
 
-#: icc_cgats_filter.cpp:867
+#: icc_cgats_filter.cpp:872
 msgid "fehlende NUMBER_OF_SETS eingefuegt"
 msgstr ""
 
-#: icc_cgats_filter.cpp:890
+#: icc_cgats_filter.cpp:895
 msgid "NUMBER_OF_SETS stimmt nicht ueberein: gefunden, berechnet "
 msgstr ""
 
-#: icc_draw.cpp:239
+#: icc_draw.cpp:240
 msgid " zu frueh benutzt!"
 msgstr ""
 
-#: icc_draw.cpp:643
+#: icc_draw.cpp:644
 msgid "unbekannte Farbe"
 msgstr ""
 
-#: icc_draw.cpp:652 icc_draw.cpp:663 icc_helfer.cpp:400
+#: icc_draw.cpp:653 icc_draw.cpp:664 icc_helfer.cpp:400
 #: icc_profile_tags.cpp:419 icc_helfer_osx.cpp:68 icc_helfer_x.cpp:63
 msgid "Red"
 msgstr "Rouge"
 
-#: icc_draw.cpp:655 icc_draw.cpp:665 icc_helfer.cpp:401
+#: icc_draw.cpp:656 icc_draw.cpp:666 icc_helfer.cpp:401
 #: icc_profile_tags.cpp:420 icc_helfer_osx.cpp:69 icc_helfer_x.cpp:64
 msgid "Green"
 msgstr "Vert"
 
-#: icc_draw.cpp:658 icc_draw.cpp:667 icc_helfer.cpp:402
+#: icc_draw.cpp:659 icc_draw.cpp:668 icc_helfer.cpp:402
 #: icc_profile_tags.cpp:421 icc_helfer_osx.cpp:70 icc_helfer_x.cpp:65
 msgid "Blue"
 msgstr "Bleu"
 
-#: icc_draw.cpp:662 icc_gl.cpp:1834 icc_helfer.cpp:343 icc_waehler.h:130
+#: icc_draw.cpp:663 icc_gl.cpp:1858 icc_helfer.cpp:343 icc_waehler.h:130
 msgid "Gray"
 msgstr "Gris"
 
-#: icc_draw.cpp:669 icc_helfer.cpp:410 icc_helfer.cpp:414
+#: icc_draw.cpp:670 icc_helfer.cpp:410 icc_helfer.cpp:414
 msgid "Cyan"
 msgstr "Cyan"
 
-#: icc_draw.cpp:671 icc_helfer.cpp:411 icc_helfer.cpp:415
+#: icc_draw.cpp:672 icc_helfer.cpp:411 icc_helfer.cpp:415
 msgid "Magenta"
 msgstr "Magenta"
 
-#: icc_draw.cpp:673 icc_helfer.cpp:412 icc_helfer.cpp:416
+#: icc_draw.cpp:674 icc_helfer.cpp:412 icc_helfer.cpp:416
 msgid "Yellow"
 msgstr "Jaune"
 
-#: icc_draw.cpp:675 icc_gl.cpp:1836 icc_helfer.cpp:403 icc_helfer.cpp:413
+#: icc_draw.cpp:676 icc_gl.cpp:1860 icc_helfer.cpp:403 icc_helfer.cpp:413
 msgid "Black"
 msgstr "Noir"
 
-#: icc_draw.cpp:677 icc_helfer.cpp:588
+#: icc_draw.cpp:678 icc_helfer.cpp:588
 msgid "Luminance"
 msgstr "Luminance"
 
-#: icc_draw.cpp:679 icc_helfer.cpp:394
+#: icc_draw.cpp:680 icc_helfer.cpp:394
 msgid "Luminance Y"
 msgstr "Luminance Y"
 
-#: icc_draw.cpp:681 icc_helfer.cpp:385
+#: icc_draw.cpp:682 icc_helfer.cpp:385
 msgid "CIE X"
 msgstr "CIE X"
 
-#: icc_draw.cpp:683 icc_helfer.cpp:386 icc_helfer.cpp:397
+#: icc_draw.cpp:684 icc_helfer.cpp:386 icc_helfer.cpp:397
 msgid "CIE Y (Luminance)"
 msgstr "CIE Y (Luminance)"
 
-#: icc_draw.cpp:685 icc_helfer.cpp:387
+#: icc_draw.cpp:686 icc_helfer.cpp:387
 msgid "CIE Z"
 msgstr "CIE Z"
 
-#: icc_draw.cpp:687 icc_helfer.cpp:408
+#: icc_draw.cpp:688 icc_helfer.cpp:408
 msgid "Lightness"
 msgstr "Clarté"
 
-#: icc_draw.cpp:689 icc_helfer.cpp:406
+#: icc_draw.cpp:690 icc_helfer.cpp:406
 msgid "Value"
 msgstr "Valeur"
 
-#: icc_draw.cpp:691 icc_examin_farbraum.cpp:202 icc_examin_io.cpp:179
+#: icc_draw.cpp:692 icc_examin_farbraum.cpp:202 icc_examin_io.cpp:179
 #: icc_helfer.cpp:388 icc_helfer.cpp:391
 msgid "CIE *L"
 msgstr "CIE *L"
 
-#: icc_draw.cpp:693 icc_examin_farbraum.cpp:203 icc_examin_io.cpp:180
-#: icc_gl.cpp:857 icc_gl.cpp:931 icc_gl.cpp:957 icc_gl.cpp:965
+#: icc_draw.cpp:694 icc_examin_farbraum.cpp:203 icc_examin_io.cpp:180
+#: icc_gl.cpp:881 icc_gl.cpp:955 icc_gl.cpp:981 icc_gl.cpp:989
 #: icc_helfer.cpp:389
 msgid "CIE *a"
 msgstr "CIE *a"
 
-#: icc_draw.cpp:695 icc_examin_farbraum.cpp:204 icc_examin_io.cpp:181
-#: icc_gl.cpp:870 icc_gl.cpp:973 icc_gl.cpp:993 icc_gl.cpp:1000
+#: icc_draw.cpp:696 icc_examin_farbraum.cpp:204 icc_examin_io.cpp:181
+#: icc_gl.cpp:894 icc_gl.cpp:997 icc_gl.cpp:1017 icc_gl.cpp:1024
 #: icc_helfer.cpp:390
 msgid "CIE *b"
 msgstr "CIE *b"
 
-#: icc_draw.cpp:697 icc_helfer.cpp:395
+#: icc_draw.cpp:698 icc_helfer.cpp:395
 msgid "Colour b"
 msgstr "Couleur b"
 
-#: icc_draw.cpp:699 icc_helfer.cpp:396
+#: icc_draw.cpp:700 icc_helfer.cpp:396
 msgid "Colour r"
 msgstr "Couleur r"
 
-#: icc_draw.cpp:738 icc_draw.cpp:799
+#: icc_draw.cpp:739 icc_draw.cpp:800
 msgid " with "
 msgstr " avec "
 
-#: icc_draw.cpp:738 icc_draw.cpp:799
+#: icc_draw.cpp:739 icc_draw.cpp:800
 msgid " points"
 msgstr " points"
 
-#: icc_draw.cpp:745
+#: icc_draw.cpp:746
 msgid " with Gamma: 1.0"
 msgstr " avec Gamma: 1.0"
 
-#: icc_draw.cpp:758 icc_draw.cpp:777
+#: icc_draw.cpp:759 icc_draw.cpp:778
 msgid " with one entry for gamma: "
 msgstr " avec un entrée pour gamma: "
 
@@ -256,27 +256,27 @@ msgstr ""
 msgid "Ready"
 msgstr ""
 
-#: icc_examin.cpp:240 icc_kette.cpp:72
+#: icc_examin.cpp:243 icc_kette.cpp:71
 msgid "Waechter Thread nicht gestartet Fehler: "
 msgstr ""
 
-#: icc_examin.cpp:245 icc_kette.cpp:77
+#: icc_examin.cpp:248 icc_kette.cpp:76
 msgid "zu viele Waechter Threads Fehler: "
 msgstr ""
 
-#: icc_examin.cpp:250 icc_kette.cpp:82
+#: icc_examin.cpp:253 icc_kette.cpp:81
 msgid "unbekannter Fehler beim Start eines Waechter Threads Fehler: "
 msgstr ""
 
-#: icc_examin.cpp:653
+#: icc_examin.cpp:641
 msgid "verstecke "
 msgstr ""
 
-#: icc_examin.cpp:657
+#: icc_examin.cpp:645
 msgid "zeige     "
 msgstr ""
 
-#: icc_examin_farbraum.cpp:179 icc_gl.cpp:2052
+#: icc_examin_farbraum.cpp:179 icc_gl.cpp:2079
 msgid "RGB Ergebnis nicht verfuegbar"
 msgstr ""
 
@@ -352,149 +352,149 @@ msgstr ""
 msgid "RGB primaries"
 msgstr ""
 
-#: icc_gl.cpp:227
+#: icc_gl.cpp:228
 msgid "OpenGL mode: "
 msgstr ""
 
-#: icc_gl.cpp:311
+#: icc_gl.cpp:312
 msgid "redraw nicht ausgefuehrt"
 msgstr ""
 
-#: icc_gl.cpp:569 icc_gl.cpp:572 icc_gl.cpp:575 icc_gl.cpp:581 icc_gl.cpp:585
-#: icc_gl.cpp:600
+#: icc_gl.cpp:570 icc_gl.cpp:573 icc_gl.cpp:576 icc_gl.cpp:582 icc_gl.cpp:586
+#: icc_gl.cpp:601
 msgid "Konnte Font nicht oeffnen:"
 msgstr ""
 
-#: icc_gl.cpp:604 icc_gl.cpp:606
+#: icc_gl.cpp:605 icc_gl.cpp:607
 msgid "Fontgroesse nicht setzbar"
 msgstr ""
 
-#: icc_gl.cpp:747
+#: icc_gl.cpp:748
 #, c-format
 msgid "0,0,0"
 msgstr ""
 
-#: icc_gl.cpp:1023
+#: icc_gl.cpp:1047
 msgid "Kanalauswahl geaendert: "
 msgstr ""
 
-#: icc_gl.cpp:1570 icc_gl.cpp:1707
+#: icc_gl.cpp:1594 icc_gl.cpp:1731
 msgid "Lab_speicher Speicher nicht verfuegbar"
 msgstr ""
 
-#: icc_gl.cpp:1591 icc_gl.cpp:1592 icc_gl.cpp:1725 icc_gl.cpp:1726
+#: icc_gl.cpp:1615 icc_gl.cpp:1616 icc_gl.cpp:1749 icc_gl.cpp:1750
 msgid "RGB_speicher Ergebnis nicht verfuegbar"
 msgstr ""
 
-#: icc_gl.cpp:1698
+#: icc_gl.cpp:1722
 msgid "XYZ_speicher Speicher nicht verfuegbar"
 msgstr ""
 
-#: icc_gl.cpp:1808 icc_gl.cpp:1818 icc_gl.cpp:1820 icc_gl.cpp:1822
+#: icc_gl.cpp:1832 icc_gl.cpp:1842 icc_gl.cpp:1844 icc_gl.cpp:1846
 msgid "Slice"
 msgstr ""
 
-#: icc_gl.cpp:1809
+#: icc_gl.cpp:1833
 msgid "Rotate around slice"
 msgstr ""
 
-#: icc_gl.cpp:1824
+#: icc_gl.cpp:1848
 msgid "Rotate around"
 msgstr ""
 
-#: icc_gl.cpp:1824
+#: icc_gl.cpp:1848
 msgid "axis"
 msgstr ""
 
-#: icc_gl.cpp:1829
+#: icc_gl.cpp:1853
 msgid "Slice plane"
 msgstr ""
 
-#: icc_gl.cpp:1832
+#: icc_gl.cpp:1856
 msgid "White"
 msgstr "Blanc"
 
-#: icc_gl.cpp:1833
+#: icc_gl.cpp:1857
 msgid "Light gray"
 msgstr ""
 
-#: icc_gl.cpp:1835
+#: icc_gl.cpp:1859
 msgid "Dark gray"
 msgstr "Gris sombre"
 
-#: icc_gl.cpp:1839
+#: icc_gl.cpp:1863
 msgid "Background colour"
 msgstr "Couleur Arrière-plan"
 
-#: icc_gl.cpp:1844
+#: icc_gl.cpp:1868
 msgid "gray"
 msgstr "gris"
 
-#: icc_gl.cpp:1845
+#: icc_gl.cpp:1869
 msgid "coloured"
 msgstr ""
 
-#: icc_gl.cpp:1846
+#: icc_gl.cpp:1870
 msgid "high contrast"
 msgstr ""
 
-#: icc_gl.cpp:1847
+#: icc_gl.cpp:1871
 msgid "shells"
 msgstr ""
 
-#: icc_gl.cpp:1852
+#: icc_gl.cpp:1876
 msgid "Sphere 1dE"
 msgstr ""
 
-#: icc_gl.cpp:1853
+#: icc_gl.cpp:1877
 msgid "Sphere 2dE"
 msgstr ""
 
-#: icc_gl.cpp:1854
+#: icc_gl.cpp:1878
 msgid "Sphere 4dE"
 msgstr ""
 
-#: icc_gl.cpp:1857
+#: icc_gl.cpp:1881
 msgid "Star"
 msgstr ""
 
-#: icc_gl.cpp:1860
+#: icc_gl.cpp:1884
 msgid "Point"
 msgstr "Point"
 
-#: icc_gl.cpp:1863
+#: icc_gl.cpp:1887
 msgid "without markers"
 msgstr ""
 
-#: icc_gl.cpp:1864
+#: icc_gl.cpp:1888
 msgid "Spektral line"
 msgstr ""
 
-#: icc_gl.cpp:1867 icc_betrachter.cxx:868
+#: icc_gl.cpp:1891 icc_betrachter.cxx:868
 msgid "Texts"
 msgstr ""
 
-#: icc_gl.cpp:1869
+#: icc_gl.cpp:1893
 msgid "Texts/Arrows on/off"
 msgstr ""
 
-#: icc_gl.cpp:1871
+#: icc_gl.cpp:1895
 msgid "Illustration"
 msgstr ""
 
-#: icc_gl.cpp:2131
+#: icc_gl.cpp:2158
 msgid "Pos"
 msgstr ""
 
-#: icc_gl.cpp:2225 icc_profile_tags.cpp:303
+#: icc_gl.cpp:2252 icc_profile_tags.cpp:303
 msgid "Channel"
 msgstr "Canal"
 
-#: icc_gl.cpp:2554
+#: icc_gl.cpp:2598
 msgid "Konnte keine Eltern finden"
 msgstr ""
 
-#: icc_gl.cpp:2564
+#: icc_gl.cpp:2608
 msgid "Konnte keine passende Programmstruktur finden"
 msgstr ""
 
@@ -1087,179 +1087,179 @@ msgstr ""
 msgid "Dateigroesse 0 fuer "
 msgstr ""
 
-#: icc_kette.cpp:175
+#: icc_kette.cpp:174
 msgid "noName"
 msgstr ""
 
-#: icc_kette.cpp:192
+#: icc_kette.cpp:191
 msgid "File not loaded!"
 msgstr ""
 
-#: icc_measurement.cpp:608
+#: icc_measurement.cpp:808
 msgid "kein passendes voreingestelltes Profil gefunden"
 msgstr ""
 
-#: icc_measurement.cpp:614
+#: icc_measurement.cpp:814
 msgid "hCOLOUR ist leer"
 msgstr ""
 
-#: icc_measurement.cpp:639
+#: icc_measurement.cpp:839
 msgid "hXYZ ist leer"
 msgstr ""
 
-#: icc_measurement.cpp:640
+#: icc_measurement.cpp:840
 msgid "hsRGB ist leer"
 msgstr ""
 
-#: icc_measurement.cpp:678
+#: icc_measurement.cpp:878
 msgid "XYZ_Satz_.size() und nFelder_ sind ungleich"
 msgstr ""
 
-#: icc_measurement.cpp:680
+#: icc_measurement.cpp:880
 msgid "RGB_Satz_.size() und nFelder_ sind ungleich"
 msgstr ""
 
-#: icc_measurement.cpp:682
+#: icc_measurement.cpp:882
 msgid "CMYK_Satz_.size() und nFelder_ sind ungleich"
 msgstr ""
 
-#: icc_measurement.cpp:820
+#: icc_measurement.cpp:1020
 msgid "Report about ICC profile"
 msgstr ""
 
-#: icc_measurement.cpp:856
+#: icc_measurement.cpp:1056
 msgid "Meas colour"
 msgstr ""
 
-#: icc_measurement.cpp:858
+#: icc_measurement.cpp:1058
 msgid "Profile colour"
 msgstr ""
 
-#: icc_measurement.cpp:930
+#: icc_measurement.cpp:1130
 msgid "no measurment data or correct profile conversion available"
 msgstr ""
 
-#: icc_measurement.cpp:937
+#: icc_measurement.cpp:1137
 msgid "Measurment- and profile colours from <b>"
 msgstr ""
 
-#: icc_measurement.cpp:939
+#: icc_measurement.cpp:1139
 msgid "RGB"
 msgstr "RVB"
 
-#: icc_measurement.cpp:941
+#: icc_measurement.cpp:1141
 msgid "CMYK"
 msgstr ""
 
-#: icc_measurement.cpp:942
+#: icc_measurement.cpp:1142
 msgid "</b> Measurement"
 msgstr ""
 
-#: icc_measurement.cpp:944
+#: icc_measurement.cpp:1144
 msgid "CMM: <b>lcms</b>"
 msgstr ""
 
-#: icc_measurement.cpp:946
+#: icc_measurement.cpp:1146
 msgid "averaging deviations (dE CIE*Lab):<b> "
 msgstr ""
 
-#: icc_measurement.cpp:946
+#: icc_measurement.cpp:1146
 msgid "</b>  maximum: "
 msgstr ""
 
-#: icc_measurement.cpp:946
+#: icc_measurement.cpp:1146
 msgid "  minimum: "
 msgstr ""
 
-#: icc_measurement.cpp:946
+#: icc_measurement.cpp:1146
 msgid "  (dE CIE 2000) averaging: "
 msgstr ""
 
-#: icc_measurement.cpp:946
+#: icc_measurement.cpp:1146
 msgid "  maximum: "
 msgstr ""
 
-#: icc_measurement.cpp:976
+#: icc_measurement.cpp:1176
 msgid "Measurement patch"
 msgstr ""
 
-#: icc_measurement.cpp:977
+#: icc_measurement.cpp:1177
 msgid "dE Lab"
 msgstr ""
 
-#: icc_measurement.cpp:978
+#: icc_measurement.cpp:1178
 msgid "dE2000"
 msgstr ""
 
-#: icc_measurement.cpp:979
+#: icc_measurement.cpp:1179
 msgid "L"
 msgstr ""
 
-#: icc_measurement.cpp:980
+#: icc_measurement.cpp:1180
 msgid "a"
 msgstr ""
 
-#: icc_measurement.cpp:981
+#: icc_measurement.cpp:1181
 msgid "b"
 msgstr ""
 
-#: icc_measurement.cpp:982
+#: icc_measurement.cpp:1182
 msgid "L'"
 msgstr ""
 
-#: icc_measurement.cpp:983
+#: icc_measurement.cpp:1183
 msgid "a'"
 msgstr ""
 
-#: icc_measurement.cpp:984
+#: icc_measurement.cpp:1184
 msgid "b'"
 msgstr ""
 
-#: icc_measurement.cpp:985
+#: icc_measurement.cpp:1185
 msgid "X"
 msgstr ""
 
-#: icc_measurement.cpp:986 icc_measurement.cpp:1000
+#: icc_measurement.cpp:1186 icc_measurement.cpp:1200
 msgid "Y"
 msgstr ""
 
-#: icc_measurement.cpp:987
+#: icc_measurement.cpp:1187
 msgid "Z"
 msgstr ""
 
-#: icc_measurement.cpp:989
+#: icc_measurement.cpp:1189
 msgid "X'"
 msgstr ""
 
-#: icc_measurement.cpp:990
+#: icc_measurement.cpp:1190
 msgid "Y'"
 msgstr ""
 
-#: icc_measurement.cpp:991
+#: icc_measurement.cpp:1191
 msgid "Z'"
 msgstr ""
 
-#: icc_measurement.cpp:994
+#: icc_measurement.cpp:1194
 msgid "R"
 msgstr ""
 
-#: icc_measurement.cpp:995
+#: icc_measurement.cpp:1195
 msgid "G"
 msgstr "V"
 
-#: icc_measurement.cpp:996
+#: icc_measurement.cpp:1196
 msgid "B"
 msgstr ""
 
-#: icc_measurement.cpp:998
+#: icc_measurement.cpp:1198
 msgid "C"
 msgstr ""
 
-#: icc_measurement.cpp:999
+#: icc_measurement.cpp:1199
 msgid "M"
 msgstr ""
 
-#: icc_measurement.cpp:1001
+#: icc_measurement.cpp:1201
 msgid "K"
 msgstr ""
 
@@ -2144,14 +2144,14 @@ msgid "Paths:"
 msgstr ""
 
 #: icc_examin_version.h:9
-msgid "May 2004 - June 2006"
+msgid "May 2004 - September 2006"
 msgstr ""
 
-#: icc_gl.h:211
+#: icc_gl.h:215
 msgid "Gibts nicht"
 msgstr ""
 
-#: icc_utils.h:219 icc_utils.h:220 icc_utils.h:221
+#: icc_utils.h:224 icc_utils.h:225 icc_utils.h:226
 msgid "!!! Warnung !!!"
 msgstr ""
 

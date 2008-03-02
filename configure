@@ -1,6 +1,7 @@
 #!/bin/sh
 
 TARGET=icc_examin
+TARGET_NAME="ICC Examin"
 BINTARGET="`echo $TARGET | sed s/_//g`"
 ERROR=0
 test -f error.tmp && rm error.tmp
@@ -17,7 +18,7 @@ VERSION_A=0
 VERSION_B=4
 VERSION_C=2
 RELEASE=0
-ZEIT="May 2004 - June 2006"
+ZEIT="May 2004 - September 2006"
 VERSION=$VERSION_A.$VERSION_B$VERSION_C
 if [ $VERSION_A -gt 9 ]; then
   VERSION_L="$VERSION_A"
@@ -35,6 +36,10 @@ else
   VERSION_L="${VERSION_L}0$VERSION_C"
 fi
 VERSION_L=`echo $VERSION_L | sed 's/^0*//g'`
+
+cwdebug=0
+
+echo "Welcome to $TARGET_NAME Version $VERSION configurator"
 
 if [ $# -gt 0 ]; then
   prefix=""
@@ -82,6 +87,14 @@ if [ $# -gt 0 ]; then
     if [ "`echo \"$1\" | sed s/\"--$switch=\"//`" != "$1" ]; then
       desktopdir="`echo $1 | sed s/--$switch=//`"
     fi
+    switch=enable-cwdebug
+    if [ "`echo \"$1\" | sed s/\"--$switch=\"//`" != "$1" ]; then
+      cwdebug="`echo $1 | sed s/--$switch=//`"
+    fi
+    switch=enable-cwdebug
+    if [ "`echo \"$1\" | sed s/\"--$switch\"//`" != "$1" ]; then
+      cwdebug="1"
+    fi
     switch=help
     if [ "`echo \"$1\" | sed s/\"--$switch\"//`" != "$1" ]; then
       echo "Usage:"
@@ -96,6 +109,7 @@ if [ $# -gt 0 ]; then
       echo "   --pixmapdir=[\$datadir/pixmaps]       icon installation path"
       echo "   --desktopdir=[\$datadir/applications] xdg installation path"
       echo ""
+      echo "   --enable-cwdebug[=\$cwdebugdir]       deploy cwlibary for debugging"
       echo "   --help"
       echo ""
       echo " Optionally set the CC and CXX environment variables."
@@ -226,8 +240,18 @@ fi
 if [ -z "$desktopdir" ]; then
   desktopdir="$datadir/applications"
 fi
+if [ "$cwdebug" -eq "1" ]; then
+  cwdebug="$libdir"
+else
+  if [ `echo $cwdebug | wc -m` -eq 2 ]; then
+    if [ "$cwdebug" -eq "0" ]; then
+      unset cwdebug
+    fi
+  fi
+fi
 export prefix exec_prefix bindir sbindir libdir includedir datadir mandir
 export pixmapdir desktopdir
+export cwdebug
 
 PATH=$bindir:$PATH
 export PATH
@@ -316,6 +340,9 @@ echo "datadir         =       $datadir"
 echo "mandir          =       $mandir"
 echo "pixmapdir       =       $pixmapdir"
 echo "desktopdir      =       $desktopdir"
+if [ -n "$cwdebug" ]; then
+echo "cwdebug         =       $cwdebug"
+fi
 echo "################################################################"
 echo ""
 
@@ -401,7 +428,7 @@ else
     echo "LINK_LIB_PATH = -Wl,--rpath -Wl,\$(libdir)" >> $CONF
     echo "LINK_SRC_PATH = -Wl,--rpath -Wl,\$(srcdir)" >> $CONF
     echo "MAKEDEPEND	= makedepend -Y" >> $CONF
-    echo "OPTS= -Wall -g \$(DEBUG) -Wunused -fPIC -fno-exceptions #-Os -fomit-frame-pointer" >> $CONF
+    echo "OPTS= -Wall -g \$(DEBUG) -Wunused -fPIC -fno-exceptions #-Os -fomit-frame-pointer \$(CWD)" >> $CONF
     echo "INSTALL = install -v" >> $CONF
   else
     echo "COPY = cp -p" >> $CONF
@@ -419,6 +446,13 @@ else
     echo "OPTS = -Wall -g \$(DEBUG) -L. -fPIC" >> $CONF
     echo "RM = rm -f" >> $CONF
   fi
+fi
+if [ -n "$cwdebug" ]; then
+  echo "" >> $CONF
+  echo "cwdebug = $cwdebug" >> $CONF
+  echo "CWLIB = -L$cwdebug -lcwd"  >> $CONF
+  echo "CCFILES = \$(DEBUG_CC)" >> $CONF
+  echo "#define CWDEBUG 1" >> $CONF_H
 fi
 
 

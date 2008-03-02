@@ -43,7 +43,6 @@ ICCkette profile;
 
 ICCkette::ICCkette  ()
 { DBG_PROG_START
-  frei_ = true;
   DBG_PROG_ENDE
 }
 
@@ -106,7 +105,7 @@ ICCkette::einfuegen (const Speicher & prof, int pos)
     }
   }
 # endif
-  while(!frei()) icc_examin_ns::sleep(0.05); frei(false);
+  frei(false);
 
   // Ist das Profile eventuell schon geladen? -> Abbruch
   /*
