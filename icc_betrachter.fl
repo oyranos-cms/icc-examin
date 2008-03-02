@@ -145,7 +145,7 @@ declblock {\#ifdef HAVE_FLU} {after {\#endif}
   }
 } 
 
-Function {} {open C return_type int
+Function {icc_betrachter(int argc, char** argv)} {open
 } {
   code DBG_PROG_START {}
   code {statlabel = (char*)calloc (sizeof (char), 1024);
@@ -220,8 +220,8 @@ Function {} {open C return_type int
     dateiwahl->preview_label = _("Vorschau");
   \#endif} {}
   Fl_Window ueber {
-    label {Über ICC examin}
-    xywh {607 753 366 241} type Double hide resizable
+    label {Über ICC examin} open
+    xywh {612 777 366 241} type Double hide resizable
     code0 {o->hide();} non_modal
   } {
     Fl_Group {} {open
@@ -238,8 +238,8 @@ Function {} {open C return_type int
     }
   }
   Fl_Window details {
-    label {ICC Details}
-    xywh {648 229 385 520} type Double box NO_BOX color 53
+    label {ICC Details} open
+    xywh {368 111 385 520} type Double box NO_BOX color 53
     code1 {DBG_PROG
 
     if (argc>1) {
@@ -434,7 +434,7 @@ ueber_html->value(getUeberHtml().c_str());}
           callback {o->select_item( o->value() );}
           xywh {0 25 385 135} color 53 align 17 textcolor 32
           code0 {int lines = tag_browser->size();}
-          code1 {cout << lines << endl; DBG_PROG}
+          code1 {DBG_PROG_V( lines )}
           class TagBrowser
         }
         Fl_Group ansichtsgruppe {open
@@ -518,7 +518,9 @@ ueber_html->value(getUeberHtml().c_str());}
 
   if (argc > 1)
     open (false);} {}
-  code DBG_PROG_ENDE {}
+  code {DBG_PROG_ENDE
+  Fl::run();} {selected
+  }
 } 
 
 Function {open(int interaktiv)} {} {
@@ -649,11 +651,12 @@ Function {icc_read_info(char* filename)} {return_type {char*}
   code DBG_PROG_ENDE {}
 } 
 
-class TagBrowser {: {public Fl_Hold_Browser}
+class TagBrowser {open : {public Fl_Hold_Browser}
 } {
   decl {int X; int Y; int W; int H; char* start_info; std::string selectedTagName;} {}
   Function {TagBrowser(int X,int Y,int W,int H,char* start_info) : Fl_Hold_Browser(X,Y,W,H,start_info), X(X), Y(Y), W(W), H(H)} {} {}
-  Function {reopen()} {} {
+  Function {reopen()} {open
+  } {
     code DBG_PROG_START {}
     code {//open and preparing the first selected item
   std::stringstream s;
@@ -1007,8 +1010,7 @@ class MftChoice {open : {public Fl_Choice}
     break;
   }
 
-  gewaehlter_eintrag = mw->value();} {selected
-    }
+  gewaehlter_eintrag = mw->value();} {}
     code DBG_PROG_ENDE {}
   }
 } 

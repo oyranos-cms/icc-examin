@@ -85,7 +85,6 @@ Im Moment werden Version 2 Profile unterstützt. \
 </p>\n \
 <p> \
 Farbprofile sind erhältlich ofmals von Herstellern optischer Geräte (digitale Kameras, Scanner, Drucker). Mit ICC Examin haben Sie die Möglichkeit einen Eindruck vom Aufbau als auch von der Qualität eines Profiles zu erlangen. <br> \
-Ausnahme: Profile mit vcgt Eintrag lassen sich mit ICC Examin nicht verlässlich prüfen.<br>\n \
 </p>\n \
 <p> \
 Die Anwendung von Farbprofilen soll einen reibungslosen Datenaustausch zwischen unterschiedlichen Farbräumen und den Abgleich auf unterschiedlichen Geräten mit Ihren jeweiligen physikalischen Gegebenheiten ermöglichen. Dies hängt insbesondere von der Qualität der verwendeten Farbprofile ab. \

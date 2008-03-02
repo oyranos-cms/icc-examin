@@ -50,8 +50,10 @@ LDLIBS = -L$(libdir) -L./ $(FLTK_LIBS) \
 
 CPP_HEADERS = \
 	agviewer.h \
+	callback_simple.h \
 	cccie64.h \
 	ciexyz64_1.h \
+	icc_betrachter.h \
 	icc_draw.h \
 	icc_formeln.h \
 	icc_examin.h \
@@ -67,9 +69,11 @@ CPP_HEADERS = \
 	ViewerFLTK.h 
 CPPFILES = \
 	icc_draw.cpp \
+	icc_examin.cpp \
 	icc_formeln.cpp \
         icc_gl.cpp \
 	icc_helfer.cpp \
+	icc_main.cpp \
 	icc_measurement.cpp \
 	icc_oyranos.cpp \
 	icc_profile.cpp \
@@ -80,7 +84,7 @@ CPPFILES = \
 #	vFLGLWidget.cpp \
 	ViewerFLTK.cpp 
 CXXFILES = \
-	icc_examin.cxx \
+	icc_betrachter.cxx \
 	fl_oyranos.cxx
 TEST = \
 	dE2000_test.cpp \
@@ -91,7 +95,7 @@ DOKU = \
         COPYING \
         AUTHORS
 FLUID = \
-	icc_examin.fl \
+	icc_betrachter.fl \
 	fl_oyranos.fl
 
 SOURCES = $(CPPFILES) $(CXXFILES) $(CPP_HEADERS)

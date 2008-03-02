@@ -303,6 +303,8 @@ agviewer::agvSwitchMoveMode(int move)
 void
 agviewer::_agvHandleButton(int &button, int &state, int &x, int &y)
 { DBG_PROG_START
+  DBG_PROG_V( button <<" "<< state);
+
  if (state == GLUT_DOWN && downb == -1) {  
     lastx = downx = x;
     lasty = downy = y;
@@ -422,7 +424,9 @@ void
 agviewer::_agvHandleKeys(unsigned char key, int&, int&)
 { DBG_PROG_START
   if (MoveMode != FLYING)
+  { DBG_PROG_ENDE
     return;
+  }
 
   if (key >= '0' && key <= '9')
     SetMove(SPEEDFUNCTION((key-'0')));
