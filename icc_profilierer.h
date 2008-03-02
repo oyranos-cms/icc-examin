@@ -45,7 +45,7 @@ class Profilierer {
     std::vector<std::map<double,XYZ> > RGB_Tags (void);
     void                RGB_Gamma_schreiben (double gamma);
     void   RGB_Gamma_anpassen (std::vector<std::map<double,XYZ> >tonwertskalen,
-                               double gamma);
+                               double gamma, bool vcgt);
     double*             XYZnachRGB (XYZ mess_xyz);
     void                gemeinsamerHeader (ICCheader *header);
     std::string         print ();

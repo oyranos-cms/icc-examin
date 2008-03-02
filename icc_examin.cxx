@@ -23,7 +23,7 @@ static void cb_menueintrag_html_speichern(Fl_Menu_*, void*) {
   std::string bericht = profile.report();
   std::string filename = filename_alt;
   filename=fl_file_chooser("Bericht Speichern", "HTML Dokumente (*.[H,h][T,t][M,m,]*)", filename_alt.c_str());
-  DBG
+  DBG_PROG
 
   if (filename == "" || filename == filename_alt) {
     load_progress->hide ();
@@ -68,7 +68,7 @@ static void cb_menueintrag_inspekt(Fl_Menu_* o, void*) {
   Fl_Menu_* mw = (Fl_Menu_*)o;
   const Fl_Menu_Item* m = mw->mvalue();
 
-  DBG_S (m->value())
+  DBG_PROG_S (m->value())
   if (m->value()) {
     inspekt->show();
     examin->hide();
@@ -170,7 +170,7 @@ int main(int argc, char **argv) {
           o->align(FL_ALIGN_TOP|FL_ALIGN_INSIDE);
           o->when(FL_WHEN_RELEASE_ALWAYS);
           int lines = tag_browser->size();
-          cout << lines << endl; DBG
+          cout << lines << endl; DBG_PROG
         }
         { Fl_Group* o = ansichtsgruppe = new Fl_Group(0, 160, 385, 335);
           { Fl_Group* o = tag_3D = new Fl_Group(0, 160, 385, 335);
@@ -260,7 +260,7 @@ int main(int argc, char **argv) {
       }
       o->end();
     }
-    DBG
+    DBG_PROG
     if (argc>1) {
 
       if (argc>1) {
@@ -291,12 +291,12 @@ std::string open(int interaktiv) {
 
   std::string filename = filename_alt;
   //Fl_File_Icon	*icon;	// New file icon
-  DBG
+  DBG_PROG
   load_progress->show ();    load_progress->value (0.0);
 
   if (interaktiv)
     filename=fl_file_chooser("Wähle ICC Profil?", "ICC Farbprofile (*.[I,i][C,c][M,m,C,c])", filename_alt.c_str());
-  DBG cout << filename_alt << "|" << filename << endl;
+  DBG_PROG_S( filename_alt << "|" << filename)
 
   if (filename == "") {
     load_progress->hide ();
@@ -312,7 +312,7 @@ std::string open(int interaktiv) {
   std::vector<std::string> url;
   std::vector<std::string> param;
 
-  if (/*browser && */(filename != "")) { DBG
+  if (/*browser && */(filename != "")) { DBG_PROG
 
     //create_vrml ( filename.c_str(), "/usr/share/color/icc/sRGB.icm", &vrmlDatei[0]);
 
@@ -321,27 +321,27 @@ std::string open(int interaktiv) {
     //url.push_back (&vrmlDatei[0]);
     //browser->load_url(url, param);
     sprintf (statlabel, "%s geladen", filename.c_str());
-    cout << statlabel << endl; DBG
+    cout << statlabel << endl; DBG_PROG
     stat->label(statlabel);
   } else {
     stat->label("Error loading file!");
-  } DBG
+  } DBG_PROG
 
   stat->hide();
   stat->show();
   load_progress->value (1.0);
   load_progress->value (0.0);
   load_progress->hide();
-  DBG
+  DBG_PROG
 
   tag_browser->reopen ();
 
   if (profile.hasMeasurement()) {
     inspekt_topline = inspekt_html->topline();
-    DBG_S(menueintrag_inspekt->value())
+    DBG_PROG_S(menueintrag_inspekt->value())
     if (menueintrag_inspekt->value()) {
       inspekt_html->value(profile.report().c_str());
-      cout << inspekt_html->size() << " " << inspekt_topline; DBG
+      cout << inspekt_html->size() << " " << inspekt_topline; DBG_PROG
       if (inspekt_html->size() -75 < inspekt_topline)
         inspekt_html->topline (inspekt_html->size() - 75);
       else
@@ -411,7 +411,7 @@ void TagBrowser::reopen() {
   }
   add_s ("@B26@tNr. Bezeichner  Typ         Größe Beschreibung")
   add_s ("@t" << profile.printHeader() )
-  DBG
+  DBG_PROG
   std::vector<std::string>::iterator it;
   for (it = tag_list.begin() ; it != tag_list.end(); ++it) {
     s << "@t";
@@ -428,7 +428,7 @@ void TagBrowser::reopen() {
     // Beschreibung
     add_s (*it)
   }
-  DBG
+  DBG_PROG
   if (value())
     select_item (value()); // Anzeigen
   else
@@ -451,7 +451,7 @@ void TagBrowser::select_item(int item) {
   std::string text = _("Leer");
   tag_text->hinein(text);
   item -= 6;
-  cout << item << ". Tag "; DBG
+  cout << item << ". Tag "; DBG_PROG
   std::vector<std::string> rgb_tags;
   rgb_tags.push_back("rXYZ");
   rgb_tags.push_back("gXYZ");
@@ -459,20 +459,20 @@ void TagBrowser::select_item(int item) {
 
   if (item < 0) {
     select(5);
-    text = profile.printLongHeader(); DBG
+    text = profile.printLongHeader(); DBG_PROG
     tag_text->hinein(text);    
   } else if (item >= 0) {
     std::vector<std::string> TagInfo = profile.printTagInfo(item);
-    cout << TagInfo.size() << " " << TagInfo[0] << " " << TagInfo[1] << " "; DBG
+    DBG_PROG_S( TagInfo.size() << " " << TagInfo[0] << " " << TagInfo[1] )
 
     if        ( TagInfo[1] == "text"
              || TagInfo[1] == "cprt?"
              || TagInfo[1] == "meas"
              || TagInfo[1] == "sig"
              || TagInfo[1] == "dtim") {
-      tag_text->hinein ( (profile.getTagText (item))[0] ); DBG
+      tag_text->hinein ( (profile.getTagText (item))[0] ); DBG_PROG
     } else if ( TagInfo[1] == "desc" ) {
-      tag_text->hinein( (profile.getTagDescription (item))[0] ); DBG
+      tag_text->hinein( (profile.getTagDescription (item))[0] ); DBG_PROG
     } else if ( TagInfo[0] == "rXYZ" || TagInfo[0] == "gXYZ" || TagInfo[0] == "bXYZ" ) {
       std::vector<double> alle_punkte, punkte;
       std::vector<std::string> alle_texte;
@@ -513,13 +513,13 @@ void TagBrowser::select_item(int item) {
     } else if ( TagInfo[1] == "mft2"
              || TagInfo[1] == "mft1" ) {
       mft_choice->profil_tag (item);
-      //mft_text->hinein ( (profile.getTagText (item))[0] ); DBG
-    } else if ( TagInfo[1] == "vcgt" ) { DBG
+      //mft_text->hinein ( (profile.getTagText (item))[0] ); DBG_PROG
+    } else if ( TagInfo[1] == "vcgt" ) { DBG_PROG
       tag_viewer->hinein_kurven ( profile.getTagCurves (item, ICCtag::CURVE_IN),
-                                  profile.getTagText (item) ); cout << "vcgt "; DBG
+                                  profile.getTagText (item) ); cout << "vcgt "; DBG_PROG
     }
     selectedTagName = TagInfo[0];
-  }DBG
+  }DBG_PROG
   DBG_PROG_ENDE
 }
 
@@ -530,7 +530,7 @@ void TagTexts::hinein(std::string text) {
   DBG_PROG_START
   //Text aus tag_browser anzeigen
 
-  zeig_mich(this); DBG
+  zeig_mich(this); DBG_PROG
 
       this->clear();
 
@@ -551,9 +551,9 @@ TagDrawings::TagDrawings(int X,int Y,int W,int H) : Fl_Widget(X,Y,W,H), X(X), Y(
 void TagDrawings::draw() {
   DBG_PROG_START
   // Kurven oder Punkte malen
-  cout << punkte.size() << "/" << kurven.size() <<" "<< texte.size() <<" "; DBG
+  DBG_PROG_S( punkte.size() << "/" << kurven.size() <<" "<< texte.size() )
 
-  DBG_V( wiederholen )
+  DBG_PROG_V( wiederholen )
 
   if (punkte.size() >= 3) {
     if (wiederholen) {
@@ -567,7 +567,7 @@ void TagDrawings::draw() {
     wiederholen = false;
     draw_kurve   (x(),y(),w(),h(),texte,kurven);
   }
-  DBG
+  DBG_PROG
   DBG_PROG_ENDE
 }
 
@@ -596,7 +596,7 @@ void TagDrawings::hinein_kurven(std::vector<std::vector<double> >vect, std::vect
   wiederholen = false;
 
   zeig_mich(this);
-  DBG
+  DBG_PROG
   DBG_PROG_ENDE
 }
 
@@ -656,11 +656,11 @@ void MftChoice::auswahl_cb(void) {
   Fl_Menu_* mw = (Fl_Menu_*)this;
   const Fl_Menu_Item* m = mw->mvalue();
   if (!m) {
-    printf("NULL \n"); DBG
+    DBG_PROG_S("NULL \n")
   } else if (m->shortcut()) {
-    printf("%s - %s \n", m->label(), fl_shortcut_label(m->shortcut())); DBG
+    DBG_PROG_S("%s - %s \n" << m->label() << fl_shortcut_label(m->shortcut()))
   } else {
-    printf("%s \n", m->label()); DBG
+    DBG_PROG_S("%s \n" << m->label())
   }
 
   std::stringstream s;
@@ -670,31 +670,31 @@ void MftChoice::auswahl_cb(void) {
   case 0: // Überblick
     { for (unsigned int i = 1; i < Info.size(); i++) // erste Zeile weglassen
         s << Info [i] << endl;
-      mft_text->hinein ( s.str() ); DBG // anzeigen
+      mft_text->hinein ( s.str() ); DBG_PROG // anzeigen
     } break;
   case 1: // Matriz
     zahlen = profile.getTagNumbers (tag_nummer, ICCtag::MATRIX);
-    cout << zahlen.size() << endl; DBG
+    cout << zahlen.size() << endl; DBG_PROG
     assert (9 == zahlen.size());
     s << endl <<
     "  " << zahlen[0] << ", " << zahlen[1] << ", " << zahlen[2] << ", " << endl <<
     "  " << zahlen[3] << ", " << zahlen[4] << ", " << zahlen[5] << ", " << endl <<
     "  " << zahlen[6] << ", " << zahlen[7] << ", " << zahlen[8] << ", " << endl;
-    mft_text->hinein ( s.str() ); DBG
+    mft_text->hinein ( s.str() ); DBG_PROG
     break;
   case 2: // Eingangskurven
-    DBG
+    DBG_PROG
     mft_viewer->hinein_kurven (
                      profile.getTagCurves (tag_nummer, ICCtag::CURVE_IN),
-                     profile.getTagChannelNames (tag_nummer, ICCtag::CURVE_IN) ); DBG
+                     profile.getTagChannelNames (tag_nummer, ICCtag::CURVE_IN) ); DBG_PROG
     break;
   case 3: // 3D Tabelle
-    DBG
+    DBG_PROG
     break;
   case 4: // Ausgangskurven
     mft_viewer->hinein_kurven (
                      profile.getTagCurves (tag_nummer, ICCtag::CURVE_OUT),
-                     profile.getTagChannelNames (tag_nummer, ICCtag::CURVE_OUT) ); DBG
+                     profile.getTagChannelNames (tag_nummer, ICCtag::CURVE_OUT) ); DBG_PROG
     break;
   }
 
@@ -711,7 +711,7 @@ void d_haendler(void* o) {
    && ((TagDrawings*)o)->wiederholen) {
     ((TagDrawings*)o)->ruhig_neuzeichnen();
     #ifdef DEBUG
-    DBG_V( ((TagDrawings*)o)->wiederholen )
+    DBG_PROG_V( ((TagDrawings*)o)->wiederholen )
     #endif
   }
   DBG_PROG_ENDE
@@ -725,11 +725,11 @@ void zeig_mich(void* widget) {
   mft_viewer->hide();
   mft_text->hide();
   
-  tag_viewer->hide(); DBG
-  tag_viewer->clear_visible(); DBG
+  tag_viewer->hide(); DBG_PROG
+  tag_viewer->clear_visible(); DBG_PROG
   tag_text->hide();
-  ((Fl_Widget*)widget)->parent()->show(); DBG
-  ((Fl_Widget*)widget)->show(); DBG
+  ((Fl_Widget*)widget)->parent()->show(); DBG_PROG
+  ((Fl_Widget*)widget)->show(); DBG_PROG
   DBG_PROG_ENDE
 }
 
@@ -764,7 +764,7 @@ GL_Ansicht::GL_Ansicht(int X,int Y,int W,int H) : Fl_Widget(X,Y,W,H), X(X), Y(Y)
 void GL_Ansicht::draw() {
   DBG_PROG_START
   // Kurven oder Punkte malen
-  cout << punkte.size() << "/" << kurven.size() <<" "<< texte.size() <<" "; DBG
+  DBG_PROG_S( punkte.size() << "/" << kurven.size() <<" "<< texte.size() )
 
   if (punkte.size() >= 3) {
     wiederholen = true;
@@ -775,7 +775,7 @@ void GL_Ansicht::draw() {
     wiederholen = false;
     draw_kurve   (x(),y(),w(),h(),texte,kurven);
   }
-  DBG
+  DBG_PROG
   DBG_PROG_ENDE
 }
 

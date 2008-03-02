@@ -276,13 +276,14 @@ ICCtag::load                        ( ICCprofile *profil,
   DBG_PROG
 
   if (_data != NULL && _size) { DBG_MEM
-    //cout << "ICCtag wiederverwendet: " << (char*)tag->sig << " "; DBG
-    DBG_MEM free(_data);DBG_MEM//delete [] _data;
-    //cout << "ICCtag wiederverwendet: " << (char*)tag->sig << " "; DBG
+    DBG_MEM_S( "ICCtag wiederverwendet: " << (char*)tag->sig << " " )
+    DBG_MEM
+    free(_data); DBG_MEM // delete [] _data;
+    DBG_MEM_S( "ICCtag wiederverwendet: " << (char*)tag->sig << " " )
   } DBG_PROG
   _size   = icValue(tag->size); DBG_MEM_V( _size )
 
-  _data = (char*) calloc(sizeof(char),_size);//new char (_size);
+  _data = (char*) calloc(sizeof(char),_size); // new char (_size);
   memcpy ( _data , data , _size );
   DBG_MEM_V((int*)_data)
 
@@ -301,18 +302,23 @@ ICCtag::getText                     (void)
   int count = 0;
 
   if (getTypName() == "sig") {
+
     if (_size < 12) return texte;
     icTechnologySignature tech;
     memcpy (&tech, &_data[8] , 4);
     text = getSigTechnology( (icTechnologySignature) icValue(tech) );
     texte.push_back( text );
+
   } else if (getTypName() == "dtim") {
+
     if (_size < 20) return texte;
     DBG
     icDateTimeNumber date;
     memcpy (&date, &_data[8] , 12);
     texte.push_back( printDatum(date) );
+
   } else if (getTypName() == "meas") {
+
     if (_size < 36) return texte;
     std::stringstream s;
     icMeasurement meas;
@@ -329,9 +335,12 @@ ICCtag::getText                     (void)
       << _("Beleuchtungstyp") << ": " <<
     getIlluminant ((icIlluminant)icValue(meas.illuminant)) <<endl;
     texte.push_back( s.str() );
+
   } else if (getTypName() == "mft2") {
+
     icLut16* lut16 = (icLut16*) &_data[8];
     int inputChan, outputChan, clutPoints, inputEnt, outputEnt;
+
     inputChan = (int)lut16->inputChan;
     outputChan = (int)lut16->outputChan;
     clutPoints = (int)lut16->clutPoints;
@@ -347,7 +356,9 @@ ICCtag::getText                     (void)
          _("3D Farbtabelle mit") << " " <<  (int)clutPoints << " " << _("Punkten Seitenlänge") << endl <<
          _("lineare Ausgangskurve") << " " << _("mit") << " " << (int)outputEnt << " " << _("Stufungen") << endl;
     texte.push_back( s.str() );
+
   } else if (getTypName() == "mft1") {
+
     icLut8* lut8 = (icLut8*) &_data[8];
     int inputChan, outputChan, clutPoints;//, inputEnt, outputEnt;
     inputChan = (int)lut8->inputChan;
@@ -362,7 +373,9 @@ ICCtag::getText                     (void)
          _("Matrix") << endl <<
          _("3D Farbtabelle mit") << " " <<  (int)clutPoints << " " << _("Punkten Seitenlänge") << endl;
     texte.push_back( s.str() );
+
   } else if (((icTagBase*)&_data[0])->sig == (icTagTypeSignature)icValue( icSigChromaticityType )) {
+
     int count = icValue(*(icUInt16Number*)&_data[8]);
     if (count == 0)
       count = 3;
@@ -378,8 +391,10 @@ ICCtag::getText                     (void)
       cout << s.str(); DBG
       #endif
     }
+
   } else  if (getTypName() == "text"
            || getTypName() == "cprt?" ) { // text
+
     text = ""; DBG_PROG
   #if 1
     char* txt = (char*)calloc (_size-8, sizeof(char));
@@ -423,11 +438,14 @@ ICCtag::getText                     (void)
     texte.push_back( text );
 
   } else if ( getTypName() == "vcgt" ) {
+
     texte.push_back( _("Rot") );
     texte.push_back( _("Grün") );
     texte.push_back( _("Blau") );
     texte.push_back( "gamma_start_ende" );
+
   } else {
+
     texte.push_back( getTypName() + " | <- iss'n das?" );
   }
     
@@ -435,6 +453,7 @@ ICCtag::getText                     (void)
   cout << count << " Ersetzungen "; DBG
   cout << " " << "" << "|" << getTypName() << "|" << text << " "; DBG
   #endif
+
   DBG_PROG_ENDE
   return texte;
 }

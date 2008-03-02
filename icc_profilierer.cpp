@@ -59,9 +59,20 @@ Profilierer::matrix()
   RGB_Tags ();
   // Gamma 1.8
   double gamma = 2.2;
-  RGB_Gamma_schreiben (gamma);
+  bool vcgt = true;
+
+  if (vcgt)
+    RGB_Gamma_schreiben (gamma);
+  else
+    RGB_Gamma_schreiben (1.0);
+
   // endgültiges Gamma berechnen und schreiben
-  RGB_Gamma_anpassen (tonwertskalen, gamma);
+  RGB_Gamma_anpassen (tonwertskalen, gamma, vcgt);
+
+  // TODO Optimierung : Kurven fit, Itterierung oder Vorausberechnung
+  // TODO eigene Oberfläche
+  // TODO Messdateien lesen aus Text und Profilen
+  // TODO Auswertung dE Lab aus fertigem Profil
 
   schreibMessTag (&profile);  // TODO bedient sich bei icc_examin
 
@@ -134,10 +145,10 @@ typedef struct VCGT_Tag {
 };
 
 void
-Profilierer::RGB_Gamma_anpassen (std::vector<std::map<double,XYZ> > tonwertskalen, double gamma)
+Profilierer::RGB_Gamma_anpassen (std::vector<std::map<double,XYZ> > tonwertskalen, double gamma, bool vcgt)
 { DBG_PROG_START
   icTag ic_tag;
-  VCGT_Tag *vcgtTag;
+  VCGT_Tag *vcgtTag = NULL;
   icTag vcgt_tag;
   ic_tag.offset = 0;
   vcgt_tag.offset = 0;
@@ -154,18 +165,21 @@ Profilierer::RGB_Gamma_anpassen (std::vector<std::map<double,XYZ> > tonwertskale
   // Werte eintragen
   kurveTag->curve.count = icValue( tonwertskalen[0].size() );
   ic_tag.size = icValue ((icUInt32Number)k_size);
-  vcgt_tag.size = icValue ((icUInt32Number)18 + 2 * tonwertskalen[0].size()*3);
-  vcgt_tag.sig = icValue ((icTagSignature)1986226036);
-  v_size = 18 + sizeof (icUInt16Number) * 3 * tonwertskalen[0].size();
-  vcgtTag = (VCGT_Tag*)calloc (sizeof (char), v_size);
-  vcgtTag->name = icValue ((icTagSignature)1986226036);
-  vcgtTag->leer = 0;
-  vcgtTag->parametrisch = icValue ((icUInt32Number)0);
-  vcgtTag->nkurven = icValue ((icUInt16Number)3);
-  vcgtTag->segmente = icValue ((icUInt16Number)tonwertskalen[0].size());
-  vcgtTag->byte = icValue ((icUInt16Number)2);
 
-  int zahl = 0;
+  if (vcgt) {
+    vcgt_tag.size= icValue ((icUInt32Number)18 + 2 * tonwertskalen[0].size()*3);
+    vcgt_tag.sig = icValue ((icTagSignature)1986226036);
+    v_size = 18 + sizeof (icUInt16Number) * 3 * tonwertskalen[0].size();
+    vcgtTag = (VCGT_Tag*)calloc (sizeof (char), v_size);
+    vcgtTag->name = icValue ((icTagSignature)1986226036);
+    vcgtTag->leer = 0;
+    vcgtTag->parametrisch = icValue ((icUInt32Number)0);
+    vcgtTag->nkurven = icValue ((icUInt16Number)3);
+    vcgtTag->segmente = icValue ((icUInt16Number)tonwertskalen[0].size());
+    vcgtTag->byte = icValue ((icUInt16Number)2);
+  }
+
+  int zahl = 0, v_zahl = 0;
   int kanal = 0;
   double *dRGB;
 
@@ -175,41 +189,58 @@ Profilierer::RGB_Gamma_anpassen (std::vector<std::map<double,XYZ> > tonwertskale
     for (i= tonwertskalen[kanal].begin(); i != tonwertskalen[kanal].end(); i++){
       dRGB = XYZnachRGB (i->second);
 
-      DBG_V( i->first ) DBG_V( dRGB[kanal] )
+      DBG_NUM_V( i->first ) DBG_NUM_V( dRGB[kanal] )
 
       // Soll
-      double soll = i->first; DBG_V( soll <<" "<< zahl <<" "<< dRGB[kanal])
-      double diff = (double)zahl/(tonwertskalen[kanal].size()-1) + dRGB[kanal] - soll; DBG_V( (double)zahl/(tonwertskalen[kanal].size()-1) <<" "<< diff )
-      vcgtTag->kurve[kanal*zahl] = icValue( (icUInt16Number)(diff*65535.0+0.5));
-      DBG_V( icValue( vcgtTag->kurve[kanal*zahl] ) )
-      kurveTag->curve.data[zahl] = icValue( (icUInt16Number)(soll*65535.0+0.5));
-      DBG_V( icValue( kurveTag->curve.data[zahl] ) )
-      zahl++;
+      double soll = i->first; DBG_NUM_V( soll <<" "<< zahl <<" "<< dRGB[kanal])
+      // Differenz
+      double diff = (double)zahl/(tonwertskalen[kanal].size()-1)
+                    + dRGB[kanal] - soll;
+      DBG_NUM_V( (double)zahl/(tonwertskalen[kanal].size()-1) <<" "<< diff )
+
+      if (vcgt) {
+        vcgtTag->kurve[v_zahl] = icValue( (icUInt16Number)(diff*65535.0 + 0.5));
+        DBG_NUM_V( icValue( vcgtTag->kurve[v_zahl] ) <<" "<< v_zahl )
+      } else {
+        kurveTag->curve.data[zahl] = icValue( (icUInt16Number)
+                                              (diff * 65535.0 + 0.5) );
+        DBG_NUM_V( icValue( kurveTag->curve.data[zahl] ) )
+      }
+      zahl++; v_zahl++;
     }
     zahl = 0;
     // Tagbeschreibung mitgeben
     switch (kanal) {
       case 0: ic_tag.sig = icValue (icSigRedTRCTag);
-              //_profil.removeTagByName("rTRC");
+              if (!vcgt)
+                _profil.removeTagByName("rTRC");
               break;
       case 1: ic_tag.sig = icValue (icSigGreenTRCTag);
-              //_profil.removeTagByName("gTRC");
+              if (!vcgt)
+                _profil.removeTagByName("gTRC");
               break;
       case 2: ic_tag.sig = icValue (icSigBlueTRCTag);
-              //_profil.removeTagByName("bTRC");
+              if (!vcgt)
+                _profil.removeTagByName("bTRC");
               break;
     }
     // Tag kreieren
-    ICCtag Tag;
-    DBG_V( &_profil ) DBG_V( icValue(ic_tag.size) << &ic_tag ) DBG_V( kurveTag )
-    Tag.load( &_profil, &ic_tag, (char*)kurveTag );
-    // hinzufügen
-    //_profil.addTag( Tag ); Tag.clear();
+    if (!vcgt) {
+      ICCtag Tag;
+      DBG_V(&_profil)  DBG_V( icValue(ic_tag.size) << &ic_tag )  DBG_V(kurveTag)
+      Tag.load( &_profil, &ic_tag, (char*)kurveTag );
+      // Tag hinzufügen
+      _profil.addTag( Tag ); Tag.clear();
+    }
   }
-  ICCtag Tag;
-  Tag.load( &_profil, &vcgt_tag, (char*)vcgtTag ); 
-  _profil.addTag( Tag );
-  _testProfil.clear();
+
+  if (vcgt) {
+    ICCtag Tag;
+    Tag.load( &_profil, &vcgt_tag, (char*)vcgtTag ); 
+    _profil.addTag( Tag );
+    _testProfil.clear();
+  }
+
   DBG_PROG_ENDE
 }
 

@@ -250,7 +250,7 @@ class ICCtag {
                              _color_in = icMaxEnumData;
                              _color_out = icMaxEnumData;
                              _profil = NULL;
-                             if (_size) DBG_MEM_V ((int*)_data)
+                             if (_size) DBG_MEM_V ((int*)_data) ;
                         }
   public:
                         ICCtag             ()             {DBG_PROG defaults(); }
@@ -282,7 +282,7 @@ class ICCtag {
     void                load (ICCprofile* profil ,icTag* tag, char* data);
   public:
     icTagSignature      getSignature ()    {DBG_PROG return _sig; }
-    std::string         getTagName()       {DBG_PROG return getSigTagName (_sig); }
+    std::string         getTagName()       {/*DBG_PROG*/ return getSigTagName (_sig); }
     std::string         getInfo()          {DBG_PROG return getSigTagDescription(_sig); }
     std::string         getTypName()       {DBG_PROG icTagTypeSignature sig =
                                             ((icTagBase*)_data) ->
