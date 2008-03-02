@@ -127,7 +127,7 @@ Profilierer::RGB_Tags (void)
   icTag ic_tag;
   ic_tag.offset = 0;
   icCurveType* kurveTag = NULL; //icCurveType = icTagBase + icCurve
-
+/*
   int size = 0;
 
   if (kurveTag && size)
@@ -169,14 +169,14 @@ Profilierer::RGB_Tags (void)
   ic_tag.sig = icValue (icSigBlueTRCTag);
   Tag.load( &_profil, &ic_tag, (char*)kurveTag );
   _profil.addTag( Tag );
-
+*/
   schreibXYZTag (icSigMediaWhitePointTag, weiss.X, weiss.Y, weiss.Z );
   schreibXYZTag (icSigMediaBlackPointTag, schwarz.X, schwarz.Y, schwarz.Z );
   schreibXYZTag (icSigRedColorantTag, rot.X, rot.Y, rot.Z );
   schreibXYZTag (icSigGreenColorantTag, gruen.X, gruen.Y, gruen.Z );
   schreibXYZTag (icSigBlueColorantTag, blau.X, blau.Y, blau.Z );
 
-  free (kurveTag);
+  //free (kurveTag);
 }
 
 void
