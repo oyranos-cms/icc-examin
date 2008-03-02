@@ -28,7 +28,8 @@
 #ifndef ICC_FORMELN_H
 #define ICC_FORMELN_H
 
-#define ICC_EXAMIN_V 0.12
+#define ICC_EXAMIN_V 0.14
+#define ICC_EXAMIN_D _("November 2004")
 
 #include <string>
 #include <iostream>

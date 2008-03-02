@@ -74,6 +74,8 @@ getUeberHtml()
           </td> \
         </tr> \
       </table> \
+<br>";
+  html << _("Datum: ") << ICC_EXAMIN_D; html << " \
 <br> \
 <p> \
 ICC Examin ist ein Betrachter von Farbprofilen gem‰ﬂ ICC Standard  - www.color.org . \

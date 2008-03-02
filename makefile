@@ -80,6 +80,7 @@ TEST = \
 	ciede2000testdata.h
 DOKU = \
         README \
+        CHANGELOG \
         COPYING \
         AUTHORS
 
