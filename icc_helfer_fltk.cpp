@@ -164,6 +164,7 @@ dbgFltkEvent(int event)
 void
 setzeIcon      ( Fl_Window *fenster, char   **xpm_daten )
 {
+# if HAVE_X && !APPLE
   fl_open_display();
   fenster->make_current();
   DBG_PROG_V( (int*) fl_display <<" "<< fl_window )
@@ -191,6 +192,7 @@ setzeIcon      ( Fl_Window *fenster, char   **xpm_daten )
   hinweis->icon_mask = mask;
   XSetWMHints( fl_display, fl_window, hinweis );
   XFree( hinweis );
+# endif
 }
 
 

@@ -10,7 +10,7 @@ endif
 COLLECT = ar cru
 RANLIB = ranlib
 MAKEDEPEND	= makedepend -Y
-LNK = ln -s
+LINK = ln -s
 RM = rm -vf
 ifdef LINUX
 COPY = cp -vdpa
@@ -285,9 +285,9 @@ $(LIBSONAMEFULL):	$(CLIB_OBJECTS)
 	$(CLIB_OBJECTS) 
 	$(REZ)
 	$(RM)  $(LIBSONAME)
-	$(LNK) $(LIBSONAMEFULL) $(LIBSONAME)
+	$(LINK) $(LIBSONAMEFULL) $(LIBSONAME)
 	$(RM)  $(LIBSO)
-	$(LNK) $(LIBSONAMEFULL) $(LIBSO)
+	$(LINK) $(LIBSONAMEFULL) $(LIBSO)
 
 $(LIBNAME):	$(CLIB_OBJECTS)
 	echo Verknuepfen $@ ...
@@ -351,69 +351,8 @@ potfile:
 
 $(POT_FILE):	potfile
 
-install:
-	echo Installation ...
-	mkdir -p $(DESTDIR)$(bindir)
-	$(INSTALL) -m 755 $(TARGET) $(DESTDIR)$(bindir)
-	fltk-config --post $(DESTDIR)$(bindir)/$(TARGET)
-	mkdir -p $(DESTDIR)$(datadir)/fonts/
-	$(INSTALL) -m 644 $(FONT) $(DESTDIR)$(datadir)/fonts/$(FONT)
-	mkdir -p $(DESTDIR)$(datadir)/applications/
-	$(INSTALL) -m 644 icc_examin.desktop $(DESTDIR)$(datadir)/applications/icc_examin.desktop
-	mkdir -p $(DESTDIR)$(datadir)/mime/packages/
-	$(INSTALL) -m 644 icc.xml $(DESTDIR)$(datadir)/mime/packages/icc.xml
-	mkdir -p $(DESTDIR)$(datadir)/pixmaps/
-	$(INSTALL) -m 644 icc_examin.png $(DESTDIR)$(datadir)/pixmaps/icc_examin.png
-	echo  Linguas ...
-	for ling in $(LINGUAS); do \
-	  echo "installiere po/$${ling}.gmo ..."; \
-      mkdir -p $(DESTDIR)$(datadir)/locale/$${ling}/LC_MESSAGES; \
-      test -f po/$${ling}.gmo \
-		&& (mkdir -p $(DESTDIR)$(datadir)/locale/$${ling}/LC_MESSAGES; \
-            $(INSTALL) -m 644 po/$${ling}.gmo $(DESTDIR)$(datadir)/locale/$${ling}/LC_MESSAGES/$(TARGET).mo ) \
-		|| (echo $${ling}.gmo is not yet ready ... skipping); \
-	done;
-	echo ... Installation beendet
-
-bundle:	static
-	echo bündeln ...
-	test -d ICC\ Examin.app/Contents/MacOS/ || mkdir -p ICC\ Examin.app/ ICC\ Examin.app/Contents/ ICC\ Examin.app/Contents/MacOS/ ICC\ Examin.app/Contents/Resources/
-	$(INSTALL) -m 755 $(TARGET) ICC\ Examin.app/Contents/MacOS/ICC\ Examin
-	strip ICC\ Examin.app/Contents/MacOS/ICC\ Examin
-	$(INSTALL) -m 644 Info.plist ICC\ Examin.app/Contents/Info.plist
-	$(INSTALL) -m 644 $(FONT) ICC\ Examin.app/Contents/Resources/
-	test -f ~/bin/iccgamut \
-	  && $(INSTALL) -m 755 ~/bin/iccgamut ICC\ Examin.app/Contents/Resources/
-	echo  Linguas ...
-	for ling in $(LINGUAS); do \
-	  echo "bündele po/$${ling}.gmo ..."; \
-      test -f po/$${ling}.gmo \
-		&& (mkdir -p ICC\ Examin.app/Contents/Resources/locale/$${ling}/LC_MESSAGES; \
-            $(INSTALL) -m 644 po/$${ling}.gmo ICC\ Examin.app/Contents/Resources/locale/$${ling}/LC_MESSAGES/$(TARGET).mo ) \
-		|| (echo $${ling}.gmo is not yet ready ... skipping); \
-	done;
-	echo ... bündeln beendet
-
-unbundle:
-	echo "mache sauber"
-	$(RM) ICC\ Examin.app/Contents/MacOS/ICC\ Examin
-	$(RM) ICC\ Examin.app/Contents/Resources/$(FONT)
-	$(RM) ICC\ Examin.app/Contents/Resources/iccgamut
-	$(RM) -R ICC\ Examin.app/Contents/Resources/locale
-
-uninstall:
-	echo deinstalliere ...
-	$(RM) $(DESTDIR)$(bindir)/$(TARGET)
-	$(RM) $(DESTDIR)$(datadir)/applications/icc_examin.desktop
-	$(RM) $(DESTDIR)$(datadir)/mime/packages/icc.xml
-	$(RM) $(DESTDIR)$(datadir)/pixmaps/icc_examin.png
-	$(RM) $(DESTDIR)$(datadir)/fonts/$(FONT)
-	for ling in $(LINGUAS); do \
-	  $(RM) $(DESTDIR)$(datadir)/locale/$${ling}/LC_MESSAGES/$(TARGET).mo; \
-	done;
-
-clean:	unbundle
-	echo "mache sauber"
+clean:	unbundle unpkg
+	echo mache sauber $@ ...
 	$(RM) mkdepend config config.h
 	$(RM) $(OBJECTS) $(CLIB_OBJECTS) $(TARGET) \
 	$(LIBNAME) $(LIBSO) $(LIBSONAME) $(LIBSONAMEFULL)
@@ -421,6 +360,7 @@ clean:	unbundle
 	  test -f po/$${ling}.gmo \
         && $(RM) po/$${ling}.gmo; \
 	done;
+	echo ... $@ fertig
 
 config:
 	configure
@@ -509,6 +449,91 @@ rpm:	dist
 	rpmbuild --clean -ba $(srcdir)/$(TARGET).spec --define "_topdir $$PWD/rpmdir"
 	@echo "============================================================"
 	@echo "Beendet - die Packete befinden sich in rpmdir/RPMS and rpmdir/SRPMS!"
+
+install:
+	echo Installation ...
+	mkdir -p $(DESTDIR)$(bindir)
+	$(INSTALL) -m 755 $(TARGET) $(DESTDIR)$(bindir)
+	fltk-config --post $(DESTDIR)$(bindir)/$(TARGET)
+	mkdir -p $(DESTDIR)$(datadir)/fonts/
+	$(INSTALL) -m 644 $(FONT) $(DESTDIR)$(datadir)/fonts/$(FONT)
+	mkdir -p $(DESTDIR)$(datadir)/applications/
+	$(INSTALL) -m 644 icc_examin.desktop $(DESTDIR)$(datadir)/applications/icc_examin.desktop
+	mkdir -p $(DESTDIR)$(datadir)/mime/packages/
+	$(INSTALL) -m 644 icc.xml $(DESTDIR)$(datadir)/mime/packages/icc.xml
+	mkdir -p $(DESTDIR)$(datadir)/pixmaps/
+	$(INSTALL) -m 644 icc_examin.png $(DESTDIR)$(datadir)/pixmaps/icc_examin.png
+	echo  Linguas ...
+	for ling in $(LINGUAS); do \
+	  echo "installiere po/$${ling}.gmo ..."; \
+      mkdir -p $(DESTDIR)$(datadir)/locale/$${ling}/LC_MESSAGES; \
+      test -f po/$${ling}.gmo \
+		&& (mkdir -p $(DESTDIR)$(datadir)/locale/$${ling}/LC_MESSAGES; \
+            $(INSTALL) -m 644 po/$${ling}.gmo $(DESTDIR)$(datadir)/locale/$${ling}/LC_MESSAGES/$(TARGET).mo ) \
+		|| (echo $${ling}.gmo is not yet ready ... skipping); \
+	done;
+	echo ... Installation beendet
+
+uninstall:
+	echo deinstalliere ...
+	$(RM) $(DESTDIR)$(bindir)/$(TARGET)
+	$(RM) $(DESTDIR)$(datadir)/applications/icc_examin.desktop
+	$(RM) $(DESTDIR)$(datadir)/mime/packages/icc.xml
+	$(RM) $(DESTDIR)$(datadir)/pixmaps/icc_examin.png
+	$(RM) $(DESTDIR)$(datadir)/fonts/$(FONT)
+	for ling in $(LINGUAS); do \
+	  $(RM) $(DESTDIR)$(datadir)/locale/$${ling}/LC_MESSAGES/$(TARGET).mo; \
+	done;
+	echo ... $@ fertig
+
+bundle:	static
+	echo bündeln ...
+	test -d ICC\ Examin.app/Contents/MacOS/ || mkdir -p ICC\ Examin.app/ ICC\ Examin.app/Contents/ ICC\ Examin.app/Contents/MacOS/ ICC\ Examin.app/Contents/Resources/
+	$(INSTALL) -m 755 $(TARGET) ICC\ Examin.app/Contents/MacOS/ICC\ Examin
+	strip ICC\ Examin.app/Contents/MacOS/ICC\ Examin
+	$(INSTALL) -m 644 Info.plist ICC\ Examin.app/Contents/Info.plist
+	$(INSTALL) -m 644 $(FONT) ICC\ Examin.app/Contents/Resources/
+	test -f ~/bin/iccgamut \
+	  && $(INSTALL) -m 755 ~/bin/iccgamut ICC\ Examin.app/Contents/Resources/ \
+	  || test -f iccgamut && $(INSTALL) -m 755 iccgamut ICC\ Examin.app/Contents/Resources/ \
+	    || echo iccgamut nicht gefunden
+	echo  Linguas ...
+	for ling in $(LINGUAS); do \
+	  echo "bündele po/$${ling}.gmo ..."; \
+      test -f po/$${ling}.gmo \
+		&& (mkdir -p ICC\ Examin.app/Contents/Resources/locale/$${ling}/LC_MESSAGES; \
+            $(INSTALL) -m 644 po/$${ling}.gmo ICC\ Examin.app/Contents/Resources/locale/$${ling}/LC_MESSAGES/$(TARGET).mo ) \
+		|| (echo $${ling}.gmo is not yet ready ... skipping); \
+	done;
+	echo ... bündeln beendet
+
+unbundle:
+	echo mache sauber $@ in $(DESTDIR) ...
+	$(RM) $(DESTDIR)ICC\ Examin.app/Contents/MacOS/ICC\ Examin
+	$(RM) $(DESTDIR)ICC\ Examin.app/Contents/Resources/$(FONT)
+	$(RM) $(DESTDIR)ICC\ Examin.app/Contents/Resources/iccgamut
+	$(RM) -R $(DESTDIR)ICC\ Examin.app/Contents/Resources/locale
+	echo ... $@ fertig
+
+pkg:	bundle
+	echo Vorbereiten des osX Packetes ...
+	make DESTDIR=`pwd`/installation install
+	mkdir -p installation/Applications/
+	$(COPY) -R ICC\ Examin.app installation/Applications/
+	make DESTDIR=`pwd`/installation/Applications/ unbundle
+	test -f ~/bin/iccgamut \
+	  && $(INSTALL) -m 755 ~/bin/iccgamut installation$(bindir) \
+	  || test -f iccgamut && $(INSTALL) -m 755 iccgamut installation$(bindir) \
+	    || echo iccgamut nicht gefunden
+	$(LINK) $(bindir)/$(TARGET) installation/Applications/ICC\ Examin.app/Contents/MacOS/ICC\ Examin
+	open /Developer/Applications/Utilities/PackageMaker.app ICC\ Examin.pmsp
+	echo sudo: chown -R root:admin installation  -- bitte nicht vergessen
+	echo ... Packet vorbereitet
+
+unpkg:
+	echo mache sauber $@ ...
+	$(RM) -R installation/
+	echo ... $@ fertig
 
 
 # Abhaengigkeiten
