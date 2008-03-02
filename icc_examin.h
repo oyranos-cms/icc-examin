@@ -72,8 +72,11 @@ class ICCexamin : public icc_examin_ns::Beobachter
     int  _zeig_prueftabelle,
          _zeig_histogram;
     int  status_;
+    bool frei_;
   public:
-    int  laeuft () { return status_; }          // kann bei >1 genutzt werden
+    int  laeuft ()  { return status_; }          // kann bei >1 genutzt werden
+    bool frei()     { return frei_; }            // ist nicht gesperrt
+
 
   public:
     ICCfltkBetrachter* icc_betrachter;

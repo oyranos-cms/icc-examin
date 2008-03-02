@@ -172,11 +172,12 @@ class ICCprofile {
     virtual             ~ICCprofile (void);
     void                clear (void);
 
-  public:
     void                load (std::string filename);
     void                load (char* filename);
+    bool                changing()             { return changing_; }
 
   private:
+    bool                changing_;
     void                fload ();
     std::string         _filename;
 

@@ -1,4 +1,13 @@
 
+2005-02-28
+	* neu: ICCexamin::frei() zur Anzeige der Benutzung eingeführt (pthread)
+
+2005-02-26
+	* neu: wächter mit pthread eingeführt in ICCkette, überwacht Dateiveränderng
+	* neu: Modell Beobachter als Rückmeldesystem eingeführt icc_modell_bobachter
+	* neu: holeDateiModifikationsZeit in icc_helfer
+	* neu: ICCprofile::changing() zur Anzeige der Benutzung eingeführt
+
 2005-02-24
 	* neu: viel an der 3D Darstellung gearbeitet
 	* neu: Umgebungsvariable LANG wird zum Auslesen von mluc Tags verwendet

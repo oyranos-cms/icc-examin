@@ -928,9 +928,6 @@ ICCtag::getNumbers                                 (MftChain typ)
       nummern[i*3 +1] = icValue(f->pcsfarbe[0])/65280.0;
       nummern[i*3 +2] = icValue(f->pcsfarbe[1])/65535.0;
       nummern[i*3 +3] = icValue(f->pcsfarbe[2])/65535.0;
-      DBG_PROG_V( nummern[i+0] )
-      DBG_PROG_V( nummern[i+1] )
-      DBG_PROG_V( nummern[i+2] )
       //for(int j=0; j < geraetefarben_n; ++j)
         //s << icValue(f->geraetefarbe[j]) << " ";
 

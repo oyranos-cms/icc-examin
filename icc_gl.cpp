@@ -233,7 +233,8 @@ GL_Ansicht::init()
 
 void
 GL_Ansicht::zeigen()
-{ DBG_PROG_START
+{
+  DBG_PROG_START
   DBG_PROG_V( id() )
 
   if(!beruehrt_) icc_examin->initReihenfolgeGL_Ansicht(this);
@@ -256,7 +257,8 @@ GL_Ansicht::zeigen()
 
 void
 GL_Ansicht::verstecken()
-{ DBG_PROG_START
+{
+  DBG_PROG_START
   DBG_PROG_V( id() )
 
   //DBG_PROG_V( w() <<" "<< h() )
@@ -277,7 +279,8 @@ GL_Ansicht::verstecken()
 
 void
 GL_Ansicht::stop()
-{ DBG_PROG_START
+{
+  DBG_PROG_START
   if (beruehrt_) {
     agviewers[agv_].agvSwitchMoveMode (Agviewer::AGV_STOP);
   }
@@ -286,16 +289,21 @@ GL_Ansicht::stop()
 
 void
 GL_Ansicht::auffrischen()
-{ DBG_PROG_START
-  menueErneuern_();
-  erstelleGLListen_();
-  auffrischen_ = false;
+{
+  DBG_PROG_START
+  if(icc_examin->frei())
+  {
+    menueErneuern_();
+    erstelleGLListen_();
+    auffrischen_ = false;
+  }
   DBG_PROG_ENDE
 }
 
 void
 GL_Ansicht::draw()
-{ DBG_PROG_START
+{
+  DBG_PROG_START
   if (gl_fenster_zeigen_)
   { DBG_PROG
     gl_fenster_->size(w(),h());
@@ -1356,7 +1364,8 @@ reshape(int id, int w, int h)
 void
 display(int id)
 { DBG_ICCGL_START
-  if(icc_examin->glAnsicht(id)->sichtbar())
+  if(icc_examin->glAnsicht(id)->sichtbar() &&
+     icc_examin->frei() )
   {
     glutSetWindow(id);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

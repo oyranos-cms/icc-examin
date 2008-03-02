@@ -155,6 +155,8 @@ Agviewer::_agvMove(void)
 { DBG_PROG_START
   //glutSetWindow(RedisplayWindow);
   DBG_PROG_V(redisplayWindow())
+  if(icc_examin->frei())
+  {
   switch (MoveMode)  {
     case FLYING:
       Ex += EyeMove*sin(TORAD(EyeAz))*cos(TORAD(EyeEl));
@@ -178,14 +180,15 @@ Agviewer::_agvMove(void)
       break;
     }
 
-  if (AdjustingAzEl) {
-    dAz *= slow_daz;
-    dEl *= slow_del;
-  }
+    if (AdjustingAzEl) {
+      dAz *= slow_daz;
+      dEl *= slow_del;
+    }
 
-  if (AllowIdle) {
-    glutSetWindow(RedisplayWindow); DBG_PROG_V( RedisplayWindow )
-    glutPostRedisplay();
+    if (AllowIdle) {
+      glutSetWindow(RedisplayWindow); DBG_PROG_V( RedisplayWindow )
+      glutPostRedisplay();
+    }
   }
   DBG_PROG_ENDE
 }

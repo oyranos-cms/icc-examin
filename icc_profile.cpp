@@ -118,6 +118,7 @@ void
 ICCprofile::fload ()
 { DBG_PROG_START // ICC Profil laden
   std::string file = _filename;
+  changing_ = true;
 
   try {
     _data = ladeDatei (file, &_size);
@@ -235,6 +236,7 @@ ICCprofile::fload ()
  
   DBG_NUM_V( _filename )
 
+  changing_ = false;
   DBG_PROG_ENDE
 }
 

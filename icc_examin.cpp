@@ -146,6 +146,7 @@ ICCexamin::start (int argc, char** argv)
 
   // zur Benutzung freigeben
   status_ = 1;
+  frei_ = true;
 
   icc_betrachter->run();
 
@@ -153,10 +154,12 @@ ICCexamin::start (int argc, char** argv)
 }
 
 #include "icc_vrml_parser.h"
+
 void
 ICCexamin::oeffnen (std::vector<std::string> dateinamen)
 { DBG_PROG_START
   // Laden
+  frei_ = false;
   bool weiter = profile.oeffnen(dateinamen);
   if (weiter) { DBG_PROG
     icc_betrachter->tag_browser->reopen ();
@@ -211,6 +214,7 @@ ICCexamin::oeffnen (std::vector<std::string> dateinamen)
       icc_betrachter->DD_histogram->auffrischen();
     }
 
+  frei_ = true;
   DBG_PROG_ENDE
 }
 
@@ -227,6 +231,7 @@ ICCexamin::oeffnen ()
 std::string
 ICCexamin::waehleTag (int item)
 { DBG_PROG_START
+  frei_ = false;
 
   DBG_PROG_V( item )
 
@@ -348,6 +353,7 @@ ICCexamin::waehleTag (int item)
     text = TagInfo[0];
   }
 
+  frei_ = true;
   DBG_PROG_ENDE
   return text;
 }
@@ -357,6 +363,7 @@ ICCexamin::waehleTag (int item)
 void
 ICCexamin::waehleMft (int item)
 { DBG_PROG_START
+  frei_ = false;
   //Auswahl aus mft_choice
 
   kurven[MFT_VIEWER].clear();
@@ -423,6 +430,7 @@ ICCexamin::waehleMft (int item)
   }
 
   icc_betrachter->mft_choice->gewaehlter_eintrag = item;
+  frei_ = true;
   DBG_PROG_ENDE
 }
 
@@ -446,20 +454,27 @@ void
 ICCexamin::nachricht( Modell* modell , int infos )
 {
   DBG_PROG_START
+  frei_ = false;
   DBG_PROG_V( infos )
   // Modell identifizieren
-  if(dynamic_cast<ICCkette*>(modell))
+  ICCkette* k = dynamic_cast<ICCkette*>(modell);
+  if(k)
   {
-    histogram (infos);
+    if(!(*k)[infos]->changing())
+    {
+      histogram (infos);
+    }
     DBG_PROG_S( _("Auffrischen von Profil Nr.: ") << infos )
   }
   Beobachter::nachricht(modell, infos);
+  frei_ = true;
   DBG_PROG_ENDE
 }
 
 void
 ICCexamin::histogram (int n)
 { DBG_PROG_START
+  frei_ = false;
   std::vector<std::string> texte, namen;
 
   texte.push_back(_("CIE *L"));
@@ -558,12 +573,14 @@ ICCexamin::histogram (int n)
     icc_betrachter->DD_histogram->achsNamen( texte );
   }
 
+  frei_ = true;
   DBG_PROG_ENDE
 }
 
 void
 ICCexamin::histogram ()
 { DBG_PROG_START
+  frei_ = false;
   std::vector<std::string> texte, namen;
 
   texte.push_back(_("CIE *L"));
@@ -681,6 +698,7 @@ ICCexamin::histogram ()
     icc_betrachter->DD_histogram->achsNamen( texte );
   }
 
+  frei_ = true;
   DBG_PROG_ENDE
 }
 
@@ -727,6 +745,7 @@ ICCexamin::testZeigen ()
 void
 ICCexamin::vcgtZeigen ()
 { DBG_PROG_START
+  frei_ = false;
   kurve_umkehren[VCGT_VIEWER] = true;
 
   #if HAVE_X// || HAVE_OSX
@@ -744,6 +763,7 @@ ICCexamin::vcgtZeigen ()
   }
   #endif
 
+  frei_ = true;
   // TODO: osX
   DBG_PROG_ENDE
 }
@@ -751,16 +771,19 @@ ICCexamin::vcgtZeigen ()
 void
 ICCexamin::moniSetzen ()
 { DBG_PROG_START
+  frei_ = false;
   if( profile.size() ) { DBG_PROG
     icc_oyranos.setzeMonitorProfil( profile.profil()->filename() );
     vcgtZeigen();
   }
+  frei_ = true;
   DBG_PROG_ENDE
 }
 
 void
 ICCexamin::standardGamma ()
 { DBG_PROG_START
+  frei_ = false;
 
   #if HAVE_X
   system("xgamma -gamma 1.0");
@@ -768,12 +791,14 @@ ICCexamin::standardGamma ()
   #endif
 
   // TODO: osX
+  frei_ = true;
   DBG_PROG_ENDE
 }
 
 bool
 ICCexamin::berichtSpeichern (void)
 { DBG_PROG_START
+  frei_ = false;
   bool erfolgreich = true;
   std::string dateiname = profile.name();  DBG_PROG_V( dateiname )
 
@@ -834,6 +859,7 @@ ICCexamin::berichtSpeichern (void)
   f.write ( bericht.c_str(), bericht.size() );
   f.close();
 
+  frei_ = true;
   DBG_PROG_ENDE
   return erfolgreich;
 }

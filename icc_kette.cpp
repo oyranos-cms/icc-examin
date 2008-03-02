@@ -27,6 +27,7 @@
 
 #include "icc_kette.h"
 #include "icc_info.h"
+#include "icc_examin.h"
 
 #include <pthread.h>
 
@@ -87,7 +88,7 @@ ICCkette::oeffnen (std::vector<std::string> dateinamen)
   return erfolgreich;
 }
 
-
+static bool erstes_mal = true;
 void*
 ICCkette::waechter (void* zeiger)
 {
@@ -98,7 +99,10 @@ ICCkette::waechter (void* zeiger)
 
   ICCkette* obj = (ICCkette*) zeiger;
 
-  sleep(1);
+  if(erstes_mal)
+    erstes_mal = false;
+  else
+    sleep(1);
 
   pthread_t p_t;
   int fehler = pthread_create(&p_t, NULL, &waechter, (void *)zeiger);
@@ -122,10 +126,12 @@ ICCkette::waechter (void* zeiger)
     DBG_PROG_V( m_zeit )
     if( m_zeit &&
         obj->aktiv_[i] &&
-        obj->profil_mzeit_[i] != m_zeit )
+        obj->profil_mzeit_[i] != m_zeit &&
+        icc_examin->frei() )
     {
       obj->profile_[i].load( obj->profilnamen_[i] );
       obj->/*Modell::*/benachrichtigen( i );
+      obj->profil_mzeit_[i] = m_zeit;
     }
   }
 
