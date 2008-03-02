@@ -82,11 +82,11 @@ std::string         printDatum( icDateTimeNumber date );
 std::string         zeig_bits_bin      (void* speicher, int groesse);
 
 // Texthelfer
-std::string::size_type suchenErsetzen ( std::string            &text,
+int                 suchenErsetzen    ( std::string            &text,
                                         std::string            &suchen,
                                         std::string            &ersetzen,
                                         std::string::size_type  pos );
-std::string::size_type suchenErsetzen ( std::string            &text,
+int                 suchenErsetzen    ( std::string            &text,
                                         const char             *suchen,
                                         const char             *ersetzen,
                                         std::string::size_type  pos );

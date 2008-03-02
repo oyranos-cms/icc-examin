@@ -29,7 +29,6 @@
 /* TODO
 	o verschmelzen             // extern über bloecke/felder möglich
 	o einzelne Blöcke herausschreiben // über bloecke/felder möglich
-	o über return Wert zurückgeben struct Zeilennummer + 2 geänderte Zeilen
 */
 
 /*
@@ -41,10 +40,16 @@
 2005-01-24  6,5 h
 2005-01-25  6,5 h
 2005-01-26 14,  h
------------------ 42,5 h
+2005-01-27  1,5 h
+----------------- 44,5 h + 30 h im Sommer
 
    ChangeLog
 
+2005-01-28
+	* fix: felder anlegen
+2005-01-27
+	* neu: log -  1:00h
+	* und: Testen - 0:30h
 2005-01-26
 	* <- 6:45
 	* fix: Textbearbeitung -> 8:00
@@ -186,6 +191,19 @@ const char CgatsFilter::ss_woerter_[STD_CGATS_FIELDS][16] =
     "STDEV_DE",
     "CHI_SQD_PAR" };
 
+// Makro
+
+#define SUCHENundERSETZEN( text, suchen, ersetzen, pos ) { \
+    int n = suchenErsetzen ( text, suchen, ersetzen, pos ); \
+    if( n ) \
+    { \
+      std::stringstream s; \
+      s << suchen << " " << n << " " << _("mal") << " " << _("durch") << " " <<\
+           ersetzen << " " << _("ersetzt"); \
+      logEintrag_( s.str(), -1, "", "" ); \
+    } \
+  }
+
 // Implementationen
 
 void
@@ -253,7 +271,7 @@ CgatsFilter::unterscheideZiffernWorte_( std::string &zeile )
   std::string txt;
   std::vector<std::string> ergebnis;
 
-  suchenErsetzen ( zeile, ",", ".", 0 );
+  SUCHENundERSETZEN( zeile, ",", ".", 0 )
 
   // Worte Suchen und von Zahlen scheiden
   for( pos = 0; pos < zeile.size() ; ++pos )
@@ -377,7 +395,8 @@ CgatsFilter::unterscheideZiffernWorte_( std::string &zeile )
         pos = zeile.size();
       }
       DBG_CGATS_V( pos << zeile )
-    }
+    } else
+      pos = zeile.size();
   }
   for( unsigned i = 0; i < ergebnis.size(); i++)
     DBG_CGATS_V( ergebnis[i] );
@@ -395,10 +414,10 @@ CgatsFilter::sucheInDATA_FORMAT_( std::string &zeile )
 
   zeilenOhneDuplikate_( s_woerter_ );
 
-  suchenErsetzen ( zeile, "nm_", spektral.c_str(), 0 );
-  suchenErsetzen ( zeile, "nm", spektral.c_str(), 0 );
-  suchenErsetzen ( zeile, "SPECTRUM_", spektral.c_str(), 0 );
-  suchenErsetzen ( zeile, "R_", spektral.c_str(), 0 );
+  SUCHENundERSETZEN( zeile, "nm_", spektral.c_str(), 0 )
+  SUCHENundERSETZEN( zeile, "nm", spektral.c_str(), 0 )
+  SUCHENundERSETZEN( zeile, "SPECTRUM_", spektral.c_str(), 0 )
+  SUCHENundERSETZEN( zeile, "R_", spektral.c_str(), 0 )
 
   DBG_PROG_V( zeile )
 
@@ -487,6 +506,7 @@ CgatsFilter::editZeile_( std::vector<std::string> &zeilen,
   DBG_CGATS_START
   int zeilendifferenz = 0;
   std::string::size_type ende, pos;
+  std::stringstream s;
   if( (ende = zeilen[i].find( "#", 0 )) == std::string::npos )
     ende = zeilen[i].size();
   pos = zeilen[i].find_first_not_of( cgats_alnum_ );
@@ -501,7 +521,8 @@ CgatsFilter::editZeile_( std::vector<std::string> &zeilen,
                    DBG_NUM_S( zeilen[i].substr( pos + 1, ende - pos - 1 ) )
                    s_woerter_.insert( s_woerter_.begin(), zeilen[i].substr(
                                          pos + 1, ende - pos - 1) );
-                   DBG_NUM_S( "neues Schlüsselwort: " << s_woerter_[0] )
+                   s << _("neues Schlüsselwort: ") << s_woerter_[0];
+                   logEintrag_( s.str(), i, zeilen[i], "" );
                    break;
     case ANFUEHRUNGSSTRICHE:
             {
@@ -525,6 +546,8 @@ CgatsFilter::editZeile_( std::vector<std::string> &zeilen,
             // SAMPLE_ID C M Y K       / auch  L A B C H ?  als Formatbezeichner
             {
               // C M Y und K suchen und ersetzen
+              unsigned l = 
+              logEintrag_( "DATA_FORMAT_ZEILE eigefügt", i, zeilen[i], "" );
               if( 0 ) // cmy
               {
                 suchenErsetzen ( zeilen[i], "\tC\t", "\tCMY_C\t", 0 );
@@ -540,19 +563,22 @@ CgatsFilter::editZeile_( std::vector<std::string> &zeilen,
                 suchenErsetzen ( zeilen[i], "\tK", "\tCMYK_K", 0 );
               }
               int zaehler_FIELDS = sucheInDATA_FORMAT_( zeilen[i] );
-              std::stringstream s;
               s << "NUMBER_OF_FIELDS " << zaehler_FIELDS;
               zeilen.insert( zeilen.begin() + i, s.str() );
               DBG_CGATS_V( felder.size() )
-              felder.resize( felder.size()+1 );
+              if( felder.size() < bloecke.size() )
+                felder.resize( felder.size()+1 );
               felder[felder.size()-1].push_back( s.str() );
+              log[l].ausgabe.push_back( s.str() );
               ++zeilendifferenz;
               zeilen.insert( zeilen.begin() + i + 1, "BEGIN_DATA_FORMAT" );
               felder[felder.size()-1].push_back( "BEGIN_DATA_FORMAT" );
+              log[l].ausgabe.push_back( "BEGIN_DATA_FORMAT" );
               ++zeilendifferenz;
               felder[felder.size()-1].push_back( zeilen[i] );
               zeilen.insert( zeilen.begin() + i + 3, "END_DATA_FORMAT" );
               felder[felder.size()-1].push_back( "END_DATA_FORMAT" );
+              log[l].ausgabe.push_back( "END_DATA_FORMAT" );
               ++zeilendifferenz;
             }
             break;
@@ -590,16 +616,13 @@ CgatsFilter::cgats_korrigieren               ()
   char LF[2];
   sprintf (CRLF , "\r\n");
   sprintf (LF , "\n");
-  if(suchenErsetzen (data_,CRLF,LF,pos) != std::string::npos)
-  {
-      DBG_NUM_S( "LF CR ersetzt" )
-  }
+  if(suchenErsetzen (data_,CRLF,LF,pos))
+      logEintrag_( "LF CR ersetzt", -1, "", "" );
+
   char CR[2];
   sprintf (CR , "\r");
-  if(suchenErsetzen (data_,CR,LF,pos) != std::string::npos)
-  {
-      DBG_NUM_S( "CR ersetzt" )
-  }
+  if(suchenErsetzen (data_,CR,LF,0))
+      logEintrag_( "CR ersetzt", -1, "", "" );
 
   #if 0
   // testweises Speichern
@@ -609,28 +632,25 @@ CgatsFilter::cgats_korrigieren               ()
   #endif
 
 
-  // reparieren: Sample_Name , SampleID, ""
-  #define SUCHENundERSETZEN( suchen, ersetzen ) \
-  pos = 0; \
-  if(suchenErsetzen ( data_, suchen, ersetzen, pos ) != std::string::npos) \
-  { \
-      DBG_NUM_S( suchen " ersetzt" ) \
-  }
+  // reparieren:
   // FORMAT Bezeichner
-  SUCHENundERSETZEN( "SampleID" , "SAMPLE_ID" )
-  SUCHENundERSETZEN( "Sample_ID" , "SAMPLE_ID" )
-  SUCHENundERSETZEN( "SampleName" , "SAMPLE_NAME" )
-  SUCHENundERSETZEN( "Sample_Name" , "SAMPLE_NAME" )
-  SUCHENundERSETZEN( "Lab_L" , "LAB_L" )
-  SUCHENundERSETZEN( "Lab_a" , "LAB_A" )
-  SUCHENundERSETZEN( "Lab_b" , "LAB_B" )
+  SUCHENundERSETZEN( data_, "SampleID" , "SAMPLE_ID", pos ) // GMB
+  SUCHENundERSETZEN( data_, "Sample_ID" , "SAMPLE_ID", pos )
+  SUCHENundERSETZEN( data_, "SampleName" , "SAMPLE_NAME", pos )
+  SUCHENundERSETZEN( data_, "Sample_Name" , "SAMPLE_NAME", pos )
+  SUCHENundERSETZEN( data_, "Yxy_x", "XYY_X", pos )
+  SUCHENundERSETZEN( data_, "Yxy_y", "XYY_Y", pos )
+  SUCHENundERSETZEN( data_, "Yxy_Y", "XYY_CAPY", pos )
+  SUCHENundERSETZEN( data_, "Lab_L" , "LAB_L", pos )
+  SUCHENundERSETZEN( data_, "Lab_a" , "LAB_A", pos )
+  SUCHENundERSETZEN( data_, "Lab_b" , "LAB_B", pos )
   // Dateibezeichner
-  SUCHENundERSETZEN( "CBTD" , "CBTD___" )
-  SUCHENundERSETZEN( "CBPR" , "CBPR___" )
-  SUCHENundERSETZEN( "CBTA" , "CBTA___" )
-  SUCHENundERSETZEN( "CBRO" , "CBRO___" ) // wird nicht behandelt
+  SUCHENundERSETZEN( data_, "CBTD" , "CBTD___", pos ) // CB
+  SUCHENundERSETZEN( data_, "CBPR" , "CBPR___", pos )
+  SUCHENundERSETZEN( data_, "CBTA" , "CBTA___", pos )
+  SUCHENundERSETZEN( data_, "CBRO" , "CBRO___", pos ) // wird nicht behandelt
   // Sonstiges
-  SUCHENundERSETZEN( "Date:" , "CREATED \"\" #" ) // nicht ganz korrekt; für GMB
+  SUCHENundERSETZEN( data_, "Date:" , "CREATED \"\" #", pos ) // GMB
 
 
   // zeilenweise
@@ -678,7 +698,7 @@ CgatsFilter::cgats_korrigieren               ()
         ++zaehler_SETS;
 
       // in gtext , durch . ersetzen und danach in zeilen[i] zurückschreiben
-      if(suchenErsetzen ( gtext, ",", ".", 0 ) != std::string::npos)
+      if(suchenErsetzen ( gtext, ",", ".", 0 ))
       {
         zeilen[i].replace( 0, gtext.size(), gtext );
         DBG_NUM_S( ", ersetzt" )
@@ -703,7 +723,9 @@ CgatsFilter::cgats_korrigieren               ()
     {
       DBG_NUM_V( felder.size() )
       // das Protokol der Feldbezeichner startet
-      felder.resize( felder.size()+1 );
+      if( felder.size() < bloecke.size() )
+        WARN_S( _("Mehr Feldblöcke als Dateblöcke") )
+      felder.resize(felder.size()+1);
       felder[felder.size()-1].push_back( "BEGIN_DATA_FORMAT" );
       for( unsigned j = 0; j < felder[0].size(); ++j )
         DBG_NUM_S( j<<" "<<felder[0][j] )
@@ -751,15 +773,20 @@ CgatsFilter::cgats_korrigieren               ()
           n_o_ = 0;
         if( n_o_ != zaehler_FIELDS)
         {
+          // Logbuch
+          std::string alt = zeilen[zeile_letztes_NUMBER_OF_FIELDS];
           // Hole eine kommentarfreie Zeile
           int size = t.size();
           zeilen[zeile_letztes_NUMBER_OF_FIELDS].erase( 0, size );
           t = s.str();
           zeilen[zeile_letztes_NUMBER_OF_FIELDS].insert( 0, t );
           DBG_CGATS_V( felder.size() )
-          //TODO Logbuch
-          WARN_S( "NUMBER_OF_FIELDS stimmt nicht überein " << n_o_ << " <-> "<<
-                  zaehler_FIELDS )
+
+          s.str("");
+          s << "NUMBER_OF_FIELDS stimmt nicht überein " << n_o_ << " <-> "<<
+                  zaehler_SETS; 
+          logEintrag_( s.str(), zeile_letztes_NUMBER_OF_FIELDS,
+                       alt, zeilen[zeile_letztes_NUMBER_OF_FIELDS] );
         }
       }
 
@@ -774,6 +801,10 @@ CgatsFilter::cgats_korrigieren               ()
     if( sucheWort (gtext, "BEGIN_DATA", 0 ) != std::string::npos )
     {
       bloecke.resize( bloecke.size()+1 );
+      if( felder.size() < bloecke.size() )
+        felder.resize( bloecke.size() );
+      else if( felder.size() > bloecke.size() )
+        logEintrag_( _("Fatal: Felder nicht zuordenbar"), -1, "", "" );
       bloecke[bloecke.size()-1].push_back( "BEGIN_DATA" );
       DBG_CGATS_V( bloecke.size()-1 <<"|"<< bloecke[bloecke.size()-1].size())
       // Markieren und Warnen
@@ -819,14 +850,18 @@ CgatsFilter::cgats_korrigieren               ()
           n_o_ = 0;
         if( n_o_ != zaehler_SETS)
         {
+          // Logbuch
+          std::string alt = zeilen[zeile_letztes_NUMBER_OF_SETS];
           // Hole eine kommentarfreie Zeile
           int size = t.size();
           zeilen[zeile_letztes_NUMBER_OF_SETS].erase( 0, size );
           t = s.str();
           zeilen[zeile_letztes_NUMBER_OF_SETS].insert( 0, t );
-          //TODO Logbuch
-          WARN_S( "NUMBER_OF_SETS stimmt nicht überein " << n_o_ << " <-> "<<
-                  zaehler_SETS )
+          s.str("");
+          s << "NUMBER_OF_SETS stimmt nicht überein " << n_o_ << " <-> "<<
+                  zaehler_SETS; 
+          logEintrag_( s.str(), zeile_letztes_NUMBER_OF_SETS,
+                       alt, zeilen[zeile_letztes_NUMBER_OF_SETS] );
         }
       }
 
@@ -900,6 +935,24 @@ CgatsFilter::cgats_korrigieren               ()
   //DBG_NUM_S (data_)
   DBG_PROG_ENDE
   return data_;
+}
+
+unsigned int
+CgatsFilter::logEintrag_ (std::string meldung, int zeile_n,
+                          std::string eingabe, std::string ausgabe )
+{ DBG_PROG_START
+  // Logbuch
+  unsigned int l = log.size();
+  log.resize(l+1);
+  if( eingabe != "" )
+    log[l].eingabe.push_back( eingabe );
+  if( ausgabe != "" )
+    log[l].ausgabe.push_back( ausgabe );
+  log[l].meldung = meldung;
+  log[l].original_zeile = zeile_n;
+  WARN_S( zeile_n << ": " << meldung )
+  DBG_PROG_ENDE
+  return l;
 }
 
 

@@ -32,6 +32,51 @@
 #define ICC_OYRANOS_H
 #define _(text) text
 
+#include <string>
+#include <vector>
+
+class Speicher
+{
+    char* zeiger_;
+    size_t groesse_;
+
+  public:
+    Speicher       () { zeiger_ = 0; groesse_ = 0; }
+    ~Speicher      () { if( zeiger_ ) free (zeiger_); }
+    Speicher       (const Speicher& s) { zeiger_ = 0; groesse_ = 0; }
+    Speicher& operator = (const Speicher& s) { zeiger_ = 0; groesse_ = 0;
+                        return *this; }
+
+    void     lade  (char* zeiger, int groesse)
+                      { zeiger_ = zeiger;
+                        groesse_ = groesse; }
+    Speicher       (char* zeiger, int groesse) { lade (zeiger, groesse); }
+
+    size_t size    () { return groesse_; }
+    std::string name;
+    operator char*       () { return zeiger_; }
+    operator std::string () { return name; }
+    operator size_t      () { return groesse_; }
+};
+
+class Oyranos
+{
+  public:
+    Oyranos()      {; }
+    ~Oyranos()     {; }
+    void    init() {; }
+
+    std::string cmyk ()                { cmyk_test_(); return cmyk_.name; }
+    char*       cmyk (int &size)       { cmyk_test_(); return cmyk_; }
+    std::string lab  ();
+    char*       lab  (int &size);
+  private:
+    void cmyk_test_();
+    Speicher cmyk_;
+    Speicher lab_;
+};
+
+extern Oyranos oyranos;
 
 void	oyranos_pfade_einlesen();
 void	oyranos_pfade_auffrischen();

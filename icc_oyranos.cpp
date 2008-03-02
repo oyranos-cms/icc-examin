@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2005  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -28,9 +28,61 @@
 // Date:      25. 11. 2004
 
 
+#ifdef HAVE_OY
+#include "oyranos/oyranos.h"
+#endif
 #include "icc_oyranos.h"
+#include "icc_utils.h"
 
-//#include <kdb.h>
+Oyranos oyranos;
+
+
+        /* Konzepte:
+         *   o - oyInit() initialisiert die Bibliothek und erlaubt das lesen von
+         *       Zeigern
+         *     - oyQuit() beräumt all diese
+         *   o ein Objekt pro Profil (void* cmsOpen(...) ; cmsClose(void*))
+         *       dies bleibt ein CMM Architektur vorbehalten
+         *   o ein C++ Wrapper für liboyranos wie mit Oyranos oyranos
+         *       oyranos als C++ Header exportieren
+         *   o alles dem Benutzer überlassen (C free())
+         *       im Prototyp hier   
+         *   o sich auf reine Namensnennung beschränken --
+         */
+
+
+
+void
+Oyranos::cmyk_test_ ()
+{
+  DBG_PROG_START
+  Speicher *v_block = &cmyk_;
+  char* block;
+
+  if( !v_block->size() )
+  { DBG_PROG_V( v_block->size() )
+    oy_debug = 1;
+    char* profil_name = oyGetDefaultCmykProfileName();
+    DBG_PROG_V( (int)profil_name << oyGetDefaultCmykProfileName() )
+    if( profil_name &&
+        cmyk_.name != profil_name )
+    { 
+        cmyk_.name = profil_name;
+
+        int size = oyGetProfileSize ( profil_name );
+        DBG_PROG_V( size )
+        if (size)
+        { block = (char*)oyGetProfileBlock( profil_name, &size);
+          DBG_PROG_V( (int)block )
+          v_block->lade(block, size);
+        }
+        oy_debug = 0;
+    }
+  }
+
+  DBG_NUM_S( "default " OY_DEFAULT_CMYK_PROFILE " profile = "<< cmyk_.name <<"\n" )
+  DBG_PROG_ENDE
+}
 
 void
 oyranos_pfade_loeschen()
@@ -50,7 +102,10 @@ oyranos_pfade_einlesen()
 void
 oyranos_pfad_dazu (char* pfad)
 {
-/*  KeySet myConfig;
+  #ifdef HAVE_OY
+
+  #if 0
+  KeySet myConfig;
   ksInit(&myConfig);
   kdbOpen();
 
@@ -83,7 +138,9 @@ oyranos_pfad_dazu (char* pfad)
     printf("Now is %s\n", value);
   }
 
-  kdbClose(); */
+  kdbClose();
+  #endif
+  #endif
 }
 
 

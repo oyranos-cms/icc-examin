@@ -749,24 +749,23 @@ zeig_bits_bin(void* speicher, int groesse)
   return text;
 }
 
-std::string::size_type
+int
 suchenErsetzen          (std::string &text,
                          std::string &suchen,
                          std::string &ersetzen,
                          std::string::size_type pos)
 {
-  //std::string::size_type ende;
+  int n = 0;
   while ((pos = text.find (suchen, pos)) != std::string::npos) {
     text.replace (pos, suchen.size(), ersetzen);
     pos = pos + suchen.size();
-    //DBG_NUM_S( suchen <<" ersetzt" )
+    ++n;
   }
 
-  if( pos == std::string::npos) return pos;
-  else return pos - suchen.size();
+  return n;
 }
 
-std::string::size_type
+int
 suchenErsetzen          (std::string &text,
                          const char  *suchen,
                          const char  *ersetzen,
@@ -775,8 +774,8 @@ suchenErsetzen          (std::string &text,
   static std::string such, ersetz;
   such = suchen;
   ersetz = ersetzen;
-  pos = suchenErsetzen(text, such, ersetz, pos);
-  return pos;
+  int n = suchenErsetzen(text, such, ersetz, pos);
+  return n;
 }
 
 

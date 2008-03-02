@@ -30,7 +30,7 @@ X11_LIBS=-L/usr/X11R6/lib
 
 FLTK_LIBS=`fltk-config --use-images --use-gl --use-glut $(DL)`
 
-KDB_LIBS=#-lkdb
+OYRANOS_LIBS=-lkdb -loyranos
 
 ifdef FLU
 FLU_LIBS=`flu-config $(DL)`
@@ -46,13 +46,15 @@ else
   GLUT = -lglut
   X_H  = -DHAVE_X
   X_CPP = icc_helfer_x.cpp
+  OY_H = -DHAVE_OY
+  OY_LIBS = -loyranos
 endif
 
-CXXFLAGS=$(OPTS) $(INCL) $(FLU_H) $(FLTK_H) $(X_H) $(OSX_H)
+CXXFLAGS=$(OPTS) $(INCL) $(FLU_H) $(FLTK_H) $(X_H) $(OSX_H) $(OY_H)
 INCL=-I$(includedir) -I/usr/X11R6/include -I./ -I/opt/kai-uwe/include
 
 LDLIBS = -L$(libdir) -L./ $(FLTK_LIBS) \
-	$(X11_LIBS) -llcms $(KDB_LIBS) $(GLUT) $(FLU_LIBS) -L/opt/kai-uwe/lib
+	$(X11_LIBS) -llcms $(OY_LIBS) $(GLUT) $(FLU_LIBS) -L/opt/kai-uwe/lib
 
 #	$(VRML_LIBS)
 

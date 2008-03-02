@@ -61,10 +61,11 @@ class CgatsFilter
     void lade (char* data, size_t size) { clear();
                                           data_orig_.assign( data,0,size ); }
     void lade (std::string &data)       { clear(); data_orig_ = data; }
-    void clear()                        { data_.resize(0); data_orig_.resize(0);
-           s_woerter_.resize(STD_CGATS_FIELDS);
-           for(unsigned i = 0; i < STD_CGATS_FIELDS; ++i)
-             s_woerter_[i] = ss_woerter_[i]; }
+    void clear()              { data_.resize(0); data_orig_.resize(0);
+                                s_woerter_.resize(STD_CGATS_FIELDS);
+                                for(unsigned i = 0; i < STD_CGATS_FIELDS; ++i)
+                                    s_woerter_[i] = ss_woerter_[i];
+                              }
     // Ausgeben
     std::string lcms_gefiltert() { typ_ = LCMS; cgats_korrigieren();
                                    return data_; }
@@ -86,7 +87,15 @@ class CgatsFilter
     std::vector<  std::vector<std::string> > felder;
     std::vector<  std::vector<std::string> > bloecke;
 
-private:
+    struct Log {
+      std::vector<std::string> eingabe;
+      std::vector<std::string> ausgabe;
+      std::string meldung;
+      int original_zeile;
+    };
+    std::vector<Log> log;
+
+  private:
     // --- Hauptfunktion ---
     // Konvertierung in Standard unix Dateiformat mit LF
     // Suchen und Ersetzen bekannnter Abweichungen (in einem std::string)
@@ -117,6 +126,9 @@ private:
     // Zeile von pos bis Ende in Anführungszeichen setzen
     void setzeWortInAnfuehrungszeichen_ ( std::string &zeile,
                                 std::string::size_type pos );
+    // bequem einen Eintrag zu log hinzufügen
+    unsigned int logEintrag_ (std::string meldung, int zeile_n,
+                              std::string zeile1,  std::string zeile2 );
 
     // Schlüsselwort -> passende Korrekturen
     enum {

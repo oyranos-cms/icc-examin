@@ -35,6 +35,8 @@
 #include "icc_utils.h"
 #include "icc_gl.h"
 #include "icc_kette.h"
+#include "icc_oyranos.h"
+
 class  ICCfltkBetrachter;
 class  ICCexamin;
 extern ICCexamin *icc_examin;

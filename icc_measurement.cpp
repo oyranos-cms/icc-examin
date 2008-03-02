@@ -394,7 +394,19 @@ ICCmeasurement::init_umrechnen                     (void)
     if ((_RGB_measurement ||
          _CMYK_measurement))
     {
-      hCOLOUR = cmsOpenProfileFromMem (_profil->_data, _profil->_size);
+      if( _profil->size() )
+        hCOLOUR = cmsOpenProfileFromMem (_profil->_data, _profil->_size);
+      else { // Alternative
+        int size;
+        char* block;
+        if( _CMYK_measurement )
+          block = oyranos.cmyk(size);
+        //else
+          //block = oyranos.rgb(size);
+
+        hCOLOUR = cmsOpenProfileFromMem (block, size);
+        // block gehört oyranos
+      }
 
       // Wie sieht das Profil die Messfarbe? -> XYZ
       hCOLOURtoXYZ =  cmsCreateTransform (hCOLOUR, TYPE_COLOUR_DBL,
