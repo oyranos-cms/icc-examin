@@ -25,7 +25,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include <GL/freeglut.h>
+//#include <GL/freeglut.h>
 #include "freeglut_internal.h"
 
 /*
@@ -58,7 +58,7 @@ extern SFG_StrokeFont fgStrokeMonoRoman;
  */
 static SFG_Font* fghFontByID( void* font )
 {
-    if( font == GLUT_BITMAP_8_BY_13        )
+/*    if( font == GLUT_BITMAP_8_BY_13        )
         return &fgFontFixed8x13;
     if( font == GLUT_BITMAP_9_BY_15        )
         return &fgFontFixed9x15;
@@ -72,7 +72,7 @@ static SFG_Font* fghFontByID( void* font )
         return &fgFontTimesRoman10;
     if( font == GLUT_BITMAP_TIMES_ROMAN_24 )
         return &fgFontTimesRoman24;
-
+*/
     //fgWarning( "font 0x%08x not found", font );
     return 0;
 }
@@ -83,9 +83,9 @@ static SFG_Font* fghFontByID( void* font )
  */
 static SFG_StrokeFont* fghStrokeByID( void* font )
 {
-    if( font == GLUT_STROKE_ROMAN      )
+    if( font == ICCGLUT_STROKE_ROMAN      )
         return &fgStrokeRoman;
-    if( font == GLUT_STROKE_MONO_ROMAN )
+    if( font == ICCGLUT_STROKE_MONO_ROMAN )
         return &fgStrokeMonoRoman;
 
     //fgWarning( "stroke font 0x%08x not found", font );
@@ -98,7 +98,7 @@ static SFG_StrokeFont* fghStrokeByID( void* font )
 /*
  * Draw a bitmap character
  */
-void FGAPIENTRY glutBitmapCharacter( void* fontID, int character )
+void glutBitmapCharacter( void* fontID, int character )
 {
     const GLubyte* face;
     SFG_Font* font;
@@ -127,7 +127,7 @@ void FGAPIENTRY glutBitmapCharacter( void* fontID, int character )
     glPopClientAttrib( );
 }
 
-void FGAPIENTRY glutBitmapString( void* fontID, const unsigned char *string )
+void glutBitmapString( void* fontID, const unsigned char *string )
 {
     unsigned char c;
     float x = 0.0f ;
@@ -176,7 +176,7 @@ void FGAPIENTRY glutBitmapString( void* fontID, const unsigned char *string )
 /*
  * Returns the width in pixels of a font's character
  */
-int FGAPIENTRY glutBitmapWidth( void* fontID, int character )
+int glutBitmapWidth( void* fontID, int character )
 {
     SFG_Font* font;
     font = fghFontByID( fontID );
@@ -188,7 +188,7 @@ int FGAPIENTRY glutBitmapWidth( void* fontID, int character )
 /*
  * Return the width of a string drawn using a bitmap font
  */
-int FGAPIENTRY glutBitmapLength( void* fontID, const unsigned char* string )
+int glutBitmapLength( void* fontID, const unsigned char* string )
 {
     unsigned char c;
     int length = 0, this_line_length = 0;
@@ -218,7 +218,7 @@ int FGAPIENTRY glutBitmapLength( void* fontID, const unsigned char* string )
 /*
  * Returns the height of a bitmap font
  */
-int FGAPIENTRY glutBitmapHeight( void* fontID )
+int glutBitmapHeight( void* fontID )
 {
     SFG_Font* font;
     font = fghFontByID( fontID );
@@ -229,7 +229,7 @@ int FGAPIENTRY glutBitmapHeight( void* fontID )
 /*
  * Draw a stroke character
  */
-void FGAPIENTRY glutStrokeCharacter( void* fontID, int character )
+void glutStrokeCharacter( void* fontID, int character )
 {
     const SFG_StrokeChar *schar;
     const SFG_StrokeStrip *strip;
@@ -254,7 +254,7 @@ void FGAPIENTRY glutStrokeCharacter( void* fontID, int character )
     glTranslatef( schar->Right, 0.0, 0.0 );
 }
 
-void FGAPIENTRY glutStrokeString( void* fontID, const unsigned char *string )
+void glutStrokeString( void* fontID, const unsigned char *string )
 {
     unsigned char c;
     int i, j;
@@ -305,7 +305,7 @@ void FGAPIENTRY glutStrokeString( void* fontID, const unsigned char *string )
 /*
  * Return the width in pixels of a stroke character
  */
-int FGAPIENTRY glutStrokeWidth( void* fontID, int character )
+int glutStrokeWidth( void* fontID, int character )
 {
     const SFG_StrokeChar *schar;
     SFG_StrokeFont* font;
@@ -324,7 +324,7 @@ int FGAPIENTRY glutStrokeWidth( void* fontID, int character )
 /*
  * Return the width of a string drawn using a stroke font
  */
-int FGAPIENTRY glutStrokeLength( void* fontID, const unsigned char* string )
+int glutStrokeLength( void* fontID, const unsigned char* string )
 {
     unsigned char c;
     float length = 0.0;
@@ -359,7 +359,7 @@ int FGAPIENTRY glutStrokeLength( void* fontID, const unsigned char* string )
 /*
  * Returns the height of a stroke font
  */
-GLfloat FGAPIENTRY glutStrokeHeight( void* fontID )
+GLfloat glutStrokeHeight( void* fontID )
 {
     SFG_StrokeFont* font;
     font = fghStrokeByID( fontID );

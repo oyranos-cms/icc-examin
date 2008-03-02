@@ -25,7 +25,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include <GL/freeglut.h>
+//#include <GL/freeglut.h>
 #include "freeglut_internal.h"
 
 /*
@@ -64,7 +64,7 @@
 /*
  * Draws a wireframed cube. Code contributed by Andreas Umbach <marvin@dataway.ch>
  */
-void FGAPIENTRY glutWireCube( GLdouble dSize )
+void glutWireCube( GLdouble dSize )
 {
     double size = dSize * 0.5;
 
@@ -87,7 +87,7 @@ void FGAPIENTRY glutWireCube( GLdouble dSize )
 /*
  * Draws a solid cube. Code contributed by Andreas Umbach <marvin@dataway.ch>
  */
-void FGAPIENTRY glutSolidCube( GLdouble dSize )
+void glutSolidCube( GLdouble dSize )
 {
     double size = dSize * 0.5;
 
@@ -165,7 +165,7 @@ static void fghCircleTable(double **sint,double **cost,const int n)
 /*
  * Draws a solid sphere
  */
-void FGAPIENTRY glutSolidSphere(GLdouble radius, GLint slices, GLint stacks)
+void glutSolidSphere(GLdouble radius, GLint slices, GLint stacks)
 {
     int i,j;
 
@@ -252,7 +252,7 @@ void FGAPIENTRY glutSolidSphere(GLdouble radius, GLint slices, GLint stacks)
 /*
  * Draws a wire sphere
  */
-void FGAPIENTRY glutWireSphere(GLdouble radius, GLint slices, GLint stacks)
+void glutWireSphere(GLdouble radius, GLint slices, GLint stacks)
 {
     int i,j;
 
@@ -321,7 +321,7 @@ void FGAPIENTRY glutWireSphere(GLdouble radius, GLint slices, GLint stacks)
 /*
  * Draws a solid cone
  */
-void FGAPIENTRY glutSolidCone( GLdouble base, GLdouble height, GLint slices, GLint stacks )
+void glutSolidCone( GLdouble base, GLdouble height, GLint slices, GLint stacks )
 {
     int i,j;
 
@@ -407,7 +407,7 @@ void FGAPIENTRY glutSolidCone( GLdouble base, GLdouble height, GLint slices, GLi
 /*
  * Draws a wire cone
  */
-void FGAPIENTRY glutWireCone( GLdouble base, GLdouble height, GLint slices, GLint stacks)
+void glutWireCone( GLdouble base, GLdouble height, GLint slices, GLint stacks)
 {
     int i,j;
 
@@ -474,7 +474,7 @@ void FGAPIENTRY glutWireCone( GLdouble base, GLdouble height, GLint slices, GLin
 /*
  * Draws a solid cylinder
  */
-void FGAPIENTRY glutSolidCylinder(GLdouble radius, GLdouble height, GLint slices, GLint stacks)
+void glutSolidCylinder(GLdouble radius, GLdouble height, GLint slices, GLint stacks)
 {
     int i,j;
 
@@ -537,7 +537,7 @@ void FGAPIENTRY glutSolidCylinder(GLdouble radius, GLdouble height, GLint slices
 /*
  * Draws a wire cylinder
  */
-void FGAPIENTRY glutWireCylinder(GLdouble radius, GLdouble height, GLint slices, GLint stacks)
+void glutWireCylinder(GLdouble radius, GLdouble height, GLint slices, GLint stacks)
 {
     int i,j;
 
@@ -595,7 +595,7 @@ void FGAPIENTRY glutWireCylinder(GLdouble radius, GLdouble height, GLint slices,
 /*
  * Draws a wire torus
  */
-void FGAPIENTRY glutWireTorus( GLdouble dInnerRadius, GLdouble dOuterRadius, GLint nSides, GLint nRings )
+void glutWireTorus( GLdouble dInnerRadius, GLdouble dOuterRadius, GLint nSides, GLint nRings )
 {
   double  iradius = dInnerRadius, oradius = dOuterRadius, phi, psi, dpsi, dphi;
   double *vertex, *normal;
@@ -675,7 +675,7 @@ void FGAPIENTRY glutWireTorus( GLdouble dInnerRadius, GLdouble dOuterRadius, GLi
 /*
  * Draws a solid torus
  */
-void FGAPIENTRY glutSolidTorus( GLdouble dInnerRadius, GLdouble dOuterRadius, GLint nSides, GLint nRings )
+void glutSolidTorus( GLdouble dInnerRadius, GLdouble dOuterRadius, GLint nSides, GLint nRings )
 {
   double  iradius = dInnerRadius, oradius = dOuterRadius, phi, psi, dpsi, dphi;
   double *vertex, *normal;
@@ -750,7 +750,7 @@ void FGAPIENTRY glutSolidTorus( GLdouble dInnerRadius, GLdouble dOuterRadius, GL
 /*
  *
  */
-void FGAPIENTRY glutWireDodecahedron( void )
+void glutWireDodecahedron( void )
 {
 
   /* Magic Numbers:  It is possible to create a dodecahedron by attaching two pentagons to each face of
@@ -802,7 +802,7 @@ void FGAPIENTRY glutWireDodecahedron( void )
 /*
  *
  */
-void FGAPIENTRY glutSolidDodecahedron( void )
+void glutSolidDodecahedron( void )
 {
 
   /* Magic Numbers:  It is possible to create a dodecahedron by attaching two pentagons to each face of
@@ -854,7 +854,7 @@ void FGAPIENTRY glutSolidDodecahedron( void )
 /*
  *
  */
-void FGAPIENTRY glutWireOctahedron( void )
+void glutWireOctahedron( void )
 {
 
 #define RADIUS    1.0f
@@ -874,7 +874,7 @@ void FGAPIENTRY glutWireOctahedron( void )
 /*
  *
  */
-void FGAPIENTRY glutSolidOctahedron( void )
+void glutSolidOctahedron( void )
 {
 
 #define RADIUS    1.0f
@@ -916,7 +916,7 @@ static GLint tet_i[4][3] =  /* Vertex indices */
 /*
  *
  */
-void FGAPIENTRY glutWireTetrahedron( void )
+void glutWireTetrahedron( void )
 {
 
   glBegin( GL_LINE_LOOP ) ;
@@ -930,7 +930,7 @@ void FGAPIENTRY glutWireTetrahedron( void )
 /*
  *
  */
-void FGAPIENTRY glutSolidTetrahedron( void )
+void glutSolidTetrahedron( void )
 {
 
   glBegin( GL_TRIANGLES ) ;
@@ -953,7 +953,7 @@ int icos_v [20][3] = { { 0, 1, 2 }, { 0, 2, 3 }, { 0, 3, 4 }, { 0, 4, 5 }, { 0, 
                        { 1, 9, 8 }, { 2, 8, 7 }, { 3, 7, 6 }, { 4, 6, 10 }, { 5, 10, 9 },
                        { 11, 9, 10 }, { 11, 8, 9 }, { 11, 7, 8 }, { 11, 6, 7 }, { 11, 10, 6 } } ;
 
-void FGAPIENTRY glutWireIcosahedron( void )
+void glutWireIcosahedron( void )
 {
   int i ;
 
@@ -976,7 +976,7 @@ void FGAPIENTRY glutWireIcosahedron( void )
 /*
  *
  */
-void FGAPIENTRY glutSolidIcosahedron( void )
+void glutSolidIcosahedron( void )
 {
   int i ;
 
@@ -1014,7 +1014,7 @@ double rdod_n[12][3] = {
   {  0.353553390594,  0.353553390594, -0.5 }, { -0.353553390594,  0.353553390594, -0.5 }, { -0.353553390594, -0.353553390594, -0.5 }, {  0.353553390594, -0.353553390594, -0.5 }
   } ;
 
-void FGAPIENTRY glutWireRhombicDodecahedron( void )
+void glutWireRhombicDodecahedron( void )
 {
   int i ;
 
@@ -1034,7 +1034,7 @@ void FGAPIENTRY glutWireRhombicDodecahedron( void )
 /*
  *
  */
-void FGAPIENTRY glutSolidRhombicDodecahedron( void )
+void glutSolidRhombicDodecahedron( void )
 {
   int i ;
 
@@ -1052,7 +1052,7 @@ void FGAPIENTRY glutSolidRhombicDodecahedron( void )
   glEnd () ;
 }
 
-void FGAPIENTRY glutWireSierpinskiSponge ( int num_levels, GLdouble offset[3], GLdouble scale )
+void glutWireSierpinskiSponge ( int num_levels, GLdouble offset[3], GLdouble scale )
 {
   int i, j ;
 
@@ -1090,7 +1090,7 @@ void FGAPIENTRY glutWireSierpinskiSponge ( int num_levels, GLdouble offset[3], G
   }
 }
 
-void FGAPIENTRY glutSolidSierpinskiSponge ( int num_levels, GLdouble offset[3], GLdouble scale )
+void glutSolidSierpinskiSponge ( int num_levels, GLdouble offset[3], GLdouble scale )
 {
   int i, j ;
 

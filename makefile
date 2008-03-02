@@ -123,7 +123,9 @@ COMMON_CPPFILES = \
 	icc_utils.cpp \
 	icc_vrml.cpp \
 	icc_vrml_parser.cpp
-FREEGLUT_FILES = \
+FREEGLUT_HFILES = \
+	freeglut_internal.h
+FREEGLUT_CFILES = \
 	freeglut_stroke_mono_roman.c \
 	freeglut_stroke_roman.c \
 	freeglut_glutfont_definitions.c \
@@ -131,7 +133,7 @@ FREEGLUT_FILES = \
 	freeglut_font_data.c \
 	freeglut_geometry.c
 COMMON_CFILES = \
-	$(FREEGLUT_FILES)
+	$(FREEGLUT_CFILES)
 CFILES = \
 	$(COMMON_CFILES)
 CPPFILES = \
@@ -145,6 +147,7 @@ CXXFILES = \
 TEST = \
 	dE2000_test.cpp \
 	ciede2000testdata.h
+
 ALL_SOURCEFILES = \
 	$(COMMON_CFILES) \
 	$(COMMON_CPPFILES) \
@@ -153,6 +156,11 @@ ALL_SOURCEFILES = \
 	$(FLTK_CPPFILES) \
 	$(CXXFILES) \
 	$(TEST)
+
+ALL_HEADERFILES = \
+	$(CPP_HEADERS) \
+	$(FREEGLUT_HFILES)
+
 DOKU = \
 	TODO \
 	README \
@@ -164,7 +172,7 @@ FLUID = \
 	icc_betrachter.fl \
 	fl_oyranos.fl
 
-SOURCES = $(ALL_SOURCEFILES) $(CPP_HEADERS)
+SOURCES = $(ALL_SOURCEFILES) $(ALL_HEADERFILES)
 OBJECTS = $(CPPFILES:.cpp=.o) $(CXXFILES:.cxx=.o) $(CFILES:.c=.o)
 TARGET  = icc_examin
 
