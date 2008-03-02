@@ -87,30 +87,20 @@ Function {} {open C return_type int
   code {statlabel = (char*)calloc (sizeof (char), 1024);
   fullscreen = false;} {}
   Fl_Window details {
-    label {ICC Details} open
-    xywh {668 330 385 520} type Double box NO_BOX color 53
-    code0 {//browser = new openvrml::browser(cout, cerr);}
+    label {ICC Details} open selected
+    xywh {678 378 385 520} type Double box NO_BOX color 53
     code1 {DBG
     if (argc>1) {
-//      std::vector<std::string> url;
-//      std::vector<std::string> param;
 
-      if (/*browser &&*/ argc>1) {
-//        url.push_back (argv[1]);
-//        browser->load_url(url, param);
+      if (argc>1) {
+
         sprintf (statlabel, "%s geladen", argv[1]);
         stat->label(statlabel);
         filename_alt = argv[1];
       } else {
         stat->label("Error loading file!");
       }
-    } // if}
-    code2 {DBG
-//    browser->add_world_changed_callback( worldChangedCB );
-//    worldChangedCB( openvrml::browser::replace_world_id );}
-    code3 {DBG
-//    viewer = new ViewerFLTK( *browser, canvas );
-//    canvas->setViewerPtr( viewer );} xclass Fl_Window visible
+    }} xclass Fl_Window visible
   } {
     Fl_Group {} {open
       xywh {0 0 385 520}
@@ -468,8 +458,7 @@ class TagBrowser {open : {public Fl_Hold_Browser}
                                   profile.getTagText (item) ); cout << "vcgt "; DBG
     }
     selectedTagName = TagInfo[0];
-  }DBG} {selected
-    }
+  }DBG} {}
   }
 } 
 
@@ -588,13 +577,6 @@ class MftChoice {open : {public Fl_Choice}
     }
 
     mft_choice->value( gewaehlter_eintrag );
-
-    if ( strstr (typ,"mft2") != 0 ) {
-    } else if ( strstr (typ, "mft1") != 0 ) {
-      //mft_text->hinein ( (profile.getTagText (tag_nummer))[0] ); DBG
-      //zeig_mich (mft_text);
-    }
-
 
   zeig_mich (this);
   auswahl_cb();} {}

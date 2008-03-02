@@ -14,26 +14,24 @@
 #include <fstream>
 #include "icc_utils.h"
 
+#include <lcms.h> // für it8 E/A
+
 
 // Zusätze - nicht definiert in icc34.h
 
 #define icSigChromaticityType 0x6368726D
 
 
-//using namespace std;
-
 // interne Funktionen
 
 const char* cp_nchar (char* text, int n);
+
 
 /**
   *   @brief interne ICC Profilstruktur
   **/
 
-class ICCprofile;
-class ICCheader;
-class ICCtag;
-
+// definiert in icc_helfer.cpp
 unsigned int            icValue   (icUInt16Number val);
 unsigned int            icValue   (icUInt32Number val);
 unsigned long           icValue   (icUInt64Number val);
@@ -56,6 +54,7 @@ std::vector<std::string> getChannelNames( icColorSpaceSignature color);
 std::string         getDeviceClassName  ( icProfileClassSignature cl);
 std::string         getPlatformName     ( icPlatformSignature platform);
 std::string         getSigTagName( icTagSignature  sig );
+std::string         getSigTagDescription( icTagSignature  sig );
 std::string         getSigTypeName( icTagTypeSignature  sig );
 std::string         getSigTechnology( icTechnologySignature sig );
 std::string         getIlluminant( icIlluminant illu );
@@ -63,6 +62,12 @@ std::string         getStandardObserver( icStandardObserver obsv );
 std::string         getMeasurementGeometry( icMeasurementGeometry measgeo );
 std::string         getMeasurementFlare( icMeasurementFlare flare );
 
+class ICCprofile;
+class ICCheader;
+class ICCtag;
+class ICCmeasurement;
+
+// definiert in icc_profile.cpp
 class ICCheader {
   public:
                         ICCheader (); 
@@ -109,6 +114,8 @@ class ICCheader {
 };
 
 class ICCtag {
+    friend class ICCmeasurement;
+
   public:
                         ICCtag             ();
                         ICCtag             (ICCprofile* profil,
@@ -129,15 +136,14 @@ class ICCtag {
     void                load (ICCprofile* profil ,icTag* tag, char* data);
   public:
     std::string         getTagName()       {return getSigTagName (_sig); }
-    std::string         getTypName()       {//cout << _data << " " ; DBG
-                                            icTagTypeSignature sig =
+    std::string         getInfo()          {return getSigTagDescription(_sig); }
+    std::string         getTypName()       {icTagTypeSignature sig =
                                             ((icTagBase*)_data) ->
                                             sig;
                                             return getSigTypeName(
                                               (icTagTypeSignature)icValue(sig));
                                            }
     int                 getSize()          {return _size; }
-    std::string         getMore();
 
     std::vector<double> getCIEXYZ();
     std::vector<double> getCurve();
@@ -155,10 +161,56 @@ class ICCtag {
     std::vector<std::string> getText (MftChain typ);
     std::vector<std::string> getDescription();
     std::string         getVrml();
-//    void                printLut           (   LPLUT           Lut,
-//                                               int             sig);
 };
 
+
+// definiert in icc_measurement.cpp
+class ICCmeasurement {
+  public:
+                        ICCmeasurement     ();
+                        ICCmeasurement     (ICCprofile* profil , ICCtag& tag);
+                        ICCmeasurement     (ICCprofile* profil,
+                                            icTag& tag, char* data);
+                        ~ICCmeasurement    ();
+  private:
+    void                init_meas (void);
+    icTagSignature      _sig;
+    int                 _size;
+    char*               _data;
+
+    LCMSHANDLE          _lcms_it8;
+    int                 _nFelder;    
+
+    ICCprofile*         _profil;
+
+  public:
+    void                load (ICCprofile* profil , ICCtag& tag);
+    void                load (ICCprofile* profil , char *data, size_t size);
+  public:
+    std::string         getTagName()       {return getSigTagName (_sig); }
+    std::string         getInfo()          {return getSigTagDescription(_sig); }
+    std::string         getTypName()       {icTagTypeSignature sig =
+                                            ((icTagBase*)_data) ->
+                                            sig;
+                                            return getSigTypeName(
+                                              (icTagTypeSignature)icValue(sig));
+                                           }
+    int                 getSize()          {return _size; }
+    int                 getPatchCount()    {return (int)cmsIT8GetPropertyDbl(
+                                            _lcms_it8, "NUMBER_OF_SETS"); }
+    int                 getTableCount()    {return cmsIT8TableCount(_lcms_it8);}
+    int                 getSampleCount()   {return _nFelder; }
+
+    std::vector<double> getCIEXYZ(int patch);
+    std::vector<double> getColor (int patch);
+
+    std::vector<std::string> getText ();
+    std::vector<std::string> getText (int patch);
+    std::vector<std::string> getDescription();
+};
+
+
+// definiert in icc_profile.cpp
 class ICCprofile {
   friend class ICCtag;
   public:
@@ -181,6 +233,7 @@ class ICCprofile {
 
     ICCheader           header;
     std::vector<ICCtag> tags;
+    ICCmeasurement      measurement;
     void                write_tagList(std::stringstream);
 
   public: // Informationen
@@ -215,6 +268,8 @@ class ICCprofile {
                                            int    size);
     int                 checkProfileDevice (char* type,
                                            icProfileClassSignature deviceClass);
+
+    bool                hasMeasurement () {return getTagByName("targ"); }
 };
 
 

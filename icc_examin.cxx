@@ -225,28 +225,18 @@ int main(int argc, char **argv) {
       }
       o->end();
     }
-    //browser = new openvrml::browser(cout, cerr);
     DBG
     if (argc>1) {
-//      std::vector<std::string> url;
-//      std::vector<std::string> param;
 
-      if (/*browser &&*/ argc>1) {
-//        url.push_back (argv[1]);
-//        browser->load_url(url, param);
+      if (argc>1) {
+
         sprintf (statlabel, "%s geladen", argv[1]);
         stat->label(statlabel);
         filename_alt = argv[1];
       } else {
         stat->label("Error loading file!");
       }
-    } // if
-    DBG
-//    browser->add_world_changed_callback( worldChangedCB );
-//    worldChangedCB( openvrml::browser::replace_world_id );
-    DBG
-//    viewer = new ViewerFLTK( *browser, canvas );
-//    canvas->setViewerPtr( viewer );
+    }
     o->end();
   }
   w->resizable(tag_text);
@@ -577,13 +567,6 @@ void MftChoice::profil_tag(int _tag) {
     }
 
     mft_choice->value( gewaehlter_eintrag );
-
-    if ( strstr (typ,"mft2") != 0 ) {
-    } else if ( strstr (typ, "mft1") != 0 ) {
-      //mft_text->hinein ( (profile.getTagText (tag_nummer))[0] ); DBG
-      //zeig_mich (mft_text);
-    }
-
 
   zeig_mich (this);
   auswahl_cb();

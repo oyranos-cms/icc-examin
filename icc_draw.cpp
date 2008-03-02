@@ -424,8 +424,12 @@ void draw_kurve    (int X, int Y, int W, int H,
       fl_color(FL_WHITE);
     } else if (name == _("Leuchtdichte Y")) {
       fl_color(FL_WHITE);
+    } else if (name == _("CIE X")) {
+      fl_color(FL_MAGENTA);
     } else if (name == _("CIE Y (Leuchtdichte)")) {
       fl_color(FL_WHITE);
+    } else if (name == _("CIE Z")) {
+      fl_color(FL_BLUE);
     } else if (name == _("Helligkeit")) {
       fl_color(FL_WHITE);
     } else if (name == _("Wert")) {
