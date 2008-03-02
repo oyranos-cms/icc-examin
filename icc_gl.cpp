@@ -761,70 +761,79 @@ GL_Ansicht::netzeAuffrischen()
        double abstand;
        for( j = 0; j < dreiecks_netze.size(); j++ )
        {
-           // ich hoffe das dauert nicht zu lange
-         netz.punkte. insert( netz.punkte.begin()+punkte_n ,
-                              dreiecks_netze[j].punkte.begin(),
-                              dreiecks_netze[j].punkte.end()    );
-           // den Punkten im neuen Netz die Transparenz zuweisen
-         for( k = punkte_n; k < netz.punkte.size(); ++k) {
-           netz.punkte[k].farbe[3] = dreiecks_netze[j].transparenz;
-           netz.punkte[k].koord[1] *= a_darstellungs_breite;
-           netz.punkte[k].koord[2] *= b_darstellungs_breite;
-         }
-
-         std::multimap<double,DreiecksIndexe>::const_iterator it;
-         for( it = dreiecks_netze[j].indexe.begin();
-                it != dreiecks_netze[j].indexe.end(); ++it )
+         double schattierung = .93 - .8/dreiecks_netze.size()*j;
+         if(dreiecks_netze[j].aktiv && dreiecks_netze[j].transparenz)
          {
-             // die Indexe werden gesondert eingefügt, um sie neu zu zählen
-     /*A*/ std::pair<double,DreiecksIndexe>
-                          index_p( *it );
-     /*B*/ for( k = 0; k < 3; ++k)
-             index_p.second.i[k] += punkte_n;
-     /*C*/
-           #if 0
-             // das wird der Mittelpunkt des umschließenden Quaders
-           abstand =
-              ( HYP3(netz.punkte[index_p.second.i[0]].koord[0]+Y,
-                     netz.punkte[index_p.second.i[0]].koord[1]+Z,
-                     netz.punkte[index_p.second.i[0]].koord[2]-X)
-              + HYP3(netz.punkte[index_p.second.i[1]].koord[0]+Y,
-                     netz.punkte[index_p.second.i[1]].koord[1]+Z,
-                     netz.punkte[index_p.second.i[1]].koord[2]-X)
-              + HYP3(netz.punkte[index_p.second.i[2]].koord[0]+Y,
-                     netz.punkte[index_p.second.i[2]].koord[1]+Z,
-                     netz.punkte[index_p.second.i[2]].koord[2]-X)
-              ) / 3.0;
-           #else
-             // Mittelpunkt des Dreiecks
-           double seitenhalbierende[3];
-           seitenhalbierende[0] =
-                  (  (netz.punkte[index_p.second.i[0]].koord[0]+Y)
-                   + (netz.punkte[index_p.second.i[1]].koord[0]+Y))/2.0;
-           seitenhalbierende[1] =
-                  (  (netz.punkte[index_p.second.i[0]].koord[1]+Z)
-                   + (netz.punkte[index_p.second.i[1]].koord[1]+Z))/2.0;
-           seitenhalbierende[2] =
-                  (  (netz.punkte[index_p.second.i[0]].koord[2]-X)
-                   + (netz.punkte[index_p.second.i[1]].koord[2]-X))/2.0;
-           double mittelpunkt[3];
-           mittelpunkt[0] = (  2.0 * seitenhalbierende[0]
-                              + netz.punkte[index_p.second.i[2]].koord[0]+Y)
-                            / 3.0;
-           mittelpunkt[1] = (  2.0 * seitenhalbierende[1]
-                              + netz.punkte[index_p.second.i[2]].koord[1]+Z)
-                            / 3.0;
-           mittelpunkt[2] = (  2.0 * seitenhalbierende[2]
-                              + netz.punkte[index_p.second.i[2]].koord[2]-X)
-                            / 3.0;
-           abstand = HYP3( mittelpunkt[0], mittelpunkt[1], mittelpunkt[2] );
-           #endif  
-           index_p.first = abstand;
-             // der Behälter std::map übernimmt die Sortierung
-     /*D*/ netz.indexe.insert(index_p);
+             // ich hoffe das dauert nicht zu lange
+           netz.punkte. insert( netz.punkte.begin()+punkte_n ,
+                                dreiecks_netze[j].punkte.begin(),
+                                dreiecks_netze[j].punkte.end()    );
+             // den Punkten im neuen Netz die Transparenz zuweisen
+           for( k = punkte_n; k < netz.punkte.size(); ++k) {
+             if(dreiecks_netze[j].grau) {
+               netz.punkte[k].farbe[0] = schattierung;
+               netz.punkte[k].farbe[1] = schattierung;
+               netz.punkte[k].farbe[2] = schattierung;
+             }
+             netz.punkte[k].farbe[3] = dreiecks_netze[j].transparenz;
+             netz.punkte[k].koord[1] *= a_darstellungs_breite;
+             netz.punkte[k].koord[2] *= b_darstellungs_breite;
+           }
+
+           std::multimap<double,DreiecksIndexe>::const_iterator it;
+           for( it = dreiecks_netze[j].indexe.begin();
+                it != dreiecks_netze[j].indexe.end(); ++it )
+           {
+               // die Indexe werden gesondert eingefügt, um sie neu zu zählen
+       /*A*/ std::pair<double,DreiecksIndexe>
+                            index_p( *it );
+       /*B*/ for( k = 0; k < 3; ++k)
+               index_p.second.i[k] += punkte_n;
+       /*C*/
+             #if 0
+               // das wird der Mittelpunkt des umschließenden Quaders
+             abstand =
+                ( HYP3(netz.punkte[index_p.second.i[0]].koord[0]+Y,
+                       netz.punkte[index_p.second.i[0]].koord[1]+Z,
+                       netz.punkte[index_p.second.i[0]].koord[2]-X)
+                + HYP3(netz.punkte[index_p.second.i[1]].koord[0]+Y,
+                       netz.punkte[index_p.second.i[1]].koord[1]+Z,
+                       netz.punkte[index_p.second.i[1]].koord[2]-X)
+                + HYP3(netz.punkte[index_p.second.i[2]].koord[0]+Y,
+                       netz.punkte[index_p.second.i[2]].koord[1]+Z,
+                       netz.punkte[index_p.second.i[2]].koord[2]-X)
+                ) / 3.0;
+             #else
+               // Mittelpunkt des Dreiecks
+             double seitenhalbierende[3];
+             seitenhalbierende[0] =
+                    (  (netz.punkte[index_p.second.i[0]].koord[0]+Y)
+                     + (netz.punkte[index_p.second.i[1]].koord[0]+Y))/2.0;
+             seitenhalbierende[1] =
+                    (  (netz.punkte[index_p.second.i[0]].koord[1]+Z)
+                     + (netz.punkte[index_p.second.i[1]].koord[1]+Z))/2.0;
+             seitenhalbierende[2] =
+                    (  (netz.punkte[index_p.second.i[0]].koord[2]-X)
+                     + (netz.punkte[index_p.second.i[1]].koord[2]-X))/2.0;
+             double mittelpunkt[3];
+             mittelpunkt[0] = (  2.0 * seitenhalbierende[0]
+                                + netz.punkte[index_p.second.i[2]].koord[0]+Y)
+                              / 3.0;
+             mittelpunkt[1] = (  2.0 * seitenhalbierende[1]
+                                + netz.punkte[index_p.second.i[2]].koord[1]+Z)
+                              / 3.0;
+             mittelpunkt[2] = (  2.0 * seitenhalbierende[2]
+                                + netz.punkte[index_p.second.i[2]].koord[2]-X)
+                              / 3.0;
+             abstand = HYP3( mittelpunkt[0], mittelpunkt[1], mittelpunkt[2] );
+             #endif  
+             index_p.first = abstand;
+               // der Behälter std::map übernimmt die Sortierung
+       /*D*/ netz.indexe.insert(index_p);
+           }
+             // neue Basis für Indexnummern
+           punkte_n += dreiecks_netze[j].punkte.size();
          }
-           // neue Basis für Indexnummern
-         punkte_n += dreiecks_netze[j].punkte.size();
        }
       glPopMatrix();
 
@@ -862,7 +871,6 @@ GL_Ansicht::netzeAuffrischen()
       glTranslatef( -b_darstellungs_breite/2, -.5, -a_darstellungs_breite/2 );
 
       
-      glColor3f(0.9, 0.9, 0.9);
       DBG_ICCGL_V( netz.indexe.size() <<" "<< netz.punkte.size() )
 
 #if 1
@@ -969,7 +977,7 @@ GL_Ansicht::punkteAuffrischen()
              i%6 == 0)
           {
             glLineWidth(2.0*strichmult);
-            glColor4f(1., 1., 1., 1.0 );
+            glColor4f(.97, .97, .97, 1. );
             glBegin(GL_LINES);
               glVertex3f(0, 0, 0);
               glColor4f(1., .6, .6, 1.0 );

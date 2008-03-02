@@ -304,7 +304,7 @@ inline void ICCfltkBetrachter::cb_menueintrag_3D_i(Fl_Menu_* o, void*) {
   if (m->value()) {
     //icc_examin->histogram();
   }
-  icc_examin->neuzeichnen(DD_histogram);
+  icc_examin->neuzeichnen(icc_examin->icc_betrachter->DD_histogram);
 }
 void ICCfltkBetrachter::cb_menueintrag_3D(Fl_Menu_* o, void* v) {
   ((ICCfltkBetrachter*)(o->parent()->parent()->user_data()))->cb_menueintrag_3D_i(o,v);

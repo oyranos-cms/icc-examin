@@ -86,7 +86,7 @@ ICCexamin::start (int argc, char** argv)
 
   icc_betrachter->mft_gl->init(1);
   icc_betrachter->DD_histogram->init(2);
-  icc_waehler_ = new  ICCwaehler(485, 186, _("Ansichtsw\212hler"));
+  icc_waehler_ = new  ICCwaehler(485, 186, _("Ansichtsw\344hler"));
   if(!icc_waehler_) WARN_S( _("icc_waehler_ nicht reservierbar") )
   icc_waehler_->hide();
 
@@ -148,15 +148,26 @@ ICCexamin::oeffnen (std::vector<std::string> dateinamen)
   frei_ = false;
   icc_betrachter->DD_histogram->punkte_clear();
   bool weiter = profile.oeffnen(dateinamen);
-  if (weiter) { DBG_PROG
-    icc_betrachter->tag_browser->reopen ();
+  if (weiter)
+  {
+    DBG_PROG
+      // Oberflächenpflege
+    if(!icc_betrachter->DD_histogram->visible() &&
+       !icc_betrachter->inspekt_html->visible() )
+      icc_betrachter->tag_browser->reopen ();
+    else if(icc_betrachter->DD_histogram->visible() &&
+            !icc_betrachter->inspekt_html->visible() )
+      icc_betrachter->DD_histogram->flush();
+
     icc_betrachter->measurement( profile.profil()->hasMeasurement() );
     if(profile.profil()->hasTagName("ncl2"))
     {
+        // Oberflächenpflege
       icc_betrachter->DD_histogram->show();
       icc_waehler_->show();
       icc_betrachter->menueintrag_3D->set();
       histogram_angezeigt_ = true;
+
       profile.oeffnen(icc_oyranos.moni(),-1);
       profile.oeffnen(icc_oyranos.cmyk(),-1);
     }
@@ -227,7 +238,7 @@ ICCexamin::oeffnen (std::vector<std::string> dateinamen)
         break;
       }
       transparenz = icc_betrachter->DD_histogram->dreiecks_netze[i].transparenz;
-      DBG_PROG
+      DBG_PROG_V( transparenz )
       grau = icc_betrachter->DD_histogram->dreiecks_netze[i].grau;
       icc_waehler_->push_back(name, transparenz, grau , aktiv[i]);
     }
@@ -660,7 +671,8 @@ ICCexamin::histogram (int n)
     if((n == 0 &&
         profile[0]->getTagByName("ncl2") >= 0 )
     || (n == 1 &&
-        profile[0]->getTagByName("ncl2") >= 0  ) )
+        profile[0]->getTagByName("ncl2") >= 0  )
+    || profile.size() == 1 )
     {
       netz[n].transparenz = 0.7;
       netz[n].grau = false;
@@ -672,7 +684,8 @@ ICCexamin::histogram (int n)
     icc_betrachter->DD_histogram->dreiecks_netze[n] = netz[n];
     icc_betrachter->DD_histogram->achsNamen( texte );
     //icc_betrachter->DD_histogram->draw();
-  }
+  } else
+    icc_betrachter->DD_histogram->dreiecks_netze[n].transparenz = 1.0;
 
 
   frei_ = true;
@@ -685,13 +698,14 @@ ICCexamin::histogram ()
   DBG_PROG_START
   frei_ = false;
 
+
   for(int i = 0; i < profile.size(); ++i)
     histogram(i);
 
-  if(icc_betrachter->DD_histogram -> dreiecks_netze.size())
+  /*if(icc_betrachter->DD_histogram -> dreiecks_netze.size())
     icc_betrachter->DD_histogram ->
       dreiecks_netze [icc_betrachter->DD_histogram->dreiecks_netze.size()-1]
-        . transparenz = 0.7;
+        . transparenz = 0.7;*/
 
   DBG_PROG_V( profile.size() )
 
@@ -891,6 +905,7 @@ ICCexamin::neuzeichnen (void* z)
     icc_betrachter->DD_histogram->hide();
     histogram_angezeigt_ = false;
     icc_waehler_->iconize();
+    WARN_S( "icc_waehler_->iconize();" )
 
     if(!icc_betrachter->menueintrag_inspekt->value()) {
       waehleTag(_item);
