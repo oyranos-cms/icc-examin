@@ -52,7 +52,7 @@ icc_examin_ns::ThreadDaten::frei(int freigeben)
       if(pth == pth_alt)
       {
         WARN_S( (intptr_t)pth << " request from same thread" )
-        continue;
+        break;
       }
       icc_examin_ns::sleep(0.01);
     }

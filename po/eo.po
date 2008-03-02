@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2006-12-29 20:17+0100\n"
+"POT-Creation-Date: 2006-12-29 21:01+0100\n"
 "PO-Revision-Date: 2005-08-13 17:35+0200\n"
 "Last-Translator: Kai-Uwe Behrmann\n"
 "Language-Team:  <eo@li.org>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: KBabel 1.9\n"
 
-#: agviewer.cpp:313 icc_gl.cpp:2667 icc_gl.cpp:2686 icc_gl.cpp:2805
+#: agviewer.cpp:313 icc_gl.cpp:2668 icc_gl.cpp:2687 icc_gl.cpp:2806
 msgid "left-/middle-/right mouse button -> rotate/cut/menu"
 msgstr ""
 
@@ -25,8 +25,8 @@ msgstr ""
 msgid "Pause"
 msgstr ""
 
-#: agviewer.cpp:350 agviewer.cpp:358 icc_gl.cpp:2771 icc_gl.cpp:2782
-#: icc_gl.cpp:2787 icc_gl.cpp:2792
+#: agviewer.cpp:350 agviewer.cpp:358 icc_gl.cpp:2772 icc_gl.cpp:2783
+#: icc_gl.cpp:2788 icc_gl.cpp:2793
 msgid "left mouse button -> go back"
 msgstr ""
 
@@ -189,18 +189,18 @@ msgstr ""
 msgid "Value"
 msgstr ""
 
-#: icc_draw.cpp:692 icc_examin_farbraum.cpp:211 icc_examin_io.cpp:216
+#: icc_draw.cpp:692 icc_examin_farbraum.cpp:211 icc_examin_io.cpp:215
 #: icc_helfer.cpp:401 icc_helfer.cpp:404
 msgid "CIE *L"
 msgstr ""
 
-#: icc_draw.cpp:694 icc_examin_farbraum.cpp:212 icc_examin_io.cpp:217
+#: icc_draw.cpp:694 icc_examin_farbraum.cpp:212 icc_examin_io.cpp:216
 #: icc_gl.cpp:1086 icc_gl.cpp:1160 icc_gl.cpp:1186 icc_gl.cpp:1194
 #: icc_helfer.cpp:402
 msgid "CIE *a"
 msgstr ""
 
-#: icc_draw.cpp:696 icc_examin_farbraum.cpp:213 icc_examin_io.cpp:218
+#: icc_draw.cpp:696 icc_examin_farbraum.cpp:213 icc_examin_io.cpp:217
 #: icc_gl.cpp:1099 icc_gl.cpp:1202 icc_gl.cpp:1222 icc_gl.cpp:1229
 #: icc_helfer.cpp:403
 msgid "CIE *b"
@@ -296,43 +296,43 @@ msgstr ""
 msgid "RGB Ergebnis nicht verfuegbar"
 msgstr ""
 
-#: icc_examin_io.cpp:224
+#: icc_examin_io.cpp:223
 msgid "kein Netz gefunden in VRML Datei"
 msgstr ""
 
-#: icc_examin_io.cpp:239
+#: icc_examin_io.cpp:238
 msgid "Anzahl gabs schon mal"
 msgstr ""
 
-#: icc_examin_io.cpp:261
+#: icc_examin_io.cpp:260
 msgid "Kein Netz gefunden. Ist Argyll installiert?"
 msgstr ""
 
-#: icc_examin_io.cpp:420
+#: icc_examin_io.cpp:419
 msgid "Stop loading "
 msgstr ""
 
-#: icc_examin_io.cpp:515
+#: icc_examin_io.cpp:514
 msgid "HTML Documents (*.htm*)"
 msgstr ""
 
-#: icc_examin_io.cpp:519 icc_betrachter.cxx:499
+#: icc_examin_io.cpp:518 icc_betrachter.cxx:499
 msgid "Save Report"
 msgstr ""
 
-#: icc_examin_io.cpp:590
+#: icc_examin_io.cpp:589
 msgid "ICC colour profiles (*.ic*)"
 msgstr ""
 
-#: icc_examin_io.cpp:591 icc_betrachter.cxx:500
+#: icc_examin_io.cpp:590 icc_betrachter.cxx:500
 msgid "Save Gamut as Profile"
 msgstr ""
 
-#: icc_examin_io.cpp:593
+#: icc_examin_io.cpp:592
 msgid "VRML Files (*.wrl)"
 msgstr ""
 
-#: icc_examin_io.cpp:594 icc_betrachter.cxx:501
+#: icc_examin_io.cpp:593 icc_betrachter.cxx:501
 msgid "Save Gamut as VRML"
 msgstr ""
 
@@ -455,11 +455,11 @@ msgstr ""
 msgid "Illustration"
 msgstr ""
 
-#: icc_gl.cpp:2396
+#: icc_gl.cpp:2397
 msgid "Pos"
 msgstr ""
 
-#: icc_gl.cpp:2480 icc_profile_tags.cpp:302
+#: icc_gl.cpp:2481 icc_profile_tags.cpp:302
 msgid "Channel"
 msgstr "kanalo"
 

@@ -2219,6 +2219,7 @@ GL_Ansicht::zeichnen()
     valid_ = true;
   }
 
+  if(!frei()) return;
   frei(false);
 
   zeit_ = icc_examin_ns::zeitSekunden();
