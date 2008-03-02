@@ -61,7 +61,9 @@ decl {\#define _(text) text} {public
 decl {\#define status(_texte) {std::stringstream s; s << _texte; box_stat->label(s.str().c_str());}} {public
 } 
 
-decl {\#include "icc_draw.h"} {} 
+decl {\#include "icc_draw.h"
+\#include "icc_oyranos.h"} {selected
+} 
 
 decl {\#include "icc_profile.h"
 \#include "icc_utils.h"
@@ -143,7 +145,7 @@ declblock {\#ifdef HAVE_FLU} {after {\#endif}
   }
 } 
 
-Function {} {C return_type int
+Function {} {open C return_type int
 } {
   code DBG_PROG_START {}
   code {statlabel = (char*)calloc (sizeof (char), 1024);
@@ -236,8 +238,8 @@ Function {} {C return_type int
     }
   }
   Fl_Window details {
-    label {ICC Details}
-    xywh {802 367 385 520} type Double box NO_BOX color 53
+    label {ICC Details} open
+    xywh {746 157 385 520} type Double box NO_BOX color 53
     code1 {DBG_PROG
 
     if (argc>1) {
@@ -333,6 +335,77 @@ Function {} {C return_type int
           }
         }
         submenu {} {
+          label Bearbeiten open
+          xywh {25 25 100 20}
+        } {
+          menuitem {} {
+            label p
+            callback {open(true)}
+            xywh {25 25 100 20}
+          }
+          menuitem {} {
+            label c
+            callback {DBG_PROG_START
+  std::string filename = filenamen_alt[0];  DBG_PROG_V( filename )
+
+  std::string::size_type pos=0;
+  if ((pos = filename.find_last_of(".", filename.size())) != std::string::npos) { DBG_PROG
+    filename.replace (pos, 5, ".html"); DBG_NUM_S( ".html gesetzt" )
+  } DBG_PROG_V( filename )
+  DBG_PROG_V( dateiwahl->filter() )
+
+  std::string muster = dateiwahl->filter(); DBG_PROG
+  std::string datei;
+  if (dateiwahl->value())
+    datei = dateiwahl->value(); DBG_PROG
+  std::string titel = dateiwahl->label(); DBG_PROG
+
+  dateiwahl->filter(_("HTML Dokumente (*.htm*)")); DBG_PROG
+  \#ifdef HAVE_FLU
+  dateiwahl->cd(".");
+  \#endif
+  dateiwahl->label(_("Bericht Speichern")); DBG_PROG
+  dateiwahl->value(filename.c_str()); DBG_PROG
+
+  dateiwahl->show(); DBG_PROG
+  while( dateiwahl->shown() )
+    Fl::wait( 0.01 );
+
+  DBG_PROG_V( dateiwahl->filter() )
+  if (dateiwahl->value())
+    filename = dateiwahl->value();
+  else
+    filename = "";
+  DBG_PROG
+
+  dateiwahl->filter(muster.c_str()); DBG_PROG
+  dateiwahl->value(datei.c_str()); DBG_PROG
+  dateiwahl->label(titel.c_str()); DBG_PROG
+  DBG_PROG_V( dateiwahl->filter() )
+
+  DBG_PROG_V( filename )
+
+  if (dateiwahl->count() == 0 || filename != "" || filename == filenamen_alt[0]) {
+    load_progress->hide ();
+    return;
+  }
+
+  std::string bericht = profile[0].report();
+
+  std::ofstream f ( filename.c_str(),  std::ios::out );
+  f.write ( bericht.c_str(), bericht.size() );
+  f.close();
+
+  DBG_PROG_ENDE}
+            xywh {10 10 100 20} deactivate divider
+          }
+          menuitem {} {
+            label Voreinstellungen
+            callback {voreinstellungen()}
+            xywh {25 25 100 20}
+          }
+        }
+        submenu {} {
           label Ansicht open
           xywh {15 15 100 20} divider
         } {
@@ -354,10 +427,9 @@ Function {} {C return_type int
   }}
             xywh {15 15 100 20} shortcut 0x40076
           }
-        }
-        menuitem menueintrag_inspekt {
-          label {Prüfansicht}
-          callback {Fl_Menu_* mw = (Fl_Menu_*)o;
+          menuitem menueintrag_inspekt {
+            label {Prüfansicht}
+            callback {Fl_Menu_* mw = (Fl_Menu_*)o;
   const Fl_Menu_Item* m = mw->mvalue();
 
   DBG_PROG_S (m->value())
@@ -372,11 +444,11 @@ Function {} {C return_type int
     examin->show();
     inspekt_topline = inspekt_html->topline();
   }}
-          tooltip {Mess- und Profilwerte bildlich und in Zahlen dargestellt; Ctrl+b} xywh {30 30 100 20} type Toggle shortcut 0x40062 deactivate
-        }
-        menuitem menueintrag_3D {
-          label {3D Ansicht}
-          callback {Fl_Menu_* mw = (Fl_Menu_*)o;
+            tooltip {Mess- und Profilwerte bildlich und in Zahlen dargestellt; Ctrl+b} xywh {40 40 100 20} type Toggle shortcut 0x40062 deactivate
+          }
+          menuitem menueintrag_3D {
+            label {3D Ansicht}
+            callback {Fl_Menu_* mw = (Fl_Menu_*)o;
   const Fl_Menu_Item* m = mw->mvalue();
 
   DBG_PROG_S (m->value())
@@ -391,7 +463,8 @@ Function {} {C return_type int
     examin->show();
     inspekt_topline = inspekt_html->topline();
   }}
-          tooltip {Mess- und Profilwerte bildlich und in Zahlen dargestellt; Ctrl+b} xywh {40 40 100 20} type Toggle shortcut 0x40062 divider
+            tooltip {Mess- und Profilwerte bildlich und in Zahlen dargestellt; Ctrl+b} xywh {50 50 100 20} type Toggle shortcut 0x40062 divider
+          }
         }
         submenu menu_hilfe {
           label Hilfe open
@@ -420,7 +493,7 @@ ueber_html->value(getUeberHtml().c_str());}
         Fl_Browser tag_browser {
           label {Bitte wählen Sie ein Profilmerkmal aus}
           callback {o->select_item( o->value() );}
-          xywh {0 25 385 135} color 53 align 17
+          xywh {0 25 385 135} color 53 align 17 textcolor 32
           code0 {int lines = tag_browser->size();}
           code1 {cout << lines << endl; DBG_PROG}
           class TagBrowser
@@ -446,7 +519,7 @@ ueber_html->value(getUeberHtml().c_str());}
             }
             Fl_Browser mft_text {
               label {Der Text}
-              xywh {0 185 385 310} color 53 align 18
+              xywh {0 185 385 310} color 53 align 18 textcolor 32
               code0 {o->show();}
               class TagTexts
             }
@@ -468,7 +541,7 @@ ueber_html->value(getUeberHtml().c_str());}
           }
           Fl_Browser tag_text {
             label {Der Text}
-            xywh {0 160 385 335} color 53 align 18
+            xywh {0 160 385 335} color 53 align 18 textcolor 32
             code0 {o->show();}
             class TagTexts
           }
@@ -827,7 +900,7 @@ class TagTexts {: {public Fl_Hold_Browser}
 class TagDrawings {open : {public Fl_Widget}
 } {
   decl {int X; int Y; int W; int H; std::vector<std::string>texte; std::vector<double>punkte; std::vector<std::vector<double> >kurven;} {}
-  decl {int wiederholen;} {selected public
+  decl {int wiederholen;} {public
   }
   Function {TagDrawings(int X,int Y,int W,int H) : Fl_Widget(X,Y,W,H), X(X), Y(Y), W(W), H(H)} {open
   } {}

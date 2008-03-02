@@ -2,3 +2,7 @@
 	* neu: binär/ascii Darstellung unbekannter Inhalte
 	* neu: tag mluc - mehrsprachige Beschreibungen
 	* neu: tag chad - Farbanpassungsmatrix
+	* fix: Speicherfreigabe bei CIExy
+2004/11/25
+	* neu: Start oyranos Integration (Konfiguration)
+	* neu: Menüs neu ordnen

@@ -10,6 +10,7 @@ static char *statlabel;
   int inspekt_topline;
  int tag_nummer;
 #include "icc_draw.h"
+#include "icc_oyranos.h"
 #include "agviewer.h"
 #include "icc_gl.h"
 std::vector<ICCprofile> profile;
@@ -155,6 +156,69 @@ static void cb_Beenden(Fl_Menu_*, void*) {
   quit();
 }
 
+static void cb_p(Fl_Menu_*, void*) {
+  open(true);
+}
+
+static void cb_c(Fl_Menu_*, void*) {
+  DBG_PROG_START
+  std::string filename = filenamen_alt[0];  DBG_PROG_V( filename )
+
+  std::string::size_type pos=0;
+  if ((pos = filename.find_last_of(".", filename.size())) != std::string::npos) { DBG_PROG
+    filename.replace (pos, 5, ".html"); DBG_NUM_S( ".html gesetzt" )
+  } DBG_PROG_V( filename )
+  DBG_PROG_V( dateiwahl->filter() )
+
+  std::string muster = dateiwahl->filter(); DBG_PROG
+  std::string datei;
+  if (dateiwahl->value())
+    datei = dateiwahl->value(); DBG_PROG
+  std::string titel = dateiwahl->label(); DBG_PROG
+
+  dateiwahl->filter(_("HTML Dokumente (*.htm*)")); DBG_PROG
+  #ifdef HAVE_FLU
+  dateiwahl->cd(".");
+  #endif
+  dateiwahl->label(_("Bericht Speichern")); DBG_PROG
+  dateiwahl->value(filename.c_str()); DBG_PROG
+
+  dateiwahl->show(); DBG_PROG
+  while( dateiwahl->shown() )
+    Fl::wait( 0.01 );
+
+  DBG_PROG_V( dateiwahl->filter() )
+  if (dateiwahl->value())
+    filename = dateiwahl->value();
+  else
+    filename = "";
+  DBG_PROG
+
+  dateiwahl->filter(muster.c_str()); DBG_PROG
+  dateiwahl->value(datei.c_str()); DBG_PROG
+  dateiwahl->label(titel.c_str()); DBG_PROG
+  DBG_PROG_V( dateiwahl->filter() )
+
+  DBG_PROG_V( filename )
+
+  if (dateiwahl->count() == 0 || filename != "" || filename == filenamen_alt[0]) {
+    load_progress->hide ();
+    return;
+  }
+
+  std::string bericht = profile[0].report();
+
+  std::ofstream f ( filename.c_str(),  std::ios::out );
+  f.write ( bericht.c_str(), bericht.size() );
+  f.close();
+
+  DBG_PROG_ENDE;
+}
+
+static void cb_Voreinstellungen(Fl_Menu_*, void*) {
+  voreinstellungen();
+}
+
 static void cb_menueintrag_Voll(Fl_Menu_*, void*) {
   Fl_Window *w = (Fl_Window *)details;
 
@@ -219,11 +283,16 @@ Fl_Menu_Item menu_[] = {
  {"Bericht Speichern", 0,  (Fl_Callback*)cb_menueintrag_html_speichern, 0, 129, 0, 0, 14, 56},
  {"Beenden", 0x40071,  (Fl_Callback*)cb_Beenden, 0, 0, 0, 0, 14, 56},
  {0},
+ {"Bearbeiten", 0,  0, 0, 64, 0, 0, 14, 56},
+ {"p", 0,  (Fl_Callback*)cb_p, 0, 0, 0, 0, 14, 56},
+ {"c", 0,  (Fl_Callback*)cb_c, 0, 129, 0, 0, 14, 56},
+ {"Voreinstellungen", 0,  (Fl_Callback*)cb_Voreinstellungen, 0, 0, 0, 0, 14, 56},
+ {0},
  {"Ansicht", 0,  0, 0, 192, 0, 0, 14, 56},
  {"Ganzer Bildschirm an/aus", 0x40076,  (Fl_Callback*)cb_menueintrag_Voll, 0, 0, 0, 0, 14, 56},
- {0},
  {"Pr\374""fansicht", 0x40062,  (Fl_Callback*)cb_menueintrag_inspekt, 0, 3, 0, 0, 14, 56},
  {"3D Ansicht", 0x40062,  (Fl_Callback*)cb_menueintrag_3D, 0, 130, 0, 0, 14, 56},
+ {0},
  {"Hilfe", 0,  0, 0, 64, 0, 0, 14, 56},
  {"\334""ber", 0,  (Fl_Callback*)cb_ber, 0, 0, 0, 0, 14, 56},
  {0},
@@ -389,6 +458,7 @@ int main(int argc, char **argv) {
           o->labelfont(0);
           o->labelsize(14);
           o->labelcolor(FL_BLACK);
+          o->textcolor(32);
           o->callback((Fl_Callback*)cb_tag_browser);
           o->align(FL_ALIGN_TOP|FL_ALIGN_INSIDE);
           o->when(FL_WHEN_RELEASE_ALWAYS);
@@ -431,6 +501,7 @@ int main(int argc, char **argv) {
               o->labelfont(0);
               o->labelsize(14);
               o->labelcolor(FL_BLACK);
+              o->textcolor(32);
               o->align(FL_ALIGN_BOTTOM|FL_ALIGN_INSIDE);
               o->when(FL_WHEN_RELEASE_ALWAYS);
               o->show();
@@ -475,6 +546,7 @@ int main(int argc, char **argv) {
             o->labelfont(0);
             o->labelsize(14);
             o->labelcolor(FL_BLACK);
+            o->textcolor(32);
             o->align(FL_ALIGN_BOTTOM|FL_ALIGN_INSIDE);
             o->when(FL_WHEN_RELEASE_ALWAYS);
             o->show();

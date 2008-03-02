@@ -54,6 +54,8 @@ CPP_HEADERS = \
 	icc_examin.h \
         icc_gl.h \
 	icc_helfer.h \
+	fl_oyranos.h \
+	icc_oyranos.h \
 	icc_profile.h \
        	icc_ueber.h \
 	icc_utils.h \
@@ -74,15 +76,19 @@ CPPFILES = \
 #	vFLGLWidget.cpp \
 	ViewerFLTK.cpp 
 CXXFILES = \
-	icc_examin.cxx
+	icc_examin.cxx \
+	fl_oyranos.cxx
 TEST = \
 	dE2000_test.cpp \
 	ciede2000testdata.h
 DOKU = \
         README \
-        CHANGELOG \
+        ChangeLog \
         COPYING \
         AUTHORS
+FLUID = \
+	icc_examin.fl \
+	fl_oyranos.fl
 
 SOURCES = $(CPPFILES) $(CXXFILES) $(CPP_HEADERS)
 OBJECTS = $(CPPFILES:.cpp=.o) $(CXXFILES:.cxx=.o)
@@ -185,9 +191,9 @@ tgz:
 	tar cf - -C $(topdir) \
 	$(addprefix $(dir)/,$(SOURCES)) \
 	$(dir)/makefile \
-	$(dir)/$(TARGET).fl \
 	$(addprefix $(dir)/,$(TEST)) \
 	$(addprefix $(dir)/,$(DOKU)) \
+	$(addprefix $(dir)/,$(FLUID)) \
 	| gzip > $(TARGET)_$(mtime).tgz
 	mv -v $(TARGET)_*.tgz ../Archiv
 

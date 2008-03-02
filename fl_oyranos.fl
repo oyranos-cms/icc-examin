@@ -1,0 +1,43 @@
+# data file for the Fltk User Interface Designer (fluid)
+version 1.0104 
+header_name {.h} 
+code_name {.cxx}
+Function {voreinstellungen()} {open
+} {
+  Fl_Window {} {
+    label Einstellungen open
+    xywh {769 388 377 206} type Double color 7 resizable
+    code0 {o->show();} visible
+  } {
+    Fl_Tabs {} {
+      label Einstellungen open
+      xywh {0 0 375 205} color 7 align 17 resizable
+    } {
+      Fl_Group {} {
+        label {Colour Profiles} open
+        xywh {0 25 375 180} color 7 selection_color 7 labelcolor 0 resizable
+      } {
+        Fl_Group order_gruppe {open
+          xywh {5 30 365 115} box ENGRAVED_FRAME color 7
+        } {
+          Fl_Output {} {
+            label {Pfade:} selected
+            xywh {80 35 285 70} type Multiline align 68
+          }
+          Fl_Button {} {
+            label {Löschen}
+            xywh {80 105 75 30} color 7
+          }
+          Fl_Button {} {
+            label Auffrischen
+            xywh {160 105 85 30} color 7
+          }
+          Fl_Button {} {
+            label Neu
+            xywh {280 105 85 30} color 7
+          }
+        }
+      }
+    }
+  }
+} 
