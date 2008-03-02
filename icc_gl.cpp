@@ -35,6 +35,8 @@
 //#define Beleuchtung
 
 typedef enum {NOTALLOWED, AXES, RASTER, RING , HELFER } DisplayLists;
+bool gl_voll[5] = {false,false,false,false,false};
+
 typedef enum { MENU_AXES, MENU_QUIT, MENU_RING, MENU_KUGEL, MENU_WUERFEL, MENU_STERN, MENU_MAX } MenuChoices;
 
 int DrawAxes = 0;
@@ -281,8 +283,10 @@ void GL_Ansicht::MakeDisplayLists() {
 
   #define PFEILSPITZE glutSolidCone(0.02, 0.05, 8, 4);
 
-  glDeleteLists (HELFER, 1);
+  if (gl_voll[HELFER])
+    glDeleteLists (HELFER, 1);
   glNewList(HELFER, GL_COMPILE);
+    gl_voll[HELFER] = true;
   GLfloat farbe[] =   { .50, .50, .50, 1.0 };
 
     // Farbkanalname
@@ -364,10 +368,13 @@ void GL_Ansicht::MakeDisplayLists() {
   DBG_PROG_V( tabelle.size() )
 
 
-    // Tabelle
-  glDeleteLists (RASTER, 1);
-    if (tabelle.size()) {
+  // Tabelle
+  if (gl_voll[RASTER])
+    glDeleteLists (RASTER, 1);
+
+  if (tabelle.size()) {
       glNewList(RASTER, GL_COMPILE);
+      gl_voll[RASTER] = true;
       int n_L = tabelle.size(), n_a=tabelle[0].size(), n_b=tabelle[0][0].size();
       double dim_x = 1.0/(n_b); DBG_PROG_V( dim_x )
       double dim_y = 1.0/(n_L); DBG_PROG_V( dim_y )
@@ -448,7 +455,7 @@ void GL_Ansicht::MakeDisplayLists() {
       glEnable(GL_LIGHTING);
       #endif
       glEndList();
-    }
+  }
 
   glNewList(RING, GL_COMPILE);
     //glutSolidDodecahedron();
