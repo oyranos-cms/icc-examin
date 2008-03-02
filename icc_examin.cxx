@@ -7,6 +7,7 @@ static char *statlabel;
  using namespace std;
  int px,py,pw,ph;
  int fullscreen;
+ int inspekt_zeigen;
 static openvrml::browser *browser = 0;
 static ViewerFLTK  *viewer = 0;
 #include "icc_draw.h"
@@ -24,7 +25,7 @@ static void cb_Beenden(Fl_Menu_*, void*) {
   quit();
 }
 
-static void cb_Voll(Fl_Menu_*, void*) {
+static void cb_menueintrag_Voll(Fl_Menu_*, void*) {
   Fl_Window *w = (Fl_Window *)details;
 
   if (!fullscreen) {
@@ -35,14 +36,24 @@ static void cb_Voll(Fl_Menu_*, void*) {
 
     w->fullscreen();
     fullscreen = true;
+  } else {
+    w->fullscreen_off(px,py,pw,ph);
+    fullscreen = false;
   };
 }
 
-static void cb_normal_ansicht(Fl_Menu_*, void*) {
+static void cb_menueintrag_inspekt(Fl_Menu_*, void*) {
   Fl_Window *w = (Fl_Window *)details;
 
-    w->fullscreen_off(px,py,pw,ph);
-    fullscreen = false;
+  if (inspekt_zeigen) {
+    inspekt_zeigen = false;
+    inspekt->hide();
+    examin->show();
+  } else {
+    inspekt_zeigen = true;
+    inspekt->show();
+    examin->hide();
+  };
 }
 
 Fl_Menu_Item menu_Fl_lookat_MenuBar[] = {
@@ -51,11 +62,13 @@ Fl_Menu_Item menu_Fl_lookat_MenuBar[] = {
  {"Beenden", 0x40071,  (Fl_Callback*)cb_Beenden, 0, 0, 0, 0, 14, 56},
  {0},
  {"Ansicht", 0,  0, 0, 64, 0, 0, 14, 56},
- {"Ganzer Bildschirm", 0,  (Fl_Callback*)cb_Voll, 0, 0, 0, 0, 14, 56},
- {"normales Fenster", 0,  (Fl_Callback*)cb_normal_ansicht, 0, 0, 0, 0, 14, 56},
+ {"Ganzer Bildschirm an/aus", 0,  (Fl_Callback*)cb_menueintrag_Voll, 0, 0, 0, 0, 14, 56},
+ {"Pr\374""fansicht an/aus", 0,  (Fl_Callback*)cb_menueintrag_inspekt, 0, 0, 0, 0, 14, 56},
  {0},
  {0}
 };
+
+Fl_Tile *examin=(Fl_Tile *)0;
 
 TagBrowser *tag_browser=(TagBrowser *)0;
 
@@ -65,11 +78,23 @@ static void cb_tag_browser(TagBrowser* o, void*) {
 
 Fl_Group *ansichtsgruppe=(Fl_Group *)0;
 
-TagDrawings *tag_viewer=(TagDrawings *)0;
+Fl_Group *tag_3D=(Fl_Group *)0;
 
 vFLGLWidget *canvas=(vFLGLWidget *)0;
 
-TagTexts *tag_texts=(TagTexts *)0;
+TagDrawings *tag_viewer=(TagDrawings *)0;
+
+TagTexts *tag_text=(TagTexts *)0;
+
+Fl_Group *tabellengruppe=(Fl_Group *)0;
+
+Fl_Choice *mft_choice=(Fl_Choice *)0;
+
+TagDrawings *mft_viewer=(TagDrawings *)0;
+
+TagTexts *mft_text=(TagTexts *)0;
+
+Fl_Group *inspekt=(Fl_Group *)0;
 
 Fl_Box *stat=(Fl_Box *)0;
 
@@ -90,7 +115,7 @@ int main(int argc, char **argv) {
         o->when(3);
         o->menu(menu_Fl_lookat_MenuBar);
       }
-      { Fl_Tile* o = new Fl_Tile(0, 25, 385, 470);
+      { Fl_Tile* o = examin = new Fl_Tile(0, 25, 385, 470);
         { TagBrowser* o = tag_browser = new TagBrowser(0, 25, 385, 135, "Bitte w\344hlen Sie ein Profilmerkmal aus");
           o->box(FL_NO_BOX);
           o->color((Fl_Color)53);
@@ -106,6 +131,22 @@ int main(int argc, char **argv) {
           cout << lines << endl; DBG
         }
         { Fl_Group* o = ansichtsgruppe = new Fl_Group(0, 160, 385, 335);
+          { Fl_Group* o = tag_3D = new Fl_Group(0, 160, 385, 335);
+            { vFLGLWidget* o = canvas = new vFLGLWidget(0, 160, 385, 335, "OpenVRML");
+              o->box(FL_NO_BOX);
+              o->color(FL_BACKGROUND_COLOR);
+              o->selection_color(FL_BACKGROUND_COLOR);
+              o->labeltype(FL_NORMAL_LABEL);
+              o->labelfont(0);
+              o->labelsize(14);
+              o->labelcolor(FL_BLACK);
+              o->align(FL_ALIGN_CENTER|FL_ALIGN_INSIDE);
+              o->when(FL_WHEN_RELEASE);
+              o->hide();
+            }
+            o->hide();
+            o->end();
+          }
           { TagDrawings* o = tag_viewer = new TagDrawings(0, 160, 385, 335);
             o->box(FL_NO_BOX);
             o->color(FL_BACKGROUND_COLOR);
@@ -118,20 +159,7 @@ int main(int argc, char **argv) {
             o->when(FL_WHEN_RELEASE);
             o->hide();
           }
-          { vFLGLWidget* o = canvas = new vFLGLWidget(0, 160, 385, 335, "OpenVRML");
-            o->box(FL_NO_BOX);
-            o->color(FL_BACKGROUND_COLOR);
-            o->selection_color(FL_BACKGROUND_COLOR);
-            o->labeltype(FL_NORMAL_LABEL);
-            o->labelfont(0);
-            o->labelsize(14);
-            o->labelcolor(FL_BLACK);
-            o->align(FL_ALIGN_CENTER|FL_ALIGN_INSIDE);
-            o->when(FL_WHEN_RELEASE);
-            o->hide();
-            o->hide();
-          }
-          { TagTexts* o = tag_texts = new TagTexts(0, 160, 385, 335, "Der Text");
+          { TagTexts* o = tag_text = new TagTexts(0, 160, 385, 335, "Der Text");
             o->box(FL_NO_BOX);
             o->color((Fl_Color)53);
             o->selection_color(FL_SELECTION_COLOR);
@@ -142,10 +170,42 @@ int main(int argc, char **argv) {
             o->align(FL_ALIGN_BOTTOM|FL_ALIGN_INSIDE);
             o->when(FL_WHEN_RELEASE_ALWAYS);
           }
+          { Fl_Group* o = tabellengruppe = new Fl_Group(0, 160, 385, 335);
+            { Fl_Choice* o = mft_choice = new Fl_Choice(0, 160, 385, 25);
+              o->box(FL_NO_BOX);
+            }
+            { TagDrawings* o = mft_viewer = new TagDrawings(0, 185, 385, 310);
+              o->box(FL_NO_BOX);
+              o->color(FL_BACKGROUND_COLOR);
+              o->selection_color(FL_BACKGROUND_COLOR);
+              o->labeltype(FL_NORMAL_LABEL);
+              o->labelfont(0);
+              o->labelsize(14);
+              o->labelcolor(FL_BLACK);
+              o->align(FL_ALIGN_CENTER);
+              o->when(FL_WHEN_RELEASE);
+            }
+            { TagTexts* o = mft_text = new TagTexts(0, 185, 385, 310, "Der Text");
+              o->box(FL_NO_BOX);
+              o->color((Fl_Color)53);
+              o->selection_color(FL_SELECTION_COLOR);
+              o->labeltype(FL_NORMAL_LABEL);
+              o->labelfont(0);
+              o->labelsize(14);
+              o->labelcolor(FL_BLACK);
+              o->align(FL_ALIGN_BOTTOM|FL_ALIGN_INSIDE);
+              o->when(FL_WHEN_RELEASE_ALWAYS);
+            }
+            o->end();
+          }
           o->end();
         }
         o->end();
         Fl_Group::current()->resizable(o);
+      }
+      { Fl_Group* o = inspekt = new Fl_Group(0, 25, 385, 470);
+        o->hide();
+        o->end();
       }
       { Fl_Group* o = new Fl_Group(0, 495, 385, 25);
         { Fl_Box* o = stat = new Fl_Box(0, 495, 385, 25, "No wrl file loaded.");
@@ -187,9 +247,10 @@ int main(int argc, char **argv) {
     canvas->setViewerPtr( viewer );
     o->end();
   }
-  w->resizable(tag_texts);
+  w->resizable(tag_text);
   w->show();
-  canvas->hide();
+  canvas->show();
+//  canvas->show_widget = false;
   viewer->Hok=1;
   viewer->Hdraw=1;
   viewer->timerUpdate();
@@ -233,7 +294,7 @@ std::string open(int interaktiv) {
 
   if (browser && (filename != "")) { DBG
 
-    create_vrml ( filename.c_str(), "/usr/share/color/icc/sRGB.icm", &vrmlDatei[0]);
+    //create_vrml ( filename.c_str(), "/usr/share/color/icc/sRGB.icm", &vrmlDatei[0]);
 
     load_progress->value (0.8);
     filename_alt = filename;
@@ -366,7 +427,7 @@ void TagBrowser::reopen() {
 void TagBrowser::select_item(int item) {
   //Auswahl aus tag_browser
   std::string text = _("Leer");
-  tag_texts->hinein(text);
+  tag_text->hinein(text);
   item -= 6;
   cout << item << ". Tag "; DBG
   std::vector<std::string> rgb_tags;
@@ -377,19 +438,19 @@ void TagBrowser::select_item(int item) {
   if (item < 0) {
     select(5);
     text = profile.printLongHeader(); DBG
-    tag_texts->hinein(text);    
+    tag_text->hinein(text);    
   } else if (item >= 0) {
     std::vector<std::string> TagInfo = profile.printTagInfo(item);
-    cout << TagInfo.size() << " " << TagInfo[0] << TagInfo[1] << " "; DBG
+    cout << TagInfo.size() << " " << TagInfo[0] << " " << TagInfo[1] << " "; DBG
 
     if        ( TagInfo[1] == "text"
              || TagInfo[1] == "cprt?"
              || TagInfo[1] == "meas"
              || TagInfo[1] == "sig"
              || TagInfo[1] == "dtim") {
-      tag_texts->hinein ( profile.getTagText (item) ); DBG
+      tag_text->hinein ( (profile.getTagText (item))[0] ); DBG
     } else if ( TagInfo[1] == "desc" ) {
-      tag_texts->hinein( (profile.getTagDescription (item))[0] ); DBG
+      tag_text->hinein( (profile.getTagDescription (item))[0] ); DBG
     } else if ( TagInfo[0] == "rXYZ" || TagInfo[0] == "gXYZ" || TagInfo[0] == "bXYZ" ) {
       std::vector<double> alle_punkte, punkte;
       std::vector<std::string> alle_texte;
@@ -424,14 +485,13 @@ void TagBrowser::select_item(int item) {
         }
       }
       tag_viewer->hinein_kurven( kurven, texte );
-    } else if ( TagInfo[1] == "chrm"
-             || TagInfo[1] == "XYZ" ) {
+    } else if ( TagInfo[1] == "chrm") {
+      tag_viewer->hinein_punkt( profile.getTagCIEXYZ(item), profile.getTagText(item) );
+    } else if ( TagInfo[1] == "XYZ" ) {
       tag_viewer->hinein_punkt( profile.getTagCIEXYZ(item), TagInfo );
     } else if ( TagInfo[1] == "mft2"
              || TagInfo[1] == "mft1" ) {
-      tag_viewer->hide();
-      tag_texts->hide();
-      canvas->show();
+      tag_text->hinein ( (profile.getTagText (item))[0] ); DBG
     }
     selectedTagName = TagInfo[0];
   }DBG
@@ -443,12 +503,9 @@ TagTexts::TagTexts(int X,int Y,int W,int H,char* start_info) : Fl_Hold_Browser(X
 void TagTexts::hinein(std::string text) {
   //Text aus tag_browser anzeigen
 
-  canvas->hide(); DBG
-  tag_viewer->hide(); DBG
-  tag_viewer->clear_visible(); DBG
-  tag_texts->show(); DBG
+  zeig_mich(this); DBG
 
-      tag_texts->clear();
+      tag_text->clear();
       int len = strlen(text.c_str());
       std::string text_line;
       char c;
@@ -457,17 +514,17 @@ void TagTexts::hinein(std::string text) {
         c = chars[zeichen];
         if (c == '\n' || (int)c == 0) {
           text_line += '\0';
-          tag_texts->add(text_line.c_str(), 0);
+          tag_text->add(text_line.c_str(), 0);
           text_line.clear();
         } else
           text_line += c;
       }
       if (text_line.size() > 0)
-        tag_texts->add(text_line.c_str(), 0);
+        tag_text->add(text_line.c_str(), 0);
 
-      tag_texts->topline(0);
-      tag_texts->textfont(FL_COURIER);
-      tag_texts->textsize(14);
+      tag_text->topline(0);
+      tag_text->textfont(FL_COURIER);
+      tag_text->textsize(14);
 }
 
 TagDrawings::TagDrawings(int X,int Y,int W,int H) : Fl_Widget(X,Y,W,H), X(X), Y(Y), W(W), H(H) {
@@ -499,9 +556,7 @@ void TagDrawings::hinein_punkt(std::vector<double> vect, std::vector<std::string
     texte.push_back (txt[i]);
   kurven.clear();
 
-  canvas->hide(); DBG
-  tag_viewer->show(); DBG
-  tag_texts->hide(); DBG
+  zeig_mich(this);
 }
 
 void TagDrawings::hinein_kurven(std::vector<std::vector<double> >vect, std::vector<std::string> txt) {
@@ -510,9 +565,7 @@ void TagDrawings::hinein_kurven(std::vector<std::vector<double> >vect, std::vect
   texte = txt;
   punkte.clear();
 
-  canvas->hide(); DBG
-  tag_viewer->show(); DBG
-  tag_texts->hide(); DBG
+  zeig_mich(this);
 }
 
 void TagDrawings::ruhig_neuzeichnen(void) {
@@ -530,4 +583,15 @@ void d_haendler(void* o) {
     cout << " wiederholen"; DBG
     #endif
   }
+}
+
+void zeig_mich(void* widget) {
+  // zeigt das ausgewählte Fenster (widget)
+
+  tabellengruppe->hide();
+  tag_viewer->hide(); DBG
+  tag_viewer->clear_visible(); DBG
+  tag_text->hide();
+  ((Fl_Widget*)widget)->parent()->show(); DBG
+  ((Fl_Widget*)widget)->show(); DBG
 }

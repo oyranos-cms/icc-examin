@@ -34,18 +34,26 @@ extern Fl_Double_Window *details;
 #include <FL/Fl_Menu_Bar.H>
 extern Fl_Menu_Bar *Fl_lookat_MenuBar;
 #include <FL/Fl_Tile.H>
+extern Fl_Tile *examin;
 extern TagBrowser *tag_browser;
 extern Fl_Group *ansichtsgruppe;
-extern TagDrawings *tag_viewer;
+extern Fl_Group *tag_3D;
 extern vFLGLWidget *canvas;
-extern TagTexts *tag_texts;
+extern TagDrawings *tag_viewer;
+extern TagTexts *tag_text;
+extern Fl_Group *tabellengruppe;
+#include <FL/Fl_Choice.H>
+extern Fl_Choice *mft_choice;
+extern TagDrawings *mft_viewer;
+extern TagTexts *mft_text;
+extern Fl_Group *inspekt;
 #include <FL/Fl_Box.H>
 extern Fl_Box *stat;
 #include <FL/Fl_Progress.H>
 extern Fl_Progress *load_progress;
 extern Fl_Menu_Item menu_Fl_lookat_MenuBar[];
-#define Voll (menu_Fl_lookat_MenuBar+5)
-#define normal_ansicht (menu_Fl_lookat_MenuBar+6)
+#define menueintrag_Voll (menu_Fl_lookat_MenuBar+5)
+#define menueintrag_inspekt (menu_Fl_lookat_MenuBar+6)
 std::string open(int interaktiv);
 void quit(void);
 void worldChangedCB( const openvrml::browser::cb_reason reason );
@@ -78,4 +86,5 @@ public:
   void ruhig_neuzeichnen(void);
 };
 void d_haendler(void* o);
+void zeig_mich(void* widget);
 #endif

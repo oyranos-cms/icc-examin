@@ -6,7 +6,8 @@ vFLGLWidget::vFLGLWidget( int x,int y,int w,int h,const char *l )
      : Fl_Gl_Window(x,y,w,h,l), 
        viewer(0)
 {
-LeftViewer = 1;
+  LeftViewer = 1;
+  draw_widget = false;
 }
 
 void vFLGLWidget::setViewerPtr( ViewerFLTK *v_ptr)
@@ -16,6 +17,12 @@ void vFLGLWidget::setViewerPtr( ViewerFLTK *v_ptr)
 
 int vFLGLWidget::handle(int e)
 {
+  if (draw_widget) {
+    this->show();
+  } else {
+    this->hide();
+  }
+ 
 	switch (e) {
 	case FL_ENTER:
 		viewer->Hdraw = 1;

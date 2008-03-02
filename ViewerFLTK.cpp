@@ -3,7 +3,7 @@
 
 #define DEBUG
 #ifdef DEBUG
-#define DBG cout << __FILE__<<":"<<__LINE__ << __func__ << "()" << endl;
+#define DBG cout << __FILE__<<":"<<__LINE__ << " " << __func__ << "()" << endl;
 #else
 #define DBG
 #endif
@@ -36,8 +36,13 @@ void ViewerFLTK::handleRedraw()
       && da_widget )
     {DBG
         int width, height;
-        width = da_widget->w();
-        height = da_widget->h(); DBG
+        if (da_widget->draw_widget) {
+          width = da_widget->w();
+          height = da_widget->h(); DBG
+        } else {
+          width = 1;
+          height = 1;
+        }
         #ifdef DEBUG
         cout << da_widget << " " << width << "x" << height << " "; DBG
         #endif

@@ -2,7 +2,7 @@
 // Copyright: Kai-Uwe Behrmann <ku.b@gmx.de>
 // Date:      04. 05. 2004
 
-#if 1
+#if 0
   #ifndef DEBUG
    #define DEBUG
   #endif
@@ -539,6 +539,7 @@ ICCtag::getText                     (void)
 { DBG
   std::vector<std::string> texte;
   std::string text = "Fehl";
+  int count = 0;
 
   if (getTypName() == "sig") {
     if (_size < 12) return texte;
@@ -565,11 +566,11 @@ ICCtag::getText                     (void)
     std::stringstream s;
     icMeasurement meas;
     memcpy (&meas, &_data[8] , 28);
-    s << 
+    s << _("Standard Betrachter") << ": " <<
     getStandardObserver( (icStandardObserver)icValue( meas.stdObserver) ) <<endl
-      << _("Rückseite") << ": X= " << icValueSF(meas.backing.X)
-                        << ", Y= " << icValueSF(meas.backing.Y)
-                        << ", Z= " << icValueSF(meas.backing.Z) << endl
+      << _("Rückseite") << ": X = " << icValueSF(meas.backing.X)
+                        << ", Y = " << icValueSF(meas.backing.Y)
+                        << ", Z = " << icValueSF(meas.backing.Z) << endl
       << _("Geometrie") << ": "<< 
     getMeasurementGeometry ((icMeasurementGeometry)icValue(meas.geometry))<<endl
       << _("Flare")     << ": "<< 
@@ -577,6 +578,39 @@ ICCtag::getText                     (void)
       << _("Beleuchtungstyp") << ": " <<
     getIlluminant ((icIlluminant)icValue(meas.illuminant)) <<endl;
     texte.push_back( s.str() );
+  } else if (getTypName() == "mft2") {
+    icLut16* lut16 = (icLut16*) &_data[8];
+    Wert inputChan, outputChan, clutPoints, inputEnt, outputEnt;
+    inputChan = (int)lut16->inputChan;
+    outputChan = (int)lut16->outputChan;
+    clutPoints = (int)lut16->clutPoints;
+    inputEnt = icValue(lut16->inputEnt);
+    outputEnt = icValue(lut16->outputEnt);
+    std::stringstream s;
+    s << _("Farbtabelle mit 16-bit Präzission:") << endl <<
+      "  "<< _("Eingangskanäle") << ": " << (int)inputChan << endl <<
+      "  "<< _("Ausgangskanäle") << ": " << (int)outputChan << endl <<
+      "  "<< _("Punktzahl einer Kante des 3D Rasters") << ": " << (int)clutPoints << endl <<
+      "  "<< _("Punkte in Eingangstabelle") << ": " << (int)inputEnt << endl <<
+      "  "<< _("Punkte in Ausgangstabelle") << ": " << (int)outputEnt << endl;
+    texte.push_back( s.str() );
+  } else if (getTypName() == "mft1") {
+    icLut8* lut8 = (icLut8*) &_data[8];
+    Wert inputChan, outputChan, clutPoints;//, inputEnt, outputEnt;
+    inputChan = (int)lut8->inputChan;
+    outputChan = (int)lut8->outputChan;
+    clutPoints = (int)lut8->clutPoints;
+    //inputEnt = icValue(lut8->inputEnt);
+    //outputEnt = icValue(lut8->outputEnt);
+    std::stringstream s;
+    s << _("Farbtabelle mit 8-bit Präzission:") << endl <<
+      "  "<< _("Eingangskanäle") << ": " << (int)inputChan << endl <<
+      "  "<< _("Ausgangskanäle") << ": " << (int)outputChan << endl <<
+      "  "<< _("Punktzahl einer Kante des 3D Rasters") << ": " << (int)clutPoints << endl;/* <<
+      "  "<< _("Punkte in Eingangstabelle") << ": " << (int)inputEnt << endl <<
+      "  "<< _("Punkte in Ausgangstabelle") << ": " << (int)outputEnt << endl;*/
+    texte.push_back( s.str() );
+    //texte.push_back( _("8-bit Farbtabelle noch nicht implementiert") );
   } else if (((icTagBase*)&_data[0])->sig == (icTagTypeSignature)icValue( icSigChromaticityType )) {
     int count = icValue(*(icUInt16Number*)&_data[8]);
     if (count == 0)
@@ -586,17 +620,56 @@ ICCtag::getText                     (void)
       std::stringstream s;
       s << _("Kanal ") << i;
       texte.push_back( s.str() );
+      texte.push_back( "chrm" );
       #ifdef DEBUG_ICCTAG
       cout << s.str(); DBG
       #endif
     }
-  } else { // text
-    text = "";
+  } else  if (getTypName() == "text"
+           || getTypName() == "cprt?" ) { // text
+    text = ""; DBG
+  #if 1
+    char* txt = (char*)calloc (_size-8, sizeof(char));
+    memcpy (txt, &_data[8], _size - 8);
+    char* pos = 0;
+    #ifdef DEBUG_ICCTAG
+    cout << (int)strchr(txt, 13) << " "; DBG
+    #endif
+    while (strchr(txt, 13) > 0) { // \r 013 0x0d
+      pos = strchr(txt, 13);
+      #ifdef DEBUG_ICCTAG
+      cout << (int)pos << " "; DBG
+      #endif
+      if (pos > 0) {
+        if (*(pos+1) == '\n')
+          *pos = ' ';
+        else
+          *pos = '\n';
+      }
+      count++;
+    };
+    text = txt;
+    free (txt);
+  #else
     text.append (&_data[8], _size - 8);
+    int pos = 0;
+    cout << (int)text.find('\r') << " "; DBG
+    while ((int)text.find('\r') > 0) { // \r 013 0x0d
+      pos = (int)text.find('\r');
+      cout << pos << " "; DBG
+      if (pos > 0)
+        //text.erase (pos);
+        text.replace (pos, 1, ' ', 1); 
+      count++;
+    };
+  #endif
     texte.push_back( text );
+  } else {
+    texte.push_back( getTypName() + " | <- iss'n das?" );
   }
     
   #ifdef DEBUG_ICCTAG
+  cout << count << " Ersetzungen "; DBG
   cout << " " << "" << "|" << getTypName() << "|" << text << " "; DBG
   #endif
   return texte;
@@ -629,6 +702,7 @@ ICCtag::getCIEXYZ                                 (void)
       count = 3;
     cout << count << " "; DBG
     for (int i = 0; i < count ; i++) { // Table 35 -- chromaticityType encoding
+      // TODO lcms braucht einen 16 Byte Offset (statt 12 Byte)
       icU16Fixed16Number* channel = (icU16Fixed16Number*)&_data[12+(4*i)];
       double xyz[3] = { icValueUF( channel[0] ),
                         icValueUF( channel[1] ),
@@ -878,7 +952,7 @@ ICCtag::getIlluminant             ( icIlluminant sig )
     case icIlluminantF2: text = _("Illuminant F2"); break;
     case icIlluminantD55: text = _("Illuminant D55"); break;
     case icIlluminantA: text = _("Illuminant A"); break;
-    case icIlluminantEquiPowerE: text = _("Illuminant ausgeglichene Energie E"); break;
+    case icIlluminantEquiPowerE: text = _("Illuminant mit ausgeglichener Energie E"); break;
     case icIlluminantF8: text = _("Illuminant F8"); break;
     case icMaxEnumIluminant: text = _("Illuminant ---"); break;
 
@@ -893,8 +967,10 @@ ICCtag::getStandardObserver             ( icStandardObserver sig )
   std::string text;
   switch (sig) {
     case icStdObsUnknown: text = _("unbekannt"); break;
-    case icStdObs1931TwoDegrees: text = _("2 Grad"); break;
-    case icStdObs1964TenDegrees: text = _("10 Grad"); break;
+    case icStdObs1931TwoDegrees: text = _("2 Grad (1931)");
+         break;
+    case icStdObs1964TenDegrees: text = _("10 Grad (1964)");
+         break;
     case icMaxStdObs: text = _("---"); break;
 
     default: text = _("???"); break;
@@ -1172,12 +1248,15 @@ ICCprofile::getTagText                                  (int item)
   std::vector<std::string> v;
   v.push_back( leer );
 
-  if (name != "text"
-   && name != "chrm"
+  if (name != "chrm"
    && name != "cprt?"
+   && name != "dtim"
    && name != "meas"
+   && name != "mft1"
+   && name != "mft2"
    && name != "sig"
-   && name != "dtim")
+   && name != "text"
+   && name != "XYZ")
     return v;
 
   return tags.at(item).getText();

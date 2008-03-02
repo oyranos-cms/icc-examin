@@ -14,6 +14,27 @@
 #define DBG cout << __FILE__<<":"<<__LINE__ <<" "<< __func__ << "()" << endl;
 #define DBG_S(txt) cout << __FILE__<<":"<<__LINE__ <<" "<< __func__ << "()" << txt << endl;
 
+class Wert
+{
+    double _wert;
+  public:
+    Wert & operator = (const Wert   & wert)
+                       {_wert =         wert._wert; return *this; }
+    Wert & operator = (const double & wert)
+                       {_wert =         wert;       return *this; }
+    Wert & operator = (const float  & wert)
+                       {_wert = (double)wert;       return *this; }
+    Wert & operator = (const int    & wert)
+                       {_wert = (double)wert;       return *this; }
+    Wert & operator = (const unsigned int    & wert)
+                       {_wert = (double)wert;       return *this; }
+  public:
+    operator double ()  {return _wert; }
+    operator float  ()  {return (float)_wert; }
+    operator int    ()  {return (int)(_wert + 0.5); }
+    operator unsigned int ()  {return (unsigned int)(_wert + 0.5); }
+};
+
 class Int {
 public:
 // TODO: byteswap + Groesse + Vorzeichen
