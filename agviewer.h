@@ -41,10 +41,10 @@
 #endif
 
 class
-agviewer {
+Agviewer {
   public:
 
-  agviewer ()  {
+  Agviewer ()  {
 /***************************************************************/
 /************************** SETTINGS ***************************/
 /***************************************************************/
@@ -102,7 +102,7 @@ agviewer {
           AdjustingAzEl = 0;
           }
   
-  ~agviewer () {; }
+  ~Agviewer () {; }
 
  /*
   * Call agvInit() with glut's current window set to the window in 
@@ -248,7 +248,8 @@ agviewer {
          init_move,
          minmove;
 
-  int AllowIdle, RedisplayWindow;
+  int AllowIdle,
+      RedisplayWindow;                      // glutWindow
   public: 
   int redisplayWindow() {return RedisplayWindow; }
   private:
@@ -285,7 +286,7 @@ agviewer {
 
 #include <vector>
 
-extern std::vector<agviewer> agviewers;
+extern std::vector<Agviewer> agviewers;
 
 extern "C" {
   // Funktionszeiger / pointer

@@ -71,30 +71,15 @@ class ICCexamin
     std::vector<double> punkte;
     std::vector<std::string> texte;
 
-  private:
-    int  _feld;
-
   public:
     void histogram();
   private:
-    int _gl_ansicht;
+    int _gl_ansicht;                   // glutWindow
     std::vector<GL_Ansicht*> _gl_ansichten;
   public:
-    void glAnsicht (GL_Ansicht* dazu) { DBG_PROG_START bool vorhanden = false;
-                              for (unsigned i = 0; i < _gl_ansichten.size();i++)
-                                if (dazu == _gl_ansichten[i]) { DBG_PROG
-                                  vorhanden = true;
-                                  _gl_ansicht = i;
-                                }
-                              if(!vorhanden) { DBG_PROG
-                                _gl_ansicht = _gl_ansichten.size();
-                                _gl_ansichten.resize( _gl_ansicht + 1 );
-                                _gl_ansichten[_gl_ansicht] = dazu; DBG_PROG_ENDE
-                              } DBG_PROG_ENDE
-                            }
-    GL_Ansicht* glAnsicht() { if(_gl_ansicht>=0)
-                                return _gl_ansichten[_gl_ansicht];
-                              else return 0; }
+    void glAnsicht (GL_Ansicht* dazu);
+    GL_Ansicht* glAnsicht(int id);
+
     // Oberflächenfunktionen (GUI)
     void fortschritt(double f);  // Fortschritt: f<0-Start f=Wert f>1-Ende
 

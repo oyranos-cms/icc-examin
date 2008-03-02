@@ -53,12 +53,15 @@ class GL_Ansicht : public Fl_Group {
   void myGLinit();
   void menuInit();
   bool gl_fenster_zeigen_;
-  int  agv_;
+  int  agv_,
+       glut_id_;
   bool first_;
 public:
   GL_Ansicht(int X,int Y,int W,int H);
   ~GL_Ansicht();
-  int  id()          {return agv_; }
+  //void setzteGlutId(int id) {if (first_) glut_id_ = id; }
+
+  int  id()          {return glut_id_; }
   int  agv()         {return agv_; }
   void draw();
   void hineinPunkte (std::vector<double> vect,
@@ -90,7 +93,7 @@ public:
   void makeDisplayLists();
   void zeigen();
   void verstecken();
-  void stop() {if (!first_) { agvSwitchMoveMode (agviewer::AGV_STOP); } }
+  void stop() {if (!first_) { agvSwitchMoveMode (Agviewer::AGV_STOP); } }
 
   char* kanalName() {return (char*)nach_farb_namen_[kanal].c_str(); }
   char* kanalName(unsigned int i) { if (nach_farb_namen_.size()>i) 
@@ -99,12 +102,23 @@ public:
   unsigned int kanaele() {return nach_farb_namen_.size(); }
 };
 
-void reshape(int w, int h);
-void display();
-void sichtbar(int v);
-void menuuse(int v);
-void handlemenu(int value);
-int  dID(int display_list);
+#define deklariereGlutFunktionen(n) \
+void reshape##n( int w, int h ); \
+void display##n(); \
+void sichtbar##n(int v); \
+void menuuse##n(int v); \
+void handlemenu##n(int value);
+
+deklariereGlutFunktionen(1)  // mft Tabellenfenster
+deklariereGlutFunktionen(2)  // Farbraumhüllansicht
+
+void reshape(int id, int w, int h);
+void display(int id);
+void sichtbar(int id, int v);
+void menuuse(int id, int v);
+void handlemenu(int id, int value);
+
+int  dID(int id, int display_list);
 
 
 

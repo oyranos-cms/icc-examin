@@ -52,7 +52,7 @@ class ICCkette
     std::vector<int>         _aktiv;
   public:
     void         oeffnen   (std::vector<std::string> dateinamen);
-    void         oeffnen   ();	// interaktiv
+    //void         oeffnen   ();	// interaktiv
     void         oeffnen   (std::string dateiname, int pos);
     void         aktiv     (int pos);
     void         passiv    (int pos);

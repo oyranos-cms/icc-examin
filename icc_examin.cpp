@@ -59,6 +59,7 @@ ICCexamin::start (int argc, char** argv)
 { DBG_PROG_START
 
   icc_betrachter->init();
+
   status(_(""));
   DBG_PROG
 
@@ -78,6 +79,7 @@ ICCexamin::start (int argc, char** argv)
       }
 
   DBG_PROG
+
   icc_betrachter->run();
 
   DBG_PROG_ENDE
@@ -347,7 +349,7 @@ ICCexamin::histogram ()
   texte.push_back(_("CIE *b"));
 
   //glAnsicht()->hineinPunkte( v, farben, texte );
-  glAnsicht()->hineinNetze( v, farben, namen, texte );
+  icc_betrachter->DD_histogram->hineinNetze( v, farben, namen, texte );
   DBG_PROG_ENDE
 }
 
@@ -444,3 +446,41 @@ ICCexamin::statusAktualisieren()
   DBG_PROG_ENDE
 }
 
+#if 1
+void
+ICCexamin::glAnsicht (GL_Ansicht* dazu)
+{ DBG_PROG_START
+  bool vorhanden = false; DBG_PROG_V( _gl_ansichten.size() )
+  if (dazu != icc_betrachter->mft_gl && // zuerst mft_gl
+      _gl_ansichten.size() < 1)
+  { DBG_PROG
+    icc_betrachter->mft_gl->zeigen(); DBG_PROG
+  }
+  for (unsigned i = 0; i < _gl_ansichten.size(); i++)
+  if (dazu == _gl_ansichten[i])
+  { DBG_PROG
+    vorhanden = true;
+    _gl_ansicht = dazu->id();
+  }
+  if(!vorhanden) { DBG_PROG
+    _gl_ansicht = dazu->id();
+    _gl_ansichten.resize( _gl_ansichten.size() +1 );
+    _gl_ansichten[_gl_ansichten.size() -1] = dazu;
+  }
+  DBG_PROG_ENDE
+}
+
+GL_Ansicht*
+ICCexamin::glAnsicht(int id)
+{ DBG_PROG_START
+  if(id>0)
+  {
+    std::vector<GL_Ansicht*>::iterator it;
+    for (it = _gl_ansichten.begin() ; it != _gl_ansichten.end(); ++it)
+      if ((*it)->id()==id)
+        return *it;
+  }
+  return 0;
+  DBG_PROG_ENDE
+}
+#endif

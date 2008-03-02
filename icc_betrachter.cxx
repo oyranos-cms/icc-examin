@@ -705,7 +705,6 @@ Fl_Double_Window* ICCfltkBetrachter::init() {
               o->labelcolor(FL_BLACK);
               o->align(FL_ALIGN_BOTTOM|FL_ALIGN_INSIDE);
               o->when(FL_WHEN_RELEASE);
-              //o->first = true;
               o->hide();
             }
             o->show();

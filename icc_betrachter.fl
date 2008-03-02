@@ -321,7 +321,7 @@ class TagDrawings {: {public Fl_Widget}
 
 decl {\#include <FL/fl_draw.H>} {} 
 
-class MftChoice {open : {public Fl_Choice}
+class MftChoice {: {public Fl_Choice}
 } {
   decl {int X; int Y; int W; int H; char* start_info; char typ[5];} {}
   decl {std::vector<std::string> Info; int gewaehlter_eintrag;} {public
@@ -539,7 +539,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window details {
       label {ICC Details} open
-      xywh {633 222 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
+      xywh {638 246 385 520} type Double box NO_BOX color 53 xclass Fl_Window visible
     } {
       Fl_Group {} {open
         xywh {0 0 385 520}
@@ -689,7 +689,7 @@ class ICCfltkBetrachter {open
 ueber_html->value(getUeberHtml().c_str());}
               xywh {5 5 100 20}
             }
-            menuitem {} {selected
+            menuitem {} {
               xywh {0 0 100 20} shortcut 0xff1b
             }
           }
@@ -732,8 +732,7 @@ ueber_html->value(getUeberHtml().c_str());}
               }
               Fl_Box mft_gl {
                 xywh {0 185 385 310} align 18
-                code0 {//o->first = true;}
-                code1 {o->hide();}
+                code0 {o->hide();}
                 class GL_Ansicht
               }
             }
@@ -754,7 +753,7 @@ ueber_html->value(getUeberHtml().c_str());}
             xywh {0 25 385 470} align 16
             code0 {o->hide();}
           }
-          Fl_Box DD_histogram {
+          Fl_Box DD_histogram {selected
             xywh {0 25 385 470}
             code0 {o->hide();}
             class GL_Ansicht
