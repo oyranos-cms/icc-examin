@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2005  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2006  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -42,12 +42,18 @@ const char* threadGettext( const char* text);
 #endif
 
 
-// I18N
-void initialiseI18N();
+/* tell about the locale path and select locale from environment */
+void        fl_initialise_locale   ( const char   *locale_path);
+/* help with searching for the right locale path */
+int         fl_search_locale_path  ( int           n_locale_paths,
+                                     const char  **locale_paths,
+                                     const char   *search_lang, /*"de" or "it"*/
+                                     const char   *app_name);   /*"my_fl_app"*/
+
 
 #include <FL/Fl_Menu_Item.H>
 // I18N in fl_i18n.cxx
-void        menue_translate( Fl_Menu_Item *menueleiste );
-void        file_chooser_translate ();
+void        fl_translate_menue     ( Fl_Menu_Item *menueleiste );
+void        fl_translate_file_chooser ();
 
 #endif //FL_I18N_H

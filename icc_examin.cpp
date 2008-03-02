@@ -120,7 +120,7 @@ ICCexamin::start (int argc, char** argv)
   texte.resize(MAX_VIEWER);
   kurve_umkehren.resize(MAX_VIEWER);
 
-  menue_translate( icc_betrachter->menu_menueleiste );
+  fl_translate_menue( icc_betrachter->menu_menueleiste );
 
   icc_betrachter->init( argc, argv );
 

@@ -509,7 +509,7 @@ Fl_Double_Window* ICCfltkBetrachter::init(int argc, char** argv) {
     dateiwahl->add_context_handler(Flu_File_Chooser::ENTRY_FILE, "DLY", _("Open Measurement"), dateiwahl_cb, NULL);
     dateiwahl->add_context_handler(Flu_File_Chooser::ENTRY_FILE, "nCIE", _("Open Measurement"), dateiwahl_cb, NULL);
   #else
-    file_chooser_translate();
+    fl_translate_file_chooser();
 
     const char* ptr = NULL;
     if (profile.size())

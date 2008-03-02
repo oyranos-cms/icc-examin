@@ -62,7 +62,21 @@ main (int argc, char** argv)
 
   DBG_PROG_START
 
-  initialiseI18N();
+  const char *locale_paths[3];
+  int is_path = -1;
+# if __APPLE__
+  locale_paths[0] = icc_examin_ns::holeBundleResource("locale","");
+  locale_paths[1] = LOCALEDIR;
+  locale_paths[2] = SRC_LOCALEDIR;
+  is_path = fl_search_locale_path (3, locale_paths, "de", "icc_examin");
+# else
+  locale_paths[0] = LOCALEDIR;
+  locale_paths[1] = SRC_LOCALEDIR;
+  is_path = fl_search_locale_path (2, locale_paths, "de", "icc_examin");
+# endif
+  if(is_path >= 0)
+    fl_initialise_locale ( locale_paths[is_path] );
+
 
   ICCexamin hauptprogramm;
 

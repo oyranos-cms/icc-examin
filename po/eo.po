@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2006-01-15 21:47+0100\n"
+"POT-Creation-Date: 2006-01-30 08:51+0100\n"
 "PO-Revision-Date: 2005-08-13 17:35+0200\n"
 "Last-Translator: Kai-Uwe Behrmann\n"
 "Language-Team:  <eo@li.org>\n"
@@ -302,7 +302,7 @@ msgstr ""
 msgid "Stop loading "
 msgstr ""
 
-#: icc_examin_io.cpp:414 fl_i18n.cxx:349 icc_betrachter.cxx:470
+#: icc_examin_io.cpp:414 fl_i18n.cxx:353 icc_betrachter.cxx:470
 msgid "Filename"
 msgstr ""
 
@@ -1747,75 +1747,71 @@ msgstr ""
 msgid "Kein Gammagradient Information erhalten"
 msgstr ""
 
-#: fl_i18n.cxx:123
+#: fl_i18n.cxx:151
 msgid "osX locale obtained: "
 msgstr ""
 
-#: fl_i18n.cxx:126
+#: fl_i18n.cxx:154
 msgid "osX locale not obtained"
 msgstr ""
 
-#: fl_i18n.cxx:258
+#: fl_i18n.cxx:286
 msgid "try to set LANG"
 msgstr ""
 
-#: fl_i18n.cxx:297
-msgid "fine with: "
-msgstr ""
-
-#: fl_i18n.cxx:299
-msgid "failed with: "
-msgstr ""
-
-#: fl_i18n.cxx:304
+#: fl_i18n.cxx:309
 msgid "try locale in "
 msgstr ""
 
-#: fl_i18n.cxx:311
+#: fl_i18n.cxx:315
 msgid "set codeset for \"icc_examin\" to "
 msgstr ""
 
-#: fl_i18n.cxx:344
+#: fl_i18n.cxx:348
 msgid "Add to Favorites"
 msgstr ""
 
-#: fl_i18n.cxx:345 icc_betrachter.cxx:477
+#: fl_i18n.cxx:349 icc_betrachter.cxx:477
 msgid "All Files (*)"
 msgstr ""
 
-#: fl_i18n.cxx:346
+#: fl_i18n.cxx:350
 msgid "Custom Filter"
 msgstr ""
 
-#: fl_i18n.cxx:347
+#: fl_i18n.cxx:351
 msgid "Please choose an existing file!"
 msgstr ""
 
-#: fl_i18n.cxx:348 icc_betrachter.cxx:451
+#: fl_i18n.cxx:352 icc_betrachter.cxx:451
 msgid "Favorites"
 msgstr ""
 
-#: fl_i18n.cxx:350
+#: fl_i18n.cxx:354
 msgid "Manage Favorites"
 msgstr ""
 
-#: fl_i18n.cxx:352
+#: fl_i18n.cxx:356
 msgid "My Computer"
 msgstr ""
 
-#: fl_i18n.cxx:354
+#: fl_i18n.cxx:358
 msgid "Filesystems"
 msgstr ""
 
-#: fl_i18n.cxx:356
+#: fl_i18n.cxx:360
 msgid "New Directory?"
 msgstr ""
 
-#: fl_i18n.cxx:357
+#: fl_i18n.cxx:361
 msgid "Preview"
 msgstr ""
 
-#: fl_i18n.cxx:360
+#: fl_i18n.cxx:363
+msgid "Save"
+msgstr ""
+
+#: fl_i18n.cxx:365
 msgid "Show:"
 msgstr ""
 
