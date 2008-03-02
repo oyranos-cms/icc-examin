@@ -53,7 +53,7 @@ public:
 };
 
 class TagDrawings : public Fl_Widget {
-  int X; int Y; int W; int H; std::vector<std::string>texte; std::vector<double>punkte; std::vector<std::vector<double> >kurven;
+  int X; int Y; int W; int H; bool kurven;
 public:
   int wiederholen;
   TagDrawings(int X,int Y,int W,int H) ;

@@ -28,6 +28,7 @@
 
 #include "icc_examin.h"
 #include "icc_betrachter.h"
+#include "icc_draw.h"
 
 ICCexamin::ICCexamin ()
 { DBG_PROG_START
@@ -49,7 +50,7 @@ ICCexamin::start (int argc, char** argv)
   DBG_PROG
 
       if (argc>1) {
-        std::string statlabel = argv[1];
+        statlabel = argv[1];
         statlabel.append (" ");
         statlabel.append (_("geladen"));
         status(statlabel.c_str());
@@ -122,9 +123,10 @@ std::string
 ICCexamin::selectTag (int item)
 { DBG_PROG_START
 
-  _kurven.clear();
-  _punkte.clear();
-  _texte.clear();
+  kurven.clear();
+  punkte.clear();
+  texte.clear();
+  kurve_umkehren = false;
 
   std::string text = _("Leer");
 
@@ -158,13 +160,13 @@ ICCexamin::selectTag (int item)
         if (profile[0].hasTagName (rgb_tags[i_name])) {
           punkte = profile[0].getTagCIEXYZ (profile[0].getTagByName(rgb_tags[i_name]));
           for (unsigned int i = 0; i < 3; i++)
-            _punkte.push_back (punkte[i]);
+            punkte.push_back (punkte[i]);
           TagInfo = profile[0].printTagInfo (profile[0].getTagByName(rgb_tags[i_name]));
           for (unsigned int i = 0; i < 2; i++)
-            _texte.push_back (TagInfo[i]);
+            texte.push_back (TagInfo[i]);
         }
       }
-      icc_examin->icc_betrachter->tag_viewer->hinein_punkt( _punkte, _texte );
+      icc_examin->icc_betrachter->tag_viewer->hinein_punkt( punkte, texte );
     } else if ( TagInfo[1] == "curv"
              || TagInfo[1] == "bfd" ) {
       std::vector<double> kurve;
@@ -173,30 +175,31 @@ ICCexamin::selectTag (int item)
         if ( (profile[0].printTagInfo(i_name))[1] == "curv"
           || (profile[0].printTagInfo(i_name))[1] == "bfd" ) {
           kurve = profile[0].getTagCurve (i_name);
-          _kurven.push_back (kurve);
+          kurven.push_back (kurve);
           TagInfo = profile[0].printTagInfo (i_name);
           //for (unsigned int i = 0; i < 2; i++)
-          _texte.push_back (TagInfo[0]);
+          texte.push_back (TagInfo[0]);
         }
       }
-      _texte.push_back ("curv");
-      icc_examin->icc_betrachter->tag_viewer->hinein_kurven( _kurven, _texte );
+      texte.push_back ("curv");
+      icc_examin->icc_betrachter->tag_viewer->hinein_kurven( kurven, texte );
     } else if ( TagInfo[1] == "chrm" ) {
-      _punkte = profile[0].getTagCIEXYZ(item);
-      _texte = profile[0].getTagText(item);
-      icc_examin->icc_betrachter->tag_viewer->hinein_punkt( _punkte, _texte );
+      punkte = profile[0].getTagCIEXYZ(item);
+      texte = profile[0].getTagText(item);
+      icc_examin->icc_betrachter->tag_viewer->hinein_punkt( punkte, texte );
     } else if ( TagInfo[1] == "XYZ" ) {
-      _punkte = profile[0].getTagCIEXYZ(item);
-      _texte = TagInfo;
-      icc_examin->icc_betrachter->tag_viewer->hinein_punkt( _punkte, _texte );
+      punkte = profile[0].getTagCIEXYZ(item);
+      texte = TagInfo;
+      icc_examin->icc_betrachter->tag_viewer->hinein_punkt( punkte, texte );
     } else if ( TagInfo[1] == "mft2"
              || TagInfo[1] == "mft1" ) {
       icc_examin->icc_betrachter->mft_choice->profil_tag (item);
       //mft_text->hinein ( (profile[0].getTagText (item))[0] ); DBG_PROG
     } else if ( TagInfo[1] == "vcgt" ) { DBG_PROG
-      _kurven = profile[0].getTagCurves (item, ICCtag::CURVE_IN);
-      _texte = profile[0].getTagText (item);
-      icc_examin->icc_betrachter->tag_viewer->hinein_kurven ( _kurven, _texte );
+      kurve_umkehren = true;
+      kurven = profile[0].getTagCurves (item, ICCtag::CURVE_IN);
+      texte = profile[0].getTagText (item);
+      icc_examin->icc_betrachter->tag_viewer->hinein_kurven ( kurven, texte );
       cout << "vcgt "; DBG_PROG
 
     /*} else if ( TagInfo[1] == "chad" ) {
@@ -220,4 +223,23 @@ ICCexamin::selectTag (int item)
   return text;
 }
 
+void
+ICCexamin::drawKurve   (int x,int y,int w,int h)
+{ DBG_PROG_START
+      if (kurven.size())
+      {
+        wiederholen = false;
+        draw_kurve   (x,y,w,h,kurve_umkehren);
+      } else {
+        if (wiederholen)
+        { draw_cie_shoe(x,y,w,h,false);
+          Fl::add_timeout( 1.2, (void(*)(void*))d_haendler ,(void*)this);
+        } else {
+          draw_cie_shoe(x,y,w,h,true);
+        }
+        wiederholen = true;
+      }
+      DBG_PROG;
+  DBG_PROG_ENDE
+}
 

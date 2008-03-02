@@ -48,11 +48,13 @@ class ICCexamin
     void         oeffnen ();	// interaktiv
 
     std::string  selectTag (int item);
-    void         drawKurve   (int x,int y,int w,int h) {; }
-private:
-    std::vector<std::vector<double> > _kurven;
-    std::vector<double> _punkte;
-    std::vector<std::string> _texte;
+    int          wiederholen;
+    int          kurve_umkehren;
+    void         drawKurve   (int x,int y,int w,int h);
+
+    std::vector<std::vector<double> > kurven;
+    std::vector<double> punkte;
+    std::vector<std::string> texte;
 
 public:
 	// Liste der geladenen Profile

@@ -196,22 +196,23 @@ TagDrawings::TagDrawings(int X,int Y,int W,int H) : Fl_Widget(X,Y,W,H), X(X), Y(
 void TagDrawings::draw() {
   DBG_PROG_START
   // Kurven oder Punkte malen
-  DBG_PROG_S( punkte.size() << "/" << kurven.size() <<" "<< texte.size() )
+  DBG_PROG_S( kurven )
 
   //DBG_PROG_V( wiederholen )
 
-  if (punkte.size() >= 3)
+  icc_examin->drawKurve   (x(),y(),w(),h());
+
+  if (kurven)
   {
-    if (wiederholen)
-    { draw_cie_shoe(x(),y(),w(),h(),texte,punkte,false);
+    icc_examin->wiederholen = false;
+  } else {
+    if (icc_examin->wiederholen)
+    { draw_cie_shoe(x(),y(),w(),h(),false);
       Fl::add_timeout( 1.2, (void(*)(void*))d_haendler ,(void*)this);
     } else {
-      draw_cie_shoe(x(),y(),w(),h(),texte,punkte,true);
+      draw_cie_shoe(x(),y(),w(),h(),true);
     }
-    wiederholen = true;
-  } else {
-    wiederholen = false;
-    icc_examin->drawKurve   (x(),y(),w(),h()/*,texte,kurven*/);
+    icc_examin->wiederholen = true;
   }
   DBG_PROG
   DBG_PROG_ENDE
@@ -220,14 +221,9 @@ void TagDrawings::draw() {
 void TagDrawings::hinein_punkt(std::vector<double> vect, std::vector<std::string> txt) {
   DBG_PROG_START
   //CIExyY aus tag_browser anzeigen
-  punkte.clear();
-  for (unsigned int i = 0; i < vect.size(); i++)
-    punkte.push_back (vect[i]);
-  texte.clear();
-  for (unsigned int i = 0; i < txt.size(); i++)
-    texte.push_back (txt[i]);
-  kurven.clear();
-  wiederholen = false;
+
+  kurven = false;
+  icc_examin->wiederholen = false;
 
   icc_examin->icc_betrachter->zeig_mich(this);
   DBG_PROG_ENDE
@@ -236,10 +232,9 @@ void TagDrawings::hinein_punkt(std::vector<double> vect, std::vector<std::string
 void TagDrawings::hinein_kurven(std::vector<std::vector<double> >vect, std::vector<std::string> txt) {
   DBG_PROG_START
   //Kurve aus tag_browser anzeigen
-  kurven = vect;
-  texte = txt;
-  punkte.clear();
-  wiederholen = false;
+
+  kurven = true;
+  icc_examin->wiederholen = false;
 
   icc_examin->icc_betrachter->zeig_mich(this);
   DBG_PROG
@@ -248,7 +243,7 @@ void TagDrawings::hinein_kurven(std::vector<std::vector<double> >vect, std::vect
 
 void TagDrawings::ruhig_neuzeichnen(void) {
   DBG_PROG_START
-  draw_cie_shoe(x(),y(),w(),h(),texte,punkte,true);
+  draw_cie_shoe(x(),y(),w(),h(),true);
   DBG_PROG_ENDE
 }
 #include <FL/fl_draw.H>

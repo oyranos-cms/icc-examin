@@ -30,6 +30,7 @@
 #include "icc_helfer.h"
 #include "icc_profile.h"
 #include "icc_helfer_ui.h"
+#include "icc_examin.h"
 #include <stdio.h>
 #include <iostream>
 #include <vector>
@@ -88,9 +89,7 @@ init_shoe() {
 
 void
 draw_cie_shoe (int X, int Y, int W, int H,
-                    std::vector<std::string>               texte,
-                    std::vector<double>                    punkte,
-                    int                                    repeated)
+                    int  repeated)
 { DBG_prog_start
   if (!init_s)
     init_shoe();
@@ -295,17 +294,17 @@ draw_cie_shoe (int X, int Y, int W, int H,
     register char RGB[3];
     register cmsCIEXYZ XYZ;
     std::vector<double> pos;
-    for (unsigned int i = 0; i < texte.size(); i++) {
-        double _XYZ[3] = {punkte[i*3+0], punkte[i*3+1], punkte[i*3+2]};
+    for (unsigned int i = 0; i < icc_examin->texte.size(); i++) {
+        double _XYZ[3] = {icc_examin->punkte[i*3+0], icc_examin->punkte[i*3+1], icc_examin->punkte[i*3+2]};
         double* xyY = XYZto_xyY ( _XYZ );
         pos.push_back ( x (xyY[0]) );
         pos.push_back ( y (xyY[1]) );
         #ifdef DEBUG_DRAW
-        cout << texte[i] << " " << punkte.size(); DBG
+        cout << icc_examin->texte[i] << " " << icc_examin->punkte.size(); DBG
         #endif
     }
 
-    if (texte[0] != "wtpt") { // markiert den Weisspunkt nur
+    if (icc_examin->texte[0] != "wtpt") { // markiert den Weisspunkt nur
       double* xyY = XYZto_xyY ( profile[0].getWhitePkt() );
       int g = 2;
 
@@ -315,7 +314,7 @@ draw_cie_shoe (int X, int Y, int W, int H,
     }
 
     fl_color(BG);
-    if (punkte.size() == 9) {
+    if (icc_examin->punkte.size() == 9) {
         for (int k = 0; k <= 3; k+=2) {
             fl_line( (int)(pos[k+0]), (int)(pos[k+1]),
                      (int)(pos[k+2]), (int)(pos[k+3]));
@@ -331,19 +330,19 @@ draw_cie_shoe (int X, int Y, int W, int H,
     }
 
     int j = 0;
-    for (unsigned int i = 0; i < texte.size(); i++) {
+    for (unsigned int i = 0; i < icc_examin->texte.size(); i++) {
         #ifdef DEBUG_DRAW
-        cout << punkte[j] << " ";
+        cout << icc_examin->punkte[j] << " ";
         #endif
-        XYZ.X = punkte[j++]; 
+        XYZ.X = icc_examin->punkte[j++]; 
         #ifdef DEBUG_DRAW
-        cout << punkte[j] << " ";
+        cout << icc_examin->punkte[j] << " ";
         #endif
-        XYZ.Y = punkte[j++];
+        XYZ.Y = icc_examin->punkte[j++];
         #ifdef DEBUG_DRAW
-        cout << punkte[j] << " " << texte[i] << " " << punkte.size(); DBG
+        cout << icc_examin->punkte[j] << " " << icc_examin->texte[i] << " " << icc_examin->punkte.size(); DBG
         #endif
-        XYZ.Z = punkte[j++]; //1 - ( punkte[i][0] +  punkte[i][1] );
+        XYZ.Z = icc_examin->punkte[j++]; //1 - ( punkte[i][0] +  punkte[i][1] );
 
         // Farbe für Darstellung konvertieren (lcms)
         cmsDoTransform (xform, &XYZ, RGB, 1);
@@ -362,13 +361,13 @@ draw_cie_shoe (int X, int Y, int W, int H,
         std::stringstream s;
         std::stringstream t;
         // lcms hilft bei Weisspunkbeschreibung aus
-        if (texte[i] == "wtpt") {
+        if (icc_examin->texte[i] == "wtpt") {
           static char txt[1024] = {'\000'};
           _cmsIdentifyWhitePoint (&txt[0], &XYZ);
           t << " (" << &txt[12] << ")";
         }
           
-        s << texte[i] << t.str() << " = " << _XYZ[0] <<", "<< _XYZ[1] <<", "<< _XYZ[2];
+        s << icc_examin->texte[i] << t.str() << " = " << _XYZ[0] <<", "<< _XYZ[1] <<", "<< _XYZ[2];
         int _w = 0, _h = 0;
         // Text einpassen
         fl_measure (s.str().c_str(), _w, _h, 1);
@@ -385,8 +384,6 @@ draw_cie_shoe (int X, int Y, int W, int H,
 }
 
 void draw_kurve    (int X, int Y, int W, int H,
-                    std::vector<std::string> texte,
-                    std::vector<std::vector<double> > kurven,
                     bool tauschen)
 { DBG_prog_start
   // Zeichenflaeche
@@ -428,13 +425,13 @@ void draw_kurve    (int X, int Y, int W, int H,
   bool ist_kurve = false;
   icColorSpaceSignature icc_colour_space_signature = icSigLabData;
   int* flFarben = getChannel_flColours (icc_colour_space_signature);
-  for (unsigned int j = 0; j < kurven.size(); j++) {
-    if (kurven.size() <= texte.size())
-      name = texte[j];
+  for (unsigned int j = 0; j < icc_examin->kurven.size(); j++) {
+    if (icc_examin->kurven.size() <= icc_examin->texte.size())
+      name = icc_examin->texte[j];
     else
       name = _("unbekannte Farbe");
-    if (kurven.size() < texte.size()
-     && texte[texte.size()-1] == "curv")
+    if (icc_examin->kurven.size() < icc_examin->texte.size()
+     && icc_examin->texte[icc_examin->texte.size()-1] == "curv")
       ist_kurve = true;
 
     fl_color( flFarben[j] );
@@ -494,20 +491,20 @@ void draw_kurve    (int X, int Y, int W, int H,
       fl_color(9 + j);
     }
     #ifdef DEBUG//_DRAW
-    cout << "Zeichne Kurve "<< name << " " << j << " " << kurven[j].size() << " Teile "; DBG
+    cout << "Zeichne Kurve "<< name << " " << j << " " << icc_examin->kurven[j].size() << " Teile "; DBG
     #endif
     s.str("");
-    if (kurven[j].size() == 0
+    if (icc_examin->kurven[j].size() == 0
      && ist_kurve) {
       fl_line (x( 0 ), y( 0 ), x( 1 ), y( 1 ) );
       // Infos einblenden 
       s << name << _(" mit Gamma: 1.0");
       fl_draw ( s.str().c_str(), x(0) + 2, y(n) + j*16 + 12);
     // parametrischer Eintrag
-    } else if (kurven[j].size() == 1
+    } else if (icc_examin->kurven[j].size() == 1
             && ist_kurve) {
       int segmente = 256;
-      double gamma = kurven[j][0]; DBG_V( gamma )
+      double gamma = icc_examin->kurven[j][0]; DBG_V( gamma )
       for (int i = 1; i < segmente; i++)
         fl_line (x( pow( (double)(i-1.0)/segmente, gamma ) ),
                  y( (i-1) / ((segmente-1) *n) ),
@@ -517,12 +514,12 @@ void draw_kurve    (int X, int Y, int W, int H,
       s << name << _(" mit einem Eintrag für Gamma: ") << gamma; DBG_V( gamma )
       fl_draw ( s.str().c_str(), x(0) + 2, y(n) + j*16 + 12);
     // parametrischer Eintrag mit Wert für Minimum und Maximum 
-    } else if (kurven[j].size() == 3
-            && texte[texte.size()-1] == "gamma_start_ende") {
+    } else if (icc_examin->kurven[j].size() == 3
+            && icc_examin->texte[icc_examin->texte.size()-1] == "gamma_start_ende") {
       int segmente = 256;
-      double gamma = kurven[j][0]; DBG_V( gamma )
-      double start = kurven[j][1]; DBG_V( start )
-      double ende  = kurven[j][2]; DBG_V( ende )
+      double gamma = icc_examin->kurven[j][0]; DBG_V( gamma )
+      double start = icc_examin->kurven[j][1]; DBG_V( start )
+      double ende  = icc_examin->kurven[j][2]; DBG_V( ende )
       double mult  = (ende - start); DBG_V( mult )
       for (int i = 1; i < segmente; i++) {
         fl_line (x( pow( (double)(i-1.0)/segmente, gamma ) * mult + start ),
@@ -535,14 +532,14 @@ void draw_kurve    (int X, int Y, int W, int H,
       fl_draw ( s.str().c_str(), x(0) + 2, y(n) + j*16 + 12);
     // segmentierte Kurve
     } else {
-      for (unsigned int i = 1; i < kurven[j].size(); i++) {
-        fl_line (x( kurven[j][i-1] ),
-                 y( (i-1) / ((kurven[j].size()-1) *n) ),
-                 x( kurven[j][i] ),
-                 y( (i) / ((kurven[j].size()-1) *n) ) );
+      for (unsigned int i = 1; i < icc_examin->kurven[j].size(); i++) {
+        fl_line (x( icc_examin->kurven[j][i-1] ),
+                 y( (i-1) / ((icc_examin->kurven[j].size()-1) *n) ),
+                 x( icc_examin->kurven[j][i] ),
+                 y( (i) / ((icc_examin->kurven[j].size()-1) *n) ) );
       }
       // Infos einblenden 
-      s << name << _(" mit ") << kurven[j].size() << _(" Punkten");
+      s << name << _(" mit ") << icc_examin->kurven[j].size() << _(" Punkten");
       fl_draw ( s.str().c_str(), x(0) + 2, y(n) + j*16 + 12);
     }
   }
