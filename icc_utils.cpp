@@ -32,9 +32,7 @@
 #include <fstream>
 
 
-#ifndef HAVE_OY
-int level_PROG = -1;
-#endif
+int level_PROG_[DBG_MAX_THREADS] = {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1};
 int icc_debug = 1;
 
 //#define WRITE_DBG
@@ -109,20 +107,39 @@ Fl_Thread icc_thread_liste[12] = {0,0,0,0,0,0,0,0,0,0,0,0};
  *
  */
 
+int
+wandelThreadId(Fl_Thread id)
+{
+  int pos = id;
+  {
+    if      (icc_thread_liste[THREAD_HAUPT] == id)
+      pos = THREAD_HAUPT;
+    else if (icc_thread_liste[THREAD_LADEN] == id)
+      pos = THREAD_LADEN;
+    else if (icc_thread_liste[THREAD_WACHE] == id)
+      pos = THREAD_WACHE;
+    else
+      pos = id;
+  }
+  return pos;
+}
+
 std::string
 dbgThreadId(Fl_Thread id)
 {
   std::stringstream ss("??");
+  int dbg_id = wandelThreadId ( id );
+  switch (dbg_id)
   {
     // in icc_thread_liste eingetragene Fl_Thread's lassen sich identifizieren
-    if      (icc_thread_liste[THREAD_HAUPT] == id) ss <<
-      "\033[30m\033[1m[HAUPT]\033[m";
-    else if (icc_thread_liste[THREAD_LADEN] == id) ss <<
-      "\033[32m\033[1m[LADEN]\033[m";
-    else if (icc_thread_liste[THREAD_WACHE] == id) ss <<
-      "\033[34m\033[1m[WACHE]\033[m";
-    else                                           ss <<
-      "\033[31m\033[1m["<< id <<"]\033[m";
+    case THREAD_HAUPT:
+      ss << "\033[30m\033[1m[HAUPT]\033[m"; break;
+    case THREAD_LADEN:
+      ss << "\033[32m\033[1m[LADEN]\033[m"; break;
+    case THREAD_WACHE:
+      ss << "\033[34m\033[1m[WACHE]\033[m"; break;
+    default:
+      ss << "\033[31m\033[1m["<< dbg_id <<"]\033[m"; break;
   }
   return ss.str();
 }

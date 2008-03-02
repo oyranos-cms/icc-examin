@@ -198,7 +198,7 @@ CgatsFilter::unterscheideZiffernWorte_( std::string &zeile )
 {
   DBG_CGATS_START
   std::string::size_type pos = 0, ende = 0, pos2, pos3;
-  static char text[64];
+  char text[64];
   bool in_anfuehrung = false;
   std::string txt;
   std::vector<std::string> ergebnis;

@@ -206,8 +206,6 @@ ICCprofile::load (const Speicher & prof)
   //Profilabschnitte
   // TagTabelle bei 132 abholen
   icTag *tagList = (icTag*)&((char*)data_)[132];
-  //(icTag*) new char ( getTagCount() * sizeof (icTag));
-  //memcpy (tagList , &((char*)data_)[132], sizeof (icTag) * getTagCount());
 
 # if BYTE_ORDER == LITTLE_ENDIAN
     DBG_PROG_S("LITTLE_ENDIAN")
@@ -220,11 +218,12 @@ ICCprofile::load (const Speicher & prof)
 # ifdef _LITTLE_ENDIAN
     DBG_PROG_S( "LITTLE_ENDIAN" )
 # endif
-  DBG_MEM_V( getTagCount() <<" "<< tags.size() )
-  if(getTagCount() || tags.size())
-    tags.resize(getTagCount());
+  int tag_count = getTagCount();
+  DBG_MEM_V( tag_count <<" "<< tags.size() )
+  if(tag_count || tags.size())
+    tags.resize(tag_count);
   DBG_MEM
-  for (int i = 0 ; i < getTagCount() ; i++)
+  for (int i = 0 ; i < tag_count; i++)
   {
     DBG_MEM
     tags[i].load( this, &tagList[i] ,
@@ -244,7 +243,7 @@ ICCprofile::load (const Speicher & prof)
     }
   }
 # ifdef DEBUG_ICCPROFILE
-  DBG_NUM_S( "TagCount: " << getTagCount() << " / " << tags.size() )
+  DBG_NUM_S( "TagCount: " << tag_count << " / " << tags.size() )
 # endif
  
   DBG_NUM_V( filename_ )

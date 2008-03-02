@@ -228,8 +228,10 @@ void
 ICCexamin::zeigCGATS()
 {
   DBG_PROG_START
+  icc_examin_ns::lock(__FILE__,__LINE__);
   // CGATS in Fenster praesentieren
   icc_examin_ns::nachricht(profile.profil()->cgats_max());
+  icc_examin_ns::unlock(this, __FILE__,__LINE__);
   DBG_PROG_ENDE
 }
 
@@ -247,7 +249,7 @@ ICCexamin::nachricht( Modell* modell , int info )
   DBG_PROG_V( info )
   // Modell identifizieren
   ICCkette* k = dynamic_cast<ICCkette*>(modell);
-  if(k && k->size() > info)
+  if(k && (k->size() > info))
   {
     DBG_PROG_S( _("Nachricht von ICCkette") )
     DBG_PROG_S( _("Auffrischen von Profil Nr.: ") << info )
@@ -296,6 +298,7 @@ ICCexamin::nachricht( Modell* modell , int info )
       }
     }
   }
+
   Beobachter::nachricht(modell, info);
   icc_examin->fortschrittThreaded(1.0);
   icc_examin->fortschrittThreaded(1.1);

@@ -103,7 +103,8 @@ icc_create_vrml( const char* p, int size, int intent )
     s << "-i a ";
   s << "-w " << ptn;
   DBG_PROG_V( s.str() )
-  ret = system (s.str().c_str()); DBG_PROG
+  std::string icc_sys_c = s.str();
+  ret = system (icc_sys_c.c_str()); DBG_PROG
   ptn = profil_temp_name.str(); ptn.append(".icc");
   erase_file (ptn.c_str());
   ptn = profil_temp_name.str(); ptn.append(".gam");

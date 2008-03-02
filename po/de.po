@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2005-08-14 08:59+0200\n"
+"POT-Creation-Date: 2005-08-14 19:20+0200\n"
 "PO-Revision-Date: 2005-08-13 17:35+0200\n"
 "Last-Translator: Kai-Uwe Behrmann\n"
 "Language-Team:  <de@li.org>\n"
@@ -205,18 +205,18 @@ msgstr "Helligkeit"
 msgid "Value"
 msgstr "Wert"
 
-#: icc_draw.cpp:677 icc_examin_farbraum.cpp:183 icc_examin_io.cpp:153
+#: icc_draw.cpp:677 icc_examin_farbraum.cpp:183 icc_examin_io.cpp:155
 #: icc_helfer.cpp:369 icc_helfer.cpp:372
 msgid "CIE *L"
 msgstr ""
 
-#: icc_draw.cpp:679 icc_examin_farbraum.cpp:184 icc_examin_io.cpp:154
+#: icc_draw.cpp:679 icc_examin_farbraum.cpp:184 icc_examin_io.cpp:156
 #: icc_gl.cpp:644 icc_gl.cpp:714 icc_gl.cpp:738 icc_gl.cpp:746
 #: icc_helfer.cpp:370
 msgid "CIE *a"
 msgstr ""
 
-#: icc_draw.cpp:681 icc_examin_farbraum.cpp:185 icc_examin_io.cpp:155
+#: icc_draw.cpp:681 icc_examin_farbraum.cpp:185 icc_examin_io.cpp:157
 #: icc_gl.cpp:657 icc_gl.cpp:754 icc_gl.cpp:772 icc_gl.cpp:779
 #: icc_helfer.cpp:371
 msgid "CIE *b"
@@ -266,7 +266,7 @@ msgstr "Darstellungsoptionen"
 msgid "icc_waehler_ nicht reservierbar"
 msgstr ""
 
-#: icc_examin.cpp:189 icc_examin_io.cpp:415
+#: icc_examin.cpp:189 icc_examin_io.cpp:419
 msgid "loaded"
 msgstr "geladen"
 
@@ -274,79 +274,79 @@ msgstr "geladen"
 msgid "Ready"
 msgstr "Bereit"
 
-#: icc_examin.cpp:252
+#: icc_examin.cpp:254
 msgid "Nachricht von ICCkette"
 msgstr ""
 
-#: icc_examin.cpp:253
+#: icc_examin.cpp:255
 msgid "Auffrischen von Profil Nr.: "
 msgstr ""
 
-#: icc_examin.cpp:375
+#: icc_examin.cpp:378
 msgid "Keine Kurve gefunden"
 msgstr ""
 
-#: icc_examin.cpp:488
+#: icc_examin.cpp:491
 msgid "verstecke "
 msgstr ""
 
-#: icc_examin.cpp:492
+#: icc_examin.cpp:495
 msgid "zeige     "
 msgstr ""
 
-#: icc_examin_io.cpp:162
+#: icc_examin_io.cpp:164
 msgid "kein Netz gefunden in VRML Datei"
 msgstr ""
 
-#: icc_examin_io.cpp:178
+#: icc_examin_io.cpp:180
 msgid "Anzahl gabs schon mal"
 msgstr ""
 
-#: icc_examin_io.cpp:198
+#: icc_examin_io.cpp:200
 msgid "Kein Netz gefunden. Ist Argyll installiert?"
 msgstr ""
 
-#: icc_examin_io.cpp:320
+#: icc_examin_io.cpp:324
 msgid "Stop loading "
 msgstr "Laden angehalten: "
 
-#: icc_examin_io.cpp:373 icc_betrachter.cxx:465
+#: icc_examin_io.cpp:377 icc_betrachter.cxx:465
 msgid "Filename"
 msgstr "Dateiname"
 
-#: icc_examin_io.cpp:377
+#: icc_examin_io.cpp:381
 msgid "found no content for"
 msgstr "keine Inhalte gefunden für"
 
-#: icc_examin_io.cpp:380
+#: icc_examin_io.cpp:384
 msgid "Internal error"
 msgstr "interner Fehler"
 
-#: icc_examin_io.cpp:382
+#: icc_examin_io.cpp:386
 msgid "No. Tag   Type   Size Description"
 msgstr "Nr. Teil  Typ   Größe Beschreibung"
 
-#: icc_examin_io.cpp:441
+#: icc_examin_io.cpp:445
 msgid "HTML Documents (*.htm*)"
 msgstr "HTML Dokumente (*.htm*)"
 
-#: icc_examin_io.cpp:445 icc_betrachter.cxx:386
+#: icc_examin_io.cpp:449 icc_betrachter.cxx:386
 msgid "Save Report"
 msgstr "Bericht Speichern"
 
-#: icc_examin_io.cpp:517 icc_betrachter.cxx:495
+#: icc_examin_io.cpp:521 icc_betrachter.cxx:495
 msgid "ICC colour profiles (*.ic*)"
 msgstr "ICC Farbprofile (*.ic*)"
 
-#: icc_examin_io.cpp:518 icc_betrachter.cxx:387
+#: icc_examin_io.cpp:522 icc_betrachter.cxx:387
 msgid "Save Gamut as Profile"
 msgstr "Speichere Farbhülle als Profil"
 
-#: icc_examin_io.cpp:520
+#: icc_examin_io.cpp:524
 msgid "VRML Files (*.wrl)"
 msgstr "VRML Dateien (*.wrl)"
 
-#: icc_examin_io.cpp:521 icc_betrachter.cxx:388
+#: icc_examin_io.cpp:525 icc_betrachter.cxx:388
 msgid "Save Gamut as VRML"
 msgstr "Speichere Farbhülle als VRML"
 
@@ -660,7 +660,7 @@ msgstr "Verknüpfung"
 msgid "Abstract"
 msgstr "Abstrakter Farbraum"
 
-#: icc_helfer.cpp:431 icc_profile.cpp:782
+#: icc_helfer.cpp:431 icc_profile.cpp:781
 msgid "Colour Space"
 msgstr "Farbraum"
 
@@ -1072,7 +1072,7 @@ msgstr "Uhr"
 msgid "seconds"
 msgstr "Sekunden"
 
-#: icc_helfer.cpp:834 icc_utils.cpp:56
+#: icc_helfer.cpp:834 icc_utils.cpp:54
 msgid "no filename given"
 msgstr "kein Dateiname angegeben"
 
@@ -1355,43 +1355,43 @@ msgstr ""
 msgid "Size"
 msgstr "Größe"
 
-#: icc_profile.cpp:361
+#: icc_profile.cpp:360
 msgid " typ - no text output"
 msgstr " Typ - keine Textausgabe"
 
-#: icc_profile.cpp:718
+#: icc_profile.cpp:717
 msgid "Work Space"
 msgstr "Arbeitsfarbraum"
 
-#: icc_profile.cpp:732
+#: icc_profile.cpp:731
 msgid "Your"
 msgstr "Ihr"
 
-#: icc_profile.cpp:733
+#: icc_profile.cpp:732
 msgid "Profile\" is designed for an other device"
 msgstr "Profil\" ist für eine anderes Gerät bestimmt"
 
-#: icc_profile.cpp:738
+#: icc_profile.cpp:737
 msgid "Separation"
 msgstr "Separation"
 
-#: icc_profile.cpp:751 icc_profile.cpp:774
+#: icc_profile.cpp:750 icc_profile.cpp:773
 msgid "Device class"
 msgstr "Geräteklasse"
 
-#: icc_profile.cpp:753 icc_profile.cpp:776 icc_profile.cpp:784
+#: icc_profile.cpp:752 icc_profile.cpp:775 icc_profile.cpp:783
 msgid "is not valid for an"
 msgstr "ist nocht gültig für ein"
 
-#: icc_profile.cpp:755 icc_profile.cpp:778
+#: icc_profile.cpp:754 icc_profile.cpp:777
 msgid "Profile\"."
 msgstr "ICC Profil\"."
 
-#: icc_profile.cpp:761
+#: icc_profile.cpp:760
 msgid "Linearisation"
 msgstr "Linearisierung"
 
-#: icc_profile.cpp:786
+#: icc_profile.cpp:785
 msgid "Profile at the moment\"."
 msgstr "Profil im Moment\"."
 
@@ -1747,7 +1747,7 @@ msgstr ""
 "Dateien k&ouml;nnen abweichende Lizenzbedingungen in den Dateik&ouml;pfen "
 "enthalten."
 
-#: icc_utils.cpp:76
+#: icc_utils.cpp:74
 msgid "Dateigroesse 0 fuer "
 msgstr ""
 
@@ -1759,15 +1759,15 @@ msgstr ""
 msgid " konnte nicht gelöscht werden"
 msgstr ""
 
-#: icc_vrml.cpp:125
+#: icc_vrml.cpp:126
 msgid "Ausnahme aufgetreten: "
 msgstr ""
 
-#: icc_vrml.cpp:129
+#: icc_vrml.cpp:130
 msgid "Std-Ausnahme aufgetreten: "
 msgstr ""
 
-#: icc_vrml.cpp:132
+#: icc_vrml.cpp:133
 msgid "Huch, unbekannte Ausnahme"
 msgstr ""
 
@@ -2151,7 +2151,7 @@ msgstr "Pfade:"
 msgid "Gibts nicht"
 msgstr ""
 
-#: icc_utils.h:175 icc_utils.h:176 icc_utils.h:177
+#: icc_utils.h:181 icc_utils.h:182 icc_utils.h:183
 msgid "!!! Warnung !!!"
 msgstr ""
 

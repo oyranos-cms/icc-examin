@@ -69,9 +69,12 @@
 # define BYTE_ORDER LITTLE_ENDIAN
 #endif
 
-extern Fl_Thread icc_thread_liste[12];
-enum { THREAD_HAUPT, THREAD_WACHE, THREAD_LADEN };
-std::string dbgThreadId(Fl_Thread id);
+
+#define DBG_MAX_THREADS
+extern Fl_Thread icc_thread_liste[DBG_MAX_THREADS];
+typedef enum ThreadDbgId { THREAD_HAUPT, THREAD_WACHE, THREAD_LADEN };
+std::string dbgThreadId    (Fl_Thread id);
+int         wandelThreadId (Fl_Thread id);
 
 
 // Statusmeldungen zur Fehlersuche
@@ -82,7 +85,10 @@ void dbgWriteF (std::stringstream & ss);
 #define cout std::cout
 #define endl std::endl
 
-extern int level_PROG;
+extern int level_PROG_ [DBG_MAX_THREADS];
+#define icc_level_PROG       level_PROG_ [wandelThreadId( pthread_self())]
+#define icc_level_PROG_plus  level_PROG_ [wandelThreadId( pthread_self())]++
+#define icc_level_PROG_minus level_PROG_ [wandelThreadId( pthread_self())]--
 extern int icc_debug;
 
 /*  icc_debug wird mit der Umgebungsvariable ICCEXAMIN_DEBUG in main() gesetzt
@@ -104,21 +110,21 @@ extern int icc_debug;
 #define DBG_UHR_ (double)clock()/(double)CLOCKS_PER_SEC
 
 #define DBG_T_     dbgWrite ( __FILE__<<":"<<__LINE__ <<" "<< __func__ << "() " << dbgThreadId(pthread_self()) <<" "<< DBG_UHR_ << " ");
-#define LEVEL      { for (int i = 0; i < level_PROG; i++) dbgWrite (" "); }
+#define LEVEL      { for (int i = 0; i < icc_level_PROG; i++) dbgWrite (" "); }
 #define DBG_       { LEVEL dbgWrite ("        "); DBG_T_ dbgWrite (endl); }
 #define DBG_S_(txt){ LEVEL dbgWrite ("        "); DBG_T_ dbgWrite (txt << endl); }
 #define DBG_V_(txt){ LEVEL dbgWrite ("        "); DBG_T_ dbgWrite (#txt << " " << txt << endl);}
 #define DBG        DBG_
 #define LEVEL_PLUS double m; \
-    for (int i = 0; i < level_PROG; i++) { \
+    for (int i = 0; i < icc_level_PROG; i++) { \
       if( (int)(modf( i / 10.0 , &m) * 10.) < 5 ) { \
         dbgWrite ("+"); \
       } else { \
         dbgWrite ("\033[1m+\033[m"); \
       } \
     }
-#define DBG_START  {level_PROG++; LEVEL_PLUS dbgWrite (" Start: "); DBG_T_ dbgWrite (endl); }
-#define DBG_ENDE   { LEVEL_PLUS dbgWrite (" Ende:  "); DBG_T_ level_PROG--; dbgWrite (endl); }
+#define DBG_START  {icc_level_PROG_plus; LEVEL_PLUS dbgWrite (" Start: "); DBG_T_ dbgWrite (endl); }
+#define DBG_ENDE   { LEVEL_PLUS dbgWrite (" Ende:  "); DBG_T_ icc_level_PROG_minus; dbgWrite (endl); }
 #define DBG_S(txt) DBG_S_(txt)
 #define DBG_V(txt) DBG_V_(txt)
 

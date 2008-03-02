@@ -1902,7 +1902,7 @@ GL_Ansicht::zeichnen()
                         icc_examin_ns::status_info( text );
                         ZeichneOText (ortho_font, scal, text)
                       }
-                      if(icc_debug = 14) {
+                      if(icc_debug == 14) {
                         glScalef(100,100,100);
                         zeichneKoordinaten_();
                         glScalef(.01,.01,.01);

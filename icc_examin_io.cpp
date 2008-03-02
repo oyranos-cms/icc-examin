@@ -62,6 +62,8 @@ const char* dateiName(std::string name);
 void
 ICCexamin::oeffnenThread_ ()
 { DBG_PROG_START
+  if(wandelThreadId(pthread_self() != THREAD_LADEN)) WARN_S( "THREAD_LADEN???" )
+
   if(!speicher_vect_.size()) {
     fortschritt( 1.1 );
     DBG_PROG_ENDE
@@ -259,7 +261,10 @@ void*
 void
 #endif
 ICCexamin::oeffnenStatisch_ (void* ie)
-{ DBG_PROG_START
+{
+  // TODO
+  //icc_examin_ns::sleep(0.1);
+  DBG_PROG_START
 
   // Laufzeitfehler erkennen
   {
