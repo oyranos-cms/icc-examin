@@ -212,10 +212,10 @@ ICCtag::load                        ( ICCprofile *profil,
   DBG_MEM_ENDE
 }
 
-std::vector<std::string>
+ICClist<std::string>
 ICCtag::getText                     (void)
 { DBG_PROG_START
-  std::vector<std::string> texte;
+  ICClist<std::string> texte;
   std::string type = getTypName();
 
   texte = this->getText (type);
@@ -223,10 +223,10 @@ ICCtag::getText                     (void)
   return texte;
 }
 
-std::vector<std::string>
+ICClist<std::string>
 ICCtag::getText                     (std::string text)
 { DBG_PROG_START
-  std::vector<std::string> texte;
+  ICClist<std::string> texte;
 
   if (data_ == NULL || !size_)
   { DBG_PROG_ENDE
@@ -323,7 +323,7 @@ ICCtag::getText                     (std::string text)
       DBG_NUM_S(  cout << s.str() )
 #     endif
     }
-    std::vector<double> xy = getCIEXYZ(); XYZto_xyY(xy);
+    ICClist<double> xy = getCIEXYZ(); XYZto_xyY(xy);
     if( icValue(*(icUInt16Number*)&data_[10]) ) 
       texte.push_back( getChromaticityColorantType( icValue(*(icUInt16Number*)&data_[10])) );
     else if(!(xy.size()%3))
@@ -650,10 +650,10 @@ ICCtag::getText                     (std::string text)
 
 
 /*
-std::vector<std::string>
+ICClist<std::string>
 ICCtag::getDescription              (void)
 { DBG_PROG_START
-  std::vector<std::string> texte;
+  ICClist<std::string> texte;
   std::string text =  "";
   icUInt32Number count = *(icUInt32Number*)(data_+8);
 
@@ -668,10 +668,10 @@ ICCtag::getDescription              (void)
   return texte;
 }*/
 
-std::vector<double>
+ICClist<double>
 ICCtag::getCIEXYZ                                 (void)
 { DBG_PROG_START
-  std::vector<double> punkte;
+  ICClist<double> punkte;
   icTagBase *base  = (icTagBase*)(&data_[0]);
 
   if ((base->sig) == (icTagTypeSignature)icValue( icSigChromaticityType )) {
@@ -707,10 +707,10 @@ ICCtag::getCIEXYZ                                 (void)
   return punkte;
 }
 
-std::vector<double>
+ICClist<double>
 ICCtag::getCurve                                  (void)
 { DBG_PROG_START
-  std::vector<double> punkte;
+  ICClist<double> punkte;
   icCurveType *daten = (icCurveType*) &data_[0];
   int count = icValue(daten->curve.count);
 
@@ -725,11 +725,11 @@ ICCtag::getCurve                                  (void)
   return punkte;
 }
 
-std::vector<std::vector<double> >
+ICClist<ICClist<double> >
 ICCtag::getCurves                                 (MftChain typ)
 { DBG_PROG_START
-  std::vector<double> kurve;
-  std::vector<std::vector<double> > kurven; DBG_PROG
+  ICClist<double> kurve;
+  ICClist<ICClist<double> > kurven; DBG_PROG
   // Who are we?
   if (getTypName() == "mft2") {
     icLut16* lut16 = (icLut16*) &data_[8];
@@ -903,11 +903,11 @@ ICCtag::getCurves                                 (MftChain typ)
   return kurven;
 }
 
-std::vector<std::vector<std::vector<std::vector<double> > > >
+ICClist<ICClist<ICClist<ICClist<double> > > >
 ICCtag::getTable                                 (MftChain typ)
 { DBG_PROG_START
-  std::vector<std::vector<std::vector<std::vector<double> > > > Tabelle;
-  std::vector<double> Farbe; DBG_PROG
+  ICClist<ICClist<ICClist<ICClist<double> > > > Tabelle;
+  ICClist<double> Farbe; DBG_PROG
   // Wer sind wir?
   if (getTypName() == "mft2") {
     icLut16* lut16 = (icLut16*) &data_[8];
@@ -1025,10 +1025,10 @@ ICCtag::getTable                                 (MftChain typ)
   return Tabelle;
 }
 
-std::vector<double>
+ICClist<double>
 ICCtag::getNumbers                                 (MftChain typ)
 { DBG_PROG_START
-  std::vector<double> nummern;
+  ICClist<double> nummern;
   // Who are we?
   if (getTypName() == "mft2") {
     icLut16* lut16 = (icLut16*) &data_[8];
@@ -1124,11 +1124,11 @@ ICCtag::getNumbers                                 (MftChain typ)
   return nummern;
 }
 
-std::vector<std::string>
+ICClist<std::string>
 ICCtag::getText                     (MftChain typ)
 { DBG_PROG_START
-  std::vector<std::string> texte;
-  std::vector<double> kanaele;
+  ICClist<std::string> texte;
+  ICClist<double> kanaele;
   char n[6];
 
 

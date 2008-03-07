@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2005  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2008  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -32,7 +32,6 @@
 
 #include "icc_utils.h"
 
-#include <vector>
 #include <string>
 #include <FL/Fl.H>
 #include <lcms.h>
@@ -46,22 +45,22 @@ public:
   void draw         ( );  // fltk virtual
   void ruhigNeuzeichnen (void);
   // der Vektor vect enthält fortlaufende XYZ Daten, txt den passenden Text
-  void hineinPunkt  ( std::vector<double> &vect,
-                      std::vector<std::string> &txt);
+  void hineinPunkt  ( ICClist<double> &vect,
+                      ICClist<std::string> &txt);
   // vect enthält Kurven mit 1 Koordinaten, txt den passenden Text dazu
-  void hineinKurven ( std::vector<std::vector<double> > &vect,
-                      std::vector<std::string> &txt);
+  void hineinKurven ( ICClist<ICClist<double> > &vect,
+                      ICClist<std::string> &txt);
   // vect enthält Kurven mit 2 Koordinaten, txt den passenden Text dazu
-  void hineinDaten  ( std::vector<std::vector<std::pair<double,double> > >&vect,
-                      std::vector<std::string> &txt);
-//  void hineinDaten  ( Handler* daten, std::vector<std::string> &txt);
+  void hineinDaten  ( ICClist<ICClist<std::pair<double,double> > >&vect,
+                      ICClist<std::string> &txt);
+//  void hineinDaten  ( Handler* daten, ICClist<std::string> &txt);
 
 private:
 //  void *daten;
-  std::vector<std::string> texte; // Texte zu Punkten oder Kurven
+  ICClist<std::string> texte; // Texte zu Punkten oder Kurven
   void drawKurve_   ( );
-  std::vector<std::vector<double> > kurven; // Daten
-  std::vector<std::vector<std::pair<double,double> > > kurven2;
+  ICClist<ICClist<double> > kurven; // Daten
+  ICClist<ICClist<std::pair<double,double> > > kurven2;
   static void dHaendler(void* o);
 
 public:
@@ -72,7 +71,7 @@ public:
 
 private:
   void drawCieShoe_ ( int  repeated);
-  std::vector<double> punkte;               // Daten
+  ICClist<double> punkte;               // Daten
   void clear() {punkte.clear(); kurven.clear(); kurven2.clear(); }
 
   // Zeichenbereich

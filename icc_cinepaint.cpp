@@ -57,7 +57,6 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
-#include <vector>
 
 
 using namespace std;

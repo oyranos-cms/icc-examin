@@ -15,7 +15,6 @@
 //#include <sstream>
 #include <stdio.h>
 #include <string>
-#include <vector>
 #include <FL/Fl.H>
 #include <FL/Fl_Window.H>
 #include <FL/Fl_Menu_Bar.H>
@@ -48,7 +47,7 @@ public:
   int inspekt_topline;
   TagTexts(int X,int Y,int W,int H,const char* start_info) ;
   TagTexts(int X,int Y,int W,int H) ;
-  void hinein(std::string text, std::vector<int> patches);
+  void hinein(std::string text, ICClist<int> patches);
   void hinein(std::string text);
   tagTextsCB_f cb;
   void selectItem(int item);
@@ -57,7 +56,7 @@ public:
 class MftChoice : public Fl_Choice {
   int X; int Y; int W; int H; const char* start_info; char typ[5];
 public:
-  std::vector<std::string> Info; int gewaehlter_eintrag;
+  ICClist<std::string> Info; int gewaehlter_eintrag;
   MftChoice(int X,int Y,int W,int H,const char* start_info) ;
   void profilTag(int _tag, std::string text);
   void auswahlCb(void);
@@ -291,7 +290,7 @@ public:
   Fl_Progress *load_progress;
   My_Fl_Box *no_box;
   int run(int argc, char** argv);
-  std::vector<std::string> open_veraltet(std::vector<std::string> dateinamen);
+  ICClist<std::string> open_veraltet(ICClist<std::string> dateinamen);
   void quit(void);
   void zeig_mich_(void* widget);
   void measurement(bool has_measurement);

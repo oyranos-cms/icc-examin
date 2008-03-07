@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2005  Kai-Uwe Behrmann 
+ * Copyright (C) 2005-2008  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -29,8 +29,8 @@
 #define ICC_CGATS_FILTER_H
 
 #include "icc_utils.h"
+#include "icc_list.h"
 
-#include <vector>
 #include <string>
 
 #define STD_CGATS_FIELDS 44
@@ -58,8 +58,6 @@ class CgatsFilter
     { DBG_PROG_START
         //! @brief Initialisierung
         typ_ = LCMS;
-          //! @brief die Dateisignatur
-        kopf = "ICCEXAM";
           //! @brief das Ersetzungswort f&uuml;r spektrale Feldbezeichner
         spektral = "SPECTRAL_";
         anfuehrungsstriche_setzen = false;
@@ -118,14 +116,19 @@ class CgatsFilter
 
     //! @brief Messdaten
     struct Messung {
-      std::vector<std::string> kommentare; //!< @brief KEYWORD ...
-      std::vector<std::vector<std::string> > felder;     //!< @brief DATA_FIELD
-      std::vector<std::vector<std::string> > block;      //!< @brief DATA
-      std::vector<int> line;               //!< @brief CGATS DATA line
+      ICClist<std::string> kommentare; //!< @brief KEYWORD ...
+      ICClist<ICClist<std::string> > felder;     //!< @brief DATA_FIELD
+      ICClist<ICClist<std::string> > block;      //!< @brief DATA
+      ICClist<int> line;               //!< @brief CGATS DATA line
       int feld_spalten;                    //!< @brief NUMBER_OF_FIELDS
       int block_zeilen;                    //!< @brief NUMBER_OF_SETS
+      Messung ()
+      {
+        feld_spalten = 0;
+        block_zeilen = 0;
+      }
     };
-    std::vector<Messung> messungen;        //!< @brief teilweise strukturierte Messdaten
+    ICClist<Messung> messungen;        //!< @brief teilweise strukturierte Messdaten
   private:
     void neuerAbschnitt_ ();
   public:
@@ -134,12 +137,12 @@ class CgatsFilter
      * Anm.: bei zusammengefassten Vorg&auml;ngen ist eventuell nur "meldung" g&uuml;ltig
      */
     struct Log {
-      std::vector<std::string> eingabe; //!< @brief die bearbeiteten Zeilen (>=0)
-      std::vector<std::string> ausgabe; //!< @brief die resultierenden Zeilen (>=0)
+      ICClist<std::string> eingabe; //!< @brief die bearbeiteten Zeilen (>=0)
+      ICClist<std::string> ausgabe; //!< @brief die resultierenden Zeilen (>=0)
       std::string meldung;              //!< @brief eine Mitteilung f&uuml;r den Vorgang
       int original_zeile;               //!< @brief Zeilennummer der Eingabe
     };
-    std::vector<Log> log;
+    ICClist<Log> log;
 
   private:
     /** @brief --- Hauptfunktion ---
@@ -178,7 +181,7 @@ class CgatsFilter
        *  editieren : Bearbeitungscode aus sucheSchluesselwort_()
        *  cmy       : Schalter f&uuml;r CB CMY Feldbezeichner
        */
-    int editZeile_( std::vector<std::string> &zeilen,
+    int editZeile_( ICClist<std::string> &zeilen,
                     int zeile_x, int editieren, bool cmy );
 
     // allgemeine Textbearbeitung
@@ -187,20 +190,20 @@ class CgatsFilter
        *  zeilen    : Referenz auf alle Text Zeilen
        *  zeile_x   : Nummer der gew&auml;hlten Zeile
        */
-    void suchenLoeschen_      ( std::vector<std::string> &zeilen,
+    void suchenLoeschen_      ( ICClist<std::string> &zeilen,
                                 std::string               text );
 
       /** @brief doppelte Zeilen l&ouml;schen
        *
        *  zeilen    : Referenz auf alle Text Zeilen
        */
-    int  zeilenOhneDuplikate_ ( std::vector<std::string> &zeilen );
+    int  zeilenOhneDuplikate_ ( ICClist<std::string> &zeilen );
 
       /** @brief Buchstabenworte von Zahlen unterscheiden
        *
        *  zeilen    : Referenz auf alle Text Zeilen
        */
-    std::vector<std::string> unterscheideZiffernWorte_ ( std::string &zeile );
+    ICClist<std::string> unterscheideZiffernWorte_ ( std::string &zeile );
 
       /** @brief Zeile von pos bis Ende in Anf&uuml;hrungszeichen setzen
        *
@@ -247,9 +250,9 @@ class CgatsFilter
     // ben&ouml;tigte dynamische Hilfsobjekte
     std::string              data_;      //!< @brief der korrigierte CGATS Text
     std::string              data_orig_; //!< @brief eine Kopie vom Original
-    std::vector<std::string> s_woerter_; //!< @brief Schl&uuml;sselw&ouml;rter
-    std::vector<std::string> felder_;    //!< @brief die Feldnamen
-    std::vector<std::string> zeilen_;    //!< @brief Arbeitsspeicher
+    ICClist<std::string> s_woerter_; //!< @brief Schl&uuml;sselw&ouml;rter
+    ICClist<std::string> felder_;    //!< @brief die Feldnamen
+    ICClist<std::string> zeilen_;    //!< @brief Arbeitsspeicher
     enum Typ_ {
       LCMS,
       MAX_KORRIGIEREN

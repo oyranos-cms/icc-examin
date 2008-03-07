@@ -46,7 +46,6 @@
 #include <iostream>
 #include <sstream>
 #include <map>
-#include <vector>
 #include <fstream>
 
 /**
@@ -90,7 +89,7 @@ class ICCprofile {
     size_t              size_;
 
     ICCheader           header;
-    std::vector<ICCtag> tags;
+    ICClist<ICCtag> tags;
   private: // cgats via lcms
     ICCmeasurement      measurement;
   public:
@@ -111,23 +110,23 @@ class ICCprofile {
 
     std::string         printHeader     ();
     std::string         printLongHeader ();
-    std::vector<std::string> getPCSNames();
+    ICClist<std::string> getPCSNames();
 
     // tag infos
     int                      tagCount();
-    std::vector<std::string> printTags  (); //!< list of tags (5)
-    std::vector<std::string> printTagInfo      (int item); //!< name,typ
-    std::vector<std::string> getTagText        (int item); //!< content
-    std::vector<std::string> getTagDescription (int item);
+    ICClist<std::string> printTags  (); //!< list of tags (5)
+    ICClist<std::string> printTagInfo      (int item); //!< name,typ
+    ICClist<std::string> getTagText        (int item); //!< content
+    ICClist<std::string> getTagDescription (int item);
 
-    std::vector<double>      getTagCIEXYZ      (int item);
-    std::vector<double>      getTagCurve       (int item);
-    std::vector<std::vector<double> >
+    ICClist<double>      getTagCIEXYZ      (int item);
+    ICClist<double>      getTagCurve       (int item);
+    ICClist<ICClist<double> >
                              getTagCurves      (int item, ICCtag::MftChain typ);
-    std::vector<std::vector<std::vector<std::vector<double> > > >
+    ICClist<ICClist<ICClist<ICClist<double> > > >
                              getTagTable       (int item, ICCtag::MftChain typ);
-    std::vector<double>      getTagNumbers     (int item, ICCtag::MftChain typ);
-    std::vector<std::string> getTagChannelNames(int item, ICCtag::MftChain typ);
+    ICClist<double>      getTagNumbers     (int item, ICCtag::MftChain typ);
+    ICClist<std::string> getTagChannelNames(int item, ICCtag::MftChain typ);
     bool                hasTagName   (std::string name); //!< name
     int                 getTagIDByName (std::string name); //!< name
     int                 getTagCount     (); 
@@ -135,7 +134,7 @@ class ICCprofile {
     //! profile infos
     //char*               getProfileInfo  ();
     char*               getProfileDescription  ();
-    std::vector<double> getWhitePkt   (void);
+    ICClist<double> getWhitePkt   (void);
     int                 getColourChannelsCount ();
     int                 hasCLUT ();
     bool                valid ();

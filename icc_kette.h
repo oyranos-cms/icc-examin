@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2005-2007  Kai-Uwe Behrmann 
+ * Copyright (C) 2005-2008  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -31,7 +31,6 @@
 #define ICC_KETTE_H
 
 #include <string>
-#include <vector>
 #include "icc_profile.h"
 #include "icc_utils.h"
 #include "icc_modell_beobachter.h"
@@ -57,10 +56,10 @@ class ICCkette : public icc_examin_ns::ThreadDaten,
   private:
     int                      aktuelles_profil_;
     /** list of loaded profiles */
-    std::vector<ICCprofile>  profile_;
-    std::vector<std::string> profilnamen_;
-    std::vector<int>         aktiv_;
-    std::vector<double>      profil_mzeit_;
+    icc_examin_ns::ICCThreadList<ICCprofile>  profile_;
+    icc_examin_ns::ICCThreadList<std::string> profilnamen_;
+    icc_examin_ns::ICCThreadList<int>         aktiv_;
+    icc_examin_ns::ICCThreadList<double>      profil_mzeit_;
 
     /** Start a pthread observer, and let him inform all our observers,
         which profile was just changed.
@@ -77,7 +76,7 @@ class ICCkette : public icc_examin_ns::ThreadDaten,
 
     void         setzAktiv (int pos) { DBG_PROG aktiv_[pos]=true;}// benachrichtigen(pos);}
     void         passiv    (int pos) { DBG_PROG aktiv_[pos]=false;}// benachrichtigen(pos);}
-    std::vector<int> aktiv () { return aktiv_; }
+    icc_examin_ns::ICCThreadList<int> aktiv () { return aktiv_; }
     int          aktiv (int pos) { return aktiv_[pos]; }
     void         aktuell   (int pos) {
                                 if(pos < (int)profile_.size())
@@ -106,7 +105,7 @@ class ICCkette : public icc_examin_ns::ThreadDaten,
     operator std::string ()  {
                if(profilnamen_.size()) return profilnamen_[aktuelles_profil_];
                else return ""; }*/
-    operator std::vector<std::string> ()  {
+    operator icc_examin_ns::ICCThreadList<std::string> ()  {
                return profilnamen_; }
     operator int ()  {
                return aktuelles_profil_; }

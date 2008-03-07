@@ -30,7 +30,6 @@
 #ifndef ICC_VRML_PARSER_H
 #define ICC_VRML_PARSER_H
 
-#include <vector>
 #include <map>
 #include "icc_helfer.h"
 #include "icc_thread_daten.h"
@@ -44,7 +43,7 @@ struct ICCnetzPunkt {
 
 /** point indexes for a representable plain */
 struct DreiecksIndexe {
-  int i[4];        //!< referes to std::vector<ICCnetzPunkt>punkte
+  int i[4];        //!< referes to ICClist<ICCnetzPunkt>punkte
   double normale[3]; //!< surface normals
   double midpoint[3];//!< midpoint
 };

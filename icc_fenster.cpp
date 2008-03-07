@@ -32,7 +32,6 @@
 #include "icc_fenster.h"
 
 #include <string>
-#include <vector>
 
 #include <FL/Fl.H>
 #if HAVE_X
@@ -80,7 +79,7 @@ dateiwahl_cb (const char *dateiname, int typ, void *arg)
 
     if (dateiname)
     {
-      std::vector<std::string> profilnamen;
+      ICClist<std::string> profilnamen;
       profilnamen.resize(1);
       //profilnamen[0] = dateiname;
 
@@ -107,10 +106,10 @@ dateiwahl_cb (MyFl_File_Chooser *f, void *data, int finish)
     DBG_NUM_V( data )
     filename = fl->value();
 
-    static std::vector<std::string> file_vect;
+    static ICClist<std::string> file_vect;
 
     if (filename && fl->count() && dateiwahl->preview()) {
-      std::vector<std::string> profilnamen;
+      ICClist<std::string> profilnamen;
       profilnamen.resize(fl->count());
       for (int i = 0; i < fl->count(); i++) {
         if(strchr(fl->value(i), '/') == 0) {
@@ -139,17 +138,16 @@ dateiwahl_cb (MyFl_File_Chooser *f, void *data, int finish)
       }
 
       // remove unseen files
-      std::vector<std::string>::iterator it;
       int run = 1;
 
       while(run)
       {
         run = 0;
-        for(it = file_vect.begin(); it != file_vect.end(); ++it)
+        for(int i = 0; i < (int)file_vect.size(); ++i)
         {
           file_in_list = 0;
-          for(int i = 0; i < (int)profilnamen.size(); ++i)
-            if(profilnamen[i] == *it)
+          for(int j = 0; j < (int)profilnamen.size(); ++j)
+            if(profilnamen[j] == file_vect[i])
             {
               file_in_list = 1;
               break;
@@ -157,7 +155,7 @@ dateiwahl_cb (MyFl_File_Chooser *f, void *data, int finish)
 
           if(!file_in_list)
           {
-            file_vect.erase( it );
+            file_vect.erase( &file_vect[i] );
             run = 1;
             break;
           }

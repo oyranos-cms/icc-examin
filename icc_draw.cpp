@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2005  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2008  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -37,7 +37,6 @@
 
 #include <stdio.h>
 #include <iostream>
-#include <vector>
 #include <string.h>
 #include <FL/Fl.H>
 #include <FL/Fl_Widget.H>
@@ -109,8 +108,8 @@ TagDrawings::~TagDrawings ()
 }
 
 void
-TagDrawings::hineinPunkt ( std::vector<double>      &vect,
-                           std::vector<std::string> &txt )
+TagDrawings::hineinPunkt ( ICClist<double>      &vect,
+                           ICClist<std::string> &txt )
 {
   DBG_PROG_START
   clear();
@@ -131,8 +130,8 @@ TagDrawings::hineinPunkt ( std::vector<double>      &vect,
 
 void
 TagDrawings::hineinDaten (
-                     std::vector<std::vector<std::pair<double,double> > > &vect,
-                     std::vector<std::string> &txt )
+                     ICClist<ICClist<std::pair<double,double> > > &vect,
+                     ICClist<std::string> &txt )
 {
   DBG_PROG_START
   clear();
@@ -157,8 +156,8 @@ TagDrawings::hineinDaten (
 }
 
 void
-TagDrawings::hineinKurven ( std::vector<std::vector<double> > &vect,
-                            std::vector<std::string> &txt)
+TagDrawings::hineinKurven ( ICClist<ICClist<double> > &vect,
+                            ICClist<std::string> &txt)
 {
   DBG_PROG_START
   clear();
@@ -439,7 +438,7 @@ TagDrawings::drawCieShoe_ ( int repeated)
     // Primaries / white point
     register char RGB[3];
     register cmsCIEXYZ XYZ;
-    std::vector<double> pos;
+    ICClist<double> pos;
     for (unsigned int i = 0; i < punkte.size()/3; i++) {
         double _XYZ[3] = {punkte[i*3+0], punkte[i*3+1], punkte[i*3+2]};
         const double* xyY = XYZto_xyY ( _XYZ );
@@ -453,7 +452,7 @@ TagDrawings::drawCieShoe_ ( int repeated)
     if (texte[0] != "wtpt") { // mark the white point only
       if(!profile.profil())
         return;
-      std::vector<double> xyY = profile.profil()->getWhitePkt();
+      ICClist<double> xyY = profile.profil()->getWhitePkt();
       XYZto_xyY ( xyY );
       int g = 2;
 

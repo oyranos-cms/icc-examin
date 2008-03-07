@@ -143,9 +143,11 @@ ICCprofile::load (const Speicher & prof)
   DBG_MEM_V( (int*)data_ <<" "<< size_ )
 
   this->clear();
+  measurementReparent();
 
   if( file.size() )
     data_type = guessFileType( file.c_str() );
+
 
   // check minimum size for plausible data
   if (prof.size() > 64) {
@@ -344,7 +346,7 @@ ICCprofile::printLongHeader ()
   return header.print_long();
 }
 
-std::vector<std::string>
+ICClist<std::string>
 ICCprofile::getPCSNames     ()
 {
   DBG_PROG
@@ -365,10 +367,10 @@ ICCprofile::tagCount        ()
   return tags.size();
 }
 
-std::vector<std::string>
+ICClist<std::string>
 ICCprofile::printTagInfo         (int item)
 { DBG_PROG_START
-  std::vector<std::string> liste;
+  ICClist<std::string> liste;
 
   if(0 > item || item >= (int)tags.size())
     return liste;
@@ -380,10 +382,10 @@ ICCprofile::printTagInfo         (int item)
   return liste;
 }
 
-std::vector<std::string>
+ICClist<std::string>
 ICCprofile::printTags            ()
 { DBG_PROG_START
-  std::vector<std::string> StringList;
+  ICClist<std::string> StringList;
   std::string text;
   std::stringstream s;
 
@@ -394,28 +396,29 @@ ICCprofile::printTags            ()
   } DBG_MEM
 
   int count = 0;
-  for (std::vector<ICCtag>::iterator it = tags.begin(); it != tags.end(); it++){
+  for (size_t i = 0; i < tags.size(); i++)
+  {
     s.str("");
     s << count; count++;           StringList.push_back(s.str()); s.str("");
-    s.str((*it).getTagName());     StringList.push_back(s.str()); s.str("");
-    s.str((*it).getTypName());     StringList.push_back(s.str()); s.str("");
-    s << (*it).getSize();          StringList.push_back(s.str()); s.str("");
-    s.str((*it).getInfo()); StringList.push_back(s.str()); s.str("");
+    s.str(tags[i].getTagName());     StringList.push_back(s.str()); s.str("");
+    s.str(tags[i].getTypName());     StringList.push_back(s.str()); s.str("");
+    s << tags[i].getSize();          StringList.push_back(s.str()); s.str("");
+    s.str(tags[i].getInfo()); StringList.push_back(s.str()); s.str("");
 # ifdef DEBUG_ICCPROFILE
-    DBG_NUM_S( (*it).getTagName() << " " << count )
+    DBG_NUM_S( tags[i].getTagName() << " " << count )
 # endif
   }
   DBG_PROG_ENDE
   return StringList;
 }
 
-std::vector<std::string>
+ICClist<std::string>
 ICCprofile::getTagText                                  (int item)
 { DBG_PROG_START
   // check
   std::string name = tags[item].getTypName();
   std::string leer = name + _(" typ - no text output");
-  std::vector<std::string> v;
+  ICClist<std::string> v;
   v.push_back( leer );
   if(item < 0 || item >= (int)tags.size())
   {
@@ -439,13 +442,13 @@ ICCprofile::getTagText                                  (int item)
   return tags.at(item).getText();
 }
 
-std::vector<std::string>
+ICClist<std::string>
 ICCprofile::getTagChannelNames                          (int item,
                                                          ICCtag::MftChain typ)
 { DBG_PROG_START
   // check
   std::string leer = tags[item].getTypName() + _(" typ - no text output");
-  std::vector<std::string> v;
+  ICClist<std::string> v;
   v.push_back( leer );
 
   // check
@@ -459,22 +462,22 @@ ICCprofile::getTagChannelNames                          (int item,
   return tags.at(item).getText(typ);
 }
 
-std::vector<std::string>
+ICClist<std::string>
 ICCprofile::getTagDescription                    (int item)
 { DBG_PROG_START
   // check
-  std::vector<std::string> leer;
+  ICClist<std::string> leer;
   if (tags[item].getTypName() != "desc") { DBG_PROG_ENDE return leer; }
 
   DBG_PROG_ENDE
   return tags.at(item).getText();
 }
 
-std::vector<double>
+ICClist<double>
 ICCprofile::getTagCIEXYZ                         (int item)
 { DBG_PROG_START
   // check
-  std::vector<double> XYZ;
+  ICClist<double> XYZ;
 
   if ( tags[item].getTypName() == "XYZ"
     || tags[item].getTypName() == "chrm")
@@ -484,11 +487,11 @@ ICCprofile::getTagCIEXYZ                         (int item)
   return XYZ;
 }
 
-std::vector<double>
+ICClist<double>
 ICCprofile::getTagCurve                          (int item)
 { DBG_PROG_START
   // check
-  std::vector<double> leer;
+  ICClist<double> leer;
   if (tags[item].getTypName() != "curv")
   {
 #   ifdef DEBUG_ICCPROFILE
@@ -502,11 +505,11 @@ ICCprofile::getTagCurve                          (int item)
   return tags.at(item).getCurve();
 }
 
-std::vector<std::vector<double> >
+ICClist<ICClist<double> >
 ICCprofile::getTagCurves                         (int item,ICCtag::MftChain typ)
 { DBG_PROG_START
   // check
-  std::vector<std::vector<double> > leer;
+  ICClist<ICClist<double> > leer;
   if (tags[item].getTypName() != "mft2"
    && tags[item].getTypName() != "mft1"
    && tags[item].getTypName() != "vcgt")
@@ -522,11 +525,11 @@ ICCprofile::getTagCurves                         (int item,ICCtag::MftChain typ)
   return tags.at(item).getCurves(typ);
 }
 
-std::vector<std::vector<std::vector<std::vector<double> > > >
+ICClist<ICClist<ICClist<ICClist<double> > > >
 ICCprofile::getTagTable                         (int item,ICCtag::MftChain typ)
 { DBG_PROG_START
   // check
-  std::vector<std::vector<std::vector<std::vector<double> > > > leer;
+  ICClist<ICClist<ICClist<ICClist<double> > > > leer;
   if (tags[item].getTypName() != "mft2"
    && tags[item].getTypName() != "mft1")
   {
@@ -541,11 +544,11 @@ ICCprofile::getTagTable                         (int item,ICCtag::MftChain typ)
   return tags.at(item).getTable(typ);
 }
 
-std::vector<double>
+ICClist<double>
 ICCprofile::getTagNumbers                        (int item,ICCtag::MftChain typ)
 { DBG_PROG_START
   // check
-  std::vector<double> leer;
+  ICClist<double> leer;
   if (tags[item].getTypName() != "mft2"
    && tags[item].getTypName() != "mft1"
    && tags[item].getTypName() != "ncl2")
@@ -568,11 +571,12 @@ ICCprofile::getTagIDByName            (std::string name)
   } DBG_MEM
 
   int item = 0;
-  for (std::vector<ICCtag>::iterator it = tags.begin(); it != tags.end(); it++){
-    if ( (*it).getTagName() == name
-      && (*it).getSize()            ) {
+  for (size_t i = 0; i < tags.size(); i++)
+  {
+    if ( tags[i].getTagName() == name
+      && tags[i].getSize()            ) {
 #     ifdef DEBUG_ICCPROFILE
-      DBG_PROG_S( item << " = " << (*it).getTagName() << " found" )
+      DBG_PROG_S( item << " = " << tags[i].getTagName() << " found" )
 #     endif
       DBG_PROG_ENDE
       return item;
@@ -596,12 +600,13 @@ ICCprofile::hasTagName            (std::string name)
 
   int item = 0;
   DBG_PROG_V( tags.size() )
-  for (std::vector<ICCtag>::iterator it = tags.begin(); it != tags.end(); it++){
-    DBG_PROG_V((intptr_t)(&it))
-    if ( (*it).getTagName() == name
-      && (*it).getSize()            ) {
+  for (size_t i = 0; i < tags.size(); i++)
+  {
+    DBG_PROG_V((intptr_t)(&tags[i]))
+    if ( tags[i].getTagName() == name
+      && tags[i].getSize()            ) {
 #     ifdef DEBUG_ICCPROFILE
-      DBG_NUM_S( (*it).getTagName() << " found" )
+      DBG_NUM_S( tags[i].getTagName() << " found" )
 #     endif
       DBG_PROG_ENDE
       return true;
@@ -657,7 +662,7 @@ ICCprofile::getColourChannelsCount(void)
   int channels = 0;
   const char *tag_name = NULL;
   ICCtag::MftChain format = ICCtag::TABLE_IN;
-  std::vector<double> nummern;
+  ICClist<double> nummern;
        if(this->hasTagName("A2B0")) {
     tag_name = "A2B0";
   } else if(this->hasTagName("A2B1")) {
@@ -691,10 +696,10 @@ ICCprofile::getColourChannelsCount(void)
   return channels;
 }
 
-std::vector<double>
+ICClist<double>
 ICCprofile::getWhitePkt           (void)
 { DBG_PROG_START
-  std::vector<double> XYZ;
+  ICClist<double> XYZ;
   if (hasTagName ("wtpt"))
     XYZ = getTagCIEXYZ (getTagIDByName ("wtpt"));
  
@@ -711,7 +716,7 @@ ICCprofile::getProfileDescription  ()
   if(hasTagName("desc"))
   {
     int id = getTagIDByName("desc");
-    std::vector<std::string> texte = getTagText( id );
+    ICClist<std::string> texte = getTagText( id );
     if(texte.size())
     {
       text = (char*) calloc( sizeof(char), strlen(texte[0].c_str()) * 4 );
@@ -1037,7 +1042,7 @@ ICCprofile::removeTag (int item)
 
   if (item >= (int)tags.size() ) { DBG_PROG_ENDE return 1; }
 
-  std::vector <ICCtag> t(tags.size()-1); DBG_PROG
+  ICClist <ICCtag> t(tags.size()-1); DBG_PROG
     DBG_PROG_V (tags.size())
   int i = 0,
       zahl = 0; DBG_PROG

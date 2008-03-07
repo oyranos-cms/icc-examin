@@ -217,9 +217,9 @@ double *outbuf = 0;            //!< colours converted to Lab
 char* colour_profile = 0;      //!< measurement colours profile (named colours)
 char *image_profile = NULL;    //!< image profile
 char *proof_profile = NULL;    //!< simulation profile
-std::vector<double>       pcsfarbe;       //!< -> CIE*Lab 
-std::vector<double>       geraetefarbe;   //!< image colours
-std::vector<std::string>  name;           //!< colour names
+ICClist<double>       pcsfarbe;       //!< -> CIE*Lab 
+ICClist<double>       geraetefarbe;   //!< image colours
+ICClist<std::string>  name;           //!< colour names
 std::string an,                //!< image profile name
             bn,                //!< colour profile
             pn;                //!< proof profile
@@ -423,11 +423,11 @@ berechneTagGroesse (int farben_n, int farb_kanaele)
  *  @param nachname		common family name for all colours
  */
 char*
-schreibeNcl2Tag              ( std::vector<double>       pcsfarbe,
-                               std::vector<double>       geraetefarbe,
+schreibeNcl2Tag              ( ICClist<double>       pcsfarbe,
+                               ICClist<double>       geraetefarbe,
                                int                       farb_kanaele,
                                const char*               vorname,
-                               std::vector<std::string>  name,
+                               ICClist<std::string>  name,
                                const char*               nachname)
 {
   int    farben_n = pcsfarbe.size() / 3;
@@ -550,7 +550,7 @@ vergleicheFarben(void* zeiger)
   DBG_PLUG_S( "layer "<< (int*)layer )
 
   // colour memory - static is perhaps dangerous?
-  static std::vector<double> vorherige_farben;
+  static ICClist<double> vorherige_farben;
 
   DBG_PLUG_S( "zeiger " << (int*)zeiger )
 

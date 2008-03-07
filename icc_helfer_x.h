@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2005  Kai-Uwe Behrmann 
+ * Copyright (C) 2005-2008  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -31,12 +31,12 @@
 #define ICC_HELFER_X_H
 
 #include <string>
-#include <vector>
+#include "icc_list.h"
 
 // helper functions
 // defined in icc_helfer_x.cpp / icc_helfer_osx.cpp
-std::vector<std::vector<double> >leseGrafikKartenGamma(std::string display_name,
-                                              std::vector<std::string> &texte,
+ICClist<ICClist<double> >leseGrafikKartenGamma(std::string display_name,
+                                              ICClist<std::string> &texte,
                                               int x, int y );
 
 

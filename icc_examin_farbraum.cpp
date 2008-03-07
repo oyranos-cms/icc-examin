@@ -190,9 +190,9 @@ ICCexamin::netzLese (int n,
  */
 void
 ICCexamin::farbenLese  ( int n,
-                         std::vector<double> & p,
-                         std::vector<double>  & f,
-                         std::vector<std::string> & names )
+                         ICClist<double> & p,
+                         ICClist<double>  & f,
+                         ICClist<std::string> & names )
 {
   DBG_PROG_START
   // show named colours
@@ -213,7 +213,7 @@ ICCexamin::farbenLese  ( int n,
     DBG_PROG
 
     int item = pr->getTagIDByName("ncl2");
-    std::vector<double> p_neu = pr->getTagNumbers (item, ICCtag::MATRIX);
+    ICClist<double> p_neu = pr->getTagNumbers (item, ICCtag::MATRIX);
     int channels_n = pr->getColourChannelsCount();
     unsigned int n_farben = p_neu.size()/(3+channels_n);
 
@@ -306,9 +306,9 @@ ICCexamin::farbenLese  ( int n,
   int single = (n < 0);
   oyNamedColours_s * nl = 0;
 
-  std::vector<double> p;
-  std::vector<double>  f;  // colour
-  std::vector<std::string> names;
+  ICClist<double> p;
+  ICClist<double>  f;  // colour
+  ICClist<std::string> names;
   oyNamedColour_s * c = 0;
   oyProfile_s * prof = oyProfile_FromFile( profile[n]->filename(), 0, 0 );
   int channels_n = oyProfile_GetChannelsCount( prof );
@@ -381,7 +381,7 @@ ICCexamin::farbraum (int n)
 {
   DBG_PROG_START
 
-  std::vector<std::string> texte, namen;
+  ICClist<std::string> texte, namen;
 
   texte.push_back(_("CIE *L"));
   texte.push_back(_("CIE *a"));

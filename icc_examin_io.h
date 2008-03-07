@@ -38,7 +38,6 @@
 #include "icc_thread_daten.h"
 
 #include <string>
-#include <vector>
 #include <set>
 #define USE_THREADS 1
 
@@ -68,7 +67,7 @@ class ICCexaminIO /*: public icc_examin_ns::Beobachter,
     int          erneuern();
     void         erneuern(int pos);
   private:
-    std::vector<Speicher> speicher_vect_;
+    ICClist<Speicher> speicher_vect_;
     static
 #if USE_THREADS
     void*
@@ -82,9 +81,9 @@ class ICCexaminIO /*: public icc_examin_ns::Beobachter,
     void         farbraum_ (int info);
   public:
     void         oeffnen ();                   //!< interactive
-    void         oeffnen (std::vector<std::string> dateinamen);
+    void         oeffnen (ICClist<std::string> dateinamen);
     bool         lade () {return lade_; };
-    void         lade (std::vector<Speicher> & neu);
+    void         lade (ICClist<Speicher> & neu);
 
   public:
     bool         berichtSpeichern (void);      //!< GCATS report -> html file

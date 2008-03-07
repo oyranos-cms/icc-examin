@@ -31,9 +31,6 @@ decl {\#include <stdio.h>} {public
 decl {\#include <string>} {public
 } 
 
-decl {\#include <vector>} {public
-} 
-
 decl {\#include <FL/Fl.H>} {public
 } 
 
@@ -135,7 +132,7 @@ class TagTexts {: {public Fl_Hold_Browser}
   } {
     code {cb = NULL;} {}
   }
-  Function {hinein(std::string text, std::vector<int> patches)} {open
+  Function {hinein(std::string text, ICClist<int> patches)} {open
   } {
     code DBG_PROG_START {}
     code {//show text from tag_browser
@@ -144,7 +141,7 @@ class TagTexts {: {public Fl_Hold_Browser}
 
       this->clear();
 
-      std::vector <std::string> texte = icc_parser::zeilenNachVector( text );
+      ICClist <std::string> texte = icc_parser::zeilenNachVector( text );
       int odd = 1;
       unsigned k = 0;
       for (unsigned int i = 0; i < texte.size(); i++)
@@ -180,7 +177,7 @@ class TagTexts {: {public Fl_Hold_Browser}
   Function {hinein(std::string text)} {open
   } {
     code DBG_PROG_START {}
-    code {std::vector<int> patches;
+    code {ICClist<int> patches;
 this->hinein( text, patches );} {}
     code DBG_PROG_ENDE {}
   }
@@ -212,7 +209,7 @@ decl {\#include <FL/fl_draw.H>} {}
 class MftChoice {: {public Fl_Choice}
 } {
   decl {int X; int Y; int W; int H; const char* start_info; char typ[5];} {}
-  decl {std::vector<std::string> Info; int gewaehlter_eintrag;} {public
+  decl {ICClist<std::string> Info; int gewaehlter_eintrag;} {public
   }
   Function {MftChoice(int X,int Y,int W,int H,const char* start_info) : Fl_Choice(X,Y,W,H,start_info), X(X), Y(Y), W(W), H(H)} {open
   } {
@@ -906,7 +903,7 @@ icc_examin->testZeigen();}
   DBG_PROG_ENDE;
   return ret;} {}
   }
-  Function {open_veraltet(std::vector<std::string> dateinamen)} {open return_type {std::vector<std::string>}
+  Function {open_veraltet(ICClist<std::string> dateinamen)} {open return_type {ICClist<std::string>}
   } {
     code DBG_PROG_START {}
     code {\#include "icc_vrml.h"

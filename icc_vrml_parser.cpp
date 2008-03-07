@@ -34,7 +34,6 @@
 
 #include <sstream>
 #include <string>
-#include <vector>
 
 #define lp {l+=0.1; icc_examin->fortschritt(l);}
 
@@ -88,8 +87,8 @@ ICCvrmlParser::lesen_ ()
   //icc_debug = 1;
   DBG_PROG_START
   int netz_n = 0;                       // the n-th net/mesh
-  std::vector<std::string> zeilen;      // editing row
-  std::vector<ZifferWort> werte;        // intermediate return value
+  ICClist<std::string> zeilen;      // editing row
+  ICClist<ZifferWort> werte;        // intermediate return value
   char trennzeichen[12];                // to be used separating signs
   trennzeichen[0] = ',';
   sprintf(&trennzeichen[1], leer_zeichen);

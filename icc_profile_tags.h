@@ -39,7 +39,6 @@
 #include <lcms.h>
 #include <icc34.h>
 #include <string>
-#include <vector>
 
 
 /**
@@ -96,8 +95,8 @@ class ICCtag {
     int                 getSize()
                           { DBG_MEM  return size_; }
 
-    std::vector<double> getCIEXYZ();
-    std::vector<double> getCurve();
+    ICClist<double> getCIEXYZ();
+    ICClist<double> getCurve();
     typedef enum {
       MATRIX,
       CURVE_IN,
@@ -106,17 +105,17 @@ class ICCtag {
       TABLE_OUT,
       CURVE_OUT
     } MftChain;
-    std::vector<std::vector<double> >
+    ICClist<ICClist<double> >
                         getCurves    (MftChain typ);
-    std::vector<std::vector<std::vector<std::vector<double> > > >
+    ICClist<ICClist<ICClist<ICClist<double> > > >
                         getTable     (MftChain typ);
-    std::vector<double> getNumbers   (MftChain typ);
+    ICClist<double> getNumbers   (MftChain typ);
     icColorSpaceSignature colorSpace (MftChain typ);
 
-    std::vector<std::string> getText ();
-    std::vector<std::string> getText (std::string type);
-    std::vector<std::string> getText (MftChain typ);
-    //std::vector<std::string> getDescription(); deprecated
+    ICClist<std::string> getText ();
+    ICClist<std::string> getText (std::string type);
+    ICClist<std::string> getText (MftChain typ);
+    //ICClist<std::string> getDescription(); deprecated
     std::string         getVrml();
   public:  // I/O
     void                load (ICCprofile* profil ,icTag* tag, char* data);

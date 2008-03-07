@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2005-2007  Kai-Uwe Behrmann 
+ * Copyright (C) 2005-2008  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -31,7 +31,6 @@
 #define ICC_WAEHLER_H
 
 #include <string>
-#include <vector>
 #include "icc_utils.h"
 #include "icc_fenster.h"
 

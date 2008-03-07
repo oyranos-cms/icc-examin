@@ -40,12 +40,12 @@
 # endif
 #endif
 
-std::vector<std::vector<double> >
+ICClist<ICClist<double> >
 leseGrafikKartenGamma  (std::string display_name,
-                        std::vector<std::string> &texte,
+                        ICClist<std::string> &texte,
                               int x, int y )
 { DBG_PROG_START
-  std::vector<std::vector<double> > kurven;
+  ICClist<ICClist<double> > kurven;
 # if APPLE
 
   OSStatus              theErr;

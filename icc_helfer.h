@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2007  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2008  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -33,9 +33,9 @@
 #include "icc_utils.h"
 #include "icc_icc.h"
 #include "icc_helfer_time.h"
+#include "icc_list.h"
 
 #include <string>
-#include <vector>
 #include <stddef.h> // size_t
 
 // file macros / partitialy from config.h
@@ -97,15 +97,15 @@ icIlluminant            icValue   (icIlluminant);
 void                    icValueXYZ(icXYZNumber*, double X, double Y, double Z);
 
 const double*           XYZto_xyY (double* XYZ);
-void                    XYZto_xyY (std::vector<double> & XYZxyY);
-void                    xyYto_XYZ (std::vector<double> & xyYXYZ);
+void                    XYZto_xyY (ICClist<double> & XYZxyY);
+void                    xyYto_XYZ (ICClist<double> & xyYXYZ);
 
 std::string         renderingIntentName ( int intent);
 int                 getColorSpaceChannels(icColorSpaceSignature color);
 icColorSpaceSignature getColorSpaceGeneric( int channels );
 std::string         getColorSpaceName   ( icColorSpaceSignature color);
-std::vector<std::string> getChannelNamesShort( icColorSpaceSignature color);
-std::vector<std::string> getChannelNames( icColorSpaceSignature color);
+ICClist<std::string> getChannelNamesShort( icColorSpaceSignature color);
+ICClist<std::string> getChannelNames( icColorSpaceSignature color);
 std::string         getDeviceClassName  ( icProfileClassSignature cl);
 std::string         getPlatformName     ( icPlatformSignature platform);
 std::string         getSigTagName( icTagSignature  sig );
@@ -180,7 +180,7 @@ namespace icc_parser {
                                         const char             *suchen,
                                         const char             *ersetzen,
                                         std::string::size_type  pos );
-  std::vector<std::string> zeilenNachVector (std::string &text);
+  ICClist<std::string> zeilenNachVector (std::string &text);
   std::string::size_type sucheWort    ( std::string            &text,
                                         std::string             wort,
                                         std::string::size_type  pos );
@@ -191,7 +191,7 @@ namespace icc_parser {
     std::pair<bool,int>         ganz_zahl;
   };
 
-  std::vector<ZifferWort>       unterscheideZiffernWorte ( std::string &zeile,
+  ICClist<ZifferWort>       unterscheideZiffernWorte ( std::string &zeile,
                                                  bool anfuehrungsstriche_setzen,
                                                  const char *trennzeichen );
 }

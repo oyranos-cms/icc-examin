@@ -1052,7 +1052,7 @@ Oyranos::vrmlVonProfil (ICCprofile & profil, int intent, int bpc,
   return vrml;
 }
 
-std::vector<double>
+ICClist<double>
 Oyranos::bandVonProfil (const Speicher & p, int intent)
 {
   DBG_PROG_START
@@ -1060,7 +1060,7 @@ Oyranos::bandVonProfil (const Speicher & p, int intent)
   const char* b = p;
 #endif
   DBG_MEM_V( (int*)b )
-  std::vector<double> band; // TODO
+  ICClist<double> band; // TODO
   DBG_PROG_ENDE
   return band;
 }

@@ -168,22 +168,15 @@ ICCkette::einfuegen (const Speicher & prof, int pos)
           profile_[0].addTag( tag );
 
           // the profile is done: erase it
-          std::vector<ICCprofile>::iterator v_it;
-          std::vector<std::string>::iterator profilnamen_it = profilnamen_.begin();
-          std::vector<int>::iterator         aktiv_it = aktiv_.begin();
-          std::vector<double>::iterator      profil_mzeit_it = profil_mzeit_.begin();
           unsigned int c = 0;
-          for(v_it = profile_.begin(); v_it != profile_.end(); ++v_it)
+          for(int j = 0; j < (int)profile_.size(); ++j)
           {
-            ++profilnamen_it;
-            ++aktiv_it;
-            ++profil_mzeit_it;
             if(i == c)
             {
-              profile_.erase ( v_it );
-              profilnamen_.erase ( profilnamen_it );
-              aktiv_.erase( aktiv_it );
-              profil_mzeit_.erase( profil_mzeit_it );
+              profile_.erase ( &profile_[i] );
+              profilnamen_.erase ( &profilnamen_[i] );
+              aktiv_.erase( &aktiv_[i] );
+              profil_mzeit_.erase( &profil_mzeit_[i] );
               break;
             }
           }

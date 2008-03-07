@@ -32,13 +32,13 @@
 
 #include "icc_utils.h"
 //#include "icc_gl.h"
+#include "icc_list.h"
 #include "icc_kette.h"
 #include "icc_oyranos.h"
 #include "icc_modell_beobachter.h"
 #include "icc_thread_daten.h"
 
 #include <string>
-#include <vector>
 #include <set>
 #define USE_THREADS 1
 
@@ -92,9 +92,9 @@ class ICCexamin : public icc_examin_ns::Beobachter,
     void         auffrischen(int schalter);
   public:
     void         oeffnen ();                   //!< interactive
-    void         oeffnen (std::vector<std::string> dateinamen);
+    void         oeffnen (ICClist<std::string> dateinamen);
     bool         lade ();
-    void         lade (std::vector<Speicher> & neu);
+    void         lade (ICClist<Speicher> & neu);
     void         oyranos_einstellungen();
 
   private:
@@ -111,7 +111,7 @@ class ICCexamin : public icc_examin_ns::Beobachter,
 
     std::string  waehleTag (int item);
     void         waehleMft (int item);
-    std::vector<int> kurve_umkehren;
+    ICClist<int> kurve_umkehren;
     enum { GL_STOP, GL_ZEICHNEN, GL_AUFFRISCHEN, GL_MOUSE_HIT3D }; //!< GL waiting
     icc_examin_ns::EinModell  * alle_gl_fenster;   //!< all Gl windows
   private:
@@ -152,9 +152,9 @@ class ICCexamin : public icc_examin_ns::Beobachter,
     int  tag_nr () { return _item; }
     int  mft_nr () { return _mft_item; }
 
-    std::vector<std::vector<std::vector<double> > > kurven;
-    std::vector<std::vector<double> >               punkte;
-    std::vector<std::vector<std::string> >          texte;
+    ICClist<ICClist<ICClist<double> > > kurven;
+    ICClist<ICClist<double> >               punkte;
+    ICClist<ICClist<std::string> >          texte;
 
     // loading of colour spaces
     void farbraum();
@@ -162,19 +162,16 @@ class ICCexamin : public icc_examin_ns::Beobachter,
     bool farbraumModus( ) { /*DBG_PROG_V( farbraum_modus_ );*/ return farbraum_modus_; }
     void farbraumModus( int profil );
     void messwertLese  ( int n,
-                         oyNamedColours_s ** list
-                         /*std::vector<double> & p,
-                         std::vector<double> & f,
-                         std::vector<std::string> & namen*/);
+                         oyNamedColours_s ** list );
     void setzMesswerte ( );
     void netzLese      ( int n,
                          icc_examin_ns::ICCThreadList<ICCnetz> * netz);
     void farbenLese    ( int n,
                          oyNamedColours_s ** list );
     void farbenLese    ( int n,
-                         std::vector<double> & p,
-                         std::vector<double> & f,
-                         std::vector<std::string> & names );
+                         ICClist<double> & p,
+                         ICClist<double> & f,
+                         ICClist<std::string> & names );
 
 
     void vcgtZeigen ();

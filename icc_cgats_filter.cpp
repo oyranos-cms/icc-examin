@@ -194,7 +194,7 @@ CgatsFilter::setzeWortInAnfuehrungszeichen_( std::string &zeile,
   DBG_CGATS_ENDE
 }
 
-std::vector<std::string>
+ICClist<std::string>
 CgatsFilter::unterscheideZiffernWorte_( std::string &zeile )
 {
   DBG_CGATS_START
@@ -202,7 +202,7 @@ CgatsFilter::unterscheideZiffernWorte_( std::string &zeile )
   char text[64];
   bool in_anfuehrung = false;
   std::string txt;
-  std::vector<std::string> ergebnis;
+  ICClist<std::string> ergebnis;
 
   suchenUndErsetzen_( zeile, ",", ".", 0 );
 
@@ -363,7 +363,7 @@ CgatsFilter::sucheInDATA_FORMAT_( std::string &zeile , int &zeile_n )
 
   DBG_PROG_V( zeile )
 
-  std::vector<std::string> test = unterscheideZiffernWorte_(zeile);
+  ICClist<std::string> test = unterscheideZiffernWorte_(zeile);
   for( unsigned int i = 0; i < test.size() ; ++i )
   { 
     pos = 0;
@@ -399,13 +399,12 @@ CgatsFilter::sucheInDATA_FORMAT_( std::string &zeile , int &zeile_n )
 }
 
 int
-CgatsFilter::zeilenOhneDuplikate_ ( std::vector<std::string> &zeilen )
+CgatsFilter::zeilenOhneDuplikate_ ( ICClist<std::string> &zeilen )
 {
   int n = 0;
   DBG_CGATS_V( zeilen.size() )
 
   std::sort( zeilen.begin(), zeilen.end() );
-  std::vector<std::string> ::iterator pos; 
   for( unsigned int i = 0; i < zeilen.size()-1; ++i)
     while ( (i < zeilen.size()-1) &&
             zeilen[i] == zeilen[i+1] )
@@ -475,7 +474,7 @@ CgatsFilter::sucheSchluesselwort_( std::string zeile )
 }
 
 int
-CgatsFilter::editZeile_( std::vector<std::string> &zeilen,
+CgatsFilter::editZeile_( ICClist<std::string> &zeilen,
                          int i, int editieren, bool cmy )
 {
   // Zeilen mit Hilfe der Klassifizierung aus sucheSchluesselwort_() bearbeiten
@@ -700,7 +699,8 @@ CgatsFilter::cgats_korrigieren_               ()
       anfuehrungsstriche_setzen = false;
       //int wort_zahl = unterscheideZiffernWorte_(zeilen_[0]).size();
       anfuehrungsstriche_setzen = anf_setzen;
-      if( ((ende - pos) != 7 &&
+      if( kopf.size() &&
+          ((ende - pos) != 7 &&
            (ende - pos) != 14 ) )
       {
         zeilen_.insert( zeilen_.begin(), kopf );
@@ -769,7 +769,7 @@ CgatsFilter::cgats_korrigieren_               ()
         } else {
 
           // Roger Breton had an example with a splitted DATA_FORMAT line
-          const std::vector<std::string> texts = unterscheideZiffernWorte_( zeilen_[i] );
+          const ICClist<std::string> texts = unterscheideZiffernWorte_( zeilen_[i] );
           messungen[messungen.size()-1].felder[0].insert(
                        messungen[messungen.size()-1].felder[0].end(),
                        texts.begin(), texts.end() );
@@ -837,7 +837,7 @@ CgatsFilter::cgats_korrigieren_               ()
         std::string t = zeilen_[zeile_letztes_NUMBER_OF_FIELDS].
                substr( 0, zeilen_[zeile_letztes_NUMBER_OF_FIELDS].find( "#" ) );
         DBG_CGATS_V( t )
-        std::vector<std::string> v = unterscheideZiffernWorte_(t);
+        ICClist<std::string> v = unterscheideZiffernWorte_(t);
         int n_o_;
         if( v.size() >= 2 )
           n_o_ = (int)atof( v[1].c_str() );
@@ -907,7 +907,7 @@ CgatsFilter::cgats_korrigieren_               ()
         std::string t = zeilen_[zeile_letztes_NUMBER_OF_SETS].
                  substr( 0, zeilen_[zeile_letztes_NUMBER_OF_SETS].find( "#" ) );
         DBG_PROG_V( t )
-        std::vector<std::string> v = unterscheideZiffernWorte_(t);
+        ICClist<std::string> v = unterscheideZiffernWorte_(t);
         int n_o_;
         if( v.size() >= 2 )
           n_o_ = (int)atof( v[1].c_str() );
@@ -1053,6 +1053,7 @@ cgats_korrigieren( char* data, size_t size )
 {
   DBG_PROG_START
   CgatsFilter cgats;
+  cgats.kopf = "ICCEXAM";
   cgats.lade( data, size );
   std::string text = cgats.lcms_gefiltert ();
   DBG_PROG_ENDE
@@ -1065,6 +1066,7 @@ cgats_max_korrigieren( char* data, size_t size )
   DBG_PROG_START
   CgatsFilter cgats;
   // Optionen setzen
+  cgats.kopf = "ICCEXAM";
   cgats.kommentar = "# Diese Datei wurde von ICC Examin geprueft bzw. neu zusammengestellt \n# bei Unvertraeglichkeiten bitte einen Hinweis\n# moeglichst mit Datenquelle(n), Ergebnis und Versionsnummer\n# an den Author email: ku.b @ gmx.de\n";
   // Laden
   cgats.lade( data, size );

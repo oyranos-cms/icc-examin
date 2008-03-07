@@ -93,7 +93,7 @@ class Oyranos
                                      Speicher & profil,
                                      int intent, int bpc);
   public:
-    std::vector<double>  bandVonProfil (const Speicher & p, int intent);
+    ICClist<double>  bandVonProfil (const Speicher & p, int intent);
 
   private:
     void lab_test_();

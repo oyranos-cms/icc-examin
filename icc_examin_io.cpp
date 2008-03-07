@@ -217,7 +217,7 @@ ICCexaminIO::oeffnenThread_ ()
     DBG_THREAD
   }
 
-  std::vector<std::string> dateinamen = profile;
+  ICClist<std::string> dateinamen = profile;
 
   if (profile.size())
   {
@@ -316,7 +316,7 @@ ICCexaminIO::oeffnenThread_ ()
 
         icc_examin_ns::lock(__FILE__,__LINE__);
         //icc_examin->icc_betrachter->DD_farbraum->hineinNetze(netze);
-        std::vector<std::string> texte;
+        ICClist<std::string> texte;
         texte.push_back(_("CIE *L"));
         texte.push_back(_("CIE *a"));
         texte.push_back(_("CIE *b"));
@@ -334,7 +334,7 @@ ICCexaminIO::oeffnenThread_ ()
     icc_examin->fortschritt( 2./3.+ 2./6. , 1.0 );
     // ICCwaehler
       // refresh
-    static std::vector<std::string> namen_neu, namen_alt;
+    static ICClist<std::string> namen_neu, namen_alt;
     bool namensgleich = false;
     namen_neu = profile;
     DBG_PROG_V( namen_neu.size() <<" "<< namen_alt.size() )
@@ -360,7 +360,7 @@ ICCexaminIO::oeffnenThread_ ()
       const char * name = 0;
 
       {
-        std::vector<int> aktiv = profile.aktiv();
+        ICClist<int> aktiv = profile.aktiv();
         DBG_PROG_V( aktiv.size() )
 
         icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze.frei(false);
@@ -450,7 +450,7 @@ dateiName(std::string name)
 }
 
 void
-ICCexaminIO::lade (std::vector<Speicher> & neu)
+ICCexaminIO::lade (ICClist<Speicher> & neu)
 {
   if(!lade())
   {
@@ -517,7 +517,7 @@ ICCexaminIO::oeffnenStatisch_ (void* ie)
 void
 oeffnen_cb(const char* filenames)
 { DBG_PROG_START
-  std::vector<std::string> dateinamen;
+  ICClist<std::string> dateinamen;
   dateinamen.push_back( filenames );
   status( filenames )
   DBG_PROG_V( filenames )
@@ -526,7 +526,7 @@ oeffnen_cb(const char* filenames)
 }
 
 void
-ICCexaminIO::oeffnen (std::vector<std::string> dateinamen)
+ICCexaminIO::oeffnen (ICClist<std::string> dateinamen)
 { DBG_PROG_START
 # if 1
   if(!dateinamen.size()) {
@@ -544,7 +544,7 @@ ICCexaminIO::oeffnen (std::vector<std::string> dateinamen)
   icc_examin->fortschritt( 0.0 , 1.0 );
 
   // loading
-  std::vector<Speicher> ss;
+  ICClist<Speicher> ss;
   // resize uses copy, and creates a reference by this to the
   // same object ; instead we need a new object => push_back()
   int moni_dabei = 0;
@@ -580,7 +580,7 @@ void
 ICCexaminIO::oeffnen ()
 { DBG_PROG_START
   icc_examin->fortschritt(0.01 , 1.0);
-  std::vector<std::string> dateinamen = profile;
+  ICClist<std::string> dateinamen = profile;
 
   //Fl_File_Icon	*icon;	// New file icon
   DBG_PROG

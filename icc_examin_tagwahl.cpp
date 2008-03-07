@@ -89,7 +89,7 @@ ICCexamin::waehleTag (int item)
   texte[TAG_VIEWER].clear();
   frei(true);
 
-  std::vector<std::string> rgb_tags;
+  ICClist<std::string> rgb_tags;
   rgb_tags.push_back("rXYZ");
   rgb_tags.push_back("gXYZ");
   rgb_tags.push_back("bXYZ");
@@ -108,7 +108,7 @@ ICCexamin::waehleTag (int item)
     text = "";
     icc_betrachterNeuzeichnen(icc_betrachter->tag_text);
   } else if (item >= 0) {
-    std::vector<std::string> TagInfo = profile.profil()->printTagInfo(item);
+    ICClist<std::string> TagInfo = profile.profil()->printTagInfo(item);
 
     kurve_umkehren[TAG_VIEWER] = false;
 
@@ -125,7 +125,7 @@ ICCexamin::waehleTag (int item)
               ) {
 
       frei(false);
-      std::vector<std::string> texte_l = profile.profil()->getTagText (item);
+      ICClist<std::string> texte_l = profile.profil()->getTagText (item);
       if( texte_l.size() )
       {
         std::string text_l = texte_l[0];
@@ -144,7 +144,7 @@ ICCexamin::waehleTag (int item)
              || TagInfo[0] == "gXYZ"
              || TagInfo[0] == "bXYZ" ) {
       std::string TagName;
-      std::vector<double> punkt;
+      ICClist<double> punkt;
       for (unsigned int i_name = 0; i_name < rgb_tags.size(); i_name++) {
         if (profile.profil()->hasTagName (rgb_tags[i_name])) {
           punkt = profile.profil()->getTagCIEXYZ (profile.profil()->getTagIDByName(rgb_tags[i_name]));
@@ -162,7 +162,7 @@ ICCexamin::waehleTag (int item)
       icc_betrachterNeuzeichnen(icc_betrachter->tag_viewer);
     } else if ( TagInfo[1] == "curv"
              || TagInfo[1] == "bfd" ) {
-      std::vector<double> kurve;
+      ICClist<double> kurve;
       std::string TagName;
       for (int i_name = 0; i_name < profile.profil()->tagCount(); i_name++) {
         if ( (profile.profil()->printTagInfo(i_name))[1] == "curv"
@@ -211,7 +211,7 @@ ICCexamin::waehleTag (int item)
 
       icc_betrachterNeuzeichnen(icc_betrachter->tag_viewer);
 /*    } else if ( TagInfo[1] == "chad" ) {
-      std::vector<double> zahlen = profile.profil()->getTagNumbers (icc_betrachter->tag_nummer, ICCtag::MATRIX);
+      ICClist<double> zahlen = profile.profil()->getTagNumbers (icc_betrachter->tag_nummer, ICCtag::MATRIX);
       cout << zahlen.size() << endl; DBG_PROG
       assert (9 == zahlen.size());
       std::stringstream s;
@@ -226,7 +226,7 @@ ICCexamin::waehleTag (int item)
       frei(false);
       profile.frei(false);
       ICCprofile * pr = profile.profil();
-      std::vector<std::string> texte;
+      ICClist<std::string> texte;
       if(pr)
         texte = pr->getTagText (item);
       profile.frei(true);
@@ -236,11 +236,11 @@ ICCexamin::waehleTag (int item)
         {
             profile.frei(false);
             ICCprofile * pr = profile.profil();
-            std::vector<double> p_neu = pr->getTagNumbers(item, ICCtag::MATRIX);
+            ICClist<double> p_neu = pr->getTagNumbers(item, ICCtag::MATRIX);
             profile.frei(true);
             int n = p_neu.size()/3;
 
-            std::vector<int> patches;
+            ICClist<int> patches;
             patches.resize( n );
             for(int i = 0; i < n; ++i)
             {
@@ -287,12 +287,12 @@ ICCexamin::waehleMft (int item)
   status("")
 
   std::stringstream s;
-  std::vector<double> zahlen;
+  ICClist<double> zahlen;
 
   DBG_PROG_V( _mft_item )
   switch (_mft_item) {
   case 0: // overview
-    { std::vector<std::string> Info = icc_betrachter->mft_choice->Info;
+    { ICClist<std::string> Info = icc_betrachter->mft_choice->Info;
       //profile.profil()->getTagText (icc_betrachter->tag_nummer)[0];
       for (unsigned int i = 1; i < Info.size(); i++) // leave out first line
         s << Info [i] << endl;
@@ -326,9 +326,9 @@ ICCexamin::waehleMft (int item)
     DBG_PROG_S("show table")
     {
       profile.frei(false);
-      std::vector<std::string> nach_farb_namen = profile.profil()->getTagChannelNames (icc_betrachter->tag_nummer, ICCtag::TABLE_OUT);
+      ICClist<std::string> nach_farb_namen = profile.profil()->getTagChannelNames (icc_betrachter->tag_nummer, ICCtag::TABLE_OUT);
       icColorSpaceSignature sig_out = profile.profil()->getTag( icc_betrachter->tag_nummer ).colorSpace( ICCtag::TABLE_OUT );
-      std::vector<std::string> nach_farben_snamen =  getChannelNamesShort( sig_out );
+      ICClist<std::string> nach_farben_snamen =  getChannelNamesShort( sig_out );
 
       icc_betrachter->mft_gl->hineinTabelle (
                      profile.profil()->getTagTable (icc_betrachter->tag_nummer, ICCtag::TABLE),
@@ -395,13 +395,13 @@ selectTextsLine( int * line )
     txt = icc_examin->icc_betrachter->tag_text->text(i);
 
     profile.frei(false);
-    std::vector<std::string> TagInfo = profile.profil()->printTagInfo(item);
+    ICClist<std::string> TagInfo = profile.profil()->printTagInfo(item);
     profile.frei(true);
     if( TagInfo.size() == 2 )
     {
-      std::vector<double> v;
+      ICClist<double> v;
       std::string name;
-      std::vector<double> lab;
+      ICClist<double> lab;
       double l[3];
       double c[32];
       double XYZ[3];
@@ -432,7 +432,7 @@ selectTextsLine( int * line )
                  TagInfo[0] == "ncl2" ) {
           if( icc_examin->icc_betrachter->tag_text->value() > 5 )
           {
-            std::vector<std::string> names;
+            ICClist<std::string> names;
             icc_examin->farbenLese(-(i-5), lab,v,names);
             name = names.size() ? names[0] : 0;
             if( lab.size() )

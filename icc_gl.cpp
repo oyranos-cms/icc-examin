@@ -2715,7 +2715,7 @@ GL_Ansicht::zeichnen()
 }
 
 void
-GL_Ansicht::achsNamen    (std::vector<std::string> achs_namen)
+GL_Ansicht::achsNamen    (ICClist<std::string> achs_namen)
 { DBG_PROG_START
   if (achs_namen.size() == 3)
     von_farb_namen_ = achs_namen;
@@ -2829,8 +2829,8 @@ GL_Ansicht::clearNet ()
 
 #if 0
 void
-GL_Ansicht::hineinPunkte       (std::vector<double>      &vect,
-                                std::vector<std::string> &achs_namen)
+GL_Ansicht::hineinPunkte       (ICClist<double>      &vect,
+                                ICClist<std::string> &achs_namen)
 { DBG_PROG_START
 
   DBG_PROG_V( vect.size() )
@@ -2874,9 +2874,9 @@ GL_Ansicht::hineinPunkte       (std::vector<double>      &vect,
 }
 
 void
-GL_Ansicht::hineinPunkte      (std::vector<double>      &vect,
-                               std::vector<float>       &punkt_farben,
-                               std::vector<std::string> &achsNamen)
+GL_Ansicht::hineinPunkte      (ICClist<double>      &vect,
+                               ICClist<float>       &punkt_farben,
+                               ICClist<std::string> &achsNamen)
 { DBG_PROG_START
 
   MARK( frei (false); )
@@ -2892,10 +2892,10 @@ GL_Ansicht::hineinPunkte      (std::vector<double>      &vect,
 }
 
 void
-GL_Ansicht::hineinPunkte      (std::vector<double> &vect,
-                               std::vector<float>  &punkt_farben,
-                               std::vector<std::string> &farb_namen,
-                               std::vector<std::string> &achs_namen)
+GL_Ansicht::hineinPunkte      (ICClist<double> &vect,
+                               ICClist<float>  &punkt_farben,
+                               ICClist<std::string> &farb_namen,
+                               ICClist<std::string> &achs_namen)
 { DBG_PROG_START
   // show curve from tag_browser
   DBG_NUM_V( farb_namen.size() <<"|"<< punkt_farben.size() )
@@ -3245,9 +3245,9 @@ GL_Ansicht::hineinNetze_       (const icc_examin_ns::ICCThreadList<ICCnetz> & d_
 
 
 void
-GL_Ansicht::hineinTabelle (std::vector<std::vector<std::vector<std::vector<double> > > > vect,
-                           std::vector<std::string> achs_namen,
-                           std::vector<std::string> nach)
+GL_Ansicht::hineinTabelle (ICClist<ICClist<ICClist<ICClist<double> > > > vect,
+                           ICClist<std::string> achs_namen,
+                           ICClist<std::string> nach)
 { DBG_PROG_START
 
   MARK( frei(false); )

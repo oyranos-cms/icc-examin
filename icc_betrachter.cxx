@@ -62,7 +62,7 @@ TagTexts::TagTexts(int X,int Y,int W,int H) : Fl_Hold_Browser(X,Y,W,H), X(X), Y(
   cb = NULL;
 }
 
-void TagTexts::hinein(std::string text, std::vector<int> patches) {
+void TagTexts::hinein(std::string text, ICClist<int> patches) {
   DBG_PROG_START
   //show text from tag_browser
 
@@ -70,7 +70,7 @@ void TagTexts::hinein(std::string text, std::vector<int> patches) {
 
       this->clear();
 
-      std::vector <std::string> texte = icc_parser::zeilenNachVector( text );
+      ICClist <std::string> texte = icc_parser::zeilenNachVector( text );
       int odd = 1;
       unsigned k = 0;
       for (unsigned int i = 0; i < texte.size(); i++)
@@ -106,7 +106,7 @@ void TagTexts::hinein(std::string text, std::vector<int> patches) {
 
 void TagTexts::hinein(std::string text) {
   DBG_PROG_START
-  std::vector<int> patches;
+  ICClist<int> patches;
 this->hinein( text, patches );
   DBG_PROG_ENDE
 }
@@ -1101,7 +1101,7 @@ int ICCfltkBetrachter::run(int argc, char** argv) {
   return ret;
 }
 
-std::vector<std::string> ICCfltkBetrachter::open_veraltet(std::vector<std::string> dateinamen) {
+ICClist<std::string> ICCfltkBetrachter::open_veraltet(ICClist<std::string> dateinamen) {
   DBG_PROG_START
   #include "icc_vrml.h"
 

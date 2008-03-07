@@ -396,7 +396,7 @@ ICCmeasurement::leseTag (void)
       }
 
       // reding and parsing
-      std::vector<std::string> farbkanaele;
+      ICClist<std::string> farbkanaele;
       // locals !
       bool has_Lab = false;
       bool has_XYZ = false;
@@ -672,7 +672,7 @@ ICCmeasurement::lcms_parse                   (void)
   }
 
   // Auslesen und Aufbereiten
-  std::vector<std::string> farbkanaele;
+  ICClist<std::string> farbkanaele;
   // muessen lokal bleiben !
   bool has_Lab = false;
   bool has_XYZ = false;
@@ -860,7 +860,7 @@ ICCmeasurement::init_umrechnen                     (void)
 
   {
     int bkpt_pos = -1;
-    std::vector<double> wp, bp;
+    ICClist<double> wp, bp;
     if (profile_)
     {
       wp = profile_->getWhitePkt();
@@ -1034,7 +1034,7 @@ ICCmeasurement::init_umrechnen                     (void)
     fortschritt(0.5,0.2);
     double Farbe[64], RGB[3], XYZ[3], CIELab[3];
     bool vcgt = false;
-    std::vector<std::vector<double> > vcgt_kurven;
+    ICClist<ICClist<double> > vcgt_kurven;
     //TODO
     if (profile_ && profile_->hasTagName ("vcgt")) {
       vcgt = true;
@@ -1219,7 +1219,7 @@ ICCmeasurement::getHtmlReport                     (bool aussen)
 
   if (reportTabelle_.size() == 0)
     reportTabelle_ = getText();
-  std::vector<int> layout = getLayout(); DBG_PROG
+  ICClist<int> layout = getLayout(); DBG_PROG
 
   html << "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">";
   html << "<html><head>" << endl;
@@ -1327,7 +1327,7 @@ ICCmeasurement::getHtmlReport                     (bool aussen)
   return html.str();
 }
 
-std::vector<std::vector<std::string> >
+ICClist<ICClist<std::string> >
 ICCmeasurement::getText                     (void)
 { DBG_PROG_START
   DBG_NUM_V( RGB_MessFarben_.size() )
@@ -1335,7 +1335,7 @@ ICCmeasurement::getText                     (void)
     init ();
 
   // push_back is too slow
-  std::vector<std::vector<std::string> > tabelle (1);
+  ICClist<ICClist<std::string> > tabelle (1);
   std::stringstream s;
   int z = 0; // rows
 
@@ -1483,10 +1483,10 @@ ICCmeasurement::getMaxCGATS           (void)
   return text;
 }
 
-std::vector<std::string>
+ICClist<std::string>
 ICCmeasurement::getDescription              (void)
 { DBG_PROG_START
-  std::vector<std::string> texte;
+  ICClist<std::string> texte;
   std::string text =  "";
 
 # ifdef DEBUG_ICCMEASUREMENT
@@ -1496,10 +1496,10 @@ ICCmeasurement::getDescription              (void)
   return texte;
 }
 
-std::vector<double>
+ICClist<double>
 ICCmeasurement::getMessRGB                  (int patch)
 { DBG_MESS_START
-  std::vector<double> punkte(3);
+  ICClist<double> punkte(3);
 
   if (RGB_MessFarben_.size() == 0)
     init ();
@@ -1518,10 +1518,10 @@ ICCmeasurement::getMessRGB                  (int patch)
   return punkte;
 }
 
-std::vector<double>
+ICClist<double>
 ICCmeasurement::getCmmRGB                   (int patch)
 { DBG_MESS_START
-  std::vector<double> punkte (3) ;
+  ICClist<double> punkte (3) ;
 
   if (RGB_ProfilFarben_.size() == 0)
     init ();
@@ -1540,10 +1540,10 @@ ICCmeasurement::getCmmRGB                   (int patch)
   return punkte;
 }
 
-std::vector<double>
+ICClist<double>
 ICCmeasurement::getMessLab                  (int patch)
 { DBG_MESS_START
-  std::vector<double> punkte (3) ;
+  ICClist<double> punkte (3) ;
 
   if (Lab_Satz_.size() == 0)
     init ();
@@ -1562,10 +1562,10 @@ ICCmeasurement::getMessLab                  (int patch)
   return punkte;
 }
 
-std::vector<double>
+ICClist<double>
 ICCmeasurement::getCmmLab                   (int patch)
 { DBG_MESS_START
-  std::vector<double> punkte (3) ;
+  ICClist<double> punkte (3) ;
 
   if (Lab_Ergebnis_.size() == 0)
     init ();
@@ -1714,14 +1714,14 @@ ICCmeasurement::getMessColour (int patch)
 
     @return                  list of patch lines, size() is patch count
  */
-std::vector<int>
+ICClist<int>
 ICCmeasurement::getPatchLines              ( const char       * tag_name )
 { DBG_MESS_START
 
   if (Lab_Ergebnis_.size() == 0)
     init ();
 
-  std::vector<int> patches;
+  ICClist<int> patches;
 
   if (Lab_Ergebnis_.size() == 0)
     return patches;

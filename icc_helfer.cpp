@@ -197,7 +197,7 @@ icValueXYZ (icXYZNumber* ic_xyz,double X, double Y, double Z)
 // Farbkonvertierungen
 
 void
-xyYto_XYZ (std::vector<double> & Y)
+xyYto_XYZ (ICClist<double> & Y)
 {
   if( (Y.size()%3) || Y.size() == 0 ) {
     WARN_S( "xyY is not a multiply of 3" )
@@ -214,7 +214,7 @@ xyYto_XYZ (std::vector<double> & Y)
 }
 
 void
-XYZto_xyY (std::vector<double> & Y)
+XYZto_xyY (ICClist<double> & Y)
 {
   if( (Y.size()%3) || Y.size() == 0 ) {
     WARN_S( "XYZ is not a multiply of 3" )
@@ -308,10 +308,10 @@ getColorSpaceName (icColorSpaceSignature sig)
   return text;
 }
 
-std::vector<std::string>
+ICClist<std::string>
 getChannelNamesShort (icColorSpaceSignature color)
 {
-  std::vector<std::string> texte;
+  ICClist<std::string> texte;
   std::stringstream s;
 # define nFARBEN(n) for (int i = 1; i <= n; i++) \
                        { s << i; \
@@ -385,10 +385,10 @@ getChannelNamesShort (icColorSpaceSignature color)
   return texte;
 }
 
-std::vector<std::string>
+ICClist<std::string>
 getChannelNames (icColorSpaceSignature sig)
 {
-  std::vector<std::string> texte;
+  ICClist<std::string> texte;
   std::stringstream s;
 # define nFARBEN(n) for (int i = 0; i < n; i++) \
                        { s << i << ". " << _("Colour"); \
@@ -1610,11 +1610,11 @@ suchenErsetzen          (std::string &text,
 #define DBG_PARSER_V( text )
 #endif
 
-std::vector<std::string>
+ICClist<std::string>
 zeilenNachVector(std::string &text)
 { DBG_PROG_START
   // fueilen aus einen Text in einen Vector
-  std::vector <std::string> texte;
+  ICClist <std::string> texte;
 
       int len = (int)strlen(text.c_str());
       std::string text_line;
@@ -1678,7 +1678,7 @@ ZifferWort zifferWort( int wert )
 { ZifferWort t; t.ganz_zahl.first = true; t.ganz_zahl.second = wert; return t; }
 
 
-std::vector<ZifferWort>
+ICClist<ZifferWort>
 unterscheideZiffernWorte ( std::string &zeile,
                            bool         anfuehrungsstriche_setzen,
                            const char  *trennzeichen )
@@ -1687,8 +1687,8 @@ unterscheideZiffernWorte ( std::string &zeile,
   static char text[64];
   bool in_anfuehrung = false;
   std::string txt;
-  std::vector<ZifferWort> ergebnis;
-  std::vector<std::string> worte;
+  ICClist<ZifferWort> ergebnis;
+  ICClist<std::string> worte;
   char trenner [16];
 
   if( trennzeichen ) { DBG_PARSER

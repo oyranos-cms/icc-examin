@@ -271,7 +271,7 @@ ICCexamin::start (int argc, char** argv)
 
   // Behandle Kommandozeilenargumente
       if (argc>1) {
-        std::vector<std::string>profilnamen;
+        ICClist<std::string>profilnamen;
         for (int i = 1; i < argc; i++) {
           DBG_PROG_S( i <<" "<< argv[i] )
           // keine process serial number in osX
@@ -426,7 +426,7 @@ ICCexamin::zeigMftTabellen ()
   const char* title = profile.profil()->filename();
   char* t = (char*) malloc(strlen(title)+20);
   int   item = tag_nr();
-  std::vector<std::string> tag_info =
+  ICClist<std::string> tag_info =
        profile.profil()->printTagInfo(item);
 
   sprintf(t, "%d:%s - %s", item + 1,
@@ -443,7 +443,7 @@ ICCexamin::zeigMftTabellen ()
   Fl_X::fake_X_wm(icc_betrachter->details, &X, &Y, &bt, &bx, &by);
 #endif
 
-  std::vector<std::string> out_names =
+  ICClist<std::string> out_names =
       profile.profil()->getTagChannelNames (icc_betrachter->tag_nummer,
                                             ICCtag::TABLE_OUT);
   MyFl_Double_Window *w = NULL;
@@ -565,10 +565,10 @@ ICCexamin::nachricht( Modell* modell , int info )
       profile.frei(true);
       return;
     }
-    std::vector<std::string> TagInfo = profile.profil()->printTagInfo(item),
+    ICClist<std::string> TagInfo = profile.profil()->printTagInfo(item),
                              names;
-    std::vector<double> chan_dv;
-    std::vector<double> lab_dv;
+    ICClist<double> chan_dv;
+    ICClist<double> lab_dv;
     double min = DBL_MAX, len;
     double cielab1[3], cielab2[3];
     double chan[32];
@@ -590,7 +590,7 @@ ICCexamin::nachricht( Modell* modell , int info )
 
       n = m.getPatchCount();
 
-      std::vector<Lab_s> lab_v;
+      ICClist<Lab_s> lab_v;
       /*if( TagInfo[0] == "DevD" ||
           TagInfo[0] == "targ" ||
           icc_betrachter->inspekt_html->visible() )*/
@@ -614,7 +614,7 @@ ICCexamin::nachricht( Modell* modell , int info )
       if(min < 5)
       {
         std::string name = m.getFieldName(min_pos);
-        std::vector<int> pl;
+        ICClist<int> pl;
 
         if(icc_betrachter->inspekt_html->visible())
           icc_betrachter->inspekt_html->topline( name.c_str() );
@@ -819,7 +819,7 @@ ICCexamin::testZeigen ()
 { DBG_PROG_START
 
 # if HAVE_X || APPLE
-  std::vector<std::vector<std::pair<double,double> > > kurven2;
+  ICClist<ICClist<std::pair<double,double> > > kurven2;
   kurven2.resize(8);
   kurven2[0].resize(4);
   kurven2[1].resize(3);
@@ -834,7 +834,7 @@ ICCexamin::testZeigen ()
       kurven2[i][j].first = sin(i) * 3.2 - 0.5* (cos(j*2)+0.1);
       kurven2[i][j].second = i * -0.2 + 0.05 * (sin(j/10.0)+2.7);
     }
-  std::vector<std::string> txt;
+  ICClist<std::string> txt;
   txt.resize(8);
   txt[0] = "a image";
   txt[1] = "paint";
@@ -898,7 +898,7 @@ ICCexamin::vcgtZeigen ()
                                                texte [VCGT_VIEWER] );
     icc_betrachter->vcgt_viewer->kurve_umkehren = true;
   } else {
-    std::vector<std::vector<double> > leer;
+    ICClist<ICClist<double> > leer;
     icc_betrachter->vcgt_viewer->hide();
     icc_betrachter->vcgt_viewer->show();
     leer.resize(3);
@@ -926,7 +926,7 @@ ICCexamin::oeffnen ()
 { io_->oeffnen();
 }
 void
-ICCexamin::oeffnen (std::vector<std::string> dateinamen)
+ICCexamin::oeffnen (ICClist<std::string> dateinamen)
 { io_->oeffnen( dateinamen );
 }
 bool
@@ -934,7 +934,7 @@ ICCexamin::lade ()
 { return io_->lade();
 }
 void
-ICCexamin::lade (std::vector<Speicher> & neu)
+ICCexamin::lade (ICClist<Speicher> & neu)
 { io_->lade(neu);
 }
 int
@@ -961,7 +961,7 @@ ICCexamin::auffrischen(int schalter)
     icc_oyranos.clear();
   if(schalter & PROGRAMM)
   {
-    std::vector<std::string> profilnamen = profile;
+    ICClist<std::string> profilnamen = profile;
     oeffnen( profilnamen );
   }
 }
@@ -980,7 +980,7 @@ ICCexamin::moniHolen ()
   int x = icc_betrachter->vcgt->x() + icc_betrachter->vcgt->w()/2;
   int y = icc_betrachter->vcgt->y() + icc_betrachter->vcgt->h()/2;
 
-  static std::vector<Speicher> ss;
+  static ICClist<Speicher> ss;
   ss.clear();
   ss.push_back(icc_oyranos.moni(x,y));
   size_t size = ss[0].size();
@@ -1134,7 +1134,7 @@ ICCexamin::erneuerTagBrowserText_ (void)
 
   std::stringstream s;
   std::string text;
-  std::vector<std::string> tag_list = profile.profil()->printTags();
+  ICClist<std::string> tag_list = profile.profil()->printTags();
   DBG_PROG_V( tag_list.size() <<" "<< (int*) b )
 
 # define add_s(stream) s << stream; b->add (s.str().c_str()); s.str("");
@@ -1164,24 +1164,25 @@ ICCexamin::erneuerTagBrowserText_ (void)
   } else {
     add_s("")
   }
-  std::vector<std::string>::iterator it;
+
   for(int i = 0; i < (int)tag_list.size(); ++i)
     ;//DBG_PROG_V( i <<" "<< tag_list[i] )
   int anzahl = 0;
-  for (it = tag_list.begin() ; it != tag_list.end(); ++it) {
+  for (int j = 0; j < (int)tag_list.size(); ++j)
+  {
     s << "@t";
     // Number
-    int Nr = atoi((*it).c_str()) + 1;
+    int Nr = atoi( tag_list[j].c_str() ) + 1;
     std::stringstream t; t << Nr;
-    for (int i = (int)t.str().size(); i < 3; i++) {s << " ";} s << Nr; *it++; ++anzahl; s << " ";
+    for (int i = (int)t.str().size(); i < 3; i++) {s << " ";} s << Nr; j++; ++anzahl; s << " ";
     // Name/title
-    s << *it; for (int i = (int)(*it++).size(); i < 6; i++) {s << " ";} ++anzahl;
+    s << tag_list[j]; for (int i = (int)(tag_list[j++]).size(); i < 6; i++) {s << " ";} ++anzahl;
     // Typ
-    s << *it; for (int i = (int)(*it++).size(); i < 5; i++) {s << " ";} ++anzahl;
+    s << tag_list[j]; for (int i = (int)(tag_list[j++]).size(); i < 5; i++) {s << " ";} ++anzahl;
     // Size
-    for (int i = (int)(*it).size(); i < 6; i++) {s << " ";} s << *it++; s << " "; ++anzahl;
+    for (int i = (int)tag_list[j].size(); i < 6; i++) {s << " ";} s << tag_list[j++]; s << " "; ++anzahl;
     // description
-    add_s (*it)
+    add_s (tag_list[j])
   }
   DBG_PROG_V( anzahl )
   if (b->value())
@@ -1597,7 +1598,7 @@ tastatur(int e)
         char *temp = (char*)malloc(Fl::event_length()+1),
              *text;
         sprintf(temp, Fl::event_text());
-        std::vector<std::string>profilnamen;
+        ICClist<std::string>profilnamen;
         while((text = strrchr(temp,'\n')) != 0)
         {
           profilnamen.push_back(text+1);
@@ -1629,7 +1630,7 @@ tastatur(int e)
           //sprintf(temp, Fl::event_text());
           DBG_PROG_V( Fl::event_text() )
           DBG_PROG_V( temp )
-          std::vector<std::string>profilnamen;
+          ICClist<std::string>profilnamen;
           while((text = strrchr(temp,'\n')) != 0)
           { DBG_PROG_V( (int*)text<<" "<<text+1 )
             if(strlen(text+1))

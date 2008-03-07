@@ -32,7 +32,7 @@
 
 
 #include <string>
-#include <vector>
+#include "icc_list.h"
 #include "icc_utils.h"
 
 #include "icc_profile_tags.h"
@@ -94,23 +94,23 @@ class ICCmeasurement {
     bool                RGB_measurement_;
     bool                CMYK_measurement_;
     // measurement values
-    std::vector<XYZ_s>    XYZ_Satz_;
-    std::vector<Lab_s>    Lab_Satz_;
-    std::vector<RGB_s>    RGB_Satz_;
-    std::vector<CMYK_s>   CMYK_Satz_;
+    ICClist<XYZ_s>    XYZ_Satz_;
+    ICClist<Lab_s>    Lab_Satz_;
+    ICClist<RGB_s>    RGB_Satz_;
+    ICClist<CMYK_s>   CMYK_Satz_;
     // profile values
-    std::vector<std::string> Feldnamen_;
-    std::vector<XYZ_s>    XYZ_Ergebnis_;
-    std::vector<Lab_s>    Lab_Ergebnis_;
-    std::vector<RGB_s>    RGB_MessFarben_;
-    std::vector<RGB_s>    RGB_ProfilFarben_;
-    std::vector<std::pair<std::string,std::vector<int> > > patch_src_lines_;
+    ICClist<std::string> Feldnamen_;
+    ICClist<XYZ_s>    XYZ_Ergebnis_;
+    ICClist<Lab_s>    Lab_Ergebnis_;
+    ICClist<RGB_s>    RGB_MessFarben_;
+    ICClist<RGB_s>    RGB_ProfilFarben_;
+    ICClist<std::pair<std::string,ICClist<int> > > patch_src_lines_;
     // results
-    std::vector<double> Lab_Differenz_;
+    ICClist<double> Lab_Differenz_;
     double              Lab_Differenz_max_;
     double              Lab_Differenz_min_;
     double              Lab_Differenz_Durchschnitt_;
-    std::vector<double> DE00_Differenz_;
+    ICClist<double> DE00_Differenz_;
     double              DE00_Differenz_max_;
     double              DE00_Differenz_min_;
     double              DE00_Differenz_Durchschnitt_;
@@ -127,8 +127,8 @@ class ICCmeasurement {
     double              XYZWP[3];       /**< media white */
     double              XYZBP[3];       /**< media black */
 
-    std::vector<std::vector<std::string> > reportTabelle_;
-    std::vector<int>    layout;
+    ICClist<ICClist<std::string> > reportTabelle_;
+    ICClist<int>    layout;
   // I/O
   public:
     void                load (ICCprofile* profil , ICCtag& tag);
@@ -153,31 +153,31 @@ class ICCmeasurement {
     size_t              getSize()          {DBG_PROG return size_; }
     int                 getPatchCount()    {DBG_PROG return nFelder_; }
     // values
-    std::vector<double> getMessRGB (int patch); //!< displaying colours
-    std::vector<double> getCmmRGB (int patch);  //!< displaying colours
-    std::vector<double> getMessLab (int patch);
-    std::vector<double> getCmmLab (int patch);
+    ICClist<double> getMessRGB (int patch); //!< displaying colours
+    ICClist<double> getCmmRGB (int patch);  //!< displaying colours
+    ICClist<double> getMessLab (int patch);
+    ICClist<double> getCmmLab (int patch);
     oyNamedColour_s *   getMessColour (int patch);
     oyNamedColour_s *   getCmmColour (int patch);
-    std::vector<int>    getPatchLines ( const char       * tag_name );
+    ICClist<int>    getPatchLines ( const char       * tag_name );
     oyNamedColour_s *   getPatchLine  ( int line, const char * tag_name );
-    std::vector<XYZ_s>    getMessXYZ ()      {DBG_PROG return XYZ_Satz_; }
-    std::vector<Lab_s>    getMessLab ()      {DBG_PROG return Lab_Satz_; }
-    std::vector<RGB_s>    getMessRGB ()      {DBG_PROG return RGB_Satz_; }
-    std::vector<CMYK_s>   getMessCMYK ()     {DBG_PROG return CMYK_Satz_; }
+    ICClist<XYZ_s>    getMessXYZ ()      {DBG_PROG return XYZ_Satz_; }
+    ICClist<Lab_s>    getMessLab ()      {DBG_PROG return Lab_Satz_; }
+    ICClist<RGB_s>    getMessRGB ()      {DBG_PROG return RGB_Satz_; }
+    ICClist<CMYK_s>   getMessCMYK ()     {DBG_PROG return CMYK_Satz_; }
     void                  getTargRGB  (int patch, RGB_s * rgb) 
                                              { *rgb = RGB_Satz_[patch]; }
     void                  getTargCMYK (int patch, CMYK_s * cmyk)
                                              { *cmyk = CMYK_Satz_[patch]; }
-    std::vector<std::string> getFeldNamen () {DBG_PROG return Feldnamen_; }
+    ICClist<std::string> getFeldNamen () {DBG_PROG return Feldnamen_; }
     std::string           getFieldName (int p) {DBG_PROG return Feldnamen_[p]; }
-    std::vector<Lab_s>    getProfileLab ()   {DBG_PROG return Lab_Ergebnis_; }
+    ICClist<Lab_s>    getProfileLab ()   {DBG_PROG return Lab_Ergebnis_; }
 
     // report
-    std::vector<std::vector<std::string> > getText ();
-    std::vector<std::string> getDescription();
+    ICClist<ICClist<std::string> > getText ();
+    ICClist<std::string> getDescription();
     std::string         getHtmlReport (bool export_ausserhalb);
-    std::vector<int>    getLayout ()       {DBG_PROG return layout; }
+    ICClist<int>    getLayout ()       {DBG_PROG return layout; }
     std::string         getCGATS    ();
     std::string         getMaxCGATS ();
 

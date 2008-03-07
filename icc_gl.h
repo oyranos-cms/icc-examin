@@ -30,7 +30,6 @@
 
 #ifndef ICC_GL_H
 #define ICC_GL_H
-#include <vector>
 
 #include "icc_utils.h"
 //#include "agviewer.h"
@@ -63,9 +62,9 @@ class GL_Ansicht : public Fl_Gl_Window,
                    public icc_examin_ns::Modell {
   // internal data
     //! position: colour1, colour2, colour3, colour channel No., value
-  std::vector<std::vector<std::vector<std::vector<double> > > > tabelle_;
-  std::vector<std::string>nach_farb_namen_;
-  std::vector<std::string>von_farb_namen_;
+  ICClist<ICClist<ICClist<ICClist<double> > > > tabelle_;
+  ICClist<std::string>nach_farb_namen_;
+  ICClist<std::string>von_farb_namen_;
   oyStructList_s * colours_;
   oyNamedColour_s  * epoint_;            //!< emphasize point
 public:
@@ -168,15 +167,15 @@ public:
   void nachricht( icc_examin_ns::Modell* modell, int info );
 
   // import data
-/*  void hineinPunkte (std::vector<double> &vect,
-                     std::vector<std::string> &achsNamen);
-  void hineinPunkte (std::vector<double> &vect, 
-                     std::vector<float>  &farben_,
-                     std::vector<std::string> &achsNamen);
-  void hineinPunkte (std::vector<double> &punktKoordinaten, //!< Lab
-                     std::vector<float>  &punktFarben,      //!< RGBA
-                     std::vector<std::string> &farb_namen_, //!< per point
-                     std::vector<std::string> &achsNamen);  //!< 3* */
+/*  void hineinPunkte (ICClist<double> &vect,
+                     ICClist<std::string> &achsNamen);
+  void hineinPunkte (ICClist<double> &vect, 
+                     ICClist<float>  &farben_,
+                     ICClist<std::string> &achsNamen);
+  void hineinPunkte (ICClist<double> &punktKoordinaten, //!< Lab
+                     ICClist<float>  &punktFarben,      //!< RGBA
+                     ICClist<std::string> &farb_namen_, //!< per point
+                     ICClist<std::string> &achsNamen);  //!< 3* */
   //TODO: Punkte auf oyNamedColour_s umstellen
   void              namedColours (oyStructList_s * colours);
   oyStructList_s *  namedColours ();
@@ -184,11 +183,11 @@ public:
   void emphasizePoint (oyNamedColour_s  * colour);  //!< a named colour
   void              clearNet ();
   icc_examin_ns::ICCThreadList<ICCnetz> dreiecks_netze;
-  void achsNamen    (std::vector<std::string> achs_namen);
+  void achsNamen    (ICClist<std::string> achs_namen);
 
-  void hineinTabelle(std::vector<std::vector<std::vector<std::vector<double> > > >vect,
-                               std::vector<std::string> vonFarben,
-                               std::vector<std::string> nachFarben);
+  void hineinTabelle(ICClist<ICClist<ICClist<ICClist<double> > > >vect,
+                               ICClist<std::string> vonFarben,
+                               ICClist<std::string> nachFarben);
 
   // transparent displaying
   int  kanal;               //!< selected channel

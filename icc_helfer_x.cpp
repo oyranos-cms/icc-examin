@@ -49,13 +49,13 @@
 #include <FL/x.H>
 #endif
 
-std::vector<std::vector<double> >
+ICClist<ICClist<double> >
 leseGrafikKartenGamma        (std::string display_name,
-                              std::vector<std::string> &texte,
+                              ICClist<std::string> &texte,
                               int x, int y )
 { DBG_PROG_START
 
-  std::vector<std::vector<double> > kurven;
+  ICClist<ICClist<double> > kurven;
 
 #ifdef HAVE_XF86VMODE
   Display *display = 0;

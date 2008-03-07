@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2007  Kai-Uwe Behrmann 
+ * Copyright (C) 2007-2008  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -115,6 +115,16 @@ public:
     return list_[reserve_ + 1000000000]; // create exception */
   }
 
+  /** @brief index access operator */
+  T & at (size_t i) {
+    return list_[i];
+  }
+
+  /** @brief constant index access operator */
+  const T& at (const size_t i) const {
+    return list_[i];
+  }
+
   /** @brief add one element
 
    *  allocate new mem, once the limit is reached
@@ -186,6 +196,40 @@ public:
       start_[i] = begin_[i];
     if( n_ < begin_i + news )
       n_ = begin_i + news;
+  }
+  /** @brief insert with automatic allocation */
+  void     insert( T* start_, const T & x ) {
+    size_t news = 1;
+    size_t begin_i = 0;
+    if(&list_[n_] < start_)
+      return;
+
+    if(start_)
+      begin_i =(size_t)((intptr_t)(start_ - begin()));
+    else
+      begin_i = 0;
+
+    reserve( begin_i + news + reserve_step );
+
+    if(start_)
+      start_ = &list_[begin_i];
+    else
+      start_ = &list_[0];
+
+    start_[begin_i] = T(x);
+    if( n_ < begin_i + news )
+      n_ = begin_i + news;
+  }
+
+  /** @brief erase with no deallocation */
+  void     erase( T* x ) {
+    for(size_t i = 0; i < n_; ++i)
+      if(&list_[i] == x)
+      {
+        memmove( &list_[i], &list_[i+1], sizeof(T) * (n_ - i - 1) );
+        -- n_;
+        break;
+      }
   }
 
   /** @brief ignore unused elements, avoid reallocation as possible */
