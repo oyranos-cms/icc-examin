@@ -90,7 +90,7 @@ class CgatsFilter
     void lade (std::string &text)       { clear(); data_orig_ = text; }
     //! @brief Zur&uuml;cksetzen der Datenstrukturen - keine neues Verhalten
     void clear()              { data_.resize(0); data_orig_.resize(0);
-                                messungen.resize(0); messungen.resize(1);
+                                messungen.clear(); messungen.resize(1);
                                 log.clear();
                                 zeilen_.clear();
                                 s_woerter_.resize(STD_CGATS_FIELDS);

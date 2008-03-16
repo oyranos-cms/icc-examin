@@ -563,7 +563,7 @@ ICCmeasurement::leseTag (void)
       // colour names of taste
       if (_id_vor_name) {
         for (int i = 0; i < n; i++) {
-          for (int j = 0; j < _nKanaele; ++j) {
+          for (int j = 0; j < (int)cgats->messungen[m].block[i].size(); ++j) {
             if( strcmp(SampleNames[j], "SAMPLE_NAME") == 0 )
               Feldnamen_[start+i] = cgats->messungen[m].block[i][j].c_str();
           }
