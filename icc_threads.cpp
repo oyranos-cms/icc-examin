@@ -116,18 +116,23 @@ icc_examin_ns::iccLock      ( oyranos::oyPointer           thread_lock,
   DBG_PROG_START
   DBG_THREAD_S( marker<<":"<<line )
 
+  static const char * last_marker = marker;
+  static int last_line = line;
+
   if(error)
   {
     if(marker)
-      WARN_S( "no lock provided at " << marker  <<":"<< line )
+      WARN_S( "no lock provided at " << marker  <<":"<< line <<"  last: "
+                                     << last_marker <<":"<< last_line)
     else
-      WARN_S( "no lock provided" )
+      WARN_S( "no lock provided" << last_marker <<":"<< last_line )
   } else {
     iccThreadMutex_m * m = (iccThreadMutex_m *) thread_lock;
 #if defined(DEBUG) && defined(__unix__)
     while (pthread_mutex_trylock( m ))
     {
-      DBG_S("mutex not available at "<<marker <<":"<< line);
+      DBG_S("mutex not available at "<<marker <<":"<< line<<"  last: "
+                                     << last_marker <<":"<< last_line);
       icc_examin_ns::sleep(1.0);
     }
 #else
