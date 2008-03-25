@@ -592,14 +592,14 @@ getSigTagDescription                            ( icTagSignature  sig )
   std::string text = _("Description");
 
   switch (sig) {
-    case icSigAToB0Tag: text = _("Lockup table, device to PCS, intent photometric"); break;
-    case icSigAToB1Tag: text = _("Lockup table, device to PCS, intent relative colorimetric"); break;
-    case icSigAToB2Tag: text = _("Lockup table, device to PCS, intent saturation"); break;
+    case icSigAToB0Tag: text = _("Lookup table, device to PCS, intent photometric"); break;
+    case icSigAToB1Tag: text = _("Lookup table, device to PCS, intent relative colorimetric"); break;
+    case icSigAToB2Tag: text = _("Lookup table, device to PCS, intent saturation"); break;
     case icSigBlueColorantTag: text = _("Blue Colorant"); break;
     case icSigBlueTRCTag: text = _("Blue tone reproduction curve"); break;
-    case icSigBToA0Tag: text = _("Lockup table, PCS to device, intent photometric"); break;
-    case icSigBToA1Tag: text = _("Lockup table, PCS to device, intent relative colorimetric"); break;
-    case icSigBToA2Tag: text = _("Lockup table, PCS to device, intent saturation"); break;
+    case icSigBToA0Tag: text = _("Lookup table, PCS to device, intent photometric"); break;
+    case icSigBToA1Tag: text = _("Lookup table, PCS to device, intent relative colorimetric"); break;
+    case icSigBToA2Tag: text = _("Lookup table, PCS to device, intent saturation"); break;
     case icSigCalibrationDateTimeTag: text = _("Calibration date"); break;
     case icSigCharTargetTag: text = _("Colour measurement data"); break;
     case icSigCopyrightTag: text = _("Copyright"); break;

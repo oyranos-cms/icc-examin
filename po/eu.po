@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cinepaint_icc-examin_eu\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2008-03-07 12:05+0100\n"
+"POT-Creation-Date: 2008-03-25 07:02+0100\n"
 "PO-Revision-Date: 2007-11-07 11:11+0100\n"
 "Last-Translator: Iñaki Larrañaga Murgoitio <dooteo@zundan.com>\n"
 "Language-Team: Basque <itzulpena@euskalgnu.org>\n"
@@ -567,15 +567,18 @@ msgid "Description"
 msgstr "Azalpena"
 
 #: icc_helfer.cpp:595
-msgid "Lockup table, device to PCS, intent photometric"
+#, fuzzy
+msgid "Lookup table, device to PCS, intent photometric"
 msgstr "Blokeatu taula, gailutik PCSra, fotometria helburuarekin"
 
 #: icc_helfer.cpp:596
-msgid "Lockup table, device to PCS, intent relative colorimetric"
+#, fuzzy
+msgid "Lookup table, device to PCS, intent relative colorimetric"
 msgstr "Blokeatu taula, gailutik PCSra, koloremetria erlatibo helburuarekin"
 
 #: icc_helfer.cpp:597
-msgid "Lockup table, device to PCS, intent saturation"
+#, fuzzy
+msgid "Lookup table, device to PCS, intent saturation"
 msgstr "Blokeatu taula, gailutik PCSra, saturazio helburuarekin"
 
 #: icc_helfer.cpp:598
@@ -587,15 +590,18 @@ msgid "Blue tone reproduction curve"
 msgstr "Tonu urdinaren erreprodukzio-kurba"
 
 #: icc_helfer.cpp:600
-msgid "Lockup table, PCS to device, intent photometric"
+#, fuzzy
+msgid "Lookup table, PCS to device, intent photometric"
 msgstr "Blokeatu taula, PCStik gailura, fotometria helburuarekin"
 
 #: icc_helfer.cpp:601
-msgid "Lockup table, PCS to device, intent relative colorimetric"
+#, fuzzy
+msgid "Lookup table, PCS to device, intent relative colorimetric"
 msgstr "Blokeatu taula, PCStik gailura, koloremetria erlatibo helburuarekin"
 
 #: icc_helfer.cpp:602
-msgid "Lockup table, PCS to device, intent saturation"
+#, fuzzy
+msgid "Lookup table, PCS to device, intent saturation"
 msgstr "Blokeatu taula, PCStik gailura, saturazio helburuarekin"
 
 #: icc_helfer.cpp:603
@@ -1391,7 +1397,8 @@ msgid "steps"
 msgstr "urratsak"
 
 #: icc_profile_tags.cpp:289 icc_profile_tags.cpp:307
-msgid "3D Lockup table with"
+#, fuzzy
+msgid "3D Lookup table with"
 msgstr "3D taula blokeatua honekin"
 
 #: icc_profile_tags.cpp:289 icc_profile_tags.cpp:307

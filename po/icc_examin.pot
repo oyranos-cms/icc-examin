@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2008-03-17 09:32+0100\n"
+"POT-Creation-Date: 2008-03-25 07:02+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -562,15 +562,15 @@ msgid "Description"
 msgstr ""
 
 #: icc_helfer.cpp:595
-msgid "Lockup table, device to PCS, intent photometric"
+msgid "Lookup table, device to PCS, intent photometric"
 msgstr ""
 
 #: icc_helfer.cpp:596
-msgid "Lockup table, device to PCS, intent relative colorimetric"
+msgid "Lookup table, device to PCS, intent relative colorimetric"
 msgstr ""
 
 #: icc_helfer.cpp:597
-msgid "Lockup table, device to PCS, intent saturation"
+msgid "Lookup table, device to PCS, intent saturation"
 msgstr ""
 
 #: icc_helfer.cpp:598
@@ -582,15 +582,15 @@ msgid "Blue tone reproduction curve"
 msgstr ""
 
 #: icc_helfer.cpp:600
-msgid "Lockup table, PCS to device, intent photometric"
+msgid "Lookup table, PCS to device, intent photometric"
 msgstr ""
 
 #: icc_helfer.cpp:601
-msgid "Lockup table, PCS to device, intent relative colorimetric"
+msgid "Lookup table, PCS to device, intent relative colorimetric"
 msgstr ""
 
 #: icc_helfer.cpp:602
-msgid "Lockup table, PCS to device, intent saturation"
+msgid "Lookup table, PCS to device, intent saturation"
 msgstr ""
 
 #: icc_helfer.cpp:603
@@ -1385,7 +1385,7 @@ msgid "steps"
 msgstr ""
 
 #: icc_profile_tags.cpp:289 icc_profile_tags.cpp:307
-msgid "3D Lockup table with"
+msgid "3D Lookup table with"
 msgstr ""
 
 #: icc_profile_tags.cpp:289 icc_profile_tags.cpp:307

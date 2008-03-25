@@ -286,7 +286,7 @@ ICCtag::getText                     (std::string text)
          _("Number of output channels") << " (" << getColorSpaceName(_color_out) << "): " << (int)outputChan << endl <<
          _("Matrix") << endl <<
          _("Linear input curve") << " " << _("with") << " " << (int)inputEnt << " " << _("steps") << endl <<
-         _("3D Lockup table with") << " " <<  (int)clutPoints << " " << _("points length per side") << endl <<
+         _("3D Lookup table with") << " " <<  (int)clutPoints << " " << _("points length per side") << endl <<
          _("Linear output curve") << " " << _("with") << " " << (int)outputEnt << " " << _("steps") << endl;
     texte.push_back( s.str() );
 
@@ -304,7 +304,7 @@ ICCtag::getText                     (std::string text)
          _("Number of input channels") << " (" << getColorSpaceName(_color_in)  << "): " << (int)inputChan << endl <<
          _("Number of output channels") << " (" << getColorSpaceName(_color_out) << "): " << (int)outputChan << endl <<
          _("Matrix") << endl <<
-         _("3D Lockup table with") << " " <<  (int)clutPoints << " " << _("points length per side") << endl;
+         _("3D Lookup table with") << " " <<  (int)clutPoints << " " << _("points length per side") << endl;
     texte.push_back( s.str() );
 
   } else if (((icTagBase*)&data_[0])->sig == (icTagTypeSignature)icValue( icSigChromaticityType )) {
