@@ -619,21 +619,48 @@ ICCtag::getText                     (std::string text)
 
     if(!texts_n || !texte[0].size())
     {
+      int type = oyFORMAT_HEX, pos;
       texte[0].append ("\n\n",2);
+      char txt[32];
 
-      for (int i = 0; i < size_-8; i = i + 4)
+      switch(type)
       {
+       case oyFORMAT_HEX:
+       for (int i = 0; i < size_-8; i = i + 8)
+       {
         texte[0].append (" ", 1);
-        text = zeig_bits_bin(&data_[8+i], MIN(4,size_-8-i));
+        text = zeig_bits_bin(&data_[8+i], MIN(8,size_-8-i), type);
+        texte[0].append (text.data(), text.size());
+        pos = 0;
+        for (int k = 0; k <  MIN(8,size_-8-i); k++)
+        {
+          if(k == 4)
+            txt[pos++] = ' ';
+
+          if (isprint(data_[8+i+k]))
+            txt[pos++] = data_[8+i+k];
+          else
+            txt[pos++] = '.';
+        }
+        texte[0].append (txt, pos);
+        texte[0].append ("\n", 1);
+       }
+       break;
+       case oyFORMAT_BIN:
+       for (int i = 0; i < size_-8; i = i + 4)
+       {
+        texte[0].append (" ", 1);
+        text = zeig_bits_bin(&data_[8+i], MIN(4,size_-8-i), type);
         texte[0].append (text.data(), text.size());
         for (int k = 0; k <  MIN(4,size_-8-i); k++)
           if (isprint(data_[8+i+k]))
             text[k] = data_[8+i+k];
           else
             text[k] = '.';
-        //text[MIN(4,size_-8-i)] = 0;
-        texte[0].append (text.data(), MIN(4,size_-8-i));//text.size());
+        texte[0].append (text.data(), MIN(4,size_-8-i));
         texte[0].append ("\n", 1);
+       }
+       break;
       }
     }
     DBG_PROG
@@ -641,7 +668,7 @@ ICCtag::getText                     (std::string text)
   }
     
 # ifdef DEBUG_ICCTAG
-  DBG_NUM_S( count << " Ersetzungen " << "|" << getTypName() << "|" << text )
+  DBG_NUM_S( count << " substitutions " << "|" << getTypName() << "|" << text )
 # endif
 
   DBG_PROG_ENDE

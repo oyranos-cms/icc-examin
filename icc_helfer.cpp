@@ -970,23 +970,41 @@ namespace icc_examin_ns {
   }
 }
 
-std::string
-zeig_bits_bin(const void* speicher, int groesse)
+std::string  zeig_bits_bin           ( const void        * mem,
+                                       int                 size,
+                                       int                 type)
 {
   std::string text;
   int byte_zahl;
   char txt[12];
 
   //@todo TODO: ->hexadezimal
-  for (int k = 0; k < groesse; k++)
-  {   for (int i = 8-1; i >= 0; i--)
+  switch(type)
+  {
+  case oyFORMAT_BIN:
+    for (int k = 0; k < size; k++)
+    {
+      for (int i = 8-1; i >= 0; i--)
       {
-              unsigned char* u8 = (unsigned char*)speicher;
+              unsigned char* u8 = (unsigned char*)mem;
               byte_zahl = (u8[k] >> i) & 1;
               sprintf (&txt[7-i], "%d", byte_zahl);
       }
       text.append( txt, strlen (txt));
-      text.append( " ", 1); /*aller 8 bit ein leerzeichen*/
+      text.append( " ", 1); /* aller 8 bit ein leerzeichen */
+    }
+       break;
+  case oyFORMAT_HEX:
+       for (int k = 0; k < size; k++)
+       {
+         unsigned char* u8 = (unsigned char*)mem;
+         sprintf (txt, "%x", u8[k]);
+         if((2-strlen(txt)) > 0)
+           text.append( "0", 2-strlen(txt));
+         text.append( txt, strlen (txt));
+         text.append( " ", 1);
+       }
+       break;
   }
 
   return text;

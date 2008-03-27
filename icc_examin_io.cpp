@@ -619,6 +619,7 @@ ICCexaminIO::oeffnen ()
     //dateiwahl->type(MyFl_File_Chooser::SINGLE | MyFl_File_Chooser::CREATE);
     //dateiwahl->window->set_modal();
 
+    dateinamen.clear();
     DBG_NUM_V( dateiwahl->count() )
     if (dateiwahl->count() && dateiwahl->value()) {
       DBG_NUM_V( dateiwahl->value() )

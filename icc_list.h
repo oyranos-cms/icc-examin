@@ -44,7 +44,7 @@ class ICClist {
   /** @brief set to defaults, ignore allocations */
   void       init() {
     zero();
-    reserve_step = 10000/sizeof(T);
+    reserve_step = 1000/sizeof(T);
   }
   void       zero() {
     list_ = NULL;
@@ -58,6 +58,10 @@ public:
              ICClist (int n) {
     init();
     reserve(n + reserve_step);
+  }
+             ICClist (const ICClist & s) {
+    init();
+    copy(s);
   }
   size_t reserve_step; //!< reservation of elements on some allocations
 
@@ -75,7 +79,7 @@ public:
   }
   /** @brief free and reset */
   void       clear   () {
-    if(n_ && list_)
+    if(list_)
       delete [] (list_);
     zero();
   }

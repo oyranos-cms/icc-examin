@@ -138,7 +138,13 @@ namespace icc_examin_ns {
 
 
 // displaying
-std::string         zeig_bits_bin      (const void* speicher, int groesse);
+enum {
+  oyFORMAT_BIN,
+  oyFORMAT_HEX
+};
+std::string  zeig_bits_bin           ( const void        * mem,
+                                       int                 size,
+                                       int                 type);
 
 // file I/O
 char*     ladeDatei                  ( std::string dateiname,

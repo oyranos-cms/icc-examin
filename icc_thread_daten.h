@@ -53,13 +53,22 @@ class ThreadDaten
     Fl_Thread pth;
     iccThreadMutex_m mutex_;
 protected:
-    ThreadDaten() { frei_ = true; zahl_ = 0; pth = 0; report_owner = 0;
+    void   init() { frei_ = true; zahl_ = 0; pth = 0; report_owner = 0;
                     iccThreadMutexInit_m( &mutex_, 0 ); }
+    ThreadDaten() { init(); }
     ~ThreadDaten() {;}
+    ThreadDaten (const ThreadDaten & s) {
+                              copy(s); }
 public:
     bool frei();              //!<@brief is not locked
     void frei(int freigeben); //!<@brief lock with wait/unlock
     bool report_owner;
+
+    ThreadDaten&   copy  (const ThreadDaten& s) {
+                              init();
+                              return *this; }
+    ThreadDaten& operator = (const ThreadDaten& d) {
+                              return copy(d); }
 };
 
 /** @brief a thread save list
@@ -92,6 +101,15 @@ public:
       DBG_PROG_S("out of range");
     return list_[reserve_ + 1000000000]; // create exception */
   }
+  
+  ICCThreadList () {;}
+  ~ICCThreadList () {;}
+  ICCThreadList (const ICCThreadList & s) {
+                              copy(s); }
+  ICCThreadList& copy  (const ICCThreadList& s) {
+                              return *this; }
+  ICCThreadList& operator = (const ICCThreadList& d) {
+                              return copy(d); }
 
 };
 

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ICC Examin 0.41\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2008-03-25 07:02+0100\n"
+"POT-Creation-Date: 2008-03-26 22:32+0100\n"
 "PO-Revision-Date: 2006-06-29 19:31+0200\n"
 "Last-Translator: Pascal LACROIX <lacroixpascal at vfemail.net>\n"
 "Language-Team: ALL <ku.b@gmx.de>\n"
@@ -312,27 +312,27 @@ msgstr ""
 msgid "Stop loading "
 msgstr ""
 
-#: icc_examin_io.cpp:666
+#: icc_examin_io.cpp:667
 msgid "HTML Documents (*.htm*)"
 msgstr ""
 
-#: icc_examin_io.cpp:670 icc_betrachter.cxx:608
+#: icc_examin_io.cpp:671 icc_betrachter.cxx:608
 msgid "Save Report"
 msgstr ""
 
-#: icc_examin_io.cpp:742
+#: icc_examin_io.cpp:743
 msgid "ICC colour profiles (*.ic*)"
 msgstr "ICC couleur profile (*.ic*)"
 
-#: icc_examin_io.cpp:743 icc_betrachter.cxx:609
+#: icc_examin_io.cpp:744 icc_betrachter.cxx:609
 msgid "Save Gamut as Profile"
 msgstr ""
 
-#: icc_examin_io.cpp:745
+#: icc_examin_io.cpp:746
 msgid "VRML Files (*.wrl)"
 msgstr "VRML Fichier (*.wrl)"
 
-#: icc_examin_io.cpp:746 icc_betrachter.cxx:610
+#: icc_examin_io.cpp:747 icc_betrachter.cxx:610
 msgid "Save Gamut as VRML"
 msgstr ""
 
@@ -483,7 +483,7 @@ msgstr "Saturation"
 msgid "Absolute Colorimetric"
 msgstr "Colorimétrie absolue"
 
-#: icc_helfer.cpp:394 icc_profile_tags.cpp:1163 icc_profile_tags.cpp:1170
+#: icc_helfer.cpp:394 icc_profile_tags.cpp:1190 icc_profile_tags.cpp:1197
 msgid "Colour"
 msgstr "Couleur"
 
@@ -956,11 +956,11 @@ msgstr ""
 msgid "seconds"
 msgstr ""
 
-#: icc_helfer.cpp:1223
+#: icc_helfer.cpp:1241
 msgid "Monitor Profile"
 msgstr "Écran Profil"
 
-#: icc_helfer.cpp:1250 icc_utils.cpp:81
+#: icc_helfer.cpp:1268 icc_utils.cpp:81
 msgid "file size 0 for "
 msgstr ""
 
