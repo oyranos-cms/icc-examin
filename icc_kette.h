@@ -56,10 +56,10 @@ class ICCkette : public icc_examin_ns::ThreadDaten,
   private:
     int                      aktuelles_profil_;
     /** list of loaded profiles */
-    icc_examin_ns::ICCThreadList<ICCprofile>  profile_;
-    icc_examin_ns::ICCThreadList<std::string> profilnamen_;
-    icc_examin_ns::ICCThreadList<int>         aktiv_;
-    icc_examin_ns::ICCThreadList<double>      profil_mzeit_;
+    ICClist<ICCprofile>  profile_;
+    ICClist<std::string> profilnamen_;
+    ICClist<int>         aktiv_;
+    ICClist<double>      profil_mzeit_;
 
     /** Start a pthread observer, and let him inform all our observers,
         which profile was just changed.
@@ -76,7 +76,7 @@ class ICCkette : public icc_examin_ns::ThreadDaten,
 
     void         setzAktiv (int pos) { DBG_PROG aktiv_[pos]=true;}// benachrichtigen(pos);}
     void         passiv    (int pos) { DBG_PROG aktiv_[pos]=false;}// benachrichtigen(pos);}
-    icc_examin_ns::ICCThreadList<int> aktiv () { return aktiv_; }
+    ICClist<int> aktiv () { return aktiv_; }
     int          aktiv (int pos) { return aktiv_[pos]; }
     void         aktuell   (int pos) {
                                 if(pos < (int)profile_.size())
@@ -105,7 +105,7 @@ class ICCkette : public icc_examin_ns::ThreadDaten,
     operator std::string ()  {
                if(profilnamen_.size()) return profilnamen_[aktuelles_profil_];
                else return ""; }*/
-    operator icc_examin_ns::ICCThreadList<std::string> ()  {
+    operator ICClist<std::string> ()  {
                return profilnamen_; }
     operator int ()  {
                return aktuelles_profil_; }

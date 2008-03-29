@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2008-03-26 22:32+0100\n"
+"POT-Creation-Date: 2008-03-28 13:49+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -481,7 +481,7 @@ msgstr ""
 msgid "Absolute Colorimetric"
 msgstr ""
 
-#: icc_helfer.cpp:394 icc_profile_tags.cpp:1190 icc_profile_tags.cpp:1197
+#: icc_helfer.cpp:394 icc_profile_tags.cpp:1191 icc_profile_tags.cpp:1198
 msgid "Colour"
 msgstr ""
 
@@ -1420,8 +1420,8 @@ msgstr ""
 msgid "Device Colours"
 msgstr ""
 
-#: icc_profile_tags.cpp:584
-msgid "Profiles where originally involved."
+#: icc_profile_tags.cpp:585
+msgid "profiles where originally involved"
 msgstr ""
 
 #: icc_ueber.cpp:67 icc_betrachter.cxx:690

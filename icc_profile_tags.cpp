@@ -581,7 +581,8 @@ ICCtag::getText                     (std::string text)
 
         if(i == 0)
         {
-          const char * t = _("Profiles where originally involved.");
+          // # "profiles ... involved" (other text) ":"
+          const char * t = _("profiles where originally involved");
           profiles_n = atoi(texts[i]);
           texte[0].append (texts[i], strlen(texts[i]));
           texte[0].append (" ", 1);
