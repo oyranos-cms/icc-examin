@@ -675,6 +675,21 @@ void ICCfltkBetrachter::cb_mft_gl_alltables_button(Fl_Button* o, void* v) {
   ((ICCfltkBetrachter*)(o->parent()->parent()->parent()->parent()->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_mft_gl_alltables_button_i(o,v);
 }
 
+void ICCfltkBetrachter::cb_mft_gl_slider_choice_i(Fl_Choice* o, void*) {
+  ICClist<int> channels = mft_gl->channels();
+  mft_gl_slider->value( channels[ 3 + o->value() ] );
+}
+void ICCfltkBetrachter::cb_mft_gl_slider_choice(Fl_Choice* o, void* v) {
+  ((ICCfltkBetrachter*)(o->parent()->parent()->parent()->parent()->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_mft_gl_slider_choice_i(o,v);
+}
+
+void ICCfltkBetrachter::cb_mft_gl_slider_i(Fl_Value_Slider*, void*) {
+  icc_examin->mftChannel( (int)mft_gl_slider_choice->value()+3, (int)mft_gl_slider->value() );
+}
+void ICCfltkBetrachter::cb_mft_gl_slider(Fl_Value_Slider* o, void* v) {
+  ((ICCfltkBetrachter*)(o->parent()->parent()->parent()->parent()->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_mft_gl_slider_i(o,v);
+}
+
 void ICCfltkBetrachter::cb_tag_text_i(TagTexts* o, void*) {
   o->selectItem( o->value() );
 }
@@ -985,6 +1000,18 @@ ard"));
                 }
                 o->end();
                 }
+                { Fl_Pack* o = mft_gl_slider_pack = new Fl_Pack(0, 185, 25, 310);
+                { Fl_Choice* o = mft_gl_slider_choice = new Fl_Choice(0, 185, 25, 25);
+                o->down_box(FL_BORDER_BOX);
+                o->callback((Fl_Callback*)cb_mft_gl_slider_choice);
+                }
+                { Fl_Value_Slider* o = mft_gl_slider = new Fl_Value_Slider(0, 210, 25, 285);
+                o->step(0.01);
+                o->callback((Fl_Callback*)cb_mft_gl_slider);
+                Fl_Group::current()->resizable(o);
+                }
+                o->end();
+                }
                 o->end();
                 Fl_Group::current()->resizable(o);
                 }
@@ -1279,6 +1306,46 @@ void ICCfltkBetrachter::mft_gl_boxAdd( const char ** names_short, const char** n
     mft_gl_button_pack->end();
     mft_gl_button_pack->resizable(o);
   mft_gl_group->end();
+  
+  DBG_PROG_ENDE
+}
+
+void ICCfltkBetrachter::mft_gl_sliderAdd( const char** names_short, const char** names, ICClist<int> channels, int clutpoints ) {
+  DBG_PROG_START
+  int i;
+    int w_new = mft_gl_slider_pack->w();
+    
+    if(mft_gl->x() == 0 && channels.size() > 3)
+    {
+      mft_gl->resize(w_new,mft_gl->y(), mft_gl->w()-w_new, mft_gl->h());
+      mft_gl_slider_pack->show();
+      mft_gl_slider->bounds( 0, clutpoints - 1 );
+      mft_gl_slider->step( 1, 1 );
+
+      if(0 <= mft_gl_slider_choice->value() &&
+         mft_gl_slider_choice->value() < (int)channels.size() - 3)
+        mft_gl_slider->value( channels[mft_gl_slider_choice->value()] );
+      else
+        mft_gl_slider->value( clutpoints/2 );
+
+      Fl_Menu_Item *menue = 0;
+      if(channels.size() - 3 > 0)
+        menue = (Fl_Menu_Item *)calloc( sizeof (Fl_Menu_Item),
+                                        channels.size() - 3 + 1 );
+
+      if(menue)
+      {
+        for(i = 0; i < (int)channels.size() - 3; ++i)
+          menue[i].text = names_short[3+i];
+        menue[i].text = 0;
+      }
+      mft_gl_slider_choice->clear();
+      mft_gl_slider_choice->menu(menue);
+      
+    } else if( mft_gl->x() > 0 && channels.size() <= 3) {
+      mft_gl->resize(0,mft_gl->y(), mft_gl->w()+w_new, mft_gl->h());
+      mft_gl_slider_pack->hide();
+    }
   
   DBG_PROG_ENDE
 }

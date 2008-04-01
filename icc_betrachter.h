@@ -76,6 +76,8 @@ public:
 #include <FL/Fl_Tile.H>
 #include <FL/Fl_Box.H>
 #include <FL/Fl_Pack.H>
+#include <FL/Fl_Choice.H>
+#include <FL/Fl_Value_Slider.H>
 #include <FL/Fl_Progress.H>
 
 class ICCfltkBetrachter {
@@ -279,6 +281,17 @@ private:
   void cb_mft_gl_alltables_button_i(Fl_Button*, void*);
   static void cb_mft_gl_alltables_button(Fl_Button*, void*);
 public:
+  Fl_Pack *mft_gl_slider_pack;
+  Fl_Choice *mft_gl_slider_choice;
+private:
+  void cb_mft_gl_slider_choice_i(Fl_Choice*, void*);
+  static void cb_mft_gl_slider_choice(Fl_Choice*, void*);
+public:
+  Fl_Value_Slider *mft_gl_slider;
+private:
+  void cb_mft_gl_slider_i(Fl_Value_Slider*, void*);
+  static void cb_mft_gl_slider(Fl_Value_Slider*, void*);
+public:
   Fl_Pack *twoD_pack;
   TagTexts *tag_text;
 private:
@@ -298,6 +311,7 @@ private:
   Fl_Button ** mft_gl_tables_buttons;
 public:
   void mft_gl_boxAdd( const char ** names_short, const char** names, int n, int actual );
+  void mft_gl_sliderAdd( const char** names_short, const char** names, ICClist<int> channels, int clutpoints );
 };
 void dHaendler(void* o);
 void initHilfe();

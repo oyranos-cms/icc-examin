@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2005  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2008  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -124,7 +124,9 @@ class ICCprofile {
     ICClist<ICClist<double> >
                              getTagCurves      (int item, ICCtag::MftChain typ);
     ICClist<ICClist<ICClist<ICClist<double> > > >
-                             getTagTable       (int item, ICCtag::MftChain typ);
+                         getTagTable ( int                 item,
+                                       ICCtag::MftChain    typ,
+                                       ICClist<int>        channels );
     ICClist<double>      getTagNumbers     (int item, ICCtag::MftChain typ);
     ICClist<std::string> getTagChannelNames(int item, ICCtag::MftChain typ);
     bool                hasTagName   (std::string name); //!< name

@@ -206,7 +206,7 @@ this->hinein( text, patches );} {}
 
 decl {\#include <FL/fl_draw.H>} {} 
 
-class MftChoice {: {public Fl_Choice}
+class MftChoice {open : {public Fl_Choice}
 } {
   decl {int X; int Y; int W; int H; const char* start_info; char typ[5];} {}
   decl {ICClist<std::string> Info; int gewaehlter_eintrag;} {public
@@ -255,7 +255,8 @@ class MftChoice {: {public Fl_Choice}
   //auswahlCb();} {}
     code DBG_PROG_ENDE {}
   }
-  Function {auswahlCb(void)} {} {
+  Function {auswahlCb(void)} {open
+  } {
     code DBG_PROG_START {}
     code {//Auswahl aus mft_choice
 
@@ -314,7 +315,7 @@ class ICCfltkBetrachter {open
   setTitleUrl = true;} {}
     Fl_Window ueber {
       label {About ICC Examin} open
-      xywh {879 749 365 295} type Double resizable
+      xywh {909 749 365 295} type Double resizable
       code0 {o->hide();}
       code1 {o->use_escape_hide = true;}
       class {icc_examin_ns::MyFl_Double_Window} visible
@@ -355,7 +356,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window vcgt {
       label {Grafic Card Gamma Table} open
-      xywh {258 639 370 405} type Double resizable
+      xywh {288 639 370 405} type Double resizable
       code0 {o->hide();}
       code1 {o->use_escape_hide = true;}
       class {icc_examin_ns::MyFl_Double_Window} visible
@@ -392,7 +393,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window DD {
       label Gamut open
-      xywh {878 308 385 520} type Double box NO_BOX resizable
+      xywh {899 434 385 520} type Double box NO_BOX resizable
       class {icc_examin_ns::MyFl_Double_Window} visible
     } {
       Fl_Group {} {open
@@ -416,7 +417,7 @@ class ICCfltkBetrachter {open
             }
             MenuItem {} {
               label Quit
-              callback {quit()} selected
+              callback {quit()}
               xywh {30 30 100 20} shortcut 0x40071
             }
           }
@@ -569,7 +570,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window details {
       label {ICC Examin} open
-      xywh {565 449 385 520} type Double box NO_BOX
+      xywh {649 524 385 520} type Double box NO_BOX
       code0 {o->main_win = o;}
       class {icc_examin_ns::MyFl_Double_Window} visible
     } {
@@ -827,6 +828,19 @@ icc_examin->testZeigen();}
                           code0 {o->show();}
                         }
                       }
+                      Fl_Pack mft_gl_slider_pack {open
+                        xywh {0 185 25 310}
+                      } {
+                        Fl_Choice mft_gl_slider_choice {
+                          callback {ICClist<int> channels = mft_gl->channels();
+  mft_gl_slider->value( channels[ 3 + o->value() ] );} open selected
+                          xywh {0 185 25 25} down_box BORDER_BOX
+                        } {}
+                        Fl_Value_Slider mft_gl_slider {
+                          callback {icc_examin->mftChannel( (int)mft_gl_slider_choice->value()+3, (int)mft_gl_slider->value() );}
+                          xywh {0 210 25 285} step 0.01 resizable
+                        }
+                      }
                     }
                   }
                 }
@@ -1081,6 +1095,46 @@ icc_examin->testZeigen();}
     mft_gl_button_pack->end();
     mft_gl_button_pack->resizable(o);
   mft_gl_group->end();
+  
+  DBG_PROG_ENDE} {}
+  }
+  Function {mft_gl_sliderAdd( const char** names_short, const char** names, ICClist<int> channels, int clutpoints )} {open
+  } {
+    code DBG_PROG_START {}
+    code {int i;
+    int w_new = mft_gl_slider_pack->w();
+    
+    if(mft_gl->x() == 0 && channels.size() > 3)
+    {
+      mft_gl->resize(w_new,mft_gl->y(), mft_gl->w()-w_new, mft_gl->h());
+      mft_gl_slider_pack->show();
+      mft_gl_slider->bounds( 0, clutpoints - 1 );
+      mft_gl_slider->step( 1, 1 );
+
+      if(0 <= mft_gl_slider_choice->value() &&
+         mft_gl_slider_choice->value() < (int)channels.size() - 3)
+        mft_gl_slider->value( channels[mft_gl_slider_choice->value()] );
+      else
+        mft_gl_slider->value( clutpoints/2 );
+
+      Fl_Menu_Item *menue = 0;
+      if(channels.size() - 3 > 0)
+        menue = (Fl_Menu_Item *)calloc( sizeof (Fl_Menu_Item),
+                                        channels.size() - 3 + 1 );
+
+      if(menue)
+      {
+        for(i = 0; i < (int)channels.size() - 3; ++i)
+          menue[i].text = names_short[3+i];
+        menue[i].text = 0;
+      }
+      mft_gl_slider_choice->clear();
+      mft_gl_slider_choice->menu(menue);
+      
+    } else if( mft_gl->x() > 0 && channels.size() <= 3) {
+      mft_gl->resize(0,mft_gl->y(), mft_gl->w()+w_new, mft_gl->h());
+      mft_gl_slider_pack->hide();
+    }
   
   DBG_PROG_ENDE} {}
   }

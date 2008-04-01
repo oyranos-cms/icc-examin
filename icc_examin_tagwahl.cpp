@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2007  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2008  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -325,38 +325,73 @@ ICCexamin::waehleMft (int item)
   case 3: // 3D table
     DBG_PROG_S("show table")
     {
+      ICClist<int> channels;
       profile.frei(false);
       ICClist<std::string> nach_farb_namen = profile.profil()->getTagChannelNames (icc_betrachter->tag_nummer, ICCtag::TABLE_OUT);
+      ICClist<std::string> from_colour_names = profile.profil()->getTagChannelNames (icc_betrachter->tag_nummer, ICCtag::TABLE_IN);
       icColorSpaceSignature sig_out = profile.profil()->getTag( icc_betrachter->tag_nummer ).colorSpace( ICCtag::TABLE_OUT );
-      ICClist<std::string> nach_farben_snamen =  getChannelNamesShort( sig_out );
-
-      icc_betrachter->mft_gl->hineinTabelle (
-                     profile.profil()->getTagTable (icc_betrachter->tag_nummer, ICCtag::TABLE),
-                     profile.profil()->getTagChannelNames (icc_betrachter->tag_nummer, ICCtag::TABLE_IN),
-                     nach_farb_namen ); DBG_PROG_S( "3D table" )
-      profile.frei(true);
+      icColorSpaceSignature sig_in = profile.profil()->getTag( icc_betrachter->tag_nummer ).colorSpace( ICCtag::TABLE_IN );
+      ICClist<std::string> nach_farb_snamen =  getChannelNamesShort( sig_out );
+      ICClist<std::string> from_colour_snames =  getChannelNamesShort( sig_in );
 
       int      n = (int)nach_farb_namen.size();
-      if(n != (int)nach_farben_snamen.size())
+      if(n != (int)nach_farb_snamen.size())
       {
         sig_out = getColorSpaceGeneric( n );
-        nach_farben_snamen =  getChannelNamesShort( sig_out );
+        nach_farb_snamen =  getChannelNamesShort( sig_out );
       }
 
-      if(n == (int)nach_farben_snamen.size())
+      channels = icc_examin->icc_betrachter->mft_gl->channels();
+      channels.resize(from_colour_names.size());
+      ICClist<double> clutpoints =  profile.profil()->getTagNumbers(
+                                                    icc_betrachter->tag_nummer,
+                                                    ICCtag::TABLE );
+      for(unsigned int i = 0; i < from_colour_names.size(); ++i)
+        if(i < 3)
+          channels[i] = -1;
+        else
+          if(channels[i] >= clutpoints[0])
+            channels[i] = (int)clutpoints[0] / 2;
+
+      if(n == (int)nach_farb_snamen.size())
       {
         const char ** pp = new const char* [n];
         const char ** sn = new const char* [n];
         for (int i = 0; i < n; i++)
         {
           pp[i] = nach_farb_namen[i].c_str();
-          sn[i] = nach_farben_snamen[i].c_str();
+          sn[i] = nach_farb_snamen[i].c_str();
         }
         icc_examin->icc_betrachter->mft_gl_boxAdd( sn, pp, n, icc_betrachter->mft_gl->kanal );
+        if(pp) delete [] pp;
+        if(sn) delete [] sn;
+
+
+        int      n = (int)from_colour_names.size();
+        pp = new const char* [n];
+        sn = new const char* [n];
+        for (int i = 0; i < n; i++)
+        {
+          pp[i] = (const char*)strdup(from_colour_names[i].c_str());
+          sn[i] = (const char*)strdup(from_colour_snames[i].c_str());
+        }
+        icc_examin->icc_betrachter->mft_gl_sliderAdd( pp, sn, channels,
+                                                      (int)clutpoints[0] );
+        /* We need to keep that around to make FLTK happy */
+        /* if(pp) delete [] pp;
+        if(sn) delete [] sn;*/
 
       } else {
         icc_examin->icc_betrachter->mft_gl_boxAdd( NULL, NULL, 0, 0 );
       }
+
+      icc_betrachter->mft_gl->hineinTabelle (
+                     profile.profil()->getTagTable (icc_betrachter->tag_nummer,
+                                                    ICCtag::TABLE, channels ),
+                     from_colour_names,
+                     nach_farb_namen, channels ); DBG_PROG_S( "3D table" )
+      profile.frei(true);
+
     }
     icc_betrachterNeuzeichnen(icc_betrachter->mft_gl_group);
     break;
@@ -379,6 +414,29 @@ ICCexamin::waehleMft (int item)
 
   frei(true);
   DBG_PROG_ENDE
+}
+
+void
+ICCexamin::mftChannel ( int channel, int clutplane )
+{
+    {
+      ICClist<int> channels;
+      profile.frei(false);
+      ICClist<std::string> from_colour_names = profile.profil()->getTagChannelNames (icc_betrachter->tag_nummer, ICCtag::TABLE_IN);
+      icColorSpaceSignature sig_out = profile.profil()->getTag( icc_betrachter->tag_nummer ).colorSpace( ICCtag::TABLE_OUT );
+      ICClist<std::string> to_colour_names =  getChannelNames( sig_out );
+
+
+      channels = icc_examin->icc_betrachter->mft_gl->channels();
+      channels[channel] = clutplane;
+
+      icc_betrachter->mft_gl->hineinTabelle (
+                     profile.profil()->getTagTable (icc_betrachter->tag_nummer,
+                                                    ICCtag::TABLE, channels ),
+                     from_colour_names,
+                     to_colour_names, channels );
+      profile.frei(true);
+    }
 }
 
 const char *

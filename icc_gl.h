@@ -65,6 +65,7 @@ class GL_Ansicht : public Fl_Gl_Window,
   ICClist<ICClist<ICClist<ICClist<double> > > > tabelle_;
   ICClist<std::string>nach_farb_namen_;
   ICClist<std::string>von_farb_namen_;
+  ICClist<int>        channels_;
   oyStructList_s * colours_;
   oyNamedColour_s  * epoint_;            //!< emphasize point
 public:
@@ -187,7 +188,9 @@ public:
 
   void hineinTabelle(ICClist<ICClist<ICClist<ICClist<double> > > >vect,
                                ICClist<std::string> vonFarben,
-                               ICClist<std::string> nachFarben);
+                               ICClist<std::string> nachFarben,
+                                       ICClist<int>        channels );
+  ICClist<int>     channels() { return channels_; }
 
   // transparent displaying
   int  kanal;               //!< selected channel

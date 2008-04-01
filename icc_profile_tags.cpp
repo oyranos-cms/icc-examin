@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2007  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2008  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -932,12 +932,15 @@ ICCtag::getCurves                                 (MftChain typ)
 }
 
 ICClist<ICClist<ICClist<ICClist<double> > > >
-ICCtag::getTable                                 (MftChain typ)
-{ DBG_PROG_START
+ICCtag::getTable                     ( MftChain            typ,
+                                       ICClist<int>        channels )
+{
+  DBG_PROG_START
   ICClist<ICClist<ICClist<ICClist<double> > > > Tabelle;
   ICClist<double> Farbe; DBG_PROG
-  // Wer sind wir?
-  if (getTypName() == "mft2") {
+  // Who are we?
+  if (getTypName() == "mft2")
+  {
     icLut16* lut16 = (icLut16*) &data_[8];
     int inputChan, outputChan, clutPoints, inputEnt, outputEnt;
     inputChan = (int)lut16->inputChan;
@@ -950,39 +953,54 @@ ICCtag::getTable                                 (MftChain typ)
     DBG_NUM_S( feldPunkte << " array points " << clutPoints << " clutPoints" )
 #   endif
     int start = 52,
-        byte  = 2;
+        byte  = 2,
+        jump  = 1;
     double div   = 65536.0;
-    DBG_PROG
+
     // What is requested?
-    if (inputChan == 3)
+    if (inputChan > 0)
     {
       switch (typ) {
       case TABLE_IN:
       case TABLE_OUT:
       case TABLE: { DBG_PROG
            start += (inputChan * inputEnt) * byte;
+           if(inputChan > 3)
+             for(int i = 3; i < (int)channels.size(); ++i)
+               start += (int)pow((double)clutPoints, i) * outputChan * channels[i] * byte;
+
+           // allocate
            Tabelle.resize(clutPoints);
            for (int i = 0; i < clutPoints; i++) {
              Tabelle[i].resize(clutPoints);
              for (int j = 0; j < clutPoints; j++) {
                Tabelle[i][j].resize(clutPoints);
                for (int k = 0; k < clutPoints; k++)
+               {
                  Tabelle[i][j][k].resize(outputChan);
+                 for (int l = 0; l < outputChan; l++)
+                   Tabelle[i][j][k][l] = 0;
+               }
              }
            }
            int n = 0;
+           // fill in
            for (int i = 0; i < clutPoints; i++) {
-             Tabelle[i].resize(clutPoints);
+             if(inputChan < 3)
+               i = clutPoints/2;
              for (int j = 0; j < clutPoints; j++) {
-               Tabelle[i][j].resize(clutPoints);
+               if(inputChan < 2)
+                 j = clutPoints/2;
                for (int k = 0; k < clutPoints; k++) {
-                 Tabelle[i][j][k].resize(outputChan);
                  for (int l = 0; l < outputChan; l++) {
-                   Tabelle[i][j][k][l] = (double)icValue (*(icUInt16Number*)&data_[start + byte*n++])
+                   Tabelle[i][j][k][l] = (double)icValue (*(icUInt16Number*)&data_[start + byte*n])
                               / div;
+                   n += jump;
                  }
                }
+               if(inputChan < 2) break;
              }
+             if(inputChan < 3) break;
            }
          }
          break;
@@ -1025,11 +1043,8 @@ ICCtag::getTable                                 (MftChain typ)
            }
            int n = 0;
            for (int i = 0; i < clutPoints; i++) {
-             Tabelle[i].resize(clutPoints);
              for (int j = 0; j < clutPoints; j++) {
-               Tabelle[i][j].resize(clutPoints);
                for (int k = 0; k < clutPoints; k++) {
-                 Tabelle[i][j][k].resize(outputChan);
                  for (int l = 0; l < outputChan; l++) {
                    Tabelle[i][j][k][l] = (double) *(icUInt8Number*)&data_[start + byte*n++]
                               / div;
@@ -1058,7 +1073,8 @@ ICCtag::getNumbers                                 (MftChain typ)
 { DBG_PROG_START
   ICClist<double> nummern;
   // Who are we?
-  if (getTypName() == "mft2") {
+  if (getTypName() == "mft2")
+  {
     icLut16* lut16 = (icLut16*) &data_[8];
     int inputChan, outputChan, clutPoints, inputEnt, outputEnt;
     inputChan = (int)lut16->inputChan;
@@ -1076,15 +1092,19 @@ ICCtag::getNumbers                                 (MftChain typ)
          }
          break;
     case TABLE:
+         nummern.push_back( clutPoints );
          break;
     case CURVE_IN:
+         nummern.push_back( inputEnt );
+         break;
     case TABLE_IN:
          nummern.push_back( inputChan );
          break;
     case CURVE_OUT:
+         nummern.push_back( outputEnt );
+         break;
     case TABLE_OUT:
          nummern.push_back( outputChan );
-         break;
          break;
     } 
   } else if (getTypName() == "mft1") {
@@ -1102,8 +1122,10 @@ ICCtag::getNumbers                                 (MftChain typ)
            nummern.push_back( icSFValue (*n) );
          }
          break;
-    case CURVE_IN:
     case TABLE:
+         nummern.push_back( clutPoints );
+         break;
+    case CURVE_IN:
     case TABLE_IN:
          nummern.push_back( inputChan );
          break;

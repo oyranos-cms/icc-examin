@@ -526,7 +526,9 @@ ICCprofile::getTagCurves                         (int item,ICCtag::MftChain typ)
 }
 
 ICClist<ICClist<ICClist<ICClist<double> > > >
-ICCprofile::getTagTable                         (int item,ICCtag::MftChain typ)
+ICCprofile::getTagTable              ( int                 item,
+                                       ICCtag::MftChain    typ,
+                                       ICClist<int>        channels )
 { DBG_PROG_START
   // check
   ICClist<ICClist<ICClist<ICClist<double> > > > leer;
@@ -541,7 +543,7 @@ ICCprofile::getTagTable                         (int item,ICCtag::MftChain typ)
   }
 
   DBG_PROG_ENDE
-  return tags.at(item).getTable(typ);
+  return tags.at(item).getTable(typ, channels);
 }
 
 ICClist<double>

@@ -59,24 +59,31 @@ public:
     init();
     reserve(n + reserve_step);
   }
+            ~ICClist () {
+    clear();
+  }
              ICClist (const ICClist & s) {
     init();
     copy(s);
   }
   size_t reserve_step; //!< reservation of elements on some allocations
 
-  /** @brief a copy this class object */
+  /** @brief copy the objects */
   ICClist&   copy    (const ICClist & l) {
     if(l.n_ > n_)
+    {
+      if(list_)
+        delete [] list_;
       list_ = new T[l.n_];
+      reserve_ = l.n_;
+    }
     if(l.n_)
       for(size_t i = 0; i < l.n_; ++i)
         list_[i] = l.list_[i];
-      //memcpy( list_, l.list_, l.n_ * sizeof(T*) );
     n_ = l.n_;
-    reserve_ = n_;
     return *this;
   }
+
   /** @brief free and reset */
   void       clear   () {
     if(list_)
@@ -213,14 +220,16 @@ public:
     else
       begin_i = 0;
 
-    reserve( begin_i + news + reserve_step );
-
-    if(start_)
+    if(begin_i + news < reserve_)
+    {
+      reserve( begin_i + news + reserve_step );
       start_ = &list_[begin_i];
-    else
+    }
+
+    if(!start_)
       start_ = &list_[0];
 
-    start_[begin_i] = T(x);
+    start_[0/*begin_i*/] = T(x);
     if( n_ < begin_i + news )
       n_ = begin_i + news;
   }

@@ -1028,7 +1028,7 @@ GL_Ansicht::textGarnieren_()
       }
 
     // CIE*a - right
-      if (von_farb_namen_.size())
+      if (von_farb_namen_.size() > 1)
       {
         ptr = (char*) von_farb_namen_[1].c_str();
         sprintf (&text[0], ptr);
@@ -1041,7 +1041,7 @@ GL_Ansicht::textGarnieren_()
       }
 
     // CIE*b - left
-      if (von_farb_namen_.size())
+      if (von_farb_namen_.size() > 2)
       {
         ptr = (char*) von_farb_namen_[2].c_str();
         sprintf (&text[0], ptr);
@@ -1106,7 +1106,7 @@ GL_Ansicht::garnieren_()
 
     // CIE*a - right
     glPushMatrix();
-      if (von_farb_namen_.size() &&
+      if (von_farb_namen_.size() > 1 &&
           von_farb_namen_[1] == _("CIE *a"))
         glTranslatef(0,-.5,0);
       FARBE(pfeilfarbe[0],pfeilfarbe[1],pfeilfarbe[2],1)
@@ -1132,7 +1132,7 @@ GL_Ansicht::garnieren_()
       glTranslated(0.0,0.0,a_darstellungs_breite/2.);
       glRotated (180,0.0,.5,.0);
       glTranslated(.0,0.0,a_darstellungs_breite);
-      if (von_farb_namen_.size() &&
+      if (von_farb_namen_.size() > 1 &&
           von_farb_namen_[1] == _("CIE *a"))
       {
         FARBE(.2,.9,0.7,1)
@@ -1140,7 +1140,7 @@ GL_Ansicht::garnieren_()
       }
       glTranslated(.0,0.0,-a_darstellungs_breite);
       glRotated (180,0.0,.5,.0);
-      if (von_farb_namen_.size() &&
+      if (von_farb_namen_.size() > 1 &&
           von_farb_namen_[1] == _("CIE *a"))
         FARBE(.9,0.2,0.5,1)
       PFEILSPITZE
@@ -1148,7 +1148,7 @@ GL_Ansicht::garnieren_()
 
     // CIE*b - left
     glPushMatrix();
-      if (von_farb_namen_.size() &&
+      if (von_farb_namen_.size() > 2 &&
           von_farb_namen_[2] == _("CIE *b"))
         glTranslated(0,-0.5,0);
       FARBE(pfeilfarbe[0],pfeilfarbe[1],pfeilfarbe[2],1)
@@ -1168,14 +1168,14 @@ GL_Ansicht::garnieren_()
       }
       glEnable(GL_LIGHTING);
       glTranslated(b_darstellungs_breite/2.,0,0);
-      if (von_farb_namen_.size() &&
+      if (von_farb_namen_.size() > 2 &&
           von_farb_namen_[2] == _("CIE *b"))
         FARBE(.9,.9,0.2,1)
       glRotated (90,0.0,.5,.0);
       PFEILSPITZE
       glRotated (180,.0,.5,.0);
       glTranslated(.0,.0,b_darstellungs_breite);
-      if (von_farb_namen_.size() &&
+      if (von_farb_namen_.size() > 2 &&
           von_farb_namen_[2] == _("CIE *b"))
       {
         FARBE(.7,.8,1.0,1)
@@ -2146,7 +2146,7 @@ GL_Ansicht::menueErneuern_()
   menue_schnitt_->add(_("Rotate around slice"),0,c_,(void*)Agviewer::ICCPOLAR, 0);
   DBG_PROG
 
-  if (von_farb_namen_.size() >= 3)
+  if (von_farb_namen_.size())
   {
     static char text_L[64];
     static char text_a[64];
@@ -2154,9 +2154,15 @@ GL_Ansicht::menueErneuern_()
     static char text_S[64];
     sprintf (text_L, "%s %s", von_farb_namen_[0].c_str(), _("Slice"));
     menue_schnitt_->replace( 0, text_L);
-    sprintf (text_a, "%s %s", von_farb_namen_[1].c_str(), _("Slice"));
+    if(von_farb_namen_.size() > 1)
+      sprintf (text_a, "%s %s", von_farb_namen_[1].c_str(), _("Slice"));
+    else
+      sprintf (text_a, "%s", _("Slice"));
     menue_schnitt_->replace( 1, text_a);
-    sprintf (text_b, "%s %s", von_farb_namen_[2].c_str(), _("Slice"));
+    if(von_farb_namen_.size() > 2)
+      sprintf (text_b, "%s %s", von_farb_namen_[2].c_str(), _("Slice"));
+    else
+      sprintf (text_a, "%s", _("Slice"));
     menue_schnitt_->replace( 2, text_b);
     sprintf (text_S, "%s %s %s", _("Rotate around"),von_farb_namen_[0].c_str(), _("axis"));
     menue_schnitt_->replace( 4, text_S);
@@ -2429,10 +2435,11 @@ GL_Ansicht::zeichnen()
             d[1] = Znacha(oZ);
             d[2] = Xnachb(oX);
             LabToCIELab( d, d, 1 );
-            sprintf( text,"%s:%.02f %s:%.02f %s:%.02f",
-                               von_farb_namen_[0].c_str(), d[0],
-                               von_farb_namen_[1].c_str(), d[1],
-                               von_farb_namen_[2].c_str(), d[2] );
+            text[0] = 0;
+            for(int i = 0; i < (int)von_farb_namen_.size(); ++i)
+              if(i < 3)
+                sprintf( &text[strlen(text)], "%s:%.02f ",
+                               von_farb_namen_[i].c_str(), d[i] );
           }
         } else {
           if(!epoint_)
@@ -2559,10 +2566,14 @@ GL_Ansicht::zeichnen()
                    DBG_PROG_V( tabelle_.size()<<" "<<tabelle_[L].size()<<" "<<
                                tabelle_[L][a].size()<<" "<<kanal )
                    // "Pos" is a abreviation to position and will be visible in the small statusline with position coordinates
-                   sprintf( text,"%s[%d][%d][%d]: ", _("Pos"),
+                   sprintf( text,"%s[%d][%d][%d]", _("Pos"),
                             (int)((oY+0.5)*tabelle_.size()),
                             (int)((oZ+0.5)*tabelle_[L].size()),
                             (int)((oX+0.5)*tabelle_[L][a].size()));
+                   for (int i = 3 ; i < (int)channels_.size(); ++i) {
+                     sprintf(&text[strlen(text)], "%d|", channels_[i]);
+                   }
+                   sprintf(&text[strlen(text)], " ");
                    for (int i = 0 ; i < (int)tabelle_[L][a][b].size(); ++i) {
                      if(i == kanal) sprintf(&text[strlen(text)], "[");
                      sprintf(&text[strlen(text)], "%.5f", tabelle_[L][a][b][i]);
@@ -2717,7 +2728,7 @@ GL_Ansicht::zeichnen()
 void
 GL_Ansicht::achsNamen    (ICClist<std::string> achs_namen)
 { DBG_PROG_START
-  if (achs_namen.size() == 3)
+  if (achs_namen.size())
     von_farb_namen_ = achs_namen;
   else
   { von_farb_namen_.clear();
@@ -3247,7 +3258,8 @@ GL_Ansicht::hineinNetze_       (const icc_examin_ns::ICCThreadList<ICCnetz> & d_
 void
 GL_Ansicht::hineinTabelle (ICClist<ICClist<ICClist<ICClist<double> > > > vect,
                            ICClist<std::string> achs_namen,
-                           ICClist<std::string> nach)
+                           ICClist<std::string> nach,
+                                       ICClist<int>        channels)
 { DBG_PROG_START
 
   MARK( frei(false); )
@@ -3255,6 +3267,7 @@ GL_Ansicht::hineinTabelle (ICClist<ICClist<ICClist<ICClist<double> > > > vect,
   nach_farb_namen_ = nach; DBG_PROG
 
   achsNamen(achs_namen);
+  channels_ = channels;
 
   MARK( frei(true); )
 

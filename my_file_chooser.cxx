@@ -239,7 +239,7 @@ MyFl_File_Chooser::MyFl_File_Chooser(const char *d, const char *p, int t, const 
           okButton->callback((Fl_Callback*)cb_okButton);
           //okButton->label(fl_ok);
         } // Fl_Return_Button* okButton
-        { Fl_Button* o = cancelButton = new Fl_Button(380, 345, 100, 25, _("Cancel"));
+        { /*Fl_Button* o =*/ cancelButton = new Fl_Button(380, 345, 100, 25, _("Cancel"));
           cancelButton->callback((Fl_Callback*)cb_cancelButton);
           //o->label(fl_cancel);
         } // Fl_Button* cancelButton
