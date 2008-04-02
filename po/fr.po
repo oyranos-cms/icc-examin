@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ICC Examin 0.41\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2008-04-01 17:58+0200\n"
+"POT-Creation-Date: 2008-04-02 22:12+0200\n"
 "PO-Revision-Date: 2006-06-29 19:31+0200\n"
 "Last-Translator: Pascal LACROIX <lacroixpascal at vfemail.net>\n"
 "Language-Team: ALL <ku.b@gmx.de>\n"
@@ -484,7 +484,7 @@ msgstr "Saturation"
 msgid "Absolute Colorimetric"
 msgstr "Colorimétrie absolue"
 
-#: icc_helfer.cpp:394 icc_profile_tags.cpp:1213 icc_profile_tags.cpp:1220
+#: icc_helfer.cpp:394 icc_profile_tags.cpp:1232 icc_profile_tags.cpp:1239
 msgid "Colour"
 msgstr "Couleur"
 

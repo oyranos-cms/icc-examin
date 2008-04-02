@@ -966,9 +966,12 @@ ICCtag::getTable                     ( MftChain            typ,
       case TABLE: { DBG_PROG
            start += (inputChan * inputEnt) * byte;
            if(inputChan > 3)
+# if 0
+             clutPoints *= (inputChan - 3);
+# else
              for(int i = 3; i < (int)channels.size(); ++i)
                start += (int)pow((double)clutPoints, i) * outputChan * channels[i] * byte;
-
+# endif
            // allocate
            Tabelle.resize(clutPoints);
            for (int i = 0; i < clutPoints; i++) {
@@ -1021,7 +1024,8 @@ ICCtag::getTable                     ( MftChain            typ,
     DBG_NUM_S( feldPunkte << " array points " << clutPoints << " clutPoints" )
 #   endif
     int start = 48,
-        byte  = 1;
+        byte  = 1,
+        jump  = 1;
     double div= 255.0;
 
     // What is requested?
@@ -1029,28 +1033,43 @@ ICCtag::getTable                     ( MftChain            typ,
     case TABLE_IN:
     case TABLE_OUT:
     case TABLE: DBG_PROG
-         if (inputChan == 3)
          {
            start += (inputChan * inputEnt) * byte;
+           if(inputChan > 3)
+             for(int i = 3; i < (int)channels.size(); ++i)
+               start += (int)pow((double)clutPoints, i) * outputChan * channels[i] * byte;
+           // allocate
            Tabelle.resize(clutPoints);
            for (int i = 0; i < clutPoints; i++) {
              Tabelle[i].resize(clutPoints);
              for (int j = 0; j < clutPoints; j++) {
                Tabelle[i][j].resize(clutPoints);
                for (int k = 0; k < clutPoints; k++)
+               {
                  Tabelle[i][j][k].resize(outputChan);
+                 for (int l = 0; l < outputChan; l++)
+                   Tabelle[i][j][k][l] = 0;
+               }
              }
            }
            int n = 0;
+           // fill in
            for (int i = 0; i < clutPoints; i++) {
+             if(inputChan < 3)
+               i = clutPoints/2;
              for (int j = 0; j < clutPoints; j++) {
+               if(inputChan < 2)
+                 j = clutPoints/2;
                for (int k = 0; k < clutPoints; k++) {
                  for (int l = 0; l < outputChan; l++) {
-                   Tabelle[i][j][k][l] = (double) *(icUInt8Number*)&data_[start + byte*n++]
+                   Tabelle[i][j][k][l] = (double)(*(icUInt8Number*)&data_[start + byte*n])
                               / div;
+                   n += jump;
                  }
                }
+               if(inputChan < 2) break;
              }
+             if(inputChan < 3) break;
            }
          }
          break;
