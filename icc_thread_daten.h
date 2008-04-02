@@ -107,6 +107,8 @@ public:
   ICCThreadList (const ICCThreadList & s) {
                               copy(s); }
   ICCThreadList& copy  (const ICCThreadList& s) {
+                              ICClist<T>::copy(s);
+                              icc_examin_ns::ThreadDaten::copy(s);
                               return *this; }
   ICCThreadList& operator = (const ICCThreadList& d) {
                               return copy(d); }
