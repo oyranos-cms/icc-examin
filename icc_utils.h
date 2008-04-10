@@ -164,16 +164,14 @@ extern int             debug_s_mutex_threads_;
   debug_s_mutex_threads_++ ; \
   if(debug_s_mutex_threads_ == 1) \
     debug_s_mutex_thread_ = iccThreadSelf(); \
-  debug_s_.str(""); \
   debug_s_ << ss; \
-  dbgWriteF(); \
   --debug_s_mutex_threads_; \
   if(!debug_s_mutex_threads_) \
     pthread_mutex_unlock( &debug_s_mutex_ ); \
 }
 #else
 #define dbgWrite(ss) { \
- debug_s_ << ss; dbgWriteF(); \
+ debug_s_ << ss; \
 }
 #endif
 /* look in icc_utils.cpp for the WRITE_DBG definition */
@@ -213,9 +211,9 @@ extern int icc_debug;
 #define DBG_T_     dbgWrite ( __FILE__<<":"<<__LINE__ <<" " ); dbgThreadId(); dbgWrite ( " "<< DBG_UHR_ <<" " );
 #endif
 #define LEVEL      { for (int i = 0; i < icc_level_PROG; i++) dbgWrite (" "); }
-#define DBG_       { LEVEL dbgWrite ("        "); DBG_T_ dbgWrite (endl); }
-#define DBG_S_(txt){ LEVEL dbgWrite ("        "); DBG_T_ dbgWrite (txt << endl); }
-#define DBG_V_(txt){ LEVEL dbgWrite ("        "); DBG_T_ dbgWrite (#txt << " " << txt << endl);}
+#define DBG_       { LEVEL dbgWrite ("        "); DBG_T_ dbgWrite (endl); dbgWriteF(); }
+#define DBG_S_(txt){ LEVEL dbgWrite ("        "); DBG_T_ dbgWrite (txt << endl); dbgWriteF(); }
+#define DBG_V_(txt){ LEVEL dbgWrite ("        "); DBG_T_ dbgWrite (#txt << " " << txt << endl); dbgWriteF(); }
 #define DBG        DBG_
 #define LEVEL_PLUS double m; \
     for (int i = 0; i < icc_level_PROG; i++) { \

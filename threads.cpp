@@ -48,7 +48,6 @@ int fl_create_thread(Fl_Thread& t, void *(*f) (void *), void* p)
   pthread_attr_t tattr;
   int ret;
 
-  size_t size = 0;
 
   /* initialized with default attributes */
   ret = pthread_attr_init( &tattr );
@@ -56,6 +55,7 @@ int fl_create_thread(Fl_Thread& t, void *(*f) (void *), void* p)
   /* reading the size of the stack */
   //ret = pthread_attr_setstacksize(&tattr, size);
 #ifdef DEBUG
+  size_t size = 0;
   ret = pthread_attr_getstacksize( &tattr,  &size );
 
   /* setting the size of the stack also */

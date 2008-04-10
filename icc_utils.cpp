@@ -28,8 +28,11 @@
 // Date:      August 2004
 
 
+#include "config.h"
 #include "icc_utils.h"
 #include "icc_helfer.h"
+#include "icc_fenster.h"
+#include "Flmm_Message.H"
 #include <fstream>
 
 
@@ -81,7 +84,10 @@ dbgWriteF (/*std::ostringstream & ss*/)
       WARN_S( _("file size 0 for ") << dateiname )
     }
 #else
-  cout << debug_s_/*ss*/.str();
+  icc_examin_ns::lock(__FILE__,__LINE__);
+  icc_examin_ns::log(debug_s_.str().c_str());
+  icc_examin_ns::unlock(0, __FILE__,__LINE__);
+  debug_s_.str("");
 #endif
 }
 
@@ -154,10 +160,11 @@ dbgThreadId(Fl_Thread thread)
 {
   std::string s("??");
   int dbg_id = wandelThreadId ( thread );
-  //printf("%d\n", (int*)s.c_str());
+  char t[64] = {0};
   switch (dbg_id)
   {
     // in icc_thread_liste registred Fl_Thread's can be identified
+#if defined(LINUX) && defined(never_nie)
     case THREAD_HAUPT:
       s = ( "\033[30m\033[1m[HAUPT]\033[m" ); break;
     case THREAD_GL1:
@@ -169,9 +176,24 @@ dbgThreadId(Fl_Thread thread)
     case THREAD_WACHE:
       s = ( "\033[34m\033[1m[WACHE]\033[m" ); break;
     default:
-      s = ( "\033[31m\033[1m[" ); dbgWrite(/*s +=*/ dbg_id ); dbgWrite( "]\033[m" ); break;
+      sprintf(t,"%d",dbg_id);
+      s = ( "\033[31m\033[1m[" ); s.append( t ); s.append( "]\033[m" ); break;
+#else
+    case THREAD_HAUPT:
+      s = ( "[HAUPT]" ); break;
+    case THREAD_GL1:
+      s = ( "[GL  1]" ); break;
+    case THREAD_GL2:
+      s = ( "[GL  2]" ); break;
+    case THREAD_LADEN:
+      s = ( "[LADEN]" ); break;
+    case THREAD_WACHE:
+      s = ( "[WACHE]" ); break;
+    default:
+      sprintf(t,"%d",dbg_id);
+      s = ( "[" ); s.append( t ); s.append( "]" ); break;
+#endif
   }
-  //dbgWrite( s;
   return s;
 }
 

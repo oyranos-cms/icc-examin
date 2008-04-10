@@ -42,6 +42,7 @@
 #include "icc_kette.h"
 #include "icc_waehler.h"
 #include "fl_i18n/fl_i18n.H"
+#include "Flmm/Flmm_Message.H"
 
 #if APPLE
 #include <Carbon/Carbon.h>
@@ -73,7 +74,55 @@ using namespace icc_examin_ns;
 #endif
 
 ICCexamin * icc_examin = 0;
+int iccMessageFunc( int code, const char * format, ... )
+{
+  char* text = 0, *pos = 0;
+  va_list list;
+  int popup = -1;
 
+  if(code == oyMSG_DBG && !icc_debug)
+    return 0;
+
+  text = (char*)calloc(sizeof(char), 4096), *pos;
+  text[0] = 0;
+
+  if(!log_window)
+    popup = 0;
+
+  switch(code)
+  {
+    case oyMSG_WARN:
+         sprintf( &text[strlen(text)], _("WARNING"));
+         sprintf( &text[strlen(text)], " %03f: ", DBG_UHR_);
+         if(popup == 0) popup = 1;
+         break;
+    case oyMSG_ERROR:
+         sprintf( &text[strlen(text)], _("!!! ERROR"));
+         sprintf( &text[strlen(text)], " %03f: ", DBG_UHR_);
+         if(popup == 0) popup = 1;
+         break;
+  }
+
+  va_start( list, format);
+  vsnprintf( &text[strlen(text)], 4096, format, list);
+  va_end  ( list );
+
+  pos = &text[strlen(text)];
+  *pos = '\n';
+  pos++;
+  *pos = 0;
+
+  icc_examin_ns::lock(__FILE__,__LINE__);
+  icc_examin_ns::log( text );
+
+  if(popup == 1 && log_window && icc_examin && icc_examin->icc_betrachter)
+    log_window->show();
+  icc_examin_ns::unlock(0, __FILE__,__LINE__);
+
+  if(text) free( text );
+
+  return 0;
+}
 
 ICCexamin::ICCexamin ()
 { DBG_PROG_START
@@ -104,6 +153,7 @@ ICCexamin::ICCexamin ()
   DBG_PROG_V( gamutwarn_ )
 
   oyThreadLockingSet( iccStruct_LockCreate, iccLockRelease, iccLock, iccUnLock);
+  oyMessageFuncSet( iccMessageFunc );
 
   alle_gl_fenster = new icc_examin_ns::EinModell;
   icc_betrachter = new ICCfltkBetrachter;
@@ -1688,7 +1738,8 @@ tastatur(int e)
     break;
   }
   
-  icc_examin->icc_betrachter->DD_farbraum->tastatur(e);
+  if(icc_examin && icc_examin->icc_betrachter)
+    icc_examin->icc_betrachter->DD_farbraum->tastatur(e);
   //DBG_PROG_ENDE
   return gefunden;
 }

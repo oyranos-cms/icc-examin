@@ -170,6 +170,8 @@ private:
   static void cb_menueintrag_nativeGamut(Fl_Menu_*, void*);
   void cb_Show_i(Fl_Menu_*, void*);
   static void cb_Show(Fl_Menu_*, void*);
+  void cb_Log_i(Fl_Menu_*, void*);
+  static void cb_Log(Fl_Menu_*, void*);
 public:
   GL_Ansicht *DD_farbraum;
   Fl_Box *DD_box_stat;
@@ -243,6 +245,8 @@ public:
 private:
   void cb_menueintrag_testkurven_i(Fl_Menu_*, void*);
   static void cb_menueintrag_testkurven(Fl_Menu_*, void*);
+  void cb_Log1_i(Fl_Menu_*, void*);
+  static void cb_Log1(Fl_Menu_*, void*);
 public:
   static Fl_Menu_Item *menu_hilfe;
 private:

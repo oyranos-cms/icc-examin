@@ -43,6 +43,8 @@ decl {\#include <FL/Fl_Menu_Bar.H>} {public
 decl {\#include <FL/Fl_Box.H>} {public
 } 
 
+decl {\#include "Flmm_Message.H"} {} 
+
 decl {\#include "icc_gl.h"} {} 
 
 decl {\#include "icc_draw.h"
@@ -315,7 +317,7 @@ class ICCfltkBetrachter {open
   setTitleUrl = true;} {}
     Fl_Window ueber {
       label {About ICC Examin} open
-      xywh {909 749 365 295} type Double resizable
+      xywh {846 740 365 295} type Double resizable
       code0 {o->hide();}
       code1 {o->use_escape_hide = true;}
       class {icc_examin_ns::MyFl_Double_Window} visible
@@ -356,7 +358,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window vcgt {
       label {Grafic Card Gamma Table} open
-      xywh {288 639 370 405} type Double resizable
+      xywh {436 627 370 405} type Double resizable
       code0 {o->hide();}
       code1 {o->use_escape_hide = true;}
       class {icc_examin_ns::MyFl_Double_Window} visible
@@ -393,7 +395,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window DD {
       label Gamut open
-      xywh {899 434 385 520} type Double box NO_BOX resizable
+      xywh {899 497 385 520} type Double box NO_BOX resizable
       class {icc_examin_ns::MyFl_Double_Window} visible
     } {
       Fl_Group {} {open
@@ -546,6 +548,11 @@ class ICCfltkBetrachter {open
   DBG_PROG_ENDE}
               xywh {65 65 100 20} shortcut 0x4006d
             }
+            MenuItem {} {
+              label Log
+              callback {if(log_window) log_window->show();}
+              xywh {50 50 100 20} shortcut 0x4006c
+            }
           }
         }
         Fl_Tile {} {open
@@ -570,7 +577,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window details {
       label {ICC Examin} open
-      xywh {649 524 385 520} type Double box NO_BOX
+      xywh {664 524 385 520} type Double box NO_BOX
       code0 {o->main_win = o;}
       class {icc_examin_ns::MyFl_Double_Window} visible
     } {
@@ -680,7 +687,7 @@ class ICCfltkBetrachter {open
               callback {DBG_PROG_START
   icc_examin->zeig3D();
   DBG_PROG_ENDE}
-              xywh {55 55 100 20} shortcut 0x40068 divider
+              xywh {55 55 100 20} shortcut 0x40068
             }
             MenuItem menueintrag_inspekt {
               label {Report View}
@@ -712,6 +719,11 @@ icc_examin->vcgtZeigen();}
               callback {vcgt->show();
 icc_examin->testZeigen();}
               xywh {30 30 100 20} shortcut 0x50074 hide
+            }
+            MenuItem {} {
+              label Log
+              callback {if(log_window) log_window->show();}
+              xywh {45 45 100 20} shortcut 0x4006c
             }
           }
           Submenu menu_hilfe {
@@ -833,7 +845,7 @@ icc_examin->testZeigen();}
                       } {
                         Fl_Choice mft_gl_slider_choice {
                           callback {ICClist<int> channels = mft_gl->channels();
-  mft_gl_slider->value( channels[ 3 + o->value() ] );} open selected
+  mft_gl_slider->value( channels[ 3 + o->value() ] );} open
                           xywh {0 185 25 25} down_box BORDER_BOX
                         } {}
                         Fl_Value_Slider mft_gl_slider {

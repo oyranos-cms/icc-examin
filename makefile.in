@@ -10,6 +10,7 @@ OSX_CPPFILES = icc_helfer_osx.cpp
 FLTK_CPPFILES = icc_helfer_fltk.cpp
 I18N_CXXFILES = #fl_i18n.cxx fl_i18n_fl.cxx
 I18N_HEADERS = #fl_i18n.H
+FLMM_H = -I./Flmm
 MSGFMT = msgfmt -c --statistics
 RPMARCH = `rpmbuild --showrc | awk '/^build arch/ {print $$4}'`
 
@@ -31,12 +32,13 @@ TOOLKIT_FILES = $(FLTK_CPPFILES)
 INCL_DEP = $(INCL) $(X_H) $(OSX_H) $(OYRANOS_H) \
 			$(FLU_H) $(FLTK_H) $(FTGL_H) $(LCMS_H) $(ALL_SOURCEFILES)
 ALL_INCL = $(INCL) \
-			$(FLU_H) $(FLTK_H) $(X_H) $(OSX_H) $(OYRANOS_H) $(LCMS_H) $(FTGL_H)
+	$(FLU_H) $(FLTK_H) $(X_H) $(OSX_H) $(OYRANOS_H) $(LCMS_H) $(FTGL_H) \
+	$(FLMM_H)
 CFLAGS_ = $(CFLAGS) $(DEBUG) $(ALL_INCL)
 CXXFLAGS_ = $(CXXFLAGS) $(DEBUG) $(ALL_INCL)
 
 LDLIBS = $(LDFLAGS) -L$(libdir) -L./ $(LIBFL_I18N) $(FLTK_LIBS) \
-	$(X11_LIBS) -llcms -L/lib \
+	$(Flmm_OBJECTS) $(X11_LIBS) -llcms -L/lib \
 	$(LIBOYRANOS_EXTRA) $(OYRANOS_LIBS) $(LCMS_LIBS) \
 	$(FTGL_LIBS) $(I18N_LIB) $(DBG_LIBS) $(LIBNAME) $(LIBBSP) $(CWLIB)
 
@@ -121,6 +123,9 @@ DEBUG_H  = sys.h debug.h
 
 MAIN_SOURCES = icc_main.cpp
 CINEPAINT_SOURCES = icc_cinepaint.cpp
+FLMM_CXXFILES = \
+	Flmm/Flmm.cxx \
+	Flmm/Flmm_Message.cxx
 
 COMMON_CFILES =  \
 	icc_oyranos_extern.c \
@@ -156,6 +161,7 @@ ALL_SOURCEFILES = \
 	$(OSX_CPPFILES) \
 	$(X_CPPFILES) \
 	$(FLTK_CPPFILES) \
+	$(FLMM_CXXFILES) \
 	$(I18N_CXXFILES) \
 	$(CXXFILES) \
 	$(MAIN_SOURCES) \
@@ -181,6 +187,18 @@ DOKU = \
 	icc_examin.xpm \
 	icc_examin.spec.in \
 	icc.xml
+
+FLMM_FILES = \
+	Flmm/Flmm.H \
+	Flmm/Flmm_Message.H \
+	Flmm/AUTHORS \
+	Flmm/ANNOUNCEMENT \
+	Flmm/CHANGES \
+	Flmm/COPYING \
+	Flmm/CREDITS \
+	Flmm/README
+
+
 FLUID = \
 	icc_betrachter.fl \
 	my_file_chooser.fl
@@ -191,10 +209,11 @@ SOURCES = $(ALL_SOURCEFILES) $(ALL_HEADERFILES)
 OBJECTS = $(CFILES:.c=.o) $(CPPFILES:.cpp=.o) $(CXXFILES:.cxx=.o) $(CCFILES:.cc=.o)
 MAIN_OBJECTS = $(MAIN_SOURCES:.cpp=.o)
 CINEPAINT_OBJECTS = $(CINEPAINT_SOURCES:.cpp=.o)
+Flmm_OBJECTS = $(FLMM_CXXFILES:.cxx=.o)
 I18N_OBJECTS =  $(I18N_CXXFILES:.cxx=.o)
 LINGUAS_SRC = $(LING:.po=.gmo)
 ALL_OBJECTS = $(OBJECTS) $(MAIN_OBJECTS) $(CINEPAINT_OBJECTS) $(I18N_OBJECTS) \
-	$(LINGUAS_SRC)
+	$(LINGUAS_SRC) $(Flmm_OBJECTS)
 
 POT_FILE = po/$(TARGET).pot
 
@@ -236,7 +255,7 @@ release:	icc_alles.o
 
 dynamic:	$(BINTARGET) $(CINEPAINT)
 
-$(BINTARGET):	$(BASE) $(OBJECTS) $(MAIN_OBJECTS) $(LINGUAS_SRC) $(I18N_OBJECTS) $(LIBNAME) $(LIBFL_I18N) $(LIBBSP)
+$(BINTARGET):	$(BASE) $(OBJECTS) $(MAIN_OBJECTS) $(LINGUAS_SRC) $(I18N_OBJECTS) $(LIBNAME) $(Flmm_OBJECTS) $(LIBFL_I18N) $(LIBBSP)
 	echo Verknuepfen $@ ...
 	$(CXX) $(CXXFLAGS_) -o $@ \
 	$(MAIN_OBJECTS) $(OBJECTS) \
@@ -247,13 +266,19 @@ $(CINEPAINT_OBJECTS):	$(CINEPAINT_SOURCES)
 	echo Compiling Gtk CinePaint plug-in ...
 	$(CXX) $(CXXFLAGS_) `$(CP_FLAGS)` -c $(CINEPAINT_SOURCES)
 
-$(CINEPAINT):	$(BASE) $(CINEPAINT_OBJECTS) $(OBJECTS) $(LINGUAS_SRC) $(I18N_OBJECTS) $(LIBNAME) $(LIBFL_I18N) $(LIBBSP)
+$(CINEPAINT):	$(BASE) $(CINEPAINT_OBJECTS) $(OBJECTS) $(LINGUAS_SRC) $(I18N_OBJECTS) $(LIBNAME) $(Flmm_OBJECTS) $(LIBFL_I18N) $(LIBBSP)
 	echo Verknuepfen $@ ...
 	$(CXX) $(CXXFLAGS_) `$(CP_FLAGS)` -o $@ \
 	$(CINEPAINT_OBJECTS) $(OBJECTS) \
 	`$(CP_LIBS)` $(LDLIBS) $(LINK_LIB_PATH) $(LINK_SRC_PATH)
 	$(REZ)
 
+Flmm/Flmm.o: Flmm/Flmm.cxx
+	echo Compiling $@
+	$(CXX) -I./Flmm -I./ -I../ $(CXXFLAGS) $(FLTK_H) -o $@ -c $<
+Flmm/Flmm_Message.o: Flmm/Flmm_Message.cxx
+	echo Compiling $@
+	$(CXX) -I./Flmm -I./ -I../ $(CXXFLAGS) $(FLTK_H) -o $@ -c $<
 
 $(LIBSONAMEFULL):	$(I18N_OBJECTS)
 	echo Verknuepfen $@ ...
@@ -372,7 +397,7 @@ depend:	$(ALL_HEADERFILES)
 	echo "schaue nach Abhaengikeiten ..."
 	echo "MAKEDEPEND_ISUP = 1" > mkdepend
 	echo "#nicht editieren/dont edit - automatisch generiert" >> mkdepend
-	-$(MAKEDEPEND) -I./ $(INCL_DEP) >> mkdepend
+	-$(MAKEDEPEND) -I./ -I./Flmm $(INCL_DEP) >> mkdepend
 
 
 # The extension to use for executables...
@@ -436,6 +461,8 @@ copy_files:
 	  $(MAKE) DESTDIR=$(DESTDIR)/fl_i18n -f $(MAKEFILE_ARCH) copy_files
 	cd bsp && \
 	  $(MAKE) DESTDIR=$(DESTDIR)/bsp copy_files
+	mkdir -p $(DESTDIR)/Flmm
+	$(COPY) -R $(FLMM_CXXFILES) $(FLMM_FILES) $(DESTDIR)/Flmm
 	$(COPY) -R \
 	$(ALL_FILES) \
 	$(DESTDIR)

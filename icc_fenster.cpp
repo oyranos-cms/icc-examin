@@ -40,6 +40,7 @@
 #endif
 #include <FL/Fl_Double_Window.H>
 #include <FL/Fl_Return_Button.H>
+#include <FL/Fl_Text_Display.H>
 #include <FL/Fl_Output.H>
 #include <FL/Fl_Widget.H>
 #include <FL/Fl_Scroll.H>
@@ -174,6 +175,7 @@ dateiwahl_cb (MyFl_File_Chooser *f, void *data, int finish)
 #endif
 
 MyFl_Double_Window* nachricht_ (std::string text); 
+MyFl_Double_Window* log_ (std::string text); 
 
 #if 1
 MyFl_Double_Window*
@@ -182,6 +184,13 @@ nachricht (std::string text) {
   // icc_fenster.cpp:162: undefined reference to `icc_examin_ns::Fl_Scroll::Fl_Scroll[in-charge](int, int, int, int, char const*)'
   // Now the funtion is outside of icc_examin_ns::
   return nachricht_(text);
+}
+MyFl_Double_Window*
+log (std::string text) {
+  // for Fl_Scroll no vtable created:
+  // icc_fenster.cpp:162: undefined reference to `icc_examin_ns::Fl_Scroll::Fl_Scroll[in-charge](int, int, int, int, char const*)'
+  // Now the funtion is outside of icc_examin_ns::
+  return log_(text);
 }
 
 #else
@@ -202,7 +211,55 @@ static void cb_Gut(Fl_Return_Button*, void* v) {
   ((MyFl_Double_Window*)v)->hide();
 }
 
-static Fl_Output *output_info=(Fl_Output *)0;
+static Fl_Text_Display *display_info=(Fl_Text_Display*)0;
+static Fl_Text_Display *display_log=(Fl_Text_Display*)0;
+static Fl_Text_Buffer *buffer_log=(Fl_Text_Buffer*)0;
+MyFl_Double_Window *log_window=(MyFl_Double_Window*)0;
+
+MyFl_Double_Window*
+log_ (std::string text)
+{
+  if(icc_examin && !log_window)
+  { MyFl_Double_Window* w = log_window = new MyFl_Double_Window(600, 226, _("Log:"));
+    w->hotspot(w);
+    { Fl_Return_Button* o = new Fl_Return_Button(220, 195, 160, 25, _("Yes"));
+      o->shortcut(0xff0d);
+      o->callback((Fl_Callback*)cb_Gut, (void*)(w));
+      o->align(FL_ALIGN_CENTER|FL_ALIGN_INSIDE);
+      w->hotspot(o);
+    }
+      { Fl_Text_Display* o = display_log = new Fl_Text_Display(0, 0, 600, 190);
+        //o->type(12);
+        //o->color((Fl_Color)53);
+        o->textfont( FL_COURIER );
+        o->box( FL_FLAT_BOX );
+        o->color(FL_BACKGROUND_COLOR);
+        Fl_Group::current()->resizable(o);
+      }
+    //w->show();
+    w->end();
+    w->use_escape_hide = true;
+  }
+
+  if(!buffer_log)
+    buffer_log = new Fl_Text_Buffer(0);
+
+  if(display_log && buffer_log && !display_log->buffer())
+    display_log->buffer(buffer_log);
+
+  if(buffer_log)
+  {
+    int l = buffer_log->length();
+    int ip = display_log->insert_position();
+    buffer_log->append( text.c_str() );
+    if(l == ip)
+      ip = buffer_log->length();
+    display_log->insert_position( ip );
+    display_log->show_insert_position();
+  }
+
+  return log_window;
+}
 
 MyFl_Double_Window*
 nachricht_ (std::string text) {
@@ -216,12 +273,15 @@ nachricht_ (std::string text) {
       o->align(FL_ALIGN_CENTER|FL_ALIGN_INSIDE);
       w->hotspot(o);
     }
-      { Fl_Output* o = output_info = new Fl_Output(0, 0, 275, 290);
-        o->type(12);
+      { Fl_Text_Display* o = display_info = new Fl_Text_Display(0, 0, 275, 290);
+        //o->type(12);
         //o->color((Fl_Color)53);
+        Fl_Text_Buffer * buffer = new Fl_Text_Buffer(0);
+        buffer->append( text.c_str() );
+        o->buffer( buffer );
+        o->textfont( FL_COURIER );
         o->box( FL_FLAT_BOX );
         o->color(FL_BACKGROUND_COLOR);
-        o->value(text.c_str());
         Fl_Group::current()->resizable(o);
       }
     o->show();

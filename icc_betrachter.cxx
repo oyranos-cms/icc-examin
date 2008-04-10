@@ -2,6 +2,7 @@
 
 #include <libintl.h>
 #include "icc_betrachter.h"
+#include "Flmm_Message.H"
 #include "icc_gl.h"
 #include "icc_draw.h"
 #include "icc_kette.h"
@@ -389,6 +390,13 @@ void ICCfltkBetrachter::cb_Show(Fl_Menu_* o, void* v) {
   ((ICCfltkBetrachter*)(o->parent()->parent()->user_data()))->cb_Show_i(o,v);
 }
 
+void ICCfltkBetrachter::cb_Log_i(Fl_Menu_*, void*) {
+  if(log_window) log_window->show();
+}
+void ICCfltkBetrachter::cb_Log(Fl_Menu_* o, void* v) {
+  ((ICCfltkBetrachter*)(o->parent()->parent()->user_data()))->cb_Log_i(o,v);
+}
+
 Fl_Menu_Item ICCfltkBetrachter::menu_DD_menueleiste[] = {
  {_("File"), 0,  0, 0, 64, FL_NORMAL_LABEL, 0, 14, 0},
  {_("Save as VRML"), 0x40073,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_gl_vrml_speichern, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
@@ -407,6 +415,7 @@ Fl_Menu_Item ICCfltkBetrachter::menu_DD_menueleiste[] = {
  {0,0,0,0,0,0,0,0,0},
  {_("Windows"), 0,  0, 0, 64, FL_NORMAL_LABEL, 0, 14, 0},
  {_("Show Main Window"), 0x4006d,  (Fl_Callback*)ICCfltkBetrachter::cb_Show, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {_("Log"), 0x4006c,  (Fl_Callback*)ICCfltkBetrachter::cb_Log, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
  {0,0,0,0,0,0,0,0,0},
  {0,0,0,0,0,0,0,0,0}
 };
@@ -560,6 +569,13 @@ void ICCfltkBetrachter::cb_menueintrag_testkurven(Fl_Menu_* o, void* v) {
   ((ICCfltkBetrachter*)(o->parent()->parent()->user_data()))->cb_menueintrag_testkurven_i(o,v);
 }
 
+void ICCfltkBetrachter::cb_Log1_i(Fl_Menu_*, void*) {
+  if(log_window) log_window->show();
+}
+void ICCfltkBetrachter::cb_Log1(Fl_Menu_* o, void* v) {
+  ((ICCfltkBetrachter*)(o->parent()->parent()->user_data()))->cb_Log1_i(o,v);
+}
+
 void ICCfltkBetrachter::cb_About_i(Fl_Menu_*, void*) {
   ueber->hotspot(ueber_html);
   ueber->show();
@@ -619,11 +635,12 @@ Fl_Menu_Item ICCfltkBetrachter::menu_menueleiste[] = {
  {_("LANG"), 0,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_lang, 0, 17, FL_NORMAL_LABEL, 0, 14, 0},
  {0,0,0,0,0,0,0,0,0},
  {_("Windows"), 0,  0, 0, 192, FL_NORMAL_LABEL, 0, 14, 0},
- {_("Gamut"), 0x40068,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_3D, 0, 128, FL_NORMAL_LABEL, 0, 14, 0},
+ {_("Gamut"), 0x40068,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_3D, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
  {_("Report View"), 0x40062,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_inspekt, 0, 1, FL_NORMAL_LABEL, 0, 14, 0},
  {_("CGATS View"), 0x40067,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_zeigcgats, 0, 129, FL_NORMAL_LABEL, 0, 14, 0},
  {_("Videocard Gamma"), 0x40074,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_vcgt, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
  {_("Test Curves"), 0x50074,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_testkurven, 0, 16, FL_NORMAL_LABEL, 0, 14, 0},
+ {_("Log"), 0x4006c,  (Fl_Callback*)ICCfltkBetrachter::cb_Log1, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
  {0,0,0,0,0,0,0,0,0},
  {_("Help"), 0,  0, 0, 64, FL_NORMAL_LABEL, 0, 14, 0},
  {_("About"), 0,  (Fl_Callback*)ICCfltkBetrachter::cb_About, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
@@ -645,7 +662,7 @@ Fl_Menu_Item* ICCfltkBetrachter::menueintrag_inspekt = ICCfltkBetrachter::menu_m
 Fl_Menu_Item* ICCfltkBetrachter::menueintrag_zeigcgats = ICCfltkBetrachter::menu_menueleiste + 18;
 Fl_Menu_Item* ICCfltkBetrachter::menueintrag_vcgt = ICCfltkBetrachter::menu_menueleiste + 19;
 Fl_Menu_Item* ICCfltkBetrachter::menueintrag_testkurven = ICCfltkBetrachter::menu_menueleiste + 20;
-Fl_Menu_Item* ICCfltkBetrachter::menu_hilfe = ICCfltkBetrachter::menu_menueleiste + 22;
+Fl_Menu_Item* ICCfltkBetrachter::menu_hilfe = ICCfltkBetrachter::menu_menueleiste + 23;
 
 void ICCfltkBetrachter::cb_tag_browser_i(TagBrowser* o, void*) {
   o->selectItem( o->value() );

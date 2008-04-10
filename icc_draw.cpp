@@ -193,6 +193,9 @@ TagDrawings::init_shoe_ ()
 
   size_t groesse = 0;
   const char* block = 0;
+
+  init_s = TRUE;
+
   block = icc_oyranos.moni(0,0, groesse);
   if(groesse &&
      icc_debug != 14) {
@@ -248,7 +251,6 @@ TagDrawings::drawCieShoe_ ( int repeated)
   //TODO -> icc_oyranos
   if (!init_s)
     init_shoe_();
-  init_s = TRUE;
 
   double rz = (double)clock()/(double)CLOCKS_PER_SEC;
   int raster_alt = raster;

@@ -92,6 +92,8 @@ namespace icc_examin_ns {
 
   //! window with news
   MyFl_Double_Window* nachricht(std::string text);
+  MyFl_Double_Window* log(std::string text);
+  extern MyFl_Double_Window *log_window;
 
 }
 
