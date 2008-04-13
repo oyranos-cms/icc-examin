@@ -296,7 +296,7 @@ ICCexaminIO::oeffnenThread_ ()
           } else
             netze[i].grau = true;
 
-          DBG_V(i<<" "<<netze[i].schattierung)
+          DBG_PROG_V(i<<" "<<netze[i].schattierung)
         }
 
         icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze.frei(false);

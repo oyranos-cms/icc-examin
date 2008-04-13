@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2007  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2008  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -70,7 +70,7 @@ icc_examin_ns::ThreadDaten::frei(int freigeben)
     int count = 0;
     while (pthread_mutex_trylock( &mutex_ ))
     {
-      DBG_S("mutex not available");
+      WARN_S("mutex not available");
       icc_examin_ns::sleep(1.0);
       ++count;
       if(count > 9)
@@ -93,7 +93,7 @@ bool
 icc_examin_ns::ThreadDaten::frei()
 {
   if(report_owner && !frei_)
-    DBG_S( "not free, owner is: " << dbgThreadId(pth) );
+    DBG_PROG_S( "not free, owner is: " << dbgThreadId(pth) );
   return frei_;
 }
 

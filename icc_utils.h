@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2007  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2008  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -144,7 +144,7 @@ Fl_Thread & getThreadId ( int pos );
 void        registerThreadId ( Fl_Thread id, int pos );
 
 /* status messages for error tracking */
-void dbgWriteF (/*std::ostringstream & ss*/);
+void dbgWriteF (int code);
 extern std::ostringstream debug_s_;
 
 # ifdef HAVE_PTHREAD_H
@@ -152,28 +152,18 @@ extern pthread_mutex_t debug_s_mutex_;
 extern Fl_Thread       debug_s_mutex_thread_;
 extern int             debug_s_mutex_threads_;
 # endif
+void     dbgWriteLock                ( void );
+void     dbgWriteUnLock              ( void );
 
-#ifdef HAVE_PTHREAD_H
+#define ICC_MSG_ERROR 300
+#define ICC_MSG_WARN  301
+#define ICC_MSG_DBG   302
+
 #define dbgWrite(ss) { \
-  if( !iccThreadEqual(debug_s_mutex_thread_, iccThreadSelf()) || \
-      debug_s_mutex_threads_ == 0 ) \
-    while (pthread_mutex_trylock( &debug_s_mutex_ )) { \
-    /*printf("%s:%d %s() debug_s_mutex_ nicht verfuegbar\n",__FILE__,__LINE__,__func__);*/ \
-      icc_examin_ns::sleep(.001); \
-    } \
-  debug_s_mutex_threads_++ ; \
-  if(debug_s_mutex_threads_ == 1) \
-    debug_s_mutex_thread_ = iccThreadSelf(); \
+  dbgWriteLock(); \
   debug_s_ << ss; \
-  --debug_s_mutex_threads_; \
-  if(!debug_s_mutex_threads_) \
-    pthread_mutex_unlock( &debug_s_mutex_ ); \
+  dbgWriteUnLock(); \
 }
-#else
-#define dbgWrite(ss) { \
- debug_s_ << ss; \
-}
-#endif
 /* look in icc_utils.cpp for the WRITE_DBG definition */
 
 #define cout std::cout
@@ -211,31 +201,31 @@ extern int icc_debug;
 #define DBG_T_     dbgWrite ( __FILE__<<":"<<__LINE__ <<" " ); dbgThreadId(); dbgWrite ( " "<< DBG_UHR_ <<" " );
 #endif
 #define LEVEL      { for (int i = 0; i < icc_level_PROG; i++) dbgWrite (" "); }
-#define DBG_       { LEVEL dbgWrite ("        "); DBG_T_ dbgWrite (endl); dbgWriteF(); }
-#define DBG_S_(txt){ LEVEL dbgWrite ("        "); DBG_T_ dbgWrite (txt << endl); dbgWriteF(); }
-#define DBG_V_(txt){ LEVEL dbgWrite ("        "); DBG_T_ dbgWrite (#txt << " " << txt << endl); dbgWriteF(); }
+#define DBG_(code) { LEVEL dbgWrite ("        "); DBG_T_ dbgWrite (endl); dbgWriteF(code); }
+#define DBG_S_(txt,code){ LEVEL dbgWrite ("        "); DBG_T_ dbgWrite (txt << endl); dbgWriteF(code); }
+#define DBG_V_(txt,code){ LEVEL dbgWrite ("        "); DBG_T_ dbgWrite (#txt << " " << txt << endl); dbgWriteF(code); }
 #define DBG        DBG_
 #define LEVEL_PLUS double m; \
     for (int i = 0; i < icc_level_PROG; i++) { \
       if( (int)(modf( i / 10.0 , &m) * 10.) < 5 ) { \
         dbgWrite ("+"); \
       } else { \
-        dbgWrite ("\033[1m+\033[m"); \
+        dbgWrite (/*"\033[1m+\033[m"*/"-"); \
       } \
     }
-#define DBG_START  {icc_level_PROG_plus; LEVEL_PLUS dbgWrite (" Start: "); DBG_T_ dbgWrite (endl); }
-#define DBG_ENDE   { LEVEL_PLUS dbgWrite (" Ende:  "); DBG_T_ icc_level_PROG_minus; dbgWrite (endl); }
-#define DBG_S(txt) DBG_S_(txt)
-#define DBG_V(txt) DBG_V_(txt)
+#define DBG_START  {icc_level_PROG_plus; LEVEL_PLUS dbgWrite (" Start: "); DBG_T_ dbgWrite (endl); dbgWriteF(ICC_MSG_DBG); }
+#define DBG_ENDE   { LEVEL_PLUS dbgWrite (" Ende:  "); DBG_T_ icc_level_PROG_minus; dbgWrite (endl); dbgWriteF(ICC_MSG_DBG); }
+#define DBG_S(txt,code) DBG_S_(txt,code)
+#define DBG_V(txt,code) DBG_V_(txt,code)
 
 #ifdef DEBUG
 #define DBG_BED(n) if (icc_debug >= n && icc_debug < 10 || icc_debug == 1##n)
 #define DBG_BED2(n1,n2) if ((icc_debug >= n1 && icc_debug < 10) || icc_debug == 1##n1 || (icc_debug >= n2 && icc_debug < 10) || icc_debug == 1##n2 )
-#define DBG_NUM        DBG_BED(1) DBG
+#define DBG_NUM        DBG_BED(1) DBG(ICC_MSG_DBG)
 #define DBG_NUM_START  DBG_BED2(1,9) DBG_START
 #define DBG_NUM_ENDE   DBG_BED2(1,9) DBG_ENDE
-#define DBG_NUM_S(txt) DBG_BED(1) DBG_S(txt)
-#define DBG_NUM_V(txt) DBG_BED(1) DBG_V(txt)
+#define DBG_NUM_S(txt) DBG_BED(1) DBG_S(txt,ICC_MSG_DBG)
+#define DBG_NUM_V(txt) DBG_BED(1) DBG_V(txt,ICC_MSG_DBG)
 #else
 #define DBG_NUM ;
 #define DBG_NUM_START
@@ -244,11 +234,11 @@ extern int icc_debug;
 #define DBG_NUM_V(txt) ;
 #endif
 #ifdef DEBUG
-#define DBG_PROG        DBG_BED(2) DBG
+#define DBG_PROG        DBG_BED(2) DBG(ICC_MSG_DBG)
 #define DBG_PROG_START  DBG_BED2(2,9) DBG_START
 #define DBG_PROG_ENDE   DBG_BED2(2,9) DBG_ENDE
-#define DBG_PROG_S(txt) DBG_BED(2) DBG_S(txt)
-#define DBG_PROG_V(txt) DBG_BED(2) DBG_V(txt)
+#define DBG_PROG_S(txt) DBG_BED(2) DBG_S(txt,ICC_MSG_DBG)
+#define DBG_PROG_V(txt) DBG_BED(2) DBG_V(txt,ICC_MSG_DBG)
 #else
 #define DBG_PROG ;
 #define DBG_PROG_START ;
@@ -257,11 +247,11 @@ extern int icc_debug;
 #define DBG_PROG_V(txt) ;
 #endif
 #ifdef DEBUG
-#define DBG_MEM        DBG_BED(3) DBG
+#define DBG_MEM        DBG_BED(3) DBG(ICC_MSG_DBG)
 #define DBG_MEM_START  DBG_BED(3) DBG_START
 #define DBG_MEM_ENDE   DBG_BED(3) DBG_ENDE
-#define DBG_MEM_S(txt) DBG_BED(3) DBG_S(txt)
-#define DBG_MEM_V(txt) DBG_BED(3) DBG_V(txt)
+#define DBG_MEM_S(txt) DBG_BED(3) DBG_S(txt,ICC_MSG_DBG)
+#define DBG_MEM_V(txt) DBG_BED(3) DBG_V(txt,ICC_MSG_DBG)
 #else
 #define DBG_MEM ;
 #define DBG_MEM_START ;
@@ -270,11 +260,11 @@ extern int icc_debug;
 #define DBG_MEM_V(txt) ;
 #endif
 #ifdef DEBUG
-#define DBG_THREAD        DBG_BED(4) DBG
+#define DBG_THREAD        DBG_BED(4) DBG(ICC_MSG_DBG)
 #define DBG_THREAD_START  DBG_BED2(4,8) DBG_START
 #define DBG_THREAD_ENDE   DBG_BED2(4,8) DBG_ENDE
-#define DBG_THREAD_S(txt) DBG_BED(4) DBG_S(txt)
-#define DBG_THREAD_V(txt) DBG_BED(4) DBG_V(txt)
+#define DBG_THREAD_S(txt) DBG_BED(4) DBG_S(txt,ICC_MSG_DBG)
+#define DBG_THREAD_V(txt) DBG_BED(4) DBG_V(txt,ICC_MSG_DBG)
 #else
 #define DBG_THREAD ;
 #define DBG_THREAD_START ;
@@ -282,9 +272,9 @@ extern int icc_debug;
 #define DBG_THREAD_S(txt) ;
 #define DBG_THREAD_V(txt) ;
 #endif
-#define WARN { dbgWrite (_("!!! Warning !!!")); DBG_ }
-#define WARN_S(txt) { dbgWrite (_("!!! Warning !!!")); DBG_S_(txt) }
-#define WARN_V(txt) { dbgWrite (_("!!! Warning !!!")); DBG_V_(txt) }
+#define WARN { dbgWrite (_("!!! Warning !!!")); DBG_(ICC_MSG_WARN) }
+#define WARN_S(txt) { dbgWrite (_("!!! Warning !!!")); DBG_S_(txt,ICC_MSG_WARN) }
+#define WARN_V(txt) { dbgWrite (_("!!! Warning !!!")); DBG_V_(txt,ICC_MSG_WARN) }
 
 namespace icc_examin_ns {
   /* Zeit / Uhr */

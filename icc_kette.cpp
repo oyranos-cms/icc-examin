@@ -132,7 +132,8 @@ ICCkette::einfuegen (const Speicher & prof, int pos)
     profilnamen_.resize (profilnamen_.size()+1 );
     aktiv_.resize (aktiv_.size()+1 );
     profil_mzeit_.resize (profil_mzeit_.size()+1 );
-    DBG_PROG_V( p<<" "<<prof.name() )
+    std::string prof_name = prof.name();
+    DBG_PROG_V( p<<" "<<prof_name )
   }
   DBG_PROG_V( pos )
 
@@ -264,7 +265,7 @@ ICCkette::waechter (void* zeiger)
         if( obj->profil_mzeit_[i] != 0 ) {
           // load in LADEN and wait for result
           icc_examin->erneuern(i);
-          DBG_S(name)
+          DBG_PROG_S(name)
         }
         obj->profil_mzeit_[i] = m_zeit;
       }

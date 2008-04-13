@@ -94,7 +94,7 @@ int iccMessageFunc( int code, const char * format, ... )
     case oyMSG_WARN:
          sprintf( &text[strlen(text)], _("WARNING"));
          sprintf( &text[strlen(text)], " %03f: ", DBG_UHR_);
-         if(popup == 0) popup = 1;
+         //if(popup == 0) popup = 1;
          break;
     case oyMSG_ERROR:
          sprintf( &text[strlen(text)], _("!!! ERROR"));
@@ -113,10 +113,7 @@ int iccMessageFunc( int code, const char * format, ... )
   *pos = 0;
 
   icc_examin_ns::lock(__FILE__,__LINE__);
-  icc_examin_ns::log( text );
-
-  if(popup == 1 && log_window && icc_examin && icc_examin->icc_betrachter)
-    log_window->show();
+  icc_examin_ns::log( text, code );
   icc_examin_ns::unlock(0, __FILE__,__LINE__);
 
   if(text) free( text );
@@ -1727,12 +1724,12 @@ tastatur(int e)
     DBG_PROG_S( "FL_DRAG "<< Fl::event_length() )
     break;
   case FL_CLOSE:
-    DBG_S( "FL_CLOSE " )
+    DBG_PROG_S( "FL_CLOSE " )
     break;
   default: 
     {
       //if(Fl::event_length())
-        DBG_MEM_S( dbgFltkEvent(e) )
+        //DBG_MEM_S( dbgFltkEvent(e) )
         DBG_MEM_S( Fl::event_length() << " bei: "<<Fl::event_x()<<","<<Fl::event_y() );
     }
     break;

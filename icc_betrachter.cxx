@@ -514,8 +514,8 @@ void ICCfltkBetrachter::cb_menueintrag_oyranos(Fl_Menu_* o, void* v) {
 void ICCfltkBetrachter::cb_menueintrag_lang_i(Fl_Menu_*, void*) {
   system("echo $LANG");
 # ifdef USE_GETTEXT
-  DBG_S( "domain     : " << textdomain(NULL) );
-  DBG_S( "domain_path: " << bindtextdomain(NULL,NULL) );
+  DBG_NUM_S( "domain     : " << textdomain(NULL) );
+  DBG_NUM_S( "domain_path: " << bindtextdomain(NULL,NULL) );
 # endif
 }
 void ICCfltkBetrachter::cb_menueintrag_lang(Fl_Menu_* o, void* v) {

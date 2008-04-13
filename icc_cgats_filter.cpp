@@ -828,7 +828,6 @@ CgatsFilter::cgats_korrigieren_               ()
           fehlendes_NUMBER_OF_FIELDS )
       {
         zeilen_.insert( zeilen_.begin() + zeile_letztes_BEGIN_DATA_FORMAT, s.str() );
-        ++i;
         logEintrag_( "fehlendes NUMBER_OF_FIELDS eingefuegt",
                      zeile_letztes_BEGIN_DATA_FORMAT, "", s.str() );
         DBG_PROG_S( zeilen_[zeile_letztes_BEGIN_DATA_FORMAT] << " eingefuegt" )

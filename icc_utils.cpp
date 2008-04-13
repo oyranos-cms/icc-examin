@@ -45,10 +45,41 @@ Fl_Thread       debug_s_mutex_thread_ = (Fl_Thread)THREAD_HAUPT;
 int             debug_s_mutex_threads_ = 0;
 #endif
 
-//#define WRITE_DBG
+void     dbgWriteLock                ( void )
+{
+#ifdef HAVE_PTHREAD_H
+#if 0
+//  if( !iccThreadEqual(debug_s_mutex_thread_, iccThreadSelf()) ||
+//      debug_s_mutex_threads_ == 0 )
+    while (pthread_mutex_trylock( &debug_s_mutex_ )) {
+    /*printf("%s:%d %s() debug_s_mutex_ nicht verfuegbar\n",__FILE__,__LINE__,__func__);*/
+      icc_examin_ns::sleep(.001);
+    }
+  debug_s_mutex_threads_++ ;
+  if(debug_s_mutex_threads_ == 1)
+    debug_s_mutex_thread_ = iccThreadSelf();
+#else
+  icc_examin_ns::lock(__FILE__,__LINE__);
+#endif
+#endif
+}
 
+void     dbgWriteUnLock              ( void )
+{
+#ifdef HAVE_PTHREAD_H
+#if 0
+  --debug_s_mutex_threads_;
+  if(!debug_s_mutex_threads_)
+    pthread_mutex_unlock( &debug_s_mutex_ );
+#else
+  icc_examin_ns::unlock( icc_examin_ns::log_window?icc_examin_ns::log_window:0,__FILE__,__LINE__);
+#endif
+#endif
+}
+
+//#define WRITE_DBG
 void
-dbgWriteF (/*std::ostringstream & ss*/)
+dbgWriteF (int code)
 {
 #ifdef WRITE_DBG
     std::string dateiname = "/tmp/icc_examin_dbg_";
@@ -85,7 +116,7 @@ dbgWriteF (/*std::ostringstream & ss*/)
     }
 #else
   icc_examin_ns::lock(__FILE__,__LINE__);
-  icc_examin_ns::log(debug_s_.str().c_str());
+  icc_examin_ns::log(debug_s_.str().c_str(), code);
   icc_examin_ns::unlock(0, __FILE__,__LINE__);
   debug_s_.str("");
 #endif

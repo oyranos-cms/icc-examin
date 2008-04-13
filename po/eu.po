@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cinepaint_icc-examin_eu\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2008-04-10 09:19+0200\n"
+"POT-Creation-Date: 2008-04-13 08:51+0200\n"
 "PO-Revision-Date: 2007-11-07 11:11+0100\n"
 "Last-Translator: Iñaki Larrañaga Murgoitio <dooteo@zundan.com>\n"
 "Language-Team: Basque <itzulpena@euskalgnu.org>\n"
@@ -249,19 +249,19 @@ msgstr ""
 msgid "!!! ERROR"
 msgstr ""
 
-#: icc_examin.cpp:241
+#: icc_examin.cpp:238
 msgid "Gamut selector"
 msgstr "Kolore-gama hautatzailea"
 
-#: icc_examin.cpp:331 icc_examin.cpp:1254
+#: icc_examin.cpp:328 icc_examin.cpp:1251
 msgid "loaded"
 msgstr "kargatuta"
 
-#: icc_examin.cpp:337
+#: icc_examin.cpp:334
 msgid "Ready"
 msgstr "Prest"
 
-#: icc_examin.cpp:386
+#: icc_examin.cpp:383
 msgid ""
 "ICC colour profiles (*.{I,i}{C,c}{M,m,C,c})\tMeasurement (*.{txt,it8,IT8,RGB,"
 "CMYK,ti*,cgats,CIE,cie,nCIE,oRPT,DLY,LAB,Q60})\tArgyll Gamuts (*.{wrl,vrml}"
@@ -270,47 +270,47 @@ msgstr ""
 "CMYK,ti*,cgats,CIE,cie,nCIE,oRPT,DLY,LAB,Q60})\tArgyll Kolore-gama (*.{wrl,"
 "vrml}"
 
-#: icc_examin.cpp:386
+#: icc_examin.cpp:383
 msgid "Which ICC profile?"
 msgstr "Zein ICC profila?"
 
-#: icc_examin.cpp:783 icc_examin.cpp:786
+#: icc_examin.cpp:780 icc_examin.cpp:783
 msgid "Compare Measurement <-> Profile Colours"
 msgstr "Konparatu neurketa <-> profilaren koloreak"
 
-#: icc_examin.cpp:785
+#: icc_examin.cpp:782
 msgid "none"
 msgstr "bat ere ez"
 
-#: icc_examin.cpp:803 icc_examin.cpp:807
+#: icc_examin.cpp:800 icc_examin.cpp:804
 msgid "Gamut View"
 msgstr "Kolore-gamaren ikuspegia"
 
-#: icc_examin.cpp:858 icc_gl.h:274
+#: icc_examin.cpp:855 icc_gl.h:274
 msgid "not available"
 msgstr "ez dago erabilgarri"
 
-#: icc_examin.cpp:1194
+#: icc_examin.cpp:1191
 msgid "Filename (ICC data type)"
 msgstr "Fitxategi-izena (ICC datu mota)"
 
-#: icc_examin.cpp:1197
+#: icc_examin.cpp:1194
 msgid "Filename (other data type)"
 msgstr "Fitxategi-izena (beste datu mota)"
 
-#: icc_examin.cpp:1199
+#: icc_examin.cpp:1196
 msgid "Filename (corrupted ICC data type)"
 msgstr "Fitxategi-izena (hondatutako ICC datu mota)"
 
-#: icc_examin.cpp:1204
+#: icc_examin.cpp:1201
 msgid "found no content for"
 msgstr "ez da honen edukirik aurkitu"
 
-#: icc_examin.cpp:1207
+#: icc_examin.cpp:1204
 msgid "Internal error"
 msgstr "Barneko errorea"
 
-#: icc_examin.cpp:1210
+#: icc_examin.cpp:1207
 msgid "No. Tag   Type   Size Description"
 msgstr "IDa Etik. Mota   Tam. Azalpena"
 
@@ -358,15 +358,15 @@ msgstr "hutsa"
 msgid "RGB primaries"
 msgstr "GBU primarioak"
 
-#: icc_fenster.cpp:223
+#: icc_fenster.cpp:227
 msgid "Log:"
 msgstr ""
 
-#: icc_fenster.cpp:225 icc_fenster.cpp:270 icc_betrachter.cxx:770
+#: icc_fenster.cpp:229 icc_fenster.cpp:293 icc_betrachter.cxx:770
 msgid "Yes"
 msgstr "Bai"
 
-#: icc_fenster.cpp:267
+#: icc_fenster.cpp:290
 msgid "Information:"
 msgstr "Informazioa:"
 
@@ -984,15 +984,15 @@ msgstr "segundo"
 msgid "Monitor Profile"
 msgstr "Monitorearen profila"
 
-#: icc_helfer.cpp:1268 icc_utils.cpp:84
+#: icc_helfer.cpp:1268 icc_utils.cpp:115
 msgid "file size 0 for "
 msgstr "fitxategi honen tamaina 0: "
 
-#: icc_kette.cpp:194
+#: icc_kette.cpp:195
 msgid "noName"
 msgstr "izengabea"
 
-#: icc_kette.cpp:211
+#: icc_kette.cpp:212
 msgid "File not loaded!"
 msgstr "Fitxategia ez da kargatu."
 
@@ -1605,7 +1605,7 @@ msgstr "Proiektua"
 msgid "Documentation"
 msgstr "Dokumentazioa"
 
-#: icc_utils.cpp:64
+#: icc_utils.cpp:95
 msgid "no filename given"
 msgstr "ez da fitxategi-izenik eman"
 
@@ -1948,8 +1948,8 @@ msgstr "Zein motatako irudia da hau?\n"
 msgid "May 2004 - January 2008"
 msgstr "2004.eko maiatza - 2007.eko iraila"
 
-#: icc_utils.h:285 icc_utils.h:286 icc_utils.h:287 icc_utils.h:341
-#: icc_utils.h:342 icc_utils.h:343
+#: icc_utils.h:275 icc_utils.h:276 icc_utils.h:277 icc_utils.h:331
+#: icc_utils.h:332 icc_utils.h:333
 msgid "!!! Warning !!!"
 msgstr "Abisua !!!"
 

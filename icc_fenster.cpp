@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2007  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2008  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -175,7 +175,7 @@ dateiwahl_cb (MyFl_File_Chooser *f, void *data, int finish)
 #endif
 
 MyFl_Double_Window* nachricht_ (std::string text); 
-MyFl_Double_Window* log_ (std::string text); 
+MyFl_Double_Window* log_ (std::string text, int code); 
 
 #if 1
 MyFl_Double_Window*
@@ -186,11 +186,11 @@ nachricht (std::string text) {
   return nachricht_(text);
 }
 MyFl_Double_Window*
-log (std::string text) {
+log (std::string text, int code) {
   // for Fl_Scroll no vtable created:
   // icc_fenster.cpp:162: undefined reference to `icc_examin_ns::Fl_Scroll::Fl_Scroll[in-charge](int, int, int, int, char const*)'
   // Now the funtion is outside of icc_examin_ns::
-  return log_(text);
+  return log_(text, code);
 }
 
 #else
@@ -215,12 +215,16 @@ static Fl_Text_Display *display_info=(Fl_Text_Display*)0;
 static Fl_Text_Display *display_log=(Fl_Text_Display*)0;
 static Fl_Text_Buffer *buffer_log=(Fl_Text_Buffer*)0;
 MyFl_Double_Window *log_window=(MyFl_Double_Window*)0;
+int log_window_poped = 0;
 
 MyFl_Double_Window*
-log_ (std::string text)
+log_ (std::string text, int code)
 {
+  int log_window_new = 0;
+
   if(icc_examin && !log_window)
-  { MyFl_Double_Window* w = log_window = new MyFl_Double_Window(600, 226, _("Log:"));
+  {
+    MyFl_Double_Window* w = log_window = new MyFl_Double_Window(600, 226, _("Log:"));
     w->hotspot(w);
     { Fl_Return_Button* o = new Fl_Return_Button(220, 195, 160, 25, _("Yes"));
       o->shortcut(0xff0d);
@@ -239,6 +243,8 @@ log_ (std::string text)
     //w->show();
     w->end();
     w->use_escape_hide = true;
+
+    log_window_new = 1;
   }
 
   if(!buffer_log)
@@ -250,12 +256,29 @@ log_ (std::string text)
   if(buffer_log)
   {
     int l = buffer_log->length();
-    int ip = display_log->insert_position();
+    int ip = -1;
+
+    if(display_log)
+      ip = display_log->insert_position();
+
     buffer_log->append( text.c_str() );
-    if(l == ip)
+
+    if(display_log && l == ip || log_window_new)
+    {
       ip = buffer_log->length();
-    display_log->insert_position( ip );
-    display_log->show_insert_position();
+      display_log->insert_position( ip );
+      display_log->show_insert_position();
+    }
+
+    if(code == ICC_MSG_ERROR &&
+       log_window &&
+       icc_examin &&
+       icc_examin->icc_betrachter &&
+       !log_window_poped)
+    {
+      log_window_poped = 1;
+      log_window->show();
+    }
   }
 
   return log_window;

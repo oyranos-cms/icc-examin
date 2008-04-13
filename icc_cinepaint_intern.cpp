@@ -47,8 +47,8 @@
 #include "icc_examin_version.h"
 
 #ifdef DEBUG_ 
-#define DBG_PLUG_V(x)  DBG_V(x) 
-#define DBG_PLUG_S(x)  DBG_S(x)
+#define DBG_PLUG_V(x)  DBG_PROG_V(x) 
+#define DBG_PLUG_S(x)  DBG_PROG_S(x)
 #else
 #define DBG_PLUG_V(x) 
 #define DBG_PLUG_S(x)
@@ -475,7 +475,7 @@ schreibeNcl2Tag              ( ICClist<double>       pcsfarbe,
 
     #ifdef DEBUG_
     if( 10 < i && i < 20 )
-    DBG_S(  icValue(f->pcsfarbe[0]) << "," << pcsfarbe[3*i+0] <<" "<<
+    DBG_PLG_S(  icValue(f->pcsfarbe[0]) << "," << pcsfarbe[3*i+0] <<" "<<
             icValue(f->pcsfarbe[1]) << "," << pcsfarbe[3*i+1] <<" "<<
             f->pcsfarbe[2] << " " << pcsfarbe[3*i+2] <<" "<<
             f->geraetefarbe[0] << " " <<
@@ -523,12 +523,12 @@ transformAnlegen( channel & layer )
                                  hs,
                                  layer.intent, layer.intent_proof,
                                  layer.flags | cmsFLAGS_NOTPRECALC);
-    DBG_S( transf <<" "<< hp <<" "<< hl <<" "<< hs <<" channels: "<<
+    DBG_PLUG_S( transf <<" "<< hp <<" "<< hl <<" "<< hs <<" channels: "<<
            T_CHANNELS(format) << " depth "<< T_BYTES(format) <<" i"<<
            layer.intent <<" ip"<< layer.intent_proof <<" f"<< layer.flags );
 
     cmsDoTransform( transf, in, out2, 1);
-    DBG_S( out[0]<<" "<<out[1]<<" "<<out[2]<<"  "<<
+    DBG_PLUG_S( out[0]<<" "<<out[1]<<" "<<out[2]<<"  "<<
            out2[0]<<" "<<out2[1]<<" "<<out2[2] )
 }
 
@@ -1573,7 +1573,7 @@ minMax(gint32 image_ID, int & min_x, int & min_y,
 
   if(icc_debug > 1) 
   {
-    DBG printf("max(%d,%d) = ",
+    printf("max(%d,%d) = ",
                 (int)max_x,(int)max_y);
     for (int c=0; c < 4; c++)
          printf("%f ", max_color[c]);

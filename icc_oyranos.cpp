@@ -977,7 +977,7 @@ Oyranos::netzVonProfil (ICCprofile & profil, int intent, int bpc,
       {
       WARN_S("Fall back to internal hull generation. Argyll is not installed?");
       } else if(native) {
-      DBG_S("Fall back to internal hull generation. "<< v);
+      DBG_NUM_S("Fall back to internal hull generation. "<< v);
       }
 #endif
     }
@@ -1147,7 +1147,7 @@ Oyranos::gamutCheckAbstract(Speicher & s, Speicher & abstract,
       _cmsSaveProfileToMem ( gmt, 0, &groesse );
       char* mem = (char*) calloc( sizeof(char), groesse);
       _cmsSaveProfileToMem ( gmt, mem, &groesse );
-      abstract.ladeUndFreePtr (&mem, groesse); DBG
+      abstract.ladeUndFreePtr (&mem, groesse);
       if(gmt) cmsCloseProfile( gmt );
       if(hLab) cmsCloseProfile( hLab );
       if(tmp) cmsCloseProfile( tmp );
@@ -1306,7 +1306,7 @@ Oyranos::wandelLabNachProfilUndZurueck(double *lab, // 0.0 - 1.0
         oyProfile_Release( &prof );
       }
     }
-    DBG_V(kanaele)
+    DBG_NUM_V(kanaele)
 #endif
 
     CIELabToLab (cielab, lab, (int)size);
@@ -1354,7 +1354,7 @@ oyProfile_s * Oyranos::oyMoni (int x, int y)
         free(buf); size = 0;
       } else
       {
-        DBG_S("Could not load profile. Use sRGB instead.")
+        WARN_S("Could not load profile. Use sRGB instead.")
         disp_prof = oyProfile_FromStd( oyASSUMED_WEB, 0 );
       }
     }

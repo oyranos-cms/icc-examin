@@ -131,7 +131,7 @@ icc_examin_ns::iccLock      ( oyranos::oyPointer           thread_lock,
 #if defined(DEBUG) && defined(__unix__)
     while (pthread_mutex_trylock( m ))
     {
-      DBG_S("mutex not available at "<<marker <<":"<< line<<"  last: "
+      DBG_PROG_S("mutex not available at "<<marker <<":"<< line<<"  last: "
                                      << last_marker <<":"<< last_line);
       icc_examin_ns::sleep(1.0);
     }

@@ -1533,7 +1533,7 @@ setI18N( const char *exename )
   if(tdd)
   {
     locale_paths[num_paths] = tdd;
-    DBG_V( num_paths <<" "<< tdd );
+    DBG_NUM_V( num_paths <<" "<< tdd );
     ++num_paths;
   }
 

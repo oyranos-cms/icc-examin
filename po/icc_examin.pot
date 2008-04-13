@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2008-04-10 09:19+0200\n"
+"POT-Creation-Date: 2008-04-13 08:51+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -247,65 +247,65 @@ msgstr ""
 msgid "!!! ERROR"
 msgstr ""
 
-#: icc_examin.cpp:241
+#: icc_examin.cpp:238
 msgid "Gamut selector"
 msgstr ""
 
-#: icc_examin.cpp:331 icc_examin.cpp:1254
+#: icc_examin.cpp:328 icc_examin.cpp:1251
 msgid "loaded"
 msgstr ""
 
-#: icc_examin.cpp:337
+#: icc_examin.cpp:334
 msgid "Ready"
 msgstr ""
 
-#: icc_examin.cpp:386
+#: icc_examin.cpp:383
 msgid ""
 "ICC colour profiles (*.{I,i}{C,c}{M,m,C,c})\tMeasurement (*.{txt,it8,IT8,RGB,"
 "CMYK,ti*,cgats,CIE,cie,nCIE,oRPT,DLY,LAB,Q60})\tArgyll Gamuts (*.{wrl,vrml}"
 msgstr ""
 
-#: icc_examin.cpp:386
+#: icc_examin.cpp:383
 msgid "Which ICC profile?"
 msgstr ""
 
-#: icc_examin.cpp:783 icc_examin.cpp:786
+#: icc_examin.cpp:780 icc_examin.cpp:783
 msgid "Compare Measurement <-> Profile Colours"
 msgstr ""
 
-#: icc_examin.cpp:785
+#: icc_examin.cpp:782
 msgid "none"
 msgstr ""
 
-#: icc_examin.cpp:803 icc_examin.cpp:807
+#: icc_examin.cpp:800 icc_examin.cpp:804
 msgid "Gamut View"
 msgstr ""
 
-#: icc_examin.cpp:858 icc_gl.h:274
+#: icc_examin.cpp:855 icc_gl.h:274
 msgid "not available"
 msgstr ""
 
-#: icc_examin.cpp:1194
+#: icc_examin.cpp:1191
 msgid "Filename (ICC data type)"
 msgstr ""
 
-#: icc_examin.cpp:1197
+#: icc_examin.cpp:1194
 msgid "Filename (other data type)"
 msgstr ""
 
-#: icc_examin.cpp:1199
+#: icc_examin.cpp:1196
 msgid "Filename (corrupted ICC data type)"
 msgstr ""
 
-#: icc_examin.cpp:1204
+#: icc_examin.cpp:1201
 msgid "found no content for"
 msgstr ""
 
-#: icc_examin.cpp:1207
+#: icc_examin.cpp:1204
 msgid "Internal error"
 msgstr ""
 
-#: icc_examin.cpp:1210
+#: icc_examin.cpp:1207
 msgid "No. Tag   Type   Size Description"
 msgstr ""
 
@@ -353,15 +353,15 @@ msgstr ""
 msgid "RGB primaries"
 msgstr ""
 
-#: icc_fenster.cpp:223
+#: icc_fenster.cpp:227
 msgid "Log:"
 msgstr ""
 
-#: icc_fenster.cpp:225 icc_fenster.cpp:270 icc_betrachter.cxx:770
+#: icc_fenster.cpp:229 icc_fenster.cpp:293 icc_betrachter.cxx:770
 msgid "Yes"
 msgstr ""
 
-#: icc_fenster.cpp:267
+#: icc_fenster.cpp:290
 msgid "Information:"
 msgstr ""
 
@@ -973,15 +973,15 @@ msgstr ""
 msgid "Monitor Profile"
 msgstr ""
 
-#: icc_helfer.cpp:1268 icc_utils.cpp:84
+#: icc_helfer.cpp:1268 icc_utils.cpp:115
 msgid "file size 0 for "
 msgstr ""
 
-#: icc_kette.cpp:194
+#: icc_kette.cpp:195
 msgid "noName"
 msgstr ""
 
-#: icc_kette.cpp:211
+#: icc_kette.cpp:212
 msgid "File not loaded!"
 msgstr ""
 
@@ -1565,7 +1565,7 @@ msgstr ""
 msgid "Documentation"
 msgstr ""
 
-#: icc_utils.cpp:64
+#: icc_utils.cpp:95
 msgid "no filename given"
 msgstr ""
 
@@ -1903,7 +1903,7 @@ msgstr ""
 msgid "May 2004 - January 2008"
 msgstr ""
 
-#: icc_utils.h:285 icc_utils.h:286 icc_utils.h:287 icc_utils.h:341
-#: icc_utils.h:342 icc_utils.h:343
+#: icc_utils.h:275 icc_utils.h:276 icc_utils.h:277 icc_utils.h:331
+#: icc_utils.h:332 icc_utils.h:333
 msgid "!!! Warning !!!"
 msgstr ""

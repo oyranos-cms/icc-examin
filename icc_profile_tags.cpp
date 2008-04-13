@@ -334,7 +334,7 @@ ICCtag::getText                     (std::string text)
         texte.push_back(s.str()); s.str("");
       }
     }
-    DBG_V( xy.size()%3 )
+    DBG_NUM_V( xy.size()%3 )
     texte.push_back( "chrm" );
 
   } else  if (text == "text"
@@ -454,7 +454,7 @@ ICCtag::getText                     (std::string text)
           wc[j] = icValue( uni16be[j] );
         wc[j] = 0;
         size = wcstombs( t, (const wchar_t*)uni16be, g );
-        DBG_V( size<<" "<<&data_[dversatz]<<" "<<&data_[dversatz+1]<<" "<< t );
+        DBG_NUM_V( size<<" "<<&data_[dversatz]<<" "<<&data_[dversatz+1]<<" "<< t );
 
         for (n = 0; n < g ; n = n+2)
           t[n/2] = (char)icValue( *(icUInt16Number*)&data_[dversatz + n] );
@@ -707,7 +707,7 @@ ICCtag::getCIEXYZ                                 (void)
 #   ifdef DEBUG_ICCTAG
     DBG_NUM_S( count )
 #   endif
-    DBG_S(getChromaticityColorantType( icValue(*(icUInt16Number*)&data_[10])))
+    DBG_NUM_S(getChromaticityColorantType( icValue(*(icUInt16Number*)&data_[10])))
     for (int i = 0; i < count ; ++i) { // Table 35 -- chromaticityType encoding
       // TODO lcms needs a 16 Byte Offset (instead of 12 Byte ?)
       icU16Fixed16Number* channel = (icU16Fixed16Number*)&data_[12+(8*i)];
@@ -720,9 +720,9 @@ ICCtag::getCIEXYZ                                 (void)
 #     ifdef DEBUG_ICCTAG
       DBG_NUM_S( xyY[0] << ", " << xyY[1] << ", " << xyY[2] )
 #     endif
-      DBG_S( xyY[0] << ", " << xyY[1] << ", " << xyY[2] )
+      DBG_NUM_S( xyY[0] << ", " << xyY[1] << ", " << xyY[2] )
     }
-    DBG_V( punkte.size() )
+    DBG_NUM_V( punkte.size() )
     xyYto_XYZ(punkte);
   } else if (base->sig == (icTagTypeSignature)icValue( icSigXYZType )) {
     icXYZType *daten = (icXYZType*) &data_[0];
