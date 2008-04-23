@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2008-04-13 08:51+0200\n"
+"POT-Creation-Date: 2008-04-18 12:17+0200\n"
 "PO-Revision-Date: 2005-08-13 17:35+0200\n"
 "Last-Translator: Kai-Uwe Behrmann\n"
 "Language-Team:  <ku.b@gmx.de>\n"
@@ -977,7 +977,7 @@ msgstr "Sekunden"
 msgid "Monitor Profile"
 msgstr "Bildschirmprofil"
 
-#: icc_helfer.cpp:1268 icc_utils.cpp:115
+#: icc_helfer.cpp:1268
 msgid "file size 0 for "
 msgstr "Dateigröße 0 für "
 
@@ -1593,10 +1593,6 @@ msgstr "Projekt"
 msgid "Documentation"
 msgstr "Dokumente"
 
-#: icc_utils.cpp:95
-msgid "no filename given"
-msgstr "kein Dateiname angegeben"
-
 #: icc_vrml.cpp:147
 msgid "exception occured: "
 msgstr "Ausnahme: "
@@ -1641,55 +1637,55 @@ msgstr "Gamma Grün: "
 msgid "no gammagradient information obtained"
 msgstr ""
 
-#: icc_helfer_fltk.cpp:322
+#: icc_helfer_fltk.cpp:324
 msgid "Add to Favorites"
 msgstr "Füge Lesezeichen hinzu"
 
-#: icc_helfer_fltk.cpp:323
+#: icc_helfer_fltk.cpp:325
 msgid "All Files (*)"
 msgstr "Alle Dateien (*)"
 
-#: icc_helfer_fltk.cpp:324
+#: icc_helfer_fltk.cpp:326
 msgid "Custom Filter"
 msgstr "Eigener Filter"
 
-#: icc_helfer_fltk.cpp:325
+#: icc_helfer_fltk.cpp:327
 msgid "Please choose an existing file!"
 msgstr "Bitte wählen Sie eine existierende Datei!"
 
-#: icc_helfer_fltk.cpp:326 my_file_chooser.cxx:182
+#: icc_helfer_fltk.cpp:328 my_file_chooser.cxx:182
 msgid "Favorites"
 msgstr "Lesezeichen"
 
-#: icc_helfer_fltk.cpp:327
+#: icc_helfer_fltk.cpp:329
 msgid "Filename"
 msgstr "Dateiname"
 
-#: icc_helfer_fltk.cpp:328 my_file_chooser.cxx:256
+#: icc_helfer_fltk.cpp:330 my_file_chooser.cxx:256
 msgid "Manage Favorites"
 msgstr "Bearbeite Lesezeichen"
 
-#: icc_helfer_fltk.cpp:330
+#: icc_helfer_fltk.cpp:332
 msgid "My Computer"
 msgstr "Mein Rechner"
 
-#: icc_helfer_fltk.cpp:332
+#: icc_helfer_fltk.cpp:334
 msgid "File Systems"
 msgstr "Dateisysteme"
 
-#: icc_helfer_fltk.cpp:334
+#: icc_helfer_fltk.cpp:336
 msgid "New Directory?"
 msgstr "Verzeichnis erstellen"
 
-#: icc_helfer_fltk.cpp:335 my_file_chooser.cxx:213
+#: icc_helfer_fltk.cpp:337 my_file_chooser.cxx:213
 msgid "Preview"
 msgstr "Vorschau"
 
-#: icc_helfer_fltk.cpp:337 my_file_chooser.cxx:291
+#: icc_helfer_fltk.cpp:339 my_file_chooser.cxx:291
 msgid "Save"
 msgstr "Sichern"
 
-#: icc_helfer_fltk.cpp:339 my_file_chooser.cxx:175
+#: icc_helfer_fltk.cpp:341 my_file_chooser.cxx:175
 msgid "Show:"
 msgstr "Zeige:"
 
@@ -1933,10 +1929,13 @@ msgstr "Was für ein Bild ist dies?\n"
 msgid "May 2004 - January 2008"
 msgstr "Mai 2004 - Januar 2008"
 
-#: icc_utils.h:275 icc_utils.h:276 icc_utils.h:277 icc_utils.h:331
-#: icc_utils.h:332 icc_utils.h:333
+#: icc_utils.h:288 icc_utils.h:289 icc_utils.h:290 icc_utils.h:344
+#: icc_utils.h:345 icc_utils.h:346
 msgid "!!! Warning !!!"
 msgstr "!!! Warnung !!!"
+
+#~ msgid "no filename given"
+#~ msgstr "kein Dateiname angegeben"
 
 #, fuzzy
 #~ msgid "Profiles"

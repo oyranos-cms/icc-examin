@@ -181,7 +181,7 @@ if [ $# -gt 0 ]; then
   done
 fi
 
-INFOECHO="&2"
+INFOECHO="echo"
 echo -e "$zeile \$@\n\nexit 0\n\n" > $CONF_LOG
 chmod 0755 $CONF_LOG
 
@@ -251,14 +251,28 @@ else
     echo_="Linux system            detected"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
     SYS=0
     if [ -f /etc/SuSE-release ]; then
-      cat /etc/SuSE-release | grep Linux; SYS=1; fi
+      if [ `cat /etc/SuSE-release | grep Linux | wc -l` -ne 0 ]; then
+        echo_="`cat /etc/SuSE-release | grep Linux`"
+        test -n $ECHO && $ECHO -e "$echo_" >> $CONF_LOG; test -n "$INFOECHO" && $INFOECHO "$echo_"
+        SYS=1; fi
+      if [ $SYS -eq 0 ]; then
+        echo_="`cat /etc/SuSE-release | grep SUSE`"
+        test -n $ECHO && $ECHO -e "$echo_" >> $CONF_LOG; test -n "$INFOECHO" && $INFOECHO "$echo_"
+        SYS=1; fi fi
     if [ -f /etc/redhat-release ]; then
-      cat /etc/redhat-release; SYS=1; fi
+      echo_="`cat /etc/redhat-release`"
+      test -n $ECHO && $ECHO -e "$echo_" >> $CONF_LOG; test -n "$INFOECHO" && $INFOECHO "$echo_"
+      SYS=1; fi
     if [ -f /etc/debian_version ]; then
       if [ -f /etc/issue.net ]; then
-        cat /etc/issue.net || cat /etc/debian_version; SYS=2; fi; fi
+        echo_="`cat /etc/issue.net || cat /etc/debian_version`"
+        test -n $ECHO && $ECHO -e "$echo_" >> $CONF_LOG; test -n "$INFOECHO" && $INFOECHO "$echo_"
+        SYS=2; fi; fi
     if [ $SYS -eq 0 ]; then
-      test -f /etc/issue.net && cat /etc/issue.net; fi
+      if [ -f /etc/issue.net ]; then
+        echo_="`cat /etc/issue.net`"
+        test -n $ECHO && $ECHO -e "$echo_" >> $CONF_LOG; test -n "$INFOECHO" && $INFOECHO "$echo_"
+    fi; fi
     OSUNAME=Linux
   else
     if [ $UNAME_ = "SunOS" ]; then

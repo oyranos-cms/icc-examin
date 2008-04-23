@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2008-04-13 08:51+0200\n"
+"POT-Creation-Date: 2008-04-18 12:17+0200\n"
 "PO-Revision-Date: 2005-08-13 17:35+0200\n"
 "Last-Translator: Kai-Uwe Behrmann\n"
 "Language-Team:  <eo@li.org>\n"
@@ -977,7 +977,7 @@ msgstr ""
 msgid "Monitor Profile"
 msgstr ""
 
-#: icc_helfer.cpp:1268 icc_utils.cpp:115
+#: icc_helfer.cpp:1268
 msgid "file size 0 for "
 msgstr ""
 
@@ -1569,10 +1569,6 @@ msgstr ""
 msgid "Documentation"
 msgstr ""
 
-#: icc_utils.cpp:95
-msgid "no filename given"
-msgstr ""
-
 #: icc_vrml.cpp:147
 msgid "exception occured: "
 msgstr ""
@@ -1618,55 +1614,55 @@ msgstr ""
 msgid "no gammagradient information obtained"
 msgstr ""
 
-#: icc_helfer_fltk.cpp:322
+#: icc_helfer_fltk.cpp:324
 msgid "Add to Favorites"
 msgstr ""
 
-#: icc_helfer_fltk.cpp:323
+#: icc_helfer_fltk.cpp:325
 msgid "All Files (*)"
 msgstr ""
 
-#: icc_helfer_fltk.cpp:324
+#: icc_helfer_fltk.cpp:326
 msgid "Custom Filter"
 msgstr ""
 
-#: icc_helfer_fltk.cpp:325
+#: icc_helfer_fltk.cpp:327
 msgid "Please choose an existing file!"
 msgstr ""
 
-#: icc_helfer_fltk.cpp:326 my_file_chooser.cxx:182
+#: icc_helfer_fltk.cpp:328 my_file_chooser.cxx:182
 msgid "Favorites"
 msgstr ""
 
-#: icc_helfer_fltk.cpp:327
+#: icc_helfer_fltk.cpp:329
 msgid "Filename"
 msgstr ""
 
-#: icc_helfer_fltk.cpp:328 my_file_chooser.cxx:256
+#: icc_helfer_fltk.cpp:330 my_file_chooser.cxx:256
 msgid "Manage Favorites"
 msgstr ""
 
-#: icc_helfer_fltk.cpp:330
+#: icc_helfer_fltk.cpp:332
 msgid "My Computer"
 msgstr ""
 
-#: icc_helfer_fltk.cpp:332
+#: icc_helfer_fltk.cpp:334
 msgid "File Systems"
 msgstr ""
 
-#: icc_helfer_fltk.cpp:334
+#: icc_helfer_fltk.cpp:336
 msgid "New Directory?"
 msgstr ""
 
-#: icc_helfer_fltk.cpp:335 my_file_chooser.cxx:213
+#: icc_helfer_fltk.cpp:337 my_file_chooser.cxx:213
 msgid "Preview"
 msgstr ""
 
-#: icc_helfer_fltk.cpp:337 my_file_chooser.cxx:291
+#: icc_helfer_fltk.cpp:339 my_file_chooser.cxx:291
 msgid "Save"
 msgstr ""
 
-#: icc_helfer_fltk.cpp:339 my_file_chooser.cxx:175
+#: icc_helfer_fltk.cpp:341 my_file_chooser.cxx:175
 msgid "Show:"
 msgstr ""
 
@@ -1908,8 +1904,8 @@ msgstr ""
 msgid "May 2004 - January 2008"
 msgstr ""
 
-#: icc_utils.h:275 icc_utils.h:276 icc_utils.h:277 icc_utils.h:331
-#: icc_utils.h:332 icc_utils.h:333
+#: icc_utils.h:288 icc_utils.h:289 icc_utils.h:290 icc_utils.h:344
+#: icc_utils.h:345 icc_utils.h:346
 msgid "!!! Warning !!!"
 msgstr ""
 

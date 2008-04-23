@@ -1380,9 +1380,9 @@ Oyranos::wandelLabNachBildschirmFarben(int x, int y,
                                        double *Lab_Speicher, // 0.0 - 1.0
                                        size_t  size, int intent, int flags)
 {
-  DBG_PROG_START
+  DBG_5_START
 
-  DBG_PROG_V( size <<" "<< intent <<" "<< flags )
+  DBG_5_V( size <<" "<< intent <<" "<< flags )
 
     // lcms types
     cmsHPROFILE hMoni = 0,
@@ -1454,7 +1454,7 @@ Oyranos::wandelLabNachBildschirmFarben(int x, int y,
       }
 
       // initialising for lcms
-      DBG_MEM_V( (int*) block <<" "<<groesse )
+      DBG_5_V( (int*) block <<" "<<groesse )
 
       fortschritt(0.2,0.2);
       if(groesse)
@@ -1481,7 +1481,7 @@ Oyranos::wandelLabNachBildschirmFarben(int x, int y,
       if (!*form)
       {
         WARN_S( "no hXYZtoRGB transformation found" )
-        DBG_PROG_ENDE
+        DBG_5_ENDE
         return RGB_Speicher;
       }
 
@@ -1509,7 +1509,7 @@ Oyranos::wandelLabNachBildschirmFarben(int x, int y,
 
     if(cielab)    free (cielab);
 
-  DBG_PROG_ENDE
+  DBG_5_ENDE
   return RGB_Speicher;
 }
 

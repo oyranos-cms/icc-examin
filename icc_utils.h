@@ -272,6 +272,19 @@ extern int icc_debug;
 #define DBG_THREAD_S(txt) ;
 #define DBG_THREAD_V(txt) ;
 #endif
+#ifdef DEBUG
+#define DBG_5        DBG_BED(5) DBG(ICC_MSG_DBG)
+#define DBG_5_START  DBG_BED2(5,8) DBG_START
+#define DBG_5_ENDE   DBG_BED2(5,8) DBG_ENDE
+#define DBG_5_S(txt) DBG_BED(5) DBG_S(txt,ICC_MSG_DBG)
+#define DBG_5_V(txt) DBG_BED(5) DBG_V(txt,ICC_MSG_DBG)
+#else
+#define DBG_5 ;
+#define DBG_5_START ;
+#define DBG_5_ENDE ;
+#define DBG_5_S(txt) ;
+#define DBG_5_V(txt) ;
+#endif
 #define WARN { dbgWrite (_("!!! Warning !!!")); DBG_(ICC_MSG_WARN) }
 #define WARN_S(txt) { dbgWrite (_("!!! Warning !!!")); DBG_S_(txt,ICC_MSG_WARN) }
 #define WARN_V(txt) { dbgWrite (_("!!! Warning !!!")); DBG_V_(txt,ICC_MSG_WARN) }

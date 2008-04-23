@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2008  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -77,10 +77,11 @@ void     dbgWriteUnLock              ( void )
 #endif
 }
 
-//#define WRITE_DBG
+#define WRITE_DBG
 void
 dbgWriteF (int code)
 {
+  icc_examin_ns::lock(__FILE__,__LINE__);
 #ifdef WRITE_DBG
     std::string dateiname = "/tmp/icc_examin_dbg_";
     dateiname += getenv("USER");
@@ -88,38 +89,21 @@ dbgWriteF (int code)
     std::ofstream f ( dateiname.c_str(),
          std::ios::out | std::ios::app | std::ios::binary | std::ios::ate );
 
-    DBG_MEM_V( dateiname )
-    if (dateiname == "")
-    {
-      DBG_PROG_ENDE
-      throw ausn_file_io (_("no filename given"));
-    }
-    DBG_MEM
-    if (!f) {
-      DBG_PROG_ENDE
-      throw ausn_file_io (dateiname.c_str());
-      dateiname = "";
-    }
 
     size_t size = (unsigned int)f.tellp();
-    DBG_MEM_V ( size << "|" << f.tellp() )
     //f.seekp(size);
-    const char* data = ss.str().c_str();
-    size = ss.str().size();
+    const char* data = debug_s_.str().c_str();
+    size = debug_s_.str().size();
     if(size) {
       f.write (data, size);
-      DBG_MEM_V ( size << "|" << f.tellp() <<" "<< (int*)data <<" "<< strlen(data) )
       f.close();
     } else {
       data = 0;
-      WARN_S( _("file size 0 for ") << dateiname )
     }
-#else
-  icc_examin_ns::lock(__FILE__,__LINE__);
+#endif
   icc_examin_ns::log(debug_s_.str().c_str(), code);
   icc_examin_ns::unlock(0, __FILE__,__LINE__);
   debug_s_.str("");
-#endif
 }
 
 

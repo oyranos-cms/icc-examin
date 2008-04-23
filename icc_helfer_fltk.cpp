@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2008  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -221,7 +221,7 @@ setzeIcon      ( Fl_Window *fenster, char   **xpm_daten )
 namespace icc_examin_ns {
 
   // checking variables
-  static int icc_thread_lock_zaehler_ = 0;
+  int icc_thread_lock_zaehler_ = 0;
   Fl_Thread icc_thread_lock_besitzer_ = 0;
 
   int  awake(void)
@@ -264,7 +264,8 @@ namespace icc_examin_ns {
     if(data_mutex_threads_ == 1)
       data_mutex_thread_ = iccThreadSelf() ;
 # else
-     DBG_THREAD_S( "locks: "<<icc_thread_lock_zaehler_ <<" stopped at: "<<file<<":"<<line )
+     DBG_5_S( "locks: "<<icc_thread_lock_zaehler_ <<" stopped at: "<<file<<":"<<line )
+     //icc_examin->frei(false);
      Fl::lock(); DBG_THREAD
      // ... taking over
      icc_thread_lock_besitzer_ = iccThreadSelf();
@@ -273,7 +274,7 @@ namespace icc_examin_ns {
     // ... check number
     ++icc_thread_lock_zaehler_;
     //Fl::awake();
-    DBG_THREAD_S( "locks: "<<icc_thread_lock_zaehler_ <<" stopped at: "<<file<<":"<<line )
+    DBG_5_S( "locks: "<<icc_thread_lock_zaehler_ <<" stopped at: "<<file<<":"<<line )
   }
 
   void unlock(void *widget, const char *file, int line)
@@ -293,13 +294,14 @@ namespace icc_examin_ns {
     if(widget) { DBG_THREAD
       Fl::awake(widget); DBG_THREAD }
     Fl::unlock();
+    //icc_examin->frei(true);
 # endif
 
     icc_thread_lock_besitzer_ = 0;
     icc_thread_lock_zaehler_ = 0;
 
     // refresh UI
-    DBG_THREAD_S( ": " << icc_thread_lock_zaehler_ << " continue" )
+    DBG_5_S( ": " << icc_thread_lock_zaehler_ << " continue" )
   }
 }
 

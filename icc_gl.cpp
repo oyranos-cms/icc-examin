@@ -3078,7 +3078,7 @@ void drawGLFaceList(FILE *fp,const icc_examin_ns::FACE *faceList)
 void
 GL_Ansicht::setBspFaceProperties_( icc_examin_ns::FACE *faceList )
 {
-  DBG_PROG_START
+  DBG_5_START
 
   icc_examin_ns::FACE * ftrav = 0;
   icc_examin_ns::VERTEX * vtrav = 0;
@@ -3152,14 +3152,14 @@ GL_Ansicht::setBspFaceProperties_( icc_examin_ns::FACE *faceList )
   oyNamedColour_Release( &c );
 #endif
 
-  DBG_PROG_ENDE
+  DBG_5_ENDE
 }
 
 /* updateNet_ takes care of dreiecks_netze.frei */
 void
 GL_Ansicht::setBspProperties_( icc_examin_ns::BSPNODE *bsp )
 {
-  DBG_PROG_START
+  //DBG_PROG_START
 
   icc_examin_ns::BSPNODE * bspNode = bsp;
 
@@ -3173,7 +3173,7 @@ GL_Ansicht::setBspProperties_( icc_examin_ns::BSPNODE *bsp )
     setBspProperties_( bspNode->node->positiveSide );
   }
 
-  DBG_PROG_ENDE
+  //DBG_PROG_ENDE
 }
 
 

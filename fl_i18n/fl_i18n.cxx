@@ -1,7 +1,7 @@
 /*
  * fl_i18n is a internationalisation helper library for FLTK.
  * 
- * Copyright (C) 2004-2007  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2008  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -44,6 +44,8 @@ static int lc = LC_MESSAGES;
 #define fl_i18n_printf(text)
 static int lc = LC_ALL;
 #endif
+
+const char *fl_i18n_codeset = 0;
 
 /* include pthread.h here for threads support */
 #ifdef USE_THREADS
@@ -92,6 +94,9 @@ char* icc_strdup_m (const char* t)
 #endif
 #ifndef DBG_PROG_ENDE
 #define DBG_PROG_ENDE
+#endif
+#ifndef WARN_S
+#define WARN_S(text)
 #endif
 
 
@@ -286,8 +291,9 @@ fl_initialise_locale( const char *domain, const char *locale_path,
     snprintf(locale,TEXTLEN, getenv("LANG"));
 # endif
 
-
-
+  if(set_codeset == FL_I18N_SETCODESET_SELECT &&
+     locale && strstr(locale, "UTF-8"))
+  {
       // add more LINGUAS here
       // borrowed from http://czyborra.com/charsets/iso8859.html
     ret = fl_set_codeset_( "af", "ISO-8859-1", locale, codeset, set_codeset ); // Afrikaans
@@ -353,6 +359,7 @@ fl_initialise_locale( const char *domain, const char *locale_path,
     ret = fl_set_codeset_( "ja", "EUC", locale, codeset, set_codeset ); // Japan ; eucJP, ujis, EUC, PCK, jis7, SJIS
 
     ret = fl_set_codeset_( "hy", /*"UTF-8"*/"ARMSCII-8", locale, codeset, set_codeset ); // Armenisch
+  }
 
   if(ret)
     return 1;
@@ -408,7 +415,10 @@ fl_initialise_locale( const char *domain, const char *locale_path,
   txd = textdomain (domain);
 
   if(cs)
+  {
+    fl_i18n_codeset = cs;
     DBG_PROG_S( _("set codeset for") << domain << " to " << cs );
+  }
 
   // gettext initialisation end
   free(codeset);
@@ -427,14 +437,12 @@ fl_translate_menue( Fl_Menu_Item* menueleiste )
 #ifdef USE_GETTEXT
   DBG_PROG_START
   int size = menueleiste->size();
-  DBG_PROG_V( size )
   for(int i = 0; i < size ; ++i) {
     const char* text = menueleiste[i].label();
-    menueleiste[i].label( _(text) );
-    DBG_PROG_V( i )
     if(text)
-      DBG_PROG_V( text <<" "<< _(text) );
+      menueleiste[i].label( _(text) );
   }
+  DBG_PROG_ENDE
 #endif
 }
 

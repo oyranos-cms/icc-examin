@@ -196,17 +196,22 @@ public:
     else
       begin_i = 0;
 
-    reserve( begin_i + news + reserve_step );
-
-    if(start_)
+    if(n_ + news > reserve_)
+    {
+      reserve( n_ + news + reserve_step );
       start_ = &list_[begin_i];
-    else
+    }
+
+    if(!start_)
       start_ = &list_[0];
 
+    if(n_ - begin_i)
+      for(size_t i = n_ + news - 1; i > begin_i + news - 1; --i)
+        list_[i] = list_[i-1];
+    n_ += news;
+
     for(size_t i = 0; i < news; ++i)
-      start_[i] = begin_[i];
-    if( n_ < begin_i + news )
-      n_ = begin_i + news;
+      start_[i] = T(begin_[i]);
   }
   /** @brief insert with automatic allocation */
   void     insert( T* start_, const T & x ) {
@@ -220,18 +225,21 @@ public:
     else
       begin_i = 0;
 
-    if(begin_i + news < reserve_)
+    if(n_ + news > reserve_)
     {
-      reserve( begin_i + news + reserve_step );
+      reserve( n_ + news + reserve_step );
       start_ = &list_[begin_i];
     }
 
     if(!start_)
       start_ = &list_[0];
 
-    start_[0/*begin_i*/] = T(x);
-    if( n_ < begin_i + news )
-      n_ = begin_i + news;
+    if(n_ - begin_i)
+      for(size_t i = n_; i > begin_i; --i)
+        list_[i] = list_[i-1];
+    ++ n_;
+
+    start_[0] = T(x);
   }
 
   /** @brief erase with no deallocation */

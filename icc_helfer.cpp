@@ -1142,7 +1142,7 @@ ICCprofile::ICCDataType guessFileType( const char        * filename )
  */
 const char * preLoadFile             ( const char        * filename )
 {
-  char *list[12] = {"icc_examin_preload0.www","icc_examin_preload1.gunzip",
+  const char *list[12] = {"icc_examin_preload0.www","icc_examin_preload1.gunzip",
                     "icc_examin_preload2.bunzip2",0,0,0,0,0,0,0,0,0};
   const char * commands[12] = {
 #if !defined(__APPLE__)
@@ -1154,7 +1154,7 @@ const char * preLoadFile             ( const char        * filename )
   const char * name = filename;
   int error = 0;
   char * command = 0;
-  char * tmp = "tmp";
+  const char * tmp = "tmp";
   static char file_name_[1024];
   int typ = -1; 
   
@@ -1574,6 +1574,7 @@ setI18N( const char *exename )
       }
     }
   }
+  oy_domain_codeset = fl_i18n_codeset;
 }
 
 namespace icc_parser {

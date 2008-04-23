@@ -125,6 +125,9 @@ namespace icc_examin_ns {
   void unlock(void *widget, const char *file, int line);
   void wait (double sekunden, int update_ui);
   extern int  (*waitFunc)(void);
+  // for debugging
+  extern int icc_thread_lock_zaehler_;
+  extern Fl_Thread icc_thread_lock_besitzer_;
 #if APPLE
   std::string holeBundleResource (const char* Dateiname_ohne_Endung,
                                   const char* Endung);

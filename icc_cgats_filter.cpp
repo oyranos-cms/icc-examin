@@ -642,6 +642,7 @@ CgatsFilter::cgats_korrigieren_               ()
   suchenUndErsetzen_( data_, "Sample_ID" , "SAMPLE_ID", pos );
   suchenUndErsetzen_( data_, "SampleName" , "SAMPLE_NAME", pos );
   suchenUndErsetzen_( data_, "Sample_Name" , "SAMPLE_NAME", pos );
+  suchenUndErsetzen_( data_, "SAMPLE_LOC" , "SAMPLE_NAME", pos );
   suchenUndErsetzen_( data_, "Yxy_x", "XYY_X", pos );
   suchenUndErsetzen_( data_, "Yxy_y", "XYY_Y", pos );
   suchenUndErsetzen_( data_, "Yxy_Y", "XYY_CAPY", pos );
@@ -828,6 +829,7 @@ CgatsFilter::cgats_korrigieren_               ()
           fehlendes_NUMBER_OF_FIELDS )
       {
         zeilen_.insert( zeilen_.begin() + zeile_letztes_BEGIN_DATA_FORMAT, s.str() );
+        ++i;
         logEintrag_( "fehlendes NUMBER_OF_FIELDS eingefuegt",
                      zeile_letztes_BEGIN_DATA_FORMAT, "", s.str() );
         DBG_PROG_S( zeilen_[zeile_letztes_BEGIN_DATA_FORMAT] << " eingefuegt" )

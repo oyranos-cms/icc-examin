@@ -222,7 +222,7 @@ log_ (std::string text, int code)
 {
   int log_window_new = 0;
 
-  if(icc_examin->laeuft() && !log_window)
+  if(icc_examin && icc_examin->laeuft() && !log_window)
   {
     MyFl_Double_Window* w = log_window = new MyFl_Double_Window(600, 226, _("Log:"));
     w->hotspot(w);
