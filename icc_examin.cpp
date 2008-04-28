@@ -83,7 +83,7 @@ int iccMessageFunc( int code, const char * format, ... )
   if(code == oyMSG_DBG && !icc_debug)
     return 0;
 
-  text = (char*)calloc(sizeof(char), 4096), *pos;
+  text = (char*)calloc(sizeof(char), 4096);
   text[0] = 0;
 
   if(!log_window)

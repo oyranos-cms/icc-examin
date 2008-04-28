@@ -164,7 +164,6 @@ boolean BSPisViewerInPositiveSideOfFace(const FACE *face,const POINT *position)
    float dp = (plane->aa) * (position->xx - face->vhead->xx) + 
               (plane->bb) * (position->yy - face->vhead->yy) +
               (plane->cc) * (position->zz - face->vhead->zz);/* + plane->dd;*/
-   //printf("%s:%d dp: %f \n", __FILE__,__LINE__,dp);
    return( (dp > 0.0) ? 1 : 0 );
 } /* BSPisViewerInPositiveSideOfFace() */
 

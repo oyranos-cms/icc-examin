@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eog\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2008-04-23 15:09+0200\n"
+"POT-Creation-Date: 2008-04-28 06:32+0200\n"
 "PO-Revision-Date: 2004-08-05 00:03+0300\n"
 "Last-Translator: Abdulaziz Al-Arfaj <alarfaj0@yahoo.com>\n"
 "Language-Team: Arabic <support@arabeyes.org>\n"
@@ -44,56 +44,56 @@ msgstr ""
 msgid "set codeset for"
 msgstr ""
 
-#: fl_i18n.cxx:455
+#: fl_i18n.cxx:459
 msgid "Add to Favorites"
 msgstr ""
 
-#: fl_i18n.cxx:456
+#: fl_i18n.cxx:460
 #, fuzzy
 msgid "All Files (*)"
 msgstr "كل الملفّات"
 
-#: fl_i18n.cxx:457
+#: fl_i18n.cxx:461
 msgid "Custom Filter"
 msgstr ""
 
-#: fl_i18n.cxx:458
+#: fl_i18n.cxx:462
 msgid "Please choose an existing file!"
 msgstr ""
 
-#: fl_i18n.cxx:459
+#: fl_i18n.cxx:463
 msgid "Favorites"
 msgstr ""
 
-#: fl_i18n.cxx:460
+#: fl_i18n.cxx:464
 msgid "Filename"
 msgstr ""
 
-#: fl_i18n.cxx:461
+#: fl_i18n.cxx:465
 msgid "Manage Favorites"
 msgstr ""
 
-#: fl_i18n.cxx:463
+#: fl_i18n.cxx:467
 msgid "My Computer"
 msgstr ""
 
-#: fl_i18n.cxx:465
+#: fl_i18n.cxx:469
 msgid "Filesystems"
 msgstr ""
 
-#: fl_i18n.cxx:467
+#: fl_i18n.cxx:471
 msgid "New Directory?"
 msgstr ""
 
-#: fl_i18n.cxx:468
+#: fl_i18n.cxx:472
 msgid "Preview"
 msgstr ""
 
-#: fl_i18n.cxx:470 fl_i18n_example.cxx:32
+#: fl_i18n.cxx:474 fl_i18n_example.cxx:32
 msgid "Save"
 msgstr ""
 
-#: fl_i18n.cxx:472
+#: fl_i18n.cxx:476
 msgid "Show:"
 msgstr ""
 

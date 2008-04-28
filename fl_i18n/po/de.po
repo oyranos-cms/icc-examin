@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2008-04-23 15:09+0200\n"
+"POT-Creation-Date: 2008-04-28 06:32+0200\n"
 "PO-Revision-Date: 2005-08-13 17:35+0200\n"
 "Last-Translator: Kai-Uwe Behrmann\n"
 "Language-Team:  <de@li.org>\n"
@@ -37,56 +37,56 @@ msgstr "versuche locale in "
 msgid "set codeset for"
 msgstr "setze Zeichensatz für"
 
-#: fl_i18n.cxx:455
+#: fl_i18n.cxx:459
 msgid "Add to Favorites"
 msgstr "Füge den Lesezeichen hinzu"
 
-#: fl_i18n.cxx:456
+#: fl_i18n.cxx:460
 msgid "All Files (*)"
 msgstr "Alle Dateien (*)"
 
-#: fl_i18n.cxx:457
+#: fl_i18n.cxx:461
 msgid "Custom Filter"
 msgstr "Benutzefilter"
 
-#: fl_i18n.cxx:458
+#: fl_i18n.cxx:462
 msgid "Please choose an existing file!"
 msgstr "Bitte ein existierende Datei wählen!"
 
-#: fl_i18n.cxx:459
+#: fl_i18n.cxx:463
 msgid "Favorites"
 msgstr "Lesezeichen"
 
-#: fl_i18n.cxx:460
+#: fl_i18n.cxx:464
 msgid "Filename"
 msgstr "Dateiname"
 
-#: fl_i18n.cxx:461
+#: fl_i18n.cxx:465
 msgid "Manage Favorites"
 msgstr "Lesezeichen Ordnen"
 
-#: fl_i18n.cxx:463
+#: fl_i18n.cxx:467
 msgid "My Computer"
 msgstr "Mein Rechner"
 
-#: fl_i18n.cxx:465
+#: fl_i18n.cxx:469
 #, fuzzy
 msgid "Filesystems"
 msgstr "Dateisystem"
 
-#: fl_i18n.cxx:467
+#: fl_i18n.cxx:471
 msgid "New Directory?"
 msgstr "Neues Verzeichnis?"
 
-#: fl_i18n.cxx:468
+#: fl_i18n.cxx:472
 msgid "Preview"
 msgstr "Vorschau"
 
-#: fl_i18n.cxx:470 fl_i18n_example.cxx:32
+#: fl_i18n.cxx:474 fl_i18n_example.cxx:32
 msgid "Save"
 msgstr "Sichern"
 
-#: fl_i18n.cxx:472
+#: fl_i18n.cxx:476
 msgid "Show:"
 msgstr "Zeige:"
 

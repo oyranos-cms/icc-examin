@@ -440,7 +440,11 @@ fl_translate_menue( Fl_Menu_Item* menueleiste )
   for(int i = 0; i < size ; ++i) {
     const char* text = menueleiste[i].label();
     if(text)
+    {
       menueleiste[i].label( _(text) );
+      /*WARN_S("no text at label item #/n:" << i <<"/"<< size)
+      break;*/
+    }
   }
   DBG_PROG_ENDE
 #endif

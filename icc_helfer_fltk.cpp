@@ -162,7 +162,7 @@ dbgFltkEvent(int event)
 }
 
 void
-setzeIcon      ( Fl_Window *fenster, char   **xpm_daten )
+setzeIcon      ( Fl_Window *fenster, const char   **xpm_daten )
 {
 # if HAVE_X && !APPLE
   fl_open_display();
@@ -176,7 +176,7 @@ setzeIcon      ( Fl_Window *fenster, char   **xpm_daten )
 # if HAVE_Xpm
   XpmCreatePixmapFromData(  fl_display,
                             DefaultRootWindow(fl_display),
-                            xpm_daten,
+                            const_cast<char**> (xpm_daten),
                             &pm,
                             &mask,
                             NULL);

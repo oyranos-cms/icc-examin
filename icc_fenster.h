@@ -64,7 +64,7 @@ namespace icc_examin_ns {
      MyFl_Double_Window(int W, int H, const char* title = 0);
      ~MyFl_Double_Window (); 
 
-     static char ** icon;                   //!< Icon (X11 - xpm)
+     static const char** icon;              //!< Icon (X11 - xpm)
      static const char * my_xclass;         //!< Fl_Window::xclass string
      static MyFl_Double_Window *  main_win; //!< the main window
      MyFl_Double_Window * only_with;        //!< observed window (WM_TRANSIENT_FOR ?)

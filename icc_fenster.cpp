@@ -325,7 +325,7 @@ MyFl_Double_Window ** MyFl_Double_Window::list_ = NULL;
 MyFl_Double_Window  * MyFl_Double_Window::main_win = NULL;
 int                   MyFl_Double_Window::n_ = 0;
 int                   MyFl_Double_Window::ref_ = 0;
-char               ** MyFl_Double_Window::icon = NULL;
+const char         ** MyFl_Double_Window::icon = NULL;
 const char          * MyFl_Double_Window::my_xclass = NULL;
 
 MyFl_Double_Window::MyFl_Double_Window(int W, int H, const char* title)

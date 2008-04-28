@@ -77,7 +77,7 @@ void     dbgWriteUnLock              ( void )
 #endif
 }
 
-#define WRITE_DBG
+//#define WRITE_DBG
 void
 dbgWriteF (int code)
 {
