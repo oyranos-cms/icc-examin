@@ -24,7 +24,7 @@ LIBSONAME = lib$(TARGET)$(LIBMID).$(VERSION_A)$(LIBEXT)
 LIBSO = lib$(TARGET)$(LIBMID)$(LIBEXT)
 LIBFL_I18N = fl_i18n/libfl_i18n.a
 LIBBSP = bsp/libbsp.a
-LIBOYRANOS_EXTRA = -loyranos_alpha
+LIBOYRANOS_EXTRA =
 
 TOOLKIT_FILES = $(FLTK_CPPFILES)
 
@@ -311,7 +311,7 @@ static:	$(BINTARGET)
 	`$(fltkconfig) --use-gl --ldstaticflags` \
 	-L/opt/local/lib \
 	`oyranos-config --ld_x_staticflags` -L/$(libdir) \
-	-lftgl $(LIBBSP) `test -f /opt/local/lib/liboyranos_alpha.a && echo /opt/local/lib/liboyranos_alpha.a || echo -loyranos_alpha` \
+	-lftgl $(LIBBSP) \
 	`test -f /usr/X11R6/lib/libfreetype.a \
 	  && echo /usr/X11R6/lib/libfreetype.a || (test -f /usr/lib/libfreetype.a \
 	    && echo /usr/lib/libfreetype.a || echo -lfreetype)` \
