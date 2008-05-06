@@ -239,7 +239,9 @@ echo_=""; echo "$echo_" >> $CONF_LOG; echo "$echo_"
 UNAME_=`uname`
 OSUNAME=BSD
 if [ $? = 0 ] && [ $UNAME_ = "Darwin" ]; then
-  echo_="Darwin PPC              detected"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
+  arch=`uname -p`
+  version=`uname -r`
+  echo_="Darwin $arch $version   detected"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
   osuname="APPLE = 1"
   echo "#define APPLE 1" >> $CONF_H
   OSX_H=""

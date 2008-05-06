@@ -73,7 +73,7 @@ int main(int argc, char **argv) {
       o->color(FL_BACKGROUND_COLOR);
       o->selection_color(FL_BACKGROUND_COLOR);
       o->labeltype(FL_NORMAL_LABEL);
-      o->labelfont(0);
+      //o->labelfont(0);
       o->labelsize(14);
       o->labelcolor(FL_FOREGROUND_COLOR);
       o->align(FL_ALIGN_CENTER);
@@ -83,6 +83,7 @@ int main(int argc, char **argv) {
       o->menu(menu_);
     }
     o->end();
+    o->resizable(o);
   }
   /*fl_font( FL_COURIER, 24);
   
