@@ -562,7 +562,7 @@ uninstall:
 	echo ... $@ fertig
 
 bundle:	#static
-	echo bündeln ...
+	echo bundle ...
 	test -d ICC\ Examin.app/Contents/Resources/lib/color/cmms/ || mkdir -p ICC\ Examin.app/ ICC\ Examin.app/Contents/ ICC\ Examin.app/Contents/MacOS/ ICC\ Examin.app/Contents/Resources/  ICC\ Examin.app/Contents/Resources/bin/ ICC\ Examin.app/Contents/Resources/lib/color/cmms/ ICC\ Examin.app/Contents/Resources/share/
 	$(INSTALL) -m 644 Info.plist ICC\ Examin.app/Contents/Info.plist
 	$(INSTALL) -m 755 ICC\ Examin.sh ICC\ Examin.app/Contents/MacOS/ICC\ Examin
@@ -570,7 +570,7 @@ bundle:	#static
 	strip ICC\ Examin.app/Contents/MacOS/$(BINTARGET)
 	echo  Bibliotheken ...
 	for bib in jpeg png lcms dl intl iconv fltk freetype oyranos elektra; do \
-	  echo "bündele lib$${bib}$(LIBEXT) ..."; \
+	  echo "bundle lib$${bib}$(LIBEXT) ..."; \
       test -f $(libdir)/lib$${bib}$(LIBEXT) \
 		&& ($(COPY) -R $(libdir)/lib$${bib}*$(LIBEXT) 'ICC Examin.app/Contents/Resources/lib/' ) \
 		|| ( test -f /usr/X11R6/lib/lib$${bib}$(LIBEXT) \
@@ -582,11 +582,11 @@ bundle:	#static
 	  && $(INSTALL) -m 755 ~/bin/iccgamut ICC\ Examin.app/Contents/Resources/bin/ \
 	  || test -f iccgamut && $(INSTALL) -m 755 iccgamut ICC\ Examin.app/Contents/Resources/bin/ \
 	  || test -f $(bindir)/iccgamut && $(INSTALL) -m 755 $(bindir)/iccgamut ICC\ Examin.app/Contents/Resources/bin/ \
-	    || echo iccgamut nicht gefunden
+	    || echo iccgamut not found
 	$(INSTALL) -m 644 $(FONT) ICC\ Examin.app/Contents/Resources/share/
 	echo  Linguas ...
 	for ling in $(LINGUAS); do \
-	  echo "bündele po/$${ling}.gmo ..."; \
+	  echo "bundle po/$${ling}.gmo ..."; \
       test -f po/$${ling}.gmo \
 		&& (mkdir -p ICC\ Examin.app/Contents/Resources/locale/$${ling}/LC_MESSAGES; \
             $(INSTALL) -m 644 po/$${ling}.gmo ICC\ Examin.app/Contents/Resources/locale/$${ling}/LC_MESSAGES/$(TARGET).mo ) \
@@ -594,16 +594,16 @@ bundle:	#static
 	done;
 	test -f $(DESTDIR)$(datadir)/locale/de/LC_MESSAGES/oyranos.mo && \
 	  $(COPY) $(DESTDIR)$(datadir)/locale/de/LC_MESSAGES/oyranos.mo ICC\ Examin.app/Contents/Resources/locale/de/LC_MESSAGES || echo no Oyranos DE i18n;
-	echo ... bündeln beendet
+	echo ... bundling finished
 
 unbundle:
-	echo mache sauber $@ in $(DESTDIR) ...
+	echo cleaning $@ in $(DESTDIR) ...
 	$(RM) $(DESTDIR)ICC\ Examin.app/Contents/MacOS/*
 	$(RM) $(DESTDIR)ICC\ Examin.app/Contents/Resources/share/$(FONT)
 	$(RM) $(DESTDIR)ICC\ Examin.app/Contents/Resources/bin/*
 	$(RM) $(DESTDIR)ICC\ Examin.app/Contents/Resources/lib/*
 	$(RM) -R $(DESTDIR)ICC\ Examin.app/Contents/Resources/locale
-	echo ... $@ fertig
+	echo ... $@ done
 
 .PHONY: install pkg bundle uninstall unbundle unpkg
 

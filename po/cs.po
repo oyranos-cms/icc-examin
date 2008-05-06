@@ -1,0 +1,1957 @@
+# Czech translation of icc_examin
+# Copyright (c) 2008 Milan Knížek
+# First translator Milan Knizek <knizek@volny.cz>, 2008
+msgid ""
+msgstr ""
+"Project-Id-Version: icc_examin\n"
+"Report-Msgid-Bugs-To: ku.b@gmx.de\n"
+"POT-Creation-Date: 2008-04-28 06:20+0200\n"
+"PO-Revision-Date: 2008-04-18 15:36+0100\n"
+"Last-Translator: Milan Knížek <knizek@volny.cz>\n"
+"Language-Team: Czech <<cs@li.org>>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Czech\n"
+
+#: icc_oyranos_extern.c:131
+msgid "XYZ"
+msgstr "XYZ"
+
+#: icc_oyranos_extern.c:132
+msgid "Lab"
+msgstr "Lab"
+
+#: icc_oyranos_extern.c:133
+msgid "Luv"
+msgstr "Luv"
+
+#: icc_oyranos_extern.c:134
+msgid "YCbCr"
+msgstr "YCbCr"
+
+#: icc_oyranos_extern.c:135
+msgid "Yxy"
+msgstr "Yxy"
+
+#: icc_oyranos_extern.c:136
+msgid "Rgb"
+msgstr "Rgb"
+
+#: icc_oyranos_extern.c:137 icc_draw.cpp:670 icc_gl.cpp:2177 icc_waehler.h:128
+msgid "Gray"
+msgstr "Šedá stupnice"
+
+#: icc_oyranos_extern.c:138
+msgid "Hsv"
+msgstr "Hsv"
+
+#: icc_oyranos_extern.c:139
+msgid "Hls"
+msgstr "Hls"
+
+#: icc_oyranos_extern.c:140
+msgid "Cmyk"
+msgstr "Cmyk"
+
+#: icc_oyranos_extern.c:141
+msgid "Cmy"
+msgstr "Cmy"
+
+#: icc_oyranos_extern.c:142
+msgid "2color"
+msgstr "2-barevný"
+
+#: icc_oyranos_extern.c:143
+msgid "3color"
+msgstr "3-barevný"
+
+#: icc_oyranos_extern.c:144
+msgid "4color"
+msgstr "4-barevný"
+
+#: icc_oyranos_extern.c:146
+msgid "5color"
+msgstr "5-barevný"
+
+#: icc_oyranos_extern.c:148
+msgid "6color"
+msgstr "6-barevný"
+
+#: icc_oyranos_extern.c:150
+msgid "7color"
+msgstr "7-barevný"
+
+#: icc_oyranos_extern.c:152
+msgid "8color"
+msgstr "8-barevný"
+
+#: icc_oyranos_extern.c:154
+msgid "9color"
+msgstr "9-barevný"
+
+#: icc_oyranos_extern.c:156
+msgid "10color"
+msgstr "10-barevný"
+
+#: icc_oyranos_extern.c:158
+msgid "11color"
+msgstr "11-barevný"
+
+#: icc_oyranos_extern.c:160
+msgid "12color"
+msgstr "12-barevný"
+
+#: icc_oyranos_extern.c:162
+msgid "13color"
+msgstr "13-barevný"
+
+#: icc_oyranos_extern.c:164
+msgid "14color"
+msgstr "14-barevný"
+
+#: icc_oyranos_extern.c:166
+msgid "15color"
+msgstr "15-barevný"
+
+#: agviewer.cpp:310 icc_gl.cpp:3279 icc_gl.cpp:3298 icc_gl.cpp:3417
+msgid "left-/middle-/right mouse button -> rotate/cut/menu"
+msgstr "levé/prostřední/pravé tlačítko myši -> rotovat/vystřihnout/menu"
+
+#: agviewer.cpp:323
+msgid "Pause"
+msgstr "Pozastavit"
+
+#: agviewer.cpp:347 agviewer.cpp:355 icc_gl.cpp:3383 icc_gl.cpp:3394
+#: icc_gl.cpp:3399 icc_gl.cpp:3404
+msgid "left mouse button -> go back"
+msgstr "levé tlačítko myši -> jít zpět"
+
+#: icc_draw.cpp:243
+msgid " used too early!"
+msgstr " použito příliš brzy!"
+
+#: icc_draw.cpp:651
+msgid "unknown Colour"
+msgstr "neznámá barva"
+
+#: icc_draw.cpp:660 icc_draw.cpp:671 icc_helfer.cpp:414
+#: icc_profile_tags.cpp:481 icc_helfer_osx.cpp:68 icc_helfer_x.cpp:64
+msgid "Red"
+msgstr "Červená"
+
+#: icc_draw.cpp:663 icc_draw.cpp:673 icc_helfer.cpp:415
+#: icc_profile_tags.cpp:482 icc_helfer_osx.cpp:69 icc_helfer_x.cpp:65
+msgid "Green"
+msgstr "Zelená"
+
+#: icc_draw.cpp:666 icc_draw.cpp:675 icc_helfer.cpp:416
+#: icc_profile_tags.cpp:483 icc_helfer_osx.cpp:70 icc_helfer_x.cpp:66
+msgid "Blue"
+msgstr "Modrá"
+
+#: icc_draw.cpp:677 icc_helfer.cpp:424 icc_helfer.cpp:428
+msgid "Cyan"
+msgstr "Azurová"
+
+#: icc_draw.cpp:679 icc_helfer.cpp:425 icc_helfer.cpp:429
+msgid "Magenta"
+msgstr "Fialová"
+
+#: icc_draw.cpp:681 icc_helfer.cpp:426 icc_helfer.cpp:430
+msgid "Yellow"
+msgstr "Žlutá"
+
+#: icc_draw.cpp:683 icc_gl.cpp:2179 icc_helfer.cpp:417 icc_helfer.cpp:427
+msgid "Black"
+msgstr "Černá"
+
+#: icc_draw.cpp:685 icc_helfer.cpp:613
+msgid "Luminance"
+msgstr "Jas"
+
+#: icc_draw.cpp:687 icc_helfer.cpp:408
+msgid "Luminance Y"
+msgstr "Jas Y"
+
+#: icc_draw.cpp:689 icc_helfer.cpp:399
+msgid "CIE X"
+msgstr "CIE X"
+
+#: icc_draw.cpp:691 icc_helfer.cpp:400 icc_helfer.cpp:411
+msgid "CIE Y (Luminance)"
+msgstr "CIE Y (Jas)"
+
+#: icc_draw.cpp:693 icc_helfer.cpp:401
+msgid "CIE Z"
+msgstr "CIE Z"
+
+#: icc_draw.cpp:695 icc_helfer.cpp:422
+msgid "Lightness"
+msgstr "Světlost"
+
+#: icc_draw.cpp:697 icc_helfer.cpp:420
+msgid "Value"
+msgstr "Hodnota"
+
+#: icc_draw.cpp:699 icc_examin_farbraum.cpp:386 icc_examin_io.cpp:320
+#: icc_helfer.cpp:402 icc_helfer.cpp:405
+msgid "CIE *L"
+msgstr "CIE *L"
+
+#: icc_draw.cpp:701 icc_examin_farbraum.cpp:387 icc_examin_io.cpp:321
+#: icc_gl.cpp:1036 icc_gl.cpp:1110 icc_gl.cpp:1136 icc_gl.cpp:1144
+#: icc_helfer.cpp:403
+msgid "CIE *a"
+msgstr "CIE *a"
+
+#: icc_draw.cpp:703 icc_examin_farbraum.cpp:388 icc_examin_io.cpp:322
+#: icc_gl.cpp:1049 icc_gl.cpp:1152 icc_gl.cpp:1172 icc_gl.cpp:1179
+#: icc_helfer.cpp:404
+msgid "CIE *b"
+msgstr "CIE *b"
+
+#: icc_draw.cpp:705 icc_helfer.cpp:409
+msgid "Colour b"
+msgstr "Barva b"
+
+#: icc_draw.cpp:707 icc_helfer.cpp:410
+msgid "Colour r"
+msgstr "Barva r"
+
+#: icc_draw.cpp:746 icc_draw.cpp:807
+msgid " with "
+msgstr " s"
+
+#: icc_draw.cpp:746 icc_draw.cpp:807
+msgid " points"
+msgstr " bodů"
+
+#: icc_draw.cpp:753
+msgid " with Gamma: 1.0"
+msgstr " s gama: 1.0"
+
+#: icc_draw.cpp:766 icc_draw.cpp:785
+msgid " with one entry for gamma: "
+msgstr " s jedním vstupem pro gama:"
+
+#: icc_examin.cpp:95
+#, c-format
+msgid "WARNING"
+msgstr ""
+
+#: icc_examin.cpp:100
+#, c-format
+msgid "!!! ERROR"
+msgstr ""
+
+#: icc_examin.cpp:238
+msgid "Gamut selector"
+msgstr "Volba gamutu"
+
+#: icc_examin.cpp:328 icc_examin.cpp:1251
+msgid "loaded"
+msgstr "načteno"
+
+#: icc_examin.cpp:334
+msgid "Ready"
+msgstr "Připraveno"
+
+#: icc_examin.cpp:383
+msgid ""
+"ICC colour profiles (*.{I,i}{C,c}{M,m,C,c})\tMeasurement (*.{txt,it8,IT8,RGB,"
+"CMYK,ti*,cgats,CIE,cie,nCIE,oRPT,DLY,LAB,Q60})\tArgyll Gamuts (*.{wrl,vrml}"
+msgstr ""
+"ICC barvové profily (*.{I,i}{C,c}{M,m,C,c})\tMěření (*.{txt,it8,IT8,RGB,CMYK,"
+"ti*,cgats,CIE,cie,nCIE,oRPT,DLY,LAB,Q60})\tGamuty Argyll (*.{wrl,vrml}"
+
+#: icc_examin.cpp:383
+msgid "Which ICC profile?"
+msgstr "Který ICC profil?"
+
+#: icc_examin.cpp:780 icc_examin.cpp:783
+msgid "Compare Measurement <-> Profile Colours"
+msgstr "Porovnat Měření <-> Barvy profilu"
+
+#: icc_examin.cpp:782
+msgid "none"
+msgstr "žádný"
+
+#: icc_examin.cpp:800 icc_examin.cpp:804
+msgid "Gamut View"
+msgstr "Zobrazení gamutu"
+
+#: icc_examin.cpp:855 icc_gl.h:274
+msgid "not available"
+msgstr "není k dispozici"
+
+#: icc_examin.cpp:1191
+msgid "Filename (ICC data type)"
+msgstr "Název souboru (ICC typ)"
+
+#: icc_examin.cpp:1194
+msgid "Filename (other data type)"
+msgstr "Jméno souboru (jiný typ)"
+
+#: icc_examin.cpp:1196
+msgid "Filename (corrupted ICC data type)"
+msgstr "Jméno souboru (porušený typ ICC dat)"
+
+#: icc_examin.cpp:1201
+msgid "found no content for"
+msgstr "nenalezen žádný obsah pro"
+
+#: icc_examin.cpp:1204
+msgid "Internal error"
+msgstr "Interní chyba"
+
+#: icc_examin.cpp:1207
+msgid "No. Tag   Type   Size Description"
+msgstr "Č.  Tag  Typ   Vel. Popis"
+
+#: icc_examin_io.cpp:328
+msgid "no net found in VRML file"
+msgstr "nenalezena žádná síť ve VRML souboru"
+
+#: icc_examin_io.cpp:372
+msgid "no net found. Is Argyll installed?"
+msgstr "nenalezena žádná síť. Je nainstalován Argyll?"
+
+#: icc_examin_io.cpp:557
+msgid "Stop loading "
+msgstr "Zastavit načítání"
+
+#: icc_examin_io.cpp:667
+msgid "HTML Documents (*.htm*)"
+msgstr "HTML Dokumenty (*.htm*)"
+
+#: icc_examin_io.cpp:671 icc_betrachter.cxx:624
+msgid "Save Report"
+msgstr "Uložit report"
+
+#: icc_examin_io.cpp:743
+msgid "ICC colour profiles (*.ic*)"
+msgstr "ICC barvové profily (*.ic*)"
+
+#: icc_examin_io.cpp:744 icc_betrachter.cxx:625
+msgid "Save Gamut as Profile"
+msgstr "Uložit gamut jako profil"
+
+#: icc_examin_io.cpp:746
+msgid "VRML Files (*.wrl)"
+msgstr "VRML soubory (*.wrl)"
+
+#: icc_examin_io.cpp:747 icc_betrachter.cxx:626
+msgid "Save Gamut as VRML"
+msgstr "Uložit gamut jako VRML"
+
+#: icc_examin_tagwahl.cpp:59
+msgid "empty"
+msgstr "prázdné"
+
+#: icc_examin_tagwahl.cpp:157
+msgid "RGB primaries"
+msgstr "RGB primární barvy"
+
+#: icc_fenster.cpp:227
+msgid "Log:"
+msgstr ""
+
+#: icc_fenster.cpp:229 icc_fenster.cpp:293 icc_betrachter.cxx:770
+msgid "Yes"
+msgstr "Ano"
+
+#: icc_fenster.cpp:290
+msgid "Information:"
+msgstr "Informace:"
+
+#: icc_gl.cpp:745 icc_gl.cpp:748 icc_gl.cpp:755 icc_gl.cpp:766 icc_gl.cpp:770
+#: icc_gl.cpp:785
+msgid "Could not open font in:"
+msgstr "Nemohu načíst písmo v:"
+
+#: icc_gl.cpp:877
+#, c-format
+msgid "0,0,0"
+msgstr "0,0,0"
+
+#: icc_gl.cpp:2145 icc_gl.cpp:2155 icc_gl.cpp:2158 icc_gl.cpp:2160
+#: icc_gl.cpp:2163 icc_gl.cpp:2165
+msgid "Slice"
+msgstr "Řez"
+
+#: icc_gl.cpp:2146
+msgid "Rotate around slice"
+msgstr "Rotovat okolo řezu"
+
+#: icc_gl.cpp:2167
+msgid "Rotate around"
+msgstr "Rotovat dokola"
+
+#: icc_gl.cpp:2167
+msgid "axis"
+msgstr "osa"
+
+#: icc_gl.cpp:2172
+msgid "Slice plane"
+msgstr "Rovina řezu"
+
+#: icc_gl.cpp:2175
+msgid "White"
+msgstr "Bílá"
+
+#: icc_gl.cpp:2176
+msgid "Light gray"
+msgstr "Světlá šeď"
+
+#: icc_gl.cpp:2178
+msgid "Dark gray"
+msgstr "Tmavá šeď"
+
+#: icc_gl.cpp:2182
+msgid "Background colour"
+msgstr "Barva pozadí"
+
+#: icc_gl.cpp:2187
+msgid "gray"
+msgstr "šedé"
+
+#: icc_gl.cpp:2188
+msgid "coloured"
+msgstr "barevné"
+
+#: icc_gl.cpp:2189
+msgid "high contrast"
+msgstr "vysoký kontrast"
+
+#: icc_gl.cpp:2191
+msgid "Onion skins"
+msgstr ""
+
+#: icc_gl.cpp:2192
+msgid "Colour line"
+msgstr "Barevná čára"
+
+#: icc_gl.cpp:2197
+msgid "Sphere 1dE"
+msgstr "Koule 1dE"
+
+#: icc_gl.cpp:2198
+msgid "Sphere 2dE"
+msgstr "Koule 2dE"
+
+#: icc_gl.cpp:2199
+msgid "Sphere 4dE"
+msgstr "Koule 4dE"
+
+#: icc_gl.cpp:2202
+msgid "Star"
+msgstr "Hvězda"
+
+#: icc_gl.cpp:2205
+msgid "Point"
+msgstr "Bod"
+
+#: icc_gl.cpp:2208
+msgid "without markers"
+msgstr "bez značek"
+
+#: icc_gl.cpp:2209
+msgid "Spektral line"
+msgstr "Spektrální čára"
+
+#: icc_gl.cpp:2212
+msgid "Texts"
+msgstr "Texty"
+
+#: icc_gl.cpp:2214
+msgid "Texts/Arrows on/off"
+msgstr "Texty/Šipky zap./vyp."
+
+#: icc_gl.cpp:2216
+msgid "Illustration"
+msgstr "Ilustrace"
+
+#: icc_gl.cpp:2569
+msgid "Pos"
+msgstr "Poz."
+
+#: icc_gl.cpp:2658 icc_profile_tags.cpp:320
+msgid "Channel"
+msgstr "Kanál"
+
+#: icc_helfer.cpp:258 icc_betrachter.cxx:410
+msgid "Photometric"
+msgstr "Fotometrický"
+
+#: icc_helfer.cpp:261 icc_betrachter.cxx:411
+msgid "Relative Colorimetric"
+msgstr "Relativní fotometrický"
+
+#: icc_helfer.cpp:264 icc_helfer.cpp:419 icc_helfer.cpp:423
+msgid "Saturation"
+msgstr "Sytost"
+
+#: icc_helfer.cpp:267 icc_betrachter.cxx:412
+msgid "Absolute Colorimetric"
+msgstr "Absolutní fotometrický"
+
+#: icc_helfer.cpp:394 icc_profile_tags.cpp:1232 icc_profile_tags.cpp:1239
+msgid "Colour"
+msgstr "Barva"
+
+#: icc_helfer.cpp:406
+msgid "CIE *u"
+msgstr "CIE *u"
+
+#: icc_helfer.cpp:407
+msgid "CIE *v"
+msgstr "CIE *v"
+
+#: icc_helfer.cpp:412
+msgid "CIE x"
+msgstr "CIE x"
+
+#: icc_helfer.cpp:413
+msgid "CIE y"
+msgstr "CIE y"
+
+#: icc_helfer.cpp:418 icc_helfer.cpp:421
+msgid "Hue"
+msgstr "Odstín"
+
+#: icc_helfer.cpp:445
+msgid "No Colour"
+msgstr "Bez barvy"
+
+#: icc_helfer.cpp:461
+msgid "Input"
+msgstr "Vstup"
+
+#: icc_helfer.cpp:462
+msgid "Display"
+msgstr "Displej"
+
+#: icc_helfer.cpp:463
+msgid "Output"
+msgstr "Výstup"
+
+#: icc_helfer.cpp:464
+msgid "Link"
+msgstr "Vazba"
+
+#: icc_helfer.cpp:465
+msgid "Abstract"
+msgstr "Výtah"
+
+#: icc_helfer.cpp:466 icc_profile.cpp:909
+msgid "Colour Space"
+msgstr "Barvový prostor"
+
+#: icc_helfer.cpp:467 icc_helfer.cpp:617
+msgid "Named Colour"
+msgstr "Pojmenovaná barva"
+
+#: icc_helfer.cpp:489
+msgid "Macintosh"
+msgstr "Macintosh"
+
+#: icc_helfer.cpp:490
+msgid "Microsoft"
+msgstr "Microsoft"
+
+#: icc_helfer.cpp:491
+msgid "Solaris"
+msgstr "Solaris"
+
+#: icc_helfer.cpp:492
+msgid "SGI"
+msgstr "SGI"
+
+#: icc_helfer.cpp:493
+msgid "Taligent"
+msgstr "Taligent"
+
+#: icc_helfer.cpp:592
+msgid "Description"
+msgstr "Popis"
+
+#: icc_helfer.cpp:595
+#, fuzzy
+msgid "Lookup table, device to PCS, intent photometric"
+msgstr "Vyhledávací tabulka, zařízení do PCS, záměr fotometrický"
+
+#: icc_helfer.cpp:596
+#, fuzzy
+msgid "Lookup table, device to PCS, intent relative colorimetric"
+msgstr "Vyhledávací tabulka, zařízení do PCS, záměr relativní fotometrický"
+
+#: icc_helfer.cpp:597
+#, fuzzy
+msgid "Lookup table, device to PCS, intent saturation"
+msgstr "Vyhledávací tabulka, zařízení do PCS, záměr sytosti"
+
+#: icc_helfer.cpp:598
+msgid "Blue Colorant"
+msgstr "Modrý kolorant"
+
+#: icc_helfer.cpp:599
+msgid "Blue tone reproduction curve"
+msgstr "Křivka reprodukce modrých tónů"
+
+#: icc_helfer.cpp:600
+#, fuzzy
+msgid "Lookup table, PCS to device, intent photometric"
+msgstr "Vyhledávací tabulka, PCS do zařízení, záměr fotometrický"
+
+#: icc_helfer.cpp:601
+#, fuzzy
+msgid "Lookup table, PCS to device, intent relative colorimetric"
+msgstr "Vyhledávací tabulka, PCS do zařízení, záměr relativní fotometrický"
+
+#: icc_helfer.cpp:602
+#, fuzzy
+msgid "Lookup table, PCS to device, intent saturation"
+msgstr "Vyhledávací tabulka, PCS do zařízení, záměr sytosti"
+
+#: icc_helfer.cpp:603
+msgid "Calibration date"
+msgstr "Datum kalibrace"
+
+#: icc_helfer.cpp:604
+msgid "Colour measurement data"
+msgstr "Data z barvového měření"
+
+#: icc_helfer.cpp:605
+msgid "Copyright"
+msgstr "Copyright"
+
+#: icc_helfer.cpp:606
+msgid "crdi"
+msgstr ""
+
+#: icc_helfer.cpp:607
+msgid "Device manufacturerer description"
+msgstr "Popis výrobce zařízení"
+
+#: icc_helfer.cpp:608
+msgid "Device model description"
+msgstr "Popis modelu zařízení"
+
+#: icc_helfer.cpp:609
+msgid "gamut"
+msgstr "gamut"
+
+#: icc_helfer.cpp:610
+msgid "Gray tone reproduction curve"
+msgstr "Křivka reprodukce šedých tónů"
+
+#: icc_helfer.cpp:611
+msgid "Green Colorant"
+msgstr "Zelený kolorant"
+
+#: icc_helfer.cpp:612
+msgid "Green tone reproduction curve"
+msgstr "Křivka reprodukce zelených tónů"
+
+#: icc_helfer.cpp:614
+msgid "Measurement"
+msgstr "Měření"
+
+#: icc_helfer.cpp:615
+msgid "Media black point"
+msgstr "Černý bod média"
+
+#: icc_helfer.cpp:616
+msgid "Media white point"
+msgstr "Bílý bod média"
+
+#: icc_helfer.cpp:618
+msgid "Named Colour 2"
+msgstr "Pojmenovaná barva 2"
+
+#: icc_helfer.cpp:619
+msgid "Preview, photografic"
+msgstr "Náhled, fotografický"
+
+#: icc_helfer.cpp:620
+msgid "Preview, relative colorimetric"
+msgstr "Náhled, relativní kolorimetrický"
+
+#: icc_helfer.cpp:621
+msgid "Preview, saturated"
+msgstr "Náhled, sytost"
+
+#: icc_helfer.cpp:622
+msgid "Profile description"
+msgstr "Popis profilu"
+
+#: icc_helfer.cpp:623
+msgid "Profile description, multilingual"
+msgstr "Popis profilu, vícejazyčný"
+
+#: icc_helfer.cpp:624
+msgid "Profile sequence description"
+msgstr "Popis sekvence profilu"
+
+#: icc_helfer.cpp:625
+msgid "psd0"
+msgstr ""
+
+#: icc_helfer.cpp:626
+msgid "psd1"
+msgstr ""
+
+#: icc_helfer.cpp:627
+msgid "psd2"
+msgstr ""
+
+#: icc_helfer.cpp:628
+msgid "psd3"
+msgstr ""
+
+#: icc_helfer.cpp:629
+msgid "ps2s"
+msgstr ""
+
+#: icc_helfer.cpp:630
+msgid "ps2i"
+msgstr ""
+
+#: icc_helfer.cpp:631
+msgid "Red Colorant"
+msgstr "Červený kolorant"
+
+#: icc_helfer.cpp:632
+msgid "Red tone reproduction curve"
+msgstr "Křivka reprodukce červených tónů"
+
+#: icc_helfer.cpp:633
+msgid "scrd"
+msgstr ""
+
+#: icc_helfer.cpp:634
+msgid "scrn"
+msgstr ""
+
+#: icc_helfer.cpp:635
+msgid "Technologie"
+msgstr "Technologie"
+
+#: icc_helfer.cpp:636
+msgid "bfd"
+msgstr ""
+
+#: icc_helfer.cpp:637
+msgid "Viewing conditions description"
+msgstr "Popis pozorovacích podmínek"
+
+#: icc_helfer.cpp:638
+msgid "Viewing Conditions"
+msgstr "Pozorovací podmínky"
+
+#: icc_helfer.cpp:639
+msgid "Device colours"
+msgstr "Barvy zařízení"
+
+#: icc_helfer.cpp:640
+msgid "Measured colours"
+msgstr "Změřené barvy"
+
+#: icc_helfer.cpp:641
+msgid "Profiling parameters"
+msgstr "Parametry profilování"
+
+#: icc_helfer.cpp:642
+msgid "VideoCardGammaTable"
+msgstr "VideoCardGammaTable"
+
+#: icc_helfer.cpp:643
+msgid "Colour adaption matrix"
+msgstr "Matice přizpůsobení barev"
+
+#: icc_helfer.cpp:644
+msgid "Chromaticity"
+msgstr "Chromaticita"
+
+#: icc_helfer.cpp:645
+msgid "Named colour order"
+msgstr "Pořadí pojmenovaných barev"
+
+#: icc_helfer.cpp:646
+msgid "Named colour names"
+msgstr "Jména pojmenovaných barev"
+
+#: icc_helfer.cpp:647 icc_helfer.cpp:739
+msgid "----"
+msgstr "----"
+
+#: icc_helfer.cpp:717
+msgid "Digital camera"
+msgstr "Digitální fotoaparát"
+
+#: icc_helfer.cpp:718
+msgid "Film scanner"
+msgstr "Filmový skener"
+
+#: icc_helfer.cpp:719
+msgid "Reflective scanner"
+msgstr "Odrazný skener"
+
+#: icc_helfer.cpp:720
+msgid "InkJet printer"
+msgstr "Inkoustová tiskárna"
+
+#: icc_helfer.cpp:721
+msgid "Thermal wax printer"
+msgstr "Tepelná vosková tiskárna"
+
+#: icc_helfer.cpp:722
+msgid "Electrophotographic printer"
+msgstr "Elektrofotografická tiskárna"
+
+#: icc_helfer.cpp:723
+msgid "Electrostatic printer"
+msgstr "Elektrostatická tiskárna"
+
+#: icc_helfer.cpp:724
+msgid "Dye sublimation printer"
+msgstr "Sublimační tiskárna"
+
+#: icc_helfer.cpp:725
+msgid "Photographic paper printer"
+msgstr "Tiskárna na fotografický papír"
+
+#: icc_helfer.cpp:726
+msgid "Film writer"
+msgstr "Zapisovač na film"
+
+#: icc_helfer.cpp:727
+msgid "Video Monitor"
+msgstr "Video monitor"
+
+#: icc_helfer.cpp:728
+msgid "Video camera"
+msgstr "Video kamera"
+
+#: icc_helfer.cpp:729
+msgid "Projection Television"
+msgstr "Projekční televize"
+
+#: icc_helfer.cpp:730
+msgid "Cathode ray tube display"
+msgstr "CRT obrazovka"
+
+#: icc_helfer.cpp:731
+msgid "Passive matrix monitor"
+msgstr "Monitor s pasívní maticí"
+
+#: icc_helfer.cpp:732
+msgid "Active matrix monitor"
+msgstr "Monitor s aktivní maticí"
+
+#: icc_helfer.cpp:733
+msgid "Photo CD"
+msgstr "Photo CD"
+
+#: icc_helfer.cpp:734
+msgid "PhotoImageSetter"
+msgstr "PhotoImageSetter"
+
+#: icc_helfer.cpp:735
+msgid "Gravure"
+msgstr "Gravura"
+
+#: icc_helfer.cpp:736
+msgid "Offset Lithography"
+msgstr "Offsetová litografie"
+
+#: icc_helfer.cpp:737
+msgid "Silkscreen"
+msgstr ""
+
+#: icc_helfer.cpp:738
+msgid "Flexography"
+msgstr "Flexografie"
+
+#: icc_helfer.cpp:761
+msgid "ITU-R BT.709"
+msgstr "ITU-R BT.709"
+
+#: icc_helfer.cpp:762
+msgid "SMPTE RP145-1994"
+msgstr "SMPTE RP145-1994"
+
+#: icc_helfer.cpp:763
+msgid "EBU Tech.3213-E"
+msgstr "EBU Tech.3213-E"
+
+#: icc_helfer.cpp:764
+msgid "P22"
+msgstr "P22"
+
+#: icc_helfer.cpp:766 icc_helfer.cpp:790 icc_helfer.cpp:810 icc_helfer.cpp:828
+#: icc_helfer.cpp:845
+msgid "???"
+msgstr "???"
+
+#: icc_helfer.cpp:779
+msgid "Illuminant unknown"
+msgstr "Iluminant neznámý"
+
+#: icc_helfer.cpp:780
+msgid "Illuminant D50"
+msgstr "Iluminant D50"
+
+#: icc_helfer.cpp:781
+msgid "Illuminant D65"
+msgstr "Iluminant D65"
+
+#: icc_helfer.cpp:782
+msgid "Illuminant D93"
+msgstr "Iluminant D93"
+
+#: icc_helfer.cpp:783
+msgid "Illuminant F2"
+msgstr "Iluminant F2"
+
+#: icc_helfer.cpp:784
+msgid "Illuminant D55"
+msgstr "Iluminant D55"
+
+#: icc_helfer.cpp:785
+msgid "Illuminant A"
+msgstr "Iluminant A"
+
+#: icc_helfer.cpp:786
+msgid "Illuminant with equal energy E"
+msgstr "Iluminant s rovnoměrnou energií E"
+
+#: icc_helfer.cpp:787
+msgid "Illuminant F8"
+msgstr "Iluminant F8"
+
+#: icc_helfer.cpp:788
+msgid "Illuminant ---"
+msgstr "Iluminant ---"
+
+#: icc_helfer.cpp:803 icc_helfer.cpp:823
+msgid "unknown"
+msgstr "neznámý"
+
+#: icc_helfer.cpp:804
+msgid "2 degree (1931)"
+msgstr "2 stupňový (1931)"
+
+#: icc_helfer.cpp:806
+msgid "10 degree (1964)"
+msgstr "10 stupňový (1964)"
+
+#: icc_helfer.cpp:808 icc_helfer.cpp:826 icc_helfer.cpp:843
+msgid "---"
+msgstr "---"
+
+#: icc_helfer.cpp:824
+msgid "0/45, 45/0"
+msgstr "0/45, 45/0"
+
+#: icc_helfer.cpp:825
+msgid "0/d or d/0"
+msgstr "0/d nebo d/0"
+
+#: icc_helfer.cpp:841
+msgid "0"
+msgstr "0"
+
+#: icc_helfer.cpp:842
+msgid "100"
+msgstr "100"
+
+#: icc_helfer.cpp:862
+msgid "o'clock"
+msgstr "hodin"
+
+#: icc_helfer.cpp:863
+msgid "seconds"
+msgstr "vteřin"
+
+#: icc_helfer.cpp:1241
+msgid "Monitor Profile"
+msgstr "Profil monitoru"
+
+#: icc_helfer.cpp:1268
+msgid "file size 0 for "
+msgstr "velikost souboru 8 pro"
+
+#: icc_kette.cpp:195
+msgid "noName"
+msgstr "beze jména"
+
+#: icc_kette.cpp:212
+msgid "File not loaded!"
+msgstr "Soubor nenačten!"
+
+#: icc_measurement.cpp:926
+msgid "use sRGB"
+msgstr "použít sRGB"
+
+#: icc_measurement.cpp:1226
+msgid "Report about ICC profile"
+msgstr "Report o ICC profilu"
+
+#: icc_measurement.cpp:1264
+msgid "Meas colour"
+msgstr "Změřené barvy"
+
+#: icc_measurement.cpp:1266
+msgid "Profile colour"
+msgstr "Barvy profilu"
+
+#: icc_measurement.cpp:1343
+msgid "no measurment data or correct profile conversion available"
+msgstr "žádná změřená data nebo nemožná konverze profilu"
+
+#: icc_measurement.cpp:1351
+msgid "Measurment- and profile colours from <b>"
+msgstr "Změřené barvy a barvy profilu z <b>"
+
+#: icc_measurement.cpp:1353
+msgid "RGB"
+msgstr "RGB"
+
+#: icc_measurement.cpp:1355
+msgid "CMYK"
+msgstr "CMYK"
+
+#: icc_measurement.cpp:1356
+msgid "</b> Measurement"
+msgstr "</b> měření"
+
+#: icc_measurement.cpp:1358
+msgid "CMM: <b>lcms</b>"
+msgstr "CMM: <b>lcms</b>"
+
+#: icc_measurement.cpp:1360
+msgid "averaging deviations (dE CIE*Lab):<b> "
+msgstr "průměrované odchylky (dE CIE*Lab):<b> "
+
+#: icc_measurement.cpp:1360
+msgid "</b>  maximum: "
+msgstr "</b>  maximum: "
+
+#: icc_measurement.cpp:1360
+msgid "  minimum: "
+msgstr "  minimum: "
+
+#: icc_measurement.cpp:1360
+msgid "  (dE CIE 2000) averaging: "
+msgstr "  (dE CIE 2000) průměry: "
+
+#: icc_measurement.cpp:1360
+msgid "  maximum: "
+msgstr "  maximum: "
+
+#: icc_measurement.cpp:1390
+msgid "Measurement patch"
+msgstr "Měřený vzorek"
+
+#: icc_measurement.cpp:1391
+msgid "dE Lab"
+msgstr "dE Lab"
+
+#: icc_measurement.cpp:1392
+msgid "dE2000"
+msgstr "dE2000"
+
+#: icc_measurement.cpp:1393
+msgid "L"
+msgstr "L"
+
+#: icc_measurement.cpp:1394
+msgid "a"
+msgstr "a"
+
+#: icc_measurement.cpp:1395
+msgid "b"
+msgstr "b"
+
+#: icc_measurement.cpp:1396
+msgid "L'"
+msgstr "L'"
+
+#: icc_measurement.cpp:1397
+msgid "a'"
+msgstr "a'"
+
+#: icc_measurement.cpp:1398
+msgid "b'"
+msgstr "b'"
+
+#: icc_measurement.cpp:1399 my_file_chooser.cxx:276
+msgid "X"
+msgstr "X"
+
+#: icc_measurement.cpp:1400 icc_measurement.cpp:1414
+msgid "Y"
+msgstr "Y"
+
+#: icc_measurement.cpp:1401
+msgid "Z"
+msgstr "Z"
+
+#: icc_measurement.cpp:1403
+msgid "X'"
+msgstr "X'"
+
+#: icc_measurement.cpp:1404
+msgid "Y'"
+msgstr "Y'"
+
+#: icc_measurement.cpp:1405
+msgid "Z'"
+msgstr "Z'"
+
+#: icc_measurement.cpp:1408
+msgid "R"
+msgstr "R"
+
+#: icc_measurement.cpp:1409
+msgid "G"
+msgstr "G"
+
+#: icc_measurement.cpp:1410
+msgid "B"
+msgstr "B"
+
+#: icc_measurement.cpp:1412
+msgid "C"
+msgstr "C"
+
+#: icc_measurement.cpp:1413
+msgid "M"
+msgstr "M"
+
+#: icc_measurement.cpp:1415
+msgid "K"
+msgstr "K"
+
+#: icc_oyranos.cpp:172
+msgid "WARNING: Could not load corrupt or damaged profile."
+msgstr "Varování: nelze načíst poškozený profil."
+
+#: icc_oyranos.cpp:178 icc_oyranos.cpp:381 icc_oyranos.cpp:387
+#: icc_oyranos.cpp:433 icc_oyranos.cpp:439 icc_oyranos.cpp:478
+#: icc_oyranos.cpp:484
+msgid "WARNING: Could not load profile."
+msgstr "Varování: Nelze načíst profil."
+
+#: icc_oyranos.cpp:614 icc_profile_header.cpp:250 icc_helfer_x.cpp:180
+msgid "Manufacturer:"
+msgstr "Výrobce:     "
+
+#: icc_oyranos.cpp:620
+msgid "Model:"
+msgstr "Model:"
+
+#: icc_oyranos.cpp:626
+msgid "Serial:"
+msgstr "Série:"
+
+#: icc_oyranos.cpp:1226 icc_vrml.cpp:151
+msgid "Std-exception occured: "
+msgstr "Nastala std. výjimka:"
+
+#: icc_oyranos.cpp:1229 icc_vrml.cpp:154
+msgid "Huch, unknown exception"
+msgstr "Uf, neznámá výjimka"
+
+#: icc_profile.cpp:172 icc_profile.cpp:190
+msgid "no profile"
+msgstr "žádný profil"
+
+#: icc_profile.cpp:172
+msgid "Size"
+msgstr "Velikost"
+
+#: icc_profile.cpp:255
+msgid "wrong tag size in profile "
+msgstr "chybná velikost tagu v profilu"
+
+#: icc_profile.cpp:270
+msgid "tag list is corrupted for tag"
+msgstr "Seznam tagů je poškozen u tagu"
+
+#: icc_profile.cpp:270
+msgid "not inside memory block"
+msgstr "ne uvnitř bloku paměti"
+
+#: icc_profile.cpp:420 icc_profile.cpp:450
+msgid " typ - no text output"
+msgstr "typ - žádný textový výstup"
+
+#: icc_profile.cpp:845
+msgid "Work Space"
+msgstr "Pracovní prostor"
+
+#: icc_profile.cpp:859
+msgid "Your"
+msgstr "Váš"
+
+#: icc_profile.cpp:860
+msgid "Profile\" is designed for an other device"
+msgstr "Profil\" je navržen pro jiné zařízení"
+
+#: icc_profile.cpp:865
+msgid "Separation"
+msgstr "Separace"
+
+#: icc_profile.cpp:878 icc_profile.cpp:901
+msgid "Device class"
+msgstr "Třída zařízení"
+
+#: icc_profile.cpp:880 icc_profile.cpp:903 icc_profile.cpp:911
+msgid "is not valid for an"
+msgstr "není platná pro"
+
+#: icc_profile.cpp:882 icc_profile.cpp:905
+msgid "Profile\"."
+msgstr "Profil\"."
+
+#: icc_profile.cpp:888
+msgid "Linearisation"
+msgstr "Linearizace"
+
+#: icc_profile.cpp:913
+msgid "Profile at the moment\"."
+msgstr "Profil v tento okamžik\"."
+
+#: icc_profile_header.cpp:115
+msgid "Transparent, "
+msgstr "Průhledný,"
+
+#: icc_profile_header.cpp:117
+msgid "Reflective, "
+msgstr "Odrazný,"
+
+#: icc_profile_header.cpp:120
+msgid "matte, "
+msgstr "matný,"
+
+#: icc_profile_header.cpp:122
+msgid "glossy, "
+msgstr "lesklý,"
+
+#: icc_profile_header.cpp:125
+msgid "negative, "
+msgstr "negativní,"
+
+#: icc_profile_header.cpp:127
+msgid "positive, "
+msgstr "pozitivní,"
+
+#: icc_profile_header.cpp:130
+msgid "black/white"
+msgstr "černo/bílý"
+
+#: icc_profile_header.cpp:132
+msgid "colour"
+msgstr "barevný"
+
+#: icc_profile_header.cpp:159
+msgid "Profile is embedded and "
+msgstr "Profil je vložen a"
+
+#: icc_profile_header.cpp:161
+msgid "Profile is not embedded and "
+msgstr "Profil není vložen a"
+
+#: icc_profile_header.cpp:164
+msgid "can not be used independently from image."
+msgstr "nemůže být použit nezávisle na obrázku."
+
+#: icc_profile_header.cpp:166
+msgid "can be used independently from image."
+msgstr "může být použit nezávisle na obrázku."
+
+#: icc_profile_header.cpp:230
+msgid "found no header"
+msgstr "nenalezena hlavička"
+
+#: icc_profile_header.cpp:235
+msgid "ICC profile header"
+msgstr "hlavička ICC profilu"
+
+#: icc_profile_header.cpp:236
+msgid "Size:        "
+msgstr "Velikost:    "
+
+#: icc_profile_header.cpp:237
+msgid "bytes"
+msgstr "bajtů"
+
+#: icc_profile_header.cpp:238
+msgid "CMM:         "
+msgstr "CMM:         "
+
+#: icc_profile_header.cpp:239
+msgid "Version:     "
+msgstr "Verze:       "
+
+#: icc_profile_header.cpp:240
+msgid "Class:       "
+msgstr "Třída:       "
+
+#: icc_profile_header.cpp:242
+msgid "Colour Space:"
+msgstr "Barvový prostor:"
+
+#: icc_profile_header.cpp:244
+msgid "PCS:         "
+msgstr "PCS:         "
+
+#: icc_profile_header.cpp:246
+msgid "Date:        "
+msgstr "Datum:       "
+
+#: icc_profile_header.cpp:247
+msgid "Magic:       "
+msgstr ""
+
+#: icc_profile_header.cpp:248
+msgid "Platform:    "
+msgstr "Platforma:   "
+
+#: icc_profile_header.cpp:249
+msgid "Flags:       "
+msgstr "Příznaky:    "
+
+#: icc_profile_header.cpp:251 icc_helfer_x.cpp:182
+msgid "Model:       "
+msgstr "Model:       "
+
+#: icc_profile_header.cpp:252
+msgid "Attributes:  "
+msgstr "Atributy:    "
+
+#: icc_profile_header.cpp:254
+msgid "Intent:      "
+msgstr "Záměr:       "
+
+#: icc_profile_header.cpp:256
+msgid "Illuminant:  "
+msgstr "Iluminant:   "
+
+#: icc_profile_header.cpp:260
+msgid "created by:  "
+msgstr "vytvořeno:   "
+
+#: icc_profile_header.cpp:268
+msgid "File header invalid"
+msgstr "Hlavička souboru neplatná"
+
+#: icc_profile_header.cpp:271
+msgid "    head  head    128 File header"
+msgstr ""
+
+#: icc_profile_tags.cpp:258
+msgid "Standard Observer"
+msgstr "Standardní pozorovatel"
+
+#: icc_profile_tags.cpp:261
+msgid "Back side"
+msgstr ""
+
+#: icc_profile_tags.cpp:264
+msgid "Geometrie"
+msgstr "Geometrie"
+
+#: icc_profile_tags.cpp:266
+msgid "Flare"
+msgstr ""
+
+#: icc_profile_tags.cpp:268
+msgid "Illuminant Type"
+msgstr "Typ iluminantu"
+
+#: icc_profile_tags.cpp:283
+msgid "Conversion table with 16-bit precission:"
+msgstr "Konverzní tabulka s 16 bitovou přesností:"
+
+#: icc_profile_tags.cpp:284 icc_profile_tags.cpp:303
+msgid "Intent:"
+msgstr "Záměr:"
+
+#: icc_profile_tags.cpp:285 icc_profile_tags.cpp:304
+msgid "Number of input channels"
+msgstr "Počet vstupních kanálů"
+
+#: icc_profile_tags.cpp:286 icc_profile_tags.cpp:305
+msgid "Number of output channels"
+msgstr "Počet výstupních kanálů"
+
+#: icc_profile_tags.cpp:287 icc_profile_tags.cpp:306
+msgid "Matrix"
+msgstr "Matice"
+
+#: icc_profile_tags.cpp:288
+msgid "Linear input curve"
+msgstr "Lineární vstupní křivka"
+
+#: icc_profile_tags.cpp:288 icc_profile_tags.cpp:290
+msgid "with"
+msgstr "s"
+
+#: icc_profile_tags.cpp:288 icc_profile_tags.cpp:290
+msgid "steps"
+msgstr "kroky"
+
+#: icc_profile_tags.cpp:289 icc_profile_tags.cpp:307
+#, fuzzy
+msgid "3D Lookup table with"
+msgstr "3D vyhledávací tabulka s"
+
+#: icc_profile_tags.cpp:289 icc_profile_tags.cpp:307
+msgid "points length per side"
+msgstr "bodů délky jedné strany"
+
+#: icc_profile_tags.cpp:290
+msgid "Linear output curve"
+msgstr "Lineární výstupní křivka"
+
+#: icc_profile_tags.cpp:302
+msgid "Conversion table with 8-bit precission:"
+msgstr "Konverzní tabulka s 8 bitovou přesností:"
+
+#: icc_profile_tags.cpp:401
+msgid "Error in ICC profile tag found!"
+msgstr "Nalezena chyba v tagu ICC profilu!"
+
+#: icc_profile_tags.cpp:514
+msgid "Number of colours:"
+msgstr "Počet barev:"
+
+#: icc_profile_tags.cpp:515
+msgid "Name"
+msgstr "Jméno"
+
+#: icc_profile_tags.cpp:515
+msgid "CIE*Lab"
+msgstr "CIE*Lab"
+
+#: icc_profile_tags.cpp:516
+msgid "Device Colours"
+msgstr "Barvy zařízení"
+
+#: icc_profile_tags.cpp:585
+msgid "profiles where originally involved"
+msgstr ""
+
+#: icc_ueber.cpp:67 icc_betrachter.cxx:722
+msgid "About ICC Examin"
+msgstr "O programu ICC Examin"
+
+#: icc_ueber.cpp:77
+msgid "ICC Examin Version"
+msgstr "ICC Examin Verze"
+
+#: icc_ueber.cpp:96
+msgid "Date"
+msgstr "Datum"
+
+#: icc_ueber.cpp:101
+msgid "internet: www.behrmann.name <br>"
+msgstr "internet: www.behrmann.name <br>"
+
+#: icc_ueber.cpp:107
+msgid ""
+"ICC Examin is a viewer for colour profiles according to ICC standard  - www."
+"color.org . At the moment version 2 profiles are supported."
+msgstr ""
+"ICC Examin je prohlížeč pro barvové profily dle ICC standardu  - www.color."
+"org. V současnosti jsou podporovány profily verze 2."
+
+#: icc_ueber.cpp:114
+msgid ""
+"The appliance of colour profiles shall help to achive an easy colour data "
+"exchange, regardless which application or what kind of operating system is "
+"used. As well colour adaption between different devices is possible, "
+"provided the colour characteristics of both devices are known. The qulity of "
+"a colour transform from one to an other device depends mainly on the quality "
+"of the colour measurement and the used profiling algorithm during profile "
+"creation."
+msgstr ""
+"Používání barvových profilů napomůže k dosažení snadné výměny barevných dat "
+"bez ohledu na to, která aplikace nebo jaký typ operačního systému je "
+"používán. Též je možné přizpůsobení barev mezi různými zařízeními za "
+"předpokladu, že barevná charakteristika obou zařízení je známa. Kvalita "
+"barevné transformace z jednoho na druhé zařízení závisí především na kvalitě "
+"měření barev a použitého algoritmu pro tvorbu profilu."
+
+#: icc_ueber.cpp:126
+msgid ""
+"Colour profiles are often available from manufacturers of optical devices "
+"(digital camera, scanner, printer). With ICC Examin you can get an "
+"impression of the internal data , stored in a ICC profile. For profiles "
+"containing measurement data, ICC Examin can generate a quality report. The "
+"deviation, calculated from the measurement data is shown as well in the "
+"three dimensional gamut viewer.<br>"
+msgstr ""
+"Barvové profily jsou často k dispozici od výrobců optických zařízení "
+"(digitálních fotoaparátů, skenerů, tiskáren). S ICC Examinem můžete získat "
+"představu o interních datech uložený v ICC profilu. Pro profily obsahující i "
+"změřená data, ICC Examin může vygenerovat report kvality. Odchylka vypočtená "
+"ze změřených dat je též zobrazena v tří rozměrném prohlížeči gamutu.<br>"
+
+#: icc_ueber.cpp:137
+msgid ""
+"The internal colour transformations are currently realised with functions of "
+"the littleCMS program library."
+msgstr ""
+"Interní barvové transformace jsou realizovány funkcemi knihoven programu "
+"LittleCMS."
+
+#: icc_ueber.cpp:155 icc_betrachter.cxx:645 icc_betrachter.cxx:647
+#: icc_betrachter.cxx:741
+msgid "Help"
+msgstr "Nápověda"
+
+#: icc_ueber.cpp:347 icc_betrachter.cxx:648 icc_betrachter.cxx:747
+msgid "License"
+msgstr "Licence"
+
+#: icc_ueber.cpp:353
+msgid ""
+"    ICC Examin is licensed under the GPL version 2.    Especially all icc_* "
+"files are licensed under the GPL.<br>    The other source files may contain "
+"devergine licenses, which are detectable from file headers. "
+msgstr ""
+"   ICC Examin podléhá licenci GPL verze 2.  Zvláště všechny icc_* soubory "
+"podléhají licenci GPL.<br>  Ostatní zdrojové soubory mohou obsahovat "
+"odchýlené licence, která jsou patrné z hlaviček souborů."
+
+#: icc_ueber.cpp:758
+msgid "Acknowledgement"
+msgstr "Poděkování"
+
+#: icc_ueber.cpp:764
+msgid ""
+"My cordially thank is especially dedicated to Marti Maria and the many "
+"writers of the Lcms-user email list."
+msgstr ""
+"Můj srdečný dík je zvláště věnován Marti Mariovi a mnoha přispěvatelům "
+"poštovní konference LCMS-user."
+
+#: icc_ueber.cpp:778
+msgid "ICC Examin uses following libraries:<br>\n"
+msgstr "ICC Examin používá následující knihovny:<br>\n"
+
+#: icc_ueber.cpp:783
+msgid "  FLTK: Bill Spitzack and others www.fltk.org<br>\n"
+msgstr "  FLTK: Bill Spitzack a další www.fltk.org<br>\n"
+
+#: icc_ueber.cpp:790
+msgid "  FLU: Jason Bryan www.osc.edu/~jbryan/FLU/<br>\n"
+msgstr "  FLU: Jason Bryan www.osc.edu/~jbryan/FLU/<br>\n"
+
+#: icc_ueber.cpp:797
+msgid "  littleCMS: Marti Maria www.littlecms.com<br>\n"
+msgstr "  littleCMS: Marti Maria www.littlecms.com<br>\n"
+
+#: icc_ueber.cpp:808
+msgid ""
+"  FTGL: Henry Maddocks homepages.paradise.net.nz/henryj/code/#FTGL<br>\n"
+msgstr ""
+"  FTGL: Henry Maddocks homepages.paradise.net.nz/henryj/code/#FTGL<br>\n"
+
+#: icc_ueber.cpp:816
+msgid ""
+"integrated sources, lock at the according files for licence conditions:<br>\n"
+msgstr "včleněné zdroje, viz příslušné soubory s podmínkami licencí:<br>\n"
+
+#: icc_ueber.cpp:821
+msgid "  agv 3D Navigation: Philip Winston<br>\n"
+msgstr "  agv 3D Navigation: Philip Winston<br>\n"
+
+#: icc_ueber.cpp:827
+msgid "  bsp rendering: Norman Chin<br>\n"
+msgstr ""
+
+#: icc_ueber.cpp:836
+msgid "For the visualisation of gamut (external):<br>\n"
+msgstr "Pro vizualizaci gamutu (externě):<br>\n"
+
+#: icc_ueber.cpp:841
+msgid ""
+"  argyll: Greame Gill web.access.net.au/argyll/argyllcms.html<br<br><br>\n"
+msgstr ""
+"  argyll: Greame Gill web.access.net.au/argyll/argyllcms.html<br<br><br>\n"
+
+#: icc_ueber.cpp:855
+msgid "Project"
+msgstr "Projekt"
+
+#: icc_ueber.cpp:857
+msgid "Documentation"
+msgstr "Dokumentace"
+
+#: icc_vrml.cpp:147
+msgid "exception occured: "
+msgstr "nastala výjimka:"
+
+#: icc_helfer_osx.cpp:73
+msgid "Manufacturer: "
+msgstr "Výrobce:      "
+
+#: icc_helfer_osx.cpp:75
+msgid "Model:      "
+msgstr "Model:      "
+
+#: icc_helfer_osx.cpp:87 icc_helfer_x.cpp:197
+msgid "Gamma Red:   "
+msgstr "Gama červená:"
+
+#: icc_helfer_osx.cpp:93
+msgid "Gamma Green: "
+msgstr "Gama zelená: "
+
+#: icc_helfer_osx.cpp:99 icc_helfer_x.cpp:209
+msgid "Gamma Blue:  "
+msgstr "Gama modrá:  "
+
+#: icc_helfer_x.cpp:86
+msgid "open X Display failed"
+msgstr "selhalo otevření X displeje"
+
+#: icc_helfer_x.cpp:127
+msgid "Screen:"
+msgstr "Obrazovka:"
+
+#: icc_helfer_x.cpp:151
+msgid "XineramaScreen:"
+msgstr "Xinerama obrazovka:"
+
+#: icc_helfer_x.cpp:203
+msgid "Gamma Green:"
+msgstr "Gama zelená:"
+
+#: icc_helfer_x.cpp:227
+msgid "no gammagradient information obtained"
+msgstr "nenalezena informace o gama přechodu"
+
+#: icc_helfer_fltk.cpp:324
+msgid "Add to Favorites"
+msgstr "Přidat k oblíbeným záložkám"
+
+#: icc_helfer_fltk.cpp:325
+msgid "All Files (*)"
+msgstr "Všechny soubory (*)"
+
+#: icc_helfer_fltk.cpp:326
+msgid "Custom Filter"
+msgstr "Vlastní filtr"
+
+#: icc_helfer_fltk.cpp:327
+msgid "Please choose an existing file!"
+msgstr "Prosim vyberte existující soubor!"
+
+#: icc_helfer_fltk.cpp:328 my_file_chooser.cxx:182
+msgid "Favorites"
+msgstr "Oblíbené"
+
+#: icc_helfer_fltk.cpp:329
+msgid "Filename"
+msgstr "Jméno souboru"
+
+#: icc_helfer_fltk.cpp:330 my_file_chooser.cxx:256
+msgid "Manage Favorites"
+msgstr "Organizovat oblíbené"
+
+#: icc_helfer_fltk.cpp:332
+msgid "My Computer"
+msgstr "Můj počítač"
+
+#: icc_helfer_fltk.cpp:334
+msgid "File Systems"
+msgstr "Souborové systémy"
+
+#: icc_helfer_fltk.cpp:336
+msgid "New Directory?"
+msgstr "Nový adresář?"
+
+#: icc_helfer_fltk.cpp:337 my_file_chooser.cxx:213
+msgid "Preview"
+msgstr "Náhled"
+
+#: icc_helfer_fltk.cpp:339 my_file_chooser.cxx:291
+msgid "Save"
+msgstr "Uložit"
+
+#: icc_helfer_fltk.cpp:341 my_file_chooser.cxx:175
+msgid "Show:"
+msgstr "Ukázat:"
+
+#: icc_betrachter.cxx:166
+msgid "lineare entrance curve with 256 steps"
+msgstr "lineární vstupní křivka s 256 kroky"
+
+#: icc_betrachter.cxx:168
+msgid "lineare exit curve with 256 steps"
+msgstr "lineární koncová křivka s 256 kroky"
+
+#: icc_betrachter.cxx:401 icc_betrachter.cxx:622
+msgid "File"
+msgstr "Soubor"
+
+#: icc_betrachter.cxx:402
+#, fuzzy
+msgid "Save as VRML"
+msgstr "Uložit gamut jako VRML"
+
+#: icc_betrachter.cxx:403 icc_betrachter.cxx:627
+msgid "Quit"
+msgstr "Ukončit"
+
+#: icc_betrachter.cxx:405 icc_betrachter.cxx:630
+msgid "View"
+msgstr "Zobrazit"
+
+#: icc_betrachter.cxx:406 icc_betrachter.cxx:631
+msgid "Whole Screen on/off"
+msgstr "Celá obrazovka zap./vyp."
+
+#: icc_betrachter.cxx:408 icc_betrachter.cxx:633
+msgid "Settings"
+msgstr "Nastavení"
+
+#: icc_betrachter.cxx:409
+msgid "Gamut Warning"
+msgstr "Varování gamutu"
+
+#: icc_betrachter.cxx:413
+msgid "BPC"
+msgstr "BPC"
+
+#: icc_betrachter.cxx:414
+#, fuzzy
+msgid "Native Gamut"
+msgstr "Uložit gamut jako VRML"
+
+#: icc_betrachter.cxx:416 icc_betrachter.cxx:637
+msgid "Windows"
+msgstr "Okna"
+
+#: icc_betrachter.cxx:417
+msgid "Show Main Window"
+msgstr "Ukázat hlavní okno"
+
+#: icc_betrachter.cxx:418 icc_betrachter.cxx:643
+msgid "Log"
+msgstr ""
+
+#: icc_betrachter.cxx:623
+msgid "Open"
+msgstr "Otevřít"
+
+#: icc_betrachter.cxx:629 icc_betrachter.cxx:638 icc_betrachter.cxx:832
+msgid "Gamut"
+msgstr "Gamut"
+
+#: icc_betrachter.cxx:634
+msgid "Oyranos Settings"
+msgstr "Nastavení oyranos"
+
+#: icc_betrachter.cxx:635
+msgid "LANG"
+msgstr "LANG"
+
+#: icc_betrachter.cxx:639
+msgid "Report View"
+msgstr "Zobrazení reportu"
+
+#: icc_betrachter.cxx:640
+msgid "CGATS View"
+msgstr "Zobrazení CGATS"
+
+#: icc_betrachter.cxx:641
+msgid "Videocard Gamma"
+msgstr "Gama video karty"
+
+#: icc_betrachter.cxx:642
+msgid "Test Curves"
+msgstr "Testovat křivky"
+
+#: icc_betrachter.cxx:646 icc_betrachter.cxx:736
+msgid "About"
+msgstr "O programu"
+
+#: icc_betrachter.cxx:754
+msgid "Acknowlegement"
+msgstr "Poděkování"
+
+#: icc_betrachter.cxx:760
+msgid "Links"
+msgstr "Odkazy"
+
+#: icc_betrachter.cxx:780
+msgid "Grafic Card Gamma Table"
+msgstr "Gama tabulka grafické karty"
+
+#: icc_betrachter.cxx:806
+msgid "Set"
+msgstr "Nastavit"
+
+#: icc_betrachter.cxx:807
+msgid ""
+"Set the current profile as monitor profile and upload vcgt tag to the video "
+"card"
+msgstr ""
+"Nastavit aktuální profil jako profil monitoru a načíst VCGT tag do video "
+"karty"
+
+#: icc_betrachter.cxx:812
+msgid "Reset"
+msgstr "Obnovit"
+
+#: icc_betrachter.cxx:813
+msgid "reset to standard gamma"
+msgstr "obnovit standardní gamma"
+
+#: icc_betrachter.cxx:817
+msgid "Load"
+msgstr "Načíst"
+
+#: icc_betrachter.cxx:818
+msgid "Load the current monitor profile"
+msgstr "Načíst aktuální profil monitoru"
+
+#: icc_betrachter.cxx:822
+msgid "Close"
+msgstr "Zavřít"
+
+#: icc_betrachter.cxx:895
+msgid "ICC Examin"
+msgstr "ICC Examin"
+
+#: icc_betrachter.cxx:932
+msgid "Choose one profile tag"
+msgstr "Vyberte jeden tag profilu"
+
+#: icc_betrachter.cxx:950
+msgid "Chain selection"
+msgstr "Výběr řetězu"
+
+#: icc_betrachter.cxx:951
+msgid "Choose a attribute"
+msgstr "Zvolte atribut"
+
+#: icc_betrachter.cxx:1013
+msgid "o"
+msgstr ""
+
+#: icc_betrachter.cxx:1014
+msgid "Show all channels of this table a own window."
+msgstr "Ukázat všechny kanály této tabulky v samostatném okně."
+
+#: icc_betrachter.cxx:1092
+msgid "..."
+msgstr "..."
+
+#: icc_betrachter.cxx:1095
+msgid "Loading .."
+msgstr "Načítám ..."
+
+#: my_file_chooser.cxx:163
+msgid "Choose File"
+msgstr "Vyberte soubor"
+
+#: my_file_chooser.cxx:203
+msgid "?"
+msgstr "?"
+
+#: my_file_chooser.cxx:232
+msgid "Filename:"
+msgstr "Jméno souboru:"
+
+#: my_file_chooser.cxx:238
+msgid "OK"
+msgstr "OK"
+
+#: my_file_chooser.cxx:242 my_file_chooser.cxx:287
+msgid "Cancel"
+msgstr "Cancel"
+
+#: my_file_chooser.cxx:273
+msgid "@8>"
+msgstr ""
+
+#: my_file_chooser.cxx:281
+msgid "@2>"
+msgstr ""
+
+#: icc_cinepaint.cpp:188
+msgid "Image Profile..."
+msgstr "Profil obrázku..."
+
+#: icc_cinepaint.cpp:189
+msgid "Proof Profile..."
+msgstr "Profil náhledu tisku..."
+
+#: icc_cinepaint.cpp:190
+msgid "Watch Colours 3D..."
+msgstr "Sledovat Barvy 3D..."
+
+#: icc_cinepaint.cpp:191
+msgid "Watch Colours 3D.2..."
+msgstr "Sledovat Barvy 3D.2..."
+
+#: icc_cinepaint_intern.cpp:357 icc_cinepaint_intern.cpp:984
+msgid "No profil assigned to image."
+msgstr "Obrázek nemá přiřazen profil."
+
+#: icc_cinepaint_intern.cpp:384
+msgid "Profil not written."
+msgstr "Profil není uložen."
+
+#: icc_cinepaint_intern.cpp:1039
+msgid "Wrong profil assigned to image."
+msgstr "Obrázek má přiřazen chybný profil."
+
+#: icc_cinepaint_intern.cpp:1254
+msgid "No active drawable found."
+msgstr "Nenalezen žádný aktivní obrázek."
+
+#: icc_cinepaint_intern.cpp:1560
+msgid "What kind of image is this?"
+msgstr "O jaký druh obrázku se jedná?"
+
+#: icc_cinepaint_intern.cpp:1654
+msgid "What kind of image is this?\n"
+msgstr "O jaký druh obrázku se jedná?\n"
+
+#: icc_examin_version.h:9
+msgid "May 2004 - January 2008"
+msgstr "květen 2004 - září 2008"
+
+#: icc_utils.h:288 icc_utils.h:289 icc_utils.h:290 icc_utils.h:344
+#: icc_utils.h:345 icc_utils.h:346
+msgid "!!! Warning !!!"
+msgstr "!!! Varování !!!"
+
+#~ msgid "RGB result not available"
+#~ msgstr "RGB výsledek není k dispozici"
+
+#~ msgid "mouse"
+#~ msgstr "myš"
+
+#~ msgid "shells"
+#~ msgstr "pláště"
+
+#~ msgid "no filename given"
+#~ msgstr "chybí název souboru"
+
+#~ msgid "examin_invisible"
+#~ msgstr "examin_neviditelný"
+
+#, fuzzy
+#~ msgid "tag_browser_invisible"
+#~ msgstr "tag_prohlížeč_neviditelný"
