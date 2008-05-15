@@ -601,8 +601,8 @@ unbundle:
 	echo cleaning $@ in $(DESTDIR) ...
 	$(RM) $(DESTDIR)ICC\ Examin.app/Contents/MacOS/*
 	$(RM) $(DESTDIR)ICC\ Examin.app/Contents/Resources$(prefix)/share/$(FONT)
-	$(RM) $(DESTDIR)ICC\ Examin.app/Contents/Resources$(prefix)/bin/*
-	$(RM) $(DESTDIR)ICC\ Examin.app/Contents/Resources$(prefix)/lib/*
+	$(RM) -R $(DESTDIR)ICC\ Examin.app/Contents/Resources$(prefix)/bin/*
+	$(RM) -R $(DESTDIR)ICC\ Examin.app/Contents/Resources$(prefix)/lib/*
 	$(RM) -R $(DESTDIR)ICC\ Examin.app/Contents/Resources$(prefix)/locale
 	echo ... $@ done
 
