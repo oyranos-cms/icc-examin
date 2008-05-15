@@ -578,7 +578,7 @@ bundle:	#static
 	        || (echo lib$${bib}$(LIBEXT) not found ... skipping)); \
 	done;
 	-$(COPY) $(libdir)/color/cmms/lib* ICC\ Examin.app/Contents/Resources$(prefix)/lib/color/cmms/
-	-$(COPY) $(libdir)/elektra ICC\ Examin.app/Contents/Resources$(prefix)/lib/
+	-$(COPY) -R $(libdir)/elektra ICC\ Examin.app/Contents/Resources$(prefix)/lib/
 	test -f ~/bin/iccgamut \
 	  && $(INSTALL) -m 755 ~/bin/iccgamut ICC\ Examin.app/Contents/Resources$(prefix)/bin/ \
 	  || test -f iccgamut && $(INSTALL) -m 755 iccgamut ICC\ Examin.app/Contents/Resources$(prefix)/bin/ \
