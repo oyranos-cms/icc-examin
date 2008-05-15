@@ -12,6 +12,7 @@ CONF_LOG=config.log
 CONF_I18N=fl_i18n/makefile
 SPEC=$TARGET.spec
 VERS="$TARGET"_version.h
+OSX_SCRIPT="$TARGET_NAME".sh
 zeile="$0 $@"
 MAKEFILE_DIR=". fl_i18n bsp"; export MAKEFILE_DIR
 
@@ -789,6 +790,16 @@ PREPARE_MAKEFILES=0; export PREPARE_MAKEFILES
 
 echo "" >> $CONF_H
 echo "#endif /* ICCEXAMIN_CONFIG_H */" >> $CONF_H
+
+
+test -n "$INFOECHO" && $INFOECHO preparing $OSX_SCRIPT in ./
+test -n "$ECHO" && $ECHO "#!/bin/bash" > $OSX_SCRIPT
+test -n "$ECHO" && $ECHO "" >> $OSX_SCRIPT
+test -n "$ECHO" && $ECHO "prefix=$prefix" >> $OSX_SCRIPT
+test -n "$ECHO" && $ECHO "" >> $OSX_SCRIPT
+test -n "$ECHO" && cat "$OSX_SCRIPT".in >> $OSX_SCRIPT
+test -n "$ECHO" && chmod 0755 "$OSX_SCRIPT"
+
 
 test -f error.tmp && ERROR=1
 test -f error.tmp && rm error.tmp
