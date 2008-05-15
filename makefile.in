@@ -219,7 +219,7 @@ POT_FILE = po/$(TARGET).pot
 
 APPL_FILES = \
 	ICC\ Examin.app/ \
-	ICC\ Examin.sh \
+	ICC\ Examin.sh.in \
 	Info.plist
 
 CWDBUG_FILES = $(DEBUG_CC) $(DEBUG_H)
@@ -565,8 +565,6 @@ bundle:	#static
 	echo bundle ...
 	test -d ICC\ Examin.app/Contents/Resources$(prefix)/lib/color/cmms/ || mkdir -p ICC\ Examin.app/ ICC\ Examin.app/Contents/ ICC\ Examin.app/Contents/MacOS/ ICC\ Examin.app/Contents/Resources$(prefix)/  ICC\ Examin.app/Contents/Resources$(prefix)/bin/ ICC\ Examin.app/Contents/Resources$(prefix)/lib/color/cmms/ ICC\ Examin.app/Contents/Resources$(prefix)/share/
 	$(INSTALL) -m 644 Info.plist ICC\ Examin.app/Contents/Info.plist
-	echo "#!/bin/bash\nprefix=$(prefix)\n" > ICC\ Examin.sh
-	cat ICC\ Examin.sh.in >> ICC\ Examin.sh
 	$(INSTALL) -m 755 ICC\ Examin.sh  ICC\ Examin.app/Contents/MacOS/ICC\ Examin
 	$(INSTALL) -m 755 $(BINTARGET) ICC\ Examin.app/Contents/MacOS/
 	strip ICC\ Examin.app/Contents/MacOS/$(BINTARGET)
@@ -580,6 +578,7 @@ bundle:	#static
 	        || (echo lib$${bib}$(LIBEXT) not found ... skipping)); \
 	done;
 	-$(COPY) $(libdir)/color/cmms/lib* ICC\ Examin.app/Contents/Resources$(prefix)/lib/color/cmms/
+	-$(COPY) $(libdir)/elektra ICC\ Examin.app/Contents/Resources$(prefix)/lib/
 	test -f ~/bin/iccgamut \
 	  && $(INSTALL) -m 755 ~/bin/iccgamut ICC\ Examin.app/Contents/Resources$(prefix)/bin/ \
 	  || test -f iccgamut && $(INSTALL) -m 755 iccgamut ICC\ Examin.app/Contents/Resources$(prefix)/bin/ \
