@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2008-04-18 12:17+0200\n"
+"POT-Creation-Date: 2008-05-22 09:38+0200\n"
 "PO-Revision-Date: 2005-08-13 17:35+0200\n"
 "Last-Translator: Kai-Uwe Behrmann\n"
 "Language-Team:  <eo@li.org>\n"
@@ -484,8 +484,8 @@ msgid "Channel"
 msgstr "kanalo"
 
 #: icc_helfer.cpp:258 icc_betrachter.cxx:410
-msgid "Photometric"
-msgstr "fotografico"
+msgid "Perceptual"
+msgstr ""
 
 #: icc_helfer.cpp:261 icc_betrachter.cxx:411
 msgid "Relative Colorimetric"
@@ -1908,6 +1908,9 @@ msgstr ""
 #: icc_utils.h:345 icc_utils.h:346
 msgid "!!! Warning !!!"
 msgstr ""
+
+#~ msgid "Photometric"
+#~ msgstr "fotografico"
 
 #, fuzzy
 #~ msgid "Photografic"

@@ -462,7 +462,7 @@ class ICCfltkBetrachter {open
               code0 {if(icc_examin->gamutwarn()) o->set();}
             }
             MenuItem menueintrag_phot_intent {
-              label Photometric
+              label Perceptual
               callback {Fl_Menu_* mw = (Fl_Menu_*)o;
   const Fl_Menu_Item* m = mw->mvalue();
 
@@ -475,7 +475,7 @@ class ICCfltkBetrachter {open
     icc_examin->intent(0);
   else
     icc_examin->intent(-1);}
-              tooltip {Enable Photografic Intent} xywh {45 45 100 20} type Toggle shortcut 0x40066
+              tooltip {Enable Perceptual Intent} xywh {45 45 100 20} type Toggle shortcut 0x40066
             }
             MenuItem menueintrag_rel_col_intent {
               label {Relative Colorimetric}

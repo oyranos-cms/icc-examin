@@ -407,7 +407,7 @@ Fl_Menu_Item ICCfltkBetrachter::menu_DD_menueleiste[] = {
  {0,0,0,0,0,0,0,0,0},
  {_("Settings"), 0,  0, 0, 64, FL_NORMAL_LABEL, 0, 14, 0},
  {_("Gamut Warning"), 0x40077,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_gamutwarn, 0, 2, FL_NORMAL_LABEL, 0, 14, 0},
- {_("Photometric"), 0x40066,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_phot_intent, 0, 2, FL_NORMAL_LABEL, 0, 14, 0},
+ {_("Perceptual"), 0x40066,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_phot_intent, 0, 2, FL_NORMAL_LABEL, 0, 14, 0},
  {_("Relative Colorimetric"), 0x40072,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_rel_col_intent, 0, 2, FL_NORMAL_LABEL, 0, 14, 0},
  {_("Absolute Colorimetric"), 0x40061,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_abs_col_intent, 0, 2, FL_NORMAL_LABEL, 0, 14, 0},
  {_("BPC"), 0x40062,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_bpc, 0, 2, FL_NORMAL_LABEL, 0, 14, 0},

@@ -255,7 +255,7 @@ renderingIntentName (int intent)
   switch (intent) 
     {
     case 0:
-      s << _("Photometric");
+      s << _("Perceptual");
       break;
     case 1:
       s << _("Relative Colorimetric");

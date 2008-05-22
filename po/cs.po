@@ -1319,10 +1319,6 @@ msgstr "Platforma: "
 msgid "Flags: "
 msgstr "Priznaky: "
 
-#: icc_profile_header.cpp:251 icc_helfer_x.cpp:182
-msgid "Model: "
-msgstr "Model: "
-
 #: icc_profile_header.cpp:252
 msgid "Attributes: "
 msgstr "Atributy: "
@@ -1594,6 +1590,10 @@ msgstr "nastala vyjimka:"
 #: icc_helfer_osx.cpp:73
 msgid "Manufacturer: "
 msgstr "Vyrobce: "
+
+#: icc_helfer_osx.cpp:75
+msgid "Model: "
+msgstr "Model: "
 
 #: icc_helfer_osx.cpp:87 icc_helfer_x.cpp:197
 msgid "Gamma Red: "

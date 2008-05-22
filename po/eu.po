@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cinepaint_icc-examin_eu\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2008-04-18 12:17+0200\n"
+"POT-Creation-Date: 2008-05-22 09:38+0200\n"
 "PO-Revision-Date: 2007-11-07 11:11+0100\n"
 "Last-Translator: Iñaki Larrañaga Murgoitio <dooteo@zundan.com>\n"
 "Language-Team: Basque <itzulpena@euskalgnu.org>\n"
@@ -486,8 +486,8 @@ msgid "Channel"
 msgstr "Kanala"
 
 #: icc_helfer.cpp:258 icc_betrachter.cxx:410
-msgid "Photometric"
-msgstr "Fotometrikoa"
+msgid "Perceptual"
+msgstr ""
 
 #: icc_helfer.cpp:261 icc_betrachter.cxx:411
 msgid "Relative Colorimetric"
@@ -1948,6 +1948,9 @@ msgstr "2004.eko maiatza - 2007.eko iraila"
 #: icc_utils.h:345 icc_utils.h:346
 msgid "!!! Warning !!!"
 msgstr "Abisua !!!"
+
+#~ msgid "Photometric"
+#~ msgstr "Fotometrikoa"
 
 #~ msgid "no filename given"
 #~ msgstr "ez da fitxategi-izenik eman"
