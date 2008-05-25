@@ -6,13 +6,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: icc_examin\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2008-04-28 06:20+0200\n"
+"POT-Creation-Date: 2008-05-25 21:06+0200\n"
 "PO-Revision-Date: 2008-05-13 19:38+0200\n"
 "Last-Translator: Milan Knizek <knizek@volny.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ASCII\n"
-"Content-Transfer-Encoding: 7bit"
+"Content-Transfer-Encoding: 7bit\n"
 
 #: icc_oyranos_extern.c:131
 msgid "XYZ"
@@ -136,17 +136,17 @@ msgid "unknown Colour"
 msgstr "neznama barva"
 
 #: icc_draw.cpp:660 icc_draw.cpp:671 icc_helfer.cpp:414
-#: icc_profile_tags.cpp:481 icc_helfer_osx.cpp:68 icc_helfer_x.cpp:64
+#: icc_profile_tags.cpp:485 icc_helfer_osx.cpp:68 icc_helfer_x.cpp:64
 msgid "Red"
 msgstr "Cervena"
 
 #: icc_draw.cpp:663 icc_draw.cpp:673 icc_helfer.cpp:415
-#: icc_profile_tags.cpp:482 icc_helfer_osx.cpp:69 icc_helfer_x.cpp:65
+#: icc_profile_tags.cpp:486 icc_helfer_osx.cpp:69 icc_helfer_x.cpp:65
 msgid "Green"
 msgstr "Zelena"
 
 #: icc_draw.cpp:666 icc_draw.cpp:675 icc_helfer.cpp:416
-#: icc_profile_tags.cpp:483 icc_helfer_osx.cpp:70 icc_helfer_x.cpp:66
+#: icc_profile_tags.cpp:487 icc_helfer_osx.cpp:70 icc_helfer_x.cpp:66
 msgid "Blue"
 msgstr "Modra"
 
@@ -306,7 +306,8 @@ msgid "Internal error"
 msgstr "Interni chyba"
 
 #: icc_examin.cpp:1207
-msgid "No. Tag Type Size Description"
+#, fuzzy
+msgid "No. Tag   Type   Size Description"
 msgstr "C. Tag Typ Vel. Popis"
 
 #: icc_examin_io.cpp:328
@@ -481,8 +482,8 @@ msgid "Channel"
 msgstr "Kanal"
 
 #: icc_helfer.cpp:258 icc_betrachter.cxx:410
-msgid "Photometric"
-msgstr "Fotometricky"
+msgid "Perceptual"
+msgstr ""
 
 #: icc_helfer.cpp:261 icc_betrachter.cxx:411
 msgid "Relative Colorimetric"
@@ -496,7 +497,7 @@ msgstr "Sytost"
 msgid "Absolute Colorimetric"
 msgstr "Absolutni fotometricky"
 
-#: icc_helfer.cpp:394 icc_profile_tags.cpp:1232 icc_profile_tags.cpp:1239
+#: icc_helfer.cpp:394 icc_profile_tags.cpp:1236 icc_profile_tags.cpp:1243
 msgid "Colour"
 msgstr "Barva"
 
@@ -1030,19 +1031,23 @@ msgid "averaging deviations (dE CIE*Lab):<b> "
 msgstr "prumerovane odchylky (dE CIE*Lab):<b> "
 
 #: icc_measurement.cpp:1360
-msgid "</b> maximum: "
+#, fuzzy
+msgid "</b>  maximum: "
 msgstr "</b> maximum: "
 
 #: icc_measurement.cpp:1360
-msgid " minimum: "
+#, fuzzy
+msgid "  minimum: "
 msgstr " minimum: "
 
 #: icc_measurement.cpp:1360
-msgid " (dE CIE 2000) averaging: "
+#, fuzzy
+msgid "  (dE CIE 2000) averaging: "
 msgstr " (dE CIE 2000) prumery: "
 
 #: icc_measurement.cpp:1360
-msgid " maximum: "
+#, fuzzy
+msgid "  maximum: "
 msgstr " maximum: "
 
 #: icc_measurement.cpp:1390
@@ -1276,7 +1281,8 @@ msgid "ICC profile header"
 msgstr "hlavicka ICC profilu"
 
 #: icc_profile_header.cpp:236
-msgid "Size: "
+#, fuzzy
+msgid "Size:        "
 msgstr "Velikost: "
 
 #: icc_profile_header.cpp:237
@@ -1284,15 +1290,17 @@ msgid "bytes"
 msgstr "bajtu"
 
 #: icc_profile_header.cpp:238
-msgid "CMM: "
-msgstr "CMM: "
+msgid "CMM:         "
+msgstr ""
 
 #: icc_profile_header.cpp:239
-msgid "Version: "
+#, fuzzy
+msgid "Version:     "
 msgstr "Verze: "
 
 #: icc_profile_header.cpp:240
-msgid "Class: "
+#, fuzzy
+msgid "Class:       "
 msgstr "Trida: "
 
 #: icc_profile_header.cpp:242
@@ -1300,39 +1308,51 @@ msgid "Colour Space:"
 msgstr "Barvovy prostor:"
 
 #: icc_profile_header.cpp:244
-msgid "PCS: "
-msgstr "PCS: "
+msgid "PCS:         "
+msgstr ""
 
 #: icc_profile_header.cpp:246
-msgid "Date: "
+#, fuzzy
+msgid "Date:        "
 msgstr "Datum: "
 
 #: icc_profile_header.cpp:247
-msgid "Magic: "
+msgid "Magic:       "
 msgstr ""
 
 #: icc_profile_header.cpp:248
-msgid "Platform: "
+#, fuzzy
+msgid "Platform:    "
 msgstr "Platforma: "
 
 #: icc_profile_header.cpp:249
-msgid "Flags: "
+#, fuzzy
+msgid "Flags:       "
 msgstr "Priznaky: "
 
+#: icc_profile_header.cpp:251 icc_helfer_x.cpp:182
+#, fuzzy
+msgid "Model:       "
+msgstr "Model: "
+
 #: icc_profile_header.cpp:252
-msgid "Attributes: "
+#, fuzzy
+msgid "Attributes:  "
 msgstr "Atributy: "
 
 #: icc_profile_header.cpp:254
-msgid "Intent: "
+#, fuzzy
+msgid "Intent:      "
 msgstr "Zamer: "
 
 #: icc_profile_header.cpp:256
-msgid "Illuminant: "
+#, fuzzy
+msgid "Illuminant:  "
 msgstr "Iluminant: "
 
 #: icc_profile_header.cpp:260
-msgid "created by: "
+#, fuzzy
+msgid "created by:  "
 msgstr "vytvoreno: "
 
 #: icc_profile_header.cpp:268
@@ -1340,7 +1360,7 @@ msgid "File header invalid"
 msgstr "Hlavicka souboru neplatna"
 
 #: icc_profile_header.cpp:271
-msgid " head head 128 File header"
+msgid "    head  head    128 File header"
 msgstr ""
 
 #: icc_profile_tags.cpp:258
@@ -1415,23 +1435,23 @@ msgstr "Konverzni tabulka s 8 bitovou presnosti:"
 msgid "Error in ICC profile tag found!"
 msgstr "Nalezena chyba v tagu ICC profilu!"
 
-#: icc_profile_tags.cpp:514
+#: icc_profile_tags.cpp:518
 msgid "Number of colours:"
 msgstr "Pocet barev:"
 
-#: icc_profile_tags.cpp:515
+#: icc_profile_tags.cpp:519
 msgid "Name"
 msgstr "Jmeno"
 
-#: icc_profile_tags.cpp:515
+#: icc_profile_tags.cpp:519
 msgid "CIE*Lab"
 msgstr "CIE*Lab"
 
-#: icc_profile_tags.cpp:516
+#: icc_profile_tags.cpp:520
 msgid "Device Colours"
 msgstr "Barvy zarizeni"
 
-#: icc_profile_tags.cpp:585
+#: icc_profile_tags.cpp:589
 msgid "profiles where originally involved"
 msgstr "profily byly puvodne pouzity"
 
@@ -1452,8 +1472,9 @@ msgid "internet: www.behrmann.name <br>"
 msgstr "internet: www.behrmann.name <br>"
 
 #: icc_ueber.cpp:107
+#, fuzzy
 msgid ""
-"ICC Examin is a viewer for colour profiles according to ICC standard - www."
+"ICC Examin is a viewer for colour profiles according to ICC standard  - www."
 "color.org . At the moment version 2 profiles are supported."
 msgstr ""
 "ICC Examin je prohlizec pro barvove profily dle ICC standardu - www.color."
@@ -1509,9 +1530,10 @@ msgid "License"
 msgstr "Licence"
 
 #: icc_ueber.cpp:353
+#, fuzzy
 msgid ""
-" ICC Examin is licensed under the GPL version 2. Especially all icc_* "
-"files are licensed under the GPL.<br> The other source files may contain "
+"    ICC Examin is licensed under the GPL version 2.    Especially all icc_* "
+"files are licensed under the GPL.<br>    The other source files may contain "
 "devergine licenses, which are detectable from file headers. "
 msgstr ""
 " ICC Examin podleha licenci GPL verze 2. Zvlaste vsechny icc_* soubory "
@@ -1535,20 +1557,24 @@ msgid "ICC Examin uses following libraries:<br>\n"
 msgstr "ICC Examin pouziva nasledujici knihovny:<br>\n"
 
 #: icc_ueber.cpp:783
-msgid " FLTK: Bill Spitzack and others www.fltk.org<br>\n"
+#, fuzzy
+msgid "  FLTK: Bill Spitzack and others www.fltk.org<br>\n"
 msgstr " FLTK: Bill Spitzack a dalsi www.fltk.org<br>\n"
 
 #: icc_ueber.cpp:790
-msgid " FLU: Jason Bryan www.osc.edu/~jbryan/FLU/<br>\n"
+#, fuzzy
+msgid "  FLU: Jason Bryan www.osc.edu/~jbryan/FLU/<br>\n"
 msgstr " FLU: Jason Bryan www.osc.edu/~jbryan/FLU/<br>\n"
 
 #: icc_ueber.cpp:797
-msgid " littleCMS: Marti Maria www.littlecms.com<br>\n"
+#, fuzzy
+msgid "  littleCMS: Marti Maria www.littlecms.com<br>\n"
 msgstr " littleCMS: Marti Maria www.littlecms.com<br>\n"
 
 #: icc_ueber.cpp:808
+#, fuzzy
 msgid ""
-" FTGL: Henry Maddocks homepages.paradise.net.nz/henryj/code/#FTGL<br>\n"
+"  FTGL: Henry Maddocks homepages.paradise.net.nz/henryj/code/#FTGL<br>\n"
 msgstr ""
 " FTGL: Henry Maddocks homepages.paradise.net.nz/henryj/code/#FTGL<br>\n"
 
@@ -1558,11 +1584,13 @@ msgid ""
 msgstr "vclenene zdroje, viz prislusne soubory s podminkami licenci:<br>\n"
 
 #: icc_ueber.cpp:821
-msgid " agv 3D Navigation: Philip Winston<br>\n"
+#, fuzzy
+msgid "  agv 3D Navigation: Philip Winston<br>\n"
 msgstr " agv 3D Navigation: Philip Winston<br>\n"
 
 #: icc_ueber.cpp:827
-msgid " bsp rendering: Norman Chin<br>\n"
+#, fuzzy
+msgid "  bsp rendering: Norman Chin<br>\n"
 msgstr " bsp vykreslovani: Norman Chin<br>\n"
 
 #: icc_ueber.cpp:836
@@ -1570,8 +1598,9 @@ msgid "For the visualisation of gamut (external):<br>\n"
 msgstr "Pro vizualizaci gamutu (externe):<br>\n"
 
 #: icc_ueber.cpp:841
+#, fuzzy
 msgid ""
-" argyll: Greame Gill web.access.net.au/argyll/argyllcms.html<br><br><br>\n"
+"  argyll: Greame Gill web.access.net.au/argyll/argyllcms.html<br<br><br>\n"
 msgstr ""
 " argyll: Greame Gill web.access.net.au/argyll/argyllcms.html<br><br><br>\n"
 
@@ -1592,11 +1621,13 @@ msgid "Manufacturer: "
 msgstr "Vyrobce: "
 
 #: icc_helfer_osx.cpp:75
-msgid "Model: "
+#, fuzzy
+msgid "Model:      "
 msgstr "Model: "
 
 #: icc_helfer_osx.cpp:87 icc_helfer_x.cpp:197
-msgid "Gamma Red: "
+#, fuzzy
+msgid "Gamma Red:   "
 msgstr "Gama cervena:"
 
 #: icc_helfer_osx.cpp:93
@@ -1604,7 +1635,8 @@ msgid "Gamma Green: "
 msgstr "Gama zelena: "
 
 #: icc_helfer_osx.cpp:99 icc_helfer_x.cpp:209
-msgid "Gamma Blue: "
+#, fuzzy
+msgid "Gamma Blue:  "
 msgstr "Gama modra: "
 
 #: icc_helfer_x.cpp:86
@@ -1923,6 +1955,15 @@ msgstr "kveten 2004 - zari 2008"
 #: icc_utils.h:345 icc_utils.h:346
 msgid "!!! Warning !!!"
 msgstr "!!! Varovani !!!"
+
+#~ msgid "Photometric"
+#~ msgstr "Fotometricky"
+
+#~ msgid "CMM: "
+#~ msgstr "CMM: "
+
+#~ msgid "PCS: "
+#~ msgstr "PCS: "
 
 #~ msgid "RGB result not available"
 #~ msgstr "RGB vysledek neni k dispozici"

@@ -448,20 +448,24 @@ ICCtag::getText                     (std::string text)
         int n, j;
         size_t size = 0;
         icUInt16Number * uni16be = (icUInt16Number*) &data_[dversatz];
-        wchar_t *wc = (wchar_t*) new wchar_t [g];
-#if 1
-        for( j = 1; j < g/2; ++j)
-          wc[j] = icValue( uni16be[j] );
-        wc[j] = 0;
-        size = wcstombs( t, (const wchar_t*)uni16be, g );
+
+        for( n = 0, j = 0; j < g/2; ++j)
+        {
+          size = wctomb( &t[n], (wchar_t)icValue( uni16be[j] ) ); 
+          if(size <= MB_CUR_MAX)
+            n += size;
+          else
+          {
+            WARN_S( "wctomb dont likes character code the " << j <<"th: "<< icValue( uni16be[j] ) <<" "<<MB_CUR_MAX );
+            t[n] = (char) icValue( uni16be[j] );
+            ++n;
+          }
+        }
+        t[n] = 0;
         DBG_NUM_V( size<<" "<<&data_[dversatz]<<" "<<&data_[dversatz+1]<<" "<< t );
 
-        for (n = 0; n < g ; n = n+2)
-          t[n/2] = (char)icValue( *(icUInt16Number*)&data_[dversatz + n] );
-        t[n/2] = 0;
-#endif
         texte.push_back( t );
-        delete [] t; delete [] wc; DBG_PROG_V( g <<" "<< dversatz )
+        delete [] t; DBG_PROG_V( g <<" "<< dversatz )
       }
     }
     if (!texte.size()) // first entry

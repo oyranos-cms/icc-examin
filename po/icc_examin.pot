@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2008-05-22 09:38+0200\n"
+"POT-Creation-Date: 2008-05-25 21:23+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -138,17 +138,17 @@ msgid "unknown Colour"
 msgstr ""
 
 #: icc_draw.cpp:660 icc_draw.cpp:671 icc_helfer.cpp:414
-#: icc_profile_tags.cpp:481 icc_helfer_osx.cpp:68 icc_helfer_x.cpp:64
+#: icc_profile_tags.cpp:485 icc_helfer_osx.cpp:68 icc_helfer_x.cpp:64
 msgid "Red"
 msgstr ""
 
 #: icc_draw.cpp:663 icc_draw.cpp:673 icc_helfer.cpp:415
-#: icc_profile_tags.cpp:482 icc_helfer_osx.cpp:69 icc_helfer_x.cpp:65
+#: icc_profile_tags.cpp:486 icc_helfer_osx.cpp:69 icc_helfer_x.cpp:65
 msgid "Green"
 msgstr ""
 
 #: icc_draw.cpp:666 icc_draw.cpp:675 icc_helfer.cpp:416
-#: icc_profile_tags.cpp:483 icc_helfer_osx.cpp:70 icc_helfer_x.cpp:66
+#: icc_profile_tags.cpp:487 icc_helfer_osx.cpp:70 icc_helfer_x.cpp:66
 msgid "Blue"
 msgstr ""
 
@@ -496,7 +496,7 @@ msgstr ""
 msgid "Absolute Colorimetric"
 msgstr ""
 
-#: icc_helfer.cpp:394 icc_profile_tags.cpp:1232 icc_profile_tags.cpp:1239
+#: icc_helfer.cpp:394 icc_profile_tags.cpp:1236 icc_profile_tags.cpp:1243
 msgid "Colour"
 msgstr ""
 
@@ -1419,23 +1419,23 @@ msgstr ""
 msgid "Error in ICC profile tag found!"
 msgstr ""
 
-#: icc_profile_tags.cpp:514
+#: icc_profile_tags.cpp:518
 msgid "Number of colours:"
 msgstr ""
 
-#: icc_profile_tags.cpp:515
+#: icc_profile_tags.cpp:519
 msgid "Name"
 msgstr ""
 
-#: icc_profile_tags.cpp:515
+#: icc_profile_tags.cpp:519
 msgid "CIE*Lab"
 msgstr ""
 
-#: icc_profile_tags.cpp:516
+#: icc_profile_tags.cpp:520
 msgid "Device Colours"
 msgstr ""
 
-#: icc_profile_tags.cpp:585
+#: icc_profile_tags.cpp:589
 msgid "profiles where originally involved"
 msgstr ""
 
