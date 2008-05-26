@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2008-05-25 21:06+0200\n"
+"POT-Creation-Date: 2008-05-26 11:42+0200\n"
 "PO-Revision-Date: 2005-08-13 17:35+0200\n"
 "Last-Translator: Kai-Uwe Behrmann\n"
 "Language-Team:  <ku.b@gmx.de>\n"
@@ -139,17 +139,17 @@ msgid "unknown Colour"
 msgstr "unbekannte Farbe"
 
 #: icc_draw.cpp:660 icc_draw.cpp:671 icc_helfer.cpp:414
-#: icc_profile_tags.cpp:485 icc_helfer_osx.cpp:68 icc_helfer_x.cpp:64
+#: icc_profile_tags.cpp:421 icc_helfer_osx.cpp:68 icc_helfer_x.cpp:64
 msgid "Red"
 msgstr "Rot"
 
 #: icc_draw.cpp:663 icc_draw.cpp:673 icc_helfer.cpp:415
-#: icc_profile_tags.cpp:486 icc_helfer_osx.cpp:69 icc_helfer_x.cpp:65
+#: icc_profile_tags.cpp:422 icc_helfer_osx.cpp:69 icc_helfer_x.cpp:65
 msgid "Green"
 msgstr "Grün"
 
 #: icc_draw.cpp:666 icc_draw.cpp:675 icc_helfer.cpp:416
-#: icc_profile_tags.cpp:487 icc_helfer_osx.cpp:70 icc_helfer_x.cpp:66
+#: icc_profile_tags.cpp:423 icc_helfer_osx.cpp:70 icc_helfer_x.cpp:66
 msgid "Blue"
 msgstr "Blau"
 
@@ -500,7 +500,7 @@ msgstr "Sättigung"
 msgid "Absolute Colorimetric"
 msgstr "Absolut Farbmetrisch"
 
-#: icc_helfer.cpp:394 icc_profile_tags.cpp:1236 icc_profile_tags.cpp:1243
+#: icc_helfer.cpp:394 icc_profile_tags.cpp:1172 icc_profile_tags.cpp:1179
 msgid "Colour"
 msgstr "Farbe"
 
@@ -1423,23 +1423,23 @@ msgstr "Konvertierungskette mit 8-bit Präzission:"
 msgid "Error in ICC profile tag found!"
 msgstr "Fehler in ICC Profilbaustein gefunden!"
 
-#: icc_profile_tags.cpp:518
+#: icc_profile_tags.cpp:454
 msgid "Number of colours:"
 msgstr "Anzahl Farben:"
 
-#: icc_profile_tags.cpp:519
+#: icc_profile_tags.cpp:455
 msgid "Name"
 msgstr ""
 
-#: icc_profile_tags.cpp:519
+#: icc_profile_tags.cpp:455
 msgid "CIE*Lab"
 msgstr ""
 
-#: icc_profile_tags.cpp:520
+#: icc_profile_tags.cpp:456
 msgid "Device Colours"
 msgstr "Gerätefarben"
 
-#: icc_profile_tags.cpp:589
+#: icc_profile_tags.cpp:525
 msgid "profiles where originally involved"
 msgstr ""
 

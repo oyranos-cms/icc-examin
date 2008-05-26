@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cinepaint_icc-examin_eu\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2008-05-25 21:06+0200\n"
+"POT-Creation-Date: 2008-05-26 11:42+0200\n"
 "PO-Revision-Date: 2007-11-07 11:11+0100\n"
 "Last-Translator: Iñaki Larrañaga Murgoitio <dooteo@zundan.com>\n"
 "Language-Team: Basque <itzulpena@euskalgnu.org>\n"
@@ -140,17 +140,17 @@ msgid "unknown Colour"
 msgstr "kolore ezezaguna"
 
 #: icc_draw.cpp:660 icc_draw.cpp:671 icc_helfer.cpp:414
-#: icc_profile_tags.cpp:485 icc_helfer_osx.cpp:68 icc_helfer_x.cpp:64
+#: icc_profile_tags.cpp:421 icc_helfer_osx.cpp:68 icc_helfer_x.cpp:64
 msgid "Red"
 msgstr "Gorria"
 
 #: icc_draw.cpp:663 icc_draw.cpp:673 icc_helfer.cpp:415
-#: icc_profile_tags.cpp:486 icc_helfer_osx.cpp:69 icc_helfer_x.cpp:65
+#: icc_profile_tags.cpp:422 icc_helfer_osx.cpp:69 icc_helfer_x.cpp:65
 msgid "Green"
 msgstr "Berdea"
 
 #: icc_draw.cpp:666 icc_draw.cpp:675 icc_helfer.cpp:416
-#: icc_profile_tags.cpp:487 icc_helfer_osx.cpp:70 icc_helfer_x.cpp:66
+#: icc_profile_tags.cpp:423 icc_helfer_osx.cpp:70 icc_helfer_x.cpp:66
 msgid "Blue"
 msgstr "Urdina"
 
@@ -501,7 +501,7 @@ msgstr "Saturazioa"
 msgid "Absolute Colorimetric"
 msgstr "Koloremetria absolutua"
 
-#: icc_helfer.cpp:394 icc_profile_tags.cpp:1236 icc_profile_tags.cpp:1243
+#: icc_helfer.cpp:394 icc_profile_tags.cpp:1172 icc_profile_tags.cpp:1179
 msgid "Colour"
 msgstr "Kolorea"
 
@@ -1432,23 +1432,23 @@ msgstr "Bihurketa-taula 8 bit-eko doitzasunarekin:"
 msgid "Error in ICC profile tag found!"
 msgstr "Errorea aurkitu da ICC profilako etiketan."
 
-#: icc_profile_tags.cpp:518
+#: icc_profile_tags.cpp:454
 msgid "Number of colours:"
 msgstr "Kolore kopurua:"
 
-#: icc_profile_tags.cpp:519
+#: icc_profile_tags.cpp:455
 msgid "Name"
 msgstr "Izena"
 
-#: icc_profile_tags.cpp:519
+#: icc_profile_tags.cpp:455
 msgid "CIE*Lab"
 msgstr "CIE*Lab"
 
-#: icc_profile_tags.cpp:520
+#: icc_profile_tags.cpp:456
 msgid "Device Colours"
 msgstr "Gailuaren koloreak"
 
-#: icc_profile_tags.cpp:589
+#: icc_profile_tags.cpp:525
 msgid "profiles where originally involved"
 msgstr ""
 
