@@ -251,7 +251,6 @@ ICCmeasurement::load                ( ICCprofile *profil,
 { DBG_PROG_START
   profile_ = profil;
   if (!profile_) WARN_S( "cant initialise, profile referenz is missed" )
-  //DBG_MEM_V( profile_->hasTagName("targ") << profile_->printLongHeader() )
 
   sig_    = tag._sig;
   if(tag.size_)
@@ -296,6 +295,8 @@ ICCmeasurement::leseTag (void)
 
   //DBG_PROG_V( data_ )
 
+  if(!data_ || !size_)
+    return;
 
   cgats->lade( data_, size_ );
   std::string data = cgats->lcms_gefiltert (); DBG_NUM_V( (int*)data_ <<" "<< size_ )
@@ -606,6 +607,10 @@ ICCmeasurement::init (void)
   }
   else if (profile_->hasTagName("b015")) {
     load (profile_, profile_->getTag(profile_->getTagIDByName("b015")));
+    leseTag ();
+  }
+  else if (profile_->hasTagName("TGL2")) {
+    load (profile_, profile_->getTag(profile_->getTagIDByName("TGL2")));
     leseTag ();
   }
   else if (profile_->hasTagName("DevD") && (profile_->hasTagName("CIED"))) {

@@ -279,10 +279,7 @@ ICCprofile::load (const Speicher & prof)
 #   endif
 
     // known tags with measurements
-    if (tags[i].getTagName() == "targ"
-     || tags[i].getTagName() == "b015"
-     || tags[i].getTagName() == "DevD"
-     || tags[i].getTagName() == "CIED"
+    if (tagBelongsToMeasurement(i)
      && data_type == ICCprofileDATA) {
 #     ifdef DEBUG_ICCPROFILE
       DBG_NUM_S( "measurements found " << tags[i].getTagName() )
@@ -924,6 +921,7 @@ ICCprofile::hasMeasurement()
   DBG_PROG
   return (hasTagName("targ") ||
           hasTagName("b015") ||
+          hasTagName("TGL2") ||
           (hasTagName("CIED")&&hasTagName("DevD")));
 }
 
@@ -942,6 +940,7 @@ ICCprofile::tagBelongsToMeasurement( int tag )
   int s = tags[tag].getSize();
   return ( (name == "targ" ||
             name == "b015" ||
+            name == "TGL2" ||
             (name == "CIED"&&hasTagName("DevD")) ||
             (hasTagName("CIED")&&name == "DevD"))
            && s );

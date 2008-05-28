@@ -638,10 +638,7 @@ ICCexamin::nachricht( Modell* modell , int info )
       n = m.getPatchCount();
 
       ICClist<Lab_s> lab_v;
-      /*if( TagInfo[0] == "DevD" ||
-          TagInfo[0] == "targ" ||
-          icc_betrachter->inspekt_html->visible() )*/
-        lab_v = m.getMessLab();
+      lab_v = m.getMessLab();
       if(!lab_v.size())
         lab_v = m.getProfileLab();
 

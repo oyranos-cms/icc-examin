@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2008-05-26 11:42+0200\n"
+"POT-Creation-Date: 2008-05-28 10:14+0200\n"
 "PO-Revision-Date: 2005-08-13 17:35+0200\n"
 "Last-Translator: Kai-Uwe Behrmann\n"
 "Language-Team:  <eo@li.org>\n"
@@ -253,7 +253,7 @@ msgstr ""
 msgid "Gamut selector"
 msgstr ""
 
-#: icc_examin.cpp:328 icc_examin.cpp:1251
+#: icc_examin.cpp:328 icc_examin.cpp:1248
 msgid "loaded"
 msgstr ""
 
@@ -271,43 +271,43 @@ msgstr ""
 msgid "Which ICC profile?"
 msgstr ""
 
-#: icc_examin.cpp:780 icc_examin.cpp:783
+#: icc_examin.cpp:777 icc_examin.cpp:780
 msgid "Compare Measurement <-> Profile Colours"
 msgstr ""
 
-#: icc_examin.cpp:782
+#: icc_examin.cpp:779
 msgid "none"
 msgstr ""
 
-#: icc_examin.cpp:800 icc_examin.cpp:804
+#: icc_examin.cpp:797 icc_examin.cpp:801
 msgid "Gamut View"
 msgstr ""
 
-#: icc_examin.cpp:855 icc_gl.h:274
+#: icc_examin.cpp:852 icc_gl.h:274
 msgid "not available"
 msgstr ""
 
-#: icc_examin.cpp:1191
+#: icc_examin.cpp:1188
 msgid "Filename (ICC data type)"
 msgstr ""
 
-#: icc_examin.cpp:1194
+#: icc_examin.cpp:1191
 msgid "Filename (other data type)"
 msgstr ""
 
-#: icc_examin.cpp:1196
+#: icc_examin.cpp:1193
 msgid "Filename (corrupted ICC data type)"
 msgstr ""
 
-#: icc_examin.cpp:1201
+#: icc_examin.cpp:1198
 msgid "found no content for"
 msgstr ""
 
-#: icc_examin.cpp:1204
+#: icc_examin.cpp:1201
 msgid "Internal error"
 msgstr ""
 
-#: icc_examin.cpp:1207
+#: icc_examin.cpp:1204
 msgid "No. Tag   Type   Size Description"
 msgstr ""
 
@@ -547,7 +547,7 @@ msgstr ""
 msgid "Abstract"
 msgstr ""
 
-#: icc_helfer.cpp:466 icc_profile.cpp:909
+#: icc_helfer.cpp:466 icc_profile.cpp:906
 msgid "Colour Space"
 msgstr ""
 
@@ -989,147 +989,147 @@ msgstr ""
 msgid "File not loaded!"
 msgstr ""
 
-#: icc_measurement.cpp:926
+#: icc_measurement.cpp:931
 msgid "use sRGB"
 msgstr ""
 
-#: icc_measurement.cpp:1226
+#: icc_measurement.cpp:1231
 msgid "Report about ICC profile"
 msgstr ""
 
-#: icc_measurement.cpp:1264
+#: icc_measurement.cpp:1269
 msgid "Meas colour"
 msgstr ""
 
-#: icc_measurement.cpp:1266
+#: icc_measurement.cpp:1271
 msgid "Profile colour"
 msgstr ""
 
-#: icc_measurement.cpp:1343
+#: icc_measurement.cpp:1348
 msgid "no measurment data or correct profile conversion available"
 msgstr ""
 
-#: icc_measurement.cpp:1351
+#: icc_measurement.cpp:1356
 msgid "Measurment- and profile colours from <b>"
 msgstr ""
 
-#: icc_measurement.cpp:1353
+#: icc_measurement.cpp:1358
 msgid "RGB"
 msgstr "RVB"
 
-#: icc_measurement.cpp:1355
+#: icc_measurement.cpp:1360
 msgid "CMYK"
 msgstr ""
 
-#: icc_measurement.cpp:1356
+#: icc_measurement.cpp:1361
 msgid "</b> Measurement"
 msgstr ""
 
-#: icc_measurement.cpp:1358
+#: icc_measurement.cpp:1363
 msgid "CMM: <b>lcms</b>"
 msgstr ""
 
-#: icc_measurement.cpp:1360
+#: icc_measurement.cpp:1365
 msgid "averaging deviations (dE CIE*Lab):<b> "
 msgstr ""
 
-#: icc_measurement.cpp:1360
+#: icc_measurement.cpp:1365
 msgid "</b>  maximum: "
 msgstr ""
 
-#: icc_measurement.cpp:1360
+#: icc_measurement.cpp:1365
 msgid "  minimum: "
 msgstr ""
 
-#: icc_measurement.cpp:1360
+#: icc_measurement.cpp:1365
 msgid "  (dE CIE 2000) averaging: "
 msgstr ""
 
-#: icc_measurement.cpp:1360
+#: icc_measurement.cpp:1365
 msgid "  maximum: "
 msgstr ""
 
-#: icc_measurement.cpp:1390
+#: icc_measurement.cpp:1395
 msgid "Measurement patch"
 msgstr ""
 
-#: icc_measurement.cpp:1391
+#: icc_measurement.cpp:1396
 msgid "dE Lab"
 msgstr ""
 
-#: icc_measurement.cpp:1392
+#: icc_measurement.cpp:1397
 msgid "dE2000"
 msgstr ""
 
-#: icc_measurement.cpp:1393
+#: icc_measurement.cpp:1398
 msgid "L"
 msgstr ""
 
-#: icc_measurement.cpp:1394
+#: icc_measurement.cpp:1399
 msgid "a"
 msgstr ""
 
-#: icc_measurement.cpp:1395
+#: icc_measurement.cpp:1400
 msgid "b"
 msgstr ""
 
-#: icc_measurement.cpp:1396
+#: icc_measurement.cpp:1401
 msgid "L'"
 msgstr ""
 
-#: icc_measurement.cpp:1397
+#: icc_measurement.cpp:1402
 msgid "a'"
 msgstr ""
 
-#: icc_measurement.cpp:1398
+#: icc_measurement.cpp:1403
 msgid "b'"
 msgstr ""
 
-#: icc_measurement.cpp:1399 my_file_chooser.cxx:276
+#: icc_measurement.cpp:1404 my_file_chooser.cxx:276
 msgid "X"
 msgstr ""
 
-#: icc_measurement.cpp:1400 icc_measurement.cpp:1414
+#: icc_measurement.cpp:1405 icc_measurement.cpp:1419
 msgid "Y"
 msgstr ""
 
-#: icc_measurement.cpp:1401
+#: icc_measurement.cpp:1406
 msgid "Z"
 msgstr ""
 
-#: icc_measurement.cpp:1403
+#: icc_measurement.cpp:1408
 msgid "X'"
 msgstr ""
 
-#: icc_measurement.cpp:1404
+#: icc_measurement.cpp:1409
 msgid "Y'"
 msgstr ""
 
-#: icc_measurement.cpp:1405
+#: icc_measurement.cpp:1410
 msgid "Z'"
 msgstr ""
 
-#: icc_measurement.cpp:1408
+#: icc_measurement.cpp:1413
 msgid "R"
 msgstr ""
 
-#: icc_measurement.cpp:1409
+#: icc_measurement.cpp:1414
 msgid "G"
 msgstr "V"
 
-#: icc_measurement.cpp:1410
+#: icc_measurement.cpp:1415
 msgid "B"
 msgstr ""
 
-#: icc_measurement.cpp:1412
+#: icc_measurement.cpp:1417
 msgid "C"
 msgstr ""
 
-#: icc_measurement.cpp:1413
+#: icc_measurement.cpp:1418
 msgid "M"
 msgstr ""
 
-#: icc_measurement.cpp:1415
+#: icc_measurement.cpp:1420
 msgid "K"
 msgstr ""
 
@@ -1183,43 +1183,43 @@ msgstr ""
 msgid "not inside memory block"
 msgstr ""
 
-#: icc_profile.cpp:420 icc_profile.cpp:450
+#: icc_profile.cpp:417 icc_profile.cpp:447
 msgid " typ - no text output"
 msgstr ""
 
-#: icc_profile.cpp:845
+#: icc_profile.cpp:842
 msgid "Work Space"
 msgstr ""
 
-#: icc_profile.cpp:859
+#: icc_profile.cpp:856
 msgid "Your"
 msgstr ""
 
-#: icc_profile.cpp:860
+#: icc_profile.cpp:857
 msgid "Profile\" is designed for an other device"
 msgstr ""
 
-#: icc_profile.cpp:865
+#: icc_profile.cpp:862
 msgid "Separation"
 msgstr ""
 
-#: icc_profile.cpp:878 icc_profile.cpp:901
+#: icc_profile.cpp:875 icc_profile.cpp:898
 msgid "Device class"
 msgstr ""
 
-#: icc_profile.cpp:880 icc_profile.cpp:903 icc_profile.cpp:911
+#: icc_profile.cpp:877 icc_profile.cpp:900 icc_profile.cpp:908
 msgid "is not valid for an"
 msgstr ""
 
-#: icc_profile.cpp:882 icc_profile.cpp:905
+#: icc_profile.cpp:879 icc_profile.cpp:902
 msgid "Profile\"."
 msgstr ""
 
-#: icc_profile.cpp:888
+#: icc_profile.cpp:885
 msgid "Linearisation"
 msgstr ""
 
-#: icc_profile.cpp:913
+#: icc_profile.cpp:910
 msgid "Profile at the moment\"."
 msgstr ""
 

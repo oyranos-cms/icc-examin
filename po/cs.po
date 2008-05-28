@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: icc_examin\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2008-05-26 11:42+0200\n"
+"POT-Creation-Date: 2008-05-28 10:14+0200\n"
 "PO-Revision-Date: 2008-05-13 19:38+0200\n"
 "Last-Translator: Milan Knizek <knizek@volny.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
@@ -249,7 +249,7 @@ msgstr "!!! CHYBA"
 msgid "Gamut selector"
 msgstr "Volba gamutu"
 
-#: icc_examin.cpp:328 icc_examin.cpp:1251
+#: icc_examin.cpp:328 icc_examin.cpp:1248
 msgid "loaded"
 msgstr "nacteno"
 
@@ -269,43 +269,43 @@ msgstr ""
 msgid "Which ICC profile?"
 msgstr "Ktery ICC profil?"
 
-#: icc_examin.cpp:780 icc_examin.cpp:783
+#: icc_examin.cpp:777 icc_examin.cpp:780
 msgid "Compare Measurement <-> Profile Colours"
 msgstr "Porovnat Mereni <-> Barvy profilu"
 
-#: icc_examin.cpp:782
+#: icc_examin.cpp:779
 msgid "none"
 msgstr "zadny"
 
-#: icc_examin.cpp:800 icc_examin.cpp:804
+#: icc_examin.cpp:797 icc_examin.cpp:801
 msgid "Gamut View"
 msgstr "Zobrazeni gamutu"
 
-#: icc_examin.cpp:855 icc_gl.h:274
+#: icc_examin.cpp:852 icc_gl.h:274
 msgid "not available"
 msgstr "neni k dispozici"
 
-#: icc_examin.cpp:1191
+#: icc_examin.cpp:1188
 msgid "Filename (ICC data type)"
 msgstr "Nazev souboru (ICC typ)"
 
-#: icc_examin.cpp:1194
+#: icc_examin.cpp:1191
 msgid "Filename (other data type)"
 msgstr "Jmeno souboru (jiny typ)"
 
-#: icc_examin.cpp:1196
+#: icc_examin.cpp:1193
 msgid "Filename (corrupted ICC data type)"
 msgstr "Jmeno souboru (poruseny typ ICC dat)"
 
-#: icc_examin.cpp:1201
+#: icc_examin.cpp:1198
 msgid "found no content for"
 msgstr "nenalezen zadny obsah pro"
 
-#: icc_examin.cpp:1204
+#: icc_examin.cpp:1201
 msgid "Internal error"
 msgstr "Interni chyba"
 
-#: icc_examin.cpp:1207
+#: icc_examin.cpp:1204
 #, fuzzy
 msgid "No. Tag   Type   Size Description"
 msgstr "C. Tag Typ Vel. Popis"
@@ -545,7 +545,7 @@ msgstr "Vazba"
 msgid "Abstract"
 msgstr "Vytah"
 
-#: icc_helfer.cpp:466 icc_profile.cpp:909
+#: icc_helfer.cpp:466 icc_profile.cpp:906
 msgid "Colour Space"
 msgstr "Barvovy prostor"
 
@@ -986,151 +986,151 @@ msgstr "beze jmena"
 msgid "File not loaded!"
 msgstr "Soubor nenacten!"
 
-#: icc_measurement.cpp:926
+#: icc_measurement.cpp:931
 msgid "use sRGB"
 msgstr "pouzit sRGB"
 
-#: icc_measurement.cpp:1226
+#: icc_measurement.cpp:1231
 msgid "Report about ICC profile"
 msgstr "Report o ICC profilu"
 
-#: icc_measurement.cpp:1264
+#: icc_measurement.cpp:1269
 msgid "Meas colour"
 msgstr "Zmerene barvy"
 
-#: icc_measurement.cpp:1266
+#: icc_measurement.cpp:1271
 msgid "Profile colour"
 msgstr "Barvy profilu"
 
-#: icc_measurement.cpp:1343
+#: icc_measurement.cpp:1348
 msgid "no measurment data or correct profile conversion available"
 msgstr "zadna zmerena data nebo nemozna konverze profilu"
 
-#: icc_measurement.cpp:1351
+#: icc_measurement.cpp:1356
 msgid "Measurment- and profile colours from <b>"
 msgstr "Zmerene barvy a barvy profilu z <b>"
 
-#: icc_measurement.cpp:1353
+#: icc_measurement.cpp:1358
 msgid "RGB"
 msgstr "RGB"
 
-#: icc_measurement.cpp:1355
+#: icc_measurement.cpp:1360
 msgid "CMYK"
 msgstr "CMYK"
 
-#: icc_measurement.cpp:1356
+#: icc_measurement.cpp:1361
 msgid "</b> Measurement"
 msgstr "</b> mereni"
 
-#: icc_measurement.cpp:1358
+#: icc_measurement.cpp:1363
 msgid "CMM: <b>lcms</b>"
 msgstr "CMM: <b>lcms</b>"
 
-#: icc_measurement.cpp:1360
+#: icc_measurement.cpp:1365
 msgid "averaging deviations (dE CIE*Lab):<b> "
 msgstr "prumerovane odchylky (dE CIE*Lab):<b> "
 
-#: icc_measurement.cpp:1360
+#: icc_measurement.cpp:1365
 #, fuzzy
 msgid "</b>  maximum: "
 msgstr "</b> maximum: "
 
-#: icc_measurement.cpp:1360
+#: icc_measurement.cpp:1365
 #, fuzzy
 msgid "  minimum: "
 msgstr " minimum: "
 
-#: icc_measurement.cpp:1360
+#: icc_measurement.cpp:1365
 #, fuzzy
 msgid "  (dE CIE 2000) averaging: "
 msgstr " (dE CIE 2000) prumery: "
 
-#: icc_measurement.cpp:1360
+#: icc_measurement.cpp:1365
 #, fuzzy
 msgid "  maximum: "
 msgstr " maximum: "
 
-#: icc_measurement.cpp:1390
+#: icc_measurement.cpp:1395
 msgid "Measurement patch"
 msgstr "Mereny vzorek"
 
-#: icc_measurement.cpp:1391
+#: icc_measurement.cpp:1396
 msgid "dE Lab"
 msgstr "dE Lab"
 
-#: icc_measurement.cpp:1392
+#: icc_measurement.cpp:1397
 msgid "dE2000"
 msgstr "dE2000"
 
-#: icc_measurement.cpp:1393
+#: icc_measurement.cpp:1398
 msgid "L"
 msgstr "L"
 
-#: icc_measurement.cpp:1394
+#: icc_measurement.cpp:1399
 msgid "a"
 msgstr "a"
 
-#: icc_measurement.cpp:1395
+#: icc_measurement.cpp:1400
 msgid "b"
 msgstr "b"
 
-#: icc_measurement.cpp:1396
+#: icc_measurement.cpp:1401
 msgid "L'"
 msgstr "L'"
 
-#: icc_measurement.cpp:1397
+#: icc_measurement.cpp:1402
 msgid "a'"
 msgstr "a'"
 
-#: icc_measurement.cpp:1398
+#: icc_measurement.cpp:1403
 msgid "b'"
 msgstr "b'"
 
-#: icc_measurement.cpp:1399 my_file_chooser.cxx:276
+#: icc_measurement.cpp:1404 my_file_chooser.cxx:276
 msgid "X"
 msgstr "X"
 
-#: icc_measurement.cpp:1400 icc_measurement.cpp:1414
+#: icc_measurement.cpp:1405 icc_measurement.cpp:1419
 msgid "Y"
 msgstr "Y"
 
-#: icc_measurement.cpp:1401
+#: icc_measurement.cpp:1406
 msgid "Z"
 msgstr "Z"
 
-#: icc_measurement.cpp:1403
+#: icc_measurement.cpp:1408
 msgid "X'"
 msgstr "X'"
 
-#: icc_measurement.cpp:1404
+#: icc_measurement.cpp:1409
 msgid "Y'"
 msgstr "Y'"
 
-#: icc_measurement.cpp:1405
+#: icc_measurement.cpp:1410
 msgid "Z'"
 msgstr "Z'"
 
-#: icc_measurement.cpp:1408
+#: icc_measurement.cpp:1413
 msgid "R"
 msgstr "R"
 
-#: icc_measurement.cpp:1409
+#: icc_measurement.cpp:1414
 msgid "G"
 msgstr "G"
 
-#: icc_measurement.cpp:1410
+#: icc_measurement.cpp:1415
 msgid "B"
 msgstr "B"
 
-#: icc_measurement.cpp:1412
+#: icc_measurement.cpp:1417
 msgid "C"
 msgstr "C"
 
-#: icc_measurement.cpp:1413
+#: icc_measurement.cpp:1418
 msgid "M"
 msgstr "M"
 
-#: icc_measurement.cpp:1415
+#: icc_measurement.cpp:1420
 msgid "K"
 msgstr "K"
 
@@ -1184,43 +1184,43 @@ msgstr "Seznam tagu je poskozen u tagu"
 msgid "not inside memory block"
 msgstr "ne uvnitr bloku pameti"
 
-#: icc_profile.cpp:420 icc_profile.cpp:450
+#: icc_profile.cpp:417 icc_profile.cpp:447
 msgid " typ - no text output"
 msgstr "typ - zadny textovy vystup"
 
-#: icc_profile.cpp:845
+#: icc_profile.cpp:842
 msgid "Work Space"
 msgstr "Pracovni prostor"
 
-#: icc_profile.cpp:859
+#: icc_profile.cpp:856
 msgid "Your"
 msgstr "Vas"
 
-#: icc_profile.cpp:860
+#: icc_profile.cpp:857
 msgid "Profile\" is designed for an other device"
 msgstr "Profil\" je navrzen pro jine zarizeni"
 
-#: icc_profile.cpp:865
+#: icc_profile.cpp:862
 msgid "Separation"
 msgstr "Separace"
 
-#: icc_profile.cpp:878 icc_profile.cpp:901
+#: icc_profile.cpp:875 icc_profile.cpp:898
 msgid "Device class"
 msgstr "Trida zarizeni"
 
-#: icc_profile.cpp:880 icc_profile.cpp:903 icc_profile.cpp:911
+#: icc_profile.cpp:877 icc_profile.cpp:900 icc_profile.cpp:908
 msgid "is not valid for an"
 msgstr "neni platna pro"
 
-#: icc_profile.cpp:882 icc_profile.cpp:905
+#: icc_profile.cpp:879 icc_profile.cpp:902
 msgid "Profile\"."
 msgstr "Profil\"."
 
-#: icc_profile.cpp:888
+#: icc_profile.cpp:885
 msgid "Linearisation"
 msgstr "Linearizace"
 
-#: icc_profile.cpp:913
+#: icc_profile.cpp:910
 msgid "Profile at the moment\"."
 msgstr "Profil v tento okamzik\"."
 
