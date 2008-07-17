@@ -495,14 +495,18 @@ ICCtag::getText                     (std::string text)
     oySTATUS_e status = oyOK;
     int error = oyProfileTag_Set( tag_, _sig, tag_type,
                                   status, size_, base );
-    oyChar **texts = 0;
+    char **texts = 0;
     int    texts_n = 0;
     int    profiles_n = 0;
+    const char * all_text = "";
 
     sprintf( tag_->required_cmm, OY_MODULE_NICK );
 
+    if(icc_debug)
+      all_text = 0;
+
     if(!error)
-      texts = oyProfileTag_GetText( tag_,&texts_n,0,0,0,0 );
+      texts = oyProfileTag_GetText( tag_, &texts_n, all_text, 0,0,0 );
 
     texte .resize(1);
 

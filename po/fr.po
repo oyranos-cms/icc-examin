@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ICC Examin 0.41\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2008-05-28 10:14+0200\n"
+"POT-Creation-Date: 2008-07-17 21:20+0200\n"
 "PO-Revision-Date: 2006-06-29 19:31+0200\n"
 "Last-Translator: Pascal LACROIX <lacroixpascal at vfemail.net>\n"
 "Language-Team: ALL <ku.b@gmx.de>\n"
@@ -237,76 +237,76 @@ msgstr " avec Gamma: 1.0"
 msgid " with one entry for gamma: "
 msgstr " avec un entrée pour gamma: "
 
-#: icc_examin.cpp:95
+#: icc_examin.cpp:96
 #, c-format
 msgid "WARNING"
 msgstr ""
 
-#: icc_examin.cpp:100
+#: icc_examin.cpp:101
 #, c-format
 msgid "!!! ERROR"
 msgstr ""
 
-#: icc_examin.cpp:238
+#: icc_examin.cpp:247
 msgid "Gamut selector"
 msgstr ""
 
-#: icc_examin.cpp:328 icc_examin.cpp:1248
+#: icc_examin.cpp:337 icc_examin.cpp:1257
 msgid "loaded"
 msgstr ""
 
-#: icc_examin.cpp:334
+#: icc_examin.cpp:343
 msgid "Ready"
 msgstr ""
 
-#: icc_examin.cpp:383
+#: icc_examin.cpp:392
 msgid ""
 "ICC colour profiles (*.{I,i}{C,c}{M,m,C,c})\tMeasurement (*.{txt,it8,IT8,RGB,"
 "CMYK,ti*,cgats,CIE,cie,nCIE,oRPT,DLY,LAB,Q60})\tArgyll Gamuts (*.{wrl,vrml}"
 msgstr ""
 
-#: icc_examin.cpp:383
+#: icc_examin.cpp:392
 msgid "Which ICC profile?"
 msgstr ""
 
-#: icc_examin.cpp:777 icc_examin.cpp:780
+#: icc_examin.cpp:786 icc_examin.cpp:789
 msgid "Compare Measurement <-> Profile Colours"
 msgstr ""
 
-#: icc_examin.cpp:779
+#: icc_examin.cpp:788
 msgid "none"
 msgstr ""
 
-#: icc_examin.cpp:797 icc_examin.cpp:801
+#: icc_examin.cpp:806 icc_examin.cpp:810
 #, fuzzy
 msgid "Gamut View"
 msgstr "Gamut"
 
-#: icc_examin.cpp:852 icc_gl.h:274
+#: icc_examin.cpp:861 icc_gl.h:274
 msgid "not available"
 msgstr ""
 
-#: icc_examin.cpp:1188
+#: icc_examin.cpp:1197
 msgid "Filename (ICC data type)"
 msgstr ""
 
-#: icc_examin.cpp:1191
+#: icc_examin.cpp:1200
 msgid "Filename (other data type)"
 msgstr ""
 
-#: icc_examin.cpp:1193
+#: icc_examin.cpp:1202
 msgid "Filename (corrupted ICC data type)"
 msgstr ""
 
-#: icc_examin.cpp:1198
+#: icc_examin.cpp:1207
 msgid "found no content for"
 msgstr ""
 
-#: icc_examin.cpp:1201
+#: icc_examin.cpp:1210
 msgid "Internal error"
 msgstr ""
 
-#: icc_examin.cpp:1204
+#: icc_examin.cpp:1213
 msgid "No. Tag   Type   Size Description"
 msgstr ""
 
@@ -354,15 +354,15 @@ msgstr ""
 msgid "RGB primaries"
 msgstr ""
 
-#: icc_fenster.cpp:227
+#: icc_fenster.cpp:230
 msgid "Log:"
 msgstr ""
 
-#: icc_fenster.cpp:229 icc_fenster.cpp:293 icc_betrachter.cxx:770
+#: icc_fenster.cpp:232 icc_fenster.cpp:297 icc_betrachter.cxx:770
 msgid "Yes"
 msgstr "Oui"
 
-#: icc_fenster.cpp:290
+#: icc_fenster.cpp:294
 msgid "Information:"
 msgstr ""
 
@@ -498,7 +498,7 @@ msgstr "Saturation"
 msgid "Absolute Colorimetric"
 msgstr "Colorimétrie absolue"
 
-#: icc_helfer.cpp:394 icc_profile_tags.cpp:1172 icc_profile_tags.cpp:1179
+#: icc_helfer.cpp:394 icc_profile_tags.cpp:1176 icc_profile_tags.cpp:1183
 msgid "Colour"
 msgstr "Couleur"
 
@@ -1438,7 +1438,7 @@ msgstr ""
 msgid "Device Colours"
 msgstr ""
 
-#: icc_profile_tags.cpp:525
+#: icc_profile_tags.cpp:529
 msgid "profiles where originally involved"
 msgstr ""
 

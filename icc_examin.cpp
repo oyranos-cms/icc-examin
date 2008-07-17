@@ -74,6 +74,7 @@ using namespace icc_examin_ns;
 #endif
 
 ICCexamin * icc_examin = 0;
+
 int iccMessageFunc( int code, const char * format, ... )
 {
   char* text = 0, *pos = 0;
@@ -112,14 +113,19 @@ int iccMessageFunc( int code, const char * format, ... )
   pos++;
   *pos = 0;
 
-  icc_examin_ns::lock(__FILE__,__LINE__);
   icc_examin_ns::log( text, code );
-  icc_examin_ns::unlock(0, __FILE__,__LINE__);
 
   if(text) free( text );
 
   return 0;
 }
+/* just a wrapper */
+int lcmsMessageFunc( int code, const char * txt )
+{
+  iccMessageFunc( code, txt );
+  return 0;
+}
+
 
 ICCexamin::ICCexamin ()
 { DBG_PROG_START
@@ -151,6 +157,9 @@ ICCexamin::ICCexamin ()
 
   oyThreadLockingSet( iccStruct_LockCreate, iccLockRelease, iccLock, iccUnLock);
   oyMessageFuncSet( iccMessageFunc );
+
+  cmsErrorAction( LCMS_ERRC_WARNING );
+  cmsSetErrorHandler( lcmsMessageFunc );
 
   alle_gl_fenster = new icc_examin_ns::EinModell;
   icc_betrachter = new ICCfltkBetrachter;
@@ -227,8 +236,6 @@ ICCexamin::start (int argc, char** argv)
 
   fl_translate_menue( icc_betrachter->menu_menueleiste );
   fl_translate_menue( icc_betrachter->menu_DD_menueleiste );
-
-  cmsErrorAction( LCMS_ERRC_WARNING );
 
   icc_betrachter->init( argc, argv );
 

@@ -961,7 +961,7 @@ std::string    vrmlScene          ( icc_examin_ns::ICCThreadList<ICCnetz> netze,
 
       for (i = 0; i < n; ++i)
       {
-          c = oyNamedColours_GetRef( colours, i );
+          c = oyNamedColours_Get( colours, i );
           XYZ = oyNamedColour_GetXYZConst( c );
 
           oyXYZ2Lab( XYZ, lab );
@@ -993,7 +993,7 @@ std::string    vrmlScene          ( icc_examin_ns::ICCThreadList<ICCnetz> netze,
 
         if(name.size())
           tn = name.c_str();
-        c = oyNamedColours_GetRef( colours, i );
+        c = oyNamedColours_Get( colours, i );
         tp = oyNamedColour_GetName( c, oyNAME_NICK, 1 );
         if(!tp)
           tp = "";

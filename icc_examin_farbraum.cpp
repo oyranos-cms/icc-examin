@@ -110,7 +110,7 @@ ICCexamin::messwertLese (int n,
             for(unsigned int i = 0; i < n_farben; ++i)
             {
               if(profile[n]->data_type == ICCprofile::ICCmeasurementDATA)
-                c = oyNamedColours_GetRef( *list, i );
+                c = oyNamedColours_Get( *list, i );
               else
                 c = messung.getCmmColour(i);
 
@@ -123,7 +123,7 @@ ICCexamin::messwertLese (int n,
             for(unsigned int i = 0; i < n_farben; ++i)
             {
               if(profile[n]->data_type == ICCprofile::ICCmeasurementDATA)
-                c = oyNamedColours_GetRef( nl, i );
+                c = oyNamedColours_Get( nl, i );
               else
                 c = messung.getCmmColour(i);
 
@@ -357,14 +357,14 @@ ICCexamin::farbenLese  ( int n,
   if(n_old == n_farben * 2 && *list)
     for(unsigned int i = 0; i < n_farben; ++i)
     {
-      c = oyNamedColours_GetRef( *list, i );
+      c = oyNamedColours_Get( *list, i );
       if(c)
         nl = oyNamedColours_MoveIn( nl, &c, -1 );
     }
   else
     for(unsigned int i = 0; i < n_farben; ++i)
     {
-      c = oyNamedColours_GetRef( nl, i );
+      c = oyNamedColours_Get( nl, i );
       if(c)
         nl = oyNamedColours_MoveIn( nl, &c, -1 );
     }

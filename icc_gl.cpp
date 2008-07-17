@@ -1711,7 +1711,7 @@ GL_Ansicht::punkteAuffrischen()
               glLineWidth(strich2*strichmult);
               // draw lines
               glBegin(GL_LINES);
-                c = oyNamedColours_GetRef( colours, i );
+                c = oyNamedColours_Get( colours, i );
                 in->data = (void*) oyNamedColour_GetXYZConst( c );
 
                 if(!zeig_punkte_als_messwerte)
@@ -1728,7 +1728,7 @@ GL_Ansicht::punkteAuffrischen()
                 iccPoint3d ( projection, lab, 0 );
                 oyNamedColour_Release( &c );
 
-                c = oyNamedColours_GetRef( colours, n + i );
+                c = oyNamedColours_Get( colours, n + i );
                 in->data = (void*) oyNamedColour_GetXYZConst( c );
                 if(!zeig_punkte_als_messwerte)
                   glColor4d(1., .6, .6, 1.0 );
@@ -1760,7 +1760,7 @@ GL_Ansicht::punkteAuffrischen()
                glBegin(GL_POINTS);
                  for (int i = 0; i < n; ++i)
                  {
-                   c = oyNamedColours_GetRef( colours, i );
+                   c = oyNamedColours_Get( colours, i );
                    in->data = (void*) oyNamedColour_GetXYZConst( c );
                    if(grau)
                      rgba[0]= rgba[1]= rgba[2] = schattierung;
@@ -1787,7 +1787,7 @@ GL_Ansicht::punkteAuffrischen()
             for (int i = 0; i < n; ++i)
             {
                  glPushMatrix();
-                   c = oyNamedColours_GetRef( colours, i );
+                   c = oyNamedColours_Get( colours, i );
                    in->data = (void*) oyNamedColour_GetXYZConst( c );
                    if(grau)
                      rgba[0]= rgba[1]= rgba[2] = schattierung;
@@ -1808,7 +1808,7 @@ GL_Ansicht::punkteAuffrischen()
             if(zeig_punkte_als_messwerte)
                  for (int i = 0; i < n; ++i)
                  {
-                   c = oyNamedColours_GetRef( colours, i );
+                   c = oyNamedColours_Get( colours, i );
                    in->data = (void*) oyNamedColour_GetXYZConst( c );
                    oyXYZ2Lab( (const double*) in->data, lab );
                    lab[0] = 0;
@@ -3515,6 +3515,9 @@ GL_Ansicht::handle( int event )
 void
 GL_Ansicht::tastatur(int e)
 { DBG_MEM_START
+  if(!icc_examin->laeuft())
+    return;
+
   Fl_Widget * wb = Fl::belowmouse();
   if(visible())
   if( this == wb )
