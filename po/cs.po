@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: icc_examin\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2008-07-17 21:20+0200\n"
+"POT-Creation-Date: 2008-07-18 08:32+0200\n"
 "PO-Revision-Date: 2008-05-13 19:38+0200\n"
 "Last-Translator: Milan Knizek <knizek@volny.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
@@ -245,19 +245,19 @@ msgstr "VAROVANI"
 msgid "!!! ERROR"
 msgstr "!!! CHYBA"
 
-#: icc_examin.cpp:247
+#: icc_examin.cpp:245
 msgid "Gamut selector"
 msgstr "Volba gamutu"
 
-#: icc_examin.cpp:337 icc_examin.cpp:1257
+#: icc_examin.cpp:335 icc_examin.cpp:1259
 msgid "loaded"
 msgstr "nacteno"
 
-#: icc_examin.cpp:343
+#: icc_examin.cpp:341
 msgid "Ready"
 msgstr "Pripraveno"
 
-#: icc_examin.cpp:392
+#: icc_examin.cpp:390
 msgid ""
 "ICC colour profiles (*.{I,i}{C,c}{M,m,C,c})\tMeasurement (*.{txt,it8,IT8,RGB,"
 "CMYK,ti*,cgats,CIE,cie,nCIE,oRPT,DLY,LAB,Q60})\tArgyll Gamuts (*.{wrl,vrml}"
@@ -265,47 +265,47 @@ msgstr ""
 "ICC barvove profily (*.{I,i}{C,c}{M,m,C,c})\tMereni (*.{txt,it8,IT8,RGB,CMYK,"
 "ti*,cgats,CIE,cie,nCIE,oRPT,DLY,LAB,Q60})\tGamuty Argyll (*.{wrl,vrml}"
 
-#: icc_examin.cpp:392
+#: icc_examin.cpp:390
 msgid "Which ICC profile?"
 msgstr "Ktery ICC profil?"
 
-#: icc_examin.cpp:786 icc_examin.cpp:789
+#: icc_examin.cpp:788 icc_examin.cpp:791
 msgid "Compare Measurement <-> Profile Colours"
 msgstr "Porovnat Mereni <-> Barvy profilu"
 
-#: icc_examin.cpp:788
+#: icc_examin.cpp:790
 msgid "none"
 msgstr "zadny"
 
-#: icc_examin.cpp:806 icc_examin.cpp:810
+#: icc_examin.cpp:808 icc_examin.cpp:812
 msgid "Gamut View"
 msgstr "Zobrazeni gamutu"
 
-#: icc_examin.cpp:861 icc_gl.h:274
+#: icc_examin.cpp:863 icc_gl.h:274
 msgid "not available"
 msgstr "neni k dispozici"
 
-#: icc_examin.cpp:1197
+#: icc_examin.cpp:1199
 msgid "Filename (ICC data type)"
 msgstr "Nazev souboru (ICC typ)"
 
-#: icc_examin.cpp:1200
+#: icc_examin.cpp:1202
 msgid "Filename (other data type)"
 msgstr "Jmeno souboru (jiny typ)"
 
-#: icc_examin.cpp:1202
+#: icc_examin.cpp:1204
 msgid "Filename (corrupted ICC data type)"
 msgstr "Jmeno souboru (poruseny typ ICC dat)"
 
-#: icc_examin.cpp:1207
+#: icc_examin.cpp:1209
 msgid "found no content for"
 msgstr "nenalezen zadny obsah pro"
 
-#: icc_examin.cpp:1210
+#: icc_examin.cpp:1212
 msgid "Internal error"
 msgstr "Interni chyba"
 
-#: icc_examin.cpp:1213
+#: icc_examin.cpp:1215
 #, fuzzy
 msgid "No. Tag   Type   Size Description"
 msgstr "C. Tag Typ Vel. Popis"
@@ -1455,23 +1455,23 @@ msgstr "Barvy zarizeni"
 msgid "profiles where originally involved"
 msgstr "profily byly puvodne pouzity"
 
-#: icc_ueber.cpp:67 icc_betrachter.cxx:722
+#: icc_ueber.cpp:68 icc_betrachter.cxx:722
 msgid "About ICC Examin"
 msgstr "O programu ICC Examin"
 
-#: icc_ueber.cpp:77
+#: icc_ueber.cpp:78
 msgid "ICC Examin Version"
 msgstr "ICC Examin Verze"
 
-#: icc_ueber.cpp:96
+#: icc_ueber.cpp:91
 msgid "Date"
 msgstr "Datum"
 
-#: icc_ueber.cpp:101
+#: icc_ueber.cpp:96
 msgid "internet: www.behrmann.name <br>"
 msgstr "internet: www.behrmann.name <br>"
 
-#: icc_ueber.cpp:107
+#: icc_ueber.cpp:102
 #, fuzzy
 msgid ""
 "ICC Examin is a viewer for colour profiles according to ICC standard  - www."
@@ -1480,7 +1480,7 @@ msgstr ""
 "ICC Examin je prohlizec pro barvove profily dle ICC standardu - www.color."
 "org. V soucasnosti jsou podporovany profily verze 2."
 
-#: icc_ueber.cpp:114
+#: icc_ueber.cpp:109
 msgid ""
 "The appliance of colour profiles shall help to achive an easy colour data "
 "exchange, regardless which application or what kind of operating system is "
@@ -1497,7 +1497,7 @@ msgstr ""
 "barevne transformace z jednoho na druhe zarizeni zavisi predevsim na kvalite "
 "mereni barev a pouziteho algoritmu pro tvorbu profilu."
 
-#: icc_ueber.cpp:126
+#: icc_ueber.cpp:121
 msgid ""
 "Colour profiles are often available from manufacturers of optical devices "
 "(digital camera, scanner, printer). With ICC Examin you can get an "
@@ -1512,7 +1512,7 @@ msgstr ""
 "zmerena data, ICC Examin muze vygenerovat report kvality. Odchylka vypoctena "
 "ze zmerenych dat je tez zobrazena v tri rozmernem prohlizeci gamutu.<br>"
 
-#: icc_ueber.cpp:137
+#: icc_ueber.cpp:132
 msgid ""
 "The internal colour transformations are currently realised with functions of "
 "the littleCMS program library."
@@ -1520,16 +1520,16 @@ msgstr ""
 "Interni barvove transformace jsou realizovany funkcemi knihoven programu "
 "LittleCMS."
 
-#: icc_ueber.cpp:155 icc_betrachter.cxx:645 icc_betrachter.cxx:647
+#: icc_ueber.cpp:150 icc_betrachter.cxx:645 icc_betrachter.cxx:647
 #: icc_betrachter.cxx:741
 msgid "Help"
 msgstr "Napoveda"
 
-#: icc_ueber.cpp:347 icc_betrachter.cxx:648 icc_betrachter.cxx:747
+#: icc_ueber.cpp:342 icc_betrachter.cxx:648 icc_betrachter.cxx:747
 msgid "License"
 msgstr "Licence"
 
-#: icc_ueber.cpp:353
+#: icc_ueber.cpp:348
 #, fuzzy
 msgid ""
 "    ICC Examin is licensed under the GPL version 2.    Especially all icc_* "
@@ -1540,11 +1540,11 @@ msgstr ""
 "podlehaji licenci GPL.<br> Ostatni zdrojove soubory mohou obsahovat "
 "odchylene licence, ktera jsou patrne z hlavicek souboru."
 
-#: icc_ueber.cpp:758
+#: icc_ueber.cpp:753
 msgid "Acknowledgement"
 msgstr "Podekovani"
 
-#: icc_ueber.cpp:764
+#: icc_ueber.cpp:759
 msgid ""
 "My cordially thank is especially dedicated to Marti Maria and the many "
 "writers of the Lcms-user email list."
@@ -1552,63 +1552,63 @@ msgstr ""
 "Muj srdecny dik je zvlaste venovan Marti Mariovi a mnoha prispevatelum "
 "postovni konference LCMS-user."
 
-#: icc_ueber.cpp:778
+#: icc_ueber.cpp:773
 msgid "ICC Examin uses following libraries:<br>\n"
 msgstr "ICC Examin pouziva nasledujici knihovny:<br>\n"
 
-#: icc_ueber.cpp:783
+#: icc_ueber.cpp:778
 #, fuzzy
 msgid "  FLTK: Bill Spitzack and others www.fltk.org<br>\n"
 msgstr " FLTK: Bill Spitzack a dalsi www.fltk.org<br>\n"
 
-#: icc_ueber.cpp:790
+#: icc_ueber.cpp:785
 #, fuzzy
 msgid "  FLU: Jason Bryan www.osc.edu/~jbryan/FLU/<br>\n"
 msgstr " FLU: Jason Bryan www.osc.edu/~jbryan/FLU/<br>\n"
 
-#: icc_ueber.cpp:797
+#: icc_ueber.cpp:792
 #, fuzzy
 msgid "  littleCMS: Marti Maria www.littlecms.com<br>\n"
 msgstr " littleCMS: Marti Maria www.littlecms.com<br>\n"
 
-#: icc_ueber.cpp:808
+#: icc_ueber.cpp:803
 #, fuzzy
 msgid ""
 "  FTGL: Henry Maddocks homepages.paradise.net.nz/henryj/code/#FTGL<br>\n"
 msgstr ""
 " FTGL: Henry Maddocks homepages.paradise.net.nz/henryj/code/#FTGL<br>\n"
 
-#: icc_ueber.cpp:816
+#: icc_ueber.cpp:811
 msgid ""
 "integrated sources, lock at the according files for licence conditions:<br>\n"
 msgstr "vclenene zdroje, viz prislusne soubory s podminkami licenci:<br>\n"
 
-#: icc_ueber.cpp:821
+#: icc_ueber.cpp:816
 #, fuzzy
 msgid "  agv 3D Navigation: Philip Winston<br>\n"
 msgstr " agv 3D Navigation: Philip Winston<br>\n"
 
-#: icc_ueber.cpp:827
+#: icc_ueber.cpp:822
 #, fuzzy
 msgid "  bsp rendering: Norman Chin<br>\n"
 msgstr " bsp vykreslovani: Norman Chin<br>\n"
 
-#: icc_ueber.cpp:836
+#: icc_ueber.cpp:831
 msgid "For the visualisation of gamut (external):<br>\n"
 msgstr "Pro vizualizaci gamutu (externe):<br>\n"
 
-#: icc_ueber.cpp:841
+#: icc_ueber.cpp:836
 #, fuzzy
 msgid ""
 "  argyll: Greame Gill web.access.net.au/argyll/argyllcms.html<br<br><br>\n"
 msgstr ""
 " argyll: Greame Gill web.access.net.au/argyll/argyllcms.html<br><br><br>\n"
 
-#: icc_ueber.cpp:855
+#: icc_ueber.cpp:850
 msgid "Project"
 msgstr "Projekt"
 
-#: icc_ueber.cpp:857
+#: icc_ueber.cpp:852
 msgid "Documentation"
 msgstr "Dokumentace"
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2008-07-17 21:20+0200\n"
+"POT-Creation-Date: 2008-07-18 08:40+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -247,65 +247,65 @@ msgstr ""
 msgid "!!! ERROR"
 msgstr ""
 
-#: icc_examin.cpp:247
+#: icc_examin.cpp:245
 msgid "Gamut selector"
 msgstr ""
 
-#: icc_examin.cpp:337 icc_examin.cpp:1257
+#: icc_examin.cpp:335 icc_examin.cpp:1259
 msgid "loaded"
 msgstr ""
 
-#: icc_examin.cpp:343
+#: icc_examin.cpp:341
 msgid "Ready"
 msgstr ""
 
-#: icc_examin.cpp:392
+#: icc_examin.cpp:390
 msgid ""
 "ICC colour profiles (*.{I,i}{C,c}{M,m,C,c})\tMeasurement (*.{txt,it8,IT8,RGB,"
 "CMYK,ti*,cgats,CIE,cie,nCIE,oRPT,DLY,LAB,Q60})\tArgyll Gamuts (*.{wrl,vrml}"
 msgstr ""
 
-#: icc_examin.cpp:392
+#: icc_examin.cpp:390
 msgid "Which ICC profile?"
 msgstr ""
 
-#: icc_examin.cpp:786 icc_examin.cpp:789
+#: icc_examin.cpp:788 icc_examin.cpp:791
 msgid "Compare Measurement <-> Profile Colours"
 msgstr ""
 
-#: icc_examin.cpp:788
+#: icc_examin.cpp:790
 msgid "none"
 msgstr ""
 
-#: icc_examin.cpp:806 icc_examin.cpp:810
+#: icc_examin.cpp:808 icc_examin.cpp:812
 msgid "Gamut View"
 msgstr ""
 
-#: icc_examin.cpp:861 icc_gl.h:274
+#: icc_examin.cpp:863 icc_gl.h:274
 msgid "not available"
 msgstr ""
 
-#: icc_examin.cpp:1197
+#: icc_examin.cpp:1199
 msgid "Filename (ICC data type)"
 msgstr ""
 
-#: icc_examin.cpp:1200
+#: icc_examin.cpp:1202
 msgid "Filename (other data type)"
 msgstr ""
 
-#: icc_examin.cpp:1202
+#: icc_examin.cpp:1204
 msgid "Filename (corrupted ICC data type)"
 msgstr ""
 
-#: icc_examin.cpp:1207
+#: icc_examin.cpp:1209
 msgid "found no content for"
 msgstr ""
 
-#: icc_examin.cpp:1210
+#: icc_examin.cpp:1212
 msgid "Internal error"
 msgstr ""
 
-#: icc_examin.cpp:1213
+#: icc_examin.cpp:1215
 msgid "No. Tag   Type   Size Description"
 msgstr ""
 
@@ -1439,29 +1439,29 @@ msgstr ""
 msgid "profiles where originally involved"
 msgstr ""
 
-#: icc_ueber.cpp:67 icc_betrachter.cxx:722
+#: icc_ueber.cpp:68 icc_betrachter.cxx:722
 msgid "About ICC Examin"
 msgstr ""
 
-#: icc_ueber.cpp:77
+#: icc_ueber.cpp:78
 msgid "ICC Examin Version"
 msgstr ""
 
-#: icc_ueber.cpp:96
+#: icc_ueber.cpp:91
 msgid "Date"
 msgstr ""
 
-#: icc_ueber.cpp:101
+#: icc_ueber.cpp:96
 msgid "internet: www.behrmann.name <br>"
 msgstr ""
 
-#: icc_ueber.cpp:107
+#: icc_ueber.cpp:102
 msgid ""
 "ICC Examin is a viewer for colour profiles according to ICC standard  - www."
 "color.org . At the moment version 2 profiles are supported."
 msgstr ""
 
-#: icc_ueber.cpp:114
+#: icc_ueber.cpp:109
 msgid ""
 "The appliance of colour profiles shall help to achive an easy colour data "
 "exchange, regardless which application or what kind of operating system is "
@@ -1472,7 +1472,7 @@ msgid ""
 "creation."
 msgstr ""
 
-#: icc_ueber.cpp:126
+#: icc_ueber.cpp:121
 msgid ""
 "Colour profiles are often available from manufacturers of optical devices "
 "(digital camera, scanner, printer). With ICC Examin you can get an "
@@ -1482,86 +1482,86 @@ msgid ""
 "three dimensional gamut viewer.<br>"
 msgstr ""
 
-#: icc_ueber.cpp:137
+#: icc_ueber.cpp:132
 msgid ""
 "The internal colour transformations are currently realised with functions of "
 "the littleCMS program library."
 msgstr ""
 
-#: icc_ueber.cpp:155 icc_betrachter.cxx:645 icc_betrachter.cxx:647
+#: icc_ueber.cpp:150 icc_betrachter.cxx:645 icc_betrachter.cxx:647
 #: icc_betrachter.cxx:741
 msgid "Help"
 msgstr ""
 
-#: icc_ueber.cpp:347 icc_betrachter.cxx:648 icc_betrachter.cxx:747
+#: icc_ueber.cpp:342 icc_betrachter.cxx:648 icc_betrachter.cxx:747
 msgid "License"
 msgstr ""
 
-#: icc_ueber.cpp:353
+#: icc_ueber.cpp:348
 msgid ""
 "    ICC Examin is licensed under the GPL version 2.    Especially all icc_* "
 "files are licensed under the GPL.<br>    The other source files may contain "
 "devergine licenses, which are detectable from file headers. "
 msgstr ""
 
-#: icc_ueber.cpp:758
+#: icc_ueber.cpp:753
 msgid "Acknowledgement"
 msgstr ""
 
-#: icc_ueber.cpp:764
+#: icc_ueber.cpp:759
 msgid ""
 "My cordially thank is especially dedicated to Marti Maria and the many "
 "writers of the Lcms-user email list."
 msgstr ""
 
-#: icc_ueber.cpp:778
+#: icc_ueber.cpp:773
 msgid "ICC Examin uses following libraries:<br>\n"
 msgstr ""
 
-#: icc_ueber.cpp:783
+#: icc_ueber.cpp:778
 msgid "  FLTK: Bill Spitzack and others www.fltk.org<br>\n"
 msgstr ""
 
-#: icc_ueber.cpp:790
+#: icc_ueber.cpp:785
 msgid "  FLU: Jason Bryan www.osc.edu/~jbryan/FLU/<br>\n"
 msgstr ""
 
-#: icc_ueber.cpp:797
+#: icc_ueber.cpp:792
 msgid "  littleCMS: Marti Maria www.littlecms.com<br>\n"
 msgstr ""
 
-#: icc_ueber.cpp:808
+#: icc_ueber.cpp:803
 msgid ""
 "  FTGL: Henry Maddocks homepages.paradise.net.nz/henryj/code/#FTGL<br>\n"
 msgstr ""
 
-#: icc_ueber.cpp:816
+#: icc_ueber.cpp:811
 msgid ""
 "integrated sources, lock at the according files for licence conditions:<br>\n"
 msgstr ""
 
-#: icc_ueber.cpp:821
+#: icc_ueber.cpp:816
 msgid "  agv 3D Navigation: Philip Winston<br>\n"
 msgstr ""
 
-#: icc_ueber.cpp:827
+#: icc_ueber.cpp:822
 msgid "  bsp rendering: Norman Chin<br>\n"
 msgstr ""
 
-#: icc_ueber.cpp:836
+#: icc_ueber.cpp:831
 msgid "For the visualisation of gamut (external):<br>\n"
 msgstr ""
 
-#: icc_ueber.cpp:841
+#: icc_ueber.cpp:836
 msgid ""
 "  argyll: Greame Gill web.access.net.au/argyll/argyllcms.html<br<br><br>\n"
 msgstr ""
 
-#: icc_ueber.cpp:855
+#: icc_ueber.cpp:850
 msgid "Project"
 msgstr ""
 
-#: icc_ueber.cpp:857
+#: icc_ueber.cpp:852
 msgid "Documentation"
 msgstr ""
 
