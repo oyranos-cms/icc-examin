@@ -693,8 +693,12 @@ ICCexamin::nachricht( Modell* modell , int info )
 
       farbenLese( profile.aktuell(), lab_dv, chan_dv, names );
       n = names.size();
-      int mult = lab_dv.size()/3/names.size();
-      int n_ = n*3*mult;
+      int mult = 0;
+      int n_ = 0;
+
+      if(n)
+        mult = lab_dv.size()/3/names.size();
+      n_ = n*3*mult;
 
       //double lab[3];
       oyNamedColour_GetColourStd ( gl->mouse_3D_hit, oyEDITING_LAB, cielab1,
