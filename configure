@@ -48,7 +48,7 @@ VERSION_L=`echo $VERSION_L | sed 's/^0*//g'`
 
 cwdebug=0
 debug=0
-verbose=0
+verbose=1
 nodeps=0
 
 # find a suitable fltk-config script
@@ -143,9 +143,9 @@ if [ $# -gt 0 ]; then
     if [ "`echo \"$1\" | sed s/\"--$switch\"//`" != "$1" ]; then
       debug="1"
     fi
-    switch=enable-verbose
+    switch=disable-verbose
     if [ "`echo \"$1\" | sed s/\"--$switch\"//`" != "$1" ]; then
-      verbose="1"
+      verbose="0"
     fi
     switch=disable-dependency-tracking
     if [ "`echo \"$1\" | sed s/\"--$switch\"//`" != "$1" ]; then
@@ -167,7 +167,7 @@ if [ $# -gt 0 ]; then
       echo ""
       echo "   --with-fltk-config=[fltk-config]     alternative fltk version"
       echo "   --enable-debug                       debug version"
-      echo "   --enable-verbose                     verbose compiling"
+      echo "   --disable-verbose                    non verbose compiling"
       echo "   --disable-dependency-tracking        no dependencies [default check]"
       echo "   --enable-cwdebug=[\$cwdebugdir]       deploy cwlibary for debugging"
       echo "   --with-rpath                         use rpath for ELF linking"
