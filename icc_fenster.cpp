@@ -216,14 +216,14 @@ static Fl_Text_Display *display_log=(Fl_Text_Display*)0;
 static Fl_Text_Buffer *buffer_log=(Fl_Text_Buffer*)0;
 MyFl_Double_Window *log_window=(MyFl_Double_Window*)0;
 int log_window_poped = 0;
-static ICCThreadList<int> log_lock_;
+static ICCThreadList<int> icc_log_lock_;
 
 MyFl_Double_Window*
 log_ (std::string text, int code)
 {
   int log_window_new = 0;
 
-  log_lock_.frei(false);
+  icc_log_lock_.frei(false);
 
   if(icc_examin && icc_examin->laeuft() && !log_window)
   {
@@ -280,11 +280,13 @@ log_ (std::string text, int code)
        !log_window_poped)
     {
       log_window_poped = 1;
+      while(!icc_examin->frei())
+        icc_examin_ns::sleep(0.01);
       log_window->show();
     }
   }
 
-  log_lock_.frei(true);
+  icc_log_lock_.frei(true);
   return log_window;
 }
 
