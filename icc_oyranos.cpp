@@ -346,7 +346,7 @@ Oyranos::moni_test_ (int x, int y)
     else
       v_block.zeit( icc_examin_ns::zeitSekunden() );
 
-    const char* oy_moni_name = oyProfile_GetText( oy_moni, oyNAME_NAME );
+    const char* oy_moni_name = oyProfile_GetFileName( oy_moni, 0 );
 
     if(oy_moni_name)
       v_block = oy_moni_name;
