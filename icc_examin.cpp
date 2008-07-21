@@ -75,14 +75,23 @@ using namespace icc_examin_ns;
 
 ICCexamin * icc_examin = 0;
 
-int iccMessageFunc( int code, const char * format, ... )
+int iccMessageFunc( int code, const oyStruct_s * context, const char * format, ... )
 {
   char* text = 0, *pos = 0;
   va_list list;
   int popup = -1;
+  const char * type_name = "";
+  int id = -1;
 
   if(code == oyMSG_DBG && !icc_debug)
     return 0;
+
+
+  if(context && oyOBJECT_TYPE_NONE < context->type_)
+  {
+    type_name = oyStruct_TypeToText( context );
+    id = oyObject_GetId( context->oy_ );
+  }
 
   text = (char*)calloc(sizeof(char), 4096);
   text[0] = 0;
@@ -105,8 +114,11 @@ int iccMessageFunc( int code, const char * format, ... )
   }
 
   va_start( list, format);
-  vsnprintf( &text[strlen(text)], 4096, format, list);
+  vsnprintf( &text[strlen(text)], 4096 - strlen(text), format, list);
   va_end  ( list );
+
+
+  snprintf( &text[strlen(text)], 4096 - strlen(text), "%s[%d] ",type_name,id );
 
   pos = &text[strlen(text)];
   *pos = '\n';
@@ -122,7 +134,7 @@ int iccMessageFunc( int code, const char * format, ... )
 /* just a wrapper */
 int lcmsMessageFunc( int code, const char * txt )
 {
-  iccMessageFunc( code, txt );
+  iccMessageFunc( code, 0, txt );
   return 0;
 }
 
