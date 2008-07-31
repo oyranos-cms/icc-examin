@@ -87,7 +87,7 @@ int iccMessageFunc( int code, const oyStruct_s * context, const char * format, .
     return 0;
 
 
-  if(context && oyOBJECT_TYPE_NONE < context->type_)
+  if(context && oyOBJECT_NONE < context->type_)
   {
     type_name = oyStruct_TypeToText( context );
     id = oyObject_GetId( context->oy_ );

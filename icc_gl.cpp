@@ -1661,7 +1661,7 @@ GL_Ansicht::punkteAuffrischen()
         {
           oyNamedColours_s * colours = 
             (oyNamedColours_s*) oyStructList_GetRefType( colours_, j,
-                                                oyOBJECT_TYPE_NAMED_COLOURS_S );
+                                                oyOBJECT_NAMED_COLOURS_S );
 
           if(!colours)
           {

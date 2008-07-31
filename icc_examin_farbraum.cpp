@@ -391,7 +391,7 @@ ICCexamin::farbraum (int n)
   oyNamedColours_s * ncl = 0;
   if(oyStructList_Count( namedColours ) > n)
     ncl = (oyNamedColours_s*) oyStructList_GetRefType( namedColours, n,
-                                   oyOBJECT_TYPE_NAMED_COLOURS_S );
+                                   oyOBJECT_NAMED_COLOURS_S );
 
   DBG_PROG_V( n <<" "<< profile.size()<<" "<<profile.aktuell() )
   DBG_PROG_V( profile[n]->filename() )

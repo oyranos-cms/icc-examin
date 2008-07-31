@@ -932,7 +932,7 @@ std::string    vrmlScene          ( icc_examin_ns::ICCThreadList<ICCnetz> netze,
 
       oyNamedColours_s * colours = 
            (oyNamedColours_s*) oyStructList_GetRefType( colour_lists, j,
-                                                oyOBJECT_TYPE_NAMED_COLOURS_S );
+                                                oyOBJECT_NAMED_COLOURS_S );
 
       int n = oyNamedColours_Count( colours );
       int aktiv = 1;
