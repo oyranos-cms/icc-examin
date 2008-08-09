@@ -36,7 +36,7 @@
 oyranos::oyPointer  
 icc_examin_ns::iccStruct_LockCreate ( oyranos::oyStruct_s * obj )
 {
-  DBG_PROG_START
+  DBG_THREAD_START
   int error = !obj;
   oyranos::oyPointer thread_lock = 0;
 
@@ -53,7 +53,7 @@ icc_examin_ns::iccStruct_LockCreate ( oyranos::oyStruct_s * obj )
   } else
     thread_lock = m;
 
-  DBG_PROG_ENDE
+  DBG_THREAD_ENDE
   return thread_lock;
 }
 
@@ -63,7 +63,7 @@ icc_examin_ns::iccLockRelease ( oyranos::oyPointer         thread_lock,
                                        int                 line )
 {
   int error = !thread_lock;
-  DBG_PROG_START
+  DBG_THREAD_START
   DBG_THREAD_S( marker<<":"<<line )
 
   if(error)
@@ -105,7 +105,7 @@ icc_examin_ns::iccLockRelease ( oyranos::oyPointer         thread_lock,
   }
 
 
-  DBG_PROG_ENDE
+  DBG_THREAD_ENDE
 }
 void       
 icc_examin_ns::iccLock      ( oyranos::oyPointer           thread_lock,
@@ -113,7 +113,7 @@ icc_examin_ns::iccLock      ( oyranos::oyPointer           thread_lock,
                                        int                 line )
 {
   int error = !thread_lock;
-  DBG_PROG_START
+  DBG_THREAD_START
   DBG_THREAD_S( marker<<":"<<line )
 
   static const char * last_marker = marker;
@@ -148,7 +148,7 @@ icc_examin_ns::iccLock      ( oyranos::oyPointer           thread_lock,
     }
   }
 
-  DBG_PROG_ENDE
+  DBG_THREAD_ENDE
 }
 void       
 icc_examin_ns::iccUnLock    ( oyranos::oyPointer           thread_lock,
@@ -156,7 +156,7 @@ icc_examin_ns::iccUnLock    ( oyranos::oyPointer           thread_lock,
                                        int                 line )
 {
   int error = !thread_lock;
-  DBG_PROG_START
+  DBG_THREAD_START
   DBG_THREAD_S( marker<<":"<<line )
 
   if(error)
@@ -178,7 +178,7 @@ icc_examin_ns::iccUnLock    ( oyranos::oyPointer           thread_lock,
     }
   }
 
-  DBG_PROG_ENDE
+  DBG_THREAD_ENDE
 }
 
 

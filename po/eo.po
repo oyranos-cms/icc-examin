@@ -2,12 +2,13 @@
 # Esperanto translations for icc_examin
 # Copyright (C) 2005 Kai-Uwe Behrmann
 # Kai-Uwe Behrmann <ku.b@gmx.de>, 2005.
+# This file is distributed under the BSD licence (http://www.opensource.org/licenses/bsd-license.php
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2008-07-19 12:02+0200\n"
+"POT-Creation-Date: 2008-08-09 09:32+0200\n"
 "PO-Revision-Date: 2005-08-13 17:35+0200\n"
 "Last-Translator: Kai-Uwe Behrmann\n"
 "Language-Team:  <eo@li.org>\n"
@@ -355,15 +356,15 @@ msgstr ""
 msgid "RGB primaries"
 msgstr ""
 
-#: icc_fenster.cpp:230
+#: icc_fenster.cpp:243
 msgid "Log:"
 msgstr ""
 
-#: icc_fenster.cpp:232 icc_fenster.cpp:299 icc_betrachter.cxx:770
+#: icc_fenster.cpp:245 icc_fenster.cpp:312 icc_betrachter.cxx:770
 msgid "Yes"
 msgstr "Jes"
 
-#: icc_fenster.cpp:296
+#: icc_fenster.cpp:309
 msgid "Information:"
 msgstr ""
 

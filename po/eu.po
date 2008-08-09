@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cinepaint_icc-examin_eu\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2008-07-19 12:02+0200\n"
+"POT-Creation-Date: 2008-08-09 09:32+0200\n"
 "PO-Revision-Date: 2007-11-07 11:11+0100\n"
 "Last-Translator: Iñaki Larrañaga Murgoitio <dooteo@zundan.com>\n"
 "Language-Team: Basque <itzulpena@euskalgnu.org>\n"
@@ -358,15 +358,15 @@ msgstr "hutsa"
 msgid "RGB primaries"
 msgstr "GBU primarioak"
 
-#: icc_fenster.cpp:230
+#: icc_fenster.cpp:243
 msgid "Log:"
 msgstr ""
 
-#: icc_fenster.cpp:232 icc_fenster.cpp:299 icc_betrachter.cxx:770
+#: icc_fenster.cpp:245 icc_fenster.cpp:312 icc_betrachter.cxx:770
 msgid "Yes"
 msgstr "Bai"
 
-#: icc_fenster.cpp:296
+#: icc_fenster.cpp:309
 msgid "Information:"
 msgstr "Informazioa:"
 

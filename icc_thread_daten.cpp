@@ -35,8 +35,7 @@
 
 void
 icc_examin_ns::ThreadDaten::frei(int freigeben)
-{ DBG_PROG_START
-
+{
   if(freigeben)
   {
     iccThreadMutexUnLock_m( &mutex_ );
@@ -55,7 +54,7 @@ icc_examin_ns::ThreadDaten::frei(int freigeben)
     {
       if(pth_current == pth_old)
       {
-        DBG_PROG_S( dbgThreadId(pth) << " request from same thread " << zahl_ )
+        DBG_THREAD_S( dbgThreadId(pth) << " request from same thread " << zahl_ )
         break;
       }
       icc_examin_ns::sleep(0.01);
@@ -85,15 +84,13 @@ icc_examin_ns::ThreadDaten::frei(int freigeben)
     ++zahl_;
     DBG_THREAD_S( "lock   " << zahl_ )
   }
-
-  DBG_PROG_ENDE
 }
 
 bool
 icc_examin_ns::ThreadDaten::frei()
 {
   if(report_owner && !frei_)
-    DBG_PROG_S( "not free, owner is: " << dbgThreadId(pth) );
+    DBG_THREAD_S( "not free, owner is: " << dbgThreadId(pth) );
   return frei_;
 }
 

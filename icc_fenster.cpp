@@ -218,10 +218,23 @@ MyFl_Double_Window *log_window=(MyFl_Double_Window*)0;
 int log_window_poped = 0;
 static ICCThreadList<int> icc_log_lock_;
 
+int iccCLIMessage( const char * text, int code )
+{
+  cout << text << endl;
+  return 0;
+}
+
 MyFl_Double_Window*
 log_ (std::string text, int code)
 {
   int log_window_new = 0;
+
+  /* do not go over expensive log window in case we want explicitely debug */
+  if(icc_debug)
+  {
+    iccCLIMessage( text.c_str(), code );
+    return 0;
+  }
 
   icc_log_lock_.frei(false);
 
