@@ -1627,6 +1627,7 @@ GL_Ansicht::punkteAuffrischen()
         oyImage_s * in = 0,
                   * out = 0,
                   * out_disp = 0;
+        oyArray2d_s * in_array = 0;
         oyColourConversion_s * cc_disp = 0, * cc_lab = 0;
         oyPROFILE_e projection = oyEDITING_LAB;
 
@@ -1634,6 +1635,7 @@ GL_Ansicht::punkteAuffrischen()
         {
           prof_in  = oyProfile_FromStd( oyEDITING_XYZ, 0 );
           prof_out = oyProfile_FromStd( projection, 0 );
+          /* we assume Oyranos uses a oyArray2d_s backend for oyImage_s */
           in =  oyImage_Create( 1,1,
                          XYZ,
                          oyChannels_m(oyProfile_GetChannelsCount(prof_in)) |
@@ -1655,6 +1657,12 @@ GL_Ansicht::punkteAuffrischen()
 
           cc_lab = oyColourConversion_Create( 0,0, in,out, 0 );
           cc_disp = oyColourConversion_Create( 0,0, in,out_disp, 0 );
+
+          if(!in->pixel_data || in->pixel_data->type_ != oyOBJECT_ARRAY2D_S)
+          {
+            WARN_S( "unknown image backend found " );
+          } else
+            in_array = (oyArray2d_s*)in->pixel_data;
         }
 
         for(int j = 0; j < nc; ++j)
@@ -1712,7 +1720,8 @@ GL_Ansicht::punkteAuffrischen()
               // draw lines
               glBegin(GL_LINES);
                 c = oyNamedColours_Get( colours, i );
-                in->data = (void*) oyNamedColour_GetXYZConst( c );
+                oyArray2d_DataSet( in_array,
+                                   (void*) oyNamedColour_GetXYZConst( c ) );
 
                 if(!zeig_punkte_als_messwerte)
                   glColor4d(.97, .97, .97, rgba[3] );
@@ -1724,12 +1733,13 @@ GL_Ansicht::punkteAuffrischen()
                   glColor4dv( rgba );
                 }
 
-                oyXYZ2Lab( (const double*) in->data, lab );
+                oyXYZ2Lab( (const double*) in_array->data, lab );
                 iccPoint3d ( projection, lab, 0 );
                 oyNamedColour_Release( &c );
 
                 c = oyNamedColours_Get( colours, n + i );
-                in->data = (void*) oyNamedColour_GetXYZConst( c );
+                oyArray2d_DataSet( in_array,
+                                   (void*) oyNamedColour_GetXYZConst( c ) );
                 if(!zeig_punkte_als_messwerte)
                   glColor4d(1., .6, .6, 1.0 );
                 else {
@@ -1740,7 +1750,7 @@ GL_Ansicht::punkteAuffrischen()
                   glColor4dv( rgba );
                 }
 
-                oyXYZ2Lab( (const double*) in->data, lab );
+                oyXYZ2Lab( (const double*) in_array->data, lab );
                 iccPoint3d ( projection, lab, 0 );
                 oyNamedColour_Release( &c );
               glEnd();
@@ -1761,14 +1771,15 @@ GL_Ansicht::punkteAuffrischen()
                  for (int i = 0; i < n; ++i)
                  {
                    c = oyNamedColours_Get( colours, i );
-                   in->data = (void*) oyNamedColour_GetXYZConst( c );
+                   oyArray2d_DataSet( in_array,
+                                      (void*) oyNamedColour_GetXYZConst( c ) );
                    if(grau)
                      rgba[0]= rgba[1]= rgba[2] = schattierung;
                    else
                      oyColourConversion_Run( cc_disp );
                    glColor4dv( rgba );
 
-                   oyXYZ2Lab( (const double*) in->data, lab );
+                   oyXYZ2Lab( (const double*) in_array->data, lab );
                    iccPoint3d ( projection, lab, 0 );
                    oyNamedColour_Release( &c );
                  }
@@ -1788,14 +1799,15 @@ GL_Ansicht::punkteAuffrischen()
             {
                  glPushMatrix();
                    c = oyNamedColours_Get( colours, i );
-                   in->data = (void*) oyNamedColour_GetXYZConst( c );
+                   oyArray2d_DataSet( in_array,
+                                      (void*) oyNamedColour_GetXYZConst( c ) );
                    if(grau)
                      rgba[0]= rgba[1]= rgba[2] = schattierung;
                    else
                      oyColourConversion_Run( cc_disp );
                    glColor4dv( rgba );
 
-                   oyXYZ2Lab( (const double*) in->data, lab );
+                   oyXYZ2Lab( (const double*) in_array->data, lab );
                    iccPoint3d( projection, lab, rad );
                    oyNamedColour_Release( &c );
                  glPopMatrix();
@@ -1809,8 +1821,9 @@ GL_Ansicht::punkteAuffrischen()
                  for (int i = 0; i < n; ++i)
                  {
                    c = oyNamedColours_Get( colours, i );
-                   in->data = (void*) oyNamedColour_GetXYZConst( c );
-                   oyXYZ2Lab( (const double*) in->data, lab );
+                   oyArray2d_DataSet( in_array,
+                                      (void*) oyNamedColour_GetXYZConst( c ) );
+                   oyXYZ2Lab( (const double*) in_array->data, lab );
                    lab[0] = 0;
                    iccPoint3d ( projection, lab, 0 );
                    oyNamedColour_Release( &c );

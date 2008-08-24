@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: icc_examin\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2008-08-09 09:32+0200\n"
+"POT-Creation-Date: 2008-08-23 18:53+0200\n"
 "PO-Revision-Date: 2008-05-13 19:38+0200\n"
 "Last-Translator: Milan Knizek <knizek@volny.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
@@ -38,7 +38,7 @@ msgstr "Yxy"
 msgid "Rgb"
 msgstr "Rgb"
 
-#: icc_oyranos_extern.c:137 icc_draw.cpp:670 icc_gl.cpp:2177 icc_waehler.h:128
+#: icc_oyranos_extern.c:137 icc_draw.cpp:670 icc_gl.cpp:2190 icc_waehler.h:128
 msgid "Gray"
 msgstr "Seda stupnice"
 
@@ -114,7 +114,7 @@ msgstr "14-barevny"
 msgid "15color"
 msgstr "15-barevny"
 
-#: agviewer.cpp:310 icc_gl.cpp:3279 icc_gl.cpp:3298 icc_gl.cpp:3417
+#: agviewer.cpp:310 icc_gl.cpp:3292 icc_gl.cpp:3311 icc_gl.cpp:3430
 msgid "left-/middle-/right mouse button -> rotate/cut/menu"
 msgstr "leve/prostredni/prave tlacitko mysi -> rotovat/vystrihnout/menu"
 
@@ -122,8 +122,8 @@ msgstr "leve/prostredni/prave tlacitko mysi -> rotovat/vystrihnout/menu"
 msgid "Pause"
 msgstr "Pozastavit"
 
-#: agviewer.cpp:347 agviewer.cpp:355 icc_gl.cpp:3383 icc_gl.cpp:3394
-#: icc_gl.cpp:3399 icc_gl.cpp:3404
+#: agviewer.cpp:347 agviewer.cpp:355 icc_gl.cpp:3396 icc_gl.cpp:3407
+#: icc_gl.cpp:3412 icc_gl.cpp:3417
 msgid "left mouse button -> go back"
 msgstr "leve tlacitko mysi -> jit zpet"
 
@@ -162,7 +162,7 @@ msgstr "Fialova"
 msgid "Yellow"
 msgstr "Zluta"
 
-#: icc_draw.cpp:683 icc_gl.cpp:2179 icc_helfer.cpp:417 icc_helfer.cpp:427
+#: icc_draw.cpp:683 icc_gl.cpp:2192 icc_helfer.cpp:417 icc_helfer.cpp:427
 msgid "Black"
 msgstr "Cerna"
 
@@ -376,108 +376,108 @@ msgstr "Nemohu nacist pismo v:"
 msgid "0,0,0"
 msgstr "0,0,0"
 
-#: icc_gl.cpp:2145 icc_gl.cpp:2155 icc_gl.cpp:2158 icc_gl.cpp:2160
-#: icc_gl.cpp:2163 icc_gl.cpp:2165
+#: icc_gl.cpp:2158 icc_gl.cpp:2168 icc_gl.cpp:2171 icc_gl.cpp:2173
+#: icc_gl.cpp:2176 icc_gl.cpp:2178
 msgid "Slice"
 msgstr "Rez"
 
-#: icc_gl.cpp:2146
+#: icc_gl.cpp:2159
 msgid "Rotate around slice"
 msgstr "Rotovat okolo rezu"
 
-#: icc_gl.cpp:2167
+#: icc_gl.cpp:2180
 msgid "Rotate around"
 msgstr "Rotovat dokola"
 
-#: icc_gl.cpp:2167
+#: icc_gl.cpp:2180
 msgid "axis"
 msgstr "osa"
 
-#: icc_gl.cpp:2172
+#: icc_gl.cpp:2185
 msgid "Slice plane"
 msgstr "Rovina rezu"
 
-#: icc_gl.cpp:2175
+#: icc_gl.cpp:2188
 msgid "White"
 msgstr "Bila"
 
-#: icc_gl.cpp:2176
+#: icc_gl.cpp:2189
 msgid "Light gray"
 msgstr "Svetla sed"
 
-#: icc_gl.cpp:2178
+#: icc_gl.cpp:2191
 msgid "Dark gray"
 msgstr "Tmava sed"
 
-#: icc_gl.cpp:2182
+#: icc_gl.cpp:2195
 msgid "Background colour"
 msgstr "Barva pozadi"
 
-#: icc_gl.cpp:2187
+#: icc_gl.cpp:2200
 msgid "gray"
 msgstr "sede"
 
-#: icc_gl.cpp:2188
+#: icc_gl.cpp:2201
 msgid "coloured"
 msgstr "barevne"
 
-#: icc_gl.cpp:2189
+#: icc_gl.cpp:2202
 msgid "high contrast"
 msgstr "vysoky kontrast"
 
-#: icc_gl.cpp:2191
+#: icc_gl.cpp:2204
 msgid "Onion skins"
 msgstr "Pruklepovy papir"
 
-#: icc_gl.cpp:2192
+#: icc_gl.cpp:2205
 msgid "Colour line"
 msgstr "Barevna cara"
 
-#: icc_gl.cpp:2197
+#: icc_gl.cpp:2210
 msgid "Sphere 1dE"
 msgstr "Koule 1dE"
 
-#: icc_gl.cpp:2198
+#: icc_gl.cpp:2211
 msgid "Sphere 2dE"
 msgstr "Koule 2dE"
 
-#: icc_gl.cpp:2199
+#: icc_gl.cpp:2212
 msgid "Sphere 4dE"
 msgstr "Koule 4dE"
 
-#: icc_gl.cpp:2202
+#: icc_gl.cpp:2215
 msgid "Star"
 msgstr "Hvezda"
 
-#: icc_gl.cpp:2205
+#: icc_gl.cpp:2218
 msgid "Point"
 msgstr "Bod"
 
-#: icc_gl.cpp:2208
+#: icc_gl.cpp:2221
 msgid "without markers"
 msgstr "bez znacek"
 
-#: icc_gl.cpp:2209
+#: icc_gl.cpp:2222
 msgid "Spektral line"
 msgstr "Spektralni cara"
 
-#: icc_gl.cpp:2212
+#: icc_gl.cpp:2225
 msgid "Texts"
 msgstr "Texty"
 
-#: icc_gl.cpp:2214
+#: icc_gl.cpp:2227
 msgid "Texts/Arrows on/off"
 msgstr "Texty/Sipky zap./vyp."
 
-#: icc_gl.cpp:2216
+#: icc_gl.cpp:2229
 msgid "Illustration"
 msgstr "Ilustrace"
 
-#: icc_gl.cpp:2569
+#: icc_gl.cpp:2582
 msgid "Pos"
 msgstr "Poz."
 
-#: icc_gl.cpp:2658 icc_profile_tags.cpp:320
+#: icc_gl.cpp:2671 icc_profile_tags.cpp:320
 msgid "Channel"
 msgstr "Kanal"
 
