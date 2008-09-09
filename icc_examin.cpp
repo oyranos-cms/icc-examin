@@ -79,7 +79,6 @@ int iccMessageFunc( int code, const oyStruct_s * context, const char * format, .
 {
   char* text = 0, *pos = 0;
   va_list list;
-  int popup = -1;
   const char * type_name = "";
   int id = -1;
 
@@ -96,20 +95,15 @@ int iccMessageFunc( int code, const oyStruct_s * context, const char * format, .
   text = (char*)calloc(sizeof(char), 4096);
   text[0] = 0;
 
-  if(!log_window)
-    popup = 0;
-
   switch(code)
   {
     case oyMSG_WARN:
          sprintf( &text[strlen(text)], _("WARNING"));
          sprintf( &text[strlen(text)], " %03f: ", DBG_UHR_);
-         //if(popup == 0) popup = 1;
          break;
     case oyMSG_ERROR:
          sprintf( &text[strlen(text)], _("!!! ERROR"));
          sprintf( &text[strlen(text)], " %03f: ", DBG_UHR_);
-         if(popup == 0) popup = 1;
          break;
   }
 
