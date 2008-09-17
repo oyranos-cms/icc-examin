@@ -11,7 +11,7 @@ CONF_TEMP_SH=config.tmp.sh
 CONF_LOG=config.log
 CONF_I18N=fl_i18n/makefile
 SPEC=$TARGET.spec
-VERS="$TARGET"_version.h
+VERS_H="$TARGET"_version.h
 OSX_SCRIPT="$TARGET_NAME".sh
 zeile="$0 $@"
 MAKEFILE_DIR=". fl_i18n bsp"; export MAKEFILE_DIR
@@ -26,7 +26,13 @@ VERSION_A=0
 VERSION_B=4
 VERSION_C=5
 RELEASE=0
-ZEIT="May 2004 - September 2008"
+START_MONTH="May"
+START_YEAR="2004"
+DEVEL_MONTH="September"
+DEVEL_YEAR="2008"
+GIT_MASTER="`cat .git/refs/heads/master`"
+time="`date +%y%m%d.%H%M%S`"
+DATE="$START_MONTH $START_YEAR - $DEVEL_MONTH $DEVEL_YEAR"
 VERSION=$VERSION_A.$VERSION_B$VERSION_C
 if [ $VERSION_A -gt 9 ]; then
   VERSION_L="$VERSION_A"
@@ -679,7 +685,7 @@ fi
 if [ -n "$CP_VERSION" ]; then
   echo "CP_FLAGS=$CP_FLAGS" >> $CONF
   echo "CP_LIBS=$CP_LIBS" >> $CONF
-  echo "#define ICC_CINEPAINT_VERSION \"Gtk CinePaint $CP_VERSION\"" >> $VERS
+  echo "#define ICC_CINEPAINT_VERSION \"Gtk CinePaint $CP_VERSION\"" >> $VERS_H
 fi
 
 echo_=""; echo "$echo_" >> $CONF_LOG; echo "$echo_"
@@ -697,20 +703,29 @@ echo "VERSION   = $VERSION" >> $CONF
 echo "VERSION_L = $VERSION_L" >> $CONF
 echo "" >> $CONF
 
-echo "#ifndef ICC_VERSION_H" > $VERS
-echo "#define ICC_VERSION_H" >> $VERS
-echo "" >> $VERS
-echo "#define ICC_EXAMIN_VERSION_A $VERSION_A" >> $VERS
-echo "#define ICC_EXAMIN_VERSION_B $VERSION_B" >> $VERS
-echo "#define ICC_EXAMIN_VERSION_C $VERSION_C" >> $VERS
-echo "#define ICC_EXAMIN_VERSION $VERSION_L" >> $VERS
-echo "#define ICC_EXAMIN_V \"$VERSION\"" >> $VERS
-echo "#define ICC_EXAMIN_D _(\"$ZEIT\")" >> $VERS
-if [ -n "$CP_VERSION" ]; then
-  echo "#define ICC_CINEPAINT_VERSION \"Gtk CinePaint $CP_VERSION\"" >> $VERS
+echo "#ifndef ICC_VERSION_H" > $VERS_H
+echo "#define ICC_VERSION_H" >> $VERS_H
+echo "" >> $VERS_H
+echo "#define ICC_EXAMIN_VERSION_A $VERSION_A" >> $VERS_H
+echo "#define ICC_EXAMIN_VERSION_B $VERSION_B" >> $VERS_H
+echo "#define ICC_EXAMIN_VERSION_C $VERSION_C" >> $VERS_H
+echo "#define ICC_EXAMIN_VERSION $VERSION_L" >> $VERS_H
+echo "#define ICC_EXAMIN_V _(\"$VERSION\")" >> $VERS_H
+test -n "$ECHO" && $ECHO "#define START_MONTH _(\"$START_MONTH\")" >> $VERS_H
+test -n "$ECHO" && $ECHO "#define START_YEAR _(\"$START_YEAR\")" >> $VERS_H
+test -n "$ECHO" && $ECHO "#define DEVEL_MONTH _(\"$DEVEL_MONTH\")" >> $VERS_H
+test -n "$ECHO" && $ECHO "#define DEVEL_YEAR _(\"$DEVEL_YEAR\")" >> $VERS_H
+test -n "$ECHO" && $ECHO "#define ICC_EXAMIN_CONFIG_DATE \"$DATE\"" >> $VERS_H
+if [ `echo $GIT_MASTER | grep cat | wc -l` -lt 1 ]; then
+  test -n "$ECHO" && $ECHO "#define GIT_MASTER \"$GIT_MASTER\"" >> $VERS_H
+else
+  test -n "$ECHO" && $ECHO "#define GIT_MASTER """ >> $VERS_H
 fi
-echo "" >> $VERS
-echo "#endif //ICC_VERSION_H" >> $VERS
+if [ -n "$CP_VERSION" ]; then
+  echo "#define ICC_CINEPAINT_VERSION \"Gtk CinePaint $CP_VERSION\"" >> $VERS_H
+fi
+echo "" >> $VERS_H
+echo "#endif //ICC_VERSION_H" >> $VERS_H
 
 echo "Version: $VERSION" > $SPEC
 echo "Source:  $TARGET"-"$VERSION".tar.gz >> $SPEC

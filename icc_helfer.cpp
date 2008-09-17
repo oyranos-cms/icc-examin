@@ -1146,7 +1146,7 @@ const char * preLoadFile             ( const char        * filename )
                     "icc_examin_preload2.bunzip2",0,0,0,0,0,0,0,0,0};
   const char * commands[12] = {
 #if !defined(__APPLE__)
- "wget -U \"ICC Examin " ICC_EXAMIN_V "\" -O"
+ "wget -U \"ICC Examin            \" -O"
 #else
  "curl -o"
 #endif
@@ -1157,7 +1157,9 @@ const char * preLoadFile             ( const char        * filename )
   const char * tmp = "tmp";
   static char file_name_[1024];
   int typ = -1; 
-  
+
+  sprintf( (char*)commands[0], "wget -U \"ICC Examin %s\" -O", ICC_EXAMIN_V);
+ 
   if(filename && strlen(filename) > 0 && strlen(filename) < 1023)
     sprintf( file_name_, "%s", filename );
   else

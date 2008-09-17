@@ -72,7 +72,8 @@ extern "C" {
 #include "icc_cinepaint_intern.cpp"
 
 char* version() { static char t[80];
-                  sprintf(t, "%s - %s", ICC_EXAMIN_V, ICC_EXAMIN_D); return t; }
+                  sprintf(t, "%s - %s %s - %s %s", ICC_EXAMIN_V,
+                  START_MONTH,START_YEAR,DEVEL_MONTH,DEVEL_YEAR); return t; }
 
 
 /*** local macros ***/

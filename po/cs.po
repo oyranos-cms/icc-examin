@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: icc_examin\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2008-09-09 08:56+0200\n"
+"POT-Creation-Date: 2008-09-15 22:14+0200\n"
 "PO-Revision-Date: 2008-05-13 19:38+0200\n"
 "Last-Translator: Milan Knizek <knizek@volny.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
@@ -970,11 +970,11 @@ msgstr "hodin"
 msgid "seconds"
 msgstr "vterin"
 
-#: icc_helfer.cpp:1241
+#: icc_helfer.cpp:1243
 msgid "Monitor Profile"
 msgstr "Profil monitoru"
 
-#: icc_helfer.cpp:1268
+#: icc_helfer.cpp:1270
 msgid "file size 0 for "
 msgstr "velikost souboru 8 pro"
 
@@ -1467,11 +1467,11 @@ msgstr "ICC Examin Verze"
 msgid "Date"
 msgstr "Datum"
 
-#: icc_ueber.cpp:96
+#: icc_ueber.cpp:98
 msgid "internet: www.behrmann.name <br>"
 msgstr "internet: www.behrmann.name <br>"
 
-#: icc_ueber.cpp:102
+#: icc_ueber.cpp:104
 #, fuzzy
 msgid ""
 "ICC Examin is a viewer for colour profiles according to ICC standard  - www."
@@ -1480,7 +1480,7 @@ msgstr ""
 "ICC Examin je prohlizec pro barvove profily dle ICC standardu - www.color."
 "org. V soucasnosti jsou podporovany profily verze 2."
 
-#: icc_ueber.cpp:109
+#: icc_ueber.cpp:111
 msgid ""
 "The appliance of colour profiles shall help to achive an easy colour data "
 "exchange, regardless which application or what kind of operating system is "
@@ -1497,7 +1497,7 @@ msgstr ""
 "barevne transformace z jednoho na druhe zarizeni zavisi predevsim na kvalite "
 "mereni barev a pouziteho algoritmu pro tvorbu profilu."
 
-#: icc_ueber.cpp:121
+#: icc_ueber.cpp:123
 msgid ""
 "Colour profiles are often available from manufacturers of optical devices "
 "(digital camera, scanner, printer). With ICC Examin you can get an "
@@ -1512,7 +1512,7 @@ msgstr ""
 "zmerena data, ICC Examin muze vygenerovat report kvality. Odchylka vypoctena "
 "ze zmerenych dat je tez zobrazena v tri rozmernem prohlizeci gamutu.<br>"
 
-#: icc_ueber.cpp:132
+#: icc_ueber.cpp:134
 msgid ""
 "The internal colour transformations are currently realised with functions of "
 "the littleCMS program library."
@@ -1520,16 +1520,16 @@ msgstr ""
 "Interni barvove transformace jsou realizovany funkcemi knihoven programu "
 "LittleCMS."
 
-#: icc_ueber.cpp:150 icc_betrachter.cxx:645 icc_betrachter.cxx:647
+#: icc_ueber.cpp:152 icc_betrachter.cxx:645 icc_betrachter.cxx:647
 #: icc_betrachter.cxx:741
 msgid "Help"
 msgstr "Napoveda"
 
-#: icc_ueber.cpp:342 icc_betrachter.cxx:648 icc_betrachter.cxx:747
+#: icc_ueber.cpp:344 icc_betrachter.cxx:648 icc_betrachter.cxx:747
 msgid "License"
 msgstr "Licence"
 
-#: icc_ueber.cpp:348
+#: icc_ueber.cpp:350
 #, fuzzy
 msgid ""
 "    ICC Examin is licensed under the GPL version 2.    Especially all icc_* "
@@ -1540,11 +1540,11 @@ msgstr ""
 "podlehaji licenci GPL.<br> Ostatni zdrojove soubory mohou obsahovat "
 "odchylene licence, ktera jsou patrne z hlavicek souboru."
 
-#: icc_ueber.cpp:753
+#: icc_ueber.cpp:755
 msgid "Acknowledgement"
 msgstr "Podekovani"
 
-#: icc_ueber.cpp:759
+#: icc_ueber.cpp:761
 msgid ""
 "My cordially thank is especially dedicated to Marti Maria and the many "
 "writers of the Lcms-user email list."
@@ -1552,63 +1552,63 @@ msgstr ""
 "Muj srdecny dik je zvlaste venovan Marti Mariovi a mnoha prispevatelum "
 "postovni konference LCMS-user."
 
-#: icc_ueber.cpp:773
+#: icc_ueber.cpp:775
 msgid "ICC Examin uses following libraries:<br>\n"
 msgstr "ICC Examin pouziva nasledujici knihovny:<br>\n"
 
-#: icc_ueber.cpp:778
+#: icc_ueber.cpp:780
 #, fuzzy
 msgid "  FLTK: Bill Spitzack and others www.fltk.org<br>\n"
 msgstr " FLTK: Bill Spitzack a dalsi www.fltk.org<br>\n"
 
-#: icc_ueber.cpp:785
+#: icc_ueber.cpp:787
 #, fuzzy
 msgid "  FLU: Jason Bryan www.osc.edu/~jbryan/FLU/<br>\n"
 msgstr " FLU: Jason Bryan www.osc.edu/~jbryan/FLU/<br>\n"
 
-#: icc_ueber.cpp:792
+#: icc_ueber.cpp:794
 #, fuzzy
 msgid "  littleCMS: Marti Maria www.littlecms.com<br>\n"
 msgstr " littleCMS: Marti Maria www.littlecms.com<br>\n"
 
-#: icc_ueber.cpp:803
+#: icc_ueber.cpp:805
 #, fuzzy
 msgid ""
 "  FTGL: Henry Maddocks homepages.paradise.net.nz/henryj/code/#FTGL<br>\n"
 msgstr ""
 " FTGL: Henry Maddocks homepages.paradise.net.nz/henryj/code/#FTGL<br>\n"
 
-#: icc_ueber.cpp:811
+#: icc_ueber.cpp:813
 msgid ""
 "integrated sources, lock at the according files for licence conditions:<br>\n"
 msgstr "vclenene zdroje, viz prislusne soubory s podminkami licenci:<br>\n"
 
-#: icc_ueber.cpp:816
+#: icc_ueber.cpp:818
 #, fuzzy
 msgid "  agv 3D Navigation: Philip Winston<br>\n"
 msgstr " agv 3D Navigation: Philip Winston<br>\n"
 
-#: icc_ueber.cpp:822
+#: icc_ueber.cpp:824
 #, fuzzy
 msgid "  bsp rendering: Norman Chin<br>\n"
 msgstr " bsp vykreslovani: Norman Chin<br>\n"
 
-#: icc_ueber.cpp:831
+#: icc_ueber.cpp:833
 msgid "For the visualisation of gamut (external):<br>\n"
 msgstr "Pro vizualizaci gamutu (externe):<br>\n"
 
-#: icc_ueber.cpp:836
+#: icc_ueber.cpp:838
 #, fuzzy
 msgid ""
 "  argyll: Greame Gill web.access.net.au/argyll/argyllcms.html<br<br><br>\n"
 msgstr ""
 " argyll: Greame Gill web.access.net.au/argyll/argyllcms.html<br><br><br>\n"
 
-#: icc_ueber.cpp:850
+#: icc_ueber.cpp:852
 msgid "Project"
 msgstr "Projekt"
 
-#: icc_ueber.cpp:852
+#: icc_ueber.cpp:854
 msgid "Documentation"
 msgstr "Dokumentace"
 
@@ -1907,19 +1907,19 @@ msgstr ""
 msgid "@2>"
 msgstr ""
 
-#: icc_cinepaint.cpp:188
+#: icc_cinepaint.cpp:189
 msgid "Image Profile..."
 msgstr "Profil obrazku..."
 
-#: icc_cinepaint.cpp:189
+#: icc_cinepaint.cpp:190
 msgid "Proof Profile..."
 msgstr "Profil nahledu tisku..."
 
-#: icc_cinepaint.cpp:190
+#: icc_cinepaint.cpp:191
 msgid "Watch Colours 3D..."
 msgstr "Sledovat Barvy 3D..."
 
-#: icc_cinepaint.cpp:191
+#: icc_cinepaint.cpp:192
 msgid "Watch Colours 3D.2..."
 msgstr "Sledovat Barvy 3D.2..."
 
@@ -1947,15 +1947,36 @@ msgstr "O jaky druh obrazku se jedna?"
 msgid "What kind of image is this?\n"
 msgstr "O jaky druh obrazku se jedna?\n"
 
+#: icc_examin_version.h:8
+msgid "0.45"
+msgstr ""
+
 #: icc_examin_version.h:9
+msgid "May"
+msgstr ""
+
+#: icc_examin_version.h:10
 #, fuzzy
-msgid "May 2004 - September 2008"
-msgstr "kveten 2004 - zari 2008"
+msgid "2004"
+msgstr "dE2000"
+
+#: icc_examin_version.h:11
+msgid "September"
+msgstr ""
+
+#: icc_examin_version.h:12
+#, fuzzy
+msgid "2008"
+msgstr "dE2000"
 
 #: icc_utils.h:288 icc_utils.h:289 icc_utils.h:290 icc_utils.h:344
 #: icc_utils.h:345 icc_utils.h:346
 msgid "!!! Warning !!!"
 msgstr "!!! Varovani !!!"
+
+#, fuzzy
+#~ msgid "May 2004 - September 2008"
+#~ msgstr "kveten 2004 - zari 2008"
 
 #~ msgid "Photometric"
 #~ msgstr "Fotometricky"

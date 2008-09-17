@@ -82,13 +82,15 @@ getUeberHtml()
   </tr> \n\
   <tr> \n\
     <td bgcolor=\"" << "#9f9f9f" << "\"> \n\
-    <b>Copyright &copy; 2004-2008  Kai-Uwe Behrmann \n\
+    <b>Copyright &copy; 2004-"; html << DEVEL_YEAR <<"  Kai-Uwe Behrmann \n\
     </b> \n\
   </tr> \n\
 </table> \n\
 <br>";
   // HTML
-  html << _("Date") << ": " << ICC_EXAMIN_D; html << " \n\
+  html << _("Date") << ": " << 
+          START_MONTH<<" "<<START_YEAR<<" - "<<DEVEL_MONTH<<" "<<DEVEL_YEAR;
+  html << " \n\
 <br> \n\
 <p>";
   // HTML

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cinepaint_icc-examin_eu\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2008-09-09 08:56+0200\n"
+"POT-Creation-Date: 2008-09-15 22:14+0200\n"
 "PO-Revision-Date: 2007-11-07 11:11+0100\n"
 "Last-Translator: Iñaki Larrañaga Murgoitio <dooteo@zundan.com>\n"
 "Language-Team: Basque <itzulpena@euskalgnu.org>\n"
@@ -980,11 +980,11 @@ msgstr "puntuan"
 msgid "seconds"
 msgstr "segundo"
 
-#: icc_helfer.cpp:1241
+#: icc_helfer.cpp:1243
 msgid "Monitor Profile"
 msgstr "Monitorearen profila"
 
-#: icc_helfer.cpp:1268
+#: icc_helfer.cpp:1270
 msgid "file size 0 for "
 msgstr "fitxategi honen tamaina 0: "
 
@@ -1464,11 +1464,11 @@ msgstr "ICC Examin-en bertsioa"
 msgid "Date"
 msgstr "Data"
 
-#: icc_ueber.cpp:96
+#: icc_ueber.cpp:98
 msgid "internet: www.behrmann.name <br>"
 msgstr "web gunea: www.behrmann.name <br>"
 
-#: icc_ueber.cpp:102
+#: icc_ueber.cpp:104
 msgid ""
 "ICC Examin is a viewer for colour profiles according to ICC standard  - www."
 "color.org . At the moment version 2 profiles are supported."
@@ -1477,7 +1477,7 @@ msgstr ""
 "ikustailea da: www.color.org . Uneko bertsioak 2 profila soilik onartzen "
 "ditu."
 
-#: icc_ueber.cpp:109
+#: icc_ueber.cpp:111
 msgid ""
 "The appliance of colour profiles shall help to achive an easy colour data "
 "exchange, regardless which application or what kind of operating system is "
@@ -1494,7 +1494,7 @@ msgstr ""
 "batetik bestera) kalitatea kolorearen neurketaren kalitatearen arabera dago, "
 "baita profila sortzean erabilitako profila-algoritmoaren arabera ere."
 
-#: icc_ueber.cpp:121
+#: icc_ueber.cpp:123
 msgid ""
 "Colour profiles are often available from manufacturers of optical devices "
 "(digital camera, scanner, printer). With ICC Examin you can get an "
@@ -1510,7 +1510,7 @@ msgstr ""
 "neurtzeko datuetatik kalkulatua, erakusten da, baita hiru dimentsiotako "
 "kolore-gama ikustailean."
 
-#: icc_ueber.cpp:132
+#: icc_ueber.cpp:134
 msgid ""
 "The internal colour transformations are currently realised with functions of "
 "the littleCMS program library."
@@ -1518,16 +1518,16 @@ msgstr ""
 "littleCMS programaren liburutegiko funtzioak erabiliz lantzen dira barneko "
 "kolore eraldaketak."
 
-#: icc_ueber.cpp:150 icc_betrachter.cxx:645 icc_betrachter.cxx:647
+#: icc_ueber.cpp:152 icc_betrachter.cxx:645 icc_betrachter.cxx:647
 #: icc_betrachter.cxx:741
 msgid "Help"
 msgstr "Laguntza"
 
-#: icc_ueber.cpp:342 icc_betrachter.cxx:648 icc_betrachter.cxx:747
+#: icc_ueber.cpp:344 icc_betrachter.cxx:648 icc_betrachter.cxx:747
 msgid "License"
 msgstr "Lizentzia"
 
-#: icc_ueber.cpp:348
+#: icc_ueber.cpp:350
 msgid ""
 "    ICC Examin is licensed under the GPL version 2.    Especially all icc_* "
 "files are licensed under the GPL.<br>    The other source files may contain "
@@ -1538,11 +1538,11 @@ msgstr ""
 "bestelako fitxategiek beste lizentziak eduki ditzakete, fitxategietako "
 "goiburuetan agertzen direlarik."
 
-#: icc_ueber.cpp:753
+#: icc_ueber.cpp:755
 msgid "Acknowledgement"
 msgstr "Aitorpena"
 
-#: icc_ueber.cpp:759
+#: icc_ueber.cpp:761
 msgid ""
 "My cordially thank is especially dedicated to Marti Maria and the many "
 "writers of the Lcms-user email list."
@@ -1550,58 +1550,58 @@ msgstr ""
 "Nire eskerrik goxoenak bereziki Marti Maria-rentzako da, eta Lcms-ko "
 "erabiltzaileen posta-zerrendako idazle guztientzako."
 
-#: icc_ueber.cpp:773
+#: icc_ueber.cpp:775
 msgid "ICC Examin uses following libraries:<br>\n"
 msgstr "ICC Examin-ek honako liburutegiak erabiltzen ditu:<br>\n"
 
-#: icc_ueber.cpp:778
+#: icc_ueber.cpp:780
 msgid "  FLTK: Bill Spitzack and others www.fltk.org<br>\n"
 msgstr "  FLTK: Bill Spitzack eta besteak: www.fltk.org<br>\n"
 
-#: icc_ueber.cpp:785
+#: icc_ueber.cpp:787
 msgid "  FLU: Jason Bryan www.osc.edu/~jbryan/FLU/<br>\n"
 msgstr "  FLU: Jason Bryan www.osc.edu/~jbryan/FLU/<br>\n"
 
-#: icc_ueber.cpp:792
+#: icc_ueber.cpp:794
 msgid "  littleCMS: Marti Maria www.littlecms.com<br>\n"
 msgstr "  littleCMS: Marti Maria www.littlecms.com<br>\n"
 
-#: icc_ueber.cpp:803
+#: icc_ueber.cpp:805
 msgid ""
 "  FTGL: Henry Maddocks homepages.paradise.net.nz/henryj/code/#FTGL<br>\n"
 msgstr ""
 "  FTGL: Henry Maddocks homepages.paradise.net.nz/henryj/code/#FTGL<br>\n"
 
-#: icc_ueber.cpp:811
+#: icc_ueber.cpp:813
 msgid ""
 "integrated sources, lock at the according files for licence conditions:<br>\n"
 msgstr ""
 "integratutako iturburuak, begiratu dagokien fitxategiak lizentzia-kontratua "
 "ezagutzeko:<br>\n"
 
-#: icc_ueber.cpp:816
+#: icc_ueber.cpp:818
 msgid "  agv 3D Navigation: Philip Winston<br>\n"
 msgstr "  agv 3D nabigazioa: Philip Winston<br>\n"
 
-#: icc_ueber.cpp:822
+#: icc_ueber.cpp:824
 msgid "  bsp rendering: Norman Chin<br>\n"
 msgstr ""
 
-#: icc_ueber.cpp:831
+#: icc_ueber.cpp:833
 msgid "For the visualisation of gamut (external):<br>\n"
 msgstr "Kolore-gamaren bisualizazioa (kanpokoa):<br>\n"
 
-#: icc_ueber.cpp:836
+#: icc_ueber.cpp:838
 msgid ""
 "  argyll: Greame Gill web.access.net.au/argyll/argyllcms.html<br<br><br>\n"
 msgstr ""
 "  argyll: Greame Gill web.access.net.au/argyll/argyllcms.html<br<br><br>\n"
 
-#: icc_ueber.cpp:850
+#: icc_ueber.cpp:852
 msgid "Project"
 msgstr "Proiektua"
 
-#: icc_ueber.cpp:852
+#: icc_ueber.cpp:854
 msgid "Documentation"
 msgstr "Dokumentazioa"
 
@@ -1899,19 +1899,19 @@ msgstr "@8>"
 msgid "@2>"
 msgstr "@2>"
 
-#: icc_cinepaint.cpp:188
+#: icc_cinepaint.cpp:189
 msgid "Image Profile..."
 msgstr "Irudiaren profila..."
 
-#: icc_cinepaint.cpp:189
+#: icc_cinepaint.cpp:190
 msgid "Proof Profile..."
 msgstr "Frogako profila..."
 
-#: icc_cinepaint.cpp:190
+#: icc_cinepaint.cpp:191
 msgid "Watch Colours 3D..."
 msgstr "Begiratu 3D koloreak..."
 
-#: icc_cinepaint.cpp:191
+#: icc_cinepaint.cpp:192
 msgid "Watch Colours 3D.2..."
 msgstr "Begiratu 3D.2 koloreak..."
 
@@ -1939,15 +1939,36 @@ msgstr "Zein motatako irudia da hau?"
 msgid "What kind of image is this?\n"
 msgstr "Zein motatako irudia da hau?\n"
 
+#: icc_examin_version.h:8
+msgid "0.45"
+msgstr ""
+
 #: icc_examin_version.h:9
+msgid "May"
+msgstr ""
+
+#: icc_examin_version.h:10
 #, fuzzy
-msgid "May 2004 - September 2008"
-msgstr "2004.eko maiatza - 2007.eko iraila"
+msgid "2004"
+msgstr "dE2000"
+
+#: icc_examin_version.h:11
+msgid "September"
+msgstr ""
+
+#: icc_examin_version.h:12
+#, fuzzy
+msgid "2008"
+msgstr "dE2000"
 
 #: icc_utils.h:288 icc_utils.h:289 icc_utils.h:290 icc_utils.h:344
 #: icc_utils.h:345 icc_utils.h:346
 msgid "!!! Warning !!!"
 msgstr "Abisua !!!"
+
+#, fuzzy
+#~ msgid "May 2004 - September 2008"
+#~ msgstr "2004.eko maiatza - 2007.eko iraila"
 
 #~ msgid "Photometric"
 #~ msgstr "Fotometrikoa"

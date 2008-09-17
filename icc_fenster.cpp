@@ -580,7 +580,7 @@ int MyFl_Double_Window::handle( int e )
 
   int x_,y_,w_,h_,wx,wy;
   x_=y_=w_=h_=wx=wy=0;
-#if (FL_MAJOR_VERSION > 0) && (FL_MINOR_VERSION > 6)
+#if ((FL_MAJOR_VERSION * 100 + FL_MINOR_VERSION) > 106)
   Fl::screen_xywh(x_,y_,w_,h_);
 #endif
   wx = this->x();
@@ -648,9 +648,9 @@ int MyFl_Double_Window::handle( int e )
   in_middle_of_[HANDLE] = 0;
 
   if(fl_window_events)
-    return Fl_Double_Window::handle(e);
-  else
-    return ergebnis;
+    ergebnis = Fl_Double_Window::handle(e);
+
+  return ergebnis;
 }
 
 void MyFl_Double_Window::label( const char *titel )
