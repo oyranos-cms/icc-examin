@@ -1144,30 +1144,30 @@ const char * preLoadFile             ( const char        * filename )
 {
   const char *list[12] = {"icc_examin_preload0.www","icc_examin_preload1.gunzip",
                     "icc_examin_preload2.bunzip2",0,0,0,0,0,0,0,0,0};
-  const char * commands[12] = {
-#if !defined(__APPLE__)
- "wget -U \"ICC Examin            \" -O"
-#else
- "curl -o"
-#endif
-  , "gzip -dc", "bzip2 -dc", 0 };
+  const char * commands[12] = { 0 , "gzip -dc", "bzip2 -dc", 0 };
   const char * name = filename;
   int error = 0;
   char * command = 0;
   const char * tmp = "tmp";
+  char* ptr = (char*) malloc(128);
   static char file_name_[1024];
   int typ = -1; 
 
-  sprintf( (char*)commands[0], "wget -U \"ICC Examin %s\" -O", ICC_EXAMIN_V);
+#if !defined(__APPLE__)
+  sprintf( ptr, "wget -U \"ICC Examin %s\" -O", ICC_EXAMIN_V);
+#else
+  sprintf( ptr, "curl -o" );
+#endif
+  commands[0] = ptr;
  
   if(filename && strlen(filename) > 0 && strlen(filename) < 1023)
     sprintf( file_name_, "%s", filename );
   else
-    return filename;
+    goto END;
 
   command = (char*) malloc(strlen(file_name_)+128);
   if(!command)
-    return filename;
+    goto END;
 
   if(getenv("TMP") && strlen(getenv("TMP")))
     tmp = getenv("TMP");
@@ -1222,6 +1222,9 @@ const char * preLoadFile             ( const char        * filename )
   }
 
   free(command); command = 0;
+
+  END:
+  if(ptr) free(ptr);
 
   return name;
 }
