@@ -46,7 +46,7 @@
 #define PLUG_IN_DESCRIPTION3  "Shows some colours of the image in a ICC Examin including profile gamut"
 #define PLUG_IN_VERSION       version()
 #define PLUG_IN_AUTHOR        "Kai-Uwe Behrmann <ku.b@gmx.de>"
-#define PLUG_IN_COPYRIGHT     "2004-2007 Kai-Uwe Behrmann"
+#define PLUG_IN_COPYRIGHT     "2004-2008 Kai-Uwe Behrmann"
 
 /***   includes   ***/
 
@@ -126,62 +126,71 @@ query ()
 {
   static GParamDef args[] =
   {
-    { PARAM_INT32, "run_mode", "Interactive, non-interactive" },
-    { PARAM_IMAGE, "image", "Input Image" },
-    { PARAM_DRAWABLE, "drawable", "Input Drawable" },
+    { PARAM_INT32 },
+    { PARAM_IMAGE },
+    { PARAM_DRAWABLE },
   };
+  args[0].type = PARAM_INT32; args[0].name = (char*)"run_mode";
+  args[0].description = (char*)"Interactive, non-interactive";
+  args[1].type = PARAM_IMAGE; args[1].name = (char*)"image";
+  args[1].description = (char*)"Input Image";
+  args[2].type = PARAM_DRAWABLE; args[2].name = (char*)"drawable";
+  args[2].description = (char*)"Input Drawable";
   static GParamDef return_vals[] =
   {
-    { PARAM_IMAGE, "image", "Output Image" },
+    { PARAM_IMAGE },
   };
+  args[0].type = PARAM_IMAGE; args[0].name = (char*)"image";
+  args[0].description = (char*)"Output Image";
+
   n_args_ = sizeof (args) / sizeof (args[0]);
   n_return_vals_ = sizeof (return_vals) / sizeof (return_vals[0]);
 
   {
-    gimp_install_procedure (PLUG_IN_NAME,
-                            PLUG_IN_BRIEF,
-                            PLUG_IN_DESCRIPTION,
-                            PLUG_IN_AUTHOR,
-                            PLUG_IN_COPYRIGHT,
+    gimp_install_procedure ((char*)PLUG_IN_NAME,
+                            (char*)PLUG_IN_BRIEF,
+                            (char*)PLUG_IN_DESCRIPTION,
+                            (char*)PLUG_IN_AUTHOR,
+                            (char*)PLUG_IN_COPYRIGHT,
                             PLUG_IN_VERSION,
-                            "<Image>/Image/ICC Profile Information/Image Profile...",
-                            "*",
+                            (char*)"<Image>/Image/ICC Profile Information/Image Profile...",
+                            (char*)"*",
                             PROC_PLUG_IN,
                             n_args_, n_return_vals_,
                             args, return_vals);
 
-    gimp_install_procedure (PLUG_IN_NAME2,
-                            PLUG_IN_BRIEF2,
-                            PLUG_IN_DESCRIPTION2,
-                            PLUG_IN_AUTHOR,
-                            PLUG_IN_COPYRIGHT,
+    gimp_install_procedure ((char*)PLUG_IN_NAME2,
+                            (char*)PLUG_IN_BRIEF2,
+                            (char*)PLUG_IN_DESCRIPTION2,
+                            (char*)PLUG_IN_AUTHOR,
+                            (char*)PLUG_IN_COPYRIGHT,
                             PLUG_IN_VERSION,
-                            "<Image>/Image/ICC Profile Information/Proof Profile...",
-                            "*",
+                            (char*)"<Image>/Image/ICC Profile Information/Proof Profile...",
+                            (char*)"*",
                             PROC_PLUG_IN,
                             n_args_, n_return_vals_,
                             args, return_vals);
 
-    gimp_install_procedure (PLUG_IN_NAME3,
-                            PLUG_IN_BRIEF3,
-                            PLUG_IN_DESCRIPTION3,
-                            PLUG_IN_AUTHOR,
-                            PLUG_IN_COPYRIGHT,
+    gimp_install_procedure ((char*)PLUG_IN_NAME3,
+                            (char*)PLUG_IN_BRIEF3,
+                            (char*)PLUG_IN_DESCRIPTION3,
+                            (char*)PLUG_IN_AUTHOR,
+                            (char*)PLUG_IN_COPYRIGHT,
                             PLUG_IN_VERSION,
-                            "<Image>/Image/Watch Colours 3D...",
-                            "*",
+                            (char*)"<Image>/Image/Watch Colours 3D...",
+                            (char*)"*",
                             PROC_PLUG_IN,
                             n_args_, n_return_vals_,
                             args, return_vals);
 
-    gimp_install_procedure (PLUG_IN_NAME4,
-                            PLUG_IN_BRIEF3,
-                            PLUG_IN_DESCRIPTION3,
-                            PLUG_IN_AUTHOR,
-                            PLUG_IN_COPYRIGHT,
+    gimp_install_procedure ((char*)PLUG_IN_NAME4,
+                            (char*)PLUG_IN_BRIEF3,
+                            (char*)PLUG_IN_DESCRIPTION3,
+                            (char*)PLUG_IN_AUTHOR,
+                            (char*)PLUG_IN_COPYRIGHT,
                             PLUG_IN_VERSION,
-                            "<Image>/Image/Watch Colours 3D.2...",
-                            "*",
+                            (char*)"<Image>/Image/Watch Colours 3D.2...",
+                            (char*)"*",
                             PROC_PLUG_IN,
                             n_args_, n_return_vals_,
                             args, return_vals);
@@ -229,7 +238,7 @@ run (char    *name,
     {
     case RUN_INTERACTIVE:
       // get saved plug-in settings
-      gimp_get_data (PLUG_IN_NAME, &bvals);
+      gimp_get_data ((char*)PLUG_IN_NAME, &bvals);
 
       // open a dialog
       if (! dialog_ (param[1].data.d_image))
@@ -255,7 +264,7 @@ run (char    *name,
 
     case RUN_WITH_LAST_VALS:
       // get saved settings
-      gimp_get_data (PLUG_IN_NAME, &bvals);
+      gimp_get_data ((char*)PLUG_IN_NAME, &bvals);
       break;
 
     default:
@@ -271,7 +280,7 @@ run (char    *name,
     {
     case RUN_INTERACTIVE:
       // get saved plug-in settings
-      gimp_get_data (PLUG_IN_NAME3, &bvals);
+      gimp_get_data ((char*)PLUG_IN_NAME3, &bvals);
 
       // open a dialog
       if (! dialog_ (param[1].data.d_image))
@@ -297,7 +306,7 @@ run (char    *name,
 
     case RUN_WITH_LAST_VALS:
       // get saved plug-in settings
-      gimp_get_data (PLUG_IN_NAME, &bvals);
+      gimp_get_data ((char*)PLUG_IN_NAME, &bvals);
       break;
 
     default:
