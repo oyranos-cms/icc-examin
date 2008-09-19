@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ICC Examin 0.41\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2008-09-15 22:14+0200\n"
+"POT-Creation-Date: 2008-09-18 09:46+0200\n"
 "PO-Revision-Date: 2006-06-29 19:31+0200\n"
 "Last-Translator: Pascal LACROIX <lacroixpascal at vfemail.net>\n"
 "Language-Team: ALL <ku.b@gmx.de>\n"
@@ -971,11 +971,11 @@ msgstr ""
 msgid "seconds"
 msgstr ""
 
-#: icc_helfer.cpp:1243
+#: icc_helfer.cpp:1246
 msgid "Monitor Profile"
 msgstr "Écran Profil"
 
-#: icc_helfer.cpp:1270
+#: icc_helfer.cpp:1273
 msgid "file size 0 for "
 msgstr ""
 
@@ -1860,21 +1860,21 @@ msgstr ""
 msgid "@2>"
 msgstr ""
 
-#: icc_cinepaint.cpp:189
+#: icc_cinepaint.cpp:198
 #, fuzzy
 msgid "Image Profile..."
 msgstr "ICC Profils"
 
-#: icc_cinepaint.cpp:190
+#: icc_cinepaint.cpp:199
 #, fuzzy
 msgid "Proof Profile..."
 msgstr "Écran Profil"
 
-#: icc_cinepaint.cpp:191
+#: icc_cinepaint.cpp:200
 msgid "Watch Colours 3D..."
 msgstr ""
 
-#: icc_cinepaint.cpp:192
+#: icc_cinepaint.cpp:201
 msgid "Watch Colours 3D.2..."
 msgstr ""
 

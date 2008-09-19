@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cinepaint_icc-examin_eu\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2008-09-15 22:14+0200\n"
+"POT-Creation-Date: 2008-09-18 09:46+0200\n"
 "PO-Revision-Date: 2007-11-07 11:11+0100\n"
 "Last-Translator: Iñaki Larrañaga Murgoitio <dooteo@zundan.com>\n"
 "Language-Team: Basque <itzulpena@euskalgnu.org>\n"
@@ -980,11 +980,11 @@ msgstr "puntuan"
 msgid "seconds"
 msgstr "segundo"
 
-#: icc_helfer.cpp:1243
+#: icc_helfer.cpp:1246
 msgid "Monitor Profile"
 msgstr "Monitorearen profila"
 
-#: icc_helfer.cpp:1270
+#: icc_helfer.cpp:1273
 msgid "file size 0 for "
 msgstr "fitxategi honen tamaina 0: "
 
@@ -1899,19 +1899,19 @@ msgstr "@8>"
 msgid "@2>"
 msgstr "@2>"
 
-#: icc_cinepaint.cpp:189
+#: icc_cinepaint.cpp:198
 msgid "Image Profile..."
 msgstr "Irudiaren profila..."
 
-#: icc_cinepaint.cpp:190
+#: icc_cinepaint.cpp:199
 msgid "Proof Profile..."
 msgstr "Frogako profila..."
 
-#: icc_cinepaint.cpp:191
+#: icc_cinepaint.cpp:200
 msgid "Watch Colours 3D..."
 msgstr "Begiratu 3D koloreak..."
 
-#: icc_cinepaint.cpp:192
+#: icc_cinepaint.cpp:201
 msgid "Watch Colours 3D.2..."
 msgstr "Begiratu 3D.2 koloreak..."
 

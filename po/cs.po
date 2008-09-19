@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: icc_examin\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2008-09-15 22:14+0200\n"
+"POT-Creation-Date: 2008-09-18 09:46+0200\n"
 "PO-Revision-Date: 2008-05-13 19:38+0200\n"
 "Last-Translator: Milan Knizek <knizek@volny.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
@@ -970,11 +970,11 @@ msgstr "hodin"
 msgid "seconds"
 msgstr "vterin"
 
-#: icc_helfer.cpp:1243
+#: icc_helfer.cpp:1246
 msgid "Monitor Profile"
 msgstr "Profil monitoru"
 
-#: icc_helfer.cpp:1270
+#: icc_helfer.cpp:1273
 msgid "file size 0 for "
 msgstr "velikost souboru 8 pro"
 
@@ -1907,19 +1907,19 @@ msgstr ""
 msgid "@2>"
 msgstr ""
 
-#: icc_cinepaint.cpp:189
+#: icc_cinepaint.cpp:198
 msgid "Image Profile..."
 msgstr "Profil obrazku..."
 
-#: icc_cinepaint.cpp:190
+#: icc_cinepaint.cpp:199
 msgid "Proof Profile..."
 msgstr "Profil nahledu tisku..."
 
-#: icc_cinepaint.cpp:191
+#: icc_cinepaint.cpp:200
 msgid "Watch Colours 3D..."
 msgstr "Sledovat Barvy 3D..."
 
-#: icc_cinepaint.cpp:192
+#: icc_cinepaint.cpp:201
 msgid "Watch Colours 3D.2..."
 msgstr "Sledovat Barvy 3D.2..."
 

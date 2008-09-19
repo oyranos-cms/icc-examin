@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2008-09-15 22:14+0200\n"
+"POT-Creation-Date: 2008-09-18 09:46+0200\n"
 "PO-Revision-Date: 2005-08-13 17:35+0200\n"
 "Last-Translator: Kai-Uwe Behrmann\n"
 "Language-Team:  <eo@li.org>\n"
@@ -974,11 +974,11 @@ msgstr ""
 msgid "seconds"
 msgstr ""
 
-#: icc_helfer.cpp:1243
+#: icc_helfer.cpp:1246
 msgid "Monitor Profile"
 msgstr ""
 
-#: icc_helfer.cpp:1270
+#: icc_helfer.cpp:1273
 msgid "file size 0 for "
 msgstr ""
 
@@ -1861,19 +1861,19 @@ msgstr ""
 msgid "@2>"
 msgstr ""
 
-#: icc_cinepaint.cpp:189
+#: icc_cinepaint.cpp:198
 msgid "Image Profile..."
 msgstr ""
 
-#: icc_cinepaint.cpp:190
+#: icc_cinepaint.cpp:199
 msgid "Proof Profile..."
 msgstr ""
 
-#: icc_cinepaint.cpp:191
+#: icc_cinepaint.cpp:200
 msgid "Watch Colours 3D..."
 msgstr ""
 
-#: icc_cinepaint.cpp:192
+#: icc_cinepaint.cpp:201
 msgid "Watch Colours 3D.2..."
 msgstr ""
 
