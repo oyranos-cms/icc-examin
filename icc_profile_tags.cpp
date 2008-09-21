@@ -344,7 +344,7 @@ ICCtag::getText                     (std::string text)
 
     int count = 0;
 # if 1
-    char* txt = (char*)calloc (size_-8, sizeof(char));
+    char* txt = (char*)calloc (size_, sizeof(char));
     memcpy (txt, &data_[8], size_ - 8);
     char* pos = 0;
 #   ifdef DEBUG_ICCTAG
