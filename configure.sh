@@ -183,7 +183,12 @@ if [ -n "$OYRANOS" ] && [ "$OYRANOS" != "0" ]; then
 #     echo "OYRANOS_LIBS = `pkg-config --libs oyranos_monitor`" >> $CONF
     fi
   else
-    echo_="no Oyranos found"; echo "$echo_" >> $CONF_LOG; test -n "$ECHO" && $ECHO "$echo_"
+    if [ $OYRANOS -eq 1 ]; then
+      echo_="!!! ERROR: no or too old Oyranos found, !!!"; echo "$echo_" >> $CONF_LOG; test -n "$ECHO" && $ECHO "$echo_"
+      ERROR=1
+    else
+      echo_="no Oyranos found"; echo "$echo_" >> $CONF_LOG; test -n "$ECHO" && $ECHO "$echo_"
+    fi
   fi
 fi
 
