@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: icc_examin\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2008-09-18 09:46+0200\n"
+"POT-Creation-Date: 2008-09-24 11:26+0200\n"
 "PO-Revision-Date: 2008-05-13 19:38+0200\n"
 "Last-Translator: Milan Knizek <knizek@volny.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
@@ -245,19 +245,19 @@ msgstr "VAROVANI"
 msgid "!!! ERROR"
 msgstr "!!! CHYBA"
 
-#: icc_examin.cpp:251
+#: icc_examin.cpp:254
 msgid "Gamut selector"
 msgstr "Volba gamutu"
 
-#: icc_examin.cpp:341 icc_examin.cpp:1265
+#: icc_examin.cpp:344 icc_examin.cpp:1268
 msgid "loaded"
 msgstr "nacteno"
 
-#: icc_examin.cpp:347
+#: icc_examin.cpp:350
 msgid "Ready"
 msgstr "Pripraveno"
 
-#: icc_examin.cpp:396
+#: icc_examin.cpp:399
 msgid ""
 "ICC colour profiles (*.{I,i}{C,c}{M,m,C,c})\tMeasurement (*.{txt,it8,IT8,RGB,"
 "CMYK,ti*,cgats,CIE,cie,nCIE,oRPT,DLY,LAB,Q60})\tArgyll Gamuts (*.{wrl,vrml}"
@@ -265,47 +265,47 @@ msgstr ""
 "ICC barvove profily (*.{I,i}{C,c}{M,m,C,c})\tMereni (*.{txt,it8,IT8,RGB,CMYK,"
 "ti*,cgats,CIE,cie,nCIE,oRPT,DLY,LAB,Q60})\tGamuty Argyll (*.{wrl,vrml}"
 
-#: icc_examin.cpp:396
+#: icc_examin.cpp:399
 msgid "Which ICC profile?"
 msgstr "Ktery ICC profil?"
 
-#: icc_examin.cpp:794 icc_examin.cpp:797
+#: icc_examin.cpp:797 icc_examin.cpp:800
 msgid "Compare Measurement <-> Profile Colours"
 msgstr "Porovnat Mereni <-> Barvy profilu"
 
-#: icc_examin.cpp:796
+#: icc_examin.cpp:799
 msgid "none"
 msgstr "zadny"
 
-#: icc_examin.cpp:814 icc_examin.cpp:818
+#: icc_examin.cpp:817 icc_examin.cpp:821
 msgid "Gamut View"
 msgstr "Zobrazeni gamutu"
 
-#: icc_examin.cpp:869 icc_gl.h:274
+#: icc_examin.cpp:872 icc_gl.h:274
 msgid "not available"
 msgstr "neni k dispozici"
 
-#: icc_examin.cpp:1205
+#: icc_examin.cpp:1208
 msgid "Filename (ICC data type)"
 msgstr "Nazev souboru (ICC typ)"
 
-#: icc_examin.cpp:1208
+#: icc_examin.cpp:1211
 msgid "Filename (other data type)"
 msgstr "Jmeno souboru (jiny typ)"
 
-#: icc_examin.cpp:1210
+#: icc_examin.cpp:1213
 msgid "Filename (corrupted ICC data type)"
 msgstr "Jmeno souboru (poruseny typ ICC dat)"
 
-#: icc_examin.cpp:1215
+#: icc_examin.cpp:1218
 msgid "found no content for"
 msgstr "nenalezen zadny obsah pro"
 
-#: icc_examin.cpp:1218
+#: icc_examin.cpp:1221
 msgid "Internal error"
 msgstr "Interni chyba"
 
-#: icc_examin.cpp:1221
+#: icc_examin.cpp:1224
 #, fuzzy
 msgid "No. Tag   Type   Size Description"
 msgstr "C. Tag Typ Vel. Popis"
@@ -1134,33 +1134,33 @@ msgstr "M"
 msgid "K"
 msgstr "K"
 
-#: icc_oyranos.cpp:172
+#: icc_oyranos.cpp:168
 msgid "WARNING: Could not load corrupt or damaged profile."
 msgstr "Varovani: nelze nacist poskozeny profil."
 
-#: icc_oyranos.cpp:178 icc_oyranos.cpp:381 icc_oyranos.cpp:387
-#: icc_oyranos.cpp:433 icc_oyranos.cpp:439 icc_oyranos.cpp:478
-#: icc_oyranos.cpp:484
+#: icc_oyranos.cpp:174 icc_oyranos.cpp:371 icc_oyranos.cpp:377
+#: icc_oyranos.cpp:408 icc_oyranos.cpp:414 icc_oyranos.cpp:448
+#: icc_oyranos.cpp:454
 msgid "WARNING: Could not load profile."
 msgstr "Varovani: Nelze nacist profil."
 
-#: icc_oyranos.cpp:614 icc_profile_header.cpp:250 icc_helfer_x.cpp:180
+#: icc_oyranos.cpp:574 icc_profile_header.cpp:250 icc_helfer_x.cpp:180
 msgid "Manufacturer:"
 msgstr "Vyrobce: "
 
-#: icc_oyranos.cpp:620
+#: icc_oyranos.cpp:580
 msgid "Model:"
 msgstr "Model:"
 
-#: icc_oyranos.cpp:626
+#: icc_oyranos.cpp:586
 msgid "Serial:"
 msgstr "Serie:"
 
-#: icc_oyranos.cpp:1226 icc_vrml.cpp:151
+#: icc_oyranos.cpp:1184 icc_vrml.cpp:151
 msgid "Std-exception occured: "
 msgstr "Nastala std. vyjimka:"
 
-#: icc_oyranos.cpp:1229 icc_vrml.cpp:154
+#: icc_oyranos.cpp:1187 icc_vrml.cpp:154
 msgid "Huch, unknown exception"
 msgstr "Uf, neznama vyjimka"
 

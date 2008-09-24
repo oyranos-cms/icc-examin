@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ICC Examin 0.41\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2008-09-18 09:46+0200\n"
+"POT-Creation-Date: 2008-09-24 11:26+0200\n"
 "PO-Revision-Date: 2006-06-29 19:31+0200\n"
 "Last-Translator: Pascal LACROIX <lacroixpascal at vfemail.net>\n"
 "Language-Team: ALL <ku.b@gmx.de>\n"
@@ -247,66 +247,66 @@ msgstr ""
 msgid "!!! ERROR"
 msgstr ""
 
-#: icc_examin.cpp:251
+#: icc_examin.cpp:254
 msgid "Gamut selector"
 msgstr ""
 
-#: icc_examin.cpp:341 icc_examin.cpp:1265
+#: icc_examin.cpp:344 icc_examin.cpp:1268
 msgid "loaded"
 msgstr ""
 
-#: icc_examin.cpp:347
+#: icc_examin.cpp:350
 msgid "Ready"
 msgstr ""
 
-#: icc_examin.cpp:396
+#: icc_examin.cpp:399
 msgid ""
 "ICC colour profiles (*.{I,i}{C,c}{M,m,C,c})\tMeasurement (*.{txt,it8,IT8,RGB,"
 "CMYK,ti*,cgats,CIE,cie,nCIE,oRPT,DLY,LAB,Q60})\tArgyll Gamuts (*.{wrl,vrml}"
 msgstr ""
 
-#: icc_examin.cpp:396
+#: icc_examin.cpp:399
 msgid "Which ICC profile?"
 msgstr ""
 
-#: icc_examin.cpp:794 icc_examin.cpp:797
+#: icc_examin.cpp:797 icc_examin.cpp:800
 msgid "Compare Measurement <-> Profile Colours"
 msgstr ""
 
-#: icc_examin.cpp:796
+#: icc_examin.cpp:799
 msgid "none"
 msgstr ""
 
-#: icc_examin.cpp:814 icc_examin.cpp:818
+#: icc_examin.cpp:817 icc_examin.cpp:821
 #, fuzzy
 msgid "Gamut View"
 msgstr "Gamut"
 
-#: icc_examin.cpp:869 icc_gl.h:274
+#: icc_examin.cpp:872 icc_gl.h:274
 msgid "not available"
 msgstr ""
 
-#: icc_examin.cpp:1205
+#: icc_examin.cpp:1208
 msgid "Filename (ICC data type)"
 msgstr ""
 
-#: icc_examin.cpp:1208
+#: icc_examin.cpp:1211
 msgid "Filename (other data type)"
 msgstr ""
 
-#: icc_examin.cpp:1210
+#: icc_examin.cpp:1213
 msgid "Filename (corrupted ICC data type)"
 msgstr ""
 
-#: icc_examin.cpp:1215
+#: icc_examin.cpp:1218
 msgid "found no content for"
 msgstr ""
 
-#: icc_examin.cpp:1218
+#: icc_examin.cpp:1221
 msgid "Internal error"
 msgstr ""
 
-#: icc_examin.cpp:1221
+#: icc_examin.cpp:1224
 msgid "No. Tag   Type   Size Description"
 msgstr ""
 
@@ -1131,33 +1131,33 @@ msgstr ""
 msgid "K"
 msgstr ""
 
-#: icc_oyranos.cpp:172
+#: icc_oyranos.cpp:168
 msgid "WARNING: Could not load corrupt or damaged profile."
 msgstr ""
 
-#: icc_oyranos.cpp:178 icc_oyranos.cpp:381 icc_oyranos.cpp:387
-#: icc_oyranos.cpp:433 icc_oyranos.cpp:439 icc_oyranos.cpp:478
-#: icc_oyranos.cpp:484
+#: icc_oyranos.cpp:174 icc_oyranos.cpp:371 icc_oyranos.cpp:377
+#: icc_oyranos.cpp:408 icc_oyranos.cpp:414 icc_oyranos.cpp:448
+#: icc_oyranos.cpp:454
 msgid "WARNING: Could not load profile."
 msgstr ""
 
-#: icc_oyranos.cpp:614 icc_profile_header.cpp:250 icc_helfer_x.cpp:180
+#: icc_oyranos.cpp:574 icc_profile_header.cpp:250 icc_helfer_x.cpp:180
 msgid "Manufacturer:"
 msgstr "Fabricant:   "
 
-#: icc_oyranos.cpp:620
+#: icc_oyranos.cpp:580
 msgid "Model:"
 msgstr "Model:"
 
-#: icc_oyranos.cpp:626
+#: icc_oyranos.cpp:586
 msgid "Serial:"
 msgstr ""
 
-#: icc_oyranos.cpp:1226 icc_vrml.cpp:151
+#: icc_oyranos.cpp:1184 icc_vrml.cpp:151
 msgid "Std-exception occured: "
 msgstr ""
 
-#: icc_oyranos.cpp:1229 icc_vrml.cpp:154
+#: icc_oyranos.cpp:1187 icc_vrml.cpp:154
 msgid "Huch, unknown exception"
 msgstr ""
 
