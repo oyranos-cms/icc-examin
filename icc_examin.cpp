@@ -120,6 +120,9 @@ int iccMessageFunc( int code, const oyStruct_s * context, const char * format, .
   *pos = 0;
 
   icc_examin_ns::log( text, code );
+  /* for debugging it is better to see messages on the console rather than
+     getting lost during a crash */
+  cout << code <<" "<< text << endl;
 
   if(text) free( text );
 
