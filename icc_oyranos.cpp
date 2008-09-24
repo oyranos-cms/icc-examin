@@ -41,11 +41,10 @@ using namespace icc_examin_ns;
 #include <lcms.h>
 #undef BOOL
 
-#ifdef HAVE_OY
 #include "oyranos/oyranos.h"
+#include "oyranos/oyranos_alpha.h"
 #include "oyranos/oyranos_monitor.h"
 using namespace oyranos;
-#endif
 
 #ifdef APPLE
 #include <Carbon/Carbon.h>
@@ -110,7 +109,6 @@ Oyranos::profil_test_ (const char* profil_name)
 {
   DBG_PROG_START
   bool fehler = false;
-# if HAVE_OY
 
   if(profil_name && strlen(profil_name))
   {
@@ -143,7 +141,6 @@ Oyranos::profil_test_ (const char* profil_name)
   
   DBG_NUM_S( "Standard " OY_DEFAULT_ASSUMED_LAB_PROFILE " Profil = "<< *lab_ <<" "<< lab_.size() <<"\n" )
 
-# endif
   return fehler;
   DBG_PROG_ENDE
 }
@@ -152,7 +149,6 @@ void
 Oyranos::lab_test_ ()
 {
   DBG_PROG_START
-# if HAVE_OY
   Speicher *v_block = &lab_;
   if( !v_block->size() )
   { DBG_PROG_V( v_block->size() )
@@ -182,7 +178,6 @@ Oyranos::lab_test_ ()
   DBG_NUM_S( "Standard " OY_DEFAULT_ASSUMED_LAB_PROFILE " Profil = "<< *lab_ <<" "<< lab_.size() <<"\n" )
 
   
-# endif
   DBG_PROG_ENDE
 }
 
@@ -239,12 +234,8 @@ MyFlattenProfileProcSize (
   return 0;
 }
 
-#ifndef HAVE_OY
-typedef  void* (oyAllocFunc_t)(size_t size);
-#endif
-
 int
-oyGetProfileBlockOSX (CMProfileRef prof, char *block, size_t *size, oyAllocFunc_t allocateFunc)
+oyGetProfileBlockOSX (CMProfileRef prof, char *block, size_t *size, oyranos::oyAlloc_f allocateFunc)
 {
   DBG_PROG_START
     CMProfileLocation loc;
@@ -361,7 +352,6 @@ void
 Oyranos::rgb_test_ ()
 {
   DBG_PROG_START
-# if HAVE_OY
   Speicher *v_block = &rgb_;
   if( !v_block->size() )
   { DBG_PROG_V( v_block->size() )
@@ -390,20 +380,6 @@ Oyranos::rgb_test_ ()
 
   if(rgb_.size())
     DBG_NUM_S( "Standard " OY_DEFAULT_ASSUMED_RGB_PROFILE " Profil = "<< *rgb_ <<" "<< rgb_.size() <<"\n" );
-# else
-# if APPLE
-  CMProfileRef prof=NULL;
-  char *block = 0;
-  size_t groesse = 0;
-  oyGetProfileBlockOSX(prof, block, &groesse, malloc);
-  if(groesse) {
-    block = (char*)malloc(groesse);
-    oyGetProfileBlockOSX(prof, block, &groesse, malloc);
-  }
-  Speicher *v_block = &rgb_;
-  v_block->ladeUndFreePtr(&block,groesse);
-# endif
-# endif
   DBG_PROG_ENDE
 }
 
@@ -412,7 +388,6 @@ void
 Oyranos::cmyk_test_ ()
 {
   DBG_PROG_START
-# if HAVE_OY
   Speicher *v_block = &cmyk_;
   if( !v_block->size() )
   { DBG_PROG_V( v_block->size() )
@@ -442,10 +417,6 @@ Oyranos::cmyk_test_ ()
 
   if(cmyk_.size())
     DBG_NUM_S( "Standard " OY_DEFAULT_ASSUMED_CMYK_PROFILE " Profil = "<< *cmyk_ <<" "<< cmyk_.size() <<"\n" );
-# else
-# if APPLE
-# endif
-# endif
   //oy_debug = 0;
   DBG_PROG_ENDE
 }
@@ -454,7 +425,6 @@ void
 Oyranos::proof_test_ ()
 {
   DBG_PROG_START
-# if HAVE_OY
   Speicher *v_block = &proof_;
   char* profil_name = NULL;
 
@@ -487,10 +457,6 @@ Oyranos::proof_test_ ()
 
   if(cmyk_.size())
     DBG_NUM_S( "Standard " OY_DEFAULT_PROOF_PROFILE " Profil = "<< *proof_ <<" "<< proof_.size() <<"\n" );
-# else
-# if APPLE
-# endif
-# endif
   //oy_debug = 0;
   DBG_PROG_ENDE
 }
@@ -502,8 +468,6 @@ Oyranos::holeMonitorProfil (const char* display_name, size_t* size )
   DBG_PROG_START
   char* moni_profil = 0;
   *size = 0;
-
-# if HAVE_OY
 
 # ifdef HAVE_X
   static Display *display=0;
@@ -528,7 +492,6 @@ Oyranos::holeMonitorProfil (const char* display_name, size_t* size )
 
   moni_profil = oyGetMonitorProfile( display_name, size );
 
-# endif
   DBG_PROG_V( *size <<" "<< (int*)moni_profil )
 
   DBG_PROG_ENDE
@@ -543,7 +506,6 @@ Oyranos::setzeMonitorProfil (const char* profil_name , int x, int y )
   int fehler = false;
 
   DBG_PROG_V( profil_name )
-# if HAVE_OY
   const char *display_name=0;
 
 # ifdef HAVE_X
@@ -575,7 +537,6 @@ Oyranos::setzeMonitorProfil (const char* profil_name , int x, int y )
   DBG_PROG_V( neues_profil )
 
   if (neues_profil) free (neues_profil);
-# endif
 
   DBG_PROG_ENDE
   return fehler;
@@ -588,7 +549,6 @@ Oyranos::moniInfo (int x, int y, int *num)
   *num = 0;
   char **infos = 0;
 
-# if HAVE_OY
   const char *display_name=0;
 
 # ifdef HAVE_X
@@ -630,8 +590,6 @@ Oyranos::moniInfo (int x, int y, int *num)
     
 
   if(new_display_name) { delete [] new_display_name; new_display_name = 0; }
-
-# endif
 
   DBG_PROG_ENDE
   return infos;
@@ -1536,8 +1494,6 @@ Oyranos::zeigTrafo           ( const char *profilA, int ein_bytes, int kanaeleA,
                                          proof_profil, intent_p);
 
   //trafos_.find(schluessel);
-# if HAVE_OY
-# endif
   DBG_PROG_ENDE
 }
 #endif
@@ -1560,9 +1516,6 @@ oyranos_pfade_einlesen()
 void
 oyranos_pfad_dazu (char* pfad)
 {
-# ifdef HAVE_OY
-
-# endif
 }
 
 
