@@ -342,7 +342,10 @@ ICCexamin::waehleMft (int item)
       }
 
       channels = icc_examin->icc_betrachter->mft_gl->channels();
+      int c_n = channels.size();
       channels.resize(from_colour_names.size());
+      for(unsigned int i = c_n; i < channels.size(); ++i)
+        channels[i] = 0;
       ICClist<double> clutpoints =  profile.profil()->getTagNumbers(
                                                     icc_betrachter->tag_nummer,
                                                     ICCtag::TABLE );

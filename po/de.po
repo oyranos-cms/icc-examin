@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2008-09-24 11:26+0200\n"
+"POT-Creation-Date: 2008-09-24 17:04+0200\n"
 "PO-Revision-Date: 2005-08-13 17:35+0200\n"
 "Last-Translator: Kai-Uwe Behrmann\n"
 "Language-Team:  <ku.b@gmx.de>\n"
@@ -501,7 +501,7 @@ msgstr "Sättigung"
 msgid "Absolute Colorimetric"
 msgstr "Absolut Farbmetrisch"
 
-#: icc_helfer.cpp:394 icc_profile_tags.cpp:1176 icc_profile_tags.cpp:1183
+#: icc_helfer.cpp:394 icc_profile_tags.cpp:1178 icc_profile_tags.cpp:1185
 msgid "Colour"
 msgstr "Farbe"
 

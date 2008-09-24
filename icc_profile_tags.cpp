@@ -1112,6 +1112,8 @@ ICCtag::getNumbers                                 (MftChain typ)
     if(farben_n)
     {
       nummern .resize(farben_n * (3+geraetefarben_n));
+      for (unsigned int i = 0; i < nummern.size(); ++i)
+        nummern[i] = 0;
       nummern[0] = farben_n;
       DBG_PROG_V( nummern[0] )
       // append device colours
