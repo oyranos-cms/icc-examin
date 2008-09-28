@@ -1,7 +1,7 @@
 /* 
  * ICC Examin plug-in for cinepaint.
  *
- * Copyright (C) 2004-2007 Kai-Uwe Behrmann <ku.b@gmx.de>
+ * Copyright (C) 2004-2008 Kai-Uwe Behrmann <ku.b@gmx.de>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -140,8 +140,8 @@ query ()
   {
     { PARAM_IMAGE },
   };
-  args[0].type = PARAM_IMAGE; args[0].name = (char*)"image";
-  args[0].description = (char*)"Output Image";
+  return_vals[0].type = PARAM_IMAGE; return_vals[0].name = (char*)"image";
+  return_vals[0].description = (char*)"Output Image";
 
   n_args_ = sizeof (args) / sizeof (args[0]);
   n_return_vals_ = sizeof (return_vals) / sizeof (return_vals[0]);
