@@ -532,7 +532,7 @@ Oyranos::setzeMonitorProfil (const char* profil_name , int x, int y )
 
   fehler = oySetMonitorProfile( new_display_name, profil_name );
 
-  char *neues_profil = oyGetMonitorProfileName( display_name, myAllocFunc );
+  char *neues_profil = oyGetMonitorProfileNameFromDB( display_name,myAllocFunc);
   if(new_display_name) { delete [] new_display_name; new_display_name = 0; }
   DBG_PROG_V( neues_profil )
 
@@ -1297,7 +1297,8 @@ oyProfile_s * Oyranos::oyMoni (int x, int y)
 
   if(disp_name)
   {
-    char * moni_profile_name = oyGetMonitorProfileName(disp_name, myAllocFunc);
+    char * moni_profile_name = oyGetMonitorProfileNameFromDB( disp_name,
+                                                              myAllocFunc );
     if(moni_profile_name)
     {
       disp_prof = oyProfile_FromFile( moni_profile_name, 0, 0 );
