@@ -34,10 +34,10 @@
 #define oyIGNORE_DEPRECATED 108
 
 #include "config.h"
-#include <oyranos/oyranos.h>
-#include <oyranos/oyranos_icc.h>
-#include <oyranos/oyranos_alpha.h>
-#include <oyranos/oyranos_icc.h>
+#include <oyranos.h>
+#include <oyranos_icc.h>
+#include <oyranos_alpha.h>
+#include <oyranos_icc.h>
 
 using namespace oyranos;
 
