@@ -1733,7 +1733,7 @@ GL_Ansicht::punkteAuffrischen()
                   glColor4dv( rgba );
                 }
 
-                oyXYZ2Lab( (const double*) in_array->data, lab );
+                oyXYZ2Lab( (const double*) in_array->array2d[0], lab );
                 iccPoint3d ( projection, lab, 0 );
                 oyNamedColour_Release( &c );
 
@@ -1750,7 +1750,7 @@ GL_Ansicht::punkteAuffrischen()
                   glColor4dv( rgba );
                 }
 
-                oyXYZ2Lab( (const double*) in_array->data, lab );
+                oyXYZ2Lab( (const double*) in_array->array2d[0], lab );
                 iccPoint3d ( projection, lab, 0 );
                 oyNamedColour_Release( &c );
               glEnd();
@@ -1779,7 +1779,7 @@ GL_Ansicht::punkteAuffrischen()
                      oyColourConversion_Run( cc_disp );
                    glColor4dv( rgba );
 
-                   oyXYZ2Lab( (const double*) in_array->data, lab );
+                   oyXYZ2Lab( (const double*) in_array->array2d[0], lab );
                    iccPoint3d ( projection, lab, 0 );
                    oyNamedColour_Release( &c );
                  }
@@ -1807,7 +1807,7 @@ GL_Ansicht::punkteAuffrischen()
                      oyColourConversion_Run( cc_disp );
                    glColor4dv( rgba );
 
-                   oyXYZ2Lab( (const double*) in_array->data, lab );
+                   oyXYZ2Lab( (const double*) in_array->array2d[0], lab );
                    iccPoint3d( projection, lab, rad );
                    oyNamedColour_Release( &c );
                  glPopMatrix();
@@ -1823,7 +1823,7 @@ GL_Ansicht::punkteAuffrischen()
                    c = oyNamedColours_Get( colours, i );
                    oyArray2d_DataSet( in_array,
                                       (void*) oyNamedColour_GetXYZConst( c ) );
-                   oyXYZ2Lab( (const double*) in_array->data, lab );
+                   oyXYZ2Lab( (const double*) in_array->array2d[0], lab );
                    lab[0] = 0;
                    iccPoint3d ( projection, lab, 0 );
                    oyNamedColour_Release( &c );
