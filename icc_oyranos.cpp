@@ -1297,30 +1297,21 @@ oyProfile_s * Oyranos::oyMoni (int x, int y)
 
   if(disp_name)
   {
-    char * moni_profile_name = oyGetMonitorProfileNameFromDB( disp_name,
-                                                              myAllocFunc );
-    if(moni_profile_name)
+    size_t size = 0;
+    char * buf = oyGetMonitorProfile( disp_name, &size, malloc );
+
+    if(size && buf)
     {
-      disp_prof = oyProfile_FromFile( moni_profile_name, 0, 0 );
-
-    } else {
-
-      size_t size = 0;
-      char * buf = oyGetMonitorProfile( disp_name, &size, malloc );
-      if(size && buf)
-      {
-        disp_prof = oyProfile_FromMem( size, buf, 0, 0 );
-        free(buf); size = 0;
-      } else
-      {
-        WARN_S("Could not load profile. Use sRGB instead.")
-        disp_prof = oyProfile_FromStd( oyASSUMED_WEB, 0 );
-      }
+      disp_prof = oyProfile_FromMem( size, buf, 0, 0 );
+      free(buf); size = 0;
+    } else
+    {
+      WARN_S("Could not load profile. Use sRGB instead.")
+      disp_prof = oyProfile_FromStd( oyASSUMED_WEB, 0 );
     }
+
     if(disp_name)
       free(disp_name);
-    if(moni_profile_name)
-      delete [] moni_profile_name;
   }
 
   if (disp_prof)
