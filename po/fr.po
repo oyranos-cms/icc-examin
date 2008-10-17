@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ICC Examin 0.41\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2008-09-28 19:41+0200\n"
+"POT-Creation-Date: 2008-10-06 11:44+0200\n"
 "PO-Revision-Date: 2006-06-29 19:31+0200\n"
 "Last-Translator: Pascal LACROIX <lacroixpascal at vfemail.net>\n"
 "Language-Team: ALL <ku.b@gmx.de>\n"
@@ -1903,7 +1903,7 @@ msgid "What kind of image is this?\n"
 msgstr ""
 
 #: icc_examin_version.h:8
-msgid "0.45"
+msgid "0.46"
 msgstr ""
 
 #: icc_examin_version.h:9
