@@ -35,7 +35,6 @@ used components and libraries (partitial statically linked):
 %build
 %configure
 make %{_smp_mflags} static || make
-make strip
 
 %install
 rm -rf %{buildroot}
@@ -55,6 +54,8 @@ update-mime-database %{_datadir}/mime/
 %doc AUTHORS COPYING ChangeLog README
 %{_bindir}/iccexamin
 %{desktopdir}/icc_examin.desktop
+%{desktopdir}/x-cgats.desktop
+%{desktopdir}/x-icc.desktop
 %{_datadir}/mime/packages/icc.xml
 %{pixmapdir}/icc_examin.png
 %{_datadir}/fonts/FreeSans.ttf
