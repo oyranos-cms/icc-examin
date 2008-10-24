@@ -42,7 +42,7 @@
 #include <sys/time.h>
 #endif
 
-#include <oyranos/oyranos_monitor.h>
+#include <oyranos.h>
 
 #include <FL/Fl_Menu_Button.H>
 #include <FL/Fl.H>
@@ -1443,7 +1443,7 @@ GL_Ansicht::netzeAuffrischen()
 
       glLineWidth(strich1*strichmult);
       int index[7];
-      double normale[3], len=1.0;
+      double len=1.0;
 
       // all material colours obtian here their transparency
       glColorMaterial( GL_FRONT_AND_BACK, GL_SPECULAR );
@@ -1507,9 +1507,9 @@ GL_Ansicht::netzeAuffrischen()
             glVertex3d( netz.punkte[index[0]].koord[2],
                         netz.punkte[index[0]].koord[0],
                         netz.punkte[index[0]].koord[1] );
-            glVertex3d( netz.punkte[index[0]].koord[2]+normale[2]/len*.1,
-                        netz.punkte[index[0]].koord[0]+normale[0]/len*.1,
-                        netz.punkte[index[0]].koord[1]+normale[1]/len*.1 );
+            glVertex3d( netz.punkte[index[0]].koord[2]+it->second.normale[2]/len*.1,
+                        netz.punkte[index[0]].koord[0]+it->second.normale[0]/len*.1,
+                        netz.punkte[index[0]].koord[1]+it->second.normale[1]/len*.1 );
           glEnd();
           }
           if(netz.kubus)
