@@ -38,7 +38,7 @@
 #include "icc_profile.h"
 #include "icc_utils.h"
 #include "icc_helfer.h"
-#include <oyranos/oyranos_alpha.h>
+#include <oyranos_alpha.h>
 
 #include <cmath>
 #include <sstream>

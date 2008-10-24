@@ -41,9 +41,8 @@ using namespace icc_examin_ns;
 #include <lcms.h>
 #undef BOOL
 
-#include "oyranos/oyranos.h"
-#include "oyranos/oyranos_alpha.h"
-#include "oyranos/oyranos_monitor.h"
+#include "oyranos.h"
+#include "oyranos_alpha.h"
 using namespace oyranos;
 
 #ifdef APPLE
