@@ -28,7 +28,7 @@ VERSION_C=6
 RELEASE=0
 START_MONTH="May"
 START_YEAR="2004"
-DEVEL_MONTH="September"
+DEVEL_MONTH="October"
 DEVEL_YEAR="2008"
 GIT_MASTER="`cat .git/refs/heads/master`"
 time="`date +%y%m%d.%H%M%S`"
@@ -672,6 +672,7 @@ if [ -z "$CP_CONFIG" ]; then
     CP_LIBS="cinepainttool --libs"
     CP_VERSION=`cinepainttool --version`
     CP_N_VERSION=`cinepainttool --version | sed "s/\.// ; s/-.//"`
+    test $CP_N_VERSION != $CP_N_VERSION | sed "s/\.//" && CP_N_VERSION=`cinepainttool --version | sed "s/\.// ; s/\..//"`
     echo_="Gtk CinePaint $CP_VERSION    detected"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
     cp_reqired=22
     if [ "$CP_N_VERSION" -ge $cp_reqired ]; then
@@ -794,10 +795,6 @@ fi
 echo "" >> $CONF
 
 
-if [ -z "$quick" ]; then
-  echo "" > mkdepend
-fi
-
 # prepare makefile from MAKEFILE_DIR
 PREPARE_MAKEFILES=1; export PREPARE_MAKEFILES
 ./configure.sh
@@ -829,6 +826,7 @@ if [ "$ERROR" -ne "0" ]; then
   exit
 else
   if [ -z "$quick" ]; then
+    echo "" > mkdepend
     make depend
   fi
 fi
