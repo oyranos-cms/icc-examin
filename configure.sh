@@ -34,21 +34,10 @@ fi
 
 if [ -n "$ELEKTRA" ] && [ "$ELEKTRA" -gt "0" ]; then
   if [ -z "$elektra_min" ]; then
-    elektra_min="0.6"
+    elektra_min="0.7"
   fi
   if [ -z "$elektra_max" ]; then
-    elektra_max="0.6.100"
-  fi
-  if [ "$internalelektra" != "no" ]; then
-   if [ `ls $ELEKTRA_VERSION | grep elektra | wc -l` -gt 0 ]; then
-     echo_="local copy of elektra   detected"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
-        echo "#define HAVE_ELEKTRA 1" >> $CONF_H
-        echo "ELEKTRA = 1" >> $CONF
-        echo "ELEKTRA_VERSION = $ELEKTRA_VERSION" >> $CONF
-        echo "ELEKTRA_H = -I\$(ELEKTRA_VERSION)/src/include" >> $CONF
-        echo "ELEKTRA_LIBS = \$(ELEKTRA_VERSION)/src/libelektra/libelektra.a" >> $CONF
-        ELEKTRA_FOUND=1
-   fi
+    elektra_max="0.7.100"
   fi
   if [ -z "$ELEKTRA_FOUND" ]; then
     elektra_mod=`pkg-config --modversion elektra`
@@ -167,20 +156,15 @@ fi
 
 if [ -n "$OYRANOS" ] && [ "$OYRANOS" != "0" ]; then
   OY_=`oyranos-config 2>>$CONF_LOG`
-# OY_=`pkg-config --exists oyranos_monitor 2>>error.txt`
   if [ $? = 0 ]; then
     echo_="Oyranos `oyranos-config --version`           detected"; echo "$echo_" >> $CONF_LOG; test -n "$ECHO" && $ECHO "$echo_"
-#    echo_="Oyranos `pkg-config --modversion oyranos`           detected"; echo "$echo_" >> $CONF_LOG; test -n "$ECHO" && $ECHO "$echo_"
     echo "#define HAVE_OY 1" >> $CONF_H
     echo "OY = 1" >> $CONF
     echo "OYRANOS_H = `oyranos-config --cflags`" >> $CONF
-#   echo "OYRANOS_H = `pkg-config --cflags oyranos_monitor`" >> $CONF
     if [ -f /usr/X11R6/include/X11/extensions/xf86vmode.h ]; then
-      echo "OYRANOS_LIBS = `oyranos-config --ld_x_flags`" >> $CONF
-#     echo "OYRANOS_LIBS = `pkg-config --libs oyranos_monitor`" >> $CONF
+      echo "OYRANOS_LIBS = `oyranos-config --ldflags`" >> $CONF
     else
-      echo "OYRANOS_LIBS = `oyranos-config --ld_x_flags`" >> $CONF
-#     echo "OYRANOS_LIBS = `pkg-config --libs oyranos_monitor`" >> $CONF
+      echo "OYRANOS_LIBS = `oyranos-config --ldflags`" >> $CONF
     fi
   else
     if [ $OYRANOS -eq 1 ]; then
@@ -631,6 +615,9 @@ if [ -n "$PREPARE_MAKEFILES" ] && [ $PREPARE_MAKEFILES -gt 0 ]; then
         test -f "$i/makefile".in && cat  "$i/makefile".in | sed 's/#if/if/g ; s/#elif/elif/g ; s/#else/else/g ; s/#end/end/g '  >> "$i/makefile"
       fi
       mv "$i/makefile" "$i/Makefile"
+      if [ "$i" != "." ]; then
+        (cd $i; make clean)
+      fi
     done
   fi
 fi
