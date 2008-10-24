@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2008-10-06 11:44+0200\n"
+"POT-Creation-Date: 2008-10-24 23:05+0200\n"
 "PO-Revision-Date: 2005-08-13 17:35+0200\n"
 "Last-Translator: Kai-Uwe Behrmann\n"
 "Language-Team:  <ku.b@gmx.de>\n"
@@ -1134,33 +1134,33 @@ msgstr ""
 msgid "K"
 msgstr ""
 
-#: icc_oyranos.cpp:168
+#: icc_oyranos.cpp:167
 msgid "WARNING: Could not load corrupt or damaged profile."
 msgstr "WARNUNG: Konnte koruptes oder beschädigtes Profil nicht laden."
 
-#: icc_oyranos.cpp:174 icc_oyranos.cpp:371 icc_oyranos.cpp:377
-#: icc_oyranos.cpp:408 icc_oyranos.cpp:414 icc_oyranos.cpp:448
-#: icc_oyranos.cpp:454
+#: icc_oyranos.cpp:173 icc_oyranos.cpp:370 icc_oyranos.cpp:376
+#: icc_oyranos.cpp:407 icc_oyranos.cpp:413 icc_oyranos.cpp:447
+#: icc_oyranos.cpp:453
 msgid "WARNING: Could not load profile."
 msgstr "WARNUNG: Konnte Profil nicht laden."
 
-#: icc_oyranos.cpp:574 icc_profile_header.cpp:250 icc_helfer_x.cpp:180
+#: icc_oyranos.cpp:573 icc_profile_header.cpp:250 icc_helfer_x.cpp:180
 msgid "Manufacturer:"
 msgstr "Hersteller:  "
 
-#: icc_oyranos.cpp:580
+#: icc_oyranos.cpp:579
 msgid "Model:"
 msgstr "Modell:"
 
-#: icc_oyranos.cpp:586
+#: icc_oyranos.cpp:585
 msgid "Serial:"
 msgstr "Serien Nr.:"
 
-#: icc_oyranos.cpp:1184 icc_vrml.cpp:151
+#: icc_oyranos.cpp:1183 icc_vrml.cpp:151
 msgid "Std-exception occured: "
 msgstr "Std-Ausnahme: "
 
-#: icc_oyranos.cpp:1187 icc_vrml.cpp:154
+#: icc_oyranos.cpp:1186 icc_vrml.cpp:154
 msgid "Huch, unknown exception"
 msgstr "Huch, unbekannte Ausnahme"
 
@@ -1939,8 +1939,8 @@ msgid "2004"
 msgstr ""
 
 #: icc_examin_version.h:11
-msgid "September"
-msgstr "September"
+msgid "October"
+msgstr "Oktober"
 
 #: icc_examin_version.h:12
 msgid "2008"
@@ -1950,6 +1950,9 @@ msgstr ""
 #: icc_utils.h:345 icc_utils.h:346
 msgid "!!! Warning !!!"
 msgstr "!!! Warnung !!!"
+
+#~ msgid "September"
+#~ msgstr "September"
 
 #, fuzzy
 #~ msgid "May 2004 - September 2008"
