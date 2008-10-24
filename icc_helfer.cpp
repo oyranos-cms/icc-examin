@@ -1542,14 +1542,19 @@ setI18N( const char *exename )
     ++num_paths;
   }
 
-  is_path = fl_search_locale_path (num_paths, locale_paths, "de", "icc_examin");
+  const char *dname = strrchr(exename, ICC_DIR_SEPARATOR_C);
+  if(dname && strlen(dname))
+    dname++;
+  if(!dname)
+    dname = exename;
+  is_path = fl_search_locale_path (num_paths, locale_paths, "de", dname);
 #if defined(_Xutf8_h) || HAVE_FLTK_UTF8
   FL_I18N_SETCODESET set_charset = FL_I18N_SETCODESET_UTF8;
 #else
   FL_I18N_SETCODESET set_charset = FL_I18N_SETCODESET_SELECT;
 #endif
   if(is_path >= 0) {
-    int err = fl_initialise_locale ( "icc_examin", locale_paths[is_path],
+    int err = fl_initialise_locale ( dname, locale_paths[is_path],
                                      set_charset );
     if(err) {
       WARN_S("i18n initialisation failed");
@@ -1561,16 +1566,12 @@ setI18N( const char *exename )
     {
       if(exename && strlen(exename))
       {
-        const char *dname = strrchr(exename, ICC_DIR_SEPARATOR_C);
-        if(dname && strlen(dname))
-          dname++;
-        if(!dname)
-          dname = exename;
+        dname = "icc_examin";
         is_path = fl_search_locale_path (num_paths, locale_paths, "de", dname );
       }
       if(is_path >= 0) {
-        int err = fl_initialise_locale ( strrchr(exename, ICC_DIR_SEPARATOR_C)+1,
-                               locale_paths[is_path], set_charset );
+        int err = fl_initialise_locale ( dname,
+                                         locale_paths[is_path], set_charset );
         if(!err) {
           DBG_NUM_S( "locale found in: " << locale_paths[is_path] );
         } else {
