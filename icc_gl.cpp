@@ -51,11 +51,16 @@
 #include <FL/filename.H>
 
 #ifdef HAVE_FTGL
+// newer FTGL seems to deprecate FTFont.h
+# if 1
 #include <FTGL/FTFont.h>
 #include <FTGL/FTGLTextureFont.h>
 #include <FTGL/FTGLPixmapFont.h>
 #include <FTGL/FTGLPolygonFont.h>
 #include <FTGL/FTGLExtrdFont.h>
+# else
+#include <FTGL/ftgl.h>
+# endif
 #endif
 
 #include <cmath>

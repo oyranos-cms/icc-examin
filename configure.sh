@@ -11,6 +11,37 @@ else
 fi
 export PKG_CONFIG_PATH
 
+if [ -n "$DSO_LINKING" ] && [ $DSO_LINKING -gt 0 ] && [ $OSUNAME != "Darwin" ]; then
+      rm -f tests/libtest$EXEC_END
+      $CC $CFLAGS -shared -Wl,-soname -Wl,my_so_name -I$includedir tests/library.c $LDFLAGS -L$libdir -o tests/libtest 2>/dev/null
+      if [ -f tests/libtest ]; then
+          DSO_VERSION="-Wl,-soname -Wl,"
+          if [ -n "$MAKEFILE_DIR" ]; then
+            for i in $MAKEFILE_DIR; do
+              test -f "$i/makefile".in && echo "DSO_LIB_VERSION = $DSO_VERSION" >> "$i/makefile"
+            done
+          fi
+          rm tests/libtest$EXEC_END
+      fi
+    if [ -z "$DSO_VERSION" ] ; then
+      rm -f tests/libtest$EXEC_END
+      $CC $CFLAGS -shared -Wl,-h -Wl,my_so_name -I$includedir tests/library.c $LDFLAGS -L$libdir -o tests/libtest 2>/dev/null
+      if [ -f tests/libtest ]; then
+          DSO_VERSION="-Wl,-h -Wl,"
+          if [ -n "$MAKEFILE_DIR" ]; then
+            for i in $MAKEFILE_DIR; do
+              test -f "$i/makefile".in && echo "DSO_LIB_VERSION = $DSO_VERSION" >> "$i/makefile"
+            done
+          fi
+          rm tests/libtest$EXEC_END
+      fi
+    fi
+    if [ -z "$DSO_VERSION" ] ; then
+          DSO_VERSION="-L"
+    fi
+    echo_="dso link option: $DSO_VERSION"; echo "$echo_" >> $CONF_LOG; test -n "$ECHO" && $ECHO "$echo_"
+fi
+
 # let it affect all other tests
 if [ -n "$LIBS" ] && [ $LIBS -gt 0 ]; then
   if [ -n "$LIBS_TEST" ]; then
