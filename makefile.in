@@ -145,6 +145,7 @@ CXXFILES = \
 	my_file_chooser2.cxx
 TEST_CPP = \
 	tests/dE2000_test.cpp \
+	tests/intptr_test.c \
 	tests/fltk_test.cxx \
 	tests/tiff_test.cxx \
 	tests/gettext_test.cxx \
