@@ -916,7 +916,7 @@ std::string    vrmlScene          ( icc_examin_ns::ICCThreadList<ICCnetz> netze,
                           oyDataType_m(oyDOUBLE),
                          prof_out,
                          0 );
-  oyColourConversion_s * cc = oyColourConversion_Create( 0,0, in,out, 0 );
+  oyColourConversion_s * cc = oyColourConversion_Create( 0, in,out, 0 );
 
 
   // named colours

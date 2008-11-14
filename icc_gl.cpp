@@ -1660,8 +1660,8 @@ GL_Ansicht::punkteAuffrischen()
                          prof_disp,
                          0 );
 
-          cc_lab = oyColourConversion_Create( 0,0, in,out, 0 );
-          cc_disp = oyColourConversion_Create( 0,0, in,out_disp, 0 );
+          cc_lab = oyColourConversion_Create( 0, in,out, 0 );
+          cc_disp = oyColourConversion_Create( 0, in,out_disp, 0 );
 
           if(!in->pixel_data || in->pixel_data->type_ != oyOBJECT_ARRAY2D_S)
           {
