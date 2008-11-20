@@ -87,18 +87,9 @@ ICCvrmlParser::lesen_ ()
   //icc_debug = 1;
   DBG_PROG_START
   int netz_n = 0;                       // the n-th net/mesh
-  ICClist<std::string> zeilen;      // editing row
-  ICClist<ZifferWort> werte;        // intermediate return value
-  char trennzeichen[12];                // to be used separating signs
-  trennzeichen[0] = ',';
-  sprintf(&trennzeichen[1], leer_zeichen);
-  const bool anfuehrungstriche = false; // set no quotation marks
-  unsigned int dimensionen;             // number of belonging values
-  int achse;                            // selected value from dimensionen
   DBG_PROG_V( original_.size() )
 
-  std::string::size_type pos=0, netz_pos=0;
-  std::string::size_type netz_ende;
+  std::string::size_type netz_pos=0;
 
 
 # if DEBUG_VRML_PARSER
@@ -118,17 +109,45 @@ ICCvrmlParser::lesen_ ()
     DBG_NUM_S( "did not find LANG variable" )
   setlocale(LC_NUMERIC,"C");
 
+  
   // search for mesh in vrml file
-  while( (netz_pos = original_.find( "IndexedFaceSet", netz_pos )) !=
+  while( (netz_pos = original_.find( "IndexedFaceSet", ++netz_pos )) !=
         std::string::npos )
+    netz_n++;
+
+  int * netz_pos_n = new int[netz_n+1],
+      i = 0;
+
+  netz_pos = 0;
+  while( (netz_pos = original_.find( "IndexedFaceSet", ++netz_pos )) !=
+        std::string::npos )
+    netz_pos_n[i++] = netz_pos;
+
+  netz_pos_n[i] = 0;
+
+#pragma omp parallel for private(netz_pos)
+  for(i = 0; i < netz_n; ++i)
   {
-    ++netz_pos;
+    ICClist<std::string> zeilen;      // editing row
+    ICClist<ZifferWort> werte;        // intermediate return value
+    char trennzeichen[12];                // to be used separating signs
+    trennzeichen[0] = ',';
+    sprintf(&trennzeichen[1], leer_zeichen);
+    const bool anfuehrungstriche = false; // set no quotation marks
+    unsigned int dimensionen;             // number of belonging values
+    int achse;                            // selected value from dimensionen
+    std::string::size_type pos=0;
+    std::string::size_type netz_ende;
+
+    netz_pos = netz_pos_n[i];
+    ++ netz_pos;
+ 
     // get the area of the mesh
     if( (netz_ende = original_.find( "IndexedFaceSet", netz_pos )) ==
         std::string::npos )
       netz_ende = original_.size();
     if( netz_pos == std::string::npos )
-      break;
+      continue;
 
     DBG_VRML_PARSER_S( "IndexedFaceSet found at position " << netz_pos <<"-"<< netz_ende );
 
@@ -344,13 +363,13 @@ ICCvrmlParser::lesen_ ()
       } // emissiveColor
     }
 
+#pragma omp critical
     if(index_min < 0)
       netze_[endnetz].clear();
     if(index_max > (int)netze_[endnetz].punkte.size())
       netze_[endnetz].clear();
-
-    netz_n++;
   }
+
 # if DEBUG_VRML_PARSER
   for(int i = 0; i < 3; ++i) {
     DBG_VRML_PARSER_S( "Position ["<<i<<"]: " <<min_pos[i] <<" - "<<max_pos[i]);
@@ -433,7 +452,8 @@ std::string netzNachVRML( icc_examin_ns::ICCThreadList<ICCnetz> & netze )
   doLocked_m( std::string loc_alt = setlocale(LC_NUMERIC, NULL);,NULL)
   doLocked_m( setlocale(LC_NUMERIC,"C");,NULL);
 
-  for(size_t i = 0; i < n; ++i)
+#pragma omp parallel for
+  for(int i = 0; i < (int)n; ++i)
   {
     ICCnetz & netz = netze[i];
     char num[24];
