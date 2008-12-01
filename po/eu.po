@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cinepaint_icc-examin_eu\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2008-11-24 09:04+0100\n"
+"POT-Creation-Date: 2008-12-01 13:59+0100\n"
 "PO-Revision-Date: 2007-11-07 11:11+0100\n"
 "Last-Translator: Iñaki Larrañaga Murgoitio <dooteo@zundan.com>\n"
 "Language-Team: Basque <itzulpena@euskalgnu.org>\n"
@@ -42,7 +42,7 @@ msgstr "Yxy"
 msgid "Rgb"
 msgstr "Gbu"
 
-#: icc_oyranos_extern.c:137 icc_draw.cpp:670 icc_gl.cpp:2200 icc_waehler.h:128
+#: icc_oyranos_extern.c:137 icc_draw.cpp:670 icc_gl.cpp:2203 icc_waehler.h:128
 msgid "Gray"
 msgstr "Grisa"
 
@@ -118,7 +118,7 @@ msgstr "14kolorea"
 msgid "15color"
 msgstr "15kolorea"
 
-#: agviewer.cpp:310 icc_gl.cpp:3302 icc_gl.cpp:3321 icc_gl.cpp:3440
+#: agviewer.cpp:310 icc_gl.cpp:3305 icc_gl.cpp:3324 icc_gl.cpp:3443
 msgid "left-/middle-/right mouse button -> rotate/cut/menu"
 msgstr "saguaren ezkerreko/erdiko/eskuineko botoia -> biratu/ebaki/menua"
 
@@ -126,8 +126,8 @@ msgstr "saguaren ezkerreko/erdiko/eskuineko botoia -> biratu/ebaki/menua"
 msgid "Pause"
 msgstr "Pausarazi"
 
-#: agviewer.cpp:347 agviewer.cpp:355 icc_gl.cpp:3406 icc_gl.cpp:3417
-#: icc_gl.cpp:3422 icc_gl.cpp:3427
+#: agviewer.cpp:347 agviewer.cpp:355 icc_gl.cpp:3409 icc_gl.cpp:3420
+#: icc_gl.cpp:3425 icc_gl.cpp:3430
 msgid "left mouse button -> go back"
 msgstr "saguaren ezkerreko botoia -> joan atzera"
 
@@ -166,7 +166,7 @@ msgstr "Magenta"
 msgid "Yellow"
 msgstr "Horia"
 
-#: icc_draw.cpp:683 icc_gl.cpp:2202 icc_helfer.cpp:417 icc_helfer.cpp:427
+#: icc_draw.cpp:683 icc_gl.cpp:2205 icc_helfer.cpp:417 icc_helfer.cpp:427
 msgid "Black"
 msgstr "Beltza"
 
@@ -380,108 +380,108 @@ msgstr "Ezin izan da letra-tipoa ireki:"
 msgid "0,0,0"
 msgstr "0,0,0"
 
-#: icc_gl.cpp:2168 icc_gl.cpp:2178 icc_gl.cpp:2181 icc_gl.cpp:2183
-#: icc_gl.cpp:2186 icc_gl.cpp:2188
+#: icc_gl.cpp:2171 icc_gl.cpp:2181 icc_gl.cpp:2184 icc_gl.cpp:2186
+#: icc_gl.cpp:2189 icc_gl.cpp:2191
 msgid "Slice"
 msgstr "Zatitu"
 
-#: icc_gl.cpp:2169
+#: icc_gl.cpp:2172
 msgid "Rotate around slice"
 msgstr "Biratu zatiaren inguruan"
 
-#: icc_gl.cpp:2190
+#: icc_gl.cpp:2193
 msgid "Rotate around"
 msgstr "Biratu inguruan"
 
-#: icc_gl.cpp:2190
+#: icc_gl.cpp:2193
 msgid "axis"
 msgstr "ardatza"
 
-#: icc_gl.cpp:2195
+#: icc_gl.cpp:2198
 msgid "Slice plane"
 msgstr "Zati planoa"
 
-#: icc_gl.cpp:2198
+#: icc_gl.cpp:2201
 msgid "White"
 msgstr "Zuria"
 
-#: icc_gl.cpp:2199
+#: icc_gl.cpp:2202
 msgid "Light gray"
 msgstr "Gris argia"
 
-#: icc_gl.cpp:2201
+#: icc_gl.cpp:2204
 msgid "Dark gray"
 msgstr "Gris iluna"
 
-#: icc_gl.cpp:2205
+#: icc_gl.cpp:2208
 msgid "Background colour"
 msgstr "Atzeko planoaren kolorea"
 
-#: icc_gl.cpp:2210
+#: icc_gl.cpp:2213
 msgid "gray"
 msgstr "grisa"
 
-#: icc_gl.cpp:2211
+#: icc_gl.cpp:2214
 msgid "coloured"
 msgstr "koloreztatua"
 
-#: icc_gl.cpp:2212
+#: icc_gl.cpp:2215
 msgid "high contrast"
 msgstr "kontraste altua"
 
-#: icc_gl.cpp:2214
+#: icc_gl.cpp:2217
 msgid "Onion skins"
 msgstr ""
 
-#: icc_gl.cpp:2215
+#: icc_gl.cpp:2218
 msgid "Colour line"
 msgstr "Kolore-marra"
 
-#: icc_gl.cpp:2220
+#: icc_gl.cpp:2223
 msgid "Sphere 1dE"
 msgstr "1dE esfera"
 
-#: icc_gl.cpp:2221
+#: icc_gl.cpp:2224
 msgid "Sphere 2dE"
 msgstr "2dE esfera"
 
-#: icc_gl.cpp:2222
+#: icc_gl.cpp:2225
 msgid "Sphere 4dE"
 msgstr "4dE esfera"
 
-#: icc_gl.cpp:2225
+#: icc_gl.cpp:2228
 msgid "Star"
 msgstr "Izarra"
 
-#: icc_gl.cpp:2228
+#: icc_gl.cpp:2231
 msgid "Point"
 msgstr "Puntua"
 
-#: icc_gl.cpp:2231
+#: icc_gl.cpp:2234
 msgid "without markers"
 msgstr "markatzailerik gabe"
 
-#: icc_gl.cpp:2232
+#: icc_gl.cpp:2235
 msgid "Spektral line"
 msgstr "Marra espektrala"
 
-#: icc_gl.cpp:2235
+#: icc_gl.cpp:2238
 msgid "Texts"
 msgstr "Testuak"
 
-#: icc_gl.cpp:2237
+#: icc_gl.cpp:2240
 msgid "Texts/Arrows on/off"
 msgstr "Testuak/Geziak aktibatu/desaktibatu"
 
-#: icc_gl.cpp:2239
+#: icc_gl.cpp:2242
 msgid "Illustration"
 msgstr "Ilustrazioa"
 
-#: icc_gl.cpp:2592
+#: icc_gl.cpp:2595
 msgid "Pos"
 msgstr "Pos."
 
-#: icc_gl.cpp:2681 icc_profile_tags.cpp:320
+#: icc_gl.cpp:2684 icc_profile_tags.cpp:320
 msgid "Channel"
 msgstr "Kanala"
 

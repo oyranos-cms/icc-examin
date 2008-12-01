@@ -1661,8 +1661,11 @@ GL_Ansicht::punkteAuffrischen()
                          0 );
 
 #if OYRANOS_VERSION >= 109
-          cc_lab = oyColourConversion_Create( 0, in,out, 0 );
-          cc_disp = oyColourConversion_Create( 0, in,out_disp, 0 );
+          oyOptions_s * opts = oyOptions_ForFilter( "//colour", "lcms", 0, 0 );
+          oyOptions_SetFromText( opts, "rendering_intent", "3" );
+
+          cc_lab = oyColourConversion_Create( opts, in,out, 0 );
+          cc_disp = oyColourConversion_Create( opts, in,out_disp, 0 );
 #else
           cc_lab = oyColourConversion_Create( 0, 0, in,out, 0 );
           cc_disp = oyColourConversion_Create( 0, 0, in,out_disp, 0 );
