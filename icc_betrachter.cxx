@@ -1259,7 +1259,9 @@ void ICCfltkBetrachter::measurement(bool has_measurement) {
   if (has_measurement) {
     DBG_PROG_S(menueintrag_inspekt->value())
     if (menueintrag_inspekt->value()) {
-      inspekt_html->value(profile.profil()->report(false).c_str());
+      bool export_ausserhalb = false;
+      inspekt_html->value(profile.profil()->report( export_ausserhalb,
+                                                    icc_examin->options() ).c_str());
       if (inspekt_html->size() -75 < tag_text->inspekt_topline)
         inspekt_html->topline (inspekt_html->size() - 75);
       else

@@ -700,7 +700,8 @@ ICCexaminIO::berichtSpeichern (void)
 
   // generate report
   bool export_html = true;
-  std::string bericht = profile.profil()->report(export_html);
+  std::string bericht = profile.profil()->report( export_html,
+                                                  icc_examin->options() );
   // save
   std::ofstream f ( dateiname.c_str(),  std::ios::out );
   f.write ( bericht.c_str(), (std::streamsize)bericht.size() );

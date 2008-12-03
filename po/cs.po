@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: icc_examin\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2008-12-01 13:59+0100\n"
+"POT-Creation-Date: 2008-12-03 17:41+0100\n"
 "PO-Revision-Date: 2008-10-16 20:18+0100\n"
 "Last-Translator: Milan Knizek <knizek@volny.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
@@ -38,7 +38,7 @@ msgstr "Yxy"
 msgid "Rgb"
 msgstr "Rgb"
 
-#: icc_oyranos_extern.c:137 icc_draw.cpp:670 icc_gl.cpp:2203 icc_waehler.h:128
+#: icc_oyranos_extern.c:137 icc_draw.cpp:670 icc_gl.cpp:2202 icc_waehler.h:128
 msgid "Gray"
 msgstr "Seda stupnice"
 
@@ -114,7 +114,7 @@ msgstr "14-barevny"
 msgid "15color"
 msgstr "15-barevny"
 
-#: agviewer.cpp:310 icc_gl.cpp:3305 icc_gl.cpp:3324 icc_gl.cpp:3443
+#: agviewer.cpp:310 icc_gl.cpp:3304 icc_gl.cpp:3323 icc_gl.cpp:3442
 msgid "left-/middle-/right mouse button -> rotate/cut/menu"
 msgstr "leve/prostredni/prave tlacitko mysi -> rotovat/vystrihnout/menu"
 
@@ -122,8 +122,8 @@ msgstr "leve/prostredni/prave tlacitko mysi -> rotovat/vystrihnout/menu"
 msgid "Pause"
 msgstr "Pozastavit"
 
-#: agviewer.cpp:347 agviewer.cpp:355 icc_gl.cpp:3409 icc_gl.cpp:3420
-#: icc_gl.cpp:3425 icc_gl.cpp:3430
+#: agviewer.cpp:347 agviewer.cpp:355 icc_gl.cpp:3408 icc_gl.cpp:3419
+#: icc_gl.cpp:3424 icc_gl.cpp:3429
 msgid "left mouse button -> go back"
 msgstr "leve tlacitko mysi -> jit zpet"
 
@@ -162,7 +162,7 @@ msgstr "Fialova"
 msgid "Yellow"
 msgstr "Zluta"
 
-#: icc_draw.cpp:683 icc_gl.cpp:2205 icc_helfer.cpp:417 icc_helfer.cpp:427
+#: icc_draw.cpp:683 icc_gl.cpp:2204 icc_helfer.cpp:417 icc_helfer.cpp:427
 msgid "Black"
 msgstr "Cerna"
 
@@ -249,7 +249,7 @@ msgstr "!!! CHYBA"
 msgid "Gamut selector"
 msgstr "Volba gamutu"
 
-#: icc_examin.cpp:344 icc_examin.cpp:1268
+#: icc_examin.cpp:344 icc_examin.cpp:1287
 msgid "loaded"
 msgstr "nacteno"
 
@@ -281,31 +281,31 @@ msgstr "zadny"
 msgid "Gamut View"
 msgstr "Zobrazeni gamutu"
 
-#: icc_examin.cpp:872 icc_gl.h:274
+#: icc_examin.cpp:891 icc_gl.h:274
 msgid "not available"
 msgstr "neni k dispozici"
 
-#: icc_examin.cpp:1208
+#: icc_examin.cpp:1227
 msgid "Filename (ICC data type)"
 msgstr "Nazev souboru (ICC typ)"
 
-#: icc_examin.cpp:1211
+#: icc_examin.cpp:1230
 msgid "Filename (other data type)"
 msgstr "Jmeno souboru (jiny typ)"
 
-#: icc_examin.cpp:1213
+#: icc_examin.cpp:1232
 msgid "Filename (corrupted ICC data type)"
 msgstr "Jmeno souboru (poruseny typ ICC dat)"
 
-#: icc_examin.cpp:1218
+#: icc_examin.cpp:1237
 msgid "found no content for"
 msgstr "nenalezen zadny obsah pro"
 
-#: icc_examin.cpp:1221
+#: icc_examin.cpp:1240
 msgid "Internal error"
 msgstr "Interni chyba"
 
-#: icc_examin.cpp:1224
+#: icc_examin.cpp:1243
 msgid "No. Tag   Type   Size Description"
 msgstr "C.  Tag   Typ     Vel. Popis"
 
@@ -329,19 +329,19 @@ msgstr "HTML Dokumenty (*.htm*)"
 msgid "Save Report"
 msgstr "Ulozit report"
 
-#: icc_examin_io.cpp:743
+#: icc_examin_io.cpp:744
 msgid "ICC colour profiles (*.ic*)"
 msgstr "ICC barvove profily (*.ic*)"
 
-#: icc_examin_io.cpp:744 icc_betrachter.cxx:625
+#: icc_examin_io.cpp:745 icc_betrachter.cxx:625
 msgid "Save Gamut as Profile"
 msgstr "Ulozit gamut jako profil"
 
-#: icc_examin_io.cpp:746
+#: icc_examin_io.cpp:747
 msgid "VRML Files (*.wrl)"
 msgstr "VRML soubory (*.wrl)"
 
-#: icc_examin_io.cpp:747 icc_betrachter.cxx:626
+#: icc_examin_io.cpp:748 icc_betrachter.cxx:626
 msgid "Save Gamut as VRML"
 msgstr "Ulozit gamut jako VRML"
 
@@ -375,108 +375,108 @@ msgstr "Nemohu nacist pismo v:"
 msgid "0,0,0"
 msgstr "0,0,0"
 
-#: icc_gl.cpp:2171 icc_gl.cpp:2181 icc_gl.cpp:2184 icc_gl.cpp:2186
-#: icc_gl.cpp:2189 icc_gl.cpp:2191
+#: icc_gl.cpp:2170 icc_gl.cpp:2180 icc_gl.cpp:2183 icc_gl.cpp:2185
+#: icc_gl.cpp:2188 icc_gl.cpp:2190
 msgid "Slice"
 msgstr "Rez"
 
-#: icc_gl.cpp:2172
+#: icc_gl.cpp:2171
 msgid "Rotate around slice"
 msgstr "Rotovat okolo rezu"
 
-#: icc_gl.cpp:2193
+#: icc_gl.cpp:2192
 msgid "Rotate around"
 msgstr "Rotovat dokola"
 
-#: icc_gl.cpp:2193
+#: icc_gl.cpp:2192
 msgid "axis"
 msgstr "osa"
 
-#: icc_gl.cpp:2198
+#: icc_gl.cpp:2197
 msgid "Slice plane"
 msgstr "Rovina rezu"
 
-#: icc_gl.cpp:2201
+#: icc_gl.cpp:2200
 msgid "White"
 msgstr "Bila"
 
-#: icc_gl.cpp:2202
+#: icc_gl.cpp:2201
 msgid "Light gray"
 msgstr "Svetla sed"
 
-#: icc_gl.cpp:2204
+#: icc_gl.cpp:2203
 msgid "Dark gray"
 msgstr "Tmava sed"
 
-#: icc_gl.cpp:2208
+#: icc_gl.cpp:2207
 msgid "Background colour"
 msgstr "Barva pozadi"
 
-#: icc_gl.cpp:2213
+#: icc_gl.cpp:2212
 msgid "gray"
 msgstr "sede"
 
-#: icc_gl.cpp:2214
+#: icc_gl.cpp:2213
 msgid "coloured"
 msgstr "barevne"
 
-#: icc_gl.cpp:2215
+#: icc_gl.cpp:2214
 msgid "high contrast"
 msgstr "vysoky kontrast"
 
-#: icc_gl.cpp:2217
+#: icc_gl.cpp:2216
 msgid "Onion skins"
 msgstr "Pruklepovy papir"
 
-#: icc_gl.cpp:2218
+#: icc_gl.cpp:2217
 msgid "Colour line"
 msgstr "Barevna cara"
 
-#: icc_gl.cpp:2223
+#: icc_gl.cpp:2222
 msgid "Sphere 1dE"
 msgstr "Koule 1dE"
 
-#: icc_gl.cpp:2224
+#: icc_gl.cpp:2223
 msgid "Sphere 2dE"
 msgstr "Koule 2dE"
 
-#: icc_gl.cpp:2225
+#: icc_gl.cpp:2224
 msgid "Sphere 4dE"
 msgstr "Koule 4dE"
 
-#: icc_gl.cpp:2228
+#: icc_gl.cpp:2227
 msgid "Star"
 msgstr "Hvezda"
 
-#: icc_gl.cpp:2231
+#: icc_gl.cpp:2230
 msgid "Point"
 msgstr "Bod"
 
-#: icc_gl.cpp:2234
+#: icc_gl.cpp:2233
 msgid "without markers"
 msgstr "bez znacek"
 
-#: icc_gl.cpp:2235
+#: icc_gl.cpp:2234
 msgid "Spektral line"
 msgstr "Spektralni cara"
 
-#: icc_gl.cpp:2238
+#: icc_gl.cpp:2237
 msgid "Texts"
 msgstr "Texty"
 
-#: icc_gl.cpp:2240
+#: icc_gl.cpp:2239
 msgid "Texts/Arrows on/off"
 msgstr "Texty/Sipky zap./vyp."
 
-#: icc_gl.cpp:2242
+#: icc_gl.cpp:2241
 msgid "Illustration"
 msgstr "Ilustrace"
 
-#: icc_gl.cpp:2595
+#: icc_gl.cpp:2594
 msgid "Pos"
 msgstr "Poz."
 
-#: icc_gl.cpp:2684 icc_profile_tags.cpp:320
+#: icc_gl.cpp:2683 icc_profile_tags.cpp:320
 msgid "Channel"
 msgstr "Kanal"
 
@@ -991,147 +991,147 @@ msgstr "beze jmena"
 msgid "File not loaded!"
 msgstr "Soubor nenacten!"
 
-#: icc_measurement.cpp:931
+#: icc_measurement.cpp:938
 msgid "use sRGB"
 msgstr "pouzit sRGB"
 
-#: icc_measurement.cpp:1231
+#: icc_measurement.cpp:1268
 msgid "Report about ICC profile"
 msgstr "Report o ICC profilu"
 
-#: icc_measurement.cpp:1269
+#: icc_measurement.cpp:1306
 msgid "Meas colour"
 msgstr "Zmerene barvy"
 
-#: icc_measurement.cpp:1271
+#: icc_measurement.cpp:1308
 msgid "Profile colour"
 msgstr "Barvy profilu"
 
-#: icc_measurement.cpp:1348
+#: icc_measurement.cpp:1385
 msgid "no measurment data or correct profile conversion available"
 msgstr "zadna zmerena data nebo nemozna konverze profilu"
 
-#: icc_measurement.cpp:1356
+#: icc_measurement.cpp:1393
 msgid "Measurment- and profile colours from <b>"
 msgstr "Zmerene barvy a barvy profilu z <b>"
 
-#: icc_measurement.cpp:1358
+#: icc_measurement.cpp:1395
 msgid "RGB"
 msgstr "RGB"
 
-#: icc_measurement.cpp:1360
+#: icc_measurement.cpp:1397
 msgid "CMYK"
 msgstr "CMYK"
 
-#: icc_measurement.cpp:1361
+#: icc_measurement.cpp:1398
 msgid "</b> Measurement"
 msgstr "</b> mereni"
 
-#: icc_measurement.cpp:1363
+#: icc_measurement.cpp:1400
 msgid "CMM: <b>lcms</b>"
 msgstr "CMM: <b>lcms</b>"
 
-#: icc_measurement.cpp:1365
+#: icc_measurement.cpp:1402
 msgid "averaging deviations (dE CIE*Lab):<b> "
 msgstr "prumerovane odchylky (dE CIE*Lab):<b> "
 
-#: icc_measurement.cpp:1365
+#: icc_measurement.cpp:1402
 msgid "</b>  maximum: "
 msgstr "</b>  maximum: "
 
-#: icc_measurement.cpp:1365
+#: icc_measurement.cpp:1402
 msgid "  minimum: "
 msgstr " minimum: "
 
-#: icc_measurement.cpp:1365
+#: icc_measurement.cpp:1402
 msgid "  (dE CIE 2000) averaging: "
 msgstr " (dE CIE 2000) prumery: "
 
-#: icc_measurement.cpp:1365
+#: icc_measurement.cpp:1402
 msgid "  maximum: "
 msgstr " maximum: "
 
-#: icc_measurement.cpp:1395
+#: icc_measurement.cpp:1432
 msgid "Measurement patch"
 msgstr "Mereny vzorek"
 
-#: icc_measurement.cpp:1396
+#: icc_measurement.cpp:1433
 msgid "dE Lab"
 msgstr "dE Lab"
 
-#: icc_measurement.cpp:1397
+#: icc_measurement.cpp:1434
 msgid "dE2000"
 msgstr "dE2000"
 
-#: icc_measurement.cpp:1398
+#: icc_measurement.cpp:1435
 msgid "L"
 msgstr "L"
 
-#: icc_measurement.cpp:1399
+#: icc_measurement.cpp:1436
 msgid "a"
 msgstr "a"
 
-#: icc_measurement.cpp:1400
+#: icc_measurement.cpp:1437
 msgid "b"
 msgstr "b"
 
-#: icc_measurement.cpp:1401
+#: icc_measurement.cpp:1438
 msgid "L'"
 msgstr "L'"
 
-#: icc_measurement.cpp:1402
+#: icc_measurement.cpp:1439
 msgid "a'"
 msgstr "a'"
 
-#: icc_measurement.cpp:1403
+#: icc_measurement.cpp:1440
 msgid "b'"
 msgstr "b'"
 
-#: icc_measurement.cpp:1404 my_file_chooser.cxx:276
+#: icc_measurement.cpp:1441 my_file_chooser.cxx:276
 msgid "X"
 msgstr "X"
 
-#: icc_measurement.cpp:1405 icc_measurement.cpp:1419
+#: icc_measurement.cpp:1442 icc_measurement.cpp:1456
 msgid "Y"
 msgstr "Y"
 
-#: icc_measurement.cpp:1406
+#: icc_measurement.cpp:1443
 msgid "Z"
 msgstr "Z"
 
-#: icc_measurement.cpp:1408
+#: icc_measurement.cpp:1445
 msgid "X'"
 msgstr "X'"
 
-#: icc_measurement.cpp:1409
+#: icc_measurement.cpp:1446
 msgid "Y'"
 msgstr "Y'"
 
-#: icc_measurement.cpp:1410
+#: icc_measurement.cpp:1447
 msgid "Z'"
 msgstr "Z'"
 
-#: icc_measurement.cpp:1413
+#: icc_measurement.cpp:1450
 msgid "R"
 msgstr "R"
 
-#: icc_measurement.cpp:1414
+#: icc_measurement.cpp:1451
 msgid "G"
 msgstr "G"
 
-#: icc_measurement.cpp:1415
+#: icc_measurement.cpp:1452
 msgid "B"
 msgstr "B"
 
-#: icc_measurement.cpp:1417
+#: icc_measurement.cpp:1454
 msgid "C"
 msgstr "C"
 
-#: icc_measurement.cpp:1418
+#: icc_measurement.cpp:1455
 msgid "M"
 msgstr "M"
 
-#: icc_measurement.cpp:1420
+#: icc_measurement.cpp:1457
 msgid "K"
 msgstr "K"
 

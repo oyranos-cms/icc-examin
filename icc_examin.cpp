@@ -851,6 +851,22 @@ ICCexamin::setzeFensterTitel()
   DBG_PROG_ENDE
 }
 
+void ICCexamin::optionsRefresh_( void )
+{
+  oyOptions_Release( &options_ );
+    
+# if OYRANOS_VERSION >= 109
+  options_ = oyOptions_ForFilter( "//colour", 0, 0, 0 );
+  char t[4];
+  /* should always be a single digit */
+  sprintf( t, "%d", intentGet(NULL));
+  oyOptions_SetFromText( options_, "rendering_intent", t );
+  sprintf( t, "%d", bpc() );
+  oyOptions_SetFromText( options_, "rendering_bpc", t );
+  sprintf( t, "%d", gamutwarn() );
+  oyOptions_SetFromText( options_, "rendering_gamut_warning", t );
+# endif
+}
 
 void
 ICCexamin::setzMesswerte()
@@ -864,7 +880,10 @@ ICCexamin::setzMesswerte()
     {
       icc_examin_ns::lock(__FILE__,__LINE__);
       int topline = icc_betrachter->tag_text->inspekt_topline = icc_betrachter->inspekt_html->topline();
-      icc_betrachter->inspekt_html->value(profile.profil()->report(export_html).c_str());
+      oyOptions_s * opts = options();
+      icc_betrachter->inspekt_html->value(profile.profil()->report( export_html,
+                                                                opts ).c_str());
+      oyOptions_Release( &opts );
       icc_betrachter->inspekt_html->topline( topline );
       icc_examin_ns::unlock(icc_betrachter->inspekt_html, __FILE__,__LINE__);
 

@@ -124,6 +124,8 @@ class ICCexamin : public icc_examin_ns::Beobachter,
          bpc_,                 //!< black point compensation / de: Schwarzpunktkompensation
          gamutwarn_,           //!< gamut warning / de: Farbraumwarnung
          nativeGamut_;         //*< native versus separation gamut
+    oyOptions_s * options_;    //*< the Oyranos options, which should match to intent_, bpc and gamutwarn_
+    void optionsRefresh_ ( void ); //*< sync options_
     bool intent_selection_,    //!< interactive selected rendering intent
          farbraum_modus_;      //!< profile.profil() contains ncl2 named colours
     ICCwaehler *icc_waehler_;
@@ -141,6 +143,8 @@ class ICCexamin : public icc_examin_ns::Beobachter,
     void gamutAnsichtZeigen ();                //!< show DD_farbraum
     int  nativeGamut() { return nativeGamut_; }
     void nativeGamut( int select );            //*< default is separation gamut
+    oyOptions_s * options( void ) { optionsRefresh_();
+                                    return oyOptions_Copy( options_, 0 ); }
 
   public:
     ICCfltkBetrachter* icc_betrachter;

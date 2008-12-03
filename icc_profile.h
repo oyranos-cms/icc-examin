@@ -147,7 +147,8 @@ class ICCprofile {
   public: // measurement infos
     bool                hasMeasurement ();
     bool                tagBelongsToMeasurement (int tag);
-    std::string         report         (bool auss);
+    std::string         report       ( bool                export_ausserhalb, 
+                                       oyOptions_s       * opts );
     ICCmeasurement&     getMeasurement ();
     std::string         cgats          ();
     std::string         cgats_max      ();

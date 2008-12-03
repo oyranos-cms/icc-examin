@@ -49,7 +49,6 @@
 #include "icc_examin_version.h"
 #include "icc_helfer.h"
 #include "icc_cgats_filter.h"
-#include "icc_examin.h"
 #include "icc_info.h"
 using namespace icc_examin_ns;
 
@@ -145,6 +144,7 @@ ICCmeasurement::defaults ()
   minFeld = -1;
   maxFeld = -1;
   cgats = 0;
+  options_ = 0;
   DBG_PROG_ENDE
 }
 
@@ -209,6 +209,11 @@ ICCmeasurement::copy (const ICCmeasurement& m)
   export_farben = m.export_farben;
   if(m.cgats)
     cgats = new CgatsFilter(*(m.cgats));
+
+  if(m.options_)
+    options_ = oyOptions_Copy( m.options_, m.options_->oy_ );
+  else
+    options_ = 0;
   
   DBG_PROG_ENDE
 }
@@ -235,6 +240,8 @@ ICCmeasurement::clear (void)
   reportTabelle_.clear();
   layout.clear();
   if(cgats) delete cgats;
+  oyOptions_Release( &options_ );
+
   DBG_PROG_ENDE
 }
 
@@ -937,12 +944,40 @@ ICCmeasurement::init_umrechnen                     (void)
     if( !hLab ) WARN_S("hLab is empty")
     if( !hsRGB ) WARN_S("hsRGB is empty")
 
+    int intent = INTENT_ABSOLUTE_COLORIMETRIC,
+        bpc = 0,
+        gamut_warning = 0,
+        flags = 0;
+    const char * o_txt = 0; 
+
+#ifndef oyStrlen_
+#define oyStrlen_ strlen
+#endif
+    o_txt = oyOptions_FindString  ( options_, "rendering_intent", 0);
+    if(o_txt && oyStrlen_(o_txt))
+      intent = atoi( o_txt );
+
+    o_txt = oyOptions_FindString  ( options_, "rendering_bpc", 0 );
+    if(o_txt && oyStrlen_(o_txt))
+      bpc = atoi( o_txt );
+
+    o_txt = oyOptions_FindString  ( options_, "rendering_gamut_warning", 0 );
+    if(o_txt && oyStrlen_(o_txt))
+      gamut_warning = atoi( o_txt );
+
+    /* this should be moved to the CMM and not be handled here in Oyranos */
+    flags = bpc ?           flags | cmsFLAGS_WHITEBLACKCOMPENSATION :
+                            flags & (~cmsFLAGS_WHITEBLACKCOMPENSATION);
+    flags = gamut_warning ? flags | cmsFLAGS_GAMUTCHECK :
+                            flags & (~cmsFLAGS_GAMUTCHECK);
+
+
 #   if 0
 #   define BW_COMP cmsFLAGS_WHITEBLACKCOMPENSATION
 #   else
 #   define BW_COMP 0
 #   endif
-    if(icc_examin && icc_examin->gamutwarn())
+    if(flags & cmsFLAGS_GAMUTCHECK)
     {
       size_t groesse = 0;
       const char* block = 0;
@@ -989,27 +1024,25 @@ ICCmeasurement::init_umrechnen                     (void)
         WARN_S("hCOLOUR is empty")
 
       fortschritt(0.1 , 0.2);
-      // How dees the profile the measurement colour? -> XYZ
+      // How sees the profile the measurement colour? -> XYZ
       hCOLOURtoXYZ =  cmsCreateTransform (hCOLOUR, TYPE_nCOLOUR_DBL,
                                     hXYZ, TYPE_XYZ_DBL,
                                     INTENT_ABSOLUTE_COLORIMETRIC,
                                     PRECALC|BW_COMP);
       fortschritt(0.1, 0.2);
-      // How dees the profile the measurement colour? -> Lab
+      // How sees the profile the measurement colour? -> Lab
       hCOLOURtoLab =  cmsCreateTransform (hCOLOUR, TYPE_nCOLOUR_DBL,
                                     hLab, TYPE_Lab_DBL,
                                     INTENT_ABSOLUTE_COLORIMETRIC,
                                     PRECALC|BW_COMP);
       fortschritt(0.15, 0.2);
-      // How dees the profile the measurement colour? -> monitor
+      // How sees the profile the measurement colour? -> monitor
       hCOLOURtoRGB =  cmsCreateProofingTransform (hCOLOUR, TYPE_nCOLOUR_DBL,
                                     hsRGB, TYPE_RGB_DBL,
                                     hProof,
-                                    INTENT_ABSOLUTE_COLORIMETRIC,
+                                    intent,
                                     INTENT_RELATIVE_COLORIMETRIC,
-                                    (icc_examin?icc_examin->gamutwarn():0) ?
-                                    cmsFLAGS_GAMUTCHECK : 0  |
-                                    PRECALC|BW_COMP);
+                                    PRECALC|flags);
       fortschritt(0.3, 0.2);
 
       if(!hCOLOURtoXYZ || !hCOLOURtoLab || !hCOLOURtoRGB)
@@ -1028,11 +1061,9 @@ ICCmeasurement::init_umrechnen                     (void)
       hLabtoRGB = cmsCreateProofingTransform (hLab, TYPE_Lab_DBL,
                                     hsRGB, TYPE_RGB_DBL,
                                     hProof,
-                                    INTENT_ABSOLUTE_COLORIMETRIC,
+                                    intent,
                                     INTENT_RELATIVE_COLORIMETRIC,
-                                    (icc_examin?icc_examin->gamutwarn():0) ?
-                                    cmsFLAGS_GAMUTCHECK : 0  |
-                                    PRECALC|BW_COMP);
+                                    PRECALC|flags);
       if(!hLabtoRGB || !hXYZtoLab)
         return;
     }
@@ -1203,8 +1234,14 @@ ICCmeasurement::init_umrechnen                     (void)
   DBG_PROG_ENDE
 }
 
+void     ICCmeasurement::options     ( oyOptions_s       * opts )
+{
+  oyOptions_Release( &options_ );
+  options_ = oyOptions_Copy( opts, 0 );
+}
+
 std::string
-ICCmeasurement::getHtmlReport                     (bool aussen)
+ICCmeasurement::getHtmlReport        ( bool                aussen )
 { DBG_PROG_START
   char SF[] = "#cccccc";  // standard background colours
   char HF[] = "#aaaaaa";  // emphasised

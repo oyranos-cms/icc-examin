@@ -947,9 +947,11 @@ ICCprofile::tagBelongsToMeasurement( int tag )
 }
 
 std::string
-ICCprofile::report (bool auss)
+ICCprofile::report                   ( bool                auss, 
+                                       oyOptions_s       * opts )
 {
   DBG_PROG
+  measurement.options( opts );
   return measurement.getHtmlReport(auss);
 }
 

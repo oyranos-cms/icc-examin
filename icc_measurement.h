@@ -86,6 +86,8 @@ class ICCmeasurement {
     int                 channels_;
     int                 isICCDisplay_;
 
+    oyOptions_s       * options_;
+
     int                 nFelder_;
 
     //! is only set when in CGATS available
@@ -176,7 +178,8 @@ class ICCmeasurement {
     // report
     ICClist<ICClist<std::string> > getText ();
     ICClist<std::string> getDescription();
-    std::string         getHtmlReport (bool export_ausserhalb);
+    std::string         getHtmlReport (bool export_ausserhalb );
+    void                options      ( oyOptions_s       * opts );
     ICClist<int>    getLayout ()       {DBG_PROG return layout; }
     std::string         getCGATS    ();
     std::string         getMaxCGATS ();
