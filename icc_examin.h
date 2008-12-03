@@ -74,13 +74,15 @@ class ICCexamin : public icc_examin_ns::Beobachter,
   };
   public:
                  ICCexamin ();
-                 ~ICCexamin () {; }
+                 ~ICCexamin () { quit(); }
 
     void         start(int argc, char** argv);
     void         quit(void);
     void         clear(void);
 
   private:
+                 ICCexamin  (const ICCexamin& m);
+    ICCexamin&   operator=  (const ICCexamin& m);
     ICCexaminIO *io_;
   public:
     int          erneuern();
