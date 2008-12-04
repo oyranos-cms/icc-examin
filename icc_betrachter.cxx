@@ -391,7 +391,8 @@ void ICCfltkBetrachter::cb_Show(Fl_Menu_* o, void* v) {
 }
 
 void ICCfltkBetrachter::cb_Log_i(Fl_Menu_*, void*) {
-  if(log_window) log_window->show();
+  log_show();
+DBG_NUM_S("Show Log window");
 }
 void ICCfltkBetrachter::cb_Log(Fl_Menu_* o, void* v) {
   ((ICCfltkBetrachter*)(o->parent()->parent()->user_data()))->cb_Log_i(o,v);
@@ -570,7 +571,8 @@ void ICCfltkBetrachter::cb_menueintrag_testkurven(Fl_Menu_* o, void* v) {
 }
 
 void ICCfltkBetrachter::cb_Log1_i(Fl_Menu_*, void*) {
-  if(log_window) log_window->show();
+  log_show();
+DBG_NUM_S("Show Log window");
 }
 void ICCfltkBetrachter::cb_Log1(Fl_Menu_* o, void* v) {
   ((ICCfltkBetrachter*)(o->parent()->parent()->user_data()))->cb_Log1_i(o,v);

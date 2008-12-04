@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2008-12-03 17:41+0100\n"
+"POT-Creation-Date: 2008-12-04 13:38+0100\n"
 "PO-Revision-Date: 2005-08-13 17:35+0200\n"
 "Last-Translator: Kai-Uwe Behrmann\n"
 "Language-Team:  <ku.b@gmx.de>\n"
@@ -239,29 +239,29 @@ msgstr " mit Gamma: 1.0"
 msgid " with one entry for gamma: "
 msgstr " mit einem Eintrag für Gamma: "
 
-#: icc_examin.cpp:101
+#: icc_examin.cpp:121
 #, c-format
 msgid "WARNING"
 msgstr ""
 
-#: icc_examin.cpp:105
+#: icc_examin.cpp:125
 #, c-format
 msgid "!!! ERROR"
 msgstr ""
 
-#: icc_examin.cpp:254
+#: icc_examin.cpp:280
 msgid "Gamut selector"
 msgstr "Darstellungsoptionen"
 
-#: icc_examin.cpp:344 icc_examin.cpp:1287
+#: icc_examin.cpp:370 icc_examin.cpp:1313
 msgid "loaded"
 msgstr "geladen"
 
-#: icc_examin.cpp:350
+#: icc_examin.cpp:376
 msgid "Ready"
 msgstr "Bereit"
 
-#: icc_examin.cpp:399
+#: icc_examin.cpp:425
 msgid ""
 "ICC colour profiles (*.{I,i}{C,c}{M,m,C,c})\tMeasurement (*.{txt,it8,IT8,RGB,"
 "CMYK,ti*,cgats,CIE,cie,nCIE,oRPT,DLY,LAB,Q60})\tArgyll Gamuts (*.{wrl,vrml}"
@@ -270,47 +270,47 @@ msgstr ""
 "ti*,cgats,CIE,cie,nCIE,oRPT,DLY,LAB,Q60})\tArgyll Farbraumhüllen (*.{wrl,"
 "vrml}"
 
-#: icc_examin.cpp:399
+#: icc_examin.cpp:425
 msgid "Which ICC profile?"
 msgstr "Welches ICC Profil?"
 
-#: icc_examin.cpp:797 icc_examin.cpp:800
+#: icc_examin.cpp:823 icc_examin.cpp:826
 msgid "Compare Measurement <-> Profile Colours"
 msgstr "Vergleich Mess- und Profilfarben"
 
-#: icc_examin.cpp:799
+#: icc_examin.cpp:825
 msgid "none"
 msgstr "kein"
 
-#: icc_examin.cpp:817 icc_examin.cpp:821
+#: icc_examin.cpp:843 icc_examin.cpp:847
 msgid "Gamut View"
 msgstr "Farbhüllansicht"
 
-#: icc_examin.cpp:891 icc_gl.h:274
+#: icc_examin.cpp:917 icc_gl.h:274
 msgid "not available"
 msgstr "nicht verfügbar"
 
-#: icc_examin.cpp:1227
+#: icc_examin.cpp:1253
 msgid "Filename (ICC data type)"
 msgstr "Dateiname (ICC Daten)"
 
-#: icc_examin.cpp:1230
+#: icc_examin.cpp:1256
 msgid "Filename (other data type)"
 msgstr "Dateiname (anderer Datentyp)"
 
-#: icc_examin.cpp:1232
+#: icc_examin.cpp:1258
 msgid "Filename (corrupted ICC data type)"
 msgstr "Dateiname (beschädigte ICC Daten)"
 
-#: icc_examin.cpp:1237
+#: icc_examin.cpp:1263
 msgid "found no content for"
 msgstr "keine Inhalte gefunden für"
 
-#: icc_examin.cpp:1240
+#: icc_examin.cpp:1266
 msgid "Internal error"
 msgstr "interner Fehler"
 
-#: icc_examin.cpp:1243
+#: icc_examin.cpp:1269
 msgid "No. Tag   Type   Size Description"
 msgstr "Nr. Teil  Typ   Größe Beschreibung"
 
@@ -330,7 +330,7 @@ msgstr "Laden angehalten: "
 msgid "HTML Documents (*.htm*)"
 msgstr "HTML Dokumente (*.htm*)"
 
-#: icc_examin_io.cpp:671 icc_betrachter.cxx:624
+#: icc_examin_io.cpp:671 icc_betrachter.cxx:626
 msgid "Save Report"
 msgstr "Bericht Speichern"
 
@@ -338,7 +338,7 @@ msgstr "Bericht Speichern"
 msgid "ICC colour profiles (*.ic*)"
 msgstr "ICC Farbprofile (*.ic*)"
 
-#: icc_examin_io.cpp:745 icc_betrachter.cxx:625
+#: icc_examin_io.cpp:745 icc_betrachter.cxx:627
 msgid "Save Gamut as Profile"
 msgstr "Speichere Farbhülle als Profil"
 
@@ -346,7 +346,7 @@ msgstr "Speichere Farbhülle als Profil"
 msgid "VRML Files (*.wrl)"
 msgstr "VRML Dateien (*.wrl)"
 
-#: icc_examin_io.cpp:748 icc_betrachter.cxx:626
+#: icc_examin_io.cpp:748 icc_betrachter.cxx:628
 msgid "Save Gamut as VRML"
 msgstr "Speichere Farbhülle als VRML"
 
@@ -358,15 +358,15 @@ msgstr "leer"
 msgid "RGB primaries"
 msgstr "RGB Primätrfarben"
 
-#: icc_fenster.cpp:243
+#: icc_fenster.cpp:249
 msgid "Log:"
 msgstr ""
 
-#: icc_fenster.cpp:245 icc_fenster.cpp:312 icc_betrachter.cxx:770
+#: icc_fenster.cpp:251 icc_fenster.cpp:318 icc_betrachter.cxx:772
 msgid "Yes"
 msgstr "Ja"
 
-#: icc_fenster.cpp:309
+#: icc_fenster.cpp:315
 msgid "Information:"
 msgstr "Information:"
 
@@ -485,11 +485,11 @@ msgstr ""
 msgid "Channel"
 msgstr "Kanal"
 
-#: icc_helfer.cpp:258 icc_betrachter.cxx:410
+#: icc_helfer.cpp:258 icc_betrachter.cxx:411
 msgid "Perceptual"
 msgstr "Fotografisch"
 
-#: icc_helfer.cpp:261 icc_betrachter.cxx:411
+#: icc_helfer.cpp:261 icc_betrachter.cxx:412
 msgid "Relative Colorimetric"
 msgstr "Relativ Farbmetrisch"
 
@@ -497,7 +497,7 @@ msgstr "Relativ Farbmetrisch"
 msgid "Saturation"
 msgstr "Sättigung"
 
-#: icc_helfer.cpp:267 icc_betrachter.cxx:412
+#: icc_helfer.cpp:267 icc_betrachter.cxx:413
 msgid "Absolute Colorimetric"
 msgstr "Absolut Farbmetrisch"
 
@@ -1444,7 +1444,7 @@ msgstr "Gerätefarben"
 msgid "profiles where originally involved"
 msgstr "Profile waren ursprünglich beteiligt"
 
-#: icc_ueber.cpp:68 icc_betrachter.cxx:722
+#: icc_ueber.cpp:68 icc_betrachter.cxx:724
 msgid "About ICC Examin"
 msgstr "Über ICC Examin"
 
@@ -1510,12 +1510,12 @@ msgstr ""
 " Die Farbumwandlungen werden zur Zeit durch Funktionen der littleCMS "
 "Programmbibliothek realisiert."
 
-#: icc_ueber.cpp:152 icc_betrachter.cxx:645 icc_betrachter.cxx:647
-#: icc_betrachter.cxx:741
+#: icc_ueber.cpp:152 icc_betrachter.cxx:647 icc_betrachter.cxx:649
+#: icc_betrachter.cxx:743
 msgid "Help"
 msgstr "Hilfe"
 
-#: icc_ueber.cpp:344 icc_betrachter.cxx:648 icc_betrachter.cxx:747
+#: icc_ueber.cpp:344 icc_betrachter.cxx:650 icc_betrachter.cxx:749
 msgid "License"
 msgstr "Lizenz"
 
@@ -1698,107 +1698,107 @@ msgstr "Lineare Eingangskurve mit 256 Stufungen"
 msgid "lineare exit curve with 256 steps"
 msgstr "Lineare Ausgangskurve mit 256 Stufungen"
 
-#: icc_betrachter.cxx:401 icc_betrachter.cxx:622
+#: icc_betrachter.cxx:402 icc_betrachter.cxx:624
 msgid "File"
 msgstr "Datei"
 
-#: icc_betrachter.cxx:402
+#: icc_betrachter.cxx:403
 msgid "Save as VRML"
 msgstr "Speichere als VRML"
 
-#: icc_betrachter.cxx:403 icc_betrachter.cxx:627
+#: icc_betrachter.cxx:404 icc_betrachter.cxx:629
 msgid "Quit"
 msgstr "Beenden"
 
-#: icc_betrachter.cxx:405 icc_betrachter.cxx:630
+#: icc_betrachter.cxx:406 icc_betrachter.cxx:632
 msgid "View"
 msgstr "Ansicht"
 
-#: icc_betrachter.cxx:406 icc_betrachter.cxx:631
+#: icc_betrachter.cxx:407 icc_betrachter.cxx:633
 msgid "Whole Screen on/off"
 msgstr "Ganzer Bildschirm an/aus"
 
-#: icc_betrachter.cxx:408 icc_betrachter.cxx:633
+#: icc_betrachter.cxx:409 icc_betrachter.cxx:635
 msgid "Settings"
 msgstr "Einstellungen"
 
-#: icc_betrachter.cxx:409
+#: icc_betrachter.cxx:410
 msgid "Gamut Warning"
 msgstr "Farb Warnung"
 
-#: icc_betrachter.cxx:413
+#: icc_betrachter.cxx:414
 msgid "BPC"
 msgstr "BPC"
 
-#: icc_betrachter.cxx:414
+#: icc_betrachter.cxx:415
 msgid "Native Gamut"
 msgstr "Native Farbhülle"
 
-#: icc_betrachter.cxx:416 icc_betrachter.cxx:637
+#: icc_betrachter.cxx:417 icc_betrachter.cxx:639
 msgid "Windows"
 msgstr "Fenster"
 
-#: icc_betrachter.cxx:417
+#: icc_betrachter.cxx:418
 msgid "Show Main Window"
 msgstr "Zeige Hauptfenster"
 
-#: icc_betrachter.cxx:418 icc_betrachter.cxx:643
+#: icc_betrachter.cxx:419 icc_betrachter.cxx:645
 msgid "Log"
 msgstr ""
 
-#: icc_betrachter.cxx:623
+#: icc_betrachter.cxx:625
 msgid "Open"
 msgstr "Öffnen"
 
-#: icc_betrachter.cxx:629 icc_betrachter.cxx:638 icc_betrachter.cxx:832
+#: icc_betrachter.cxx:631 icc_betrachter.cxx:640 icc_betrachter.cxx:834
 msgid "Gamut"
 msgstr "Farbhülle"
 
-#: icc_betrachter.cxx:634
+#: icc_betrachter.cxx:636
 msgid "Oyranos Settings"
 msgstr "Oyranos Einstellungen"
 
-#: icc_betrachter.cxx:635
+#: icc_betrachter.cxx:637
 msgid "LANG"
 msgstr ""
 
-#: icc_betrachter.cxx:639
+#: icc_betrachter.cxx:641
 msgid "Report View"
 msgstr "Qualitäts Bericht"
 
-#: icc_betrachter.cxx:640
+#: icc_betrachter.cxx:642
 msgid "CGATS View"
 msgstr "CGATS Ansicht"
 
-#: icc_betrachter.cxx:641
+#: icc_betrachter.cxx:643
 msgid "Videocard Gamma"
 msgstr "Grafikkarten Gamma"
 
-#: icc_betrachter.cxx:642
+#: icc_betrachter.cxx:644
 msgid "Test Curves"
 msgstr "Test Kurven"
 
-#: icc_betrachter.cxx:646 icc_betrachter.cxx:736
+#: icc_betrachter.cxx:648 icc_betrachter.cxx:738
 msgid "About"
 msgstr "Über"
 
-#: icc_betrachter.cxx:754
+#: icc_betrachter.cxx:756
 msgid "Acknowlegement"
 msgstr "Dank"
 
-#: icc_betrachter.cxx:760
+#: icc_betrachter.cxx:762
 msgid "Links"
 msgstr "Verknüpfung"
 
-#: icc_betrachter.cxx:780
+#: icc_betrachter.cxx:782
 msgid "Grafic Card Gamma Table"
 msgstr "Grafik Karten Gamma Tabelle (vcgt)"
 
-#: icc_betrachter.cxx:806
+#: icc_betrachter.cxx:808
 msgid "Set"
 msgstr "Setze"
 
-#: icc_betrachter.cxx:807
+#: icc_betrachter.cxx:809
 msgid ""
 "Set the current profile as monitor profile and upload vcgt tag to the video "
 "card"
@@ -1806,55 +1806,55 @@ msgstr ""
 "Das aktuelle Profile als Monitorprofil setzen und die Gamma Tabelle in die "
 "Grafikkarte laden"
 
-#: icc_betrachter.cxx:812
+#: icc_betrachter.cxx:814
 msgid "Reset"
 msgstr "Standard"
 
-#: icc_betrachter.cxx:813
+#: icc_betrachter.cxx:815
 msgid "reset to standard gamma"
 msgstr "Auf Standard Gamma zurücksetzen"
 
-#: icc_betrachter.cxx:817
+#: icc_betrachter.cxx:819
 msgid "Load"
 msgstr "Lade"
 
-#: icc_betrachter.cxx:818
+#: icc_betrachter.cxx:820
 msgid "Load the current monitor profile"
 msgstr "Das aktuelle Monitor Profile laden"
 
-#: icc_betrachter.cxx:822
+#: icc_betrachter.cxx:824
 msgid "Close"
 msgstr "Schliessen"
 
-#: icc_betrachter.cxx:895
+#: icc_betrachter.cxx:897
 msgid "ICC Examin"
 msgstr "ICC Examin"
 
-#: icc_betrachter.cxx:932
+#: icc_betrachter.cxx:934
 msgid "Choose one profile tag"
 msgstr "Wählen Sie einen Profilbaustein"
 
-#: icc_betrachter.cxx:950
+#: icc_betrachter.cxx:952
 msgid "Chain selection"
 msgstr "Kettenauswahl"
 
-#: icc_betrachter.cxx:951
+#: icc_betrachter.cxx:953
 msgid "Choose a attribute"
 msgstr "Wählen Sie ein Bestandteil"
 
-#: icc_betrachter.cxx:1013
+#: icc_betrachter.cxx:1015
 msgid "o"
 msgstr ""
 
-#: icc_betrachter.cxx:1014
+#: icc_betrachter.cxx:1016
 msgid "Show all channels of this table a own window."
 msgstr "Zeige alle Kanäle dieser Tabelle in einem eigenen Fenster an."
 
-#: icc_betrachter.cxx:1092
+#: icc_betrachter.cxx:1094
 msgid "..."
 msgstr ""
 
-#: icc_betrachter.cxx:1095
+#: icc_betrachter.cxx:1097
 msgid "Loading .."
 msgstr "Lade ..."
 
