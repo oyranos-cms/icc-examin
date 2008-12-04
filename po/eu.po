@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cinepaint_icc-examin_eu\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2008-12-04 13:38+0100\n"
+"POT-Creation-Date: 2008-12-03 17:41+0100\n"
 "PO-Revision-Date: 2007-11-07 11:11+0100\n"
 "Last-Translator: Iñaki Larrañaga Murgoitio <dooteo@zundan.com>\n"
 "Language-Team: Basque <itzulpena@euskalgnu.org>\n"
@@ -239,29 +239,29 @@ msgstr " gammarekin: 1.0"
 msgid " with one entry for gamma: "
 msgstr " gammaren sarrera batekin: "
 
-#: icc_examin.cpp:121
+#: icc_examin.cpp:101
 #, c-format
 msgid "WARNING"
 msgstr ""
 
-#: icc_examin.cpp:125
+#: icc_examin.cpp:105
 #, c-format
 msgid "!!! ERROR"
 msgstr ""
 
-#: icc_examin.cpp:280
+#: icc_examin.cpp:254
 msgid "Gamut selector"
 msgstr "Kolore-gama hautatzailea"
 
-#: icc_examin.cpp:370 icc_examin.cpp:1313
+#: icc_examin.cpp:344 icc_examin.cpp:1287
 msgid "loaded"
 msgstr "kargatuta"
 
-#: icc_examin.cpp:376
+#: icc_examin.cpp:350
 msgid "Ready"
 msgstr "Prest"
 
-#: icc_examin.cpp:425
+#: icc_examin.cpp:399
 msgid ""
 "ICC colour profiles (*.{I,i}{C,c}{M,m,C,c})\tMeasurement (*.{txt,it8,IT8,RGB,"
 "CMYK,ti*,cgats,CIE,cie,nCIE,oRPT,DLY,LAB,Q60})\tArgyll Gamuts (*.{wrl,vrml}"
@@ -270,47 +270,47 @@ msgstr ""
 "CMYK,ti*,cgats,CIE,cie,nCIE,oRPT,DLY,LAB,Q60})\tArgyll Kolore-gama (*.{wrl,"
 "vrml}"
 
-#: icc_examin.cpp:425
+#: icc_examin.cpp:399
 msgid "Which ICC profile?"
 msgstr "Zein ICC profila?"
 
-#: icc_examin.cpp:823 icc_examin.cpp:826
+#: icc_examin.cpp:797 icc_examin.cpp:800
 msgid "Compare Measurement <-> Profile Colours"
 msgstr "Konparatu neurketa <-> profilaren koloreak"
 
-#: icc_examin.cpp:825
+#: icc_examin.cpp:799
 msgid "none"
 msgstr "bat ere ez"
 
-#: icc_examin.cpp:843 icc_examin.cpp:847
+#: icc_examin.cpp:817 icc_examin.cpp:821
 msgid "Gamut View"
 msgstr "Kolore-gamaren ikuspegia"
 
-#: icc_examin.cpp:917 icc_gl.h:274
+#: icc_examin.cpp:891 icc_gl.h:274
 msgid "not available"
 msgstr "ez dago erabilgarri"
 
-#: icc_examin.cpp:1253
+#: icc_examin.cpp:1227
 msgid "Filename (ICC data type)"
 msgstr "Fitxategi-izena (ICC datu mota)"
 
-#: icc_examin.cpp:1256
+#: icc_examin.cpp:1230
 msgid "Filename (other data type)"
 msgstr "Fitxategi-izena (beste datu mota)"
 
-#: icc_examin.cpp:1258
+#: icc_examin.cpp:1232
 msgid "Filename (corrupted ICC data type)"
 msgstr "Fitxategi-izena (hondatutako ICC datu mota)"
 
-#: icc_examin.cpp:1263
+#: icc_examin.cpp:1237
 msgid "found no content for"
 msgstr "ez da honen edukirik aurkitu"
 
-#: icc_examin.cpp:1266
+#: icc_examin.cpp:1240
 msgid "Internal error"
 msgstr "Barneko errorea"
 
-#: icc_examin.cpp:1269
+#: icc_examin.cpp:1243
 msgid "No. Tag   Type   Size Description"
 msgstr "IDa Etik. Mota   Tam. Azalpena"
 
@@ -330,7 +330,7 @@ msgstr "Gelditu kargatzea "
 msgid "HTML Documents (*.htm*)"
 msgstr "HTML dokumentuak (*.htm*)"
 
-#: icc_examin_io.cpp:671 icc_betrachter.cxx:626
+#: icc_examin_io.cpp:671 icc_betrachter.cxx:624
 msgid "Save Report"
 msgstr "Gorde txostena"
 
@@ -338,7 +338,7 @@ msgstr "Gorde txostena"
 msgid "ICC colour profiles (*.ic*)"
 msgstr "ICC kolore-profilak (*.ic*)"
 
-#: icc_examin_io.cpp:745 icc_betrachter.cxx:627
+#: icc_examin_io.cpp:745 icc_betrachter.cxx:625
 msgid "Save Gamut as Profile"
 msgstr "Gorde kolore-gama profila gisa"
 
@@ -346,7 +346,7 @@ msgstr "Gorde kolore-gama profila gisa"
 msgid "VRML Files (*.wrl)"
 msgstr "VRML fitxategiak (*.wrl)"
 
-#: icc_examin_io.cpp:748 icc_betrachter.cxx:628
+#: icc_examin_io.cpp:748 icc_betrachter.cxx:626
 msgid "Save Gamut as VRML"
 msgstr "Gorde kolore-gama VRML gisa"
 
@@ -358,15 +358,15 @@ msgstr "hutsa"
 msgid "RGB primaries"
 msgstr "GBU primarioak"
 
-#: icc_fenster.cpp:249
+#: icc_fenster.cpp:243
 msgid "Log:"
 msgstr ""
 
-#: icc_fenster.cpp:251 icc_fenster.cpp:318 icc_betrachter.cxx:772
+#: icc_fenster.cpp:245 icc_fenster.cpp:312 icc_betrachter.cxx:770
 msgid "Yes"
 msgstr "Bai"
 
-#: icc_fenster.cpp:315
+#: icc_fenster.cpp:309
 msgid "Information:"
 msgstr "Informazioa:"
 
@@ -485,11 +485,11 @@ msgstr "Pos."
 msgid "Channel"
 msgstr "Kanala"
 
-#: icc_helfer.cpp:258 icc_betrachter.cxx:411
+#: icc_helfer.cpp:258 icc_betrachter.cxx:410
 msgid "Perceptual"
 msgstr ""
 
-#: icc_helfer.cpp:261 icc_betrachter.cxx:412
+#: icc_helfer.cpp:261 icc_betrachter.cxx:411
 msgid "Relative Colorimetric"
 msgstr "Koloremetria erlatiboa"
 
@@ -497,7 +497,7 @@ msgstr "Koloremetria erlatiboa"
 msgid "Saturation"
 msgstr "Saturazioa"
 
-#: icc_helfer.cpp:267 icc_betrachter.cxx:413
+#: icc_helfer.cpp:267 icc_betrachter.cxx:412
 msgid "Absolute Colorimetric"
 msgstr "Koloremetria absolutua"
 
@@ -1452,7 +1452,7 @@ msgstr "Gailuaren koloreak"
 msgid "profiles where originally involved"
 msgstr ""
 
-#: icc_ueber.cpp:68 icc_betrachter.cxx:724
+#: icc_ueber.cpp:68 icc_betrachter.cxx:722
 msgid "About ICC Examin"
 msgstr "ICC Examin-i buruz"
 
@@ -1518,12 +1518,12 @@ msgstr ""
 "littleCMS programaren liburutegiko funtzioak erabiliz lantzen dira barneko "
 "kolore eraldaketak."
 
-#: icc_ueber.cpp:152 icc_betrachter.cxx:647 icc_betrachter.cxx:649
-#: icc_betrachter.cxx:743
+#: icc_ueber.cpp:152 icc_betrachter.cxx:645 icc_betrachter.cxx:647
+#: icc_betrachter.cxx:741
 msgid "Help"
 msgstr "Laguntza"
 
-#: icc_ueber.cpp:344 icc_betrachter.cxx:650 icc_betrachter.cxx:749
+#: icc_ueber.cpp:344 icc_betrachter.cxx:648 icc_betrachter.cxx:747
 msgid "License"
 msgstr "Lizentzia"
 
@@ -1709,109 +1709,109 @@ msgstr "sarrerako kurba lineala 256 urratsekin"
 msgid "lineare exit curve with 256 steps"
 msgstr "irteerako kurba lineala 256 urratsekin"
 
-#: icc_betrachter.cxx:402 icc_betrachter.cxx:624
+#: icc_betrachter.cxx:401 icc_betrachter.cxx:622
 msgid "File"
 msgstr "Fitxategia"
 
-#: icc_betrachter.cxx:403
+#: icc_betrachter.cxx:402
 #, fuzzy
 msgid "Save as VRML"
 msgstr "Gorde kolore-gama VRML gisa"
 
-#: icc_betrachter.cxx:404 icc_betrachter.cxx:629
+#: icc_betrachter.cxx:403 icc_betrachter.cxx:627
 msgid "Quit"
 msgstr "Irten"
 
-#: icc_betrachter.cxx:406 icc_betrachter.cxx:632
+#: icc_betrachter.cxx:405 icc_betrachter.cxx:630
 msgid "View"
 msgstr "Ikusi"
 
-#: icc_betrachter.cxx:407 icc_betrachter.cxx:633
+#: icc_betrachter.cxx:406 icc_betrachter.cxx:631
 msgid "Whole Screen on/off"
 msgstr "Pantaila osoa aktibatu/desaktibatu"
 
-#: icc_betrachter.cxx:409 icc_betrachter.cxx:635
+#: icc_betrachter.cxx:408 icc_betrachter.cxx:633
 msgid "Settings"
 msgstr "Ezarpenak"
 
-#: icc_betrachter.cxx:410
+#: icc_betrachter.cxx:409
 msgid "Gamut Warning"
 msgstr "Kolore-gamaren abisua"
 
-#: icc_betrachter.cxx:414
+#: icc_betrachter.cxx:413
 msgid "BPC"
 msgstr "BPC"
 
-#: icc_betrachter.cxx:415
+#: icc_betrachter.cxx:414
 #, fuzzy
 msgid "Native Gamut"
 msgstr "Gorde kolore-gama VRML gisa"
 
-#: icc_betrachter.cxx:417 icc_betrachter.cxx:639
+#: icc_betrachter.cxx:416 icc_betrachter.cxx:637
 msgid "Windows"
 msgstr "Leihoak"
 
-#: icc_betrachter.cxx:418
+#: icc_betrachter.cxx:417
 msgid "Show Main Window"
 msgstr "Erakutsi leiho nagusia"
 
-#: icc_betrachter.cxx:419 icc_betrachter.cxx:645
+#: icc_betrachter.cxx:418 icc_betrachter.cxx:643
 msgid "Log"
 msgstr ""
 
-#: icc_betrachter.cxx:625
+#: icc_betrachter.cxx:623
 msgid "Open"
 msgstr "Ireki"
 
-#: icc_betrachter.cxx:631 icc_betrachter.cxx:640 icc_betrachter.cxx:834
+#: icc_betrachter.cxx:629 icc_betrachter.cxx:638 icc_betrachter.cxx:832
 msgid "Gamut"
 msgstr "Kolore-gama"
 
-#: icc_betrachter.cxx:636
+#: icc_betrachter.cxx:634
 msgid "Oyranos Settings"
 msgstr "Oyranos-en ezarpenak"
 
-#: icc_betrachter.cxx:637
+#: icc_betrachter.cxx:635
 msgid "LANG"
 msgstr "HIZK"
 
-#: icc_betrachter.cxx:641
+#: icc_betrachter.cxx:639
 msgid "Report View"
 msgstr "Txostenaren ikuspegia"
 
-#: icc_betrachter.cxx:642
+#: icc_betrachter.cxx:640
 msgid "CGATS View"
 msgstr "CGATS ikuspegia"
 
-#: icc_betrachter.cxx:643
+#: icc_betrachter.cxx:641
 msgid "Videocard Gamma"
 msgstr "Bideo-txartelaren gamma"
 
-#: icc_betrachter.cxx:644
+#: icc_betrachter.cxx:642
 msgid "Test Curves"
 msgstr "Probako kurbak"
 
-#: icc_betrachter.cxx:648 icc_betrachter.cxx:738
+#: icc_betrachter.cxx:646 icc_betrachter.cxx:736
 msgid "About"
 msgstr "Honi buruz"
 
-#: icc_betrachter.cxx:756
+#: icc_betrachter.cxx:754
 msgid "Acknowlegement"
 msgstr "Aitorpena"
 
-#: icc_betrachter.cxx:762
+#: icc_betrachter.cxx:760
 msgid "Links"
 msgstr "Estekak"
 
-#: icc_betrachter.cxx:782
+#: icc_betrachter.cxx:780
 msgid "Grafic Card Gamma Table"
 msgstr "Txartel grafikoaren gamma-taula"
 
-#: icc_betrachter.cxx:808
+#: icc_betrachter.cxx:806
 msgid "Set"
 msgstr "Ezarri"
 
-#: icc_betrachter.cxx:809
+#: icc_betrachter.cxx:807
 msgid ""
 "Set the current profile as monitor profile and upload vcgt tag to the video "
 "card"
@@ -1819,55 +1819,55 @@ msgstr ""
 "Ezarri uneko profila monitorearen profila gisa eta kargatu vctg etiketa "
 "bideo-txartelean"
 
-#: icc_betrachter.cxx:814
+#: icc_betrachter.cxx:812
 msgid "Reset"
 msgstr "Berrezarri"
 
-#: icc_betrachter.cxx:815
+#: icc_betrachter.cxx:813
 msgid "reset to standard gamma"
 msgstr "berrezarri gamma estandarrera"
 
-#: icc_betrachter.cxx:819
+#: icc_betrachter.cxx:817
 msgid "Load"
 msgstr "Kargatu"
 
-#: icc_betrachter.cxx:820
+#: icc_betrachter.cxx:818
 msgid "Load the current monitor profile"
 msgstr "Kargatu uneko monitorearen profila"
 
-#: icc_betrachter.cxx:824
+#: icc_betrachter.cxx:822
 msgid "Close"
 msgstr "Itxi"
 
-#: icc_betrachter.cxx:897
+#: icc_betrachter.cxx:895
 msgid "ICC Examin"
 msgstr "ICC Examin"
 
-#: icc_betrachter.cxx:934
+#: icc_betrachter.cxx:932
 msgid "Choose one profile tag"
 msgstr "Aukeratu profilaren etiketa"
 
-#: icc_betrachter.cxx:952
+#: icc_betrachter.cxx:950
 msgid "Chain selection"
 msgstr "Kate-hautapena"
 
-#: icc_betrachter.cxx:953
+#: icc_betrachter.cxx:951
 msgid "Choose a attribute"
 msgstr "Aukeratu atribututa"
 
-#: icc_betrachter.cxx:1015
+#: icc_betrachter.cxx:1013
 msgid "o"
 msgstr ""
 
-#: icc_betrachter.cxx:1016
+#: icc_betrachter.cxx:1014
 msgid "Show all channels of this table a own window."
 msgstr "Erakutsi taula honen kanal guztiak leiho propioan"
 
-#: icc_betrachter.cxx:1094
+#: icc_betrachter.cxx:1092
 msgid "..."
 msgstr "..."
 
-#: icc_betrachter.cxx:1097
+#: icc_betrachter.cxx:1095
 msgid "Loading .."
 msgstr "Kargatzen ..."
 

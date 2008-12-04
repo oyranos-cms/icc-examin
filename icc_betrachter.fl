@@ -317,7 +317,7 @@ class ICCfltkBetrachter {open
   setTitleUrl = true;} {}
     Fl_Window ueber {
       label {About ICC Examin} open
-      xywh {846 737 365 295} type Double resizable
+      xywh {846 740 365 295} type Double resizable
       code0 {o->hide();}
       code1 {o->use_escape_hide = true;}
       class {icc_examin_ns::MyFl_Double_Window} visible
@@ -395,7 +395,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window DD {
       label Gamut open
-      xywh {899 506 385 520} type Double box NO_BOX resizable
+      xywh {899 497 385 520} type Double box NO_BOX resizable
       class {icc_examin_ns::MyFl_Double_Window} visible
     } {
       Fl_Group {} {open
@@ -550,8 +550,7 @@ class ICCfltkBetrachter {open
             }
             MenuItem {} {
               label Log
-              callback {log_show();
-DBG_NUM_S("Show Log window")} selected
+              callback {if(log_window) log_window->show();}
               xywh {50 50 100 20} shortcut 0x4006c
             }
           }
@@ -578,7 +577,7 @@ DBG_NUM_S("Show Log window")} selected
     }
     Fl_Window details {
       label {ICC Examin} open
-      xywh {664 512 385 520} type Double box NO_BOX
+      xywh {664 524 385 520} type Double box NO_BOX
       code0 {o->main_win = o;}
       class {icc_examin_ns::MyFl_Double_Window} visible
     } {
@@ -723,8 +722,7 @@ icc_examin->testZeigen();}
             }
             MenuItem {} {
               label Log
-              callback { log_show();
-DBG_NUM_S("Show Log window")}
+              callback {if(log_window) log_window->show();}
               xywh {45 45 100 20} shortcut 0x4006c
             }
           }
@@ -852,7 +850,7 @@ DBG_NUM_S("Show Log window")}
                         } {}
                         Fl_Value_Slider mft_gl_slider {
                           callback {icc_examin->mftChannel( (int)mft_gl_slider_choice->value()+3, (int)mft_gl_slider->value() );}
-                          xywh {0 210 25 285} resizable
+                          xywh {0 210 25 285} step 0.01 resizable
                         }
                       }
                     }

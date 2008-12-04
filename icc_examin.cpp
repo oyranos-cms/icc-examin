@@ -75,17 +75,14 @@ using namespace icc_examin_ns;
 
 ICCexamin * icc_examin = 0;
 
-int level_Prog = 0;
-
-
 int iccMessageFunc( int code, const oyStruct_s * context, const char * format, ... )
 {
   char* text = 0, *pos = 0;
   va_list list;
   const char * type_name = "";
-  int id = -1, i;
+  int id = -1;
 
-  if(code == oyMSG_DBG && !oy_debug)
+  if(code == oyMSG_DBG && !icc_debug)
     return 0;
 
 
@@ -98,45 +95,24 @@ int iccMessageFunc( int code, const oyStruct_s * context, const char * format, .
   text = (char*)calloc(sizeof(char), 4096);
   text[0] = 0;
 
-  if(format && strlen(format) > 6)
-  {
-    if(strncasecmp("Start:", format, 6 ) == 0)
-      ++level_Prog;
-    if(strncasecmp("  End:", format, 6 ) == 0)
-      --level_Prog;
-  }
-
-# define MAX_LEVEL 20
-  if(level_Prog < 0)
-    level_Prog = 0;
-  if(level_Prog > MAX_LEVEL)
-    level_Prog = MAX_LEVEL;
-  for (i = 0; i < level_Prog; i++)
-    sprintf( &text[strlen(text)], " ");
-
-
   switch(code)
   {
     case oyMSG_WARN:
          sprintf( &text[strlen(text)], _("WARNING"));
-         sprintf( &text[strlen(text)], dbgThreadId( iccThreadSelf()).c_str());
+         sprintf( &text[strlen(text)], " %03f: ", DBG_UHR_);
          break;
     case oyMSG_ERROR:
          sprintf( &text[strlen(text)], _("!!! ERROR"));
-         sprintf( &text[strlen(text)], dbgThreadId( iccThreadSelf()).c_str());
-         break;
-    case oyMSG_DBG:
-         sprintf( &text[strlen(text)], dbgThreadId( iccThreadSelf()).c_str());
+         sprintf( &text[strlen(text)], " %03f: ", DBG_UHR_);
          break;
   }
-
-  snprintf( &text[strlen(text)], 4096 - strlen(text), " %03f %s[%d] ", 
-                                                      DBG_UHR_, type_name,id );
 
   va_start( list, format);
   vsnprintf( &text[strlen(text)], 4096 - strlen(text), format, list);
   va_end  ( list );
 
+
+  snprintf( &text[strlen(text)], 4096 - strlen(text), "%s[%d] ",type_name,id );
 
   pos = &text[strlen(text)];
   *pos = '\n';
@@ -146,7 +122,7 @@ int iccMessageFunc( int code, const oyStruct_s * context, const char * format, .
   icc_examin_ns::log( text, code );
   /* for debugging it is better to see messages on the console rather than
      getting lost during a crash */
-  cout << code <<" "<< text;
+  cout << code <<" "<< text << endl;
 
   if(text) free( text );
 
@@ -199,7 +175,6 @@ ICCexamin::ICCexamin ()
   io_ = new ICCexaminIO;
   profile.init();
   collect_changing_points = 0;
-  options_ = 0;
 
   DBG_PROG_ENDE
 }
@@ -222,7 +197,6 @@ ICCexamin::quit ()
   gl_gamut.set("native_gamut", nativeGamut_ );
   gl_gamut.flush();
   DBG_PROG_V( gamutwarn_ )
-  oyOptions_Release( &options_ );
 
   DBG_PROG_ENDE
   exit(0);

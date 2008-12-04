@@ -192,12 +192,6 @@ log (std::string text, int code) {
   // Now the funtion is outside of icc_examin_ns::
   return log_(text, code);
 }
-void log_show(void)
-{
-  if(!log_window)
-    log_("", 0);
-  log_window->show();
-}
 
 #else
 MyFl_Double_Window*

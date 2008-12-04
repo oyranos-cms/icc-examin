@@ -93,7 +93,6 @@ namespace icc_examin_ns {
   //! window with news
   MyFl_Double_Window* nachricht(std::string text);
   MyFl_Double_Window* log(std::string text, int level);
-  void log_show(void);
   extern MyFl_Double_Window *log_window;
   extern int log_window_poped;
 
