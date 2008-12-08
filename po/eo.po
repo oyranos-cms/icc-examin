@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2008-12-04 13:38+0100\n"
+"POT-Creation-Date: 2008-12-08 12:14+0100\n"
 "PO-Revision-Date: 2005-08-13 17:35+0200\n"
 "Last-Translator: Kai-Uwe Behrmann\n"
 "Language-Team:  <eo@li.org>\n"
@@ -360,7 +360,7 @@ msgstr ""
 msgid "Log:"
 msgstr ""
 
-#: icc_fenster.cpp:251 icc_fenster.cpp:318 icc_betrachter.cxx:772
+#: icc_fenster.cpp:251 icc_fenster.cpp:318 icc_betrachter.cxx:770
 msgid "Yes"
 msgstr "Jes"
 
@@ -1444,7 +1444,7 @@ msgstr ""
 msgid "profiles where originally involved"
 msgstr ""
 
-#: icc_ueber.cpp:68 icc_betrachter.cxx:724
+#: icc_ueber.cpp:68 icc_betrachter.cxx:723
 msgid "About ICC Examin"
 msgstr ""
 
@@ -1494,11 +1494,11 @@ msgid ""
 msgstr ""
 
 #: icc_ueber.cpp:152 icc_betrachter.cxx:647 icc_betrachter.cxx:649
-#: icc_betrachter.cxx:743
+#: icc_betrachter.cxx:741
 msgid "Help"
 msgstr ""
 
-#: icc_ueber.cpp:344 icc_betrachter.cxx:650 icc_betrachter.cxx:749
+#: icc_ueber.cpp:344 icc_betrachter.cxx:650 icc_betrachter.cxx:747
 msgid "License"
 msgstr ""
 
@@ -1727,7 +1727,7 @@ msgstr ""
 msgid "Open"
 msgstr ""
 
-#: icc_betrachter.cxx:631 icc_betrachter.cxx:640 icc_betrachter.cxx:834
+#: icc_betrachter.cxx:631 icc_betrachter.cxx:640 icc_betrachter.cxx:831
 msgid "Gamut"
 msgstr ""
 
@@ -1755,81 +1755,81 @@ msgstr ""
 msgid "Test Curves"
 msgstr ""
 
-#: icc_betrachter.cxx:648 icc_betrachter.cxx:738
+#: icc_betrachter.cxx:648 icc_betrachter.cxx:736
 msgid "About"
 msgstr ""
 
-#: icc_betrachter.cxx:756
+#: icc_betrachter.cxx:754
 msgid "Acknowlegement"
 msgstr ""
 
-#: icc_betrachter.cxx:762
+#: icc_betrachter.cxx:760
 msgid "Links"
 msgstr ""
 
-#: icc_betrachter.cxx:782
+#: icc_betrachter.cxx:780
 msgid "Grafic Card Gamma Table"
 msgstr ""
 
-#: icc_betrachter.cxx:808
+#: icc_betrachter.cxx:805
 msgid "Set"
 msgstr ""
 
-#: icc_betrachter.cxx:809
+#: icc_betrachter.cxx:806
 msgid ""
 "Set the current profile as monitor profile and upload vcgt tag to the video "
 "card"
 msgstr ""
 
-#: icc_betrachter.cxx:814
+#: icc_betrachter.cxx:811
 msgid "Reset"
 msgstr ""
 
-#: icc_betrachter.cxx:815
+#: icc_betrachter.cxx:812
 msgid "reset to standard gamma"
 msgstr ""
 
-#: icc_betrachter.cxx:819
+#: icc_betrachter.cxx:816
 msgid "Load"
 msgstr ""
 
-#: icc_betrachter.cxx:820
+#: icc_betrachter.cxx:817
 msgid "Load the current monitor profile"
 msgstr ""
 
-#: icc_betrachter.cxx:824
+#: icc_betrachter.cxx:821
 msgid "Close"
 msgstr ""
 
-#: icc_betrachter.cxx:897
+#: icc_betrachter.cxx:893
 msgid "ICC Examin"
 msgstr ""
 
-#: icc_betrachter.cxx:934
+#: icc_betrachter.cxx:929
 msgid "Choose one profile tag"
 msgstr ""
 
-#: icc_betrachter.cxx:952
+#: icc_betrachter.cxx:947
 msgid "Chain selection"
 msgstr ""
 
-#: icc_betrachter.cxx:953
+#: icc_betrachter.cxx:948
 msgid "Choose a attribute"
 msgstr ""
 
-#: icc_betrachter.cxx:1015
+#: icc_betrachter.cxx:1010
 msgid "o"
 msgstr ""
 
-#: icc_betrachter.cxx:1016
+#: icc_betrachter.cxx:1011
 msgid "Show all channels of this table a own window."
 msgstr ""
 
-#: icc_betrachter.cxx:1094
+#: icc_betrachter.cxx:1089
 msgid "..."
 msgstr ""
 
-#: icc_betrachter.cxx:1097
+#: icc_betrachter.cxx:1092
 msgid "Loading .."
 msgstr ""
 

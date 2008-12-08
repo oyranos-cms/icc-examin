@@ -627,7 +627,7 @@ echo_=""; echo "$echo_" >> $CONF_LOG; echo "$echo_"
 echo_=""; echo "$echo_" >> $CONF_LOG; echo "$echo_"
 
 LIBS_TEST="dl iconv intl c m"; export LIBS_TEST
-X_ADD="Xpm Xext"; export X_ADD
+X_ADD="Xpm Xext Xinerama Xxf86vm"; export X_ADD
 
 
 ECHO="echo"; export ECHO

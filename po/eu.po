@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cinepaint_icc-examin_eu\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2008-12-04 13:38+0100\n"
+"POT-Creation-Date: 2008-12-08 12:14+0100\n"
 "PO-Revision-Date: 2007-11-07 11:11+0100\n"
 "Last-Translator: Iñaki Larrañaga Murgoitio <dooteo@zundan.com>\n"
 "Language-Team: Basque <itzulpena@euskalgnu.org>\n"
@@ -362,7 +362,7 @@ msgstr "GBU primarioak"
 msgid "Log:"
 msgstr ""
 
-#: icc_fenster.cpp:251 icc_fenster.cpp:318 icc_betrachter.cxx:772
+#: icc_fenster.cpp:251 icc_fenster.cpp:318 icc_betrachter.cxx:770
 msgid "Yes"
 msgstr "Bai"
 
@@ -1452,7 +1452,7 @@ msgstr "Gailuaren koloreak"
 msgid "profiles where originally involved"
 msgstr ""
 
-#: icc_ueber.cpp:68 icc_betrachter.cxx:724
+#: icc_ueber.cpp:68 icc_betrachter.cxx:723
 msgid "About ICC Examin"
 msgstr "ICC Examin-i buruz"
 
@@ -1519,11 +1519,11 @@ msgstr ""
 "kolore eraldaketak."
 
 #: icc_ueber.cpp:152 icc_betrachter.cxx:647 icc_betrachter.cxx:649
-#: icc_betrachter.cxx:743
+#: icc_betrachter.cxx:741
 msgid "Help"
 msgstr "Laguntza"
 
-#: icc_ueber.cpp:344 icc_betrachter.cxx:650 icc_betrachter.cxx:749
+#: icc_ueber.cpp:344 icc_betrachter.cxx:650 icc_betrachter.cxx:747
 msgid "License"
 msgstr "Lizentzia"
 
@@ -1763,7 +1763,7 @@ msgstr ""
 msgid "Open"
 msgstr "Ireki"
 
-#: icc_betrachter.cxx:631 icc_betrachter.cxx:640 icc_betrachter.cxx:834
+#: icc_betrachter.cxx:631 icc_betrachter.cxx:640 icc_betrachter.cxx:831
 msgid "Gamut"
 msgstr "Kolore-gama"
 
@@ -1791,27 +1791,27 @@ msgstr "Bideo-txartelaren gamma"
 msgid "Test Curves"
 msgstr "Probako kurbak"
 
-#: icc_betrachter.cxx:648 icc_betrachter.cxx:738
+#: icc_betrachter.cxx:648 icc_betrachter.cxx:736
 msgid "About"
 msgstr "Honi buruz"
 
-#: icc_betrachter.cxx:756
+#: icc_betrachter.cxx:754
 msgid "Acknowlegement"
 msgstr "Aitorpena"
 
-#: icc_betrachter.cxx:762
+#: icc_betrachter.cxx:760
 msgid "Links"
 msgstr "Estekak"
 
-#: icc_betrachter.cxx:782
+#: icc_betrachter.cxx:780
 msgid "Grafic Card Gamma Table"
 msgstr "Txartel grafikoaren gamma-taula"
 
-#: icc_betrachter.cxx:808
+#: icc_betrachter.cxx:805
 msgid "Set"
 msgstr "Ezarri"
 
-#: icc_betrachter.cxx:809
+#: icc_betrachter.cxx:806
 msgid ""
 "Set the current profile as monitor profile and upload vcgt tag to the video "
 "card"
@@ -1819,55 +1819,55 @@ msgstr ""
 "Ezarri uneko profila monitorearen profila gisa eta kargatu vctg etiketa "
 "bideo-txartelean"
 
-#: icc_betrachter.cxx:814
+#: icc_betrachter.cxx:811
 msgid "Reset"
 msgstr "Berrezarri"
 
-#: icc_betrachter.cxx:815
+#: icc_betrachter.cxx:812
 msgid "reset to standard gamma"
 msgstr "berrezarri gamma estandarrera"
 
-#: icc_betrachter.cxx:819
+#: icc_betrachter.cxx:816
 msgid "Load"
 msgstr "Kargatu"
 
-#: icc_betrachter.cxx:820
+#: icc_betrachter.cxx:817
 msgid "Load the current monitor profile"
 msgstr "Kargatu uneko monitorearen profila"
 
-#: icc_betrachter.cxx:824
+#: icc_betrachter.cxx:821
 msgid "Close"
 msgstr "Itxi"
 
-#: icc_betrachter.cxx:897
+#: icc_betrachter.cxx:893
 msgid "ICC Examin"
 msgstr "ICC Examin"
 
-#: icc_betrachter.cxx:934
+#: icc_betrachter.cxx:929
 msgid "Choose one profile tag"
 msgstr "Aukeratu profilaren etiketa"
 
-#: icc_betrachter.cxx:952
+#: icc_betrachter.cxx:947
 msgid "Chain selection"
 msgstr "Kate-hautapena"
 
-#: icc_betrachter.cxx:953
+#: icc_betrachter.cxx:948
 msgid "Choose a attribute"
 msgstr "Aukeratu atribututa"
 
-#: icc_betrachter.cxx:1015
+#: icc_betrachter.cxx:1010
 msgid "o"
 msgstr ""
 
-#: icc_betrachter.cxx:1016
+#: icc_betrachter.cxx:1011
 msgid "Show all channels of this table a own window."
 msgstr "Erakutsi taula honen kanal guztiak leiho propioan"
 
-#: icc_betrachter.cxx:1094
+#: icc_betrachter.cxx:1089
 msgid "..."
 msgstr "..."
 
-#: icc_betrachter.cxx:1097
+#: icc_betrachter.cxx:1092
 msgid "Loading .."
 msgstr "Kargatzen ..."
 
