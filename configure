@@ -56,6 +56,7 @@ cwdebug=0
 debug=0
 verbose=1
 nodeps=0
+rpm=0
 
 # find a suitable fltk-config script
 fltkconfig="fltk-config"
@@ -188,18 +189,27 @@ if [ $# -gt 0 ]; then
   done
 fi
 
-INFOECHO="echo"
-echo -e "$zeile \$@\n\nexit 0\n\n" > $CONF_LOG
-chmod 0755 $CONF_LOG
+# no RPM spec file generation
+if [ 0 -eq $rpm ]; then
+  ECHO="echo";
+  INFOECHO="echo"
+  $ECHO $e "$zeile \$@" > $CONF_LOG
+  $ECHO $e "exit 0" >> $CONF_LOG
+  $ECHO $e "" >> $CONF_LOG
+  $ECHO $e "" >> $CONF_LOG
+  chmod 0755 $CONF_LOG
+else
+  ECHO=""
+  RPMECHO="echo"
+fi
 
-echo_=""; echo -e "$echo_" >> $CONF_LOG; echo "$echo_"
+echo_=""; echo $e "$echo_" >> $CONF_LOG; echo "$echo_"
 echo_="################################################################"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
 echo_="#                                                              #"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
 echo_="        Welcome to $TARGET_NAME Version $VERSION configurator"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
 echo_="#                                                              #"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
 echo_="#                       Configuration                          #"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
 
-ECHO="echo";
 
 src_dir="`(cd ..;pwd)`/""$TARGET"-"$VERSION"
 
@@ -262,25 +272,25 @@ else
     if [ -f /etc/SuSE-release ]; then
       if [ `cat /etc/SuSE-release | grep Linux | wc -l` -ne 0 ]; then
         echo_="`cat /etc/SuSE-release | grep Linux`"
-        test -n $ECHO && $ECHO -e "$echo_" >> $CONF_LOG; test -n "$INFOECHO" && $INFOECHO "$echo_"
+        test -n $ECHO && $ECHO $e "$echo_" >> $CONF_LOG; test -n "$INFOECHO" && $INFOECHO "$echo_"
         SYS=1; fi
       if [ $SYS -eq 0 ]; then
         echo_="`cat /etc/SuSE-release | grep SUSE`"
-        test -n $ECHO && $ECHO -e "$echo_" >> $CONF_LOG; test -n "$INFOECHO" && $INFOECHO "$echo_"
+        test -n $ECHO && $ECHO $e "$echo_" >> $CONF_LOG; test -n "$INFOECHO" && $INFOECHO "$echo_"
         SYS=1; fi fi
     if [ -f /etc/redhat-release ]; then
       echo_="`cat /etc/redhat-release`"
-      test -n $ECHO && $ECHO -e "$echo_" >> $CONF_LOG; test -n "$INFOECHO" && $INFOECHO "$echo_"
+      test -n $ECHO && $ECHO $e "$echo_" >> $CONF_LOG; test -n "$INFOECHO" && $INFOECHO "$echo_"
       SYS=1; fi
     if [ -f /etc/debian_version ]; then
       if [ -f /etc/issue.net ]; then
         echo_="`cat /etc/issue.net || cat /etc/debian_version`"
-        test -n $ECHO && $ECHO -e "$echo_" >> $CONF_LOG; test -n "$INFOECHO" && $INFOECHO "$echo_"
+        test -n $ECHO && $ECHO $e "$echo_" >> $CONF_LOG; test -n "$INFOECHO" && $INFOECHO "$echo_"
         SYS=2; fi; fi
     if [ $SYS -eq 0 ]; then
       if [ -f /etc/issue.net ]; then
         echo_="`cat /etc/issue.net`"
-        test -n $ECHO && $ECHO -e "$echo_" >> $CONF_LOG; test -n "$INFOECHO" && $INFOECHO "$echo_"
+        test -n $ECHO && $ECHO $e "$echo_" >> $CONF_LOG; test -n "$INFOECHO" && $INFOECHO "$echo_"
     fi; fi
     OSUNAME=Linux
   else
