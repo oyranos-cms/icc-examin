@@ -186,7 +186,6 @@ DOKU = \
 	x-icc.desktop \
 	icc_examin.png \
 	icc_examin.xpm \
-	icc_examin.spec.in \
 	icc.xml
 
 FLMM_FILES = \
@@ -227,10 +226,16 @@ CWDBUG_FILES = $(DEBUG_CC) $(DEBUG_H)
 
 BSP_FILES = $(BSP_C) $(BSP_H) $(BSP_TEXT)
 
-ALL_FILES =	$(SOURCES) \
+CONFIG_FILES = \
 	makefile.in \
 	configure \
 	configure.sh \
+	$(TARGET).spec.in
+
+
+ALL_FILES = \
+	$(CONFIG_FILES) \
+	$(SOURCES) \
 	$(DOKU) \
 	$(FONT) \
 	$(APPL_FILES) \
@@ -242,7 +247,7 @@ ALL_FILES =	$(SOURCES) \
 MTIME   := $(shell date +%y%m%d.%H%M%S)
 
 
-all:	dynamic
+all:	config.h mkdepend dynamic
 	
 BASE = 
 	
@@ -393,6 +398,10 @@ clean:	unbundle unpkg
 
 config:
 	./configure
+
+# configure if the file config is not available
+config.h:	$(CONFIG_FILES) ./config.log
+	./config.log
 
 depend:	$(ALL_HEADERFILES)
 	echo "schaue nach Abhaengikeiten ..."
