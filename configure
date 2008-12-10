@@ -51,6 +51,7 @@ else
 fi
 VERSION_L=`echo $VERSION_L | sed 's/^0*//g'`
 
+INFOECHO="echo"
 
 cwdebug=0
 debug=0
@@ -192,7 +193,6 @@ fi
 # no RPM spec file generation
 if [ 0 -eq $rpm ]; then
   ECHO="echo";
-  INFOECHO="echo"
   $ECHO $e "$zeile \$@" > $CONF_LOG
   $ECHO $e "exit 0" >> $CONF_LOG
   $ECHO $e "" >> $CONF_LOG

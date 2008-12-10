@@ -27,6 +27,8 @@
 
 /* Date:      25. 11. 2004 */
 
+int icc_not_used_dummy = 0;
+
 #if 0
 
 #include "icc_oyranos_extern.h"

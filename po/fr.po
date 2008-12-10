@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ICC Examin 0.41\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2008-12-08 12:14+0100\n"
+"POT-Creation-Date: 2008-12-10 14:15+0100\n"
 "PO-Revision-Date: 2006-06-29 19:31+0200\n"
 "Last-Translator: Pascal LACROIX <lacroixpascal at vfemail.net>\n"
 "Language-Team: ALL <ku.b@gmx.de>\n"
@@ -15,103 +15,103 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: icc_oyranos_extern.c:131
+#: icc_oyranos_extern.c:133
 msgid "XYZ"
 msgstr "XYZ"
 
-#: icc_oyranos_extern.c:132
+#: icc_oyranos_extern.c:134
 msgid "Lab"
 msgstr "Lab"
 
-#: icc_oyranos_extern.c:133
+#: icc_oyranos_extern.c:135
 msgid "Luv"
 msgstr "Luv"
 
-#: icc_oyranos_extern.c:134
+#: icc_oyranos_extern.c:136
 msgid "YCbCr"
 msgstr "YCbCr"
 
-#: icc_oyranos_extern.c:135
+#: icc_oyranos_extern.c:137
 msgid "Yxy"
 msgstr "Yxy"
 
-#: icc_oyranos_extern.c:136
+#: icc_oyranos_extern.c:138
 msgid "Rgb"
 msgstr "Rvb"
 
-#: icc_oyranos_extern.c:137 icc_draw.cpp:670 icc_gl.cpp:2202 icc_waehler.h:128
+#: icc_oyranos_extern.c:139 icc_draw.cpp:670 icc_gl.cpp:2202 icc_waehler.h:128
 msgid "Gray"
 msgstr "Gris"
 
-#: icc_oyranos_extern.c:138
+#: icc_oyranos_extern.c:140
 msgid "Hsv"
 msgstr "Hsv"
 
-#: icc_oyranos_extern.c:139
+#: icc_oyranos_extern.c:141
 msgid "Hls"
 msgstr "Hls"
 
-#: icc_oyranos_extern.c:140
+#: icc_oyranos_extern.c:142
 msgid "Cmyk"
 msgstr "Cmyk"
 
-#: icc_oyranos_extern.c:141
+#: icc_oyranos_extern.c:143
 msgid "Cmy"
 msgstr "Cmy"
 
-#: icc_oyranos_extern.c:142
+#: icc_oyranos_extern.c:144
 msgid "2color"
 msgstr "2couleurs"
 
-#: icc_oyranos_extern.c:143
+#: icc_oyranos_extern.c:145
 msgid "3color"
 msgstr "3couleurs"
 
-#: icc_oyranos_extern.c:144
+#: icc_oyranos_extern.c:146
 msgid "4color"
 msgstr "4couleurs"
 
-#: icc_oyranos_extern.c:146
+#: icc_oyranos_extern.c:148
 msgid "5color"
 msgstr "5couleurs"
 
-#: icc_oyranos_extern.c:148
+#: icc_oyranos_extern.c:150
 msgid "6color"
 msgstr "6couleurs"
 
-#: icc_oyranos_extern.c:150
+#: icc_oyranos_extern.c:152
 msgid "7color"
 msgstr "7couleurs"
 
-#: icc_oyranos_extern.c:152
+#: icc_oyranos_extern.c:154
 msgid "8color"
 msgstr "8couleurs"
 
-#: icc_oyranos_extern.c:154
+#: icc_oyranos_extern.c:156
 msgid "9color"
 msgstr "9couleurs"
 
-#: icc_oyranos_extern.c:156
+#: icc_oyranos_extern.c:158
 msgid "10color"
 msgstr "10couleurs"
 
-#: icc_oyranos_extern.c:158
+#: icc_oyranos_extern.c:160
 msgid "11color"
 msgstr "11couleurs"
 
-#: icc_oyranos_extern.c:160
+#: icc_oyranos_extern.c:162
 msgid "12color"
 msgstr "12couleurs"
 
-#: icc_oyranos_extern.c:162
+#: icc_oyranos_extern.c:164
 msgid "13color"
 msgstr "13couleurs"
 
-#: icc_oyranos_extern.c:164
+#: icc_oyranos_extern.c:166
 msgid "14color"
 msgstr "14couleurs"
 
-#: icc_oyranos_extern.c:166
+#: icc_oyranos_extern.c:168
 msgid "15color"
 msgstr "15couleurs"
 
