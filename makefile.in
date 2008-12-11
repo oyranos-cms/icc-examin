@@ -515,6 +515,9 @@ install_cp:
 	$(INSTALL) -m 644 $(FONT) $(DESTDIR)$(datadir)/fonts/$(FONT)
 	$(fltkconfig) --post $(DESTDIR)$(CP_DIR)/$(CINEPAINT)
 	mkdir -p $(DESTDIR)$(datadir)/fonts/
+	echo ... Installation beendet
+
+install_cp_linguas:
 	echo  Linguas ...
 	for ling in $(LINGUAS); do \
 	  echo "installiere po/$${ling}.gmo ..."; \
@@ -524,13 +527,13 @@ install_cp:
             $(INSTALL) -m 644 po/$${ling}.gmo $(DESTDIR)$(datadir)/locale/$${ling}/LC_MESSAGES/$(CINEPAINT).mo ) \
 		|| (echo $${ling}.gmo is not yet ready ... skipping); \
 	done;
-	echo ... Installation beendet
+	echo ... Linguas Installation beendet
 
 install_global:
 	echo Installation ...
 	mkdir -p $(DESTDIR)$(bindir)
 	$(INSTALL) -m 755 $(BINTARGET) $(DESTDIR)$(bindir)
-	strip $(DESTDIR)$(bindir)/$(BINTARGET)
+	#strip $(DESTDIR)$(bindir)/$(BINTARGET)
 	$(fltkconfig) --post $(DESTDIR)$(bindir)/$(BINTARGET)
 	mkdir -p $(DESTDIR)$(datadir)/fonts/
 	$(INSTALL) -m 644 $(FONT) $(DESTDIR)$(datadir)/fonts/$(FONT)
@@ -577,7 +580,7 @@ bundle:	#static
 	$(INSTALL) -m 644 Info.plist ICC\ Examin.app/Contents/Info.plist
 	$(INSTALL) -m 755 ICC\ Examin.sh  ICC\ Examin.app/Contents/MacOS/ICC\ Examin
 	$(INSTALL) -m 755 $(BINTARGET) ICC\ Examin.app/Contents/MacOS/
-	strip ICC\ Examin.app/Contents/MacOS/$(BINTARGET)
+	#strip ICC\ Examin.app/Contents/MacOS/$(BINTARGET)
 	echo  Bibliotheken ...
 	for bib in jpeg png lcms dl intl iconv fltk freetype oyranos elektra; do \
 	  echo "bundle lib$${bib}$(LIBEXT) ..."; \

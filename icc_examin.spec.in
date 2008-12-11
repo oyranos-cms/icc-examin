@@ -1,4 +1,5 @@
 Summary: ICC profile viewer and colour visualisation
+Requires: oyranos oyranos-ui-fltk oyranos-monitor oyranos-monitor-nvidia
 Name: icc_examin
 License: GPL,LGPL
 Group: Productivity/Graphics/Other
@@ -10,23 +11,27 @@ BuildRoot: %{_tmppath}/%{name}-root
 Prefix:    %{_prefix}
 
 %description
-ICC Examin is a small utility (unix name: icc_examin) for the
+ICC Examin is a small utility (unix name: iccexamin) for the
 purpos of watching the internals of ICC profiles, measurement
-data (CGATS), argylls gamut visualisations (vrml) and
-video card gamma tables (Xorg/XFree86/osX).
+data (CGATS), colour samples (named colour profiles), gamut 
+visualisations (vrml), video card gamma tables (Xorg/XFree86/osX).
 
 
 Authors:
 --------
     ICC Examin  Kai-Uwe Behrmann <www.behrmann.name>
 
-used components and libraries (partitial statically linked):
+used components:
     agv         Philip Winston
-    littleCMS   Marti Maria
-    FLTK        Bill Spizak and others
-    FTGL        Henry Maddocks
-    Oyranos     Kai-Uwe Behrmann
-    Elektra     Avi Alkalay and others
+    bsp         Norman Chin
+    FLTK code snippets  Bill Spitzak and others <www.fltk.org>
+
+Translators:
+cs:                  Milan Knizek <knizek@volny.cz> 2008
+de:                  Kai-Uwe Behrmann <www.behrmann.name>
+eu:                  Iñaki Larrañaga Murgoitio <dooteo@euskalgnu.org>, 2007
+fr:                  Pascal LACROIX <lacroixpascal at vfemail.net>, 2006
+
 
 %prep
 %setup -q -n %{name}-%{version}
@@ -34,7 +39,7 @@ used components and libraries (partitial statically linked):
 
 %build
 %configure
-make %{_smp_mflags} static || make
+make %{_smp_mflags} || make
 
 %install
 rm -rf %{buildroot}
@@ -61,8 +66,11 @@ update-mime-database %{_datadir}/mime/
 %{_datadir}/fonts/FreeSans.ttf
 %{_datadir}/locale/*
 
-
 %changelog
+* Thu Dec 11 2008 Kai-Uwe Behrmann
+- add CinéPaint plug-in
+- add Oyranos dependencies
+
 * Mon Mar 02 2006 Kai-Uwe Behrmann
 - name-majorversion.minorversion-releaseversion.xxx sheme
 
