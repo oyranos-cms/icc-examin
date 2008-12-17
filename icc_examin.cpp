@@ -50,6 +50,7 @@
 
 #include <limits.h>
 #include <float.h>
+#include <unistd.h>
 #include <FL/x.H>
 
 using namespace icc_examin_ns;
@@ -84,6 +85,8 @@ int iccMessageFunc( int code, const oyStruct_s * context, const char * format, .
   va_list list;
   const char * type_name = "";
   int id = -1, i;
+  int pid = 0;
+  FILE * fp = 0;
 
   if(code == oyMSG_DBG && !oy_debug)
     return 0;
@@ -119,16 +122,14 @@ int iccMessageFunc( int code, const oyStruct_s * context, const char * format, .
   {
     case oyMSG_WARN:
          sprintf( &text[strlen(text)], _("WARNING"));
-         sprintf( &text[strlen(text)], dbgThreadId( iccThreadSelf()).c_str());
          break;
     case oyMSG_ERROR:
          sprintf( &text[strlen(text)], _("!!! ERROR"));
-         sprintf( &text[strlen(text)], dbgThreadId( iccThreadSelf()).c_str());
          break;
     case oyMSG_DBG:
-         sprintf( &text[strlen(text)], dbgThreadId( iccThreadSelf()).c_str());
          break;
   }
+  sprintf( &text[strlen(text)], dbgThreadId( iccThreadSelf()).c_str());
 
   snprintf( &text[strlen(text)], 4096 - strlen(text), " %03f %s[%d] ", 
                                                       DBG_UHR_, type_name,id );
@@ -147,6 +148,23 @@ int iccMessageFunc( int code, const oyStruct_s * context, const char * format, .
   /* for debugging it is better to see messages on the console rather than
      getting lost during a crash */
   cout << code <<" "<< text;
+
+# define TMP_FILE "/tmp/icc_examin_gdb_temp.txt"
+  pid = (int)getpid();
+  fp = fopen( TMP_FILE, "w" );
+
+  if(fp)
+  {
+    fprintf(fp, "attach %d\n", pid);
+    fprintf(fp, "thread 1\nbacktrace\nthread 2\nbacktrace\nthread 3\nbacktrace\ndetach" );
+    fclose(fp);
+    if(code != oyMSG_DBG && code != ICC_MSG_DBG)
+    {
+      cout << "GDB output:" << endl;
+      system("gdb -batch -x " TMP_FILE);
+    }
+  } else
+    cout << "could not open " << TMP_FILE << endl;
 
   if(text) free( text );
 

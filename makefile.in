@@ -404,7 +404,7 @@ config.h:	$(CONFIG_FILES) ./config.log
 	./config.log
 
 depend:	$(ALL_HEADERFILES)
-	echo "schaue nach Abhaengikeiten ..."
+	echo "schaue nach Abhaengigkeiten ..."
 	echo "MAKEDEPEND_ISUP = 1" > mkdepend
 	echo "#nicht editieren/dont edit - automatisch generiert" >> mkdepend
 	-$(MAKEDEPEND) -I./ -I./Flmm $(INCL_DEP) >> mkdepend

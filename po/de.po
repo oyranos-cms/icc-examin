@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2008-12-10 14:15+0100\n"
+"POT-Creation-Date: 2008-12-17 09:15+0100\n"
 "PO-Revision-Date: 2005-08-13 17:35+0200\n"
 "Last-Translator: Kai-Uwe Behrmann\n"
 "Language-Team:  <ku.b@gmx.de>\n"
@@ -239,29 +239,29 @@ msgstr " mit Gamma: 1.0"
 msgid " with one entry for gamma: "
 msgstr " mit einem Eintrag für Gamma: "
 
-#: icc_examin.cpp:121
+#: icc_examin.cpp:124
 #, c-format
 msgid "WARNING"
 msgstr ""
 
-#: icc_examin.cpp:125
+#: icc_examin.cpp:127
 #, c-format
 msgid "!!! ERROR"
 msgstr ""
 
-#: icc_examin.cpp:280
+#: icc_examin.cpp:298
 msgid "Gamut selector"
 msgstr "Darstellungsoptionen"
 
-#: icc_examin.cpp:370 icc_examin.cpp:1313
+#: icc_examin.cpp:388 icc_examin.cpp:1331
 msgid "loaded"
 msgstr "geladen"
 
-#: icc_examin.cpp:376
+#: icc_examin.cpp:394
 msgid "Ready"
 msgstr "Bereit"
 
-#: icc_examin.cpp:425
+#: icc_examin.cpp:443
 msgid ""
 "ICC colour profiles (*.{I,i}{C,c}{M,m,C,c})\tMeasurement (*.{txt,it8,IT8,RGB,"
 "CMYK,ti*,cgats,CIE,cie,nCIE,oRPT,DLY,LAB,Q60})\tArgyll Gamuts (*.{wrl,vrml}"
@@ -270,47 +270,47 @@ msgstr ""
 "ti*,cgats,CIE,cie,nCIE,oRPT,DLY,LAB,Q60})\tArgyll Farbraumhüllen (*.{wrl,"
 "vrml}"
 
-#: icc_examin.cpp:425
+#: icc_examin.cpp:443
 msgid "Which ICC profile?"
 msgstr "Welches ICC Profil?"
 
-#: icc_examin.cpp:823 icc_examin.cpp:826
+#: icc_examin.cpp:841 icc_examin.cpp:844
 msgid "Compare Measurement <-> Profile Colours"
 msgstr "Vergleich Mess- und Profilfarben"
 
-#: icc_examin.cpp:825
+#: icc_examin.cpp:843
 msgid "none"
 msgstr "kein"
 
-#: icc_examin.cpp:843 icc_examin.cpp:847
+#: icc_examin.cpp:861 icc_examin.cpp:865
 msgid "Gamut View"
 msgstr "Farbhüllansicht"
 
-#: icc_examin.cpp:917 icc_gl.h:274
+#: icc_examin.cpp:935 icc_gl.h:274
 msgid "not available"
 msgstr "nicht verfügbar"
 
-#: icc_examin.cpp:1253
+#: icc_examin.cpp:1271
 msgid "Filename (ICC data type)"
 msgstr "Dateiname (ICC Daten)"
 
-#: icc_examin.cpp:1256
+#: icc_examin.cpp:1274
 msgid "Filename (other data type)"
 msgstr "Dateiname (anderer Datentyp)"
 
-#: icc_examin.cpp:1258
+#: icc_examin.cpp:1276
 msgid "Filename (corrupted ICC data type)"
 msgstr "Dateiname (beschädigte ICC Daten)"
 
-#: icc_examin.cpp:1263
+#: icc_examin.cpp:1281
 msgid "found no content for"
 msgstr "keine Inhalte gefunden für"
 
-#: icc_examin.cpp:1266
+#: icc_examin.cpp:1284
 msgid "Internal error"
 msgstr "interner Fehler"
 
-#: icc_examin.cpp:1269
+#: icc_examin.cpp:1287
 msgid "No. Tag   Type   Size Description"
 msgstr "Nr. Teil  Typ   Größe Beschreibung"
 
@@ -1939,8 +1939,9 @@ msgid "2004"
 msgstr ""
 
 #: icc_examin_version.h:11
-msgid "October"
-msgstr "Oktober"
+#, fuzzy
+msgid "December"
+msgstr "September"
 
 #: icc_examin_version.h:12
 msgid "2008"
@@ -1951,8 +1952,8 @@ msgstr ""
 msgid "!!! Warning !!!"
 msgstr "!!! Warnung !!!"
 
-#~ msgid "September"
-#~ msgstr "September"
+#~ msgid "October"
+#~ msgstr "Oktober"
 
 #, fuzzy
 #~ msgid "May 2004 - September 2008"
