@@ -12,7 +12,7 @@ Prefix:    %{_prefix}
 
 %description
 ICC Examin is a small utility (unix name: iccexamin) for the
-purpos of watching the internals of ICC profiles, measurement
+purpose of watching the internals of ICC profiles, measurement
 data (CGATS), colour samples (named colour profiles), gamut 
 visualisations (vrml), video card gamma tables (Xorg/XFree86/osX).
 

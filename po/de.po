@@ -1939,9 +1939,8 @@ msgid "2004"
 msgstr ""
 
 #: icc_examin_version.h:11
-#, fuzzy
 msgid "December"
-msgstr "September"
+msgstr "Dezember"
 
 #: icc_examin_version.h:12
 msgid "2008"

@@ -1,3 +1,105 @@
+Version 0.46
+
+Iñaki Larrañaga Murgoitio (1):
+	* [po]: Basque translations
+
+Kai-Uwe Behrmann (86):
+	* show distribution
+	* git maintainance
+	* remove std::vector
+	* fix for GMB measurement line marking
+	* add more thread debugging infos
+	* correct typo (thanks to Guy K. Kloss for spotting)
+	* add copy contructors and hex displaying
+	* repair list class copy
+	* support n-dimensional mft2 table displaying
+	* complete for mft1
+	* repair ICCThreadList::copy regression
+	* add Flmm widgets
+	* add log window (Ctrl-L)
+	* add Flmm
+	* window access fix
+	* add fl_i18n_codeset in fl_i18n.H for checking
+	* fix various compiler warnings
+	* more osX configure verbosity
+	* remove oyranos_alpha reference
+	* half way osX bundle reordering
+	* bundle elektra backends
+	* fix elektra backend install
+	* clean recursive
+	* switch first rendering intent naming back to perceptual
+	* allow for non i18n builds
+	* remove wcstombs
+	* remove mluc decoding as it is covered by Oyranos
+	* add propriarity TGL2 to target tag names (ICC: "targ")
+	* rename to oyNamedColours_Get
+	* clean the ICC header of intermediate ncl2 profile
+	* avoid crash of zero length ncl2 colour lists
+	* remove ambiguous html table attribute
+	* update
+	* switch to verbose compiling by default
+	* update to Oyranos new message function type
+	* avoid FL:: thread dependency for message logging; use a local mutex
+	* obtain the correct filename for a Oyranos profile
+	* update
+	* update nl_langinfo() compatibility
+	* update to last Oyranos git changes
+	* during debugging direct log messages to the command line
+	* update to Oyranos oyImage_s data API
+	* some cleaning und updating
+	* more detailed date support in configure and the About window
+	* fix write on static memory
+	* fix constant warnings
+	* version increase to 0.46
+	* keep some more place for text allocation
+	* dump warnings to console
+	* convert to new function type naming and remove HAVE_OY macros
+	* update
+	* set configure to error on failed Oyranos detection
+	* initialise some ICClist arrays
+	* fix for the last (f2dd3f92b...) commit to the CinePaint plug-ins
+	* update to Oyranos renaming for oyGetMonitorProfileNameFromDB()
+	* switch to Oyranos' new include path propagation
+	* update to a removed struct member in Oyranos
+	* omit monitor profile name
+	* update
+	* support new CinePaint version scheme
+	* sync configure.sh mit ICC Examin
+	* repair RPM building
+	* hope to not break normale drawing
+	* search for i18n files more robust
+	* change to new include scheme
+	* update
+	* adapt the older CinePaint detection
+	* FTGL deprecates old include files
+	* add intptr test file
+	* detect compiler settings for 32/64-bit builds suring configure
+	* [docu]: give credit to translators and contributors of data
+	* [oyra]: adapt to Oyranos changed oyColourConversion_Create()
+	* [new]: add OpenMP support for vrml parsing
+	* [build]: ifdef backward compatible to Oyranos v0.1.8
+	* [fix]: rendering intent selection for 3D view
+	* [oyra]: add oyOptions_s to ICCmeasurement and ICCexamin
+	* [and]: prohibit accidential ICCexamin copies
+	* [and]: rework the debug system
+	* [and]: rework the debug system
+	* [and]: rework the debug system
+	* [conf]: update to Oyranos configure.sh
+	* [build]: check for configuration file changes
+	* [conf]: remove GNU "echo -e" extension
+	* [build]: fix a compile warning for a empty source file
+	* [conf]: update to Oyranos
+	* [build]: configure and build CinéPaint plug-in rpm
+
+Milan Knízek (2):
+	* [po]: changes to cs.po
+	* [po]: add czesh translation
+
+Pascal LACROIX (1):
+	* [po]: french translations
+
+
+
 2007-11-08
 	* neu: add --with-rpath configure option
 
