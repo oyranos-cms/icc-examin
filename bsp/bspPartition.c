@@ -98,12 +98,12 @@ while (ftrav != NULL_FACE) {
 	     IS_EQ(ftrav->plane.bb,plane->bb) &&
 	     IS_EQ(ftrav->plane.cc,plane->cc)) 
          {
-            PREPEND_FACE(ftrav,*faceSameDir);
-  if(*faceSameDir == NULL_FACE || ftrav == 0)
-  {
-    int stop_variable = 0;
-    stop_variable ++;
-  }
+           PREPEND_FACE(ftrav,*faceSameDir);
+           if(*faceSameDir == NULL_FACE || ftrav == 0)
+           {
+             int stop_variable = 0;
+             stop_variable ++;
+           }
 	 } else PREPEND_FACE(ftrav,*faceOppDir);
       }
    }
