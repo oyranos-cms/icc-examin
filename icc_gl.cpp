@@ -420,11 +420,6 @@ GL_Ansicht::init(int ty)
     agv_->eyeDist (agv_->dist()*2.0);
   }
 
-  gl_listen[AXES] = glGenLists(1);
-  agv_->agvMakeAxesList( gl_listen[AXES] ); DBG_PROG
-
-  gl_font( FL_HELVETICA, 10 );
-
   // initialise
   menueInit_(); DBG_PROG
   menueAufruf (hintergrundfarbeZuMenueeintrag(hintergrundfarbe)); // colour sheme
@@ -2329,6 +2324,7 @@ GL_Ansicht::zeichnen()
   if(!valid_) {
     // complete initialisation
     //init(id_);
+    gl_font( FL_HELVETICA, 10 );
 
     GLinit_();  DBG_PROG
     fensterForm();
