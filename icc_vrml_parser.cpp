@@ -104,9 +104,11 @@ ICCvrmlParser::lesen_ ()
   const char* temp = setlocale(LC_NUMERIC, NULL);
   char* loc_alt = icc_strdup_m(temp); //getenv("LANG");
   if(loc_alt)
+  {
     DBG_NUM_V( loc_alt )
-  else
+  } else {
     DBG_NUM_S( "did not find LANG variable" )
+  }
   setlocale(LC_NUMERIC,"C");
 
   

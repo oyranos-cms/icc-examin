@@ -69,9 +69,11 @@ icc_examin_ns::iccLockRelease ( oyranos::oyPointer         thread_lock,
   if(error)
   {
     if(marker)
+    {
       DBG_THREAD_S( "no lock provided at " << marker <<":"<< line )
-    else
+    } else {
       DBG_THREAD_S( "no lock provided" )
+    }
   } else {
     iccThreadMutex_m * m = (iccThreadMutex_m *) thread_lock;
     //iccUnLock( m, marker, line );

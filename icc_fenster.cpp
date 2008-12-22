@@ -285,7 +285,7 @@ log_ (std::string text, int code)
 
     buffer_log->append( text.c_str() );
 
-    if(display_log && l == ip || log_window_new)
+    if((display_log && l == ip) || log_window_new)
     {
       ip = buffer_log->length();
       display_log->insert_position( ip );

@@ -120,7 +120,7 @@ Oyranos::profil_test_ (const char* profil_name)
         // insert empty block
         Prof_Map_elem teil (profil_name, Speicher());
         Prof_mapIt_bool erg = pspeicher_ .insert( teil );
-        if( erg.second = true )
+        if( erg.second == true )
         {
           // get referenz to block
           Speicher *v_block = &pspeicher_[profil_name];

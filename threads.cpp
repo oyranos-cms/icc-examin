@@ -54,7 +54,7 @@ int fl_create_thread(Fl_Thread& t, void *(*f) (void *), void* p)
 
   /* reading the size of the stack */
   //ret = pthread_attr_setstacksize(&tattr, size);
-#ifdef DEBUG
+#ifdef DEBUG_
   size_t size = 0;
   ret = pthread_attr_getstacksize( &tattr,  &size );
 
@@ -69,7 +69,8 @@ int fl_create_thread(Fl_Thread& t, void *(*f) (void *), void* p)
   ret = pthread_create((pthread_t*)&t, &tattr, f, p); 
 
 #ifdef DEBUG
-  void *base = NULL; size = 0;
+  void *base = NULL;
+  size_t size = 0;
   ret = pthread_attr_getstack (&tattr, &base, &size); 
   std::cout<<"Startpos: "<< base <<" size: "<< size << std::endl;
 #endif

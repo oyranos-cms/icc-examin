@@ -219,7 +219,7 @@ extern int icc_debug;
 #define DBG_V(txt,code) DBG_V_(txt,code)
 
 #ifdef DEBUG
-#define DBG_BED(n) if (icc_debug >= n && icc_debug < 10 || icc_debug == 1##n)
+#define DBG_BED(n) if ((icc_debug >= n && icc_debug < 10) || icc_debug == 1##n)
 #define DBG_BED2(n1,n2) if ((icc_debug >= n1 && icc_debug < 10) || icc_debug == 1##n1 || (icc_debug >= n2 && icc_debug < 10) || icc_debug == 1##n2 )
 #define DBG_NUM        DBG_BED(1) DBG(ICC_MSG_DBG)
 #define DBG_NUM_START  DBG_BED2(1,9) DBG_START
