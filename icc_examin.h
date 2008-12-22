@@ -47,7 +47,6 @@ class  ICCwaehler;
 class  ICCexamin;
 extern ICCexamin *icc_examin;
 class  ICCexaminIO;
-class  icc_examin_ns::EinModell;
 
 namespace icc_examin_ns {
     enum IccGamutFormat {
