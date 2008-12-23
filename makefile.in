@@ -30,7 +30,7 @@ TOOLKIT_FILES = $(FLTK_CPPFILES)
 
 
 INCL_DEP = $(INCL) $(X_H) $(OSX_H) $(OYRANOS_H) \
-			$(FLU_H) $(FLTK_H) $(FTGL_H) $(LCMS_H) $(ALL_SOURCEFILES)
+	$(FLU_H) $(FLTK_H) $(FTGL_H) $(LCMS_H) $(ALL_SOURCEFILES) bsp/*.c
 ALL_INCL = $(INCL) \
 	$(FLU_H) $(FLTK_H) $(X_H) $(OSX_H) $(OYRANOS_H) $(LCMS_H) $(FTGL_H) \
 	$(FLMM_H)
@@ -198,6 +198,8 @@ FLMM_FILES = \
 	Flmm/CREDITS \
 	Flmm/README
 
+# the files are covered in the bsp directory
+BSP_SOURCES := $(shell ls bsp/*.c)
 
 FLUID = \
 	icc_betrachter.fl \
@@ -211,6 +213,8 @@ MAIN_OBJECTS = $(MAIN_SOURCES:.cpp=.o)
 CINEPAINT_OBJECTS = $(CINEPAINT_SOURCES:.cpp=.o)
 Flmm_OBJECTS = $(FLMM_CXXFILES:.cxx=.o)
 I18N_OBJECTS =  $(I18N_CXXFILES:.cxx=.o)
+BSP_OBJECTS = $(BSP_SOURCES:.c=.o)
+
 LINGUAS_SRC = $(LING:.po=.gmo)
 ALL_OBJECTS = $(OBJECTS) $(MAIN_OBJECTS) $(CINEPAINT_OBJECTS) $(I18N_OBJECTS) \
 	$(LINGUAS_SRC) $(Flmm_OBJECTS)
@@ -304,7 +308,7 @@ $(LIBNAME):	$(I18N_OBJECTS)
 $(LIBFL_I18N):
 	cd fl_i18n/ && $(MAKE) -f $(MAKEFILE_ARCH)
 
-$(LIBBSP):
+$(LIBBSP):	$(BSP_OBJECTS)
 	cd bsp/ && $(MAKE)
 
 static:	$(BINTARGET)
