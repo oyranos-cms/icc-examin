@@ -500,8 +500,6 @@ ICCtag::getText                     (std::string text)
     int    profiles_n = 0;
     const char * all_text = "";
 
-    sprintf( tag_->required_cmm, OY_MODULE_NICK );
-
     if(icc_debug)
       all_text = 0;
 
