@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2008-12-22 16:26+0100\n"
+"POT-Creation-Date: 2008-12-27 12:33+0100\n"
 "PO-Revision-Date: 2005-08-13 17:35+0200\n"
 "Last-Translator: Kai-Uwe Behrmann\n"
 "Language-Team:  <eo@li.org>\n"
@@ -250,65 +250,65 @@ msgstr ""
 msgid "!!! ERROR"
 msgstr ""
 
-#: icc_examin.cpp:298
+#: icc_examin.cpp:301
 msgid "Gamut selector"
 msgstr ""
 
-#: icc_examin.cpp:388 icc_examin.cpp:1331
+#: icc_examin.cpp:391 icc_examin.cpp:1334
 msgid "loaded"
 msgstr ""
 
-#: icc_examin.cpp:394
+#: icc_examin.cpp:397
 msgid "Ready"
 msgstr ""
 
-#: icc_examin.cpp:443
+#: icc_examin.cpp:446
 msgid ""
 "ICC colour profiles (*.{I,i}{C,c}{M,m,C,c})\tMeasurement (*.{txt,it8,IT8,RGB,"
 "CMYK,ti*,cgats,CIE,cie,nCIE,oRPT,DLY,LAB,Q60})\tArgyll Gamuts (*.{wrl,vrml}"
 msgstr ""
 
-#: icc_examin.cpp:443
+#: icc_examin.cpp:446
 msgid "Which ICC profile?"
 msgstr ""
 
-#: icc_examin.cpp:841 icc_examin.cpp:844
+#: icc_examin.cpp:844 icc_examin.cpp:847
 msgid "Compare Measurement <-> Profile Colours"
 msgstr ""
 
-#: icc_examin.cpp:843
+#: icc_examin.cpp:846
 msgid "none"
 msgstr ""
 
-#: icc_examin.cpp:861 icc_examin.cpp:865
+#: icc_examin.cpp:864 icc_examin.cpp:868
 msgid "Gamut View"
 msgstr ""
 
-#: icc_examin.cpp:935 icc_gl.h:274
+#: icc_examin.cpp:938 icc_gl.h:274
 msgid "not available"
 msgstr ""
 
-#: icc_examin.cpp:1271
+#: icc_examin.cpp:1274
 msgid "Filename (ICC data type)"
 msgstr ""
 
-#: icc_examin.cpp:1274
+#: icc_examin.cpp:1277
 msgid "Filename (other data type)"
 msgstr ""
 
-#: icc_examin.cpp:1276
+#: icc_examin.cpp:1279
 msgid "Filename (corrupted ICC data type)"
 msgstr ""
 
-#: icc_examin.cpp:1281
+#: icc_examin.cpp:1284
 msgid "found no content for"
 msgstr ""
 
-#: icc_examin.cpp:1284
+#: icc_examin.cpp:1287
 msgid "Internal error"
 msgstr ""
 
-#: icc_examin.cpp:1287
+#: icc_examin.cpp:1290
 msgid "No. Tag   Type   Size Description"
 msgstr ""
 
@@ -500,7 +500,7 @@ msgstr "pureco"
 msgid "Absolute Colorimetric"
 msgstr ""
 
-#: icc_helfer.cpp:394 icc_profile_tags.cpp:1178 icc_profile_tags.cpp:1185
+#: icc_helfer.cpp:394 icc_profile_tags.cpp:1176 icc_profile_tags.cpp:1183
 msgid "Colour"
 msgstr "kolora"
 
@@ -1440,7 +1440,7 @@ msgstr ""
 msgid "Device Colours"
 msgstr ""
 
-#: icc_profile_tags.cpp:529
+#: icc_profile_tags.cpp:527
 msgid "profiles where originally involved"
 msgstr ""
 

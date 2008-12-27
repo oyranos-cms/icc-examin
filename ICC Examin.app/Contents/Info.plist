@@ -28,6 +28,8 @@
 			<string>cgats</string>
 		    <key>CFBundleTypeRole</key>
             <string>Editor</string>
+			<key>LSIsAppleDefaultForType</key>
+			<true/>
 		</dict>
 		<dict>
 			<key>CFBundleTypeExtensions</key>
@@ -38,25 +40,37 @@
 			<string>argyll gamut</string>
 		    <key>CFBundleTypeRole</key>
             <string>Editor</string>
+			<key>LSIsAppleDefaultForType</key>
+			<true/>
 		</dict>
 		<dict>
+			<key>CFBundleTypeName</key>
+			<string>ICC Profile</string>
+		    <key>CFBundleTypeRole</key>
+            <string>Viewer</string>
+            <key>CFBundleTypeOSTypes</key>
+            <array>
+				<string>prof</string>
+			</array>
 			<key>CFBundleTypeExtensions</key>
 			<array>
 				<string>icc</string>
-				<string>ICC</string>
 				<string>icm</string>
+				<string>ICC</string>
 				<string>ICM</string>
 			</array>
-			<key>CFBundleTypeName</key>
-			<string>ICC profiles</string>
-		    <key>CFBundleTypeRole</key>
-            <string>Editor</string>
+            <key>CFBundleTypeMIMETypes</key>
+            <array>
+                <string>icc</string>
+            </array>
+			<key>LSIsAppleDefaultForType</key>
+			<true/>
 		</dict>
 	</array>
 	<key>CFBundleExecutable</key>
 	<string>ICC Examin</string>
 	<key>CFBundleGetInfoString</key>
-	<string>Copyright 2004-2005, Kai-Uwe Behrmann
+	<string>Copyright 2004-2008, Kai-Uwe Behrmann
 	www.behrmann.name</string>
 	<key>CFBundleIconFile</key>
 	<string>icc_examin.icns</string>
@@ -69,7 +83,7 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>0.36</string>
+	<string>0.45rc7</string>
 	<key>CSResourcesFileMapped</key>
 	<true/>
 </dict>

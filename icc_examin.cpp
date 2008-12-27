@@ -149,24 +149,27 @@ int iccMessageFunc( int code, const oyStruct_s * context, const char * format, .
      getting lost during a crash */
   cout << code <<" "<< text;
 
-# define TMP_FILE "/tmp/icc_examin_gdb_temp.txt"
-  pid = (int)getpid();
-  fp = fopen( TMP_FILE, "w" );
-
-  if(fp)
-  {
-    fprintf(fp, "attach %d\n", pid);
-    fprintf(fp, "thread 1\nbacktrace\nthread 2\nbacktrace\nthread 3\nbacktrace\ndetach" );
-    fclose(fp);
-    if(code != oyMSG_DBG && code != ICC_MSG_DBG)
-    {
-      cout << "GDB output:" << endl;
-      system("gdb -batch -x " TMP_FILE);
-    }
-  } else
-    cout << "could not open " << TMP_FILE << endl;
-
   if(text) free( text );
+
+  if(icc_debug)
+  {
+#   define TMP_FILE "/tmp/icc_examin_gdb_temp.txt"
+    pid = (int)getpid();
+    fp = fopen( TMP_FILE, "w" );
+
+    if(fp)
+    {
+      fprintf(fp, "attach %d\n", pid);
+      fprintf(fp, "thread 1\nbacktrace\nthread 2\nbacktrace\nthread 3\nbacktrace\ndetach" );
+      fclose(fp);
+      if(code != oyMSG_DBG && code != ICC_MSG_DBG)
+      {
+        cout << "GDB output:" << endl;
+        system("gdb -batch -x " TMP_FILE);
+      }
+    } else
+      cout << "could not open " << TMP_FILE << endl;
+  }
 
   return 0;
 }

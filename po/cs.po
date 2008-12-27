@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: icc_examin\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2008-12-22 16:26+0100\n"
+"POT-Creation-Date: 2008-12-27 12:33+0100\n"
 "PO-Revision-Date: 2008-10-16 20:18+0100\n"
 "Last-Translator: Milan Knizek <knizek@volny.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
@@ -245,19 +245,19 @@ msgstr "VAROVANI"
 msgid "!!! ERROR"
 msgstr "!!! CHYBA"
 
-#: icc_examin.cpp:298
+#: icc_examin.cpp:301
 msgid "Gamut selector"
 msgstr "Volba gamutu"
 
-#: icc_examin.cpp:388 icc_examin.cpp:1331
+#: icc_examin.cpp:391 icc_examin.cpp:1334
 msgid "loaded"
 msgstr "nacteno"
 
-#: icc_examin.cpp:394
+#: icc_examin.cpp:397
 msgid "Ready"
 msgstr "Pripraveno"
 
-#: icc_examin.cpp:443
+#: icc_examin.cpp:446
 msgid ""
 "ICC colour profiles (*.{I,i}{C,c}{M,m,C,c})\tMeasurement (*.{txt,it8,IT8,RGB,"
 "CMYK,ti*,cgats,CIE,cie,nCIE,oRPT,DLY,LAB,Q60})\tArgyll Gamuts (*.{wrl,vrml}"
@@ -265,47 +265,47 @@ msgstr ""
 "ICC barvove profily (*.{I,i}{C,c}{M,m,C,c})\tMereni (*.{txt,it8,IT8,RGB,CMYK,"
 "ti*,cgats,CIE,cie,nCIE,oRPT,DLY,LAB,Q60})\tGamuty Argyll (*.{wrl,vrml}"
 
-#: icc_examin.cpp:443
+#: icc_examin.cpp:446
 msgid "Which ICC profile?"
 msgstr "Ktery ICC profil?"
 
-#: icc_examin.cpp:841 icc_examin.cpp:844
+#: icc_examin.cpp:844 icc_examin.cpp:847
 msgid "Compare Measurement <-> Profile Colours"
 msgstr "Porovnat Mereni <-> Barvy profilu"
 
-#: icc_examin.cpp:843
+#: icc_examin.cpp:846
 msgid "none"
 msgstr "zadny"
 
-#: icc_examin.cpp:861 icc_examin.cpp:865
+#: icc_examin.cpp:864 icc_examin.cpp:868
 msgid "Gamut View"
 msgstr "Zobrazeni gamutu"
 
-#: icc_examin.cpp:935 icc_gl.h:274
+#: icc_examin.cpp:938 icc_gl.h:274
 msgid "not available"
 msgstr "neni k dispozici"
 
-#: icc_examin.cpp:1271
+#: icc_examin.cpp:1274
 msgid "Filename (ICC data type)"
 msgstr "Nazev souboru (ICC typ)"
 
-#: icc_examin.cpp:1274
+#: icc_examin.cpp:1277
 msgid "Filename (other data type)"
 msgstr "Jmeno souboru (jiny typ)"
 
-#: icc_examin.cpp:1276
+#: icc_examin.cpp:1279
 msgid "Filename (corrupted ICC data type)"
 msgstr "Jmeno souboru (poruseny typ ICC dat)"
 
-#: icc_examin.cpp:1281
+#: icc_examin.cpp:1284
 msgid "found no content for"
 msgstr "nenalezen zadny obsah pro"
 
-#: icc_examin.cpp:1284
+#: icc_examin.cpp:1287
 msgid "Internal error"
 msgstr "Interni chyba"
 
-#: icc_examin.cpp:1287
+#: icc_examin.cpp:1290
 msgid "No. Tag   Type   Size Description"
 msgstr "C.  Tag   Typ     Vel. Popis"
 
@@ -496,7 +496,7 @@ msgstr "Saturacni"
 msgid "Absolute Colorimetric"
 msgstr "Absolutni kolorimetricky"
 
-#: icc_helfer.cpp:394 icc_profile_tags.cpp:1178 icc_profile_tags.cpp:1185
+#: icc_helfer.cpp:394 icc_profile_tags.cpp:1176 icc_profile_tags.cpp:1183
 msgid "Colour"
 msgstr "Barva"
 
@@ -1443,7 +1443,7 @@ msgstr "CIE*Lab"
 msgid "Device Colours"
 msgstr "Barvy zarizeni"
 
-#: icc_profile_tags.cpp:529
+#: icc_profile_tags.cpp:527
 msgid "profiles where originally involved"
 msgstr "profily byly puvodne pouzity"
 
