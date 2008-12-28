@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: icc_examin\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2008-12-27 12:33+0100\n"
+"POT-Creation-Date: 2008-12-29 00:29+0100\n"
 "PO-Revision-Date: 2008-10-16 20:18+0100\n"
 "Last-Translator: Milan Knizek <knizek@volny.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
@@ -235,29 +235,29 @@ msgstr " s gama: 1.0"
 msgid " with one entry for gamma: "
 msgstr " s jednim vstupem pro gama: "
 
-#: icc_examin.cpp:124
+#: icc_examin.cpp:128
 #, c-format
 msgid "WARNING"
 msgstr "VAROVANI"
 
-#: icc_examin.cpp:127
+#: icc_examin.cpp:131
 #, c-format
 msgid "!!! ERROR"
 msgstr "!!! CHYBA"
 
-#: icc_examin.cpp:301
+#: icc_examin.cpp:305
 msgid "Gamut selector"
 msgstr "Volba gamutu"
 
-#: icc_examin.cpp:391 icc_examin.cpp:1334
+#: icc_examin.cpp:395 icc_examin.cpp:1338
 msgid "loaded"
 msgstr "nacteno"
 
-#: icc_examin.cpp:397
+#: icc_examin.cpp:401
 msgid "Ready"
 msgstr "Pripraveno"
 
-#: icc_examin.cpp:446
+#: icc_examin.cpp:450
 msgid ""
 "ICC colour profiles (*.{I,i}{C,c}{M,m,C,c})\tMeasurement (*.{txt,it8,IT8,RGB,"
 "CMYK,ti*,cgats,CIE,cie,nCIE,oRPT,DLY,LAB,Q60})\tArgyll Gamuts (*.{wrl,vrml}"
@@ -265,47 +265,47 @@ msgstr ""
 "ICC barvove profily (*.{I,i}{C,c}{M,m,C,c})\tMereni (*.{txt,it8,IT8,RGB,CMYK,"
 "ti*,cgats,CIE,cie,nCIE,oRPT,DLY,LAB,Q60})\tGamuty Argyll (*.{wrl,vrml}"
 
-#: icc_examin.cpp:446
+#: icc_examin.cpp:450
 msgid "Which ICC profile?"
 msgstr "Ktery ICC profil?"
 
-#: icc_examin.cpp:844 icc_examin.cpp:847
+#: icc_examin.cpp:848 icc_examin.cpp:851
 msgid "Compare Measurement <-> Profile Colours"
 msgstr "Porovnat Mereni <-> Barvy profilu"
 
-#: icc_examin.cpp:846
+#: icc_examin.cpp:850
 msgid "none"
 msgstr "zadny"
 
-#: icc_examin.cpp:864 icc_examin.cpp:868
+#: icc_examin.cpp:868 icc_examin.cpp:872
 msgid "Gamut View"
 msgstr "Zobrazeni gamutu"
 
-#: icc_examin.cpp:938 icc_gl.h:274
+#: icc_examin.cpp:942 icc_gl.h:274
 msgid "not available"
 msgstr "neni k dispozici"
 
-#: icc_examin.cpp:1274
+#: icc_examin.cpp:1278
 msgid "Filename (ICC data type)"
 msgstr "Nazev souboru (ICC typ)"
 
-#: icc_examin.cpp:1277
+#: icc_examin.cpp:1281
 msgid "Filename (other data type)"
 msgstr "Jmeno souboru (jiny typ)"
 
-#: icc_examin.cpp:1279
+#: icc_examin.cpp:1283
 msgid "Filename (corrupted ICC data type)"
 msgstr "Jmeno souboru (poruseny typ ICC dat)"
 
-#: icc_examin.cpp:1284
+#: icc_examin.cpp:1288
 msgid "found no content for"
 msgstr "nenalezen zadny obsah pro"
 
-#: icc_examin.cpp:1287
+#: icc_examin.cpp:1291
 msgid "Internal error"
 msgstr "Interni chyba"
 
-#: icc_examin.cpp:1290
+#: icc_examin.cpp:1294
 msgid "No. Tag   Type   Size Description"
 msgstr "C.  Tag   Typ     Vel. Popis"
 

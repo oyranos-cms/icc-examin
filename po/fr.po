@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ICC Examin 0.41\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2008-12-27 12:33+0100\n"
+"POT-Creation-Date: 2008-12-29 00:29+0100\n"
 "PO-Revision-Date: 2006-06-29 19:31+0200\n"
 "Last-Translator: Pascal LACROIX <lacroixpascal at vfemail.net>\n"
 "Language-Team: ALL <ku.b@gmx.de>\n"
@@ -237,76 +237,76 @@ msgstr " avec Gamma: 1.0"
 msgid " with one entry for gamma: "
 msgstr " avec un entrée pour gamma: "
 
-#: icc_examin.cpp:124
+#: icc_examin.cpp:128
 #, c-format
 msgid "WARNING"
 msgstr ""
 
-#: icc_examin.cpp:127
+#: icc_examin.cpp:131
 #, c-format
 msgid "!!! ERROR"
 msgstr ""
 
-#: icc_examin.cpp:301
+#: icc_examin.cpp:305
 msgid "Gamut selector"
 msgstr ""
 
-#: icc_examin.cpp:391 icc_examin.cpp:1334
+#: icc_examin.cpp:395 icc_examin.cpp:1338
 msgid "loaded"
 msgstr ""
 
-#: icc_examin.cpp:397
+#: icc_examin.cpp:401
 msgid "Ready"
 msgstr ""
 
-#: icc_examin.cpp:446
+#: icc_examin.cpp:450
 msgid ""
 "ICC colour profiles (*.{I,i}{C,c}{M,m,C,c})\tMeasurement (*.{txt,it8,IT8,RGB,"
 "CMYK,ti*,cgats,CIE,cie,nCIE,oRPT,DLY,LAB,Q60})\tArgyll Gamuts (*.{wrl,vrml}"
 msgstr ""
 
-#: icc_examin.cpp:446
+#: icc_examin.cpp:450
 msgid "Which ICC profile?"
 msgstr ""
 
-#: icc_examin.cpp:844 icc_examin.cpp:847
+#: icc_examin.cpp:848 icc_examin.cpp:851
 msgid "Compare Measurement <-> Profile Colours"
 msgstr ""
 
-#: icc_examin.cpp:846
+#: icc_examin.cpp:850
 msgid "none"
 msgstr ""
 
-#: icc_examin.cpp:864 icc_examin.cpp:868
+#: icc_examin.cpp:868 icc_examin.cpp:872
 #, fuzzy
 msgid "Gamut View"
 msgstr "Gamut"
 
-#: icc_examin.cpp:938 icc_gl.h:274
+#: icc_examin.cpp:942 icc_gl.h:274
 msgid "not available"
 msgstr ""
 
-#: icc_examin.cpp:1274
+#: icc_examin.cpp:1278
 msgid "Filename (ICC data type)"
 msgstr ""
 
-#: icc_examin.cpp:1277
+#: icc_examin.cpp:1281
 msgid "Filename (other data type)"
 msgstr ""
 
-#: icc_examin.cpp:1279
+#: icc_examin.cpp:1283
 msgid "Filename (corrupted ICC data type)"
 msgstr ""
 
-#: icc_examin.cpp:1284
+#: icc_examin.cpp:1288
 msgid "found no content for"
 msgstr ""
 
-#: icc_examin.cpp:1287
+#: icc_examin.cpp:1291
 msgid "Internal error"
 msgstr ""
 
-#: icc_examin.cpp:1290
+#: icc_examin.cpp:1294
 msgid "No. Tag   Type   Size Description"
 msgstr ""
 
