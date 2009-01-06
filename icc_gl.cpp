@@ -82,10 +82,10 @@ void zeichneKegel( GLdouble breite, GLdouble hoehe, GLint seiten,
 #define DEBUG_ICCGL
 #endif
 #ifdef DEBUG_ICCGL
-#define DBG_ICCGL_START DBG_NUM_START
-#define DBG_ICCGL_ENDE DBG_NUM_ENDE
-#define DBG_ICCGL_V( texte ) DBG_NUM_V( texte )
-#define DBG_ICCGL_S( texte ) DBG_NUM_S( texte )
+#define DBG_ICCGL_START DBG_PROG_START
+#define DBG_ICCGL_ENDE DBG_PROG_ENDE
+#define DBG_ICCGL_V( texte ) DBG_PROG_V( texte )
+#define DBG_ICCGL_S( texte ) DBG_PROG_S( texte )
 #define DBG_ICCGL2_S( texte )
 #else
 #define DBG_ICCGL_START
@@ -3454,7 +3454,7 @@ GL_Ansicht::menueAufruf ( int value )
 
 #define DBG_BUTTON 1
 #if DBG_BUTTON
-# define DBG_BUTTON_S(text) DBG_NUM_S(text)
+# define DBG_BUTTON_S(text) DBG_MEM_S(text)
 #else
 # define DBG_BUTTON_S(text)
 #endif

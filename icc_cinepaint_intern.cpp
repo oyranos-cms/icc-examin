@@ -1004,9 +1004,13 @@ bearbeiteEingebetteteProfile( channel *layer )
   static std::string old_pprofil_name;
 
   if(profil_name)
+  {
     ;//DBG_PROG_S( image_ID <<": "<< profil_name <<" "<< old_profil_name )
+  }
   if(pprofil_name)
+  {
     DBG_PLUG_S( image_ID <<": "<< pprofil_name <<" "<< old_pprofil_name )
+  }
 
   // Test for changes in profile
   if( strcmp(old_profil_name.c_str(), profil_name) == 0/* &&

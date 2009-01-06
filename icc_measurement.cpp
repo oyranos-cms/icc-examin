@@ -486,23 +486,31 @@ ICCmeasurement::leseTag (void)
 
       // read colours
       int c = 0;
+      const char * d_text = 0;
       if (has_XYZ)
       { DBG_PROG // no calculation required
         XYZ_Satz_.resize(nFelder_);
-        for (int i = 0; i < n; i++) {
-          for (int j = 0; j < _nKanaele; ++j) {
+        for (int i = 0; i < n; i++)
+        {
+          if((int)cgats->messungen[m].block.size() > i)
+          for (int j = 0; j < _nKanaele; ++j)
+          {
+            if((int)cgats->messungen[m].block[i].size() <= j)
+              continue;
+
+            d_text = cgats->messungen[m].block[i][j].c_str();
             c = 0;
             if( strcmp(SampleNames[j], "XYZ_X") == 0 )
-              XYZ_Satz_[start+i].X = (atof(cgats->messungen[m].block[i][j].c_str()) - range_XYZ[c]) / (range_XYZ[c+1] - range_XYZ[c]);
-              //XYZ_Satz_[i].X = atof(cgats->messungen[m].block[i][j].c_str()) / 100.0;
+              XYZ_Satz_[start+i].X = (atof(d_text) - range_XYZ[c]) /
+                                     (range_XYZ[c+1] - range_XYZ[c]);
             c+=2;
             if( strcmp(SampleNames[j], "XYZ_Y") == 0 )
-              XYZ_Satz_[start+i].Y = (atof(cgats->messungen[m].block[i][j].c_str()) - range_XYZ[c]) / (range_XYZ[c+1] - range_XYZ[c]);
-              //XYZ_Satz_[i].Y = atof(cgats->messungen[m].block[i][j].c_str()) / 100.0;
+              XYZ_Satz_[start+i].Y = (atof(d_text) - range_XYZ[c]) /
+                                     (range_XYZ[c+1] - range_XYZ[c]);
             c+=2;
             if( strcmp(SampleNames[j], "XYZ_Z") == 0 )
-              XYZ_Satz_[start+i].Z = (atof(cgats->messungen[m].block[i][j].c_str()) - range_XYZ[c]) / (range_XYZ[c+1] - range_XYZ[c]);
-              //XYZ_Satz_[i].Z = atof(cgats->messungen[m].block[i][j].c_str()) / 100.0;
+              XYZ_Satz_[start+i].Z = (atof(d_text) - range_XYZ[c]) /
+                                     (range_XYZ[c+1] - range_XYZ[c]);
           }
         }
       }
@@ -510,59 +518,83 @@ ICCmeasurement::leseTag (void)
       {
         DBG_PROG // no calculation required
         Lab_Satz_.resize(nFelder_);
-        for (int i = 0; i < n; i++) {
-          for (int j = 0; j < _nKanaele; ++j) {
+        for (int i = 0; i < n; i++)
+        {
+          if((int)cgats->messungen[m].block.size() > i)
+          for (int j = 0; j < _nKanaele; ++j)
+          {
+            if((int)cgats->messungen[m].block[i].size() <= j)
+              continue;
+
+            d_text = cgats->messungen[m].block[i][j].c_str();
             c = 0;
             if( strcmp(SampleNames[j], "LAB_L") == 0 )
-              Lab_Satz_[start+i].L = (atof(cgats->messungen[m].block[i][j].c_str()) - range_Lab[c]) / (range_Lab[c+1] - range_Lab[c]);
+              Lab_Satz_[start+i].L = (atof(d_text) - range_Lab[c]) /
+                                     (range_Lab[c+1] - range_Lab[c]);
             c+=2;
             if( strcmp(SampleNames[j], "LAB_A") == 0 )
-              Lab_Satz_[start+i].a = (atof(cgats->messungen[m].block[i][j].c_str()) - range_Lab[c]) / (range_Lab[c+1] - range_Lab[c]);
+              Lab_Satz_[start+i].a = (atof(d_text) - range_Lab[c]) /
+                                     (range_Lab[c+1] - range_Lab[c]);
             c+=2;
             if( strcmp(SampleNames[j], "LAB_B") == 0 )
-              Lab_Satz_[start+i].b = (atof(cgats->messungen[m].block[i][j].c_str()) - range_Lab[c]) / (range_Lab[c+1] - range_Lab[c]);
+              Lab_Satz_[start+i].b = (atof(d_text) - range_Lab[c]) /
+                                     (range_Lab[c+1] - range_Lab[c]);
           }
         }
       }
       if (has_RGB) { DBG_PROG // no calculation required
         RGB_Satz_.resize(nFelder_);
-        for (int i = 0; i < n; i++) {
-          for (int j = 0; j < _nKanaele; ++j) {
+        for (int i = 0; i < n; i++)
+        {
+          if((int)cgats->messungen[m].block.size() > i)
+          for (int j = 0; j < _nKanaele; ++j)
+          {
+            if((int)cgats->messungen[m].block[i].size() <= j)
+              continue;
+
+            d_text = cgats->messungen[m].block[i][j].c_str();
             c = 0;
             if( strcmp(SampleNames[j], "RGB_R") == 0 )
-              RGB_Satz_[start+i].R = (atof(cgats->messungen[m].block[i][j].c_str()) - range_RGB[c]) / (range_RGB[c+1] - range_RGB[c]);
-              //RGB_Satz_[i].R = atof(cgats->messungen[m].block[i][j].c_str()) / 255.0;
+              RGB_Satz_[start+i].R = (atof(d_text) - range_RGB[c]) /
+                                     (range_RGB[c+1] - range_RGB[c]);
             c+=2;
             if( strcmp(SampleNames[j], "RGB_G") == 0 )
-              RGB_Satz_[start+i].G = (atof(cgats->messungen[m].block[i][j].c_str()) - range_RGB[c]) / (range_RGB[c+1] - range_RGB[c]);
-              //RGB_Satz_[i].G = atof(cgats->messungen[m].block[i][j].c_str()) / 255.0;
+              RGB_Satz_[start+i].G = (atof(d_text) - range_RGB[c]) /
+                                     (range_RGB[c+1] - range_RGB[c]);
             c+=2;
             if( strcmp(SampleNames[j], "RGB_B") == 0 )
-              RGB_Satz_[start+i].B = (atof(cgats->messungen[m].block[i][j].c_str()) - range_RGB[c]) / (range_RGB[c+1] - range_RGB[c]);
-              //RGB_Satz_[i].B = atof(cgats->messungen[m].block[i][j].c_str()) / 255.0;
+              RGB_Satz_[start+i].B = (atof(d_text) - range_RGB[c]) /
+                                     (range_RGB[c+1] - range_RGB[c]);
           }
         }
       }
       if (has_CMYK) { DBG_PROG // no calculation required
         CMYK_Satz_.resize(nFelder_);
-        for (int i = 0; i < n; i++) {
-          for (int j = 0; j < _nKanaele; ++j) {
+        for (int i = 0; i < n; i++)
+        {
+          if((int)cgats->messungen[m].block.size() > i)
+          for (int j = 0; j < _nKanaele; ++j)
+          {
+            if((int)cgats->messungen[m].block[i].size() <= j)
+              continue;
+
+            d_text = cgats->messungen[m].block[i][j].c_str();
             c = 0;
             if( strcmp(SampleNames[j], "CMYK_C") == 0 )
-              CMYK_Satz_[start+i].C = (atof(cgats->messungen[m].block[i][j].c_str()) - range_CMYK[c]) / (range_CMYK[c+1] - range_CMYK[c]);
-              //CMYK_Satz_[i].C = atof(cgats->messungen[m].block[i][j].c_str()) /100.0;
+              CMYK_Satz_[start+i].C = (atof(d_text) - range_CMYK[c]) /
+                                      (range_CMYK[c+1] - range_CMYK[c]);
             c+=2;
             if( strcmp(SampleNames[j], "CMYK_M") == 0 )
-              CMYK_Satz_[start+i].M = (atof(cgats->messungen[m].block[i][j].c_str()) - range_CMYK[c]) / (range_CMYK[c+1] - range_CMYK[c]);
-              //CMYK_Satz_[i].M = atof(cgats->messungen[m].block[i][j].c_str()) /100.0;
+              CMYK_Satz_[start+i].M = (atof(d_text) - range_CMYK[c]) /
+                                      (range_CMYK[c+1] - range_CMYK[c]);
             c+=2;
             if( strcmp(SampleNames[j], "CMYK_Y") == 0 )
-              CMYK_Satz_[start+i].Y = (atof(cgats->messungen[m].block[i][j].c_str()) - range_CMYK[c]) / (range_CMYK[c+1] - range_CMYK[c]);
-              //CMYK_Satz_[i].Y = atof(cgats->messungen[m].block[i][j].c_str()) /100.0;
+              CMYK_Satz_[start+i].Y = (atof(d_text) - range_CMYK[c]) /
+                                      (range_CMYK[c+1] - range_CMYK[c]);
             c+=2;
             if( strcmp(SampleNames[j], "CMYK_K") == 0 )
-              CMYK_Satz_[start+i].K = (atof(cgats->messungen[m].block[i][j].c_str()) - range_CMYK[c]) / (range_CMYK[c+1] - range_CMYK[c]);
-              //CMYK_Satz_[i].K = atof(cgats.messungen[m].block[i][j].c_str()) /100.0;
+              CMYK_Satz_[start+i].K = (atof(d_text) - range_CMYK[c]) /
+                                      (range_CMYK[c+1] - range_CMYK[c]);
           }
         } DBG_PROG
       }
