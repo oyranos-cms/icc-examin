@@ -178,9 +178,9 @@ leseGrafikKartenGamma        (std::string display_name,
     } else
     if (XF86VidModeGetMonitor(display, effective_screen, &monitor)) {
       texte.push_back(_("Manufacturer:"));
-      texte[texte.size()-1].append(monitor.vendor);
+      texte[texte.size()-1].append(monitor.vendor?monitor.vendor:"");
       texte.push_back(_("Model:       "));
-      texte[texte.size()-1].append(monitor.model);
+      texte[texte.size()-1].append(monitor.model?monitor.model:"");
       DBG_PROG_V( monitor.vendor )
       DBG_PROG_V( monitor.model )
     } else {
