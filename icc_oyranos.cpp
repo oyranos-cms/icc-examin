@@ -560,12 +560,15 @@ Oyranos::moniInfo (int x, int y, int *num)
   char *manufacturer = 0;
   char *model = 0;
   char *serial = 0;
+  char *geometry = 0;
+  char *system_port = 0;
 
   int screen = oyGetScreenFromPosition( display_name, x,y );
   char *new_display_name = changeScreenName_( display_name, screen );
 //int fehler =
                oyGetMonitorInfo( new_display_name,
-                                 &manufacturer, &model, &serial,
+                                 &manufacturer, &model, &serial, &geometry,
+                                 &system_port, 0,
                                  myAllocFunc );
 
   if( manufacturer && strlen( manufacturer ) )
@@ -584,6 +587,18 @@ Oyranos::moniInfo (int x, int y, int *num)
   {
     infos[2 * *num] = icc_strdup_m(_("Serial:"));
     infos[2 * *num + 1] = icc_strdup_m( serial );
+    *num += 1;
+  }
+  if( geometry && strlen( geometry ) )
+  {
+    infos[2 * *num] = icc_strdup_m(_("Geometry:"));
+    infos[2 * *num + 1] = icc_strdup_m( geometry );
+    *num += 1;
+  }
+  if( system_port && strlen( system_port ) )
+  {
+    infos[2 * *num] = icc_strdup_m(_("Port:"));
+    infos[2 * *num + 1] = icc_strdup_m( system_port );
     *num += 1;
   }
     
