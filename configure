@@ -659,7 +659,7 @@ XF86VMODE=1; export XF86VMODE
 DEBUG=1; export DEBUG
 PO=1; export PO
 GETTEXT=1; export GETTEXT
-./configure.sh
+./configure_tests.sh
 LIBS=0; export LIBS
 
 ARGYLL=0; export ARGYLL
@@ -848,7 +848,7 @@ echo "" >> $CONF
 
 # prepare makefile from MAKEFILE_DIR
 PREPARE_MAKEFILES=1; export PREPARE_MAKEFILES
-./configure.sh
+./configure_tests.sh
 PREPARE_MAKEFILES=0; export PREPARE_MAKEFILES
 
 echo "" >> $CONF_H

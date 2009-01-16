@@ -233,7 +233,7 @@ BSP_FILES = $(BSP_C) $(BSP_H) $(BSP_TEXT)
 CONFIG_FILES = \
 	makefile.in \
 	configure \
-	configure.sh \
+	configure_tests.sh \
 	$(TARGET).spec.in
 
 
