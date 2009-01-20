@@ -90,12 +90,12 @@ leseGrafikKartenGamma        (std::string display_name,
   DBG_PROG_V( XDisplayName (display_name.c_str()) )
 
   // Wo befindet sich das Fenster?
-  int n_fenster = 0;
+  int n_xin_info = 0;
   int screens = 0;
   int screen = 0;
   int effective_screen = 0;
 # ifdef HAVE_XIN
-  XineramaScreenInfo* fenster = 0;
+  XineramaScreenInfo* xin_info = 0;
 # endif
   if( ScreenCount( display ) > 1 )
   {
@@ -139,19 +139,19 @@ leseGrafikKartenGamma        (std::string display_name,
   else
     if( XineramaIsActive( display ) )
     {
-      fenster = XineramaQueryScreens( display, &n_fenster );
-      for (int i = 0; i < n_fenster; ++i) {
-        DBG_PROG_S( "Fenster[" << fenster[i].screen_number <<"]: "<<
-                    fenster[i].x_org <<"+"<<
-                    fenster[i].y_org <<","<< fenster[i].width <<"x"<<
-                    fenster[i].height );
-        if( x >= fenster[i].x_org && x < fenster[i].x_org + fenster[i].width &&
-            y >= fenster[i].y_org && y < fenster[i].y_org + fenster[i].height )
-        { char nr[8]; snprintf( nr, 8, "%d", fenster[i].screen_number );
+      xin_info = XineramaQueryScreens( display, &n_xin_info );
+      for (int i = 0; i < n_xin_info; ++i) {
+        DBG_PROG_S( "Fenster[" << xin_info[i].screen_number <<"]: "<<
+                    xin_info[i].x_org <<"+"<<
+                    xin_info[i].y_org <<","<< xin_info[i].width <<"x"<<
+                    xin_info[i].height );
+        if( x >= xin_info[i].x_org && x < xin_info[i].x_org + xin_info[i].width &&
+            y >= xin_info[i].y_org && y < xin_info[i].y_org + xin_info[i].height )
+        { char nr[8]; snprintf( nr, 8, "%d", xin_info[i].screen_number );
           texte.push_back(_("XineramaScreen:"));
           texte[texte.size()-1].append( " " );
           texte[texte.size()-1].append( nr );
-          screen = fenster[i].screen_number;
+          screen = xin_info[i].screen_number;
         }
         //int vp_x, vp_y;
         //XF86VidModeGetViewPort( display, i, &vp_x, &vp_y );

@@ -567,8 +567,8 @@ Oyranos::moniInfo (int x, int y, int *num)
   char *new_display_name = changeScreenName_( display_name, screen );
 //int fehler =
                oyGetMonitorInfo( new_display_name,
-                                 &manufacturer, &model, &serial, &geometry,
-                                 &system_port, 0,
+                                 &manufacturer, &model, &serial, 
+                                 &system_port, &geometry, 0,
                                  myAllocFunc );
 
   if( manufacturer && strlen( manufacturer ) )
