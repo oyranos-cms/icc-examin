@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2008-12-29 11:39+0100\n"
+"POT-Creation-Date: 2009-01-20 18:47+0100\n"
 "PO-Revision-Date: 2005-08-13 17:35+0200\n"
 "Last-Translator: Kai-Uwe Behrmann\n"
 "Language-Team:  <ku.b@gmx.de>\n"
@@ -240,14 +240,12 @@ msgid " with one entry for gamma: "
 msgstr " mit einem Eintrag für Gamma: "
 
 #: icc_examin.cpp:128
-#, c-format
 msgid "WARNING"
-msgstr ""
+msgstr "WARNUNG"
 
 #: icc_examin.cpp:131
-#, c-format
 msgid "!!! ERROR"
-msgstr ""
+msgstr "!!! FEHLER"
 
 #: icc_examin.cpp:305
 msgid "Gamut selector"
@@ -376,7 +374,6 @@ msgid "Could not open font in:"
 msgstr "Konnte Font nicht öffnen in:"
 
 #: icc_gl.cpp:877
-#, c-format
 msgid "0,0,0"
 msgstr ""
 
@@ -990,147 +987,147 @@ msgstr "kein Name"
 msgid "File not loaded!"
 msgstr "Datei nicht geladen!"
 
-#: icc_measurement.cpp:938
+#: icc_measurement.cpp:970
 msgid "use sRGB"
 msgstr "benutze sRGB"
 
-#: icc_measurement.cpp:1268
+#: icc_measurement.cpp:1300
 msgid "Report about ICC profile"
 msgstr "Report zum Farbprofil"
 
-#: icc_measurement.cpp:1306
+#: icc_measurement.cpp:1338
 msgid "Meas colour"
 msgstr "Messfarbe"
 
-#: icc_measurement.cpp:1308
+#: icc_measurement.cpp:1340
 msgid "Profile colour"
 msgstr "Profilfarbe"
 
-#: icc_measurement.cpp:1385
+#: icc_measurement.cpp:1417
 msgid "no measurment data or correct profile conversion available"
 msgstr "keine Messdaten oder korrekte Farbtransformation verfügbar"
 
-#: icc_measurement.cpp:1393
+#: icc_measurement.cpp:1425
 msgid "Measurment- and profile colours from <b>"
 msgstr "Mess- und Profilfarben aus <b>"
 
-#: icc_measurement.cpp:1395
+#: icc_measurement.cpp:1427
 msgid "RGB"
 msgstr ""
 
-#: icc_measurement.cpp:1397
+#: icc_measurement.cpp:1429
 msgid "CMYK"
 msgstr ""
 
-#: icc_measurement.cpp:1398
+#: icc_measurement.cpp:1430
 msgid "</b> Measurement"
 msgstr "</b> Messdaten"
 
-#: icc_measurement.cpp:1400
+#: icc_measurement.cpp:1432
 msgid "CMM: <b>lcms</b>"
 msgstr ""
 
-#: icc_measurement.cpp:1402
+#: icc_measurement.cpp:1434
 msgid "averaging deviations (dE CIE*Lab):<b> "
 msgstr "Abweichungen (dE CIE*Lab) durchschnittlich:<b> "
 
-#: icc_measurement.cpp:1402
+#: icc_measurement.cpp:1434
 msgid "</b>  maximum: "
 msgstr "</b>  maximal: "
 
-#: icc_measurement.cpp:1402
+#: icc_measurement.cpp:1434
 msgid "  minimum: "
 msgstr "  minimal: "
 
-#: icc_measurement.cpp:1402
+#: icc_measurement.cpp:1434
 msgid "  (dE CIE 2000) averaging: "
 msgstr "  (dE CIE 2000) durchschnittlich: "
 
-#: icc_measurement.cpp:1402
+#: icc_measurement.cpp:1434
 msgid "  maximum: "
 msgstr "  maximal: "
 
-#: icc_measurement.cpp:1432
+#: icc_measurement.cpp:1464
 msgid "Measurement patch"
 msgstr "Messfeld"
 
-#: icc_measurement.cpp:1433
+#: icc_measurement.cpp:1465
 msgid "dE Lab"
 msgstr ""
 
-#: icc_measurement.cpp:1434
+#: icc_measurement.cpp:1466
 msgid "dE2000"
 msgstr ""
 
-#: icc_measurement.cpp:1435
+#: icc_measurement.cpp:1467
 msgid "L"
 msgstr ""
 
-#: icc_measurement.cpp:1436
+#: icc_measurement.cpp:1468
 msgid "a"
 msgstr ""
 
-#: icc_measurement.cpp:1437
+#: icc_measurement.cpp:1469
 msgid "b"
 msgstr ""
 
-#: icc_measurement.cpp:1438
+#: icc_measurement.cpp:1470
 msgid "L'"
 msgstr ""
 
-#: icc_measurement.cpp:1439
+#: icc_measurement.cpp:1471
 msgid "a'"
 msgstr ""
 
-#: icc_measurement.cpp:1440
+#: icc_measurement.cpp:1472
 msgid "b'"
 msgstr ""
 
-#: icc_measurement.cpp:1441 my_file_chooser.cxx:276
+#: icc_measurement.cpp:1473 my_file_chooser.cxx:276
 msgid "X"
 msgstr ""
 
-#: icc_measurement.cpp:1442 icc_measurement.cpp:1456
+#: icc_measurement.cpp:1474 icc_measurement.cpp:1488
 msgid "Y"
 msgstr ""
 
-#: icc_measurement.cpp:1443
+#: icc_measurement.cpp:1475
 msgid "Z"
 msgstr ""
 
-#: icc_measurement.cpp:1445
+#: icc_measurement.cpp:1477
 msgid "X'"
 msgstr ""
 
-#: icc_measurement.cpp:1446
+#: icc_measurement.cpp:1478
 msgid "Y'"
 msgstr ""
 
-#: icc_measurement.cpp:1447
+#: icc_measurement.cpp:1479
 msgid "Z'"
 msgstr ""
 
-#: icc_measurement.cpp:1450
+#: icc_measurement.cpp:1482
 msgid "R"
 msgstr ""
 
-#: icc_measurement.cpp:1451
+#: icc_measurement.cpp:1483
 msgid "G"
 msgstr ""
 
-#: icc_measurement.cpp:1452
+#: icc_measurement.cpp:1484
 msgid "B"
 msgstr ""
 
-#: icc_measurement.cpp:1454
+#: icc_measurement.cpp:1486
 msgid "C"
 msgstr ""
 
-#: icc_measurement.cpp:1455
+#: icc_measurement.cpp:1487
 msgid "M"
 msgstr ""
 
-#: icc_measurement.cpp:1457
+#: icc_measurement.cpp:1489
 msgid "K"
 msgstr ""
 
@@ -1144,23 +1141,31 @@ msgstr "WARNUNG: Konnte koruptes oder beschädigtes Profil nicht laden."
 msgid "WARNING: Could not load profile."
 msgstr "WARNUNG: Konnte Profil nicht laden."
 
-#: icc_oyranos.cpp:573 icc_profile_header.cpp:250 icc_helfer_x.cpp:180
+#: icc_oyranos.cpp:576 icc_profile_header.cpp:250 icc_helfer_x.cpp:180
 msgid "Manufacturer:"
 msgstr "Hersteller:  "
 
-#: icc_oyranos.cpp:579
+#: icc_oyranos.cpp:582
 msgid "Model:"
 msgstr "Modell:"
 
-#: icc_oyranos.cpp:585
+#: icc_oyranos.cpp:588
 msgid "Serial:"
 msgstr "Serien Nr.:"
 
-#: icc_oyranos.cpp:1183 icc_vrml.cpp:151
+#: icc_oyranos.cpp:594
+msgid "Geometry:"
+msgstr "Geometrie:"
+
+#: icc_oyranos.cpp:600
+msgid "Port:"
+msgstr "Anschluß:"
+
+#: icc_oyranos.cpp:1198 icc_vrml.cpp:151
 msgid "Std-exception occured: "
 msgstr "Std-Ausnahme: "
 
-#: icc_oyranos.cpp:1186 icc_vrml.cpp:154
+#: icc_oyranos.cpp:1201 icc_vrml.cpp:154
 msgid "Huch, unknown exception"
 msgstr "Huch, unbekannte Ausnahme"
 
@@ -1910,24 +1915,24 @@ msgstr "Kein Profil am Bild."
 msgid "Profil not written."
 msgstr "Kein Profil geschrieben."
 
-#: icc_cinepaint_intern.cpp:1039
+#: icc_cinepaint_intern.cpp:1043
 msgid "Wrong profil assigned to image."
 msgstr "Falsches Profil am Bild."
 
-#: icc_cinepaint_intern.cpp:1254
+#: icc_cinepaint_intern.cpp:1258
 msgid "No active drawable found."
 msgstr "Keine aktive Zeichenebene gefunden."
 
-#: icc_cinepaint_intern.cpp:1560
+#: icc_cinepaint_intern.cpp:1564
 msgid "What kind of image is this?"
 msgstr "Was für ein Bild ist dies?"
 
-#: icc_cinepaint_intern.cpp:1654
+#: icc_cinepaint_intern.cpp:1658
 msgid "What kind of image is this?\n"
 msgstr "Was für ein Bild ist dies?\n"
 
 #: icc_examin_version.h:8
-msgid "0.46"
+msgid "0.47"
 msgstr ""
 
 #: icc_examin_version.h:9
@@ -1939,11 +1944,11 @@ msgid "2004"
 msgstr ""
 
 #: icc_examin_version.h:11
-msgid "December"
-msgstr "Dezember"
+msgid "January"
+msgstr "Jenner"
 
 #: icc_examin_version.h:12
-msgid "2008"
+msgid "2009"
 msgstr ""
 
 #: icc_utils.h:288 icc_utils.h:289 icc_utils.h:290 icc_utils.h:344
@@ -1951,12 +1956,35 @@ msgstr ""
 msgid "!!! Warning !!!"
 msgstr "!!! Warnung !!!"
 
+#~ msgid "February"
+#~ msgstr "Februar"
+
+#~ msgid "March"
+#~ msgstr "März"
+
+#~ msgid "April"
+#~ msgstr "April"
+
+#~ msgid "June"
+#~ msgstr "Juni"
+
+#~ msgid "July"
+#~ msgstr "Juli"
+
+#~ msgid "August"
+#~ msgstr "August"
+
+#~ msgid "September"
+#~ msgstr "September"
+
 #~ msgid "October"
 #~ msgstr "Oktober"
 
-#, fuzzy
-#~ msgid "May 2004 - September 2008"
-#~ msgstr "Mai 2004 - Januar 2008"
+#~ msgid "November"
+#~ msgstr "November"
+
+#~ msgid "December"
+#~ msgstr "Dezember"
 
 #~ msgid "no filename given"
 #~ msgstr "kein Dateiname angegeben"
