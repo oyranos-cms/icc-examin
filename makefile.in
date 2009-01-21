@@ -256,7 +256,7 @@ all:	config.h mkdepend dynamic
 BASE = 
 	
 release:	icc_alles.o
-	echo Verknuepfen $@...
+	echo Linking $@...
 	$(CXX) $(CXXFLAGS_) -o $(BINTARGET) \
 	icc_alles.o \
 	$(LDLIBS)
@@ -266,7 +266,7 @@ release:	icc_alles.o
 dynamic:	$(BINTARGET) $(CINEPAINT)
 
 $(BINTARGET):	$(BASE) $(OBJECTS) $(MAIN_OBJECTS) $(LINGUAS_SRC) $(I18N_OBJECTS) $(LIBNAME) $(Flmm_OBJECTS) $(LIBFL_I18N) $(LIBBSP)
-	echo Verknuepfen $@ ...
+	echo Linking $@ ...
 	$(CXX) $(CXXFLAGS_) -o $@ \
 	$(MAIN_OBJECTS) $(OBJECTS) \
 	$(LDLIBS) $(LINK_LIB_PATH) $(LINK_SRC_PATH)
@@ -277,7 +277,7 @@ $(CINEPAINT_OBJECTS):	$(CINEPAINT_SOURCES)
 	$(CXX) $(CXXFLAGS_) `$(CP_FLAGS)` -c $(CINEPAINT_SOURCES)
 
 $(CINEPAINT):	$(BASE) $(CINEPAINT_OBJECTS) $(OBJECTS) $(LINGUAS_SRC) $(I18N_OBJECTS) $(LIBNAME) $(Flmm_OBJECTS) $(LIBFL_I18N) $(LIBBSP)
-	echo Verknuepfen $@ ...
+	echo Linking $@ ...
 	$(CXX) $(CXXFLAGS_) `$(CP_FLAGS)` -o $@ \
 	$(CINEPAINT_OBJECTS) $(OBJECTS) \
 	`$(CP_LIBS)` $(LDLIBS) $(LINK_LIB_PATH) $(LINK_SRC_PATH)
@@ -291,7 +291,7 @@ Flmm/Flmm_Message.o: Flmm/Flmm_Message.cxx
 	$(CXX) -I./Flmm -I./ -I../ $(CXXFLAGS) $(FLTK_H) -o $@ -c $<
 
 $(LIBSONAMEFULL):	$(I18N_OBJECTS)
-	echo Verknuepfen $@ ...
+	echo Linking $@ ...
 	$(CXX) $(CFLAGS_) $(LDFLAGS) $(LINK_NAME) -o $(LIBSONAMEFULL) \
 	$(I18N_OBJECTS)  icc_utils.o icc_helfer.o icc_speicher.o
 	$(REZ)
@@ -301,7 +301,7 @@ $(LIBSONAMEFULL):	$(I18N_OBJECTS)
 	$(LINK) $(LIBSONAMEFULL) $(LIBSO)
 
 $(LIBNAME):	$(I18N_OBJECTS)
-	echo Verknuepfen $@ ...
+	echo Linking $@ ...
 	$(COLLECT) $(LIBNAME) $(I18N_OBJECTS)
 	$(RANLIB) $(LIBNAME)
 
@@ -312,7 +312,7 @@ $(LIBBSP):	$(BSP_OBJECTS)
 	cd bsp/ && $(MAKE)
 
 static:	$(BINTARGET)
-	echo Verknuepfen $@ ...
+	echo Linking $@ ...
 	$(CXX) $(CXXFLAGS_) -o $(BINTARGET) $(MAIN_OBJECTS) $(OBJECTS) \
 	-L./ \
 	`test -f /opt/local/lib/libfltk_images.a && (echo /opt/local/lib/libfltk_images.a; \
@@ -375,9 +375,10 @@ $(LINGUAS_SRC):	$(POT_FILE)
 	done;
 
 $(POT_FILE):	$(ALL_SOURCEFILES)
+	echo Generate $(POT_FILE) ...
 	test `which xgettext` && xgettext --force-po $(XGETTEXT_OPTIONS) \
 	-d $(TARGET) \
-	-o $(POT_FILE) \
+	-o $(POT_FILE) -c \
 	$(SOURCES) || echo -e "\c"
 	for ling in $(LINGUAS); do \
             test `which $(MSGMERGE)` && \
@@ -385,11 +386,11 @@ $(POT_FILE):	$(ALL_SOURCEFILES)
                  $(POT_FILE) || \
 	        echo -e "\c"; \
 	done;
-	echo $(POT_FILE) fertig
+	echo ... $(POT_FILE) done
 
 
 clean:	unbundle unpkg
-	echo mache sauber $@ ...
+	echo Cleaning $@ ...
 	-$(RM) $(ALL_OBJECTS) $(BINTARGET) \
 	$(LIBNAME) $(LIBSO) $(LIBSONAME) $(LIBSONAMEFULL)
 	-for ling in $(LINGUAS); do \
@@ -398,7 +399,7 @@ clean:	unbundle unpkg
 	done;
 	cd fl_i18n/ && $(MAKE) -f $(MAKEFILE_ARCH) clean
 	cd bsp/ && $(MAKE) clean
-	echo ... $@ fertig
+	echo ... $@ done
 
 config:
 	./configure
@@ -408,7 +409,7 @@ config.h:	$(CONFIG_FILES) ./config.log
 	./config.log
 
 depend:	$(ALL_HEADERFILES)
-	echo "schaue nach Abhaengigkeiten ..."
+	echo "Check for Dependencies ..."
 	echo "MAKEDEPEND_ISUP = 1" > mkdepend
 	echo "#nicht editieren/dont edit - automatisch generiert" >> mkdepend
 	-$(MAKEDEPEND) -I./ -I./Flmm $(INCL_DEP) >> mkdepend
@@ -506,7 +507,7 @@ rpm:	$(TARGET).spec dist
 	cp -f $(TARGET)-$(VERSION).tar.gz rpmdir/SOURCES
 	rpmbuild --clean -ba $(srcdir)/$(TARGET).spec --define "_topdir $$PWD/rpmdir"
 	@echo "============================================================"
-	@echo "Beendet - die Packete befinden sich in rpmdir/RPMS and rpmdir/SRPMS!"
+	@echo "Finished - the Packages are in rpmdir/RPMS and rpmdir/SRPMS!"
 
 install:	$(INSTALL_TARGET)
 
@@ -519,19 +520,19 @@ install_cp:
 	$(INSTALL) -m 644 $(FONT) $(DESTDIR)$(datadir)/fonts/$(FONT)
 	$(fltkconfig) --post $(DESTDIR)$(CP_DIR)/$(CINEPAINT)
 	mkdir -p $(DESTDIR)$(datadir)/fonts/
-	echo ... Installation beendet
+	echo ... Installation finished
 
 install_cp_linguas:
 	echo  Linguas ...
 	for ling in $(LINGUAS); do \
-	  echo "installiere po/$${ling}.gmo ..."; \
+	  echo "install po/$${ling}.gmo ..."; \
 	  mkdir -p $(DESTDIR)$(datadir)/locale/$${ling}/LC_MESSAGES; \
 	  test -f po/$${ling}.gmo \
 		&& (mkdir -p $(DESTDIR)$(datadir)/locale/$${ling}/LC_MESSAGES; \
             $(INSTALL) -m 644 po/$${ling}.gmo $(DESTDIR)$(datadir)/locale/$${ling}/LC_MESSAGES/$(CINEPAINT).mo ) \
 		|| (echo $${ling}.gmo is not yet ready ... skipping); \
 	done;
-	echo ... Linguas Installation beendet
+	echo ... Linguas Installation finished
 
 install_global:
 	echo Installation ...
@@ -551,17 +552,17 @@ install_global:
 	$(INSTALL) -m 644 icc_examin.png $(DESTDIR)$(pixmapdir)/icc_examin.png
 	echo  Linguas ...
 	for ling in $(LINGUAS); do \
-	  echo "installiere po/$${ling}.gmo ..."; \
+	  echo "Installing po/$${ling}.gmo ..."; \
 	  mkdir -p $(DESTDIR)$(datadir)/locale/$${ling}/LC_MESSAGES; \
 	  test -f po/$${ling}.gmo \
 		&& (mkdir -p $(DESTDIR)$(datadir)/locale/$${ling}/LC_MESSAGES; \
             $(INSTALL) -m 644 po/$${ling}.gmo $(DESTDIR)$(datadir)/locale/$${ling}/LC_MESSAGES/$(TARGET).mo ) \
 		|| (echo $${ling}.gmo is not yet ready ... skipping); \
 	done;
-	echo ... Installation beendet
+	echo ... Installation finished
 
 uninstall:
-	echo deinstalliere ...
+	echo Deinstall ...
 	if [ "$(INSTALL_TARGET)" = "install_global" ]; then \
 	  $(RM) $(DESTDIR)$(bindir)/$(BINTARGET); \
 	else \
@@ -576,7 +577,7 @@ uninstall:
 	for ling in $(LINGUAS); do \
 	  $(RM) $(DESTDIR)$(datadir)/locale/$${ling}/LC_MESSAGES/$(TARGET).mo; \
 	done;
-	echo ... $@ fertig
+	echo ... $@ done
 
 bundle:	#static
 	echo bundle ...
@@ -626,7 +627,7 @@ unbundle:
 .PHONY: install pkg bundle uninstall unbundle unpkg
 
 pkg:	bundle
-	echo Vorbereiten des osX Packetes ...
+	echo Prepare osX Package ...
 	$(RM) -r installation/*
 	$(MAKE) DESTDIR=`pwd`/installation install
 	mkdir -p installation/Applications/
@@ -640,12 +641,12 @@ pkg:	bundle
 	$(LINK) $(bindir)/$(BINTARGET) installation/Applications/ICC\ Examin.app/Contents/MacOS/ICC\ Examin
 	open /Developer/Applications/Utilities/PackageMaker.app ICC\ Examin.pmsp
 	echo sudo: chown -R root:admin `pwd`/installation  -- bitte nicht vergessen
-	echo ... Packet vorbereitet
+	echo ... Package prepared
 
 unpkg:
-	echo mache sauber $@ ...
+	echo Cleaning $@ ...
 	$(RM) -R installation/
-	echo ... $@ fertig
+	echo ... $@ done
 
 fltkconfig:
 	echo $(fltkconfig)
