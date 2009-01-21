@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cinepaint_icc-examin_eu\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2009-01-20 18:47+0100\n"
+"POT-Creation-Date: 2009-01-21 06:47+0100\n"
 "PO-Revision-Date: 2007-11-07 11:11+0100\n"
 "Last-Translator: Iñaki Larrañaga Murgoitio <dooteo@zundan.com>\n"
 "Language-Team: Basque <itzulpena@euskalgnu.org>\n"
@@ -118,6 +118,8 @@ msgstr "14kolorea"
 msgid "15color"
 msgstr "15kolorea"
 
+#. ICC stop
+#. if (MoveMode == FLYING)
 #: agviewer.cpp:310 icc_gl.cpp:3300 icc_gl.cpp:3319 icc_gl.cpp:3438
 msgid "left-/middle-/right mouse button -> rotate/cut/menu"
 msgstr "saguaren ezkerreko/erdiko/eskuineko botoia -> biratu/ebaki/menua"
@@ -223,6 +225,7 @@ msgstr "b kolorea"
 msgid "Colour r"
 msgstr "r kolorea"
 
+#. show infos
 #: icc_draw.cpp:746 icc_draw.cpp:807
 msgid " with "
 msgstr " honekin "
@@ -231,10 +234,12 @@ msgstr " honekin "
 msgid " points"
 msgstr " puntu"
 
+#. show infos
 #: icc_draw.cpp:753
 msgid " with Gamma: 1.0"
 msgstr " gammarekin: 1.0"
 
+#. show infos
 #: icc_draw.cpp:766 icc_draw.cpp:785
 msgid " with one entry for gamma: "
 msgstr " gammaren sarrera batekin: "
@@ -310,6 +315,7 @@ msgstr "ez da honen edukirik aurkitu"
 msgid "Internal error"
 msgstr "Barneko errorea"
 
+#. this string is sensible to formatting in the tag browser GUI, please keep a mono spaced formatting
 #: icc_examin.cpp:1294
 msgid "No. Tag   Type   Size Description"
 msgstr "IDa Etik. Mota   Tam. Azalpena"
@@ -362,6 +368,7 @@ msgstr "GBU primarioak"
 msgid "Log:"
 msgstr ""
 
+#. Fl_Tabs* o
 #: icc_fenster.cpp:251 icc_fenster.cpp:318 icc_betrachter.cxx:770
 msgid "Yes"
 msgstr "Bai"
@@ -401,6 +408,7 @@ msgstr "ardatza"
 msgid "Slice plane"
 msgstr "Zati planoa"
 
+#. ->Darstellung->background colour
 #: icc_gl.cpp:2195
 msgid "White"
 msgstr "Zuria"
@@ -429,6 +437,7 @@ msgstr "koloreztatua"
 msgid "high contrast"
 msgstr "kontraste altua"
 
+#. Shells alike displaying, alternatves are "Membranes" or "Shells"
 #: icc_gl.cpp:2211
 msgid "Onion skins"
 msgstr ""
@@ -453,6 +462,7 @@ msgstr "4dE esfera"
 msgid "Star"
 msgstr "Izarra"
 
+#. points are reserved for image colours
 #: icc_gl.cpp:2225
 msgid "Point"
 msgstr "Puntua"
@@ -477,6 +487,7 @@ msgstr "Testuak/Geziak aktibatu/desaktibatu"
 msgid "Illustration"
 msgstr "Ilustrazioa"
 
+#. "Pos" is a abreviation to position and will be visible in the small statusline with position coordinates
 #: icc_gl.cpp:2590
 msgid "Pos"
 msgstr "Pos."
@@ -695,6 +706,7 @@ msgstr "Profilaren azalpena"
 msgid "Profile description, multilingual"
 msgstr "Profilaren azalpena, hizkuntza anitzetan"
 
+#. dscm
 #: icc_helfer.cpp:624
 msgid "Profile sequence description"
 msgstr "Profila-sekuentziaren azalpena"
@@ -759,34 +771,43 @@ msgstr "Ikuspegiaren baldintzak"
 msgid "Device colours"
 msgstr "Gailuaren koloreak"
 
+#. DevD
 #: icc_helfer.cpp:640
 msgid "Measured colours"
 msgstr "Neurtutako koloreak"
 
+#. CIED
 #: icc_helfer.cpp:641
 msgid "Profiling parameters"
 msgstr "Profila-parametroak"
 
+#. Pmtr
 #: icc_helfer.cpp:642
 msgid "VideoCardGammaTable"
 msgstr "Bideo-txartelaren gamma taula"
 
+#. vcgt
 #: icc_helfer.cpp:643
 msgid "Colour adaption matrix"
 msgstr "Kolorea egokitzeko matrizea"
 
+#. chad
 #: icc_helfer.cpp:644
 msgid "Chromaticity"
 msgstr "Ñabardura"
 
+#. chrm
 #: icc_helfer.cpp:645
 msgid "Named colour order"
 msgstr "Kolore izendunen ordena"
 
+#. clro
 #: icc_helfer.cpp:646
 msgid "Named colour names"
 msgstr "Kolore izendunen izenak"
 
+#. clrt
+#. flex
 #: icc_helfer.cpp:647 icc_helfer.cpp:739
 msgid "----"
 msgstr "----"
@@ -795,86 +816,107 @@ msgstr "----"
 msgid "Digital camera"
 msgstr "Kamera digitala"
 
+#. dcam
 #: icc_helfer.cpp:718
 msgid "Film scanner"
 msgstr "Film-eskanerra"
 
+#. fscn
 #: icc_helfer.cpp:719
 msgid "Reflective scanner"
 msgstr "Eskaner islatzailea"
 
+#. rscn
 #: icc_helfer.cpp:720
 msgid "InkJet printer"
 msgstr "Tintazko inprimagailua"
 
+#. ijet
 #: icc_helfer.cpp:721
 msgid "Thermal wax printer"
 msgstr "Inprimagailu ezko-termala"
 
+#. twax
 #: icc_helfer.cpp:722
 msgid "Electrophotographic printer"
 msgstr "Inprimagailu elektrofotografikoa"
 
+#. epho
 #: icc_helfer.cpp:723
 msgid "Electrostatic printer"
 msgstr "Inprimagailu elektrostatikoa"
 
+#. esta
 #: icc_helfer.cpp:724
 msgid "Dye sublimation printer"
 msgstr "Sublimazio-koloragarrizko inprimagailua"
 
+#. dsub
 #: icc_helfer.cpp:725
 msgid "Photographic paper printer"
 msgstr "Paper fotografikoko inprimagailua"
 
+#. rpho
 #: icc_helfer.cpp:726
 msgid "Film writer"
 msgstr "Film-idazlea"
 
+#. fprn
 #: icc_helfer.cpp:727
 msgid "Video Monitor"
 msgstr "Bideo-monitorea"
 
+#. vidm
 #: icc_helfer.cpp:728
 msgid "Video camera"
 msgstr "Bideo-kamera"
 
+#. vidc
 #: icc_helfer.cpp:729
 msgid "Projection Television"
 msgstr "Proiekziozko telebista"
 
+#. pjtv
 #: icc_helfer.cpp:730
 msgid "Cathode ray tube display"
 msgstr "Katodo-izpien hodizko pantaila"
 
+#. CRT
 #: icc_helfer.cpp:731
 msgid "Passive matrix monitor"
 msgstr "Matrize pasibozko monitorea"
 
+#. PMD
 #: icc_helfer.cpp:732
 msgid "Active matrix monitor"
 msgstr "Matrize aktibozko monitorea"
 
+#. AMD
 #: icc_helfer.cpp:733
 msgid "Photo CD"
 msgstr "Photo CD"
 
+#. KPCD
 #: icc_helfer.cpp:734
 msgid "PhotoImageSetter"
 msgstr "Argazki ezartzailea"
 
+#. imgs
 #: icc_helfer.cpp:735
 msgid "Gravure"
 msgstr "Sakongrabatzea"
 
+#. grav
 #: icc_helfer.cpp:736
 msgid "Offset Lithography"
 msgstr "Desplazamendu litografikoa"
 
+#. offs
 #: icc_helfer.cpp:737
 msgid "Silkscreen"
 msgstr "Serigrafia"
 
+#. silk
 #: icc_helfer.cpp:738
 msgid "Flexography"
 msgstr "Flexografia"
@@ -1092,6 +1134,7 @@ msgstr "a'"
 msgid "b'"
 msgstr "b'"
 
+#. Fl_Button* favUpButton
 #: icc_measurement.cpp:1473 my_file_chooser.cxx:276
 msgid "X"
 msgstr "X"
@@ -1172,10 +1215,12 @@ msgstr "Geometria"
 msgid "Port:"
 msgstr "Puntua"
 
+#. catches all from exception
 #: icc_oyranos.cpp:1198 icc_vrml.cpp:151
 msgid "Std-exception occured: "
 msgstr "STD salbuespena gertatu da: "
 
+#. catches all from exception
 #: icc_oyranos.cpp:1201 icc_vrml.cpp:154
 msgid "Huch, unknown exception"
 msgstr "Salbuespen ezezaguna"
@@ -1200,6 +1245,7 @@ msgstr "etiketa-zerrenda hondatuta dago: "
 msgid "not inside memory block"
 msgstr "ez dago memoria-blokearen barruan"
 
+#. check
 #: icc_profile.cpp:417 icc_profile.cpp:447
 msgid " typ - no text output"
 msgstr " typ - irteerako testurik ez"
@@ -1364,6 +1410,7 @@ msgstr "sortzailea:     "
 msgid "File header invalid"
 msgstr "Fitxategiaren goiburua baliogabea"
 
+#. format sensible, as this string is the header in the tag browser table
 #: icc_profile_header.cpp:271
 msgid "    head  head    128 File header"
 msgstr "    goib. goib.   128 Fitxategi-goiburua"
@@ -1372,6 +1419,7 @@ msgstr "    goib. goib.   128 Fitxategi-goiburua"
 msgid "Standard Observer"
 msgstr "Behatzaile estandarra"
 
+#. "Back side" or Background
 #: icc_profile_tags.cpp:261
 #, fuzzy
 msgid "Back side"
@@ -1458,18 +1506,22 @@ msgstr "CIE*Lab"
 msgid "Device Colours"
 msgstr "Gailuaren koloreak"
 
+#. # "profiles ... involved" (other text) ":"
 #: icc_profile_tags.cpp:527
 msgid "profiles where originally involved"
 msgstr ""
 
+#. HTML
 #: icc_ueber.cpp:68 icc_betrachter.cxx:723
 msgid "About ICC Examin"
 msgstr "ICC Examin-i buruz"
 
+#. HTML
 #: icc_ueber.cpp:78
 msgid "ICC Examin Version"
 msgstr "ICC Examin-en bertsioa"
 
+#. HTML
 #: icc_ueber.cpp:91
 msgid "Date"
 msgstr "Data"
@@ -1528,11 +1580,14 @@ msgstr ""
 "littleCMS programaren liburutegiko funtzioak erabiliz lantzen dira barneko "
 "kolore eraldaketak."
 
+#. HTML
+#. Fl_Help_View* ueber_html
 #: icc_ueber.cpp:152 icc_betrachter.cxx:647 icc_betrachter.cxx:649
 #: icc_betrachter.cxx:741
 msgid "Help"
 msgstr "Laguntza"
 
+#. Fl_Help_View* hilfe_html
 #: icc_ueber.cpp:344 icc_betrachter.cxx:650 icc_betrachter.cxx:747
 msgid "License"
 msgstr "Lizentzia"
@@ -1548,6 +1603,7 @@ msgstr ""
 "bestelako fitxategiek beste lizentziak eduki ditzakete, fitxategietako "
 "goiburuetan agertzen direlarik."
 
+#. HTML
 #: icc_ueber.cpp:755
 msgid "Acknowledgement"
 msgstr "Aitorpena"
@@ -1607,14 +1663,17 @@ msgid ""
 msgstr ""
 "  argyll: Greame Gill web.access.net.au/argyll/argyllcms.html<br<br><br>\n"
 
+#. HTML
 #: icc_ueber.cpp:852
 msgid "Project"
 msgstr "Proiektua"
 
+#. HTML
 #: icc_ueber.cpp:854
 msgid "Documentation"
 msgstr "Dokumentazioa"
 
+#. catches all from exception
 #: icc_vrml.cpp:147
 msgid "exception occured: "
 msgstr "salbuespena gertatu da: "
@@ -1623,6 +1682,7 @@ msgstr "salbuespena gertatu da: "
 msgid "Manufacturer: "
 msgstr "Hornitzailea: "
 
+#. texte[texte.size()-1].append(monitor.vendor);
 #: icc_helfer_osx.cpp:75
 msgid "Model:      "
 msgstr "Modeloa:    "
@@ -1675,6 +1735,7 @@ msgstr "Iragazki pertsonalizatua"
 msgid "Please choose an existing file!"
 msgstr "Aukeratu existitzen den fitxategia."
 
+#. Fl_Choice* showChoice
 #: icc_helfer_fltk.cpp:328 my_file_chooser.cxx:182
 msgid "Favorites"
 msgstr "Gogokoak"
@@ -1683,6 +1744,7 @@ msgstr "Gogokoak"
 msgid "Filename"
 msgstr "Fitxategi-izena"
 
+#. icc_examin_ns::MyFl_Double_Window* window
 #: icc_helfer_fltk.cpp:330 my_file_chooser.cxx:256
 msgid "Manage Favorites"
 msgstr "Kudeatu gogokoak"
@@ -1703,6 +1765,7 @@ msgstr "Direktorio berria?"
 msgid "Preview"
 msgstr "Aurrebista"
 
+#. Fl_Button* favCancelButton
 #: icc_helfer_fltk.cpp:339 my_file_chooser.cxx:291
 msgid "Save"
 msgstr "Gorde"
@@ -1773,6 +1836,7 @@ msgstr ""
 msgid "Open"
 msgstr "Ireki"
 
+#. icc_examin_ns::MyFl_Double_Window* vcgt
 #: icc_betrachter.cxx:631 icc_betrachter.cxx:640 icc_betrachter.cxx:831
 msgid "Gamut"
 msgstr "Kolore-gama"
@@ -1805,18 +1869,22 @@ msgstr "Probako kurbak"
 msgid "About"
 msgstr "Honi buruz"
 
+#. Fl_Help_View* lizenz_html
 #: icc_betrachter.cxx:754
 msgid "Acknowlegement"
 msgstr "Aitorpena"
 
+#. Fl_Help_View* dank_html
 #: icc_betrachter.cxx:760
 msgid "Links"
 msgstr "Estekak"
 
+#. icc_examin_ns::MyFl_Double_Window* ueber
 #: icc_betrachter.cxx:780
 msgid "Grafic Card Gamma Table"
 msgstr "Txartel grafikoaren gamma-taula"
 
+#. TagDrawings* vcgt_viewer
 #: icc_betrachter.cxx:805
 msgid "Set"
 msgstr "Ezarri"
@@ -1829,6 +1897,7 @@ msgstr ""
 "Ezarri uneko profila monitorearen profila gisa eta kargatu vctg etiketa "
 "bideo-txartelean"
 
+#. Fl_Button* vcgt_set_button
 #: icc_betrachter.cxx:811
 msgid "Reset"
 msgstr "Berrezarri"
@@ -1837,6 +1906,7 @@ msgstr "Berrezarri"
 msgid "reset to standard gamma"
 msgstr "berrezarri gamma estandarrera"
 
+#. Fl_Button* vcgt_reset_button
 #: icc_betrachter.cxx:816
 msgid "Load"
 msgstr "Kargatu"
@@ -1845,10 +1915,12 @@ msgstr "Kargatu"
 msgid "Load the current monitor profile"
 msgstr "Kargatu uneko monitorearen profila"
 
+#. Fl_Button* vcgt_load_button
 #: icc_betrachter.cxx:821
 msgid "Close"
 msgstr "Itxi"
 
+#. icc_examin_ns::MyFl_Double_Window* DD
 #: icc_betrachter.cxx:893
 msgid "ICC Examin"
 msgstr "ICC Examin"
@@ -1877,6 +1949,7 @@ msgstr "Erakutsi taula honen kanal guztiak leiho propioan"
 msgid "..."
 msgstr "..."
 
+#. Fl_Box* box_stat
 #: icc_betrachter.cxx:1092
 msgid "Loading .."
 msgstr "Kargatzen ..."
@@ -1885,10 +1958,12 @@ msgstr "Kargatzen ..."
 msgid "Choose File"
 msgstr "Aukeratu fitxategia"
 
+#. Fl_File_Browser* fileList
 #: my_file_chooser.cxx:203
 msgid "?"
 msgstr "?"
 
+#. Fl_File_Input* fileName
 #: my_file_chooser.cxx:232
 msgid "Filename:"
 msgstr "Fitxategi-izena:"
@@ -1897,6 +1972,9 @@ msgstr "Fitxategi-izena:"
 msgid "OK"
 msgstr "Ados"
 
+#. okButton->label(fl_ok);
+#. Fl_Return_Button* okButton
+#. Fl_Button* o =
 #: my_file_chooser.cxx:242 my_file_chooser.cxx:287
 msgid "Cancel"
 msgstr "Utzi"
@@ -1905,6 +1983,7 @@ msgstr "Utzi"
 msgid "@8>"
 msgstr "@8>"
 
+#. Fl_Button* favDeleteButton
 #: my_file_chooser.cxx:281
 msgid "@2>"
 msgstr "@2>"

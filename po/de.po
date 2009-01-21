@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2009-01-20 18:47+0100\n"
+"POT-Creation-Date: 2009-01-21 06:47+0100\n"
 "PO-Revision-Date: 2005-08-13 17:35+0200\n"
 "Last-Translator: Kai-Uwe Behrmann\n"
 "Language-Team:  <ku.b@gmx.de>\n"
@@ -118,6 +118,8 @@ msgstr "14farbig"
 msgid "15color"
 msgstr "15farbig"
 
+#. ICC stop
+#. if (MoveMode == FLYING)
 #: agviewer.cpp:310 icc_gl.cpp:3300 icc_gl.cpp:3319 icc_gl.cpp:3438
 msgid "left-/middle-/right mouse button -> rotate/cut/menu"
 msgstr "linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menue"
@@ -223,6 +225,7 @@ msgstr "Farbanteil b"
 msgid "Colour r"
 msgstr "Farbanteil r"
 
+#. show infos
 #: icc_draw.cpp:746 icc_draw.cpp:807
 msgid " with "
 msgstr " mit "
@@ -231,19 +234,23 @@ msgstr " mit "
 msgid " points"
 msgstr " Punkten"
 
+#. show infos
 #: icc_draw.cpp:753
 msgid " with Gamma: 1.0"
 msgstr " mit Gamma: 1.0"
 
+#. show infos
 #: icc_draw.cpp:766 icc_draw.cpp:785
 msgid " with one entry for gamma: "
 msgstr " mit einem Eintrag für Gamma: "
 
 #: icc_examin.cpp:128
+#, c-format
 msgid "WARNING"
 msgstr "WARNUNG"
 
 #: icc_examin.cpp:131
+#, c-format
 msgid "!!! ERROR"
 msgstr "!!! FEHLER"
 
@@ -308,6 +315,7 @@ msgstr "keine Inhalte gefunden für"
 msgid "Internal error"
 msgstr "interner Fehler"
 
+#. this string is sensible to formatting in the tag browser GUI, please keep a mono spaced formatting
 #: icc_examin.cpp:1294
 msgid "No. Tag   Type   Size Description"
 msgstr "Nr. Teil  Typ   Größe Beschreibung"
@@ -360,6 +368,7 @@ msgstr "RGB Primätrfarben"
 msgid "Log:"
 msgstr ""
 
+#. Fl_Tabs* o
 #: icc_fenster.cpp:251 icc_fenster.cpp:318 icc_betrachter.cxx:770
 msgid "Yes"
 msgstr "Ja"
@@ -374,6 +383,7 @@ msgid "Could not open font in:"
 msgstr "Konnte Font nicht öffnen in:"
 
 #: icc_gl.cpp:877
+#, c-format
 msgid "0,0,0"
 msgstr ""
 
@@ -398,6 +408,7 @@ msgstr "Achse"
 msgid "Slice plane"
 msgstr "Querschnitt"
 
+#. ->Darstellung->background colour
 #: icc_gl.cpp:2195
 msgid "White"
 msgstr "Weiß"
@@ -426,6 +437,7 @@ msgstr "farbig"
 msgid "high contrast"
 msgstr "kontrastreich"
 
+#. Shells alike displaying, alternatves are "Membranes" or "Shells"
 #: icc_gl.cpp:2211
 msgid "Onion skins"
 msgstr "Zwiebelhäutchen"
@@ -450,6 +462,7 @@ msgstr "Kugel 4dE"
 msgid "Star"
 msgstr "Stern"
 
+#. points are reserved for image colours
 #: icc_gl.cpp:2225
 msgid "Point"
 msgstr "Punkt"
@@ -474,6 +487,7 @@ msgstr "Texte/Pfeile an/aus"
 msgid "Illustration"
 msgstr "Darstellung"
 
+#. "Pos" is a abreviation to position and will be visible in the small statusline with position coordinates
 #: icc_gl.cpp:2590
 msgid "Pos"
 msgstr ""
@@ -686,6 +700,7 @@ msgstr "Profilbeschreibung"
 msgid "Profile description, multilingual"
 msgstr "Profilbeschreibung mehrsprachig"
 
+#. dscm
 #: icc_helfer.cpp:624
 msgid "Profile sequence description"
 msgstr "Beschreibung der Profilverknüpfung"
@@ -750,34 +765,43 @@ msgstr "Betrachtungsbedingungen"
 msgid "Device colours"
 msgstr "Farbmessflächen"
 
+#. DevD
 #: icc_helfer.cpp:640
 msgid "Measured colours"
 msgstr "Farbmessergebnisse"
 
+#. CIED
 #: icc_helfer.cpp:641
 msgid "Profiling parameters"
 msgstr "Profilierungsparameter"
 
+#. Pmtr
 #: icc_helfer.cpp:642
 msgid "VideoCardGammaTable"
 msgstr "Grafik Karten Gamma Tabelle (vcgt)"
 
+#. vcgt
 #: icc_helfer.cpp:643
 msgid "Colour adaption matrix"
 msgstr "Farbanpassungsmatrix"
 
+#. chad
 #: icc_helfer.cpp:644
 msgid "Chromaticity"
 msgstr "Primärfarben"
 
+#. chrm
 #: icc_helfer.cpp:645
 msgid "Named colour order"
 msgstr "Einzelfarbordnung"
 
+#. clro
 #: icc_helfer.cpp:646
 msgid "Named colour names"
 msgstr "Einzelfarbnamen"
 
+#. clrt
+#. flex
 #: icc_helfer.cpp:647 icc_helfer.cpp:739
 msgid "----"
 msgstr ""
@@ -786,86 +810,107 @@ msgstr ""
 msgid "Digital camera"
 msgstr "Digitale Kamera"
 
+#. dcam
 #: icc_helfer.cpp:718
 msgid "Film scanner"
 msgstr "Filmscanner"
 
+#. fscn
 #: icc_helfer.cpp:719
 msgid "Reflective scanner"
 msgstr "Auflichtscanner"
 
+#. rscn
 #: icc_helfer.cpp:720
 msgid "InkJet printer"
 msgstr "Tintenstrahldrucker"
 
+#. ijet
 #: icc_helfer.cpp:721
 msgid "Thermal wax printer"
 msgstr "Thermischer Wachsdrucker"
 
+#. twax
 #: icc_helfer.cpp:722
 msgid "Electrophotographic printer"
 msgstr "Electrofotografischer Drucker"
 
+#. epho
 #: icc_helfer.cpp:723
 msgid "Electrostatic printer"
 msgstr "Electrostatischer Drucker"
 
+#. esta
 #: icc_helfer.cpp:724
 msgid "Dye sublimation printer"
 msgstr "Thermosublimationsdrucker"
 
+#. dsub
 #: icc_helfer.cpp:725
 msgid "Photographic paper printer"
 msgstr "Photographischer Papierdrucker"
 
+#. rpho
 #: icc_helfer.cpp:726
 msgid "Film writer"
 msgstr "Filmbelichter"
 
+#. fprn
 #: icc_helfer.cpp:727
 msgid "Video Monitor"
 msgstr "Video Bildschirm"
 
+#. vidm
 #: icc_helfer.cpp:728
 msgid "Video camera"
 msgstr "Video Kamera"
 
+#. vidc
 #: icc_helfer.cpp:729
 msgid "Projection Television"
 msgstr "Fernsehprojektion"
 
+#. pjtv
 #: icc_helfer.cpp:730
 msgid "Cathode ray tube display"
 msgstr "Kathodenstrahlmonitor"
 
+#. CRT
 #: icc_helfer.cpp:731
 msgid "Passive matrix monitor"
 msgstr "Passivmatrixmonitor"
 
+#. PMD
 #: icc_helfer.cpp:732
 msgid "Active matrix monitor"
 msgstr "Aktivmatrixmonitor"
 
+#. AMD
 #: icc_helfer.cpp:733
 msgid "Photo CD"
 msgstr ""
 
+#. KPCD
 #: icc_helfer.cpp:734
 msgid "PhotoImageSetter"
 msgstr ""
 
+#. imgs
 #: icc_helfer.cpp:735
 msgid "Gravure"
 msgstr ""
 
+#. grav
 #: icc_helfer.cpp:736
 msgid "Offset Lithography"
 msgstr ""
 
+#. offs
 #: icc_helfer.cpp:737
 msgid "Silkscreen"
 msgstr ""
 
+#. silk
 #: icc_helfer.cpp:738
 msgid "Flexography"
 msgstr ""
@@ -1083,6 +1128,7 @@ msgstr ""
 msgid "b'"
 msgstr ""
 
+#. Fl_Button* favUpButton
 #: icc_measurement.cpp:1473 my_file_chooser.cxx:276
 msgid "X"
 msgstr ""
@@ -1161,10 +1207,12 @@ msgstr "Geometrie:"
 msgid "Port:"
 msgstr "Anschluß:"
 
+#. catches all from exception
 #: icc_oyranos.cpp:1198 icc_vrml.cpp:151
 msgid "Std-exception occured: "
 msgstr "Std-Ausnahme: "
 
+#. catches all from exception
 #: icc_oyranos.cpp:1201 icc_vrml.cpp:154
 msgid "Huch, unknown exception"
 msgstr "Huch, unbekannte Ausnahme"
@@ -1189,6 +1237,7 @@ msgstr "die Elementliste ist beschädigt für Element"
 msgid "not inside memory block"
 msgstr "nicht innerhalb des Speicherblocks"
 
+#. check
 #: icc_profile.cpp:417 icc_profile.cpp:447
 msgid " typ - no text output"
 msgstr " Typ - keine Textausgabe"
@@ -1353,6 +1402,7 @@ msgstr "erzeugt von: "
 msgid "File header invalid"
 msgstr "Dateikopf ungültig"
 
+#. format sensible, as this string is the header in the tag browser table
 #: icc_profile_header.cpp:271
 msgid "    head  head    128 File header"
 msgstr "    Kopf  Kopf    128 Dateikopf"
@@ -1361,6 +1411,7 @@ msgstr "    Kopf  Kopf    128 Dateikopf"
 msgid "Standard Observer"
 msgstr "Standard Betrachter"
 
+#. "Back side" or Background
 #: icc_profile_tags.cpp:261
 msgid "Back side"
 msgstr "Rückseite"
@@ -1445,18 +1496,22 @@ msgstr ""
 msgid "Device Colours"
 msgstr "Gerätefarben"
 
+#. # "profiles ... involved" (other text) ":"
 #: icc_profile_tags.cpp:527
 msgid "profiles where originally involved"
 msgstr "Profile waren ursprünglich beteiligt"
 
+#. HTML
 #: icc_ueber.cpp:68 icc_betrachter.cxx:723
 msgid "About ICC Examin"
 msgstr "Über ICC Examin"
 
+#. HTML
 #: icc_ueber.cpp:78
 msgid "ICC Examin Version"
 msgstr ""
 
+#. HTML
 #: icc_ueber.cpp:91
 msgid "Date"
 msgstr "Datum"
@@ -1515,11 +1570,14 @@ msgstr ""
 " Die Farbumwandlungen werden zur Zeit durch Funktionen der littleCMS "
 "Programmbibliothek realisiert."
 
+#. HTML
+#. Fl_Help_View* ueber_html
 #: icc_ueber.cpp:152 icc_betrachter.cxx:647 icc_betrachter.cxx:649
 #: icc_betrachter.cxx:741
 msgid "Help"
 msgstr "Hilfe"
 
+#. Fl_Help_View* hilfe_html
 #: icc_ueber.cpp:344 icc_betrachter.cxx:650 icc_betrachter.cxx:747
 msgid "License"
 msgstr "Lizenz"
@@ -1534,6 +1592,7 @@ msgstr ""
 "icc_* Dateien sind lizenziert unter der GPL.<br>     Die anderen Dateien "
 "k&ouml;nnen abweichende Lizenzbedingungen in den Dateik&ouml;pfen enthalten."
 
+#. HTML
 #: icc_ueber.cpp:755
 msgid "Acknowledgement"
 msgstr "Dank"
@@ -1591,14 +1650,17 @@ msgid ""
 "  argyll: Greame Gill web.access.net.au/argyll/argyllcms.html<br<br><br>\n"
 msgstr ""
 
+#. HTML
 #: icc_ueber.cpp:852
 msgid "Project"
 msgstr "Projekt"
 
+#. HTML
 #: icc_ueber.cpp:854
 msgid "Documentation"
 msgstr "Dokumente"
 
+#. catches all from exception
 #: icc_vrml.cpp:147
 msgid "exception occured: "
 msgstr "Ausnahme: "
@@ -1607,6 +1669,7 @@ msgstr "Ausnahme: "
 msgid "Manufacturer: "
 msgstr "Hersteller:   "
 
+#. texte[texte.size()-1].append(monitor.vendor);
 #: icc_helfer_osx.cpp:75
 msgid "Model:      "
 msgstr "Modell:     "
@@ -1659,6 +1722,7 @@ msgstr "Eigener Filter"
 msgid "Please choose an existing file!"
 msgstr "Bitte wählen Sie eine existierende Datei!"
 
+#. Fl_Choice* showChoice
 #: icc_helfer_fltk.cpp:328 my_file_chooser.cxx:182
 msgid "Favorites"
 msgstr "Lesezeichen"
@@ -1667,6 +1731,7 @@ msgstr "Lesezeichen"
 msgid "Filename"
 msgstr "Dateiname"
 
+#. icc_examin_ns::MyFl_Double_Window* window
 #: icc_helfer_fltk.cpp:330 my_file_chooser.cxx:256
 msgid "Manage Favorites"
 msgstr "Bearbeite Lesezeichen"
@@ -1687,6 +1752,7 @@ msgstr "Verzeichnis erstellen"
 msgid "Preview"
 msgstr "Vorschau"
 
+#. Fl_Button* favCancelButton
 #: icc_helfer_fltk.cpp:339 my_file_chooser.cxx:291
 msgid "Save"
 msgstr "Sichern"
@@ -1755,6 +1821,7 @@ msgstr ""
 msgid "Open"
 msgstr "Öffnen"
 
+#. icc_examin_ns::MyFl_Double_Window* vcgt
 #: icc_betrachter.cxx:631 icc_betrachter.cxx:640 icc_betrachter.cxx:831
 msgid "Gamut"
 msgstr "Farbhülle"
@@ -1787,18 +1854,22 @@ msgstr "Test Kurven"
 msgid "About"
 msgstr "Über"
 
+#. Fl_Help_View* lizenz_html
 #: icc_betrachter.cxx:754
 msgid "Acknowlegement"
 msgstr "Dank"
 
+#. Fl_Help_View* dank_html
 #: icc_betrachter.cxx:760
 msgid "Links"
 msgstr "Verknüpfung"
 
+#. icc_examin_ns::MyFl_Double_Window* ueber
 #: icc_betrachter.cxx:780
 msgid "Grafic Card Gamma Table"
 msgstr "Grafik Karten Gamma Tabelle (vcgt)"
 
+#. TagDrawings* vcgt_viewer
 #: icc_betrachter.cxx:805
 msgid "Set"
 msgstr "Setze"
@@ -1811,6 +1882,7 @@ msgstr ""
 "Das aktuelle Profile als Monitorprofil setzen und die Gamma Tabelle in die "
 "Grafikkarte laden"
 
+#. Fl_Button* vcgt_set_button
 #: icc_betrachter.cxx:811
 msgid "Reset"
 msgstr "Standard"
@@ -1819,6 +1891,7 @@ msgstr "Standard"
 msgid "reset to standard gamma"
 msgstr "Auf Standard Gamma zurücksetzen"
 
+#. Fl_Button* vcgt_reset_button
 #: icc_betrachter.cxx:816
 msgid "Load"
 msgstr "Lade"
@@ -1827,10 +1900,12 @@ msgstr "Lade"
 msgid "Load the current monitor profile"
 msgstr "Das aktuelle Monitor Profile laden"
 
+#. Fl_Button* vcgt_load_button
 #: icc_betrachter.cxx:821
 msgid "Close"
 msgstr "Schliessen"
 
+#. icc_examin_ns::MyFl_Double_Window* DD
 #: icc_betrachter.cxx:893
 msgid "ICC Examin"
 msgstr "ICC Examin"
@@ -1859,6 +1934,7 @@ msgstr "Zeige alle Kanäle dieser Tabelle in einem eigenen Fenster an."
 msgid "..."
 msgstr ""
 
+#. Fl_Box* box_stat
 #: icc_betrachter.cxx:1092
 msgid "Loading .."
 msgstr "Lade ..."
@@ -1867,10 +1943,12 @@ msgstr "Lade ..."
 msgid "Choose File"
 msgstr "Wählen Sie eine Datei"
 
+#. Fl_File_Browser* fileList
 #: my_file_chooser.cxx:203
 msgid "?"
 msgstr "?"
 
+#. Fl_File_Input* fileName
 #: my_file_chooser.cxx:232
 msgid "Filename:"
 msgstr "Dateiname:"
@@ -1879,6 +1957,9 @@ msgstr "Dateiname:"
 msgid "OK"
 msgstr "Ja"
 
+#. okButton->label(fl_ok);
+#. Fl_Return_Button* okButton
+#. Fl_Button* o =
 #: my_file_chooser.cxx:242 my_file_chooser.cxx:287
 msgid "Cancel"
 msgstr "Abbrechen"
@@ -1887,6 +1968,7 @@ msgstr "Abbrechen"
 msgid "@8>"
 msgstr ""
 
+#. Fl_Button* favDeleteButton
 #: my_file_chooser.cxx:281
 msgid "@2>"
 msgstr ""

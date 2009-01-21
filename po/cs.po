@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: icc_examin\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2009-01-20 18:47+0100\n"
+"POT-Creation-Date: 2009-01-21 06:47+0100\n"
 "PO-Revision-Date: 2008-10-16 20:18+0100\n"
 "Last-Translator: Milan Knizek <knizek@volny.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
@@ -114,6 +114,8 @@ msgstr "14-barevny"
 msgid "15color"
 msgstr "15-barevny"
 
+#. ICC stop
+#. if (MoveMode == FLYING)
 #: agviewer.cpp:310 icc_gl.cpp:3300 icc_gl.cpp:3319 icc_gl.cpp:3438
 msgid "left-/middle-/right mouse button -> rotate/cut/menu"
 msgstr "leve/prostredni/prave tlacitko mysi -> rotovat/vystrihnout/menu"
@@ -219,6 +221,7 @@ msgstr "Barva b"
 msgid "Colour r"
 msgstr "Barva r"
 
+#. show infos
 #: icc_draw.cpp:746 icc_draw.cpp:807
 msgid " with "
 msgstr " s"
@@ -227,10 +230,12 @@ msgstr " s"
 msgid " points"
 msgstr " bodu"
 
+#. show infos
 #: icc_draw.cpp:753
 msgid " with Gamma: 1.0"
 msgstr " s gama: 1.0"
 
+#. show infos
 #: icc_draw.cpp:766 icc_draw.cpp:785
 msgid " with one entry for gamma: "
 msgstr " s jednim vstupem pro gama: "
@@ -305,6 +310,7 @@ msgstr "nenalezen zadny obsah pro"
 msgid "Internal error"
 msgstr "Interni chyba"
 
+#. this string is sensible to formatting in the tag browser GUI, please keep a mono spaced formatting
 #: icc_examin.cpp:1294
 msgid "No. Tag   Type   Size Description"
 msgstr "C.  Tag   Typ     Vel. Popis"
@@ -357,6 +363,7 @@ msgstr "RGB primarni barvy"
 msgid "Log:"
 msgstr "Zurnal:"
 
+#. Fl_Tabs* o
 #: icc_fenster.cpp:251 icc_fenster.cpp:318 icc_betrachter.cxx:770
 msgid "Yes"
 msgstr "Ano"
@@ -396,6 +403,7 @@ msgstr "osa"
 msgid "Slice plane"
 msgstr "Rovina rezu"
 
+#. ->Darstellung->background colour
 #: icc_gl.cpp:2195
 msgid "White"
 msgstr "Bila"
@@ -424,6 +432,7 @@ msgstr "barevne"
 msgid "high contrast"
 msgstr "vysoky kontrast"
 
+#. Shells alike displaying, alternatves are "Membranes" or "Shells"
 #: icc_gl.cpp:2211
 msgid "Onion skins"
 msgstr "Pruklepovy papir"
@@ -448,6 +457,7 @@ msgstr "Koule 4dE"
 msgid "Star"
 msgstr "Hvezda"
 
+#. points are reserved for image colours
 #: icc_gl.cpp:2225
 msgid "Point"
 msgstr "Bod"
@@ -472,6 +482,7 @@ msgstr "Texty/Sipky zap./vyp."
 msgid "Illustration"
 msgstr "Ilustrace"
 
+#. "Pos" is a abreviation to position and will be visible in the small statusline with position coordinates
 #: icc_gl.cpp:2590
 msgid "Pos"
 msgstr "Poz."
@@ -690,6 +701,7 @@ msgstr "Popis profilu"
 msgid "Profile description, multilingual"
 msgstr "Popis profilu, vicejazycny"
 
+#. dscm
 #: icc_helfer.cpp:624
 msgid "Profile sequence description"
 msgstr "Popis sekvence profilu"
@@ -754,34 +766,43 @@ msgstr "Pozorovaci podminky"
 msgid "Device colours"
 msgstr "Barvy zarizeni"
 
+#. DevD
 #: icc_helfer.cpp:640
 msgid "Measured colours"
 msgstr "Zmerene barvy"
 
+#. CIED
 #: icc_helfer.cpp:641
 msgid "Profiling parameters"
 msgstr "Parametry profilovani"
 
+#. Pmtr
 #: icc_helfer.cpp:642
 msgid "VideoCardGammaTable"
 msgstr "VideoCardGammaTable"
 
+#. vcgt
 #: icc_helfer.cpp:643
 msgid "Colour adaption matrix"
 msgstr "Matice prizpusobeni barev"
 
+#. chad
 #: icc_helfer.cpp:644
 msgid "Chromaticity"
 msgstr "Chromaticita"
 
+#. chrm
 #: icc_helfer.cpp:645
 msgid "Named colour order"
 msgstr "Poradi pojmenovanych barev"
 
+#. clro
 #: icc_helfer.cpp:646
 msgid "Named colour names"
 msgstr "Jmena pojmenovanych barev"
 
+#. clrt
+#. flex
 #: icc_helfer.cpp:647 icc_helfer.cpp:739
 msgid "----"
 msgstr "----"
@@ -790,86 +811,107 @@ msgstr "----"
 msgid "Digital camera"
 msgstr "Digitalni fotoaparat"
 
+#. dcam
 #: icc_helfer.cpp:718
 msgid "Film scanner"
 msgstr "Filmovy skener"
 
+#. fscn
 #: icc_helfer.cpp:719
 msgid "Reflective scanner"
 msgstr "Odrazny skener"
 
+#. rscn
 #: icc_helfer.cpp:720
 msgid "InkJet printer"
 msgstr "Inkoustova tiskarna"
 
+#. ijet
 #: icc_helfer.cpp:721
 msgid "Thermal wax printer"
 msgstr "Tepelna voskova tiskarna"
 
+#. twax
 #: icc_helfer.cpp:722
 msgid "Electrophotographic printer"
 msgstr "Elektrofotograficka tiskarna"
 
+#. epho
 #: icc_helfer.cpp:723
 msgid "Electrostatic printer"
 msgstr "Elektrostaticka tiskarna"
 
+#. esta
 #: icc_helfer.cpp:724
 msgid "Dye sublimation printer"
 msgstr "Sublimacni tiskarna"
 
+#. dsub
 #: icc_helfer.cpp:725
 msgid "Photographic paper printer"
 msgstr "Tiskarna na fotograficky papir"
 
+#. rpho
 #: icc_helfer.cpp:726
 msgid "Film writer"
 msgstr "Zapisovac na film"
 
+#. fprn
 #: icc_helfer.cpp:727
 msgid "Video Monitor"
 msgstr "Video monitor"
 
+#. vidm
 #: icc_helfer.cpp:728
 msgid "Video camera"
 msgstr "Video kamera"
 
+#. vidc
 #: icc_helfer.cpp:729
 msgid "Projection Television"
 msgstr "Projekcni televize"
 
+#. pjtv
 #: icc_helfer.cpp:730
 msgid "Cathode ray tube display"
 msgstr "CRT obrazovka"
 
+#. CRT
 #: icc_helfer.cpp:731
 msgid "Passive matrix monitor"
 msgstr "Monitor s pasivni matici"
 
+#. PMD
 #: icc_helfer.cpp:732
 msgid "Active matrix monitor"
 msgstr "Monitor s aktivni matici"
 
+#. AMD
 #: icc_helfer.cpp:733
 msgid "Photo CD"
 msgstr "Photo CD"
 
+#. KPCD
 #: icc_helfer.cpp:734
 msgid "PhotoImageSetter"
 msgstr "PhotoImageSetter"
 
+#. imgs
 #: icc_helfer.cpp:735
 msgid "Gravure"
 msgstr "Gravura"
 
+#. grav
 #: icc_helfer.cpp:736
 msgid "Offset Lithography"
 msgstr "Offsetova litografie"
 
+#. offs
 #: icc_helfer.cpp:737
 msgid "Silkscreen"
 msgstr "Sitotisk"
 
+#. silk
 #: icc_helfer.cpp:738
 msgid "Flexography"
 msgstr "Flexografie"
@@ -1087,6 +1129,7 @@ msgstr "a'"
 msgid "b'"
 msgstr "b'"
 
+#. Fl_Button* favUpButton
 #: icc_measurement.cpp:1473 my_file_chooser.cxx:276
 msgid "X"
 msgstr "X"
@@ -1167,10 +1210,12 @@ msgstr "Geometrie"
 msgid "Port:"
 msgstr "Bod"
 
+#. catches all from exception
 #: icc_oyranos.cpp:1198 icc_vrml.cpp:151
 msgid "Std-exception occured: "
 msgstr "Nastala std. vyjimka: "
 
+#. catches all from exception
 #: icc_oyranos.cpp:1201 icc_vrml.cpp:154
 msgid "Huch, unknown exception"
 msgstr "Uf, neznama vyjimka"
@@ -1195,6 +1240,7 @@ msgstr "Seznam tagu je poskozen u tagu"
 msgid "not inside memory block"
 msgstr "ne uvnitr bloku pameti"
 
+#. check
 #: icc_profile.cpp:417 icc_profile.cpp:447
 msgid " typ - no text output"
 msgstr "typ - zadny textovy vystup"
@@ -1359,6 +1405,7 @@ msgstr "Vytvoreno:   "
 msgid "File header invalid"
 msgstr "Hlavicka souboru neplatna"
 
+#. format sensible, as this string is the header in the tag browser table
 #: icc_profile_header.cpp:271
 msgid "    head  head    128 File header"
 msgstr ""
@@ -1367,6 +1414,7 @@ msgstr ""
 msgid "Standard Observer"
 msgstr "Standardni pozorovatel"
 
+#. "Back side" or Background
 #: icc_profile_tags.cpp:261
 #, fuzzy
 msgid "Back side"
@@ -1453,18 +1501,22 @@ msgstr "CIE*Lab"
 msgid "Device Colours"
 msgstr "Barvy zarizeni"
 
+#. # "profiles ... involved" (other text) ":"
 #: icc_profile_tags.cpp:527
 msgid "profiles where originally involved"
 msgstr "profily byly puvodne pouzity"
 
+#. HTML
 #: icc_ueber.cpp:68 icc_betrachter.cxx:723
 msgid "About ICC Examin"
 msgstr "O programu ICC Examin"
 
+#. HTML
 #: icc_ueber.cpp:78
 msgid "ICC Examin Version"
 msgstr "ICC Examin Verze"
 
+#. HTML
 #: icc_ueber.cpp:91
 msgid "Date"
 msgstr "Datum"
@@ -1521,11 +1573,14 @@ msgstr ""
 "Interni barvove transformace jsou realizovany funkcemi knihoven programu "
 "LittleCMS."
 
+#. HTML
+#. Fl_Help_View* ueber_html
 #: icc_ueber.cpp:152 icc_betrachter.cxx:647 icc_betrachter.cxx:649
 #: icc_betrachter.cxx:741
 msgid "Help"
 msgstr "Napoveda"
 
+#. Fl_Help_View* hilfe_html
 #: icc_ueber.cpp:344 icc_betrachter.cxx:650 icc_betrachter.cxx:747
 msgid "License"
 msgstr "Licence"
@@ -1540,6 +1595,7 @@ msgstr ""
 "podlehaji licenci GPL.<br> Ostatni zdrojove soubory mohou obsahovat "
 "odchylene licence, ktera jsou patrne z hlavicek souboru."
 
+#. HTML
 #: icc_ueber.cpp:755
 msgid "Acknowledgement"
 msgstr "Podekovani"
@@ -1598,14 +1654,17 @@ msgid ""
 msgstr ""
 "  argyll: Greame Gill web.access.net.au/argyll/argyllcms.html<br><br><br>\n"
 
+#. HTML
 #: icc_ueber.cpp:852
 msgid "Project"
 msgstr "Projekt"
 
+#. HTML
 #: icc_ueber.cpp:854
 msgid "Documentation"
 msgstr "Dokumentace"
 
+#. catches all from exception
 #: icc_vrml.cpp:147
 msgid "exception occured: "
 msgstr "nastala vyjimka:"
@@ -1614,6 +1673,7 @@ msgstr "nastala vyjimka:"
 msgid "Manufacturer: "
 msgstr "Vyrobce:      "
 
+#. texte[texte.size()-1].append(monitor.vendor);
 #: icc_helfer_osx.cpp:75
 msgid "Model:      "
 msgstr "Model:      "
@@ -1666,6 +1726,7 @@ msgstr "Vlastni filtr"
 msgid "Please choose an existing file!"
 msgstr "Prosim vyberte existujici soubor!"
 
+#. Fl_Choice* showChoice
 #: icc_helfer_fltk.cpp:328 my_file_chooser.cxx:182
 msgid "Favorites"
 msgstr "Oblibene"
@@ -1674,6 +1735,7 @@ msgstr "Oblibene"
 msgid "Filename"
 msgstr "Jmeno souboru"
 
+#. icc_examin_ns::MyFl_Double_Window* window
 #: icc_helfer_fltk.cpp:330 my_file_chooser.cxx:256
 msgid "Manage Favorites"
 msgstr "Organizovat oblibene"
@@ -1694,6 +1756,7 @@ msgstr "Novy adresar?"
 msgid "Preview"
 msgstr "Nahled"
 
+#. Fl_Button* favCancelButton
 #: icc_helfer_fltk.cpp:339 my_file_chooser.cxx:291
 msgid "Save"
 msgstr "Ulozit"
@@ -1762,6 +1825,7 @@ msgstr "Zurnal"
 msgid "Open"
 msgstr "Otevrit"
 
+#. icc_examin_ns::MyFl_Double_Window* vcgt
 #: icc_betrachter.cxx:631 icc_betrachter.cxx:640 icc_betrachter.cxx:831
 msgid "Gamut"
 msgstr "Gamut"
@@ -1794,18 +1858,22 @@ msgstr "Testovat krivky"
 msgid "About"
 msgstr "O programu"
 
+#. Fl_Help_View* lizenz_html
 #: icc_betrachter.cxx:754
 msgid "Acknowlegement"
 msgstr "Podekovani"
 
+#. Fl_Help_View* dank_html
 #: icc_betrachter.cxx:760
 msgid "Links"
 msgstr "Odkazy"
 
+#. icc_examin_ns::MyFl_Double_Window* ueber
 #: icc_betrachter.cxx:780
 msgid "Grafic Card Gamma Table"
 msgstr "Gama tabulka graficke karty"
 
+#. TagDrawings* vcgt_viewer
 #: icc_betrachter.cxx:805
 msgid "Set"
 msgstr "Nastavit"
@@ -1818,6 +1886,7 @@ msgstr ""
 "Nastavit aktualni profil jako profil monitoru a nacist VCGT tag do video "
 "karty"
 
+#. Fl_Button* vcgt_set_button
 #: icc_betrachter.cxx:811
 msgid "Reset"
 msgstr "Obnovit"
@@ -1826,6 +1895,7 @@ msgstr "Obnovit"
 msgid "reset to standard gamma"
 msgstr "obnovit standardni gamma"
 
+#. Fl_Button* vcgt_reset_button
 #: icc_betrachter.cxx:816
 msgid "Load"
 msgstr "Nacist"
@@ -1834,10 +1904,12 @@ msgstr "Nacist"
 msgid "Load the current monitor profile"
 msgstr "Nacist aktualni profil monitoru"
 
+#. Fl_Button* vcgt_load_button
 #: icc_betrachter.cxx:821
 msgid "Close"
 msgstr "Zavrit"
 
+#. icc_examin_ns::MyFl_Double_Window* DD
 #: icc_betrachter.cxx:893
 msgid "ICC Examin"
 msgstr "ICC Examin"
@@ -1866,6 +1938,7 @@ msgstr "Ukazat vsechny kanaly teto tabulky v samostatnem okne."
 msgid "..."
 msgstr "..."
 
+#. Fl_Box* box_stat
 #: icc_betrachter.cxx:1092
 msgid "Loading .."
 msgstr "Nacitam ..."
@@ -1874,10 +1947,12 @@ msgstr "Nacitam ..."
 msgid "Choose File"
 msgstr "Vyberte soubor"
 
+#. Fl_File_Browser* fileList
 #: my_file_chooser.cxx:203
 msgid "?"
 msgstr "?"
 
+#. Fl_File_Input* fileName
 #: my_file_chooser.cxx:232
 msgid "Filename:"
 msgstr "Jmeno souboru:"
@@ -1886,6 +1961,9 @@ msgstr "Jmeno souboru:"
 msgid "OK"
 msgstr "OK"
 
+#. okButton->label(fl_ok);
+#. Fl_Return_Button* okButton
+#. Fl_Button* o =
 #: my_file_chooser.cxx:242 my_file_chooser.cxx:287
 msgid "Cancel"
 msgstr "Cancel"
@@ -1894,6 +1972,7 @@ msgstr "Cancel"
 msgid "@8>"
 msgstr ""
 
+#. Fl_Button* favDeleteButton
 #: my_file_chooser.cxx:281
 msgid "@2>"
 msgstr ""
