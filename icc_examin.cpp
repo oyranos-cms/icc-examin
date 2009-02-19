@@ -911,11 +911,11 @@ void ICCexamin::optionsRefresh_( void )
   char t[4];
   /* should always be a single digit */
   sprintf( t, "%d", intentGet(NULL));
-  oyOptions_SetFromText( options_, "rendering_intent", t, 0 );
+  oyOptions_SetFromText( &options_, "rendering_intent", t, 0 );
   sprintf( t, "%d", bpc() );
-  oyOptions_SetFromText( options_, "rendering_bpc", t, 0 );
+  oyOptions_SetFromText( &options_, "rendering_bpc", t, 0 );
   sprintf( t, "%d", gamutwarn() );
-  oyOptions_SetFromText( options_, "rendering_gamut_warning", t, 0 );
+  oyOptions_SetFromText( &options_, "rendering_gamut_warning", t, 0 );
 # endif
 }
 
