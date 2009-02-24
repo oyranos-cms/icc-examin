@@ -165,6 +165,7 @@ GL_Ansicht::init_()
 
   id_ = ref_;
   ++ref_;
+  initialised_ = false;
 
   agv_ = NULL;
   agv_ = this->getAgv(this, NULL);
@@ -342,6 +343,11 @@ GL_Ansicht::copy (const GL_Ansicht & gl)
 void
 GL_Ansicht::init(int ty)
 { DBG_PROG_START
+
+  if(initialised_)
+    return;
+
+  initialised_ = true;
 
   // 1 fuer mft_gl und 2 fuer DD_farbraum
   typ_ = ty;
@@ -2321,9 +2327,10 @@ GL_Ansicht::zeichnen()
   }
 # endif
 
-  if(!valid_) {
+  if(!valid_)
+  {
     // complete initialisation
-    //init(id_);
+    init(id_);
     gl_font( FL_HELVETICA, 10 );
 
     GLinit_();  DBG_PROG

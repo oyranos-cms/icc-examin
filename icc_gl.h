@@ -139,11 +139,13 @@ public:
   GL_Ansicht& operator = (const GL_Ansicht& gl) { return copy(gl); }
 private:
   void init_();
+  bool initialised_;
 public:
   void init(int fenster);
 
   // which window is managed?
   int  id()          {return id_; } //!< equal to agviewer::RedisplayWindow
+  void id(int i)     { id_ = i; }
   int  typ()   {return typ_; } //!< window ID / display mode
   void typ(int t_)   { typ_ = t_; }
 
