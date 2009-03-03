@@ -556,7 +556,7 @@ Oyranos::moniInfo (int x, int y, int *num)
   display_name = XDisplayString( fl_display );  // belongs to FLTK
   DBG_PROG_V( display_name <<" "<< strlen(display_name) )
 # endif
-  infos = (char**) new char* [6];
+  infos = (char**) new char* [10];
   char *manufacturer = 0;
   char *model = 0;
   char *serial = 0;
