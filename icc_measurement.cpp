@@ -1366,8 +1366,26 @@ ICCmeasurement::getHtmlReport        ( bool                aussen )
     {
       if (s < f)
       { // colour representation
+        char * tmp = 0;
+        const char * t;
+        int len = 0, c = 0;
         if(s == 0)
-          html << "    <a name=\"" << Feldnamen_[z] << "\">\n";
+        {
+          if(Feldnamen_[z].c_str())
+          {
+            /* tokenise uppercase as HTML tags have to be case insensitive */
+            t = Feldnamen_[z].c_str();
+            len = strlen(t);
+            tmp = (char*) malloc(len*2 + 1);
+            for(int i = 0; i < len; ++i)
+              if(isupper(t[i]))
+              {
+                sprintf( &tmp[c++], "%c_", t[i] ); c++;
+              } else
+                sprintf( &tmp[c++], "%c", t[i] );
+            html << "    <a name=\"" << Feldnamen_[z] << "\">\n";
+          } 
+        }
         html << "    <td width=\"20\" bgcolor=\"#"; 
         farbe[0] = 0;
 
