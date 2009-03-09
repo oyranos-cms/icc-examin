@@ -28,7 +28,7 @@ VERSION_C=7
 RELEASE=0
 START_MONTH="May"
 START_YEAR="2004"
-DEVEL_MONTH="January"
+DEVEL_MONTH="March"
 DEVEL_YEAR="2009"
 GIT_MASTER="`cat .git/refs/heads/master`"
 time="`date +%y%m%d.%H%M%S`"
@@ -883,4 +883,10 @@ else
 fi
 
 
+echo_="const char * icc_config_log_=\" \\"
+test -n "$ECHO" && $ECHO "$echo_" >  $CONF_LOG.h
+test -n "$ECHO" && cat $CONF_LOG | sed 's/\"/\\\"/g ; s/$/\ \\n\\/g'  >> $CONF_LOG.h
+echo_="\";"
+test -n "$ECHO" && $ECHO $e "$echo_" >> $CONF_LOG.h
 
+exit 1

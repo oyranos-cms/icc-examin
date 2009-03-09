@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2008  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2009  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -28,7 +28,8 @@
 
 #include "icc_utils.h"
 #include "icc_examin_version.h"
-//#include "icc_ueber.h"
+#include "icc_helfer.h"
+#include "config.log.h"
 #include <sstream>
 
 
@@ -135,8 +136,6 @@ getUeberHtml()
 "of the littleCMS program library.");
   html << " \
 </p>\n";
-
-  html << "\n\n<br>\n</body></html>\n";
 
   //DBG_NUM_S(html.str() )
   DBG_PROG_ENDE
@@ -855,6 +854,35 @@ getLinksText()
 
   DBG_PROG_ENDE
   return text.str();
+}
+
+std::string
+getInfoHtml()
+{
+  DBG_PROG_START
+  //char HF[] = "#aaaaaa";  // emphasised
+  std::stringstream html;
+
+  // HTML
+  html << getHtmlKopf( _("Configure Log") );
+
+  std::string log = icc_config_log_;
+  int n = icc_parser::suchenErsetzen( log, "\n", "<br>", 0 );
+  n = icc_parser::suchenErsetzen( log, " ", "&nbsp;", 0 );
+  n = icc_parser::suchenErsetzen( log, "################################################################", "", 0 );
+  html <<
+  "<br><h4>";
+  html << _( "Configure Log" );
+  html << "</h4>\n\
+<p>\n" <<
+  log;
+  html << "\n\n<br>\n</body></html>\n";
+  html << " \
+</p>\n";
+
+  //DBG_NUM_S(html.str() )
+  DBG_PROG_ENDE
+  return html.str();
 }
 
 
