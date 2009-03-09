@@ -247,6 +247,7 @@ ICCkette::waechter (void* zeiger)
 
   while(1)
   {
+    if(icc_examin_ns::laeuft())
     for(unsigned i = 0; i < obj->profilnamen_.size(); ++i)
     {
       const char* name = obj->profilnamen_[i].c_str();

@@ -37,7 +37,7 @@ status_info(const char* text, int fenster)
 int
 laeuft()
 {
-  return icc_examin->laeuft();
+  return icc_examin && icc_examin->laeuft();
 }
 
 }
