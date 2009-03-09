@@ -299,8 +299,8 @@ ICCexamin::start (int argc, char** argv)
 
   icc_betrachter->init( argc, argv );
 
-  icc_betrachter->mft_gl->id(1);
-  icc_betrachter->DD_farbraum->id(2);
+  icc_betrachter->mft_gl->init(1);
+  icc_betrachter->DD_farbraum->init(2);
   {
     icc_waehler_ = new ICCwaehler(485, 116, _("Gamut selector"));
     if(!icc_waehler_) WARN_S( "icc_waehler_ not reservable" )
@@ -561,7 +561,7 @@ ICCexamin::zeigMftTabellen ()
           new GL_Ansicht (*icc_betrachter->mft_gl); //(0,0,lw,lh);
 
         GL_Ansicht::getAgv(gl, icc_betrachter->mft_gl);
-        gl->id( icc_betrachter->mft_gl->id() );
+        gl->init( icc_betrachter->mft_gl->id() );
         gl->copy( *icc_betrachter->mft_gl );
         gl->kanal = i;
       g->end();
