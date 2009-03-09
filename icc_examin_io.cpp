@@ -29,6 +29,7 @@
 #include "icc_examin.h"
 #include "icc_examin_io.h"
 #include "icc_betrachter.h"
+#include "icc_info.h"
 #include "icc_waehler.h"
 
 using namespace icc_examin_ns;
@@ -488,7 +489,7 @@ ICCexaminIO::oeffnenStatisch_ (void* ie)
 
   // start loop for this thread
   while(1) {
-    if(icc_examin->status_) {
+    if(icc_examin_ns::laeuft()) {
       if(examin->io_->lade_) {
         examin->io_->oeffnenThread_();
         examin->io_->lade_ = false;
@@ -584,13 +585,13 @@ ICCexaminIO::oeffnen ()
 
   //Fl_File_Icon	*icon;	// New file icon
   DBG_PROG
-    dateiwahl->callback(dateiwahl_cb);
-    dateiwahl->preview(true);
+    dateiwahl()->callback(dateiwahl_cb);
+    dateiwahl()->preview(true);
 
     const char* ptr = NULL;
     if (dateinamen.size()) {
       ptr = dateinamen[0].c_str();
-      dateiwahl->value(ptr);
+      dateiwahl()->value(ptr);
       DBG_PROG_S( dateinamen[0])
     } 
       if(ptr) DBG_PROG_V( ptr );
@@ -606,26 +607,26 @@ ICCexaminIO::oeffnen ()
       ptr = getenv("HOME");
     }
 
-    dateiwahl->show();
+    dateiwahl()->show();
 
     if(ptr)
-      dateiwahl->value(ptr);
+      dateiwahl()->value(ptr);
 
 
     // protected: dateiwahl->window->clear_flag(64); //Fl_Window::FL_MODAL
-    dateiwahl->type(MyFl_File_Chooser::MULTI);
-    while (dateiwahl->visible())
+    dateiwahl()->type(MyFl_File_Chooser::MULTI);
+    while (dateiwahl()->visible())
       icc_examin_ns::wait( 0, true );
     //dateiwahl->type(MyFl_File_Chooser::SINGLE | MyFl_File_Chooser::CREATE);
     //dateiwahl->window->set_modal();
 
     dateinamen.clear();
-    DBG_NUM_V( dateiwahl->count() )
-    if (dateiwahl->count() && dateiwahl->value()) {
-      DBG_NUM_V( dateiwahl->value() )
-      dateinamen.resize(dateiwahl->count());
-      for (int i = 1; i <= dateiwahl->count(); i++)
-        dateinamen[i-1] = dateiwahl->value(i);
+    DBG_NUM_V( dateiwahl()->count() )
+    if (dateiwahl()->count() && dateiwahl()->value()) {
+      DBG_NUM_V( dateiwahl()->value() )
+      dateinamen.resize(dateiwahl()->count());
+      for (int i = 1; i <= dateiwahl()->count(); i++)
+        dateinamen[i-1] = dateiwahl()->value(i);
     }
   DBG_PROG
 
@@ -633,8 +634,8 @@ ICCexaminIO::oeffnen ()
   if (dateinamen.size() == 0) {
   }
 
-  dateiwahl->callback(0);
-  dateiwahl->preview(false);
+  dateiwahl()->callback(0);
+  dateiwahl()->preview(false);
 
   oeffnen( dateinamen );
   neu_laden_ = true;
@@ -655,44 +656,44 @@ ICCexaminIO::berichtSpeichern (void)
   } DBG_PROG_V( dateiname )
 
   // call FLTK file dialog
-  DBG_PROG_V( dateiwahl->filter() )
+  DBG_PROG_V( dateiwahl()->filter() )
 
-  std::string muster = dateiwahl->filter(); DBG_PROG
+  std::string muster = dateiwahl()->filter(); DBG_PROG
   std::string datei;
-  if (dateiwahl->value())
-    datei = dateiwahl->value(); DBG_PROG
-  std::string titel = dateiwahl->label(); DBG_PROG
+  if (dateiwahl()->value())
+    datei = dateiwahl()->value(); DBG_PROG
+  std::string titel = dateiwahl()->label(); DBG_PROG
 
-  dateiwahl->callback(0);
-  dateiwahl->filter(_("HTML Documents (*.htm*)")); DBG_PROG
+  dateiwahl()->callback(0);
+  dateiwahl()->filter(_("HTML Documents (*.htm*)")); DBG_PROG
 # ifdef HAVE_FLU
-  dateiwahl->cd(".");
+  dateiwahl()->cd(".");
 # endif
-  dateiwahl->label(_("Save Report")); DBG_PROG
-  dateiwahl->value(dateiname.c_str()); DBG_PROG
+  dateiwahl()->label(_("Save Report")); DBG_PROG
+  dateiwahl()->value(dateiname.c_str()); DBG_PROG
 
-  dateiwahl->show(); DBG_PROG
-  dateiwahl->type(MyFl_File_Chooser::SINGLE | MyFl_File_Chooser::CREATE);
-  while( dateiwahl->shown() )
+  dateiwahl()->show(); DBG_PROG
+  dateiwahl()->type(MyFl_File_Chooser::SINGLE | MyFl_File_Chooser::CREATE);
+  while( dateiwahl()->shown() )
     icc_examin_ns::wait( 0.05, true );
 
-  DBG_PROG_V( dateiwahl->filter() )
-  if (dateiwahl->value())
-    dateiname = dateiwahl->value();
+  DBG_PROG_V( dateiwahl()->filter() )
+  if (dateiwahl()->value())
+    dateiname = dateiwahl()->value();
   else
     dateiname = "";
   DBG_PROG
 
-  dateiwahl->filter(muster.c_str()); DBG_PROG
-  dateiwahl->value(datei.c_str()); DBG_PROG
-  dateiwahl->label(titel.c_str()); DBG_PROG
-  DBG_PROG_V( dateiwahl->filter() )
+  dateiwahl()->filter(muster.c_str()); DBG_PROG
+  dateiwahl()->value(datei.c_str()); DBG_PROG
+  dateiwahl()->label(titel.c_str()); DBG_PROG
+  DBG_PROG_V( dateiwahl()->filter() )
 
   DBG_PROG_V( dateiname )
 
   if (dateiname == "" ||
       dateiname == profile.name())
-  { DBG_PROG_V( dateiwahl->count() << dateiname )
+  { DBG_PROG_V( dateiwahl()->count() << dateiname )
     icc_examin->fortschritt (1.1 , 1.0);
     DBG_PROG_ENDE
     return false;
@@ -730,49 +731,49 @@ ICCexaminIO::gamutSpeichern (IccGamutFormat format)
   } DBG_PROG_V( dateiname )
 
   // call FLTK file dialog
-    DBG_PROG_V( dateiwahl->filter() )
-  std::string muster = dateiwahl->filter(); DBG_PROG
+    DBG_PROG_V( dateiwahl()->filter() )
+  std::string muster = dateiwahl()->filter(); DBG_PROG
   std::string datei;
-  if (dateiwahl->value())
-    datei = dateiwahl->value(); DBG_PROG
-  std::string titel = dateiwahl->label(); DBG_PROG
+  if (dateiwahl()->value())
+    datei = dateiwahl()->value(); DBG_PROG
+  std::string titel = dateiwahl()->label(); DBG_PROG
 
 # ifdef HAVE_FLU
-  dateiwahl->cd(".");
+  dateiwahl()->cd(".");
 # endif
   if(format == ICC_ABSTRACT) {
-    dateiwahl->filter(_("ICC colour profiles (*.ic*)")); DBG_PROG
-    dateiwahl->label(_("Save Gamut as Profile")); DBG_PROG
+    dateiwahl()->filter(_("ICC colour profiles (*.ic*)")); DBG_PROG
+    dateiwahl()->label(_("Save Gamut as Profile")); DBG_PROG
   } else if(format == ICC_VRML || format == GL_VRML) {
-    dateiwahl->filter(_("VRML Files (*.wrl)")); DBG_PROG
-    dateiwahl->label(_("Save Gamut as VRML")); DBG_PROG
+    dateiwahl()->filter(_("VRML Files (*.wrl)")); DBG_PROG
+    dateiwahl()->label(_("Save Gamut as VRML")); DBG_PROG
   }
-  dateiwahl->value(dateiname.c_str()); DBG_PROG
-  dateiwahl->callback(0);
+  dateiwahl()->value(dateiname.c_str()); DBG_PROG
+  dateiwahl()->callback(0);
 
-  dateiwahl->show(); DBG_PROG
-  dateiwahl->type(MyFl_File_Chooser::SINGLE | MyFl_File_Chooser::CREATE);
-  while( dateiwahl->shown() )
+  dateiwahl()->show(); DBG_PROG
+  dateiwahl()->type(MyFl_File_Chooser::SINGLE | MyFl_File_Chooser::CREATE);
+  while( dateiwahl()->shown() )
     icc_examin_ns::wait( 0.05, true );
 
-    DBG_PROG_V( dateiwahl->filter() )
-  if (dateiwahl->value())
-    dateiname = dateiwahl->value();
+    DBG_PROG_V( dateiwahl()->filter() )
+  if (dateiwahl()->value())
+    dateiname = dateiwahl()->value();
   else
     dateiname = "";
 
     DBG_PROG
 
-  dateiwahl->filter(muster.c_str()); DBG_PROG
-  dateiwahl->value(datei.c_str()); DBG_PROG
-  dateiwahl->label(titel.c_str()); DBG_PROG
-    DBG_PROG_V( dateiwahl->filter() )
+  dateiwahl()->filter(muster.c_str()); DBG_PROG
+  dateiwahl()->value(datei.c_str()); DBG_PROG
+  dateiwahl()->label(titel.c_str()); DBG_PROG
+    DBG_PROG_V( dateiwahl()->filter() )
 
     DBG_PROG_V( dateiname )
 
   if (dateiname == "" ||
       dateiname == profile.name())
-  { DBG_PROG_V( dateiwahl->count() << dateiname )
+  { DBG_PROG_V( dateiwahl()->count() << dateiname )
     icc_examin->fortschritt (1.1 , 1.0);
       DBG_PROG_ENDE
     return false;

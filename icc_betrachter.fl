@@ -1,5 +1,5 @@
 # data file for the Fltk User Interface Designer (fluid)
-version 1.0107 
+version 1.0300 
 i18n_type 1 
 i18n_include <libintl.h> 
 i18n_function _ 
@@ -44,6 +44,9 @@ decl {\#include <FL/Fl_Box.H>} {public
 } 
 
 decl {\#include "Flmm_Message.H"} {} 
+
+decl {\#include "Flmm_Tabs.H"} {public
+} 
 
 decl {\#include "icc_gl.h"} {} 
 
@@ -317,7 +320,7 @@ class ICCfltkBetrachter {open
   setTitleUrl = true;} {}
     Fl_Window ueber {
       label {About ICC Examin} open
-      xywh {846 737 365 295} type Double resizable
+      xywh {852 608 365 295} type Double resizable
       code0 {o->hide();}
       code1 {o->use_escape_hide = true;}
       class {icc_examin_ns::MyFl_Double_Window} visible
@@ -327,10 +330,11 @@ class ICCfltkBetrachter {open
       } {
         Fl_Tabs {} {open
           xywh {0 0 365 260} resizable
+          class Flmm_Tabs
         } {
           Fl_Help_View ueber_html {
             label About
-            xywh {0 25 365 235} box THIN_UP_BOX color 49 selection_color 47
+            xywh {0 25 365 235} box THIN_UP_BOX color 49 selection_color 47 hide
           }
           Fl_Help_View hilfe_html {
             label Help
@@ -347,6 +351,10 @@ class ICCfltkBetrachter {open
           Fl_Output links_text {
             label Links
             xywh {10 35 345 215} type Multiline box THIN_DOWN_BOX color 49 selection_color 47 hide
+          }
+          Fl_Help_View info_html {
+            label Info selected
+            xywh {0 25 365 235} box THIN_UP_BOX color 49 selection_color 47
           }
         }
         Fl_Button ja {
@@ -395,7 +403,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window DD {
       label Gamut open
-      xywh {899 506 385 520} type Double box NO_BOX resizable
+      xywh {265 234 385 520} type Double box NO_BOX resizable
       class {icc_examin_ns::MyFl_Double_Window} visible
     } {
       Fl_Group {} {open
@@ -551,7 +559,7 @@ class ICCfltkBetrachter {open
             MenuItem {} {
               label Log
               callback {log_show();
-DBG_NUM_S("Show Log window")} selected
+DBG_NUM_S("Show Log window")}
               xywh {50 50 100 20} shortcut 0x4006c
             }
           }
@@ -578,7 +586,7 @@ DBG_NUM_S("Show Log window")} selected
     }
     Fl_Window details {
       label {ICC Examin} open
-      xywh {664 512 385 520} type Double box NO_BOX
+      xywh {113 231 385 520} type Double box NO_BOX
       code0 {o->main_win = o;}
       class {icc_examin_ns::MyFl_Double_Window} visible
     } {
@@ -723,7 +731,7 @@ icc_examin->testZeigen();}
             }
             MenuItem {} {
               label Log
-              callback { log_show();
+              callback {log_show();
 DBG_NUM_S("Show Log window")}
               xywh {45 45 100 20} shortcut 0x4006c
             }
@@ -852,7 +860,7 @@ DBG_NUM_S("Show Log window")}
                         } {}
                         Fl_Value_Slider mft_gl_slider {
                           callback {icc_examin->mftChannel( (int)mft_gl_slider_choice->value()+3, (int)mft_gl_slider->value() );}
-                          xywh {0 210 25 285} resizable
+                          xywh {0 210 25 285} step 0.01 resizable
                         }
                       }
                     }
@@ -942,7 +950,7 @@ DBG_NUM_S("Show Log window")}
     const char* ptr = NULL;
     if (dateinamen.size()) {
       ptr = dateinamen[0].c_str();
-      dateiwahl->value(ptr);
+      dateiwahl()->value(ptr);
       DBG_PROG_S( dateinamen[0])
     } 
       if(ptr) DBG_PROG_V( ptr );
@@ -958,21 +966,21 @@ DBG_NUM_S("Show Log window")}
       ptr = getenv("HOME");
     }
 
-    dateiwahl->show();
+    dateiwahl()->show();
 
     if(ptr)
-      dateiwahl->value(ptr);
+      dateiwahl()->value(ptr);
 
 
-    while (dateiwahl->visible())
+    while (dateiwahl()->visible())
       Fl::wait();
 
-    DBG_NUM_V( dateiwahl->count() )
-    if (dateiwahl->count() && dateiwahl->value()) {
-      DBG_NUM_V( dateiwahl->value() )
-      dateinamen.resize(dateiwahl->count());
-      for (int i = 1; i <= dateiwahl->count(); i++)
-        dateinamen[i-1] = dateiwahl->value(i);
+    DBG_NUM_V( dateiwahl()->count() )
+    if (dateiwahl()->count() && dateiwahl()->value()) {
+      DBG_NUM_V( dateiwahl()->value() )
+      dateinamen.resize(dateiwahl()->count());
+      for (int i = 1; i <= dateiwahl()->count(); i++)
+        dateinamen[i-1] = dateiwahl()->value(i);
     }
   DBG_PROG
 
@@ -1175,11 +1183,13 @@ Function {dHaendler(void* o)} {return_type {static void}
   code DBG_PROG_ENDE {}
 } 
 
-Function {initHilfe()} {} {
+Function {initHilfe()} {open
+} {
   code {/* aktualisieren */
   icc_examin->icc_betrachter->ueber_html->value(getUeberHtml().c_str());
   icc_examin->icc_betrachter->hilfe_html->value(getHilfeHtml().c_str());
   icc_examin->icc_betrachter->lizenz_html->value(getLizenzHtml().c_str());
   icc_examin->icc_betrachter->dank_html->value(getDankHtml().c_str());
-  icc_examin->icc_betrachter->links_text->value(getLinksText().c_str());} {}
+  icc_examin->icc_betrachter->links_text->value(getLinksText().c_str());
+  icc_examin->icc_betrachter->info_html->value(getInfoHtml().c_str());} {}
 } 

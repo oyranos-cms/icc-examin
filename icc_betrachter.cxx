@@ -732,11 +732,21 @@ icc_examin_ns::MyFl_Double_Window* ICCfltkBetrachter::init(int argc, char** argv
     ueber->align(Fl_Align(FL_ALIGN_TOP));
     ueber->when(FL_WHEN_RELEASE);
     { Fl_Group* o = new Fl_Group(0, 0, 375, 295);
-      { Fl_Tabs* o = new Fl_Tabs(0, 0, 365, 260);
+      { Flmm_Tabs* o = new Flmm_Tabs(0, 0, 365, 260);
+        o->box(FL_THIN_UP_BOX);
+        o->color(FL_BACKGROUND_COLOR);
+        o->selection_color(FL_BACKGROUND_COLOR);
+        o->labeltype(FL_NORMAL_LABEL);
+        o->labelfont(0);
+        o->labelsize(14);
+        o->labelcolor(FL_FOREGROUND_COLOR);
+        o->align(Fl_Align(FL_ALIGN_TOP));
+        o->when(FL_WHEN_RELEASE);
         { ueber_html = new Fl_Help_View(0, 25, 365, 235, _("About"));
           ueber_html->box(FL_THIN_UP_BOX);
           ueber_html->color(FL_BACKGROUND_COLOR);
           ueber_html->selection_color(FL_DARK1);
+          ueber_html->hide();
         } // Fl_Help_View* ueber_html
         { hilfe_html = new Fl_Help_View(0, 25, 365, 235, _("Help"));
           hilfe_html->box(FL_THIN_UP_BOX);
@@ -764,9 +774,14 @@ icc_examin_ns::MyFl_Double_Window* ICCfltkBetrachter::init(int argc, char** argv
           links_text->selection_color(FL_DARK1);
           links_text->hide();
         } // Fl_Output* links_text
+        { info_html = new Fl_Help_View(0, 25, 365, 235, _("Info"));
+          info_html->box(FL_THIN_UP_BOX);
+          info_html->color(FL_BACKGROUND_COLOR);
+          info_html->selection_color(FL_DARK1);
+        } // Fl_Help_View* info_html
         o->end();
         Fl_Group::current()->resizable(o);
-      } // Fl_Tabs* o
+      } // Flmm_Tabs* o
       { ja = new Fl_Button(130, 264, 110, 25, _("Yes"));
         ja->callback((Fl_Callback*)cb_ja);
       } // Fl_Button* ja
@@ -1152,7 +1167,7 @@ ICClist<std::string> ICCfltkBetrachter::open_veraltet(ICClist<std::string> datei
     const char* ptr = NULL;
     if (dateinamen.size()) {
       ptr = dateinamen[0].c_str();
-      dateiwahl->value(ptr);
+      dateiwahl()->value(ptr);
       DBG_PROG_S( dateinamen[0])
     } 
       if(ptr) DBG_PROG_V( ptr );
@@ -1168,21 +1183,21 @@ ICClist<std::string> ICCfltkBetrachter::open_veraltet(ICClist<std::string> datei
       ptr = getenv("HOME");
     }
 
-    dateiwahl->show();
+    dateiwahl()->show();
 
     if(ptr)
-      dateiwahl->value(ptr);
+      dateiwahl()->value(ptr);
 
 
-    while (dateiwahl->visible())
+    while (dateiwahl()->visible())
       Fl::wait();
 
-    DBG_NUM_V( dateiwahl->count() )
-    if (dateiwahl->count() && dateiwahl->value()) {
-      DBG_NUM_V( dateiwahl->value() )
-      dateinamen.resize(dateiwahl->count());
-      for (int i = 1; i <= dateiwahl->count(); i++)
-        dateinamen[i-1] = dateiwahl->value(i);
+    DBG_NUM_V( dateiwahl()->count() )
+    if (dateiwahl()->count() && dateiwahl()->value()) {
+      DBG_NUM_V( dateiwahl()->value() )
+      dateinamen.resize(dateiwahl()->count());
+      for (int i = 1; i <= dateiwahl()->count(); i++)
+        dateinamen[i-1] = dateiwahl()->value(i);
     }
   DBG_PROG
 
@@ -1391,4 +1406,5 @@ void initHilfe() {
   icc_examin->icc_betrachter->lizenz_html->value(getLizenzHtml().c_str());
   icc_examin->icc_betrachter->dank_html->value(getDankHtml().c_str());
   icc_examin->icc_betrachter->links_text->value(getLinksText().c_str());
+  icc_examin->icc_betrachter->info_html->value(getInfoHtml().c_str());
 }

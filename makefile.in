@@ -125,7 +125,8 @@ MAIN_SOURCES = icc_main.cpp
 CINEPAINT_SOURCES = icc_cinepaint.cpp
 FLMM_CXXFILES = \
 	Flmm/Flmm.cxx \
-	Flmm/Flmm_Message.cxx
+	Flmm/Flmm_Message.cxx \
+	Flmm/Flmm_Tabs.cxx
 
 COMMON_CFILES =  \
 	icc_oyranos_extern.c \
@@ -191,6 +192,7 @@ DOKU = \
 FLMM_FILES = \
 	Flmm/Flmm.H \
 	Flmm/Flmm_Message.H \
+	Flmm/Flmm_Tabs.H \
 	Flmm/AUTHORS \
 	Flmm/ANNOUNCEMENT \
 	Flmm/CHANGES \
@@ -287,6 +289,9 @@ Flmm/Flmm.o: Flmm/Flmm.cxx
 	echo Compiling $@
 	$(CXX) -I./Flmm -I./ -I../ $(CXXFLAGS) $(FLTK_H) -o $@ -c $<
 Flmm/Flmm_Message.o: Flmm/Flmm_Message.cxx
+	echo Compiling $@
+	$(CXX) -I./Flmm -I./ -I../ $(CXXFLAGS) $(FLTK_H) -o $@ -c $<
+Flmm/Flmm_Tabs.o: Flmm/Flmm_Tabs.cxx
 	echo Compiling $@
 	$(CXX) -I./Flmm -I./ -I../ $(CXXFLAGS) $(FLTK_H) -o $@ -c $<
 

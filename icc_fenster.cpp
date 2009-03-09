@@ -30,6 +30,7 @@
 #include "icc_examin.h"
 #include "icc_dateiwahl.h"
 #include "icc_fenster.h"
+#include "icc_helfer_fltk.h"
 
 #include <string>
 
@@ -51,50 +52,25 @@ namespace icc_examin_ns {
 #define IN_MIDDLE_OF_(n) { DBG_NUM_S("Break signal loop "<<n); /*return;*/ }
 
 #ifdef HAVE_FLTK
-#ifdef HAVE_FLU
+MyFl_File_Chooser  *dateiwahl_ = 0;
 
-Flu_File_Chooser *dateiwahl;
-
-void
-dateiwahl_cb (const char *dateiname, int typ, void *arg)
-{ DBG_PROG_START
-
-  // no profile dialog
-  if (strstr( dateiwahl->pattern(), "*.ic*") == 0 &&
-      // potential measurements
-      strstr( dateiwahl->pattern(), "*.txt") == 0 &&
-      strstr( dateiwahl->pattern(), "*.TXT") == 0 &&
-      strstr( dateiwahl->pattern(), "*.it8") == 0 &&
-      strstr( dateiwahl->pattern(), "*.IT8") == 0 &&
-      strstr( dateiwahl->pattern(), "*.CMYK") == 0 &&
-      strstr( dateiwahl->pattern(), "*.DLY") == 0 &&
-      strstr( dateiwahl->pattern(), "*.nCIE") == 0 &&
-      strstr( dateiwahl->pattern(), "*.oRPT") == 0 &&
-      strstr( dateiwahl->pattern(), "*.LAB") == 0 &&
-      strstr( dateiwahl->pattern(), "*.Q60") == 0 &&
-      strstr( dateiwahl->pattern(), "*.IC*") == 0 )
+MyFl_File_Chooser  * dateiwahl()
+{
+  if(!dateiwahl_)
   {
-    DBG_PROG_ENDE
-    //return;
+    my_fl_translate_file_chooser();
+
+    const char* ptr = NULL;
+    if (profile.size())
+      ptr = profile.name().c_str();
+    dateiwahl_ = new MyFl_File_Chooser(ptr, _("ICC colour profiles (*.{I,i}{C,c}{M,m,C,c})	Measurement (*.{txt,it8,IT8,RGB,CMYK,ti*,cgats,CIE,cie,nCIE,oRPT,DLY,LAB,Q60})	Argyll Gamuts (*.{wrl,vrml,wrl.gz,vrml.gz}"), MyFl_File_Chooser::MULTI, _("Which ICC profile?"));
+    dateiwahl_->callback(dateiwahl_cb);
+    dateiwahl_->preview(true);
+    icc_examin_ns::MyFl_Double_Window *w = dateiwahl_->window;
+    w->use_escape_hide = true;
   }
-
-    if (dateiname)
-    {
-      ICClist<std::string> profilnamen;
-      profilnamen.resize(1);
-      //profilnamen[0] = dateiname;
-
-      DBG_NUM_V( profile )
-      profilnamen[0] = dateiwahl->get_current_directory();
-      profilnamen[0].append( dateiname );
-      DBG_NUM_V( profilnamen[0] )
-      icc_examin->oeffnen( profilnamen );
-    }
-
-  DBG_PROG_ENDE
+  return dateiwahl_;
 }
-#else
-MyFl_File_Chooser  *dateiwahl;
 
 void
 dateiwahl_cb (MyFl_File_Chooser *f, void *data, int finish)
@@ -109,7 +85,7 @@ dateiwahl_cb (MyFl_File_Chooser *f, void *data, int finish)
 
     static ICClist<std::string> file_vect;
 
-    if (filename && fl->count() && dateiwahl->preview()) {
+    if (filename && fl->count() && dateiwahl()->preview()) {
       ICClist<std::string> profilnamen;
       profilnamen.resize(fl->count());
       for (int i = 0; i < fl->count(); i++) {
@@ -172,7 +148,6 @@ dateiwahl_cb (MyFl_File_Chooser *f, void *data, int finish)
 
   DBG_PROG_ENDE
 }
-#endif
 
 MyFl_Double_Window* nachricht_ (std::string text); 
 MyFl_Double_Window* log_ (std::string text, int code); 

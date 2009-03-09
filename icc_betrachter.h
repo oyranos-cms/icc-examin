@@ -19,6 +19,7 @@
 #include <FL/Fl_Window.H>
 #include <FL/Fl_Menu_Bar.H>
 #include <FL/Fl_Box.H>
+#include "Flmm_Tabs.H"
 #include "icc_fenster.h" 
 #include "icc_dateiwahl.h" 
 #include <FL/Fl_Hold_Browser.H>
@@ -68,7 +69,6 @@ public:
   int handle( int event );
 };
 #include <FL/Fl_Group.H>
-#include <FL/Fl_Tabs.H>
 #include <FL/Fl_Help_View.H>
 #include <FL/Fl_Output.H>
 #include <FL/Fl_Button.H>
@@ -97,6 +97,7 @@ public:
   Fl_Help_View *lizenz_html;
   Fl_Help_View *dank_html;
   Fl_Output *links_text;
+  Fl_Help_View *info_html;
   Fl_Button *ja;
 private:
   void cb_ja_i(Fl_Button*, void*);
