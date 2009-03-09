@@ -58,8 +58,6 @@
 // in icc_helfer_fltk.cpp
 void        dbgFltkEvents  ( int           event);
 std::string dbgFltkEvent   ( int           event);
-void        setzeIcon      ( Fl_Window    *fenster,
-                             const char  **xpm_daten );
 void        fl_delayed_redraw ( void *Fl_Widget);
 #endif
 

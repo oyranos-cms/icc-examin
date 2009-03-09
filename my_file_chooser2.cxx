@@ -46,6 +46,7 @@
 // Include necessary headers.
 //
 
+#include "icc_utils.h"
 #include <my_file_chooser.h>
 #include <FL/filename.H>
 #include <FL/fl_ask.H>

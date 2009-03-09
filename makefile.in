@@ -143,7 +143,8 @@ CPPFILES = \
 CXXFILES = \
 	icc_betrachter.cxx \
 	my_file_chooser.cxx \
-	my_file_chooser2.cxx
+	my_file_chooser2.cxx \
+	my_fl_double_window.cxx
 TEST_CPP = \
 	tests/dE2000_test.cpp \
 	tests/intptr_test.c \

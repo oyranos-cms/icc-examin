@@ -30,7 +30,7 @@
 #ifndef ICC_FENSTER_H
 #define ICC_FENSTER_H
 
-#include "icc_utils.h"
+#include <string>
 
 //#if HAVE_FLTK
 #include <FL/Fl_Hold_Browser.H> 
@@ -88,6 +88,7 @@ namespace icc_examin_ns {
      const char* label() { return Fl_Double_Window::label(); }
 
      int  handle (int e);        //!< query events (keys, FL_HIDE...)
+     static int  (*event_handler) (int e);//!< general application event handler
   };
 
   //! window with news
@@ -97,6 +98,8 @@ namespace icc_examin_ns {
   extern MyFl_Double_Window *log_window;
   extern int log_window_poped;
 
+  void        setzeIcon    ( Fl_Window    *fenster,
+                             const char  **xpm_daten );
 }
 
 //#endif

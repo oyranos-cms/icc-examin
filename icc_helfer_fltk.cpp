@@ -39,11 +39,6 @@
 #include "icc_helfer.h"
 #include "icc_icc.h"
 #include <FL/Fl.H>
-#if HAVE_X
-#include <X11/xpm.h>
-#include <X11/extensions/shape.h>
-#include <FL/x.H>
-#endif
 
 
 #ifdef HAVE_FLTK
@@ -159,46 +154,6 @@ dbgFltkEvent(int event)
   default: text = "event: "; event += event;
   }
   return text;
-}
-
-void
-setzeIcon      ( Fl_Window *fenster, const char   **xpm_daten )
-{
-# if HAVE_X && !APPLE
-  fl_open_display();
-  if(!fenster) {
-    WARN_S("no window provided")
-    return;
-  }
-  fenster->make_current();
-  DBG_PROG_V( (int*) fl_display <<" "<< fl_window )
-  Pixmap pm, mask;
-# if HAVE_Xpm
-  XpmCreatePixmapFromData(  fl_display,
-                            DefaultRootWindow(fl_display),
-                            const_cast<char**> (xpm_daten),
-                            &pm,
-                            &mask,
-                            NULL);
-# endif
-# if 0
-  XShapeCombineMask(fl_display, fl_window,
-                    ShapeBounding,0,0,
-                    mask,ShapeSet);
-# endif
-  //fenster->icon((char*)p); // die FLTK Methode
-
-  XWMHints *hinweis;
-  hinweis = XGetWMHints( fl_display, fl_window );
-  if (!hinweis)
-    hinweis = XAllocWMHints();
-  hinweis->flags |= IconPixmapHint;
-  hinweis->icon_pixmap = pm;
-  hinweis->flags |= IconMaskHint;
-  hinweis->icon_mask = mask;
-  XSetWMHints( fl_display, fl_window, hinweis );
-  XFree( hinweis );
-# endif
 }
 
 

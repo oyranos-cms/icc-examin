@@ -382,6 +382,7 @@ ICCexamin::start (int argc, char** argv)
   modellDazu( /*GL_Ansicht*/icc_betrachter->DD_farbraum);
 
   Fl::add_handler(tastatur);
+  MyFl_Double_Window::event_handler = tastatur;
 
   // Behandle Kommandozeilenargumente
       if (argc>1) {
