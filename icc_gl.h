@@ -251,6 +251,7 @@ private:
   double zeit_diff_;        //!< seconds per frame
   double zeit_;
   int  valid_;              //!< remembers valid() from within draw()
+  int  update_geometries_;  //!< remembers creating GL lists from within draw()
   char t[128];              //!< text for searching errors
   int  maus_x_;
   int  maus_y_;

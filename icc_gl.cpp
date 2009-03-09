@@ -198,6 +198,7 @@ GL_Ansicht::init_()
   maus_y_alt = -1;
   maus_steht = false;
   valid_ = false;
+  update_geometries_ = true;
   zeit_ = 0;
   text[0] = 0;
   colours_ = 0;
@@ -340,6 +341,11 @@ GL_Ansicht::copy (const GL_Ansicht & gl)
   return *this;
 }
 
+/**
+ *  Use this function, including mode(), outside of Fl_Gl_Window::draw().
+ *
+ *  @see http://www.fltk.org/str.php?L1945
+ */
 void
 GL_Ansicht::init(int ty)
 { DBG_PROG_START
@@ -512,7 +518,7 @@ GL_Ansicht::bewegenStatisch_ (void* gl_a)
   DBG_ICCGL_ENDE
 }
 
-bool GL_Ansicht::darfBewegen()        { return agv_->darf_bewegen_; }
+bool GL_Ansicht::darfBewegen()        { return agv_ && agv_->darf_bewegen_; }
 void GL_Ansicht::darfBewegen(int d)
 {
   agv_->darf_bewegen_ = d?true:false; 
@@ -542,12 +548,10 @@ GL_Ansicht::auffrischen_()
 
   menueErneuern_();
 
-  int err = erstelleGLListen_();
-  if(err)
-    valid_ = false;
+  update_geometries_ = true;
 
   DBG_PROG_ENDE
-  return err;
+  return 0;
 }
 
 void
@@ -582,10 +586,10 @@ GL_Ansicht::nachricht(icc_examin_ns::Modell* modell, int info)
   if( visible() && shown() && !agv_->parent->visible() )
     agv_->reparent(this);
 
-  if(info == ICCexamin::GL_AUFFRISCHEN)
+  if( info == ICCexamin::GL_AUFFRISCHEN )
   {
     invalidate();
-    erstelleGLListen_();
+    auffrischen_();
     redraw();
   }
 
@@ -665,7 +669,7 @@ GL_Ansicht::getAgv( GL_Ansicht *ansicht, GL_Ansicht *referenz )
   if(!agv && referenz)
   {
     agv = referenz->agv_;
-    agv -> reparent( ansicht );
+    agv->reparent( ansicht );
   }
 
   if(!agv)
@@ -925,6 +929,8 @@ int
 GL_Ansicht::erstelleGLListen_()
 { DBG_PROG_START
 
+  WARN_S(update_geometries_)
+
   if(!frei())
     return 1;
 
@@ -933,6 +939,7 @@ GL_Ansicht::erstelleGLListen_()
   garnieren_();
 
   tabelleAuffrischen();
+  WARN_S(update_geometries_)
 
   // actualise shodow
   static char aktive[64];
@@ -2330,17 +2337,28 @@ GL_Ansicht::zeichnen()
   if(!valid_)
   {
     // complete initialisation
-    init(id_);
     gl_font( FL_HELVETICA, 10 );
-
+    update_geometries_ = true;
     GLinit_();  DBG_PROG
     fensterForm();
-    int err = auffrischen_();
-    if(!err)
-      valid_ = true;
-    else
-      return;
+    WARN_S("nach erstelleGLListen_() " << update_geometries_)
   }
+
+  if(update_geometries_)
+  {
+    int err = erstelleGLListen_();
+    WARN_S("nach erstelleGLListen_()")
+    if(err)
+    {
+      update_geometries_ = true;
+      return;
+    }
+
+    update_geometries_ = false;
+    valid_ = true;
+  }
+
+  WARN_S("nach erstelleGLListen_()" << update_geometries_)
 
   if(!frei()) return;
   MARK( frei(false); )
