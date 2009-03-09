@@ -2475,21 +2475,19 @@ GL_Ansicht::zeichnen()
         }
       }
 
-      if( (strlen(text) || epoint_) &&
-          typ() != 1 )
-      {
-        double lab[3] = {oY+0.5, oZ/2.55+0.5, oX/2.55+0.5},
-              *rgb_ = 0, *rgb;
-
-        icc_examin->statusFarbe(lab[0],lab[1],lab[2]);
-          DBG_PROG_V( lab[0]<<" "<<lab[1]<<" "<<lab[2] )
-        /*if(epoint_ && epoint_->sig == icSigRgbData)
-          rgb = &epoint_->channels[0];
-        else*/
-          rgb_ = rgb = icc_oyranos.wandelLabNachBildschirmFarben( 
+    double lab[3] = {oY+0.5, oZ/2.55+0.5, oX/2.55+0.5},
+            *rgb_ = 0, *rgb = 0;
+    rgb_ = rgb = icc_oyranos.wandelLabNachBildschirmFarben( 
                window()->x() + window()->w()/2, window()->y() + window()->h()/2,
                                  lab, 1, icc_examin->intentGet(NULL),
                                  icc_examin->gamutwarn()?cmsFLAGS_GAMUTCHECK:0);
+
+      if( (strlen(text) || epoint_) &&
+          typ() != 1 )
+      {
+
+        icc_examin->statusFarbe(lab[0],lab[1],lab[2]);
+          DBG_PROG_V( lab[0]<<" "<<lab[1]<<" "<<lab[2] )
         if(rgb)
         {
 #         ifndef Beleuchtung_
@@ -2509,7 +2507,6 @@ GL_Ansicht::zeichnen()
 #         endif
         }
         glLineWidth(strich1*strichmult);
-        if(rgb_) delete [] rgb_;
       }
 
 
@@ -2574,7 +2571,8 @@ GL_Ansicht::zeichnen()
 
             glRasterPos3d (X, Y, 9.999);
                       
-            if(typ() == 1) {
+            if(typ() == 1)
+            {
               DBG_PROG_V( oY<<" "<<oZ<<" "<<oX )
                         /*if(-0.505 <= oY && oY <= 0.505 &&
                            -0.505 <= oZ && oZ <= 0.505 &&
@@ -2613,11 +2611,48 @@ GL_Ansicht::zeichnen()
                    ZeichneOText (ortho_font, scal, text)
                  }}}
                }
-            } else {
+            } else
+            {
               if(!epoint_)
                 glStatus( text, typ_ );
               ZeichneOText (ortho_font, scal, text)
+
+              /* Circle around point */
+              if( epoint_) 
+              {
+                GLdouble breite = 24;
+                int seiten = 8 + breite/2;
+                GLdouble x, y,
+                         s = 2*M_PI/(GLdouble)seiten; // static variable
+
+                // lines
+                FARBE(f,f,f,1)
+                glBegin(GL_LINE_STRIP);
+                  glVertex3d( X+2*breite, Y-1, 9.999 );
+                  glVertex3d( X+0.5*breite, Y-1, 9.999 );
+                glEnd();
+                glBegin(GL_LINE_STRIP);
+                  glVertex3d( X-1.2*breite, Y-1, 9.999 );
+                  glVertex3d( X-0.2*breite, Y-1, 9.999 );
+                glEnd();
+                glBegin(GL_LINE_STRIP);
+                  glVertex3d( X, Y+1.2*breite, 9.999 );
+                  glVertex3d( X, Y+0.5*breite, 9.999 );
+                glEnd();
+
+                // circle
+                breite += 1;
+                glBegin(GL_LINE_STRIP);
+                  for(int i = 0; i <= seiten; ++i)
+                  {
+                    x = cos(i*(double)s)*breite;
+                    y = sin(i*(double)s)*breite;
+                    glVertex3d( X+x, Y+y, 9 );
+                  }
+                glEnd();
+              }
             }
+
             if(icc_debug == 14) {
               glScalef(100,100,100);
               zeichneKoordinaten_();
@@ -2742,6 +2777,7 @@ GL_Ansicht::zeichnen()
       // allow other colours to appear
       oyNamedColour_Release( &epoint_ );
 
+    if(rgb_) delete [] rgb_;
 
   } else
     if(!icc_examin->frei())
