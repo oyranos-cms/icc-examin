@@ -999,7 +999,7 @@ Oyranos::vrmlVonProfil (ICCprofile & profil, int intent, int bpc,
         for(int k = 0; k < 3 ; ++k)
           netze[0].punkte[j].farbe[k] = rgb[k];
 
-        delete [] rgb;
+        free( rgb );
   }
 
   vrml = netzNachVRML( netze );
