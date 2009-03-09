@@ -48,14 +48,8 @@
 #include "icc_fenster.h"
 namespace icc_examin_ns {
 
-
-#if HAVE_FLU
-  extern Flu_File_Chooser *dateiwahl;
-  void dateiwahl_cb(const char *dateiname, int typ, void *arg);
-#else
-  extern MyFl_File_Chooser  *dateiwahl;
+  extern MyFl_File_Chooser  *dateiwahl( void );
   void dateiwahl_cb( MyFl_File_Chooser *f, void *data, int typ );
-#endif
 
 }
 
