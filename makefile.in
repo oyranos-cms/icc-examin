@@ -314,7 +314,7 @@ $(LIBNAME):	$(I18N_OBJECTS)
 $(LIBFL_I18N):
 	cd fl_i18n/ && $(MAKE) -f $(MAKEFILE_ARCH)
 
-$(LIBBSP):	$(BSP_OBJECTS)
+$(LIBBSP):	$(BSP_SOURCES)
 	cd bsp/ && $(MAKE)
 
 static:	$(BINTARGET)
