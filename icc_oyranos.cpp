@@ -566,10 +566,16 @@ Oyranos::moniInfo (int x, int y, int *num)
   int screen = oyGetScreenFromPosition( display_name, x,y );
   char *new_display_name = changeScreenName_( display_name, screen );
 //int fehler =
+# if OYRANOS_VERSION > 109
                oyGetMonitorInfo( new_display_name,
                                  &manufacturer, &model, &serial, 
                                  &system_port, &geometry, 0,
                                  myAllocFunc );
+# else
+               oyGetMonitorInfo( new_display_name,
+                                 &manufacturer, &model, &serial, 
+                                 myAllocFunc );
+# endif
 
   if( manufacturer && strlen( manufacturer ) )
   {

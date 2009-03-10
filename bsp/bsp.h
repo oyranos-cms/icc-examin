@@ -54,7 +54,7 @@ typedef struct bspnodeTag {
 
 
 #ifdef __APPLE__
-/* ku.b for ICC Examin */
+/* ku.b for ICC Examin original value was 0.0000076 */
 #define TOLER 0.000076
 #else
 #define TOLER 0.0000076

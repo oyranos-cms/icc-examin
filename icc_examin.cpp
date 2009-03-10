@@ -233,12 +233,12 @@ void
 ICCexamin::quit ()
 { DBG_PROG_START
   status_ = false;
-  icc_examin_ns::sleep(0.5);
+  //icc_examin_ns::sleep(0.5);
 
-  delete icc_betrachter->DD;
+  /*delete icc_betrachter->DD;
   delete icc_betrachter->details;
   delete icc_betrachter;
-  delete alle_gl_fenster;
+  delete alle_gl_fenster;*/
   delete io_;
 
   Fl_Preferences vor( Fl_Preferences::USER, "oyranos.org", "iccexamin");
@@ -894,15 +894,22 @@ void ICCexamin::optionsRefresh_( void )
   oyOptions_Release( &options_ );
     
 # if OYRANOS_VERSION >= 109
+# if OYRANOS_VERSION > 109
+# define UND &
+# define FLAGS ,0
+# else
+# define UND
+# define FLAGS
+# endif
   options_ = oyOptions_ForFilter( "//colour", 0, 0, 0 );
   char t[4];
   /* should always be a single digit */
   sprintf( t, "%d", intentGet(NULL));
-  oyOptions_SetFromText( &options_, "rendering_intent", t, 0 );
+  oyOptions_SetFromText( UND options_, "rendering_intent", t FLAGS );
   sprintf( t, "%d", bpc() );
-  oyOptions_SetFromText( &options_, "rendering_bpc", t, 0 );
+  oyOptions_SetFromText( UND options_, "rendering_bpc", t FLAGS );
   sprintf( t, "%d", gamutwarn() );
-  oyOptions_SetFromText( &options_, "rendering_gamut_warning", t, 0 );
+  oyOptions_SetFromText( UND options_, "rendering_gamut_warning", t FLAGS );
 # endif
 }
 
