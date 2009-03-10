@@ -198,7 +198,7 @@ GL_Ansicht::init_()
   maus_y_alt = -1;
   maus_steht = false;
   valid_ = false;
-  update_geometries_ = true;
+  update_geometries_ = false;
   zeit_ = 0;
   text[0] = 0;
   colours_ = 0;
@@ -929,8 +929,6 @@ int
 GL_Ansicht::erstelleGLListen_()
 { DBG_PROG_START
 
-  WARN_S(update_geometries_)
-
   if(!frei())
     return 1;
 
@@ -939,7 +937,6 @@ GL_Ansicht::erstelleGLListen_()
   garnieren_();
 
   tabelleAuffrischen();
-  WARN_S(update_geometries_)
 
   // actualise shodow
   static char aktive[64];
@@ -2338,27 +2335,20 @@ GL_Ansicht::zeichnen()
   {
     // complete initialisation
     gl_font( FL_HELVETICA, 10 );
-    update_geometries_ = true;
+    auffrischen_();
     GLinit_();  DBG_PROG
     fensterForm();
-    WARN_S("nach erstelleGLListen_() " << update_geometries_)
   }
 
   if(update_geometries_)
   {
     int err = erstelleGLListen_();
-    WARN_S("nach erstelleGLListen_()")
     if(err)
-    {
-      update_geometries_ = true;
       return;
-    }
 
     update_geometries_ = false;
     valid_ = true;
   }
-
-  WARN_S("nach erstelleGLListen_()" << update_geometries_)
 
   if(!frei()) return;
   MARK( frei(false); )
