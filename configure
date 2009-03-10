@@ -889,4 +889,4 @@ test -n "$ECHO" && cat $CONF_LOG | sed 's/\"/\\\"/g ; s/$/\ \\n\\/g'  >> $CONF_L
 echo_="\";"
 test -n "$ECHO" && $ECHO $e "$echo_" >> $CONF_LOG.h
 
-exit 1
+exit 0
