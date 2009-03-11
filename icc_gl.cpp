@@ -1638,7 +1638,7 @@ GL_Ansicht::punkteAuffrischen()
                   * out = 0,
                   * out_disp = 0;
         oyArray2d_s * in_array = 0;
-        oyColourConversion_s * cc_disp = 0, * cc_lab = 0;
+        oyConversion_s * cc_disp = 0, * cc_lab = 0;
         oyPROFILE_e projection = oyEDITING_LAB;
 
         if(nc)
@@ -1665,15 +1665,10 @@ GL_Ansicht::punkteAuffrischen()
                          prof_disp,
                          0 );
 
-#if OYRANOS_VERSION >= 109
           oyOptions_s * opts = icc_examin->options();
-          cc_lab = oyColourConversion_Create( opts, in,out, 0 );
-          cc_disp = oyColourConversion_Create( opts, in,out_disp, 0 );
+          cc_lab = oyConversion_CreateBasic( in,out, opts, 0 );
+          cc_disp = oyConversion_CreateBasic( in,out_disp, opts, 0 );
           oyOptions_Release( &opts );
-#else
-          cc_lab = oyColourConversion_Create( 0, 0, in,out, 0 );
-          cc_disp = oyColourConversion_Create( 0, 0, in,out_disp, 0 );
-#endif
 
           if(!in->pixel_data || in->pixel_data->type_ != oyOBJECT_ARRAY2D_S)
           {
@@ -1746,7 +1741,7 @@ GL_Ansicht::punkteAuffrischen()
                   if(grau)
                     rgba[0]= rgba[1]= rgba[2] = schattierung;
                   else
-                    oyColourConversion_Run( cc_disp );
+                    oyConversion_RunPixels( cc_disp, 0 );
                   glColor4dv( rgba );
                 }
 
@@ -1763,7 +1758,7 @@ GL_Ansicht::punkteAuffrischen()
                   if(grau)
                     rgba[0]= rgba[1]= rgba[2] = schattierung;
                   else
-                    oyColourConversion_Run( cc_disp );
+                    oyConversion_RunPixels( cc_disp, 0 );
                   glColor4dv( rgba );
                 }
 
@@ -1793,7 +1788,7 @@ GL_Ansicht::punkteAuffrischen()
                    if(grau)
                      rgba[0]= rgba[1]= rgba[2] = schattierung;
                    else
-                     oyColourConversion_Run( cc_disp );
+                     oyConversion_RunPixels( cc_disp, 0 );
                    glColor4dv( rgba );
 
                    oyXYZ2Lab( (const double*) in_array->array2d[0], lab );
@@ -1821,7 +1816,7 @@ GL_Ansicht::punkteAuffrischen()
                    if(grau)
                      rgba[0]= rgba[1]= rgba[2] = schattierung;
                    else
-                     oyColourConversion_Run( cc_disp );
+                     oyConversion_RunPixels( cc_disp, 0 );
                    glColor4dv( rgba );
 
                    oyXYZ2Lab( (const double*) in_array->array2d[0], lab );
@@ -1848,8 +1843,8 @@ GL_Ansicht::punkteAuffrischen()
           glEnd();
         }
 
-        oyColourConversion_Release( &cc_lab );
-        oyColourConversion_Release( &cc_disp );
+        oyConversion_Release( &cc_lab );
+        oyConversion_Release( &cc_disp );
         oyImage_Release( &in );
         oyImage_Release( &out );
         oyImage_Release( &out_disp );
