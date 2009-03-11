@@ -104,6 +104,8 @@ icc_examin_ns::iccLockRelease ( oyranos::oyPointer         thread_lock,
       else
         WARN_S( err_string << error )
     }
+
+    free( m ); m = 0;
   }
 
 
