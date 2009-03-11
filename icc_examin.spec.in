@@ -62,11 +62,14 @@ update-mime-database %{_datadir}/mime/
 %{desktopdir}/x-cgats.desktop
 %{desktopdir}/x-icc.desktop
 %{_datadir}/mime/packages/icc.xml
-%{pixmapdir}/icc_examin.png
+%{pixmapdir}/icc_examin.*
 %{_datadir}/fonts/FreeSans.ttf
 %{_datadir}/locale/*
 
 %changelog
+* Wed Mar 11 2009 Kai-Uwe Behrmann
+- add icc_examin.svg
+
 * Thu Dec 11 2008 Kai-Uwe Behrmann
 - add CinéPaint plug-in
 - add Oyranos dependencies

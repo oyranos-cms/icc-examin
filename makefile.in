@@ -187,6 +187,7 @@ DOKU = \
 	x-cgats.desktop \
 	x-icc.desktop \
 	icc_examin.png \
+	icc_examin.svg \
 	icc_examin.xpm \
 	icc.xml
 
@@ -556,6 +557,7 @@ install_global:
 	$(INSTALL) -m 644 icc.xml $(DESTDIR)$(datadir)/mime/packages/icc.xml
 	mkdir -p $(DESTDIR)$(pixmapdir)
 	$(INSTALL) -m 644 icc_examin.png $(DESTDIR)$(pixmapdir)/icc_examin.png
+	$(INSTALL) -m 644 icc_examin.svg $(DESTDIR)$(pixmapdir)/icc_examin.svg
 	echo  Linguas ...
 	for ling in $(LINGUAS); do \
 	  echo "Installing po/$${ling}.gmo ..."; \
@@ -579,6 +581,7 @@ uninstall:
 	$(RM) $(DESTDIR)$(desktopdir)/x-icc.desktop
 	$(RM) $(DESTDIR)$(datadir)/mime/packages/icc.xml
 	$(RM) $(DESTDIR)$(pixmapdir)/icc_examin.png
+	$(RM) $(DESTDIR)$(pixmapdir)/icc_examin.svg
 	$(RM) $(DESTDIR)$(datadir)/fonts/$(FONT)
 	for ling in $(LINGUAS); do \
 	  $(RM) $(DESTDIR)$(datadir)/locale/$${ling}/LC_MESSAGES/$(TARGET).mo; \
