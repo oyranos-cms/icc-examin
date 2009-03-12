@@ -1,8 +1,0 @@
-[Desktop Entry]
-Type=MimeType
-MimeType=application/x-icc
-Icon=icc_examin.png
-Patterns=*.icc *.icm
-Name=ICC
-Comment=ICC colour profile
-Encoding=UTF-8
