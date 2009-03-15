@@ -57,7 +57,7 @@ typedef struct bspnodeTag {
 /* ku.b for ICC Examin original value was 0.0000076 */
 #define TOLER 0.000076
 #else
-#define TOLER 0.0000076
+#define TOLER 0.000076
 #endif
 #define IS_EQ(a,b) ((fabs((double)(a)-(b)) >= (double) TOLER) ? 0 : 1)
 typedef enum {NEGATIVE= -1, ZERO= 0, POSITIVE= 1} SIGN;
