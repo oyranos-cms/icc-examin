@@ -59,9 +59,6 @@ update-mime-database %{_datadir}/mime/
 %doc AUTHORS COPYING ChangeLog README
 %{_bindir}/iccexamin
 %{desktopdir}/icc_examin.desktop
-%{desktopdir}/x-cgats.desktop
-%{desktopdir}/x-icc.desktop
-%{_datadir}/mime/packages/icc.xml
 %{pixmapdir}/icc_examin.*
 %{_datadir}/fonts/FreeSans.ttf
 %{_datadir}/locale/*
