@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2008  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2009  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -421,7 +421,8 @@ GL_Ansicht::init(int ty)
 
   agv_->agvInit(id_);
 
-  if (typ_ > 1) {
+  if (typ_ > 1)
+  {
     DBG_PROG_S("gl window " << id_)
     a_darstellungs_breite = 2.55;
     b_darstellungs_breite = 2.55;
@@ -2367,6 +2368,7 @@ GL_Ansicht::zeichnen()
     glLoadIdentity();
     glMatrixMode(GL_PROJECTION);
 
+
     glEnable(GL_TEXTURE_2D);
     glDisable(GL_LIGHTING);
     if(!smooth) {
@@ -2550,6 +2552,7 @@ GL_Ansicht::zeichnen()
          glLoadIdentity();
          glMatrixMode(GL_MODELVIEW);
          glOrtho( 0, w(), 0, h(), 0.1, 100.0);
+
 
          if (zeige_helfer)
            textGarnieren_();
