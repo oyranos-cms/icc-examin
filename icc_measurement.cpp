@@ -106,7 +106,7 @@ ICCmeasurement::defaults ()
 {
   DBG_PROG_START
   DBG_MEM_V( id_ <<" "<< profile_ )
-  sig_ = icMaxEnumTag;
+  sig_ = (icTagSignature)0xFFFFFFFF;
   size_ = 0;
   data_ = NULL;
 
@@ -284,7 +284,7 @@ ICCmeasurement::load                ( ICCprofile *profil,
   profile_ = profil;
   if (!profile_) WARN_S( "cant initialise, profile referenz is missed" )
 
-  if (sig_ != icMaxEnumTag)
+  if (sig_ != (icTagSignature)0xFFFFFFFF)
     sig_ = icSigCharTargetTag;
 
   size_   = size;

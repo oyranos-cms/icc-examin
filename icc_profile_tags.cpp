@@ -98,7 +98,7 @@ void
 ICCtag::defaults ()
 {
   DBG_PROG
-  _sig = icMaxEnumTag;
+  _sig = (icTagSignature)0xFFFFFFFF;
   size_ = 0;
   data_ = NULL;
   _intent = 0;
