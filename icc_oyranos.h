@@ -37,8 +37,6 @@
 
 #include "icc_oyranos_extern.h"
 
-#include <oyranos_icc.h>
-
 #include <string>
 #include <list>
 #include <map>
