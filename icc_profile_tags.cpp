@@ -102,8 +102,8 @@ ICCtag::defaults ()
   size_ = 0;
   data_ = NULL;
   _intent = 0;
-  _color_in = icMaxEnumData;
-  _color_out = icMaxEnumData;
+  _color_in = (icColorSpaceSignature)0xFFFFFFFF;
+  _color_out = (icColorSpaceSignature)0xFFFFFFFF;
   _profil = NULL;
   if (size_) DBG_MEM_V ((int*)data_) ;
 }
