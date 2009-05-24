@@ -112,15 +112,15 @@ clean:
 
 .c.o:
 	echo Compiling $< ...
-	$(CC) $(CFLAGS_) -c $<
+	$(CC) $(CFLAGS_) -c $(SRCDIR)/$<
 
 .cxx.o:
 	echo Compiling $< ...
-	$(CXX) $(CXXFLAGS_) -c $<
+	$(CXX) $(CXXFLAGS_) -c $(SRCDIR)/$<
 
 .cpp.o:
 	echo Compiling $< ...
-	$(CXX) $(CXXFLAGS_) -c $<
+	$(CXX) $(CXXFLAGS_) -c $(SRCDIR)/$<
 
 .fl.cxx:
 	echo Expanding $< ...

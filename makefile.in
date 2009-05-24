@@ -3,6 +3,9 @@ COLLECT = ar cru
 RANLIB = ranlib
 LINK = ln -s
 
+SRCDIR          = $(src_dir)
+BUILDDIR        = $(build_dir)/
+
 DL = --ldflags # --ldstaticflags
 
 X_CPPFILES = icc_helfer_x.cpp
@@ -10,7 +13,7 @@ OSX_CPPFILES = icc_helfer_osx.cpp
 FLTK_CPPFILES = icc_helfer_fltk.cpp
 I18N_CXXFILES = #fl_i18n.cxx fl_i18n_fl.cxx
 I18N_HEADERS = #fl_i18n.H
-FLMM_H = -I./Flmm
+FLMM_H = -I$(SRCDIR)/Flmm
 MSGFMT = msgfmt -c --statistics
 RPMARCH = `rpmbuild --showrc | awk '/^build arch/ {print $$4}'`
 
@@ -29,13 +32,12 @@ LIBOYRANOS_EXTRA =
 TOOLKIT_FILES = $(FLTK_CPPFILES)
 
 
-INCL_DEP = $(INCL) $(X_H) $(OSX_H) $(OYRANOS_H) \
-	$(FLU_H) $(FLTK_H) $(FTGL_H) $(LCMS_H) $(ALL_SOURCEFILES) bsp/*.c
-ALL_INCL = $(INCL) \
-	$(FLU_H) $(FLTK_H) $(X_H) $(OSX_H) $(OYRANOS_H) $(LCMS_H) $(FTGL_H) \
-	$(FLMM_H)
-CFLAGS_ = $(CFLAGS) $(DEBUG) $(ALL_INCL)
-CXXFLAGS_ = $(CXXFLAGS) $(DEBUG) $(ALL_INCL)
+INCL = $(X_H) $(OSX_H) $(OYRANOS_H) \
+	$(FLTK_H) $(FTGL_H) $(LCMS_H) -I$(SRCDIR) $(FLMM_H) \
+	-I$(includedir) 
+INCL_DEP = $(ALL_SOURCEFILES) $(BSP_SOURCES)
+CFLAGS_ = $(CFLAGS) $(DEBUG)
+CXXFLAGS_ = $(CXXFLAGS) $(DEBUG)
 
 LDLIBS = $(LDFLAGS) -L$(libdir) -L./ $(LIBFL_I18N) $(FLTK_LIBS) \
 	$(Flmm_OBJECTS) $(X11_LIBS) -llcms -L/lib \
@@ -200,7 +202,7 @@ FLMM_FILES = \
 	Flmm/README
 
 # the files are covered in the bsp directory
-BSP_SOURCES := $(shell ls bsp/*.c)
+BSP_SOURCES := $(shell (cd $(SRCDIR) && ls bsp/*.c))
 
 FLUID = \
 	icc_betrachter.fl \
@@ -209,7 +211,15 @@ FONT = FreeSans.ttf
 
 SOURCES = $(ALL_SOURCEFILES) $(ALL_HEADERFILES)
 
-OBJECTS = $(CFILES:.c=.o) $(CPPFILES:.cpp=.o) $(CXXFILES:.cxx=.o) $(CCFILES:.cc=.o)
+# we need these files to generate explicite targets for out of tree builds
+COBJECTS = \
+	$(CFILES:.c=.o) \
+	$(BSP_OBJECTS)
+CPPOBJECTS = $(MAIN_OBJECTS) $(CPPFILES:.cpp=.o)
+CXXOBJECTS = $(CXXFILES:.cxx=.o) $(Flmm_OBJECTS) $(I18N_OBJECTS)
+
+
+OBJECTS = $(CFILES:.c=.o) $(CPPFILES:.cpp=.o) $(CXXFILES:.cxx=.o)
 MAIN_OBJECTS = $(MAIN_SOURCES:.cpp=.o)
 CINEPAINT_OBJECTS = $(CINEPAINT_SOURCES:.cpp=.o)
 Flmm_OBJECTS = $(FLMM_CXXFILES:.cxx=.o)
@@ -232,10 +242,10 @@ CWDBUG_FILES = $(DEBUG_CC) $(DEBUG_H)
 BSP_FILES = $(BSP_C) $(BSP_H) $(BSP_TEXT)
 
 CONFIG_FILES = \
-	makefile.in \
-	configure \
-	configure_tests.sh \
-	$(TARGET).spec.in
+	$(SRCDIR)/makefile.in \
+	$(SRCDIR)/configure \
+	$(SRCDIR)/configure_tests.sh \
+	$(SRCDIR)/$(TARGET).spec.in
 
 
 ALL_FILES = \
@@ -273,9 +283,9 @@ $(BINTARGET):	$(BASE) $(OBJECTS) $(MAIN_OBJECTS) $(LINGUAS_SRC) $(I18N_OBJECTS) 
 	$(LDLIBS) $(LINK_LIB_PATH) $(LINK_SRC_PATH)
 	$(REZ)
 
-$(CINEPAINT_OBJECTS):	$(CINEPAINT_SOURCES)
+$(CINEPAINT_OBJECTS):	$(SRCDIR)/$(CINEPAINT_SOURCES)
 	echo Compiling Gtk CinePaint plug-in ...
-	$(CXX) $(CXXFLAGS_) `$(CP_FLAGS)` -c $(CINEPAINT_SOURCES)
+	$(CXX) -I. $(CXXFLAGS_) `$(CP_FLAGS)` -c $(SRCDIR)/$(CINEPAINT_SOURCES)
 
 $(CINEPAINT):	$(BASE) $(CINEPAINT_OBJECTS) $(OBJECTS) $(LINGUAS_SRC) $(I18N_OBJECTS) $(LIBNAME) $(Flmm_OBJECTS) $(LIBFL_I18N) $(LIBBSP)
 	echo Linking $@ ...
@@ -284,15 +294,6 @@ $(CINEPAINT):	$(BASE) $(CINEPAINT_OBJECTS) $(OBJECTS) $(LINGUAS_SRC) $(I18N_OBJE
 	`$(CP_LIBS)` $(LDLIBS) $(LINK_LIB_PATH) $(LINK_SRC_PATH)
 	$(REZ)
 
-Flmm/Flmm.o: Flmm/Flmm.cxx
-	echo Compiling $@
-	$(CXX) -I./Flmm -I./ -I../ $(CXXFLAGS) $(FLTK_H) -o $@ -c $<
-Flmm/Flmm_Message.o: Flmm/Flmm_Message.cxx
-	echo Compiling $@
-	$(CXX) -I./Flmm -I./ -I../ $(CXXFLAGS) $(FLTK_H) -o $@ -c $<
-Flmm/Flmm_Tabs.o: Flmm/Flmm_Tabs.cxx
-	echo Compiling $@
-	$(CXX) -I./Flmm -I./ -I../ $(CXXFLAGS) $(FLTK_H) -o $@ -c $<
 
 $(LIBSONAMEFULL):	$(I18N_OBJECTS)
 	echo Linking $@ ...
@@ -312,7 +313,7 @@ $(LIBNAME):	$(I18N_OBJECTS)
 $(LIBFL_I18N):
 	cd fl_i18n/ && $(MAKE) -f $(MAKEFILE_ARCH)
 
-$(LIBBSP):	$(BSP_SOURCES)
+$(LIBBSP):	$(BSP_OBJECTS)
 	cd bsp/ && $(MAKE)
 
 static:	$(BINTARGET)
@@ -351,51 +352,56 @@ static_static:	$(OBJECTS)
 	$(REZ)
 
 test:	icc_formeln.o icc_utils.o
-	$(CXX) $(CXXFLAGS_) $(INCL) -o dE2000_test.o -c tests/dE2000_test.cpp
+	$(CXX) $(CXXFLAGS_) $(INCL) -o dE2000_test.o \
+	  -c $(SRCDIR)tests/dE2000_test.cpp
 	$(CXX) $(CXXFLAGS_) -o dE2000_test dE2000_test.o icc_formeln.o icc_utils.o \
 	-L$(libdir) -llcms
 	$(REZ)
 
-$(LINGUAS_SRC):	$(POT_FILE)
+$(LINGUAS_SRC):	$(SRCDIR)/$(POT_FILE)
 	echo Linguas ... $(@:.gmo=)
+	mkdir -p po/
 	for ling in $(@:.gmo=); do \
-	  lingua=`echo $${ling} | sed s%po\/%%g`; \
-	  echo "update $${ling}.gmo ..."; \
-	  test -f $${ling}.po \
-        && ($(MSGFMT) -o $${ling}.gmo $${ling}.po; \
-            if [ ! -d $${ling} ]; then \
-              mkdir -p $${ling}; \
+	  lingua=`echo $${ling} | sed s%po/%%g | sed s%$(SRCDIR)/%%g`; \
+	  echo "update po/$${lingua}.gmo ..."; \
+	  test -f $(SRCDIR)/$${ling}.po \
+        && ($(MSGFMT) -o po/$${lingua}.gmo $(SRCDIR)/$${ling}.po; \
+            if [ ! -d po/$${lingua} ]; then \
+              mkdir po/$${lingua}; \
             fi; \
-            if [ ! -d ./$${ling}/LC_MESSAGES ]; then \
-              mkdir -p $${ling}/LC_MESSAGES; \
+            if [ ! -d po/$${lingua}/LC_MESSAGES ]; then \
+              mkdir po/$${lingua}/LC_MESSAGES; \
             fi; \
-            test -L $${ling}/LC_MESSAGES/$(TARGET).mo \
-              && $(RM) $${ling}/LC_MESSAGES/$(TARGET).mo; \
-	    cd $${ling}/LC_MESSAGES; \
-            ln -s ../../$${lingua}.gmo $(TARGET).mo; \
-	    cd ../.. \
-	   ) \
-        || (echo $${ling}.po is not yet ready ... skipping) \
+            test -L po/$${lingua}/LC_MESSAGES/$(TARGET).mo \
+              && $(RM) po/$${lingua}/LC_MESSAGES/$(TARGET).mo \
+              || echo po/$${lingua}/LC_MESSAGES/$(TARGET).mo nicht gefunden; \
+            ln -s ../../$${lingua}.gmo po/$${lingua}/LC_MESSAGES/$(TARGET).mo;) \
+        || (echo $(SRCDIR)/$${ling}.po is not yet ready ... skipping) \
 	done;
 
-$(POT_FILE):	$(ALL_SOURCEFILES)
-	echo Generate $(POT_FILE) ...
-	test `which xgettext` && xgettext --force-po $(XGETTEXT_OPTIONS) \
-	-d $(TARGET) \
-	-o $(POT_FILE) -c \
-	$(SOURCES) || echo -e "\c"
-	for ling in $(LINGUAS); do \
-            test `which $(MSGMERGE)` && \
-                 $(MSGMERGE) $(MSGMERG_OPTS) po/$${ling}.po \
-                 $(POT_FILE) || \
-	        echo -e "\c"; \
+$(SRCDIR)/$(POT_FILE):
+	echo Generating $(SRCDIR)/$(POT_FILE) ...
+	mkdir -p $(SRCDIR)/po
+	test `which xgettext` && (cd $(SRCDIR); \
+	  xgettext --force-po $(XGETTEXT_OPTIONS) \
+	   -d $(TARGET) \
+	   -o $(SRCDIR)/$(POT_FILE) -c \
+	   $(SOURCES) $(CHEADERS)) \
+	|| echo -e "\c"
+	-$(MSGCAT) $(SRCDIR)/po/*.pot -o $(SRCDIR)/po/oyranos.pot
+	for ling in $(SRCDIR)/po/*.po; do \
+	  lingua=`echo $${ling} | sed 's%$(SRCDIR)/po/%%g ; s%.po%%'`; \
+	  test `which $(MSGMERGE)` && \
+	         $(MSGMERGE) $(MSGMERG_OPTS) $(SRCDIR)/po/$${lingua}.po \
+	         $(SRCDIR)/$(POT_FILE) || \
+	    echo -e "\c"; \
 	done;
-	echo ... $(POT_FILE) done
+	echo ... $(SRCDIR)/$(POT_FILE) done
 
 
 clean:	unbundle unpkg
 	echo Cleaning $@ ...
-	-$(RM) $(ALL_OBJECTS) $(BINTARGET) \
+	-$(RM) $(ALL_OBJECTS) $(BINTARGET) $(CINEPAINT) \
 	$(LIBNAME) $(LIBSO) $(LIBSONAME) $(LIBSONAMEFULL)
 	-for ling in $(LINGUAS); do \
 	  test -f po/$${ling}.gmo \
@@ -412,12 +418,37 @@ config:
 config.h:	$(CONFIG_FILES) ./config.log
 	./config.log
 
-depend:	$(ALL_HEADERFILES)
+depend:	cdepend
 	echo "Check for Dependencies ..."
 	echo "MAKEDEPEND_ISUP = 1" > mkdepend
 	echo "#nicht editieren/dont edit - automatisch generiert" >> mkdepend
-	-$(MAKEDEPEND) -I./ -I./Flmm $(INCL_DEP) >> mkdepend
+	-(for file in $(INCL_DEP); do \
+	    incl_src="$${incl_src} $(SRCDIR)/$${file}"; done; \
+	  $(MAKEDEPEND) -I./ -I$(SRCDIR) $(INCL) $${incl_src} >> mkdepend)
 
+cdepend:
+	echo preparing dependency compilation ...
+	echo "COBJECTS_ISUP = 1" > cobjects
+	echo "#nicht editieren/dont edit - automatisch generiert" >> cobjects
+	echo "" >> cobjects
+	for i in $(COBJECTS); do \
+	  echo "$${i}:" >> cobjects; \
+	  echo "	echo Compiling $${i} ..." >> cobjects; \
+	  echo '	$$(CC) -I./ -I$$(SRCDIR) $$(CFLAGS_) -c -o $$*.o $$(SRCDIR)/$$*.c' >> cobjects; \
+	  echo "" >> cobjects; \
+	done
+	for i in $(CPPOBJECTS); do \
+	  echo "$${i}:" >> cobjects; \
+	  echo "	echo Compiling $${i} ..." >> cobjects; \
+	  echo '	$$(CXX) -I./ -I$$(SRCDIR) $$(CXXFLAGS_) -c -o $$*.o $$(SRCDIR)/$$*.cpp' >> cobjects; \
+	  echo "" >> cobjects; \
+	done
+	for i in $(CXXOBJECTS); do \
+	  echo "$${i}:" >> cobjects; \
+	  echo "	echo Compiling $${i} ..." >> cobjects; \
+	  echo '	$$(CXX) -I./ -I$$(SRCDIR) $$(CXXFLAGS_) -c -o $$*.o $$(SRCDIR)/$$*.cxx' >> cobjects; \
+	  echo "" >> cobjects; \
+	done
 
 # The extension to use for executables...
 EXEEXT		= 
@@ -427,15 +458,15 @@ EXEEXT		=
 
 .c.o:
 	echo Compiling $< ...
-	$(CC) $(CFLAGS_) -c $<
+	$(CC) -I. $(CFLAGS_) -c $<
 
 .cxx.o:
 	echo Compiling $< ...
-	$(CXX) $(CXXFLAGS_) -c $<
+	$(CXX) -I. $(CXXFLAGS_) -c $<
 
 .cpp.o:
 	echo Compiling $< ...
-	$(CXX) $(CXXFLAGS_) -c $<
+	$(CXX) -I. $(CXXFLAGS_) -c $<
 
 .fl.cxx:
 	echo Expanding $< ...
@@ -476,22 +507,26 @@ distdir:
 
 copy_files:
 	mkdir -p $(DESTDIR)
-	cd fl_i18n && \
+	cd $(SRCDIR)/fl_i18n && \
 	  $(MAKE) DESTDIR=$(DESTDIR)/fl_i18n -f $(MAKEFILE_ARCH) copy_files
-	cd bsp && \
+	cd $(SRCDIR)/bsp && \
 	  $(MAKE) DESTDIR=$(DESTDIR)/bsp copy_files
 	mkdir -p $(DESTDIR)/Flmm
-	$(COPY) -R $(FLMM_CXXFILES) $(FLMM_FILES) $(DESTDIR)/Flmm
+	cd $(SRCDIR) && \
+	  $(COPY) -R $(FLMM_CXXFILES) $(FLMM_FILES) $(DESTDIR)/Flmm
+	cd $(SRCDIR) && \
 	$(COPY) -R \
 	$(ALL_FILES) \
 	$(DESTDIR)
 	mkdir -p $(DESTDIR)/po
-	$(COPY) $(POT_FILE) $(DESTDIR)/po
+	cd $(SRCDIR) && \
+	  $(COPY) $(POT_FILE) $(DESTDIR)/po
 	mkdir -p $(DESTDIR)/tests
-	$(COPY) $(TEST_FILES) $(DESTDIR)/tests
+	cd $(SRCDIR) && \
+	  $(COPY) $(TEST_FILES) $(DESTDIR)/tests
 	for ling in $(LINGUAS); do \
-	  test -f po/$${ling}.po \
-	  && $(COPY) po/$${ling}.po $(DESTDIR)/po/; \
+	  test -f $(SRCDIR)/po/$${ling}.po \
+	  && $(COPY) $(SRCDIR)po/$${ling}.po $(DESTDIR)/po/; \
 	done;
 
 
@@ -509,7 +544,7 @@ rpm:	$(TARGET).spec dist
 	rpmdir/SRPMS \
 	rpmdir/RPMS/$(RPMARCH)
 	cp -f $(TARGET)-$(VERSION).tar.gz rpmdir/SOURCES
-	rpmbuild --clean -ba $(srcdir)/$(TARGET).spec --define "_topdir $$PWD/rpmdir"
+	rpmbuild --clean -ba $(build_dir)/$(TARGET).spec --define "_topdir $$PWD/rpmdir"
 	@echo "============================================================"
 	@echo "Finished - the Packages are in rpmdir/RPMS and rpmdir/SRPMS!"
 
@@ -653,8 +688,11 @@ fltkconfig:
 
 # mkdepend
 include mkdepend
+include cobjects
 
 #ifndef MAKEDEPEND_ISUP
 mkdepend: depend
 #endif
-
+#ifndef COBJECTS_ISUP
+cobjects: cdepend
+#endif

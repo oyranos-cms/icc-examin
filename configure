@@ -5,6 +5,10 @@ TARGET_NAME="ICC Examin"
 BINTARGET="`echo $TARGET | sed s/_//g`"
 ERROR=0
 
+ROOT_DIR="$0"
+ROOT_DIR=`echo $ROOT_DIR | sed 's%/configure%%1'`
+ROOT_DIR=`(cd $ROOT_DIR; pwd)`
+
 CONF_H=config.h
 CONF=makefile
 CONF_TEMP_SH=config.tmp.sh
@@ -17,6 +21,15 @@ zeile="$0 $@"
 MAKEFILE_DIR=". fl_i18n bsp"; export MAKEFILE_DIR
 
 
+if [ "$ROOT_DIR" != "." ]; then
+  mkdir -p fl_i18n/
+  mkdir -p FL/
+  mkdir -p Flmm/
+  mkdir -p bsp/
+  mkdir -p tests/
+fi
+
+export ROOT_DIR
 export CONF_H CONF CONF_I18N CONF_TEMP_SH CONF_LOG
 
 test -f error.tmp && rm error.tmp
@@ -28,9 +41,9 @@ VERSION_C=7
 RELEASE=0
 START_MONTH="May"
 START_YEAR="2004"
-DEVEL_MONTH="March"
+DEVEL_MONTH="May"
 DEVEL_YEAR="2009"
-GIT_MASTER="`cat .git/refs/heads/master`"
+GIT_MASTER="`cat $ROOT_DIR/.git/refs/heads/master`"
 time="`date +%y%m%d.%H%M%S`"
 DATE="$START_MONTH $START_YEAR - $DEVEL_MONTH $DEVEL_YEAR"
 VERSION=$VERSION_A.$VERSION_B$VERSION_C
@@ -127,10 +140,6 @@ if [ $# -gt 0 ]; then
       fltkconfig="`echo $1 | sed s/--$switch=//`"
       fltkldflags="--ldstaticflags"
     fi
-    switch=argyll-internal
-    if [ "`echo \"$1\" | sed s/\"--$switch=\"//`" != "$1" ]; then
-      internalargyll="`echo $1 | sed s/--$switch=//`"
-    fi
     switch=enable-cwdebug
     if [ "`echo \"$1\" | sed s/\"--$switch=\"//`" != "$1" ]; then
       cwdebug="`echo $1 | sed s/--$switch=//`"
@@ -203,6 +212,9 @@ else
   RPMECHO="echo"
 fi
 
+build_dir="`pwd`"
+
+
 echo_=""; echo $e "$echo_" >> $CONF_LOG; echo "$echo_"
 echo_="################################################################"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
 echo_="#                                                              #"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
@@ -211,11 +223,29 @@ echo_="#                                                              #"; echo "
 echo_="#                       Configuration                          #"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
 
 
-src_dir="`(cd ..;pwd)`/""$TARGET"-"$VERSION"
-
 #prefix
 if [ -z "$prefix" ]; then
   prefix=/usr/local
+fi
+
+# define some common variables in front of config.site
+if [ -n "$CXX" ]; then
+  CXX_saved=$CXX
+fi
+if [ -n "$CC" ]; then
+  CC_saved=$CC
+fi
+if [ -n "$CFLAGS" ]; then
+  CFLAGS_saved=$CFLAGS
+  CFLAGS=""
+fi
+if [ -n "$CXXFLAGS" ]; then
+  CXXFLAGS_saved=$CXXFLAGS
+  CXXFLAGS=""
+fi
+if [ -n "$LDFLAGS" ]; then
+  LDFLAGS_saved=$LDFLAGS
+  LDFLAGS=""
 fi
 
 if [ -z "$datadir" ]; then
@@ -230,9 +260,26 @@ else
   fi
 fi
 
+# recover variables after config.site
+if [ -n "$CXX_saved" ]; then
+  CXX="$CXX_saved"
+fi
+if [ -n "$CC_saved" ]; then
+  CC="$CC_saved"
+fi
+if [ -n "$CFLAGS_saved" ]; then
+  CFLAGS="$CFLAGS_saved $CFLAGS"
+fi
+if [ -n "$CXXFLAGS_saved" ]; then
+  CXXFLAGS="$CXXFLAGS_saved $CXXFLAGS"
+fi
+if [ -n "$LDFLAGS_saved" ]; then
+  LDFLAGS="$LDFLAGS_saved $LDFLAGS"
+fi
+
 test -f error.txt && rm error.txt
 if [ -z "$quick" ]; then
-  test -f mkdepend && rm mkdepend config.h
+  test -f mkdepend && rm mkdepend config.h cobjects
 fi
 
 for i in $MAKEFILE_DIR; do
@@ -337,7 +384,7 @@ if [ -z "$CC" ]; then
 else
   COMPILER=$CC
 fi
-$COMPILER $CFLAGS tests/intptr_test.c -o tests/intptr_test 2>/dev/null
+$COMPILER $CFLAGS $ROOT_DIR/tests/intptr_test.c -o tests/intptr_test 2>/dev/null
 if [ -f tests/intptr_test ]; then
   tests/intptr_test
   INTPTR_SIZE=$?
@@ -355,7 +402,7 @@ if [ -f tests/intptr_test ]; then
   test -n "$ECHO" && $ECHO $e "$echo_" >> $CONF_LOG; test -n "$INFOECHO" && $INFOECHO "$echo_"
   rm tests/intptr_test
 else
-  $COMPILER $CFLAGS tests/intptr_test.c -o tests/intptr_test
+  $COMPILER $CFLAGS $ROOT_DIR/tests/intptr_test.c -o tests/intptr_test
 fi
 MACH_=`uname -m`
 if [ $? = 0 ]; then
@@ -382,13 +429,13 @@ export OSUNAME LIBDIR BARCH
 
 if [ $OSUNAME = Windows ]; then
   up="`echo $USERPROFILE | sed s%\\\\\\\%/%g`"
-  srcdir=`pwd | sed s%/%"C:/MinGW/"%1`
-#  srcdir=`echo $srcdir | sed s%$USERNAME/%%`
-#  srcdir=`echo $srcdir | sed s%/%%1`
-  srcdir=`echo $srcdir | sed s%/%\\\\\\\\\\\\\\\\\\%g`
-  test -z "$srcdir" && echo_="srcdir not detected in `pwd`"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
+  src_dir=`pwd | sed s%/%"C:/MinGW/"%1`
+#  src_dir=`echo $src_dir | sed s%$USERNAME/%%`
+#  src_dir=`echo $src_dir | sed s%/%%1`
+  src_dir=`echo $src_dir | sed s%/%\\\\\\\\\\\\\\\\\\%g`
+  test -z "$src_dir" && echo_="src_dir not detected in `pwd`"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
 else
-  srcdir="`pwd`"
+  src_dir="$ROOT_DIR"
 fi
 
 if [ -z "$CC" ]; then
@@ -464,26 +511,6 @@ export PATH
 
 # detect Libraries
 
-if [ "$internalargyll" != "no" ]; then
-  ARGYLL_VERSION="argyll-0.60"
-  export ARGYLL_VERSION
-fi
-export internalargyll
-
-# walk into sub dirs and configure there
-if [ -n "$ECHO" ]; then
-  if [ "$internalargyll" != "no" ] && [ -z "$quick" ]; then
-    if [ -d $ARGYLL_VERSION ]; then
-      cd $ARGYLL_VERSION
-      if [ -n "$ECHO" ]; then
-        echo_="./configure --enable-static $nodeps_config_opt --prefix=$prefix"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
-      fi
-      ./configure --enable-static $nodeps_config_opt --prefix=$prefix
-      cd $srcdir
-    fi
-  fi
-fi
-
 if [ $nodeps -eq 1 ]; then
   GCC_MM="echo \"\#disable dependency tracking\""
   nodeps_config_opt=--disable-dependency-tracking
@@ -531,6 +558,8 @@ else
         --from-code=utf-8"
   if [ $OSUNAME = "Linux" ]; then
     COPY="cp $DEBUG_SWITCH -dpa"
+    CFLAGS=""
+    CXXFLAGS=""
     LDFLAGS="-L."
     MAKE_LDFLAGS="\$(dl) \$(iconv)"
     I18N_LIB="\$(LIBNAME)"
@@ -540,7 +569,7 @@ else
     LIBNAMEV="lib\$(TARGET)\$(LIBMID).\$(VERSION_A)"
     if [ -n "$rpath" ]; then
       LINK_LIB_PATH="-Wl,--rpath -Wl,\$(libdir)"
-      LINK_SRC_PATH="-Wl,--rpath -Wl,\$(srcdir)"
+      LINK_SRC_PATH="-Wl,--rpath -Wl,\$(build_dir)"
     fi
     INSTALL="install $DEBUG_SWITCH"
   else
@@ -553,7 +582,7 @@ else
       LINK_FLAGS="-shared \$(iconv)"
       if [ -n "$rpath" ]; then
         LINK_LIB_PATH="-Wl,--rpath -Wl,\$(libdir)"
-        LINK_SRC_PATH="-Wl,--rpath -Wl,\$(srcdir)"
+        LINK_SRC_PATH="-Wl,--rpath -Wl,\$(build_dir)"
       fi
       INSTALL="install $DEBUG_SWITCH"
     fi
@@ -586,6 +615,9 @@ CXXFLAGS="$CXXFLAGS $CXXFLAGS_COMMON $MAKE_CXXFLAGS"
 LDFLAGS="$LDFLAGS $LDFLAGS_COMMON $MAKE_LDFLAGS"
 
 for i in $MAKEFILE_DIR; do
+  mkdir -p $i
+  test -n "$ECHO" && $ECHO "SRCDIR = $ROOT_DIR/$i" >> "$i/makefile"
+  test -n "$ECHO" && $ECHO "" >> "$i/makefile"
   #test -n "$ECHO" && $ECHO " = $" >> "$i/makefile"
   test -n "$ECHO" && $ECHO "COPY = $COPY" >> "$i/makefile"
   test -n "$ECHO" && $ECHO "RM = $RM" >> "$i/makefile"
@@ -642,7 +674,6 @@ X_ADD="Xpm Xext Xinerama Xxf86vm"; export X_ADD
 
 ECHO="echo"; export ECHO
 LIBS=1; export LIBS
-ARGYLL=1; export ARGYLL
 #export ELEKTRA=1
 OYRANOS=1; export OYRANOS
 LCMS=1; export LCMS
@@ -659,10 +690,9 @@ XF86VMODE=1; export XF86VMODE
 DEBUG=1; export DEBUG
 PO=1; export PO
 GETTEXT=1; export GETTEXT
-./configure_tests.sh
+$ROOT_DIR/configure_tests.sh
 LIBS=0; export LIBS
 
-ARGYLL=0; export ARGYLL
 ELEKTRA=0; export ELEKTRA
 OYRANOS=0; export OYRANOS
 LCMS=0; export LCMS
@@ -765,7 +795,7 @@ echo "%define cp_dir          $CP_DIR" >> $SPEC
 fi
 echo "%define pixmapdir       $pixmapdir" >> $SPEC
 echo "%define desktopdir      $desktopdir" >> $SPEC
-cat  "$SPEC.in" >> $SPEC
+cat  "$ROOT_DIR/$SPEC.in" >> $SPEC
 if [ "$INSTALL_TARGET" != install_global ]; then
   echo "" >> $SPEC
   echo "%package      cinepaint" >> $SPEC
@@ -803,7 +833,7 @@ echo_="datadir         =       $datadir"; echo "$echo_" >> $CONF_LOG; echo "$ech
 echo_="mandir          =       $mandir"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
 echo_="pixmapdir       =       $pixmapdir"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
 echo_="desktopdir      =       $desktopdir"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
-echo_="srcdir          =       $srcdir" ; echo "$echo_" >> $CONF_LOG; echo "$echo_"
+echo_="src_dir          =       $src_dir" ; echo "$echo_" >> $CONF_LOG; echo "$echo_"
 if [ -n "$cwdebug" ]; then
 echo_="cwdebug         =       $cwdebug"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
 fi
@@ -817,8 +847,7 @@ echo_="################################################################"; echo "
 echo_=""; echo "$echo_" >> $CONF_LOG; echo "$echo_"
 
 for i in $MAKEFILE_DIR; do
-  test -n "$ECHO" && $ECHO "src_dir = $src_dir" >> "$i/makefile"
-  test -n "$ECHO" && $ECHO "srcdir = $srcdir" >> "$i/makefile"
+  test -n "$ECHO" && $ECHO "src_dir = $ROOT_DIR/$i" >> "$i/makefile"
   test -n "$ECHO" && $ECHO "prefix=$prefix" >> "$i/makefile"
   test -n "$ECHO" && $ECHO "exec_prefix=$exec_prefix" >> "$i/makefile"
   test -n "$ECHO" && $ECHO "bindir=$bindir" >> "$i/makefile"
@@ -836,11 +865,11 @@ echo "#define PREFIX         \"$prefix\"" >> $CONF_H
 echo "#define ICCEXAMIN_DATADIR        \"$datadir\"" >> $CONF_H
 echo "#define ICCEXAMIN_LOCALEDIR      \"$datadir/locale\"" >> $CONF_H
 echo "#define PIXMAPDIR      \"$pixmapdir\"" >> $CONF_H
-echo "#define SRCDIR         \"$srcdir\"" >> $CONF_H
+echo "#define SRCDIR         \"$src_dir\"" >> $CONF_H
 if [ $OSUNAME = Windows ]; then
-  echo "#define SRC_LOCALEDIR  \"$srcdir\\\\po\"" >> $CONF_H
+  echo "#define SRC_LOCALEDIR  \"$src_dir\\\\po\"" >> $CONF_H
 else
-  echo "#define SRC_LOCALEDIR  \"$srcdir/po\"" >> $CONF_H
+  echo "#define SRC_LOCALEDIR  \"$src_dir/po\"" >> $CONF_H
 fi
 
 echo "" >> $CONF
@@ -848,7 +877,7 @@ echo "" >> $CONF
 
 # prepare makefile from MAKEFILE_DIR
 PREPARE_MAKEFILES=1; export PREPARE_MAKEFILES
-./configure_tests.sh
+$ROOT_DIR/configure_tests.sh
 PREPARE_MAKEFILES=0; export PREPARE_MAKEFILES
 
 echo "" >> $CONF_H
@@ -860,7 +889,7 @@ test -n "$ECHO" && $ECHO "#!/bin/bash" > $OSX_SCRIPT
 test -n "$ECHO" && $ECHO "" >> $OSX_SCRIPT
 test -n "$ECHO" && $ECHO "prefix=$prefix" >> $OSX_SCRIPT
 test -n "$ECHO" && $ECHO "" >> $OSX_SCRIPT
-test -n "$ECHO" && cat "$OSX_SCRIPT".in >> $OSX_SCRIPT
+test -n "$ECHO" && cat "$ROOT_DIR/$OSX_SCRIPT".in >> $OSX_SCRIPT
 test -n "$ECHO" && chmod 0755 "$OSX_SCRIPT"
 
 
@@ -877,7 +906,8 @@ if [ "$ERROR" -ne "0" ]; then
   exit
 else
   if [ -z "$quick" ]; then
-    echo "" > mkdepend
+    test -n "$ECHO" && $ECHO "" > mkdepend
+    test -n "$ECHO" && $ECHO "" > cobjects
     make depend
   fi
 fi
@@ -888,5 +918,9 @@ test -n "$ECHO" && $ECHO "$echo_" >  $CONF_LOG.h
 test -n "$ECHO" && cat $CONF_LOG | sed 's/\"/\\\"/g ; s/$/\ \\n\\/g'  >> $CONF_LOG.h
 echo_="\";"
 test -n "$ECHO" && $ECHO $e "$echo_" >> $CONF_LOG.h
+
+if [ -f error.txt ] && [ `cat error.txt | wc -l` -lt 1 ]; then
+  rm error.txt
+fi
 
 exit 0
