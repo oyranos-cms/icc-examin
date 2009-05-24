@@ -526,7 +526,7 @@ copy_files:
 	  $(COPY) $(TEST_FILES) $(DESTDIR)/tests
 	for ling in $(LINGUAS); do \
 	  test -f $(SRCDIR)/po/$${ling}.po \
-	  && $(COPY) $(SRCDIR)po/$${ling}.po $(DESTDIR)/po/; \
+	  && $(COPY) $(SRCDIR)/po/$${ling}.po $(DESTDIR)/po/; \
 	done;
 
 
@@ -537,7 +537,7 @@ $(TARGET).spec:
 	./configure
 
 rpm:	$(TARGET).spec dist
-	./configure --prefix=/usr # for RedHat alike distributions
+	$(SRCDIR)/configure --prefix=/usr --rpm-only # generate the spec file
 	mkdir -p rpmdir/BUILD \
 	rpmdir/SPECS \
 	rpmdir/SOURCES \

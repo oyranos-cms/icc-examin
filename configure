@@ -848,6 +848,7 @@ echo_=""; echo "$echo_" >> $CONF_LOG; echo "$echo_"
 
 for i in $MAKEFILE_DIR; do
   test -n "$ECHO" && $ECHO "src_dir = $ROOT_DIR/$i" >> "$i/makefile"
+  test -n "$ECHO" && $ECHO "build_dir = $build_dir" >> "$i/makefile"
   test -n "$ECHO" && $ECHO "prefix=$prefix" >> "$i/makefile"
   test -n "$ECHO" && $ECHO "exec_prefix=$exec_prefix" >> "$i/makefile"
   test -n "$ECHO" && $ECHO "bindir=$bindir" >> "$i/makefile"
