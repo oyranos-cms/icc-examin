@@ -48,7 +48,7 @@ int             debug_s_mutex_threads_ = 0;
 void     dbgWriteLock                ( void )
 {
 #ifdef HAVE_PTHREAD_H
-#if 0
+#if 1
 //  if( !iccThreadEqual(debug_s_mutex_thread_, iccThreadSelf()) ||
 //      debug_s_mutex_threads_ == 0 )
     while (pthread_mutex_trylock( &debug_s_mutex_ )) {
@@ -67,14 +67,21 @@ void     dbgWriteLock                ( void )
 void     dbgWriteUnLock              ( void )
 {
 #ifdef HAVE_PTHREAD_H
-#if 0
+#if 1
   --debug_s_mutex_threads_;
-  if(!debug_s_mutex_threads_)
+  //if(!debug_s_mutex_threads_)
     pthread_mutex_unlock( &debug_s_mutex_ );
 #else
   icc_examin_ns::unlock( icc_examin_ns::log_window?icc_examin_ns::log_window:0,__FILE__,__LINE__);
 #endif
 #endif
+}
+
+void dbgWriteS( std::string s )
+{
+  dbgWriteLock();
+  debug_s_ << s;
+  dbgWriteUnLock();
 }
 
 //#define WRITE_DBG

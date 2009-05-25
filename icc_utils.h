@@ -159,10 +159,12 @@ void     dbgWriteUnLock              ( void );
 #define ICC_MSG_WARN  301
 #define ICC_MSG_DBG   302
 
-#define dbgWrite(ss) { \
-  dbgWriteLock(); \
-  debug_s_ << ss; \
-  dbgWriteUnLock(); \
+void dbgWriteS( std::string s );
+#define dbgWrite(ss) \
+{ \
+  std::ostringstream dbg_stream; \
+  dbg_stream << ss; \
+  dbgWriteS( dbg_stream.str() ); \
 }
 /* look in icc_utils.cpp for the WRITE_DBG definition */
 
