@@ -210,10 +210,7 @@ log_ (std::string text, int code)
 
   /* do not go over expensive log window in case we want explicitely debug */
   if(icc_debug)
-  {
     iccCLIMessage( text.c_str(), code );
-    return 0;
-  }
 
   icc_log_lock_.frei(false);
 
