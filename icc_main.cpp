@@ -54,8 +54,11 @@ main (int argc, char** argv)
 # endif
 
   if(getenv("ICCEXAMIN_DEBUG") && atoi(getenv("ICCEXAMIN_DEBUG"))>0)
+  {
     icc_debug = atoi(getenv("ICCEXAMIN_DEBUG"));
-  else
+    for(int i = 0; i < argc; ++i)
+      DBG_PROG_S( i <<" "<< argv[i] );
+  } else
     icc_debug = 0;
 
   DBG_PROG_START
