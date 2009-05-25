@@ -1560,7 +1560,7 @@ ICCexamin::fortschritt()
 //! Progress bar: f<0-Start f=Wert f>1-Ende  a>=1 komplett a=0.1 10%
 void
 ICCexamin::fortschritt(double f, double anteil)
-{ DBG_PROG_START
+{
 #ifndef __APPLE__ /* FLTK has problems to events from different threads on osX*/
   int thread = wandelThreadId(iccThreadSelf());
   if(thread != THREAD_HAUPT)
@@ -1575,21 +1575,17 @@ ICCexamin::fortschritt(double f, double anteil)
       else
         icc_betrachter->load_progress-> value( (float)(1.0 -
                     icc_betrachter->load_progress->value() / fabs(anteil) * f) );
-      DBG_PROG_V( f )
     } else if (1.0 < f &&
                anteil > 0.0) {
       icc_betrachter->load_progress-> hide();
-      DBG_PROG_V( f )
     } else if(anteil > 0.0) {
       icc_betrachter->load_progress-> show();
-      DBG_PROG_V( f )
     }
     icc_betrachter->load_progress-> damage(FL_DAMAGE_ALL);
   
   if(thread != THREAD_HAUPT)
     icc_examin_ns::unlock(icc_betrachter->load_progress, __FILE__,__LINE__);
 #endif
-  DBG_PROG_ENDE
 }
 
 void 
