@@ -357,8 +357,8 @@ int MyFl_Double_Window::handle( int e )
          fl_window_events = 0;
          break;
   }
-  DBG_PROG_S( id_<<" "<<(user_hide?"u":" ")<<" "<<(visible()?"v":" ")<<" "<<
-              (shown()?"s":" ")<<" "<<dbgFltkEvent(e) )
+  //DBG_PROG_S( id_<<" "<<(user_hide?"u":" ")<<" "<<(visible()?"v":" ")<<" "<<
+  //            (shown()?"s":" ")<<" "<<dbgFltkEvent(e) )
 
   if(use_escape_hide)
   if(e == FL_SHORTCUT && Fl::event_key() == FL_Escape)
