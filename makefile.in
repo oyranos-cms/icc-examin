@@ -507,9 +507,9 @@ distdir:
 
 copy_files:
 	mkdir -p $(DESTDIR)
-	cd $(SRCDIR)/fl_i18n && \
+	cd fl_i18n && \
 	  $(MAKE) DESTDIR=$(DESTDIR)/fl_i18n -f $(MAKEFILE_ARCH) copy_files
-	cd $(SRCDIR)/bsp && \
+	cd bsp && \
 	  $(MAKE) DESTDIR=$(DESTDIR)/bsp copy_files
 	mkdir -p $(DESTDIR)/Flmm
 	cd $(SRCDIR) && \

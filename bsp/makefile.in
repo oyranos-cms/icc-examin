@@ -58,7 +58,6 @@ TARGET_OBJECTS = $(TARGET_CFILES:.c=.o)
 
 
 ALL_FILES =	$(SOURCES) \
-	Makefile \
 	makefile.in \
 	$(DOKU)
 
@@ -151,9 +150,10 @@ targz:
 copy_files:
 	echo Copy all $(TARGET) files ...
 	mkdir $(DESTDIR)
-	$(COPY) -R \
-	$(ALL_FILES) \
-	$(DESTDIR)
+	cd $(SRCDIR) && \
+	  $(COPY) -R \
+	  $(ALL_FILES) \
+	  $(DESTDIR)
 
 
 dist: $(BASE) targz
