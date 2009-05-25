@@ -674,7 +674,9 @@ Oyranos::netzVonProfil_ (ICCnetz & netz,
       }
     }
 
-  if(wandelLabNachProfilUndZurueck( lab, size, intent, bpc, profil ))
+  if(wandelLabNachProfilUndZurueck( lab, size, intent,
+                                    bpc ? cmsFLAGS_WHITEBLACKCOMPENSATION : 0,
+                                    profil ))
     return  std::string("oyranos");
   //double * rgb = wandelLabNachBildschirmFarben( 0,0, lab, size, 0, 0 );
 
@@ -1155,7 +1157,6 @@ Oyranos::wandelLabNachProfilUndZurueck(double *lab, // 0.0 - 1.0
 
     size_t groesse = p.size();
     const char*  block = p;
-    int flags_ = 0;
     int kanaele, format;
     int input_ausnahme = 0;
     oyProfile_s * profile = oyProfile_FromMem( groesse, (void*)block, 0, 0 );
@@ -1163,8 +1164,6 @@ Oyranos::wandelLabNachProfilUndZurueck(double *lab, // 0.0 - 1.0
     
 
     {
-      flags_ = flags & ~cmsFLAGS_GAMUTCHECK;
-
       // initialising for lcms
       DBG_MEM_V( (int*) block <<" "<<groesse )
 
