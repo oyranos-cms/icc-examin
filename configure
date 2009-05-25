@@ -868,9 +868,9 @@ echo "#define ICCEXAMIN_LOCALEDIR      \"$datadir/locale\"" >> $CONF_H
 echo "#define PIXMAPDIR      \"$pixmapdir\"" >> $CONF_H
 echo "#define SRCDIR         \"$src_dir\"" >> $CONF_H
 if [ $OSUNAME = Windows ]; then
-  echo "#define SRC_LOCALEDIR  \"$src_dir\\\\po\"" >> $CONF_H
+  echo "#define SRC_LOCALEDIR  \"$build_dir\\\\po\"" >> $CONF_H
 else
-  echo "#define SRC_LOCALEDIR  \"$src_dir/po\"" >> $CONF_H
+  echo "#define SRC_LOCALEDIR  \"$build_dir/po\"" >> $CONF_H
 fi
 
 echo "" >> $CONF

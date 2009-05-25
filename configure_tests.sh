@@ -615,7 +615,7 @@ if [ -n "$FLTK" ] && [ $FLTK -gt 0 ]; then
       $fltkconfig --compile $ROOT_DIR/tests/fltk_test.cxx 1>> $CONF_LOG 2>> $CONF_LOG
       ERROR=1
     else
-      test -f fltk_test$EXEC_END && rm fltk_test$EXEC_END || rm fltk-test$EXEC_END
+      test -f fltk_test$EXEC_END && rm fltk_test$EXEC_END || rm fltk_test$EXEC_END
     fi
     if [ -z "$fltkldflags" ]; then
       fltkldflags="--ldflags"
