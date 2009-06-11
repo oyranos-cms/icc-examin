@@ -208,9 +208,16 @@ log_ (std::string text, int code)
 {
   int log_window_new = 0;
 
+  int dbg_id = wandelThreadId ( iccThreadSelf() );
+
   /* do not go over expensive log window in case we want explicitely debug */
-  if(icc_debug)
+  if(icc_debug ||
+     (dbg_id != THREAD_HAUPT &&!log_window))
     iccCLIMessage( text.c_str(), code );
+
+  /* avoid to create a FLTK window from outside the main thread */
+  if(dbg_id != THREAD_HAUPT && !log_window)
+    return 0;
 
   icc_log_lock_.frei(false);
 
