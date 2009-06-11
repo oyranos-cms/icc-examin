@@ -1707,16 +1707,19 @@ ICCmeasurement::getCmmColour (int patch)
     return nc;
   }
 
-  oyProfile_s * prof = 0;
+  oyProfile_s * prof = oyProfile_Copy( profile_->profile_, 0 );
 
-  if(profile_->data_type == ICCprofile::ICCprofileDATA)
-    prof = oyProfile_FromFile( profile_->filename(), 0, 0 );
-  else
+  if(!prof)
   {
-    if(CMYK_measurement_)
-      prof = oyProfile_FromStd( oyEDITING_CMYK, 0 );
+    if(profile_->data_type == ICCprofile::ICCprofileDATA)
+      prof = oyProfile_FromFile( profile_->filename(), 0, 0 );
     else
-      prof = oyProfile_FromStd( oyEDITING_RGB, 0 );
+    {
+      if(CMYK_measurement_)
+        prof = oyProfile_FromStd( oyEDITING_CMYK, 0 );
+      else
+        prof = oyProfile_FromStd( oyEDITING_RGB, 0 );
+    }
   }
 
   if(CMYK_measurement_)
@@ -1728,6 +1731,7 @@ ICCmeasurement::getCmmColour (int patch)
 
   nc = oyNamedColour_CreateWithName( Feldnamen_[i].c_str(),0,0,
                                      channels, XYZ, 0,0, prof, 0 );
+  oyProfile_Release( &prof );
   DBG_MESS_ENDE
   return nc;
 }
@@ -1766,16 +1770,19 @@ ICCmeasurement::getMessColour (int patch)
     return nc;
   }
 
-  oyProfile_s * prof = 0;
+  oyProfile_s * prof = oyProfile_Copy( profile_->profile_, 0 );
 
-  if(profile_->data_type == ICCprofile::ICCprofileDATA)
-    prof = oyProfile_FromFile( profile_->filename(), 0, 0 );
-  else
+  if(!prof)
   {
-    if(CMYK_measurement_)
-      prof = oyProfile_FromStd( oyEDITING_CMYK, 0 );
+    if(profile_->data_type == ICCprofile::ICCprofileDATA)
+      prof = oyProfile_FromFile( profile_->filename(), 0, 0 );
     else
-      prof = oyProfile_FromStd( oyEDITING_RGB, 0 );
+    {
+      if(CMYK_measurement_)
+        prof = oyProfile_FromStd( oyEDITING_CMYK, 0 );
+      else
+        prof = oyProfile_FromStd( oyEDITING_RGB, 0 );
+    }
   }
 
   if(CMYK_measurement_)
@@ -1793,6 +1800,7 @@ ICCmeasurement::getMessColour (int patch)
 
   nc = oyNamedColour_CreateWithName( Feldnamen_[i].c_str(),0,0,
                                      channels, XYZ, 0,0, prof, 0 );
+  oyProfile_Release( &prof );
   DBG_MESS_ENDE
   return nc;
 }
