@@ -215,6 +215,17 @@ MyFl_File_Chooser::directory(const char *d)// I - Directory to change to
   else
     directory_[0] = '\0';
 
+  // skip non directories
+  if (d[0] != '\0')
+  {
+#if (defined(WIN32) && ! defined(__CYGWIN__))|| defined(__EMX__)
+    if (d[0] != '/' && d[0] != '\\' && d[1] != ':')
+#else
+    if (d[0] != '/' && d[0] != '\\')
+#endif /* WIN32 || __EMX__ */
+      return;
+  }
+
   if (shown()) {
     // Rescan the directory...
     rescan();
@@ -481,7 +492,7 @@ MyFl_File_Chooser::fileListCB()
     if (!fl_filename_isdir(pathname) || (type_ & DIRECTORY))
       okButton->activate();
     else
-      okButton->deactivate();
+      ;//okButton->deactivate();
   }
 }
 
@@ -511,7 +522,7 @@ MyFl_File_Chooser::fileNameCB()
   filename = (char *)fileName->value();
 
   if (!filename || !filename[0]) {
-    okButton->deactivate();
+    //okButton->deactivate();
     return;
   }
 
@@ -528,7 +539,7 @@ MyFl_File_Chooser::fileNameCB()
       filename[0] != '\\' &&
       !(isalpha(filename[0] & 255) && (!filename[1] || filename[1] == ':'))) {
 #else
-  if (directory_[0] != '\0' && filename[0] != '/') {
+  if (0 && directory_[0] != '\0' && filename[0] != '/') {
 #endif /* WIN32 || __EMX__ */
     fl_filename_absolute(pathname, sizeof(pathname), filename);
     value(pathname);
@@ -574,7 +585,7 @@ MyFl_File_Chooser::fileNameCB()
     if ((slash = strrchr(pathname, '/')) == NULL)
       slash = strrchr(pathname, '\\');
 
-    if (!slash) return;
+    if (!slash || pathname[0] != '/') return;
 
     // Yes, change directories if necessary...
     *slash++ = '\0';
@@ -677,7 +688,7 @@ MyFl_File_Chooser::fileNameCB()
         (!fl_filename_isdir(fileName->value()) || (type_ & DIRECTORY))) {
       okButton->activate();
     } else {
-      okButton->deactivate();
+      //okButton->deactivate();
     }
   } else {
     // FL_Delete or FL_BackSpace
@@ -687,7 +698,7 @@ MyFl_File_Chooser::fileNameCB()
         (!fl_filename_isdir(fileName->value()) || (type_ & DIRECTORY))) {
       okButton->activate();
     } else {
-      okButton->deactivate();
+      //okButton->deactivate();
     }
   }
 }
@@ -846,7 +857,7 @@ MyFl_File_Chooser::rescan()
   if (type_ & DIRECTORY)
     okButton->activate();
   else
-    okButton->deactivate();
+    ;//okButton->deactivate();
 
   // Build the file list...
   fileList->load(directory_, sort);
@@ -1110,7 +1121,7 @@ MyFl_File_Chooser::value(const char *filename)
     // Yes, just change the current directory...
     directory(filename);
     fileName->value("");
-    okButton->deactivate();
+    //okButton->deactivate();
     return;
   }
 
