@@ -54,6 +54,7 @@ ICCprofile::ICCprofile (void)
 { DBG_PROG_START
   data_ = NULL;
   size_ = 0;
+  profile_ = NULL;
   DBG_PROG_ENDE
 }
 
@@ -68,6 +69,7 @@ ICCprofile::ICCprofile (const Speicher & s)
  : measurement(this)
 { DBG_PROG_START
   if (data_ && size_) free(data_);
+  oyProfile_Release( &profile_ );
   data_ = NULL;
   size_ = 0;
 
@@ -101,6 +103,7 @@ ICCprofile::copy_ ( const ICCprofile & p )
   data_ = (char*) calloc (sizeof(char), p.size_);
   size_ = p.size_;
   memcpy(data_, p.data_, size_);
+  profile_ = oyProfile_Copy( p.profile_, 0 );
   filename_ = p.filename_;
   changing_ = p.changing_;
   measurement = p.measurement;
@@ -121,6 +124,7 @@ ICCprofile::clear (void)
   if (data_ && size_) free(data_);
   data_ = NULL;
   size_ = 0;
+  oyProfile_Release( &profile_ );
 
   filename_ = "";
   header.load(NULL);
@@ -157,6 +161,9 @@ ICCprofile::load (const Speicher & prof)
     const char* z = prof;
     memcpy(data_, z, size_);
     filename_ = file;
+    profile_ = oyProfile_FromFile( filename_.c_str(), 0, 0 );
+    if(!profile_)
+      profile_ = oyProfile_FromMem( size_, data_, 0, 0 );
     DBG_MEM_V( filename_ )
     DBG_MEM_V( size_ )
     DBG_MEM_V( (int*)data_ <<" "<< (int*)z )

@@ -87,6 +87,7 @@ class ICCprofile {
     // icc34.h definitions
     char*               data_;
     size_t              size_;
+    oyProfile_s       * profile_;
 
     ICCheader           header;
     ICClist<ICCtag> tags;
