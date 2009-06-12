@@ -48,7 +48,7 @@ using namespace icc_examin_ns;
 #endif
 
 const char * selectTextsLine( int * line );
-
+const char * selecTpsidLine( int * line );
 
 std::string
 ICCexamin::waehleTag (int item)
@@ -247,6 +247,12 @@ ICCexamin::waehleTag (int item)
               patches[i] = i+5;
             }
           icc_betrachter->tag_text->hinein ( texte[0], patches );
+
+        } else if(TagInfo[0] == "psid")
+        {
+          icc_betrachter->tag_text->hinein ( texte[0] );
+          tagTextsCB_f cb = &selecTpsidLine;
+          icc_betrachter->tag_text->cb = cb;
 
         } else
           icc_betrachter->tag_text->hinein ( texte[0] );
@@ -504,7 +510,7 @@ selectTextsLine( int * line )
               LabToCIELab( l, l, 1 );
               oyLab2XYZ( l, XYZ );
 
-              prof = oyProfile_FromFile( profile.profil()->filename(), 0,NULL );
+              prof = profile.profil()->oyProfile();
               colour = oyNamedColour_CreateWithName( name.c_str(), NULL, NULL,
                                          c, XYZ, NULL,0, prof, 0 );
               oyProfile_Release( &prof );
@@ -520,6 +526,31 @@ selectTextsLine( int * line )
       }
       profile.frei(true);
     }
+  }
+
+  return txt;
+}
+
+// show the psid profile in the status bar
+const char *
+selecTpsidLine( int * line )
+{
+  int i = 0;
+  const char * txt = "--";
+
+  if(line && *line > 1)
+  {
+    i = *line;
+    txt = icc_examin->icc_betrachter->tag_text->text(i);
+
+    status(_("Loading .."))  Fl::flush();
+
+    profile.frei(false);
+      oyProfile_s * prof = profile.profil()->oyProfile();
+      const char * name = oyProfile_GetFileName(prof, (i-2)/5);
+      status(name ? name : _("not available"))
+      oyProfile_Release( &prof );
+    profile.frei(true);
   }
 
   return txt;
