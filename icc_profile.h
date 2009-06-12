@@ -88,7 +88,10 @@ class ICCprofile {
     char*               data_;
     size_t              size_;
     oyProfile_s       * profile_;
+  public:
+    oyProfile_s       * oyProfile() { return oyProfile_Copy( profile_, 0 ); }
 
+  private:
     ICCheader           header;
     ICClist<ICCtag> tags;
   private: // cgats via lcms
