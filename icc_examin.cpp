@@ -684,8 +684,10 @@ ICCexamin::nachricht( Modell* modell , int info )
     if(profile.profil()->hasMeasurement())
     {
       ICCmeasurement & m = profile.profil()->getMeasurement();
+      oyOptions_s * opts = icc_examin->options();
       oyNamedColour_GetColourStd ( gl->mouse_3D_hit, oyEDITING_LAB, cielab1,
-                                   oyDOUBLE, 0 );
+                                   oyDOUBLE, 0, opts );
+      oyOptions_Release( &opts );
 
       DBG_PROG_S( cielab1[0] <<" "<< cielab1[1] <<" "<< cielab1[2] )
 
@@ -747,10 +749,12 @@ ICCexamin::nachricht( Modell* modell , int info )
         mult = lab_dv.size()/3/names.size();
       n_ = n*3*mult;
 
+      oyOptions_s * opts = icc_examin->options();
       //double lab[3];
       oyNamedColour_GetColourStd ( gl->mouse_3D_hit, oyEDITING_LAB, cielab1,
-                                   oyDOUBLE, 0);
+                                   oyDOUBLE, 0, opts );
       //LabToCIELab( lab, cielab1, 1 );
+      oyOptions_Release( &opts );
 
       for(int i = 0; i < n_; i+=3*mult)
       {
@@ -891,8 +895,6 @@ ICCexamin::setzeFensterTitel()
 
 void ICCexamin::optionsRefresh_( void )
 {
-  oyOptions_Release( &options_ );
-    
 # if OYRANOS_VERSION >= 109
 # if OYRANOS_VERSION > 109
 # define UND &
@@ -901,7 +903,9 @@ void ICCexamin::optionsRefresh_( void )
 # define UND
 # define FLAGS
 # endif
-  options_ = oyOptions_ForFilter( "//colour", 0, 0, 0 );
+  if(!options_)
+    options_ = oyOptions_ForFilter( "//imaging", 0, 0, 0 );
+
   char t[4];
   /* should always be a single digit */
   sprintf( t, "%d", intentGet(NULL));

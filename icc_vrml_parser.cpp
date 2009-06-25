@@ -924,6 +924,8 @@ std::string    vrmlScene          ( icc_examin_ns::ICCThreadList<ICCnetz> netze,
 
   /* colour conversion context */
   double lab[3], rgba[4];
+  oyOptions_s * opts = 0;
+  oyOptions_SetFromText( &opts, "////rendering_intent", "0", OY_CREATE_NEW );
 
   // named colours
   if (oyStructList_Count( colour_lists ))
@@ -981,7 +983,7 @@ std::string    vrmlScene          ( icc_examin_ns::ICCThreadList<ICCnetz> netze,
           if(netze[j].grau)
             rgba[0]= rgba[1]= rgba[2] = schattierung;
           else
-            oyNamedColour_GetColourStd( c, oyASSUMED_WEB, rgba, oyDOUBLE, 0 );
+            oyNamedColour_GetColourStd( c, oyASSUMED_WEB, rgba, oyDOUBLE, 0,opts );
 
           sprintf( txt, "                %.03f %.03f %.03f,\n",
                         rgba[0], rgba[1], rgba[2]);
@@ -1141,6 +1143,7 @@ std::string    vrmlScene          ( icc_examin_ns::ICCThreadList<ICCnetz> netze,
   oyProfile_s * prof = oyProfile_FromStd( oyEDITING_XYZ, NULL );
   oyNamedColour_s * c = oyNamedColour_Create( NULL, NULL,0, prof, 0 );
 
+
   // net preparation and *ab gamut bound lines
   for(unsigned int i = 0; i < netze.size(); ++i)
   {
@@ -1162,8 +1165,8 @@ std::string    vrmlScene          ( icc_examin_ns::ICCThreadList<ICCnetz> netze,
           lab[1] = (netze[i].punkte[j].koord[1]-.5)*255.;
           lab[2] = (netze[i].punkte[j].koord[2]-.5)*255.;
 
-          oyNamedColour_SetColourStd( c, oyEDITING_LAB, lab, oyDOUBLE, 0 );
-          oyNamedColour_GetColourStd( c, oyASSUMED_WEB, rgba, oyDOUBLE, 0 );
+          oyNamedColour_SetColourStd( c, oyEDITING_LAB, lab, oyDOUBLE, 0, opts);
+          oyNamedColour_GetColourStd( c, oyASSUMED_WEB, rgba, oyDOUBLE, 0,opts);
           for(int k = 0; k < 3 ; ++k)
             netze[i].punkte[j].farbe[k] = rgba[k];
         }
@@ -1257,6 +1260,7 @@ std::string    vrmlScene          ( icc_examin_ns::ICCThreadList<ICCnetz> netze,
   }
   if(txt) free(txt);
   oyNamedColour_Release( &c );
+  oyOptions_Release( &opts );
 
   if(loc_alt.size())
     doLocked_m( setlocale(LC_NUMERIC,loc_alt.c_str()) , NULL);

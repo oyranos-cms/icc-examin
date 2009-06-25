@@ -2400,6 +2400,7 @@ GL_Ansicht::zeichnen()
         glCallList( gl_listen[PUNKTE] );
       glCallList( gl_listen[PUNKTE] ); DBG_ICCGL_V( gl_listen[PUNKTE] )
 
+      oyOptions_s * opts = icc_examin->options();
 
       // localisate
       if( epoint_ && Fl::belowmouse() != this )
@@ -2407,9 +2408,10 @@ GL_Ansicht::zeichnen()
         double l[3];
         Lab_s lab;
         const char * temp = oyNamedColour_GetName( epoint_, oyNAME_NICK, 0 );
+
         if(temp)
           sprintf( text, "%s", temp );
-        oyNamedColour_GetColourStd( epoint_, oyEDITING_LAB, l, oyDOUBLE, 0 );
+        oyNamedColour_GetColourStd( epoint_, oyEDITING_LAB, l, oyDOUBLE,0,opts);
         CIELabToLab( l, lab );
         oY = LNachY( lab.L );
         oZ = aNachZ( lab.a );
@@ -2442,14 +2444,15 @@ GL_Ansicht::zeichnen()
           }
 
           oyNamedColour_SetColourStd ( mouse_3D_hit, oyEDITING_XYZ,
-                                       (oyPointer)d, oyDOUBLE, 0 );
+                                       (oyPointer)d, oyDOUBLE, 0, opts );
           MARK( frei(true); )
           benachrichtigen( ICCexamin::GL_MOUSE_HIT3D );
           MARK( frei(false); )
           if(epoint_)
           {
             Lab_s lab;
-            oyNamedColour_GetColourStd( epoint_, oyEDITING_LAB, d, oyDOUBLE, 0);
+            oyNamedColour_GetColourStd( epoint_, oyEDITING_LAB, d, oyDOUBLE,
+                                        0, opts );
             CIELabToLab( d, lab );
             oY = LNachY( lab.L );
             oZ = aNachZ( lab.a );
@@ -2480,6 +2483,7 @@ GL_Ansicht::zeichnen()
         }
       }
 
+    oyOptions_Release( &opts );
     double lab[3] = {oY+0.5, oZ/2.55+0.5, oX/2.55+0.5},
             *rgb_ = 0, *rgb = 0;
     rgb_ = rgb = icc_oyranos.wandelLabNachBildschirmFarben( 
@@ -3000,11 +3004,13 @@ GL_Ansicht::emphasizePoint    (oyNamedColour_s * colour)
   {
     oyNamedColour_Release( &epoint_ );
     epoint_ = oyNamedColour_Copy( colour, 0 );
-
+ 
     double l[3];
     Lab_s lab;
-    oyNamedColour_GetColourStd( colour, oyEDITING_LAB, l, oyDOUBLE, 0 );
+    oyOptions_s * opts = icc_examin->options();
+    oyNamedColour_GetColourStd( colour, oyEDITING_LAB, l, oyDOUBLE, 0, opts );
     CIELabToLab( l, lab );
+    oyOptions_Release( &opts );
 
     icc_examin->statusFarbe( lab.L, lab.a, lab.b );
     uint32_t create = 1;
@@ -3163,6 +3169,7 @@ GL_Ansicht::setBspFaceProperties_( icc_examin_ns::FACE *faceList )
               window()->x() + window()->w()/2, window()->y() + window()->h()/2
                                               );
   oyNamedColour_s * c = oyNamedColour_Create( 0, 0, 0, prof, 0 );
+  oyOptions_s * opts = icc_examin->options();
 #endif
 
   /* updateNet_ takes care of dreiecks_netze.frei */
@@ -3185,9 +3192,9 @@ GL_Ansicht::setBspFaceProperties_( icc_examin_ns::FACE *faceList )
         lab[2] = vtrav->zz/b_darstellungs_breite;
         LabToCIELab( lab, lab, 1 );
 
-        oyNamedColour_SetColourStd( c, oyEDITING_LAB, lab, oyDOUBLE, 0 );
+        oyNamedColour_SetColourStd( c, oyEDITING_LAB, lab, oyDOUBLE, 0, opts );
 
-        oyNamedColour_GetColour( c, disp_prof, rgba, oyDOUBLE, 0 );
+        oyNamedColour_GetColour( c, disp_prof, rgba, oyDOUBLE, 0, opts );
 
         vtrav->color.rr = rgba[0];
         vtrav->color.gg = rgba[1];
@@ -3220,6 +3227,7 @@ GL_Ansicht::setBspFaceProperties_( icc_examin_ns::FACE *faceList )
 
 #ifdef USE_OY_NC
   oyNamedColour_Release( &c );
+  oyOptions_Release( &opts );
 #endif
 
   DBG_5_ENDE
