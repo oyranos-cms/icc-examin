@@ -1816,8 +1816,12 @@ tastatur(int e)
     break;
   }
   
-  if(icc_examin && icc_examin->icc_betrachter)
-    icc_examin->icc_betrachter->DD_farbraum->tastatur(e);
+  if(icc_examin && icc_examin->icc_betrachter &&
+     icc_examin->icc_betrachter->DD_farbraum->shown())
+    gefunden = icc_examin->icc_betrachter->DD_farbraum->tastatur(e);
+  if(icc_examin && icc_examin->icc_betrachter && 
+     icc_examin->icc_betrachter->mft_gl->shown())
+    gefunden = icc_examin->icc_betrachter->mft_gl->tastatur(e);
   //DBG_PROG_ENDE
   return gefunden;
 }

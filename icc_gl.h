@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2008  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2009  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -219,6 +219,8 @@ public:
   static const double std_vorder_schnitt;
   double vorder_schnitt;    //!< front cut plane
   double schnitttiefe;      //!< thickness of the GL slice
+  double level;             //*< level for table slicing 0...1
+  double level_step;        //*< modification of level variable
   double a_darstellungs_breite; //!< direction CIE*a   for stretching
   double b_darstellungs_breite; //!< ~         CIE*b ; where CIE*L max is 1.0
   bool zeig_punkte_als_paare;
@@ -238,7 +240,7 @@ private:
 public:
   // display functions
   void zeichnen();          //!< gl drawing
-  void tastatur(int e);
+  int  tastatur(int e);
   void menueAufruf(int value);
   // Bewegungsfunktionen
   void bewegen(bool setze);

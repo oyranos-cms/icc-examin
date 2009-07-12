@@ -197,6 +197,8 @@ GL_Ansicht::init_()
   maus_x_alt = -1;
   maus_y_alt = -1;
   maus_steht = false;
+  level = 0.5;
+  level_step = 0.1;
   valid_ = false;
   update_geometries_ = false;
   zeit_ = 0;
@@ -436,7 +438,9 @@ GL_Ansicht::init(int ty)
   // initialise
   menueInit_(); DBG_PROG
   menueAufruf (hintergrundfarbeZuMenueeintrag(hintergrundfarbe)); // colour sheme
+  int schalen_old = schalen;
   menueAufruf (MENU_GRAU);     // CLUT colour sheme
+  schalen = schalen_old;
   schatten = 0.1f;
   if (typ() == 1) menueAufruf (MENU_WUERFEL);
 
@@ -1224,31 +1228,47 @@ GL_Ansicht::tabelleAuffrischen()
   {
     gl_listen[RASTER] = glGenLists(1);
     glNewList( gl_listen[RASTER], GL_COMPILE); DBG_PROG_V( gl_listen[RASTER] )
-      int n_L = (int)tabelle_.size(), n_a=(int)tabelle_[0].size(), n_b=(int)tabelle_[0][0].size();
-      double dim_x = 1.0/(n_b); DBG_PROG_V( dim_x )
-      double dim_y = 1.0/(n_L); DBG_PROG_V( dim_y )
-      double dim_z = 1.0/(n_a); DBG_PROG_V( dim_z )
-      double start_x,start_y,start_z, x,y,z;
-      double wert;
 
-      schnitttiefe= HYP3(dim_x,dim_y,dim_z);
+      int n_L = (int)tabelle_.size(), n_a=(int)tabelle_[0].size(), n_b=(int)tabelle_[0][0].size();
+      double dim_x = 1.0/(n_b-1); DBG_PROG_V( dim_x )
+      double dim_y = 1.0/(n_L-1); DBG_PROG_V( dim_y )
+      double dim_z = 1.0/(n_a-1); DBG_PROG_V( dim_z )
+      double start_x,start_y,start_z, x,y,z;
+      double wert,
+             A,B,C,D,E_,F,G,H;
+
+      /*if(schalen)
+        vorder_schnitt = 0.01;
+      else
+        vorder_schnitt = std_vorder_schnitt;*/
+      schnitttiefe = HYP3(dim_x,dim_y,dim_z);
       DBG_NUM_V( schnitttiefe );
       start_x = start_y = start_z = x = y = z = 0.5; start_y = y = -0.5;
       glPushMatrix();
+
 #     ifndef Beleuchtung_
       glDisable(GL_LIGHTING);
 #     endif
       DBG_PROG_V( tabelle_.size() <<" "<< tabelle_[0].size() )
+
       float korr = 0.995f/2.0f;
       glTranslated(-0.5/0.995+dim_x/2,-0.5/0.995+dim_y/2,-0.5/0.995+dim_z/2);
-      for (int L = 0; L < (int)n_L; L++) {
+
+      int geschaelt = 0;
+      for (int L = 0; L < (int)n_L; L++)
+      {
         x = start_x + L * dim_y;
+
         for (int a = 0; a < (int)n_a; a++)
         {
           y = start_y + a * dim_z;
-          for (int b = 0; b < (int)n_b; b++) {
+
+          for (int b = 0; b < (int)n_b; b++)
+          {
             z = start_z + b * dim_x;
-            wert = tabelle_[L][a][b][kanal]; //DBG_PROG_V( L << a << b << kanal )
+
+            wert = tabelle_[L][a][b][kanal]; //DBG_PROG_V( L << a << b << kanal)
+
 #           ifdef Beleuchtung_
             FARBE(wert, wert, wert,1)
             //glColor3f(wert, wert, wert);
@@ -1269,31 +1289,173 @@ GL_Ansicht::tabelleAuffrischen()
                                                                    break;
             }
 #           endif
-            if (wert) {
-                glBegin(GL_TRIANGLE_FAN);
-                  glVertex3d(dim_x*b+ dim_x*korr,dim_y*L+ dim_y*korr,dim_z*a+ dim_z*korr);
-                  glVertex3d(dim_x*b+ dim_x*korr,dim_y*L+-dim_y*korr,dim_z*a+ dim_z*korr);
-                  glVertex3d(dim_x*b+-dim_x*korr,dim_y*L+-dim_y*korr,dim_z*a+ dim_z*korr);
-                  glVertex3d(dim_x*b+-dim_x*korr,dim_y*L+ dim_y*korr,dim_z*a+ dim_z*korr);
-                  glVertex3d(dim_x*b+-dim_x*korr,dim_y*L+ dim_y*korr,dim_z*a+-dim_z*korr);
-                  glVertex3d(dim_x*b+ dim_x*korr,dim_y*L+ dim_y*korr,dim_z*a+-dim_z*korr);
-                  glVertex3d(dim_x*b+ dim_x*korr,dim_y*L+-dim_y*korr,dim_z*a+-dim_z*korr);
-                  glVertex3d(dim_x*b+ dim_x*korr,dim_y*L+-dim_y*korr,dim_z*a+ dim_z*korr);
+            if(schalen)// && punktfarbe == MENU_KONTRASTREICH)
+            for(int n = 0; n < schalen; ++n)
+            {
+              double l = 1./schalen * n + level/schalen;
 
+              if(b == n_b - 1 ||
+                 a == n_a - 1 ||
+                 L == n_L - 1)
+                continue;
+
+              /* 
+                  The cubus can be imagined like:
+                                                 
+                        B x             __       
+                         / \            AB == CIE*b
+                        / | \           __       
+                       /     \          AD == CIE*a
+                      /   |   x C       __       
+                   A x   F   /|         EA == CIE*L
+                     |\   x / |                  
+                     | \ / /  |                  
+                     |  \ /  \|                  
+                     | / x D  x G                
+                   E x   |   /                   
+                      \  |  /                    
+                       \ | /                     
+                        \|/                      
+                         x H                     
+               */
+
+              A = tabelle_[L+1][a][b][kanal];
+              B = tabelle_[L+1][a][b+1][kanal];
+              C = tabelle_[L+1][a+1][b+1][kanal];
+              D = tabelle_[L+1][a+1][b][kanal];
+              E_= tabelle_[L][a][b][kanal];
+              F = tabelle_[L][a][b+1][kanal];
+              G = tabelle_[L][a+1][b+1][kanal];
+              H = tabelle_[L][a+1][b][kanal];
+
+              /* isolines */
+              glBegin(GL_LINE_STRIP);
+                if(A <l&&l< B)
+                {
+                  glVertex3d(dim_x*b+ dim_x*(-.5+(l-A)/(B-A)),
+                             dim_y*L+ dim_y*.5,
+                             dim_z*a+-dim_z*.5);
+                  ++ geschaelt;
+                }
+                if(B <l&&l< A)
+                {
+                  glVertex3d(dim_x*b+ dim_x*(.5+(B-l)/(A-B)),
+                             dim_y*L+ dim_y*.5,
+                             dim_z*a+-dim_z*.5);
+                  ++ geschaelt;
+                }
+                if(D <l&&l< C)
+                {
+                  glVertex3d(dim_x*b+ dim_x*(-.5+(l-D)/(C-D)),
+                             dim_y*L+ dim_y*.5,
+                             dim_z*a+ dim_z*.5);
+                  ++ geschaelt;
+                }
+                if(C <l&&l< D)
+                {
+                  glVertex3d(dim_x*b+ dim_x*(.5+(C-l)/(D-C)),
+                             dim_y*L+ dim_y*.5,
+                             dim_z*a+ dim_z*.5);
+                  ++ geschaelt;
+                }
+                if(A <l&&l< D)
+                {
+                  glVertex3d(dim_x*b+-dim_x*.5,
+                             dim_y*L+ dim_y*.5,
+                             dim_z*a+ dim_z*(-.5+(l-A)/(D-A)));
+                  ++ geschaelt;
+                }
+                if(D <l&&l< A)
+                {
+                  glVertex3d(dim_x*b+-dim_x*.5,
+                             dim_y*L+ dim_y*.5,
+                             dim_z*a+ dim_z*(.5+(D-l)/(A-D)));
+                  ++ geschaelt;
+                }
+                if(B <l&&l< C)
+                {
+                  glVertex3d(dim_x*b+ dim_x*.5,
+                             dim_y*L+ dim_y*.5,
+                             dim_z*a+ dim_z*(-.5+(l-B)/(C-B)));
+                  ++ geschaelt;
+                }
+                if(C <l&&l< B)
+                {
+                  glVertex3d(dim_x*b+ dim_x*.5,
+                             dim_y*L+ dim_y*.5,
+                             dim_z*a+ dim_z*(.5+(C-l)/(B-C)));
+                  ++ geschaelt;
+                }
+              glEnd();
+
+            }
+
+            /* the cubus representation */
+            if (wert && 
+                (!schalen || geschaelt < 0))
+            {
+                glBegin(GL_TRIANGLE_FAN);
+                  glVertex3d(dim_x*b+ dim_x*korr,
+                             dim_y*L+ dim_y*korr,
+                             dim_z*a+ dim_z*korr);
+                  glVertex3d(dim_x*b+ dim_x*korr,
+                             dim_y*L+-dim_y*korr,
+                             dim_z*a+ dim_z*korr);
+                  glVertex3d(dim_x*b+-dim_x*korr,
+                             dim_y*L+-dim_y*korr,
+                             dim_z*a+ dim_z*korr);
+                  glVertex3d(dim_x*b+-dim_x*korr,
+                             dim_y*L+ dim_y*korr,
+                             dim_z*a+ dim_z*korr);
+                  glVertex3d(dim_x*b+-dim_x*korr,
+                             dim_y*L+ dim_y*korr,
+                             dim_z*a+-dim_z*korr);
+                  glVertex3d(dim_x*b+ dim_x*korr,
+                             dim_y*L+ dim_y*korr,
+                             dim_z*a+-dim_z*korr);
+                  glVertex3d(dim_x*b+ dim_x*korr,
+                             dim_y*L+-dim_y*korr,
+                             dim_z*a+-dim_z*korr);
+                  glVertex3d(dim_x*b+ dim_x*korr,
+                             dim_y*L+-dim_y*korr,
+                             dim_z*a+ dim_z*korr);
                 glEnd();
                 glBegin(GL_TRIANGLE_FAN);
-                  glVertex3d(dim_x*b+-dim_x*korr,dim_y*L+-dim_y*korr,dim_z*a+-dim_z*korr);
-                  glVertex3d(dim_x*b+ dim_x*korr,dim_y*L+-dim_y*korr,dim_z*a+-dim_z*korr);
-                  glVertex3d(dim_x*b+ dim_x*korr,dim_y*L+-dim_y*korr,dim_z*a+ dim_z*korr);
-                  glVertex3d(dim_x*b+-dim_x*korr,dim_y*L+-dim_y*korr,dim_z*a+ dim_z*korr);
-                  glVertex3d(dim_x*b+-dim_x*korr,dim_y*L+ dim_y*korr,dim_z*a+ dim_z*korr);
-                  glVertex3d(dim_x*b+-dim_x*korr,dim_y*L+ dim_y*korr,dim_z*a+-dim_z*korr);
-                  glVertex3d(dim_x*b+ dim_x*korr,dim_y*L+ dim_y*korr,dim_z*a+-dim_z*korr);
-                  glVertex3d(dim_x*b+ dim_x*korr,dim_y*L+-dim_y*korr,dim_z*a+-dim_z*korr);
+                  glVertex3d(dim_x*b+-dim_x*korr,
+                             dim_y*L+-dim_y*korr,
+                             dim_z*a+-dim_z*korr);
+                  glVertex3d(dim_x*b+ dim_x*korr,
+                             dim_y*L+-dim_y*korr,
+                             dim_z*a+-dim_z*korr);
+                  glVertex3d(dim_x*b+ dim_x*korr,
+                             dim_y*L+-dim_y*korr,
+                             dim_z*a+ dim_z*korr);
+                  glVertex3d(dim_x*b+-dim_x*korr,
+                             dim_y*L+-dim_y*korr,
+                             dim_z*a+ dim_z*korr);
+                  glVertex3d(dim_x*b+-dim_x*korr,
+                             dim_y*L+ dim_y*korr,
+                             dim_z*a+ dim_z*korr);
+                  glVertex3d(dim_x*b+-dim_x*korr,
+                             dim_y*L+ dim_y*korr,
+                             dim_z*a+-dim_z*korr);
+                  glVertex3d(dim_x*b+ dim_x*korr,
+                             dim_y*L+ dim_y*korr,
+                             dim_z*a+-dim_z*korr);
+                  glVertex3d(dim_x*b+ dim_x*korr,
+                             dim_y*L+-dim_y*korr,
+                             dim_z*a+-dim_z*korr);
                 glEnd();
             }
           }
         }
+
+        if(schalen && L == n_L -1 && geschaelt < 2 && geschaelt != -1)
+        {
+          L = 0;
+          geschaelt = -1;
+        }
+
       } DBG_PROG
       glPopMatrix();
 #     ifndef Beleuchtung_
@@ -3392,12 +3554,15 @@ GL_Ansicht::menueAufruf ( int value )
       break;
     case MENU_GRAU:
       punktfarbe = MENU_GRAU;
+      schalen = 0;
       break;
     case MENU_FARBIG:
       punktfarbe = MENU_FARBIG;
+      schalen = 0;
       break;
     case MENU_KONTRASTREICH:
       punktfarbe = MENU_KONTRASTREICH;
+      schalen = 0;
       break;
     case MENU_SCHALEN:
       if (! schalen)
@@ -3590,19 +3755,21 @@ GL_Ansicht::handle( int event )
   return schluss;
 }
 
-void
+int
 GL_Ansicht::tastatur(int e)
 { DBG_MEM_START
+  int found = 0;
   if(!icc_examin->laeuft())
-    return;
+    return found;
 
   Fl_Widget * wb = Fl::belowmouse();
-  if(visible())
+  int is_visible = visible();
+  if(is_visible)
   if( this == wb )
   {
-    //e = Fl::get_key(e);
     DBG_ICCGL_S("e = " << e << " " << Fl::event_key() )
-    if(e == FL_SHORTCUT)
+    if(e == FL_SHORTCUT ||
+       e == FL_KEYBOARD)
     {
       double clip_old = vorder_schnitt;
       if(Fl::event_key() == FL_Up) {
@@ -3618,9 +3785,19 @@ GL_Ansicht::tastatur(int e)
          !darfBewegen())
         redraw();
 
-      switch (Fl::event_key()) {
-      case 45: // '-' this is not conform on all consoles; use FLTK native key codes?
-        if(punktform >= MENU_dE1KUGEL && punktform <= MENU_dE4KUGEL)
+      int k = ((char*)Fl::event_text())[0];
+
+      switch (k) {
+      case '-':
+        if(tabelle_.size() && schalen)
+        {
+          this->level -= this->level_step;
+          if(this->level <= .0)
+            this->level = .0001;
+          auffrischen_();
+          redraw();
+        }
+        else if(punktform >= MENU_dE1KUGEL && punktform <= MENU_dE4KUGEL)
         {
           if (punktform > MENU_dE1KUGEL) {
             --punktform;
@@ -3635,9 +3812,18 @@ GL_Ansicht::tastatur(int e)
           redraw();
         }
         DBG_PROG_V( Fl::event_key() <<" "<< punktgroesse )
+        found = 1;
         break;
-      case 43: // '+'
-        if (punktform >= MENU_dE1KUGEL && punktform <= MENU_dE4KUGEL)
+      case '+': // 43
+        if(tabelle_.size() && schalen)
+        {
+          this->level += this->level_step;
+          if(this->level >= 1.0)
+            this->level = .9999;
+          auffrischen_();
+          redraw();
+        }
+        else if (punktform >= MENU_dE1KUGEL && punktform <= MENU_dE4KUGEL)
         {
           if (punktform < MENU_dE4KUGEL) {
             ++punktform;
@@ -3654,6 +3840,43 @@ GL_Ansicht::tastatur(int e)
           redraw();
         }
         DBG_PROG_V( Fl::event_key()  <<" "<< punktgroesse <<" "<< punktform <<" "<< MENU_DIFFERENZ_LINIE )
+        found = 1;
+        break;
+      case '*':
+        if(tabelle_.size() && schalen)
+        {
+          this->level_step *= 2;
+          if(this->level_step > 0.999)
+            this->level_step = 0.999;
+        }
+        found = 1;
+        break;
+      case '/':
+        if(tabelle_.size() && schalen)
+        {
+          this->level_step /= 2;
+          if(this->level_step < 0.0001)
+            this->level_step = 0.0001;
+        }
+        found = 1;
+        break;
+      case '1':
+      case '2':
+      case '3':
+      case '4':
+      case '5':
+      case '6':
+      case '7':
+      case '8':
+      case '9':
+      case '0':
+        if(tabelle_.size())
+        {
+          schalen = k - '0';
+          auffrischen_();
+          redraw();
+        }
+        found = 1;
         break;
       default:
         dbgFltkEvents(e);
@@ -3661,7 +3884,9 @@ GL_Ansicht::tastatur(int e)
       }
     }
   }
+
   DBG_MEM_ENDE
+  return found;
 }
 
 

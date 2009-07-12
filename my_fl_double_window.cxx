@@ -295,7 +295,7 @@ int MyFl_Double_Window::handle( int e )
 
   int ergebnis = 0;
   if(event_handler)
-    event_handler(e);
+    ergebnis = event_handler(e);
 
   int zeigen = (e == FL_HIDE || e == FL_SHOW);
 
@@ -369,7 +369,7 @@ int MyFl_Double_Window::handle( int e )
 
   in_middle_of_[HANDLE] = 0;
 
-  if(fl_window_events)
+  if(fl_window_events && !ergebnis)
     ergebnis = Fl_Double_Window::handle(e);
 
   return ergebnis;
