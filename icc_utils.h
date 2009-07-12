@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2008  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2009  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -198,9 +198,9 @@ extern int icc_debug;
 #define DBG_UHR_ (double)clock()/(double)CLOCKS_PER_SEC
 
 #ifndef WIN32
-#define DBG_T_     dbgWrite ( __FILE__<<":"<<__LINE__ <<" "<< __func__ << "() " ); dbgThreadId(); dbgWrite ( " "<< DBG_UHR_ <<" " );
+#define DBG_T_     dbgWrite ( (strrchr(__FILE__,'/') ? strrchr(__FILE__,'/')+1 : __FILE__)<<":"<<__LINE__ <<" "<< __func__ << "() " ); dbgThreadId(); dbgWrite ( " "<< DBG_UHR_ <<" " );
 #else
-#define DBG_T_     dbgWrite ( __FILE__<<":"<<__LINE__ <<" " ); dbgThreadId(); dbgWrite ( " "<< DBG_UHR_ <<" " );
+#define DBG_T_     dbgWrite ( (strrchr(__FILE__,'/') ? strrchr(__FILE__,'/')+1 : __FILE__)<<":"<<__LINE__ <<" " ); dbgThreadId(); dbgWrite ( " "<< DBG_UHR_ <<" " );
 #endif
 #define LEVEL      { for (int i = 0; i < icc_level_PROG; i++) dbgWrite (" "); }
 #define DBG_(code) { LEVEL dbgWrite ("        "); DBG_T_ dbgWrite (endl); dbgWriteF(code); }
