@@ -1229,13 +1229,29 @@ GL_Ansicht::tabelleAuffrischen()
     gl_listen[RASTER] = glGenLists(1);
     glNewList( gl_listen[RASTER], GL_COMPILE); DBG_PROG_V( gl_listen[RASTER] )
 
-      int n_L = (int)tabelle_.size(), n_a=(int)tabelle_[0].size(), n_b=(int)tabelle_[0][0].size();
-      double dim_x = 1.0/(n_b-1); DBG_PROG_V( dim_x )
-      double dim_y = 1.0/(n_L-1); DBG_PROG_V( dim_y )
-      double dim_z = 1.0/(n_a-1); DBG_PROG_V( dim_z )
+      int n_L = (int)tabelle_.size(),
+          n_a=(int)tabelle_[0].size(),
+          n_b=(int)tabelle_[0][0].size();
+
+      /* The small data cubes fit all into the whole table cubus.
+       * The edge of the starting data cube lies on the edge of the table cubus.
+       */
+      double dim_x = 1.0/n_b;
+      double dim_y = 1.0/n_L;
+      double dim_z = 1.0/n_a;
       double start_x,start_y,start_z, x,y,z;
       double wert,
              A,B,C,D,E_,F,G,H;
+
+      /* The cubus for lines is completely filled from 0...1 .
+       * The center of the starting data entry lies on the edge of the whole
+       * cube.
+       */
+      if(schalen != 0)
+      {
+        dim_x = 1.0/(n_b-1);
+        dim_z = 1.0/(n_a-1);
+      }
 
       /*if(schalen)
         vorder_schnitt = 0.01;
@@ -1252,6 +1268,7 @@ GL_Ansicht::tabelleAuffrischen()
       DBG_PROG_V( tabelle_.size() <<" "<< tabelle_[0].size() )
 
       float korr = 0.995f/2.0f;
+      /* The cubus start point is shifted to let the data appear centred. */
       glTranslated(-0.5/0.995+dim_x/2,-0.5/0.995+dim_y/2,-0.5/0.995+dim_z/2);
 
       int geschaelt = 0;
@@ -1280,7 +1297,7 @@ GL_Ansicht::tabelleAuffrischen()
                                            1.0-wert, 1.0);         break;
               case MENU_KONTRASTREICH: wert = wert * 6;
                                 while(wert > 1.0) { wert = wert - 1.0; }
-                                if (schalen && wert < 0.80) wert = 0.0;
+                                if (schalen != 0 && wert < 0.80) wert = 0.0;
                                 if (0/*schalen*/) {
                                   glDisable(GL_LIGHTING);
                                   FARBE(wert, wert, wert,1)
@@ -1289,15 +1306,11 @@ GL_Ansicht::tabelleAuffrischen()
                                                                    break;
             }
 #           endif
-            if(schalen)// && punktfarbe == MENU_KONTRASTREICH)
-            for(int n = 0; n < schalen; ++n)
-            {
-              double l = 1./schalen * n + level/schalen;
 
-              if(b == n_b - 1 ||
-                 a == n_a - 1 ||
-                 L == n_L - 1)
-                continue;
+            if(schalen != 0)
+            for(int n = 0; n < abs(schalen); ++n)
+            {
+              double l = 1./abs(schalen) * n + level/abs(schalen);
 
               /* 
                   The cubus can be imagined like:
@@ -1319,68 +1332,77 @@ GL_Ansicht::tabelleAuffrischen()
                          x H                     
                */
 
-              A = tabelle_[L+1][a][b][kanal];
-              B = tabelle_[L+1][a][b+1][kanal];
-              C = tabelle_[L+1][a+1][b+1][kanal];
-              D = tabelle_[L+1][a+1][b][kanal];
-              E_= tabelle_[L][a][b][kanal];
-              F = tabelle_[L][a][b+1][kanal];
-              G = tabelle_[L][a+1][b+1][kanal];
-              H = tabelle_[L][a+1][b][kanal];
+              A = tabelle_[L][a][b][kanal];
+              if(b != n_b - 1)
+              B = tabelle_[L][a][b+1][kanal];
+              if(b != n_b - 1 && a != n_a - 1)
+              C = tabelle_[L][a+1][b+1][kanal];
+              if(a != n_a - 1)
+              D = tabelle_[L][a+1][b][kanal];
+
+              if(schalen > 0 && L != 0)
+              {
+              E_= tabelle_[L-1][a][b][kanal];
+              if(b != n_b - 1)
+              F = tabelle_[L-1][a][b+1][kanal];
+              if(b != n_b - 1 && a != n_a - 1)
+              G = tabelle_[L-1][a+1][b+1][kanal];
+              if(a != n_a - 1)
+              H = tabelle_[L-1][a+1][b][kanal];
+              }
 
               /* isolines */
               glBegin(GL_LINE_STRIP);
-                if(A <l&&l< B)
+                if(A <l&&l< B && b != n_b - 1)
                 {
                   glVertex3d(dim_x*b+ dim_x*(-.5+(l-A)/(B-A)),
                              dim_y*L+ dim_y*.5,
                              dim_z*a+-dim_z*.5);
                   ++ geschaelt;
                 }
-                if(B <l&&l< A)
+                if(B <l&&l< A && b != n_b - 1)
                 {
                   glVertex3d(dim_x*b+ dim_x*(.5+(B-l)/(A-B)),
                              dim_y*L+ dim_y*.5,
                              dim_z*a+-dim_z*.5);
                   ++ geschaelt;
                 }
-                if(D <l&&l< C)
+                if(D <l&&l< C && b != n_b - 1 && a != n_a - 1)
                 {
                   glVertex3d(dim_x*b+ dim_x*(-.5+(l-D)/(C-D)),
                              dim_y*L+ dim_y*.5,
                              dim_z*a+ dim_z*.5);
                   ++ geschaelt;
                 }
-                if(C <l&&l< D)
+                if(C <l&&l< D && b != n_b - 1 && a != n_a - 1)
                 {
                   glVertex3d(dim_x*b+ dim_x*(.5+(C-l)/(D-C)),
                              dim_y*L+ dim_y*.5,
                              dim_z*a+ dim_z*.5);
                   ++ geschaelt;
                 }
-                if(A <l&&l< D)
+                if(A <l&&l< D && a != n_a - 1)
                 {
                   glVertex3d(dim_x*b+-dim_x*.5,
                              dim_y*L+ dim_y*.5,
                              dim_z*a+ dim_z*(-.5+(l-A)/(D-A)));
                   ++ geschaelt;
                 }
-                if(D <l&&l< A)
+                if(D <l&&l< A && a != n_a - 1)
                 {
                   glVertex3d(dim_x*b+-dim_x*.5,
                              dim_y*L+ dim_y*.5,
                              dim_z*a+ dim_z*(.5+(D-l)/(A-D)));
                   ++ geschaelt;
                 }
-                if(B <l&&l< C)
+                if(B <l&&l< C && b != n_b - 1 && a != n_a - 1)
                 {
                   glVertex3d(dim_x*b+ dim_x*.5,
                              dim_y*L+ dim_y*.5,
                              dim_z*a+ dim_z*(-.5+(l-B)/(C-B)));
                   ++ geschaelt;
                 }
-                if(C <l&&l< B)
-                {
+                if(C <l&&l< B && b != n_b - 1 && a != n_a - 1) {
                   glVertex3d(dim_x*b+ dim_x*.5,
                              dim_y*L+ dim_y*.5,
                              dim_z*a+ dim_z*(.5+(C-l)/(B-C)));
@@ -1388,11 +1410,134 @@ GL_Ansicht::tabelleAuffrischen()
                 }
               glEnd();
 
+              /* shortcut '_' <==> schale<0 - shows vertical lines */
+              if(schalen > 0 && L != 0)
+              {
+              if(b != n_b - 1)
+              {
+              glBegin(GL_LINE_STRIP);
+                if(A <l&&l< B)
+                  glVertex3d(dim_x*b+ dim_x*(-.5+(l-A)/(B-A)),
+                             dim_y*L+ dim_y*.5,
+                             dim_z*a+-dim_z*.5);
+                if(E_ <l&&l< F)
+                  glVertex3d(dim_x*b+ dim_x*(-.5+(l-E_)/(F-E_)),
+                             dim_y*L+-dim_y*.5,
+                             dim_z*a+-dim_z*.5);
+                if(B <l&&l< A)
+                  glVertex3d(dim_x*b+ dim_x*(.5+(B-l)/(A-B)),
+                             dim_y*L+ dim_y*.5,
+                             dim_z*a+-dim_z*.5);
+                if(F <l&&l< E_)
+                  glVertex3d(dim_x*b+ dim_x*(.5+(F-l)/(E_-F)),
+                             dim_y*L+-dim_y*.5,
+                             dim_z*a+-dim_z*.5);
+                if(A <l&&l< E_)
+                  glVertex3d(dim_x*b+-dim_x*.5,
+                             dim_y*L+ dim_y*(.5+(A-l)/(E_-A)),
+                             dim_z*a+-dim_z*.5);
+                if(E_ <l&&l< A)
+                  glVertex3d(dim_x*b+-dim_x*.5,
+                             dim_y*L+ dim_y*(-.5+(l-E_)/(A-E_)),
+                             dim_z*a+-dim_z*.5);
+                if(B <l&&l< F)
+                  glVertex3d(dim_x*b+ dim_x*.5,
+                             dim_y*L+ dim_y*(.5+(B-l)/(F-B)),
+                             dim_z*a+-dim_z*.5);
+                if(F <l&&l< B)
+                  glVertex3d(dim_x*b+ dim_x*.5,
+                             dim_y*L+ dim_y*(-.5+(l-F)/(B-F)),
+                             dim_z*a+-dim_z*.5);
+              glEnd();
+              }
+
+              if(a != n_a - 1)
+              {
+              glBegin(GL_LINE_STRIP);
+#if 0
+                if(D <l&&l< C)
+                  glVertex3d(dim_x*b+ dim_x*(-.5+(l-D)/(C-D)),
+                             dim_y*L+ dim_y*.5,
+                             dim_z*a+ dim_z*.5);
+                if(H <l&&l< G)
+                  glVertex3d(dim_x*b+ dim_x*(-.5+(l-H)/(G-H)),
+                             dim_y*L+-dim_y*.5,
+                             dim_z*a+ dim_z*.5);
+                if(C <l&&l< D)
+                  glVertex3d(dim_x*b+ dim_x*(.5+(C-l)/(D-C)),
+                             dim_y*L+ dim_y*.5,
+                             dim_z*a+ dim_z*.5);
+                if(G <l&&l< H)
+                  glVertex3d(dim_x*b+ dim_x*(.5+(G-l)/(H-G)),
+                             dim_y*L+-dim_y*.5,
+                             dim_z*a+ dim_z*.5);
+#endif
+                if(A <l&&l< D)
+                  glVertex3d(dim_x*b+-dim_x*.5,
+                             dim_y*L+ dim_y*.5,
+                             dim_z*a+ dim_z*(-.5+(l-A)/(D-A)));
+                if(E_ <l&&l< H)
+                  glVertex3d(dim_x*b+-dim_x*.5,
+                             dim_y*L+-dim_y*.5,
+                             dim_z*a+ dim_z*(-.5+(l-E_)/(H-E_)));
+                if(D <l&&l< A)
+                  glVertex3d(dim_x*b+-dim_x*.5,
+                             dim_y*L+ dim_y*.5,
+                             dim_z*a+ dim_z*(.5+(D-l)/(A-D)));
+                if(H <l&&l< E_)
+                  glVertex3d(dim_x*b+-dim_x*.5,
+                             dim_y*L+-dim_y*.5,
+                             dim_z*a+ dim_z*(.5+(H-l)/(E_-H)));
+                if(A <l&&l< E_)
+                  glVertex3d(dim_x*b+-dim_x*.5,
+                             dim_y*L+ dim_y*(.5+(A-l)/(E_-A)),
+                             dim_z*a+-dim_z*.5);
+                if(E_ <l&&l< A)
+                  glVertex3d(dim_x*b+-dim_x*.5,
+                             dim_y*L+ dim_y*(-.5+(l-E_)/(A-E_)),
+                             dim_z*a+-dim_z*.5);
+                if(D <l&&l< H)
+                  glVertex3d(dim_x*b+-dim_x*.5,
+                             dim_y*L+ dim_y*(.5+(D-l)/(H-D)),
+                             dim_z*a+ dim_z*.5);
+                if(H <l&&l< D)
+                  glVertex3d(dim_x*b+-dim_x*.5,
+                             dim_y*L+ dim_y*(-.5+(l-H)/(D-H)),
+                             dim_z*a+ dim_z*.5);
+#if 0
+                if(B <l&&l< C)
+                  glVertex3d(dim_x*b+ dim_x*.5,
+                             dim_y*L+ dim_y*.5,
+                             dim_z*a+ dim_z*(-.5+(l-B)/(C-B)));
+                if(F <l&&l< G)
+                  glVertex3d(dim_x*b+ dim_x*.5,
+                             dim_y*L+-dim_y*.5,
+                             dim_z*a+ dim_z*(-.5+(l-F)/(G-F)));
+                if(C <l&&l< B)
+                  glVertex3d(dim_x*b+ dim_x*.5,
+                             dim_y*L+ dim_y*.5,
+                             dim_z*a+ dim_z*(.5+(C-l)/(B-C)));
+                if(G <l&&l< F)
+                  glVertex3d(dim_x*b+ dim_x*.5,
+                             dim_y*L+-dim_y*.5,
+                             dim_z*a+ dim_z*(.5+(G-l)/(F-G)));
+                if(C <l&&l< G)
+                  glVertex3d(dim_x*b+ dim_x*.5,
+                             dim_y*L+ dim_y*(.5+(C-l)/(G-C)),
+                             dim_z*a+ dim_z*.5);
+                if(G <l&&l< C)
+                  glVertex3d(dim_x*b+ dim_x*.5,
+                             dim_y*L+ dim_y*(-.5+(l-G)/(C-G)),
+                             dim_z*a+ dim_z*.5);
+#endif
+              glEnd();
+              }
+              }
             }
 
             /* the cubus representation */
             if (wert && 
-                (!schalen || geschaelt < 0))
+                (schalen == 0 || geschaelt < 0))
             {
                 glBegin(GL_TRIANGLE_FAN);
                   glVertex3d(dim_x*b+ dim_x*korr,
@@ -1450,7 +1595,7 @@ GL_Ansicht::tabelleAuffrischen()
           }
         }
 
-        if(schalen && L == n_L -1 && geschaelt < 2 && geschaelt != -1)
+        if(schalen != 0 && L == n_L -1 && geschaelt < 2 && geschaelt != -1)
         {
           L = 0;
           geschaelt = -1;
@@ -3789,7 +3934,7 @@ GL_Ansicht::tastatur(int e)
 
       switch (k) {
       case '-':
-        if(tabelle_.size() && schalen)
+        if(tabelle_.size() && schalen != 0)
         {
           this->level -= this->level_step;
           if(this->level <= .0)
@@ -3815,7 +3960,7 @@ GL_Ansicht::tastatur(int e)
         found = 1;
         break;
       case '+': // 43
-        if(tabelle_.size() && schalen)
+        if(tabelle_.size() && schalen != 0)
         {
           this->level += this->level_step;
           if(this->level >= 1.0)
@@ -3843,7 +3988,7 @@ GL_Ansicht::tastatur(int e)
         found = 1;
         break;
       case '*':
-        if(tabelle_.size() && schalen)
+        if(tabelle_.size() && schalen != 0)
         {
           this->level_step *= 2;
           if(this->level_step > 0.999)
@@ -3852,11 +3997,20 @@ GL_Ansicht::tastatur(int e)
         found = 1;
         break;
       case '/':
-        if(tabelle_.size() && schalen)
+        if(tabelle_.size() && schalen != 0)
         {
           this->level_step /= 2;
           if(this->level_step < 0.0001)
             this->level_step = 0.0001;
+        }
+        found = 1;
+        break;
+      case '_':
+        if(tabelle_.size())
+        {
+          schalen = -schalen;
+          auffrischen_();
+          redraw();
         }
         found = 1;
         break;
@@ -3872,7 +4026,11 @@ GL_Ansicht::tastatur(int e)
       case '0':
         if(tabelle_.size())
         {
-          schalen = k - '0';
+          if(schalen<0)
+            schalen = -(k - '0');
+          else
+            schalen = (k - '0');
+
           auffrischen_();
           redraw();
         }
