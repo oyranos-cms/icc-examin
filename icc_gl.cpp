@@ -197,7 +197,7 @@ GL_Ansicht::init_()
   maus_x_alt = -1;
   maus_y_alt = -1;
   maus_steht = false;
-  level = 0.5;
+  level = 0.5001;
   level_step = 0.1;
   valid_ = false;
   update_geometries_ = false;
@@ -1250,6 +1250,7 @@ GL_Ansicht::tabelleAuffrischen()
       if(schalen != 0)
       {
         dim_x = 1.0/(n_b-1);
+        dim_y = 1.0/(n_L-1);
         dim_z = 1.0/(n_a-1);
       }
 
@@ -1269,7 +1270,9 @@ GL_Ansicht::tabelleAuffrischen()
 
       float korr = 0.995f/2.0f;
       /* The cubus start point is shifted to let the data appear centred. */
-      glTranslated(-0.5/0.995+dim_x/2,-0.5/0.995+dim_y/2,-0.5/0.995+dim_z/2);
+      glTranslated( -0.5/0.995+dim_x/2,
+                    -0.5/0.995+dim_y/2 - (schalen != 0 ? dim_y : 0),
+                    -0.5/0.995+dim_z/2);
 
       int geschaelt = 0;
       for (int L = 0; L < (int)n_L; L++)
@@ -1410,7 +1413,6 @@ GL_Ansicht::tabelleAuffrischen()
                 }
               glEnd();
 
-              /* shortcut '_' <==> schale<0 - shows vertical lines */
               if(schalen > 0 && L != 0)
               {
               if(b != n_b - 1)
@@ -1454,24 +1456,6 @@ GL_Ansicht::tabelleAuffrischen()
               if(a != n_a - 1)
               {
               glBegin(GL_LINE_STRIP);
-#if 0
-                if(D <l&&l< C)
-                  glVertex3d(dim_x*b+ dim_x*(-.5+(l-D)/(C-D)),
-                             dim_y*L+ dim_y*.5,
-                             dim_z*a+ dim_z*.5);
-                if(H <l&&l< G)
-                  glVertex3d(dim_x*b+ dim_x*(-.5+(l-H)/(G-H)),
-                             dim_y*L+-dim_y*.5,
-                             dim_z*a+ dim_z*.5);
-                if(C <l&&l< D)
-                  glVertex3d(dim_x*b+ dim_x*(.5+(C-l)/(D-C)),
-                             dim_y*L+ dim_y*.5,
-                             dim_z*a+ dim_z*.5);
-                if(G <l&&l< H)
-                  glVertex3d(dim_x*b+ dim_x*(.5+(G-l)/(H-G)),
-                             dim_y*L+-dim_y*.5,
-                             dim_z*a+ dim_z*.5);
-#endif
                 if(A <l&&l< D)
                   glVertex3d(dim_x*b+-dim_x*.5,
                              dim_y*L+ dim_y*.5,
@@ -1504,32 +1488,6 @@ GL_Ansicht::tabelleAuffrischen()
                   glVertex3d(dim_x*b+-dim_x*.5,
                              dim_y*L+ dim_y*(-.5+(l-H)/(D-H)),
                              dim_z*a+ dim_z*.5);
-#if 0
-                if(B <l&&l< C)
-                  glVertex3d(dim_x*b+ dim_x*.5,
-                             dim_y*L+ dim_y*.5,
-                             dim_z*a+ dim_z*(-.5+(l-B)/(C-B)));
-                if(F <l&&l< G)
-                  glVertex3d(dim_x*b+ dim_x*.5,
-                             dim_y*L+-dim_y*.5,
-                             dim_z*a+ dim_z*(-.5+(l-F)/(G-F)));
-                if(C <l&&l< B)
-                  glVertex3d(dim_x*b+ dim_x*.5,
-                             dim_y*L+ dim_y*.5,
-                             dim_z*a+ dim_z*(.5+(C-l)/(B-C)));
-                if(G <l&&l< F)
-                  glVertex3d(dim_x*b+ dim_x*.5,
-                             dim_y*L+-dim_y*.5,
-                             dim_z*a+ dim_z*(.5+(G-l)/(F-G)));
-                if(C <l&&l< G)
-                  glVertex3d(dim_x*b+ dim_x*.5,
-                             dim_y*L+ dim_y*(.5+(C-l)/(G-C)),
-                             dim_z*a+ dim_z*.5);
-                if(G <l&&l< C)
-                  glVertex3d(dim_x*b+ dim_x*.5,
-                             dim_y*L+ dim_y*(-.5+(l-G)/(C-G)),
-                             dim_z*a+ dim_z*.5);
-#endif
               glEnd();
               }
               }
@@ -1599,6 +1557,9 @@ GL_Ansicht::tabelleAuffrischen()
         {
           L = 0;
           geschaelt = -1;
+          dim_x = 1.0/n_b;
+          dim_y = 1.0/n_L;
+          dim_z = 1.0/n_a;
         }
 
       } DBG_PROG
