@@ -3084,13 +3084,13 @@ GL_Ansicht::zeichnen()
     double dzeit = icc_examin_ns::zeitSekunden() - zeit_;
     if(dzeit > 1./15. )
     {
-      if(smooth)
+      if(smooth && !schalen)
       {
         smooth = 0;
         strich_neu = true;
       }
     }
-    if(dzeit < 1./40.)
+    if(dzeit < 1./40. || schalen)
     {
       if(!smooth)
       {
