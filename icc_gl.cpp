@@ -1254,10 +1254,12 @@ GL_Ansicht::tabelleAuffrischen()
         dim_z = 1.0/(n_a-1);
       }
 
-      /*if(schalen)
+#if 0
+      if(schalen)
         vorder_schnitt = 0.01;
       else
-        vorder_schnitt = std_vorder_schnitt;*/
+        vorder_schnitt = std_vorder_schnitt;
+#endif
       schnitttiefe = HYP3(dim_x,dim_y,dim_z);
       DBG_NUM_V( schnitttiefe );
       start_x = start_y = start_z = x = y = z = 0.5; start_y = y = -0.5;
@@ -1333,6 +1335,8 @@ GL_Ansicht::tabelleAuffrischen()
                        \ | /                     
                         \|/                      
                          x H                     
+
+               *  get table values:
                */
 
               A = tabelle_[L][a][b][kanal];
@@ -1354,65 +1358,199 @@ GL_Ansicht::tabelleAuffrischen()
               H = tabelle_[L-1][a+1][b][kanal];
               }
 
+              int edges;
               /* isolines */
-              glBegin(GL_LINE_STRIP);
+              {
+                int e[8] = {0,0,0,0,0,0,0,0};
+                edges = 0;
+                /* We assume, that a rectangle can be cut in basically three 
+                 * ways: no interpolation is done - nothing to do,
+                 *       two interpolations - rectangle is sliced by a face
+                 *       four interpolations - two faces 
+                 *
+                 *  Here the edges are count. e is filled just for fun.
+                 */
                 if(A <l&&l< B && b != n_b - 1)
                 {
-                  glVertex3d(dim_x*b+ dim_x*(-.5+(l-A)/(B-A)),
-                             dim_y*L+ dim_y*.5,
-                             dim_z*a+-dim_z*.5);
-                  ++ geschaelt;
+                  ++edges;
+                  e[0] = 1;
                 }
                 if(B <l&&l< A && b != n_b - 1)
                 {
-                  glVertex3d(dim_x*b+ dim_x*(.5+(B-l)/(A-B)),
-                             dim_y*L+ dim_y*.5,
-                             dim_z*a+-dim_z*.5);
-                  ++ geschaelt;
-                }
-                if(D <l&&l< C && b != n_b - 1 && a != n_a - 1)
-                {
-                  glVertex3d(dim_x*b+ dim_x*(-.5+(l-D)/(C-D)),
-                             dim_y*L+ dim_y*.5,
-                             dim_z*a+ dim_z*.5);
-                  ++ geschaelt;
-                }
-                if(C <l&&l< D && b != n_b - 1 && a != n_a - 1)
-                {
-                  glVertex3d(dim_x*b+ dim_x*(.5+(C-l)/(D-C)),
-                             dim_y*L+ dim_y*.5,
-                             dim_z*a+ dim_z*.5);
-                  ++ geschaelt;
-                }
-                if(A <l&&l< D && a != n_a - 1)
-                {
-                  glVertex3d(dim_x*b+-dim_x*.5,
-                             dim_y*L+ dim_y*.5,
-                             dim_z*a+ dim_z*(-.5+(l-A)/(D-A)));
-                  ++ geschaelt;
-                }
-                if(D <l&&l< A && a != n_a - 1)
-                {
-                  glVertex3d(dim_x*b+-dim_x*.5,
-                             dim_y*L+ dim_y*.5,
-                             dim_z*a+ dim_z*(.5+(D-l)/(A-D)));
-                  ++ geschaelt;
+                  ++edges;
+                  e[0] = 1;
                 }
                 if(B <l&&l< C && b != n_b - 1 && a != n_a - 1)
                 {
-                  glVertex3d(dim_x*b+ dim_x*.5,
-                             dim_y*L+ dim_y*.5,
-                             dim_z*a+ dim_z*(-.5+(l-B)/(C-B)));
-                  ++ geschaelt;
+                  ++edges;
+                  e[1] = 1;
                 }
-                if(C <l&&l< B && b != n_b - 1 && a != n_a - 1) {
-                  glVertex3d(dim_x*b+ dim_x*.5,
-                             dim_y*L+ dim_y*.5,
-                             dim_z*a+ dim_z*(.5+(C-l)/(B-C)));
-                  ++ geschaelt;
+                if(C <l&&l< B && b != n_b - 1 && a != n_a - 1)
+                {
+                  ++edges;
+                  e[1] = 1;
                 }
-              glEnd();
+                if(D <l&&l< C && b != n_b - 1 && a != n_a - 1)
+                {
+                  ++edges;
+                  e[2] = 1;
+                }
+                if(C <l&&l< D && b != n_b - 1 && a != n_a - 1)
+                {
+                  ++edges;
+                  e[2] = 1;
+                }
+                if(A <l&&l< D && a != n_a - 1)
+                {
+                  ++edges;
+                  e[3] = 1;
+                }
+                if(D <l&&l< A && a != n_a - 1)
+                {
+                  ++edges;
+                  e[3] = 1;
+                }
+                geschaelt += edges;
 
+                /*  For no interpolation (edges) we skip the following, 
+                 *  for two interpolations (edges) one pass is needed and
+                 *  for four we need to do a second pass.
+                 */
+                for(int m = edges; m > 0; m -= 2)
+                {
+                  /* reset the edges drawing instructor */
+                  memset(e, 0, sizeof(int)*8);
+                  /*  four interpolations, first pass:
+                   *  We want just one line o be drawn. Eigther with one
+                   *  interpolated point between AB && AD || BA && BC.
+                   *  The two conditions are exclusive, as AB || BA is possible.
+                   */
+                  if(m == 4 && edges == 4)
+                  {
+                    if(A <l&&l< B && b != n_b - 1 &&
+                       A <l&&l< D && a != n_a - 1)
+                    {
+                      e[0] = 1;
+                      e[3] = -1;
+                    }
+
+                    if(B <l&&l< A && b != n_b - 1 &&
+                       B <l&&l< C && b != n_b - 1 && a != n_a - 1)
+                    {
+                      e[0] = -1;
+                      e[1] = 1;
+                    }
+                    if(oy_debug)
+                    {
+                    /* draw the non interpolated table rectangle */
+                    glColor4d( 1, 0, 0, 1.0);
+                    glBegin(GL_LINE_STRIP);
+                      glVertex3d(dim_x*b+-dim_x*.5,
+                                 dim_y*L+ dim_y*.5,
+                                 dim_z*a+-dim_z*.5);
+                      glVertex3d(dim_x*b+ dim_x*.5,
+                                 dim_y*L+ dim_y*.5,
+                                 dim_z*a+-dim_z*.5);
+                      glVertex3d(dim_x*b+ dim_x*.5,
+                                 dim_y*L+ dim_y*.5,
+                                 dim_z*a+ dim_z*.5);
+                    glEnd();
+                    }
+                  }
+                  /* four interpolations, second pass:
+                   * The other line we expect is ordered to be drawn here. */
+                  if(m == 2 && edges == 4)
+                  {
+                    if(D <l&&l< C && b != n_b - 1 && a != n_a - 1 &&
+                       D <l&&l< A && a != n_a - 1)
+                    {
+                      e[2] = -1;
+                      e[3] = 1;
+                    }
+
+                    if(C <l&&l< D && b != n_b - 1 && a != n_a - 1 &&
+                       C <l&&l< B && b != n_b - 1 && a != n_a - 1)
+                    {
+                      e[2] = 1;
+                      e[1] = -1;
+                    }
+                  }
+
+                  /* Only one line is expected. No particular order is needed. 
+                   * Just the direction counts.
+                   */
+                  if(edges == 2)
+                  {
+                    if(A <l&&l< B && b != n_b - 1)
+                      e[0] = 1;
+
+                    if(B <l&&l< A && b != n_b - 1)
+                      e[0] = -1;
+
+                    if(B <l&&l< C && b != n_b - 1 && a != n_a - 1)
+                      e[1] = 1;
+
+                    if(C <l&&l< B && b != n_b - 1 && a != n_a - 1)
+                      e[1] = -1;
+
+                    if(C <l&&l< D && b != n_b - 1 && a != n_a - 1)
+                      e[2] = 1;
+
+                    if(D <l&&l< C && b != n_b - 1 && a != n_a - 1)
+                      e[2] = -1;
+
+                    if(D <l&&l< A && a != n_a - 1)
+                      e[3] = 1;
+
+                    if(A <l&&l< D && a != n_a - 1)
+                      e[3] = -1;
+                  }
+
+if(0 && edges==4)
+printf("%s:%d %d e:%d,%d,%d,%d\n",__FILE__,__LINE__,m, e[0],e[1],e[2],e[3]);
+
+                  /* Draw one line, otherwise we get crossing lines.
+                   * Variable e should contain only two fills.
+                   */
+                  glBegin(GL_LINES);
+                    if(e[0] == 1 && b != n_b - 1)
+                      glVertex3d(dim_x*b+ dim_x*(-.5+(l-A)/(B-A)),
+                                 dim_y*L+ dim_y*.5,
+                                 dim_z*a+-dim_z*.5);
+                    if(e[0] == -1 && b != n_b - 1)
+                      glVertex3d(dim_x*b+ dim_x*(.5+(B-l)/(A-B)),
+                                 dim_y*L+ dim_y*.5,
+                                 dim_z*a+-dim_z*.5);
+                    if(e[1] == 1 && b != n_b - 1 && a != n_a - 1)
+                      glVertex3d(dim_x*b+ dim_x*.5,
+                                 dim_y*L+ dim_y*.5,
+                                 dim_z*a+ dim_z*(-.5+(l-B)/(C-B)));
+                    if(e[1] == -1 && b != n_b - 1 && a != n_a - 1)
+                      glVertex3d(dim_x*b+ dim_x*.5,
+                                 dim_y*L+ dim_y*.5,
+                                 dim_z*a+ dim_z*(.5+(C-l)/(B-C)));
+                    if(e[2] == 1 && b != n_b - 1 && a != n_a - 1)
+                      glVertex3d(dim_x*b+ dim_x*(.5+(C-l)/(D-C)),
+                                 dim_y*L+ dim_y*.5,
+                                  dim_z*a+ dim_z*.5);
+                    if(e[2] == -1 && b != n_b - 1 && a != n_a - 1)
+                      glVertex3d(dim_x*b+ dim_x*(-.5+(l-D)/(C-D)),
+                                 dim_y*L+ dim_y*.5,
+                                 dim_z*a+ dim_z*.5);
+                    if(e[3] == 1 && a != n_a - 1)
+                      glVertex3d(dim_x*b+-dim_x*.5,
+                                 dim_y*L+ dim_y*.5,
+                                 dim_z*a+ dim_z*(.5+(D-l)/(A-D)));
+                    if(e[3] == -1 && a != n_a - 1)
+                      glVertex3d(dim_x*b+-dim_x*.5,
+                                 dim_y*L+ dim_y*.5,
+                                 dim_z*a+ dim_z*(-.5+(l-A)/(D-A)));
+                  glEnd();
+                }
+              }
+
+
+              /* The analysation as in isolines above should be below as well.*/
               if(schalen > 0 && L != 0)
               {
               if(b != n_b - 1)
@@ -2899,7 +3037,7 @@ GL_Ansicht::zeichnen()
               if( epoint_) 
               {
                 GLdouble breite = 24;
-                int seiten = 8 + breite/2;
+                int seiten = (int)(8 + breite/2);
                 GLdouble x, y,
                          s = 2*M_PI/(GLdouble)seiten; // static variable
 
