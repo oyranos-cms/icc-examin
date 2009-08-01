@@ -2073,8 +2073,8 @@ GL_Ansicht::punkteAuffrischen()
                          0 );
 
           oyOptions_s * opts = icc_examin->options();
-          cc_lab = oyConversion_CreateBasic( in,out, opts, 0 );
-          cc_disp = oyConversion_CreateBasic( in,out_disp, opts, 0 );
+          cc_lab = oyConversion_CreateBasicPixels( in,out, opts, 0 );
+          cc_disp = oyConversion_CreateBasicPixels( in,out_disp, opts, 0 );
           oyOptions_Release( &opts );
 
           if(!in->pixel_data || in->pixel_data->type_ != oyOBJECT_ARRAY2D_S)
