@@ -67,6 +67,45 @@ if [ -n "$LIBS" ] && [ $LIBS -gt 0 ]; then
   fi
 fi
 
+if [ -n "$CUPS" ] && [ $CUPS -gt 0 ]; then
+  rm -f tests/libtest$EXEC_END
+  $CXX $CFLAGS -I$includedir $ROOT_DIR/tests/cups_test.cxx $LDFLAGS -L$libdir -lcups -o tests/libtest 2>>$CONF_LOG
+    if [ -f tests/libtest ]; then
+      echo_="`tests/libtest`             detected"; echo "$echo_" >> $CONF_LOG; test -n "$ECHO" && $ECHO "$echo_"
+      echo "#define HAVE_CUPS 1" >> $CONF_H
+      echo "CUPS = 1" >> $CONF
+      rm tests/libtest$EXEC_END
+    else
+      echo_="no or too old CUPS print spooler found,"; echo "$echo_" >> $CONF_LOG; test -n "$ECHO" && $ECHO "$echo_"
+      echo_="  download: http://www.cups.org"; echo "$echo_" >> $CONF_LOG; test -n "$ECHO" && $ECHO "$echo_"
+    fi
+fi
+
+
+if [ -n "$SANE" ] && [ $SANE -gt 0 ]; then
+  rm -f tests/libtest$EXEC_END
+  $CXX $CFLAGS -I$includedir $ROOT_DIR/tests/sane_test.cxx $LDFLAGS -L$libdir -lsane -o tests/libtest 2>>$CONF_LOG
+    if [ -f tests/libtest ]; then
+      tests/libtest > /dev/null
+      if [ $? = 0 ]; then
+        test_ok=0;
+      else
+        test_ok=1;
+      fi
+      echo_="`tests/libtest`         detected"; echo "$echo_" >> $CONF_LOG; test -n "$ECHO" && $ECHO "$echo_"
+      if [ $test_ok = 0 ]; then
+        echo "#define HAVE_SANE 1" >> $CONF_H
+        echo "SANE = 1" >> $CONF
+      else
+      echo_="SANE will not be used!"; echo "$echo_" >> $CONF_LOG; test -n "$ECHO" && $ECHO "$echo_"
+      fi
+      rm tests/libtest$EXEC_END
+    else
+      echo_="no or too old SANE scanner support library found,"; echo "$echo_" >> $CONF_LOG; test -n "$ECHO" && $ECHO "$echo_"
+      echo_="  download: http://www.sane-project.org"; echo "$echo_" >> $CONF_LOG; test -n "$ECHO" && $ECHO "$echo_"
+    fi
+fi
+
 
 if [ -n "$ELEKTRA" ] && [ "$ELEKTRA" -gt "0" ]; then
   if [ -z "$elektra_min" ]; then
@@ -298,6 +337,56 @@ if [ -n "$LCMS" ] && [ $LCMS -gt 0 ]; then
       echo_="$name $version               detected"; echo "$echo_" >> $CONF_LOG; test -n "$ECHO" && $ECHO "$echo_"
     else
       echo_="$name                    detected"; echo "$echo_" >> $CONF_LOG; test -n "$ECHO" && $ECHO "$echo_"
+    fi
+  else
+    if [ $TESTER -eq 1 ]; then
+      echo_="!!! ERROR: no or too old $name found, !!!"; echo "$echo_" >> $CONF_LOG; test -n "$ECHO" && $ECHO "$echo_"
+      ERROR=1
+    else
+      echo_="    Warning: no or too old $name found,"; echo "$echo_" >> $CONF_LOG; test -n "$ECHO" && $ECHO "$echo_"
+      WARNING=1
+    fi
+    echo_="  need at least version $minversion, download: $url"; echo "$echo_" >> $CONF_LOG; test -n "$ECHO" && $ECHO "$echo_"
+  fi
+fi
+
+if [ -n "$LRAW" ] && [ $LRAW -gt 0 ]; then
+  name="raw-lite"
+  libname=$name
+  minversion=0.7
+  url="http://www.libraw.org"
+  TESTER=$LRAW
+  ID=LRAW
+
+  ID_H="$ID"_H
+  ID_LIBS="$ID"_LIBS
+  HAVE_LIB=0
+  version=`pkg-config --modversion $name`
+  pkg-config  --atleast-version=$minversion $name
+  if [ $? = 0 ]; then
+    HAVE_LIB=1
+    echo "#define HAVE_$ID 1" >> $CONF_H
+    echo "$ID = 1" >> $CONF
+    echo "$ID_H = `pkg-config --cflags $name | sed \"$STRIPOPT\"`" >> $CONF
+    echo "$ID_LIBS = `pkg-config --libs $name | sed \"$STRIPOPT\"`" >> $CONF
+  else
+    l=$libname
+    rm -f tests/libtest$EXEC_END
+    $CXX $CXXFLAGS -I$includedir $ROOT_DIR/tests/lib_test.cxx $LDFLAGS -L/usr/X11R6/lib$BARCH -L/usr/lib$BARCH -L$libdir -l$l -o tests/libtest 2>/dev/null
+    if [ -f tests/libtest ]; then
+      HAVE_LIB=1
+      echo "#define HAVE_$ID 1" >> $CONF_H
+      echo "$ID = 1" >> $CONF
+      echo "$ID_H =" >> $CONF
+      echo "$ID_LIBS = -l$l" >> $CONF
+      rm tests/libtest$EXEC_END
+    fi
+  fi
+  if [ $HAVE_LIB -eq 1 ]; then
+    if [ "$version" != "" ]; then
+      echo_="$name $version           detected"; echo "$echo_" >> $CONF_LOG; test -n "$ECHO" && $ECHO "$echo_"
+    else
+      echo_="$name                detected"; echo "$echo_" >> $CONF_LOG; test -n "$ECHO" && $ECHO "$echo_"
     fi
   else
     if [ $TESTER -eq 1 ]; then
@@ -600,8 +689,8 @@ fi
 if [ -n "$FLTK" ] && [ $FLTK -gt 0 ]; then
   FLTK_="`$fltkconfig --api-version 2>>$CONF_LOG | sed \"$STRIPOPT\"`"
   if [ $? = 0 ] && [ -n "$FLTK_" ]; then
-    # check for utf-8 capability
-    if [ $fltkconfig != `echo $fltkconfig | sed "s%fltk2-config%% ; s%utf8%%"` ]; then
+    # check for utf-8 capability in version 1.3 and higher
+    if [ "1.1" != `$fltkconfig --api-version` ] && [ "1.0" != `$fltkconfig --api-version` ]; then
       echo "#define HAVE_FLTK_UTF8 1" >> $CONF_H
       echo "HAVE_FLTK_UTF8 = -DHAVE_FLTK_UTF8" >> $CONF_I18N
       fltk_utf8="utf-8 `$fltkconfig --version`"
@@ -615,7 +704,7 @@ if [ -n "$FLTK" ] && [ $FLTK -gt 0 ]; then
       $fltkconfig --compile $ROOT_DIR/tests/fltk_test.cxx 1>> $CONF_LOG 2>> $CONF_LOG
       ERROR=1
     else
-      test -f fltk_test$EXEC_END && rm fltk_test$EXEC_END || rm fltk_test$EXEC_END
+      test -f fltk_test$EXEC_END && rm fltk_test$EXEC_END || rm fltk-test$EXEC_END
     fi
     if [ -z "$fltkldflags" ]; then
       fltkldflags="--ldflags"
@@ -772,7 +861,7 @@ if [ -n "$DEBUG" ] && [ $DEBUG -gt 0 ]; then
   if [ -n "$MAKEFILE_DIR" ]; then
     for i in $MAKEFILE_DIR; do
       if [ "$debug" -eq "1" ]; then
-        if [ $OSUNAME == "Darwin" ] || [ $OSUNAME == "Windows" ]; then
+        if [ $OSUNAME = "Darwin" ] || [ $OSUNAME = "Windows" ]; then
           DEBUG_="-Wall -g -DDEBUG"
         else
           DEBUG_="-Wall -g -DDEBUG --pedantic"
