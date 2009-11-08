@@ -53,10 +53,11 @@
 #include <FL/x.H>
 #include <FL/Fl_Shared_Image.H>
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 #include "flstring.h"
-#include <errno.h>
+#include <cerrno>
 #include <sys/types.h>
 #include <sys/stat.h>
 

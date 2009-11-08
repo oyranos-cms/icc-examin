@@ -43,6 +43,8 @@
 #include "icc_profile.h"
 #include "icc_examin_version.h"
 
+#include <cstring>
+
 #define g_message printf
 
 /** @brief MSB<->LSB */

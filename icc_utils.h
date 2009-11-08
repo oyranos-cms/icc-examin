@@ -71,9 +71,11 @@
 #include <iostream>
 #include <sstream>
 #include <cmath>
+# include <cstring>
 # include "fl_i18n/fl_i18n.H"
 #else
 # define threadGettext(text) text
+# include <string.h>
 #endif /* __cplusplus */
 
 #include <errno.h>

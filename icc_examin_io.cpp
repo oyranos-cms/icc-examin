@@ -38,6 +38,8 @@ using namespace icc_examin_ns;
 #include "threads.h"
 #endif
 
+#include <cstring>
+
 //#define DEBUG_EXAMIN
 #ifdef DEBUG_EXAMIN
 #define DBG_EXAMIN_START DBG_PROG_START

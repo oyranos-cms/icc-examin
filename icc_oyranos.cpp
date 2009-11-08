@@ -1125,7 +1125,6 @@ Oyranos::gamutCheckAbstract(Speicher & s, Speicher & abstract,
       if(tr1) cmsDeleteTransform( tr1 );
       fortschritt(0.2,0.2);
       LPLUT gmt_lut = cmsAllocLUT();
-      //LPLUT lut = cmsReadICCLut( tmp, icSigAToB0Tag);
       cmsAlloc3DGrid( gmt_lut, 53, 3, 3);
       tr1 = cmsCreateProofingTransform  (hLab, TYPE_Lab_DBL,
                                                hLab, TYPE_Lab_DBL,
@@ -1153,7 +1152,6 @@ Oyranos::gamutCheckAbstract(Speicher & s, Speicher & abstract,
       if(tmp) cmsCloseProfile( tmp );
       if(tr1) cmsDeleteTransform( tr1 );
       if(gmt_lut) cmsFreeLUT( gmt_lut );
-      //if(lut) cmsFreeLUT( lut );
     if(start <= 0.0)
       fortschritt(1.1);
  

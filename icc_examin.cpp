@@ -49,6 +49,7 @@
 #endif
 
 #include <limits.h>
+#include <cstring>
 #include <float.h>
 #include <unistd.h>
 #include <FL/x.H>
