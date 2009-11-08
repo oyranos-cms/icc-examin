@@ -789,7 +789,7 @@ ICCexaminIO::gamutSpeichern (IccGamutFormat format)
     Speicher speicher;
     icc_oyranos.gamutCheckAbstract( profil, speicher,
                                     icc_examin->intentGet(NULL),
-                                    /*cmsFLAGS_GAMUTCHECK |*/ cmsFLAGS_SOFTPROOFING );
+                                    cmsFLAGS_GAMUTCHECK );
 
     // save
     saveMemToFile ( dateiname.c_str(), (const char*)speicher, speicher.size() );

@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2008  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2009  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -1060,9 +1060,17 @@ gamutCheckSampler(register WORD In[],
                       register LPVOID Cargo)
 {
   cmsCIELab Lab1, Lab2;
+  double d;
+  oyPointer * ptr = (oyPointer*)Cargo;
 
   cmsLabEncoded2Float(&Lab1, In);
-  cmsDoTransform( Cargo, &Lab1, &Lab2, 1 );
+  cmsDoTransform( ptr[0], &Lab1, &Lab2, 1 );
+  d = cmsDeltaE( &Lab1, &Lab2 );
+  if(abs(d) > 10 && ptr[1])
+  {
+    Lab2.L = 50.0;
+    Lab2.a = Lab2.b = 0.0;
+  }
   cmsFloat2LabEncoded(Out, &Lab2);
 
   return TRUE;
@@ -1078,6 +1086,7 @@ Oyranos::gamutCheckAbstract(Speicher & s, Speicher & abstract,
               hLab = 0;
   size_t groesse = s.size();
   const char* block = s;
+  oyPointer ptr[2] = {0,0};
 
   DBG_MEM_V( (int*) block <<" "<<groesse )
 
@@ -1096,6 +1105,9 @@ Oyranos::gamutCheckAbstract(Speicher & s, Speicher & abstract,
                                                intent,
                                                INTENT_RELATIVE_COLORIMETRIC,
                                                PRECALC|flags|cmsFLAGS_HIGHRESPRECALC);
+      ptr[0] = tr1;
+      ptr[1] = flags & cmsFLAGS_GAMUTCHECK ? (oyPointer)1 : 0;
+
      
 #if 0 // Gamut tag
       LPLUT lut = _cmsPrecalculateGamutCheck( tr1 ); DBG
@@ -1110,19 +1122,27 @@ Oyranos::gamutCheckAbstract(Speicher & s, Speicher & abstract,
 
       // We calculate the gamut warning for a abstract profile
       cmsHPROFILE tmp = cmsTransform2DeviceLink(tr1,0);
+      if(tr1) cmsDeleteTransform( tr1 );
       fortschritt(0.2,0.2);
-      LPLUT gmt_lut = cmsAllocLUT(),
-            lut = cmsReadICCLut( tmp, icSigAToB0Tag);
-      cmsAlloc3DGrid( gmt_lut, lut->cLutPoints, 3, 3);
-      DBG_PROG_V( lut->cLutPoints )
-      cmsSample3DGrid( gmt_lut, icc_examin_ns::gamutCheckSampler, tr1, 0 );
+      LPLUT gmt_lut = cmsAllocLUT();
+      //LPLUT lut = cmsReadICCLut( tmp, icSigAToB0Tag);
+      cmsAlloc3DGrid( gmt_lut, 53, 3, 3);
+      tr1 = cmsCreateProofingTransform  (hLab, TYPE_Lab_DBL,
+                                               hLab, TYPE_Lab_DBL,
+                                               profil,
+                                               intent,
+                                               INTENT_RELATIVE_COLORIMETRIC,
+                                               PRECALC|flags|cmsFLAGS_HIGHRESPRECALC);
+      cmsSample3DGrid( gmt_lut, icc_examin_ns::gamutCheckSampler, ptr, 0 );
 
       fortschritt(0.5,0.2);
       cmsHPROFILE gmt = _cmsCreateProfilePlaceholder();
       cmsSetDeviceClass( gmt, icSigAbstractClass );
       cmsSetColorSpace( gmt, icSigLabData );
       cmsSetPCS( gmt, icSigLabData );
-      cmsAddTag( gmt, icSigProfileDescriptionTag,  (char*)"GamutCheck");
+      cmsAddTag( gmt, icSigProfileDescriptionTag,  (char*)"proofing");
+      cmsAddTag( gmt, icSigCopyrightTag, (char*)"no copyright; use freely" );
+      cmsAddTag( gmt, icSigMediaWhitePointTag, cmsD50_XYZ() );
       cmsAddTag( gmt, icSigAToB0Tag, gmt_lut );
       _cmsSaveProfileToMem ( gmt, 0, &groesse );
       char* mem = (char*) calloc( sizeof(char), groesse);
@@ -1133,7 +1153,7 @@ Oyranos::gamutCheckAbstract(Speicher & s, Speicher & abstract,
       if(tmp) cmsCloseProfile( tmp );
       if(tr1) cmsDeleteTransform( tr1 );
       if(gmt_lut) cmsFreeLUT( gmt_lut );
-      if(lut) cmsFreeLUT( lut );
+      //if(lut) cmsFreeLUT( lut );
     if(start <= 0.0)
       fortschritt(1.1);
  
