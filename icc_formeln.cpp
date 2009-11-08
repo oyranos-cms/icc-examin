@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2007  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2009  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -37,6 +37,7 @@
 #include "icc_formeln.h"
 
 #include <cmath>
+#include <cstring>
 
 #ifdef DEBUG_ICCFORMELN
 # define DBG_v(x) DBG_NUM_V(x)
