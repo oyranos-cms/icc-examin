@@ -438,7 +438,7 @@ ICCexamin::farbraum (int n)
   {
     if(!namedColours)
       namedColours = oyStructList_New(0);
-    oyStructList_MoveIn( namedColours, (oyStruct_s**)&ncl, n );
+    oyStructList_MoveIn( namedColours, (oyStruct_s**)&ncl, n, 0 );
   }
 
   icc_betrachter->DD_farbraum->namedColours( namedColours );
