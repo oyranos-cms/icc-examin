@@ -720,6 +720,10 @@ icc_examin_ns::MyFl_Double_Window* ICCfltkBetrachter::init(int argc, char** argv
   DBG_PROG_START
   fullscreen = false;
   setTitleUrl = true;
+  mft_gl_tables_buttons = 0;
+  px=py=pw=ph=0;
+  tag_nummer = -1;
+  widget_oben = -1;
   { icc_examin_ns::MyFl_Double_Window* o = ueber = new icc_examin_ns::MyFl_Double_Window(365, 295, _("About ICC Examin"));
     ueber->box(FL_FLAT_BOX);
     ueber->color(FL_BACKGROUND_COLOR);
