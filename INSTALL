@@ -36,6 +36,19 @@ For building decompress and unpack the source archive file and run
     show all available configure options
   # configure --help
 
+  Debian (2009-11):
+    1. Enable universe repo in package manager
+    2. sudo apt-get install argyll
+    3. sudo apt-get install build-essential libfltk1.1-dev pkg-config libftgl-dev libxpm-dev libxext-dev libxinerama-dev libxxf86vm-dev liblcms1-dev libpng12-dev libtiff4-dev mesa-utils libglw1-mesa-dev git git-core libmsgcat-perl libcups2-dev libxrandr-dev gettext fluid libxml2-dev libxfixes-dev
+    4. wget http://www.libraw.org/data/LibRaw-Lite-0.7.2-Linux.tar.gz #unpack and make ; sudo make install
+    5. Elektra from http://www.libelektra.org download elektra-0.7.0.tar.gz from http://sourceforge.net/projects/elektra/files/ and ./configure;make; sudo make install
+    6. Oyranos is needed from git: instruction
+       http://www.oyranos.org/wiki/index.php?title=Oyranos/git
+       do a "sudo ldconfig" after installing.
+    7. Icc Examin see above Oyranos instruction.
+git clone git://www.oyranos.org/git/icc_examin
+
+
 
 Hints:
 If a package is not found, include the path to the configuration scripts, 
