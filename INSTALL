@@ -36,6 +36,11 @@ For building decompress and unpack the source archive file and run
     show all available configure options
   # configure --help
 
+  From ColourWiki is a build script available. It helps with Oyranos, some of
+  its dependencies and with ICC Examin. See:
+  http://www.oyranos.org/wiki/index.php?title=Oyranos/git
+  https://www.behrmann.name/temp/icc_examin-build.sh
+
   Debian (2009-11):
     1. Enable universe repo in package manager
     2. sudo apt-get install argyll
