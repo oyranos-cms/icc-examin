@@ -350,12 +350,23 @@ ICCmeasurement::leseTag (void)
     const char **SampleNames = 0;
     int m = 0; // actual measurement
     int m_n = cgats->messungen.size();
+    int _nKanaele = (int)cgats->messungen[m].felder[0].size();
+    bool _sample_name = false;
+    bool _sample_id = false;
+    bool _id_vor_name = false;
 
     for(m = 0; m < m_n; ++m)
     {
       int n   = cgats->messungen[m].block_zeilen,
           start = nFelder_,
           end = nFelder_ + n;
+
+      if(cgats->messungen[m].felder.size() != 1)
+      {
+        WARN_S( "There are unadequate field declarations: "
+                << cgats->messungen[m].felder.size() )
+      }
+
       // measurement spot number
       if (nFelder_ == 0 ||
           nFelder_ ||
@@ -371,36 +382,36 @@ ICCmeasurement::leseTag (void)
         goto finish;
       }
 
-      if(cgats->messungen[m].felder.size() != 1)
+      if(cgats->messungen[m].felder.size())
       {
-        WARN_S( "There are unadequate field declarations: "
-                << cgats->messungen[m].felder.size() )
-        goto finish;
+        _nKanaele = (int)cgats->messungen[m].felder[0].size();
+        SampleNames = (const char**) new const char* [_nKanaele];
+        for (int i = 0; i < _nKanaele; i++)
+          SampleNames[i] = cgats->messungen[m].felder[0][i].c_str();
       }
 
-      int _nKanaele = (int)cgats->messungen[m].felder[0].size();
-      bool _sample_name = false;
-      bool _sample_id = false;
-      bool _id_vor_name = false;
-
-      SampleNames = (const char**) new const char* [_nKanaele];
-      for (int i = 0; i < _nKanaele; i++)
-        SampleNames[i] = cgats->messungen[m].felder[0][i].c_str();
 
 
       // What is all here? Do we want do exchange the names later?
-      for (int i = 0; i < _nKanaele; i++) {
-        if (strstr(cgats->messungen[m].felder[0][i].c_str(),"SAMPLE_ID") != 0)
-          _sample_id = true;
-        if (strstr(cgats->messungen[m].felder[0][i].c_str(),"SAMPLE_NAME") != 0
-         && _sample_id) {
-          _sample_name = true;
-          _id_vor_name = true;
+      if(cgats->messungen[m].felder.size())
+      {
+        _sample_name = false;
+        _sample_id = false;
+        _id_vor_name = false;
+        for (int i = 0; i < _nKanaele; i++)
+        {
+          if (strstr(cgats->messungen[m].felder[0][i].c_str(),"SAMPLE_ID") != 0)
+            _sample_id = true;
+          if (strstr(cgats->messungen[m].felder[0][i].c_str(),"SAMPLE_NAME") != 0
+           && _sample_id) {
+            _sample_name = true;
+            _id_vor_name = true;
+          }
+#   ifdef DEBUG_ICCMEASUREMENT
+          DBG_NUM_S( SampleNames[i] << " _sample_name " << _sample_name <<
+                " _sample_id" << _sample_id << " _id_vor_name " << _id_vor_name)
+#   endif
         }
-    #   ifdef DEBUG_ICCMEASUREMENT
-        DBG_NUM_S( SampleNames[i] << " _sample_name " << _sample_name <<
-               " _sample_id" << _sample_id << " _id_vor_name " << _id_vor_name) 
-    #   endif
       }
 
       // reding and parsing
