@@ -331,6 +331,11 @@ ICCmeasurement::leseTag (void)
     {
       range_RGB[0] = range_RGB[2] = range_RGB[4] = 0.f;
       range_RGB[1] = range_RGB[3] = range_RGB[5] = 100.f;
+    } else
+    if(strstr(data.c_str(), "ORIGINATOR \"Monaco Systems, Inc\""))
+    {
+      range_RGB[0] = range_RGB[2] = range_RGB[4] = 0.f;
+      range_RGB[1] = range_RGB[3] = range_RGB[5] = 1.f;
     } else {
       range_RGB[0] = range_RGB[2] = range_RGB[4] = 0.f;
       range_RGB[1] = range_RGB[3] = range_RGB[5] = 255.f;
