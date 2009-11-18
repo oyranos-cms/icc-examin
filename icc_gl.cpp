@@ -439,7 +439,7 @@ GL_Ansicht::init(int ty)
   menueInit_(); DBG_PROG
   menueAufruf (hintergrundfarbeZuMenueeintrag(hintergrundfarbe)); // colour sheme
   int schalen_old = schalen;
-  menueAufruf (MENU_GRAU);     // CLUT colour sheme
+  menueAufruf (MENU_FARBIG);     // CLUT colour sheme
   schalen = schalen_old;
   schatten = 0.1f;
   if (typ() == 1) menueAufruf (MENU_WUERFEL);
