@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2008  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2009  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -81,7 +81,9 @@ dateiwahl_cb (MyFl_File_Chooser *f, void *data, int finish)
     DBG_NUM_V( data )
     filename = fl->value();
 
-    static ICClist<std::string> file_vect;
+    static ICCThreadList<std::string> file_vect;
+
+    file_vect.frei(false);
 
     if (filename && fl->count() && dateiwahl()->preview()) {
       ICClist<std::string> profilnamen;
@@ -143,6 +145,8 @@ dateiwahl_cb (MyFl_File_Chooser *f, void *data, int finish)
       DBG_PROG_V( file_vect.size() << filename )
       icc_examin->oeffnen( file_vect );
     }
+
+  file_vect.frei(true);
 
   DBG_PROG_ENDE
 }
