@@ -561,6 +561,8 @@ ICCexamin::zeigMftTabellen ()
         GL_Ansicht *gl = 
           new GL_Ansicht (*icc_betrachter->mft_gl); //(0,0,lw,lh);
 
+        /* Workaround: after copy the same glLists appeared on copied context */
+        icc_betrachter->mft_gl->resetContexts();
         GL_Ansicht::getAgv(gl, icc_betrachter->mft_gl);
         gl->init( icc_betrachter->mft_gl->id() );
         gl->copy( *icc_betrachter->mft_gl );
