@@ -87,7 +87,7 @@ public:
   /** @brief free and reset */
   void       clear   () {
     if(list_)
-      delete [] (list_);
+      delete [] list_;
     zero();
   }
   const size_t size() const {
@@ -143,8 +143,8 @@ public:
   void     push_back( T x ) {
     if(n_ >= reserve_)
       reserve( n_ + 1 + reserve_step );
-    list_[n_] = x;
     ++n_;
+    list_[n_-1] = x;
   }
 
   T *      begin() {
