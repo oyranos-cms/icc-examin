@@ -148,6 +148,8 @@ int GL_Ansicht::ref_ = 0;
 GL_Ansicht::GL_Ansicht(int X,int Y,int W,int H)
   : Fl_Gl_Window(X,Y,W,H)
 { DBG_PROG_START
+  id_ = ref_;
+  ++ref_;
   init_();
   DBG_PROG_ENDE
 }
@@ -155,20 +157,19 @@ GL_Ansicht::GL_Ansicht(int X,int Y,int W,int H)
 GL_Ansicht::GL_Ansicht(int X,int Y,int W,int H, const char *l)
   : Fl_Gl_Window(X,Y,W,H,l)
 { DBG_PROG_START
+  id_ = ref_;
+  ++ref_;
   init_();
   DBG_PROG_ENDE
 }
 
 void
-GL_Ansicht::init_()
+GL_Ansicht::zero_()
 { DBG_PROG_START
 
-  id_ = ref_;
-  ++ref_;
   initialised_ = false;
 
   agv_ = NULL;
-  agv_ = this->getAgv(this, NULL);
 
   kanal = 0;
   schnitttiefe = 0.01;
@@ -177,11 +178,13 @@ GL_Ansicht::init_()
   b_darstellungs_breite = 1.0;
   schalen = 5;
   punktform = MENU_dE1STERN;
+  punktfarbe = 0;
   punktgroesse = 8;
   //punkt_zahl_alt = 0;
   hintergrundfarbe = 0.75;
   spektralband = 0;
   zeige_helfer = true;
+  memset( text, 0, 128 );
   zeig_punkte_als_paare = false;
   zeig_punkte_als_messwerte = false;
   typ_ = -1;
@@ -192,6 +195,7 @@ GL_Ansicht::init_()
   blend = false;
   smooth = false;
   waiting_ = 1;
+  memset( t, 0, 128 );
   maus_x_ = 0;
   maus_y_ = 0;
   maus_x_alt = -1;
@@ -209,40 +213,52 @@ GL_Ansicht::init_()
   mouse_3D_hit = oyNamedColour_Create( NULL, NULL,0, prof, 0 );
   oyProfile_Release( &prof );
 
-  for(int i = 0; i <= DL_MAX; ++i)
-    gl_listen[i] = 0;
+  DBG_S( id_ << ": zero RASTER " << gl_listen_[RASTER], ICC_MSG_WARN );
+  for(int i = 0; i < DL_MAX; ++i)
+    gl_listen_[i] = 0;
 
   bsp = 0;
 
   DBG_PROG_ENDE
 }
 
+void
+GL_Ansicht::init_()
+{ DBG_PROG_START
+
+  zero_();
+  agv_ = this->getAgv(this, NULL);
+
+  DBG_PROG_ENDE
+}
+
 GL_Ansicht::~GL_Ansicht()
 { DBG_PROG_START
-  if (gl_listen[RASTER]) {
-    DBG_PROG_S( "delete glListe " << gl_listen[RASTER] )
-    glDeleteLists (gl_listen[RASTER],1);
-    gl_listen[RASTER] = 0;
+  if (gl_listen_[RASTER]) {
+    DBG_PROG_S( "delete glListe " << gl_listen_[RASTER] )
+    //DBG_S( id_ << ": erase RASTER " << gl_listen_[RASTER], ICC_MSG_WARN );
+    glDeleteLists (gl_listen_[RASTER],1);
+    gl_listen_[RASTER] = 0;
   }
-  if (gl_listen[HELFER]) {
-    DBG_PROG_S( "delete glListe " << gl_listen[HELFER] )
-    glDeleteLists (gl_listen[HELFER],1);
-    gl_listen[HELFER] = 0;
+  if (gl_listen_[HELFER]) {
+    DBG_PROG_S( "delete glListe " << gl_listen_[HELFER] )
+    glDeleteLists (gl_listen_[HELFER],1);
+    gl_listen_[HELFER] = 0;
   }
-  if (gl_listen[PUNKTE]) {
-    DBG_PROG_S( "delete glListe " << gl_listen[PUNKTE] )
-    glDeleteLists (gl_listen[PUNKTE],1);
-    gl_listen[PUNKTE] = 0;
+  if (gl_listen_[PUNKTE]) {
+    DBG_PROG_S( "delete glListe " << gl_listen_[PUNKTE] )
+    glDeleteLists (gl_listen_[PUNKTE],1);
+    gl_listen_[PUNKTE] = 0;
   }
-  if (gl_listen[SPEKTRUM]) {
-    DBG_PROG_S( "delete glListe " << gl_listen[SPEKTRUM] )
-    glDeleteLists (gl_listen[SPEKTRUM],1);
-    gl_listen[SPEKTRUM] = 0;
+  if (gl_listen_[SPEKTRUM]) {
+    DBG_PROG_S( "delete glListe " << gl_listen_[SPEKTRUM] )
+    glDeleteLists (gl_listen_[SPEKTRUM],1);
+    gl_listen_[SPEKTRUM] = 0;
   }
-  if (gl_listen[UMRISSE]) {
-    DBG_PROG_S( "delete glListe " << gl_listen[UMRISSE] )
-    glDeleteLists (gl_listen[UMRISSE],1);
-    gl_listen[UMRISSE] = 0;
+  if (gl_listen_[UMRISSE]) {
+    DBG_PROG_S( "delete glListe " << gl_listen_[UMRISSE] )
+    glDeleteLists (gl_listen_[UMRISSE],1);
+    gl_listen_[UMRISSE] = 0;
   }
 # ifdef HAVE_FTGL
   //if(font) delete font;
@@ -293,51 +309,87 @@ GL_Ansicht::~GL_Ansicht()
   DBG_PROG_ENDE
 }
 
+void GL_Ansicht::resetContexts ()
+{
+  /* reset the to be copied contexts */
+  for(int i = 0; i < DL_MAX; ++i)
+  {
+    if( gl_listen_[i] )
+      glDeleteLists( gl_listen_[i], 1 );
+    gl_listen_[i] = 0;
+  }
+}
+
+
 GL_Ansicht&
 GL_Ansicht::copy (const GL_Ansicht & gl)
 { DBG_PROG_START
 
-  kanal = gl.kanal;
-  schnitttiefe = gl.schnitttiefe;
-  vorder_schnitt = gl.vorder_schnitt;
-  a_darstellungs_breite = gl.a_darstellungs_breite;
-  b_darstellungs_breite = gl.b_darstellungs_breite;
-  schalen = gl.schalen;
-  punktform = gl.punktform;
-  punktgroesse = gl.punktgroesse;
-  //punkt_zahl_alt = gl.punkt_zahl_alt;
-  hintergrundfarbe = gl.hintergrundfarbe;
-  spektralband = gl.spektralband;
-  zeige_helfer = gl.zeige_helfer;
-  zeig_punkte_als_paare = gl.zeig_punkte_als_paare;
-  zeig_punkte_als_messwerte = gl.zeig_punkte_als_messwerte;
+  /* preserve argv_ */
+  Agviewer * tmp = this->agv_;
+  zero_();
+  this->agv_ = tmp;
+
+  tabelle_ = gl.tabelle_;
+  nach_farb_namen_ = gl.nach_farb_namen_;
+  von_farb_namen_ = gl.von_farb_namen_;
+  channels_ = gl.channels_;
+  colours_ = oyStructList_Copy( gl.colours_, NULL );
+  epoint_ = oyNamedColour_Copy( gl.epoint_, 0 );
+  mouse_3D_hit = oyNamedColour_Copy( gl.mouse_3D_hit, 0 );
+
   typ_ = gl.typ_;
+
+  waiting_ = gl.waiting_;
+  bsp = 0;
+
+  kanal = gl.kanal;
+  punktform = gl.punktform;
+  punktfarbe = gl.punktfarbe;
+  punktgroesse = gl.punktgroesse;
+  hintergrundfarbe = gl.hintergrundfarbe;
+  textfarbe[0] = gl.textfarbe[0];
+  textfarbe[1] = gl.textfarbe[1];
+  textfarbe[2] = gl.textfarbe[2];
+  pfeilfarbe[0] = gl.pfeilfarbe[0];
+  pfeilfarbe[1] = gl.pfeilfarbe[1];
+  pfeilfarbe[2] = gl.pfeilfarbe[2];
+  schatten = gl.schatten;
   strichmult = gl.strichmult;
   strich1 = gl.strich1;
   strich2 = gl.strich2;
   strich3 = gl.strich3;
-  blend = gl.blend;
-  smooth = gl.smooth;
-  waiting_ = gl.waiting_;
+  schalen = gl.schalen;
+
+  seitenverhaeltnis = gl.seitenverhaeltnis;
+  vorder_schnitt = gl.vorder_schnitt;
+  schnitttiefe = gl.schnitttiefe;
+  level = gl.level;
+  level_step = gl.level_step;
+  a_darstellungs_breite = gl.a_darstellungs_breite;
+  b_darstellungs_breite = gl.b_darstellungs_breite;
+  zeig_punkte_als_paare = gl.zeig_punkte_als_paare;
+  zeig_punkte_als_messwerte = gl.zeig_punkte_als_messwerte;
+  spektralband = gl.spektralband;
+  zeige_helfer = gl.zeige_helfer;
+
+  zeit_ = gl.zeit_;
+  valid_ = gl.valid_;
   maus_x_ = gl.maus_x_;
   maus_y_ = gl.maus_y_;
+  maus_x_alt = gl.maus_x_alt;
+  maus_y_alt = gl.maus_y_alt;
   maus_steht = gl.maus_steht;
-  valid_ = gl.valid_;
-  zeit_ = gl.zeit_;
 
-  for(int i = 0; i <= DL_MAX; ++i)
-    gl_listen[i] = 0;
+  smooth = gl.smooth;
+  blend = gl.blend;
 
 # ifdef HAVE_FTGL
   font = ortho_font = 0;
 # endif
 
-  tabelle_ = gl.tabelle_;
-  nach_farb_namen_ = gl.nach_farb_namen_;
-  von_farb_namen_ = gl.von_farb_namen_;
-  epoint_ = oyNamedColour_Copy( gl.epoint_, 0 );
-  mouse_3D_hit = oyNamedColour_Copy( gl.mouse_3D_hit, 0 );
-  colours_ = oyStructList_Copy( gl.colours_, NULL );
+  // initialise
+  menueInit_();
 
   DBG_PROG_ENDE
   return *this;
@@ -1081,13 +1133,13 @@ GL_Ansicht::garnieren_()
 
   DBG_PROG_V( id() )
   // arrow and text
-  if (gl_listen[HELFER]) {
-    glDeleteLists (gl_listen[HELFER], 1);
+  if (gl_listen_[HELFER]) {
+    glDeleteLists (gl_listen_[HELFER], 1);
   }
 
-  GL_Ansicht::gl_listen[HELFER] = glGenLists(1);
+  GL_Ansicht::gl_listen_[HELFER] = glGenLists(1);
 
-  glNewList( gl_listen[HELFER], GL_COMPILE); DBG_PROG_V( gl_listen[HELFER] )
+  glNewList( gl_listen_[HELFER], GL_COMPILE); DBG_PROG_V( gl_listen_[HELFER] )
     GLfloat farbe[] =   { pfeilfarbe[0],pfeilfarbe[1],pfeilfarbe[2], 1.0 };
     glLineWidth(strich3*strichmult);
 
@@ -1219,15 +1271,16 @@ GL_Ansicht::tabelleAuffrischen()
   }
 
   // table
-  if (gl_listen[RASTER]) {
-    glDeleteLists ( gl_listen[RASTER], 1);
-    gl_listen[RASTER] = 0;
+  if (gl_listen_[RASTER]) {
+    //DBG_S( id_ << ": erase RASTER " << gl_listen_[RASTER], ICC_MSG_WARN );
+    glDeleteLists ( gl_listen_[RASTER], 1);
+    gl_listen_[RASTER] = 0;
   }
 
   if (tabelle_.size())
   {
-    gl_listen[RASTER] = glGenLists(1);
-    glNewList( gl_listen[RASTER], GL_COMPILE); DBG_PROG_V( gl_listen[RASTER] )
+    gl_listen_[RASTER] = glGenLists(1);
+    glNewList( gl_listen_[RASTER], GL_COMPILE); DBG_PROG_V( gl_listen_[RASTER] )
 
       int n_L = (int)tabelle_.size(),
           n_a=(int)tabelle_[0].size(),
@@ -1821,9 +1874,10 @@ GL_Ansicht::netzeAuffrischen()
       glPopMatrix();
 
 
-  if (gl_listen[RASTER]) {
-    glDeleteLists (gl_listen[RASTER], 1);
-    gl_listen[RASTER] = 0;
+  if (gl_listen_[RASTER]) {
+    //DBG_S( id_ << ": erase RASTER " << gl_listen_[RASTER], ICC_MSG_WARN );
+    glDeleteLists (gl_listen_[RASTER], 1);
+    gl_listen_[RASTER] = 0;
   }
 
 #     ifdef Beleuchtung
@@ -2011,17 +2065,17 @@ void
 GL_Ansicht::punkteAuffrischen()
 { DBG_PROG_START
 
-  if (gl_listen[PUNKTE]) {
-    glDeleteLists (gl_listen[PUNKTE], 1);
-    gl_listen[PUNKTE] = 0;
+  if (gl_listen_[PUNKTE]) {
+    glDeleteLists (gl_listen_[PUNKTE], 1);
+    gl_listen_[PUNKTE] = 0;
   }
 
   //coordinates  in CIE*b CIE*L CIE*a 
   if (oyStructList_Count( colours_ )) {
     DBG_PROG_V( oyStructList_Count( colours_ ) )
 
-    gl_listen[PUNKTE] = glGenLists(1);
-    glNewList( gl_listen[PUNKTE], GL_COMPILE); DBG_PROG_V( gl_listen[PUNKTE] )
+    gl_listen_[PUNKTE] = glGenLists(1);
+    glNewList( gl_listen_[PUNKTE], GL_COMPILE); DBG_PROG_V( gl_listen_[PUNKTE] )
 #     ifndef Beleuchtung_
       glDisable(GL_LIGHTING);
 #     endif
@@ -2278,10 +2332,10 @@ GL_Ansicht::zeigeUmrisse_()
 {
   DBG_PROG_START
 
-  if (gl_listen[UMRISSE]) {
-    DBG_PROG_S( "delete glListe " << gl_listen[UMRISSE] )
-    glDeleteLists (gl_listen[UMRISSE],1);
-    gl_listen[UMRISSE] = 0;
+  if (gl_listen_[UMRISSE]) {
+    DBG_PROG_S( "delete glListe " << gl_listen_[UMRISSE] )
+    glDeleteLists (gl_listen_[UMRISSE],1);
+    gl_listen_[UMRISSE] = 0;
   }
 
   //if (spektralband == MENU_SPEKTRALBAND)
@@ -2335,9 +2389,9 @@ GL_Ansicht::zeigeUmrisse_()
   }
     GLfloat farbe[] =   { pfeilfarbe[0],pfeilfarbe[1],pfeilfarbe[2], 1.0 };
 
-  gl_listen[UMRISSE] = glGenLists(1);
-  glNewList( gl_listen[UMRISSE], GL_COMPILE );
-  DBG_PROG_V( gl_listen[UMRISSE] ) 
+  gl_listen_[UMRISSE] = glGenLists(1);
+  glNewList( gl_listen_[UMRISSE], GL_COMPILE );
+  DBG_PROG_V( gl_listen_[UMRISSE] ) 
 
     glDisable (GL_LIGHTING);
     glDisable (GL_ALPHA_TEST_FUNC);
@@ -2414,9 +2468,9 @@ GL_Ansicht::zeigeSpektralband_()
 {
   DBG_PROG_START
 
-  if (gl_listen[SPEKTRUM])
-    glDeleteLists (gl_listen[SPEKTRUM], 1);
-  gl_listen[SPEKTRUM] = 0;
+  if (gl_listen_[SPEKTRUM])
+    glDeleteLists (gl_listen_[SPEKTRUM], 1);
+  gl_listen_[SPEKTRUM] = 0;
   if (spektralband == MENU_SPEKTRALBAND)
   {
     double *RGB_Speicher = 0,
@@ -2491,9 +2545,9 @@ GL_Ansicht::zeigeSpektralband_()
 
     GLfloat farbe[] =   { pfeilfarbe[0],pfeilfarbe[1],pfeilfarbe[2], 1.0 };
 
-    gl_listen[SPEKTRUM] = glGenLists(1);
-    glNewList( gl_listen[SPEKTRUM], GL_COMPILE );
-    DBG_PROG_V( gl_listen[SPEKTRUM] ) 
+    gl_listen_[SPEKTRUM] = glGenLists(1);
+    glNewList( gl_listen_[SPEKTRUM], GL_COMPILE );
+    DBG_PROG_V( gl_listen_[SPEKTRUM] ) 
 
       glDisable (GL_LIGHTING);
       glDisable (GL_ALPHA_TEST_FUNC);
@@ -2796,15 +2850,16 @@ GL_Ansicht::zeichnen()
       glMatrixMode(GL_MODELVIEW);
       glLoadIdentity();
 
-      glCallList( gl_listen[SPEKTRUM] ); DBG_ICCGL_V( gl_listen[SPEKTRUM] )
-      glCallList( gl_listen[UMRISSE] ); DBG_ICCGL_V( gl_listen[UMRISSE] )
+      glCallList( gl_listen_[SPEKTRUM] ); DBG_ICCGL_V( gl_listen_[SPEKTRUM] )
+      glCallList( gl_listen_[UMRISSE] ); DBG_ICCGL_V( gl_listen_[UMRISSE] )
       if (zeige_helfer) {
-        glCallList( gl_listen[HELFER] ); DBG_ICCGL_V( gl_listen[HELFER] )
+        glCallList( gl_listen_[HELFER] ); DBG_ICCGL_V( gl_listen_[HELFER] )
       }
-      glCallList( gl_listen[RASTER] ); DBG_ICCGL_V( gl_listen[RASTER] )
+      glCallList( gl_listen_[RASTER] ); DBG_ICCGL_V( gl_listen_[RASTER] )
+      //DBG_S( id_ << ": " << gl_listen_[RASTER], ICC_MSG_WARN)
       if(punktform == MENU_dE1STERN)
-        glCallList( gl_listen[PUNKTE] );
-      glCallList( gl_listen[PUNKTE] ); DBG_ICCGL_V( gl_listen[PUNKTE] )
+        glCallList( gl_listen_[PUNKTE] );
+      glCallList( gl_listen_[PUNKTE] ); DBG_ICCGL_V( gl_listen_[PUNKTE] )
 
       oyOptions_s * opts = icc_examin->options();
 
@@ -3932,6 +3987,8 @@ GL_Ansicht::handle( int event )
   int mausknopf = Fl::event_state();
   int schluss = 1;
   DBG_MEM_V( dbgFltkEvent(event) )
+
+  tastatur(event);
 
   switch(event)
   {

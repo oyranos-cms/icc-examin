@@ -98,7 +98,7 @@ private:
   void menueInit_();
 
   typedef enum {NOTALLOWED, AXES, RASTER, PUNKTE , SPEKTRUM, HELFER, UMRISSE, DL_MAX } DisplayLists;
-  int gl_listen[DL_MAX];
+  int gl_listen_[DL_MAX];
 public:
   typedef enum {
    MENU_AXES,
@@ -139,6 +139,7 @@ public:
   GL_Ansicht& operator = (const GL_Ansicht& gl) { return copy(gl); }
 private:
   void init_();
+  void zero_();
   bool initialised_;
 public:
   void init(int fenster);
@@ -150,6 +151,7 @@ public:
   void typ(int t_)   { typ_ = t_; }
 
   static Agviewer* getAgv(GL_Ansicht *me, GL_Ansicht *referenz);
+  void resetContexts ();
 
   // fltk virtual
   void redraw();
