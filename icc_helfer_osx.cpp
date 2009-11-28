@@ -48,20 +48,48 @@ leseGrafikKartenGamma  (std::string display_name,
   ICClist<ICClist<double> > kurven;
 # if APPLE
 
+  int pos = 0;
+  CGDisplayErr err = kCGErrorSuccess;
+  CGDisplayCount alloc_disps = 0;
+  CGDirectDisplayID * active_displays = 0,
+                    cg_direct_display_id = 0;
+  CGDisplayCount n = 0;
+
+  err = CGGetActiveDisplayList( alloc_disps, active_displays, &n );
+  if(n <= 0 || err != kCGErrorSuccess)
+  {
+    WARN_S( _("open X Display failed") << display_name)
+    return 0;
+  }
+  alloc_disps = n + 1;
+  active_displays = (CGDirectDisplayID*) calloc( sizeof(CGDirectDisplayID), alloc_disps );
+  if(active_displays)
+    err = CGGetActiveDisplayList( alloc_disps, active_displays, &n);
+
+  if(display_name.size())
+    pos = atoi( display_name.c_str() );
+
+  if(err)
+  {
+    WARN_S( "CGGetActiveDisplayList call with error " << err );
+  } else
+  {
+    cg_direct_display_id = active_displays[pos];
+
+    if(active_displays)
+      free( active_displays ); active_displays = 0;
+  }
+
   OSStatus              theErr;
   UInt32                size=0, count=0, kanaele=0;
   CMVideoCardGamma*     gamma = nil;
-  DisplayIDType screenID=0;
-  GDHandle device = DMGetFirstScreenDevice(true);
-  // TODO: GetDeviceList();
-  DMGetDisplayIDByGDevice(device, &screenID, false);
 
-  theErr = CMGetGammaByAVID(screenID, nil, &size);
+  theErr = CMGetGammaByAVID(cg_direct_display_id, nil, &size);
   require_noerr(theErr, bail);
   gamma = (CMVideoCardGamma*) NewPtrClear(size);
   require(gamma, bail);
-	
-  theErr = CMGetGammaByAVID(screenID, gamma, &size);
+
+  theErr = CMGetGammaByAVID(cg_direct_display_id, gamma, &size);
   require_noerr(theErr, bail);
 
   texte.resize(4);

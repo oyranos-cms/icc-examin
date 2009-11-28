@@ -238,12 +238,15 @@ oyGetProfileBlockOSX (CMProfileRef prof, char *block, size_t *size, oyranos::oyA
 {
   DBG_PROG_START
     CMProfileLocation loc;
-    CMGetProfileLocation(prof, &loc);
+    UInt32 locationSize = sizeof(CMProfileLocation);
+
+    NCMGetProfileLocation(prof, &loc, &locationSize);
     switch(loc.locType)
     {
       case cmNoProfileBase:
              DBG_PROG_S("Das Monitorprofil ist ein temporaeres Profil.")
              break;
+#if !__LP64__ && !TARGET_OS_WIN32
       case cmFileBasedProfile:
              DBG_PROG_S("Das Monitorprofil ist ein Datei Profil.")
              break;
@@ -256,6 +259,7 @@ oyGetProfileBlockOSX (CMProfileRef prof, char *block, size_t *size, oyranos::oyA
       case cmProcedureBasedProfile:
              DBG_PROG_S("Das Monitorprofil ist ein prozedurales Profil.")
              break;
+#endif
       case cmPathBasedProfile:
              DBG_PROG_S("Das Monitorprofil ist ein Pfad Profil.")
              break;
@@ -267,6 +271,7 @@ oyGetProfileBlockOSX (CMProfileRef prof, char *block, size_t *size, oyranos::oyA
              break;
     }
 
+#if !__LP64__ && !TARGET_OS_WIN32
     refcon ref = {0,0};
     Boolean bol;
     // only the size
@@ -276,7 +281,7 @@ oyGetProfileBlockOSX (CMProfileRef prof, char *block, size_t *size, oyranos::oyA
       return err;
     }
     CMError err = CMFlattenProfile ( prof, 0, MyFlattenProfileProc, &ref, &bol);
-    
+
     err = 0;
     Str255 str;
     ScriptCode code;
@@ -284,13 +289,24 @@ oyGetProfileBlockOSX (CMProfileRef prof, char *block, size_t *size, oyranos::oyA
     DBG_PROG_V( (int)str[0] )
 	if (prof) CMCloseProfile(prof);
     const unsigned char *profil_name = str; ++profil_name;
+
     if(ref.size && ref.data)
     {
         *size = ref.size;
         block = (char*) allocateFunc( *size );
         memcpy(block, ref.data, ref.size);
           DBG_MEM_V( size )
+    } else
+#endif
+
+    if(loc.locType == cmBufferBasedProfile)
+    {
+        *size = loc.u.bufferLoc.size;
+        block = (char*) allocateFunc( *size );
+        memcpy(block, loc.u.bufferLoc.buffer, *size);
+          DBG_PROG_V( *size )
     }
+
   DBG_PROG_ENDE
   return 0;
 }

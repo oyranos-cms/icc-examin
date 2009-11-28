@@ -134,7 +134,7 @@ int iccMessageFunc( int code, const oyStruct_s * context, const char * format, .
     case oyMSG_DBG:
          break;
   }
-  sprintf( &text[strlen(text)], dbgThreadId( iccThreadSelf()).c_str());
+  sprintf( &text[strlen(text)], "%s", dbgThreadId( iccThreadSelf()).c_str());
 
   snprintf( &text[strlen(text)], 4096 - strlen(text), " %03f %s[%d] ", 
                                                       DBG_UHR_, type_name,id );
@@ -351,7 +351,7 @@ ICCexamin::start (int argc, char** argv)
   } 
 #endif
 
-# if APPLE
+# if APPLE && !__LP64__
   // osX Resourcen
   IBNibRef nibRef;
   OSStatus err;
