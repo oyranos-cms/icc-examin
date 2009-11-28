@@ -288,16 +288,21 @@ Agviewer::agvSwitchMoveMode(int move)
 void
 Agviewer::agvHandleButton(int button, int event, int x, int y)
 {
+  int dbg = 0;
   DBG_PROG_START
   DBG_PROG_V( button <<" "<< event);
 
   if (event == FL_PUSH/* && downb == -1*/)
   {
+    if(lastx != x || lasty != y)
+      dbg = 1;
+
     lastx = downx = x;
     lasty = downy = y;
     downb = button;    
 
-    if (button & FL_BUTTON1)
+
+    if (button & FL_BUTTON1 || downb == 0)
     {
         if (MoveMode == FLYING)
           EyeEl = -EyeEl;
@@ -323,10 +328,10 @@ Agviewer::agvHandleButton(int button, int event, int x, int y)
           icc_examin_ns::status_info(_("Pause"),parent->typ());
     }
 
-  } else if (event == FL_RELEASE && /*button ==*/ downb) {
+  } else if (event == FL_RELEASE && /*button ==*/ downb >= 0) {
     DBG_PROG
 
-    if (downb & FL_BUTTON1)
+    if (downb & FL_BUTTON1 || downb == 0)
       { DBG_NUM_S( "Loslassen" )
         if (MoveMode != FLYING) {
           AzSpin =  -dAz;
