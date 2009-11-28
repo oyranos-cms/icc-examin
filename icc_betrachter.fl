@@ -1,7 +1,7 @@
 # data file for the Fltk User Interface Designer (fluid)
 version 1.0300 
 i18n_type 1 
-i18n_include <libintl.h> 
+i18n_include <fl_i18n/fl_i18n.H> 
 i18n_function _ 
 header_name {.h} 
 code_name {.cxx}
@@ -231,7 +231,7 @@ class MftChoice {open : {public Fl_Choice}
     code {icc_examin->icc_betrachter->tag_nummer = _tag;
 
 // = profile.profil()->printTagInfo(icc_examin->icc_betrachter->tag_nummer);
-    sprintf (&typ[0], profile.profil()->printTagInfo(icc_examin->icc_betrachter->tag_nummer)[1].c_str());
+    sprintf (&typ[0], "%s", profile.profil()->printTagInfo(icc_examin->icc_betrachter->tag_nummer)[1].c_str());
 
     DBG_PROG_V( profile.profil()->printTagInfo(icc_examin->icc_betrachter->tag_nummer)[1].c_str() )
 
