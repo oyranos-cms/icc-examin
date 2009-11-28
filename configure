@@ -41,7 +41,7 @@ VERSION_C=7
 RELEASE=0
 START_MONTH="May"
 START_YEAR="2004"
-DEVEL_MONTH="May"
+DEVEL_MONTH="November"
 DEVEL_YEAR="2009"
 GIT_MASTER="`cat $ROOT_DIR/.git/refs/heads/master`"
 time="`date +%y%m%d.%H%M%S`"
@@ -375,8 +375,6 @@ for i in $MAKEFILE_DIR; do
   test -n "$ECHO" && $ECHO "MAKEFILE_ARCH = Makefile$OS_EXT" >> "$i/makefile"
 done
 
-BARCH=""
-
 # detect the compilers bus width options
 rm -f tests/intptr_test
 if [ -z "$CC" ]; then
@@ -393,7 +391,6 @@ if [ -f tests/intptr_test ]; then
   elif [ $INTPTR_SIZE -eq 8 ]; then
     echo_="64-bit build            detected"
     test -n "$ECHO" && $ECHO "BUILD_64 = 1" >> $CONF
-    BARCH="64"
   elif [ $INTPTR_SIZE -ne 0 ]; then
     echo_="$INTPTR_SIZE-byte intptr_t          detected"
   else
@@ -419,12 +416,12 @@ if [ $? = 0 ]; then
     fi
   fi
 fi
-LIBDIR="lib"$BARCH
+LIBDIR="lib"
 
 for i in $MAKEFILE_DIR; do
   test -n "$ECHO" && $ECHO "$BUILD_64" >> "$i/makefile"
 done
-export OSUNAME LIBDIR BARCH
+export OSUNAME LIBDIR
 
 
 if [ $OSUNAME = Windows ]; then
