@@ -1089,7 +1089,7 @@ GL_Ansicht::textGarnieren_()
       if (von_farb_namen_.size())
       {
         ptr = (char*) von_farb_namen_[0].c_str();
-        sprintf (&text[0], ptr);
+        sprintf (&text[0], "%s", ptr);
         glRasterPos3d (0, .5+ueber, 0);
         ZeichneOText(ortho_font, 1, text)
       }
@@ -1098,7 +1098,7 @@ GL_Ansicht::textGarnieren_()
       if (von_farb_namen_.size() > 1)
       {
         ptr = (char*) von_farb_namen_[1].c_str();
-        sprintf (&text[0], ptr);
+        sprintf (&text[0], "%s", ptr);
         if (von_farb_namen_.size() &&
             von_farb_namen_[1] == _("CIE *a"))
           glRasterPos3d (.0, -.5, a_darstellungs_breite/2.+ueber);
@@ -1111,7 +1111,7 @@ GL_Ansicht::textGarnieren_()
       if (von_farb_namen_.size() > 2)
       {
         ptr = (char*) von_farb_namen_[2].c_str();
-        sprintf (&text[0], ptr);
+        sprintf (&text[0], "%s", ptr);
         if (von_farb_namen_.size() &&
             von_farb_namen_[2] == _("CIE *b"))
           glRasterPos3d (b_darstellungs_breite/2.+ueber, -.5, .0);

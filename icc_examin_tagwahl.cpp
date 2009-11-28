@@ -548,7 +548,10 @@ selecTpsidLine( int * line )
     profile.frei(false);
       oyProfile_s * prof = profile.profil()->oyProfile();
       const char * name = oyProfile_GetFileName(prof, (i-2)/5);
-      status(name ? name : _("not available"))
+      if(name)
+        status(name)
+      else
+        status(_("not available"))
       oyProfile_Release( &prof );
     profile.frei(true);
   }

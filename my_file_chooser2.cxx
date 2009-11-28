@@ -50,7 +50,7 @@
 #include <my_file_chooser.h>
 #include <FL/filename.H>
 #include <FL/fl_ask.H>
-#include <FL/x.H>
+//#include <FL/x.H>
 #include <FL/Fl_Shared_Image.H>
 
 #include <cstdio>
@@ -577,7 +577,7 @@ MyFl_File_Chooser::fileNameCB()
       }
     } else {
       // File doesn't exist, so beep at and alert the user...
-      fl_alert(existing_file_label);
+      fl_alert( "%s", existing_file_label );
     }
   }
   else if (Fl::event_key() != FL_Delete &&

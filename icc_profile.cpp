@@ -726,7 +726,7 @@ ICCprofile::getProfileDescription  ()
     if(texte.size())
     {
       text = (char*) calloc( sizeof(char), strlen(texte[0].c_str()) * 4 );
-      sprintf( text, texte[0].c_str() );
+      sprintf( text, "%s", texte[0].c_str() );
     }
   }
 

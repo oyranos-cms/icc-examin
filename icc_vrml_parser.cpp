@@ -134,7 +134,7 @@ ICCvrmlParser::lesen_ ()
     ICClist<ZifferWort> werte;        // intermediate return value
     char trennzeichen[12];                // to be used separating signs
     trennzeichen[0] = ',';
-    sprintf(&trennzeichen[1], leer_zeichen);
+    sprintf(&trennzeichen[1], "%s", leer_zeichen);
     const bool anfuehrungstriche = false; // set no quotation marks
     unsigned int dimensionen;             // number of belonging values
     int achse;                            // selected value from dimensionen
@@ -1014,7 +1014,7 @@ std::string    vrmlScene          ( icc_examin_ns::ICCThreadList<ICCnetz> netze,
 
         temp.append("\
     Transform { translation ");
-        sprintf( txt, point[i].c_str() );
+        sprintf( txt, "%s", point[i].c_str() );
         temp.append( txt );
         temp.append("\
       children [\n");
@@ -1037,7 +1037,7 @@ std::string    vrmlScene          ( icc_examin_ns::ICCThreadList<ICCnetz> netze,
             material Material {\n\
               diffuseColor 0.0 0.0 0.0\n\
               emissiveColor ");
-        sprintf( txt, colour[i].c_str() );
+        sprintf( txt, "%s", colour[i].c_str() );
         temp.append( txt );
         if(!has_mesh && rgba[3] < 1.0)
         {
@@ -1054,7 +1054,7 @@ std::string    vrmlScene          ( icc_examin_ns::ICCThreadList<ICCnetz> netze,
 ");
         temp.append("\
     Transform { translation ");
-        sprintf( txt, shadow[i].c_str() );
+        sprintf( txt, "%s", shadow[i].c_str() );
         temp.append( txt );
         temp.append("\
       children Shape {\n\

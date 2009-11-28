@@ -1423,7 +1423,7 @@ getExecPath(const char *filename)
     char *text = (char*) calloc( sizeof(char), len );
     text[0] = 0;
     /* whats the path for the executeable ? */
-    snprintf (text, len-1, filename);
+    snprintf (text, len-1, "%s", filename);
 
     if(text[0] == '~')
     {
@@ -1466,7 +1466,7 @@ getExecPath(const char *filename)
       {
         char* cn = (char*) calloc(2048, sizeof(char));
         sprintf (cn, "%s%s%s", getenv("PWD"), ICC_DIR_SEPARATOR, filename);
-        sprintf (text, cn);
+        sprintf (text, "%s", cn);
         if(cn) free(cn); 
       }
     }
@@ -1719,9 +1719,9 @@ unterscheideZiffernWorte ( std::string &zeile,
   char trenner [16];
 
   if( trennzeichen ) { DBG_PARSER
-    sprintf (trenner, trennzeichen );
+    sprintf (trenner, "%s",trennzeichen );
   } else {
-    sprintf (trenner, leer_zeichen );
+    sprintf (trenner, "%s", leer_zeichen );
     suchenErsetzen( zeile, ",", ".", 0 );
   }
 
