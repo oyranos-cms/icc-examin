@@ -509,7 +509,8 @@ ICCexamin::farbraum (int n)
         (*netze)[n].grau = true;
       }
 
-      if(profile[n]->filename() == icc_examin->moniName())
+      if(profile[n]->filename() == icc_examin->moniName() && 
+         netze->size() > 1)
       {
         profile.passiv(n);
         (*netze)[n].aktiv = false;

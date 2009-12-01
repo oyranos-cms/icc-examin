@@ -384,7 +384,8 @@ ICCexaminIO::oeffnenThread_ ()
           active = aktiv[i];
           active = icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze[i].aktiv;
 
-          if(profile[i]->filename() == icc_examin->moniName())
+          if(profile[i]->filename() == icc_examin->moniName() &&
+             anzahl > 1)
           {
             profile.passiv(i);
             active = false;
