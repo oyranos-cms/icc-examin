@@ -49,6 +49,7 @@
 // Use POSIX threading...
 
 #    include <pthread.h>
+#    include <limits.h> /* PTHREAD_STACK_MIN */
 
 typedef pthread_t Fl_Thread;
 
