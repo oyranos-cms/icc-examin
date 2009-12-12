@@ -345,17 +345,26 @@ Oyranos::moni_test_ (int x, int y)
   if(icc_examin_ns::zeitSekunden() > v_block.zeit() + 1.0)
   {
     oy_moni = oyMoni(x,y);
-
     char* block = (char*) oyProfile_GetMem ( oy_moni, &size, 0, malloc );
+
+    /* monitor name is expensive for non cached profiles */
+    const char * vb = v_block;
+    if(v_block.size() != size ||
+       memcmp( vb, block, size ) != 0 )
+    {
+      if(block && size)
+        v_block.ladeUndFreePtr(&block, size);
+      else
+        v_block.zeit( icc_examin_ns::zeitSekunden() );
+
+      const char* oy_moni_name = oyProfile_GetFileName( oy_moni, 0 );
+
+      if(oy_moni_name)
+        v_block = oy_moni_name;
+    }
     if(block && size)
-      v_block.ladeUndFreePtr(&block, size);
-    else
-      v_block.zeit( icc_examin_ns::zeitSekunden() );
+      free( block ); block = 0; size = 0;
 
-    const char* oy_moni_name = oyProfile_GetFileName( oy_moni, 0 );
-
-    if(oy_moni_name)
-      v_block = oy_moni_name;
     oyProfile_Release( &oy_moni );
   }
 
@@ -1282,7 +1291,7 @@ Oyranos::wandelLabNachProfilUndZurueck(double *lab, // 0.0 - 1.0
                                                hLab, TYPE_Lab_DBL,
                                                intent,
                                                PRECALC|flags);
-    if (!form) { WARN_S( "no transformation found" ); return 1; }
+    if (!form) { /* dead lock WARN_S( "no transformation found" );*/ return 1; }
 
     cmsDoTransform (form, farben, cielab, (unsigned int)size);
     cmsDeleteTransform (form);
