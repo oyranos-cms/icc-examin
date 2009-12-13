@@ -162,12 +162,30 @@ nachricht (std::string text) {
   // Now the funtion is outside of icc_examin_ns::
   return nachricht_(text);
 }
+
+struct log_cb_struct {
+  std::string text;
+  int code;
+};
+
+void log_cb(void * data)
+{
+  struct log_cb_struct * a = (struct log_cb_struct *)data;
+  log_(a->text, a->code);
+  delete a;
+}
+
+iccThreadMutex_m icc_log_mutex_;
+
 MyFl_Double_Window*
-log (std::string text, int code) {
-  // for Fl_Scroll no vtable created:
-  // icc_fenster.cpp:162: undefined reference to `icc_examin_ns::Fl_Scroll::Fl_Scroll[in-charge](int, int, int, int, char const*)'
-  // Now the funtion is outside of icc_examin_ns::
-  return log_(text, code);
+log (std::string text, int code)
+{
+  /* let FLTK call the main thread */
+  struct log_cb_struct * a = new struct log_cb_struct;
+  a->text = text;
+  a->code = code;
+  Fl::awake( log_cb, a );
+  return 0;
 }
 void log_show(void)
 {

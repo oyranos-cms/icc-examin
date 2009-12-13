@@ -88,7 +88,6 @@ void dbgWriteS( std::string s )
 void
 dbgWriteF (int code)
 {
-  icc_examin_ns::lock(__FILE__,__LINE__);
 #ifdef WRITE_DBG
     std::string dateiname = "/tmp/icc_examin_dbg_";
     dateiname += getenv("USER");
@@ -109,7 +108,6 @@ dbgWriteF (int code)
     }
 #endif
   icc_examin_ns::log(debug_s_.str().c_str(), code);
-  icc_examin_ns::unlock(0, __FILE__,__LINE__);
   debug_s_.str("");
 }
 

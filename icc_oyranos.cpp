@@ -1291,7 +1291,7 @@ Oyranos::wandelLabNachProfilUndZurueck(double *lab, // 0.0 - 1.0
                                                hLab, TYPE_Lab_DBL,
                                                intent,
                                                PRECALC|flags);
-    if (!form) { /* dead lock WARN_S( "no transformation found" );*/ return 1; }
+    if (!form) { WARN_S( "no transformation found" ); return 1; }
 
     cmsDoTransform (form, farben, cielab, (unsigned int)size);
     cmsDeleteTransform (form);
