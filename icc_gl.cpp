@@ -810,7 +810,7 @@ GL_Ansicht::GLinit_()
 # endif
   if(!holeDateiModifikationsZeit(font_name)) {
     DBG_PROG_S( _("Could not open font in:") << font_name )
-    font_name = "/usr/share/fonts/dejavu/DejaVuSans.ttf";
+    font_name = "/usr/share/fonts/truetype/DejaVuSans.ttf";
     if(!holeDateiModifikationsZeit(font_name)) {
       DBG_PROG_S( _("Could not open font in:") << font_name )
 #ifdef  WIN32
