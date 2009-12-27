@@ -793,7 +793,7 @@ GL_Ansicht::GLinit_()
   if(font) delete font;
   if(ortho_font) delete ortho_font;
 
-  const char* font_name = "/usr/X11R6/lib/X11/fonts/truetype/FreeSans.ttf";
+  const char* font_name = "/usr/share/fonts/dejavu/DejaVuSans.ttf";
 # if APPLE
   std::string f_n;
   if(getenv("RESOURCESPATH"))
@@ -810,7 +810,7 @@ GL_Ansicht::GLinit_()
 # endif
   if(!holeDateiModifikationsZeit(font_name)) {
     DBG_PROG_S( _("Could not open font in:") << font_name )
-    font_name = "/usr/X11R6/lib/X11/fonts/truetype/arial.ttf";
+    font_name = "/usr/share/fonts/dejavu/DejaVuSans.ttf";
     if(!holeDateiModifikationsZeit(font_name)) {
       DBG_PROG_S( _("Could not open font in:") << font_name )
 #ifdef  WIN32
@@ -835,7 +835,7 @@ GL_Ansicht::GLinit_()
           font_name = n;
           if(!holeDateiModifikationsZeit(font_name)) {
             DBG_PROG_S( _("Could not open font in:") << font_name )
-            sprintf (n, "%s/FreeSans.ttf", SRCDIR);
+            sprintf (n, "%s/DejaVuSans.ttf", SRCDIR);
             font_name = n;
           }
         }
