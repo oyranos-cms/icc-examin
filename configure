@@ -70,6 +70,7 @@ cwdebug=0
 debug=0
 verbose=1
 nodeps=0
+openmp=1
 rpm=0
 
 # find a suitable fltk-config script
@@ -160,6 +161,10 @@ if [ $# -gt 0 ]; then
     if [ "`echo \"$1\" | sed s/\"--$switch\"//`" != "$1" ]; then
       debug="1"
     fi
+    switch=disable-openmp
+    if [ "`echo \"$1\" | sed s/\"--$switch\"//`" != "$1" ]; then
+      openmp="0"
+    fi
     switch=disable-verbose
     if [ "`echo \"$1\" | sed s/\"--$switch\"//`" != "$1" ]; then
       verbose="0"
@@ -184,6 +189,7 @@ if [ $# -gt 0 ]; then
       echo ""
       echo "   --with-fltk-config=[fltk-config]     alternative fltk version"
       echo "   --enable-debug                       debug version"
+      echo "   --disable-openmp                     SMP support [default enabled]"
       echo "   --disable-verbose                    non verbose compiling"
       echo "   --disable-dependency-tracking        no dependencies [default check]"
       echo "   --enable-cwdebug=[\$cwdebugdir]       deploy cwlibary for debugging"
@@ -607,9 +613,9 @@ else
   fi
 fi
 
-CFLAGS="$CFLAGS $CFLAGS_COMMON $MAKE_CFLAGS"
-CXXFLAGS="$CXXFLAGS $CXXFLAGS_COMMON $MAKE_CXXFLAGS"
-LDFLAGS="$LDFLAGS $LDFLAGS_COMMON $MAKE_LDFLAGS"
+CFLAGS="$CFLAGS $CFLAGS_COMMON $MAKE_CFLAGS \$(OPENMP)"
+CXXFLAGS="$CXXFLAGS $CXXFLAGS_COMMON $MAKE_CXXFLAGS \$(OPENMP)"
+LDFLAGS="$LDFLAGS $LDFLAGS_COMMON $MAKE_LDFLAGS \$(OPENMP)"
 
 for i in $MAKEFILE_DIR; do
   mkdir -p $i
@@ -641,11 +647,17 @@ for i in $MAKEFILE_DIR; do
   test -n "$ECHO" && $ECHO "CFLAGS   = $CFLAGS"       >> "$i/makefile"
   test -n "$ECHO" && $ECHO "CXXFLAGS = $CXXFLAGS" >> "$i/makefile"
   test -n "$ECHO" && $ECHO "LDFLAGS  = $LDFLAGS"    >> "$i/makefile"
+  if [ $openmp -eq 1 ]; then
+    test -n "$ECHO" && $ECHO "OPENMP = -fopenmp"       >> "$i/makefile"
+  fi
   test -n "$ECHO" && $ECHO "" >> "$i/makefile"
   test -n "$ECHO" && $ECHO "" >> "$i/makefile"
 done
 test -n "$ECHO" && $ECHO "LIBNAMEFULL = $LIBNAMEFULL" >> "$CONF"
 test -n "$ECHO" && $ECHO "LIBNAMEV = $LIBNAMEV" >> "$CONF"
+if [ $openmp -eq 1 ]; then
+  echo_="Using OpenMP"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
+fi
 
 unset CFLAGS CXXFLAGS LDFLAGS
 CFLAGS="$CFLAGS $CFLAGS_COMMON"
