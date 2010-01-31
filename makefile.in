@@ -582,11 +582,14 @@ install_global:
 	mkdir -p $(DESTDIR)$(datadir)/fonts/
 	$(INSTALL) -m 644 $(FONT) $(DESTDIR)$(datadir)/fonts/$(FONT)
 	mkdir -p $(DESTDIR)$(desktopdir)
-	$(INSTALL) -m 644 icc_examin.desktop $(DESTDIR)$(desktopdir)/icc_examin.desktop
+	#$(INSTALL) -m 644 icc_examin.desktop $(DESTDIR)$(desktopdir)/icc_examin.desktop
+	-xdg-desktop-menu install --novendor icc_examin.desktop
 	mkdir -p $(DESTDIR)$(datadir)/mime/packages/
 	mkdir -p $(DESTDIR)$(pixmapdir)
-	$(INSTALL) -m 644 icc_examin.png $(DESTDIR)$(pixmapdir)/icc_examin.png
-	$(INSTALL) -m 644 icc_examin.svg $(DESTDIR)$(pixmapdir)/icc_examin.svg
+	#$(INSTALL) -m 644 icc_examin.png $(DESTDIR)$(pixmapdir)/iccexamin.png
+	$(INSTALL) -m 644 icc_examin.svg $(DESTDIR)$(pixmapdir)/hicolor/scalable/iccexamin.svg
+	test -f iccexamin.png || $(CP) icc_examin.png iccexamin.png
+	-xdg-icon-resource install --size 128 --novendor iccexamin.png
 	echo  Linguas ...
 	for ling in $(LINGUAS); do \
 	  echo "Installing po/$${ling}.gmo ..."; \
@@ -606,8 +609,8 @@ uninstall:
 	  $(RM) $(DESTDIR)$(CP_DIR)/$(CINEPAINT); \
 	fi
 	$(RM) $(DESTDIR)$(desktopdir)/icc_examin.desktop
-	$(RM) $(DESTDIR)$(pixmapdir)/icc_examin.png
-	$(RM) $(DESTDIR)$(pixmapdir)/icc_examin.svg
+	$(RM) $(DESTDIR)$(pixmapdir)/iccexamin.png
+	$(RM) $(DESTDIR)$(pixmapdir)/iccexamin.svg
 	$(RM) $(DESTDIR)$(datadir)/fonts/$(FONT)
 	for ling in $(LINGUAS); do \
 	  $(RM) $(DESTDIR)$(datadir)/locale/$${ling}/LC_MESSAGES/$(TARGET).mo; \
