@@ -585,7 +585,7 @@ install_global:
 	#$(INSTALL) -m 644 icc_examin.desktop $(DESTDIR)$(desktopdir)/icc_examin.desktop
 	-xdg-desktop-menu install --novendor icc_examin.desktop
 	mkdir -p $(DESTDIR)$(datadir)/mime/packages/
-	mkdir -p $(DESTDIR)$(pixmapdir)
+	mkdir -p $(DESTDIR)$(pixmapdir)/hicolor/scalable/
 	#$(INSTALL) -m 644 icc_examin.png $(DESTDIR)$(pixmapdir)/iccexamin.png
 	$(INSTALL) -m 644 icc_examin.svg $(DESTDIR)$(pixmapdir)/hicolor/scalable/iccexamin.svg
 	test -f iccexamin.png || $(CP) icc_examin.png iccexamin.png
