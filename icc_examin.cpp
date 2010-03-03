@@ -192,7 +192,7 @@ ICCexamin::ICCexamin ()
 
   // set a nice GUI surface
 #ifdef __APPLE__
-  Fl::scheme("plastic"); // gtk+
+  Fl::scheme("plastic"); // plastic gtk+
 #endif
 
   _item = -1;

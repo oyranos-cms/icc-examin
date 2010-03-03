@@ -619,7 +619,7 @@ uninstall:
 
 bundle:	#static
 	echo bundle ...
-	test -d ICC\ Examin.app/Contents/Resources$(prefix)/lib/colour/modules/ || mkdir -p ICC\ Examin.app/ ICC\ Examin.app/Contents/ ICC\ Examin.app/Contents/MacOS/ ICC\ Examin.app/Contents/Resources$(prefix)/  ICC\ Examin.app/Contents/Resources$(prefix)/bin/ ICC\ Examin.app/Contents/Resources$(prefix)/lib/colour/modules/ ICC\ Examin.app/Contents/Resources$(prefix)/share/
+	test -d ICC\ Examin.app/Contents/Resources$(prefix)/lib/colour/modules/ || mkdir -p ICC\ Examin.app/ ICC\ Examin.app/Contents/ ICC\ Examin.app/Contents/MacOS/ ICC\ Examin.app/Contents/Resources$(prefix)/  ICC\ Examin.app/Contents/Resources$(prefix)/bin/ ICC\ Examin.app/Contents/Resources$(prefix)/lib/colour/modules/ ICC\ Examin.app/Contents/Resources$(prefix)/lib/oyranos/ ICC\ Examin.app/Contents/Resources$(prefix)/share/
 	$(INSTALL) -m 644 Info.plist ICC\ Examin.app/Contents/Info.plist
 	$(INSTALL) -m 755 ICC\ Examin.sh  ICC\ Examin.app/Contents/MacOS/ICC\ Examin
 	test -f iccexamin.app/Contents/MacOS/iccexamin && \
@@ -635,6 +635,7 @@ bundle:	#static
 		    && ($(COPY) -R /usr/X11R6/lib/lib$${bib}*$(LIBEXT) 'ICC Examin.app/Contents/Resources$(prefix)/lib/' ) \
 	        || (echo lib$${bib}$(LIBEXT) not found ... skipping)); \
 	done;
+	-$(COPY) $(libdir)/oyranos/lib* ICC\ Examin.app/Contents/Resources$(prefix)/lib/oyranos/
 	-$(COPY) $(libdir)/colour/modules/lib* ICC\ Examin.app/Contents/Resources$(prefix)/lib/colour/modules/
 	-$(COPY) -R $(libdir)/elektra ICC\ Examin.app/Contents/Resources$(prefix)/lib/
 	test -f ~/bin/iccgamut \
