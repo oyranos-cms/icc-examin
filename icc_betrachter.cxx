@@ -921,6 +921,10 @@ ard"));
     details->align(Fl_Align(FL_ALIGN_TOP));
     details->when(FL_WHEN_RELEASE);
     { Fl_Group* o = new Fl_Group(0, 0, 385, 520);
+      { Fl_Box* o = new Fl_Box(0, 0, 385, 520, _("invisible box"));
+        o->box(FL_FLAT_BOX);
+        o->align(Fl_Align(FL_ALIGN_CENTER|FL_ALIGN_INSIDE));
+      } // Fl_Box* o
       { menueleiste = new Fl_Menu_Bar(0, 0, 385, 25);
         menueleiste->align(Fl_Align(FL_ALIGN_LEFT));
         menueleiste->when(3);
@@ -1105,6 +1109,7 @@ ard"));
       { Fl_Group* o = new Fl_Group(0, 495, 385, 25);
         o->align(Fl_Align(FL_ALIGN_LEFT));
         { box_stat = new Fl_Box(0, 495, 385, 25, _("..."));
+          box_stat->box(FL_THIN_DOWN_BOX);
           box_stat->align(Fl_Align(FL_ALIGN_LEFT|FL_ALIGN_INSIDE));
         } // Fl_Box* box_stat
         { Fl_Progress* o = load_progress = new Fl_Progress(0, 495, 385, 25, _("Loading .."));
@@ -1128,7 +1133,7 @@ ard"));
       no_box->labelcolor(FL_FOREGROUND_COLOR);
       no_box->align(Fl_Align(FL_ALIGN_LEFT));
       no_box->when(FL_WHEN_RELEASE);
-      o->box(FL_NO_BOX);
+      //o->box(FL_NO_BOX);
     } // My_Fl_Box* no_box
     o->main_win = o;
     details->end();
@@ -1143,9 +1148,10 @@ ard"));
   Fl::get_system_colors();
   details->show();
   { // plastic sets a background image, for others unset a transparent box
+    // the background is not redrawn for new text
     const char* style = Fl::scheme();
     if(!style || (style && strstr(style,"plastic") == 0))
-      box_stat->box(FL_BORDER_BOX);
+      ;//box_stat->box(FL_BORDER_BOX);
   }
   DBG_PROG
   DBG_PROG_ENDE

@@ -95,8 +95,7 @@ class TagBrowser {open : {public Fl_Hold_Browser}
   }
   Function {TagBrowser(int X,int Y,int W,int H) : Fl_Hold_Browser(X,Y,W,H), X(X), Y(Y), W(W), H(H)} {open
   } {
-    code {} {selected
-    }
+    code {} {}
   }
   Function {reopen_nicht()} {open
   } {
@@ -328,11 +327,10 @@ class ICCfltkBetrachter {open
   mft_gl_tables_buttons = 0;
   px=py=pw=ph=0;
   tag_nummer = -1;
-  widget_oben = -1;
-} {}
+  widget_oben = -1;} {}
     Fl_Window ueber {
       label {About ICC Examin} open
-      xywh {852 617 365 295} type Double resizable
+      xywh {852 501 365 295} type Double resizable
       code0 {o->hide();}
       code1 {o->use_escape_hide = true;}
       class {icc_examin_ns::MyFl_Double_Window} visible
@@ -378,7 +376,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window vcgt {
       label {Grafic Card Gamma Table} open
-      xywh {436 627 370 405} type Double resizable
+      xywh {436 391 370 405} type Double resizable
       code0 {o->hide();}
       code1 {o->use_escape_hide = true;}
       class {icc_examin_ns::MyFl_Double_Window} visible
@@ -415,7 +413,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window DD {
       label Gamut open
-      xywh {265 243 385 520} type Double box NO_BOX resizable
+      xywh {338 221 385 520} type Double box NO_BOX resizable
       class {icc_examin_ns::MyFl_Double_Window} visible
     } {
       Fl_Group {} {open
@@ -598,13 +596,17 @@ DBG_NUM_S("Show Log window")}
     }
     Fl_Window details {
       label {ICC Examin} open
-      xywh {720 79 385 520} type Double box NO_BOX
+      xywh {686 151 385 520} type Double box NO_BOX
       code0 {o->main_win = o;}
       class {icc_examin_ns::MyFl_Double_Window} visible
     } {
       Fl_Group {} {open
         xywh {0 0 385 520}
       } {
+        Fl_Box {} {
+          label {invisible box} selected
+          xywh {0 0 385 520} box FLAT_BOX align 16
+        }
         Fl_Menu_Bar menueleiste {open
           xywh {0 0 385 25} align 4 when 3
         } {
@@ -872,7 +874,7 @@ DBG_NUM_S("Show Log window")}
                         } {}
                         Fl_Value_Slider mft_gl_slider {
                           callback {icc_examin->mftChannel( (int)mft_gl_slider_choice->value()+3, (int)mft_gl_slider->value() );}
-                          xywh {0 210 25 285} step 0.01 resizable
+                          xywh {0 210 25 285} resizable
                         }
                       }
                     }
@@ -909,7 +911,7 @@ DBG_NUM_S("Show Log window")}
         } {
           Fl_Box box_stat {
             label {...}
-            xywh {0 495 385 25} align 20
+            xywh {0 495 385 25} box THIN_DOWN_BOX align 20
           }
           Fl_Progress load_progress {
             label {Loading ..}
@@ -922,7 +924,7 @@ DBG_NUM_S("Show Log window")}
       }
       Fl_Box no_box {
         xywh {0 0 385 520} align 4
-        code0 {o->box(FL_NO_BOX);}
+        code0 {//o->box(FL_NO_BOX);}
         class My_Fl_Box
       }
     }
@@ -936,9 +938,10 @@ DBG_NUM_S("Show Log window")}
   Fl::get_system_colors();
   details->show();
   { // plastic sets a background image, for others unset a transparent box
+    // the background is not redrawn for new text
     const char* style = Fl::scheme();
     if(!style || (style && strstr(style,"plastic") == 0))
-      box_stat->box(FL_BORDER_BOX);
+      ;//box_stat->box(FL_BORDER_BOX);
   }
   DBG_PROG} {}
     code DBG_PROG_ENDE {}
