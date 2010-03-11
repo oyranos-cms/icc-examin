@@ -683,15 +683,16 @@ Oyranos::netzVonProfil_ (ICCnetz & netz,
     for(int x = 0; x < 2 * (a - 1); ++x)
     {
       int pos = (4 * a * (a + 1)  +  y * 2 * (a - 1) + x) * kanaele;
-      int b = 0; // area
+      int b = 1; // area
       int x_pos = x + 1, y_pos = y + 1;
       double val = (double)y_pos/(double)a * (max-min);
 
-      if       (b * (a - b) <= x && x < ++b * a - b) {
+      if       (0 <= x && x < a - 1) {
         lab[pos + 0] = 1.0;
         lab[pos + 1] = min + (x_pos - (b - 1) * (a - 1))/(double)a * (max-min);
         lab[pos + 2] = min + val;
-      } else if(b * (a - b) <= x && x < ++b * a - b) {
+      } else if(a - 1 <= x && x < 2 * a - 2) {
+        ++b;
         lab[pos + 1] = min + (x_pos - (b - 1) * (a - 1))/(double)a * (max-min);
         lab[pos + 2] = min + val;
         // see http://www.behrmann.name/wind/oyranos/icc_examin_2008.01.21.html
@@ -852,7 +853,7 @@ Oyranos::netzVonProfil_ (ICCnetz & netz,
     for(int x = 0; x < 2 * a; ++x)
     {
       int x_ = x + off;
-      int b = 0; // area
+      int b = 1; // area
 
       // lower border
       if( y == 0 )
@@ -902,7 +903,7 @@ Oyranos::netzVonProfil_ (ICCnetz & netz,
       {
         if(x == 0) {
         }
-      } else if(b * (a - b) <= x && x < ++b * a - b - 1) {
+      } else if(0 <= x && x < a - 1 - 1) {
 
         // upper middle field (*L=0.0)
         index_p.second.i[0] = (y-1) *  2*(a-1)+x_; index_p.second.i[2] =  (y-1)*2*(a-1)+x_+1;
@@ -913,7 +914,8 @@ Oyranos::netzVonProfil_ (ICCnetz & netz,
         index_p.second.i[0] = (y+0)*2*(a-1)+x_; index_p.second.i[1] = (y+0)*2*(a-1)+x_+1;
         netz.indexe. insert( index_p );
 
-      } else if(b * (a - b) <= x && x < ++b * a - b - 1) {
+      } else if(a - 1 <= x && x < 2 * a - 2 - 1) {
+        b = 2;
         // lower middle field (*L=1.0)
         index_p.second.i[0] = (y-1) *  2*(a-1)+x_; index_p.second.i[1] =  (y-1)*2*(a-1)+x_+1;
         index_p.second.i[2] = (y+0)*2*(a-1)+x_;
