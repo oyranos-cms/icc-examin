@@ -582,13 +582,14 @@ install_global:
 	mkdir -p $(DESTDIR)$(datadir)/fonts/
 	$(INSTALL) -m 644 $(FONT) $(DESTDIR)$(datadir)/fonts/$(FONT)
 	mkdir -p $(DESTDIR)$(desktopdir)
-	#$(INSTALL) -m 644 icc_examin.desktop $(DESTDIR)$(desktopdir)/icc_examin.desktop
-	-xdg-desktop-menu install --novendor icc_examin.desktop
+	#$(INSTALL) -m 644 icc_examin.desktop $(DESTDIR)$(desktopdir)/iccexamin.desktop
+	$(CP) icc_examin.desktop iccexamin.desktop
+	-xdg-desktop-menu install --novendor iccexamin.desktop
 	mkdir -p $(DESTDIR)$(datadir)/mime/packages/
 	mkdir -p $(DESTDIR)$(pixmapdir)/hicolor/scalable/
 	#$(INSTALL) -m 644 icc_examin.png $(DESTDIR)$(pixmapdir)/iccexamin.png
 	$(INSTALL) -m 644 icc_examin.svg $(DESTDIR)$(pixmapdir)/hicolor/scalable/iccexamin.svg
-	test -f iccexamin.png || $(CP) icc_examin.png iccexamin.png
+	$(CP) icc_examin.png iccexamin.png
 	-xdg-icon-resource install --size 128 --novendor iccexamin.png
 	echo  Linguas ...
 	for ling in $(LINGUAS); do \
@@ -608,7 +609,7 @@ uninstall:
 	else \
 	  $(RM) $(DESTDIR)$(CP_DIR)/$(CINEPAINT); \
 	fi
-	$(RM) $(DESTDIR)$(desktopdir)/icc_examin.desktop
+	$(RM) $(DESTDIR)$(desktopdir)/iccexamin.desktop
 	$(RM) $(DESTDIR)$(pixmapdir)/iccexamin.png
 	$(RM) $(DESTDIR)$(pixmapdir)/iccexamin.svg
 	$(RM) $(DESTDIR)$(datadir)/fonts/$(FONT)
