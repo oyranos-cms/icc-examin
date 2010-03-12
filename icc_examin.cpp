@@ -52,7 +52,9 @@
 #include <cstring>
 #include <float.h>
 #include <unistd.h>
+#ifdef HAVE_X
 #include <FL/x.H>
+#endif
 
 using namespace icc_examin_ns;
 
