@@ -54,6 +54,8 @@
 #include <unistd.h>
 #ifdef HAVE_X
 #include <FL/x.H>
+#elif APPLE
+#include <FL/mac.H>
 #endif
 
 using namespace icc_examin_ns;
