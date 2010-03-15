@@ -583,13 +583,13 @@ install_global:
 	$(INSTALL) -m 644 $(FONT) $(DESTDIR)$(datadir)/fonts/$(FONT)
 	mkdir -p $(DESTDIR)$(desktopdir)
 	#$(INSTALL) -m 644 icc_examin.desktop $(DESTDIR)$(desktopdir)/iccexamin.desktop
-	$(CP) icc_examin.desktop iccexamin.desktop
+	$(COPY) icc_examin.desktop iccexamin.desktop
 	-xdg-desktop-menu install --novendor iccexamin.desktop
 	mkdir -p $(DESTDIR)$(datadir)/mime/packages/
 	mkdir -p $(DESTDIR)$(pixmapdir)/hicolor/scalable/
 	#$(INSTALL) -m 644 icc_examin.png $(DESTDIR)$(pixmapdir)/iccexamin.png
 	$(INSTALL) -m 644 icc_examin.svg $(DESTDIR)$(pixmapdir)/hicolor/scalable/iccexamin.svg
-	$(CP) icc_examin.png iccexamin.png
+	$(COPY) icc_examin.png iccexamin.png
 	-xdg-icon-resource install --size 128 --novendor iccexamin.png
 	echo  Linguas ...
 	for ling in $(LINGUAS); do \
