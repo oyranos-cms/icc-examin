@@ -213,9 +213,9 @@ GL_Ansicht::zero_()
   mouse_3D_hit = oyNamedColour_Create( NULL, NULL,0, prof, 0 );
   oyProfile_Release( &prof );
 
-  DBG_S( id_ << ": zero RASTER " << gl_listen_[RASTER], ICC_MSG_WARN );
   for(int i = 0; i < DL_MAX; ++i)
     gl_listen_[i] = 0;
+  DBG_S( id_ << ": zero RASTER " << gl_listen_[RASTER], ICC_MSG_WARN );
 
   bsp = 0;
 
