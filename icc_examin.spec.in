@@ -58,8 +58,8 @@ update-mime-database %{_datadir}/mime/
 %defattr(-, root, root)
 %doc AUTHORS COPYING ChangeLog README
 %{_bindir}/iccexamin
-%{desktopdir}/icc_examin.desktop
-%{pixmapdir}/icc_examin.*
+%{desktopdir}/iccexamin.desktop
+%{pixmapdir}/iccexamin.*
 %{_datadir}/fonts/FreeSans.ttf
 %{_datadir}/locale/*
 
