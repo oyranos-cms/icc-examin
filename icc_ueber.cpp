@@ -167,19 +167,19 @@ getHilfeHtml()
 </p> \
 <div class=\"tocindent\"> \
 <p><a href=\"#Gamut\">2.4.1 Gamut</a><br /> \
-<a href=\"#3D_navigation\">2.4.1.1 3D navigation</a><br /> \
-<a href=\"#Report_View\">2.4.2 Report View</a><br /> \
+<a href=\"#3D_navigation\">2.4.2  3D navigation and keys</a><br /> \
+<a href=\"#Report_View\">2.4.3 Report View</a><br /> \
  \
-<a href=\"#CGATS_view\">2.4.3 CGATS view</a><br /> \
-<a href=\"#Grafic_card_gamma_tables\">2.4.4 Grafic card gamma tables</a><br /> \
-<a href=\"#Help\">2.4.5 Help</a><br /> \
+<a href=\"#CGATS_view\">2.4.4 CGATS view</a><br /> \
+<a href=\"#Grafic_card_gamma_tables\">2.4.5 Grafic card gamma tables</a><br /> \
+<a href=\"#Help\">2.4.6 Help</a><br /> \
 </p> \
 </div> \
 </div> \
 <div class=\"tocline\"><a href=\"#Profile_elements\">3 Profile elements</a><br /></div> \
 <div class=\"tocindent\"> \
 <p><a href=\"#Header\">3.1 Header</a><br /> \
-<a href=\"#Tags\">3.2 Tags</a><br /> \
+<a href=\"#Tags\">3.2 Tag types</a><br /> \
 </p> \
  \
 <div class=\"tocindent\"> \
@@ -189,6 +189,7 @@ getHilfeHtml()
 <a href=\"#mft1_.2F_mft2\">3.2.4 mft1 / mft2</a><br /> \
 <a href=\"#sf32\">3.2.5 sf32</a><br /> \
 <a href=\"#ncl2\">3.2.6 ncl2</a><br /> \
+<a href=\"#psid\">3.2.7 psid</a><br /> \
 </p> \
 </div> \
 </div> \
@@ -205,7 +206,7 @@ getHilfeHtml()
  \
 </li></ul> \
 <a name=\"Usage\"></a><h2> Usage </h2> \
-<p>ICC Examin can be launched from the Application folder or Dock on osX and from the Graphics menu on Linux. \
+<p>ICC Examin can be launched from the Application folder or Dock on osX and from the Graphics menu on Linux. It should as well register as viewer for ICC profiles, CGATS text and VRML Gamut files. \
 </p> \
 <a name=\"File_opening\"></a><h3> File opening </h3> \
 <p>From the application windows menubar you can select File-&gt;Open and to show file dialog. Select one or more files for gamut comparision as you like. The selection order should be preserved. On top right side of the FLTK file selector resides the bookmark alias Favourites button. If you frequently visit directories you will find it usefull to append these directories to your bookmark / favourites list. To do this, go to an directory with the file selector and choose from the bookmark button the add entry. The added directory appears in the bookmark list and is available for later use. \
@@ -230,22 +231,6 @@ getHilfeHtml()
  \
 <p>First to call is the 3D gamut viewer. You can select it from the menu bar. It shows the gamut of the device described by the profile. If such a description is not appropriate, the external used Argyll iccgamut utility may not deliver a vrml gamut file and thus the 3D gamut view may remain empty.  \
 </p><p>The colour space shown is allways in CIE*Lab coordinates.  \
-</p><a name=\"3D_navigation\"></a><h5> 3D navigation </h5> \
-<p>To navigate arround in a 3D view use the: \
-</p> \
-<ul><li> left mouse button to rotate \
-</li><li> middle mouse button or Shift+left mouse button to move/clip \
-</li><li> right mouse button/ Strg+left mouse button to obtain additional menus. Among the additional menus are in: \
-<ul><li> top menu: the channel selection if appropriate \
- \
-<ul><li> Slice plane submenu, with axis slicing in fly through style and rotation \
-</li><li> Illustration submenu, with the background colour selection and text/marker switching off \
-</li></ul> \
-</li></ul> \
-</li></ul> \
-<p>From the context menu (ctrl+left mouse button or right mouse button) you can select the average human (CIE standard observer) visible spectral colours as a line. \
-</p><p>If meashurements are shown, the spot radius can be selected from the context menu. This is handy to easily detect dE's of above 2 or 4. The connection line goes from the measurement (white) to the deviation by the profile (red). \
-</p><p>Colour spots can be enlarged or made smaller by pressing + or -. \
 </p><p> \
 The Gamut Menus:\
 </p> \
@@ -258,6 +243,44 @@ Settings: \
 <li>Native or separation Gamut. The later is the inbuild default. The native colour gamut can only be created when iccgamut from ArgyllCMS is available.</li></ul> \
 Windows: \
 <ul><li>Show main application window, in case it is a icon.</li></ul> \
+</p><a name=\"3D_navigation\"></a><h4> 3D navigation and keys </h4> \
+<p>To navigate arround in a 3D view use the: \
+</p> \
+<ul><li> left mouse button to rotate \
+</li><li> middle mouse button or Shift+left mouse button to move/clip \
+</li><li> right mouse button/ Strg+left mouse button to obtain additional menus. Among the additional menus are in: \
+<ul><li> top menu: the channel selection if appropriate \
+ \
+<ul><li> Slice plane submenu, with axis slicing in fly through style and rotation \
+</li><li> Illustration submenu, with the background colour selection and text/marker switching off and on\
+</li></ul> \
+</li></ul> \
+</li></ul> \
+<p>From the context menu (ctrl+left mouse button or right mouse button) you can select the average human (CIE standard observer) visible spectral colours as a line. \
+</p><p>If meashurements are shown, the spot radius can be selected from the context menu. This is handy to easily detect dE's of above 2 or 4. The connection line goes from the measurement (white) to the deviation by the profile (red). \
+</p><p> \
+Additional keys: \
+</p><p> \
+<ul><li> Gamut view:</li> \
+<ul> \
+     <li> down key - reduce the slice plane distance </li> \
+     <li> up key - increase the slice plane distance </li> \
+     <li> home key - reset the slice plane distance </li> \
+     <li> end key - set the slice plane distance to center </li> \
+     <li> Colour spots can be enlarged or made smaller by pressing + or -. </li> \
+</ul></li> \
+</ul> \
+<ul><li> CLUT table line mode:</li> \
+<ul> \
+     <li> number key - set the number of interpolation planes </li> \
+     <li> '-' minus - reduce the actual interpolation plane </li> \
+     <li> '+' plus - increase the actual interpolation plane </li> \
+     <li> '/' slash - smaller steps for the minus and pus keys above </li> \
+     <li> '*' star - larger steps for the minus and pus keys above </li> \
+     <li> '_' underline - switch lines between one and three directions </li> \
+</ul></li> \
+</ul> \
+</p> \
 <a name=\"Report_View\"></a><h4> Report View </h4> \
 <p>If the profile contains measurements a report is generated. You reach this by selecting from the top menu View-&gt;Report. These measurement data are compared to what is calculated with the profile by littleCMS - the internal used CMM. \
 </p><p>Such a comparision from device colours + measurements colours on the one side and device + profile/CMM colours on the other side are just one possible quality checking method. \
@@ -290,7 +313,7 @@ Windows: \
  \
 </li><li> and some more or less meaningfull informations \
 </li></ul> \
-<a name=\"Tags\"></a><h3> Tags </h3> \
+<a name=\"Tags\"></a><h3> Tag types </h3> \
 <p>Below the header, which behaves like a fixed tag, are the variable tags listed. They appear in the same order as in the file. Starting withe the tag number, then the tag signature and the type of content in the tag. The size of the tag follows and a small description gives you an idea af what the tag may be intended for. \
 </p> \
 <a name=\"text_.2F_desc_.2F_targ\"></a><h4> text / desc / targ / mluc</h4> \
@@ -317,6 +340,10 @@ Windows: \
 </p> \
 <a name=\"ncl2\"></a><h4> ncl2 </h4> \
 <p>The ncl2 tag is used to store named colours in a list. This can be used to describe spot colours or describe a painters palette. Loading a profile containing such a tag into ICC Examin switches the 3D gamut view mode on. You see then the colours in 3D (CIE*Lab) and not as a list of numbers as in the tag viewer. \
+</p> \
+<a name=\"psid\"></a><h4> psid </h4> \
+<p> The Profile identifier tag is used in device link profiles to identify the profiles used to build the device link. However there are other informations needed to repeat the creation of a device link profile, like rendering intents or K preservation flags and so on. \
+</p> \
 </p><p><br /> \
 More tags can follow here... \
 </p> \
