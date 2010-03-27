@@ -1117,7 +1117,7 @@ ICCexamin::moniHolen ()
 
   static ICClist<Speicher> ss;
   ss.clear();
-  ss.push_back(icc_oyranos.moni(x,y));
+  ss.push_back(icc_oyranos.moniNative(x,y));
   size_t size = ss[0].size();
   const char *moni_profil = ss[0];
   if(!moni_profil || !size) {

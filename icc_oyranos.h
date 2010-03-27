@@ -76,7 +76,8 @@ class Oyranos
                                        { moni_test_(x,y); g = moni_.size();
                                          return moni_; }
     const Speicher & moni (int x,int y){ moni_test_(x,y); return moni_; }
-    oyProfile_s * oyMoni (int x, int y);
+    const Speicher & moniNative (int x,int y){ moni_native_test_(x,y); return moni_native_; }
+    oyProfile_s * oyMoni (int x, int y, int native = 0);
     int         setzeMonitorProfil     (const char *name, int x, int y );
     char**      moniInfo (int x, int y, int *num);
     // common profiles
@@ -98,11 +99,13 @@ class Oyranos
   private:
     void lab_test_();
     void moni_test_( int x, int y );
+    void moni_native_test_(int x, int y);
     void rgb_test_();
     void cmyk_test_();
     void proof_test_();
     Speicher lab_;
     Speicher moni_;
+    Speicher moni_native_;
     Speicher rgb_;
     Speicher cmyk_;
     Speicher proof_;

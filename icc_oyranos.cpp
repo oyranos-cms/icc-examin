@@ -98,6 +98,7 @@ Oyranos::clear()
 {
     lab_.clear();
     moni_.clear();
+    moni_native_.clear();
     rgb_.clear();
     cmyk_.clear();
     proof_.clear();
@@ -332,6 +333,44 @@ changeScreenName_( const char *display_name, int screen )
     sprintf( &ptr[strlen(ptr)], ".%d", screen );
 
   return new_display_name;
+}
+
+void
+Oyranos::moni_native_test_ (int x, int y)
+{
+  DBG_PROG_START
+  size_t size = 0;
+  Speicher v_block = moni_native_;
+  oyProfile_s * oy_moni = 0;
+
+  if(icc_examin_ns::zeitSekunden() > v_block.zeit() + 1.0)
+  {
+    oy_moni = oyMoni(x,y, 1);
+    char* block = (char*) oyProfile_GetMem ( oy_moni, &size, 0, malloc );
+
+    /* monitor name is expensive for non cached profiles */
+    const char * vb = v_block;
+    if(v_block.size() != size ||
+       memcmp( vb, block, size ) != 0 )
+    {
+      if(block && size)
+        v_block.ladeUndFreePtr(&block, size);
+      else
+        v_block.zeit( icc_examin_ns::zeitSekunden() );
+
+      const char* oy_moni_name = oyProfile_GetFileName( oy_moni, 0 );
+
+      if(oy_moni_name)
+        v_block = oy_moni_name;
+    }
+    if(block && size)
+      free( block ); block = 0; size = 0;
+
+    oyProfile_Release( &oy_moni );
+  }
+
+  DBG_PROG_ENDE
+  return;
 }
 
 void
@@ -1346,7 +1385,7 @@ Oyranos::wandelLabNachProfilUndZurueck(double *lab, // 0.0 - 1.0
 }
 
 
-oyProfile_s * Oyranos::oyMoni (int x, int y)
+oyProfile_s * Oyranos::oyMoni (int x, int y, int native)
 {
   char * disp_name = 0;
   oyProfile_s * disp_prof = 0;
@@ -1361,14 +1400,23 @@ oyProfile_s * Oyranos::oyMoni (int x, int y)
 
   if(disp_name)
   {
-    size_t size = 0;
-    char * buf = oyGetMonitorProfile( disp_name, &size, malloc );
+    oyOptions_s * options = 0;
+    oyConfig_s * device = 0;
 
-    if(size && buf)
+    if(native)
     {
-      disp_prof = oyProfile_FromMem( size, buf, 0, 0 );
-      free(buf); size = 0;
-    } else
+      oyOptions_SetFromText( &options,
+                               "//"OY_TYPE_STD"/config/net_color_region_target",
+                                       "yes", OY_CREATE_NEW );
+    }
+
+    oyDeviceGet( OY_TYPE_STD, "monitor", disp_name, 0, &device );
+    
+
+    oyDeviceGetProfile( device, options, &disp_prof );
+    oyOptions_Release( &options );
+
+    if(!disp_prof)
     {
       WARN_S("Could not load profile. Use sRGB instead.")
       disp_prof = oyProfile_FromStd( oyASSUMED_WEB, 0 );
