@@ -1406,7 +1406,10 @@ oyProfile_s * Oyranos::oyMoni (int x, int y, int native)
     if(native)
     {
       oyOptions_SetFromText( &options,
-                               "//"OY_TYPE_STD"/config/net_color_region_target",
+                             "//"OY_TYPE_STD"/config/command",
+                             "list", OY_CREATE_NEW );
+      oyOptions_SetFromText( &options,
+                   "//"OY_TYPE_STD"/config/icc_profile.net_color_region_target",
                                        "yes", OY_CREATE_NEW );
     }
 
