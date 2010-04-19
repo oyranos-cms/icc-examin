@@ -355,10 +355,13 @@ ICCmeasurement::leseTag (void)
     const char **SampleNames = 0;
     int m = 0; // actual measurement
     int m_n = cgats->messungen.size();
-    int _nKanaele = (int)cgats->messungen[m].felder[0].size();
+    int _nKanaele = 0;
     bool _sample_name = false;
     bool _sample_id = false;
     bool _id_vor_name = false;
+
+    if(cgats && cgats->messungen.size() && cgats->messungen[m].felder.size())
+      _nKanaele = (int)cgats->messungen[m].felder[0].size();
 
     for(m = 0; m < m_n; ++m)
     {
