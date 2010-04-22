@@ -1134,7 +1134,15 @@ ICCmeasurement::init_umrechnen                     (void)
       {
         RGB_MessFarben_.resize(nFelder_);
         if(!XYZ_measurement_)
+        {
           XYZ_Satz_.resize(nFelder_);
+          for(int i = 0; i < nFelder_; ++i)
+          {
+            XYZ_Satz_[i].X = 0;
+            XYZ_Satz_[i].Y = 0;
+            XYZ_Satz_[i].Z = 0;
+          }
+        }
         if(!LAB_measurement_)
           Lab_Satz_.resize(nFelder_);
         Lab_Differenz_.resize(nFelder_); DBG_NUM_V( Lab_Differenz_.size() )

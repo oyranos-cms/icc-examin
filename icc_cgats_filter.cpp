@@ -56,7 +56,7 @@ using namespace icc_parser;
 //! statische Initialisierungen
 
 const char *CgatsFilter::cgats_alnum_ = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_|/-+=()[]{}<>&?!:;,.0123456789";
-const char *CgatsFilter::cgats_numerisch_ = "-+,.0123456789";
+const char *CgatsFilter::cgats_numerisch_ = "-+,.0123456789eE";
 const char *CgatsFilter::cgats_ziffer_ = "0123456789";
 const char *CgatsFilter::cgats_alpha_ = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_|/=()[]{}<>&?!:;";
 const char *CgatsFilter::leer_zeichen_ = " \t\n\v\f\r";
