@@ -452,13 +452,13 @@ GL_Ansicht::init(int ty)
   resizable(0);
 
 # define TEST_GL(modus) { \
-    mode(modus); \
-    if(can_do()) { \
+    this->mode(modus); \
+    if(this->can_do()) { \
       mod |= modus; \
-      mode(mod); \
-      DBG_PROG_S( "OpenGL understand: ja   " << #modus <<" "<< mode() ) \
-    } else { \
-      DBG_PROG_S( "OpenGL understand: nein " << #modus <<" "<< mode() ) \
+      this->mode(mod); DBG_PROG_S( "can_do(): " << modus ); \
+      DBG_PROG_S( "OpenGL understand: ja   " << #modus <<" "<< this->mode() ) \
+    } else {  printf("can_do() false: %d\n", modus); \
+      DBG_PROG_S( "OpenGL understand: nein " << #modus <<" "<< this->mode() ) \
     } \
   }
 
