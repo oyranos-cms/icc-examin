@@ -58,7 +58,6 @@ CPP_HEADERS = \
 	icc_formeln.h \
 	icc_examin.h \
 	icc_examin_io.h \
-	icc_examin_version.h \
 	icc_gamut.h \
 	icc_gl.h \
 	icc_helfer.h \
@@ -490,6 +489,7 @@ tgz:
 	test -d ../Archiv && mv -v $(TARGET)_*.tgz ../Archiv
 
 targz:
+	test -d $(TARGET)-$(VERSION) && $(RM) -R $(TARGET)-$(VERSION) || echo -e "\c"
 	$(MAKE) DESTDIR="`pwd`/$(TARGET)-$(VERSION)" copy_files
 	tar cf - $(TARGET)-$(VERSION)/ \
 	| gzip > $(TARGET)_$(MTIME).tgz
@@ -532,6 +532,8 @@ copy_files:
 
 dist:	$(BASE) targz
 	test -f && $(COPY) ../Archiv/$(TARGET)_$(MTIME).tgz $(TARGET)-$(VERSION).tar.gz || $(COPY) $(TARGET)_$(MTIME).tgz $(TARGET)-$(VERSION).tar.gz
+
+dist-gzip:	dist
 
 $(TARGET).spec:
 	./configure
