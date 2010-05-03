@@ -861,7 +861,7 @@ ICCexamin::setzeFensterTitel()
       snprintf(t, t_len, "ICC Examin: %s - %s", title,
               _("Gamut View"));
 	  if(strlen(title) > t_len)
-	    sprintf( &t[t_len], "..." );
+	    sprintf( &t[t_len-4], "..." );
     } else
       snprintf(t, t_len, "ICC Examin: - %s", _("Gamut View"));
 
