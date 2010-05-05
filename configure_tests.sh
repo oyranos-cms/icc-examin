@@ -806,10 +806,10 @@ if [ -n "$CAIRO" ] && [ $CAIRO -gt 0 ]; then
   pkg-config  --atleast-version=1.0 $pc_package
   if [ $? = 0 ]; then
     echo_="$pc_package	`pkg-config --modversion $pc_package`		detected"; echo "$echo_" >> $CONF_LOG; test -n "$ECHO" && $ECHO "$echo_"
-    echo "#define HAVE_COMPIZ 1" >> $CONF_H
-    echo "COMPIZ = 1" >> $CONF
-    echo "COMPIZ_H = `pkg-config --cflags $pc_package | sed \"$STRIPOPT\"`" >> $CONF
-    echo "COMPIZ_LIBS = `pkg-config --libs $pc_package | sed \"$STRIPOPT\"`" >> $CONF
+    echo "#define HAVE_CAIRO 1" >> $CONF_H
+    echo "CAIRO = 1" >> $CONF
+    echo "CAIRO_H = `pkg-config --cflags $pc_package | sed \"$STRIPOPT\"`" >> $CONF
+    echo "CAIRO_LIBS = `pkg-config --libs $pc_package | sed \"$STRIPOPT\"`" >> $CONF
   else
     echo_="  no or too old $pc_package found, need $pc_package to build examples"; echo "$echo_" >> $CONF_LOG; test -n "$ECHO" && $ECHO "$echo_"
   fi
