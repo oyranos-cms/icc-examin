@@ -821,6 +821,7 @@ if [ "$INSTALL_TARGET" != install_global ]; then
   echo "%files        cinepaint" >> $SPEC
   echo "%defattr(-, root, root)" >> $SPEC
   echo "%doc AUTHORS COPYING ChangeLog README" >> $SPEC
+  echo "%dir %{cp_dir}" >> $SPEC
   echo "%{cp_dir}/icc_examin_cp" >> $SPEC
   echo "" >> $SPEC
 fi
