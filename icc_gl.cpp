@@ -941,7 +941,7 @@ GL_Ansicht::zeichneKoordinaten_()
     glRotated (90,0.0,0,1.0);
       glMatrixMode(GL_MODELVIEW);
       glTranslated((0.0-0.3),(0.0-0.1),(0.0-0.05));
-        sprintf (&text[0],_("0,0,0"));
+        strcpy (&text[0],_("0,0,0"));
         ZeichneText(font, text)
       glTranslated(0.3,0.1,0.05);
     glRotated (-90,0.0,0,1.0);

@@ -126,10 +126,10 @@ int iccMessageFunc( int code, const oyStruct_s * context, const char * format, .
   switch(code)
   {
     case oyMSG_WARN:
-         sprintf( &text[strlen(text)], _("WARNING"));
+         strcpy( &text[strlen(text)], _("WARNING"));
          break;
     case oyMSG_ERROR:
-         sprintf( &text[strlen(text)], _("!!! ERROR"));
+         strcpy( &text[strlen(text)], _("!!! ERROR"));
          break;
     case oyMSG_DBG:
          break;
