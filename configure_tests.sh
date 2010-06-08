@@ -713,6 +713,8 @@ if [ -n "$X11" ] && [ $X11 -gt 0 ]; then
     fi
 fi
 
+
+
 if [ -n "$FTGL" ] && [ $FTGL -gt 0 ]; then
   pkg-config  --atleast-version=1.0 ftgl
   if [ $? = 0 ]; then
@@ -790,33 +792,6 @@ if [ -n "$FLTK" ] && [ $FLTK -gt 0 ]; then
   fi
 fi
 
-if [ -n "$FLU" ] && [ $FLU -gt 0 ]; then
-  FLU_=`flu-config --cxxflags 2>>$CONF_LOG`
-  if [ "`$fltkconfig --version`" = "1.1.7" ]; then
-    echo -e "\c"
-    #"
-    echo_="FLTK version 1.1.7 is not supported by FLU"; echo "$echo_" >> $CONF_LOG; test -n "$ECHO" && $ECHO "$echo_"
-    if [ "$FLU" = 1 ]; then
-      ERROR=1
-    fi
-  else
-    if [ -n "$FLU_" ] && [ -n "$FLTK_" ]; then
-      echo_="FLU                     detected"; echo "$echo_" >> $CONF_LOG; test -n "$ECHO" && $ECHO "$echo_"
-      echo "#define HAVE_FLU 1" >> $CONF_H
-      echo "FLU = 1" >> $CONF
-      echo "FLU_H = `flu-config --cxxflags | sed \"$STRIPOPT\"`" >> $CONF
-      echo "FLU_LIBS = `flu-config --ldflags --use-gl | sed \"$STRIPOPT\"`" >> $CONF
-    else
-      if [ "$FLU" -gt 1 ]; then
-        echo_="   no FLU found, will not use it"; echo "$echo_" >> $CONF_LOG; test -n "$ECHO" && $ECHO "$echo_"
-      else
-        echo_="ERROR:   FLU is not found; download:"; echo "$echo_" >> $CONF_LOG; test -n "$ECHO" && $ECHO "$echo_"
-        echo_="         http://www.osc.edu/~jbryan/FLU/http://www.osc.edu/~jbryan/FLU/"; echo "$echo_" >> $CONF_LOG; test -n "$ECHO" && $ECHO "$echo_"
-        ERROR=1
-      fi
-    fi
-  fi
-fi
 
 if [ -n "$QT" ] && [ $QT -gt 0 ]; then
   pc_package=QtGui
