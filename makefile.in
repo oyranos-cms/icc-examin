@@ -43,7 +43,7 @@ LDLIBS = $(LDFLAGS) -L$(libdir) -L./ $(LIBFL_I18N) $(FLTK_LIBS) \
 	$(Flmm_OBJECTS) $(X11_LIBS) -llcms -L/lib \
 	$(LIBOYRANOS_EXTRA) $(OYRANOS_LIBS) $(LCMS_LIBS) \
 	$(FTGL_LIBS) $(I18N_LIB) $(DBG_LIBS) $(LIBNAME) $(LIBBSP) $(CWLIB) \
-	$(GLU_LIBS)
+	$(GLU_LIBS) $(pthread)
 
 CPP_HEADERS = \
 	agviewer.h \
