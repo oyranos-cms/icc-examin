@@ -38,14 +38,14 @@
 
 namespace icc_examin_ns {
 
-  oyranos::oyPointer iccStruct_LockCreate ( oyranos::oyStruct_s * obj );
-  void       iccLockRelease          ( oyranos::oyPointer  lock,
+  oyPointer  iccStruct_LockCreate    ( oyStruct_s        * obj );
+  void       iccLockRelease          ( oyPointer           lock,
                                        const char        * marker,
                                        int                 line );
-  void       iccLock                 ( oyranos::oyPointer  lock,
+  void       iccLock                 ( oyPointer           lock,
                                        const char        * marker,
                                        int                 line );
-  void       iccUnLock               ( oyranos::oyPointer  look,
+  void       iccUnLock               ( oyPointer           look,
                                        const char        * marker,
                                        int                 line );
 

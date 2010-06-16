@@ -33,12 +33,12 @@
 #include "icc_utils.h"
 #include "threads.h"
 
-oyranos::oyPointer  
-icc_examin_ns::iccStruct_LockCreate ( oyranos::oyStruct_s * obj )
+oyPointer  
+icc_examin_ns::iccStruct_LockCreate ( oyStruct_s * obj )
 {
   DBG_THREAD_START
   int error = !obj;
-  oyranos::oyPointer thread_lock = 0;
+  oyPointer thread_lock = 0;
 
   if(error)
   {
@@ -58,7 +58,7 @@ icc_examin_ns::iccStruct_LockCreate ( oyranos::oyStruct_s * obj )
 }
 
 void       
-icc_examin_ns::iccLockRelease ( oyranos::oyPointer         thread_lock,
+icc_examin_ns::iccLockRelease        ( oyPointer         thread_lock,
                                        const char        * marker,
                                        int                 line )
 {
@@ -112,7 +112,7 @@ icc_examin_ns::iccLockRelease ( oyranos::oyPointer         thread_lock,
   DBG_THREAD_ENDE
 }
 void       
-icc_examin_ns::iccLock      ( oyranos::oyPointer           thread_lock,
+icc_examin_ns::iccLock               ( oyPointer           thread_lock,
                                        const char        * marker,
                                        int                 line )
 {
@@ -155,7 +155,7 @@ icc_examin_ns::iccLock      ( oyranos::oyPointer           thread_lock,
   DBG_THREAD_ENDE
 }
 void       
-icc_examin_ns::iccUnLock    ( oyranos::oyPointer           thread_lock,
+icc_examin_ns::iccUnLock             ( oyPointer           thread_lock,
                                        const char        * marker,
                                        int                 line )
 {

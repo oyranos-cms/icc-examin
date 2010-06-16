@@ -43,7 +43,6 @@ using namespace icc_examin_ns;
 
 #include "oyranos.h"
 #include "oyranos_alpha.h"
-using namespace oyranos;
 
 #ifdef APPLE
 #include <Carbon/Carbon.h>
@@ -152,7 +151,7 @@ Oyranos::lab_test_ ()
   Speicher *v_block = &lab_;
   if( !v_block->size() )
   { DBG_PROG_V( v_block->size() )
-    char* profil_name = oyGetDefaultProfileName( oyranos::oyASSUMED_LAB, myAllocFunc );
+    char* profil_name = oyGetDefaultProfileName( oyASSUMED_LAB, myAllocFunc );
     if(profil_name)
       DBG_PROG_V( (int*)profil_name << profil_name );
     if( profil_name &&
@@ -235,7 +234,7 @@ MyFlattenProfileProcSize (
 }
 
 int
-oyGetProfileBlockOSX (CMProfileRef prof, char *block, size_t *size, oyranos::oyAlloc_f allocateFunc)
+oyGetProfileBlockOSX (CMProfileRef prof, char *block, size_t *size, oyAlloc_f allocateFunc)
 {
   DBG_PROG_START
     CMProfileLocation loc;
@@ -418,7 +417,7 @@ Oyranos::rgb_test_ ()
   Speicher *v_block = &rgb_;
   if( !v_block->size() )
   { DBG_PROG_V( v_block->size() )
-    const char* profil_name = oyGetDefaultProfileName( oyranos::oyASSUMED_RGB, myAllocFunc );
+    const char* profil_name = oyGetDefaultProfileName( oyASSUMED_RGB, myAllocFunc );
     if(profil_name)
       DBG_PROG_V( (intptr_t)profil_name << profil_name );
     if( profil_name &&
@@ -454,7 +453,7 @@ Oyranos::cmyk_test_ ()
   Speicher *v_block = &cmyk_;
   if( !v_block->size() )
   { DBG_PROG_V( v_block->size() )
-    char* profil_name = oyGetDefaultProfileName( oyranos::oyASSUMED_CMYK, myAllocFunc );
+    char* profil_name = oyGetDefaultProfileName( oyASSUMED_CMYK, myAllocFunc );
     if(profil_name) {DBG_PROG_V( profil_name );
     } else {         DBG_PROG_V( (intptr_t)profil_name );}
 
@@ -491,7 +490,7 @@ Oyranos::proof_test_ ()
   Speicher *v_block = &proof_;
   char* profil_name = NULL;
 
-  profil_name = oyGetDefaultProfileName( oyranos::oyPROFILE_PROOF, myAllocFunc);
+  profil_name = oyGetDefaultProfileName( oyPROFILE_PROOF, myAllocFunc);
 
   if( !v_block->size() )
   { DBG_PROG_V( v_block->size() )

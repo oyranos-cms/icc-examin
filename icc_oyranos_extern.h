@@ -39,16 +39,12 @@
 #include <oyranos_alpha.h>
 #include <oyranos_icc.h>
 
-using namespace oyranos;
-
 #define HAVE_LCMS 1
 
 #include "icc_utils.h"
 
 #ifdef __cplusplus
 extern "C" {
-namespace oyranos
-{
 #endif /* __cplusplus */
 
 #ifndef HAVE_OY
@@ -60,7 +56,6 @@ void  myCDeAllocFunc(void * buf);
 
 
 #ifdef __cplusplus
-} /* namespace oyranos */
 } /* extern "C" */
 #endif /* __cplusplus */
 
