@@ -1,5 +1,5 @@
 Summary: ICC profile viewer and colour visualisation
-Requires: oyranos oyranos-ui-fltk oyranos-monitor oyranos-monitor-nvidia
+Requires: oyranos liboyranos-devel oyranos-ui-fltk oyranos-monitor oyranos-monitor-nvidia
 Name: icc_examin
 License: GPL,LGPL
 Group: Productivity/Graphics/Other
@@ -41,12 +41,10 @@ fr:                  Pascal LACROIX <lacroixpascal at vfemail.net>, 2006
 make %{_smp_mflags} || make
 
 %install
-rm -rf %{buildroot}
 make DESTDIR=%{buildroot} install
 %find_lang %{name}       # generate a special file list
 
 %clean
-rm -rf %{buildroot}
 
 %post
 update-mime-database %{_datadir}/mime/
