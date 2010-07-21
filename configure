@@ -802,7 +802,7 @@ echo "Version: $VERSION" > $SPEC
 echo "Source:  $TARGET"-"$VERSION".tar.gz >> $SPEC
 echo "Release: $RELEASE" >> $SPEC
 if [ -n "$CP_CONFIG" ]; then
-echo "%define cp_dir          $CP_DIR" >> $SPEC
+echo "%define cp_dir          %{_libdir}/cinepaint/`cinepainttool --version`/plug-ins" >> $SPEC
 fi
 echo "%define pixmapdir       $pixmapdir" >> $SPEC
 echo "%define desktopdir      $desktopdir" >> $SPEC
@@ -823,8 +823,8 @@ if [ "$INSTALL_TARGET" != install_global ]; then
   echo "%files        cinepaint" >> $SPEC
   echo "%defattr(-, root, root)" >> $SPEC
   echo "%doc AUTHORS COPYING ChangeLog README" >> $SPEC
-  echo "#%dir %{_libdir}/cinepaint/" >> $SPEC
-  echo "#%dir %{_libdir}/cinepaint/0.25.0/" >> $SPEC
+  echo "%dir %{_libdir}/cinepaint/" >> $SPEC
+  echo "%dir %{_libdir}/cinepaint/`cinepainttool --version`/" >> $SPEC
   echo "%dir %{cp_dir}" >> $SPEC
   echo "%{cp_dir}/icc_examin_cp" >> $SPEC
   echo "" >> $SPEC
