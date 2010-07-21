@@ -202,7 +202,7 @@ FLMM_FILES = \
 	Flmm/README
 
 # the files are covered in the bsp directory
-BSP_SOURCES := $(shell (cd $(SRCDIR) && ls bsp/*.c))
+BSP_SOURCES := $(shell cd $(SRCDIR) && ls bsp/*.c)
 
 FLUID = \
 	icc_betrachter.fl \
