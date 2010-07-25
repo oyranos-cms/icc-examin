@@ -36,8 +36,7 @@
 #include "config.h"
 #include <oyranos.h>
 #include <oyranos_icc.h>
-#include <oyranos_alpha.h>
-#include <oyranos_icc.h>
+#include <alpha/oyranos_alpha.h>
 
 #define HAVE_LCMS 1
 

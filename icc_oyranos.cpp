@@ -42,7 +42,7 @@ using namespace icc_examin_ns;
 #undef BOOL
 
 #include "oyranos.h"
-#include "oyranos_alpha.h"
+#include "alpha/oyranos_alpha.h"
 
 #ifdef APPLE
 #include <Carbon/Carbon.h>
