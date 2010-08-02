@@ -64,6 +64,7 @@
 #endif
 
 #include <cmath>
+#include <iconv.h>
 
 #ifdef DEBUG_
 #define MARK(x) DBG_S( #x ) x
@@ -142,6 +143,39 @@ FTFont *font = NULL, *ortho_font = NULL;
                                    glScaled(1.0/scal,1.0/(scal*w()/(double)h()),1.0/scal); \
                                  }
 
+#ifdef HAVE_FTGL
+void drawText( FTFont * f, const char * in_txt )
+{
+  float strichmult = 1.0;
+  int blend = 1;
+
+  size_t size,
+         in_left,
+         out_left;
+  char * utf8, * txt, * utmp, * ttmp;
+  int len = 0;
+
+  if(strcmp(oy_domain_codeset,"UTF-8") != 0)
+  {
+    while(in_txt[len]) ++len;
+
+    in_left = len;
+    out_left = len*4 + 1;
+    utmp = utf8 = (char*)calloc( out_left, sizeof(char) );
+    ttmp = txt = strdup(in_txt);
+
+    iconv_t cd = iconv_open( "UTF-8", oy_domain_codeset );
+    size = iconv( cd, &ttmp, &in_left, &utmp, &out_left);
+    iconv_close( cd );
+    ZeichneText( f, utf8 );
+    if(utf8)free(utf8);
+    if(txt)free(txt);
+
+  } else
+    ZeichneText( f, in_txt );
+
+}
+#endif
 
 int GL_Ansicht::ref_ = 0;
 
@@ -852,9 +886,9 @@ GL_Ansicht::GLinit_()
     WARN_S( _("Could not open font in:") << font_name )
   } else {
     font->CharMap( ft_encoding_unicode );
+    ortho_font->CharMap( ft_encoding_unicode );
     font->Depth(12);
     if(!font->FaceSize(72)) WARN_S("Fontsize not setable"); \
-    ortho_font->CharMap( ft_encoding_unicode );
     if(!ortho_font->FaceSize(16)) WARN_S("Fontsize not setable");
   }
 # endif
