@@ -52,14 +52,14 @@
 
 #ifdef HAVE_FTGL
 // newer FTGL seems to deprecate FTFont.h
-# if 1
+# if defined(FTGL_INLCUDE_VER)
+#include <FTGL/ftgl.h>
+# else
 #include <FTGL/FTFont.h>
 #include <FTGL/FTGLTextureFont.h>
 #include <FTGL/FTGLPixmapFont.h>
 #include <FTGL/FTGLPolygonFont.h>
 #include <FTGL/FTGLExtrdFont.h>
-# else
-#include <FTGL/ftgl.h>
 # endif
 #endif
 
@@ -138,7 +138,7 @@ FTFont *font = NULL, *ortho_font = NULL;
 
 #define ZeichneOText(Font, scal, buffer) { \
                                    glScaled(scal,scal*w()/(double)h(),scal); \
-                                   ZeichneText(Font, buffer); \
+                                     ZeichneText(Font, buffer); \
                                    glScaled(1.0/scal,1.0/(scal*w()/(double)h()),1.0/scal); \
                                  }
 
