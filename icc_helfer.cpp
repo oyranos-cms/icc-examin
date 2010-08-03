@@ -1582,7 +1582,10 @@ setI18N( const char *exename )
       }
     }
   }
-  oy_domain_codeset = fl_i18n_codeset;
+  if(fl_i18n_codeset)
+    oy_domain_codeset = fl_i18n_codeset;
+  else
+    oy_domain_codeset = "UTF-8";
 }
 
 namespace icc_parser {
