@@ -64,7 +64,8 @@
 #endif
 
 #include <cmath>
-#include <iconv.h>
+#include <iconv.h>    /* iconv */
+#include <wchar.h>    /* wchar_t */
 
 #ifdef DEBUG_
 #define MARK(x) DBG_S( #x ) x
@@ -152,23 +153,25 @@ void drawText( FTFont * f, const char * in_txt )
   size_t size,
          in_left,
          out_left;
-  char * utf8, * txt, * utmp, * ttmp;
+  wchar_t * wchar, * wtmp;
+  char * txt, * ttmp;
   int len = 0;
 
-  if(strcmp(oy_domain_codeset,"UTF-8") != 0)
+  if(strcmp(oy_domain_codeset,"UTF-32") != 0)
   {
-    while(in_txt[len]) ++len;
+    len = strlen( in_txt );
 
     in_left = len;
-    out_left = len*4 + 1;
-    utmp = utf8 = (char*)calloc( out_left, sizeof(char) );
+    out_left = ( len + 1 ) * sizeof(wchar_t);
+    wtmp = wchar = (wchar_t*)calloc( len + 1, sizeof(wchar_t) );
     ttmp = txt = strdup(in_txt);
 
-    iconv_t cd = iconv_open( "UTF-8", oy_domain_codeset );
-    size = iconv( cd, &ttmp, &in_left, &utmp, &out_left);
+    iconv_t cd = iconv_open( "WCHAR_T", oy_domain_codeset );
+    size = iconv( cd, &ttmp, &in_left, (char**)&wtmp, &out_left);
     iconv_close( cd );
-    ZeichneText( f, utf8 );
-    if(utf8)free(utf8);
+
+    ZeichneText( f, wchar );
+    if(wchar)free(wchar);
     if(txt)free(txt);
 
   } else
