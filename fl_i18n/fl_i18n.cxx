@@ -249,6 +249,8 @@ fl_initialise_locale( const char *domain, const char *locale_path,
   CFShow( cfstring );
   DBG_PROG_V( CFStringGetLength(cfstring) )
 
+  sprintf(codeset, "MACROMAN");
+
     // copy to a C buffer
   CFIndex gr = 36;
   char text[36];
