@@ -150,100 +150,143 @@ getHilfeHtml()
   // HTML
   html << getHtmlKopf( _("Help") );
 
-  html << " \
-<p>ICC Examin is a FLTK based colour profile viewer. \
-</p><p>The educational purpose is to show the otherwise hidden internals of ICC profiles and give users a rough estimation, what the profiles can be used for. \
-</p> \
+  html << " <p>";
+  html << _("ICC Examin is a colour profile viewer.");
+  html << "</p><p>";
+  html << _("It shows the internals of binary encoded ICC profiles to get an idea about its capabilities.");
+  html << "</p> \
 <table border=\"0\" id=\"toc\"><tr id=\"toctitle\"><td align=\"center\"> \
 <b>Table of contents</b></td></tr><tr id=\"tocinside\"><td> \
-<div class=\"tocline\"><a href=\"#Features\">1 Features</a><br /></div> \
-<div class=\"tocline\"><a href=\"#Usage\">2 Usage</a><br /></div> \
+<div class=\"tocline\"><a href=\"#Features\">";
+  html << _("1 Features"); html << "</a><br /></div> \
+<div class=\"tocline\"><a href=\"#Usage\">";
+  html << _("2 Usage"); html << "</a><br /></div> \
  \
 <div class=\"tocindent\"> \
-<p><a href=\"#File_opening\">2.1 File opening</a><br /> \
-<a href=\"#Main_window\">2.2 Main window</a><br /> \
-<a href=\"#Complex_tags_navigation\">2.3 Complex tags navigation</a><br /> \
-<a href=\"#Windows_and_Views\">2.4 Windows and Views</a><br /> \
+<p><a href=\"#File_opening\">";
+  html << _("2.1 File opening"); html << "</a><br /> \
+<a href=\"#Main_window\">";
+  html << _("2.2 Main window"); html << "</a><br /> \
+<a href=\"#Complex_tags_navigation\">";
+  html << _("2.3 Complex tags navigation"); html << "</a><br /> \
+<a href=\"#Windows_and_Views\">";
+  html << _("2.4 Windows and Views"); html <<"</a><br /> \
 </p> \
 <div class=\"tocindent\"> \
-<p><a href=\"#Gamut\">2.4.1 Gamut</a><br /> \
-<a href=\"#3D_navigation\">2.4.2  3D navigation and keys</a><br /> \
-<a href=\"#Report_View\">2.4.3 Report View</a><br /> \
+<p><a href=\"#Gamut\">";
+  html << _("2.4.1 Gamut"); html << "</a><br /> \
+<a href=\"#3D_navigation\">";
+  html << _("2.4.2 3D navigation and keys"); html << "</a><br /> \
+<a href=\"#Report_View\">";
+  html << _("2.4.3 Report View"); html << "</a><br /> \
  \
-<a href=\"#CGATS_view\">2.4.4 CGATS view</a><br /> \
-<a href=\"#Grafic_card_gamma_tables\">2.4.5 Grafic card gamma tables</a><br /> \
-<a href=\"#Help\">2.4.6 Help</a><br /> \
-</p> \
-</div> \
-</div> \
-<div class=\"tocline\"><a href=\"#Profile_elements\">3 Profile elements</a><br /></div> \
-<div class=\"tocindent\"> \
-<p><a href=\"#Header\">3.1 Header</a><br /> \
-<a href=\"#Tags\">3.2 Tag types</a><br /> \
-</p> \
- \
-<div class=\"tocindent\"> \
-<p><a href=\"#text_.2F_desc_.2F_targ\">3.2.1 text / desc / targ</a><br /> \
-<a href=\"#curv\">3.2.2 curv</a><br /> \
-<a href=\"#XYZ\">3.2.3 XYZ</a><br /> \
-<a href=\"#mft1_.2F_mft2\">3.2.4 mft1 / mft2</a><br /> \
-<a href=\"#sf32\">3.2.5 sf32</a><br /> \
-<a href=\"#ncl2\">3.2.6 ncl2</a><br /> \
-<a href=\"#psid\">3.2.7 psid</a><br /> \
+<a href=\"#CGATS_view\">";
+  html << _("2.4.4 CGATS view"); html << "</a><br /> \
+<a href=\"#Grafic_card_gamma_tables\">";
+  html << _("2.4.5 Grafic card gamma tables"); html << "</a><br /> \
+<a href=\"#Help\">";
+  html << _("2.4.6 Help"); html << "</a><br /> \
 </p> \
 </div> \
 </div> \
-<div class=\"tocline\"><a href=\"#Other_file_formats\">4 Other file formats</a><br /></div> \
+<div class=\"tocline\"><a href=\"#Profile_elements\">";
+  html << _("3 Profile elements"); html << "</a><br /></div> \
+<div class=\"tocindent\"> \
+<p><a href=\"#Header\">";
+  html << _("3.1 Header"); html << "</a><br /> \
+<a href=\"#Tags\">";
+  html << _("3.2 Tag types"); html << "</a><br /> \
+</p> \
  \
 <div class=\"tocindent\"> \
-<p><a href=\"#CGATS\">4.1 CGATS</a><br /> \
-<a href=\"#VRML\">4.2 VRML</a><br /> \
+<p><a href=\"#text_.2F_desc_.2F_targ\">";
+  html << _("3.2.1 text / desc / targ"); html << "</a><br /> \
+<a href=\"#curv\">";
+  html << _("3.2.2 curv"); html << "</a><br /> \
+<a href=\"#XYZ\">";
+  html << _("3.2.3 XYZ"); html << "</a><br /> \
+<a href=\"#mft1_.2F_mft2\">";
+  html << _("3.2.4 mft1 / mft2"); html << "</a><br /> \
+<a href=\"#sf32\">";
+  html << _("3.2.5 sf32"); html << "</a><br /> \
+<a href=\"#ncl2\">";
+  html << _("3.2.6 ncl2"); html << "</a><br /> \
+<a href=\"#psid\">";
+  html << _("3.2.7 psid"); html << "</a><br /> \
+</p> \
+</div> \
+</div> \
+<div class=\"tocline\"><a href=\"#Other_file_formats\">";
+  html << _("4 Other file formats"); html << "</a><br /></div> \
+ \
+<div class=\"tocindent\"> \
+<p><a href=\"#CGATS\">";
+  html << _("4.1 CGATS"); html << "</a><br /> \
+<a href=\"#VRML\">";
+  html << _("4.2 VRML"); html << "</a><br /> \
 </p> \
 </div> \
 </td></tr></table> \
-<a name=\"Features\"></a><h2> Features </h2> \
-<ul><li> see the <a href=\"http://www.behrmann.name/index.php?option=com_content&amp;task=view&amp;id=32&amp;Itemid=1\" class='external' title=\"http://www.behrmann.name/index.php?option=com content&amp;task=view&amp;id=32&amp;Itemid=1\">ICC Examin</a><span class='urlexpansion'>&nbsp;(<i>http://www.behrmann.name</i>)</span> page for an overview \
- \
+<a name=\"Features\"></a><h2>";
+  html << _("1 Features"); html << "</h2> \
+<ul><li> "; html << _("For an overview see"); 
+  html << " <a href=\"http://www.behrmann.name/index.php?option=com_content&amp;task=view&amp;id=32&amp;Itemid=1\" class='external' title=\"http://www.behrmann.name/index.php?option=com content&amp;task=view&amp;id=32&amp;Itemid=1\">ICC Examin</a><span class='urlexpansion'>&nbsp;(<i>http://www.behrmann.name</i>)</span> \
 </li></ul> \
-<a name=\"Usage\"></a><h2> Usage </h2> \
-<p>ICC Examin can be launched from the Application folder or Dock on osX and from the Graphics menu on Linux. It should as well register as viewer for ICC profiles, CGATS text and VRML Gamut files. \
-</p> \
-<a name=\"File_opening\"></a><h3> File opening </h3> \
-<p>From the application windows menubar you can select File-&gt;Open and to show file dialog. Select one or more files for gamut comparision as you like. The selection order should be preserved. On top right side of the FLTK file selector resides the bookmark alias Favourites button. If you frequently visit directories you will find it usefull to append these directories to your bookmark / favourites list. To do this, go to an directory with the file selector and choose from the bookmark button the add entry. The added directory appears in the bookmark list and is available for later use. \
+<a name=\"Usage\"></a><h2>";
+  html << _("2 Usage"); html << "</h2> \
+<p>";
+  html << _("ICC Examin can be launched from the Application folder or Dock on osX and from the Graphics menu on Linux. It should as well register as viewer for ICC profiles, CGATS text and VRML Gamut files.");
+  html << "</p> \
+<a name=\"File_opening\"></a><h3>";
+  html << _("2.1 File opening"); html << "</h3> \
+<p>";
+  html << _("From the application windows menubar you can select File-&gt;Open and to show file dialog. Select one or more files for gamut comparision as you like. The selection order should be preserved. On top right side of the FLTK file selector resides the bookmark alias Favourites button. If you frequently visit directories you will find it usefull to append these directories to your bookmark / favourites list. To do this, go to an directory with the file selector and choose from the bookmark button the add entry. The added directory appears in the bookmark list and is available for later use.");
+  html << "</p><p>";
+  html << _("ICC Examin's file selector is designed to work like a browser. Every new selected file is instantly shown in the aaplication for quick comparisions. When ICC Examin starts to parse files, it shows the yellow progressbar. Depending on the complexity of the file it may take some time to finish. The open gamut view takes extra time.");
+  html << "</p><p>";
+  html << _("VRML file are selectable alone. ICC Examin will not accept mixing with other files. The VRML gamut hull's from ArgyllCMS are the only known supported ones.");
+  html << "</p><p>";
+  html << _("ICC profiles can be loaded many for gamut comparisions. A named colour profile will only be accepted in the first position. Loading a CGATS measurement file after the belonging profile allowes to create the ICC Examin quality report. Some profiles, most of the standard CMYK ones, have the measurements already included.");
+  html << "</p><p>";
+  html << _("CGATS measurement files are only supported in single quantities and as mentioned above in konjunction with belonging ICC profiles.");
+  html << "</p><p>";
+  html << _("Files once loaded are observed by ICC Examin. The view will be actualised upon a modification.");
+  html << "</p> \
+<a name=\"Main_window\"></a><h3>";
+  html << _("2.2 Main window"); html << "</h3> \
+<p>";
+  html << _("In normal mode ICC Examin shows first the tag list with the tag viewer below. Over the tag list resides the applications menubar.");
+  html << "</p><p>";
+  html << _("You can select an tag from the taglist and watch its content in the tag window below.");
+  html << "</p><p>";
+  html << _("On the bottom you see the status area of the window.");
+  html << "</p> \
+<a name=\"Complex_tags_navigation\"></a><h3>";
+  html << _("2.3 Complex tags navigation"); html << "</h3> \
  \
-</p><p>ICC Examin's file selector is designed to work like a browser. Every new selected file is instantly shown in the aaplication for quick comparisions. When ICC Examin starts to parse files, it shows the yellow progressbar. Depending on the complexity of the file it may take some time to finish. The open gamut view takes extra time.\
-</p><p> VRML file are selectable alone. ICC Examin will not accept mixing with other files. The VRML gamut hull's from ArgyllCMS are the only known supported ones. \
-</p><p> ICC profiles can be loaded many for gamut comparisions. A named colour profile will only be accepted in the first position. Loading a CGATS measurement file after the belonging profile allowes to create the ICC Examin quality report. Some profiles, most of the standard CMYK ones, have the measurements already included. \
-</p><p> CGATS measurement files are only supported in single quantities and as mentioned above in konjunction with belonging ICC profiles. \
-</p><p> Files once loaded are observed by ICC Examin. The view will be actualised upon a modification. \
-</p> \
-<a name=\"Main_window\"></a><h3> Main window </h3> \
-<p>In normal mode ICC Examin shows first the tag list with the tag viewer below. Over the tag list resides the applications menubar. \
-</p><p>You can select an tag from the taglist and watch its content in the tag window below. \
-</p><p>On the bottom you see the status area of the window. \
-</p> \
-<a name=\"Complex_tags_navigation\"></a><h3> Complex tags navigation </h3> \
+<p>";
+  html << _("Some tags contain complex data. For such tags may appear a choicebutton below the tag list. There you can select detailed views of a complex tags endities."); html << "</p> \
+<a name=\"Windows_and_Views\"></a><h3>";
+  html << _("2.4 Windows and Views"); html << "</h3> \
+<a name=\"Gamut\"></a><h4>";
+  html << _("2.4.1 Gamut"); html << "</h4> \
  \
-<p>Some tags contain complex data. For such tags may appear a choicebutton below the tag list. There you can select detailed views of a complex tags endities. \
-</p> \
-<a name=\"Windows_and_Views\"></a><h3> Windows and Views  </h3> \
-<a name=\"Gamut\"></a><h4> Gamut </h4> \
- \
-<p>First to call is the 3D gamut viewer. You can select it from the menu bar. It shows the gamut of the device described by the profile. If such a description is not appropriate, the external used Argyll iccgamut utility may not deliver a vrml gamut file and thus the 3D gamut view may remain empty.  \
-</p><p>The colour space shown is allways in CIE*Lab coordinates.  \
-</p><p> \
-The Gamut Menus:\
-</p> \
-File: \
-<ul><li>Quit - allowes for exiting the application</li></ul> \
-View: \
-<ul><li>Full screen mode</li></ul> \
-Settings: \
-<ul><li>4 rendering intents + BPC</li> \
-<li>Native or separation Gamut. The later is the inbuild default. The native colour gamut can only be created when iccgamut from ArgyllCMS is available.</li></ul> \
+<p>";
+  html << _("First to call is the 3D gamut viewer. You can select it from the menu bar. It shows the gamut of the device described by the profile. If such a description is not appropriate, the external used Argyll iccgamut utility may not deliver a vrml gamut file and thus the 3D gamut view may remain empty. "); html << "</p><p>";
+  html << _("The colour space shown is allways in CIE*Lab coordinates. "); html << "</p><p> \
+";
+  html << _("The Gamut Menus"); html << "</p>";
+  html << _("File"); html << ": <ul><li>";
+  html << _("Quit - allowes for exiting the application"); html << "</li></ul>";
+  html << _("View"); html << ": <ul><li>";
+  html << _("Full screen mode"); html << "</li></ul>";
+  html << _("Settings"); html << ": <ul><li>";
+  html << _("4 rendering intents + BPC"); html << "</li><li>";
+  html << _("Native or separation Gamut. The later is the inbuild default. The native colour gamut can only be created when iccgamut from ArgyllCMS is available."); html << "</li></ul> \
 Windows: \
 <ul><li>Show main application window, in case it is a icon.</li></ul> \
-</p><a name=\"3D_navigation\"></a><h4> 3D navigation and keys </h4> \
+</p><a name=\"3D_navigation\"></a><h4>";
+  html << _("2.4.2 3D navigation and keys"); html << "</h4> \
 <p>To navigate arround in a 3D view use the: \
 </p> \
 <ul><li> left mouse button to rotate \
