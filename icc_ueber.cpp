@@ -170,7 +170,7 @@ getHilfeHtml()
 <a href=\"#Complex_tags_navigation\">";
   html << _("2.3 Complex tags navigation"); html << "</a><br /> \
 <a href=\"#Windows_and_Views\">";
-  html << _("2.4 Windows and Views"); html <<"</a><br /> \
+  html << _("2.4 Windows and Views"); html <<"</a> \
 </p> \
 <div class=\"tocindent\"> \
 <p><a href=\"#Gamut\">";
@@ -189,7 +189,7 @@ getHilfeHtml()
 </p> \
 </div> \
 </div> \
-<div class=\"tocline\"><a href=\"#Profile_elements\">";
+<br/><div class=\"tocline\"><a href=\"#Profile_elements\">";
   html << _("3 Profile elements"); html << "</a><br /></div> \
 <div class=\"tocindent\"> \
 <p><a href=\"#Header\">";
@@ -200,7 +200,7 @@ getHilfeHtml()
  \
 <div class=\"tocindent\"> \
 <p><a href=\"#text_.2F_desc_.2F_targ\">";
-  html << _("3.2.1 text / desc / targ"); html << "</a><br /> \
+  html << _("3.2.1 text / desc / targ / mluc"); html << "</a><br /> \
 <a href=\"#curv\">";
   html << _("3.2.2 curv"); html << "</a><br /> \
 <a href=\"#XYZ\">";
@@ -221,9 +221,9 @@ getHilfeHtml()
  \
 <div class=\"tocindent\"> \
 <p><a href=\"#CGATS\">";
-  html << _("4.1 CGATS"); html << "</a><br /> \
+  html << _("4.1 Measurements CGATS"); html << "</a><br /> \
 <a href=\"#VRML\">";
-  html << _("4.2 VRML"); html << "</a><br /> \
+  html << _("4.2 Model VRML"); html << "</a><br /> \
 </p> \
 </div> \
 </td></tr></table> \
@@ -248,7 +248,7 @@ getHilfeHtml()
   html << "</p><p>";
   html << _("ICC profiles can be loaded many for gamut comparisions. A named colour profile will only be accepted in the first position. Loading a CGATS measurement file after the belonging profile allowes to create the ICC Examin quality report. Some profiles, most of the standard CMYK ones, have the measurements already included.");
   html << "</p><p>";
-  html << _("CGATS measurement files are only supported in single quantities and as mentioned above in konjunction with belonging ICC profiles.");
+  html << _("Multiple CGATS measurements can be loaded at once");
   html << "</p><p>";
   html << _("Files once loaded are observed by ICC Examin. The view will be actualised upon a modification.");
   html << "</p> \
@@ -272,7 +272,7 @@ getHilfeHtml()
   html << _("2.4.1 Gamut"); html << "</h4> \
  \
 <p>";
-  html << _("First to call is the 3D gamut viewer. You can select it from the menu bar. It shows the gamut of the device described by the profile. If such a description is not appropriate, the external used Argyll iccgamut utility may not deliver a vrml gamut file and thus the 3D gamut view may remain empty. "); html << "</p><p>";
+  html << _("The 3D gamut viewer can be selected from the menu bar Window &gt; Gamut. It shows the gamut of the device described by the profile with the absolute colorimetric rendering intent."); html << "</p><p>";
   html << _("The colour space shown is allways in CIE*Lab coordinates. "); html << "</p><p> \
 ";
   html << _("The Gamut Menus"); html << "</p>";
@@ -282,123 +282,182 @@ getHilfeHtml()
   html << _("Full screen mode"); html << "</li></ul>";
   html << _("Settings"); html << ": <ul><li>";
   html << _("4 rendering intents + BPC"); html << "</li><li>";
-  html << _("Native or separation Gamut. The later is the inbuild default. The native colour gamut can only be created when iccgamut from ArgyllCMS is available."); html << "</li></ul> \
-Windows: \
-<ul><li>Show main application window, in case it is a icon.</li></ul> \
+  html << _("Native or separation Gamut. The later is the inbuild default. The native colour gamut can only be created when iccgamut from ArgyllCMS is available."); html << "</li></ul>";
+  html << _("Windows"); html << ": \
+<ul><li>";
+  html << _("Show main application window, in case it is a icon.");
+  html << "</li></ul> \
 </p><a name=\"3D_navigation\"></a><h4>";
   html << _("2.4.2 3D navigation and keys"); html << "</h4> \
-<p>To navigate arround in a 3D view use the: \
-</p> \
-<ul><li> left mouse button to rotate \
-</li><li> middle mouse button or Shift+left mouse button to move/clip \
-</li><li> right mouse button/ Strg+left mouse button to obtain additional menus. Among the additional menus are in: \
-<ul><li> top menu: the channel selection if appropriate \
- \
-<ul><li> Slice plane submenu, with axis slicing in fly through style and rotation \
-</li><li> Illustration submenu, with the background colour selection and text/marker switching off and on\
+<p>";
+  html << _("To navigate arround in a 3D view use the:");
+  html << "</p> \
+<ul><li>";
+  html << _("left mouse button to rotate");
+  html << "</li><li>";
+  html << _("middle mouse button or Shift+left mouse button to move/clip");
+  html << "</li><li>";
+  html << _("right mouse button/ Strg+left mouse button to obtain additional menus. Among the additional menus are in:");
+  html << "<ul><li>";
+  html << _("top menu: the channel selection if appropriate");
+  html << "<ul><li>";
+  html << _("Slice plane submenu, with axis slicing in fly through style and rotation");
+  html << "</li><li>";
+  html << _("Illustration submenu, with the background colour selection and text/marker switching off and on");
+  html << "</li></ul> \
 </li></ul> \
 </li></ul> \
-</li></ul> \
-<p>From the context menu (ctrl+left mouse button or right mouse button) you can select the average human (CIE standard observer) visible spectral colours as a line. \
-</p><p>If meashurements are shown, the spot radius can be selected from the context menu. This is handy to easily detect dE's of above 2 or 4. The connection line goes from the measurement (white) to the deviation by the profile (red). \
-</p><p> \
-Additional keys: \
-</p><p> \
-<ul><li> Gamut view:</li> \
-<ul> \
-     <li> down key - reduce the slice plane distance </li> \
-     <li> up key - increase the slice plane distance </li> \
-     <li> home key - reset the slice plane distance </li> \
-     <li> end key - set the slice plane distance to center </li> \
-     <li> Colour spots can be enlarged or made smaller by pressing + or -. </li> \
+<p>";
+  html << _("From the context menu (ctrl+left mouse button or right mouse button) you can select the average human (CIE standard observer) visible spectral colours as a line."); html << "</p><p>";
+  html << _("If meashurements are shown, the spot radius can be selected from the context menu. This is handy to easily detect dE's of above 2 or 4. The connection line goes from the measurement (white) to the deviation by the profile (red).");
+  html << "</p><p>";
+  html << _("Additional keys:");
+  html << "</p><p>  <ul><li>";
+  html << _("Gamut view:"); html << "</li> \
+<ul> <li>";
+  html << _("down key - reduce the slice plane distance"); html <<"</li><li>";
+  html << _("up key - increase the slice plane distance"); html <<"</li><li>";
+  html << _("home key - reset the slice plane distance"); html << "</li><li>";
+  html << _("end key - set the slice plane distance to center"); html << "</li><li>";
+  html << _("Colour spots can be enlarged or made smaller by pressing + or -.");
+  html << "</li> \
 </ul></li> \
 </ul> \
-<ul><li> CLUT table line mode:</li> \
+<ul><li>";
+  html << _("CLUT table line mode:"); html << "</li> \
 <ul> \
-     <li> number key - set the number of interpolation planes </li> \
-     <li> '-' minus - reduce the actual interpolation plane </li> \
-     <li> '+' plus - increase the actual interpolation plane </li> \
-     <li> '/' slash - smaller steps for the minus and pus keys above </li> \
-     <li> '*' star - larger steps for the minus and pus keys above </li> \
-     <li> '_' underline - switch lines between one and three directions </li> \
+     <li>";
+  html << _(" number key - set the number of interpolation planes");
+html << "</li> \
+     <li>";
+  html << _("'-' minus - reduce the actual interpolation plane"); html << "</li> \
+     <li>";
+  html << _("'+' plus - increase the actual interpolation plane"); html << "</li> \
+     <li>";
+  html << _("'/' slash - smaller steps for the minus and pus keys above"); html << "</li> \
+     <li>";
+  html << _("'*' star - larger steps for the minus and plus keys above"); html <<  "</li> \
+     <li>";
+  html << _("'_' underline - switch lines between one and three directions"); html << "</li> \
 </ul></li> \
 </ul> \
 </p> \
-<a name=\"Report_View\"></a><h4> Report View </h4> \
-<p>If the profile contains measurements a report is generated. You reach this by selecting from the top menu View-&gt;Report. These measurement data are compared to what is calculated with the profile by littleCMS - the internal used CMM. \
-</p><p>Such a comparision from device colours + measurements colours on the one side and device + profile/CMM colours on the other side are just one possible quality checking method. \
-</p><p>More comparision styles would be nice in giving better meaning for varying criteria. The differences are summarised in the reports top lines. Each like contains the the colour values and euclidian dE + dE2000. Two rectangles on the right side may help to see the colour differences visually. The first monitor profile is used for this. \
-</p><p>The report can be exported from the File menu in html format. \
+<a name=\"Report_View\"></a><h4>";
+  html << _("2.4.3 Report View"); html << "</h4> \
+<p>";
+  html << _("If the profile contains measurements a report is generated. You reach this by selecting from the top menu View-&gt;Report. These measurement data are compared to what is calculated with the profile by littleCMS - the internal used CMM.");
+  html << "</p><p>";
+  html << _("Such a comparision from device colours + measurements colours on the one side and device + profile/CMM colours on the other side are just one possible quality checking method.");
+  html << "</p><p>";
+  html << _("More comparision styles would be nice in giving better meaning for varying criteria. The differences are summarised in the reports top lines. Each like contains the the colour values and euclidian dE + dE2000. Two rectangles on the right side may help to see the colour differences visually. The first monitor profile is used for this.");
+  html << "</p><p>";
+  html << _("The report can be exported from the File menu in html format.");
+  html << " \
+</p> \
+<a name=\"CGATS_view\"></a><h4>";
+  html << _("2.4.4 CGATS view");
+  html << "</h4> \
+<p>";
+  html << _("The measurement data is taken from the profile, if available, and transformed to fit in the CGATS standard. A window can be called from the View menu to show the corrected measurement output.");
+ html << "</p> \
+<a name=\"Grafic_card_gamma_tables\"></a><h4>";
+  html << _("2.4.5 Grafic card gamma tables"); html << "</h4> \
+<p>";
+  html << _("The gamma tables in the grafic card are shown in an external window, callable from the View menu. It shows on osX/XFree86/Xorg the RGB curves. The monitor profile can be loaded from this window in the main profile viewer window for further examination. The grafic card is observed during the window being open. The window is sensible to positioning on multi monitor setups. The profiles equivalent is the vcgt tag.");
+  html << "</p> \
+<a name=\"Help\"></a><h4>";
+  html << _("2.4.6 Help"); html << "</h4> \
+<p>";
+  html << _("The Help menus About button shows a short overview, license and other programers acknowledgement, who helped with providing theyre code for free."); html << "</p> \
+<a name=\"Profile_elements\"></a><h2>";
+  html << _("3 Profile elements"); html << "</h2> \
+<a name=\"Header\"></a><h3>";
+  html << _("3.1 Header"); html << "</h3> \
  \
+<p>";
+  html << _("Now you see the tag list has obtained some entries, showing the profiles tags. The first entry is allways the header. If the header is selected the tag window below shows many useful information about the profile. Among these information are:"); html << " \
 </p> \
-<a name=\"CGATS_view\"></a><h4> CGATS view </h4> \
-<p>The measurement data is taken from the profile, if available, and transformed to fit in the CGATS standard. A window can be called from the View menu to show the corrected measurement output. \
-</p> \
-<a name=\"Grafic_card_gamma_tables\"></a><h4> Grafic card gamma tables </h4> \
-<p>The gamma tables in the grafic card are shown in an external window, callable from the View menu. It shows on osX/XFree86/Xorg the RGB curves. The monitor profile can be loaded from this window in the main profile viewer window for further examination. The grafic card is observed during the window being open. The window is sensible to positioning on multi monitor setups. The profiles equivalent is the vcgt tag. \
-</p> \
-<a name=\"Help\"></a><h4> Help </h4> \
-<p>The Help menus About button shows a short overview, license and other programers acknowledgement, who helped with providing theyre code for free. \
-</p> \
-<a name=\"Profile_elements\"></a><h2> Profile elements </h2> \
-<a name=\"Header\"></a><h3> Header </h3> \
+<ul><li>";
+  html << _("the internal stored size of the profile"); html << "</li><li>";
+  html << _("the prefered ColourMatchingModule (CMM)"); html << "</li><li>";
+  html << _("ICC standard version"); html << "</li><li>";
+  html << _("kind of usage"); html << "</li><li>";
+  html << _("device colour space"); html << "</li><li>";
+  html << _("the internal used reference colour space"); html << "</li><li>";
+  html << _("date of creation"); html << "</li><li>";
+  html << _("file type sinature (allways acsp)"); html << "</li><li>";
+  html << _("and some more or less meaningfull informations");
+  html << "</li></ul> \
+<a name=\"Tags\"></a><h3>";
+  html << _("3.2 Tag types"); html << "</h3> \
+<p>";
+  html << _("Below the header, which behaves like a fixed tag, are the variable tags listed. They appear in the same order as in the file. Starting withe the tag number, then the tag signature and the type of content in the tag. The size of the tag follows and a small description gives you an idea af what the tag may be intended for.");
+  html << "</p> \
+<a name=\"text_.2F_desc_.2F_targ\"></a><h4>";
+  html << _("3.2.1 text / desc / targ / mluc"); html << "</h4> \
  \
-<p>Now you see the tag list has obtained some entries, showing the profiles tags. The first entry is allways the header. If the header is selected the tag window below shows many useful information about the profile. Among these information are: \
-</p> \
-<ul><li> the internal stored size of the profile \
-</li><li> the prefered ColourMatchingModule (CMM) \
-</li><li> ICC standard version \
-</li><li> kind of usage \
-</li><li> device colour space \
-</li><li> the internal used reference colour space \
-</li><li> date of creation \
-</li><li> file type sinature (allways acsp) \
+<p>";
+  html << _("Tags of type text are the most simple ones. they include informations about the profile like License informations, Description for displaying on behalf of the whole profile, Measurement data , in CGATS text formet and more.");
+  html << "</p> \
+<a name=\"curv\"></a><h4>";
+  html << _("3.2.2 curv"); html << "</h4> \
+<p>";
+  html << _("An other type are curves. They are shown as such. Note the coordinates are all normalised to 0.0 -&gt; 1.0.");
+  html << "</p> \
+<a name=\"XYZ\"></a><h4>";
+  html << _("3.2.3 XYZ"); html << "</h4> \
  \
-</li><li> and some more or less meaningfull informations \
-</li></ul> \
-<a name=\"Tags\"></a><h3> Tag types </h3> \
-<p>Below the header, which behaves like a fixed tag, are the variable tags listed. They appear in the same order as in the file. Starting withe the tag number, then the tag signature and the type of content in the tag. The size of the tag follows and a small description gives you an idea af what the tag may be intended for. \
-</p> \
-<a name=\"text_.2F_desc_.2F_targ\"></a><h4> text / desc / targ / mluc</h4> \
+<p>";
+  html << _("XYZ tags show things like Mediawhitepoint or Primaries of monitors in the CIE*xy diagram.");
+  html << "</p><p>";
+  html << _("Note: primaries and some curves are grouped to better understand theyr meaning in the profile.");
+  html << "</p> \
+<a name=\"mft1_.2F_mft2\"></a><h4>";
+  html << _("3.2.4 mft1 / mft2"); html << "</h4> \
+<p>";
+  html << _("MFT1/2 tags are complex and contain a set of peaces to do a colour transformation. The choice button below the tag view names them. You can select the matrix, in-and output curves and the CLUT. Currently only CLUTs with less than 3 dimensions in input direction are supported. This kind of tag is mostly independend of other tags. Only few tags like wtpt and chad may influence them.");
+  html << "</p><p>";
+  html << _("The CLUT view has various options to visualise the table. For instance you can make table appear coloured or select a channel of choice. The numbers in the status window are normalised to 0.0 -&gt; 1.0.");
+  html << "</p><p>";
+  html << _("They contain the result of hard work in researching the best translation of scattered measurements to equally spaced grid tables. Only this step makes colour transformation reasonably fast.");
+  html << "</p><p>";
+  html << _("The tag is described in in verson 2 of the ICC specification. In ICC specification version 4 a new even more complex tag is introduced and is calleed mAB.");
+  html << "</p> \
+<a name=\"sf32\"></a><h4>";
+  html << _("3.2.5 sf32"); html << "</h4> \
  \
-<p>Tags of type text are the most simple ones. they include informations about the profile like License informations, Description for displaying on behalf of the whole profile, Measurement data , in CGATS text formet and more. \
-</p> \
-<a name=\"curv\"></a><h4> curv </h4> \
-<p>An other type are curves. They are shown as such. Note the coordinates are all normalised to 0.0 -&gt; 1.0. \
-</p> \
-<a name=\"XYZ\"></a><h4> XYZ </h4> \
+<p>";
+  html << _("sf32 and similiar tags may contain only numbers. Theyre interpretation depends on the name of the tag. For instance the tag named chad is used to specify a colour transformation matrix, which was originally used to normalise the measured colours to D50 standard conditions.");
+  html << "</p> \
+<a name=\"ncl2\"></a><h4>";
+  html << _("3.2.6 ncl2");
+  html << "</h4> \
+<p>";
+  html << _("The ncl2 tag is used to store named colours in a list. This can be used to describe spot colours or describe a painters palette. Loading a profile containing such a tag into ICC Examin switches the 3D gamut view mode on. You see then the colours in 3D (CIE*Lab) and not as a list of numbers as in the tag viewer.");
+  html << "</p> \
+<a name=\"psid\"></a><h4>";
+  html << _("3.2.7 psid"); html << "</h4> \
+<p>";
+  html << _(" The Profile identifier tag is used in device link profiles to identify the profiles used to build the device link. However there are other informations needed to repeat the creation of a device link profile, like rendering intents or K preservation flags and so on.");
+  html << "</p> \
+</p><p><br />";
+  html << _("More tags can follow here...");
+  html << "</p> \
+<a name=\"Other_file_formats\"></a><h2>";
+  html << _("4 Other file formats"); html << "</h2> \
  \
-<p>XYZ tags show things like Mediawhitepoint or Primaries of monitors in the CIE*xy diagram.  \
-</p><p>Note: primaries and some curves are grouped to better understand theyr meaning in the profile. \
-</p> \
-<a name=\"mft1_.2F_mft2\"></a><h4> mft1 / mft2 </h4> \
-<p>MFT1/2 tags are complex and contain a set of peaces to do a colour transformation. The choice button below the tag view names them. You can select the matrix, in-and output curves and the CLUT. Currently only CLUTs with less than 3 dimensions in input direction are supported. This kind of tag is mostly independend of other tags. Only few tags like wtpt and chad may influence them.  \
-</p><p>The CLUT view has various options to visualise the table. For instance you can make table appear coloured or select a channel of choice. The numbers in the status window are normalised to 0.0 -&gt; 1.0. \
-</p><p>They contain the result of hard work in researching the best translation of scattered measurements to equally spaced grid tables. Only this step makes colour transformation reasonably fast.  \
-</p><p>The tag is described in in verson 2 of the ICC specification. In ICC specification version 4 a new even more complex tag is introduced and is calleed mAB. \
-</p> \
-<a name=\"sf32\"></a><h4> sf32 </h4> \
- \
-<p>sf32 and similiar tags may contain only numbers. Theyre interpretation depends on the name of the tag. For instance the tag named chad is used to specify a colour transformation matrix, which was originally used to normalise the measured colours to D50 standard conditions. \
-</p> \
-<a name=\"ncl2\"></a><h4> ncl2 </h4> \
-<p>The ncl2 tag is used to store named colours in a list. This can be used to describe spot colours or describe a painters palette. Loading a profile containing such a tag into ICC Examin switches the 3D gamut view mode on. You see then the colours in 3D (CIE*Lab) and not as a list of numbers as in the tag viewer. \
-</p> \
-<a name=\"psid\"></a><h4> psid </h4> \
-<p> The Profile identifier tag is used in device link profiles to identify the profiles used to build the device link. However there are other informations needed to repeat the creation of a device link profile, like rendering intents or K preservation flags and so on. \
-</p> \
-</p><p><br /> \
-More tags can follow here... \
-</p> \
-<a name=\"Other_file_formats\"></a><h2> Other file formats </h2> \
- \
-<a name=\"CGATS\"></a><h3> CGATS </h3> \
-<p>Measurement data in CGATS format can be opened in ICC Examin. In the file selector is a dedicated filter available. The data are shown as text and in the 3D view. \
-</p> \
-<a name=\"VRML\"></a><h3> VRML </h3> \
-<p>A subset of vrml alias wrl files is parsed. It allowes to open colour gamuts produced with argyll and saved with ICC Examin.  \
-</p><p>It would be nice to allow as well lines to get parsed, which are used for visualisations by iccview for instance. \
-</p>";
+<a name=\"CGATS\"></a><h3>";
+  html << _("4.1 Measurements CGATS"); html << "</h3> \
+<p>";
+  html << _("Measurement data in CGATS format can be opened in ICC Examin. In the file selector is a dedicated filter available. The data are shown as text and in the 3D view.");
+  html << "</p> \
+<a name=\"VRML\"></a><h3>";
+  html << _("4.2 Model VRML"); html <<  "</h3> \
+<p>";
+  html << _("A subset of vrml alias wrl files is parsed. It allowes to open colour gamuts produced with argyll and saved with ICC Examin.");
+  html << "</p><p>";
+  html << _("It would be nice to allow as well lines to get parsed, which are used for visualisations by iccview for instance.");
+  html << "</p>";
   html << "\n\n<br>\n</body></html>\n";
 
   DBG_PROG_ENDE

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ICC Examin 0.41\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2010-08-04 09:25+0200\n"
+"POT-Creation-Date: 2010-08-04 13:55+0200\n"
 "PO-Revision-Date: 2006-06-29 19:31+0200\n"
 "Last-Translator: Pascal LACROIX <lacroixpascal at vfemail.net>\n"
 "Language-Team: ALL <ku.b@gmx.de>\n"
@@ -1602,77 +1602,77 @@ msgstr ""
 msgid "2.4.1 Gamut"
 msgstr "Gamut"
 
-#: icc_ueber.cpp:179 icc_ueber.cpp:289
+#: icc_ueber.cpp:179 icc_ueber.cpp:291
 msgid "2.4.2 3D navigation and keys"
 msgstr ""
 
-#: icc_ueber.cpp:181
+#: icc_ueber.cpp:181 icc_ueber.cpp:346
 msgid "2.4.3 Report View"
 msgstr ""
 
-#: icc_ueber.cpp:184
+#: icc_ueber.cpp:184 icc_ueber.cpp:358
 msgid "2.4.4 CGATS view"
 msgstr ""
 
-#: icc_ueber.cpp:186
+#: icc_ueber.cpp:186 icc_ueber.cpp:364
 msgid "2.4.5 Grafic card gamma tables"
 msgstr ""
 
-#: icc_ueber.cpp:188
+#: icc_ueber.cpp:188 icc_ueber.cpp:369
 msgid "2.4.6 Help"
 msgstr ""
 
-#: icc_ueber.cpp:193
+#: icc_ueber.cpp:193 icc_ueber.cpp:373
 #, fuzzy
 msgid "3 Profile elements"
 msgstr "Profils"
 
-#: icc_ueber.cpp:196
+#: icc_ueber.cpp:196 icc_ueber.cpp:375
 msgid "3.1 Header"
 msgstr ""
 
-#: icc_ueber.cpp:198
+#: icc_ueber.cpp:198 icc_ueber.cpp:392
 msgid "3.2 Tag types"
 msgstr ""
 
-#: icc_ueber.cpp:203
-msgid "3.2.1 text / desc / targ"
+#: icc_ueber.cpp:203 icc_ueber.cpp:397
+msgid "3.2.1 text / desc / targ / mluc"
 msgstr ""
 
-#: icc_ueber.cpp:205
+#: icc_ueber.cpp:205 icc_ueber.cpp:403
 msgid "3.2.2 curv"
 msgstr ""
 
-#: icc_ueber.cpp:207
+#: icc_ueber.cpp:207 icc_ueber.cpp:408
 msgid "3.2.3 XYZ"
 msgstr ""
 
-#: icc_ueber.cpp:209
+#: icc_ueber.cpp:209 icc_ueber.cpp:416
 msgid "3.2.4 mft1 / mft2"
 msgstr ""
 
-#: icc_ueber.cpp:211
+#: icc_ueber.cpp:211 icc_ueber.cpp:427
 msgid "3.2.5 sf32"
 msgstr ""
 
-#: icc_ueber.cpp:213
+#: icc_ueber.cpp:213 icc_ueber.cpp:433
 msgid "3.2.6 ncl2"
 msgstr ""
 
-#: icc_ueber.cpp:215
+#: icc_ueber.cpp:215 icc_ueber.cpp:439
 msgid "3.2.7 psid"
 msgstr ""
 
-#: icc_ueber.cpp:220
+#: icc_ueber.cpp:220 icc_ueber.cpp:447
 msgid "4 Other file formats"
 msgstr ""
 
-#: icc_ueber.cpp:224
-msgid "4.1 CGATS"
+#: icc_ueber.cpp:224 icc_ueber.cpp:450
+msgid "4.1 Measurements CGATS"
 msgstr ""
 
-#: icc_ueber.cpp:226
-msgid "4.2 VRML"
+#: icc_ueber.cpp:226 icc_ueber.cpp:455
+msgid "4.2 Model VRML"
 msgstr ""
 
 #: icc_ueber.cpp:232
@@ -1725,9 +1725,7 @@ msgid ""
 msgstr ""
 
 #: icc_ueber.cpp:251
-msgid ""
-"CGATS measurement files are only supported in single quantities and as "
-"mentioned above in konjunction with belonging ICC profiles."
+msgid "Multiple CGATS measurements can be loaded at once"
 msgstr ""
 
 #: icc_ueber.cpp:253
@@ -1761,11 +1759,9 @@ msgstr ""
 
 #: icc_ueber.cpp:275
 msgid ""
-"First to call is the 3D gamut viewer. You can select it from the menu bar. "
-"It shows the gamut of the device described by the profile. If such a "
-"description is not appropriate, the external used Argyll iccgamut utility "
-"may not deliver a vrml gamut file and thus the 3D gamut view may remain "
-"empty. "
+"The 3D gamut viewer can be selected from the menu bar Window &gt; Gamut. It "
+"shows the gamut of the device described by the profile with the absolute "
+"colorimetric rendering intent."
 msgstr ""
 
 #: icc_ueber.cpp:276
@@ -1806,12 +1802,335 @@ msgid ""
 "colour gamut can only be created when iccgamut from ArgyllCMS is available."
 msgstr ""
 
+#: icc_ueber.cpp:286 icc_betrachter.cxx:417 icc_betrachter.cxx:639
+msgid "Windows"
+msgstr ""
+
+#: icc_ueber.cpp:288
+msgid "Show main application window, in case it is a icon."
+msgstr ""
+
+#: icc_ueber.cpp:293
+msgid "To navigate arround in a 3D view use the:"
+msgstr ""
+
+#: icc_ueber.cpp:296
+msgid "left mouse button to rotate"
+msgstr ""
+
+#: icc_ueber.cpp:298
+msgid "middle mouse button or Shift+left mouse button to move/clip"
+msgstr ""
+
+#: icc_ueber.cpp:300
+msgid ""
+"right mouse button/ Strg+left mouse button to obtain additional menus. Among "
+"the additional menus are in:"
+msgstr ""
+
+#: icc_ueber.cpp:302
+msgid "top menu: the channel selection if appropriate"
+msgstr ""
+
+#: icc_ueber.cpp:304
+msgid ""
+"Slice plane submenu, with axis slicing in fly through style and rotation"
+msgstr ""
+
+#: icc_ueber.cpp:306
+msgid ""
+"Illustration submenu, with the background colour selection and text/marker "
+"switching off and on"
+msgstr ""
+
+#: icc_ueber.cpp:311
+msgid ""
+"From the context menu (ctrl+left mouse button or right mouse button) you can "
+"select the average human (CIE standard observer) visible spectral colours as "
+"a line."
+msgstr ""
+
+#: icc_ueber.cpp:312
+msgid ""
+"If meashurements are shown, the spot radius can be selected from the context "
+"menu. This is handy to easily detect dE's of above 2 or 4. The connection "
+"line goes from the measurement (white) to the deviation by the profile (red)."
+msgstr ""
+
+#: icc_ueber.cpp:314
+msgid "Additional keys:"
+msgstr ""
+
+#: icc_ueber.cpp:316
+#, fuzzy
+msgid "Gamut view:"
+msgstr "Gamut"
+
+#: icc_ueber.cpp:318
+msgid "down key - reduce the slice plane distance"
+msgstr ""
+
+#: icc_ueber.cpp:319
+msgid "up key - increase the slice plane distance"
+msgstr ""
+
+#: icc_ueber.cpp:320
+msgid "home key - reset the slice plane distance"
+msgstr ""
+
+#: icc_ueber.cpp:321
+msgid "end key - set the slice plane distance to center"
+msgstr ""
+
+#: icc_ueber.cpp:322
+msgid "Colour spots can be enlarged or made smaller by pressing + or -."
+msgstr ""
+
+#: icc_ueber.cpp:327
+msgid "CLUT table line mode:"
+msgstr ""
+
+#: icc_ueber.cpp:330
+msgid " number key - set the number of interpolation planes"
+msgstr ""
+
+#: icc_ueber.cpp:333
+msgid "'-' minus - reduce the actual interpolation plane"
+msgstr ""
+
+#: icc_ueber.cpp:335
+msgid "'+' plus - increase the actual interpolation plane"
+msgstr ""
+
+#: icc_ueber.cpp:337
+msgid "'/' slash - smaller steps for the minus and pus keys above"
+msgstr ""
+
+#: icc_ueber.cpp:339
+msgid "'*' star - larger steps for the minus and plus keys above"
+msgstr ""
+
+#: icc_ueber.cpp:341
+msgid "'_' underline - switch lines between one and three directions"
+msgstr ""
+
+#: icc_ueber.cpp:348
+msgid ""
+"If the profile contains measurements a report is generated. You reach this "
+"by selecting from the top menu View-&gt;Report. These measurement data are "
+"compared to what is calculated with the profile by littleCMS - the internal "
+"used CMM."
+msgstr ""
+
+#: icc_ueber.cpp:350
+msgid ""
+"Such a comparision from device colours + measurements colours on the one "
+"side and device + profile/CMM colours on the other side are just one "
+"possible quality checking method."
+msgstr ""
+
+#: icc_ueber.cpp:352
+msgid ""
+"More comparision styles would be nice in giving better meaning for varying "
+"criteria. The differences are summarised in the reports top lines. Each like "
+"contains the the colour values and euclidian dE + dE2000. Two rectangles on "
+"the right side may help to see the colour differences visually. The first "
+"monitor profile is used for this."
+msgstr ""
+
+#: icc_ueber.cpp:354
+msgid "The report can be exported from the File menu in html format."
+msgstr ""
+
+#: icc_ueber.cpp:361
+msgid ""
+"The measurement data is taken from the profile, if available, and "
+"transformed to fit in the CGATS standard. A window can be called from the "
+"View menu to show the corrected measurement output."
+msgstr ""
+
+#: icc_ueber.cpp:366
+msgid ""
+"The gamma tables in the grafic card are shown in an external window, "
+"callable from the View menu. It shows on osX/XFree86/Xorg the RGB curves. "
+"The monitor profile can be loaded from this window in the main profile "
+"viewer window for further examination. The grafic card is observed during "
+"the window being open. The window is sensible to positioning on multi "
+"monitor setups. The profiles equivalent is the vcgt tag."
+msgstr ""
+
+#: icc_ueber.cpp:371
+msgid ""
+"The Help menus About button shows a short overview, license and other "
+"programers acknowledgement, who helped with providing theyre code for free."
+msgstr ""
+
+#: icc_ueber.cpp:378
+msgid ""
+"Now you see the tag list has obtained some entries, showing the profiles "
+"tags. The first entry is allways the header. If the header is selected the "
+"tag window below shows many useful information about the profile. Among "
+"these information are:"
+msgstr ""
+
+#: icc_ueber.cpp:381
+msgid "the internal stored size of the profile"
+msgstr ""
+
+#: icc_ueber.cpp:382
+msgid "the prefered ColourMatchingModule (CMM)"
+msgstr ""
+
+#: icc_ueber.cpp:383
+#, fuzzy
+msgid "ICC standard version"
+msgstr "ICC Examin Version"
+
+#: icc_ueber.cpp:384
+msgid "kind of usage"
+msgstr ""
+
+#: icc_ueber.cpp:385
+#, fuzzy
+msgid "device colour space"
+msgstr "Espace colorimétrique"
+
+#: icc_ueber.cpp:386
+msgid "the internal used reference colour space"
+msgstr ""
+
+#: icc_ueber.cpp:387
+#, fuzzy
+msgid "date of creation"
+msgstr "Saturation"
+
+#: icc_ueber.cpp:388
+msgid "file type sinature (allways acsp)"
+msgstr ""
+
+#: icc_ueber.cpp:389
+msgid "and some more or less meaningfull informations"
+msgstr ""
+
+#: icc_ueber.cpp:394
+msgid ""
+"Below the header, which behaves like a fixed tag, are the variable tags "
+"listed. They appear in the same order as in the file. Starting withe the tag "
+"number, then the tag signature and the type of content in the tag. The size "
+"of the tag follows and a small description gives you an idea af what the tag "
+"may be intended for."
+msgstr ""
+
+#: icc_ueber.cpp:400
+msgid ""
+"Tags of type text are the most simple ones. they include informations about "
+"the profile like License informations, Description for displaying on behalf "
+"of the whole profile, Measurement data , in CGATS text formet and more."
+msgstr ""
+
+#: icc_ueber.cpp:405
+msgid ""
+"An other type are curves. They are shown as such. Note the coordinates are "
+"all normalised to 0.0 -&gt; 1.0."
+msgstr ""
+
+#: icc_ueber.cpp:411
+msgid ""
+"XYZ tags show things like Mediawhitepoint or Primaries of monitors in the "
+"CIE*xy diagram."
+msgstr ""
+
+#: icc_ueber.cpp:413
+msgid ""
+"Note: primaries and some curves are grouped to better understand theyr "
+"meaning in the profile."
+msgstr ""
+
+#: icc_ueber.cpp:418
+msgid ""
+"MFT1/2 tags are complex and contain a set of peaces to do a colour "
+"transformation. The choice button below the tag view names them. You can "
+"select the matrix, in-and output curves and the CLUT. Currently only CLUTs "
+"with less than 3 dimensions in input direction are supported. This kind of "
+"tag is mostly independend of other tags. Only few tags like wtpt and chad "
+"may influence them."
+msgstr ""
+
+#: icc_ueber.cpp:420
+msgid ""
+"The CLUT view has various options to visualise the table. For instance you "
+"can make table appear coloured or select a channel of choice. The numbers in "
+"the status window are normalised to 0.0 -&gt; 1.0."
+msgstr ""
+
+#: icc_ueber.cpp:422
+msgid ""
+"They contain the result of hard work in researching the best translation of "
+"scattered measurements to equally spaced grid tables. Only this step makes "
+"colour transformation reasonably fast."
+msgstr ""
+
+#: icc_ueber.cpp:424
+msgid ""
+"The tag is described in in verson 2 of the ICC specification. In ICC "
+"specification version 4 a new even more complex tag is introduced and is "
+"calleed mAB."
+msgstr ""
+
+#: icc_ueber.cpp:430
+msgid ""
+"sf32 and similiar tags may contain only numbers. Theyre interpretation "
+"depends on the name of the tag. For instance the tag named chad is used to "
+"specify a colour transformation matrix, which was originally used to "
+"normalise the measured colours to D50 standard conditions."
+msgstr ""
+
+#: icc_ueber.cpp:436
+msgid ""
+"The ncl2 tag is used to store named colours in a list. This can be used to "
+"describe spot colours or describe a painters palette. Loading a profile "
+"containing such a tag into ICC Examin switches the 3D gamut view mode on. "
+"You see then the colours in 3D (CIE*Lab) and not as a list of numbers as in "
+"the tag viewer."
+msgstr ""
+
+#: icc_ueber.cpp:441
+msgid ""
+" The Profile identifier tag is used in device link profiles to identify the "
+"profiles used to build the device link. However there are other informations "
+"needed to repeat the creation of a device link profile, like rendering "
+"intents or K preservation flags and so on."
+msgstr ""
+
+#: icc_ueber.cpp:444
+msgid "More tags can follow here..."
+msgstr ""
+
+#: icc_ueber.cpp:452
+msgid ""
+"Measurement data in CGATS format can be opened in ICC Examin. In the file "
+"selector is a dedicated filter available. The data are shown as text and in "
+"the 3D view."
+msgstr ""
+
+#: icc_ueber.cpp:457
+msgid ""
+"A subset of vrml alias wrl files is parsed. It allowes to open colour gamuts "
+"produced with argyll and saved with ICC Examin."
+msgstr ""
+
+#: icc_ueber.cpp:459
+msgid ""
+"It would be nice to allow as well lines to get parsed, which are used for "
+"visualisations by iccview for instance."
+msgstr ""
+
 #. Fl_Help_View* hilfe_html
-#: icc_ueber.cpp:413 icc_betrachter.cxx:650 icc_betrachter.cxx:761
+#: icc_ueber.cpp:472 icc_betrachter.cxx:650 icc_betrachter.cxx:761
 msgid "License"
 msgstr ""
 
-#: icc_ueber.cpp:419
+#: icc_ueber.cpp:478
 msgid ""
 "    ICC Examin is licensed under the GPL version 2.    Especially all icc_* "
 "files are licensed under the GPL.<br>    The other source files may contain "
@@ -1819,71 +2138,71 @@ msgid ""
 msgstr ""
 
 #. HTML
-#: icc_ueber.cpp:824
+#: icc_ueber.cpp:883
 msgid "Acknowledgement"
 msgstr ""
 
-#: icc_ueber.cpp:830
+#: icc_ueber.cpp:889
 msgid ""
 "My cordially thank is especially dedicated to Marti Maria and the many "
 "writers of the Lcms-user email list."
 msgstr ""
 
-#: icc_ueber.cpp:844
+#: icc_ueber.cpp:903
 msgid "ICC Examin uses following libraries:<br>\n"
 msgstr ""
 
-#: icc_ueber.cpp:849
+#: icc_ueber.cpp:908
 msgid "  FLTK: Bill Spitzack and others www.fltk.org<br>\n"
 msgstr ""
 
-#: icc_ueber.cpp:856
+#: icc_ueber.cpp:915
 msgid "  FLU: Jason Bryan www.osc.edu/~jbryan/FLU/<br>\n"
 msgstr ""
 
-#: icc_ueber.cpp:863
+#: icc_ueber.cpp:922
 msgid "  littleCMS: Marti Maria www.littlecms.com<br>\n"
 msgstr ""
 
-#: icc_ueber.cpp:874
+#: icc_ueber.cpp:933
 msgid ""
 "  FTGL: Henry Maddocks homepages.paradise.net.nz/henryj/code/#FTGL<br>\n"
 msgstr ""
 
-#: icc_ueber.cpp:882
+#: icc_ueber.cpp:941
 msgid ""
 "integrated sources, lock at the according files for licence conditions:<br>\n"
 msgstr ""
 
-#: icc_ueber.cpp:887
+#: icc_ueber.cpp:946
 msgid "  agv 3D Navigation: Philip Winston<br>\n"
 msgstr ""
 
-#: icc_ueber.cpp:893
+#: icc_ueber.cpp:952
 msgid "  bsp rendering: Norman Chin<br>\n"
 msgstr ""
 
-#: icc_ueber.cpp:902
+#: icc_ueber.cpp:961
 msgid "For the visualisation of gamut (external):<br>\n"
 msgstr ""
 
-#: icc_ueber.cpp:907
+#: icc_ueber.cpp:966
 msgid ""
 "  argyll: Greame Gill web.access.net.au/argyll/argyllcms.html<br<br><br>\n"
 msgstr ""
 
 #. HTML
-#: icc_ueber.cpp:921
+#: icc_ueber.cpp:980
 msgid "Project"
 msgstr ""
 
 #. HTML
-#: icc_ueber.cpp:923
+#: icc_ueber.cpp:982
 msgid "Documentation"
 msgstr ""
 
 #. HTML
-#: icc_ueber.cpp:937 icc_ueber.cpp:945
+#: icc_ueber.cpp:996 icc_ueber.cpp:1004
 msgid "Configure Log"
 msgstr ""
 
@@ -2019,10 +2338,6 @@ msgstr ""
 
 #: icc_betrachter.cxx:415
 msgid "Native Gamut"
-msgstr ""
-
-#: icc_betrachter.cxx:417 icc_betrachter.cxx:639
-msgid "Windows"
 msgstr ""
 
 #: icc_betrachter.cxx:418
