@@ -25,7 +25,18 @@ BSPNODE *BSPconstructTree(FACE **faceList)
    BSPchoosePlane(*faceList,&plane); 
    BSPpartitionFaceListWithPlane(&plane,faceList,&faceNegList,&facePosList,
 				 &sameDirList,&oppDirList);
-   assert(*faceList == NULL_FACE); assert(sameDirList != NULL_FACE);
+   if(*faceList != NULL_FACE)
+   {
+     printf("%s:%d %s() *faceList != NULL_FACE\n",
+            __FILE__, __LINE__, __func__);
+     return NULL_BSPNODE;
+   }
+   if(sameDirList == NULL_FACE)
+   {
+     printf("%s:%d %s() sameDirList == NULL_FACE\n",
+            __FILE__, __LINE__, __func__);
+     return NULL_BSPNODE;
+   }
 
    /* construct the tree */
    newBspNode= allocBspNode(PARTITION_NODE,sameDirList,oppDirList);
