@@ -1859,7 +1859,7 @@ msgstr "Fenster"
 
 #: icc_ueber.cpp:288
 msgid "Show main application window, in case it is a icon."
-msgstr ""
+msgstr "Zeige Hauptfenster im Falle es ist zu einem Symbol verkleinert."
 
 #: icc_ueber.cpp:293
 msgid "To navigate arround in a 3D view use the:"
@@ -1980,6 +1980,9 @@ msgid ""
 "compared to what is calculated with the profile by littleCMS - the internal "
 "used CMM."
 msgstr ""
+"Falls das Farbprofil Messdaten enthält wird ein Bericht erzeugt. Der "
+"Qualitätsbericht wird mit Fenster-&gt;Qualitätsbericht aufgerufen. Die "
+"Messungen werden mit den intern von einem Farbmodul (CMM) durch das Farbprofil"" berecheten Werten verglichen."
 
 #: icc_ueber.cpp:350
 msgid ""
@@ -1987,6 +1990,8 @@ msgid ""
 "side and device + profile/CMM colours on the other side are just one "
 "possible quality checking method."
 msgstr ""
+"Ein solcher Vergleich von gemessenen Gerätefarben und errechneten Farben für "
+"die gleichen Gerätefarben ist nur eine mögliche Art die Qualität zu prüfen."
 
 #: icc_ueber.cpp:352
 msgid ""
@@ -1996,10 +2001,13 @@ msgid ""
 "the right side may help to see the colour differences visually. The first "
 "monitor profile is used for this."
 msgstr ""
+"Die Unterschiede werden am Anfang zusammengefasst. Jede Tabellenzeile enthält "
+"euklidische dE und dE2000 Abstandswerte. Zwei Rechtecke ermöglichen einen "
+"augenscheinlichen Vergleich am Bildschirm."
 
 #: icc_ueber.cpp:354
 msgid "The report can be exported from the File menu in html format."
-msgstr ""
+msgstr "Der Bericht kann im HTML Format exportiert werden im Dateimenü."
 
 #: icc_ueber.cpp:361
 msgid ""
@@ -2007,6 +2015,8 @@ msgid ""
 "transformed to fit in the CGATS standard. A window can be called from the "
 "View menu to show the corrected measurement output."
 msgstr ""
+"Die Messdaten werden intern in das CGATS Format gewandelt. Diese Daten können "
+"über Fenster-&gt;CGATS Ansicht eingesehen werden."
 
 #: icc_ueber.cpp:366
 msgid ""
@@ -2017,12 +2027,22 @@ msgid ""
 "the window being open. The window is sensible to positioning on multi "
 "monitor setups. The profiles equivalent is the vcgt tag."
 msgstr ""
+"Die Gammatabellen der Grafikkarte werden, soweit erkannt und gefordert, in "
+"einem eigenen "
+"Fenser dargestellt. Es zeigt die RGB Kurven unter osX/XFree86/Xorg an für den "
+"Bildschirm an auf dem es gerade dargestellt wird. Das Bildschirmprofil kann "
+"über dieses Fenster in das Hauptfenster geladen werden. Die Ansicht der "
+"Grafikkartenkurven wird beständig aktualisiert. "
+"Die Entsprechung der Kurven in einem ICC Profile ist im vcgt Glied enthalten."
 
 #: icc_ueber.cpp:371
 msgid ""
 "The Help menus About button shows a short overview, license and other "
 "programers acknowledgement, who helped with providing theyre code for free."
 msgstr ""
+"Das Menüeintrag \"Über\" des Hilfemenüs zeigt einen kleinen Überblick, die "
+"Lizenzbedingungen, eine Liste von beitragenden Programmierern und "
+"Internetverknüpfungen an."
 
 #: icc_ueber.cpp:378
 msgid ""
@@ -2031,22 +2051,25 @@ msgid ""
 "tag window below shows many useful information about the profile. Among "
 "these information are:"
 msgstr ""
+"Nun hat die Liste der Profilbestandteile einige Einträge erhalten. Der Erste "
+"ist immer der Dateikopf. Wenn das Kopfglied gewählt wird zeigen sich folgende "
+"hilfreiche Informationen:"
 
 #: icc_ueber.cpp:381
 msgid "the internal stored size of the profile"
-msgstr ""
+msgstr "die interne gespeicherte Profilgröße"
 
 #: icc_ueber.cpp:382
 msgid "the prefered ColourMatchingModule (CMM)"
-msgstr ""
+msgstr "das bevorzugte Farbumrechnungsmodul (CMM)"
 
 #: icc_ueber.cpp:383
 msgid "ICC standard version"
-msgstr ""
+msgstr "die benutze Version des ICC Standards"
 
 #: icc_ueber.cpp:384
 msgid "kind of usage"
-msgstr ""
+msgstr "Art der Nutzung"
 
 #: icc_ueber.cpp:385
 msgid "device colour space"
@@ -2054,7 +2077,7 @@ msgstr "Gerätefarbraum"
 
 #: icc_ueber.cpp:386
 msgid "the internal used reference colour space"
-msgstr ""
+msgstr "der interne Referenzfarbraum"
 
 #: icc_ueber.cpp:387
 msgid "date of creation"
@@ -2062,55 +2085,76 @@ msgstr "Datum der Erstellung"
 
 #: icc_ueber.cpp:388
 msgid "file type sinature (allways acsp)"
-msgstr ""
+msgstr "die Dateitypesignatur (immer acsp)"
 
 #: icc_ueber.cpp:389
 msgid "and some more or less meaningfull informations"
-msgstr ""
+msgstr "und weitere mehr oder weniger bedeutende Informationsn"
 
 #: icc_ueber.cpp:394
 msgid ""
 "Below the header, which behaves like a fixed tag, are the variable tags "
-"listed. They appear in the same order as in the file. Starting withe the tag "
+"listed. They appear in the same order as in the file. Starting with the tag "
 "number, then the tag signature and the type of content in the tag. The size "
 "of the tag follows and a small description gives you an idea af what the tag "
 "may be intended for."
 msgstr ""
+"Unter den ProfilKopf sind die variable Liste der anderen Glieder aufgeführt. "
+"Sie erscheinen in der selben Reihenfolge wie in der Datei. Die erste Spalte "
+"enthält die Ordnungsnummer, gefolgt von Kennzeichnung, Typ und Größe. Eine "
+"kurze Beschreibung des Gliedes folgt in der letzten Spalte."
 
 #: icc_ueber.cpp:400
 msgid ""
-"Tags of type text are the most simple ones. they include informations about "
+"Tags of type text are the most simple ones. They include informations about "
 "the profile like License informations, Description for displaying on behalf "
-"of the whole profile, Measurement data , in CGATS text formet and more."
+"of the whole profile, Measurement data , in CGATS text format and more."
 msgstr ""
+"Die GLieder vom Typ Text sind die einfachsten. Sie können zum Beispiel "
+"Messdaten enthalten."
 
 #: icc_ueber.cpp:405
 msgid ""
 "An other type are curves. They are shown as such. Note the coordinates are "
 "all normalised to 0.0 -&gt; 1.0."
 msgstr ""
+"Kurven werden graphisch dargestellt. Die Koordinaten sind auf 0.0 -&gt; 1.0 "
+"normalisiert."
 
 #: icc_ueber.cpp:411
 msgid ""
 "XYZ tags show things like Mediawhitepoint or Primaries of monitors in the "
-"CIE*xy diagram."
+"CIE*xy diagram. This diagram shows only the hue and intensity part of the "
+"CIE XYZ colour space. The Intensity of the CIE Y channel can be imagined "
+"as a view from top."
 msgstr ""
+"Glieder vom Typ XYZ können den Medienweißpunkt oder Primärfarborte eines "
+"Monitors enthalten und werden im CIE*xy Diagram dargestellt. Dieses Diagram "
+"Zeigt nur den Farbanteil des CIE*XYZ Farbraumes. Die Intensität des CIE*Y "
+"Kanals kann sich in der Draufsicht vorgestellt werden."
 
 #: icc_ueber.cpp:413
 msgid ""
-"Note: primaries and some curves are grouped to better understand theyr "
+"Note: primaries and some curves are grouped to better understand their "
 "meaning in the profile."
 msgstr ""
+"Hinweis: Primärfarborte und einige Kurven werden gruppiert, um ihre Bedeutung "
+"im Profil besser erfassen zu können."
 
 #: icc_ueber.cpp:418
 msgid ""
 "MFT1/2 tags are complex and contain a set of peaces to do a colour "
 "transformation. The choice button below the tag view names them. You can "
-"select the matrix, in-and output curves and the CLUT. Currently only CLUTs "
-"with less than 3 dimensions in input direction are supported. This kind of "
+"select the matrix, in-and output curves and the CLUT. This kind of "
 "tag is mostly independend of other tags. Only few tags like wtpt and chad "
 "may influence them."
 msgstr ""
+"Glieder des Typs MFT1/2 sind kompliziert und einthalten selbst mehrere "
+"Stufen einer Farbumwandlung. Mit dem Auswahlknopf unterhalb der Gliedliste "
+"lassen sich die Matrizen, Kurven und Farbtabellen wählen. Die beiden "
+"Gliedtypen enthalten eine ziehmlich komplete Rezeptur der Farbumwandlung "
+"zwischen Geräte- und Kontaktfarbraum (PCS). Die Umwandlung kann lediglich "
+"noch von wtpt und chad beeinflusst werden."
 
 #: icc_ueber.cpp:420
 msgid ""
@@ -2118,6 +2162,10 @@ msgid ""
 "can make table appear coloured or select a channel of choice. The numbers in "
 "the status window are normalised to 0.0 -&gt; 1.0."
 msgstr ""
+"Die 3D Tabellenansicht hat viele Betrachtungsoptionen. Zum Beispiel kann die "
+"Tabelle undurchsichtig, grau und farbig gezeigt werden. Einzelne Kanäle "
+"lassen sich auswählen. Die angezeigten Zahlenwerte sind alle auf 0.0 -&gt; 1.0"
+" normalisiert."
 
 #: icc_ueber.cpp:422
 msgid ""
@@ -2125,6 +2173,10 @@ msgid ""
 "scattered measurements to equally spaced grid tables. Only this step makes "
 "colour transformation reasonably fast."
 msgstr ""
+"Sie enthalten das Ergebnis der interpolierenden Projektion von verstreuten "
+"Messungen in das regelmäßige Gitter der Tabelle hinein. Nur diese Tabelle "
+"ermöglicht es mit relativ kleinem Aufwand die endgültigen Farbwerte zu "
+"interpolieren."
 
 #: icc_ueber.cpp:424
 msgid ""
@@ -2132,6 +2184,8 @@ msgid ""
 "specification version 4 a new even more complex tag is introduced and is "
 "calleed mAB."
 msgstr ""
+"Dieser Typ wurde in Version 2 des ICC Standards eingeführt. Mit Version 4 "
+"gibt es weiterentwickelte neue Typen."
 
 #: icc_ueber.cpp:430
 msgid ""
@@ -2140,6 +2194,10 @@ msgid ""
 "specify a colour transformation matrix, which was originally used to "
 "normalise the measured colours to D50 standard conditions."
 msgstr ""
+"sf32 und ähnliche Formen enthalten nur einfache Zahlenwerte. Ihre Deutung "
+"hängt ganz vom Namen des Gliedes ab. Z.B. das Glied mit Kürzel 'chad' enthält "
+"eine Farbumwandlungsmatrix für die Übertragung der Messfarben nach der D50 "
+"benannten Beleuchtungsbedingung."
 
 #: icc_ueber.cpp:436
 msgid ""
@@ -2149,6 +2207,11 @@ msgid ""
 "You see then the colours in 3D (CIE*Lab) and not as a list of numbers as in "
 "the tag viewer."
 msgstr ""
+"Der ncl2 Typ enthält Einzelfarbwerte in einer Liste. Diese kann benutzt "
+"werden um Farbpaletten zu beschreiben. Das Laden eines solchen Farbprofiles "
+"lässt ICC Examin direkt das 3D Farbraumfenster öffnen. Die Farben werden als "
+"Orte im 3D CIE*Lab Farbraum und nicht als Textliste wie im Hauptfenster "
+"angezeigt."
 
 #: icc_ueber.cpp:441
 msgid ""
@@ -2157,10 +2220,14 @@ msgid ""
 "needed to repeat the creation of a device link profile, like rendering "
 "intents or K preservation flags and so on."
 msgstr ""
+"Das Profilidentifikationsglied dient in Geräteverknüpfungsprofilen der "
+"Zuordnung der ursprünglichen Farbprofile. Dennoch werden noch weitere "
+"Information, wie die Übertragungsfunktion, die benutzte CMM und ihre "
+"benutzten Optionen, benötigt um ein solches Profil nachgestalten zu können."
 
 #: icc_ueber.cpp:444
 msgid "More tags can follow here..."
-msgstr ""
+msgstr "Mehr Typen können hier folgen ..."
 
 #: icc_ueber.cpp:452
 msgid ""
@@ -2168,18 +2235,27 @@ msgid ""
 "selector is a dedicated filter available. The data are shown as text and in "
 "the 3D view."
 msgstr ""
+"Messdaten im CGATS Format können in ICC Examin direkt geöffnet werden. Im "
+"Dateiwähler ist ein eigener Filter dafür vorgesehen. Die Daten werden als "
+"Text und in der 3D Farbraumansicht angezeigt."
 
 #: icc_ueber.cpp:457
 msgid ""
 "A subset of vrml alias wrl files is parsed. It allowes to open colour gamuts "
 "produced with argyll and saved with ICC Examin."
 msgstr ""
+"Eine Untermenge der 3D Formates VRML, meist mit der Endung wrl, wird gelesen. "
+"Damit können Farbraumhüllen von z.B. ArgyllCMS oder solche mit ICC Examin "
+"gespeicherten geöffnet werden."
 
 #: icc_ueber.cpp:459
 msgid ""
 "It would be nice to allow as well lines to get parsed, which are used for "
 "visualisations by iccview for instance."
 msgstr ""
+"Die von ICC Examin gespeicherten Farborte und ihre Verbindungslinien werden "
+"zur Zeit nicht unterstützt. Vollkompatible VRML Betrachter sollten sie "
+"allerding darstellen können."
 
 #. Fl_Help_View* hilfe_html
 #: icc_ueber.cpp:472 icc_betrachter.cxx:650 icc_betrachter.cxx:761
@@ -2276,7 +2352,7 @@ msgstr "Ausnahme: "
 
 #: icc_helfer_osx.cpp:61 icc_helfer_x.cpp:86
 msgid "open X Display failed"
-msgstr ""
+msgstr "Verbinfung zum X Server gescheitert"
 
 #: icc_helfer_osx.cpp:101
 msgid "Manufacturer: "
@@ -2313,7 +2389,7 @@ msgstr "Gamma Grün: "
 
 #: icc_helfer_x.cpp:227
 msgid "no gammagradient information obtained"
-msgstr ""
+msgstr "keine Gammainformationen erhalten"
 
 #: icc_helfer_fltk.cpp:279
 msgid "Add to Favorites"

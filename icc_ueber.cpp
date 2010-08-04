@@ -391,13 +391,13 @@ html << "</li> \
 <a name=\"Tags\"></a><h3>";
   html << _("3.2 Tag types"); html << "</h3> \
 <p>";
-  html << _("Below the header, which behaves like a fixed tag, are the variable tags listed. They appear in the same order as in the file. Starting withe the tag number, then the tag signature and the type of content in the tag. The size of the tag follows and a small description gives you an idea af what the tag may be intended for.");
+  html << _("Below the header, which behaves like a fixed tag, are the variable tags listed. They appear in the same order as in the file. Starting with the tag number, then the tag signature and the type of content in the tag. The size of the tag follows and a small description gives you an idea af what the tag may be intended for.");
   html << "</p> \
 <a name=\"text_.2F_desc_.2F_targ\"></a><h4>";
   html << _("3.2.1 text / desc / targ / mluc"); html << "</h4> \
  \
 <p>";
-  html << _("Tags of type text are the most simple ones. they include informations about the profile like License informations, Description for displaying on behalf of the whole profile, Measurement data , in CGATS text formet and more.");
+  html << _("Tags of type text are the most simple ones. They include informations about the profile like License informations, Description for displaying on behalf of the whole profile, Measurement data , in CGATS text format and more.");
   html << "</p> \
 <a name=\"curv\"></a><h4>";
   html << _("3.2.2 curv"); html << "</h4> \
@@ -408,14 +408,14 @@ html << "</li> \
   html << _("3.2.3 XYZ"); html << "</h4> \
  \
 <p>";
-  html << _("XYZ tags show things like Mediawhitepoint or Primaries of monitors in the CIE*xy diagram.");
+  html << _("XYZ tags show things like Mediawhitepoint or Primaries of monitors in the CIE*xy diagram. This diagram shows only the hue and intensity part of the CIE XYZ colour space. The Intensity of the CIE Y channel can be imagined as a view from top.");
   html << "</p><p>";
-  html << _("Note: primaries and some curves are grouped to better understand theyr meaning in the profile.");
+  html << _("Note: primaries and some curves are grouped to better understand their meaning in the profile.");
   html << "</p> \
 <a name=\"mft1_.2F_mft2\"></a><h4>";
   html << _("3.2.4 mft1 / mft2"); html << "</h4> \
 <p>";
-  html << _("MFT1/2 tags are complex and contain a set of peaces to do a colour transformation. The choice button below the tag view names them. You can select the matrix, in-and output curves and the CLUT. Currently only CLUTs with less than 3 dimensions in input direction are supported. This kind of tag is mostly independend of other tags. Only few tags like wtpt and chad may influence them.");
+  html << _("MFT1/2 tags are complex and contain a set of peaces to do a colour transformation. The choice button below the tag view names them. You can select the matrix, in-and output curves and the CLUT. This kind of tag is mostly independend of other tags. Only few tags like wtpt and chad may influence them.");
   html << "</p><p>";
   html << _("The CLUT view has various options to visualise the table. For instance you can make table appear coloured or select a channel of choice. The numbers in the status window are normalised to 0.0 -&gt; 1.0.");
   html << "</p><p>";
