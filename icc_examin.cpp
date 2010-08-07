@@ -170,7 +170,7 @@ int iccMessageFunc( int code, const oyStruct_s * context, const char * format, .
       if(code != oyMSG_DBG && code != ICC_MSG_DBG)
       {
         cout << "GDB output:" << endl;
-        system("gdb -batch -x " TMP_FILE);
+        int r = system("gdb -batch -x " TMP_FILE);
       }
     } else
       cout << "could not open " << TMP_FILE << endl;
