@@ -1,3 +1,185 @@
+Version 0.47
+
+Kai-Uwe Behrmann (171):
+	* [add]: GDB output on error
+	* [docu] update ChangeLog file
+	* [add]: set OY_LOCALEDIR to point to Oyranos message files
+	* [and]: formatting
+	* [fix]: compiler warning
+	* [fix]: move remaining OpenGL call to Fl_GL_Window::draw()
+	* [fix] several compiler warnings
+	* [build]: trace bsp changes
+	* [fix]: missed Oyranos tag parsing fallback
+	* [and]: attach gdb only for ICCEXAMIN_DEBUG>0
+	* [alpha]: update to Oyranos API change
+	* [build] fix for Mandriva2007
+	* [fix]: memory error in leseTag()
+	* [fix]: Null Xinerama monitor name string
+	* [alpha]: update to new oyGetMonitorInfo()
+	* [build]: move configure.sh -> configure_tests.sh
+	* [and]: update to v0.47
+	* [conf]: remove configure.sh
+	* [alpha]: update to Oyranos API changes
+	* [and]: rename some internal variables
+	* [i18n]: update de
+	* [build]: translate messages to international en_GB
+	* [i18n]: add comments to translation files
+	* [and]: add compressed VRML's to file selector
+	* [i18n]: update german
+	* [alpha]: update to Oyranos' oyOptions_SetFromText()
+	* [fix]: init OpenGL with mapped window
+	* [fix]: memory crash on XRandR
+	* [and]: disable FLTK cli argument processing
+	* [fix]: tokenise uppercase in HTML output
+	* [add]: info tab to about window
+	* [and]: dateiwahl changed from pointer to a function
+	* [fix]: too dark status colour regression
+	* [and]: check every thread for running after a window was shown
+	* [and]: highlight patch selection with a circle
+	* [build]: add Flmm_Tabs files
+	* [and]: migrate window code to my_fl_double_window.cxx
+	* [fix]: move GL list creation inside draw()
+	* [fix]: revert ab5b42e0c mode() inside draw()
+	* [fix]: correct a mismatched delete []
+	* [and]: fix missed GL menue regression
+	* [build]: track bsp source changes
+	* [fix]: compatibility to Oyranos-0.1.9
+	* [build]: return zero on configure success
+	* [and]: add SVG icon
+	* [fix]: free leaked memory from thread code
+	* [and]: switch to oyConversion_s
+	* [and]: update mime and desktop infos
+	* [build]: remove 6ed73e31 files
+	* [and]: adapt bsp to x86_64
+	* [and]: include <oyranos_icc.h>
+	* [and]: undo previous commit
+	* [and]: replace icMaxEnumTag by (icTagSignature)0xFFFFFFFF
+	* [conf]: sync configure script with Oyranos
+	* [and]: substitute icMaxEnumData
+	* [conf]: sync with Oyranos
+	* [build]: out of source tree support
+	* [build]: out of source rpm target
+	* [conf]: fix warning about non existing fltk-test
+	* [and]: reduce overhead while debugging
+	* [fix]: log window crash during debug
+	* [and]: dump out CLI args in debug mode
+	* [fix]: BPC option in gamut window bug
+	* [and]: remove expensive debug output
+	* [fix]: thread concurrency during debugging
+	* [conf]: beautify src_dir variable
+	* [and]: omit okButton deactivation and some file checking ...
+	* [fix]: avoid to create a FLTK window from outside the main thread
+	* [and]: load profile data into a Oyranos object
+	* [fix]: use own file load capabilities ...
+	* [and]: allow external access to Oyranos profile object
+	* [new]: show device link source profile in the status bar
+	* [and]: remove oyColourConversion_s references in VRML writing
+	* [and]: pass options to oyNamedColour_s
+	* [and]: short source file names for debug messages
+	* [add]: isolines for table view
+	* [add]: mesh for table view
+	* [and]: place the table mesh correctly
+	* [and]: improve isolines in 3D table view
+	* [and]: always smoothed lines in 3D table view
+	* [alpha]: update to oyConversion_CreateBasicPixels()
+	* [conf]: update to Oyranos
+	* [core]: update to Oyranos API
+	* [core]: revert previous
+	* [core]: fix abstract proofing profile
+	* [core]: fix compile error
+	* [core]: fix compile errors
+	* [core]: initialise variables
+	* [core]: update to Oyranos API
+	* [docu]: add build script hints
+	* [core]: robuster CGATS DATA_FORMAT parsing
+	* [core]: add Monaco CGATS RGB scaling
+	* [core]: switch to coloured table mesh by default
+	* [core]: avoid event conflicts
+	* [core]: fix the multi table window regression
+	* [core]: fix OpenGL related bug
+	* [fix]: wrong memory deallocation
+	* [build]: give a new bundle version
+	* [core]: try to avoid cocoa issues
+	* [conf]: update date; omit library guessing
+	* [fix]: a non gettext build issue
+	* [fix]: compiler warnings
+	* [core]: update to newer osX ColorSync APIs
+	* [build]: search for moved binary
+	* [docu]: hint about missing BPC information
+	* [core]: fix compile issue
+	* [core]: show single display profile
+	* [core]: economic monitor profile update
+	* [fix]: message related thread issues
+	* [docs]: to UTF-8
+	* [core]: add font directory fix
+	* [conf]: sync with Oyranos script
+	* [conf]: enable OpenMP support
+	* [build]: desktop, mime and pixmap fixes
+	* [build]: create missing directory
+	* [build]: create missing directory
+	* [bundle]: adapt internal library paths
+	* [UI]: add background widget for hiding white
+	* [build]: copy Oyranos modules for osX bundle
+	* [build]: update mime to Oyranos
+	* [core]: fix compiler warning
+	* [core]: fix osX with missed X11 compiling
+	* [core]: build fix
+	* [core]: FL/mac.H can not be used directly
+	* [build]: correct copy variable
+	* [build]: update spec files to changed icon
+	* [core]: avoid use of uninitialised valgrind warn
+	* [build]: add missed icons again
+	* [docu]: document actual keys and 'psid'
+	* [core]: use native Oyranos profile
+	* [core]: sync with Oyranos
+	* [fix]: wrong list access
+	* [core]: GL dbg messages
+	* [fix]: cgats variants
+	* [build]: add dist-gzip target to make ...
+	* [build]: change rpm pixmap dir
+	* [core]: fix buffer overflow
+	* [conf]: add %dir cp_dir to spec file
+	* [core]: fix another buffer overflow
+	* [build]: reduce rpm generatin warnings
+	* [conf]: format configure output somewhat
+	* [conf]: correct FLAGS for CAIRO
+	* [fix]: security string warnings
+	* [conf]: sync with Oyranos
+	* [conf]: remove unused section
+	* [conf]: add glu test
+	* [build]: add glu flags
+	* [conf]: check for pthread
+	* [conf]: move GLU into X11 section
+	* [core]: remove oyranos namespace
+	* [conf]: sync with Oyranos configure script
+	* [build]: dont remove RPM buildroot
+	* [conf]: remove x-world/x-vrml mime
+	* [build]: sync RPM spec file with OSC
+	* [build]: fix shell call in makefile
+	* [build]: update to Oyranos alpha header changes
+	* [conf]: check FTGL version
+	* [core]: convert to utf8 for FTGL
+	* [core]: complete previous commit
+	* [core]: convert to wchar_t for FTGL
+	* [core]: fall back to codeset UTF-8
+	* [i18n]: osX SL seems to expect MACROMAN
+	* [i18n]: start help page translation
+	* [i18n]: more help page translations
+	* [i18n]: complete the help page translation
+	* [core]: dont exit from bsp
+	* [core]: fix compiler warning
+	* [conf]: detect cinepaint path for RPM spec
+	* [core]: fix format string error
+	* [build]: update mandriva dependencies
+	* [i18n]: fix format string errors
+
+Lars Tore Gustavsen (1):
+	* [docu]: Debian build hints
+
+kwizart (1):
+	* [core]: apply fedora patches
+
+
 Version 0.46
 
 Iñaki Larrañaga Murgoitio (1):
