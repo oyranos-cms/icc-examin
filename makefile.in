@@ -592,8 +592,8 @@ install_global:
 	mkdir -p $(DESTDIR)$(pixmapdir)/hicolor/scalable/
 	#$(INSTALL) -m 644 icc_examin.png $(DESTDIR)$(pixmapdir)/iccexamin.png
 	$(COPY) icc_examin.png iccexamin.png
+	$(INSTALL) -m 644 iccexamin.png $(DESTDIR)$(pixmapdir)/iccexamin.png
 	$(INSTALL) -m 644 icc_examin.svg $(DESTDIR)$(pixmapdir)/hicolor/scalable/iccexamin.svg
-	$(INSTALL) -m 644 iccexamin.png $(DESTDIR)$(pixmapdir)/hicolor/scalable/iccexamin.png
 	-xdg-icon-resource install --size 128 --novendor iccexamin.png
 	echo  Linguas ...
 	for ling in $(LINGUAS); do \
@@ -615,7 +615,7 @@ uninstall:
 	fi
 	$(RM) $(DESTDIR)$(desktopdir)/iccexamin.desktop
 	$(RM) $(DESTDIR)$(pixmapdir)/iccexamin.png
-	$(RM) $(DESTDIR)$(pixmapdir)/iccexamin.svg
+	$(RM) $(DESTDIR)$(pixmapdir)/hicolor/scalable/iccexamin.svg
 	$(RM) $(DESTDIR)$(datadir)/fonts/$(FONT)
 	for ling in $(LINGUAS); do \
 	  $(RM) $(DESTDIR)$(datadir)/locale/$${ling}/LC_MESSAGES/$(TARGET).mo; \

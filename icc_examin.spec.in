@@ -78,9 +78,10 @@ update-mime-database %{_datadir}/mime/
 %doc AUTHORS COPYING ChangeLog README
 %{_bindir}/iccexamin
 %{desktopdir}/iccexamin.desktop
+%{pixmapdir}/iccexamin.png
 %dir %{pixmapdir}/hicolor
 %dir %{pixmapdir}/hicolor/scalable
-%{pixmapdir}/hicolor/scalable/iccexamin.*
+%{pixmapdir}/hicolor/scalable/iccexamin.svg
 %{_datadir}/fonts/FreeSans.ttf
 
 
