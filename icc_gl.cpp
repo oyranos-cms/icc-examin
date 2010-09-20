@@ -2243,6 +2243,7 @@ GL_Ansicht::punkteAuffrischen()
                   glColor4dv( rgba );
                 }
 
+                if(in_array)
                 oyXYZ2Lab( (const double*) in_array->array2d[0], lab );
                 iccPoint3d ( projection, lab, 0 );
                 oyNamedColour_Release( &c );
@@ -2260,6 +2261,7 @@ GL_Ansicht::punkteAuffrischen()
                   glColor4dv( rgba );
                 }
 
+                if(in_array)
                 oyXYZ2Lab( (const double*) in_array->array2d[0], lab );
                 iccPoint3d ( projection, lab, 0 );
                 oyNamedColour_Release( &c );
@@ -2289,6 +2291,7 @@ GL_Ansicht::punkteAuffrischen()
                      oyConversion_RunPixels( cc_disp, 0 );
                    glColor4dv( rgba );
 
+                   if(in_array)
                    oyXYZ2Lab( (const double*) in_array->array2d[0], lab );
                    iccPoint3d ( projection, lab, 0 );
                    oyNamedColour_Release( &c );
@@ -2317,6 +2320,7 @@ GL_Ansicht::punkteAuffrischen()
                      oyConversion_RunPixels( cc_disp, 0 );
                    glColor4dv( rgba );
 
+                   if(in_array)
                    oyXYZ2Lab( (const double*) in_array->array2d[0], lab );
                    iccPoint3d( projection, lab, rad );
                    oyNamedColour_Release( &c );
@@ -2333,6 +2337,7 @@ GL_Ansicht::punkteAuffrischen()
                    c = oyNamedColours_Get( colours, i );
                    oyArray2d_DataSet( in_array,
                                       (void*) oyNamedColour_GetXYZConst( c ) );
+                   if(in_array)
                    oyXYZ2Lab( (const double*) in_array->array2d[0], lab );
                    lab[0] = 0;
                    iccPoint3d ( projection, lab, 0 );
