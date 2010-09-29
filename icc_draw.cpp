@@ -233,7 +233,8 @@ TagDrawings::draw ()
     } else if (punkte.size()) {
       if (wiederholen)
       { drawCieShoe_ (false);
-        Fl::add_timeout( 1.2, /*(void(*)(void*))*/dHaendler ,(void*)this);
+        /* incremental updates draw most often in the wrong context */
+        //Fl::add_timeout( 1.2, /*(void(*)(void*))*/dHaendler ,(void*)this);
       } else {
         drawCieShoe_ (true);
       }
