@@ -232,12 +232,13 @@ TagDrawings::draw ()
       drawKurve_ ();
     } else if (punkte.size()) {
       if (wiederholen)
-      { drawCieShoe_ (false);
-        Fl::add_timeout( 1.2, /*(void(*)(void*))*/dHaendler ,(void*)this);
+      { drawCieShoe_ (true);
+        /* incremental updates draw most often in the wrong context */
+        //Fl::add_timeout( 1.2, /*(void(*)(void*))*/dHaendler ,(void*)this);
       } else {
         drawCieShoe_ (true);
       }
-      wiederholen = true; 
+      wiederholen = false; 
     }
   } else
     DBG_PROG_S( __func__ << _(" used too early!") );

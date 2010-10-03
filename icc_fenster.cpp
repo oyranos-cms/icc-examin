@@ -45,6 +45,7 @@
 #include <FL/Fl_Output.H>
 #include <FL/Fl_Widget.H>
 #include <FL/Fl_Scroll.H>
+#include <FL/Enumerations.H>
 
 
 namespace icc_examin_ns {
@@ -184,7 +185,11 @@ log (std::string text, int code)
   struct log_cb_struct * a = new struct log_cb_struct;
   a->text = text;
   a->code = code;
+#if ((FL_MAJOR_VERSION * 10000 + FL_MINOR_VERSION * 100 + FL_PATCH_VERSION) > 10108)
   Fl::awake( log_cb, a );
+#else
+  Fl::awake( );
+#endif
   return 0;
 }
 void log_show(void)
