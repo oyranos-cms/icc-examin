@@ -107,6 +107,16 @@ TagDrawings::~TagDrawings ()
   DBG_PROG_ENDE
 }
 
+/**
+ *  @param         vect                XYZ triples (count == vect/3)
+ *                                     The first three, if that many, are 
+ *                                     connected through a line
+ *  @param         txt                 count entries are used to label the
+ *                                     XYZ points. The following ones are 
+ *                                     printed on the upper left corner.
+ *                                     The last entry is the tag type and not
+ *                                     printed.
+ */
 void
 TagDrawings::hineinPunkt ( ICClist<double>      &vect,
                            ICClist<std::string> &txt )
@@ -467,7 +477,7 @@ TagDrawings::drawCieShoe_ ( int repeated)
     }
 
     fl_color(BG);
-    if (punkte.size() == 9) {
+    if (punkte.size() >= 9) {
         for (int k = 0; k <= 3; k+=2) {
             fl_line( (int)(pos[k+0]), (int)(pos[k+1]),
                      (int)(pos[k+2]), (int)(pos[k+3]));
