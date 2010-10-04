@@ -552,24 +552,16 @@ ICCtag::getText                     (std::string text)
     } else
     if( text == "ndin" || text == "mmod")
     {
-      int j = 0;
-      if(text == "ndin")
-        /* scheme is 1 + i * 7 */
-        j = 2;
-      else if(text == "mmod")
-        j = 2;
+      int j = 2;
 
       for (int i = 0; i < texts_n; ++i)
       {
         int line_break = 1;
 
         {
-          if(((i-1)%j))
+          if(((i)%j))
           {
-            if((((i-1)%j)-1)%2)
-              texte[0].append ("  ", 2);
-            else
-              line_break = 1;
+            texte[0].append ("  ", 2);
           }
 
           if(texts[i])
