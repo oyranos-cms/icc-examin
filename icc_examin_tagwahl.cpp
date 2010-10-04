@@ -222,6 +222,49 @@ ICCexamin::waehleTag (int item)
       icc_betrachter->tag_text->hinein ( s.str() ); DBG_PROG
 
       icc_betrachterNeuzeichnen(icc_betrachter->tag_text); */
+    } else if ( TagInfo[1] == "ndin" ) {
+      profile.frei(false);
+      texte [TAG_VIEWER] = profile.profil()->getTagText(item);
+      ICClist<double> colorimetry;
+      std::string t = texte[TAG_VIEWER][0];
+      /* parse from text */
+      ICClist<std::string> lines = icc_parser::zeilenNachVector( t ), list;
+      int n = lines.size(), i;
+      /* odd text lines contain colorimetric data */
+      for(i = 3; i < 10; i+=2)
+      {
+        double x,y;
+        std::string line = lines[i];
+        ICClist<icc_parser::ZifferWort> xy =
+                                     icc_parser::unterscheideZiffernWorte (
+                                                                  line, 0, " ");
+        if(xy.size() == 2)
+        {
+          ICClist<double> values;
+          x = xy[0].zahl.second;
+          y = xy[1].zahl.second;
+          values.push_back( x );
+          values.push_back( y );
+          values.push_back( 1.0 );
+          xyYto_XYZ(values);
+          for(int j = 0; j < 3; ++j)
+            colorimetry.push_back( values[j] );
+          std::stringstream s;
+          s << lines[i-1] << lines[i];
+          list.push_back( s.str() );
+        }
+      }
+      for(i = 10; i < n; ++i)
+        list.push_back( lines[i] );
+      list.push_back( TagInfo[1] );
+      texte [TAG_VIEWER] = list;
+      punkte[TAG_VIEWER] = colorimetry;
+      profile.frei(true);
+      frei(false);
+      //texte[TAG_VIEWER].push_back ("XYZ");
+      icc_betrachter->tag_viewer->hineinPunkt( punkte[TAG_VIEWER], texte[TAG_VIEWER] );
+      frei(true);
+      icc_betrachterNeuzeichnen(icc_betrachter->tag_viewer);
     } else {
       frei(false);
       profile.frei(false);
