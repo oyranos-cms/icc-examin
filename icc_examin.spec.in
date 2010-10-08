@@ -64,6 +64,9 @@ make %{_smp_mflags} || make
 %install
 make DESTDIR=%{buildroot} install
 %find_lang %{name}       # generate a special file list
+%if 0%{?suse_version} > 1010
+%suse_update_desktop_file -n  iccexamin # some openSUSE magic
+%endif
 
 %clean
 
