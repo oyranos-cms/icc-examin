@@ -363,7 +363,7 @@ html << "</li> \
 <a name=\"Grafic_card_gamma_tables\"></a><h4>";
   html << _("2.4.5 Grafic card gamma tables"); html << "</h4> \
 <p>";
-  html << _("The gamma tables in the grafic card are shown in an external window, callable from the View menu. It shows on osX/XFree86/Xorg the RGB curves. The monitor profile can be loaded from this window in the main profile viewer window for further examination. The grafic card is observed during the window being open. The window is sensible to positioning on multi monitor setups. The profiles equivalent is the vcgt tag.");
+  html << _("The gamma tables in the grafic card are shown in an external window, callable from the View menu. It shows on osX/XFree86/Xorg the RGB calibration curves. Calibration data, as represented in this window, is traditionally not part of the colorimetrically bound ICC profiles. However, calibration data is influental to the correctness of the monitor ICC profiles. Profiling can happen without graphic card gamma tables and consequently the graphic card lookup tables should be linear in that case. For convenience, the monitor profile can be loaded from this window in the main profile viewer window for further examination. The grafic card is observed during the window being open. The window is sensible to positioning on multi monitor setups. The profiles equivalent is the vcgt tag. A loaded monitor profile should show the same calibration curves in the vcgt tag as the Grafic card gamma tables window or the Grafic card gamma tables window should be linear or not set.");
   html << "</p> \
 <a name=\"Help\"></a><h4>";
   html << _("2.4.6 Help"); html << "</h4> \
