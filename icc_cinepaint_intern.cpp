@@ -222,7 +222,8 @@ ICClist<double>       geraetefarbe;   //!< image colours
 ICClist<std::string>  name;           //!< colour names
 std::string an,                //!< image profile name
             bn,                //!< colour profile
-            pn;                //!< proof profile
+            pn,                //!< proof profile
+            mn;                //!< monitor profile
 size_t tag_size;               //!< ncl2 tag size
 int x_num;                     //!< number of measurement points in x/y
 int y_num;
@@ -790,14 +791,36 @@ waechter (void* zeiger)
   // start ICC Examin
   if(!bin_erste)
   {
-    const char *args_c[4];
+    const char *args_c[5];
+    int argc_c = 4;
 
     args_c[0] = argv[0];
     args_c[1] = bn.c_str();
     args_c[2] = an.c_str();
     args_c[3] = pn.c_str();
+    args_c[4] = mn.c_str();
 
-    startWithArgs(4, (char**)args_c);
+
+#ifdef HAVE_X
+    Display * display = XOpenDisplay(NULL);;
+    int screen = DefaultScreen( display );
+    Window root = RootWindow( display, screen );
+    Atom atom = XInternAtom( display, "_ICC_DEVICE_PROFILE", False ),
+         a;
+    int actual_format_return;
+    unsigned long nitems_return=0, bytes_after_return=0;
+    unsigned char* prop_return=0;
+    XGetWindowProperty( display, root, atom, 0, INT_MAX, 0, XA_CARDINAL, &a,
+                     &actual_format_return, &nitems_return, &bytes_after_return,
+                     &prop_return );
+    if(nitems_return)
+    {
+      schreibeDatei( prop_return, nitems_return, mn.c_str() );
+      ++argc_c;
+    }
+#endif
+
+    startWithArgs(argc_c, (char**)args_c);
 
     DBG_PROG_S( "bin_erste: " << bin_erste )
     freilauf = false;
@@ -863,6 +886,7 @@ aufraeumen(channel *layer)
     remove(an.c_str());
     remove(bn.c_str());
     remove(pn.c_str());
+    remove(mn.c_str());
     if(colour_profile) delete [] colour_profile;
     if(image_profile) free( image_profile);
     if(proof_profile) free (proof_profile);
@@ -1130,7 +1154,8 @@ doWatch (gint32 image_ID_)
   an = profil_temp_name.str(); an.append("_image.icc");
   bn = profil_temp_name.str(); bn.append("_pixel.icc");
   pn = profil_temp_name.str(); pn.append("_proof.icc");
-  
+  mn = profil_temp_name.str(); mn.append("_moni0.icc");
+
   channel *layer = 0;
 
   DBG_PROG_S( "image_ID: " << image_ID )

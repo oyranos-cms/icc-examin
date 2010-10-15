@@ -46,7 +46,7 @@
 #define PLUG_IN_DESCRIPTION3  "Shows some colours of the image in a ICC Examin including profile gamut"
 #define PLUG_IN_VERSION       version()
 #define PLUG_IN_AUTHOR        "Kai-Uwe Behrmann <ku.b@gmx.de>"
-#define PLUG_IN_COPYRIGHT     "2004-2008 Kai-Uwe Behrmann"
+#define PLUG_IN_COPYRIGHT     "2004-2010 Kai-Uwe Behrmann"
 
 /***   includes   ***/
 
