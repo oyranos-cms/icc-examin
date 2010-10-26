@@ -571,6 +571,38 @@ ICCtag::getText                     (std::string text)
           texte[0].append ("\n", 1);
       }
     } else
+    if( text == "dict")
+    {
+      int j = 2;
+
+      for (int i = 0; i < texts_n; ++i)
+      {
+        int line_break = 1;
+
+        {
+          if(i == 0)
+          {
+            texte[0].append (_("Size"), strlen(_("Size")));
+            texte[0].append (": ", 2);
+          }
+          else if(i == 1)
+          {
+            texte[0].append (_("Count"), strlen(_("Count")));
+            texte[0].append (": ", 2);
+          }
+          else if(((i)%j))
+            texte[0].append ("  ", 2);
+
+          if(texts[i])
+            texte[0].append (texts[i], strlen(texts[i]));
+
+          if(i > 1 && ((i+1)%j))
+            texte[0].append (":", 1);
+        }
+        if(line_break)
+          texte[0].append ("\n", 1);
+      }
+    } else
     {
       for (int i = 0; i < texts_n; ++i)
       {
