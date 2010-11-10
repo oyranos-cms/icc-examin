@@ -1514,6 +1514,17 @@ ICCexamin::icc_betrachterNeuzeichnen (void* z)
   SichtbarkeitsWechsel(mft_text, 0)
   SichtbarkeitsWechsel(tag_viewer, 1)
   SichtbarkeitsWechsel(tag_text, 1)
+  
+#if defined(APPLE)
+  // FLTK 1.1.10 seems to have problems with hiding OpenGL widgets
+  if(wid != icc_betrachter->mft_gl_group &&
+     !icc_betrachter->mft_gl_group->visible())
+  {
+    printf("minimise\n");
+    //icc_betrachter->mft_gl->size( 1,1 );
+    icc_betrachter->mft_gl->hide();
+  }
+#endif
 
 # if 0
   // wenigstens ein Widget zeigen
