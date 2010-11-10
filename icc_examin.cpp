@@ -1519,11 +1519,7 @@ ICCexamin::icc_betrachterNeuzeichnen (void* z)
   // FLTK 1.1.10 seems to have problems with hiding OpenGL widgets
   if(wid != icc_betrachter->mft_gl_group &&
      !icc_betrachter->mft_gl_group->visible())
-  {
-    printf("minimise\n");
-    //icc_betrachter->mft_gl->size( 1,1 );
     icc_betrachter->mft_gl->hide();
-  }
 #endif
 
 # if 0
