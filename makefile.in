@@ -659,6 +659,7 @@ bundle:	#static
 	done;
 	test -f $(DESTDIR)$(datadir)/locale/de/LC_MESSAGES/oyranos.mo && \
 	  $(COPY) $(DESTDIR)$(datadir)/locale/de/LC_MESSAGES/oyranos.mo ICC\ Examin.app/Contents/Resources$(prefix)/locale/de/LC_MESSAGES || echo no Oyranos DE i18n;
+	-$(COPY) -r `oyranos-config --syscolordir`/`oyranos-config --iccdirname` ICC\ Examin.app/Contents/Resources$(prefix)/share
 	echo ... bundling finished
 
 unbundle:
