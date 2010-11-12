@@ -1395,7 +1395,11 @@ oyProfile_s * Oyranos::oyMoni (int x, int y, int native)
   if(x == x_alt && y == y_alt && prof_alt)
     return oyProfile_Copy( prof_alt, 0 );
 
+#if defined(HAVE_X)
   disp_name = oyGetDisplayNameFromPosition( 0, x,y, malloc );
+#else
+  disp_name = oyGetDisplayNameFromPosition2( OY_TYPE_STD, "monitor.qarz", 0, x,y, malloc );
+#endif
 
   if(disp_name)
   {
@@ -1412,8 +1416,13 @@ oyProfile_s * Oyranos::oyMoni (int x, int y, int native)
                                        "yes", OY_CREATE_NEW );
     }
 
-    oyDeviceGet( OY_TYPE_STD, "monitor", disp_name, 0, &device );
     
+#if defined(HAVE_X)
+    oyDeviceGet( OY_TYPE_STD, "monitor", disp_name, 0, &device );
+#else
+    oyDeviceGet( OY_TYPE_STD, "monitor.qarz", disp_name, 0, &device );
+#endif
+
 
     oyDeviceGetProfile( device, options, &disp_prof );
     oyOptions_Release( &options );
