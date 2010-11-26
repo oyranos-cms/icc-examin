@@ -2168,13 +2168,15 @@ GL_Ansicht::punkteAuffrischen()
           cc_disp = oyConversion_CreateBasicPixels( in,out_disp, opts, 0 );
           oyOptions_Release( &opts );
 
-          if(!in->pixel_data || in->pixel_data->type_ != oyOBJECT_ARRAY2D_S)
+          if(in && 
+             (!in->pixel_data || in->pixel_data->type_ != oyOBJECT_ARRAY2D_S))
           {
             WARN_S( "unknown image backend found " );
-          } else
+          } else if(in)
             in_array = (oyArray2d_s*)in->pixel_data;
         }
 
+        if(cc_disp)
         for(int j = 0; j < nc; ++j)
         {
           oyNamedColours_s * colours = 
