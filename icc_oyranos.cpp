@@ -327,7 +327,8 @@ changeScreenName_( const char *display_name, int screen )
   if( ptr )
   {
     ptr2 = strchr( ptr, '.' );
-    sprintf( ptr2, ".%d", screen );
+    if(ptr2)
+      sprintf( ptr2, ".%d", screen );
   } else
     sprintf( &ptr[strlen(ptr)], ".%d", screen );
 
