@@ -1150,7 +1150,8 @@ const char * preLoadFile             ( const char        * filename )
   const char * name = filename;
   int error = 0;
   char * command = 0;
-  const char * tmp = "tmp";
+  const char * tmp = NULL;
+  char * tmp_name = 0;
   char* ptr = (char*) malloc(128);
   static char file_name_[1024];
   int typ = -1; 
@@ -1179,6 +1180,26 @@ const char * preLoadFile             ( const char        * filename )
   else
   if(getenv("TMPDIR") && strlen(getenv("TMPDIR")))
     tmp = getenv("TMPDIR");
+
+  if(!tmp)
+  {
+#if !defined(WIN32)
+    FILE *out = icc_popen_m("mktemp", "r");
+    if(out)
+    {  
+      char name[64] = {0};
+      size_t r = fscanf( out, "%60s", name ); r=r;
+      if( name[0] != 0 )
+      {
+        tmp_name = strdup( name );
+        tmp = tmp_name;
+        remove(tmp);
+        mkdir(tmp, 0777);
+      }
+      icc_pclose_m(out);
+    } 
+#endif
+  }
 
   // web content
   if( filename && strlen(filename) &&
@@ -1227,6 +1248,7 @@ const char * preLoadFile             ( const char        * filename )
 
   END:
   if(ptr) free(ptr);
+  if(tmp_name) free(tmp_name);
 
   return name;
 }
