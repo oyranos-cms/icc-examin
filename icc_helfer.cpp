@@ -1157,7 +1157,7 @@ const char * preLoadFile             ( const char        * filename )
   int typ = -1; 
 
 #if !defined(__APPLE__)
-  sprintf( ptr, "wget -U \"ICC Examin %s\" -O", ICC_EXAMIN_V);
+  sprintf( ptr, "wget -U \"ICC Examin %s %s %s\" -O", ICC_EXAMIN_V, UNAME, DISTNAME);
 #else
   sprintf( ptr, "curl -o" );
 #endif
