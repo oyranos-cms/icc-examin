@@ -37,10 +37,6 @@
 #include "config.h"
 using namespace icc_examin_ns;
 
-#define BOOL LCMS_BOOL
-#include <lcms.h>
-#undef BOOL
-
 #include "oyranos.h"
 #include "alpha/oyranos_alpha.h"
 

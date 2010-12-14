@@ -39,8 +39,6 @@ typedef void* LCMSHANDLE;
 #define cdecl
 #endif
 
-#include <lcms.h>
-
 /* additionals - not defined in icc34.h */
 
 #ifndef icSigProfileSequenceIdentifierTag

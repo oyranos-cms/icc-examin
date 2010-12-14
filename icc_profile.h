@@ -39,8 +39,6 @@
 #include "icc_profile_header.h"
 #include "icc_profile_tags.h"
 
-// need lcms.h for BSD
-#include <lcms.h>
 #include <icc34.h>
 #include <string>
 #include <iostream>

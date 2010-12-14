@@ -217,9 +217,6 @@ ICCexamin::ICCexamin ()
   oyThreadLockingSet( iccStruct_LockCreate, iccLockRelease, iccLock, iccUnLock);
   oyMessageFuncSet( iccMessageFunc );
 
-  cmsErrorAction( LCMS_ERRC_WARNING );
-  cmsSetErrorHandler( lcmsMessageFunc );
-
   alle_gl_fenster = new icc_examin_ns::EinModell;
   icc_betrachter = new ICCfltkBetrachter;
   io_ = new ICCexaminIO;
@@ -898,26 +895,17 @@ ICCexamin::setzeFensterTitel()
 
 void ICCexamin::optionsRefresh_( void )
 {
-# if OYRANOS_VERSION >= 109
-# if OYRANOS_VERSION > 109
-# define UND &
-# define FLAGS ,0
-# else
-# define UND
-# define FLAGS
-# endif
   if(!options_)
     options_ = oyOptions_ForFilter( "//imaging", 0, 0, 0 );
 
   char t[4];
   /* should always be a single digit */
   sprintf( t, "%d", intentGet(NULL));
-  oyOptions_SetFromText( UND options_, "rendering_intent", t FLAGS );
+  oyOptions_SetFromText( &options_, "rendering_intent", t, 0 );
   sprintf( t, "%d", bpc() );
-  oyOptions_SetFromText( UND options_, "rendering_bpc", t FLAGS );
+  oyOptions_SetFromText( &options_, "rendering_bpc", t, 0 );
   sprintf( t, "%d", gamutwarn() );
-  oyOptions_SetFromText( UND options_, "rendering_gamut_warning", t FLAGS );
-# endif
+  oyOptions_SetFromText( &options_, "rendering_gamut_warning", t, 0 );
 }
 
 void

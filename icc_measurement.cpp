@@ -43,7 +43,6 @@
 
 
 #include "icc_utils.h"
-//#include <lcms.h> // for CGATS reading
 #include "icc_profile.h"
 #include "icc_oyranos.h"
 #include "icc_examin_version.h"
