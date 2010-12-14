@@ -458,10 +458,9 @@ ICCexaminIO::lade (ICClist<Speicher> & neu)
 {
   if(!lade())
   {
-#if USE_THREADS
     speicher_vect_ = neu;
     lade_ = true;
-#else
+#ifndef USE_THREADS
     oeffnenStatisch_(icc_examin);
 #endif
   } else {
