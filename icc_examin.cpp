@@ -171,6 +171,7 @@ int iccMessageFunc( int code, const oyStruct_s * context, const char * format, .
       {
         cout << "GDB output:" << endl;
         int r = system("gdb -batch -x " TMP_FILE);
+        r = 0;
       }
     } else
       cout << "could not open " << TMP_FILE << endl;
