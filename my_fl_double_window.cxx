@@ -69,7 +69,6 @@ int                (* MyFl_Double_Window::event_handler) (int e) = 0;
 MyFl_Double_Window::MyFl_Double_Window(int W, int H, const char* title)
   : Fl_Double_Window(W,H,title)
 {
-  desktop_ = 0;
   init_object_();
 }
 
@@ -82,6 +81,9 @@ MyFl_Double_Window::MyFl_Double_Window(int X, int Y, int W, int H, const char *t
 void
 MyFl_Double_Window::init_object_ ()
 {
+  desktop_ = 0;
+  memset(titel_, 0, 256);
+
   if(n_ <= 0)
     init_class_();
 
