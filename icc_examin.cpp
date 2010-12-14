@@ -491,7 +491,7 @@ ICCexamin::zeigPrueftabelle ()
         lh = details->h();
 
     MyFl_Double_Window *w =
-      new MyFl_Double_Window( lx+lw, ly, lw, lh, "" );
+      new MyFl_Double_Window( lx+lw, ly, lw, lh, "Prueftabelle" );
       w->user_data((void*)(0));
         Fl_Group *g = new Fl_Group(0,0,lw,lh);
         g->end();
