@@ -166,7 +166,8 @@ void MyFl_Double_Window::show(int argc, char** argv)
 #endif
   }
 
-  if(/*this == main_win &&*/ icon)
+  if(/*this == main_win &&*/ icon &&
+     this->visible() && this->shown())
     setzeIcon( this, icon );
 
 # if HAVE_X
