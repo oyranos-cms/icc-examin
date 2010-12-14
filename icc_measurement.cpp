@@ -375,6 +375,12 @@ ICCmeasurement::leseTag (void)
                 << cgats->messungen[m].felder.size() )
       }
 
+      // we want valid patchsets only
+      // heuristic: skip patches sets with fewer patches
+      if(m > 0 && n &&
+         _nKanaele >  (int)cgats->messungen[m].felder[0].size())
+        continue;
+
       // measurement spot number
       if (nFelder_ == 0 ||
           nFelder_ ||
