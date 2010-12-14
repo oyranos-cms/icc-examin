@@ -37,7 +37,6 @@
 #include "icc_thread_daten.h"
 #include "icc_speicher.h"
 
-#define USE_THREADS 1
 
 class ICCkette;
 extern ICCkette profile;

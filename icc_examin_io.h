@@ -39,7 +39,6 @@
 
 #include <string>
 #include <set>
-#define USE_THREADS 1
 
 class  ICCfltkBetrachter;
 class  ICCwaehler;
@@ -82,7 +81,13 @@ class ICCexaminIO /*: public icc_examin_ns::Beobachter,
   public:
     void         oeffnen ();                   //!< interactive
     void         oeffnen (ICClist<std::string> dateinamen);
-    bool         lade () {return lade_; };
+    bool         lade () {
+#if USE_THREADS
+                           return lade_;
+#else
+                           return 0;
+#endif
+                         };
     void         lade (ICClist<Speicher> & neu);
 
   public:

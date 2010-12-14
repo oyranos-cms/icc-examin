@@ -34,9 +34,10 @@
 
 #if USE_THREADS
 # include "threads.h"
-# if HAVE_FLTK
-#   include <FL/Fl.H>
-# endif
+#endif
+
+#if HAVE_FLTK
+# include <FL/Fl.H>
 #endif
 
 ICCkette profile;
@@ -245,7 +246,9 @@ ICCkette::waechter (void* zeiger)
   // Haupt Thread freigeben
   //icc_examin_ns::unlock(0,__FILE__,__LINE__);
 
+# if USE_THREADS
   while(1)
+# endif
   {
     if(icc_examin_ns::laeuft())
     for(unsigned i = 0; i < obj->profilnamen_.size(); ++i)

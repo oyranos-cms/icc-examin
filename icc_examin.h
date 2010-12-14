@@ -40,7 +40,6 @@
 
 #include <string>
 #include <set>
-#define USE_THREADS 1
 
 class  ICCfltkBetrachter;
 class  ICCwaehler;

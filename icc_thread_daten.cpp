@@ -36,6 +36,7 @@
 void
 icc_examin_ns::ThreadDaten::frei(int freigeben)
 {
+#if USE_THREADS
   if(freigeben)
   {
     iccThreadMutexUnLock_m( &mutex_ );
@@ -84,6 +85,7 @@ icc_examin_ns::ThreadDaten::frei(int freigeben)
     ++zahl_;
     DBG_THREAD_S( "lock   " << zahl_ )
   }
+#endif
 }
 
 bool

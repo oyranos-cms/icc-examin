@@ -214,7 +214,9 @@ ICCexamin::ICCexamin ()
   gl_gamut.get("native_gamut", nativeGamut_, 0 );
   DBG_PROG_V( gamutwarn_ )
 
+#if USE_THREADS
   oyThreadLockingSet( iccStruct_LockCreate, iccLockRelease, iccLock, iccUnLock);
+#endif
   oyMessageFuncSet( iccMessageFunc );
 
   cmsErrorAction( LCMS_ERRC_WARNING );

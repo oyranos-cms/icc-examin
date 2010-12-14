@@ -32,7 +32,6 @@
 #ifndef ICC_THREAD_DATEN_H
 #define ICC_THREAD_DATEN_H
 
-#define USE_THREADS 1
 
 #include "icc_utils.h"
 #include "icc_helfer.h"

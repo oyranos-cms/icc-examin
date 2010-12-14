@@ -458,8 +458,12 @@ ICCexaminIO::lade (ICClist<Speicher> & neu)
 {
   if(!lade())
   {
+#if USE_THREADS
     speicher_vect_ = neu;
     lade_ = true;
+#else
+    oeffnenStatisch_(icc_examin);
+#endif
   } else {
     DBG_THREAD_S( "must wait" )
   }
@@ -478,6 +482,7 @@ ICCexaminIO::oeffnenStatisch_ (void* ie)
   DBG_PROG_START
 
   // detect run time errors
+#if USE_THREADS
   {
     static int erster = true;
     if(!erster)
@@ -485,13 +490,17 @@ ICCexaminIO::oeffnenStatisch_ (void* ie)
              "run only one time.")
     erster = false;
   }
+#endif
   if(!ie) WARN_S( "no ICCexaminIO class available" )
 
   // connect to main class
   ICCexamin* examin = (ICCexamin*) ie;
 
   // start loop for this thread
-  while(1) {
+# if USE_THREADS
+  while(1)
+#endif
+  {
     if(icc_examin_ns::laeuft()) {
       if(examin->io_->lade_) {
         examin->io_->oeffnenThread_();
