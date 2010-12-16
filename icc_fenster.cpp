@@ -82,7 +82,7 @@ dateiwahl_cb (MyFl_File_Chooser *f, void *data, int finish)
     DBG_NUM_V( data )
     filename = fl->value();
 
-    ICCThreadList<std::string> file_vect;
+    static ICCThreadList<std::string> file_vect;
 
     file_vect.frei(false);
 
