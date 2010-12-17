@@ -1152,12 +1152,12 @@ const char * preLoadFile             ( const char        * filename )
   char * command = 0;
   const char * tmp = NULL;
   char * tmp_name = 0;
-  char* ptr = (char*) malloc(128);
+  char* ptr = (char*) malloc(1024);
   static char file_name_[1024];
   int typ = -1; 
 
 #if !defined(__APPLE__)
-  sprintf( ptr, "wget -U \"ICC Examin %s %s %s\" -O", ICC_EXAMIN_V, UNAME, DISTNAME);
+  sprintf( ptr, "which wget && wget -U \"ICC Examin %s %s %s\" -O || curl -o", ICC_EXAMIN_V, UNAME, DISTNAME);
 #else
   sprintf( ptr, "curl -o" );
 #endif
@@ -1168,7 +1168,7 @@ const char * preLoadFile             ( const char        * filename )
   else
     goto END;
 
-  command = (char*) malloc(strlen(file_name_)+128);
+  command = (char*) malloc(strlen(file_name_)+1024);
   if(!command)
     goto END;
 
