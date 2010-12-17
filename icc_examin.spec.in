@@ -9,7 +9,7 @@ Vendor: Kai-Uwe Behrmann
 BuildRoot: %{_tmppath}/%{name}-root
 Prefix:    %{_prefix}
 
-BuildRequires:  gcc-c++ gettext fltk-devel pkgconfig    libpng-devel libjpeg-devel libtiff-devel liboyranos-alpha-devel = 0.1.10  libxml2-devel elektra-devel ftgl-devel shared-mime-info
+BuildRequires:  gcc-c++ gettext fltk-devel pkgconfig    libpng-devel libjpeg-devel libtiff-devel liboyranos-alpha-devel libxml2-devel ftgl-devel shared-mime-info
 
 
 %if 0%{?suse_version} > 910
