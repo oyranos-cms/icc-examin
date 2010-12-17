@@ -801,6 +801,7 @@ waechter (void* zeiger)
     args_c[4] = mn.c_str();
 
 
+    // get the main screens net color spec ICC profile as supported by CinePaint
 #ifdef HAVE_X
     Display * display = XOpenDisplay(NULL);;
     int screen = DefaultScreen( display );
