@@ -64,11 +64,11 @@ class ICCkette : public icc_examin_ns::ThreadDaten,
         which profile was just changed.
      */
     static
-#   if USE_THREADS
+//#   if USE_THREADS
     void*
-#   else
+/*#   else
     void
-#   endif
+#   endif*/
                  waechter (void*);
   public:
     bool         einfuegen (const Speicher & profil, int pos);

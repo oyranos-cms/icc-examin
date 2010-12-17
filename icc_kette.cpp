@@ -31,8 +31,9 @@
 #include "icc_examin.h"
 #include "icc_helfer.h"
 
+#define USE_THREADS_KETTE 1
 
-#if USE_THREADS
+#if USE_THREADS_KETTE
 # include "threads.h"
 #endif
 
@@ -51,7 +52,7 @@ void
 ICCkette::init ()
 { DBG_PROG_START
   aktuelles_profil_ = -1;
-# if USE_THREADS
+# if USE_THREADS_KETTE
   // There are three basic threads for ICC Examin.
   // In the main thread runs ICCexamin.
   // The next one starts a while loop to observe the opened files
@@ -229,7 +230,7 @@ ICCkette::einfuegen (const Speicher & prof, int pos)
   return erfolg;
 }
 
-#if USE_THREADS
+#if USE_THREADS_KETTE
 void*
 #else
 void
@@ -239,14 +240,16 @@ ICCkette::waechter (void* zeiger)
   // TODO
   //icc_examin_ns::sleep(1.0);
   //cout << (int*)level_PROG_ << endl;
+#if USE_THREADS_KETTE
   registerThreadId( iccThreadSelf(), THREAD_WACHE );
+#endif
 
   DBG_PROG_START
   ICCkette* obj = (ICCkette*) zeiger;
   // Haupt Thread freigeben
   //icc_examin_ns::unlock(0,__FILE__,__LINE__);
 
-# if USE_THREADS
+# if USE_THREADS_KETTE
   while(1)
 # endif
   {
@@ -260,7 +263,7 @@ ICCkette::waechter (void* zeiger)
       if( m_zeit &&
           obj->aktiv_[i] &&
           obj->profil_mzeit_[i] != m_zeit
-#      if USE_THREADS
+#      if USE_THREADS_KETTE
        && obj->frei()
 #      endif
         )
@@ -278,13 +281,15 @@ ICCkette::waechter (void* zeiger)
     icc_examin_ns::sleep(1.0/10.0);
   }
 
-# if USE_THREADS
+# if USE_THREADS_KETTE
   icc_examin_ns::wait( 0.0, true );
+# else
+  Fl::repeat_timeout( 0.4, waechter, zeiger );
 # endif
 
   DBG_PROG_ENDE
   return
-# if USE_THREADS
+# if USE_THREADS_KETTE
          0
 # endif
           ;
