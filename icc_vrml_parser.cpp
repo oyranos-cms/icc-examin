@@ -460,7 +460,7 @@ std::string netzNachVRML( icc_examin_ns::ICCThreadList<ICCnetz> & netze )
     ICCnetz & netz = netze[i];
     char num[24];
 
-    if(!netz.aktiv || netz.undurchsicht <= 0.)
+    if(!netz.active() || netz.undurchsicht <= 0.)
       continue;
 
     if(!netz.punkte.size())
@@ -954,7 +954,7 @@ std::string    vrmlScene          ( icc_examin_ns::ICCThreadList<ICCnetz> netze,
 
       if(netze.size() > (unsigned)j)
       {
-        aktiv = netze[j].aktiv;
+        aktiv = netze[j].active();
         grau = netze[j].grau;
         rgba[3] = netze[j].undurchsicht;
         schattierung = netze[j].schattierung;
@@ -1148,7 +1148,7 @@ std::string    vrmlScene          ( icc_examin_ns::ICCThreadList<ICCnetz> netze,
   for(unsigned int i = 0; i < netze.size(); ++i)
   {
     int p_n = netze[i].punkte.size();
-    if(netze[i].aktiv)
+    if(netze[i].active())
     {
       for(int j = 0; j < p_n; ++j)
       {

@@ -162,7 +162,7 @@ public:
   aktiv_knopf_->value(wert);
 
   //icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze.frei(false);
-  icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze[pos_].aktiv = wert;
+  icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze[pos_].active( wert );
   //icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze.frei(true);
 
   redraw();

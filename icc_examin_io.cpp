@@ -279,7 +279,7 @@ ICCexaminIO::oeffnenThread_ ()
           if(netze_n == 1 && net[j].undurchsicht <= 0)
             net[j].undurchsicht = 1.;
  
-          net[j].aktiv = true;
+          net[j].active( true );
 
           netze.push_back( net[j] );
         }
@@ -313,7 +313,7 @@ ICCexaminIO::oeffnenThread_ ()
             bool waehlbar = true;
             icc_examin->icc_waehler_->push_back( netze[i].name.c_str(),
                                   netze[i].undurchsicht, netze[i].grau,
-                                  netze[i].aktiv, waehlbar);
+                                  netze[i].active(), waehlbar);
           }
         }
 
@@ -382,7 +382,7 @@ ICCexaminIO::oeffnenThread_ ()
           waehlbar = profile[i]->size() > 128 ? true : false;
 
           active = aktiv[i];
-          active = icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze[i].aktiv;
+          active = icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze[i].active();
 
           if(profile[i]->filename() == icc_examin->moniName() &&
              anzahl > 1)

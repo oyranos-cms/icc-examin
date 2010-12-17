@@ -1046,10 +1046,10 @@ GL_Ansicht::erstelleGLListen_()
     if(dreiecks_netze[i].schattierung < 0)
       dreiecks_netze[i].schattierung = schattierung;
 
-    if( dreiecks_netze[i].aktiv != aktive[i] ||
+    if( dreiecks_netze[i].active() != aktive[i] ||
         dreiecks_netze[i].grau != grau[i]  )
     {
-      aktive[i] = dreiecks_netze[i].aktiv;
+      aktive[i] = dreiecks_netze[i].active();
       grau[i] = dreiecks_netze[i].grau;
       if(!aktualisiert)
       {
@@ -2200,7 +2200,7 @@ GL_Ansicht::punkteAuffrischen()
 
           if(dreiecks_netze.size() > (unsigned)j)
           {
-            aktiv = dreiecks_netze[j].aktiv;
+            aktiv = dreiecks_netze[j].active();
             grau = dreiecks_netze[j].grau;
             rgba[3] = dreiecks_netze[j].undurchsicht;
             schattierung = dreiecks_netze[j].schattierung;
@@ -2450,7 +2450,7 @@ GL_Ansicht::zeigeUmrisse_()
     for (unsigned int i=0; i < dreiecks_netze.size(); ++i)
     {
       if(dreiecks_netze[i].umriss.size() &&
-         dreiecks_netze[i].aktiv &&
+         dreiecks_netze[i].active() &&
          dreiecks_netze[i].undurchsicht)
       {
         //Farbband
@@ -3031,7 +3031,7 @@ GL_Ansicht::zeichnen()
 
         int some_active = 0;
         for(size_t i = 0; i < dreiecks_netze.size(); ++i)
-          if(dreiecks_netze[i].aktiv)
+          if(dreiecks_netze[i].active())
             some_active = 1;
 
         if(some_active)
@@ -3273,7 +3273,7 @@ GL_Ansicht::zeichnen()
              glRasterPos2d(0, 20 + ortho_font->FaceSize() / 0.94
                                    * (dreiecks_netze.size()-i-1) );
 #          endif
-           if(dreiecks_netze[i].aktiv)
+           if(dreiecks_netze[i].active())
              ZeichneOText (ortho_font, scal, text.c_str())
          }
          dreiecks_netze.frei(true);
@@ -3562,7 +3562,7 @@ void getFacesFromICCnetz ( const ICCnetz & netz, icc_examin_ns::FACE **fList,
         color.gg = netz.punkte[ index_p.second.i[j] ].farbe[1];
         color.bb = netz.punkte[ index_p.second.i[j] ].farbe[2];
       }
-      if(netz.aktiv)
+      if(netz.active())
         color.aa = netz.undurchsicht;
       else
         color.aa = 0.0;
@@ -3723,7 +3723,7 @@ GL_Ansicht::setBspFaceProperties_( icc_examin_ns::FACE *faceList )
         }
 #endif
       }
-      if(netz.aktiv)
+      if(netz.active())
         vtrav->color.aa = netz.undurchsicht;
       else
         vtrav->color.aa = 0.0;

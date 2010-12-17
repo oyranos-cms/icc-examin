@@ -629,7 +629,7 @@ ICCexamin::nachricht( Modell* modell , int info )
           icc_examin->waehlbar( info, false );
           icc_betrachter->DD_farbraum->dreiecks_netze.frei(false);
           if(icc_betrachter->DD_farbraum->dreiecks_netze.size() > (size_t)info)
-            icc_betrachter->DD_farbraum->dreiecks_netze[info].aktiv = false;
+            icc_betrachter->DD_farbraum->dreiecks_netze[info].active( false );
           icc_betrachter->DD_farbraum->dreiecks_netze.frei(true);
         }
       }

@@ -513,7 +513,7 @@ ICCexamin::farbraum (int n)
          netze->size() > 1)
       {
         profile.passiv(n);
-        (*netze)[n].aktiv = false;
+        (*netze)[n].active( false );
       }
 
 

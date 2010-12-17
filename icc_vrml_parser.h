@@ -54,7 +54,11 @@ struct ICCnetz {
   std::multimap<double,DreiecksIndexe> indexe;   //!< assigning the points
   ICClist<ICCnetzPunkt> umriss;                  //!< mesh hull, a line
   std::string name;                              //!< name
+private:
   int aktiv;                                     //!< show?
+public:
+  void active(int a) { WARN_S(aktiv<<" "<<a); aktiv = a;}
+  int active() const {return aktiv;}
   int grau;                                      //!< no colour?
   double undurchsicht;                           //!< alpha 0..1
   double schattierung;                           //!< L* colour for gray 0..1
