@@ -1156,19 +1156,13 @@ const char * preLoadFile             ( const char        * filename )
   static char file_name_[1024];
   int typ = -1; 
 
-#if !defined(__APPLE__)
-  sprintf( ptr, "which wget && wget -U \"ICC Examin %s %s %s\" -O || curl -o", ICC_EXAMIN_V, UNAME, DISTNAME);
-#else
-  sprintf( ptr, "curl -o" );
-#endif
-  commands[0] = ptr;
  
   if(filename && strlen(filename) > 0 && strlen(filename) < 1023)
     sprintf( file_name_, "%s", filename );
   else
     goto END;
 
-  command = (char*) malloc(strlen(file_name_)+1024);
+  command = (char*) malloc(strlen(file_name_) * 2 + 1024);
   if(!command)
     goto END;
 
@@ -1208,8 +1202,17 @@ const char * preLoadFile             ( const char        * filename )
   {
     typ = 0;
 
-    sprintf(command,"%s %s/%s \"%s\"", 
-            commands[typ], tmp, list[typ], filename);
+#if !defined(__APPLE__)
+  sprintf( ptr, "which wget && wget -U \"ICC Examin %s %s %s\" -O || curl -o", ICC_EXAMIN_V, UNAME, DISTNAME);
+#else
+  sprintf( ptr, "curl -o" );
+#endif
+
+    sprintf(command,
+            "which wget && wget -U \"ICC Examin %s %s %s\" -O %s/%s \"%s\" "
+            "|| curl -L \"%s\" -o %s/%s",
+            ICC_EXAMIN_V, UNAME, DISTNAME, tmp, list[typ], filename,
+            filename, tmp, list[typ] );
 
     fprintf(stderr, "ICC Examin %s: %s\n", ICC_EXAMIN_V, command);
     error = system(command);
