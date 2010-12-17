@@ -1238,7 +1238,7 @@ ICCexamin::intent( int intent_neu )
     intent_selection_ = 1;
   }
 
-  if(intent_alt != intent_neu) {
+  if(intent_alt != intent_) {
     auffrischen( PROGRAMM );
   }
 }
