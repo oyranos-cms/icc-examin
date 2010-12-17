@@ -57,8 +57,10 @@ struct ICCnetz {
 private:
   int aktiv;                                     //!< show?
 public:
-  void active(int a) { WARN_S(aktiv<<" "<<a); aktiv = a;}
-  int active() const {return aktiv;}
+  void active(int a) {
+    aktiv = a;
+  }
+  int active() const { return aktiv; }
   int grau;                                      //!< no colour?
   double undurchsicht;                           //!< alpha 0..1
   double schattierung;                           //!< L* colour for gray 0..1
