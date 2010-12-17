@@ -890,6 +890,8 @@ for i in $MAKEFILE_DIR; do
   test -n "$ECHO" && $ECHO "" >> "$i/makefile"
 done
 
+echo "#define HAVE_PTHREAD_H 1" >> $CONF_H
+
 echo "#define PREFIX         \"$prefix\"" >> $CONF_H
 echo "#define ICCEXAMIN_DATADIR        \"$datadir\"" >> $CONF_H
 echo "#define ICCEXAMIN_LOCALEDIR      \"$datadir/locale\"" >> $CONF_H
