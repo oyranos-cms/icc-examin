@@ -624,8 +624,14 @@ ICCexamin::nachricht( Modell* modell , int info )
         DBG_PROG_V( _item )
  
         if((*k)[info]->size() > 128)
+        {
           icc_examin->waehlbar( info, true );
-        else {
+          icc_betrachter->DD_farbraum->dreiecks_netze.frei(false);
+          if(icc_betrachter->DD_farbraum->dreiecks_netze.size() > (size_t)info)
+            icc_betrachter->DD_farbraum->dreiecks_netze[info].active( true );
+          icc_betrachter->DD_farbraum->dreiecks_netze.frei(true);
+        } else
+        {
           icc_examin->waehlbar( info, false );
           icc_betrachter->DD_farbraum->dreiecks_netze.frei(false);
           if(icc_betrachter->DD_farbraum->dreiecks_netze.size() > (size_t)info)
@@ -1236,10 +1242,6 @@ ICCexamin::intent( int intent_neu )
   } else {
     intent_ = intent_neu;
     intent_selection_ = 1;
-  }
-
-  if(intent_alt != intent_) {
-    auffrischen( PROGRAMM );
   }
 }
 
