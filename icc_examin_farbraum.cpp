@@ -588,7 +588,12 @@ ICCexamin::farbraumModus (int profil)
   if(profile.size() && profile.profil()->hasTagName("ncl2"))
   {
     farbraum_modus_ = true;
-    intent( -1 );
+    static int test = 1;
+    if(lade() && test)
+      intentNoUpdate( profile.profil()->intent() );
+    else
+      intent( -1 );
+
     DBG_PROG_S( "set colour space mode" )
   } else if(!profile.size()) {
     WARN_S( "too early with " << profile.size() << " profiles" )

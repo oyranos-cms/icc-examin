@@ -136,6 +136,7 @@ class ICCexamin : public icc_examin_ns::Beobachter,
                                        *interaktiv = (int)intent_selection_;
                                      return intent_; }        //!< the global rendering intent; see as well @see: ICCprofile.intent()
     void intent (int i);                       //!< set a rendering intent
+    void intentNoUpdate (int i) {intent_= i; } //!< set a rendering intent
     int  bpc ()  { return bpc_; }              //!< global BPC
     void bpc (int i);                          //!< set BPC
     int  gamutwarn ()  { return gamutwarn_; }  //!< gamut warning?
