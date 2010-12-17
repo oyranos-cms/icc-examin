@@ -476,7 +476,9 @@ void
 #endif
 ICCexaminIO::oeffnenStatisch_ (void* ie)
 {
+#if USE_THREADS
   registerThreadId( iccThreadSelf(), THREAD_LADEN );
+#endif
 
   DBG_PROG_START
 
@@ -512,17 +514,24 @@ ICCexaminIO::oeffnenStatisch_ (void* ie)
           examin->io_->oeffnenThread_( e );
           examin->io_->lade_ = false;
         } else {
+# if USE_THREADS
           // short pause 
           icc_examin_ns::sleep(0.2); DBG_THREAD
+# endif
         }
       }
-    } else
+    }
+# if USE_THREADS
+    else
       icc_examin_ns::sleep(0.2);
+# endif
   }
 
   DBG_PROG_ENDE
 # if USE_THREADS
   return 0;
+# else
+  Fl::repeat_timeout( 0.4, oeffnenStatisch_, ie );
 # endif
 }
 
