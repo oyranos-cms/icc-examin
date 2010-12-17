@@ -1144,7 +1144,7 @@ ICCprofile::ICCDataType guessFileType( const char        * filename )
  */
 const char * preLoadFile             ( const char        * filename )
 {
-  const char *list[12] = {"icc_examin_preload0.www","icc_examin_preload1.gunzip",
+  const char *list[12] = {".www",".gunzip",
                     "icc_examin_preload2.bunzip2",0,0,0,0,0,0,0,0,0};
   const char * commands[12] = { 0 , "gzip -dc", "bzip2 -dc", 0 };
   const char * name = filename;
@@ -1153,9 +1153,16 @@ const char * preLoadFile             ( const char        * filename )
   const char * tmp = NULL;
   char * tmp_name = 0;
   char* ptr = (char*) malloc(1024);
+  char * user = 0;
   static char file_name_[1024];
   int typ = -1; 
 
+  if(getenv("USER"))
+    user=strdup(getenv("USER"));
+  else if(getenv("UID"))
+    user=strdup(getenv("UID"));
+  else
+    user=strdup("user");
  
   if(filename && strlen(filename) > 0 && strlen(filename) < 1023)
     sprintf( file_name_, "%s", filename );
@@ -1209,17 +1216,17 @@ const char * preLoadFile             ( const char        * filename )
 #endif
 
     sprintf(command,
-            "which wget && wget -U \"ICC Examin %s %s %s\" -O %s/%s \"%s\" "
-            "|| curl -L \"%s\" -o %s/%s",
-            ICC_EXAMIN_V, UNAME, DISTNAME, tmp, list[typ], filename,
-            filename, tmp, list[typ] );
+            "which wget && wget -U \"ICC Examin %s %s %s\" -O %s/icc_examin_preload-%s%s \"%s\" "
+            "|| curl -L \"%s\" -o %s/icc_examin_preload-%s%s",
+            ICC_EXAMIN_V, UNAME, DISTNAME, tmp, user, list[typ], filename,
+            filename, tmp, user, list[typ] );
 
     fprintf(stderr, "ICC Examin %s: %s\n", ICC_EXAMIN_V, command);
     error = system(command);
 
     if(!error)
     {
-      sprintf( file_name_, "%s/%s", tmp, list[typ] );
+      sprintf( file_name_, "%s/icc_examin_preload-%s%s", tmp, user, list[typ] );
       name = file_name_;
     }
   }
@@ -1234,15 +1241,15 @@ const char * preLoadFile             ( const char        * filename )
     else if(memcmp(&filename[strlen(filename)-4],".bz2", 4 )==0)
       typ = 2;
     
-    sprintf(command,"%s \"%s\" > %s/%s", 
-            commands[typ], file_name_,  tmp, list[typ]);
+    sprintf(command,"%s \"%s\" > %s/icc_examin_preload-%s%s", 
+            commands[typ], file_name_,  tmp, user, list[typ]);
 
     fprintf(stderr, "ICC Examin %s: %s\n", ICC_EXAMIN_V, command);
     error = system(command);
 
     if(!error)
     {
-      sprintf( file_name_, "%s/%s", tmp, list[typ] );
+      sprintf( file_name_, "%s/icc_examin_preload-%s%s", tmp, user, list[typ] );
       name = file_name_;
     }
   }
@@ -1252,6 +1259,7 @@ const char * preLoadFile             ( const char        * filename )
   END:
   if(ptr) free(ptr);
   if(tmp_name) free(tmp_name);
+  if(user) free(user);
 
   return name;
 }
