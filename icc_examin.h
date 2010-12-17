@@ -135,7 +135,7 @@ class ICCexamin : public icc_examin_ns::Beobachter,
     int  intentGet(int *interaktiv){ if(interaktiv)
                                        *interaktiv = (int)intent_selection_;
                                      return intent_; }        //!< the global rendering intent; see as well @see: ICCprofile.intent()
-    void intent (int i);                       //!< set a rendering intent
+    void intent (int i, int update );          //!< set a rendering intent
     void intentNoUpdate (int i) {intent_= i; } //!< set a rendering intent
     int  bpc ()  { return bpc_; }              //!< global BPC
     void bpc (int i);                          //!< set BPC

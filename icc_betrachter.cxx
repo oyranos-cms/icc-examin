@@ -307,9 +307,9 @@ void ICCfltkBetrachter::cb_menueintrag_phot_intent_i(Fl_Menu_* o, void*) {
   menueintrag_abs_col_intent->clear();
 
   if(m->value())
-    icc_examin->intent(0);
+    icc_examin->intent(0,1);
   else
-    icc_examin->intent(-1);
+    icc_examin->intent(-1,1);
 }
 void ICCfltkBetrachter::cb_menueintrag_phot_intent(Fl_Menu_* o, void* v) {
   ((ICCfltkBetrachter*)(o->parent()->parent()->user_data()))->cb_menueintrag_phot_intent_i(o,v);
@@ -325,9 +325,9 @@ void ICCfltkBetrachter::cb_menueintrag_rel_col_intent_i(Fl_Menu_* o, void*) {
   menueintrag_abs_col_intent->clear();
 
   if(m->value())
-    icc_examin->intent(1);
+    icc_examin->intent(1,1);
   else
-    icc_examin->intent(-1);
+    icc_examin->intent(-1,1);
 }
 void ICCfltkBetrachter::cb_menueintrag_rel_col_intent(Fl_Menu_* o, void* v) {
   ((ICCfltkBetrachter*)(o->parent()->parent()->user_data()))->cb_menueintrag_rel_col_intent_i(o,v);
@@ -343,9 +343,9 @@ void ICCfltkBetrachter::cb_menueintrag_abs_col_intent_i(Fl_Menu_* o, void*) {
   menueintrag_rel_col_intent->clear();
 
   if(m->value())
-    icc_examin->intent(3);
+    icc_examin->intent(3,1);
   else
-    icc_examin->intent(-1);
+    icc_examin->intent(-1,1);
 }
 void ICCfltkBetrachter::cb_menueintrag_abs_col_intent(Fl_Menu_* o, void* v) {
   ((ICCfltkBetrachter*)(o->parent()->parent()->user_data()))->cb_menueintrag_abs_col_intent_i(o,v);

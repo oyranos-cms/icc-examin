@@ -592,7 +592,7 @@ ICCexamin::farbraumModus (int profil)
     if(lade() && test)
       intentNoUpdate( profile.profil()->intent() );
     else
-      intent( -1 );
+      intent( -1, 0 );
 
     DBG_PROG_S( "set colour space mode" )
   } else if(!profile.size()) {

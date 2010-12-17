@@ -490,9 +490,9 @@ class ICCfltkBetrachter {open
   menueintrag_abs_col_intent->clear();
 
   if(m->value())
-    icc_examin->intent(0);
+    icc_examin->intent(0,1);
   else
-    icc_examin->intent(-1);}
+    icc_examin->intent(-1,1);}
               tooltip {Enable Perceptual Intent} xywh {45 45 100 20} type Toggle shortcut 0x40066
             }
             MenuItem menueintrag_rel_col_intent {
@@ -506,9 +506,9 @@ class ICCfltkBetrachter {open
   menueintrag_abs_col_intent->clear();
 
   if(m->value())
-    icc_examin->intent(1);
+    icc_examin->intent(1,1);
   else
-    icc_examin->intent(-1);}
+    icc_examin->intent(-1,1);}
               tooltip {Enable Whitepoint Adaption;  useful for gamut comparisions} xywh {55 55 100 20} type Toggle shortcut 0x40072
             }
             MenuItem menueintrag_abs_col_intent {
@@ -522,9 +522,9 @@ class ICCfltkBetrachter {open
   menueintrag_rel_col_intent->clear();
 
   if(m->value())
-    icc_examin->intent(3);
+    icc_examin->intent(3,1);
   else
-    icc_examin->intent(-1);}
+    icc_examin->intent(-1,1);}
               tooltip {Enable Whitepoint Adaption;  useful for gamut comparisions} xywh {65 65 100 20} type Toggle shortcut 0x40061
             }
             MenuItem menueintrag_bpc {

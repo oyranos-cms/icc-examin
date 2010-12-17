@@ -1227,7 +1227,7 @@ ICCexamin::gamutAnsichtZeigen ()
 }
 
 void
-ICCexamin::intent( int intent_neu )
+ICCexamin::intent( int intent_neu, int update )
 {
   int intent_alt = intent_;
   if(intent_neu < 0)
@@ -1243,6 +1243,9 @@ ICCexamin::intent( int intent_neu )
     intent_ = intent_neu;
     intent_selection_ = 1;
   }
+
+  if(intent_alt != intent_ && update)
+    auffrischen( PROGRAMM );
 }
 
 void

@@ -96,7 +96,7 @@ ICCexaminIO::farbraum_(int info)
           int interactive = 0;
           icc_examin->intentGet(&interactive);
           if(icc_examin->farbraumModus() && !interactive)
-            icc_examin->intent( -1 );
+            icc_examin->intent( -1, 0 );
 
           // ncl2 ?
           DBG_PROG_V( profile.aktuell() );
