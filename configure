@@ -141,6 +141,10 @@ if [ $# -gt 0 ]; then
       fltkconfig="`echo $1 | sed s/--$switch=//`"
       fltkldflags="--ldstaticflags"
     fi
+    switch=fltk-config-flags
+    if [ "`echo \"$1\" | sed s/\"--$switch=\"//`" != "$1" ]; then
+      fltkflags="`echo $1 | sed s/--$switch=//`"
+    fi
     switch=enable-cwdebug
     if [ "`echo \"$1\" | sed s/\"--$switch=\"//`" != "$1" ]; then
       cwdebug="`echo $1 | sed s/--$switch=//`"
@@ -188,6 +192,7 @@ if [ $# -gt 0 ]; then
       echo "   --desktopdir=[\$datadir/applications] xdg installation path"
       echo ""
       echo "   --with-fltk-config=[fltk-config]     alternative fltk version"
+      echo "   --fltk-config-flags=[]               additional fltk flags"
       echo "   --enable-debug                       debug version"
       echo "   --disable-openmp                     SMP support [default enabled]"
       echo "   --disable-verbose                    non verbose compiling"
@@ -517,7 +522,7 @@ else
 fi
 export prefix exec_prefix bindir sbindir libdir includedir datadir mandir
 export pixmapdir desktopdir
-export fltkconfig fltkldflags cwdebug debug verbose
+export fltkconfig fltkldflags fltkflags cwdebug debug verbose
 
 PATH=$bindir:$PATH
 export PATH
