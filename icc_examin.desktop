@@ -1,13 +1,12 @@
-#!/usr/bin/env xdg-open
 [Desktop Entry]
-Version=1.0
 Type=Application
-Categories=Graphics;RasterGraphics;Viewer;
+Categories=Application;Graphics;Publishing;
 Comment=Look at the internals of ICC profiles
 Comment[de]=ICC Farbprofilebetrachter
 Comment[fr]=Examiner un profil ICC
 Exec=iccexamin %U
 GenericName=ICC profile viewer
+GenericName[de]=ICC Farbprofilbetrachter
 Icon=iccexamin
 MimeType=application/vnd.iccprofile;text/vnd.cgats;model/vrml;
 Name=ICC Examin
