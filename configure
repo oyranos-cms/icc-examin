@@ -413,6 +413,8 @@ if [ -f tests/intptr_test ]; then
     echo_="32-bit build            detected"
   elif [ $INTPTR_SIZE -eq 8 ]; then
     echo_="64-bit build            detected"
+    FPIC=-fPIC
+    DPIC=-DPIC
     test -n "$ECHO" && $ECHO "BUILD_64 = 1" >> $CONF
   elif [ $INTPTR_SIZE -ne 0 ]; then
     echo_="$INTPTR_SIZE-byte intptr_t          detected"
@@ -557,8 +559,8 @@ if [ $OSUNAME = "Darwin" ]; then
   LIBEXT=".dylib"
   LINK_FLAGS="-dynamiclib -L."
   MSGMERGE="msgmerge"
-  CFLAGS="-Wall -g -DPIC -Wunused"
-  CXXFLAGS="-Wall -g -DPIC"
+  CFLAGS="-Wall -g $DPIC -Wunused"
+  CXXFLAGS="-Wall -g $DPIC"
   REZ="\$(fltkconfig) --post \$@"
   OSX_CPP="\$(OSX_CPPFILES)"
   XGETTEXT_OPTIONS="--keyword=gettext \
@@ -585,7 +587,7 @@ else
     I18N_LIB="\$(LIBNAME)"
     I18N_LIBSTAT="\$(LIBNAME)"
     INCL="-I\$(includedir) -I/usr/X11R6/include -I. -I/usr/include/g++ -I/usr/include"
-    LINK_FLAGS="-shared \$(dl) -fPIC -L. -lpthread"
+    LINK_FLAGS="-shared \$(dl) $FPIC -L. -lpthread"
     LIBNAMEV="lib\$(TARGET)\$(LIBMID).\$(VERSION_A)"
     if [ -n "$rpath" ]; then
       LINK_LIB_PATH="-Wl,--rpath -Wl,\$(libdir)"
@@ -595,7 +597,7 @@ else
   else
     COPY="cp -p"
     INCL="-I\$(includedir) -I/usr/X11R6/include -I. -I/usr/include/g++ -I/usr/include"
-    PIC=-fPIC
+    PIC=$FPIC
     if [ $OSUNAME = "BSD" ]; then
       MAKE_LDFLAGS="\$(iconv)"
       INSTALL="install $DEBUG_SWITCH"
@@ -616,7 +618,7 @@ else
       INSTALL="install"
       LINK_FLAGS="-shared \$(dl) \$(iconv)"
     fi
-    CFLAGS="-L. -fPIC"
+    CFLAGS="-L. $FPIC"
     CXXFLAGS="-L. $PIC"
     if [ $OSUNAME = "Windows" ]; then
       PIC=""
