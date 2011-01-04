@@ -1,6 +1,6 @@
 [Desktop Entry]
 Type=Application
-Categories=Application;Graphics;Publishing;
+Categories=Graphics;Viewer;
 Comment=Look at the internals of ICC profiles
 Comment[de]=ICC Farbprofilebetrachter
 Comment[fr]=Examiner un profil ICC
