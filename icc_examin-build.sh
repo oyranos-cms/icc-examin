@@ -35,6 +35,7 @@ INTPTR_SIZE=`./ptr-size`
   elif [ $INTPTR_SIZE -gt 4 ]; then
     echo_="64-bit build            detected"
     BARCH=64
+    FPIC=-fPIC
     test -n "$ECHO" && $ECHO "BUILD_64 = 1" >> $CONF
   elif [ $INTPTR_SIZE -ne 0 ]; then
     echo_="$INTPTR_SIZE-byte intptr_t          detected"
@@ -428,6 +429,34 @@ sleep 1
 
 cd "$top"
 
+#LibRaw
+git_repo=LibRaw
+  echo checkout $git_repo
+  if [ -d $git_repo ]; then
+    cd $git_repo
+    git pull
+  else
+    echo git://github.com/LibRaw/LibRaw.git
+    git clone git://github.com/$git_repo/$git_repo.git
+    cd $git_repo
+    git checkout master
+  fi
+  sleep 2
+  if [ -f configure ]; then
+    echo ""
+  else
+    aclocal -I m4
+    libtoolize -f
+    automake --add-missing
+    autoconf
+  fi
+  CFLAGS="$CFLAGS $FPIC" CXXFLAGS="$CXXFLAGS $FPIC" ./configure --enable-openmp $conf_opts $@
+  make $MAKE_CPUS
+  make install
+sleep 2
+
+cd "$top"
+
 
 # OpenICC default profiles
 packet=openicc-data
@@ -440,8 +469,8 @@ if [ -f $packet_file ]; then
 else
   echo downloading http://downloads.sourceforge.net/project/openicc/OpenICC-Profiles/$packet_file
   which curl && curl -L $loc$packet_file -o $packet_file || wget $loc$packet_file
-  sleep 1
 fi
+sleep 1
 if [ `$SHA1SUM $packet_file | grep $checksum | wc -l` -eq 1 ]; then
   echo sha1sum for $packet_file passed
   echo unpacking $packet_file ...
@@ -499,6 +528,48 @@ git_repo=compicc
   fi
   sleep 2
   ./configure --disable-verbose $conf_opts $@
+  make $MAKE_CPUS
+  make install
+sleep 1
+
+cd "$top"
+
+
+# kolor-manager
+  echo checkout kolor-manager
+  svn checkout svn://anonsvn.kde.org/home/kde/trunk/playground/graphics/kolor-manager
+  sleep 1
+  if [ -d kolor-manager ]; then
+    cd kolor-manager
+    if [ -d kolor-manager ]; then
+      echo ""
+    else
+      mkdir build
+    fi
+    cd build
+    cmake -DCMAKE_INSTALL_PREFIX=~/.kde4/ -DCMAKE_BUILD_TYPE=debugfull ..
+    make
+    make install
+    kbuildsycoca4
+  fi
+sleep 1
+
+cd "$top"
+
+
+# cinepaint
+git_repo=cinepaint
+  echo checkout $git_repo
+  if [ -d $git_repo ]; then
+    cd $git_repo
+    git pull
+  else
+    git clone git://www.oyranos.org/git/$git_repo $git_repo
+    cd $git_repo
+    git checkout master
+  fi
+  sleep 2
+  ./configure --enable-debug --disable-icc_examin --disable-pygimp $conf_opts $@
   make $MAKE_CPUS
   make install
 sleep 1
