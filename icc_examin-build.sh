@@ -429,6 +429,85 @@ sleep 1
 
 cd "$top"
 
+
+# SANE
+git_repo=sane-backends
+  if [ -d $git_repo ]; then
+    echo !!! Will REMOVE $git_repo
+    sleep 4
+    rm -rf $git_repo
+  fi
+  echo checkout $git_repo
+  if [ -d $git_repo ]; then
+    cd $git_repo
+    git pull
+  else
+    echo git://git.debian.org/git/sane/sane-backends.git
+    git clone git://git.debian.org/git/sane/$git_repo.git
+    cd $git_repo
+    git checkout master
+  fi
+  sleep 2
+
+  url=http://alioth.debian.org/tracker/download.php/30186/410366/312641/3945
+  packet_file=sane_cap_colour.patch
+  checksum=4665a1e4b7b9b920a10b830b354ee32667eaefd6
+  echo download and apply $packet_file
+  which curl && curl -L $url/$packet_file -o $packet_file || wget $url/$packet_file
+  if [ `$SHA1SUM $packet_file | grep $checksum | wc -l` -eq 1 ]; then
+    echo sha1sum for $packet_file passed
+  else
+    echo sha1sum for $packet_file failed
+    exit 1
+  fi
+  patch -p1 < $packet_file
+
+  url=http://alioth.debian.org/tracker/download.php/30186/410366/312641/3946
+  packet_file=sane_cap_colour_plustek.patch
+  checksum=4198052440777e8697a9adf1c86844b4a143c6ba
+  echo download and apply $packet_file
+  which curl && curl -L $url/$packet_file -o $packet_file || wget $url/$packet_file
+  if [ `$SHA1SUM $packet_file | grep $checksum | wc -l` -eq 1 ]; then
+    echo sha1sum for $packet_file passed
+  else
+    echo sha1sum for $packet_file failed
+    exit 1
+  fi
+  patch -p1 < $packet_file
+
+  url=http://alioth.debian.org/tracker/download.php/30186/410366/312641/3947
+  packet_file=sane_cap_colour_backends.patch
+  checksum=3dc60111bb371fc191387f144dc977a33b232b59
+  echo download and apply $packet_file
+  which curl && curl -L $url/$packet_file,gz -o $packet_file.gz || wget $url/$packet_file.gz
+  gzip -d $packet_file.gz
+  if [ `$SHA1SUM $packet_file | grep $checksum | wc -l` -eq 1 ]; then
+    echo sha1sum for $packet_file passed
+  else
+    echo sha1sum for $packet_file failed
+    exit 1
+  fi
+  patch -p1 < $packet_file
+
+  sleep 1
+
+  if [ -f configure ]; then
+    echo ""
+  else
+    aclocal -I m4
+    libtoolize -f
+    automake --add-missing
+    autoconf
+  fi
+  CFLAGS="$CFLAGS $FPIC" CXXFLAGS="$CXXFLAGS $FPIC" ./configure --enable-pnm-backend $conf_opts $@
+  sleep 2
+  make $MAKE_CPUS
+  make install
+sleep 2
+
+cd "$top"
+
+
 #LibRaw
 git_repo=LibRaw
   echo checkout $git_repo
@@ -450,7 +529,8 @@ git_repo=LibRaw
     automake --add-missing
     autoconf
   fi
-  CFLAGS="$CFLAGS $FPIC" CXXFLAGS="$CXXFLAGS $FPIC" ./configure --enable-openmp $conf_opts $@
+  CFLAGS="$CFLAGS $FPIC" CXXFLAGS="$CXXFLAGS $FPIC" ./configure --enable-openmp --enable-lcms=no $conf_opts $@
+  sleep 2
   make $MAKE_CPUS
   make install
 sleep 2
@@ -548,6 +628,7 @@ cd "$top"
     fi
     cd build
     cmake -DCMAKE_INSTALL_PREFIX=~/.kde4/ -DCMAKE_BUILD_TYPE=debugfull ..
+    sleep 2
     make
     make install
     kbuildsycoca4
@@ -570,6 +651,7 @@ git_repo=cinepaint
   fi
   sleep 2
   ./configure --enable-debug --disable-icc_examin --disable-pygimp $conf_opts $@
+  sleep 2
   make $MAKE_CPUS
   make install
 sleep 1
