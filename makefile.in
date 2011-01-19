@@ -533,6 +533,9 @@ copy_files:
 
 dist:	$(BASE) targz
 	test -f && $(COPY) ../Archiv/$(TARGET)_$(MTIME).tgz $(TARGET)-$(VERSION).tar.gz || $(COPY) $(TARGET)_$(MTIME).tgz $(TARGET)-$(VERSION).tar.gz
+	tar xzf $(TARGET)-$(VERSION).tar.gz
+	tar cjf $(TARGET)-$(VERSION).tar.bz2 $(TARGET)-$(VERSION)/
+	$(RM) -R $(TARGET)-$(VERSION)
 
 dist-gzip:	dist
 
