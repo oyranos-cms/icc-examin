@@ -49,6 +49,7 @@
 #include <FL/gl.h>
 #include <FL/Fl_Preferences.H>
 #include <FL/filename.H>
+#include <FL/fl_draw.H>  /* fl_cursor() */
 
 #ifdef HAVE_FTGL
 // newer FTGL seems to deprecate FTFont.h
@@ -4044,12 +4045,19 @@ GL_Ansicht::handle( int event )
          }
          if(mausknopf & FL_BUTTON1 && mausknopf & FL_SHIFT)
            mausknopf = FL_BUTTON2;
+
+         if(mausknopf & FL_BUTTON2)
+           fl_cursor( FL_CURSOR_NS, FL_BLACK, FL_WHITE );
+         else
+           fl_cursor( FL_CURSOR_HAND, FL_BLACK, FL_WHITE );
+
          agv_->agvHandleButton( mausknopf, event, Fl::event_x(),Fl::event_y());
          DBG_BUTTON_S( "FL_PUSH bei: " << Fl::event_x() << "," << Fl::event_y() )
          break;
     case FL_RELEASE:
          agv_->agvHandleButton(Fl::event_state(),event, Fl::event_x(),Fl::event_y());
          DBG_BUTTON_S( "FL_RELEASE bei: " << Fl::event_x() << "," << Fl::event_y() )
+         fl_cursor( FL_CURSOR_DEFAULT, FL_BLACK, FL_WHITE );
          break;
     case FL_DRAG:
          DBG_BUTTON_S( "FL_DRAG bei: " << Fl::event_x() << "," << Fl::event_y() )
