@@ -4084,6 +4084,8 @@ GL_Ansicht::handle( int event )
          break;
     case FL_MOUSEWHEEL:
          DBG_BUTTON_S( "FL_MOUSEWHEEL" << Fl::event_dx() << "," << Fl::event_dy() )
+         fl_cursor( FL_CURSOR_MOVE, FL_BLACK, FL_WHITE );
+         tastatur(Fl::event_dy());
          break;
     case FL_LEAVE:
          DBG_BUTTON_S( dbgFltkEvent(event) )
