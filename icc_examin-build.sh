@@ -395,6 +395,7 @@ git_repo=xcolor
   echo checkout $git_repo
   if [ -d $git_repo ]; then
     cd $git_repo
+    rm -r doc/
     git pull
   else
     git clone git://www.oyranos.org/git/$git_repo $git_repo
@@ -433,9 +434,10 @@ cd "$top"
 # SANE
 git_repo=sane-backends
   if [ -d $git_repo ]; then
-    echo !!! Will REMOVE $git_repo
-    sleep 4
-    rm -rf $git_repo
+    cd $git_repo
+    echo revert old patches ...
+    patch -p1 -R < patch_old.patch
+    cd "$top"
   fi
   echo checkout $git_repo
   if [ -d $git_repo ]; then
@@ -453,7 +455,11 @@ git_repo=sane-backends
   packet_file=sane_cap_colour.patch
   checksum=4665a1e4b7b9b920a10b830b354ee32667eaefd6
   echo download and apply $packet_file
-  which curl && curl -L $url/$packet_file -o $packet_file || wget $url/$packet_file
+  if [ -f $packet_file ]; then
+    a=1
+  else
+    which curl && curl -L $url/$packet_file -o $packet_file || wget $url/$packet_file
+  fi
   if [ `$SHA1SUM $packet_file | grep $checksum | wc -l` -eq 1 ]; then
     echo sha1sum for $packet_file passed
   else
@@ -466,7 +472,12 @@ git_repo=sane-backends
   packet_file=sane_cap_colour_plustek.patch
   checksum=4198052440777e8697a9adf1c86844b4a143c6ba
   echo download and apply $packet_file
-  which curl && curl -L $url/$packet_file -o $packet_file || wget $url/$packet_file
+  echo download and apply $packet_file
+  if [ -f $packet_file ]; then
+    a=1
+  else
+    which curl && curl -L $url/$packet_file -o $packet_file || wget $url/$packet_file
+  fi
   if [ `$SHA1SUM $packet_file | grep $checksum | wc -l` -eq 1 ]; then
     echo sha1sum for $packet_file passed
   else
@@ -479,8 +490,12 @@ git_repo=sane-backends
   packet_file=sane_cap_colour_backends.patch
   checksum=3dc60111bb371fc191387f144dc977a33b232b59
   echo download and apply $packet_file
-  which curl && curl -L $url/$packet_file,gz -o $packet_file.gz || wget $url/$packet_file.gz
-  gzip -d $packet_file.gz
+  if [ -f $packet_file ]; then
+    a=1
+  else
+    which curl && curl -L $url/$packet_file,gz -o $packet_file.gz || wget $url/$packet_file.gz
+    gzip -d $packet_file.gz
+  fi
   if [ `$SHA1SUM $packet_file | grep $checksum | wc -l` -eq 1 ]; then
     echo sha1sum for $packet_file passed
   else
@@ -489,6 +504,7 @@ git_repo=sane-backends
   fi
   patch -p1 < $packet_file
 
+  git diff > patch_old.patch
   sleep 1
 
   if [ -f configure ]; then
@@ -498,9 +514,9 @@ git_repo=sane-backends
     libtoolize -f
     automake --add-missing
     autoconf
+    sleep 2
+    CFLAGS="$CFLAGS $FPIC" CXXFLAGS="$CXXFLAGS $FPIC" ./configure --enable-pnm-backend $conf_opts $@
   fi
-  CFLAGS="$CFLAGS $FPIC" CXXFLAGS="$CXXFLAGS $FPIC" ./configure --enable-pnm-backend $conf_opts $@
-  sleep 2
   make $MAKE_CPUS
   make install
 sleep 2
@@ -648,9 +664,9 @@ git_repo=cinepaint
     git clone git://www.oyranos.org/git/$git_repo $git_repo
     cd $git_repo
     git checkout master
+    sleep 2
+    ./configure --enable-debug --disable-icc_examin --disable-pygimp $conf_opts $@
   fi
-  sleep 2
-  ./configure --enable-debug --disable-icc_examin --disable-pygimp $conf_opts $@
   sleep 2
   make $MAKE_CPUS
   make install
