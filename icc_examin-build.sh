@@ -554,16 +554,49 @@ sleep 2
 cd "$top"
 
 
-# OpenICC default profiles
 packet=openicc-data
-packet_dir=$packet-1.0.0
-packet_file=$packet_dir.tar.gz
-checksum=dd2ed93f0862d52a590b7bfcda415483954e1b5c
+packet_dir=$packet-1.1.0
+packet_file=$packet_dir.tar.bz2
+checksum=4ab2c23eb7aa4b3a944f8367626d1b14b6d95d7e
 loc=http://downloads.sourceforge.net/project/openicc/OpenICC-Profiles/
 if [ -f $packet_file ]; then
   echo $packet_file already here
 else
   echo downloading http://downloads.sourceforge.net/project/openicc/OpenICC-Profiles/$packet_file
+  which curl && curl -L $loc$packet_file -o $packet_file || wget $loc$packet_file
+fi
+sleep 1
+if [ `$SHA1SUM $packet_file | grep $checksum | wc -l` -eq 1 ]; then
+  echo sha1sum for $packet_file passed
+  echo unpacking $packet_file ...
+  tar xjf $packet_file
+  if [ -d $packet_dir ]; then
+    echo $packet_dir in place
+    cd $packet_dir
+    ./configure --disable-verbose $conf_opts $@
+    make
+    make install
+  fi
+  echo hier: `pwd`
+else
+  echo sha1sum for $packet_file failed
+  exit 1
+fi
+
+cd "$top"
+
+sleep 2
+
+# OpenICC default profiles II
+packet=basICColor_Offset_2009
+packet_dir=$packet-1.0.0
+packet_file=$packet_dir.tar.gz
+checksum=88af1519b0e3afec71e2dcd3bd7634649a014702
+loc=http://downloads.sourceforge.net/project/openicc/basICColor-Profiles/
+if [ -f $packet_file ]; then
+  echo $packet_file already here
+else
+  echo downloading http://downloads.sourceforge.net/project/openicc/basICColor-Profiles/$packet_file
   which curl && curl -L $loc$packet_file -o $packet_file || wget $loc$packet_file
 fi
 sleep 1
@@ -703,7 +736,7 @@ if [ -f "$git_repo/$target" ]; then
   echo ICC Examin is in $git_repo/$target
   echo You can test it now with one of:
   echo   $git_repo/$target http://www.oyranos.org/wiki/images/3/31/SRGB_linear.icc
-  echo   $git_repo/$target openicc-data-1.0.0/default_profiles/printing/coated_FOGRA39L_argl.icc
+  echo   $git_repo/$target openicc-data-1.1.0/default_profiles/printing/coated_FOGRA39L_argl.icc
   echo   hint: the 3D gamut hull is shown with the Ctrl-h shortcut
 else
   echo Could not build $git_repo/$target
