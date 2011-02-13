@@ -4084,8 +4084,19 @@ GL_Ansicht::handle( int event )
          break;
     case FL_MOUSEWHEEL:
          DBG_BUTTON_S( "FL_MOUSEWHEEL" << Fl::event_dx() << "," << Fl::event_dy() )
-         fl_cursor( FL_CURSOR_MOVE, FL_BLACK, FL_WHITE );
-         tastatur(Fl::event_dy());
+         if(mausknopf & FL_SHIFT)
+         {
+           fl_cursor( FL_CURSOR_MOVE, FL_BLACK, FL_WHITE );
+         
+           double clip_old = vorder_schnitt;
+           vorder_schnitt -= Fl::event_dy()*0.01;
+           if(vorder_schnitt - clip_old != 0 &&
+             !darfBewegen())
+           redraw();
+           fl_cursor( FL_CURSOR_DEFAULT, FL_BLACK, FL_WHITE );
+         } else
+         agv_->agvHandleButton( mausknopf,event, Fl::event_dx(),Fl::event_dy());
+         redraw();
          break;
     case FL_LEAVE:
          DBG_BUTTON_S( dbgFltkEvent(event) )

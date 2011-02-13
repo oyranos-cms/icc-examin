@@ -365,6 +365,16 @@ Agviewer::agvHandleButton(int button, int event, int x, int y)
 
     downb = -1;
 
+  } else if(event == FL_MOUSEWHEEL)
+  {
+    downb = FL_BUTTON2 | FL_MOUSEWHEEL;
+        downDist = EyeDist;
+        downEx = Ex;
+        downEy = Ey;
+        downEz = Ez;
+        downEyeMove = EyeMove;
+        EyeMove = 0;
+    agvHandleMotion(x,y*10);
   } else
     WARN_S( "keine Anweisung erkennbar" )
 
@@ -377,7 +387,9 @@ Agviewer::agvHandleButton(int button, int event, int x, int y)
 void
 Agviewer::agvHandleMotion(int x, int y)
 { DBG_PROG_START
-  int deltax = x - downx, deltay = y - downy;
+  double deltax = x - downx, deltay = y - downy;
+  if(downb & FL_MOUSEWHEEL)
+    deltay = y;
 
   if (downb & FL_BUTTON1)
   {
@@ -393,7 +405,11 @@ Agviewer::agvHandleMotion(int x, int y)
   if (downb & FL_BUTTON2)
   {
       DBG_PROG_S( "FL_BUTTON2" )
+      if(MoveMode == POLAR)
+        deltay *= EyeDist*0.33;
       EyeDist = (GLfloat)(downDist + dist_sens*deltay);
+      if(EyeDist <= 0.0 && MoveMode == POLAR)
+        EyeDist = 0.01;
       Ex = (GLfloat)(downEx - e_sens*deltay*sin(TORAD(EyeAz))*cos(TORAD(EyeEl)));
       Ey = (GLfloat)(downEy - e_sens*deltay*sin(TORAD(EyeEl)));
       Ez = (GLfloat)(downEz + e_sens*deltay*cos(TORAD(EyeAz))*cos(TORAD(EyeEl)));
