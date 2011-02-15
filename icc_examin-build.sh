@@ -515,6 +515,11 @@ git_repo=sane-backends
     automake --add-missing
     autoconf
     sleep 2
+  fi
+  
+  if [ -f config.log ]; then
+    echo ""
+  else
     CFLAGS="$CFLAGS $FPIC" CXXFLAGS="$CXXFLAGS $FPIC" ./configure --enable-pnm-backend $conf_opts $@
   fi
   make $MAKE_CPUS
