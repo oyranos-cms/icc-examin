@@ -62,6 +62,9 @@
 #include <FTGL/FTGLPolygonFont.h>
 #include <FTGL/FTGLExtrdFont.h>
 # endif
+# ifdef HAVE_FONTCONFIG
+# include <fontconfig/fontconfig.h>
+# endif
 #endif
 
 #include <cmath>
@@ -832,6 +835,33 @@ GL_Ansicht::GLinit_()
   if(ortho_font) delete ortho_font;
 
   const char* font_name = "/usr/share/fonts/dejavu/DejaVuSans.ttf";
+
+# ifdef HAVE_FONTCONFIG
+  FcResult r = FcResultMatch;
+  FcPattern * pat = FcPatternBuild (0, FC_SCALABLE, FcTypeBool, true,
+                                       NULL );
+  pat = FcNameParse( (FcChar8 *)"DejaVu Sans" );
+  FcObjectSet * os = FcObjectSetBuild(FC_FAMILY, FC_STYLE, (void *)0);
+  FcFontSet * font_list = FcFontList(0, pat, os);
+  FcObjectSetDestroy( os );
+  FcPatternDestroy( pat );
+  int fc_n = font_list->nfont;
+  for(int i = 0; i< fc_n; ++i)
+  {
+    {
+      FcChar8 * fname = NULL;
+      
+      FcPattern* match = FcFontMatch(0, font_list->fonts[i], &r);
+      r = FcPatternGetString( match, FC_FILE, 0, &fname );
+      if( r == FcResultMatch &&
+          fname && strstr((const char*)fname, "DejaVuSans.ttf") != NULL )
+        font_name = (const char *) fname;
+      FcPatternDestroy( match ); match = 0;
+    }
+  }
+  FcFontSetDestroy( font_list );
+# endif
+
 # if APPLE
   std::string f_n;
   if(getenv("RESOURCESPATH"))
