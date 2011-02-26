@@ -27,6 +27,7 @@
 
 // Date:      20. 05. 2005
 
+#include <alpha/oyranos_alpha.h>
 
 #include "icc_gamut.h"
 #include "icc_profile.h"
@@ -124,42 +125,32 @@ holeCMYKRampen( icUInt16Number *block, size_t & zahl )
 
 /** @brief creates a linie around the saturated colours of Cmyk and Rgb profiles */
 double*
-iccGrenze(ICCprofile & profil, int intent, size_t & groesse)
+iccGrenze(ICCprofile & profil, oyOptions_s * options, size_t & groesse)
 {
   DBG_PROG_START
   double *lab_erg = 0;
   icColorSpaceSignature csp = profil.colorSpace();
   if(csp == icSigRgbData ||
-     csp == icSigCmykData) {
+     csp == icSigCmykData)
+  {
     icUInt16Number *block = (icUInt16Number*) malloc(200*4*sizeof(double));
     icUInt16Number *lab_block = (icUInt16Number*) malloc(200*4*sizeof(double));
     size_t size=0;
     char  *p_block = 0;
     p_block = profil.saveProfileToMem(&size);
-#   if 0 
-    static int num = 0;
-    char text[24]; 
-    sprintf (text, "Übung%d.icc", num++);
-    saveMemToFile( text, p_block, size );
-#   endif
+
     // scan here the colour space border
-    cmsHPROFILE lab = cmsCreateLabProfile(cmsD50_xyY());
-    cmsHPROFILE p = cmsOpenProfileFromMem(p_block, (DWORD)size);
-    cmsHTRANSFORM xform = 0;
-    if(csp == icSigRgbData || csp == icSigCmyData) {
-      xform = cmsCreateTransform(p, TYPE_RGB_16, lab, TYPE_Lab_16,
-                                               intent, cmsFLAGS_NOTPRECALC);
-    } else if(csp == icSigCmykData) {
-      xform = cmsCreateTransform(p, TYPE_CMYK_16, lab,TYPE_Lab_16,
-                                               intent, cmsFLAGS_NOTPRECALC);
-    }
-    if(xform) {
+    oyProfile_s * lab = oyProfile_FromStd(oyEDITING_LAB, 0);
+    oyProfile_s * p = oyProfile_FromMem( size, p_block, 0,0);
+    {
       size_t zahl = 0;
       if(csp == icSigRgbData)
         holeRGBRampen( (icUInt16Number*)block, zahl );
       else if(csp == icSigCmykData)
         holeCMYKRampen( (icUInt16Number*)block, zahl );
-      cmsDoTransform(xform, block, lab_block, (unsigned int)zahl);
+
+      oyColourConvert_( p, lab, block, lab_block,
+                        oyUINT16, oyUINT16, options, size );
       groesse = zahl;
       lab_erg = new double [groesse*3];
       for(int i = 0; i < (int)groesse*3; ++i) {
@@ -167,9 +158,8 @@ iccGrenze(ICCprofile & profil, int intent, size_t & groesse)
       }
       DBG_PROG_V( groesse )
     }
-    if(xform) cmsDeleteTransform(xform);
-    if(lab) cmsCloseProfile(lab);
-    if(p) cmsCloseProfile(p);
+    oyProfile_Release( &lab );
+    oyProfile_Release( &p );
     if(p_block) free (p_block);
     if(block) free (block);
     if(lab_block) free (lab_block);

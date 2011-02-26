@@ -37,7 +37,7 @@ class ICCprofile;
 
 namespace icc_examin_ns {
 
-double* iccGrenze(ICCprofile & profil, int intent, size_t & groesse);
+double* iccGrenze(ICCprofile & profil, oyOptions_s * options, size_t & groesse);
 
 }
 

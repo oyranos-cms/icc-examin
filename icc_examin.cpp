@@ -80,7 +80,7 @@ ICCexamin * icc_examin = 0;
 int level_Prog = 0;
 
 
-int iccMessageFunc( int code, const oyStruct_s * context, const char * format, ... )
+int iccMessageFunc( int code, void * context_, const char * format, ... )
 {
   char* text = 0, *pos = 0;
   va_list list;
@@ -88,6 +88,7 @@ int iccMessageFunc( int code, const oyStruct_s * context, const char * format, .
   int id = -1, i;
   int pid = 0;
   FILE * fp = 0;
+  oyStruct_s * context = (oyStruct_s*) context_;
 
   if(code == oyMSG_DBG && !oy_debug)
     return 0;
@@ -171,6 +172,7 @@ int iccMessageFunc( int code, const oyStruct_s * context, const char * format, .
       {
         cout << "GDB output:" << endl;
         int r = system("gdb -batch -x " TMP_FILE);
+        r = 0;
       }
     } else
       cout << "could not open " << TMP_FILE << endl;
@@ -896,7 +898,7 @@ ICCexamin::setzeFensterTitel()
 void ICCexamin::optionsRefresh_( void )
 {
   if(!options_)
-    options_ = oyOptions_ForFilter( "//imaging", 0, 0, 0 );
+    options_ = oyOptions_ForFilter( "//imaging/icc", 0, 0, 0 );
 
   char t[4];
   /* should always be a single digit */
@@ -1608,9 +1610,7 @@ ICCexamin::statusFarbe(double & L, double & a, double & b)
                                 icc_betrachter->DD_box_stat->window()->x() + icc_betrachter->DD_box_stat->window()->w()/2,
                                 icc_betrachter->DD_box_stat->window()->y() + icc_betrachter->DD_box_stat->window()->h()/2,
                                 lab, 1,
-                                icc_examin->intentGet(NULL),
-                                (icc_examin->gamutwarn()?cmsFLAGS_GAMUTCHECK:0)|
-                                (icc_examin->bpc()?cmsFLAGS_BLACKPOINTCOMPENSATION:0));
+                                options_);
   Fl_Color colour = fl_rgb_color( (int)(rgb[0]*255),
                                   (int)(rgb[1]*255), (int)(rgb[2]*255) );
 

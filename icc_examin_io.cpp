@@ -785,14 +785,13 @@ ICCexaminIO::gamutSpeichern (IccGamutFormat format)
   Speicher profil;
   size_t groesse = 0;
   char* daten = 0;
+  oyOptions_s * options = icc_examin->options();
   daten = profile.profil()->saveProfileToMem( &groesse );
   profil.ladeNew( daten, groesse );
   if(format == ICC_ABSTRACT) {
     // generate Gamut profile
     Speicher speicher;
-    icc_oyranos.gamutCheckAbstract( profil, speicher,
-                                    icc_examin->intentGet(NULL),
-                                    cmsFLAGS_GAMUTCHECK );
+    icc_oyranos.gamutCheckAbstract( profil, speicher, options );
 
     // save
     saveMemToFile ( dateiname.c_str(), (const char*)speicher, speicher.size() );
@@ -800,9 +799,7 @@ ICCexaminIO::gamutSpeichern (IccGamutFormat format)
   } else if(format == ICC_VRML || format == GL_VRML) {
     std::string vrml;
     if(format == ICC_VRML)
-      vrml = icc_oyranos.vrmlVonProfil ( *profile.profil(),
-                                         icc_examin->intentGet(NULL),
-                                         icc_examin->bpc(),
+      vrml = icc_oyranos.vrmlVonProfil ( *profile.profil(), options,
                                          icc_examin->nativeGamut() );
     else
     if(format == GL_VRML)
@@ -826,6 +823,7 @@ ICCexaminIO::gamutSpeichern (IccGamutFormat format)
     saveMemToFile ( dateiname.c_str(), vrml.c_str(), vrml.size() );
   }
   profil.clear();
+  oyOptions_Release( &options );
 
     DBG_PROG_ENDE
   return erfolgreich;

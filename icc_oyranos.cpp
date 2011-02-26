@@ -679,22 +679,22 @@ Oyranos::moniInfo (int x, int y, int *num)
 std::string
 Oyranos::netzVonProfil_ (ICCnetz & netz,
                          Speicher & profil,
-                         int intent, int bpc)
+                         oyOptions_s * options)
 {
   DBG_PROG_START
   // a cubus from six squares with the range of the Lab cube
   // will be transformed to a profile colour space and converted to a mesh
   int a = 12; // resolution : 10 - more quick; 20 - more precise
   size_t  size = 4*a*(a+1) + 2*(a-1)*(a-1);
-  int     kanaele = 3;
-  double *lab = new double [size*kanaele];
+  int     channels_n = 3;
+  double *lab = new double [size*channels_n];
   double  min = 0.01, max = 0.99;
   // side quares
   for(int y = 0; y <= a; ++y)
     for(int x = 0; x < 4 * a; ++x)
     {
       int b = 0; // area
-      int pos = (y * 4 * a + x) * kanaele;
+      int pos = (y * 4 * a + x) * channels_n;
 
       // see http://www.behrmann.name/wind/oyranos/icc_examin_2008.01.21.html
       lab[pos + 0] = pow(.9999 - (double)y/(double)a, 2.0) + 0.0001;
@@ -717,7 +717,7 @@ Oyranos::netzVonProfil_ (ICCnetz & netz,
   for(int y = 0; y < (a - 1); ++y)
     for(int x = 0; x < 2 * (a - 1); ++x)
     {
-      int pos = (4 * a * (a + 1)  +  y * 2 * (a - 1) + x) * kanaele;
+      int pos = (4 * a * (a + 1)  +  y * 2 * (a - 1) + x) * channels_n;
       int b = 1; // area
       int x_pos = x + 1, y_pos = y + 1;
       double val = (double)y_pos/(double)a * (max-min);
@@ -735,8 +735,7 @@ Oyranos::netzVonProfil_ (ICCnetz & netz,
       }
     }
 
-  if(wandelLabNachProfilUndZurueck( lab, size, intent,
-                                    bpc ? cmsFLAGS_WHITEBLACKCOMPENSATION : 0,
+  if(wandelLabNachProfilUndZurueck( lab, size, options,
                                     profil ))
     return  std::string("oyranos");
   //double * rgb = wandelLabNachBildschirmFarben( 0,0, lab, size, 0, 0 );
@@ -745,12 +744,12 @@ Oyranos::netzVonProfil_ (ICCnetz & netz,
   netz.punkte. resize( size );
   for(size_t i = 0; i < size; ++i)
   {
-    for(int k = 0; k < kanaele; ++k)
+    for(int k = 0; k < channels_n; ++k)
     {
-      netz.punkte[i].koord[k] = lab [i*kanaele+k];
-      netz.punkte[i].farbe[k] = 0;//rgb [i*kanaele+k];
+      netz.punkte[i].koord[k] = lab [i*channels_n+k];
+      netz.punkte[i].farbe[k] = 0;//rgb [i*channels_n+k];
     }
-    netz.punkte[i].farbe[kanaele] = 1.0;
+    netz.punkte[i].farbe[channels_n] = 1.0;
   }
   // build mesh
   char *liste = new char [size];
@@ -976,7 +975,7 @@ Oyranos::netzVonProfil_ (ICCnetz & netz,
 #include "icc_vrml.h"
 #include "icc_gamut.h"
 void
-Oyranos::netzVonProfil (ICCprofile & profil, int intent, int bpc,
+Oyranos::netzVonProfil (ICCprofile & profil, oyOptions_s * options,
                         int native, ICCnetz & netz)
 {
   DBG_PROG_START
@@ -995,6 +994,12 @@ Oyranos::netzVonProfil (ICCprofile & profil, int intent, int bpc,
 
     double v = profil.getHeader().versionD();
 
+    int intent = 0;
+    const char * ri_text = oyOptions_FindString( options, "rendering_intent", 0 );
+    if(ri_text)
+      sscanf(ri_text, "%d", &intent );
+
+
     if(native && v < 4)
       vrml = iccCreateVrml ( s,(int)s.size(), intent );
 
@@ -1011,7 +1016,7 @@ Oyranos::netzVonProfil (ICCprofile & profil, int intent, int bpc,
     {
       netz = netze[0];
     } else {
-      t = netzVonProfil_(netz, s, intent, bpc);
+      t = netzVonProfil_(netz, s, options);
 #ifdef USE_ARGYLL
       DBG_PROG_S("Fall back to internal hull generation.");
 #else
@@ -1027,7 +1032,7 @@ Oyranos::netzVonProfil (ICCprofile & profil, int intent, int bpc,
     if(netz.punkte.size())
     {
       size_t groesse = 0;
-      double* band = icc_examin_ns::iccGrenze( profil, intent, groesse );
+      double* band = icc_examin_ns::iccGrenze( profil, options, groesse );
       DBG_PROG_V( (int*) band <<" "<< groesse )
 
       netz.umriss.resize( groesse );
@@ -1042,7 +1047,7 @@ Oyranos::netzVonProfil (ICCprofile & profil, int intent, int bpc,
 }
 
 std::string
-Oyranos::vrmlVonProfil (ICCprofile & profil, int intent, int bpc,
+Oyranos::vrmlVonProfil (ICCprofile & profil, oyOptions_s * options,
                         int native)
 {
   DBG_PROG_START
@@ -1052,7 +1057,7 @@ Oyranos::vrmlVonProfil (ICCprofile & profil, int intent, int bpc,
 
   netze.resize(1);
 
-  netzVonProfil( profil, intent, bpc, native,
+  netzVonProfil( profil, options, native,
                                  netze[0] );
 
   int p_n = netze[0].punkte.size();
@@ -1064,8 +1069,7 @@ Oyranos::vrmlVonProfil (ICCprofile & profil, int intent, int bpc,
           lab[k] = netze[0].punkte[j].koord[k];
 
         double * rgb = icc_oyranos.wandelLabNachBildschirmFarben( 0, 0,
-                                 lab, 1, 3,
-                                 0);
+                                                              lab, 1, options );
         for(int k = 0; k < 3 ; ++k)
           netze[0].punkte[j].farbe[k] = rgb[k];
 
@@ -1087,9 +1091,15 @@ Oyranos::vrmlVonProfil (ICCprofile & profil, int intent, int bpc,
   {
     double v = profil.getHeader().versionD();
 
+    int intent = 0;
+    const char * ri_text = oyOptions_FindString( options, "rendering_intent", 0 );
+    if(ri_text)
+      sscanf(ri_text, "%d", &intent );
+
     if(native && v < 4)
       vrml = iccCreateVrml ( s, (int)s.size(), intent );
   }
+
   DBG_PROG_ENDE
   return vrml;
 }
@@ -1115,107 +1125,44 @@ Oyranos::bandVonProfil (const Speicher & p, int intent)
 #define BW_COMP 0
 #endif
 
-namespace icc_examin_ns {
-int
-gamutCheckSampler(register WORD In[],
-                      register WORD Out[],
-                      register LPVOID Cargo)
-{
-  cmsCIELab Lab1, Lab2;
-  double d;
-  oyPointer * ptr = (oyPointer*)Cargo;
-
-  cmsLabEncoded2Float(&Lab1, In);
-  cmsDoTransform( ptr[0], &Lab1, &Lab2, 1 );
-  d = cmsDeltaE( &Lab1, &Lab2 );
-  if(abs(d) > 10 && ptr[1])
-  {
-    Lab2.L = 50.0;
-    Lab2.a = Lab2.b = 0.0;
-  }
-  cmsFloat2LabEncoded(Out, &Lab2);
-
-  return TRUE;
-}
-}
-
 void
 Oyranos::gamutCheckAbstract(Speicher & s, Speicher & abstract,
-                            int intent, int flags)
+                            oyOptions_s * options)
 {
   DBG_PROG_START
-  cmsHPROFILE profil = 0,
-              hLab = 0;
-  size_t groesse = s.size();
+  size_t size = s.size();
   const char* block = s;
-  oyPointer ptr[2] = {0,0};
 
-  DBG_MEM_V( (int*) block <<" "<<groesse )
+  DBG_MEM_V( (int*) block <<" "<<size )
 
     double start = fortschritt();
 
+    oyOptions_s * opts = 0,
+                * result = 0;
+    oyProfile_s * prof = oyProfile_FromMem( size, (void*)block, 0, 0 );
+    int error = oyOptions_MoveInStruct( &opts,
+                      "//"OY_TYPE_STD"proofing_profile",
+                      (oyStruct_s**)&prof, 0 );
 
-      fortschritt(0.2, 0.2);
-      hLab  = cmsCreateLabProfile(cmsD50_xyY());
-      if(!hLab)  WARN_S( "hLab profil not opened" )
+    oyOptions_AppendOpts( opts, options );
+    error = oyOptions_Handle( "//"OY_TYPE_STD"/create_profile.icc",
+                      opts,"create_profile.icc_profile.proofing_effect",
+                      &result );
 
-      fortschritt(0.2, 0.2);
-      profil = cmsOpenProfileFromMem(const_cast<char*>(block), (DWORD)groesse);
-      cmsHTRANSFORM tr1 = cmsCreateProofingTransform  (hLab, TYPE_Lab_DBL,
-                                               hLab, TYPE_Lab_DBL,
-                                               profil,
-                                               intent,
-                                               INTENT_RELATIVE_COLORIMETRIC,
-                                               PRECALC|flags|cmsFLAGS_HIGHRESPRECALC);
-      ptr[0] = tr1;
-      ptr[1] = flags & cmsFLAGS_GAMUTCHECK ? (oyPointer)1 : 0;
+    prof = (oyProfile_s*) oyOptions_GetType( result, -1, "icc_profile",
+                                             oyOBJECT_PROFILE_S );
 
-     
-#if 0 // Gamut tag
-      LPLUT lut = _cmsPrecalculateGamutCheck( tr1 ); DBG
-      cmsHPROFILE gmt = _cmsCreateProfilePlaceholder();
-      cmsSetDeviceClass( gmt, icSigOutputClass );
-      cmsSetColorSpace( gmt, icSigLabData );
-      cmsSetPCS( gmt, icSigCmykData );
-      _cmsAddLUTTag( gmt, icSigGamutTag, lut ); DBG
-      cmsAddTag( gmt, icSigProfileDescriptionTag,  (char*)"GamutCheck");
-      _cmsSaveProfile ( gmt,"proof_gamut.icc"); DBG
-#endif
+    oyOptions_Release( &result );
+    oyOptions_Release( &opts );
 
-      // We calculate the gamut warning for a abstract profile
-      cmsHPROFILE tmp = cmsTransform2DeviceLink(tr1,0);
-      if(tr1) cmsDeleteTransform( tr1 );
-      fortschritt(0.2,0.2);
-      LPLUT gmt_lut = cmsAllocLUT();
-      cmsAlloc3DGrid( gmt_lut, 53, 3, 3);
-      tr1 = cmsCreateProofingTransform  (hLab, TYPE_Lab_DBL,
-                                               hLab, TYPE_Lab_DBL,
-                                               profil,
-                                               intent,
-                                               INTENT_RELATIVE_COLORIMETRIC,
-                                               PRECALC|flags|cmsFLAGS_HIGHRESPRECALC);
-      cmsSample3DGrid( gmt_lut, icc_examin_ns::gamutCheckSampler, ptr, 0 );
+    fortschritt(0.2, 0.2);
+    char * mem = (char*)oyProfile_GetMem( prof, &size, 0, malloc );
+    abstract.ladeUndFreePtr (&mem, size);
 
-      fortschritt(0.5,0.2);
-      cmsHPROFILE gmt = _cmsCreateProfilePlaceholder();
-      cmsSetDeviceClass( gmt, icSigAbstractClass );
-      cmsSetColorSpace( gmt, icSigLabData );
-      cmsSetPCS( gmt, icSigLabData );
-      cmsAddTag( gmt, icSigProfileDescriptionTag,  (char*)"proofing");
-      cmsAddTag( gmt, icSigCopyrightTag, (char*)"no copyright; use freely" );
-      cmsAddTag( gmt, icSigMediaWhitePointTag, cmsD50_XYZ() );
-      cmsAddTag( gmt, icSigAToB0Tag, gmt_lut );
-      _cmsSaveProfileToMem ( gmt, 0, &groesse );
-      char* mem = (char*) calloc( sizeof(char), groesse);
-      _cmsSaveProfileToMem ( gmt, mem, &groesse );
-      abstract.ladeUndFreePtr (&mem, groesse);
-      if(gmt) cmsCloseProfile( gmt );
-      if(hLab) cmsCloseProfile( hLab );
-      if(tmp) cmsCloseProfile( tmp );
-      if(tr1) cmsDeleteTransform( tr1 );
-      if(gmt_lut) cmsFreeLUT( gmt_lut );
     if(start <= 0.0)
       fortschritt(1.1);
+
+  oyProfile_Release( &prof );
  
   DBG_PROG_ENDE
 }
@@ -1223,7 +1170,7 @@ Oyranos::gamutCheckAbstract(Speicher & s, Speicher & abstract,
 
 int
 Oyranos::wandelLabNachProfilUndZurueck(double *lab, // 0.0 - 1.0
-                                       size_t  size, int intent, int flags,
+                                       size_t  size, oyOptions_s * options,
                                        Speicher & p )
 {
   DBG_PROG_START
@@ -1231,78 +1178,60 @@ Oyranos::wandelLabNachProfilUndZurueck(double *lab, // 0.0 - 1.0
   DBG_PROG_V( size <<" "<< intent <<" "<< flags )
 
     // lcms types
-    cmsHPROFILE hProfil = 0,
-                hLab = 0;
-    cmsHTRANSFORM form = 0;
 
-    size_t groesse = p.size();
+    size_t bsize = p.size();
     const char*  block = p;
-    int kanaele, format;
+    int channels_n;
     int input_ausnahme = 0;
-    oyProfile_s * profile = oyProfile_FromMem( groesse, (void*)block, 0, 0 );
+    oyProfile_s * profile = oyProfile_FromMem( bsize, (void*)block, 0, 0 );
+    channels_n = oyProfile_GetChannelsCount( profile );
+    double * channels = new double [size*channels_n];
     oyProfile_s * lab_profile = oyProfile_FromStd( oyEDITING_LAB, 0 );
+    oyConversion_s * ctolab = 0, * labtoc;
     
 
     {
       // initialising for lcms
       DBG_MEM_V( (int*) block <<" "<<groesse )
 
-      if(groesse)
-        hProfil = cmsOpenProfileFromMem(const_cast<char*>(block), (DWORD)groesse);
-      else
+      if(!bsize)
         WARN_S("no profile found");
 
-      icColorSpaceSignature pcs = cmsGetPCS( hProfil );
+      icColorSpaceSignature pcs = (icColorSpaceSignature)
+                           oyProfile_GetSignature( profile, oySIGNATURE_PCS );
       if( pcs != icSigXYZData && pcs != icSigLabData )
         return 1;
-      icProfileClassSignature device = cmsGetDeviceClass( hProfil );
+      icProfileClassSignature device = (icProfileClassSignature)
+                           oyProfile_GetSignature( profile, oySIGNATURE_CLASS );
       if( device != icSigInputClass && device != icSigDisplayClass &&
           device != icSigOutputClass && device != icSigAbstractClass )
         return 1;
 
-      hLab  = cmsCreateLabProfile(cmsD50_xyY());
+      /*hLab  = cmsCreateLabProfile(cmsD50_xyY());
       cmsSetColorSpace( hLab, icSigRgbData );
       cmsSetDeviceClass( hLab, icSigInputClass );
       if(!hLab) { WARN_S( "hLab Profil not opened" ); return 1; }
-
-      kanaele = _cmsChannelsOf( cmsGetColorSpace( hProfil ) );
-      format = COLORSPACE_SH(PT_ANY) |
-               CHANNELS_SH(kanaele) |
-               BYTES_SH(0); // lcms_bytes;
-
-#     if HAVE_EXCEPTION
-      try {
-#     endif
-      form = cmsCreateTransform               (hLab, TYPE_RGB_DBL,
-                                               hProfil, format,
-                                               intent,
-                                               PRECALC|flags);
-#     if HAVE_EXCEPTION
-      }
-      catch (std::exception & e) { // catches all from exception
-        WARN_S (_("Std-exception occured: ") << e.what());
-      }
-      catch (...) {       // catches all from exception
-        WARN_S (_("Huch, unknown exception"));
-      }
-#endif
-
-      if (!form) {
+      */
+      ctolab = oyConversion_FromBuffers(
+                               profile, lab_profile, lab, channels,
+                               oyDOUBLE,oyDOUBLE, options, size );
+      if (!ctolab)
+      {
         if(device == icSigInputClass && 
-           kanaele == 3)
+           channels_n == 3)
         {
           // use colours instantly
           input_ausnahme = 1;
 
-        } else {
+        } else
+        {
           WARN_S( "no transformation found" );
           return 1;
         }
       }
     }
 
-    double *farben = new double [size * kanaele];
-    if(!farben) { WARN_S( "not enough memory available" ); return 1; }
+    if(!channels) { WARN_S( "not enough memory available" ); return 1; }
 
     double *cielab = new double [size * 3];
 #ifdef DEBUG
@@ -1312,17 +1241,20 @@ Oyranos::wandelLabNachProfilUndZurueck(double *lab, // 0.0 - 1.0
 
     if(!input_ausnahme)
     {
-      cmsDoTransform (form, lab, farben, (unsigned int)size);
-      cmsDeleteTransform (form);
+      oyConversion_RunPixels( ctolab, 0 );
+      oyConversion_Release( &ctolab );
 #ifdef DEBUG
       memcpy( cielab_tmp, lab, size * 3 * sizeof(double));
 #endif
     } else {
       LabToCIELab (lab, cielab, (int)size);
-      memcpy( farben, cielab, size * kanaele * sizeof(double)); // why cielab?
+      memcpy( channels, cielab, size * channels_n * sizeof(double)); // why cielab?
     }
 
-    cmsSetColorSpace( hLab, icSigLabData );
+    labtoc = oyConversion_FromBuffers(
+                               lab_profile, profile, channels, lab,
+                               oyDOUBLE,oyDOUBLE, options, size );
+    /*cmsSetColorSpace( hLab, icSigLabData );
     cmsSetDeviceClass( hLab, icSigOutputClass );
     form = cmsCreateTransform                 (hProfil, format,
                                                hLab, TYPE_Lab_DBL,
@@ -1330,11 +1262,14 @@ Oyranos::wandelLabNachProfilUndZurueck(double *lab, // 0.0 - 1.0
                                                PRECALC|flags);
     if (!form) { WARN_S( "no transformation found" ); return 1; }
 
-    cmsDoTransform (form, farben, cielab, (unsigned int)size);
-    cmsDeleteTransform (form);
+    cmsDoTransform (form, channels, cielab, (unsigned int)size);
+    cmsDeleteTransform (form);*/
+    oyConversion_RunPixels( labtoc, 0 );
+    oyConversion_Release( &labtoc );
+    
 
 #ifdef DEBUG
-    if(kanaele == 4)
+    if(channels_n == 4)
     {
       if(icc_debug > 1)
       {
@@ -1346,7 +1281,7 @@ Oyranos::wandelLabNachProfilUndZurueck(double *lab, // 0.0 - 1.0
           saveMemToFile( "icc_oyranos.lab1.cgats", txt, strlen(txt) );
           free(txt);
         }
-        txt = oyDumpColourToCGATS( farben, size, profile, malloc,
+        txt = oyDumpColourToCGATS( channels, size, profile, malloc,
                                           __FILE__ );
         if(txt)
         {
@@ -1363,18 +1298,16 @@ Oyranos::wandelLabNachProfilUndZurueck(double *lab, // 0.0 - 1.0
         oyProfile_Release( &prof );
       }
     }
-    DBG_NUM_V(kanaele)
+    DBG_NUM_V(channels_n)
 #endif
 
     CIELabToLab (cielab, lab, (int)size);
 
-    if(hProfil)   cmsCloseProfile(hProfil);
-    if(hLab)      cmsCloseProfile(hLab);
     oyProfile_Release( &profile );
     oyProfile_Release( &lab_profile );
 
     if(cielab)    delete [] cielab;
-    if(farben)    delete [] farben;
+    if(channels)    delete [] channels;
 
   DBG_PROG_ENDE
   return 0;
@@ -1448,134 +1381,36 @@ oyProfile_s * Oyranos::oyMoni (int x, int y, int native)
 double*
 Oyranos::wandelLabNachBildschirmFarben(int x, int y,
                                        double *Lab_Speicher, // 0.0 - 1.0
-                                       size_t  size, int intent, int flags)
+                                       size_t  size, oyOptions_s * options)
 {
   DBG_5_START
 
   DBG_5_V( size <<" "<< intent <<" "<< flags )
 
-    // lcms types
-    cmsHPROFILE hMoni = 0,
-                hLab = 0,
-                hProof = 0;
-    static cmsHTRANSFORM hLabtoRGB = 0;
-    static cmsHTRANSFORM h_lab_to_RGB_teuer = 0;
-    cmsHTRANSFORM *form = 0;
+    oyProfile_s * prof_disp = oyMoni(x,y);
+
     double *RGB_Speicher = 0;
-    static int flags_ = 0;
-    static int intent_ = 0;
-    static int x_ = 0;
-    static int y_ = 0;
-
-    size_t groesse = 0;
-    char*  block = 0;
-    static size_t groesse_ = 0;
-    static char * block_ = 0;
-
-#ifndef OYRANOS_VERSION
-#define OYRANOS_VERSION 0
-#endif
-#if OYRANOS_VERSION > 106
-    static
-#if OYRANOS_VERSION > 107
-           unsigned
-#endif
-                     char digest[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-                          dig[16];
-#endif
-
-    if(x != x_ || y != y_ || !block_ || !groesse_ || size > 1)
-    {
-      block = block_ = (char*) moni(x,y, groesse_);
-      x_ = x;
-      y_ = y;
-      groesse = groesse_;
-      
-      if(block && groesse)
-        oyProfileGetMD5(block, groesse, dig);
-    }
-
-    if(flags & cmsFLAGS_GAMUTCHECK)
-      form = &h_lab_to_RGB_teuer;
-    else
-      form = &hLabtoRGB;
 
     double start = fortschritt();
 
-    if(flags_ != (flags & ~cmsFLAGS_GAMUTCHECK) ||
-       intent_ != intent ||
-#if OYRANOS_VERSION > 106
-       (size > 1 && memcmp(digest, dig, 16) != 0) ||
-#endif
-       !*form )
-    {
-      flags_ = flags & ~cmsFLAGS_GAMUTCHECK;
-      intent_ = intent;
-#if OYRANOS_VERSION > 106
-      memcpy( digest, dig, 16 );
-#endif
 
-      fortschritt(0.05,0.2);
+    fortschritt(0.05,0.2);
 
-      if (*form)
-      {
-        cmsDeleteTransform(*form);
-        *form = 0;
-      }
-
-      // initialising for lcms
-      DBG_5_V( (int*) block <<" "<<groesse )
-
-      fortschritt(0.2,0.2);
-      if(groesse)
-        hMoni = cmsOpenProfileFromMem(block, (DWORD)groesse);
-      else
-        hMoni = cmsCreate_sRGBProfile();
-      if(!hMoni) WARN_S( "hMoni profile nicht opened" )
-      hLab  = cmsCreateLabProfile(cmsD50_xyY());
-      if(!hLab)  WARN_S( "hLab profile not opened" )
-
-      if(flags & cmsFLAGS_GAMUTCHECK)
-      {
-        block = const_cast<char*>( proof(groesse) );
-        hProof = cmsOpenProfileFromMem(block, (DWORD)groesse);
-      }
-
-      fortschritt(0.5,0.2);
-      *form = cmsCreateProofingTransform  (hLab, TYPE_Lab_DBL,
-                                               hMoni, TYPE_RGB_DBL,
-                                               hProof, // simulation profile
-                                               intent,
-                                               INTENT_RELATIVE_COLORIMETRIC,
-                                               PRECALC|BW_COMP|flags);
-      if (!*form)
-      {
-        WARN_S( "no hXYZtoRGB transformation found" )
-        DBG_5_ENDE
-        return RGB_Speicher;
-      }
-
-      if(flags & cmsFLAGS_GAMUTCHECK)
-        h_lab_to_RGB_teuer = *form;
-      else
-        hLabtoRGB = *form;
-
-    }
-
+    oyProfile_s * prof_lab = oyProfile_FromStd( oyEDITING_LAB, 0 );
 
     RGB_Speicher = new double[size*3];
     if(!RGB_Speicher)  WARN_S( "RGB_speicher Speicher not available" )
 
     double *cielab = (double*) malloc (sizeof(double)*3*size);
     LabToCIELab (Lab_Speicher, cielab, (int)size);
-
-    cmsDoTransform (*form, cielab, RGB_Speicher, (unsigned int)size);
+    oyColourConvert_( prof_lab, prof_disp, Lab_Speicher, RGB_Speicher,
+                      oyDOUBLE, oyDOUBLE, options, size );
 
     if(start <= 0.0)
       fortschritt(1.1);
 
-    if(hMoni)     cmsCloseProfile(hMoni);
-    if(hLab)      cmsCloseProfile(hLab);
+    oyProfile_Release( &prof_disp );
+    oyProfile_Release( &prof_lab );
 
     if(cielab)    free (cielab);
 

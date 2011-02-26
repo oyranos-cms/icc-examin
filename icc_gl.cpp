@@ -2382,6 +2382,8 @@ GL_Ansicht::zeigeUmrisse_()
     gl_listen_[UMRISSE] = 0;
   }
 
+  oyOptions_s * opts = icc_examin->options();
+
   //if (spektralband == MENU_SPEKTRALBAND)
   for (unsigned int d=0; d < dreiecks_netze.size(); ++d)
   {
@@ -2404,7 +2406,7 @@ GL_Ansicht::zeigeUmrisse_()
 
     RGB_Speicher = icc_oyranos.wandelLabNachBildschirmFarben(
                window()->x() + window()->w()/2, window()->y() + window()->h()/2,
-               Lab_Speicher, (size_t)n, icc_examin->intentGet(NULL), 0);
+               Lab_Speicher, (size_t)n, opts);
     DBG_PROG_V( n )
     // create shadow
     Lab_Speicher_schatten = (double*) malloc (sizeof(double) * n*3);
@@ -2417,7 +2419,7 @@ GL_Ansicht::zeigeUmrisse_()
 
     RGBSchatten_Speicher = icc_oyranos.wandelLabNachBildschirmFarben(
                window()->x() + window()->w()/2, window()->y() + window()->h()/2,
-                      Lab_Speicher_schatten, n, icc_examin->intentGet(NULL), 0);
+                      Lab_Speicher_schatten, n, opts);
     if(!RGB_Speicher)  WARN_S( "RGB_speicher result is not available" )
     if(!RGBSchatten_Speicher)  WARN_S( "RGB_speicher result is not available" )
 
@@ -2429,8 +2431,9 @@ GL_Ansicht::zeigeUmrisse_()
     if (Lab_Speicher_schatten) free (Lab_Speicher_schatten);
     if (RGB_Speicher) delete [] RGB_Speicher;
     if (RGBSchatten_Speicher) delete [] RGBSchatten_Speicher;
-
   }
+  oyOptions_Release( &opts );
+
     GLfloat farbe[] =   { pfeilfarbe[0],pfeilfarbe[1],pfeilfarbe[2], 1.0 };
 
   gl_listen_[UMRISSE] = glGenLists(1);
@@ -2523,6 +2526,7 @@ GL_Ansicht::zeigeSpektralband_()
            *Lab_Speicher = 0,
            *Lab_Speicher_schatten = 0;
     int n_punkte = 471;//341; // 700 nm
+    oyOptions_s * opts = icc_examin->options();
 
     if(typ_ > 1)
     {
@@ -2560,7 +2564,7 @@ GL_Ansicht::zeigeSpektralband_()
 
     RGB_Speicher = icc_oyranos.wandelLabNachBildschirmFarben(
                window()->x() + window()->w()/2, window()->y() + window()->h()/2,
-               Lab_Speicher, (size_t)n_punkte, icc_examin->intentGet(NULL), 0);
+               Lab_Speicher, (size_t)n_punkte, opts);
 
     if(typ_ == 1)
       for (int i = 0; i < n_punkte; ++i)
@@ -2579,7 +2583,7 @@ GL_Ansicht::zeigeSpektralband_()
 
     RGBSchatten_Speicher = icc_oyranos.wandelLabNachBildschirmFarben(
                window()->x() + window()->w()/2, window()->y() + window()->h()/2,
-               Lab_Speicher_schatten, n_punkte, icc_examin->intentGet(NULL), 0);
+               Lab_Speicher_schatten, n_punkte, opts);
     if(!RGB_Speicher || !RGBSchatten_Speicher) 
     {
       WARN_S( "RGB_speicher result not available" )
@@ -2641,7 +2645,7 @@ GL_Ansicht::zeigeSpektralband_()
     if (RGBSchatten_Speicher) delete [] RGBSchatten_Speicher;
     if (Lab_Speicher) delete [] Lab_Speicher;
     if (Lab_Speicher_schatten) delete [] Lab_Speicher_schatten;
-
+    oyOptions_Release( &opts );
   }
   DBG_PROG_ENDE
 }
@@ -2988,13 +2992,11 @@ GL_Ansicht::zeichnen()
         }
       }
 
-    oyOptions_Release( &opts );
     double lab[3] = {oY+0.5, oZ/2.55+0.5, oX/2.55+0.5},
             *rgb_ = 0, *rgb = 0;
     rgb_ = rgb = icc_oyranos.wandelLabNachBildschirmFarben( 
                window()->x() + window()->w()/2, window()->y() + window()->h()/2,
-                                 lab, 1, icc_examin->intentGet(NULL),
-                                 icc_examin->gamutwarn()?cmsFLAGS_GAMUTCHECK:0);
+                                 lab, 1, opts);
 
       if( (strlen(text) || epoint_) &&
           typ() != 1 )
@@ -3293,6 +3295,7 @@ GL_Ansicht::zeichnen()
       oyNamedColour_Release( &epoint_ );
 
     if(rgb_) delete [] rgb_;
+    oyOptions_Release( &opts );
 
   } else
     if(!icc_examin->frei())
@@ -3674,8 +3677,8 @@ GL_Ansicht::setBspFaceProperties_( icc_examin_ns::FACE *faceList )
               window()->x() + window()->w()/2, window()->y() + window()->h()/2
                                               );
   oyNamedColour_s * c = oyNamedColour_Create( 0, 0, 0, prof, 0 );
-  oyOptions_s * opts = icc_examin->options();
 #endif
+  oyOptions_s * opts = icc_examin->options();
 
   /* updateNet_ takes care of dreiecks_netze.frei */
   for( ftrav = faceList; ftrav != 0; ftrav = ftrav->fnext )
@@ -3711,8 +3714,7 @@ GL_Ansicht::setBspFaceProperties_( icc_examin_ns::FACE *faceList )
 
         double * rgb = icc_oyranos.wandelLabNachBildschirmFarben( 
                window()->x() + window()->w()/2, window()->y() + window()->h()/2,
-                                 lab, 1, icc_examin->intentGet(NULL),
-                                 icc_examin->gamutwarn()?cmsFLAGS_GAMUTCHECK:0);
+                                 lab, 1, opts);
 
         if(rgb)
         {
@@ -3732,8 +3734,8 @@ GL_Ansicht::setBspFaceProperties_( icc_examin_ns::FACE *faceList )
 
 #ifdef USE_OY_NC
   oyNamedColour_Release( &c );
-  oyOptions_Release( &opts );
 #endif
+  oyOptions_Release( &opts );
 
   DBG_5_ENDE
 }
