@@ -1175,7 +1175,6 @@ Oyranos::wandelLabNachProfilUndZurueck(double *lab, // 0.0 - 1.0
 {
   DBG_PROG_START
 
-  DBG_PROG_V( size <<" "<< intent <<" "<< flags )
 
     // lcms types
 
@@ -1192,7 +1191,7 @@ Oyranos::wandelLabNachProfilUndZurueck(double *lab, // 0.0 - 1.0
 
     {
       // initialising for lcms
-      DBG_MEM_V( (int*) block <<" "<<groesse )
+      DBG_MEM_V( (int*) block <<" "<<bsize )
 
       if(!bsize)
         WARN_S("no profile found");
@@ -1385,7 +1384,6 @@ Oyranos::wandelLabNachBildschirmFarben(int x, int y,
 {
   DBG_5_START
 
-  DBG_5_V( size <<" "<< intent <<" "<< flags )
 
     oyProfile_s * prof_disp = oyMoni(x,y);
 
