@@ -36,18 +36,16 @@
 namespace icc_examin_ns {
 
 /** @brief creates a colour gradient for RGB colours */
-void
-holeRGBRampen( icUInt16Number *block, size_t & zahl )
+icUInt16Number* holeRGBRampen( size_t & zahl )
 {
   DBG_PROG_START
   int k = 3;
   double schritte = 10.,
          max = 65535.;
-
   zahl = (int)schritte*k*2 + 1;
 
-  for(int i = 0; i < (int)zahl*k; ++i)
-    block[i] = 0;
+  icUInt16Number *block = (icUInt16Number*) calloc( zahl*k,
+                                                    sizeof(icUInt16Number) );
 
   for(int i = 0; i < (int)zahl; ++i) {
     // red
@@ -77,10 +75,10 @@ holeRGBRampen( icUInt16Number *block, size_t & zahl )
   block[zahl*3-3+1] = 0;
   block[zahl*3-3+2] = (int)max;
   DBG_PROG_ENDE
+  return block;
 }
 
-void
-holeCMYKRampen( icUInt16Number *block, size_t & zahl )
+icUInt16Number* holeCMYKRampen( size_t & zahl )
 {
   DBG_PROG_START
   int k = 4;
@@ -88,6 +86,9 @@ holeCMYKRampen( icUInt16Number *block, size_t & zahl )
          max = 65535.;
 
   zahl = (int)schritte*(k-1)*2 + 1;
+
+  icUInt16Number *block = (icUInt16Number*) calloc( zahl*k,
+                                                    sizeof(icUInt16Number) );
 
   for(int i = 0; i < (int)zahl*k; ++i) {
     block[i] = 0;
@@ -121,6 +122,7 @@ holeCMYKRampen( icUInt16Number *block, size_t & zahl )
   block[zahl*k-k+1] = 0;
   block[zahl*k-k+2] = (int)max;
   DBG_PROG_ENDE
+  return block;
 }
 
 /** @brief creates a linie around the saturated colours of Cmyk and Rgb profiles */
@@ -133,7 +135,7 @@ iccGrenze(ICCprofile & profil, oyOptions_s * options, size_t & groesse)
   if(csp == icSigRgbData ||
      csp == icSigCmykData)
   {
-    icUInt16Number *block = (icUInt16Number*) malloc(200*4*sizeof(double));
+    icUInt16Number *block = 0;
     icUInt16Number *lab_block = (icUInt16Number*) malloc(200*4*sizeof(double));
     size_t size=0;
     char  *p_block = 0;
@@ -143,15 +145,15 @@ iccGrenze(ICCprofile & profil, oyOptions_s * options, size_t & groesse)
     oyProfile_s * lab = oyProfile_FromStd(oyEDITING_LAB, 0);
     oyProfile_s * p = oyProfile_FromMem( size, p_block, 0,0);
     {
-      size_t zahl = 0;
+      size_t lenght = 0;
       if(csp == icSigRgbData)
-        holeRGBRampen( (icUInt16Number*)block, zahl );
+        block = (icUInt16Number*) holeRGBRampen( lenght );
       else if(csp == icSigCmykData)
-        holeCMYKRampen( (icUInt16Number*)block, zahl );
+        block = (icUInt16Number*) holeCMYKRampen( lenght );
 
       oyColourConvert_( p, lab, block, lab_block,
-                        oyUINT16, oyUINT16, options, size );
-      groesse = zahl;
+                        oyUINT16, oyUINT16, options, lenght );
+      groesse = lenght;
       lab_erg = new double [groesse*3];
       for(int i = 0; i < (int)groesse*3; ++i) {
         lab_erg[i] = lab_block[i]/65535.;
