@@ -267,11 +267,6 @@ TagDrawings::draw ()
   DBG_PROG_ENDE
 }
 
-extern "C" {
-  int              oyArray2d_ToPPM_    ( oyArray2d_s       * array,
-                                       const char        * file_name );
-};
-
 void
 TagDrawings::drawCieShoe_ ( int repeated)
 { DBG_prog_start
