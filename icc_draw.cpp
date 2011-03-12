@@ -197,7 +197,7 @@ TagDrawings::ruhigNeuzeichnen (void)
 void
 TagDrawings::init_shoe_ ()
 {
-  // initialisation for lcms
+  // initialisation for Oyranos
   hXYZ  = oyProfile_FromStd( oyEDITING_XYZ, NULL );
 
   size_t groesse = 0;
@@ -216,19 +216,20 @@ TagDrawings::init_shoe_ ()
   in    = oyImage_Create( 1,1,
                          buf_in,
                          oyChannels_m(oyProfile_GetChannelsCount(hXYZ)) |
-                         oyFLOAT,
+                                                          oyDataType_m(oyFLOAT),
                          hXYZ,
                          0 );
   out   = oyImage_Create( 1,1,
                          buf_out ,
                          oyChannels_m(oyProfile_GetChannelsCount(hsRGB)) |
-                         oyUINT8,
+                                                          oyDataType_m(oyUINT8),
                          hsRGB,
                          0 );
   oyOptions_s * options = 0;
   // absolute colorimetric intent
   oyOptions_SetFromText( &options, "rendering_intent", "3", 0 );
   c = oyConversion_CreateBasicPixels( in,out, options, 0 );
+  oyOptions_Release( &options );
 }
 
 void
@@ -265,6 +266,11 @@ TagDrawings::draw ()
     DBG_PROG_S( __func__ << _(" used too early!") );
   DBG_PROG_ENDE
 }
+
+extern "C" {
+  int              oyArray2d_ToPPM_    ( oyArray2d_s       * array,
+                                       const char        * file_name );
+};
 
 void
 TagDrawings::drawCieShoe_ ( int repeated)
@@ -304,7 +310,7 @@ TagDrawings::drawCieShoe_ ( int repeated)
         buf_in[1] = bildNachY(cie_y);
         buf_in[2] = 1 - (buf_in[0] +  buf_in[1]);
 
-        // draw background (lcms)
+        // draw background (Oyranos)
         oyConversion_RunPixels( c, 0 );
 
         fl_color (fl_rgb_color (buf_out[0],buf_out[1],buf_out[2]));
@@ -339,18 +345,34 @@ TagDrawings::drawCieShoe_ ( int repeated)
         i += 3;
       }
     }
-    // draw background (lcms)
-    for(i = 0; i < n_pixel; ++i)
+    // draw background (Oyranos)
     {
-      buf_in[0] =  XYZ_speicher[i*3+0];
-      buf_in[1] =  XYZ_speicher[i*3+1];
-      buf_in[2] =  XYZ_speicher[i*3+2];
-      oyConversion_RunPixels( c, 0 );
-      RGB_speicher[0] = buf_out[i*3+0];
-      RGB_speicher[1] = buf_out[i*3+1];
-      RGB_speicher[2] = buf_out[i*3+2];
+      int width = xNachBild(0.73) - xNachBild(0),
+          height = abs(yNachBild(0.85) - yNachBild(0.01));
+      oyImage_s * cie_xyz = oyImage_Create( width,height,
+                         XYZ_speicher,
+                         oyChannels_m(oyProfile_GetChannelsCount(hXYZ)) |
+                                                          oyDataType_m(oyFLOAT),
+                         hXYZ,
+                         0 ),
+                * cie_image = oyImage_Create( width,height,
+                         RGB_speicher,
+                         oyChannels_m(oyProfile_GetChannelsCount(hsRGB)) |
+                                                          oyDataType_m(oyUINT8),
+                         hsRGB,
+                         0 );
+      oyOptions_s * options = 0;
+      // absolute colorimetric intent
+      oyOptions_SetFromText( &options, "rendering_intent", "3", 0 );
+      oyConversion_s * cie = oyConversion_CreateBasicPixels( cie_xyz, cie_image,
+                                                             options, 0 );
+      oyConversion_RunPixels( cie, 0 );
+      oyConversion_Release( &cie );
+      oyImage_Release( &cie_xyz );
+      oyImage_Release( &cie_image );
+      oyOptions_Release( &options );
     }
-    fl_draw_image(RGB_speicher, xNachBild(min_x), yNachBild(0.85), wi, hi, 3, 0);
+    fl_draw_image(RGB_speicher, xNachBild(min_x), yNachBild(0.85), wi, hi, 3,0);
   }
 
   // detect time of refresh
@@ -523,7 +545,7 @@ TagDrawings::drawCieShoe_ ( int repeated)
 #       endif
         buf_in[2] = punkte[i*3+2]; //1 - ( punkte[i][0] +  punkte[i][1] );
 
-        // convert colour for displaying (lcms)
+        // convert colour for displaying (Oyranos)
         oyConversion_RunPixels( c, 0 );
 
         double _XYZ[3] = {buf_in[0], buf_in[1], buf_in[2]};
