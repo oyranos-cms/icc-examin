@@ -1028,7 +1028,7 @@ ICCmeasurement::init_umrechnen                     (void)
                                     PRECALC|BW_COMP);*/
       fortschritt(0.1, 0.2);
       // How sees the profile the measurement colour? -> Lab
-      ctoxyz= oyConversion_FromBuffers( profile, profile_lab, Farbe, CIELab,
+      ctolab= oyConversion_FromBuffers( profile, profile_lab, Farbe, CIELab,
                                         oyDOUBLE, oyDOUBLE, options, 0 );
       /*hCOLOURtoLab =  cmsCreateTransform (hCOLOUR, TYPE_nCOLOUR_DBL,
                                     hLab, TYPE_Lab_DBL,
