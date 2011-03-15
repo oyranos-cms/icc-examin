@@ -1018,7 +1018,7 @@ ICCmeasurement::init_umrechnen                     (void)
 
 
       fortschritt(0.1 , 0.2);
-      oyOptions_SetFromText( &options, "rendering_intent", "3", OY_CREATE_NEW );
+      oyOptions_SetFromText( &options, "///rendering_intent", "3", OY_CREATE_NEW );
       // How sees the profile the measurement colour? -> XYZ
       ctoxyz= oyConversion_FromBuffers( profile, profile_xyz, Farbe, XYZ,
                                         oyDOUBLE, oyDOUBLE, options, 0 );
@@ -1037,8 +1037,8 @@ ICCmeasurement::init_umrechnen                     (void)
       oyOptions_Release( &options );
       fortschritt(0.15, 0.2);
       // How sees the profile the measurement colour? -> monitor
-      oyOptions_SetFromText( &options, "rendering_intent", "2", OY_CREATE_NEW );
-      oyOptions_SetFromText( &options, "rendering_bpc", "1", OY_CREATE_NEW );
+      oyOptions_SetFromText( &options, "///rendering_intent", "2", OY_CREATE_NEW );
+      oyOptions_SetFromText( &options, "///rendering_bpc", "1", OY_CREATE_NEW );
       ctorgb= oyConversion_FromBuffers( profile, profile_rgb, Farbe, RGB,
                                         oyDOUBLE, oyDOUBLE, options_, 0 );
       /*hCOLOURtoRGB =  cmsCreateProofingTransform (hCOLOUR, TYPE_nCOLOUR_DBL,
