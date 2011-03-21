@@ -1404,8 +1404,6 @@ Oyranos::wandelLabNachBildschirmFarben(int x, int y,
     RGB_Speicher = new double[size*3];
     if(!RGB_Speicher)  WARN_S( "RGB_speicher Speicher not available" )
 
-    double *cielab = (double*) malloc (sizeof(double)*3*size);
-    LabToCIELab (Lab_Speicher, cielab, (int)size);
     oyColourConvert_( prof_lab, prof_disp, Lab_Speicher, RGB_Speicher,
                       oyDOUBLE, oyDOUBLE, options, size );
 
@@ -1414,8 +1412,6 @@ Oyranos::wandelLabNachBildschirmFarben(int x, int y,
 
     oyProfile_Release( &prof_disp );
     oyProfile_Release( &prof_lab );
-
-    if(cielab)    free (cielab);
 
   DBG_5_ENDE
   return RGB_Speicher;
