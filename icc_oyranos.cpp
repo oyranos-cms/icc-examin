@@ -313,6 +313,10 @@ char*
 changeScreenName_( const char *display_name, int screen )
 {
   char *new_display_name = 0;
+
+  if(!display_name)
+    return NULL;
+
   if( (new_display_name = (char*) new char [strlen(display_name) +24]) == 0)
     return NULL;
 
@@ -589,7 +593,8 @@ Oyranos::setzeMonitorProfil (const char* profil_name , int x, int y )
   int screen = oyGetScreenFromPosition( display_name, x,y );
   char *new_display_name = changeScreenName_( display_name, screen );
 
-  fehler = oySetMonitorProfile( new_display_name, profil_name );
+  if(new_display_name)
+    fehler = oySetMonitorProfile( new_display_name, profil_name );
 
   char *neues_profil = oyGetMonitorProfileNameFromDB( display_name,myAllocFunc);
   if(new_display_name) { delete [] new_display_name; new_display_name = 0; }
