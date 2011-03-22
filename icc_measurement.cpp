@@ -43,7 +43,6 @@
 
 
 #include "icc_utils.h"
-//#include <lcms.h> // for CGATS reading
 #include "icc_profile.h"
 #include "icc_oyranos.h"
 #include "icc_examin_version.h"
@@ -959,10 +958,6 @@ ICCmeasurement::init_umrechnen                     (void)
   if ((RGB_measurement_ ||
        CMYK_measurement_) || (XYZ_measurement_ || LAB_measurement_))
   {
-    cmsHTRANSFORM hCOLOURtoRGB=0, hLabtoRGB=0, hCOLOURtoXYZ=0, hXYZtoLab=0,
-                  hCOLOURtoLab=0;
-    cmsHPROFILE   hCOLOUR=0, hsRGB=0, hLab=0, hXYZ=0, hProof = 0;
-
     double start = fortschritt();
 
 
@@ -973,75 +968,29 @@ ICCmeasurement::init_umrechnen                     (void)
       DBG_PROG_V( getColorSpaceName(profile_->header.colorSpace()) )
     }
 
+    oyProfile_s * profile = 0,
+                * profile_rgb = 0,
+                * profile_xyz = oyProfile_FromStd( oyEDITING_XYZ, 0 ),
+                * profile_lab = oyProfile_FromStd( oyEDITING_LAB, 0 );
+
     // select a fitting monitor- / displayprofile
     if(!export_farben)
     {
-#     ifdef HAVE_OY
-      size_t groesse = 0;
-      const char* block = 0;
       int x = 0;
       int y = 0;
 
-      block = icc_oyranos.moni( x,y, groesse );
-      if(groesse)
-        hsRGB = cmsOpenProfileFromMem(const_cast<char*>(block), groesse);
+      profile_rgb = icc_oyranos.oyMoni( x,y, 0 );
+
       DBG_PROG_S( icc_oyranos.moni_name( x,y ) << " Farben" )
-#     endif
-    } else { DBG_PROG_S( "Export colours" ); }
-
-    if(!hsRGB)
+    } else
     {
-      hsRGB = cmsCreate_sRGBProfile ();
-      WARN_S( _("use sRGB") )
+      profile_rgb = oyProfile_FromStd( oyASSUMED_WEB, 0 );
+      DBG_PROG_S( "Export colours" );
     }
-    hLab = cmsCreateLabProfile (cmsD50_xyY());
-    hXYZ = cmsCreateXYZProfile ();
 
-    if( !hXYZ ) WARN_S("hXYZ is empty")
-    if( !hLab ) WARN_S("hLab is empty")
-    if( !hsRGB ) WARN_S("hsRGB is empty")
-
-    int intent = INTENT_ABSOLUTE_COLORIMETRIC,
-        bpc = 0,
-        gamut_warning = 0,
-        flags = 0;
-    const char * o_txt = 0; 
-
-#ifndef oyStrlen_
-#define oyStrlen_ strlen
-#endif
-    o_txt = oyOptions_FindString  ( options_, "rendering_intent", 0);
-    if(o_txt && oyStrlen_(o_txt))
-      intent = atoi( o_txt );
-
-    o_txt = oyOptions_FindString  ( options_, "rendering_bpc", 0 );
-    if(o_txt && oyStrlen_(o_txt))
-      bpc = atoi( o_txt );
-
-    o_txt = oyOptions_FindString  ( options_, "rendering_gamut_warning", 0 );
-    if(o_txt && oyStrlen_(o_txt))
-      gamut_warning = atoi( o_txt );
-
-    /* this should be moved to the CMM and not be handled here in Oyranos */
-    flags = bpc ?           flags | cmsFLAGS_WHITEBLACKCOMPENSATION :
-                            flags & (~cmsFLAGS_WHITEBLACKCOMPENSATION);
-    flags = gamut_warning ? flags | cmsFLAGS_GAMUTCHECK :
-                            flags & (~cmsFLAGS_GAMUTCHECK);
-
-
-#   if 0
-#   define BW_COMP cmsFLAGS_WHITEBLACKCOMPENSATION
-#   else
-#   define BW_COMP 0
-#   endif
-    if(flags & cmsFLAGS_GAMUTCHECK)
-    {
-      size_t groesse = 0;
-      const char* block = 0;
-      block = const_cast<char*>( icc_oyranos.proof(groesse) );
-      hProof = cmsOpenProfileFromMem(const_cast<char*>(block), (DWORD)groesse);
-      if( !hProof ) WARN_S("hProof is empty")
-    }
+    double Farbe[64], RGB[3], XYZ[3], CIELab[3];
+    oyConversion_s * ctorgb, * ctoxyz, * ctolab, * labtorgb;
+    oyOptions_s * options = 0;
 
     if ((RGB_measurement_ ||
          CMYK_measurement_))
@@ -1053,79 +1002,89 @@ ICCmeasurement::init_umrechnen                     (void)
 
 #   define TYPE_nCOLOUR_DBL (COLORSPACE_SH(PT_ANY)|CHANNELS_SH(channels_)|BYTES_SH(0))
       if( profile_->size() &&
-          profile_->data_type == ICCprofile::ICCprofileDATA)
-        hCOLOUR = cmsOpenProfileFromMem (const_cast<char*>(profile_->data_),
-                                         (DWORD)profile_->size_);
+          profile_->data_type == ICCprofile::ICCprofileDATA )
+        profile = oyProfile_FromMem( profile_->size_, const_cast<char*>(profile_->data_), 0,0 );
 
-      if(!hCOLOUR)
+      if(!profile)
       { // alternative
-        size_t groesse = 0;
-        const char* block = 0;
-#       ifdef HAVE_OY
         if( CMYK_measurement_ )
-          block = icc_oyranos.cmyk(groesse);
+          profile = oyProfile_FromStd( oyEDITING_CMYK,0 );
         else
         if( RGB_measurement_ )
-          block = icc_oyranos.rgb(groesse);
-#       endif
-        DBG_PROG_V( groesse )
+          profile = oyProfile_FromStd( oyEDITING_RGB, 0 );
 
-        if( !groesse ) {
+        if( !profile ) {
           WARN_S("no suitable default profile found")
           goto Kein_Profil; //TODO
-        } else
-          hCOLOUR = cmsOpenProfileFromMem(const_cast<char*>(block), (DWORD)groesse);
+        }
       }
 
-      if( !hCOLOUR )
+      if( !profile )
         WARN_S("hCOLOUR is empty")
 
+
       fortschritt(0.1 , 0.2);
+      oyOptions_SetFromText( &options, "///rendering_intent", "3", OY_CREATE_NEW );
       // How sees the profile the measurement colour? -> XYZ
-      hCOLOURtoXYZ =  cmsCreateTransform (hCOLOUR, TYPE_nCOLOUR_DBL,
+      ctoxyz= oyConversion_CreateBasicPixelsFromBuffers(
+                                        profile, Farbe, oyDOUBLE,
+                                        profile_xyz, XYZ, oyDOUBLE,
+                                        options,0);
+      /*hCOLOURtoXYZ =  cmsCreateTransform (hCOLOUR, TYPE_nCOLOUR_DBL,
                                     hXYZ, TYPE_XYZ_DBL,
                                     INTENT_ABSOLUTE_COLORIMETRIC,
-                                    PRECALC|BW_COMP);
+                                    PRECALC|BW_COMP);*/
       fortschritt(0.1, 0.2);
       // How sees the profile the measurement colour? -> Lab
-      hCOLOURtoLab =  cmsCreateTransform (hCOLOUR, TYPE_nCOLOUR_DBL,
+      ctolab= oyConversion_CreateBasicPixelsFromBuffers(
+                                        profile, Farbe, oyDOUBLE,
+                                        profile_lab, CIELab, oyDOUBLE,
+                                        options, 0 );
+      /*hCOLOURtoLab =  cmsCreateTransform (hCOLOUR, TYPE_nCOLOUR_DBL,
                                     hLab, TYPE_Lab_DBL,
                                     INTENT_ABSOLUTE_COLORIMETRIC,
-                                    PRECALC|BW_COMP);
+                                    PRECALC|BW_COMP);*/
+      oyOptions_Release( &options );
       fortschritt(0.15, 0.2);
       // How sees the profile the measurement colour? -> monitor
-      hCOLOURtoRGB =  cmsCreateProofingTransform (hCOLOUR, TYPE_nCOLOUR_DBL,
+      oyOptions_SetFromText( &options, "///rendering_intent", "2", OY_CREATE_NEW );
+      oyOptions_SetFromText( &options, "///rendering_bpc", "1", OY_CREATE_NEW );
+      ctorgb= oyConversion_CreateBasicPixelsFromBuffers(
+                                        profile, Farbe, oyDOUBLE,
+                                        profile_rgb, RGB, oyDOUBLE,
+                                        options_, 0 );
+      /*hCOLOURtoRGB =  cmsCreateProofingTransform (hCOLOUR, TYPE_nCOLOUR_DBL,
                                     hsRGB, TYPE_RGB_DBL,
                                     hProof,
                                     intent,
                                     INTENT_RELATIVE_COLORIMETRIC,
-                                    PRECALC|flags);
+                                    PRECALC|flags);*/
       fortschritt(0.3, 0.2);
 
-      if(!hCOLOURtoXYZ || !hCOLOURtoLab || !hCOLOURtoRGB)
+      if(!ctoxyz || !ctolab || !ctorgb)
         return;
     }
     Kein_Profil:
     if (XYZ_measurement_ || LAB_measurement_)
     {
-      // How sees the measurement device the measurement colour? -> Lab
-      hXYZtoLab = cmsCreateTransform (hXYZ, TYPE_XYZ_DBL,
-                                    hLab, TYPE_Lab_DBL,
-                                    INTENT_ABSOLUTE_COLORIMETRIC,
-                                    PRECALC|BW_COMP);
-
       // How sees the CMM the measurement colour? -> monitor
-      hLabtoRGB = cmsCreateProofingTransform (hLab, TYPE_Lab_DBL,
+      labtorgb = oyConversion_CreateBasicPixelsFromBuffers(
+                                           profile_lab, CIELab, oyDOUBLE,
+                                           profile_rgb, RGB, oyDOUBLE,
+                                           options, 0 );
+
+      /*hLabtoRGB = cmsCreateProofingTransform (hLab, TYPE_Lab_DBL,
                                     hsRGB, TYPE_RGB_DBL,
                                     hProof,
                                     intent,
                                     INTENT_RELATIVE_COLORIMETRIC,
-                                    PRECALC|flags);
-      if(!hLabtoRGB || !hXYZtoLab)
+                                    PRECALC|flags); */
+      if(!labtorgb)
         return;
     }
+
+    oyOptions_Release( &options );
     fortschritt(0.5,0.2);
-    double Farbe[64], RGB[3], XYZ[3], CIELab[3];
     bool vcgt = false;
     ICClist<ICClist<double> > vcgt_kurven;
     //TODO
@@ -1186,8 +1145,6 @@ ICCmeasurement::init_umrechnen                     (void)
           {
             LabToCIELab( Lab_Satz_[i], &CIELab[0] );
           } else {
-            //double cielab[3];
-            //cmsDoTransform (hXYZtoLab, &XYZ[0], &cielab[0], 1);
             double lab[3];
             XYZtoLab (&XYZ[0], &lab[0], 1);
             FarbeZuDouble( &Lab_Satz_[i], &lab[0] );
@@ -1197,7 +1154,7 @@ ICCmeasurement::init_umrechnen                     (void)
           if (!XYZ_measurement_)
             LabtoXYZ( Lab_Satz_[i], XYZ_Satz_[i]);
 
-          cmsDoTransform (hLabtoRGB, &CIELab[0], &RGB[0], 1);
+          oyConversion_RunPixels( labtorgb, 0 );
           FarbeZuDouble( &RGB_MessFarben_[i], RGB );
         }
 
@@ -1219,16 +1176,16 @@ ICCmeasurement::init_umrechnen                     (void)
             Farbe[3] = CMYK_Satz_[i].K*100.0;
           }
 
-          if(hCOLOURtoXYZ)
-          cmsDoTransform (hCOLOURtoXYZ, &Farbe[0], &XYZ[0], 1);
+          if(ctoxyz)
+            oyConversion_RunPixels( ctoxyz, 0 );
           FarbeZuDouble ( &XYZ_Ergebnis_[i], &XYZ[0] );
 
-          if(hCOLOURtoLab)
-          cmsDoTransform (hCOLOURtoLab, &Farbe[0], &CIELab[0], 1);
+          if(ctolab)
+            oyConversion_RunPixels( ctolab, 0 );
           CIELabToLab ( &CIELab[0], Lab_Ergebnis_[i] );
 
-          if(hCOLOURtoRGB)
-          cmsDoTransform (hCOLOURtoRGB, &Farbe[0], &RGB[0], 1);
+          if(ctorgb)
+            oyConversion_RunPixels( ctorgb, 0 );
           FarbeZuDouble ( &RGB_ProfilFarben_[i], &RGB[0] );
 
           if(Lab_Satz_.size())
@@ -1264,21 +1221,15 @@ ICCmeasurement::init_umrechnen                     (void)
     if(start <= 0.0)
       fortschritt(1.1);
 
-    if (XYZ_measurement_ || LAB_measurement_) {
-      if(hXYZtoLab) cmsDeleteTransform (hXYZtoLab);
-      if(hLabtoRGB) cmsDeleteTransform (hLabtoRGB);
-    }
-    if ((RGB_measurement_ ||
-         CMYK_measurement_)) {
-      if(hCOLOURtoXYZ) cmsDeleteTransform (hCOLOURtoXYZ);
-      if(hCOLOURtoLab) cmsDeleteTransform (hCOLOURtoLab);
-      if(hCOLOURtoRGB) cmsDeleteTransform (hCOLOURtoRGB);
-      if(hCOLOUR) cmsCloseProfile (hCOLOUR);
-    }
-    if(hsRGB) cmsCloseProfile (hsRGB);
-    if(hLab) cmsCloseProfile (hLab);
-    if(hXYZ) cmsCloseProfile (hXYZ);
-    if(hProof) cmsCloseProfile (hProof);
+    oyProfile_Release( &profile );
+    oyProfile_Release( &profile_rgb );
+    oyProfile_Release( &profile_xyz );
+    oyProfile_Release( &profile_lab );
+
+    oyConversion_Release( &ctoxyz );
+    oyConversion_Release( &ctolab );
+    oyConversion_Release( &ctorgb );
+    oyConversion_Release( &labtorgb );
   } else
     WARN_S("no RGB/CMYK and XYZ measurements found")
 

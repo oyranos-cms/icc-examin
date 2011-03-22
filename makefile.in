@@ -18,7 +18,7 @@ MSGFMT = msgfmt -c --statistics
 RPMARCH = `rpmbuild --showrc | awk '/^build arch/ {print $$4}'`
 
 LIB_LIBS = -L$(libdir) -L./ $(FLTK_LIBS) $(FLU_LIBS) \
-	-llcms -L/lib \
+	-L/lib \
 	$(DBG_LIBS) -lintl $(dl) $(m) $(c)
 
 
@@ -41,7 +41,7 @@ CFLAGS_ = $(CFLAGS) $(DEBUG)
 CXXFLAGS_ = $(CXXFLAGS) $(INCL_) $(DEBUG)
 
 LDLIBS = $(LDFLAGS) -L$(libdir) -L./ $(LIBFL_I18N) $(FLTK_LIBS) \
-	$(Flmm_OBJECTS) $(X11_LIBS) -llcms -L/lib \
+	$(Flmm_OBJECTS) $(X11_LIBS) -L/lib \
 	$(LIBOYRANOS_EXTRA) $(OYRANOS_LIBS) $(LCMS_LIBS) \
 	$(FTGL_LIBS) $(FONTCONFIG_LIBS) $(I18N_LIB) $(DBG_LIBS) \
 	$(LIBNAME) $(LIBBSP) $(CWLIB) \
@@ -334,11 +334,6 @@ static:	$(BINTARGET)
 	    && echo /usr/lib/libfreetype.a || echo -lfreetype)` \
 	$(I18N_LIBSTAT) $(X11_LIBS) \
 	$(DBG_LIBS) \
-	`test -f /opt/kai-uwe/lib/liblcms.a && echo /opt/kai-uwe/lib/liblcms.a || \
-	  (test -f /usr/lib/liblcms.a && echo /usr/lib/liblcms.a || \
-	  (test -f /opt/local/lib/liblcms.a && echo /opt/local/lib/liblcms.a || \
-        (test -f /usr/local/lib/liblcms.a && echo /usr/local/lib/liblcms.a || \
-	      (pkg-config --libs lcms))))` $(LIBFL_I18N) #/usr/lib/libelektra.a # Hack for static lcms
 	$(REZ)
 
 strip: $(BINTARGET)
@@ -350,14 +345,14 @@ static_static:	$(OBJECTS)
 	$(OBJECTS) \
 	$(LDLIBS) -static -ljpeg -lpng -lX11 -lpthread -lz -ldl \
 	-lfreetype -lfontconfig -lXrender -lGLU -lXext -lexpat \
-	-L/opt/local/lib liblcms.a
+	-L/opt/local/lib
 	$(REZ)
 
 test:	icc_formeln.o icc_utils.o
 	$(CXX) $(CXXFLAGS_) $(INCL) -o dE2000_test.o \
 	  -c $(SRCDIR)tests/dE2000_test.cpp
 	$(CXX) $(CXXFLAGS_) -o dE2000_test dE2000_test.o icc_formeln.o icc_utils.o \
-	-L$(libdir) -llcms
+	-L$(libdir)
 	$(REZ)
 
 $(LINGUAS_SRC):	$(SRCDIR)/$(POT_FILE)

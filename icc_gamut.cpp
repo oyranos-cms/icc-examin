@@ -27,6 +27,7 @@
 
 // Date:      20. 05. 2005
 
+#include <alpha/oyranos_alpha.h>
 
 #include "icc_gamut.h"
 #include "icc_profile.h"
@@ -35,18 +36,16 @@
 namespace icc_examin_ns {
 
 /** @brief creates a colour gradient for RGB colours */
-void
-holeRGBRampen( icUInt16Number *block, size_t & zahl )
+icUInt16Number* holeRGBRampen( size_t & zahl )
 {
   DBG_PROG_START
   int k = 3;
   double schritte = 10.,
          max = 65535.;
-
   zahl = (int)schritte*k*2 + 1;
 
-  for(int i = 0; i < (int)zahl*k; ++i)
-    block[i] = 0;
+  icUInt16Number *block = (icUInt16Number*) calloc( zahl*k,
+                                                    sizeof(icUInt16Number) );
 
   for(int i = 0; i < (int)zahl; ++i) {
     // red
@@ -76,10 +75,10 @@ holeRGBRampen( icUInt16Number *block, size_t & zahl )
   block[zahl*3-3+1] = 0;
   block[zahl*3-3+2] = (int)max;
   DBG_PROG_ENDE
+  return block;
 }
 
-void
-holeCMYKRampen( icUInt16Number *block, size_t & zahl )
+icUInt16Number* holeCMYKRampen( size_t & zahl )
 {
   DBG_PROG_START
   int k = 4;
@@ -87,6 +86,9 @@ holeCMYKRampen( icUInt16Number *block, size_t & zahl )
          max = 65535.;
 
   zahl = (int)schritte*(k-1)*2 + 1;
+
+  icUInt16Number *block = (icUInt16Number*) calloc( zahl*k,
+                                                    sizeof(icUInt16Number) );
 
   for(int i = 0; i < (int)zahl*k; ++i) {
     block[i] = 0;
@@ -120,56 +122,46 @@ holeCMYKRampen( icUInt16Number *block, size_t & zahl )
   block[zahl*k-k+1] = 0;
   block[zahl*k-k+2] = (int)max;
   DBG_PROG_ENDE
+  return block;
 }
 
 /** @brief creates a linie around the saturated colours of Cmyk and Rgb profiles */
 double*
-iccGrenze(ICCprofile & profil, int intent, size_t & groesse)
+iccGrenze(ICCprofile & profil, oyOptions_s * options, size_t & groesse)
 {
   DBG_PROG_START
   double *lab_erg = 0;
   icColorSpaceSignature csp = profil.colorSpace();
   if(csp == icSigRgbData ||
-     csp == icSigCmykData) {
-    icUInt16Number *block = (icUInt16Number*) malloc(200*4*sizeof(double));
+     csp == icSigCmykData)
+  {
+    icUInt16Number *block = 0;
     icUInt16Number *lab_block = (icUInt16Number*) malloc(200*4*sizeof(double));
     size_t size=0;
     char  *p_block = 0;
     p_block = profil.saveProfileToMem(&size);
-#   if 0 
-    static int num = 0;
-    char text[24]; 
-    sprintf (text, "Übung%d.icc", num++);
-    saveMemToFile( text, p_block, size );
-#   endif
+
     // scan here the colour space border
-    cmsHPROFILE lab = cmsCreateLabProfile(cmsD50_xyY());
-    cmsHPROFILE p = cmsOpenProfileFromMem(p_block, (DWORD)size);
-    cmsHTRANSFORM xform = 0;
-    if(csp == icSigRgbData || csp == icSigCmyData) {
-      xform = cmsCreateTransform(p, TYPE_RGB_16, lab, TYPE_Lab_16,
-                                               intent, cmsFLAGS_NOTPRECALC);
-    } else if(csp == icSigCmykData) {
-      xform = cmsCreateTransform(p, TYPE_CMYK_16, lab,TYPE_Lab_16,
-                                               intent, cmsFLAGS_NOTPRECALC);
-    }
-    if(xform) {
-      size_t zahl = 0;
+    oyProfile_s * lab = oyProfile_FromStd(oyEDITING_LAB, 0);
+    oyProfile_s * p = oyProfile_FromMem( size, p_block, 0,0);
+    {
+      size_t lenght = 0;
       if(csp == icSigRgbData)
-        holeRGBRampen( (icUInt16Number*)block, zahl );
+        block = (icUInt16Number*) holeRGBRampen( lenght );
       else if(csp == icSigCmykData)
-        holeCMYKRampen( (icUInt16Number*)block, zahl );
-      cmsDoTransform(xform, block, lab_block, (unsigned int)zahl);
-      groesse = zahl;
+        block = (icUInt16Number*) holeCMYKRampen( lenght );
+
+      oyColourConvert_( p, lab, block, lab_block,
+                        oyUINT16, oyUINT16, options, lenght );
+      groesse = lenght;
       lab_erg = new double [groesse*3];
       for(int i = 0; i < (int)groesse*3; ++i) {
         lab_erg[i] = lab_block[i]/65535.;
       }
       DBG_PROG_V( groesse )
     }
-    if(xform) cmsDeleteTransform(xform);
-    if(lab) cmsCloseProfile(lab);
-    if(p) cmsCloseProfile(p);
+    oyProfile_Release( &lab );
+    oyProfile_Release( &p );
     if(p_block) free (p_block);
     if(block) free (block);
     if(lab_block) free (lab_block);

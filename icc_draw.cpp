@@ -42,7 +42,6 @@
 #include <FL/Fl_Widget.H>
 #include <FL/fl_draw.H>
 
-#include <lcms.h>
 #include "cccie64.h"
 #include "ciexyz64_1.h"
 
@@ -85,10 +84,10 @@ TagDrawings::TagDrawings (int X,int Y,int W,int H, const char* l)
   ursprung_zeichnen = true;
 
   raster = 4;
-  init_s = FALSE;
+  init_s = false;
   rechenzeit = 0.1;
   hXYZ = hsRGB = 0;
-  xform = 0;
+  c = 0;
   RGB_speicher = 0;
   XYZ_speicher = 0;
   n_speicher = 0;
@@ -98,9 +97,9 @@ TagDrawings::TagDrawings (int X,int Y,int W,int H, const char* l)
 TagDrawings::~TagDrawings ()
 {
   DBG_PROG_START
-  if(hXYZ) cmsCloseProfile(hXYZ);
-  if(hsRGB) cmsCloseProfile(hsRGB);
-  if(xform) cmsDeleteTransform(xform);
+  oyProfile_Release( &hXYZ );
+  oyProfile_Release( &hsRGB );
+  oyConversion_Release( &c );
   if(RGB_speicher) delete [] RGB_speicher;
   if(XYZ_speicher) delete [] XYZ_speicher;
 
@@ -198,26 +197,39 @@ TagDrawings::ruhigNeuzeichnen (void)
 void
 TagDrawings::init_shoe_ ()
 {
-  // initialisation for lcms
-  hXYZ  = cmsCreateXYZProfile();
+  // initialisation for Oyranos
+  hXYZ  = oyProfile_FromStd( oyEDITING_XYZ, NULL );
 
   size_t groesse = 0;
   const char* block = 0;
 
-  init_s = TRUE;
+  init_s = true;
 
   block = icc_oyranos.moni(0,0, groesse);
   if(groesse &&
      icc_debug != 14) {
-    hsRGB = cmsOpenProfileFromMem(const_cast <char*> (block), (DWORD)groesse);
+    hsRGB = oyProfile_FromMem(groesse, const_cast <char*> (block), 0, NULL);
   } else {
-    hsRGB = cmsCreate_sRGBProfile();
+    hsRGB = oyProfile_FromStd( oyASSUMED_WEB, NULL );
   }
 
-  xform = cmsCreateTransform              (hXYZ, TYPE_XYZ_DBL,
-                                           hsRGB, TYPE_RGB_8,
-                                           INTENT_ABSOLUTE_COLORIMETRIC,
-                                           cmsFLAGS_NOTPRECALC);
+  in    = oyImage_Create( 1,1,
+                         buf_in,
+                         oyChannels_m(oyProfile_GetChannelsCount(hXYZ)) |
+                                                          oyDataType_m(oyFLOAT),
+                         hXYZ,
+                         0 );
+  out   = oyImage_Create( 1,1,
+                         buf_out ,
+                         oyChannels_m(oyProfile_GetChannelsCount(hsRGB)) |
+                                                          oyDataType_m(oyUINT8),
+                         hsRGB,
+                         0 );
+  oyOptions_s * options = 0;
+  // absolute colorimetric intent
+  oyOptions_SetFromText( &options, "rendering_intent", "3", 0 );
+  c = oyConversion_CreateBasicPixels( in,out, options, 0 );
+  oyOptions_Release( &options );
 }
 
 void
@@ -286,21 +298,17 @@ TagDrawings::drawCieShoe_ ( int repeated)
   // colour area
   if (!repeated)
   {
-    register char RGB[3];
-    register cmsCIEXYZ XYZ;
-
     for (int cie_y=yNachBild(0.01) ; cie_y > yNachBild(0.85); cie_y -= raster)
       for (int cie_x=xNachBild(0) ; cie_x < xNachBild(0.73) ; cie_x += raster)
       {
-        XYZ.X = bildNachX(cie_x);
-        XYZ.Y = bildNachY(cie_y);
-        XYZ.Z = 1 - (XYZ.X +  XYZ.Y);
+        buf_in[0] = bildNachX(cie_x);
+        buf_in[1] = bildNachY(cie_y);
+        buf_in[2] = 1 - (buf_in[0] +  buf_in[1]);
 
-        // draw background (lcms)
-        if(xform)
-        cmsDoTransform(xform, &XYZ, RGB, 1);
+        // draw background (Oyranos)
+        oyConversion_RunPixels( c, 0 );
 
-        fl_color (fl_rgb_color (RGB[0],RGB[1],RGB[2]));
+        fl_color (fl_rgb_color (buf_out[0],buf_out[1],buf_out[2]));
         if (raster > 1)
           fl_rectf (cie_x , cie_y, raster,raster);
         else
@@ -320,22 +328,46 @@ TagDrawings::drawCieShoe_ ( int repeated)
       int multi = 2;
       n_speicher = 3*n_pixel;
       RGB_speicher = (unsigned char*) new char [n_speicher * multi];
-      XYZ_speicher = (cmsCIEXYZ*) new cmsCIEXYZ [n_pixel * multi];
+      XYZ_speicher = (float*) new float [n_speicher * multi];
     }
 
     for (int cie_y=yNachBild(0.85) ; cie_y < yNachBild(0.01) ; cie_y ++) {
       for (int cie_x=xNachBild(0) ; cie_x < xNachBild(0.73) ; cie_x ++) {
 
-        XYZ_speicher[i].X = bildNachX(cie_x);
-        XYZ_speicher[i].Y = bildNachY(cie_y);
-        XYZ_speicher[i].Z = 1 - (XYZ_speicher[i].X +  XYZ_speicher[i].Y);
-        i++;
+        XYZ_speicher[i+0] = bildNachX(cie_x);
+        XYZ_speicher[i+1] = bildNachY(cie_y);
+        XYZ_speicher[i+2] = 1 - (XYZ_speicher[i+0] +  XYZ_speicher[i+1]);
+        i += 3;
       }
     }
-    // draw background (lcms)
-    if(xform)
-    cmsDoTransform(xform, XYZ_speicher, RGB_speicher, n_pixel);
-    fl_draw_image(RGB_speicher, xNachBild(min_x), yNachBild(0.85), wi, hi, 3, 0);
+    // draw background (Oyranos)
+    {
+      int width = xNachBild(0.73) - xNachBild(0),
+          height = abs(yNachBild(0.85) - yNachBild(0.01));
+      oyImage_s * cie_xyz = oyImage_Create( width,height,
+                         XYZ_speicher,
+                         oyChannels_m(oyProfile_GetChannelsCount(hXYZ)) |
+                                                          oyDataType_m(oyFLOAT),
+                         hXYZ,
+                         0 ),
+                * cie_image = oyImage_Create( width,height,
+                         RGB_speicher,
+                         oyChannels_m(oyProfile_GetChannelsCount(hsRGB)) |
+                                                          oyDataType_m(oyUINT8),
+                         hsRGB,
+                         0 );
+      oyOptions_s * options = 0;
+      // absolute colorimetric intent
+      oyOptions_SetFromText( &options, "rendering_intent", "3", 0 );
+      oyConversion_s * cie = oyConversion_CreateBasicPixels( cie_xyz, cie_image,
+                                                             options, 0 );
+      oyConversion_RunPixels( cie, 0 );
+      oyConversion_Release( &cie );
+      oyImage_Release( &cie_xyz );
+      oyImage_Release( &cie_image );
+      oyOptions_Release( &options );
+    }
+    fl_draw_image(RGB_speicher, xNachBild(min_x), yNachBild(0.85), wi, hi, 3,0);
   }
 
   // detect time of refresh
@@ -449,8 +481,6 @@ TagDrawings::drawCieShoe_ ( int repeated)
     fl_push_clip( x(),yNachBild(max_x), xNachBild(max_x),(int)(hoehe+tab_rand_y+0.5) );
 
     // Primaries / white point
-    register char RGB[3];
-    register cmsCIEXYZ XYZ;
     ICClist<double> pos;
     for (unsigned int i = 0; i < punkte.size()/3; i++) {
         double _XYZ[3] = {punkte[i*3+0], punkte[i*3+1], punkte[i*3+2]};
@@ -492,6 +522,7 @@ TagDrawings::drawCieShoe_ ( int repeated)
 #       endif
     }
     DBG_PROG_V( punkte.size() )
+
     unsigned int i;
     for (i = 0; i < punkte.size()/3; i++)
     {
@@ -499,28 +530,27 @@ TagDrawings::drawCieShoe_ ( int repeated)
 #       ifdef DEBUG_DRAW
         cout << punkte[i*3+0] << " ";
 #       endif
-        XYZ.X = punkte[i*3+0]; 
+        buf_in[0] = punkte[i*3+0]; 
 #       ifdef DEBUG_DRAW
         cout << punkte[i*3+1] << " ";
 #       endif
-        XYZ.Y = punkte[i*3+1];
+        buf_in[1] = punkte[i*3+1];
 #       ifdef DEBUG_DRAW
         cout << punkte[i*3+2] << " " << texte[i] << " " << punkte.size(); DBG_PROG
 #       endif
-        XYZ.Z = punkte[i*3+2]; //1 - ( punkte[i][0] +  punkte[i][1] );
+        buf_in[2] = punkte[i*3+2]; //1 - ( punkte[i][0] +  punkte[i][1] );
 
-        // convert colour for displaying (lcms)
-        if(xform)
-        cmsDoTransform (xform, &XYZ, RGB, 1);
+        // convert colour for displaying (Oyranos)
+        oyConversion_RunPixels( c, 0 );
 
-        double _XYZ[3] = {XYZ.X, XYZ.Y, XYZ.Z};
+        double _XYZ[3] = {buf_in[0], buf_in[1], buf_in[2]};
         const double* xyY = XYZto_xyY ( _XYZ );
         double pos_x = xNachBild(xyY[0]);
         double pos_y = yNachBild(xyY[1]);
 
         fl_color (BG);
         fl_circle ( pos_x , pos_y , 9.0);
-        fl_color (fl_rgb_color (RGB[0],RGB[1],RGB[2]));
+        fl_color (fl_rgb_color (buf_out[0],buf_out[1],buf_out[2]));
         fl_circle ( pos_x , pos_y , 7.0);
         // some description for the colour points
         fl_font (FL_HELVETICA, 12);
@@ -530,8 +560,8 @@ TagDrawings::drawCieShoe_ ( int repeated)
         if (texte.size()>i)
         { if (texte[i] == "wtpt") {
             static char txt[1024] = {'\000'};
-            _cmsIdentifyWhitePoint (&txt[0], &XYZ);
-            t << " (" << &txt[12] << ")";
+            //_cmsIdentifyWhitePoint (&txt[0], &XYZ);
+            //t << " (" << &txt[12] << ")";
           }
           
           s << texte[i] << t.str() << " = " <<

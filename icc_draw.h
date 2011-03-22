@@ -34,7 +34,6 @@
 
 #include <string>
 #include <FL/Fl.H>
-#include <lcms.h>
 
 class TagDrawings : public Fl_Widget {
 public:
@@ -87,11 +86,11 @@ public:
   bool zeige_raster;               // Schalter für Darstellung der Rasterlinien
 
   // Wertebereiche
-  double min_x, min_y, max_x, max_y;
+  float min_x, min_y, max_x, max_y;
 
 private:
-  double raster_wert_x_;           // Rasterweite in Benutzereinheiten
-  double raster_wert_y_;
+  float raster_wert_x_;           // Rasterweite in Benutzereinheiten
+  float raster_wert_y_;
   void   zeichneRaster_(void);     // Darstellung des Raster mit Werten
 
   // CIExy Raster
@@ -100,23 +99,26 @@ private:
   void init_shoe_ ();
 
   // lcms Typen
-  cmsHPROFILE hXYZ;
-  cmsHPROFILE hsRGB;
-  cmsHTRANSFORM xform;
+  oyProfile_s * hXYZ;
+  oyProfile_s * hsRGB;
+  oyConversion_s * c;
+  oyImage_s * in, * out;
+  float buf_in[3];
+  unsigned char buf_out[3];
   double rechenzeit;
   unsigned char* RGB_speicher;
-  cmsCIEXYZ* XYZ_speicher;
+  float * XYZ_speicher;
   int n_speicher;
 
   // einige Koordinaten
-  inline int xNachBild (double val)
-                 { return (int)(((double)xO + (val-min_x)*breite
+  inline int xNachBild (float val)
+                 { return (int)(((float)xO + (val-min_x)*breite
                                               /(max_x-min_x)) + 0.5); }
-  inline int yNachBild (double val)
-                 { return (int)(((double)yO - (val-min_y)*hoehe
+  inline int yNachBild (float val)
+                 { return (int)(((float)yO - (val-min_y)*hoehe
                                               /(max_y-min_y)) + 0.5); }
-  inline double bildNachX (int val) { return ((val-min_x-xO)*(max_x-min_x)/breite); }
-  inline double bildNachY (int val) { return ((yO-val-min_y)*(max_y-min_y)/hoehe); }
+  inline float bildNachX (int val) { return ((val-min_x-xO)*(max_x-min_x)/breite); }
+  inline float bildNachY (int val) { return ((yO-val-min_y)*(max_y-min_y)/hoehe); }
 };
 
 

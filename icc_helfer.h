@@ -30,6 +30,8 @@
 #ifndef ICC_HELFER_H
 #define ICC_HELFER_H
 
+#include <icc34.h>
+
 #include "icc_utils.h"
 #include "icc_icc.h"
 #include "icc_helfer_time.h"

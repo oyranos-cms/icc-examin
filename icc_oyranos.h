@@ -87,12 +87,12 @@ class Oyranos
 //    char*       holeMonitorProfil      (const char *display_name, size_t *size );
     void        netzAusVRML   (std::string & vrml, icc_examin_ns::ICCThreadList<ICCnetz> & netz)
                                 { netz = extrahiereNetzAusVRML (vrml); }
-    void        netzVonProfil (ICCprofile & p, int intent, int bpc,
+    void        netzVonProfil (ICCprofile & p, oyOptions_s * options,
                                int native, ICCnetz & netz);
   private:
     std::string netzVonProfil_      (ICCnetz  & netz,
                                      Speicher & profil,
-                                     int intent, int bpc);
+                                     oyOptions_s * options );
   public:
     ICClist<double>  bandVonProfil (const Speicher & p, int intent);
 
@@ -118,21 +118,19 @@ class Oyranos
     void     clear();
     // intermediate
     int      wandelLabNachProfilUndZurueck(double *lab, // 0.0 - 1.0
-                                           size_t  size, int intent, int flags,
+                                           size_t  size, oyOptions_s * options,
                                            Speicher & profil);
     double*  wandelLabNachBildschirmFarben(int x, int y, 
                                            double *Lab_Speicher, // 0.0 - 1.0
-                                           size_t  size, int intent, int flags);
+                                           size_t  size, oyOptions_s * options);
     // Create an abstract profile containing GamutCheck + Proof
     // from a device profile; write in the gamut profile in abstract
     void     gamutCheckAbstract(  Speicher &  profil,
                                   Speicher &  abstract,
-                                  int         intent,
-                                  int         flags);
+                                  oyOptions_s*options );
     // Create VMRL from Profile
     std::string vrmlVonProfil (   ICCprofile &profil,
-                                  int         intent,
-                                  int         bpc,
+                                  oyOptions_s*options,
                                   int         native );
 
 };
@@ -145,6 +143,16 @@ void	oyranos_pfade_auffrischen();
 void	oyranos_pfade_loeschen();
 void	oyranos_pfad_dazu();
 
+extern "C" {
+int  oyColourConvert_ ( oyProfile_s       * p_in,
+                        oyProfile_s       * p_out,
+                        oyPointer           buf_in,
+                        oyPointer           buf_out,
+                        oyDATATYPE_e        buf_type_in,
+                        oyDATATYPE_e        buf_type_out,
+                        oyOptions_s       * options,
+                        int                 count );
+}
 
 
 #endif //ICC_OYRANOS_H

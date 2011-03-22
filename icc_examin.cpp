@@ -85,7 +85,6 @@ int iccMessageFunc( int code, const oyPointer c, const char * format, ... )
   oyStruct_s * context = (oyStruct_s*) c;
 #else
 int iccMessageFunc( int code, const oyStruct_s * context, const char * format, ... )
-{
 #endif
   char* text = 0, *pos = 0;
   va_list list;
@@ -224,9 +223,6 @@ ICCexamin::ICCexamin ()
   oyThreadLockingSet( iccStruct_LockCreate, iccLockRelease, iccLock, iccUnLock);
 #endif
   oyMessageFuncSet( iccMessageFunc );
-
-  cmsErrorAction( LCMS_ERRC_WARNING );
-  cmsSetErrorHandler( lcmsMessageFunc );
 
   alle_gl_fenster = new icc_examin_ns::EinModell;
   icc_betrachter = new ICCfltkBetrachter;
@@ -912,26 +908,17 @@ ICCexamin::setzeFensterTitel()
 
 void ICCexamin::optionsRefresh_( void )
 {
-# if OYRANOS_VERSION >= 109
-# if OYRANOS_VERSION > 109
-# define UND &
-# define FLAGS ,0
-# else
-# define UND
-# define FLAGS
-# endif
   if(!options_)
-    options_ = oyOptions_ForFilter( "//imaging", 0, 0, 0 );
+    options_ = oyOptions_ForFilter( "//imaging/icc", 0, 0, 0 );
 
   char t[4];
   /* should always be a single digit */
   sprintf( t, "%d", intentGet(NULL));
-  oyOptions_SetFromText( UND options_, "rendering_intent", t FLAGS );
+  oyOptions_SetFromText( &options_, "rendering_intent", t, 0 );
   sprintf( t, "%d", bpc() );
-  oyOptions_SetFromText( UND options_, "rendering_bpc", t FLAGS );
+  oyOptions_SetFromText( &options_, "rendering_bpc", t, 0 );
   sprintf( t, "%d", gamutwarn() );
-  oyOptions_SetFromText( UND options_, "rendering_gamut_warning", t FLAGS );
-# endif
+  oyOptions_SetFromText( &options_, "rendering_gamut_warning", t, 0 );
 }
 
 void
@@ -1633,9 +1620,7 @@ ICCexamin::statusFarbe(double & L, double & a, double & b)
                                 icc_betrachter->DD_box_stat->window()->x() + icc_betrachter->DD_box_stat->window()->w()/2,
                                 icc_betrachter->DD_box_stat->window()->y() + icc_betrachter->DD_box_stat->window()->h()/2,
                                 lab, 1,
-                                icc_examin->intentGet(NULL),
-                                (icc_examin->gamutwarn()?cmsFLAGS_GAMUTCHECK:0)|
-                                (icc_examin->bpc()?cmsFLAGS_BLACKPOINTCOMPENSATION:0));
+                                options_);
   Fl_Color colour = fl_rgb_color( (int)(rgb[0]*255),
                                   (int)(rgb[1]*255), (int)(rgb[2]*255) );
 

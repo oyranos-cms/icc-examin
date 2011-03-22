@@ -35,8 +35,6 @@
 #include "icc_helfer.h"
 
 
-// lcms.h for BSD compiling
-#include <lcms.h>
 #include <icc34.h>
 #include <string>
 

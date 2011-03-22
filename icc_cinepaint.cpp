@@ -65,7 +65,6 @@ using namespace std;
 extern "C" {
 #include <libgimp/gimp.h>
 #include <libgimp/stdplugins-intl.h>
-#include <lcms.h>
 #include <icc34.h>
 }
 
