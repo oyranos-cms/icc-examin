@@ -1192,11 +1192,25 @@ Oyranos::wandelLabNachProfilUndZurueck(double *lab, // 0.0 - 1.0
     double * channels = new double [size*channels_n];
     oyProfile_s * lab_profile = oyProfile_FromStd( oyEDITING_LAB, 0 );
     oyConversion_s * ctolab = 0, * labtoc;
-    
+    oyImage_s * image_lab, * image_tmp;
 
     {
       // initialising for lcms
       DBG_MEM_V( (int*) block <<" "<<bsize )
+
+      image_lab   = oyImage_Create( size, 1,
+                         lab ,
+                         oyChannels_m(oyProfile_GetChannelsCount(lab_profile)) |
+                         oyDataType_m(oyDOUBLE),
+                         lab_profile,
+                         0 );
+      image_tmp   = oyImage_Create( size, 1,
+                         channels ,
+                         oyChannels_m(oyProfile_GetChannelsCount(profile)) |
+                         oyDataType_m(oyDOUBLE),
+                         profile,
+                         0 );
+
 
       if(!bsize)
         WARN_S("no profile found");
@@ -1216,10 +1230,9 @@ Oyranos::wandelLabNachProfilUndZurueck(double *lab, // 0.0 - 1.0
       cmsSetDeviceClass( hLab, icSigInputClass );
       if(!hLab) { WARN_S( "hLab Profil not opened" ); return 1; }
       */
-      ctolab = oyConversion_CreateBasicPixelsFromBuffers(
-                               profile,     channels, oyDOUBLE,
-                               lab_profile, lab,      oyDOUBLE,
-                               options, size );
+      ctolab = oyConversion_CreateBasicPixels(
+                               image_lab, image_tmp, options, 0 );
+
       if (!ctolab)
       {
         if(device == icSigInputClass && 
@@ -1238,7 +1251,6 @@ Oyranos::wandelLabNachProfilUndZurueck(double *lab, // 0.0 - 1.0
 
     if(!channels) { WARN_S( "not enough memory available" ); return 1; }
 
-    double *cielab = new double [size * 3];
 #ifdef DEBUG
     double *cielab_tmp = new double [size * 3];
 #endif
@@ -1252,14 +1264,11 @@ Oyranos::wandelLabNachProfilUndZurueck(double *lab, // 0.0 - 1.0
       memcpy( cielab_tmp, lab, size * 3 * sizeof(double));
 #endif
     } else {
-      LabToCIELab (lab, cielab, (int)size);
-      memcpy( channels, cielab, size * channels_n * sizeof(double)); // why cielab?
+      memcpy( channels, lab, size * channels_n * sizeof(double));
     }
 
-    labtoc = oyConversion_CreateBasicPixelsFromBuffers(
-                               lab_profile, lab,      oyDOUBLE,
-                               profile,     channels, oyDOUBLE,
-                               options, size );
+    labtoc = oyConversion_CreateBasicPixels(
+                               image_tmp, image_lab, options, 0 );
     /*cmsSetColorSpace( hLab, icSigLabData );
     cmsSetDeviceClass( hLab, icSigOutputClass );
     form = cmsCreateTransform                 (hProfil, format,
@@ -1294,7 +1303,7 @@ Oyranos::wandelLabNachProfilUndZurueck(double *lab, // 0.0 - 1.0
           saveMemToFile( "icc_oyranos.cmyk.cgats", txt, strlen(txt) );
           free(txt);
         }
-        txt = oyDumpColourToCGATS( cielab, size, prof, malloc,
+        txt = oyDumpColourToCGATS( lab, size, prof, malloc,
                                           __FILE__ );
         if(txt)
         {
@@ -1307,12 +1316,11 @@ Oyranos::wandelLabNachProfilUndZurueck(double *lab, // 0.0 - 1.0
     DBG_NUM_V(channels_n)
 #endif
 
-    CIELabToLab (cielab, lab, (int)size);
-
     oyProfile_Release( &profile );
     oyProfile_Release( &lab_profile );
+    oyImage_Release( &image_lab );
+    oyImage_Release( &image_tmp );
 
-    if(cielab)    delete [] cielab;
     if(channels)    delete [] channels;
 
   DBG_PROG_ENDE
