@@ -1410,7 +1410,7 @@ Oyranos::wandelLabNachBildschirmFarben(int x, int y,
     static oyImage_s * image_lab = 0,
                      * image_disp = 0;
     static oyOptions_s * options_old = 0;
-    static double rgb[3], lab[3];
+    static double * rgb = 0, * lab = 0;
     static size_t size_old = 0;
 
     RGB_Speicher = new double[size*3];
@@ -1431,6 +1431,13 @@ Oyranos::wandelLabNachBildschirmFarben(int x, int y,
 
       size_old = size;
 
+      if(rgb)
+        free(rgb); rgb = 0;
+      rgb = (double*) calloc(sizeof(double),3*size);
+      if(lab)
+        free(lab); lab = 0;
+      lab = (double*) calloc(sizeof(double),3*size);
+
       oyImage_Release( &image_disp );
       image_disp   = oyImage_Create( size, 1,
                          rgb,
@@ -1440,6 +1447,7 @@ Oyranos::wandelLabNachBildschirmFarben(int x, int y,
                          0 );
 
       oyProfile_s * prof_lab = oyProfile_FromStd( oyEDITING_LAB, 0 );
+      oyImage_Release( &image_lab );
       image_lab   = oyImage_Create( size, 1,
                          lab,
                          oyChannels_m(oyProfile_GetChannelsCount(prof_lab)) |
