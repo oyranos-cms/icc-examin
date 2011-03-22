@@ -1216,9 +1216,10 @@ Oyranos::wandelLabNachProfilUndZurueck(double *lab, // 0.0 - 1.0
       cmsSetDeviceClass( hLab, icSigInputClass );
       if(!hLab) { WARN_S( "hLab Profil not opened" ); return 1; }
       */
-      ctolab = oyConversion_FromBuffers(
-                               profile, lab_profile, channels, lab,
-                               oyDOUBLE,oyDOUBLE, options, size );
+      ctolab = oyConversion_CreateBasicPixelsFromBuffers(
+                               profile,     channels, oyDOUBLE,
+                               lab_profile, lab,      oyDOUBLE,
+                               options, size );
       if (!ctolab)
       {
         if(device == icSigInputClass && 
@@ -1255,9 +1256,10 @@ Oyranos::wandelLabNachProfilUndZurueck(double *lab, // 0.0 - 1.0
       memcpy( channels, cielab, size * channels_n * sizeof(double)); // why cielab?
     }
 
-    labtoc = oyConversion_FromBuffers(
-                               lab_profile, profile, lab, channels,
-                               oyDOUBLE,oyDOUBLE, options, size );
+    labtoc = oyConversion_CreateBasicPixelsFromBuffers(
+                               lab_profile, lab,      oyDOUBLE,
+                               profile,     channels, oyDOUBLE,
+                               options, size );
     /*cmsSetColorSpace( hLab, icSigLabData );
     cmsSetDeviceClass( hLab, icSigOutputClass );
     form = cmsCreateTransform                 (hProfil, format,
