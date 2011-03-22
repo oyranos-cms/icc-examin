@@ -1217,7 +1217,7 @@ Oyranos::wandelLabNachProfilUndZurueck(double *lab, // 0.0 - 1.0
       if(!hLab) { WARN_S( "hLab Profil not opened" ); return 1; }
       */
       ctolab = oyConversion_FromBuffers(
-                               profile, lab_profile, lab, channels,
+                               profile, lab_profile, channels, lab,
                                oyDOUBLE,oyDOUBLE, options, size );
       if (!ctolab)
       {
@@ -1256,7 +1256,7 @@ Oyranos::wandelLabNachProfilUndZurueck(double *lab, // 0.0 - 1.0
     }
 
     labtoc = oyConversion_FromBuffers(
-                               lab_profile, profile, channels, lab,
+                               lab_profile, profile, lab, channels,
                                oyDOUBLE,oyDOUBLE, options, size );
     /*cmsSetColorSpace( hLab, icSigLabData );
     cmsSetDeviceClass( hLab, icSigOutputClass );
