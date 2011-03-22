@@ -1461,9 +1461,9 @@ Oyranos::wandelLabNachBildschirmFarben(int x, int y,
       oyProfile_Release( &prof_lab );
     }
 
-    memcpy( lab, Lab_Speicher, sizeof(double)*3 );
+    memcpy( lab, Lab_Speicher, sizeof(double)*3*size );
     oyConversion_RunPixels( cc, 0 );
-    memcpy( RGB_Speicher, rgb, sizeof(double)*3 );
+    memcpy( RGB_Speicher, rgb, sizeof(double)*3*size );
 
     if(start <= 0.0)
       fortschritt(1.1);
