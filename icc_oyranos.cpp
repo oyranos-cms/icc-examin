@@ -1405,23 +1405,62 @@ Oyranos::wandelLabNachBildschirmFarben(int x, int y,
     double *RGB_Speicher = 0;
 
     double start = fortschritt();
-
-
-    fortschritt(0.05,0.2);
-
-    oyProfile_s * prof_lab = oyProfile_FromStd( oyEDITING_LAB, 0 );
+    static oyConversion_s * cc = 0;
+    static oyProfile_s * prof_disp_old = 0;
+    static oyImage_s * image_lab = 0,
+                     * image_disp = 0;
+    static oyOptions_s * options_old = 0;
+    static double rgb[3], lab[3];
+    static size_t size_old = 0;
 
     RGB_Speicher = new double[size*3];
     if(!RGB_Speicher)  WARN_S( "RGB_speicher Speicher not available" )
 
-    oyColourConvert_( prof_lab, prof_disp, Lab_Speicher, RGB_Speicher,
-                      oyDOUBLE, oyDOUBLE, options, size );
+    fortschritt(0.05,0.2);
+
+
+    if(prof_disp != prof_disp_old ||
+       options != options_old ||
+       size != size_old)
+    {
+      oyOptions_Release( &options_old );
+      options_old = oyOptions_Copy( options, 0 );
+
+      oyProfile_Release( &prof_disp_old );
+      prof_disp_old = oyProfile_Copy( prof_disp, 0 );
+
+      size_old = size;
+
+      oyImage_Release( &image_disp );
+      image_disp   = oyImage_Create( size, 1,
+                         rgb,
+                         oyChannels_m(oyProfile_GetChannelsCount(prof_disp)) |
+                         oyDataType_m(oyDOUBLE),
+                         prof_disp,
+                         0 );
+
+      oyProfile_s * prof_lab = oyProfile_FromStd( oyEDITING_LAB, 0 );
+      image_lab   = oyImage_Create( size, 1,
+                         lab,
+                         oyChannels_m(oyProfile_GetChannelsCount(prof_lab)) |
+                         oyDataType_m(oyDOUBLE),
+                         prof_lab,
+                         0 );
+
+      oyConversion_Release( &cc );
+      cc = oyConversion_CreateBasicPixels( image_lab, image_disp, options, 0 );
+
+      oyProfile_Release( &prof_lab );
+    }
+
+    memcpy( lab, Lab_Speicher, sizeof(double)*3 );
+    oyConversion_RunPixels( cc, 0 );
+    memcpy( RGB_Speicher, rgb, sizeof(double)*3 );
 
     if(start <= 0.0)
       fortschritt(1.1);
 
     oyProfile_Release( &prof_disp );
-    oyProfile_Release( &prof_lab );
 
   DBG_5_ENDE
   return RGB_Speicher;
