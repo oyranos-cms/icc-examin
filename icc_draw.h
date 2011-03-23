@@ -103,11 +103,11 @@ private:
   oyProfile_s * hsRGB;
   oyConversion_s * c;
   oyImage_s * in, * out;
-  float buf_in[3];
+  double buf_in[3];
   unsigned char buf_out[3];
   double rechenzeit;
   unsigned char* RGB_speicher;
-  float * XYZ_speicher;
+  double * XYZ_speicher;
   int n_speicher;
 
   // einige Koordinaten

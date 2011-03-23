@@ -216,13 +216,13 @@ TagDrawings::init_shoe_ ()
   in    = oyImage_Create( 1,1,
                          buf_in,
                          oyChannels_m(oyProfile_GetChannelsCount(hXYZ)) |
-                                                          oyDataType_m(oyFLOAT),
+                                                         oyDataType_m(oyDOUBLE),
                          hXYZ,
                          0 );
   out   = oyImage_Create( 1,1,
                          buf_out ,
                          oyChannels_m(oyProfile_GetChannelsCount(hsRGB)) |
-                                                          oyDataType_m(oyUINT8),
+                                                         oyDataType_m(oyUINT8),
                          hsRGB,
                          0 );
   oyOptions_s * options = 0;
@@ -328,7 +328,7 @@ TagDrawings::drawCieShoe_ ( int repeated)
       int multi = 2;
       n_speicher = 3*n_pixel;
       RGB_speicher = (unsigned char*) new char [n_speicher * multi];
-      XYZ_speicher = (float*) new float [n_speicher * multi];
+      XYZ_speicher = (double*) new double [n_speicher * multi];
     }
 
     for (int cie_y=yNachBild(0.85) ; cie_y < yNachBild(0.01) ; cie_y ++) {
@@ -347,7 +347,7 @@ TagDrawings::drawCieShoe_ ( int repeated)
       oyImage_s * cie_xyz = oyImage_Create( width,height,
                          XYZ_speicher,
                          oyChannels_m(oyProfile_GetChannelsCount(hXYZ)) |
-                                                          oyDataType_m(oyFLOAT),
+                                                         oyDataType_m(oyDOUBLE),
                          hXYZ,
                          0 ),
                 * cie_image = oyImage_Create( width,height,
