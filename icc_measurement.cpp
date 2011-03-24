@@ -1022,9 +1022,9 @@ ICCmeasurement::init_umrechnen                     (void)
       if( !profile )
         WARN_S("hCOLOUR is empty")
 
-
       fortschritt(0.1 , 0.2);
-      oyOptions_SetFromText( &options, "///rendering_intent", "3", OY_CREATE_NEW );
+      oyOptions_SetFromText( &options, OY_BEHAVIOUR_STD "rendering_intent", "3",
+                             OY_CREATE_NEW );
       // How sees the profile the measurement colour? -> XYZ
       ctoxyz= oyConversion_CreateBasicPixelsFromBuffers(
                                         profile, Farbe, oyDOUBLE,
@@ -1047,8 +1047,10 @@ ICCmeasurement::init_umrechnen                     (void)
       oyOptions_Release( &options );
       fortschritt(0.15, 0.2);
       // How sees the profile the measurement colour? -> monitor
-      oyOptions_SetFromText( &options, "///rendering_intent", "2", OY_CREATE_NEW );
-      oyOptions_SetFromText( &options, "///rendering_bpc", "1", OY_CREATE_NEW );
+      oyOptions_SetFromText( &options, OY_BEHAVIOUR_STD "rendering_intent", "2",
+                             OY_CREATE_NEW );
+      oyOptions_SetFromText( &options, OY_BEHAVIOUR_STD "rendering_bpc", "1",
+                             OY_CREATE_NEW );
       ctorgb= oyConversion_CreateBasicPixelsFromBuffers(
                                         profile, Farbe, oyDOUBLE,
                                         profile_rgb, RGB, oyDOUBLE,
@@ -1185,7 +1187,6 @@ ICCmeasurement::init_umrechnen                     (void)
 
           if(ctolab)
             oyConversion_RunPixels( ctolab, 0 );
-          //CIELabToLab ( &CIELab[0], Lab_Ergebnis_[i] );
           Lab_Ergebnis_[i].L = Lab[0];
           Lab_Ergebnis_[i].a = Lab[1];
           Lab_Ergebnis_[i].b = Lab[2];
