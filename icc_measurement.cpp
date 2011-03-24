@@ -1171,14 +1171,14 @@ ICCmeasurement::init_umrechnen                     (void)
           // profile colours
           if (RGB_measurement_) {
             //for (int n = 0; n < channels_; n++)
-            Farbe[0] = RGB_Satz_[i].R*100.0; DBG_MESS_V( RGB_Satz_[i].R )
-            Farbe[1] = RGB_Satz_[i].G*100.0;
-            Farbe[2] = RGB_Satz_[i].B*100.0;
+            Farbe[0] = RGB_Satz_[i].R; DBG_MESS_V( RGB_Satz_[i].R )
+            Farbe[1] = RGB_Satz_[i].G;
+            Farbe[2] = RGB_Satz_[i].B;
           } else {
-            Farbe[0] = CMYK_Satz_[i].C*100.0; DBG_MESS_V( CMYK_Satz_[i].C )
-            Farbe[1] = CMYK_Satz_[i].M*100.0;
-            Farbe[2] = CMYK_Satz_[i].Y*100.0;
-            Farbe[3] = CMYK_Satz_[i].K*100.0;
+            Farbe[0] = CMYK_Satz_[i].C; DBG_MESS_V( CMYK_Satz_[i].C )
+            Farbe[1] = CMYK_Satz_[i].M;
+            Farbe[2] = CMYK_Satz_[i].Y;
+            Farbe[3] = CMYK_Satz_[i].K;
           }
 
           if(ctoxyz)
