@@ -988,7 +988,7 @@ ICCmeasurement::init_umrechnen                     (void)
       DBG_PROG_S( "Export colours" );
     }
 
-    double Farbe[64], RGB[3], XYZ[3], CIELab[3];
+    double Farbe[64], RGB[3], XYZ[3], Lab[3];
     oyConversion_s * ctorgb, * ctoxyz, * ctolab, * labtorgb;
     oyOptions_s * options = 0;
 
@@ -1029,7 +1029,7 @@ ICCmeasurement::init_umrechnen                     (void)
       ctoxyz= oyConversion_CreateBasicPixelsFromBuffers(
                                         profile, Farbe, oyDOUBLE,
                                         profile_xyz, XYZ, oyDOUBLE,
-                                        options,0);
+                                        options,1 );
       /*hCOLOURtoXYZ =  cmsCreateTransform (hCOLOUR, TYPE_nCOLOUR_DBL,
                                     hXYZ, TYPE_XYZ_DBL,
                                     INTENT_ABSOLUTE_COLORIMETRIC,
@@ -1038,8 +1038,8 @@ ICCmeasurement::init_umrechnen                     (void)
       // How sees the profile the measurement colour? -> Lab
       ctolab= oyConversion_CreateBasicPixelsFromBuffers(
                                         profile, Farbe, oyDOUBLE,
-                                        profile_lab, CIELab, oyDOUBLE,
-                                        options, 0 );
+                                        profile_lab, Lab, oyDOUBLE,
+                                        options, 1 );
       /*hCOLOURtoLab =  cmsCreateTransform (hCOLOUR, TYPE_nCOLOUR_DBL,
                                     hLab, TYPE_Lab_DBL,
                                     INTENT_ABSOLUTE_COLORIMETRIC,
@@ -1052,7 +1052,7 @@ ICCmeasurement::init_umrechnen                     (void)
       ctorgb= oyConversion_CreateBasicPixelsFromBuffers(
                                         profile, Farbe, oyDOUBLE,
                                         profile_rgb, RGB, oyDOUBLE,
-                                        options_, 0 );
+                                        options, 1 );
       /*hCOLOURtoRGB =  cmsCreateProofingTransform (hCOLOUR, TYPE_nCOLOUR_DBL,
                                     hsRGB, TYPE_RGB_DBL,
                                     hProof,
@@ -1069,9 +1069,9 @@ ICCmeasurement::init_umrechnen                     (void)
     {
       // How sees the CMM the measurement colour? -> monitor
       labtorgb = oyConversion_CreateBasicPixelsFromBuffers(
-                                           profile_lab, CIELab, oyDOUBLE,
+                                           profile_lab, Lab, oyDOUBLE,
                                            profile_rgb, RGB, oyDOUBLE,
-                                           options, 0 );
+                                           options, 1 );
 
       /*hLabtoRGB = cmsCreateProofingTransform (hLab, TYPE_Lab_DBL,
                                     hsRGB, TYPE_RGB_DBL,
@@ -1143,12 +1143,15 @@ ICCmeasurement::init_umrechnen                     (void)
 
           if(LAB_measurement_ && !isICCDisplay_)
           {
-            LabToCIELab( Lab_Satz_[i], &CIELab[0] );
+            //LabToCIELab( Lab_Satz_[i], &Lab[0] );
+            Lab[0] = Lab_Satz_[i].L;
+            Lab[1] = Lab_Satz_[i].a;
+            Lab[2] = Lab_Satz_[i].b;
           } else {
-            double lab[3];
-            XYZtoLab (&XYZ[0], &lab[0], 1);
-            FarbeZuDouble( &Lab_Satz_[i], &lab[0] );
-            LabToCIELab( &lab[0], &CIELab[0], 1);
+            //double lab[3];
+            XYZtoLab (&XYZ[0], &Lab[0], 1);
+            FarbeZuDouble( &Lab_Satz_[i], &Lab[0] );
+            //LabToCIELab( &lab[0], &CIELab[0], 1);
           }
 
           if (!XYZ_measurement_)
@@ -1182,7 +1185,10 @@ ICCmeasurement::init_umrechnen                     (void)
 
           if(ctolab)
             oyConversion_RunPixels( ctolab, 0 );
-          CIELabToLab ( &CIELab[0], Lab_Ergebnis_[i] );
+          //CIELabToLab ( &CIELab[0], Lab_Ergebnis_[i] );
+          Lab_Ergebnis_[i].L = Lab[0];
+          Lab_Ergebnis_[i].a = Lab[1];
+          Lab_Ergebnis_[i].b = Lab[2];
 
           if(ctorgb)
             oyConversion_RunPixels( ctorgb, 0 );

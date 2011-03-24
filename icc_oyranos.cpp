@@ -1180,9 +1180,6 @@ Oyranos::wandelLabNachProfilUndZurueck(double *lab, // 0.0 - 1.0
 {
   DBG_PROG_START
 
-
-    // lcms types
-
     size_t bsize = p.size();
     const char*  block = p;
     int channels_n;
@@ -1195,7 +1192,7 @@ Oyranos::wandelLabNachProfilUndZurueck(double *lab, // 0.0 - 1.0
     oyImage_s * image_lab, * image_tmp;
 
     {
-      // initialising for lcms
+      // initialising
       DBG_MEM_V( (int*) block <<" "<<bsize )
 
       image_lab   = oyImage_Create( size, 1,
