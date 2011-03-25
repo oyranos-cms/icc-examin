@@ -989,8 +989,8 @@ ICCmeasurement::init_umrechnen                     (void)
     }
 
     double Farbe[64], RGB[3], XYZ[3], Lab[3];
-    oyConversion_s * ctorgb, * ctoxyz, * ctolab, * labtorgb;
-    oyOptions_s * abscol = 0, * ui_options = 0;
+    oyConversion_s * ctorgb=0, * ctoxyz=0, * ctolab=0, * labtorgb=0;
+    oyOptions_s * abscol=0, * ui_options=0;
 
     ui_options = oyOptions_FromBoolean( options_, 0, oyBOOLEAN_UNION, NULL );
 
