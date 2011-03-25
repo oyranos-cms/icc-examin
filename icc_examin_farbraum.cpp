@@ -162,7 +162,7 @@ ICCexamin::netzLese (int n,
       intent = profile[n]->intent();
 
     if(profile[n]->data_type == ICCprofile::ICCprofileDATA)
-      icc_oyranos.netzVonProfil( *(profile[n]), options_, nativeGamut(),
+      icc_oyranos.netzVonProfil( *(profile[n]), options(), nativeGamut(),
                                  netz_temp );
       
     if(netz_temp.punkte.size())
