@@ -1256,6 +1256,22 @@ ICCexamin::nativeGamut( int nativeGamut_neu )
   nativeGamut_ = nativeGamut_neu;
 }
 
+oyOptions_s * ICCexamin::options( void )
+{
+  oyOptions_s * ui_options = 0;
+  optionsRefresh_();
+
+  ui_options = oyOptions_FromBoolean( options_, 0, oyBOOLEAN_UNION, NULL );
+
+  /* default to absolute colorimetric  */
+  if(oyOptions_FindString( ui_options, "rendering_intent", NULL) == NULL)
+    oyOptions_SetFromText( &ui_options, OY_BEHAVIOUR_STD "rendering_intent",
+                             "3", OY_CREATE_NEW );
+
+  return ui_options;
+}
+
+
 void
 ICCexamin::erneuerTagBrowserText_ (void)
 {

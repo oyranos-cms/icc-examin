@@ -144,8 +144,7 @@ class ICCexamin : public icc_examin_ns::Beobachter,
     void gamutAnsichtZeigen ();                //!< show DD_farbraum
     int  nativeGamut() { return nativeGamut_; }
     void nativeGamut( int select );            //*< default is separation gamut
-    oyOptions_s * options( void ) { optionsRefresh_();
-                                    return oyOptions_Copy( options_, 0 ); }
+    oyOptions_s * options( void );
 
   public:
     ICCfltkBetrachter* icc_betrachter;
