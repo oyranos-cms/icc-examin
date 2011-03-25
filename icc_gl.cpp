@@ -2941,12 +2941,12 @@ GL_Ansicht::zeichnen()
       glCallList( gl_listen_[PUNKTE] ); DBG_ICCGL_V( gl_listen_[PUNKTE] )
 
       oyOptions_s * opts = icc_examin->options();
+      Lab_s lab;
+      double l[3];
 
       // localisate
       if( epoint_ && Fl::belowmouse() != this )
       {
-        double l[3];
-        Lab_s lab;
         const char * temp = oyNamedColour_GetName( epoint_, oyNAME_NICK, 0 );
 
         if(temp)
@@ -2990,7 +2990,6 @@ GL_Ansicht::zeichnen()
           MARK( frei(false); )
           if(epoint_)
           {
-            Lab_s lab;
             oyNamedColour_GetColourStd( epoint_, oyEDITING_LAB, d, oyDOUBLE,
                                         0, opts );
             CIELabToLab( d, lab );
@@ -3023,18 +3022,20 @@ GL_Ansicht::zeichnen()
         }
       }
 
-    double lab[3] = {oY+0.5, oZ/2.55+0.5, oX/2.55+0.5},
-            *rgb_ = 0, *rgb = 0;
-    rgb_ = rgb = icc_oyranos.wandelLabNachBildschirmFarben( 
-               window()->x() + window()->w()/2, window()->y() + window()->h()/2,
-                                 lab, 1, opts);
+    l[0] = oY+0.5;
+    l[1] = oZ/2.55+0.5;
+    l[2] = oX/2.55+0.5;
+    double *rgb_ = 0, *rgb = 0;
 
       if( (strlen(text) || epoint_) &&
           typ() != 1 )
       {
+        rgb_ = rgb = icc_oyranos.wandelLabNachBildschirmFarben( 
+               window()->x() + window()->w()/2, window()->y() + window()->h()/2,
+                                 l, 1, opts);
 
-        icc_examin->statusFarbe(lab[0],lab[1],lab[2]);
-          DBG_PROG_V( lab[0]<<" "<<lab[1]<<" "<<lab[2] )
+        icc_examin->statusFarbe(l[0],l[1],l[2]);
+          DBG_PROG_V( l[0]<<" "<<l[1]<<" "<<l[2] )
         if(rgb)
         {
 #         ifndef Beleuchtung_
