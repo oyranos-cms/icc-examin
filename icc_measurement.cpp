@@ -1184,6 +1184,9 @@ ICCmeasurement::init_umrechnen                     (void)
 
           if(ctoxyz)
             oyConversion_RunPixels( ctoxyz, 0 );
+          XYZ[0] *= 2.0;
+          XYZ[1] *= 2.0;
+          XYZ[2] *= 2.0;
           FarbeZuDouble ( &XYZ_Ergebnis_[i], &XYZ[0] );
 
           if(ctolab)
@@ -1518,9 +1521,9 @@ ICCmeasurement::getText                     (void)
       s << XYZ_Satz_[i].Y * (range_XYZ[3]-range_XYZ[2]) + range_XYZ[2]; tabelle[z+i][sp++] = s.str().c_str(); s.str("");
       s << XYZ_Satz_[i].Z * (range_XYZ[5]-range_XYZ[4]) + range_XYZ[4]; tabelle[z+i][sp++] = s.str().c_str(); s.str("");
       if (xyz_erg_sp) {
-      s << XYZ_Ergebnis_[i].X * 2.0 * (range_XYZ[1]-range_XYZ[0]) + range_XYZ[0]; tabelle[z+i][sp++]=s.str().c_str();s.str("");
-      s << XYZ_Ergebnis_[i].Y * 2.0 * (range_XYZ[3]-range_XYZ[2]) + range_XYZ[2]; tabelle[z+i][sp++]=s.str().c_str();s.str("");
-      s << XYZ_Ergebnis_[i].Z * 2.0 * (range_XYZ[5]-range_XYZ[4]) + range_XYZ[4]; tabelle[z+i][sp++]=s.str().c_str();s.str("");
+      s << XYZ_Ergebnis_[i].X * (range_XYZ[1]-range_XYZ[0]) + range_XYZ[0]; tabelle[z+i][sp++]=s.str().c_str();s.str("");
+      s << XYZ_Ergebnis_[i].Y * (range_XYZ[3]-range_XYZ[2]) + range_XYZ[2]; tabelle[z+i][sp++]=s.str().c_str();s.str("");
+      s << XYZ_Ergebnis_[i].Z * (range_XYZ[5]-range_XYZ[4]) + range_XYZ[4]; tabelle[z+i][sp++]=s.str().c_str();s.str("");
       } DBG_TAB_V( i )
       if (RGB_measurement_) {
         s << RGB_Satz_[i].R * (range_RGB[1]-range_RGB[0]) + range_RGB[0]; tabelle[z+i][sp++]= s.str().c_str(); s.str("");
