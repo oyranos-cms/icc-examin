@@ -1153,10 +1153,8 @@ ICCmeasurement::init_umrechnen                     (void)
             Lab[1] = Lab_Satz_[i].a;
             Lab[2] = Lab_Satz_[i].b;
           } else {
-            //double lab[3];
             XYZtoLab (&XYZ[0], &Lab[0], 1);
             FarbeZuDouble( &Lab_Satz_[i], &Lab[0] );
-            //LabToCIELab( &lab[0], &CIELab[0], 1);
           }
 
           if (!XYZ_measurement_)
@@ -1520,9 +1518,9 @@ ICCmeasurement::getText                     (void)
       s << XYZ_Satz_[i].Y * (range_XYZ[3]-range_XYZ[2]) + range_XYZ[2]; tabelle[z+i][sp++] = s.str().c_str(); s.str("");
       s << XYZ_Satz_[i].Z * (range_XYZ[5]-range_XYZ[4]) + range_XYZ[4]; tabelle[z+i][sp++] = s.str().c_str(); s.str("");
       if (xyz_erg_sp) {
-      s << XYZ_Ergebnis_[i].X * (range_XYZ[1]-range_XYZ[0]) + range_XYZ[0]; tabelle[z+i][sp++]=s.str().c_str();s.str("");
-      s << XYZ_Ergebnis_[i].Y * (range_XYZ[3]-range_XYZ[2]) + range_XYZ[2]; tabelle[z+i][sp++]=s.str().c_str();s.str("");
-      s << XYZ_Ergebnis_[i].Z * (range_XYZ[5]-range_XYZ[4]) + range_XYZ[4]; tabelle[z+i][sp++]=s.str().c_str();s.str("");
+      s << XYZ_Ergebnis_[i].X * 2.0 * (range_XYZ[1]-range_XYZ[0]) + range_XYZ[0]; tabelle[z+i][sp++]=s.str().c_str();s.str("");
+      s << XYZ_Ergebnis_[i].Y * 2.0 * (range_XYZ[3]-range_XYZ[2]) + range_XYZ[2]; tabelle[z+i][sp++]=s.str().c_str();s.str("");
+      s << XYZ_Ergebnis_[i].Z * 2.0 * (range_XYZ[5]-range_XYZ[4]) + range_XYZ[4]; tabelle[z+i][sp++]=s.str().c_str();s.str("");
       } DBG_TAB_V( i )
       if (RGB_measurement_) {
         s << RGB_Satz_[i].R * (range_RGB[1]-range_RGB[0]) + range_RGB[0]; tabelle[z+i][sp++]= s.str().c_str(); s.str("");
