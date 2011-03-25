@@ -106,6 +106,7 @@ class Agviewer : public icc_examin_ns::Modell
           downb = -1;
           AdjustingAzEl = 0;
           darf_bewegen_ = false;
+          duenn = false;
           }
 
   void reparent( GL_Ansicht* p ) { parent = p; }
