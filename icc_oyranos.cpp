@@ -1401,7 +1401,6 @@ Oyranos::wandelLabNachBildschirmFarben(int x, int y,
 
     double *RGB_Speicher = 0;
 
-    double start = fortschritt();
     static oyConversion_s * cc = 0;
     static oyProfile_s * prof_disp_old = 0;
     static oyImage_s * image_lab = 0,
@@ -1412,8 +1411,6 @@ Oyranos::wandelLabNachBildschirmFarben(int x, int y,
 
     RGB_Speicher = new double[size*3];
     if(!RGB_Speicher)  WARN_S( "RGB_speicher Speicher not available" )
-
-    fortschritt(0.05,0.2);
 
 
     if(prof_disp != prof_disp_old ||
@@ -1461,9 +1458,6 @@ Oyranos::wandelLabNachBildschirmFarben(int x, int y,
     memcpy( lab, Lab_Speicher, sizeof(double)*3*size );
     oyConversion_RunPixels( cc, 0 );
     memcpy( RGB_Speicher, rgb, sizeof(double)*3*size );
-
-    if(start <= 0.0)
-      fortschritt(1.1);
 
     oyProfile_Release( &prof_disp );
 
