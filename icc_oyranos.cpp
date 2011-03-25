@@ -1188,7 +1188,7 @@ Oyranos::wandelLabNachProfilUndZurueck(double *lab, // 0.0 - 1.0
     channels_n = oyProfile_GetChannelsCount( profile );
     double * channels = new double [size*channels_n];
     oyProfile_s * lab_profile = oyProfile_FromStd( oyEDITING_LAB, 0 );
-    oyConversion_s * ctolab = 0, * labtoc;
+    oyConversion_s * ctolab = 0, * labtoc = 0;
     oyImage_s * image_lab, * image_tmp;
 
     {
@@ -1227,10 +1227,10 @@ Oyranos::wandelLabNachProfilUndZurueck(double *lab, // 0.0 - 1.0
       cmsSetDeviceClass( hLab, icSigInputClass );
       if(!hLab) { WARN_S( "hLab Profil not opened" ); return 1; }
       */
-      ctolab = oyConversion_CreateBasicPixels(
+      labtoc = oyConversion_CreateBasicPixels(
                                image_lab, image_tmp, options, 0 );
 
-      if (!ctolab)
+      if (!labtoc)
       {
         if(device == icSigInputClass && 
            channels_n == 3)
@@ -1255,8 +1255,8 @@ Oyranos::wandelLabNachProfilUndZurueck(double *lab, // 0.0 - 1.0
 
     if(!input_ausnahme)
     {
-      oyConversion_RunPixels( ctolab, 0 );
-      oyConversion_Release( &ctolab );
+      oyConversion_RunPixels( labtoc, 0 );
+      oyConversion_Release( &labtoc );
 #ifdef DEBUG
       memcpy( cielab_tmp, lab, size * 3 * sizeof(double));
 #endif
@@ -1264,7 +1264,7 @@ Oyranos::wandelLabNachProfilUndZurueck(double *lab, // 0.0 - 1.0
       memcpy( channels, lab, size * channels_n * sizeof(double));
     }
 
-    labtoc = oyConversion_CreateBasicPixels(
+    ctolab = oyConversion_CreateBasicPixels(
                                image_tmp, image_lab, options, 0 );
     /*cmsSetColorSpace( hLab, icSigLabData );
     cmsSetDeviceClass( hLab, icSigOutputClass );
@@ -1276,8 +1276,8 @@ Oyranos::wandelLabNachProfilUndZurueck(double *lab, // 0.0 - 1.0
 
     cmsDoTransform (form, channels, cielab, (unsigned int)size);
     cmsDeleteTransform (form);*/
-    oyConversion_RunPixels( labtoc, 0 );
-    oyConversion_Release( &labtoc );
+    oyConversion_RunPixels( ctolab, 0 );
+    oyConversion_Release( &ctolab );
     
 
 #ifdef DEBUG
@@ -1318,7 +1318,7 @@ Oyranos::wandelLabNachProfilUndZurueck(double *lab, // 0.0 - 1.0
     oyImage_Release( &image_lab );
     oyImage_Release( &image_tmp );
 
-    if(channels)    delete [] channels;
+    if(channels)    delete [] channels; channels = NULL;
 
   DBG_PROG_ENDE
   return 0;
