@@ -324,43 +324,6 @@ LabToCIELab (const Lab_s & lab, double* cielab)
       cielab[2] = (lab.b * 256.0) - 128.0;
 }
 
-void
-OyLabToLab (const double* oylab, Lab_s & lab)
-{
-      lab.L =  oylab[0]          / 1.0;
-      lab.a = (oylab[1] + 1.28f) / 2.56f;
-      lab.b = (oylab[2] + 1.28f) / 2.56f;
-}
-
-void
-OyLabToLab (const double* oylab, double* lab, int n)
-{
-    for(int i = 0; i < n; ++i)
-    {
-      lab[i*3+0] =  oylab[i*3+0]          / 1.0;
-      lab[i*3+1] = (oylab[i*3+1] + 1.28f) / 2.56f;
-      lab[i*3+2] = (oylab[i*3+2] + 1.28f) / 2.56f;
-    }
-}
-
-void
-LabToOyLab (const double* lab, double* oylab, int n)
-{
-    for(int i = 0; i < n; ++i)
-    {
-      oylab[i*3+0] =  lab[i*3+0];
-      oylab[i*3+1] = (lab[i*3+1] * 2.56f) - 1.28f;
-      oylab[i*3+2] = (lab[i*3+2] * 2.56f) - 1.28f;
-    }
-}
-
-void
-LabToOyLab (const Lab_s & lab, double* cielab)
-{
-      cielab[0] =  lab.L * 1.0f;
-      cielab[1] = (lab.a * 2.56f) - 1.28f;
-      cielab[2] = (lab.b * 2.56f) - 1.28f;
-}
 
 void
 FarbeZuDouble (double* d_xyz, XYZ_s xyz)

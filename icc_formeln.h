@@ -98,10 +98,5 @@ void          CIELabToLab (const double* cielab, double* lab, int n);
 void          CIELabToLab (const double* cielab, Lab_s & lab);
 void          LabToCIELab (const double* lab, double* cielab, int n);
 void          LabToCIELab (const Lab_s & lab, double* cielab);
-// normalising OYLab L 0...1 a/b -1.27...+1.27 // lab 0...1
-void          OyLabToLab (const double* oylab, double* lab, int n);
-void          OyLabToLab (const double* oylab, Lab_s & lab);
-void          LabToOyLab (const double* lab, double* oylab, int n);
-void          LabToOyLab (const Lab_s & lab, double* oylab);
 
 #endif //ICC_FORMELN_H
