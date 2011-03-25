@@ -1243,17 +1243,27 @@ ICCexamin::intent( int intent_neu, int update )
 void
 ICCexamin::bpc( int bpc_neu )
 {
+  int refresh = 0;
   if(bpc_ != bpc_neu)
-    auffrischen( PROGRAMM );
+    refresh = 1;
+
   bpc_ = bpc_neu;
+
+  if(refresh)
+    auffrischen( PROGRAMM );
 }
 
 void
 ICCexamin::nativeGamut( int nativeGamut_neu )
 {
+  int refresh = 0;
   if(nativeGamut_ != nativeGamut_neu)
-    auffrischen( PROGRAMM );
+    refresh = 1;
+
   nativeGamut_ = nativeGamut_neu;
+
+  if(refresh)
+    auffrischen( PROGRAMM );
 }
 
 oyOptions_s * ICCexamin::options( void )
