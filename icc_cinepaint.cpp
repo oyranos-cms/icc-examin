@@ -1,7 +1,7 @@
 /* 
  * ICC Examin plug-in for cinepaint.
  *
- * Copyright (C) 2004-2008 Kai-Uwe Behrmann <ku.b@gmx.de>
+ * Copyright (C) 2004-2010 Kai-Uwe Behrmann <ku.b@gmx.de>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

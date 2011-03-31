@@ -1,7 +1,7 @@
 /* 
  * ICC Examin plug-in for cinepaint.
  *
- * Copyright (C) 2004-2007 Kai-Uwe Behrmann <ku.b@gmx.de>
+ * Copyright (C) 2004-2011 Kai-Uwe Behrmann <ku.b@gmx.de>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -206,11 +206,11 @@ struct Ncl2 {
 
 /**   global variables   */
 
-cmsHPROFILE hl;                //!< lcms CIE*Lab profile
-cmsHPROFILE hp;                //!< lcms image profile
-cmsHPROFILE hs;                //!< lcms simulation profile
-cmsHTRANSFORM transf = 0;      //!< lcms device link
-long format;                   //!< lcms colour layout
+oyProfile_s * hl = NULL;       //!< CIE*Lab profile
+oyProfile_s * hp = NULL;       //!< image profile
+oyProfile_s * hs = NULL;       //!< simulation profile
+oyConversion_s * transf = NULL;//!< device link
+oyPixel_t format;              //!< colour layout
 int farb_kanaele;              //!< colour channels as in image profile
 double *colour = 0;            //!< measured colours : 0.0 -> 1.0 ==farb_kanaele
 double *outbuf = 0;            //!< colours converted to Lab
@@ -285,8 +285,8 @@ void            setzeRenderingIntent (char *header, icUInt32Number intent);
 size_t          berechneTagGroesse (int farben_n, int farb_kanaele);
 int             bearbeiteEingebetteteProfile( channel *layers );
 void            transformAnlegen( channel & layer );
-gint            drawableColourLayoutToLcms( channel    & layer,
-                                            cmsHPROFILE  p );
+gint            drawableColourLayoutToOy  ( channel    & layer,
+                                            oyProfile_s *  p );
 /** @} */
 /** \addtogroup thread_api Thread API
  *  @{ */
@@ -506,29 +506,54 @@ schreibeNcl2Tag              ( ICClist<double>       pcsfarbe,
 void
 transformAnlegen( channel & layer )
 {
-    drawableColourLayoutToLcms( layer, hp );
+    oyOptions_s * options = 0;
+    char num[12];
+    drawableColourLayoutToOy( layer, hp );
 
     DBG_PROG_S( transf )
-    double in[6] = {0.5,0.5,0.5,0.5,0.5,0.5}, out[3]={0,0,0},
-           out2[3]={0,0,0};
-    if(transf)
-    {
-      cmsDoTransform( transf, in, out, 1);
-      cmsDeleteTransform (transf);
-    }
-    transf = 0;
+
+    oyConversion_Release ( &transf );
+
     DBG_PROG_S( transf <<" "<< layer.intent )
 
-    transf = cmsCreateProofingTransform (hp, format,
-                                 hl, TYPE_Lab_DBL,
-                                 hs,
-                                 layer.intent, layer.intent_proof,
-                                 layer.flags | cmsFLAGS_NOTPRECALC);
+    printf(num,"%d", layer.intent);
+    oyOptions_SetFromText( &options, OY_DEFAULT_RENDERING_INTENT, num,
+                           OY_CREATE_NEW );
+    printf(num,"%d", layer.intent_proof);
+    oyOptions_SetFromText( &options, OY_DEFAULT_RENDERING_INTENT_PROOF,
+                           num, OY_CREATE_NEW );
+    if(layer.flags & 0x2000) /* BPC */
+      oyOptions_SetFromText( &options, OY_DEFAULT_RENDERING_BPC,
+                             "1", OY_CREATE_NEW );
+
+    if(layer.flags & 0x1000) /* gamut warning */
+      oyOptions_SetFromText( &options, OY_DEFAULT_RENDERING_GAMUT_WARNING,
+                             "1", OY_CREATE_NEW );
+    if(layer.flags & 0x4000) /* proofing */
+    {
+      oyProfiles_s * proofs = oyProfiles_New(0);
+      oyProfile_s * proof = oyProfile_Copy( hs, 0 );
+      oyOptions_SetFromText( &options, OY_DEFAULT_PROOF_SOFT,
+                             "1", OY_CREATE_NEW );
+      oyProfiles_MoveIn( proofs, &proof, -1 );
+      oyOptions_MoveInStruct( &options,
+                              OY_TOP_SHARED OY_SLASH OY_DOMAIN_STD OY_SLASH OY_TYPE_STD "/icc/profiles_simulation",
+                              (oyStruct_s**) &proofs, OY_CREATE_NEW );
+
+    }
+
+    transf = oyConversion_CreateBasicPixelsFromBuffers(
+                                           hp, colour, oyDOUBLE,
+                                           hl, outbuf, oyDOUBLE,
+                                           options, n_points );
+
+    
+    oyOptions_Release( &options );
+
     DBG_PLUG_S( transf <<" "<< hp <<" "<< hl <<" "<< hs <<" channels: "<<
            T_CHANNELS(format) << " depth "<< T_BYTES(format) <<" i"<<
            layer.intent <<" ip"<< layer.intent_proof <<" f"<< layer.flags );
 
-    cmsDoTransform( transf, in, out2, 1);
     DBG_PLUG_S( out[0]<<" "<<out[1]<<" "<<out[2]<<"  "<<
            out2[0]<<" "<<out2[1]<<" "<<out2[2] )
 }
@@ -685,7 +710,7 @@ vergleicheFarben(void* zeiger)
           T_BYTES(format) <<" "; DBG
 # endif
 
-  cmsDoTransform( transf, colour, outbuf, n_points);
+  oyConversion_RunPixels( transf, NULL );
 
 
   // Berechnung Auswerten ...
@@ -717,7 +742,7 @@ vergleicheFarben(void* zeiger)
   memcpy(&colour_profile[164], zahl, 4);
     // Farbraum
   *((icUInt32Number*)zahl) = icValue((icUInt32Number)
-                                     cmsGetColorSpace( hp ));
+                        oyProfile_GetSignature( hp, oySIGNATURE_COLOUR_SPACE ));
   memcpy(&colour_profile[16], zahl, 4);
 
   DBG_PROG_S( (int*)image_profile << " " << tag_size )
@@ -895,10 +920,10 @@ aufraeumen(channel *layer)
     proof_profile = 0;
     if(colour) delete [] colour;
     if(outbuf) delete [] outbuf;
-    cmsDeleteTransform (transf);
-    cmsCloseProfile (hl);
-    cmsCloseProfile (hp);
-    if(hs) cmsCloseProfile (hs);
+    oyConversion_Release( &transf );
+    oyProfile_Release( &hl);
+    oyProfile_Release( &hp);
+    if(hs) oyProfile_Release( &hs);
   }
 }
 
@@ -947,13 +972,12 @@ schreibeDatei(const void *data, gint groesse, std::string name)
  *  @param p		lcms colour profile
  */
 gint
-drawableColourLayoutToLcms( channel    & layer,
-                            cmsHPROFILE  p )
+drawableColourLayoutToOy (  channel    & layer,
+                            oyProfile_s *  p )
 {
   //GDrawableType/*GimpDrawableType*/ drawable_type;
   gint success = GIMP_PDB_SUCCESS;
-  int     bit, lcms_bytes,
-          in_color_space = PT_ANY;
+  oyDATATYPE_e data_type = oyUINT8;
 
   format = 0;
 
@@ -962,20 +986,16 @@ drawableColourLayoutToLcms( channel    & layer,
 
     switch (layer.precision) {
       case 1:         // uint8
-        bit =  8;
-        lcms_bytes = 1;
+        data_type = oyUINT8;
         break;
       case 2:         // uint16
-        bit = 16; 
-        lcms_bytes = 2;
+        data_type = oyUINT16;
         break;
       case 3:         // f32
-        bit = 32; 
-        lcms_bytes = 0;
+        data_type = oyFLOAT;
         break;
       case 4:         // f16 OpenEXR
-        bit = 16; 
-        lcms_bytes = 0;
+        data_type = oyFLOAT;
         break;
       default:
         g_print ("!!! Precision = %d not allowed!\n", layer.precision);
@@ -985,12 +1005,7 @@ drawableColourLayoutToLcms( channel    & layer,
     if(farb_kanaele < layer.samplesperpixel)
       ;//format |= EXTRA_SH(layer.samplesperpixel - farb_kanaele);
 
-    format |=             (COLORSPACE_SH(in_color_space)|
-                           CHANNELS_SH(farb_kanaele)|
-                           BYTES_SH(0)); // lcms_bytes));
-
-  DBG_PROG_S( farb_kanaele <<" "<< T_CHANNELS(format) <<" "<< T_EXTRA(format) <<" "<< T_BYTES(format) )
-
+    format |= oyChannels_m(farb_kanaele) | oyDataType_m(data_type);
 
   return success;
 }
@@ -1059,11 +1074,11 @@ bearbeiteEingebetteteProfile( channel *layer )
     schreibeDatei( image_profile, size, an );
 //sleep(10);
     // calculate -> CIE*Lab prepare
-    if(hl)cmsCloseProfile (hl);
-    if(hp)cmsCloseProfile (hp);
-    hl   = cmsCreateLabProfile( cmsD50_xyY() );
-    hp   = cmsOpenProfileFromMem( image_profile, size );
-    farb_kanaele = _cmsChannelsOf( cmsGetColorSpace( hp ) );
+    if(hl)oyProfile_Release( &hl);
+    if(hp)oyProfile_Release( &hp);
+    hl   = oyProfile_FromStd( oyEDITING_LAB, 0 );
+    hp   = oyProfile_FromMem( size, image_profile, 0,0 );
+    farb_kanaele = oyProfile_GetChannelsCount( hp );
     if(farb_kanaele > layer->samplesperpixel) {
       g_message (_("Wrong profil assigned to image."));
       return 1;
@@ -1071,6 +1086,8 @@ bearbeiteEingebetteteProfile( channel *layer )
     layer->status |= PROFIL_NEU(1);
     //DBG_PROG_S( "hp = " << hp << " status:"<< layer->status )
   }
+
+#define cmsFLAGS_SOFTPROOFING 0x4000
 
   // save of embeded profiles
   int        new_proofing = 
@@ -1088,8 +1105,8 @@ bearbeiteEingebetteteProfile( channel *layer )
     {
       proof_profile = gimp_image_get_icc_profile_by_mem ( image_ID, &psize,
                                                           ICC_PROOF_PROFILE);
-      if(hs) cmsCloseProfile (hs);
-      hs   = cmsOpenProfileFromMem( proof_profile, psize );
+      if(hs) oyProfile_Release( &hs);
+      hs   = oyProfile_FromMem( psize, proof_profile, 0,0 );
       setzeRenderingIntent ( proof_profile, layer->intent_proof );
       schreibeDatei( proof_profile, psize, pn );
     } else {
