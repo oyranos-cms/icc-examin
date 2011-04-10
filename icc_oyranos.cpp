@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2009  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2011  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -1399,15 +1399,19 @@ Oyranos::wandelLabNachBildschirmFarben(int x, int y,
 
     oyProfile_s * prof_disp = oyMoni(x,y);
 
-    double *RGB_Speicher = 0;
+    double *RGB_Speicher = NULL;
 
-    static oyConversion_s * cc = 0;
-    static oyProfile_s * prof_disp_old = 0;
-    static oyImage_s * image_lab = 0,
-                     * image_disp = 0;
-    static oyOptions_s * options_old = 0;
-    static double * rgb = 0, * lab = 0;
+    static oyConversion_s * cc = NULL;
+    static oyProfile_s * prof_disp_old = NULL;
+    static oyImage_s * image_lab = NULL,
+                     * image_disp = NULL;
+    static oyOptions_s * options_old = NULL;
+    static oyPixelAccess_s * pixel_access = NULL;
+    static double * rgb = NULL, * lab = NULL;
     static size_t size_old = 0;
+
+    oyFilterNode_s * node;
+    oyFilterPlug_s * plug;
 
     RGB_Speicher = new double[size*3];
     if(!RGB_Speicher)  WARN_S( "RGB_speicher Speicher not available" )
@@ -1453,10 +1457,17 @@ Oyranos::wandelLabNachBildschirmFarben(int x, int y,
       cc = oyConversion_CreateBasicPixels( image_lab, image_disp, options, 0 );
 
       oyProfile_Release( &prof_lab );
+
+      oyPixelAccess_Release( &pixel_access );
+      node = oyConversion_GetNode( cc, OY_OUTPUT );
+      plug = oyFilterNode_GetPlug( node, 0 );
+      oyFilterNode_Release( &node );
+      pixel_access = oyPixelAccess_Create( 0,0, plug, oyPIXEL_ACCESS_IMAGE, 0 );
+      oyFilterPlug_Release( &plug );
     }
 
     memcpy( lab, Lab_Speicher, sizeof(double)*3*size );
-    oyConversion_RunPixels( cc, 0 );
+    oyConversion_RunPixels( cc, pixel_access );
     memcpy( RGB_Speicher, rgb, sizeof(double)*3*size );
 
     oyProfile_Release( &prof_disp );

@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2008  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2011  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -870,6 +870,17 @@ ICCmeasurement::lcms_parse                   (void)
   DBG_PROG_ENDE
 }
 #endif
+      
+oyPixelAccess_s * oyPixelAccess_FromConversion( oyConversion_s * cc )
+{
+  oyPixelAccess_s * pixel_access;
+  oyFilterNode_s *  node = oyConversion_GetNode( cc, OY_OUTPUT );
+  oyFilterPlug_s *  plug = oyFilterNode_GetPlug( node, 0 );
+  oyFilterNode_Release( &node );
+  pixel_access = oyPixelAccess_Create( 0,0, plug, oyPIXEL_ACCESS_IMAGE, 0 );
+  oyFilterPlug_Release( &plug );
+  return pixel_access;
+}
 
 void
 ICCmeasurement::init_umrechnen                     (void)
@@ -1100,6 +1111,12 @@ ICCmeasurement::init_umrechnen                     (void)
     }
 
     {
+      oyPixelAccess_s
+        * pixel_access_ctoxyz = oyPixelAccess_FromConversion(ctoxyz),
+        * pixel_access_ctolab = oyPixelAccess_FromConversion(ctolab),
+        * pixel_access_ctorgb = oyPixelAccess_FromConversion(ctorgb),
+        * pixel_access_labtorgb = oyPixelAccess_FromConversion(labtorgb);
+
       if (XYZ_measurement_ || LAB_measurement_)
       {
         RGB_MessFarben_.resize(nFelder_);
@@ -1160,7 +1177,7 @@ ICCmeasurement::init_umrechnen                     (void)
           if (!XYZ_measurement_)
             LabtoXYZ( Lab_Satz_[i], XYZ_Satz_[i]);
 
-          oyConversion_RunPixels( labtorgb, 0 );
+          oyConversion_RunPixels( labtorgb, pixel_access_labtorgb );
           FarbeZuDouble( &RGB_MessFarben_[i], RGB );
         }
 
@@ -1183,20 +1200,20 @@ ICCmeasurement::init_umrechnen                     (void)
           }
 
           if(ctoxyz)
-            oyConversion_RunPixels( ctoxyz, 0 );
+            oyConversion_RunPixels( ctoxyz, pixel_access_ctoxyz );
           XYZ[0] *= 2.0;
           XYZ[1] *= 2.0;
           XYZ[2] *= 2.0;
           FarbeZuDouble ( &XYZ_Ergebnis_[i], &XYZ[0] );
 
           if(ctolab)
-            oyConversion_RunPixels( ctolab, 0 );
+            oyConversion_RunPixels( ctolab, pixel_access_ctolab );
           Lab_Ergebnis_[i].L = Lab[0];
           Lab_Ergebnis_[i].a = Lab[1];
           Lab_Ergebnis_[i].b = Lab[2];
 
           if(ctorgb)
-            oyConversion_RunPixels( ctorgb, 0 );
+            oyConversion_RunPixels( ctorgb, pixel_access_ctorgb );
           FarbeZuDouble ( &RGB_ProfilFarben_[i], &RGB[0] );
 
           if(Lab_Satz_.size())
@@ -1227,6 +1244,11 @@ ICCmeasurement::init_umrechnen                     (void)
           }
         }
       }
+
+      oyPixelAccess_Release( &pixel_access_ctoxyz );
+      oyPixelAccess_Release( &pixel_access_ctolab );
+      oyPixelAccess_Release( &pixel_access_ctorgb );
+      oyPixelAccess_Release( &pixel_access_labtorgb );
     }
 
     if(start <= 0.0)
