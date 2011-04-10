@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2008  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2011  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -96,6 +96,7 @@ class ICCexamin : public icc_examin_ns::Beobachter,
     bool         lade ();
     void         lade (ICClist<Speicher> & neu);
     void         oyranos_einstellungen();
+    std::string  oyranos_settings_gui;
 
   private:
     void         erneuerTagBrowserText_ (void);//!< profile text in browserText

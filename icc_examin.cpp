@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2009  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2011  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -344,14 +344,24 @@ ICCexamin::start (int argc, char** argv)
 # endif
 
 #if !defined(WIN32)
-  FILE *out = icc_popen_m("oyranos-config", "r");
+  const char * oyranos_settings_gui_app = getenv("OYRANOS_SETTINGS_GUI");
+  if(!oyranos_settings_gui_app)
+    oyranos_settings_gui_app = "synnefo";
+  char * app = findApplication( oyranos_settings_gui_app );
   if(out)
   {  
-    char name[64] = {0};
-    size_t r = fscanf( out, "%12s", name ); r=r;
-    if( strcmp(name, "oyranos") == 0 )
+    oyranos_settings_gui = oyranos_settings_gui_app;
+    icc_betrachter->menu_einstellungen->show();
+  } 
+  else
+  {
+    oyranos_settings_gui_app = "oyranos-config-fltk";
+    app = findApplication( oyranos_settings_gui_app );
+    if(out)
+    {  
+      oyranos_settings_gui = oyranos_settings_gui_app;
       icc_betrachter->menu_einstellungen->show();
-    icc_pclose_m(out);
+    }
   } 
 #endif
 
@@ -1104,7 +1114,9 @@ ICCexamin::auffrischen(int schalter)
 void
 ICCexamin::oyranos_einstellungen()
 {
-  int r = system("oyranos-config-fltk"); r = r;
+  int r = 0;
+  if(oyranos_settings_gui.size())
+    r = system(oyranos_settings_gui.c_str());
   auffrischen( PROGRAMM | OYRANOS );
 }
 
