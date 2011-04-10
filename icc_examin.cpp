@@ -348,7 +348,7 @@ ICCexamin::start (int argc, char** argv)
   if(!oyranos_settings_gui_app)
     oyranos_settings_gui_app = "synnefo";
   char * app = findApplication( oyranos_settings_gui_app );
-  if(out)
+  if(app)
   {  
     oyranos_settings_gui = oyranos_settings_gui_app;
     icc_betrachter->menu_einstellungen->show();
@@ -357,12 +357,13 @@ ICCexamin::start (int argc, char** argv)
   {
     oyranos_settings_gui_app = "oyranos-config-fltk";
     app = findApplication( oyranos_settings_gui_app );
-    if(out)
+    if(app)
     {  
       oyranos_settings_gui = oyranos_settings_gui_app;
       icc_betrachter->menu_einstellungen->show();
     }
-  } 
+  }
+  if(app) free(app); app = 0;
 #endif
 
 # if APPLE && !__LP64__
