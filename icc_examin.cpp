@@ -817,6 +817,7 @@ ICCexamin::nachricht( Modell* modell , int info )
           prof = oyProfile_FromStd( oyASSUMED_WEB, NULL );
         int channels_n = oyProfile_GetChannelsCount( prof );
 
+        if((min_pos*channels_n*mult) < (int)chan_dv.size())
         for(int k = 0; k < channels_n; ++k)
           chan[k] = chan_dv[min_pos*channels_n*mult+k];
 

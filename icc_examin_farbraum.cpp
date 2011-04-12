@@ -214,9 +214,11 @@ ICCexamin::farbenLese  ( int n,
 
     int item = pr->getTagIDByName("ncl2");
     ICClist<double> p_neu = pr->getTagNumbers (item, ICCtag::MATRIX);
-    int channels_n = pr->getColourChannelsCount();
+    int channels_n = p_neu[1]+0.5;
     unsigned int n_farben = p_neu.size()/(3+channels_n);
 
+    if(n_farben != p_neu[0])
+      WARN_S( "wrong patch count" << n_farben<<">"<< p_neu[0] )
 
     names = pr->getTag(item).getText("ncl2_names");
 
@@ -233,7 +235,7 @@ ICCexamin::farbenLese  ( int n,
     if(n_farben != p.size() / 3 / mult)
     {
       DBG_PROG_S( "resize " << n_farben <<" "<<
-              p_neu.size() / 3 <<" "<< p.size() / 3 / mult )
+              (p_neu.size()-2) / 3 <<" "<< p.size() / 3 / mult )
       p.resize( n_farben * 3 * mult );
       f.resize( n_farben * channels_n * mult );
       neu = 1;
@@ -241,9 +243,9 @@ ICCexamin::farbenLese  ( int n,
 
     if( single )
     {
-      p[0] = p_neu[patch*3+0];
-      p[1] = p_neu[patch*3+1];
-      p[2] = p_neu[patch*3+2];
+      p[0] = p_neu[patch*3+2+0];
+      p[1] = p_neu[patch*3+2+1];
+      p[2] = p_neu[patch*3+2+2];
 
       names[0] = names[patch];
       names.resize(1);
@@ -260,9 +262,9 @@ ICCexamin::farbenLese  ( int n,
           p[s+4] = p[s+1];
           p[s+5] = p[s+2];
         }
-        p[s+0] = p_neu[i*3+0];
-        p[s+1] = p_neu[i*3+1];
-        p[s+2] = p_neu[i*3+2];
+        p[s+0] = p_neu[i*3+2+0];
+        p[s+1] = p_neu[i*3+2+1];
+        p[s+2] = p_neu[i*3+2+2];
         if(mult == 2 && neu)
         {
           // double of new colours
@@ -288,7 +290,7 @@ ICCexamin::farbenLese  ( int n,
           f[s+channels_n + j] = f[s + j];
 
       for(int j = 0; j < channels_n; ++j)
-        f[s + j] = p_neu[3*n_farben + i*channels_n + j];
+        f[s + j] = p_neu[3*n_farben + i*channels_n +2+ j];
 
       if(mult == 2 && neu)
         for(int j = 0; j < channels_n; ++j)
@@ -334,9 +336,11 @@ ICCexamin::farbenLese  ( int n,
   {
     double XYZ[3];
     double cielab[3];
-    double * channels = &f[channels_n*i];
     const char * name = 0;
     unsigned int names_n = names.size();
+    double * channels = NULL;
+    if(channels_n*i < f.size())
+      channels = &f[channels_n*i];
 
     if(i >= names_n)
     {
