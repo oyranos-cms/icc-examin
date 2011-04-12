@@ -273,7 +273,8 @@ ICCexamin::farbenLese  ( int n,
       }
     }
 
-    if(n_farben != f.size() / channels_n / mult)
+    if(channels_n && mult &&
+       n_farben != f.size() / channels_n / mult)
       neu = 1;
     else
       neu = 0;
