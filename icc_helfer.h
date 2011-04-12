@@ -171,6 +171,7 @@ std::string tempFileName ();
 
 // common
 char* getExecPath               ( const char *filename );
+char* findApplication                ( const char        * app_name );
 void  setI18N                   ( const char *exename );
 
 // text helper

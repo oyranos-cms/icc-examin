@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2008  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2010  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -1520,6 +1520,35 @@ getExecPath(const char *filename)
   }
   DBG_PROG_ENDE
   return exec_path;
+}
+
+extern "C" {
+char ** oyStringSplit_(const char * name, const char delimiter, int * n, oyAlloc_f alloc);
+void oyStringListRelease_( char***, int, oyDeAlloc_f );
+} /* extern "C" */
+/* resembles which */
+char * findApplication(const char * app_name)
+{
+  const char * path = getenv("PATH");
+  char * full_app_name = NULL;
+  if(path && app_name)
+  {
+    int paths_n = 0, i;
+    char ** paths = oyStringSplit_( path, ':', &paths_n, malloc );
+    for(i = 0; i < paths_n; ++i)
+    {
+      std::string full_name = paths[i];
+      full_name += app_name;
+      int found = isFileFull( full_name.c_str() );
+      if(found)
+      {
+        i = paths_n;
+        full_app_name = strdup( full_name.c_str() );
+      }
+    }
+    oyStringListRelease_( &paths, paths_n, free );
+  }
+  return full_app_name;
 }
 
 #include "fl_i18n/fl_i18n.H"
