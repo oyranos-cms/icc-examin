@@ -665,40 +665,7 @@ ICCprofile::valid ()
 int
 ICCprofile::getColourChannelsCount(void)
 { DBG_PROG_START
-  int channels = 0;
-  const char *tag_name = NULL;
-  ICCtag::MftChain format = ICCtag::TABLE_IN;
-  ICClist<double> nummern;
-       if(this->hasTagName("A2B0")) {
-    tag_name = "A2B0";
-  } else if(this->hasTagName("A2B1")) {
-    tag_name = "A2B1";
-  } else if(this->hasTagName("A2B2")) {
-    tag_name = "A2B2";
-  } else if(this->hasTagName("B2A0")) {
-    tag_name = "B2A0"; format = ICCtag::TABLE_OUT;
-  } else if(this->hasTagName("B2A1")) {
-    tag_name = "B2A1"; format = ICCtag::TABLE_OUT;
-  } else if(this->hasTagName("B2A2")) {
-    tag_name = "B2A2"; format = ICCtag::TABLE_OUT;
-  }
-
-  if(tag_name)
-  {
-    nummern = tags[getTagIDByName(tag_name)].getNumbers(format);
-    if(nummern.size())
-      channels = (int)nummern[0];
-  } else if(this->hasTagName("kTRC")) {
-    channels = 1;
-  } else if(this->hasTagName("rTRC") &&
-          this->hasTagName("gTRC") &&
-          this->hasTagName("bTRC")) {
-    channels = 3;
-  }
-  if(channels == 0)
-  {
-    channels = getColorSpaceChannels(colorSpace());
-  }
+  int channels = getColorSpaceChannels(colorSpace());
 
   DBG_PROG_ENDE
   return channels;
