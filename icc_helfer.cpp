@@ -1538,6 +1538,7 @@ char * findApplication(const char * app_name)
     for(i = 0; i < paths_n; ++i)
     {
       std::string full_name = paths[i];
+      full_name += OY_SLASH;
       full_name += app_name;
       int found = isFileFull( full_name.c_str() );
       if(found)
