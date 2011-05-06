@@ -1,3 +1,134 @@
+Version 0.48
+
+Kai-Uwe Behrmann (124):
+	* [core]: fix application search function
+	* [core]: ignore missed device channels in ncl2
+	* [core]: use profile headers channel count
+	* [core]: add channels count fallback
+	* [core]: prevent numerical exception
+	* [core]: use pixel access objects for optimisation
+	* [core]: fix declaration
+	* [core]: add Synnefo Oyranos front send
+	* [cine]: omit switch to Oyranos
+	* [core]: refresh after options change
+	* [core]: add absolute intent for initial mesh
+	* [core]: rename variables
+	* [core]: remove progress indicator for Oyranos
+	* [core]: convert colours only as needed
+	* [core]: initialise variables
+	* [core]: initialise variable
+	* [core]: correct XYZ value range on data set
+	* [core]: default absolute intent in core options
+	* [core]: remove unneeded conversion functions
+	* [core]: scale XYZ display to new value range
+	* [core]: use ui options again
+	* [core]: omit measurement scaling
+	* [core]: add full rendering options name
+	* [core]: fix single buffer pixel count
+	* [core]: set drawing to double buffers for lcms
+	* [core]: convert complete data
+	* [core]: fix access to multiple pixels
+	* [core]: omit unused code
+	* [core]: cache one pixel transforms
+	* [core]: fix temorary buffer usage
+	* [core]: adapt to Oyranos new alpha API change
+	* [core]: set correct buffers
+	* [core]: omit unused buffer
+	* [conf]: update
+	* [core]: catch unexpected display names
+	* [core]: fix Oyranos option keys
+	* [core]: fix wrong context assignment
+	* [core]: clean up intermediate debugging code
+	* [core]: fix drawing with Oyranos colours
+	* [core]: simplify holeRGBRampen()
+	* [core]: compile fixes
+	* [core]: use Oyranos' ICC definitions
+	* [core]: convert from lcms to Oyranos 1
+	* [core]: fontconfig searches DejaVuSans.ttf
+	* [conf]: sync with Oyranos script
+	* [build]: fix sane build
+	* [build]: switch to new profile packages
+	* [build]:  reduce downloads and rebuilding
+	* [core]: zoom with mouse wheel
+	* [core]: move cut plane by shift + mouse wheel
+	* [core]: mouse plane move
+	* [core]: show mouse move cursor and zoom
+	* [build]: compress package with bzip2
+	* [core]: update to Oyranos API change
+	* [conf]: sync with Oyranos
+	* [build]: script disable lcms in LibRaw
+	* [build]: script LibRaw, kolor-manager, CinePaint
+	* [build]: add build script to git
+	* [conf]: desktop Categories=Graphics;Viewer;
+	* [conf]: use -fPIC only for 64bit builds
+	* [conf]: desktop Applications;Graphics;Publishing
+	* [conf]: add configure --fltk-config-flags option
+	* [conf]: move link flag to proper variable
+	* [conf]: set paths to freetype on osX
+	* [core]: support pser user temp file name
+	* [core]: add update option to intent()
+	* [core]: fix recent wget fallback #dad898c4
+	* [build]: update RPM spec
+	* remove elektra requirement
+	* [core]: beautify code
+	* [core]: symetrical activate net
+	* [core]: ICCnetz::aktiv variable is private
+	* [core]: allow fallback for non wget
+	* [core]: poll for changed files
+	* [core]: reenable file observer thread
+	* [core]: comment net-color spec profile inclusion
+	* [conf]: reenable threading in CinePaint plugin
+	* [core]: careful update
+	* [core]: not always update in ICCexamin::intent()
+	* [core]: reenable ICCexamin::lade()
+	* [core]: revert #d7f3e5f52
+	* [core]: fix push_back()
+	* [core]: fix compile warning
+	* [core]: add intermediate title
+	* [core]: initialise titel string
+	* [core]: one more request
+	* [conf]: update devel date
+	* [docu]: add Fedora requirements
+	* [core]: load harmonic patch sets or skip
+	* [core]: omit static variable
+	* [core]: enable loading again
+	* [core]: remove many lcms references
+	* [core]: remove threads
+	* [core]: omit line break for singe line texts
+	* [core]: send arch and distribution name during download
+	* [conf]: store arch and distribution names
+	* [core]: support download without TMP variable
+	* [core]: fix DISPLAY string crash
+	* [core]: dont crash with missed default profiles
+	* [core]: use explicite ColorSync on osX
+	* [build]: install OpenICC profiles
+	* [i18n]: adapt app bundle i18n path
+	* [conf]: detect osX version not Darwin's
+	* [core]: just GL widget
+	* [core]: hide mft_gl widget on osX
+	* [conf]: set release version and date
+	* [build]: on osX, bundle libXcm
+	* [core]: better format the dict tag type text
+	* [i18n]: update deutsch
+	* [cine]: load net-color monitor profile
+	* [i18n]: update deutsch
+	* [docu]: ICC profile <-> calibration data window
+	* [build]: add suse_update_desktop_file RPM macro
+	* [core]: turn ndin into drawing
+	* [core]: better format ndin and mmod text output
+	* [core]: draw first three XYZ points as triangle
+	* [core]: detect new tag types
+	* [core]: avoid cieShoe drawing conflicts
+	* [core]: disable incremental updates
+	* [build]: elder FLTK compile fix
+	* [core]: fix access to NULL ptr array
+	* [build]: install the png icon correctly
+	* [conf]: bump version
+	* [docu]: update changelog
+
+Nicolas Chauvet (1):
+	* [conf]: apply Fedora pkg-config patch
+
 Version 0.47
 
 Kai-Uwe Behrmann (171):
