@@ -739,7 +739,10 @@ ICCtag::getCurve                                  (void)
   icCurveType *daten = (icCurveType*) &data_[0];
   int count = icValue(daten->curve.count);
 
-  if (count == 1) { // icU16Fixed16Number
+  if(count == 0)
+  {
+    punkte.push_back (1.0);
+  } else if (count == 1) { // icU16Fixed16Number
     punkte.push_back (icValue(daten->curve.data[0])/256.0);
   } else {
     for (int i = 0; i < count; i++)
