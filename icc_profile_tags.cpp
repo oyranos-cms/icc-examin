@@ -603,6 +603,19 @@ ICCtag::getText                     (std::string text)
           texte[0].append ("\n", 1);
       }
     } else
+    if( text == "mAB " ||
+        text == "mBA ")
+    {
+      for (int i = 0; i < texts_n; ++i)
+      {
+        if(texts[i] && strlen(texts[i]))
+        {
+          texte[0].append (texts[i], strlen(texts[i]));
+          if(texts_n > 1)
+            texte[0].append ("\n", 1);
+        }
+      }
+    } else
     {
       for (int i = 0; i < texts_n; ++i)
       {

@@ -199,6 +199,9 @@ ICCexamin::waehleTag (int item)
       icc_betrachter->mft_choice->profilTag (item, t);
       frei(true);
       waehleMft (_mft_item);
+    } else if ( TagInfo[1] == "mAB ")
+    {
+      showData (_mft_item);
     } else if ( TagInfo[1] == "vcgt" ) { DBG_PROG_S("vcgt")
       kurve_umkehren[TAG_VIEWER] = true;
       kurven[TAG_VIEWER] = profile.profil()->getTagCurves (item, ICCtag::CURVE_IN);
@@ -315,6 +318,82 @@ ICCexamin::waehleTag (int item)
   return text;
 }
 
+void ICCexamin::showData (int item)
+{
+  ICClist<std::string> TagInfo = profile.profil()->printTagInfo(_item);
+  std::string choice_text;
+
+  kurven[MFT_VIEWER].clear();
+  punkte[MFT_VIEWER].clear();
+  texte[MFT_VIEWER].clear();
+
+  if (item < 1)
+    _mft_item = 0;
+  else
+    _mft_item = item;
+
+  kurve_umkehren[MFT_VIEWER] = false;
+
+  status("")
+
+  const char * tmp = 0;
+  if(TagInfo[1] == "mAB ")
+  {
+    /* skip the two channel info lines */
+    std::string tmp_string = profile.profil()->getTagText(_item)[0];
+    tmp = tmp_string.c_str();
+    ICClist<std::string> lines = icc_parser::zeilenNachVector( tmp_string );
+    choice_text = lines[0];
+    choice_text += "\n";
+
+    for(int i = 0; i < 3; ++i)
+    {
+      tmp = strchr(tmp, '\n');
+      if(tmp)
+        tmp++;
+      else
+        break;
+    }
+  }
+  if(tmp)
+    choice_text += tmp;
+
+  frei(false);
+  icc_betrachter->mft_choice->profilTag( _item, choice_text );
+  frei(true);
+
+  std::string t;
+  tmp = profile.profil()->getTagText (_item)[0].c_str();
+  if(tmp)
+    tmp = strchr( tmp, '\n' );
+  if(tmp)
+  {
+    tmp++;
+    t = tmp;
+  }
+
+  frei(false);
+  if(_mft_item == 0)
+  {
+    t += _("Intent:");
+    t += " ";
+    if(TagInfo[0] == "A2B0")
+      t += renderingIntentName(0);
+    if(TagInfo[0] == "A2B1")
+      t += renderingIntentName(1);
+    if(TagInfo[0] == "A2B2")
+      t += renderingIntentName(2);
+    t += "\n";
+
+    icc_betrachter->mft_text->hinein ( t );
+    icc_betrachterNeuzeichnen(icc_betrachter->mft_text);
+  }
+  frei(true);
+
+  icc_betrachter->mft_choice->gewaehlter_eintrag = item;
+  if(item <= 0)
+    icc_betrachter->mft_choice->value(0);
+}
 
 void
 ICCexamin::waehleMft (int item)
@@ -427,8 +506,9 @@ ICCexamin::waehleMft (int item)
           pp[i] = (const char*)strdup(from_colour_names[i].c_str());
           sn[i] = (const char*)strdup(from_colour_snames[i].c_str());
         }
-        icc_examin->icc_betrachter->mft_gl_sliderAdd( pp, sn, channels,
-                                                      (int)clutpoints[0] );
+        if(clutpoints.size())
+          icc_examin->icc_betrachter->mft_gl_sliderAdd( pp, sn, channels,
+                                                        (int)clutpoints[0] );
         /* We need to keep that around to make FLTK happy */
         /* if(pp) delete [] pp;
         if(sn) delete [] sn;*/
