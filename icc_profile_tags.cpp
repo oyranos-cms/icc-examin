@@ -709,7 +709,7 @@ ICCtag::getDescription              (void)
 ICClist<double>
 ICCtag::getCIEXYZ                                 (void)
 { DBG_PROG_START
-  ICClist<double> punkte;
+  ICClist<double> points;
   icTagBase *base  = (icTagBase*)(&data_[0]);
 
   if ((base->sig) == (icTagTypeSignature)icValue( icSigChromaticityType )) {
@@ -724,46 +724,46 @@ ICCtag::getCIEXYZ                                 (void)
       double xyY[3] = { icUFValue( channel[0] ),
                         icUFValue( channel[1] ),
                         1.0 };
-      punkte.push_back( xyY[0] );
-      punkte.push_back( xyY[1] );
-      punkte.push_back( xyY[2] );
+      points.push_back( xyY[0] );
+      points.push_back( xyY[1] );
+      points.push_back( xyY[2] );
 #     ifdef DEBUG_ICCTAG
       DBG_NUM_S( xyY[0] << ", " << xyY[1] << ", " << xyY[2] )
 #     endif
       DBG_NUM_S( xyY[0] << ", " << xyY[1] << ", " << xyY[2] )
     }
-    DBG_NUM_V( punkte.size() )
-    xyYto_XYZ(punkte);
+    DBG_NUM_V( points.size() )
+    xyYto_XYZ(points);
   } else if (base->sig == (icTagTypeSignature)icValue( icSigXYZType )) {
     icXYZType *daten = (icXYZType*) &data_[0];
-    punkte.push_back( icSFValue( (daten->data.data[0].X) ) );
-    punkte.push_back( icSFValue( (daten->data.data[0].Y) ) );
-    punkte.push_back( icSFValue( (daten->data.data[0].Z) ) );
+    points.push_back( icSFValue( (daten->data.data[0].X) ) );
+    points.push_back( icSFValue( (daten->data.data[0].Y) ) );
+    points.push_back( icSFValue( (daten->data.data[0].Z) ) );
   }
 
   DBG_PROG_ENDE
-  return punkte;
+  return points;
 }
 
 ICClist<double>
 ICCtag::getCurve                                  (void)
 { DBG_PROG_START
-  ICClist<double> punkte;
+  ICClist<double> points;
   icCurveType *daten = (icCurveType*) &data_[0];
   int count = icValue(daten->curve.count);
 
   if(count == 0)
   {
-    punkte.push_back (1.0);
+    points.push_back (1.0);
   } else if (count == 1) { // icU16Fixed16Number
-    punkte.push_back (icValue(daten->curve.data[0])/256.0);
+    points.push_back (icValue(daten->curve.data[0])/256.0);
   } else {
     for (int i = 0; i < count; i++)
-      punkte.push_back (icValue(daten->curve.data[i])/65536.0);
+      points.push_back (icValue(daten->curve.data[i])/65536.0);
   }
 
   DBG_PROG_ENDE
-  return punkte;
+  return points;
 }
 
 ICClist<ICClist<double> >
