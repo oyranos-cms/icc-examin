@@ -201,7 +201,34 @@ ICCexamin::waehleTag (int item)
       waehleMft (_mft_item);
     } else if ( TagInfo[1] == "mAB ")
     {
-      showData (_mft_item);
+      std::string choice_text;
+      const char * tmp = 0;
+      if(TagInfo[1] == "mAB ")
+      {
+        /* skip the two channel info lines */
+        std::string tmp_string = profile.profil()->getTagText(_item)[0];
+        tmp = tmp_string.c_str();
+        ICClist<std::string> lines = icc_parser::zeilenNachVector( tmp_string );
+        choice_text = lines[0];
+        choice_text += "\n";
+
+        for(int i = 0; i < 3; ++i)
+        {
+          tmp = strchr(tmp, '\n');
+          if(tmp)
+            tmp++;
+          else
+            break;
+        }
+      }
+      if(tmp)
+        choice_text += tmp;
+
+      frei(false);
+      icc_betrachter->mft_choice->profilTag( _item, choice_text );
+      frei(true);
+
+      waehleMft(_mft_item);
     } else if ( TagInfo[1] == "vcgt" ) { DBG_PROG_S("vcgt")
       kurve_umkehren[TAG_VIEWER] = true;
       kurven[TAG_VIEWER] = profile.profil()->getTagCurves (item, ICCtag::CURVE_IN);
@@ -321,60 +348,13 @@ ICCexamin::waehleTag (int item)
 void ICCexamin::showData (int item)
 {
   ICClist<std::string> TagInfo = profile.profil()->printTagInfo(_item);
-  std::string choice_text;
-
-  kurven[MFT_VIEWER].clear();
-  punkte[MFT_VIEWER].clear();
-  texte[MFT_VIEWER].clear();
-
-  if (item < 1)
-    _mft_item = 0;
-  else
-    _mft_item = item;
-
-  kurve_umkehren[MFT_VIEWER] = false;
-
-  status("")
-
-  const char * tmp = 0;
-  if(TagInfo[1] == "mAB ")
-  {
-    /* skip the two channel info lines */
-    std::string tmp_string = profile.profil()->getTagText(_item)[0];
-    tmp = tmp_string.c_str();
-    ICClist<std::string> lines = icc_parser::zeilenNachVector( tmp_string );
-    choice_text = lines[0];
-    choice_text += "\n";
-
-    for(int i = 0; i < 3; ++i)
-    {
-      tmp = strchr(tmp, '\n');
-      if(tmp)
-        tmp++;
-      else
-        break;
-    }
-  }
-  if(tmp)
-    choice_text += tmp;
-
-  frei(false);
-  icc_betrachter->mft_choice->profilTag( _item, choice_text );
-  frei(true);
 
   std::string t;
-  tmp = profile.profil()->getTagText (_item)[0].c_str();
-  if(tmp)
-    tmp = strchr( tmp, '\n' );
-  if(tmp)
-  {
-    tmp++;
-    t = tmp;
-  }
 
   frei(false);
   if(_mft_item == 0)
   {
+    const char * tmp = 0;
     t += _("Intent:");
     t += " ";
     if(TagInfo[0] == "A2B0")
@@ -385,19 +365,30 @@ void ICCexamin::showData (int item)
       t += renderingIntentName(2);
     t += "\n";
 
+    tmp = profile.profil()->getTagText (_item)[0].c_str();
+    if(tmp)
+      tmp = strchr( tmp, '\n' );
+    if(tmp)
+    {
+      tmp++;
+      t += tmp;
+    }
+    icc_betrachter->mft_text->hinein ( t );
+    icc_betrachterNeuzeichnen(icc_betrachter->mft_text);
+  } else
+  {
+    
+    t = "part 1";
     icc_betrachter->mft_text->hinein ( t );
     icc_betrachterNeuzeichnen(icc_betrachter->mft_text);
   }
   frei(true);
-
-  icc_betrachter->mft_choice->gewaehlter_eintrag = item;
-  if(item <= 0)
-    icc_betrachter->mft_choice->value(0);
 }
 
 void
 ICCexamin::waehleMft (int item)
 { DBG_PROG_START
+  ICClist<std::string> TagInfo = profile.profil()->printTagInfo(_item);
   frei(false);
   //selection from mft_choice
 
@@ -418,6 +409,10 @@ ICCexamin::waehleMft (int item)
   ICClist<double> zahlen;
 
   DBG_PROG_V( _mft_item )
+
+  if(TagInfo[1] == "mAB ")
+    showData(_mft_item);
+  else
   switch (_mft_item) {
   case 0: // overview
     { ICClist<std::string> Info = icc_betrachter->mft_choice->Info;
