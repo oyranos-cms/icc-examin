@@ -130,6 +130,7 @@ class ICCprofile {
                                        ICCtag::MftChain    typ,
                                        ICClist<int>        channels );
     ICClist<double>      getTagNumbers     (int item, ICCtag::MftChain typ);
+    oyStructList_s *     getTagNumbers     (int item);
     ICClist<std::string> getTagChannelNames(int item, ICCtag::MftChain typ);
     bool                hasTagName   (std::string name); //!< name
     int                 getTagIDByName (std::string name); //!< name

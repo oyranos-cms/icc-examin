@@ -377,10 +377,44 @@ void ICCexamin::showData (int item)
     icc_betrachterNeuzeichnen(icc_betrachter->mft_text);
   } else
   {
-    
-    t = "part 1";
-    icc_betrachter->mft_text->hinein ( t );
-    icc_betrachterNeuzeichnen(icc_betrachter->mft_text);
+    int mft_pos = _mft_item-1;
+    oyStructList_s * list = profile.profil()->getTagNumbers(_item);
+    oyOption_s * opt = 0;
+    int count = oyStructList_Count( list );
+    int list_pos = -1;
+    for(int i = 0; i < count; ++i)
+    {
+      opt = (oyOption_s*) oyStructList_GetRefType( list, i, oyOBJECT_OPTION_S );
+      if(opt) ++list_pos;
+
+      if(list_pos == mft_pos)
+      {
+        if(oyFilterRegistrationMatchKey( oyOption_GetRegistration(opt),
+                                       "icParametricCurveType", oyOBJECT_NONE ))
+        {
+          int n = oyOption_GetValueDouble( opt, 0 );
+          n = 0;
+        } else
+        {
+          t = oyStructList_GetName( list, i-1 );
+          t += " ";
+          t += strrchr( oyOption_GetRegistration(opt), '/' ) + 1;
+          icc_betrachter->mft_text->hinein ( t );
+          icc_betrachterNeuzeichnen(icc_betrachter->mft_text);
+        }
+        break;
+      }
+      oyOption_Release( &opt );
+    }
+    if(list_pos != mft_pos)
+    {
+      char num[12];
+      sprintf( num, "%d", mft_pos );
+      t = "no element found: ";
+      t += num;
+      icc_betrachter->mft_text->hinein ( t );
+      icc_betrachterNeuzeichnen(icc_betrachter->mft_text);
+    }
   }
   frei(true);
 }

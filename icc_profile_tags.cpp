@@ -1208,6 +1208,20 @@ ICCtag::getNumbers                                 (MftChain typ)
   return nummern;
 }
 
+oyStructList_s * ICCtag::getNumbers  ( )
+{
+  oyStructList_s * numbers = 0;
+    icTagBase *base  = (icTagBase*)(&data_[0]);
+    icTagTypeSignature tag_type = icValue( base->sig );
+    oySTATUS_e status = oyOK;
+    oyProfileTag_s * tag_ = oyProfileTag_CreateFromData( _sig, tag_type, status,
+                                                         size_, data_, 0 );
+
+    numbers = oyProfileTag_Get( tag_ );
+  oyProfileTag_Release( &tag_ );
+  return numbers;
+}
+
 ICClist<std::string>
 ICCtag::getText                     (MftChain typ)
 { DBG_PROG_START
