@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2008  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2011  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -348,6 +348,7 @@ ICCexamin::waehleTag (int item)
 void ICCexamin::showData (int item)
 {
   ICClist<std::string> TagInfo = profile.profil()->printTagInfo(_item);
+  char num[12];
 
   std::string t;
 
@@ -379,21 +380,34 @@ void ICCexamin::showData (int item)
   {
     int mft_pos = _mft_item-1;
     oyStructList_s * list = profile.profil()->getTagNumbers(_item);
-    oyOption_s * opt = 0;
+    oyOption_s * opt;
+    oyStructList_s * elements;
     int count = oyStructList_Count( list );
     int list_pos = -1;
     for(int i = 0; i < count; ++i)
     {
+      elements = 0;
       opt = (oyOption_s*) oyStructList_GetRefType( list, i, oyOBJECT_OPTION_S );
-      if(opt) ++list_pos;
+      if(!opt)
+        elements = (oyStructList_s*) oyStructList_GetRefType( list, i,
+                                                       oyOBJECT_STRUCT_LIST_S );
+      if(opt || elements) ++list_pos;
 
       if(list_pos == mft_pos)
       {
-        if(oyFilterRegistrationMatchKey( oyOption_GetRegistration(opt),
+        if(opt && oyFilterRegistrationMatchKey( oyOption_GetRegistration(opt),
                                        "icParametricCurveType", oyOBJECT_NONE ))
         {
           int n = oyOption_GetValueDouble( opt, 0 );
           n = 0;
+        } else if(elements)
+        {
+          t = "found ";
+          sprintf( num, "%d", oyStructList_Count( elements ) );
+          t += num;
+          t += " elements";
+          icc_betrachter->mft_text->hinein ( t );
+          icc_betrachterNeuzeichnen(icc_betrachter->mft_text);
         } else
         {
           t = oyStructList_GetName( list, i-1 );
@@ -408,7 +422,6 @@ void ICCexamin::showData (int item)
     }
     if(list_pos != mft_pos)
     {
-      char num[12];
       sprintf( num, "%d", mft_pos );
       t = "no element found: ";
       t += num;
