@@ -443,7 +443,7 @@ cdepend:
 	for i in $(CXXOBJECTS); do \
 	  echo "$${i}:" >> cobjects; \
 	  echo "	echo Compiling $${i} ..." >> cobjects; \
-	  echo '	$$(CXX) -I./ -I$$(SRCDIR) $$(CXXFLAGS_) -c -o $$*.o $$(SRCDIR)/$$*.cxx' >> cobjects; \
+	  echo '	$$(CXX) -I./ -I$$(SRCDIR) $$(CXXFLAGS_) $$(GETTEXT) -c -o $$*.o $$(SRCDIR)/$$*.cxx' >> cobjects; \
 	  echo "" >> cobjects; \
 	done
 
