@@ -612,13 +612,6 @@ vergleicheFarben(void* zeiger)
 	DBG_PROG_S("raster")
   }
 
-  // create device link
-  if( GET_TRANSFORM(layer->status) ||
-      GET_PROFIL(layer->status) ||
-      GET_CHANNELS(layer->status) ||
-      GET_BITDEPTH(layer->status) ) {
-    transformAnlegen( *layer );
-  }
   if( GET_GEOMETRY(layer->status) ||
       GET_PROFIL(layer->status) ||
       GET_CHANNELS(layer->status) ||
@@ -627,6 +620,13 @@ vergleicheFarben(void* zeiger)
 	DBG_PROG_S("reserved")
   }
 
+  // create device link
+  if( GET_TRANSFORM(layer->status) ||
+      GET_PROFIL(layer->status) ||
+      GET_CHANNELS(layer->status) ||
+      GET_BITDEPTH(layer->status) ) {
+    transformAnlegen( *layer );
+  }
   DBG_PLUG_S( "nlayers: " << nlayers )
  
   name.resize(x_num*y_num+2);
