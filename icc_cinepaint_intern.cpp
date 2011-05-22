@@ -516,10 +516,10 @@ transformAnlegen( channel & layer )
 
     DBG_PROG_S( transf <<" "<< layer.intent )
 
-    printf(num,"%d", layer.intent);
+    sprintf(num,"%d", layer.intent);
     oyOptions_SetFromText( &options, OY_DEFAULT_RENDERING_INTENT, num,
                            OY_CREATE_NEW );
-    printf(num,"%d", layer.intent_proof);
+    sprintf(num,"%d", layer.intent_proof);
     oyOptions_SetFromText( &options, OY_DEFAULT_RENDERING_INTENT_PROOF,
                            num, OY_CREATE_NEW );
     if(layer.flags & 0x2000) /* BPC */
