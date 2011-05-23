@@ -710,13 +710,12 @@ vergleicheFarben(void* zeiger)
 
   oyConversion_RunPixels( transf, NULL );
 
-
   // Berechnung Auswerten ...
   for(int i = 0; i < n_points; ++i)
   {
-    pcsfarbe.push_back( outbuf[3*i+0]/100.0);
-    pcsfarbe.push_back((outbuf[3*i+1]+128.0)/255.0);
-    pcsfarbe.push_back((outbuf[3*i+2]+128.0)/255.0);
+    pcsfarbe.push_back( outbuf[3*i+0]);
+    pcsfarbe.push_back( outbuf[3*i+1]);
+    pcsfarbe.push_back( outbuf[3*i+2]);
 
     //DBG_PROG_S( pcsfarbe[farb_kanaele*i+0] << "," << pcsfarbe[farb_kanaele*i+1] << "," << pcsfarbe[farb_kanaele*i+2] )
 
@@ -1235,11 +1234,6 @@ holeFarbPunkt (channel* layer, int & x_punkt, int & y_punkt,
         getColour ( layer, n, buf, &colour[colour_x*farb_kanaele],
                     x_punkt, y_punkt);
 
-        colour[colour_x*farb_kanaele+0] *= 100.0;
-        colour[colour_x*farb_kanaele+1] *= 100.0;
-        colour[colour_x*farb_kanaele+2] *= 100.0;
-        if(farb_kanaele == 4)
-        colour[colour_x*farb_kanaele+3] *= 100.0;
         sprintf( txt, "%d,%d", x_punkt, y_punkt );
         #ifdef DEBUG_
         cout << colour_x <<": "<<
