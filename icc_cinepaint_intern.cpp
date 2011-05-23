@@ -528,8 +528,6 @@ transformAnlegen( channel & layer )
     if(layer.flags & 0x2000) /* BPC */
       oyOptions_SetFromText( &options, OY_DEFAULT_RENDERING_BPC,
                              "1", OY_CREATE_NEW );
-    fprintf(stderr,"%s:%d intent: %d intent_proof: %d\n", __FILE__,__LINE__,
-                   layer.intent, layer.intent_proof);
 
     if(layer.flags & 0x1000) /* gamut warning */
       oyOptions_SetFromText( &options, OY_DEFAULT_RENDERING_GAMUT_WARNING,
