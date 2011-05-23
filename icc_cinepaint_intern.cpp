@@ -519,12 +519,17 @@ transformAnlegen( channel & layer )
     sprintf(num,"%d", layer.intent);
     oyOptions_SetFromText( &options, OY_DEFAULT_RENDERING_INTENT, num,
                            OY_CREATE_NEW );
-    sprintf(num,"%d", layer.intent_proof);
+    if(layer.intent_proof == 3)
+      sprintf(num,"%d", 1);
+    else
+      sprintf(num,"%d", 0);
     oyOptions_SetFromText( &options, OY_DEFAULT_RENDERING_INTENT_PROOF,
                            num, OY_CREATE_NEW );
     if(layer.flags & 0x2000) /* BPC */
       oyOptions_SetFromText( &options, OY_DEFAULT_RENDERING_BPC,
                              "1", OY_CREATE_NEW );
+    fprintf(stderr,"%s:%d intent: %d intent_proof: %d\n", __FILE__,__LINE__,
+                   layer.intent, layer.intent_proof);
 
     if(layer.flags & 0x1000) /* gamut warning */
       oyOptions_SetFromText( &options, OY_DEFAULT_RENDERING_GAMUT_WARNING,
