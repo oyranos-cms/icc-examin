@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2008  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2011  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -199,6 +199,36 @@ ICCexamin::waehleTag (int item)
       icc_betrachter->mft_choice->profilTag (item, t);
       frei(true);
       waehleMft (_mft_item);
+    } else if ( TagInfo[1] == "mAB ")
+    {
+      std::string choice_text;
+      const char * tmp = 0;
+      if(TagInfo[1] == "mAB ")
+      {
+        /* skip the two channel info lines */
+        std::string tmp_string = profile.profil()->getTagText(_item)[0];
+        tmp = tmp_string.c_str();
+        ICClist<std::string> lines = icc_parser::zeilenNachVector( tmp_string );
+        choice_text = lines[0];
+        choice_text += "\n";
+
+        for(int i = 0; i < 3; ++i)
+        {
+          tmp = strchr(tmp, '\n');
+          if(tmp)
+            tmp++;
+          else
+            break;
+        }
+      }
+      if(tmp)
+        choice_text += tmp;
+
+      frei(false);
+      icc_betrachter->mft_choice->profilTag( _item, choice_text );
+      frei(true);
+
+      waehleMft(_mft_item);
     } else if ( TagInfo[1] == "vcgt" ) { DBG_PROG_S("vcgt")
       kurve_umkehren[TAG_VIEWER] = true;
       kurven[TAG_VIEWER] = profile.profil()->getTagCurves (item, ICCtag::CURVE_IN);
@@ -315,10 +345,136 @@ ICCexamin::waehleTag (int item)
   return text;
 }
 
+void ICCexamin::showData (int item)
+{
+  ICClist<std::string> TagInfo = profile.profil()->printTagInfo(_item);
+  char num[12];
+  int n;
+
+  std::string t;
+
+  frei(false);
+  if(_mft_item == 0)
+  {
+    const char * tmp = 0;
+    t += _("Intent:");
+    t += " ";
+    if(TagInfo[0] == "A2B0")
+      t += renderingIntentName(0);
+    if(TagInfo[0] == "A2B1")
+      t += renderingIntentName(1);
+    if(TagInfo[0] == "A2B2")
+      t += renderingIntentName(2);
+    t += "\n";
+
+    tmp = profile.profil()->getTagText (_item)[0].c_str();
+    if(tmp)
+      tmp = strchr( tmp, '\n' );
+    if(tmp)
+    {
+      tmp++;
+      t += tmp;
+    }
+    icc_betrachter->mft_text->hinein ( t );
+    icc_betrachterNeuzeichnen(icc_betrachter->mft_text);
+  } else
+  {
+    int mft_pos = _mft_item-1;
+    oyStructList_s * list = profile.profil()->getTagNumbers(_item);
+    oyOption_s * opt;
+    oyStructList_s * elements;
+    int count = oyStructList_Count( list );
+    int list_pos = -1;
+    for(int i = 0; i < count; ++i)
+    {
+      elements = 0;
+      opt = (oyOption_s*) oyStructList_GetRefType( list, i, oyOBJECT_OPTION_S );
+      if(!opt)
+        elements = (oyStructList_s*) oyStructList_GetRefType( list, i,
+                                                       oyOBJECT_STRUCT_LIST_S );
+      if(opt || elements) ++list_pos;
+
+      if(list_pos == mft_pos)
+      {
+        if(opt && oyFilterRegistrationMatchKey( oyOption_GetRegistration(opt),
+                                       "icParametricCurveType", oyOBJECT_NONE ))
+        {
+          n = oyOption_GetValueDouble( opt, 0 );
+          n = 0;
+        } else if(elements)
+        {
+          oyStructList_s * element;
+          oyOption_s * element_data;
+          const char * element_name;
+          ICClist<ICClist<double> > curves;
+          ICClist<std::string>      texts;
+
+          n = oyStructList_Count( elements );
+          t = "found ";
+          sprintf( num, "%d", n );
+          t += num;
+          t += " elements\n";
+          for(int j = 0; j < n; ++j)
+          {
+            if(j != 0) t += "\n";
+
+            element = (oyStructList_s*) oyStructList_GetRefType( elements, j,
+                                             oyOBJECT_STRUCT_LIST_S );
+            element_name = oyStructList_GetName( element, 0 );
+            if(element_name)
+            t += element_name;
+            t += " ";
+
+            element_data = (oyOption_s*) oyStructList_GetRefType( element, 1,
+                                             oyOBJECT_OPTION_S );
+            if(!element_name)
+            {
+              element_name = oyOption_GetRegistration( element_data );
+              if(element_name)
+                t += element_name;
+            }
+
+            oyStructList_Release( &element );
+            oyOption_Release( &element_data );
+          }
+
+          if(curves.size())
+          {
+            icc_betrachter->mft_viewer->hineinKurven ( curves, texts );
+            icc_betrachterNeuzeichnen(icc_betrachter->mft_viewer);
+          } else
+          {
+            icc_betrachter->mft_text->hinein ( t );
+            icc_betrachterNeuzeichnen(icc_betrachter->mft_text);
+          }
+        } else
+        {
+          t = oyStructList_GetName( list, i-1 );
+          t += " ";
+          t += strrchr( oyOption_GetRegistration(opt), '/' ) + 1;
+          icc_betrachter->mft_text->hinein ( t );
+          icc_betrachterNeuzeichnen(icc_betrachter->mft_text);
+        }
+        break;
+      }
+      oyOption_Release( &opt );
+    }
+    if(list_pos != mft_pos)
+    {
+      sprintf( num, "%d", mft_pos );
+      t = "no element found: ";
+      t += num;
+      icc_betrachter->mft_text->hinein ( t );
+      icc_betrachterNeuzeichnen(icc_betrachter->mft_text);
+    }
+  }
+  frei(true);
+}
 
 void
 ICCexamin::waehleMft (int item)
 { DBG_PROG_START
+  ICClist<std::string> TagInfo = profile.profil()->printTagInfo(_item);
   frei(false);
   //selection from mft_choice
 
@@ -339,6 +495,10 @@ ICCexamin::waehleMft (int item)
   ICClist<double> zahlen;
 
   DBG_PROG_V( _mft_item )
+
+  if(TagInfo[1] == "mAB ")
+    showData(_mft_item);
+  else
   switch (_mft_item) {
   case 0: // overview
     { ICClist<std::string> Info = icc_betrachter->mft_choice->Info;
@@ -427,8 +587,9 @@ ICCexamin::waehleMft (int item)
           pp[i] = (const char*)strdup(from_colour_names[i].c_str());
           sn[i] = (const char*)strdup(from_colour_snames[i].c_str());
         }
-        icc_examin->icc_betrachter->mft_gl_sliderAdd( pp, sn, channels,
-                                                      (int)clutpoints[0] );
+        if(clutpoints.size())
+          icc_examin->icc_betrachter->mft_gl_sliderAdd( pp, sn, channels,
+                                                        (int)clutpoints[0] );
         /* We need to keep that around to make FLTK happy */
         /* if(pp) delete [] pp;
         if(sn) delete [] sn;*/

@@ -247,7 +247,9 @@ class MftChoice {open : {public Fl_Choice}
       mft_menue[4].text = Info[7].c_str();
       mft_menue[5].text = 0;
       icc_examin->icc_betrachter->mft_choice->menu(mft_menue);
-    } else { DBG_PROG
+    } else
+    if ( strstr (typ,"mft1") != 0 )
+    {
       Fl_Menu_Item *mft_menue = (Fl_Menu_Item *)calloc (sizeof (Fl_Menu_Item), 6);
 
       mft_menue[0].text = Info[0].c_str();
@@ -256,6 +258,15 @@ class MftChoice {open : {public Fl_Choice}
       mft_menue[3].text = Info[5].c_str();
       mft_menue[4].text = _("lineare exit curve with 256 steps");
       mft_menue[5].text = 0;
+      icc_examin->icc_betrachter->mft_choice->menu(mft_menue);
+    } else
+    {
+      int count = Info.size();
+      Fl_Menu_Item *mft_menue = (Fl_Menu_Item *)calloc (sizeof (Fl_Menu_Item),
+                                                        count+1);
+      for(int i = 0; i < count; ++i)
+        mft_menue[i].text = Info[i].c_str();
+      mft_menue[count].text = 0;
       icc_examin->icc_betrachter->mft_choice->menu(mft_menue);
     }
 

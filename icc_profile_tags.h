@@ -33,7 +33,7 @@
 
 #include "icc_utils.h"
 #include "icc_helfer.h"
-
+#include <oyStructList_s.h>
 
 #include <icc34.h>
 #include <string>
@@ -109,6 +109,7 @@ class ICCtag {
                          getTable    ( MftChain            typ,
                                        ICClist<int>        channel );
     ICClist<double> getNumbers   (MftChain typ);
+    oyStructList_s *     getNumbers  ();
     icColorSpaceSignature colorSpace (MftChain typ);
 
     ICClist<std::string> getText ();

@@ -569,6 +569,11 @@ ICCprofile::getTagNumbers                        (int item,ICCtag::MftChain typ)
   return tags.at(item).getNumbers(typ);
 }
 
+oyStructList_s * ICCprofile::getTagNumbers       (int item)
+{
+  return tags.at(item).getNumbers();
+}
+
 int
 ICCprofile::getTagIDByName            (std::string name)
 { DBG_PROG_START

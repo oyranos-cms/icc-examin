@@ -46,7 +46,7 @@
 #include "icc_kette.h"
 #include "icc_examin_version.h"
 
-#ifdef DEBUG_ 
+#ifdef DEBUG 
 #define DBG_PLUG_V(x)  DBG_PROG_V(x) 
 #define DBG_PLUG_S(x)  DBG_PROG_S(x)
 #else
@@ -355,7 +355,7 @@ doExamin (gint32 image_ID, CMSProfileType typ)
   if(gimp_image_has_icc_profile(image_ID, typ)) {
       mem_profile = gimp_image_get_icc_profile_by_mem(image_ID, &size, typ);
   } else {
-    g_message (_("No profil assigned to image."));
+    g_message ("%s",_("No profil assigned to image."));
     return -1;
   }
 
@@ -382,7 +382,7 @@ doExamin (gint32 image_ID, CMSProfileType typ)
 
     remove( tname.c_str() );
   } else
-    g_message (_("Profil not written."));
+    g_message ("%s",_("Profil not written."));
 
   return image_ID;
 }
@@ -452,9 +452,9 @@ schreibeNcl2Tag              ( ICClist<double>       pcsfarbe,
   ncl2->anzahl = icValue((icUInt32Number)farben_n);
   ncl2->koord  = icValue((icUInt32Number)farb_kanaele);
   if(vorname && strlen(vorname) < 32)
-    sprintf(ncl2->vorname, vorname);
+    sprintf(ncl2->vorname, "%s",vorname);
   if(nachname && strlen(nachname) < 32)
-    sprintf(ncl2->nachname, nachname);
+    sprintf(ncl2->nachname, "%s",nachname);
 
   DBG_PROG_S( farben_n <<" "<< pcsfarbe.size() )
 
@@ -472,7 +472,7 @@ schreibeNcl2Tag              ( ICClist<double>       pcsfarbe,
                                    (geraetefarbe[farb_kanaele*i+j]*65535.0));
     // TODO mark pointer here
     if (name.size() && name[i].size() < 32)
-      sprintf(f->name, name[i].c_str());
+      sprintf(f->name, "%s", name[i].c_str());
 
     #ifdef DEBUG_
     if( 10 < i && i < 20 )
@@ -516,10 +516,13 @@ transformAnlegen( channel & layer )
 
     DBG_PROG_S( transf <<" "<< layer.intent )
 
-    printf(num,"%d", layer.intent);
+    sprintf(num,"%d", layer.intent);
     oyOptions_SetFromText( &options, OY_DEFAULT_RENDERING_INTENT, num,
                            OY_CREATE_NEW );
-    printf(num,"%d", layer.intent_proof);
+    if(layer.intent_proof == 3)
+      sprintf(num,"%d", 1);
+    else
+      sprintf(num,"%d", 0);
     oyOptions_SetFromText( &options, OY_DEFAULT_RENDERING_INTENT_PROOF,
                            num, OY_CREATE_NEW );
     if(layer.flags & 0x2000) /* BPC */
@@ -547,15 +550,17 @@ transformAnlegen( channel & layer )
                                            hl, outbuf, oyDOUBLE,
                                            options, n_points );
 
-    
+    if(!transf)
+      WARN_S( "no conversion context created: " <<
+                  oyOptions_GetText(options, oyNAME_NAME));
     oyOptions_Release( &options );
 
     DBG_PLUG_S( transf <<" "<< hp <<" "<< hl <<" "<< hs <<" channels: "<<
-           T_CHANNELS(format) << " depth "<< T_BYTES(format) <<" i"<<
+           oyToChannels_m(format) << " depth "<< oyToDataType_m(format) <<" i"<<
            layer.intent <<" ip"<< layer.intent_proof <<" f"<< layer.flags );
 
-    DBG_PLUG_S( out[0]<<" "<<out[1]<<" "<<out[2]<<"  "<<
-           out2[0]<<" "<<out2[1]<<" "<<out2[2] )
+    /*DBG_PLUG_S( out[0]<<" "<<out[1]<<" "<<out[2]<<"  "<<
+           out2[0]<<" "<<out2[1]<<" "<<out2[2] )*/
 }
 
 /** @brief search for changing colours
@@ -610,13 +615,6 @@ vergleicheFarben(void* zeiger)
 	DBG_PROG_S("raster")
   }
 
-  // create device link
-  if( GET_TRANSFORM(layer->status) ||
-      GET_PROFIL(layer->status) ||
-      GET_CHANNELS(layer->status) ||
-      GET_BITDEPTH(layer->status) ) {
-    transformAnlegen( *layer );
-  }
   if( GET_GEOMETRY(layer->status) ||
       GET_PROFIL(layer->status) ||
       GET_CHANNELS(layer->status) ||
@@ -625,6 +623,13 @@ vergleicheFarben(void* zeiger)
 	DBG_PROG_S("reserved")
   }
 
+  // create device link
+  if( GET_TRANSFORM(layer->status) ||
+      GET_PROFIL(layer->status) ||
+      GET_CHANNELS(layer->status) ||
+      GET_BITDEPTH(layer->status) ) {
+    transformAnlegen( *layer );
+  }
   DBG_PLUG_S( "nlayers: " << nlayers )
  
   name.resize(x_num*y_num+2);
@@ -697,28 +702,23 @@ vergleicheFarben(void* zeiger)
   }
 
 # ifdef DEBUG_
-  DBG_PROG_S( farb_kanaele <<" "<< T_CHANNELS(format) <<" "<< T_BYTES(format) )
+  DBG_PROG_S( farb_kanaele <<" "<< oyToChannels_m(format) <<" "<< oyToDataType_m(format) )
   cout <<
-          T_COLORSPACE(format) <<" "<<
-          T_SWAPFIRST(format) <<" "<<
-          T_FLAVOR(format) <<" "<<
-          T_PLANAR(format) <<" "<<
-          T_ENDIAN16(format) <<" "<<
-          T_DOSWAP(format) <<" "<<
-          T_EXTRA(format) <<" "<<
-          T_CHANNELS(format) <<" "<<
-          T_BYTES(format) <<" "; DBG
+          oyToSwapColourChannels_m(format) <<" "<<
+          oyToFlavor_m(format) <<" "<<
+          oyToPlanar_m(format) <<" "<<
+          oyToByteswap_m(format) <<" "<<
+          oyToColourOffset_m(format) <<" "; DBG
 # endif
 
   oyConversion_RunPixels( transf, NULL );
 
-
   // Berechnung Auswerten ...
   for(int i = 0; i < n_points; ++i)
   {
-    pcsfarbe.push_back( outbuf[3*i+0]/100.0);
-    pcsfarbe.push_back((outbuf[3*i+1]+128.0)/255.0);
-    pcsfarbe.push_back((outbuf[3*i+2]+128.0)/255.0);
+    pcsfarbe.push_back( outbuf[3*i+0]);
+    pcsfarbe.push_back( outbuf[3*i+1]);
+    pcsfarbe.push_back( outbuf[3*i+2]);
 
     //DBG_PROG_S( pcsfarbe[farb_kanaele*i+0] << "," << pcsfarbe[farb_kanaele*i+1] << "," << pcsfarbe[farb_kanaele*i+2] )
 
@@ -964,8 +964,8 @@ schreibeDatei(const void *data, gint groesse, std::string name)
     T_ENDIAN16(e) \n
     T_DOSWAP(e) \n
     T_EXTRA(e) \n
-    T_CHANNELS(c) \n
-    T_BYTES(b) - always 0, as we convert to float.\n
+    oyToChannels_m(c) \n
+    oyToDataType_m(b) - always 0, as we convert to float.\n
 
 
  *  @param layer	layers
@@ -1021,7 +1021,7 @@ bearbeiteEingebetteteProfile( channel *layer )
 {
   // has the profile name changed?
   if (!gimp_image_has_icc_profile(image_ID, ICC_IMAGE_PROFILE)) {
-    g_message (_("No profil assigned to image."));
+    g_message ("%s",_("No profil assigned to image."));
     return 1;
   }
 
@@ -1080,7 +1080,7 @@ bearbeiteEingebetteteProfile( channel *layer )
     hp   = oyProfile_FromMem( size, image_profile, 0,0 );
     farb_kanaele = oyProfile_GetChannelsCount( hp );
     if(farb_kanaele > layer->samplesperpixel) {
-      g_message (_("Wrong profil assigned to image."));
+      g_message ("%s",_("Wrong profil assigned to image."));
       return 1;
     }
     layer->status |= PROFIL_NEU(1);
@@ -1237,11 +1237,6 @@ holeFarbPunkt (channel* layer, int & x_punkt, int & y_punkt,
         getColour ( layer, n, buf, &colour[colour_x*farb_kanaele],
                     x_punkt, y_punkt);
 
-        colour[colour_x*farb_kanaele+0] *= 100.0;
-        colour[colour_x*farb_kanaele+1] *= 100.0;
-        colour[colour_x*farb_kanaele+2] *= 100.0;
-        if(farb_kanaele == 4)
-        colour[colour_x*farb_kanaele+3] *= 100.0;
         sprintf( txt, "%d,%d", x_punkt, y_punkt );
         #ifdef DEBUG_
         cout << colour_x <<": "<<
@@ -1298,7 +1293,7 @@ holeLayerInfo    (channel & layer)
   image_ID = gimp_display_get_image_id( layer.display_ID);
   gint32 drawable_ID = gimp_image_get_active_layer (image_ID);
   if(drawable_ID < 0)
-    g_message(_("No active drawable found."));
+    g_message("%s",_("No active drawable found."));
 
   // run
   {
@@ -1604,7 +1599,7 @@ minMax(gint32 image_ID, int & min_x, int & min_y,
                        min_y = y;
                      }
                    break;
-              default: g_message (_("What kind of image is this?")); break;
+              default: g_message ("%s",_("What kind of image is this?")); break;
             }
           }
         }

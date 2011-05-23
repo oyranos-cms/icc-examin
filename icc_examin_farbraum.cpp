@@ -158,13 +158,22 @@ ICCexamin::netzLese (int n,
   
   {
     int intent = intentGet(NULL);
+    oyOptions_s * opts = oyOptions_FromBoolean( options(), NULL,
+                                                oyBOOLEAN_UNION, NULL );
     if(farbraumModus())
       intent = profile[n]->intent();
+    if( intent < 0 || 3 < intent ) /* check range */
+      intent = 3;
+
+    char num[4];
+    sprintf(num, "%d", intent);
+    oyOptions_SetFromText( &opts, "rendering_intent", num, OY_CREATE_NEW );
 
     if(profile[n]->data_type == ICCprofile::ICCprofileDATA)
-      icc_oyranos.netzVonProfil( *(profile[n]), options(), nativeGamut(),
+      icc_oyranos.netzVonProfil( *(profile[n]), opts, nativeGamut(),
                                  netz_temp );
-      
+    oyOptions_Release( &opts );
+
     if(netz_temp.punkte.size())
     {
       netz_temp.name = profile[n]->filename();

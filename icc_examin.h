@@ -112,6 +112,7 @@ class ICCexamin : public icc_examin_ns::Beobachter,
 
     std::string  waehleTag (int item);
     void         waehleMft (int item);
+    void         showData (int item);
     void         mftChannel ( int channel, int clutplane );
     ICClist<int> kurve_umkehren;
     enum { GL_STOP, GL_ZEICHNEN, GL_AUFFRISCHEN, GL_MOUSE_HIT3D }; //!< GL waiting
