@@ -349,6 +349,7 @@ void ICCexamin::showData (int item)
 {
   ICClist<std::string> TagInfo = profile.profil()->printTagInfo(_item);
   char num[12];
+  int n;
 
   std::string t;
 
@@ -398,16 +399,54 @@ void ICCexamin::showData (int item)
         if(opt && oyFilterRegistrationMatchKey( oyOption_GetRegistration(opt),
                                        "icParametricCurveType", oyOBJECT_NONE ))
         {
-          int n = oyOption_GetValueDouble( opt, 0 );
+          n = oyOption_GetValueDouble( opt, 0 );
           n = 0;
         } else if(elements)
         {
+          oyStructList_s * element;
+          oyOption_s * element_data;
+          const char * element_name;
+          ICClist<ICClist<double> > curves;
+          ICClist<std::string>      texts;
+
+          n = oyStructList_Count( elements );
           t = "found ";
-          sprintf( num, "%d", oyStructList_Count( elements ) );
+          sprintf( num, "%d", n );
           t += num;
-          t += " elements";
-          icc_betrachter->mft_text->hinein ( t );
-          icc_betrachterNeuzeichnen(icc_betrachter->mft_text);
+          t += " elements\n";
+          for(int j = 0; j < n; ++j)
+          {
+            if(j != 0) t += "\n";
+
+            element = (oyStructList_s*) oyStructList_GetRefType( elements, j,
+                                             oyOBJECT_STRUCT_LIST_S );
+            element_name = oyStructList_GetName( element, 0 );
+            if(element_name)
+            t += element_name;
+            t += " ";
+
+            element_data = (oyOption_s*) oyStructList_GetRefType( element, 1,
+                                             oyOBJECT_OPTION_S );
+            if(!element_name)
+            {
+              element_name = oyOption_GetRegistration( element_data );
+              if(element_name)
+                t += element_name;
+            }
+
+            oyStructList_Release( &element );
+            oyOption_Release( &element_data );
+          }
+
+          if(curves.size())
+          {
+            icc_betrachter->mft_viewer->hineinKurven ( curves, texts );
+            icc_betrachterNeuzeichnen(icc_betrachter->mft_viewer);
+          } else
+          {
+            icc_betrachter->mft_text->hinein ( t );
+            icc_betrachterNeuzeichnen(icc_betrachter->mft_text);
+          }
         } else
         {
           t = oyStructList_GetName( list, i-1 );
