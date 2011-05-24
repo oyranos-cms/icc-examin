@@ -604,12 +604,14 @@ TagDrawings::zeichneRaster_ ()
   {
     static char text[64];
     // raster lines
+    fl_color ( fl_color_average( BG, VG, 0.8 ) );
     if(zeige_raster)
       fl_line ( xNachBild(f),(int)(yO+5), xNachBild(f),yNachBild(max_y));
     else
       fl_line ( xNachBild(f),(int)(yO+5), xNachBild(f),yNachBild(min_y));
 
     // values
+    fl_color(VG);
     if(raster_wert_x_ < 0.01)
       sprintf ( text, "%.3f", f);
     else if(raster_wert_x_ < 0.1)
@@ -624,12 +626,14 @@ TagDrawings::zeichneRaster_ ()
   {
     static char text[64];
     // raster lines
+    fl_color ( fl_color_average( BG, VG, 0.8 ) );
     if(zeige_raster)
       fl_line ( (int)(xO-5),yNachBild(f), xNachBild(max_x),yNachBild(f));
     else
       fl_line ( (int)(xO-5),yNachBild(f), xNachBild(min_x),yNachBild(f));
 
     // values
+    fl_color(VG);
     if(raster_wert_y_ < 0.01)
       sprintf ( text, "%.3f", f);
     else if(raster_wert_y_ < 0.1)
