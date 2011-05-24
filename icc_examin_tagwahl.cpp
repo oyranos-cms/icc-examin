@@ -47,6 +47,11 @@ using namespace icc_examin_ns;
 #define DBG_EXAMIN_S( texte )
 #endif
 
+extern "C" {
+char ** oyStringSplit_(const char * name, const char delimiter, int * n, oyAlloc_f alloc);
+void oyStringListRelease_( char***, int, oyDeAlloc_f );
+} /* extern "C" */
+
 const char * selectTextsLine( int * line );
 const char * selecTpsidLine( int * line );
 
@@ -295,6 +300,20 @@ ICCexamin::waehleTag (int item)
       icc_betrachter->tag_viewer->hineinPunkt( punkte[TAG_VIEWER], texte[TAG_VIEWER] );
       frei(true);
       icc_betrachterNeuzeichnen(icc_betrachter->tag_viewer);
+    } else if ( TagInfo[1] == "para" )
+    {
+      oyStructList_s * element = 0;
+      oyStructList_s * list = oyStructList_New(0);
+      for (int i_name = 0; i_name < profile.profil()->tagCount(); i_name++) {
+        if ( (profile.profil()->printTagInfo(i_name))[1] == "para" ) {
+          element = profile.profil()->getTagNumbers (i_name);
+          oyStructList_MoveIn( list, (oyStruct_s**)&element, -1, 0 );
+          TagInfo = profile.profil()->printTagInfo (i_name);
+          texte[TAG_VIEWER].push_back (TagInfo[0]);
+        }
+      }
+      showCurve( list, texte[TAG_VIEWER], TAG_VIEWER );
+      oyStructList_Release( &list );
     } else {
       frei(false);
       profile.frei(false);
@@ -345,7 +364,117 @@ ICCexamin::waehleTag (int item)
   return text;
 }
 
-void ICCexamin::showData (int item)
+void ICCexamin::showCurve( oyStructList_s * elements,
+                           ICClist<std::string> texts,
+                           int viewer )
+{
+  char num[12];
+  int n;
+
+  std::string t;
+
+  if(elements)
+  {
+        oyStructList_s * element;
+        oyOption_s * element_data;
+        const char * element_name;
+        ICClist<ICClist<double> > curves;
+
+        n = oyStructList_Count( elements );
+        if(viewer != TAG_VIEWER)
+        {
+          /* found XXX elements */
+          t = _("found");
+          t += " ";
+          sprintf( num, "%d", n );
+          t += num;
+          t += " ";
+          /* found XXX elements */
+          t += _("elements");
+          t += "\n";
+        }
+
+        for(int j = 0; j < n; ++j)
+        {
+            if(j != 0) t += "\n";
+
+            element = (oyStructList_s*) oyStructList_GetRefType( elements, j,
+                                             oyOBJECT_STRUCT_LIST_S );
+            element_name = oyStructList_GetName( element, 0 );
+            if(element_name)
+            t += element_name;
+            t += " ";
+
+            element_data = (oyOption_s*) oyStructList_GetRefType( element, 1,
+                                             oyOBJECT_OPTION_S );
+            if(!element_name)
+            {
+              element_name = oyOption_GetRegistration( element_data );
+              if(element_name)
+                t += element_name;
+            }
+
+            if(element_data &&
+               oyFilterRegistrationMatchKey( 
+                oyOption_GetRegistration(element_data),
+                                   "////icParametricCurveType", oyOBJECT_NONE ))
+            {
+              double type = oyOption_GetValueDouble( element_data, 0 );
+              double params_n = oyOption_GetValueDouble( element_data, 1 );
+              double segmented_curve_count = oyOption_GetValueDouble( 
+                                                element_data, (int)2+params_n );
+
+              curves.push_back(0);
+              int pos = curves.size() - 1;
+              double val;
+              for(int k = 0; k < (int)segmented_curve_count; ++k)
+              {
+                val = oyOption_GetValueDouble( element_data,
+                                               (int)2 + params_n + 1 + k);
+                curves[pos].push_back( val );
+              }
+            }
+
+            oyStructList_Release( &element );
+            oyOption_Release( &element_data );
+        }
+
+        int txts_n = 0, i;
+        char ** txts = oyStringSplit_( t.c_str(),'\n', &txts_n, malloc);
+        for(i = 0; i < txts_n; ++i)
+        {
+          std::string text = txts[i];
+          texts.push_back( text );
+        }
+        oyStringListRelease_( &txts, txts_n, free );
+
+        if(curves.size())
+        {
+          if(viewer == MFT_VIEWER)
+          {
+            icc_betrachter->mft_viewer->hineinKurven ( curves, texts );
+            icc_betrachterNeuzeichnen(icc_betrachter->mft_viewer);
+          } else
+          {
+            icc_betrachter->tag_viewer->hineinKurven ( curves, texts );
+            icc_betrachterNeuzeichnen(icc_betrachter->tag_viewer);
+          }
+        } else
+        {
+          if(viewer == MFT_VIEWER)
+          {
+            icc_betrachter->mft_text->hinein ( t );
+            icc_betrachterNeuzeichnen(icc_betrachter->mft_text);
+          } else
+          {
+            icc_betrachter->tag_text->hinein ( t );
+            icc_betrachterNeuzeichnen(icc_betrachter->tag_text);
+          }
+        }
+  }
+}
+
+void ICCexamin::showTableData (int item)
 {
   ICClist<std::string> TagInfo = profile.profil()->printTagInfo(_item);
   char num[12];
@@ -396,57 +525,15 @@ void ICCexamin::showData (int item)
 
       if(list_pos == mft_pos)
       {
+
         if(opt && oyFilterRegistrationMatchKey( oyOption_GetRegistration(opt),
-                                       "icParametricCurveType", oyOBJECT_NONE ))
+                                   "////icParametricCurveType", oyOBJECT_NONE ))
         {
           n = oyOption_GetValueDouble( opt, 0 );
           n = 0;
         } else if(elements)
         {
-          oyStructList_s * element;
-          oyOption_s * element_data;
-          const char * element_name;
-          ICClist<ICClist<double> > curves;
-          ICClist<std::string>      texts;
-
-          n = oyStructList_Count( elements );
-          t = "found ";
-          sprintf( num, "%d", n );
-          t += num;
-          t += " elements\n";
-          for(int j = 0; j < n; ++j)
-          {
-            if(j != 0) t += "\n";
-
-            element = (oyStructList_s*) oyStructList_GetRefType( elements, j,
-                                             oyOBJECT_STRUCT_LIST_S );
-            element_name = oyStructList_GetName( element, 0 );
-            if(element_name)
-            t += element_name;
-            t += " ";
-
-            element_data = (oyOption_s*) oyStructList_GetRefType( element, 1,
-                                             oyOBJECT_OPTION_S );
-            if(!element_name)
-            {
-              element_name = oyOption_GetRegistration( element_data );
-              if(element_name)
-                t += element_name;
-            }
-
-            oyStructList_Release( &element );
-            oyOption_Release( &element_data );
-          }
-
-          if(curves.size())
-          {
-            icc_betrachter->mft_viewer->hineinKurven ( curves, texts );
-            icc_betrachterNeuzeichnen(icc_betrachter->mft_viewer);
-          } else
-          {
-            icc_betrachter->mft_text->hinein ( t );
-            icc_betrachterNeuzeichnen(icc_betrachter->mft_text);
-          }
+          showCurve( elements, texte[MFT_VIEWER], MFT_VIEWER );
         } else
         {
           t = oyStructList_GetName( list, i-1 );
@@ -497,7 +584,7 @@ ICCexamin::waehleMft (int item)
   DBG_PROG_V( _mft_item )
 
   if(TagInfo[1] == "mAB ")
-    showData(_mft_item);
+    showTableData(_mft_item);
   else
   switch (_mft_item) {
   case 0: // overview
