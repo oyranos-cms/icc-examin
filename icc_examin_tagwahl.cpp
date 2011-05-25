@@ -204,11 +204,11 @@ ICCexamin::selectTag (int item)
       icc_betrachter->table_choice->profilTag (item, t);
       frei(true);
       selectTable (_table_item);
-    } else if ( TagInfo[1] == "mAB ")
+    } else if ( TagInfo[1] == "mAB " ||
+                TagInfo[1] == "mBA ")
     {
       std::string choice_text;
       const char * tmp = 0;
-      if(TagInfo[1] == "mAB ")
       {
         /* skip the two channel info lines */
         std::string tmp_string = profile.profil()->getTagText(_item)[0];
@@ -505,11 +505,11 @@ void ICCexamin::showmABData (int item)
     const char * tmp = 0;
     t += _("Intent:");
     t += " ";
-    if(TagInfo[0] == "A2B0")
+    if(TagInfo[0] == "A2B0" || TagInfo[0] == "B2A0")
       t += renderingIntentName(0);
-    if(TagInfo[0] == "A2B1")
+    if(TagInfo[0] == "A2B1" || TagInfo[0] == "B2A1")
       t += renderingIntentName(1);
-    if(TagInfo[0] == "A2B2")
+    if(TagInfo[0] == "A2B2" || TagInfo[0] == "B2A2")
       t += renderingIntentName(2);
     t += "\n";
 
