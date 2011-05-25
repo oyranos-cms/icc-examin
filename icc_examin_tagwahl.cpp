@@ -56,7 +56,7 @@ const char * selectTextsLine( int * line );
 const char * selecTpsidLine( int * line );
 
 std::string
-ICCexamin::waehleTag (int item)
+ICCexamin::selectTag (int item)
 { DBG_PROG_START
 
   DBG_PROG_V( item )
@@ -201,9 +201,9 @@ ICCexamin::waehleTag (int item)
              || TagInfo[1] == "mft1" ) { DBG_PROG_S("mft1/2")
       std::string t = profile.profil()->getTagText (item)[0];
       frei(false);
-      icc_betrachter->mft_choice->profilTag (item, t);
+      icc_betrachter->table_choice->profilTag (item, t);
       frei(true);
-      waehleMft (_mft_item);
+      selectTable (_table_item);
     } else if ( TagInfo[1] == "mAB ")
     {
       std::string choice_text;
@@ -230,10 +230,10 @@ ICCexamin::waehleTag (int item)
         choice_text += tmp;
 
       frei(false);
-      icc_betrachter->mft_choice->profilTag( _item, choice_text );
+      icc_betrachter->table_choice->profilTag( _item, choice_text );
       frei(true);
 
-      waehleMft(_mft_item);
+      selectTable(_table_item);
     } else if ( TagInfo[1] == "vcgt" ) { DBG_PROG_S("vcgt")
       kurve_umkehren[TAG_VIEWER] = true;
       kurven[TAG_VIEWER] = profile.profil()->getTagCurves (item, ICCtag::CURVE_IN);
@@ -312,7 +312,7 @@ ICCexamin::waehleTag (int item)
           texte[TAG_VIEWER].push_back (TagInfo[0]);
         }
       }
-      showCurve( list, texte[TAG_VIEWER], TAG_VIEWER );
+      showData( list, texte[TAG_VIEWER], TAG_VIEWER );
       oyStructList_Release( &list );
     } else {
       frei(false);
@@ -364,7 +364,7 @@ ICCexamin::waehleTag (int item)
   return text;
 }
 
-void ICCexamin::showCurve( oyStructList_s * elements,
+void ICCexamin::showData( oyStructList_s * elements,
                            ICClist<std::string> texts,
                            int viewer )
 {
@@ -419,7 +419,7 @@ void ICCexamin::showCurve( oyStructList_s * elements,
                 oyOption_GetRegistration(element_data),
                                    "////icParametricCurveType", oyOBJECT_NONE ))
             {
-              double type = oyOption_GetValueDouble( element_data, 0 );
+              /*double type = oyOption_GetValueDouble( element_data, 0 );*/
               double params_n = oyOption_GetValueDouble( element_data, 1 );
               double segmented_curve_count = oyOption_GetValueDouble( 
                                                 element_data, (int)2+params_n );
@@ -452,8 +452,8 @@ void ICCexamin::showCurve( oyStructList_s * elements,
         {
           if(viewer == MFT_VIEWER)
           {
-            icc_betrachter->mft_viewer->hineinKurven ( curves, texts );
-            icc_betrachterNeuzeichnen(icc_betrachter->mft_viewer);
+            icc_betrachter->table_viewer->hineinKurven ( curves, texts );
+            icc_betrachterNeuzeichnen(icc_betrachter->table_viewer);
           } else
           {
             icc_betrachter->tag_viewer->hineinKurven ( curves, texts );
@@ -463,8 +463,8 @@ void ICCexamin::showCurve( oyStructList_s * elements,
         {
           if(viewer == MFT_VIEWER)
           {
-            icc_betrachter->mft_text->hinein ( t );
-            icc_betrachterNeuzeichnen(icc_betrachter->mft_text);
+            icc_betrachter->table_text->hinein ( t );
+            icc_betrachterNeuzeichnen(icc_betrachter->table_text);
           } else
           {
             icc_betrachter->tag_text->hinein ( t );
@@ -474,7 +474,7 @@ void ICCexamin::showCurve( oyStructList_s * elements,
   }
 }
 
-void ICCexamin::showTableData (int item)
+void ICCexamin::showmABData (int item)
 {
   ICClist<std::string> TagInfo = profile.profil()->printTagInfo(_item);
   char num[12];
@@ -483,7 +483,8 @@ void ICCexamin::showTableData (int item)
   std::string t;
 
   frei(false);
-  if(_mft_item == 0)
+  /* textual overview */
+  if(_table_item == 0)
   {
     const char * tmp = 0;
     t += _("Intent:");
@@ -504,11 +505,12 @@ void ICCexamin::showTableData (int item)
       tmp++;
       t += tmp;
     }
-    icc_betrachter->mft_text->hinein ( t );
-    icc_betrachterNeuzeichnen(icc_betrachter->mft_text);
+    icc_betrachter->table_text->hinein ( t );
+    icc_betrachterNeuzeichnen(icc_betrachter->table_text);
   } else
+  /* show tags sub items */
   {
-    int mft_pos = _mft_item-1;
+    int table_pos = _table_item-1;
     oyStructList_s * list = profile.profil()->getTagNumbers(_item);
     oyOption_s * opt;
     oyStructList_s * elements;
@@ -523,7 +525,7 @@ void ICCexamin::showTableData (int item)
                                                        oyOBJECT_STRUCT_LIST_S );
       if(opt || elements) ++list_pos;
 
-      if(list_pos == mft_pos)
+      if(list_pos == table_pos)
       {
 
         if(opt && oyFilterRegistrationMatchKey( oyOption_GetRegistration(opt),
@@ -533,46 +535,46 @@ void ICCexamin::showTableData (int item)
           n = 0;
         } else if(elements)
         {
-          showCurve( elements, texte[MFT_VIEWER], MFT_VIEWER );
+          showData( elements, texte[MFT_VIEWER], MFT_VIEWER );
         } else
         {
           t = oyStructList_GetName( list, i-1 );
           t += " ";
           t += strrchr( oyOption_GetRegistration(opt), '/' ) + 1;
-          icc_betrachter->mft_text->hinein ( t );
-          icc_betrachterNeuzeichnen(icc_betrachter->mft_text);
+          icc_betrachter->table_text->hinein ( t );
+          icc_betrachterNeuzeichnen(icc_betrachter->table_text);
         }
         break;
       }
       oyOption_Release( &opt );
     }
-    if(list_pos != mft_pos)
+    if(list_pos != table_pos)
     {
-      sprintf( num, "%d", mft_pos );
+      sprintf( num, "%d", table_pos );
       t = "no element found: ";
       t += num;
-      icc_betrachter->mft_text->hinein ( t );
-      icc_betrachterNeuzeichnen(icc_betrachter->mft_text);
+      icc_betrachter->table_text->hinein ( t );
+      icc_betrachterNeuzeichnen(icc_betrachter->table_text);
     }
   }
   frei(true);
 }
 
 void
-ICCexamin::waehleMft (int item)
+ICCexamin::selectTable (int item)
 { DBG_PROG_START
   ICClist<std::string> TagInfo = profile.profil()->printTagInfo(_item);
   frei(false);
-  //selection from mft_choice
+  //selection from table_choice
 
   kurven[MFT_VIEWER].clear();
   punkte[MFT_VIEWER].clear();
   texte[MFT_VIEWER].clear();
 
   if (item < 1)
-    _mft_item = 0;
+    _table_item = 0;
   else
-    _mft_item = item;
+    _table_item = item;
 
   kurve_umkehren[MFT_VIEWER] = false;
 
@@ -581,32 +583,32 @@ ICCexamin::waehleMft (int item)
   std::stringstream s;
   ICClist<double> zahlen;
 
-  DBG_PROG_V( _mft_item )
+  DBG_PROG_V( _table_item )
 
   if(TagInfo[1] == "mAB ")
-    showTableData(_mft_item);
+    showmABData(_table_item);
   else
-  switch (_mft_item) {
+  switch (_table_item) {
   case 0: // overview
-    { ICClist<std::string> Info = icc_betrachter->mft_choice->Info;
+    { ICClist<std::string> Info = icc_betrachter->table_choice->Info;
       //profile.profil()->getTagText (icc_betrachter->tag_nummer)[0];
       for (unsigned int i = 1; i < Info.size(); i++) // leave out first line
         s << Info [i] << endl;
-      icc_betrachter->mft_text->hinein ( s.str() ); DBG_PROG_S("show text")
-      icc_betrachterNeuzeichnen(icc_betrachter->mft_text);
+      icc_betrachter->table_text->hinein ( s.str() ); DBG_PROG_S("show text")
+      icc_betrachterNeuzeichnen(icc_betrachter->table_text);
     } break;
   case 1: // matrix
     profile.frei(false);
     zahlen = profile.profil()->getTagNumbers (icc_betrachter->tag_nummer, ICCtag::MATRIX);
     profile.frei(true);
-    DBG_PROG_S("show numbers in mft_text")
+    DBG_PROG_S("show numbers in table_text")
     assert (9 == zahlen.size());
     s << endl <<
     "  " << zahlen[0] << ", " << zahlen[1] << ", " << zahlen[2] << ", " << endl <<
     "  " << zahlen[3] << ", " << zahlen[4] << ", " << zahlen[5] << ", " << endl <<
     "  " << zahlen[6] << ", " << zahlen[7] << ", " << zahlen[8] << ", " << endl;
-    icc_betrachter->mft_text->hinein ( s.str() ); DBG_PROG
-    icc_betrachterNeuzeichnen(icc_betrachter->mft_text);
+    icc_betrachter->table_text->hinein ( s.str() ); DBG_PROG
+    icc_betrachterNeuzeichnen(icc_betrachter->table_text);
     break;
   case 2: // input curves
     DBG_PROG_S("show curves")
@@ -614,8 +616,8 @@ ICCexamin::waehleMft (int item)
     kurven[MFT_VIEWER] =  profile.profil()->getTagCurves (icc_betrachter->tag_nummer, ICCtag::CURVE_IN);
     texte[MFT_VIEWER] = profile.profil()->getTagChannelNames (icc_betrachter->tag_nummer, ICCtag::CURVE_IN);
     profile.frei(true);
-    icc_betrachter->mft_viewer->hineinKurven ( kurven[MFT_VIEWER], texte[MFT_VIEWER] );
-    icc_betrachterNeuzeichnen(icc_betrachter->mft_viewer);
+    icc_betrachter->table_viewer->hineinKurven ( kurven[MFT_VIEWER], texte[MFT_VIEWER] );
+    icc_betrachterNeuzeichnen(icc_betrachter->table_viewer);
     DBG_PROG
     break;
   case 3: // 3D table
@@ -637,7 +639,7 @@ ICCexamin::waehleMft (int item)
         nach_farb_snamen =  getChannelNamesShort( sig_out );
       }
 
-      channels = icc_examin->icc_betrachter->mft_gl->channels();
+      channels = icc_examin->icc_betrachter->table_gl->channels();
       int c_n = channels.size();
       channels.resize(from_colour_names.size());
       for(unsigned int i = c_n; i < channels.size(); ++i)
@@ -661,7 +663,7 @@ ICCexamin::waehleMft (int item)
           pp[i] = nach_farb_namen[i].c_str();
           sn[i] = nach_farb_snamen[i].c_str();
         }
-        icc_examin->icc_betrachter->mft_gl_boxAdd( sn, pp, n, icc_betrachter->mft_gl->kanal );
+        icc_examin->icc_betrachter->table_gl_boxAdd( sn, pp, n, icc_betrachter->table_gl->kanal );
         if(pp) delete [] pp;
         if(sn) delete [] sn;
 
@@ -675,17 +677,17 @@ ICCexamin::waehleMft (int item)
           sn[i] = (const char*)strdup(from_colour_snames[i].c_str());
         }
         if(clutpoints.size())
-          icc_examin->icc_betrachter->mft_gl_sliderAdd( pp, sn, channels,
+          icc_examin->icc_betrachter->table_gl_sliderAdd( pp, sn, channels,
                                                         (int)clutpoints[0] );
         /* We need to keep that around to make FLTK happy */
         /* if(pp) delete [] pp;
         if(sn) delete [] sn;*/
 
       } else {
-        icc_examin->icc_betrachter->mft_gl_boxAdd( NULL, NULL, 0, 0 );
+        icc_examin->icc_betrachter->table_gl_boxAdd( NULL, NULL, 0, 0 );
       }
 
-      icc_betrachter->mft_gl->hineinTabelle (
+      icc_betrachter->table_gl->hineinTabelle (
                      profile.profil()->getTagTable (icc_betrachter->tag_nummer,
                                                     ICCtag::TABLE, channels ),
                      from_colour_names,
@@ -693,7 +695,7 @@ ICCexamin::waehleMft (int item)
       profile.frei(true);
 
     }
-    icc_betrachterNeuzeichnen(icc_betrachter->mft_gl_group);
+    icc_betrachterNeuzeichnen(icc_betrachter->table_gl_group);
     break;
   case 4: // output curves
     DBG_PROG_S("show curves")
@@ -701,15 +703,15 @@ ICCexamin::waehleMft (int item)
     kurven[MFT_VIEWER] = profile.profil()->getTagCurves (icc_betrachter->tag_nummer, ICCtag::CURVE_OUT);
     texte[MFT_VIEWER] = profile.profil()->getTagChannelNames (icc_betrachter->tag_nummer, ICCtag::CURVE_OUT);
     profile.frei(true);
-    icc_betrachter->mft_viewer->hineinKurven ( kurven[MFT_VIEWER], texte[MFT_VIEWER] );
-    icc_betrachterNeuzeichnen(icc_betrachter->mft_viewer);
+    icc_betrachter->table_viewer->hineinKurven ( kurven[MFT_VIEWER], texte[MFT_VIEWER] );
+    icc_betrachterNeuzeichnen(icc_betrachter->table_viewer);
     DBG_PROG
     break;
   }
 
-  icc_betrachter->mft_choice->gewaehlter_eintrag = item;
+  icc_betrachter->table_choice->gewaehlter_eintrag = item;
   if(item <= 0)
-    icc_betrachter->mft_choice->value(0);
+    icc_betrachter->table_choice->value(0);
   DBG_NUM_V( item )
 
   frei(true);
@@ -717,7 +719,7 @@ ICCexamin::waehleMft (int item)
 }
 
 void
-ICCexamin::mftChannel ( int channel, int clutplane )
+ICCexamin::tableChannel ( int channel, int clutplane )
 {
     {
       ICClist<int> channels;
@@ -727,10 +729,10 @@ ICCexamin::mftChannel ( int channel, int clutplane )
       ICClist<std::string> to_colour_names =  getChannelNames( sig_out );
 
 
-      channels = icc_examin->icc_betrachter->mft_gl->channels();
+      channels = icc_examin->icc_betrachter->table_gl->channels();
       channels[channel] = clutplane;
 
-      icc_betrachter->mft_gl->hineinTabelle (
+      icc_betrachter->table_gl->hineinTabelle (
                      profile.profil()->getTagTable (icc_betrachter->tag_nummer,
                                                     ICCtag::TABLE, channels ),
                      from_colour_names,

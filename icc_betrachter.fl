@@ -64,7 +64,7 @@ decl {\#include "icc_fenster.h"
 decl {class TagDrawings;
 class TagBrowser;
 class TagTexts;
-class MftChoice;
+class TableChoice;
 class GL_Ansicht;} {public
 } 
 
@@ -113,7 +113,7 @@ class TagBrowser {open : {public Fl_Hold_Browser}
   item -= 6;
   DBG_PROG_S( item << ". Tag " )
   
-  std::string text = icc_examin->waehleTag(item);
+  std::string text = icc_examin->selectTag(item);
   if (text != "")
     selectedTagName = text;
   DBG_PROG_V( text );} {}
@@ -215,12 +215,12 @@ this->hinein( text, patches );} {}
 
 decl {\#include <FL/fl_draw.H>} {} 
 
-class MftChoice {open : {public Fl_Choice}
+class TableChoice {open : {public Fl_Choice}
 } {
   decl {int X; int Y; int W; int H; const char* start_info; char typ[5];} {}
   decl {ICClist<std::string> Info; int gewaehlter_eintrag;} {public
   }
-  Function {MftChoice(int X,int Y,int W,int H,const char* start_info) : Fl_Choice(X,Y,W,H,start_info), X(X), Y(Y), W(W), H(H)} {open
+  Function {TableChoice(int X,int Y,int W,int H,const char* start_info) : Fl_Choice(X,Y,W,H,start_info), X(X), Y(Y), W(W), H(H)} {open
   } {
     code {gewaehlter_eintrag = 0;} {}
   }
@@ -246,7 +246,7 @@ class MftChoice {open : {public Fl_Choice}
       mft_menue[3].text = Info[6].c_str();
       mft_menue[4].text = Info[7].c_str();
       mft_menue[5].text = 0;
-      icc_examin->icc_betrachter->mft_choice->menu(mft_menue);
+      icc_examin->icc_betrachter->table_choice->menu(mft_menue);
     } else
     if ( strstr (typ,"mft1") != 0 )
     {
@@ -258,19 +258,19 @@ class MftChoice {open : {public Fl_Choice}
       mft_menue[3].text = Info[5].c_str();
       mft_menue[4].text = _("lineare exit curve with 256 steps");
       mft_menue[5].text = 0;
-      icc_examin->icc_betrachter->mft_choice->menu(mft_menue);
+      icc_examin->icc_betrachter->table_choice->menu(mft_menue);
     } else
     {
       int count = Info.size();
-      Fl_Menu_Item *mft_menue = (Fl_Menu_Item *)calloc (sizeof (Fl_Menu_Item),
+      Fl_Menu_Item *table_menue = (Fl_Menu_Item *)calloc (sizeof (Fl_Menu_Item),
                                                         count+1);
       for(int i = 0; i < count; ++i)
-        mft_menue[i].text = Info[i].c_str();
-      mft_menue[count].text = 0;
-      icc_examin->icc_betrachter->mft_choice->menu(mft_menue);
+        table_menue[i].text = Info[i].c_str();
+      table_menue[count].text = 0;
+      icc_examin->icc_betrachter->table_choice->menu(table_menue);
     }
 
-    icc_examin->icc_betrachter->mft_choice->value( gewaehlter_eintrag );
+    icc_examin->icc_betrachter->table_choice->value( gewaehlter_eintrag );
 
   //auswahlCb();} {}
     code DBG_PROG_ENDE {}
@@ -278,7 +278,7 @@ class MftChoice {open : {public Fl_Choice}
   Function {auswahlCb(void)} {open
   } {
     code DBG_PROG_START {}
-    code {//Auswahl aus mft_choice
+    code {//Auswahl aus table_choice
 
   status("")
 
@@ -292,7 +292,7 @@ class MftChoice {open : {public Fl_Choice}
     DBG_PROG_S("%s \\n" << m->label())
   }
 
-  icc_examin->waehleMft( mw->value() );
+  icc_examin->selectTable( mw->value() );
 
   DBG_PROG} {}
     code DBG_PROG_ENDE {}
@@ -314,9 +314,9 @@ class My_Fl_Box {: {public Fl_Box}
   }
 } 
 
-Function {mft_gl_menueCb_(Fl_Widget * w, void * data)} {private
+Function {table_gl_menueCb_(Fl_Widget * w, void * data)} {private
 } {
-  code {icc_examin->icc_betrachter->mft_gl->menueAufruf( (intptr_t) data );} {}
+  code {icc_examin->icc_betrachter->table_gl->menueAufruf( (intptr_t) data );} {}
 } 
 
 class ICCfltkBetrachter {open
@@ -335,7 +335,7 @@ class ICCfltkBetrachter {open
     code DBG_PROG_START {}
     code {fullscreen = false;
   setTitleUrl = true;
-  mft_gl_tables_buttons = 0;
+  table_gl_tables_buttons = 0;
   px=py=pw=ph=0;
   tag_nummer = -1;
   widget_oben = -1;} {}
@@ -832,59 +832,59 @@ DBG_NUM_S("Show Log window")}
                 Fl_Pack {} {open
                   xywh {0 160 385 335} align 4 resizable
                 } {
-                  Fl_Choice mft_choice {
+                  Fl_Choice table_choice {
                     label {Chain selection}
                     callback {o->auswahlCb();} open
                     tooltip {Choose a attribute} xywh {0 160 385 25} box NO_BOX down_box BORDER_BOX
                     code0 {o->show();}
-                    class MftChoice
+                    class TableChoice
                   } {}
                   Fl_Group {} {open
                     xywh {0 185 385 310} align 4 resizable
                   } {
-                    Fl_Box mft_viewer {
+                    Fl_Box table_viewer {
                       xywh {0 185 385 310} align 4
                       code0 {o->show();}
                       class TagDrawings
                     }
-                    Fl_Browser mft_text {
+                    Fl_Browser table_text {
                       callback {o->selectItem( o->value() );}
                       xywh {0 185 385 310} box FLAT_BOX color 49 align 4
                       code0 {o->show();}
                       class TagTexts
                     }
-                    Fl_Group mft_gl_group {open
+                    Fl_Group table_gl_group {open
                       xywh {0 185 385 310} align 4 resizable
                     } {
                       Fl_Box {} {
                         xywh {0 185 385 310} box FLAT_BOX align 4
                       }
-                      Fl_Box mft_gl {
+                      Fl_Box table_gl {
                         xywh {0 185 360 310} align 4 resizable
                         code0 {o->hide();}
                         code1 {o->typ( 2 ); // bleibt zumeist im Hauptfenster}
                         class GL_Ansicht
                       }
-                      Fl_Pack mft_gl_button_pack {open
+                      Fl_Pack table_gl_button_pack {open
                         xywh {360 185 25 310}
                       } {
-                        Fl_Button mft_gl_alltables_button {
+                        Fl_Button table_gl_alltables_button {
                           label o
-                          callback {icc_examin->zeigMftTabellen();}
+                          callback {icc_examin->showTables();}
                           tooltip {Show all channels of this table a own window.} xywh {360 185 25 25}
                           code0 {o->show();}
                         }
                       }
-                      Fl_Pack mft_gl_slider_pack {open
+                      Fl_Pack table_gl_slider_pack {open
                         xywh {0 185 25 310}
                       } {
-                        Fl_Choice mft_gl_slider_choice {
-                          callback {ICClist<int> channels = mft_gl->channels();
-  mft_gl_slider->value( channels[ 3 + o->value() ] );} open
+                        Fl_Choice table_gl_slider_choice {
+                          callback {ICClist<int> channels = table_gl->channels();
+  table_gl_slider->value( channels[ 3 + o->value() ] );} open
                           xywh {0 185 25 25} down_box BORDER_BOX
                         } {}
-                        Fl_Value_Slider mft_gl_slider {
-                          callback {icc_examin->mftChannel( (int)mft_gl_slider_choice->value()+3, (int)mft_gl_slider->value() );}
+                        Fl_Value_Slider table_gl_slider {
+                          callback {icc_examin->tableChannel( (int)table_gl_slider_choice->value()+3, (int)table_gl_slider->value() );}
                           xywh {0 210 25 285} resizable
                         }
                       }
@@ -1033,16 +1033,16 @@ DBG_NUM_S("Show Log window")}
     code DBG_PROG_START {}
     code {// zeigt das ausgewaehlte Fenster (widget)
 
-  mft_viewer->hide();
-  mft_text->hide();
+  table_viewer->hide();
+  table_text->hide();
   tag_viewer->hide(); DBG_PROG
   tag_viewer->clear_visible(); DBG_PROG
   tag_text->hide();
   inspekt_html->hide();
 
   // stop
-  if (widget != mft_gl) {
-    mft_gl->hide();
+  if (widget != table_gl) {
+    table_gl->hide();
   }
   if (widget != DD_farbraum ) {
     DD_farbraum->hide();
@@ -1057,16 +1057,16 @@ DBG_NUM_S("Show Log window")}
       inspekt_html->hide();
   }
 
-  if (widget != mft_gl &&
+  if (widget != table_gl &&
       widget != DD_farbraum )
   { 
     ((Fl_Widget*)widget)->show(); DBG_PROG
     if( !menueintrag_inspekt->value() &&
         !menueintrag_3D->value() )
       ;//selectItem(icc_examin->tag_nr()+6);
-  } else if (widget == mft_gl) {
-    DBG_PROG_S( "leave mft GL window." )
-    mft_gl->show();
+  } else if (widget == table_gl) {
+    DBG_PROG_S( "leave table GL window." )
+    table_gl->show();
   } else if (widget == DD_farbraum) {
     DBG_PROG_S( "leave 3D GL window." )
     DD_farbraum->show();
@@ -1095,77 +1095,77 @@ DBG_NUM_S("Show Log window")}
     menueintrag_zeigcgats->deactivate();
   }} {}
   }
-  decl {Fl_Button ** mft_gl_tables_buttons;} {}
-  Function {mft_gl_boxAdd( const char ** names_short, const char** names, int n, int actual )} {open
+  decl {Fl_Button ** table_gl_tables_buttons;} {}
+  Function {table_gl_boxAdd( const char ** names_short, const char** names, int n, int actual )} {open
   } {
     code DBG_PROG_START {}
     code {int i;
-    int h = mft_gl_alltables_button->h(),
-        w = mft_gl_alltables_button->w();
+    int h = table_gl_alltables_button->h(),
+        w = table_gl_alltables_button->w();
     Fl_Button * o;
 
-    mft_gl_group->begin();
-    if(mft_gl_tables_buttons)
-      for(i = 1; i <= (intptr_t)mft_gl_tables_buttons[0] + 1; ++i)
+    table_gl_group->begin();
+    if(table_gl_tables_buttons)
+      for(i = 1; i <= (intptr_t)table_gl_tables_buttons[0] + 1; ++i)
       {
-        mft_gl_tables_buttons[i]->hide();
-        mft_gl_button_pack->remove( mft_gl_tables_buttons[i] );
-        if(mft_gl_tables_buttons[i])
-          delete mft_gl_tables_buttons[i];
+        table_gl_tables_buttons[i]->hide();
+        table_gl_button_pack->remove( table_gl_tables_buttons[i] );
+        if(table_gl_tables_buttons[i])
+          delete table_gl_tables_buttons[i];
       }
 
-    mft_gl_button_pack->begin();
-    mft_gl_button_pack->size( mft_gl_button_pack->w(), mft_gl_group->h() );
+    table_gl_button_pack->begin();
+    table_gl_button_pack->size( table_gl_button_pack->w(), table_gl_group->h() );
 
-    mft_gl_tables_buttons = new Fl_Button* [n+2];
-    mft_gl_tables_buttons[0] = (Fl_Button*)(intptr_t) n;
+    table_gl_tables_buttons = new Fl_Button* [n+2];
+    table_gl_tables_buttons[0] = (Fl_Button*)(intptr_t) n;
 
-    for(i = 1; i <= (intptr_t)mft_gl_tables_buttons[0]; ++i)
+    for(i = 1; i <= (intptr_t)table_gl_tables_buttons[0]; ++i)
     {
       int kanal = i - 1;
 
-      mft_gl_tables_buttons[i] = o = 
-        new Fl_Button( mft_gl_alltables_button->x(),
-                       mft_gl_alltables_button->y() + i*h,
+      table_gl_tables_buttons[i] = o = 
+        new Fl_Button( table_gl_alltables_button->x(),
+                       table_gl_alltables_button->y() + i*h,
                        w,h );
       o->copy_label( names_short[ kanal ] );
-      o->callback( (Fl_Callback*)mft_gl_menueCb_ );
+      o->callback( (Fl_Callback*)table_gl_menueCb_ );
       o->user_data( (void*)(intptr_t)(GL_Ansicht::MENU_MAX + kanal) );
       o->tooltip( icc_strdup_m( names[ kanal ] ) );
       o->when(FL_WHEN_RELEASE);
       if(i-1 == actual)
         o->take_focus();
     }
-    int oh = mft_gl_button_pack->y() + mft_gl_group->h() - (mft_gl_tables_buttons[i-1]->y() + h);
+    int oh = table_gl_button_pack->y() + table_gl_group->h() - (table_gl_tables_buttons[i-1]->y() + h);
 
-    mft_gl_tables_buttons[i] = o = new Fl_Button( mft_gl_alltables_button->x(),
-                       mft_gl_alltables_button->y() + i*h,
+    table_gl_tables_buttons[i] = o = new Fl_Button( table_gl_alltables_button->x(),
+                       table_gl_alltables_button->y() + i*h,
                        w,oh );
     o->box(FL_NO_BOX);
-    mft_gl_button_pack->end();
-    mft_gl_button_pack->resizable(o);
-  mft_gl_group->end();
+    table_gl_button_pack->end();
+    table_gl_button_pack->resizable(o);
+  table_gl_group->end();
   
   DBG_PROG_ENDE} {}
   }
-  Function {mft_gl_sliderAdd( const char** names_short, const char** names, ICClist<int> channels, int clutpoints )} {open
+  Function {table_gl_sliderAdd( const char** names_short, const char** names, ICClist<int> channels, int clutpoints )} {open
   } {
     code DBG_PROG_START {}
     code {int i;
-    int w_new = mft_gl_slider_pack->w();
+    int w_new = table_gl_slider_pack->w();
     
-    if(mft_gl->x() == 0 && channels.size() > 3)
+    if(table_gl->x() == 0 && channels.size() > 3)
     {
-      mft_gl->resize(w_new,mft_gl->y(), mft_gl->w()-w_new, mft_gl->h());
-      mft_gl_slider_pack->show();
-      mft_gl_slider->bounds( 0, clutpoints - 1 );
-      mft_gl_slider->step( 1, 1 );
+      table_gl->resize(w_new,table_gl->y(), table_gl->w()-w_new, table_gl->h());
+      table_gl_slider_pack->show();
+      table_gl_slider->bounds( 0, clutpoints - 1 );
+      table_gl_slider->step( 1, 1 );
 
-      if(0 <= mft_gl_slider_choice->value() &&
-         mft_gl_slider_choice->value() < (int)channels.size() - 3)
-        mft_gl_slider->value( channels[mft_gl_slider_choice->value()] );
+      if(0 <= table_gl_slider_choice->value() &&
+         table_gl_slider_choice->value() < (int)channels.size() - 3)
+        table_gl_slider->value( channels[table_gl_slider_choice->value()] );
       else
-        mft_gl_slider->value( clutpoints/2 );
+        table_gl_slider->value( clutpoints/2 );
 
       Fl_Menu_Item *menue = 0;
       if(channels.size() - 3 > 0)
@@ -1178,12 +1178,12 @@ DBG_NUM_S("Show Log window")}
           menue[i].text = names_short[3+i];
         menue[i].text = 0;
       }
-      mft_gl_slider_choice->clear();
-      mft_gl_slider_choice->menu(menue);
+      table_gl_slider_choice->clear();
+      table_gl_slider_choice->menu(menue);
       
-    } else if( mft_gl->x() > 0 && channels.size() <= 3) {
-      mft_gl->resize(0,mft_gl->y(), mft_gl->w()+w_new, mft_gl->h());
-      mft_gl_slider_pack->hide();
+    } else if( table_gl->x() > 0 && channels.size() <= 3) {
+      table_gl->resize(0,table_gl->y(), table_gl->w()+w_new, table_gl->h());
+      table_gl_slider_pack->hide();
     }
   
   DBG_PROG_ENDE} {}

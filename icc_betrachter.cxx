@@ -44,7 +44,7 @@ void TagBrowser::selectItem(int item) {
   item -= 6;
   DBG_PROG_S( item << ". Tag " )
   
-  std::string text = icc_examin->waehleTag(item);
+  std::string text = icc_examin->selectTag(item);
   if (text != "")
     selectedTagName = text;
   DBG_PROG_V( text );
@@ -132,11 +132,11 @@ void TagTexts::selectItem(int item) {
 }
 #include <FL/fl_draw.H>
 
-MftChoice::MftChoice(int X,int Y,int W,int H,const char* start_info) : Fl_Choice(X,Y,W,H,start_info), X(X), Y(Y), W(W), H(H) {
+TableChoice::TableChoice(int X,int Y,int W,int H,const char* start_info) : Fl_Choice(X,Y,W,H,start_info), X(X), Y(Y), W(W), H(H) {
   gewaehlter_eintrag = 0;
 }
 
-void MftChoice::profilTag(int _tag, std::string text) {
+void TableChoice::profilTag(int _tag, std::string text) {
   DBG_PROG_START
   icc_examin->icc_betrachter->tag_nummer = _tag;
 
@@ -157,7 +157,7 @@ void MftChoice::profilTag(int _tag, std::string text) {
       mft_menue[3].text = Info[6].c_str();
       mft_menue[4].text = Info[7].c_str();
       mft_menue[5].text = 0;
-      icc_examin->icc_betrachter->mft_choice->menu(mft_menue);
+      icc_examin->icc_betrachter->table_choice->menu(mft_menue);
     } else
     if ( strstr (typ,"mft1") != 0 )
     {
@@ -169,27 +169,27 @@ void MftChoice::profilTag(int _tag, std::string text) {
       mft_menue[3].text = Info[5].c_str();
       mft_menue[4].text = _("lineare exit curve with 256 steps");
       mft_menue[5].text = 0;
-      icc_examin->icc_betrachter->mft_choice->menu(mft_menue);
+      icc_examin->icc_betrachter->table_choice->menu(mft_menue);
     } else
     {
       int count = Info.size();
-      Fl_Menu_Item *mft_menue = (Fl_Menu_Item *)calloc (sizeof (Fl_Menu_Item),
+      Fl_Menu_Item *table_menue = (Fl_Menu_Item *)calloc (sizeof (Fl_Menu_Item),
                                                         count+1);
       for(int i = 0; i < count; ++i)
-        mft_menue[i].text = Info[i].c_str();
-      mft_menue[count].text = 0;
-      icc_examin->icc_betrachter->mft_choice->menu(mft_menue);
+        table_menue[i].text = Info[i].c_str();
+      table_menue[count].text = 0;
+      icc_examin->icc_betrachter->table_choice->menu(table_menue);
     }
 
-    icc_examin->icc_betrachter->mft_choice->value( gewaehlter_eintrag );
+    icc_examin->icc_betrachter->table_choice->value( gewaehlter_eintrag );
 
   //auswahlCb();
   DBG_PROG_ENDE
 }
 
-void MftChoice::auswahlCb(void) {
+void TableChoice::auswahlCb(void) {
   DBG_PROG_START
-  //Auswahl aus mft_choice
+  //Auswahl aus table_choice
 
   status("")
 
@@ -203,7 +203,7 @@ void MftChoice::auswahlCb(void) {
     DBG_PROG_S("%s \n" << m->label())
   }
 
-  icc_examin->waehleMft( mw->value() );
+  icc_examin->selectTable( mw->value() );
 
   DBG_PROG
   DBG_PROG_ENDE
@@ -219,8 +219,8 @@ int My_Fl_Box::handle( int event ) {
   return ergebnis;
 }
 
-static void mft_gl_menueCb_(Fl_Widget * w, void * data) {
-  icc_examin->icc_betrachter->mft_gl->menueAufruf( (intptr_t) data );
+static void table_gl_menueCb_(Fl_Widget * w, void * data) {
+  icc_examin->icc_betrachter->table_gl->menueAufruf( (intptr_t) data );
 }
 
 void ICCfltkBetrachter::cb_ja_i(Fl_Button*, void*) {
@@ -684,40 +684,40 @@ void ICCfltkBetrachter::cb_tag_browser(TagBrowser* o, void* v) {
   ((ICCfltkBetrachter*)(o->parent()->parent()->parent()->parent()->user_data()))->cb_tag_browser_i(o,v);
 }
 
-void ICCfltkBetrachter::cb_mft_choice_i(MftChoice* o, void*) {
+void ICCfltkBetrachter::cb_table_choice_i(TableChoice* o, void*) {
   o->auswahlCb();
 }
-void ICCfltkBetrachter::cb_mft_choice(MftChoice* o, void* v) {
-  ((ICCfltkBetrachter*)(o->parent()->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_mft_choice_i(o,v);
+void ICCfltkBetrachter::cb_table_choice(TableChoice* o, void* v) {
+  ((ICCfltkBetrachter*)(o->parent()->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_table_choice_i(o,v);
 }
 
-void ICCfltkBetrachter::cb_mft_text_i(TagTexts* o, void*) {
+void ICCfltkBetrachter::cb_table_text_i(TagTexts* o, void*) {
   o->selectItem( o->value() );
 }
-void ICCfltkBetrachter::cb_mft_text(TagTexts* o, void* v) {
-  ((ICCfltkBetrachter*)(o->parent()->parent()->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_mft_text_i(o,v);
+void ICCfltkBetrachter::cb_table_text(TagTexts* o, void* v) {
+  ((ICCfltkBetrachter*)(o->parent()->parent()->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_table_text_i(o,v);
 }
 
-void ICCfltkBetrachter::cb_mft_gl_alltables_button_i(Fl_Button*, void*) {
-  icc_examin->zeigMftTabellen();
+void ICCfltkBetrachter::cb_table_gl_alltables_button_i(Fl_Button*, void*) {
+  icc_examin->showTables();
 }
-void ICCfltkBetrachter::cb_mft_gl_alltables_button(Fl_Button* o, void* v) {
-  ((ICCfltkBetrachter*)(o->parent()->parent()->parent()->parent()->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_mft_gl_alltables_button_i(o,v);
-}
-
-void ICCfltkBetrachter::cb_mft_gl_slider_choice_i(Fl_Choice* o, void*) {
-  ICClist<int> channels = mft_gl->channels();
-  mft_gl_slider->value( channels[ 3 + o->value() ] );
-}
-void ICCfltkBetrachter::cb_mft_gl_slider_choice(Fl_Choice* o, void* v) {
-  ((ICCfltkBetrachter*)(o->parent()->parent()->parent()->parent()->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_mft_gl_slider_choice_i(o,v);
+void ICCfltkBetrachter::cb_table_gl_alltables_button(Fl_Button* o, void* v) {
+  ((ICCfltkBetrachter*)(o->parent()->parent()->parent()->parent()->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_table_gl_alltables_button_i(o,v);
 }
 
-void ICCfltkBetrachter::cb_mft_gl_slider_i(Fl_Value_Slider*, void*) {
-  icc_examin->mftChannel( (int)mft_gl_slider_choice->value()+3, (int)mft_gl_slider->value() );
+void ICCfltkBetrachter::cb_table_gl_slider_choice_i(Fl_Choice* o, void*) {
+  ICClist<int> channels = table_gl->channels();
+  table_gl_slider->value( channels[ 3 + o->value() ] );
 }
-void ICCfltkBetrachter::cb_mft_gl_slider(Fl_Value_Slider* o, void* v) {
-  ((ICCfltkBetrachter*)(o->parent()->parent()->parent()->parent()->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_mft_gl_slider_i(o,v);
+void ICCfltkBetrachter::cb_table_gl_slider_choice(Fl_Choice* o, void* v) {
+  ((ICCfltkBetrachter*)(o->parent()->parent()->parent()->parent()->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_table_gl_slider_choice_i(o,v);
+}
+
+void ICCfltkBetrachter::cb_table_gl_slider_i(Fl_Value_Slider*, void*) {
+  icc_examin->tableChannel( (int)table_gl_slider_choice->value()+3, (int)table_gl_slider->value() );
+}
+void ICCfltkBetrachter::cb_table_gl_slider(Fl_Value_Slider* o, void* v) {
+  ((ICCfltkBetrachter*)(o->parent()->parent()->parent()->parent()->parent()->parent()->parent()->parent()->parent()->parent()->user_data()))->cb_table_gl_slider_i(o,v);
 }
 
 void ICCfltkBetrachter::cb_tag_text_i(TagTexts* o, void*) {
@@ -731,7 +731,7 @@ icc_examin_ns::MyFl_Double_Window* ICCfltkBetrachter::init(int argc, char** argv
   DBG_PROG_START
   fullscreen = false;
   setTitleUrl = true;
-  mft_gl_tables_buttons = 0;
+  table_gl_tables_buttons = 0;
   px=py=pw=ph=0;
   tag_nummer = -1;
   widget_oben = -1;
@@ -978,90 +978,90 @@ ard"));
               tabellengruppe->align(FL_ALIGN_LEFT);
               { Fl_Pack* o = new Fl_Pack(0, 160, 385, 335);
                 o->align(FL_ALIGN_LEFT);
-                { MftChoice* o = mft_choice = new MftChoice(0, 160, 385, 25, _("Chain selection"));
-                mft_choice->tooltip(_("Choose a attribute"));
-                mft_choice->box(FL_NO_BOX);
-                mft_choice->down_box(FL_BORDER_BOX);
-                mft_choice->color((Fl_Color)FL_BACKGROUND_COLOR);
-                mft_choice->selection_color((Fl_Color)FL_SELECTION_COLOR);
-                mft_choice->labeltype(FL_NORMAL_LABEL);
-                mft_choice->labelfont(0);
-                mft_choice->labelsize(14);
-                mft_choice->labelcolor((Fl_Color)FL_FOREGROUND_COLOR);
-                mft_choice->callback((Fl_Callback*)cb_mft_choice);
-                mft_choice->align(FL_ALIGN_LEFT);
-                mft_choice->when(FL_WHEN_RELEASE);
+                { TableChoice* o = table_choice = new TableChoice(0, 160, 385, 25, _("Chain selection"));
+                table_choice->tooltip(_("Choose a attribute"));
+                table_choice->box(FL_NO_BOX);
+                table_choice->down_box(FL_BORDER_BOX);
+                table_choice->color((Fl_Color)FL_BACKGROUND_COLOR);
+                table_choice->selection_color((Fl_Color)FL_SELECTION_COLOR);
+                table_choice->labeltype(FL_NORMAL_LABEL);
+                table_choice->labelfont(0);
+                table_choice->labelsize(14);
+                table_choice->labelcolor((Fl_Color)FL_FOREGROUND_COLOR);
+                table_choice->callback((Fl_Callback*)cb_table_choice);
+                table_choice->align(FL_ALIGN_LEFT);
+                table_choice->when(FL_WHEN_RELEASE);
                 o->show();
-                } // MftChoice* mft_choice
+                } // TableChoice* table_choice
                 { Fl_Group* o = new Fl_Group(0, 185, 385, 310);
                 o->align(FL_ALIGN_LEFT);
-                { TagDrawings* o = mft_viewer = new TagDrawings(0, 185, 385, 310);
-                mft_viewer->box(FL_NO_BOX);
-                mft_viewer->color((Fl_Color)FL_BACKGROUND_COLOR);
-                mft_viewer->selection_color((Fl_Color)FL_BACKGROUND_COLOR);
-                mft_viewer->labeltype(FL_NORMAL_LABEL);
-                mft_viewer->labelfont(0);
-                mft_viewer->labelsize(14);
-                mft_viewer->labelcolor((Fl_Color)FL_FOREGROUND_COLOR);
-                mft_viewer->align(FL_ALIGN_LEFT);
-                mft_viewer->when(FL_WHEN_RELEASE);
+                { TagDrawings* o = table_viewer = new TagDrawings(0, 185, 385, 310);
+                table_viewer->box(FL_NO_BOX);
+                table_viewer->color((Fl_Color)FL_BACKGROUND_COLOR);
+                table_viewer->selection_color((Fl_Color)FL_BACKGROUND_COLOR);
+                table_viewer->labeltype(FL_NORMAL_LABEL);
+                table_viewer->labelfont(0);
+                table_viewer->labelsize(14);
+                table_viewer->labelcolor((Fl_Color)FL_FOREGROUND_COLOR);
+                table_viewer->align(FL_ALIGN_LEFT);
+                table_viewer->when(FL_WHEN_RELEASE);
                 o->show();
-                } // TagDrawings* mft_viewer
-                { TagTexts* o = mft_text = new TagTexts(0, 185, 385, 310);
-                mft_text->box(FL_FLAT_BOX);
-                mft_text->color((Fl_Color)FL_BACKGROUND_COLOR);
-                mft_text->selection_color((Fl_Color)FL_SELECTION_COLOR);
-                mft_text->labeltype(FL_NORMAL_LABEL);
-                mft_text->labelfont(0);
-                mft_text->labelsize(14);
-                mft_text->labelcolor((Fl_Color)FL_FOREGROUND_COLOR);
-                mft_text->callback((Fl_Callback*)cb_mft_text);
-                mft_text->align(FL_ALIGN_LEFT);
-                mft_text->when(FL_WHEN_RELEASE_ALWAYS);
+                } // TagDrawings* table_viewer
+                { TagTexts* o = table_text = new TagTexts(0, 185, 385, 310);
+                table_text->box(FL_FLAT_BOX);
+                table_text->color((Fl_Color)FL_BACKGROUND_COLOR);
+                table_text->selection_color((Fl_Color)FL_SELECTION_COLOR);
+                table_text->labeltype(FL_NORMAL_LABEL);
+                table_text->labelfont(0);
+                table_text->labelsize(14);
+                table_text->labelcolor((Fl_Color)FL_FOREGROUND_COLOR);
+                table_text->callback((Fl_Callback*)cb_table_text);
+                table_text->align(FL_ALIGN_LEFT);
+                table_text->when(FL_WHEN_RELEASE_ALWAYS);
                 o->show();
-                } // TagTexts* mft_text
-                { mft_gl_group = new Fl_Group(0, 185, 385, 310);
-                mft_gl_group->align(FL_ALIGN_LEFT);
+                } // TagTexts* table_text
+                { table_gl_group = new Fl_Group(0, 185, 385, 310);
+                table_gl_group->align(FL_ALIGN_LEFT);
                 { Fl_Box* o = new Fl_Box(0, 185, 385, 310);
                 o->box(FL_FLAT_BOX);
                 o->align(FL_ALIGN_LEFT);
                 } // Fl_Box* o
-                { GL_Ansicht* o = mft_gl = new GL_Ansicht(0, 185, 360, 310);
-                mft_gl->box(FL_NO_BOX);
-                mft_gl->color((Fl_Color)FL_BACKGROUND_COLOR);
-                mft_gl->selection_color((Fl_Color)FL_BACKGROUND_COLOR);
-                mft_gl->labeltype(FL_NORMAL_LABEL);
-                mft_gl->labelfont(0);
-                mft_gl->labelsize(14);
-                mft_gl->labelcolor((Fl_Color)FL_FOREGROUND_COLOR);
-                mft_gl->align(FL_ALIGN_LEFT);
-                mft_gl->when(FL_WHEN_RELEASE);
-                Fl_Group::current()->resizable(mft_gl);
+                { GL_Ansicht* o = table_gl = new GL_Ansicht(0, 185, 360, 310);
+                table_gl->box(FL_NO_BOX);
+                table_gl->color((Fl_Color)FL_BACKGROUND_COLOR);
+                table_gl->selection_color((Fl_Color)FL_BACKGROUND_COLOR);
+                table_gl->labeltype(FL_NORMAL_LABEL);
+                table_gl->labelfont(0);
+                table_gl->labelsize(14);
+                table_gl->labelcolor((Fl_Color)FL_FOREGROUND_COLOR);
+                table_gl->align(FL_ALIGN_LEFT);
+                table_gl->when(FL_WHEN_RELEASE);
+                Fl_Group::current()->resizable(table_gl);
                 o->hide();
                 o->typ( 2 ); // bleibt zumeist im Hauptfenster
-                } // GL_Ansicht* mft_gl
-                { mft_gl_button_pack = new Fl_Pack(360, 185, 25, 310);
-                { Fl_Button* o = mft_gl_alltables_button = new Fl_Button(360, 185, 25, 25, _("o"));
-                mft_gl_alltables_button->tooltip(_("Show all channels of this table a own window."));
-                mft_gl_alltables_button->callback((Fl_Callback*)cb_mft_gl_alltables_button);
+                } // GL_Ansicht* table_gl
+                { table_gl_button_pack = new Fl_Pack(360, 185, 25, 310);
+                { Fl_Button* o = table_gl_alltables_button = new Fl_Button(360, 185, 25, 25, _("o"));
+                table_gl_alltables_button->tooltip(_("Show all channels of this table a own window."));
+                table_gl_alltables_button->callback((Fl_Callback*)cb_table_gl_alltables_button);
                 o->show();
-                } // Fl_Button* mft_gl_alltables_button
-                mft_gl_button_pack->end();
-                } // Fl_Pack* mft_gl_button_pack
-                { mft_gl_slider_pack = new Fl_Pack(0, 185, 25, 310);
-                { mft_gl_slider_choice = new Fl_Choice(0, 185, 25, 25);
-                mft_gl_slider_choice->down_box(FL_BORDER_BOX);
-                mft_gl_slider_choice->callback((Fl_Callback*)cb_mft_gl_slider_choice);
-                } // Fl_Choice* mft_gl_slider_choice
-                { mft_gl_slider = new Fl_Value_Slider(0, 210, 25, 285);
-                mft_gl_slider->callback((Fl_Callback*)cb_mft_gl_slider);
-                Fl_Group::current()->resizable(mft_gl_slider);
-                } // Fl_Value_Slider* mft_gl_slider
-                mft_gl_slider_pack->end();
-                } // Fl_Pack* mft_gl_slider_pack
-                mft_gl_group->end();
-                Fl_Group::current()->resizable(mft_gl_group);
-                } // Fl_Group* mft_gl_group
+                } // Fl_Button* table_gl_alltables_button
+                table_gl_button_pack->end();
+                } // Fl_Pack* table_gl_button_pack
+                { table_gl_slider_pack = new Fl_Pack(0, 185, 25, 310);
+                { table_gl_slider_choice = new Fl_Choice(0, 185, 25, 25);
+                table_gl_slider_choice->down_box(FL_BORDER_BOX);
+                table_gl_slider_choice->callback((Fl_Callback*)cb_table_gl_slider_choice);
+                } // Fl_Choice* table_gl_slider_choice
+                { table_gl_slider = new Fl_Value_Slider(0, 210, 25, 285);
+                table_gl_slider->callback((Fl_Callback*)cb_table_gl_slider);
+                Fl_Group::current()->resizable(table_gl_slider);
+                } // Fl_Value_Slider* table_gl_slider
+                table_gl_slider_pack->end();
+                } // Fl_Pack* table_gl_slider_pack
+                table_gl_group->end();
+                Fl_Group::current()->resizable(table_gl_group);
+                } // Fl_Group* table_gl_group
                 o->end();
                 Fl_Group::current()->resizable(o);
                 } // Fl_Group* o
@@ -1246,16 +1246,16 @@ void ICCfltkBetrachter::zeig_mich_(void* widget) {
   DBG_PROG_START
   // zeigt das ausgewaehlte Fenster (widget)
 
-  mft_viewer->hide();
-  mft_text->hide();
+  table_viewer->hide();
+  table_text->hide();
   tag_viewer->hide(); DBG_PROG
   tag_viewer->clear_visible(); DBG_PROG
   tag_text->hide();
   inspekt_html->hide();
 
   // stop
-  if (widget != mft_gl) {
-    mft_gl->hide();
+  if (widget != table_gl) {
+    table_gl->hide();
   }
   if (widget != DD_farbraum ) {
     DD_farbraum->hide();
@@ -1270,16 +1270,16 @@ void ICCfltkBetrachter::zeig_mich_(void* widget) {
       inspekt_html->hide();
   }
 
-  if (widget != mft_gl &&
+  if (widget != table_gl &&
       widget != DD_farbraum )
   { 
     ((Fl_Widget*)widget)->show(); DBG_PROG
     if( !menueintrag_inspekt->value() &&
         !menueintrag_3D->value() )
       ;//selectItem(icc_examin->tag_nr()+6);
-  } else if (widget == mft_gl) {
-    DBG_PROG_S( "leave mft GL window." )
-    mft_gl->show();
+  } else if (widget == table_gl) {
+    DBG_PROG_S( "leave table GL window." )
+    table_gl->show();
   } else if (widget == DD_farbraum) {
     DBG_PROG_S( "leave 3D GL window." )
     DD_farbraum->show();
@@ -1309,75 +1309,75 @@ void ICCfltkBetrachter::measurement(bool has_measurement) {
   }
 }
 
-void ICCfltkBetrachter::mft_gl_boxAdd( const char ** names_short, const char** names, int n, int actual ) {
+void ICCfltkBetrachter::table_gl_boxAdd( const char ** names_short, const char** names, int n, int actual ) {
   DBG_PROG_START
   int i;
-    int h = mft_gl_alltables_button->h(),
-        w = mft_gl_alltables_button->w();
+    int h = table_gl_alltables_button->h(),
+        w = table_gl_alltables_button->w();
     Fl_Button * o;
 
-    mft_gl_group->begin();
-    if(mft_gl_tables_buttons)
-      for(i = 1; i <= (intptr_t)mft_gl_tables_buttons[0] + 1; ++i)
+    table_gl_group->begin();
+    if(table_gl_tables_buttons)
+      for(i = 1; i <= (intptr_t)table_gl_tables_buttons[0] + 1; ++i)
       {
-        mft_gl_tables_buttons[i]->hide();
-        mft_gl_button_pack->remove( mft_gl_tables_buttons[i] );
-        if(mft_gl_tables_buttons[i])
-          delete mft_gl_tables_buttons[i];
+        table_gl_tables_buttons[i]->hide();
+        table_gl_button_pack->remove( table_gl_tables_buttons[i] );
+        if(table_gl_tables_buttons[i])
+          delete table_gl_tables_buttons[i];
       }
 
-    mft_gl_button_pack->begin();
-    mft_gl_button_pack->size( mft_gl_button_pack->w(), mft_gl_group->h() );
+    table_gl_button_pack->begin();
+    table_gl_button_pack->size( table_gl_button_pack->w(), table_gl_group->h() );
 
-    mft_gl_tables_buttons = new Fl_Button* [n+2];
-    mft_gl_tables_buttons[0] = (Fl_Button*)(intptr_t) n;
+    table_gl_tables_buttons = new Fl_Button* [n+2];
+    table_gl_tables_buttons[0] = (Fl_Button*)(intptr_t) n;
 
-    for(i = 1; i <= (intptr_t)mft_gl_tables_buttons[0]; ++i)
+    for(i = 1; i <= (intptr_t)table_gl_tables_buttons[0]; ++i)
     {
       int kanal = i - 1;
 
-      mft_gl_tables_buttons[i] = o = 
-        new Fl_Button( mft_gl_alltables_button->x(),
-                       mft_gl_alltables_button->y() + i*h,
+      table_gl_tables_buttons[i] = o = 
+        new Fl_Button( table_gl_alltables_button->x(),
+                       table_gl_alltables_button->y() + i*h,
                        w,h );
       o->copy_label( names_short[ kanal ] );
-      o->callback( (Fl_Callback*)mft_gl_menueCb_ );
+      o->callback( (Fl_Callback*)table_gl_menueCb_ );
       o->user_data( (void*)(intptr_t)(GL_Ansicht::MENU_MAX + kanal) );
       o->tooltip( icc_strdup_m( names[ kanal ] ) );
       o->when(FL_WHEN_RELEASE);
       if(i-1 == actual)
         o->take_focus();
     }
-    int oh = mft_gl_button_pack->y() + mft_gl_group->h() - (mft_gl_tables_buttons[i-1]->y() + h);
+    int oh = table_gl_button_pack->y() + table_gl_group->h() - (table_gl_tables_buttons[i-1]->y() + h);
 
-    mft_gl_tables_buttons[i] = o = new Fl_Button( mft_gl_alltables_button->x(),
-                       mft_gl_alltables_button->y() + i*h,
+    table_gl_tables_buttons[i] = o = new Fl_Button( table_gl_alltables_button->x(),
+                       table_gl_alltables_button->y() + i*h,
                        w,oh );
     o->box(FL_NO_BOX);
-    mft_gl_button_pack->end();
-    mft_gl_button_pack->resizable(o);
-  mft_gl_group->end();
+    table_gl_button_pack->end();
+    table_gl_button_pack->resizable(o);
+  table_gl_group->end();
   
   DBG_PROG_ENDE
 }
 
-void ICCfltkBetrachter::mft_gl_sliderAdd( const char** names_short, const char** names, ICClist<int> channels, int clutpoints ) {
+void ICCfltkBetrachter::table_gl_sliderAdd( const char** names_short, const char** names, ICClist<int> channels, int clutpoints ) {
   DBG_PROG_START
   int i;
-    int w_new = mft_gl_slider_pack->w();
+    int w_new = table_gl_slider_pack->w();
     
-    if(mft_gl->x() == 0 && channels.size() > 3)
+    if(table_gl->x() == 0 && channels.size() > 3)
     {
-      mft_gl->resize(w_new,mft_gl->y(), mft_gl->w()-w_new, mft_gl->h());
-      mft_gl_slider_pack->show();
-      mft_gl_slider->bounds( 0, clutpoints - 1 );
-      mft_gl_slider->step( 1, 1 );
+      table_gl->resize(w_new,table_gl->y(), table_gl->w()-w_new, table_gl->h());
+      table_gl_slider_pack->show();
+      table_gl_slider->bounds( 0, clutpoints - 1 );
+      table_gl_slider->step( 1, 1 );
 
-      if(0 <= mft_gl_slider_choice->value() &&
-         mft_gl_slider_choice->value() < (int)channels.size() - 3)
-        mft_gl_slider->value( channels[mft_gl_slider_choice->value()] );
+      if(0 <= table_gl_slider_choice->value() &&
+         table_gl_slider_choice->value() < (int)channels.size() - 3)
+        table_gl_slider->value( channels[table_gl_slider_choice->value()] );
       else
-        mft_gl_slider->value( clutpoints/2 );
+        table_gl_slider->value( clutpoints/2 );
 
       Fl_Menu_Item *menue = 0;
       if(channels.size() - 3 > 0)
@@ -1390,12 +1390,12 @@ void ICCfltkBetrachter::mft_gl_sliderAdd( const char** names_short, const char**
           menue[i].text = names_short[3+i];
         menue[i].text = 0;
       }
-      mft_gl_slider_choice->clear();
-      mft_gl_slider_choice->menu(menue);
+      table_gl_slider_choice->clear();
+      table_gl_slider_choice->menu(menue);
       
-    } else if( mft_gl->x() > 0 && channels.size() <= 3) {
-      mft_gl->resize(0,mft_gl->y(), mft_gl->w()+w_new, mft_gl->h());
-      mft_gl_slider_pack->hide();
+    } else if( table_gl->x() > 0 && channels.size() <= 3) {
+      table_gl->resize(0,table_gl->y(), table_gl->w()+w_new, table_gl->h());
+      table_gl_slider_pack->hide();
     }
   
   DBG_PROG_ENDE

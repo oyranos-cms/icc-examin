@@ -107,21 +107,21 @@ class ICCexamin : public icc_examin_ns::Beobachter,
     void         zeig3D ();                    //!< 3D colour space view
     void         zeigPrueftabelle ();          //!< show controlling report
     void         zeigCGATS();                  //!< show corrected CGATS
-    void         zeigMftTabellen();            //!< open all channels
+    void         showTables();                 //!< open all channels
     void         icc_betrachterNeuzeichnen (void* widget); //!< redraw UI
 
-    std::string  waehleTag (int item);
-    void         waehleMft (int item);
-    void         showTableData (int item);
-    void         showCurve (oyStructList_s * list,
+    std::string  selectTag (int item);
+    void         selectTable (int item);
+    void         showmABData (int item);
+    void         showData (oyStructList_s * list,
                            ICClist<std::string> texts,
                            int viewer );
-    void         mftChannel ( int channel, int clutplane );
+    void         tableChannel ( int channel, int clutplane );
     ICClist<int> kurve_umkehren;
     enum { GL_STOP, GL_ZEICHNEN, GL_AUFFRISCHEN, GL_MOUSE_HIT3D }; //!< GL waiting
     icc_examin_ns::EinModell  * alle_gl_fenster;   //!< all Gl windows
   private:
-    int  _item,  _mft_item;    //!< @brief selected profil items
+    int  _item,  _table_item;  //!< @brief selected profil items
     int  _zeig_prueftabelle,
          farbraum_angezeigt_;
     int  status_,
@@ -160,7 +160,7 @@ class ICCexamin : public icc_examin_ns::Beobachter,
     int         collect_changing_points;       //*< add moving points to olders
   public:
     int  tag_nr () { return _item; }
-    int  mft_nr () { return _mft_item; }
+    int  table_nr () { return _table_item; }
 
     ICClist<ICClist<ICClist<double> > > kurven;
     ICClist<ICClist<double> >               punkte;
