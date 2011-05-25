@@ -570,6 +570,24 @@ void ICCexamin::showmABData (int item)
 
         } else if(elements)
         {
+          element = (oyStructList_s*) oyStructList_GetRefType( elements, 0,
+                                                       oyOBJECT_STRUCT_LIST_S );
+          opt = (oyOption_s*) oyStructList_GetRefType( element, 2,
+                                                           oyOBJECT_OPTION_S );
+          oyStructList_Release( &element );
+          icColorSpaceSignature csp = profile.profil()->getPCS();
+          const char * text = oyOption_GetValueString( opt, 0 );
+          if(text &&
+             oyFilterRegistrationMatchKey( oyOption_GetRegistration( opt ),
+                                           "////color_space", oyOBJECT_NONE ) &&
+             strcmp( text, "1") == 0 )
+            csp = profile.profil()->colorSpace();
+
+          oyOption_Release( &opt );
+          ICClist<std::string> channel_names =  getChannelNames( csp );
+
+          for(int j = 0; j < (int)channel_names.size(); ++j)
+            texte[MFT_VIEWER].push_back( channel_names[j] );
           showData( elements, texte[MFT_VIEWER], MFT_VIEWER );
         } else
         {
