@@ -219,7 +219,6 @@ ICCkette::einfuegen (const Speicher & prof, int pos)
   //icc_examin_ns::lock(__FILE__,__LINE__);
   //if(pos >= 0)
   {
-    benachrichtigen( p );
     if( extra_benachrichtigen >= 0 )
       benachrichtigen( extra_benachrichtigen );
   }
