@@ -27,7 +27,7 @@
 class TagDrawings;
 class TagBrowser;
 class TagTexts;
-class MftChoice;
+class TableChoice;
 class GL_Ansicht;
 const char* iccReadInfo(char* filename);
 
@@ -54,11 +54,11 @@ public:
   void selectItem(int item);
 };
 
-class MftChoice : public Fl_Choice {
+class TableChoice : public Fl_Choice {
   int X; int Y; int W; int H; const char* start_info; char typ[5]; 
 public:
   ICClist<std::string> Info; int gewaehlter_eintrag; 
-  MftChoice(int X,int Y,int W,int H,const char* start_info) ;
+  TableChoice(int X,int Y,int W,int H,const char* start_info) ;
   void profilTag(int _tag, std::string text);
   void auswahlCb(void);
 };
@@ -267,35 +267,35 @@ private:
 public:
   Fl_Group *ansichtsgruppe;
   Fl_Group *tabellengruppe;
-  MftChoice *mft_choice;
+  TableChoice *table_choice;
 private:
-  void cb_mft_choice_i(MftChoice*, void*);
-  static void cb_mft_choice(MftChoice*, void*);
+  void cb_table_choice_i(TableChoice*, void*);
+  static void cb_table_choice(TableChoice*, void*);
 public:
-  TagDrawings *mft_viewer;
-  TagTexts *mft_text;
+  TagDrawings *table_viewer;
+  TagTexts *table_text;
 private:
-  void cb_mft_text_i(TagTexts*, void*);
-  static void cb_mft_text(TagTexts*, void*);
+  void cb_table_text_i(TagTexts*, void*);
+  static void cb_table_text(TagTexts*, void*);
 public:
-  Fl_Group *mft_gl_group;
-  GL_Ansicht *mft_gl;
-  Fl_Pack *mft_gl_button_pack;
-  Fl_Button *mft_gl_alltables_button;
+  Fl_Group *table_gl_group;
+  GL_Ansicht *table_gl;
+  Fl_Pack *table_gl_button_pack;
+  Fl_Button *table_gl_alltables_button;
 private:
-  void cb_mft_gl_alltables_button_i(Fl_Button*, void*);
-  static void cb_mft_gl_alltables_button(Fl_Button*, void*);
+  void cb_table_gl_alltables_button_i(Fl_Button*, void*);
+  static void cb_table_gl_alltables_button(Fl_Button*, void*);
 public:
-  Fl_Pack *mft_gl_slider_pack;
-  Fl_Choice *mft_gl_slider_choice;
+  Fl_Pack *table_gl_slider_pack;
+  Fl_Choice *table_gl_slider_choice;
 private:
-  void cb_mft_gl_slider_choice_i(Fl_Choice*, void*);
-  static void cb_mft_gl_slider_choice(Fl_Choice*, void*);
+  void cb_table_gl_slider_choice_i(Fl_Choice*, void*);
+  static void cb_table_gl_slider_choice(Fl_Choice*, void*);
 public:
-  Fl_Value_Slider *mft_gl_slider;
+  Fl_Value_Slider *table_gl_slider;
 private:
-  void cb_mft_gl_slider_i(Fl_Value_Slider*, void*);
-  static void cb_mft_gl_slider(Fl_Value_Slider*, void*);
+  void cb_table_gl_slider_i(Fl_Value_Slider*, void*);
+  static void cb_table_gl_slider(Fl_Value_Slider*, void*);
 public:
   Fl_Pack *twoD_pack;
   TagTexts *tag_text;
@@ -313,10 +313,10 @@ public:
   void zeig_mich_(void* widget);
   void measurement(bool has_measurement);
 private:
-  Fl_Button ** mft_gl_tables_buttons; 
+  Fl_Button ** table_gl_tables_buttons; 
 public:
-  void mft_gl_boxAdd( const char ** names_short, const char** names, int n, int actual );
-  void mft_gl_sliderAdd( const char** names_short, const char** names, ICClist<int> channels, int clutpoints );
+  void table_gl_boxAdd( const char ** names_short, const char** names, int n, int actual );
+  void table_gl_sliderAdd( const char** names_short, const char** names, ICClist<int> channels, int clutpoints );
 };
 void dHaendler(void* o);
 void initHilfe();

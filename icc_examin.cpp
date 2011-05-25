@@ -201,7 +201,7 @@ ICCexamin::ICCexamin ()
 #endif
 
   _item = -1;
-  _mft_item = -1;
+  _table_item = -1;
   for(int i = 0; i < 4; ++i)
     statlabel[i] = "";
   status_ = false;
@@ -304,7 +304,7 @@ ICCexamin::start (int argc, char** argv)
 
   icc_betrachter->init( argc, argv );
 
-  icc_betrachter->mft_gl->init(1);
+  icc_betrachter->table_gl->init(1);
   icc_betrachter->DD_farbraum->init(2);
   {
     icc_waehler_ = new ICCwaehler(485, 116, _("Gamut selector"));
@@ -315,7 +315,7 @@ ICCexamin::start (int argc, char** argv)
 
   // Die TagViewers registrieren und ihre Variablen initialisieren
   icc_betrachter->tag_viewer->id = TAG_VIEWER;
-  icc_betrachter->mft_viewer->id = MFT_VIEWER;
+  icc_betrachter->table_viewer->id = MFT_VIEWER;
   icc_betrachter->vcgt_viewer->id = VCGT_VIEWER;
 
   // Fuer eine Fl_Sys_Menu_Bar
@@ -537,7 +537,7 @@ ICCexamin::zeigCGATS()
 }
 
 void
-ICCexamin::zeigMftTabellen ()
+ICCexamin::showTables ()
 { DBG_PROG_START
 
   const char* title = profile.profil()->filename();
@@ -552,8 +552,8 @@ ICCexamin::zeigMftTabellen ()
 
   int lx = icc_betrachter->details->x(),
       ly = icc_betrachter->details->y()+10,
-      lw = icc_betrachter->mft_gl->w(),
-      lh = icc_betrachter->mft_gl->h();
+      lw = icc_betrachter->table_gl->w(),
+      lh = icc_betrachter->table_gl->h();
 
 #if defined(__APPLE__) && 0
   int X,Y,bt,bx,by;
@@ -574,13 +574,13 @@ ICCexamin::zeigMftTabellen ()
       w->user_data((void*)(0));
       Fl_Group *g = new Fl_Group(0,0,lw,lh);
         GL_Ansicht *gl = 
-          new GL_Ansicht (*icc_betrachter->mft_gl); //(0,0,lw,lh);
+          new GL_Ansicht (*icc_betrachter->table_gl); //(0,0,lw,lh);
 
         /* Workaround: after copy the same glLists appeared on copied context */
-        icc_betrachter->mft_gl->resetContexts();
-        GL_Ansicht::getAgv(gl, icc_betrachter->mft_gl);
-        gl->init( icc_betrachter->mft_gl->id() );
-        gl->copy( *icc_betrachter->mft_gl );
+        icc_betrachter->table_gl->resetContexts();
+        GL_Ansicht::getAgv(gl, icc_betrachter->table_gl);
+        gl->init( icc_betrachter->table_gl->id() );
+        gl->copy( *icc_betrachter->table_gl );
         gl->kanal = i;
       g->end();
     w->end();
@@ -594,7 +594,7 @@ ICCexamin::zeigMftTabellen ()
     gl->damage(FL_DAMAGE_ALL);
   }
 
-  waehleMft(0);
+  selectTable(0);
 
   DBG_PROG_ENDE
 }
@@ -661,7 +661,7 @@ ICCexamin::nachricht( Modell* modell , int info )
 
         fortschritt(0.7 , 1.0);
         if(icc_betrachter->examin->visible())
-          waehleTag(_item);
+          selectTag(_item);
 
         fortschritt(0.9 , 1.0);
         if(icc_betrachter->DD_farbraum->visible())
@@ -1392,10 +1392,10 @@ ICCexamin::icc_betrachterNeuzeichnen (void* z)
   DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->tag_browser)->visible() )
   DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->tag_text)->visible() )
   DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->tag_viewer)->visible() )
-  DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->mft_choice)->visible() )
-  DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->mft_text)->visible() )
-  DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->mft_gl_group)->visible() )
-  DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->mft_viewer)->visible() )
+  DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->table_choice)->visible() )
+  DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->table_text)->visible() )
+  DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->table_gl_group)->visible() )
+  DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->table_viewer)->visible() )
 
 # if 0
   enum {ZEIGEN, VERSTECKEN, NACHRICHT, KEINEn};
@@ -1495,17 +1495,17 @@ ICCexamin::icc_betrachterNeuzeichnen (void* z)
 
   // clean up - here?
   if (wid == icc_betrachter->tag_viewer ||
-      wid == icc_betrachter->mft_viewer) {
+      wid == icc_betrachter->table_viewer) {
     wid->clear_visible(); DBG_PROG_V( item << _item )
   }
 
   // table companion
-  if (wid == icc_betrachter->mft_text ||
-      wid == icc_betrachter->mft_gl_group ||
-      wid == icc_betrachter->mft_viewer)
-  { icc_betrachter->mft_choice->show(); DBG_PROG_S( "mft_choice zeigen" ) 
+  if (wid == icc_betrachter->table_text ||
+      wid == icc_betrachter->table_gl_group ||
+      wid == icc_betrachter->table_viewer)
+  { icc_betrachter->table_choice->show(); DBG_PROG_S( "table_choice zeigen" ) 
   } else
-    icc_betrachter->mft_choice->hide();
+    icc_betrachter->table_choice->hide();
 
 # define SichtbarkeitsWechsel(widget, oberst) \
   { \
@@ -1549,23 +1549,23 @@ ICCexamin::icc_betrachterNeuzeichnen (void* z)
   Fl_Widget *wids[2] = {icc_betrachter->tabellengruppe,
                         icc_betrachter->twoD_pack};
 
-  SichtbarkeitsWechsel(mft_viewer, 0)
-  SichtbarkeitsWechsel(mft_gl_group, 0)
-  SichtbarkeitsWechsel(mft_text, 0)
+  SichtbarkeitsWechsel(table_viewer, 0)
+  SichtbarkeitsWechsel(table_gl_group, 0)
+  SichtbarkeitsWechsel(table_text, 0)
   SichtbarkeitsWechsel(tag_viewer, 1)
   SichtbarkeitsWechsel(tag_text, 1)
   
 #if defined(APPLE)
   // FLTK 1.1.10 seems to have problems with hiding OpenGL widgets
-  if(wid != icc_betrachter->mft_gl_group &&
-     !icc_betrachter->mft_gl_group->visible())
-    icc_betrachter->mft_gl->hide();
+  if(wid != icc_betrachter->table_gl_group &&
+     !icc_betrachter->table_gl_group->visible())
+    icc_betrachter->table_gl->hide();
 #endif
 
 # if 0
   // wenigstens ein Widget zeigen
   if(oben == TAG_ZEIGEN &&
-     !icc_betrachter->mft_choice ->visible() &&
+     !icc_betrachter->table_choice ->visible() &&
      !icc_betrachter->tag_viewer ->visible() )
     icc_betrachter->tag_text->show();
 
@@ -1576,10 +1576,10 @@ ICCexamin::icc_betrachterNeuzeichnen (void* z)
   DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->ansichtsgruppe)->visible() )
   DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->tag_text)->visible() )
   DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->tag_viewer)->visible() )
-  DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->mft_choice)->visible() )
-  DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->mft_text)->visible() )
-  DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->mft_gl_group)->visible() )
-  DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->mft_viewer)->visible() )
+  DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->table_choice)->visible() )
+  DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->table_text)->visible() )
+  DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->table_gl_group)->visible() )
+  DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->table_viewer)->visible() )
 
   // Inhalte Erneuern
   if(waehle_tag) {
@@ -1868,8 +1868,8 @@ tastatur(int e)
      icc_examin->icc_betrachter->DD_farbraum->shown())
     gefunden = icc_examin->icc_betrachter->DD_farbraum->tastatur(e);
   if(icc_examin && icc_examin->icc_betrachter && 
-     icc_examin->icc_betrachter->mft_gl->shown())
-    gefunden = icc_examin->icc_betrachter->mft_gl->tastatur(e);
+     icc_examin->icc_betrachter->table_gl->shown())
+    gefunden = icc_examin->icc_betrachter->table_gl->tastatur(e);
   //DBG_PROG_ENDE
   return gefunden;
 }

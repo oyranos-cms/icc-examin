@@ -243,7 +243,7 @@ ICCexaminIO::oeffnenThread_ ()
     else if(!icc_examin->icc_betrachter->details->visible_r())
     {
       icc_examin->icc_betrachterNeuzeichnen( icc_examin->icc_betrachter->tag_viewer);
-      icc_examin->waehleTag( icc_examin->tag_nr() );
+      icc_examin->selectTag( icc_examin->tag_nr() );
     }
 
     icc_examin_ns::unlock(this, __FILE__,__LINE__);
