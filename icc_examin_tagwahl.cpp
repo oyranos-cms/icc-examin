@@ -433,6 +433,23 @@ void ICCexamin::showData( oyStructList_s * elements,
                                                (int)2 + params_n + 1 + k);
                 curves[pos].push_back( val );
               }
+            } else
+            if(element_data &&
+               oyFilterRegistrationMatchKey( 
+                oyOption_GetRegistration(element_data),
+                                   "////icCurveType", oyOBJECT_NONE ))
+            {
+              double segmented_curve_count = oyOption_GetValueDouble( 
+                                                element_data, 0 );
+
+              curves.push_back(0);
+              int pos = curves.size() - 1;
+              double val;
+              for(int k = 0; k < (int)segmented_curve_count; ++k)
+              {
+                val = oyOption_GetValueDouble( element_data, 1 + k);
+                curves[pos].push_back( val );
+              }
             }
 
             oyStructList_Release( &element );
@@ -478,7 +495,6 @@ void ICCexamin::showmABData (int item)
 {
   ICClist<std::string> TagInfo = profile.profil()->printTagInfo(_item);
   char num[12];
-  int n;
 
   std::string t;
 
@@ -513,7 +529,7 @@ void ICCexamin::showmABData (int item)
     int table_pos = _table_item-1;
     oyStructList_s * list = profile.profil()->getTagNumbers(_item);
     oyOption_s * opt;
-    oyStructList_s * elements;
+    oyStructList_s * elements, * element;
     int count = oyStructList_Count( list );
     int list_pos = -1;
     for(int i = 0; i < count; ++i)
@@ -529,10 +545,29 @@ void ICCexamin::showmABData (int item)
       {
 
         if(opt && oyFilterRegistrationMatchKey( oyOption_GetRegistration(opt),
-                                   "////icParametricCurveType", oyOBJECT_NONE ))
+                                   "////Matrix3x3+3", oyOBJECT_NONE ))
         {
-          n = oyOption_GetValueDouble( opt, 0 );
-          n = 0;
+          t = _("Matrix 3x3 + 3"); t += "\n";
+          for(int j = 0; j < 3; ++j)
+          {
+            if(j) t += "\n";
+            char m[4][24];
+            for(int k = 0; k < 4; ++k)
+            {
+              double val = oyOption_GetValueDouble( opt, j*3+k );
+              sprintf( m[k], "%s%f", val < 0.0 ? "-":" ", fabs(val) );
+            }
+            t += &m[0][0];
+            t += "*";
+            t += &m[1][0];
+            t += "*";
+            t += &m[2][0];
+            t += " + ";
+            t += &m[3][0];
+          }
+          icc_betrachter->table_text->hinein ( t );
+          icc_betrachterNeuzeichnen(icc_betrachter->table_text);
+
         } else if(elements)
         {
           showData( elements, texte[MFT_VIEWER], MFT_VIEWER );
@@ -585,7 +620,8 @@ ICCexamin::selectTable (int item)
 
   DBG_PROG_V( _table_item )
 
-  if(TagInfo[1] == "mAB ")
+  if(TagInfo[1] == "mAB " ||
+     TagInfo[1] == "mBA ")
     showmABData(_table_item);
   else
   switch (_table_item) {
