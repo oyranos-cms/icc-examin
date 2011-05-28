@@ -683,11 +683,13 @@ void ICCexamin::showmABData (int item)
           {
             if(j) t += "\n";
             char m[4][24];
-            for(int k = 0; k < 4; ++k)
+            for(int k = 0; k < 3; ++k)
             {
               double val = oyOption_GetValueDouble( opt, j*3+k );
               sprintf( m[k], "%s%f", val < 0.0 ? "-":" ", fabs(val) );
             }
+            double val = oyOption_GetValueDouble( opt, 9+j );
+            sprintf( m[3], "%s%f", val < 0.0 ? "-":" ", fabs(val) );
             t += &m[0][0];
             t += "*";
             t += &m[1][0];
