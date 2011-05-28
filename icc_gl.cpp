@@ -3872,6 +3872,14 @@ GL_Ansicht::hineinNetze_       (const icc_examin_ns::ICCThreadList<ICCnetz> & d_
 }
 
 
+/**
+ *
+ *  @param[in]     vect                The 3 dimensional tables
+ *  @param[in]     achs_namen          the coordinate source channel names
+ *  @param[in]     nach                the target channel names
+  * @param[in]     channels            selected channels: 1 - selected,
+ *                                     0 - not selected, -1 - non existent
+ */
 void
 GL_Ansicht::hineinTabelle (ICClist<ICClist<ICClist<ICClist<double> > > > vect,
                            ICClist<std::string> achs_namen,
