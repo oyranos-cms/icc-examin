@@ -545,6 +545,137 @@ void ICCexamin::showmABData (int item)
       {
 
         if(opt && oyFilterRegistrationMatchKey( oyOption_GetRegistration(opt),
+                                   "////icSigLutAtoBTypeNlut", oyOBJECT_NONE ))
+        {
+          int inputChan = oyOption_GetValueDouble( opt, 0 ),
+              outputChan = oyOption_GetValueDouble( opt, 1 );
+          ICClist<double> clutpoints;
+          clutpoints.resize( inputChan );
+          for(int i = 0; i < inputChan; ++i)
+            clutpoints[i] = oyOption_GetValueDouble( opt, 2+i );
+
+          ICClist< ICClist< ICClist< ICClist< double > > > > Table;
+          ICClist<int> channels;
+          profile.frei(false);
+          ICClist<std::string> nach_farb_namen = profile.profil()->getTagChannelNames (icc_betrachter->tag_nummer, ICCtag::TABLE_OUT);
+          ICClist<std::string> from_colour_names = profile.profil()->getTagChannelNames (icc_betrachter->tag_nummer, ICCtag::TABLE_IN);
+          icColorSpaceSignature sig_out = profile.profil()->getTag( icc_betrachter->tag_nummer ).colorSpace( ICCtag::TABLE_OUT );
+          icColorSpaceSignature sig_in = profile.profil()->getTag( icc_betrachter->tag_nummer ).colorSpace( ICCtag::TABLE_IN );
+          ICClist<std::string> nach_farb_snamen =  getChannelNamesShort( sig_out );
+          ICClist<std::string> from_colour_snames =  getChannelNamesShort( sig_in );
+
+          int      n = (int)nach_farb_namen.size();
+          if(n != (int)nach_farb_snamen.size())
+          {
+            sig_out = getColorSpaceGeneric( n );
+            nach_farb_snamen =  getChannelNamesShort( sig_out );
+          }
+
+          channels = icc_examin->icc_betrachter->table_gl->channels();
+          int c_n = channels.size();
+          channels.resize(from_colour_names.size());
+          for(unsigned int i = c_n; i < channels.size(); ++i)
+            channels[i] = 0;
+          for(unsigned int i = 0; i < from_colour_names.size(); ++i)
+            if(i < 3)
+              channels[i] = -1;
+            else
+              if(channels[i] >= clutpoints[0])
+                channels[i] = (int)clutpoints[0] / 2;
+
+          if(n == (int)nach_farb_snamen.size())
+          {
+            const char ** pp = new const char* [n];
+            const char ** sn = new const char* [n];
+            for (int i = 0; i < n; i++)
+            {
+              pp[i] = nach_farb_namen[i].c_str();
+              sn[i] = nach_farb_snamen[i].c_str();
+            }
+            icc_examin->icc_betrachter->table_gl_boxAdd( sn, pp, n, icc_betrachter->table_gl->kanal );
+            if(pp) delete [] pp;
+            if(sn) delete [] sn;
+
+
+            int      n = (int)from_colour_names.size();
+            pp = new const char* [n];
+            sn = new const char* [n];
+            for (int i = 0; i < n; i++)
+            {
+              pp[i] = (const char*)strdup(from_colour_names[i].c_str());
+              sn[i] = (const char*)strdup(from_colour_snames[i].c_str());
+            }
+            if(clutpoints.size())
+              icc_examin->icc_betrachter->table_gl_sliderAdd( pp, sn, channels,
+                                                        (int)clutpoints[0] );
+            /* We need to keep that around to make FLTK happy */
+            /* if(pp) delete [] pp;
+            if(sn) delete [] sn;*/
+
+          } else {
+            icc_examin->icc_betrachter->table_gl_boxAdd( NULL, NULL, 0, 0 );
+          }
+
+          {
+            int start=0;
+            double val;
+
+           if(inputChan > 3)
+# if 0
+             clutpoints[0] *= (inputChan - 3);
+# else
+             for(int i = 3; i < (int)channels.size(); ++i)
+               start += (int)pow((double)clutpoints[i], i) * outputChan * channels[i];
+# endif
+           // allocate
+           Table.resize(clutpoints[0]);
+           for (int i = 0; i < clutpoints[0]; i++) {
+             Table[i].resize(clutpoints[0]);
+             for (int j = 0; j < clutpoints[0]; j++) {
+               Table[i][j].resize(clutpoints[0]);
+               for (int k = 0; k < clutpoints[0]; k++)
+               {
+                 Table[i][j][k].resize(outputChan);
+                 for (int l = 0; l < outputChan; l++)
+                   Table[i][j][k][l] = 1;
+               }
+             }
+           }
+           n = 0;
+           // fill in
+           for (int i = 0; i < clutpoints[0]; i++)
+           {
+             if(inputChan < 3)
+               i = clutpoints[0]/2;
+             for (int j = 0; j < clutpoints[0]; j++)
+             {
+               if(inputChan < 2)
+                 j = clutpoints[0]/2;
+               for (int k = 0; k < clutpoints[0]; k++)
+               {
+                 for (int l = 0; l < outputChan; l++)
+                 {
+                   val = oyOption_GetValueDouble(opt, 3 + start + n);
+                   Table[i][j][k][l] = val;
+                   ++n;
+                 }
+               }
+               if(inputChan < 2) break;
+             }
+             if(inputChan < 3) break;
+           }
+         }
+
+         icc_betrachter->table_gl->hineinTabelle (
+                     Table,
+                     from_colour_names,
+                     nach_farb_namen, channels ); DBG_PROG_S( "3D table" )
+         profile.frei(true);
+
+         icc_betrachterNeuzeichnen(icc_betrachter->table_gl_group);
+
+        } else
+        if(opt && oyFilterRegistrationMatchKey( oyOption_GetRegistration(opt),
                                    "////Matrix3x3+3", oyOBJECT_NONE ))
         {
           t = _("Matrix 3x3 + 3"); t += "\n";
@@ -612,6 +743,7 @@ void ICCexamin::showmABData (int item)
   }
   frei(true);
 }
+
 
 void
 ICCexamin::selectTable (int item)
