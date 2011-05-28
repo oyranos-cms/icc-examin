@@ -457,7 +457,10 @@ ICCprofile::getTagChannelNames                          (int item,
 
   // check
   if (tags[item].getTypName() != "mft2"
-   && tags[item].getTypName() != "mft1")
+   && tags[item].getTypName() != "mft1"
+   && tags[item].getTypName() != "mAB "
+   && tags[item].getTypName() != "mBA "
+   && tags[item].getTypName() != "mpet")
   { DBG_PROG_ENDE
     return v;
   }
