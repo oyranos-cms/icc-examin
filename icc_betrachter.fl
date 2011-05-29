@@ -1,5 +1,5 @@
 # data file for the Fltk User Interface Designer (fluid)
-version 1.0300 
+version 1.0108 
 i18n_type 1 
 i18n_include <fl_i18n/fl_i18n.H> 
 i18n_function _ 
@@ -1156,17 +1156,6 @@ DBG_NUM_S("Show Log window")}
     
     if(table_gl->x() == 0 && channels.size() > 3)
     {
-      table_gl->resize(w_new,table_gl->y(), table_gl->w()-w_new, table_gl->h());
-      table_gl_slider_pack->show();
-      table_gl_slider->bounds( 0, clutpoints - 1 );
-      table_gl_slider->step( 1, 1 );
-
-      if(0 <= table_gl_slider_choice->value() &&
-         table_gl_slider_choice->value() < (int)channels.size() - 3)
-        table_gl_slider->value( channels[table_gl_slider_choice->value()] );
-      else
-        table_gl_slider->value( clutpoints/2 );
-
       Fl_Menu_Item *menue = 0;
       if(channels.size() - 3 > 0)
         menue = (Fl_Menu_Item *)calloc( sizeof (Fl_Menu_Item),
@@ -1178,9 +1167,19 @@ DBG_NUM_S("Show Log window")}
           menue[i].text = names_short[3+i];
         menue[i].text = 0;
       }
+      
       table_gl_slider_choice->clear();
       table_gl_slider_choice->menu(menue);
-      
+
+      table_gl->resize(w_new,table_gl->y(), table_gl->w()-w_new, table_gl->h());
+      table_gl_slider_pack->show();
+      table_gl_slider->bounds( 0, clutpoints - 1 );
+      table_gl_slider->step( 1, 1 );
+
+      if(0 <= table_gl_slider_choice->value() &&
+         table_gl_slider_choice->value() < (int)channels.size() - 3)
+        table_gl_slider->value( channels[table_gl_slider_choice->value()+3] );
+
     } else if( table_gl->x() > 0 && channels.size() <= 3) {
       table_gl->resize(0,table_gl->y(), table_gl->w()+w_new, table_gl->h());
       table_gl_slider_pack->hide();
