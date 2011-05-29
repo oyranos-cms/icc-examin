@@ -575,13 +575,13 @@ void ICCexamin::showmABData ()
           int c_n = channels.size();
           channels.resize(from_colour_names.size());
           for(unsigned int i = c_n; i < channels.size(); ++i)
-            channels[i] = 0;
+            channels[i] = clutpoints[i] / 2;
           for(unsigned int i = 0; i < from_colour_names.size(); ++i)
             if(i < 3)
               channels[i] = -1;
             else
-              if(channels[i] >= clutpoints[0])
-                channels[i] = (int)clutpoints[0] / 2;
+              if(channels[i] >= clutpoints[i])
+                channels[i] = (int)clutpoints[i] / 2;
 
           if(n == (int)nach_farb_snamen.size())
           {
@@ -832,11 +832,11 @@ ICCexamin::selectTable (int item)
       channels = icc_examin->icc_betrachter->table_gl->channels();
       int c_n = channels.size();
       channels.resize(from_colour_names.size());
-      for(unsigned int i = c_n; i < channels.size(); ++i)
-        channels[i] = 0;
       ICClist<double> clutpoints =  profile.profil()->getTagNumbers(
                                                     icc_betrachter->tag_nummer,
                                                     ICCtag::TABLE );
+      for(unsigned int i = c_n; i < channels.size(); ++i)
+        channels[i] = clutpoints[0] / 2;
       for(unsigned int i = 0; i < from_colour_names.size(); ++i)
         if(i < 3)
           channels[i] = -1;
