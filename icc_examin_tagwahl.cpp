@@ -491,7 +491,7 @@ void ICCexamin::showData( oyStructList_s * elements,
   }
 }
 
-void ICCexamin::showmABData (int item)
+void ICCexamin::showmABData ()
 {
   ICClist<std::string> TagInfo = profile.profil()->printTagInfo(_item);
   char num[12];
@@ -617,62 +617,64 @@ void ICCexamin::showmABData (int item)
           }
 
           {
-            int start=0;
+            int start=0, table3d_size;
             double val;
 
-           if(inputChan > 3)
-# if 0
-             clutpoints[0] *= (inputChan - 3);
-# else
-             for(int i = 3; i < (int)channels.size(); ++i)
-               start += (int)pow((double)clutpoints[i], i) * outputChan * channels[i];
-# endif
-           // allocate
-           Table.resize(clutpoints[0]);
-           for (int i = 0; i < clutpoints[0]; i++) {
-             Table[i].resize(clutpoints[0]);
-             for (int j = 0; j < clutpoints[0]; j++) {
-               Table[i][j].resize(clutpoints[0]);
-               for (int k = 0; k < clutpoints[0]; k++)
-               {
-                 Table[i][j][k].resize(outputChan);
-                 for (int l = 0; l < outputChan; l++)
-                   Table[i][j][k][l] = 1;
-               }
-             }
-           }
-           n = 0;
-           // fill in
-           for (int i = 0; i < clutpoints[0]; i++)
-           {
-             if(inputChan < 3)
-               i = clutpoints[0]/2;
-             for (int j = 0; j < clutpoints[0]; j++)
-             {
-               if(inputChan < 2)
-                 j = clutpoints[0]/2;
-               for (int k = 0; k < clutpoints[0]; k++)
-               {
-                 for (int l = 0; l < outputChan; l++)
-                 {
-                   val = oyOption_GetValueDouble(opt, 3 + start + n);
-                   Table[i][j][k][l] = val;
-                   ++n;
-                 }
-               }
-               if(inputChan < 2) break;
-             }
-             if(inputChan < 3) break;
-           }
-         }
+            // allocate
+            Table.resize(clutpoints[0]);
+            for (int i = 0; i < clutpoints[0]; i++) {
+              Table[i].resize(clutpoints[1]);
+              for (int j = 0; j < clutpoints[1]; j++) {
+                Table[i][j].resize(clutpoints[2]);
+                for (int k = 0; k < clutpoints[2]; k++)
+                {
+                  Table[i][j][k].resize(outputChan);
+                  for (int l = 0; l < outputChan; l++)
+                    Table[i][j][k][l] = 1;
+                }
+              }
+            }
 
-         icc_betrachter->table_gl->hineinTabelle (
+            table3d_size = (int)clutpoints[0] * (int)clutpoints[1] *
+                           (int)clutpoints[2] * outputChan;
+
+            for(int i = 3; i < (int)channels.size(); ++i)
+            {
+              start += table3d_size * (channels[i] <= 0 ? 0 : channels[i]);
+              table3d_size *= clutpoints[i];
+            }
+            n = 0;
+            // fill in
+            for (int i = 0; i < clutpoints[0]; i++)
+            {
+              if(inputChan < 3)
+                i = clutpoints[1]/2;
+              for (int j = 0; j < clutpoints[1]; j++)
+              {
+                if(inputChan < 2)
+                  j = clutpoints[1]/2;
+                for (int k = 0; k < clutpoints[2]; k++)
+                {
+                  for (int l = 0; l < outputChan; l++)
+                  {
+                    val = oyOption_GetValueDouble(opt, 3 + start + n);
+                    Table[i][j][k][l] = val;
+                    ++n;
+                  }
+                }
+                if(inputChan < 2) break;
+              }
+              if(inputChan < 3) break;
+            }
+          }
+
+          icc_betrachter->table_gl->hineinTabelle (
                      Table,
                      from_colour_names,
                      nach_farb_namen, channels ); DBG_PROG_S( "3D table" )
-         profile.frei(true);
+          profile.frei(true);
 
-         icc_betrachterNeuzeichnen(icc_betrachter->table_gl_group);
+          icc_betrachterNeuzeichnen(icc_betrachter->table_gl_group);
 
         } else
         if(opt && oyFilterRegistrationMatchKey( oyOption_GetRegistration(opt),
@@ -774,7 +776,7 @@ ICCexamin::selectTable (int item)
 
   if(TagInfo[1] == "mAB " ||
      TagInfo[1] == "mBA ")
-    showmABData(_table_item);
+    showmABData();
   else
   switch (_table_item) {
   case 0: // overview
@@ -909,6 +911,21 @@ ICCexamin::selectTable (int item)
 void
 ICCexamin::tableChannel ( int channel, int clutplane )
 {
+    ICClist<int> channels;
+
+    ICClist<std::string> TagInfo = profile.profil()->printTagInfo(_item);
+ 
+   if ( TagInfo[1] == "mAB " ||
+         TagInfo[1] == "mBA ")
+    {
+
+      channels = icc_examin->icc_betrachter->table_gl->channels();
+      channels[channel] = clutplane;
+      icc_examin->icc_betrachter->table_gl->channels( channels );
+
+      selectTable(_table_item);
+
+    } else
     {
       ICClist<int> channels;
       profile.frei(false);

@@ -112,7 +112,7 @@ class ICCexamin : public icc_examin_ns::Beobachter,
 
     std::string  selectTag (int item);
     void         selectTable (int item);
-    void         showmABData (int item);
+    void         showmABData ();
     void         showData (oyStructList_s * list,
                            ICClist<std::string> texts,
                            int viewer );
