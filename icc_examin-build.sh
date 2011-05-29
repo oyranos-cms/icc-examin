@@ -500,7 +500,11 @@ cd "$top"
 
 
 # SANE
-git_repo=sane-backends
+UNAME_=`uname`
+if [ $UNAME_ = "Darwin" ]; then
+  skip=sane
+else
+  git_repo=sane-backends
   if [ -d $git_repo ]; then
     cd $git_repo
     echo revert old patches ...
@@ -592,6 +596,7 @@ git_repo=sane-backends
   fi
   make $MAKE_CPUS
   make install
+fi
 sleep 2
 
 cd "$top"
