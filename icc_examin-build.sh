@@ -278,9 +278,77 @@ else
 
   cd "$top"
 fi
+
+packet=libxml-2.0
+pkg-config  --atleast-version=2.0 $packet
+if [ $? -eq 0 ]; then 
+  libxml2="$packet:     `pkg-config --modversion $packet`"
+else
+  libxml2="$packet version is too old; need at least $packet"
+fi
+
+packet=libpng
+pkg-config  --atleast-version=1.0 $packet
+if [ $? -eq 0 ]; then 
+  libpng="$packet:         `pkg-config --modversion $packet`"
+else
+  libpng="$packet version is too old; need at least $packet 1.0"
+  #stop_build=1
+
+  echo building $packet ...
+  packet_dir=$packet-1.5.2
+  packet_file="$packet_dir".tar.gz
+  url="http://sourceforge.net/projects/libpng/files/libpng15/1.5.2/"
+  checksum=71c30b9b23169a2dac5b0a77954d9d91f8d944fe
+  if [ -f $packet_file ]; then
+    echo $packet_file already here
+  else
+    echo "downloading $url$packet_file"
+    which curl && curl -L "$url$packet_file" -o $packet_file || wget "$url$packet_file"
+    sleep 1
+  fi
+  if [ `$SHA1SUM $packet_file | grep $checksum | wc -l` -eq 1 ]; then
+    echo sha1sum for $packet_file passed
+  else
+    echo sha1sum for $packet_file failed
+    exit 1
+  fi
+  packet_ready=0
+  pkg-config --atleast-version=1.0 $packet
+  if [ $? -eq 0 ]; then
+    if [ -d $packet_dir ]; then
+      echo "$packet + $packet_dir found, skipping $packet build and installation"
+      packet_ready=1
+    fi
+  else
+    echo PKG_CONFIG_PATH=$PKG_CONFIG_PATH
+    pkg-config --modversion $packet
+  fi
+  if [ $packet_ready -lt 1 ]; then
+    if [ -d $packet_dir ]; then
+      echo remove $packet_dir
+      sleep 1
+      rm -r $packet_dir
+    fi
+    echo unpacking $packet_file ...
+    tar xzf $packet_file
+    cd $packet_dir
+    make clean
+    CFLAGS="$CFLAGS $OSX_ARCH" CXXFLAGS="$CXXFLAGS $OSX_ARCH" LDFLAGS="$LDFLAGS $OSX_ARCH" ./configure $conf_opts $@
+    make $MAKE_CPUS
+    make install
+  fi
+  libpng="$packet:      `pkg-config --modversion $packet`"
+  sleep 1
+
+  cd "$top"
+fi
+
 echo "$fltk"
 echo "$ftgl"
 echo "$lcms"
+echo "$libxml2"
+echo "$libpng"
 
 
 if [ $stop_build -gt 0 ]; then
