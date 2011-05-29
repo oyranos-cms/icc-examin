@@ -633,9 +633,9 @@ cd "$top"
 
 
 packet=openicc-data
-packet_dir=$packet-1.1.0
+packet_dir=$packet-1.2.0
 packet_file=$packet_dir.tar.bz2
-checksum=4ab2c23eb7aa4b3a944f8367626d1b14b6d95d7e
+checksum=1ed5aa92e7347e66ddd028e542453354bf503de9
 loc=http://downloads.sourceforge.net/project/openicc/OpenICC-Profiles/
 if [ -f $packet_file ]; then
   echo $packet_file already here
@@ -667,9 +667,9 @@ sleep 2
 
 # OpenICC default profiles II
 packet=basICColor_Offset_2009
-packet_dir=$packet-1.0.0
+packet_dir=$packet-1.1.1
 packet_file=$packet_dir.tar.gz
-checksum=88af1519b0e3afec71e2dcd3bd7634649a014702
+checksum=5d11f7fc6a82fbaee2b4a861ca64862976fc49e5
 loc=http://downloads.sourceforge.net/project/openicc/basICColor-Profiles/
 if [ -f $packet_file ]; then
   echo $packet_file already here
