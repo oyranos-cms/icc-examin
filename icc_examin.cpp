@@ -290,6 +290,11 @@ resize_fuer_menubar(Fl_Widget* w)
 
 void oeffnen_cb(const char* filenames);
 
+extern "C" {
+char * oyReadStdinToMem_             ( size_t            * size,
+                                       oyAlloc_f           allocate_func );
+}
+
 void
 ICCexamin::start (int argc, char** argv)
 { DBG_PROG_START
@@ -406,6 +411,22 @@ ICCexamin::start (int argc, char** argv)
         for (int i = 1; i < argc; i++) {
           DBG_PROG_S( i <<" "<< argv[i] )
           // keine process serial number in osX
+          if(strcmp(argv[i],"-i") == 0)
+          {
+            size_t size = 0;
+            char * mem = oyReadStdinToMem_(&size, malloc);
+            if( mem )
+            {
+              ICClist<Speicher> neu;
+              Speicher block;
+              block.ladeUndFreePtr( &mem, size );
+              neu.push_back( block );
+              lade( neu );
+              // stop after "-i" argument
+              break;
+            }
+            WARN_S( "momory" );
+          } else
           if(std::string(argv[i]).find("-psn_") == std::string::npos)
           {
             if(i == 1)
