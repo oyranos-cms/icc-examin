@@ -1,3 +1,52 @@
+Version 0.49
+
+Kai-Uwe Behrmann (42):
+	* [core]: accept nLUT channels level
+	* [core]: set initial nLUT level at middle
+	* [core]: fix 4+n Lut navigation
+	* [core]: add Gl channels setter
+	* [build]: use RPM Recommends only in openSUSE
+	* [build]: script update to new profile packages
+	* [build]: script disable sane on osX
+	* [build]: add libxml and libpng to build script
+	* [build]: install new v0.3.0 Oyranos libraries
+	* [core]: use correct order for mAB matrix elements
+	* [core]: show mAB nLUTs in 3D viewer
+	* [docu]: GL_Ansicht::hineinTabelle
+	* [core]: getTagChannelNames() more tag types
+	* [core]: remove unneeded updating
+	* [core]: enable mBA
+	* [core]: redraw table choice
+	* [core]: prepend channel names before curve texts
+	* [core]: show complex tags icCurveType and matrix
+	* [core]: rename Mft to Table
+	* [core]: add ICCprofile::getPCS()
+	* [i18n]: update deutsch
+	* [core]: show parametric tag as curve
+	* [core]: adapt diagram raster brightness
+	* [core]: more details on curve in mAB
+	* [cine]: reduce debug output
+	* [cine]: translate ICC to Oyranos proof intent
+	* [core]: use profile intent for proof gamut
+	* [cine]: use generic values ranges
+	* [cine]: allocate buffers before context
+	* [cine]: fix options assignment
+	* [core]: fix string compile warnings
+	* [build]: script checks for cinepaint Makefile
+	* [build]: use gettext with new generated code
+	* [core]: include missed i18n macro
+	* [core]: detect oyStructList_s data from tags
+	* [core]: access tag data from Oyranos
+	* [core]: punkte renaming
+	* [core]: use waehleMft() for MftChoice again
+	* [core]: mAB support I
+	* [core]: allow explicite MftChoice settings
+	* [core]: add idendity curve
+	* [conf]: bump version
+
+Togan Muftuoglu (1):
+	* [build]: move nvidia to Recommends
+
 Version 0.48
 
 Kai-Uwe Behrmann (124):

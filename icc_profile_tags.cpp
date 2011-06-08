@@ -966,6 +966,7 @@ ICCtag::getTable                     ( MftChain            typ,
     DBG_NUM_S( feldPunkte << " array points " << clutPoints << " clutPoints" )
 #   endif
     int start = 52,
+        table3d_size,
         byte  = 2,
         jump  = 1;
     double div   = 65536.0;
@@ -977,14 +978,16 @@ ICCtag::getTable                     ( MftChain            typ,
       case TABLE_IN:
       case TABLE_OUT:
       case TABLE: { DBG_PROG
-           start += (inputChan * inputEnt) * byte;
-           if(inputChan > 3)
-# if 0
-             clutPoints *= (inputChan - 3);
-# else
-             for(int i = 3; i < (int)channels.size(); ++i)
-               start += (int)pow((double)clutPoints, i) * outputChan * channels[i] * byte;
-# endif
+            start += (inputChan * inputEnt) * byte;
+            table3d_size = clutPoints * clutPoints *
+                           clutPoints * outputChan * byte;
+
+            for(int i = 3; i < (int)channels.size(); ++i)
+            {
+              start += table3d_size * (channels[i] <= 0 ? 0 : channels[i]);
+              table3d_size *= clutPoints;
+            }
+
            // allocate
            Tabelle.resize(clutPoints);
            for (int i = 0; i < clutPoints; i++) {
@@ -1037,6 +1040,7 @@ ICCtag::getTable                     ( MftChain            typ,
     DBG_NUM_S( feldPunkte << " array points " << clutPoints << " clutPoints" )
 #   endif
     int start = 48,
+        table3d_size,
         byte  = 1,
         jump  = 1;
     double div= 255.0;
@@ -1047,10 +1051,16 @@ ICCtag::getTable                     ( MftChain            typ,
     case TABLE_OUT:
     case TABLE: DBG_PROG
          {
-           start += (inputChan * inputEnt) * byte;
-           if(inputChan > 3)
-             for(int i = 3; i < (int)channels.size(); ++i)
-               start += (int)pow((double)clutPoints, i) * outputChan * channels[i] * byte;
+            start += (inputChan * inputEnt) * byte;
+            table3d_size = clutPoints * clutPoints *
+                           clutPoints * outputChan * byte;
+
+            for(int i = 3; i < (int)channels.size(); ++i)
+            {
+              start += table3d_size * (channels[i] <= 0 ? 0 : channels[i]);
+              table3d_size *= clutPoints;
+            }
+
            // allocate
            Tabelle.resize(clutPoints);
            for (int i = 0; i < clutPoints; i++) {

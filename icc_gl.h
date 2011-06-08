@@ -195,6 +195,7 @@ public:
                                ICClist<std::string> nachFarben,
                                        ICClist<int>        channels );
   ICClist<int>     channels() { return channels_; }
+  void             channels( ICClist<int>channels ) { channels_ = channels; }
 
   // transparent displaying
   int  kanal;               //!< selected channel

@@ -1524,7 +1524,9 @@ ICCexamin::icc_betrachterNeuzeichnen (void* z)
   if (wid == icc_betrachter->table_text ||
       wid == icc_betrachter->table_gl_group ||
       wid == icc_betrachter->table_viewer)
-  { icc_betrachter->table_choice->show(); DBG_PROG_S( "table_choice zeigen" ) 
+  {
+    icc_betrachter->table_choice->show(); DBG_PROG_S( "table_choice zeigen" ) 
+    icc_betrachter->table_choice->redraw();
   } else
     icc_betrachter->table_choice->hide();
 
