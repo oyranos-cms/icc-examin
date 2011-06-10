@@ -207,7 +207,7 @@ class ICCexamin : public icc_examin_ns::Beobachter,
     void scheme(const char* plastic_or_gtk); //!< "plastic" "gtk+"
 };
 
-int tastatur(int e);
+int event_handler(int e);
 
 #define status(texte) {std::stringstream s; s << texte; icc_examin->statlabel[0] = s.str(); icc_examin->statusAktualisieren();}
 

@@ -402,8 +402,8 @@ ICCexamin::start (int argc, char** argv)
   modellDazu( /*ICCkette*/&profile ); // wird in nachricht ausgewertet
   modellDazu( /*GL_Ansicht*/icc_betrachter->DD_farbraum);
 
-  Fl::add_handler(tastatur);
-  MyFl_Double_Window::event_handler = tastatur;
+  Fl::add_handler(event_handler);
+  MyFl_Double_Window::event_handler = event_handler;
 
   // Behandle Kommandozeilenargumente
       if (argc>1) {
@@ -1724,7 +1724,7 @@ ICCexamin::scheme(const char *name)
 }
 
 int
-tastatur(int e)
+event_handler(int e)
 { //DBG_PROG_START
   int gefunden = 0;
   static int dnd_kommt = false;
