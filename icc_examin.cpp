@@ -1959,7 +1959,6 @@ event_handler(int e)
           oyConversion_RunPixels( ctoxyz, NULL );
           oyConversion_Release( &ctoxyz );
           oyNamedColour_s * colour = oyNamedColour_CreateWithName(
-          oyConversion_Release( &ctoxyz );
                                  NULL,name,NULL,d3,xyz,(char*)data,n, p, NULL);
           oyProfile_Release( &p );
           icc_examin->icc_betrachter->DD_farbraum->emphasizePoint( colour );
