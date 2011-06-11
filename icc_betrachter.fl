@@ -307,7 +307,7 @@ class My_Fl_Box {: {public Fl_Box}
   }
   Function {handle( int event )} {open return_type int
   } {
-    code {int ergebnis = tastatur(event);
+    code {int ergebnis = event_handler(event);
   if(!ergebnis)
     ;//ergebnis = Fl_Box::handle(event);
   return ergebnis;} {}
