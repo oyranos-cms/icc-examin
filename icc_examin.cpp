@@ -1878,6 +1878,96 @@ event_handler(int e)
   case FL_CLOSE:
     DBG_PROG_S( "FL_CLOSE " )
     break;
+  case FL_NO_EVENT:
+    {
+#if defined(HAVE_X)
+      const XEvent * xevent = fl_xevent;
+      static int xevent_setup = 0;
+      static Atom c = XInternAtom( xevent->xany.display, "_COLOR_SELECTION",0 );
+      if(!xevent_setup)
+      {
+        /* register to property events */
+        XSelectInput( xevent->xany.display,
+                      RootWindow( xevent->xany.display, 0 ),
+                      PropertyChangeMask );  /* _COLOR_SELECTION */
+        xevent_setup = 1;
+      }
+      if(xevent && xevent->type == PropertyNotify &&
+         xevent->xproperty.atom == c)
+      {
+        Atom atom = xevent->xproperty.atom;
+        Display *display = xevent->xany.display;
+        Atom actual;
+        int format;
+        unsigned long left, n;
+        unsigned char * data = 0;
+        char * app_title = 0,
+             * icc_profile_name = 0,
+             * name = 0;
+        double d3[3];
+        XGetWindowProperty( display, RootWindow(display,0),
+                      c, 0, ~0, False, XA_STRING,
+                      &actual, &format, &n, &left, &data );
+        n += left;
+        if(n && data)
+        {
+          const char * actual_name = XGetAtomName( display, atom );
+          #define GetString( name_ ) { \
+            const char * key = "#"#name_":"; \
+            const char * p = strstr( (char*)data, key ), * tmp; \
+           if(p) \
+           { \
+            p += strlen( key ); \
+            name_ = (char*)malloc( strlen( p ) ); \
+            tmp = strchr(p,'#'); \
+            if(tmp) { \
+              memcpy(name_, p, tmp - p ); \
+              name_[tmp - p] = '\000'; \
+            } else \
+              sprintf( name_, "%s", p ); \
+           } \
+          }
+
+          GetString( app_title );
+          GetString( icc_profile_name );
+          GetString( name );
+          #undef GetString
+          sscanf( (char*)data, "%lg %lg %lg",
+                  &d3[0], &d3[1], &d3[2] );
+
+          if(icc_debug)
+          {
+            fprintf(stderr, "obtained event: %s\n%s\n", actual_name, data );
+            fprintf(stderr, "%s: %g %g %g\n", app_title?app_title:"??",
+                            d3[0], d3[1], d3[2] );
+            fprintf(stderr, "profile: %s", icc_profile_name?icc_profile_name:"??" );
+            fprintf(stderr, "%s%s%s",
+                            name?"\n":"", name?"name: ":"", name?name:"" );
+            fprintf(stderr, "\n");
+          }
+          oyProfile_s * p = oyProfile_FromFile(icc_profile_name, 0, 0);
+          double xyz[3] = {-1,-1,-1};
+          oyProfile_s * profile_xyz = oyProfile_FromStd( oyEDITING_XYZ, 0 );
+          oyOptions_s * abscol=0;
+          oyOptions_SetFromText( &abscol, OY_BEHAVIOUR_STD "rendering_intent",
+                                 "3", OY_CREATE_NEW );
+          oyConversion_s * 
+          ctoxyz = oyConversion_CreateBasicPixelsFromBuffers(
+                                        p, d3, oyDOUBLE,
+                                        profile_xyz, xyz, oyDOUBLE,
+                                        abscol, 1 );
+          oyConversion_RunPixels( ctoxyz, NULL );
+          oyConversion_Release( &ctoxyz );
+          oyNamedColour_s * colour = oyNamedColour_CreateWithName(
+          oyConversion_Release( &ctoxyz );
+                                 NULL,name,NULL,d3,xyz,(char*)data,n, p, NULL);
+          oyProfile_Release( &p );
+          icc_examin->icc_betrachter->DD_farbraum->emphasizePoint( colour );
+        }
+      }
+#endif
+    }
+    break;
   default: 
     {
       //if(Fl::event_length())
