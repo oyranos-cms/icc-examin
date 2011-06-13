@@ -231,11 +231,11 @@ else
 
   # lcms
   echo building lcms ...
-  packet=lcms
-  packet_dir=$packet-1.19
+  packet=lcms2
+  packet_dir=$packet-2.2
   packet_file="$packet_dir".tar.gz
-  url="http://www.littlecms.com/"
-  checksum=d5b075ccffc0068015f74f78e4bc39138bcfe2d4
+  url="http://sourceforge.net/projects/lcms/files/lcms/2.2/"
+  checksum=55ae4884a92c7fbd491c118aa3b356814b1014df
   if [ -f $packet_file ]; then
     echo $packet_file already here
   else
