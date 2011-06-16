@@ -741,6 +741,29 @@ sleep 1
 
 cd "$top"
 
+# Synnefo
+git_repo=synnefo
+  echo checkout $git_repo
+  if [ -d $git_repo ]; then
+    cd $git_repo
+    git pull
+  else
+    git clone git://gitorious.org/$git_repo/$git_repo.git
+    cd $git_repo
+    git checkout master
+    mkdir build
+    cd build
+    cmake ..
+  fi
+  sleep 2
+  cd build
+  cmake -DCMAKE_INSTALL_PREFIX=~/.kde4/ -DCMAKE_BUILD_TYPE=debugfull ..
+  make
+  make install
+sleep 1
+
+cd "$top"
+
 
 # kolor-manager
   echo checkout kolor-manager
