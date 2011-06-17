@@ -1201,9 +1201,6 @@ ICCmeasurement::init_umrechnen                     (void)
 
           if(ctoxyz)
             oyConversion_RunPixels( ctoxyz, pixel_access_ctoxyz );
-          XYZ[0] *= 2.0;
-          XYZ[1] *= 2.0;
-          XYZ[2] *= 2.0;
           FarbeZuDouble ( &XYZ_Ergebnis_[i], &XYZ[0] );
 
           if(ctolab)
