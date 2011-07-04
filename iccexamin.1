@@ -1,0 +1,32 @@
+.TH "ICC Examin" 3 "July 04, 2011" ICC Examin
+.SH NAME
+ICC Examin \- graphical ICC examination tool.
+.SH SYNOPSIS
+\fBiccexamin\fR [[FILENAME] ...]
+.SH DESCRIPTION
+The 
+.I "ICC Examin"
+colour examination tool accepts as input ICC profiles, CGATS colour measurement files and named colour files. It allows to dynamical observe the content of these files at once and updates to changes. The tool shows as well video graphics card calibration curves.
+
+The report view compares ICC colours with measurement colours. A internet URL can be viewed if the curl tool is installed. Several ICC profiles can be loaded into the 3D view and compared. The 3D views provide context menues. The 3D view can be exported as VRML and in parts be reloaded. 
+
+The first loaded file is detailed shown in the main windows tag browser. Each ICC profile tag can be selected for examination and will be shown in detail in the window below the tag browser. Some tags contain nested elements, which are accessible from a choice below the tag browser.
+.SH HELP
+A advanced help text is available either as a web site:
+http://www.oyranos.org/wiki/index.php?title=ICC_Examin
+or through the help window, which is accessible through the F1 button.
+.SH ENVIRONMENT
+.TP
+.B DISPLAY
+On X11 systems the display is selected by this variable.
+.TP
+.B ICCEXAMIN_DEBUG
+set the ICC Examin debug level.
+.SH AUTHOR
+Kai-Uwe Behrmann (ku.b (at) gmx.de) - main author
+
+Components come from many authors.
+.SH "SEE ALSO"
+oyranos(3)
+.SH BUGS
+at: http://sourceforge.net/tracker/?group_id=177017&atid=879553

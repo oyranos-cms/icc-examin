@@ -89,9 +89,13 @@ update-mime-database %{_datadir}/mime/
 %dir %{pixmapdir}/hicolor/scalable
 %{pixmapdir}/hicolor/scalable/iccexamin.svg
 %{_datadir}/fonts/FreeSans.ttf
+%{_mandir}/man1/iccexamin.*
 
 
 %changelog
+* Mon Jul 04 2011 Kai-Uwe Behrmann
+- add man page
+
 * Wed Mar 11 2009 Kai-Uwe Behrmann
 - add icc_examin.svg
 

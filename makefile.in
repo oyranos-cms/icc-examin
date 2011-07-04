@@ -192,6 +192,8 @@ DOKU = \
 	icc_examin.svg \
 	icc_examin.xpm
 
+MAN1 = iccexamin.1
+
 FLMM_FILES = \
 	Flmm/Flmm.H \
 	Flmm/Flmm_Message.H \
@@ -249,11 +251,11 @@ CONFIG_FILES = \
 	$(SRCDIR)/configure_tests.sh \
 	$(SRCDIR)/$(TARGET).spec.in
 
-
 ALL_FILES = \
 	$(CONFIG_FILES) \
 	$(SOURCES) \
 	$(DOKU) \
+	$(MAN1) \
 	$(FONT) \
 	$(APPL_FILES) \
 	$(CWDBUG_FILES) \
@@ -604,6 +606,9 @@ install_global:
             $(INSTALL) -m 644 po/$${ling}.gmo $(DESTDIR)$(datadir)/locale/$${ling}/LC_MESSAGES/$(TARGET).mo ) \
 		|| (echo $${ling}.gmo is not yet ready ... skipping); \
 	done;
+	mkdir -p "$(DESTDIR)$(mandir)/man1"
+	cd $(SRCDIR) && \
+	  $(INSTALL) -m 644 $(MAN1) "$(DESTDIR)$(mandir)/man1"
 	echo ... Installation finished
 
 uninstall:
@@ -620,6 +625,9 @@ uninstall:
 	for ling in $(LINGUAS); do \
 	  $(RM) $(DESTDIR)$(datadir)/locale/$${ling}/LC_MESSAGES/$(TARGET).mo; \
 	done;
+	for file in $(MAN1); do \
+	  $(RM) "$(DESTDIR)$(mandir)/man1/$$file"; \
+	done
 	echo ... $@ done
 
 bundle:	#static
