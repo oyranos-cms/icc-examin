@@ -1948,14 +1948,13 @@ event_handler(int e)
           oyProfile_s * p = oyProfile_FromFile(icc_profile_name, 0, 0);
           double xyz[3] = {-1,-1,-1};
           oyProfile_s * profile_xyz = oyProfile_FromStd( oyEDITING_XYZ, 0 );
-          oyOptions_s * abscol=0;
-          oyOptions_SetFromText( &abscol, OY_BEHAVIOUR_STD "rendering_intent",
-                                 "3", OY_CREATE_NEW );
+          oyOptions_s * opts = icc_examin->options();
           oyConversion_s * 
           ctoxyz = oyConversion_CreateBasicPixelsFromBuffers(
                                         p, d3, oyDOUBLE,
                                         profile_xyz, xyz, oyDOUBLE,
-                                        abscol, 1 );
+                                        opts, 1 );
+          oyOptions_Release( &opts );
           oyConversion_RunPixels( ctoxyz, NULL );
           oyConversion_Release( &ctoxyz );
           oyNamedColour_s * colour = oyNamedColour_CreateWithName(
