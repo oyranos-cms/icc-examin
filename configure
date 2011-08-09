@@ -36,12 +36,12 @@ test -f error.tmp && rm error.tmp
 test -f $CONF_TEMP_SH && rm $CONF_TEMP_SH
 
 VERSION_A=0
-VERSION_B=4
-VERSION_C=10
+VERSION_B=5
+VERSION_C=0
 RELEASE=0
 START_MONTH="May"
 START_YEAR="2004"
-DEVEL_MONTH="May"
+DEVEL_MONTH="July"
 DEVEL_YEAR="2011"
 GIT_MASTER="`cat $ROOT_DIR/.git/refs/heads/master`"
 time="`date +%y%m%d.%H%M%S`"
