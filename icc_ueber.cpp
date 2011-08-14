@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2009  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2011  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -103,25 +103,25 @@ getUeberHtml()
   // HTML
   html << _(
 "ICC Examin is a viewer for colour profiles according to ICC "
-"standard  - www.color.org . At the moment version 2 profiles are supported.");
+"standard  - www.color.org . At the moment version 2 and version 4 profiles are supported.");
   html << " \
 </p>\n \
 <p>";
   // HTML
   html << _(
-"The appliance of colour profiles shall help to achive an easy colour data "
+"The appliance of color profiles shall help to achive an easy color data "
 "exchange, regardless which application or what kind of operating system is "
-"used. As well colour adaption between different devices is possible, "
-"provided the colour characteristics of both devices are known. "
-"The qulity of a colour transform from one to an other device depends mainly "
-"on the quality of the colour measurement and the used profiling algorithm "
+"used. As well color adaption between different devices is possible, "
+"provided the color characteristics of both devices are known. "
+"The qulity of a color transform from one to an other device depends mainly "
+"on the quality of the color measurement and the used profiling algorithm "
 "during profile creation.");
   html << " \
 </p>\n \
 <p>";
   // HTML
   html << _(
-"Colour profiles are often available from manufacturers of optical devices "
+"Color profiles are often available from manufacturers of optical devices "
 "(digital camera, scanner, printer). With ICC Examin you can get an impression "
 "of the internal data , stored in a ICC profile. For profiles containing "
 "measurement data, ICC Examin can generate a quality report. The deviation, "
@@ -132,8 +132,8 @@ getUeberHtml()
 <p>";
   // HTML
   html << _(
-"The internal colour transformations are currently realised with functions "
-"of the littleCMS program library.");
+"The color transformations are realised with littleCMS through the Oyranos "
+"CMM API.");
   html << " \
 </p>\n";
 

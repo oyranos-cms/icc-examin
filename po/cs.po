@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: icc_examin\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2011-05-24 15:29+0200\n"
+"POT-Creation-Date: 2011-08-09 11:53+0200\n"
 "PO-Revision-Date: 2008-10-16 20:18+0100\n"
 "Last-Translator: Milan Knizek <knizek@volny.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
@@ -116,7 +116,7 @@ msgstr "15-barevny"
 
 #. ICC stop
 #. if (MoveMode == FLYING)
-#: agviewer.cpp:315 icc_gl.cpp:3896 icc_gl.cpp:3915 icc_gl.cpp:4037
+#: agviewer.cpp:315 icc_gl.cpp:3904 icc_gl.cpp:3923 icc_gl.cpp:4045
 msgid "left-/middle-/right mouse button -> rotate/cut/menu"
 msgstr "leve/prostredni/prave tlacitko mysi -> rotovat/vystrihnout/menu"
 
@@ -124,8 +124,8 @@ msgstr "leve/prostredni/prave tlacitko mysi -> rotovat/vystrihnout/menu"
 msgid "Pause"
 msgstr "Pozastavit"
 
-#: agviewer.cpp:352 agviewer.cpp:360 icc_gl.cpp:4003 icc_gl.cpp:4014
-#: icc_gl.cpp:4019 icc_gl.cpp:4024
+#: agviewer.cpp:352 agviewer.cpp:360 icc_gl.cpp:4011 icc_gl.cpp:4022
+#: icc_gl.cpp:4027 icc_gl.cpp:4032
 msgid "left mouse button -> go back"
 msgstr "leve tlacitko mysi -> jit zpet"
 
@@ -248,56 +248,56 @@ msgstr "VAROVANI"
 msgid "!!! ERROR"
 msgstr "!!! CHYBA"
 
-#: icc_examin.cpp:310
+#: icc_examin.cpp:315
 msgid "Gamut selector"
 msgstr "Volba gamutu"
 
-#: icc_examin.cpp:412 icc_examin.cpp:1379
+#: icc_examin.cpp:433 icc_examin.cpp:1400
 msgid "loaded"
 msgstr "nacteno"
 
-#: icc_examin.cpp:418
+#: icc_examin.cpp:439
 msgid "Ready"
 msgstr "Pripraveno"
 
-#: icc_examin.cpp:864 icc_examin.cpp:867
+#: icc_examin.cpp:885 icc_examin.cpp:888
 msgid "Compare Measurement <-> Profile Colours"
 msgstr "Porovnat Mereni <-> Barvy profilu"
 
-#: icc_examin.cpp:866
+#: icc_examin.cpp:887
 msgid "none"
 msgstr "zadny"
 
-#: icc_examin.cpp:884 icc_examin.cpp:888
+#: icc_examin.cpp:905 icc_examin.cpp:909
 msgid "Gamut View"
 msgstr "Zobrazeni gamutu"
 
-#: icc_examin.cpp:956 icc_examin_tagwahl.cpp:845 icc_gl.h:281
+#: icc_examin.cpp:977 icc_examin_tagwahl.cpp:1052 icc_gl.h:282
 msgid "not available"
 msgstr "neni k dispozici"
 
-#: icc_examin.cpp:1319
+#: icc_examin.cpp:1340
 msgid "Filename (ICC data type)"
 msgstr "Nazev souboru (ICC typ)"
 
-#: icc_examin.cpp:1322
+#: icc_examin.cpp:1343
 msgid "Filename (other data type)"
 msgstr "Jmeno souboru (jiny typ)"
 
-#: icc_examin.cpp:1324
+#: icc_examin.cpp:1345
 msgid "Filename (corrupted ICC data type)"
 msgstr "Jmeno souboru (poruseny typ ICC dat)"
 
-#: icc_examin.cpp:1329
+#: icc_examin.cpp:1350
 msgid "found no content for"
 msgstr "nenalezen zadny obsah pro"
 
-#: icc_examin.cpp:1332
+#: icc_examin.cpp:1353
 msgid "Internal error"
 msgstr "Interni chyba"
 
 #. this string is sensible to formatting in the tag browser GUI, please keep a mono spaced formatting
-#: icc_examin.cpp:1335
+#: icc_examin.cpp:1356
 msgid "No. Tag   Type   Size Description"
 msgstr "C.  Tag   Typ     Vel. Popis"
 
@@ -357,13 +357,18 @@ msgstr "Bod"
 msgid "elements"
 msgstr "Mereni"
 
-#: icc_examin_tagwahl.cpp:489 icc_profile_tags.cpp:284
+#: icc_examin_tagwahl.cpp:506 icc_profile_tags.cpp:284
 #: icc_profile_tags.cpp:303
 msgid "Intent:"
 msgstr "Zamer:"
 
+#: icc_examin_tagwahl.cpp:683
+#, fuzzy
+msgid "Matrix 3x3 + 3"
+msgstr "Matice"
+
 #. Fl_Box* box_stat
-#: icc_examin_tagwahl.cpp:837 icc_betrachter.cxx:1126
+#: icc_examin_tagwahl.cpp:1044 icc_betrachter.cxx:1126
 msgid "Loading .."
 msgstr "Nacitam ..."
 
@@ -528,7 +533,7 @@ msgstr "Saturacni"
 msgid "Absolute Colorimetric"
 msgstr "Absolutni kolorimetricky"
 
-#: icc_helfer.cpp:395 icc_profile_tags.cpp:1261 icc_profile_tags.cpp:1268
+#: icc_helfer.cpp:395 icc_profile_tags.cpp:1271 icc_profile_tags.cpp:1278
 msgid "Colour"
 msgstr "Barva"
 
@@ -576,7 +581,7 @@ msgstr "Vazba"
 msgid "Abstract"
 msgstr "Vytah"
 
-#: icc_helfer.cpp:467 icc_profile.cpp:887
+#: icc_helfer.cpp:467 icc_profile.cpp:890
 msgid "Colour Space"
 msgstr "Barvovy prostor"
 
@@ -1054,144 +1059,144 @@ msgstr "beze jmena"
 msgid "File not loaded!"
 msgstr "Soubor nenacten!"
 
-#: icc_measurement.cpp:1317
+#: icc_measurement.cpp:1314
 msgid "Report about ICC profile"
 msgstr "Report o ICC profilu"
 
-#: icc_measurement.cpp:1355
+#: icc_measurement.cpp:1352
 msgid "Meas colour"
 msgstr "Zmerene barvy"
 
-#: icc_measurement.cpp:1357
+#: icc_measurement.cpp:1354
 msgid "Profile colour"
 msgstr "Barvy profilu"
 
-#: icc_measurement.cpp:1452
+#: icc_measurement.cpp:1449
 msgid "no measurment data or correct profile conversion available"
 msgstr "zadna zmerena data nebo nemozna konverze profilu"
 
-#: icc_measurement.cpp:1460
+#: icc_measurement.cpp:1457
 msgid "Measurment- and profile colours from <b>"
 msgstr "Zmerene barvy a barvy profilu z <b>"
 
-#: icc_measurement.cpp:1462
+#: icc_measurement.cpp:1459
 msgid "RGB"
 msgstr "RGB"
 
-#: icc_measurement.cpp:1464
+#: icc_measurement.cpp:1461
 msgid "CMYK"
 msgstr "CMYK"
 
-#: icc_measurement.cpp:1465
+#: icc_measurement.cpp:1462
 msgid "</b> Measurement"
 msgstr "</b> mereni"
 
-#: icc_measurement.cpp:1467
+#: icc_measurement.cpp:1464
 msgid "CMM: <b>lcms</b>"
 msgstr "CMM: <b>lcms</b>"
 
-#: icc_measurement.cpp:1469
+#: icc_measurement.cpp:1466
 msgid "averaging deviations (dE CIE*Lab):<b> "
 msgstr "prumerovane odchylky (dE CIE*Lab):<b> "
 
-#: icc_measurement.cpp:1469
+#: icc_measurement.cpp:1466
 msgid "</b>  maximum: "
 msgstr "</b>  maximum: "
 
-#: icc_measurement.cpp:1469
+#: icc_measurement.cpp:1466
 msgid "  minimum: "
 msgstr " minimum: "
 
-#: icc_measurement.cpp:1469
+#: icc_measurement.cpp:1466
 msgid "  (dE CIE 2000) averaging: "
 msgstr " (dE CIE 2000) prumery: "
 
-#: icc_measurement.cpp:1469
+#: icc_measurement.cpp:1466
 msgid "  maximum: "
 msgstr " maximum: "
 
-#: icc_measurement.cpp:1499
+#: icc_measurement.cpp:1496
 msgid "Measurement patch"
 msgstr "Mereny vzorek"
 
-#: icc_measurement.cpp:1500
+#: icc_measurement.cpp:1497
 msgid "dE Lab"
 msgstr "dE Lab"
 
-#: icc_measurement.cpp:1501
+#: icc_measurement.cpp:1498
 msgid "dE2000"
 msgstr "dE2000"
 
-#: icc_measurement.cpp:1502
+#: icc_measurement.cpp:1499
 msgid "L"
 msgstr "L"
 
-#: icc_measurement.cpp:1503
+#: icc_measurement.cpp:1500
 msgid "a"
 msgstr "a"
 
-#: icc_measurement.cpp:1504
+#: icc_measurement.cpp:1501
 msgid "b"
 msgstr "b"
 
-#: icc_measurement.cpp:1505
+#: icc_measurement.cpp:1502
 msgid "L'"
 msgstr "L'"
 
-#: icc_measurement.cpp:1506
+#: icc_measurement.cpp:1503
 msgid "a'"
 msgstr "a'"
 
-#: icc_measurement.cpp:1507
+#: icc_measurement.cpp:1504
 msgid "b'"
 msgstr "b'"
 
 #. Fl_Button* favUpButton
-#: icc_measurement.cpp:1508 my_file_chooser.cxx:277
+#: icc_measurement.cpp:1505 my_file_chooser.cxx:277
 msgid "X"
 msgstr "X"
 
-#: icc_measurement.cpp:1509 icc_measurement.cpp:1523
+#: icc_measurement.cpp:1506 icc_measurement.cpp:1520
 msgid "Y"
 msgstr "Y"
 
-#: icc_measurement.cpp:1510
+#: icc_measurement.cpp:1507
 msgid "Z"
 msgstr "Z"
 
-#: icc_measurement.cpp:1512
+#: icc_measurement.cpp:1509
 msgid "X'"
 msgstr "X'"
 
-#: icc_measurement.cpp:1513
+#: icc_measurement.cpp:1510
 msgid "Y'"
 msgstr "Y'"
 
-#: icc_measurement.cpp:1514
+#: icc_measurement.cpp:1511
 msgid "Z'"
 msgstr "Z'"
 
-#: icc_measurement.cpp:1517
+#: icc_measurement.cpp:1514
 msgid "R"
 msgstr "R"
 
-#: icc_measurement.cpp:1518
+#: icc_measurement.cpp:1515
 msgid "G"
 msgstr "G"
 
-#: icc_measurement.cpp:1519
+#: icc_measurement.cpp:1516
 msgid "B"
 msgstr "B"
 
-#: icc_measurement.cpp:1521
+#: icc_measurement.cpp:1518
 msgid "C"
 msgstr "C"
 
-#: icc_measurement.cpp:1522
+#: icc_measurement.cpp:1519
 msgid "M"
 msgstr "M"
 
-#: icc_measurement.cpp:1524
+#: icc_measurement.cpp:1521
 msgid "K"
 msgstr "K"
 
@@ -1252,39 +1257,39 @@ msgstr "ne uvnitr bloku pameti"
 msgid " typ - no text output"
 msgstr "typ - zadny textovy vystup"
 
-#: icc_profile.cpp:823
+#: icc_profile.cpp:826
 msgid "Work Space"
 msgstr "Pracovni prostor"
 
-#: icc_profile.cpp:837
+#: icc_profile.cpp:840
 msgid "Your"
 msgstr "Vas"
 
-#: icc_profile.cpp:838
+#: icc_profile.cpp:841
 msgid "Profile\" is designed for an other device"
 msgstr "Profil\" je navrzen pro jine zarizeni"
 
-#: icc_profile.cpp:843
+#: icc_profile.cpp:846
 msgid "Separation"
 msgstr "Separace"
 
-#: icc_profile.cpp:856 icc_profile.cpp:879
+#: icc_profile.cpp:859 icc_profile.cpp:882
 msgid "Device class"
 msgstr "Trida zarizeni"
 
-#: icc_profile.cpp:858 icc_profile.cpp:881 icc_profile.cpp:889
+#: icc_profile.cpp:861 icc_profile.cpp:884 icc_profile.cpp:892
 msgid "is not valid for an"
 msgstr "neni platna pro"
 
-#: icc_profile.cpp:860 icc_profile.cpp:883
+#: icc_profile.cpp:863 icc_profile.cpp:886
 msgid "Profile\"."
 msgstr "Profil\"."
 
-#: icc_profile.cpp:866
+#: icc_profile.cpp:869
 msgid "Linearisation"
 msgstr "Linearizace"
 
-#: icc_profile.cpp:891
+#: icc_profile.cpp:894
 msgid "Profile at the moment\"."
 msgstr "Profil v tento okamzik\"."
 
@@ -1534,22 +1539,23 @@ msgid "internet: www.behrmann.name <br>"
 msgstr "internet: www.behrmann.name <br>"
 
 #: icc_ueber.cpp:105
+#, fuzzy
 msgid ""
 "ICC Examin is a viewer for colour profiles according to ICC standard  - www."
-"color.org . At the moment version 2 profiles are supported."
+"color.org . At the moment version 2 and version 4 profiles are supported."
 msgstr ""
 "ICC Examin je prohlizec pro barvove profily dle ICC standardu - www.color."
 "org. V soucasnosti jsou podporovany profily verze 2."
 
 #: icc_ueber.cpp:112
+#, fuzzy
 msgid ""
-"The appliance of colour profiles shall help to achive an easy colour data "
+"The appliance of color profiles shall help to achive an easy color data "
 "exchange, regardless which application or what kind of operating system is "
-"used. As well colour adaption between different devices is possible, "
-"provided the colour characteristics of both devices are known. The qulity of "
-"a colour transform from one to an other device depends mainly on the quality "
-"of the colour measurement and the used profiling algorithm during profile "
-"creation."
+"used. As well color adaption between different devices is possible, provided "
+"the color characteristics of both devices are known. The qulity of a color "
+"transform from one to an other device depends mainly on the quality of the "
+"color measurement and the used profiling algorithm during profile creation."
 msgstr ""
 "Pouzivani barvovych profilu napomuze k dosazeni snadne vymeny barevnych dat "
 "bez ohledu na to, ktera aplikace nebo jaky typ operacniho systemu je "
@@ -1559,8 +1565,9 @@ msgstr ""
 "mereni barev a pouziteho algoritmu pro tvorbu profilu."
 
 #: icc_ueber.cpp:124
+#, fuzzy
 msgid ""
-"Colour profiles are often available from manufacturers of optical devices "
+"Color profiles are often available from manufacturers of optical devices "
 "(digital camera, scanner, printer). With ICC Examin you can get an "
 "impression of the internal data , stored in a ICC profile. For profiles "
 "containing measurement data, ICC Examin can generate a quality report. The "
@@ -1574,9 +1581,10 @@ msgstr ""
 "ze zmerenych dat je tez zobrazena v tri rozmernem prohlizeci gamutu.<br>"
 
 #: icc_ueber.cpp:135
+#, fuzzy
 msgid ""
-"The internal colour transformations are currently realised with functions of "
-"the littleCMS program library."
+"The color transformations are realised with littleCMS through the Oyranos "
+"CMM API."
 msgstr ""
 "Interni barvove transformace jsou realizovany funkcemi knihoven programu "
 "LittleCMS."
