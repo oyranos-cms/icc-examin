@@ -175,7 +175,7 @@ int iccMessageFunc( int code, const oyStruct_s * context, const char * format, .
       {
         cout << "GDB output:" << endl;
         int r = system("gdb -batch -x " TMP_FILE);
-        r = 0;
+        if(r) r = 0; // just to disable compiler warnings
       }
     } else
       cout << "could not open " << TMP_FILE << endl;
@@ -1140,6 +1140,7 @@ ICCexamin::oyranos_einstellungen()
   int r = 0;
   if(oyranos_settings_gui.size())
     r = system(oyranos_settings_gui.c_str());
+  if(r) r = 0; // just to disable warnings
   auffrischen( PROGRAMM | OYRANOS );
 }
 
@@ -1405,7 +1406,6 @@ void
 ICCexamin::icc_betrachterNeuzeichnen (void* z)
 { DBG_PROG_START
   Fl_Widget *wid = (Fl_Widget*)z;
-  static int item;
 
   DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->DD_farbraum)->visible())
   DBG_PROG_V( dynamic_cast<Fl_Widget*>(icc_betrachter->inspekt_html)->visible())
@@ -1517,7 +1517,7 @@ ICCexamin::icc_betrachterNeuzeichnen (void* z)
   // clean up - here?
   if (wid == icc_betrachter->tag_viewer ||
       wid == icc_betrachter->table_viewer) {
-    wid->clear_visible(); DBG_PROG_V( item << _item )
+    wid->clear_visible();
   }
 
   // table companion
@@ -1561,7 +1561,6 @@ ICCexamin::icc_betrachterNeuzeichnen (void* z)
         if( g ) \
           for(int i = 0; i < g->children(); ++i) \
             g->child(i)->show(); \
-        item = _item; \
       } \
       if (!w->visible_r()) \
         w->window()->show(); \

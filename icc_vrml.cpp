@@ -120,6 +120,7 @@ iccCreateVrml( const char* p, int size, int intent )
   DBG_PROG_V( s.str() )
   std::string icc_sys_c = s.str();
   ret = system (icc_sys_c.c_str()); DBG_PROG
+  if(ret) ret = 0; // fix compiler warning
 #endif /* USE_ARGYLL */
 
   ptn = profil_temp_name; oyStrAdd( ptn, ".icc");

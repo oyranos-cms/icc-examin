@@ -79,7 +79,8 @@ Function {iccReadInfo(char* filename)} {return_type {const char*}
 
   sprintf (systemBefehl, "iccdump \\"%s\\" > %s",
                                     filename, textfile);
-  system (systemBefehl);
+  int ret = system (systemBefehl);
+  if(ret) ret = 0;
 
   return textfile;} {}
   code DBG_PROG_ENDE {}
@@ -197,7 +198,6 @@ this->hinein( text, patches );} {}
     code DBG_PROG_START {}
     code {// selection from tag_browser
 
-  const char * txt = 0;
   int i = item;
 
   status("")
@@ -205,7 +205,7 @@ this->hinein( text, patches );} {}
   DBG_PROG_S( item << ". Tag " )
   
   if (cb)
-    txt = (*cb) ( &i );
+    (*cb) ( &i );
 
   if(i != item)
     select(i);} {}
@@ -704,7 +704,8 @@ DBG_NUM_S("Show Log window")}
             }
             MenuItem menueintrag_lang {
               label LANG
-              callback {system("echo $LANG");
+              callback {int ret = system("echo $LANG");
+  if(ret) ret = 0;
 \# ifdef USE_GETTEXT
   DBG_NUM_S( "domain     : " << textdomain(NULL) );
   DBG_NUM_S( "domain_path: " << bindtextdomain(NULL,NULL) );

@@ -1009,6 +1009,8 @@ getInfoHtml()
   html << " \
 </p>\n";
 
+  if(n) n = 0; // fix compiler warning
+
   //DBG_NUM_S(html.str() )
   DBG_PROG_ENDE
   return html.str();

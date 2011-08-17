@@ -288,15 +288,11 @@ Agviewer::agvSwitchMoveMode(int move)
 void
 Agviewer::agvHandleButton(int button, int event, int x, int y)
 {
-  int dbg = 0;
   DBG_PROG_START
   DBG_PROG_V( button <<" "<< event);
 
   if (event == FL_PUSH/* && downb == -1*/)
   {
-    if(lastx != x || lasty != y)
-      dbg = 1;
-
     lastx = downx = x;
     lasty = downy = y;
     downb = button;    

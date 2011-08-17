@@ -892,7 +892,6 @@ Oyranos::netzVonProfil_ (ICCnetz & netz,
     for(int x = 0; x < 2 * a; ++x)
     {
       int x_ = x + off;
-      int b = 1; // area
 
       // lower border
       if( y == 0 )
@@ -954,7 +953,6 @@ Oyranos::netzVonProfil_ (ICCnetz & netz,
         netz.indexe. insert( index_p );
 
       } else if(a - 1 <= x && x < 2 * a - 2 - 1) {
-        b = 2;
         // lower middle field (*L=1.0)
         index_p.second.i[0] = (y-1) *  2*(a-1)+x_; index_p.second.i[1] =  (y-1)*2*(a-1)+x_+1;
         index_p.second.i[2] = (y+0)*2*(a-1)+x_;
@@ -1153,6 +1151,9 @@ Oyranos::gamutCheckAbstract(Speicher & s, Speicher & abstract,
     error = oyOptions_Handle( "//"OY_TYPE_STD"/create_profile.icc",
                       opts,"create_profile.icc_profile.proofing_effect",
                       &result );
+
+    if(error)
+      WARN_S("create_profile.icc_profile.proofing_effect failed");
 
     prof = (oyProfile_s*) oyOptions_GetType( result, -1, "icc_profile",
                                              oyOBJECT_PROFILE_S );

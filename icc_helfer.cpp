@@ -319,7 +319,7 @@ getChannelNamesShort (icColorSpaceSignature color)
                          texte.push_back (s.str()); s.str(""); \
                        }
 
-  switch (color) {
+  switch ((uint32_t)color) {
     case icSigXYZData: texte.push_back ("X");
                        texte.push_back ("Y");
                        texte.push_back ("Z"); break;

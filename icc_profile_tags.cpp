@@ -497,7 +497,6 @@ ICCtag::getText                     (std::string text)
                                   status, size_, base );
     char **texts = 0;
     int    texts_n = 0;
-    int    profiles_n = 0;
     const char * all_text = "";
 
     if(icc_debug)
@@ -525,7 +524,6 @@ ICCtag::getText                     (std::string text)
         {
           // # "profiles ... involved" (other text) ":"
           const char * t = _("profiles where originally involved");
-          profiles_n = atoi(texts[i]);
           texte[0].append (texts[i], strlen(texts[i]));
           texte[0].append (" ", 1);
           texte[0].append (t, strlen(t));
@@ -955,12 +953,12 @@ ICCtag::getTable                     ( MftChain            typ,
   if (getTypName() == "mft2")
   {
     icLut16* lut16 = (icLut16*) &data_[8];
-    int inputChan, outputChan, clutPoints, inputEnt, outputEnt;
+    int inputChan, outputChan, clutPoints, inputEnt;
     inputChan = (int)lut16->inputChan;
     outputChan = (int)lut16->outputChan;
     clutPoints = (int)lut16->clutPoints;
     inputEnt = icValue(lut16->inputEnt);
-    outputEnt = icValue(lut16->outputEnt);
+    //outputEnt = icValue(lut16->outputEnt);
 #   ifdef DEBUG_ICCTAG
     int feldPunkte = (int)pow((double)clutPoints, inputChan);
     DBG_NUM_S( feldPunkte << " array points " << clutPoints << " clutPoints" )

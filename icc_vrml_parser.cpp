@@ -875,8 +875,8 @@ std::string    vrmlScene          ( icc_examin_ns::ICCThreadList<ICCnetz> netze,
   std::string text, temp;
   char t[16];
   const char * names[3] = {0,0,0};
-  int show_points_as_measurements = 0, show_points_as_pairs = 0,
-      spectralline = 0;
+  int /*show_points_as_measurements = 0,*/ show_points_as_pairs = 0 /*,
+      spectralline = 0*/;
   float L = 340.0, a = 0.0, b = 0.0;
   char * txt = (char*) malloc (256);
 
@@ -892,10 +892,10 @@ std::string    vrmlScene          ( icc_examin_ns::ICCThreadList<ICCnetz> netze,
     {
       if(strstr(names[2],"show_points_as_pairs"))
         show_points_as_pairs = 1;
-      if(strstr(names[2],"show_points_as_measurements"))
-        show_points_as_measurements = 1;
-      if(strstr(names[2],"spectralline"))
-        spectralline = 1;
+      //if(strstr(names[2],"show_points_as_measurements"))
+      //  show_points_as_measurements = 1;
+      //if(strstr(names[2],"spectralline"))
+      //  spectralline = 1;
       if(strstr(names[2],"viewpoint:"))
         sscanf( strstr(names[2],"viewpoint:")+strlen("viewpoint:"),
                 "%f %f %f", &L,&a,&b );
@@ -944,7 +944,6 @@ std::string    vrmlScene          ( icc_examin_ns::ICCThreadList<ICCnetz> netze,
 
       int n = oyNamedColours_Count( colours );
       int aktiv = 1;
-      int grau = 0;
       oyNamedColour_s * c = NULL;
       double schattierung = 1;
       int has_mesh = 0;
@@ -955,7 +954,6 @@ std::string    vrmlScene          ( icc_examin_ns::ICCThreadList<ICCnetz> netze,
       if(netze.size() > (unsigned)j)
       {
         aktiv = netze[j].active();
-        grau = netze[j].grau;
         rgba[3] = netze[j].undurchsicht;
         schattierung = netze[j].schattierung;
         if(netze[j].punkte.size())

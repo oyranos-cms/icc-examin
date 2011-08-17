@@ -154,8 +154,7 @@ void drawText( FTFont * f, const char * in_txt )
   float strichmult = 1.0;
   int blend = 1;
 
-  size_t size,
-         in_left,
+  size_t in_left,
          out_left;
   wchar_t * wchar, * wtmp;
   char * txt, * ttmp;
@@ -171,7 +170,7 @@ void drawText( FTFont * f, const char * in_txt )
     ttmp = txt = strdup(in_txt);
 
     iconv_t cd = iconv_open( "WCHAR_T", oy_domain_codeset );
-    size = iconv( cd, &ttmp, &in_left, (char**)&wtmp, &out_left);
+    iconv( cd, &ttmp, &in_left, (char**)&wtmp, &out_left);
     iconv_close( cd );
 
     ZeichneText( f, wchar );
@@ -1362,7 +1361,7 @@ GL_Ansicht::tabelleAuffrischen()
       double dim_z = 1.0/n_a;
       double start_x,start_y,start_z, x,y,z;
       double wert,
-             A,B,C,D,E_,F,G,H;
+             A=.0,B=.0,C=.0,D=.0,E_=.0,F=.0,H=.0;
 
       /* The cubus for lines is completely filled from 0...1 .
        * The center of the starting data entry lies on the edge of the whole
@@ -1473,8 +1472,8 @@ GL_Ansicht::tabelleAuffrischen()
               E_= tabelle_[L-1][a][b][kanal];
               if(b != n_b - 1)
               F = tabelle_[L-1][a][b+1][kanal];
-              if(b != n_b - 1 && a != n_a - 1)
-              G = tabelle_[L-1][a+1][b+1][kanal];
+              /*i if(b != n_b - 1 && a != n_a - 1)
+              G = tabelle_[L-1][a+1][b+1][kanal]; */
               if(a != n_a - 1)
               H = tabelle_[L-1][a+1][b][kanal];
               }
@@ -2305,7 +2304,6 @@ GL_Ansicht::punkteAuffrischen()
             n *= 2; 
 
           double rad = .02;
-          int dim = 12;
           int kugeln_zeichnen = false;
           switch (punktform)
           {
@@ -2331,9 +2329,9 @@ GL_Ansicht::punkteAuffrischen()
                  }
                glEnd();
               break;
-            case MENU_dE1KUGEL: rad = 0.005;dim = 5; kugeln_zeichnen = true;break;
-            case MENU_dE2KUGEL: rad = 0.01; dim = 8; kugeln_zeichnen = true;break;
-            case MENU_dE4KUGEL: rad = 0.02; dim =12; kugeln_zeichnen = true;break;
+            case MENU_dE1KUGEL: rad = 0.005;kugeln_zeichnen = true;break;
+            case MENU_dE2KUGEL: rad = 0.01; kugeln_zeichnen = true;break;
+            case MENU_dE4KUGEL: rad = 0.02; kugeln_zeichnen = true;break;
                  break;
             case MENU_DIFFERENZ_LINIE: // they are drawn anyway
                  break;
@@ -3401,7 +3399,8 @@ GL_Ansicht::namedColours       ()
   if(colours_)
     error = oyObject_SetNames ( colours_->oy_, __FILE__, "colour lists",
                                   text.c_str() );
-
+  if(error)
+    WARN_S( "oyObject_SetNames: " << error );
   colours = oyStructList_Copy( colours_, NULL );
 
   DBG_PROG_ENDE

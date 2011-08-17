@@ -901,7 +901,10 @@ ICCmeasurement::init_umrechnen                     (void)
 
   XYZmax[0] = XYZmax[1] = XYZmax[2] = -100000;
   XYZmin[0] = XYZmin[1] = XYZmin[2] = 100000;
-  { int maxFeld=0, minFeld=0;
+  {
+#ifdef DEBUG
+    int maxFeld=0, minFeld=0;
+#endif
     const char *maxFN=0, *minFN=0;
     if (nFelder_ != (int)XYZ_Satz_.size()) {
       DBG_PROG_S("divergine measurement count");
@@ -1101,14 +1104,11 @@ ICCmeasurement::init_umrechnen                     (void)
     oyOptions_Release( &ui_options );
 
     fortschritt(0.5,0.2);
-    bool vcgt = false;
     ICClist<ICClist<double> > vcgt_kurven;
     //TODO
-    if (profile_ && profile_->hasTagName ("vcgt")) {
-      vcgt = true;
+    if (profile_ && profile_->hasTagName ("vcgt"))
       vcgt_kurven = profile_->getTagCurves( profile_->getTagIDByName("vcgt"),
                                                                 ICCtag::MATRIX);
-    }
 
     {
       oyPixelAccess_s

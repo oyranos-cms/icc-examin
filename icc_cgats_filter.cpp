@@ -136,7 +136,6 @@ CgatsFilter::setzeWortInAnfuehrungszeichen_( std::string &zeile,
     std::string::size_type ende, pos_orig = pos;
 
     bool in_anfuehrung = false;
-    int letze_anfuehrungsstriche = -1;
     if( (ende = zeile.find_last_of( cgats_alnum_ ))
         == std::string::npos )
     {
@@ -164,10 +163,8 @@ CgatsFilter::setzeWortInAnfuehrungszeichen_( std::string &zeile,
         if( in_anfuehrung ) // hinaus
         {
           in_anfuehrung = false;
-          letze_anfuehrungsstriche = -1;
         } else {            // hinein
           in_anfuehrung = true;
-          letze_anfuehrungsstriche = (int)pos;
         }
       } else if( strchr( cgats_alnum_, zeile[pos] ) &&// ein Zeichen
                  !in_anfuehrung )                     // .. ausserhalb
@@ -177,7 +174,6 @@ CgatsFilter::setzeWortInAnfuehrungszeichen_( std::string &zeile,
         ++ende;
         ++pos;
         in_anfuehrung = true;
-        letze_anfuehrungsstriche = (int)pos-1;
         DBG_CGATS_S( zeile.substr( pos, ende-pos+1 ) )
       }
     }
@@ -347,7 +343,6 @@ CgatsFilter::sucheInDATA_FORMAT_( std::string &zeile , int &zeile_n )
   bool anf_setzen = anfuehrungsstriche_setzen;
   anfuehrungsstriche_setzen = false;
 
-  std::string::size_type pos=0;
   zeilenOhneDuplikate_( s_woerter_ );
 
   DBG_NUM_V( zeile )
@@ -366,7 +361,6 @@ CgatsFilter::sucheInDATA_FORMAT_( std::string &zeile , int &zeile_n )
   ICClist<std::string> test = unterscheideZiffernWorte_(zeile);
   for( unsigned int i = 0; i < test.size() ; ++i )
   { 
-    pos = 0;
     bool gefunden = false;
     for( unsigned j = 0; j < s_woerter_.size(); ++j )
       if( test[i].find( s_woerter_[j], 0 ) != std::string::npos )
