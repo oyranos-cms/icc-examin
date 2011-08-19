@@ -631,11 +631,11 @@ sleep 2
 
 cd "$top"
 
-
-packet=openicc-data
-packet_dir=$packet-1.2.0
+http://sourceforge.net/projects/openicc/files/OpenICC-Profiles/icc-profiles-openicc-1.3.0.tar.gz/download
+packet=icc-profiles-openicc
+packet_dir=$packet-1.3.0
 packet_file=$packet_dir.tar.bz2
-checksum=1ed5aa92e7347e66ddd028e542453354bf503de9
+checksum=c5004a31b2174d223c4de5f774cd108d2cf80d87
 loc=http://downloads.sourceforge.net/project/openicc/OpenICC-Profiles/
 if [ -f $packet_file ]; then
   echo $packet_file already here
@@ -666,10 +666,10 @@ cd "$top"
 sleep 2
 
 # OpenICC default profiles II
-packet=basICColor_Offset_2009
-packet_dir=$packet-1.1.1
+packet=icc-profiles-basiccolor-printing2009
+packet_dir=$packet-1.2.0
 packet_file=$packet_dir.tar.gz
-checksum=5d11f7fc6a82fbaee2b4a861ca64862976fc49e5
+checksum=74612fd2c5cced04001c5d42d8d7855e267d1d05
 loc=http://downloads.sourceforge.net/project/openicc/basICColor-Profiles/
 if [ -f $packet_file ]; then
   echo $packet_file already here
@@ -839,7 +839,7 @@ if [ -f "$git_repo/$target" ]; then
   echo ICC Examin is in $git_repo/$target
   echo You can test it now with one of:
   echo   $git_repo/$target http://www.oyranos.org/wiki/images/3/31/SRGB_linear.icc
-  echo   $git_repo/$target openicc-data-1.1.0/default_profiles/printing/coated_FOGRA39L_argl.icc
+  echo   $git_repo/$target icc-profiles-basiccolor-printing2009-1.2.0/default_profiles/printing/ISOcoated_v2_bas.ICC
   echo   hint: the 3D gamut hull is shown with the Ctrl-h shortcut
 else
   echo Could not build $git_repo/$target
