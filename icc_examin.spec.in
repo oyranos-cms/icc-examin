@@ -1,12 +1,12 @@
-Summary: ICC profile viewer and colour visualisation
-Requires: oyranos-ui-fltk oyranos-monitor
-Name: icc_examin
-License: GPL,LGPL
-Group: Productivity/Graphics/Other
+Summary:   ICC profile viewer and colour visualisation
+Requires:  oyranos-ui-fltk oyranos-monitor
+Name:      icc_examin
+License:   GPL,LGPL
+Group:     Productivity/Graphics/Other
 #Source: http://www.behrmann.name/index.php?option=com_content&task=view&id=33&Itemid=69
-URL: http://www.behrmann.name
-Vendor: Kai-Uwe Behrmann
-BuildRoot: %{_tmppath}/%{name}-root
+URL:       http://www.behrmann.name
+Vendor:    Kai-Uwe Behrmann
+BuildRoot: %{_tmppath}/%{name}-%{version}-build
 Prefix:    %{_prefix}
 
 BuildRequires:  gcc-c++ gettext fltk-devel pkgconfig    libpng-devel libjpeg-devel libtiff-devel liboyranos-alpha-devel libxml2-devel ftgl-devel shared-mime-info cinepaint-devel
@@ -16,6 +16,7 @@ BuildRequires:  desktop-file-utils
 #BuildRequires: gcc-c++ gettext fltk-devel xorg-x11 xorg-x11-devel xorg-x11-Mesa-devel  pkgconfig libpng-devel libjpeg-devel
 BuildRequires:  expat fontconfig-devel freetype2-devel gcc gcc-c++ gettext gettext-devel libjpeg-devel libpng-devel pkgconfig zlib-devel
 %endif
+
 %if 0%{?suse_version} > 1010
 Recommends:   oyranos-monitor-nvidia
 BuildRequires:  Mesa Mesa-devel xorg-x11-fonts-devel xorg-x11-libICE xorg-x11-libICE-devel xorg-x11-libSM
@@ -29,14 +30,17 @@ BuildRequires:  xorg-x11-libfontenc xorg-x11-libfontenc-devel xorg-x11-libs xorg
 BuildRequires:  xorg-x11-libxkbfile-devel xorg-x11-proto-devel xorg-x11-util-devel xorg-x11-xtrans-devel
 BuildRequires:  liblcms-devel xdg-utils
 %endif
+
 %if 0%{?mandriva_version} > 0
 Recommends: oyranos-monitor-nvidia
 BuildRequires:  Mesa X11-devel lcms-devel xdg-utils libgomp-devel libtool-devel
 %endif
+
 %if 0%{?fedora_version} > 0
 Requires: oyranos-monitor-nvidia
 BuildRequires:  Mesa-devel xorg-x11-devel xorg-x11-Mesa-devel libXxf86vm-devel libXmu-devel libXpm-devel qt3-devel lcms-devel xdg-utils elektra-devel libXcm0
 %endif
+
 %if 0%{?debian_version} > 0
 BuildRequires:  xorg-x11 xorg-x11-devel xorg-x11-Mesa-devel xorg-x11-libXext xorg-x11-libXext-devel  xorg-x11-libXpm xorg-x11-libXpm-devel cinepaint-devel-0.25
 %endif
@@ -69,9 +73,10 @@ fr:                  Pascal LACROIX <lacroixpascal at vfemail.net>, 2006
 
 
 %prep
-%setup -q -n %{name}-%{version}
+%setup -q
 
 %build
+export CFLAGS="%{optflags}"
 %configure
 make %{_smp_mflags} || make
 
