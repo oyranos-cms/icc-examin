@@ -10,15 +10,24 @@ BuildRoot: %{_tmppath}/%{name}-root
 Prefix:    %{_prefix}
 
 BuildRequires:  gcc-c++ gettext fltk-devel pkgconfig    libpng-devel libjpeg-devel libtiff-devel liboyranos-alpha-devel libxml2-devel ftgl-devel shared-mime-info cinepaint-devel
-
+BuildRequires:  desktop-file-utils
 
 %if 0%{?suse_version} > 910
 #BuildRequires: gcc-c++ gettext fltk-devel xorg-x11 xorg-x11-devel xorg-x11-Mesa-devel  pkgconfig libpng-devel libjpeg-devel
 BuildRequires:  expat fontconfig-devel freetype2-devel gcc gcc-c++ gettext gettext-devel libjpeg-devel libpng-devel pkgconfig zlib-devel
 %endif
 %if 0%{?suse_version} > 1010
-Recommends: oyranos-monitor-nvidia
-BuildRequires:  Mesa Mesa-devel xorg-x11-fonts-devel xorg-x11-libICE xorg-x11-libICE-devel xorg-x11-libSM xorg-x11 xorg-x11-devel xorg-x11-libSM-devel xorg-x11-libX11 xorg-x11-libX11-devel xorg-x11-libXau xorg-x11-libXau-devel xorg-x11-libXdmcp xorg-x11-libXdmcp-devel xorg-x11-libXext xorg-x11-libXext-devel xorg-x11-libXfixes xorg-x11-libXfixes-devel xorg-x11-libXmu xorg-x11-libXmu-devel xorg-x11-libXp xorg-x11-libXp-devel xorg-x11-libXpm xorg-x11-libXpm-devel xorg-x11-libXprintUtil xorg-x11-libXprintUtil-devel xorg-x11-libXrender xorg-x11-libXrender-devel xorg-x11-libXt xorg-x11-libXt-devel xorg-x11-libXv xorg-x11-libXv-devel xorg-x11-libfontenc xorg-x11-libfontenc-devel xorg-x11-libs xorg-x11-libxkbfile xorg-x11-libxkbfile-devel xorg-x11-proto-devel xorg-x11-util-devel xorg-x11-xtrans-devel  liblcms-devel update-desktop-files xdg-utils
+Recommends:   oyranos-monitor-nvidia
+BuildRequires:  Mesa Mesa-devel xorg-x11-fonts-devel xorg-x11-libICE xorg-x11-libICE-devel xorg-x11-libSM
+BuildRequires:  xorg-x11 xorg-x11-devel xorg-x11-libSM-devel xorg-x11-libX11 xorg-x11-libX11-devel
+BuildRequires:  xorg-x11-libXau xorg-x11-libXau-devel xorg-x11-libXdmcp xorg-x11-libXdmcp-devel
+BuildRequires:  xorg-x11-libXext xorg-x11-libXext-devel xorg-x11-libXfixes xorg-x11-libXfixes-devel
+BuildRequires:  xorg-x11-libXmu xorg-x11-libXmu-devel xorg-x11-libXp xorg-x11-libXp-devel xorg-x11-libXpm
+BuildRequires:  xorg-x11-libXpm-devel xorg-x11-libXprintUtil xorg-x11-libXprintUtil-devel xorg-x11-libXrender
+BuildRequires:  xorg-x11-libXrender-devel xorg-x11-libXt xorg-x11-libXt-devel xorg-x11-libXv xorg-x11-libXv-devel
+BuildRequires:  xorg-x11-libfontenc xorg-x11-libfontenc-devel xorg-x11-libs xorg-x11-libxkbfile 
+BuildRequires:  xorg-x11-libxkbfile-devel xorg-x11-proto-devel xorg-x11-util-devel xorg-x11-xtrans-devel
+BuildRequires:  liblcms-devel xdg-utils
 %endif
 %if 0%{?mandriva_version} > 0
 Recommends: oyranos-monitor-nvidia
@@ -32,6 +41,9 @@ BuildRequires:  Mesa-devel xorg-x11-devel xorg-x11-Mesa-devel libXxf86vm-devel l
 BuildRequires:  xorg-x11 xorg-x11-devel xorg-x11-Mesa-devel xorg-x11-libXext xorg-x11-libXext-devel  xorg-x11-libXpm xorg-x11-libXpm-devel cinepaint-devel-0.25
 %endif
 
+%if !0%{?suse_version}
+Requires:  freefont
+%endif
 
 %description
 ICC Examin is a small utility (unix name: iccexamin) for the
@@ -58,7 +70,6 @@ fr:                  Pascal LACROIX <lacroixpascal at vfemail.net>, 2006
 
 %prep
 %setup -q -n %{name}-%{version}
-#-%{release}
 
 %build
 %configure
@@ -66,10 +77,16 @@ make %{_smp_mflags} || make
 
 %install
 make DESTDIR=%{buildroot} install
-%find_lang %{name}       # generate a special file list
+
 %if 0%{?suse_version} > 1010
-%suse_update_desktop_file -n  iccexamin # some openSUSE magic
+# Font is included in freefont package (on opensuse) and in some few others no really need to distribute it once more
+rm %{buildroot}/%{_datadir}/fonts/FreeSans.ttf
 %endif
+cp icc_examin.desktop iccexamin.desktop
+# make rpmplint quit...
+echo 'X-SuSE-translate=true' >> iccexamin.desktop
+desktop-file-install --dir=%{buildroot}/%{desktopdir} iccexamin.desktop
+%find_lang %{name}       # generate a special file list
 
 %clean
 
