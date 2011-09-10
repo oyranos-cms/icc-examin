@@ -573,7 +573,21 @@ ICCexaminIO::oeffnen (ICClist<std::string> dateinamen)
   {
     ss.push_back(Speicher());
 
-    ss[i] = dateiNachSpeicher(dateinamen[i]);
+    char * t = oyGetPathFromProfileName( dateinamen[i].c_str(),
+                                                      malloc );
+    std::string path_name = t;
+    if(t)
+      free(t);
+
+    const char * pn = dateinamen[i].c_str();
+    if(strchr( pn, OY_SLASH_C ))
+      pn = strchr( pn, OY_SLASH_C );
+
+    path_name += "/";
+    path_name += pn;
+
+    ss[i] = dateiNachSpeicher( path_name );
+
     if(i == 0 && ss[i].size() == 0) {
       status( _("Stop loading ") << dateinamen[i] )
       icc_examin->fortschritt( 1.1 , 1.0 );
