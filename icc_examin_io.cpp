@@ -580,8 +580,8 @@ ICCexaminIO::oeffnen (ICClist<std::string> dateinamen)
       free(t);
 
     const char * pn = dateinamen[i].c_str();
-    if(strchr( pn, OY_SLASH_C ))
-      pn = strchr( pn, OY_SLASH_C );
+    if(strrchr( pn, OY_SLASH_C ))
+      pn = strrchr( pn, OY_SLASH_C );
 
     path_name += "/";
     path_name += pn;
