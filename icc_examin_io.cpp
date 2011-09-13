@@ -575,15 +575,17 @@ ICCexaminIO::oeffnen (ICClist<std::string> dateinamen)
 
     char * t = oyGetPathFromProfileName( dateinamen[i].c_str(),
                                                       malloc );
-    std::string path_name = t;
+    std::string path_name;
     if(t)
+      path_name = t;
       free(t);
 
     const char * pn = dateinamen[i].c_str();
     if(strrchr( pn, OY_SLASH_C ))
       pn = strrchr( pn, OY_SLASH_C );
 
-    path_name += "/";
+    if(path_name.size())
+      path_name += "/";
     path_name += pn;
 
     ss[i] = dateiNachSpeicher( path_name );
