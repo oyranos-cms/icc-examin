@@ -13,7 +13,6 @@ BuildRequires:  gcc-c++ gettext fltk-devel pkgconfig    libpng-devel libjpeg-dev
 BuildRequires:  desktop-file-utils
 
 %if 0%{?suse_version} > 910
-#BuildRequires: gcc-c++ gettext fltk-devel xorg-x11 xorg-x11-devel xorg-x11-Mesa-devel  pkgconfig libpng-devel libjpeg-devel
 BuildRequires:  expat fontconfig-devel freetype2-devel gcc gcc-c++ gettext gettext-devel libjpeg-devel libpng-devel pkgconfig zlib-devel
 %endif
 
@@ -110,7 +109,9 @@ update-mime-database %{_datadir}/mime/
 %dir %{pixmapdir}/hicolor
 %dir %{pixmapdir}/hicolor/scalable
 %{pixmapdir}/hicolor/scalable/iccexamin.svg
+%if 0%{?suse_version} < 1010
 %{_datadir}/fonts/FreeSans.ttf
+%endif
 %{_mandir}/man1/iccexamin.*
 
 
