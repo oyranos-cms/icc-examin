@@ -471,9 +471,18 @@ git_repo=xcolor
     git checkout master
   fi
   sleep 2
-  ./configure --disable-verbose $conf_opts $@
-  make $MAKE_CPUS
-  make install
+  update_xcm=0
+  git_version="`cat .git/refs/heads/master`"
+  old_git_version="`cat old_gitrev.txt`"
+  if [ "$git_version" != "$old_git_version" ]; then
+    update_xcm=1
+    ./configure --disable-verbose $conf_opts $@
+    make $MAKE_CPUS
+    make install
+  else
+    echo no changes in git $git_version
+  fi
+  echo "$git_version" > old_gitrev.txt
 sleep 1
 
 cd "$top"
@@ -491,9 +500,16 @@ git_repo=xcm
     git checkout master
   fi
   sleep 2
-  ./configure --disable-verbose $conf_opts $@
-  make $MAKE_CPUS
-  make install
+  git_version="`cat .git/refs/heads/master`"
+  old_git_version="`cat old_gitrev.txt`"
+  if [ "$git_version" != "$old_git_version" ]; then
+    ./configure --disable-verbose $conf_opts $@
+    make $MAKE_CPUS
+    make install
+  else
+    echo no changes in git $git_version
+  fi
+  echo "$git_version" > old_gitrev.txt
 sleep 1
 
 cd "$top"
@@ -523,7 +539,7 @@ else
   fi
   sleep 2
 
-  git_version="`cat ../sane-backends/.git/refs/heads/master`"
+  git_version="`cat .git/refs/heads/master`"
 
   url=http://alioth.debian.org/tracker/download.php/30186/410366/312641/3945
   packet_file=sane_cap_colour.patch
@@ -597,12 +613,14 @@ else
     CFLAGS="$CFLAGS $FPIC" CXXFLAGS="$CXXFLAGS $FPIC" ./configure --enable-pnm-backend $conf_opts $@
   fi
 
-  old_git_version="`cat sane_old_gitrev.txt`"
+  old_git_version="`cat old_gitrev.txt`"
   if [ "$git_version" != "$old_git_version" ]; then
     make $MAKE_CPUS
     make install
+  else
+    echo no changes in git $git_version
   fi
-  echo "$git_version" > sane_old_gitrev.txt
+  echo "$git_version" > old_gitrev.txt
 fi
 sleep 2
 
@@ -718,12 +736,22 @@ git_repo=oyranos
     cd $git_repo
     git checkout master
   fi
+  echo updated libXcm $update_xcm
   sleep 2
-  make clean
-  CFLAGS="$CFLAGS $OSX_ARCH" CXXFLAGS="$CXXFLAGS $OSX_ARCH" LDFLAGS="$LDFLAGS $OSX_ARCH" ./configure $conf_opts $@  --disable-verbose --enable-debug
-  make $MAKE_CPUS
-  make install
-  make check
+  git_version="`cat .git/refs/heads/master`"
+  old_git_version="`cat old_gitrev.txt`"
+  update_oyranos=0
+  if [ $update_xcm = 1 ] || [ "$git_version" != "$old_git_version" ]; then
+    update_oyranos=1
+    make clean
+    CFLAGS="$CFLAGS $OSX_ARCH" CXXFLAGS="$CXXFLAGS $OSX_ARCH" LDFLAGS="$LDFLAGS $OSX_ARCH" ./configure $conf_opts $@  --disable-verbose --enable-debug
+    make $MAKE_CPUS
+    make install
+    make check
+  else
+    echo no changes in git $git_version
+  fi
+  echo "$git_version" > old_gitrev.txt
 sleep 1
 
 cd "$top"
@@ -741,9 +769,16 @@ git_repo=compicc
     git checkout master
   fi
   sleep 2
-  ./configure --disable-verbose $conf_opts $@
-  make $MAKE_CPUS
-  make install
+  git_version="`cat .git/refs/heads/master`"
+  old_git_version="`cat old_gitrev.txt`"
+  if [ $update_oyranos = 1 ] || [ "$git_version" != "$old_git_version" ]; then
+    ./configure --disable-verbose $conf_opts $@
+    make $MAKE_CPUS
+    make install
+  else
+    echo no changes in git $git_version
+  fi
+  echo "$git_version" > old_gitrev.txt
 sleep 1
 
 cd "$top"
@@ -810,9 +845,17 @@ git_repo=cinepaint
     sleep 2
     ./configure --enable-debug --disable-icc_examin --disable-pygimp $conf_opts $@
   fi
+  echo updated oyranos $update_oyranos
   sleep 2
-  make $MAKE_CPUS
-  make install
+  git_version="`cat .git/refs/heads/master`"
+  old_git_version="`cat old_gitrev.txt`"
+  if [ $update_oyranos = 1 ] || [ "$git_version" != "$old_git_version" ]; then
+    make $MAKE_CPUS
+    make install
+  else
+    echo no changes in git $git_version
+  fi
+  echo "$git_version" > old_gitrev.txt
 sleep 1
 
 cd "$top"
@@ -830,12 +873,19 @@ git_repo=icc_examin
     git checkout master
   fi
   sleep 2
-  make clean
-  CFLAGS="$CFLAGS $OSX_ARCH" CXXFLAGS="$CXXFLAGS $OSX_ARCH" LDFLAGS="$LDFLAGS $OSX_ARCH" ./configure $conf_opts --disable-verbose --enable-debug $@
-  make $MAKE_CPUS
-  if [ $? = 0 ] && [ $UNAME_ = "Darwin" ]; then
-    make bundle
+  git_version="`cat .git/refs/heads/master`"
+  old_git_version="`cat old_gitrev.txt`"
+  if [ $update_oyranos = 1 ] || [ "$git_version" != "$old_git_version" ]; then
+    make clean
+    CFLAGS="$CFLAGS $OSX_ARCH" CXXFLAGS="$CXXFLAGS $OSX_ARCH" LDFLAGS="$LDFLAGS $OSX_ARCH" ./configure $conf_opts --disable-verbose --enable-debug $@
+    make $MAKE_CPUS
+    if [ $? = 0 ] && [ $UNAME_ = "Darwin" ]; then
+      make bundle
+    fi
+  else
+    echo no changes in git $git_version
   fi
+  echo "$git_version" > old_gitrev.txt
 #make install
 sleep 1
 
