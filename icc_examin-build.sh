@@ -222,9 +222,9 @@ if [ $? -gt 0 ]; then
   ftgl="FTGL is missed or not ready"
 #  stop_build=1
 fi
-pkg-config  --atleast-version=1.14 lcms
+pkg-config  --atleast-version=2.2 lcms2
 if [ $? -eq 0 ]; then 
-  lcms="littleCMS:      `pkg-config --modversion lcms`"
+  lcms="littleCMS:      `pkg-config --modversion lcms2`"
 else
   lcms="littleCMS version is too old; need at least lcms-1.14"
   #stop_build=1
@@ -523,6 +523,8 @@ else
   fi
   sleep 2
 
+  git_version="`cat ../sane-backends/.git/refs/heads/master`"
+
   url=http://alioth.debian.org/tracker/download.php/30186/410366/312641/3945
   packet_file=sane_cap_colour.patch
   checksum=4665a1e4b7b9b920a10b830b354ee32667eaefd6
@@ -594,8 +596,13 @@ else
   else
     CFLAGS="$CFLAGS $FPIC" CXXFLAGS="$CXXFLAGS $FPIC" ./configure --enable-pnm-backend $conf_opts $@
   fi
-  make $MAKE_CPUS
-  make install
+
+  old_git_version="`cat sane_old_gitrev.txt`"
+  if [ "$git_version" != "$old_git_version" ]; then
+    make $MAKE_CPUS
+    make install
+  fi
+  echo "$git_version" > sane_old_gitrev.txt
 fi
 sleep 2
 
