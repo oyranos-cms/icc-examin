@@ -142,11 +142,15 @@ FTFont *font = NULL, *ortho_font = NULL;
 # define ZeichneText(Font, Zeiger)
 #endif
 
+#ifdef HAVE_FTGL
 #define ZeichneOText(Font, scal, buffer) { \
                                    glScaled(scal,scal*w()/(double)h(),scal); \
                                      drawText(Font, buffer); \
                                    glScaled(1.0/scal,1.0/(scal*w()/(double)h()),1.0/scal); \
                                  }
+#else
+#define ZeichneOText(Font, scal, buffer) {}
+#endif
 
 #ifdef HAVE_FTGL
 void drawText( FTFont * f, const char * in_txt )
