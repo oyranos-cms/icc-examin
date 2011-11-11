@@ -1,33 +1,43 @@
-Summary:   ICC profile viewer and colour visualisation
-Requires:  oyranos-ui-fltk oyranos-monitor
-Name:      icc_examin
-License:   GPL,LGPL
-Group:     Productivity/Graphics/Other
-#Source: http://www.behrmann.name/index.php?option=com_content&task=view&id=33&Itemid=69
-URL:       http://www.behrmann.name
-Vendor:    Kai-Uwe Behrmann
-BuildRoot: %{_tmppath}/%{name}-%{version}-build
-Prefix:    %{_prefix}
+Summary:    ICC profile viewer and colour visualisation
+Requires:   oyranos-ui-fltk oyranos-monitor
+Name:       icc_examin
+License:    GPL-2.0+,LGPL-2.0+
+Group:      Productivity/Graphics/Other
+Url:        http://www.behrmann.name
 
-BuildRequires:  gcc-c++ gettext fltk-devel pkgconfig    libpng-devel libjpeg-devel libtiff-devel liboyranos-alpha-devel libxml2-devel ftgl-devel shared-mime-info cinepaint-devel
+BuildRoot:      %{_tmppath}/%{name}-%{version}-build
+BuildRequires:  gcc-c++ gettext fltk-devel pkgconfig
+BuildRequires:  libpng-devel libjpeg-devel libtiff-devel liboyranos-alpha-devel
+BuildRequires:  libxml2-devel ftgl-devel shared-mime-info
 BuildRequires:  desktop-file-utils
 
 %if 0%{?suse_version} > 910
-BuildRequires:  expat fontconfig-devel freetype2-devel gcc gcc-c++ gettext gettext-devel libjpeg-devel libpng-devel pkgconfig zlib-devel
+BuildRequires:  expat fontconfig-devel freetype2-devel gcc gcc-c++
+BuildRequires:  gettext gettext-devel libjpeg-devel libpng-devel
+BuildRequires:  pkgconfig zlib-devel
 %endif
 
 %if 0%{?suse_version} > 1010
-Recommends:   oyranos-monitor-nvidia
-BuildRequires:  Mesa Mesa-devel xorg-x11-fonts-devel xorg-x11-libICE xorg-x11-libICE-devel xorg-x11-libSM
-BuildRequires:  xorg-x11 xorg-x11-devel xorg-x11-libSM-devel xorg-x11-libX11 xorg-x11-libX11-devel
-BuildRequires:  xorg-x11-libXau xorg-x11-libXau-devel xorg-x11-libXdmcp xorg-x11-libXdmcp-devel
-BuildRequires:  xorg-x11-libXext xorg-x11-libXext-devel xorg-x11-libXfixes xorg-x11-libXfixes-devel
-BuildRequires:  xorg-x11-libXmu xorg-x11-libXmu-devel xorg-x11-libXp xorg-x11-libXp-devel xorg-x11-libXpm
-BuildRequires:  xorg-x11-libXpm-devel xorg-x11-libXprintUtil xorg-x11-libXprintUtil-devel xorg-x11-libXrender
-BuildRequires:  xorg-x11-libXrender-devel xorg-x11-libXt xorg-x11-libXt-devel xorg-x11-libXv xorg-x11-libXv-devel
-BuildRequires:  xorg-x11-libfontenc xorg-x11-libfontenc-devel xorg-x11-libs xorg-x11-libxkbfile 
-BuildRequires:  xorg-x11-libxkbfile-devel xorg-x11-proto-devel xorg-x11-util-devel xorg-x11-xtrans-devel
-BuildRequires:  liblcms-devel xdg-utils
+Recommends:   oyranos-monitor-nvidia freefont
+BuildRequires:  Mesa Mesa-devel xorg-x11-fonts-devel xorg-x11-libICE
+BuildRequires:  xorg-x11-libICE-devel xorg-x11-libSM
+BuildRequires:  xorg-x11 xorg-x11-devel xorg-x11-libSM-devel 
+BuildRequires:  xorg-x11-libX11 xorg-x11-libX11-devel
+BuildRequires:  xorg-x11-libXau xorg-x11-libXau-devel 
+BuildRequires:  xorg-x11-libXdmcp xorg-x11-libXdmcp-devel
+BuildRequires:  xorg-x11-libXext xorg-x11-libXext-devel
+BuildRequires:  xorg-x11-libXfixes xorg-x11-libXfixes-devel
+BuildRequires:  xorg-x11-libXmu xorg-x11-libXmu-devel xorg-x11-libXp
+BuildRequires:  xorg-x11-libXp-devel xorg-x11-libXpm
+BuildRequires:  xorg-x11-libXpm-devel xorg-x11-libXprintUtil
+BuildRequires:  xorg-x11-libXprintUtil-devel xorg-x11-libXrender
+BuildRequires:  xorg-x11-libXrender-devel xorg-x11-libXt
+BuildRequires:  xorg-x11-libXt-devel xorg-x11-libXv xorg-x11-libXv-devel
+BuildRequires:  xorg-x11-libfontenc xorg-x11-libfontenc-devel
+BuildRequires:  xorg-x11-libs xorg-x11-libxkbfile 
+BuildRequires:  xorg-x11-libxkbfile-devel xorg-x11-proto-devel
+BuildRequires:  xorg-x11-util-devel xorg-x11-xtrans-devel
+BuildRequires:  liblcms-devel xdg-utils update-desktop-files
 %endif
 
 %if 0%{?mandriva_version} > 0
@@ -36,16 +46,12 @@ BuildRequires:  Mesa X11-devel lcms-devel xdg-utils libgomp-devel libtool-devel
 %endif
 
 %if 0%{?fedora_version} > 0
-Requires: oyranos-monitor-nvidia
+Recommends: oyranos-monitor-nvidia
 BuildRequires:  Mesa-devel xorg-x11-devel xorg-x11-Mesa-devel libXxf86vm-devel libXmu-devel libXpm-devel qt3-devel lcms-devel xdg-utils elektra-devel libXcm0
 %endif
 
 %if 0%{?debian_version} > 0
 BuildRequires:  xorg-x11 xorg-x11-devel xorg-x11-Mesa-devel xorg-x11-libXext xorg-x11-libXext-devel  xorg-x11-libXpm xorg-x11-libXpm-devel cinepaint-devel-0.25
-%endif
-
-%if !0%{?suse_version}
-Requires:  freefont
 %endif
 
 %description
@@ -81,18 +87,11 @@ make %{_smp_mflags} || make
 
 %install
 make DESTDIR=%{buildroot} install
-
-%if 0%{?suse_version} > 1010
-# Font is included in freefont package (on opensuse) and in some few others no really need to distribute it once more
-rm %{buildroot}/%{_datadir}/fonts/FreeSans.ttf
-%endif
-cp icc_examin.desktop iccexamin.desktop
-# make rpmplint quit...
-echo 'X-SuSE-translate=true' >> iccexamin.desktop
-desktop-file-install --dir=%{buildroot}/%{desktopdir} iccexamin.desktop
 %find_lang %{name}       # generate a special file list
-
-%clean
+%if 0%{?suse_version} > 1010
+find %{buildroot} -type f -name "*.ttf" -delete -print
+%suse_update_desktop_file -n  iccexamin # some openSUSE magic
+%endif
 
 %post
 update-mime-database %{_datadir}/mime/
