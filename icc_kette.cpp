@@ -223,7 +223,7 @@ ICCkette::einfuegen (const Speicher & prof, int pos)
       benachrichtigen( extra_benachrichtigen );
   }
   //else
-    ///*Modell::*/benachrichtigen( p );
+    /*Modell::*/benachrichtigen( p );
   //icc_examin_ns::unlock(icc_examin, __FILE__,__LINE__);
   DBG_PROG_ENDE
   return erfolg;
