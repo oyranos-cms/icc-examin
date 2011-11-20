@@ -1313,6 +1313,9 @@ oyOptions_s * ICCexamin::options( void )
   if(oyOptions_FindString( ui_options, "rendering_intent", NULL) == NULL)
     oyOptions_SetFromText( &ui_options, OY_BEHAVIOUR_STD "rendering_intent",
                              "3", OY_CREATE_NEW );
+  /* absolute intent in lcms2 is always full adapted to D50 */
+  oyOptions_SetFromText( &ui_options, OY_BEHAVIOUR_STD "adaption_state",
+                         "0.0", OY_CREATE_NEW );
 
   return ui_options;
 }
