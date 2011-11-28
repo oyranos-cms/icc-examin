@@ -808,23 +808,25 @@ cd "$top"
 
 
 # kolor-manager
-  echo checkout kolor-manager
-  svn checkout svn://anonsvn.kde.org/home/kde/trunk/playground/graphics/kolor-manager
-  sleep 1
-  if [ -d kolor-manager ]; then
-    cd kolor-manager
-    if [ -d kolor-manager ]; then
-      echo ""
-    else
-      mkdir build
-    fi
+git_repo=kolor-manager
+  echo checkout $git_repo
+  if [ -d $git_repo ]; then
+    cd $git_repo
+    git pull
+  else
+    git clone git://anongit.kde.org/$git_repo.git
+    cd $git_repo
+    git checkout master
+    mkdir build
     cd build
-    cmake -DCMAKE_INSTALL_PREFIX=~/.kde4/ -DCMAKE_BUILD_TYPE=debugfull ..
-    sleep 2
-    make
-    make install
-    kbuildsycoca4
+    cmake ..
   fi
+  sleep 2
+  cd build
+  cmake -DCMAKE_INSTALL_PREFIX=~/.kde4/ -DCMAKE_BUILD_TYPE=debugfull ..
+  make
+  make install
+  kbuildsycoca4
 sleep 1
 
 cd "$top"
