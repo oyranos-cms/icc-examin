@@ -361,14 +361,15 @@ sleep 3
 
 # Elektra
 packet=elektra
-packet_dir=$packet-0.7.0
+packet_dir=$packet-0.7.1
 packet_file=$packet_dir.tar.gz
-checksum=1d0aac0a654660cba0965e7b2998b3f312a9ba96
+checksum=bcc733cab0b391e5790c05635ab7161d9bdcaffa
+url=ftp://ftp.markus-raab.org/elektra/
 if [ -f $packet_file ]; then
   echo $packet_file already here
 else
-  echo downloading http://www.markus-raab.org/ftp/$packet_file
-  which curl && curl -L http://www.markus-raab.org/ftp/$packet_file -o $packet_file || wget http://www.markus-raab.org/ftp/$packet_file
+  echo downloading $url$packet_file
+  which curl && curl -L $url$packet_file -o $packet_file || wget $url$packet_file
   sleep 1
 fi
 if [ `$SHA1SUM $packet_file | grep $checksum | wc -l` -eq 1 ]; then
@@ -897,7 +898,6 @@ echo ""
 if [ -f "$git_repo/$target" ]; then
   echo ICC Examin is in $git_repo/$target
   echo You can test it now with one of:
-  echo   $git_repo/$target http://www.oyranos.org/wiki/images/3/31/SRGB_linear.icc
   echo   $git_repo/$target icc-profiles-basiccolor-printing2009-1.2.0/default_profiles/printing/ISOcoated_v2_bas.ICC
   echo   hint: the 3D gamut hull is shown with the Ctrl-h shortcut
 else
