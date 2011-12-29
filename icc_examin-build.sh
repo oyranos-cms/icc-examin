@@ -841,10 +841,10 @@ git_repo=cinepaint
     git pull
   else
     git clone git://www.oyranos.org/git/$git_repo $git_repo
+    cd $git_repo
     git checkout master
   fi
   if [[ ! -f Makefile ]]; then
-    cd $git_repo
     sleep 2
     ./configure --enable-debug --disable-icc_examin --disable-pygimp $conf_opts $@
   fi
