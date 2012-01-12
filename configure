@@ -714,6 +714,7 @@ LIBTIFF=1; export LIBTIFF
 #FLU=2; export FLU
 if [ $OSUNAME != "Darwin" ] && [ $OSUNAME != "Windows" ]; then
 X11=1;   export X11
+XCM=1;   export XCM
 fi
 XINERAMA=1; export XINERAMA
 XF86VMODE=1; export XF86VMODE
@@ -734,6 +735,7 @@ LIBPNG=0; export LIBPNG
 LIBTIFF=0; export LIBTIFF
 FLU=0; export FLU
 X11=0; export X11
+XCM=0; export XCM
 XINERAMA=0; export XINERAMA
 XF86VMODE=0; export XF86VMODE
 DEBUG=0; export DEBUG
