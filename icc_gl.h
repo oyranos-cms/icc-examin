@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2009  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2012  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -68,6 +68,8 @@ class GL_Ansicht : public Fl_Gl_Window,
   ICClist<int>        channels_;
   oyStructList_s * colours_;
   oyNamedColour_s  * epoint_;            //!< emphasize point
+  oyProfile_s * edit_;                   //!< editing colour space
+  oyRectangle_s * window_geometry;
 public:
   oyNamedColour_s  * mouse_3D_hit;       //!< a point recently hit by the mouse
 

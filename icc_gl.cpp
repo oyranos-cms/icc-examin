@@ -71,6 +71,8 @@
 #include <iconv.h>    /* iconv */
 #include <wchar.h>    /* wchar_t */
 
+#include <X11/Xcm/Xcm.h>
+
 #ifdef DEBUG_
 #define MARK(x) DBG_S( #x ) x
 #else
@@ -256,6 +258,8 @@ GL_Ansicht::zero_()
   oyProfile_s * prof = oyProfile_FromStd( oyEDITING_XYZ, NULL );
   mouse_3D_hit = oyNamedColour_Create( NULL, NULL,0, prof, 0 );
   oyProfile_Release( &prof );
+  window_geometry = NULL;
+  edit_ = NULL;
 
   for(int i = 0; i < DL_MAX; ++i)
     gl_listen_[i] = 0;
@@ -272,6 +276,10 @@ GL_Ansicht::init_()
 
   zero_();
   agv_ = this->getAgv(this, NULL);
+
+  edit_ = oyProfile_Copy( icc_oyranos.getEditingProfile(), NULL );
+
+  window_geometry = oyRectangle_NewWith( x(), y(), w(), h(), NULL );
 
   DBG_PROG_ENDE
 }
@@ -310,6 +318,7 @@ GL_Ansicht::~GL_Ansicht()
 # endif
 
   namedColoursRelease();
+  oyProfile_Release( &edit_ );
 
   --ref_;
 
@@ -381,6 +390,7 @@ GL_Ansicht::copy (const GL_Ansicht & gl)
   colours_ = oyStructList_Copy( gl.colours_, NULL );
   epoint_ = oyNamedColour_Copy( gl.epoint_, 0 );
   mouse_3D_hit = oyNamedColour_Copy( gl.mouse_3D_hit, 0 );
+  edit_ = oyProfile_Copy( gl.edit_, NULL );
 
   typ_ = gl.typ_;
 
@@ -2159,7 +2169,11 @@ GL_Ansicht::punkteAuffrischen()
         int x = this->window()->x() + this->window()->w()/2;
         int y = this->window()->y() + this->window()->h()/2;
 
-        oyProfile_s * prof_disp = icc_oyranos.oyMoni(x,y);
+        oyProfile_s * prof_disp = NULL;
+        if(icc_oyranos.colourServerActive() | XCM_COLOR_SERVER_PROFILES)
+          prof_disp = oyProfile_Copy( edit_, NULL );
+        else
+          prof_disp = icc_oyranos.oyMoni(x,y);
 
         int nc = oyStructList_Count(colours_);
 
@@ -2439,6 +2453,7 @@ GL_Ansicht::zeigeUmrisse_()
 
     RGB_Speicher = icc_oyranos.wandelLabNachBildschirmFarben(
                window()->x() + window()->w()/2, window()->y() + window()->h()/2,
+           icc_oyranos.colourServerActive() | XCM_COLOR_SERVER_PROFILES?edit_:0,
                Lab_Speicher, (size_t)n, opts);
     DBG_PROG_V( n )
     // create shadow
@@ -2452,6 +2467,7 @@ GL_Ansicht::zeigeUmrisse_()
 
     RGBSchatten_Speicher = icc_oyranos.wandelLabNachBildschirmFarben(
                window()->x() + window()->w()/2, window()->y() + window()->h()/2,
+           icc_oyranos.colourServerActive() | XCM_COLOR_SERVER_PROFILES?edit_:0,
                       Lab_Speicher_schatten, n, opts);
     if(!RGB_Speicher)  WARN_S( "RGB_speicher result is not available" )
     if(!RGBSchatten_Speicher)  WARN_S( "RGB_speicher result is not available" )
@@ -2597,6 +2613,7 @@ GL_Ansicht::zeigeSpektralband_()
 
     RGB_Speicher = icc_oyranos.wandelLabNachBildschirmFarben(
                window()->x() + window()->w()/2, window()->y() + window()->h()/2,
+           icc_oyranos.colourServerActive() | XCM_COLOR_SERVER_PROFILES?edit_:0,
                Lab_Speicher, (size_t)n_punkte, opts);
 
     if(typ_ == 1)
@@ -2616,6 +2633,7 @@ GL_Ansicht::zeigeSpektralband_()
 
     RGBSchatten_Speicher = icc_oyranos.wandelLabNachBildschirmFarben(
                window()->x() + window()->w()/2, window()->y() + window()->h()/2,
+           icc_oyranos.colourServerActive() | XCM_COLOR_SERVER_PROFILES?edit_:0,
                Lab_Speicher_schatten, n_punkte, opts);
     if(!RGB_Speicher || !RGBSchatten_Speicher) 
     {
@@ -2852,6 +2870,9 @@ GL_Ansicht::fensterForm( )
     glViewport(0,0,w(),h());
     DBG_PROG_V( x()<<" "<< y()<<" "<<w()<<" "<<h())
     seitenverhaeltnis = (GLdouble)w()/(GLdouble)h();
+    if(icc_oyranos.colourServerActive() | XCM_COLOR_SERVER_PROFILES)
+      icc_oyranos.colourServerRegionSet( this, edit_, window_geometry );
+    oyRectangle_SetGeo( window_geometry, x(), y(), w(), h() );
   }
   DBG_PROG_ENDE
 }
@@ -3034,6 +3055,7 @@ GL_Ansicht::zeichnen()
       {
         rgb_ = rgb = icc_oyranos.wandelLabNachBildschirmFarben( 
                window()->x() + window()->w()/2, window()->y() + window()->h()/2,
+           icc_oyranos.colourServerActive() | XCM_COLOR_SERVER_PROFILES?edit_:0,
                                  l, 1, opts);
 
         icc_examin->statusFarbe(l[0],l[1],l[2]);
@@ -3708,9 +3730,12 @@ GL_Ansicht::setBspFaceProperties_( icc_examin_ns::FACE *faceList )
   double lab[3];
 #ifdef USE_OY_NC
   oyProfile_s * prof = oyProfile_FromStd( oyEDITING_LAB, 0 );
-  oyProfile_s * disp_prof = icc_oyranos.oyMoni(
-              window()->x() + window()->w()/2, window()->y() + window()->h()/2
-                                              );
+  oyProfile_s * prof_disp = NULL;
+  if(icc_oyranos.colourServerActive() | XCM_COLOR_SERVER_PROFILES)
+    prof_disp = oyProfile_Copy( edit_, NULL );
+  else
+    prof_disp = icc_oyranos.icc_oyranos.oyMoni(
+              window()->x() + window()->w()/2, window()->y() + window()->h()/2);
   oyNamedColour_s * c = oyNamedColour_Create( 0, 0, 0, prof, 0 );
 #endif
   oyOptions_s * opts = icc_examin->options();
@@ -3737,7 +3762,7 @@ GL_Ansicht::setBspFaceProperties_( icc_examin_ns::FACE *faceList )
 
         oyNamedColour_SetColourStd( c, oyEDITING_LAB, lab, oyDOUBLE, 0, opts );
 
-        oyNamedColour_GetColour( c, disp_prof, rgba, oyDOUBLE, 0, opts );
+        oyNamedColour_GetColour( c, prof_disp, rgba, oyDOUBLE, 0, opts );
 
         vtrav->color.rr = rgba[0];
         vtrav->color.gg = rgba[1];
@@ -3747,8 +3772,11 @@ GL_Ansicht::setBspFaceProperties_( icc_examin_ns::FACE *faceList )
         lab[1] = vtrav->yy/a_darstellungs_breite;
         lab[2] = vtrav->zz/b_darstellungs_breite;
 
-        double * rgb = icc_oyranos.wandelLabNachBildschirmFarben( 
+        double * rgb = NULL;
+        rgb = icc_oyranos.wandelLabNachBildschirmFarben( 
                window()->x() + window()->w()/2, window()->y() + window()->h()/2,
+
+           icc_oyranos.colourServerActive() | XCM_COLOR_SERVER_PROFILES?edit_:0,
                                  lab, 1, opts);
 
         if(rgb)
@@ -3769,6 +3797,7 @@ GL_Ansicht::setBspFaceProperties_( icc_examin_ns::FACE *faceList )
 
 #ifdef USE_OY_NC
   oyNamedColour_Release( &c );
+  oyProfile_Release( &prof_disp );
 #endif
   oyOptions_Release( &opts );
 
