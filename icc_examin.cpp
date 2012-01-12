@@ -48,6 +48,8 @@
 #include <Carbon/Carbon.h>
 #endif
 
+#include <X11/Xcm/Xcm.h>
+
 #include <limits.h>
 #include <cstring>
 #include <float.h>
@@ -1684,6 +1686,8 @@ ICCexamin::statusFarbe(double & L, double & a, double & b)
   rgb = icc_oyranos. wandelLabNachBildschirmFarben(
                                 icc_betrachter->DD_box_stat->window()->x() + icc_betrachter->DD_box_stat->window()->w()/2,
                                 icc_betrachter->DD_box_stat->window()->y() + icc_betrachter->DD_box_stat->window()->h()/2,
+            icc_oyranos.colourServerActive() | XCM_COLOR_SERVER_PROFILES?
+                               icc_oyranos.getEditingProfile():NULL,
                                 lab, 1,
                                 options_);
   Fl_Color colour = fl_rgb_color( (int)(rgb[0]*255),
