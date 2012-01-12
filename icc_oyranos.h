@@ -120,9 +120,13 @@ class Oyranos
     int      wandelLabNachProfilUndZurueck(double *lab, // 0.0 - 1.0
                                            size_t  size, oyOptions_s * options,
                                            Speicher & profil);
-    double*  wandelLabNachBildschirmFarben(int x, int y, 
+    double*  wandelLabNachBildschirmFarben(int x, int y, oyProfile_s * profile, 
                                            double *Lab_Speicher, // 0.0 - 1.0
                                            size_t  size, oyOptions_s * options);
+    double*  convertLabToProfile         ( oyProfile_s * profile,
+                                           double *Lab_Speicher, // 0.0 - 1.0
+                                           size_t  size, oyOptions_s * options);
+    oyProfile_s * getEditingProfile      ( );
     // Create an abstract profile containing GamutCheck + Proof
     // from a device profile; write in the gamut profile in abstract
     void     gamutCheckAbstract(  Speicher &  profil,
@@ -133,6 +137,10 @@ class Oyranos
                                   oyOptions_s*options,
                                   int         native );
 
+    int      colourServerActive( );
+    void     colourServerRegionSet   ( Fl_Widget         * widget,
+                                       oyProfile_s       * profile,
+                                       oyRectangle_s     * old_rect );
 };
 
 extern Oyranos icc_oyranos;

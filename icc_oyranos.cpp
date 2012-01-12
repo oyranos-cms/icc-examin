@@ -46,6 +46,8 @@ using namespace icc_examin_ns;
 
 #ifdef HAVE_X
 #include <X11/Xlib.h>
+#include <X11/extensions/Xfixes.h>
+#include <X11/Xcm/Xcm.h>
 # ifdef HAVE_FLTK
 # include <FL/x.H>
 # endif
@@ -1071,7 +1073,7 @@ Oyranos::vrmlVonProfil (ICCprofile & profil, oyOptions_s * options,
         for(int k = 0; k < 3 ; ++k)
           lab[k] = netze[0].punkte[j].koord[k];
 
-        double * rgb = icc_oyranos.wandelLabNachBildschirmFarben( 0, 0,
+        double * rgb = icc_oyranos.wandelLabNachBildschirmFarben( 0, 0, NULL,
                                                               lab, 1, options );
         for(int k = 0; k < 3 ; ++k)
           netze[0].punkte[j].farbe[k] = rgb[k];
@@ -1391,12 +1393,14 @@ oyProfile_s * Oyranos::oyMoni (int x, int y, int native)
 
 
 double*
-Oyranos::wandelLabNachBildschirmFarben(int x, int y,
+Oyranos::wandelLabNachBildschirmFarben(int x, int y, oyProfile_s * profile,
                                        double *Lab_Speicher, // 0.0 - 1.0
                                        size_t  size, oyOptions_s * options)
 {
   DBG_5_START
 
+    if(profile)
+      return convertLabToProfile( profile, Lab_Speicher, size, options );
 
     oyProfile_s * prof_disp = oyMoni(x,y);
 
@@ -1477,7 +1481,180 @@ Oyranos::wandelLabNachBildschirmFarben(int x, int y,
   return RGB_Speicher;
 }
 
+double*  Oyranos::convertLabToProfile    ( oyProfile_s * profile,
+                                           double *Lab_Speicher, // 0.0 - 1.0
+                                           size_t  size, oyOptions_s * options)
+{
+  DBG_5_START
 
+
+    oyProfile_s * prof_disp = profile;
+
+    double *RGB_Speicher = NULL;
+
+    static oyConversion_s * cc = NULL;
+    static oyProfile_s * prof_disp_old = NULL;
+    static oyImage_s * image_lab = NULL,
+                     * image_disp = NULL;
+    static oyOptions_s * options_old = NULL;
+    static oyPixelAccess_s * pixel_access = NULL;
+    static double * rgb = NULL, * lab = NULL;
+    static size_t size_old = 0;
+
+    oyFilterNode_s * node;
+    oyFilterPlug_s * plug;
+
+    RGB_Speicher = new double[size*3];
+    if(!RGB_Speicher)  WARN_S( "RGB_speicher Speicher not available" )
+
+
+    if(prof_disp != prof_disp_old ||
+       options != options_old ||
+       size != size_old)
+    {
+      oyOptions_Release( &options_old );
+      options_old = oyOptions_Copy( options, 0 );
+
+      oyProfile_Release( &prof_disp_old );
+      prof_disp_old = oyProfile_Copy( prof_disp, 0 );
+
+      size_old = size;
+
+      if(rgb)
+        free(rgb); rgb = 0;
+      rgb = (double*) calloc(sizeof(double),3*size);
+      if(lab)
+        free(lab); lab = 0;
+      lab = (double*) calloc(sizeof(double),3*size);
+
+      oyImage_Release( &image_disp );
+      image_disp   = oyImage_Create( size, 1,
+                         rgb,
+                         oyChannels_m(oyProfile_GetChannelsCount(prof_disp)) |
+                         oyDataType_m(oyDOUBLE),
+                         prof_disp,
+                         0 );
+
+      oyProfile_s * prof_lab = oyProfile_FromStd( oyEDITING_LAB, 0 );
+      oyImage_Release( &image_lab );
+      image_lab   = oyImage_Create( size, 1,
+                         lab,
+                         oyChannels_m(oyProfile_GetChannelsCount(prof_lab)) |
+                         oyDataType_m(oyDOUBLE),
+                         prof_lab,
+                         0 );
+
+      oyConversion_Release( &cc );
+      cc = oyConversion_CreateBasicPixels( image_lab, image_disp, options, 0 );
+
+      oyProfile_Release( &prof_lab );
+
+      oyPixelAccess_Release( &pixel_access );
+      node = oyConversion_GetNode( cc, OY_OUTPUT );
+      plug = oyFilterNode_GetPlug( node, 0 );
+      oyFilterNode_Release( &node );
+      pixel_access = oyPixelAccess_Create( 0,0, plug, oyPIXEL_ACCESS_IMAGE, 0 );
+      oyFilterPlug_Release( &plug );
+    }
+
+    memcpy( lab, Lab_Speicher, sizeof(double)*3*size );
+    oyConversion_RunPixels( cc, pixel_access );
+    memcpy( RGB_Speicher, rgb, sizeof(double)*3*size );
+
+
+  DBG_5_ENDE
+  return RGB_Speicher;
+}
+
+
+void Oyranos::colourServerRegionSet  ( Fl_Widget         * widget,
+                                       oyProfile_s       * p,
+                                       oyRectangle_s     * old_rect )
+{
+#if defined(HAVE_X)           
+      /* add X11 window and display identifiers to output image */
+  Display * dpy = fl_display;     
+  Window win = fl_xid(widget->window());
+
+  oyBlob_s * b = oyBlob_New(NULL);
+  oyOptions_s * opts = oyOptions_New( NULL ),
+              * result = NULL;
+  oyRectangle_s * r;
+  oyProfile_s * prof = oyProfile_Copy( p, NULL );
+  int error = 0;
+
+  oyBlob_SetFromStatic( b, (void*)win, 0, "Window" );
+  error = oyOptions_MoveInStruct( &opts, "///window_id", (oyStruct_s**)&b,
+                          OY_CREATE_NEW );
+  b = oyBlob_New(NULL);
+  oyBlob_SetFromStatic( b, (void*)dpy, 0, "Display" );
+  error = oyOptions_MoveInStruct( &opts, "///display_id", (oyStruct_s**)&b,
+                          OY_CREATE_NEW);
+  r = oyRectangle_NewWith( widget->x(), widget->y(), widget->w(), widget->h(),
+                           NULL );
+  error = oyOptions_MoveInStruct( &opts, "///window_rectangle",(oyStruct_s**)&r,
+                          OY_CREATE_NEW );
+  r = oyRectangle_Copy( old_rect, NULL );
+  error = oyOptions_MoveInStruct( &opts, "///old_window_rectangle",
+                          (oyStruct_s**)&r, OY_CREATE_NEW );
+  error = oyOptions_MoveInStruct( &opts, "///icc_profile", (oyStruct_s**)&prof,
+                          OY_CREATE_NEW );
+
+  error = oyOptions_Handle( "//"OY_TYPE_STD"/set_xcm_region",
+                                opts,"set_xcm_region",
+                                &result );
+  if(error)
+    WARN_S("\"set_xcm_region\" failed " << error);
+  oyOptions_Release( &opts );
+#endif                     
+}
+
+oyProfile_s * Oyranos::getEditingProfile      ( )
+{
+  static oyProfile_s * editing = NULL;
+
+  if(!editing)
+  {
+    oyOption_s *matrix = oyOption_FromRegistration("///colour_matrix."
+              "from_primaries."
+              "redx_redy_greenx_greeny_bluex_bluey_whitex_whitey_gamma", NULL );
+    /* http://www.color.org/chardata/rgb/rommrgb.xalter
+     * original gamma is 1.8, we adapt to typical LCD gamma of 2.2 */
+    oyOption_SetFromDouble( matrix, 0.7347, 0, 0);
+    oyOption_SetFromDouble( matrix, 0.2653, 1, 0);
+    oyOption_SetFromDouble( matrix, 0.1596, 2, 0);
+    oyOption_SetFromDouble( matrix, 0.8404, 3, 0);
+    oyOption_SetFromDouble( matrix, 0.0366, 4, 0);
+    oyOption_SetFromDouble( matrix, 0.0001, 5, 0);
+    oyOption_SetFromDouble( matrix, 0.3457, 6, 0);
+    oyOption_SetFromDouble( matrix, 0.3585, 7, 0);
+    oyOption_SetFromDouble( matrix, 2.2, 8, 0);
+
+    oyOptions_s * opts = oyOptions_New(0),
+                * result = 0;
+
+    oyOptions_MoveIn( opts, &matrix, -1 );
+    oyOptions_Handle( "//"OY_TYPE_STD"/create_profile.icc",
+                                opts,"create_profile.icc_profile.colour_matrix",
+                                &result );
+
+    editing = (oyProfile_s*)oyOptions_GetType( result, -1, "icc_profile",
+                                               oyOBJECT_PROFILE_S );
+    oyOptions_Release( &result );
+
+    oyProfile_AddTagText( editing, icSigProfileDescriptionTag,
+                                            "ICC Examin ROMM gamma 2.2" );
+
+    if(oy_debug)
+    {
+      size_t size = 0;
+      char * data = (char*) oyProfile_GetMem( editing, &size, 0, malloc );
+      saveMemToFile( "ICC Examin ROMM gamma 2.2.icc", data, size );
+    }
+  }
+
+  return editing;
+}
 
 
 
@@ -1504,6 +1681,24 @@ Oyranos::zeigTrafo           ( const char *profilA, int ein_bytes, int kanaeleA,
 }
 #endif
 
+
+int      Oyranos::colourServerActive( )
+{
+  static int active = 0;
+#if defined(HAVE_X)
+  static double z = 0;
+  if(z + 1.0 < icc_examin_ns::zeitSekunden())
+  {
+    active = XcmColorServerCapabilities( fl_display );
+    z = icc_examin_ns::zeitSekunden();
+    if(oy_debug)
+      printf("colour server active: %d %g\n", active, z);
+  }
+#endif
+  return active;
+}
+
+
 void
 oyranos_pfade_loeschen()
 {
@@ -1523,5 +1718,4 @@ void
 oyranos_pfad_dazu (char* pfad)
 {
 }
-
 

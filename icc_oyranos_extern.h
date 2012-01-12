@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2007  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2012  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -37,8 +37,6 @@
 #include <oyranos.h>
 #include <oyranos_icc.h>
 #include <alpha/oyranos_alpha.h>
-
-#define HAVE_LCMS 1
 
 #include "icc_utils.h"
 
