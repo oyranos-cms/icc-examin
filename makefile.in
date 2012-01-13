@@ -469,11 +469,11 @@ EXEEXT		=
 
 .fl.cxx:
 	echo Expanding $< ...
-	fluid -c $<
+	cd $(SRCDIR); fluid -c $<
 
 .fl.h:
 	echo Expanding $< ...
-	fluid -c $<
+	cd $(SRCDIR); fluid -c $<
 
 .po:
 	echo Generating $@ ...
