@@ -32,6 +32,7 @@
 
 #include <list>
 #include <string>
+#include <unistd.h> // intptr_t
 
 #include "icc_modell_beobachter.h"
 

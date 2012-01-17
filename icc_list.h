@@ -31,6 +31,7 @@
 #define ICC_LIST_H
 
 #include <stddef.h> // size_t
+#include <unistd.h> // intptr_t
 
 // data structures
 // partitial in icc_speicher.h
