@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2011  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2012  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -1445,6 +1445,7 @@ ICCmeasurement::getText                     (void)
   std::stringstream s;
   int z = 0; // rows
 
+  tabelle.resize(1);
   tabelle[0].resize(1);
   tabelle[0][0] = _("no measurment data or correct profile conversion available");
 
