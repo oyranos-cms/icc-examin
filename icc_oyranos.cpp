@@ -1569,18 +1569,22 @@ double*  Oyranos::convertLabToProfile    ( oyProfile_s * profile,
 
 void Oyranos::colourServerRegionSet  ( Fl_Widget         * widget,
                                        oyProfile_s       * p,
-                                       oyRectangle_s     * old_rect )
+                                       oyRectangle_s     * old_rect,
+                                       int                 remove )
 {
 #if defined(HAVE_X)           
+  if(!fl_display || !widget->window() || !widget->window()->visible())
+    return;
+
       /* add X11 window and display identifiers to output image */
-  Display * dpy = fl_display;     
+  Display * dpy = fl_display;
   Window win = fl_xid(widget->window());
 
   oyBlob_s * b = oyBlob_New(NULL);
   oyOptions_s * opts = oyOptions_New( NULL ),
               * result = NULL;
   oyRectangle_s * r;
-  oyProfile_s * prof = oyProfile_Copy( p, NULL );
+  oyProfile_s * prof = NULL;
   int error = 0;
 
   oyBlob_SetFromStatic( b, (void*)win, 0, "Window" );
@@ -1590,15 +1594,22 @@ void Oyranos::colourServerRegionSet  ( Fl_Widget         * widget,
   oyBlob_SetFromStatic( b, (void*)dpy, 0, "Display" );
   error = oyOptions_MoveInStruct( &opts, "///display_id", (oyStruct_s**)&b,
                           OY_CREATE_NEW);
-  r = oyRectangle_NewWith( widget->x(), widget->y(), widget->w(), widget->h(),
-                           NULL );
+  if(remove)
+    r = oyRectangle_NewWith( 0, 0, 0, 0, NULL );
+  else
+    r = oyRectangle_NewWith( widget->x(), widget->y(), widget->w(), widget->h(),
+                             NULL );
   error = oyOptions_MoveInStruct( &opts, "///window_rectangle",(oyStruct_s**)&r,
                           OY_CREATE_NEW );
   r = oyRectangle_Copy( old_rect, NULL );
   error = oyOptions_MoveInStruct( &opts, "///old_window_rectangle",
                           (oyStruct_s**)&r, OY_CREATE_NEW );
-  error = oyOptions_MoveInStruct( &opts, "///icc_profile", (oyStruct_s**)&prof,
+  if(p)
+  {
+    prof = oyProfile_Copy( p, NULL );
+    error = oyOptions_MoveInStruct( &opts, "///icc_profile",(oyStruct_s**)&prof,
                           OY_CREATE_NEW );
+  }
 
   error = oyOptions_Handle( "//"OY_TYPE_STD"/set_xcm_region",
                                 opts,"set_xcm_region",

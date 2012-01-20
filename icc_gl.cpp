@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2011  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2012  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -671,6 +671,7 @@ GL_Ansicht::hide()
   DBG_PROG_START
   DBG_PROG_V( visible()<<" "<<shown() )
   icc_examin->alle_gl_fenster->beobachterFort(this);
+  icc_oyranos.colourServerRegionSet( this, NULL, window_geometry, 1 );
   Fl_Gl_Window::hide();
   DBG_PROG_ENDE
 }     
@@ -2870,8 +2871,9 @@ GL_Ansicht::fensterForm( )
     glViewport(0,0,w(),h());
     DBG_PROG_V( x()<<" "<< y()<<" "<<w()<<" "<<h())
     seitenverhaeltnis = (GLdouble)w()/(GLdouble)h();
-    if(icc_oyranos.colourServerActive() | XCM_COLOR_SERVER_PROFILES)
-      icc_oyranos.colourServerRegionSet( this, edit_, window_geometry );
+    if(icc_oyranos.colourServerActive() | XCM_COLOR_SERVER_PROFILES &&
+       typ_ != 1)
+      icc_oyranos.colourServerRegionSet( this, edit_, window_geometry, 0 );
     oyRectangle_SetGeo( window_geometry, x(), y(), w(), h() );
   }
   DBG_PROG_ENDE
@@ -4173,6 +4175,9 @@ GL_Ansicht::handle( int event )
          break;
     case FL_LEAVE:
          DBG_BUTTON_S( dbgFltkEvent(event) )
+         break;
+    case FL_HIDE:
+         hide();
          break;
     case FL_NO_EVENT:
     default:
