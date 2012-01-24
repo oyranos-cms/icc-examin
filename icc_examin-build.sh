@@ -168,13 +168,10 @@ if [ $? -gt 0 ]; then
   # FLTK
   echo building FLTK ...
   packet=fltk
-  #packet_dir=$packet-1.1.10
-  #packet_file="$packet_dir"-source.tar.gz
-  #url="http://ftp.rz.tu-bs.de/pub/mirror/ftp.easysw.com/ftp/pub/fltk/1.1.10/"
-  #checksum=e6378a76ca1ef073bcb092df1ef3ba55
-  packet_dir=$packet-1.3.x-r7216
-  packet_file="$packet_dir".tar.gz
-  checksum=df8bc3f65e5e90591f2196a8957f6c6d
+  url=http://ftp.easysw.com/pub/fltk/1.3.0/
+  packet_dir=$packet-1.3.0
+  packet_file="$packet_dir"-source.tar.gz
+  checksum=44d5d7ba06afdd36ea17da6b4b703ca3
   if [ -f $packet_file ]; then
     echo $packet_file already here
   else
