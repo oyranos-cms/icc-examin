@@ -296,6 +296,9 @@ int MyFl_Double_Window::handle( int e )
     IN_MIDDLE_OF_(in_middle_of_[HANDLE])
   in_middle_of_[HANDLE] += 1;
 
+  // update window position
+  Oy_Fl_Window_Base::handle(this, e);
+
   int ergebnis = 0;
   if(event_handler)
     ergebnis = event_handler(e);

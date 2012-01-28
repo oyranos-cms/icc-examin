@@ -990,12 +990,8 @@ ICCmeasurement::init_umrechnen                     (void)
     // select a fitting monitor- / displayprofile
     if(!export_farben)
     {
-      int x = 0;
-      int y = 0;
+      profile_rgb = icc_oyranos.getEditingProfile();
 
-      profile_rgb = icc_oyranos.oyMoni( x,y, 0 );
-
-      DBG_PROG_S( icc_oyranos.moni_name( x,y ) << " Farben" )
     } else
     {
       profile_rgb = oyProfile_FromStd( oyASSUMED_WEB, 0 );

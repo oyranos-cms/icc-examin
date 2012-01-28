@@ -1,5 +1,5 @@
 # data file for the Fltk User Interface Designer (fluid)
-version 1.0108 
+version 1.0110 
 i18n_type 1 
 i18n_include <fl_i18n/fl_i18n.H> 
 i18n_function _ 
@@ -46,6 +46,9 @@ decl {\#include <FL/Fl_Box.H>} {public
 decl {\#include "Flmm_Message.H"} {} 
 
 decl {\#include "Flmm_Tabs.H"} {public
+} 
+
+decl {\#include "Oy_Fl_Group.h"} {public
 } 
 
 decl {\#include "icc_gl.h"} {} 
@@ -424,7 +427,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window DD {
       label Gamut open
-      xywh {338 221 385 520} type Double box NO_BOX resizable
+      xywh {1426 269 385 520} type Double box NO_BOX resizable
       class {icc_examin_ns::MyFl_Double_Window} visible
     } {
       Fl_Group {} {open
@@ -594,8 +597,13 @@ DBG_NUM_S("Show Log window")}
             code1 {o->typ( 1 ); // wandert ins 1. Nebenfenster}
             class GL_Ansicht
           }
-          Fl_Box DD_box_stat {
-            xywh {0 495 385 25} box FLAT_BOX align 21
+          Fl_Group DD_box_stat_oy {open
+            xywh {0 495 385 25}
+            class Oy_Fl_Group
+          } {
+            Fl_Box DD_box_stat {
+              xywh {0 495 385 25} box FLAT_BOX align 21
+            }
           }
         }
       }
@@ -615,10 +623,10 @@ DBG_NUM_S("Show Log window")}
         xywh {0 0 385 520}
       } {
         Fl_Box {} {
-          label {invisible box} selected
+          label {invisible box}
           xywh {0 0 385 520} box FLAT_BOX align 16
         }
-        Fl_Menu_Bar menueleiste {open
+        Fl_Menu_Bar menueleiste {
           xywh {0 0 385 25} align 4 when 3
         } {
           Submenu {} {
@@ -810,7 +818,7 @@ DBG_NUM_S("Show Log window")}
           Fl_Group {} {open
             xywh {0 25 385 470} align 4
           } {
-            Fl_Help_View inspekt_html {
+            Fl_Help_View inspekt_html {selected
               xywh {0 25 385 470} box FLAT_BOX color 49 align 4 resizable
               code0 {o->hide();}
             }

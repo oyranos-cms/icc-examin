@@ -42,13 +42,13 @@
 #include <FL/Fl_Double_Window.H> 
 #include <FL/fl_ask.H>
 
-
+#include "Oy_Fl_Window_Base.h"
 
 namespace icc_examin_ns {
 
 
   //! register all windows inside this class, to adjust behaviour
-  class MyFl_Double_Window : public Fl_Double_Window
+  class MyFl_Double_Window : public Fl_Double_Window, public Oy_Fl_Window_Base
   {
 
      static MyFl_Double_Window ** list_;

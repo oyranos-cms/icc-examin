@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2011  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2012  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -37,8 +37,10 @@
 #include "config.h"
 using namespace icc_examin_ns;
 
-#include "oyranos.h"
-#include "alpha/oyranos_alpha.h"
+#include <oyranos.h>
+#include <alpha/oyranos_alpha.h>
+
+#include "oyranos_display_helpers.c"
 
 #ifdef APPLE
 #include <Carbon/Carbon.h>

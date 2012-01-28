@@ -526,10 +526,12 @@ ICCexamin::zeigPrueftabelle ()
         lw = details->w(),
         lh = details->h();
 
+    oyProfile_s * e = icc_oyranos.getEditingProfile();
     MyFl_Double_Window *w =
       new MyFl_Double_Window( lx+lw, ly, lw, lh, "Prueftabelle" );
       w->user_data((void*)(0));
-        Fl_Group *g = new Fl_Group(0,0,lw,lh);
+        Oy_Fl_Group *g = new Oy_Fl_Group(0,0,lw,lh,e);
+        oyProfile_Release( &e );
         g->end();
         wid->resize(0,0, lw,lh);
         g->add( wid );
@@ -1682,6 +1684,12 @@ ICCexamin::statusFarbe(double & L, double & a, double & b)
 { DBG_PROG_START
   double lab[3] = {L, a, b},
          *rgb = 0;
+  static oyProfile_s * e = NULL;
+  if(!e)
+  {
+    e = icc_oyranos.getEditingProfile();
+    icc_betrachter->DD_box_stat_oy->setProfile( e );
+  }
   DBG_PROG_V( lab[0]<<" "<<lab[1]<<" "<<lab[2] )
   rgb = icc_oyranos. wandelLabNachBildschirmFarben(
                                 icc_betrachter->DD_box_stat->window()->x() + icc_betrachter->DD_box_stat->window()->w()/2,
