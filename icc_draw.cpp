@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2011  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2012  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -341,6 +341,7 @@ TagDrawings::drawCieShoe_ ( int repeated)
       }
     }
     // draw background (Oyranos)
+    if(n_pixel)
     {
       int width = xNachBild(0.73) - xNachBild(0),
           height = abs(yNachBild(0.85) - yNachBild(0.01));
