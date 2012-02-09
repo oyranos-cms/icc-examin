@@ -1,4 +1,4 @@
-export PATH=$PATH:/home/kuwe/.local/bin
+export PATH=$PATH:$HOME/.local/bin
 export LIBDIR=$HOME/.local/lib64
 export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:$LIBDIR/pkgconfig
 ./icc_examin-build.sh --prefix=$HOME/.local --libdir=$LIBDIR
