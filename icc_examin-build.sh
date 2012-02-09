@@ -472,7 +472,9 @@ git_repo=xcolor
   update_xcm=0
   git_version="`cat .git/refs/heads/master`"
   old_git_version="`cat old_gitrev.txt`"
-  if [ "$git_version" != "$old_git_version" ]; then
+  pkg-config --atleast-version=0.5 xcm
+  if [ "$git_version" != "$old_git_version" ] || [ $? -ne 0 ]; then
+    echo "xcm `pkg-config --modversion xcm`"
     update_xcm=1
     ./configure --disable-verbose $conf_opts $@
     make $MAKE_CPUS
@@ -739,7 +741,10 @@ git_repo=oyranos
   git_version="`cat .git/refs/heads/master`"
   old_git_version="`cat old_gitrev.txt`"
   update_oyranos=0
-  if [ $update_xcm = 1 ] || [ "$git_version" != "$old_git_version" ]; then
+  pkg-config --atleast-version=0.4 oyranos
+  if [ $update_xcm = 1 ] || [ "$git_version" != "$old_git_version" ] ||
+     [ $? -ne 0 ]; then
+    echo "xcm `pkg-config --modversion oyranos`"
     update_oyranos=1
     make clean
     CFLAGS="$CFLAGS $OSX_ARCH" CXXFLAGS="$CXXFLAGS $OSX_ARCH" LDFLAGS="$LDFLAGS $OSX_ARCH" ./configure $conf_opts $@  --disable-verbose --enable-debug
