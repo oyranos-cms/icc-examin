@@ -72,6 +72,18 @@ else
     SHA1SUM=sha1sum
   fi
   NON_OSX_SHARED=--enable-shared
+  if [ $UNAME_ = "MINGW32_NT-6.1" ]; then
+    url=ftp://ftp.gnupg.org/gcrypt/binary
+    packet_file=sha1sum.exe
+    checksum=10cf8f3c437f979309c42941f21f4023
+    which curl && curl -L $url/$packet_file -o $packet_file || wget $url/$packet_file
+    if [ `$MD5SUM $packet_file | grep $checksum | wc -l` -eq 1 ]; then
+      echo downloaded $packet_file
+    else
+      rm $packet_file
+      echo download of $packet_file incomplete
+    fi
+  fi
 fi
 
 cpus=`./processors`
