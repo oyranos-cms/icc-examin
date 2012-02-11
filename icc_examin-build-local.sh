@@ -1,4 +1,4 @@
-export inst$HOME
+export inst=$HOME
 export PATH=$PATH:$inst/.local/bin
 export LIBDIR=$inst/.local/lib64
 export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:$LIBDIR/pkgconfig
