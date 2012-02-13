@@ -121,8 +121,16 @@ if [ -z "$PATH" ]; then
 else
   PATH=$PATH:$prefix/bin
 fi
-
-export PATH PKG_CONFIG_PATH LD_LIBRARY_PATH
+if [ -z "$kde_prefix" ]; then
+  kde_prefix=$HOME/.kde4/
+fi
+if [ -z "$verbose" ]; then
+  verbose=1
+fi
+if [ $verbose -eq 0 ]; then
+  v=--disable-verbose
+fi
+export PATH PKG_CONFIG_PATH LD_LIBRARY_PATH kde_prefix
 
 
 ### dependency testing ###
@@ -148,7 +156,7 @@ else
   else
     echo downloading $url/$packet_file
     which curl && curl -L $url/$packet_file -o $packet_file || wget $url/$packet_file
-    sleep 1
+    if [ $verbose -gt 0 ]; then sleep 1; fi
   fi
   if [ `$SHA1SUM $packet_file | grep $checksum | wc -l` -eq 1 ]; then
     echo sha1sum for $packet_file passed
@@ -158,7 +166,7 @@ else
   fi
   if [ -d $packet_dir ]; then
     echo remove $packet_dir
-    sleep 1
+    if [ $verbose -gt 0 ]; then sleep 1; fi
     rm -r $packet_dir
   fi
   tar xzf $packet_file
@@ -168,7 +176,7 @@ else
   make $MAKE_CPUS
   make install
 fi
-sleep 1
+if [ $verbose -gt 0 ]; then sleep 1; fi
 
 cd "$top"
 
@@ -189,7 +197,7 @@ if [ $? -gt 0 ]; then
   else
     echo "downloading $url$packet_file"
     which curl && curl -L "$url$packet_file" -o $packet_file || wget "$url$packet_file"
-    sleep 1
+    if [ $verbose -gt 0 ]; then sleep 1; fi
   fi
   if [ `$MD5SUM $packet_file | grep $checksum | wc -l` -eq 1 ]; then
     echo md5sum for $packet_file passed
@@ -211,7 +219,7 @@ if [ $? -gt 0 ]; then
   if [ $packet_ready -lt 1 ]; then
     if [ -d $packet_dir ]; then
       echo remove $packet_dir
-      sleep 1
+      if [ $verbose -gt 0 ]; then sleep 1; fi
       rm -r $packet_dir
     fi
     echo unpacking $packet_file ...
@@ -222,7 +230,7 @@ if [ $? -gt 0 ]; then
     make $MAKE_CPUS
     make install
   fi
-  sleep 1
+  if [ $verbose -gt 0 ]; then sleep 1; fi
 
   cd "$top"
 fi
@@ -250,7 +258,7 @@ else
   else
     echo "downloading $url$packet_file"
     which curl && curl -L "$url$packet_file" -o $packet_file || wget "$url$packet_file"
-    sleep 1
+    if [ $verbose -gt 0 ]; then sleep 1; fi
   fi
   if [ `$SHA1SUM $packet_file | grep $checksum | wc -l` -eq 1 ]; then
     echo sha1sum for $packet_file passed
@@ -272,7 +280,7 @@ else
   if [ $packet_ready -lt 1 ]; then
     if [ -d $packet_dir ]; then
       echo remove $packet_dir
-      sleep 1
+      if [ $verbose -gt 0 ]; then sleep 1; fi
       rm -r $packet_dir
     fi
     echo unpacking $packet_file ...
@@ -283,7 +291,7 @@ else
     make $MAKE_CPUS
     make install
   fi
-  sleep 1
+  if [ $verbose -gt 0 ]; then sleep 1; fi
 
   cd "$top"
 fi
@@ -314,7 +322,7 @@ else
   else
     echo "downloading $url$packet_file"
     which curl && curl -L "$url$packet_file" -o $packet_file || wget "$url$packet_file"
-    sleep 1
+    if [ $verbose -gt 0 ]; then sleep 1; fi
   fi
   if [ `$SHA1SUM $packet_file | grep $checksum | wc -l` -eq 1 ]; then
     echo sha1sum for $packet_file passed
@@ -336,7 +344,7 @@ else
   if [ $packet_ready -lt 1 ]; then
     if [ -d $packet_dir ]; then
       echo remove $packet_dir
-      sleep 1
+      if [ $verbose -gt 0 ]; then sleep 1; fi
       rm -r $packet_dir
     fi
     echo unpacking $packet_file ...
@@ -348,7 +356,7 @@ else
     make install
   fi
   libpng="$packet:      `pkg-config --modversion $packet`"
-  sleep 1
+  if [ $verbose -gt 0 ]; then sleep 1; fi
 
   cd "$top"
 fi
@@ -358,7 +366,14 @@ echo "$ftgl"
 echo "$lcms"
 echo "$libxml2"
 echo "$libpng"
-
+echo ""
+echo "$0 $@"
+echo "PATH            = $PATH"
+echo "LD_LIBRARY_PATH = $LD_LIBRARY_PATH"
+echo "PKG_CONFIG_PATH = $PKG_CONFIG_PATH"
+echo "prefix          = $prefix"
+echo "kde_prefix      = $kde_prefix"
+echo "skip            = $skip"
 
 if [ $stop_build -gt 0 ]; then
   echo ""
@@ -366,7 +381,7 @@ if [ $stop_build -gt 0 ]; then
   echo ""
   exit 1
 fi
-sleep 3
+if [ $verbose -gt 0 ]; then sleep 1; fi
 
 # Elektra
 packet=elektra
@@ -374,12 +389,12 @@ packet_dir=$packet-0.7.1
 packet_file=$packet_dir.tar.gz
 checksum=bcc733cab0b391e5790c05635ab7161d9bdcaffa
 url=ftp://ftp.markus-raab.org/elektra/
-if [ -f $packet_file ]; then
-  echo $packet_file already here
+if [ -f $packet_file ] || [ `echo "$skip" | grep $packet | wc -l` -ne 0 ]; then
+  echo $packet_file skipped
 else
   echo downloading $url$packet_file
   which curl && curl -L $url$packet_file -o $packet_file || wget $url$packet_file
-  sleep 1
+  if [ $verbose -gt 0 ]; then sleep 1; fi
 fi
 if [ `$SHA1SUM $packet_file | grep $checksum | wc -l` -eq 1 ]; then
   echo sha1sum for $packet_file passed
@@ -398,10 +413,12 @@ else
   echo PKG_CONFIG_PATH=$PKG_CONFIG_PATH
   pkg-config --modversion $packet
 fi
-if [ $packet_ready -lt 1 ]; then
+if [ $packet_ready -eq 1 ] || [ `echo "$skip" | grep $packet | wc -l` -ne 0 ]; then
+  echo $packet skipped
+else
   if [ -d $packet_dir ]; then
     echo remove $packet_dir
-    sleep 1
+    if [ $verbose -gt 0 ]; then sleep 1; fi
     rm -r $packet_dir
   fi
   echo unpacking $packet_file ...
@@ -418,7 +435,7 @@ if [ $packet_ready -lt 1 ]; then
     fi
   fi
 fi
-sleep 1
+if [ $verbose -gt 0 ]; then sleep 1; fi
 
 cd "$top"
 
@@ -444,7 +461,7 @@ else
   else
     echo downloading $url/$packet_file
     which curl && curl -L $url/$packet_file -o $packet_file || wget $url/$packet_file
-    sleep 1
+    if [ $verbose -gt 0 ]; then sleep 1; fi
   fi
   if [ `$SHA1SUM $packet_file | grep $checksum | wc -l` -eq 1 ]; then
     echo sha1sum for $packet_file passed
@@ -454,7 +471,7 @@ else
   fi
   if [ -d $packet_dir ]; then
     echo remove $packet_dir
-    sleep 1
+    if [ $verbose -gt 0 ]; then sleep 1; fi
     rm -r $packet_dir
   fi
   tar xzf $packet_file
@@ -464,7 +481,7 @@ else
   make $MAKE_CPUS
   make install
 fi
-sleep 1
+if [ $verbose -gt 0 ]; then sleep 1; fi
 
 cd "$top"
 
@@ -480,22 +497,22 @@ git_repo=xcolor
     cd $git_repo
     git checkout master
   fi
-  sleep 2
+  if [ $verbose -gt 0 ]; then sleep 2; fi
   update_xcm=0
   git_version="`cat .git/refs/heads/master`"
   old_git_version="`cat old_gitrev.txt`"
   pkg-config --atleast-version=0.5 xcm
-  if [ "$git_version" != "$old_git_version" ] || [ $? -ne 0 ]; then
+  if [ $? -ne 0 ] || [ "$git_version" != "$old_git_version" ]; then
     echo "xcm `pkg-config --modversion xcm`"
     update_xcm=1
-    ./configure --disable-verbose $conf_opts $@
+    ./configure $v $conf_opts $@
     make $MAKE_CPUS
     make install
   else
     echo no changes in git $git_version
   fi
   echo "$git_version" > old_gitrev.txt
-sleep 1
+if [ $verbose -gt 0 ]; then sleep 1; fi
 
 cd "$top"
 
@@ -511,26 +528,26 @@ git_repo=xcm
     cd $git_repo
     git checkout master
   fi
-  sleep 2
+  if [ $verbose -gt 0 ]; then sleep 2; fi
   git_version="`cat .git/refs/heads/master`"
   old_git_version="`cat old_gitrev.txt`"
   if [ "$git_version" != "$old_git_version" ]; then
-    ./configure --disable-verbose $conf_opts $@
+    ./configure $v $conf_opts $@
     make $MAKE_CPUS
     make install
   else
     echo no changes in git $git_version
   fi
   echo "$git_version" > old_gitrev.txt
-sleep 1
+if [ $verbose -gt 0 ]; then sleep 1; fi
 
 cd "$top"
 
 
 # SANE
 UNAME_=`uname`
-if [ $UNAME_ = "Darwin" ]; then
-  skip=sane
+if [ $UNAME_ = "Darwin" ] || [ `echo "$skip" | grep sane | wc -l` -ne 0 ]; then
+  echo sane skipped
 else
   git_repo=sane-backends
   if [ -d $git_repo ]; then
@@ -549,7 +566,7 @@ else
     cd $git_repo
     git checkout master
   fi
-  sleep 2
+  if [ $verbose -gt 0 ]; then sleep 2; fi
 
   git_version="`cat .git/refs/heads/master`"
 
@@ -607,7 +624,7 @@ else
   patch -p1 < $packet_file
 
   git diff > patch_old.patch
-  sleep 1
+  if [ $verbose -gt 0 ]; then sleep 1; fi
 
   if [ -f configure ]; then
     echo ""
@@ -616,7 +633,7 @@ else
     libtoolize -f
     automake --add-missing
     autoconf
-    sleep 2
+    if [ $verbose -gt 0 ]; then sleep 2; fi
   fi
   
   if [ -f config.log ]; then
@@ -627,6 +644,7 @@ else
 
   old_git_version="`cat old_gitrev.txt`"
   if [ "$git_version" != "$old_git_version" ]; then
+    echo "$git_version" != "$old_git_version"
     make $MAKE_CPUS
     make install
   else
@@ -634,13 +652,16 @@ else
   fi
   echo "$git_version" > old_gitrev.txt
 fi
-sleep 2
+if [ $verbose -gt 0 ]; then sleep 2; fi
 
 cd "$top"
 
 
 #LibRaw
 git_repo=LibRaw
+if [ `echo "$skip" | grep $git_repo | wc -l` -ne 0 ]; then
+  echo $git_repo skipped
+else
   echo checkout $git_repo
   if [ -d $git_repo ]; then
     cd $git_repo
@@ -651,7 +672,7 @@ git_repo=LibRaw
     cd $git_repo
     git checkout master
   fi
-  sleep 2
+  if [ $verbose -gt 0 ]; then sleep 2; fi
   if [ -f configure ]; then
     echo ""
   else
@@ -660,11 +681,17 @@ git_repo=LibRaw
     automake --add-missing
     autoconf
   fi
-  CFLAGS="$CFLAGS $FPIC" CXXFLAGS="$CXXFLAGS $FPIC" ./configure --enable-openmp --enable-lcms=no $conf_opts $@
-  sleep 2
-  make $MAKE_CPUS
-  make install
-sleep 2
+  git_version="`cat .git/refs/heads/master`"
+  old_git_version="`cat old_gitrev.txt`"
+  if [ "$git_version" != "$old_git_version" ]; then
+    CFLAGS="$CFLAGS $FPIC" CXXFLAGS="$CXXFLAGS $FPIC" ./configure --enable-openmp --enable-lcms=no $conf_opts $@
+    if [ $verbose -gt 0 ]; then sleep 2; fi
+    make $MAKE_CPUS
+    make install
+    echo "$git_version" > old_gitrev.txt
+  fi
+fi
+if [ $verbose -gt 0 ]; then sleep 2; fi
 
 cd "$top"
 
@@ -680,7 +707,7 @@ else
   echo downloading http://downloads.sourceforge.net/project/openicc/OpenICC-Profiles/$packet_file
   which curl && curl -L $loc$packet_file -o $packet_file || wget $loc$packet_file
 fi
-sleep 1
+if [ $verbose -gt 0 ]; then sleep 1; fi
 if [ `$SHA1SUM $packet_file | grep $checksum | wc -l` -eq 1 ]; then
   echo sha1sum for $packet_file passed
   echo unpacking $packet_file ...
@@ -688,7 +715,7 @@ if [ `$SHA1SUM $packet_file | grep $checksum | wc -l` -eq 1 ]; then
   if [ -d $packet_dir ]; then
     echo $packet_dir in place
     cd $packet_dir
-    ./configure --disable-verbose $conf_opts $@
+    ./configure $v $conf_opts $@
     make
     make install
   fi
@@ -700,7 +727,7 @@ fi
 
 cd "$top"
 
-sleep 2
+if [ $verbose -gt 0 ]; then sleep 2; fi
 
 # OpenICC default profiles II
 packet=icc-profiles-basiccolor-printing2009
@@ -714,7 +741,7 @@ else
   echo downloading http://downloads.sourceforge.net/project/openicc/basICColor-Profiles/$packet_file
   which curl && curl -L $loc$packet_file -o $packet_file || wget $loc$packet_file
 fi
-sleep 1
+if [ $verbose -gt 0 ]; then sleep 1; fi
 if [ `$SHA1SUM $packet_file | grep $checksum | wc -l` -eq 1 ]; then
   echo sha1sum for $packet_file passed
   echo unpacking $packet_file ...
@@ -722,7 +749,7 @@ if [ `$SHA1SUM $packet_file | grep $checksum | wc -l` -eq 1 ]; then
   if [ -d $packet_dir ]; then
     echo $packet_dir in place
     cd $packet_dir
-    ./configure --disable-verbose $conf_opts $@
+    ./configure $v $conf_opts $@
     make
     make install
   fi
@@ -734,7 +761,7 @@ fi
 
 cd "$top"
 
-sleep 2
+if [ $verbose -gt 0 ]; then sleep 2; fi
 
 
 # Oyranos
@@ -749,17 +776,17 @@ git_repo=oyranos
     git checkout master
   fi
   echo updated libXcm $update_xcm
-  sleep 2
+  if [ $verbose -gt 0 ]; then sleep 2; fi
   git_version="`cat .git/refs/heads/master`"
   old_git_version="`cat old_gitrev.txt`"
   update_oyranos=0
   pkg-config --atleast-version=0.4 oyranos
-  if [ $update_xcm = 1 ] || [ "$git_version" != "$old_git_version" ] ||
-     [ $? -ne 0 ]; then
+  if [ $? -ne 0 ] || [ $update_xcm = 1 ] ||
+     [ "$git_version" != "$old_git_version" ]; then
     echo "xcm `pkg-config --modversion oyranos`"
     update_oyranos=1
     make clean
-    CFLAGS="$CFLAGS $OSX_ARCH" CXXFLAGS="$CXXFLAGS $OSX_ARCH" LDFLAGS="$LDFLAGS $OSX_ARCH" ./configure $conf_opts $@  --disable-verbose --enable-debug
+    CFLAGS="$CFLAGS $OSX_ARCH" CXXFLAGS="$CXXFLAGS $OSX_ARCH" LDFLAGS="$LDFLAGS $OSX_ARCH" ./configure $conf_opts $@  $v --enable-debug
     make $MAKE_CPUS
     make install
     make check
@@ -767,13 +794,16 @@ git_repo=oyranos
     echo no changes in git $git_version
   fi
   echo "$git_version" > old_gitrev.txt
-sleep 1
+if [ $verbose -gt 0 ]; then sleep 1; fi
 
 cd "$top"
 
 
 # CompIcc
 git_repo=compicc
+if [ `echo "$skip" | grep $git_repo | wc -l` -ne 0 ]; then
+  echo $git_repo skipped
+else
   echo checkout $git_repo
   if [ -d $git_repo ]; then
     cd $git_repo
@@ -783,23 +813,27 @@ git_repo=compicc
     cd $git_repo
     git checkout master
   fi
-  sleep 2
+  if [ $verbose -gt 0 ]; then sleep 2; fi
   git_version="`cat .git/refs/heads/master`"
   old_git_version="`cat old_gitrev.txt`"
   if [ $update_oyranos = 1 ] || [ "$git_version" != "$old_git_version" ]; then
-    ./configure --disable-verbose $conf_opts $@
+    ./configure $v $conf_opts $@
     make $MAKE_CPUS
     make install
   else
     echo no changes in git $git_version
   fi
   echo "$git_version" > old_gitrev.txt
-sleep 1
+fi
+if [ $verbose -gt 0 ]; then sleep 1; fi
 
 cd "$top"
 
 # Synnefo
 git_repo=synnefo
+if [ `echo "$skip" | grep $git_repo | wc -l` -ne 0 ]; then
+  echo $git_repo skipped
+else
   echo checkout $git_repo
   if [ -d $git_repo ]; then
     cd $git_repo
@@ -809,21 +843,31 @@ git_repo=synnefo
     cd $git_repo
     git checkout master
     mkdir build
-    cd build
-    cmake ..
   fi
-  sleep 2
-  cd build
-  cmake -DCMAKE_INSTALL_PREFIX=~/.kde4/ -DCMAKE_BUILD_TYPE=debugfull ..
-  make
-  make install
-sleep 1
+  if [ $verbose -gt 0 ]; then sleep 2; fi
+  git_version="`cat .git/refs/heads/master`"
+  old_git_version="`cat old_gitrev.txt`"
+  if [ $update_oyranos = 1 ] || [ "$git_version" != "$old_git_version" ]; then
+    cd build
+    cmake -DCMAKE_INSTALL_PREFIX=$prefix -DCMAKE_BUILD_TYPE=debugfull ..
+    make
+    make install
+  else
+    echo no changes in git $git_version
+  fi
+  cd "$top/$git_repo"
+  echo "$git_version" > old_gitrev.txt
+fi
+if [ $verbose -gt 0 ]; then sleep 1; fi
 
 cd "$top"
 
 
 # kolor-manager
 git_repo=kolor-manager
+if [ `echo "$skip" | grep $git_repo | wc -l` -ne 0 ]; then
+  echo $git_repo skipped
+else
   echo checkout $git_repo
   if [ -d $git_repo ]; then
     cd $git_repo
@@ -833,22 +877,32 @@ git_repo=kolor-manager
     cd $git_repo
     git checkout master
     mkdir build
-    cd build
-    cmake ..
   fi
-  sleep 2
-  cd build
-  cmake -DCMAKE_INSTALL_PREFIX=~/.kde4/ -DCMAKE_BUILD_TYPE=debugfull ..
-  make
-  make install
-  kbuildsycoca4
-sleep 1
+  if [ $verbose -gt 0 ]; then sleep 2; fi
+  git_version="`cat .git/refs/heads/master`"
+  old_git_version="`cat old_gitrev.txt`"
+  if [ $update_oyranos = 1 ] || [ "$git_version" != "$old_git_version" ]; then
+    cd build
+    cmake -DCMAKE_INSTALL_PREFIX=$kde_prefix -DCMAKE_BUILD_TYPE=debugfull ..
+    make
+    make install
+    kbuildsycoca4
+  else
+    echo no changes in git $git_version
+  fi
+  cd "$top/$git_repo"
+  echo "$git_version" > old_gitrev.txt
+fi
+if [ $verbose -gt 0 ]; then sleep 1; fi
 
 cd "$top"
 
 
 # cinepaint
 git_repo=cinepaint
+if [ `echo "$skip" | grep cinepaint | wc -l` -ne 0 ]; then
+  echo cinepaint skipped
+else
   echo checkout $git_repo
   if [ -d $git_repo ]; then
     cd $git_repo
@@ -859,11 +913,12 @@ git_repo=cinepaint
     git checkout master
   fi
   if [[ ! -f Makefile ]]; then
+  if [ $verbose -gt 0 ]; then sleep 2; fi
     sleep 2
     ./configure --enable-debug --disable-icc_examin --disable-pygimp $conf_opts $@
   fi
   echo updated oyranos $update_oyranos
-  sleep 2
+  if [ $verbose -gt 0 ]; then sleep 2; fi
   git_version="`cat .git/refs/heads/master`"
   old_git_version="`cat old_gitrev.txt`"
   if [ $update_oyranos = 1 ] || [ "$git_version" != "$old_git_version" ]; then
@@ -873,6 +928,8 @@ git_repo=cinepaint
     echo no changes in git $git_version
   fi
   echo "$git_version" > old_gitrev.txt
+fi
+if [ $verbose -gt 0 ]; then sleep 1; fi
 sleep 1
 
 cd "$top"
@@ -889,12 +946,13 @@ git_repo=icc_examin
     cd $git_repo
     git checkout master
   fi
-  sleep 2
+  if [ $verbose -gt 0 ]; then sleep 2; fi
   git_version="`cat .git/refs/heads/master`"
   old_git_version="`cat old_gitrev.txt`"
-  if [ $update_oyranos = 1 ] || [ "$git_version" != "$old_git_version" ]; then
+  if [ $update_oyranos = 1 ] || [ "$git_version" != "$old_git_version" ] ||
+     [ ! -f "$target" ]; then
     make clean
-    CFLAGS="$CFLAGS $OSX_ARCH" CXXFLAGS="$CXXFLAGS $OSX_ARCH" LDFLAGS="$LDFLAGS $OSX_ARCH" ./configure $conf_opts --disable-verbose --enable-debug $@
+    CFLAGS="$CFLAGS $OSX_ARCH" CXXFLAGS="$CXXFLAGS $OSX_ARCH" LDFLAGS="$LDFLAGS $OSX_ARCH" ./configure $conf_opts $v --enable-debug $@
     make $MAKE_CPUS
     if [ $? = 0 ] && [ $UNAME_ = "Darwin" ]; then
       make bundle
@@ -904,7 +962,7 @@ git_repo=icc_examin
   fi
   echo "$git_version" > old_gitrev.txt
 #make install
-sleep 1
+if [ $verbose -gt 0 ]; then sleep 1; fi
 
 cd "$top"
 
