@@ -505,7 +505,10 @@ git_repo=xcolor
   if [ $? -ne 0 ] || [ "$git_version" != "$old_git_version" ]; then
     echo "xcm `pkg-config --modversion xcm`"
     update_xcm=1
-    ./configure $v $conf_opts $@
+    if [ $UNAME_ = "MINGW32_NT-6.1" ]; then
+      xcolor_skip="--disable-libX11"
+    fi
+    ./configure $v $conf_opts $xcolor_skip $@
     make $MAKE_CPUS
     make install
   else
@@ -828,6 +831,40 @@ fi
 if [ $verbose -gt 0 ]; then sleep 1; fi
 
 cd "$top"
+
+# libCmpx
+git_repo=libcmpx
+if [ `echo "$skip" | grep $git_repo | wc -l` -ne 0 ]; then
+  echo $git_repo skipped
+else
+  echo checkout $git_repo
+  if [ -d $git_repo ]; then
+    cd $git_repo
+    git pull
+  else
+    git clone git://gitorious.org/$git_repo/$git_repo.git
+    cd $git_repo
+    git checkout master
+    mkdir build
+  fi
+  if [ $verbose -gt 0 ]; then sleep 2; fi
+  git_version="`cat .git/refs/heads/master`"
+  old_git_version="`cat old_gitrev.txt`"
+  if [ $update_oyranos = 1 ] || [ "$git_version" != "$old_git_version" ]; then
+    cd build
+    cmake -DCMAKE_INSTALL_PREFIX=$prefix -DLIBRARY_OUTPUT_PATH=$libdir -DCMAKE_BUILD_TYPE=debugfull ..
+    make
+    make install
+  else
+    echo no changes in git $git_version
+  fi
+  cd "$top/$git_repo"
+  echo "$git_version" > old_gitrev.txt
+fi
+if [ $verbose -gt 0 ]; then sleep 1; fi
+
+cd "$top"
+
 
 # Synnefo
 git_repo=synnefo

@@ -3,7 +3,11 @@ export inst=$HOME
 export kde_prefix=$HOME/.kde4/
 export PATH=$PATH:$inst/.local/bin
 export LIBDIR=$inst/.local/lib64
-export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:$LIBDIR/pkgconfig
+if [ -z $PKG_CONFIG_PATH ]; then
+  export PKG_CONFIG_PATH=$LIBDIR/pkgconfig
+else
+  export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:$LIBDIR/pkgconfig
+fi
 
 # uncomment below the packages you are not interessted in
 # elektra,sane,LibRaw,compicc,synnefo,kolor-manager,cinepaint
