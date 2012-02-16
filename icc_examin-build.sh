@@ -129,6 +129,8 @@ if [ -z "$verbose" ]; then
 fi
 if [ $verbose -eq 0 ]; then
   v=--disable-verbose
+else
+  v=--enable-silent-rules
 fi
 export PATH PKG_CONFIG_PATH LD_LIBRARY_PATH kde_prefix
 
@@ -490,7 +492,6 @@ git_repo=xcolor
   echo checkout $git_repo
   if [ -d $git_repo ]; then
     cd $git_repo
-    rm -r doc/
     git pull
   else
     git clone git://www.oyranos.org/git/$git_repo $git_repo
