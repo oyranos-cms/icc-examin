@@ -123,6 +123,17 @@ FTFont *font = NULL, *ortho_font = NULL;
 #endif
 
 // set material colours
+#define Lab2GL(L,a,b,A) { double lab[] = {L,a,b}; float farbe[4]={0,0,0,A}; \
+                      oyOptions_s * opts = icc_examin->options(); \
+        double * rgb = icc_oyranos.wandelLabNachBildschirmFarben( \
+             window()->x() + window()->w()/2, window()->y() + window()->h()/2, \
+       (icc_oyranos.colourServerActive() & XCM_COLOR_SERVER_PROFILES)?edit_:0, \
+                                 lab, 1, opts); \
+                      for(int i = 0; i < 3; ++i) \
+                        farbe[i] = rgb[i]; \
+                      glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, farbe); \
+                      glColor4fv(farbe); \
+                      delete [] rgb; oyOptions_Release( &opts ); }
 #define FARBE(r,g,b,a) {farbe[0] = (float)(r); farbe[1] = (float)(g); farbe[2] = (float)(b); \
                       farbe[3] = (float)(a);  \
                       glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, farbe); \
@@ -260,6 +271,9 @@ GL_Ansicht::zero_()
   oyProfile_Release( &prof );
   window_geometry = NULL;
   edit_ = NULL;
+
+  for (int i=1; i < 3 ; ++i) textfarbe[i] = 0.5;
+  for (int i=1; i < 3 ; ++i) pfeilfarbe[i] = 0.5;
 
   for(int i = 0; i < DL_MAX; ++i)
     gl_listen_[i] = 0;
@@ -1007,7 +1021,6 @@ void
 GL_Ansicht::zeichneKoordinaten_()
 { DBG_ICCGL_START
   char text[256];
-  GLfloat farbe[] =   { 1.0, 1.0, 1.0, 1.0 };
 
   // coordinate axis
     glBegin(GL_LINES);
@@ -1028,13 +1041,13 @@ GL_Ansicht::zeichneKoordinaten_()
       glTranslated(0.3,0.1,0.05);
     glRotated (-90,0.0,0,1.0);
 
-    FARBE(1,1,1,1)
+    Lab2GL(1,.5,.5,1)
     glTranslated(.1,0,0);
-      FARBE(1,0,1,1)
+      Lab2GL(.9,0,-1.0,1)
       glRotated (90,0.0,1.0,.0);
         zeichneKegel(0.01, 0.025, 8);
       glRotated (-90,0.0,1.0,.0);
-      FARBE(1,1,1,1)
+      Lab2GL(1,.5,.5,1)
       glTranslated(.02,0,0);
         ZeichneText(font, "X")
       glTranslated((-0.02),0,0);
@@ -1042,21 +1055,21 @@ GL_Ansicht::zeichneKoordinaten_()
 
     glTranslated(.0,.1,0);
       glRotated (270,1.0,.0,.0);
-        FARBE(1,1,0,1)
+        Lab2GL(1,0.0,1.0,1)
         zeichneKegel(0.01, 0.025, 8);
       glRotated (90,1.0,.0,.0);
       glRotated (90,0.0,.0,1.0);
-        FARBE(1,1,1,1)
+        Lab2GL(1,.5,.5,1)
         ZeichneText(font, "Y")
       glRotated (270,0.0,.0,1.0);
     glTranslated(.0,(-0.1),0);
 
     glTranslated(0,0,.1);
-      FARBE(0,1,1,1)
+      Lab2GL(0.9,0,-1.0,1)
       zeichneKegel(0.01, 0.025, 8);
       glRotated (90,0.0,.5,.0);
         glTranslated(-.1,0,0);
-          FARBE(1,1,1,1)
+          Lab2GL(1,.5,.5,1)
           ZeichneText(font, "Z")
         glTranslated(.1,0,0);
       glRotated (270,0.0,.5,.0);
@@ -1122,29 +1135,15 @@ GL_Ansicht::erstelleGLListen_()
   dreiecks_netze.frei(true);
 
   //background
-       static double hintergrundfarbe_statisch = hintergrundfarbe;
-       if(hintergrundfarbe != hintergrundfarbe_statisch)
-         DBG_NUM_S("background colour changed"
-                <<" "<<id_<<" colour: "<<hintergrundfarbe );
-
-  glClearColor(hintergrundfarbe,hintergrundfarbe,hintergrundfarbe,1.);
-  /*switch (hintergrundfarbe) {
-    case MENU_WEISS:
-      glClearColor(1.,1.,1.,1.0);
-      break;
-    case MENU_HELLGRAU:
-      glClearColor(.75,.75,.75,1.0);
-      break;
-    case MENU_GRAUGRAU:
-      glClearColor(.5,.5,.5,1.0);
-      break;
-    case MENU_DUNKELGRAU:
-      glClearColor(.25,.25,.25,1.0);
-      break;
-    case MENU_SCHWARZ:
-      glClearColor(.0,.0,.0,1.0);
-      break;
-  }*/
+  { double lab[] = {hintergrundfarbe,.5,.5};
+                      oyOptions_s * opts = icc_examin->options();
+        double * rgb = icc_oyranos.wandelLabNachBildschirmFarben(
+             window()->x() + window()->w()/2, window()->y() + window()->h()/2,
+       (icc_oyranos.colourServerActive() & XCM_COLOR_SERVER_PROFILES)?edit_:0,
+                                 lab, 1, opts);
+    glClearColor(rgb[0],rgb[1],rgb[2],1.0);
+    delete [] rgb; oyOptions_Release( &opts );
+  }
 
   MARK( frei(true); )
 
@@ -1159,11 +1158,10 @@ GL_Ansicht::textGarnieren_()
   char text[256];
   char* ptr = 0;
   GLfloat ueber = 0.035f;
-  GLfloat farbe[] =   { 1.0, 1.0, 1.0, 1.0 };
 
     glDisable(GL_TEXTURE_2D);
     glDisable(GL_LIGHTING);
-    FARBE(textfarbe[0],textfarbe[1],textfarbe[2],1)
+    Lab2GL(textfarbe[0],textfarbe[1],textfarbe[2],1)
 
     // CIE*L - top
     glPushMatrix();
@@ -1222,7 +1220,6 @@ GL_Ansicht::garnieren_()
   GL_Ansicht::gl_listen_[HELFER] = glGenLists(1);
 
   glNewList( gl_listen_[HELFER], GL_COMPILE); DBG_PROG_V( gl_listen_[HELFER] )
-    GLfloat farbe[] =   { pfeilfarbe[0],pfeilfarbe[1],pfeilfarbe[2], 1.0 };
     glLineWidth(strich3*strichmult);
 
     // colour space channel name
@@ -1238,7 +1235,7 @@ GL_Ansicht::garnieren_()
 
     // CIE*L - top
     glPushMatrix();
-      FARBE(pfeilfarbe[0],pfeilfarbe[1],pfeilfarbe[2],1)
+      Lab2GL(pfeilfarbe[0],pfeilfarbe[1],pfeilfarbe[2],1)
       glTranslatef(0,.5,0);
       glRotatef (270,1.0,0.0,.0);
       PFEILSPITZE
@@ -1251,14 +1248,12 @@ GL_Ansicht::garnieren_()
     glEnable(GL_LIGHTING);
     glPopMatrix();
 
-#   define ZEIG_GITTER 1
-
     // CIE*a - right
     glPushMatrix();
       if (von_farb_namen_.size() > 1 &&
           von_farb_namen_[1] == _("CIE *a"))
         glTranslatef(0,-.5,0);
-      FARBE(pfeilfarbe[0],pfeilfarbe[1],pfeilfarbe[2],1)
+      Lab2GL(pfeilfarbe[0],pfeilfarbe[1],pfeilfarbe[2],1)
       float schritt = .25, Schritt = 1., start, ende;
       start = (float)(- floor (a_darstellungs_breite/2./schritt) * schritt);
       ende  = (float)(  floor (a_darstellungs_breite/2./schritt) * schritt);
@@ -1284,14 +1279,14 @@ GL_Ansicht::garnieren_()
       if (von_farb_namen_.size() > 1 &&
           von_farb_namen_[1] == _("CIE *a"))
       {
-        FARBE(.2,.9,0.7,1)
+        Lab2GL(1.,-1.0,0.5,1)
         PFEILSPITZE
       }
       glTranslated(.0,0.0,-a_darstellungs_breite);
       glRotated (180,0.0,.5,.0);
       if (von_farb_namen_.size() > 1 &&
           von_farb_namen_[1] == _("CIE *a"))
-        FARBE(.9,0.2,0.5,1)
+        Lab2GL(1.,1.0,0.5,1)
       PFEILSPITZE
     glPopMatrix(); DBG_PROG
 
@@ -1300,7 +1295,7 @@ GL_Ansicht::garnieren_()
       if (von_farb_namen_.size() > 2 &&
           von_farb_namen_[2] == _("CIE *b"))
         glTranslated(0,-0.5,0);
-      FARBE(pfeilfarbe[0],pfeilfarbe[1],pfeilfarbe[2],1)
+      Lab2GL(pfeilfarbe[0],pfeilfarbe[1],pfeilfarbe[2],1)
       // grid
       glDisable(GL_LIGHTING);
       for(float i = start; i <= ende; i+=schritt) {
@@ -1319,7 +1314,7 @@ GL_Ansicht::garnieren_()
       glTranslated(b_darstellungs_breite/2.,0,0);
       if (von_farb_namen_.size() > 2 &&
           von_farb_namen_[2] == _("CIE *b"))
-        FARBE(.9,.9,0.2,1)
+        Lab2GL(1.,0.5,1.0,1)
       glRotated (90,0.0,.5,.0);
       PFEILSPITZE
       glRotated (180,.0,.5,.0);
@@ -1327,7 +1322,7 @@ GL_Ansicht::garnieren_()
       if (von_farb_namen_.size() > 2 &&
           von_farb_namen_[2] == _("CIE *b"))
       {
-        FARBE(.7,.8,1.0,1)
+        Lab2GL(.6,0.5,-1.0,1)
         PFEILSPITZE
       }
     glPopMatrix();
@@ -1341,7 +1336,6 @@ GL_Ansicht::garnieren_()
 void
 GL_Ansicht::tabelleAuffrischen()
 { DBG_PROG_START
-  GLfloat farbe[] =   { textfarbe[0],textfarbe[1],textfarbe[2], 1.0 };
 
   DBG_PROG_V( tabelle_.size() )
   // correct the channel selection
@@ -1427,7 +1421,7 @@ GL_Ansicht::tabelleAuffrischen()
             wert = tabelle_[L][a][b][kanal]; //DBG_PROG_V( L << a << b << kanal)
 
 #           ifdef Beleuchtung_
-            FARBE(wert, wert, wert,1)
+            Lab2GL(wert, .5, .5,1)
             //glColor3f(wert, wert, wert);
 #           else
             switch (punktfarbe) {
@@ -1440,7 +1434,7 @@ GL_Ansicht::tabelleAuffrischen()
                                 if (schalen != 0 && wert < 0.80) wert = 0.0;
                                 if (0/*schalen*/) {
                                   glDisable(GL_LIGHTING);
-                                  FARBE(wert, wert, wert,1)
+                                  Lab2GL(wert, .5, .5,1)
                                   glEnable(GL_LIGHTING);
                                 } else glColor4d( wert, wert, wert, 1.0);
                                                                    break;
@@ -2171,7 +2165,7 @@ GL_Ansicht::punkteAuffrischen()
         int y = this->window()->y() + this->window()->h()/2;
 
         oyProfile_s * prof_disp = NULL;
-        if(icc_oyranos.colourServerActive() | XCM_COLOR_SERVER_PROFILES)
+        if(icc_oyranos.colourServerActive() & XCM_COLOR_SERVER_PROFILES)
           prof_disp = oyProfile_Copy( edit_, NULL );
         else
           prof_disp = icc_oyranos.oyMoni(x,y);
@@ -2454,7 +2448,7 @@ GL_Ansicht::zeigeUmrisse_()
 
     RGB_Speicher = icc_oyranos.wandelLabNachBildschirmFarben(
                window()->x() + window()->w()/2, window()->y() + window()->h()/2,
-           icc_oyranos.colourServerActive() | XCM_COLOR_SERVER_PROFILES?edit_:0,
+         (icc_oyranos.colourServerActive() & XCM_COLOR_SERVER_PROFILES)?edit_:0,
                Lab_Speicher, (size_t)n, opts);
     DBG_PROG_V( n )
     // create shadow
@@ -2468,7 +2462,7 @@ GL_Ansicht::zeigeUmrisse_()
 
     RGBSchatten_Speicher = icc_oyranos.wandelLabNachBildschirmFarben(
                window()->x() + window()->w()/2, window()->y() + window()->h()/2,
-           icc_oyranos.colourServerActive() | XCM_COLOR_SERVER_PROFILES?edit_:0,
+         (icc_oyranos.colourServerActive() & XCM_COLOR_SERVER_PROFILES)?edit_:0,
                       Lab_Speicher_schatten, n, opts);
     if(!RGB_Speicher)  WARN_S( "RGB_speicher result is not available" )
     if(!RGBSchatten_Speicher)  WARN_S( "RGB_speicher result is not available" )
@@ -2514,7 +2508,7 @@ GL_Ansicht::zeigeUmrisse_()
         glBegin(GL_LINE_STRIP);
         for (int z=0 ; z < (int)dreiecks_netze[i].umriss.size(); z++) {
           if(!dreiecks_netze[i].grau) {
-            FARBE(dreiecks_netze[i].umriss[z].farbe[0],
+            Lab2GL(dreiecks_netze[i].umriss[z].farbe[0],
                   dreiecks_netze[i].umriss[z].farbe[1],
                   dreiecks_netze[i].umriss[z].farbe[2],1)
           }
@@ -2534,9 +2528,7 @@ GL_Ansicht::zeigeUmrisse_()
         DBG_PROG_V( n )
         glLineWidth(strich2*strichmult);
 
-        FARBE (          dreiecks_netze[i].schattierung,
-                         dreiecks_netze[i].schattierung,
-                         dreiecks_netze[i].schattierung,1);
+        Lab2GL (          dreiecks_netze[i].schattierung, .5, .5, 1);
 
         glBegin(GL_LINE_STRIP);
         for (int z=0 ; z < n; z++)
@@ -2614,7 +2606,7 @@ GL_Ansicht::zeigeSpektralband_()
 
     RGB_Speicher = icc_oyranos.wandelLabNachBildschirmFarben(
                window()->x() + window()->w()/2, window()->y() + window()->h()/2,
-           icc_oyranos.colourServerActive() | XCM_COLOR_SERVER_PROFILES?edit_:0,
+         (icc_oyranos.colourServerActive() & XCM_COLOR_SERVER_PROFILES)?edit_:0,
                Lab_Speicher, (size_t)n_punkte, opts);
 
     if(typ_ == 1)
@@ -2634,7 +2626,7 @@ GL_Ansicht::zeigeSpektralband_()
 
     RGBSchatten_Speicher = icc_oyranos.wandelLabNachBildschirmFarben(
                window()->x() + window()->w()/2, window()->y() + window()->h()/2,
-           icc_oyranos.colourServerActive() | XCM_COLOR_SERVER_PROFILES?edit_:0,
+         (icc_oyranos.colourServerActive() & XCM_COLOR_SERVER_PROFILES)?edit_:0,
                Lab_Speicher_schatten, n_punkte, opts);
     if(!RGB_Speicher || !RGBSchatten_Speicher) 
     {
@@ -2871,7 +2863,7 @@ GL_Ansicht::fensterForm( )
     glViewport(0,0,w(),h());
     DBG_PROG_V( x()<<" "<< y()<<" "<<w()<<" "<<h())
     seitenverhaeltnis = (GLdouble)w()/(GLdouble)h();
-    if(icc_oyranos.colourServerActive() | XCM_COLOR_SERVER_PROFILES &&
+    if(icc_oyranos.colourServerActive() & XCM_COLOR_SERVER_PROFILES &&
        typ_ != 1)
       icc_oyranos.colourServerRegionSet( this, edit_, window_geometry, 0 );
     oyRectangle_SetGeo( window_geometry, x(), y(), w(), h() );
@@ -3057,7 +3049,7 @@ GL_Ansicht::zeichnen()
       {
         rgb_ = rgb = icc_oyranos.wandelLabNachBildschirmFarben( 
                window()->x() + window()->w()/2, window()->y() + window()->h()/2,
-           icc_oyranos.colourServerActive() | XCM_COLOR_SERVER_PROFILES?edit_:0,
+         (icc_oyranos.colourServerActive() & XCM_COLOR_SERVER_PROFILES)?edit_:0,
                                  l, 1, opts);
 
         icc_examin->statusFarbe(l[0],l[1],l[2]);
@@ -3105,7 +3097,7 @@ GL_Ansicht::zeichnen()
     // End of drawing
 
     // Text
-    FARBE(textfarbe[0],textfarbe[1],textfarbe[2],1)
+    Lab2GL(textfarbe[0],textfarbe[1],textfarbe[2],1)
 
     GLfloat lmodel_ambient[] = {hintergrundfarbe,
                                 hintergrundfarbe,
@@ -3135,7 +3127,7 @@ GL_Ansicht::zeichnen()
             float f = 0.0f;
             if(hintergrundfarbe < 0.6)
               f = 1.f;
-            FARBE(f,f,f,1)
+            Lab2GL(f,.5,.5,1)
 
             // text above scene
             glLoadIdentity();
@@ -3201,7 +3193,7 @@ GL_Ansicht::zeichnen()
                          s = 2*M_PI/(GLdouble)seiten; // static variable
 
                 // lines
-                FARBE(f,f,f,1)
+                Lab2GL(f,.5,.5,1)
                 glBegin(GL_LINE_STRIP);
                   glVertex3d( X+2*breite, Y-1, 9.999 );
                   glVertex3d( X+0.5*breite, Y-1, 9.999 );
@@ -3288,7 +3280,7 @@ GL_Ansicht::zeichnen()
        glLoadIdentity();
        glOrtho(0,w(),0,h(),-10.0,10.0);
 
-       FARBE(textfarbe[0],textfarbe[1],textfarbe[2],1)
+       Lab2GL(textfarbe[0],textfarbe[1],textfarbe[2],1)
 
        glTranslatef(5,-12,0/*8.8 - schnitttiefe*3*/);
 
@@ -3733,7 +3725,7 @@ GL_Ansicht::setBspFaceProperties_( icc_examin_ns::FACE *faceList )
 #ifdef USE_OY_NC
   oyProfile_s * prof = oyProfile_FromStd( oyEDITING_LAB, 0 );
   oyProfile_s * prof_disp = NULL;
-  if(icc_oyranos.colourServerActive() | XCM_COLOR_SERVER_PROFILES)
+  if(icc_oyranos.colourServerActive() & XCM_COLOR_SERVER_PROFILES)
     prof_disp = oyProfile_Copy( edit_, NULL );
   else
     prof_disp = icc_oyranos.icc_oyranos.oyMoni(
@@ -3777,8 +3769,7 @@ GL_Ansicht::setBspFaceProperties_( icc_examin_ns::FACE *faceList )
         double * rgb = NULL;
         rgb = icc_oyranos.wandelLabNachBildschirmFarben( 
                window()->x() + window()->w()/2, window()->y() + window()->h()/2,
-
-           icc_oyranos.colourServerActive() | XCM_COLOR_SERVER_PROFILES?edit_:0,
+         (icc_oyranos.colourServerActive() & XCM_COLOR_SERVER_PROFILES)?edit_:0,
                                  lab, 1, opts);
 
         if(rgb)
@@ -4018,28 +4009,28 @@ GL_Ansicht::menueAufruf ( int value )
       break;
     case MENU_WEISS:
       hintergrundfarbe = 1.;//MENU_WEISS;
-      for (int i=0; i < 3 ; ++i) pfeilfarbe[i] = (float)(1.*farb_faktor);
-      for (int i=0; i < 3 ; ++i) textfarbe[i] = (float)(.75*farb_faktor);
+      pfeilfarbe[0] = (float)(1.*farb_faktor);
+      textfarbe[0] = (float)(.75*farb_faktor);
       break;
     case MENU_HELLGRAU:
       hintergrundfarbe = 0.75;//MENU_HELLGRAU;
-      for (int i=0; i < 3 ; ++i) pfeilfarbe[i] = (float)(1.0*farb_faktor);
-      for (int i=0; i < 3 ; ++i) textfarbe[i] = (float)(0.5*farb_faktor);
+      pfeilfarbe[0] = (float)(1.0*farb_faktor);
+      textfarbe[0] = (float)(0.5*farb_faktor);
       break;
     case MENU_GRAUGRAU:
       hintergrundfarbe = 0.5;//MENU_GRAUGRAU;
-      for (int i=0; i < 3 ; ++i) pfeilfarbe[i] = (float)(.75*farb_faktor);
-      for (int i=0; i < 3 ; ++i) textfarbe[i] = (float)(0.25*farb_faktor);
+      pfeilfarbe[0] = (float)(.75*farb_faktor);
+      textfarbe[0] = (float)(0.25*farb_faktor);
       break;
     case MENU_DUNKELGRAU:
       hintergrundfarbe = 0.25;//MENU_DUNKELGRAU;
-      for (int i=0; i < 3 ; ++i) pfeilfarbe[i] = (float)(0.5*farb_faktor);
-      for (int i=0; i < 3 ; ++i) textfarbe[i] = (float)(0.75*farb_faktor);
+      pfeilfarbe[0] = (float)(0.5*farb_faktor);
+      textfarbe[0] = (float)(0.75*farb_faktor);
       break;
     case MENU_SCHWARZ:
       hintergrundfarbe = 0.0;//MENU_SCHWARZ;
-      for (int i=0; i < 3 ; ++i) pfeilfarbe[i] = (float)(.25*farb_faktor);
-      for (int i=0; i < 3 ; ++i) textfarbe[i] = (float)(0.5*farb_faktor);
+      pfeilfarbe[0] = (float)(.25*farb_faktor);
+      textfarbe[0] = (float)(0.5*farb_faktor);
       break;
     case Agviewer::FLYING:
       glStatus(_("left mouse button -> go back"), typ_);
