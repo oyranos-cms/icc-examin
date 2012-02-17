@@ -595,18 +595,8 @@ ICCexaminIO::oeffnen (ICClist<std::string> dateinamen)
       icc_examin->fortschritt( 1.1 , 1.0 );
       return;
     }
-    if (dateinamen[i] == icc_oyranos.moni_name( x,y ))
-    {
-      if(!ss[i].size())
-        ss[i] = icc_oyranos.moni( x,y );
-      moni_dabei = true;
-    }
   }
   DBG_PROG
-
-  // the monitor profile is allways included for comparisions 
-  if (!moni_dabei && ss.size())
-    ss.push_back(icc_oyranos.moni( x,y ));
 
   lade (ss);
 
