@@ -558,17 +558,12 @@ ICCexaminIO::oeffnen (ICClist<std::string> dateinamen)
   }
 # endif
 
-  int x = icc_examin->icc_betrachter->vcgt->x() + icc_examin->icc_betrachter->vcgt->w()/2;
-  int y = icc_examin->icc_betrachter->vcgt->y() + icc_examin->icc_betrachter->vcgt->h()/2;
-
-
   icc_examin->fortschritt( 0.0 , 1.0 );
 
   // loading
   ICClist<Speicher> ss;
   // resize uses copy, and creates a reference by this to the
   // same object ; instead we need a new object => push_back()
-  int moni_dabei = 0;
   for (unsigned int i = 0; i < dateinamen.size(); ++i)
   {
     ss.push_back(Speicher());
