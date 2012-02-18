@@ -790,7 +790,10 @@ git_repo=oyranos
     echo "xcm `pkg-config --modversion oyranos`"
     update_oyranos=1
     make clean
-    CFLAGS="$CFLAGS $OSX_ARCH" CXXFLAGS="$CXXFLAGS $OSX_ARCH" LDFLAGS="$LDFLAGS $OSX_ARCH" ./configure $conf_opts $@  $v --enable-debug
+    if [ $UNAME_ = "MINGW32_NT-6.1" ]; then
+      x11_skip="--disable-libX11"
+    fi
+    CFLAGS="$CFLAGS $OSX_ARCH" CXXFLAGS="$CXXFLAGS $OSX_ARCH" LDFLAGS="$LDFLAGS $OSX_ARCH" ./configure $conf_opts $@  $v --enable-debug $x11_skip
     make $MAKE_CPUS
     make install
     make check
