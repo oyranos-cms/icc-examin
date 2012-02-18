@@ -17,10 +17,11 @@ fi
 # export verbose=0
 
 # run main script
+export LD_LIBRARY_PATH=$LIBDIR:$LD_LIBRARY_PATH
+export LDFLAGS=-L$LIBDIR
 ./icc_examin-build.sh --prefix=$inst/.local --libdir=$LIBDIR
 
 #test
-export LD_LIBRARY_PATH=$LIBDIR:$LD_LIBRARY_PATH
 if [ -f "icc_examin/iccexamin" ]; then
   icc_examin/iccexamin icc-profiles-basiccolor-printing2009-1.2.0/default_profiles/printing/ISOcoated_v2_bas.ICC
 fi

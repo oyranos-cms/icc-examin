@@ -76,7 +76,12 @@ else
     url=ftp://ftp.gnupg.org/gcrypt/binary
     packet_file=sha1sum.exe
     checksum=10cf8f3c437f979309c42941f21f4023
-    which curl && curl -L $url/$packet_file -o $packet_file || wget $url/$packet_file
+    if [ -f $packet_file ]; then
+      echo $packet_file already here
+    else
+      echo downloading $url/$packet_file
+      which curl && curl -L $url/$packet_file -o $packet_file || wget $url/$packet_file
+    fi
     if [ `$MD5SUM $packet_file | grep $checksum | wc -l` -eq 1 ]; then
       echo downloaded $packet_file
     else
@@ -427,10 +432,21 @@ else
   tar xzf $packet_file
   cd $packet_dir
   make clean
-  CFLAGS="$CFLAGS $OSX_ARCH" CXXFLAGS="$CXXFLAGS $OSX_ARCH" LDFLAGS="$LDFLAGS $OSX_ARCH" ./configure $conf_opts $@
+  if [ $UNAME_ = "MINGW32_NT-6.1" ]; then
+    elektra_args="--disable-hosts"
+  fi
+  CFLAGS="$CFLAGS $OSX_ARCH" CXXFLAGS="$CXXFLAGS $OSX_ARCH" LDFLAGS="$LDFLAGS $OSX_ARCH" ./configure $conf_opts $elektra_args $@
+  if [ $UNAME_ = "MINGW32_NT-6.1" ]; then
+    dos2unix src/libelektra/objects
+    patch=http://www.oyranos.org/download/elektra-0.7.1_win32-2.patch
+    echo downloading $patch
+    which curl && curl -L $patch -o elektra-0.7.1_win32-2.patch || wget $patch
+  fi
   make $MAKE_CPUS
   make install
-  UNAME_=`uname`
+  if [ $UNAME_ = "MINGW32_NT-6.1" ]; then
+    cp -v elektra.pc $libdir/pkgconfig/
+  fi
   if [ $? = 0 ] && [ $UNAME_ = "Darwin" ]; then
     if [ -f $libdir/libelektra.dylib ]; then
       cp -v elektra.pc $libdir/pkgconfig/
