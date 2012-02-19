@@ -728,6 +728,9 @@ else
   which curl && curl -L $loc$packet_file -o $packet_file || wget $loc$packet_file
 fi
 if [ $verbose -gt 0 ]; then sleep 1; fi
+if [ `echo "$skip" | grep openicc | wc -l` -ne 0 ]; then
+  echo openicc skipped
+else
 if [ `$SHA1SUM $packet_file | grep $checksum | wc -l` -eq 1 ]; then
   echo sha1sum for $packet_file passed
   echo unpacking $packet_file ...
@@ -743,6 +746,7 @@ if [ `$SHA1SUM $packet_file | grep $checksum | wc -l` -eq 1 ]; then
 else
   echo sha1sum for $packet_file failed
   exit 1
+fi
 fi
 
 cd "$top"
@@ -762,6 +766,9 @@ else
   which curl && curl -L $loc$packet_file -o $packet_file || wget $loc$packet_file
 fi
 if [ $verbose -gt 0 ]; then sleep 1; fi
+if [ `echo "$skip" | grep basiccolor | wc -l` -ne 0 ]; then
+  echo basiccolor skipped
+else
 if [ `$SHA1SUM $packet_file | grep $checksum | wc -l` -eq 1 ]; then
   echo sha1sum for $packet_file passed
   echo unpacking $packet_file ...
@@ -777,6 +784,7 @@ if [ `$SHA1SUM $packet_file | grep $checksum | wc -l` -eq 1 ]; then
 else
   echo sha1sum for $packet_file failed
   exit 1
+fi
 fi
 
 cd "$top"

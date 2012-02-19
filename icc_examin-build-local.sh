@@ -11,7 +11,7 @@ fi
 
 # uncomment below the packages you are not interessted in
 # elektra,sane,LibRaw,compicc,synnefo,kolor-manager,cinepaint
-# export skip=elektra,sane,LibRaw,compicc,synnefo,kolor-manager,cinepaint
+# export skip=elektra,openicc,basiccolor,sane,LibRaw,compicc,synnefo,kolor-manager,cinepaint
 
 #uncomment the below line to see less messages
 # export verbose=0
