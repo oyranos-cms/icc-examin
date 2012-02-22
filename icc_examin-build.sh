@@ -395,7 +395,7 @@ packet=elektra
 packet_dir=$packet-0.7.1
 packet_file=$packet_dir.tar.gz
 checksum=bcc733cab0b391e5790c05635ab7161d9bdcaffa
-url=ftp://ftp.markus-raab.org/elektra/
+url=http://www.oyranos.org/download/
 if [ -f $packet_file ] || [ `echo "$skip" | grep $packet | wc -l` -ne 0 ]; then
   echo $packet_file skipped
 else
@@ -438,9 +438,9 @@ else
   CFLAGS="$CFLAGS $OSX_ARCH" CXXFLAGS="$CXXFLAGS $OSX_ARCH" LDFLAGS="$LDFLAGS $OSX_ARCH" ./configure $conf_opts $elektra_args $@
   if [ $UNAME_ = "MINGW32_NT-6.1" ]; then
     dos2unix src/libelektra/objects
-    patch=http://www.oyranos.org/download/elektra-0.7.1_win32-2.patch
-    echo downloading $patch
-    which curl && curl -L $patch -o elektra-0.7.1_win32-2.patch || wget $patch
+    patch=elektra-0.7.1_win32-2.patch
+    echo downloading $url$patch
+    which curl && curl -L $url$patch -o $patch || wget $url$patch
   fi
   make $MAKE_CPUS
   make install
