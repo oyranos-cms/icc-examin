@@ -1,8 +1,8 @@
 #environment
-export inst=$HOME
+export inst=$HOME/.local
 export kde_prefix=$HOME/.kde4/
-export PATH=$PATH:$inst/.local/bin
-export LIBDIR=$inst/.local/lib64
+export PATH=$PATH:$inst//bin
+export LIBDIR=$inst/lib64
 if [ -z $PKG_CONFIG_PATH ]; then
   export PKG_CONFIG_PATH=$LIBDIR/pkgconfig
 else
@@ -19,7 +19,7 @@ fi
 # run main script
 export LD_LIBRARY_PATH=$LIBDIR:$LD_LIBRARY_PATH
 export LDFLAGS=-L$LIBDIR
-./icc_examin-build.sh --prefix=$inst/.local --libdir=$LIBDIR
+./icc_examin-build.sh --prefix=$inst --libdir=$LIBDIR
 
 #test
 if [ -f "icc_examin/iccexamin" ]; then
