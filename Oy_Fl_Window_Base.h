@@ -21,7 +21,7 @@ class Oy_Fl_Window_Base
     wx=wy=0;
 #if ((FL_MAJOR_VERSION * 100 + FL_MINOR_VERSION) > 106)
     int lx_,ly_,lw_,lh_;
-    lx_=ly_=lw_=lh_=wx=wy=0;
+    lx_=ly_=lw_=lh_=0;
     Fl::screen_xywh(lx_,ly_,lw_,lh_);
 #endif
     wx = win->x();
@@ -33,14 +33,14 @@ class Oy_Fl_Window_Base
     oywin->init = 1;
 #if defined(__APPLE__)
     /* osX virtualises window placement, but we need exact positioning */
-    if(oywin->pos_x != x() || oywin->pos_y != y())
+    if(oywin->pos_x != win->x() || oywin->pos_y != win->y())
     {
       win->redraw();
     }
 #endif
 
-    oywin->pos_x = win->x();
-    oywin->pos_y = win->y();
+    oywin->pos_x = wx;
+    oywin->pos_y = wy;
 
     if(e == FL_FOCUS)
       win->redraw();
