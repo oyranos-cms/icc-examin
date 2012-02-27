@@ -86,12 +86,6 @@ iccCreateVrml( const char* p, int size, int intent )
   }
 
   int ret;
-#ifdef USE_ARGYLL
-  double volume = -1.0;
-  ret = iccCreateArgyllVrml( ptn.c_str(), intent, &volume );
-  DBG_V(volume)
-
-#else
   // generate vrml - argyll external variant
 # if APPLE
   std::string argyll_bundle_pfad = icc_examin_ns::holeBundleResource("iccgamut",
@@ -121,7 +115,6 @@ iccCreateVrml( const char* p, int size, int intent )
   std::string icc_sys_c = s.str();
   ret = system (icc_sys_c.c_str()); DBG_PROG
   if(ret) ret = 0; // fix compiler warning
-#endif /* USE_ARGYLL */
 
   ptn = profil_temp_name; oyStrAdd( ptn, ".icc");
 # ifndef DEBUG_

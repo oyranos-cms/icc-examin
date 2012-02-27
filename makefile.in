@@ -135,8 +135,7 @@ FLMM_CXXFILES = \
 COMMON_CFILES =  \
 	icc_oyranos_extern.c \
 	flstring.c \
-	vsnprintf.c \
-	icc_argyll.c
+	vsnprintf.c
 CFILES = \
 	$(COMMON_CFILES)
 CPPFILES = \

@@ -1024,16 +1024,12 @@ Oyranos::netzVonProfil (ICCprofile & profil, oyOptions_s * options,
       netz = netze[0];
     } else {
       t = netzVonProfil_(netz, s, options);
-#ifdef USE_ARGYLL
-      DBG_PROG_S("Fall back to internal hull generation.");
-#else
       if(v < 4 && native)
       {
       WARN_S("Fall back to internal hull generation. Argyll is not installed?");
       } else if(native) {
       DBG_NUM_S("Fall back to internal hull generation. "<< v);
       }
-#endif
     }
 
     if(netz.punkte.size())
