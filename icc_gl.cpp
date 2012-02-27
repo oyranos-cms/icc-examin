@@ -79,11 +79,11 @@
 #define MARK(x) x
 #endif
 
-#define Beleuchtung
+#define LIGHTING
 //#define Lab_STERN 1
 
-void zeichneKegel( GLdouble breite, GLdouble hoehe, GLint seiten );
-void zeichneKegel( GLdouble breite, GLdouble hoehe, GLint seiten,
+void drawCone( GLdouble width, GLdouble height, GLint steps );
+void drawCone( GLdouble width, GLdouble height, GLint steps,
                    GLdouble x, GLdouble y, GLdouble z );
 
 #ifdef DEBUG
@@ -106,16 +106,16 @@ void zeichneKegel( GLdouble breite, GLdouble hoehe, GLint seiten,
 #define glStatus( txt, tuep ) icc_examin_ns::status_info( txt, tuep - 1 );
 
 
-#define bNachX(b) ((b)*cie_b_display_stretch - cie_b_display_stretch/2.)
-#define LNachY(L) ((L) - 0.5)
-#define aNachZ(a) ((a)*cie_a_display_stretch - cie_a_display_stretch/2.)
-#define LabNachXYZv(L,a,b) \
+#define bToX(b) ((b)*cie_b_display_stretch - cie_b_display_stretch/2.)
+#define LToY(L) ((L) - 0.5)
+#define aToZ(a) ((a)*cie_a_display_stretch - cie_a_display_stretch/2.)
+#define LabToXYZv(L,a,b) \
          (b*cie_b_display_stretch - cie_b_display_stretch/2.), \
          (L - 0.5), \
          (a*cie_a_display_stretch - cie_a_display_stretch/2.)
-#define YNachL(Y) ((Y) + .5)
-#define Znacha(Z) ((Z) / cie_a_display_stretch + .5)
-#define Xnachb(X) ((X) / cie_b_display_stretch + .5)
+#define YToL(Y) ((Y) + .5)
+#define ZToa(Z) ((Z) / cie_a_display_stretch + .5)
+#define XTob(X) ((X) / cie_b_display_stretch + .5)
 
 const double GL_View::std_front_cut = 4.2;
 #ifdef HAVE_FTGL
@@ -123,46 +123,46 @@ FTFont *font = NULL, *ortho_font = NULL;
 #endif
 
 // set material colours
-#define Lab2GL(L,a,b,A) { double lab[] = {L,a,b}; float farbe[4]={0,0,0,A}; \
+#define Lab2GL(L,a,b,A) { double lab[] = {L,a,b}; float colour[4]={0,0,0,A}; \
                       oyOptions_s * opts = icc_examin->options(); \
         double * rgb = icc_oyranos.wandelLabNachBildschirmFarben( \
              window()->x() + window()->w()/2, window()->y() + window()->h()/2, \
        (icc_oyranos.colourServerActive() & XCM_COLOR_SERVER_PROFILES)?edit_:0, \
                                  lab, 1, opts); \
                       for(int i = 0; i < 3; ++i) \
-                        farbe[i] = rgb[i]; \
-                      glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, farbe); \
-                      glColor4fv(farbe); \
+                        colour[i] = rgb[i]; \
+                      glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, colour); \
+                      glColor4fv(colour); \
                       delete [] rgb; oyOptions_Release( &opts ); }
-#define FARBE(r,g,b,a) {farbe[0] = (float)(r); farbe[1] = (float)(g); farbe[2] = (float)(b); \
-                      farbe[3] = (float)(a);  \
-                      glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, farbe); \
-                      glColor4fv(farbe); }
+#define COLOUR(r,g,b,a) {colour[0] = (float)(r); colour[1] = (float)(g); colour[2] = (float)(b); \
+                      colour[3] = (float)(a);  \
+                      glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, colour); \
+                      glColor4fv(colour); }
 
 // draw text
 #ifdef HAVE_FTGL
-#  define ZeichneText(Font, Zeiger) { \
+#  define drawTEXT(Font, ptr) { \
    glLineWidth(line_mult); \
     if(blend) glDisable(GL_BLEND); \
       glTranslated(.0,0,0.01); \
         glScaled(0.002,0.002,0.002); \
-          if(Font) Font->Render(Zeiger); \
+          if(Font) Font->Render(ptr); \
         glScaled(500,500,500); \
       glTranslated(.0,0,-.01); \
     if(blend) glEnable(GL_BLEND); \
    glLineWidth(line_mult); }
 #else
-# define ZeichneText(Font, Zeiger)
+# define drawTEXT(Font, ptr)
 #endif
 
 #ifdef HAVE_FTGL
-#define ZeichneOText(Font, scal, buffer) { \
+#define drawOTEXT(Font, scal, buffer) { \
                                    glScaled(scal,scal*w()/(double)h(),scal); \
                                      drawText(Font, buffer); \
                                    glScaled(1.0/scal,1.0/(scal*w()/(double)h()),1.0/scal); \
                                  }
 #else
-#define ZeichneOText(Font, scal, buffer) {}
+#define drawOTEXT(Font, scal, buffer) {}
 #endif
 
 #ifdef HAVE_FTGL
@@ -190,12 +190,12 @@ void drawText( FTFont * f, const char * in_txt )
     iconv( cd, &ttmp, &in_left, (char**)&wtmp, &out_left);
     iconv_close( cd );
 
-    ZeichneText( f, wchar );
+    drawTEXT( f, wchar );
     if(wchar)free(wchar);
     if(txt)free(txt);
 
   } else
-    ZeichneText( f, in_txt );
+    drawTEXT( f, in_txt );
 
 }
 #endif
@@ -257,7 +257,7 @@ GL_View::zero_()
   mouse_y_ = 0;
   mouse_x_old = -1;
   mouse_y_old = -1;
-  mouse_steht = false;
+  mouse_stays = false;
   level = 0.5001;
   level_step = 0.1;
   valid_ = false;
@@ -447,7 +447,7 @@ GL_View::copy (const GL_View & gl)
   mouse_y_ = gl.mouse_y_;
   mouse_x_old = gl.mouse_x_old;
   mouse_y_old = gl.mouse_y_old;
-  mouse_steht = gl.mouse_steht;
+  mouse_stays = gl.mouse_stays;
 
   smooth = gl.smooth;
   blend = gl.blend;
@@ -524,9 +524,9 @@ GL_View::init(int ty)
     if(this->can_do()) { \
       mod |= modus; \
       this->mode(mod); DBG_PROG_S( "can_do(): " << modus ); \
-      DBG_PROG_S( "OpenGL understand: ja   " << #modus <<" "<< this->mode() ) \
+      DBG_PROG_S( "OpenGL understand: yes  " << #modus <<" "<< this->mode() ) \
     } else {  printf("can_do() false: %d\n", modus); \
-      DBG_PROG_S( "OpenGL understand: nein " << #modus <<" "<< this->mode() ) \
+      DBG_PROG_S( "OpenGL understand: no   " << #modus <<" "<< this->mode() ) \
     } \
   }
 
@@ -564,7 +564,7 @@ GL_View::init(int ty)
   shadow = 0.1f;
   if (type() == 1) menuEvents (MENU_CUBE);
 
-  mouse_steht = false;
+  mouse_stays = false;
 
   DBG_PROG_ENDE
 }
@@ -580,21 +580,21 @@ GL_View::mousePoint_( GLdouble &oX, GLdouble &oY, GLdouble &oZ,
   GLfloat zBuffer = 0;
   glReadPixels((GLint)mouse_x_,(GLint)h()-mouse_y_,1,1,GL_DEPTH_COMPONENT, GL_FLOAT, &zBuffer);
   GLdouble model_matrix[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-           projektions_matrix[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-  GLint bildschirm[4] = {0,0,0,0};
+           projection_matrix[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+  GLint display_coords[4] = {0,0,0,0};
   glGetDoublev(GL_MODELVIEW_MATRIX, model_matrix);
-  glGetDoublev(GL_PROJECTION_MATRIX, projektions_matrix);
-  glGetIntegerv(GL_VIEWPORT, bildschirm);
+  glGetDoublev(GL_PROJECTION_MATRIX, projection_matrix);
+  glGetIntegerv(GL_VIEWPORT, display_coords);
   if(from_mouse)
     gluUnProject(mouse_x_, h()-mouse_y_, zBuffer,
-                 model_matrix, projektions_matrix, bildschirm,
+                 model_matrix, projection_matrix, display_coords,
                  &oX, &oY, &oZ);
 
 
   DBG_PROG_V( "X: "<<oX<<" Y: "<<oY<<" Z: "<<oZ<<" "<<id_ )
 
   gluProject( oX, oY, oZ,
-              model_matrix, projektions_matrix, bildschirm,
+              model_matrix, projection_matrix, display_coords,
               &X,&Y,&Z);
   DBG_PROG_ENDE
 }
@@ -605,40 +605,40 @@ GL_View::moveStatic_ (void* gl_a)
 {
   DBG_ICCGL_START
 
-  GL_View *gl_ansicht = (GL_View*)gl_a;
+  GL_View *gl_view = (GL_View*)gl_a;
 
-  if (!gl_ansicht) {
-      WARN_S( "no GL_View provided " << gl_ansicht->id_ )
+  if (!gl_view) {
+      WARN_S( "no GL_View provided " << gl_view->id_ )
       return;
   }
 
   // actualise UI
-  gl_ansicht->waiting_ = 0;
+  gl_view->waiting_ = 0;
   icc_examin_ns::wait( 0.0, true );
-  gl_ansicht->waiting_ = 1;
+  gl_view->waiting_ = 1;
 
-  if(gl_ansicht->canMove())
+  if(gl_view->canMove())
   {
-    double zeichnen_schlaf = 0;  // no endless wait queues
+    double drawing_sleep = 0;  // no endless wait queues
     if(!icc_examin->frei())
     {
       zahl = 0;
-      DBG_ICCGL_S( "redraw not allowed " << gl_ansicht->id_ )
+      DBG_ICCGL_S( "redraw not allowed " << gl_view->id_ )
     } else {
-      double zeit = icc_examin_ns::zeitSekunden();
+      double time = icc_examin_ns::zeitSekunden();
 
-      if (zeit - gl_ansicht->time_ < 1./25.) {
-        zeichnen_schlaf = 1./25. - gl_ansicht->time_;
+      if (time - gl_view->time_ < 1./25.) {
+        drawing_sleep = 1./25. - gl_view->time_;
       } else {
-        gl_ansicht->redraw();
+        gl_view->redraw();
         zahl++;
       }
 
     }
     // short wait
-    Fl::repeat_timeout( MIN(0.01,zeichnen_schlaf), moveStatic_, gl_a );
+    Fl::repeat_timeout( MIN(0.01,drawing_sleep), moveStatic_, gl_a );
 
-    DBG_ICCGL_S( "Pause " << gl_ansicht->time_diff_<<" "<<zeichnen_schlaf <<" "<< " "<< gl_ansicht->id_ <<" "<<zahl<<" "<< gl_ansicht->canMove())
+    DBG_ICCGL_S( "Pause " << gl_view->time_diff_<<" "<<drawing_sleep <<" "<< " "<< gl_view->id_ <<" "<<zahl<<" "<< gl_view->canMove())
   } 
   DBG_ICCGL_ENDE
 }
@@ -650,7 +650,7 @@ void GL_View::canMove(int d)
   if (d)
     Fl::add_timeout(0.04, moveStatic_,this);
 
-  DBG_ICCGL_S("Stop Bewegen "<<zahl<<" "<<d)
+  DBG_ICCGL_S("Stop Spin "<<zahl<<" "<<d)
 }
 
 void
@@ -702,7 +702,7 @@ GL_View::show()
 }     
 
 
-/** recive of a drawing news */
+/** receive of a drawing news */
 void
 GL_View::message(icc_examin_ns::Model* model, int info)
 {
@@ -788,25 +788,25 @@ GL_View::draw()
 }
 
 Agviewer*
-GL_View::getAgv( GL_View *ansicht, GL_View *referenz )
+GL_View::getAgv( GL_View *view, GL_View *reference )
 { DBG_PROG_START
   Agviewer *agv = NULL;
 
-  if(!agv && referenz)
+  if(!agv && reference)
   {
-    agv = referenz->agv_;
-    agv->reparent( ansicht );
+    agv = reference->agv_;
+    agv->reparent( view );
   }
 
   if(!agv)
-    agv = new Agviewer (ansicht);
+    agv = new Agviewer (view);
 
-  if(ansicht->agv_)
-    ansicht->modelDel( ansicht->agv_ );
+  if(view->agv_)
+    view->modelDel( view->agv_ );
 
-  ansicht->agv_ = agv;
+  view->agv_ = agv;
 
-  ansicht->modelAdd( ansicht->agv_ );
+  view->modelAdd( view->agv_ );
 
   DBG_ICCGL_ENDE
   return agv;
@@ -818,7 +818,7 @@ GL_View::GLinit_()
   GLfloat mat_ambuse[] = { 0.2f, 0.2f, 0.2f, 1.0f };
   GLfloat mat_specular[] = { 1.0f, 1.0f, 1.0f, 1.0f };
 
-# ifdef Beleuchtung
+# ifdef LIGHTING
   glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, mat_ambuse);
   glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, mat_specular);
   glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 50.0);
@@ -841,7 +841,7 @@ GL_View::GLinit_()
 # endif
 # endif
   //glEnable(GL_LIGHT1);
-# ifndef Beleuchtung
+# ifndef LIGHTING
   glDisable(GL_LIGHTING);
 # endif
 
@@ -960,27 +960,27 @@ GL_View::GLinit_()
 }
 
 void
-zeichneKegel( GLdouble breite, GLdouble hoehe, GLint seiten )
+drawCone( GLdouble width, GLdouble height, GLint steps )
 { DBG_ICCGL_START
   GLdouble x, y,
-           s = 2*M_PI/(GLdouble)seiten, // static variable
-           hn = breite*tan(breite/2./hoehe); // normal hight
+           s = 2*M_PI/(GLdouble)steps, // static variable
+           hn = width*tan(width/2./height); // normal hight
   // bottom
   glBegin(GL_TRIANGLE_FAN);
     glNormal3d( 0, 0, -1 );
     glVertex3d( 0, 0, 0 );
-    for(int i = 0; i <= seiten; ++i)
-      glVertex3d( cos(i*s)*breite, sin(i*s)*breite, 0 );
+    for(int i = 0; i <= steps; ++i)
+      glVertex3d( cos(i*s)*width, sin(i*s)*width, 0 );
   glEnd();
   // cone
   glBegin(GL_TRIANGLE_STRIP);
-    for(int i = 0; i <= seiten; ++i)
+    for(int i = 0; i <= steps; ++i)
     {
-      x = cos(i*s)*breite;
-      y = sin(i*s)*breite;
+      x = cos(i*s)*width;
+      y = sin(i*s)*width;
       glNormal3d( x, y, hn );
       glVertex3d( x, y, 0 );
-      glVertex3d( 0, 0, hoehe );
+      glVertex3d( 0, 0, height );
     }
   glEnd();
 
@@ -988,27 +988,27 @@ zeichneKegel( GLdouble breite, GLdouble hoehe, GLint seiten )
 }
 
 void
-zeichneKegel( GLdouble breite, GLdouble hoehe, GLint seiten ,
+drawCone( GLdouble width, GLdouble height, GLint steps ,
               GLdouble x, GLdouble y, GLdouble z )
 { DBG_ICCGL_START
   GLdouble xk, yk,
-           s = 2*M_PI/(GLdouble)seiten, // static variable
-           hn = breite*tan(breite/2./hoehe); // hight of normal
+           s = 2*M_PI/(GLdouble)steps, // static variable
+           hn = width*tan(width/2./height); // hight of normal
   // bottom
   glBegin(GL_TRIANGLE_FAN);
     glNormal3d( 0, 0, -1 );
     glVertex3d( x, y, z );
-    for(int i = 0; i <= seiten; ++i)
-      glVertex3d( x+cos(i*s)*breite, y+sin(i*s)*breite, z );
+    for(int i = 0; i <= steps; ++i)
+      glVertex3d( x+cos(i*s)*width, y+sin(i*s)*width, z );
   glEnd();
   // cone
   glBegin(GL_TRIANGLE_STRIP);
-    for(int i = 0; i <= seiten; ++i)
+    for(int i = 0; i <= steps; ++i)
     {
-      xk = cos(i*s)*breite;
-      yk = sin(i*s)*breite;
+      xk = cos(i*s)*width;
+      yk = sin(i*s)*width;
       glNormal3d( xk, yk, hn );
-      glVertex3d( x+xk, y+yk, z+hoehe );
+      glVertex3d( x+xk, y+yk, z+height );
       glVertex3d( x, y, z );
     }
   glEnd();
@@ -1037,7 +1037,7 @@ GL_View::drawCoordinates_()
       glMatrixMode(GL_MODELVIEW);
       glTranslated((0.0-0.3),(0.0-0.1),(0.0-0.05));
         strcpy (&text[0],_("0,0,0"));
-        ZeichneText(font, text)
+        drawTEXT(font, text)
       glTranslated(0.3,0.1,0.05);
     glRotated (-90,0.0,0,1.0);
 
@@ -1045,32 +1045,32 @@ GL_View::drawCoordinates_()
     glTranslated(.1,0,0);
       Lab2GL(.9,0,-1.0,1)
       glRotated (90,0.0,1.0,.0);
-        zeichneKegel(0.01, 0.025, 8);
+        drawCone(0.01, 0.025, 8);
       glRotated (-90,0.0,1.0,.0);
       Lab2GL(1,.5,.5,1)
       glTranslated(.02,0,0);
-        ZeichneText(font, "X")
+        drawTEXT(font, "X")
       glTranslated((-0.02),0,0);
     glTranslated((-0.1),0,0);
 
     glTranslated(.0,.1,0);
       glRotated (270,1.0,.0,.0);
         Lab2GL(1,0.0,1.0,1)
-        zeichneKegel(0.01, 0.025, 8);
+        drawCone(0.01, 0.025, 8);
       glRotated (90,1.0,.0,.0);
       glRotated (90,0.0,.0,1.0);
         Lab2GL(1,.5,.5,1)
-        ZeichneText(font, "Y")
+        drawTEXT(font, "Y")
       glRotated (270,0.0,.0,1.0);
     glTranslated(.0,(-0.1),0);
 
     glTranslated(0,0,.1);
       Lab2GL(0.9,0,-1.0,1)
-      zeichneKegel(0.01, 0.025, 8);
+      drawCone(0.01, 0.025, 8);
       glRotated (90,0.0,.5,.0);
         glTranslated(-.1,0,0);
           Lab2GL(1,.5,.5,1)
-          ZeichneText(font, "Z")
+          drawTEXT(font, "Z")
         glTranslated(.1,0,0);
       glRotated (270,0.0,.5,.0);
     glTranslated(0,0,-.1);
@@ -1091,28 +1091,28 @@ GL_View::createGLLists_()
   refreshTable();
 
   // actualise shodow
-  static char aktive[64];
-  static char grau[64];
-  char aktualisiert = false;
+  static char actives[64];
+  static char gray[64];
+  char aktualised = false;
 
   triangle_nets.frei(false);
   for(int i = 0; i < (int)triangle_nets.size(); ++i)
   {
     double netze_n = triangle_nets.size();
-    double schattierung = .93 - .8/netze_n*i;
-    schattierung = 1.0 - i/(double)netze_n;
+    double shade = .93 - .8/netze_n*i;
+    shade = 1.0 - i/(double)netze_n;
     if(triangle_nets[i].schattierung < 0)
-      triangle_nets[i].schattierung = schattierung;
+      triangle_nets[i].schattierung = shade;
 
-    if( triangle_nets[i].active() != aktive[i] ||
-        triangle_nets[i].grau != grau[i]  )
+    if( triangle_nets[i].active() != actives[i] ||
+        triangle_nets[i].grau != gray[i]  )
     {
-      aktive[i] = triangle_nets[i].active();
-      grau[i] = triangle_nets[i].grau;
-      if(!aktualisiert)
+      actives[i] = triangle_nets[i].active();
+      gray[i] = triangle_nets[i].grau;
+      if(!aktualised)
       {
         //showContours_();
-        aktualisiert = true;
+        aktualised = true;
       }
     }
   }
@@ -1171,7 +1171,7 @@ GL_View::adornText_()
         ptr = (char*) from_channel_names_[0].c_str();
         sprintf (&text[0], "%s", ptr);
         glRasterPos3d (0, .5+ueber, 0);
-        ZeichneOText(ortho_font, 1, text)
+        drawOTEXT(ortho_font, 1, text)
       }
 
     // CIE*a - right
@@ -1184,7 +1184,7 @@ GL_View::adornText_()
           glRasterPos3d (.0, -.5, cie_a_display_stretch/2.+ueber);
         else
           glRasterPos3d (.0, .0, cie_a_display_stretch/2.+ueber);
-        ZeichneOText(ortho_font, 1, text)
+        drawOTEXT(ortho_font, 1, text)
       }
 
     // CIE*b - left
@@ -1197,7 +1197,7 @@ GL_View::adornText_()
           glRasterPos3d (cie_b_display_stretch/2.+ueber, -.5, .0);
         else
           glRasterPos3d (cie_b_display_stretch/2.+ueber, .0, .0);
-        ZeichneOText(ortho_font, 1, text)
+        drawOTEXT(ortho_font, 1, text)
       }
     glPopMatrix();
 
@@ -1209,7 +1209,7 @@ GL_View::adorn_()
 {
   DBG_PROG_START
 
-# define PFEILSPITZE zeichneKegel(0.02, 0.05, 16);
+# define ARROW_TIP drawCone(0.02, 0.05, 16);
 
   DBG_PROG_V( id() )
   // arrow and text
@@ -1238,7 +1238,7 @@ GL_View::adorn_()
       Lab2GL(arrow_colour[0],arrow_colour[1],arrow_colour[2],1)
       glTranslatef(0,.5,0);
       glRotatef (270,1.0,0.0,.0);
-      PFEILSPITZE
+      ARROW_TIP
     glPopMatrix(); DBG_PROG
     glPushMatrix();
     glDisable(GL_LIGHTING);
@@ -1280,14 +1280,14 @@ GL_View::adorn_()
           from_channel_names_[1] == _("CIE *a"))
       {
         Lab2GL(1.,-1.0,0.5,1)
-        PFEILSPITZE
+        ARROW_TIP
       }
       glTranslated(.0,0.0,-cie_a_display_stretch);
       glRotated (180,0.0,.5,.0);
       if (from_channel_names_.size() > 1 &&
           from_channel_names_[1] == _("CIE *a"))
         Lab2GL(1.,1.0,0.5,1)
-      PFEILSPITZE
+      ARROW_TIP
     glPopMatrix(); DBG_PROG
 
     // CIE*b - left
@@ -1316,14 +1316,14 @@ GL_View::adorn_()
           from_channel_names_[2] == _("CIE *b"))
         Lab2GL(1.,0.5,1.0,1)
       glRotated (90,0.0,.5,.0);
-      PFEILSPITZE
+      ARROW_TIP
       glRotated (180,.0,.5,.0);
       glTranslated(.0,.0,cie_b_display_stretch);
       if (from_channel_names_.size() > 2 &&
           from_channel_names_[2] == _("CIE *b"))
       {
         Lab2GL(.6,0.5,-1.0,1)
-        PFEILSPITZE
+        ARROW_TIP
       }
     glPopMatrix();
     glLineWidth(line_1*line_mult);
@@ -1369,7 +1369,7 @@ GL_View::refreshTable()
       double dim_y = 1.0/n_L;
       double dim_z = 1.0/n_a;
       double start_x,start_y,start_z, x,y,z;
-      double wert,
+      double value,
              A=.0,B=.0,C=.0,D=.0,E_=.0,F=.0,H=.0;
 
       /* The cubus for lines is completely filled from 0...1 .
@@ -1394,12 +1394,12 @@ GL_View::refreshTable()
       start_x = start_y = start_z = x = y = z = 0.5; start_y = y = -0.5;
       glPushMatrix();
 
-#     ifndef Beleuchtung_
+#     ifndef LIGHTING_
       glDisable(GL_LIGHTING);
 #     endif
       DBG_PROG_V( table_.size() <<" "<< table_[0].size() )
 
-      float korr = 0.995f/2.0f;
+      float corr = 0.995f/2.0f;
       /* The cubus start point is shifted to let the data appear centred. */
       glTranslated( -0.5/0.995+dim_x/2,
                     -0.5/0.995+dim_y/2 - (onion_skin != 0 ? dim_y : 0),
@@ -1418,25 +1418,25 @@ GL_View::refreshTable()
           {
             z = start_z + b * dim_x;
 
-            wert = table_[L][a][b][channel]; //DBG_PROG_V( L << a << b << channel)
+            value = table_[L][a][b][channel]; //DBG_PROG_V( L << a << b << channel)
 
-#           ifdef Beleuchtung_
-            Lab2GL(wert, .5, .5,1)
-            //glColor3f(wert, wert, wert);
+#           ifdef LIGHTING_
+            Lab2GL(value, .5, .5,1)
+            //glColor3f(value, value, value);
 #           else
             switch (point_colour) {
-              case MENU_GRAY:   glColor4d( wert, wert, wert, 1.0); break;
-              case MENU_COLOUR: glColor4d((wert*2),
-                                           wert*2-1.0,
-                                           1.0-wert, 1.0);         break;
-              case MENU_HIGHCONTRAST: wert = wert * 6;
-                                while(wert > 1.0) { wert = wert - 1.0; }
-                                if (onion_skin != 0 && wert < 0.80) wert = 0.0;
+              case MENU_GRAY:   glColor4d( value, value, value, 1.0); break;
+              case MENU_COLOUR: glColor4d((value*2),
+                                           value*2-1.0,
+                                           1.0-value, 1.0);         break;
+              case MENU_HIGHCONTRAST: value = value * 6;
+                                while(value > 1.0) { value = value - 1.0; }
+                                if (onion_skin != 0 && value < 0.80) value = 0.0;
                                 if (0/*onion_skin*/) {
                                   glDisable(GL_LIGHTING);
-                                  Lab2GL(wert, .5, .5,1)
+                                  Lab2GL(value, .5, .5,1)
                                   glEnable(GL_LIGHTING);
-                                } else glColor4d( wert, wert, wert, 1.0);
+                                } else glColor4d( value, value, value, 1.0);
                                                                    break;
             }
 #           endif
@@ -1761,60 +1761,60 @@ printf("%s:%d %d e:%d,%d,%d,%d\n",__FILE__,__LINE__,m, e[0],e[1],e[2],e[3]);
             }
 
             /* the cubus representation */
-            if (wert && 
+            if (value && 
                 (onion_skin == 0 || geschaelt < 0))
             {
                 glBegin(GL_TRIANGLE_FAN);
-                  glVertex3d(dim_x*b+ dim_x*korr,
-                             dim_y*L+ dim_y*korr,
-                             dim_z*a+ dim_z*korr);
-                  glVertex3d(dim_x*b+ dim_x*korr,
-                             dim_y*L+-dim_y*korr,
-                             dim_z*a+ dim_z*korr);
-                  glVertex3d(dim_x*b+-dim_x*korr,
-                             dim_y*L+-dim_y*korr,
-                             dim_z*a+ dim_z*korr);
-                  glVertex3d(dim_x*b+-dim_x*korr,
-                             dim_y*L+ dim_y*korr,
-                             dim_z*a+ dim_z*korr);
-                  glVertex3d(dim_x*b+-dim_x*korr,
-                             dim_y*L+ dim_y*korr,
-                             dim_z*a+-dim_z*korr);
-                  glVertex3d(dim_x*b+ dim_x*korr,
-                             dim_y*L+ dim_y*korr,
-                             dim_z*a+-dim_z*korr);
-                  glVertex3d(dim_x*b+ dim_x*korr,
-                             dim_y*L+-dim_y*korr,
-                             dim_z*a+-dim_z*korr);
-                  glVertex3d(dim_x*b+ dim_x*korr,
-                             dim_y*L+-dim_y*korr,
-                             dim_z*a+ dim_z*korr);
+                  glVertex3d(dim_x*b+ dim_x*corr,
+                             dim_y*L+ dim_y*corr,
+                             dim_z*a+ dim_z*corr);
+                  glVertex3d(dim_x*b+ dim_x*corr,
+                             dim_y*L+-dim_y*corr,
+                             dim_z*a+ dim_z*corr);
+                  glVertex3d(dim_x*b+-dim_x*corr,
+                             dim_y*L+-dim_y*corr,
+                             dim_z*a+ dim_z*corr);
+                  glVertex3d(dim_x*b+-dim_x*corr,
+                             dim_y*L+ dim_y*corr,
+                             dim_z*a+ dim_z*corr);
+                  glVertex3d(dim_x*b+-dim_x*corr,
+                             dim_y*L+ dim_y*corr,
+                             dim_z*a+-dim_z*corr);
+                  glVertex3d(dim_x*b+ dim_x*corr,
+                             dim_y*L+ dim_y*corr,
+                             dim_z*a+-dim_z*corr);
+                  glVertex3d(dim_x*b+ dim_x*corr,
+                             dim_y*L+-dim_y*corr,
+                             dim_z*a+-dim_z*corr);
+                  glVertex3d(dim_x*b+ dim_x*corr,
+                             dim_y*L+-dim_y*corr,
+                             dim_z*a+ dim_z*corr);
                 glEnd();
                 glBegin(GL_TRIANGLE_FAN);
-                  glVertex3d(dim_x*b+-dim_x*korr,
-                             dim_y*L+-dim_y*korr,
-                             dim_z*a+-dim_z*korr);
-                  glVertex3d(dim_x*b+ dim_x*korr,
-                             dim_y*L+-dim_y*korr,
-                             dim_z*a+-dim_z*korr);
-                  glVertex3d(dim_x*b+ dim_x*korr,
-                             dim_y*L+-dim_y*korr,
-                             dim_z*a+ dim_z*korr);
-                  glVertex3d(dim_x*b+-dim_x*korr,
-                             dim_y*L+-dim_y*korr,
-                             dim_z*a+ dim_z*korr);
-                  glVertex3d(dim_x*b+-dim_x*korr,
-                             dim_y*L+ dim_y*korr,
-                             dim_z*a+ dim_z*korr);
-                  glVertex3d(dim_x*b+-dim_x*korr,
-                             dim_y*L+ dim_y*korr,
-                             dim_z*a+-dim_z*korr);
-                  glVertex3d(dim_x*b+ dim_x*korr,
-                             dim_y*L+ dim_y*korr,
-                             dim_z*a+-dim_z*korr);
-                  glVertex3d(dim_x*b+ dim_x*korr,
-                             dim_y*L+-dim_y*korr,
-                             dim_z*a+-dim_z*korr);
+                  glVertex3d(dim_x*b+-dim_x*corr,
+                             dim_y*L+-dim_y*corr,
+                             dim_z*a+-dim_z*corr);
+                  glVertex3d(dim_x*b+ dim_x*corr,
+                             dim_y*L+-dim_y*corr,
+                             dim_z*a+-dim_z*corr);
+                  glVertex3d(dim_x*b+ dim_x*corr,
+                             dim_y*L+-dim_y*corr,
+                             dim_z*a+ dim_z*corr);
+                  glVertex3d(dim_x*b+-dim_x*corr,
+                             dim_y*L+-dim_y*corr,
+                             dim_z*a+ dim_z*corr);
+                  glVertex3d(dim_x*b+-dim_x*corr,
+                             dim_y*L+ dim_y*corr,
+                             dim_z*a+ dim_z*corr);
+                  glVertex3d(dim_x*b+-dim_x*corr,
+                             dim_y*L+ dim_y*corr,
+                             dim_z*a+-dim_z*corr);
+                  glVertex3d(dim_x*b+ dim_x*corr,
+                             dim_y*L+ dim_y*corr,
+                             dim_z*a+-dim_z*corr);
+                  glVertex3d(dim_x*b+ dim_x*corr,
+                             dim_y*L+-dim_y*corr,
+                             dim_z*a+-dim_z*corr);
                 glEnd();
             }
           }
@@ -1831,7 +1831,7 @@ printf("%s:%d %d e:%d,%d,%d,%d\n",__FILE__,__LINE__,m, e[0],e[1],e[2],e[3]);
 
       } DBG_PROG
       glPopMatrix();
-#     ifndef Beleuchtung_
+#     ifndef LIGHTING_
       glEnable(GL_LIGHTING);
 #     endif
     glEndList();
@@ -1915,7 +1915,7 @@ GL_View::refreshNets()
        glEnable(GL_LIGHTING);
 
        if(icc_debug != 0)
-         zeichneKegel(0.02, 0.05, 16, lX, 0, lZ);
+         drawCone(0.02, 0.05, 16, lX, 0, lZ);
 
 
        if(icc_debug == 14) {
@@ -1929,7 +1929,7 @@ GL_View::refreshNets()
        glTranslated(-X/1.2,-Y/1.2,-Z/1.2);
        }
 
-       std::multimap<double,DreiecksIndexe> indexe;
+       std::multimap<double,DreiecksIndexe> indices;
        double abstand;
        std::multimap<double,DreiecksIndexe>::const_iterator it;
        if(!bsp)
@@ -1945,7 +1945,7 @@ GL_View::refreshNets()
                              index_p.second.midpoint[2]+X );
              index_p.first = abstand;
                // the container std::map does sorting
-       /*D*/ indexe.insert(index_p);
+       /*D*/ indices.insert(index_p);
        }
       glPopMatrix();
 
@@ -1956,7 +1956,7 @@ GL_View::refreshNets()
     gl_listen_[RASTER] = 0;
   }
 
-#     ifdef Beleuchtung
+#     ifdef LIGHTING
       glEnable(GL_LIGHTING);
 #     else
       glDisable(GL_LIGHTING);
@@ -1996,11 +1996,11 @@ GL_View::refreshNets()
       glColorMaterial( GL_FRONT_AND_BACK, GL_SPECULAR );
       glColorMaterial( GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE );
       glEnable( GL_COLOR_MATERIAL );
-      //GLfloat farbe[4] = {  0.5,0.5,0.5,1.0 };
-#define FARBEN(r,g,b,a) {/*farbe [0] = (r); farbe [1] = (g); farbe [2] = (b); \
-                      farbe[3] = (a);  \
-              glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, farbe); \
-              glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, farbe);*/\
+      //GLfloat colour[4] = {  0.5,0.5,0.5,1.0 };
+#define COLOURS(r,g,b,a) {/*colour [0] = (r); colour [1] = (g); colour [2] = (b); \
+                      colour[3] = (a);  \
+              glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, colour); \
+              glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, colour);*/\
                       glColor4d(r,g,b,a); }
 
       if(bsp)
@@ -2011,7 +2011,7 @@ GL_View::refreshNets()
                                     X + cie_b_display_stretch/2.};
         if(icc_debug != 0)
         {
-          zeichneKegel(0.02, 0.05, 16, X/dist, Y/dist, Z/dist);
+          drawCone(0.02, 0.05, 16, X/dist, Y/dist, Z/dist);
           glBegin(GL_LINES);
             glVertex3d( X/dist,
                         Y/dist,
@@ -2025,7 +2025,7 @@ GL_View::refreshNets()
       }
         else
       {
-        for( it = indexe.begin(); it != indexe.end(); ++it )
+        for( it = indices.begin(); it != indices.end(); ++it )
         {
           index[0] = it->second.i[0];
           index[1] = it->second.i[1];
@@ -2037,7 +2037,7 @@ GL_View::refreshNets()
                         it->second.normale[1] );
             for( int l = 2; l >= 0; --l)
             {
-              FARBEN (   net.punkte[index[l]].farbe[0],
+              COLOURS (   net.punkte[index[l]].farbe[0],
                          net.punkte[index[l]].farbe[1],
                          net.punkte[index[l]].farbe[2],
                          net.punkte[index[l]].farbe[3]);
@@ -2061,7 +2061,7 @@ GL_View::refreshNets()
           }
           if(net.kubus)
           {
-            FARBEN ( 5.0,5.0,5.0,net.punkte[index[0]].farbe[3] );
+            COLOURS ( 5.0,5.0,5.0,net.punkte[index[0]].farbe[3] );
             glBegin(GL_LINES);
               glVertex3d( net.punkte[index[1]].koord[2],
                           net.punkte[index[1]].koord[0],
@@ -2079,7 +2079,7 @@ GL_View::refreshNets()
       glDisable (GL_BLEND);
       glDisable( GL_COLOR_MATERIAL );
       glDepthMask(GL_TRUE);
-#     ifndef Beleuchtung
+#     ifndef LIGHTING
       glEnable(GL_LIGHTING);
 #     endif
 
@@ -2152,7 +2152,7 @@ GL_View::refreshPoints()
 
     gl_listen_[POINTS] = glGenLists(1);
     glNewList( gl_listen_[POINTS], GL_COMPILE); DBG_PROG_V( gl_listen_[POINTS] )
-#     ifndef Beleuchtung_
+#     ifndef LIGHTING_
       glDisable(GL_LIGHTING);
 #     endif
 
@@ -2233,20 +2233,20 @@ GL_View::refreshPoints()
           }
 
           int n = oyNamedColours_Count( colours );
-          int aktiv = 1;
-          int grau = 0;
+          int active = 1;
+          int gray = 0;
           oyNamedColour_s * c = NULL;
-          double schattierung = 1;
+          double shade = 1;
           int has_mesh = 0;
 
           rgba[3] = 1;
 
           if(triangle_nets.size() > (unsigned)j)
           {
-            aktiv = triangle_nets[j].active();
-            grau = triangle_nets[j].grau;
+            active = triangle_nets[j].active();
+            gray = triangle_nets[j].grau;
             rgba[3] = triangle_nets[j].undurchsicht;
-            schattierung = triangle_nets[j].schattierung;
+            shade = triangle_nets[j].schattierung;
             if(triangle_nets[j].punkte.size())
               has_mesh = 1;
           }
@@ -2262,7 +2262,7 @@ GL_View::refreshPoints()
             glDisable (GL_ALPHA_TEST_FUNC);
           }
 
-          if(!aktiv)
+          if(!active)
             continue;
 
           if(show_points_as_pairs)
@@ -2281,8 +2281,8 @@ GL_View::refreshPoints()
                 if(!show_points_as_measurements)
                   glColor4d(.97, .97, .97, rgba[3] );
                 else {
-                  if(grau)
-                    rgba[0]= rgba[1]= rgba[2] = schattierung;
+                  if(gray)
+                    rgba[0]= rgba[1]= rgba[2] = shade;
                   else
                     oyConversion_RunPixels( cc_disp, 0 );
                   glColor4dv( rgba );
@@ -2299,8 +2299,8 @@ GL_View::refreshPoints()
                 if(!show_points_as_measurements)
                   glColor4d(1., .6, .6, 1.0 );
                 else {
-                  if(grau)
-                    rgba[0]= rgba[1]= rgba[2] = schattierung;
+                  if(gray)
+                    rgba[0]= rgba[1]= rgba[2] = shade;
                   else
                     oyConversion_RunPixels( cc_disp, 0 );
                   glColor4dv( rgba );
@@ -2317,7 +2317,7 @@ GL_View::refreshPoints()
             n *= 2; 
 
           double rad = .02;
-          int kugeln_zeichnen = false;
+          int draw_spheres = false;
           switch (point_form)
           {
             case MENU_dE1STAR:
@@ -2329,8 +2329,8 @@ GL_View::refreshPoints()
                    c = oyNamedColours_Get( colours, i );
                    oyArray2d_DataSet( in_array,
                                       (void*) oyNamedColour_GetXYZConst( c ) );
-                   if(grau)
-                     rgba[0]= rgba[1]= rgba[2] = schattierung;
+                   if(gray)
+                     rgba[0]= rgba[1]= rgba[2] = shade;
                    else
                      oyConversion_RunPixels( cc_disp, 0 );
                    glColor4dv( rgba );
@@ -2342,15 +2342,15 @@ GL_View::refreshPoints()
                  }
                glEnd();
               break;
-            case MENU_dE1SPHERE: rad = 0.005;kugeln_zeichnen = true;break;
-            case MENU_dE2SPHERE: rad = 0.01; kugeln_zeichnen = true;break;
-            case MENU_dE4SPHERE: rad = 0.02; kugeln_zeichnen = true;break;
+            case MENU_dE1SPHERE: rad = 0.005;draw_spheres = true;break;
+            case MENU_dE2SPHERE: rad = 0.01; draw_spheres = true;break;
+            case MENU_dE4SPHERE: rad = 0.02; draw_spheres = true;break;
                  break;
             case MENU_DIFFERENCE_LINE: // they are drawn anyway
                  break;
           }
 
-          if(kugeln_zeichnen)
+          if(draw_spheres)
           {
             for (int i = 0; i < n; ++i)
             {
@@ -2358,8 +2358,8 @@ GL_View::refreshPoints()
                    c = oyNamedColours_Get( colours, i );
                    oyArray2d_DataSet( in_array,
                                       (void*) oyNamedColour_GetXYZConst( c ) );
-                   if(grau)
-                     rgba[0]= rgba[1]= rgba[2] = schattierung;
+                   if(gray)
+                     rgba[0]= rgba[1]= rgba[2] = shade;
                    else
                      oyConversion_RunPixels( cc_disp, 0 );
                    glColor4dv( rgba );
@@ -2400,7 +2400,7 @@ GL_View::refreshPoints()
         oyProfile_Release( &prof_disp );
 
       glPopMatrix();
-#     ifndef Beleuchtung_
+#     ifndef LIGHTING_
       glEnable(GL_LIGHTING);
 #     endif
     glEndList();
@@ -2429,56 +2429,56 @@ GL_View::showContours_()
   //if (spectral_line == MENU_SPECTRAL_LINE)
   for (unsigned int d=0; d < triangle_nets.size(); ++d)
   {
-    double *RGB_Speicher = 0,
-           *RGBSchatten_Speicher = 0,
-           *Lab_Speicher = 0,
-           *Lab_Speicher_schatten = 0;
+    double *RGB_buffer = 0,
+           *RGB_shadow_buffer = 0,
+           *Lab_buffer = 0,
+           *Lab_shadow_buffer = 0;
 
     // conversion
     int n = (int)triangle_nets[d].umriss.size();
     DBG_PROG_V( n )
     if(!n) continue;
 
-    Lab_Speicher = (double*) malloc (sizeof(double) * n*3);
-    if(!Lab_Speicher)  WARN_S( "Lab_speicher Speicher nicht verfuegbar" )
+    Lab_buffer = (double*) malloc (sizeof(double) * n*3);
+    if(!Lab_buffer)  WARN_S( "Lab_speicher Speicher nicht verfuegbar" )
 
     for ( int j = 0; j < n; ++j)
       for(int k = 0; k < 3 ; ++k)
-        Lab_Speicher[j*3+k] = triangle_nets[d].umriss[j].koord[k];
+        Lab_buffer[j*3+k] = triangle_nets[d].umriss[j].koord[k];
 
-    RGB_Speicher = icc_oyranos.wandelLabNachBildschirmFarben(
+    RGB_buffer = icc_oyranos.wandelLabNachBildschirmFarben(
                window()->x() + window()->w()/2, window()->y() + window()->h()/2,
          (icc_oyranos.colourServerActive() & XCM_COLOR_SERVER_PROFILES)?edit_:0,
-               Lab_Speicher, (size_t)n, opts);
+               Lab_buffer, (size_t)n, opts);
     DBG_PROG_V( n )
     // create shadow
-    Lab_Speicher_schatten = (double*) malloc (sizeof(double) * n*3);
+    Lab_shadow_buffer = (double*) malloc (sizeof(double) * n*3);
 
     for (int i = 0; i < n; ++i) {
-      Lab_Speicher_schatten[i*3+0] = triangle_nets[d].schattierung; //background_colour*.40+.35;
-      Lab_Speicher_schatten[i*3+1] = (Lab_Speicher[i*3+1]-.5)*.25+0.5;
-      Lab_Speicher_schatten[i*3+2] = (Lab_Speicher[i*3+2]-.5)*.25+0.5;
+      Lab_shadow_buffer[i*3+0] = triangle_nets[d].schattierung; //background_colour*.40+.35;
+      Lab_shadow_buffer[i*3+1] = (Lab_buffer[i*3+1]-.5)*.25+0.5;
+      Lab_shadow_buffer[i*3+2] = (Lab_buffer[i*3+2]-.5)*.25+0.5;
     }
 
-    RGBSchatten_Speicher = icc_oyranos.wandelLabNachBildschirmFarben(
+    RGB_shadow_buffer = icc_oyranos.wandelLabNachBildschirmFarben(
                window()->x() + window()->w()/2, window()->y() + window()->h()/2,
          (icc_oyranos.colourServerActive() & XCM_COLOR_SERVER_PROFILES)?edit_:0,
-                      Lab_Speicher_schatten, n, opts);
-    if(!RGB_Speicher)  WARN_S( "RGB_speicher result is not available" )
-    if(!RGBSchatten_Speicher)  WARN_S( "RGB_speicher result is not available" )
+                      Lab_shadow_buffer, n, opts);
+    if(!RGB_buffer)  WARN_S( "RGB_speicher result is not available" )
+    if(!RGB_shadow_buffer)  WARN_S( "RGB_speicher result is not available" )
 
     for ( int j = 0; j < n; ++j)
       for(int k = 0; k < 3 ; ++k)
-        triangle_nets[d].umriss[j].farbe[k] = RGBSchatten_Speicher[j*3+k];
+        triangle_nets[d].umriss[j].farbe[k] = RGB_shadow_buffer[j*3+k];
 
-    if (Lab_Speicher) free (Lab_Speicher);
-    if (Lab_Speicher_schatten) free (Lab_Speicher_schatten);
-    if (RGB_Speicher) delete [] RGB_Speicher;
-    if (RGBSchatten_Speicher) delete [] RGBSchatten_Speicher;
+    if (Lab_buffer) free (Lab_buffer);
+    if (Lab_shadow_buffer) free (Lab_shadow_buffer);
+    if (RGB_buffer) delete [] RGB_buffer;
+    if (RGB_shadow_buffer) delete [] RGB_shadow_buffer;
   }
   oyOptions_Release( &opts );
 
-    GLfloat farbe[] =   { arrow_colour[0],arrow_colour[1],arrow_colour[2], 1.0 };
+    GLfloat colour[] =   { arrow_colour[0],arrow_colour[1],arrow_colour[2], 1.0 };
 
   gl_listen_[CONTOURS] = glGenLists(1);
   glNewList( gl_listen_[CONTOURS], GL_COMPILE );
@@ -2500,7 +2500,7 @@ GL_View::showContours_()
          triangle_nets[i].active() &&
          triangle_nets[i].undurchsicht)
       {
-        //Farbband
+        // colour line
         if(icc_debug)
         {
         glLineWidth(line_3*line_mult);
@@ -2534,7 +2534,7 @@ GL_View::showContours_()
         for (int z=0 ; z < n; z++)
         {
           if(!triangle_nets[i].grau) {
-            FARBE(triangle_nets[i].umriss[z].farbe[0],
+            COLOUR(triangle_nets[i].umriss[z].farbe[0],
                   triangle_nets[i].umriss[z].farbe[1],
                   triangle_nets[i].umriss[z].farbe[2],1)
           }
@@ -2562,11 +2562,11 @@ GL_View::showSprectralLine_()
   gl_listen_[SPEKTRUM] = 0;
   if (spectral_line == MENU_SPECTRAL_LINE)
   {
-    double *RGB_Speicher = 0,
-           *RGBSchatten_Speicher = 0,
+    double *RGB_buffer = 0,
+           *RGB_shadow_buffer = 0,
            *XYZ_Speicher = 0,
-           *Lab_Speicher = 0,
-           *Lab_Speicher_schatten = 0;
+           *Lab_buffer = 0,
+           *Lab_shadow_buffer = 0;
     int n_punkte = 471;//341; // 700 nm
     oyOptions_s * opts = icc_examin->options();
 
@@ -2582,60 +2582,60 @@ GL_View::showSprectralLine_()
         { XYZ_Speicher[i*3+j] = (double)cieXYZ[i][j];
         }
       }
-      Lab_Speicher = new double [n_punkte*3];
-      Lab_Speicher_schatten = new double [n_punkte*3];
-      if(!Lab_Speicher)  WARN_S( "Lab_speicher Speicher not available" )
+      Lab_buffer = new double [n_punkte*3];
+      Lab_shadow_buffer = new double [n_punkte*3];
+      if(!Lab_buffer)  WARN_S( "Lab_speicher Speicher not available" )
 
-      XYZtoLab (XYZ_Speicher, Lab_Speicher, n_punkte);
+      XYZtoLab (XYZ_Speicher, Lab_buffer, n_punkte);
 
     } else
     {
       //colour circle
       n_punkte = 90;
-      Lab_Speicher = new double [n_punkte*3];
-      Lab_Speicher_schatten = new double [n_punkte*3];
-      if(!Lab_Speicher)  WARN_S( "Lab_speicher Speicher not available" )
+      Lab_buffer = new double [n_punkte*3];
+      Lab_shadow_buffer = new double [n_punkte*3];
+      if(!Lab_buffer)  WARN_S( "Lab_speicher Speicher not available" )
 
       for (int i = 0; i < n_punkte; ++i)
       {
-          Lab_Speicher[i*3+0] = (double)0.666;
-          Lab_Speicher[i*3+1] = (double)cos(i*2*M_PI/(n_punkte-1))*.714 + .5;
-          Lab_Speicher[i*3+2] = (double)sin(i*2*M_PI/(n_punkte-1))*.714 + .5;
+          Lab_buffer[i*3+0] = (double)0.666;
+          Lab_buffer[i*3+1] = (double)cos(i*2*M_PI/(n_punkte-1))*.714 + .5;
+          Lab_buffer[i*3+2] = (double)sin(i*2*M_PI/(n_punkte-1))*.714 + .5;
       }
     }
 
-    RGB_Speicher = icc_oyranos.wandelLabNachBildschirmFarben(
+    RGB_buffer = icc_oyranos.wandelLabNachBildschirmFarben(
                window()->x() + window()->w()/2, window()->y() + window()->h()/2,
          (icc_oyranos.colourServerActive() & XCM_COLOR_SERVER_PROFILES)?edit_:0,
-               Lab_Speicher, (size_t)n_punkte, opts);
+               Lab_buffer, (size_t)n_punkte, opts);
 
     if(type_ == 1)
       for (int i = 0; i < n_punkte; ++i)
-        Lab_Speicher[i*3+0] = (double).0;
+        Lab_buffer[i*3+0] = (double).0;
 
 
     DBG_PROG_V( n_punkte )
     // generate shadows
     for (int i = 0; i < n_punkte*2; ++i)
-      Lab_Speicher_schatten[i] = Lab_Speicher[i];
+      Lab_shadow_buffer[i] = Lab_buffer[i];
     for (int i = 0; i < n_punkte; ++i) {
-      Lab_Speicher_schatten[i*3] = background_colour*.40+.35;
-      Lab_Speicher_schatten[i*3+1] = (Lab_Speicher[i*3+1]-.5)*.25+0.5;
-      Lab_Speicher_schatten[i*3+2] = (Lab_Speicher[i*3+2]-.5)*.25+0.5;
+      Lab_shadow_buffer[i*3] = background_colour*.40+.35;
+      Lab_shadow_buffer[i*3+1] = (Lab_buffer[i*3+1]-.5)*.25+0.5;
+      Lab_shadow_buffer[i*3+2] = (Lab_buffer[i*3+2]-.5)*.25+0.5;
     }
 
-    RGBSchatten_Speicher = icc_oyranos.wandelLabNachBildschirmFarben(
+    RGB_shadow_buffer = icc_oyranos.wandelLabNachBildschirmFarben(
                window()->x() + window()->w()/2, window()->y() + window()->h()/2,
          (icc_oyranos.colourServerActive() & XCM_COLOR_SERVER_PROFILES)?edit_:0,
-               Lab_Speicher_schatten, n_punkte, opts);
-    if(!RGB_Speicher || !RGBSchatten_Speicher) 
+               Lab_shadow_buffer, n_punkte, opts);
+    if(!RGB_buffer || !RGB_shadow_buffer) 
     {
       WARN_S( "RGB_speicher result not available" )
       DBG_PROG_ENDE
       return;
     }
 
-    GLfloat farbe[] =   { arrow_colour[0],arrow_colour[1],arrow_colour[2], 1.0 };
+    GLfloat colour[] =   { arrow_colour[0],arrow_colour[1],arrow_colour[2], 1.0 };
 
     gl_listen_[SPEKTRUM] = glGenLists(1);
     glNewList( gl_listen_[SPEKTRUM], GL_COMPILE );
@@ -2655,13 +2655,13 @@ GL_View::showSprectralLine_()
       glColor4f(0.5, 1.0, 1.0, 1.0);
       glBegin(GL_LINE_STRIP);
         for (int i=0 ; i <= (n_punkte - 1); i++) {
-          DBG_ICCGL2_S( i<<" "<<Lab_Speicher[i*3]<<"|"<<Lab_Speicher[i*3+1]<<"|"<<Lab_Speicher[i*3+2] )
-          DBG_ICCGL2_S( i<<" "<<RGB_Speicher[i*3]<<"|"<<RGB_Speicher[i*3+1]<<"|"<<RGB_Speicher[i*3+2] )
-          FARBE(RGB_Speicher[i*3],RGB_Speicher[i*3+1],RGB_Speicher[i*3+2],1);
+          DBG_ICCGL2_S( i<<" "<<Lab_buffer[i*3]<<"|"<<Lab_buffer[i*3+1]<<"|"<<Lab_buffer[i*3+2] )
+          DBG_ICCGL2_S( i<<" "<<RGB_buffer[i*3]<<"|"<<RGB_buffer[i*3+1]<<"|"<<RGB_buffer[i*3+2] )
+          COLOUR(RGB_buffer[i*3],RGB_buffer[i*3+1],RGB_buffer[i*3+2],1);
           glVertex3d( 
-         (Lab_Speicher[i*3+2]*cie_b_display_stretch - cie_b_display_stretch/2.),
-         (Lab_Speicher[i*3+0] - 0.5),
-         (Lab_Speicher[i*3+1]*cie_a_display_stretch - cie_a_display_stretch/2.)
+         (Lab_buffer[i*3+2]*cie_b_display_stretch - cie_b_display_stretch/2.),
+         (Lab_buffer[i*3+0] - 0.5),
+         (Lab_buffer[i*3+1]*cie_a_display_stretch - cie_a_display_stretch/2.)
           );
         }
       glEnd();
@@ -2672,11 +2672,11 @@ GL_View::showSprectralLine_()
       glBegin(GL_LINE_STRIP);
       //#define S * .25 + text_colour[0] - shadow
         for (int i=0 ; i <= (n_punkte - 1); i++) {
-          FARBE(RGBSchatten_Speicher[i*3],RGBSchatten_Speicher[i*3+1],RGBSchatten_Speicher[i*3+2],1)
+          COLOUR(RGB_shadow_buffer[i*3],RGB_shadow_buffer[i*3+1],RGB_shadow_buffer[i*3+2],1)
           glVertex3d( 
-         (Lab_Speicher[i*3+2]*cie_b_display_stretch - cie_b_display_stretch/2.),
+         (Lab_buffer[i*3+2]*cie_b_display_stretch - cie_b_display_stretch/2.),
          (- 0.5),
-         (Lab_Speicher[i*3+1]*cie_a_display_stretch - cie_a_display_stretch/2.)
+         (Lab_buffer[i*3+1]*cie_a_display_stretch - cie_a_display_stretch/2.)
           );
         }
       glEnd();
@@ -2685,10 +2685,10 @@ GL_View::showSprectralLine_()
     glEndList();
 
     if (XYZ_Speicher) delete [] XYZ_Speicher;
-    if (RGB_Speicher) delete [] RGB_Speicher;
-    if (RGBSchatten_Speicher) delete [] RGBSchatten_Speicher;
-    if (Lab_Speicher) delete [] Lab_Speicher;
-    if (Lab_Speicher_schatten) delete [] Lab_Speicher_schatten;
+    if (RGB_buffer) delete [] RGB_buffer;
+    if (RGB_shadow_buffer) delete [] RGB_shadow_buffer;
+    if (Lab_buffer) delete [] Lab_buffer;
+    if (Lab_shadow_buffer) delete [] Lab_shadow_buffer;
     oyOptions_Release( &opts );
   }
   DBG_PROG_ENDE
@@ -2857,7 +2857,7 @@ GL_View::setPerspective()
 }
 
 void
-GL_View::fensterForm( )
+GL_View::windowShape( )
 { DBG_PROG_START
   if(visible()) {
     glViewport(0,0,w(),h());
@@ -2875,13 +2875,6 @@ void
 GL_View::drawGL()
 {
   DBG_ICCGL_START
-# if 0
-  int thread = wandelThreadId(iccThreadSelf());
-  if(thread != THREAD_HAUPT) {
-    WARN_S( "falscher Thread: " << dbgThreadId(iccThreadSelf()) );
-    DBG_PROG_ENDE
-  }
-# endif
 
   if(!valid_)
   {
@@ -2889,7 +2882,7 @@ GL_View::drawGL()
     gl_font( FL_HELVETICA, 10 );
     refresh_();
     GLinit_();  DBG_PROG
-    fensterForm();
+    windowShape();
   }
 
   if(update_geometries_)
@@ -2909,10 +2902,10 @@ GL_View::drawGL()
 
 
   int scal = 1;
-  GLfloat farbe[] =   { text_colour[0],text_colour[1],text_colour[2], 1.0 };
+  GLfloat colour[] =   { text_colour[0],text_colour[1],text_colour[2], 1.0 };
   GLdouble oX=.0,oY=.0,oZ=.0;
   GLdouble X=.0,Y=.0,Z=.0;
-  std::string kanalname;
+  std::string channel_name;
 
   icc_examin->report_owner = 1;
   if(visible() &&
@@ -2970,9 +2963,9 @@ GL_View::drawGL()
           sprintf( text, "%s", temp );
         oyNamedColour_GetColourStd( epoint_, oyEDITING_LAB, l, oyDOUBLE,0,opts);
         CIELabToLab( l, lab );
-        oY = LNachY( lab.L );
-        oZ = aNachZ( lab.a );
-        oX = bNachX( lab.b );
+        oY = LToY( lab.L );
+        oZ = aToZ( lab.a );
+        oX = bToX( lab.b );
         mousePoint_( oX, oY, oZ, X, Y, Z, 0 );
       } else
       {
@@ -2987,9 +2980,9 @@ GL_View::drawGL()
                        -grenze < oZ && oZ < grenze)
         {
           double d[3];
-          d[0] = YNachL(oY);
-          d[1] = Znacha(oZ);
-          d[2] = Xnachb(oX);
+          d[0] = YToL(oY);
+          d[1] = ZToa(oZ);
+          d[2] = XTob(oX);
           LabToCIELab( d, d, 1 );
           oyLab2XYZ(d, d);
 
@@ -3010,9 +3003,9 @@ GL_View::drawGL()
             oyNamedColour_GetColourStd( epoint_, oyEDITING_LAB, d, oyDOUBLE,
                                         0, opts );
             CIELabToLab( d, lab );
-            oY = LNachY( lab.L );
-            oZ = aNachZ( lab.a );
-            oX = bNachX( lab.b );
+            oY = LToY( lab.L );
+            oZ = aToZ( lab.a );
+            oX = bToX( lab.b );
             mousePoint_( oX, oY, oZ, X, Y, Z, 0 );
             const char * temp = oyNamedColour_GetName( epoint_, oyNAME_NICK, 0 );
             if(temp)
@@ -3023,9 +3016,9 @@ GL_View::drawGL()
           if(!strlen(text))
           {
             double d[3];
-            d[0] = YNachL(oY);
-            d[1] = Znacha(oZ);
-            d[2] = Xnachb(oX);
+            d[0] = YToL(oY);
+            d[1] = ZToa(oZ);
+            d[2] = XTob(oX);
             LabToCIELab( d, d, 1 );
             text[0] = 0;
             for(int i = 0; i < (int)from_channel_names_.size(); ++i)
@@ -3056,19 +3049,19 @@ GL_View::drawGL()
           DBG_PROG_V( l[0]<<" "<<l[1]<<" "<<l[2] )
         if(rgb)
         {
-#         ifndef Beleuchtung_
+#         ifndef LIGHTING_
           glDisable(GL_LIGHTING);
 #         endif
           glPushMatrix();
             glLineWidth(line_3*line_mult);
-            FARBE(rgb[0], rgb[1], rgb[2],1)
+            COLOUR(rgb[0], rgb[1], rgb[2],1)
             glBegin(GL_LINES);
               glVertex3f( oX, oY, oZ );
               glVertex3f( oX, -0.5, oZ );
             glEnd();
           glPopMatrix();
             DBG_PROG_V( rgb[0] <<" "<< rgb[1] <<" "<< rgb[2] )
-#         ifndef Beleuchtung_
+#         ifndef LIGHTING_
           glEnable(GL_LIGHTING);
 #         endif
         }
@@ -3153,9 +3146,9 @@ GL_View::drawGL()
                  int b = (int)((oX+0.5)*table_[L][a].size());
                  if(0 <= b && b < (int)table_[L][a].size()) {
 # ifdef DEBUG
-                   double wert = table_[L][a][b][channel];
+                   double value = table_[L][a][b][channel];
 # endif
-                   DBG_PROG_V( L<<" "<<a<<" "<<b<<" "<<wert )
+                   DBG_PROG_V( L<<" "<<a<<" "<<b<<" "<<value )
                    DBG_PROG_V( table_.size()<<" "<<table_[L].size()<<" "<<
                                table_[L][a].size()<<" "<<channel )
                    // "Pos" is a abreviation to position and will be visible in the small statusline with position coordinates
@@ -3175,45 +3168,45 @@ GL_View::drawGL()
                        sprintf(&text[strlen(text)], " ");
                    }
                    glStatus( text, type_ );
-                   ZeichneOText (ortho_font, scal, text)
+                   drawOTEXT (ortho_font, scal, text)
                  }}}
                }
             } else
             {
               if(!epoint_)
                 glStatus( text, type_ );
-              ZeichneOText (ortho_font, scal, text)
+              drawOTEXT (ortho_font, scal, text)
 
               /* Circle around point */
               if( epoint_) 
               {
-                GLdouble breite = 24;
-                int seiten = (int)(8 + breite/2);
+                GLdouble width = 24;
+                int steps = (int)(8 + width/2);
                 GLdouble x, y,
-                         s = 2*M_PI/(GLdouble)seiten; // static variable
+                         s = 2*M_PI/(GLdouble)steps; // static variable
 
                 // lines
                 Lab2GL(f,.5,.5,1)
                 glBegin(GL_LINE_STRIP);
-                  glVertex3d( X+2*breite, Y-1, 9.999 );
-                  glVertex3d( X+0.5*breite, Y-1, 9.999 );
+                  glVertex3d( X+2*width, Y-1, 9.999 );
+                  glVertex3d( X+0.5*width, Y-1, 9.999 );
                 glEnd();
                 glBegin(GL_LINE_STRIP);
-                  glVertex3d( X-1.2*breite, Y-1, 9.999 );
-                  glVertex3d( X-0.2*breite, Y-1, 9.999 );
+                  glVertex3d( X-1.2*width, Y-1, 9.999 );
+                  glVertex3d( X-0.2*width, Y-1, 9.999 );
                 glEnd();
                 glBegin(GL_LINE_STRIP);
-                  glVertex3d( X, Y+1.2*breite, 9.999 );
-                  glVertex3d( X, Y+0.5*breite, 9.999 );
+                  glVertex3d( X, Y+1.2*width, 9.999 );
+                  glVertex3d( X, Y+0.5*width, 9.999 );
                 glEnd();
 
                 // circle
-                breite += 1;
+                width += 1;
                 glBegin(GL_LINE_STRIP);
-                  for(int i = 0; i <= seiten; ++i)
+                  for(int i = 0; i <= steps; ++i)
                   {
-                    x = cos(i*(double)s)*breite;
-                    y = sin(i*(double)s)*breite;
+                    x = cos(i*(double)s)*width;
+                    y = sin(i*(double)s)*width;
                     glVertex3d( X+x, Y+y, 9 );
                   }
                 glEnd();
@@ -3231,34 +3224,34 @@ GL_View::drawGL()
        glPopMatrix();
     }
 
-    bool strich_neu = false;
-    double dzeit = icc_examin_ns::zeitSekunden() - time_;
-    if(dzeit > 1./15. )
+    bool line_new = false;
+    double frame_duration = icc_examin_ns::zeitSekunden() - time_;
+    if(frame_duration > 1./15. )
     {
       if(smooth && !onion_skin)
       {
         smooth = 0;
-        strich_neu = true;
+        line_new = true;
       }
     }
-    if(dzeit < 1./40. || onion_skin)
+    if(frame_duration < 1./40. || onion_skin)
     {
       if(!smooth)
       {
         smooth = 1;
-        strich_neu = true;
+        line_new = true;
       }
     }
-    if(strich_neu) {
+    if(line_new) {
       //showSprectralLine_();
       adorn_();
     }
 
     // measure speed
-    static double zeit_old = 0;
+    static double duration_old = 0;
     snprintf(t, 128, "time_: %.01f id: %d f/s: %.03f theoretical f/s: %.03f",
-             time_, id_, 1./(time_ - zeit_old), 1./dzeit);
-    zeit_old = time_;
+             time_, id_, 1./(time_ - duration_old), 1./frame_duration);
+    duration_old = time_;
     DBG_PROG_V( t )
 
 
@@ -3267,7 +3260,7 @@ GL_View::drawGL()
       glRasterPos2d(0, h() -10 );
 #   endif
     if(mouse_x_old != mouse_x_ || mouse_y_old != mouse_y_)
-      mouse_steht = true;
+      mouse_stays = true;
     mouse_x_old = mouse_x_;
     mouse_y_old = mouse_y_;
 
@@ -3285,9 +3278,9 @@ GL_View::drawGL()
        glTranslatef(5,-12,0/*8.8 - cut_distance*3*/);
 
        if(type() == 1) {
-         kanalname.append(_("Channel"));
-         kanalname.append(": ");
-         kanalname.append(channelName());
+         channel_name.append(_("Channel"));
+         channel_name.append(": ");
+         channel_name.append(channelName());
 
 /*         oyNamedColour_s   * c = oyNamedColours_GetRef( colours_, 0 );
          const char* chan_name = 0;
@@ -3295,12 +3288,12 @@ GL_View::drawGL()
          {
            chan_name = oyProfile_GetChannelName( c->profile_,
                                                            channel, oyNAME_NAME );
-           kanalname.append( chan_name );
+           channel_name.append( chan_name );
            oyNamedColour_Release( &c );
   
          } else if(from_channel_names_.size() > channel) {
 
-             kanalname.append( from_channel_names_[channel] );
+             channel_name.append( from_channel_names_[channel] );
          }
   */
 
@@ -3308,7 +3301,7 @@ GL_View::drawGL()
          if(ortho_font)
            glRasterPos3d(0,ortho_font->FaceSize()*1.6/5.+20.,9.99);
 #        endif
-         ZeichneOText (ortho_font, scal, kanalname.c_str()) 
+         drawOTEXT (ortho_font, scal, channel_name.c_str()) 
        } else
        {
          MARK( frei(true); )
@@ -3326,14 +3319,14 @@ GL_View::drawGL()
                                    * (triangle_nets.size()-i-1) );
 #          endif
            if(triangle_nets[i].active())
-             ZeichneOText (ortho_font, scal, text.c_str())
+             drawOTEXT (ortho_font, scal, text.c_str())
          }
          triangle_nets.frei(true);
          MARK( frei(false); )
        }
 
        if(icc_debug)
-         ZeichneOText (ortho_font, scal, t)
+         drawOTEXT (ortho_font, scal, t)
 
        glEnable(GL_TEXTURE_2D);
        glEnable(GL_LIGHTING);
@@ -3471,88 +3464,6 @@ GL_View::clearNet ()
   redraw();
 }
 
-#if 0
-void
-GL_View::hineinPunkte       (ICClist<double>      &vect,
-                                ICClist<std::string> &achs_namen)
-{ DBG_PROG_START
-
-  DBG_PROG_V( vect.size() )
-
-  MARK( frei (false); )
-  if(!punkte_.size() &&
-     (int)vect.size() > (1000*3 *
-       ((!show_points_as_measurements && show_points_as_pairs) ? 2:1)) )
-    point_size = 2;
-
-  table_.clear();DBG_PROG
-  punkte_.clear(); DBG_PROG
-
-  achsNamen(achs_namen);
-
-  punkte_.resize( vect.size() );
-  for (unsigned int i = 0; i < punkte_.size()/3; ++i)
-  {
-    punkte_[i*3+0] = vect[i*3+0];
-    punkte_[i*3+1] = vect[i*3+1]*cie_a_display_stretch;
-    punkte_[i*3+2] = vect[i*3+2]*cie_b_display_stretch;
-  }
-  
-  DBG_PROG_V( show_points_as_pairs<<"|"<<point_form<<"|"<<punkte_.size() )
-
-  if (!show_points_as_measurements &&
-      point_form != MENU_dE1STAR &&
-      punkte_.size())
-    point_form = MENU_dE1STAR;
-
-  if (!show_points_as_measurements &&
-      point_form == MENU_dE1STAR &&
-      punkte_.size())
-    point_form = MENU_dE1SPHERE;
-
-  MARK( frei (true); )
-
-  valid_=false;
-  redraw();
-  DBG_PROG_ENDE
-}
-
-void
-GL_View::hineinPunkte      (ICClist<double>      &vect,
-                               ICClist<float>       &punkt_farben,
-                               ICClist<std::string> &achsNamen)
-{ DBG_PROG_START
-
-  MARK( frei (false); )
-  // show curve from tag_browser
-  farben_.clear();
-  farben_ = punkt_farben;
-  MARK( frei (true); )
-  DBG_PROG_S( farben_.size()/4 << " colours" )
-
-  hineinPunkte(vect,achsNamen);
-
-  DBG_PROG_ENDE
-}
-
-void
-GL_View::hineinPunkte      (ICClist<double> &vect,
-                               ICClist<float>  &punkt_farben,
-                               ICClist<std::string> &farb_namen,
-                               ICClist<std::string> &achs_namen)
-{ DBG_PROG_START
-  // show curve from tag_browser
-  DBG_NUM_V( farb_namen.size() <<"|"<< punkt_farben.size() )
-  MARK( frei(false); )
-  farb_namen_.clear();
-  farb_namen_ = farb_namen;
-  MARK( frei(true); )
-
-  hineinPunkte(vect, punkt_farben, achs_namen);
-
-  DBG_PROG_ENDE
-}
-#endif
 
 void
 GL_View::emphasizePoint    (oyNamedColour_s * colour)
@@ -3701,7 +3612,7 @@ void drawGLFaceList(FILE *fp,const icc_examin_ns::FACE *faceList)
         for (vtrav= ftrav->vhead; vtrav->vnext != 0;
              vtrav= vtrav->vnext)
         {
-          FARBEN (    vtrav->color.rr, vtrav->color.gg, vtrav->color.bb,
+          COLOURS (    vtrav->color.rr, vtrav->color.gg, vtrav->color.bb,
                       vtrav->color.aa );
           glVertex3f( vtrav->zz, vtrav->xx, vtrav->yy );
         }
@@ -3948,9 +3859,9 @@ GL_View::menuEvents ( int value )
       glStatus(_("left-/middle-/right mouse button -> rotate/cut/menu"), type_);
     }
 #   if APPLE
-    double farb_faktor = 1./*0.6666*/ *0.8;
+    double colour_corr = 1./*0.6666*/ *0.8;
 #   else
-    double farb_faktor = 1.*.8;
+    double colour_corr = 1.*.8;
 #   endif
 
     switch (value) {
@@ -4009,28 +3920,28 @@ GL_View::menuEvents ( int value )
       break;
     case MENU_WHITE:
       background_colour = 1.;//MENU_WHITE;
-      arrow_colour[0] = (float)(1.*farb_faktor);
-      text_colour[0] = (float)(.75*farb_faktor);
+      arrow_colour[0] = (float)(1.*colour_corr);
+      text_colour[0] = (float)(.75*colour_corr);
       break;
     case MENU_LIGHT_GRAY:
       background_colour = 0.75;//MENU_LIGHT_GRAY;
-      arrow_colour[0] = (float)(1.0*farb_faktor);
-      text_colour[0] = (float)(0.5*farb_faktor);
+      arrow_colour[0] = (float)(1.0*colour_corr);
+      text_colour[0] = (float)(0.5*colour_corr);
       break;
     case MENU_GRAY_GRAY:
       background_colour = 0.5;//MENU_GRAY_GRAY;
-      arrow_colour[0] = (float)(.75*farb_faktor);
-      text_colour[0] = (float)(0.25*farb_faktor);
+      arrow_colour[0] = (float)(.75*colour_corr);
+      text_colour[0] = (float)(0.25*colour_corr);
       break;
     case MENU_DARK_GRAY:
       background_colour = 0.25;//MENU_DARK_GRAY;
-      arrow_colour[0] = (float)(0.5*farb_faktor);
-      text_colour[0] = (float)(0.75*farb_faktor);
+      arrow_colour[0] = (float)(0.5*colour_corr);
+      text_colour[0] = (float)(0.75*colour_corr);
       break;
     case MENU_BLACK:
       background_colour = 0.0;//MENU_BLACK;
-      arrow_colour[0] = (float)(.25*farb_faktor);
-      text_colour[0] = (float)(0.5*farb_faktor);
+      arrow_colour[0] = (float)(.25*colour_corr);
+      text_colour[0] = (float)(0.5*colour_corr);
       break;
     case Agviewer::FLYING:
       glStatus(_("left mouse button -> go back"), type_);
@@ -4095,8 +4006,8 @@ int
 GL_View::handle( int event )
 {
   DBG_ICCGL_START
-  int mausknopf = Fl::event_state();
-  int schluss = 1;
+  int mouse_button = Fl::event_state();
+  int end = 1;
   DBG_MEM_V( dbgFltkEvent(event) )
 
   keyEvents(event);
@@ -4104,20 +4015,20 @@ GL_View::handle( int event )
   switch(event)
   {
     case FL_PUSH:
-         if(mausknopf & FL_BUTTON3 ||
-           (mausknopf & FL_BUTTON1 && mausknopf & FL_CTRL) ) {
+         if(mouse_button & FL_BUTTON3 ||
+           (mouse_button & FL_BUTTON1 && mouse_button & FL_CTRL) ) {
            menue_button_->popup();
            break;
          }
-         if(mausknopf & FL_BUTTON1 && mausknopf & FL_SHIFT)
-           mausknopf = FL_BUTTON2;
+         if(mouse_button & FL_BUTTON1 && mouse_button & FL_SHIFT)
+           mouse_button = FL_BUTTON2;
 
-         if(mausknopf & FL_BUTTON2)
+         if(mouse_button & FL_BUTTON2)
            fl_cursor( FL_CURSOR_NS, FL_BLACK, FL_WHITE );
          else
            fl_cursor( FL_CURSOR_HAND, FL_BLACK, FL_WHITE );
 
-         agv_->agvHandleButton( mausknopf, event, Fl::event_x(),Fl::event_y());
+         agv_->agvHandleButton( mouse_button, event, Fl::event_x(),Fl::event_y());
          DBG_BUTTON_S( "FL_PUSH bei: " << Fl::event_x() << "," << Fl::event_y() )
          break;
     case FL_RELEASE:
@@ -4150,7 +4061,7 @@ GL_View::handle( int event )
          break;
     case FL_MOUSEWHEEL:
          DBG_BUTTON_S( "FL_MOUSEWHEEL" << Fl::event_dx() << "," << Fl::event_dy() )
-         if(mausknopf & FL_SHIFT)
+         if(mouse_button & FL_SHIFT)
          {
            fl_cursor( FL_CURSOR_MOVE, FL_BLACK, FL_WHITE );
          
@@ -4161,7 +4072,7 @@ GL_View::handle( int event )
            redraw();
            fl_cursor( FL_CURSOR_DEFAULT, FL_BLACK, FL_WHITE );
          } else
-         agv_->agvHandleButton( mausknopf,event, Fl::event_dx(),Fl::event_dy());
+         agv_->agvHandleButton( mouse_button,event, Fl::event_dx(),Fl::event_dy());
          redraw();
          break;
     case FL_LEAVE:
@@ -4176,7 +4087,7 @@ GL_View::handle( int event )
          DBG_ICCGL_ENDE
          return Fl_Gl_Window::handle(event);
   }
-  if(mausknopf)
+  if(mouse_button)
   {
     switch(Fl::event_state()) {
       case FL_BUTTON1: DBG_BUTTON_S("FL_BUTTON1") break;
@@ -4187,7 +4098,7 @@ GL_View::handle( int event )
   }
 
   DBG_ICCGL_ENDE
-  return schluss;
+  return end;
 }
 
 int
@@ -4364,7 +4275,7 @@ GL_View::c_ ( Fl_Widget* w, void* data )
 
 
 int
-GL_View::backgroundColourToMenuEntry( float farbe )
+GL_View::backgroundColourToMenuEntry( float colour )
 {
   int eintrag = MENU_LIGHT_GRAY;
 
@@ -4382,6 +4293,6 @@ GL_View::backgroundColourToMenuEntry( float farbe )
   return eintrag;
 }
 
-#undef ZeichneText
-#undef FARBE
+#undef drawTEXT
+#undef COLOUR
 

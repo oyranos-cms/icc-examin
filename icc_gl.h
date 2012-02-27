@@ -74,7 +74,7 @@ public:
   oyNamedColour_s  * mouse_3D_hit;       //!< a point recently hit by the mouse
 
 private:
-  void fensterForm();
+  void windowShape();
 
   // adapt inner struktures at data change
   void renewMenue_();
@@ -254,7 +254,7 @@ private:
   int  mouse_x_;
   int  mouse_y_;
   int  mouse_x_old, mouse_y_old;
-  bool mouse_steht;
+  bool mouse_stays;
   void mousePoint_( GLdouble & oX, GLdouble & oY, GLdouble & oZ,
                   GLdouble & X, GLdouble & Y, GLdouble & Z, int from_mouse );
 public:
