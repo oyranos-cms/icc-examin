@@ -111,11 +111,11 @@ ICCexaminIO::farbraum_(int info)
         }
 
 /*        if(profile.aktiv(info)) // not useable at the moment
-        { if (info < (int)icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze.size())
-            icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze[info].aktiv = true;
+        { if (info < (int)icc_examin->icc_betrachter->DD_farbraum->triangle_nets.size())
+            icc_examin->icc_betrachter->DD_farbraum->triangle_nets[info].aktiv = true;
 
-        } else if (info < (int)icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze.size()) {
-          icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze[info].aktiv = false;
+        } else if (info < (int)icc_examin->icc_betrachter->DD_farbraum->triangle_nets.size()) {
+          icc_examin->icc_betrachter->DD_farbraum->triangle_nets[info].aktiv = false;
         }*/
 }
 
@@ -162,11 +162,11 @@ ICCexaminIO::oeffnenThread_ (int pos)
       // UI handling
     icc_examin_ns::lock(__FILE__,__LINE__);
     //erneuerTagBrowserText_ ();
-    icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze.frei(false);
+    icc_examin->icc_betrachter->DD_farbraum->triangle_nets.frei(false);
     int has_mesh = 0;
-    if( icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze.size() > (size_t)pos )
-      has_mesh = icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze[pos].indexe.size();
-    icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze.frei(true);
+    if( icc_examin->icc_betrachter->DD_farbraum->triangle_nets.size() > (size_t)pos )
+      has_mesh = icc_examin->icc_betrachter->DD_farbraum->triangle_nets[pos].indexe.size();
+    icc_examin->icc_betrachter->DD_farbraum->triangle_nets.frei(true);
 
     if(has_mesh)
       icc_examin->icc_betrachter->DD_farbraum->clearNet();
@@ -302,9 +302,9 @@ ICCexaminIO::oeffnenThread_ ()
           DBG_PROG_V(i<<" "<<netze[i].schattierung)
         }
 
-        icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze.frei(false);
-        icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze = netze;
-        icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze.frei(true);
+        icc_examin->icc_betrachter->DD_farbraum->triangle_nets.frei(false);
+        icc_examin->icc_betrachter->DD_farbraum->triangle_nets = netze;
+        icc_examin->icc_betrachter->DD_farbraum->triangle_nets.frei(true);
 
         for(int i = 0; i < netze_n; ++i )
         {
@@ -366,23 +366,23 @@ ICCexaminIO::oeffnenThread_ ()
         ICClist<int> aktiv = profile.aktiv();
         DBG_PROG_V( aktiv.size() )
 
-        icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze.frei(false);
+        icc_examin->icc_betrachter->DD_farbraum->triangle_nets.frei(false);
         for(int i = 0; i < anzahl; ++i)
         {
           DBG_PROG_V( i )
 
-          if( i >= (int)icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze.size() ) {
+          if( i >= (int)icc_examin->icc_betrachter->DD_farbraum->triangle_nets.size() ) {
             WARN_S( _("no net found. Is Argyll installed?") )
             break;
           }
 
-          undurchsicht= icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze[i].undurchsicht;
+          undurchsicht= icc_examin->icc_betrachter->DD_farbraum->triangle_nets[i].undurchsicht;
           DBG_PROG_V( undurchsicht )
-          grau = icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze[i].grau?true:false;
+          grau = icc_examin->icc_betrachter->DD_farbraum->triangle_nets[i].grau?true:false;
           waehlbar = profile[i]->size() > 128 ? true : false;
 
           active = aktiv[i];
-          active = icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze[i].active();
+          active = icc_examin->icc_betrachter->DD_farbraum->triangle_nets[i].active();
 
           if(profile[i]->filename() == icc_examin->moniName() &&
              anzahl > 1)
@@ -398,7 +398,7 @@ ICCexaminIO::oeffnenThread_ ()
                                           undurchsicht, grau, active, waehlbar);
           }
         }
-        icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze.frei(true);
+        icc_examin->icc_betrachter->DD_farbraum->triangle_nets.frei(true);
 
       }
       icc_examin_ns::unlock(this, __FILE__,__LINE__);
@@ -824,15 +824,15 @@ ICCexaminIO::gamutSpeichern (IccGamutFormat format)
     {
       double text_colour = -1., arrow_colour = -1.;
       icc_examin->icc_betrachter->DD_farbraum->frei(false);
-      if(icc_examin->icc_betrachter->DD_farbraum->zeige_helfer)
+      if(icc_examin->icc_betrachter->DD_farbraum->show_helpers)
       {
-        text_colour = icc_examin->icc_betrachter->DD_farbraum->textfarbe[0];
-        arrow_colour = icc_examin->icc_betrachter->DD_farbraum->pfeilfarbe[0];
+        text_colour = icc_examin->icc_betrachter->DD_farbraum->text_colour[0];
+        arrow_colour = icc_examin->icc_betrachter->DD_farbraum->arrow_colour[0];
       }
-      vrml = vrmlScene( icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze,
+      vrml = vrmlScene( icc_examin->icc_betrachter->DD_farbraum->triangle_nets,
                     icc_examin->icc_betrachter->DD_farbraum->namedColours(),
                     text_colour, arrow_colour,
-                    icc_examin->icc_betrachter->DD_farbraum->hintergrundfarbe,
+                    icc_examin->icc_betrachter->DD_farbraum->background_colour,
                     icc_examin->icc_betrachter->DD_farbraum->pointRadius() );
       icc_examin->icc_betrachter->DD_farbraum->frei(true);
     }

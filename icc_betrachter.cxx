@@ -141,13 +141,13 @@ void TableChoice::profilTag(int _tag, std::string text) {
   icc_examin->icc_betrachter->tag_nummer = _tag;
 
 // = profile.profil()->printTagInfo(icc_examin->icc_betrachter->tag_nummer);
-    sprintf (&typ[0], "%s", profile.profil()->printTagInfo(icc_examin->icc_betrachter->tag_nummer)[1].c_str());
+    sprintf (&type[0], "%s", profile.profil()->printTagInfo(icc_examin->icc_betrachter->tag_nummer)[1].c_str());
 
     DBG_PROG_V( profile.profil()->printTagInfo(icc_examin->icc_betrachter->tag_nummer)[1].c_str() )
 
     Info = icc_parser::zeilenNachVector (text);
 
-    if ( strstr (typ,"mft2") != 0 )
+    if ( strstr (type,"mft2") != 0 )
     { DBG_PROG
       Fl_Menu_Item *mft_menue = (Fl_Menu_Item *)calloc (sizeof (Fl_Menu_Item), 6);
 
@@ -159,7 +159,7 @@ void TableChoice::profilTag(int _tag, std::string text) {
       mft_menue[5].text = 0;
       icc_examin->icc_betrachter->table_choice->menu(mft_menue);
     } else
-    if ( strstr (typ,"mft1") != 0 )
+    if ( strstr (type,"mft1") != 0 )
     {
       Fl_Menu_Item *mft_menue = (Fl_Menu_Item *)calloc (sizeof (Fl_Menu_Item), 6);
 
@@ -220,7 +220,7 @@ int My_Fl_Box::handle( int event ) {
 }
 
 static void table_gl_menueCb_(Fl_Widget * w, void * data) {
-  icc_examin->icc_betrachter->table_gl->menueAufruf( (intptr_t) data );
+  icc_examin->icc_betrachter->table_gl->menuEvents( (intptr_t) data );
 }
 
 void ICCfltkBetrachter::cb_ja_i(Fl_Button*, void*) {
@@ -895,7 +895,7 @@ ard"));
           DD_farbraum->when(FL_WHEN_RELEASE);
           Fl_Group::current()->resizable(DD_farbraum);
           o->hide();
-          o->typ( 1 ); // wandert ins 1. Nebenfenster
+          o->type( 1 ); // wandert ins 1. Nebenfenster
         } // GL_View* DD_farbraum
         { DD_box_stat_oy = new Oy_Fl_Group(0, 495, 385, 25);
           DD_box_stat_oy->box(FL_NO_BOX);
@@ -1051,7 +1051,7 @@ ard"));
                 table_gl->when(FL_WHEN_RELEASE);
                 Fl_Group::current()->resizable(table_gl);
                 o->hide();
-                o->typ( 2 ); // bleibt zumeist im Hauptfenster
+                o->type( 2 ); // bleibt zumeist im Hauptfenster
                 } // GL_View* table_gl
                 { table_gl_button_pack = new Fl_Pack(360, 185, 25, 310);
                 { Fl_Button* o = table_gl_alltables_button = new Fl_Button(360, 185, 25, 25, _("o"));

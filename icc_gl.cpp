@@ -106,18 +106,18 @@ void zeichneKegel( GLdouble breite, GLdouble hoehe, GLint seiten,
 #define glStatus( txt, tuep ) icc_examin_ns::status_info( txt, tuep - 1 );
 
 
-#define bNachX(b) ((b)*b_darstellungs_breite - b_darstellungs_breite/2.)
+#define bNachX(b) ((b)*cie_b_display_stretch - cie_b_display_stretch/2.)
 #define LNachY(L) ((L) - 0.5)
-#define aNachZ(a) ((a)*a_darstellungs_breite - a_darstellungs_breite/2.)
+#define aNachZ(a) ((a)*cie_a_display_stretch - cie_a_display_stretch/2.)
 #define LabNachXYZv(L,a,b) \
-         (b*b_darstellungs_breite - b_darstellungs_breite/2.), \
+         (b*cie_b_display_stretch - cie_b_display_stretch/2.), \
          (L - 0.5), \
-         (a*a_darstellungs_breite - a_darstellungs_breite/2.)
+         (a*cie_a_display_stretch - cie_a_display_stretch/2.)
 #define YNachL(Y) ((Y) + .5)
-#define Znacha(Z) ((Z) / a_darstellungs_breite + .5)
-#define Xnachb(X) ((X) / b_darstellungs_breite + .5)
+#define Znacha(Z) ((Z) / cie_a_display_stretch + .5)
+#define Xnachb(X) ((X) / cie_b_display_stretch + .5)
 
-const double GL_View::std_vorder_schnitt = 4.2;
+const double GL_View::std_front_cut = 4.2;
 #ifdef HAVE_FTGL
 FTFont *font = NULL, *ortho_font = NULL;
 #endif
@@ -142,7 +142,7 @@ FTFont *font = NULL, *ortho_font = NULL;
 // draw text
 #ifdef HAVE_FTGL
 #  define ZeichneText(Font, Zeiger) { \
-   glLineWidth(strichmult); \
+   glLineWidth(line_mult); \
     if(blend) glDisable(GL_BLEND); \
       glTranslated(.0,0,0.01); \
         glScaled(0.002,0.002,0.002); \
@@ -150,7 +150,7 @@ FTFont *font = NULL, *ortho_font = NULL;
         glScaled(500,500,500); \
       glTranslated(.0,0,-.01); \
     if(blend) glEnable(GL_BLEND); \
-   glLineWidth(strichmult); }
+   glLineWidth(line_mult); }
 #else
 # define ZeichneText(Font, Zeiger)
 #endif
@@ -168,7 +168,7 @@ FTFont *font = NULL, *ortho_font = NULL;
 #ifdef HAVE_FTGL
 void drawText( FTFont * f, const char * in_txt )
 {
-  float strichmult = 1.0;
+  float line_mult = 1.0;
   int blend = 1;
 
   size_t in_left,
@@ -228,41 +228,41 @@ GL_View::zero_()
 
   agv_ = NULL;
 
-  kanal = 0;
-  schnitttiefe = 0.01;
-  vorder_schnitt = std_vorder_schnitt;
-  a_darstellungs_breite = 1.0;
-  b_darstellungs_breite = 1.0;
-  schalen = 5;
-  punktform = MENU_dE1STERN;
-  punktfarbe = 0;
-  punktgroesse = 8;
-  //punkt_zahl_alt = 0;
-  hintergrundfarbe = 0.75;
-  spektralband = 0;
-  zeige_helfer = true;
+  channel = 0;
+  cut_distance = 0.01;
+  front_cut = std_front_cut;
+  cie_a_display_stretch = 1.0;
+  cie_b_display_stretch = 1.0;
+  onion_skin = 5;
+  point_form = MENU_dE1STAR;
+  point_colour = 0;
+  point_size = 8;
+  //punkt_zahl_old = 0;
+  background_colour = 0.75;
+  spectral_line = 0;
+  show_helpers = true;
   memset( text, 0, 128 );
-  zeig_punkte_als_paare = false;
-  zeig_punkte_als_messwerte = false;
-  typ_ = -1;
-  strichmult = 1.0;
-  strich1 = 1;
-  strich2 = 2;
-  strich3 = 3;
+  show_points_as_pairs = false;
+  show_points_as_measurements = false;
+  type_ = -1;
+  line_mult = 1.0;
+  line_1 = 1;
+  line_2 = 2;
+  line_3 = 3;
   blend = false;
   smooth = false;
   waiting_ = 1;
   memset( t, 0, 128 );
-  maus_x_ = 0;
-  maus_y_ = 0;
-  maus_x_alt = -1;
-  maus_y_alt = -1;
-  maus_steht = false;
+  mouse_x_ = 0;
+  mouse_y_ = 0;
+  mouse_x_old = -1;
+  mouse_y_old = -1;
+  mouse_steht = false;
   level = 0.5001;
   level_step = 0.1;
   valid_ = false;
   update_geometries_ = false;
-  zeit_ = 0;
+  time_ = 0;
   text[0] = 0;
   colours_ = 0;
   epoint_ = 0;
@@ -272,8 +272,8 @@ GL_View::zero_()
   window_geometry = NULL;
   edit_ = NULL;
 
-  for (int i=1; i < 3 ; ++i) textfarbe[i] = 0.5;
-  for (int i=1; i < 3 ; ++i) pfeilfarbe[i] = 0.5;
+  for (int i=1; i < 3 ; ++i) text_colour[i] = 0.5;
+  for (int i=1; i < 3 ; ++i) arrow_colour[i] = 0.5;
 
   for(int i = 0; i < DL_MAX; ++i)
     gl_listen_[i] = 0;
@@ -306,25 +306,25 @@ GL_View::~GL_View()
     glDeleteLists (gl_listen_[RASTER],1);
     gl_listen_[RASTER] = 0;
   }
-  if (gl_listen_[HELFER]) {
-    DBG_PROG_S( "delete glListe " << gl_listen_[HELFER] )
-    glDeleteLists (gl_listen_[HELFER],1);
-    gl_listen_[HELFER] = 0;
+  if (gl_listen_[HELPER]) {
+    DBG_PROG_S( "delete glListe " << gl_listen_[HELPER] )
+    glDeleteLists (gl_listen_[HELPER],1);
+    gl_listen_[HELPER] = 0;
   }
-  if (gl_listen_[PUNKTE]) {
-    DBG_PROG_S( "delete glListe " << gl_listen_[PUNKTE] )
-    glDeleteLists (gl_listen_[PUNKTE],1);
-    gl_listen_[PUNKTE] = 0;
+  if (gl_listen_[POINTS]) {
+    DBG_PROG_S( "delete glListe " << gl_listen_[POINTS] )
+    glDeleteLists (gl_listen_[POINTS],1);
+    gl_listen_[POINTS] = 0;
   }
   if (gl_listen_[SPEKTRUM]) {
     DBG_PROG_S( "delete glListe " << gl_listen_[SPEKTRUM] )
     glDeleteLists (gl_listen_[SPEKTRUM],1);
     gl_listen_[SPEKTRUM] = 0;
   }
-  if (gl_listen_[UMRISSE]) {
-    DBG_PROG_S( "delete glListe " << gl_listen_[UMRISSE] )
-    glDeleteLists (gl_listen_[UMRISSE],1);
-    gl_listen_[UMRISSE] = 0;
+  if (gl_listen_[CONTOURS]) {
+    DBG_PROG_S( "delete glListe " << gl_listen_[CONTOURS] )
+    glDeleteLists (gl_listen_[CONTOURS],1);
+    gl_listen_[CONTOURS] = 0;
   }
 # ifdef HAVE_FTGL
   //if(font) delete font;
@@ -336,41 +336,41 @@ GL_View::~GL_View()
 
   --ref_;
 
-  doLocked_m( std::string loc_alt = setlocale(LC_NUMERIC, NULL);,NULL) //getenv("LANG");
-  if(loc_alt.size()) {
-    DBG_NUM_V( loc_alt )
+  doLocked_m( std::string loc_old = setlocale(LC_NUMERIC, NULL);,NULL) //getenv("LANG");
+  if(loc_old.size()) {
+    DBG_NUM_V( loc_old )
   } else {
     DBG_NUM_S( "LANG variable not found" )
   }
   doLocked_m( setlocale(LC_NUMERIC,"C");,NULL);
 
   Fl_Preferences gl( Fl_Preferences::USER, "oyranos.org", "iccexamin");
-  switch (typ_)
+  switch (type_)
   {
     case 1:
     {
       Fl_Preferences gl_cube(gl, "gl_cube");
-      gl_cube.set("spektralband", spektralband );
-      gl_cube.set("hintergrundfarbe", hintergrundfarbe );
-      gl_cube.set("zeige_helfer", zeige_helfer );
-      gl_cube.set("schalen", schalen );
+      gl_cube.set("spectral_line", spectral_line );
+      gl_cube.set("background_colour", background_colour );
+      gl_cube.set("show_helpers", show_helpers );
+      gl_cube.set("onion_skin", onion_skin );
 
-      DBG_PROG_V( spektralband )
+      DBG_PROG_V( spectral_line )
     } break;
     case 2:
     {
       Fl_Preferences gl_gamut(gl, "gl_gamut");
-      gl_gamut.set("spektralband", spektralband );
-      gl_gamut.set("hintergrundfarbe", hintergrundfarbe );
-      gl_gamut.set("zeige_helfer", zeige_helfer );
-      gl_gamut.set("schalen", schalen );
+      gl_gamut.set("spectral_line", spectral_line );
+      gl_gamut.set("background_colour", background_colour );
+      gl_gamut.set("show_helpers", show_helpers );
+      gl_gamut.set("onion_skin", onion_skin );
 
-      DBG_PROG_V( spektralband )
+      DBG_PROG_V( spectral_line )
     } break;
   }
 
-  if(loc_alt.size())
-    doLocked_m( setlocale(LC_NUMERIC,loc_alt.c_str()) , NULL);
+  if(loc_old.size())
+    doLocked_m( setlocale(LC_NUMERIC,loc_old.c_str()) , NULL);
 
 
   DBG_PROG_ENDE
@@ -397,57 +397,57 @@ GL_View::copy (const GL_View & gl)
   zero_();
   this->agv_ = tmp;
 
-  tabelle_ = gl.tabelle_;
-  nach_farb_namen_ = gl.nach_farb_namen_;
-  von_farb_namen_ = gl.von_farb_namen_;
+  table_ = gl.table_;
+  to_channel_names_ = gl.to_channel_names_;
+  from_channel_names_ = gl.from_channel_names_;
   channels_ = gl.channels_;
   colours_ = oyStructList_Copy( gl.colours_, NULL );
   epoint_ = oyNamedColour_Copy( gl.epoint_, 0 );
   mouse_3D_hit = oyNamedColour_Copy( gl.mouse_3D_hit, 0 );
   edit_ = oyProfile_Copy( gl.edit_, NULL );
 
-  typ_ = gl.typ_;
+  type_ = gl.type_;
 
   waiting_ = gl.waiting_;
   bsp = 0;
 
-  kanal = gl.kanal;
-  punktform = gl.punktform;
-  punktfarbe = gl.punktfarbe;
-  punktgroesse = gl.punktgroesse;
-  hintergrundfarbe = gl.hintergrundfarbe;
-  textfarbe[0] = gl.textfarbe[0];
-  textfarbe[1] = gl.textfarbe[1];
-  textfarbe[2] = gl.textfarbe[2];
-  pfeilfarbe[0] = gl.pfeilfarbe[0];
-  pfeilfarbe[1] = gl.pfeilfarbe[1];
-  pfeilfarbe[2] = gl.pfeilfarbe[2];
-  schatten = gl.schatten;
-  strichmult = gl.strichmult;
-  strich1 = gl.strich1;
-  strich2 = gl.strich2;
-  strich3 = gl.strich3;
-  schalen = gl.schalen;
+  channel = gl.channel;
+  point_form = gl.point_form;
+  point_colour = gl.point_colour;
+  point_size = gl.point_size;
+  background_colour = gl.background_colour;
+  text_colour[0] = gl.text_colour[0];
+  text_colour[1] = gl.text_colour[1];
+  text_colour[2] = gl.text_colour[2];
+  arrow_colour[0] = gl.arrow_colour[0];
+  arrow_colour[1] = gl.arrow_colour[1];
+  arrow_colour[2] = gl.arrow_colour[2];
+  shadow = gl.shadow;
+  line_mult = gl.line_mult;
+  line_1 = gl.line_1;
+  line_2 = gl.line_2;
+  line_3 = gl.line_3;
+  onion_skin = gl.onion_skin;
 
-  seitenverhaeltnis = gl.seitenverhaeltnis;
-  vorder_schnitt = gl.vorder_schnitt;
-  schnitttiefe = gl.schnitttiefe;
+  window_proportion = gl.window_proportion;
+  front_cut = gl.front_cut;
+  cut_distance = gl.cut_distance;
   level = gl.level;
   level_step = gl.level_step;
-  a_darstellungs_breite = gl.a_darstellungs_breite;
-  b_darstellungs_breite = gl.b_darstellungs_breite;
-  zeig_punkte_als_paare = gl.zeig_punkte_als_paare;
-  zeig_punkte_als_messwerte = gl.zeig_punkte_als_messwerte;
-  spektralband = gl.spektralband;
-  zeige_helfer = gl.zeige_helfer;
+  cie_a_display_stretch = gl.cie_a_display_stretch;
+  cie_b_display_stretch = gl.cie_b_display_stretch;
+  show_points_as_pairs = gl.show_points_as_pairs;
+  show_points_as_measurements = gl.show_points_as_measurements;
+  spectral_line = gl.spectral_line;
+  show_helpers = gl.show_helpers;
 
-  zeit_ = gl.zeit_;
+  time_ = gl.time_;
   valid_ = gl.valid_;
-  maus_x_ = gl.maus_x_;
-  maus_y_ = gl.maus_y_;
-  maus_x_alt = gl.maus_x_alt;
-  maus_y_alt = gl.maus_y_alt;
-  maus_steht = gl.maus_steht;
+  mouse_x_ = gl.mouse_x_;
+  mouse_y_ = gl.mouse_y_;
+  mouse_x_old = gl.mouse_x_old;
+  mouse_y_old = gl.mouse_y_old;
+  mouse_steht = gl.mouse_steht;
 
   smooth = gl.smooth;
   blend = gl.blend;
@@ -478,13 +478,13 @@ GL_View::init(int ty)
   initialised_ = true;
 
   // 1 fuer mft_gl und 2 fuer DD_farbraum
-  typ_ = ty;
+  type_ = ty;
 
   DBG_PROG
 
-  doLocked_m( std::string loc_alt = setlocale(LC_NUMERIC, NULL);,NULL) //getenv("LANG");
-  if(loc_alt.size()) {
-    DBG_NUM_V( loc_alt )
+  doLocked_m( std::string loc_old = setlocale(LC_NUMERIC, NULL);,NULL) //getenv("LANG");
+  if(loc_old.size()) {
+    DBG_NUM_V( loc_old )
   } else {
     DBG_NUM_S( "LANG variable not found" )
   }
@@ -492,30 +492,30 @@ GL_View::init(int ty)
 
   Fl_Preferences gl( Fl_Preferences::USER, "oyranos.org", "iccexamin");
 
-  switch(typ_)
+  switch(type_)
   {
     case 1:
     {
       Fl_Preferences gl_cube(gl, "gl_cube");
-      gl_cube.get("spektralband", spektralband, 0 );
-      gl_cube.get("hintergrundfarbe", hintergrundfarbe, 0.75 );
-      gl_cube.get("zeige_helfer", zeige_helfer, true );
-      gl_cube.get("schalen", schalen, 5 );
+      gl_cube.get("spectral_line", spectral_line, 0 );
+      gl_cube.get("background_colour", background_colour, 0.75 );
+      gl_cube.get("show_helpers", show_helpers, true );
+      gl_cube.get("onion_skin", onion_skin, 5 );
     } break;
     case 2:
     {
       Fl_Preferences gl_gamut(gl, "gl_gamut");
-      gl_gamut.get("spektralband", spektralband, 0 );
-      gl_gamut.get("hintergrundfarbe", hintergrundfarbe, 0.75 );
-      gl_gamut.get("zeige_helfer", zeige_helfer, true );
-      gl_gamut.get("schalen", schalen, 5 );
+      gl_gamut.get("spectral_line", spectral_line, 0 );
+      gl_gamut.get("background_colour", background_colour, 0.75 );
+      gl_gamut.get("show_helpers", show_helpers, true );
+      gl_gamut.get("onion_skin", onion_skin, 5 );
     } break;
   }
 
-  if(loc_alt.size())
-    doLocked_m( setlocale(LC_NUMERIC,loc_alt.c_str()) , NULL);
+  if(loc_old.size())
+    doLocked_m( setlocale(LC_NUMERIC,loc_old.c_str()) , NULL);
 
-  DBG_PROG_V( spektralband )
+  DBG_PROG_V( spectral_line )
 
   resizable(0);
 
@@ -543,42 +543,42 @@ GL_View::init(int ty)
 
   agv_->agvInit(id_);
 
-  if (typ_ > 1)
+  if (type_ > 1)
   {
     DBG_PROG_S("gl window " << id_)
-    a_darstellungs_breite = 2.55;
-    b_darstellungs_breite = 2.55;
+    cie_a_display_stretch = 2.55;
+    cie_b_display_stretch = 2.55;
     agv_->distA (agv_->distA()
-                           + a_darstellungs_breite/2.0 - 0.5);
+                           + cie_a_display_stretch/2.0 - 0.5);
     agv_->distB (agv_->distB()
-                           + b_darstellungs_breite/2.0 - 0.5);
+                           + cie_b_display_stretch/2.0 - 0.5);
     agv_->eyeDist (agv_->dist()*2.0);
   }
 
   // initialise
   menueInit_(); DBG_PROG
-  menueAufruf (hintergrundfarbeZuMenueeintrag(hintergrundfarbe)); // colour sheme
-  int schalen_old = schalen;
-  menueAufruf (MENU_FARBIG);     // CLUT colour sheme
-  schalen = schalen_old;
-  schatten = 0.1f;
-  if (typ() == 1) menueAufruf (MENU_WUERFEL);
+  menuEvents (backgroundColourToMenuEntry(background_colour)); // colour sheme
+  int schalen_old = onion_skin;
+  menuEvents (MENU_COLOUR);     // CLUT colour sheme
+  onion_skin = schalen_old;
+  shadow = 0.1f;
+  if (type() == 1) menuEvents (MENU_CUBE);
 
-  maus_steht = false;
+  mouse_steht = false;
 
   DBG_PROG_ENDE
 }
 
 /** @brief localise the position */
 void
-GL_View::mausPunkt_( GLdouble &oX, GLdouble &oY, GLdouble &oZ,
+GL_View::mousePoint_( GLdouble &oX, GLdouble &oY, GLdouble &oZ,
                         GLdouble &X, GLdouble &Y, GLdouble &Z, int from_mouse )
 {
   DBG_PROG_START  
   // localise position
   // how far is the next object in this direction, very laborious
   GLfloat zBuffer = 0;
-  glReadPixels((GLint)maus_x_,(GLint)h()-maus_y_,1,1,GL_DEPTH_COMPONENT, GL_FLOAT, &zBuffer);
+  glReadPixels((GLint)mouse_x_,(GLint)h()-mouse_y_,1,1,GL_DEPTH_COMPONENT, GL_FLOAT, &zBuffer);
   GLdouble model_matrix[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
            projektions_matrix[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
   GLint bildschirm[4] = {0,0,0,0};
@@ -586,7 +586,7 @@ GL_View::mausPunkt_( GLdouble &oX, GLdouble &oY, GLdouble &oZ,
   glGetDoublev(GL_PROJECTION_MATRIX, projektions_matrix);
   glGetIntegerv(GL_VIEWPORT, bildschirm);
   if(from_mouse)
-    gluUnProject(maus_x_, h()-maus_y_, zBuffer,
+    gluUnProject(mouse_x_, h()-mouse_y_, zBuffer,
                  model_matrix, projektions_matrix, bildschirm,
                  &oX, &oY, &oZ);
 
@@ -601,7 +601,7 @@ GL_View::mausPunkt_( GLdouble &oX, GLdouble &oY, GLdouble &oZ,
 
 static int zahl = 0;
 void
-GL_View::bewegenStatisch_ (void* gl_a)
+GL_View::moveStatic_ (void* gl_a)
 {
   DBG_ICCGL_START
 
@@ -617,7 +617,7 @@ GL_View::bewegenStatisch_ (void* gl_a)
   icc_examin_ns::wait( 0.0, true );
   gl_ansicht->waiting_ = 1;
 
-  if(gl_ansicht->darfBewegen())
+  if(gl_ansicht->canMove())
   {
     double zeichnen_schlaf = 0;  // no endless wait queues
     if(!icc_examin->frei())
@@ -627,8 +627,8 @@ GL_View::bewegenStatisch_ (void* gl_a)
     } else {
       double zeit = icc_examin_ns::zeitSekunden();
 
-      if (zeit - gl_ansicht->zeit_ < 1./25.) {
-        zeichnen_schlaf = 1./25. - gl_ansicht->zeit_;
+      if (zeit - gl_ansicht->time_ < 1./25.) {
+        zeichnen_schlaf = 1./25. - gl_ansicht->time_;
       } else {
         gl_ansicht->redraw();
         zahl++;
@@ -636,28 +636,28 @@ GL_View::bewegenStatisch_ (void* gl_a)
 
     }
     // short wait
-    Fl::repeat_timeout( MIN(0.01,zeichnen_schlaf), bewegenStatisch_, gl_a );
+    Fl::repeat_timeout( MIN(0.01,zeichnen_schlaf), moveStatic_, gl_a );
 
-    DBG_ICCGL_S( "Pause " << gl_ansicht->zeit_diff_<<" "<<zeichnen_schlaf <<" "<< " "<< gl_ansicht->id_ <<" "<<zahl<<" "<< gl_ansicht->darfBewegen())
+    DBG_ICCGL_S( "Pause " << gl_ansicht->time_diff_<<" "<<zeichnen_schlaf <<" "<< " "<< gl_ansicht->id_ <<" "<<zahl<<" "<< gl_ansicht->canMove())
   } 
   DBG_ICCGL_ENDE
 }
 
-bool GL_View::darfBewegen()        { return agv_ && agv_->can_move_; }
-void GL_View::darfBewegen(int d)
+bool GL_View::canMove()        { return agv_ && agv_->can_move_; }
+void GL_View::canMove(int d)
 {
   agv_->can_move_ = d?true:false; 
   if (d)
-    Fl::add_timeout(0.04, bewegenStatisch_,this);
+    Fl::add_timeout(0.04, moveStatic_,this);
 
   DBG_ICCGL_S("Stop Bewegen "<<zahl<<" "<<d)
 }
 
 void
-GL_View::bewegen (bool setze)
+GL_View::move (bool setze)
 {
   DBG_ICCGL_START
-  darfBewegen( setze );
+  canMove( setze );
   DBG_ICCGL_V( setze )
   if(!setze) {
     agv_->agvSwitchMoveMode (Agviewer::AGV_STOP);
@@ -667,11 +667,11 @@ GL_View::bewegen (bool setze)
 }
 
 int
-GL_View::auffrischen_()
+GL_View::refresh_()
 {
   DBG_PROG_START
 
-  menueErneuern_();
+  renewMenue_();
 
   update_geometries_ = true;
 
@@ -704,7 +704,7 @@ GL_View::show()
 
 /** recive of a drawing news */
 void
-GL_View::nachricht(icc_examin_ns::Model* model, int info)
+GL_View::message(icc_examin_ns::Model* model, int info)
 {
   DBG_PROG_START
   DBG_PROG_V( info<<" "<<window()->visible()<<" "<<visible()<<" "<<shown()<<" "<<id_ )
@@ -715,7 +715,7 @@ GL_View::nachricht(icc_examin_ns::Model* model, int info)
   if( info == ICCexamin::GL_AUFFRISCHEN )
   {
     invalidate();
-    auffrischen_();
+    refresh_();
     redraw();
   }
 
@@ -723,7 +723,7 @@ GL_View::nachricht(icc_examin_ns::Model* model, int info)
     Fl_Gl_Window::redraw();
   if(info == ICCexamin::GL_STOP)
   {
-    darfBewegen( false );
+    canMove( false );
   }
 
   DBG_PROG_ENDE
@@ -760,8 +760,8 @@ GL_View::draw()
 {
   DBG_PROG_START
   --zahl;
-  DBG_PROG_S( "entrance darfBewegen(): "
-               << darfBewegen()<<" "<<id_<<" colour: "<<hintergrundfarbe )
+  DBG_PROG_S( "entrance canMove(): "
+               << canMove()<<" "<<id_<<" colour: "<<background_colour )
   int thread = wandelThreadId(iccThreadSelf());
   if(thread != THREAD_HAUPT) {
     WARN_S( ": wrong thread" );
@@ -780,9 +780,9 @@ GL_View::draw()
   if(!valid())
     valid_ = false;
 
-  zeichnen();
+  drawGL();
 
-  DBG_PROG_V( dreiecks_netze.size() )
+  DBG_PROG_V( triangle_nets.size() )
 
   DBG_PROG_ENDE
 }
@@ -1018,7 +1018,7 @@ zeichneKegel( GLdouble breite, GLdouble hoehe, GLint seiten ,
 
 
 void
-GL_View::zeichneKoordinaten_()
+GL_View::drawCoordinates_()
 { DBG_ICCGL_START
   char text[256];
 
@@ -1078,7 +1078,7 @@ GL_View::zeichneKoordinaten_()
 }
 
 int
-GL_View::erstelleGLListen_()
+GL_View::createGLLists_()
 { DBG_PROG_START
 
   if(!frei())
@@ -1086,56 +1086,56 @@ GL_View::erstelleGLListen_()
 
   MARK( frei(false); )
 
-  garnieren_();
+  adorn_();
 
-  tabelleAuffrischen();
+  refreshTable();
 
   // actualise shodow
   static char aktive[64];
   static char grau[64];
   char aktualisiert = false;
 
-  dreiecks_netze.frei(false);
-  for(int i = 0; i < (int)dreiecks_netze.size(); ++i)
+  triangle_nets.frei(false);
+  for(int i = 0; i < (int)triangle_nets.size(); ++i)
   {
-    double netze_n = dreiecks_netze.size();
+    double netze_n = triangle_nets.size();
     double schattierung = .93 - .8/netze_n*i;
     schattierung = 1.0 - i/(double)netze_n;
-    if(dreiecks_netze[i].schattierung < 0)
-      dreiecks_netze[i].schattierung = schattierung;
+    if(triangle_nets[i].schattierung < 0)
+      triangle_nets[i].schattierung = schattierung;
 
-    if( dreiecks_netze[i].active() != aktive[i] ||
-        dreiecks_netze[i].grau != grau[i]  )
+    if( triangle_nets[i].active() != aktive[i] ||
+        triangle_nets[i].grau != grau[i]  )
     {
-      aktive[i] = dreiecks_netze[i].active();
-      grau[i] = dreiecks_netze[i].grau;
+      aktive[i] = triangle_nets[i].active();
+      grau[i] = triangle_nets[i].grau;
       if(!aktualisiert)
       {
-        //zeigeUmrisse_();
+        //showContours_();
         aktualisiert = true;
       }
     }
   }
-  dreiecks_netze.frei(true);
+  triangle_nets.frei(true);
 
   MARK( frei(true); )
   updateNet_();
   MARK( frei(false); )
 
-  dreiecks_netze.frei(false);
-  if(dreiecks_netze.size())
-    zeigeUmrisse_();
-  dreiecks_netze.frei(true);
+  triangle_nets.frei(false);
+  if(triangle_nets.size())
+    showContours_();
+  triangle_nets.frei(true);
  
-  zeigeSpektralband_();
+  showSprectralLine_();
 
-  DBG_PROG_V( punktform <<" "<< MENU_dE1STERN )
-  dreiecks_netze.frei(false);
-  punkteAuffrischen();
-  dreiecks_netze.frei(true);
+  DBG_PROG_V( point_form <<" "<< MENU_dE1STAR )
+  triangle_nets.frei(false);
+  refreshPoints();
+  triangle_nets.frei(true);
 
   //background
-  { double lab[] = {hintergrundfarbe,.5,.5};
+  { double lab[] = {background_colour,.5,.5};
                       oyOptions_s * opts = icc_examin->options();
         double * rgb = icc_oyranos.wandelLabNachBildschirmFarben(
              window()->x() + window()->w()/2, window()->y() + window()->h()/2,
@@ -1152,7 +1152,7 @@ GL_View::erstelleGLListen_()
 }
 
 void
-GL_View::textGarnieren_()
+GL_View::adornText_()
 {
   DBG_PROG_START
   char text[256];
@@ -1161,42 +1161,42 @@ GL_View::textGarnieren_()
 
     glDisable(GL_TEXTURE_2D);
     glDisable(GL_LIGHTING);
-    Lab2GL(textfarbe[0],textfarbe[1],textfarbe[2],1)
+    Lab2GL(text_colour[0],text_colour[1],text_colour[2],1)
 
     // CIE*L - top
     glPushMatrix();
       glLoadIdentity();
-      if (von_farb_namen_.size())
+      if (from_channel_names_.size())
       {
-        ptr = (char*) von_farb_namen_[0].c_str();
+        ptr = (char*) from_channel_names_[0].c_str();
         sprintf (&text[0], "%s", ptr);
         glRasterPos3d (0, .5+ueber, 0);
         ZeichneOText(ortho_font, 1, text)
       }
 
     // CIE*a - right
-      if (von_farb_namen_.size() > 1)
+      if (from_channel_names_.size() > 1)
       {
-        ptr = (char*) von_farb_namen_[1].c_str();
+        ptr = (char*) from_channel_names_[1].c_str();
         sprintf (&text[0], "%s", ptr);
-        if (von_farb_namen_.size() &&
-            von_farb_namen_[1] == _("CIE *a"))
-          glRasterPos3d (.0, -.5, a_darstellungs_breite/2.+ueber);
+        if (from_channel_names_.size() &&
+            from_channel_names_[1] == _("CIE *a"))
+          glRasterPos3d (.0, -.5, cie_a_display_stretch/2.+ueber);
         else
-          glRasterPos3d (.0, .0, a_darstellungs_breite/2.+ueber);
+          glRasterPos3d (.0, .0, cie_a_display_stretch/2.+ueber);
         ZeichneOText(ortho_font, 1, text)
       }
 
     // CIE*b - left
-      if (von_farb_namen_.size() > 2)
+      if (from_channel_names_.size() > 2)
       {
-        ptr = (char*) von_farb_namen_[2].c_str();
+        ptr = (char*) from_channel_names_[2].c_str();
         sprintf (&text[0], "%s", ptr);
-        if (von_farb_namen_.size() &&
-            von_farb_namen_[2] == _("CIE *b"))
-          glRasterPos3d (b_darstellungs_breite/2.+ueber, -.5, .0);
+        if (from_channel_names_.size() &&
+            from_channel_names_[2] == _("CIE *b"))
+          glRasterPos3d (cie_b_display_stretch/2.+ueber, -.5, .0);
         else
-          glRasterPos3d (b_darstellungs_breite/2.+ueber, .0, .0);
+          glRasterPos3d (cie_b_display_stretch/2.+ueber, .0, .0);
         ZeichneOText(ortho_font, 1, text)
       }
     glPopMatrix();
@@ -1205,7 +1205,7 @@ GL_View::textGarnieren_()
 }
 
 void
-GL_View::garnieren_()
+GL_View::adorn_()
 {
   DBG_PROG_START
 
@@ -1213,14 +1213,14 @@ GL_View::garnieren_()
 
   DBG_PROG_V( id() )
   // arrow and text
-  if (gl_listen_[HELFER]) {
-    glDeleteLists (gl_listen_[HELFER], 1);
+  if (gl_listen_[HELPER]) {
+    glDeleteLists (gl_listen_[HELPER], 1);
   }
 
-  GL_View::gl_listen_[HELFER] = glGenLists(1);
+  GL_View::gl_listen_[HELPER] = glGenLists(1);
 
-  glNewList( gl_listen_[HELFER], GL_COMPILE); DBG_PROG_V( gl_listen_[HELFER] )
-    glLineWidth(strich3*strichmult);
+  glNewList( gl_listen_[HELPER], GL_COMPILE); DBG_PROG_V( gl_listen_[HELPER] )
+    glLineWidth(line_3*line_mult);
 
     // colour space channel name
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -1235,7 +1235,7 @@ GL_View::garnieren_()
 
     // CIE*L - top
     glPushMatrix();
-      Lab2GL(pfeilfarbe[0],pfeilfarbe[1],pfeilfarbe[2],1)
+      Lab2GL(arrow_colour[0],arrow_colour[1],arrow_colour[2],1)
       glTranslatef(0,.5,0);
       glRotatef (270,1.0,0.0,.0);
       PFEILSPITZE
@@ -1250,83 +1250,83 @@ GL_View::garnieren_()
 
     // CIE*a - right
     glPushMatrix();
-      if (von_farb_namen_.size() > 1 &&
-          von_farb_namen_[1] == _("CIE *a"))
+      if (from_channel_names_.size() > 1 &&
+          from_channel_names_[1] == _("CIE *a"))
         glTranslatef(0,-.5,0);
-      Lab2GL(pfeilfarbe[0],pfeilfarbe[1],pfeilfarbe[2],1)
+      Lab2GL(arrow_colour[0],arrow_colour[1],arrow_colour[2],1)
       float schritt = .25, Schritt = 1., start, ende;
-      start = (float)(- floor (a_darstellungs_breite/2./schritt) * schritt);
-      ende  = (float)(  floor (a_darstellungs_breite/2./schritt) * schritt);
+      start = (float)(- floor (cie_a_display_stretch/2./schritt) * schritt);
+      ende  = (float)(  floor (cie_a_display_stretch/2./schritt) * schritt);
       // grid
       glDisable(GL_LIGHTING);
       for(float i = start; i <= ende; i+=schritt) {
 
         if(i/Schritt == floor(i/Schritt))
-          glLineWidth(strich3*strichmult);
+          glLineWidth(line_3*line_mult);
         else
-          glLineWidth(strich1*strichmult);
+          glLineWidth(line_1*line_mult);
 
         glBegin(GL_LINES);
-          glVertex3d( i, 0,  a_darstellungs_breite/2.);
-          glVertex3d( i, 0, -a_darstellungs_breite/2.);
+          glVertex3d( i, 0,  cie_a_display_stretch/2.);
+          glVertex3d( i, 0, -cie_a_display_stretch/2.);
         glEnd();
       }
       glEnable(GL_LIGHTING);
 
-      glTranslated(0.0,0.0,a_darstellungs_breite/2.);
+      glTranslated(0.0,0.0,cie_a_display_stretch/2.);
       glRotated (180,0.0,.5,.0);
-      glTranslated(.0,0.0,a_darstellungs_breite);
-      if (von_farb_namen_.size() > 1 &&
-          von_farb_namen_[1] == _("CIE *a"))
+      glTranslated(.0,0.0,cie_a_display_stretch);
+      if (from_channel_names_.size() > 1 &&
+          from_channel_names_[1] == _("CIE *a"))
       {
         Lab2GL(1.,-1.0,0.5,1)
         PFEILSPITZE
       }
-      glTranslated(.0,0.0,-a_darstellungs_breite);
+      glTranslated(.0,0.0,-cie_a_display_stretch);
       glRotated (180,0.0,.5,.0);
-      if (von_farb_namen_.size() > 1 &&
-          von_farb_namen_[1] == _("CIE *a"))
+      if (from_channel_names_.size() > 1 &&
+          from_channel_names_[1] == _("CIE *a"))
         Lab2GL(1.,1.0,0.5,1)
       PFEILSPITZE
     glPopMatrix(); DBG_PROG
 
     // CIE*b - left
     glPushMatrix();
-      if (von_farb_namen_.size() > 2 &&
-          von_farb_namen_[2] == _("CIE *b"))
+      if (from_channel_names_.size() > 2 &&
+          from_channel_names_[2] == _("CIE *b"))
         glTranslated(0,-0.5,0);
-      Lab2GL(pfeilfarbe[0],pfeilfarbe[1],pfeilfarbe[2],1)
+      Lab2GL(arrow_colour[0],arrow_colour[1],arrow_colour[2],1)
       // grid
       glDisable(GL_LIGHTING);
       for(float i = start; i <= ende; i+=schritt) {
 
         if(i/Schritt == floor(i/Schritt))
-          glLineWidth(strich3*strichmult);
+          glLineWidth(line_3*line_mult);
         else
-          glLineWidth(strich1*strichmult);
+          glLineWidth(line_1*line_mult);
 
         glBegin(GL_LINES);
-          glVertex3d( b_darstellungs_breite/2., 0, i);
-          glVertex3d(-b_darstellungs_breite/2., 0, i);
+          glVertex3d( cie_b_display_stretch/2., 0, i);
+          glVertex3d(-cie_b_display_stretch/2., 0, i);
         glEnd();
       }
       glEnable(GL_LIGHTING);
-      glTranslated(b_darstellungs_breite/2.,0,0);
-      if (von_farb_namen_.size() > 2 &&
-          von_farb_namen_[2] == _("CIE *b"))
+      glTranslated(cie_b_display_stretch/2.,0,0);
+      if (from_channel_names_.size() > 2 &&
+          from_channel_names_[2] == _("CIE *b"))
         Lab2GL(1.,0.5,1.0,1)
       glRotated (90,0.0,.5,.0);
       PFEILSPITZE
       glRotated (180,.0,.5,.0);
-      glTranslated(.0,.0,b_darstellungs_breite);
-      if (von_farb_namen_.size() > 2 &&
-          von_farb_namen_[2] == _("CIE *b"))
+      glTranslated(.0,.0,cie_b_display_stretch);
+      if (from_channel_names_.size() > 2 &&
+          from_channel_names_[2] == _("CIE *b"))
       {
         Lab2GL(.6,0.5,-1.0,1)
         PFEILSPITZE
       }
     glPopMatrix();
-    glLineWidth(strich1*strichmult);
+    glLineWidth(line_1*line_mult);
 
   glEndList();
 
@@ -1334,15 +1334,15 @@ GL_View::garnieren_()
 }
 
 void
-GL_View::tabelleAuffrischen()
+GL_View::refreshTable()
 { DBG_PROG_START
 
-  DBG_PROG_V( tabelle_.size() )
+  DBG_PROG_V( table_.size() )
   // correct the channel selection
-  if(tabelle_.size()) {
-    if( (int)tabelle_[0][0][0].size() <= kanal) {
-      kanal = (int)tabelle_[0][0][0].size()-1;
-      DBG_PROG_S( "Kanalauswahl geaendert: " << kanal )
+  if(table_.size()) {
+    if( (int)table_[0][0][0].size() <= channel) {
+      channel = (int)table_[0][0][0].size()-1;
+      DBG_PROG_S( "Kanalauswahl geaendert: " << channel )
     }
   }
 
@@ -1353,14 +1353,14 @@ GL_View::tabelleAuffrischen()
     gl_listen_[RASTER] = 0;
   }
 
-  if (tabelle_.size())
+  if (table_.size())
   {
     gl_listen_[RASTER] = glGenLists(1);
     glNewList( gl_listen_[RASTER], GL_COMPILE); DBG_PROG_V( gl_listen_[RASTER] )
 
-      int n_L = (int)tabelle_.size(),
-          n_a=(int)tabelle_[0].size(),
-          n_b=(int)tabelle_[0][0].size();
+      int n_L = (int)table_.size(),
+          n_a=(int)table_[0].size(),
+          n_b=(int)table_[0][0].size();
 
       /* The small data cubes fit all into the whole table cubus.
        * The edge of the starting data cube lies on the edge of the table cubus.
@@ -1376,7 +1376,7 @@ GL_View::tabelleAuffrischen()
        * The center of the starting data entry lies on the edge of the whole
        * cube.
        */
-      if(schalen != 0)
+      if(onion_skin != 0)
       {
         dim_x = 1.0/(n_b-1);
         dim_y = 1.0/(n_L-1);
@@ -1384,25 +1384,25 @@ GL_View::tabelleAuffrischen()
       }
 
 #if 0
-      if(schalen)
-        vorder_schnitt = 0.01;
+      if(onion_skin)
+        front_cut = 0.01;
       else
-        vorder_schnitt = std_vorder_schnitt;
+        front_cut = std_front_cut;
 #endif
-      schnitttiefe = HYP3(dim_x,dim_y,dim_z);
-      DBG_NUM_V( schnitttiefe );
+      cut_distance = HYP3(dim_x,dim_y,dim_z);
+      DBG_NUM_V( cut_distance );
       start_x = start_y = start_z = x = y = z = 0.5; start_y = y = -0.5;
       glPushMatrix();
 
 #     ifndef Beleuchtung_
       glDisable(GL_LIGHTING);
 #     endif
-      DBG_PROG_V( tabelle_.size() <<" "<< tabelle_[0].size() )
+      DBG_PROG_V( table_.size() <<" "<< table_[0].size() )
 
       float korr = 0.995f/2.0f;
       /* The cubus start point is shifted to let the data appear centred. */
       glTranslated( -0.5/0.995+dim_x/2,
-                    -0.5/0.995+dim_y/2 - (schalen != 0 ? dim_y : 0),
+                    -0.5/0.995+dim_y/2 - (onion_skin != 0 ? dim_y : 0),
                     -0.5/0.995+dim_z/2);
 
       int geschaelt = 0;
@@ -1418,21 +1418,21 @@ GL_View::tabelleAuffrischen()
           {
             z = start_z + b * dim_x;
 
-            wert = tabelle_[L][a][b][kanal]; //DBG_PROG_V( L << a << b << kanal)
+            wert = table_[L][a][b][channel]; //DBG_PROG_V( L << a << b << channel)
 
 #           ifdef Beleuchtung_
             Lab2GL(wert, .5, .5,1)
             //glColor3f(wert, wert, wert);
 #           else
-            switch (punktfarbe) {
-              case MENU_GRAU:   glColor4d( wert, wert, wert, 1.0); break;
-              case MENU_FARBIG: glColor4d((wert*2),
+            switch (point_colour) {
+              case MENU_GRAY:   glColor4d( wert, wert, wert, 1.0); break;
+              case MENU_COLOUR: glColor4d((wert*2),
                                            wert*2-1.0,
                                            1.0-wert, 1.0);         break;
-              case MENU_KONTRASTREICH: wert = wert * 6;
+              case MENU_HIGHCONTRAST: wert = wert * 6;
                                 while(wert > 1.0) { wert = wert - 1.0; }
-                                if (schalen != 0 && wert < 0.80) wert = 0.0;
-                                if (0/*schalen*/) {
+                                if (onion_skin != 0 && wert < 0.80) wert = 0.0;
+                                if (0/*onion_skin*/) {
                                   glDisable(GL_LIGHTING);
                                   Lab2GL(wert, .5, .5,1)
                                   glEnable(GL_LIGHTING);
@@ -1441,10 +1441,10 @@ GL_View::tabelleAuffrischen()
             }
 #           endif
 
-            if(schalen != 0)
-            for(int n = 0; n < abs(schalen); ++n)
+            if(onion_skin != 0)
+            for(int n = 0; n < abs(onion_skin); ++n)
             {
-              double l = 1./abs(schalen) * n + level/abs(schalen);
+              double l = 1./abs(onion_skin) * n + level/abs(onion_skin);
 
               /* 
                   The cubus can be imagined like:
@@ -1468,23 +1468,23 @@ GL_View::tabelleAuffrischen()
                *  get table values:
                */
 
-              A = tabelle_[L][a][b][kanal];
+              A = table_[L][a][b][channel];
               if(b != n_b - 1)
-              B = tabelle_[L][a][b+1][kanal];
+              B = table_[L][a][b+1][channel];
               if(b != n_b - 1 && a != n_a - 1)
-              C = tabelle_[L][a+1][b+1][kanal];
+              C = table_[L][a+1][b+1][channel];
               if(a != n_a - 1)
-              D = tabelle_[L][a+1][b][kanal];
+              D = table_[L][a+1][b][channel];
 
-              if(schalen > 0 && L != 0)
+              if(onion_skin > 0 && L != 0)
               {
-              E_= tabelle_[L-1][a][b][kanal];
+              E_= table_[L-1][a][b][channel];
               if(b != n_b - 1)
-              F = tabelle_[L-1][a][b+1][kanal];
+              F = table_[L-1][a][b+1][channel];
               /*i if(b != n_b - 1 && a != n_a - 1)
-              G = tabelle_[L-1][a+1][b+1][kanal]; */
+              G = table_[L-1][a+1][b+1][channel]; */
               if(a != n_a - 1)
-              H = tabelle_[L-1][a+1][b][kanal];
+              H = table_[L-1][a+1][b][channel];
               }
 
               int edges;
@@ -1680,7 +1680,7 @@ printf("%s:%d %d e:%d,%d,%d,%d\n",__FILE__,__LINE__,m, e[0],e[1],e[2],e[3]);
 
 
               /* The analysation as in isolines above should be below as well.*/
-              if(schalen > 0 && L != 0)
+              if(onion_skin > 0 && L != 0)
               {
               if(b != n_b - 1)
               {
@@ -1762,7 +1762,7 @@ printf("%s:%d %d e:%d,%d,%d,%d\n",__FILE__,__LINE__,m, e[0],e[1],e[2],e[3]);
 
             /* the cubus representation */
             if (wert && 
-                (schalen == 0 || geschaelt < 0))
+                (onion_skin == 0 || geschaelt < 0))
             {
                 glBegin(GL_TRIANGLE_FAN);
                   glVertex3d(dim_x*b+ dim_x*korr,
@@ -1820,7 +1820,7 @@ printf("%s:%d %d e:%d,%d,%d,%d\n",__FILE__,__LINE__,m, e[0],e[1],e[2],e[3]);
           }
         }
 
-        if(schalen != 0 && L == n_L -1 && geschaelt < 2 && geschaelt != -1)
+        if(onion_skin != 0 && L == n_L -1 && geschaelt < 2 && geschaelt != -1)
         {
           L = 0;
           geschaelt = -1;
@@ -1841,17 +1841,17 @@ printf("%s:%d %d e:%d,%d,%d,%d\n",__FILE__,__LINE__,m, e[0],e[1],e[2],e[3]);
 }
 
 void
-GL_View::netzeAuffrischen()
+GL_View::refreshNets()
 {
   DBG_PROG_START
   MARK( frei(false); )
-    if( dreiecks_netze.size() )
+    if( triangle_nets.size() )
     {
-      DBG_ICCGL_V( dreiecks_netze.size() )
-      DBG_ICCGL_V( dreiecks_netze[0].name )
-      DBG_ICCGL_V( dreiecks_netze[0].punkte.size() )
-      DBG_ICCGL_V( dreiecks_netze[0].indexe.size() )
-      DBG_ICCGL_V( dreiecks_netze[0].undurchsicht )
+      DBG_ICCGL_V( triangle_nets.size() )
+      DBG_ICCGL_V( triangle_nets[0].name )
+      DBG_ICCGL_V( triangle_nets[0].punkte.size() )
+      DBG_ICCGL_V( triangle_nets[0].indexe.size() )
+      DBG_ICCGL_V( triangle_nets[0].undurchsicht )
     }
 
       // sort meshes
@@ -1870,12 +1870,12 @@ GL_View::netzeAuffrischen()
        glEnable(GL_LIGHTING);
        glEnable(GL_DEPTH_TEST);
 
-       static double hintergrundfarbe_statisch = hintergrundfarbe;
-       if(hintergrundfarbe != hintergrundfarbe_statisch)
+       static double hintergrundfarbe_statisch = background_colour;
+       if(background_colour != hintergrundfarbe_statisch)
          DBG_NUM_S("background colour changed "<<id_);
-       GLfloat lmodel_ambient[] = {0.125f+hintergrundfarbe/8,
-                                   0.125f+hintergrundfarbe/8,
-                                   0.125f+hintergrundfarbe/8, 1.0f};
+       GLfloat lmodel_ambient[] = {0.125f+background_colour/8,
+                                   0.125f+background_colour/8,
+                                   0.125f+background_colour/8, 1.0f};
        glLightModelfv(GL_LIGHT_MODEL_AMBIENT, lmodel_ambient);
 
        GLfloat light1_position[] = { lX, lY, lZ, 1.0 };
@@ -1919,13 +1919,13 @@ GL_View::netzeAuffrischen()
 
 
        if(icc_debug == 14) {
-       strichmult = 3;
+       line_mult = 3;
        DBG_ICCGL_S( "dist:"<<EyeDist<<" elevation:"<<EyeEl<<" azimuth:"<<EyeAz )
        glMatrixMode(GL_MODELVIEW);
        glLoadIdentity();
        glTranslated(X/1.2,Y/1.2,Z/1.2);
        DBG_ICCGL_S( "X:"<<X<<" Y:"<<Y<<" Z:"<<Z )
-       zeichneKoordinaten_();
+       drawCoordinates_();
        glTranslated(-X/1.2,-Y/1.2,-Z/1.2);
        }
 
@@ -1933,7 +1933,7 @@ GL_View::netzeAuffrischen()
        double abstand;
        std::multimap<double,DreiecksIndexe>::const_iterator it;
        if(!bsp)
-       for( it = netz.indexe.begin(); it != netz.indexe.end(); ++it )
+       for( it = net.indexe.begin(); it != net.indexe.end(); ++it )
        {
                // insert indicies, to count newly
        /*A*/ std::pair<double,DreiecksIndexe> index_p( *it );
@@ -1982,13 +1982,13 @@ GL_View::netzeAuffrischen()
       glFrontFace(GL_CCW);
       glPushMatrix();
         // positioning
-      glTranslated( -b_darstellungs_breite/2., -.5, -a_darstellungs_breite/2. );
+      glTranslated( -cie_b_display_stretch/2., -.5, -cie_a_display_stretch/2. );
 
       
-      DBG_ICCGL_V( netz.indexe.size() <<" "<< netz.punkte.size() )
+      DBG_ICCGL_V( net.indexe.size() <<" "<< net.punkte.size() )
 
 
-      glLineWidth(strich1*strichmult);
+      glLineWidth(line_1*line_mult);
       int index[7];
       double len=1.0;
 
@@ -2007,8 +2007,8 @@ GL_View::netzeAuffrischen()
       {
         double dist = HYP3(X,Y,Z);
         icc_examin_ns::POINT pov = {Y + 0.5,
-                                    Z + b_darstellungs_breite/2,
-                                    X + b_darstellungs_breite/2.};
+                                    Z + cie_b_display_stretch/2,
+                                    X + cie_b_display_stretch/2.};
         if(icc_debug != 0)
         {
           zeichneKegel(0.02, 0.05, 16, X/dist, Y/dist, Z/dist);
@@ -2037,38 +2037,38 @@ GL_View::netzeAuffrischen()
                         it->second.normale[1] );
             for( int l = 2; l >= 0; --l)
             {
-              FARBEN (   netz.punkte[index[l]].farbe[0],
-                         netz.punkte[index[l]].farbe[1],
-                         netz.punkte[index[l]].farbe[2],
-                         netz.punkte[index[l]].farbe[3]);
-              glVertex3d( netz.punkte[index[l]].koord[2],
-                          netz.punkte[index[l]].koord[0],
-                          netz.punkte[index[l]].koord[1] );
+              FARBEN (   net.punkte[index[l]].farbe[0],
+                         net.punkte[index[l]].farbe[1],
+                         net.punkte[index[l]].farbe[2],
+                         net.punkte[index[l]].farbe[3]);
+              glVertex3d( net.punkte[index[l]].koord[2],
+                          net.punkte[index[l]].koord[0],
+                          net.punkte[index[l]].koord[1] );
             }
           glEnd();
           //DBG_V( index <<" "<< len <<" "<< normale[0] );
           if(icc_debug != 0)
           {
-          glLineWidth(strich1*strichmult);
+          glLineWidth(line_1*line_mult);
           glBegin(GL_LINES);
-            glVertex3d( netz.punkte[index[0]].koord[2],
-                        netz.punkte[index[0]].koord[0],
-                        netz.punkte[index[0]].koord[1] );
-            glVertex3d( netz.punkte[index[0]].koord[2]+it->second.normale[2]/len*.1,
-                        netz.punkte[index[0]].koord[0]+it->second.normale[0]/len*.1,
-                        netz.punkte[index[0]].koord[1]+it->second.normale[1]/len*.1 );
+            glVertex3d( net.punkte[index[0]].koord[2],
+                        net.punkte[index[0]].koord[0],
+                        net.punkte[index[0]].koord[1] );
+            glVertex3d( net.punkte[index[0]].koord[2]+it->second.normale[2]/len*.1,
+                        net.punkte[index[0]].koord[0]+it->second.normale[0]/len*.1,
+                        net.punkte[index[0]].koord[1]+it->second.normale[1]/len*.1 );
           glEnd();
           }
-          if(netz.kubus)
+          if(net.kubus)
           {
-            FARBEN ( 5.0,5.0,5.0,netz.punkte[index[0]].farbe[3] );
+            FARBEN ( 5.0,5.0,5.0,net.punkte[index[0]].farbe[3] );
             glBegin(GL_LINES);
-              glVertex3d( netz.punkte[index[1]].koord[2],
-                          netz.punkte[index[1]].koord[0],
-                          netz.punkte[index[1]].koord[1] );
-              glVertex3d( netz.punkte[index[0]].koord[2],
-                          netz.punkte[index[0]].koord[0],
-                          netz.punkte[index[0]].koord[1] );
+              glVertex3d( net.punkte[index[1]].koord[2],
+                          net.punkte[index[1]].koord[0],
+                          net.punkte[index[1]].koord[1] );
+              glVertex3d( net.punkte[index[0]].koord[2],
+                          net.punkte[index[0]].koord[0],
+                          net.punkte[index[0]].koord[1] );
             glEnd();
           }
         }
@@ -2099,8 +2099,8 @@ GL_View::iccPoint3d               ( oyPROFILE_e         projection,
   {
     case oyEDITING_LAB:
          CIELabToLab( vertex, d3, 1 );
-         d3[2] *= b_darstellungs_breite;
-         d3[1] *= a_darstellungs_breite;
+         d3[2] *= cie_b_display_stretch;
+         d3[1] *= cie_a_display_stretch;
          break;
     default:
          memcpy( d3, vertex, sizeof(double) * 3 );
@@ -2127,31 +2127,31 @@ GL_View::iccPoint3d               ( oyPROFILE_e         projection,
 double GL_View::pointRadius()
 {
   double rad = 0.5;
-  switch (punktform)
+  switch (point_form)
   {
-    case MENU_dE1KUGEL: rad = 0.5; break;
-    case MENU_dE2KUGEL: rad = 1.0; break;
-    case MENU_dE4KUGEL: rad = 2.0; break;
-    default:            rad = ((double)punktgroesse)/4.0; break;
+    case MENU_dE1SPHERE: rad = 0.5; break;
+    case MENU_dE2SPHERE: rad = 1.0; break;
+    case MENU_dE4SPHERE: rad = 2.0; break;
+    default:            rad = ((double)point_size)/4.0; break;
   }
   return rad;
 }
 
 void
-GL_View::punkteAuffrischen()
+GL_View::refreshPoints()
 { DBG_PROG_START
 
-  if (gl_listen_[PUNKTE]) {
-    glDeleteLists (gl_listen_[PUNKTE], 1);
-    gl_listen_[PUNKTE] = 0;
+  if (gl_listen_[POINTS]) {
+    glDeleteLists (gl_listen_[POINTS], 1);
+    gl_listen_[POINTS] = 0;
   }
 
   //coordinates  in CIE*b CIE*L CIE*a 
   if (oyStructList_Count( colours_ )) {
     DBG_PROG_V( oyStructList_Count( colours_ ) )
 
-    gl_listen_[PUNKTE] = glGenLists(1);
-    glNewList( gl_listen_[PUNKTE], GL_COMPILE); DBG_PROG_V( gl_listen_[PUNKTE] )
+    gl_listen_[POINTS] = glGenLists(1);
+    glNewList( gl_listen_[POINTS], GL_COMPILE); DBG_PROG_V( gl_listen_[POINTS] )
 #     ifndef Beleuchtung_
       glDisable(GL_LIGHTING);
 #     endif
@@ -2159,7 +2159,7 @@ GL_View::punkteAuffrischen()
       //glColor3f(0.9, 0.9, 0.9);
       glPushMatrix();
         // positioning
-        glTranslated( -b_darstellungs_breite/2,-.5,-a_darstellungs_breite/2 );
+        glTranslated( -cie_b_display_stretch/2,-.5,-cie_a_display_stretch/2 );
 
         int x = this->window()->x() + this->window()->w()/2;
         int y = this->window()->y() + this->window()->h()/2;
@@ -2241,13 +2241,13 @@ GL_View::punkteAuffrischen()
 
           rgba[3] = 1;
 
-          if(dreiecks_netze.size() > (unsigned)j)
+          if(triangle_nets.size() > (unsigned)j)
           {
-            aktiv = dreiecks_netze[j].active();
-            grau = dreiecks_netze[j].grau;
-            rgba[3] = dreiecks_netze[j].undurchsicht;
-            schattierung = dreiecks_netze[j].schattierung;
-            if(dreiecks_netze[j].punkte.size())
+            aktiv = triangle_nets[j].active();
+            grau = triangle_nets[j].grau;
+            rgba[3] = triangle_nets[j].undurchsicht;
+            schattierung = triangle_nets[j].schattierung;
+            if(triangle_nets[j].punkte.size())
               has_mesh = 1;
           }
 
@@ -2265,20 +2265,20 @@ GL_View::punkteAuffrischen()
           if(!aktiv)
             continue;
 
-          if(zeig_punkte_als_paare)
+          if(show_points_as_pairs)
             n /= 2;
 
-          if(zeig_punkte_als_paare)
+          if(show_points_as_pairs)
             for (int i = 0; i < n; ++i)
             {
-              glLineWidth(strich2*strichmult);
+              glLineWidth(line_2*line_mult);
               // draw lines
               glBegin(GL_LINES);
                 c = oyNamedColours_Get( colours, i );
                 oyArray2d_DataSet( in_array,
                                    (void*) oyNamedColour_GetXYZConst( c ) );
 
-                if(!zeig_punkte_als_messwerte)
+                if(!show_points_as_measurements)
                   glColor4d(.97, .97, .97, rgba[3] );
                 else {
                   if(grau)
@@ -2296,7 +2296,7 @@ GL_View::punkteAuffrischen()
                 c = oyNamedColours_Get( colours, n + i );
                 oyArray2d_DataSet( in_array,
                                    (void*) oyNamedColour_GetXYZConst( c ) );
-                if(!zeig_punkte_als_messwerte)
+                if(!show_points_as_measurements)
                   glColor4d(1., .6, .6, 1.0 );
                 else {
                   if(grau)
@@ -2313,15 +2313,15 @@ GL_View::punkteAuffrischen()
               glEnd();
             }
 
-          if(zeig_punkte_als_paare && !zeig_punkte_als_messwerte)
+          if(show_points_as_pairs && !show_points_as_measurements)
             n *= 2; 
 
           double rad = .02;
           int kugeln_zeichnen = false;
-          switch (punktform)
+          switch (point_form)
           {
-            case MENU_dE1STERN:
-               glPointSize(punktgroesse);
+            case MENU_dE1STAR:
+               glPointSize(point_size);
                glColor4d(.97, .97, .97, rgba[3] );
                glBegin(GL_POINTS);
                  for (int i = 0; i < n; ++i)
@@ -2342,11 +2342,11 @@ GL_View::punkteAuffrischen()
                  }
                glEnd();
               break;
-            case MENU_dE1KUGEL: rad = 0.005;kugeln_zeichnen = true;break;
-            case MENU_dE2KUGEL: rad = 0.01; kugeln_zeichnen = true;break;
-            case MENU_dE4KUGEL: rad = 0.02; kugeln_zeichnen = true;break;
+            case MENU_dE1SPHERE: rad = 0.005;kugeln_zeichnen = true;break;
+            case MENU_dE2SPHERE: rad = 0.01; kugeln_zeichnen = true;break;
+            case MENU_dE4SPHERE: rad = 0.02; kugeln_zeichnen = true;break;
                  break;
-            case MENU_DIFFERENZ_LINIE: // they are drawn anyway
+            case MENU_DIFFERENCE_LINE: // they are drawn anyway
                  break;
           }
 
@@ -2372,10 +2372,10 @@ GL_View::punkteAuffrischen()
             }
           }
           // shadow
-          glColor4f( schatten, schatten, schatten, 1. );
-          glPointSize((punktgroesse/2-1)>0?(punktgroesse/2-1):1);
+          glColor4f( shadow, shadow, shadow, 1. );
+          glPointSize((point_size/2-1)>0?(point_size/2-1):1);
           glBegin(GL_POINTS);
-            if(zeig_punkte_als_messwerte)
+            if(show_points_as_measurements)
                  for (int i = 0; i < n; ++i)
                  {
                    c = oyNamedColours_Get( colours, i );
@@ -2414,20 +2414,20 @@ GL_View::punkteAuffrischen()
 extern float cieXYZ [471][3]; // in 
 
 void
-GL_View::zeigeUmrisse_()
+GL_View::showContours_()
 {
   DBG_PROG_START
 
-  if (gl_listen_[UMRISSE]) {
-    DBG_PROG_S( "delete glListe " << gl_listen_[UMRISSE] )
-    glDeleteLists (gl_listen_[UMRISSE],1);
-    gl_listen_[UMRISSE] = 0;
+  if (gl_listen_[CONTOURS]) {
+    DBG_PROG_S( "delete glListe " << gl_listen_[CONTOURS] )
+    glDeleteLists (gl_listen_[CONTOURS],1);
+    gl_listen_[CONTOURS] = 0;
   }
 
   oyOptions_s * opts = icc_examin->options();
 
-  //if (spektralband == MENU_SPEKTRALBAND)
-  for (unsigned int d=0; d < dreiecks_netze.size(); ++d)
+  //if (spectral_line == MENU_SPECTRAL_LINE)
+  for (unsigned int d=0; d < triangle_nets.size(); ++d)
   {
     double *RGB_Speicher = 0,
            *RGBSchatten_Speicher = 0,
@@ -2435,7 +2435,7 @@ GL_View::zeigeUmrisse_()
            *Lab_Speicher_schatten = 0;
 
     // conversion
-    int n = (int)dreiecks_netze[d].umriss.size();
+    int n = (int)triangle_nets[d].umriss.size();
     DBG_PROG_V( n )
     if(!n) continue;
 
@@ -2444,7 +2444,7 @@ GL_View::zeigeUmrisse_()
 
     for ( int j = 0; j < n; ++j)
       for(int k = 0; k < 3 ; ++k)
-        Lab_Speicher[j*3+k] = dreiecks_netze[d].umriss[j].koord[k];
+        Lab_Speicher[j*3+k] = triangle_nets[d].umriss[j].koord[k];
 
     RGB_Speicher = icc_oyranos.wandelLabNachBildschirmFarben(
                window()->x() + window()->w()/2, window()->y() + window()->h()/2,
@@ -2455,7 +2455,7 @@ GL_View::zeigeUmrisse_()
     Lab_Speicher_schatten = (double*) malloc (sizeof(double) * n*3);
 
     for (int i = 0; i < n; ++i) {
-      Lab_Speicher_schatten[i*3+0] = dreiecks_netze[d].schattierung; //hintergrundfarbe*.40+.35;
+      Lab_Speicher_schatten[i*3+0] = triangle_nets[d].schattierung; //background_colour*.40+.35;
       Lab_Speicher_schatten[i*3+1] = (Lab_Speicher[i*3+1]-.5)*.25+0.5;
       Lab_Speicher_schatten[i*3+2] = (Lab_Speicher[i*3+2]-.5)*.25+0.5;
     }
@@ -2469,7 +2469,7 @@ GL_View::zeigeUmrisse_()
 
     for ( int j = 0; j < n; ++j)
       for(int k = 0; k < 3 ; ++k)
-        dreiecks_netze[d].umriss[j].farbe[k] = RGBSchatten_Speicher[j*3+k];
+        triangle_nets[d].umriss[j].farbe[k] = RGBSchatten_Speicher[j*3+k];
 
     if (Lab_Speicher) free (Lab_Speicher);
     if (Lab_Speicher_schatten) free (Lab_Speicher_schatten);
@@ -2478,11 +2478,11 @@ GL_View::zeigeUmrisse_()
   }
   oyOptions_Release( &opts );
 
-    GLfloat farbe[] =   { pfeilfarbe[0],pfeilfarbe[1],pfeilfarbe[2], 1.0 };
+    GLfloat farbe[] =   { arrow_colour[0],arrow_colour[1],arrow_colour[2], 1.0 };
 
-  gl_listen_[UMRISSE] = glGenLists(1);
-  glNewList( gl_listen_[UMRISSE], GL_COMPILE );
-  DBG_PROG_V( gl_listen_[UMRISSE] ) 
+  gl_listen_[CONTOURS] = glGenLists(1);
+  glNewList( gl_listen_[CONTOURS], GL_COMPILE );
+  DBG_PROG_V( gl_listen_[CONTOURS] ) 
 
     glDisable (GL_LIGHTING);
     glDisable (GL_ALPHA_TEST_FUNC);
@@ -2494,55 +2494,55 @@ GL_View::zeigeUmrisse_()
       glEnable(GL_LINE_SMOOTH);
     }
 
-    for (unsigned int i=0; i < dreiecks_netze.size(); ++i)
+    for (unsigned int i=0; i < triangle_nets.size(); ++i)
     {
-      if(dreiecks_netze[i].umriss.size() &&
-         dreiecks_netze[i].active() &&
-         dreiecks_netze[i].undurchsicht)
+      if(triangle_nets[i].umriss.size() &&
+         triangle_nets[i].active() &&
+         triangle_nets[i].undurchsicht)
       {
         //Farbband
         if(icc_debug)
         {
-        glLineWidth(strich3*strichmult);
+        glLineWidth(line_3*line_mult);
         glColor4f(1., 1.0, 1.0, 1.0);
         glBegin(GL_LINE_STRIP);
-        for (int z=0 ; z < (int)dreiecks_netze[i].umriss.size(); z++) {
-          if(!dreiecks_netze[i].grau) {
-            Lab2GL(dreiecks_netze[i].umriss[z].farbe[0],
-                  dreiecks_netze[i].umriss[z].farbe[1],
-                  dreiecks_netze[i].umriss[z].farbe[2],1)
+        for (int z=0 ; z < (int)triangle_nets[i].umriss.size(); z++) {
+          if(!triangle_nets[i].grau) {
+            Lab2GL(triangle_nets[i].umriss[z].farbe[0],
+                  triangle_nets[i].umriss[z].farbe[1],
+                  triangle_nets[i].umriss[z].farbe[2],1)
           }
 
           glVertex3d( 
-                  (dreiecks_netze[i].umriss[z].koord[2] * b_darstellungs_breite
-                    - b_darstellungs_breite/2.),
-                  (dreiecks_netze[i].umriss[z].koord[0] - 0.5),
-                  (dreiecks_netze[i].umriss[z].koord[1] * a_darstellungs_breite
-                    - a_darstellungs_breite/2.)
+                  (triangle_nets[i].umriss[z].koord[2] * cie_b_display_stretch
+                    - cie_b_display_stretch/2.),
+                  (triangle_nets[i].umriss[z].koord[0] - 0.5),
+                  (triangle_nets[i].umriss[z].koord[1] * cie_a_display_stretch
+                    - cie_a_display_stretch/2.)
           );
         }
         glEnd();
         }
         // colour line shadow
-        int n = (int)dreiecks_netze[i].umriss.size();
+        int n = (int)triangle_nets[i].umriss.size();
         DBG_PROG_V( n )
-        glLineWidth(strich2*strichmult);
+        glLineWidth(line_2*line_mult);
 
-        Lab2GL (          dreiecks_netze[i].schattierung, .5, .5, 1);
+        Lab2GL (          triangle_nets[i].schattierung, .5, .5, 1);
 
         glBegin(GL_LINE_STRIP);
         for (int z=0 ; z < n; z++)
         {
-          if(!dreiecks_netze[i].grau) {
-            FARBE(dreiecks_netze[i].umriss[z].farbe[0],
-                  dreiecks_netze[i].umriss[z].farbe[1],
-                  dreiecks_netze[i].umriss[z].farbe[2],1)
+          if(!triangle_nets[i].grau) {
+            FARBE(triangle_nets[i].umriss[z].farbe[0],
+                  triangle_nets[i].umriss[z].farbe[1],
+                  triangle_nets[i].umriss[z].farbe[2],1)
           }
-          glVertex3d(dreiecks_netze[i].umriss[z].koord[2]*b_darstellungs_breite
-                      - b_darstellungs_breite/2.,
+          glVertex3d(triangle_nets[i].umriss[z].koord[2]*cie_b_display_stretch
+                      - cie_b_display_stretch/2.,
                      -0.5,
-                     dreiecks_netze[i].umriss[z].koord[1]*a_darstellungs_breite
-                      - a_darstellungs_breite/2.);
+                     triangle_nets[i].umriss[z].koord[1]*cie_a_display_stretch
+                      - cie_a_display_stretch/2.);
         }
         glEnd();
       }
@@ -2553,14 +2553,14 @@ GL_View::zeigeUmrisse_()
 }
 
 void
-GL_View::zeigeSpektralband_()
+GL_View::showSprectralLine_()
 {
   DBG_PROG_START
 
   if (gl_listen_[SPEKTRUM])
     glDeleteLists (gl_listen_[SPEKTRUM], 1);
   gl_listen_[SPEKTRUM] = 0;
-  if (spektralband == MENU_SPEKTRALBAND)
+  if (spectral_line == MENU_SPECTRAL_LINE)
   {
     double *RGB_Speicher = 0,
            *RGBSchatten_Speicher = 0,
@@ -2570,7 +2570,7 @@ GL_View::zeigeSpektralband_()
     int n_punkte = 471;//341; // 700 nm
     oyOptions_s * opts = icc_examin->options();
 
-    if(typ_ > 1)
+    if(type_ > 1)
     {
       // spektrum variables
       //int nano_min = 63; // 420 nm
@@ -2609,7 +2609,7 @@ GL_View::zeigeSpektralband_()
          (icc_oyranos.colourServerActive() & XCM_COLOR_SERVER_PROFILES)?edit_:0,
                Lab_Speicher, (size_t)n_punkte, opts);
 
-    if(typ_ == 1)
+    if(type_ == 1)
       for (int i = 0; i < n_punkte; ++i)
         Lab_Speicher[i*3+0] = (double).0;
 
@@ -2619,7 +2619,7 @@ GL_View::zeigeSpektralband_()
     for (int i = 0; i < n_punkte*2; ++i)
       Lab_Speicher_schatten[i] = Lab_Speicher[i];
     for (int i = 0; i < n_punkte; ++i) {
-      Lab_Speicher_schatten[i*3] = hintergrundfarbe*.40+.35;
+      Lab_Speicher_schatten[i*3] = background_colour*.40+.35;
       Lab_Speicher_schatten[i*3+1] = (Lab_Speicher[i*3+1]-.5)*.25+0.5;
       Lab_Speicher_schatten[i*3+2] = (Lab_Speicher[i*3+2]-.5)*.25+0.5;
     }
@@ -2635,7 +2635,7 @@ GL_View::zeigeSpektralband_()
       return;
     }
 
-    GLfloat farbe[] =   { pfeilfarbe[0],pfeilfarbe[1],pfeilfarbe[2], 1.0 };
+    GLfloat farbe[] =   { arrow_colour[0],arrow_colour[1],arrow_colour[2], 1.0 };
 
     gl_listen_[SPEKTRUM] = glGenLists(1);
     glNewList( gl_listen_[SPEKTRUM], GL_COMPILE );
@@ -2651,7 +2651,7 @@ GL_View::zeigeSpektralband_()
         glEnable(GL_LINE_SMOOTH);
       }
 
-      glLineWidth(strich3*strichmult);
+      glLineWidth(line_3*line_mult);
       glColor4f(0.5, 1.0, 1.0, 1.0);
       glBegin(GL_LINE_STRIP);
         for (int i=0 ; i <= (n_punkte - 1); i++) {
@@ -2659,24 +2659,24 @@ GL_View::zeigeSpektralband_()
           DBG_ICCGL2_S( i<<" "<<RGB_Speicher[i*3]<<"|"<<RGB_Speicher[i*3+1]<<"|"<<RGB_Speicher[i*3+2] )
           FARBE(RGB_Speicher[i*3],RGB_Speicher[i*3+1],RGB_Speicher[i*3+2],1);
           glVertex3d( 
-         (Lab_Speicher[i*3+2]*b_darstellungs_breite - b_darstellungs_breite/2.),
+         (Lab_Speicher[i*3+2]*cie_b_display_stretch - cie_b_display_stretch/2.),
          (Lab_Speicher[i*3+0] - 0.5),
-         (Lab_Speicher[i*3+1]*a_darstellungs_breite - a_darstellungs_breite/2.)
+         (Lab_Speicher[i*3+1]*cie_a_display_stretch - cie_a_display_stretch/2.)
           );
         }
       glEnd();
       // shadow
-      if(typ_ > 1)
+      if(type_ > 1)
       {
-      glLineWidth(strich2*strichmult);
+      glLineWidth(line_2*line_mult);
       glBegin(GL_LINE_STRIP);
-      //#define S * .25 + textfarbe[0] - schatten
+      //#define S * .25 + text_colour[0] - shadow
         for (int i=0 ; i <= (n_punkte - 1); i++) {
           FARBE(RGBSchatten_Speicher[i*3],RGBSchatten_Speicher[i*3+1],RGBSchatten_Speicher[i*3+2],1)
           glVertex3d( 
-         (Lab_Speicher[i*3+2]*b_darstellungs_breite - b_darstellungs_breite/2.),
+         (Lab_Speicher[i*3+2]*cie_b_display_stretch - cie_b_display_stretch/2.),
          (- 0.5),
-         (Lab_Speicher[i*3+1]*a_darstellungs_breite - a_darstellungs_breite/2.)
+         (Lab_Speicher[i*3+1]*cie_a_display_stretch - cie_a_display_stretch/2.)
           );
         }
       glEnd();
@@ -2704,110 +2704,110 @@ cpMenueButton (Fl_Menu_Button* m)
 }
 
 void
-GL_View::menueErneuern_()
+GL_View::renewMenue_()
 { DBG_PROG_START
   MARK( frei(false); )
 
   // erase
-  menue_schnitt_->clear();
-  menue_hintergrund_->clear();
-  menue_form_->clear();
+  menue_cut_->clear();
+  menue_background_->clear();
+  menue_shape_->clear();
   menue_->clear();
   menue_button_->clear();
   DBG_PROG
 
   // ->Darstellung
-  menue_schnitt_->add("text_L", 0,c_, (void*)Agviewer::ICCFLY_L, 0);
-  menue_schnitt_->add("text_a", 0,c_, (void*)Agviewer::ICCFLY_a, 0);
-  menue_schnitt_->add("text_b", 0,c_, (void*)Agviewer::ICCFLY_b, 0);
-  menue_schnitt_->add(_("Slice"), 0,c_, (void*)Agviewer::FLYING, 0);
-  menue_schnitt_->add(_("Rotate around slice"),0,c_,(void*)Agviewer::ICCPOLAR, 0);
+  menue_cut_->add("text_L", 0,c_, (void*)Agviewer::ICCFLY_L, 0);
+  menue_cut_->add("text_a", 0,c_, (void*)Agviewer::ICCFLY_a, 0);
+  menue_cut_->add("text_b", 0,c_, (void*)Agviewer::ICCFLY_b, 0);
+  menue_cut_->add(_("Slice"), 0,c_, (void*)Agviewer::FLYING, 0);
+  menue_cut_->add(_("Rotate around slice"),0,c_,(void*)Agviewer::ICCPOLAR, 0);
   DBG_PROG
 
-  if (von_farb_namen_.size())
+  if (from_channel_names_.size())
   {
     static char text_L[64];
     static char text_a[64];
     static char text_b[64];
     static char text_S[64];
-    sprintf (text_L, "%s %s", von_farb_namen_[0].c_str(), _("Slice"));
-    menue_schnitt_->replace( 0, text_L);
-    if(von_farb_namen_.size() > 1)
-      sprintf (text_a, "%s %s", von_farb_namen_[1].c_str(), _("Slice"));
+    sprintf (text_L, "%s %s", from_channel_names_[0].c_str(), _("Slice"));
+    menue_cut_->replace( 0, text_L);
+    if(from_channel_names_.size() > 1)
+      sprintf (text_a, "%s %s", from_channel_names_[1].c_str(), _("Slice"));
     else
       sprintf (text_a, "%s", _("Slice"));
-    menue_schnitt_->replace( 1, text_a);
-    if(von_farb_namen_.size() > 2)
-      sprintf (text_b, "%s %s", von_farb_namen_[2].c_str(), _("Slice"));
+    menue_cut_->replace( 1, text_a);
+    if(from_channel_names_.size() > 2)
+      sprintf (text_b, "%s %s", from_channel_names_[2].c_str(), _("Slice"));
     else
       sprintf (text_a, "%s", _("Slice"));
-    menue_schnitt_->replace( 2, text_b);
-    sprintf (text_S, "%s %s %s", _("Rotate around"),von_farb_namen_[0].c_str(), _("axis"));
-    menue_schnitt_->replace( 4, text_S);
+    menue_cut_->replace( 2, text_b);
+    sprintf (text_S, "%s %s %s", _("Rotate around"),from_channel_names_[0].c_str(), _("axis"));
+    menue_cut_->replace( 4, text_S);
   }
   DBG_PROG
 
-  menue_->add (_("Slice plane"),0,0, cpMenueButton(menue_schnitt_),FL_SUBMENU_POINTER);
+  menue_->add (_("Slice plane"),0,0, cpMenueButton(menue_cut_),FL_SUBMENU_POINTER);
 
   // ->Darstellung->background colour
-  menue_hintergrund_->add(_("White"), 0,c_, (void*)MENU_WEISS, 0);
-  menue_hintergrund_->add(_("Light gray"), 0,c_, (void*)MENU_HELLGRAU, 0);
-  menue_hintergrund_->add(_("Gray"), 0,c_, (void*)MENU_GRAUGRAU, 0);
-  menue_hintergrund_->add(_("Dark gray"), 0,c_, (void*)MENU_DUNKELGRAU, 0);
-  menue_hintergrund_->add(_("Black"), 0,c_, (void*)MENU_SCHWARZ, 0);
+  menue_background_->add(_("White"), 0,c_, (void*)MENU_WHITE, 0);
+  menue_background_->add(_("Light gray"), 0,c_, (void*)MENU_LIGHT_GRAY, 0);
+  menue_background_->add(_("Gray"), 0,c_, (void*)MENU_GRAY_GRAY, 0);
+  menue_background_->add(_("Dark gray"), 0,c_, (void*)MENU_DARK_GRAY, 0);
+  menue_background_->add(_("Black"), 0,c_, (void*)MENU_BLACK, 0);
   DBG_PROG
 
-  menue_form_->add (_("Background colour"),0,c_,cpMenueButton(menue_hintergrund_),FL_SUBMENU_POINTER);
+  menue_shape_->add (_("Background colour"),0,c_,cpMenueButton(menue_background_),FL_SUBMENU_POINTER);
 
   // ->Darstellung
-  if(typ_ == 1)
+  if(type_ == 1)
   {
-    menue_form_->add( _("gray"), 0,c_, (void*)MENU_GRAU, 0 );
-    menue_form_->add( _("coloured"), 0,c_, (void*)MENU_FARBIG, 0 );
-    menue_form_->add( _("high contrast"), 0,c_, (void*)MENU_KONTRASTREICH, 0 );
+    menue_shape_->add( _("gray"), 0,c_, (void*)MENU_GRAY, 0 );
+    menue_shape_->add( _("coloured"), 0,c_, (void*)MENU_COLOUR, 0 );
+    menue_shape_->add( _("high contrast"), 0,c_, (void*)MENU_HIGHCONTRAST, 0 );
     // Shells alike displaying, alternatves are "Membranes" or "Shells"
-    menue_form_->add( _("Onion skins"), 0,c_, (void*)MENU_SCHALEN, 0 );
-    menue_form_->add( _("Colour line"), 0,c_, (void*)MENU_SPEKTRALBAND, 0 );
+    menue_shape_->add( _("Onion skins"), 0,c_, (void*)MENU_ONIONSKIN, 0 );
+    menue_shape_->add( _("Colour line"), 0,c_, (void*)MENU_SPECTRAL_LINE, 0 );
   } else {
     // spheres with their radius symbolise measurement colours
-    if(!zeig_punkte_als_messwerte)
+    if(!show_points_as_measurements)
     {
-      menue_form_->add( _("Sphere 1dE"), 0,c_, (void*)MENU_dE1KUGEL, 0 );
-      menue_form_->add( _("Sphere 2dE"), 0,c_, (void*)MENU_dE2KUGEL, 0 );
-      menue_form_->add( _("Sphere 4dE"), 0,c_, (void*)MENU_dE4KUGEL, 0 );
+      menue_shape_->add( _("Sphere 1dE"), 0,c_, (void*)MENU_dE1SPHERE, 0 );
+      menue_shape_->add( _("Sphere 2dE"), 0,c_, (void*)MENU_dE2SPHERE, 0 );
+      menue_shape_->add( _("Sphere 4dE"), 0,c_, (void*)MENU_dE4SPHERE, 0 );
     } else {
 #   ifdef Lab_STERN
-      menue_form_->add( _("Star"), 0,c_, (void*)MENU_dE1STERN, 0 );
+      menue_shape_->add( _("Star"), 0,c_, (void*)MENU_dE1STAR, 0 );
 #   else
       // points are reserved for image colours
-      menue_form_->add( _("Point"), 0,c_, (void*)MENU_dE1STERN, 0 );
+      menue_shape_->add( _("Point"), 0,c_, (void*)MENU_dE1STAR, 0 );
 #   endif
     }
-    menue_form_->add( _("without markers"), 0,c_, (void*)MENU_DIFFERENZ_LINIE, 0);
-    menue_form_->add( _("Spektral line"), 0,c_, (void*)MENU_SPEKTRALBAND, 0 );
+    menue_shape_->add( _("without markers"), 0,c_, (void*)MENU_DIFFERENCE_LINE, 0);
+    menue_shape_->add( _("Spektral line"), 0,c_, (void*)MENU_SPECTRAL_LINE, 0 );
   }
   DBG_PROG
-  menue_form_->add( _("Texts"), 0,c_, (void*)MENU_HELFER, 0 );
-  DBG_PROG_V( menue_form_->size() )
-  menue_form_->replace( menue_form_->size()-2, _("Texts/Arrows on/off"));
+  menue_shape_->add( _("Texts"), 0,c_, (void*)MENU_HELPER, 0 );
+  DBG_PROG_V( menue_shape_->size() )
+  menue_shape_->replace( menue_shape_->size()-2, _("Texts/Arrows on/off"));
 
-  menue_->add (_("Illustration"),0,c_,cpMenueButton(menue_form_),FL_SUBMENU_POINTER);
+  menue_->add (_("Illustration"),0,c_,cpMenueButton(menue_shape_),FL_SUBMENU_POINTER);
 
   DBG_PROG_V( menue_->size() )
 
 
   // -> (main menue)
-  for (int i = 0; i < (int)nach_farb_namen_.size(); i++) {
-    char* p = (char*) nach_farb_namen_[i].c_str();
+  for (int i = 0; i < (int)to_channel_names_.size(); i++) {
+    char* p = (char*) to_channel_names_[i].c_str();
     menue_->add( p, 0,c_, (void*)((intptr_t)(MENU_MAX + i)), 0 );
-    DBG_PROG_V( MENU_MAX + i <<" "<< nach_farb_namen_[i] )
+    DBG_PROG_V( MENU_MAX + i <<" "<< to_channel_names_[i] )
   }
 
   // TODO: -> upper menue
   menue_button_->copy(menue_->menu());
   menue_button_->callback(c_);
 
-  //glStatus(_("left-/middle-/right mouse button -> rotate/cut/menu"), typ_);
+  //glStatus(_("left-/middle-/right mouse button -> rotate/cut/menu"), type_);
 
   MARK( frei(true); )
   DBG_PROG_ENDE
@@ -2826,14 +2826,14 @@ GL_View::menueInit_()
   Fl_Menu_Button *ms[4];
 
   ms[0] = menue_ = new Fl_Menu_Button(0,0,w(),h(),""); menue_->hide();
-  ms[1] = menue_schnitt_ = new Fl_Menu_Button(0,0,w(),h(),""); menue_schnitt_->hide();
-  ms[2] = menue_hintergrund_ = new Fl_Menu_Button(0,0,w(),h(),""); menue_hintergrund_->hide();
-  ms[3] = menue_form_ = new Fl_Menu_Button(0,0,w(),h(),""); menue_form_->hide();
+  ms[1] = menue_cut_ = new Fl_Menu_Button(0,0,w(),h(),""); menue_cut_->hide();
+  ms[2] = menue_background_ = new Fl_Menu_Button(0,0,w(),h(),""); menue_background_->hide();
+  ms[3] = menue_shape_ = new Fl_Menu_Button(0,0,w(),h(),""); menue_shape_->hide();
 
   for (int i = 0; i < 4; ++i)
     ms[i]->add("dummy",0,0,0,0);
 
-  //menueErneuern_();
+  //renewMenue_();
 
   this->end();
   MARK( frei(true); )
@@ -2842,16 +2842,16 @@ GL_View::menueInit_()
 
 
 /*inline*/ void
-GL_View::setzePerspektive()
+GL_View::setPerspective()
 { //DBG_ICCGL_START
     // camera viewing angle
     if (agv_->thin)
-      gluPerspective(15, seitenverhaeltnis,
-                     vorder_schnitt,
-                     vorder_schnitt + schnitttiefe);
+      gluPerspective(15, window_proportion,
+                     front_cut,
+                     front_cut + cut_distance);
     else
-      gluPerspective(15, seitenverhaeltnis,
-                     vorder_schnitt, 50);
+      gluPerspective(15, window_proportion,
+                     front_cut, 50);
                   // ^-- near cut plane
   //DBG_ICCGL_ENDE
 }
@@ -2862,9 +2862,9 @@ GL_View::fensterForm( )
   if(visible()) {
     glViewport(0,0,w(),h());
     DBG_PROG_V( x()<<" "<< y()<<" "<<w()<<" "<<h())
-    seitenverhaeltnis = (GLdouble)w()/(GLdouble)h();
+    window_proportion = (GLdouble)w()/(GLdouble)h();
     if(icc_oyranos.colourServerActive() & XCM_COLOR_SERVER_PROFILES &&
-       typ_ != 1)
+       type_ != 1)
       icc_oyranos.colourServerRegionSet( this, edit_, window_geometry, 0 );
     oyRectangle_SetGeo( window_geometry, x(), y(), w(), h() );
   }
@@ -2872,7 +2872,7 @@ GL_View::fensterForm( )
 }
 
 void
-GL_View::zeichnen()
+GL_View::drawGL()
 {
   DBG_ICCGL_START
 # if 0
@@ -2887,14 +2887,14 @@ GL_View::zeichnen()
   {
     // complete initialisation
     gl_font( FL_HELVETICA, 10 );
-    auffrischen_();
+    refresh_();
     GLinit_();  DBG_PROG
     fensterForm();
   }
 
   if(update_geometries_)
   {
-    int err = erstelleGLListen_();
+    int err = createGLLists_();
     if(err)
       return;
 
@@ -2905,11 +2905,11 @@ GL_View::zeichnen()
   if(!frei()) return;
   MARK( frei(false); )
 
-  zeit_ = icc_examin_ns::zeitSekunden();
+  time_ = icc_examin_ns::zeitSekunden();
 
 
   int scal = 1;
-  GLfloat farbe[] =   { textfarbe[0],textfarbe[1],textfarbe[2], 1.0 };
+  GLfloat farbe[] =   { text_colour[0],text_colour[1],text_colour[2], 1.0 };
   GLdouble oX=.0,oY=.0,oZ=.0;
   GLdouble X=.0,Y=.0,Z=.0;
   std::string kanalname;
@@ -2938,7 +2938,7 @@ GL_View::zeichnen()
     // start drawing
     glPushMatrix();
 
-      GL_View::setzePerspektive();
+      GL_View::setPerspective();
 
       /* so this replaces gluLookAt or equiv */
       agv_->agvViewTransform();
@@ -2947,15 +2947,15 @@ GL_View::zeichnen()
       glLoadIdentity();
 
       glCallList( gl_listen_[SPEKTRUM] ); DBG_ICCGL_V( gl_listen_[SPEKTRUM] )
-      glCallList( gl_listen_[UMRISSE] ); DBG_ICCGL_V( gl_listen_[UMRISSE] )
-      if (zeige_helfer) {
-        glCallList( gl_listen_[HELFER] ); DBG_ICCGL_V( gl_listen_[HELFER] )
+      glCallList( gl_listen_[CONTOURS] ); DBG_ICCGL_V( gl_listen_[CONTOURS] )
+      if (show_helpers) {
+        glCallList( gl_listen_[HELPER] ); DBG_ICCGL_V( gl_listen_[HELPER] )
       }
       glCallList( gl_listen_[RASTER] ); DBG_ICCGL_V( gl_listen_[RASTER] )
       //DBG_S( id_ << ": " << gl_listen_[RASTER], ICC_MSG_WARN)
-      if(punktform == MENU_dE1STERN)
-        glCallList( gl_listen_[PUNKTE] );
-      glCallList( gl_listen_[PUNKTE] ); DBG_ICCGL_V( gl_listen_[PUNKTE] )
+      if(point_form == MENU_dE1STAR)
+        glCallList( gl_listen_[POINTS] );
+      glCallList( gl_listen_[POINTS] ); DBG_ICCGL_V( gl_listen_[POINTS] )
 
       oyOptions_s * opts = icc_examin->options();
       Lab_s lab;
@@ -2973,15 +2973,15 @@ GL_View::zeichnen()
         oY = LNachY( lab.L );
         oZ = aNachZ( lab.a );
         oX = bNachX( lab.b );
-        mausPunkt_( oX, oY, oZ, X, Y, Z, 0 );
+        mousePoint_( oX, oY, oZ, X, Y, Z, 0 );
       } else
       {
         text[0] = 0;
-        mausPunkt_( oX, oY, oZ, X, Y, Z, 1 );
+        mousePoint_( oX, oY, oZ, X, Y, Z, 1 );
 
         GLfloat grenze = 3.2;
 
-        if(von_farb_namen_.size() &&
+        if(from_channel_names_.size() &&
                        -grenze < oY && oY < grenze &&
                        -grenze < oX && oX < grenze &&
                        -grenze < oZ && oZ < grenze)
@@ -3013,7 +3013,7 @@ GL_View::zeichnen()
             oY = LNachY( lab.L );
             oZ = aNachZ( lab.a );
             oX = bNachX( lab.b );
-            mausPunkt_( oX, oY, oZ, X, Y, Z, 0 );
+            mousePoint_( oX, oY, oZ, X, Y, Z, 0 );
             const char * temp = oyNamedColour_GetName( epoint_, oyNAME_NICK, 0 );
             if(temp)
               sprintf( text, "%s", temp );
@@ -3028,10 +3028,10 @@ GL_View::zeichnen()
             d[2] = Xnachb(oX);
             LabToCIELab( d, d, 1 );
             text[0] = 0;
-            for(int i = 0; i < (int)von_farb_namen_.size(); ++i)
+            for(int i = 0; i < (int)from_channel_names_.size(); ++i)
               if(i < 3)
                 sprintf( &text[strlen(text)], "%s:%.02f ",
-                               von_farb_namen_[i].c_str(), d[i] );
+                               from_channel_names_[i].c_str(), d[i] );
           }
         } else {
           if(!epoint_)
@@ -3045,7 +3045,7 @@ GL_View::zeichnen()
     double *rgb_ = 0, *rgb = 0;
 
       if( (strlen(text) || epoint_) &&
-          typ() != 1 )
+          type() != 1 )
       {
         rgb_ = rgb = icc_oyranos.wandelLabNachBildschirmFarben( 
                window()->x() + window()->w()/2, window()->y() + window()->h()/2,
@@ -3060,7 +3060,7 @@ GL_View::zeichnen()
           glDisable(GL_LIGHTING);
 #         endif
           glPushMatrix();
-            glLineWidth(strich3*strichmult);
+            glLineWidth(line_3*line_mult);
             FARBE(rgb[0], rgb[1], rgb[2],1)
             glBegin(GL_LINES);
               glVertex3f( oX, oY, oZ );
@@ -3072,24 +3072,24 @@ GL_View::zeichnen()
           glEnable(GL_LIGHTING);
 #         endif
         }
-        glLineWidth(strich1*strichmult);
+        glLineWidth(line_1*line_mult);
       }
 
 
-      if(dreiecks_netze.size())
+      if(triangle_nets.size())
       {
         MARK( frei(true); )
-        dreiecks_netze.frei(false);
+        triangle_nets.frei(false);
 
         int some_active = 0;
-        for(size_t i = 0; i < dreiecks_netze.size(); ++i)
-          if(dreiecks_netze[i].active())
+        for(size_t i = 0; i < triangle_nets.size(); ++i)
+          if(triangle_nets[i].active())
             some_active = 1;
 
         if(some_active)
-          netzeAuffrischen();
+          refreshNets();
 
-        dreiecks_netze.frei(true);
+        triangle_nets.frei(true);
         MARK( frei(false); )
       }
 
@@ -3097,11 +3097,11 @@ GL_View::zeichnen()
     // End of drawing
 
     // Text
-    Lab2GL(textfarbe[0],textfarbe[1],textfarbe[2],1)
+    Lab2GL(text_colour[0],text_colour[1],text_colour[2],1)
 
-    GLfloat lmodel_ambient[] = {hintergrundfarbe,
-                                hintergrundfarbe,
-                                hintergrundfarbe, 1.0};
+    GLfloat lmodel_ambient[] = {background_colour,
+                                background_colour,
+                                background_colour, 1.0};
     glLightModelfv(GL_LIGHT_MODEL_AMBIENT, lmodel_ambient);
 
     if(1)
@@ -3115,8 +3115,8 @@ GL_View::zeichnen()
          glOrtho( 0, w(), 0, h(), 0.1, 100.0);
 
 
-         if (zeige_helfer)
-           textGarnieren_();
+         if (show_helpers)
+           adornText_();
 
          // can go away from drawing function
          if(strlen(text))
@@ -3125,7 +3125,7 @@ GL_View::zeichnen()
             DBG_ICCGL_V( oX<<" "<<oY<<" "<<oZ )
 
             float f = 0.0f;
-            if(hintergrundfarbe < 0.6)
+            if(background_colour < 0.6)
               f = 1.f;
             Lab2GL(f,.5,.5,1)
 
@@ -3138,50 +3138,50 @@ GL_View::zeichnen()
 
             glRasterPos3d (X, Y, 9.999);
                       
-            if(typ() == 1)
+            if(type() == 1)
             {
               DBG_PROG_V( oY<<" "<<oZ<<" "<<oX )
                         /*if(-0.505 <= oY && oY <= 0.505 &&
                            -0.505 <= oZ && oZ <= 0.505 &&
                            -0.505 <= oX && oX <= 0.505)*/
-              if(tabelle_.size())
+              if(table_.size())
               {
-                 int L = (int)((oY+0.5)*tabelle_.size());
-                 if(0 <= L && L < (int)tabelle_.size()) {
-                 int a = (int)((oZ+0.5)*tabelle_[L].size());
-                 if(0 <= a && a < (int)tabelle_[L].size()) {
-                 int b = (int)((oX+0.5)*tabelle_[L][a].size());
-                 if(0 <= b && b < (int)tabelle_[L][a].size()) {
+                 int L = (int)((oY+0.5)*table_.size());
+                 if(0 <= L && L < (int)table_.size()) {
+                 int a = (int)((oZ+0.5)*table_[L].size());
+                 if(0 <= a && a < (int)table_[L].size()) {
+                 int b = (int)((oX+0.5)*table_[L][a].size());
+                 if(0 <= b && b < (int)table_[L][a].size()) {
 # ifdef DEBUG
-                   double wert = tabelle_[L][a][b][kanal];
+                   double wert = table_[L][a][b][channel];
 # endif
                    DBG_PROG_V( L<<" "<<a<<" "<<b<<" "<<wert )
-                   DBG_PROG_V( tabelle_.size()<<" "<<tabelle_[L].size()<<" "<<
-                               tabelle_[L][a].size()<<" "<<kanal )
+                   DBG_PROG_V( table_.size()<<" "<<table_[L].size()<<" "<<
+                               table_[L][a].size()<<" "<<channel )
                    // "Pos" is a abreviation to position and will be visible in the small statusline with position coordinates
                    sprintf( text,"%s[%d][%d][%d]", _("Pos"),
-                            (int)((oY+0.5)*tabelle_.size()),
-                            (int)((oZ+0.5)*tabelle_[L].size()),
-                            (int)((oX+0.5)*tabelle_[L][a].size()));
+                            (int)((oY+0.5)*table_.size()),
+                            (int)((oZ+0.5)*table_[L].size()),
+                            (int)((oX+0.5)*table_[L][a].size()));
                    for (int i = 3 ; i < (int)channels_.size(); ++i) {
                      sprintf(&text[strlen(text)], "%d|", channels_[i]);
                    }
                    sprintf(&text[strlen(text)], " ");
-                   for (int i = 0 ; i < (int)tabelle_[L][a][b].size(); ++i) {
-                     if(i == kanal) sprintf(&text[strlen(text)], "[");
-                     sprintf(&text[strlen(text)], "%.5f", tabelle_[L][a][b][i]);
-                     if(i == kanal) sprintf(&text[strlen(text)], "]");
-                     if (i != (int)tabelle_[L][a][b].size()-1)
+                   for (int i = 0 ; i < (int)table_[L][a][b].size(); ++i) {
+                     if(i == channel) sprintf(&text[strlen(text)], "[");
+                     sprintf(&text[strlen(text)], "%.5f", table_[L][a][b][i]);
+                     if(i == channel) sprintf(&text[strlen(text)], "]");
+                     if (i != (int)table_[L][a][b].size()-1)
                        sprintf(&text[strlen(text)], " ");
                    }
-                   glStatus( text, typ_ );
+                   glStatus( text, type_ );
                    ZeichneOText (ortho_font, scal, text)
                  }}}
                }
             } else
             {
               if(!epoint_)
-                glStatus( text, typ_ );
+                glStatus( text, type_ );
               ZeichneOText (ortho_font, scal, text)
 
               /* Circle around point */
@@ -3222,26 +3222,26 @@ GL_View::zeichnen()
 
             if(icc_debug == 14) {
               glScalef(100,100,100);
-              zeichneKoordinaten_();
+              drawCoordinates_();
               glScalef(.01,.01,.01);
             }
-            DBG_ICCGL_V( maus_x_-x() <<" "<< -maus_y_+h() )
+            DBG_ICCGL_V( mouse_x_-x() <<" "<< -mouse_y_+h() )
          }
 
        glPopMatrix();
     }
 
     bool strich_neu = false;
-    double dzeit = icc_examin_ns::zeitSekunden() - zeit_;
+    double dzeit = icc_examin_ns::zeitSekunden() - time_;
     if(dzeit > 1./15. )
     {
-      if(smooth && !schalen)
+      if(smooth && !onion_skin)
       {
         smooth = 0;
         strich_neu = true;
       }
     }
-    if(dzeit < 1./40. || schalen)
+    if(dzeit < 1./40. || onion_skin)
     {
       if(!smooth)
       {
@@ -3250,15 +3250,15 @@ GL_View::zeichnen()
       }
     }
     if(strich_neu) {
-      //zeigeSpektralband_();
-      garnieren_();
+      //showSprectralLine_();
+      adorn_();
     }
 
     // measure speed
-    static double zeit_alt = 0;
-    snprintf(t, 128, "zeit_: %.01f id: %d f/s: %.03f theoretical f/s: %.03f",
-             zeit_, id_, 1./(zeit_ - zeit_alt), 1./dzeit);
-    zeit_alt = zeit_;
+    static double zeit_old = 0;
+    snprintf(t, 128, "time_: %.01f id: %d f/s: %.03f theoretical f/s: %.03f",
+             time_, id_, 1./(time_ - zeit_old), 1./dzeit);
+    zeit_old = time_;
     DBG_PROG_V( t )
 
 
@@ -3266,10 +3266,10 @@ GL_View::zeichnen()
     if(ortho_font)
       glRasterPos2d(0, h() -10 );
 #   endif
-    if(maus_x_alt != maus_x_ || maus_y_alt != maus_y_)
-      maus_steht = true;
-    maus_x_alt = maus_x_;
-    maus_y_alt = maus_y_;
+    if(mouse_x_old != mouse_x_ || mouse_y_old != mouse_y_)
+      mouse_steht = true;
+    mouse_x_old = mouse_x_;
+    mouse_y_old = mouse_y_;
 
     // colour channel name
     // text
@@ -3280,27 +3280,27 @@ GL_View::zeichnen()
        glLoadIdentity();
        glOrtho(0,w(),0,h(),-10.0,10.0);
 
-       Lab2GL(textfarbe[0],textfarbe[1],textfarbe[2],1)
+       Lab2GL(text_colour[0],text_colour[1],text_colour[2],1)
 
-       glTranslatef(5,-12,0/*8.8 - schnitttiefe*3*/);
+       glTranslatef(5,-12,0/*8.8 - cut_distance*3*/);
 
-       if(typ() == 1) {
+       if(type() == 1) {
          kanalname.append(_("Channel"));
          kanalname.append(": ");
-         kanalname.append(kanalName());
+         kanalname.append(channelName());
 
 /*         oyNamedColour_s   * c = oyNamedColours_GetRef( colours_, 0 );
          const char* chan_name = 0;
          if(c)
          {
            chan_name = oyProfile_GetChannelName( c->profile_,
-                                                           kanal, oyNAME_NAME );
+                                                           channel, oyNAME_NAME );
            kanalname.append( chan_name );
            oyNamedColour_Release( &c );
   
-         } else if(von_farb_namen_.size() > kanal) {
+         } else if(from_channel_names_.size() > channel) {
 
-             kanalname.append( von_farb_namen_[kanal] );
+             kanalname.append( from_channel_names_[channel] );
          }
   */
 
@@ -3312,23 +3312,23 @@ GL_View::zeichnen()
        } else
        {
          MARK( frei(true); )
-         dreiecks_netze.frei(false);
+         triangle_nets.frei(false);
          for (unsigned int i=0;
-                i < dreiecks_netze.size();
+                i < triangle_nets.size();
                   ++i)
          {
            std::string text;
-           text = dreiecks_netze[i].name;
-           DBG_PROG_V( dreiecks_netze[i].name )
+           text = triangle_nets[i].name;
+           DBG_PROG_V( triangle_nets[i].name )
 #          ifdef HAVE_FTGL
            if(ortho_font)
              glRasterPos2d(0, 20 + ortho_font->FaceSize() / 0.94
-                                   * (dreiecks_netze.size()-i-1) );
+                                   * (triangle_nets.size()-i-1) );
 #          endif
-           if(dreiecks_netze[i].active())
+           if(triangle_nets[i].active())
              ZeichneOText (ortho_font, scal, text.c_str())
          }
-         dreiecks_netze.frei(true);
+         triangle_nets.frei(true);
          MARK( frei(false); )
        }
 
@@ -3361,12 +3361,12 @@ void
 GL_View::achsNamen    (ICClist<std::string> achs_namen)
 { DBG_PROG_START
   if (achs_namen.size())
-    von_farb_namen_ = achs_namen;
+    from_channel_names_ = achs_namen;
   else
-  { von_farb_namen_.clear();
-    von_farb_namen_.push_back ("?");
-    von_farb_namen_.push_back ("?");
-    von_farb_namen_.push_back ("?");
+  { from_channel_names_.clear();
+    from_channel_names_.push_back ("?");
+    from_channel_names_.push_back ("?");
+    from_channel_names_.push_back ("?");
   }
   valid_=false;
   DBG_PROG_ENDE
@@ -3380,9 +3380,9 @@ GL_View::achsNamen    (ICClist<std::string> achs_namen)
  *  We set the name in the oyStructList_s->oy_ member. You can read it with 
  *  oyranos::oyObject_GetNames. The nick (__FILE__) and name ("colour lists")
  *  are static. The description contains scene informations as follows
- *  - show_points_as_pairs is present with zeig_punkte_als_paare being true
- *  - show_points_as_measurements with zeig_punkte_als_messwerte being true
- *  - spectralline with spektralband being true
+ *  - show_points_as_pairs is present with show_points_as_pairs being true
+ *  - show_points_as_measurements with show_points_as_measurements being true
+ *  - spectralline with spectral_line being true
  *  - viewpoint: is followed by the Lab position. The viewing angle is 15°.
  *
  *  @version ICC Examin: 0.45
@@ -3399,11 +3399,11 @@ GL_View::namedColours       ()
   std::string text = "ICC Examin scene:";
   char t[24];
   int error = 0;
-  if(zeig_punkte_als_paare)
+  if(show_points_as_pairs)
     text.append(" show_points_as_pairs");
-  if(zeig_punkte_als_messwerte)
+  if(show_points_as_measurements)
     text.append(" show_points_as_measurements");
-  if(spektralband)
+  if(spectral_line)
     text.append(" spectralline");
     
        float EyeAz = agv_->eyeAzimuth(),
@@ -3437,10 +3437,10 @@ GL_View::namedColours       (oyStructList_s * colours)
   
   colours_ = oyStructList_Copy( colours, NULL );
 
-  if (!zeig_punkte_als_messwerte &&
-      punktform == MENU_dE1STERN &&
+  if (!show_points_as_measurements &&
+      point_form == MENU_dE1STAR &&
       colours_)
-    punktform = MENU_dE1KUGEL;
+    point_form = MENU_dE1SPHERE;
 
   MARK( frei(true); )
 
@@ -3482,10 +3482,10 @@ GL_View::hineinPunkte       (ICClist<double>      &vect,
   MARK( frei (false); )
   if(!punkte_.size() &&
      (int)vect.size() > (1000*3 *
-       ((!zeig_punkte_als_messwerte && zeig_punkte_als_paare) ? 2:1)) )
-    punktgroesse = 2;
+       ((!show_points_as_measurements && show_points_as_pairs) ? 2:1)) )
+    point_size = 2;
 
-  tabelle_.clear();DBG_PROG
+  table_.clear();DBG_PROG
   punkte_.clear(); DBG_PROG
 
   achsNamen(achs_namen);
@@ -3494,21 +3494,21 @@ GL_View::hineinPunkte       (ICClist<double>      &vect,
   for (unsigned int i = 0; i < punkte_.size()/3; ++i)
   {
     punkte_[i*3+0] = vect[i*3+0];
-    punkte_[i*3+1] = vect[i*3+1]*a_darstellungs_breite;
-    punkte_[i*3+2] = vect[i*3+2]*b_darstellungs_breite;
+    punkte_[i*3+1] = vect[i*3+1]*cie_a_display_stretch;
+    punkte_[i*3+2] = vect[i*3+2]*cie_b_display_stretch;
   }
   
-  DBG_PROG_V( zeig_punkte_als_paare<<"|"<<punktform<<"|"<<punkte_.size() )
+  DBG_PROG_V( show_points_as_pairs<<"|"<<point_form<<"|"<<punkte_.size() )
 
-  if (!zeig_punkte_als_messwerte &&
-      punktform != MENU_dE1STERN &&
+  if (!show_points_as_measurements &&
+      point_form != MENU_dE1STAR &&
       punkte_.size())
-    punktform = MENU_dE1STERN;
+    point_form = MENU_dE1STAR;
 
-  if (!zeig_punkte_als_messwerte &&
-      punktform == MENU_dE1STERN &&
+  if (!show_points_as_measurements &&
+      point_form == MENU_dE1STAR &&
       punkte_.size())
-    punktform = MENU_dE1KUGEL;
+    point_form = MENU_dE1SPHERE;
 
   MARK( frei (true); )
 
@@ -3574,7 +3574,7 @@ GL_View::emphasizePoint    (oyNamedColour_s * colour)
     icc_examin->statusFarbe( lab.L, lab.a, lab.b );
     uint32_t create = 1;
     glStatus( oyNamedColour_GetName( colour, oyNAME_DESCRIPTION, create ),
-              typ_ );
+              type_ );
   }
   MARK( frei(true); )
 
@@ -3583,7 +3583,7 @@ GL_View::emphasizePoint    (oyNamedColour_s * colour)
   DBG_PROG_ENDE
 }
 
-void getFacesFromICCnetz ( const ICCnetz & netz, icc_examin_ns::FACE **fList,
+void getFacesFromICCnetz ( const ICCnetz & net, icc_examin_ns::FACE **fList,
                            float scale_x, float scale_y, float scale_z )
 {
   icc_examin_ns::FACE *fListTail = 0;
@@ -3601,29 +3601,29 @@ void getFacesFromICCnetz ( const ICCnetz & netz, icc_examin_ns::FACE **fList,
   }
 
   std::multimap<double,DreiecksIndexe>::const_iterator it;
-  for( it = netz.indexe.begin(); it != netz.indexe.end(); ++it )
+  for( it = net.indexe.begin(); it != net.indexe.end(); ++it )
   {
     std::pair<double,DreiecksIndexe> index_p( *it );
     icc_examin_ns::VERTEX * v = 0;
 
     for(int j = 2; j >= 0; --j)
     {
-      if(netz.grau)
+      if(net.grau)
       {
-        color.rr = color.gg = color.bb = netz.schattierung;
+        color.rr = color.gg = color.bb = net.schattierung;
       } else {
-        color.rr = netz.punkte[ index_p.second.i[j] ].farbe[0];
-        color.gg = netz.punkte[ index_p.second.i[j] ].farbe[1];
-        color.bb = netz.punkte[ index_p.second.i[j] ].farbe[2];
+        color.rr = net.punkte[ index_p.second.i[j] ].farbe[0];
+        color.gg = net.punkte[ index_p.second.i[j] ].farbe[1];
+        color.bb = net.punkte[ index_p.second.i[j] ].farbe[2];
       }
-      if(netz.active())
-        color.aa = netz.undurchsicht;
+      if(net.active())
+        color.aa = net.undurchsicht;
       else
         color.aa = 0.0;
 
-      v = allocVertex( netz.punkte[ index_p.second.i[j] ].koord[0]*scale_x,
-                       netz.punkte[ index_p.second.i[j] ].koord[1]*scale_y,
-                       netz.punkte[ index_p.second.i[j] ].koord[2]*scale_z,
+      v = allocVertex( net.punkte[ index_p.second.i[j] ].koord[0]*scale_x,
+                       net.punkte[ index_p.second.i[j] ].koord[1]*scale_y,
+                       net.punkte[ index_p.second.i[j] ].koord[2]*scale_z,
                        &color);
 
       appendVertex( &vList, &vListTail, v );
@@ -3734,24 +3734,24 @@ GL_View::setBspFaceProperties_( icc_examin_ns::FACE *faceList )
 #endif
   oyOptions_s * opts = icc_examin->options();
 
-  /* updateNet_ takes care of dreiecks_netze.frei */
+  /* updateNet_ takes care of triangle_nets.frei */
   for( ftrav = faceList; ftrav != 0; ftrav = ftrav->fnext )
   {
     int pos = ftrav->group;
-    ICCnetz & netz = dreiecks_netze[pos];
+    ICCnetz & net = triangle_nets[pos];
 
     for( vtrav = ftrav->vhead; vtrav->vnext != 0; vtrav = vtrav->vnext )
     {
-      if(netz.grau)
+      if(net.grau)
       {
-        vtrav->color.rr = vtrav->color.gg = vtrav->color.bb = netz.schattierung;
+        vtrav->color.rr = vtrav->color.gg = vtrav->color.bb = net.schattierung;
       } else {
 
 #if USE_OY_NC
         double rgba[4] = {0,0,0,1};
         lab[0] = vtrav->xx; 
-        lab[1] = vtrav->yy/a_darstellungs_breite;
-        lab[2] = vtrav->zz/b_darstellungs_breite;
+        lab[1] = vtrav->yy/cie_a_display_stretch;
+        lab[2] = vtrav->zz/cie_b_display_stretch;
         LabToCIELab( lab, lab, 1 );
 
         oyNamedColour_SetColourStd( c, oyEDITING_LAB, lab, oyDOUBLE, 0, opts );
@@ -3763,8 +3763,8 @@ GL_View::setBspFaceProperties_( icc_examin_ns::FACE *faceList )
         vtrav->color.bb = rgba[2];
 #else
         lab[0] = vtrav->xx;
-        lab[1] = vtrav->yy/a_darstellungs_breite;
-        lab[2] = vtrav->zz/b_darstellungs_breite;
+        lab[1] = vtrav->yy/cie_a_display_stretch;
+        lab[2] = vtrav->zz/cie_b_display_stretch;
 
         double * rgb = NULL;
         rgb = icc_oyranos.wandelLabNachBildschirmFarben( 
@@ -3781,8 +3781,8 @@ GL_View::setBspFaceProperties_( icc_examin_ns::FACE *faceList )
         }
 #endif
       }
-      if(netz.active())
-        vtrav->color.aa = netz.undurchsicht;
+      if(net.active())
+        vtrav->color.aa = net.undurchsicht;
       else
         vtrav->color.aa = 0.0;
     }
@@ -3797,7 +3797,7 @@ GL_View::setBspFaceProperties_( icc_examin_ns::FACE *faceList )
   DBG_5_ENDE
 }
 
-/* updateNet_ takes care of dreiecks_netze.frei */
+/* updateNet_ takes care of triangle_nets.frei */
 void
 GL_View::setBspProperties_( icc_examin_ns::BSPNODE *bsp )
 {
@@ -3825,27 +3825,27 @@ GL_View::updateNet_()
   DBG_PROG_START
 
   if(!bsp)
-    hineinNetze_( dreiecks_netze );
+    loadNets_( triangle_nets );
 
   MARK( frei(false); )
-  dreiecks_netze.frei(false);
+  triangle_nets.frei(false);
   if(bsp)
     setBspProperties_(bsp);
-  dreiecks_netze.frei(true);
+  triangle_nets.frei(true);
   MARK( frei(true); )
 
   DBG_PROG_ENDE
 }
 
 void
-GL_View::hineinNetze_       (const icc_examin_ns::ICCThreadList<ICCnetz> & d_n)
+GL_View::loadNets_       (const icc_examin_ns::ICCThreadList<ICCnetz> & d_n)
 {
   DBG_PROG_START
 
   MARK( frei(false); )
-  dreiecks_netze.frei(false);
+  triangle_nets.frei(false);
 
-  netz.clear();
+  net.clear();
 
     // used by BSPtraverseTreeAndRender
   icc_examin_ns::drawFaceList = drawGLFaceList;
@@ -3859,7 +3859,7 @@ GL_View::hineinNetze_       (const icc_examin_ns::ICCThreadList<ICCnetz> & d_n)
     for(unsigned i = 0; i < d_n.size(); ++i)
     {
       getFacesFromICCnetz( d_n[i], &faceList,
-                           1, a_darstellungs_breite, b_darstellungs_breite );
+                           1, cie_a_display_stretch, cie_b_display_stretch );
 
       icc_examin_ns::FACE *ftrav = 0;
       int n = 0;
@@ -3878,17 +3878,17 @@ GL_View::hineinNetze_       (const icc_examin_ns::ICCThreadList<ICCnetz> & d_n)
       icc_examin_ns::freeFaceList( &faceList );
     } else if (0)
       for(unsigned i = 0; i < d_n.size(); ++i)
-        netz.insert( d_n[i] );
+        net.insert( d_n[i] );
 
-    for(unsigned k = 0; k < netz.punkte.size(); ++k)
+    for(unsigned k = 0; k < net.punkte.size(); ++k)
     {
-      netz.punkte[k].koord[1] *= a_darstellungs_breite;
-      netz.punkte[k].koord[2] *= b_darstellungs_breite;
+      net.punkte[k].koord[1] *= cie_a_display_stretch;
+      net.punkte[k].koord[2] *= cie_b_display_stretch;
     }
 
   }
 
-  dreiecks_netze.frei(true);
+  triangle_nets.frei(true);
   MARK( frei(true); )
 
   valid_=false;
@@ -3906,15 +3906,15 @@ GL_View::hineinNetze_       (const icc_examin_ns::ICCThreadList<ICCnetz> & d_n)
  *                                     0 - not selected, -1 - non existent
  */
 void
-GL_View::hineinTabelle (ICClist<ICClist<ICClist<ICClist<double> > > > vect,
+GL_View::loadTable (ICClist<ICClist<ICClist<ICClist<double> > > > vect,
                            ICClist<std::string> achs_namen,
                            ICClist<std::string> nach,
                                        ICClist<int>        channels)
 { DBG_PROG_START
 
   MARK( frei(false); )
-  tabelle_ = vect;  DBG_PROG
-  nach_farb_namen_ = nach; DBG_PROG
+  table_ = vect;  DBG_PROG
+  to_channel_names_ = nach; DBG_PROG
 
   achsNamen(achs_namen);
   channels_ = channels;
@@ -3926,14 +3926,14 @@ GL_View::hineinTabelle (ICClist<ICClist<ICClist<ICClist<double> > > > vect,
   valid_=false;
   redraw();
 
-  glStatus(_("left-/middle-/right mouse button -> rotate/cut/menu"), typ_);
+  glStatus(_("left-/middle-/right mouse button -> rotate/cut/menu"), type_);
 
   DBG_PROG_ENDE
 }
 
 
 void
-GL_View::menueAufruf ( int value )
+GL_View::menuEvents ( int value )
 {
   DBG_PROG_START
 
@@ -3944,8 +3944,8 @@ GL_View::menueAufruf ( int value )
   {
     if (value >= MENU_MAX &&
         value < 100) {
-      kanal = value - MENU_MAX; DBG_PROG_V( kanal )
-      glStatus(_("left-/middle-/right mouse button -> rotate/cut/menu"), typ_);
+      channel = value - MENU_MAX; DBG_PROG_V( channel )
+      glStatus(_("left-/middle-/right mouse button -> rotate/cut/menu"), type_);
     }
 #   if APPLE
     double farb_faktor = 1./*0.6666*/ *0.8;
@@ -3959,115 +3959,115 @@ GL_View::menueAufruf ( int value )
       break;
     case MENU_QUIT:
       break;
-    case MENU_WUERFEL:
-      punktform = MENU_WUERFEL;
+    case MENU_CUBE:
+      point_form = MENU_CUBE;
       break;
-    case MENU_GRAU:
-      punktfarbe = MENU_GRAU;
-      schalen = 0;
+    case MENU_GRAY:
+      point_colour = MENU_GRAY;
+      onion_skin = 0;
       break;
-    case MENU_FARBIG:
-      punktfarbe = MENU_FARBIG;
-      schalen = 0;
+    case MENU_COLOUR:
+      point_colour = MENU_COLOUR;
+      onion_skin = 0;
       break;
-    case MENU_KONTRASTREICH:
-      punktfarbe = MENU_KONTRASTREICH;
-      schalen = 0;
+    case MENU_HIGHCONTRAST:
+      point_colour = MENU_HIGHCONTRAST;
+      onion_skin = 0;
       break;
-    case MENU_SCHALEN:
-      if (! schalen)
-         schalen = 5;
+    case MENU_ONIONSKIN:
+      if (! onion_skin)
+         onion_skin = 5;
       else
-         schalen = 0;
+         onion_skin = 0;
       break;
-    case MENU_dE1STERN:
-       punktform = MENU_dE1STERN;
+    case MENU_dE1STAR:
+       point_form = MENU_dE1STAR;
       break;
-    case MENU_dE1KUGEL:
-       punktform = MENU_dE1KUGEL;
+    case MENU_dE1SPHERE:
+       point_form = MENU_dE1SPHERE;
       break;
-    case MENU_dE2KUGEL:
-       punktform = MENU_dE2KUGEL;
+    case MENU_dE2SPHERE:
+       point_form = MENU_dE2SPHERE;
       break;
-    case MENU_dE4KUGEL:
-       punktform = MENU_dE4KUGEL;
+    case MENU_dE4SPHERE:
+       point_form = MENU_dE4SPHERE;
       break;
-    case MENU_DIFFERENZ_LINIE:
-       if(punktform == MENU_dE1STERN) punktform = MENU_DIFFERENZ_LINIE; else punktform = MENU_dE1STERN;
+    case MENU_DIFFERENCE_LINE:
+       if(point_form == MENU_dE1STAR) point_form = MENU_DIFFERENCE_LINE; else point_form = MENU_dE1STAR;
       break;
-    case MENU_SPEKTRALBAND:
-      if (! spektralband)
-         spektralband = MENU_SPEKTRALBAND;
+    case MENU_SPECTRAL_LINE:
+      if (! spectral_line)
+         spectral_line = MENU_SPECTRAL_LINE;
       else
-         spektralband = 0;
+         spectral_line = 0;
       break;
-    case MENU_HELFER:
-      if (! zeige_helfer)
-         zeige_helfer = MENU_HELFER;
+    case MENU_HELPER:
+      if (! show_helpers)
+         show_helpers = MENU_HELPER;
       else
-         zeige_helfer = 0;
+         show_helpers = 0;
       break;
-    case MENU_WEISS:
-      hintergrundfarbe = 1.;//MENU_WEISS;
-      pfeilfarbe[0] = (float)(1.*farb_faktor);
-      textfarbe[0] = (float)(.75*farb_faktor);
+    case MENU_WHITE:
+      background_colour = 1.;//MENU_WHITE;
+      arrow_colour[0] = (float)(1.*farb_faktor);
+      text_colour[0] = (float)(.75*farb_faktor);
       break;
-    case MENU_HELLGRAU:
-      hintergrundfarbe = 0.75;//MENU_HELLGRAU;
-      pfeilfarbe[0] = (float)(1.0*farb_faktor);
-      textfarbe[0] = (float)(0.5*farb_faktor);
+    case MENU_LIGHT_GRAY:
+      background_colour = 0.75;//MENU_LIGHT_GRAY;
+      arrow_colour[0] = (float)(1.0*farb_faktor);
+      text_colour[0] = (float)(0.5*farb_faktor);
       break;
-    case MENU_GRAUGRAU:
-      hintergrundfarbe = 0.5;//MENU_GRAUGRAU;
-      pfeilfarbe[0] = (float)(.75*farb_faktor);
-      textfarbe[0] = (float)(0.25*farb_faktor);
+    case MENU_GRAY_GRAY:
+      background_colour = 0.5;//MENU_GRAY_GRAY;
+      arrow_colour[0] = (float)(.75*farb_faktor);
+      text_colour[0] = (float)(0.25*farb_faktor);
       break;
-    case MENU_DUNKELGRAU:
-      hintergrundfarbe = 0.25;//MENU_DUNKELGRAU;
-      pfeilfarbe[0] = (float)(0.5*farb_faktor);
-      textfarbe[0] = (float)(0.75*farb_faktor);
+    case MENU_DARK_GRAY:
+      background_colour = 0.25;//MENU_DARK_GRAY;
+      arrow_colour[0] = (float)(0.5*farb_faktor);
+      text_colour[0] = (float)(0.75*farb_faktor);
       break;
-    case MENU_SCHWARZ:
-      hintergrundfarbe = 0.0;//MENU_SCHWARZ;
-      pfeilfarbe[0] = (float)(.25*farb_faktor);
-      textfarbe[0] = (float)(0.5*farb_faktor);
+    case MENU_BLACK:
+      background_colour = 0.0;//MENU_BLACK;
+      arrow_colour[0] = (float)(.25*farb_faktor);
+      text_colour[0] = (float)(0.5*farb_faktor);
       break;
     case Agviewer::FLYING:
-      glStatus(_("left mouse button -> go back"), typ_);
+      glStatus(_("left mouse button -> go back"), type_);
       agv_->thin = true;
       break;
     case Agviewer::ICCFLY_L:
-      if(typ() == 2) {
+      if(type() == 2) {
         agv_->eyeDist( 2 * agv_->dist() );
-        vorder_schnitt = std_vorder_schnitt + agv_->dist();
+        front_cut = std_front_cut + agv_->dist();
       } else {
         agv_->eyeDist( agv_->dist() );
-        vorder_schnitt = std_vorder_schnitt;
+        front_cut = std_front_cut;
       }
-      glStatus(_("left mouse button -> go back"), typ_);
+      glStatus(_("left mouse button -> go back"), type_);
       agv_->thin = true;
       break;
     case Agviewer::ICCFLY_a:
-      vorder_schnitt = std_vorder_schnitt;
-      glStatus(_("left mouse button -> go back"), typ_);
+      front_cut = std_front_cut;
+      glStatus(_("left mouse button -> go back"), type_);
       agv_->thin = true;
       break;
     case Agviewer::ICCFLY_b:
-      vorder_schnitt = std_vorder_schnitt;
-      glStatus(_("left mouse button -> go back"), typ_);
+      front_cut = std_front_cut;
+      glStatus(_("left mouse button -> go back"), type_);
       agv_->thin = true;
       break;
     case Agviewer::ICCPOLAR:
       agv_->thin = true;
     case Agviewer::POLAR:
-      if(typ() == 1)
+      if(type() == 1)
         agv_->thin = true;
       else
         agv_->thin = false;
       break;
     case Agviewer::AGV_STOP:
       agv_->thin = false;
-      glStatus(_("left-/middle-/right mouse button -> rotate/cut/menu"), typ_);
+      glStatus(_("left-/middle-/right mouse button -> rotate/cut/menu"), type_);
       break;
     }
   }
@@ -4099,7 +4099,7 @@ GL_View::handle( int event )
   int schluss = 1;
   DBG_MEM_V( dbgFltkEvent(event) )
 
-  tastatur(event);
+  keyEvents(event);
 
   switch(event)
   {
@@ -4127,9 +4127,9 @@ GL_View::handle( int event )
          break;
     case FL_DRAG:
          DBG_BUTTON_S( "FL_DRAG bei: " << Fl::event_x() << "," << Fl::event_y() )
-         maus_x_ = Fl::event_x();
-         maus_y_ = Fl::event_y();
-         agv_->agvHandleMotion(maus_x_, maus_y_);
+         mouse_x_ = Fl::event_x();
+         mouse_y_ = Fl::event_y();
+         agv_->agvHandleMotion(mouse_x_, mouse_y_);
          redraw();
          break;
     case FL_KEYDOWN:
@@ -4141,9 +4141,9 @@ GL_View::handle( int event )
     case FL_ENTER:
     case FL_MOVE:
          DBG_BUTTON_S( "FL_MOVE bei: " << Fl::event_x() << "," << Fl::event_y() )
-         maus_x_ = Fl::event_x();
-         maus_y_ = Fl::event_y();
-         if(visible() && !darfBewegen()) {
+         mouse_x_ = Fl::event_x();
+         mouse_y_ = Fl::event_y();
+         if(visible() && !canMove()) {
            redraw();
          }
          text[0] = 0;
@@ -4154,10 +4154,10 @@ GL_View::handle( int event )
          {
            fl_cursor( FL_CURSOR_MOVE, FL_BLACK, FL_WHITE );
          
-           double clip_old = vorder_schnitt;
-           vorder_schnitt -= Fl::event_dy()*0.01;
-           if(vorder_schnitt - clip_old != 0 &&
-             !darfBewegen())
+           double clip_old = front_cut;
+           front_cut -= Fl::event_dy()*0.01;
+           if(front_cut - clip_old != 0 &&
+             !canMove())
            redraw();
            fl_cursor( FL_CURSOR_DEFAULT, FL_BLACK, FL_WHITE );
          } else
@@ -4191,7 +4191,7 @@ GL_View::handle( int event )
 }
 
 int
-GL_View::tastatur(int e)
+GL_View::keyEvents(int e)
 { DBG_MEM_START
   int found = 0;
   if(!icc_examin->laeuft())
@@ -4206,79 +4206,79 @@ GL_View::tastatur(int e)
     if(e == FL_SHORTCUT ||
        e == FL_KEYBOARD)
     {
-      double clip_old = vorder_schnitt;
+      double clip_old = front_cut;
       if(Fl::event_key() == FL_Up) {
-        vorder_schnitt += 0.01;
+        front_cut += 0.01;
       } else if(Fl::event_key() == FL_Down) {
-        vorder_schnitt -= 0.01;
+        front_cut -= 0.01;
       } else if(Fl::event_key() == FL_Home) {
-        vorder_schnitt = 4.2;
+        front_cut = 4.2;
       } else if(Fl::event_key() == FL_End) {
-        vorder_schnitt = agv_->eyeDist();
+        front_cut = agv_->eyeDist();
       }
-      if(vorder_schnitt - clip_old != 0 &&
-         !darfBewegen())
+      if(front_cut - clip_old != 0 &&
+         !canMove())
         redraw();
 
       int k = ((char*)Fl::event_text())[0];
 
       switch (k) {
       case '-':
-        if(tabelle_.size() && schalen != 0)
+        if(table_.size() && onion_skin != 0)
         {
           this->level -= this->level_step;
           if(this->level <= .0)
             this->level = .0001;
-          auffrischen_();
+          refresh_();
           redraw();
         }
-        else if(punktform >= MENU_dE1KUGEL && punktform <= MENU_dE4KUGEL)
+        else if(point_form >= MENU_dE1SPHERE && point_form <= MENU_dE4SPHERE)
         {
-          if (punktform > MENU_dE1KUGEL) {
-            --punktform;
+          if (point_form > MENU_dE1SPHERE) {
+            --point_form;
           }
         }
-        else if (punktform == MENU_DIFFERENZ_LINIE)
-          punktform = MENU_dE1KUGEL;
-        else if(punktgroesse > 1)
+        else if (point_form == MENU_DIFFERENCE_LINE)
+          point_form = MENU_dE1SPHERE;
+        else if(point_size > 1)
         {
-          --punktgroesse;
-          auffrischen_();
+          --point_size;
+          refresh_();
           redraw();
         }
-        DBG_PROG_V( Fl::event_key() <<" "<< punktgroesse )
+        DBG_PROG_V( Fl::event_key() <<" "<< point_size )
         found = 1;
         break;
       case '+': // 43
-        if(tabelle_.size() && schalen != 0)
+        if(table_.size() && onion_skin != 0)
         {
           this->level += this->level_step;
           if(this->level >= 1.0)
             this->level = .9999;
-          auffrischen_();
+          refresh_();
           redraw();
         }
-        else if (punktform >= MENU_dE1KUGEL && punktform <= MENU_dE4KUGEL)
+        else if (point_form >= MENU_dE1SPHERE && point_form <= MENU_dE4SPHERE)
         {
-          if (punktform < MENU_dE4KUGEL) {
-            ++punktform;
+          if (point_form < MENU_dE4SPHERE) {
+            ++point_form;
           }
         }
-        else if (punktform == MENU_DIFFERENZ_LINIE)
+        else if (point_form == MENU_DIFFERENCE_LINE)
         {
-          punktform = MENU_dE4KUGEL;
+          point_form = MENU_dE4SPHERE;
         }
-        else if (punktgroesse < 61)
+        else if (point_size < 61)
         {
-          ++punktgroesse;
-          auffrischen_();
+          ++point_size;
+          refresh_();
           redraw();
         }
-        DBG_PROG_V( Fl::event_key()  <<" "<< punktgroesse <<" "<< punktform <<" "<< MENU_DIFFERENZ_LINIE )
+        DBG_PROG_V( Fl::event_key()  <<" "<< point_size <<" "<< point_form <<" "<< MENU_DIFFERENCE_LINE )
         found = 1;
         break;
       case '*':
-        if(tabelle_.size() && schalen != 0)
+        if(table_.size() && onion_skin != 0)
         {
           this->level_step *= 2;
           if(this->level_step > 0.999)
@@ -4287,7 +4287,7 @@ GL_View::tastatur(int e)
         found = 1;
         break;
       case '/':
-        if(tabelle_.size() && schalen != 0)
+        if(table_.size() && onion_skin != 0)
         {
           this->level_step /= 2;
           if(this->level_step < 0.0001)
@@ -4296,10 +4296,10 @@ GL_View::tastatur(int e)
         found = 1;
         break;
       case '_':
-        if(tabelle_.size())
+        if(table_.size())
         {
-          schalen = -schalen;
-          auffrischen_();
+          onion_skin = -onion_skin;
+          refresh_();
           redraw();
         }
         found = 1;
@@ -4314,14 +4314,14 @@ GL_View::tastatur(int e)
       case '8':
       case '9':
       case '0':
-        if(tabelle_.size())
+        if(table_.size())
         {
-          if(schalen<0)
-            schalen = -(k - '0');
+          if(onion_skin<0)
+            onion_skin = -(k - '0');
           else
-            schalen = (k - '0');
+            onion_skin = (k - '0');
 
-          auffrischen_();
+          refresh_();
           redraw();
         }
         found = 1;
@@ -4339,10 +4339,10 @@ GL_View::tastatur(int e)
 
 
 void
-GL_View::c_ ( Fl_Widget* w, void* daten )
+GL_View::c_ ( Fl_Widget* w, void* data )
 { DBG_ICCGL_START
 
-  intptr_t value = (intptr_t) daten;
+  intptr_t value = (intptr_t) data;
   DBG_PROG_V( value )
 
   GL_View *gl_obj = dynamic_cast<GL_View*>(w->parent());
@@ -4353,7 +4353,7 @@ GL_View::c_ ( Fl_Widget* w, void* daten )
   else
   if (gl_obj)
   {
-    gl_obj->menueAufruf((int)value);
+    gl_obj->menuEvents((int)value);
   }
   else
     WARN_S("could not find a suitable program structure")
@@ -4364,20 +4364,20 @@ GL_View::c_ ( Fl_Widget* w, void* daten )
 
 
 int
-GL_View::hintergrundfarbeZuMenueeintrag( float farbe )
+GL_View::backgroundColourToMenuEntry( float farbe )
 {
-  int eintrag = MENU_HELLGRAU;
+  int eintrag = MENU_LIGHT_GRAY;
 
-  if(hintergrundfarbe == 1.0)
-    eintrag = MENU_WEISS;
-  if(hintergrundfarbe == 0.75)
-    eintrag = MENU_HELLGRAU;
-  if(hintergrundfarbe == 0.5)
-    eintrag = MENU_GRAUGRAU;
-  if(hintergrundfarbe == 0.25)
-    eintrag = MENU_DUNKELGRAU;
-  if(hintergrundfarbe == 0.0)
-    eintrag = MENU_SCHWARZ;
+  if(background_colour == 1.0)
+    eintrag = MENU_WHITE;
+  if(background_colour == 0.75)
+    eintrag = MENU_LIGHT_GRAY;
+  if(background_colour == 0.5)
+    eintrag = MENU_GRAY_GRAY;
+  if(background_colour == 0.25)
+    eintrag = MENU_DARK_GRAY;
+  if(background_colour == 0.0)
+    eintrag = MENU_BLACK;
 
   return eintrag;
 }

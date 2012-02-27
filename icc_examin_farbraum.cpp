@@ -64,21 +64,21 @@ ICCexamin::messwertLese (int n,
       ICCmeasurement messung = profile[n]->getMeasurement();
 
       if(messung.validHalf() && profile[n]->size())
-        icc_betrachter->DD_farbraum->zeig_punkte_als_paare = true;
+        icc_betrachter->DD_farbraum->show_points_as_pairs = true;
       else
-        icc_betrachter->DD_farbraum->zeig_punkte_als_paare = false;
+        icc_betrachter->DD_farbraum->show_points_as_pairs = false;
 
-        DBG_NUM_V( icc_betrachter->DD_farbraum->zeig_punkte_als_paare )
-      icc_betrachter->DD_farbraum->zeig_punkte_als_messwerte = true;
-        DBG_NUM_V( icc_betrachter->DD_farbraum->zeig_punkte_als_messwerte )
+        DBG_NUM_V( icc_betrachter->DD_farbraum->show_points_as_pairs )
+      icc_betrachter->DD_farbraum->show_points_as_measurements = true;
+        DBG_NUM_V( icc_betrachter->DD_farbraum->show_points_as_measurements )
 
       if(profile.profil()->data_type == ICCprofile::ICCmeasurementDATA || 
          profile.profil()->hasTagName("ncl2") )
-        icc_betrachter->DD_farbraum->zeig_punkte_als_messwerte = true;
+        icc_betrachter->DD_farbraum->show_points_as_measurements = true;
       else
-        icc_betrachter->DD_farbraum->zeig_punkte_als_messwerte = false;
+        icc_betrachter->DD_farbraum->show_points_as_measurements = false;
 
-        DBG_NUM_V( icc_betrachter->DD_farbraum->zeig_punkte_als_messwerte )
+        DBG_NUM_V( icc_betrachter->DD_farbraum->show_points_as_measurements )
 
       unsigned int j;
       unsigned int n_farben = messung.getPatchCount(); DBG_PROG_V( messung.getPatchCount() )
@@ -103,7 +103,7 @@ ICCexamin::messwertLese (int n,
         if(n_old != n_farben * 2)
           oyNamedColours_Release( list );
 
-        if(icc_betrachter->DD_farbraum->zeig_punkte_als_paare)
+        if(icc_betrachter->DD_farbraum->show_points_as_pairs)
         {
           if(n_old == n_farben * 2 && *list)
           {
@@ -335,8 +335,8 @@ ICCexamin::farbenLese  ( int n,
 
   if( !single )
   {
-    icc_betrachter->DD_farbraum->zeig_punkte_als_messwerte = true;
-    icc_betrachter->DD_farbraum->zeig_punkte_als_paare = true;
+    icc_betrachter->DD_farbraum->show_points_as_measurements = true;
+    icc_betrachter->DD_farbraum->show_points_as_pairs = true;
   } else {
     n_farben = 1;
   }
@@ -439,12 +439,12 @@ ICCexamin::farbraum (int n)
   }
 
   bool neues_netz = false;
-  if( n >= (int)icc_betrachter->DD_farbraum->dreiecks_netze.size() )
+  if( n >= (int)icc_betrachter->DD_farbraum->triangle_nets.size() )
     neues_netz = true;
 
 
-  //if((int)icc_betrachter->DD_farbraum->dreiecks_netze.size() > n)
-    //icc_betrachter->DD_farbraum->dreiecks_netze[n].undurchsicht = 1.0;
+  //if((int)icc_betrachter->DD_farbraum->triangle_nets.size() > n)
+    //icc_betrachter->DD_farbraum->triangle_nets[n].undurchsicht = 1.0;
   if(oyStructList_Count( namedColours ) > n && !collect_changing_points)
     oyStructList_ReleaseAt( namedColours, n );
 
@@ -467,12 +467,12 @@ ICCexamin::farbraum (int n)
   {
   //MARK( icc_betrachter->DD_farbraum->frei(false); )
 
-    icc_betrachter->DD_farbraum->dreiecks_netze.frei(false);
-    if((int)icc_betrachter->DD_farbraum->dreiecks_netze .size() <= n)
-      icc_betrachter->DD_farbraum->dreiecks_netze .resize( n + 1 );
+    icc_betrachter->DD_farbraum->triangle_nets.frei(false);
+    if((int)icc_betrachter->DD_farbraum->triangle_nets .size() <= n)
+      icc_betrachter->DD_farbraum->triangle_nets .resize( n + 1 );
 
-    icc_examin_ns::ICCThreadList<ICCnetz> *netze = &icc_betrachter->DD_farbraum->dreiecks_netze;
-    DBG_PROG_V( icc_betrachter->DD_farbraum->dreiecks_netze.size() <<" "<< n )
+    icc_examin_ns::ICCThreadList<ICCnetz> *netze = &icc_betrachter->DD_farbraum->triangle_nets;
+    DBG_PROG_V( icc_betrachter->DD_farbraum->triangle_nets.size() <<" "<< n )
 
 
     if( profile.size() > n && !ncl2_profil )
@@ -536,24 +536,24 @@ ICCexamin::farbraum (int n)
       DBG_PROG_V( n <<" "<< profile.aktiv(n) )
     }
 
-    if(icc_betrachter->DD_farbraum->dreiecks_netze[n].name == "")
+    if(icc_betrachter->DD_farbraum->triangle_nets[n].name == "")
     {
-      icc_betrachter->DD_farbraum->dreiecks_netze[n].name =
+      icc_betrachter->DD_farbraum->triangle_nets[n].name =
                                                          profile[n]->filename();
       // extract file name
-      std::string & dateiname = icc_betrachter->DD_farbraum->dreiecks_netze[n].name;
+      std::string & dateiname = icc_betrachter->DD_farbraum->triangle_nets[n].name;
       if( dateiname.find_last_of("/") != std::string::npos)
         dateiname = dateiname.substr( dateiname.find_last_of("/")+1,
                                     dateiname.size() );
-      DBG_PROG_V( icc_betrachter->DD_farbraum->dreiecks_netze[n].name )
+      DBG_PROG_V( icc_betrachter->DD_farbraum->triangle_nets[n].name )
     }
 
 #if 0
     if( profile.size() > n && !ncl2_profil )
       icc_betrachter->DD_farbraum->hineinNetze(
-                                  icc_betrachter->DD_farbraum->dreiecks_netze );
+                                  icc_betrachter->DD_farbraum->triangle_nets );
 #endif
-    icc_betrachter->DD_farbraum->dreiecks_netze.frei(true);
+    icc_betrachter->DD_farbraum->triangle_nets.frei(true);
 
   //MARK( icc_betrachter->DD_farbraum->frei(true); )
   }
@@ -567,11 +567,11 @@ ICCexamin::farbraum ()
   DBG_PROG_START
   MARK( frei(false); )
 
-  MARK( icc_betrachter->DD_farbraum->dreiecks_netze.frei(false); )
-  if((int)icc_betrachter->DD_farbraum->dreiecks_netze.size() > profile.size())
-    icc_betrachter->DD_farbraum->dreiecks_netze.resize(profile.size());
-  MARK( icc_betrachter->DD_farbraum->dreiecks_netze.frei(true); )
-  DBG_PROG_V( icc_betrachter->DD_farbraum->dreiecks_netze.size() )
+  MARK( icc_betrachter->DD_farbraum->triangle_nets.frei(false); )
+  if((int)icc_betrachter->DD_farbraum->triangle_nets.size() > profile.size())
+    icc_betrachter->DD_farbraum->triangle_nets.resize(profile.size());
+  MARK( icc_betrachter->DD_farbraum->triangle_nets.frei(true); )
+  DBG_PROG_V( icc_betrachter->DD_farbraum->triangle_nets.size() )
   MARK( frei(true); )
 
   for(int i = 0; i < profile.size(); ++i)
@@ -582,9 +582,9 @@ ICCexamin::farbraum ()
   }
   icc_betrachter->DD_farbraum->clearNet();
 
-  /*if(icc_betrachter->DD_farbraum -> dreiecks_netze.size())
+  /*if(icc_betrachter->DD_farbraum -> triangle_nets.size())
     icc_betrachter->DD_farbraum ->
-      dreiecks_netze [icc_betrachter->DD_farbraum->dreiecks_netze.size()-1]
+      triangle_nets [icc_betrachter->DD_farbraum->triangle_nets.size()-1]
         . undurchsicht = 0.7;*/
 
   DBG_PROG_V( profile.size() )

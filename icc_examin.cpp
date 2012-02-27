@@ -268,9 +268,9 @@ ICCexamin::clear ()
   icc_betrachter->DD_farbraum->frei(false);
   profile.clear();
   icc_betrachter->DD_farbraum->frei(true);
-  icc_betrachter->DD_farbraum->dreiecks_netze.frei(false);
-  icc_betrachter->DD_farbraum->dreiecks_netze.clear();
-  icc_betrachter->DD_farbraum->dreiecks_netze.frei(true);
+  icc_betrachter->DD_farbraum->triangle_nets.frei(false);
+  icc_betrachter->DD_farbraum->triangle_nets.clear();
+  icc_betrachter->DD_farbraum->triangle_nets.frei(true);
 
   icc_betrachter->DD_farbraum->clearNet ();
 
@@ -606,7 +606,7 @@ ICCexamin::showTables ()
         GL_View::getAgv(gl, icc_betrachter->table_gl);
         gl->init( icc_betrachter->table_gl->id() );
         gl->copy( *icc_betrachter->table_gl );
-        gl->kanal = i;
+        gl->channel = i;
       g->end();
     w->end();
     w->resizable(w);
@@ -663,17 +663,17 @@ ICCexamin::message( Model* model , int info )
         if((*k)[info]->size() > 128)
         {
           icc_examin->waehlbar( info, true );
-          icc_betrachter->DD_farbraum->dreiecks_netze.frei(false);
-          if(icc_betrachter->DD_farbraum->dreiecks_netze.size() > (size_t)info)
-            icc_betrachter->DD_farbraum->dreiecks_netze[info].active( true );
-          icc_betrachter->DD_farbraum->dreiecks_netze.frei(true);
+          icc_betrachter->DD_farbraum->triangle_nets.frei(false);
+          if(icc_betrachter->DD_farbraum->triangle_nets.size() > (size_t)info)
+            icc_betrachter->DD_farbraum->triangle_nets[info].active( true );
+          icc_betrachter->DD_farbraum->triangle_nets.frei(true);
         } else
         {
           icc_examin->waehlbar( info, false );
-          icc_betrachter->DD_farbraum->dreiecks_netze.frei(false);
-          if(icc_betrachter->DD_farbraum->dreiecks_netze.size() > (size_t)info)
-            icc_betrachter->DD_farbraum->dreiecks_netze[info].active( false );
-          icc_betrachter->DD_farbraum->dreiecks_netze.frei(true);
+          icc_betrachter->DD_farbraum->triangle_nets.frei(false);
+          if(icc_betrachter->DD_farbraum->triangle_nets.size() > (size_t)info)
+            icc_betrachter->DD_farbraum->triangle_nets[info].active( false );
+          icc_betrachter->DD_farbraum->triangle_nets.frei(true);
         }
       }
 
@@ -1991,10 +1991,10 @@ event_handler(int e)
   
   if(icc_examin && icc_examin->icc_betrachter &&
      icc_examin->icc_betrachter->DD_farbraum->shown())
-    gefunden = icc_examin->icc_betrachter->DD_farbraum->tastatur(e);
+    gefunden = icc_examin->icc_betrachter->DD_farbraum->keyEvents(e);
   if(icc_examin && icc_examin->icc_betrachter && 
      icc_examin->icc_betrachter->table_gl->shown())
-    gefunden = icc_examin->icc_betrachter->table_gl->tastatur(e);
+    gefunden = icc_examin->icc_betrachter->table_gl->keyEvents(e);
   //DBG_PROG_ENDE
   return gefunden;
 }

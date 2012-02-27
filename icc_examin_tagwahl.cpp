@@ -592,7 +592,7 @@ void ICCexamin::showmABData ()
               pp[i] = nach_farb_namen[i].c_str();
               sn[i] = nach_farb_snamen[i].c_str();
             }
-            icc_examin->icc_betrachter->table_gl_boxAdd( sn, pp, n, icc_betrachter->table_gl->kanal );
+            icc_examin->icc_betrachter->table_gl_boxAdd( sn, pp, n, icc_betrachter->table_gl->channel );
             if(pp) delete [] pp;
             if(sn) delete [] sn;
 
@@ -668,7 +668,7 @@ void ICCexamin::showmABData ()
             }
           }
 
-          icc_betrachter->table_gl->hineinTabelle (
+          icc_betrachter->table_gl->loadTable (
                      Table,
                      from_colour_names,
                      nach_farb_namen, channels ); DBG_PROG_S( "3D table" )
@@ -853,7 +853,7 @@ ICCexamin::selectTable (int item)
           pp[i] = nach_farb_namen[i].c_str();
           sn[i] = nach_farb_snamen[i].c_str();
         }
-        icc_examin->icc_betrachter->table_gl_boxAdd( sn, pp, n, icc_betrachter->table_gl->kanal );
+        icc_examin->icc_betrachter->table_gl_boxAdd( sn, pp, n, icc_betrachter->table_gl->channel );
         if(pp) delete [] pp;
         if(sn) delete [] sn;
 
@@ -877,7 +877,7 @@ ICCexamin::selectTable (int item)
         icc_examin->icc_betrachter->table_gl_boxAdd( NULL, NULL, 0, 0 );
       }
 
-      icc_betrachter->table_gl->hineinTabelle (
+      icc_betrachter->table_gl->loadTable (
                      profile.profil()->getTagTable (icc_betrachter->tag_nummer,
                                                     ICCtag::TABLE, channels ),
                      from_colour_names,
@@ -937,7 +937,7 @@ ICCexamin::tableChannel ( int channel, int clutplane )
       channels = icc_examin->icc_betrachter->table_gl->channels();
       channels[channel] = clutplane;
 
-      icc_betrachter->table_gl->hineinTabelle (
+      icc_betrachter->table_gl->loadTable (
                      profile.profil()->getTagTable (icc_betrachter->tag_nummer,
                                                     ICCtag::TABLE, channels ),
                      from_colour_names,

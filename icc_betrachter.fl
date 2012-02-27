@@ -220,7 +220,7 @@ decl {\#include <FL/fl_draw.H>} {}
 
 class TableChoice {open : {public Fl_Choice}
 } {
-  decl {int X; int Y; int W; int H; const char* start_info; char typ[5];} {}
+  decl {int X; int Y; int W; int H; const char* start_info; char type[5];} {}
   decl {ICClist<std::string> Info; int gewaehlter_eintrag;} {public
   }
   Function {TableChoice(int X,int Y,int W,int H,const char* start_info) : Fl_Choice(X,Y,W,H,start_info), X(X), Y(Y), W(W), H(H)} {open
@@ -233,13 +233,13 @@ class TableChoice {open : {public Fl_Choice}
     code {icc_examin->icc_betrachter->tag_nummer = _tag;
 
 // = profile.profil()->printTagInfo(icc_examin->icc_betrachter->tag_nummer);
-    sprintf (&typ[0], "%s", profile.profil()->printTagInfo(icc_examin->icc_betrachter->tag_nummer)[1].c_str());
+    sprintf (&type[0], "%s", profile.profil()->printTagInfo(icc_examin->icc_betrachter->tag_nummer)[1].c_str());
 
     DBG_PROG_V( profile.profil()->printTagInfo(icc_examin->icc_betrachter->tag_nummer)[1].c_str() )
 
     Info = icc_parser::zeilenNachVector (text);
 
-    if ( strstr (typ,"mft2") != 0 )
+    if ( strstr (type,"mft2") != 0 )
     { DBG_PROG
       Fl_Menu_Item *mft_menue = (Fl_Menu_Item *)calloc (sizeof (Fl_Menu_Item), 6);
 
@@ -251,7 +251,7 @@ class TableChoice {open : {public Fl_Choice}
       mft_menue[5].text = 0;
       icc_examin->icc_betrachter->table_choice->menu(mft_menue);
     } else
-    if ( strstr (typ,"mft1") != 0 )
+    if ( strstr (type,"mft1") != 0 )
     {
       Fl_Menu_Item *mft_menue = (Fl_Menu_Item *)calloc (sizeof (Fl_Menu_Item), 6);
 
@@ -319,7 +319,7 @@ class My_Fl_Box {: {public Fl_Box}
 
 Function {table_gl_menueCb_(Fl_Widget * w, void * data)} {private
 } {
-  code {icc_examin->icc_betrachter->table_gl->menueAufruf( (intptr_t) data );} {}
+  code {icc_examin->icc_betrachter->table_gl->menuEvents( (intptr_t) data );} {}
 } 
 
 class ICCfltkBetrachter {open
@@ -594,7 +594,7 @@ DBG_NUM_S("Show Log window")}
           Fl_Box DD_farbraum {
             xywh {0 25 385 470} box THIN_DOWN_BOX resizable
             code0 {o->hide();}
-            code1 {o->typ( 1 ); // wandert ins 1. Nebenfenster}
+            code1 {o->type( 1 ); // wandert ins 1. Nebenfenster}
             class GL_View
           }
           Fl_Group DD_box_stat_oy {open
@@ -871,7 +871,7 @@ DBG_NUM_S("Show Log window")}
                       Fl_Box table_gl {
                         xywh {0 185 360 310} align 4 resizable
                         code0 {o->hide();}
-                        code1 {o->typ( 2 ); // bleibt zumeist im Hauptfenster}
+                        code1 {o->type( 2 ); // bleibt zumeist im Hauptfenster}
                         class GL_View
                       }
                       Fl_Pack table_gl_button_pack {open

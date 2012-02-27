@@ -161,9 +161,9 @@ public:
 
   aktiv_knopf_->value(wert);
 
-  //icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze.frei(false);
-  icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze[pos_].active( wert );
-  //icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze.frei(true);
+  //icc_examin->icc_betrachter->DD_farbraum->triangle_nets.frei(false);
+  icc_examin->icc_betrachter->DD_farbraum->triangle_nets[pos_].active( wert );
+  //icc_examin->icc_betrachter->DD_farbraum->triangle_nets.frei(true);
 
   redraw();
 
@@ -177,9 +177,9 @@ public:
  void  undurchsicht(double wert)
  {
   undurchsicht_->value(wert);
-  //icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze.frei(false);
-  icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze[pos_].undurchsicht = wert;
-  //icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze.frei(true);
+  //icc_examin->icc_betrachter->DD_farbraum->triangle_nets.frei(false);
+  icc_examin->icc_betrachter->DD_farbraum->triangle_nets[pos_].undurchsicht = wert;
+  //icc_examin->icc_betrachter->DD_farbraum->triangle_nets.frei(true);
  }
  double undurchsicht()
  {
@@ -189,9 +189,9 @@ public:
  void  grau(bool wert)
  {
   grau_->value(wert);
-  //icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze.frei(false);
-  icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze[pos_].grau = wert;
-  //icc_examin->icc_betrachter->DD_farbraum->dreiecks_netze.frei(true);
+  //icc_examin->icc_betrachter->DD_farbraum->triangle_nets.frei(false);
+  icc_examin->icc_betrachter->DD_farbraum->triangle_nets[pos_].grau = wert;
+  //icc_examin->icc_betrachter->DD_farbraum->triangle_nets.frei(true);
  }
  bool  grau()
  {

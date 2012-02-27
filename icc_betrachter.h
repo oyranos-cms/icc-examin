@@ -56,7 +56,7 @@ public:
 };
 
 class TableChoice : public Fl_Choice {
-  int X; int Y; int W; int H; const char* start_info; char typ[5]; 
+  int X; int Y; int W; int H; const char* start_info; char type[5]; 
 public:
   ICClist<std::string> Info; int gewaehlter_eintrag; 
   TableChoice(int X,int Y,int W,int H,const char* start_info) ;

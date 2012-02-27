@@ -192,13 +192,13 @@ Agviewer::MoveOn(int v)
              (MoveMode == POLAR &&
              (AzSpin != 0 || ElSpin != 0 || AdjustingAzEl))))
   {
-    if (parent->darfBewegen()) {
+    if (parent->canMove()) {
       DBG_PROG_S( "idle: agvMove_static" )
       agvMove_();
       parent->redraw();
     }
   } else {
-    if (parent->darfBewegen()) {
+    if (parent->canMove()) {
       DBG_PROG_S( "idle: ---" )
     }
   }
@@ -222,7 +222,7 @@ Agviewer::agvSwitchMoveMode(int move)
       EyeAz =  EyeAz;
       EyeEl = -EyeEl;
       EyeMove = (GLfloat)init_move;
-      parent->bewegen(true);
+      parent->move(true);
       break;
     case ICCFLY_L:
       MoveMode = POLAR;
@@ -260,7 +260,7 @@ Agviewer::agvSwitchMoveMode(int move)
       EyeEl   = 0;
       AzSpin  = 1.0;
       ElSpin  = (GLfloat)init_el_spin;
-      parent->bewegen(true);
+      parent->move(true);
       break;
     case POLAR:
       EyeDist = (GLfloat)init_dist;
@@ -308,7 +308,7 @@ Agviewer::agvHandleButton(int button, int event, int x, int y)
         AdjustingAzEl = 1;
         MoveOn(0); //ICC stop
         //if (MoveMode == FLYING)
-          icc_examin_ns::status_info(_("left-/middle-/right mouse button -> rotate/cut/menu"),parent->typ());
+          icc_examin_ns::status_info(_("left-/middle-/right mouse button -> rotate/cut/menu"),parent->type());
         thin = false;
         MoveMode = POLAR;
     } else
@@ -321,7 +321,7 @@ Agviewer::agvHandleButton(int button, int event, int x, int y)
         downEyeMove = EyeMove;
         EyeMove = 0;
         if (MoveMode == FLYING)
-          icc_examin_ns::status_info(_("Pause"),parent->typ());
+          icc_examin_ns::status_info(_("Pause"),parent->type());
     }
 
   } else if (event == FL_RELEASE && /*button ==*/ downb >= 0) {
@@ -337,15 +337,15 @@ Agviewer::agvHandleButton(int button, int event, int x, int y)
           if (ElSpin < min_elspin && ElSpin > -min_elspin)
             ElSpin = 0; 
           if(!AzSpin && !ElSpin) {
-            parent->bewegen(false); DBG_NUM_S("slow release")
+            parent->move(false); DBG_NUM_S("slow release")
           } else {
-            parent->bewegen(true); DBG_NUM_S( "fast release" )
+            parent->move(true); DBG_NUM_S( "fast release" )
           }
         }
         AdjustingAzEl = 0;
         MoveOn(1);
         if (MoveMode == FLYING) {
-          icc_examin_ns::status_info(_("left mouse button -> go back"),parent->typ());
+          icc_examin_ns::status_info(_("left mouse button -> go back"),parent->type());
           thin = false;
         }
       } else
@@ -353,7 +353,7 @@ Agviewer::agvHandleButton(int button, int event, int x, int y)
       {
         EyeMove = downEyeMove;
         if (MoveMode == FLYING) {
-          icc_examin_ns::status_info(_("left mouse button -> go back"),parent->typ());
+          icc_examin_ns::status_info(_("left mouse button -> go back"),parent->type());
           thin = true;
         }
       } else

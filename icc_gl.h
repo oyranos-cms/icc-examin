@@ -62,9 +62,9 @@ class GL_View : public Fl_Gl_Window,
                    public icc_examin_ns::Model {
   // internal data
     //! position: colour1, colour2, colour3, colour channel No., value
-  ICClist<ICClist<ICClist<ICClist<double> > > > tabelle_;
-  ICClist<std::string>nach_farb_namen_;
-  ICClist<std::string>von_farb_namen_;
+  ICClist<ICClist<ICClist<ICClist<double> > > > table_;
+  ICClist<std::string>to_channel_names_;
+  ICClist<std::string>from_channel_names_;
   ICClist<int>        channels_;
   oyStructList_s * colours_;
   oyNamedColour_s  * epoint_;            //!< emphasize point
@@ -77,57 +77,57 @@ private:
   void fensterForm();
 
   // adapt inner struktures at data change
-  void menueErneuern_();
-  int  erstelleGLListen_();
-  void textGarnieren_();
-  void garnieren_();
-  int  auffrischen_();      //!< refresh without init()
+  void renewMenue_();
+  int  createGLLists_();
+  void adornText_();
+  void adorn_();
+  int  refresh_();      //!< refresh without init()
 
   // menues
   Fl_Menu_Button  *menue_;
   Fl_Menu_Button  *menue_button_;
-  Fl_Menu_Button  *menue_schnitt_;
-  Fl_Menu_Button  *menue_form_;
-  Fl_Menu_Button  *menue_hintergrund_;
-  static void c_(Fl_Widget* w, void* daten);
+  Fl_Menu_Button  *menue_cut_;
+  Fl_Menu_Button  *menue_shape_;
+  Fl_Menu_Button  *menue_background_;
+  static void c_(Fl_Widget* w, void* data);
   
   // IDs
   Agviewer *agv_;
   static int  ref_;
   int  id_;
-  int  typ_;
+  int  type_;
   void GLinit_();
   void menueInit_();
 
-  typedef enum {NOTALLOWED, AXES, RASTER, PUNKTE , SPEKTRUM, HELFER, UMRISSE, DL_MAX } DisplayLists;
+  typedef enum {NOTALLOWED, AXES, RASTER, POINTS , SPEKTRUM, HELPER, CONTOURS, DL_MAX } DisplayLists;
   int gl_listen_[DL_MAX];
 public:
   typedef enum {
    MENU_AXES,
    MENU_QUIT,
-   MENU_KUGEL,           //!< form of 3DLut-representation
-   MENU_WUERFEL,
-   MENU_STERN,
-   MENU_GRAU,            //!< the colour displaying of the 3DLut
-   MENU_FARBIG,
-   MENU_KONTRASTREICH,
-   MENU_SCHALEN,         //!< sparce of the 3DLut / plug-in candidate
-   MENU_dE1KUGEL,        //!< meashurement-/profile differences with colour location
-   MENU_dE2KUGEL,
-   MENU_dE4KUGEL,
-   MENU_dE1STERN,
-   MENU_DIFFERENZ_LINIE, //!< meashurement-/profile differences with put lines
-   MENU_SPEKTRALBAND,    //!< spectral colours as lines
-   MENU_HELFER,          //!< show texts and arrows
-   MENU_WEISS,           //!< background colour
-   MENU_HELLGRAU,
-   MENU_GRAUGRAU,
-   MENU_DUNKELGRAU,
-   MENU_SCHWARZ,
+   MENU_SPHERE,           //!< form of 3DLut-representation
+   MENU_CUBE,
+   MENU_STAR,
+   MENU_GRAY,            //!< the colour displaying of the 3DLut
+   MENU_COLOUR,
+   MENU_HIGHCONTRAST,
+   MENU_ONIONSKIN,         //!< space of the 3DLut / plug-in candidate
+   MENU_dE1SPHERE,        //!< meashurement-/profile differences with colour location
+   MENU_dE2SPHERE,
+   MENU_dE4SPHERE,
+   MENU_dE1STAR,
+   MENU_DIFFERENCE_LINE, //!< meashurement-/profile differences with put lines
+   MENU_SPECTRAL_LINE,    //!< spectral colours as lines
+   MENU_HELPER,          //!< show texts and arrows
+   MENU_WHITE,           //!< background colour
+   MENU_LIGHT_GRAY,
+   MENU_GRAY_GRAY,
+   MENU_DARK_GRAY,
+   MENU_BLACK,
    MENU_MAX
   } MenuChoices;
 private:
-  int hintergrundfarbeZuMenueeintrag( float farbe );
+  int backgroundColourToMenuEntry( float farbe );
 
   int DrawAxes;
 
@@ -144,13 +144,13 @@ private:
   void zero_();
   bool initialised_;
 public:
-  void init(int fenster);
+  void init(int window);
 
   // which window is managed?
   int  id()          {return id_; } //!< equal to agviewer::RedisplayWindow
   void id(int i)     { id_ = i; }
-  int  typ()   {return typ_; } //!< window ID / display mode
-  void typ(int t_)   { typ_ = t_; }
+  int  type()   {return type_; } //!< window ID / display mode
+  void type(int t_)   { type_ = t_; }
 
   static Agviewer* getAgv(GL_View *me, GL_View *referenz);
   void resetContexts ();
@@ -161,9 +161,9 @@ private:
   void draw();
   int  handle(int event);
   int  waiting_;       //!< dont generate and display new movement
-  ICCnetz netz;             //!< internal net representation, thread entry
+  ICCnetz net;             //!< internal net representation, thread entry
   icc_examin_ns::BSPNODE *bsp;   //**< BSP tree root
-  void hineinNetze_  (const icc_examin_ns::ICCThreadList<ICCnetz> & dreiecks_netze);
+  void loadNets_  (const icc_examin_ns::ICCThreadList<ICCnetz> & triangle_nets);
   void setBspProperties_( icc_examin_ns::BSPNODE * bsp );
   void setBspFaceProperties_( icc_examin_ns::FACE * faceList );
   void updateNet_    ();
@@ -171,100 +171,91 @@ public:
   void show();
   void hide();
   // redraw request from agv_
-  void nachricht( icc_examin_ns::Model* modell, int info );
+  void message( icc_examin_ns::Model* model, int info );
 
   // import data
-/*  void hineinPunkte (ICClist<double> &vect,
-                     ICClist<std::string> &achsNamen);
-  void hineinPunkte (ICClist<double> &vect, 
-                     ICClist<float>  &farben_,
-                     ICClist<std::string> &achsNamen);
-  void hineinPunkte (ICClist<double> &punktKoordinaten, //!< Lab
-                     ICClist<float>  &punktFarben,      //!< RGBA
-                     ICClist<std::string> &farb_namen_, //!< per point
-                     ICClist<std::string> &achsNamen);  //!< 3* */
-  //TODO: Punkte auf oyNamedColour_s umstellen
+  //TODO: use oyNamedColour_s
   void              namedColours (oyStructList_s * colours);
   oyStructList_s *  namedColours ();
   void              namedColoursRelease ();
   void emphasizePoint (oyNamedColour_s  * colour);  //!< a named colour
   void              clearNet ();
-  icc_examin_ns::ICCThreadList<ICCnetz> dreiecks_netze;
+  icc_examin_ns::ICCThreadList<ICCnetz> triangle_nets;
   void achsNamen    (ICClist<std::string> achs_namen);
 
-  void hineinTabelle(ICClist<ICClist<ICClist<ICClist<double> > > >vect,
-                               ICClist<std::string> vonFarben,
-                               ICClist<std::string> nachFarben,
+  void loadTable(ICClist<ICClist<ICClist<ICClist<double> > > >vect,
+                               ICClist<std::string> fromColours,
+                               ICClist<std::string> toColours,
                                        ICClist<int>        channels );
   ICClist<int>     channels() { return channels_; }
   void             channels( ICClist<int>channels ) { channels_ = channels; }
 
   // transparent displaying
-  int  kanal;               //!< selected channel
+  int  channel;               //!< selected channel
        // displaying of grid points of the transformation table
-  int  punktform;           //!< MENU_KUGEL MENU_WUERFEL MENU_STERN
-  int  punktfarbe;          //!< MENU_GRAU MENU_FARBIG MENU_KONTRASTREICH
-  int  punktgroesse;        //!< size in pixel
+  int  point_form;           //!< MENU_SPHERE MENU_CUBE MENU_STAR
+  int  point_colour;          //!< MENU_GRAY MENU_COLOUR MENU_HIGHCONTRAST
+  int  point_size;        //!< size in pixel
   double pointRadius();     //*< estimated size of a point
 
-  float hintergrundfarbe;   //!< background colour / colour sheme
-  float textfarbe[3];
-  float pfeilfarbe[3];
-  float schatten;
-  float strichmult;         //!< multiplicator
-  char  strich1, strich2, strich3;
-  int   schalen;            //!< MENU_SCHALEN
+  float background_colour;   //!< background colour / colour sheme
+  float text_colour[3];
+  float arrow_colour[3];
+  float shadow;
+  float line_mult;         //!< multiplicator
+  char  line_1, line_2, line_3;
+  int   onion_skin;            //!< MENU_ONIONSKIN
 
   // drawing functions
-  void setzePerspektive();  //!< actualise perspektive
-  void tabelleAuffrischen();//!< glCompile for table
-  void punkteAuffrischen(); //!< glCompile for points
-  void netzeAuffrischen();  //!< sort and drawing
-  double seitenverhaeltnis; //!< proportion of window
-  static const double std_vorder_schnitt;
-  double vorder_schnitt;    //!< front cut plane
-  double schnitttiefe;      //!< thickness of the GL slice
+  void setPerspective();  //!< actualise perspektive
+  void refreshTable();//!< glCompile for table
+  void refreshPoints(); //!< glCompile for points
+  void refreshNets();  //!< sort and drawing
+  double window_proportion; //!< proportion of window
+  static const double std_front_cut;
+  double front_cut;    //!< front cut plane
+  double cut_distance;      //!< thickness of the GL slice
   double level;             //*< level for table slicing 0...1
   double level_step;        //*< modification of level variable
-  double a_darstellungs_breite; //!< direction CIE*a   for stretching
-  double b_darstellungs_breite; //!< ~         CIE*b ; where CIE*L max is 1.0
-  bool zeig_punkte_als_paare;
-  bool zeig_punkte_als_messwerte;
-  int  spektralband;        //!< show spectral saturated colour line
-  int  zeige_helfer;        //!< show arrows and text
+  double cie_a_display_stretch; //!< direction CIE*a   for stretching
+  double cie_b_display_stretch; //!< ~         CIE*b ; where CIE*L max is 1.0
+  bool show_points_as_pairs;
+  bool show_points_as_measurements;
+  int  spectral_line;        //!< show spectral saturated colour line
+  int  show_helpers;        //!< show arrows and text
   char text[128];           //!< Status line text
   void iccPoint3d                    ( oyPROFILE_e         projection,
                                        double            * vertex,
                                        double              radius );
 private:
-  void zeigeSpektralband_();
-  void zeigeUmrisse_();
+  void showSprectralLine_();
+  void showContours_();
   // Debug
-  void zeichneKoordinaten_();
+  void drawCoordinates_();
 
 public:
   // display functions
-  void zeichnen();          //!< gl drawing
-  int  tastatur(int e);
-  void menueAufruf(int value);
+  void drawGL();          //!< gl drawing
+  int  keyEvents(int e);
+  void menuEvents(int value);
   // Bewegungsfunktionen
-  void bewegen(bool setze);
-  bool darfBewegen();
-  void darfBewegen(int d);
+  void move(bool setze);
+  bool canMove();
+  void canMove(int d);
   void invalidate(void) { Fl_Gl_Window::invalidate(); valid_ = 0; }
 private:
-  static void bewegenStatisch_(void* GL_View);
+  static void moveStatic_(void* GL_View);
 private:
-  double zeit_diff_;        //!< seconds per frame
-  double zeit_;
+  double time_diff_;        //!< seconds per frame
+  double time_;
   int  valid_;              //!< remembers valid() from within draw()
   int  update_geometries_;  //!< remembers creating GL lists from within draw()
   char t[128];              //!< text for searching errors
-  int  maus_x_;
-  int  maus_y_;
-  int  maus_x_alt, maus_y_alt;
-  bool maus_steht;
-  void mausPunkt_( GLdouble & oX, GLdouble & oY, GLdouble & oZ,
+  int  mouse_x_;
+  int  mouse_y_;
+  int  mouse_x_old, mouse_y_old;
+  bool mouse_steht;
+  void mousePoint_( GLdouble & oX, GLdouble & oY, GLdouble & oZ,
                   GLdouble & X, GLdouble & Y, GLdouble & Z, int from_mouse );
 public:
   // speed
@@ -272,17 +263,17 @@ public:
   int  blend;                     //!<   -"-
 
   // data informations
-  const char* kanalName() const {
-                      if (nach_farb_namen_.size() &&
-                          (int)nach_farb_namen_.size() > kanal) {
-                        return nach_farb_namen_[kanal].c_str();
+  const char* channelName() const {
+                      if (to_channel_names_.size() &&
+                          (int)to_channel_names_.size() > channel) {
+                        return to_channel_names_[channel].c_str();
                       } else {
                         return "";}  }
-  const char* kanalName(unsigned int i) const {
-                      if (nach_farb_namen_.size()>i) 
-                        return (const char*)nach_farb_namen_[i].c_str();
+  const char* channelName(unsigned int i) const {
+                      if (to_channel_names_.size()>i) 
+                        return (const char*)to_channel_names_[i].c_str();
                       else  return _("not available"); }
-  unsigned int kanaele() {return (unsigned int)nach_farb_namen_.size(); }
+  unsigned int channel_count() {return (unsigned int)to_channel_names_.size(); }
 };
 
 
