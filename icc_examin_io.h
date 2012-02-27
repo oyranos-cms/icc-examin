@@ -34,7 +34,7 @@
 #include "icc_gl.h"
 #include "icc_kette.h"
 #include "icc_oyranos.h"
-#include "icc_modell_beobachter.h"
+#include "icc_model_observer.h"
 #include "icc_thread_daten.h"
 
 #include <string>

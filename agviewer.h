@@ -39,16 +39,16 @@
 #else
 #  include <GL/glu.h> // added for FLTK
 #endif
-#include "icc_modell_beobachter.h"
+#include "icc_model_observer.h"
 
-class GL_Ansicht;
+class GL_View;
 
-class Agviewer : public icc_examin_ns::Modell
+class Agviewer : public icc_examin_ns::Model
 {
   public:
-  GL_Ansicht* parent;
+  GL_View* parent;
 
-  Agviewer (GL_Ansicht* p)  {
+  Agviewer (GL_View* p)  {
     parent = p;
 /***************************************************************/
 /************************** SETTINGS ***************************/
@@ -105,11 +105,11 @@ class Agviewer : public icc_examin_ns::Modell
 
           downb = -1;
           AdjustingAzEl = 0;
-          darf_bewegen_ = false;
-          duenn = false;
+          can_move_ = false;
+          thin = false;
           }
 
-  void reparent( GL_Ansicht* p ) { parent = p; }
+  void reparent( GL_View* p ) { parent = p; }
   
   ~Agviewer () {; }
 
@@ -158,7 +158,7 @@ class Agviewer : public icc_examin_ns::Modell
 
 
   // thin slice visualisation
- bool duenn;
+ bool thin;
 
  /*
   * agvViewTransform basically does the appropriate gluLookAt() for the 
@@ -176,8 +176,8 @@ class Agviewer : public icc_examin_ns::Modell
   void agvMove_(void);
   //static void agvMove_statisch(void* agv);
 
-  //! Falls das Fenster sichtbar ist kann gedreht werden
-  bool darf_bewegen_;
+  //! allow to rotate
+  bool can_move_;
 
 
  /*
@@ -283,9 +283,9 @@ public:
   int redisplayWindow() { return RedisplayWindow; }
   void setIdle(bool set);
 
-  /* gebe allen Beobachtern eine Zeichenaufforderung */
-  void benachrichtigen (int infos)
-                        { icc_examin_ns::Modell::benachrichtigen( infos ); }
+  /* send all observers a draw message */
+  void notify (int infos)
+                        { icc_examin_ns::Model::notify( infos ); }
 
   private:
    /* If AllowIdle is 1 it means AGV will install its own idle which

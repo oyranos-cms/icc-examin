@@ -36,8 +36,8 @@
 /*
  *  mode of work
  *
- *  The class modell provides the means to observe a condition.
- *  Observers of the class beobachter can subscribe to changes in modell.
+ *  The class model provides the means to observe a condition.
+ *  Observers of the class beobachter can subscribe to changes in model.
  *  A simple whole number informs about the changing state.
  *  It is important to know what kind the model is and to interprete the
  *  obtained number, possibly as a enumeration.
@@ -55,42 +55,42 @@
 
 namespace icc_examin_ns {
 
-  class Modell;
+  class Model;
 
-  class Beobachter
+  class Observer
   {
-      std::list<Modell*> modell_;
+      std::list<Model*> model_;
     protected:
-      virtual ~Beobachter();
+      virtual ~Observer();
     public:
-      Beobachter();
-      virtual void nachricht ( Modell* modell , int infos );
-      void modellFort ( Modell* modell );
-      void modellDazu ( Modell* modell );
+      Observer();
+      virtual void message ( Model* model , int infos );
+      void modelDel ( Model* model );
+      void modelAdd ( Model* model );
   };
 
-  class Modell
+  class Model
   {
-    friend class Beobachter;
+    friend class Observer;
     protected:
-      Modell();
-      void beobachterDazu(Beobachter* beo);
-      void beobachterFort(Beobachter* beo);
-      void benachrichtigen(int infos);
+      Model();
+      void observerAdd(Observer* beo);
+      void observerDel(Observer* beo);
+      void notify(int infos);
 
-      virtual ~Modell();
+      virtual ~Model();
     private:
-      std::list<Beobachter*> beobachter_;
+      std::list<Observer*> observer_;
   };
 
-  class EinModell : public Modell
+  class aModel : public Model
   {
     public:
-      EinModell() { ; }
-      ~EinModell() { ; }
-      void beobachterDazu(Beobachter* beo) { Modell::beobachterDazu(beo); }
-      void beobachterFort(Beobachter* beo) { Modell::beobachterFort(beo); }
-      void benachrichtigen(int infos)      { Modell::benachrichtigen(infos); }
+      aModel() { ; }
+      ~aModel() { ; }
+      void observerAdd(Observer* beo) { Model::observerAdd(beo); }
+      void observerDel(Observer* beo) { Model::observerDel(beo); }
+      void notify(int infos)          { Model::notify(infos); }
   };
 
 }

@@ -68,7 +68,7 @@ decl {class TagDrawings;
 class TagBrowser;
 class TagTexts;
 class TableChoice;
-class GL_Ansicht;} {public
+class GL_View;} {public
 } 
 
 decl {using namespace icc_examin_ns;} {} 
@@ -595,7 +595,7 @@ DBG_NUM_S("Show Log window")}
             xywh {0 25 385 470} box THIN_DOWN_BOX resizable
             code0 {o->hide();}
             code1 {o->typ( 1 ); // wandert ins 1. Nebenfenster}
-            class GL_Ansicht
+            class GL_View
           }
           Fl_Group DD_box_stat_oy {open
             xywh {0 495 385 25}
@@ -872,7 +872,7 @@ DBG_NUM_S("Show Log window")}
                         xywh {0 185 360 310} align 4 resizable
                         code0 {o->hide();}
                         code1 {o->typ( 2 ); // bleibt zumeist im Hauptfenster}
-                        class GL_Ansicht
+                        class GL_View
                       }
                       Fl_Pack table_gl_button_pack {open
                         xywh {360 185 25 310}
@@ -1139,7 +1139,7 @@ DBG_NUM_S("Show Log window")}
                        w,h );
       o->copy_label( names_short[ kanal ] );
       o->callback( (Fl_Callback*)table_gl_menueCb_ );
-      o->user_data( (void*)(intptr_t)(GL_Ansicht::MENU_MAX + kanal) );
+      o->user_data( (void*)(intptr_t)(GL_View::MENU_MAX + kanal) );
       o->tooltip( icc_strdup_m( names[ kanal ] ) );
       o->when(FL_WHEN_RELEASE);
       if(i-1 == actual)

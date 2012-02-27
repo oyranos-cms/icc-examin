@@ -226,7 +226,7 @@ ICCexamin::ICCexamin ()
 #endif
   oyMessageFuncSet( iccMessageFunc );
 
-  alle_gl_fenster = new icc_examin_ns::EinModell;
+  alle_gl_fenster = new icc_examin_ns::aModel;
   icc_betrachter = new ICCfltkBetrachter;
   io_ = new ICCexaminIO;
   profile.init();
@@ -401,8 +401,8 @@ ICCexamin::start (int argc, char** argv)
 
   DBG_PROG
 
-  modellDazu( /*ICCkette*/&profile ); // wird in nachricht ausgewertet
-  modellDazu( /*GL_Ansicht*/icc_betrachter->DD_farbraum);
+  modelAdd( /*ICCkette*/&profile ); // will be handled in message
+  modelAdd( /*GL_View*/icc_betrachter->DD_farbraum);
 
   Fl::add_handler(event_handler);
   MyFl_Double_Window::event_handler = event_handler;
@@ -490,7 +490,7 @@ ICCexamin::zeig3D ()
 { DBG_PROG_START
 
   MyFl_Double_Window *w = icc_betrachter->DD;
-  GL_Ansicht *wid = icc_betrachter->DD_farbraum;
+  GL_View *wid = icc_betrachter->DD_farbraum;
 
   if(!icc_waehler_->visible())
     icc_waehler_->show();
@@ -598,12 +598,12 @@ ICCexamin::showTables ()
 
       w->user_data((void*)(0));
       Fl_Group *g = new Fl_Group(0,0,lw,lh);
-        GL_Ansicht *gl = 
-          new GL_Ansicht (*icc_betrachter->table_gl); //(0,0,lw,lh);
+        GL_View *gl = 
+          new GL_View (*icc_betrachter->table_gl); //(0,0,lw,lh);
 
         /* Workaround: after copy the same glLists appeared on copied context */
         icc_betrachter->table_gl->resetContexts();
-        GL_Ansicht::getAgv(gl, icc_betrachter->table_gl);
+        GL_View::getAgv(gl, icc_betrachter->table_gl);
         gl->init( icc_betrachter->table_gl->id() );
         gl->copy( *icc_betrachter->table_gl );
         gl->kanal = i;
@@ -624,9 +624,9 @@ ICCexamin::showTables ()
   DBG_PROG_ENDE
 }
 
-/** virtual from icc_examin_ns::Beobachter:: */
+/** virtual from icc_examin_ns::Observer:: */
 void
-ICCexamin::nachricht( Modell* modell , int info )
+ICCexamin::message( Model* model , int info )
 {
   DBG_PROG_START
 
@@ -637,8 +637,8 @@ ICCexamin::nachricht( Modell* modell , int info )
   }
 
   DBG_THREAD_V( info )
-  // identify Modell
-  ICCkette* k = dynamic_cast<ICCkette*>(modell);
+  // identify Model
+  ICCkette* k = dynamic_cast<ICCkette*>(model);
   if(k && (k->size() > info))
   {
     DBG_PROG_S( "news from ICCkette" )
@@ -699,11 +699,11 @@ ICCexamin::nachricht( Modell* modell , int info )
     }
     fortschritt(1.0 , 1.0);
     fortschritt(1.1 , 1.0);
-    Beobachter::nachricht(modell, info);
+    Observer::message(model, info);
   }
 
 
-  GL_Ansicht* gl = dynamic_cast<GL_Ansicht*>(modell);
+  GL_View* gl = dynamic_cast<GL_View*>(model);
   if(gl && info == GL_MOUSE_HIT3D)
   {
     // find a CGATS/ncl2 tag_text / inspect_html line from a 3D(Lab) mouse hit

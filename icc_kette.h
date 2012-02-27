@@ -33,7 +33,7 @@
 #include <string>
 #include "icc_profile.h"
 #include "icc_utils.h"
-#include "icc_modell_beobachter.h"
+#include "icc_model_observer.h"
 #include "icc_thread_daten.h"
 #include "icc_speicher.h"
 
@@ -42,7 +42,7 @@ class ICCkette;
 extern ICCkette profile;
 
 class ICCkette : public icc_examin_ns::ThreadDaten,
-                 public icc_examin_ns::Modell
+                 public icc_examin_ns::Model
 {
   public:
                  ICCkette  ();

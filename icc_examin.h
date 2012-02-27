@@ -35,7 +35,7 @@
 #include "icc_list.h"
 #include "icc_kette.h"
 #include "icc_oyranos.h"
-#include "icc_modell_beobachter.h"
+#include "icc_model_observer.h"
 #include "icc_thread_daten.h"
 
 #include <string>
@@ -60,7 +60,7 @@ namespace icc_examin_ns {
  *  The class coordinates the user interface (UI) and data events,
  *  the start of the (fltk-)main loop and the threads.
  */
-class ICCexamin : public icc_examin_ns::Beobachter,
+class ICCexamin : public icc_examin_ns::Observer,
                   public icc_examin_ns::ThreadDaten
 {
   friend class ICCexaminIO;
@@ -119,7 +119,7 @@ class ICCexamin : public icc_examin_ns::Beobachter,
     void         tableChannel ( int channel, int clutplane );
     ICClist<int> kurve_umkehren;
     enum { GL_STOP, GL_ZEICHNEN, GL_AUFFRISCHEN, GL_MOUSE_HIT3D }; //!< GL waiting
-    icc_examin_ns::EinModell  * alle_gl_fenster;   //!< all Gl windows
+    icc_examin_ns::aModel  * alle_gl_fenster;   //!< all Gl windows
   private:
     int  _item,  _table_item;  //!< @brief selected profil items
     int  _zeig_prueftabelle,
@@ -195,8 +195,8 @@ class ICCexamin : public icc_examin_ns::Beobachter,
     std::string moniName();
     void standardGamma ();
   public:
-      //! virtual from icc_examin_ns::Beobachter::
-    void nachricht( icc_examin_ns::Modell* modell , int infos );
+      //! virtual from icc_examin_ns::Observer::
+    void message( icc_examin_ns::Model* model , int infos );
 
     // GUI functions
     double fortschritt( void );

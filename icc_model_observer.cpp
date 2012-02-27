@@ -34,49 +34,49 @@
 #include <string>
 #include <unistd.h> // intptr_t
 
-#include "icc_modell_beobachter.h"
+#include "icc_model_observer.h"
 
 
 using namespace icc_examin_ns;
 
 // --- observer ---
 
-Beobachter::Beobachter()
+Observer::Observer()
 {
   DBG_PROG_START
   DBG_PROG_ENDE
 }
 
-Beobachter::~Beobachter()
+Observer::~Observer()
 {
   DBG_PROG_START
-  std::list<Modell*>::iterator m_it;
-  for(m_it = modell_.begin(); m_it != modell_.end(); ++m_it)
+  std::list<Model*>::iterator m_it;
+  for(m_it = model_.begin(); m_it != model_.end(); ++m_it)
   {
-    (*m_it)->beobachterFort(this);
+    (*m_it)->observerDel(this);
   }
   DBG_PROG_ENDE
 }
 
 void
-Beobachter::modellDazu ( Modell* modell )
+Observer::modelAdd ( Model* model )
 {
   DBG_PROG_START
-  modell_.push_back (modell);
-  modell->beobachterDazu(this);
+  model_.push_back (model);
+  model->observerAdd(this);
   DBG_PROG_ENDE
 }
 
 void
-Beobachter::modellFort(Modell* modell)
+Observer::modelDel(Model* model)
 {
   DBG_PROG_START
-  std::list<Modell*>::iterator m_it;
-  for(m_it = modell_.begin(); m_it != modell_.end(); ++m_it)
+  std::list<Model*>::iterator m_it;
+  for(m_it = model_.begin(); m_it != model_.end(); ++m_it)
   {
-    if(modell == *m_it)
+    if(model == *m_it)
     {
-      modell_.erase ( m_it );
+      model_.erase ( m_it );
       break;
     }
   }
@@ -90,7 +90,7 @@ Beobachter::modellFort(Modell* modell)
     in the derived class to implement
  */
 void
-Beobachter::nachricht ( Modell* modell , int infos )
+Observer::message ( Model* model , int infos )
 {
   DBG_PROG;
 }
@@ -98,49 +98,49 @@ Beobachter::nachricht ( Modell* modell , int infos )
 
 // --- model ---
 
-Modell::Modell()
+Model::Model()
 {
   DBG_PROG_START
   DBG_PROG_ENDE
 }
 
-Modell::~Modell()
+Model::~Model()
 {
   DBG_PROG_START
   // unregister with all observers
-  std::list<Beobachter*>::iterator it;
-  for(it = beobachter_.begin(); it != beobachter_.end(); ++it)
+  std::list<Observer*>::iterator it;
+  for(it = observer_.begin(); it != observer_.end(); ++it)
   {
-    (*it)->modellFort(this);
+    (*it)->modelDel(this);
   }
   DBG_PROG_ENDE
 }
 
 void
-Modell::beobachterDazu(Beobachter* beo)
+Model::observerAdd(Observer* beo)
 {
   DBG_PROG_START
-  beobachter_.push_back (beo);
+  observer_.push_back (beo);
   DBG_PROG_ENDE
 }
 
 void
-Modell::beobachterFort(Beobachter* beo)
+Model::observerDel(Observer* beo)
 {
   DBG_PROG_START
-  if(!beobachter_.size())
+  if(!observer_.size())
     return;
 
   // delete single observer from the list
-  std::list<Beobachter*>::iterator it = beobachter_.begin();
+  std::list<Observer*>::iterator it = observer_.begin();
   intptr_t isis = (intptr_t)*it;
   if(isis > 0)
   {
-    for(; it != beobachter_.end(); ++it)
+    for(; it != observer_.end(); ++it)
     {
       if(beo == *it)
       {
-        beobachter_.erase ( it );
+        observer_.erase ( it );
         break;
       }
     }
@@ -152,13 +152,13 @@ Modell::beobachterFort(Beobachter* beo)
 
 /** @brief inform all my observers */
 void
-Modell::benachrichtigen(int infos)
+Model::notify(int infos)
 {
   DBG_PROG_START
-  std::list<Beobachter*>::iterator it;
-  for(it = beobachter_.begin(); it != beobachter_.end(); ++it)
+  std::list<Observer*>::iterator it;
+  for(it = observer_.begin(); it != observer_.end(); ++it)
   {
-    (*it)->nachricht(this, infos);
+    (*it)->message(this, infos);
   }
   DBG_PROG_ENDE
 }

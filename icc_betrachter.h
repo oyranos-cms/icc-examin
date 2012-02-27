@@ -29,7 +29,7 @@ class TagDrawings;
 class TagBrowser;
 class TagTexts;
 class TableChoice;
-class GL_Ansicht;
+class GL_View;
 const char* iccReadInfo(char* filename);
 
 class TagBrowser : public Fl_Hold_Browser {
@@ -175,7 +175,7 @@ private:
   void cb_Log_i(Fl_Menu_*, void*);
   static void cb_Log(Fl_Menu_*, void*);
 public:
-  GL_Ansicht *DD_farbraum;
+  GL_View *DD_farbraum;
   Oy_Fl_Group *DD_box_stat_oy;
   Fl_Box *DD_box_stat;
   My_Fl_Box *no_box2;
@@ -281,7 +281,7 @@ private:
   static void cb_table_text(TagTexts*, void*);
 public:
   Fl_Group *table_gl_group;
-  GL_Ansicht *table_gl;
+  GL_View *table_gl;
   Fl_Pack *table_gl_button_pack;
   Fl_Button *table_gl_alltables_button;
 private:

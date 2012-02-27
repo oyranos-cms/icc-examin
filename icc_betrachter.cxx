@@ -883,7 +883,7 @@ ard"));
         DD_menueleiste->menu(menu_DD_menueleiste);
       } // Fl_Menu_Bar* DD_menueleiste
       { Fl_Tile* o = new Fl_Tile(0, 25, 385, 495);
-        { GL_Ansicht* o = DD_farbraum = new GL_Ansicht(0, 25, 385, 470);
+        { GL_View* o = DD_farbraum = new GL_View(0, 25, 385, 470);
           DD_farbraum->box(FL_THIN_DOWN_BOX);
           DD_farbraum->color((Fl_Color)FL_BACKGROUND_COLOR);
           DD_farbraum->selection_color((Fl_Color)FL_BACKGROUND_COLOR);
@@ -896,7 +896,7 @@ ard"));
           Fl_Group::current()->resizable(DD_farbraum);
           o->hide();
           o->typ( 1 ); // wandert ins 1. Nebenfenster
-        } // GL_Ansicht* DD_farbraum
+        } // GL_View* DD_farbraum
         { DD_box_stat_oy = new Oy_Fl_Group(0, 495, 385, 25);
           DD_box_stat_oy->box(FL_NO_BOX);
           DD_box_stat_oy->color((Fl_Color)FL_BACKGROUND_COLOR);
@@ -1039,7 +1039,7 @@ ard"));
                 o->box(FL_FLAT_BOX);
                 o->align(FL_ALIGN_LEFT);
                 } // Fl_Box* o
-                { GL_Ansicht* o = table_gl = new GL_Ansicht(0, 185, 360, 310);
+                { GL_View* o = table_gl = new GL_View(0, 185, 360, 310);
                 table_gl->box(FL_NO_BOX);
                 table_gl->color((Fl_Color)FL_BACKGROUND_COLOR);
                 table_gl->selection_color((Fl_Color)FL_BACKGROUND_COLOR);
@@ -1052,7 +1052,7 @@ ard"));
                 Fl_Group::current()->resizable(table_gl);
                 o->hide();
                 o->typ( 2 ); // bleibt zumeist im Hauptfenster
-                } // GL_Ansicht* table_gl
+                } // GL_View* table_gl
                 { table_gl_button_pack = new Fl_Pack(360, 185, 25, 310);
                 { Fl_Button* o = table_gl_alltables_button = new Fl_Button(360, 185, 25, 25, _("o"));
                 table_gl_alltables_button->tooltip(_("Show all channels of this table a own window."));
@@ -1355,7 +1355,7 @@ void ICCfltkBetrachter::table_gl_boxAdd( const char ** names_short, const char**
                        w,h );
       o->copy_label( names_short[ kanal ] );
       o->callback( (Fl_Callback*)table_gl_menueCb_ );
-      o->user_data( (void*)(intptr_t)(GL_Ansicht::MENU_MAX + kanal) );
+      o->user_data( (void*)(intptr_t)(GL_View::MENU_MAX + kanal) );
       o->tooltip( icc_strdup_m( names[ kanal ] ) );
       o->when(FL_WHEN_RELEASE);
       if(i-1 == actual)

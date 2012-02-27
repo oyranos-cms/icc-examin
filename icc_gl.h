@@ -41,7 +41,7 @@
 #else
 #  include <GL/glu.h> // added for FLTK
 #endif
-#include "icc_modell_beobachter.h"
+#include "icc_model_observer.h"
 #include "bsp/bsp.h"
 //#include "Fl_Slot.H"
 
@@ -56,10 +56,10 @@ class ICCnetzList: public ICClist,
                    public icc_examin_ns::ThreadDaten {
 };*/
 
-class GL_Ansicht : public Fl_Gl_Window,
+class GL_View : public Fl_Gl_Window,
                    public icc_examin_ns::ThreadDaten,
-                   public icc_examin_ns::Beobachter,
-                   public icc_examin_ns::Modell {
+                   public icc_examin_ns::Observer,
+                   public icc_examin_ns::Model {
   // internal data
     //! position: colour1, colour2, colour3, colour channel No., value
   ICClist<ICClist<ICClist<ICClist<double> > > > tabelle_;
@@ -132,13 +132,13 @@ private:
   int DrawAxes;
 
 public:
-  GL_Ansicht(int X,int Y,int W,int H);
-  GL_Ansicht(int X,int Y,int W,int H, const char *l);
-  ~GL_Ansicht();
-  GL_Ansicht (const GL_Ansicht & gl)
+  GL_View(int X,int Y,int W,int H);
+  GL_View(int X,int Y,int W,int H, const char *l);
+  ~GL_View();
+  GL_View (const GL_View & gl)
     : Fl_Gl_Window(0,0,gl.w(),gl.h()) { id_ = ref_; ++ref_; copy(gl); }
-  GL_Ansicht& copy(const GL_Ansicht& gl);
-  GL_Ansicht& operator = (const GL_Ansicht& gl) { return copy(gl); }
+  GL_View& copy(const GL_View& gl);
+  GL_View& operator = (const GL_View& gl) { return copy(gl); }
 private:
   void init_();
   void zero_();
@@ -152,7 +152,7 @@ public:
   int  typ()   {return typ_; } //!< window ID / display mode
   void typ(int t_)   { typ_ = t_; }
 
-  static Agviewer* getAgv(GL_Ansicht *me, GL_Ansicht *referenz);
+  static Agviewer* getAgv(GL_View *me, GL_View *referenz);
   void resetContexts ();
 
   // fltk virtual
@@ -171,7 +171,7 @@ public:
   void show();
   void hide();
   // redraw request from agv_
-  void nachricht( icc_examin_ns::Modell* modell, int info );
+  void nachricht( icc_examin_ns::Model* modell, int info );
 
   // import data
 /*  void hineinPunkte (ICClist<double> &vect,
@@ -253,7 +253,7 @@ public:
   void darfBewegen(int d);
   void invalidate(void) { Fl_Gl_Window::invalidate(); valid_ = 0; }
 private:
-  static void bewegenStatisch_(void* GL_Ansicht);
+  static void bewegenStatisch_(void* GL_View);
 private:
   double zeit_diff_;        //!< seconds per frame
   double zeit_;

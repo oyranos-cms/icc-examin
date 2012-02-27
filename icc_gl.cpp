@@ -117,7 +117,7 @@ void zeichneKegel( GLdouble breite, GLdouble hoehe, GLint seiten,
 #define Znacha(Z) ((Z) / a_darstellungs_breite + .5)
 #define Xnachb(X) ((X) / b_darstellungs_breite + .5)
 
-const double GL_Ansicht::std_vorder_schnitt = 4.2;
+const double GL_View::std_vorder_schnitt = 4.2;
 #ifdef HAVE_FTGL
 FTFont *font = NULL, *ortho_font = NULL;
 #endif
@@ -200,9 +200,9 @@ void drawText( FTFont * f, const char * in_txt )
 }
 #endif
 
-int GL_Ansicht::ref_ = 0;
+int GL_View::ref_ = 0;
 
-GL_Ansicht::GL_Ansicht(int X,int Y,int W,int H)
+GL_View::GL_View(int X,int Y,int W,int H)
   : Fl_Gl_Window(X,Y,W,H)
 { DBG_PROG_START
   id_ = ref_;
@@ -211,7 +211,7 @@ GL_Ansicht::GL_Ansicht(int X,int Y,int W,int H)
   DBG_PROG_ENDE
 }
 
-GL_Ansicht::GL_Ansicht(int X,int Y,int W,int H, const char *l)
+GL_View::GL_View(int X,int Y,int W,int H, const char *l)
   : Fl_Gl_Window(X,Y,W,H,l)
 { DBG_PROG_START
   id_ = ref_;
@@ -221,7 +221,7 @@ GL_Ansicht::GL_Ansicht(int X,int Y,int W,int H, const char *l)
 }
 
 void
-GL_Ansicht::zero_()
+GL_View::zero_()
 { DBG_PROG_START
 
   initialised_ = false;
@@ -285,7 +285,7 @@ GL_Ansicht::zero_()
 }
 
 void
-GL_Ansicht::init_()
+GL_View::init_()
 { DBG_PROG_START
 
   zero_();
@@ -298,7 +298,7 @@ GL_Ansicht::init_()
   DBG_PROG_ENDE
 }
 
-GL_Ansicht::~GL_Ansicht()
+GL_View::~GL_View()
 { DBG_PROG_START
   if (gl_listen_[RASTER]) {
     DBG_PROG_S( "delete glListe " << gl_listen_[RASTER] )
@@ -376,7 +376,7 @@ GL_Ansicht::~GL_Ansicht()
   DBG_PROG_ENDE
 }
 
-void GL_Ansicht::resetContexts ()
+void GL_View::resetContexts ()
 {
   /* reset the to be copied contexts */
   for(int i = 0; i < DL_MAX; ++i)
@@ -388,8 +388,8 @@ void GL_Ansicht::resetContexts ()
 }
 
 
-GL_Ansicht&
-GL_Ansicht::copy (const GL_Ansicht & gl)
+GL_View&
+GL_View::copy (const GL_View & gl)
 { DBG_PROG_START
 
   /* preserve argv_ */
@@ -469,7 +469,7 @@ GL_Ansicht::copy (const GL_Ansicht & gl)
  *  @see http://www.fltk.org/str.php?L1945
  */
 void
-GL_Ansicht::init(int ty)
+GL_View::init(int ty)
 { DBG_PROG_START
 
   if(initialised_)
@@ -571,7 +571,7 @@ GL_Ansicht::init(int ty)
 
 /** @brief localise the position */
 void
-GL_Ansicht::mausPunkt_( GLdouble &oX, GLdouble &oY, GLdouble &oZ,
+GL_View::mausPunkt_( GLdouble &oX, GLdouble &oY, GLdouble &oZ,
                         GLdouble &X, GLdouble &Y, GLdouble &Z, int from_mouse )
 {
   DBG_PROG_START  
@@ -579,36 +579,36 @@ GL_Ansicht::mausPunkt_( GLdouble &oX, GLdouble &oY, GLdouble &oZ,
   // how far is the next object in this direction, very laborious
   GLfloat zBuffer = 0;
   glReadPixels((GLint)maus_x_,(GLint)h()-maus_y_,1,1,GL_DEPTH_COMPONENT, GL_FLOAT, &zBuffer);
-  GLdouble modell_matrix[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+  GLdouble model_matrix[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
            projektions_matrix[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
   GLint bildschirm[4] = {0,0,0,0};
-  glGetDoublev(GL_MODELVIEW_MATRIX, modell_matrix);
+  glGetDoublev(GL_MODELVIEW_MATRIX, model_matrix);
   glGetDoublev(GL_PROJECTION_MATRIX, projektions_matrix);
   glGetIntegerv(GL_VIEWPORT, bildschirm);
   if(from_mouse)
     gluUnProject(maus_x_, h()-maus_y_, zBuffer,
-                 modell_matrix, projektions_matrix, bildschirm,
+                 model_matrix, projektions_matrix, bildschirm,
                  &oX, &oY, &oZ);
 
 
   DBG_PROG_V( "X: "<<oX<<" Y: "<<oY<<" Z: "<<oZ<<" "<<id_ )
 
   gluProject( oX, oY, oZ,
-              modell_matrix, projektions_matrix, bildschirm,
+              model_matrix, projektions_matrix, bildschirm,
               &X,&Y,&Z);
   DBG_PROG_ENDE
 }
 
 static int zahl = 0;
 void
-GL_Ansicht::bewegenStatisch_ (void* gl_a)
+GL_View::bewegenStatisch_ (void* gl_a)
 {
   DBG_ICCGL_START
 
-  GL_Ansicht *gl_ansicht = (GL_Ansicht*)gl_a;
+  GL_View *gl_ansicht = (GL_View*)gl_a;
 
   if (!gl_ansicht) {
-      WARN_S( "no GL_Ansicht provided " << gl_ansicht->id_ )
+      WARN_S( "no GL_View provided " << gl_ansicht->id_ )
       return;
   }
 
@@ -643,10 +643,10 @@ GL_Ansicht::bewegenStatisch_ (void* gl_a)
   DBG_ICCGL_ENDE
 }
 
-bool GL_Ansicht::darfBewegen()        { return agv_ && agv_->darf_bewegen_; }
-void GL_Ansicht::darfBewegen(int d)
+bool GL_View::darfBewegen()        { return agv_ && agv_->can_move_; }
+void GL_View::darfBewegen(int d)
 {
-  agv_->darf_bewegen_ = d?true:false; 
+  agv_->can_move_ = d?true:false; 
   if (d)
     Fl::add_timeout(0.04, bewegenStatisch_,this);
 
@@ -654,20 +654,20 @@ void GL_Ansicht::darfBewegen(int d)
 }
 
 void
-GL_Ansicht::bewegen (bool setze)
+GL_View::bewegen (bool setze)
 {
   DBG_ICCGL_START
   darfBewegen( setze );
   DBG_ICCGL_V( setze )
   if(!setze) {
     agv_->agvSwitchMoveMode (Agviewer::AGV_STOP);
-    agv_->benachrichtigen(ICCexamin::GL_STOP);
+    agv_->notify(ICCexamin::GL_STOP);
   }
   DBG_ICCGL_ENDE
 }
 
 int
-GL_Ansicht::auffrischen_()
+GL_View::auffrischen_()
 {
   DBG_PROG_START
 
@@ -680,22 +680,22 @@ GL_Ansicht::auffrischen_()
 }
 
 void
-GL_Ansicht::hide()
+GL_View::hide()
 {   
   DBG_PROG_START
   DBG_PROG_V( visible()<<" "<<shown() )
-  icc_examin->alle_gl_fenster->beobachterFort(this);
+  icc_examin->alle_gl_fenster->observerDel(this);
   icc_oyranos.colourServerRegionSet( this, NULL, window_geometry, 1 );
   Fl_Gl_Window::hide();
   DBG_PROG_ENDE
 }     
 
 void
-GL_Ansicht::show()
+GL_View::show()
 {   
   DBG_PROG_START
   DBG_PROG_V( visible()<<" "<<shown() )
-  icc_examin->alle_gl_fenster->beobachterDazu(this);
+  icc_examin->alle_gl_fenster->observerAdd(this);
   if( window()->visible() )
     Fl_Gl_Window::show();
   DBG_PROG_ENDE
@@ -704,7 +704,7 @@ GL_Ansicht::show()
 
 /** recive of a drawing news */
 void
-GL_Ansicht::nachricht(icc_examin_ns::Modell* modell, int info)
+GL_View::nachricht(icc_examin_ns::Model* model, int info)
 {
   DBG_PROG_START
   DBG_PROG_V( info<<" "<<window()->visible()<<" "<<visible()<<" "<<shown()<<" "<<id_ )
@@ -733,7 +733,7 @@ GL_Ansicht::nachricht(icc_examin_ns::Modell* modell, int info)
  *  this makes moving the viewes syncronised
  */
 void
-GL_Ansicht::redraw()
+GL_View::redraw()
 {
   DBG_PROG_START
 
@@ -751,12 +751,12 @@ GL_Ansicht::redraw()
   }
 
   if(agv_)
-    agv_->benachrichtigen(ICCexamin::GL_ZEICHNEN);
+    agv_->notify(ICCexamin::GL_ZEICHNEN);
   DBG_PROG_ENDE
 }
 
 void
-GL_Ansicht::draw()
+GL_View::draw()
 {
   DBG_PROG_START
   --zahl;
@@ -788,7 +788,7 @@ GL_Ansicht::draw()
 }
 
 Agviewer*
-GL_Ansicht::getAgv( GL_Ansicht *ansicht, GL_Ansicht *referenz )
+GL_View::getAgv( GL_View *ansicht, GL_View *referenz )
 { DBG_PROG_START
   Agviewer *agv = NULL;
 
@@ -802,18 +802,18 @@ GL_Ansicht::getAgv( GL_Ansicht *ansicht, GL_Ansicht *referenz )
     agv = new Agviewer (ansicht);
 
   if(ansicht->agv_)
-    ansicht->modellFort( ansicht->agv_ );
+    ansicht->modelDel( ansicht->agv_ );
 
   ansicht->agv_ = agv;
 
-  ansicht->modellDazu( ansicht->agv_ );
+  ansicht->modelAdd( ansicht->agv_ );
 
   DBG_ICCGL_ENDE
   return agv;
 }
 
 void
-GL_Ansicht::GLinit_()
+GL_View::GLinit_()
 { DBG_PROG_START
   GLfloat mat_ambuse[] = { 0.2f, 0.2f, 0.2f, 1.0f };
   GLfloat mat_specular[] = { 1.0f, 1.0f, 1.0f, 1.0f };
@@ -1018,7 +1018,7 @@ zeichneKegel( GLdouble breite, GLdouble hoehe, GLint seiten ,
 
 
 void
-GL_Ansicht::zeichneKoordinaten_()
+GL_View::zeichneKoordinaten_()
 { DBG_ICCGL_START
   char text[256];
 
@@ -1078,7 +1078,7 @@ GL_Ansicht::zeichneKoordinaten_()
 }
 
 int
-GL_Ansicht::erstelleGLListen_()
+GL_View::erstelleGLListen_()
 { DBG_PROG_START
 
   if(!frei())
@@ -1152,7 +1152,7 @@ GL_Ansicht::erstelleGLListen_()
 }
 
 void
-GL_Ansicht::textGarnieren_()
+GL_View::textGarnieren_()
 {
   DBG_PROG_START
   char text[256];
@@ -1205,7 +1205,7 @@ GL_Ansicht::textGarnieren_()
 }
 
 void
-GL_Ansicht::garnieren_()
+GL_View::garnieren_()
 {
   DBG_PROG_START
 
@@ -1217,7 +1217,7 @@ GL_Ansicht::garnieren_()
     glDeleteLists (gl_listen_[HELFER], 1);
   }
 
-  GL_Ansicht::gl_listen_[HELFER] = glGenLists(1);
+  GL_View::gl_listen_[HELFER] = glGenLists(1);
 
   glNewList( gl_listen_[HELFER], GL_COMPILE); DBG_PROG_V( gl_listen_[HELFER] )
     glLineWidth(strich3*strichmult);
@@ -1334,7 +1334,7 @@ GL_Ansicht::garnieren_()
 }
 
 void
-GL_Ansicht::tabelleAuffrischen()
+GL_View::tabelleAuffrischen()
 { DBG_PROG_START
 
   DBG_PROG_V( tabelle_.size() )
@@ -1841,7 +1841,7 @@ printf("%s:%d %d e:%d,%d,%d,%d\n",__FILE__,__LINE__,m, e[0],e[1],e[2],e[3]);
 }
 
 void
-GL_Ansicht::netzeAuffrischen()
+GL_View::netzeAuffrischen()
 {
   DBG_PROG_START
   MARK( frei(false); )
@@ -2089,7 +2089,7 @@ GL_Ansicht::netzeAuffrischen()
 
 
 void
-GL_Ansicht::iccPoint3d               ( oyPROFILE_e         projection,
+GL_View::iccPoint3d               ( oyPROFILE_e         projection,
                                        double            * vertex,
                                        double              radius )
 {
@@ -2124,7 +2124,7 @@ GL_Ansicht::iccPoint3d               ( oyPROFILE_e         projection,
   
 }
 
-double GL_Ansicht::pointRadius()
+double GL_View::pointRadius()
 {
   double rad = 0.5;
   switch (punktform)
@@ -2138,7 +2138,7 @@ double GL_Ansicht::pointRadius()
 }
 
 void
-GL_Ansicht::punkteAuffrischen()
+GL_View::punkteAuffrischen()
 { DBG_PROG_START
 
   if (gl_listen_[PUNKTE]) {
@@ -2414,7 +2414,7 @@ GL_Ansicht::punkteAuffrischen()
 extern float cieXYZ [471][3]; // in 
 
 void
-GL_Ansicht::zeigeUmrisse_()
+GL_View::zeigeUmrisse_()
 {
   DBG_PROG_START
 
@@ -2553,7 +2553,7 @@ GL_Ansicht::zeigeUmrisse_()
 }
 
 void
-GL_Ansicht::zeigeSpektralband_()
+GL_View::zeigeSpektralband_()
 {
   DBG_PROG_START
 
@@ -2704,7 +2704,7 @@ cpMenueButton (Fl_Menu_Button* m)
 }
 
 void
-GL_Ansicht::menueErneuern_()
+GL_View::menueErneuern_()
 { DBG_PROG_START
   MARK( frei(false); )
 
@@ -2814,7 +2814,7 @@ GL_Ansicht::menueErneuern_()
 }
 
 void
-GL_Ansicht::menueInit_()
+GL_View::menueInit_()
 {
   DBG_PROG_START
   MARK( frei(false); )
@@ -2842,10 +2842,10 @@ GL_Ansicht::menueInit_()
 
 
 /*inline*/ void
-GL_Ansicht::setzePerspektive()
+GL_View::setzePerspektive()
 { //DBG_ICCGL_START
     // camera viewing angle
-    if (agv_->duenn)
+    if (agv_->thin)
       gluPerspective(15, seitenverhaeltnis,
                      vorder_schnitt,
                      vorder_schnitt + schnitttiefe);
@@ -2857,7 +2857,7 @@ GL_Ansicht::setzePerspektive()
 }
 
 void
-GL_Ansicht::fensterForm( )
+GL_View::fensterForm( )
 { DBG_PROG_START
   if(visible()) {
     glViewport(0,0,w(),h());
@@ -2872,7 +2872,7 @@ GL_Ansicht::fensterForm( )
 }
 
 void
-GL_Ansicht::zeichnen()
+GL_View::zeichnen()
 {
   DBG_ICCGL_START
 # if 0
@@ -2938,7 +2938,7 @@ GL_Ansicht::zeichnen()
     // start drawing
     glPushMatrix();
 
-      GL_Ansicht::setzePerspektive();
+      GL_View::setzePerspektive();
 
       /* so this replaces gluLookAt or equiv */
       agv_->agvViewTransform();
@@ -3003,7 +3003,7 @@ GL_Ansicht::zeichnen()
           oyNamedColour_SetColourStd ( mouse_3D_hit, oyEDITING_XYZ,
                                        (oyPointer)d, oyDOUBLE, 0, opts );
           MARK( frei(true); )
-          benachrichtigen( ICCexamin::GL_MOUSE_HIT3D );
+          notify( ICCexamin::GL_MOUSE_HIT3D );
           MARK( frei(false); )
           if(epoint_)
           {
@@ -3358,7 +3358,7 @@ GL_Ansicht::zeichnen()
 }
 
 void
-GL_Ansicht::achsNamen    (ICClist<std::string> achs_namen)
+GL_View::achsNamen    (ICClist<std::string> achs_namen)
 { DBG_PROG_START
   if (achs_namen.size())
     von_farb_namen_ = achs_namen;
@@ -3376,7 +3376,7 @@ GL_Ansicht::achsNamen    (ICClist<std::string> achs_namen)
  *  @brief export our colour spots
  *
  *  The returned oyStructList_s contains the unaltered oyNamedColours_s objects
- *  we obtained in GL_Ansicht::namedColours(x).
+ *  we obtained in GL_View::namedColours(x).
  *  We set the name in the oyStructList_s->oy_ member. You can read it with 
  *  oyranos::oyObject_GetNames. The nick (__FILE__) and name ("colour lists")
  *  are static. The description contains scene informations as follows
@@ -3390,7 +3390,7 @@ GL_Ansicht::achsNamen    (ICClist<std::string> achs_namen)
  *  @since   2005/00/00 (ICC Examin: 0.0.x)
  */
 oyStructList_s*
-GL_Ansicht::namedColours       ()
+GL_View::namedColours       ()
 {
   oyStructList_s * colours;
 
@@ -3428,7 +3428,7 @@ GL_Ansicht::namedColours       ()
 }
 
 void
-GL_Ansicht::namedColours       (oyStructList_s * colours)
+GL_View::namedColours       (oyStructList_s * colours)
 {
   DBG_PROG_START
   MARK( frei(false); )
@@ -3451,7 +3451,7 @@ GL_Ansicht::namedColours       (oyStructList_s * colours)
 }
 
 void
-GL_Ansicht::namedColoursRelease()
+GL_View::namedColoursRelease()
 {
   MARK( frei(false); )
   oyStructList_Release( &colours_ );
@@ -3460,7 +3460,7 @@ GL_Ansicht::namedColoursRelease()
 }
 
 void
-GL_Ansicht::clearNet ()
+GL_View::clearNet ()
 {
   MARK( frei(false); )
   icc_examin_ns::BSPfreeTree(&bsp);
@@ -3473,7 +3473,7 @@ GL_Ansicht::clearNet ()
 
 #if 0
 void
-GL_Ansicht::hineinPunkte       (ICClist<double>      &vect,
+GL_View::hineinPunkte       (ICClist<double>      &vect,
                                 ICClist<std::string> &achs_namen)
 { DBG_PROG_START
 
@@ -3518,7 +3518,7 @@ GL_Ansicht::hineinPunkte       (ICClist<double>      &vect,
 }
 
 void
-GL_Ansicht::hineinPunkte      (ICClist<double>      &vect,
+GL_View::hineinPunkte      (ICClist<double>      &vect,
                                ICClist<float>       &punkt_farben,
                                ICClist<std::string> &achsNamen)
 { DBG_PROG_START
@@ -3536,7 +3536,7 @@ GL_Ansicht::hineinPunkte      (ICClist<double>      &vect,
 }
 
 void
-GL_Ansicht::hineinPunkte      (ICClist<double> &vect,
+GL_View::hineinPunkte      (ICClist<double> &vect,
                                ICClist<float>  &punkt_farben,
                                ICClist<std::string> &farb_namen,
                                ICClist<std::string> &achs_namen)
@@ -3555,7 +3555,7 @@ GL_Ansicht::hineinPunkte      (ICClist<double> &vect,
 #endif
 
 void
-GL_Ansicht::emphasizePoint    (oyNamedColour_s * colour)
+GL_View::emphasizePoint    (oyNamedColour_s * colour)
 { DBG_PROG_START
   // show curve from tag_browser
   MARK( frei(false); )
@@ -3711,7 +3711,7 @@ void drawGLFaceList(FILE *fp,const icc_examin_ns::FACE *faceList)
 }
 
 void
-GL_Ansicht::setBspFaceProperties_( icc_examin_ns::FACE *faceList )
+GL_View::setBspFaceProperties_( icc_examin_ns::FACE *faceList )
 {
   DBG_5_START
 
@@ -3799,7 +3799,7 @@ GL_Ansicht::setBspFaceProperties_( icc_examin_ns::FACE *faceList )
 
 /* updateNet_ takes care of dreiecks_netze.frei */
 void
-GL_Ansicht::setBspProperties_( icc_examin_ns::BSPNODE *bsp )
+GL_View::setBspProperties_( icc_examin_ns::BSPNODE *bsp )
 {
   //DBG_PROG_START
 
@@ -3820,7 +3820,7 @@ GL_Ansicht::setBspProperties_( icc_examin_ns::BSPNODE *bsp )
 
 
 void
-GL_Ansicht::updateNet_()
+GL_View::updateNet_()
 {
   DBG_PROG_START
 
@@ -3838,7 +3838,7 @@ GL_Ansicht::updateNet_()
 }
 
 void
-GL_Ansicht::hineinNetze_       (const icc_examin_ns::ICCThreadList<ICCnetz> & d_n)
+GL_View::hineinNetze_       (const icc_examin_ns::ICCThreadList<ICCnetz> & d_n)
 {
   DBG_PROG_START
 
@@ -3906,7 +3906,7 @@ GL_Ansicht::hineinNetze_       (const icc_examin_ns::ICCThreadList<ICCnetz> & d_
  *                                     0 - not selected, -1 - non existent
  */
 void
-GL_Ansicht::hineinTabelle (ICClist<ICClist<ICClist<ICClist<double> > > > vect,
+GL_View::hineinTabelle (ICClist<ICClist<ICClist<ICClist<double> > > > vect,
                            ICClist<std::string> achs_namen,
                            ICClist<std::string> nach,
                                        ICClist<int>        channels)
@@ -3933,7 +3933,7 @@ GL_Ansicht::hineinTabelle (ICClist<ICClist<ICClist<ICClist<double> > > > vect,
 
 
 void
-GL_Ansicht::menueAufruf ( int value )
+GL_View::menueAufruf ( int value )
 {
   DBG_PROG_START
 
@@ -4034,7 +4034,7 @@ GL_Ansicht::menueAufruf ( int value )
       break;
     case Agviewer::FLYING:
       glStatus(_("left mouse button -> go back"), typ_);
-      agv_->duenn = true;
+      agv_->thin = true;
       break;
     case Agviewer::ICCFLY_L:
       if(typ() == 2) {
@@ -4045,35 +4045,35 @@ GL_Ansicht::menueAufruf ( int value )
         vorder_schnitt = std_vorder_schnitt;
       }
       glStatus(_("left mouse button -> go back"), typ_);
-      agv_->duenn = true;
+      agv_->thin = true;
       break;
     case Agviewer::ICCFLY_a:
       vorder_schnitt = std_vorder_schnitt;
       glStatus(_("left mouse button -> go back"), typ_);
-      agv_->duenn = true;
+      agv_->thin = true;
       break;
     case Agviewer::ICCFLY_b:
       vorder_schnitt = std_vorder_schnitt;
       glStatus(_("left mouse button -> go back"), typ_);
-      agv_->duenn = true;
+      agv_->thin = true;
       break;
     case Agviewer::ICCPOLAR:
-      agv_->duenn = true;
+      agv_->thin = true;
     case Agviewer::POLAR:
       if(typ() == 1)
-        agv_->duenn = true;
+        agv_->thin = true;
       else
-        agv_->duenn = false;
+        agv_->thin = false;
       break;
     case Agviewer::AGV_STOP:
-      agv_->duenn = false;
+      agv_->thin = false;
       glStatus(_("left-/middle-/right mouse button -> rotate/cut/menu"), typ_);
       break;
     }
   }
 
   if(visible()) {
-    icc_examin->alle_gl_fenster->benachrichtigen(ICCexamin::GL_AUFFRISCHEN);
+    icc_examin->alle_gl_fenster->notify(ICCexamin::GL_AUFFRISCHEN);
   }
 
   if(value >= 100)
@@ -4092,7 +4092,7 @@ GL_Ansicht::menueAufruf ( int value )
 #endif
 
 int
-GL_Ansicht::handle( int event )
+GL_View::handle( int event )
 {
   DBG_ICCGL_START
   int mausknopf = Fl::event_state();
@@ -4191,7 +4191,7 @@ GL_Ansicht::handle( int event )
 }
 
 int
-GL_Ansicht::tastatur(int e)
+GL_View::tastatur(int e)
 { DBG_MEM_START
   int found = 0;
   if(!icc_examin->laeuft())
@@ -4339,13 +4339,13 @@ GL_Ansicht::tastatur(int e)
 
 
 void
-GL_Ansicht::c_ ( Fl_Widget* w, void* daten )
+GL_View::c_ ( Fl_Widget* w, void* daten )
 { DBG_ICCGL_START
 
   intptr_t value = (intptr_t) daten;
   DBG_PROG_V( value )
 
-  GL_Ansicht *gl_obj = dynamic_cast<GL_Ansicht*>(w->parent());
+  GL_View *gl_obj = dynamic_cast<GL_View*>(w->parent());
   DBG_MEM_V( (intptr_t)gl_obj )
   DBG_MEM_V( (intptr_t)w->parent() )
   if(!w->parent())
@@ -4364,7 +4364,7 @@ GL_Ansicht::c_ ( Fl_Widget* w, void* daten )
 
 
 int
-GL_Ansicht::hintergrundfarbeZuMenueeintrag( float farbe )
+GL_View::hintergrundfarbeZuMenueeintrag( float farbe )
 {
   int eintrag = MENU_HELLGRAU;
 

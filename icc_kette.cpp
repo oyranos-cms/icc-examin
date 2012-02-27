@@ -151,7 +151,7 @@ ICCkette::einfuegen (const Speicher & prof, int pos)
 #endif
   DBG_PROG_V( dtype )
 
-  int extra_benachrichtigen = -1;
+  int extra_notify = -1;
   // measurement data should be appended after the first profile, as normal
   if(profile_[0].data_type == ICCprofile::ICCprofileDATA)
   {
@@ -186,7 +186,7 @@ ICCkette::einfuegen (const Speicher & prof, int pos)
           // we dont add the measurement to the profiles list
           return erfolg;
         }
-        extra_benachrichtigen = 0;
+        extra_notify = 0;
         continue;
       }
     }
@@ -219,11 +219,11 @@ ICCkette::einfuegen (const Speicher & prof, int pos)
   //icc_examin_ns::lock(__FILE__,__LINE__);
   //if(pos >= 0)
   {
-    if( extra_benachrichtigen >= 0 )
-      benachrichtigen( extra_benachrichtigen );
+    if( extra_notify >= 0 )
+      notify( extra_notify );
   }
   //else
-    /*Modell::*/benachrichtigen( p );
+    /*Modell::*/notify( p );
   //icc_examin_ns::unlock(icc_examin, __FILE__,__LINE__);
   DBG_PROG_ENDE
   return erfolg;

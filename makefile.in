@@ -73,7 +73,7 @@ CPP_HEADERS = \
 	icc_kette.h \
 	icc_list.h \
 	icc_measurement.h \
-	icc_modell_beobachter.h \
+	icc_model_observer.h \
 	icc_oyranos.h \
 	icc_oyranos_extern.h \
 	icc_profile.h \
@@ -107,7 +107,7 @@ COMMON_CPPFILES = \
 	icc_info.cpp \
 	icc_kette.cpp \
 	icc_measurement.cpp \
-	icc_modell_beobachter.cpp \
+	icc_model_observer.cpp \
 	icc_oyranos.cpp \
 	icc_profile.cpp \
 	icc_profile_header.cpp \

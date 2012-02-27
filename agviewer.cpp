@@ -12,7 +12,7 @@
  * http://www.cs.hmc.edu/people/pwinston
  */
 
-// ICC Kopfdateien und Definitionen
+// ICC header and definitions
 #include "icc_utils.h"
 #include "icc_info.h"
 
@@ -55,7 +55,7 @@ void
 Agviewer::agvInit(int window)
 { DBG_PROG_START
   RedisplayWindow = window;
-  duenn = false; // ICC Schnitt - Kai-Uwe
+  thin = false; // gamut cut - Kai-Uwe
   DBG_PROG_ENDE
 }
 
@@ -193,7 +193,7 @@ Agviewer::MoveOn(int v)
              (AzSpin != 0 || ElSpin != 0 || AdjustingAzEl))))
   {
     if (parent->darfBewegen()) {
-      DBG_PROG_S( "idle: agvMove_statisch" )
+      DBG_PROG_S( "idle: agvMove_static" )
       agvMove_();
       parent->redraw();
     }
@@ -255,7 +255,7 @@ Agviewer::agvSwitchMoveMode(int move)
       break;
     case ICCPOLAR:
       move = POLAR;
-      EyeDist = 4.2f; // der Schnittabstand
+      EyeDist = 4.2f; // distance to cut plane
       //EyeAz   = 0;
       EyeEl   = 0;
       AzSpin  = 1.0;
@@ -309,7 +309,7 @@ Agviewer::agvHandleButton(int button, int event, int x, int y)
         MoveOn(0); //ICC stop
         //if (MoveMode == FLYING)
           icc_examin_ns::status_info(_("left-/middle-/right mouse button -> rotate/cut/menu"),parent->typ());
-        duenn = false;
+        thin = false;
         MoveMode = POLAR;
     } else
       if(button & FL_BUTTON2)
@@ -337,16 +337,16 @@ Agviewer::agvHandleButton(int button, int event, int x, int y)
           if (ElSpin < min_elspin && ElSpin > -min_elspin)
             ElSpin = 0; 
           if(!AzSpin && !ElSpin) {
-            parent->bewegen(false); DBG_NUM_S("langsames Loslassen")
+            parent->bewegen(false); DBG_NUM_S("slow release")
           } else {
-            parent->bewegen(true); DBG_NUM_S( "schnelles Loslassen" )
+            parent->bewegen(true); DBG_NUM_S( "fast release" )
           }
         }
         AdjustingAzEl = 0;
         MoveOn(1);
         if (MoveMode == FLYING) {
           icc_examin_ns::status_info(_("left mouse button -> go back"),parent->typ());
-          duenn = false;
+          thin = false;
         }
       } else
       if(downb & FL_BUTTON2)
@@ -354,10 +354,10 @@ Agviewer::agvHandleButton(int button, int event, int x, int y)
         EyeMove = downEyeMove;
         if (MoveMode == FLYING) {
           icc_examin_ns::status_info(_("left mouse button -> go back"),parent->typ());
-          duenn = true;
+          thin = true;
         }
       } else
-        WARN_S( "nicht erkennbare Maustaste: " << button )
+        WARN_S( "unknown mouse button: " << button )
 
     downb = -1;
 
@@ -372,7 +372,7 @@ Agviewer::agvHandleButton(int button, int event, int x, int y)
         EyeMove = 0;
     agvHandleMotion(x,y*10);
   } else
-    WARN_S( "keine Anweisung erkennbar" )
+    WARN_S( "command not understood" )
 
   DBG_PROG_ENDE
 }
