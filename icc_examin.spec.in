@@ -1,57 +1,121 @@
-Summary:    ICC profile viewer and colour visualisation
-Requires:   oyranos-ui-fltk oyranos-monitor
-Name:       icc_examin
-License:    GPL-2.0+,LGPL-2.0+
-Group:      Productivity/Graphics/Other
-Url:        http://www.behrmann.name
+Summary:        ICC profile viewer and colour visualisation
+Requires:       oyranos-ui-fltk oyranos-monitor
+Name:           icc_examin
+License:        GPL-2.0+,LGPL-2.0+
+Group:          Productivity/Graphics/Other
+Url:            http://www.oyranos.org/icc-examin
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
-BuildRequires:  gcc-c++ gettext fltk-devel pkgconfig
-BuildRequires:  libpng-devel libjpeg-devel libtiff-devel liboyranos-alpha-devel
-BuildRequires:  libxml2-devel ftgl-devel shared-mime-info
 BuildRequires:  desktop-file-utils
+BuildRequires:  fltk-devel
+BuildRequires:  ftgl-devel
+BuildRequires:  gcc-c++
+BuildRequires:  gettext
+BuildRequires:  libjpeg-devel
+BuildRequires:  liboyranos-alpha-devel
+BuildRequires:  libpng-devel
+BuildRequires:  libtiff-devel
+BuildRequires:  libtool
+BuildRequires:  libxml2-devel
+BuildRequires:  pkgconfig
+BuildRequires:  shared-mime-info
 
 %if 0%{?suse_version} > 910
-BuildRequires:  expat fontconfig-devel freetype2-devel gcc gcc-c++
-BuildRequires:  gettext gettext-devel libjpeg-devel libpng-devel
-BuildRequires:  pkgconfig zlib-devel
+BuildRequires:  expat
+BuildRequires:  fontconfig-devel
+BuildRequires:  freetype2-devel
+BuildRequires:  gcc
+BuildRequires:  gcc-c++
+BuildRequires:  gettext
+BuildRequires:  gettext-devel
+BuildRequires:  libjpeg-devel
+BuildRequires:  libpng-devel
+BuildRequires:  pkgconfig
+BuildRequires:  zlib-devel
 %endif
 
 %if 0%{?suse_version} > 1010
-Recommends:   oyranos-monitor-nvidia freefont
-BuildRequires:  Mesa Mesa-devel xorg-x11-fonts-devel xorg-x11-libICE
-BuildRequires:  xorg-x11-libICE-devel xorg-x11-libSM
-BuildRequires:  xorg-x11 xorg-x11-devel xorg-x11-libSM-devel 
-BuildRequires:  xorg-x11-libX11 xorg-x11-libX11-devel
-BuildRequires:  xorg-x11-libXau xorg-x11-libXau-devel 
-BuildRequires:  xorg-x11-libXdmcp xorg-x11-libXdmcp-devel
-BuildRequires:  xorg-x11-libXext xorg-x11-libXext-devel
-BuildRequires:  xorg-x11-libXfixes xorg-x11-libXfixes-devel
-BuildRequires:  xorg-x11-libXmu xorg-x11-libXmu-devel xorg-x11-libXp
-BuildRequires:  xorg-x11-libXp-devel xorg-x11-libXpm
-BuildRequires:  xorg-x11-libXpm-devel xorg-x11-libXprintUtil
-BuildRequires:  xorg-x11-libXprintUtil-devel xorg-x11-libXrender
-BuildRequires:  xorg-x11-libXrender-devel xorg-x11-libXt
-BuildRequires:  xorg-x11-libXt-devel xorg-x11-libXv xorg-x11-libXv-devel
-BuildRequires:  xorg-x11-libfontenc xorg-x11-libfontenc-devel
-BuildRequires:  xorg-x11-libs xorg-x11-libxkbfile 
-BuildRequires:  xorg-x11-libxkbfile-devel xorg-x11-proto-devel
-BuildRequires:  xorg-x11-util-devel xorg-x11-xtrans-devel
-BuildRequires:  liblcms-devel xdg-utils update-desktop-files
+Recommends:     oyranos-monitor-nvidia freefont
+BuildRequires:  Mesa
+BuildRequires:  Mesa-devel
+BuildRequires:  xorg-x11-fonts-devel
+BuildRequires:  xorg-x11-libICE
+BuildRequires:  xorg-x11-libICE-devel
+BuildRequires:  xorg-x11-libSM
+BuildRequires:  xorg-x11
+BuildRequires:  xorg-x11-devel
+BuildRequires:  xorg-x11-libSM-devel
+BuildRequires:  xorg-x11-libX11
+BuildRequires:  xorg-x11-libX11-devel
+BuildRequires:  xorg-x11-libXau
+BuildRequires:  xorg-x11-libXau-devel
+BuildRequires:  xorg-x11-libXdmcp
+BuildRequires:  xorg-x11-libXdmcp-devel
+BuildRequires:  xorg-x11-libXext
+BuildRequires:  xorg-x11-libXext-devel
+BuildRequires:  xorg-x11-libXfixes
+BuildRequires:  xorg-x11-libXfixes-devel
+BuildRequires:  xorg-x11-libXmu
+BuildRequires:  xorg-x11-libXmu-devel
+BuildRequires:  xorg-x11-libXp
+BuildRequires:  xorg-x11-libXp-devel
+BuildRequires:  xorg-x11-libXpm
+BuildRequires:  xorg-x11-libXpm-devel
+BuildRequires:  xorg-x11-libXprintUtil
+BuildRequires:  xorg-x11-libXprintUtil-devel
+BuildRequires:  xorg-x11-libXrender
+BuildRequires:  xorg-x11-libXrender-devel
+BuildRequires:  xorg-x11-libXt
+BuildRequires:  xorg-x11-libXt-devel
+BuildRequires:  xorg-x11-libXv
+BuildRequires:  xorg-x11-libXv-devel
+BuildRequires:  xorg-x11-libfontenc
+BuildRequires:  xorg-x11-libfontenc-devel
+BuildRequires:  xorg-x11-libs
+BuildRequires:  xorg-x11-libxkbfile
+BuildRequires:  xorg-x11-libxkbfile-devel
+BuildRequires:  xorg-x11-proto-devel
+BuildRequires:  xorg-x11-util-devel
+BuildRequires:  xorg-x11-xtrans-devel
+BuildRequires:  liblcms-devel
+BuildRequires:  update-desktop-files
+BuildRequires:  xdg-utils
 %endif
 
 %if 0%{?mandriva_version} > 0
-Recommends: oyranos-monitor-nvidia
-BuildRequires:  Mesa X11-devel lcms-devel xdg-utils libgomp-devel libtool-devel
+Recommends:     oyranos-monitor-nvidia
+BuildRequires:  Mesa
+BuildRequires:  X11-devel
+BuildRequires:  lcms-devel
+BuildRequires:  libgomp-devel
+BuildRequires:  libtool-devel
+BuildRequires:  xdg-utils
 %endif
 
 %if 0%{?fedora_version} > 0
-Recommends: oyranos-monitor-nvidia
-BuildRequires:  Mesa-devel xorg-x11-devel xorg-x11-Mesa-devel libXxf86vm-devel libXmu-devel libXpm-devel qt3-devel lcms-devel xdg-utils elektra-devel libXcm0
+Recommends:     oyranos-monitor-nvidia
+BuildRequires:  Mesa-devel
+BuildRequires:  elektra-devel
+BuildRequires:  lcms-devel
+BuildRequires:  libXcm0
+BuildRequires:  libXmu-devel
+BuildRequires:  libXpm-devel
+BuildRequires:  libXxf86vm-devel
+BuildRequires:  qt3-devel
+BuildRequires:  xdg-utils
+BuildRequires:  xorg-x11-Mesa-devel
+BuildRequires:  xorg-x11-devel
 %endif
 
 %if 0%{?debian_version} > 0
-BuildRequires:  xorg-x11 xorg-x11-devel xorg-x11-Mesa-devel xorg-x11-libXext xorg-x11-libXext-devel  xorg-x11-libXpm xorg-x11-libXpm-devel cinepaint-devel-0.25
+BuildRequires:  cinepaint-devel-0.25
+BuildRequires:  xorg-x11
+BuildRequires:  xorg-x11-Mesa-devel
+BuildRequires:  xorg-x11-devel
+BuildRequires:  xorg-x11-libXext
+BuildRequires:  xorg-x11-libXext-devel
+BuildRequires:  xorg-x11-libXpm
+BuildRequires:  xorg-x11-libXpm-devel
 %endif
 
 %description
