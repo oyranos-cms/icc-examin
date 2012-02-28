@@ -88,6 +88,11 @@ CPP_HEADERS = \
 	icc_vrml_parser.h \
 	icc_waehler.h \
 	my_file_chooser.h \
+	Oy_Fl_Double_Window.h \
+	Oy_Fl_Group.h \
+	Oy_Fl_Window_Base.h \
+	oyranos_display_helpers.h \
+	oyranos_display_helpers.c \
 	threads.h
 #	Fl_Slot.H
 
@@ -547,7 +552,7 @@ rpm:	$(TARGET).spec dist
 	rpmdir/SOURCES \
 	rpmdir/SRPMS \
 	rpmdir/RPMS/$(RPMARCH)
-	cp -f $(TARGET)-$(VERSION).tar.gz rpmdir/SOURCES
+	cp -f $(TARGET)-$(VERSION).tar.bz2 rpmdir/SOURCES
 	rpmbuild --clean -ba $(build_dir)/$(TARGET).spec --define "_topdir $$PWD/rpmdir"
 	@echo "============================================================"
 	@echo "Finished - the Packages are in rpmdir/RPMS and rpmdir/SRPMS!"
