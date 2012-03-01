@@ -389,7 +389,7 @@ $(SRCDIR)/$(POT_FILE):
 	  xgettext --force-po $(XGETTEXT_OPTIONS) \
 	   -d $(TARGET) \
 	   -o $(SRCDIR)/$(POT_FILE) -c \
-	   $(SOURCES) $(CHEADERS)) \
+	   $(SOURCES) $(CHEADERS) $(BUILDDIR)$(TARGET)_version.h) \
 	|| echo -e "\c"
 	-$(MSGCAT) $(SRCDIR)/po/*.pot -o $(SRCDIR)/po/oyranos.pot
 	for ling in $(SRCDIR)/po/*.po; do \
