@@ -96,7 +96,7 @@ getUeberHtml()
 <p>";
   // HTML
   html << _(
-"internet: www.behrmann.name <br>");
+"internet: www.oyranos.org/icc-examin <br>");
   html << " \
 </p>\n \
 <p>";
@@ -156,7 +156,7 @@ getHilfeHtml()
   html << _("It shows the internals of binary encoded ICC profiles to get an idea about its capabilities.");
   html << "</p> \
 <table border=\"0\" id=\"toc\"><tr id=\"toctitle\"><td align=\"center\"> \
-<b>Table of contents</b></td></tr><tr id=\"tocinside\"><td> \
+<b>" << _("Table of contents") << "</b></td></tr><tr id=\"tocinside\"><td> \
 <div class=\"tocline\"><a href=\"#Features\">";
   html << _("1 Features"); html << "</a><br /></div> \
 <div class=\"tocline\"><a href=\"#Usage\">";
@@ -230,7 +230,7 @@ getHilfeHtml()
 <a name=\"Features\"></a><h2>";
   html << _("1 Features"); html << "</h2> \
 <ul><li> "; html << _("For an overview see"); 
-  html << " <a href=\"http://www.behrmann.name/index.php?option=com_content&amp;task=view&amp;id=32&amp;Itemid=1\" class='external' title=\"http://www.behrmann.name/index.php?option=com content&amp;task=view&amp;id=32&amp;Itemid=1\">ICC Examin</a><span class='urlexpansion'>&nbsp;(<i>http://www.behrmann.name</i>)</span> \
+  html << " <a href=\"http://www.oyranos.org/icc-examin/\" class='external' title=\"http://www.oyranos.org/icc-examin/\">ICC Examin</a><span class='urlexpansion'>&nbsp;(<i>http://www.oyranos.org</i>)</span> \
 </li></ul> \
 <a name=\"Usage\"></a><h2>";
   html << _("2 Usage"); html << "</h2> \
@@ -977,7 +977,7 @@ getLinksText()
   DBG_PROG_START
   std::stringstream text;
   // HTML
-  text << _( "Project" ) <<"     :\n"<< "  http://www.behrmann.name/index.php?option=com_content&task=view&id=32&Itemid=1" << "\n";
+  text << _( "Project" ) <<"     :\n"<< "  http://www.oyranos.org/icc-examin/" << "\n";
   // HTML
   text << _( "Documentation" )<<":\n"<< "  http://www.oyranos.org/wiki/index.php?title=ICC_Examin";
 
