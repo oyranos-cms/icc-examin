@@ -1208,11 +1208,7 @@ const char * preLoadFile             ( const char        * filename )
   {
     typ = 0;
 
-#if !defined(__APPLE__)
-  sprintf( ptr, "which wget && wget -U \"ICC Examin %s %s %s\" -O || curl -o", ICC_EXAMIN_V, UNAME, DISTNAME);
-#else
-  sprintf( ptr, "curl -o" );
-#endif
+    sprintf( ptr, "which wget && wget -U \"ICC Examin %s %s %s\" -O || curl -o", ICC_EXAMIN_V, UNAME, DISTNAME);
 
     sprintf(command,
             "which wget && wget -U \"ICC Examin %s %s %s\" -O %s/icc_examin_preload-%s%s \"%s\" "
