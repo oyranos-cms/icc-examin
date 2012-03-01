@@ -705,7 +705,7 @@ Oyranos::netzVonProfil_ (ICCnetz & netz,
       int b = 0; // area
       int pos = (y * 4 * a + x) * channels_n;
 
-      // see http://www.behrmann.name/wind/oyranos/icc_examin_2008.01.21.html
+      // see http://www.oyranos.org/2008/01/gamut-mapping/
       lab[pos + 0] = pow(.9999 - (double)y/(double)a, 2.0) + 0.0001;
 
       if       (b * a <= x && x < ++b * a) {
@@ -739,7 +739,7 @@ Oyranos::netzVonProfil_ (ICCnetz & netz,
         ++b;
         lab[pos + 1] = min + (x_pos - (b - 1) * (a - 1))/(double)a * (max-min);
         lab[pos + 2] = min + val;
-        // see http://www.behrmann.name/wind/oyranos/icc_examin_2008.01.21.html
+        // see http://www.oyranos.org/2008/01/gamut-mapping/
         lab[pos + 0] = HYP( lab[pos + 1] - 0.5, lab[pos + 2] - 0.5)/100.;//0.0
       }
     }
