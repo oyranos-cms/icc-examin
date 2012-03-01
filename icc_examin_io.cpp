@@ -584,6 +584,8 @@ ICCexaminIO::oeffnen (ICClist<std::string> dateinamen)
     path_name += pn;
 
     ss[i] = dateiNachSpeicher( path_name );
+    if(ss[i].size() == 0)
+      ss[i] = dateiNachSpeicher( dateinamen[i].c_str() );
 
     if(i == 0 && ss[i].size() == 0) {
       status( _("Stop loading ") << dateinamen[i] )
