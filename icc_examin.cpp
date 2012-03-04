@@ -253,6 +253,8 @@ ICCexamin::quit ()
   gl_gamut.set("gamutwarn", gamutwarn_ );
   gl_gamut.set("native_gamut", nativeGamut_ );
   gl_gamut.flush();
+  icc_betrachter->DD_farbraum->savePreferences();
+  icc_betrachter->table_gl->savePreferences();
   DBG_PROG_V( gamutwarn_ )
   oyOptions_Release( &options_ );
 

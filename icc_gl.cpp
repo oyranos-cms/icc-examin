@@ -344,6 +344,17 @@ GL_View::~GL_View()
   }
   doLocked_m( setlocale(LC_NUMERIC,"C");,NULL);
 
+  this->savePreferences();
+
+  if(loc_old.size())
+    doLocked_m( setlocale(LC_NUMERIC,loc_old.c_str()) , NULL);
+
+
+  DBG_PROG_ENDE
+}
+
+void GL_View::savePreferences()
+{
   Fl_Preferences gl( Fl_Preferences::USER, "oyranos.org", "iccexamin");
   switch (type_)
   {
@@ -368,12 +379,6 @@ GL_View::~GL_View()
       DBG_PROG_V( spectral_line )
     } break;
   }
-
-  if(loc_old.size())
-    doLocked_m( setlocale(LC_NUMERIC,loc_old.c_str()) , NULL);
-
-
-  DBG_PROG_ENDE
 }
 
 void GL_View::resetContexts ()

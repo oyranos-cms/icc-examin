@@ -145,6 +145,7 @@ private:
   bool initialised_;
 public:
   void init(int window);
+  void savePreferences();
 
   // which window is managed?
   int  id()          {return id_; } //!< equal to agviewer::RedisplayWindow
