@@ -1,3 +1,67 @@
+Version 0.51
+
+Kai-Uwe Behrmann (57):
+	* [core]: save GL preferences
+	* [core]: fix http file opening
+	* [i18n]: update deutsch
+	* [core]: translate missing about text
+	* [i18n]: scan version header for months
+	* [core]: adjust URLs
+	* [core]: support wget on linux
+	* [conf]: actualise date
+	* [conf]: adapt to openSUSE spec changes
+	* [build]: package missed files
+	* [core]: translate icc_gl.cpp
+	* [core]: translate icc_gl.h
+	* [core]: rename agviewer variables
+	* [core]: remove argyll file
+	* [core]: share Oy_Fl_Window_Base fix for osX
+	* [conf]: change elektra download url
+	* [conf]: adapt prefix more easily in custom build script
+	* [conf]: set build script unix executeable flag
+	* [iemn]: add observer plugin starter
+	* [conf]: allow to skip profile install in script
+	* [conf]: assist in elektra build on win32
+	* [conf]: disable X11 on win32 in build script
+	* [core]: remove unused variables
+	* [core]: remove monitor profile tracing
+	* [core]: set in 3D all colours by profile
+	* [conf]: skip xcolor/doc removal
+	* [conf]: add libcmpx to build script
+	* [build]: add verbose, skip and kde_prefix variables
+	* [conf]: fix typo in build script
+	* [build]: easier install directory in script
+	* [core]: skip zero size colour conversion
+	* [conf]: fix variable name in script
+	* [conf]: check for installation of pkg-config files
+	* [core]: add display helper file
+	* [core]: add Oy_Fl_Group class
+	* [core]: use the Oy_Fl_Group widget from Oyranos
+	* [build]: update script to FLTK-1.3.0
+	* [core]: show missed measurement message again
+	* [core]: disable Xcm region if the widget is hidden
+	* [build]: generate FLTK sources in source directory
+	* [core]: colour correct statusFarbe by a colour server
+	* [core]: let a colour server colour correct OpenGL
+	* [core]: wrap Xcm calls and add getEditingProfile()
+	* [conf]: require libXcm
+	* [core]: update to x_color_region_target in Oy-0.3.3
+	* [build]: add build script for a local installation
+	* [build]: fix small bug in changing working directory
+	* [build]: update build script to elektra-0.7.1
+	* [docu]: Confirm licensing of icc_examin 0.50
+	* [build]: update script to new KolorManager git
+	* [core]: fix regression in file observation
+	* [core]: set lcms2 adaption state to lcms 1 behaviour
+	* [build]: sync with openSUSE RPM spec
+	* [core]: build again without FTGL
+	* [build]: script skips unchanged git packages
+	* [build]: update script to lcms2 and check sane version
+	* [conf]: bump version
+
+Nicolas Chauvet (1):
+	* [core]: Fix compilation with gcc 4.7
+
 Version 0.50
 
 Boris Manojlovic (1):
