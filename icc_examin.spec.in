@@ -1,5 +1,5 @@
 Summary:        ICC profile viewer and colour visualisation
-Requires:       oyranos-ui-fltk oyranos-monitor
+Requires:       oyranos-ui-fltk oyranos-monitor >= 0.4.0
 Name:           icc_examin
 License:        GPL-2.0+,LGPL-2.0+
 Group:          Productivity/Graphics/Other
@@ -12,7 +12,7 @@ BuildRequires:  ftgl-devel
 BuildRequires:  gcc-c++
 BuildRequires:  gettext
 BuildRequires:  libjpeg-devel
-BuildRequires:  liboyranos-alpha-devel
+BuildRequires:  liboyranos-alpha-devel >= 0.4.0
 BuildRequires:  libpng-devel
 BuildRequires:  libtiff-devel
 BuildRequires:  libtool
@@ -30,12 +30,13 @@ BuildRequires:  gettext
 BuildRequires:  gettext-devel
 BuildRequires:  libjpeg-devel
 BuildRequires:  libpng-devel
+BuildRequires:  libXcm-devel
 BuildRequires:  pkgconfig
 BuildRequires:  zlib-devel
 %endif
 
 %if 0%{?suse_version} > 1010
-Recommends:     oyranos-monitor-nvidia freefont
+Recommends:     oyranos-monitor-nvidia >= 0.4.0 freefont
 BuildRequires:  Mesa
 BuildRequires:  Mesa-devel
 BuildRequires:  xorg-x11-fonts-devel
@@ -83,7 +84,7 @@ BuildRequires:  xdg-utils
 %endif
 
 %if 0%{?mandriva_version} > 0
-Recommends:     oyranos-monitor-nvidia
+Recommends:     oyranos-monitor-nvidia >= 0.4.0
 BuildRequires:  Mesa
 BuildRequires:  X11-devel
 BuildRequires:  lcms-devel
@@ -93,11 +94,11 @@ BuildRequires:  xdg-utils
 %endif
 
 %if 0%{?fedora_version} > 0
-Recommends:     oyranos-monitor-nvidia
+Recommends:     oyranos-monitor-nvidia >= 0.4.0
 BuildRequires:  Mesa-devel
 BuildRequires:  elektra-devel
 BuildRequires:  lcms-devel
-BuildRequires:  libXcm0
+BuildRequires:  libXcm-devel
 BuildRequires:  libXmu-devel
 BuildRequires:  libXpm-devel
 BuildRequires:  libXxf86vm-devel
