@@ -402,27 +402,23 @@ else
   echo downloading $url$packet_file
   which curl && curl -L $url$packet_file -o $packet_file || wget $url$packet_file
   if [ $verbose -gt 0 ]; then sleep 1; fi
-fi
-if [ `$SHA1SUM $packet_file | grep $checksum | wc -l` -eq 1 ]; then
-  echo sha1sum for $packet_file passed
-else
-  echo sha1sum for $packet_file failed
-  exit 1
-fi
-packet_ready=0
-pkg-config --atleast-version=0.7.0 $packet
-if [ $? -eq 0 ]; then
-  if [ -d $packet_dir ]; then
-    echo "$packet + $packet_dir found, skipping $packet build and installation"
-    packet_ready=1
+  if [ `$SHA1SUM $packet_file | grep $checksum | wc -l` -eq 1 ]; then
+    echo sha1sum for $packet_file passed
+  else
+    echo sha1sum for $packet_file failed
+    exit 1
   fi
-else
-  echo PKG_CONFIG_PATH=$PKG_CONFIG_PATH
-  pkg-config --modversion $packet
-fi
-if [ $packet_ready -eq 1 ] || [ `echo "$skip" | grep $packet | wc -l` -ne 0 ]; then
-  echo $packet skipped
-else
+  packet_ready=0
+  pkg-config --atleast-version=0.7.0 $packet
+  if [ $? -eq 0 ]; then
+    if [ -d $packet_dir ]; then
+      echo "$packet + $packet_dir found, skipping $packet build and installation"
+      packet_ready=1
+    fi
+  else
+    echo PKG_CONFIG_PATH=$PKG_CONFIG_PATH
+    pkg-config --modversion $packet
+  fi
   if [ -d $packet_dir ]; then
     echo remove $packet_dir
     if [ $verbose -gt 0 ]; then sleep 1; fi
