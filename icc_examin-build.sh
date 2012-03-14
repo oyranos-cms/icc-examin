@@ -533,33 +533,6 @@ if [ $verbose -gt 0 ]; then sleep 1; fi
 cd "$top"
 
 
-# Xcm
-git_repo=xcm
-  echo checkout $git_repo
-  if [ -d $git_repo ]; then
-    cd $git_repo
-    git pull
-  else
-    git clone git://www.oyranos.org/git/$git_repo $git_repo
-    cd $git_repo
-    git checkout master
-  fi
-  if [ $verbose -gt 0 ]; then sleep 2; fi
-  git_version="`cat .git/refs/heads/master`"
-  old_git_version="`cat old_gitrev.txt`"
-  if [ "$git_version" != "$old_git_version" ]; then
-    ./configure $v $conf_opts $@
-    make $MAKE_CPUS
-    make install
-  else
-    echo no changes in git $git_version
-  fi
-  echo "$git_version" > old_gitrev.txt
-if [ $verbose -gt 0 ]; then sleep 1; fi
-
-cd "$top"
-
-
 # SANE
 UNAME_=`uname`
 if [ $UNAME_ = "Darwin" ] || [ `echo "$skip" | grep sane | wc -l` -ne 0 ]; then
@@ -817,6 +790,33 @@ git_repo=oyranos
     make $MAKE_CPUS
     make install
     make check
+  else
+    echo no changes in git $git_version
+  fi
+  echo "$git_version" > old_gitrev.txt
+if [ $verbose -gt 0 ]; then sleep 1; fi
+
+cd "$top"
+
+
+# Xcm
+git_repo=xcm
+  echo checkout $git_repo
+  if [ -d $git_repo ]; then
+    cd $git_repo
+    git pull
+  else
+    git clone git://www.oyranos.org/git/$git_repo $git_repo
+    cd $git_repo
+    git checkout master
+  fi
+  if [ $verbose -gt 0 ]; then sleep 2; fi
+  git_version="`cat .git/refs/heads/master`"
+  old_git_version="`cat old_gitrev.txt`"
+  if [ "$git_version" != "$old_git_version" ]; then
+    ./configure $v $conf_opts $@
+    make $MAKE_CPUS
+    make install
   else
     echo no changes in git $git_version
   fi
