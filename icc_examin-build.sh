@@ -396,11 +396,13 @@ packet_dir=$packet-0.7.1
 packet_file=$packet_dir.tar.gz
 checksum=bcc733cab0b391e5790c05635ab7161d9bdcaffa
 url=http://www.oyranos.org/download/
-if [ -f $packet_file ] || [ `echo "$skip" | grep $packet | wc -l` -ne 0 ]; then
-  echo $packet_file skipped
+if [ `echo "$skip" | grep $packet | wc -l` -ne 0 ]; then
+  echo $packet skipped
 else
-  echo downloading $url$packet_file
-  which curl && curl -L $url$packet_file -o $packet_file || wget $url$packet_file
+  if [ ! -f $packet_file ]; then
+    echo downloading $url$packet_file
+    which curl && curl -L $url$packet_file -o $packet_file || wget $url$packet_file
+  fi
   if [ $verbose -gt 0 ]; then sleep 1; fi
   if [ `$SHA1SUM $packet_file | grep $checksum | wc -l` -eq 1 ]; then
     echo sha1sum for $packet_file passed
@@ -418,34 +420,35 @@ else
   else
     echo PKG_CONFIG_PATH=$PKG_CONFIG_PATH
     pkg-config --modversion $packet
-  fi
-  if [ -d $packet_dir ]; then
-    echo remove $packet_dir
-    if [ $verbose -gt 0 ]; then sleep 1; fi
-    rm -r $packet_dir
-  fi
-  echo unpacking $packet_file ...
-  tar xzf $packet_file
-  cd $packet_dir
-  make clean
-  if [ $UNAME_ = "MINGW32_NT-6.1" ]; then
-    elektra_args="--disable-hosts"
-  fi
-  CFLAGS="$CFLAGS $OSX_ARCH" CXXFLAGS="$CXXFLAGS $OSX_ARCH" LDFLAGS="$LDFLAGS $OSX_ARCH" ./configure $conf_opts $elektra_args $@
-  if [ $UNAME_ = "MINGW32_NT-6.1" ]; then
-    dos2unix src/libelektra/objects
-    patch=elektra-0.7.1_win32-2.patch
-    echo downloading $url$patch
-    which curl && curl -L $url$patch -o $patch || wget $url$patch
-  fi
-  make $MAKE_CPUS
-  make install
-  if [ $UNAME_ = "MINGW32_NT-6.1" ]; then
-    cp -v elektra.pc $libdir/pkgconfig/
-  fi
-  if [ $? = 0 ] && [ $UNAME_ = "Darwin" ]; then
-    if [ -f $libdir/libelektra.dylib ]; then
+
+    if [ -d $packet_dir ]; then
+      echo remove $packet_dir
+      if [ $verbose -gt 0 ]; then sleep 1; fi
+      rm -r $packet_dir
+    fi
+    echo unpacking $packet_file ...
+    tar xzf $packet_file
+    cd $packet_dir
+    make clean
+    if [ $UNAME_ = "MINGW32_NT-6.1" ]; then
+      elektra_args="--disable-hosts"
+    fi
+    CFLAGS="$CFLAGS $OSX_ARCH" CXXFLAGS="$CXXFLAGS $OSX_ARCH" LDFLAGS="$LDFLAGS $OSX_ARCH" ./configure $conf_opts $elektra_args $@
+    if [ $UNAME_ = "MINGW32_NT-6.1" ]; then
+      dos2unix src/libelektra/objects
+      patch=elektra-0.7.1_win32-2.patch
+      echo downloading $url$patch
+      which curl && curl -L $url$patch -o $patch || wget $url$patch
+    fi
+    make $MAKE_CPUS
+    make install
+    if [ $UNAME_ = "MINGW32_NT-6.1" ]; then
       cp -v elektra.pc $libdir/pkgconfig/
+    fi
+    if [ $? = 0 ] && [ $UNAME_ = "Darwin" ]; then
+      if [ -f $libdir/libelektra.dylib ]; then
+        cp -v elektra.pc $libdir/pkgconfig/
+      fi
     fi
   fi
 fi
