@@ -687,7 +687,7 @@ if [ $verbose -gt 0 ]; then sleep 2; fi
 
 cd "$top"
 
-http://sourceforge.net/projects/openicc/files/OpenICC-Profiles/icc-profiles-openicc-1.3.0.tar.gz/download
+
 packet=icc-profiles-openicc
 packet_dir=$packet-1.3.0
 packet_file=$packet_dir.tar.bz2
