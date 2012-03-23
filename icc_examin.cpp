@@ -948,7 +948,7 @@ ICCexamin::setzeFensterTitel()
 void ICCexamin::optionsRefresh_( void )
 {
   if(!options_)
-    options_ = oyOptions_ForFilter( "//imaging/icc", 0, 0, 0 );
+    options_ = oyOptions_ForFilter( "//"OY_TYPE_STD"/icc", 0, 0, 0 );
 
   char t[4];
   /* should always be a single digit */
