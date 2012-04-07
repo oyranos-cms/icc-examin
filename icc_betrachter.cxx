@@ -1255,51 +1255,6 @@ void ICCfltkBetrachter::quit(void) {
   DBG_PROG_ENDE
 }
 
-void ICCfltkBetrachter::zeig_mich_(void* widget) {
-  DBG_PROG_START
-  // zeigt das ausgewaehlte Fenster (widget)
-
-  table_viewer->hide();
-  table_text->hide();
-  tag_viewer->hide(); DBG_PROG
-  tag_viewer->clear_visible(); DBG_PROG
-  tag_text->hide();
-  inspekt_html->hide();
-
-  // stop
-  if (widget != table_gl) {
-    table_gl->hide();
-  }
-  if (widget != DD_farbraum ) {
-    DD_farbraum->hide();
-  }
-
-  // start
-  if( widget == inspekt_html )
-  { DBG_PROG_S("inspekt_html handling")
-    if( menueintrag_inspekt->value() )
-      inspekt_html->show();
-    else
-      inspekt_html->hide();
-  }
-
-  if (widget != table_gl &&
-      widget != DD_farbraum )
-  { 
-    ((Fl_Widget*)widget)->show(); DBG_PROG
-    if( !menueintrag_inspekt->value() &&
-        !menueintrag_3D->value() )
-      ;//selectItem(icc_examin->tag_nr()+6);
-  } else if (widget == table_gl) {
-    DBG_PROG_S( "leave table GL window." )
-    table_gl->show();
-  } else if (widget == DD_farbraum) {
-    DBG_PROG_S( "leave 3D GL window." )
-    DD_farbraum->show();
-  }
-  DBG_PROG_ENDE
-}
-
 void ICCfltkBetrachter::measurement(bool has_measurement) {
   if (has_measurement) {
     DBG_PROG_S(menueintrag_inspekt->value())
