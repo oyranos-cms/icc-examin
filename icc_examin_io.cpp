@@ -239,7 +239,7 @@ ICCexaminIO::oeffnenThread_ ()
 
       // UI handling
     if(icc_examin->farbraumModus())
-      icc_examin->gamutAnsichtZeigen();
+      icc_examin->gamutViewShow();
     else if(!icc_examin->icc_betrachter->details->visible_r())
     {
       icc_examin->icc_betrachterNeuzeichnen( icc_examin->icc_betrachter->tag_viewer);
@@ -325,7 +325,7 @@ ICCexaminIO::oeffnenThread_ ()
         texte.push_back(_("CIE *b"));
         icc_examin->icc_betrachter->DD_farbraum->achsNamen(texte);
         icc_examin->icc_betrachter->DD_farbraum->namedColoursRelease();
-        icc_examin->gamutAnsichtZeigen();
+        icc_examin->gamutViewShow();
         icc_examin_ns::unlock(this, __FILE__,__LINE__);
       } else
         WARN_S(_("no net found in VRML file"))

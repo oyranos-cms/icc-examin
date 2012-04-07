@@ -409,8 +409,9 @@ ICCexamin::start (int argc, char** argv)
   Fl::add_handler(event_handler);
   MyFl_Double_Window::event_handler = event_handler;
 
-  // Behandle Kommandozeilenargumente
-      if (argc>1) {
+  // hande command line arguments
+      if (argc>1)
+      {
         ICClist<std::string>profilnamen;
         for (int i = 1; i < argc; i++) {
           DBG_PROG_S( i <<" "<< argv[i] )
@@ -430,6 +431,10 @@ ICCexamin::start (int argc, char** argv)
               break;
             }
             WARN_S( "momory" );
+          } else
+          if(strcmp(argv[i],"-g") == 0)
+          {
+            zeig3D();
           } else
           if(std::string(argv[i]).find("-psn_") == std::string::npos)
           {
@@ -1242,7 +1247,7 @@ ICCexamin::standardGamma ()
 }
 
 void
-ICCexamin::gamutAnsichtZeigen ()
+ICCexamin::gamutViewShow ()
 {
       icc_examin_ns::lock(__FILE__,__LINE__);
       icc_betrachter->menueintrag_3D->set();

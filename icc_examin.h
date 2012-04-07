@@ -146,7 +146,7 @@ class ICCexamin : public icc_examin_ns::Observer,
     void bpc (int i);                          //!< set BPC
     int  gamutwarn ()  { return gamutwarn_; }  //!< gamut warning?
     void gamutwarn (int warn);
-    void gamutAnsichtZeigen ();                //!< show DD_farbraum
+    void gamutViewShow ();                     //!< show DD_farbraum
     int  nativeGamut() { return nativeGamut_; }
     void nativeGamut( int select );            //*< default is separation gamut
     oyOptions_s * options( void );

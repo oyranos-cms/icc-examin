@@ -1,8 +1,8 @@
-.TH "ICC Examin" 3 "July 04, 2011" ICC Examin
+.TH "ICC Examin" 1 "April 07, 2012" "ICC Examin"
 .SH NAME
 ICC Examin \- graphical ICC examination tool.
 .SH SYNOPSIS
-\fBiccexamin\fR [[FILENAME] ...]
+\fBiccexamin\fR [-g] [-i|[FILENAME] ...]
 .SH DESCRIPTION
 The 
 .I "ICC Examin"
@@ -11,6 +11,13 @@ colour examination tool accepts as input ICC profiles, CGATS colour measurement 
 The report view compares ICC colours with measurement colours. A internet URL can be viewed if the curl tool is installed. Several ICC profiles can be loaded into the 3D view and compared. The 3D views provide context menues. The 3D view can be exported as VRML and in parts be reloaded. 
 
 The first loaded file is detailed shown in the main windows tag browser. Each ICC profile tag can be selected for examination and will be shown in detail in the window below the tag browser. Some tags contain nested elements, which are accessible from a choice below the tag browser.
+.SH OPTIONS
+.TP
+.B \-g
+show gamut window
+.TP
+\fB\-i
+read input stream
 .SH HELP
 A advanced help text is available either as a web site:
 http://www.oyranos.org/wiki/index.php?title=ICC_Examin

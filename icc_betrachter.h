@@ -312,7 +312,6 @@ public:
   int run(int argc, char** argv);
   ICClist<std::string> open_veraltet(ICClist<std::string> dateinamen);
   void quit(void);
-  void zeig_mich_(void* widget);
   void measurement(bool has_measurement);
 private:
   Fl_Button ** table_gl_tables_buttons; 
