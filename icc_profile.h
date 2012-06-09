@@ -64,7 +64,8 @@ class ICCprofile {
     ICCprofileDATA,
     ICCcorruptedprofileDATA,
     ICCmeasurementDATA,
-    ICCvrmlDATA
+    ICCvrmlDATA,
+    ICCimageDATA
   } ICCDataType;
 
                         ICCprofile ();

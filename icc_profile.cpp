@@ -143,6 +143,7 @@ ICCprofile::load (const Speicher & prof)
   DBG_PROG_START // ICC Profil load
   std::string file = prof.name();
   changing_ = true;
+  Speicher * prof_ = NULL;
 
   DBG_MEM_V( (int*)data_ <<" "<< size_ )
 
@@ -152,13 +153,28 @@ ICCprofile::load (const Speicher & prof)
   if( file.size() )
     data_type = guessFileType( file.c_str() );
 
+  if(data_type == ICCimageDATA)
+  {
+    oyImage_s * image = NULL;
+    oyImage_FromFile(file.c_str(), &image, NULL);
+    oyProfile_s * p = oyImage_ProfileGet( image );
+    size_t size = 0;
+    char * data = (char*)oyProfile_GetMem( p, &size, 0, malloc);
+    prof_ = new Speicher();
+    prof_->ladeUndFreePtr( &data, size );
+  }
 
   // check minimum size for plausible data
-  if (prof.size() > 64) {
+  size_t prof_size = prof.size();
+  if(prof_)
+    prof_size = prof_->size();
+  if (prof_size > 64) {
     //WARN_S( _("!!!! Profil wird wiederbenutzt !!!! ") )
-    size_ = prof.size();
+    size_ = prof_size;
     data_ = (char*)calloc (sizeof (char), size_+1);
     const char* z = prof;
+    if(prof_)
+      z = (*prof_);
     memcpy(data_, z, size_);
     filename_ = file;
     profile_ = oyProfile_FromFile( filename_.c_str(), 0, 0 );
@@ -299,6 +315,9 @@ ICCprofile::load (const Speicher & prof)
 # endif
  
   DBG_NUM_V( filename_ )
+
+  if(prof_)
+    delete prof_;
 
   changing_ = false;
   DBG_PROG_ENDE

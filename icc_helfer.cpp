@@ -1129,6 +1129,15 @@ ICCprofile::ICCDataType guessFileType( const char        * filename )
      strcmp(suffix, "meas")==0 ||
      strcmp(suffix, "txt")==0 )
     type = ICCprofile::ICCmeasurementDATA; 
+  else
+  if(strcmp(suffix, "png")==0 ||
+     strcmp(suffix, "ppm")==0 ||
+     strcmp(suffix, "pgm")==0 ||
+     strcmp(suffix, "jpg")==0 ||
+     strcmp(suffix, "jpeg")==0 ||
+     strcmp(suffix, "tif")==0 ||
+     strcmp(suffix, "tiff")==0)
+    type = ICCprofile::ICCimageDATA; 
 
   return type;
 }
