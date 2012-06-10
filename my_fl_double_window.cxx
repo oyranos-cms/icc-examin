@@ -402,13 +402,12 @@ void setzeIcon      ( Fl_Window *fenster, const char   **xpm_daten )
   DBG_PROG_V( (int*) fl_display <<" "<< fl_window )
   Pixmap pm, mask;
 # if HAVE_Xpm
-  XpmAttributes xpm_attr;
   XpmCreatePixmapFromData(  fl_display,
                             DefaultRootWindow(fl_display),
                             const_cast<char**> (xpm_daten),
                             &pm,
                             &mask,
-                            &xpm_attr);
+                            NULL);
 # endif
 # if 0
   XShapeCombineMask(fl_display, fl_window,
