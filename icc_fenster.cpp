@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2009  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2012  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -46,12 +46,69 @@
 #include <FL/Fl_Widget.H>
 #include <FL/Fl_Scroll.H>
 #include <FL/Enumerations.H>
-
+#include <FL/Fl_JPEG_Image.H>
+#include <FL/Fl_Shared_Image.H>
 
 namespace icc_examin_ns {
 
 #ifdef HAVE_FLTK
 MyFl_File_Chooser  *dateiwahl_ = 0;
+
+Fl_Image* iccImageCheck( const char* fname, uchar *header, int len )
+{
+  const char    *home;          // Home directory
+  char          preview[1024],  // Preview filename
+                command[1024];  // Command
+  int stat;
+
+  const char *endung = strrchr(fname,'.');
+  if( !endung ) return NULL;
+  ICCprofile::ICCDataType file_type = guessFileType( fname );
+  if(strcmp(endung+1,"jpg") == 0) return NULL;
+
+  home = getenv("HOME");
+  sprintf(preview, "%s/.preview.ppm", home ? home : "");
+
+  if (file_type == ICCprofile::ICCimageDATA)
+  {
+    icc_examin_ns::MyFl_Double_Window *w = dateiwahl_->window;
+    oyProfile_s * p = icc_oyranos.oyMoni(w->x()+w->w()/2, w->y()+w->h()/2, 0);
+    oyImage_s * image = NULL;
+    oyImage_FromFile(fname, &image, NULL);
+    oyConversion_s * cc = oyConversion_CreateFromImage (
+                                image, 0, 0,
+                                p, oyUINT8, oyOPTIONATTRIBUTE_ADVANCED, 0 );
+    oyConversion_RunPixels( cc, 0 );
+    oyImage_Release( &image );
+    image = oyConversion_GetImage( cc, OY_OUTPUT );
+    oyImage_PpmWrite( image, preview, fname );
+    WARN_S("wrote file:" << fname <<" to "<<preview);
+    return new Fl_PNM_Image( preview );
+  } else
+  {
+    sprintf (command, "dcraw -i '%s'\n", fname);
+    //fputs (command, stderr);
+
+    stat = system (command);
+    if(stat) {
+      if (file_type != ICCprofile::ICCimageDATA && stat) {
+        if (stat > 0x200)
+          WARN_S (_("The \"rawphoto\" plugin won't work because "
+        "there is no \"dcraw\" executable in your path."));
+      }
+      return NULL;
+    }
+
+    sprintf(command,
+          "dcraw -e -v -c"
+          " \'%s\' > \'%s\' ", fname, preview);
+
+    if (system(command)) return NULL;
+  }
+
+  return new Fl_JPEG_Image( preview );
+}
+
 
 MyFl_File_Chooser  * dateiwahl()
 {
@@ -62,9 +119,11 @@ MyFl_File_Chooser  * dateiwahl()
     const char* ptr = NULL;
     if (profile.size())
       ptr = profile.name().c_str();
-    dateiwahl_ = new MyFl_File_Chooser(ptr, _("ICC colour profiles (*.{I,i}{C,c}{M,m,C,c})	Measurement (*.{txt,it8,IT8,RGB,CMYK,ti*,cgats,CIE,cie,nCIE,oRPT,DLY,LAB,Q60})	Argyll Gamuts (*.{wrl,vrml,wrl.gz,vrml.gz}"), MyFl_File_Chooser::MULTI, _("Which ICC profile?"));
+    dateiwahl_ = new MyFl_File_Chooser(ptr, _("ICC colour profiles (*.{I,i}{C,c}{M,m,C,c})	Measurement (*.{txt,it8,IT8,RGB,CMYK,ti*,cgats,CIE,cie,nCIE,oRPT,DLY,LAB,Q60})	Argyll Gamuts (*.{wrl,vrml,wrl.gz,vrml.gz}	Images (*.png)"), MyFl_File_Chooser::MULTI, _("Which ICC profile?"));
     dateiwahl_->callback(dateiwahl_cb);
     dateiwahl_->preview(true);
+
+
     icc_examin_ns::MyFl_Double_Window *w = dateiwahl_->window;
     w->use_escape_hide = true;
   }

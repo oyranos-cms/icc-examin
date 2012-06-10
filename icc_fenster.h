@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2011  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2012  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -102,6 +102,7 @@ namespace icc_examin_ns {
 
   void        setzeIcon    ( Fl_Window    *fenster,
                              const char  **xpm_daten );
+  Fl_Image* iccImageCheck( const char* fname, uchar *header, int len );
 }
 
 //#endif
