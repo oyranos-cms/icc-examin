@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2012-03-01 08:31+0100\n"
+"POT-Creation-Date: 2012-06-10 11:43+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -41,7 +41,7 @@ msgstr ""
 msgid "Rgb"
 msgstr ""
 
-#: icc_oyranos_extern.c:139 icc_draw.cpp:716 icc_gl.cpp:2755 icc_waehler.h:128
+#: icc_oyranos_extern.c:139 icc_draw.cpp:716 icc_gl.cpp:2760 icc_waehler.h:128
 msgid "Gray"
 msgstr ""
 
@@ -119,7 +119,7 @@ msgstr ""
 
 #. ICC stop
 #. if (MoveMode == FLYING)
-#: agviewer.cpp:311 icc_gl.cpp:3840 icc_gl.cpp:3859 icc_gl.cpp:3981
+#: agviewer.cpp:311 icc_gl.cpp:3845 icc_gl.cpp:3864 icc_gl.cpp:3986
 msgid "left-/middle-/right mouse button -> rotate/cut/menu"
 msgstr ""
 
@@ -127,8 +127,8 @@ msgstr ""
 msgid "Pause"
 msgstr ""
 
-#: agviewer.cpp:348 agviewer.cpp:356 icc_gl.cpp:3947 icc_gl.cpp:3958
-#: icc_gl.cpp:3963 icc_gl.cpp:3968
+#: agviewer.cpp:348 agviewer.cpp:356 icc_gl.cpp:3952 icc_gl.cpp:3963
+#: icc_gl.cpp:3968 icc_gl.cpp:3973
 msgid "left mouse button -> go back"
 msgstr ""
 
@@ -167,7 +167,7 @@ msgstr ""
 msgid "Yellow"
 msgstr ""
 
-#: icc_draw.cpp:729 icc_gl.cpp:2757 icc_helfer.cpp:418 icc_helfer.cpp:428
+#: icc_draw.cpp:729 icc_gl.cpp:2762 icc_helfer.cpp:418 icc_helfer.cpp:428
 msgid "Black"
 msgstr ""
 
@@ -205,13 +205,13 @@ msgid "CIE *L"
 msgstr ""
 
 #: icc_draw.cpp:747 icc_examin_farbraum.cpp:401 icc_examin_io.cpp:324
-#: icc_gl.cpp:1183 icc_gl.cpp:1254 icc_gl.cpp:1280 icc_gl.cpp:1288
+#: icc_gl.cpp:1188 icc_gl.cpp:1259 icc_gl.cpp:1285 icc_gl.cpp:1293
 #: icc_helfer.cpp:404
 msgid "CIE *a"
 msgstr ""
 
 #: icc_draw.cpp:749 icc_examin_farbraum.cpp:402 icc_examin_io.cpp:325
-#: icc_gl.cpp:1196 icc_gl.cpp:1296 icc_gl.cpp:1316 icc_gl.cpp:1323
+#: icc_gl.cpp:1201 icc_gl.cpp:1301 icc_gl.cpp:1321 icc_gl.cpp:1328
 #: icc_helfer.cpp:405
 msgid "CIE *b"
 msgstr ""
@@ -251,56 +251,56 @@ msgstr ""
 msgid "!!! ERROR"
 msgstr ""
 
-#: icc_examin.cpp:317
+#: icc_examin.cpp:319
 msgid "Gamut selector"
 msgstr ""
 
-#: icc_examin.cpp:435 icc_examin.cpp:1408
+#: icc_examin.cpp:442 icc_examin.cpp:1415
 msgid "loaded"
 msgstr ""
 
-#: icc_examin.cpp:441
+#: icc_examin.cpp:448
 msgid "Ready"
 msgstr ""
 
-#: icc_examin.cpp:889 icc_examin.cpp:892
+#: icc_examin.cpp:896 icc_examin.cpp:899
 msgid "Compare Measurement <-> Profile Colours"
 msgstr ""
 
-#: icc_examin.cpp:891
+#: icc_examin.cpp:898
 msgid "none"
 msgstr ""
 
-#: icc_examin.cpp:909 icc_examin.cpp:913
+#: icc_examin.cpp:916 icc_examin.cpp:920
 msgid "Gamut View"
 msgstr ""
 
-#: icc_examin.cpp:981 icc_examin_tagwahl.cpp:1052 icc_gl.h:275
+#: icc_examin.cpp:988 icc_examin_tagwahl.cpp:1052 icc_gl.h:276
 msgid "not available"
 msgstr ""
 
-#: icc_examin.cpp:1348
+#: icc_examin.cpp:1355
 msgid "Filename (ICC data type)"
 msgstr ""
 
-#: icc_examin.cpp:1351
+#: icc_examin.cpp:1358
 msgid "Filename (other data type)"
 msgstr ""
 
-#: icc_examin.cpp:1353
+#: icc_examin.cpp:1360
 msgid "Filename (corrupted ICC data type)"
 msgstr ""
 
-#: icc_examin.cpp:1358
+#: icc_examin.cpp:1365
 msgid "found no content for"
 msgstr ""
 
-#: icc_examin.cpp:1361
+#: icc_examin.cpp:1368
 msgid "Internal error"
 msgstr ""
 
 #. this string is sensible to formatting in the tag browser GUI, please keep a mono spaced formatting
-#: icc_examin.cpp:1364
+#: icc_examin.cpp:1371
 msgid "No. Tag   Type   Size Description"
 msgstr ""
 
@@ -312,31 +312,31 @@ msgstr ""
 msgid "no net found. Is Argyll installed?"
 msgstr ""
 
-#: icc_examin_io.cpp:589
+#: icc_examin_io.cpp:591
 msgid "Stop loading "
 msgstr ""
 
-#: icc_examin_io.cpp:689
+#: icc_examin_io.cpp:691
 msgid "HTML Documents (*.htm*)"
 msgstr ""
 
-#: icc_examin_io.cpp:693 icc_betrachter.cxx:638
+#: icc_examin_io.cpp:695 icc_betrachter.cxx:638
 msgid "Save Report"
 msgstr ""
 
-#: icc_examin_io.cpp:766
+#: icc_examin_io.cpp:768
 msgid "ICC colour profiles (*.ic*)"
 msgstr ""
 
-#: icc_examin_io.cpp:767 icc_betrachter.cxx:639
+#: icc_examin_io.cpp:769 icc_betrachter.cxx:639
 msgid "Save Gamut as Profile"
 msgstr ""
 
-#: icc_examin_io.cpp:769
+#: icc_examin_io.cpp:771
 msgid "VRML Files (*.wrl)"
 msgstr ""
 
-#: icc_examin_io.cpp:770 icc_betrachter.cxx:640
+#: icc_examin_io.cpp:772 icc_betrachter.cxx:640
 msgid "Save Gamut as VRML"
 msgstr ""
 
@@ -376,7 +376,7 @@ msgstr ""
 msgid ""
 "ICC colour profiles (*.{I,i}{C,c}{M,m,C,c})\tMeasurement (*.{txt,it8,IT8,RGB,"
 "CMYK,ti*,cgats,CIE,cie,nCIE,oRPT,DLY,LAB,Q60})\tArgyll Gamuts (*.{wrl,vrml,"
-"wrl.gz,vrml.gz}"
+"wrl.gz,vrml.gz}\tImages (*.png)"
 msgstr ""
 
 #: icc_fenster.cpp:65
@@ -396,121 +396,121 @@ msgstr ""
 msgid "Information:"
 msgstr ""
 
-#: icc_gl.cpp:908 icc_gl.cpp:911 icc_gl.cpp:918 icc_gl.cpp:929 icc_gl.cpp:933
-#: icc_gl.cpp:948
+#: icc_gl.cpp:913 icc_gl.cpp:916 icc_gl.cpp:923 icc_gl.cpp:934 icc_gl.cpp:938
+#: icc_gl.cpp:953
 msgid "Could not open font in:"
 msgstr ""
 
-#: icc_gl.cpp:1039
+#: icc_gl.cpp:1044
 msgid "0,0,0"
 msgstr ""
 
-#: icc_gl.cpp:2723 icc_gl.cpp:2733 icc_gl.cpp:2736 icc_gl.cpp:2738
-#: icc_gl.cpp:2741 icc_gl.cpp:2743
+#: icc_gl.cpp:2728 icc_gl.cpp:2738 icc_gl.cpp:2741 icc_gl.cpp:2743
+#: icc_gl.cpp:2746 icc_gl.cpp:2748
 msgid "Slice"
 msgstr ""
 
-#: icc_gl.cpp:2724
+#: icc_gl.cpp:2729
 msgid "Rotate around slice"
 msgstr ""
 
-#: icc_gl.cpp:2745
+#: icc_gl.cpp:2750
 msgid "Rotate around"
 msgstr ""
 
-#: icc_gl.cpp:2745
+#: icc_gl.cpp:2750
 msgid "axis"
 msgstr ""
 
-#: icc_gl.cpp:2750
+#: icc_gl.cpp:2755
 msgid "Slice plane"
 msgstr ""
 
 #. ->Darstellung->background colour
-#: icc_gl.cpp:2753
+#: icc_gl.cpp:2758
 msgid "White"
 msgstr ""
 
-#: icc_gl.cpp:2754
+#: icc_gl.cpp:2759
 msgid "Light gray"
 msgstr ""
 
-#: icc_gl.cpp:2756
+#: icc_gl.cpp:2761
 msgid "Dark gray"
 msgstr ""
 
-#: icc_gl.cpp:2760
+#: icc_gl.cpp:2765
 msgid "Background colour"
 msgstr ""
 
-#: icc_gl.cpp:2765
+#: icc_gl.cpp:2770
 msgid "gray"
 msgstr ""
 
-#: icc_gl.cpp:2766
+#: icc_gl.cpp:2771
 msgid "coloured"
 msgstr ""
 
-#: icc_gl.cpp:2767
+#: icc_gl.cpp:2772
 msgid "high contrast"
 msgstr ""
 
 #. Shells alike displaying, alternatves are "Membranes" or "Shells"
-#: icc_gl.cpp:2769
+#: icc_gl.cpp:2774
 msgid "Onion skins"
 msgstr ""
 
-#: icc_gl.cpp:2770
+#: icc_gl.cpp:2775
 msgid "Colour line"
 msgstr ""
 
-#: icc_gl.cpp:2775
+#: icc_gl.cpp:2780
 msgid "Sphere 1dE"
 msgstr ""
 
-#: icc_gl.cpp:2776
+#: icc_gl.cpp:2781
 msgid "Sphere 2dE"
 msgstr ""
 
-#: icc_gl.cpp:2777
+#: icc_gl.cpp:2782
 msgid "Sphere 4dE"
 msgstr ""
 
-#: icc_gl.cpp:2780
+#: icc_gl.cpp:2785
 msgid "Star"
 msgstr ""
 
 #. points are reserved for image colours
-#: icc_gl.cpp:2783
+#: icc_gl.cpp:2788
 msgid "Point"
 msgstr ""
 
-#: icc_gl.cpp:2786
+#: icc_gl.cpp:2791
 msgid "without markers"
 msgstr ""
 
-#: icc_gl.cpp:2787
+#: icc_gl.cpp:2792
 msgid "Spektral line"
 msgstr ""
 
-#: icc_gl.cpp:2790
+#: icc_gl.cpp:2795
 msgid "Texts"
 msgstr ""
 
-#: icc_gl.cpp:2792
+#: icc_gl.cpp:2797
 msgid "Texts/Arrows on/off"
 msgstr ""
 
-#: icc_gl.cpp:2794
+#: icc_gl.cpp:2799
 msgid "Illustration"
 msgstr ""
 
 #. "Pos" is a abreviation to position and will be visible in the small statusline with position coordinates
-#: icc_gl.cpp:3155
+#: icc_gl.cpp:3160
 msgid "Pos"
 msgstr ""
 
-#: icc_gl.cpp:3281 icc_profile_tags.cpp:320
+#: icc_gl.cpp:3286 icc_profile_tags.cpp:320
 msgid "Channel"
 msgstr ""
 
@@ -578,7 +578,7 @@ msgstr ""
 msgid "Abstract"
 msgstr ""
 
-#: icc_helfer.cpp:467 icc_profile.cpp:890
+#: icc_helfer.cpp:467 icc_profile.cpp:909
 msgid "Colour Space"
 msgstr ""
 
@@ -1034,11 +1034,11 @@ msgstr ""
 msgid "seconds"
 msgstr ""
 
-#: icc_helfer.cpp:1276
+#: icc_helfer.cpp:1285
 msgid "Monitor Profile"
 msgstr ""
 
-#: icc_helfer.cpp:1303
+#: icc_helfer.cpp:1312
 msgid "file size 0 for "
 msgstr ""
 
@@ -1221,64 +1221,64 @@ msgstr ""
 msgid "Port:"
 msgstr ""
 
-#: icc_profile.cpp:179 icc_profile.cpp:197
+#: icc_profile.cpp:195 icc_profile.cpp:213
 msgid "no profile"
 msgstr ""
 
-#: icc_profile.cpp:179 icc_profile_tags.cpp:583
+#: icc_profile.cpp:195 icc_profile_tags.cpp:583
 msgid "Size"
 msgstr ""
 
-#: icc_profile.cpp:262
+#: icc_profile.cpp:278
 msgid "wrong tag size in profile "
 msgstr ""
 
-#: icc_profile.cpp:277
+#: icc_profile.cpp:293
 msgid "tag list is corrupted for tag"
 msgstr ""
 
-#: icc_profile.cpp:277
+#: icc_profile.cpp:293
 msgid "not inside memory block"
 msgstr ""
 
 #. check
-#: icc_profile.cpp:424 icc_profile.cpp:454
+#: icc_profile.cpp:443 icc_profile.cpp:473
 msgid " typ - no text output"
 msgstr ""
 
-#: icc_profile.cpp:826
+#: icc_profile.cpp:845
 msgid "Work Space"
 msgstr ""
 
-#: icc_profile.cpp:840
+#: icc_profile.cpp:859
 msgid "Your"
 msgstr ""
 
-#: icc_profile.cpp:841
+#: icc_profile.cpp:860
 msgid "Profile\" is designed for an other device"
 msgstr ""
 
-#: icc_profile.cpp:846
+#: icc_profile.cpp:865
 msgid "Separation"
 msgstr ""
 
-#: icc_profile.cpp:859 icc_profile.cpp:882
+#: icc_profile.cpp:878 icc_profile.cpp:901
 msgid "Device class"
 msgstr ""
 
-#: icc_profile.cpp:861 icc_profile.cpp:884 icc_profile.cpp:892
+#: icc_profile.cpp:880 icc_profile.cpp:903 icc_profile.cpp:911
 msgid "is not valid for an"
 msgstr ""
 
-#: icc_profile.cpp:863 icc_profile.cpp:886
+#: icc_profile.cpp:882 icc_profile.cpp:905
 msgid "Profile\"."
 msgstr ""
 
-#: icc_profile.cpp:869
+#: icc_profile.cpp:888
 msgid "Linearisation"
 msgstr ""
 
-#: icc_profile.cpp:894
+#: icc_profile.cpp:913
 msgid "Profile at the moment\"."
 msgstr ""
 
@@ -2567,22 +2567,22 @@ msgstr ""
 msgid "!!! Warning !!!"
 msgstr ""
 
-#: /home/kuwe/programme/icc_examin/build_11.4/icc_examin_version.h:8
-msgid "0.51"
+#: /home/kuwe/programme/CMS/icc_examin/build_11.4/icc_examin_version.h:8
+msgid "0.52"
 msgstr ""
 
-#: /home/kuwe/programme/icc_examin/build_11.4/icc_examin_version.h:9
+#: /home/kuwe/programme/CMS/icc_examin/build_11.4/icc_examin_version.h:9
 msgid "May"
 msgstr ""
 
-#: /home/kuwe/programme/icc_examin/build_11.4/icc_examin_version.h:10
+#: /home/kuwe/programme/CMS/icc_examin/build_11.4/icc_examin_version.h:10
 msgid "2004"
 msgstr ""
 
-#: /home/kuwe/programme/icc_examin/build_11.4/icc_examin_version.h:11
+#: /home/kuwe/programme/CMS/icc_examin/build_11.4/icc_examin_version.h:11
 msgid "March"
 msgstr ""
 
-#: /home/kuwe/programme/icc_examin/build_11.4/icc_examin_version.h:12
+#: /home/kuwe/programme/CMS/icc_examin/build_11.4/icc_examin_version.h:12
 msgid "2012"
 msgstr ""
