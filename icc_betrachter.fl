@@ -954,6 +954,7 @@ DBG_NUM_S("Show Log window")}
   //Fl::background(190,190,190);
   //Fl::background(255,255,255);
   //Fl::scheme(NULL);
+  Fl_Shared_Image::add_handler(iccImageCheck);
   Fl_File_Icon::load_system_icons();
   Fl::get_system_colors();
   details->show();
