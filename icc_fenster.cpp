@@ -68,11 +68,17 @@ Fl_Image* iccImageCheck( const char* fname, uchar *header, int len )
 
   home = getenv("HOME");
   sprintf(preview, "%s/.preview.ppm", home ? home : "");
+  remove(preview);
 
   if (file_type == ICCprofile::ICCimageDATA)
   {
-    icc_examin_ns::MyFl_Double_Window *w = dateiwahl_->window;
-    oyProfile_s * p = icc_oyranos.oyMoni(w->x()+w->w()/2, w->y()+w->h()/2, 0);
+    oyProfile_s * p;
+    if(dateiwahl_)
+    {
+      icc_examin_ns::MyFl_Double_Window *w = dateiwahl()->window;
+      p = icc_oyranos.oyMoni(w->x()+w->w()/2, w->y()+w->h()/2, 0);
+    } else
+      p = icc_oyranos.oyMoni(0,0,0);
     oyImage_s * image = NULL;
     oyImage_FromFile(fname, &image, NULL);
     oyConversion_s * cc = oyConversion_CreateFromImage (
@@ -119,7 +125,7 @@ MyFl_File_Chooser  * dateiwahl()
     const char* ptr = NULL;
     if (profile.size())
       ptr = profile.name().c_str();
-    dateiwahl_ = new MyFl_File_Chooser(ptr, _("ICC colour profiles (*.{I,i}{C,c}{M,m,C,c})	Measurement (*.{txt,it8,IT8,RGB,CMYK,ti*,cgats,CIE,cie,nCIE,oRPT,DLY,LAB,Q60})	Argyll Gamuts (*.{wrl,vrml,wrl.gz,vrml.gz}	Images (*.png)"), MyFl_File_Chooser::MULTI, _("Which ICC profile?"));
+    dateiwahl_ = new MyFl_File_Chooser(ptr, _("All Formats (*.{ICC,ICM,txt,it8,IT8,RGB,CMYK,ti*,cgats,CIE,cie,nCIE,oRPT,DLY,LAB,Q60,wrl,vrml,wrl.gz,vrml.gz,png,ppm,pnm,pgm,pfm})	ICC colour profiles (*.{I,i}{C,c}{M,m,C,c})	Measurement (*.{txt,it8,IT8,RGB,CMYK,ti*,cgats,CIE,cie,nCIE,oRPT,DLY,LAB,Q60})	Argyll Gamuts (*.{wrl,vrml,wrl.gz,vrml.gz}	Images (*.png,ppm,pnm,pgm,pfm)"), MyFl_File_Chooser::MULTI, _("Which ICC profile?"));
     dateiwahl_->callback(dateiwahl_cb);
     dateiwahl_->preview(true);
 
