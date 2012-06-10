@@ -1133,6 +1133,7 @@ ICCprofile::ICCDataType guessFileType( const char        * filename )
   if(strcmp(suffix, "png")==0 ||
      strcmp(suffix, "ppm")==0 ||
      strcmp(suffix, "pgm")==0 ||
+     strcmp(suffix, "pfm")==0 ||
      strcmp(suffix, "jpg")==0 ||
      strcmp(suffix, "jpeg")==0 ||
      strcmp(suffix, "tif")==0 ||
