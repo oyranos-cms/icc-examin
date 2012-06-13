@@ -1358,8 +1358,8 @@ ICCexamin::erneuerTagBrowserText_ (void)
     file_type_name = _("Filename (other data type)");
   if(profile.profil()->data_type == ICCprofile::ICCcorruptedprofileDATA)
     file_type_name = _("Filename (corrupted ICC data type)");
-  add_s ("@f" << file_type_name << ":" )
-  add_s ("@b    " << profile.profil()->filename() )
+  add_s ("@b" << profile.profil()->getProfileDescription() )
+  add_s ("    " << profile.profil()->filename() )
   add_s ("")
   if (tag_list.size() == 0) {
     add_s (_("found no content for") <<" \"" << profile.profil()->filename() << "\"")
