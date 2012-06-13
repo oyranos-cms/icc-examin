@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ICC Examin 0.41\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2012-06-10 11:41+0200\n"
+"POT-Creation-Date: 2012-06-10 18:13+0200\n"
 "PO-Revision-Date: 2006-06-29 19:31+0200\n"
 "Last-Translator: Pascal LACROIX <lacroixpascal at vfemail.net>\n"
 "Language-Team: ALL <ku.b@gmx.de>\n"
@@ -375,27 +375,35 @@ msgstr ""
 msgid "Loading .."
 msgstr ""
 
-#: icc_fenster.cpp:65
+#: icc_fenster.cpp:102
 msgid ""
-"ICC colour profiles (*.{I,i}{C,c}{M,m,C,c})\tMeasurement (*.{txt,it8,IT8,RGB,"
-"CMYK,ti*,cgats,CIE,cie,nCIE,oRPT,DLY,LAB,Q60})\tArgyll Gamuts (*.{wrl,vrml,"
-"wrl.gz,vrml.gz}\tImages (*.png)"
+"The \"rawphoto\" plugin won't work because there is no \"dcraw\" executable "
+"in your path."
 msgstr ""
 
-#: icc_fenster.cpp:65
+#: icc_fenster.cpp:128
+msgid ""
+"All Formats (*.{ICC,ICM,txt,it8,IT8,RGB,CMYK,ti*,cgats,CIE,cie,nCIE,oRPT,DLY,"
+"LAB,Q60,wrl,vrml,wrl.gz,vrml.gz,png,ppm,pnm,pgm,pfm})\tICC colour profiles "
+"(*.{I,i}{C,c}{M,m,C,c})\tMeasurement (*.{txt,it8,IT8,RGB,CMYK,ti*,cgats,CIE,"
+"cie,nCIE,oRPT,DLY,LAB,Q60})\tArgyll Gamuts (*.{wrl,vrml,wrl.gz,vrml."
+"gz}\tImages (*.png,ppm,pnm,pgm,pfm)"
+msgstr ""
+
+#: icc_fenster.cpp:128
 msgid "Which ICC profile?"
 msgstr ""
 
-#: icc_fenster.cpp:253
+#: icc_fenster.cpp:318
 msgid "Log:"
 msgstr ""
 
 #. Flmm_Tabs* o
-#: icc_fenster.cpp:255 icc_fenster.cpp:322 icc_betrachter.cxx:801
+#: icc_fenster.cpp:320 icc_fenster.cpp:387 icc_betrachter.cxx:801
 msgid "Yes"
 msgstr "Oui"
 
-#: icc_fenster.cpp:319
+#: icc_fenster.cpp:384
 msgid "Information:"
 msgstr ""
 
@@ -1038,11 +1046,11 @@ msgstr ""
 msgid "seconds"
 msgstr ""
 
-#: icc_helfer.cpp:1285
+#: icc_helfer.cpp:1286
 msgid "Monitor Profile"
 msgstr "Écran Profil"
 
-#: icc_helfer.cpp:1312
+#: icc_helfer.cpp:1313
 msgid "file size 0 for "
 msgstr ""
 

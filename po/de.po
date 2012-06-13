@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2012-06-10 11:41+0200\n"
+"POT-Creation-Date: 2012-06-10 18:13+0200\n"
 "PO-Revision-Date: 2005-08-13 17:35+0200\n"
 "Last-Translator: Kai-Uwe Behrmann\n"
 "Language-Team:  <ku.b@gmx.de>\n"
@@ -374,30 +374,39 @@ msgstr ""
 msgid "Loading .."
 msgstr "Lade ..."
 
-#: icc_fenster.cpp:65
+#: icc_fenster.cpp:102
 msgid ""
-"ICC colour profiles (*.{I,i}{C,c}{M,m,C,c})\tMeasurement (*.{txt,it8,IT8,RGB,"
-"CMYK,ti*,cgats,CIE,cie,nCIE,oRPT,DLY,LAB,Q60})\tArgyll Gamuts (*.{wrl,vrml,"
-"wrl.gz,vrml.gz}\tImages (*.png)"
+"The \"rawphoto\" plugin won't work because there is no \"dcraw\" executable "
+"in your path."
 msgstr ""
-"ICC Farbprofile (*.{I,i}{C,c}{M,m,C,c})\tMessdaten (*.{txt,it8,IT8,RGB,CMYK,"
-"ti*,cgats,CIE,cie,nCIE,oRPT,DLY,LAB,Q60})\tArgyll Farbraumhüllen (*.{wrl,"
-"vrml,wrl.gz,vrml.gz}\tBilder (*.png)"
 
-#: icc_fenster.cpp:65
+#: icc_fenster.cpp:128
+msgid ""
+"All Formats (*.{ICC,ICM,txt,it8,IT8,RGB,CMYK,ti*,cgats,CIE,cie,nCIE,oRPT,DLY,"
+"LAB,Q60,wrl,vrml,wrl.gz,vrml.gz,png,ppm,pnm,pgm,pfm})\tICC colour profiles "
+"(*.{I,i}{C,c}{M,m,C,c})\tMeasurement (*.{txt,it8,IT8,RGB,CMYK,ti*,cgats,CIE,"
+"cie,nCIE,oRPT,DLY,LAB,Q60})\tArgyll Gamuts (*.{wrl,vrml,wrl.gz,vrml."
+"gz}\tImages (*.png,ppm,pnm,pgm,pfm)"
+msgstr ""
+"Alle Formate (*.{ICC,ICM,txt,it8,IT8,RGB,CMYK,ti*,cgats,CIE,cie,nCIE,oRPT,DLY,"
+"LAB,Q60,wrl,vrml,wrl.gz,vrml.gz,png,ppm,pnm,pgm,pfm})	ICC Farbprofile (*.{I,i}{C,c}{M,m,C,c})\tMessdaten (*.{txt,it8,IT8,RGB,CMYK,"
+"ti*,cgats,CIE,cie,nCIE,oRPT,DLY,LAB,Q60})\tArgyll Farbraumhüllen (*.{wrl,"
+"vrml,wrl.gz,vrml.gz}\tBilder (*.png,ppm,pnm,pgm,pfm)"
+
+#: icc_fenster.cpp:128
 msgid "Which ICC profile?"
 msgstr "Welches ICC Profil?"
 
-#: icc_fenster.cpp:253
+#: icc_fenster.cpp:318
 msgid "Log:"
 msgstr ""
 
 #. Flmm_Tabs* o
-#: icc_fenster.cpp:255 icc_fenster.cpp:322 icc_betrachter.cxx:801
+#: icc_fenster.cpp:320 icc_fenster.cpp:387 icc_betrachter.cxx:801
 msgid "Yes"
 msgstr "Ja"
 
-#: icc_fenster.cpp:319
+#: icc_fenster.cpp:384
 msgid "Information:"
 msgstr "Information:"
 
@@ -1039,11 +1048,11 @@ msgstr "Uhr"
 msgid "seconds"
 msgstr "Sekunden"
 
-#: icc_helfer.cpp:1285
+#: icc_helfer.cpp:1286
 msgid "Monitor Profile"
 msgstr "Bildschirmprofil"
 
-#: icc_helfer.cpp:1312
+#: icc_helfer.cpp:1313
 msgid "file size 0 for "
 msgstr "Dateigröße 0 für "
 
