@@ -157,7 +157,7 @@ ICCprofile::load (const Speicher & prof)
   {
     oyImage_s * image = NULL;
     oyImage_FromFile(file.c_str(), &image, NULL);
-    oyProfile_s * p = oyImage_ProfileGet( image );
+    oyProfile_s * p = oyImage_GetProfile( image );
     size_t size = 0;
     char * data = (char*)oyProfile_GetMem( p, &size, 0, malloc);
     prof_ = new Speicher();
