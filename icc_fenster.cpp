@@ -27,7 +27,9 @@
 
 //#include "icc_utils.h"
 //#include "icc_kette.h"
+#include "icc_betrachter.h"
 #include "icc_examin.h"
+#include "icc_gl.h"
 #include "icc_dateiwahl.h"
 #include "icc_fenster.h"
 #include "icc_helfer_fltk.h"
@@ -47,6 +49,7 @@
 #include <FL/Fl_Scroll.H>
 #include <FL/Enumerations.H>
 #include <FL/Fl_JPEG_Image.H>
+#include <FL/Fl_PNG_Image.H>
 #include <FL/Fl_Shared_Image.H>
 
 namespace icc_examin_ns {
@@ -64,6 +67,10 @@ Fl_Image* iccImageCheck( const char* fname, uchar *header, int len )
   const char *endung = strrchr(fname,'.');
   if( !endung ) return NULL;
   ICCprofile::ICCDataType file_type = guessFileType( fname );
+
+  if(profile.size())
+    file_type = guessFileType( profile.profil()->filename() );
+
   if(strcmp(endung+1,"jpg") == 0) return NULL;
 
   home = getenv("HOME");
@@ -90,6 +97,38 @@ Fl_Image* iccImageCheck( const char* fname, uchar *header, int len )
     oyImage_PpmWrite( image, preview, fname );
     WARN_S("wrote file:" << fname <<" to "<<preview);
     return new Fl_PNM_Image( preview );
+  } else if(file_type == ICCprofile::ICCprofileDATA)
+  {
+    if(profile.size())
+    {
+      std::string t = "oyranos-profile-graph -w 512 -b -t 2 -l";
+      if(!icc_examin->icc_betrachter->DD_farbraum->spectral_line)
+        t += " -s";
+      t += " -o ";
+      t += preview;
+      for(int i = 0; i < profile.size(); ++i)
+      {
+        t += " '";
+        t += profile.name(i);
+        t += "'";
+      }
+      stat = system (t.c_str());
+    } else
+    {
+      std::string t = "oyranos-profile-graph -w 512 -b -t 2 -l";
+      if(!icc_examin->icc_betrachter->DD_farbraum->spectral_line)
+        t += " -s";
+      t += " -o ";
+      t += preview;
+      {
+        t += " '";
+        t += fname;
+        t += "'";
+      }
+      stat = system (command);
+    }
+    return new Fl_PNG_Image( preview );
+
   } else
   {
     sprintf (command, "dcraw -i '%s'\n", fname);
