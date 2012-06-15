@@ -1,5 +1,5 @@
 Summary:        ICC profile viewer and colour visualisation
-Requires:       oyranos-ui-fltk oyranos-monitor >= 0.4.0
+Requires:       oyranos-ui-fltk oyranos-monitor >= 0.5.0 oyranos-profile-graph
 Name:           icc_examin
 License:        GPL-2.0+,LGPL-2.0+
 Group:          Productivity/Graphics/Other
