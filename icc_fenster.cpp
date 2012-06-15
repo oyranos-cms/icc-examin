@@ -99,34 +99,27 @@ Fl_Image* iccImageCheck( const char* fname, uchar *header, int len )
     return new Fl_PNM_Image( preview );
   } else if(file_type == ICCprofile::ICCprofileDATA)
   {
+    std::string t = "oyranos-profile-graph -w 512 -b -t 2 -l";
+    if(!icc_examin->icc_betrachter->DD_farbraum->spectral_line)
+      t += " -s";
+    t += " -o ";
+    t += preview;
     if(profile.size())
     {
-      std::string t = "oyranos-profile-graph -w 512 -b -t 2 -l";
-      if(!icc_examin->icc_betrachter->DD_farbraum->spectral_line)
-        t += " -s";
-      t += " -o ";
-      t += preview;
       for(int i = 0; i < profile.size(); ++i)
       {
         t += " '";
         t += profile.name(i);
         t += "'";
       }
-      stat = system (t.c_str());
     } else
     {
-      std::string t = "oyranos-profile-graph -w 512 -b -t 2 -l";
-      if(!icc_examin->icc_betrachter->DD_farbraum->spectral_line)
-        t += " -s";
-      t += " -o ";
-      t += preview;
-      {
         t += " '";
         t += fname;
         t += "'";
-      }
-      stat = system (command);
     }
+    DBG_NUM_V( t.c_str() )
+    stat = system (t.c_str());
     return new Fl_PNG_Image( preview );
 
   } else
