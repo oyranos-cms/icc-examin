@@ -162,7 +162,7 @@ int iccMessageFunc( int code, const oyStruct_s * context, const char * format, .
 
   if(text) free( text );
 
-  if(icc_debug)
+  if(icc_debug && !getenv("ICCEXAMIN_SKIP_GDB"))
   {
 #   define TMP_FILE "/tmp/icc_examin_gdb_temp.txt"
     pid = (int)getpid();
