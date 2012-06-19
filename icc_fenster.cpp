@@ -94,7 +94,7 @@ Fl_Image* iccImageCheck( const char* fname, uchar *header, int len )
     oyConversion_RunPixels( cc, 0 );
     oyImage_Release( &image );
     image = oyConversion_GetImage( cc, OY_OUTPUT );
-    oyImage_PpmWrite( image, preview, fname );
+    oyImage_WritePPM( image, preview, fname );
     WARN_S("wrote file:" << fname <<" to "<<preview);
     return new Fl_PNM_Image( preview );
   } else if(file_type == ICCprofile::ICCprofileDATA)
