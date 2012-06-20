@@ -552,7 +552,7 @@ void ICCexamin::showmABData ()
           ICClist<double> clutpoints;
           clutpoints.resize( inputChan );
           for(int i = 0; i < inputChan; ++i)
-            clutpoints[i] = oyOption_GetValueDouble( opt, 2+i );
+            clutpoints[i] = oyOption_GetValueDouble( opt, 3+i );
 
           ICClist< ICClist< ICClist< ICClist< double > > > > Table;
           ICClist<int> channels;
@@ -617,7 +617,8 @@ void ICCexamin::showmABData ()
           }
 
           {
-            int start=0, table3d_size;
+            int start = 3 + clutpoints.size(),
+                table3d_size;
             double val;
 
             // allocate
@@ -639,10 +640,8 @@ void ICCexamin::showmABData ()
                            (int)clutpoints[2] * outputChan;
 
             for(int i = 3; i < (int)channels.size(); ++i)
-            {
-              start += table3d_size * (channels[i] <= 0 ? 0 : channels[i]);
               table3d_size *= clutpoints[i];
-            }
+
             n = 0;
             // fill in
             for (int i = 0; i < clutpoints[0]; i++)
@@ -657,7 +656,7 @@ void ICCexamin::showmABData ()
                 {
                   for (int l = 0; l < outputChan; l++)
                   {
-                    val = oyOption_GetValueDouble(opt, 3 + start + n);
+                    val = oyOption_GetValueDouble(opt, start + n);
                     Table[i][j][k][l] = val;
                     ++n;
                   }
