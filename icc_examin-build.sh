@@ -14,7 +14,7 @@ fi
 top="`pwd`"
 stop_build=0
 target=iccexamin
-
+update=0
 
 ### Testing the system ###
 
@@ -872,12 +872,16 @@ else
     git clone git://gitorious.org/$git_repo/$git_repo.git
     cd $git_repo
     git checkout master
+  fi
+  if [[ ! -d build ]]; then
     mkdir build
+    update=1
   fi
   if [ $verbose -gt 0 ]; then sleep 2; fi
   git_version="`cat .git/refs/heads/master`"
   old_git_version="`cat old_gitrev.txt`"
-  if [ $update_oyranos = 1 ] || [ "$git_version" != "$old_git_version" ]; then
+  if [ $update = 1 ] || [ $update_oyranos = 1 ] || [ "$git_version" != "$old_git_version" ]; then
+    update=0
     cd build
     cmake -DCMAKE_INSTALL_PREFIX=$prefix -DLIBRARY_OUTPUT_PATH=$libdir -DCMAKE_BUILD_TYPE=debugfull ..
     make
@@ -906,12 +910,16 @@ else
     git clone git://gitorious.org/$git_repo/$git_repo.git
     cd $git_repo
     git checkout master
+  fi
+  if [[ ! -d build ]]; then
     mkdir build
+    update=1
   fi
   if [ $verbose -gt 0 ]; then sleep 2; fi
   git_version="`cat .git/refs/heads/master`"
   old_git_version="`cat old_gitrev.txt`"
-  if [ $update_oyranos = 1 ] || [ "$git_version" != "$old_git_version" ]; then
+  if [ $update = 1 ] || [ $update_oyranos = 1 ] || [ "$git_version" != "$old_git_version" ]; then
+    update=0
     cd build
     cmake -DCMAKE_INSTALL_PREFIX=$prefix -DCMAKE_BUILD_TYPE=debugfull ..
     make
@@ -940,12 +948,16 @@ else
     git clone git://anongit.kde.org/$git_repo.git
     cd $git_repo
     git checkout master
+  fi
+  if [[ ! -d build ]]; then
     mkdir build
+    update=1
   fi
   if [ $verbose -gt 0 ]; then sleep 2; fi
   git_version="`cat .git/refs/heads/master`"
   old_git_version="`cat old_gitrev.txt`"
-  if [ $update_oyranos = 1 ] || [ "$git_version" != "$old_git_version" ]; then
+  if [ $update = 1 ] || [ $update_oyranos = 1 ] || [ "$git_version" != "$old_git_version" ]; then
+    update=0
     cd build
     cmake -DCMAKE_INSTALL_PREFIX=$kde_prefix -DCMAKE_BUILD_TYPE=debugfull ..
     make
