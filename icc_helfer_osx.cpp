@@ -58,7 +58,7 @@ leseGrafikKartenGamma  (std::string display_name,
   err = CGGetActiveDisplayList( alloc_disps, active_displays, &n );
   if(n <= 0 || err != kCGErrorSuccess)
   {
-    WARN_S( _("open X Display failed") << display_name)
+    WARN_S( _("open X Display failed") << display_name << " " << n )
     return 0;
   }
   alloc_disps = n + 1;
