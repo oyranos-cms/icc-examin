@@ -644,7 +644,7 @@ bundle:	#static
 	  $(INSTALL) -m 755 $(BINTARGET) ICC\ Examin.app/Contents/MacOS/
 	#strip ICC\ Examin.app/Contents/MacOS/$(BINTARGET)
 	echo  Bibliotheken ...
-	for bib in jpeg png lcms dl intl iconv fltk freetype ftgl oyranos oyranos_core oyranos_object elektra Xcm; do \
+	for bib in jpeg png lcms ltdl dl intl iconv fltk freetype ftgl oyranos oyranos_core oyranos_object elektra Xcm; do \
 	  echo "bundle lib$${bib}$(LIBEXT) ..."; \
       test -f $(libdir)/lib$${bib}$(LIBEXT) \
 		&& ($(COPY) -R $(libdir)/lib$${bib}*$(LIBEXT) 'ICC Examin.app/Contents/Resources$(prefix)/lib/' ) \
