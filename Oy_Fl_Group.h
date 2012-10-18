@@ -6,8 +6,13 @@
 #include <FL/Fl_Group.H>
 #include <FL/fl_draw.H>
 
-#include "Oy_Fl_Window_Base.h"
+#include "Oy_Fl_Double_Window.h"
 #include "oyranos_display_helpers.h"
+
+extern "C" {
+void               oyShowConversion_ ( oyConversion_s    * conversion,
+                                       uint32_t            flags );
+}
 
 class Oy_Fl_Group : public Fl_Group
 {
@@ -69,8 +74,8 @@ public:
       if(image)
       {
         /* take care to not go over the borders */
-        if(px < W - image->width) px = W - image->width;
-        if(py < H - image->height) py = H - image->height;
+        if(px < W - oyImage_GetWidth( image )) px = W - oyImage_GetWidth( image );
+        if(py < H - oyImage_GetHeight( image )) py = H - oyImage_GetHeight( image );
         if(px > 0) px = 0;
         if(py > 0) py = 0;
 
@@ -78,10 +83,10 @@ public:
         int offset_x = 0, offset_y = 0;
         if(center_aligned)
         {
-          if(W > image->width)
-            offset_x = (W - image->width) / 2;
-          if(H > image->height)
-            offset_y = (H - image->height) / 2;
+          if(W > oyImage_GetWidth( image ))
+            offset_x = (W - oyImage_GetWidth( image )) / 2;
+          if(H > oyImage_GetHeight( image ))
+            offset_y = (H - oyImage_GetHeight( image )) / 2;
         }
         display_rectangle = oyRectangle_NewWith( X+offset_x,Y+offset_y,W,H, 0 );
       }
@@ -95,11 +100,11 @@ public:
 
       if(ticket)
       {
-        oyRectangle_s output_rectangle = {oyOBJECT_RECTANGLE_S,0,0,0};
-        oyRectangle_SamplesFromImage( image, 0, &output_rectangle );
-        output_rectangle.width = OY_MIN( W, image->width );
-        output_rectangle.height = OY_MIN( H, image->height );
-        oyRectangle_Scale( &output_rectangle, 1.0/image->width );
+        oyRectangle_s * output_rectangle = oyRectangle_New(0);
+        oyImage_PixelsToSamples( image, 0, output_rectangle );
+        *oyRectangle_SetGeo1(output_rectangle,2) = OY_MIN( W, oyImage_GetWidth( image ) );
+        *oyRectangle_SetGeo1(output_rectangle,3) = OY_MIN( H, oyImage_GetHeight( image ) );
+        oyRectangle_Scale( output_rectangle, 1.0/oyImage_GetWidth( image ) );
 #if DEBUG
         if(oy_debug)
         {
@@ -107,20 +112,23 @@ public:
           if(px != old_px)
           {
             old_px = px;
-            oyRectangle_s r = {oyOBJECT_RECTANGLE_S,0,0,0};
-            oyRectangle_SetByRectangle( &r, &output_rectangle );
-            oyRectangle_Scale( &r, image->width );
+            oyRectangle_s * r = oyRectangle_New( 0 );
+            oyRectangle_SetByRectangle( r, output_rectangle );
+            oyRectangle_Scale( r, oyImage_GetWidth( image ) );
             printf( "%s:%d output rectangle: %s start_xy:%.04g %.04g\n",
                 strrchr(__FILE__,'/')+1, __LINE__,
-                oyRectangle_Show(&r),
-                ticket->start_xy[0]*image->width, ticket->start_xy[1]*image->width );
+                oyRectangle_Show(r),
+                oyPixelAccess_GetStart( ticket,0 )*oyImage_GetWidth( image ),
+                oyPixelAccess_GetStart( ticket,1 )*oyImage_GetWidth( image ) );
+            oyRectangle_Release( &r );
           }
         }
 #endif
         oyPixelAccess_ChangeRectangle( ticket,
-                                       -px/(double)image->width,
-                                       -py/(double)image->width,
-                                       &output_rectangle );
+                                       -px/(double)oyImage_GetWidth( image ),
+                                       -py/(double)oyImage_GetWidth( image ),
+                                       output_rectangle );
+        oyRectangle_Release( &output_rectangle );
       }
 
       if(image)
@@ -137,19 +145,24 @@ public:
       {
         static int done = 0;
         if(!done)
-          oyShowGraph_( conversion()->input, 0 );
+        {
+          int oy_debug_old = oy_debug;
+          oy_debug = 1;
+          oyShowConversion_( conversion(), 0 );
+          oy_debug = oy_debug_old;
+        }
         done = 1;
       }
 
       /* some error checks */
-      pt = oyImage_GetPixelLayout( image );
+      pt = oyImage_GetPixelLayout( image, oyLAYOUT );
       data_type = oyToDataType_m( pt );
       channels = oyToChannels_m( pt );
       if(pt != 0 &&
          ((channels != 4 && channels != 3) || data_type != data_type_request))
       {
-        printf( "WARNING: wrong image data format: %s\n"
-                "need 4 or 3 channels with %s\n",
+        printf( "%s:%d WARNING: wrong image data format: %s\n"
+                "need 4 or 3 channels with %s\n", __FILE__,__LINE__,
                 image ? oyObject_GetName( image->oy_, oyNAME_NICK ) : "",
                 oyDatatypeToText( data_type_request ) );
         return;
@@ -239,8 +252,8 @@ public:
     oyConversion_Release( &context );
     oyFilterNode_Release( &icc );
     context = oyConversion_FromImageForDisplay( 
-                             image, image_display, &icc, oyOPTIONATTRIBUTE_ADVANCED,
-                             oyUINT8, 0 );
+                             image, image_display, &icc,
+                             oyOPTIONATTRIBUTE_ADVANCED, oyUINT8, 0,0, 0 );
     if(oy_debug)
       printf("%s:%d context:%s\n",
               strrchr(__FILE__,'/')+1, __LINE__,

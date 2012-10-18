@@ -15,8 +15,7 @@
 #ifndef oyranos_display_helpers_h
 #define oyranos_display_helpers_h
 
-#include <oyranos.h>
-#include <alpha/oyranos_alpha.h>
+#include <oyConversion_s.h>
 
 extern int oy_display_verbose;
 
@@ -26,12 +25,16 @@ oyConversion_s * oyConversion_FromImageForDisplay  (
                                        oyFilterNode_s   ** icc_node,
                                        uint32_t            flags,
                                        oyDATATYPE_e        data_type,
+                                       const char        * cc_name,
+                                       oyOptions_s       * cc_options,
                                        oyObject_s          obj );
 oyConversion_s * oyConversion_FromImageFileNameForDisplay  (
                                        const char        * file_name,
                                        oyFilterNode_s   ** icc_node,
                                        uint32_t            flags,
                                        oyDATATYPE_e        data_type,
+                                       const char        * cc_name,
+                                       oyOptions_s       * cc_options,
                                        oyObject_s          obj );
 int  oyDrawScreenImage               ( oyConversion_s    * context,
                                        oyPixelAccess_s   * ticket,
@@ -63,6 +66,7 @@ const char *   oyDatatypeToText      ( oyDATATYPE_e        t); }
 
 #ifndef OY_MIN
 #define OY_MIN(a,b)    (((a) <= (b)) ? (a) : (b))
+#define OY_MAX(a,b)    (((a) > (b)) ? (a) : (b))
 #endif
 
 
