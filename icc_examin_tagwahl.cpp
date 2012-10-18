@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2011  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2012  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -30,6 +30,8 @@
 #include "icc_betrachter.h"
 #include "icc_draw.h"
 #include "icc_gl.h"
+
+#include <oyranos_colour.h>
 
 using namespace icc_examin_ns;
 

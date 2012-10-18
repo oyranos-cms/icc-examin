@@ -1,7 +1,7 @@
 /* 
  * ICC Examin plug-in for cinepaint.
  *
- * Copyright (C) 2004-2011 Kai-Uwe Behrmann <ku.b@gmx.de>
+ * Copyright (C) 2004-2012 Kai-Uwe Behrmann <ku.b@gmx.de>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,6 +45,8 @@
 #include "icc_examin.h"
 #include "icc_kette.h"
 #include "icc_examin_version.h"
+
+#include <oyProfiles_s.h>
 
 #ifdef DEBUG 
 #define DBG_PLUG_V(x)  DBG_PROG_V(x) 

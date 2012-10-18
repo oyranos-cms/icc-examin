@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2011  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-201"  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -49,6 +49,8 @@
 #endif
 
 #include <X11/Xcm/Xcm.h>
+
+#include <oyranos_colour.h>
 
 #include <limits.h>
 #include <cstring>

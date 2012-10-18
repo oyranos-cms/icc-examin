@@ -38,7 +38,7 @@
 using namespace icc_examin_ns;
 
 #include <oyranos.h>
-#include <alpha/oyranos_alpha.h>
+#include <oyranos_devices.h>
 
 #include "oyranos_display_helpers.c"
 

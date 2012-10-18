@@ -36,7 +36,6 @@
 #include "config.h"
 #include <oyranos.h>
 #include <oyranos_icc.h>
-#include <alpha/oyranos_alpha.h>
 
 #include "icc_utils.h"
 

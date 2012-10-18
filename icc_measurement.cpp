@@ -41,6 +41,7 @@
 # define DBG_MESS_V(t)
 #endif
 
+#include <oyranos_colour.h>
 
 #include "icc_utils.h"
 #include "icc_profile.h"

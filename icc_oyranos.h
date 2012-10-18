@@ -37,6 +37,12 @@
 
 #include "icc_oyranos_extern.h"
 
+#include <oyConversion_s.h>
+#include <oyProfile_s.h>
+#include <oyRectangle_s.h>
+#include <alpha/oyranos_alpha.h>
+#include <oyranos_image.h>
+
 #include <string>
 #include <list>
 #include <map>

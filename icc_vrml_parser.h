@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2005-2010  Kai-Uwe Behrmann 
+ * Copyright (C) 2005-2012  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -34,6 +34,8 @@
 #include "icc_helfer.h"
 #include "icc_thread_daten.h"
 #include "icc_oyranos_extern.h"
+
+#include "oyStructList_s.h"
 
 /** a point in space with calculated colour */
 struct ICCnetzPunkt {

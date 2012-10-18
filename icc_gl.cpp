@@ -73,6 +73,10 @@
 
 #include <X11/Xcm/Xcm.h>
 
+#include <oyArray2d_s.h>
+#include <oyImage_s.h>
+#include <oyranos_colour.h>
+
 #ifdef DEBUG_
 #define MARK(x) DBG_S( #x ) x
 #else
@@ -2216,12 +2220,11 @@ GL_View::refreshPoints()
           cc_disp = oyConversion_CreateBasicPixels( in,out_disp, opts, 0 );
           oyOptions_Release( &opts );
 
-          if(in && 
-             (!in->pixel_data || in->pixel_data->type_ != oyOBJECT_ARRAY2D_S))
+          in_array = (oyArray2d_s*) oyImage_GetPixelData( in );
+          if(!in_array || in_array->type_ != oyOBJECT_ARRAY2D_S)
           {
             WARN_S( "unknown image backend found " );
-          } else if(in)
-            in_array = (oyArray2d_s*)in->pixel_data;
+          }
         }
 
         if(cc_disp)
@@ -2280,7 +2283,7 @@ GL_View::refreshPoints()
               // draw lines
               glBegin(GL_LINES);
                 c = oyNamedColours_Get( colours, i );
-                oyArray2d_DataSet( in_array,
+                oyArray2d_SetData( in_array,
                                    (void*) oyNamedColour_GetXYZConst( c ) );
 
                 if(!show_points_as_measurements)
@@ -2294,12 +2297,12 @@ GL_View::refreshPoints()
                 }
 
                 if(in_array)
-                oyXYZ2Lab( (const double*) in_array->array2d[0], lab );
+                oyXYZ2Lab( ((double**)oyArray2d_GetData( in_array ))[0], lab );
                 iccPoint3d ( projection, lab, 0 );
                 oyNamedColour_Release( &c );
 
                 c = oyNamedColours_Get( colours, n + i );
-                oyArray2d_DataSet( in_array,
+                oyArray2d_SetData( in_array,
                                    (void*) oyNamedColour_GetXYZConst( c ) );
                 if(!show_points_as_measurements)
                   glColor4d(1., .6, .6, 1.0 );
@@ -2312,7 +2315,7 @@ GL_View::refreshPoints()
                 }
 
                 if(in_array)
-                oyXYZ2Lab( (const double*) in_array->array2d[0], lab );
+                oyXYZ2Lab( ((double**)oyArray2d_GetData( in_array ))[0], lab );
                 iccPoint3d ( projection, lab, 0 );
                 oyNamedColour_Release( &c );
               glEnd();
@@ -2332,7 +2335,7 @@ GL_View::refreshPoints()
                  for (int i = 0; i < n; ++i)
                  {
                    c = oyNamedColours_Get( colours, i );
-                   oyArray2d_DataSet( in_array,
+                   oyArray2d_SetData( in_array,
                                       (void*) oyNamedColour_GetXYZConst( c ) );
                    if(gray)
                      rgba[0]= rgba[1]= rgba[2] = shade;
@@ -2341,7 +2344,7 @@ GL_View::refreshPoints()
                    glColor4dv( rgba );
 
                    if(in_array)
-                   oyXYZ2Lab( (const double*) in_array->array2d[0], lab );
+                   oyXYZ2Lab( ((double**)oyArray2d_GetData( in_array ))[0], lab );
                    iccPoint3d ( projection, lab, 0 );
                    oyNamedColour_Release( &c );
                  }
@@ -2361,7 +2364,7 @@ GL_View::refreshPoints()
             {
                  glPushMatrix();
                    c = oyNamedColours_Get( colours, i );
-                   oyArray2d_DataSet( in_array,
+                   oyArray2d_SetData( in_array,
                                       (void*) oyNamedColour_GetXYZConst( c ) );
                    if(gray)
                      rgba[0]= rgba[1]= rgba[2] = shade;
@@ -2370,7 +2373,7 @@ GL_View::refreshPoints()
                    glColor4dv( rgba );
 
                    if(in_array)
-                   oyXYZ2Lab( (const double*) in_array->array2d[0], lab );
+                   oyXYZ2Lab( ((double**)oyArray2d_GetData( in_array ))[0], lab );
                    iccPoint3d( projection, lab, rad );
                    oyNamedColour_Release( &c );
                  glPopMatrix();
@@ -2384,10 +2387,10 @@ GL_View::refreshPoints()
                  for (int i = 0; i < n; ++i)
                  {
                    c = oyNamedColours_Get( colours, i );
-                   oyArray2d_DataSet( in_array,
+                   oyArray2d_SetData( in_array,
                                       (void*) oyNamedColour_GetXYZConst( c ) );
                    if(in_array)
-                   oyXYZ2Lab( (const double*) in_array->array2d[0], lab );
+                   oyXYZ2Lab( ((double**)oyArray2d_GetData( in_array ))[0], lab );
                    lab[0] = 0;
                    iccPoint3d ( projection, lab, 0 );
                    oyNamedColour_Release( &c );
@@ -2403,6 +2406,7 @@ GL_View::refreshPoints()
         oyProfile_Release( &prof_in );
         oyProfile_Release( &prof_out );
         oyProfile_Release( &prof_disp );
+        oyArray2d_Release( &in_array );
 
       glPopMatrix();
 #     ifndef LIGHTING_
