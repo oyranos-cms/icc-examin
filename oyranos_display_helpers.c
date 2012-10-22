@@ -16,6 +16,7 @@
 #include <oyConversion_s.h>
 #include <oyObject_s.h>
 #include "oyranos_display_helpers.h"
+#include <oyranos_image.h>
 
 int oy_display_verbose = 0;
 
@@ -365,7 +366,7 @@ int  oyDrawScreenImage               ( oyConversion_s    * context,
                 "need 4 or 3 channels with %s\n", __FILE__,__LINE__,
                 oyOptions_FindString( image_tags, "filename", 0 ),
                 image ? oyObject_GetName( image->oy_, oyNAME_NICK ) : "",
-                oyDatatypeToText( data_type_request ) );
+                oyDataTypeToText( data_type_request ) );
         return 1;
       }
 
@@ -375,7 +376,6 @@ int  oyDrawScreenImage               ( oyConversion_s    * context,
                                     "display_rectangle", oyOBJECT_RECTANGLE_S );
       oyRectangle_SetGeo( disp_rectangle, X,Y,W,H );
 
-      oyOptions_Release( &image_tags );
 
       node_out = oyConversion_GetNode( context, OY_OUTPUT );
       ticket_roi = oyPixelAccess_GetOutputROI( ticket );
@@ -408,6 +408,11 @@ int  oyDrawScreenImage               ( oyConversion_s    * context,
         oyPixelAccess_SetOldStart(ticket,1, oyPixelAccess_GetStart(ticket,1));
       } else
         result = -1;
+
+      oyFilterNode_Release( &node_out );
+      oyOptions_Release( &image_tags );
+      oyRectangle_Release( &disp_rectangle );
+      oyRectangle_Release( &ticket_roi );
     }
 
   if(oy_debug)
