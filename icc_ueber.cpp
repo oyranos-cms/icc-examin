@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2011  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2012  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -96,7 +96,7 @@ getUeberHtml()
 <p>";
   // HTML
   html << _(
-"internet: www.oyranos.org/icc-examin <br>");
+"internet: <a href=\"http://www.oyranos.org/icc-examin\">www.oyranos.org/icc-examin</a> <br>");
   html << " \
 </p>\n \
 <p>";
@@ -230,7 +230,7 @@ getHilfeHtml()
 <a name=\"Features\"></a><h2>";
   html << _("1 Features"); html << "</h2> \
 <ul><li> "; html << _("For an overview see"); 
-  html << " <a href=\"http://www.oyranos.org/icc-examin/\" class='external' title=\"http://www.oyranos.org/icc-examin/\">ICC Examin</a><span class='urlexpansion'>&nbsp;(<i>http://www.oyranos.org</i>)</span> \
+  html << " <a href=\"http://www.oyranos.org/icc-examin/\" class='external' title=\"http://www.oyranos.org/icc-examin/\">ICC Examin</a><span class='urlexpansion'>&nbsp;(<i><a href=\"http://www.oyranos.org\">http://www.oyranos.org</a></i>)</span> \
 </li></ul> \
 <a name=\"Usage\"></a><h2>";
   html << _("2 Usage"); html << "</h2> \
@@ -900,26 +900,26 @@ getDankHtml()
 <p>\n";
   // HTML
   html << _(
-"ICC Examin uses following libraries:<br>\n");
+"ICC Examin uses following libraries:<br/>\n");
   html << " \
 <p>";
   // HTML
   html << _(
-"  FLTK: Bill Spitzack and others www.fltk.org<br>\n");
+"  FLTK: Bill Spitzack and others <a href=\"http://www.fltk.org\">www.fltk.org</a><br/>\n");
 #ifdef HAVE_FLU
   html << " \
 </p>\n \
 <p>";
   // HTML
   html << _(
-"  FLU: Jason Bryan www.osc.edu/~jbryan/FLU/<br>\n");
+"  FLU: Jason Bryan <a href=\"http://www.osc.edu/~jbryan/FLU\">www.osc.edu/~jbryan/FLU/</a><br/>\n");
 #endif
   html << " \
 </p>\n \
 <p>";
   // HTML
   html << _(
-"  littleCMS: Marti Maria www.littlecms.com<br>\n");
+"  littleCMS: Marti Maria <a href=\"http://www.littlecms.com\">www.littlecms.com</a><br/>\n");
   html << " \
  <br> \
  <br> \
@@ -930,7 +930,7 @@ getDankHtml()
 <p>";
   // HTML
   html << _(
-"  FTGL: Henry Maddocks homepages.paradise.net.nz/henryj/code/#FTGL<br>\n");
+"  FTGL: Henry Maddocks <a href=\"http://homepages.paradise.net.nz/henryj/code/#FTGL\">homepages.paradise.net.nz/henryj/code/#FTGL<\a><br/>\n");
   html << " \
 </p>";
 #endif
@@ -938,18 +938,18 @@ getDankHtml()
 <p>";
   // HTML
   html << _(
-"integrated sources, lock at the according files for licence conditions:<br>\n");
+"integrated sources, lock at the according files for licence conditions:<br/>\n");
   html << " \
 <p>";
   // HTML
   html << _(
-"  agv 3D Navigation: Philip Winston<br>\n");
+"  agv 3D Navigation: Philip Winston<br/>\n");
   html << " \
 </p>\n \
 <p>";
   // HTML
   html << _(
-"  bsp rendering: Norman Chin<br>\n");
+"  bsp rendering: Norman Chin<br/>\n");
   html << " \
 </p>\n \
 <br>\n";
@@ -958,31 +958,17 @@ getDankHtml()
 <p>";
   // HTML
   html << _(
-"For the visualisation of gamut (external):<br>\n");
+"For the visualisation of gamut (external):<br/>\n");
   html << " \
 <p>";
   // HTML
   html << _( 
-"  argyll: Greame Gill web.access.net.au/argyll/argyllcms.html<br<br><br>\n");
+"  argyll: Greame Gill <a href=\"http://www.argyllcms.com\">www.argyllcms.com</a><br/><br/><br/>\n");
   html << " \
 <br>\n";
   html << "\n\n<br>\n</body></html>\n";
   DBG_PROG_ENDE
   return html.str();
-}
-
-std::string
-getLinksText()
-{
-  DBG_PROG_START
-  std::stringstream text;
-  // HTML
-  text << _( "Project" ) <<"     :\n"<< "  http://www.oyranos.org/icc-examin/" << "\n";
-  // HTML
-  text << _( "Documentation" )<<":\n"<< "  http://www.oyranos.org/wiki/index.php?title=ICC_Examin";
-
-  DBG_PROG_ENDE
-  return text.str();
 }
 
 std::string

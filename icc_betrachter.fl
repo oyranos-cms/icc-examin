@@ -372,10 +372,6 @@ class ICCfltkBetrachter {open
             label Acknowlegement
             xywh {0 25 365 235} box THIN_UP_BOX color 49 selection_color 47 hide
           }
-          Fl_Output links_text {
-            label Links
-            xywh {10 35 345 215} type Multiline box THIN_DOWN_BOX color 49 selection_color 47 hide
-          }
           Fl_Help_View info_html {
             label Info
             xywh {0 25 365 235} box THIN_UP_BOX color 49 selection_color 47
@@ -1181,6 +1177,5 @@ Function {initHilfe()} {open
   icc_examin->icc_betrachter->hilfe_html->value(getHilfeHtml().c_str());
   icc_examin->icc_betrachter->lizenz_html->value(getLizenzHtml().c_str());
   icc_examin->icc_betrachter->dank_html->value(getDankHtml().c_str());
-  icc_examin->icc_betrachter->links_text->value(getLinksText().c_str());
   icc_examin->icc_betrachter->info_html->value(getInfoHtml().c_str());} {}
 } 

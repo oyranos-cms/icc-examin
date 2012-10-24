@@ -34,7 +34,6 @@ std::string getUeberHtml();
 std::string getHilfeHtml();
 std::string getLizenzHtml();
 std::string getDankHtml();
-std::string getLinksText();
 std::string getInfoHtml();
 
 #endif //ICC_UEBER_H
