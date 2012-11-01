@@ -34,7 +34,7 @@
 
 #include "icc_utils.h"
 #include "icc_helfer.h"
-#include <alpha/oyranos_alpha.h>
+#include <oyStruct_s.h>
 
 namespace icc_examin_ns {
 
