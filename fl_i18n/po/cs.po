@@ -1,0 +1,111 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR Kai-Uwe Behrmann
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: fl_i18n_example\n"
+"Report-Msgid-Bugs-To: ku.b@gmx.de\n"
+"POT-Creation-Date: 2008-07-23 20:58+0200\n"
+"PO-Revision-Date: 2012-10-19 15:37+0100\n"
+"Last-Translator: Milan Knížek <knizek@volny.cz>\n"
+"Language-Team: Czech <cs@li.org>\n"
+"Language: Czech\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2\n"
+
+#: fl_i18n.cxx:258
+msgid "osX locale obtained: "
+msgstr "osX locale zjištěno: "
+
+#: fl_i18n.cxx:261
+msgid "osX locale not obtained"
+msgstr "osX locale nezjištěno"
+
+#: fl_i18n.cxx:384
+msgid "try to set LANG"
+msgstr "zkuste nastavit LANG"
+
+#: fl_i18n.cxx:403
+msgid "try locale in "
+msgstr "zkuste locale v"
+
+#: fl_i18n.cxx:423
+msgid "set codeset for"
+msgstr "nastavit kódovou stránku na"
+
+#: fl_i18n.cxx:464
+msgid "Add to Favorites"
+msgstr "Přidat do záložek"
+
+#: fl_i18n.cxx:465
+msgid "All Files (*)"
+msgstr "Všechny soubory (*)"
+
+#: fl_i18n.cxx:466
+msgid "Custom Filter"
+msgstr "Vlastní filtr"
+
+#: fl_i18n.cxx:467
+msgid "Please choose an existing file!"
+msgstr "Prosím vyberte existující soubor!"
+
+#: fl_i18n.cxx:468
+msgid "Favorites"
+msgstr "Záložky"
+
+#: fl_i18n.cxx:469
+msgid "Filename"
+msgstr "Jméno souboru"
+
+#: fl_i18n.cxx:470
+msgid "Manage Favorites"
+msgstr "Spravovat záložky"
+
+#: fl_i18n.cxx:472
+msgid "My Computer"
+msgstr "Můj počítač"
+
+#: fl_i18n.cxx:474
+msgid "Filesystems"
+msgstr "Souborové systémy"
+
+#: fl_i18n.cxx:476
+msgid "New Directory?"
+msgstr "Nový adresář?"
+
+#: fl_i18n.cxx:477
+msgid "Preview"
+msgstr "Náhled"
+
+#: fl_i18n.cxx:479 fl_i18n_example.cxx:33
+msgid "Save"
+msgstr "Uložit"
+
+#: fl_i18n.cxx:481
+msgid "Show:"
+msgstr "Ukázat:"
+
+#: fl_i18n_example.cxx:15 fl_i18n_example.cxx:69 fl_i18n_example.cxx:73
+msgid "Hello, world!"
+msgstr "Ahoj, světe!"
+
+#: fl_i18n_example.cxx:31
+msgid "File"
+msgstr "Soubor"
+
+#: fl_i18n_example.cxx:32
+msgid "Open"
+msgstr "Otevřít"
+
+#: fl_i18n_example.cxx:34
+msgid "Quit"
+msgstr "Ukončit"
+
+#: fl_i18n_example.cxx:70
+#, fuzzy
+msgid "fl_i18n_example"
+msgstr "fl_i18n_example"
