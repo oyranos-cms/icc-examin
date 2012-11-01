@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2008  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2012  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -325,7 +325,7 @@ ICCtag::getText                     (std::string text)
     }
     ICClist<double> xy = getCIEXYZ(); XYZto_xyY(xy);
     if( icValue(*(icUInt16Number*)&data_[10]) ) 
-      texte.push_back( getChromaticityColorantType( icValue(*(icUInt16Number*)&data_[10])) );
+      texte.push_back( getChromaticityColorantType( icValue(*(icInt16Number*)&data_[10])) );
     else if(!(xy.size()%3))
     {
       std::stringstream s;
@@ -715,12 +715,12 @@ ICCtag::getCIEXYZ                                 (void)
 #   ifdef DEBUG_ICCTAG
     DBG_NUM_S( count )
 #   endif
-    DBG_NUM_S(getChromaticityColorantType( icValue(*(icUInt16Number*)&data_[10])))
+    DBG_NUM_S(getChromaticityColorantType( icValue(*(icInt16Number*)&data_[10])))
     for (int i = 0; i < count ; ++i) { // Table 35 -- chromaticityType encoding
       // TODO lcms needs a 16 Byte Offset (instead of 12 Byte ?)
-      icU16Fixed16Number* channel = (icU16Fixed16Number*)&data_[12+(8*i)];
-      double xyY[3] = { icUFValue( channel[0] ),
-                        icUFValue( channel[1] ),
+      icS15Fixed16Number* channel = (icS15Fixed16Number*)&data_[12+(8*i)];
+      double xyY[3] = { icSFValue( channel[0] ),
+                        icSFValue( channel[1] ),
                         1.0 };
       points.push_back( xyY[0] );
       points.push_back( xyY[1] );
