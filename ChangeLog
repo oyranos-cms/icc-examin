@@ -1,3 +1,59 @@
+Version 0.52
+
+Kai-Uwe Behrmann (48):
+	* [docu]: update ChangeLog
+	* [core]: reduce Oyranos alpha includes
+	* [core]: fix for negative signed chromaticities
+	* [core]: set www links
+	* [conf]: actualise date
+	* [core]: update to Oyranos API changes
+	* [core]: revert include in Oy_Fl_Group.h
+	* [build]: add libltdl to bundle target
+	* [core]: update osX bundle version
+	* [build]: update after removal of build dirs
+	* [build]: require Oyranos >= 0.9
+	* [core]: compile with Oyranos gsoc2011
+	* [core]: update Oy_Fl_ widgets
+	* [build]: add libltdl to bundle target
+	* [core]: update osX bundle version
+	* [build]: update after removal of build dirs
+	* [core]: detect lraw supported cameraRAW prefixes
+	* [core]: fix mAB/mBA table access
+	* [core]: update to oyImage_WritePPM API change
+	* [core]: add debug output for system commands
+	* [core]: adapt oyranos-profile-graph options
+	* [core]: add ICCEXAMIN_SKIP_GDB environment variable
+	* [core]: simplify the oyranos-profile-graph launch
+	* [build]: require Oyranos >= 0.5
+	* [core]: use ICC grapher for preview icon
+	* [core]: show internal profile name in main window
+	* [i18n]: update deutsch
+	* [core]: update to Oyranos v0.5 API changes
+	* [core]: add file formats to desktop file
+	* [core]: remove previous preview image
+	* [core]: add pfm to supported formats
+	* [i18n]: update deutsch
+	* [core]: use own instead of default image handler
+	* [core]: add iccImageCheck()
+	* [core]: partitial revert #4d4529d7
+	* [core]: support image profiles
+	* [core]: small code translation
+	* [core]: add -g option
+	* [core]: clean unused function
+	* [core]: use macro for config name
+	* [docu]: update web link
+	* [build]: remove unneeded text line in script
+	* [build]: fix elektra skipping in script
+	* [build]: move xcm behind Oyranos in script
+	* [build]: update skip list in build script
+	* [build]: fix skipping elektra in script
+	* [build]: require XCM supporting libraries in spec file
+	* [conf]: bump version
+
+Milan Knizek (2):
+	* [i18n]: update Czech for fl_i18n
+	* [i18n]: update Czech
+
 Version 0.51
 
 Kai-Uwe Behrmann (57):
