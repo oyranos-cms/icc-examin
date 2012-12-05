@@ -565,7 +565,7 @@ install_cp:
 	$(INSTALL) -m 755 $(CINEPAINT) $(DESTDIR)$(CP_DIR)
 	#strip $(DESTDIR)$(bindir)/$(CINEPAINT)
 	mkdir -p $(DESTDIR)$(datadir)/fonts/
-	$(INSTALL) -m 644 $(FONT) $(DESTDIR)$(datadir)/fonts/$(FONT)
+	$(INSTALL) -m 644 $(SRCDIR)/$(FONT) $(DESTDIR)$(datadir)/fonts/$(FONT)
 	$(fltkconfig) --post $(DESTDIR)$(CP_DIR)/$(CINEPAINT)
 	mkdir -p $(DESTDIR)$(datadir)/fonts/
 	echo ... Installation finished
@@ -589,17 +589,17 @@ install_global:
 	#strip $(DESTDIR)$(bindir)/$(BINTARGET)
 	$(fltkconfig) --post $(DESTDIR)$(bindir)/$(BINTARGET)
 	mkdir -p $(DESTDIR)$(datadir)/fonts/
-	$(INSTALL) -m 644 $(FONT) $(DESTDIR)$(datadir)/fonts/$(FONT)
+	$(INSTALL) -m 644 $(SRCDIR)/$(FONT) $(DESTDIR)$(datadir)/fonts/$(FONT)
 	mkdir -p $(DESTDIR)$(desktopdir)
-	$(COPY) icc_examin.desktop iccexamin.desktop
+	$(COPY) $(SRCDIR)/icc_examin.desktop iccexamin.desktop
 	$(INSTALL) -m 644 iccexamin.desktop $(DESTDIR)$(desktopdir)/iccexamin.desktop
 	-xdg-desktop-menu install --novendor iccexamin.desktop
 	mkdir -p $(DESTDIR)$(datadir)/mime/packages/
 	mkdir -p $(DESTDIR)$(pixmapdir)/hicolor/scalable/
-	#$(INSTALL) -m 644 icc_examin.png $(DESTDIR)$(pixmapdir)/iccexamin.png
-	$(COPY) icc_examin.png iccexamin.png
+	#$(INSTALL) -m 644 $(SRCDIR)/icc_examin.png $(DESTDIR)$(pixmapdir)/iccexamin.png
+	$(COPY) $(SRCDIR)/icc_examin.png iccexamin.png
 	$(INSTALL) -m 644 iccexamin.png $(DESTDIR)$(pixmapdir)/iccexamin.png
-	$(INSTALL) -m 644 icc_examin.svg $(DESTDIR)$(pixmapdir)/hicolor/scalable/iccexamin.svg
+	$(INSTALL) -m 644 $(SRCDIR)/icc_examin.svg $(DESTDIR)$(pixmapdir)/hicolor/scalable/iccexamin.svg
 	-xdg-icon-resource install --size 128 --novendor iccexamin.png
 	echo  Linguas ...
 	for ling in $(LINGUAS); do \
