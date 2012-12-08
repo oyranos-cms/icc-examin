@@ -981,6 +981,7 @@ Oyranos::netzVonProfil_ (ICCnetz & netz,
 
 #include "icc_vrml.h"
 #include "icc_gamut.h"
+extern "C" {void * cnew(size_t s){return new char[s];}}
 void
 Oyranos::netzVonProfil (ICCprofile & profil, oyOptions_s * options,
                         int native, ICCnetz & netz)
@@ -990,7 +991,9 @@ Oyranos::netzVonProfil (ICCprofile & profil, oyOptions_s * options,
 
   if(profil.valid()) {
       size_t groesse = 0;
-      char* daten = profil.saveProfileToMem(&groesse);
+      oyProfile_s * p = profil.oyProfile();
+      char * daten = (char*)oyProfile_GetMem( p, &groesse, 0, cnew );
+      oyProfile_Release( &p );
       s.ladeUndFreePtr(&daten, groesse);
       DBG_NUM_V( groesse );
   }
