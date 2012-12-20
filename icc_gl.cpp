@@ -131,7 +131,7 @@ FTFont *font = NULL, *ortho_font = NULL;
                       oyOptions_s * opts = icc_examin->options(); \
         double * rgb = icc_oyranos.wandelLabNachBildschirmFarben( \
              window()->x() + window()->w()/2, window()->y() + window()->h()/2, \
-       (icc_oyranos.colourServerActive() & XCM_COLOR_SERVER_PROFILES)?edit_:0, \
+       (icc_oyranos.colourServerActive() & XCM_COLOR_SERVER_MANAGEMENT)?edit_:0, \
                                  lab, 1, opts); \
                       for(int i = 0; i < 3; ++i) \
                         colour[i] = rgb[i]; \
@@ -1148,7 +1148,7 @@ GL_View::createGLLists_()
                       oyOptions_s * opts = icc_examin->options();
         double * rgb = icc_oyranos.wandelLabNachBildschirmFarben(
              window()->x() + window()->w()/2, window()->y() + window()->h()/2,
-       (icc_oyranos.colourServerActive() & XCM_COLOR_SERVER_PROFILES)?edit_:0,
+       (icc_oyranos.colourServerActive() & XCM_COLOR_SERVER_MANAGEMENT)?edit_:0,
                                  lab, 1, opts);
     glClearColor(rgb[0],rgb[1],rgb[2],1.0);
     delete [] rgb; oyOptions_Release( &opts );
@@ -2174,7 +2174,7 @@ GL_View::refreshPoints()
         int y = this->window()->y() + this->window()->h()/2;
 
         oyProfile_s * prof_disp = NULL;
-        if(icc_oyranos.colourServerActive() & XCM_COLOR_SERVER_PROFILES)
+        if(icc_oyranos.colourServerActive() & XCM_COLOR_SERVER_MANAGEMENT)
           prof_disp = oyProfile_Copy( edit_, NULL );
         else
           prof_disp = icc_oyranos.oyMoni(x,y);
@@ -2457,7 +2457,7 @@ GL_View::showContours_()
 
     RGB_buffer = icc_oyranos.wandelLabNachBildschirmFarben(
                window()->x() + window()->w()/2, window()->y() + window()->h()/2,
-         (icc_oyranos.colourServerActive() & XCM_COLOR_SERVER_PROFILES)?edit_:0,
+         (icc_oyranos.colourServerActive() & XCM_COLOR_SERVER_MANAGEMENT)?edit_:0,
                Lab_buffer, (size_t)n, opts);
     DBG_PROG_V( n )
     // create shadow
@@ -2471,7 +2471,7 @@ GL_View::showContours_()
 
     RGB_shadow_buffer = icc_oyranos.wandelLabNachBildschirmFarben(
                window()->x() + window()->w()/2, window()->y() + window()->h()/2,
-         (icc_oyranos.colourServerActive() & XCM_COLOR_SERVER_PROFILES)?edit_:0,
+         (icc_oyranos.colourServerActive() & XCM_COLOR_SERVER_MANAGEMENT)?edit_:0,
                       Lab_shadow_buffer, n, opts);
     if(!RGB_buffer)  WARN_S( "RGB_speicher result is not available" )
     if(!RGB_shadow_buffer)  WARN_S( "RGB_speicher result is not available" )
@@ -2615,7 +2615,7 @@ GL_View::showSprectralLine_()
 
     RGB_buffer = icc_oyranos.wandelLabNachBildschirmFarben(
                window()->x() + window()->w()/2, window()->y() + window()->h()/2,
-         (icc_oyranos.colourServerActive() & XCM_COLOR_SERVER_PROFILES)?edit_:0,
+         (icc_oyranos.colourServerActive() & XCM_COLOR_SERVER_MANAGEMENT)?edit_:0,
                Lab_buffer, (size_t)n_punkte, opts);
 
     if(type_ == 1)
@@ -2635,7 +2635,7 @@ GL_View::showSprectralLine_()
 
     RGB_shadow_buffer = icc_oyranos.wandelLabNachBildschirmFarben(
                window()->x() + window()->w()/2, window()->y() + window()->h()/2,
-         (icc_oyranos.colourServerActive() & XCM_COLOR_SERVER_PROFILES)?edit_:0,
+         (icc_oyranos.colourServerActive() & XCM_COLOR_SERVER_MANAGEMENT)?edit_:0,
                Lab_shadow_buffer, n_punkte, opts);
     if(!RGB_buffer || !RGB_shadow_buffer) 
     {
@@ -2872,7 +2872,7 @@ GL_View::windowShape( )
     glViewport(0,0,w(),h());
     DBG_PROG_V( x()<<" "<< y()<<" "<<w()<<" "<<h())
     window_proportion = (GLdouble)w()/(GLdouble)h();
-    if(icc_oyranos.colourServerActive() & XCM_COLOR_SERVER_PROFILES &&
+    if(icc_oyranos.colourServerActive() & XCM_COLOR_SERVER_MANAGEMENT &&
        type_ != 1)
       icc_oyranos.colourServerRegionSet( this, edit_, window_geometry, 0 );
     oyRectangle_SetGeo( window_geometry, x(), y(), w(), h() );
@@ -3051,7 +3051,7 @@ GL_View::drawGL()
       {
         rgb_ = rgb = icc_oyranos.wandelLabNachBildschirmFarben( 
                window()->x() + window()->w()/2, window()->y() + window()->h()/2,
-         (icc_oyranos.colourServerActive() & XCM_COLOR_SERVER_PROFILES)?edit_:0,
+         (icc_oyranos.colourServerActive() & XCM_COLOR_SERVER_MANAGEMENT)?edit_:0,
                                  l, 1, opts);
 
         icc_examin->statusFarbe(l[0],l[1],l[2]);
@@ -3645,7 +3645,7 @@ GL_View::setBspFaceProperties_( icc_examin_ns::FACE *faceList )
 #ifdef USE_OY_NC
   oyProfile_s * prof = oyProfile_FromStd( oyEDITING_LAB, 0 );
   oyProfile_s * prof_disp = NULL;
-  if(icc_oyranos.colourServerActive() & XCM_COLOR_SERVER_PROFILES)
+  if(icc_oyranos.colourServerActive() & XCM_COLOR_SERVER_MANAGEMENT)
     prof_disp = oyProfile_Copy( edit_, NULL );
   else
     prof_disp = icc_oyranos.icc_oyranos.oyMoni(
@@ -3689,7 +3689,7 @@ GL_View::setBspFaceProperties_( icc_examin_ns::FACE *faceList )
         double * rgb = NULL;
         rgb = icc_oyranos.wandelLabNachBildschirmFarben( 
                window()->x() + window()->w()/2, window()->y() + window()->h()/2,
-         (icc_oyranos.colourServerActive() & XCM_COLOR_SERVER_PROFILES)?edit_:0,
+         (icc_oyranos.colourServerActive() & XCM_COLOR_SERVER_MANAGEMENT)?edit_:0,
                                  lab, 1, opts);
 
         if(rgb)
