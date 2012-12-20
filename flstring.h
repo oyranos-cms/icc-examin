@@ -95,14 +95,14 @@ FL_EXPORT extern int fl_vsnprintf(char *, size_t, const char *, va_list ap);
  * that work the way strncpy() and strncat() *should* have worked.
  */
 
-FL_EXPORT extern size_t fl_strlcat(char *, const char *, size_t);
+FL_EXPORT extern size_t oy_fl_strlcat(char *, const char *, size_t);
 #  if !HAVE_STRLCAT && !defined(strlcat)
-#    define strlcat fl_strlcat
+#    define strlcat oy_fl_strlcat
 #  endif /* !HAVE_STRLCAT */
 
-FL_EXPORT extern size_t fl_strlcpy(char *, const char *, size_t);
+FL_EXPORT extern size_t oy_fl_strlcpy(char *, const char *, size_t);
 #  if !HAVE_STRLCPY && !defined(strlcpy)
-#    define strlcpy fl_strlcpy
+#    define strlcpy oy_fl_strlcpy
 #  endif /* !HAVE_STRLCPY */
 
 #  ifdef __cplusplus

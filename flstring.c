@@ -33,7 +33,7 @@
  */
 
 size_t				/* O - Length of string */
-fl_strlcat(char       *dst,	/* O - Destination string */
+oy_fl_strlcat(char       *dst,	/* O - Destination string */
            const char *src,	/* I - Source string */
 	   size_t     size) {	/* I - Size of destination string buffer */
   size_t	srclen;		/* Length of source string */
@@ -73,7 +73,7 @@ fl_strlcat(char       *dst,	/* O - Destination string */
  */
 
 size_t				/* O - Length of string */
-fl_strlcpy(char       *dst,	/* O - Destination string */
+oy_fl_strlcpy(char       *dst,	/* O - Destination string */
            const char *src,	/* I - Source string */
 	   size_t      size) {	/* I - Size of destination string buffer */
   size_t	srclen;		/* Length of source string */
