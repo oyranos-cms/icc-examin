@@ -36,7 +36,6 @@ BuildRequires:  zlib-devel
 %endif
 
 %if 0%{?suse_version} > 1010
-Recommends:     oyranos-monitor-nvidia >= 0.4.0 freefont
 BuildRequires:  Mesa
 BuildRequires:  Mesa-devel
 BuildRequires:  xorg-x11-fonts-devel
@@ -84,7 +83,6 @@ BuildRequires:  xdg-utils
 %endif
 
 %if 0%{?mandriva_version} > 0
-Recommends:     oyranos-monitor-nvidia >= 0.4.0
 BuildRequires:  Mesa
 BuildRequires:  X11-devel
 BuildRequires:  lcms-devel
@@ -94,7 +92,6 @@ BuildRequires:  xdg-utils
 %endif
 
 %if 0%{?fedora_version} > 0
-Recommends:     oyranos-monitor-nvidia >= 0.4.0
 BuildRequires:  Mesa-devel
 BuildRequires:  elektra-devel
 BuildRequires:  lcms-devel
@@ -106,17 +103,6 @@ BuildRequires:  qt3-devel
 BuildRequires:  xdg-utils
 BuildRequires:  xorg-x11-Mesa-devel
 BuildRequires:  xorg-x11-devel
-%endif
-
-%if 0%{?debian_version} > 0
-BuildRequires:  cinepaint-devel-0.25
-BuildRequires:  xorg-x11
-BuildRequires:  xorg-x11-Mesa-devel
-BuildRequires:  xorg-x11-devel
-BuildRequires:  xorg-x11-libXext
-BuildRequires:  xorg-x11-libXext-devel
-BuildRequires:  xorg-x11-libXpm
-BuildRequires:  xorg-x11-libXpm-devel
 %endif
 
 %description
