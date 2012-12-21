@@ -1,0 +1,39 @@
+Source: icc-examin
+Priority: optional
+Maintainer: Kai-Uwe Behrmann (oy) <oy@oyranos.org>
+Build-Depends: debhelper (>= 8.0.0), autotools-dev,
+ autoconf,
+ cmake,
+ gettext,
+ libfltk-dev,
+ liboyranos-dev,
+ x11proto-xf86vidmode-dev,
+ x11proto-xext-dev,
+ libxxf86vm-dev,
+ libxrandr-dev,
+ libxinerama-dev,
+ libxmu-dev,
+ libxpm-dev,
+ libxfixes-dev,
+ libxcm-dev,
+ libglu1-mesa-dev,
+ pkg-config,
+ locales,
+ libfreetype6-dev
+# libftgl-dev  
+Standards-Version: 3.9.3
+Section: libs
+Homepage: http://www.oyranos.org/icc_examin
+Vcs-Git: git://www.oyranos.org/git/icc_examin
+Vcs-Browser: http://www.oyranos.org/scm?p=icc_examin.git;a=summary
+
+Package: icc-examin
+Section: graphics
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, oyranos
+Description: ICC profile viewer and colour visualisation
+ ICC Examin is a small utility (unix name: iccexamin) for the
+ purpose of watching the internals of ICC profiles, measurement
+ data (CGATS), colour samples (named colour profiles), gamut 
+ visualisations (vrml), video card gamma tables (Xorg/XFree86/osX).
+

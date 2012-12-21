@@ -1,3 +1,4 @@
+DEBTARGET = icc-examin
 
 COLLECT = ar cru
 RANLIB = ranlib
@@ -356,8 +357,8 @@ static_static:	$(OBJECTS)
 
 test:	icc_formeln.o icc_utils.o
 	$(CXX) $(CXXFLAGS_) $(INCL) -o dE2000_test.o \
-	  -c $(SRCDIR)tests/dE2000_test.cpp
-	$(CXX) $(CXXFLAGS_) -o dE2000_test dE2000_test.o icc_formeln.o icc_utils.o \
+	  -c $(SRCDIR)/tests/dE2000_test.cpp
+	$(CXX) $(CXXFLAGS_) -o dE2000_test dE2000_test.o icc_formeln.o \
 	-L$(libdir)
 	$(REZ)
 
@@ -556,6 +557,32 @@ rpm:	$(TARGET).spec dist
 	rpmbuild --clean -ba $(build_dir)/$(TARGET).spec --define "_topdir $$PWD/rpmdir"
 	@echo "============================================================"
 	@echo "Finished - the Packages are in rpmdir/RPMS and rpmdir/SRPMS!"
+
+deb:	dist
+	$(SRCDIR)/configure --prefix=/usr --rpm-only
+	mkdir -p debian/deb/DEBIAN
+	tar xvjf $(TARGET)-$(VERSION).tar.bz2
+	(cd $(TARGET)-$(VERSION); \
+	./configure --prefix=/usr; \
+	$(MAKE) "DESTDIR=$(build_dir)/debian/deb/DEBIAN" install;)
+	$(COPY) $(TARGET)-$(VERSION)/$(TARGET)_control $(build_dir)/debian/deb/DEBIAN/control
+	$(RM) -R $(TARGET)-$(VERSION)
+	dpkg -b $(build_dir)/debian/deb debian/$(TARGET)_$(VERSION)-$(RELEASE)_$(deb_arch).deb
+	$(RM) -R $(build_dir)/debian/deb
+	echo ... $@ done
+
+debsrc:	dist
+	test -d $(DEBTARGET)-$(VERSION) && $(RM) -R $(DEBTARGET)-$(VERSION) || echo ""
+	tar xvjf $(TARGET)-$(VERSION).tar.bz2
+	mv $(TARGET)-$(VERSION)/ $(DEBTARGET)-$(VERSION)
+	cp -R $(SRCDIR)/extras/debian $(DEBTARGET)-$(VERSION)
+	tar cjf $(DEBTARGET)_$(VERSION).orig.tar.bz2 $(DEBTARGET)-$(VERSION)/
+	dpkg-source -b $(DEBTARGET)-$(VERSION)
+	echo ... $@ done
+
+debian:	debsrc
+	(cd $(DEBTARGET)-$(VERSION)/debian; debuild)
+	echo ... $@ done
 
 install:	$(INSTALL_TARGET)
 
