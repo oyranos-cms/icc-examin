@@ -1,3 +1,16 @@
+Version 0.53
+
+Kai-Uwe Behrmann (9):
+	* [build]: debian/ubuntu packages
+	* [build]: remove recommendation to oy-monitor-nvidia
+	* [core]: use editing space only with colour server
+	* [core]: check wide gamut editing suitability
+	* [core]: rename FLTK functions to internal names
+	* [core]: skip rewriting profile memory
+	* [build]: install from out-of-source configuration
+	* [conf]: bump version
+	* [conf]: fix compiling on Fedora 17
+
 Version 0.52
 
 Kai-Uwe Behrmann (48):
