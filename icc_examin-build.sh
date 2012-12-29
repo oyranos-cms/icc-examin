@@ -689,9 +689,10 @@ cd "$top"
 
 
 packet=icc-profiles-openicc
-packet_dir=$packet-1.3.0
+packet_dir=$packet-1.3.1
 packet_file=$packet_dir.tar.bz2
-checksum=c5004a31b2174d223c4de5f774cd108d2cf80d87
+checksum=ddcad40c0e4805cb82d727aaea41a498c6a927e4
+#c5004a31b2174d223c4de5f774cd108d2cf80d87
 loc=http://downloads.sourceforge.net/project/openicc/OpenICC-Profiles/
 if [ -f $packet_file ]; then
   echo $packet_file already here
