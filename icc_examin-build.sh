@@ -789,7 +789,7 @@ git_repo=oyranos
     if [ $UNAME_ = "MINGW32_NT-6.1" ]; then
       x11_skip="--disable-libX11"
     fi
-    CFLAGS="$CFLAGS $OSX_ARCH" CXXFLAGS="$CXXFLAGS $OSX_ARCH" LDFLAGS="$LDFLAGS $OSX_ARCH" ./configure $conf_opts $@  $v --enable-debug $x11_skip
+    CFLAGS="$CFLAGS $OSX_ARCH" CXXFLAGS="$CXXFLAGS $OSX_ARCH" LDFLAGS="$LDFLAGS $OSX_ARCH" ./configure $conf_opts $@  $v --enable-debug $x11_skip  --xdgsysdir=$HOME/.local/xdg
     make $MAKE_CPUS
     make install
     make check
