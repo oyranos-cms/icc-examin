@@ -838,19 +838,25 @@ git_repo=oyranos
   git_version="`cat .git/refs/heads/master`"
   old_git_version="`cat old_gitrev.txt`"
   update_oyranos=0
-  pkg-config --atleast-version=0.4 oyranos
+  pkg-config --atleast-version=0.9.4 oyranos
   if [ $? -ne 0 ] || [ $update_xcm = 1 ] ||
      [ "$git_version" != "$old_git_version" ]; then
     echo "xcm `pkg-config --modversion oyranos`"
     update_oyranos=1
+    if [[ ! -d build ]]; then
+      mkdir build
+      update=1
+    fi
+    cd build
     make clean
     if [ $UNAME_ = "MINGW32_NT-6.1" ]; then
       x11_skip="--disable-libX11"
     fi
-    CFLAGS="$CFLAGS $OSX_ARCH" CXXFLAGS="$CXXFLAGS $OSX_ARCH" LDFLAGS="$LDFLAGS $OSX_ARCH" ./configure $conf_opts $@  $v --enable-debug $x11_skip  --xdgsysdir=$HOME/.local/xdg
+    CFLAGS="$CFLAGS $OSX_ARCH" CXXFLAGS="$CXXFLAGS $OSX_ARCH" LDFLAGS="$LDFLAGS $OSX_ARCH" ../configure $conf_opts $@  $v --enable-debug $x11_skip  --xdgsysdir=$HOME/.local/xdg
     make $MAKE_CPUS
     make install
     make check
+    cd "$top/$git_repo"
   else
     echo no changes in git $git_version
   fi
