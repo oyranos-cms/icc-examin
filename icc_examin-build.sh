@@ -368,11 +368,68 @@ else
   cd "$top"
 fi
 
+packet=cmake
+$packet --version
+if [ $? -eq 0 ]; then 
+  cmake="$packet:         `cmake --version`"
+else
+  cmake="$packet version is too old; need at least $packet 2.8"
+  #stop_build=1
+
+  echo building $packet ...
+  packet_dir=$packet-2.8.10.2
+  packet_file="$packet_dir".tar.gz
+  url="http://www.cmake.org/files/v2.8/"
+  checksum=2d868ccc3f9f2aa7c2844bd0a4609d5313edaaec
+  if [ -f $packet_file ]; then
+    echo $packet_file already here
+  else
+    echo "downloading $url$packet_file"
+    which curl && curl -L "$url$packet_file" -o $packet_file || wget "$url$packet_file"
+    if [ $verbose -gt 0 ]; then sleep 1; fi
+  fi
+  if [ `$SHA1SUM $packet_file | grep $checksum | wc -l` -eq 1 ]; then
+    echo sha1sum for $packet_file passed
+  else
+    echo sha1sum for $packet_file failed
+    exit 1
+  fi
+  packet_ready=0
+  pkg-config --atleast-version=1.0 $packet
+  if [ $? -eq 0 ]; then
+    if [ -d $packet_dir ]; then
+      echo "$packet + $packet_dir found, skipping $packet build and installation"
+      packet_ready=1
+    fi
+  else
+    $packet --version
+  fi
+  if [ $packet_ready -lt 1 ]; then
+    if [ -d $packet_dir ]; then
+      echo remove $packet_dir
+      if [ $verbose -gt 0 ]; then sleep 1; fi
+      rm -r $packet_dir
+    fi
+    echo unpacking $packet_file ...
+    tar xzf $packet_file
+    cd $packet_dir
+    make clean
+    ./bootstrap --prefix=$prefix
+    make $MAKE_CPUS
+    make install
+  fi
+  cmake="$packet:      `cmake --version`"
+  if [ $verbose -gt 0 ]; then sleep 1; fi
+
+  cd "$top"
+fi
+
 echo "$fltk"
 echo "$ftgl"
 echo "$lcms"
 echo "$libxml2"
 echo "$libpng"
+echo "$cmake"
 echo ""
 echo "$0 $@"
 echo "PATH            = $PATH"
