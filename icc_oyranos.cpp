@@ -1626,9 +1626,11 @@ oyProfile_s * Oyranos::getEditingProfile      ( )
 
   if(!editing)
   {
+#if defined(XCM_HAVE_X11)
     if(!(colourServerActive() | (XCM_COLOR_SERVER_REGIONS &&
                                  XCM_COLOR_SERVER_PROFILES)))
       return oyProfile_FromStd( oyASSUMED_WEB, 0 );
+#endif
 
     oyOption_s *matrix = oyOption_FromRegistration("///colour_matrix."
               "from_primaries."
