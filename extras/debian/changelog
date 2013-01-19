@@ -1,8 +1,8 @@
 icc-examin (0.54-1) unstable; urgency=low
 
-  * minor bug fixes
+  * bug fixes
 
- -- Kai-Uwe Behrmann (oy) <oy@oyranos.org>  Fri, 11 Jan 2013 12:00:00 +0100
+ -- Kai-Uwe Behrmann (oy) <oy@oyranos.org>  Sat, 19 Jan 2013 12:00:00 +0100
 
 icc-examin (0.53-1) unstable; urgency=low
 

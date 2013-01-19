@@ -1,3 +1,15 @@
+Version 0.54
+
+Kai-Uwe Behrmann (8):
+	* [core]: fix warnings with Xcm
+	* [build]: update oyranos cmake in build script
+	* [build]: support cmake in build script
+	* [docu]: update and format copying files
+	* [conf]: bump version
+	* [core]: fix memory alloc/free pair
+	* [build]: update to icc-profiles-openicc-1.3.1
+	* [build]: add XDG dir to build script
+
 Version 0.53
 
 Kai-Uwe Behrmann (9):
