@@ -333,6 +333,8 @@ changeScreenName_( const char *display_name, int screen )
     ptr2 = strchr( ptr, '.' );
     if(ptr2)
       sprintf( ptr2, ".%d", screen );
+    else
+      sprintf( &ptr[strlen(ptr)], ".%d", screen );
   } else
     sprintf( &ptr[strlen(ptr)], ".%d", screen );
 
@@ -611,37 +613,63 @@ Oyranos::setzeMonitorProfil (const char* profil_name , int x, int y )
 }
 
 char**
-Oyranos::moniInfo (int x, int y, int *num)
+Oyranos::moniInfo (int x, int y, int * num)
 {
   DBG_PROG_START
   *num = 0;
   char **infos = 0;
 
-  const char *display_name=0;
+  char *display_name=0;
 
-# ifdef HAVE_X
-  //static Display *display=0;
-
-  display_name = XDisplayString( fl_display );  // belongs to FLTK
-  DBG_PROG_V( display_name <<" "<< strlen(display_name) )
-# endif
+#if defined(HAVE_X)
+  display_name = oyGetDisplayNameFromPosition( 0, x,y, malloc );
+#else
+  display_name = oyGetDisplayNameFromPosition2( OY_TYPE_STD, "monitor.qarz", 0, x,y, malloc );
+#endif
   infos = (char**) new char* [10];
-  char *manufacturer = 0;
-  char *model = 0;
-  char *serial = 0;
-  char *geometry = 0;
-  char *system_port = 0;
+  static char *manufacturer = 0;
+  static char *model = 0;
+  static char *serial = 0;
+  static char *geometry = 0;
+  static char *system_port = 0;
 
-  int screen = oyGetScreenFromPosition( display_name, x,y );
-  char *new_display_name = changeScreenName_( display_name, screen );
+  static char * old_screen_name = 0;
 //int fehler =
-# if OYRANOS_VERSION > 109
-               oyGetMonitorInfo( new_display_name,
+# if OYRANOS_VERSION > 300
+  oyConfig_s * device = 0;
+  oyOptions_s * options = 0;
+  const char * t;
+
+  if(!old_screen_name ||
+     strcmp(display_name, old_screen_name) != 0)
+  {
+    oyOptions_SetFromText( &options,
+                             "//"OY_TYPE_STD"/config/command",
+                             "properties", OY_CREATE_NEW );
+    oyDeviceGet( OY_TYPE_STD, "monitor", display_name, options, &device );
+    oyOptions_Release( &options );
+
+    t = oyConfig_FindString( device, "manufacturer", 0 );
+    if(t) manufacturer = strdup( t );
+    t = oyConfig_FindString( device, "model", 0 );
+    if(t) model = strdup( t );
+    t = oyConfig_FindString( device, "serial", 0 );
+    if(t) serial = strdup( t );
+    t = oyConfig_FindString( device, "geometry", 0 );
+    if(t) geometry = strdup( t );
+    t = oyConfig_FindString( device, "system_port", 0 );
+    if(t) system_port = strdup( t );
+
+    oyConfig_Release( &device );
+    old_screen_name = strdup(display_name);
+  }
+# elif OYRANOS_VERSION > 109
+               oyGetMonitorInfo( display_name,
                                  &manufacturer, &model, &serial, 
                                  &system_port, &geometry, 0,
                                  myAllocFunc );
 # else
-               oyGetMonitorInfo( new_display_name,
+               oyGetMonitorInfo( display_name,
                                  &manufacturer, &model, &serial, 
                                  myAllocFunc );
 # endif
@@ -678,7 +706,7 @@ Oyranos::moniInfo (int x, int y, int *num)
   }
     
 
-  if(new_display_name) { delete [] new_display_name; new_display_name = 0; }
+  if(display_name) { free(display_name); display_name = 0; }
 
   DBG_PROG_ENDE
   return infos;
