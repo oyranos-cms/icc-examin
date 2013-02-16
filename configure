@@ -697,7 +697,7 @@ echo_=""; echo "$echo_" >> $CONF_LOG; echo "$echo_"
 echo_=""; echo "$echo_" >> $CONF_LOG; echo "$echo_"
 
 LIBS_TEST="dl iconv intl c m pthread"; export LIBS_TEST
-X_ADD="Xpm Xext Xinerama Xxf86vm X11"; export X_ADD
+X_ADD="Xpm Xext Xinerama Xxf86vm Xrandr X11"; export X_ADD
 
 
 ECHO="echo"; export ECHO
@@ -718,6 +718,7 @@ XCM=1;   export XCM
 fi
 XINERAMA=1; export XINERAMA
 XF86VMODE=1; export XF86VMODE
+XRANDR=1; export XRANDR
 DEBUG=1; export DEBUG
 PO=1; export PO
 GETTEXT=1; export GETTEXT
