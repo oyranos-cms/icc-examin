@@ -198,10 +198,22 @@ leseGrafikKartenGamma        (std::string display_name,
         RROutput output = res->outputs[i];
         XRROutputInfo * output_info = XRRGetOutputInfo( display, res,
                                                         output);
-        if(output_info->crtc && ncrtc++ == screen)
+        if(output_info->crtc)
         {
-          crtc = output_info->crtc;
-          gamma_size = XRRGetCrtcGammaSize( display, output_info->crtc );
+          XRRCrtcInfo * info = XRRGetCrtcInfo( display, res, output_info->crtc );
+
+          ncrtc++;
+
+          if( x >= info->x && x < info->x + info->width &&
+              y >= info->y && y < info->y + info->height )
+          {
+            crtc = output_info->crtc;
+            gamma_size = XRRGetCrtcGammaSize( display, output_info->crtc );
+            DBG_NUM_S("[" <<ncrtc-1<<"] (" <<screen<<") crtc: "
+                       <<output_info->crtc<<" name: "<<output_info->name<<" "<<
+                       info->width<<"x"<<info->height<<"+"<<info->x<<"+"<<info->y);
+          }
+          XRRFreeCrtcInfo( info );
         }
 
         XRRFreeOutputInfo( output_info ); output_info = 0;
