@@ -640,8 +640,9 @@ Oyranos::moniInfo (int x, int y, int * num)
   oyOptions_s * options = 0;
   const char * t;
 
-  if(!old_screen_name ||
-     strcmp(display_name, old_screen_name) != 0)
+  if(display_name &&
+     (!old_screen_name ||
+      strcmp(display_name, old_screen_name) != 0))
   {
     oyOptions_SetFromText( &options,
                              "//"OY_TYPE_STD"/config/command",
@@ -662,6 +663,12 @@ Oyranos::moniInfo (int x, int y, int * num)
 
     oyConfig_Release( &device );
     old_screen_name = strdup(display_name);
+  } else if(!display_name)
+  {
+    infos[2 * *num] = icc_strdup_m(_("Screen:"));
+    infos[2 * *num + 1] = icc_strdup_m(_("none"));
+    *num += 1;
+    return infos;
   }
 # elif OYRANOS_VERSION > 109
                oyGetMonitorInfo( display_name,
