@@ -871,7 +871,7 @@ GL_View::GLinit_()
   if(font) delete font;
   if(ortho_font) delete ortho_font;
 
-  const char* font_name = "/usr/share/fonts/dejavu/DejaVuSans.ttf";
+  char * font_name = strdup("/usr/share/fonts/dejavu/DejaVuSans.ttf");
 
 # ifdef HAVE_FONTCONFIG
   FcResult r = FcResultMatch;
@@ -892,7 +892,7 @@ GL_View::GLinit_()
       r = FcPatternGetString( match, FC_FILE, 0, &fname );
       if( r == FcResultMatch &&
           fname && strstr((const char*)fname, "DejaVuSans.ttf") != NULL )
-        font_name = (const char *) fname;
+        font_name = strdup( fname );
       FcPatternDestroy( match ); match = 0;
     }
   }
@@ -910,18 +910,18 @@ GL_View::GLinit_()
     f_n = icc_examin_ns::holeBundleResource("FreeSans", "ttf");
   }
   if(f_n.size()) {
-    font_name = f_n.c_str(); DBG_PROG_S( f_n )
+    font_name = strdup(f_n.c_str()); DBG_PROG_S( f_n )
   }
 # endif
   if(!holeDateiModifikationsZeit(font_name)) {
     DBG_PROG_S( _("Could not open font in:") << font_name )
-    font_name = "/usr/share/fonts/truetype/DejaVuSans.ttf";
+    font_name = strdup("/usr/share/fonts/truetype/DejaVuSans.ttf");
     if(!holeDateiModifikationsZeit(font_name)) {
       DBG_PROG_S( _("Could not open font in:") << font_name )
 #ifdef  WIN32
-      font_name = "C:\\Windows\\Fonts\\arial.ttf";
+      font_name = strdup("C:\\Windows\\Fonts\\arial.ttf");
 #else
-      font_name = "/Library/Fonts/Arial.ttf";
+      font_name = strdup("/Library/Fonts/Arial.ttf");
 #endif
       if(!holeDateiModifikationsZeit(font_name)) {
         DBG_PROG_S( _("Could not open font in:") << font_name )
