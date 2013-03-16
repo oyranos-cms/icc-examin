@@ -892,7 +892,7 @@ GL_View::GLinit_()
       r = FcPatternGetString( match, FC_FILE, 0, &fname );
       if( r == FcResultMatch &&
           fname && strstr((const char*)fname, "DejaVuSans.ttf") != NULL )
-        font_name = strdup( fname );
+        font_name = strdup( (const char*)fname );
       FcPatternDestroy( match ); match = 0;
     }
   }
