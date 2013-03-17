@@ -639,7 +639,7 @@ ICCexaminIO::oeffnen ()
     // protected: dateiwahl->window->clear_flag(64); //Fl_Window::FL_MODAL
     dateiwahl()->type(MyFl_File_Chooser::MULTI);
     while (dateiwahl()->visible())
-      icc_examin_ns::wait( 0, true );
+      icc_examin_ns::wait( 0.05, true );
     //dateiwahl->type(MyFl_File_Chooser::SINGLE | MyFl_File_Chooser::CREATE);
     //dateiwahl->window->set_modal();
 
