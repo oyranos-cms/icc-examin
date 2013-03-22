@@ -1350,7 +1350,7 @@ ICCexamin::erneuerTagBrowserText_ (void)
   ICClist<std::string> tag_list = profile.profil()->printTags();
   DBG_PROG_V( tag_list.size() <<" "<< (int*) b )
 
-# define add_s(stream) s << stream; b->add (s.str().c_str()); s.str("");
+# define add_s(stream) {s << stream; b->add (s.str().c_str()); s.str("");}
 # define add_          s << " ";
 
   b->clear();
@@ -1360,7 +1360,11 @@ ICCexamin::erneuerTagBrowserText_ (void)
     file_type_name = _("Filename (other data type)");
   if(profile.profil()->data_type == ICCprofile::ICCcorruptedprofileDATA)
     file_type_name = _("Filename (corrupted ICC data type)");
-  add_s ("@b" << profile.profil()->getProfileDescription() )
+  char * desc = profile.profil()->getProfileDescription();
+  if(desc)
+  add_s ("@b" << desc )
+  else
+  add_s ("@b" << "----" )
   add_s ("    " << profile.profil()->filename() )
   add_s ("")
   if (tag_list.size() == 0) {
