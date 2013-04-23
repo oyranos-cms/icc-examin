@@ -204,8 +204,8 @@ leseGrafikKartenGamma        (std::string display_name,
 
           ncrtc++;
 
-          if( x >= info->x && x < info->x + info->width &&
-              y >= info->y && y < info->y + info->height )
+          if( x >= (int)info->x && x < (int)(info->x + info->width) &&
+              y >= (int)info->y && y < (int)(info->y + info->height) )
           {
             crtc = output_info->crtc;
             gamma_size = XRRGetCrtcGammaSize( display, output_info->crtc );

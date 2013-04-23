@@ -305,17 +305,9 @@ int MyFl_Double_Window::handle( int e )
 
   int zeigen = (e == FL_HIDE || e == FL_SHOW);
 
-
-  int x_,y_,w_,h_,wx,wy;
-  x_=y_=w_=h_=wx=wy=0;
-#if ((FL_MAJOR_VERSION * 100 + FL_MINOR_VERSION) > 106)
+  int x_,y_,w_,h_;
+  x_=y_=w_=h_=0;
   Fl::screen_xywh(x_,y_,w_,h_);
-#endif
-  wx = this->x();
-  wy = this->y();
-
-  /*if(!ergebnis)
-    ;*/
 
   int net_desktop = -1;
 #if HAVE_X

@@ -1156,7 +1156,7 @@ ard"));
       } // Fl_Group* o
       o->end();
     } // Fl_Group* o
-    { My_Fl_Box* o = no_box = new My_Fl_Box(0, 0, 385, 520);
+    { no_box = new My_Fl_Box(0, 0, 385, 520);
       no_box->box(FL_NO_BOX);
       no_box->color(FL_BACKGROUND_COLOR);
       no_box->selection_color(FL_BACKGROUND_COLOR);
@@ -1166,7 +1166,6 @@ ard"));
       no_box->labelcolor(FL_FOREGROUND_COLOR);
       no_box->align(Fl_Align(FL_ALIGN_LEFT));
       no_box->when(FL_WHEN_RELEASE);
-      //o->box(FL_NO_BOX);
     } // My_Fl_Box* no_box
     o->main_win = o;
     details->end();

@@ -940,7 +940,7 @@ DBG_NUM_S("Show Log window")}
       }
       Fl_Box no_box {
         xywh {0 0 385 520} align 4
-        code0 {//o->box(FL_NO_BOX);}
+        code0 {}
         class My_Fl_Box
       }
     }
