@@ -213,9 +213,17 @@ My_Fl_Box::My_Fl_Box(int X,int Y,int W, int H, const char* title ) : Fl_Box(X,Y,
 }
 
 int My_Fl_Box::handle( int event ) {
-  int ergebnis = event_handler(event);
-    if(!ergebnis)
-      ;//ergebnis = Fl_Box::handle(event);
+  int ergebnis = 0;
+  
+    DBG_NUM_S( dbgFltkEvent(event) << dndCommes() );
+  
+    if(dndCommes())
+      ergebnis = Fl_Box::handle(event);
+  
+    int erg = event_handler(event);
+    if(erg)
+      ergebnis = erg;
+  
     return ergebnis;
 }
 

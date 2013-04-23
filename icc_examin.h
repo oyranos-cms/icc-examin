@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2011  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2013  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -208,6 +208,8 @@ class ICCexamin : public icc_examin_ns::Observer,
 };
 
 int event_handler(int e);
+int  dndCommes();
+void dndCommes( int i );
 
 #define status(texte) {std::stringstream s; s << texte; icc_examin->statlabel[0] = s.str(); icc_examin->statusAktualisieren();}
 

@@ -1,11 +1,11 @@
 # data file for the Fltk User Interface Designer (fluid)
-version 1.0110 
+version 1.0300 
 i18n_type 1 
 i18n_include <fl_i18n/fl_i18n.H> 
 i18n_function _ 
 header_name {.h} 
 code_name {.cxx}
-decl {\#include "icc_examin.h"} {public
+decl {\#include "icc_examin.h"} {public local
 } 
 
 decl {\#include "icc_profile.h"
@@ -13,65 +13,69 @@ decl {\#include "icc_profile.h"
 \#include "icc_utils.h"
 \#include "icc_ueber.h"
 \#include "icc_helfer.h"
-\#include "icc_helfer_fltk.h"} {public
+\#include "icc_helfer_fltk.h"} {public local
 } 
 
-decl {\#include <cassert>} {public
+decl {\#include <cassert>} {public local
 } 
 
-decl {\#include <iostream>} {public
+decl {\#include <iostream>} {public local
 } 
 
-decl {//\#include <sstream>} {public
+decl {//\#include <sstream>} {public local
 } 
 
-decl {\#include <stdio.h>} {public
+decl {\#include <stdio.h>} {public local
 } 
 
-decl {\#include <string>} {public
+decl {\#include <string>} {public local
 } 
 
-decl {\#include <FL/Fl.H>} {public
+decl {\#include <FL/Fl.H>} {public local
 } 
 
-decl {\#include <FL/Fl_Window.H>} {public
+decl {\#include <FL/Fl_Window.H>} {public local
 } 
 
-decl {\#include <FL/Fl_Menu_Bar.H>} {public
+decl {\#include <FL/Fl_Menu_Bar.H>} {public local
 } 
 
-decl {\#include <FL/Fl_Box.H>} {public
+decl {\#include <FL/Fl_Box.H>} {public local
 } 
 
-decl {\#include "Flmm_Message.H"} {} 
-
-decl {\#include "Flmm_Tabs.H"} {public
+decl {\#include "Flmm_Message.H"} {private local
 } 
 
-decl {\#include "Oy_Fl_Group.h"} {public
+decl {\#include "Flmm_Tabs.H"} {public local
 } 
 
-decl {\#include "icc_gl.h"} {} 
+decl {\#include "Oy_Fl_Group.h"} {public local
+} 
+
+decl {\#include "icc_gl.h"} {private local
+} 
 
 decl {\#include "icc_draw.h"
 \#include "icc_kette.h"
 \#include "icc_oyranos_extern.h"
-\#include "fl_i18n/fl_i18n.H"} {} 
+\#include "fl_i18n/fl_i18n.H"} {private local
+} 
 
 decl {\#include "icc_fenster.h" 
 \#include "icc_dateiwahl.h" 
 \#include <FL/Fl_Hold_Browser.H>
-\#include <FL/Fl_Choice.H>} {public
+\#include <FL/Fl_Choice.H>} {public local
 } 
 
 decl {class TagDrawings;
 class TagBrowser;
 class TagTexts;
 class TableChoice;
-class GL_View;} {public
+class GL_View;} {public local
 } 
 
-decl {using namespace icc_examin_ns;} {} 
+decl {using namespace icc_examin_ns;} {private local
+} 
 
 Function {iccReadInfo(char* filename)} {return_type {const char*}
 } {
@@ -91,7 +95,7 @@ Function {iccReadInfo(char* filename)} {return_type {const char*}
 
 class TagBrowser {open : {public Fl_Hold_Browser}
 } {
-  decl {int X; int Y; int W; int H; const char* start_info; std::string selectedTagName;} {public
+  decl {int X; int Y; int W; int H; const char* start_info; std::string selectedTagName;} {public local
   }
   Function {TagBrowser(int X,int Y,int W,int H,const char* start_info) : Fl_Hold_Browser(X,Y,W,H,start_info), X(X), Y(Y), W(W), H(H)} {open
   } {
@@ -129,13 +133,14 @@ class TagBrowser {open : {public Fl_Hold_Browser}
   }
 } 
 
-decl {typedef const char* (*tagTextsCB_f)(int * line);} {public
+decl {typedef const char* (*tagTextsCB_f)(int * line);} {public local
 } 
 
 class TagTexts {: {public Fl_Hold_Browser}
 } {
-  decl {int X; int Y; int W; int H; const char* start_info;} {}
-  decl {int inspekt_topline;} {public
+  decl {int X; int Y; int W; int H; const char* start_info;} {private local
+  }
+  decl {int inspekt_topline;} {public local
   }
   Function {TagTexts(int X,int Y,int W,int H,const char* start_info) : Fl_Hold_Browser(X,Y,W,H,start_info), X(X), Y(Y), W(W), H(H)} {open
   } {
@@ -194,7 +199,7 @@ class TagTexts {: {public Fl_Hold_Browser}
 this->hinein( text, patches );} {}
     code DBG_PROG_ENDE {}
   }
-  decl {tagTextsCB_f cb;} {public
+  decl {tagTextsCB_f cb;} {public local
   }
   Function {selectItem(int item)} {open
   } {
@@ -216,12 +221,14 @@ this->hinein( text, patches );} {}
   }
 } 
 
-decl {\#include <FL/fl_draw.H>} {} 
+decl {\#include <FL/fl_draw.H>} {private local
+} 
 
 class TableChoice {open : {public Fl_Choice}
 } {
-  decl {int X; int Y; int W; int H; const char* start_info; char type[5];} {}
-  decl {ICClist<std::string> Info; int gewaehlter_eintrag;} {public
+  decl {int X; int Y; int W; int H; const char* start_info; char type[5];} {private local
+  }
+  decl {ICClist<std::string> Info; int gewaehlter_eintrag;} {public local
   }
   Function {TableChoice(int X,int Y,int W,int H,const char* start_info) : Fl_Choice(X,Y,W,H,start_info), X(X), Y(Y), W(W), H(H)} {open
   } {
@@ -302,7 +309,7 @@ class TableChoice {open : {public Fl_Choice}
   }
 } 
 
-class My_Fl_Box {: {public Fl_Box}
+class My_Fl_Box {open : {public Fl_Box}
 } {
   Function {My_Fl_Box(int X,int Y,int W, int H, const char* title = 0) : Fl_Box(X,Y,W,H,title)} {open
   } {
@@ -310,10 +317,19 @@ class My_Fl_Box {: {public Fl_Box}
   }
   Function {handle( int event )} {open return_type int
   } {
-    code {int ergebnis = event_handler(event);
-  if(!ergebnis)
-    ;//ergebnis = Fl_Box::handle(event);
-  return ergebnis;} {}
+    code {int ergebnis = 0;
+
+  DBG_NUM_S( dbgFltkEvent(event) << dndCommes() );
+
+  if(dndCommes())
+    ergebnis = Fl_Box::handle(event);
+
+  int erg = event_handler(event);
+  if(erg)
+    ergebnis = erg;
+
+  return ergebnis;} {selected
+    }
   }
 } 
 
@@ -331,7 +347,7 @@ class ICCfltkBetrachter {open
   
  int tag_nummer;
   
- enum{ WID_0, WID_3D, WID_INSPEKT }; int widget_oben;} {public
+ enum{ WID_0, WID_3D, WID_INSPEKT }; int widget_oben;} {public local
   }
   Function {init(int argc, char** argv)} {open
   } {
@@ -814,7 +830,7 @@ DBG_NUM_S("Show Log window")}
           Fl_Group {} {open
             xywh {0 25 385 470} align 4
           } {
-            Fl_Help_View inspekt_html {selected
+            Fl_Help_View inspekt_html {
               xywh {0 25 385 470} box FLAT_BOX color 49 align 4 resizable
               code0 {o->hide();}
             }
@@ -940,7 +956,6 @@ DBG_NUM_S("Show Log window")}
       }
       Fl_Box no_box {
         xywh {0 0 385 520} align 4
-        code0 {}
         class My_Fl_Box
       }
     }
@@ -1057,7 +1072,8 @@ DBG_NUM_S("Show Log window")}
     menueintrag_zeigcgats->deactivate();
   }} {}
   }
-  decl {Fl_Button ** table_gl_tables_buttons;} {}
+  decl {Fl_Button ** table_gl_tables_buttons;} {private local
+  }
   Function {table_gl_boxAdd( const char ** names_short, const char** names, int n, int actual )} {open
   } {
     code DBG_PROG_START {}

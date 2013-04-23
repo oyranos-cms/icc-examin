@@ -1750,6 +1750,12 @@ ICCexamin::scheme(const char *name)
   DBG_PROG_ENDE
 }
 
+static int dnd_ = false;
+int  dndCommes()
+{ return dnd_; }
+void dndCommes( int i )
+{ dnd_ = i; }
+
 int
 event_handler(int e)
 { //DBG_PROG_START
@@ -1792,6 +1798,7 @@ event_handler(int e)
   case FL_DND_ENTER:
     DBG_PROG_S( "FL_DND_ENTER" )
     fortschritt(0.01 , 1.0);
+    dndCommes(1);
     return 1;
     break;
   case FL_DND_DRAG:
@@ -1816,7 +1823,7 @@ event_handler(int e)
     DBG_PROG_S( "FL_PASTE " << Fl::event_length() )
       std::string adresse, suchen = "%20", ersetzen = " ";
       int pos;
-#     if APPLE_
+#     if defined(__APPLE__)
       if(dnd_kommt &&
          Fl::event_length())
       {
@@ -1839,6 +1846,7 @@ event_handler(int e)
           icc_parser::suchenErsetzen(profilnamen[pos], suchen, ersetzen, 0);
         icc_examin->oeffnen(profilnamen);
         free(temp);
+        dndCommes(0);
       }
       dnd_kommt = false;
 #     else
@@ -1892,6 +1900,7 @@ event_handler(int e)
           free(temp);
           dnd_kommt = false;
         }
+        dndCommes(0);
       }
 #     endif
     }

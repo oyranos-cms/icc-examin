@@ -4020,7 +4020,7 @@ GL_View::handle( int event )
   DBG_ICCGL_START
   int mouse_button = Fl::event_state();
   int end = 1;
-  DBG_MEM_V( dbgFltkEvent(event) )
+  DBG_NUM_V( dbgFltkEvent(event) )
 
   keyEvents(event);
 
