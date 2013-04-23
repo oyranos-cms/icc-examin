@@ -16,6 +16,10 @@
 #define oyranos_display_helpers_h
 
 #include <oyConversion_s.h>
+#include <oyranos_image.h>
+#if defined(HAVE_XCM)
+#include <X11/Xcm/Xcm.h>             /* check for proper X11/XCM support */
+#endif
 
 extern int oy_display_verbose;
 
@@ -49,7 +53,7 @@ int  oyDrawScreenImage               ( oyConversion_s    * context,
                                        oyImage_s         * image );
 oyProfile_s * getEditingProfile      ( );
 
-#ifdef HAVE_X
+#ifdef XCM_HAVE_X11
 #include <X11/Xlib.h>
 #endif
 
@@ -59,10 +63,6 @@ oyProfile_s * getEditingProfile      ( );
 #else
 #define _(text) text
 #endif
-
-
-extern "C" {
-const char *   oyDatatypeToText      ( oyDATATYPE_e        t); }
 
 #ifndef OY_MIN
 #define OY_MIN(a,b)    (((a) <= (b)) ? (a) : (b))
