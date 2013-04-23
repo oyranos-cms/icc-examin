@@ -1354,7 +1354,7 @@ ICCexamin::erneuerTagBrowserText_ (void)
 # define add_          s << " ";
 
   b->clear();
-  const char *file_type_name = _("Filename (ICC data type)");
+  const char *file_type_name = _("----");
   DBG_PROG_V( profile.profil()->data_type )
   if(profile.profil()->data_type != ICCprofile::ICCprofileDATA)
     file_type_name = _("Filename (other data type)");
@@ -1364,7 +1364,7 @@ ICCexamin::erneuerTagBrowserText_ (void)
   if(desc)
   add_s ("@b" << desc )
   else
-  add_s ("@b" << "----" )
+  add_s ("@b" << file_type_name )
   add_s ("    " << profile.profil()->filename() )
   add_s ("")
   if (tag_list.size() == 0) {
