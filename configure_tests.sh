@@ -541,9 +541,10 @@ if [ -n "$XCM" ] && [ $XCM -gt 0 ]; then
     ID_H="$ID"_H
     ID_LIBS="$ID"_LIBS
     if [ -z "$found" ]; then
-      pkg-config  --atleast-version=0.2 $pc_package
+      pkg-config  --atleast-version=${minversion} $pc_package
       if [ $? = 0 ]; then
-        found=`pkg-config --cflags $pc_package`
+        found="yes"
+        cflags=`pkg-config --cflags $pc_package`
         version=`pkg-config --modversion $pc_package`
       fi
     fi
@@ -557,7 +558,7 @@ if [ -n "$XCM" ] && [ $XCM -gt 0 ]; then
       if [ -n "$MAKEFILE_DIR" ]; then
         for i in $MAKEFILE_DIR; do
           test -f "$ROOT_DIR/$i/makefile".in && echo "XCM = 1" >> "$i/makefile"
-          test -f "$ROOT_DIR/$i/makefile".in && echo "XCM_H = $found" >> "$i/makefile"
+          test -f "$ROOT_DIR/$i/makefile".in && echo "XCM_H = $cflags" >> "$i/makefile"
           test -f "$ROOT_DIR/$i/makefile".in && echo "$ID_LIBS = `pkg-config --libs $name | sed \"$STRIPOPT\"`" >> "$i/makefile"
         done
       fi
