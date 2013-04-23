@@ -2015,9 +2015,12 @@ GL_View::refreshNets()
       if(bsp)
       {
         double dist = HYP3(X,Y,Z);
-        icc_examin_ns::POINT pov = {Y + 0.5,
-                                    Z + cie_b_display_stretch/2,
-                                    X + cie_b_display_stretch/2.};
+        icc_examin_ns::POINT pov;
+
+        pov.xx = Y + 0.5f;
+        pov.yy = Z + cie_b_display_stretch/2.0f;
+        pov.zz = X + cie_b_display_stretch/2.0f;
+
         if(icc_debug != 0)
         {
           drawCone(0.02, 0.05, 16, X/dist, Y/dist, Z/dist);
