@@ -1112,7 +1112,7 @@ fi
 if [ -n "$PO" ] && [ $PO -gt 0 ]; then
   pos_dir="`ls $ROOT_DIR/po/*.po 2> /dev/null`"
   LING="`echo $pos_dir | sed s%$ROOT_DIR/%%g`"
-  LINGUAS="`echo $pos_dir | sed s%\.po%%g | sed s%$ROOT_DIR/%%g`"
+  LINGUAS="`echo $pos_dir | sed s%$ROOT_DIR/po/%%g | sed s%\.po%%g`"
   echo "LINGUAS = $LINGUAS" >> $CONF
   echo_="translations available: $LINGUAS"; echo "$echo_" >> $CONF_LOG; test -n "$ECHO" && $ECHO "$echo_"
   echo "LING = $LING" >> $CONF
