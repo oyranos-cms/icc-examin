@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2012  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2013  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -42,8 +42,6 @@
 #include <sys/time.h>
 #endif
 
-#include <oyranos.h>
-
 #include <FL/Fl_Menu_Button.H>
 #include <FL/Fl.H>
 #include <FL/gl.h>
@@ -72,10 +70,6 @@
 #include <wchar.h>    /* wchar_t */
 
 #include <X11/Xcm/Xcm.h>
-
-#include <oyArray2d_s.h>
-#include <oyImage_s.h>
-#include <oyranos_colour.h>
 
 #ifdef DEBUG_
 #define MARK(x) DBG_S( #x ) x
@@ -271,7 +265,7 @@ GL_View::zero_()
   colours_ = 0;
   epoint_ = 0;
   oyProfile_s * prof = oyProfile_FromStd( oyEDITING_XYZ, NULL );
-  mouse_3D_hit = oyNamedColour_Create( NULL, NULL,0, prof, 0 );
+  mouse_3D_hit = oyNamedColor_Create( NULL, NULL,0, prof, 0 );
   oyProfile_Release( &prof );
   window_geometry = NULL;
   edit_ = NULL;
@@ -411,8 +405,8 @@ GL_View::copy (const GL_View & gl)
   from_channel_names_ = gl.from_channel_names_;
   channels_ = gl.channels_;
   colours_ = oyStructList_Copy( gl.colours_, NULL );
-  epoint_ = oyNamedColour_Copy( gl.epoint_, 0 );
-  mouse_3D_hit = oyNamedColour_Copy( gl.mouse_3D_hit, 0 );
+  epoint_ = oyNamedColor_Copy( gl.epoint_, 0 );
+  mouse_3D_hit = oyNamedColor_Copy( gl.mouse_3D_hit, 0 );
   edit_ = oyProfile_Copy( gl.edit_, NULL );
 
   type_ = gl.type_;
@@ -2233,9 +2227,9 @@ GL_View::refreshPoints()
         if(cc_disp)
         for(int j = 0; j < nc; ++j)
         {
-          oyNamedColours_s * colours = 
-            (oyNamedColours_s*) oyStructList_GetRefType( colours_, j,
-                                                oyOBJECT_NAMED_COLOURS_S );
+          oyNamedColors_s * colours = 
+            (oyNamedColors_s*) oyStructList_GetRefType( colours_, j,
+                                                oyOBJECT_NAMED_COLORS_S );
 
           if(!colours)
           {
@@ -2243,10 +2237,10 @@ GL_View::refreshPoints()
             continue;
           }
 
-          int n = oyNamedColours_Count( colours );
+          int n = oyNamedColors_Count( colours );
           int active = 1;
           int gray = 0;
-          oyNamedColour_s * c = NULL;
+          oyNamedColor_s * c = NULL;
           double shade = 1;
           int has_mesh = 0;
 
@@ -2285,9 +2279,9 @@ GL_View::refreshPoints()
               glLineWidth(line_2*line_mult);
               // draw lines
               glBegin(GL_LINES);
-                c = oyNamedColours_Get( colours, i );
+                c = oyNamedColors_Get( colours, i );
                 oyArray2d_SetData( in_array,
-                                   (void*) oyNamedColour_GetXYZConst( c ) );
+                                   (void*) oyNamedColor_GetXYZConst( c ) );
 
                 if(!show_points_as_measurements)
                   glColor4d(.97, .97, .97, rgba[3] );
@@ -2302,11 +2296,11 @@ GL_View::refreshPoints()
                 if(in_array)
                 oyXYZ2Lab( ((double**)oyArray2d_GetData( in_array ))[0], lab );
                 iccPoint3d ( projection, lab, 0 );
-                oyNamedColour_Release( &c );
+                oyNamedColor_Release( &c );
 
-                c = oyNamedColours_Get( colours, n + i );
+                c = oyNamedColors_Get( colours, n + i );
                 oyArray2d_SetData( in_array,
-                                   (void*) oyNamedColour_GetXYZConst( c ) );
+                                   (void*) oyNamedColor_GetXYZConst( c ) );
                 if(!show_points_as_measurements)
                   glColor4d(1., .6, .6, 1.0 );
                 else {
@@ -2320,7 +2314,7 @@ GL_View::refreshPoints()
                 if(in_array)
                 oyXYZ2Lab( ((double**)oyArray2d_GetData( in_array ))[0], lab );
                 iccPoint3d ( projection, lab, 0 );
-                oyNamedColour_Release( &c );
+                oyNamedColor_Release( &c );
               glEnd();
             }
 
@@ -2337,9 +2331,9 @@ GL_View::refreshPoints()
                glBegin(GL_POINTS);
                  for (int i = 0; i < n; ++i)
                  {
-                   c = oyNamedColours_Get( colours, i );
+                   c = oyNamedColors_Get( colours, i );
                    oyArray2d_SetData( in_array,
-                                      (void*) oyNamedColour_GetXYZConst( c ) );
+                                      (void*) oyNamedColor_GetXYZConst( c ) );
                    if(gray)
                      rgba[0]= rgba[1]= rgba[2] = shade;
                    else
@@ -2349,7 +2343,7 @@ GL_View::refreshPoints()
                    if(in_array)
                    oyXYZ2Lab( ((double**)oyArray2d_GetData( in_array ))[0], lab );
                    iccPoint3d ( projection, lab, 0 );
-                   oyNamedColour_Release( &c );
+                   oyNamedColor_Release( &c );
                  }
                glEnd();
               break;
@@ -2366,9 +2360,9 @@ GL_View::refreshPoints()
             for (int i = 0; i < n; ++i)
             {
                  glPushMatrix();
-                   c = oyNamedColours_Get( colours, i );
+                   c = oyNamedColors_Get( colours, i );
                    oyArray2d_SetData( in_array,
-                                      (void*) oyNamedColour_GetXYZConst( c ) );
+                                      (void*) oyNamedColor_GetXYZConst( c ) );
                    if(gray)
                      rgba[0]= rgba[1]= rgba[2] = shade;
                    else
@@ -2378,7 +2372,7 @@ GL_View::refreshPoints()
                    if(in_array)
                    oyXYZ2Lab( ((double**)oyArray2d_GetData( in_array ))[0], lab );
                    iccPoint3d( projection, lab, rad );
-                   oyNamedColour_Release( &c );
+                   oyNamedColor_Release( &c );
                  glPopMatrix();
             }
           }
@@ -2389,14 +2383,14 @@ GL_View::refreshPoints()
             if(show_points_as_measurements)
                  for (int i = 0; i < n; ++i)
                  {
-                   c = oyNamedColours_Get( colours, i );
+                   c = oyNamedColors_Get( colours, i );
                    oyArray2d_SetData( in_array,
-                                      (void*) oyNamedColour_GetXYZConst( c ) );
+                                      (void*) oyNamedColor_GetXYZConst( c ) );
                    if(in_array)
                    oyXYZ2Lab( ((double**)oyArray2d_GetData( in_array ))[0], lab );
                    lab[0] = 0;
                    iccPoint3d ( projection, lab, 0 );
-                   oyNamedColour_Release( &c );
+                   oyNamedColor_Release( &c );
                  }
           glEnd();
         }
@@ -2969,11 +2963,11 @@ GL_View::drawGL()
       // localisate
       if( epoint_ && Fl::belowmouse() != this )
       {
-        const char * temp = oyNamedColour_GetName( epoint_, oyNAME_NICK, 0 );
+        const char * temp = oyNamedColor_GetName( epoint_, oyNAME_NICK, 0 );
 
         if(temp)
           sprintf( text, "%s", temp );
-        oyNamedColour_GetColourStd( epoint_, oyEDITING_LAB, l, oyDOUBLE,0,opts);
+        oyNamedColor_GetColorStd( epoint_, oyEDITING_LAB, l, oyDOUBLE,0,opts);
         CIELabToLab( l, lab );
         oY = LToY( lab.L );
         oZ = aToZ( lab.a );
@@ -3001,25 +2995,25 @@ GL_View::drawGL()
           if(!mouse_3D_hit)
           {
             oyProfile_s * prof = oyProfile_FromStd( oyEDITING_XYZ, NULL );
-            mouse_3D_hit = oyNamedColour_Create( NULL, NULL,0, prof, 0 );
+            mouse_3D_hit = oyNamedColor_Create( NULL, NULL,0, prof, 0 );
             oyProfile_Release( &prof );
           }
 
-          oyNamedColour_SetColourStd ( mouse_3D_hit, oyEDITING_XYZ,
+          oyNamedColor_SetColorStd ( mouse_3D_hit, oyEDITING_XYZ,
                                        (oyPointer)d, oyDOUBLE, 0, opts );
           MARK( frei(true); )
           notify( ICCexamin::GL_MOUSE_HIT3D );
           MARK( frei(false); )
           if(epoint_)
           {
-            oyNamedColour_GetColourStd( epoint_, oyEDITING_LAB, d, oyDOUBLE,
+            oyNamedColor_GetColorStd( epoint_, oyEDITING_LAB, d, oyDOUBLE,
                                         0, opts );
             CIELabToLab( d, lab );
             oY = LToY( lab.L );
             oZ = aToZ( lab.a );
             oX = bToX( lab.b );
             mousePoint_( oX, oY, oZ, X, Y, Z, 0 );
-            const char * temp = oyNamedColour_GetName( epoint_, oyNAME_NICK, 0 );
+            const char * temp = oyNamedColor_GetName( epoint_, oyNAME_NICK, 0 );
             if(temp)
               sprintf( text, "%s", temp );
             else
@@ -3294,14 +3288,14 @@ GL_View::drawGL()
          channel_name.append(": ");
          channel_name.append(channelName());
 
-/*         oyNamedColour_s   * c = oyNamedColours_GetRef( colours_, 0 );
+/*         oyNamedColor_s   * c = oyNamedColors_GetRef( colours_, 0 );
          const char* chan_name = 0;
          if(c)
          {
            chan_name = oyProfile_GetChannelName( c->profile_,
                                                            channel, oyNAME_NAME );
            channel_name.append( chan_name );
-           oyNamedColour_Release( &c );
+           oyNamedColor_Release( &c );
   
          } else if(from_channel_names_.size() > channel) {
 
@@ -3347,7 +3341,7 @@ GL_View::drawGL()
 
     if( epoint_ && Fl::belowmouse() == this )
       // allow other colours to appear
-      oyNamedColour_Release( &epoint_ );
+      oyNamedColor_Release( &epoint_ );
 
     if(rgb_) delete [] rgb_;
     oyOptions_Release( &opts );
@@ -3380,7 +3374,7 @@ GL_View::achsNamen    (ICClist<std::string> achs_namen)
 /** @func  namedColours
  *  @brief export our colour spots
  *
- *  The returned oyStructList_s contains the unaltered oyNamedColours_s objects
+ *  The returned oyStructList_s contains the unaltered oyNamedColors_s objects
  *  we obtained in GL_View::namedColours(x).
  *  We set the name in the oyStructList_s->oy_ member. You can read it with 
  *  oyranos::oyObject_GetNames. The nick (__FILE__) and name ("colour lists")
@@ -3460,7 +3454,7 @@ GL_View::namedColoursRelease()
 {
   MARK( frei(false); )
   oyStructList_Release( &colours_ );
-  oyNamedColour_Release( &mouse_3D_hit );
+  oyNamedColor_Release( &mouse_3D_hit );
   MARK( frei(true); )
 }
 
@@ -3478,25 +3472,25 @@ GL_View::clearNet ()
 
 
 void
-GL_View::emphasizePoint    (oyNamedColour_s * colour)
+GL_View::emphasizePoint    (oyNamedColor_s * colour)
 { DBG_PROG_START
   // show curve from tag_browser
   MARK( frei(false); )
   if(colour)
   {
-    oyNamedColour_Release( &epoint_ );
-    epoint_ = oyNamedColour_Copy( colour, 0 );
+    oyNamedColor_Release( &epoint_ );
+    epoint_ = oyNamedColor_Copy( colour, 0 );
  
     double l[3];
     Lab_s lab;
     oyOptions_s * opts = icc_examin->options();
-    oyNamedColour_GetColourStd( colour, oyEDITING_LAB, l, oyDOUBLE, 0, opts );
+    oyNamedColor_GetColorStd( colour, oyEDITING_LAB, l, oyDOUBLE, 0, opts );
     CIELabToLab( l, lab );
     oyOptions_Release( &opts );
 
     icc_examin->statusFarbe( lab.L, lab.a, lab.b );
     uint32_t create = 1;
-    glStatus( oyNamedColour_GetName( colour, oyNAME_DESCRIPTION, create ),
+    glStatus( oyNamedColor_GetName( colour, oyNAME_DESCRIPTION, create ),
               type_ );
   }
   MARK( frei(true); )
@@ -3653,7 +3647,7 @@ GL_View::setBspFaceProperties_( icc_examin_ns::FACE *faceList )
   else
     prof_disp = icc_oyranos.icc_oyranos.oyMoni(
               window()->x() + window()->w()/2, window()->y() + window()->h()/2);
-  oyNamedColour_s * c = oyNamedColour_Create( 0, 0, 0, prof, 0 );
+  oyNamedColor_s * c = oyNamedColor_Create( 0, 0, 0, prof, 0 );
 #endif
   oyOptions_s * opts = icc_examin->options();
 
@@ -3677,9 +3671,9 @@ GL_View::setBspFaceProperties_( icc_examin_ns::FACE *faceList )
         lab[2] = vtrav->zz/cie_b_display_stretch;
         LabToCIELab( lab, lab, 1 );
 
-        oyNamedColour_SetColourStd( c, oyEDITING_LAB, lab, oyDOUBLE, 0, opts );
+        oyNamedColor_SetColorStd( c, oyEDITING_LAB, lab, oyDOUBLE, 0, opts );
 
-        oyNamedColour_GetColour( c, prof_disp, rgba, oyDOUBLE, 0, opts );
+        oyNamedColor_GetColor( c, prof_disp, rgba, oyDOUBLE, 0, opts );
 
         vtrav->color.rr = rgba[0];
         vtrav->color.gg = rgba[1];
@@ -3712,7 +3706,7 @@ GL_View::setBspFaceProperties_( icc_examin_ns::FACE *faceList )
   }
 
 #ifdef USE_OY_NC
-  oyNamedColour_Release( &c );
+  oyNamedColor_Release( &c );
   oyProfile_Release( &prof_disp );
 #endif
   oyOptions_Release( &opts );

@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2012  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2013  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -151,7 +151,7 @@ iccGrenze(ICCprofile & profil, oyOptions_s * options, size_t & groesse)
       else if(csp == icSigCmykData)
         block = (icUInt16Number*) holeCMYKRampen( lenght );
 
-      oyColourConvert_( p, lab, block, lab_block,
+      oyColorConvert_( p, lab, block, lab_block,
                         oyUINT16, oyUINT16, options, lenght );
       groesse = lenght;
       lab_erg = new double [groesse*3];

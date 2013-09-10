@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2012  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2013  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -30,7 +30,7 @@
 #include "icc_betrachter.h"
 #include "icc_gl.h"
 
-#include <oyranos_colour.h>
+#include <oyranos_color.h>
 
 using namespace icc_examin_ns;
 
@@ -57,7 +57,7 @@ using namespace icc_examin_ns;
 
 void
 ICCexamin::messwertLese (int n,
-                         oyNamedColours_s ** list)
+                         oyNamedColors_s ** list)
 {
   DBG_PROG_START
   if(profile.size() > n &&
@@ -84,8 +84,8 @@ ICCexamin::messwertLese (int n,
 
       unsigned int j;
       unsigned int n_farben = messung.getPatchCount(); DBG_PROG_V( messung.getPatchCount() )
-      oyNamedColour_s * c = 0;
-      oyNamedColours_s * nl = 0;
+      oyNamedColor_s * c = 0;
+      oyNamedColors_s * nl = oyNamedColors_New(0);
 
       if(messung.validHalf())
       {
@@ -97,13 +97,13 @@ ICCexamin::messwertLese (int n,
             c = messung.getCmmColour(j);
 
           if (c)
-            nl = oyNamedColours_MoveIn( nl, &c, -1 );
+            oyNamedColors_MoveIn( nl, &c, -1 );
         }
 
-        unsigned int n_old = oyNamedColours_Count( *list );
+        unsigned int n_old = oyNamedColors_Count( *list );
 
         if(n_old != n_farben * 2)
-          oyNamedColours_Release( list );
+          oyNamedColors_Release( list );
 
         if(icc_betrachter->DD_farbraum->show_points_as_pairs)
         {
@@ -112,12 +112,12 @@ ICCexamin::messwertLese (int n,
             for(unsigned int i = 0; i < n_farben; ++i)
             {
               if(profile[n]->data_type == ICCprofile::ICCmeasurementDATA)
-                c = oyNamedColours_Get( *list, i );
+                c = oyNamedColors_Get( *list, i );
               else
                 c = messung.getCmmColour(i);
 
               if(c)
-                nl = oyNamedColours_MoveIn( nl, &c, -1 );
+                oyNamedColors_MoveIn( nl, &c, -1 );
             }
           }
           else
@@ -125,17 +125,17 @@ ICCexamin::messwertLese (int n,
             for(unsigned int i = 0; i < n_farben; ++i)
             {
               if(profile[n]->data_type == ICCprofile::ICCmeasurementDATA)
-                c = oyNamedColours_Get( nl, i );
+                c = oyNamedColors_Get( nl, i );
               else
                 c = messung.getCmmColour(i);
 
               if(c)
-                nl = oyNamedColours_MoveIn( nl, &c, -1 );
+                oyNamedColors_MoveIn( nl, &c, -1 );
             }
           }
         }
 
-        oyNamedColours_Release( list );
+        oyNamedColors_Release( list );
 
         *list = nl; nl = 0;
 
@@ -314,26 +314,26 @@ ICCexamin::farbenLese  ( int n,
 
 void
 ICCexamin::farbenLese  ( int n,
-                         oyNamedColours_s ** list )
+                         oyNamedColors_s ** list )
 {
   DBG_PROG_START
   int single = (n < 0);
-  oyNamedColours_s * nl = 0;
+  oyNamedColors_s * nl = oyNamedColors_New(0);
 
   ICClist<double> p;
   ICClist<double>  f;  // colour
   ICClist<std::string> names;
-  oyNamedColour_s * c = 0;
+  oyNamedColor_s * c = 0;
   oyProfile_s * prof = oyProfile_FromFile( profile[n]->filename(), 0, 0 );
   int channels_n = oyProfile_GetChannelsCount( prof );
 
 
   farbenLese(n, p, f, names);
   unsigned int n_farben = p.size()/3;
-  unsigned int n_old = oyNamedColours_Count( *list );
+  unsigned int n_old = oyNamedColors_Count( *list );
 
   if(n_old != n_farben * 2)
-    oyNamedColours_Release( list );
+    oyNamedColors_Release( list );
 
   if( !single )
   {
@@ -363,29 +363,29 @@ ICCexamin::farbenLese  ( int n,
     LabToCIELab( &p[3*i], cielab, 1 );
     oyLab2XYZ( cielab, XYZ );
 
-    c = oyNamedColour_CreateWithName( name,0,0, channels, XYZ, 0,0, prof, 0 );
+    c = oyNamedColor_CreateWithName( name,0,0, channels, XYZ, 0,0, prof, 0 );
 
     if(c)
-      nl = oyNamedColours_MoveIn( nl, &c, -1 );
+      oyNamedColors_MoveIn( nl, &c, -1 );
   }
   oyProfile_Release( &prof );
 
   if(n_old == n_farben * 2 && *list)
     for(unsigned int i = 0; i < n_farben; ++i)
     {
-      c = oyNamedColours_Get( *list, i );
+      c = oyNamedColors_Get( *list, i );
       if(c)
-        nl = oyNamedColours_MoveIn( nl, &c, -1 );
+        oyNamedColors_MoveIn( nl, &c, -1 );
     }
   else
     for(unsigned int i = 0; i < n_farben; ++i)
     {
-      c = oyNamedColours_Get( nl, i );
+      c = oyNamedColors_Get( nl, i );
       if(c)
-        nl = oyNamedColours_MoveIn( nl, &c, -1 );
+        oyNamedColors_MoveIn( nl, &c, -1 );
     }
 
-  oyNamedColours_Release( list );
+  oyNamedColors_Release( list );
 
   *list = nl;
 
@@ -404,10 +404,10 @@ ICCexamin::farbraum (int n)
   texte.push_back(_("CIE *b"));
 
   oyStructList_s * namedColours = icc_betrachter->DD_farbraum->namedColours();
-  oyNamedColours_s * ncl = 0;
+  oyNamedColors_s * ncl = 0;
   if(oyStructList_Count( namedColours ) > n)
-    ncl = (oyNamedColours_s*) oyStructList_GetRefType( namedColours, n,
-                                   oyOBJECT_NAMED_COLOURS_S );
+    ncl = (oyNamedColors_s*) oyStructList_GetRefType( namedColours, n,
+                                   oyOBJECT_NAMED_COLORS_S );
 
   DBG_PROG_V( n <<" "<< profile.size()<<" "<<profile.aktuell() )
   DBG_PROG_V( profile[n]->filename() )

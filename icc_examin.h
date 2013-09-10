@@ -172,12 +172,12 @@ class ICCexamin : public icc_examin_ns::Observer,
     bool farbraumModus( ) { /*DBG_PROG_V( farbraum_modus_ );*/ return farbraum_modus_; }
     void farbraumModus( int profil );
     void messwertLese  ( int n,
-                         oyNamedColours_s ** list );
+                         oyNamedColors_s ** list );
     void setzMesswerte ( );
     void netzLese      ( int n,
                          icc_examin_ns::ICCThreadList<ICCnetz> * netz);
     void farbenLese    ( int n,
-                         oyNamedColours_s ** list );
+                         oyNamedColors_s ** list );
     void farbenLese    ( int n,
                          ICClist<double> & p,
                          ICClist<double> & f,

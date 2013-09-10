@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2012  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2013  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -67,11 +67,11 @@ class GL_View : public Fl_Gl_Window,
   ICClist<std::string>from_channel_names_;
   ICClist<int>        channels_;
   oyStructList_s * colours_;
-  oyNamedColour_s  * epoint_;            //!< emphasize point
+  oyNamedColor_s  * epoint_;            //!< emphasize point
   oyProfile_s * edit_;                   //!< editing colour space
   oyRectangle_s * window_geometry;
 public:
-  oyNamedColour_s  * mouse_3D_hit;       //!< a point recently hit by the mouse
+  oyNamedColor_s  * mouse_3D_hit;       //!< a point recently hit by the mouse
 
 private:
   void windowShape();
@@ -175,11 +175,11 @@ public:
   void message( icc_examin_ns::Model* model, int info );
 
   // import data
-  //TODO: use oyNamedColour_s
+  //TODO: use oyNamedColor_s
   void              namedColours (oyStructList_s * colours);
   oyStructList_s *  namedColours ();
   void              namedColoursRelease ();
-  void emphasizePoint (oyNamedColour_s  * colour);  //!< a named colour
+  void emphasizePoint (oyNamedColor_s  * colour);  //!< a named colour
   void              clearNet ();
   icc_examin_ns::ICCThreadList<ICCnetz> triangle_nets;
   void achsNamen    (ICClist<std::string> achs_namen);

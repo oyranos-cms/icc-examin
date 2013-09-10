@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2012  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2013  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -38,9 +38,12 @@
 #include "icc_oyranos_extern.h"
 
 #include <oyConversion_s.h>
+#include <oyObject_s.h>
 #include <oyProfile_s.h>
 #include <oyRectangle_s.h>
-#include <alpha/oyranos_alpha.h>
+#include <oyNamedColor_s.h>
+#include <oyNamedColors_s.h>
+#include <oyranos_color.h>
 #include <oyranos_image.h>
 
 #include <string>
@@ -159,7 +162,7 @@ void	oyranos_pfade_loeschen();
 void	oyranos_pfad_dazu();
 
 extern "C" {
-int  oyColourConvert_ ( oyProfile_s       * p_in,
+int  oyColorConvert_ ( oyProfile_s       * p_in,
                         oyProfile_s       * p_out,
                         oyPointer           buf_in,
                         oyPointer           buf_out,
@@ -167,6 +170,11 @@ int  oyColourConvert_ ( oyProfile_s       * p_in,
                         oyDATATYPE_e        buf_type_out,
                         oyOptions_s       * options,
                         int                 count );
+char   *       oyDumpColorToCGATS   ( const double      * channels,
+                                       size_t              n,
+                                       oyProfile_s       * prof,
+                                       oyAlloc_f           allocateFunc,
+                                       const char        * DESCRIPTOR );
 }
 
 

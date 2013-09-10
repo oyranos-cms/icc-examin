@@ -1,7 +1,7 @@
 /* 
  * ICC Examin plug-in for cinepaint.
  *
- * Copyright (C) 2004-2012 Kai-Uwe Behrmann <ku.b@gmx.de>
+ * Copyright (C) 2004-2013 Kai-Uwe Behrmann <ku.b@gmx.de>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -744,7 +744,7 @@ vergleicheFarben(void* zeiger)
   memcpy(&colour_profile[164], zahl, 4);
     // Farbraum
   *((icUInt32Number*)zahl) = icValue((icUInt32Number)
-                        oyProfile_GetSignature( hp, oySIGNATURE_COLOUR_SPACE ));
+                        oyProfile_GetSignature( hp, oySIGNATURE_COLOR_SPACE ));
   memcpy(&colour_profile[16], zahl, 4);
 
   DBG_PROG_S( (int*)image_profile << " " << tag_size )

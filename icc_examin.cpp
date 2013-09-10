@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2012"  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2013  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -40,6 +40,7 @@
 #include "icc_fenster.h"
 #include "icc_info.h"
 #include "icc_kette.h"
+#include "icc_oyranos.h"
 #include "icc_waehler.h"
 #include "fl_i18n/fl_i18n.H"
 #include "Flmm/Flmm_Message.H"
@@ -49,8 +50,6 @@
 #endif
 
 #include <X11/Xcm/Xcm.h>
-
-#include <oyranos_colour.h>
 
 #include <limits.h>
 #include <cstring>
@@ -743,7 +742,7 @@ ICCexamin::message( Model* model , int info )
     {
       ICCmeasurement & m = profile.profil()->getMeasurement();
       oyOptions_s * opts = icc_examin->options();
-      oyNamedColour_GetColourStd ( gl->mouse_3D_hit, oyEDITING_LAB, cielab1,
+      oyNamedColor_GetColorStd ( gl->mouse_3D_hit, oyEDITING_LAB, cielab1,
                                    oyDOUBLE, 0, opts );
       oyOptions_Release( &opts );
 
@@ -785,7 +784,7 @@ ICCexamin::message( Model* model , int info )
         }
         DBG_PROG_V(min <<" "<< min_pos)
 
-        oyNamedColour_s * colour = 0;
+        oyNamedColor_s * colour = 0;
 
         if(pl.size() && (signed)pl.size() > min_pos)
           colour = m.getPatchLine( pl[min_pos], TagInfo[0].c_str() );
@@ -793,7 +792,7 @@ ICCexamin::message( Model* model , int info )
           colour = m.getMessColour( min_pos );
 
         icc_betrachter->DD_farbraum->emphasizePoint( colour );
-        oyNamedColour_Release( &colour );
+        oyNamedColor_Release( &colour );
       }
 
     } else if( profile.profil()->hasTagName("ncl2") ) {
@@ -809,7 +808,7 @@ ICCexamin::message( Model* model , int info )
 
       oyOptions_s * opts = icc_examin->options();
       //double lab[3];
-      oyNamedColour_GetColourStd ( gl->mouse_3D_hit, oyEDITING_LAB, cielab1,
+      oyNamedColor_GetColorStd ( gl->mouse_3D_hit, oyEDITING_LAB, cielab1,
                                    oyDOUBLE, 0, opts );
       //LabToCIELab( lab, cielab1, 1 );
       oyOptions_Release( &opts );
@@ -857,14 +856,14 @@ ICCexamin::message( Model* model , int info )
 
         const char * name = names[min_pos].c_str();
 
-        oyNamedColour_s * colour = 
-          oyNamedColour_CreateWithName( name, NULL, NULL,
+        oyNamedColor_s * colour = 
+          oyNamedColor_CreateWithName( name, NULL, NULL,
                                         chan, XYZ, NULL,0, prof, 0 );
         oyProfile_Release( &prof );
         if(!names[min_pos].size())
           DBG_PROG_S( "no name found" );
         icc_betrachter->DD_farbraum->emphasizePoint( colour );
-        oyNamedColour_Release( &colour );
+        oyNamedColor_Release( &colour );
       }
     }
     profile.frei(true);
@@ -1993,7 +1992,7 @@ event_handler(int e)
           oyOptions_Release( &opts );
           oyConversion_RunPixels( ctoxyz, NULL );
           oyConversion_Release( &ctoxyz );
-          oyNamedColour_s * colour = oyNamedColour_CreateWithName(
+          oyNamedColor_s * colour = oyNamedColor_CreateWithName(
                                  NULL,name,NULL,d3,xyz,(char*)data,n, p, NULL);
           oyProfile_Release( &p );
           icc_examin->icc_betrachter->DD_farbraum->emphasizePoint( colour );

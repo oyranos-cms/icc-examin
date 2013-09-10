@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2010  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2013  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -274,7 +274,7 @@ renderingIntentName (int intent)
 int
 getColorSpaceChannels (icColorSpaceSignature color)
 {
-  return oyICCColourSpaceGetChannelCount( color );
+  return oyICCColorSpaceGetChannelCount( color );
 }
 
 icColorSpaceSignature getColorSpaceGeneric( int channels )
@@ -305,7 +305,7 @@ std::string
 getColorSpaceName (icColorSpaceSignature sig)
 {
   std::string text;
-  text = oyICCColourSpaceGetName( sig );
+  text = oyICCColorSpaceGetName( sig );
   return text;
 }
 

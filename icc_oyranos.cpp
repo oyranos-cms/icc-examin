@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2012  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2013  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -1324,21 +1324,21 @@ Oyranos::wandelLabNachProfilUndZurueck(double *lab, // 0.0 - 1.0
       if(icc_debug > 1)
       {
         oyProfile_s * prof = oyProfile_FromStd( oyEDITING_LAB, 0 );
-        char * txt = oyDumpColourToCGATS( cielab_tmp, size, prof, malloc,
+        char * txt = oyDumpColorToCGATS( cielab_tmp, size, prof, malloc,
                                           __FILE__ );
         if(txt)
         {
           saveMemToFile( "icc_oyranos.lab1.cgats", txt, strlen(txt) );
           free(txt);
         }
-        txt = oyDumpColourToCGATS( channels, size, profile, malloc,
+        txt = oyDumpColorToCGATS( channels, size, profile, malloc,
                                           __FILE__ );
         if(txt)
         {
           saveMemToFile( "icc_oyranos.cmyk.cgats", txt, strlen(txt) );
           free(txt);
         }
-        txt = oyDumpColourToCGATS( lab, size, prof, malloc,
+        txt = oyDumpColorToCGATS( lab, size, prof, malloc,
                                           __FILE__ );
         if(txt)
         {
@@ -1667,7 +1667,7 @@ oyProfile_s * Oyranos::getEditingProfile      ( )
       return oyProfile_FromStd( oyASSUMED_WEB, 0 );
 #endif
 
-    oyOption_s *matrix = oyOption_FromRegistration("///colour_matrix."
+    oyOption_s *matrix = oyOption_FromRegistration("///color_matrix."
               "from_primaries."
               "redx_redy_greenx_greeny_bluex_bluey_whitex_whitey_gamma", NULL );
     /* http://www.color.org/chardata/rgb/rommrgb.xalter
@@ -1687,7 +1687,7 @@ oyProfile_s * Oyranos::getEditingProfile      ( )
 
     oyOptions_MoveIn( opts, &matrix, -1 );
     oyOptions_Handle( "//"OY_TYPE_STD"/create_profile.icc",
-                                opts,"create_profile.icc_profile.colour_matrix",
+                                opts,"create_profile.icc_profile.color_matrix",
                                 &result );
 
     editing = (oyProfile_s*)oyOptions_GetType( result, -1, "icc_profile",

@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2012  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2013  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -40,8 +40,6 @@
 # define DBG_MESS_ENDE
 # define DBG_MESS_V(t)
 #endif
-
-#include <oyranos_colour.h>
 
 #include "icc_utils.h"
 #include "icc_profile.h"
@@ -1697,10 +1695,10 @@ ICCmeasurement::getCmmLab                   (int patch)
  *  @since ICC Examin 0.45
  *  @date  28 december 2007 (ICC Examin 0.45)
  */
-oyNamedColour_s *
+oyNamedColor_s *
 ICCmeasurement::getCmmColour (int patch)
 { DBG_MESS_START
-  oyNamedColour_s * nc = 0;
+  oyNamedColor_s * nc = 0;
   int i = patch;
   double * channels = 0, * XYZ = 0;
 
@@ -1741,7 +1739,7 @@ ICCmeasurement::getCmmColour (int patch)
 
   XYZ = (double*)&XYZ_Ergebnis_[i];
 
-  nc = oyNamedColour_CreateWithName( Feldnamen_[i].c_str(),0,0,
+  nc = oyNamedColor_CreateWithName( Feldnamen_[i].c_str(),0,0,
                                      channels, XYZ, 0,0, prof, 0 );
   oyProfile_Release( &prof );
   DBG_MESS_ENDE
@@ -1757,10 +1755,10 @@ ICCmeasurement::getCmmColour (int patch)
  *  @since ICC Examin 0.45
  *  @date  28 december 2007 (ICC Examin 0.45)
  */
-oyNamedColour_s *
+oyNamedColor_s *
 ICCmeasurement::getMessColour (int patch)
 { DBG_MESS_START
-  oyNamedColour_s * nc = 0;
+  oyNamedColor_s * nc = 0;
   int i = patch;
   double * channels = 0;
   const double * CIEXYZ = 0,
@@ -1810,7 +1808,7 @@ ICCmeasurement::getMessColour (int patch)
   } else
     XYZ = CIEXYZ;
 
-  nc = oyNamedColour_CreateWithName( Feldnamen_[i].c_str(),0,0,
+  nc = oyNamedColor_CreateWithName( Feldnamen_[i].c_str(),0,0,
                                      channels, XYZ, 0,0, prof, 0 );
   oyProfile_Release( &prof );
   DBG_MESS_ENDE
@@ -1857,10 +1855,10 @@ ICCmeasurement::getPatchLines              ( const char       * tag_name )
 
 /** Get information about a text line in a measurement tag.
  */
-oyNamedColour_s *
+oyNamedColor_s *
 ICCmeasurement::getPatchLine  ( int line, const char * tag_name )
 { DBG_MESS_START
-  oyNamedColour_s * nc = 0;
+  oyNamedColor_s * nc = 0;
   int patch = -1;
 
   if (Lab_Ergebnis_.size() == 0)

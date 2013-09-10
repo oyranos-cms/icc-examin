@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2008  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2013  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -159,10 +159,10 @@ class ICCmeasurement {
     ICClist<double> getCmmRGB (int patch);  //!< displaying colours
     ICClist<double> getMessLab (int patch);
     ICClist<double> getCmmLab (int patch);
-    oyNamedColour_s *   getMessColour (int patch);
-    oyNamedColour_s *   getCmmColour (int patch);
+    oyNamedColor_s *   getMessColour (int patch);
+    oyNamedColor_s *   getCmmColour (int patch);
     ICClist<int>    getPatchLines ( const char       * tag_name );
-    oyNamedColour_s *   getPatchLine  ( int line, const char * tag_name );
+    oyNamedColor_s *   getPatchLine  ( int line, const char * tag_name );
     ICClist<XYZ_s>    getMessXYZ ()      {DBG_PROG return XYZ_Satz_; }
     ICClist<Lab_s>    getMessLab ()      {DBG_PROG return Lab_Satz_; }
     ICClist<RGB_s>    getMessRGB ()      {DBG_PROG return RGB_Satz_; }

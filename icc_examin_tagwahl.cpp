@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2012  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2013  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -30,8 +30,7 @@
 #include "icc_betrachter.h"
 #include "icc_draw.h"
 #include "icc_gl.h"
-
-#include <oyranos_colour.h>
+#include "icc_oyranos.h"
 
 using namespace icc_examin_ns;
 
@@ -971,7 +970,7 @@ selectTextsLine( int * line )
       double l[3];
       double c[32];
       double XYZ[3];
-      oyNamedColour_s * colour = 0;
+      oyNamedColor_s * colour = 0;
       oyProfile_s * prof = 0;
 
       profile.frei(false);
@@ -983,14 +982,14 @@ selectTextsLine( int * line )
         if(colour)
         {
           icc_examin->icc_betrachter->DD_farbraum->emphasizePoint( colour );
-          name = oyNamedColour_GetName( colour, oyNAME_NICK, 0 );
+          name = oyNamedColor_GetName( colour, oyNAME_NICK, 0 );
 
           // very simple approach, but enough to see the line
           icc_examin->icc_betrachter->inspekt_html->topline( name.c_str() );
 
           DBG_PROG_S( txt <<" "<< TagInfo[0] <<" "<< TagInfo[1] <<" L "<< lab[0] <<" a "<< lab[1] <<" b "<< lab[2] )
 
-          oyNamedColour_Release( &colour );
+          oyNamedColor_Release( &colour );
 
         } 
 
@@ -1010,12 +1009,12 @@ selectTextsLine( int * line )
               oyLab2XYZ( l, XYZ );
 
               prof = profile.profil()->oyProfile();
-              colour = oyNamedColour_CreateWithName( name.c_str(), NULL, NULL,
+              colour = oyNamedColor_CreateWithName( name.c_str(), NULL, NULL,
                                          c, XYZ, NULL,0, prof, 0 );
               oyProfile_Release( &prof );
 
               icc_examin->icc_betrachter->DD_farbraum->emphasizePoint( colour );
-              oyNamedColour_Release( &colour );
+              oyNamedColor_Release( &colour );
 
             } else
               icc_examin->icc_betrachter->DD_farbraum->emphasizePoint( NULL );

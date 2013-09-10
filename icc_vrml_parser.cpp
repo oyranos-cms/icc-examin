@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2005-2012  Kai-Uwe Behrmann 
+ * Copyright (C) 2005-2013  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -29,13 +29,9 @@
 
 
 #include "icc_helfer.h"
+#include "icc_oyranos.h"
 #include "icc_vrml_parser.h"
 #include "icc_examin_version.h"
-
-#include <oyObject_s.h>
-#include <oyOptions_s.h>
-#include <oyranos_colour.h>
-#include <alpha/oyranos_alpha.h>
 
 #include <sstream>
 #include <string>
@@ -943,13 +939,13 @@ std::string    vrmlScene          ( icc_examin_ns::ICCThreadList<ICCnetz> netze,
     {
       ICClist<std::string> point, shadow, colour;
 
-      oyNamedColours_s * colours = 
-           (oyNamedColours_s*) oyStructList_GetRefType( colour_lists, j,
-                                                oyOBJECT_NAMED_COLOURS_S );
+      oyNamedColors_s * colours = 
+           (oyNamedColors_s*) oyStructList_GetRefType( colour_lists, j,
+                                                oyOBJECT_NAMED_COLORS_S );
 
-      int n = oyNamedColours_Count( colours );
+      int n = oyNamedColors_Count( colours );
       int aktiv = 1;
-      oyNamedColour_s * c = NULL;
+      oyNamedColor_s * c = NULL;
       double schattierung = 1;
       int has_mesh = 0;
       std::string name;
@@ -972,8 +968,8 @@ std::string    vrmlScene          ( icc_examin_ns::ICCThreadList<ICCnetz> netze,
 
       for (i = 0; i < n; ++i)
       {
-          c = oyNamedColours_Get( colours, i );
-          XYZ = oyNamedColour_GetXYZConst( c );
+          c = oyNamedColors_Get( colours, i );
+          XYZ = oyNamedColor_GetXYZConst( c );
 
           oyXYZ2Lab( XYZ, lab );
           sprintf( txt, "                %.03f %.03f %.03f,\n",
@@ -986,13 +982,13 @@ std::string    vrmlScene          ( icc_examin_ns::ICCThreadList<ICCnetz> netze,
           if(netze[j].grau)
             rgba[0]= rgba[1]= rgba[2] = schattierung;
           else
-            oyNamedColour_GetColourStd( c, oyASSUMED_WEB, rgba, oyDOUBLE, 0,opts );
+            oyNamedColor_GetColorStd( c, oyASSUMED_WEB, rgba, oyDOUBLE, 0,opts );
 
           sprintf( txt, "                %.03f %.03f %.03f,\n",
                         rgba[0], rgba[1], rgba[2]);
           colour.push_back( txt );
 
-          oyNamedColour_Release( &c );
+          oyNamedColor_Release( &c );
       }
 
       for(i = 0; i < n; ++i)
@@ -1004,8 +1000,8 @@ std::string    vrmlScene          ( icc_examin_ns::ICCThreadList<ICCnetz> netze,
 
         if(name.size())
           tn = name.c_str();
-        c = oyNamedColours_Get( colours, i );
-        tp = oyNamedColour_GetName( c, oyNAME_NICK, 1 );
+        c = oyNamedColors_Get( colours, i );
+        tp = oyNamedColor_GetName( c, oyNAME_NICK, 1 );
         if(!tp)
           tp = "";
 
@@ -1013,7 +1009,7 @@ std::string    vrmlScene          ( icc_examin_ns::ICCThreadList<ICCnetz> netze,
     # point pos:%d:%d  file: %s  name: %s\n",
                       j, i+1, tn, tp );
         temp.append( txt );
-        oyNamedColour_Release( &c );
+        oyNamedColor_Release( &c );
 
         temp.append("\
     Transform { translation ");
@@ -1144,7 +1140,7 @@ std::string    vrmlScene          ( icc_examin_ns::ICCThreadList<ICCnetz> netze,
   }
 
   oyProfile_s * prof = oyProfile_FromStd( oyEDITING_XYZ, NULL );
-  oyNamedColour_s * c = oyNamedColour_Create( NULL, NULL,0, prof, 0 );
+  oyNamedColor_s * c = oyNamedColor_Create( NULL, NULL,0, prof, 0 );
 
 
   // net preparation and *ab gamut bound lines
@@ -1168,8 +1164,8 @@ std::string    vrmlScene          ( icc_examin_ns::ICCThreadList<ICCnetz> netze,
           lab[1] = (netze[i].punkte[j].koord[1]-.5)*255.;
           lab[2] = (netze[i].punkte[j].koord[2]-.5)*255.;
 
-          oyNamedColour_SetColourStd( c, oyEDITING_LAB, lab, oyDOUBLE, 0, opts);
-          oyNamedColour_GetColourStd( c, oyASSUMED_WEB, rgba, oyDOUBLE, 0,opts);
+          oyNamedColor_SetColorStd( c, oyEDITING_LAB, lab, oyDOUBLE, 0, opts);
+          oyNamedColor_GetColorStd( c, oyASSUMED_WEB, rgba, oyDOUBLE, 0,opts);
           for(int k = 0; k < 3 ; ++k)
             netze[i].punkte[j].farbe[k] = rgba[k];
         }
@@ -1262,7 +1258,7 @@ std::string    vrmlScene          ( icc_examin_ns::ICCThreadList<ICCnetz> netze,
     }
   }
   if(txt) free(txt);
-  oyNamedColour_Release( &c );
+  oyNamedColor_Release( &c );
   oyOptions_Release( &opts );
 
   if(loc_alt.size())
