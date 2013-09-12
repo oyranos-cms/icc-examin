@@ -1406,14 +1406,14 @@ oyProfile_s * Oyranos::oyMoni (int x, int y, int native)
     oyDeviceGetProfile( device, options, &disp_prof );
     oyOptions_Release( &options );
 
-    if(!disp_prof)
-    {
-      WARN_S("Could not load profile. Use sRGB instead.")
-      disp_prof = oyProfile_FromStd( oyASSUMED_WEB, 0 );
-    }
-
     if(disp_name)
       free(disp_name);
+  }
+
+  if(!disp_prof)
+  {
+    WARN_S("Could not load profile. Use sRGB instead.")
+    disp_prof = oyProfile_FromStd( oyASSUMED_WEB, 0 );
   }
 
   if (disp_prof)
