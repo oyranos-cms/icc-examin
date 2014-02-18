@@ -1043,8 +1043,8 @@ ICCmeasurement::init_umrechnen                     (void)
                              OY_CREATE_NEW );
       // How sees the profile the measurement colour? -> XYZ
       ctoxyz= oyConversion_CreateBasicPixelsFromBuffers(
-                                        profile, Farbe, oyDOUBLE,
-                                        profile_xyz, XYZ, oyDOUBLE,
+                                        profile, Farbe, oyDataType_m(oyDOUBLE),
+                                        profile_xyz, XYZ, oyDataType_m(oyDOUBLE),
                                         abscol, 1 );
       /*hCOLOURtoXYZ =  cmsCreateTransform (hCOLOUR, TYPE_nCOLOUR_DBL,
                                     hXYZ, TYPE_XYZ_DBL,
@@ -1053,8 +1053,8 @@ ICCmeasurement::init_umrechnen                     (void)
       fortschritt(0.1, 0.2);
       // How sees the profile the measurement colour? -> Lab
       ctolab= oyConversion_CreateBasicPixelsFromBuffers(
-                                        profile, Farbe, oyDOUBLE,
-                                        profile_lab, Lab, oyDOUBLE,
+                                        profile, Farbe, oyDataType_m(oyDOUBLE),
+                                        profile_lab, Lab, oyDataType_m(oyDOUBLE),
                                         abscol, 1 );
       /*hCOLOURtoLab =  cmsCreateTransform (hCOLOUR, TYPE_nCOLOUR_DBL,
                                     hLab, TYPE_Lab_DBL,
@@ -1064,8 +1064,8 @@ ICCmeasurement::init_umrechnen                     (void)
       fortschritt(0.15, 0.2);
       // How sees the profile the measurement colour? -> monitor
       ctorgb= oyConversion_CreateBasicPixelsFromBuffers(
-                                        profile, Farbe, oyDOUBLE,
-                                        profile_rgb, RGB, oyDOUBLE,
+                                        profile, Farbe, oyDataType_m(oyDOUBLE),
+                                        profile_rgb, RGB, oyDataType_m(oyDOUBLE),
                                         ui_options, 1 );
       /*hCOLOURtoRGB =  cmsCreateProofingTransform (hCOLOUR, TYPE_nCOLOUR_DBL,
                                     hsRGB, TYPE_RGB_DBL,
@@ -1083,8 +1083,8 @@ ICCmeasurement::init_umrechnen                     (void)
     {
       // How sees the CMM the measurement colour? -> monitor
       labtorgb = oyConversion_CreateBasicPixelsFromBuffers(
-                                           profile_lab, Lab, oyDOUBLE,
-                                           profile_rgb, RGB, oyDOUBLE,
+                                           profile_lab, Lab, oyDataType_m(oyDOUBLE),
+                                           profile_rgb, RGB, oyDataType_m(oyDOUBLE),
                                            ui_options, 1 );
 
       /*hLabtoRGB = cmsCreateProofingTransform (hLab, TYPE_Lab_DBL,

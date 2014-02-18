@@ -548,8 +548,8 @@ transformAnlegen( channel & layer )
     }
 
     transf = oyConversion_CreateBasicPixelsFromBuffers(
-                                           hp, colour, oyDOUBLE,
-                                           hl, outbuf, oyDOUBLE,
+                                           hp, colour, oyDataType_m(oyDOUBLE),
+                                           hl, outbuf, oyDataType_m(oyDOUBLE),
                                            options, n_points );
 
     if(!transf)

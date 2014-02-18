@@ -1986,8 +1986,8 @@ event_handler(int e)
           oyOptions_s * opts = icc_examin->options();
           oyConversion_s * 
           ctoxyz = oyConversion_CreateBasicPixelsFromBuffers(
-                                        p, d3, oyDOUBLE,
-                                        profile_xyz, xyz, oyDOUBLE,
+                                        p, d3, oyDataType_m(oyDOUBLE),
+                                        profile_xyz, xyz, oyDataType_m(oyDOUBLE),
                                         opts, 1 );
           oyOptions_Release( &opts );
           oyConversion_RunPixels( ctoxyz, NULL );
