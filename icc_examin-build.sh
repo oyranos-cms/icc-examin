@@ -895,7 +895,7 @@ cd "$top"
 
 # CompIcc
 git_repo=compicc
-if [ `echo "$skip" | grep $git_repo | wc -l` -ne 0 ]; then
+if [ $UNAME_ = "Darwin" ] || [ `echo "$skip" | grep $git_repo | wc -l` -ne 0 ]; then
   echo $git_repo skipped
 else
   echo checkout $git_repo
@@ -1001,7 +1001,7 @@ cd "$top"
 
 # kolor-manager
 git_repo=kolor-manager
-if [ `echo "$skip" | grep $git_repo | wc -l` -ne 0 ]; then
+if [ $UNAME_ = "Darwin" ] || [ `echo "$skip" | grep $git_repo | wc -l` -ne 0 ]; then
   echo $git_repo skipped
 else
   echo checkout $git_repo
