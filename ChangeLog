@@ -1,3 +1,35 @@
+Version 0.55
+
+Boris Samorodov (1):
+	* [conf]: adapt inline sed usage for FreeBSD
+
+Dominique Leuenberger (1):
+	* [conf]: Fix build on Factory - where 'pkg-config --cflags xcm' is empty
+
+Kai-Uwe Behrmann (22):
+	* [build]: sync spec file with OBS
+	* [build]: ignore packages in build script on Darwin
+	* [core]: update to Oyranos 0.9.5 API change
+	* [core]: do not rely on display name for fallback
+	* [core]: update to Oyranos 0.9.5 API changes
+	* [core]: update to oyranos FLTK widget
+	* [core]: fix DnD
+	* [core]: fix more compiler warnings
+	* [core]: fix compiler warning about C++11 syntax
+	* [core]: set non profile description
+	* [i18n]: update deutsch
+	* [core]: check for proper X11/XCM support
+	* [core]: fix warning after profile extraction from image
+	* [core]: fix for profiles without desc tag
+	* [core]: fix lagging UI on file open
+	* [core]: fix compiling
+	* [core]: fix Harald's crash on XFCE
+	* [core]: show missed monitor under vcgt window
+	* [core]: adapt xrandr to xinerama monitor order
+	* [core]: use available XRandR for monitor gamma
+	* [core]: use Oyranos device API in moniInfo()
+	* [conf]: detect and link XRandR
+
 Version 0.54
 
 Kai-Uwe Behrmann (8):
