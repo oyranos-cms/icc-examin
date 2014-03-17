@@ -613,7 +613,7 @@ else
       MAKE_LDFLAGS="\$(dl) \$(iconv)"
       INSTALL="install"
     else
-      LDFLAGS="-mimpure-text"
+      LDFLAGS=""
       MAKE_LDFLAGS="\$(dl) \$(iconv)"
       INSTALL="install"
       LINK_FLAGS="-shared \$(dl) \$(iconv)"
