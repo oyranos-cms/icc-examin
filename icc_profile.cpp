@@ -178,7 +178,7 @@ ICCprofile::load (const Speicher & prof)
     memcpy(data_, z, size_);
     filename_ = file;
     if(data_type != ICCimageDATA)
-      profile_ = oyProfile_FromFile( filename_.c_str(), 0, 0 );
+      profile_ = oyProfile_FromFile( filename_.c_str(), icc_oyranos.oy_profile_from_flags, 0 );
     if(!profile_)
       profile_ = oyProfile_FromMem( size_, data_, 0, 0 );
     DBG_MEM_V( filename_ )

@@ -568,8 +568,15 @@ ICCexaminIO::oeffnen (ICClist<std::string> dateinamen)
   {
     ss.push_back(Speicher());
 
-    char * t = oyGetPathFromProfileName( dateinamen[i].c_str(),
+
+    oyProfile_s * p = oyProfile_FromFile( dateinamen[i].c_str(), icc_oyranos.oy_profile_from_flags, 0 );
+    char * t = oyGetPathFromProfileName( oyProfile_GetFileName( p, -1 ),
                                                       malloc );
+    oyProfile_Release( &p );
+
+    if(t && t[strlen(t)-1] == OY_SLASH_C)
+      t[strlen(t)-1] = '\000';
+
     std::string path_name;
     if(t)
       path_name = t;

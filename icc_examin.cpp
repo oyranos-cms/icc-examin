@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2013  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2014  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -410,7 +410,7 @@ ICCexamin::start (int argc, char** argv)
   Fl::add_handler(event_handler);
   MyFl_Double_Window::event_handler = event_handler;
 
-  // hande command line arguments
+  // handel command line arguments
       if (argc>1)
       {
         ICClist<std::string>profilnamen;
@@ -431,11 +431,19 @@ ICCexamin::start (int argc, char** argv)
               // stop after "-i" argument
               break;
             }
-            WARN_S( "momory" );
+            WARN_S( "memory" );
           } else
           if(strcmp(argv[i],"-g") == 0)
           {
             zeig3D();
+          } else
+          if(strcmp(argv[i],"-2") == 0)
+          {
+            icc_oyranos.oy_profile_from_flags |= OY_ICC_VERSION_2;
+          } else
+          if(strcmp(argv[i],"-4") == 0)
+          {
+            icc_oyranos.oy_profile_from_flags |= OY_ICC_VERSION_4;
           } else
           if(std::string(argv[i]).find("-psn_") == std::string::npos)
           {
@@ -845,7 +853,7 @@ ICCexamin::message( Model* model , int info )
         memset(chan, 0, sizeof(double)*32);
 
         oyProfile_s * prof = oyProfile_FromFile
-                                      ( profile.profil()->filename(), 0,NULL );
+                                      ( profile.profil()->filename(), icc_oyranos.oy_profile_from_flags,NULL );
         if(!prof)
           prof = oyProfile_FromStd( oyASSUMED_WEB, NULL );
         int channels_n = oyProfile_GetChannelsCount( prof );
@@ -1980,7 +1988,7 @@ event_handler(int e)
                             name?"\n":"", name?"name: ":"", name?name:"" );
             fprintf(stderr, "\n");
           }
-          oyProfile_s * p = oyProfile_FromFile(icc_profile_name, 0, 0);
+          oyProfile_s * p = oyProfile_FromFile(icc_profile_name, icc_oyranos.oy_profile_from_flags, 0);
           double xyz[3] = {-1,-1,-1};
           oyProfile_s * profile_xyz = oyProfile_FromStd( oyEDITING_XYZ, 0 );
           oyOptions_s * opts = icc_examin->options();

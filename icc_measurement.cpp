@@ -1722,7 +1722,7 @@ ICCmeasurement::getCmmColour (int patch)
   if(!prof)
   {
     if(profile_->data_type == ICCprofile::ICCprofileDATA)
-      prof = oyProfile_FromFile( profile_->filename(), 0, 0 );
+      prof = oyProfile_FromFile( profile_->filename(), icc_oyranos.oy_profile_from_flags, 0 );
     else
     {
       if(CMYK_measurement_)
@@ -1785,7 +1785,7 @@ ICCmeasurement::getMessColour (int patch)
   if(!prof)
   {
     if(profile_->data_type == ICCprofile::ICCprofileDATA)
-      prof = oyProfile_FromFile( profile_->filename(), 0, 0 );
+      prof = oyProfile_FromFile( profile_->filename(), icc_oyranos.oy_profile_from_flags, 0 );
     else
     {
       if(CMYK_measurement_)

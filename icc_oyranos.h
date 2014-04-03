@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2013  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2014  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -151,6 +151,7 @@ class Oyranos
                                        oyProfile_s       * profile,
                                        oyRectangle_s     * old_rect,
                                        int                 remove );
+    int      oy_profile_from_flags;
 };
 
 extern Oyranos icc_oyranos;
