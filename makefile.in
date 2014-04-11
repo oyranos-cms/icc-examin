@@ -584,7 +584,7 @@ debian:	debsrc
 	(cd $(DEBTARGET)-$(VERSION)/debian; debuild)
 	echo ... $@ done
 
-install:	$(INSTALL_TARGET)
+install:	all $(INSTALL_TARGET)
 
 install_cp:
 	echo Installation ...
