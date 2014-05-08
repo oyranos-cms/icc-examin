@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2012  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2014  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -198,7 +198,7 @@ void
 TagDrawings::init_shoe_ ()
 {
   // initialisation for Oyranos
-  hXYZ  = oyProfile_FromStd( oyEDITING_XYZ, NULL );
+  hXYZ  = oyProfile_FromStd( oyEDITING_XYZ, icc_oyranos.icc_profile_flags, NULL );
 
   size_t groesse = 0;
   const char* block = 0;
@@ -210,7 +210,7 @@ TagDrawings::init_shoe_ ()
      icc_debug != 14) {
     hsRGB = oyProfile_FromMem(groesse, const_cast <char*> (block), 0, NULL);
   } else {
-    hsRGB = oyProfile_FromStd( oyASSUMED_WEB, NULL );
+    hsRGB = oyProfile_FromStd( oyASSUMED_WEB, icc_oyranos.icc_profile_flags, NULL );
   }
 
   in    = oyImage_Create( 1,1,

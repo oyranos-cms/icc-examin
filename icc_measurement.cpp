@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2013  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2014  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -983,8 +983,8 @@ ICCmeasurement::init_umrechnen                     (void)
 
     oyProfile_s * profile = 0,
                 * profile_rgb = 0,
-                * profile_xyz = oyProfile_FromStd( oyEDITING_XYZ, 0 ),
-                * profile_lab = oyProfile_FromStd( oyEDITING_LAB, 0 );
+                * profile_xyz = oyProfile_FromStd( oyEDITING_XYZ, icc_oyranos.icc_profile_flags, 0 ),
+                * profile_lab = oyProfile_FromStd( oyEDITING_LAB, icc_oyranos.icc_profile_flags, 0 );
 
     // select a fitting monitor- / displayprofile
     if(!export_farben)
@@ -993,7 +993,7 @@ ICCmeasurement::init_umrechnen                     (void)
 
     } else
     {
-      profile_rgb = oyProfile_FromStd( oyASSUMED_WEB, 0 );
+      profile_rgb = oyProfile_FromStd( oyASSUMED_WEB, icc_oyranos.icc_profile_flags, 0 );
       DBG_PROG_S( "Export colours" );
     }
 
@@ -1024,10 +1024,10 @@ ICCmeasurement::init_umrechnen                     (void)
       if(!profile)
       { // alternative
         if( CMYK_measurement_ )
-          profile = oyProfile_FromStd( oyEDITING_CMYK,0 );
+          profile = oyProfile_FromStd( oyEDITING_CMYK, icc_oyranos.icc_profile_flags,0 );
         else
         if( RGB_measurement_ )
-          profile = oyProfile_FromStd( oyEDITING_RGB, 0 );
+          profile = oyProfile_FromStd( oyEDITING_RGB, icc_oyranos.icc_profile_flags, 0 );
 
         if( !profile ) {
           WARN_S("no suitable default profile found")
@@ -1726,9 +1726,9 @@ ICCmeasurement::getCmmColour (int patch)
     else
     {
       if(CMYK_measurement_)
-        prof = oyProfile_FromStd( oyEDITING_CMYK, 0 );
+        prof = oyProfile_FromStd( oyEDITING_CMYK, icc_oyranos.icc_profile_flags, 0 );
       else
-        prof = oyProfile_FromStd( oyEDITING_RGB, 0 );
+        prof = oyProfile_FromStd( oyEDITING_RGB, icc_oyranos.icc_profile_flags, 0 );
     }
   }
 
@@ -1789,9 +1789,9 @@ ICCmeasurement::getMessColour (int patch)
     else
     {
       if(CMYK_measurement_)
-        prof = oyProfile_FromStd( oyEDITING_CMYK, 0 );
+        prof = oyProfile_FromStd( oyEDITING_CMYK, icc_oyranos.icc_profile_flags, 0 );
       else
-        prof = oyProfile_FromStd( oyEDITING_RGB, 0 );
+        prof = oyProfile_FromStd( oyEDITING_RGB, icc_oyranos.icc_profile_flags, 0 );
     }
   }
 

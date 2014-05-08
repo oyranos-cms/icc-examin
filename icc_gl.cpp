@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2013  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2014  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -264,7 +264,7 @@ GL_View::zero_()
   text[0] = 0;
   colours_ = 0;
   epoint_ = 0;
-  oyProfile_s * prof = oyProfile_FromStd( oyEDITING_XYZ, NULL );
+  oyProfile_s * prof = oyProfile_FromStd( oyEDITING_XYZ, icc_oyranos.icc_profile_flags, NULL );
   mouse_3D_hit = oyNamedColor_Create( NULL, NULL,0, prof, 0 );
   oyProfile_Release( &prof );
   window_geometry = NULL;
@@ -2190,8 +2190,8 @@ GL_View::refreshPoints()
 
         if(nc)
         {
-          prof_in  = oyProfile_FromStd( oyEDITING_XYZ, 0 );
-          prof_out = oyProfile_FromStd( projection, 0 );
+          prof_in  = oyProfile_FromStd( oyEDITING_XYZ, icc_oyranos.icc_profile_flags, 0 );
+          prof_out = oyProfile_FromStd( projection, icc_oyranos.icc_profile_flags, 0 );
           /* we assume Oyranos uses a oyArray2d_s backend for oyImage_s */
           in =  oyImage_Create( 1,1,
                          XYZ,
@@ -2994,7 +2994,7 @@ GL_View::drawGL()
 
           if(!mouse_3D_hit)
           {
-            oyProfile_s * prof = oyProfile_FromStd( oyEDITING_XYZ, NULL );
+            oyProfile_s * prof = oyProfile_FromStd( oyEDITING_XYZ, icc_oyranos.icc_profile_flags, NULL );
             mouse_3D_hit = oyNamedColor_Create( NULL, NULL,0, prof, 0 );
             oyProfile_Release( &prof );
           }
@@ -3640,7 +3640,7 @@ GL_View::setBspFaceProperties_( icc_examin_ns::FACE *faceList )
 //#define USE_OY_NC
   double lab[3];
 #ifdef USE_OY_NC
-  oyProfile_s * prof = oyProfile_FromStd( oyEDITING_LAB, 0 );
+  oyProfile_s * prof = oyProfile_FromStd( oyEDITING_LAB, icc_oyranos.icc_profile_flags, 0 );
   oyProfile_s * prof_disp = NULL;
   if(icc_oyranos.colourServerActive() & XCM_COLOR_SERVER_MANAGEMENT)
     prof_disp = oyProfile_Copy( edit_, NULL );

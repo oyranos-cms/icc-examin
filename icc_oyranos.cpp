@@ -1225,7 +1225,7 @@ Oyranos::wandelLabNachProfilUndZurueck(double *lab, // 0.0 - 1.0
     oyProfile_s * profile = oyProfile_FromMem( bsize, (void*)block, 0, 0 );
     channels_n = oyProfile_GetChannelsCount( profile );
     double * channels = new double [size*channels_n];
-    oyProfile_s * lab_profile = oyProfile_FromStd( oyEDITING_LAB, 0 );
+    oyProfile_s * lab_profile = oyProfile_FromStd( oyEDITING_LAB, icc_oyranos.icc_profile_flags, 0 );
     oyConversion_s * ctolab = 0, * labtoc = 0;
     oyImage_s * image_lab, * image_tmp;
 
@@ -1323,7 +1323,7 @@ Oyranos::wandelLabNachProfilUndZurueck(double *lab, // 0.0 - 1.0
     {
       if(icc_debug > 1)
       {
-        oyProfile_s * prof = oyProfile_FromStd( oyEDITING_LAB, 0 );
+        oyProfile_s * prof = oyProfile_FromStd( oyEDITING_LAB, icc_oyranos.icc_profile_flags, 0 );
         char * txt = oyDumpColorToCGATS( cielab_tmp, size, prof, malloc,
                                           __FILE__ );
         if(txt)
@@ -1413,7 +1413,7 @@ oyProfile_s * Oyranos::oyMoni (int x, int y, int native)
   if(!disp_prof)
   {
     WARN_S("Could not load profile. Use sRGB instead.")
-    disp_prof = oyProfile_FromStd( oyASSUMED_WEB, 0 );
+    disp_prof = oyProfile_FromStd( oyASSUMED_WEB, icc_oyranos.icc_profile_flags, 0 );
   }
 
   if (disp_prof)
@@ -1484,7 +1484,7 @@ Oyranos::wandelLabNachBildschirmFarben(int x, int y, oyProfile_s * profile,
                          prof_disp,
                          0 );
 
-      oyProfile_s * prof_lab = oyProfile_FromStd( oyEDITING_LAB, 0 );
+      oyProfile_s * prof_lab = oyProfile_FromStd( oyEDITING_LAB, icc_oyranos.icc_profile_flags, 0 );
       oyImage_Release( &image_lab );
       image_lab   = oyImage_Create( size, 1,
                          lab,
@@ -1570,7 +1570,7 @@ double*  Oyranos::convertLabToProfile    ( oyProfile_s * profile,
                          prof_disp,
                          0 );
 
-      oyProfile_s * prof_lab = oyProfile_FromStd( oyEDITING_LAB, 0 );
+      oyProfile_s * prof_lab = oyProfile_FromStd( oyEDITING_LAB, icc_oyranos.icc_profile_flags, 0 );
       oyImage_Release( &image_lab );
       image_lab   = oyImage_Create( size, 1,
                          lab,
@@ -1664,8 +1664,22 @@ oyProfile_s * Oyranos::getEditingProfile      ( )
 #if defined(XCM_HAVE_X11)
     if(!(colourServerActive() | (XCM_COLOR_SERVER_REGIONS &&
                                  XCM_COLOR_SERVER_PROFILES)))
-      return oyProfile_FromStd( oyASSUMED_WEB, 0 );
+      return oyProfile_FromStd( oyASSUMED_WEB, icc_oyranos.icc_profile_flags, 0 );
 #endif
+
+    std::string editing_name("ICC Examin ROMM gamma 2.2 ");
+
+    if(icc_oyranos.icc_profile_flags & OY_ICC_VERSION_2)
+      editing_name += "v2";
+    else
+      editing_name += "v4";
+
+    editing_name += ".icc";
+
+    editing = oyProfile_FromFile( editing_name.c_str(), icc_oyranos.icc_profile_flags, 0 );
+
+    if(editing)
+      return editing;
 
     oyOption_s *matrix = oyOption_FromRegistration("///color_matrix."
               "from_primaries."
@@ -1685,6 +1699,7 @@ oyProfile_s * Oyranos::getEditingProfile      ( )
     oyOptions_s * opts = oyOptions_New(0),
                 * result = 0;
 
+    oyOptions_SetFromInt( &opts, "///icc_profile_flags", icc_oyranos.icc_profile_flags, 0, OY_CREATE_NEW );
     oyOptions_MoveIn( opts, &matrix, -1 );
     oyOptions_Handle( "//"OY_TYPE_STD"/create_profile.icc",
                                 opts,"create_profile.icc_profile.color_matrix",
@@ -1694,8 +1709,7 @@ oyProfile_s * Oyranos::getEditingProfile      ( )
                                                oyOBJECT_PROFILE_S );
     oyOptions_Release( &result );
 
-    oyProfile_AddTagText( editing, icSigProfileDescriptionTag,
-                                            "ICC Examin ROMM gamma 2.2" );
+    oyProfile_AddTagText( editing, icSigProfileDescriptionTag, editing_name.c_str() );
 
     if(oy_debug)
     {
@@ -1703,6 +1717,8 @@ oyProfile_s * Oyranos::getEditingProfile      ( )
       char * data = (char*) oyProfile_GetMem( editing, &size, 0, malloc );
       saveMemToFile( "ICC Examin ROMM gamma 2.2.icc", data, size );
     }
+
+    oyProfile_Install( editing, NULL );
   }
 
   return editing;

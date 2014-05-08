@@ -324,7 +324,7 @@ ICCexamin::farbenLese  ( int n,
   ICClist<double>  f;  // colour
   ICClist<std::string> names;
   oyNamedColor_s * c = 0;
-  oyProfile_s * prof = oyProfile_FromFile( profile[n]->filename(), icc_oyranos.oy_profile_from_flags, 0 );
+  oyProfile_s * prof = oyProfile_FromFile( profile[n]->filename(), icc_oyranos.icc_profile_flags, 0 );
   int channels_n = oyProfile_GetChannelsCount( prof );
 
 

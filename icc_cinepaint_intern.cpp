@@ -1,7 +1,7 @@
 /* 
  * ICC Examin plug-in for cinepaint.
  *
- * Copyright (C) 2004-2013 Kai-Uwe Behrmann <ku.b@gmx.de>
+ * Copyright (C) 2004-2014 Kai-Uwe Behrmann <ku.b@gmx.de>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1078,7 +1078,7 @@ bearbeiteEingebetteteProfile( channel *layer )
     // calculate -> CIE*Lab prepare
     if(hl)oyProfile_Release( &hl);
     if(hp)oyProfile_Release( &hp);
-    hl   = oyProfile_FromStd( oyEDITING_LAB, 0 );
+    hl   = oyProfile_FromStd( oyEDITING_LAB, icc_oyranos.icc_profile_flags, 0 );
     hp   = oyProfile_FromMem( size, image_profile, 0,0 );
     farb_kanaele = oyProfile_GetChannelsCount( hp );
     if(farb_kanaele > layer->samplesperpixel) {

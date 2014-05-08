@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2013  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2014  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -142,7 +142,7 @@ iccGrenze(ICCprofile & profil, oyOptions_s * options, size_t & groesse)
     p_block = profil.saveProfileToMem(&size);
 
     // scan here the colour space border
-    oyProfile_s * lab = oyProfile_FromStd(oyEDITING_LAB, 0);
+    oyProfile_s * lab = oyProfile_FromStd(oyEDITING_LAB, icc_oyranos.icc_profile_flags, 0);
     oyProfile_s * p = oyProfile_FromMem( size, p_block, 0,0);
     {
       size_t lenght = 0;

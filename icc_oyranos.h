@@ -151,7 +151,11 @@ class Oyranos
                                        oyProfile_s       * profile,
                                        oyRectangle_s     * old_rect,
                                        int                 remove );
+
+    // primary profile selection flags
     int      oy_profile_from_flags;
+    // secondary help profile selection flags
+    int      icc_profile_flags;
 };
 
 extern Oyranos icc_oyranos;

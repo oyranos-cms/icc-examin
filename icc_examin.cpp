@@ -304,6 +304,12 @@ void
 ICCexamin::start (int argc, char** argv)
 { DBG_PROG_START
 
+  /* select profiles matching actual capabilities */
+  oyFilterNode_s * node = oyFilterNode_NewWith( "//" OY_TYPE_STD "/icc", NULL, 0 );
+  const char * reg = oyFilterNode_GetRegistration( node );
+  icc_oyranos.icc_profile_flags = oyICCProfileSelectionFlagsFromRegistration( reg );
+  oyFilterNode_Release( &node );
+
   kurven.resize(MAX_VIEWER);
   punkte.resize(MAX_VIEWER);
   texte.resize(MAX_VIEWER);
@@ -855,7 +861,7 @@ ICCexamin::message( Model* model , int info )
         oyProfile_s * prof = oyProfile_FromFile
                                       ( profile.profil()->filename(), icc_oyranos.oy_profile_from_flags,NULL );
         if(!prof)
-          prof = oyProfile_FromStd( oyASSUMED_WEB, NULL );
+          prof = oyProfile_FromStd( oyASSUMED_WEB, icc_oyranos.icc_profile_flags, NULL );
         int channels_n = oyProfile_GetChannelsCount( prof );
 
         if((min_pos*channels_n*mult) < (int)chan_dv.size())
@@ -1990,7 +1996,7 @@ event_handler(int e)
           }
           oyProfile_s * p = oyProfile_FromFile(icc_profile_name, icc_oyranos.oy_profile_from_flags, 0);
           double xyz[3] = {-1,-1,-1};
-          oyProfile_s * profile_xyz = oyProfile_FromStd( oyEDITING_XYZ, 0 );
+          oyProfile_s * profile_xyz = oyProfile_FromStd( oyEDITING_XYZ, icc_oyranos.icc_profile_flags, 0 );
           oyOptions_s * opts = icc_examin->options();
           oyConversion_s * 
           ctoxyz = oyConversion_CreateBasicPixelsFromBuffers(

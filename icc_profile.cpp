@@ -156,7 +156,7 @@ ICCprofile::load (const Speicher & prof)
   if(data_type == ICCimageDATA)
   {
     oyImage_s * image = NULL;
-    oyImage_FromFile(file.c_str(), &image, NULL);
+    oyImage_FromFile(file.c_str(), icc_oyranos.icc_profile_flags, &image, NULL);
     oyProfile_s * p = oyImage_GetProfile( image );
     size_t size = 0;
     char * data = (char*)oyProfile_GetMem( p, &size, 0, malloc);

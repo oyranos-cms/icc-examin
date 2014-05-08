@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2005-2013  Kai-Uwe Behrmann 
+ * Copyright (C) 2005-2014  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -1139,7 +1139,7 @@ std::string    vrmlScene          ( icc_examin_ns::ICCThreadList<ICCnetz> netze,
 
   }
 
-  oyProfile_s * prof = oyProfile_FromStd( oyEDITING_XYZ, NULL );
+  oyProfile_s * prof = oyProfile_FromStd( oyEDITING_XYZ, icc_oyranos.icc_profile_flags, NULL );
   oyNamedColor_s * c = oyNamedColor_Create( NULL, NULL,0, prof, 0 );
 
 
