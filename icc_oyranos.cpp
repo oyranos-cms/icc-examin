@@ -1655,15 +1655,16 @@ void Oyranos::colourServerRegionSet  ( Fl_Widget         * widget,
 #endif                     
 }
 
-oyProfile_s * Oyranos::getEditingProfile      ( )
+oyProfile_s * Oyranos::getEditingProfile      ( int early_binding )
 {
   static oyProfile_s * editing = NULL;
 
   if(!editing)
   {
 #if defined(XCM_HAVE_X11)
-    if(!(colourServerActive() | (XCM_COLOR_SERVER_REGIONS &&
-                                 XCM_COLOR_SERVER_PROFILES)))
+    if(!((colourServerActive() & XCM_COLOR_SERVER_REGIONS) &&
+         (colourServerActive() & XCM_COLOR_SERVER_PROFILES)) &&
+       !early_binding)
       return oyProfile_FromStd( oyASSUMED_WEB, icc_oyranos.icc_profile_flags, 0 );
 #endif
 

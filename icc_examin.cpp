@@ -548,7 +548,7 @@ ICCexamin::zeigPrueftabelle ()
         lw = details->w(),
         lh = details->h();
 
-    oyProfile_s * e = icc_oyranos.getEditingProfile();
+    oyProfile_s * e = icc_oyranos.getEditingProfile(1);
     MyFl_Double_Window *w =
       new MyFl_Double_Window( lx+lw, ly, lw, lh, "Prueftabelle" );
       w->user_data((void*)(0));
@@ -1713,15 +1713,14 @@ ICCexamin::statusFarbe(double & L, double & a, double & b)
   static oyProfile_s * e = NULL;
   if(!e)
   {
-    e = icc_oyranos.getEditingProfile();
+    e = icc_oyranos.getEditingProfile(1);
     icc_betrachter->DD_box_stat_oy->setProfile( e );
   }
   DBG_PROG_V( lab[0]<<" "<<lab[1]<<" "<<lab[2] )
   rgb = icc_oyranos. wandelLabNachBildschirmFarben(
                                 icc_betrachter->DD_box_stat->window()->x() + icc_betrachter->DD_box_stat->window()->w()/2,
                                 icc_betrachter->DD_box_stat->window()->y() + icc_betrachter->DD_box_stat->window()->h()/2,
-            icc_oyranos.colourServerActive() | XCM_COLOR_SERVER_PROFILES?
-                               icc_oyranos.getEditingProfile():NULL,
+                                e,
                                 lab, 1,
                                 options_);
   Fl_Color colour = fl_rgb_color( (int)(rgb[0]*255),

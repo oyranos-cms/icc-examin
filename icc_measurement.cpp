@@ -989,7 +989,7 @@ ICCmeasurement::init_umrechnen                     (void)
     // select a fitting monitor- / displayprofile
     if(!export_farben)
     {
-      profile_rgb = icc_oyranos.getEditingProfile();
+      profile_rgb = icc_oyranos.getEditingProfile(1);
 
     } else
     {

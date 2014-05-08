@@ -135,7 +135,7 @@ class Oyranos
     double*  convertLabToProfile         ( oyProfile_s * profile,
                                            double *Lab_Speicher, // 0.0 - 1.0
                                            size_t  size, oyOptions_s * options);
-    oyProfile_s * getEditingProfile      ( );
+    oyProfile_s * getEditingProfile      ( int early_binding );
     // Create an abstract profile containing GamutCheck + Proof
     // from a device profile; write in the gamut profile in abstract
     void     gamutCheckAbstract(  Speicher &  profil,
