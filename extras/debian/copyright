@@ -3,7 +3,7 @@ Upstream-Name: icc_examin
 Source:  http://sourceforge.net/projects/oyranos/files/ICC%20Examin
 
 Files: *
-Copyright: 2004-2012, Kai-Uwe Behrmann
+Copyright: 2004-2014, Kai-Uwe Behrmann
 License: GPL-2+
  This program is free software; you can redistribute it
  and/or modify it under the terms of the GNU General Public
@@ -27,7 +27,7 @@ License: GPL-2+
  `/usr/share/common-licenses/GPL-2'.
 
 Files: po/*
-Copyright: 2004-2012, Kai-Uwe Behrmann
+Copyright: 2004-2014, Kai-Uwe Behrmann
 License: BSD-3-Clause License
  All rights reserved.
  .
