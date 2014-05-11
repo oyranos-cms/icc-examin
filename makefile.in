@@ -254,7 +254,7 @@ CONFIG_FILES = \
 	$(SRCDIR)/makefile.in \
 	$(SRCDIR)/configure \
 	$(SRCDIR)/configure_tests.sh \
-	$(SRCDIR)/$(TARGET).spec.in
+	$(SRCDIR)/$(DEBTARGET).spec.in
 
 ALL_FILES = \
 	$(CONFIG_FILES) \
@@ -487,21 +487,21 @@ EXEEXT		=
 tgz:
 	$(MAKE) DESTDIR="`pwd`/Entwickeln" copy_files
 	tar cf - Entwickeln/ \
-	| gzip > $(TARGET)_$(MTIME).tgz
+	| gzip > $(DEBTARGET)_$(MTIME).tgz
 	test -d Entwickeln && \
 	test `pwd` != `(cd Entwickeln; pwd)` && \
 	$(RM) -R Entwickeln
-	test -d ../Archiv && mv -v $(TARGET)_*.tgz ../Archiv
+	test -d ../Archiv && mv -v $(DEBTARGET)_*.tgz ../Archiv
 
 targz:
-	test -d $(TARGET)-$(VERSION) && $(RM) -R $(TARGET)-$(VERSION) || echo -e "\c"
-	$(MAKE) DESTDIR="`pwd`/$(TARGET)-$(VERSION)" copy_files
-	tar cf - $(TARGET)-$(VERSION)/ \
-	| gzip > $(TARGET)_$(MTIME).tgz
-	test -d $(TARGET)-$(VERSION) && \
-	test `pwd` != `(cd $(TARGET)-$(VERSION); pwd)` && \
-	$(RM) -R $(TARGET)-$(VERSION) 
-	test -d ../Archiv && mv -v $(TARGET)_*.tgz ../Archiv || echo no copy
+	test -d $(DEBTARGET)-$(VERSION) && $(RM) -R $(DEBTARGET)-$(VERSION) || echo -e "\c"
+	$(MAKE) DESTDIR="`pwd`/$(DEBTARGET)-$(VERSION)" copy_files
+	tar cf - $(DEBTARGET)-$(VERSION)/ \
+	| gzip > $(DEBTARGET)_$(MTIME).tgz
+	test -d $(DEBTARGET)-$(VERSION) && \
+	test `pwd` != `(cd $(DEBTARGET)-$(VERSION); pwd)` && \
+	$(RM) -R $(DEBTARGET)-$(VERSION) 
+	test -d ../Archiv && mv -v $(DEBTARGET)_*.tgz ../Archiv || echo no copy
 
 # ein automake Ziel
 distdir:
@@ -536,45 +536,44 @@ copy_files:
 
 
 dist:	$(BASE) targz
-	test -f && $(COPY) ../Archiv/$(TARGET)_$(MTIME).tgz $(TARGET)-$(VERSION).tar.gz || $(COPY) $(TARGET)_$(MTIME).tgz $(TARGET)-$(VERSION).tar.gz
-	tar xzf $(TARGET)-$(VERSION).tar.gz
-	tar cjf $(TARGET)-$(VERSION).tar.bz2 $(TARGET)-$(VERSION)/
-	$(RM) -R $(TARGET)-$(VERSION)
+	test -f && $(COPY) ../Archiv/$(DEBTARGET)_$(MTIME).tgz $(DEBTARGET)-$(VERSION).tar.gz || $(COPY) $(DEBTARGET)_$(MTIME).tgz $(DEBTARGET)-$(VERSION).tar.gz
+	tar xzf $(DEBTARGET)-$(VERSION).tar.gz
+	tar cjf $(DEBTARGET)-$(VERSION).tar.bz2 $(DEBTARGET)-$(VERSION)/
+	$(RM) -R $(DEBTARGET)-$(VERSION)
 
 dist-gzip:	dist
 
-$(TARGET).spec:
-	./configure
+$(DEBTARGET).spec:
+	$(SRCDIR)/configure
 
-rpm:	$(TARGET).spec dist
+rpm:	$(DEBTARGET).spec dist
 	$(SRCDIR)/configure --prefix=/usr --rpm-only # generate the spec file
 	mkdir -p rpmdir/BUILD \
 	rpmdir/SPECS \
 	rpmdir/SOURCES \
 	rpmdir/SRPMS \
 	rpmdir/RPMS/$(RPMARCH)
-	cp -f $(TARGET)-$(VERSION).tar.bz2 rpmdir/SOURCES
-	rpmbuild --clean -ba $(build_dir)/$(TARGET).spec --define "_topdir $$PWD/rpmdir"
+	cp -f $(DEBTARGET)-$(VERSION).tar.bz2 rpmdir/SOURCES
+	rpmbuild --clean -ba $(build_dir)/$(DEBTARGET).spec --define "_topdir $$PWD/rpmdir"
 	@echo "============================================================"
 	@echo "Finished - the Packages are in rpmdir/RPMS and rpmdir/SRPMS!"
 
 deb:	dist
 	$(SRCDIR)/configure --prefix=/usr --rpm-only
 	mkdir -p debian/deb/DEBIAN
-	tar xvjf $(TARGET)-$(VERSION).tar.bz2
-	(cd $(TARGET)-$(VERSION); \
+	tar xvjf $(DEBTARGET)-$(VERSION).tar.bz2
+	(cd $(DEBTARGET)-$(VERSION); \
 	./configure --prefix=/usr; \
 	$(MAKE) "DESTDIR=$(build_dir)/debian/deb/DEBIAN" install;)
-	$(COPY) $(TARGET)-$(VERSION)/$(TARGET)_control $(build_dir)/debian/deb/DEBIAN/control
-	$(RM) -R $(TARGET)-$(VERSION)
-	dpkg -b $(build_dir)/debian/deb debian/$(TARGET)_$(VERSION)-$(RELEASE)_$(deb_arch).deb
+	$(COPY) $(DEBTARGET)-$(VERSION)/$(TARGET)_control $(build_dir)/debian/deb/DEBIAN/control
+	$(RM) -R $(DEBTARGET)-$(VERSION)
+	dpkg -b $(build_dir)/debian/deb debian/$(DEBTARGET)_$(VERSION)-$(RELEASE)_$(deb_arch).deb
 	$(RM) -R $(build_dir)/debian/deb
 	echo ... $@ done
 
 debsrc:	dist
 	test -d $(DEBTARGET)-$(VERSION) && $(RM) -R $(DEBTARGET)-$(VERSION) || echo ""
-	tar xvjf $(TARGET)-$(VERSION).tar.bz2
-	mv $(TARGET)-$(VERSION)/ $(DEBTARGET)-$(VERSION)
+	tar xvjf $(DEBTARGET)-$(VERSION).tar.bz2
 	cp -R $(SRCDIR)/extras/debian $(DEBTARGET)-$(VERSION)
 	tar cjf $(DEBTARGET)_$(VERSION).orig.tar.bz2 $(DEBTARGET)-$(VERSION)/
 	dpkg-source -b $(DEBTARGET)-$(VERSION)
