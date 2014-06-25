@@ -572,31 +572,30 @@ ICCexaminIO::oeffnen (ICClist<std::string> dateinamen)
     oyProfile_s * p = oyProfile_FromName( dateinamen[i].c_str(), icc_oyranos.oy_profile_from_flags, 0 );
     const char * fn = oyProfile_GetFileName( p, -1 );
     char * t = NULL;
+    std::string path_name;
 
     if(fn && strchr(fn, OY_SLASH_C) == NULL)
+    {
       t = oyGetPathFromProfileName( fn, malloc );
+      if(t && t[strlen(t)-1] == OY_SLASH_C)
+        t[strlen(t)-1] = '\000';
+
+      if(t)
+      {
+        path_name = t;
+        path_name += "/";
+        free(t); t = NULL;
+      }
+      path_name += fn;
+
+    } else if(fn)
+      path_name = fn;
+
     oyProfile_Release( &p );
 
-    if(t && t[strlen(t)-1] == OY_SLASH_C)
-      t[strlen(t)-1] = '\000';
-
-    std::string path_name;
-    if(t)
-      path_name = t;
-      free(t);
-
-    const char * pn = dateinamen[i].c_str();
-    if(strrchr( pn, OY_SLASH_C ))
-      pn = strrchr( pn, OY_SLASH_C );
 
     if(path_name.size())
-      path_name += "/";
-    path_name += pn;
-
-    if(t)
       ss[i] = dateiNachSpeicher( path_name );
-    else
-      ss[i] = dateiNachSpeicher( std::string(fn) );
 
     if(ss[i].size() == 0)
       ss[i] = dateiNachSpeicher( dateinamen[i].c_str() );
