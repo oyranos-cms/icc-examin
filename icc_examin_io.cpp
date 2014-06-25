@@ -569,9 +569,12 @@ ICCexaminIO::oeffnen (ICClist<std::string> dateinamen)
     ss.push_back(Speicher());
 
 
-    oyProfile_s * p = oyProfile_FromFile( dateinamen[i].c_str(), icc_oyranos.oy_profile_from_flags, 0 );
-    char * t = oyGetPathFromProfileName( oyProfile_GetFileName( p, -1 ),
-                                                      malloc );
+    oyProfile_s * p = oyProfile_FromName( dateinamen[i].c_str(), icc_oyranos.oy_profile_from_flags, 0 );
+    const char * fn = oyProfile_GetFileName( p, -1 );
+    char * t = NULL;
+
+    if(fn && strchr(fn, OY_SLASH_C) == NULL)
+      t = oyGetPathFromProfileName( fn, malloc );
     oyProfile_Release( &p );
 
     if(t && t[strlen(t)-1] == OY_SLASH_C)
@@ -590,7 +593,11 @@ ICCexaminIO::oeffnen (ICClist<std::string> dateinamen)
       path_name += "/";
     path_name += pn;
 
-    ss[i] = dateiNachSpeicher( path_name );
+    if(t)
+      ss[i] = dateiNachSpeicher( path_name );
+    else
+      ss[i] = dateiNachSpeicher( std::string(fn) );
+
     if(ss[i].size() == 0)
       ss[i] = dateiNachSpeicher( dateinamen[i].c_str() );
 
