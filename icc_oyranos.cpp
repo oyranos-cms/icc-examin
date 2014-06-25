@@ -77,6 +77,7 @@ Oyranos icc_oyranos;
 Oyranos::Oyranos()
 {
   DBG_PROG_START
+  oy_profile_from_flags = OY_NO_REPAIR;
   DBG_PROG_ENDE
 }
 
