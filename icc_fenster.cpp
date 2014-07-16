@@ -89,7 +89,7 @@ Fl_Image* iccImageCheck( const char* fname, uchar *header, int len )
     oyImage_s * image = NULL;
     oyImage_FromFile(fname, icc_oyranos.icc_profile_flags, &image, NULL);
     oyConversion_s * cc = oyConversion_CreateFromImage (
-                                image, 0, 0,
+                                image, 0,
                                 p, oyUINT8, oyOPTIONATTRIBUTE_ADVANCED, 0 );
     oyConversion_RunPixels( cc, 0 );
     oyImage_Release( &image );
