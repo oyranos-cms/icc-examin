@@ -1005,7 +1005,7 @@ ICCmeasurement::init_umrechnen                     (void)
 
     /* default to absolute colorimetric  */
     if(oyOptions_FindString( ui_options, "rendering_intent", NULL) == NULL)
-      oyOptions_SetFromText( &ui_options, OY_BEHAVIOUR_STD "rendering_intent",
+      oyOptions_SetFromText( &ui_options, OY_BEHAVIOUR_STD "/rendering_intent",
                              "3", OY_CREATE_NEW );
 
     if ((RGB_measurement_ ||
@@ -1039,7 +1039,7 @@ ICCmeasurement::init_umrechnen                     (void)
         WARN_S("hCOLOUR is empty")
 
       fortschritt(0.1 , 0.2);
-      oyOptions_SetFromText( &abscol, OY_BEHAVIOUR_STD "rendering_intent", "3",
+      oyOptions_SetFromText( &abscol, OY_BEHAVIOUR_STD "/rendering_intent", "3",
                              OY_CREATE_NEW );
       // How sees the profile the measurement colour? -> XYZ
       ctoxyz= oyConversion_CreateBasicPixelsFromBuffers(

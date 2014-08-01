@@ -305,10 +305,8 @@ ICCexamin::start (int argc, char** argv)
 { DBG_PROG_START
 
   /* select profiles matching actual capabilities */
-  oyFilterNode_s * node = oyFilterNode_NewWith( "//" OY_TYPE_STD "/icc", NULL, 0 );
-  const char * reg = oyFilterNode_GetRegistration( node );
-  icc_oyranos.icc_profile_flags = oyICCProfileSelectionFlagsFromRegistration( reg );
-  oyFilterNode_Release( &node );
+  icc_oyranos.icc_profile_flags = oyICCProfileSelectionFlagsFromOptions( 
+                          OY_CMM_STD, "//" OY_TYPE_STD "/icc_color", NULL, 0 );
 
   kurven.resize(MAX_VIEWER);
   punkte.resize(MAX_VIEWER);
@@ -968,7 +966,7 @@ ICCexamin::setzeFensterTitel()
 void ICCexamin::optionsRefresh_( void )
 {
   if(!options_)
-    options_ = oyOptions_ForFilter( "//"OY_TYPE_STD"/icc", 0, 0, 0 );
+    options_ = oyOptions_ForFilter( "//"OY_TYPE_STD"/icc_color", 0, 0, 0 );
 
   char t[4];
   /* should always be a single digit */
@@ -1337,10 +1335,10 @@ oyOptions_s * ICCexamin::options( void )
 
   /* default to absolute colorimetric  */
   if(oyOptions_FindString( ui_options, "rendering_intent", NULL) == NULL)
-    oyOptions_SetFromText( &ui_options, OY_BEHAVIOUR_STD "rendering_intent",
+    oyOptions_SetFromText( &ui_options, OY_BEHAVIOUR_STD "/rendering_intent",
                              "3", OY_CREATE_NEW );
   /* absolute intent in lcms2 is always full adapted to D50 */
-  oyOptions_SetFromText( &ui_options, OY_BEHAVIOUR_STD "adaption_state",
+  oyOptions_SetFromText( &ui_options, OY_BEHAVIOUR_STD "/adaption_state",
                          "0.0", OY_CREATE_NEW );
 
   return ui_options;

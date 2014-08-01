@@ -1182,7 +1182,7 @@ Oyranos::gamutCheckAbstract(Speicher & s, Speicher & abstract,
                 * result = 0;
     oyProfile_s * prof = oyProfile_FromMem( size, (void*)block, 0, 0 );
     int error = oyOptions_MoveInStruct( &opts,
-                      "//"OY_TYPE_STD"proofing_profile",
+                      "//"OY_TYPE_STD"/proofing_profile",
                       (oyStruct_s**)&prof, 0 );
 
     oyOptions_AppendOpts( opts, options );
