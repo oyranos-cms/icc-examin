@@ -1,5 +1,5 @@
 /**
- *  Oyranos is an open source Colour Management System 
+ *  Oyranos is an open source Color Management System 
  * 
  *  @par Copyright:
  *            2009-2012 (C) Kai-Uwe Behrmann
@@ -17,6 +17,7 @@
 
 #include <oyConversion_s.h>
 #include <oyranos_image.h>
+//#include "oyranos_config_internal.h" /* I18N */
 #if defined(HAVE_XCM)
 #include <X11/Xcm/Xcm.h>             /* check for proper X11/XCM support */
 #endif
@@ -29,7 +30,6 @@ oyConversion_s * oyConversion_FromImageForDisplay  (
                                        oyFilterNode_s   ** icc_node,
                                        uint32_t            flags,
                                        oyDATATYPE_e        data_type,
-                                       const char        * cc_name,
                                        oyOptions_s       * cc_options,
                                        oyObject_s          obj );
 oyConversion_s * oyConversion_FromImageFileNameForDisplay  (
@@ -37,7 +37,6 @@ oyConversion_s * oyConversion_FromImageFileNameForDisplay  (
                                        oyFilterNode_s   ** icc_node,
                                        uint32_t            flags,
                                        oyDATATYPE_e        data_type,
-                                       const char        * cc_name,
                                        oyOptions_s       * cc_options,
                                        oyObject_s          obj );
 int  oyDrawScreenImage               ( oyConversion_s    * context,
@@ -55,13 +54,6 @@ oyProfile_s * getEditingProfile      ( );
 
 #ifdef XCM_HAVE_X11
 #include <X11/Xlib.h>
-#endif
-
-#ifdef USE_GETTEXT
-#include "config.h" /* I18N */
-#include "fl_i18n/fl_i18n.H"
-#else
-#define _(text) text
 #endif
 
 #ifndef OY_MIN
