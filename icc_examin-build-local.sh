@@ -1,8 +1,8 @@
 #environment
-export inst=$HOME/.local
+export prefix=$HOME/.local
 export kde_prefix=$HOME/.kde4/
-export PATH=$PATH:$inst//bin
-export LIBDIR=$inst/lib64
+export PATH=$PATH:$prefix/bin
+export LIBDIR=$prefix/lib
 if [ -z $PKG_CONFIG_PATH ]; then
   export PKG_CONFIG_PATH=$LIBDIR/pkgconfig
 else
@@ -10,8 +10,8 @@ else
 fi
 
 # uncomment below the packages you are not interessted in
-# elektra,openicc,basiccolor,sane,LibRaw,compicc,libcmpx,synnefo,kolor-manager,cinepaint
-# export skip=sane,LibRaw,compicc,kolor-manager,cinepaint
+# elektra,sane,LibRaw,compicc,synnefo,kolor-manager,cinepaint
+# export skip=elektra,sane,LibRaw,compicc,synnefo,kolor-manager,cinepaint
 
 #uncomment the below line to see less messages
 # export verbose=0
@@ -19,7 +19,7 @@ fi
 # run main script
 export LD_LIBRARY_PATH=$LIBDIR:$LD_LIBRARY_PATH
 export LDFLAGS=-L$LIBDIR
-./icc_examin-build.sh --prefix=$inst --libdir=$LIBDIR
+./icc_examin-build.sh --prefix=$prefix --libdir=$LIBDIR
 
 #test
 if [ -f "icc_examin/iccexamin" ]; then
