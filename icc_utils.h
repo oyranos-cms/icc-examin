@@ -47,11 +47,11 @@
 
 #include "threads.h"
 #include <new>			/* bad_alloc() */
-#if defined(WIN32)
+#if defined(WIN32) && !defined(HAVE_PTHREAD_H)
 # define iccThreadSelf  GetCurrentThreadId
 # define iccThreadEqual(a,b) ((a) == (b))
-# define iccThreadMutex_m    int
-# define iccThreadMutexInit_m(m) 
+# define iccThreadMutex_m    unsigned long
+# define iccMutexInit_m(m,a) InitializeCriticalSection(m)
 # define icc_popen_m    _popen
 # define icc_pclose_m   _pclose
   char * icc_strdup(const char*);
@@ -72,7 +72,6 @@
 #include <sstream>
 #include <cmath>
 # include <cstring>
-# include "fl_i18n/fl_i18n.H"
 #else
 # define threadGettext(text) text
 # include <string.h>
@@ -88,7 +87,7 @@
 #endif
 #ifdef USE_GETTEXT
 # include <libintl.h>
-# define _(text) threadGettext(text)
+# define _(text) dgettext( "icc_examin", text )
 #else
 # define _(text) text
 #endif
