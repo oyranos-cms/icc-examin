@@ -43,7 +43,7 @@
 #  if HAVE_PTHREAD_H
 // Use POSIX threading...
 
-int fl_create_thread(Fl_Thread& t, void *(*f) (void *), void* p)
+int fl_create_thread(Fl_Thread& t, void * (*f) (void *), void* p)
 {
   pthread_attr_t tattr;
   int ret;
@@ -68,7 +68,7 @@ int fl_create_thread(Fl_Thread& t, void *(*f) (void *), void* p)
   /* only size specified in tattr*/
   ret = pthread_create((pthread_t*)&t, &tattr, f, p); 
 
-#ifdef DEBUG
+#if defined(DEBUG) && !defined(WIN32)
   void *base = NULL;
   size_t size = 0;
   ret = pthread_attr_getstack (&tattr, &base, &size); 
@@ -82,7 +82,7 @@ int fl_create_thread(Fl_Thread& t, void *(*f) (void *), void* p)
 
 #  elif defined(WIN32) && !defined(__WATCOMC__) // Use Windows threading...
 
-int fl_create_thread(Fl_Thread& t, void *(*f) (void *), void* p) {
+int fl_create_thread(Fl_Thread& t, void * (*f) (void *), void* p) {
   t = (Fl_Thread)_beginthread((void( __cdecl * )( void * ))f, 0, p);
   if( t )
     return 0;
@@ -92,7 +92,7 @@ int fl_create_thread(Fl_Thread& t, void *(*f) (void *), void* p) {
 
 #  elif defined(__WATCOMC__)
 
-int fl_create_thread(Fl_Thread& t, void *(*f) (void *), void* p) {
+int fl_create_thread(Fl_Thread& t, void * (*f) (void *), void* p) {
   return t = (Fl_Thread)_beginthread((void(* )( void * ))f, 32000, p);
 }
 #  endif // !HAVE_PTHREAD_H
