@@ -517,7 +517,7 @@ fi
 if [ "$cwdebug" -eq "1" ]; then
   cwdebug="$libdir"
 else
-  if [ `echo $cwdebug | wc -m` -eq 2 ]; then
+  if [ `echo $cwdebug | wc -c` -eq 2 ]; then
     if [ "$cwdebug" -eq "0" ]; then
       unset cwdebug
     fi
@@ -684,7 +684,7 @@ CFLAGS="$CFLAGS $CFLAGS_COMMON"
 CXXFLAGS="$CXXFLAGS $CXXFLAGS_COMMON"
 LDFLAGS="$LDFLAGS $LDFLAGS_COMMON"
 
-if [ -n "$cwdebug" ]; then
+if [ "$cwdebug" = "1" ]; then
   for i in $MAKEFILE_DIR; do
     echo "" >> "$i/makefile"
     echo "cwdebug = $cwdebug" >> "$i/makefile"
