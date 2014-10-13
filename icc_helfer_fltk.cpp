@@ -177,7 +177,7 @@ namespace icc_examin_ns {
 
   // checking variables
   int icc_thread_lock_zaehler_ = 0;
-  Fl_Thread icc_thread_lock_besitzer_ = 0;
+  Fl_Thread icc_thread_lock_besitzer_;
 
   int  awake(void)
   {
@@ -252,7 +252,6 @@ namespace icc_examin_ns {
     //icc_examin->frei(true);
 # endif
 
-    icc_thread_lock_besitzer_ = 0;
     icc_thread_lock_zaehler_ = 0;
 
     // refresh UI
