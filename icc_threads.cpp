@@ -91,11 +91,13 @@ icc_examin_ns::iccLockRelease        ( oyPointer         thread_lock,
         case EINVAL:       err_string = "EINVAL = "; break;
         case ENOMEM:       err_string = "ENOMEM = "; break;
         case EIO:          err_string = "EIO = "; break;
+#if !defined( WIN32 )
         case ELOOP:        err_string = "ELOOP = "; break;
+        case EOVERFLOW:    err_string = "EOVERFLOW = "; break;
+#endif
         case ENAMETOOLONG: err_string = "ENAMETOOLONG = "; break;
         case ENOENT:       err_string = "ENOENT = "; break;
         case ENOTDIR:      err_string = "ENOTDIR = "; break;
-        case EOVERFLOW:    err_string = "EOVERFLOW = "; break;
         case EPERM:        err_string = "EPERM = "; break;
         default:           err_string = "Error = "; break;
       }
