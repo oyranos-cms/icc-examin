@@ -495,7 +495,7 @@ ICCtag::getText                     (std::string text)
     int error = oyProfileTag_Set( tag_, _sig, tag_type,
                                   status, size_, base );
     char **texts = 0;
-    int    texts_n = 0;
+    long texts_n = 0;
     const char * all_text = "";
 
     if(icc_debug)
