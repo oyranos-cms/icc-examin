@@ -14,7 +14,7 @@ fi
 top="`pwd`"
 stop_build=0
 target=iccexamin
-update=0
+
 
 ### Testing the system ###
 
@@ -44,6 +44,13 @@ INTPTR_SIZE=`./ptr-size`
   fi
 echo "$echo_"
 LIB=lib$BARCH
+
+
+UNAME_=`uname`
+if [ $UNAME_ = "MINGW32_NT-6.1" ]; then
+  PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/usr/local/lib/pkgconfig
+fi
+
 
 # get processor count
 echo \
@@ -88,12 +95,13 @@ else
       rm $packet_file
       echo download of $packet_file incomplete
     fi
+    cmake_target="-GMSYS Makefiles"
   fi
 fi
 
 cpus=`./processors`
 if [ -n "$cpus" ]; then
-  MAKE_CPUS="-j $cpus"
+  MAKE_CPUS="-j$cpus"
   echo will add MAKE_CPUS=$MAKE_CPUS
 fi
 
@@ -179,7 +187,7 @@ else
   tar xzf $packet_file
   cd $packet_dir
    make clean
-  ./configure $conf_opts $@
+  CFLAGS=-I./glib-1.2.10 ./configure $conf_opts $@
   make $MAKE_CPUS
   make install
 fi
@@ -195,7 +203,7 @@ if [ $? -gt 0 ]; then
   # FLTK
   echo building FLTK ...
   packet=fltk
-  url=http://ftp.easysw.com/pub/fltk/1.3.0/
+  url=http://www.fltk.org/pub/fltk/1.3.0/
   packet_dir=$packet-1.3.0
   packet_file="$packet_dir"-source.tar.gz
   checksum=44d5d7ba06afdd36ea17da6b4b703ca3
@@ -309,6 +317,53 @@ if [ $? -eq 0 ]; then
   libxml2="$packet:     `pkg-config --modversion $packet`"
 else
   libxml2="$packet version is too old; need at least $packet"
+
+  echo building $packet ...
+  packet_dir=libxml2-2.7.8.win32
+  packet_file="$packet_dir".zip
+  url="ftp://ftp.zlatkovic.com/libxml/"
+  checksum=cc021bcb0b84a5e34c5aeed6df43c10ed4c15d35
+  if [ -f $packet_file ]; then
+    echo $packet_file already here
+  else
+    echo "downloading $url$packet_file"
+    which curl && curl -L "$url$packet_file" -o $packet_file || wget "$url$packet_file"
+    if [ $verbose -gt 0 ]; then sleep 1; fi
+  fi
+  if [ `$SHA1SUM $packet_file | grep $checksum | wc -l` -eq 1 ]; then
+    echo sha1sum for $packet_file passed
+  else
+    echo sha1sum for $packet_file failed
+    exit 1
+  fi
+  packet_ready=0
+  pkg-config --atleast-version=1.0 $packet
+  if [ $? -eq 0 ]; then
+    if [ -d $packet_dir ]; then
+      echo "$packet + $packet_dir found, skipping $packet build and installation"
+      packet_ready=1
+    fi
+  else
+    echo PKG_CONFIG_PATH=$PKG_CONFIG_PATH
+    pkg-config --modversion $packet
+  fi
+  if [ $packet_ready -lt 1 ]; then
+    if [ -d $packet_dir ]; then
+      echo remove $packet_dir
+      if [ $verbose -gt 0 ]; then sleep 1; fi
+      rm -r $packet_dir
+    fi
+    echo unpacking $packet_file ...
+    unzip -q $packet_file
+    cd $packet_dir
+    cp -a bin/* $prefix/bin/
+    cp -a include/* $prefix/include/
+    cp -a lib/* $prefix/lib/
+  fi
+  libpng="$packet:      `pkg-config --modversion $packet`"
+  if [ $verbose -gt 0 ]; then sleep 1; fi
+
+  cd "$top"
 fi
 
 packet=libpng
@@ -322,7 +377,7 @@ else
   echo building $packet ...
   packet_dir=$packet-1.5.2
   packet_file="$packet_dir".tar.gz
-  url="http://sourceforge.net/projects/libpng/files/libpng15/1.5.2/"
+  url="http://sourceforge.net/projects/libpng/files/libpng15/older-releases/1.5.2/"
   checksum=71c30b9b23169a2dac5b0a77954d9d91f8d944fe
   if [ -f $packet_file ]; then
     echo $packet_file already here
@@ -413,9 +468,9 @@ else
     echo unpacking $packet_file ...
     tar xzf $packet_file
     cd $packet_dir
-    make clean
-    ./bootstrap --prefix=$prefix
-    make $MAKE_CPUS
+    which c++
+    ./configure --prefix=$prefix
+    make
     make install
   fi
   cmake="$packet:      `cmake --version`"
@@ -453,59 +508,65 @@ packet_dir=$packet-0.7.1
 packet_file=$packet_dir.tar.gz
 checksum=bcc733cab0b391e5790c05635ab7161d9bdcaffa
 url=http://www.oyranos.org/download/
-if [ `echo "$skip" | grep $packet | wc -l` -ne 0 ]; then
+if [ -f $packet_file ] || [ `echo "$skip" | grep $packet | wc -l` -ne 0 ]; then
+  echo $packet_file skipped
+else
+  echo downloading $url$packet_file
+  which curl && curl -L $url$packet_file -o $packet_file || wget $url$packet_file
+  if [ $verbose -gt 0 ]; then sleep 1; fi
+fi
+if [ `$SHA1SUM $packet_file | grep $checksum | wc -l` -eq 1 ]; then
+  echo sha1sum for $packet_file passed
+else
+  echo sha1sum for $packet_file failed
+  exit 1
+fi
+packet_ready=0
+pkg-config --atleast-version=0.7.0 $packet
+if [ $? -eq 0 ]; then
+  if [ -d $packet_dir ]; then
+    echo "$packet + $packet_dir found, skipping $packet build and installation"
+    packet_ready=1
+  fi
+else
+  echo PKG_CONFIG_PATH=$PKG_CONFIG_PATH
+  pkg-config --modversion $packet
+fi
+if [ $packet_ready -eq 1 ] || [ `echo "$skip" | grep $packet | wc -l` -ne 0 ]; then
   echo $packet skipped
 else
-  if [ ! -f $packet_file ]; then
-    echo downloading $url$packet_file
-    which curl && curl -L $url$packet_file -o $packet_file || wget $url$packet_file
+  if [ -d $packet_dir ]; then
+    echo remove $packet_dir
+    if [ $verbose -gt 0 ]; then sleep 1; fi
+    rm -r $packet_dir
   fi
-  if [ $verbose -gt 0 ]; then sleep 1; fi
-  if [ `$SHA1SUM $packet_file | grep $checksum | wc -l` -eq 1 ]; then
-    echo sha1sum for $packet_file passed
-  else
-    echo sha1sum for $packet_file failed
-    exit 1
+  echo unpacking $packet_file ...
+  tar xzf $packet_file
+  cd $packet_dir
+  make clean
+  if [ $UNAME_ = "MINGW32_NT-6.1" ]; then
+    elektra_args="--disable-hosts"
   fi
-  packet_ready=0
-  pkg-config --atleast-version=0.7.0 $packet
-  if [ $? -eq 0 ]; then
-    if [ -d $packet_dir ]; then
-      echo "$packet + $packet_dir found, skipping $packet build and installation"
-      packet_ready=1
-    fi
-  else
-    echo PKG_CONFIG_PATH=$PKG_CONFIG_PATH
-    pkg-config --modversion $packet
-
-    if [ -d $packet_dir ]; then
-      echo remove $packet_dir
-      if [ $verbose -gt 0 ]; then sleep 1; fi
-      rm -r $packet_dir
-    fi
-    echo unpacking $packet_file ...
-    tar xzf $packet_file
-    cd $packet_dir
-    make clean
-    if [ $UNAME_ = "MINGW32_NT-6.1" ]; then
-      elektra_args="--disable-hosts"
-    fi
-    CFLAGS="$CFLAGS $OSX_ARCH" CXXFLAGS="$CXXFLAGS $OSX_ARCH" LDFLAGS="$LDFLAGS $OSX_ARCH" ./configure $conf_opts $elektra_args $@
-    if [ $UNAME_ = "MINGW32_NT-6.1" ]; then
-      dos2unix src/libelektra/objects
-      patch=elektra-0.7.1_win32-2.patch
-      echo downloading $url$patch
-      which curl && curl -L $url$patch -o $patch || wget $url$patch
-    fi
-    make $MAKE_CPUS
-    make install
-    if [ $UNAME_ = "MINGW32_NT-6.1" ]; then
+  CFLAGS="$CFLAGS $OSX_ARCH" CXXFLAGS="$CXXFLAGS $OSX_ARCH" LDFLAGS="$LDFLAGS $OSX_ARCH" ./configure $conf_opts $elektra_args $@
+  if [ $UNAME_ = "MINGW32_NT-6.1" ]; then
+    patch_fn=elektra-0.7.1_win32-2.patch
+    patch=http://www.oyranos.org/download/$patch_fn
+    echo downloading $patch
+    which curl && curl -L $patch -o elektra-0.7.1_win32-2.patch || wget $patch
+    patch -p1 < $patch_fn
+    rm src/libelektra/exported_symbols.c
+  fi
+  make $MAKE_CPUS
+  if [ $UNAME_ = "MINGW32_NT-6.1" ]; then
+    dos2unix src/libelektra/objects
+  fi
+  make install
+  if [ $UNAME_ = "MINGW32_NT-6.1" ]; then
+    cp -v elektra.pc $libdir/pkgconfig/
+  fi
+  if [ $? = 0 ] && [ $UNAME_ = "Darwin" ]; then
+    if [ -f $libdir/libelektra.dylib ]; then
       cp -v elektra.pc $libdir/pkgconfig/
-    fi
-    if [ $? = 0 ] && [ $UNAME_ = "Darwin" ]; then
-      if [ -f $libdir/libelektra.dylib ]; then
-        cp -v elektra.pc $libdir/pkgconfig/
-      fi
     fi
   fi
 fi
@@ -515,10 +576,9 @@ cd "$top"
 
 # Git
 packet=git
-packet_dir=$packet-1.7.0.2
+packet_dir=$packet-1.9.4
 packet_file=$packet_dir.tar.gz
-url=http://kernel.org/pub/software/scm/git/
-checksum=070ac19c65367ca55138e5e6674d0f35f5113a6b
+url=https://kernel.org/pub/software/scm/git/
 packet_ready=0
 git --version
 if [ $? -eq 0 ]; then
@@ -537,12 +597,6 @@ else
     which curl && curl -L $url/$packet_file -o $packet_file || wget $url/$packet_file
     if [ $verbose -gt 0 ]; then sleep 1; fi
   fi
-  if [ `$SHA1SUM $packet_file | grep $checksum | wc -l` -eq 1 ]; then
-    echo sha1sum for $packet_file passed
-  else
-    echo sha1sum for $packet_file failed
-    exit 1
-  fi
   if [ -d $packet_dir ]; then
     echo remove $packet_dir
     if [ $verbose -gt 0 ]; then sleep 1; fi
@@ -560,13 +614,13 @@ if [ $verbose -gt 0 ]; then sleep 1; fi
 cd "$top"
 
 # Xcolor
-git_repo=xcolor
+git_repo=libxcm
   echo checkout $git_repo
   if [ -d $git_repo ]; then
     cd $git_repo
     git pull
   else
-    git clone git://www.oyranos.org/git/$git_repo $git_repo
+    git clone git://github.com/oyranos-cms/$git_repo $git_repo
     cd $git_repo
     git checkout master
   fi
@@ -744,12 +798,11 @@ if [ $verbose -gt 0 ]; then sleep 2; fi
 
 cd "$top"
 
-
+#http://sourceforge.net/projects/openicc/files/OpenICC-Profiles/icc-profiles-openicc-1.3.0.tar.gz/download
 packet=icc-profiles-openicc
 packet_dir=$packet-1.3.1
 packet_file=$packet_dir.tar.bz2
 checksum=ddcad40c0e4805cb82d727aaea41a498c6a927e4
-#c5004a31b2174d223c4de5f774cd108d2cf80d87
 loc=http://downloads.sourceforge.net/project/openicc/OpenICC-Profiles/
 if [ -f $packet_file ]; then
   echo $packet_file already here
@@ -829,34 +882,37 @@ git_repo=oyranos
     cd $git_repo
     git pull
   else
-    git clone git://www.oyranos.org/git/$git_repo $git_repo
+    git clone git://github.com/oyranos-cms/$git_repo $git_repo
     cd $git_repo
     git checkout master
+    mkdir build
   fi
   echo updated libXcm $update_xcm
   if [ $verbose -gt 0 ]; then sleep 2; fi
   git_version="`cat .git/refs/heads/master`"
+  if [[ ! -d build ]]; then
+    mkdir build
+    update_xcm=1
+  fi
+  cd build
   old_git_version="`cat old_gitrev.txt`"
   update_oyranos=0
-  pkg-config --atleast-version=0.9.4 oyranos
+  pkg-config --atleast-version=0.9 oyranos
   if [ $? -ne 0 ] || [ $update_xcm = 1 ] ||
      [ "$git_version" != "$old_git_version" ]; then
-    echo "xcm `pkg-config --modversion oyranos`"
+    echo "oyranos `pkg-config --modversion oyranos`"
     update_oyranos=1
-    if [[ ! -d build ]]; then
-      mkdir build
-      update=1
-    fi
-    cd build
     make clean
     if [ $UNAME_ = "MINGW32_NT-6.1" ]; then
       x11_skip="--disable-libX11"
+      cmake "$cmake_target" -DCMAKE_C_FLAGS="$CFLAGS $OSX_ARCH" -DCMAKE_CXX_FLAGS="$CXXFLAGS $OSX_ARCH" -DCMAKE_LD_FLAGS="$LDFLAGS $OSX_ARCH" -DCMAKE_INSTALL_PREFIX="$prefix" -DXDG_CONFIG_DIR="$HOME/.local/xdg" -DLIB_SUFFIX=$BARCH -DCMAKE_BUILD_TYPE=debugfull ..
+      make
+    else
+      CFLAGS="$CFLAGS $OSX_ARCH" CXXFLAGS="$CXXFLAGS $OSX_ARCH" LDFLAGS="$LDFLAGS $OSX_ARCH" ../configure $conf_opts $@  $v --enable-debug $x11_skip
+      make $MAKE_CPUS
     fi
-    CFLAGS="$CFLAGS $OSX_ARCH" CXXFLAGS="$CXXFLAGS $OSX_ARCH" LDFLAGS="$LDFLAGS $OSX_ARCH" ../configure $conf_opts $@  $v --enable-debug $x11_skip  --xdgsysdir=$HOME/.local/xdg
-    make $MAKE_CPUS
     make install
     make check
-    cd "$top/$git_repo"
   else
     echo no changes in git $git_version
   fi
@@ -873,7 +929,7 @@ git_repo=xcm
     cd $git_repo
     git pull
   else
-    git clone git://www.oyranos.org/git/$git_repo $git_repo
+    git clone git://github.com/oyranos-cms/$git_repo $git_repo
     cd $git_repo
     git checkout master
   fi
@@ -895,7 +951,7 @@ cd "$top"
 
 # CompIcc
 git_repo=compicc
-if [ $UNAME_ = "Darwin" ] || [ `echo "$skip" | grep $git_repo | wc -l` -ne 0 ]; then
+if [ `echo "$skip" | grep $git_repo | wc -l` -ne 0 ]; then
   echo $git_repo skipped
 else
   echo checkout $git_repo
@@ -939,15 +995,14 @@ else
   fi
   if [[ ! -d build ]]; then
     mkdir build
-    update=1
+    update_oyranos=1
   fi
   if [ $verbose -gt 0 ]; then sleep 2; fi
   git_version="`cat .git/refs/heads/master`"
   old_git_version="`cat old_gitrev.txt`"
-  if [ $update = 1 ] || [ $update_oyranos = 1 ] || [ "$git_version" != "$old_git_version" ]; then
-    update=0
+  if [ $update_oyranos = 1 ] || [ "$git_version" != "$old_git_version" ]; then
     cd build
-    cmake -DCMAKE_INSTALL_PREFIX=$prefix -DLIBRARY_OUTPUT_PATH=$libdir -DCMAKE_BUILD_TYPE=debugfull ..
+    cmake "$cmake_target" -DCMAKE_INSTALL_PREFIX=$prefix -DLIBRARY_OUTPUT_PATH=$libdir -DCMAKE_BUILD_TYPE=debugfull ..
     make
     make install
   else
@@ -977,15 +1032,14 @@ else
   fi
   if [[ ! -d build ]]; then
     mkdir build
-    update=1
+    update_oyranos=1
   fi
   if [ $verbose -gt 0 ]; then sleep 2; fi
   git_version="`cat .git/refs/heads/master`"
   old_git_version="`cat old_gitrev.txt`"
-  if [ $update = 1 ] || [ $update_oyranos = 1 ] || [ "$git_version" != "$old_git_version" ]; then
-    update=0
+  if [ $update_oyranos = 1 ] || [ "$git_version" != "$old_git_version" ]; then
     cd build
-    cmake -DCMAKE_INSTALL_PREFIX=$prefix -DCMAKE_BUILD_TYPE=debugfull ..
+    cmake "$cmake_target" -DCMAKE_INSTALL_PREFIX=$prefix -DCMAKE_BUILD_TYPE=debugfull ..
     make
     make install
   else
@@ -1001,7 +1055,7 @@ cd "$top"
 
 # kolor-manager
 git_repo=kolor-manager
-if [ $UNAME_ = "Darwin" ] || [ `echo "$skip" | grep $git_repo | wc -l` -ne 0 ]; then
+if [ `echo "$skip" | grep $git_repo | wc -l` -ne 0 ]; then
   echo $git_repo skipped
 else
   echo checkout $git_repo
@@ -1015,15 +1069,14 @@ else
   fi
   if [[ ! -d build ]]; then
     mkdir build
-    update=1
+    update_oyranos=1
   fi
   if [ $verbose -gt 0 ]; then sleep 2; fi
   git_version="`cat .git/refs/heads/master`"
   old_git_version="`cat old_gitrev.txt`"
-  if [ $update = 1 ] || [ $update_oyranos = 1 ] || [ "$git_version" != "$old_git_version" ]; then
-    update=0
+  if [ $update_oyranos = 1 ] || [ "$git_version" != "$old_git_version" ]; then
     cd build
-    cmake -DCMAKE_INSTALL_PREFIX=$kde_prefix -DCMAKE_BUILD_TYPE=debugfull ..
+    cmake "$cmake_target" -DCMAKE_INSTALL_PREFIX=$kde_prefix -DCMAKE_BUILD_TYPE=debugfull ..
     make
     make install
     kbuildsycoca4
@@ -1039,7 +1092,7 @@ cd "$top"
 
 
 # cinepaint
-git_repo=cinepaint
+git_repo=cinepaint_ng
 if [ `echo "$skip" | grep cinepaint | wc -l` -ne 0 ]; then
   echo cinepaint skipped
 else
@@ -1048,7 +1101,7 @@ else
     cd $git_repo
     git pull
   else
-    git clone git://www.oyranos.org/git/$git_repo $git_repo
+    git clone git://gitorious.org/cinepaint_ng/$git_repo $git_repo
     cd $git_repo
     git checkout master
   fi
@@ -1076,13 +1129,13 @@ cd "$top"
 
 
 # ICC Examin
-git_repo=icc_examin
+git_repo=icc-examin
   echo checkout $git_repo
   if [ -d $git_repo ]; then
     cd $git_repo
     git pull
   else
-    git clone git://www.oyranos.org/git/$git_repo $git_repo
+    git clone git://github.com/oyranos-cms/$git_repo $git_repo
     cd $git_repo
     git checkout master
   fi
