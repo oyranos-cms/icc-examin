@@ -41,7 +41,11 @@ int icc_debug = 1;
 std::ostringstream debug_s_;
 #ifdef HAVE_PTHREAD_H
 pthread_mutex_t debug_s_mutex_        = PTHREAD_MUTEX_INITIALIZER;
-Fl_Thread       debug_s_mutex_thread_ = (Fl_Thread)THREAD_HAUPT;
+Fl_Thread       debug_s_mutex_thread_
+#if !defined(WIN32)
+                                      = (Fl_Thread)THREAD_HAUPT
+#endif
+				      ;
 int             debug_s_mutex_threads_ = 0;
 #endif
 

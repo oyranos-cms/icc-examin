@@ -52,7 +52,7 @@ class ThreadDaten
     Fl_Thread pth;
     iccThreadMutex_m mutex_;
 protected:
-    void   init() { frei_ = true; zahl_ = 0; pth = 0; report_owner = 0;
+    void   init() { frei_ = true; zahl_ = 0; report_owner = 0;
                     iccThreadMutexInit_m( &mutex_, 0 ); }
     ThreadDaten() { init(); }
     ~ThreadDaten() {;}
