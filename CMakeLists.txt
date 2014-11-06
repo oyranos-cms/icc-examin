@@ -31,6 +31,7 @@ SET( ICC_EXAMIN_V "\"${ICCEXAMIN_VERSION_MAJOR}.${ICCEXAMIN_VERSION_MINOR}${ICCE
 
 IF( ${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
   SET(PLATFORM "OSX")
+  SET( gamma_view icc_helfer_osx.cpp )
 ELSEIF( ${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   SET(PLATFORM "Linux")
 ELSE( ${CMAKE_SYSTEM_NAME} MATCHES "Linux")
@@ -59,27 +60,41 @@ FIND_PACKAGE( X11 )
 IF(X11_FOUND)
   INCLUDE_DIRECTORIES( ${X11_INCLUDE_DIRS} )
   LINK_DIRECTORIES( ${X11_LIBRARY_DIRS} )
-  SET( HAVE_X11 1 )
+  SET( HAVE_X TRUE )
+  SET( HAVE_X11 TRUE )
+  SET( gamma_view icc_helfer_x.cpp )
+  IF(X11_Xrandr_FOUND)
+    SET( HAVE_XRANDR TRUE )
+  ENDIF()
+  IF(X11_xf86vmode_FOUND)
+    SET( HAVE_XF86VMODE TRUE )
+  ENDIF()
+  IF(X11_Xinerama_FOUND)
+    SET( HAVE_XIN TRUE )
+  ENDIF()
+  IF(X11_Xpm_FOUND)
+    SET( HAVE_Xpm TRUE )
+  ENDIF()
 ENDIF()
 
 FIND_PACKAGE( FLTK REQUIRED )
 IF(FLTK_FOUND)
-  SET( HAVE_FLTK 1 )
-  SET( HAVE_FLTK_UTF8 1 )
+  SET( HAVE_FLTK TRUE )
+  SET( HAVE_FLTK_UTF8 TRUE )
 ENDIF()
 INCLUDE_DIRECTORIES( ${FLTK_INCLUDE_DIRS} )
 LINK_DIRECTORIES( ${FLTK_LIBRARY_DIRS} )
 
 FIND_PACKAGE( OpenGL )
 IF(OPENGL_FOUND)
-  SET( HAVE_OPENGL 1 )
+  SET( HAVE_OPENGL TRUE )
 ENDIF()
 INCLUDE_DIRECTORIES( ${OPENGL_INCLUDE_DIR} )
 LINK_DIRECTORIES( ${OPENGL_LIBRARY_DIRS} )
 
 FIND_PACKAGE( FTGL )
 IF(FTGL_FOUND)
-  SET( HAVE_FTGL 1 )
+  SET( HAVE_FTGL TRUE )
 ENDIF()
 INCLUDE_DIRECTORIES( ${FTGL_INCLUDE_DIRS} )
 LINK_DIRECTORIES( ${FTGL_LIBRARY_DIRS} )
@@ -94,8 +109,8 @@ LINK_DIRECTORIES( ${FREETYPE_LIBRARY_DIRS} )
 
 FIND_PACKAGE( Threads )
 IF(Threads_FOUND)
-  SET( HAVE_PTHREAD 1 )
-  SET( HAVE_PTHREAD_H 1 )
+  SET( HAVE_PTHREAD TRUE )
+  SET( HAVE_PTHREAD_H TRUE )
 ENDIF()
 
 FIND_PACKAGE( GetText )
@@ -130,6 +145,7 @@ SET( COMMON_CPPFILES
         bsp/bspUtility.c
         fl_i18n/fl_i18n.cxx
         Flmm/Flmm_Tabs.cxx
+        ${gamma_view}
 	icc_cgats_filter.cpp
 	icc_draw.cpp
 	icc_examin.cpp
@@ -172,17 +188,21 @@ SET( icc_examin_SRCS
      ${COMMON_CPPFILES}
    )
 
-ADD_EXECUTABLE( icc_examin ${icc_examin_SRCS} )
-TARGET_LINK_LIBRARIES ( icc_examin oyranos ${EXTRA_LIBS}
+ADD_EXECUTABLE( iccexamin ${icc_examin_SRCS} )
+TARGET_LINK_LIBRARIES ( iccexamin oyranos ${EXTRA_LIBS}
                  ${FLTK_LIBRARIES}
                  ${OYRANOS_LIBRARIES}
                  ${XCM_LIBRARIES}
                  ${FTGL_LIBRARIES}
                  ${FREETYPE_LIBRARIES}
                  ${OPENGL_LIBRARIES}
+                 ${X11_Xinerama_LIB}
+                 ${X11_Xpm_LIB}
+                 ${X11_Xrandr_LIB}
+                 ${X11_Xxf86vm_LIB}
                  ${CMAKE_THREAD_LIBS_INIT} )
-INSTALL( TARGETS icc_examin DESTINATION bin )
-INSTALL( FILES icc_examin-applet.desktop DESTINATION share/applications )
+INSTALL( TARGETS iccexamin DESTINATION bin )
+INSTALL( FILES icc_examin.desktop DESTINATION share/applications )
 INSTALL( FILES icc_examin.svg DESTINATION share/pixmaps )
 
 # i18n
