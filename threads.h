@@ -43,8 +43,10 @@
 
 #include "config.h"
 
-#if !WIN32
+#if !defined(_WIN32)
+#ifndef HAVE_PTHREAD_H
 #define HAVE_PTHREAD_H 1
+#endif
 #endif
 
 #  if HAVE_PTHREAD_H
@@ -57,7 +59,7 @@ typedef pthread_t Fl_Thread;
 
 int fl_create_thread(Fl_Thread& t, void *(*f) (void *), void* p);
 
-#  elif defined(WIN32) && !defined(__WATCOMC__) // Use Windows threading...
+#  elif defined(_WIN32) && !defined(__WATCOMC__) // Use Windows threading...
 
 #    include <windows.h>
 #    include <process.h>
