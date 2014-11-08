@@ -1,6 +1,6 @@
 CMAKE_MINIMUM_REQUIRED (VERSION 2.6)
 
-PROJECT (ICC_Examin)
+PROJECT (icc-examin)
 
 SET (ICCEXAMIN_VERSION_MAJOR 0)
 SET (ICCEXAMIN_VERSION_MINOR 5)
@@ -14,6 +14,14 @@ set (PACKAGE_DESCRIPTION "ICC Examin is a small utility (unix name: iccexamin) f
 
 #additional cmake modules for loading libraries
 SET (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
+
+CONFIGURE_FILE(
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/${PROJECT_NAME}Uninstall.cmake.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/cmake/${PROJECT_NAME}Uninstall.cmake"
+    IMMEDIATE @ONLY)
+ADD_CUSTOM_TARGET( uninstall
+	"${CMAKE_COMMAND}" -P "${CMAKE_CURRENT_BINARY_DIR}/cmake/${PROJECT_NAME}Uninstall.cmake")
+
 
 IF (NOT CMAKE_BUILD_TYPE)
 	SET(CMAKE_BUILD_TYPE RelWithDebInfo CACHE STRING "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel." FORCE)
