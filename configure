@@ -3,7 +3,7 @@
 TARGET=icc-examin
 DEBTARGET=icc-examin
 TARGET_NAME="ICC Examin"
-BINTARGET="`echo $TARGET | sed s/_//g | sed s/-//g
+BINTARGET="`echo $TARGET | sed s/_//g | sed s/-//g`"
 ERROR=0
 
 ROOT_DIR="$0"
