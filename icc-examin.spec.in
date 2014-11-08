@@ -141,7 +141,7 @@ make %{_smp_mflags} || make
 
 %install
 make DESTDIR=%{buildroot} install
-%find_lang icc_examin       # generate a special file list
+%find_lang icc-examin       # generate a special file list
 %if 0%{?suse_version} > 1010
 find %{buildroot} -type f -name "*.ttf" -delete -print
 %suse_update_desktop_file -n  iccexamin # some openSUSE magic

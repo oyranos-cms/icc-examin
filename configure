@@ -1,9 +1,9 @@
 #!/bin/sh
 
-TARGET=icc_examin
+TARGET=icc-examin
 DEBTARGET=icc-examin
 TARGET_NAME="ICC Examin"
-BINTARGET="`echo $TARGET | sed s/_//g`"
+BINTARGET="`echo $TARGET | sed s/_//g | sed s/-//g
 ERROR=0
 
 ROOT_DIR="$0"
@@ -16,7 +16,7 @@ CONF_TEMP_SH=config.tmp.sh
 CONF_LOG=config.log
 CONF_I18N=fl_i18n/makefile
 SPEC="$DEBTARGET".spec
-VERS_H="$TARGET"_version.h
+VERS_H=icc_examin_version.h
 OSX_SCRIPT="$TARGET_NAME".sh
 zeile="$0 $@"
 MAKEFILE_DIR=". fl_i18n bsp"; export MAKEFILE_DIR
