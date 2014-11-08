@@ -498,7 +498,7 @@ threadGettext( const char* text)
 {
   const char *translation = text;
 #ifdef USE_GETTEXT
-# ifdef HAVE_PTHREAD_H
+# if defined(HAVE_PTHREAD_H) && defined(USE_THREADS)
   static pthread_mutex_t translation_mutex_         = PTHREAD_MUTEX_INITIALIZER;
   static Fl_Thread       translation_mutex_thread_  = (Fl_Thread)pthread_self();
   static int             translation_mutex_threads_ = 0;

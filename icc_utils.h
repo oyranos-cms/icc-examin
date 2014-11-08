@@ -87,7 +87,8 @@
 #endif
 #ifdef USE_GETTEXT
 # include <libintl.h>
-# define _(text) dgettext( "icc_examin", text )
+# define TEXTDOMAIN "icc-examin"
+# define _(text) dgettext( TEXTDOMAIN, text )
 #else
 # define _(text) text
 #endif

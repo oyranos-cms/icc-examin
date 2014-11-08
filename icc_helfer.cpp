@@ -1645,7 +1645,7 @@ setI18N( const char *exename )
     {
       if(exename && strlen(exename))
       {
-        dname = "icc_examin";
+        dname = TEXTDOMAIN;
         is_path = fl_search_locale_path (num_paths, locale_paths, "de", dname );
       }
       if(is_path >= 0) {

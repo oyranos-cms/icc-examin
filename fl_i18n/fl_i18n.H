@@ -31,9 +31,10 @@
 #ifndef FL_I18N_H
 #define FL_I18N_H
 
+#include "config.h"
 #define FL_I18N_VERSION 101
 
-#if defined(WIN32) && !defined(__MINGW32__)
+#if defined(_WIN32) && !defined(__MINGW32__)
 #define USE_GETTEXT 1
 #endif
 
