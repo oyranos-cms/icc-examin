@@ -72,7 +72,7 @@ LIBNAME = lib$(TARGET).a
 #endif
 
 INCL_DEP = $(INCL) $(FLTK_H) $(ALL_SOURCEFILES)
-ALL_INCL = $(INCL) $(FLTK_H) 
+ALL_INCL = -I../ $(INCL) $(FLTK_H) 
 
 CXXFLAGS_=$(OPTS) $(ALL_INCL) $(CXXFLAGS)
 CFLAG_   = $(OPTS) $(ALL_INCL) $(CFLAGS)
@@ -144,7 +144,7 @@ C := $(shell date +%C)
 MTIME   := $(shell date +%Y%m%e.%H%M%S | sed s/$C//)
 
 
-all:	dynamic
+all:	$(LIBNAME)
 	
 BASE =  
 	
