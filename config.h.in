@@ -1,0 +1,53 @@
+/* automatically generated file by configure - do not edit */
+#ifndef ICCEXAMIN_CONFIG_H
+#define ICCEXAMIN_CONFIG_H
+
+#define PLATFORM @PLATFORM@
+#cmakedefine UNIX 
+#cmakedefine APPLE
+#cmakedefine BSD 
+/* #cmakedefine _WIN32 */ /* already defined by the system */
+#cmakedefine HAVE_OPENMP
+#cmakedefine HAVE_C
+#cmakedefine HAVE_M
+#cmakedefine HAVE_PTHREAD
+#cmakedefine HAVE_XCM
+#cmakedefine01 HAVE_X
+#cmakedefine01 HAVE_X11
+#cmakedefine HAVE_XF86VMODE
+#cmakedefine HAVE_XIN
+#cmakedefine HAVE_XRANDR
+#cmakedefine01 HAVE_Xpm
+#cmakedefine01 HAVE_FLTK_UTF8
+#cmakedefine01 HAVE_FLTK
+#cmakedefine HAVE_FONTCONFIG
+#cmakedefine HAVE_FTGL
+#cmakedefine HAVE_QT
+#cmakedefine USE_GETTEXT
+#cmakedefine HAVE_DIRENT_H
+#cmakedefine HAVE_LOCALE_H
+#cmakedefine HAVE_INTTYPES_H
+#cmakedefine01 HAVE_PTHREAD_H
+#cmakedefine HAVE_STDINT_H
+#ifndef DEBUG 
+#cmakedefine01 DEBUG
+#endif
+
+/*#define HAVE_XIN 1
+#define HAVE_GLU 1
+#define HAVE_Xpm 1
+#define HAVE_Xext 1
+#define HAVE_Xinerama 1
+#define HAVE_Xxf86vm 1
+#define HAVE_Xrandr 1
+#define HAVE_X11 1
+#define HAVE_X 1
+#define FTGL_INLCUDE_VER 20100 */
+#define PREFIX         "@CMAKE_INSTALL_PREFIX@"
+#define ICCEXAMIN_DATADIR        "@CMAKE_INSTALL_PREFIX@/share"
+#define ICCEXAMIN_LOCALEDIR      "@CMAKE_INSTALL_PREFIX@/share/locale"
+#define PIXMAPDIR      "@CMAKE_INSTALL_PREFIX@/share/pixmaps"
+#define SRCDIR         "@CMAKE_SOURCE_DIR@"
+#define SRC_LOCALEDIR  "@CMAKE_BINARY_DIR@/po"
+
+#endif /* ICCEXAMIN_CONFIG_H */

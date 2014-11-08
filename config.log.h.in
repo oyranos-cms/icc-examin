@@ -1,0 +1,21 @@
+/* automatically generated file by configure - do not edit */
+#ifndef CONFIG_LOG_H
+#define CONFIG_LOG_H
+
+#include <oyranos_version.h>
+
+const char * icc_config_log_=" \
+PLATFORM = @PLATFORM@\
+prefix =                @CMAKE_INSTALL_PREFIX@ \n\
+ \n\
+################################################################ \n\
+#                       Configuration                          # \n\
+prefix          =       @CMAKE_INSTALL_PREFIX@ \n\
+CC              =       @CMAKE_C_COMPILER@ \n\
+CXX             =       @CMAKE_CXX_COMPILER@ \n\
+CMAKE_BUILD_TYPE=       @CMAKE_BUILD_TYPE@ \n\
+OYRANOS         =       "OYRANOS_VERSION_NAME" \n\
+################################################################ \n\
+ \n\
+";
+#endif /* CONFIG_LOG_H */
