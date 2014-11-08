@@ -45,7 +45,7 @@
 #ifdef HAVE_XIN
   #include <X11/extensions/Xinerama.h>
 #endif
-#if defined( HAVE_XRANDR )
+#if defined( HAVE_XRANDR ) || defined(HAVE_Xrandr)
   # include <X11/extensions/Xrandr.h>
 #endif
 #ifdef HAVE_FLTK
@@ -171,7 +171,7 @@ leseGrafikKartenGamma        (std::string display_name,
   static int xrr_version = -1;
   int gamma_size = 0;
   int crtc = 0;
-# if defined(HAVE_XRANDR)
+# if defined(HAVE_XRANDR) || defined(HAVE_Xrandr)
   int major_versionp = 0;
   int minor_versionp = 0;
   int i, n = 0;
@@ -285,7 +285,7 @@ leseGrafikKartenGamma        (std::string display_name,
     DBG_PROG_S( "no gammagradient information obtained" );
 
   DBG_PROG_V( size )
-# if defined(HAVE_XRANDR)
+# if defined(HAVE_XRANDR) || defined(HAVE_Xrandr)
   if(xrr_version >= 102 && gamma_size)
   {
     size = gamma_size;
