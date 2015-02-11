@@ -48,6 +48,11 @@
 
 #include <oyProfiles_s.h>
 
+#ifdef HAVE_X11
+#include <X11/Xlib.h>
+#include <X11/Xatom.h>
+#endif
+
 #ifdef DEBUG 
 #define DBG_PLUG_V(x)  DBG_PROG_V(x) 
 #define DBG_PLUG_S(x)  DBG_PROG_S(x)
