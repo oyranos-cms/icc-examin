@@ -762,10 +762,9 @@ if [ -z "$CP_CONFIG" ]; then
     CP_FLAGS="cinepainttool --cflags"
     CP_LIBS="cinepainttool --libs"
     CP_VERSION=`cinepainttool --version`
-    CP_N_VERSION="`cinepainttool --version | sed 's/\.// ; s/-.//'`"
-    test "$CP_N_VERSION" != `echo $CP_N_VERSION | sed 's/\.//'` && CP_N_VERSION="`cinepainttool --version | sed 's/\.// ; s/\..//'`"
+    CP_N_VERSION="`cinepainttool --version | sed 's/\./ /g' | awk '{print $2*100+$1*10000+$3}'`"
     echo_="Gtk CinePaint $CP_VERSION    detected"; echo "$echo_" >> $CONF_LOG; echo "$echo_"
-    cp_reqired=22
+    cp_reqired=220
     if [ "$CP_N_VERSION" -ge $cp_reqired ]; then
       echo "CINEPAINT = icc_examin_cp" >> $CONF
       CP_DIR="`$CP_CONFIG --install-dir`"
