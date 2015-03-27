@@ -60,6 +60,10 @@ FIND_PACKAGE( Oyranos REQUIRED )
 INCLUDE_DIRECTORIES( ${OYRANOS_INCLUDE_DIRS} )
 LINK_DIRECTORIES( ${OYRANOS_LIBRARY_DIRS} )
 
+FIND_PACKAGE( Cinepaint )
+INCLUDE_DIRECTORIES( ${CINEPAINT_INCLUDE_DIRS} )
+#LINK_DIRECTORIES( ${CINEPAINT_LIBRARIES} )
+
 FIND_PACKAGE( Xcm REQUIRED )
 INCLUDE_DIRECTORIES( ${XCM_INCLUDE_DIRS} )
 LINK_DIRECTORIES( ${XCM_LIBRARY_DIRS} )
@@ -168,7 +172,6 @@ SET( COMMON_CPPFILES
         icc_helfer_fltk.cpp
 	icc_info.cpp
 	icc_kette.cpp
-	icc_main.cpp
 	icc_measurement.cpp
 	icc_model_observer.cpp
 	icc_oyranos.cpp
@@ -196,7 +199,7 @@ SET( icc_examin_SRCS
      ${COMMON_CPPFILES}
    )
 
-ADD_EXECUTABLE( iccexamin ${icc_examin_SRCS} )
+ADD_EXECUTABLE( iccexamin ${icc_examin_SRCS} icc_main.cpp )
 TARGET_LINK_LIBRARIES ( iccexamin oyranos ${EXTRA_LIBS}
                  ${FLTK_LIBRARIES}
                  ${OYRANOS_LIBRARIES}
@@ -212,6 +215,24 @@ TARGET_LINK_LIBRARIES ( iccexamin oyranos ${EXTRA_LIBS}
 INSTALL( TARGETS iccexamin DESTINATION bin )
 INSTALL( FILES icc_examin.desktop DESTINATION share/applications )
 INSTALL( FILES icc_examin.svg DESTINATION share/pixmaps )
+INSTALL( FILES iccexamin.1 DESTINATION share/man/man1 )
+
+IF( CINEPAINT_FOUND )
+  ADD_EXECUTABLE( icc_examin_cp ${icc_examin_SRCS} icc_cinepaint.cpp )
+  TARGET_LINK_LIBRARIES ( icc_examin_cp oyranos ${CINEPAINT_LIBRARIES}
+                 ${FLTK_LIBRARIES}
+                 ${OYRANOS_LIBRARIES}
+                 ${XCM_LIBRARIES}
+                 ${FTGL_LIBRARIES}
+                 ${FREETYPE_LIBRARIES}
+                 ${OPENGL_LIBRARIES}
+                 ${X11_Xinerama_LIB}
+                 ${X11_Xpm_LIB}
+                 ${X11_Xrandr_LIB}
+                 ${X11_Xxf86vm_LIB}
+                 ${CMAKE_THREAD_LIBS_INIT} )
+  INSTALL( TARGETS icc_examin_cp DESTINATION ${CINEPAINT_INSTALL_PATH} )
+ENDIF()
 
 # i18n
 IF( GETTEXT_FOUND )
