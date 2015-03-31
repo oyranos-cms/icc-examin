@@ -1,4 +1,4 @@
-#/bin/sh
+#!/bin/sh -xv
 
 if [ $# -gt 1 ] ; then
   if [ $1 = "-h" ] || [ $1 = "--help" ] || [ $1 = "-?" ]; then
@@ -34,7 +34,10 @@ INTPTR_SIZE=`./ptr-size`
     echo_="32-bit build            detected"
   elif [ $INTPTR_SIZE -gt 4 ]; then
     echo_="64-bit build            detected"
-    BARCH=64
+    if [ -n "$SKIPBARCH" ]; then
+      BARCH=64
+      echo_="ignore 64-bit build"
+    fi
     FPIC=-fPIC
     test -n "$ECHO" && $ECHO "BUILD_64 = 1" >> $CONF
   elif [ $INTPTR_SIZE -ne 0 ]; then
@@ -502,78 +505,6 @@ if [ $stop_build -gt 0 ]; then
 fi
 if [ $verbose -gt 0 ]; then sleep 1; fi
 
-# Elektra
-packet=elektra
-packet_dir=$packet-0.7.1
-packet_file=$packet_dir.tar.gz
-checksum=bcc733cab0b391e5790c05635ab7161d9bdcaffa
-url=http://www.oyranos.org/download/
-if [ -f $packet_file ] || [ `echo "$skip" | grep $packet | wc -l` -ne 0 ]; then
-  echo $packet_file skipped
-else
-  echo downloading $url$packet_file
-  which curl && curl -L $url$packet_file -o $packet_file || wget $url$packet_file
-  if [ $verbose -gt 0 ]; then sleep 1; fi
-fi
-if [ `$SHA1SUM $packet_file | grep $checksum | wc -l` -eq 1 ]; then
-  echo sha1sum for $packet_file passed
-else
-  echo sha1sum for $packet_file failed
-  exit 1
-fi
-packet_ready=0
-pkg-config --atleast-version=0.7.0 $packet
-if [ $? -eq 0 ]; then
-  if [ -d $packet_dir ]; then
-    echo "$packet + $packet_dir found, skipping $packet build and installation"
-    packet_ready=1
-  fi
-else
-  echo PKG_CONFIG_PATH=$PKG_CONFIG_PATH
-  pkg-config --modversion $packet
-fi
-if [ $packet_ready -eq 1 ] || [ `echo "$skip" | grep $packet | wc -l` -ne 0 ]; then
-  echo $packet skipped
-else
-  if [ -d $packet_dir ]; then
-    echo remove $packet_dir
-    if [ $verbose -gt 0 ]; then sleep 1; fi
-    rm -r $packet_dir
-  fi
-  echo unpacking $packet_file ...
-  tar xzf $packet_file
-  cd $packet_dir
-  make clean
-  if [ $UNAME_ = "MINGW32_NT-6.1" ]; then
-    elektra_args="--disable-hosts"
-  fi
-  CFLAGS="$CFLAGS $OSX_ARCH" CXXFLAGS="$CXXFLAGS $OSX_ARCH" LDFLAGS="$LDFLAGS $OSX_ARCH" ./configure $conf_opts $elektra_args $@
-  if [ $UNAME_ = "MINGW32_NT-6.1" ]; then
-    patch_fn=elektra-0.7.1_win32-2.patch
-    patch=http://www.oyranos.org/download/$patch_fn
-    echo downloading $patch
-    which curl && curl -L $patch -o elektra-0.7.1_win32-2.patch || wget $patch
-    patch -p1 < $patch_fn
-    rm src/libelektra/exported_symbols.c
-  fi
-  make $MAKE_CPUS
-  if [ $UNAME_ = "MINGW32_NT-6.1" ]; then
-    dos2unix src/libelektra/objects
-  fi
-  make install
-  if [ $UNAME_ = "MINGW32_NT-6.1" ]; then
-    cp -v elektra.pc $libdir/pkgconfig/
-  fi
-  if [ $? = 0 ] && [ $UNAME_ = "Darwin" ]; then
-    if [ -f $libdir/libelektra.dylib ]; then
-      cp -v elektra.pc $libdir/pkgconfig/
-    fi
-  fi
-fi
-if [ $verbose -gt 0 ]; then sleep 1; fi
-
-cd "$top"
-
 # Git
 packet=git
 packet_dir=$packet-1.9.4
@@ -609,6 +540,112 @@ else
   make $MAKE_CPUS
   make install
 fi
+if [ $verbose -gt 0 ]; then sleep 1; fi
+
+cd "$top"
+
+# yajl
+git_repo=yajl
+  echo checkout $git_repo
+  if [ -d $git_repo ]; then
+    cd $git_repo
+    git pull
+  else
+    git clone git://github.com/lloyd/$git_repo $git_repo
+    cd $git_repo
+    git checkout master
+    url=https://build.opensuse.org/source/home:bekun:devel/libyajl
+    packet_file=lib_suffix.patch
+    checksum=6a884be9da38be55afeab2c83759867bc2a73bff
+    echo download and apply $packet_file
+    if [ -f $packet_file ]; then
+      a=1
+    else
+      which curl && curl -L https://build.opensuse.org/source/home:bekun:devel/libyajl/libyajl-lib_suffix.patch?rev=074e0464184ff3fb87ceafb5149c600f -o $packet_file || wget $url/$packet_file
+    fi
+    if [ `$SHA1SUM $packet_file | grep $checksum | wc -l` -eq 1 ]; then
+      echo sha1sum for $packet_file passed
+    else
+      echo sha1sum for $packet_file failed
+      exit 1
+    fi
+    patch -p1 < $packet_file
+
+    mkdir build
+  fi
+  update_yajl=0
+  if [ $verbose -gt 0 ]; then sleep 2; fi
+  git_version="`cat .git/refs/heads/master`"
+  if [[ ! -d build ]]; then
+    mkdir build
+    update_yajl=1
+  fi
+  cd build
+  old_git_version="`cat old_gitrev.txt`"
+  update_oyranos=0
+  pkg-config --atleast-version=0.8 $git_repo
+  if [ $? -ne 0 ] || [ $update_yajl = 1 ] ||
+     [ "$git_version" != "$old_git_version" ]; then
+    echo "$git_repo `pkg-config --modversion $git_repo`"
+    update_oyranos=1
+    cmake "$cmake_target" -DCMAKE_C_FLAGS="$CFLAGS $OSX_ARCH" -DCMAKE_CXX_FLAGS="$CXXFLAGS $OSX_ARCH" -DCMAKE_LD_FLAGS="$LDFLAGS $OSX_ARCH" -DCMAKE_INSTALL_PREFIX="$prefix" -DLIB_SUFFIX=$BARCH -DCMAKE_BUILD_TYPE=debugfull ..
+    make clean
+    if [ $UNAME_ = "MINGW32_NT-6.1" ]; then
+      make
+    else
+      make $MAKE_CPUS
+    fi
+    make install
+    make check
+  else
+    echo no changes in git $git_version
+  fi
+  echo "$git_version" > old_gitrev.txt
+if [ $verbose -gt 0 ]; then sleep 1; fi
+
+cd "$top"
+
+# Elektra
+git_repo=libelektra
+  echo checkout $git_repo
+  if [ -d $git_repo ]; then
+    cd $git_repo
+    git pull
+  else
+    git clone git://github.com/ElektraInitiative/$git_repo $git_repo
+    cd $git_repo
+    git checkout master
+    mkdir build
+  fi
+  update_xcm=0
+  if [ $verbose -gt 0 ]; then sleep 2; fi
+  git_version="`cat .git/refs/heads/master`"
+  if [[ ! -d build ]]; then
+    mkdir build
+    update_xcm=1
+  fi
+  cd build
+  old_git_version="`cat old_gitrev.txt`"
+  update_oyranos=0
+  pkg-config --atleast-version=0.8 elektra
+  if [ $? -ne 0 ] || [ $update_xcm = 1 ] ||
+     [ "$git_version" != "$old_git_version" ]; then
+    echo "elektra `pkg-config --modversion elektra`"
+    update_oyranos=1
+    make clean
+    if [ $UNAME_ = "MINGW32_NT-6.1" ]; then
+      cmake "$cmake_target" -DCMAKE_C_FLAGS="$CFLAGS $OSX_ARCH" -DCMAKE_CXX_FLAGS="$CXXFLAGS $OSX_ARCH" -DCMAKE_LD_FLAGS="$LDFLAGS $OSX_ARCH" -DCMAKE_INSTALL_PREFIX="$prefix" -DXDG_CONFIG_DIR="$HOME/.local/xdg" -DLIB_SUFFIX=$BARCH -DCMAKE_BUILD_TYPE=debugfull ..
+      make
+    else
+      cmake "$cmake_target" -DCMAKE_C_FLAGS="$CFLAGS $OSX_ARCH" -DCMAKE_CXX_FLAGS="$CXXFLAGS $OSX_ARCH" -DCMAKE_LD_FLAGS="$LDFLAGS $OSX_ARCH" -DCMAKE_INSTALL_PREFIX="$prefix" -DLIB_SUFFIX=$BARCH -DCMAKE_BUILD_TYPE=debugfull -DINSTALL_SYSTEM_FILES=false -DBUILD_TESTING=false -DENABLE_TESTING=OFF -DTOOLS=ALL -DPLUGINS="dump;resolver;yajl;rename;struct" ..
+      make $MAKE_CPUS
+    fi
+    make install
+    make check
+  else
+    echo no changes in git $git_version
+  fi
+  echo "$git_version" > old_gitrev.txt
 if [ $verbose -gt 0 ]; then sleep 1; fi
 
 cd "$top"
