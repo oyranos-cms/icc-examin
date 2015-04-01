@@ -1,4 +1,5 @@
-#!/bin/sh -xv
+#!/bin/sh
+# -xv
 
 if [ $# -gt 1 ] ; then
   if [ $1 = "-h" ] || [ $1 = "--help" ] || [ $1 = "-?" ]; then
@@ -10,6 +11,18 @@ if [ $# -gt 1 ] ; then
     exit 0
   fi
 fi
+
+
+# options
+
+# uncomment below the packages you are not interessted in
+# elektra,openicc,basiccolor,sane,LibRaw,compicc,synnefo,kolor-manager,cinepaint
+# export skip=elektra,openicc,basiccolor,sane,LibRaw,compicc,synnefo,kolor-manager,cinepaint
+
+# uncomment the below line to see less messages
+# export verbose=0
+
+
 
 top="`pwd`"
 stop_build=0
@@ -55,25 +68,28 @@ if [ $UNAME_ = "MINGW32_NT-6.1" ]; then
 fi
 
 
-# get processor count
-echo \
-"#include <stdio.h>
-#include <omp.h>
-
-int main(int argc, char**argv)
-{
-  int i;
-  #pragma omp parallel
-  for(i = 0; i < 2; ++i) ;
-  fprintf(stdout, \"%d\", omp_get_num_procs());
-  return 0;
-}" > omp.c
-gcc -fopenmp -Wall -g omp.c -o processors
 UNAME_=`uname`
 if [ $UNAME_ = "Darwin" ]; then
   MD5SUM=md5
   SHA1SUM=shasum
+
   OSX_ARCH="-arch `uname -p`"
+
+  # allow for fat binaries
+  export configure_opts_extra=--disable-dependency-tracking
+  export SKIPBARCH=1
+
+  if [ $OSX_ARCH = "ppc" ]; then
+    OSX_ARCH_CARBON="-arch ppc -arch i386"
+    OSX_ARCH_LIBRARY="-arch i386 -arch ppc"
+    #OSX_ARCH_LIBRARY=-DCMAKE_OSX_ARCHITECTURES="i386 ppc"
+  else
+    OSX_ARCH_CARBON="-arch i386"
+    OSX_ARCH_COCOA="-arch x86_64"
+    OSX_ARCH_LIBRARY="-arch i386 -arch x86_64"
+    #OSX_ARCH_LIBRARY=-DCMAKE_OSX_ARCHITECTURES="i386 x86_64"
+  fi
+
 else
   MD5SUM=md5sum
   if [ "`which sha1`" != "" ]; then
@@ -102,26 +118,51 @@ else
   fi
 fi
 
+# get processor count
+echo \
+"#include <stdio.h>
+#include <omp.h>
+
+int main(int argc, char**argv)
+{
+  int i;
+  #pragma omp parallel
+  for(i = 0; i < 2; ++i) ;
+  fprintf(stdout, \"%d\", omp_get_num_procs());
+  return 0;
+}" > omp.c
+gcc -fopenmp -Wall -g omp.c -o processors
 cpus=`./processors`
 if [ -n "$cpus" ]; then
   MAKE_CPUS="-j$cpus"
   echo will add MAKE_CPUS=$MAKE_CPUS
 fi
 
-prefix=/usr/local
+
+# environment
+
+export kde_prefix=$HOME/.kde4/
+if [ -z $prefix ]; then
+  export prefix=$HOME/.local
+if
 switch=prefix
 if [ "`echo \"$1\" | sed s/\"--$switch=\"//`" != "$1" ]; then
   prefix="`echo \"$1\" | sed s/\"--$switch=\"//`"
 fi
-libdir=$prefix/$LIB
+if [ -z $libdir ]; then
+  libdir=$prefix/$LIB
+if
 switch=libdir
 if [ "`echo \"$1\" | sed s/\"--$switch=\"//`" != "$1" ]; then
   libdir="`echo \"$1\" | sed s/\"--$switch=\"//`"
 else
   libopt="--libdir=$libdir"
 fi
-conf_opts="$libopt"
+conf_opts="$libopt $configure_opts_extra"
 
+if [ -z "$LDFLAGS" ]; then
+  export LDFLAGS=-L$libdir
+fi
 if [ -z "$LD_LIBRARY_PATH" ]; then
   LD_LIBRARY_PATH=$libdir
 else
@@ -305,7 +346,7 @@ else
     tar xzf $packet_file
     cd $packet_dir
     make clean
-    CFLAGS="$CFLAGS $OSX_ARCH" CXXFLAGS="$CXXFLAGS $OSX_ARCH" LDFLAGS="$LDFLAGS $OSX_ARCH" ./configure $conf_opts $@
+    CFLAGS="$CFLAGS $OSX_ARCH_LIBRARY" CXXFLAGS="$CXXFLAGS $OSX_ARCH_LIBRARY" LDFLAGS="$LDFLAGS $OSX_ARCH_LIBRARY" ./configure $conf_opts $@
     make $MAKE_CPUS
     make install
   fi
@@ -416,7 +457,7 @@ else
     tar xzf $packet_file
     cd $packet_dir
     make clean
-    CFLAGS="$CFLAGS $OSX_ARCH" CXXFLAGS="$CXXFLAGS $OSX_ARCH" LDFLAGS="$LDFLAGS $OSX_ARCH" ./configure $conf_opts $@
+    CFLAGS="$CFLAGS $OSX_ARCH_LIBRARY" CXXFLAGS="$CXXFLAGS $OSX_ARCH_LIBRARY" LDFLAGS="$LDFLAGS $OSX_ARCH_LIBRARY" ./configure $conf_opts $@
     make $MAKE_CPUS
     make install
   fi
@@ -588,7 +629,7 @@ git_repo=yajl
      [ "$git_version" != "$old_git_version" ]; then
     echo "$git_repo `pkg-config --modversion $git_repo`"
     update_oyranos=1
-    cmake "$cmake_target" -DCMAKE_C_FLAGS="$CFLAGS $OSX_ARCH" -DCMAKE_CXX_FLAGS="$CXXFLAGS $OSX_ARCH" -DCMAKE_LD_FLAGS="$LDFLAGS $OSX_ARCH" -DCMAKE_INSTALL_PREFIX="$prefix" -DLIB_SUFFIX=$BARCH -DCMAKE_BUILD_TYPE=debugfull ..
+    cmake "$cmake_target" -DCMAKE_C_FLAGS="$CFLAGS $OSX_ARCH_LIBRARY" -DCMAKE_CXX_FLAGS="$CXXFLAGS $OSX_ARCH_LIBRARY" -DCMAKE_LD_FLAGS="$LDFLAGS $OSX_ARCH_LIBRARY" -DCMAKE_INSTALL_PREFIX="$prefix" -DLIB_SUFFIX=$BARCH -DCMAKE_BUILD_TYPE=debugfull ..
     make clean
     if [ $UNAME_ = "MINGW32_NT-6.1" ]; then
       make
@@ -634,10 +675,10 @@ git_repo=libelektra
     update_oyranos=1
     make clean
     if [ $UNAME_ = "MINGW32_NT-6.1" ]; then
-      cmake "$cmake_target" -DCMAKE_C_FLAGS="$CFLAGS $OSX_ARCH" -DCMAKE_CXX_FLAGS="$CXXFLAGS $OSX_ARCH" -DCMAKE_LD_FLAGS="$LDFLAGS $OSX_ARCH" -DCMAKE_INSTALL_PREFIX="$prefix" -DXDG_CONFIG_DIR="$HOME/.local/xdg" -DLIB_SUFFIX=$BARCH -DCMAKE_BUILD_TYPE=debugfull ..
+      cmake "$cmake_target" -DCMAKE_C_FLAGS="$CFLAGS" -DCMAKE_CXX_FLAGS="$CXXFLAGS" -DCMAKE_LD_FLAGS="$LDFLAGS" -DCMAKE_INSTALL_PREFIX="$prefix" -DXDG_CONFIG_DIR="$HOME/.local/xdg" -DLIB_SUFFIX=$BARCH -DCMAKE_BUILD_TYPE=debugfull ..
       make
     else
-      cmake "$cmake_target" -DCMAKE_C_FLAGS="$CFLAGS $OSX_ARCH" -DCMAKE_CXX_FLAGS="$CXXFLAGS $OSX_ARCH" -DCMAKE_LD_FLAGS="$LDFLAGS $OSX_ARCH" -DCMAKE_INSTALL_PREFIX="$prefix" -DLIB_SUFFIX=$BARCH -DCMAKE_BUILD_TYPE=debugfull -DINSTALL_SYSTEM_FILES=false -DBUILD_TESTING=false -DENABLE_TESTING=OFF -DTOOLS=ALL -DPLUGINS="dump;resolver;yajl;rename;struct" ..
+      cmake "$cmake_target" -DCMAKE_C_FLAGS="$CFLAGS $OSX_ARCH_LIBRARY" -DCMAKE_CXX_FLAGS="$CXXFLAGS $OSX_ARCH_LIBRARY" -DCMAKE_LD_FLAGS="$LDFLAGS $OSX_ARCH_LIBRARY" -DCMAKE_INSTALL_PREFIX="$prefix" -DLIB_SUFFIX=$BARCH -DCMAKE_BUILD_TYPE=debugfull -DINSTALL_SYSTEM_FILES=false -DBUILD_TESTING=false -DENABLE_TESTING=OFF -DTOOLS=DEFAULT -DPLUGINS="dump;resolver;yajl;rename;struct" ..
       make $MAKE_CPUS
     fi
     make install
@@ -672,7 +713,7 @@ git_repo=libxcm
     if [ $UNAME_ = "MINGW32_NT-6.1" ]; then
       xcolor_skip="--disable-libX11"
     fi
-    ./configure $v $conf_opts $xcolor_skip $@
+    CFLAGS="$CFLAGS $OSX_ARCH_LIBRARY" CXXFLAGS="$CXXFLAGS $OSX_ARCH_LIBRARY" LDFLAGS="$LDFLAGS $OSX_ARCH_LIBRARY" ./configure $v $conf_opts $xcolor_skip $@
     make $MAKE_CPUS
     make install
   else
@@ -824,7 +865,7 @@ else
   git_version="`cat .git/refs/heads/master`"
   old_git_version="`cat old_gitrev.txt`"
   if [ "$git_version" != "$old_git_version" ]; then
-    CFLAGS="$CFLAGS $FPIC" CXXFLAGS="$CXXFLAGS $FPIC" ./configure --enable-openmp --enable-lcms=no $conf_opts $@
+    CFLAGS="$CFLAGS $OSX_ARCH_LIBRARY $FPIC" CXXFLAGS="$CXXFLAGS $OSX_ARCH_LIBRARY $FPIC" LDFLAGS="$LDFLAGS $OSX_ARCH_LIBRARY" ./configure --enable-openmp --enable-lcms=no $conf_opts $@
     if [ $verbose -gt 0 ]; then sleep 2; fi
     make $MAKE_CPUS
     make install
@@ -942,10 +983,10 @@ git_repo=oyranos
     make clean
     if [ $UNAME_ = "MINGW32_NT-6.1" ]; then
       x11_skip="--disable-libX11"
-      cmake "$cmake_target" -DCMAKE_C_FLAGS="$CFLAGS $OSX_ARCH" -DCMAKE_CXX_FLAGS="$CXXFLAGS $OSX_ARCH" -DCMAKE_LD_FLAGS="$LDFLAGS $OSX_ARCH" -DCMAKE_INSTALL_PREFIX="$prefix" -DXDG_CONFIG_DIR="$HOME/.local/xdg" -DLIB_SUFFIX=$BARCH -DCMAKE_BUILD_TYPE=debugfull ..
+      cmake "$cmake_target" -DCMAKE_C_FLAGS="$CFLAGS" -DCMAKE_CXX_FLAGS="$CXXFLAGS" -DCMAKE_LD_FLAGS="$LDFLAGS" -DCMAKE_INSTALL_PREFIX="$prefix" -DXDG_CONFIG_DIR="$HOME/.local/xdg" -DLIB_SUFFIX=$BARCH -DCMAKE_BUILD_TYPE=debugfull ..
       make
     else
-      CFLAGS="$CFLAGS $OSX_ARCH" CXXFLAGS="$CXXFLAGS $OSX_ARCH" LDFLAGS="$LDFLAGS $OSX_ARCH" ../configure $conf_opts $@  $v --enable-debug $x11_skip
+      CFLAGS="$CFLAGS $OSX_ARCH_LIBRARY" CXXFLAGS="$CXXFLAGS $OSX_ARCH_LIBRARY" LDFLAGS="$LDFLAGS $OSX_ARCH_LIBRARY" ../configure $conf_opts $@  $v --enable-debug --xdgsysdir="$HOME/.local/xdg" $x11_skip
       make $MAKE_CPUS
     fi
     make install
@@ -1017,7 +1058,7 @@ if [ $verbose -gt 0 ]; then sleep 1; fi
 cd "$top"
 
 # libCmpx
-git_repo=libcmpx
+git_repo=bekus-libcmpx
 if [ `echo "$skip" | grep $git_repo | wc -l` -ne 0 ]; then
   echo $git_repo skipped
 else
@@ -1026,7 +1067,7 @@ else
     cd $git_repo
     git pull
   else
-    git clone git://gitorious.org/$git_repo/$git_repo.git
+    git clone https://gitorious.org/libcmpx/$git_repo.git
     cd $git_repo
     git checkout master
   fi
@@ -1039,7 +1080,7 @@ else
   old_git_version="`cat old_gitrev.txt`"
   if [ $update_oyranos = 1 ] || [ "$git_version" != "$old_git_version" ]; then
     cd build
-    cmake "$cmake_target" -DCMAKE_INSTALL_PREFIX=$prefix -DLIBRARY_OUTPUT_PATH=$libdir -DCMAKE_BUILD_TYPE=debugfull ..
+    cmake "$cmake_target" -DCMAKE_C_FLAGS="$CFLAGS $OSX_ARCH_LIBRARY" -DCMAKE_CXX_FLAGS="$CXXFLAGS $OSX_ARCH_LIBRARY" -DCMAKE_LD_FLAGS="$LDFLAGS $OSX_ARCH_LIBRARY" -DCMAKE_INSTALL_PREFIX=$prefix -DLIBRARY_OUTPUT_PATH=$libdir -DCMAKE_BUILD_TYPE=debugfull ..
     make
     make install
   else
@@ -1054,7 +1095,7 @@ cd "$top"
 
 
 # Synnefo
-git_repo=synnefo
+git_repo=bekus-synnefo
 if [ `echo "$skip" | grep $git_repo | wc -l` -ne 0 ]; then
   echo $git_repo skipped
 else
@@ -1063,7 +1104,7 @@ else
     cd $git_repo
     git pull
   else
-    git clone git://gitorious.org/$git_repo/$git_repo.git
+    git clone https://gitorious.org/synnefo/$git_repo.git
     cd $git_repo
     git checkout master
   fi
@@ -1076,7 +1117,7 @@ else
   old_git_version="`cat old_gitrev.txt`"
   if [ $update_oyranos = 1 ] || [ "$git_version" != "$old_git_version" ]; then
     cd build
-    cmake "$cmake_target" -DCMAKE_INSTALL_PREFIX=$prefix -DCMAKE_BUILD_TYPE=debugfull ..
+    cmake "$cmake_target" -DCMAKE_C_FLAGS="$CFLAGS $OSX_ARCH_COCOA" -DCMAKE_CXX_FLAGS="$CXXFLAGS $OSX_ARCH_COCOA" -DCMAKE_LD_FLAGS="$LDFLAGS $OSX_ARCH_COCOA" -DCMAKE_INSTALL_PREFIX=$prefix -DCMAKE_BUILD_TYPE=debugfull ..
     make
     make install
   else
@@ -1138,7 +1179,7 @@ else
     cd $git_repo
     git pull
   else
-    git clone git://gitorious.org/cinepaint_ng/$git_repo $git_repo
+    git clone https://gitorious.org/$git_repo/$git_repo.git
     cd $git_repo
     git checkout master
   fi
