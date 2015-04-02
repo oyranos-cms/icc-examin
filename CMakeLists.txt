@@ -107,9 +107,10 @@ LINK_DIRECTORIES( ${OPENGL_LIBRARY_DIRS} )
 FIND_PACKAGE( FTGL )
 IF(FTGL_FOUND)
   SET( HAVE_FTGL TRUE )
+  INCLUDE_DIRECTORIES( ${FTGL_INCLUDE_DIRS} )
+  LINK_DIRECTORIES( ${FTGL_LIBRARY_DIRS} )
+  SET( EXTRA_LIBS ${EXTRA_LIBS} ${FTGL_LIBRARIES} )
 ENDIF()
-INCLUDE_DIRECTORIES( ${FTGL_INCLUDE_DIRS} )
-LINK_DIRECTORIES( ${FTGL_LIBRARY_DIRS} )
 
 FIND_PACKAGE( Freetype )
 IF(FREETYPE_FOUND)
@@ -204,7 +205,6 @@ TARGET_LINK_LIBRARIES ( iccexamin oyranos ${EXTRA_LIBS}
                  ${FLTK_LIBRARIES}
                  ${OYRANOS_LIBRARIES}
                  ${XCM_LIBRARIES}
-                 ${FTGL_LIBRARIES}
                  ${FREETYPE_LIBRARIES}
                  ${OPENGL_LIBRARIES}
                  ${X11_Xinerama_LIB}
@@ -223,7 +223,6 @@ IF( CINEPAINT_FOUND )
                  ${FLTK_LIBRARIES}
                  ${OYRANOS_LIBRARIES}
                  ${XCM_LIBRARIES}
-                 ${FTGL_LIBRARIES}
                  ${FREETYPE_LIBRARIES}
                  ${OPENGL_LIBRARIES}
                  ${X11_Xinerama_LIB}
