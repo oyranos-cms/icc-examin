@@ -46,7 +46,7 @@ using namespace icc_examin_ns;
 #include <Carbon/Carbon.h>
 #endif
 
-#ifdef HAVE_X
+#if defined(HAVE_X) && !defined(__APPLE__)
 #include <X11/Xlib.h>
 #include <X11/extensions/Xfixes.h>
 #include <X11/Xcm/Xcm.h>
@@ -539,7 +539,7 @@ Oyranos::holeMonitorProfil (const char* display_name, size_t* size )
   char* moni_profil = 0;
   *size = 0;
 
-# ifdef HAVE_X
+# if defined(HAVE_X) && !defined(__APPLE__)
   static Display *display=0;
   if(display_name)
     display = XOpenDisplay(display_name);
@@ -578,7 +578,7 @@ Oyranos::setzeMonitorProfil (const char* profil_name , int x, int y )
   DBG_PROG_V( profil_name )
   const char *display_name=0;
 
-# ifdef HAVE_X
+# if defined(HAVE_X) && !defined(__APPLE__)
   static Display *display=0;
 
 # ifdef HAVE_FLTK
@@ -622,7 +622,7 @@ Oyranos::moniInfo (int x, int y, int * num)
 
   char *display_name=0;
 
-#if defined(HAVE_X)
+#if defined(HAVE_X) && !defined(__APPLE__)
   display_name = oyGetDisplayNameFromPosition( 0, x,y, malloc );
 #else
   display_name = oyGetDisplayNameFromPosition2( OY_TYPE_STD, "monitor.qarz", 0, x,y, malloc );
@@ -1375,7 +1375,7 @@ oyProfile_s * Oyranos::oyMoni (int x, int y, int native)
   if(x == x_alt && y == y_alt && prof_alt)
     return oyProfile_Copy( prof_alt, 0 );
 
-#if defined(HAVE_X)
+#if defined(HAVE_X) && !defined(__APPLE__)
   disp_name = oyGetDisplayNameFromPosition( 0, x,y, malloc );
 #else
   disp_name = oyGetDisplayNameFromPosition2( OY_TYPE_STD, "monitor.qarz", 0, x,y, malloc );
@@ -1397,7 +1397,7 @@ oyProfile_s * Oyranos::oyMoni (int x, int y, int native)
     }
 
     
-#if defined(HAVE_X)
+#if defined(HAVE_X) && !defined(__APPLE__)
     oyDeviceGet( OY_TYPE_STD, "monitor", disp_name, 0, &device );
 #else
     oyDeviceGet( OY_TYPE_STD, "monitor.qarz", disp_name, 0, &device );
@@ -1608,7 +1608,7 @@ void Oyranos::colourServerRegionSet  ( Fl_Widget         * widget,
                                        oyRectangle_s     * old_rect,
                                        int                 remove )
 {
-#if defined(HAVE_X)           
+#if defined(HAVE_X) && !defined(__APPLE__)          
   if(!fl_display || !widget->window() || !widget->window()->visible())
     return;
 
@@ -1755,7 +1755,7 @@ Oyranos::zeigTrafo           ( const char *profilA, int ein_bytes, int kanaeleA,
 int      Oyranos::colourServerActive( )
 {
   static int active = 0;
-#if defined(HAVE_X)
+#if defined(HAVE_X) && !defined(__APPLE__)
   static double z = 0;
   if(z + 1.0 < icc_examin_ns::zeitSekunden())
   {

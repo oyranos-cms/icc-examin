@@ -41,7 +41,7 @@ std::string dbgFltkEvent   ( int           event);
 #include <string>
 
 #include <FL/Fl.H>
-#if HAVE_X
+#if defined(HAVE_X) && !defined(__APPLE__)
 #include <FL/x.H>
 #include <X11/Xutil.h>
 #include <X11/xpm.h>
@@ -172,7 +172,7 @@ void MyFl_Double_Window::show(int argc, char** argv)
      this->visible() && this->shown())
     setzeIcon( this, icon );
 
-# if HAVE_X
+#if defined(HAVE_X) && !defined(__APPLE__)
   if( is_toolbox )
   {
 #if 0
@@ -310,7 +310,7 @@ int MyFl_Double_Window::handle( int e )
   Fl::screen_xywh(x_,y_,w_,h_);
 
   int net_desktop = -1;
-#if HAVE_X
+#if defined(HAVE_X) && !defined(__APPLE__)
   if(fl_display && zeigen)
   {
     Atom atom = XInternAtom (fl_display, "_NET_CURRENT_DESKTOP", 0), a;

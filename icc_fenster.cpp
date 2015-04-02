@@ -37,7 +37,7 @@
 #include <string>
 
 #include <FL/Fl.H>
-#if HAVE_X
+#if HAVE_X && !defined(__APPLE__)
 #include <FL/x.H>
 #include <X11/Xutil.h>
 #endif
