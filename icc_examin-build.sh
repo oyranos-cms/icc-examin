@@ -1,4 +1,5 @@
-#!/bin/sh -xv
+#!/bin/sh
+# -xv
 
 if [ $# -gt 1 ] ; then
   if [ $1 = "-h" ] || [ $1 = "--help" ] || [ $1 = "-?" ]; then
@@ -1215,10 +1216,13 @@ git_repo=icc-examin
   if [ $verbose -gt 0 ]; then sleep 2; fi
   git_version="`cat .git/refs/heads/master`"
   old_git_version="`cat old_gitrev.txt`"
+  if [[ ! -d build ]]; then
+    mkdir build
+  fi
   if [ $update_oyranos = 1 ] || [ "$git_version" != "$old_git_version" ] ||
      [ ! -f "$target" ]; then
-    make clean
-    CFLAGS="$CFLAGS $OSX_ARCH" CXXFLAGS="$CXXFLAGS $OSX_ARCH" LDFLAGS="$LDFLAGS $OSX_ARCH" ./configure $conf_opts $v --enable-debug $@
+    cd build
+    cmake "$cmake_target" -DCMAKE_C_FLAGS="$CFLAGS $OSX_ARCH_COCOA" -DCMAKE_CXX_FLAGS="$CXXFLAGS $OSX_ARCH_COCOA" -DCMAKE_LD_FLAGS="$LDFLAGS $OSX_ARCH_COCOA" -DCMAKE_INSTALL_PREFIX="$prefix" -DCMAKE_BUILD_TYPE=debugfull ..
     make $MAKE_CPUS
     if [ $? = 0 ] && [ $UNAME_ = "Darwin" ]; then
       make bundle
