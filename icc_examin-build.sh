@@ -628,7 +628,6 @@ git_repo=yajl
     echo "$git_repo `pkg-config --modversion $git_repo`"
     update_oyranos=1
     cmake "$cmake_target" -DCMAKE_C_FLAGS="$CFLAGS $OSX_ARCH_LIBRARY" -DCMAKE_CXX_FLAGS="$CXXFLAGS $OSX_ARCH_LIBRARY" -DCMAKE_LD_FLAGS="$LDFLAGS $OSX_ARCH_LIBRARY" -DCMAKE_INSTALL_PREFIX="$prefix" -DLIB_SUFFIX=$BARCH -DCMAKE_BUILD_TYPE=debugfull ..
-    make clean
     if [ $UNAME_ = "MINGW32_NT-6.1" ]; then
       make
     else
@@ -671,7 +670,6 @@ git_repo=libelektra
      [ "$git_version" != "$old_git_version" ]; then
     echo "elektra `pkg-config --modversion elektra`"
     update_oyranos=1
-    make clean
     if [ $UNAME_ = "MINGW32_NT-6.1" ]; then
       cmake "$cmake_target" -DCMAKE_C_FLAGS="$CFLAGS" -DCMAKE_CXX_FLAGS="$CXXFLAGS" -DCMAKE_LD_FLAGS="$LDFLAGS" -DCMAKE_INSTALL_PREFIX="$prefix" -DXDG_CONFIG_DIR="$HOME/.local/xdg" -DLIB_SUFFIX=$BARCH -DCMAKE_BUILD_TYPE=debugfull ..
       make
@@ -978,7 +976,6 @@ git_repo=oyranos
      [ "$git_version" != "$old_git_version" ]; then
     echo "oyranos `pkg-config --modversion oyranos`"
     update_oyranos=1
-    make clean
     if [ $UNAME_ = "MINGW32_NT-6.1" ]; then
       x11_skip="--disable-libX11"
       cmake "$cmake_target" -DCMAKE_C_FLAGS="$CFLAGS" -DCMAKE_CXX_FLAGS="$CXXFLAGS" -DCMAKE_LD_FLAGS="$LDFLAGS" -DCMAKE_INSTALL_PREFIX="$prefix" -DXDG_CONFIG_DIR="$HOME/.local/xdg" -DLIB_SUFFIX=$BARCH -DCMAKE_BUILD_TYPE=debugfull ..
