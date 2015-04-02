@@ -7,7 +7,7 @@
 /* flags to indicate if any piece of a line segment is inside any polyhedron
  *     or outside all polyhedra
  */
-static boolean anyPieceOfLineIn, anyPieceOfLineOut;
+static bsp_boolean anyPieceOfLineIn, anyPieceOfLineOut;
 
 /* local functions - see function definition */
 static int BSPclassifyPoint(const POINT *point, const BSPNODE *bspNode);
@@ -22,7 +22,7 @@ static void BSPclassifyLineInterior(const POINT *from, const POINT *to,
  * to      - end position of viewer
  * bspTree - BSP tree of scene
  */
-boolean BSPdidViewerCollideWithScene(const POINT *from, const POINT *to,
+bsp_boolean BSPdidViewerCollideWithScene(const POINT *from, const POINT *to,
 				     const BSPNODE *bspTree)
 {
    /* first classify the endpoints */ 

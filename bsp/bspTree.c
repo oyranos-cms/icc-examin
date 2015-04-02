@@ -5,7 +5,7 @@
 
 /* local functions */
 static void BSPchoosePlane(FACE *faceList,PLANE *plane);
-static boolean doesFaceStraddlePlane(const FACE *face,const PLANE *plane);
+static bsp_boolean doesFaceStraddlePlane(const FACE *face,const PLANE *plane);
 static BSPNODE *allocBspNode(NODE_TYPE kind,FACE *sameDir,FACE *oppDir);
 static PARTITIONNODE *allocPartitionNode(FACE *sameDir,FACE *oppDir);
 static void freePartitionNode(PARTITIONNODE **partitionNode);
@@ -143,9 +143,9 @@ static void BSPchoosePlane(FACE *faceList,PLANE *plane)
  * face  - face to check 
  * plane - plane 
  */
-static boolean doesFaceStraddlePlane(const FACE *face, const PLANE *plane)
+static bsp_boolean doesFaceStraddlePlane(const FACE *face, const PLANE *plane)
 {
-   boolean anyNegative= 0, anyPositive= 0;
+   bsp_boolean anyNegative= 0, anyPositive= 0;
    VERTEX *vtrav; 
 
    assert(face->vhead != NULL_VERTEX);
@@ -169,7 +169,7 @@ static boolean doesFaceStraddlePlane(const FACE *face, const PLANE *plane)
  * face     - face[plane] (ku.b needs a face for ICC Examin)
  * position - position of point
  */
-boolean BSPisViewerInPositiveSideOfFace(const FACE *face,const POINT *position)
+bsp_boolean BSPisViewerInPositiveSideOfFace(const FACE *face,const POINT *position)
 {
    const PLANE * plane = &face->plane;
    float dp = (plane->aa) * (position->xx - face->vhead->xx) + 

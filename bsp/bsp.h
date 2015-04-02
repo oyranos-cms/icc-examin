@@ -65,11 +65,11 @@ typedef enum {NEGATIVE= -1, ZERO= 0, POSITIVE= 1} SIGN;
 
 /* external functions */
 BSPNODE *BSPconstructTree(FACE **faceList);
-boolean BSPisViewerInPositiveSideOfFace(const FACE * face,const POINT*position);
+bsp_boolean BSPisViewerInPositiveSideOfFace(const FACE * face,const POINT*position);
 void BSPtraverseTreeAndRender(const BSPNODE *bspNode,const POINT *position, int back_face);
 void BSPfreeTree(BSPNODE **bspNode);
 
-boolean BSPdidViewerCollideWithScene(const POINT *from, const POINT *to,
+bsp_boolean BSPdidViewerCollideWithScene(const POINT *from, const POINT *to,
 				     const BSPNODE *bspTree);
 
 VERTEX *allocVertex(float xx,float yy,float zz,COLOR *color);

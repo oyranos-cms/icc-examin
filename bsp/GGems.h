@@ -148,7 +148,7 @@ if (!(x)) fprintf(stderr," Assert failed: x\n");
 #define FALSE		0
 #define ON		1
 #define OFF 		0
-#define boolean int			/* boolean data type */
+#define bsp_boolean int			/* boolean data type */
 typedef int flag;			/* flag data type */
 
 extern double V2SquaredLength(), V2Length();

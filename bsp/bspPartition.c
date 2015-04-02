@@ -254,7 +254,7 @@ static SIGN whichSideIsFaceWRTplane(FACE *face, const PLANE *plane)
 {
    register VERTEX *vtrav;
    float value;
-   boolean isNeg, isPos;
+   bsp_boolean isNeg, isPos;
 
    isNeg= isPos= FALSE;
    
