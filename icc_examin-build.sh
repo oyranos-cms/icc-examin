@@ -1,5 +1,4 @@
-#!/bin/sh
-# -xv
+#!/bin/sh -xv
 
 if [ $# -gt 1 ] ; then
   if [ $1 = "-h" ] || [ $1 = "--help" ] || [ $1 = "-?" ]; then
@@ -31,43 +30,6 @@ target=iccexamin
 
 ### Testing the system ###
 
-# get host 64-bit capabilities
-echo \
-"#include <stdio.h>
-
-int main(int argc, char**argv)
-{
-  fprintf(stdout, \"%d\", (int)sizeof(int*));
-  return 0;
-}" > ptr_size.c
-gcc -Wall -g ptr_size.c -o ptr-size
-BARCH=""
-INTPTR_SIZE=`./ptr-size`
-  if [ $INTPTR_SIZE -eq 4 ]; then
-    echo_="32-bit build            detected"
-  elif [ $INTPTR_SIZE -gt 4 ]; then
-    echo_="64-bit build            detected"
-    if [ -n "$SKIPBARCH" ]; then
-      BARCH=64
-      echo_="ignore 64-bit build"
-    fi
-    FPIC=-fPIC
-    test -n "$ECHO" && $ECHO "BUILD_64 = 1" >> $CONF
-  elif [ $INTPTR_SIZE -ne 0 ]; then
-    echo_="$INTPTR_SIZE-byte intptr_t          detected"
-  else
-    echo_="CPU bus width not         detected"
-  fi
-echo "$echo_"
-LIB=lib$BARCH
-
-
-UNAME_=`uname`
-if [ $UNAME_ = "MINGW32_NT-6.1" ]; then
-  PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/usr/local/lib/pkgconfig
-fi
-
-
 UNAME_=`uname`
 if [ $UNAME_ = "Darwin" ]; then
   MD5SUM=md5
@@ -79,7 +41,7 @@ if [ $UNAME_ = "Darwin" ]; then
   export configure_opts_extra=--disable-dependency-tracking
   export SKIPBARCH=1
 
-  if [ $OSX_ARCH = "ppc" ]; then
+  if [ "$OSX_ARCH" = "ppc" ]; then
     OSX_ARCH_CARBON="-arch ppc -arch i386"
     OSX_ARCH_LIBRARY="-arch i386 -arch ppc"
     #OSX_ARCH_LIBRARY=-DCMAKE_OSX_ARCHITECTURES="i386 ppc"
@@ -97,7 +59,6 @@ else
   else
     SHA1SUM=sha1sum
   fi
-  NON_OSX_SHARED=--enable-shared
   if [ $UNAME_ = "MINGW32_NT-6.1" ]; then
     url=ftp://ftp.gnupg.org/gcrypt/binary
     packet_file=sha1sum.exe
@@ -117,6 +78,44 @@ else
     cmake_target="-GMSYS Makefiles"
   fi
 fi
+
+# get host 64-bit capabilities
+echo \
+"#include <stdio.h>
+
+int main(int argc, char**argv)
+{
+  fprintf(stdout, \"%d\", (int)sizeof(int*));
+  return 0;
+}" > ptr_size.c
+gcc -Wall -g ptr_size.c -o ptr-size
+BARCH=""
+INTPTR_SIZE=`./ptr-size`
+  if [ $INTPTR_SIZE -eq 4 ]; then
+    echo_="32-bit build            detected"
+  elif [ $INTPTR_SIZE -gt 4 ]; then
+    echo_="64-bit build            detected"
+    if [ -z "$SKIPBARCH" ]; then
+      BARCH=64
+    else
+      echo_="ignore 64-bit build"
+    fi
+    FPIC=-fPIC
+    test -n "$ECHO" && $ECHO "BUILD_64 = 1" >> $CONF
+  elif [ $INTPTR_SIZE -ne 0 ]; then
+    echo_="$INTPTR_SIZE-byte intptr_t          detected"
+  else
+    echo_="CPU bus width not         detected"
+  fi
+echo "$echo_"
+LIB=lib$BARCH
+
+
+UNAME_=`uname`
+if [ $UNAME_ = "MINGW32_NT-6.1" ]; then
+  PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/usr/local/lib/pkgconfig
+fi
+
 
 # get processor count
 echo \
@@ -144,21 +143,19 @@ fi
 export kde_prefix=$HOME/.kde4/
 if [ -z $prefix ]; then
   export prefix=$HOME/.local
-if
+fi
 switch=prefix
 if [ "`echo \"$1\" | sed s/\"--$switch=\"//`" != "$1" ]; then
   prefix="`echo \"$1\" | sed s/\"--$switch=\"//`"
 fi
 if [ -z $libdir ]; then
   libdir=$prefix/$LIB
-if
+fi
 switch=libdir
 if [ "`echo \"$1\" | sed s/\"--$switch=\"//`" != "$1" ]; then
   libdir="`echo \"$1\" | sed s/\"--$switch=\"//`"
-else
-  libopt="--libdir=$libdir"
 fi
-conf_opts="$libopt $configure_opts_extra"
+conf_opts="--prefix=$prefix -libdir=$libdir $configure_opts_extra"
 
 if [ -z "$LDFLAGS" ]; then
   export LDFLAGS=-L$libdir
@@ -247,10 +244,10 @@ if [ $? -gt 0 ]; then
   # FLTK
   echo building FLTK ...
   packet=fltk
-  url=http://www.fltk.org/pub/fltk/1.3.0/
-  packet_dir=$packet-1.3.0
+  url=http://www.fltk.org/pub/fltk/1.3.3/
+  packet_dir=$packet-1.3.3
   packet_file="$packet_dir"-source.tar.gz
-  checksum=44d5d7ba06afdd36ea17da6b4b703ca3
+  checksum=9ccdb0d19dc104b87179bd9fd10822e3
   if [ -f $packet_file ]; then
     echo $packet_file already here
   else
@@ -285,7 +282,7 @@ if [ $? -gt 0 ]; then
     tar xzf $packet_file
     cd $packet_dir
     make clean
-    ./configure $conf_opts --enable-gl $NON_OSX_SHARED --enable-threads --enable-xinerama --enable-xft $@
+    ./configure $fltk_conf_opts --enable-gl --enable-shared --enable-threads --enable-xinerama --enable-xft $@
     make $MAKE_CPUS
     make install
   fi
