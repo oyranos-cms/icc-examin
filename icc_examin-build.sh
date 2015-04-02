@@ -282,6 +282,7 @@ if [ $? -gt 0 ]; then
     tar xzf $packet_file
     cd $packet_dir
     make clean
+    fltk_conf_opts="`echo $conf_opts | sed s/--disable-dependency-tracking//g`"
     ./configure $fltk_conf_opts --enable-gl --enable-shared --enable-threads --enable-xinerama --enable-xft $@
     make $MAKE_CPUS
     make install
