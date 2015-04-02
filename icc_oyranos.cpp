@@ -42,7 +42,7 @@ using namespace icc_examin_ns;
 
 #include "oyranos_display_helpers.c"
 
-#ifdef APPLE
+#if defined(__APPLE__)
 #include <Carbon/Carbon.h>
 #endif
 
@@ -181,7 +181,7 @@ Oyranos::lab_test_ ()
   DBG_PROG_ENDE
 }
 
-#ifdef APPLE
+#if defined(__APPLE__)
 typedef struct {
   char   *data;
   SInt32  size;

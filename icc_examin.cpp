@@ -45,7 +45,7 @@
 #include "fl_i18n/fl_i18n.H"
 #include "Flmm/Flmm_Message.H"
 
-#if APPLE
+#ifdef __APPLE__
 #include <Carbon/Carbon.h>
 #endif
 
@@ -284,7 +284,7 @@ ICCexamin::clear ()
 void
 resize_fuer_menubar(Fl_Widget* w)
 {
-# if APPLE
+# ifdef __APPLE__
   w->resize( w->x(), w->y()-25, w->w(), w->h()+25 );
 # endif
 }
@@ -341,9 +341,9 @@ ICCexamin::start (int argc, char** argv)
   DBG_PROG
 
   // Oberflaechenpflege
-# if HAVE_X || APPLE
+# if HAVE_X || defined(__APPLE__)
   icc_betrachter->menueintrag_vcgt->show();
-#   if APPLE
+#   ifdef __APPLE__
     icc_betrachter->vcgt_set_button->deactivate();
     icc_betrachter->vcgt_reset_button->deactivate();
 #   endif
@@ -380,7 +380,7 @@ ICCexamin::start (int argc, char** argv)
   if(app) free(app); app = 0;
 #endif
 
-# if APPLE && !__LP64__
+# if defined(__APPLE__) && !__LP64__
   // osX Resourcen
   IBNibRef nibRef;
   OSStatus err;
@@ -486,7 +486,7 @@ ICCexamin::start (int argc, char** argv)
   {
     WARN_S( "observer thread not started. Error: "  << fehler );
   } else
-# if !APPLE && !WIN32 && PTHREAD_THREADS_MAX
+# if !defined(__APPLE__) && !WIN32 && PTHREAD_THREADS_MAX
   if( fehler == (int)PTHREAD_THREADS_MAX )
   {
     WARN_S( "Too many observer threads. Error: " << fehler );
@@ -1011,7 +1011,7 @@ void
 ICCexamin::testZeigen ()
 { DBG_PROG_START
 
-# if HAVE_X || APPLE
+# if HAVE_X || defined(__APPLE__)
   ICClist<ICClist<std::pair<double,double> > > kurven2;
   kurven2.resize(8);
   kurven2[0].resize(4);
@@ -1079,7 +1079,7 @@ ICCexamin::vcgtZeigen ()
   }
 
   frei(false);
-# if HAVE_X || APPLE
+# if HAVE_X || defined(__APPLE__)
   std::string display_name = "";
   int x = icc_betrachter->vcgt->x() + icc_betrachter->vcgt->w()/2;
   int y = icc_betrachter->vcgt->y() + icc_betrachter->vcgt->h()/2;
@@ -1503,7 +1503,7 @@ ICCexamin::icc_betrachterNeuzeichnen (void* z)
       icc_betrachter->box_stat->redraw();
     }
     if(icc_waehler_->visible())
-#   ifdef APPLE
+#   ifdef __APPLE__
       icc_waehler_->hide();
 #   else
       icc_waehler_->iconize();
@@ -1536,7 +1536,7 @@ ICCexamin::icc_betrachterNeuzeichnen (void* z)
   }
   if(!icc_betrachter->DD_farbraum->visible_r()) {
       if(icc_waehler_ && icc_waehler_->visible())
-#   ifdef APPLE
+#   ifdef __APPLE__
         icc_waehler_->hide();
 #   else
         icc_waehler_->iconize();
@@ -1608,7 +1608,7 @@ ICCexamin::icc_betrachterNeuzeichnen (void* z)
   SichtbarkeitsWechsel(tag_viewer, 1)
   SichtbarkeitsWechsel(tag_text, 1)
   
-#if defined(APPLE)
+#if defined(__APPLE__)
   // FLTK 1.1.10 seems to have problems with hiding OpenGL widgets
   if(wid != icc_betrachter->table_gl_group &&
      !icc_betrachter->table_gl_group->visible())
@@ -1840,7 +1840,7 @@ event_handler(int e)
         DBG_PROG_S( Fl::event_text() );
         char *temp = (char*)malloc(Fl::event_length()+1),
              *text;
-        sprintf(temp, Fl::event_text());
+        sprintf(temp, "%s", Fl::event_text());
         ICClist<std::string>profilnamen;
         while((text = strrchr(temp,'\n')) != 0)
         {
@@ -1926,7 +1926,7 @@ event_handler(int e)
     break;
   case FL_NO_EVENT:
     {
-#if defined(HAVE_X)
+#if defined(HAVE_X) && !defined(__APPLE__)
       const XEvent * xevent = fl_xevent;
       static int xevent_setup = 0;
       static Atom c = XInternAtom( xevent->xany.display, "_COLOR_SELECTION",0 );

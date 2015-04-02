@@ -128,7 +128,7 @@ namespace icc_examin_ns {
   // for debugging
   extern int icc_thread_lock_zaehler_;
   extern Fl_Thread icc_thread_lock_besitzer_;
-#if APPLE
+#if defined(__APPLE__)
   std::string holeBundleResource (const char* Dateiname_ohne_Endung,
                                   const char* Endung);
 #endif

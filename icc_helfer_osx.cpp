@@ -33,7 +33,7 @@
 //#include "icc_examin.h"
 #include "icc_helfer_x.h"
 
-#if APPLE
+#if defined(__APPLE__)
 # include <Carbon/Carbon.h>
 # ifdef HAVE_FLTK
   //#include <FL/osx.H>
@@ -46,7 +46,7 @@ leseGrafikKartenGamma  (std::string display_name,
                               int x, int y )
 { DBG_PROG_START
   ICClist<ICClist<double> > kurven;
-# if APPLE
+# if defined(__APPLE__)
 
   int pos = 0;
   CGDisplayErr err = kCGErrorSuccess;

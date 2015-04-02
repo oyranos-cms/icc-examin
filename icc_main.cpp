@@ -49,7 +49,7 @@ main (int argc, char** argv)
 
 
 
-# if APPLE
+# if defined(__APPLE__)
   //MallocDebug_CheckFreeList();
 # endif
 

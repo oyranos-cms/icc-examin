@@ -34,7 +34,7 @@
 #if HAVE_FLTK
 # include "icc_helfer_fltk.h"
 #endif
-#if HAVE_X || APPLE
+#if HAVE_X || defined(__APPLE__)
 # include "icc_helfer_x.h"
 #endif
 

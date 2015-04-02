@@ -34,7 +34,7 @@
 #define AGVIEWER_H
 
 #include "icc_utils.h" // ICC Examin
-#if APPLE
+#if __APPLE__
 #  include <OpenGL/glu.h>
 #else
 #  include <GL/glu.h> // added for FLTK

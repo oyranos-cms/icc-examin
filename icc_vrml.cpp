@@ -87,7 +87,7 @@ iccCreateVrml( const char* p, int size, int intent )
 
   int ret;
   // generate vrml - argyll external variant
-# if APPLE
+# if defined(__APPLE__)
   std::string argyll_bundle_pfad = icc_examin_ns::holeBundleResource("iccgamut",
                                                                      "");
   if(argyll_bundle_pfad.size()) {

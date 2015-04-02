@@ -896,7 +896,7 @@ GL_View::GLinit_()
   FcFontSetDestroy( font_list );
 # endif
 
-# if APPLE
+# if defined(__APPLE__)
   std::string f_n;
   if(getenv("RESOURCESPATH"))
   {
@@ -3867,7 +3867,7 @@ GL_View::menuEvents ( int value )
       channel = value - MENU_MAX; DBG_PROG_V( channel )
       glStatus(_("left-/middle-/right mouse button -> rotate/cut/menu"), type_);
     }
-#   if APPLE
+#   if defined(__APPLE__)
     double colour_corr = 1./*0.6666*/ *0.8;
 #   else
     double colour_corr = 1.*.8;

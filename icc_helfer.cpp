@@ -903,7 +903,7 @@ oyStrAdd( std::string & text, const char * add )
 
 namespace icc_examin_ns {
 
-#          if defined(__GNUC__) || defined(LINUX) || defined(APPLE) || defined(SOLARIS)
+#          if defined(__GNUC__) || defined(LINUX) || defined(__APPLE__) || defined(SOLARIS)
 # include <sys/time.h>
 # define   ZEIT_TEILER 10000
 #          else // WINDOWS TODO
@@ -927,7 +927,7 @@ namespace icc_examin_ns {
   {
            time_t zeit_;
            double teiler = ZEIT_TEILER;
-#          if defined(__GNUC__) || defined(APPLE) || defined(SOLARIS) || defined(BSD)
+#          if defined(__GNUC__) || defined(__APPLE__) || defined(SOLARIS) || defined(BSD)
            struct timeval tv;
            gettimeofday( &tv, NULL );
            double tmp_d;
@@ -1404,7 +1404,7 @@ holeDateiModifikationsZeit (const char* fullFileName)
   double m_zeit = 0.0;
   if (r)
   {
-#   if defined(APPLE) || defined(BSD)
+#   if defined(__APPLE__) || defined(BSD)
     m_zeit = status.st_mtime ;
     m_zeit += status.st_mtimespec.tv_nsec/1000000. ;
 #   elif defined(WIN32) 
@@ -1575,7 +1575,7 @@ setI18N( const char *exename )
   const char *locale_paths[4] = {0,0,0,0};
   signed int is_path = -1;
   int num_paths = 0;
-# if __APPLE__
+# if defined(__APPLE__)
   std::string bdr;
   // RESOURCESPATH is set in the bundle by "Contents/MacOS/ICC Examin.sh"
   if(getenv("RESOURCESPATH")) {

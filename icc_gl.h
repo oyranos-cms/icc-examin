@@ -36,7 +36,7 @@
 #include "icc_vrml_parser.h"
 #include "icc_oyranos.h"
 #include "icc_thread_daten.h"
-#if APPLE
+#if defined(__APPLE__)
 #  include <OpenGL/glu.h>
 #else
 #  include <GL/glu.h> // added for FLTK

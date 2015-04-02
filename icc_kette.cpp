@@ -66,7 +66,7 @@ ICCkette::init ()
   {
     WARN_S( "Observer thread not started. Error: "  << fehler );
   } else
-# if !APPLE && !WIN32 && PTHREAD_THREADS_MAX
+# if !defined(__APPLE__) && !WIN32 && PTHREAD_THREADS_MAX
   if( fehler == (int)PTHREAD_THREADS_MAX )
   {
     WARN_S( "Too many observer threads. Error: " << fehler );

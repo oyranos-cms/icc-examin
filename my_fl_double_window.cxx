@@ -384,7 +384,7 @@ void MyFl_Double_Window::label( const char *titel )
 
 void setzeIcon      ( Fl_Window *fenster, const char   **xpm_daten )
 {
-# if HAVE_X && !APPLE
+# if HAVE_X && !defined(__APPLE__)
   fl_open_display();
   if(!fenster) {
     WARN_S("no window provided")
