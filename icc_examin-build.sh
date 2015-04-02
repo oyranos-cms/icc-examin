@@ -155,7 +155,7 @@ switch=libdir
 if [ "`echo \"$1\" | sed s/\"--$switch=\"//`" != "$1" ]; then
   libdir="`echo \"$1\" | sed s/\"--$switch=\"//`"
 fi
-conf_opts="--prefix=$prefix -libdir=$libdir $configure_opts_extra"
+conf_opts="--prefix=$prefix --libdir=$libdir $configure_opts_extra"
 
 if [ -z "$LDFLAGS" ]; then
   export LDFLAGS=-L$libdir
