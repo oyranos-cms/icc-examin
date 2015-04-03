@@ -620,15 +620,15 @@ git_repo=yajl
     mkdir build
     update_yajl=1
   fi
-  cd build
   old_git_version="`cat old_gitrev.txt`"
   update_oyranos=0
   pkg-config --atleast-version=0.8 $git_repo
   if [ $? -ne 0 ] || [ $update_yajl = 1 ] ||
      [ "$git_version" != "$old_git_version" ]; then
+    cd build
     echo "$git_repo `pkg-config --modversion $git_repo`"
     update_oyranos=1
-    cmake "$cmake_target" -DCMAKE_C_FLAGS="$CFLAGS $OSX_ARCH_LIBRARY" -DCMAKE_CXX_FLAGS="$CXXFLAGS $OSX_ARCH_LIBRARY" -DCMAKE_LD_FLAGS="$LDFLAGS $OSX_ARCH_LIBRARY" -DCMAKE_INSTALL_PREFIX="$prefix" -DLIB_SUFFIX=$BARCH -DCMAKE_BUILD_TYPE=debugfull ..
+    cmake "$cmake_target" -DCMAKE_C_FLAGS="$CFLAGS $OSX_ARCH_LIBRARY" -DCMAKE_CXX_FLAGS="$CXXFLAGS $OSX_ARCH_LIBRARY" -DCMAKE_LD_FLAGS="$LDFLAGS $OSX_ARCH_LIBRARY" -DCMAKE_INSTALL_PREFIX="$prefix" -DLIB_SUFFIX=$BARCH -DCMAKE_BUILD_TYPE=Debug ..
     if [ $UNAME_ = "MINGW32_NT-6.1" ]; then
       make
     else
@@ -636,10 +636,11 @@ git_repo=yajl
     fi
     make install
     make check
+    cd "$top/$git_repo"
+    echo "$git_version" > old_gitrev.txt
   else
     echo no changes in git $git_version
   fi
-  echo "$git_version" > old_gitrev.txt
 if [ $verbose -gt 0 ]; then sleep 1; fi
 
 cd "$top"
@@ -663,27 +664,28 @@ git_repo=libelektra
     mkdir build
     update_xcm=1
   fi
-  cd build
   old_git_version="`cat old_gitrev.txt`"
   update_oyranos=0
   pkg-config --atleast-version=0.8 elektra
   if [ $? -ne 0 ] || [ $update_xcm = 1 ] ||
      [ "$git_version" != "$old_git_version" ]; then
+    cd build
     echo "elektra `pkg-config --modversion elektra`"
     update_oyranos=1
     if [ $UNAME_ = "MINGW32_NT-6.1" ]; then
-      cmake "$cmake_target" -DCMAKE_C_FLAGS="$CFLAGS" -DCMAKE_CXX_FLAGS="$CXXFLAGS" -DCMAKE_LD_FLAGS="$LDFLAGS" -DCMAKE_INSTALL_PREFIX="$prefix" -DXDG_CONFIG_DIR="$HOME/.local/xdg" -DLIB_SUFFIX=$BARCH -DCMAKE_BUILD_TYPE=debugfull ..
+      cmake "$cmake_target" -DCMAKE_C_FLAGS="$CFLAGS" -DCMAKE_CXX_FLAGS="$CXXFLAGS" -DCMAKE_LD_FLAGS="$LDFLAGS" -DCMAKE_INSTALL_PREFIX="$prefix" -DXDG_CONFIG_DIR="$HOME/.local/xdg" -DLIB_SUFFIX=$BARCH -DCMAKE_BUILD_TYPE=Debug ..
       make
     else
-      cmake "$cmake_target" -DCMAKE_C_FLAGS="$CFLAGS $OSX_ARCH_LIBRARY" -DCMAKE_CXX_FLAGS="$CXXFLAGS $OSX_ARCH_LIBRARY" -DCMAKE_LD_FLAGS="$LDFLAGS $OSX_ARCH_LIBRARY" -DCMAKE_INSTALL_PREFIX="$prefix" -DLIB_SUFFIX=$BARCH -DCMAKE_BUILD_TYPE=debugfull -DINSTALL_SYSTEM_FILES=false -DBUILD_TESTING=false -DENABLE_TESTING=OFF -DTOOLS=DEFAULT -DPLUGINS="dump;resolver;yajl;rename;struct" ..
+      cmake "$cmake_target" -DCMAKE_C_FLAGS="$CFLAGS $OSX_ARCH_LIBRARY" -DCMAKE_CXX_FLAGS="$CXXFLAGS $OSX_ARCH_LIBRARY" -DCMAKE_LD_FLAGS="$LDFLAGS $OSX_ARCH_LIBRARY" -DCMAKE_INSTALL_PREFIX="$prefix" -DLIB_SUFFIX=$BARCH -DCMAKE_BUILD_TYPE=Debug -DINSTALL_SYSTEM_FILES=false -DBUILD_TESTING=false -DENABLE_TESTING=OFF -DTOOLS=DEFAULT -DPLUGINS="dump;resolver;yajl;rename;struct" ..
       make $MAKE_CPUS
     fi
     make install
     make check
+    cd "$top/$git_repo"
+    echo "$git_version" > old_gitrev.txt
   else
     echo no changes in git $git_version
   fi
-  echo "$git_version" > old_gitrev.txt
 if [ $verbose -gt 0 ]; then sleep 1; fi
 
 cd "$top"
@@ -713,10 +715,11 @@ git_repo=libxcm
     CFLAGS="$CFLAGS $OSX_ARCH_LIBRARY" CXXFLAGS="$CXXFLAGS $OSX_ARCH_LIBRARY" LDFLAGS="$LDFLAGS $OSX_ARCH_LIBRARY" ./configure $v $conf_opts $xcolor_skip $@
     make $MAKE_CPUS
     make install
+    cd "$top/$git_repo"
+    echo "$git_version" > old_gitrev.txt
   else
     echo no changes in git $git_version
   fi
-  echo "$git_version" > old_gitrev.txt
 if [ $verbose -gt 0 ]; then sleep 1; fi
 
 cd "$top"
@@ -825,10 +828,11 @@ else
     echo "$git_version" != "$old_git_version"
     make $MAKE_CPUS
     make install
+    cd "$top/$git_repo"
+    echo "$git_version" > old_gitrev.txt
   else
     echo no changes in git $git_version
   fi
-  echo "$git_version" > old_gitrev.txt
 fi
 if [ $verbose -gt 0 ]; then sleep 2; fi
 
@@ -969,17 +973,17 @@ git_repo=oyranos
     mkdir build
     update_xcm=1
   fi
-  cd build
   old_git_version="`cat old_gitrev.txt`"
   update_oyranos=0
   pkg-config --atleast-version=0.9 oyranos
   if [ $? -ne 0 ] || [ $update_xcm = 1 ] ||
      [ "$git_version" != "$old_git_version" ]; then
+    cd build
     echo "oyranos `pkg-config --modversion oyranos`"
     update_oyranos=1
     if [ $UNAME_ = "MINGW32_NT-6.1" ]; then
       x11_skip="--disable-libX11"
-      cmake "$cmake_target" -DCMAKE_C_FLAGS="$CFLAGS" -DCMAKE_CXX_FLAGS="$CXXFLAGS" -DCMAKE_LD_FLAGS="$LDFLAGS" -DCMAKE_INSTALL_PREFIX="$prefix" -DXDG_CONFIG_DIR="$HOME/.local/xdg" -DLIB_SUFFIX=$BARCH -DCMAKE_BUILD_TYPE=debugfull ..
+      cmake "$cmake_target" -DCMAKE_C_FLAGS="$CFLAGS" -DCMAKE_CXX_FLAGS="$CXXFLAGS" -DCMAKE_LD_FLAGS="$LDFLAGS" -DCMAKE_INSTALL_PREFIX="$prefix" -DXDG_CONFIG_DIR="$HOME/.local/xdg" -DLIB_SUFFIX=$BARCH -DCMAKE_BUILD_TYPE=Debug ..
       make
     else
       CFLAGS="$CFLAGS $OSX_ARCH_LIBRARY" CXXFLAGS="$CXXFLAGS $OSX_ARCH_LIBRARY" LDFLAGS="$LDFLAGS $OSX_ARCH_LIBRARY" ../configure $conf_opts $@  $v --enable-debug --xdgsysdir="$HOME/.local/xdg" $x11_skip
@@ -987,10 +991,11 @@ git_repo=oyranos
     fi
     make install
     make check
+    cd "$top/$git_repo"
+    echo "$git_version" > old_gitrev.txt
   else
     echo no changes in git $git_version
   fi
-  echo "$git_version" > old_gitrev.txt
 if [ $verbose -gt 0 ]; then sleep 1; fi
 
 cd "$top"
@@ -1014,10 +1019,11 @@ git_repo=xcm
     ./configure $v $conf_opts $@
     make $MAKE_CPUS
     make install
+    cd "$top/$git_repo"
+    echo "$git_version" > old_gitrev.txt
   else
     echo no changes in git $git_version
   fi
-  echo "$git_version" > old_gitrev.txt
 if [ $verbose -gt 0 ]; then sleep 1; fi
 
 cd "$top"
@@ -1044,10 +1050,11 @@ else
     ./configure $v $conf_opts $@
     make $MAKE_CPUS
     make install
+    cd "$top/$git_repo"
+    echo "$git_version" > old_gitrev.txt
   else
     echo no changes in git $git_version
   fi
-  echo "$git_version" > old_gitrev.txt
 fi
 if [ $verbose -gt 0 ]; then sleep 1; fi
 
@@ -1076,14 +1083,14 @@ else
   old_git_version="`cat old_gitrev.txt`"
   if [ $update_oyranos = 1 ] || [ "$git_version" != "$old_git_version" ]; then
     cd build
-    cmake "$cmake_target" -DCMAKE_C_FLAGS="$CFLAGS $OSX_ARCH_LIBRARY" -DCMAKE_CXX_FLAGS="$CXXFLAGS $OSX_ARCH_LIBRARY" -DCMAKE_LD_FLAGS="$LDFLAGS $OSX_ARCH_LIBRARY" -DCMAKE_INSTALL_PREFIX=$prefix -DLIBRARY_OUTPUT_PATH=$libdir -DCMAKE_BUILD_TYPE=debugfull ..
+    cmake "$cmake_target" -DCMAKE_C_FLAGS="$CFLAGS $OSX_ARCH_LIBRARY" -DCMAKE_CXX_FLAGS="$CXXFLAGS $OSX_ARCH_LIBRARY" -DCMAKE_LD_FLAGS="$LDFLAGS $OSX_ARCH_LIBRARY" -DCMAKE_INSTALL_PREFIX=$prefix -DLIBRARY_OUTPUT_PATH=$libdir -DCMAKE_BUILD_TYPE=Debug ..
     make
     make install
+    cd "$top/$git_repo"
+    echo "$git_version" > old_gitrev.txt
   else
     echo no changes in git $git_version
   fi
-  cd "$top/$git_repo"
-  echo "$git_version" > old_gitrev.txt
 fi
 if [ $verbose -gt 0 ]; then sleep 1; fi
 
@@ -1113,14 +1120,14 @@ else
   old_git_version="`cat old_gitrev.txt`"
   if [ $update_oyranos = 1 ] || [ "$git_version" != "$old_git_version" ]; then
     cd build
-    cmake "$cmake_target" -DCMAKE_C_FLAGS="$CFLAGS $OSX_ARCH_COCOA" -DCMAKE_CXX_FLAGS="$CXXFLAGS $OSX_ARCH_COCOA" -DCMAKE_LD_FLAGS="$LDFLAGS $OSX_ARCH_COCOA" -DCMAKE_INSTALL_PREFIX=$prefix -DCMAKE_BUILD_TYPE=debugfull ..
+    cmake "$cmake_target" -DCMAKE_C_FLAGS="$CFLAGS $OSX_ARCH_COCOA" -DCMAKE_CXX_FLAGS="$CXXFLAGS $OSX_ARCH_COCOA" -DCMAKE_LD_FLAGS="$LDFLAGS $OSX_ARCH_COCOA" -DCMAKE_INSTALL_PREFIX=$prefix -DCMAKE_BUILD_TYPE=Debug ..
     make
     make install
+    cd "$top/$git_repo"
+    echo "$git_version" > old_gitrev.txt
   else
     echo no changes in git $git_version
   fi
-  cd "$top/$git_repo"
-  echo "$git_version" > old_gitrev.txt
 fi
 if [ $verbose -gt 0 ]; then sleep 1; fi
 
@@ -1154,11 +1161,11 @@ else
     make
     make install
     kbuildsycoca4
+    cd "$top/$git_repo"
+    echo "$git_version" > old_gitrev.txt
   else
     echo no changes in git $git_version
   fi
-  cd "$top/$git_repo"
-  echo "$git_version" > old_gitrev.txt
 fi
 if [ $verbose -gt 0 ]; then sleep 1; fi
 
@@ -1222,16 +1229,17 @@ git_repo=icc-examin
   if [ $update_oyranos = 1 ] || [ "$git_version" != "$old_git_version" ] ||
      [ ! -f "$target" ]; then
     cd build
-    cmake "$cmake_target" -DCMAKE_C_FLAGS="$CFLAGS $OSX_ARCH_COCOA" -DCMAKE_CXX_FLAGS="$CXXFLAGS $OSX_ARCH_COCOA" -DCMAKE_LD_FLAGS="$LDFLAGS $OSX_ARCH_COCOA" -DCMAKE_INSTALL_PREFIX="$prefix" -DCMAKE_BUILD_TYPE=debugfull ..
+    cmake "$cmake_target" -DCMAKE_C_FLAGS="$CFLAGS $OSX_ARCH_COCOA" -DCMAKE_CXX_FLAGS="$CXXFLAGS $OSX_ARCH_COCOA" -DCMAKE_LD_FLAGS="$LDFLAGS $OSX_ARCH_COCOA" -DCMAKE_INSTALL_PREFIX="$prefix" -DCMAKE_BUILD_TYPE=Debug ..
     make $MAKE_CPUS
     if [ $? = 0 ] && [ $UNAME_ = "Darwin" ]; then
       make bundle
     fi
+    make install
+    cd "$top/$git_repo"
+    echo "$git_version" > old_gitrev.txt
   else
     echo no changes in git $git_version
   fi
-  echo "$git_version" > old_gitrev.txt
-#make install
 if [ $verbose -gt 0 ]; then sleep 1; fi
 
 cd "$top"
