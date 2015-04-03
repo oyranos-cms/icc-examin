@@ -1237,12 +1237,12 @@ if [ $verbose -gt 0 ]; then sleep 1; fi
 cd "$top"
 
 echo ""
-if [ -f "$git_repo/$target" ]; then
+if [ -f "$git_repo/build/$target" ]; then
   echo ICC Examin is in $git_repo/$target
   echo You can test it now with one of:
-  echo   $git_repo/$target icc-profiles-basiccolor-printing2009-1.2.0/default_profiles/printing/ISOcoated_v2_bas.ICC
+  echo   $git_repo/build/$target icc-profiles-basiccolor-printing2009-1.2.0/default_profiles/printing/ISOcoated_v2_bas.ICC
   echo   hint: the 3D gamut hull is shown with the Ctrl-h shortcut
 else
-  echo Could not build $git_repo/$target
+  echo Could not build $git_repo/build/$target
 fi
 
