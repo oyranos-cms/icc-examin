@@ -69,8 +69,7 @@ class ICCheader {
                   { DBG_PROG  memcpy((char*)&(header.cmmId),s,
                                      sizeof (icSignature)); }
     const char* cmmName () const
-                  { DBG_PROG  return cp_nchar((char*)&(header.cmmId),
-                                              sizeof (icSignature)); }
+                  { DBG_PROG  return oyICCCmmDescription( icValue( header.cmmId ) ); }
     double      versionD() const;
     int         version () const
                   { DBG_PROG  return icValue(header.version); }
