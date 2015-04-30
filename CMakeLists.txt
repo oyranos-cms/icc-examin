@@ -202,7 +202,7 @@ SET( icc_examin_SRCS
    )
 
 ADD_EXECUTABLE( iccexamin ${icc_examin_SRCS} icc_main.cpp )
-TARGET_LINK_LIBRARIES ( iccexamin oyranos ${EXTRA_LIBS}
+TARGET_LINK_LIBRARIES ( iccexamin ${EXTRA_LIBS}
                  ${FLTK_LIBRARIES}
                  ${OYRANOS_LIBRARIES}
                  ${XCM_LIBRARIES}
@@ -220,7 +220,7 @@ INSTALL( FILES iccexamin.1 DESTINATION share/man/man1 )
 
 IF( CINEPAINT_FOUND )
   ADD_EXECUTABLE( icc_examin_cp ${icc_examin_SRCS} icc_cinepaint.cpp )
-  TARGET_LINK_LIBRARIES ( icc_examin_cp oyranos ${CINEPAINT_LIBRARIES}
+  TARGET_LINK_LIBRARIES ( icc_examin_cp ${CINEPAINT_LIBRARIES}
                  ${FLTK_LIBRARIES}
                  ${OYRANOS_LIBRARIES}
                  ${XCM_LIBRARIES}
