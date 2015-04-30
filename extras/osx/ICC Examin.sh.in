@@ -1,0 +1,37 @@
+#!/bin/bash
+
+prefix=
+
+
+exe=iccexamin
+path="${0%/*}"
+export top_path="${path%/*}"
+export RESOURCESPATH="$top_path/Resources$prefix"
+export dyld_path="$top_path/MacOS"
+binpath="$path"
+
+test -z $DYLD_FALLBACK_LIBRARY_PATH && \
+export DYLD_FALLBACK_LIBRARY_PATH="$dyld_path:$RESOURCESPATH/elektra" ||
+export DYLD_FALLBACK_LIBRARY_PATH="$dyld_path:$RESOURCESPATH/elektra":$DYLD_FALLBACK_LIBRARY_PATH
+export PATH=$binpath:$PATH
+
+test -z $DYLD_FALLBACK_FRAMEWORK_PATH && \
+export DYLD_FALLBACK_FRAMEWORK_PATH="$top_path/Frameworks" ||
+export DYLD_FALLBACK_FRAMEWORK_PATH="$top_path/Frameworks":$DYLD_FALLBACK_FRAMEWORK_PATH
+
+test -z $XDG_DATA_DIRS && \
+XDG_DATA_DIRS="$top_path/Frameworks/@OYRANOS_FRAMEWORK_ICC@/Resources/share" ||
+XDG_DATA_DIRS="$top_path/Frameworks/@OYRANOS_FRAMEWORK_ICC@/Resources/share:$XDG_DATA_DIRS"
+
+test -z $OY_MODULE_PATH && \
+OY_MODULE_PATH="$RESOURCESPATH" ||
+OY_MODULE_PATH="$RESOURCESPATH:$OY_MODULE_PATH"
+
+OY_LOCALEDIR="$top_path/Frameworks/@OYRANOS_FRAMEWORK_LOCALE@/Resources/@OYRANOS_FRAMEWORK_LOCALE_DIR@"
+
+export XDG_DATA_DIRS OY_MODULE_PATH OY_LOCALEDIR
+
+
+
+#set >> /tmp/test.txt
+"$path/$exe" $@

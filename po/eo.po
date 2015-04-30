@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2014-11-08 10:46+0100\n"
+"POT-Creation-Date: 2015-04-02 22:35+0200\n"
 "PO-Revision-Date: 2005-08-13 17:35+0200\n"
 "Last-Translator: Kai-Uwe Behrmann\n"
 "Language-Team:  <eo@li.org>\n"
@@ -19,81 +19,178 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: KBabel 1.9\n"
 
-#: icc_oyranos_extern.c:133
-msgid "XYZ"
+#: icc_ueber.cpp:478
+msgid ""
+"    ICC Examin is licensed under the GPL version 2.    Especially all icc_* "
+"files are licensed under the GPL.<br>    The other source files may contain "
+"devergine licenses, which are detectable from file headers. "
 msgstr ""
 
-#: icc_oyranos_extern.c:134
-msgid "Lab"
+#. format sensible, as this string is the header in the tag browser table
+#: icc_profile_header.cpp:271
+msgid "    head  head    128 File header"
 msgstr ""
 
-#: icc_oyranos_extern.c:135
-msgid "Luv"
+#: icc_measurement.cpp:1462
+msgid "  (dE CIE 2000) averaging: "
 msgstr ""
 
-#: icc_oyranos_extern.c:136
-msgid "YCbCr"
+#: icc_ueber.cpp:908
+msgid ""
+"  FLTK: Bill Spitzack and others <a href=\"http://www.fltk.org\">www.fltk."
+"org</a><br/>\n"
 msgstr ""
 
-#: icc_oyranos_extern.c:137
-msgid "Yxy"
+#: icc_ueber.cpp:915
+msgid ""
+"  FLU: Jason Bryan <a href=\"http://www.osc.edu/~jbryan/FLU\">www.osc.edu/"
+"~jbryan/FLU/</a><br/>\n"
 msgstr ""
 
-#: icc_oyranos_extern.c:138
-msgid "Rgb"
+#: icc_ueber.cpp:933
+msgid ""
+"  FTGL: Henry Maddocks <a href=\"http://homepages.paradise.net.nz/henryj/"
+"code/#FTGL\">homepages.paradise.net.nz/henryj/code/#FTGL<\a><br/>\n"
 msgstr ""
 
-#: icc_oyranos_extern.c:139 icc_draw.cpp:716 icc_gl.cpp:2764 icc_waehler.h:128
-msgid "Gray"
-msgstr "Griza"
-
-#: icc_oyranos_extern.c:140
-msgid "Hsv"
+#: icc_ueber.cpp:946
+msgid "  agv 3D Navigation: Philip Winston<br/>\n"
 msgstr ""
 
-#: icc_oyranos_extern.c:141
-msgid "Hls"
+#: icc_ueber.cpp:966
+msgid ""
+"  argyll: Greame Gill <a href=\"http://www.argyllcms.com\">www.argyllcms."
+"com</a><br/><br/><br/>\n"
 msgstr ""
 
-#: icc_oyranos_extern.c:142
-msgid "Cmyk"
+#: icc_ueber.cpp:952
+msgid "  bsp rendering: Norman Chin<br/>\n"
 msgstr ""
 
-#: icc_oyranos_extern.c:143
-msgid "Cmy"
+#: icc_ueber.cpp:922
+msgid ""
+"  littleCMS: Marti Maria <a href=\"http://www.littlecms.com\">www.littlecms."
+"com</a><br/>\n"
 msgstr ""
 
-#: icc_oyranos_extern.c:144
-msgid "2color"
-msgstr "2koloroj"
+#: icc_measurement.cpp:1462
+msgid "  maximum: "
+msgstr ""
 
-#: icc_oyranos_extern.c:145
-msgid "3color"
-msgstr "3koloroj"
+#: icc_measurement.cpp:1462
+msgid "  minimum: "
+msgstr ""
 
-#: icc_oyranos_extern.c:146
-msgid "4color"
-msgstr "4koloroj"
+#: icc_ueber.cpp:441
+msgid ""
+" The Profile identifier tag is used in device link profiles to identify the "
+"profiles used to build the device link. However there are other informations "
+"needed to repeat the creation of a device link profile, like rendering "
+"intents or K preservation flags and so on."
+msgstr ""
 
-#: icc_oyranos_extern.c:148
-msgid "5color"
-msgstr "5koloroj"
+#: icc_ueber.cpp:330
+msgid " number key - set the number of interpolation planes"
+msgstr ""
 
-#: icc_oyranos_extern.c:150
-msgid "6color"
-msgstr "6koloroj"
+#: icc_draw.cpp:792 icc_draw.cpp:853
+msgid " points"
+msgstr "punktoj"
 
-#: icc_oyranos_extern.c:152
-msgid "7color"
-msgstr "7koloroj"
+#. check
+#: icc_profile.cpp:444 icc_profile.cpp:474
+msgid " typ - no text output"
+msgstr ""
 
-#: icc_oyranos_extern.c:154
-msgid "8color"
-msgstr "8koloroj"
+#: icc_draw.cpp:266
+msgid " used too early!"
+msgstr ""
 
-#: icc_oyranos_extern.c:156
-msgid "9color"
-msgstr "9koloroj"
+#. show infos
+#: icc_draw.cpp:792 icc_draw.cpp:853
+msgid " with "
+msgstr " kaj "
+
+#. show infos
+#: icc_draw.cpp:799
+msgid " with Gamma: 1.0"
+msgstr ""
+
+#. show infos
+#: icc_draw.cpp:812 icc_draw.cpp:831
+msgid " with one entry for gamma: "
+msgstr ""
+
+#: icc_examin.cpp:139
+msgid "!!! ERROR"
+msgstr ""
+
+#: icc_utils.h:292 icc_utils.h:293 icc_utils.h:294 icc_utils.h:348
+#: icc_utils.h:349 icc_utils.h:350
+msgid "!!! Warning !!!"
+msgstr ""
+
+#: icc_ueber.cpp:339
+msgid "'*' star - larger steps for the minus and plus keys above"
+msgstr ""
+
+#: icc_ueber.cpp:335
+msgid "'+' plus - increase the actual interpolation plane"
+msgstr ""
+
+#: icc_ueber.cpp:333
+msgid "'-' minus - reduce the actual interpolation plane"
+msgstr ""
+
+#: icc_ueber.cpp:337
+msgid "'/' slash - smaller steps for the minus and pus keys above"
+msgstr ""
+
+#: icc_ueber.cpp:341
+msgid "'_' underline - switch lines between one and three directions"
+msgstr ""
+
+#: icc_helfer.cpp:809 icc_helfer.cpp:827 icc_helfer.cpp:844
+msgid "---"
+msgstr ""
+
+#. clrt
+#. flex
+#: icc_examin.cpp:1368 icc_helfer.cpp:648 icc_helfer.cpp:740
+msgid "----"
+msgstr ""
+
+#: icc_helfer.cpp:842
+msgid "0"
+msgstr ""
+
+#: icc_gl.cpp:1045
+msgid "0,0,0"
+msgstr ""
+
+#: icc_examin_version.h:8
+msgid "0.56"
+msgstr ""
+
+#: icc_helfer.cpp:825
+msgid "0/45, 45/0"
+msgstr ""
+
+#: icc_helfer.cpp:826
+msgid "0/d or d/0"
+msgstr ""
+
+#: icc_ueber.cpp:161 icc_ueber.cpp:231
+msgid "1 Features"
+msgstr ""
+
+#: icc_helfer.cpp:807
+msgid "10 degree (1964)"
+msgstr ""
+
+#: icc_helfer.cpp:843
+msgid "100"
+msgstr ""
 
 #: icc_oyranos_extern.c:158
 msgid "10color"
@@ -119,1486 +216,12 @@ msgstr "14koloroj"
 msgid "15color"
 msgstr "15koloroj"
 
-#. ICC stop
-#. if (MoveMode == FLYING)
-#: agviewer.cpp:311 icc_gl.cpp:3849 icc_gl.cpp:3868 icc_gl.cpp:3990
-msgid "left-/middle-/right mouse button -> rotate/cut/menu"
-msgstr ""
-
-#: agviewer.cpp:324
-msgid "Pause"
-msgstr ""
-
-#: agviewer.cpp:348 agviewer.cpp:356 icc_gl.cpp:3956 icc_gl.cpp:3967
-#: icc_gl.cpp:3972 icc_gl.cpp:3977
-msgid "left mouse button -> go back"
-msgstr ""
-
-#: icc_draw.cpp:266
-msgid " used too early!"
-msgstr ""
-
-#: icc_draw.cpp:697
-#, fuzzy
-msgid "unknown Colour"
-msgstr "kolora"
-
-#: icc_draw.cpp:706 icc_draw.cpp:717 icc_helfer.cpp:415
-#: icc_profile_tags.cpp:420 icc_helfer_osx.cpp:96 icc_helfer_x.cpp:67
-msgid "Red"
-msgstr "Ruĝa"
-
-#: icc_draw.cpp:709 icc_draw.cpp:719 icc_helfer.cpp:416
-#: icc_profile_tags.cpp:421 icc_helfer_osx.cpp:97 icc_helfer_x.cpp:68
-msgid "Green"
-msgstr "Verda"
-
-#: icc_draw.cpp:712 icc_draw.cpp:721 icc_helfer.cpp:417
-#: icc_profile_tags.cpp:422 icc_helfer_osx.cpp:98 icc_helfer_x.cpp:69
-msgid "Blue"
-msgstr "Blua"
-
-#: icc_draw.cpp:723 icc_helfer.cpp:425 icc_helfer.cpp:429
-msgid "Cyan"
-msgstr "Cejana"
-
-#: icc_draw.cpp:725 icc_helfer.cpp:426 icc_helfer.cpp:430
-msgid "Magenta"
-msgstr "Fuksina"
-
-#: icc_draw.cpp:727 icc_helfer.cpp:427 icc_helfer.cpp:431
-msgid "Yellow"
-msgstr "Flava"
-
-#: icc_draw.cpp:729 icc_gl.cpp:2766 icc_helfer.cpp:418 icc_helfer.cpp:428
-msgid "Black"
-msgstr "Nigra"
-
-#: icc_draw.cpp:731 icc_helfer.cpp:614
-msgid "Luminance"
-msgstr ""
-
-#: icc_draw.cpp:733 icc_helfer.cpp:409
-msgid "Luminance Y"
-msgstr ""
-
-#: icc_draw.cpp:735 icc_helfer.cpp:400
-msgid "CIE X"
-msgstr ""
-
-#: icc_draw.cpp:737 icc_helfer.cpp:401 icc_helfer.cpp:412
-msgid "CIE Y (Luminance)"
-msgstr ""
-
-#: icc_draw.cpp:739 icc_helfer.cpp:402
-msgid "CIE Z"
-msgstr ""
-
-#: icc_draw.cpp:741 icc_helfer.cpp:423
-msgid "Lightness"
-msgstr ""
-
-#: icc_draw.cpp:743 icc_helfer.cpp:421
-msgid "Value"
-msgstr ""
-
-#: icc_draw.cpp:745 icc_examin_farbraum.cpp:402 icc_examin_io.cpp:323
-#: icc_helfer.cpp:403 icc_helfer.cpp:406
-msgid "CIE *L"
-msgstr ""
-
-#: icc_draw.cpp:747 icc_examin_farbraum.cpp:403 icc_examin_io.cpp:324
-#: icc_gl.cpp:1189 icc_gl.cpp:1260 icc_gl.cpp:1286 icc_gl.cpp:1294
-#: icc_helfer.cpp:404
-msgid "CIE *a"
-msgstr ""
-
-#: icc_draw.cpp:749 icc_examin_farbraum.cpp:404 icc_examin_io.cpp:325
-#: icc_gl.cpp:1202 icc_gl.cpp:1302 icc_gl.cpp:1322 icc_gl.cpp:1329
-#: icc_helfer.cpp:405
-msgid "CIE *b"
-msgstr ""
-
-#: icc_draw.cpp:751 icc_helfer.cpp:410
-msgid "Colour b"
-msgstr "Koloro b"
-
-#: icc_draw.cpp:753 icc_helfer.cpp:411
-msgid "Colour r"
-msgstr "Koloro r"
-
-#. show infos
-#: icc_draw.cpp:792 icc_draw.cpp:853
-msgid " with "
-msgstr " kaj "
-
-#: icc_draw.cpp:792 icc_draw.cpp:853
-msgid " points"
-msgstr "punktoj"
-
-#. show infos
-#: icc_draw.cpp:799
-msgid " with Gamma: 1.0"
-msgstr ""
-
-#. show infos
-#: icc_draw.cpp:812 icc_draw.cpp:831
-msgid " with one entry for gamma: "
-msgstr ""
-
-#: icc_examin.cpp:136
-msgid "WARNING"
-msgstr ""
-
-#: icc_examin.cpp:139
-msgid "!!! ERROR"
-msgstr ""
-
-#: icc_examin.cpp:324
-msgid "Gamut selector"
-msgstr ""
-
-#: icc_examin.cpp:455 icc_examin.cpp:1432
-msgid "loaded"
-msgstr ""
-
-#: icc_examin.cpp:461
-msgid "Ready"
-msgstr ""
-
-#: icc_examin.cpp:909 icc_examin.cpp:912
-msgid "Compare Measurement <-> Profile Colours"
-msgstr ""
-
-#: icc_examin.cpp:911 icc_oyranos.cpp:670
-msgid "none"
-msgstr ""
-
-#: icc_examin.cpp:929 icc_examin.cpp:933
-msgid "Gamut View"
-msgstr ""
-
-#: icc_examin.cpp:1001 icc_examin_tagwahl.cpp:1052 icc_gl.h:276
-msgid "not available"
-msgstr ""
-
-#. clrt
-#. flex
-#: icc_examin.cpp:1368 icc_helfer.cpp:648 icc_helfer.cpp:740
-msgid "----"
-msgstr ""
-
-#: icc_examin.cpp:1371
-msgid "Filename (other data type)"
-msgstr ""
-
-#: icc_examin.cpp:1373
-msgid "Filename (corrupted ICC data type)"
-msgstr ""
-
-#: icc_examin.cpp:1382
-msgid "found no content for"
-msgstr ""
-
-#: icc_examin.cpp:1385
-msgid "Internal error"
-msgstr ""
-
-#. this string is sensible to formatting in the tag browser GUI, please keep a mono spaced formatting
-#: icc_examin.cpp:1388
-msgid "No. Tag   Type   Size Description"
-msgstr ""
-
-#: icc_examin_io.cpp:331
-msgid "no net found in VRML file"
-msgstr ""
-
-#: icc_examin_io.cpp:375
-msgid "no net found. Is Argyll installed?"
-msgstr ""
-
-#: icc_examin_io.cpp:604
-msgid "Stop loading "
-msgstr ""
-
-#: icc_examin_io.cpp:704
-msgid "HTML Documents (*.htm*)"
-msgstr ""
-
-#: icc_examin_io.cpp:708 icc_betrachter.cxx:646
-msgid "Save Report"
-msgstr ""
-
-#: icc_examin_io.cpp:781
-msgid "ICC colour profiles (*.ic*)"
-msgstr ""
-
-#: icc_examin_io.cpp:782 icc_betrachter.cxx:647
-msgid "Save Gamut as Profile"
-msgstr ""
-
-#: icc_examin_io.cpp:784
-msgid "VRML Files (*.wrl)"
-msgstr ""
-
-#: icc_examin_io.cpp:785 icc_betrachter.cxx:648
-msgid "Save Gamut as VRML"
-msgstr ""
-
-#: icc_examin_tagwahl.cpp:65
-msgid "empty"
-msgstr ""
-
-#: icc_examin_tagwahl.cpp:163
-msgid "RGB primaries"
-msgstr ""
-
-#. found XXX elements
-#: icc_examin_tagwahl.cpp:388
-msgid "found"
-msgstr ""
-
-#. found XXX elements
-#: icc_examin_tagwahl.cpp:394
-msgid "elements"
-msgstr ""
-
-#: icc_examin_tagwahl.cpp:507 icc_profile_tags.cpp:283
-#: icc_profile_tags.cpp:302
-msgid "Intent:"
-msgstr ""
-
-#: icc_examin_tagwahl.cpp:683
-msgid "Matrix 3x3 + 3"
-msgstr ""
-
-#. Fl_Box* box_stat
-#: icc_examin_tagwahl.cpp:1044 icc_betrachter.cxx:1140
-msgid "Loading .."
-msgstr ""
-
-#: icc_fenster.cpp:134
-msgid ""
-"The \"rawphoto\" plugin won't work because there is no \"dcraw\" executable "
-"in your path."
-msgstr ""
-
-#: icc_fenster.cpp:160
-msgid ""
-"All Formats (*.{ICC,ICM,txt,it8,IT8,RGB,CMYK,ti*,cgats,CIE,cie,nCIE,oRPT,DLY,"
-"LAB,Q60,wrl,vrml,wrl.gz,vrml.gz,png,ppm,pnm,pgm,pfm})\tICC colour profiles "
-"(*.{I,i}{C,c}{M,m,C,c})\tMeasurement (*.{txt,it8,IT8,RGB,CMYK,ti*,cgats,CIE,"
-"cie,nCIE,oRPT,DLY,LAB,Q60})\tArgyll Gamuts (*.{wrl,vrml,wrl.gz,vrml."
-"gz}\tImages (*.png,ppm,pnm,pgm,pfm)"
-msgstr ""
-
-#: icc_fenster.cpp:160
-msgid "Which ICC profile?"
-msgstr ""
-
-#: icc_fenster.cpp:350
-msgid "Log:"
-msgstr ""
-
-#. Flmm_Tabs* o
-#: icc_fenster.cpp:352 icc_fenster.cpp:419 icc_betrachter.cxx:802
-msgid "Yes"
-msgstr "Jes"
-
-#: icc_fenster.cpp:416
-msgid "Information:"
-msgstr ""
-
-#: icc_gl.cpp:914 icc_gl.cpp:917 icc_gl.cpp:924 icc_gl.cpp:935 icc_gl.cpp:939
-#: icc_gl.cpp:954
-msgid "Could not open font in:"
-msgstr ""
-
-#: icc_gl.cpp:1045
-msgid "0,0,0"
-msgstr ""
-
-#: icc_gl.cpp:2732 icc_gl.cpp:2742 icc_gl.cpp:2745 icc_gl.cpp:2747
-#: icc_gl.cpp:2750 icc_gl.cpp:2752
-msgid "Slice"
-msgstr ""
-
-#: icc_gl.cpp:2733
-msgid "Rotate around slice"
-msgstr ""
-
-#: icc_gl.cpp:2754
-msgid "Rotate around"
-msgstr ""
-
-#: icc_gl.cpp:2754
-msgid "axis"
-msgstr ""
-
-#: icc_gl.cpp:2759
-msgid "Slice plane"
-msgstr ""
-
-#. ->Darstellung->background colour
-#: icc_gl.cpp:2762
-msgid "White"
-msgstr "Blanka"
-
-#: icc_gl.cpp:2763
-msgid "Light gray"
-msgstr ""
-
-#: icc_gl.cpp:2765
-msgid "Dark gray"
-msgstr ""
-
-#: icc_gl.cpp:2769
-msgid "Background colour"
-msgstr ""
-
-#: icc_gl.cpp:2774
-msgid "gray"
-msgstr "Griza"
-
-#: icc_gl.cpp:2775
-msgid "coloured"
-msgstr ""
-
-#: icc_gl.cpp:2776
-msgid "high contrast"
-msgstr ""
-
-#. Shells alike displaying, alternatves are "Membranes" or "Shells"
-#: icc_gl.cpp:2778
-msgid "Onion skins"
-msgstr ""
-
-#: icc_gl.cpp:2779
-#, fuzzy
-msgid "Colour line"
-msgstr "kolora"
-
-#: icc_gl.cpp:2784
-msgid "Sphere 1dE"
-msgstr ""
-
-#: icc_gl.cpp:2785
-msgid "Sphere 2dE"
-msgstr ""
-
-#: icc_gl.cpp:2786
-msgid "Sphere 4dE"
-msgstr ""
-
-#: icc_gl.cpp:2789
-msgid "Star"
-msgstr ""
-
-#. points are reserved for image colours
-#: icc_gl.cpp:2792
-msgid "Point"
-msgstr ""
-
-#: icc_gl.cpp:2795
-msgid "without markers"
-msgstr ""
-
-#: icc_gl.cpp:2796
-msgid "Spektral line"
-msgstr "spektra linio"
-
-#: icc_gl.cpp:2799
-msgid "Texts"
-msgstr ""
-
-#: icc_gl.cpp:2801
-msgid "Texts/Arrows on/off"
-msgstr ""
-
-#: icc_gl.cpp:2803
-msgid "Illustration"
-msgstr ""
-
-#. "Pos" is a abreviation to position and will be visible in the small statusline with position coordinates
-#: icc_gl.cpp:3164
-msgid "Pos"
-msgstr ""
-
-#: icc_gl.cpp:3290 icc_profile_tags.cpp:319
-msgid "Channel"
-msgstr "kanalo"
-
-#: icc_helfer.cpp:259 icc_betrachter.cxx:430
-msgid "Perceptual"
-msgstr ""
-
-#: icc_helfer.cpp:262 icc_betrachter.cxx:431
-msgid "Relative Colorimetric"
-msgstr ""
-
-#: icc_helfer.cpp:265 icc_helfer.cpp:420 icc_helfer.cpp:424
-msgid "Saturation"
-msgstr "pureco"
-
-#: icc_helfer.cpp:268 icc_betrachter.cxx:432
-msgid "Absolute Colorimetric"
-msgstr ""
-
-#: icc_helfer.cpp:395 icc_profile_tags.cpp:1268 icc_profile_tags.cpp:1275
-msgid "Colour"
-msgstr "kolora"
-
-#: icc_helfer.cpp:407
-msgid "CIE *u"
-msgstr ""
-
-#: icc_helfer.cpp:408
-msgid "CIE *v"
-msgstr ""
-
-#: icc_helfer.cpp:413
-msgid "CIE x"
-msgstr ""
-
-#: icc_helfer.cpp:414
-msgid "CIE y"
-msgstr ""
-
-#: icc_helfer.cpp:419 icc_helfer.cpp:422
-msgid "Hue"
-msgstr "tono"
-
-#: icc_helfer.cpp:446
-msgid "No Colour"
-msgstr ""
-
-#: icc_helfer.cpp:462
-msgid "Input"
-msgstr ""
-
-#: icc_helfer.cpp:463
-msgid "Display"
-msgstr "Ekrano"
-
-#: icc_helfer.cpp:464
-msgid "Output"
-msgstr ""
-
-#: icc_helfer.cpp:465
-msgid "Link"
-msgstr ""
-
-#: icc_helfer.cpp:466
-msgid "Abstract"
-msgstr ""
-
-#: icc_helfer.cpp:467 icc_profile.cpp:910
-msgid "Colour Space"
-msgstr ""
-
-#: icc_helfer.cpp:468 icc_helfer.cpp:618
-msgid "Named Colour"
-msgstr ""
-
-#: icc_helfer.cpp:490
-msgid "Macintosh"
-msgstr ""
-
-#: icc_helfer.cpp:491
-msgid "Microsoft"
-msgstr ""
-
-#: icc_helfer.cpp:492
-msgid "Solaris"
-msgstr ""
-
-#: icc_helfer.cpp:493
-msgid "SGI"
-msgstr ""
-
-#: icc_helfer.cpp:494
-msgid "Taligent"
-msgstr ""
-
-#: icc_helfer.cpp:593
-msgid "Description"
-msgstr ""
-
-#: icc_helfer.cpp:596
-msgid "Lookup table, device to PCS, intent photometric"
-msgstr ""
-
-#: icc_helfer.cpp:597
-msgid "Lookup table, device to PCS, intent relative colorimetric"
-msgstr ""
-
-#: icc_helfer.cpp:598
-msgid "Lookup table, device to PCS, intent saturation"
-msgstr ""
-
-#: icc_helfer.cpp:599
-msgid "Blue Colorant"
-msgstr ""
-
-#: icc_helfer.cpp:600
-msgid "Blue tone reproduction curve"
-msgstr ""
-
-#: icc_helfer.cpp:601
-msgid "Lookup table, PCS to device, intent photometric"
-msgstr ""
-
-#: icc_helfer.cpp:602
-msgid "Lookup table, PCS to device, intent relative colorimetric"
-msgstr ""
-
-#: icc_helfer.cpp:603
-msgid "Lookup table, PCS to device, intent saturation"
-msgstr ""
-
-#: icc_helfer.cpp:604
-msgid "Calibration date"
-msgstr ""
-
-#: icc_helfer.cpp:605
-msgid "Colour measurement data"
-msgstr ""
-
-#: icc_helfer.cpp:606
-msgid "Copyright"
-msgstr ""
-
-#: icc_helfer.cpp:607
-msgid "crdi"
-msgstr ""
-
-#: icc_helfer.cpp:608
-msgid "Device manufacturerer description"
-msgstr ""
-
-#: icc_helfer.cpp:609
-msgid "Device model description"
-msgstr ""
-
-#: icc_helfer.cpp:610
-msgid "gamut"
-msgstr ""
-
-#: icc_helfer.cpp:611
-msgid "Gray tone reproduction curve"
-msgstr ""
-
-#: icc_helfer.cpp:612
-msgid "Green Colorant"
-msgstr ""
-
-#: icc_helfer.cpp:613
-msgid "Green tone reproduction curve"
-msgstr ""
-
-#: icc_helfer.cpp:615
-msgid "Measurement"
-msgstr ""
-
-#: icc_helfer.cpp:616
-msgid "Media black point"
-msgstr "nigro punkto"
-
-#: icc_helfer.cpp:617
-msgid "Media white point"
-msgstr "blanco punkto"
-
-#: icc_helfer.cpp:619
-#, fuzzy
-msgid "Named Colour 2"
-msgstr "kolora"
-
-#: icc_helfer.cpp:620
-msgid "Preview, photografic"
-msgstr ""
-
-#: icc_helfer.cpp:621
-msgid "Preview, relative colorimetric"
-msgstr ""
-
-#: icc_helfer.cpp:622
-msgid "Preview, saturated"
-msgstr ""
-
-#: icc_helfer.cpp:623
-msgid "Profile description"
-msgstr ""
-
-#: icc_helfer.cpp:624
-msgid "Profile description, multilingual"
-msgstr ""
-
-#. dscm
-#: icc_helfer.cpp:625
-msgid "Profile sequence description"
-msgstr ""
-
-#: icc_helfer.cpp:626
-msgid "psd0"
-msgstr ""
-
-#: icc_helfer.cpp:627
-msgid "psd1"
-msgstr ""
-
-#: icc_helfer.cpp:628
-msgid "psd2"
-msgstr ""
-
-#: icc_helfer.cpp:629
-msgid "psd3"
-msgstr ""
-
-#: icc_helfer.cpp:630
-msgid "ps2s"
-msgstr ""
-
-#: icc_helfer.cpp:631
-msgid "ps2i"
-msgstr ""
-
-#: icc_helfer.cpp:632
-msgid "Red Colorant"
-msgstr ""
-
-#: icc_helfer.cpp:633
-msgid "Red tone reproduction curve"
-msgstr ""
-
-#: icc_helfer.cpp:634
-msgid "scrd"
-msgstr ""
-
-#: icc_helfer.cpp:635
-msgid "scrn"
-msgstr ""
-
-#: icc_helfer.cpp:636
-msgid "Technologie"
-msgstr ""
-
-#: icc_helfer.cpp:637
-msgid "bfd"
-msgstr ""
-
-#: icc_helfer.cpp:638
-msgid "Viewing conditions description"
-msgstr ""
-
-#: icc_helfer.cpp:639
-msgid "Viewing Conditions"
-msgstr ""
-
-#: icc_helfer.cpp:640
-msgid "Device colours"
-msgstr ""
-
-#. DevD
-#: icc_helfer.cpp:641
-msgid "Measured colours"
-msgstr ""
-
-#. CIED
-#: icc_helfer.cpp:642
-msgid "Profiling parameters"
-msgstr ""
-
-#. Pmtr
-#: icc_helfer.cpp:643
-msgid "VideoCardGammaTable"
-msgstr ""
-
-#. vcgt
-#: icc_helfer.cpp:644
-msgid "Colour adaption matrix"
-msgstr ""
-
-#. chad
-#: icc_helfer.cpp:645
-msgid "Chromaticity"
-msgstr ""
-
-#. chrm
-#: icc_helfer.cpp:646
-msgid "Named colour order"
-msgstr ""
-
-#. clro
-#: icc_helfer.cpp:647
-msgid "Named colour names"
-msgstr ""
-
-#: icc_helfer.cpp:718
-msgid "Digital camera"
-msgstr ""
-
-#. dcam
-#: icc_helfer.cpp:719
-msgid "Film scanner"
-msgstr ""
-
-#. fscn
-#: icc_helfer.cpp:720
-msgid "Reflective scanner"
-msgstr ""
-
-#. rscn
-#: icc_helfer.cpp:721
-msgid "InkJet printer"
-msgstr ""
-
-#. ijet
-#: icc_helfer.cpp:722
-msgid "Thermal wax printer"
-msgstr ""
-
-#. twax
-#: icc_helfer.cpp:723
-msgid "Electrophotographic printer"
-msgstr ""
-
-#. epho
-#: icc_helfer.cpp:724
-msgid "Electrostatic printer"
-msgstr ""
-
-#. esta
-#: icc_helfer.cpp:725
-msgid "Dye sublimation printer"
-msgstr ""
-
-#. dsub
-#: icc_helfer.cpp:726
-msgid "Photographic paper printer"
-msgstr ""
-
-#. rpho
-#: icc_helfer.cpp:727
-msgid "Film writer"
-msgstr ""
-
-#. fprn
-#: icc_helfer.cpp:728
-msgid "Video Monitor"
-msgstr ""
-
-#. vidm
-#: icc_helfer.cpp:729
-msgid "Video camera"
-msgstr ""
-
-#. vidc
-#: icc_helfer.cpp:730
-msgid "Projection Television"
-msgstr ""
-
-#. pjtv
-#: icc_helfer.cpp:731
-msgid "Cathode ray tube display"
-msgstr ""
-
-#. CRT
-#: icc_helfer.cpp:732
-msgid "Passive matrix monitor"
-msgstr ""
-
-#. PMD
-#: icc_helfer.cpp:733
-msgid "Active matrix monitor"
-msgstr ""
-
-#. AMD
-#: icc_helfer.cpp:734
-msgid "Photo CD"
-msgstr ""
-
-#. KPCD
-#: icc_helfer.cpp:735
-msgid "PhotoImageSetter"
-msgstr ""
-
-#. imgs
-#: icc_helfer.cpp:736
-msgid "Gravure"
-msgstr ""
-
-#. grav
-#: icc_helfer.cpp:737
-msgid "Offset Lithography"
-msgstr ""
-
-#. offs
-#: icc_helfer.cpp:738
-msgid "Silkscreen"
-msgstr ""
-
-#. silk
-#: icc_helfer.cpp:739
-msgid "Flexography"
-msgstr ""
-
-#: icc_helfer.cpp:762
-msgid "ITU-R BT.709"
-msgstr ""
-
-#: icc_helfer.cpp:763
-msgid "SMPTE RP145-1994"
-msgstr ""
-
-#: icc_helfer.cpp:764
-msgid "EBU Tech.3213-E"
-msgstr ""
-
-#: icc_helfer.cpp:765
-msgid "P22"
-msgstr ""
-
-#: icc_helfer.cpp:767 icc_helfer.cpp:791 icc_helfer.cpp:811 icc_helfer.cpp:829
-#: icc_helfer.cpp:846
-msgid "???"
-msgstr ""
-
-#: icc_helfer.cpp:780
-msgid "Illuminant unknown"
-msgstr ""
-
-#: icc_helfer.cpp:781
-msgid "Illuminant D50"
-msgstr ""
-
-#: icc_helfer.cpp:782
-msgid "Illuminant D65"
-msgstr ""
-
-#: icc_helfer.cpp:783
-msgid "Illuminant D93"
-msgstr ""
-
-#: icc_helfer.cpp:784
-msgid "Illuminant F2"
-msgstr ""
-
-#: icc_helfer.cpp:785
-msgid "Illuminant D55"
-msgstr ""
-
-#: icc_helfer.cpp:786
-msgid "Illuminant A"
-msgstr ""
-
-#: icc_helfer.cpp:787
-msgid "Illuminant with equal energy E"
-msgstr ""
-
-#: icc_helfer.cpp:788
-msgid "Illuminant F8"
-msgstr ""
-
-#: icc_helfer.cpp:789
-msgid "Illuminant ---"
-msgstr ""
-
-#: icc_helfer.cpp:804 icc_helfer.cpp:824
-msgid "unknown"
+#: icc_ueber.cpp:163 icc_ueber.cpp:236
+msgid "2 Usage"
 msgstr ""
 
 #: icc_helfer.cpp:805
 msgid "2 degree (1931)"
-msgstr ""
-
-#: icc_helfer.cpp:807
-msgid "10 degree (1964)"
-msgstr ""
-
-#: icc_helfer.cpp:809 icc_helfer.cpp:827 icc_helfer.cpp:844
-msgid "---"
-msgstr ""
-
-#: icc_helfer.cpp:825
-msgid "0/45, 45/0"
-msgstr ""
-
-#: icc_helfer.cpp:826
-msgid "0/d or d/0"
-msgstr ""
-
-#: icc_helfer.cpp:842
-msgid "0"
-msgstr ""
-
-#: icc_helfer.cpp:843
-msgid "100"
-msgstr ""
-
-#: icc_helfer.cpp:863
-msgid "o'clock"
-msgstr ""
-
-#: icc_helfer.cpp:864
-msgid "seconds"
-msgstr ""
-
-#: icc_helfer.cpp:1295
-msgid "Monitor Profile"
-msgstr ""
-
-#: icc_helfer.cpp:1322
-msgid "file size 0 for "
-msgstr ""
-
-#: icc_kette.cpp:197
-msgid "noName"
-msgstr ""
-
-#: icc_kette.cpp:214
-msgid "File not loaded!"
-msgstr ""
-
-#: icc_measurement.cpp:1309
-msgid "Report about ICC profile"
-msgstr ""
-
-#: icc_measurement.cpp:1347
-msgid "Meas colour"
-msgstr ""
-
-#: icc_measurement.cpp:1349
-msgid "Profile colour"
-msgstr ""
-
-#: icc_measurement.cpp:1445
-msgid "no measurment data or correct profile conversion available"
-msgstr ""
-
-#: icc_measurement.cpp:1453
-msgid "Measurment- and profile colours from <b>"
-msgstr ""
-
-#: icc_measurement.cpp:1455
-msgid "RGB"
-msgstr "RVB"
-
-#: icc_measurement.cpp:1457
-msgid "CMYK"
-msgstr ""
-
-#: icc_measurement.cpp:1458
-msgid "</b> Measurement"
-msgstr ""
-
-#: icc_measurement.cpp:1460
-msgid "CMM: <b>lcms</b>"
-msgstr ""
-
-#: icc_measurement.cpp:1462
-msgid "averaging deviations (dE CIE*Lab):<b> "
-msgstr ""
-
-#: icc_measurement.cpp:1462
-msgid "</b>  maximum: "
-msgstr ""
-
-#: icc_measurement.cpp:1462
-msgid "  minimum: "
-msgstr ""
-
-#: icc_measurement.cpp:1462
-msgid "  (dE CIE 2000) averaging: "
-msgstr ""
-
-#: icc_measurement.cpp:1462
-msgid "  maximum: "
-msgstr ""
-
-#: icc_measurement.cpp:1492
-msgid "Measurement patch"
-msgstr ""
-
-#: icc_measurement.cpp:1493
-msgid "dE Lab"
-msgstr ""
-
-#: icc_measurement.cpp:1494
-msgid "dE2000"
-msgstr ""
-
-#: icc_measurement.cpp:1495
-msgid "L"
-msgstr ""
-
-#: icc_measurement.cpp:1496
-msgid "a"
-msgstr ""
-
-#: icc_measurement.cpp:1497
-msgid "b"
-msgstr ""
-
-#: icc_measurement.cpp:1498
-msgid "L'"
-msgstr ""
-
-#: icc_measurement.cpp:1499
-msgid "a'"
-msgstr ""
-
-#: icc_measurement.cpp:1500
-msgid "b'"
-msgstr ""
-
-#. Fl_Button* favUpButton
-#: icc_measurement.cpp:1501 my_file_chooser.cxx:277
-msgid "X"
-msgstr ""
-
-#: icc_measurement.cpp:1502 icc_measurement.cpp:1516
-msgid "Y"
-msgstr ""
-
-#: icc_measurement.cpp:1503
-msgid "Z"
-msgstr ""
-
-#: icc_measurement.cpp:1505
-msgid "X'"
-msgstr ""
-
-#: icc_measurement.cpp:1506
-msgid "Y'"
-msgstr ""
-
-#: icc_measurement.cpp:1507
-msgid "Z'"
-msgstr ""
-
-#: icc_measurement.cpp:1510
-msgid "R"
-msgstr ""
-
-#: icc_measurement.cpp:1511
-msgid "G"
-msgstr "V"
-
-#: icc_measurement.cpp:1512
-msgid "B"
-msgstr ""
-
-#: icc_measurement.cpp:1514
-msgid "C"
-msgstr ""
-
-#: icc_measurement.cpp:1515
-msgid "M"
-msgstr ""
-
-#: icc_measurement.cpp:1517
-msgid "K"
-msgstr ""
-
-#: icc_oyranos.cpp:168
-msgid "WARNING: Could not load corrupt or damaged profile."
-msgstr ""
-
-#: icc_oyranos.cpp:174 icc_oyranos.cpp:441 icc_oyranos.cpp:447
-#: icc_oyranos.cpp:478 icc_oyranos.cpp:484 icc_oyranos.cpp:518
-#: icc_oyranos.cpp:524
-msgid "WARNING: Could not load profile."
-msgstr ""
-
-#: icc_oyranos.cpp:669 icc_helfer_x.cpp:130
-#, fuzzy
-msgid "Screen:"
-msgstr "verda"
-
-#: icc_oyranos.cpp:687 icc_profile_header.cpp:250 icc_helfer_x.cpp:239
-msgid "Manufacturer:"
-msgstr ""
-
-#: icc_oyranos.cpp:693
-msgid "Model:"
-msgstr ""
-
-#: icc_oyranos.cpp:699
-msgid "Serial:"
-msgstr ""
-
-#: icc_oyranos.cpp:705
-msgid "Geometry:"
-msgstr ""
-
-#: icc_oyranos.cpp:711
-msgid "Port:"
-msgstr ""
-
-#: icc_profile.cpp:196 icc_profile.cpp:214
-msgid "no profile"
-msgstr ""
-
-#: icc_profile.cpp:196 icc_profile_tags.cpp:582
-msgid "Size"
-msgstr ""
-
-#: icc_profile.cpp:279
-msgid "wrong tag size in profile "
-msgstr ""
-
-#: icc_profile.cpp:294
-msgid "tag list is corrupted for tag"
-msgstr ""
-
-#: icc_profile.cpp:294
-msgid "not inside memory block"
-msgstr ""
-
-#. check
-#: icc_profile.cpp:444 icc_profile.cpp:474
-msgid " typ - no text output"
-msgstr ""
-
-#: icc_profile.cpp:846
-msgid "Work Space"
-msgstr ""
-
-#: icc_profile.cpp:860
-msgid "Your"
-msgstr ""
-
-#: icc_profile.cpp:861
-msgid "Profile\" is designed for an other device"
-msgstr ""
-
-#: icc_profile.cpp:866
-msgid "Separation"
-msgstr ""
-
-#: icc_profile.cpp:879 icc_profile.cpp:902
-msgid "Device class"
-msgstr ""
-
-#: icc_profile.cpp:881 icc_profile.cpp:904 icc_profile.cpp:912
-msgid "is not valid for an"
-msgstr ""
-
-#: icc_profile.cpp:883 icc_profile.cpp:906
-msgid "Profile\"."
-msgstr ""
-
-#: icc_profile.cpp:889
-msgid "Linearisation"
-msgstr ""
-
-#: icc_profile.cpp:914
-msgid "Profile at the moment\"."
-msgstr ""
-
-#: icc_profile_header.cpp:115
-msgid "Transparent, "
-msgstr ""
-
-#: icc_profile_header.cpp:117
-msgid "Reflective, "
-msgstr ""
-
-#: icc_profile_header.cpp:120
-msgid "matte, "
-msgstr ""
-
-#: icc_profile_header.cpp:122
-msgid "glossy, "
-msgstr ""
-
-#: icc_profile_header.cpp:125
-msgid "negative, "
-msgstr ""
-
-#: icc_profile_header.cpp:127
-msgid "positive, "
-msgstr ""
-
-#: icc_profile_header.cpp:130
-msgid "black/white"
-msgstr "nigro/blanco"
-
-#: icc_profile_header.cpp:132
-msgid "colour"
-msgstr "kolora"
-
-#: icc_profile_header.cpp:159
-msgid "Profile is embedded and "
-msgstr ""
-
-#: icc_profile_header.cpp:161
-msgid "Profile is not embedded and "
-msgstr ""
-
-#: icc_profile_header.cpp:164
-msgid "can not be used independently from image."
-msgstr ""
-
-#: icc_profile_header.cpp:166
-msgid "can be used independently from image."
-msgstr ""
-
-#: icc_profile_header.cpp:230
-msgid "found no header"
-msgstr ""
-
-#: icc_profile_header.cpp:235
-msgid "ICC profile header"
-msgstr ""
-
-#: icc_profile_header.cpp:236
-msgid "Size:        "
-msgstr ""
-
-#: icc_profile_header.cpp:237
-msgid "bytes"
-msgstr ""
-
-#: icc_profile_header.cpp:238
-msgid "CMM:         "
-msgstr ""
-
-#: icc_profile_header.cpp:239
-msgid "Version:     "
-msgstr ""
-
-#: icc_profile_header.cpp:240
-msgid "Class:       "
-msgstr ""
-
-#: icc_profile_header.cpp:242
-msgid "Colour Space:"
-msgstr ""
-
-#: icc_profile_header.cpp:244
-msgid "PCS:         "
-msgstr ""
-
-#: icc_profile_header.cpp:246
-msgid "Date:        "
-msgstr ""
-
-#: icc_profile_header.cpp:247
-msgid "Magic:       "
-msgstr ""
-
-#: icc_profile_header.cpp:248
-msgid "Platform:    "
-msgstr ""
-
-#: icc_profile_header.cpp:249
-msgid "Flags:       "
-msgstr ""
-
-#: icc_profile_header.cpp:251 icc_helfer_x.cpp:241
-msgid "Model:       "
-msgstr ""
-
-#: icc_profile_header.cpp:252
-msgid "Attributes:  "
-msgstr ""
-
-#: icc_profile_header.cpp:254
-msgid "Intent:      "
-msgstr ""
-
-#: icc_profile_header.cpp:256
-msgid "Illuminant:  "
-msgstr ""
-
-#: icc_profile_header.cpp:260
-msgid "created by:  "
-msgstr ""
-
-#: icc_profile_header.cpp:268
-msgid "File header invalid"
-msgstr ""
-
-#. format sensible, as this string is the header in the tag browser table
-#: icc_profile_header.cpp:271
-msgid "    head  head    128 File header"
-msgstr ""
-
-#: icc_profile_tags.cpp:257
-msgid "Standard Observer"
-msgstr ""
-
-#. "Back side" or Background
-#: icc_profile_tags.cpp:260
-msgid "Back side"
-msgstr ""
-
-#: icc_profile_tags.cpp:263
-msgid "Geometrie"
-msgstr ""
-
-#: icc_profile_tags.cpp:265
-msgid "Flare"
-msgstr ""
-
-#: icc_profile_tags.cpp:267
-msgid "Illuminant Type"
-msgstr ""
-
-#: icc_profile_tags.cpp:282
-msgid "Conversion table with 16-bit precission:"
-msgstr "kun 8-bitoj"
-
-#: icc_profile_tags.cpp:284 icc_profile_tags.cpp:303
-msgid "Number of input channels"
-msgstr "numbro kanaloj"
-
-#: icc_profile_tags.cpp:285 icc_profile_tags.cpp:304
-msgid "Number of output channels"
-msgstr ""
-
-#: icc_profile_tags.cpp:286 icc_profile_tags.cpp:305
-msgid "Matrix"
-msgstr ""
-
-#: icc_profile_tags.cpp:287
-msgid "Linear input curve"
-msgstr ""
-
-#: icc_profile_tags.cpp:287 icc_profile_tags.cpp:289
-msgid "with"
-msgstr "kun"
-
-#: icc_profile_tags.cpp:287 icc_profile_tags.cpp:289
-msgid "steps"
-msgstr ""
-
-#: icc_profile_tags.cpp:288 icc_profile_tags.cpp:306
-msgid "3D Lookup table with"
-msgstr ""
-
-#: icc_profile_tags.cpp:288 icc_profile_tags.cpp:306
-msgid "points length per side"
-msgstr ""
-
-#: icc_profile_tags.cpp:289
-msgid "Linear output curve"
-msgstr ""
-
-#: icc_profile_tags.cpp:301
-msgid "Conversion table with 8-bit precission:"
-msgstr "kun 16-bitoj"
-
-#: icc_profile_tags.cpp:400
-msgid "Error in ICC profile tag found!"
-msgstr ""
-
-#: icc_profile_tags.cpp:453
-msgid "Number of colours:"
-msgstr "nombro koloroj:"
-
-#: icc_profile_tags.cpp:454
-msgid "Name"
-msgstr "nomo"
-
-#: icc_profile_tags.cpp:454
-msgid "CIE*Lab"
-msgstr ""
-
-#: icc_profile_tags.cpp:455
-msgid "Device Colours"
-msgstr ""
-
-#. # "profiles ... involved" (other text) ":"
-#: icc_profile_tags.cpp:525
-msgid "profiles where originally involved"
-msgstr ""
-
-#: icc_profile_tags.cpp:587
-msgid "Count"
-msgstr ""
-
-#. HTML
-#: icc_ueber.cpp:69 icc_betrachter.cxx:747
-msgid "About ICC Examin"
-msgstr ""
-
-#. HTML
-#: icc_ueber.cpp:79
-msgid "ICC Examin Version"
-msgstr ""
-
-#. HTML
-#: icc_ueber.cpp:92
-msgid "Date"
-msgstr ""
-
-#: icc_ueber.cpp:99
-msgid ""
-"internet: <a href=\"http://www.oyranos.org/icc-examin\">www.oyranos.org/icc-"
-"examin</a> <br>"
-msgstr ""
-
-#: icc_ueber.cpp:105
-msgid ""
-"ICC Examin is a viewer for colour profiles according to ICC standard  - www."
-"color.org . At the moment version 2 and version 4 profiles are supported."
-msgstr ""
-
-#: icc_ueber.cpp:112
-msgid ""
-"The appliance of color profiles shall help to achive an easy color data "
-"exchange, regardless which application or what kind of operating system is "
-"used. As well color adaption between different devices is possible, provided "
-"the color characteristics of both devices are known. The qulity of a color "
-"transform from one to an other device depends mainly on the quality of the "
-"color measurement and the used profiling algorithm during profile creation."
-msgstr ""
-
-#: icc_ueber.cpp:124
-msgid ""
-"Color profiles are often available from manufacturers of optical devices "
-"(digital camera, scanner, printer). With ICC Examin you can get an "
-"impression of the internal data , stored in a ICC profile. For profiles "
-"containing measurement data, ICC Examin can generate a quality report. The "
-"deviation, calculated from the measurement data is shown as well in the "
-"three dimensional gamut viewer.<br>"
-msgstr ""
-
-#: icc_ueber.cpp:135
-msgid ""
-"The color transformations are realised with littleCMS through the Oyranos "
-"CMM API."
-msgstr ""
-
-#. HTML
-#. Fl_Help_View* ueber_html
-#: icc_ueber.cpp:151 icc_betrachter.cxx:667 icc_betrachter.cxx:669
-#: icc_betrachter.cxx:775
-msgid "Help"
-msgstr ""
-
-#: icc_ueber.cpp:154
-msgid "ICC Examin is a colour profile viewer."
-msgstr ""
-
-#: icc_ueber.cpp:156
-msgid ""
-"It shows the internals of binary encoded ICC profiles to get an idea about "
-"its capabilities."
-msgstr ""
-
-#: icc_ueber.cpp:159
-msgid "Table of contents"
-msgstr ""
-
-#: icc_ueber.cpp:161 icc_ueber.cpp:231
-msgid "1 Features"
-msgstr ""
-
-#: icc_ueber.cpp:163 icc_ueber.cpp:236
-msgid "2 Usage"
 msgstr ""
 
 #: icc_ueber.cpp:167 icc_ueber.cpp:241
@@ -1641,6 +264,18 @@ msgstr ""
 msgid "2.4.6 Help"
 msgstr ""
 
+#: icc_examin_version.h:10
+msgid "2004"
+msgstr ""
+
+#: icc_examin_version.h:12
+msgid "2014"
+msgstr ""
+
+#: icc_oyranos_extern.c:144
+msgid "2color"
+msgstr "2koloroj"
+
 #: icc_ueber.cpp:193 icc_ueber.cpp:373
 msgid "3 Profile elements"
 msgstr ""
@@ -1681,8 +316,20 @@ msgstr ""
 msgid "3.2.7 psid"
 msgstr ""
 
+#: icc_profile_tags.cpp:288 icc_profile_tags.cpp:306
+msgid "3D Lookup table with"
+msgstr ""
+
+#: icc_oyranos_extern.c:145
+msgid "3color"
+msgstr "3koloroj"
+
 #: icc_ueber.cpp:220 icc_ueber.cpp:447
 msgid "4 Other file formats"
+msgstr ""
+
+#: icc_ueber.cpp:284
+msgid "4 rendering intents + BPC"
 msgstr ""
 
 #: icc_ueber.cpp:224 icc_ueber.cpp:450
@@ -1693,15 +340,468 @@ msgstr ""
 msgid "4.2 Model VRML"
 msgstr ""
 
+#: icc_oyranos_extern.c:146
+msgid "4color"
+msgstr "4koloroj"
+
+#: icc_oyranos_extern.c:148
+msgid "5color"
+msgstr "5koloroj"
+
+#: icc_oyranos_extern.c:150
+msgid "6color"
+msgstr "6koloroj"
+
+#: icc_oyranos_extern.c:152
+msgid "7color"
+msgstr "7koloroj"
+
+#: icc_oyranos_extern.c:154
+msgid "8color"
+msgstr "8koloroj"
+
+#: icc_oyranos_extern.c:156
+msgid "9color"
+msgstr "9koloroj"
+
+#: icc_measurement.cpp:1462
+msgid "</b>  maximum: "
+msgstr ""
+
+#: icc_measurement.cpp:1458
+msgid "</b> Measurement"
+msgstr ""
+
+#: icc_helfer.cpp:767 icc_helfer.cpp:791 icc_helfer.cpp:811 icc_helfer.cpp:829
+#: icc_helfer.cpp:846
+msgid "???"
+msgstr ""
+
+#: icc_ueber.cpp:457
+msgid ""
+"A subset of vrml alias wrl files is parsed. It allowes to open colour gamuts "
+"produced with argyll and saved with ICC Examin."
+msgstr ""
+
+#. HTML
+#: icc_ueber.cpp:69
+msgid "About ICC Examin"
+msgstr ""
+
+#: icc_helfer.cpp:268
+msgid "Absolute Colorimetric"
+msgstr ""
+
+#: icc_helfer.cpp:466
+msgid "Abstract"
+msgstr ""
+
+#. HTML
+#: icc_ueber.cpp:883
+msgid "Acknowledgement"
+msgstr ""
+
+#. PMD
+#: icc_helfer.cpp:733
+msgid "Active matrix monitor"
+msgstr ""
+
+#: icc_helfer_fltk.cpp:278
+msgid "Add to Favorites"
+msgstr ""
+
+#: icc_ueber.cpp:314
+msgid "Additional keys:"
+msgstr ""
+
+#: icc_helfer_fltk.cpp:279
+msgid "All Files (*)"
+msgstr ""
+
+#: icc_fenster.cpp:160
+msgid ""
+"All Formats (*.{ICC,ICM,txt,it8,IT8,RGB,CMYK,ti*,cgats,CIE,cie,nCIE,oRPT,DLY,"
+"LAB,Q60,wrl,vrml,wrl.gz,vrml.gz,png,ppm,pnm,pgm,pfm})\tICC colour profiles "
+"(*.{I,i}{C,c}{M,m,C,c})\tMeasurement (*.{txt,it8,IT8,RGB,CMYK,ti*,cgats,CIE,"
+"cie,nCIE,oRPT,DLY,LAB,Q60})\tArgyll Gamuts (*.{wrl,vrml,wrl.gz,vrml."
+"gz}\tImages (*.png,ppm,pnm,pgm,pfm)"
+msgstr ""
+
+#: icc_ueber.cpp:405
+msgid ""
+"An other type are curves. They are shown as such. Note the coordinates are "
+"all normalised to 0.0 -&gt; 1.0."
+msgstr ""
+
+#: icc_profile_header.cpp:252
+msgid "Attributes:  "
+msgstr ""
+
+#: icc_measurement.cpp:1512
+msgid "B"
+msgstr ""
+
+#. "Back side" or Background
+#: icc_profile_tags.cpp:260
+msgid "Back side"
+msgstr ""
+
+#: icc_gl.cpp:2769
+msgid "Background colour"
+msgstr ""
+
+#: icc_ueber.cpp:394
+msgid ""
+"Below the header, which behaves like a fixed tag, are the variable tags "
+"listed. They appear in the same order as in the file. Starting with the tag "
+"number, then the tag signature and the type of content in the tag. The size "
+"of the tag follows and a small description gives you an idea af what the tag "
+"may be intended for."
+msgstr ""
+
+#: icc_draw.cpp:729 icc_gl.cpp:2766 icc_helfer.cpp:418 icc_helfer.cpp:428
+msgid "Black"
+msgstr "Nigra"
+
+#: icc_draw.cpp:712 icc_draw.cpp:721 icc_helfer.cpp:417 icc_helfer_osx.cpp:98
+#: icc_helfer_x.cpp:69 icc_profile_tags.cpp:422
+msgid "Blue"
+msgstr "Blua"
+
+#: icc_helfer.cpp:599
+msgid "Blue Colorant"
+msgstr ""
+
+#: icc_helfer.cpp:600
+msgid "Blue tone reproduction curve"
+msgstr ""
+
+#: icc_measurement.cpp:1514
+msgid "C"
+msgstr ""
+
+#: icc_draw.cpp:745 icc_examin_farbraum.cpp:402 icc_examin_io.cpp:323
+#: icc_helfer.cpp:403 icc_helfer.cpp:406
+msgid "CIE *L"
+msgstr ""
+
+#: icc_draw.cpp:747 icc_examin_farbraum.cpp:403 icc_examin_io.cpp:324
+#: icc_gl.cpp:1189 icc_gl.cpp:1260 icc_gl.cpp:1286 icc_gl.cpp:1294
+#: icc_helfer.cpp:404
+msgid "CIE *a"
+msgstr ""
+
+#: icc_draw.cpp:749 icc_examin_farbraum.cpp:404 icc_examin_io.cpp:325
+#: icc_gl.cpp:1202 icc_gl.cpp:1302 icc_gl.cpp:1322 icc_gl.cpp:1329
+#: icc_helfer.cpp:405
+msgid "CIE *b"
+msgstr ""
+
+#: icc_helfer.cpp:407
+msgid "CIE *u"
+msgstr ""
+
+#: icc_helfer.cpp:408
+msgid "CIE *v"
+msgstr ""
+
+#: icc_draw.cpp:735 icc_helfer.cpp:400
+msgid "CIE X"
+msgstr ""
+
+#: icc_draw.cpp:737 icc_helfer.cpp:401 icc_helfer.cpp:412
+msgid "CIE Y (Luminance)"
+msgstr ""
+
+#: icc_draw.cpp:739 icc_helfer.cpp:402
+msgid "CIE Z"
+msgstr ""
+
+#: icc_helfer.cpp:413
+msgid "CIE x"
+msgstr ""
+
+#: icc_helfer.cpp:414
+msgid "CIE y"
+msgstr ""
+
+#: icc_profile_tags.cpp:454
+msgid "CIE*Lab"
+msgstr ""
+
+#: icc_ueber.cpp:327
+msgid "CLUT table line mode:"
+msgstr ""
+
+#: icc_profile_header.cpp:238
+msgid "CMM:         "
+msgstr ""
+
+#: icc_measurement.cpp:1460
+msgid "CMM: <b>lcms</b>"
+msgstr ""
+
+#: icc_measurement.cpp:1457
+msgid "CMYK"
+msgstr ""
+
+#: icc_helfer.cpp:604
+msgid "Calibration date"
+msgstr ""
+
+#. pjtv
+#: icc_helfer.cpp:731
+msgid "Cathode ray tube display"
+msgstr ""
+
+#: icc_gl.cpp:3290 icc_profile_tags.cpp:319
+msgid "Channel"
+msgstr "kanalo"
+
+#. chad
+#: icc_helfer.cpp:645
+msgid "Chromaticity"
+msgstr ""
+
+#: icc_profile_header.cpp:240
+msgid "Class:       "
+msgstr ""
+
+#: icc_oyranos_extern.c:143
+msgid "Cmy"
+msgstr ""
+
+#: icc_oyranos_extern.c:142
+msgid "Cmyk"
+msgstr ""
+
+#: icc_ueber.cpp:124
+msgid ""
+"Color profiles are often available from manufacturers of optical devices "
+"(digital camera, scanner, printer). With ICC Examin you can get an "
+"impression of the internal data , stored in a ICC profile. For profiles "
+"containing measurement data, ICC Examin can generate a quality report. The "
+"deviation, calculated from the measurement data is shown as well in the "
+"three dimensional gamut viewer.<br>"
+msgstr ""
+
+#. The following strings must match the categories for a menu entry.
+#: oyranos_cmm_iemn.c:502 icc_helfer.cpp:395 icc_profile_tags.cpp:1268
+#: icc_profile_tags.cpp:1275
+msgid "Colour"
+msgstr "kolora"
+
+#: icc_helfer.cpp:467 icc_profile.cpp:910
+msgid "Colour Space"
+msgstr ""
+
+#: icc_profile_header.cpp:242
+msgid "Colour Space:"
+msgstr ""
+
+#. vcgt
+#: icc_helfer.cpp:644
+msgid "Colour adaption matrix"
+msgstr ""
+
+#: icc_draw.cpp:751 icc_helfer.cpp:410
+msgid "Colour b"
+msgstr "Koloro b"
+
+#: icc_gl.cpp:2779
+#, fuzzy
+msgid "Colour line"
+msgstr "kolora"
+
+#: icc_helfer.cpp:605
+msgid "Colour measurement data"
+msgstr ""
+
+#: icc_draw.cpp:753 icc_helfer.cpp:411
+msgid "Colour r"
+msgstr "Koloro r"
+
+#: icc_ueber.cpp:322
+msgid "Colour spots can be enlarged or made smaller by pressing + or -."
+msgstr ""
+
+#: icc_examin.cpp:909 icc_examin.cpp:912
+msgid "Compare Measurement <-> Profile Colours"
+msgstr ""
+
+#. HTML
+#: icc_ueber.cpp:982 icc_ueber.cpp:990
+msgid "Configure Log"
+msgstr ""
+
+#: icc_profile_tags.cpp:282
+msgid "Conversion table with 16-bit precission:"
+msgstr "kun 8-bitoj"
+
+#: icc_profile_tags.cpp:301
+msgid "Conversion table with 8-bit precission:"
+msgstr "kun 16-bitoj"
+
+#: icc_helfer.cpp:606
+msgid "Copyright"
+msgstr ""
+
+#: oyranos_cmm_iemn.c:262
+msgid "Copyright (c) 2010 Kai-Uwe Behrmann; newBSD"
+msgstr ""
+
+#: icc_gl.cpp:914 icc_gl.cpp:917 icc_gl.cpp:924 icc_gl.cpp:935 icc_gl.cpp:939
+#: icc_gl.cpp:954
+msgid "Could not open font in:"
+msgstr ""
+
+#: icc_profile_tags.cpp:587
+msgid "Count"
+msgstr ""
+
+#: icc_helfer_fltk.cpp:280
+msgid "Custom Filter"
+msgstr ""
+
+#: icc_draw.cpp:723 icc_helfer.cpp:425 icc_helfer.cpp:429
+msgid "Cyan"
+msgstr "Cejana"
+
+#: icc_gl.cpp:2765
+msgid "Dark gray"
+msgstr ""
+
+#. HTML
+#: icc_ueber.cpp:92
+msgid "Date"
+msgstr ""
+
+#: icc_profile_header.cpp:246
+msgid "Date:        "
+msgstr ""
+
+#: icc_helfer.cpp:593
+msgid "Description"
+msgstr ""
+
+#: icc_profile_tags.cpp:455
+msgid "Device Colours"
+msgstr ""
+
+#: icc_profile.cpp:879 icc_profile.cpp:902
+msgid "Device class"
+msgstr ""
+
+#: icc_helfer.cpp:640
+msgid "Device colours"
+msgstr ""
+
+#: icc_helfer.cpp:608
+msgid "Device manufacturerer description"
+msgstr ""
+
+#: icc_helfer.cpp:609
+msgid "Device model description"
+msgstr ""
+
+#: icc_helfer.cpp:718
+msgid "Digital camera"
+msgstr ""
+
+#: icc_helfer.cpp:463
+msgid "Display"
+msgstr "Ekrano"
+
+#. esta
+#: icc_helfer.cpp:725
+msgid "Dye sublimation printer"
+msgstr ""
+
+#: icc_helfer.cpp:764
+msgid "EBU Tech.3213-E"
+msgstr ""
+
+#. twax
+#: icc_helfer.cpp:723
+msgid "Electrophotographic printer"
+msgstr ""
+
+#. epho
+#: icc_helfer.cpp:724
+msgid "Electrostatic printer"
+msgstr ""
+
+#: icc_profile_tags.cpp:400
+msgid "Error in ICC profile tag found!"
+msgstr ""
+
+#: icc_helfer_fltk.cpp:282
+msgid "Favorites"
+msgstr ""
+
+#: icc_ueber.cpp:279
+msgid "File"
+msgstr ""
+
+#: icc_helfer_fltk.cpp:288
+msgid "File Systems"
+msgstr ""
+
+#: icc_profile_header.cpp:268
+msgid "File header invalid"
+msgstr ""
+
+#: icc_kette.cpp:214
+msgid "File not loaded!"
+msgstr ""
+
+#: icc_helfer_fltk.cpp:283
+msgid "Filename"
+msgstr ""
+
+#: icc_examin.cpp:1373
+msgid "Filename (corrupted ICC data type)"
+msgstr ""
+
+#: icc_examin.cpp:1371
+msgid "Filename (other data type)"
+msgstr ""
+
+#: icc_ueber.cpp:253
+msgid ""
+"Files once loaded are observed by ICC Examin. The view will be actualised "
+"upon a modification."
+msgstr ""
+
+#. dcam
+#: icc_helfer.cpp:719
+msgid "Film scanner"
+msgstr ""
+
+#. rpho
+#: icc_helfer.cpp:727
+msgid "Film writer"
+msgstr ""
+
+#: icc_profile_header.cpp:249
+msgid "Flags:       "
+msgstr ""
+
+#: icc_profile_tags.cpp:265
+msgid "Flare"
+msgstr ""
+
+#. silk
+#: icc_helfer.cpp:739
+msgid "Flexography"
+msgstr ""
+
 #: icc_ueber.cpp:232
 msgid "For an overview see"
 msgstr ""
 
-#: icc_ueber.cpp:238
-msgid ""
-"ICC Examin can be launched from the Application folder or Dock on osX and "
-"from the Graphics menu on Linux. It should as well register as viewer for "
-"ICC profiles, CGATS text and VRML Gamut files."
+#: icc_ueber.cpp:961
+msgid "For the visualisation of gamut (external):<br/>\n"
 msgstr ""
 
 #: icc_ueber.cpp:243
@@ -1717,6 +817,151 @@ msgid ""
 "later use."
 msgstr ""
 
+#: icc_ueber.cpp:311
+msgid ""
+"From the context menu (ctrl+left mouse button or right mouse button) you can "
+"select the average human (CIE standard observer) visible spectral colours as "
+"a line."
+msgstr ""
+
+#: icc_ueber.cpp:282
+msgid "Full screen mode"
+msgstr ""
+
+#: icc_measurement.cpp:1511
+msgid "G"
+msgstr "V"
+
+#: icc_helfer_osx.cpp:127 icc_helfer_x.cpp:276
+msgid "Gamma Blue:  "
+msgstr ""
+
+#: icc_helfer_x.cpp:270
+msgid "Gamma Green:"
+msgstr ""
+
+#: icc_helfer_osx.cpp:121
+msgid "Gamma Green: "
+msgstr ""
+
+#: icc_helfer_osx.cpp:115 icc_helfer_x.cpp:264
+msgid "Gamma Red:   "
+msgstr ""
+
+#: icc_helfer_x.cpp:254
+msgid "Gamma:   "
+msgstr ""
+
+#: icc_examin.cpp:929 icc_examin.cpp:933
+msgid "Gamut View"
+msgstr ""
+
+#: icc_examin.cpp:324
+msgid "Gamut selector"
+msgstr ""
+
+#: icc_ueber.cpp:316
+msgid "Gamut view:"
+msgstr ""
+
+#: icc_profile_tags.cpp:263
+msgid "Geometrie"
+msgstr ""
+
+#: icc_oyranos.cpp:705
+msgid "Geometry:"
+msgstr ""
+
+#. imgs
+#: icc_helfer.cpp:736
+msgid "Gravure"
+msgstr ""
+
+#: icc_oyranos_extern.c:139 icc_draw.cpp:716 icc_gl.cpp:2764 icc_waehler.h:128
+msgid "Gray"
+msgstr "Griza"
+
+#: icc_helfer.cpp:611
+msgid "Gray tone reproduction curve"
+msgstr ""
+
+#: icc_draw.cpp:709 icc_draw.cpp:719 icc_helfer.cpp:416 icc_helfer_osx.cpp:97
+#: icc_helfer_x.cpp:68 icc_profile_tags.cpp:421
+msgid "Green"
+msgstr "Verda"
+
+#: icc_helfer.cpp:612
+msgid "Green Colorant"
+msgstr ""
+
+#: icc_helfer.cpp:613
+msgid "Green tone reproduction curve"
+msgstr ""
+
+#: icc_examin_io.cpp:704
+msgid "HTML Documents (*.htm*)"
+msgstr ""
+
+#. HTML
+#: icc_ueber.cpp:151
+msgid "Help"
+msgstr ""
+
+#: icc_oyranos_extern.c:141
+msgid "Hls"
+msgstr ""
+
+#: icc_oyranos_extern.c:140
+msgid "Hsv"
+msgstr ""
+
+#. catches all from exception
+#: icc_vrml.cpp:148
+msgid "Huch, unknown exception"
+msgstr ""
+
+#: icc_helfer.cpp:419 icc_helfer.cpp:422
+msgid "Hue"
+msgstr "tono"
+
+#: oyranos_cmm_iemn.c:502
+msgid "ICC Examin"
+msgstr ""
+
+#: oyranos_cmm_iemn.c:486
+msgid "ICC Examin Object"
+msgstr ""
+
+#. HTML
+#: icc_ueber.cpp:79
+msgid "ICC Examin Version"
+msgstr ""
+
+#: icc_ueber.cpp:238
+msgid ""
+"ICC Examin can be launched from the Application folder or Dock on osX and "
+"from the Graphics menu on Linux. It should as well register as viewer for "
+"ICC profiles, CGATS text and VRML Gamut files."
+msgstr ""
+
+#: icc_ueber.cpp:154
+msgid "ICC Examin is a colour profile viewer."
+msgstr ""
+
+#: icc_ueber.cpp:105
+msgid ""
+"ICC Examin is a viewer for colour profiles according to ICC standard  - www."
+"color.org . At the moment version 2 and version 4 profiles are supported."
+msgstr ""
+
+#: oyranos_cmm_iemn.c:246 oyranos_cmm_iemn.c:248
+msgid "ICC Examin output filter"
+msgstr ""
+
+#: icc_ueber.cpp:903
+msgid "ICC Examin uses following libraries:<br/>\n"
+msgstr ""
+
 #: icc_ueber.cpp:245
 msgid ""
 "ICC Examin's file selector is designed to work like a browser. Every new "
@@ -1726,11 +971,12 @@ msgid ""
 "open gamut view takes extra time."
 msgstr ""
 
-#: icc_ueber.cpp:247
-msgid ""
-"VRML file are selectable alone. ICC Examin will not accept mixing with other "
-"files. The VRML gamut hull's from ArgyllCMS are the only known supported "
-"ones."
+#: icc_examin_io.cpp:781
+msgid "ICC colour profiles (*.ic*)"
+msgstr ""
+
+#: icc_profile_header.cpp:235
+msgid "ICC profile header"
 msgstr ""
 
 #: icc_ueber.cpp:249
@@ -1742,130 +988,12 @@ msgid ""
 "the measurements already included."
 msgstr ""
 
-#: icc_ueber.cpp:251
-msgid "Multiple CGATS measurements can be loaded at once"
+#: icc_ueber.cpp:383
+msgid "ICC standard version"
 msgstr ""
 
-#: icc_ueber.cpp:253
-msgid ""
-"Files once loaded are observed by ICC Examin. The view will be actualised "
-"upon a modification."
-msgstr ""
-
-#: icc_ueber.cpp:258
-msgid ""
-"In normal mode ICC Examin shows first the tag list with the tag viewer "
-"below. Over the tag list resides the applications menubar."
-msgstr ""
-
-#: icc_ueber.cpp:260
-msgid ""
-"You can select an tag from the taglist and watch its content in the tag "
-"window below."
-msgstr ""
-
-#: icc_ueber.cpp:262
-msgid "On the bottom you see the status area of the window."
-msgstr ""
-
-#: icc_ueber.cpp:268
-msgid ""
-"Some tags contain complex data. For such tags may appear a choicebutton "
-"below the tag list. There you can select detailed views of a complex tags "
-"endities."
-msgstr ""
-
-#: icc_ueber.cpp:275
-msgid ""
-"The 3D gamut viewer can be selected from the menu bar Window &gt; Gamut. It "
-"shows the gamut of the device described by the profile with the absolute "
-"colorimetric rendering intent."
-msgstr ""
-
-#: icc_ueber.cpp:276
-msgid "The colour space shown is allways in CIE*Lab coordinates. "
-msgstr ""
-
-#: icc_ueber.cpp:278
-msgid "The Gamut Menus"
-msgstr ""
-
-#: icc_ueber.cpp:279 icc_betrachter.cxx:421 icc_betrachter.cxx:644
-msgid "File"
-msgstr ""
-
-#: icc_ueber.cpp:280
-msgid "Quit - allowes for exiting the application"
-msgstr ""
-
-#: icc_ueber.cpp:281 icc_betrachter.cxx:425 icc_betrachter.cxx:652
-msgid "View"
-msgstr ""
-
-#: icc_ueber.cpp:282
-msgid "Full screen mode"
-msgstr ""
-
-#: icc_ueber.cpp:283 icc_betrachter.cxx:428 icc_betrachter.cxx:655
-msgid "Settings"
-msgstr ""
-
-#: icc_ueber.cpp:284
-msgid "4 rendering intents + BPC"
-msgstr ""
-
-#: icc_ueber.cpp:285
-msgid ""
-"Native or separation Gamut. The later is the inbuild default. The native "
-"colour gamut can only be created when iccgamut from ArgyllCMS is available."
-msgstr ""
-
-#: icc_ueber.cpp:286 icc_betrachter.cxx:436 icc_betrachter.cxx:659
-msgid "Windows"
-msgstr ""
-
-#: icc_ueber.cpp:288
-msgid "Show main application window, in case it is a icon."
-msgstr ""
-
-#: icc_ueber.cpp:293
-msgid "To navigate arround in a 3D view use the:"
-msgstr ""
-
-#: icc_ueber.cpp:296
-msgid "left mouse button to rotate"
-msgstr ""
-
-#: icc_ueber.cpp:298
-msgid "middle mouse button or Shift+left mouse button to move/clip"
-msgstr ""
-
-#: icc_ueber.cpp:300
-msgid ""
-"right mouse button/ Strg+left mouse button to obtain additional menus. Among "
-"the additional menus are in:"
-msgstr ""
-
-#: icc_ueber.cpp:302
-msgid "top menu: the channel selection if appropriate"
-msgstr ""
-
-#: icc_ueber.cpp:304
-msgid ""
-"Slice plane submenu, with axis slicing in fly through style and rotation"
-msgstr ""
-
-#: icc_ueber.cpp:306
-msgid ""
-"Illustration submenu, with the background colour selection and text/marker "
-"switching off and on"
-msgstr ""
-
-#: icc_ueber.cpp:311
-msgid ""
-"From the context menu (ctrl+left mouse button or right mouse button) you can "
-"select the average human (CIE standard observer) visible spectral colours as "
-"a line."
+#: icc_helfer.cpp:762
+msgid "ITU-R BT.709"
 msgstr ""
 
 #: icc_ueber.cpp:312
@@ -1873,62 +1001,6 @@ msgid ""
 "If meashurements are shown, the spot radius can be selected from the context "
 "menu. This is handy to easily detect dE's of above 2 or 4. The connection "
 "line goes from the measurement (white) to the deviation by the profile (red)."
-msgstr ""
-
-#: icc_ueber.cpp:314
-msgid "Additional keys:"
-msgstr ""
-
-#: icc_ueber.cpp:316
-msgid "Gamut view:"
-msgstr ""
-
-#: icc_ueber.cpp:318
-msgid "down key - reduce the slice plane distance"
-msgstr ""
-
-#: icc_ueber.cpp:319
-msgid "up key - increase the slice plane distance"
-msgstr ""
-
-#: icc_ueber.cpp:320
-msgid "home key - reset the slice plane distance"
-msgstr ""
-
-#: icc_ueber.cpp:321
-msgid "end key - set the slice plane distance to center"
-msgstr ""
-
-#: icc_ueber.cpp:322
-msgid "Colour spots can be enlarged or made smaller by pressing + or -."
-msgstr ""
-
-#: icc_ueber.cpp:327
-msgid "CLUT table line mode:"
-msgstr ""
-
-#: icc_ueber.cpp:330
-msgid " number key - set the number of interpolation planes"
-msgstr ""
-
-#: icc_ueber.cpp:333
-msgid "'-' minus - reduce the actual interpolation plane"
-msgstr ""
-
-#: icc_ueber.cpp:335
-msgid "'+' plus - increase the actual interpolation plane"
-msgstr ""
-
-#: icc_ueber.cpp:337
-msgid "'/' slash - smaller steps for the minus and pus keys above"
-msgstr ""
-
-#: icc_ueber.cpp:339
-msgid "'*' star - larger steps for the minus and plus keys above"
-msgstr ""
-
-#: icc_ueber.cpp:341
-msgid "'_' underline - switch lines between one and three directions"
 msgstr ""
 
 #: icc_ueber.cpp:348
@@ -1939,11 +1011,316 @@ msgid ""
 "used CMM."
 msgstr ""
 
-#: icc_ueber.cpp:350
+#: icc_helfer.cpp:789
+msgid "Illuminant ---"
+msgstr ""
+
+#: icc_helfer.cpp:786
+msgid "Illuminant A"
+msgstr ""
+
+#: icc_helfer.cpp:781
+msgid "Illuminant D50"
+msgstr ""
+
+#: icc_helfer.cpp:785
+msgid "Illuminant D55"
+msgstr ""
+
+#: icc_helfer.cpp:782
+msgid "Illuminant D65"
+msgstr ""
+
+#: icc_helfer.cpp:783
+msgid "Illuminant D93"
+msgstr ""
+
+#: icc_helfer.cpp:784
+msgid "Illuminant F2"
+msgstr ""
+
+#: icc_helfer.cpp:788
+msgid "Illuminant F8"
+msgstr ""
+
+#: icc_profile_tags.cpp:267
+msgid "Illuminant Type"
+msgstr ""
+
+#: icc_helfer.cpp:780
+msgid "Illuminant unknown"
+msgstr ""
+
+#: icc_helfer.cpp:787
+msgid "Illuminant with equal energy E"
+msgstr ""
+
+#: icc_profile_header.cpp:256
+msgid "Illuminant:  "
+msgstr ""
+
+#: icc_gl.cpp:2803
+msgid "Illustration"
+msgstr ""
+
+#: icc_ueber.cpp:306
 msgid ""
-"Such a comparision from device colours + measurements colours on the one "
-"side and device + profile/CMM colours on the other side are just one "
-"possible quality checking method."
+"Illustration submenu, with the background colour selection and text/marker "
+"switching off and on"
+msgstr ""
+
+#: icc_cinepaint.cpp:197
+msgid "Image Profile..."
+msgstr ""
+
+#: oyranos_cmm_iemn.c:484
+msgid "Image[iemn_filter]"
+msgstr ""
+
+#: icc_ueber.cpp:258
+msgid ""
+"In normal mode ICC Examin shows first the tag list with the tag viewer "
+"below. Over the tag list resides the applications menubar."
+msgstr ""
+
+#: icc_fenster.cpp:416
+msgid "Information:"
+msgstr ""
+
+#. rscn
+#: icc_helfer.cpp:721
+msgid "InkJet printer"
+msgstr ""
+
+#: icc_helfer.cpp:462
+msgid "Input"
+msgstr ""
+
+#: icc_examin_tagwahl.cpp:507 icc_profile_tags.cpp:283
+#: icc_profile_tags.cpp:302
+msgid "Intent:"
+msgstr ""
+
+#: icc_profile_header.cpp:254
+msgid "Intent:      "
+msgstr ""
+
+#: icc_examin.cpp:1385
+msgid "Internal error"
+msgstr ""
+
+#: icc_ueber.cpp:156
+msgid ""
+"It shows the internals of binary encoded ICC profiles to get an idea about "
+"its capabilities."
+msgstr ""
+
+#: icc_ueber.cpp:459
+msgid ""
+"It would be nice to allow as well lines to get parsed, which are used for "
+"visualisations by iccview for instance."
+msgstr ""
+
+#: icc_measurement.cpp:1517
+msgid "K"
+msgstr ""
+
+#: oyranos_cmm_iemn.c:254
+msgid "Kai-Uwe Behrmann"
+msgstr ""
+
+#: icc_measurement.cpp:1495
+msgid "L"
+msgstr ""
+
+#: icc_measurement.cpp:1498
+msgid "L'"
+msgstr ""
+
+#: icc_oyranos_extern.c:134
+msgid "Lab"
+msgstr ""
+
+#: icc_ueber.cpp:472
+msgid "License"
+msgstr ""
+
+#: icc_gl.cpp:2763
+msgid "Light gray"
+msgstr ""
+
+#: icc_draw.cpp:741 icc_helfer.cpp:423
+msgid "Lightness"
+msgstr ""
+
+#: icc_profile_tags.cpp:287
+msgid "Linear input curve"
+msgstr ""
+
+#: icc_profile_tags.cpp:289
+msgid "Linear output curve"
+msgstr ""
+
+#: icc_profile.cpp:889
+msgid "Linearisation"
+msgstr ""
+
+#: icc_helfer.cpp:465
+msgid "Link"
+msgstr ""
+
+#: icc_examin_tagwahl.cpp:1044
+msgid "Loading .."
+msgstr ""
+
+#: icc_fenster.cpp:350
+msgid "Log:"
+msgstr ""
+
+#: icc_helfer.cpp:601
+msgid "Lookup table, PCS to device, intent photometric"
+msgstr ""
+
+#: icc_helfer.cpp:602
+msgid "Lookup table, PCS to device, intent relative colorimetric"
+msgstr ""
+
+#: icc_helfer.cpp:603
+msgid "Lookup table, PCS to device, intent saturation"
+msgstr ""
+
+#: icc_helfer.cpp:596
+msgid "Lookup table, device to PCS, intent photometric"
+msgstr ""
+
+#: icc_helfer.cpp:597
+msgid "Lookup table, device to PCS, intent relative colorimetric"
+msgstr ""
+
+#: icc_helfer.cpp:598
+msgid "Lookup table, device to PCS, intent saturation"
+msgstr ""
+
+#: icc_draw.cpp:731 icc_helfer.cpp:614
+msgid "Luminance"
+msgstr ""
+
+#: icc_draw.cpp:733 icc_helfer.cpp:409
+msgid "Luminance Y"
+msgstr ""
+
+#: icc_oyranos_extern.c:135
+msgid "Luv"
+msgstr ""
+
+#: icc_measurement.cpp:1515
+msgid "M"
+msgstr ""
+
+#: icc_ueber.cpp:418
+msgid ""
+"MFT1/2 tags are complex and contain a set of peaces to do a colour "
+"transformation. The choice button below the tag view names them. You can "
+"select the matrix, in-and output curves and the CLUT. This kind of tag is "
+"mostly independend of other tags. Only few tags like wtpt and chad may "
+"influence them."
+msgstr ""
+
+#: icc_helfer.cpp:490
+msgid "Macintosh"
+msgstr ""
+
+#: icc_draw.cpp:725 icc_helfer.cpp:426 icc_helfer.cpp:430
+msgid "Magenta"
+msgstr "Fuksina"
+
+#: icc_profile_header.cpp:247
+msgid "Magic:       "
+msgstr ""
+
+#: icc_helfer_fltk.cpp:284
+msgid "Manage Favorites"
+msgstr ""
+
+#: icc_helfer_x.cpp:239 icc_oyranos.cpp:687 icc_profile_header.cpp:250
+msgid "Manufacturer:"
+msgstr ""
+
+#: icc_helfer_osx.cpp:101
+msgid "Manufacturer: "
+msgstr ""
+
+#: icc_profile_tags.cpp:286 icc_profile_tags.cpp:305
+msgid "Matrix"
+msgstr ""
+
+#: icc_examin_tagwahl.cpp:683
+msgid "Matrix 3x3 + 3"
+msgstr ""
+
+#: icc_examin_version.h:9
+msgid "May"
+msgstr ""
+
+#: oyranos_cmm_iemn.c:252
+msgid "Me"
+msgstr ""
+
+#: icc_measurement.cpp:1347
+msgid "Meas colour"
+msgstr ""
+
+#. DevD
+#: icc_helfer.cpp:641
+msgid "Measured colours"
+msgstr ""
+
+#: icc_helfer.cpp:615
+msgid "Measurement"
+msgstr ""
+
+#: icc_ueber.cpp:452
+msgid ""
+"Measurement data in CGATS format can be opened in ICC Examin. In the file "
+"selector is a dedicated filter available. The data are shown as text and in "
+"the 3D view."
+msgstr ""
+
+#: icc_measurement.cpp:1492
+msgid "Measurement patch"
+msgstr ""
+
+#: icc_measurement.cpp:1453
+msgid "Measurment- and profile colours from <b>"
+msgstr ""
+
+#: icc_helfer.cpp:616
+msgid "Media black point"
+msgstr "nigro punkto"
+
+#: icc_helfer.cpp:617
+msgid "Media white point"
+msgstr "blanco punkto"
+
+#: icc_helfer.cpp:491
+msgid "Microsoft"
+msgstr ""
+
+#: icc_oyranos.cpp:693
+msgid "Model:"
+msgstr ""
+
+#. texte[texte.size()-1].append(monitor.vendor);
+#: icc_helfer_osx.cpp:103
+msgid "Model:      "
+msgstr ""
+
+#: icc_helfer_x.cpp:241 icc_profile_header.cpp:251
+msgid "Model:       "
+msgstr ""
+
+#: icc_helfer.cpp:1295
+msgid "Monitor Profile"
 msgstr ""
 
 #: icc_ueber.cpp:352
@@ -1955,15 +1332,544 @@ msgid ""
 "monitor profile is used for this."
 msgstr ""
 
-#: icc_ueber.cpp:354
-msgid "The report can be exported from the File menu in html format."
+#: oyranos_cmm_iemn.c:495
+msgid "More indepth help  for My example filter."
 msgstr ""
 
-#: icc_ueber.cpp:361
+#: icc_ueber.cpp:444
+msgid "More tags can follow here..."
+msgstr ""
+
+#: icc_ueber.cpp:251
+msgid "Multiple CGATS measurements can be loaded at once"
+msgstr ""
+
+#: icc_helfer_fltk.cpp:286
+msgid "My Computer"
+msgstr ""
+
+#: icc_ueber.cpp:889
 msgid ""
-"The measurement data is taken from the profile, if available, and "
-"transformed to fit in the CGATS standard. A window can be called from the "
-"View menu to show the corrected measurement output."
+"My cordially thank is especially dedicated to Marti Maria and the many "
+"writers of the Lcms-user email list."
+msgstr ""
+
+#: oyranos_cmm_iemn.c:256
+msgid ""
+"My project; www: http://www.oyranos.org; support/email: ku.b@gmx.de; "
+"sources: http://www.oyranos.org/wiki/index.php?title=Oyranos/Download"
+msgstr ""
+
+#: icc_profile_tags.cpp:454
+msgid "Name"
+msgstr "nomo"
+
+#: icc_helfer.cpp:468 icc_helfer.cpp:618
+msgid "Named Colour"
+msgstr ""
+
+#: icc_helfer.cpp:619
+#, fuzzy
+msgid "Named Colour 2"
+msgstr "kolora"
+
+#. clro
+#: icc_helfer.cpp:647
+msgid "Named colour names"
+msgstr ""
+
+#. chrm
+#: icc_helfer.cpp:646
+msgid "Named colour order"
+msgstr ""
+
+#: icc_ueber.cpp:285
+msgid ""
+"Native or separation Gamut. The later is the inbuild default. The native "
+"colour gamut can only be created when iccgamut from ArgyllCMS is available."
+msgstr ""
+
+#: icc_helfer_fltk.cpp:290
+msgid "New Directory?"
+msgstr ""
+
+#: icc_helfer.cpp:446
+msgid "No Colour"
+msgstr ""
+
+#: icc_cinepaint_intern.cpp:1303
+msgid "No active drawable found."
+msgstr ""
+
+#: icc_cinepaint_intern.cpp:365 icc_cinepaint_intern.cpp:1031
+msgid "No profil assigned to image."
+msgstr ""
+
+#. this string is sensible to formatting in the tag browser GUI, please keep a mono spaced formatting
+#: icc_examin.cpp:1388
+msgid "No. Tag   Type   Size Description"
+msgstr ""
+
+#: icc_ueber.cpp:413
+msgid ""
+"Note: primaries and some curves are grouped to better understand their "
+"meaning in the profile."
+msgstr ""
+
+#: icc_examin_version.h:11
+msgid "November"
+msgstr ""
+
+#: icc_ueber.cpp:378
+msgid ""
+"Now you see the tag list has obtained some entries, showing the profiles "
+"tags. The first entry is allways the header. If the header is selected the "
+"tag window below shows many useful information about the profile. Among "
+"these information are:"
+msgstr ""
+
+#: icc_profile_tags.cpp:453
+msgid "Number of colours:"
+msgstr "nombro koloroj:"
+
+#: icc_profile_tags.cpp:284 icc_profile_tags.cpp:303
+msgid "Number of input channels"
+msgstr "numbro kanaloj"
+
+#: icc_profile_tags.cpp:285 icc_profile_tags.cpp:304
+msgid "Number of output channels"
+msgstr ""
+
+#. grav
+#: icc_helfer.cpp:737
+msgid "Offset Lithography"
+msgstr ""
+
+#: icc_ueber.cpp:262
+msgid "On the bottom you see the status area of the window."
+msgstr ""
+
+#. Shells alike displaying, alternatves are "Membranes" or "Shells"
+#: icc_gl.cpp:2778
+msgid "Onion skins"
+msgstr ""
+
+#: icc_helfer.cpp:464
+msgid "Output"
+msgstr ""
+
+#: icc_helfer.cpp:765
+msgid "P22"
+msgstr ""
+
+#: icc_profile_header.cpp:244
+msgid "PCS:         "
+msgstr ""
+
+#. CRT
+#: icc_helfer.cpp:732
+msgid "Passive matrix monitor"
+msgstr ""
+
+#: agviewer.cpp:324
+msgid "Pause"
+msgstr ""
+
+#: icc_helfer.cpp:259
+msgid "Perceptual"
+msgstr ""
+
+#. AMD
+#: icc_helfer.cpp:734
+msgid "Photo CD"
+msgstr ""
+
+#. KPCD
+#: icc_helfer.cpp:735
+msgid "PhotoImageSetter"
+msgstr ""
+
+#. dsub
+#: icc_helfer.cpp:726
+msgid "Photographic paper printer"
+msgstr ""
+
+#: icc_profile_header.cpp:248
+msgid "Platform:    "
+msgstr ""
+
+#: icc_helfer_fltk.cpp:281
+msgid "Please choose an existing file!"
+msgstr ""
+
+#. points are reserved for image colours
+#: icc_gl.cpp:2792
+msgid "Point"
+msgstr ""
+
+#: icc_oyranos.cpp:711
+msgid "Port:"
+msgstr ""
+
+#. "Pos" is a abreviation to position and will be visible in the small statusline with position coordinates
+#: icc_gl.cpp:3164
+msgid "Pos"
+msgstr ""
+
+#: icc_helfer_fltk.cpp:291
+msgid "Preview"
+msgstr ""
+
+#: icc_helfer.cpp:620
+msgid "Preview, photografic"
+msgstr ""
+
+#: icc_helfer.cpp:621
+msgid "Preview, relative colorimetric"
+msgstr ""
+
+#: icc_helfer.cpp:622
+msgid "Preview, saturated"
+msgstr ""
+
+#: icc_cinepaint_intern.cpp:392
+msgid "Profil not written."
+msgstr ""
+
+#: icc_profile.cpp:914
+msgid "Profile at the moment\"."
+msgstr ""
+
+#: icc_measurement.cpp:1349
+msgid "Profile colour"
+msgstr ""
+
+#: icc_helfer.cpp:623
+msgid "Profile description"
+msgstr ""
+
+#: icc_helfer.cpp:624
+msgid "Profile description, multilingual"
+msgstr ""
+
+#: icc_profile_header.cpp:159
+msgid "Profile is embedded and "
+msgstr ""
+
+#: icc_profile_header.cpp:161
+msgid "Profile is not embedded and "
+msgstr ""
+
+#. dscm
+#: icc_helfer.cpp:625
+msgid "Profile sequence description"
+msgstr ""
+
+#: icc_profile.cpp:861
+msgid "Profile\" is designed for an other device"
+msgstr ""
+
+#: icc_profile.cpp:883 icc_profile.cpp:906
+msgid "Profile\"."
+msgstr ""
+
+#. CIED
+#: icc_helfer.cpp:642
+msgid "Profiling parameters"
+msgstr ""
+
+#. vidc
+#: icc_helfer.cpp:730
+msgid "Projection Television"
+msgstr ""
+
+#: icc_cinepaint.cpp:198
+msgid "Proof Profile..."
+msgstr ""
+
+#: icc_ueber.cpp:280
+msgid "Quit - allowes for exiting the application"
+msgstr ""
+
+#: icc_measurement.cpp:1510
+msgid "R"
+msgstr ""
+
+#: icc_measurement.cpp:1455
+msgid "RGB"
+msgstr "RVB"
+
+#: icc_examin_tagwahl.cpp:163
+msgid "RGB primaries"
+msgstr ""
+
+#: icc_examin.cpp:461
+msgid "Ready"
+msgstr ""
+
+#: icc_draw.cpp:706 icc_draw.cpp:717 icc_helfer.cpp:415 icc_helfer_osx.cpp:96
+#: icc_helfer_x.cpp:67 icc_profile_tags.cpp:420
+msgid "Red"
+msgstr "Ruĝa"
+
+#: icc_helfer.cpp:632
+msgid "Red Colorant"
+msgstr ""
+
+#: icc_helfer.cpp:633
+msgid "Red tone reproduction curve"
+msgstr ""
+
+#. fscn
+#: icc_helfer.cpp:720
+msgid "Reflective scanner"
+msgstr ""
+
+#: icc_profile_header.cpp:117
+msgid "Reflective, "
+msgstr ""
+
+#: icc_helfer.cpp:262
+msgid "Relative Colorimetric"
+msgstr ""
+
+#: icc_measurement.cpp:1309
+msgid "Report about ICC profile"
+msgstr ""
+
+#: icc_oyranos_extern.c:138
+msgid "Rgb"
+msgstr ""
+
+#: icc_gl.cpp:2754
+msgid "Rotate around"
+msgstr ""
+
+#: icc_gl.cpp:2733
+msgid "Rotate around slice"
+msgstr ""
+
+#: icc_helfer.cpp:493
+msgid "SGI"
+msgstr ""
+
+#: icc_helfer.cpp:763
+msgid "SMPTE RP145-1994"
+msgstr ""
+
+#: icc_helfer.cpp:265 icc_helfer.cpp:420 icc_helfer.cpp:424
+msgid "Saturation"
+msgstr "pureco"
+
+#: icc_helfer_fltk.cpp:293
+msgid "Save"
+msgstr ""
+
+#: icc_examin_io.cpp:782
+msgid "Save Gamut as Profile"
+msgstr ""
+
+#: icc_examin_io.cpp:785
+msgid "Save Gamut as VRML"
+msgstr ""
+
+#: icc_examin_io.cpp:708
+msgid "Save Report"
+msgstr ""
+
+#: icc_helfer_x.cpp:130 icc_oyranos.cpp:669
+#, fuzzy
+msgid "Screen:"
+msgstr "verda"
+
+#: icc_profile.cpp:866
+msgid "Separation"
+msgstr ""
+
+#: icc_oyranos.cpp:699
+msgid "Serial:"
+msgstr ""
+
+#: icc_ueber.cpp:283
+msgid "Settings"
+msgstr ""
+
+#: icc_ueber.cpp:288
+msgid "Show main application window, in case it is a icon."
+msgstr ""
+
+#: icc_helfer_fltk.cpp:295
+msgid "Show:"
+msgstr ""
+
+#. offs
+#: icc_helfer.cpp:738
+msgid "Silkscreen"
+msgstr ""
+
+#: icc_profile.cpp:196 icc_profile_tags.cpp:582
+msgid "Size"
+msgstr ""
+
+#: icc_profile_header.cpp:236
+msgid "Size:        "
+msgstr ""
+
+#: icc_gl.cpp:2732 icc_gl.cpp:2742 icc_gl.cpp:2745 icc_gl.cpp:2747
+#: icc_gl.cpp:2750 icc_gl.cpp:2752
+msgid "Slice"
+msgstr ""
+
+#: icc_gl.cpp:2759
+msgid "Slice plane"
+msgstr ""
+
+#: icc_ueber.cpp:304
+msgid ""
+"Slice plane submenu, with axis slicing in fly through style and rotation"
+msgstr ""
+
+#: icc_helfer.cpp:492
+msgid "Solaris"
+msgstr ""
+
+#: oyranos_cmm_iemn.c:493
+msgid "Some help for My example filter."
+msgstr ""
+
+#: icc_ueber.cpp:268
+msgid ""
+"Some tags contain complex data. For such tags may appear a choicebutton "
+"below the tag list. There you can select detailed views of a complex tags "
+"endities."
+msgstr ""
+
+#: icc_gl.cpp:2796
+msgid "Spektral line"
+msgstr "spektra linio"
+
+#: icc_gl.cpp:2784
+msgid "Sphere 1dE"
+msgstr ""
+
+#: icc_gl.cpp:2785
+msgid "Sphere 2dE"
+msgstr ""
+
+#: icc_gl.cpp:2786
+msgid "Sphere 4dE"
+msgstr ""
+
+#: icc_profile_tags.cpp:257
+msgid "Standard Observer"
+msgstr ""
+
+#: icc_gl.cpp:2789
+msgid "Star"
+msgstr ""
+
+#. catches all from exception
+#: icc_vrml.cpp:145
+msgid "Std-exception occured: "
+msgstr ""
+
+#: icc_examin_io.cpp:604
+msgid "Stop loading "
+msgstr ""
+
+#: icc_ueber.cpp:350
+msgid ""
+"Such a comparision from device colours + measurements colours on the one "
+"side and device + profile/CMM colours on the other side are just one "
+"possible quality checking method."
+msgstr ""
+
+#: icc_ueber.cpp:159
+msgid "Table of contents"
+msgstr ""
+
+#: icc_ueber.cpp:400
+msgid ""
+"Tags of type text are the most simple ones. They include informations about "
+"the profile like License informations, Description for displaying on behalf "
+"of the whole profile, Measurement data , in CGATS text format and more."
+msgstr ""
+
+#: icc_helfer.cpp:494
+msgid "Taligent"
+msgstr ""
+
+#: icc_helfer.cpp:636
+msgid "Technologie"
+msgstr ""
+
+#: icc_gl.cpp:2799
+msgid "Texts"
+msgstr ""
+
+#: icc_gl.cpp:2801
+msgid "Texts/Arrows on/off"
+msgstr ""
+
+#: icc_fenster.cpp:134
+msgid ""
+"The \"rawphoto\" plugin won't work because there is no \"dcraw\" executable "
+"in your path."
+msgstr ""
+
+#: icc_ueber.cpp:275
+msgid ""
+"The 3D gamut viewer can be selected from the menu bar Window &gt; Gamut. It "
+"shows the gamut of the device described by the profile with the absolute "
+"colorimetric rendering intent."
+msgstr ""
+
+#: oyranos_cmm_iemn.c:272
+msgid ""
+"The 3D view uses OpenGL to project the image colours into a 3D view "
+"representing the CIE*Lab colour space. The filter needs a running window "
+"system."
+msgstr ""
+
+#: icc_ueber.cpp:420
+msgid ""
+"The CLUT view has various options to visualise the table. For instance you "
+"can make table appear coloured or select a channel of choice. The numbers in "
+"the status window are normalised to 0.0 -&gt; 1.0."
+msgstr ""
+
+#: icc_ueber.cpp:278
+msgid "The Gamut Menus"
+msgstr ""
+
+#: icc_ueber.cpp:371
+msgid ""
+"The Help menus About button shows a short overview, license and other "
+"programers acknowledgement, who helped with providing theyre code for free."
+msgstr ""
+
+#: icc_ueber.cpp:112
+msgid ""
+"The appliance of color profiles shall help to achive an easy color data "
+"exchange, regardless which application or what kind of operating system is "
+"used. As well color adaption between different devices is possible, provided "
+"the color characteristics of both devices are known. The qulity of a color "
+"transform from one to an other device depends mainly on the quality of the "
+"color measurement and the used profiling algorithm during profile creation."
+msgstr ""
+
+#: icc_ueber.cpp:135
+msgid ""
+"The color transformations are realised with littleCMS through the Oyranos "
+"CMM API."
+msgstr ""
+
+#: icc_ueber.cpp:276
+msgid "The colour space shown is allways in CIE*Lab coordinates. "
+msgstr ""
+
+#: oyranos_cmm_iemn.c:270
+msgid "The filter allows to visually observe a images colours."
 msgstr ""
 
 #: icc_ueber.cpp:366
@@ -1984,129 +1890,11 @@ msgid ""
 "should be linear or not set."
 msgstr ""
 
-#: icc_ueber.cpp:371
+#: icc_ueber.cpp:361
 msgid ""
-"The Help menus About button shows a short overview, license and other "
-"programers acknowledgement, who helped with providing theyre code for free."
-msgstr ""
-
-#: icc_ueber.cpp:378
-msgid ""
-"Now you see the tag list has obtained some entries, showing the profiles "
-"tags. The first entry is allways the header. If the header is selected the "
-"tag window below shows many useful information about the profile. Among "
-"these information are:"
-msgstr ""
-
-#: icc_ueber.cpp:381
-msgid "the internal stored size of the profile"
-msgstr ""
-
-#: icc_ueber.cpp:382
-msgid "the prefered ColourMatchingModule (CMM)"
-msgstr ""
-
-#: icc_ueber.cpp:383
-msgid "ICC standard version"
-msgstr ""
-
-#: icc_ueber.cpp:384
-msgid "kind of usage"
-msgstr ""
-
-#: icc_ueber.cpp:385
-msgid "device colour space"
-msgstr ""
-
-#: icc_ueber.cpp:386
-msgid "the internal used reference colour space"
-msgstr ""
-
-#: icc_ueber.cpp:387
-#, fuzzy
-msgid "date of creation"
-msgstr "pureco"
-
-#: icc_ueber.cpp:388
-msgid "file type sinature (allways acsp)"
-msgstr ""
-
-#: icc_ueber.cpp:389
-msgid "and some more or less meaningfull informations"
-msgstr ""
-
-#: icc_ueber.cpp:394
-msgid ""
-"Below the header, which behaves like a fixed tag, are the variable tags "
-"listed. They appear in the same order as in the file. Starting with the tag "
-"number, then the tag signature and the type of content in the tag. The size "
-"of the tag follows and a small description gives you an idea af what the tag "
-"may be intended for."
-msgstr ""
-
-#: icc_ueber.cpp:400
-msgid ""
-"Tags of type text are the most simple ones. They include informations about "
-"the profile like License informations, Description for displaying on behalf "
-"of the whole profile, Measurement data , in CGATS text format and more."
-msgstr ""
-
-#: icc_ueber.cpp:405
-msgid ""
-"An other type are curves. They are shown as such. Note the coordinates are "
-"all normalised to 0.0 -&gt; 1.0."
-msgstr ""
-
-#: icc_ueber.cpp:411
-msgid ""
-"XYZ tags show things like Mediawhitepoint or Primaries of monitors in the "
-"CIE*xy diagram. This diagram shows only the hue and intensity part of the "
-"CIE XYZ colour space. The Intensity of the CIE Y channel can be imagined as "
-"a view from top."
-msgstr ""
-
-#: icc_ueber.cpp:413
-msgid ""
-"Note: primaries and some curves are grouped to better understand their "
-"meaning in the profile."
-msgstr ""
-
-#: icc_ueber.cpp:418
-msgid ""
-"MFT1/2 tags are complex and contain a set of peaces to do a colour "
-"transformation. The choice button below the tag view names them. You can "
-"select the matrix, in-and output curves and the CLUT. This kind of tag is "
-"mostly independend of other tags. Only few tags like wtpt and chad may "
-"influence them."
-msgstr ""
-
-#: icc_ueber.cpp:420
-msgid ""
-"The CLUT view has various options to visualise the table. For instance you "
-"can make table appear coloured or select a channel of choice. The numbers in "
-"the status window are normalised to 0.0 -&gt; 1.0."
-msgstr ""
-
-#: icc_ueber.cpp:422
-msgid ""
-"They contain the result of hard work in researching the best translation of "
-"scattered measurements to equally spaced grid tables. Only this step makes "
-"colour transformation reasonably fast."
-msgstr ""
-
-#: icc_ueber.cpp:424
-msgid ""
-"The tag is described in in verson 2 of the ICC specification. In ICC "
-"specification version 4 a new even more complex tag is introduced and is "
-"calleed mAB."
-msgstr ""
-
-#: icc_ueber.cpp:430
-msgid ""
-"sf32 and similiar tags may contain only numbers. Theyre interpretation "
-"depends on the name of the tag. For instance the tag named chad is used to "
-"specify a colour transformation matrix, which was originally used to "
-"normalise the measured colours to D50 standard conditions."
+"The measurement data is taken from the profile, if available, and "
+"transformed to fit in the CGATS standard. A window can be called from the "
+"View menu to show the corrected measurement output."
 msgstr ""
 
 #: icc_ueber.cpp:436
@@ -2118,427 +1906,95 @@ msgid ""
 "the tag viewer."
 msgstr ""
 
-#: icc_ueber.cpp:441
+#: icc_ueber.cpp:354
+msgid "The report can be exported from the File menu in html format."
+msgstr ""
+
+#: icc_ueber.cpp:424
 msgid ""
-" The Profile identifier tag is used in device link profiles to identify the "
-"profiles used to build the device link. However there are other informations "
-"needed to repeat the creation of a device link profile, like rendering "
-"intents or K preservation flags and so on."
+"The tag is described in in verson 2 of the ICC specification. In ICC "
+"specification version 4 a new even more complex tag is introduced and is "
+"calleed mAB."
 msgstr ""
 
-#: icc_ueber.cpp:444
-msgid "More tags can follow here..."
+#. ijet
+#: icc_helfer.cpp:722
+msgid "Thermal wax printer"
 msgstr ""
 
-#: icc_ueber.cpp:452
+#: icc_ueber.cpp:422
 msgid ""
-"Measurement data in CGATS format can be opened in ICC Examin. In the file "
-"selector is a dedicated filter available. The data are shown as text and in "
-"the 3D view."
+"They contain the result of hard work in researching the best translation of "
+"scattered measurements to equally spaced grid tables. Only this step makes "
+"colour transformation reasonably fast."
 msgstr ""
 
-#: icc_ueber.cpp:457
+#: icc_ueber.cpp:293
+msgid "To navigate arround in a 3D view use the:"
+msgstr ""
+
+#: icc_profile_header.cpp:115
+msgid "Transparent, "
+msgstr ""
+
+#: icc_examin_io.cpp:784
+msgid "VRML Files (*.wrl)"
+msgstr ""
+
+#: icc_ueber.cpp:247
 msgid ""
-"A subset of vrml alias wrl files is parsed. It allowes to open colour gamuts "
-"produced with argyll and saved with ICC Examin."
+"VRML file are selectable alone. ICC Examin will not accept mixing with other "
+"files. The VRML gamut hull's from ArgyllCMS are the only known supported "
+"ones."
 msgstr ""
 
-#: icc_ueber.cpp:459
-msgid ""
-"It would be nice to allow as well lines to get parsed, which are used for "
-"visualisations by iccview for instance."
+#: icc_draw.cpp:743 icc_helfer.cpp:421
+msgid "Value"
 msgstr ""
 
-#. Fl_Help_View* hilfe_html
-#: icc_ueber.cpp:472 icc_betrachter.cxx:670 icc_betrachter.cxx:781
-msgid "License"
+#: icc_profile_header.cpp:239
+msgid "Version:     "
 msgstr ""
 
-#: icc_ueber.cpp:478
-msgid ""
-"    ICC Examin is licensed under the GPL version 2.    Especially all icc_* "
-"files are licensed under the GPL.<br>    The other source files may contain "
-"devergine licenses, which are detectable from file headers. "
+#. fprn
+#: icc_helfer.cpp:728
+msgid "Video Monitor"
 msgstr ""
 
-#. HTML
-#: icc_ueber.cpp:883
-msgid "Acknowledgement"
+#. vidm
+#: icc_helfer.cpp:729
+msgid "Video camera"
 msgstr ""
 
-#: icc_ueber.cpp:889
-msgid ""
-"My cordially thank is especially dedicated to Marti Maria and the many "
-"writers of the Lcms-user email list."
+#. Pmtr
+#: icc_helfer.cpp:643
+msgid "VideoCardGammaTable"
 msgstr ""
 
-#: icc_ueber.cpp:903
-msgid "ICC Examin uses following libraries:<br/>\n"
+#: icc_ueber.cpp:281
+msgid "View"
 msgstr ""
 
-#: icc_ueber.cpp:908
-msgid ""
-"  FLTK: Bill Spitzack and others <a href=\"http://www.fltk.org\">www.fltk."
-"org</a><br/>\n"
+#: icc_helfer.cpp:639
+msgid "Viewing Conditions"
 msgstr ""
 
-#: icc_ueber.cpp:915
-msgid ""
-"  FLU: Jason Bryan <a href=\"http://www.osc.edu/~jbryan/FLU\">www.osc.edu/"
-"~jbryan/FLU/</a><br/>\n"
+#: icc_helfer.cpp:638
+msgid "Viewing conditions description"
 msgstr ""
 
-#: icc_ueber.cpp:922
-msgid ""
-"  littleCMS: Marti Maria <a href=\"http://www.littlecms.com\">www.littlecms."
-"com</a><br/>\n"
+#: icc_examin.cpp:136
+msgid "WARNING"
 msgstr ""
 
-#: icc_ueber.cpp:933
-msgid ""
-"  FTGL: Henry Maddocks <a href=\"http://homepages.paradise.net.nz/henryj/"
-"code/#FTGL\">homepages.paradise.net.nz/henryj/code/#FTGL<\a><br/>\n"
+#: icc_oyranos.cpp:168
+msgid "WARNING: Could not load corrupt or damaged profile."
 msgstr ""
 
-#: icc_ueber.cpp:941
-msgid ""
-"integrated sources, lock at the according files for licence conditions:<br/"
-">\n"
-msgstr ""
-
-#: icc_ueber.cpp:946
-msgid "  agv 3D Navigation: Philip Winston<br/>\n"
-msgstr ""
-
-#: icc_ueber.cpp:952
-msgid "  bsp rendering: Norman Chin<br/>\n"
-msgstr ""
-
-#: icc_ueber.cpp:961
-msgid "For the visualisation of gamut (external):<br/>\n"
-msgstr ""
-
-#: icc_ueber.cpp:966
-msgid ""
-"  argyll: Greame Gill <a href=\"http://www.argyllcms.com\">www.argyllcms."
-"com</a><br/><br/><br/>\n"
-msgstr ""
-
-#. HTML
-#: icc_ueber.cpp:982 icc_ueber.cpp:990
-msgid "Configure Log"
-msgstr ""
-
-#. catches all from exception
-#: icc_vrml.cpp:141
-msgid "exception occured: "
-msgstr ""
-
-#. catches all from exception
-#: icc_vrml.cpp:145
-msgid "Std-exception occured: "
-msgstr ""
-
-#. catches all from exception
-#: icc_vrml.cpp:148
-msgid "Huch, unknown exception"
-msgstr ""
-
-#: icc_helfer_osx.cpp:61 icc_helfer_x.cpp:89
-msgid "open X Display failed"
-msgstr ""
-
-#: icc_helfer_osx.cpp:101
-msgid "Manufacturer: "
-msgstr ""
-
-#. texte[texte.size()-1].append(monitor.vendor);
-#: icc_helfer_osx.cpp:103
-msgid "Model:      "
-msgstr ""
-
-#: icc_helfer_osx.cpp:115 icc_helfer_x.cpp:264
-msgid "Gamma Red:   "
-msgstr ""
-
-#: icc_helfer_osx.cpp:121
-msgid "Gamma Green: "
-msgstr ""
-
-#: icc_helfer_osx.cpp:127 icc_helfer_x.cpp:276
-msgid "Gamma Blue:  "
-msgstr ""
-
-#: icc_helfer_x.cpp:154
-msgid "XineramaScreen:"
-msgstr ""
-
-#: icc_helfer_x.cpp:254
-msgid "Gamma:   "
-msgstr ""
-
-#: icc_helfer_x.cpp:270
-msgid "Gamma Green:"
-msgstr ""
-
-#: icc_helfer_x.cpp:299 icc_helfer_x.cpp:323
-msgid "no gammagradient information obtained"
-msgstr ""
-
-#: icc_helfer_fltk.cpp:278
-msgid "Add to Favorites"
-msgstr ""
-
-#: icc_helfer_fltk.cpp:279
-msgid "All Files (*)"
-msgstr ""
-
-#: icc_helfer_fltk.cpp:280
-msgid "Custom Filter"
-msgstr ""
-
-#: icc_helfer_fltk.cpp:281
-msgid "Please choose an existing file!"
-msgstr ""
-
-#. Fl_Choice* showChoice
-#: icc_helfer_fltk.cpp:282 my_file_chooser.cxx:183
-msgid "Favorites"
-msgstr ""
-
-#: icc_helfer_fltk.cpp:283
-msgid "Filename"
-msgstr ""
-
-#. icc_examin_ns::MyFl_Double_Window* window
-#: icc_helfer_fltk.cpp:284 my_file_chooser.cxx:257
-msgid "Manage Favorites"
-msgstr ""
-
-#: icc_helfer_fltk.cpp:286
-msgid "My Computer"
-msgstr ""
-
-#: icc_helfer_fltk.cpp:288
-msgid "File Systems"
-msgstr ""
-
-#: icc_helfer_fltk.cpp:290
-msgid "New Directory?"
-msgstr ""
-
-#: icc_helfer_fltk.cpp:291 my_file_chooser.cxx:214
-msgid "Preview"
-msgstr ""
-
-#. Fl_Button* favCancelButton
-#: icc_helfer_fltk.cpp:293 my_file_chooser.cxx:292
-msgid "Save"
-msgstr ""
-
-#: icc_helfer_fltk.cpp:295 my_file_chooser.cxx:176
-msgid "Show:"
-msgstr ""
-
-#: icc_betrachter.cxx:168
-msgid "lineare entrance curve with 256 steps"
-msgstr ""
-
-#: icc_betrachter.cxx:170
-msgid "lineare exit curve with 256 steps"
-msgstr ""
-
-#: icc_betrachter.cxx:422
-msgid "Save as VRML"
-msgstr ""
-
-#: icc_betrachter.cxx:423 icc_betrachter.cxx:649
-msgid "Quit"
-msgstr ""
-
-#: icc_betrachter.cxx:426 icc_betrachter.cxx:653
-msgid "Whole Screen on/off"
-msgstr ""
-
-#: icc_betrachter.cxx:429
-msgid "Gamut Warning"
-msgstr ""
-
-#: icc_betrachter.cxx:433
-msgid "BPC"
-msgstr ""
-
-#: icc_betrachter.cxx:434
-msgid "Native Gamut"
-msgstr ""
-
-#: icc_betrachter.cxx:437
-msgid "Show Main Window"
-msgstr ""
-
-#: icc_betrachter.cxx:438 icc_betrachter.cxx:665
-msgid "Log"
-msgstr ""
-
-#: icc_betrachter.cxx:645
-msgid "Open"
-msgstr ""
-
-#. icc_examin_ns::MyFl_Double_Window* vcgt
-#: icc_betrachter.cxx:651 icc_betrachter.cxx:660 icc_betrachter.cxx:863
-msgid "Gamut"
-msgstr ""
-
-#: icc_betrachter.cxx:656
-msgid "Oyranos Settings"
-msgstr ""
-
-#: icc_betrachter.cxx:657
-msgid "LANG"
-msgstr ""
-
-#: icc_betrachter.cxx:661
-msgid "Report View"
-msgstr ""
-
-#: icc_betrachter.cxx:662
-msgid "CGATS View"
-msgstr ""
-
-#: icc_betrachter.cxx:663
-msgid "Videocard Gamma"
-msgstr ""
-
-#: icc_betrachter.cxx:664
-msgid "Test Curves"
-msgstr ""
-
-#: icc_betrachter.cxx:668 icc_betrachter.cxx:769
-msgid "About"
-msgstr ""
-
-#. Fl_Help_View* lizenz_html
-#: icc_betrachter.cxx:788
-msgid "Acknowlegement"
-msgstr ""
-
-#. Fl_Help_View* dank_html
-#: icc_betrachter.cxx:794
-msgid "Info"
-msgstr ""
-
-#. icc_examin_ns::MyFl_Double_Window* ueber
-#: icc_betrachter.cxx:812
-msgid "Grafic Card Gamma Table"
-msgstr ""
-
-#. TagDrawings* vcgt_viewer
-#: icc_betrachter.cxx:837
-msgid "Set"
-msgstr ""
-
-#: icc_betrachter.cxx:838
-msgid ""
-"Set the current profile as monitor profile and upload vcgt tag to the video "
-"card"
-msgstr ""
-
-#. Fl_Button* vcgt_set_button
-#: icc_betrachter.cxx:843
-msgid "Reset"
-msgstr ""
-
-#: icc_betrachter.cxx:844
-msgid "reset to standard gamma"
-msgstr ""
-
-#. Fl_Button* vcgt_reset_button
-#: icc_betrachter.cxx:848
-msgid "Load"
-msgstr ""
-
-#: icc_betrachter.cxx:849
-msgid "Load the current monitor profile"
-msgstr ""
-
-#. Fl_Button* vcgt_load_button
-#: icc_betrachter.cxx:853
-msgid "Close"
-msgstr ""
-
-#. icc_examin_ns::MyFl_Double_Window* DD
-#: icc_betrachter.cxx:937
-msgid "ICC Examin"
-msgstr ""
-
-#: icc_betrachter.cxx:949
-msgid "invisible box"
-msgstr ""
-
-#: icc_betrachter.cxx:977
-msgid "Choose one profile tag"
-msgstr ""
-
-#: icc_betrachter.cxx:995
-msgid "Chain selection"
-msgstr ""
-
-#: icc_betrachter.cxx:996
-msgid "Choose a attribute"
-msgstr ""
-
-#: icc_betrachter.cxx:1058
-msgid "o"
-msgstr ""
-
-#: icc_betrachter.cxx:1059
-msgid "Show all channels of this table a own window."
-msgstr ""
-
-#: icc_betrachter.cxx:1136
-msgid "..."
-msgstr ""
-
-#: my_file_chooser.cxx:164
-msgid "Choose File"
-msgstr ""
-
-#. Fl_File_Browser* fileList
-#: my_file_chooser.cxx:204
-msgid "?"
-msgstr ""
-
-#. Fl_File_Input* fileName
-#: my_file_chooser.cxx:233
-msgid "Filename:"
-msgstr ""
-
-#: my_file_chooser.cxx:239
-msgid "OK"
-msgstr ""
-
-#. okButton->label(fl_ok);
-#. Fl_Return_Button* okButton
-#. Fl_Button* o =
-#: my_file_chooser.cxx:243 my_file_chooser.cxx:288
-msgid "Cancel"
-msgstr ""
-
-#: my_file_chooser.cxx:274
-msgid "@8>"
-msgstr ""
-
-#. Fl_Button* favDeleteButton
-#: my_file_chooser.cxx:282
-msgid "@2>"
-msgstr ""
-
-#: icc_cinepaint.cpp:197
-msgid "Image Profile..."
-msgstr ""
-
-#: icc_cinepaint.cpp:198
-msgid "Proof Profile..."
+#: icc_oyranos.cpp:174 icc_oyranos.cpp:441 icc_oyranos.cpp:447
+#: icc_oyranos.cpp:478 icc_oyranos.cpp:484 icc_oyranos.cpp:518
+#: icc_oyranos.cpp:524
+msgid "WARNING: Could not load profile."
 msgstr ""
 
 #: icc_cinepaint.cpp:199
@@ -2549,53 +2005,462 @@ msgstr ""
 msgid "Watch Colours 3D.2..."
 msgstr ""
 
-#: icc_cinepaint_intern.cpp:360 icc_cinepaint_intern.cpp:1026
-msgid "No profil assigned to image."
-msgstr ""
-
-#: icc_cinepaint_intern.cpp:387
-msgid "Profil not written."
-msgstr ""
-
-#: icc_cinepaint_intern.cpp:1085
-msgid "Wrong profil assigned to image."
-msgstr ""
-
-#: icc_cinepaint_intern.cpp:1298
-msgid "No active drawable found."
-msgstr ""
-
-#: icc_cinepaint_intern.cpp:1604
+#: icc_cinepaint_intern.cpp:1609
 msgid "What kind of image is this?"
 msgstr ""
 
-#: icc_cinepaint_intern.cpp:1698
+#: icc_cinepaint_intern.cpp:1703
 msgid "What kind of image is this?\n"
 msgstr ""
 
-#: icc_utils.h:292 icc_utils.h:293 icc_utils.h:294 icc_utils.h:348
-#: icc_utils.h:349 icc_utils.h:350
-msgid "!!! Warning !!!"
+#: icc_fenster.cpp:160
+msgid "Which ICC profile?"
 msgstr ""
 
-#: /home/kuwe/programme/CMS/icc_examin/Entwickeln/build_conf/icc_examin_version.h:8
-msgid "0.56"
+#. ->Darstellung->background colour
+#: icc_gl.cpp:2762
+msgid "White"
+msgstr "Blanka"
+
+#: icc_ueber.cpp:286
+msgid "Windows"
 msgstr ""
 
-#: /home/kuwe/programme/CMS/icc_examin/Entwickeln/build_conf/icc_examin_version.h:9
-msgid "May"
+#: icc_profile.cpp:846
+msgid "Work Space"
 msgstr ""
 
-#: /home/kuwe/programme/CMS/icc_examin/Entwickeln/build_conf/icc_examin_version.h:10
-msgid "2004"
+#: icc_cinepaint_intern.cpp:1090
+msgid "Wrong profil assigned to image."
 msgstr ""
 
-#: /home/kuwe/programme/CMS/icc_examin/Entwickeln/build_conf/icc_examin_version.h:11
-msgid "November"
+#: icc_measurement.cpp:1501
+msgid "X"
 msgstr ""
 
-#: /home/kuwe/programme/CMS/icc_examin/Entwickeln/build_conf/icc_examin_version.h:12
-msgid "2014"
+#: icc_measurement.cpp:1505
+msgid "X'"
+msgstr ""
+
+#: icc_oyranos_extern.c:133
+msgid "XYZ"
+msgstr ""
+
+#: icc_ueber.cpp:411
+msgid ""
+"XYZ tags show things like Mediawhitepoint or Primaries of monitors in the "
+"CIE*xy diagram. This diagram shows only the hue and intensity part of the "
+"CIE XYZ colour space. The Intensity of the CIE Y channel can be imagined as "
+"a view from top."
+msgstr ""
+
+#: icc_helfer_x.cpp:154
+msgid "XineramaScreen:"
+msgstr ""
+
+#: icc_measurement.cpp:1502 icc_measurement.cpp:1516
+msgid "Y"
+msgstr ""
+
+#: icc_measurement.cpp:1506
+msgid "Y'"
+msgstr ""
+
+#: icc_oyranos_extern.c:136
+msgid "YCbCr"
+msgstr ""
+
+#: icc_draw.cpp:727 icc_helfer.cpp:427 icc_helfer.cpp:431
+msgid "Yellow"
+msgstr "Flava"
+
+#: icc_fenster.cpp:352 icc_fenster.cpp:419
+msgid "Yes"
+msgstr "Jes"
+
+#: icc_ueber.cpp:260
+msgid ""
+"You can select an tag from the taglist and watch its content in the tag "
+"window below."
+msgstr ""
+
+#: icc_profile.cpp:860
+msgid "Your"
+msgstr ""
+
+#: icc_oyranos_extern.c:137
+msgid "Yxy"
+msgstr ""
+
+#: icc_measurement.cpp:1503
+msgid "Z"
+msgstr ""
+
+#: icc_measurement.cpp:1507
+msgid "Z'"
+msgstr ""
+
+#: icc_measurement.cpp:1496
+msgid "a"
+msgstr ""
+
+#: icc_measurement.cpp:1499
+msgid "a'"
+msgstr ""
+
+#: icc_ueber.cpp:389
+msgid "and some more or less meaningfull informations"
+msgstr ""
+
+#: icc_measurement.cpp:1462
+msgid "averaging deviations (dE CIE*Lab):<b> "
+msgstr ""
+
+#: icc_gl.cpp:2754
+msgid "axis"
+msgstr ""
+
+#: icc_measurement.cpp:1497
+msgid "b"
+msgstr ""
+
+#: icc_measurement.cpp:1500
+msgid "b'"
+msgstr ""
+
+#: icc_helfer.cpp:637
+msgid "bfd"
+msgstr ""
+
+#: icc_profile_header.cpp:130
+msgid "black/white"
+msgstr "nigro/blanco"
+
+#: icc_profile_header.cpp:237
+msgid "bytes"
+msgstr ""
+
+#: icc_profile_header.cpp:166
+msgid "can be used independently from image."
+msgstr ""
+
+#: icc_profile_header.cpp:164
+msgid "can not be used independently from image."
+msgstr ""
+
+#: icc_profile_header.cpp:132
+msgid "colour"
+msgstr "kolora"
+
+#: icc_gl.cpp:2775
+msgid "coloured"
+msgstr ""
+
+#: icc_helfer.cpp:607
+msgid "crdi"
+msgstr ""
+
+#: icc_profile_header.cpp:260
+msgid "created by:  "
+msgstr ""
+
+#: icc_measurement.cpp:1493
+msgid "dE Lab"
+msgstr ""
+
+#: icc_measurement.cpp:1494
+msgid "dE2000"
+msgstr ""
+
+#: icc_ueber.cpp:387
+#, fuzzy
+msgid "date of creation"
+msgstr "pureco"
+
+#: icc_ueber.cpp:385
+msgid "device colour space"
+msgstr ""
+
+#: icc_ueber.cpp:318
+msgid "down key - reduce the slice plane distance"
+msgstr ""
+
+#. found XXX elements
+#: icc_examin_tagwahl.cpp:394
+msgid "elements"
+msgstr ""
+
+#: icc_examin_tagwahl.cpp:65
+msgid "empty"
+msgstr ""
+
+#: icc_ueber.cpp:321
+msgid "end key - set the slice plane distance to center"
+msgstr ""
+
+#. catches all from exception
+#: icc_vrml.cpp:141
+msgid "exception occured: "
+msgstr ""
+
+#: icc_helfer.cpp:1322
+msgid "file size 0 for "
+msgstr ""
+
+#: icc_ueber.cpp:388
+msgid "file type sinature (allways acsp)"
+msgstr ""
+
+#. found XXX elements
+#: icc_examin_tagwahl.cpp:388
+msgid "found"
+msgstr ""
+
+#: icc_examin.cpp:1382
+msgid "found no content for"
+msgstr ""
+
+#: icc_profile_header.cpp:230
+msgid "found no header"
+msgstr ""
+
+#: icc_helfer.cpp:610
+msgid "gamut"
+msgstr ""
+
+#: icc_profile_header.cpp:122
+msgid "glossy, "
+msgstr ""
+
+#: icc_gl.cpp:2774
+msgid "gray"
+msgstr "Griza"
+
+#: oyranos_cmm_iemn.c:268
+msgid "help"
+msgstr ""
+
+#: icc_gl.cpp:2776
+msgid "high contrast"
+msgstr ""
+
+#: icc_ueber.cpp:320
+msgid "home key - reset the slice plane distance"
+msgstr ""
+
+#: icc_ueber.cpp:941
+msgid ""
+"integrated sources, lock at the according files for licence conditions:<br/"
+">\n"
+msgstr ""
+
+#: icc_ueber.cpp:99
+msgid ""
+"internet: <a href=\"http://www.oyranos.org/icc-examin\">www.oyranos.org/icc-"
+"examin</a> <br>"
+msgstr ""
+
+#: icc_profile.cpp:881 icc_profile.cpp:904 icc_profile.cpp:912
+msgid "is not valid for an"
+msgstr ""
+
+#: icc_ueber.cpp:384
+msgid "kind of usage"
+msgstr ""
+
+#: agviewer.cpp:348 agviewer.cpp:356 icc_gl.cpp:3956 icc_gl.cpp:3967
+#: icc_gl.cpp:3972 icc_gl.cpp:3977
+msgid "left mouse button -> go back"
+msgstr ""
+
+#: icc_ueber.cpp:296
+msgid "left mouse button to rotate"
+msgstr ""
+
+#. ICC stop
+#. if (MoveMode == FLYING)
+#: agviewer.cpp:311 icc_gl.cpp:3849 icc_gl.cpp:3868 icc_gl.cpp:3990
+msgid "left-/middle-/right mouse button -> rotate/cut/menu"
+msgstr ""
+
+#: icc_examin.cpp:455 icc_examin.cpp:1432
+msgid "loaded"
+msgstr ""
+
+#: icc_profile_header.cpp:120
+msgid "matte, "
+msgstr ""
+
+#: icc_ueber.cpp:298
+msgid "middle mouse button or Shift+left mouse button to move/clip"
+msgstr ""
+
+#: icc_profile_header.cpp:125
+msgid "negative, "
+msgstr ""
+
+#: oyranos_cmm_iemn.c:264
+msgid "new BSD license: http://www.opensource.org/licenses/bsd-license.php"
+msgstr ""
+
+#: oyranos_cmm_iemn.c:260
+msgid "newBSD"
+msgstr ""
+
+#: icc_helfer_x.cpp:299 icc_helfer_x.cpp:323
+msgid "no gammagradient information obtained"
+msgstr ""
+
+#: icc_measurement.cpp:1445
+msgid "no measurment data or correct profile conversion available"
+msgstr ""
+
+#: icc_examin_io.cpp:331
+msgid "no net found in VRML file"
+msgstr ""
+
+#: icc_examin_io.cpp:375
+msgid "no net found. Is Argyll installed?"
+msgstr ""
+
+#: icc_profile.cpp:196 icc_profile.cpp:214
+msgid "no profile"
+msgstr ""
+
+#: icc_kette.cpp:197
+msgid "noName"
+msgstr ""
+
+#: icc_examin.cpp:911 icc_oyranos.cpp:670
+msgid "none"
+msgstr ""
+
+#: icc_examin.cpp:1001 icc_examin_tagwahl.cpp:1052 icc_gl.h:276
+msgid "not available"
+msgstr ""
+
+#: icc_profile.cpp:294
+msgid "not inside memory block"
+msgstr ""
+
+#: icc_helfer.cpp:863
+msgid "o'clock"
+msgstr ""
+
+#: icc_helfer_osx.cpp:61 icc_helfer_x.cpp:89
+msgid "open X Display failed"
+msgstr ""
+
+#: icc_profile_tags.cpp:288 icc_profile_tags.cpp:306
+msgid "points length per side"
+msgstr ""
+
+#: icc_profile_header.cpp:127
+msgid "positive, "
+msgstr ""
+
+#. # "profiles ... involved" (other text) ":"
+#: icc_profile_tags.cpp:525
+msgid "profiles where originally involved"
+msgstr ""
+
+#: icc_helfer.cpp:631
+msgid "ps2i"
+msgstr ""
+
+#: icc_helfer.cpp:630
+msgid "ps2s"
+msgstr ""
+
+#: icc_helfer.cpp:626
+msgid "psd0"
+msgstr ""
+
+#: icc_helfer.cpp:627
+msgid "psd1"
+msgstr ""
+
+#: icc_helfer.cpp:628
+msgid "psd2"
+msgstr ""
+
+#: icc_helfer.cpp:629
+msgid "psd3"
+msgstr ""
+
+#: icc_ueber.cpp:300
+msgid ""
+"right mouse button/ Strg+left mouse button to obtain additional menus. Among "
+"the additional menus are in:"
+msgstr ""
+
+#: icc_helfer.cpp:634
+msgid "scrd"
+msgstr ""
+
+#: icc_helfer.cpp:635
+msgid "scrn"
+msgstr ""
+
+#: icc_helfer.cpp:864
+msgid "seconds"
+msgstr ""
+
+#: icc_ueber.cpp:430
+msgid ""
+"sf32 and similiar tags may contain only numbers. Theyre interpretation "
+"depends on the name of the tag. For instance the tag named chad is used to "
+"specify a colour transformation matrix, which was originally used to "
+"normalise the measured colours to D50 standard conditions."
+msgstr ""
+
+#: icc_profile_tags.cpp:287 icc_profile_tags.cpp:289
+msgid "steps"
+msgstr ""
+
+#: icc_profile.cpp:294
+msgid "tag list is corrupted for tag"
+msgstr ""
+
+#: icc_ueber.cpp:381
+msgid "the internal stored size of the profile"
+msgstr ""
+
+#: icc_ueber.cpp:386
+msgid "the internal used reference colour space"
+msgstr ""
+
+#: icc_ueber.cpp:382
+msgid "the prefered ColourMatchingModule (CMM)"
+msgstr ""
+
+#: icc_ueber.cpp:302
+msgid "top menu: the channel selection if appropriate"
+msgstr ""
+
+#: icc_helfer.cpp:804 icc_helfer.cpp:824
+msgid "unknown"
+msgstr ""
+
+#: icc_draw.cpp:697
+#, fuzzy
+msgid "unknown Colour"
+msgstr "kolora"
+
+#: icc_ueber.cpp:319
+msgid "up key - increase the slice plane distance"
+msgstr ""
+
+#: icc_profile_tags.cpp:287 icc_profile_tags.cpp:289
+msgid "with"
+msgstr "kun"
+
+#: icc_gl.cpp:2795
+msgid "without markers"
+msgstr ""
+
+#: icc_profile.cpp:279
+msgid "wrong tag size in profile "
 msgstr ""
 
 #, fuzzy
