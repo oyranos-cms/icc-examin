@@ -1720,7 +1720,7 @@ oyProfile_s * Oyranos::getEditingProfile      ( int early_binding )
       saveMemToFile( "ICC Examin ROMM gamma 2.2.icc", data, size );
     }
 
-    oyProfile_Install( editing, NULL );
+    oyProfile_Install( editing, oySCOPE_USER, NULL );
   }
 
   return editing;
