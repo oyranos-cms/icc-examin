@@ -201,8 +201,86 @@ SET( icc_examin_SRCS
      ${COMMON_CPPFILES}
    )
 
-ADD_EXECUTABLE( iccexamin ${icc_examin_SRCS} icc_main.cpp )
-TARGET_LINK_LIBRARIES ( iccexamin ${EXTRA_LIBS}
+IF(APPLE)
+  # icon files to copy in the bundle
+  set( OSX_ICON_FILES ${PROJECT_SOURCE_DIR}/extras/osx/icc-examin.icns  )
+  CONFIGURE_FILE (
+                "${CMAKE_CURRENT_SOURCE_DIR}/extras/osx/ICC Examin.sh.in"
+                "${CMAKE_CURRENT_BINARY_DIR}/extras/osx/ICC Examin.sh"
+                @ONLY
+                 )
+  set( OSX_SCRIPT_FILES "${CMAKE_CURRENT_BINARY_DIR}/extras/osx/ICC Examin.sh" )
+  set( OSX_PKG_FILES ${PROJECT_SOURCE_DIR}/extras/osx/PkgInfo )
+
+  ADD_EXECUTABLE( "ICCExamin" MACOSX_BUNDLE ${icc_examin_SRCS} icc_main.cpp ${OSX_ICON_FILES} )
+
+  INSTALL( TARGETS "ICCExamin"
+           EXPORT ICCExaminLibraryDepends
+           RUNTIME DESTINATION bin
+           BUNDLE DESTINATION  bin
+           RENAME ICCExamin.bin
+         )
+
+  set_target_properties( "ICCExamin" PROPERTIES MACOSX_BUNDLE_BUNDLE_NAME "ICC Examin" )
+  set_target_properties( "ICCExamin" PROPERTIES MACOSX_BUNDLE_INFO_STRING "ICC Examin front end to Oyranos Color Management System, www.oyranos.org" )
+  set_target_properties( "ICCExamin" PROPERTIES MACOSX_BUNDLE_EXECUTABLE_NAME "ICCExamin" )
+  set_target_properties( "ICCExamin" PROPERTIES MACOSX_BUNDLE_ICON_FILE icc-examin.icns )
+  set_target_properties( "ICCExamin" PROPERTIES MACOSX_BUNDLE_GUI_IDENTIFIER org.oyranos.icc-examin )
+  set_target_properties( "ICCExamin" PROPERTIES MACOSX_BUNDLE_LONG_VERSION_STRING "ICC Examin ${ICC_EXAMIN_V}" )
+  set_target_properties( "ICCExamin" PROPERTIES MACOSX_BUNDLE_SHORT_VERSION_STRING ${ICC_EXAMIN_V} )
+  set_target_properties( "ICCExamin" PROPERTIES MACOSX_BUNDLE_BUNDLE_VERSION 1.0 )
+  set_target_properties( "ICCExamin" PROPERTIES MACOSX_BUNDLE_COPYRIGHT "2004-2015 Kai-Uwe Behrmann" )
+
+  # configure CMake to use a custom Info.plist
+  #set_target_properties( "ICCExamin" PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${PROJECT_SOURCE_DIR}/extras/osx/Info.plist )
+
+  # set where in the bundle to put the icns files
+  set_source_files_properties( ${OSX_ICON_FILES} PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
+
+# Now the work of copying dependencies into the bundle/package
+# The quotes are escaped and variables to use at install time have their $ escaped
+# An alternative is the do a configure_file() on a script and use install(SCRIPT  ...).
+  SET(APPS "\${CMAKE_INSTALL_PREFIX}/bin/ICCExamin.app")  # paths to executables
+  SET(DIRS "\${CMAKE_INSTALL_PREFIX}/lib;\${CMAKE_CURRENT_BINARY_DIR};\${CMAKE_INSTALL_PREFIX}/Library/Frameworks")   # directories to search for prerequisites
+  INSTALL(CODE "
+   include(BundleUtilities)
+   fixup_bundle(\"${APPS}\"   \"\"   \"${DIRS}\")
+   " COMPONENT Runtime)
+
+  # this is the script to setup the environment and call the real binary
+  INSTALL( PROGRAMS "${OSX_SCRIPT_FILES}" DESTINATION "bin/ICCExamin.app/Contents/MacOS"
+           RENAME "ICCExamin" )
+  INSTALL( FILES "${OSX_PKG_FILES}" DESTINATION "bin/ICCExamin.app/Contents" COMPONENT bin )
+
+  # place the binary
+  INSTALL( PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/ICCExamin.app/Contents/MacOS/ICCExamin
+           DESTINATION "bin/ICCExamin.app/Contents/MacOS"
+           RENAME ICCExamin.bin )
+
+  # install Oyranos modules
+  FILE( GLOB OYRANOS_ALL_CMMS ${OYRANOS_CMM_DIR}/liboyranos_*_cmm* )
+  INSTALL( FILES ${OYRANOS_ALL_CMMS} DESTINATION "bin/ICCExamin.app/Contents/Resources/${OYRANOS_CMM_SUBDIR}" COMPONENT lib )
+  FILE( GLOB OYRANOS_ALL_META ${OYRANOS_META_DIR}/liboyranos_*_cmm* )
+  INSTALL( FILES ${OYRANOS_ALL_META} DESTINATION "bin/ICCExamin.app/Contents/Resources/${OYRANOS_META_SUBDIR}" COMPONENT lib )
+  FOREACH( oy_dep_lib ${OYRANOS_MODULE_LIBRARIES} )
+    FILE( GLOB OYRANOS_MODULE_DEP_LIBRARIES ${OYRANOS_META_DIR}/../lib${oy_dep_lib}*.dylib )
+    INSTALL( FILES ${OYRANOS_MODULE_DEP_LIBRARIES} DESTINATION "bin/ICCExamin.app/Contents/MacOS" COMPONENT lib )
+  ENDFOREACH( oy_dep_lib )
+
+  INSTALL( PROGRAMS ${OYRANOS_META_DIR}/../../bin/oyranos-profile-graph DESTINATION "bin/ICCExamin.app/Contents/MacOS" COMPONENT bin )
+
+  FIND_PACKAGE(PkgConfig)
+  PKG_CHECK_MODULES(ELEKTRA elektra)
+  INSTALL( DIRECTORY ${ELEKTRA_LIBDIR}/elektra DESTINATION "bin/ICCExamin.app/Contents/Resources" COMPONENT lib )
+
+
+ELSEIF(UNIX)
+  ADD_EXECUTABLE( iccexamin ${icc_examin_SRCS} icc_main.cpp )
+ELSEIF (WIN32)
+  ADD_EXECUTABLE( iccexamin WIN32 ${icc_examin_SRCS} icc_main.cpp )
+ENDIF ()
+
+TARGET_LINK_LIBRARIES ( ICCExamin ${EXTRA_LIBS}
                  ${FLTK_LIBRARIES}
                  ${OYRANOS_LIBRARIES}
                  ${XCM_LIBRARIES}
@@ -213,7 +291,11 @@ TARGET_LINK_LIBRARIES ( iccexamin ${EXTRA_LIBS}
                  ${X11_Xrandr_LIB}
                  ${X11_Xxf86vm_LIB}
                  ${CMAKE_THREAD_LIBS_INIT} )
-INSTALL( TARGETS iccexamin DESTINATION bin )
+
+IF( NOT APPLE )
+  INSTALL( TARGETS iccexamin 
+           RUNTIME DESTINATION bin )
+ENDIF()
 INSTALL( FILES icc_examin.desktop DESTINATION share/applications )
 INSTALL( FILES icc_examin.svg DESTINATION share/pixmaps )
 INSTALL( FILES iccexamin.1 DESTINATION share/man/man1 )
@@ -253,8 +335,23 @@ IF( GETTEXT_FOUND )
     COMMENT "Extract translatable messages to ${_potFile}"
   )
 
-  SET( LINGUAS po/cs.po po/de.po po/eo.po po/eu.po  po/fr.po )
+  SET( LINGUAS po/cs.po po/de.po po/eo.po po/eu.po po/fr.po )
+  FOREACH( my_lang ${LINGUAS} )
+    GET_FILENAME_COMPONENT(_absFile ${my_lang} ABSOLUTE)
+    GET_FILENAME_COMPONENT(_abs_PATH ${_absFile} PATH)
+    GET_FILENAME_COMPONENT(_lang ${_absFile} NAME_WE)
+    SET( MY_LINGUAS ${MY_LINGUAS} ${_lang} )
+  ENDFOREACH( my_lang )
   # compile translations always to have them ready for installation
   GETTEXT_CREATE_TRANSLATIONS( ${_potFile} ALL ${LINGUAS} )
+
+  # install into app bundle
+  IF(APPLE)
+    FOREACH( my_lang ${MY_LINGUAS} )
+      INSTALL( FILES "${CMAKE_BINARY_DIR}/${my_lang}.gmo"
+               DESTINATION "${CMAKE_INSTALL_PREFIX}/bin/ICCExamin.app/Contents/Resources/locale/${my_lang}/LC_MESSAGES"
+               RENAME icc-examin.mo )
+    ENDFOREACH( my_lang )
+  ENDIF(APPLE)
 ENDIF()
 

@@ -3,7 +3,7 @@
 prefix=
 
 
-exe=iccexamin
+exe=ICCExamin.bin
 path="${0%/*}"
 export top_path="${path%/*}"
 export RESOURCESPATH="$top_path/Resources$prefix"
