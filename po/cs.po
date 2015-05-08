@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: icc_examin\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2015-04-02 22:35+0200\n"
+"POT-Creation-Date: 2015-05-08 16:51+0200\n"
 "PO-Revision-Date: 2012-10-19 15:09+0100\n"
 "Last-Translator: Milan Knížek <knizek@volny.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
@@ -172,7 +172,7 @@ msgstr "---"
 
 #. clrt
 #. flex
-#: icc_examin.cpp:1368 icc_helfer.cpp:648 icc_helfer.cpp:740
+#: icc_examin.cpp:1381 icc_helfer.cpp:648 icc_helfer.cpp:740
 msgid "----"
 msgstr "----"
 
@@ -183,10 +183,6 @@ msgstr "0"
 #: icc_gl.cpp:1045
 msgid "0,0,0"
 msgstr "0,0,0"
-
-#: icc_examin_version.h:8
-msgid "0.56"
-msgstr ""
 
 #: icc_helfer.cpp:825
 msgid "0/45, 45/0"
@@ -279,14 +275,6 @@ msgstr "2.4.5 Gama tabulka grafické karty"
 #: icc_ueber.cpp:188 icc_ueber.cpp:369
 msgid "2.4.6 Help"
 msgstr "2.4.6 Nápověda"
-
-#: icc_examin_version.h:10
-msgid "2004"
-msgstr "2004"
-
-#: icc_examin_version.h:12
-msgid "2014"
-msgstr ""
 
 #: icc_oyranos_extern.c:144
 msgid "2color"
@@ -458,6 +446,10 @@ msgstr ""
 "Dalším typem jsou křivky, které se jako takové i zobrazí (souřadnice jsou "
 "normalizovány na interval 0.0 -&gt; 1.0)."
 
+#: test_waehler.cpp:6
+msgid "Ansichtswähler"
+msgstr ""
+
 #: icc_profile_header.cpp:252
 msgid "Attributes:  "
 msgstr "Atributy:    "
@@ -492,8 +484,8 @@ msgstr ""
 msgid "Black"
 msgstr "Černá"
 
-#: icc_draw.cpp:712 icc_draw.cpp:721 icc_helfer.cpp:417 icc_helfer_osx.cpp:98
-#: icc_helfer_x.cpp:69 icc_profile_tags.cpp:422
+#: icc_draw.cpp:712 icc_draw.cpp:721 icc_profile_tags.cpp:422
+#: icc_helfer_osx.cpp:98 icc_helfer_x.cpp:69 icc_helfer.cpp:417
 msgid "Blue"
 msgstr "Modrá"
 
@@ -509,18 +501,18 @@ msgstr "Křivka reprodukce modrých tónů"
 msgid "C"
 msgstr "C"
 
-#: icc_draw.cpp:745 icc_examin_farbraum.cpp:402 icc_examin_io.cpp:323
+#: icc_examin_farbraum.cpp:402 icc_draw.cpp:745 icc_examin_io.cpp:323
 #: icc_helfer.cpp:403 icc_helfer.cpp:406
 msgid "CIE *L"
 msgstr "CIE *L"
 
-#: icc_draw.cpp:747 icc_examin_farbraum.cpp:403 icc_examin_io.cpp:324
+#: icc_examin_farbraum.cpp:403 icc_draw.cpp:747 icc_examin_io.cpp:324
 #: icc_gl.cpp:1189 icc_gl.cpp:1260 icc_gl.cpp:1286 icc_gl.cpp:1294
 #: icc_helfer.cpp:404
 msgid "CIE *a"
 msgstr "CIE *a"
 
-#: icc_draw.cpp:749 icc_examin_farbraum.cpp:404 icc_examin_io.cpp:325
+#: icc_examin_farbraum.cpp:404 icc_draw.cpp:749 icc_examin_io.cpp:325
 #: icc_gl.cpp:1202 icc_gl.cpp:1302 icc_gl.cpp:1322 icc_gl.cpp:1329
 #: icc_helfer.cpp:405
 msgid "CIE *b"
@@ -583,7 +575,7 @@ msgstr "Datum kalibrace"
 msgid "Cathode ray tube display"
 msgstr "CRT obrazovka"
 
-#: icc_gl.cpp:3290 icc_profile_tags.cpp:319
+#: icc_profile_tags.cpp:319 icc_gl.cpp:3290
 msgid "Channel"
 msgstr "Kanál"
 
@@ -621,12 +613,12 @@ msgstr ""
 "prohlížeč gamutu.<br>"
 
 #. The following strings must match the categories for a menu entry.
-#: oyranos_cmm_iemn.c:502 icc_helfer.cpp:395 icc_profile_tags.cpp:1268
-#: icc_profile_tags.cpp:1275
+#: oyranos_cmm_iemn.c:502 icc_profile_tags.cpp:1268 icc_profile_tags.cpp:1275
+#: icc_helfer.cpp:395
 msgid "Colour"
 msgstr "Barva"
 
-#: icc_helfer.cpp:467 icc_profile.cpp:910
+#: icc_profile.cpp:910 icc_helfer.cpp:467
 msgid "Colour Space"
 msgstr "Barvový prostor"
 
@@ -659,7 +651,7 @@ msgstr "Barva r"
 msgid "Colour spots can be enlarged or made smaller by pressing + or -."
 msgstr "Barvové body mohou být zvětšeny či zmenšeny pomocí kláves + a -."
 
-#: icc_examin.cpp:909 icc_examin.cpp:912
+#: icc_examin.cpp:922 icc_examin.cpp:925
 msgid "Compare Measurement <-> Profile Colours"
 msgstr "Porovnat měření <-> barvy profilu"
 
@@ -713,6 +705,10 @@ msgstr "Datum"
 #: icc_profile_header.cpp:246
 msgid "Date:        "
 msgstr "Datum:       "
+
+#: icc_profilierer.cpp:38
+msgid "Dateikopf ungültig"
+msgstr ""
 
 #: icc_helfer.cpp:593
 msgid "Description"
@@ -793,11 +789,11 @@ msgstr "Soubor nenačten!"
 msgid "Filename"
 msgstr "Jméno souboru"
 
-#: icc_examin.cpp:1373
+#: icc_examin.cpp:1386
 msgid "Filename (corrupted ICC data type)"
 msgstr "Jméno souboru (porušený typ dat ICC)"
 
-#: icc_examin.cpp:1371
+#: icc_examin.cpp:1384
 msgid "Filename (other data type)"
 msgstr "Jméno souboru (jiný typ)"
 
@@ -900,7 +896,7 @@ msgstr "Gama červená:"
 msgid "Gamma:   "
 msgstr "Gama červená:"
 
-#: icc_examin.cpp:929 icc_examin.cpp:933
+#: icc_examin.cpp:942 icc_examin.cpp:946
 msgid "Gamut View"
 msgstr "Zobrazení gamutu"
 
@@ -933,8 +929,8 @@ msgstr "Šeď"
 msgid "Gray tone reproduction curve"
 msgstr "Křivka reprodukce šedých tónů"
 
-#: icc_draw.cpp:709 icc_draw.cpp:719 icc_helfer.cpp:416 icc_helfer_osx.cpp:97
-#: icc_helfer_x.cpp:68 icc_profile_tags.cpp:421
+#: icc_draw.cpp:709 icc_draw.cpp:719 icc_profile_tags.cpp:421
+#: icc_helfer_osx.cpp:97 icc_helfer_x.cpp:68 icc_helfer.cpp:416
 msgid "Green"
 msgstr "Zelená"
 
@@ -1172,8 +1168,8 @@ msgstr "Inkoustová tiskárna"
 msgid "Input"
 msgstr "Vstupní"
 
-#: icc_examin_tagwahl.cpp:507 icc_profile_tags.cpp:283
-#: icc_profile_tags.cpp:302
+#: icc_examin_tagwahl_110528.131850.cpp:506 icc_profile_tags.cpp:283
+#: icc_profile_tags.cpp:302 icc_examin_tagwahl.cpp:507
 msgid "Intent:"
 msgstr "Záměr:"
 
@@ -1181,7 +1177,7 @@ msgstr "Záměr:"
 msgid "Intent:      "
 msgstr "Záměr:       "
 
-#: icc_examin.cpp:1385
+#: icc_examin.cpp:1398
 msgid "Internal error"
 msgstr "Vnitřní chyba"
 
@@ -1249,7 +1245,7 @@ msgstr "Linearizace"
 msgid "Link"
 msgstr "Spojovací"
 
-#: icc_examin_tagwahl.cpp:1044
+#: icc_examin_tagwahl_110528.131850.cpp:1025 icc_examin_tagwahl.cpp:1044
 msgid "Loading .."
 msgstr "Načítá se ..."
 
@@ -1327,7 +1323,7 @@ msgstr "Magic:       "
 msgid "Manage Favorites"
 msgstr "Spravovat záložky"
 
-#: icc_helfer_x.cpp:239 icc_oyranos.cpp:687 icc_profile_header.cpp:250
+#: icc_oyranos.cpp:687 icc_profile_header.cpp:250 icc_helfer_x.cpp:239
 msgid "Manufacturer:"
 msgstr "Výrobce:     "
 
@@ -1339,13 +1335,9 @@ msgstr "Výrobce:      "
 msgid "Matrix"
 msgstr "Matice"
 
-#: icc_examin_tagwahl.cpp:683
+#: icc_examin_tagwahl_110528.131850.cpp:681 icc_examin_tagwahl.cpp:683
 msgid "Matrix 3x3 + 3"
 msgstr "Matice 3x3 + 3"
-
-#: icc_examin_version.h:9
-msgid "May"
-msgstr "květen"
 
 #: oyranos_cmm_iemn.c:252
 #, fuzzy
@@ -1404,7 +1396,7 @@ msgstr "Model:"
 msgid "Model:      "
 msgstr "Model:      "
 
-#: icc_helfer_x.cpp:241 icc_profile_header.cpp:251
+#: icc_profile_header.cpp:251 icc_helfer_x.cpp:241
 msgid "Model:       "
 msgstr "Model:       "
 
@@ -1504,7 +1496,7 @@ msgid "No profil assigned to image."
 msgstr "Obrázek nemá přiřazen profil."
 
 #. this string is sensible to formatting in the tag browser GUI, please keep a mono spaced formatting
-#: icc_examin.cpp:1388
+#: icc_examin.cpp:1401
 msgid "No. Tag   Type   Size Description"
 msgstr "Č.  Šť.   Typ     Vel. Popis"
 
@@ -1515,10 +1507,6 @@ msgid ""
 msgstr ""
 "Pozn.: primární barvy a některé křivky jsou seskupeny, aby byl zřejmější "
 "jejich význam v profilu a vzájemný vztah."
-
-#: icc_examin_version.h:11
-msgid "November"
-msgstr ""
 
 #: icc_ueber.cpp:378
 msgid ""
@@ -1702,16 +1690,16 @@ msgstr "R"
 msgid "RGB"
 msgstr "RGB"
 
-#: icc_examin_tagwahl.cpp:163
+#: icc_examin_tagwahl_110528.131850.cpp:162 icc_examin_tagwahl.cpp:163
 msgid "RGB primaries"
 msgstr "Primární barvy RGB"
 
-#: icc_examin.cpp:461
+#: icc_examin.cpp:474
 msgid "Ready"
 msgstr "Připraven"
 
-#: icc_draw.cpp:706 icc_draw.cpp:717 icc_helfer.cpp:415 icc_helfer_osx.cpp:96
-#: icc_helfer_x.cpp:67 icc_profile_tags.cpp:420
+#: icc_draw.cpp:706 icc_draw.cpp:717 icc_profile_tags.cpp:420
+#: icc_helfer_osx.cpp:96 icc_helfer_x.cpp:67 icc_helfer.cpp:415
 msgid "Red"
 msgstr "Červená"
 
@@ -1780,7 +1768,7 @@ msgstr "Uložit gamut jako VRML"
 msgid "Save Report"
 msgstr "Uložit report"
 
-#: icc_helfer_x.cpp:130 icc_oyranos.cpp:669
+#: icc_oyranos.cpp:669 icc_helfer_x.cpp:130
 msgid "Screen:"
 msgstr "Obrazovka:"
 
@@ -2345,11 +2333,11 @@ msgid "down key - reduce the slice plane distance"
 msgstr "šipka dolů - zmenšit vzdálenost roviny řezu"
 
 #. found XXX elements
-#: icc_examin_tagwahl.cpp:394
+#: icc_examin_tagwahl_110528.131850.cpp:393 icc_examin_tagwahl.cpp:394
 msgid "elements"
 msgstr "elementy"
 
-#: icc_examin_tagwahl.cpp:65
+#: icc_examin_tagwahl_110528.131850.cpp:64 icc_examin_tagwahl.cpp:65
 msgid "empty"
 msgstr "prázdné"
 
@@ -2371,11 +2359,11 @@ msgid "file type sinature (allways acsp)"
 msgstr "file type signature (vždy acsp)"
 
 #. found XXX elements
-#: icc_examin_tagwahl.cpp:388
+#: icc_examin_tagwahl_110528.131850.cpp:387 icc_examin_tagwahl.cpp:388
 msgid "found"
 msgstr "nalezeno"
 
-#: icc_examin.cpp:1382
+#: icc_examin.cpp:1395
 msgid "found no content for"
 msgstr "nenalezen žadný obsah pro"
 
@@ -2406,6 +2394,10 @@ msgstr "vysoký kontrast"
 #: icc_ueber.cpp:320
 msgid "home key - reset the slice plane distance"
 msgstr "klávesa Home - výchozí vzdálenost roviny řezu"
+
+#: test_waehler.cpp:7
+msgid "icc_waehler_ nicht reservierbar"
+msgstr ""
 
 #: icc_ueber.cpp:941
 #, fuzzy
@@ -2445,7 +2437,7 @@ msgstr "levé tlačítko myši pro rotaci"
 msgid "left-/middle-/right mouse button -> rotate/cut/menu"
 msgstr "levé/prostřední/pravé tlačítko myši -> rotovat/vystřihnout/menu"
 
-#: icc_examin.cpp:455 icc_examin.cpp:1432
+#: icc_examin.cpp:468 icc_examin.cpp:1445
 msgid "loaded"
 msgstr "načteno"
 
@@ -2493,11 +2485,12 @@ msgstr "žádny profil"
 msgid "noName"
 msgstr "beze jména"
 
-#: icc_examin.cpp:911 icc_oyranos.cpp:670
+#: icc_oyranos.cpp:670 icc_examin.cpp:924
 msgid "none"
 msgstr "žádný"
 
-#: icc_examin.cpp:1001 icc_examin_tagwahl.cpp:1052 icc_gl.h:276
+#: icc_examin_tagwahl_110528.131850.cpp:1033 icc_examin.cpp:1014
+#: icc_examin_tagwahl.cpp:1052 icc_gl.h:276
 msgid "not available"
 msgstr "nedostupné"
 
@@ -2636,6 +2629,9 @@ msgstr "chybná velikost štítku v profilu"
 #~ msgid "0.52"
 #~ msgstr "0.52"
 
+#~ msgid "2004"
+#~ msgstr "2004"
+
 #~ msgid "2012"
 #~ msgstr "2012"
 
@@ -2716,6 +2712,9 @@ msgstr "chybná velikost štítku v profilu"
 
 #~ msgid "March"
 #~ msgstr "březen"
+
+#~ msgid "May"
+#~ msgstr "květen"
 
 #~ msgid "Native Gamut"
 #~ msgstr "Nativní gamut"

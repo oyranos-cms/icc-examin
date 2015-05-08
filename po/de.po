@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2015-04-02 22:35+0200\n"
+"POT-Creation-Date: 2015-05-08 16:51+0200\n"
 "PO-Revision-Date: 2005-08-13 17:35+0200\n"
 "Last-Translator: Kai-Uwe Behrmann\n"
 "Language-Team:  <ku.b@gmx.de>\n"
@@ -165,7 +165,7 @@ msgstr ""
 
 #. clrt
 #. flex
-#: icc_examin.cpp:1368 icc_helfer.cpp:648 icc_helfer.cpp:740
+#: icc_examin.cpp:1381 icc_helfer.cpp:648 icc_helfer.cpp:740
 msgid "----"
 msgstr ""
 
@@ -175,10 +175,6 @@ msgstr ""
 
 #: icc_gl.cpp:1045
 msgid "0,0,0"
-msgstr ""
-
-#: icc_examin_version.h:8
-msgid "0.56"
 msgstr ""
 
 #: icc_helfer.cpp:825
@@ -272,14 +268,6 @@ msgstr "2.4.5 Grafik Karten Gamma Tabelle (vcgt)"
 #: icc_ueber.cpp:188 icc_ueber.cpp:369
 msgid "2.4.6 Help"
 msgstr "2.4.6 Hilfe"
-
-#: icc_examin_version.h:10
-msgid "2004"
-msgstr ""
-
-#: icc_examin_version.h:12
-msgid "2014"
-msgstr ""
 
 #: icc_oyranos_extern.c:144
 msgid "2color"
@@ -452,6 +440,10 @@ msgstr ""
 "Kurven werden graphisch dargestellt. Die Koordinaten sind auf 0.0 -&gt; 1.0 "
 "normalisiert."
 
+#: test_waehler.cpp:6
+msgid "Ansichtswähler"
+msgstr ""
+
 #: icc_profile_header.cpp:252
 msgid "Attributes:  "
 msgstr "Attribute:   "
@@ -486,8 +478,8 @@ msgstr ""
 msgid "Black"
 msgstr "Schwarz"
 
-#: icc_draw.cpp:712 icc_draw.cpp:721 icc_helfer.cpp:417 icc_helfer_osx.cpp:98
-#: icc_helfer_x.cpp:69 icc_profile_tags.cpp:422
+#: icc_draw.cpp:712 icc_draw.cpp:721 icc_profile_tags.cpp:422
+#: icc_helfer_osx.cpp:98 icc_helfer_x.cpp:69 icc_helfer.cpp:417
 msgid "Blue"
 msgstr "Blau"
 
@@ -503,18 +495,18 @@ msgstr "Blaue Farbwiedergabekurve"
 msgid "C"
 msgstr ""
 
-#: icc_draw.cpp:745 icc_examin_farbraum.cpp:402 icc_examin_io.cpp:323
+#: icc_examin_farbraum.cpp:402 icc_draw.cpp:745 icc_examin_io.cpp:323
 #: icc_helfer.cpp:403 icc_helfer.cpp:406
 msgid "CIE *L"
 msgstr ""
 
-#: icc_draw.cpp:747 icc_examin_farbraum.cpp:403 icc_examin_io.cpp:324
+#: icc_examin_farbraum.cpp:403 icc_draw.cpp:747 icc_examin_io.cpp:324
 #: icc_gl.cpp:1189 icc_gl.cpp:1260 icc_gl.cpp:1286 icc_gl.cpp:1294
 #: icc_helfer.cpp:404
 msgid "CIE *a"
 msgstr ""
 
-#: icc_draw.cpp:749 icc_examin_farbraum.cpp:404 icc_examin_io.cpp:325
+#: icc_examin_farbraum.cpp:404 icc_draw.cpp:749 icc_examin_io.cpp:325
 #: icc_gl.cpp:1202 icc_gl.cpp:1302 icc_gl.cpp:1322 icc_gl.cpp:1329
 #: icc_helfer.cpp:405
 msgid "CIE *b"
@@ -577,7 +569,7 @@ msgstr "Kalibrationsdatum"
 msgid "Cathode ray tube display"
 msgstr "Kathodenstrahlmonitor"
 
-#: icc_gl.cpp:3290 icc_profile_tags.cpp:319
+#: icc_profile_tags.cpp:319 icc_gl.cpp:3290
 msgid "Channel"
 msgstr "Kanal"
 
@@ -615,12 +607,12 @@ msgstr ""
 "dreidimensionalen Farbraumbetrachter dargestellt. <br>"
 
 #. The following strings must match the categories for a menu entry.
-#: oyranos_cmm_iemn.c:502 icc_helfer.cpp:395 icc_profile_tags.cpp:1268
-#: icc_profile_tags.cpp:1275
+#: oyranos_cmm_iemn.c:502 icc_profile_tags.cpp:1268 icc_profile_tags.cpp:1275
+#: icc_helfer.cpp:395
 msgid "Colour"
 msgstr "Farbe"
 
-#: icc_helfer.cpp:467 icc_profile.cpp:910
+#: icc_profile.cpp:910 icc_helfer.cpp:467
 msgid "Colour Space"
 msgstr "Farbraum"
 
@@ -653,7 +645,7 @@ msgstr "Farbanteil r"
 msgid "Colour spots can be enlarged or made smaller by pressing + or -."
 msgstr "Einzelfarben können vergrößert oder verkleinert werden mit + und -."
 
-#: icc_examin.cpp:909 icc_examin.cpp:912
+#: icc_examin.cpp:922 icc_examin.cpp:925
 msgid "Compare Measurement <-> Profile Colours"
 msgstr "Vergleich Mess- und Profilfarben"
 
@@ -707,6 +699,10 @@ msgstr "Datum"
 #: icc_profile_header.cpp:246
 msgid "Date:        "
 msgstr "Datum:       "
+
+#: icc_profilierer.cpp:38
+msgid "Dateikopf ungültig"
+msgstr ""
 
 #: icc_helfer.cpp:593
 msgid "Description"
@@ -787,11 +783,11 @@ msgstr "Datei nicht geladen!"
 msgid "Filename"
 msgstr "Dateiname"
 
-#: icc_examin.cpp:1373
+#: icc_examin.cpp:1386
 msgid "Filename (corrupted ICC data type)"
 msgstr "Dateiname (beschädigte ICC Daten)"
 
-#: icc_examin.cpp:1371
+#: icc_examin.cpp:1384
 msgid "Filename (other data type)"
 msgstr "Dateiname (anderer Datentyp)"
 
@@ -890,7 +886,7 @@ msgstr "Gamma Rot:   "
 msgid "Gamma:   "
 msgstr "Gamma:   "
 
-#: icc_examin.cpp:929 icc_examin.cpp:933
+#: icc_examin.cpp:942 icc_examin.cpp:946
 msgid "Gamut View"
 msgstr "Farbhüllansicht"
 
@@ -923,8 +919,8 @@ msgstr "Grau"
 msgid "Gray tone reproduction curve"
 msgstr "Schwarze Wiedergabekurve"
 
-#: icc_draw.cpp:709 icc_draw.cpp:719 icc_helfer.cpp:416 icc_helfer_osx.cpp:97
-#: icc_helfer_x.cpp:68 icc_profile_tags.cpp:421
+#: icc_draw.cpp:709 icc_draw.cpp:719 icc_profile_tags.cpp:421
+#: icc_helfer_osx.cpp:97 icc_helfer_x.cpp:68 icc_helfer.cpp:416
 msgid "Green"
 msgstr "Grün"
 
@@ -1159,8 +1155,8 @@ msgstr "Tintenstrahldrucker"
 msgid "Input"
 msgstr "Eingabe"
 
-#: icc_examin_tagwahl.cpp:507 icc_profile_tags.cpp:283
-#: icc_profile_tags.cpp:302
+#: icc_examin_tagwahl_110528.131850.cpp:506 icc_profile_tags.cpp:283
+#: icc_profile_tags.cpp:302 icc_examin_tagwahl.cpp:507
 msgid "Intent:"
 msgstr "Übertragung:"
 
@@ -1168,7 +1164,7 @@ msgstr "Übertragung:"
 msgid "Intent:      "
 msgstr "Übertragung: "
 
-#: icc_examin.cpp:1385
+#: icc_examin.cpp:1398
 msgid "Internal error"
 msgstr "interner Fehler"
 
@@ -1237,7 +1233,7 @@ msgstr "Linearisierung"
 msgid "Link"
 msgstr "Verknüpfung"
 
-#: icc_examin_tagwahl.cpp:1044
+#: icc_examin_tagwahl_110528.131850.cpp:1025 icc_examin_tagwahl.cpp:1044
 msgid "Loading .."
 msgstr "Lade ..."
 
@@ -1316,7 +1312,7 @@ msgstr "Signatur:    "
 msgid "Manage Favorites"
 msgstr "Bearbeite Lesezeichen"
 
-#: icc_helfer_x.cpp:239 icc_oyranos.cpp:687 icc_profile_header.cpp:250
+#: icc_oyranos.cpp:687 icc_profile_header.cpp:250 icc_helfer_x.cpp:239
 msgid "Manufacturer:"
 msgstr "Hersteller:  "
 
@@ -1328,13 +1324,9 @@ msgstr "Hersteller:   "
 msgid "Matrix"
 msgstr ""
 
-#: icc_examin_tagwahl.cpp:683
+#: icc_examin_tagwahl_110528.131850.cpp:681 icc_examin_tagwahl.cpp:683
 msgid "Matrix 3x3 + 3"
 msgstr ""
-
-#: icc_examin_version.h:9
-msgid "May"
-msgstr "Mai"
 
 #: oyranos_cmm_iemn.c:252
 msgid "Me"
@@ -1392,7 +1384,7 @@ msgstr "Modell:"
 msgid "Model:      "
 msgstr "Modell:     "
 
-#: icc_helfer_x.cpp:241 icc_profile_header.cpp:251
+#: icc_profile_header.cpp:251 icc_helfer_x.cpp:241
 msgid "Model:       "
 msgstr "Modell:      "
 
@@ -1489,7 +1481,7 @@ msgid "No profil assigned to image."
 msgstr "Kein Profil am Bild."
 
 #. this string is sensible to formatting in the tag browser GUI, please keep a mono spaced formatting
-#: icc_examin.cpp:1388
+#: icc_examin.cpp:1401
 msgid "No. Tag   Type   Size Description"
 msgstr "Nr. Teil  Typ   Größe Beschreibung"
 
@@ -1500,10 +1492,6 @@ msgid ""
 msgstr ""
 "Hinweis: Primärfarborte und einige Kurven werden gruppiert, um ihre "
 "Bedeutung im Profil besser erfassen zu können."
-
-#: icc_examin_version.h:11
-msgid "November"
-msgstr "November"
 
 #: icc_ueber.cpp:378
 msgid ""
@@ -1687,16 +1675,16 @@ msgstr ""
 msgid "RGB"
 msgstr ""
 
-#: icc_examin_tagwahl.cpp:163
+#: icc_examin_tagwahl_110528.131850.cpp:162 icc_examin_tagwahl.cpp:163
 msgid "RGB primaries"
 msgstr "RGB Primätrfarben"
 
-#: icc_examin.cpp:461
+#: icc_examin.cpp:474
 msgid "Ready"
 msgstr "Bereit"
 
-#: icc_draw.cpp:706 icc_draw.cpp:717 icc_helfer.cpp:415 icc_helfer_osx.cpp:96
-#: icc_helfer_x.cpp:67 icc_profile_tags.cpp:420
+#: icc_draw.cpp:706 icc_draw.cpp:717 icc_profile_tags.cpp:420
+#: icc_helfer_osx.cpp:96 icc_helfer_x.cpp:67 icc_helfer.cpp:415
 msgid "Red"
 msgstr "Rot"
 
@@ -1765,7 +1753,7 @@ msgstr "Speichere Farbhülle als VRML"
 msgid "Save Report"
 msgstr "Bericht Speichern"
 
-#: icc_helfer_x.cpp:130 icc_oyranos.cpp:669
+#: icc_oyranos.cpp:669 icc_helfer_x.cpp:130
 msgid "Screen:"
 msgstr "Bildschirm:"
 
@@ -2331,11 +2319,11 @@ msgid "down key - reduce the slice plane distance"
 msgstr "Pfeiltaste nach unten - verringert den Schnittflächenabstand"
 
 #. found XXX elements
-#: icc_examin_tagwahl.cpp:394
+#: icc_examin_tagwahl_110528.131850.cpp:393 icc_examin_tagwahl.cpp:394
 msgid "elements"
 msgstr "Element(e)"
 
-#: icc_examin_tagwahl.cpp:65
+#: icc_examin_tagwahl_110528.131850.cpp:64 icc_examin_tagwahl.cpp:65
 msgid "empty"
 msgstr "leer"
 
@@ -2357,11 +2345,11 @@ msgid "file type sinature (allways acsp)"
 msgstr "die Dateitypesignatur (immer acsp)"
 
 #. found XXX elements
-#: icc_examin_tagwahl.cpp:388
+#: icc_examin_tagwahl_110528.131850.cpp:387 icc_examin_tagwahl.cpp:388
 msgid "found"
 msgstr "Fand"
 
-#: icc_examin.cpp:1382
+#: icc_examin.cpp:1395
 msgid "found no content for"
 msgstr "keine Inhalte gefunden für"
 
@@ -2392,6 +2380,10 @@ msgstr "kontrastreich"
 #: icc_ueber.cpp:320
 msgid "home key - reset the slice plane distance"
 msgstr "Position 1 - setzt die Schnittfläche zurück"
+
+#: test_waehler.cpp:7
+msgid "icc_waehler_ nicht reservierbar"
+msgstr ""
 
 #: icc_ueber.cpp:941
 msgid ""
@@ -2432,7 +2424,7 @@ msgstr "linke Maustaste -> Drehen"
 msgid "left-/middle-/right mouse button -> rotate/cut/menu"
 msgstr "linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menue"
 
-#: icc_examin.cpp:455 icc_examin.cpp:1432
+#: icc_examin.cpp:468 icc_examin.cpp:1445
 msgid "loaded"
 msgstr "geladen"
 
@@ -2480,11 +2472,12 @@ msgstr "kein Profil"
 msgid "noName"
 msgstr "kein Name"
 
-#: icc_examin.cpp:911 icc_oyranos.cpp:670
+#: icc_oyranos.cpp:670 icc_examin.cpp:924
 msgid "none"
 msgstr "kein"
 
-#: icc_examin.cpp:1001 icc_examin_tagwahl.cpp:1052 icc_gl.h:276
+#: icc_examin_tagwahl_110528.131850.cpp:1033 icc_examin.cpp:1014
+#: icc_examin_tagwahl.cpp:1052 icc_gl.h:276
 msgid "not available"
 msgstr "nicht verfügbar"
 
@@ -2834,6 +2827,9 @@ msgstr "falsche Elementgröße in Profil "
 #~ msgid "March"
 #~ msgstr "März"
 
+#~ msgid "May"
+#~ msgstr "Mai"
+
 #~ msgid "Named Coulor"
 #~ msgstr "Einzelfarben"
 
@@ -2848,6 +2844,9 @@ msgstr "falsche Elementgröße in Profil "
 
 #~ msgid "New Folder"
 #~ msgstr "Neuer Ordner"
+
+#~ msgid "November"
+#~ msgstr "November"
 
 #~ msgid "OK"
 #~ msgstr "Ja"

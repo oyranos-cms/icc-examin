@@ -203,44 +203,45 @@ SET( icc_examin_SRCS
 
 IF(APPLE)
   # icon files to copy in the bundle
-  set( OSX_ICON_FILES ${PROJECT_SOURCE_DIR}/extras/osx/icc-examin.icns  )
+  SET( OSX_ICON_FILES ${PROJECT_SOURCE_DIR}/extras/osx/icc-examin.icns  )
   CONFIGURE_FILE (
                 "${CMAKE_CURRENT_SOURCE_DIR}/extras/osx/ICC Examin.sh.in"
                 "${CMAKE_CURRENT_BINARY_DIR}/extras/osx/ICC Examin.sh"
                 @ONLY
                  )
-  set( OSX_SCRIPT_FILES "${CMAKE_CURRENT_BINARY_DIR}/extras/osx/ICC Examin.sh" )
-  set( OSX_PKG_FILES ${PROJECT_SOURCE_DIR}/extras/osx/PkgInfo )
+  SET( OSX_SCRIPT_FILES "${CMAKE_CURRENT_BINARY_DIR}/extras/osx/ICC Examin.sh" )
+  SET( OSX_PKG_FILES ${PROJECT_SOURCE_DIR}/extras/osx/PkgInfo )
 
-  ADD_EXECUTABLE( "ICCExamin" MACOSX_BUNDLE ${icc_examin_SRCS} icc_main.cpp ${OSX_ICON_FILES} )
+  ADD_EXECUTABLE( ${ICCE_APP} MACOSX_BUNDLE ${icc_examin_SRCS} icc_main.cpp ${OSX_ICON_FILES} )
 
-  INSTALL( TARGETS "ICCExamin"
+  SET( ICCE_APP ICCExamin )
+  INSTALL( TARGETS ${ICCE_APP}
            EXPORT ICCExaminLibraryDepends
            RUNTIME DESTINATION bin
            BUNDLE DESTINATION  bin
-           RENAME ICCExamin.bin
+           RENAME ${ICCE_APP}.bin
          )
 
-  set_target_properties( "ICCExamin" PROPERTIES MACOSX_BUNDLE_BUNDLE_NAME "ICC Examin" )
-  set_target_properties( "ICCExamin" PROPERTIES MACOSX_BUNDLE_INFO_STRING "ICC Examin front end to Oyranos Color Management System, www.oyranos.org" )
-  set_target_properties( "ICCExamin" PROPERTIES MACOSX_BUNDLE_EXECUTABLE_NAME "ICCExamin" )
-  set_target_properties( "ICCExamin" PROPERTIES MACOSX_BUNDLE_ICON_FILE icc-examin.icns )
-  set_target_properties( "ICCExamin" PROPERTIES MACOSX_BUNDLE_GUI_IDENTIFIER org.oyranos.icc-examin )
-  set_target_properties( "ICCExamin" PROPERTIES MACOSX_BUNDLE_LONG_VERSION_STRING "ICC Examin ${ICC_EXAMIN_V}" )
-  set_target_properties( "ICCExamin" PROPERTIES MACOSX_BUNDLE_SHORT_VERSION_STRING ${ICC_EXAMIN_V} )
-  set_target_properties( "ICCExamin" PROPERTIES MACOSX_BUNDLE_BUNDLE_VERSION 1.0 )
-  set_target_properties( "ICCExamin" PROPERTIES MACOSX_BUNDLE_COPYRIGHT "2004-2015 Kai-Uwe Behrmann" )
+  SET_TARGET_PROPERTIES( ${ICCE_APP} PROPERTIES MACOSX_BUNDLE_BUNDLE_NAME "ICC Examin" )
+  SET_TARGET_PROPERTIES( ${ICCE_APP} PROPERTIES MACOSX_BUNDLE_INFO_STRING "ICC Examin front end to Oyranos Color Management System, www.oyranos.org" )
+  SET_TARGET_PROPERTIES( ${ICCE_APP} PROPERTIES MACOSX_BUNDLE_EXECUTABLE_NAME ${ICCE_APP} )
+  SET_TARGET_PROPERTIES( ${ICCE_APP} PROPERTIES MACOSX_BUNDLE_ICON_FILE icc-examin.icns )
+  SET_TARGET_PROPERTIES( ${ICCE_APP} PROPERTIES MACOSX_BUNDLE_GUI_IDENTIFIER org.oyranos.icc-examin )
+  SET_TARGET_PROPERTIES( ${ICCE_APP} PROPERTIES MACOSX_BUNDLE_LONG_VERSION_STRING "ICC Examin ${ICC_EXAMIN_V}" )
+  SET_TARGET_PROPERTIES( ${ICCE_APP} PROPERTIES MACOSX_BUNDLE_SHORT_VERSION_STRING ${ICC_EXAMIN_V} )
+  SET_TARGET_PROPERTIES( ${ICCE_APP} PROPERTIES MACOSX_BUNDLE_BUNDLE_VERSION 1.0 )
+  SET_TARGET_PROPERTIES( ${ICCE_APP} PROPERTIES MACOSX_BUNDLE_COPYRIGHT "2004-2015 Kai-Uwe Behrmann" )
 
   # configure CMake to use a custom Info.plist
-  #set_target_properties( "ICCExamin" PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${PROJECT_SOURCE_DIR}/extras/osx/Info.plist )
+  #SET_TARGET_PROPERTIES( ${ICCE_APP} PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${PROJECT_SOURCE_DIR}/extras/osx/Info.plist )
 
   # set where in the bundle to put the icns files
-  set_source_files_properties( ${OSX_ICON_FILES} PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
+  SET_SOURCE_FILES_PROPERTIES( ${OSX_ICON_FILES} PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
 
 # Now the work of copying dependencies into the bundle/package
 # The quotes are escaped and variables to use at install time have their $ escaped
 # An alternative is the do a configure_file() on a script and use install(SCRIPT  ...).
-  SET(APPS "\${CMAKE_INSTALL_PREFIX}/bin/ICCExamin.app")  # paths to executables
+  SET(APPS "\${CMAKE_INSTALL_PREFIX}/bin/${ICCE_APP}.app")  # paths to executables
   SET(DIRS "\${CMAKE_INSTALL_PREFIX}/lib;\${CMAKE_CURRENT_BINARY_DIR};\${CMAKE_INSTALL_PREFIX}/Library/Frameworks")   # directories to search for prerequisites
   INSTALL(CODE "
    include(BundleUtilities)
@@ -248,39 +249,41 @@ IF(APPLE)
    " COMPONENT Runtime)
 
   # this is the script to setup the environment and call the real binary
-  INSTALL( PROGRAMS "${OSX_SCRIPT_FILES}" DESTINATION "bin/ICCExamin.app/Contents/MacOS"
-           RENAME "ICCExamin" )
-  INSTALL( FILES "${OSX_PKG_FILES}" DESTINATION "bin/ICCExamin.app/Contents" COMPONENT bin )
+  INSTALL( PROGRAMS "${OSX_SCRIPT_FILES}" DESTINATION "bin/${ICCE_APP}.app/Contents/MacOS"
+           RENAME ${ICCE_APP} )
+  INSTALL( FILES "${OSX_PKG_FILES}" DESTINATION "bin/${ICCE_APP}.app/Contents" COMPONENT bin )
 
   # place the binary
-  INSTALL( PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/ICCExamin.app/Contents/MacOS/ICCExamin
-           DESTINATION "bin/ICCExamin.app/Contents/MacOS"
-           RENAME ICCExamin.bin )
+  INSTALL( PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/${ICCE_APP}.app/Contents/MacOS/${ICCE_APP}
+           DESTINATION "bin/${ICCE_APP}.app/Contents/MacOS"
+           RENAME ${ICCE_APP}.bin )
 
   # install Oyranos modules
   FILE( GLOB OYRANOS_ALL_CMMS ${OYRANOS_CMM_DIR}/liboyranos_*_cmm* )
-  INSTALL( FILES ${OYRANOS_ALL_CMMS} DESTINATION "bin/ICCExamin.app/Contents/Resources/${OYRANOS_CMM_SUBDIR}" COMPONENT lib )
+  INSTALL( FILES ${OYRANOS_ALL_CMMS} DESTINATION "bin/${ICCE_APP}.app/Contents/Resources/${OYRANOS_CMM_SUBDIR}" COMPONENT lib )
   FILE( GLOB OYRANOS_ALL_META ${OYRANOS_META_DIR}/liboyranos_*_cmm* )
-  INSTALL( FILES ${OYRANOS_ALL_META} DESTINATION "bin/ICCExamin.app/Contents/Resources/${OYRANOS_META_SUBDIR}" COMPONENT lib )
+  INSTALL( FILES ${OYRANOS_ALL_META} DESTINATION "bin/${ICCE_APP}.app/Contents/Resources/${OYRANOS_META_SUBDIR}" COMPONENT lib )
   FOREACH( oy_dep_lib ${OYRANOS_MODULE_LIBRARIES} )
     FILE( GLOB OYRANOS_MODULE_DEP_LIBRARIES ${OYRANOS_META_DIR}/../lib${oy_dep_lib}*.dylib )
-    INSTALL( FILES ${OYRANOS_MODULE_DEP_LIBRARIES} DESTINATION "bin/ICCExamin.app/Contents/MacOS" COMPONENT lib )
+    INSTALL( FILES ${OYRANOS_MODULE_DEP_LIBRARIES} DESTINATION "bin/${ICCE_APP}.app/Contents/MacOS" COMPONENT lib )
   ENDFOREACH( oy_dep_lib )
 
-  INSTALL( PROGRAMS ${OYRANOS_META_DIR}/../../bin/oyranos-profile-graph DESTINATION "bin/ICCExamin.app/Contents/MacOS" COMPONENT bin )
+  INSTALL( PROGRAMS ${OYRANOS_META_DIR}/../../bin/oyranos-profile-graph DESTINATION "bin/${ICCE_APP}.app/Contents/MacOS" COMPONENT bin )
 
   FIND_PACKAGE(PkgConfig)
   PKG_CHECK_MODULES(ELEKTRA elektra)
-  INSTALL( DIRECTORY ${ELEKTRA_LIBDIR}/elektra DESTINATION "bin/ICCExamin.app/Contents/Resources" COMPONENT lib )
+  INSTALL( DIRECTORY ${ELEKTRA_LIBDIR}/elektra DESTINATION "bin/${ICCE_APP}.app/Contents/Resources" COMPONENT lib )
 
 
 ELSEIF(UNIX)
-  ADD_EXECUTABLE( iccexamin ${icc_examin_SRCS} icc_main.cpp )
+  SET( ICCE_APP iccexamin )
+  ADD_EXECUTABLE( ${ICCE_APP} ${icc_examin_SRCS} icc_main.cpp )
 ELSEIF (WIN32)
-  ADD_EXECUTABLE( iccexamin WIN32 ${icc_examin_SRCS} icc_main.cpp )
+  SET( ICCE_APP iccexamin )
+  ADD_EXECUTABLE( ${ICCE_APP} WIN32 ${icc_examin_SRCS} icc_main.cpp )
 ENDIF ()
 
-TARGET_LINK_LIBRARIES ( ICCExamin ${EXTRA_LIBS}
+TARGET_LINK_LIBRARIES ( ${ICCE_APP} ${EXTRA_LIBS}
                  ${FLTK_LIBRARIES}
                  ${OYRANOS_LIBRARIES}
                  ${XCM_LIBRARIES}
@@ -293,7 +296,7 @@ TARGET_LINK_LIBRARIES ( ICCExamin ${EXTRA_LIBS}
                  ${CMAKE_THREAD_LIBS_INIT} )
 
 IF( NOT APPLE )
-  INSTALL( TARGETS iccexamin 
+  INSTALL( TARGETS ${ICCE_APP} 
            RUNTIME DESTINATION bin )
 ENDIF()
 INSTALL( FILES icc_examin.desktop DESTINATION share/applications )
@@ -302,7 +305,8 @@ INSTALL( FILES iccexamin.1 DESTINATION share/man/man1 )
 
 IF( CINEPAINT_FOUND )
   ADD_EXECUTABLE( icc_examin_cp ${icc_examin_SRCS} icc_cinepaint.cpp )
-  TARGET_LINK_LIBRARIES ( icc_examin_cp ${CINEPAINT_LIBRARIES}
+  TARGET_LINK_LIBRARIES ( icc_examin_cp ${EXTRA_LIBS}
+                 ${CINEPAINT_LIBRARIES}
                  ${FLTK_LIBRARIES}
                  ${OYRANOS_LIBRARIES}
                  ${XCM_LIBRARIES}
@@ -349,7 +353,7 @@ IF( GETTEXT_FOUND )
   IF(APPLE)
     FOREACH( my_lang ${MY_LINGUAS} )
       INSTALL( FILES "${CMAKE_BINARY_DIR}/${my_lang}.gmo"
-               DESTINATION "${CMAKE_INSTALL_PREFIX}/bin/ICCExamin.app/Contents/Resources/locale/${my_lang}/LC_MESSAGES"
+               DESTINATION "${CMAKE_INSTALL_PREFIX}/bin/${ICCE_APP}.app/Contents/Resources/locale/${my_lang}/LC_MESSAGES"
                RENAME icc-examin.mo )
     ENDFOREACH( my_lang )
   ENDIF(APPLE)
