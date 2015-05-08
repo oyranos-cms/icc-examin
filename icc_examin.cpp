@@ -360,8 +360,21 @@ ICCexamin::start (int argc, char** argv)
 #if !defined(WIN32)
   const char * oyranos_settings_gui_app = getenv("OYRANOS_SETTINGS_GUI");
   if(!oyranos_settings_gui_app)
-    oyranos_settings_gui_app = "synnefo";
-  char * app = findApplication( oyranos_settings_gui_app );
+    oyranos_settings_gui_app = "oyranos-config-synnefo";
+  char * app = NULL;
+  const char * synnefo_bins[] = {"oyranos-config-synnefo",
+                                 "oyranos-config-synnefo-qt4",
+                                 "synnefo",
+                                 "Synnefo",
+                                 NULL};
+  int i = 0;
+  while(synnefo_bins[i])
+  {
+    app = findApplication( oyranos_settings_gui_app );
+    if(app) break;
+    else ++i;
+  }
+
   if(app)
   {  
     oyranos_settings_gui = oyranos_settings_gui_app;
