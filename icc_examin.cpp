@@ -290,7 +290,7 @@ resize_fuer_menubar(Fl_Widget* w)
 }
 
 # if HAVE_X
-# include "icc_examin.xpm" // icc_examin_xpm
+# include "iccexamin.xpm" // icc_examin_xpm
 # endif
 
 void oeffnen_cb(const char* filenames);

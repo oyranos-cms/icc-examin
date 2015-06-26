@@ -299,8 +299,8 @@ IF( NOT APPLE )
   INSTALL( TARGETS ${ICCE_APP} 
            RUNTIME DESTINATION bin )
 ENDIF()
-INSTALL( FILES icc_examin.desktop DESTINATION share/applications )
-INSTALL( FILES icc_examin.svg DESTINATION share/pixmaps )
+INSTALL( FILES iccexamin.desktop DESTINATION share/applications )
+INSTALL( FILES iccexamin.svg DESTINATION share/pixmaps )
 INSTALL( FILES iccexamin.1 DESTINATION share/man/man1 )
 
 IF( CINEPAINT_FOUND )
