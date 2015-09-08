@@ -619,7 +619,6 @@ install_global:
 	mkdir -p $(DESTDIR)$(desktopdir)
 	$(INSTALL) -m 644 iccexamin.desktop $(DESTDIR)$(desktopdir)/
 	-xdg-desktop-menu install --novendor iccexamin.desktop
-	mkdir -p $(DESTDIR)$(datadir)/mime/packages/
 	mkdir -p $(DESTDIR)$(pixmapdir)/hicolor/scalable/
 	$(INSTALL) -m 644 iccexamin.png $(DESTDIR)$(pixmapdir)/
 	$(INSTALL) -m 644 $(SRCDIR)/iccexamin.svg $(DESTDIR)$(pixmapdir)/hicolor/scalable/

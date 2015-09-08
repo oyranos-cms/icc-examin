@@ -724,6 +724,38 @@ if [ $verbose -gt 0 ]; then sleep 1; fi
 
 cd "$top"
 
+# Xcalib
+packet=xcalib
+git_repo=$packet
+xcalib -version
+  echo checkout $git_repo
+  if [ -d $git_repo ]; then
+    cd $git_repo
+    git pull
+  else
+    git clone git://github.com/openicc/$git_repo $git_repo
+    cd $git_repo
+    git checkout master
+    mkdir build
+  fi
+  if [ $verbose -gt 0 ]; then sleep 2; fi
+  git_version="`cat .git/refs/heads/master`"
+  old_git_version="`cat old_gitrev.txt`"
+  if [ "$git_version" != "$old_git_version" ]; then
+    echo "$packet `xcalib -version`"
+    cd build
+    cmake "$cmake_target" -DCMAKE_C_FLAGS="$CFLAGS $OSX_ARCH_LIBRARY" -DCMAKE_CXX_FLAGS="$CXXFLAGS $OSX_ARCH_LIBRARY" -DCMAKE_LD_FLAGS="$LDFLAGS $OSX_ARCH_LIBRARY" -DCMAKE_INSTALL_PREFIX="$prefix" -DCMAKE_BUILD_TYPE=Debug ..
+    make $MAKE_CPUS
+    make install
+    cd "$top/$git_repo"
+    echo "$git_version" > old_gitrev.txt
+  else
+    echo no changes in git $git_version
+  fi
+if [ $verbose -gt 0 ]; then sleep 1; fi
+
+cd "$top"
+
 
 # SANE
 UNAME_=`uname`
