@@ -1130,7 +1130,7 @@ cd "$top"
 
 
 # Synnefo
-git_repo=bekus-synnefo
+git_repo=Synnefo
 if [ `echo "$skip" | grep $git_repo | wc -l` -ne 0 ]; then
   echo $git_repo skipped
 else
@@ -1139,7 +1139,7 @@ else
     cd $git_repo
     git pull
   else
-    git clone https://gitorious.org/synnefo/$git_repo.git
+    git clone git://github.com/oyranos-cms/$git_repo.git
     cd $git_repo
     git checkout master
   fi
@@ -1205,7 +1205,7 @@ cd "$top"
 
 
 # cinepaint
-git_repo=cinepaint_ng
+git_repo=cinepaint-ng
 if [ `echo "$skip" | grep cinepaint | wc -l` -ne 0 ]; then
   echo cinepaint skipped
 else
@@ -1214,9 +1214,9 @@ else
     cd $git_repo
     git pull
   else
-    git clone https://gitorious.org/$git_repo/$git_repo.git
+    git clone https://gitlab.com/$git_repo/$git_repo.git
     cd $git_repo
-    git checkout master
+    git checkout oy-0.9.6
   fi
   if [[ ! -f Makefile ]]; then
   if [ $verbose -gt 0 ]; then sleep 2; fi
@@ -1259,7 +1259,7 @@ git_repo=icc-examin
     mkdir build
   fi
   if [ $update_oyranos = 1 ] || [ "$git_version" != "$old_git_version" ] ||
-     [ ! -f "$target" ]; then
+     [ ! -f "build/$target" ]; then
     cd build
     cmake "$cmake_target" -DCMAKE_C_FLAGS="$CFLAGS $OSX_ARCH_COCOA" -DCMAKE_CXX_FLAGS="$CXXFLAGS $OSX_ARCH_COCOA" -DCMAKE_LD_FLAGS="$LDFLAGS $OSX_ARCH_COCOA" -DCMAKE_INSTALL_PREFIX="$prefix" -DCMAKE_BUILD_TYPE=Debug ..
     make $MAKE_CPUS
@@ -1279,8 +1279,8 @@ cd "$top"
 echo ""
 if [ -f "$git_repo/build/$target" ]; then
   echo ICC Examin is in $git_repo/$target
-  echo You can test it now with one of:
-  echo   $git_repo/build/$target icc-profiles-basiccolor-printing2009-1.2.0/default_profiles/printing/ISOcoated_v2_bas.ICC
+  echo You can test it now with:
+  echo   $git_repo/build/$target -g icc-profiles-basiccolor-printing2009-1.2.0/default_profiles/printing/ISOcoated_v2_bas.ICC
   echo   hint: the 3D gamut hull is shown with the Ctrl-h shortcut
 else
   echo Could not build $git_repo/build/$target
