@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2012  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2016  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -347,15 +347,15 @@ log_ (std::string text, int code)
 
   if(icc_examin && icc_examin->laeuft() && !log_window)
   {
-    MyFl_Double_Window* w = log_window = new MyFl_Double_Window(600, 226, _("Log:"));
+    MyFl_Double_Window* w = log_window = new MyFl_Double_Window(SCALE(600), SCALE(226), _("Log:"));
     w->hotspot(w);
-    { Fl_Return_Button* o = new Fl_Return_Button(220, 195, 160, 25, _("Yes"));
+    { Fl_Return_Button* o = new Fl_Return_Button(SCALE(220), SCALE(195), SCALE(160), SCALE(25), _("Yes"));
       o->shortcut(0xff0d);
       o->callback((Fl_Callback*)cb_Gut, (void*)(w));
       o->align(FL_ALIGN_CENTER|FL_ALIGN_INSIDE);
       w->hotspot(o);
     }
-      { Fl_Text_Display* o = display_log = new Fl_Text_Display(0, 0, 600, 190);
+      { Fl_Text_Display* o = display_log = new Fl_Text_Display(0, 0, SCALE(600), SCALE(190));
         //o->type(12);
         //o->color((Fl_Color)53);
         o->textfont( FL_COURIER );
@@ -413,16 +413,16 @@ log_ (std::string text, int code)
 MyFl_Double_Window*
 nachricht_ (std::string text) {
   MyFl_Double_Window* w;
-  { MyFl_Double_Window* o = new MyFl_Double_Window(275, 326, _("Information:"));
+  { MyFl_Double_Window* o = new MyFl_Double_Window(SCALE(275), SCALE(326), _("Information:"));
     w = o;
     w->hotspot(o);
-    { Fl_Return_Button* o = new Fl_Return_Button(60, 295, 160, 25, _("Yes"));
+    { Fl_Return_Button* o = new Fl_Return_Button(SCALE(60), SCALE(295), SCALE(160), SCALE(25), _("Yes"));
       o->shortcut(0xff0d);
       o->callback((Fl_Callback*)cb_Gut, (void*)(w));
       o->align(FL_ALIGN_CENTER|FL_ALIGN_INSIDE);
       w->hotspot(o);
     }
-      { Fl_Text_Display* o = display_info = new Fl_Text_Display(0, 0, 275, 290);
+      { Fl_Text_Display* o = display_info = new Fl_Text_Display(0, 0, SCALE(275), SCALE(290));
         //o->type(12);
         //o->color((Fl_Color)53);
         Fl_Text_Buffer * buffer = new Fl_Text_Buffer(0);

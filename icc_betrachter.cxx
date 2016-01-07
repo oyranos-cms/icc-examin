@@ -102,7 +102,7 @@ void TagTexts::hinein(std::string text, ICClist<int> patches) {
 
       this->topline(inspekt_topline);
       this->textfont(FL_COURIER);
-      this->textsize(14);
+      this->textsize(SCALE(14));
   DBG_PROG_ENDE
 }
 
@@ -418,24 +418,24 @@ void ICCfltkBetrachter::cb_Log(Fl_Menu_* o, void* v) {
 }
 
 Fl_Menu_Item ICCfltkBetrachter::menu_DD_menueleiste[] = {
- {_("File"), 0,  0, 0, 64, FL_NORMAL_LABEL, 0, 14, 0},
- {_("Save as VRML"), 0x40073,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_gl_vrml_speichern, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
- {_("Quit"), 0x40071,  (Fl_Callback*)ICCfltkBetrachter::cb_Quit, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {_("File"), 0,  0, 0, 64, FL_NORMAL_LABEL, 0, SCALE(14), 0},
+ {_("Save as VRML"), 0x40073,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_gl_vrml_speichern, 0, 0, FL_NORMAL_LABEL, 0, SCALE(14), 0},
+ {_("Quit"), 0x40071,  (Fl_Callback*)ICCfltkBetrachter::cb_Quit, 0, 0, FL_NORMAL_LABEL, 0, SCALE(14), 0},
  {0,0,0,0,0,0,0,0,0},
- {_("View"), 0,  0, 0, 64, FL_NORMAL_LABEL, 0, 14, 0},
- {_("Whole Screen on/off"), 0x40076,  (Fl_Callback*)ICCfltkBetrachter::cb_DD_menueintrag_Voll, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {_("View"), 0,  0, 0, 64, FL_NORMAL_LABEL, 0, SCALE(14), 0},
+ {_("Whole Screen on/off"), 0x40076,  (Fl_Callback*)ICCfltkBetrachter::cb_DD_menueintrag_Voll, 0, 0, FL_NORMAL_LABEL, 0, SCALE(14), 0},
  {0,0,0,0,0,0,0,0,0},
- {_("Settings"), 0,  0, 0, 64, FL_NORMAL_LABEL, 0, 14, 0},
- {_("Gamut Warning"), 0x40077,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_gamutwarn, 0, 2, FL_NORMAL_LABEL, 0, 14, 0},
- {_("Perceptual"), 0x40066,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_phot_intent, 0, 2, FL_NORMAL_LABEL, 0, 14, 0},
- {_("Relative Colorimetric"), 0x40072,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_rel_col_intent, 0, 2, FL_NORMAL_LABEL, 0, 14, 0},
- {_("Absolute Colorimetric"), 0x40061,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_abs_col_intent, 0, 2, FL_NORMAL_LABEL, 0, 14, 0},
- {_("BPC"), 0x40062,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_bpc, 0, 2, FL_NORMAL_LABEL, 0, 14, 0},
- {_("Native Gamut"), 0x40062,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_nativeGamut, 0, 2, FL_NORMAL_LABEL, 0, 14, 0},
+ {_("Settings"), 0,  0, 0, 64, FL_NORMAL_LABEL, 0, SCALE(14), 0},
+ {_("Gamut Warning"), 0x40077,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_gamutwarn, 0, 2, FL_NORMAL_LABEL, 0, SCALE(14), 0},
+ {_("Perceptual"), 0x40066,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_phot_intent, 0, 2, FL_NORMAL_LABEL, 0, SCALE(14), 0},
+ {_("Relative Colorimetric"), 0x40072,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_rel_col_intent, 0, 2, FL_NORMAL_LABEL, 0, SCALE(14), 0},
+ {_("Absolute Colorimetric"), 0x40061,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_abs_col_intent, 0, 2, FL_NORMAL_LABEL, 0, SCALE(14), 0},
+ {_("BPC"), 0x40062,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_bpc, 0, 2, FL_NORMAL_LABEL, 0, SCALE(14), 0},
+ {_("Native Gamut"), 0x40062,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_nativeGamut, 0, 2, FL_NORMAL_LABEL, 0, SCALE(14), 0},
  {0,0,0,0,0,0,0,0,0},
- {_("Windows"), 0,  0, 0, 64, FL_NORMAL_LABEL, 0, 14, 0},
- {_("Show Main Window"), 0x4006d,  (Fl_Callback*)ICCfltkBetrachter::cb_Show, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
- {_("Log"), 0x4006c,  (Fl_Callback*)ICCfltkBetrachter::cb_Log, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {_("Windows"), 0,  0, 0, 64, FL_NORMAL_LABEL, 0, SCALE(14), 0},
+ {_("Show Main Window"), 0x4006d,  (Fl_Callback*)ICCfltkBetrachter::cb_Show, 0, 0, FL_NORMAL_LABEL, 0, SCALE(14), 0},
+ {_("Log"), 0x4006c,  (Fl_Callback*)ICCfltkBetrachter::cb_Log, 0, 0, FL_NORMAL_LABEL, 0, SCALE(14), 0},
  {0,0,0,0,0,0,0,0,0},
  {0,0,0,0,0,0,0,0,0}
 };
@@ -641,33 +641,33 @@ void ICCfltkBetrachter::cb_License(Fl_Menu_* o, void* v) {
 }
 
 Fl_Menu_Item ICCfltkBetrachter::menu_menueleiste[] = {
- {_("File"), 0,  0, 0, 64, FL_NORMAL_LABEL, 0, 14, 0},
- {_("Open"), 0x4006f,  (Fl_Callback*)ICCfltkBetrachter::cb_Open, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
- {_("Save Report"), 0,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_html_speichern, 0, 129, FL_NORMAL_LABEL, 0, 14, 0},
- {_("Save Gamut as Profile"), 0,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_gamut_speichern, 0, 1, FL_NORMAL_LABEL, 0, 14, 0},
- {_("Save Gamut as VRML"), 0,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_gamut_vrml_speichern, 0, 129, FL_NORMAL_LABEL, 0, 14, 0},
- {_("Quit"), 0x40071,  (Fl_Callback*)ICCfltkBetrachter::cb_Quit1, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {_("File"), 0,  0, 0, 64, FL_NORMAL_LABEL, 0, SCALE(14), 0},
+ {_("Open"), 0x4006f,  (Fl_Callback*)ICCfltkBetrachter::cb_Open, 0, 0, FL_NORMAL_LABEL, 0, SCALE(14), 0},
+ {_("Save Report"), 0,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_html_speichern, 0, 129, FL_NORMAL_LABEL, 0, SCALE(14), 0},
+ {_("Save Gamut as Profile"), 0,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_gamut_speichern, 0, 1, FL_NORMAL_LABEL, 0, SCALE(14), 0},
+ {_("Save Gamut as VRML"), 0,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_gamut_vrml_speichern, 0, 129, FL_NORMAL_LABEL, 0, SCALE(14), 0},
+ {_("Quit"), 0x40071,  (Fl_Callback*)ICCfltkBetrachter::cb_Quit1, 0, 0, FL_NORMAL_LABEL, 0, SCALE(14), 0},
  {0,0,0,0,0,0,0,0,0},
- {_("Gamut"), 0x40068,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_huelle, 0, 16, FL_NORMAL_LABEL, 0, 14, 0},
- {_("View"), 0,  0, 0, 64, FL_NORMAL_LABEL, 0, 14, 0},
- {_("Whole Screen on/off"), 0x40076,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_Voll, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {_("Gamut"), 0x40068,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_huelle, 0, 16, FL_NORMAL_LABEL, 0, SCALE(14), 0},
+ {_("View"), 0,  0, 0, 64, FL_NORMAL_LABEL, 0, SCALE(14), 0},
+ {_("Whole Screen on/off"), 0x40076,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_Voll, 0, 0, FL_NORMAL_LABEL, 0, SCALE(14), 0},
  {0,0,0,0,0,0,0,0,0},
- {_("Settings"), 0,  0, 0, 80, FL_NORMAL_LABEL, 0, 14, 0},
- {_("Oyranos Settings"), 0,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_oyranos, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
- {_("LANG"), 0,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_lang, 0, 17, FL_NORMAL_LABEL, 0, 14, 0},
+ {_("Settings"), 0,  0, 0, 80, FL_NORMAL_LABEL, 0, SCALE(14), 0},
+ {_("Oyranos Settings"), 0,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_oyranos, 0, 0, FL_NORMAL_LABEL, 0, SCALE(14), 0},
+ {_("LANG"), 0,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_lang, 0, 17, FL_NORMAL_LABEL, 0, SCALE(14), 0},
  {0,0,0,0,0,0,0,0,0},
- {_("Windows"), 0,  0, 0, 192, FL_NORMAL_LABEL, 0, 14, 0},
- {_("Gamut"), 0x40068,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_3D, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
- {_("Report View"), 0x40062,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_inspekt, 0, 1, FL_NORMAL_LABEL, 0, 14, 0},
- {_("CGATS View"), 0x40067,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_zeigcgats, 0, 129, FL_NORMAL_LABEL, 0, 14, 0},
- {_("Videocard Gamma"), 0x40074,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_vcgt, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
- {_("Test Curves"), 0x50074,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_testkurven, 0, 16, FL_NORMAL_LABEL, 0, 14, 0},
- {_("Log"), 0x4006c,  (Fl_Callback*)ICCfltkBetrachter::cb_Log1, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {_("Windows"), 0,  0, 0, 192, FL_NORMAL_LABEL, 0, SCALE(14), 0},
+ {_("Gamut"), 0x40068,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_3D, 0, 0, FL_NORMAL_LABEL, 0, SCALE(14), 0},
+ {_("Report View"), 0x40062,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_inspekt, 0, 1, FL_NORMAL_LABEL, 0, SCALE(14), 0},
+ {_("CGATS View"), 0x40067,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_zeigcgats, 0, 129, FL_NORMAL_LABEL, 0, SCALE(14), 0},
+ {_("Videocard Gamma"), 0x40074,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_vcgt, 0, 0, FL_NORMAL_LABEL, 0, SCALE(14), 0},
+ {_("Test Curves"), 0x50074,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_testkurven, 0, 16, FL_NORMAL_LABEL, 0, SCALE(14), 0},
+ {_("Log"), 0x4006c,  (Fl_Callback*)ICCfltkBetrachter::cb_Log1, 0, 0, FL_NORMAL_LABEL, 0, SCALE(14), 0},
  {0,0,0,0,0,0,0,0,0},
- {_("Help"), 0,  0, 0, 64, FL_NORMAL_LABEL, 0, 14, 0},
- {_("About"), 0,  (Fl_Callback*)ICCfltkBetrachter::cb_About, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
- {_("Help"), 0xffbe,  (Fl_Callback*)ICCfltkBetrachter::cb_Help, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
- {_("License"), 0,  (Fl_Callback*)ICCfltkBetrachter::cb_License, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {_("Help"), 0,  0, 0, 64, FL_NORMAL_LABEL, 0, SCALE(14), 0},
+ {_("About"), 0,  (Fl_Callback*)ICCfltkBetrachter::cb_About, 0, 0, FL_NORMAL_LABEL, 0, SCALE(14), 0},
+ {_("Help"), 0xffbe,  (Fl_Callback*)ICCfltkBetrachter::cb_Help, 0, 0, FL_NORMAL_LABEL, 0, SCALE(14), 0},
+ {_("License"), 0,  (Fl_Callback*)ICCfltkBetrachter::cb_License, 0, 0, FL_NORMAL_LABEL, 0, SCALE(14), 0},
  {0,0,0,0,0,0,0,0,0},
  {0,0,0,0,0,0,0,0,0}
 };
@@ -744,54 +744,54 @@ icc_examin_ns::MyFl_Double_Window* ICCfltkBetrachter::init(int argc, char** argv
   px=py=pw=ph=0;
   tag_nummer = -1;
   widget_oben = -1;
-  { icc_examin_ns::MyFl_Double_Window* o = ueber = new icc_examin_ns::MyFl_Double_Window(365, 295, _("About ICC Examin"));
+  { icc_examin_ns::MyFl_Double_Window* o = ueber = new icc_examin_ns::MyFl_Double_Window(SCALE(365), SCALE(295), _("About ICC Examin"));
     ueber->box(FL_FLAT_BOX);
     ueber->color((Fl_Color)FL_BACKGROUND_COLOR);
     ueber->selection_color((Fl_Color)FL_BACKGROUND_COLOR);
     ueber->labeltype(FL_NO_LABEL);
     ueber->labelfont(0);
-    ueber->labelsize(14);
+    ueber->labelsize(SCALE(14));
     ueber->labelcolor((Fl_Color)FL_FOREGROUND_COLOR);
     ueber->user_data((void*)(this));
     ueber->align(FL_ALIGN_TOP);
     ueber->when(FL_WHEN_RELEASE);
-    { Fl_Group* o = new Fl_Group(0, 0, 375, 295);
-      { Flmm_Tabs* o = new Flmm_Tabs(0, 0, 365, 260);
+    { Fl_Group* o = new Fl_Group(SCALE(0), SCALE(0), SCALE(375), SCALE(295));
+      { Flmm_Tabs* o = new Flmm_Tabs(SCALE(0), SCALE(0), SCALE(365), SCALE(260));
         o->box(FL_THIN_UP_BOX);
         o->color((Fl_Color)FL_BACKGROUND_COLOR);
         o->selection_color((Fl_Color)FL_BACKGROUND_COLOR);
         o->labeltype(FL_NORMAL_LABEL);
         o->labelfont(0);
-        o->labelsize(14);
+        o->labelsize(SCALE(14));
         o->labelcolor((Fl_Color)FL_FOREGROUND_COLOR);
         o->align(FL_ALIGN_TOP);
         o->when(FL_WHEN_RELEASE);
-        { ueber_html = new Fl_Help_View(0, 25, 365, 235, _("About"));
+        { ueber_html = new Fl_Help_View(0, SCALE(25), SCALE(365), SCALE(235), _("About"));
           ueber_html->box(FL_THIN_UP_BOX);
           ueber_html->color((Fl_Color)FL_BACKGROUND_COLOR);
           ueber_html->selection_color((Fl_Color)FL_DARK1);
           ueber_html->hide();
         } // Fl_Help_View* ueber_html
-        { hilfe_html = new Fl_Help_View(0, 25, 365, 235, _("Help"));
+        { hilfe_html = new Fl_Help_View(0, SCALE(25), SCALE(365), SCALE(235), _("Help"));
           hilfe_html->box(FL_THIN_UP_BOX);
           hilfe_html->color((Fl_Color)FL_BACKGROUND_COLOR);
           hilfe_html->selection_color((Fl_Color)FL_DARK1);
           hilfe_html->hide();
         } // Fl_Help_View* hilfe_html
-        { lizenz_html = new Fl_Help_View(0, 25, 365, 235, _("License"));
+        { lizenz_html = new Fl_Help_View(0, SCALE(25), SCALE(365), SCALE(235), _("License"));
           lizenz_html->box(FL_THIN_UP_BOX);
           lizenz_html->color((Fl_Color)FL_BACKGROUND_COLOR);
           lizenz_html->selection_color((Fl_Color)FL_DARK1);
           lizenz_html->hide();
           Fl_Group::current()->resizable(lizenz_html);
         } // Fl_Help_View* lizenz_html
-        { dank_html = new Fl_Help_View(0, 25, 365, 235, _("Acknowlegement"));
+        { dank_html = new Fl_Help_View(0, SCALE(25), SCALE(365), SCALE(235), _("Acknowlegement"));
           dank_html->box(FL_THIN_UP_BOX);
           dank_html->color((Fl_Color)FL_BACKGROUND_COLOR);
           dank_html->selection_color((Fl_Color)FL_DARK1);
           dank_html->hide();
         } // Fl_Help_View* dank_html
-        { info_html = new Fl_Help_View(0, 25, 365, 235, _("Info"));
+        { info_html = new Fl_Help_View(0, SCALE(25), SCALE(365), SCALE(235), _("Info"));
           info_html->box(FL_THIN_UP_BOX);
           info_html->color((Fl_Color)FL_BACKGROUND_COLOR);
           info_html->selection_color((Fl_Color)FL_DARK1);
@@ -799,7 +799,7 @@ icc_examin_ns::MyFl_Double_Window* ICCfltkBetrachter::init(int argc, char** argv
         o->end();
         Fl_Group::current()->resizable(o);
       } // Flmm_Tabs* o
-      { ja = new Fl_Button(130, 264, 110, 25, _("Yes"));
+      { ja = new Fl_Button(SCALE(130), SCALE(264), SCALE(110), SCALE(25), _("Yes"));
         ja->callback((Fl_Callback*)cb_ja);
       } // Fl_Button* ja
       o->end();
@@ -809,48 +809,48 @@ icc_examin_ns::MyFl_Double_Window* ICCfltkBetrachter::init(int argc, char** argv
     ueber->end();
     ueber->resizable(ueber);
   } // icc_examin_ns::MyFl_Double_Window* ueber
-  { icc_examin_ns::MyFl_Double_Window* o = vcgt = new icc_examin_ns::MyFl_Double_Window(370, 405, _("Grafic Card Gamma Table"));
+  { icc_examin_ns::MyFl_Double_Window* o = vcgt = new icc_examin_ns::MyFl_Double_Window(SCALE(370), SCALE(405), _("Grafic Card Gamma Table"));
     vcgt->box(FL_FLAT_BOX);
     vcgt->color((Fl_Color)FL_BACKGROUND_COLOR);
     vcgt->selection_color((Fl_Color)FL_BACKGROUND_COLOR);
     vcgt->labeltype(FL_NO_LABEL);
     vcgt->labelfont(0);
-    vcgt->labelsize(14);
+    vcgt->labelsize(SCALE(14));
     vcgt->labelcolor((Fl_Color)FL_FOREGROUND_COLOR);
     vcgt->user_data((void*)(this));
     vcgt->align(FL_ALIGN_TOP);
     vcgt->when(FL_WHEN_RELEASE);
-    { Fl_Group* o = new Fl_Group(0, 0, 370, 395);
-      { TagDrawings* o = vcgt_viewer = new TagDrawings(0, 0, 370, 360);
+    { Fl_Group* o = new Fl_Group(0, 0, SCALE(370), SCALE(395));
+      { TagDrawings* o = vcgt_viewer = new TagDrawings(0, 0, SCALE(370), SCALE(360));
         vcgt_viewer->box(FL_NO_BOX);
         vcgt_viewer->color((Fl_Color)FL_BACKGROUND_COLOR);
         vcgt_viewer->selection_color((Fl_Color)FL_BACKGROUND_COLOR);
         vcgt_viewer->labeltype(FL_NORMAL_LABEL);
         vcgt_viewer->labelfont(0);
-        vcgt_viewer->labelsize(14);
+        vcgt_viewer->labelsize(SCALE(14));
         vcgt_viewer->labelcolor((Fl_Color)FL_FOREGROUND_COLOR);
         vcgt_viewer->align(FL_ALIGN_CENTER);
         vcgt_viewer->when(FL_WHEN_RELEASE);
         Fl_Group::current()->resizable(vcgt_viewer);
         o->show();
       } // TagDrawings* vcgt_viewer
-      { vcgt_set_button = new Fl_Button(10, 370, 85, 25, _("Set"));
+      { vcgt_set_button = new Fl_Button(SCALE(10), SCALE(370), SCALE(85), SCALE(25), _("Set"));
         vcgt_set_button->tooltip(_("Set the current profile as monitor profile and upload vcgt tag to the video c\
 ard"));
         vcgt_set_button->callback((Fl_Callback*)cb_vcgt_set_button);
         vcgt_set_button->window()->hotspot(vcgt_set_button);
       } // Fl_Button* vcgt_set_button
-      { vcgt_reset_button = new Fl_Button(95, 370, 90, 25, _("Reset"));
+      { vcgt_reset_button = new Fl_Button(SCALE(95), SCALE(370), SCALE(90), SCALE(25), _("Reset"));
         vcgt_reset_button->tooltip(_("reset to standard gamma"));
         vcgt_reset_button->callback((Fl_Callback*)cb_vcgt_reset_button);
         vcgt_reset_button->window()->hotspot(vcgt_reset_button);
       } // Fl_Button* vcgt_reset_button
-      { vcgt_load_button = new Fl_Button(185, 370, 90, 25, _("Load"));
+      { vcgt_load_button = new Fl_Button(SCALE(185), SCALE(370), SCALE(90), SCALE(25), _("Load"));
         vcgt_load_button->tooltip(_("Load the current monitor profile"));
         vcgt_load_button->callback((Fl_Callback*)cb_vcgt_load_button);
         vcgt_load_button->window()->hotspot(vcgt_load_button);
       } // Fl_Button* vcgt_load_button
-      { vcgt_close_button = new Fl_Button(275, 370, 90, 25, _("Close"));
+      { vcgt_close_button = new Fl_Button(SCALE(275), SCALE(370), SCALE(90), SCALE(25), _("Close"));
         vcgt_close_button->callback((Fl_Callback*)cb_vcgt_close_button);
       } // Fl_Button* vcgt_close_button
       o->end();
@@ -860,19 +860,19 @@ ard"));
     vcgt->end();
     vcgt->resizable(vcgt);
   } // icc_examin_ns::MyFl_Double_Window* vcgt
-  { DD = new icc_examin_ns::MyFl_Double_Window(385, 520, _("Gamut"));
+  { DD = new icc_examin_ns::MyFl_Double_Window(SCALE(385), SCALE(520), _("Gamut"));
     DD->box(FL_NO_BOX);
     DD->color((Fl_Color)FL_BACKGROUND_COLOR);
     DD->selection_color((Fl_Color)FL_BACKGROUND_COLOR);
     DD->labeltype(FL_NO_LABEL);
     DD->labelfont(0);
-    DD->labelsize(14);
+    DD->labelsize(SCALE(14));
     DD->labelcolor((Fl_Color)FL_FOREGROUND_COLOR);
     DD->user_data((void*)(this));
     DD->align(FL_ALIGN_TOP);
     DD->when(FL_WHEN_RELEASE);
-    { Fl_Group* o = new Fl_Group(0, 0, 385, 520);
-      { DD_menueleiste = new Fl_Menu_Bar(0, 0, 385, 25);
+    { Fl_Group* o = new Fl_Group(0, 0, SCALE(385), SCALE(520));
+      { DD_menueleiste = new Fl_Menu_Bar(0, 0, SCALE(385), SCALE(25));
         DD_menueleiste->align(FL_ALIGN_LEFT|FL_ALIGN_INSIDE);
         DD_menueleiste->when(3);
         { Fl_Menu_Item* o = &menu_DD_menueleiste[8];
@@ -883,14 +883,14 @@ ard"));
         }
         DD_menueleiste->menu(menu_DD_menueleiste);
       } // Fl_Menu_Bar* DD_menueleiste
-      { Fl_Tile* o = new Fl_Tile(0, 25, 385, 495);
-        { GL_View* o = DD_farbraum = new GL_View(0, 25, 385, 470);
+      { Fl_Tile* o = new Fl_Tile(0, SCALE(25), SCALE(385), SCALE(495));
+        { GL_View* o = DD_farbraum = new GL_View(0, SCALE(25), SCALE(385), SCALE(470));
           DD_farbraum->box(FL_THIN_DOWN_BOX);
           DD_farbraum->color((Fl_Color)FL_BACKGROUND_COLOR);
           DD_farbraum->selection_color((Fl_Color)FL_BACKGROUND_COLOR);
           DD_farbraum->labeltype(FL_NORMAL_LABEL);
           DD_farbraum->labelfont(0);
-          DD_farbraum->labelsize(14);
+          DD_farbraum->labelsize(SCALE(14));
           DD_farbraum->labelcolor((Fl_Color)FL_FOREGROUND_COLOR);
           DD_farbraum->align(FL_ALIGN_CENTER);
           DD_farbraum->when(FL_WHEN_RELEASE);
@@ -898,17 +898,17 @@ ard"));
           o->hide();
           o->type( 1 ); // wandert ins 1. Nebenfenster
         } // GL_View* DD_farbraum
-        { DD_box_stat_oy = new Oy_Fl_Group(0, 495, 385, 25);
+        { DD_box_stat_oy = new Oy_Fl_Group(0, SCALE(495), SCALE(385), SCALE(25));
           DD_box_stat_oy->box(FL_NO_BOX);
           DD_box_stat_oy->color((Fl_Color)FL_BACKGROUND_COLOR);
           DD_box_stat_oy->selection_color((Fl_Color)FL_BACKGROUND_COLOR);
           DD_box_stat_oy->labeltype(FL_NORMAL_LABEL);
           DD_box_stat_oy->labelfont(0);
-          DD_box_stat_oy->labelsize(14);
+          DD_box_stat_oy->labelsize(SCALE(14));
           DD_box_stat_oy->labelcolor((Fl_Color)FL_FOREGROUND_COLOR);
           DD_box_stat_oy->align(FL_ALIGN_TOP);
           DD_box_stat_oy->when(FL_WHEN_RELEASE);
-          { DD_box_stat = new Fl_Box(0, 495, 385, 25);
+          { DD_box_stat = new Fl_Box(0, SCALE(495), SCALE(385), SCALE(25));
             DD_box_stat->box(FL_FLAT_BOX);
             DD_box_stat->align(FL_ALIGN_TOP_LEFT|FL_ALIGN_INSIDE);
           } // Fl_Box* DD_box_stat
@@ -919,13 +919,13 @@ ard"));
       } // Fl_Tile* o
       o->end();
     } // Fl_Group* o
-    { My_Fl_Box* o = no_box2 = new My_Fl_Box(0, 0, 385, 520);
+    { My_Fl_Box* o = no_box2 = new My_Fl_Box(0, 0, SCALE(385), SCALE(520));
       no_box2->box(FL_NO_BOX);
       no_box2->color((Fl_Color)FL_BACKGROUND_COLOR);
       no_box2->selection_color((Fl_Color)FL_BACKGROUND_COLOR);
       no_box2->labeltype(FL_NORMAL_LABEL);
       no_box2->labelfont(0);
-      no_box2->labelsize(14);
+      no_box2->labelsize(SCALE(14));
       no_box2->labelcolor((Fl_Color)FL_FOREGROUND_COLOR);
       no_box2->align(FL_ALIGN_CENTER);
       no_box2->when(FL_WHEN_RELEASE);
@@ -934,23 +934,23 @@ ard"));
     DD->end();
     DD->resizable(DD);
   } // icc_examin_ns::MyFl_Double_Window* DD
-  { icc_examin_ns::MyFl_Double_Window* o = details = new icc_examin_ns::MyFl_Double_Window(385, 520, _("ICC Examin"));
+  { icc_examin_ns::MyFl_Double_Window* o = details = new icc_examin_ns::MyFl_Double_Window(SCALE(385), SCALE(520), _("ICC Examin"));
     details->box(FL_NO_BOX);
     details->color((Fl_Color)FL_BACKGROUND_COLOR);
     details->selection_color((Fl_Color)FL_BACKGROUND_COLOR);
     details->labeltype(FL_NO_LABEL);
     details->labelfont(0);
-    details->labelsize(14);
+    details->labelsize(SCALE(14));
     details->labelcolor((Fl_Color)FL_FOREGROUND_COLOR);
     details->user_data((void*)(this));
     details->align(FL_ALIGN_TOP);
     details->when(FL_WHEN_RELEASE);
-    { Fl_Group* o = new Fl_Group(0, 0, 385, 520);
-      { Fl_Box* o = new Fl_Box(0, 0, 385, 520, _("invisible box"));
+    { Fl_Group* o = new Fl_Group(0, 0, SCALE(385), SCALE(520));
+      { Fl_Box* o = new Fl_Box(0, 0, SCALE(385), SCALE(520), _("invisible box"));
         o->box(FL_FLAT_BOX);
         o->align(FL_ALIGN_CENTER|FL_ALIGN_INSIDE);
       } // Fl_Box* o
-      { menueleiste = new Fl_Menu_Bar(0, 0, 385, 25);
+      { menueleiste = new Fl_Menu_Bar(0, 0, SCALE(385), SCALE(25));
         menueleiste->align(FL_ALIGN_LEFT);
         menueleiste->when(3);
         { Fl_Menu_Item* o = &menu_menueleiste[19];
@@ -958,11 +958,11 @@ ard"));
         }
         menueleiste->menu(menu_menueleiste);
       } // Fl_Menu_Bar* menueleiste
-      { Fl_Group* o = new Fl_Group(0, 25, 385, 470);
+      { Fl_Group* o = new Fl_Group(0, SCALE(25), SCALE(385), SCALE(470));
         o->align(FL_ALIGN_LEFT);
-        { Fl_Group* o = new Fl_Group(0, 25, 385, 470);
+        { Fl_Group* o = new Fl_Group(0, SCALE(25), SCALE(385), SCALE(470));
           o->align(FL_ALIGN_LEFT);
-          { Fl_Help_View* o = inspekt_html = new Fl_Help_View(0, 25, 385, 470);
+          { Fl_Help_View* o = inspekt_html = new Fl_Help_View(0, SCALE(25), SCALE(385), SCALE(470));
             inspekt_html->box(FL_FLAT_BOX);
             inspekt_html->color((Fl_Color)FL_BACKGROUND_COLOR);
             inspekt_html->align(FL_ALIGN_LEFT);
@@ -971,28 +971,28 @@ ard"));
           } // Fl_Help_View* inspekt_html
           o->end();
         } // Fl_Group* o
-        { examin = new Fl_Tile(0, 25, 385, 470);
+        { examin = new Fl_Tile(0, SCALE(25), SCALE(385), SCALE(470));
           examin->align(FL_ALIGN_LEFT);
-          { tag_browser = new TagBrowser(0, 25, 385, 135);
+          { tag_browser = new TagBrowser(0, SCALE(25), SCALE(385), SCALE(135));
             tag_browser->tooltip(_("Choose one profile tag"));
             tag_browser->box(FL_THIN_DOWN_BOX);
             tag_browser->color((Fl_Color)FL_BACKGROUND_COLOR);
             tag_browser->selection_color((Fl_Color)FL_SELECTION_COLOR);
             tag_browser->labeltype(FL_NORMAL_LABEL);
             tag_browser->labelfont(0);
-            tag_browser->labelsize(14);
+            tag_browser->labelsize(SCALE(14));
             tag_browser->labelcolor((Fl_Color)FL_FOREGROUND_COLOR);
             tag_browser->callback((Fl_Callback*)cb_tag_browser);
             tag_browser->align(FL_ALIGN_LEFT);
             tag_browser->when(FL_WHEN_RELEASE_ALWAYS);
           } // TagBrowser* tag_browser
-          { ansichtsgruppe = new Fl_Group(0, 160, 385, 335);
+          { ansichtsgruppe = new Fl_Group(0, SCALE(160), SCALE(385), SCALE(335));
             ansichtsgruppe->align(FL_ALIGN_LEFT);
-            { Fl_Group* o = tabellengruppe = new Fl_Group(0, 160, 385, 335);
+            { Fl_Group* o = tabellengruppe = new Fl_Group(0, SCALE(160), SCALE(385), SCALE(335));
               tabellengruppe->align(FL_ALIGN_LEFT);
-              { Fl_Pack* o = new Fl_Pack(0, 160, 385, 335);
+              { Fl_Pack* o = new Fl_Pack(0, SCALE(160), SCALE(385), SCALE(335));
                 o->align(FL_ALIGN_LEFT);
-                { TableChoice* o = table_choice = new TableChoice(0, 160, 385, 25, _("Chain selection"));
+                { TableChoice* o = table_choice = new TableChoice(0, SCALE(160), SCALE(385), SCALE(25), _("Chain selection"));
                 table_choice->tooltip(_("Choose a attribute"));
                 table_choice->box(FL_NO_BOX);
                 table_choice->down_box(FL_BORDER_BOX);
@@ -1000,53 +1000,53 @@ ard"));
                 table_choice->selection_color((Fl_Color)FL_SELECTION_COLOR);
                 table_choice->labeltype(FL_NORMAL_LABEL);
                 table_choice->labelfont(0);
-                table_choice->labelsize(14);
+                table_choice->labelsize(SCALE(14));
                 table_choice->labelcolor((Fl_Color)FL_FOREGROUND_COLOR);
                 table_choice->callback((Fl_Callback*)cb_table_choice);
                 table_choice->align(FL_ALIGN_LEFT);
                 table_choice->when(FL_WHEN_RELEASE);
                 o->show();
                 } // TableChoice* table_choice
-                { Fl_Group* o = new Fl_Group(0, 185, 385, 310);
+                { Fl_Group* o = new Fl_Group(0, SCALE(185), SCALE(385), SCALE(310));
                 o->align(FL_ALIGN_LEFT);
-                { TagDrawings* o = table_viewer = new TagDrawings(0, 185, 385, 310);
+                { TagDrawings* o = table_viewer = new TagDrawings(0, SCALE(185), SCALE(385), SCALE(310));
                 table_viewer->box(FL_NO_BOX);
                 table_viewer->color((Fl_Color)FL_BACKGROUND_COLOR);
                 table_viewer->selection_color((Fl_Color)FL_BACKGROUND_COLOR);
                 table_viewer->labeltype(FL_NORMAL_LABEL);
                 table_viewer->labelfont(0);
-                table_viewer->labelsize(14);
+                table_viewer->labelsize(SCALE(14));
                 table_viewer->labelcolor((Fl_Color)FL_FOREGROUND_COLOR);
                 table_viewer->align(FL_ALIGN_LEFT);
                 table_viewer->when(FL_WHEN_RELEASE);
                 o->show();
                 } // TagDrawings* table_viewer
-                { TagTexts* o = table_text = new TagTexts(0, 185, 385, 310);
+                { TagTexts* o = table_text = new TagTexts(0, SCALE(185), SCALE(385), SCALE(310));
                 table_text->box(FL_FLAT_BOX);
                 table_text->color((Fl_Color)FL_BACKGROUND_COLOR);
                 table_text->selection_color((Fl_Color)FL_SELECTION_COLOR);
                 table_text->labeltype(FL_NORMAL_LABEL);
                 table_text->labelfont(0);
-                table_text->labelsize(14);
+                table_text->labelsize(SCALE(14));
                 table_text->labelcolor((Fl_Color)FL_FOREGROUND_COLOR);
                 table_text->callback((Fl_Callback*)cb_table_text);
                 table_text->align(FL_ALIGN_LEFT);
                 table_text->when(FL_WHEN_RELEASE_ALWAYS);
                 o->show();
                 } // TagTexts* table_text
-                { table_gl_group = new Fl_Group(0, 185, 385, 310);
+                { table_gl_group = new Fl_Group(0, SCALE(185), SCALE(385), SCALE(310));
                 table_gl_group->align(FL_ALIGN_LEFT);
-                { Fl_Box* o = new Fl_Box(0, 185, 385, 310);
+                { Fl_Box* o = new Fl_Box(0, SCALE(185), SCALE(385), SCALE(310));
                 o->box(FL_FLAT_BOX);
                 o->align(FL_ALIGN_LEFT);
                 } // Fl_Box* o
-                { GL_View* o = table_gl = new GL_View(0, 185, 360, 310);
+                { GL_View* o = table_gl = new GL_View(0, SCALE(185), SCALE(360), SCALE(310));
                 table_gl->box(FL_NO_BOX);
                 table_gl->color((Fl_Color)FL_BACKGROUND_COLOR);
                 table_gl->selection_color((Fl_Color)FL_BACKGROUND_COLOR);
                 table_gl->labeltype(FL_NORMAL_LABEL);
                 table_gl->labelfont(0);
-                table_gl->labelsize(14);
+                table_gl->labelsize(SCALE(14));
                 table_gl->labelcolor((Fl_Color)FL_FOREGROUND_COLOR);
                 table_gl->align(FL_ALIGN_LEFT);
                 table_gl->when(FL_WHEN_RELEASE);
@@ -1054,20 +1054,20 @@ ard"));
                 o->hide();
                 o->type( 2 ); // bleibt zumeist im Hauptfenster
                 } // GL_View* table_gl
-                { table_gl_button_pack = new Fl_Pack(360, 185, 25, 310);
-                { Fl_Button* o = table_gl_alltables_button = new Fl_Button(360, 185, 25, 25, _("o"));
+                { table_gl_button_pack = new Fl_Pack(SCALE(360), SCALE(185), SCALE(25), SCALE(310));
+                { Fl_Button* o = table_gl_alltables_button = new Fl_Button(SCALE(360), SCALE(185), SCALE(25), SCALE(25), _("o"));
                 table_gl_alltables_button->tooltip(_("Show all channels of this table a own window."));
                 table_gl_alltables_button->callback((Fl_Callback*)cb_table_gl_alltables_button);
                 o->show();
                 } // Fl_Button* table_gl_alltables_button
                 table_gl_button_pack->end();
                 } // Fl_Pack* table_gl_button_pack
-                { table_gl_slider_pack = new Fl_Pack(0, 185, 25, 310);
-                { table_gl_slider_choice = new Fl_Choice(0, 185, 25, 25);
+                { table_gl_slider_pack = new Fl_Pack(0, SCALE(185), SCALE(25), SCALE(310));
+                { table_gl_slider_choice = new Fl_Choice(0, SCALE(185), SCALE(25), SCALE(25));
                 table_gl_slider_choice->down_box(FL_BORDER_BOX);
                 table_gl_slider_choice->callback((Fl_Callback*)cb_table_gl_slider_choice);
                 } // Fl_Choice* table_gl_slider_choice
-                { table_gl_slider = new Fl_Value_Slider(0, 210, 25, 285);
+                { table_gl_slider = new Fl_Value_Slider(0, SCALE(210), SCALE(25), SCALE(285));
                 table_gl_slider->callback((Fl_Callback*)cb_table_gl_slider);
                 Fl_Group::current()->resizable(table_gl_slider);
                 } // Fl_Value_Slider* table_gl_slider
@@ -1085,34 +1085,34 @@ ard"));
               o->show();
               tabellengruppe->end();
             } // Fl_Group* tabellengruppe
-            { twoD_pack = new Fl_Pack(0, 160, 385, 335);
+            { twoD_pack = new Fl_Pack(0, SCALE(160), SCALE(385), SCALE(335));
               twoD_pack->align(FL_ALIGN_LEFT);
-              { Fl_Box* o = new Fl_Box(0, 160, 385, 5);
+              { Fl_Box* o = new Fl_Box(0, SCALE(160), SCALE(385), SCALE(5));
                 o->box(FL_UP_BOX);
                 o->align(FL_ALIGN_LEFT);
               } // Fl_Box* o
-              { Fl_Group* o = new Fl_Group(0, 165, 385, 330);
+              { Fl_Group* o = new Fl_Group(0, SCALE(165), SCALE(385), SCALE(330));
                 o->align(FL_ALIGN_LEFT);
-                { TagTexts* o = tag_text = new TagTexts(0, 165, 385, 330);
+                { TagTexts* o = tag_text = new TagTexts(0, SCALE(165), SCALE(385), SCALE(330));
                 tag_text->box(FL_FLAT_BOX);
                 tag_text->color((Fl_Color)FL_BACKGROUND_COLOR);
                 tag_text->selection_color((Fl_Color)FL_SELECTION_COLOR);
                 tag_text->labeltype(FL_NORMAL_LABEL);
                 tag_text->labelfont(0);
-                tag_text->labelsize(14);
+                tag_text->labelsize(SCALE(14));
                 tag_text->labelcolor((Fl_Color)FL_FOREGROUND_COLOR);
                 tag_text->callback((Fl_Callback*)cb_tag_text);
                 tag_text->align(FL_ALIGN_LEFT);
                 tag_text->when(FL_WHEN_RELEASE_ALWAYS);
                 o->show();
                 } // TagTexts* tag_text
-                { TagDrawings* o = tag_viewer = new TagDrawings(0, 165, 385, 330);
+                { TagDrawings* o = tag_viewer = new TagDrawings(0, SCALE(165), SCALE(385), SCALE(330));
                 tag_viewer->box(FL_NO_BOX);
                 tag_viewer->color((Fl_Color)FL_BACKGROUND_COLOR);
                 tag_viewer->selection_color((Fl_Color)FL_BACKGROUND_COLOR);
                 tag_viewer->labeltype(FL_NORMAL_LABEL);
                 tag_viewer->labelfont(0);
-                tag_viewer->labelsize(14);
+                tag_viewer->labelsize(SCALE(14));
                 tag_viewer->labelcolor((Fl_Color)FL_FOREGROUND_COLOR);
                 tag_viewer->align(FL_ALIGN_LEFT);
                 tag_viewer->when(FL_WHEN_RELEASE);
@@ -1131,13 +1131,13 @@ ard"));
         o->end();
         Fl_Group::current()->resizable(o);
       } // Fl_Group* o
-      { Fl_Group* o = new Fl_Group(0, 495, 385, 25);
+      { Fl_Group* o = new Fl_Group(0, SCALE(495), SCALE(385), SCALE(25));
         o->align(FL_ALIGN_LEFT);
-        { box_stat = new Fl_Box(0, 495, 385, 25, _("..."));
+        { box_stat = new Fl_Box(0, SCALE(495), SCALE(385), SCALE(25), _("..."));
           box_stat->box(FL_THIN_DOWN_BOX);
           box_stat->align(FL_ALIGN_LEFT|FL_ALIGN_INSIDE);
         } // Fl_Box* box_stat
-        { Fl_Progress* o = load_progress = new Fl_Progress(0, 495, 385, 25, _("Loading .."));
+        { Fl_Progress* o = load_progress = new Fl_Progress(0, SCALE(495), SCALE(385), SCALE(25), _("Loading .."));
           load_progress->box(FL_THIN_UP_BOX);
           load_progress->color((Fl_Color)FL_BACKGROUND_COLOR);
           o->hide();
@@ -1148,13 +1148,13 @@ ard"));
       } // Fl_Group* o
       o->end();
     } // Fl_Group* o
-    { no_box = new My_Fl_Box(0, 0, 385, 520);
+    { no_box = new My_Fl_Box(0, 0, SCALE(385), SCALE(520));
       no_box->box(FL_NO_BOX);
       no_box->color((Fl_Color)FL_BACKGROUND_COLOR);
       no_box->selection_color((Fl_Color)FL_BACKGROUND_COLOR);
       no_box->labeltype(FL_NORMAL_LABEL);
       no_box->labelfont(0);
-      no_box->labelsize(14);
+      no_box->labelsize(SCALE(14));
       no_box->labelcolor((Fl_Color)FL_FOREGROUND_COLOR);
       no_box->align(FL_ALIGN_LEFT);
       no_box->when(FL_WHEN_RELEASE);

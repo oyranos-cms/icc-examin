@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2014  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2016  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -234,6 +234,7 @@ ICCexamin::ICCexamin ()
   collect_changing_points = 0;
   options_ = 0;
 
+
   DBG_PROG_ENDE
 }
 
@@ -285,7 +286,7 @@ void
 resize_fuer_menubar(Fl_Widget* w)
 {
 # ifdef __APPLE__
-  w->resize( w->x(), w->y()-25, w->w(), w->h()+25 );
+  w->resize( w->x(), w->y()-SCALE(25), w->w(), w->h()+SCALE(25) );
 # endif
 }
 
@@ -316,12 +317,24 @@ ICCexamin::start (int argc, char** argv)
   fl_translate_menue( icc_betrachter->menu_menueleiste );
   fl_translate_menue( icc_betrachter->menu_DD_menueleiste );
 
+  // get high DPI infos for windows width and font scaling
+  scale = getScale();
+  cout << " scale: " << scale <<endl;
+  FL_NORMAL_SIZE=SCALE(14);
+
+
   icc_betrachter->init( argc, argv );
+  icc_betrachter->inspekt_html->textsize( SCALE(icc_betrachter->inspekt_html->textsize()) );
+  icc_betrachter->ueber_html->textsize( SCALE(icc_betrachter->ueber_html->textsize()) );
+  icc_betrachter->hilfe_html->textsize( SCALE(icc_betrachter->hilfe_html->textsize()) );
+  icc_betrachter->lizenz_html->textsize( SCALE(icc_betrachter->lizenz_html->textsize()) );
+  icc_betrachter->dank_html->textsize( SCALE(icc_betrachter->dank_html->textsize()) );
+  icc_betrachter->info_html->textsize( SCALE(icc_betrachter->info_html->textsize()) );
 
   icc_betrachter->table_gl->init(1);
   icc_betrachter->DD_farbraum->init(2);
   {
-    icc_waehler_ = new ICCwaehler(485, 116, _("Gamut selector"));
+    icc_waehler_ = new ICCwaehler(SCALE(485), SCALE(116), _("Gamut selector"));
     if(!icc_waehler_) WARN_S( "icc_waehler_ not reservable" )
     // gehoert zum DD_farbraum fenster
     icc_waehler_->only_with = dynamic_cast<icc_examin_ns::MyFl_Double_Window*>(icc_betrachter->DD_farbraum->window());
@@ -555,7 +568,7 @@ ICCexamin::zeigPrueftabelle ()
   if(wid->window() == details)
   {
     int lx = details->x(),
-        ly = details->y()+10,
+        ly = details->y()+SCALE(10),
         lw = details->w(),
         lh = details->h();
 
@@ -572,7 +585,7 @@ ICCexamin::zeigPrueftabelle ()
       w->resizable(w);
       //w->resizable(g);
       w->show();
-      w->position(w->x(), ly-10);
+      w->position(w->x(), ly-SCALE(10));
   }
 
   wid->window()->show();
@@ -609,7 +622,7 @@ ICCexamin::showTables ()
           title);
 
   int lx = icc_betrachter->details->x(),
-      ly = icc_betrachter->details->y()+10,
+      ly = icc_betrachter->details->y()+SCALE(10),
       lw = icc_betrachter->table_gl->w(),
       lh = icc_betrachter->table_gl->h();
 
@@ -645,7 +658,7 @@ ICCexamin::showTables ()
     w->resizable(w);
     g->show();
     w->show();
-    w->position( w->x(), ly-10 );
+    w->position( w->x(), ly-SCALE(10) );
     DBG_PROG_V( icc_betrachter->details->y()<<" "<<w->y() )
     gl->show();
     gl->invalidate();
@@ -2045,3 +2058,48 @@ event_handler(int e)
 }
 
 
+#if defined( HAVE_XRANDR ) || defined(HAVE_Xrandr)
+  # include <X11/extensions/Xrandr.h>
+#endif
+float scale;
+float getScale()
+{
+  float xdpi = 0, ydpi = 0;
+  Fl::screen_dpi (xdpi, ydpi);
+  if(xdpi)
+    scale = xdpi / 96.f;
+
+# if defined(HAVE_XRANDR) || defined(HAVE_Xrandr)
+  int screen = DefaultScreen( fl_display );
+  Window w = RootWindow(fl_display, screen);
+  XRRScreenResources * res = XRRGetScreenResources(fl_display, w);
+  int first = -1;
+  for(int i=0; i < res->noutput; ++i)
+  {
+    XRROutputInfo * output_info = XRRGetOutputInfo( fl_display, res, res->outputs[i]);
+    if(output_info->crtc)
+    {
+      XRRCrtcInfo * crtc_info = XRRGetCrtcInfo( fl_display, res,
+                                                output_info->crtc );
+      unsigned int pixel_width = crtc_info->width,
+                   pixel_height = crtc_info->height;
+      float xdpi = pixel_width * 25.4f / (float)output_info->mm_width,
+            ydpi = pixel_height * 25.4f / (float)output_info->mm_height;
+      printf( "[%d] %upx x %upx  Dimensions: %limm x %limm  DPI: %.02f x %.02f\n",
+              i, pixel_width, pixel_height,
+              output_info->mm_width, output_info->mm_height,
+              xdpi, ydpi );
+
+      if(first == -1)
+      {
+         first = i;
+         scale = xdpi / 96.f;
+      }
+    }
+    XRRFreeOutputInfo( output_info );
+  }
+  XRRFreeScreenResources(res);
+#endif
+
+  return scale;
+}

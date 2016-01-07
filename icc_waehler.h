@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2005-2010  Kai-Uwe Behrmann 
+ * Copyright (C) 2005-2016  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -96,7 +96,7 @@ class ICCwaehlerProfil : public Fl_Pack
 public:
  ICCwaehlerProfil(const char* name, double undurchsicht, 
                    bool grau, bool aktiv, int pos)
-    : Fl_Pack( 0,0,470,25 ), pos_(pos)
+    : Fl_Pack( 0,0,SCALE(470),SCALE(25) ), pos_(pos)
  {
   DBG_PROG_START
   DBG_PROG_V( name )
@@ -106,26 +106,27 @@ public:
   {
           begin(); DBG_PROG
           type(1);
-          { Fl_Button* o = aktiv_knopf_ = new Fl_Button(6, 6, 25, 25);
+          { Fl_Button* o = aktiv_knopf_ = new Fl_Button(SCALE(6), SCALE(6), SCALE(25), SCALE(25));
             o->type(1);
             //o->selection_color(FL_WHITE);
             o->value( aktiv );
             o->callback(aktiv_knopf_cb_statisch_);
           }
-          { Fl_Pack* o = gruppe_ = new Fl_Pack(29, 6, 445, 25);
+          { Fl_Pack* o = gruppe_ = new Fl_Pack(SCALE(29), SCALE(6), SCALE(443), SCALE(25));
             o->type(1);
             if(aktiv) o->activate(); else o->deactivate();
-            { Fl_Output* o = name_ = new Fl_Output(29, 6, 230, 25);
+            { Fl_Output* o = name_ = new Fl_Output(SCALE(29), SCALE(6), SCALE(230), SCALE(25));
               o->align(FL_ALIGN_LEFT|FL_ALIGN_INSIDE);
               o->value( name );
               this->resizable(o);
             }
-            { Fl_Value_Slider* o = undurchsicht_ = new Fl_Value_Slider(259, 6, 150, 25);
+            { Fl_Value_Slider* o = undurchsicht_ = new Fl_Value_Slider(SCALE(259), SCALE(6), SCALE(150), SCALE(25));
               o->type(1);
               o->value(undurchsicht);
+              o->labelsize(SCALE(14));
               o->callback(undurchsicht_cb_statisch_);
             }
-            { Fl_Light_Button* o = grau_ = new Fl_Light_Button(409, 6, 65, 25, _("Gray"));
+            { Fl_Light_Button* o = grau_ = new Fl_Light_Button(SCALE(409), SCALE(6), SCALE(65), SCALE(25), _("Gray"));
               o->selection_color(FL_DARK3);
               o->value(grau);
               o->callback(grau_cb_statisch_);
@@ -214,10 +215,10 @@ public:
     profile_[i] = 0;
 
   {
-    Fl_Scroll* o = scroll_profile = new Fl_Scroll(5, 5, w()-14, h()-10);
+    Fl_Scroll* o = scroll_profile = new Fl_Scroll(SCALE(5), SCALE(5), w()-SCALE(14), h()-SCALE(10));
       o->box(FL_THIN_DOWN_BOX);
       o->type(Fl_Scroll::VERTICAL);
-      { Fl_Pack* o = hbox = new Fl_Pack(6, 6, w()-16, h()-12);
+      { Fl_Pack* o = hbox = new Fl_Pack(SCALE(6), SCALE(6), w()-SCALE(16), h()-SCALE(12));
         o->box(FL_THIN_DOWN_FRAME);
         o->end();
       }   

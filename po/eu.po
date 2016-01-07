@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cinepaint_icc-examin_eu\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2015-05-08 16:51+0200\n"
+"POT-Creation-Date: 2016-01-07 20:48+0100\n"
 "PO-Revision-Date: 2007-11-07 11:11+0100\n"
 "Last-Translator: Iñaki Larrañaga Murgoitio <dooteo@zundan.com>\n"
 "Language-Team: Basque <itzulpena@euskalgnu.org>\n"
@@ -105,7 +105,7 @@ msgstr ""
 msgid " number key - set the number of interpolation planes"
 msgstr ""
 
-#: icc_draw.cpp:792 icc_draw.cpp:853
+#: icc_draw.cpp:796 icc_draw.cpp:857
 msgid " points"
 msgstr " puntu"
 
@@ -114,22 +114,22 @@ msgstr " puntu"
 msgid " typ - no text output"
 msgstr " typ - irteerako testurik ez"
 
-#: icc_draw.cpp:266
+#: icc_draw.cpp:270
 msgid " used too early!"
 msgstr " goizegi erabilita!"
 
 #. show infos
-#: icc_draw.cpp:792 icc_draw.cpp:853
+#: icc_draw.cpp:796 icc_draw.cpp:857
 msgid " with "
 msgstr " honekin "
 
 #. show infos
-#: icc_draw.cpp:799
+#: icc_draw.cpp:803
 msgid " with Gamma: 1.0"
 msgstr " gammarekin: 1.0"
 
 #. show infos
-#: icc_draw.cpp:812 icc_draw.cpp:831
+#: icc_draw.cpp:816 icc_draw.cpp:835
 msgid " with one entry for gamma: "
 msgstr " gammaren sarrera batekin: "
 
@@ -168,7 +168,7 @@ msgstr "---"
 
 #. clrt
 #. flex
-#: icc_examin.cpp:1381 icc_helfer.cpp:648 icc_helfer.cpp:740
+#: icc_examin.cpp:1394 icc_helfer.cpp:648 icc_helfer.cpp:740
 msgid "----"
 msgstr "----"
 
@@ -176,7 +176,7 @@ msgstr "----"
 msgid "0"
 msgstr "0"
 
-#: icc_gl.cpp:1045
+#: icc_gl.cpp:1048
 msgid "0,0,0"
 msgstr "0,0,0"
 
@@ -445,10 +445,6 @@ msgid ""
 "all normalised to 0.0 -&gt; 1.0."
 msgstr ""
 
-#: test_waehler.cpp:6
-msgid "Ansichtswähler"
-msgstr ""
-
 #: icc_profile_header.cpp:252
 msgid "Attributes:  "
 msgstr "Atributuak:     "
@@ -463,7 +459,7 @@ msgstr "U"
 msgid "Back side"
 msgstr "Atzeko planoan"
 
-#: icc_gl.cpp:2769
+#: icc_gl.cpp:2772
 msgid "Background colour"
 msgstr "Atzeko planoaren kolorea"
 
@@ -476,12 +472,12 @@ msgid ""
 "may be intended for."
 msgstr ""
 
-#: icc_draw.cpp:729 icc_gl.cpp:2766 icc_helfer.cpp:418 icc_helfer.cpp:428
+#: icc_draw.cpp:733 icc_helfer.cpp:418 icc_helfer.cpp:428 icc_gl.cpp:2769
 msgid "Black"
 msgstr "Beltza"
 
-#: icc_draw.cpp:712 icc_draw.cpp:721 icc_profile_tags.cpp:422
-#: icc_helfer_osx.cpp:98 icc_helfer_x.cpp:69 icc_helfer.cpp:417
+#: icc_helfer_osx.cpp:98 icc_helfer_x.cpp:69 icc_draw.cpp:716 icc_draw.cpp:725
+#: icc_helfer.cpp:417 icc_profile_tags.cpp:422
 msgid "Blue"
 msgstr "Urdina"
 
@@ -497,20 +493,20 @@ msgstr "Tonu urdinaren erreprodukzio-kurba"
 msgid "C"
 msgstr "C"
 
-#: icc_examin_farbraum.cpp:402 icc_draw.cpp:745 icc_examin_io.cpp:323
+#: icc_examin_farbraum.cpp:402 icc_examin_io.cpp:323 icc_draw.cpp:749
 #: icc_helfer.cpp:403 icc_helfer.cpp:406
 msgid "CIE *L"
 msgstr "CIE *L"
 
-#: icc_examin_farbraum.cpp:403 icc_draw.cpp:747 icc_examin_io.cpp:324
-#: icc_gl.cpp:1189 icc_gl.cpp:1260 icc_gl.cpp:1286 icc_gl.cpp:1294
-#: icc_helfer.cpp:404
+#: icc_examin_farbraum.cpp:403 icc_examin_io.cpp:324 icc_draw.cpp:751
+#: icc_helfer.cpp:404 icc_gl.cpp:1192 icc_gl.cpp:1263 icc_gl.cpp:1289
+#: icc_gl.cpp:1297
 msgid "CIE *a"
 msgstr "CIE *a"
 
-#: icc_examin_farbraum.cpp:404 icc_draw.cpp:749 icc_examin_io.cpp:325
-#: icc_gl.cpp:1202 icc_gl.cpp:1302 icc_gl.cpp:1322 icc_gl.cpp:1329
-#: icc_helfer.cpp:405
+#: icc_examin_farbraum.cpp:404 icc_examin_io.cpp:325 icc_draw.cpp:753
+#: icc_helfer.cpp:405 icc_gl.cpp:1205 icc_gl.cpp:1305 icc_gl.cpp:1325
+#: icc_gl.cpp:1332
 msgid "CIE *b"
 msgstr "CIE *b"
 
@@ -522,15 +518,15 @@ msgstr "CIE *u"
 msgid "CIE *v"
 msgstr "CIE *v"
 
-#: icc_draw.cpp:735 icc_helfer.cpp:400
+#: icc_draw.cpp:739 icc_helfer.cpp:400
 msgid "CIE X"
 msgstr "CIE X"
 
-#: icc_draw.cpp:737 icc_helfer.cpp:401 icc_helfer.cpp:412
+#: icc_draw.cpp:741 icc_helfer.cpp:401 icc_helfer.cpp:412
 msgid "CIE Y (Luminance)"
 msgstr "CIE Y (luminantzia)"
 
-#: icc_draw.cpp:739 icc_helfer.cpp:402
+#: icc_draw.cpp:743 icc_helfer.cpp:402
 msgid "CIE Z"
 msgstr "CIE Z"
 
@@ -571,7 +567,7 @@ msgstr "Kalibrazio-data"
 msgid "Cathode ray tube display"
 msgstr "Katodo-izpien hodizko pantaila"
 
-#: icc_profile_tags.cpp:319 icc_gl.cpp:3290
+#: icc_profile_tags.cpp:319 icc_gl.cpp:3293
 msgid "Channel"
 msgstr "Kanala"
 
@@ -610,12 +606,12 @@ msgstr ""
 "kolore-gama ikustailean."
 
 #. The following strings must match the categories for a menu entry.
-#: oyranos_cmm_iemn.c:502 icc_profile_tags.cpp:1268 icc_profile_tags.cpp:1275
-#: icc_helfer.cpp:395
+#: oyranos_cmm_iemn.c:502 icc_helfer.cpp:395 icc_profile_tags.cpp:1268
+#: icc_profile_tags.cpp:1275
 msgid "Colour"
 msgstr "Kolorea"
 
-#: icc_profile.cpp:910 icc_helfer.cpp:467
+#: icc_helfer.cpp:467 icc_profile.cpp:910
 msgid "Colour Space"
 msgstr "Kolore-espazioa"
 
@@ -628,11 +624,11 @@ msgstr "Kolore-espazioa:"
 msgid "Colour adaption matrix"
 msgstr "Kolorea egokitzeko matrizea"
 
-#: icc_draw.cpp:751 icc_helfer.cpp:410
+#: icc_draw.cpp:755 icc_helfer.cpp:410
 msgid "Colour b"
 msgstr "b kolorea"
 
-#: icc_gl.cpp:2779
+#: icc_gl.cpp:2782
 msgid "Colour line"
 msgstr "Kolore-marra"
 
@@ -640,7 +636,7 @@ msgstr "Kolore-marra"
 msgid "Colour measurement data"
 msgstr "Kolore-neurketaren datuak"
 
-#: icc_draw.cpp:753 icc_helfer.cpp:411
+#: icc_draw.cpp:757 icc_helfer.cpp:411
 msgid "Colour r"
 msgstr "r kolorea"
 
@@ -648,7 +644,7 @@ msgstr "r kolorea"
 msgid "Colour spots can be enlarged or made smaller by pressing + or -."
 msgstr ""
 
-#: icc_examin.cpp:922 icc_examin.cpp:925
+#: icc_examin.cpp:935 icc_examin.cpp:938
 msgid "Compare Measurement <-> Profile Colours"
 msgstr "Konparatu neurketa <-> profilaren koloreak"
 
@@ -673,8 +669,8 @@ msgstr "Copyright-a"
 msgid "Copyright (c) 2010 Kai-Uwe Behrmann; newBSD"
 msgstr ""
 
-#: icc_gl.cpp:914 icc_gl.cpp:917 icc_gl.cpp:924 icc_gl.cpp:935 icc_gl.cpp:939
-#: icc_gl.cpp:954
+#: icc_gl.cpp:917 icc_gl.cpp:920 icc_gl.cpp:927 icc_gl.cpp:938 icc_gl.cpp:942
+#: icc_gl.cpp:957
 msgid "Could not open font in:"
 msgstr "Ezin izan da letra-tipoa ireki:"
 
@@ -687,11 +683,11 @@ msgstr "Puntua"
 msgid "Custom Filter"
 msgstr "Iragazki pertsonalizatua"
 
-#: icc_draw.cpp:723 icc_helfer.cpp:425 icc_helfer.cpp:429
+#: icc_draw.cpp:727 icc_helfer.cpp:425 icc_helfer.cpp:429
 msgid "Cyan"
 msgstr "Cyana"
 
-#: icc_gl.cpp:2765
+#: icc_gl.cpp:2768
 msgid "Dark gray"
 msgstr "Gris iluna"
 
@@ -703,10 +699,6 @@ msgstr "Data"
 #: icc_profile_header.cpp:246
 msgid "Date:        "
 msgstr "Data:           "
-
-#: icc_profilierer.cpp:38
-msgid "Dateikopf ungültig"
-msgstr ""
 
 #: icc_helfer.cpp:593
 msgid "Description"
@@ -787,11 +779,11 @@ msgstr "Fitxategia ez da kargatu."
 msgid "Filename"
 msgstr "Fitxategi-izena"
 
-#: icc_examin.cpp:1386
+#: icc_examin.cpp:1399
 msgid "Filename (corrupted ICC data type)"
 msgstr "Fitxategi-izena (hondatutako ICC datu mota)"
 
-#: icc_examin.cpp:1384
+#: icc_examin.cpp:1397
 msgid "Filename (other data type)"
 msgstr "Fitxategi-izena (beste datu mota)"
 
@@ -882,11 +874,11 @@ msgstr "Gamma gorria:"
 msgid "Gamma:   "
 msgstr "Gamma gorria:"
 
-#: icc_examin.cpp:942 icc_examin.cpp:946
+#: icc_examin.cpp:955 icc_examin.cpp:959
 msgid "Gamut View"
 msgstr "Kolore-gamaren ikuspegia"
 
-#: icc_examin.cpp:324
+#: icc_examin.cpp:337
 msgid "Gamut selector"
 msgstr "Kolore-gama hautatzailea"
 
@@ -909,7 +901,7 @@ msgstr "Geometria"
 msgid "Gravure"
 msgstr "Sakongrabatzea"
 
-#: icc_oyranos_extern.c:139 icc_draw.cpp:716 icc_gl.cpp:2764 icc_waehler.h:128
+#: icc_oyranos_extern.c:139 icc_draw.cpp:720 icc_gl.cpp:2767 icc_waehler.h:129
 msgid "Gray"
 msgstr "Grisa"
 
@@ -917,8 +909,8 @@ msgstr "Grisa"
 msgid "Gray tone reproduction curve"
 msgstr "Tonu grisaren erreprodukzio-kurba"
 
-#: icc_draw.cpp:709 icc_draw.cpp:719 icc_profile_tags.cpp:421
-#: icc_helfer_osx.cpp:97 icc_helfer_x.cpp:68 icc_helfer.cpp:416
+#: icc_helfer_osx.cpp:97 icc_helfer_x.cpp:68 icc_draw.cpp:713 icc_draw.cpp:723
+#: icc_helfer.cpp:416 icc_profile_tags.cpp:421
 msgid "Green"
 msgstr "Berdea"
 
@@ -1100,7 +1092,7 @@ msgstr "Iluminatzailea E energia berdinarekin"
 msgid "Illuminant:  "
 msgstr "Iluminatzailea: "
 
-#: icc_gl.cpp:2803
+#: icc_gl.cpp:2806
 msgid "Illustration"
 msgstr "Ilustrazioa"
 
@@ -1137,8 +1129,8 @@ msgstr "Tintazko inprimagailua"
 msgid "Input"
 msgstr "Sarrera"
 
-#: icc_examin_tagwahl_110528.131850.cpp:506 icc_profile_tags.cpp:283
-#: icc_profile_tags.cpp:302 icc_examin_tagwahl.cpp:507
+#: icc_examin_tagwahl.cpp:507 icc_profile_tags.cpp:283
+#: icc_profile_tags.cpp:302
 msgid "Intent:"
 msgstr "Helburua:"
 
@@ -1146,7 +1138,7 @@ msgstr "Helburua:"
 msgid "Intent:      "
 msgstr "Helburua:       "
 
-#: icc_examin.cpp:1398
+#: icc_examin.cpp:1411
 msgid "Internal error"
 msgstr "Barneko errorea"
 
@@ -1186,11 +1178,11 @@ msgstr "Lab"
 msgid "License"
 msgstr "Lizentzia"
 
-#: icc_gl.cpp:2763
+#: icc_gl.cpp:2766
 msgid "Light gray"
 msgstr "Gris argia"
 
-#: icc_draw.cpp:741 icc_helfer.cpp:423
+#: icc_draw.cpp:745 icc_helfer.cpp:423
 msgid "Lightness"
 msgstr "Argitasuna"
 
@@ -1210,7 +1202,7 @@ msgstr "Linealisazioa"
 msgid "Link"
 msgstr "Esteka"
 
-#: icc_examin_tagwahl_110528.131850.cpp:1025 icc_examin_tagwahl.cpp:1044
+#: icc_examin_tagwahl.cpp:1044
 msgid "Loading .."
 msgstr "Kargatzen ..."
 
@@ -1248,11 +1240,11 @@ msgstr "Blokeatu taula, gailutik PCSra, koloremetria erlatibo helburuarekin"
 msgid "Lookup table, device to PCS, intent saturation"
 msgstr "Blokeatu taula, gailutik PCSra, saturazio helburuarekin"
 
-#: icc_draw.cpp:731 icc_helfer.cpp:614
+#: icc_draw.cpp:735 icc_helfer.cpp:614
 msgid "Luminance"
 msgstr "Luminantzia"
 
-#: icc_draw.cpp:733 icc_helfer.cpp:409
+#: icc_draw.cpp:737 icc_helfer.cpp:409
 msgid "Luminance Y"
 msgstr "Luminantzia Y"
 
@@ -1277,7 +1269,7 @@ msgstr ""
 msgid "Macintosh"
 msgstr "Macintosh"
 
-#: icc_draw.cpp:725 icc_helfer.cpp:426 icc_helfer.cpp:430
+#: icc_draw.cpp:729 icc_helfer.cpp:426 icc_helfer.cpp:430
 msgid "Magenta"
 msgstr "Magenta"
 
@@ -1289,7 +1281,7 @@ msgstr "Magikoa:        "
 msgid "Manage Favorites"
 msgstr "Kudeatu gogokoak"
 
-#: icc_oyranos.cpp:687 icc_profile_header.cpp:250 icc_helfer_x.cpp:239
+#: icc_profile_header.cpp:250 icc_helfer_x.cpp:239 icc_oyranos.cpp:687
 msgid "Manufacturer:"
 msgstr "Hornitzailea:   "
 
@@ -1301,7 +1293,7 @@ msgstr "Hornitzailea: "
 msgid "Matrix"
 msgstr "Matrizea"
 
-#: icc_examin_tagwahl_110528.131850.cpp:681 icc_examin_tagwahl.cpp:683
+#: icc_examin_tagwahl.cpp:683
 #, fuzzy
 msgid "Matrix 3x3 + 3"
 msgstr "Matrizea"
@@ -1452,7 +1444,7 @@ msgid "No profil assigned to image."
 msgstr "Ez dago profilik esleituta irudiari."
 
 #. this string is sensible to formatting in the tag browser GUI, please keep a mono spaced formatting
-#: icc_examin.cpp:1401
+#: icc_examin.cpp:1414
 msgid "No. Tag   Type   Size Description"
 msgstr "IDa Etik. Mota   Tam. Azalpena"
 
@@ -1492,7 +1484,7 @@ msgid "On the bottom you see the status area of the window."
 msgstr ""
 
 #. Shells alike displaying, alternatves are "Membranes" or "Shells"
-#: icc_gl.cpp:2778
+#: icc_gl.cpp:2781
 msgid "Onion skins"
 msgstr ""
 
@@ -1545,7 +1537,7 @@ msgid "Please choose an existing file!"
 msgstr "Aukeratu existitzen den fitxategia."
 
 #. points are reserved for image colours
-#: icc_gl.cpp:2792
+#: icc_gl.cpp:2795
 msgid "Point"
 msgstr "Puntua"
 
@@ -1555,7 +1547,7 @@ msgid "Port:"
 msgstr "Puntua"
 
 #. "Pos" is a abreviation to position and will be visible in the small statusline with position coordinates
-#: icc_gl.cpp:3164
+#: icc_gl.cpp:3167
 msgid "Pos"
 msgstr "Pos."
 
@@ -1642,16 +1634,16 @@ msgstr "G"
 msgid "RGB"
 msgstr "GBU"
 
-#: icc_examin_tagwahl_110528.131850.cpp:162 icc_examin_tagwahl.cpp:163
+#: icc_examin_tagwahl.cpp:163
 msgid "RGB primaries"
 msgstr "GBU primarioak"
 
-#: icc_examin.cpp:474
+#: icc_examin.cpp:487
 msgid "Ready"
 msgstr "Prest"
 
-#: icc_draw.cpp:706 icc_draw.cpp:717 icc_profile_tags.cpp:420
-#: icc_helfer_osx.cpp:96 icc_helfer_x.cpp:67 icc_helfer.cpp:415
+#: icc_helfer_osx.cpp:96 icc_helfer_x.cpp:67 icc_draw.cpp:710 icc_draw.cpp:721
+#: icc_helfer.cpp:415 icc_profile_tags.cpp:420
 msgid "Red"
 msgstr "Gorria"
 
@@ -1684,11 +1676,11 @@ msgstr "ICC profilari buruzko txostena"
 msgid "Rgb"
 msgstr "Gbu"
 
-#: icc_gl.cpp:2754
+#: icc_gl.cpp:2757
 msgid "Rotate around"
 msgstr "Biratu inguruan"
 
-#: icc_gl.cpp:2733
+#: icc_gl.cpp:2736
 msgid "Rotate around slice"
 msgstr "Biratu zatiaren inguruan"
 
@@ -1720,7 +1712,7 @@ msgstr "Gorde kolore-gama VRML gisa"
 msgid "Save Report"
 msgstr "Gorde txostena"
 
-#: icc_oyranos.cpp:669 icc_helfer_x.cpp:130
+#: icc_helfer_x.cpp:130 icc_oyranos.cpp:669
 msgid "Screen:"
 msgstr "Pantaila:"
 
@@ -1757,12 +1749,12 @@ msgstr "Tamaina"
 msgid "Size:        "
 msgstr "Tamaina:        "
 
-#: icc_gl.cpp:2732 icc_gl.cpp:2742 icc_gl.cpp:2745 icc_gl.cpp:2747
-#: icc_gl.cpp:2750 icc_gl.cpp:2752
+#: icc_gl.cpp:2735 icc_gl.cpp:2745 icc_gl.cpp:2748 icc_gl.cpp:2750
+#: icc_gl.cpp:2753 icc_gl.cpp:2755
 msgid "Slice"
 msgstr "Zatitu"
 
-#: icc_gl.cpp:2759
+#: icc_gl.cpp:2762
 msgid "Slice plane"
 msgstr "Zati planoa"
 
@@ -1786,19 +1778,19 @@ msgid ""
 "endities."
 msgstr ""
 
-#: icc_gl.cpp:2796
+#: icc_gl.cpp:2799
 msgid "Spektral line"
 msgstr "Marra espektrala"
 
-#: icc_gl.cpp:2784
+#: icc_gl.cpp:2787
 msgid "Sphere 1dE"
 msgstr "1dE esfera"
 
-#: icc_gl.cpp:2785
+#: icc_gl.cpp:2788
 msgid "Sphere 2dE"
 msgstr "2dE esfera"
 
-#: icc_gl.cpp:2786
+#: icc_gl.cpp:2789
 msgid "Sphere 4dE"
 msgstr "4dE esfera"
 
@@ -1806,7 +1798,7 @@ msgstr "4dE esfera"
 msgid "Standard Observer"
 msgstr "Behatzaile estandarra"
 
-#: icc_gl.cpp:2789
+#: icc_gl.cpp:2792
 msgid "Star"
 msgstr "Izarra"
 
@@ -1845,11 +1837,11 @@ msgstr "Taligent"
 msgid "Technologie"
 msgstr "Teknologia"
 
-#: icc_gl.cpp:2799
+#: icc_gl.cpp:2802
 msgid "Texts"
 msgstr "Testuak"
 
-#: icc_gl.cpp:2801
+#: icc_gl.cpp:2804
 msgid "Texts/Arrows on/off"
 msgstr "Testuak/Geziak aktibatu/desaktibatu"
 
@@ -2000,7 +1992,7 @@ msgid ""
 "ones."
 msgstr ""
 
-#: icc_draw.cpp:743 icc_helfer.cpp:421
+#: icc_draw.cpp:747 icc_helfer.cpp:421
 msgid "Value"
 msgstr "Balioa"
 
@@ -2070,7 +2062,7 @@ msgid "Which ICC profile?"
 msgstr "Zein ICC profila?"
 
 #. ->Darstellung->background colour
-#: icc_gl.cpp:2762
+#: icc_gl.cpp:2765
 msgid "White"
 msgstr "Zuria"
 
@@ -2122,7 +2114,7 @@ msgstr "Y'"
 msgid "YCbCr"
 msgstr "YCbCr"
 
-#: icc_draw.cpp:727 icc_helfer.cpp:427 icc_helfer.cpp:431
+#: icc_draw.cpp:731 icc_helfer.cpp:427 icc_helfer.cpp:431
 msgid "Yellow"
 msgstr "Horia"
 
@@ -2168,7 +2160,7 @@ msgstr ""
 msgid "averaging deviations (dE CIE*Lab):<b> "
 msgstr "batez besteko desbiderapena (dE CIE*Lab):<b> "
 
-#: icc_gl.cpp:2754
+#: icc_gl.cpp:2757
 msgid "axis"
 msgstr "ardatza"
 
@@ -2204,7 +2196,7 @@ msgstr "ezin da erabili iruditik independenteki"
 msgid "colour"
 msgstr "kolorea"
 
-#: icc_gl.cpp:2775
+#: icc_gl.cpp:2778
 msgid "coloured"
 msgstr "koloreztatua"
 
@@ -2239,12 +2231,12 @@ msgid "down key - reduce the slice plane distance"
 msgstr ""
 
 #. found XXX elements
-#: icc_examin_tagwahl_110528.131850.cpp:393 icc_examin_tagwahl.cpp:394
+#: icc_examin_tagwahl.cpp:394
 #, fuzzy
 msgid "elements"
 msgstr "Neurketa"
 
-#: icc_examin_tagwahl_110528.131850.cpp:64 icc_examin_tagwahl.cpp:65
+#: icc_examin_tagwahl.cpp:65
 msgid "empty"
 msgstr "hutsa"
 
@@ -2266,12 +2258,12 @@ msgid "file type sinature (allways acsp)"
 msgstr ""
 
 #. found XXX elements
-#: icc_examin_tagwahl_110528.131850.cpp:387 icc_examin_tagwahl.cpp:388
+#: icc_examin_tagwahl.cpp:388
 #, fuzzy
 msgid "found"
 msgstr "Puntua"
 
-#: icc_examin.cpp:1395
+#: icc_examin.cpp:1408
 msgid "found no content for"
 msgstr "ez da honen edukirik aurkitu"
 
@@ -2287,7 +2279,7 @@ msgstr "kolore-gama"
 msgid "glossy, "
 msgstr "satinatua, "
 
-#: icc_gl.cpp:2774
+#: icc_gl.cpp:2777
 msgid "gray"
 msgstr "grisa"
 
@@ -2295,16 +2287,12 @@ msgstr "grisa"
 msgid "help"
 msgstr ""
 
-#: icc_gl.cpp:2776
+#: icc_gl.cpp:2779
 msgid "high contrast"
 msgstr "kontraste altua"
 
 #: icc_ueber.cpp:320
 msgid "home key - reset the slice plane distance"
-msgstr ""
-
-#: test_waehler.cpp:7
-msgid "icc_waehler_ nicht reservierbar"
 msgstr ""
 
 #: icc_ueber.cpp:941
@@ -2331,8 +2319,8 @@ msgstr "ez da baliozko "
 msgid "kind of usage"
 msgstr ""
 
-#: agviewer.cpp:348 agviewer.cpp:356 icc_gl.cpp:3956 icc_gl.cpp:3967
-#: icc_gl.cpp:3972 icc_gl.cpp:3977
+#: agviewer.cpp:348 agviewer.cpp:356 icc_gl.cpp:3959 icc_gl.cpp:3970
+#: icc_gl.cpp:3975 icc_gl.cpp:3980
 msgid "left mouse button -> go back"
 msgstr "saguaren ezkerreko botoia -> joan atzera"
 
@@ -2343,11 +2331,11 @@ msgstr "saguaren ezkerreko botoia -> joan atzera"
 
 #. ICC stop
 #. if (MoveMode == FLYING)
-#: agviewer.cpp:311 icc_gl.cpp:3849 icc_gl.cpp:3868 icc_gl.cpp:3990
+#: agviewer.cpp:311 icc_gl.cpp:3852 icc_gl.cpp:3871 icc_gl.cpp:3993
 msgid "left-/middle-/right mouse button -> rotate/cut/menu"
 msgstr "saguaren ezkerreko/erdiko/eskuineko botoia -> biratu/ebaki/menua"
 
-#: icc_examin.cpp:468 icc_examin.cpp:1445
+#: icc_examin.cpp:481 icc_examin.cpp:1458
 msgid "loaded"
 msgstr "kargatuta"
 
@@ -2395,12 +2383,11 @@ msgstr "profilik ez"
 msgid "noName"
 msgstr "izengabea"
 
-#: icc_oyranos.cpp:670 icc_examin.cpp:924
+#: icc_examin.cpp:937 icc_oyranos.cpp:670
 msgid "none"
 msgstr "bat ere ez"
 
-#: icc_examin_tagwahl_110528.131850.cpp:1033 icc_examin.cpp:1014
-#: icc_examin_tagwahl.cpp:1052 icc_gl.h:276
+#: icc_examin.cpp:1027 icc_examin_tagwahl.cpp:1052 icc_gl.h:276
 msgid "not available"
 msgstr "ez dago erabilgarri"
 
@@ -2507,7 +2494,7 @@ msgstr ""
 msgid "unknown"
 msgstr "ezezaguna"
 
-#: icc_draw.cpp:697
+#: icc_draw.cpp:701
 msgid "unknown Colour"
 msgstr "kolore ezezaguna"
 
@@ -2519,7 +2506,7 @@ msgstr ""
 msgid "with"
 msgstr "honekin"
 
-#: icc_gl.cpp:2795
+#: icc_gl.cpp:2798
 msgid "without markers"
 msgstr "markatzailerik gabe"
 

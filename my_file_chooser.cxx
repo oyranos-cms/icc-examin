@@ -3,7 +3,7 @@
 //
 // Fl_File_Chooser dialog for the Fast Light Tool Kit (FLTK).
 //
-// Copyright 1998-2005 by Bill Spitzak and others.
+// Copyright 1998-2016 by Bill Spitzak and others.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Library General Public
@@ -161,90 +161,90 @@ void MyFl_File_Chooser::cb_favOkButton(Fl_Return_Button* o, void* v) {
 }
 
 MyFl_File_Chooser::MyFl_File_Chooser(const char *d, const char *p, int t, const char *title) {
-  { window = new icc_examin_ns::MyFl_Double_Window(490, 380, _("Choose File"));
+  { window = new icc_examin_ns::MyFl_Double_Window(SCALE(490), SCALE(380), _("Choose File"));
     window->box(FL_FLAT_BOX);
     window->color(FL_BACKGROUND_COLOR);
     window->selection_color(FL_BACKGROUND_COLOR);
     window->labeltype(FL_NO_LABEL);
     window->labelfont(0);
-    window->labelsize(14);
+    window->labelsize(SCALE(14));
     window->labelcolor(FL_FOREGROUND_COLOR);
     window->callback((Fl_Callback*)cb_window, (void*)(this));
     window->align(FL_ALIGN_TOP);
     window->when(FL_WHEN_RELEASE);
-    { Fl_Group* o = new Fl_Group(10, 10, 470, 25);
-      { showChoice = new Fl_Choice(65, 10, 215, 25, _("Show:"));
+    { Fl_Group* o = new Fl_Group(SCALE(10), SCALE(10), SCALE(470), SCALE(25));
+      { showChoice = new Fl_Choice(SCALE(65), SCALE(10), SCALE(215), SCALE(25), _("Show:"));
         showChoice->down_box(FL_BORDER_BOX);
         showChoice->labelfont(1);
         showChoice->callback((Fl_Callback*)cb_showChoice);
         Fl_Group::current()->resizable(showChoice);
         showChoice->label(show_label);
       } // Fl_Choice* showChoice
-      { favoritesButton = new Fl_Menu_Button(290, 10, 155, 25, _("Favorites"));
+      { favoritesButton = new Fl_Menu_Button(SCALE(290), SCALE(10), SCALE(155), SCALE(25), _("Favorites"));
         favoritesButton->down_box(FL_BORDER_BOX);
         favoritesButton->callback((Fl_Callback*)cb_favoritesButton);
         favoritesButton->align(FL_ALIGN_LEFT|FL_ALIGN_INSIDE);
         favoritesButton->label(favorites_label);
       } // Fl_Menu_Button* favoritesButton
-      { Fl_Button* o = newButton = new Fl_Button(455, 10, 25, 25);
-        newButton->labelsize(8);
+      { Fl_Button* o = newButton = new Fl_Button(SCALE(455), SCALE(10), SCALE(25), SCALE(25));
+        newButton->labelsize(SCALE(8));
         newButton->callback((Fl_Callback*)cb_newButton);
         o->tooltip(new_directory_tooltip);
       } // Fl_Button* newButton
       o->end();
     } // Fl_Group* o
-    { Fl_Tile* o = new Fl_Tile(10, 45, 470, 225);
+    { Fl_Tile* o = new Fl_Tile(SCALE(10), SCALE(45), SCALE(470), SCALE(225));
       o->callback((Fl_Callback*)cb_);
-      { fileList = new Fl_File_Browser(10, 45, 295, 225);
+      { fileList = new Fl_File_Browser(SCALE(10), SCALE(45), SCALE(295), SCALE(225));
         fileList->type(2);
         fileList->callback((Fl_Callback*)cb_fileList);
         fileList->when(3);
         fileList->window()->hotspot(fileList);
       } // Fl_File_Browser* fileList
-      { previewBox = new Fl_Box(305, 45, 175, 225, _("?"));
+      { previewBox = new Fl_Box(SCALE(305), SCALE(45), SCALE(175), SCALE(225), _("?"));
         previewBox->box(FL_DOWN_BOX);
-        previewBox->labelsize(100);
+        previewBox->labelsize(SCALE(100));
         previewBox->align(FL_ALIGN_CLIP|FL_ALIGN_INSIDE);
       } // Fl_Box* previewBox
       o->end();
       Fl_Group::current()->resizable(o);
     } // Fl_Tile* o
-    { Fl_Group* o = new Fl_Group(10, 275, 470, 95);
-      { Fl_Group* o = new Fl_Group(10, 275, 470, 20);
-        { previewButton = new Fl_Check_Button(10, 275, 73, 20, _("Preview"));
+    { Fl_Group* o = new Fl_Group(SCALE(10), SCALE(275), SCALE(470), SCALE(95));
+      { Fl_Group* o = new Fl_Group(SCALE(10), SCALE(275), SCALE(470), SCALE(20));
+        { previewButton = new Fl_Check_Button(SCALE(10), SCALE(275), SCALE(73), SCALE(20), _("Preview"));
           previewButton->down_box(FL_DOWN_BOX);
           previewButton->value(1);
           previewButton->shortcut(0x80070);
           previewButton->callback((Fl_Callback*)cb_previewButton);
           previewButton->label(preview_label);
         } // Fl_Check_Button* previewButton
-        { Fl_Box* o = new Fl_Box(115, 275, 365, 20);
+        { Fl_Box* o = new Fl_Box(SCALE(115), SCALE(275), SCALE(365), SCALE(20));
           Fl_Group::current()->resizable(o);
         } // Fl_Box* o
         o->end();
       } // Fl_Group* o
-      { fileName = new Fl_File_Input(115, 300, 365, 35);
+      { fileName = new Fl_File_Input(SCALE(115), SCALE(300), SCALE(365), SCALE(35));
         fileName->labelfont(1);
         fileName->callback((Fl_Callback*)cb_fileName);
         fileName->when(FL_WHEN_ENTER_KEY);
         Fl_Group::current()->resizable(fileName);
         fileName->when(FL_WHEN_CHANGED | FL_WHEN_ENTER_KEY_ALWAYS);
       } // Fl_File_Input* fileName
-      { Fl_Box* o = new Fl_Box(10, 310, 105, 25, _("Filename:"));
+      { Fl_Box* o = new Fl_Box(SCALE(10), SCALE(310), SCALE(105), SCALE(25), _("Filename:"));
         o->labelfont(1);
         o->align(FL_ALIGN_RIGHT|FL_ALIGN_INSIDE);
         o->label(filename_label);
       } // Fl_Box* o
-      { Fl_Group* o = new Fl_Group(10, 345, 470, 25);
-        { okButton = new Fl_Return_Button(270, 345, 100, 25, _("OK"));
+      { Fl_Group* o = new Fl_Group(SCALE(10), SCALE(345), SCALE(470), SCALE(25));
+        { okButton = new Fl_Return_Button(SCALE(270), SCALE(345), SCALE(100), SCALE(25), _("OK"));
           okButton->callback((Fl_Callback*)cb_okButton);
           //okButton->label(fl_ok);
         } // Fl_Return_Button* okButton
-        { /*Fl_Button* o =*/ cancelButton = new Fl_Button(380, 345, 100, 25, _("Cancel"));
+        { /*Fl_Button* o =*/ cancelButton = new Fl_Button(SCALE(380), SCALE(345), SCALE(100), SCALE(25), _("Cancel"));
           cancelButton->callback((Fl_Callback*)cb_cancelButton);
           //o->label(fl_cancel);
         } // Fl_Button* cancelButton
-        { Fl_Box* o = new Fl_Box(10, 345, 30, 25);
+        { Fl_Box* o = new Fl_Box(SCALE(10), SCALE(345), SCALE(30), SCALE(25));
           Fl_Group::current()->resizable(o);
         } // Fl_Box* o
         o->end();
@@ -254,53 +254,53 @@ MyFl_File_Chooser::MyFl_File_Chooser(const char *d, const char *p, int t, const 
     if (title) window->label(title);
     window->end();
   } // icc_examin_ns::MyFl_Double_Window* window
-  { favWindow = new icc_examin_ns::MyFl_Double_Window(355, 150, _("Manage Favorites"));
+  { favWindow = new icc_examin_ns::MyFl_Double_Window(SCALE(355), SCALE(150), _("Manage Favorites"));
     favWindow->box(FL_FLAT_BOX);
     favWindow->color(FL_BACKGROUND_COLOR);
     favWindow->selection_color(FL_BACKGROUND_COLOR);
     favWindow->labeltype(FL_NO_LABEL);
     favWindow->labelfont(0);
-    favWindow->labelsize(14);
+    favWindow->labelsize(SCALE(14));
     favWindow->labelcolor(FL_FOREGROUND_COLOR);
     favWindow->user_data((void*)(this));
     favWindow->align(FL_ALIGN_TOP);
     favWindow->when(FL_WHEN_RELEASE);
-    { favList = new Fl_File_Browser(10, 10, 300, 95);
+    { favList = new Fl_File_Browser(SCALE(10), SCALE(10), SCALE(300), SCALE(95));
       favList->type(2);
       favList->callback((Fl_Callback*)cb_favList);
       Fl_Group::current()->resizable(favList);
     } // Fl_File_Browser* favList
-    { Fl_Group* o = new Fl_Group(320, 10, 25, 95);
-      { favUpButton = new Fl_Button(320, 10, 25, 25, _("@8>"));
+    { Fl_Group* o = new Fl_Group(SCALE(320), SCALE(10), SCALE(25), SCALE(95));
+      { favUpButton = new Fl_Button(SCALE(320), SCALE(10), SCALE(25), SCALE(25), _("@8>"));
         favUpButton->callback((Fl_Callback*)cb_favUpButton);
       } // Fl_Button* favUpButton
-      { favDeleteButton = new Fl_Button(320, 45, 25, 25, _("X"));
+      { favDeleteButton = new Fl_Button(SCALE(320), SCALE(45), SCALE(25), SCALE(25), _("X"));
         favDeleteButton->labelfont(1);
         favDeleteButton->callback((Fl_Callback*)cb_favDeleteButton);
         Fl_Group::current()->resizable(favDeleteButton);
       } // Fl_Button* favDeleteButton
-      { favDownButton = new Fl_Button(320, 80, 25, 25, _("@2>"));
+      { favDownButton = new Fl_Button(SCALE(320), SCALE(80), SCALE(25), SCALE(25), _("@2>"));
         favDownButton->callback((Fl_Callback*)cb_favDownButton);
       } // Fl_Button* favDownButton
       o->end();
     } // Fl_Group* o
-    { Fl_Group* o = new Fl_Group(10, 113, 335, 29);
-      { favCancelButton = new Fl_Button(273, 115, 72, 25, _("Cancel"));
+    { Fl_Group* o = new Fl_Group(SCALE(10), SCALE(113), SCALE(335), SCALE(29));
+      { favCancelButton = new Fl_Button(SCALE(273), SCALE(115), SCALE(72), SCALE(25), _("Cancel"));
         favCancelButton->callback((Fl_Callback*)cb_favCancelButton);
         favCancelButton->label(fl_cancel);
       } // Fl_Button* favCancelButton
-      { favOkButton = new Fl_Return_Button(181, 115, 79, 25, _("Save"));
+      { favOkButton = new Fl_Return_Button(SCALE(181), SCALE(115), SCALE(79), SCALE(25), _("Save"));
         favOkButton->callback((Fl_Callback*)cb_favOkButton);
         favOkButton->label(save_label);
       } // Fl_Return_Button* favOkButton
-      { Fl_Box* o = new Fl_Box(10, 115, 161, 25);
+      { Fl_Box* o = new Fl_Box(SCALE(10), SCALE(115), SCALE(161), SCALE(25));
         Fl_Group::current()->resizable(o);
       } // Fl_Box* o
       o->end();
     } // Fl_Group* o
     favWindow->label(manage_favorites_label);
     favWindow->set_modal();
-    favWindow->size_range(181, 150);
+    favWindow->size_range(SCALE(181), SCALE(150));
     favWindow->end();
   } // icc_examin_ns::MyFl_Double_Window* favWindow
   callback_ = 0;

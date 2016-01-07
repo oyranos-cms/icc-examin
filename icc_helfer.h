@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2008  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2016  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -61,6 +61,7 @@
 void        dbgFltkEvents  ( int           event);
 std::string dbgFltkEvent   ( int           event);
 void        fl_delayed_redraw ( void *Fl_Widget);
+float       getScale       ( );
 #endif
 
 // internal functions

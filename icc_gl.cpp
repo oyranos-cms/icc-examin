@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2014  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2016  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -29,6 +29,7 @@
 
 
 #include "icc_examin.h"
+#include "icc_fenster.h"
 #include "icc_formeln.h"
 #include "icc_oyranos.h"
 #include "icc_utils.h"
@@ -140,12 +141,13 @@ FTFont *font = NULL, *ortho_font = NULL;
 // draw text
 #ifdef HAVE_FTGL
 #  define drawTEXT(Font, ptr) { \
+   float scal_in = 0.002, scal_out = 500; \
    glLineWidth(line_mult); \
     if(blend) glDisable(GL_BLEND); \
       glTranslated(.0,0,0.01); \
-        glScaled(0.002,0.002,0.002); \
+        glScaled(scal_in,scal_in,scal_in); \
           if(Font) Font->Render(ptr); \
-        glScaled(500,500,500); \
+        glScaled(scal_out,scal_out,scal_out); \
       glTranslated(.0,0,-.01); \
     if(blend) glEnable(GL_BLEND); \
    glLineWidth(line_mult); }
@@ -155,9 +157,10 @@ FTFont *font = NULL, *ortho_font = NULL;
 
 #ifdef HAVE_FTGL
 #define drawOTEXT(Font, scal, buffer) { \
-                                   glScaled(scal,scal*w()/(double)h(),scal); \
+                                   float scal_ = scal; SCALE(scal); \
+                                   glScaled(scal,scal_*w()/(double)h(),scal_); \
                                      drawText(Font, buffer); \
-                                   glScaled(1.0/scal,1.0/(scal*w()/(double)h()),1.0/scal); \
+                                   glScaled(1.0/scal_,1.0/(scal_*w()/(double)h()),1.0/scal_); \
                                  }
 #else
 #define drawOTEXT(Font, scal, buffer) {}
@@ -166,7 +169,7 @@ FTFont *font = NULL, *ortho_font = NULL;
 #ifdef HAVE_FTGL
 void drawText( FTFont * f, const char * in_txt )
 {
-  float line_mult = 1.0;
+  float line_mult = SCALE(1.0);
   int blend = 1;
 
   size_t in_left,
@@ -243,7 +246,7 @@ GL_View::zero_()
   show_points_as_pairs = false;
   show_points_as_measurements = false;
   type_ = -1;
-  line_mult = 1.0;
+  line_mult = SCALE(1.0);
   line_1 = 1;
   line_2 = 2;
   line_3 = 3;
@@ -955,9 +958,9 @@ GL_View::GLinit_()
   } else {
     font->CharMap( ft_encoding_unicode );
     ortho_font->CharMap( ft_encoding_unicode );
-    font->Depth(12);
-    if(!font->FaceSize(72)) WARN_S("Fontsize not setable"); \
-    if(!ortho_font->FaceSize(16)) WARN_S("Fontsize not setable");
+    font->Depth(SCALE(12));
+    if(!font->FaceSize(SCALE(72))) WARN_S("Fontsize not setable"); \
+    if(!ortho_font->FaceSize(SCALE(16))) WARN_S("Fontsize not setable");
   }
 # endif
 
@@ -999,22 +1002,22 @@ drawCone( GLdouble width, GLdouble height, GLint steps ,
 { DBG_ICCGL_START
   GLdouble xk, yk,
            s = 2*M_PI/(GLdouble)steps, // static variable
-           hn = width*tan(width/2./height); // hight of normal
+           hn = SCALE(width)*tan(SCALE(width)/2./SCALE(height)); // hight of normal
   // bottom
   glBegin(GL_TRIANGLE_FAN);
     glNormal3d( 0, 0, -1 );
     glVertex3d( x, y, z );
     for(int i = 0; i <= steps; ++i)
-      glVertex3d( x+cos(i*s)*width, y+sin(i*s)*width, z );
+      glVertex3d( x+cos(i*s)*SCALE(width), y+sin(i*s)*SCALE(width), z );
   glEnd();
   // cone
   glBegin(GL_TRIANGLE_STRIP);
     for(int i = 0; i <= steps; ++i)
     {
-      xk = cos(i*s)*width;
-      yk = sin(i*s)*width;
+      xk = cos(i*s)*SCALE(width);
+      yk = sin(i*s)*SCALE(width);
       glNormal3d( xk, yk, hn );
-      glVertex3d( x+xk, y+yk, z+height );
+      glVertex3d( x+xk, y+yk, z+SCALE(height) );
       glVertex3d( x, y, z );
     }
   glEnd();
@@ -1177,7 +1180,7 @@ GL_View::adornText_()
         ptr = (char*) from_channel_names_[0].c_str();
         sprintf (&text[0], "%s", ptr);
         glRasterPos3d (0, .5+ueber, 0);
-        drawOTEXT(ortho_font, 1, text)
+        drawOTEXT(ortho_font, 1.0, text)
       }
 
     // CIE*a - right
@@ -1190,7 +1193,7 @@ GL_View::adornText_()
           glRasterPos3d (.0, -.5, cie_a_display_stretch/2.+ueber);
         else
           glRasterPos3d (.0, .0, cie_a_display_stretch/2.+ueber);
-        drawOTEXT(ortho_font, 1, text)
+        drawOTEXT(ortho_font, 1.0, text)
       }
 
     // CIE*b - left
@@ -1925,7 +1928,7 @@ GL_View::refreshNets()
 
 
        if(icc_debug == 14) {
-       line_mult = 3;
+       line_mult = SCALE(3);
        DBG_ICCGL_S( "dist:"<<EyeDist<<" elevation:"<<EyeEl<<" azimuth:"<<EyeAz )
        glMatrixMode(GL_MODELVIEW);
        glLoadIdentity();
@@ -3189,7 +3192,7 @@ GL_View::drawGL()
               /* Circle around point */
               if( epoint_) 
               {
-                GLdouble width = 24;
+                GLdouble width = SCALE(24);
                 int steps = (int)(8 + width/2);
                 GLdouble x, y,
                          s = 2*M_PI/(GLdouble)steps; // static variable

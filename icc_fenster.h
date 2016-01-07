@@ -1,7 +1,7 @@
 /*
  * ICC Examin ist eine ICC Profil Betrachter
  * 
- * Copyright (C) 2004-2012  Kai-Uwe Behrmann 
+ * Copyright (C) 2004-2016  Kai-Uwe Behrmann 
  *
  * Autor: Kai-Uwe Behrmann <ku.b@gmx.de>
  *
@@ -106,6 +106,9 @@ namespace icc_examin_ns {
 }
 
 //#endif
+
+extern float scale;
+#define SCALE(x) RUND(scale*x)
 
 #endif //ICC_FENSTER_H
 

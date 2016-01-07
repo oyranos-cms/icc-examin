@@ -29,6 +29,7 @@
 
 #include "icc_utils.h"
 #include "icc_helfer.h"
+#include "icc_fenster.h"
 #include "icc_profile.h"
 #include "icc_helfer_ui.h"
 #include "icc_info.h"
@@ -68,11 +69,11 @@ TagDrawings::TagDrawings (int X,int Y,int W,int H, const char* l)
 {
   DBG_PROG_START
   // drawing area variables
-  tab_rand_x=20;
-  tab_rand_y=20;
-  linker_text_rand  = 25;
-  unterer_text_rand = 17;
-  raster_abstand = 35;
+  tab_rand_x=SCALE(20);
+  tab_rand_y=SCALE(20);
+  linker_text_rand  = SCALE(25);
+  unterer_text_rand = SCALE(17);
+  raster_abstand = SCALE(35);
   zeige_raster = true;
   // value range variables
   min_x = min_y = 0.0;
@@ -83,7 +84,7 @@ TagDrawings::TagDrawings (int X,int Y,int W,int H, const char* l)
   zeichne_linie = true;
   ursprung_zeichnen = true;
 
-  raster = 4;
+  raster = SCALE(4);
   init_s = false;
   rechenzeit = 0.1;
   hXYZ = hsRGB = 0;
@@ -239,6 +240,9 @@ TagDrawings::draw ()
   // draw curves or points
   if (icc_examin_ns::laeuft())
   {
+    // adapt line width
+    fl_line_style(0, SCALE(1));
+
     // diagramvariables in image points
     xO = (float)(x() +       tab_rand_x + linker_text_rand);     // origin
     yO = (float)(y() + h() - tab_rand_y - unterer_text_rand);    // origin
@@ -550,11 +554,11 @@ TagDrawings::drawCieShoe_ ( int repeated)
         double pos_y = yNachBild(xyY[1]);
 
         fl_color (BG);
-        fl_circle ( pos_x , pos_y , 9.0);
+        fl_circle ( pos_x , pos_y , SCALE(9.0));
         fl_color (fl_rgb_color (buf_out[0],buf_out[1],buf_out[2]));
-        fl_circle ( pos_x , pos_y , 7.0);
+        fl_circle ( pos_x , pos_y , SCALE(7.0));
         // some description for the colour points
-        fl_font (FL_HELVETICA, 12);
+        fl_font (FL_HELVETICA, SCALE(12));
         std::stringstream s;
         std::stringstream t;
         // lcms helps with wither point description
@@ -572,15 +576,15 @@ TagDrawings::drawCieShoe_ ( int repeated)
           fl_measure (s.str().c_str(), _w, _h, 1);
           fl_color(FL_WHITE);//FOREGROUND_COLOR);
           fl_draw ( s.str().c_str(),
-                    (int)(pos_x +9 + _w > xNachBild(max_x) ?
-                          xNachBild(max_x) - _w : pos_x +9), 
-                    (int)(pos_y -9 - _h < yNachBild(max_x) ?
-                          yNachBild(max_x) + _h : pos_y -9)  );
+                    (int)(pos_x +SCALE(9) + _w > xNachBild(max_x) ?
+                          xNachBild(max_x) - _w : pos_x +SCALE(9)), 
+                    (int)(pos_y -SCALE(9) - _h < yNachBild(max_x) ?
+                          yNachBild(max_x) + _h : pos_y -SCALE(9))  );
         }
     }
     int j = 0;
     for( ; i < texte.size()-1; ++i) {
-      fl_draw ( texte[i].c_str(), xNachBild(min_x) + 2, yNachBild(max_y) + j*16 +12);
+      fl_draw ( texte[i].c_str(), xNachBild(min_x) + 2, yNachBild(max_y) + j*SCALE(16) +SCALE(12));
       ++j;
     }
   }
@@ -597,7 +601,7 @@ TagDrawings::zeichneRaster_ ()
   raster_wert_y_ = (max_y-min_y) * raster_abstand / (double)hoehe;
 
   // text
-  fl_font (FL_HELVETICA, 10);
+  fl_font (FL_HELVETICA, SCALE(10));
 
   // TODO round
 
@@ -621,7 +625,7 @@ TagDrawings::zeichneRaster_ ()
       sprintf ( text, "%.1f", f);
     else
       sprintf ( text, "%.f", f);
-    fl_draw ( text, xNachBild(f)-7, (int)(yO+20) );
+    fl_draw ( text, xNachBild(f)-7, (int)(yO+SCALE(20)) );
   }
   for (double f=min_y ; f <= max_y ; f += raster_wert_y_)
   {
@@ -643,7 +647,7 @@ TagDrawings::zeichneRaster_ ()
       sprintf ( text, "%.1f", f);
     else
       sprintf ( text, "%.f", f);
-    fl_draw ( text, (int)(xO-30), yNachBild(f)+4 );
+    fl_draw ( text, (int)(xO-SCALE(30)), yNachBild(f)+SCALE(4) );
   }
   fl_color(FL_WHITE);
   if (ursprung_zeichnen)
@@ -677,7 +681,7 @@ TagDrawings::drawKurve_    ()
 
 
   // curv
-  fl_font ( FL_HELVETICA, 12) ;
+  fl_font ( FL_HELVETICA, SCALE(12)) ;
   std::stringstream s ;
   std::string name;
   bool ist_kurve = false;
@@ -790,14 +794,14 @@ TagDrawings::drawKurve_    ()
         }
       }
       s << name << _(" with ") << kurven2[j].size() << _(" points")<<": "<<symbol_[symbol_n_];
-      fl_draw ( s.str().c_str(), xNachBild(min_x) + 2, yNachBild(max_y) + j*16 + 12);
+      fl_draw ( s.str().c_str(), xNachBild(min_x) + 2, yNachBild(max_y) + j*SCALE(16) + SCALE(12));
       ++symbol_n_;
     } else if (kurven[j].size() == 0 &&
                ist_kurve) {
       fl_line (xNachBild( min_x ), yNachBild( min_y ), xNachBild( max_x ), yNachBild( max_y ) );
       // show infos 
       s << name << _(" with Gamma: 1.0");
-      fl_draw ( s.str().c_str(), xNachBild(0) + 2, yNachBild(max_y) + j*16 +12);
+      fl_draw ( s.str().c_str(), xNachBild(0) + 2, yNachBild(max_y) + j*SCALE(16) +SCALE(12));
     // parametric entry
     } else if (kurven[j].size() == 1
             && ist_kurve) {
@@ -810,7 +814,7 @@ TagDrawings::drawKurve_    ()
                  yNachBild( (i) / ((segmente-1) / max_y) ) );
       // show infos 
       s << name << _(" with one entry for gamma: ") << gamma; DBG_NUM_V( gamma )
-      fl_draw ( s.str().c_str(), xNachBild(0) + 2, yNachBild(max_y) + j*16 +12);
+      fl_draw ( s.str().c_str(), xNachBild(0) + 2, yNachBild(max_y) + j*SCALE(16) +12);
     // parametric entry with Min und Max 
     } else if (kurven[j].size() == 3
             && texte[texte.size()-1] == "gamma_start_ende") {
@@ -829,7 +833,7 @@ TagDrawings::drawKurve_    ()
       }
       // show infos
       s << name << _(" with one entry for gamma: ") << gamma;
-      fl_draw ( s.str().c_str(), xNachBild(0) + 2, yNachBild(max_y) + j*16 +12);
+      fl_draw ( s.str().c_str(), xNachBild(0) + 2, yNachBild(max_y) + j*SCALE(16) +SCALE(12));
     // segmented curv
     } else { // value range 0.0 -> max_[x,y]
       for (unsigned int i = 1; i < kurven[j].size(); i++) {
@@ -851,7 +855,7 @@ TagDrawings::drawKurve_    ()
       }
       // show infos
       s << name << _(" with ") << kurven[j].size() << _(" points");
-      fl_draw ( s.str().c_str(), xNachBild(min_x) + 2, yNachBild(max_y) + j*16 +12);
+      fl_draw ( s.str().c_str(), xNachBild(min_x) + 2, yNachBild(max_y) + j*SCALE(16) +SCALE(12));
     }
   }
   // additional text
@@ -863,7 +867,7 @@ TagDrawings::drawKurve_    ()
           j < (unsigned)texte.size(); ++j)
       if(texte[j] != "gamma_start_ende" &&
          texte[j] != "curv")
-        fl_draw ( texte[j].c_str(), xNachBild(min_x) + 2, yNachBild(max_y) + j*16 + 12);
+        fl_draw ( texte[j].c_str(), xNachBild(min_x) + 2, yNachBild(max_y) + j*SCALE(16) + SCALE(12));
   }
 
   fl_pop_clip();

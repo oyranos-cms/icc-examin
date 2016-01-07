@@ -189,7 +189,7 @@ class TagTexts {: {public Fl_Hold_Browser}
 
       this->topline(inspekt_topline);
       this->textfont(FL_COURIER);
-      this->textsize(14);} {}
+      this->textsize(14*scale);} {}
     code DBG_PROG_ENDE {}
   }
   Function {hinein(std::string text)} {open
@@ -360,7 +360,7 @@ class ICCfltkBetrachter {open
   widget_oben = -1;} {}
     Fl_Window ueber {
       label {About ICC Examin} open
-      xywh {852 501 365 295} type Double resizable
+      xywh {852 501 365*scale 295*scale} type Double resizable
       code0 {o->hide();}
       code1 {o->use_escape_hide = true;}
       class {icc_examin_ns::MyFl_Double_Window} visible
@@ -402,7 +402,7 @@ class ICCfltkBetrachter {open
     }
     Fl_Window vcgt {
       label {Grafic Card Gamma Table} open
-      xywh {436 391 370 405} type Double resizable
+      xywh {436 391 370*scale 405*scale} type Double resizable
       code0 {o->hide();}
       code1 {o->use_escape_hide = true;}
       class {icc_examin_ns::MyFl_Double_Window} visible
