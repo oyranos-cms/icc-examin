@@ -2070,6 +2070,8 @@ float getScale()
     scale = xdpi / 96.f;
 
 # if defined(HAVE_XRANDR) || defined(HAVE_Xrandr)
+  // work around for FLTK Xinarama based wrong DPI detection
+  // It reports always 96 DPI. Tested up to 1.3.3 .
   int screen = DefaultScreen( fl_display );
   Window w = RootWindow(fl_display, screen);
   XRRScreenResources * res = XRRGetScreenResources(fl_display, w);
