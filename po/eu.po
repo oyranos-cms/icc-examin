@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cinepaint_icc-examin_eu\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2016-01-07 20:48+0100\n"
+"POT-Creation-Date: 2016-01-07 21:31+0100\n"
 "PO-Revision-Date: 2007-11-07 11:11+0100\n"
 "Last-Translator: Iñaki Larrañaga Murgoitio <dooteo@zundan.com>\n"
 "Language-Team: Basque <itzulpena@euskalgnu.org>\n"
@@ -171,6 +171,10 @@ msgstr "---"
 #: icc_examin.cpp:1394 icc_helfer.cpp:648 icc_helfer.cpp:740
 msgid "----"
 msgstr "----"
+
+#: icc_betrachter.cxx:1136
+msgid "..."
+msgstr "..."
 
 #: icc_helfer.cpp:842
 msgid "0"
@@ -380,10 +384,24 @@ msgstr "</b>  gehienezkoa: "
 msgid "</b> Measurement"
 msgstr "</b> neurketa"
 
+#. Fl_File_Browser* fileList
+#: my_file_chooser.cxx:204
+msgid "?"
+msgstr "?"
+
 #: icc_helfer.cpp:767 icc_helfer.cpp:791 icc_helfer.cpp:811 icc_helfer.cpp:829
 #: icc_helfer.cpp:846
 msgid "???"
 msgstr "???"
+
+#. Fl_Button* favDeleteButton
+#: my_file_chooser.cxx:282
+msgid "@2>"
+msgstr "@2>"
+
+#: my_file_chooser.cxx:274
+msgid "@8>"
+msgstr "@8>"
 
 #: icc_ueber.cpp:457
 msgid ""
@@ -391,12 +409,16 @@ msgid ""
 "produced with argyll and saved with ICC Examin."
 msgstr ""
 
+#: icc_betrachter.cxx:668 icc_betrachter.cxx:769
+msgid "About"
+msgstr "Honi buruz"
+
 #. HTML
-#: icc_ueber.cpp:69
+#: icc_ueber.cpp:69 icc_betrachter.cxx:747
 msgid "About ICC Examin"
 msgstr "ICC Examin-i buruz"
 
-#: icc_helfer.cpp:268
+#: icc_helfer.cpp:268 icc_betrachter.cxx:432
 msgid "Absolute Colorimetric"
 msgstr "Koloremetria absolutua"
 
@@ -407,6 +429,11 @@ msgstr "Abstraktua"
 #. HTML
 #: icc_ueber.cpp:883
 msgid "Acknowledgement"
+msgstr "Aitorpena"
+
+#. Fl_Help_View* lizenz_html
+#: icc_betrachter.cxx:788
+msgid "Acknowlegement"
 msgstr "Aitorpena"
 
 #. PMD
@@ -453,6 +480,10 @@ msgstr "Atributuak:     "
 msgid "B"
 msgstr "U"
 
+#: icc_betrachter.cxx:433
+msgid "BPC"
+msgstr "BPC"
+
 #. "Back side" or Background
 #: icc_profile_tags.cpp:260
 #, fuzzy
@@ -492,6 +523,10 @@ msgstr "Tonu urdinaren erreprodukzio-kurba"
 #: icc_measurement.cpp:1514
 msgid "C"
 msgstr "C"
+
+#: icc_betrachter.cxx:662
+msgid "CGATS View"
+msgstr "CGATS ikuspegia"
 
 #: icc_examin_farbraum.cpp:402 icc_examin_io.cpp:323 icc_draw.cpp:749
 #: icc_helfer.cpp:403 icc_helfer.cpp:406
@@ -562,14 +597,37 @@ msgstr "CMYK"
 msgid "Calibration date"
 msgstr "Kalibrazio-data"
 
+#. okButton->label(fl_ok);
+#. Fl_Return_Button* okButton
+#. Fl_Button* o =
+#: my_file_chooser.cxx:243 my_file_chooser.cxx:288
+msgid "Cancel"
+msgstr "Utzi"
+
 #. pjtv
 #: icc_helfer.cpp:731
 msgid "Cathode ray tube display"
 msgstr "Katodo-izpien hodizko pantaila"
 
+#: icc_betrachter.cxx:995
+msgid "Chain selection"
+msgstr "Kate-hautapena"
+
 #: icc_profile_tags.cpp:319 icc_gl.cpp:3293
 msgid "Channel"
 msgstr "Kanala"
+
+#: my_file_chooser.cxx:164
+msgid "Choose File"
+msgstr "Aukeratu fitxategia"
+
+#: icc_betrachter.cxx:996
+msgid "Choose a attribute"
+msgstr "Aukeratu atribututa"
+
+#: icc_betrachter.cxx:977
+msgid "Choose one profile tag"
+msgstr "Aukeratu profilaren etiketa"
 
 #. chad
 #: icc_helfer.cpp:645
@@ -579,6 +637,11 @@ msgstr "Ñabardura"
 #: icc_profile_header.cpp:240
 msgid "Class:       "
 msgstr "Klasea:         "
+
+#. Fl_Button* vcgt_load_button
+#: icc_betrachter.cxx:853
+msgid "Close"
+msgstr "Itxi"
 
 #: icc_oyranos_extern.c:143
 msgid "Cmy"
@@ -755,11 +818,12 @@ msgstr "Inprimagailu elektrostatikoa"
 msgid "Error in ICC profile tag found!"
 msgstr "Errorea aurkitu da ICC profilako etiketan."
 
-#: icc_helfer_fltk.cpp:282
+#. Fl_Choice* showChoice
+#: icc_helfer_fltk.cpp:282 my_file_chooser.cxx:183
 msgid "Favorites"
 msgstr "Gogokoak"
 
-#: icc_ueber.cpp:279
+#: icc_ueber.cpp:279 icc_betrachter.cxx:421 icc_betrachter.cxx:644
 msgid "File"
 msgstr "Fitxategia"
 
@@ -786,6 +850,11 @@ msgstr "Fitxategi-izena (hondatutako ICC datu mota)"
 #: icc_examin.cpp:1397
 msgid "Filename (other data type)"
 msgstr "Fitxategi-izena (beste datu mota)"
+
+#. Fl_File_Input* fileName
+#: my_file_chooser.cxx:233
+msgid "Filename:"
+msgstr "Fitxategi-izena:"
 
 #: icc_ueber.cpp:253
 msgid ""
@@ -874,9 +943,18 @@ msgstr "Gamma gorria:"
 msgid "Gamma:   "
 msgstr "Gamma gorria:"
 
+#. icc_examin_ns::MyFl_Double_Window* vcgt
+#: icc_betrachter.cxx:651 icc_betrachter.cxx:660 icc_betrachter.cxx:863
+msgid "Gamut"
+msgstr "Kolore-gama"
+
 #: icc_examin.cpp:955 icc_examin.cpp:959
 msgid "Gamut View"
 msgstr "Kolore-gamaren ikuspegia"
+
+#: icc_betrachter.cxx:429
+msgid "Gamut Warning"
+msgstr "Kolore-gamaren abisua"
 
 #: icc_examin.cpp:337
 msgid "Gamut selector"
@@ -895,6 +973,11 @@ msgstr "Geometria"
 #, fuzzy
 msgid "Geometry:"
 msgstr "Geometria"
+
+#. icc_examin_ns::MyFl_Double_Window* ueber
+#: icc_betrachter.cxx:812
+msgid "Grafic Card Gamma Table"
+msgstr "Txartel grafikoaren gamma-taula"
 
 #. imgs
 #: icc_helfer.cpp:736
@@ -927,7 +1010,9 @@ msgid "HTML Documents (*.htm*)"
 msgstr "HTML dokumentuak (*.htm*)"
 
 #. HTML
-#: icc_ueber.cpp:151
+#. Fl_Help_View* ueber_html
+#: icc_ueber.cpp:151 icc_betrachter.cxx:667 icc_betrachter.cxx:669
+#: icc_betrachter.cxx:775
 msgid "Help"
 msgstr "Laguntza"
 
@@ -948,7 +1033,8 @@ msgstr "Salbuespen ezezaguna"
 msgid "Hue"
 msgstr "Ñabardura"
 
-#: oyranos_cmm_iemn.c:502
+#. icc_examin_ns::MyFl_Double_Window* DD
+#: oyranos_cmm_iemn.c:502 icc_betrachter.cxx:937
 msgid "ICC Examin"
 msgstr "ICC Examin"
 
@@ -1116,6 +1202,11 @@ msgid ""
 "below. Over the tag list resides the applications menubar."
 msgstr ""
 
+#. Fl_Help_View* dank_html
+#: icc_betrachter.cxx:794
+msgid "Info"
+msgstr ""
+
 #: icc_fenster.cpp:416
 msgid "Information:"
 msgstr "Informazioa:"
@@ -1170,11 +1261,16 @@ msgstr "L"
 msgid "L'"
 msgstr "L'"
 
+#: icc_betrachter.cxx:657
+msgid "LANG"
+msgstr "HIZK"
+
 #: icc_oyranos_extern.c:134
 msgid "Lab"
 msgstr "Lab"
 
-#: icc_ueber.cpp:472
+#. Fl_Help_View* hilfe_html
+#: icc_ueber.cpp:472 icc_betrachter.cxx:670 icc_betrachter.cxx:781
 msgid "License"
 msgstr "Lizentzia"
 
@@ -1202,9 +1298,23 @@ msgstr "Linealisazioa"
 msgid "Link"
 msgstr "Esteka"
 
-#: icc_examin_tagwahl.cpp:1044
+#. Fl_Button* vcgt_reset_button
+#: icc_betrachter.cxx:848
+msgid "Load"
+msgstr "Kargatu"
+
+#: icc_betrachter.cxx:849
+msgid "Load the current monitor profile"
+msgstr "Kargatu uneko monitorearen profila"
+
+#. Fl_Box* box_stat
+#: icc_examin_tagwahl.cpp:1044 icc_betrachter.cxx:1140
 msgid "Loading .."
 msgstr "Kargatzen ..."
+
+#: icc_betrachter.cxx:438 icc_betrachter.cxx:665
+msgid "Log"
+msgstr ""
 
 #: icc_fenster.cpp:350
 msgid "Log:"
@@ -1277,7 +1387,8 @@ msgstr "Magenta"
 msgid "Magic:       "
 msgstr "Magikoa:        "
 
-#: icc_helfer_fltk.cpp:284
+#. icc_examin_ns::MyFl_Double_Window* window
+#: icc_helfer_fltk.cpp:284 my_file_chooser.cxx:257
 msgid "Manage Favorites"
 msgstr "Kudeatu gogokoak"
 
@@ -1421,6 +1532,11 @@ msgstr "Kolore izendunen izenak"
 msgid "Named colour order"
 msgstr "Kolore izendunen ordena"
 
+#: icc_betrachter.cxx:434
+#, fuzzy
+msgid "Native Gamut"
+msgstr "Gorde kolore-gama VRML gisa"
+
 #: icc_ueber.cpp:285
 msgid ""
 "Native or separation Gamut. The later is the inbuild default. The native "
@@ -1474,6 +1590,10 @@ msgstr "Sarrerako kanal kopurua"
 msgid "Number of output channels"
 msgstr "Irteerako kanal kopurua"
 
+#: my_file_chooser.cxx:239
+msgid "OK"
+msgstr "Ados"
+
 #. grav
 #: icc_helfer.cpp:737
 msgid "Offset Lithography"
@@ -1488,9 +1608,17 @@ msgstr ""
 msgid "Onion skins"
 msgstr ""
 
+#: icc_betrachter.cxx:645
+msgid "Open"
+msgstr "Ireki"
+
 #: icc_helfer.cpp:464
 msgid "Output"
 msgstr "Irteera"
+
+#: icc_betrachter.cxx:656
+msgid "Oyranos Settings"
+msgstr "Oyranos-en ezarpenak"
 
 #: icc_helfer.cpp:765
 msgid "P22"
@@ -1509,7 +1637,7 @@ msgstr "Matrize pasibozko monitorea"
 msgid "Pause"
 msgstr "Pausarazi"
 
-#: icc_helfer.cpp:259
+#: icc_helfer.cpp:259 icc_betrachter.cxx:430
 msgid "Perceptual"
 msgstr ""
 
@@ -1551,7 +1679,7 @@ msgstr "Puntua"
 msgid "Pos"
 msgstr "Pos."
 
-#: icc_helfer_fltk.cpp:291
+#: icc_helfer_fltk.cpp:291 my_file_chooser.cxx:214
 msgid "Preview"
 msgstr "Aurrebista"
 
@@ -1622,6 +1750,10 @@ msgstr "Proiekziozko telebista"
 msgid "Proof Profile..."
 msgstr "Frogako profila..."
 
+#: icc_betrachter.cxx:423 icc_betrachter.cxx:649
+msgid "Quit"
+msgstr "Irten"
+
 #: icc_ueber.cpp:280
 msgid "Quit - allowes for exiting the application"
 msgstr ""
@@ -1664,13 +1796,22 @@ msgstr "Eskaner islatzailea"
 msgid "Reflective, "
 msgstr "Isolatzailea, "
 
-#: icc_helfer.cpp:262
+#: icc_helfer.cpp:262 icc_betrachter.cxx:431
 msgid "Relative Colorimetric"
 msgstr "Koloremetria erlatiboa"
+
+#: icc_betrachter.cxx:661
+msgid "Report View"
+msgstr "Txostenaren ikuspegia"
 
 #: icc_measurement.cpp:1309
 msgid "Report about ICC profile"
 msgstr "ICC profilari buruzko txostena"
+
+#. Fl_Button* vcgt_set_button
+#: icc_betrachter.cxx:843
+msgid "Reset"
+msgstr "Berrezarri"
 
 #: icc_oyranos_extern.c:138
 msgid "Rgb"
@@ -1696,21 +1837,27 @@ msgstr "SMPTE RP145-1994"
 msgid "Saturation"
 msgstr "Saturazioa"
 
-#: icc_helfer_fltk.cpp:293
+#. Fl_Button* favCancelButton
+#: icc_helfer_fltk.cpp:293 my_file_chooser.cxx:292
 msgid "Save"
 msgstr "Gorde"
 
-#: icc_examin_io.cpp:782
+#: icc_examin_io.cpp:782 icc_betrachter.cxx:647
 msgid "Save Gamut as Profile"
 msgstr "Gorde kolore-gama profila gisa"
 
-#: icc_examin_io.cpp:785
+#: icc_examin_io.cpp:785 icc_betrachter.cxx:648
 msgid "Save Gamut as VRML"
 msgstr "Gorde kolore-gama VRML gisa"
 
-#: icc_examin_io.cpp:708
+#: icc_examin_io.cpp:708 icc_betrachter.cxx:646
 msgid "Save Report"
 msgstr "Gorde txostena"
+
+#: icc_betrachter.cxx:422
+#, fuzzy
+msgid "Save as VRML"
+msgstr "Gorde kolore-gama VRML gisa"
 
 #: icc_helfer_x.cpp:130 icc_oyranos.cpp:669
 msgid "Screen:"
@@ -1724,15 +1871,36 @@ msgstr "Bereizketa"
 msgid "Serial:"
 msgstr "Seriekoa:"
 
-#: icc_ueber.cpp:283
+#. TagDrawings* vcgt_viewer
+#: icc_betrachter.cxx:837
+msgid "Set"
+msgstr "Ezarri"
+
+#: icc_betrachter.cxx:838
+msgid ""
+"Set the current profile as monitor profile and upload vcgt tag to the video "
+"card"
+msgstr ""
+"Ezarri uneko profila monitorearen profila gisa eta kargatu vctg etiketa "
+"bideo-txartelean"
+
+#: icc_ueber.cpp:283 icc_betrachter.cxx:428 icc_betrachter.cxx:655
 msgid "Settings"
 msgstr "Ezarpenak"
+
+#: icc_betrachter.cxx:437
+msgid "Show Main Window"
+msgstr "Erakutsi leiho nagusia"
+
+#: icc_betrachter.cxx:1059
+msgid "Show all channels of this table a own window."
+msgstr "Erakutsi taula honen kanal guztiak leiho propioan"
 
 #: icc_ueber.cpp:288
 msgid "Show main application window, in case it is a icon."
 msgstr ""
 
-#: icc_helfer_fltk.cpp:295
+#: icc_helfer_fltk.cpp:295 my_file_chooser.cxx:176
 msgid "Show:"
 msgstr "Erakutsi:"
 
@@ -1836,6 +2004,10 @@ msgstr "Taligent"
 #: icc_helfer.cpp:636
 msgid "Technologie"
 msgstr "Teknologia"
+
+#: icc_betrachter.cxx:664
+msgid "Test Curves"
+msgstr "Probako kurbak"
 
 #: icc_gl.cpp:2802
 msgid "Texts"
@@ -2015,7 +2187,11 @@ msgstr "Bideo-kamera"
 msgid "VideoCardGammaTable"
 msgstr "Bideo-txartelaren gamma taula"
 
-#: icc_ueber.cpp:281
+#: icc_betrachter.cxx:663
+msgid "Videocard Gamma"
+msgstr "Bideo-txartelaren gamma"
+
+#: icc_ueber.cpp:281 icc_betrachter.cxx:425 icc_betrachter.cxx:652
 msgid "View"
 msgstr "Ikusi"
 
@@ -2066,7 +2242,11 @@ msgstr "Zein ICC profila?"
 msgid "White"
 msgstr "Zuria"
 
-#: icc_ueber.cpp:286
+#: icc_betrachter.cxx:426 icc_betrachter.cxx:653
+msgid "Whole Screen on/off"
+msgstr "Pantaila osoa aktibatu/desaktibatu"
+
+#: icc_ueber.cpp:286 icc_betrachter.cxx:436 icc_betrachter.cxx:659
 msgid "Windows"
 msgstr "Leihoak"
 
@@ -2078,7 +2258,8 @@ msgstr "Laneko area"
 msgid "Wrong profil assigned to image."
 msgstr "Okerreko profila irudiari esleituta."
 
-#: icc_measurement.cpp:1501
+#. Fl_Button* favUpButton
+#: icc_measurement.cpp:1501 my_file_chooser.cxx:277
 msgid "X"
 msgstr "X"
 
@@ -2118,7 +2299,8 @@ msgstr "YCbCr"
 msgid "Yellow"
 msgstr "Horia"
 
-#: icc_fenster.cpp:352 icc_fenster.cpp:419
+#. Flmm_Tabs* o
+#: icc_fenster.cpp:352 icc_fenster.cpp:419 icc_betrachter.cxx:802
 msgid "Yes"
 msgstr "Bai"
 
@@ -2311,6 +2493,10 @@ msgid ""
 "examin</a> <br>"
 msgstr "web gunea: www.behrmann.name <br>"
 
+#: icc_betrachter.cxx:949
+msgid "invisible box"
+msgstr ""
+
 #: icc_profile.cpp:881 icc_profile.cpp:904 icc_profile.cpp:912
 msgid "is not valid for an"
 msgstr "ez da baliozko "
@@ -2334,6 +2520,14 @@ msgstr "saguaren ezkerreko botoia -> joan atzera"
 #: agviewer.cpp:311 icc_gl.cpp:3852 icc_gl.cpp:3871 icc_gl.cpp:3993
 msgid "left-/middle-/right mouse button -> rotate/cut/menu"
 msgstr "saguaren ezkerreko/erdiko/eskuineko botoia -> biratu/ebaki/menua"
+
+#: icc_betrachter.cxx:168
+msgid "lineare entrance curve with 256 steps"
+msgstr "sarrerako kurba lineala 256 urratsekin"
+
+#: icc_betrachter.cxx:170
+msgid "lineare exit curve with 256 steps"
+msgstr "irteerako kurba lineala 256 urratsekin"
 
 #: icc_examin.cpp:481 icc_examin.cpp:1458
 msgid "loaded"
@@ -2395,6 +2589,10 @@ msgstr "ez dago erabilgarri"
 msgid "not inside memory block"
 msgstr "ez dago memoria-blokearen barruan"
 
+#: icc_betrachter.cxx:1058
+msgid "o"
+msgstr ""
+
 #: icc_helfer.cpp:863
 msgid "o'clock"
 msgstr "puntuan"
@@ -2439,6 +2637,10 @@ msgstr "psa2"
 #: icc_helfer.cpp:629
 msgid "psd3"
 msgstr "psa3"
+
+#: icc_betrachter.cxx:844
+msgid "reset to standard gamma"
+msgstr "berrezarri gamma estandarrera"
 
 #: icc_ueber.cpp:300
 msgid ""
@@ -2514,9 +2716,6 @@ msgstr "markatzailerik gabe"
 msgid "wrong tag size in profile "
 msgstr "okerreko etiketa-tamaina profilan "
 
-#~ msgid "..."
-#~ msgstr "..."
-
 #, fuzzy
 #~ msgid "2004"
 #~ msgstr "dE2000"
@@ -2529,45 +2728,6 @@ msgstr "okerreko etiketa-tamaina profilan "
 #~ msgid "2009"
 #~ msgstr "dE2000"
 
-#~ msgid "?"
-#~ msgstr "?"
-
-#~ msgid "@2>"
-#~ msgstr "@2>"
-
-#~ msgid "@8>"
-#~ msgstr "@8>"
-
-#~ msgid "About"
-#~ msgstr "Honi buruz"
-
-#~ msgid "Acknowlegement"
-#~ msgstr "Aitorpena"
-
-#~ msgid "BPC"
-#~ msgstr "BPC"
-
-#~ msgid "CGATS View"
-#~ msgstr "CGATS ikuspegia"
-
-#~ msgid "Cancel"
-#~ msgstr "Utzi"
-
-#~ msgid "Chain selection"
-#~ msgstr "Kate-hautapena"
-
-#~ msgid "Choose File"
-#~ msgstr "Aukeratu fitxategia"
-
-#~ msgid "Choose a attribute"
-#~ msgstr "Aukeratu atribututa"
-
-#~ msgid "Choose one profile tag"
-#~ msgstr "Aukeratu profilaren etiketa"
-
-#~ msgid "Close"
-#~ msgstr "Itxi"
-
 #~ msgid "Documentation"
 #~ msgstr "Dokumentazioa"
 
@@ -2578,29 +2738,8 @@ msgstr "okerreko etiketa-tamaina profilan "
 #~ msgid "Filename (ICC data type)"
 #~ msgstr "Fitxategi-izena (ICC datu mota)"
 
-#~ msgid "Filename:"
-#~ msgstr "Fitxategi-izena:"
-
-#~ msgid "Gamut"
-#~ msgstr "Kolore-gama"
-
-#~ msgid "Gamut Warning"
-#~ msgstr "Kolore-gamaren abisua"
-
-#~ msgid "Grafic Card Gamma Table"
-#~ msgstr "Txartel grafikoaren gamma-taula"
-
-#~ msgid "LANG"
-#~ msgstr "HIZK"
-
 #~ msgid "Links"
 #~ msgstr "Estekak"
-
-#~ msgid "Load"
-#~ msgstr "Kargatu"
-
-#~ msgid "Load the current monitor profile"
-#~ msgstr "Kargatu uneko monitorearen profila"
 
 #, fuzzy
 #~ msgid "Main window"
@@ -2609,19 +2748,6 @@ msgstr "okerreko etiketa-tamaina profilan "
 #, fuzzy
 #~ msgid "May 2004 - September 2008"
 #~ msgstr "2004.eko maiatza - 2007.eko iraila"
-
-#, fuzzy
-#~ msgid "Native Gamut"
-#~ msgstr "Gorde kolore-gama VRML gisa"
-
-#~ msgid "OK"
-#~ msgstr "Ados"
-
-#~ msgid "Open"
-#~ msgstr "Ireki"
-
-#~ msgid "Oyranos Settings"
-#~ msgstr "Oyranos-en ezarpenak"
 
 #~ msgid "Photometric"
 #~ msgstr "Fotometrikoa"
@@ -2633,61 +2759,14 @@ msgstr "okerreko etiketa-tamaina profilan "
 #~ msgid "Project"
 #~ msgstr "Proiektua"
 
-#~ msgid "Quit"
-#~ msgstr "Irten"
-
 #~ msgid "RGB result not available"
 #~ msgstr "GBUren emaitza ez dago erabilgarri"
-
-#~ msgid "Report View"
-#~ msgstr "Txostenaren ikuspegia"
-
-#~ msgid "Reset"
-#~ msgstr "Berrezarri"
-
-#, fuzzy
-#~ msgid "Save as VRML"
-#~ msgstr "Gorde kolore-gama VRML gisa"
-
-#~ msgid "Set"
-#~ msgstr "Ezarri"
-
-#~ msgid ""
-#~ "Set the current profile as monitor profile and upload vcgt tag to the "
-#~ "video card"
-#~ msgstr ""
-#~ "Ezarri uneko profila monitorearen profila gisa eta kargatu vctg etiketa "
-#~ "bideo-txartelean"
-
-#~ msgid "Show Main Window"
-#~ msgstr "Erakutsi leiho nagusia"
-
-#~ msgid "Show all channels of this table a own window."
-#~ msgstr "Erakutsi taula honen kanal guztiak leiho propioan"
-
-#~ msgid "Test Curves"
-#~ msgstr "Probako kurbak"
-
-#~ msgid "Videocard Gamma"
-#~ msgstr "Bideo-txartelaren gamma"
-
-#~ msgid "Whole Screen on/off"
-#~ msgstr "Pantaila osoa aktibatu/desaktibatu"
-
-#~ msgid "lineare entrance curve with 256 steps"
-#~ msgstr "sarrerako kurba lineala 256 urratsekin"
-
-#~ msgid "lineare exit curve with 256 steps"
-#~ msgstr "irteerako kurba lineala 256 urratsekin"
 
 #~ msgid "mouse"
 #~ msgstr "sagua"
 
 #~ msgid "no filename given"
 #~ msgstr "ez da fitxategi-izenik eman"
-
-#~ msgid "reset to standard gamma"
-#~ msgstr "berrezarri gamma estandarrera"
 
 #~ msgid "shells"
 #~ msgstr "irudi-gainjarriak"

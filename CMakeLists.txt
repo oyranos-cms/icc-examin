@@ -329,6 +329,7 @@ IF( GETTEXT_FOUND )
   FILE( GLOB SRC_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
         *.c
         *.cpp
+        *.cxx
         *.h
       )
 

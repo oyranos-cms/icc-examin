@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2016-01-07 20:48+0100\n"
+"POT-Creation-Date: 2016-01-07 21:31+0100\n"
 "PO-Revision-Date: 2005-08-13 17:35+0200\n"
 "Last-Translator: Kai-Uwe Behrmann\n"
 "Language-Team:  <ku.b@gmx.de>\n"
@@ -167,6 +167,10 @@ msgstr ""
 #. flex
 #: icc_examin.cpp:1394 icc_helfer.cpp:648 icc_helfer.cpp:740
 msgid "----"
+msgstr ""
+
+#: icc_betrachter.cxx:1136
+msgid "..."
 msgstr ""
 
 #: icc_helfer.cpp:842
@@ -369,9 +373,23 @@ msgstr "</b>  maximal: "
 msgid "</b> Measurement"
 msgstr "</b> Messdaten"
 
+#. Fl_File_Browser* fileList
+#: my_file_chooser.cxx:204
+msgid "?"
+msgstr "?"
+
 #: icc_helfer.cpp:767 icc_helfer.cpp:791 icc_helfer.cpp:811 icc_helfer.cpp:829
 #: icc_helfer.cpp:846
 msgid "???"
+msgstr ""
+
+#. Fl_Button* favDeleteButton
+#: my_file_chooser.cxx:282
+msgid "@2>"
+msgstr ""
+
+#: my_file_chooser.cxx:274
+msgid "@8>"
 msgstr ""
 
 #: icc_ueber.cpp:457
@@ -383,12 +401,16 @@ msgstr ""
 "gelesen. Damit können Farbraumhüllen von z.B. ArgyllCMS oder solche mit ICC "
 "Examin gespeicherten geöffnet werden."
 
+#: icc_betrachter.cxx:668 icc_betrachter.cxx:769
+msgid "About"
+msgstr "Über"
+
 #. HTML
-#: icc_ueber.cpp:69
+#: icc_ueber.cpp:69 icc_betrachter.cxx:747
 msgid "About ICC Examin"
 msgstr "Über ICC Examin"
 
-#: icc_helfer.cpp:268
+#: icc_helfer.cpp:268 icc_betrachter.cxx:432
 msgid "Absolute Colorimetric"
 msgstr "Absolut Farbmetrisch"
 
@@ -399,6 +421,11 @@ msgstr "Abstrakter Farbraum"
 #. HTML
 #: icc_ueber.cpp:883
 msgid "Acknowledgement"
+msgstr "Dank"
+
+#. Fl_Help_View* lizenz_html
+#: icc_betrachter.cxx:788
+msgid "Acknowlegement"
 msgstr "Dank"
 
 #. PMD
@@ -448,6 +475,10 @@ msgstr "Attribute:   "
 msgid "B"
 msgstr ""
 
+#: icc_betrachter.cxx:433
+msgid "BPC"
+msgstr "BPC"
+
 #. "Back side" or Background
 #: icc_profile_tags.cpp:260
 msgid "Back side"
@@ -490,6 +521,10 @@ msgstr "Blaue Farbwiedergabekurve"
 #: icc_measurement.cpp:1514
 msgid "C"
 msgstr ""
+
+#: icc_betrachter.cxx:662
+msgid "CGATS View"
+msgstr "CGATS Ansicht"
 
 #: icc_examin_farbraum.cpp:402 icc_examin_io.cpp:323 icc_draw.cpp:749
 #: icc_helfer.cpp:403 icc_helfer.cpp:406
@@ -560,14 +595,37 @@ msgstr ""
 msgid "Calibration date"
 msgstr "Kalibrationsdatum"
 
+#. okButton->label(fl_ok);
+#. Fl_Return_Button* okButton
+#. Fl_Button* o =
+#: my_file_chooser.cxx:243 my_file_chooser.cxx:288
+msgid "Cancel"
+msgstr "Abbrechen"
+
 #. pjtv
 #: icc_helfer.cpp:731
 msgid "Cathode ray tube display"
 msgstr "Kathodenstrahlmonitor"
 
+#: icc_betrachter.cxx:995
+msgid "Chain selection"
+msgstr "Kettenauswahl"
+
 #: icc_profile_tags.cpp:319 icc_gl.cpp:3293
 msgid "Channel"
 msgstr "Kanal"
+
+#: my_file_chooser.cxx:164
+msgid "Choose File"
+msgstr "Wählen Sie eine Datei"
+
+#: icc_betrachter.cxx:996
+msgid "Choose a attribute"
+msgstr "Wählen Sie ein Bestandteil"
+
+#: icc_betrachter.cxx:977
+msgid "Choose one profile tag"
+msgstr "Wählen Sie einen Profilbaustein"
 
 #. chad
 #: icc_helfer.cpp:645
@@ -577,6 +635,11 @@ msgstr "Primärfarben"
 #: icc_profile_header.cpp:240
 msgid "Class:       "
 msgstr "Klasse:      "
+
+#. Fl_Button* vcgt_load_button
+#: icc_betrachter.cxx:853
+msgid "Close"
+msgstr "Schliessen"
 
 #: icc_oyranos_extern.c:143
 msgid "Cmy"
@@ -751,11 +814,12 @@ msgstr "Electrostatischer Drucker"
 msgid "Error in ICC profile tag found!"
 msgstr "Fehler in ICC Profilbaustein gefunden!"
 
-#: icc_helfer_fltk.cpp:282
+#. Fl_Choice* showChoice
+#: icc_helfer_fltk.cpp:282 my_file_chooser.cxx:183
 msgid "Favorites"
 msgstr "Lesezeichen"
 
-#: icc_ueber.cpp:279
+#: icc_ueber.cpp:279 icc_betrachter.cxx:421 icc_betrachter.cxx:644
 msgid "File"
 msgstr "Datei"
 
@@ -782,6 +846,11 @@ msgstr "Dateiname (beschädigte ICC Daten)"
 #: icc_examin.cpp:1397
 msgid "Filename (other data type)"
 msgstr "Dateiname (anderer Datentyp)"
+
+#. Fl_File_Input* fileName
+#: my_file_chooser.cxx:233
+msgid "Filename:"
+msgstr "Dateiname:"
 
 #: icc_ueber.cpp:253
 msgid ""
@@ -878,9 +947,18 @@ msgstr "Gamma Rot:   "
 msgid "Gamma:   "
 msgstr "Gamma:   "
 
+#. icc_examin_ns::MyFl_Double_Window* vcgt
+#: icc_betrachter.cxx:651 icc_betrachter.cxx:660 icc_betrachter.cxx:863
+msgid "Gamut"
+msgstr "Farbhülle"
+
 #: icc_examin.cpp:955 icc_examin.cpp:959
 msgid "Gamut View"
 msgstr "Farbhüllansicht"
+
+#: icc_betrachter.cxx:429
+msgid "Gamut Warning"
+msgstr "Farb Warnung"
 
 #: icc_examin.cpp:337
 msgid "Gamut selector"
@@ -897,6 +975,11 @@ msgstr ""
 #: icc_oyranos.cpp:705
 msgid "Geometry:"
 msgstr "Geometrie:"
+
+#. icc_examin_ns::MyFl_Double_Window* ueber
+#: icc_betrachter.cxx:812
+msgid "Grafic Card Gamma Table"
+msgstr "Grafik Karten Gamma Tabelle (vcgt)"
 
 #. imgs
 #: icc_helfer.cpp:736
@@ -929,7 +1012,9 @@ msgid "HTML Documents (*.htm*)"
 msgstr "HTML Dokumente (*.htm*)"
 
 #. HTML
-#: icc_ueber.cpp:151
+#. Fl_Help_View* ueber_html
+#: icc_ueber.cpp:151 icc_betrachter.cxx:667 icc_betrachter.cxx:669
+#: icc_betrachter.cxx:775
 msgid "Help"
 msgstr "Hilfe"
 
@@ -950,7 +1035,8 @@ msgstr "Huch, unbekannte Ausnahme"
 msgid "Hue"
 msgstr "Farbton"
 
-#: oyranos_cmm_iemn.c:502
+#. icc_examin_ns::MyFl_Double_Window* DD
+#: oyranos_cmm_iemn.c:502 icc_betrachter.cxx:937
 msgid "ICC Examin"
 msgstr "ICC Examin"
 
@@ -1134,6 +1220,11 @@ msgstr ""
 "Im Hauptfenster zeigt ICC Examin oben die Menüleiste, darunter die Liste der "
 "Profilglieder und darunter Details."
 
+#. Fl_Help_View* dank_html
+#: icc_betrachter.cxx:794
+msgid "Info"
+msgstr ""
+
 #: icc_fenster.cpp:416
 msgid "Information:"
 msgstr "Information:"
@@ -1193,11 +1284,16 @@ msgstr ""
 msgid "L'"
 msgstr ""
 
+#: icc_betrachter.cxx:657
+msgid "LANG"
+msgstr ""
+
 #: icc_oyranos_extern.c:134
 msgid "Lab"
 msgstr ""
 
-#: icc_ueber.cpp:472
+#. Fl_Help_View* hilfe_html
+#: icc_ueber.cpp:472 icc_betrachter.cxx:670 icc_betrachter.cxx:781
 msgid "License"
 msgstr "Lizenz"
 
@@ -1225,9 +1321,23 @@ msgstr "Linearisierung"
 msgid "Link"
 msgstr "Verknüpfung"
 
-#: icc_examin_tagwahl.cpp:1044
+#. Fl_Button* vcgt_reset_button
+#: icc_betrachter.cxx:848
+msgid "Load"
+msgstr "Lade"
+
+#: icc_betrachter.cxx:849
+msgid "Load the current monitor profile"
+msgstr "Das aktuelle Monitor Profile laden"
+
+#. Fl_Box* box_stat
+#: icc_examin_tagwahl.cpp:1044 icc_betrachter.cxx:1140
 msgid "Loading .."
 msgstr "Lade ..."
+
+#: icc_betrachter.cxx:438 icc_betrachter.cxx:665
+msgid "Log"
+msgstr ""
 
 #: icc_fenster.cpp:350
 msgid "Log:"
@@ -1300,7 +1410,8 @@ msgstr ""
 msgid "Magic:       "
 msgstr "Signatur:    "
 
-#: icc_helfer_fltk.cpp:284
+#. icc_examin_ns::MyFl_Double_Window* window
+#: icc_helfer_fltk.cpp:284 my_file_chooser.cxx:257
 msgid "Manage Favorites"
 msgstr "Bearbeite Lesezeichen"
 
@@ -1448,6 +1559,10 @@ msgstr "Einzelfarbnamen"
 msgid "Named colour order"
 msgstr "Einzelfarbordnung"
 
+#: icc_betrachter.cxx:434
+msgid "Native Gamut"
+msgstr "Native Farbhülle"
+
 #: icc_ueber.cpp:285
 msgid ""
 "Native or separation Gamut. The later is the inbuild default. The native "
@@ -1508,6 +1623,10 @@ msgstr "Eingangskanäle"
 msgid "Number of output channels"
 msgstr "Ausgangskanäle"
 
+#: my_file_chooser.cxx:239
+msgid "OK"
+msgstr "Ja"
+
 #. grav
 #: icc_helfer.cpp:737
 msgid "Offset Lithography"
@@ -1522,9 +1641,17 @@ msgstr "Am unteren Rand befindet sich die Statuszeile."
 msgid "Onion skins"
 msgstr "Zwiebelhäutchen"
 
+#: icc_betrachter.cxx:645
+msgid "Open"
+msgstr "Öffnen"
+
 #: icc_helfer.cpp:464
 msgid "Output"
 msgstr "Ausgabe"
+
+#: icc_betrachter.cxx:656
+msgid "Oyranos Settings"
+msgstr "Oyranos Einstellungen"
 
 #: icc_helfer.cpp:765
 msgid "P22"
@@ -1543,7 +1670,7 @@ msgstr "Passivmatrixmonitor"
 msgid "Pause"
 msgstr "Pause"
 
-#: icc_helfer.cpp:259
+#: icc_helfer.cpp:259 icc_betrachter.cxx:430
 msgid "Perceptual"
 msgstr "Fotografisch"
 
@@ -1584,7 +1711,7 @@ msgstr "Anschluß:"
 msgid "Pos"
 msgstr ""
 
-#: icc_helfer_fltk.cpp:291
+#: icc_helfer_fltk.cpp:291 my_file_chooser.cxx:214
 msgid "Preview"
 msgstr "Vorschau"
 
@@ -1655,6 +1782,10 @@ msgstr "Fernsehprojektion"
 msgid "Proof Profile..."
 msgstr "Simulationsprofil..."
 
+#: icc_betrachter.cxx:423 icc_betrachter.cxx:649
+msgid "Quit"
+msgstr "Beenden"
+
 #: icc_ueber.cpp:280
 msgid "Quit - allowes for exiting the application"
 msgstr "Beenden - erlaubt das Beenden des Programmes."
@@ -1697,13 +1828,22 @@ msgstr "Auflichtscanner"
 msgid "Reflective, "
 msgstr "Aufsicht, "
 
-#: icc_helfer.cpp:262
+#: icc_helfer.cpp:262 icc_betrachter.cxx:431
 msgid "Relative Colorimetric"
 msgstr "Relativ Farbmetrisch"
+
+#: icc_betrachter.cxx:661
+msgid "Report View"
+msgstr "Qualitäts Bericht"
 
 #: icc_measurement.cpp:1309
 msgid "Report about ICC profile"
 msgstr "Report zum Farbprofil"
+
+#. Fl_Button* vcgt_set_button
+#: icc_betrachter.cxx:843
+msgid "Reset"
+msgstr "Standard"
 
 #: icc_oyranos_extern.c:138
 msgid "Rgb"
@@ -1729,21 +1869,26 @@ msgstr ""
 msgid "Saturation"
 msgstr "Sättigung"
 
-#: icc_helfer_fltk.cpp:293
+#. Fl_Button* favCancelButton
+#: icc_helfer_fltk.cpp:293 my_file_chooser.cxx:292
 msgid "Save"
 msgstr "Sichern"
 
-#: icc_examin_io.cpp:782
+#: icc_examin_io.cpp:782 icc_betrachter.cxx:647
 msgid "Save Gamut as Profile"
 msgstr "Speichere Farbhülle als Profil"
 
-#: icc_examin_io.cpp:785
+#: icc_examin_io.cpp:785 icc_betrachter.cxx:648
 msgid "Save Gamut as VRML"
 msgstr "Speichere Farbhülle als VRML"
 
-#: icc_examin_io.cpp:708
+#: icc_examin_io.cpp:708 icc_betrachter.cxx:646
 msgid "Save Report"
 msgstr "Bericht Speichern"
+
+#: icc_betrachter.cxx:422
+msgid "Save as VRML"
+msgstr "Speichere als VRML"
 
 #: icc_helfer_x.cpp:130 icc_oyranos.cpp:669
 msgid "Screen:"
@@ -1757,15 +1902,36 @@ msgstr "Separation"
 msgid "Serial:"
 msgstr "Serien Nr.:"
 
-#: icc_ueber.cpp:283
+#. TagDrawings* vcgt_viewer
+#: icc_betrachter.cxx:837
+msgid "Set"
+msgstr "Setze"
+
+#: icc_betrachter.cxx:838
+msgid ""
+"Set the current profile as monitor profile and upload vcgt tag to the video "
+"card"
+msgstr ""
+"Das aktuelle Profile als Monitorprofil setzen und die Gamma Tabelle in die "
+"Grafikkarte laden"
+
+#: icc_ueber.cpp:283 icc_betrachter.cxx:428 icc_betrachter.cxx:655
 msgid "Settings"
 msgstr "Einstellungen"
+
+#: icc_betrachter.cxx:437
+msgid "Show Main Window"
+msgstr "Zeige Hauptfenster"
+
+#: icc_betrachter.cxx:1059
+msgid "Show all channels of this table a own window."
+msgstr "Zeige alle Kanäle dieser Tabelle in einem eigenen Fenster an."
 
 #: icc_ueber.cpp:288
 msgid "Show main application window, in case it is a icon."
 msgstr "Zeige Hauptfenster im Falle es ist zu einem Symbol verkleinert."
 
-#: icc_helfer_fltk.cpp:295
+#: icc_helfer_fltk.cpp:295 my_file_chooser.cxx:176
 msgid "Show:"
 msgstr "Zeige:"
 
@@ -1876,6 +2042,10 @@ msgstr ""
 #: icc_helfer.cpp:636
 msgid "Technologie"
 msgstr ""
+
+#: icc_betrachter.cxx:664
+msgid "Test Curves"
+msgstr "Test Kurven"
 
 #: icc_gl.cpp:2802
 msgid "Texts"
@@ -2091,7 +2261,11 @@ msgstr "Video Kamera"
 msgid "VideoCardGammaTable"
 msgstr "Grafik Karten Gamma Tabelle (vcgt)"
 
-#: icc_ueber.cpp:281
+#: icc_betrachter.cxx:663
+msgid "Videocard Gamma"
+msgstr "Grafikkarten Gamma"
+
+#: icc_ueber.cpp:281 icc_betrachter.cxx:425 icc_betrachter.cxx:652
 msgid "View"
 msgstr "Ansicht"
 
@@ -2142,7 +2316,11 @@ msgstr "Welches ICC Profil?"
 msgid "White"
 msgstr "Weiß"
 
-#: icc_ueber.cpp:286
+#: icc_betrachter.cxx:426 icc_betrachter.cxx:653
+msgid "Whole Screen on/off"
+msgstr "Ganzer Bildschirm an/aus"
+
+#: icc_ueber.cpp:286 icc_betrachter.cxx:436 icc_betrachter.cxx:659
 msgid "Windows"
 msgstr "Fenster"
 
@@ -2154,7 +2332,8 @@ msgstr "Arbeitsfarbraum"
 msgid "Wrong profil assigned to image."
 msgstr "Falsches Profil am Bild."
 
-#: icc_measurement.cpp:1501
+#. Fl_Button* favUpButton
+#: icc_measurement.cpp:1501 my_file_chooser.cxx:277
 msgid "X"
 msgstr ""
 
@@ -2198,7 +2377,8 @@ msgstr ""
 msgid "Yellow"
 msgstr "Gelb"
 
-#: icc_fenster.cpp:352 icc_fenster.cpp:419
+#. Flmm_Tabs* o
+#: icc_fenster.cpp:352 icc_fenster.cpp:419 icc_betrachter.cxx:802
 msgid "Yes"
 msgstr "Ja"
 
@@ -2389,6 +2569,10 @@ msgstr ""
 "Internet: <a href=\"http://www.oyranos.org/icc-examin\">www.oyranos.org/icc-"
 "examin</a> <br>"
 
+#: icc_betrachter.cxx:949
+msgid "invisible box"
+msgstr ""
+
 #: icc_profile.cpp:881 icc_profile.cpp:904 icc_profile.cpp:912
 msgid "is not valid for an"
 msgstr "ist nicht gültig für ein"
@@ -2411,6 +2595,14 @@ msgstr "linke Maustaste -> Drehen"
 #: agviewer.cpp:311 icc_gl.cpp:3852 icc_gl.cpp:3871 icc_gl.cpp:3993
 msgid "left-/middle-/right mouse button -> rotate/cut/menu"
 msgstr "linke-/mittlere-/rechte Maustaste -> Drehen/Schneiden/Menue"
+
+#: icc_betrachter.cxx:168
+msgid "lineare entrance curve with 256 steps"
+msgstr "Lineare Eingangskurve mit 256 Stufungen"
+
+#: icc_betrachter.cxx:170
+msgid "lineare exit curve with 256 steps"
+msgstr "Lineare Ausgangskurve mit 256 Stufungen"
 
 #: icc_examin.cpp:481 icc_examin.cpp:1458
 msgid "loaded"
@@ -2472,6 +2664,10 @@ msgstr "nicht verfügbar"
 msgid "not inside memory block"
 msgstr "nicht innerhalb des Speicherblocks"
 
+#: icc_betrachter.cxx:1058
+msgid "o"
+msgstr ""
+
 #: icc_helfer.cpp:863
 msgid "o'clock"
 msgstr "Uhr"
@@ -2516,6 +2712,10 @@ msgstr ""
 #: icc_helfer.cpp:629
 msgid "psd3"
 msgstr ""
+
+#: icc_betrachter.cxx:844
+msgid "reset to standard gamma"
+msgstr "Auf Standard Gamma zurücksetzen"
 
 #: icc_ueber.cpp:300
 msgid ""
@@ -2607,17 +2807,8 @@ msgstr "falsche Elementgröße in Profil "
 #~ msgid "2.4.2  3D navigation and keys"
 #~ msgstr "2.4.2 3D Navigation und Tasten"
 
-#~ msgid "?"
-#~ msgstr "?"
-
-#~ msgid "About"
-#~ msgstr "Über"
-
 #~ msgid "About ICC_Examin"
 #~ msgstr "&Uuml;ber ICC_Examin"
-
-#~ msgid "Acknowlegement"
-#~ msgstr "Dank"
 
 #~ msgid "Add this directory to my favorites"
 #~ msgstr "zu Lesezeichen"
@@ -2631,32 +2822,8 @@ msgstr "falsche Elementgröße in Profil "
 #~ msgid "August"
 #~ msgstr "August"
 
-#~ msgid "BPC"
-#~ msgstr "BPC"
-
-#~ msgid "CGATS View"
-#~ msgstr "CGATS Ansicht"
-
-#~ msgid "Cancel"
-#~ msgstr "Abbrechen"
-
 #~ msgid "Chain -texts"
 #~ msgstr "Kette -Texte"
-
-#~ msgid "Chain selection"
-#~ msgstr "Kettenauswahl"
-
-#~ msgid "Choose File"
-#~ msgstr "Wählen Sie eine Datei"
-
-#~ msgid "Choose a attribute"
-#~ msgstr "Wählen Sie ein Bestandteil"
-
-#~ msgid "Choose one profile tag"
-#~ msgstr "Wählen Sie einen Profilbaustein"
-
-#~ msgid "Close"
-#~ msgstr "Schliessen"
 
 #~ msgid "Compact Disk"
 #~ msgstr "CD"
@@ -2745,20 +2912,11 @@ msgstr "falsche Elementgröße in Profil "
 #~ msgid "Filename (measurement)"
 #~ msgstr "Messdatei öffnen"
 
-#~ msgid "Filename:"
-#~ msgstr "Dateiname:"
-
 #~ msgid "Floppy Disk"
 #~ msgstr "Diskette"
 
 #~ msgid "Folder"
 #~ msgstr "Ordner"
-
-#~ msgid "Gamut"
-#~ msgstr "Farbhülle"
-
-#~ msgid "Gamut Warning"
-#~ msgstr "Farb Warnung"
 
 #~ msgid "Go back one directory in the history"
 #~ msgstr "vorheriges Verzeichnis"
@@ -2768,9 +2926,6 @@ msgstr "falsche Elementgröße in Profil "
 
 #~ msgid "Go to the parent directory"
 #~ msgstr "nächsthöheres Verzeichnis"
-
-#~ msgid "Grafic Card Gamma Table"
-#~ msgstr "Grafik Karten Gamma Tabelle (vcgt)"
 
 #~ msgid "Home"
 #~ msgstr "Heimverzeichnis"
@@ -2799,12 +2954,6 @@ msgstr "falsche Elementgröße in Profil "
 #~ msgid "List mode"
 #~ msgstr "Standard Anzeige"
 
-#~ msgid "Load"
-#~ msgstr "Lade"
-
-#~ msgid "Load the current monitor profile"
-#~ msgstr "Das aktuelle Monitor Profile laden"
-
 #~ msgid "Local Disk"
 #~ msgstr "Localer Speicher"
 
@@ -2820,9 +2969,6 @@ msgstr "falsche Elementgröße in Profil "
 #~ msgid "Named Coulor"
 #~ msgstr "Einzelfarben"
 
-#~ msgid "Native Gamut"
-#~ msgstr "Native Farbhülle"
-
 #~ msgid "Network Disk"
 #~ msgstr "Netzwerk Speicher"
 
@@ -2835,23 +2981,14 @@ msgstr "falsche Elementgröße in Profil "
 #~ msgid "November"
 #~ msgstr "November"
 
-#~ msgid "OK"
-#~ msgstr "Ja"
-
 #~ msgid "October"
 #~ msgstr "Oktober"
-
-#~ msgid "Open"
-#~ msgstr "Öffnen"
 
 #~ msgid "Open Measurement"
 #~ msgstr "Messdatei öffnen"
 
 #~ msgid "Options"
 #~ msgstr "Optionen"
-
-#~ msgid "Oyranos Settings"
-#~ msgstr "Oyranos Einstellungen"
 
 #~ msgid ""
 #~ "Oyranos and FLU are not installed.\n"
@@ -2887,9 +3024,6 @@ msgstr "falsche Elementgröße in Profil "
 #~ msgid "Project"
 #~ msgstr "Projekt"
 
-#~ msgid "Quit"
-#~ msgstr "Beenden"
-
 #~ msgid "RAM Disk"
 #~ msgstr "RAM Speicher"
 
@@ -2908,42 +3042,14 @@ msgstr "falsche Elementgröße in Profil "
 #~ msgid "Rename"
 #~ msgstr "Umbenennen"
 
-#~ msgid "Report View"
-#~ msgstr "Qualitäts Bericht"
-
-#~ msgid "Reset"
-#~ msgstr "Standard"
-
-#~ msgid "Save as VRML"
-#~ msgstr "Speichere als VRML"
-
 #~ msgid "September"
 #~ msgstr "September"
-
-#~ msgid "Set"
-#~ msgstr "Setze"
-
-#~ msgid ""
-#~ "Set the current profile as monitor profile and upload vcgt tag to the "
-#~ "video card"
-#~ msgstr ""
-#~ "Das aktuelle Profile als Monitorprofil setzen und die Gamma Tabelle in "
-#~ "die Grafikkarte laden"
 
 #~ msgid "Show Hidden Files"
 #~ msgstr "Zeige versteckte Dateien"
 
-#~ msgid "Show Main Window"
-#~ msgstr "Zeige Hauptfenster"
-
-#~ msgid "Show all channels of this table a own window."
-#~ msgstr "Zeige alle Kanäle dieser Tabelle in einem eigenen Fenster an."
-
 #~ msgid "Tags"
 #~ msgstr "Baustein"
-
-#~ msgid "Test Curves"
-#~ msgstr "Test Kurven"
 
 #~ msgid "Type"
 #~ msgstr "Typ"
@@ -2953,12 +3059,6 @@ msgstr "falsche Elementgröße in Profil "
 
 #~ msgid "Usage"
 #~ msgstr "Benutzung"
-
-#~ msgid "Videocard Gamma"
-#~ msgstr "Grafikkarten Gamma"
-
-#~ msgid "Whole Screen on/off"
-#~ msgstr "Ganzer Bildschirm an/aus"
 
 #~ msgid "Wide list mode"
 #~ msgstr "Weite Anzeige"
@@ -2971,12 +3071,6 @@ msgstr "falsche Elementgröße in Profil "
 
 #~ msgid "fine with: "
 #~ msgstr "gut mit: "
-
-#~ msgid "lineare entrance curve with 256 steps"
-#~ msgstr "Lineare Eingangskurve mit 256 Stufungen"
-
-#~ msgid "lineare exit curve with 256 steps"
-#~ msgstr "Lineare Ausgangskurve mit 256 Stufungen"
 
 #, fuzzy
 #~ msgid "monitor"
@@ -2994,9 +3088,6 @@ msgstr "falsche Elementgröße in Profil "
 
 #~ msgid "relative colorimetric RI"
 #~ msgstr "Relativ Farbmetrisch"
-
-#~ msgid "reset to standard gamma"
-#~ msgstr "Auf Standard Gamma zurücksetzen"
 
 #~ msgid "shells"
 #~ msgstr "schalen"
