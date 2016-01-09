@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ICC Examin 0.41\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2016-01-09 18:58+0100\n"
+"POT-Creation-Date: 2016-01-09 20:37+0100\n"
 "PO-Revision-Date: 2006-06-29 19:31+0200\n"
 "Last-Translator: Pascal LACROIX <lacroixpascal at vfemail.net>\n"
 "Language-Team: ALL <ku.b@gmx.de>\n"
@@ -153,7 +153,7 @@ msgstr ""
 
 #. clrt
 #. flex
-#: icc_examin.cpp:1435 icc_helfer.cpp:648 icc_helfer.cpp:740
+#: icc_examin.cpp:1439 icc_helfer.cpp:648 icc_helfer.cpp:740
 msgid "----"
 msgstr ""
 
@@ -676,7 +676,7 @@ msgstr "Couleur r"
 msgid "Colour spots can be enlarged or made smaller by pressing + or -."
 msgstr ""
 
-#: icc_examin.cpp:976 icc_examin.cpp:979
+#: icc_examin.cpp:980 icc_examin.cpp:983
 msgid "Compare Measurement <-> Profile Colours"
 msgstr ""
 
@@ -812,11 +812,11 @@ msgstr ""
 msgid "Filename"
 msgstr ""
 
-#: icc_examin.cpp:1440
+#: icc_examin.cpp:1444
 msgid "Filename (corrupted ICC data type)"
 msgstr ""
 
-#: icc_examin.cpp:1438
+#: icc_examin.cpp:1442
 msgid "Filename (other data type)"
 msgstr ""
 
@@ -917,7 +917,7 @@ msgstr "Gamma Rouge"
 msgid "Gamut"
 msgstr "Gamut"
 
-#: icc_examin.cpp:996 icc_examin.cpp:1000
+#: icc_examin.cpp:1000 icc_examin.cpp:1004
 #, fuzzy
 msgid "Gamut View"
 msgstr "Gamut"
@@ -926,7 +926,7 @@ msgstr "Gamut"
 msgid "Gamut Warning"
 msgstr "Avertissement Gamut"
 
-#: icc_examin.cpp:378
+#: icc_examin.cpp:382
 msgid "Gamut selector"
 msgstr ""
 
@@ -1194,7 +1194,7 @@ msgstr "Intention:"
 msgid "Intent:      "
 msgstr "Intention:   "
 
-#: icc_examin.cpp:1452
+#: icc_examin.cpp:1456
 msgid "Internal error"
 msgstr ""
 
@@ -1515,7 +1515,7 @@ msgid "No profil assigned to image."
 msgstr ""
 
 #. this string is sensible to formatting in the tag browser GUI, please keep a mono spaced formatting
-#: icc_examin.cpp:1455
+#: icc_examin.cpp:1459
 msgid "No. Tag   Type   Size Description"
 msgstr ""
 
@@ -1726,7 +1726,7 @@ msgstr "RVB"
 msgid "RGB primaries"
 msgstr ""
 
-#: icc_examin.cpp:528
+#: icc_examin.cpp:532
 msgid "Ready"
 msgstr ""
 
@@ -2398,7 +2398,7 @@ msgstr ""
 msgid "found"
 msgstr "Point"
 
-#: icc_examin.cpp:1449
+#: icc_examin.cpp:1453
 msgid "found no content for"
 msgstr ""
 
@@ -2477,7 +2477,7 @@ msgstr ""
 msgid "lineare exit curve with 256 steps"
 msgstr ""
 
-#: icc_examin.cpp:522 icc_examin.cpp:1499
+#: icc_examin.cpp:526 icc_examin.cpp:1503
 msgid "loaded"
 msgstr ""
 
@@ -2526,11 +2526,11 @@ msgstr "Ouvrir Profil"
 msgid "noName"
 msgstr ""
 
-#: icc_examin.cpp:978 icc_oyranos.cpp:670
+#: icc_examin.cpp:982 icc_oyranos.cpp:670
 msgid "none"
 msgstr ""
 
-#: icc_examin.cpp:1068 icc_examin_tagwahl.cpp:1052 icc_gl.h:277
+#: icc_examin.cpp:1072 icc_examin_tagwahl.cpp:1052 icc_gl.h:277
 msgid "not available"
 msgstr ""
 

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: icc_examin\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2016-01-09 18:58+0100\n"
+"POT-Creation-Date: 2016-01-09 20:37+0100\n"
 "PO-Revision-Date: 2012-10-19 15:09+0100\n"
 "Last-Translator: Milan Knížek <knizek@volny.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
@@ -172,7 +172,7 @@ msgstr "---"
 
 #. clrt
 #. flex
-#: icc_examin.cpp:1435 icc_helfer.cpp:648 icc_helfer.cpp:740
+#: icc_examin.cpp:1439 icc_helfer.cpp:648 icc_helfer.cpp:740
 msgid "----"
 msgstr "----"
 
@@ -710,7 +710,7 @@ msgstr "Barva r"
 msgid "Colour spots can be enlarged or made smaller by pressing + or -."
 msgstr "Barvové body mohou být zvětšeny či zmenšeny pomocí kláves + a -."
 
-#: icc_examin.cpp:976 icc_examin.cpp:979
+#: icc_examin.cpp:980 icc_examin.cpp:983
 msgid "Compare Measurement <-> Profile Colours"
 msgstr "Porovnat měření <-> barvy profilu"
 
@@ -845,11 +845,11 @@ msgstr "Soubor nenačten!"
 msgid "Filename"
 msgstr "Jméno souboru"
 
-#: icc_examin.cpp:1440
+#: icc_examin.cpp:1444
 msgid "Filename (corrupted ICC data type)"
 msgstr "Jméno souboru (porušený typ dat ICC)"
 
-#: icc_examin.cpp:1438
+#: icc_examin.cpp:1442
 msgid "Filename (other data type)"
 msgstr "Jméno souboru (jiný typ)"
 
@@ -962,7 +962,7 @@ msgstr "Gama červená:"
 msgid "Gamut"
 msgstr "Gamut"
 
-#: icc_examin.cpp:996 icc_examin.cpp:1000
+#: icc_examin.cpp:1000 icc_examin.cpp:1004
 msgid "Gamut View"
 msgstr "Zobrazení gamutu"
 
@@ -970,7 +970,7 @@ msgstr "Zobrazení gamutu"
 msgid "Gamut Warning"
 msgstr "Varování gamutu"
 
-#: icc_examin.cpp:378
+#: icc_examin.cpp:382
 msgid "Gamut selector"
 msgstr "Volba gamutu"
 
@@ -1260,7 +1260,7 @@ msgstr "Záměr:"
 msgid "Intent:      "
 msgstr "Záměr:       "
 
-#: icc_examin.cpp:1452
+#: icc_examin.cpp:1456
 msgid "Internal error"
 msgstr "Vnitřní chyba"
 
@@ -1603,7 +1603,7 @@ msgid "No profil assigned to image."
 msgstr "Obrázek nemá přiřazen profil."
 
 #. this string is sensible to formatting in the tag browser GUI, please keep a mono spaced formatting
-#: icc_examin.cpp:1455
+#: icc_examin.cpp:1459
 msgid "No. Tag   Type   Size Description"
 msgstr "Č.  Šť.   Typ     Vel. Popis"
 
@@ -1817,7 +1817,7 @@ msgstr "RGB"
 msgid "RGB primaries"
 msgstr "Primární barvy RGB"
 
-#: icc_examin.cpp:528
+#: icc_examin.cpp:532
 msgid "Ready"
 msgstr "Připraven"
 
@@ -2544,7 +2544,7 @@ msgstr "file type signature (vždy acsp)"
 msgid "found"
 msgstr "nalezeno"
 
-#: icc_examin.cpp:1449
+#: icc_examin.cpp:1453
 msgid "found no content for"
 msgstr "nenalezen žadný obsah pro"
 
@@ -2626,7 +2626,7 @@ msgstr "lineární vstupní křivka s 256 kroky"
 msgid "lineare exit curve with 256 steps"
 msgstr "lineární výstupní křivka s 256 kroky"
 
-#: icc_examin.cpp:522 icc_examin.cpp:1499
+#: icc_examin.cpp:526 icc_examin.cpp:1503
 msgid "loaded"
 msgstr "načteno"
 
@@ -2674,11 +2674,11 @@ msgstr "žádny profil"
 msgid "noName"
 msgstr "beze jména"
 
-#: icc_examin.cpp:978 icc_oyranos.cpp:670
+#: icc_examin.cpp:982 icc_oyranos.cpp:670
 msgid "none"
 msgstr "žádný"
 
-#: icc_examin.cpp:1068 icc_examin_tagwahl.cpp:1052 icc_gl.h:277
+#: icc_examin.cpp:1072 icc_examin_tagwahl.cpp:1052 icc_gl.h:277
 msgid "not available"
 msgstr "nedostupné"
 

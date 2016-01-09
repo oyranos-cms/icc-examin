@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cinepaint_icc-examin_eu\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2016-01-09 18:58+0100\n"
+"POT-Creation-Date: 2016-01-09 20:37+0100\n"
 "PO-Revision-Date: 2007-11-07 11:11+0100\n"
 "Last-Translator: Iñaki Larrañaga Murgoitio <dooteo@zundan.com>\n"
 "Language-Team: Basque <itzulpena@euskalgnu.org>\n"
@@ -168,7 +168,7 @@ msgstr "---"
 
 #. clrt
 #. flex
-#: icc_examin.cpp:1435 icc_helfer.cpp:648 icc_helfer.cpp:740
+#: icc_examin.cpp:1439 icc_helfer.cpp:648 icc_helfer.cpp:740
 msgid "----"
 msgstr "----"
 
@@ -707,7 +707,7 @@ msgstr "r kolorea"
 msgid "Colour spots can be enlarged or made smaller by pressing + or -."
 msgstr ""
 
-#: icc_examin.cpp:976 icc_examin.cpp:979
+#: icc_examin.cpp:980 icc_examin.cpp:983
 msgid "Compare Measurement <-> Profile Colours"
 msgstr "Konparatu neurketa <-> profilaren koloreak"
 
@@ -843,11 +843,11 @@ msgstr "Fitxategia ez da kargatu."
 msgid "Filename"
 msgstr "Fitxategi-izena"
 
-#: icc_examin.cpp:1440
+#: icc_examin.cpp:1444
 msgid "Filename (corrupted ICC data type)"
 msgstr "Fitxategi-izena (hondatutako ICC datu mota)"
 
-#: icc_examin.cpp:1438
+#: icc_examin.cpp:1442
 msgid "Filename (other data type)"
 msgstr "Fitxategi-izena (beste datu mota)"
 
@@ -948,7 +948,7 @@ msgstr "Gamma gorria:"
 msgid "Gamut"
 msgstr "Kolore-gama"
 
-#: icc_examin.cpp:996 icc_examin.cpp:1000
+#: icc_examin.cpp:1000 icc_examin.cpp:1004
 msgid "Gamut View"
 msgstr "Kolore-gamaren ikuspegia"
 
@@ -956,7 +956,7 @@ msgstr "Kolore-gamaren ikuspegia"
 msgid "Gamut Warning"
 msgstr "Kolore-gamaren abisua"
 
-#: icc_examin.cpp:378
+#: icc_examin.cpp:382
 msgid "Gamut selector"
 msgstr "Kolore-gama hautatzailea"
 
@@ -1229,7 +1229,7 @@ msgstr "Helburua:"
 msgid "Intent:      "
 msgstr "Helburua:       "
 
-#: icc_examin.cpp:1452
+#: icc_examin.cpp:1456
 msgid "Internal error"
 msgstr "Barneko errorea"
 
@@ -1560,7 +1560,7 @@ msgid "No profil assigned to image."
 msgstr "Ez dago profilik esleituta irudiari."
 
 #. this string is sensible to formatting in the tag browser GUI, please keep a mono spaced formatting
-#: icc_examin.cpp:1455
+#: icc_examin.cpp:1459
 msgid "No. Tag   Type   Size Description"
 msgstr "IDa Etik. Mota   Tam. Azalpena"
 
@@ -1770,7 +1770,7 @@ msgstr "GBU"
 msgid "RGB primaries"
 msgstr "GBU primarioak"
 
-#: icc_examin.cpp:528
+#: icc_examin.cpp:532
 msgid "Ready"
 msgstr "Prest"
 
@@ -2455,7 +2455,7 @@ msgstr ""
 msgid "found"
 msgstr "Puntua"
 
-#: icc_examin.cpp:1449
+#: icc_examin.cpp:1453
 msgid "found no content for"
 msgstr "ez da honen edukirik aurkitu"
 
@@ -2539,7 +2539,7 @@ msgstr "sarrerako kurba lineala 256 urratsekin"
 msgid "lineare exit curve with 256 steps"
 msgstr "irteerako kurba lineala 256 urratsekin"
 
-#: icc_examin.cpp:522 icc_examin.cpp:1499
+#: icc_examin.cpp:526 icc_examin.cpp:1503
 msgid "loaded"
 msgstr "kargatuta"
 
@@ -2587,11 +2587,11 @@ msgstr "profilik ez"
 msgid "noName"
 msgstr "izengabea"
 
-#: icc_examin.cpp:978 icc_oyranos.cpp:670
+#: icc_examin.cpp:982 icc_oyranos.cpp:670
 msgid "none"
 msgstr "bat ere ez"
 
-#: icc_examin.cpp:1068 icc_examin_tagwahl.cpp:1052 icc_gl.h:277
+#: icc_examin.cpp:1072 icc_examin_tagwahl.cpp:1052 icc_gl.h:277
 msgid "not available"
 msgstr "ez dago erabilgarri"
 

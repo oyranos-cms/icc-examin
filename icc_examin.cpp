@@ -367,10 +367,14 @@ ICCexamin::start (int argc, char** argv)
   // get high DPI infos for windows width and font scaling
   cout << " sys_scale: " << getSysScale() << " user_scale: " << getScale() << endl;
   scale = getSysScale() * getScale();
+  // setup font size before any widget creation
+  FL_NORMAL_SIZE = SCALE(14);
 
 
   icc_betrachter->init( argc, argv );
+  // do menue label and some dynamic widget scaling
   updateSizes();
+
 
   icc_betrachter->table_gl->init(1);
   icc_betrachter->DD_farbraum->init(2);
