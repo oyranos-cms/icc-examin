@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: icc_examin\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2016-01-07 21:31+0100\n"
+"POT-Creation-Date: 2016-01-09 18:58+0100\n"
 "PO-Revision-Date: 2012-10-19 15:09+0100\n"
 "Last-Translator: Milan Knížek <knizek@volny.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
@@ -172,11 +172,11 @@ msgstr "---"
 
 #. clrt
 #. flex
-#: icc_examin.cpp:1394 icc_helfer.cpp:648 icc_helfer.cpp:740
+#: icc_examin.cpp:1435 icc_helfer.cpp:648 icc_helfer.cpp:740
 msgid "----"
 msgstr "----"
 
-#: icc_betrachter.cxx:1136
+#: icc_betrachter.cxx:1116
 msgid "..."
 msgstr "..."
 
@@ -407,12 +407,12 @@ msgstr ""
 "Barvové gamuty vytvořené argyllCMS a uložené v programu ICC Examinu jako "
 "VRML (čili WRL) soubory lze opětovně otevřít."
 
-#: icc_betrachter.cxx:668 icc_betrachter.cxx:769
+#: icc_betrachter.cxx:678 icc_betrachter.cxx:777
 msgid "About"
 msgstr "O programu"
 
 #. HTML
-#: icc_ueber.cpp:69 icc_betrachter.cxx:747
+#: icc_ueber.cpp:69 icc_betrachter.cxx:759
 msgid "About ICC Examin"
 msgstr "O programu ICC Examin"
 
@@ -430,7 +430,7 @@ msgid "Acknowledgement"
 msgstr "Poděkování"
 
 #. Fl_Help_View* lizenz_html
-#: icc_betrachter.cxx:788
+#: icc_betrachter.cxx:796
 msgid "Acknowlegement"
 msgstr "Poděkování"
 
@@ -528,7 +528,7 @@ msgstr "Křivka reprodukce modrých tónů"
 msgid "C"
 msgstr "C"
 
-#: icc_betrachter.cxx:662
+#: icc_betrachter.cxx:672
 msgid "CGATS View"
 msgstr "Zobrazení CGATS"
 
@@ -613,7 +613,7 @@ msgstr "Zrušit"
 msgid "Cathode ray tube display"
 msgstr "CRT obrazovka"
 
-#: icc_betrachter.cxx:995
+#: icc_betrachter.cxx:987
 msgid "Chain selection"
 msgstr "Výběr řetězce"
 
@@ -625,11 +625,11 @@ msgstr "Kanál"
 msgid "Choose File"
 msgstr "Vybrat soubor"
 
-#: icc_betrachter.cxx:996
+#: icc_betrachter.cxx:988
 msgid "Choose a attribute"
 msgstr "Zvolte atribut"
 
-#: icc_betrachter.cxx:977
+#: icc_betrachter.cxx:971
 msgid "Choose one profile tag"
 msgstr "Vyberte jeden šítek profilu"
 
@@ -643,7 +643,7 @@ msgid "Class:       "
 msgstr "Třída:       "
 
 #. Fl_Button* vcgt_load_button
-#: icc_betrachter.cxx:853
+#: icc_betrachter.cxx:857
 msgid "Close"
 msgstr "Zavřít"
 
@@ -710,7 +710,7 @@ msgstr "Barva r"
 msgid "Colour spots can be enlarged or made smaller by pressing + or -."
 msgstr "Barvové body mohou být zvětšeny či zmenšeny pomocí kláves + a -."
 
-#: icc_examin.cpp:935 icc_examin.cpp:938
+#: icc_examin.cpp:976 icc_examin.cpp:979
 msgid "Compare Measurement <-> Profile Colours"
 msgstr "Porovnat měření <-> barvy profilu"
 
@@ -825,7 +825,7 @@ msgstr "Nalezena chyba ve štítku profilu ICC!"
 msgid "Favorites"
 msgstr "Záložky"
 
-#: icc_ueber.cpp:279 icc_betrachter.cxx:421 icc_betrachter.cxx:644
+#: icc_ueber.cpp:279 icc_betrachter.cxx:421 icc_betrachter.cxx:652
 msgid "File"
 msgstr "Soubor"
 
@@ -845,11 +845,11 @@ msgstr "Soubor nenačten!"
 msgid "Filename"
 msgstr "Jméno souboru"
 
-#: icc_examin.cpp:1399
+#: icc_examin.cpp:1440
 msgid "Filename (corrupted ICC data type)"
 msgstr "Jméno souboru (porušený typ dat ICC)"
 
-#: icc_examin.cpp:1397
+#: icc_examin.cpp:1438
 msgid "Filename (other data type)"
 msgstr "Jméno souboru (jiný typ)"
 
@@ -958,11 +958,11 @@ msgid "Gamma:   "
 msgstr "Gama červená:"
 
 #. icc_examin_ns::MyFl_Double_Window* vcgt
-#: icc_betrachter.cxx:651 icc_betrachter.cxx:660 icc_betrachter.cxx:863
+#: icc_betrachter.cxx:659 icc_betrachter.cxx:670 icc_betrachter.cxx:867
 msgid "Gamut"
 msgstr "Gamut"
 
-#: icc_examin.cpp:955 icc_examin.cpp:959
+#: icc_examin.cpp:996 icc_examin.cpp:1000
 msgid "Gamut View"
 msgstr "Zobrazení gamutu"
 
@@ -970,7 +970,7 @@ msgstr "Zobrazení gamutu"
 msgid "Gamut Warning"
 msgstr "Varování gamutu"
 
-#: icc_examin.cpp:337
+#: icc_examin.cpp:378
 msgid "Gamut selector"
 msgstr "Volba gamutu"
 
@@ -987,7 +987,7 @@ msgid "Geometry:"
 msgstr "Geometrie:"
 
 #. icc_examin_ns::MyFl_Double_Window* ueber
-#: icc_betrachter.cxx:812
+#: icc_betrachter.cxx:820
 msgid "Grafic Card Gamma Table"
 msgstr "Tabulka gama grafické karty"
 
@@ -1023,8 +1023,8 @@ msgstr "Dokumenty HTML (*.htm*)"
 
 #. HTML
 #. Fl_Help_View* ueber_html
-#: icc_ueber.cpp:151 icc_betrachter.cxx:667 icc_betrachter.cxx:669
-#: icc_betrachter.cxx:775
+#: icc_ueber.cpp:151 icc_betrachter.cxx:677 icc_betrachter.cxx:679
+#: icc_betrachter.cxx:783
 msgid "Help"
 msgstr "Nápověda"
 
@@ -1046,7 +1046,7 @@ msgid "Hue"
 msgstr "Odstín"
 
 #. icc_examin_ns::MyFl_Double_Window* DD
-#: oyranos_cmm_iemn.c:502 icc_betrachter.cxx:937
+#: oyranos_cmm_iemn.c:502 icc_betrachter.cxx:933
 msgid "ICC Examin"
 msgstr "ICC Examin"
 
@@ -1234,7 +1234,7 @@ msgstr ""
 "obsah. Nad seznamem štítků je k dispozici menu aplikace."
 
 #. Fl_Help_View* dank_html
-#: icc_betrachter.cxx:794
+#: icc_betrachter.cxx:802
 msgid "Info"
 msgstr "Info"
 
@@ -1260,7 +1260,7 @@ msgstr "Záměr:"
 msgid "Intent:      "
 msgstr "Záměr:       "
 
-#: icc_examin.cpp:1411
+#: icc_examin.cpp:1452
 msgid "Internal error"
 msgstr "Vnitřní chyba"
 
@@ -1296,7 +1296,7 @@ msgstr "P"
 msgid "L'"
 msgstr "L'"
 
-#: icc_betrachter.cxx:657
+#: icc_betrachter.cxx:667
 msgid "LANG"
 msgstr "LANG"
 
@@ -1305,7 +1305,7 @@ msgid "Lab"
 msgstr "Lab"
 
 #. Fl_Help_View* hilfe_html
-#: icc_ueber.cpp:472 icc_betrachter.cxx:670 icc_betrachter.cxx:781
+#: icc_ueber.cpp:472 icc_betrachter.cxx:680 icc_betrachter.cxx:789
 msgid "License"
 msgstr "Licence"
 
@@ -1334,20 +1334,20 @@ msgid "Link"
 msgstr "Spojovací"
 
 #. Fl_Button* vcgt_reset_button
-#: icc_betrachter.cxx:848
+#: icc_betrachter.cxx:852
 msgid "Load"
 msgstr "Načíst"
 
-#: icc_betrachter.cxx:849
+#: icc_betrachter.cxx:853
 msgid "Load the current monitor profile"
 msgstr "Načíst aktuální profil monitoru"
 
 #. Fl_Box* box_stat
-#: icc_examin_tagwahl.cpp:1044 icc_betrachter.cxx:1140
+#: icc_examin_tagwahl.cpp:1044 icc_betrachter.cxx:1120
 msgid "Loading .."
 msgstr "Načítá se ..."
 
-#: icc_betrachter.cxx:438 icc_betrachter.cxx:665
+#: icc_betrachter.cxx:438 icc_betrachter.cxx:675
 msgid "Log"
 msgstr "Záznam událostí"
 
@@ -1603,7 +1603,7 @@ msgid "No profil assigned to image."
 msgstr "Obrázek nemá přiřazen profil."
 
 #. this string is sensible to formatting in the tag browser GUI, please keep a mono spaced formatting
-#: icc_examin.cpp:1414
+#: icc_examin.cpp:1455
 msgid "No. Tag   Type   Size Description"
 msgstr "Č.  Šť.   Typ     Vel. Popis"
 
@@ -1656,7 +1656,7 @@ msgstr "Úplně dole se zobrazuje stav aplikace."
 msgid "Onion skins"
 msgstr "Průklepový papír"
 
-#: icc_betrachter.cxx:645
+#: icc_betrachter.cxx:653
 msgid "Open"
 msgstr "Otevřít"
 
@@ -1664,7 +1664,7 @@ msgstr "Otevřít"
 msgid "Output"
 msgstr "Výstupní"
 
-#: icc_betrachter.cxx:656
+#: icc_betrachter.cxx:666
 msgid "Oyranos Settings"
 msgstr "Nastavení Oyranosu"
 
@@ -1797,7 +1797,7 @@ msgstr "Projekční televize"
 msgid "Proof Profile..."
 msgstr "Profil simulace zobrazení..."
 
-#: icc_betrachter.cxx:423 icc_betrachter.cxx:649
+#: icc_betrachter.cxx:423 icc_betrachter.cxx:657
 msgid "Quit"
 msgstr "Ukončit"
 
@@ -1817,7 +1817,7 @@ msgstr "RGB"
 msgid "RGB primaries"
 msgstr "Primární barvy RGB"
 
-#: icc_examin.cpp:487
+#: icc_examin.cpp:528
 msgid "Ready"
 msgstr "Připraven"
 
@@ -1847,7 +1847,7 @@ msgstr "odrazné, "
 msgid "Relative Colorimetric"
 msgstr "Relativní kolorimetrický"
 
-#: icc_betrachter.cxx:661
+#: icc_betrachter.cxx:671
 msgid "Report View"
 msgstr "Zobrazení reportu"
 
@@ -1856,7 +1856,7 @@ msgid "Report about ICC profile"
 msgstr "Report o profilu ICC"
 
 #. Fl_Button* vcgt_set_button
-#: icc_betrachter.cxx:843
+#: icc_betrachter.cxx:847
 msgid "Reset"
 msgstr "Reset"
 
@@ -1889,15 +1889,15 @@ msgstr "Saturace"
 msgid "Save"
 msgstr "Uložit"
 
-#: icc_examin_io.cpp:782 icc_betrachter.cxx:647
+#: icc_examin_io.cpp:782 icc_betrachter.cxx:655
 msgid "Save Gamut as Profile"
 msgstr "Uložit gamut jako profil"
 
-#: icc_examin_io.cpp:785 icc_betrachter.cxx:648
+#: icc_examin_io.cpp:785 icc_betrachter.cxx:656
 msgid "Save Gamut as VRML"
 msgstr "Uložit gamut jako VRML"
 
-#: icc_examin_io.cpp:708 icc_betrachter.cxx:646
+#: icc_examin_io.cpp:708 icc_betrachter.cxx:654
 msgid "Save Report"
 msgstr "Uložit report"
 
@@ -1918,18 +1918,18 @@ msgid "Serial:"
 msgstr "Sériové č.:"
 
 #. TagDrawings* vcgt_viewer
-#: icc_betrachter.cxx:837
+#: icc_betrachter.cxx:841
 msgid "Set"
 msgstr "Nastavit"
 
-#: icc_betrachter.cxx:838
+#: icc_betrachter.cxx:842
 msgid ""
 "Set the current profile as monitor profile and upload vcgt tag to the video "
 "card"
 msgstr ""
 "Nastavit aktuální profil jako profil monitoru a načíst VCGT do video karty"
 
-#: icc_ueber.cpp:283 icc_betrachter.cxx:428 icc_betrachter.cxx:655
+#: icc_ueber.cpp:283 icc_betrachter.cxx:428 icc_betrachter.cxx:665
 msgid "Settings"
 msgstr "Nastavení"
 
@@ -1937,7 +1937,7 @@ msgstr "Nastavení"
 msgid "Show Main Window"
 msgstr "Zobrazit hlavní okno"
 
-#: icc_betrachter.cxx:1059
+#: icc_betrachter.cxx:1043
 msgid "Show all channels of this table a own window."
 msgstr "Ukázat všechny kanály této tabulky v samostatném okně."
 
@@ -1956,6 +1956,16 @@ msgstr "Sítotisk"
 
 #: icc_profile.cpp:196 icc_profile_tags.cpp:582
 msgid "Size"
+msgstr "Velikost"
+
+#: icc_betrachter.cxx:662
+#, fuzzy
+msgid "Size+"
+msgstr "Velikost"
+
+#: icc_betrachter.cxx:663
+#, fuzzy
+msgid "Size-"
 msgstr "Velikost"
 
 #: icc_profile_header.cpp:236
@@ -2057,7 +2067,7 @@ msgstr "Taligent"
 msgid "Technologie"
 msgstr "Technologie"
 
-#: icc_betrachter.cxx:664
+#: icc_betrachter.cxx:674
 msgid "Test Curves"
 msgstr "Testovat křivky"
 
@@ -2276,11 +2286,11 @@ msgstr "Video kamera"
 msgid "VideoCardGammaTable"
 msgstr "Gama tabulka graf. karty"
 
-#: icc_betrachter.cxx:663
+#: icc_betrachter.cxx:673
 msgid "Videocard Gamma"
 msgstr "Gama video karty"
 
-#: icc_ueber.cpp:281 icc_betrachter.cxx:425 icc_betrachter.cxx:652
+#: icc_ueber.cpp:281 icc_betrachter.cxx:425 icc_betrachter.cxx:660
 msgid "View"
 msgstr "Zobrazit"
 
@@ -2331,11 +2341,11 @@ msgstr "Který profil ICC?"
 msgid "White"
 msgstr "Bílá"
 
-#: icc_betrachter.cxx:426 icc_betrachter.cxx:653
+#: icc_betrachter.cxx:426 icc_betrachter.cxx:661
 msgid "Whole Screen on/off"
 msgstr "Celá obrazovka zap./vyp."
 
-#: icc_ueber.cpp:286 icc_betrachter.cxx:436 icc_betrachter.cxx:659
+#: icc_ueber.cpp:286 icc_betrachter.cxx:436 icc_betrachter.cxx:669
 msgid "Windows"
 msgstr "Okna"
 
@@ -2393,7 +2403,7 @@ msgid "Yellow"
 msgstr "Žlutá"
 
 #. Flmm_Tabs* o
-#: icc_fenster.cpp:352 icc_fenster.cpp:419 icc_betrachter.cxx:802
+#: icc_fenster.cpp:352 icc_fenster.cpp:419 icc_betrachter.cxx:810
 msgid "Yes"
 msgstr "Ano"
 
@@ -2534,7 +2544,7 @@ msgstr "file type signature (vždy acsp)"
 msgid "found"
 msgstr "nalezeno"
 
-#: icc_examin.cpp:1408
+#: icc_examin.cpp:1449
 msgid "found no content for"
 msgstr "nenalezen žadný obsah pro"
 
@@ -2581,7 +2591,7 @@ msgid ""
 "examin</a> <br>"
 msgstr "Internet: <a href=\"http://www.oyranos.org\">www.oyranos.org</a><br>"
 
-#: icc_betrachter.cxx:949
+#: icc_betrachter.cxx:943
 msgid "invisible box"
 msgstr "neviditelný box"
 
@@ -2616,7 +2626,7 @@ msgstr "lineární vstupní křivka s 256 kroky"
 msgid "lineare exit curve with 256 steps"
 msgstr "lineární výstupní křivka s 256 kroky"
 
-#: icc_examin.cpp:481 icc_examin.cpp:1458
+#: icc_examin.cpp:522 icc_examin.cpp:1499
 msgid "loaded"
 msgstr "načteno"
 
@@ -2664,11 +2674,11 @@ msgstr "žádny profil"
 msgid "noName"
 msgstr "beze jména"
 
-#: icc_examin.cpp:937 icc_oyranos.cpp:670
+#: icc_examin.cpp:978 icc_oyranos.cpp:670
 msgid "none"
 msgstr "žádný"
 
-#: icc_examin.cpp:1027 icc_examin_tagwahl.cpp:1052 icc_gl.h:276
+#: icc_examin.cpp:1068 icc_examin_tagwahl.cpp:1052 icc_gl.h:277
 msgid "not available"
 msgstr "nedostupné"
 
@@ -2676,7 +2686,7 @@ msgstr "nedostupné"
 msgid "not inside memory block"
 msgstr "ne uvnitř bloku paměti"
 
-#: icc_betrachter.cxx:1058
+#: icc_betrachter.cxx:1042
 msgid "o"
 msgstr "o"
 
@@ -2725,7 +2735,7 @@ msgstr "psd2"
 msgid "psd3"
 msgstr "psd3"
 
-#: icc_betrachter.cxx:844
+#: icc_betrachter.cxx:848
 msgid "reset to standard gamma"
 msgstr "obnovit standardní gama"
 

@@ -301,6 +301,52 @@ char * oyReadStdinToMem_             ( size_t            * size,
                                        oyAlloc_f           allocate_func );
 }
 
+void updateMenuSize(Fl_Menu_Item * menueleiste)
+{
+  int size = menueleiste->size();
+  for(int i = 0; i < size ; ++i) {
+    const char* text = menueleiste[i].label();
+    if(text)
+      menueleiste[i].labelsize( FL_NORMAL_SIZE );
+  }
+}
+void ICCexamin::updateSizes()
+{
+  FL_NORMAL_SIZE = SCALE(14);
+  icc_betrachter->inspekt_html->textsize( FL_NORMAL_SIZE );
+  icc_betrachter->ueber_html->textsize( FL_NORMAL_SIZE );
+  icc_betrachter->hilfe_html->textsize( FL_NORMAL_SIZE );
+  icc_betrachter->lizenz_html->textsize( FL_NORMAL_SIZE );
+  icc_betrachter->dank_html->textsize( FL_NORMAL_SIZE );
+  icc_betrachter->info_html->textsize( FL_NORMAL_SIZE );
+  icc_betrachter->ja->labelsize( FL_NORMAL_SIZE );
+  icc_betrachter->tag_browser->textsize( FL_NORMAL_SIZE );
+  icc_betrachter->tag_text->textsize( FL_NORMAL_SIZE );
+  icc_betrachter->table_choice->textsize( FL_NORMAL_SIZE );
+  icc_betrachter->table_text->textsize( FL_NORMAL_SIZE );
+  icc_betrachter->table_viewer->redraw( );
+  icc_betrachter->table_gl->redraw( );
+  icc_betrachter->table_gl_slider_choice->textsize( FL_NORMAL_SIZE );
+  icc_betrachter->table_gl_slider->textsize( FL_NORMAL_SIZE );
+  updateMenuSize( icc_betrachter->menu_menueleiste );
+  updateMenuSize( icc_betrachter->menu_DD_menueleiste );
+  icc_betrachter->vcgt_set_button->labelsize( FL_NORMAL_SIZE );
+  icc_betrachter->vcgt_set_button->size( icc_betrachter->vcgt_set_button->w(), SCALE(25) );
+  icc_betrachter->vcgt_reset_button->labelsize( FL_NORMAL_SIZE );
+  icc_betrachter->vcgt_reset_button->size( icc_betrachter->vcgt_reset_button->w(), SCALE(25) );
+  icc_betrachter->vcgt_load_button->labelsize( FL_NORMAL_SIZE );
+  icc_betrachter->vcgt_load_button->size( icc_betrachter->vcgt_load_button->w(), SCALE(25) );
+  icc_betrachter->vcgt_close_button->labelsize( FL_NORMAL_SIZE );
+  icc_betrachter->vcgt_close_button->size( icc_betrachter->vcgt_close_button->w(), SCALE(25) );
+  icc_betrachter->vcgt_viewer->redraw();
+  icc_betrachter->DD->redraw();
+  icc_betrachter->DD_farbraum->invalidate();
+  icc_betrachter->DD_farbraum->redraw();
+  icc_betrachter->DD_box_stat->labelsize( FL_NORMAL_SIZE );
+  icc_betrachter->box_stat->labelsize( FL_NORMAL_SIZE );
+  icc_betrachter->details->redraw();
+}
+
 void
 ICCexamin::start (int argc, char** argv)
 { DBG_PROG_START
@@ -317,19 +363,14 @@ ICCexamin::start (int argc, char** argv)
   fl_translate_menue( icc_betrachter->menu_menueleiste );
   fl_translate_menue( icc_betrachter->menu_DD_menueleiste );
 
+
   // get high DPI infos for windows width and font scaling
-  scale = getScale();
-  cout << " scale: " << scale <<endl;
-  FL_NORMAL_SIZE=SCALE(14);
+  cout << " sys_scale: " << getSysScale() << " user_scale: " << getScale() << endl;
+  scale = getSysScale() * getScale();
 
 
   icc_betrachter->init( argc, argv );
-  icc_betrachter->inspekt_html->textsize( SCALE(icc_betrachter->inspekt_html->textsize()) );
-  icc_betrachter->ueber_html->textsize( SCALE(icc_betrachter->ueber_html->textsize()) );
-  icc_betrachter->hilfe_html->textsize( SCALE(icc_betrachter->hilfe_html->textsize()) );
-  icc_betrachter->lizenz_html->textsize( SCALE(icc_betrachter->lizenz_html->textsize()) );
-  icc_betrachter->dank_html->textsize( SCALE(icc_betrachter->dank_html->textsize()) );
-  icc_betrachter->info_html->textsize( SCALE(icc_betrachter->info_html->textsize()) );
+  updateSizes();
 
   icc_betrachter->table_gl->init(1);
   icc_betrachter->DD_farbraum->init(2);
@@ -2061,13 +2102,15 @@ event_handler(int e)
 #if defined( HAVE_XRANDR ) || defined(HAVE_Xrandr)
   # include <X11/extensions/Xrandr.h>
 #endif
-float scale;
-float getScale()
+float scale = 0;
+float user_scale = 1.0f;
+float getSysScale()
 {
-  float xdpi = 0, ydpi = 0;
+  float xdpi = 0, ydpi = 0,
+        sys_scale = 1.0f;
   Fl::screen_dpi (xdpi, ydpi);
   if(xdpi)
-    scale = xdpi / 96.f;
+    sys_scale = xdpi / 96.f;
 
 # if defined(HAVE_XRANDR) || defined(HAVE_Xrandr)
   // work around for FLTK Xinarama based wrong DPI detection
@@ -2095,7 +2138,7 @@ float getScale()
       if(first == -1)
       {
          first = i;
-         scale = xdpi / 96.f;
+         sys_scale = xdpi / 96.f;
       }
     }
     XRRFreeOutputInfo( output_info );
@@ -2103,5 +2146,29 @@ float getScale()
   XRRFreeScreenResources(res);
 #endif
 
-  return scale;
+  return sys_scale;
+}
+
+float getScale()
+{
+  
+  Fl_Preferences pref( Fl_Preferences::USER, "oyranos.org", "iccexamin" );
+  Fl_Preferences iccexamin_pref( pref, "iccexamin" );
+  iccexamin_pref.get(  "scale", user_scale, 1.0f );
+
+  return user_scale;
+}
+
+void setScale( float new_user_scale )
+{
+  user_scale = new_user_scale;
+  Fl_Preferences pref( Fl_Preferences::USER, "oyranos.org", "iccexamin" );
+  Fl_Preferences iccexamin_pref( pref, "iccexamin" );
+  iccexamin_pref.set(  "scale", user_scale );
+
+  scale = getSysScale() * user_scale;
+
+  printf("user_scale = %f\n", user_scale);
+
+  icc_examin->updateSizes();
 }

@@ -205,11 +205,16 @@ class ICCexamin : public icc_examin_ns::Observer,
     void statusAktualisieren();  //!< use the "status" macro
 
     void scheme(const char* plastic_or_gtk); //!< "plastic" "gtk+"
+    void updateSizes( void ); //!< update font sizes
 };
 
 int event_handler(int e);
 int  dndCommes();
 void dndCommes( int i );
+
+void setScale( float scale );
+float getScale( void );
+float getSysScale();
 
 #define status(texte) {std::stringstream s; s << texte; icc_examin->statlabel[0] = s.str(); icc_examin->statusAktualisieren();}
 #endif //ICC_EXAMIN_H

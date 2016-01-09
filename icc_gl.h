@@ -33,6 +33,7 @@
 
 #include "icc_utils.h"
 //#include "agviewer.h"
+#include "icc_fenster.h"
 #include "icc_vrml_parser.h"
 #include "icc_oyranos.h"
 #include "icc_thread_daten.h"
@@ -243,7 +244,7 @@ public:
   void move(bool setze);
   bool canMove();
   void canMove(int d);
-  void invalidate(void) { Fl_Gl_Window::invalidate(); valid_ = 0; }
+  void invalidate(void) { Fl_Gl_Window::invalidate(); valid_ = 0; line_mult = SCALE(1.0); }
 private:
   static void moveStatic_(void* GL_View);
 private:

@@ -211,6 +211,14 @@ private:
   void cb_menueintrag_Voll_i(Fl_Menu_*, void*);
   static void cb_menueintrag_Voll(Fl_Menu_*, void*);
 public:
+  static Fl_Menu_Item *menueintrag_sizeplus;
+private:
+  static void cb_menueintrag_sizeplus(Fl_Menu_*, void*);
+public:
+  static Fl_Menu_Item *menueintrag_sizeminus;
+private:
+  static void cb_menueintrag_sizeminus(Fl_Menu_*, void*);
+public:
   static Fl_Menu_Item *menu_einstellungen;
   static Fl_Menu_Item *menueintrag_oyranos;
 private:

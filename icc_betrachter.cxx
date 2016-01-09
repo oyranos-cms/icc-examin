@@ -524,6 +524,14 @@ void ICCfltkBetrachter::cb_menueintrag_Voll(Fl_Menu_* o, void* v) {
   ((ICCfltkBetrachter*)(o->parent()->parent()->user_data()))->cb_menueintrag_Voll_i(o,v);
 }
 
+void ICCfltkBetrachter::cb_menueintrag_sizeplus(Fl_Menu_*, void*) {
+  setScale( getScale() * 1.1 );
+}
+
+void ICCfltkBetrachter::cb_menueintrag_sizeminus(Fl_Menu_*, void*) {
+  setScale( getScale() / 1.1 );
+}
+
 void ICCfltkBetrachter::cb_menueintrag_oyranos_i(Fl_Menu_*, void*) {
   icc_examin->oyranos_einstellungen();
 }
@@ -651,6 +659,8 @@ Fl_Menu_Item ICCfltkBetrachter::menu_menueleiste[] = {
  {_("Gamut"), 0x40068,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_huelle, 0, 16, FL_NORMAL_LABEL, 0, SCALE(14), 0},
  {_("View"), 0,  0, 0, 64, FL_NORMAL_LABEL, 0, SCALE(14), 0},
  {_("Whole Screen on/off"), 0x40076,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_Voll, 0, 0, FL_NORMAL_LABEL, 0, SCALE(14), 0},
+ {_("Size+"), 0,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_sizeplus, 0, 0, FL_NORMAL_LABEL, 0, SCALE(14), 0},
+ {_("Size-"), 0,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_sizeminus, 0, 0, FL_NORMAL_LABEL, 0, SCALE(14), 0},
  {0,0,0,0,0,0,0,0,0},
  {_("Settings"), 0,  0, 0, 80, FL_NORMAL_LABEL, 0, SCALE(14), 0},
  {_("Oyranos Settings"), 0,  (Fl_Callback*)ICCfltkBetrachter::cb_menueintrag_oyranos, 0, 0, FL_NORMAL_LABEL, 0, SCALE(14), 0},
@@ -676,15 +686,17 @@ Fl_Menu_Item* ICCfltkBetrachter::menueintrag_gamut_speichern = ICCfltkBetrachter
 Fl_Menu_Item* ICCfltkBetrachter::menueintrag_gamut_vrml_speichern = ICCfltkBetrachter::menu_menueleiste + 4;
 Fl_Menu_Item* ICCfltkBetrachter::menueintrag_huelle = ICCfltkBetrachter::menu_menueleiste + 7;
 Fl_Menu_Item* ICCfltkBetrachter::menueintrag_Voll = ICCfltkBetrachter::menu_menueleiste + 9;
-Fl_Menu_Item* ICCfltkBetrachter::menu_einstellungen = ICCfltkBetrachter::menu_menueleiste + 11;
-Fl_Menu_Item* ICCfltkBetrachter::menueintrag_oyranos = ICCfltkBetrachter::menu_menueleiste + 12;
-Fl_Menu_Item* ICCfltkBetrachter::menueintrag_lang = ICCfltkBetrachter::menu_menueleiste + 13;
-Fl_Menu_Item* ICCfltkBetrachter::menueintrag_3D = ICCfltkBetrachter::menu_menueleiste + 16;
-Fl_Menu_Item* ICCfltkBetrachter::menueintrag_inspekt = ICCfltkBetrachter::menu_menueleiste + 17;
-Fl_Menu_Item* ICCfltkBetrachter::menueintrag_zeigcgats = ICCfltkBetrachter::menu_menueleiste + 18;
-Fl_Menu_Item* ICCfltkBetrachter::menueintrag_vcgt = ICCfltkBetrachter::menu_menueleiste + 19;
-Fl_Menu_Item* ICCfltkBetrachter::menueintrag_testkurven = ICCfltkBetrachter::menu_menueleiste + 20;
-Fl_Menu_Item* ICCfltkBetrachter::menu_hilfe = ICCfltkBetrachter::menu_menueleiste + 23;
+Fl_Menu_Item* ICCfltkBetrachter::menueintrag_sizeplus = ICCfltkBetrachter::menu_menueleiste + 10;
+Fl_Menu_Item* ICCfltkBetrachter::menueintrag_sizeminus = ICCfltkBetrachter::menu_menueleiste + 11;
+Fl_Menu_Item* ICCfltkBetrachter::menu_einstellungen = ICCfltkBetrachter::menu_menueleiste + 13;
+Fl_Menu_Item* ICCfltkBetrachter::menueintrag_oyranos = ICCfltkBetrachter::menu_menueleiste + 14;
+Fl_Menu_Item* ICCfltkBetrachter::menueintrag_lang = ICCfltkBetrachter::menu_menueleiste + 15;
+Fl_Menu_Item* ICCfltkBetrachter::menueintrag_3D = ICCfltkBetrachter::menu_menueleiste + 18;
+Fl_Menu_Item* ICCfltkBetrachter::menueintrag_inspekt = ICCfltkBetrachter::menu_menueleiste + 19;
+Fl_Menu_Item* ICCfltkBetrachter::menueintrag_zeigcgats = ICCfltkBetrachter::menu_menueleiste + 20;
+Fl_Menu_Item* ICCfltkBetrachter::menueintrag_vcgt = ICCfltkBetrachter::menu_menueleiste + 21;
+Fl_Menu_Item* ICCfltkBetrachter::menueintrag_testkurven = ICCfltkBetrachter::menu_menueleiste + 22;
+Fl_Menu_Item* ICCfltkBetrachter::menu_hilfe = ICCfltkBetrachter::menu_menueleiste + 25;
 
 void ICCfltkBetrachter::cb_tag_browser_i(TagBrowser* o, void*) {
   o->selectItem( o->value() );
@@ -749,8 +761,6 @@ icc_examin_ns::MyFl_Double_Window* ICCfltkBetrachter::init(int argc, char** argv
     ueber->color((Fl_Color)FL_BACKGROUND_COLOR);
     ueber->selection_color((Fl_Color)FL_BACKGROUND_COLOR);
     ueber->labeltype(FL_NO_LABEL);
-    ueber->labelfont(0);
-    ueber->labelsize(SCALE(14));
     ueber->labelcolor((Fl_Color)FL_FOREGROUND_COLOR);
     ueber->user_data((void*)(this));
     ueber->align(FL_ALIGN_TOP);
@@ -761,8 +771,6 @@ icc_examin_ns::MyFl_Double_Window* ICCfltkBetrachter::init(int argc, char** argv
         o->color((Fl_Color)FL_BACKGROUND_COLOR);
         o->selection_color((Fl_Color)FL_BACKGROUND_COLOR);
         o->labeltype(FL_NORMAL_LABEL);
-        o->labelfont(0);
-        o->labelsize(SCALE(14));
         o->labelcolor((Fl_Color)FL_FOREGROUND_COLOR);
         o->align(FL_ALIGN_TOP);
         o->when(FL_WHEN_RELEASE);
@@ -814,8 +822,6 @@ icc_examin_ns::MyFl_Double_Window* ICCfltkBetrachter::init(int argc, char** argv
     vcgt->color((Fl_Color)FL_BACKGROUND_COLOR);
     vcgt->selection_color((Fl_Color)FL_BACKGROUND_COLOR);
     vcgt->labeltype(FL_NO_LABEL);
-    vcgt->labelfont(0);
-    vcgt->labelsize(SCALE(14));
     vcgt->labelcolor((Fl_Color)FL_FOREGROUND_COLOR);
     vcgt->user_data((void*)(this));
     vcgt->align(FL_ALIGN_TOP);
@@ -826,8 +832,6 @@ icc_examin_ns::MyFl_Double_Window* ICCfltkBetrachter::init(int argc, char** argv
         vcgt_viewer->color((Fl_Color)FL_BACKGROUND_COLOR);
         vcgt_viewer->selection_color((Fl_Color)FL_BACKGROUND_COLOR);
         vcgt_viewer->labeltype(FL_NORMAL_LABEL);
-        vcgt_viewer->labelfont(0);
-        vcgt_viewer->labelsize(SCALE(14));
         vcgt_viewer->labelcolor((Fl_Color)FL_FOREGROUND_COLOR);
         vcgt_viewer->align(FL_ALIGN_CENTER);
         vcgt_viewer->when(FL_WHEN_RELEASE);
@@ -865,8 +869,6 @@ ard"));
     DD->color((Fl_Color)FL_BACKGROUND_COLOR);
     DD->selection_color((Fl_Color)FL_BACKGROUND_COLOR);
     DD->labeltype(FL_NO_LABEL);
-    DD->labelfont(0);
-    DD->labelsize(SCALE(14));
     DD->labelcolor((Fl_Color)FL_FOREGROUND_COLOR);
     DD->user_data((void*)(this));
     DD->align(FL_ALIGN_TOP);
@@ -889,8 +891,6 @@ ard"));
           DD_farbraum->color((Fl_Color)FL_BACKGROUND_COLOR);
           DD_farbraum->selection_color((Fl_Color)FL_BACKGROUND_COLOR);
           DD_farbraum->labeltype(FL_NORMAL_LABEL);
-          DD_farbraum->labelfont(0);
-          DD_farbraum->labelsize(SCALE(14));
           DD_farbraum->labelcolor((Fl_Color)FL_FOREGROUND_COLOR);
           DD_farbraum->align(FL_ALIGN_CENTER);
           DD_farbraum->when(FL_WHEN_RELEASE);
@@ -903,8 +903,6 @@ ard"));
           DD_box_stat_oy->color((Fl_Color)FL_BACKGROUND_COLOR);
           DD_box_stat_oy->selection_color((Fl_Color)FL_BACKGROUND_COLOR);
           DD_box_stat_oy->labeltype(FL_NORMAL_LABEL);
-          DD_box_stat_oy->labelfont(0);
-          DD_box_stat_oy->labelsize(SCALE(14));
           DD_box_stat_oy->labelcolor((Fl_Color)FL_FOREGROUND_COLOR);
           DD_box_stat_oy->align(FL_ALIGN_TOP);
           DD_box_stat_oy->when(FL_WHEN_RELEASE);
@@ -924,8 +922,6 @@ ard"));
       no_box2->color((Fl_Color)FL_BACKGROUND_COLOR);
       no_box2->selection_color((Fl_Color)FL_BACKGROUND_COLOR);
       no_box2->labeltype(FL_NORMAL_LABEL);
-      no_box2->labelfont(0);
-      no_box2->labelsize(SCALE(14));
       no_box2->labelcolor((Fl_Color)FL_FOREGROUND_COLOR);
       no_box2->align(FL_ALIGN_CENTER);
       no_box2->when(FL_WHEN_RELEASE);
@@ -939,8 +935,6 @@ ard"));
     details->color((Fl_Color)FL_BACKGROUND_COLOR);
     details->selection_color((Fl_Color)FL_BACKGROUND_COLOR);
     details->labeltype(FL_NO_LABEL);
-    details->labelfont(0);
-    details->labelsize(SCALE(14));
     details->labelcolor((Fl_Color)FL_FOREGROUND_COLOR);
     details->user_data((void*)(this));
     details->align(FL_ALIGN_TOP);
@@ -953,7 +947,7 @@ ard"));
       { menueleiste = new Fl_Menu_Bar(0, 0, SCALE(385), SCALE(25));
         menueleiste->align(FL_ALIGN_LEFT);
         menueleiste->when(3);
-        { Fl_Menu_Item* o = &menu_menueleiste[19];
+        { Fl_Menu_Item* o = &menu_menueleiste[21];
           o->hide();
         }
         menueleiste->menu(menu_menueleiste);
@@ -979,8 +973,6 @@ ard"));
             tag_browser->color((Fl_Color)FL_BACKGROUND_COLOR);
             tag_browser->selection_color((Fl_Color)FL_SELECTION_COLOR);
             tag_browser->labeltype(FL_NORMAL_LABEL);
-            tag_browser->labelfont(0);
-            tag_browser->labelsize(SCALE(14));
             tag_browser->labelcolor((Fl_Color)FL_FOREGROUND_COLOR);
             tag_browser->callback((Fl_Callback*)cb_tag_browser);
             tag_browser->align(FL_ALIGN_LEFT);
@@ -999,8 +991,6 @@ ard"));
                 table_choice->color((Fl_Color)FL_BACKGROUND_COLOR);
                 table_choice->selection_color((Fl_Color)FL_SELECTION_COLOR);
                 table_choice->labeltype(FL_NORMAL_LABEL);
-                table_choice->labelfont(0);
-                table_choice->labelsize(SCALE(14));
                 table_choice->labelcolor((Fl_Color)FL_FOREGROUND_COLOR);
                 table_choice->callback((Fl_Callback*)cb_table_choice);
                 table_choice->align(FL_ALIGN_LEFT);
@@ -1014,8 +1004,6 @@ ard"));
                 table_viewer->color((Fl_Color)FL_BACKGROUND_COLOR);
                 table_viewer->selection_color((Fl_Color)FL_BACKGROUND_COLOR);
                 table_viewer->labeltype(FL_NORMAL_LABEL);
-                table_viewer->labelfont(0);
-                table_viewer->labelsize(SCALE(14));
                 table_viewer->labelcolor((Fl_Color)FL_FOREGROUND_COLOR);
                 table_viewer->align(FL_ALIGN_LEFT);
                 table_viewer->when(FL_WHEN_RELEASE);
@@ -1026,8 +1014,6 @@ ard"));
                 table_text->color((Fl_Color)FL_BACKGROUND_COLOR);
                 table_text->selection_color((Fl_Color)FL_SELECTION_COLOR);
                 table_text->labeltype(FL_NORMAL_LABEL);
-                table_text->labelfont(0);
-                table_text->labelsize(SCALE(14));
                 table_text->labelcolor((Fl_Color)FL_FOREGROUND_COLOR);
                 table_text->callback((Fl_Callback*)cb_table_text);
                 table_text->align(FL_ALIGN_LEFT);
@@ -1045,8 +1031,6 @@ ard"));
                 table_gl->color((Fl_Color)FL_BACKGROUND_COLOR);
                 table_gl->selection_color((Fl_Color)FL_BACKGROUND_COLOR);
                 table_gl->labeltype(FL_NORMAL_LABEL);
-                table_gl->labelfont(0);
-                table_gl->labelsize(SCALE(14));
                 table_gl->labelcolor((Fl_Color)FL_FOREGROUND_COLOR);
                 table_gl->align(FL_ALIGN_LEFT);
                 table_gl->when(FL_WHEN_RELEASE);
@@ -1098,8 +1082,6 @@ ard"));
                 tag_text->color((Fl_Color)FL_BACKGROUND_COLOR);
                 tag_text->selection_color((Fl_Color)FL_SELECTION_COLOR);
                 tag_text->labeltype(FL_NORMAL_LABEL);
-                tag_text->labelfont(0);
-                tag_text->labelsize(SCALE(14));
                 tag_text->labelcolor((Fl_Color)FL_FOREGROUND_COLOR);
                 tag_text->callback((Fl_Callback*)cb_tag_text);
                 tag_text->align(FL_ALIGN_LEFT);
@@ -1111,8 +1093,6 @@ ard"));
                 tag_viewer->color((Fl_Color)FL_BACKGROUND_COLOR);
                 tag_viewer->selection_color((Fl_Color)FL_BACKGROUND_COLOR);
                 tag_viewer->labeltype(FL_NORMAL_LABEL);
-                tag_viewer->labelfont(0);
-                tag_viewer->labelsize(SCALE(14));
                 tag_viewer->labelcolor((Fl_Color)FL_FOREGROUND_COLOR);
                 tag_viewer->align(FL_ALIGN_LEFT);
                 tag_viewer->when(FL_WHEN_RELEASE);
@@ -1153,8 +1133,6 @@ ard"));
       no_box->color((Fl_Color)FL_BACKGROUND_COLOR);
       no_box->selection_color((Fl_Color)FL_BACKGROUND_COLOR);
       no_box->labeltype(FL_NORMAL_LABEL);
-      no_box->labelfont(0);
-      no_box->labelsize(SCALE(14));
       no_box->labelcolor((Fl_Color)FL_FOREGROUND_COLOR);
       no_box->align(FL_ALIGN_LEFT);
       no_box->when(FL_WHEN_RELEASE);
