@@ -68,6 +68,10 @@ getUeberHtml()
   // HTML
   html << getHtmlKopf( _("About ICC Examin") );
 
+  const char *  months[] = {
+    _("January"),_("February"),_("March"),_("April"),_("May"),_("June"),_("July"),_("August"),_("September"),_("October"),_("November"),_("December")
+  };
+
   // general informations
   html <<
 "<table cellspacing=3 cellpadding=4 width=\"100%\"> \n\
@@ -90,7 +94,7 @@ getUeberHtml()
 <br>";
   // HTML
   html << _("Date") << ": " << 
-          START_MONTH<<" "<<START_YEAR<<" - "<<DEVEL_MONTH<<" "<<DEVEL_YEAR;
+          _(START_MONTH)<<" "<<START_YEAR<<" - "<<_(DEVEL_MONTH)<<" "<<DEVEL_YEAR;
   html << " \n\
 <br> \n\
 <p>";

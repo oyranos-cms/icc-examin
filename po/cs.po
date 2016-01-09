@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: icc_examin\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2016-01-09 20:37+0100\n"
+"POT-Creation-Date: 2016-01-09 20:51+0100\n"
 "PO-Revision-Date: 2012-10-19 15:09+0100\n"
 "Last-Translator: Milan Knížek <knizek@volny.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SearchPath-0: /tmp/a\n"
 
-#: icc_ueber.cpp:478
+#: icc_ueber.cpp:482
 msgid ""
 "    ICC Examin is licensed under the GPL version 2.    Especially all icc_* "
 "files are licensed under the GPL.<br>    The other source files may contain "
@@ -38,21 +38,21 @@ msgstr "    head  head    128 File header"
 msgid "  (dE CIE 2000) averaging: "
 msgstr "  (dE CIE 2000) průměry: "
 
-#: icc_ueber.cpp:908
+#: icc_ueber.cpp:912
 #, fuzzy
 msgid ""
 "  FLTK: Bill Spitzack and others <a href=\"http://www.fltk.org\">www.fltk."
 "org</a><br/>\n"
 msgstr "  FLTK: Bill Spitzack a ostatní www.fltk.org<br>\n"
 
-#: icc_ueber.cpp:915
+#: icc_ueber.cpp:919
 #, fuzzy
 msgid ""
 "  FLU: Jason Bryan <a href=\"http://www.osc.edu/~jbryan/FLU\">www.osc.edu/"
 "~jbryan/FLU/</a><br/>\n"
 msgstr "  FLU: Jason Bryan www.osc.edu/~jbryan/FLU/<br>\n"
 
-#: icc_ueber.cpp:933
+#: icc_ueber.cpp:937
 #, fuzzy
 msgid ""
 "  FTGL: Henry Maddocks <a href=\"http://homepages.paradise.net.nz/henryj/"
@@ -60,12 +60,12 @@ msgid ""
 msgstr ""
 "  FTGL: Henry Maddocks homepages.paradise.net.nz/henryj/code/#FTGL<br>\n"
 
-#: icc_ueber.cpp:946
+#: icc_ueber.cpp:950
 #, fuzzy
 msgid "  agv 3D Navigation: Philip Winston<br/>\n"
 msgstr "  agv 3D Navigation: Philip Winston<br>\n"
 
-#: icc_ueber.cpp:966
+#: icc_ueber.cpp:970
 #, fuzzy
 msgid ""
 "  argyll: Greame Gill <a href=\"http://www.argyllcms.com\">www.argyllcms."
@@ -73,12 +73,12 @@ msgid ""
 msgstr ""
 "  argyll: Greame Gill web.access.net.au/argyll/argyllcms.html<br><br><br>\n"
 
-#: icc_ueber.cpp:952
+#: icc_ueber.cpp:956
 #, fuzzy
 msgid "  bsp rendering: Norman Chin<br/>\n"
 msgstr "  bsp rendering: Norman Chin<br>\n"
 
-#: icc_ueber.cpp:922
+#: icc_ueber.cpp:926
 #, fuzzy
 msgid ""
 "  littleCMS: Marti Maria <a href=\"http://www.littlecms.com\">www.littlecms."
@@ -93,7 +93,7 @@ msgstr "  maximum: "
 msgid "  minimum: "
 msgstr "  minimum: "
 
-#: icc_ueber.cpp:441
+#: icc_ueber.cpp:445
 msgid ""
 " The Profile identifier tag is used in device link profiles to identify the "
 "profiles used to build the device link. However there are other informations "
@@ -105,7 +105,7 @@ msgstr ""
 "uloženy i další informace nutné k opětovnému vytvoření spojovacího profilu "
 "jako např. záměry transformace, info o zachování K atd."
 
-#: icc_ueber.cpp:330
+#: icc_ueber.cpp:334
 msgid " number key - set the number of interpolation planes"
 msgstr "číselná klávesa - nastavit počet rovin interpolace"
 
@@ -146,23 +146,23 @@ msgstr "!!! CHYBA"
 msgid "!!! Warning !!!"
 msgstr "!!! Varování !!!"
 
-#: icc_ueber.cpp:339
+#: icc_ueber.cpp:343
 msgid "'*' star - larger steps for the minus and plus keys above"
 msgstr "'*' hvězdička - větší kroky pro klávesy mínus a plus"
 
-#: icc_ueber.cpp:335
+#: icc_ueber.cpp:339
 msgid "'+' plus - increase the actual interpolation plane"
 msgstr "'+' plus - zvýšit rovinu interpolace"
 
-#: icc_ueber.cpp:333
+#: icc_ueber.cpp:337
 msgid "'-' minus - reduce the actual interpolation plane"
 msgstr "'-' mínus - snížit rovinu interpolace"
 
-#: icc_ueber.cpp:337
+#: icc_ueber.cpp:341
 msgid "'/' slash - smaller steps for the minus and pus keys above"
 msgstr "'/' lomítko - menší kroky pro klávesy mínus a plus"
 
-#: icc_ueber.cpp:341
+#: icc_ueber.cpp:345
 msgid "'_' underline - switch lines between one and three directions"
 msgstr "'_' podtržítko - přepínat linie mezi jedním a třemi směry"
 
@@ -196,7 +196,7 @@ msgstr "0/45, 45/0"
 msgid "0/d or d/0"
 msgstr "0/d nebo d/0"
 
-#: icc_ueber.cpp:161 icc_ueber.cpp:231
+#: icc_ueber.cpp:165 icc_ueber.cpp:235
 msgid "1 Features"
 msgstr "1 Vlastnosti"
 
@@ -232,7 +232,7 @@ msgstr "14barevný"
 msgid "15color"
 msgstr "15barevný"
 
-#: icc_ueber.cpp:163 icc_ueber.cpp:236
+#: icc_ueber.cpp:167 icc_ueber.cpp:240
 msgid "2 Usage"
 msgstr "2 Použití"
 
@@ -240,43 +240,43 @@ msgstr "2 Použití"
 msgid "2 degree (1931)"
 msgstr "2stupňový (1931)"
 
-#: icc_ueber.cpp:167 icc_ueber.cpp:241
+#: icc_ueber.cpp:171 icc_ueber.cpp:245
 msgid "2.1 File opening"
 msgstr "2.1 Otevření souboru"
 
-#: icc_ueber.cpp:169 icc_ueber.cpp:256
+#: icc_ueber.cpp:173 icc_ueber.cpp:260
 msgid "2.2 Main window"
 msgstr "2.2 Hlavní okno"
 
-#: icc_ueber.cpp:171 icc_ueber.cpp:265
+#: icc_ueber.cpp:175 icc_ueber.cpp:269
 msgid "2.3 Complex tags navigation"
 msgstr "2.3 Kompletní údaje o štítcích"
 
-#: icc_ueber.cpp:173 icc_ueber.cpp:270
+#: icc_ueber.cpp:177 icc_ueber.cpp:274
 msgid "2.4 Windows and Views"
 msgstr "2.4 Okna a pohledy"
 
-#: icc_ueber.cpp:177 icc_ueber.cpp:272
+#: icc_ueber.cpp:181 icc_ueber.cpp:276
 msgid "2.4.1 Gamut"
 msgstr "2.4.1 Gamut"
 
-#: icc_ueber.cpp:179 icc_ueber.cpp:291
+#: icc_ueber.cpp:183 icc_ueber.cpp:295
 msgid "2.4.2 3D navigation and keys"
 msgstr "2.4.2 3D navigace a klávesy"
 
-#: icc_ueber.cpp:181 icc_ueber.cpp:346
+#: icc_ueber.cpp:185 icc_ueber.cpp:350
 msgid "2.4.3 Report View"
 msgstr "2.4.3 Zobrazení reportu"
 
-#: icc_ueber.cpp:184 icc_ueber.cpp:358
+#: icc_ueber.cpp:188 icc_ueber.cpp:362
 msgid "2.4.4 CGATS view"
 msgstr "2.4.4 Zobrazení CGATS"
 
-#: icc_ueber.cpp:186 icc_ueber.cpp:364
+#: icc_ueber.cpp:190 icc_ueber.cpp:368
 msgid "2.4.5 Grafic card gamma tables"
 msgstr "2.4.5 Gama tabulka grafické karty"
 
-#: icc_ueber.cpp:188 icc_ueber.cpp:369
+#: icc_ueber.cpp:192 icc_ueber.cpp:373
 msgid "2.4.6 Help"
 msgstr "2.4.6 Nápověda"
 
@@ -284,43 +284,43 @@ msgstr "2.4.6 Nápověda"
 msgid "2color"
 msgstr "2barevný"
 
-#: icc_ueber.cpp:193 icc_ueber.cpp:373
+#: icc_ueber.cpp:197 icc_ueber.cpp:377
 msgid "3 Profile elements"
 msgstr "3 Skladba profilu"
 
-#: icc_ueber.cpp:196 icc_ueber.cpp:375
+#: icc_ueber.cpp:200 icc_ueber.cpp:379
 msgid "3.1 Header"
 msgstr "3.1 Hlavička"
 
-#: icc_ueber.cpp:198 icc_ueber.cpp:392
+#: icc_ueber.cpp:202 icc_ueber.cpp:396
 msgid "3.2 Tag types"
 msgstr "3.2 Typy štítků"
 
-#: icc_ueber.cpp:203 icc_ueber.cpp:397
+#: icc_ueber.cpp:207 icc_ueber.cpp:401
 msgid "3.2.1 text / desc / targ / mluc"
 msgstr "3.2.1 text / desc / targ / mluc"
 
-#: icc_ueber.cpp:205 icc_ueber.cpp:403
+#: icc_ueber.cpp:209 icc_ueber.cpp:407
 msgid "3.2.2 curv"
 msgstr "3.2.2 curv"
 
-#: icc_ueber.cpp:207 icc_ueber.cpp:408
+#: icc_ueber.cpp:211 icc_ueber.cpp:412
 msgid "3.2.3 XYZ"
 msgstr "3.2.3 XYZ"
 
-#: icc_ueber.cpp:209 icc_ueber.cpp:416
+#: icc_ueber.cpp:213 icc_ueber.cpp:420
 msgid "3.2.4 mft1 / mft2"
 msgstr "3.2.4 mft1 / mft2"
 
-#: icc_ueber.cpp:211 icc_ueber.cpp:427
+#: icc_ueber.cpp:215 icc_ueber.cpp:431
 msgid "3.2.5 sf32"
 msgstr "3.2.5 sf32"
 
-#: icc_ueber.cpp:213 icc_ueber.cpp:433
+#: icc_ueber.cpp:217 icc_ueber.cpp:437
 msgid "3.2.6 ncl2"
 msgstr "3.2.6 ncl2"
 
-#: icc_ueber.cpp:215 icc_ueber.cpp:439
+#: icc_ueber.cpp:219 icc_ueber.cpp:443
 msgid "3.2.7 psid"
 msgstr "3.2.7 psid"
 
@@ -332,19 +332,19 @@ msgstr "3D vyhledávací tabulka s"
 msgid "3color"
 msgstr "3barevný"
 
-#: icc_ueber.cpp:220 icc_ueber.cpp:447
+#: icc_ueber.cpp:224 icc_ueber.cpp:451
 msgid "4 Other file formats"
 msgstr "4 Jiné formáty souborů"
 
-#: icc_ueber.cpp:284
+#: icc_ueber.cpp:288
 msgid "4 rendering intents + BPC"
 msgstr "4 záměry transformace + BPC"
 
-#: icc_ueber.cpp:224 icc_ueber.cpp:450
+#: icc_ueber.cpp:228 icc_ueber.cpp:454
 msgid "4.1 Measurements CGATS"
 msgstr "4.1 Měření CGATS"
 
-#: icc_ueber.cpp:226 icc_ueber.cpp:455
+#: icc_ueber.cpp:230 icc_ueber.cpp:459
 msgid "4.2 Model VRML"
 msgstr "4.2 Model VRML"
 
@@ -399,7 +399,7 @@ msgstr "@2>"
 msgid "@8>"
 msgstr "@8>"
 
-#: icc_ueber.cpp:457
+#: icc_ueber.cpp:461
 msgid ""
 "A subset of vrml alias wrl files is parsed. It allowes to open colour gamuts "
 "produced with argyll and saved with ICC Examin."
@@ -425,7 +425,7 @@ msgid "Abstract"
 msgstr "Abstraktní"
 
 #. HTML
-#: icc_ueber.cpp:883
+#: icc_ueber.cpp:887
 msgid "Acknowledgement"
 msgstr "Poděkování"
 
@@ -443,7 +443,7 @@ msgstr "Monitor s aktivní maticí"
 msgid "Add to Favorites"
 msgstr "Přidat do záložek"
 
-#: icc_ueber.cpp:314
+#: icc_ueber.cpp:318
 msgid "Additional keys:"
 msgstr "Další klávesy:"
 
@@ -465,7 +465,7 @@ msgstr ""
 "cie,nCIE,oRPT,DLY,LAB,Q60})\tGamuty Argyll (*.{wrl,vrml,wrl.gz,vrml."
 "gz}\tObrázky (*.png,ppm,pnm,pgm,pfm)"
 
-#: icc_ueber.cpp:405
+#: icc_ueber.cpp:409
 msgid ""
 "An other type are curves. They are shown as such. Note the coordinates are "
 "all normalised to 0.0 -&gt; 1.0."
@@ -473,9 +473,17 @@ msgstr ""
 "Dalším typem jsou křivky, které se jako takové i zobrazí (souřadnice jsou "
 "normalizovány na interval 0.0 -&gt; 1.0)."
 
+#: icc_ueber.cpp:72
+msgid "April"
+msgstr ""
+
 #: icc_profile_header.cpp:252
 msgid "Attributes:  "
 msgstr "Atributy:    "
+
+#: icc_ueber.cpp:72
+msgid "August"
+msgstr ""
 
 #: icc_measurement.cpp:1512
 msgid "B"
@@ -494,7 +502,7 @@ msgstr "Pozadí"
 msgid "Background colour"
 msgstr "Barva pozadi"
 
-#: icc_ueber.cpp:394
+#: icc_ueber.cpp:398
 msgid ""
 "Below the header, which behaves like a fixed tag, are the variable tags "
 "listed. They appear in the same order as in the file. Starting with the tag "
@@ -581,7 +589,7 @@ msgstr "CIE y"
 msgid "CIE*Lab"
 msgstr "CIE*Lab"
 
-#: icc_ueber.cpp:327
+#: icc_ueber.cpp:331
 msgid "CLUT table line mode:"
 msgstr "Liniový režim tabulky CLUT:"
 
@@ -655,7 +663,7 @@ msgstr "Cmy"
 msgid "Cmyk"
 msgstr "Cmyk"
 
-#: icc_ueber.cpp:124
+#: icc_ueber.cpp:128
 msgid ""
 "Color profiles are often available from manufacturers of optical devices "
 "(digital camera, scanner, printer). With ICC Examin you can get an "
@@ -706,7 +714,7 @@ msgstr "Data z barvového měření"
 msgid "Colour r"
 msgstr "Barva r"
 
-#: icc_ueber.cpp:322
+#: icc_ueber.cpp:326
 msgid "Colour spots can be enlarged or made smaller by pressing + or -."
 msgstr "Barvové body mohou být zvětšeny či zmenšeny pomocí kláves + a -."
 
@@ -715,7 +723,7 @@ msgid "Compare Measurement <-> Profile Colours"
 msgstr "Porovnat měření <-> barvy profilu"
 
 #. HTML
-#: icc_ueber.cpp:982 icc_ueber.cpp:990
+#: icc_ueber.cpp:986 icc_ueber.cpp:994
 msgid "Configure Log"
 msgstr "Konfigurovat záznam událostí"
 
@@ -757,13 +765,17 @@ msgid "Dark gray"
 msgstr "Tmavá šeď"
 
 #. HTML
-#: icc_ueber.cpp:92
+#: icc_ueber.cpp:96
 msgid "Date"
 msgstr "Datum"
 
 #: icc_profile_header.cpp:246
 msgid "Date:        "
 msgstr "Datum:       "
+
+#: icc_ueber.cpp:72
+msgid "December"
+msgstr ""
 
 #: icc_helfer.cpp:593
 msgid "Description"
@@ -825,7 +837,11 @@ msgstr "Nalezena chyba ve štítku profilu ICC!"
 msgid "Favorites"
 msgstr "Záložky"
 
-#: icc_ueber.cpp:279 icc_betrachter.cxx:421 icc_betrachter.cxx:652
+#: icc_ueber.cpp:72
+msgid "February"
+msgstr ""
+
+#: icc_ueber.cpp:283 icc_betrachter.cxx:421 icc_betrachter.cxx:652
 msgid "File"
 msgstr "Soubor"
 
@@ -858,7 +874,7 @@ msgstr "Jméno souboru (jiný typ)"
 msgid "Filename:"
 msgstr "Jméno souboru:"
 
-#: icc_ueber.cpp:253
+#: icc_ueber.cpp:257
 msgid ""
 "Files once loaded are observed by ICC Examin. The view will be actualised "
 "upon a modification."
@@ -889,16 +905,16 @@ msgstr "Přesvětlení"
 msgid "Flexography"
 msgstr "Flexografie"
 
-#: icc_ueber.cpp:232
+#: icc_ueber.cpp:236
 msgid "For an overview see"
 msgstr "Pro obecný přehled viz"
 
-#: icc_ueber.cpp:961
+#: icc_ueber.cpp:965
 #, fuzzy
 msgid "For the visualisation of gamut (external):<br/>\n"
 msgstr "Pro vizualizaci gamutu (externí):<br>\n"
 
-#: icc_ueber.cpp:243
+#: icc_ueber.cpp:247
 msgid ""
 "From the application windows menubar you can select File-&gt;Open and to "
 "show file dialog. Select one or more files for gamut comparision as you "
@@ -918,7 +934,7 @@ msgstr ""
 "kliknutím na tlačítko Přidat poté, co označíte příslušný adresář myší. "
 "Přidaný adresář se objeví v seznamu záložek pro budoucí použití."
 
-#: icc_ueber.cpp:311
+#: icc_ueber.cpp:315
 msgid ""
 "From the context menu (ctrl+left mouse button or right mouse button) you can "
 "select the average human (CIE standard observer) visible spectral colours as "
@@ -928,7 +944,7 @@ msgstr ""
 "můžete zobrazit čáru představující viditelné spektrální barvy dle definice "
 "standardního pozorovatele (CIE)."
 
-#: icc_ueber.cpp:282
+#: icc_ueber.cpp:286
 msgid "Full screen mode"
 msgstr "Celoobrazovkový režim"
 
@@ -974,7 +990,7 @@ msgstr "Varování gamutu"
 msgid "Gamut selector"
 msgstr "Volba gamutu"
 
-#: icc_ueber.cpp:316
+#: icc_ueber.cpp:320
 msgid "Gamut view:"
 msgstr "Zobrazení gamutu:"
 
@@ -1023,7 +1039,7 @@ msgstr "Dokumenty HTML (*.htm*)"
 
 #. HTML
 #. Fl_Help_View* ueber_html
-#: icc_ueber.cpp:151 icc_betrachter.cxx:677 icc_betrachter.cxx:679
+#: icc_ueber.cpp:155 icc_betrachter.cxx:677 icc_betrachter.cxx:679
 #: icc_betrachter.cxx:783
 msgid "Help"
 msgstr "Nápověda"
@@ -1056,11 +1072,11 @@ msgid "ICC Examin Object"
 msgstr "ICC Examin"
 
 #. HTML
-#: icc_ueber.cpp:79
+#: icc_ueber.cpp:83
 msgid "ICC Examin Version"
 msgstr "ICC Examin Verze"
 
-#: icc_ueber.cpp:238
+#: icc_ueber.cpp:242
 msgid ""
 "ICC Examin can be launched from the Application folder or Dock on osX and "
 "from the Graphics menu on Linux. It should as well register as viewer for "
@@ -1070,11 +1086,11 @@ msgstr ""
 "na Linuxu. Měl by být též zaregistrován jako prohlížeč profilů ICC, textů "
 "CGATS a souborů VRML Gamut."
 
-#: icc_ueber.cpp:154
+#: icc_ueber.cpp:158
 msgid "ICC Examin is a colour profile viewer."
 msgstr "ICC Examin je prohlížeč barvových profilů."
 
-#: icc_ueber.cpp:105
+#: icc_ueber.cpp:109
 msgid ""
 "ICC Examin is a viewer for colour profiles according to ICC standard  - www."
 "color.org . At the moment version 2 and version 4 profiles are supported."
@@ -1087,12 +1103,12 @@ msgstr ""
 msgid "ICC Examin output filter"
 msgstr "ICC Examin Verze"
 
-#: icc_ueber.cpp:903
+#: icc_ueber.cpp:907
 #, fuzzy
 msgid "ICC Examin uses following libraries:<br/>\n"
 msgstr "ICC Examin používá následující knihovny:<br>\n"
 
-#: icc_ueber.cpp:245
+#: icc_ueber.cpp:249
 msgid ""
 "ICC Examin's file selector is designed to work like a browser. Every new "
 "selected file is instantly shown in the aaplication for quick comparisions. "
@@ -1114,7 +1130,7 @@ msgstr "Barvové profily ICC (*.ic*)"
 msgid "ICC profile header"
 msgstr "hlavička profilu ICC"
 
-#: icc_ueber.cpp:249
+#: icc_ueber.cpp:253
 msgid ""
 "ICC profiles can be loaded many for gamut comparisions. A named colour "
 "profile will only be accepted in the first position. Loading a CGATS "
@@ -1129,7 +1145,7 @@ msgstr ""
 "většina standardních profilů CMYK, mají data měření již vložena v souboru "
 "profilu."
 
-#: icc_ueber.cpp:383
+#: icc_ueber.cpp:387
 msgid "ICC standard version"
 msgstr "verze standardu ICC"
 
@@ -1137,7 +1153,7 @@ msgstr "verze standardu ICC"
 msgid "ITU-R BT.709"
 msgstr "ITU-R BT.709"
 
-#: icc_ueber.cpp:312
+#: icc_ueber.cpp:316
 msgid ""
 "If meashurements are shown, the spot radius can be selected from the context "
 "menu. This is handy to easily detect dE's of above 2 or 4. The connection "
@@ -1147,7 +1163,7 @@ msgstr ""
 "menu. Tímto lze snadno identifikovat odchylku (dE) větší než 2 či 4. "
 "Spojnice vychází z bodu měření (bíle) do bodu odchylky profilu (červeně)."
 
-#: icc_ueber.cpp:348
+#: icc_ueber.cpp:352
 msgid ""
 "If the profile contains measurements a report is generated. You reach this "
 "by selecting from the top menu View-&gt;Report. These measurement data are "
@@ -1210,7 +1226,7 @@ msgstr "Illuminant:  "
 msgid "Illustration"
 msgstr "Ilustrace"
 
-#: icc_ueber.cpp:306
+#: icc_ueber.cpp:310
 msgid ""
 "Illustration submenu, with the background colour selection and text/marker "
 "switching off and on"
@@ -1225,7 +1241,7 @@ msgstr "Profil obrázku..."
 msgid "Image[iemn_filter]"
 msgstr ""
 
-#: icc_ueber.cpp:258
+#: icc_ueber.cpp:262
 msgid ""
 "In normal mode ICC Examin shows first the tag list with the tag viewer "
 "below. Over the tag list resides the applications menubar."
@@ -1264,7 +1280,7 @@ msgstr "Záměr:       "
 msgid "Internal error"
 msgstr "Vnitřní chyba"
 
-#: icc_ueber.cpp:156
+#: icc_ueber.cpp:160
 msgid ""
 "It shows the internals of binary encoded ICC profiles to get an idea about "
 "its capabilities."
@@ -1272,13 +1288,25 @@ msgstr ""
 "Zobrazuje interní údaje binárně zakódovaných v profilech ICC, čímž umožňuje "
 "získat představu ohledně jejich použití."
 
-#: icc_ueber.cpp:459
+#: icc_ueber.cpp:463
 msgid ""
 "It would be nice to allow as well lines to get parsed, which are used for "
 "visualisations by iccview for instance."
 msgstr ""
 "Bylo by pěkné umožnit též analýzu \"řádků/čar\", které jsou např. použity "
 "pro vizualizace programem iccview. "
+
+#: icc_ueber.cpp:72
+msgid "January"
+msgstr ""
+
+#: icc_ueber.cpp:72
+msgid "July"
+msgstr ""
+
+#: icc_ueber.cpp:72
+msgid "June"
+msgstr ""
 
 #: icc_measurement.cpp:1517
 msgid "K"
@@ -1305,7 +1333,7 @@ msgid "Lab"
 msgstr "Lab"
 
 #. Fl_Help_View* hilfe_html
-#: icc_ueber.cpp:472 icc_betrachter.cxx:680 icc_betrachter.cxx:789
+#: icc_ueber.cpp:476 icc_betrachter.cxx:680 icc_betrachter.cxx:789
 msgid "License"
 msgstr "Licence"
 
@@ -1395,7 +1423,7 @@ msgstr "Luv"
 msgid "M"
 msgstr "M"
 
-#: icc_ueber.cpp:418
+#: icc_ueber.cpp:422
 msgid ""
 "MFT1/2 tags are complex and contain a set of peaces to do a colour "
 "transformation. The choice button below the tag view names them. You can "
@@ -1434,6 +1462,10 @@ msgstr "Výrobce:     "
 msgid "Manufacturer: "
 msgstr "Výrobce:      "
 
+#: icc_ueber.cpp:72
+msgid "March"
+msgstr "březen"
+
 #: icc_profile_tags.cpp:286 icc_profile_tags.cpp:305
 msgid "Matrix"
 msgstr "Matice"
@@ -1441,6 +1473,10 @@ msgstr "Matice"
 #: icc_examin_tagwahl.cpp:683
 msgid "Matrix 3x3 + 3"
 msgstr "Matice 3x3 + 3"
+
+#: icc_ueber.cpp:72
+msgid "May"
+msgstr "květen"
 
 #: oyranos_cmm_iemn.c:252
 #, fuzzy
@@ -1460,7 +1496,7 @@ msgstr "Změřené barvy"
 msgid "Measurement"
 msgstr "Měření"
 
-#: icc_ueber.cpp:452
+#: icc_ueber.cpp:456
 msgid ""
 "Measurement data in CGATS format can be opened in ICC Examin. In the file "
 "selector is a dedicated filter available. The data are shown as text and in "
@@ -1507,7 +1543,7 @@ msgstr "Model:       "
 msgid "Monitor Profile"
 msgstr "Profil monitoru"
 
-#: icc_ueber.cpp:352
+#: icc_ueber.cpp:356
 msgid ""
 "More comparision styles would be nice in giving better meaning for varying "
 "criteria. The differences are summarised in the reports top lines. Each like "
@@ -1525,11 +1561,11 @@ msgstr ""
 msgid "More indepth help  for My example filter."
 msgstr ""
 
-#: icc_ueber.cpp:444
+#: icc_ueber.cpp:448
 msgid "More tags can follow here..."
 msgstr "Další štítky mohou následovat zde..."
 
-#: icc_ueber.cpp:251
+#: icc_ueber.cpp:255
 msgid "Multiple CGATS measurements can be loaded at once"
 msgstr "Současně může být načteno vícero měření CGATS"
 
@@ -1537,7 +1573,7 @@ msgstr "Současně může být načteno vícero měření CGATS"
 msgid "My Computer"
 msgstr "Můj počítač"
 
-#: icc_ueber.cpp:889
+#: icc_ueber.cpp:893
 msgid ""
 "My cordially thank is especially dedicated to Marti Maria and the many "
 "writers of the Lcms-user email list."
@@ -1577,7 +1613,7 @@ msgstr "Pořadí pojmenovaných barev"
 msgid "Native Gamut"
 msgstr "Nativní gamut"
 
-#: icc_ueber.cpp:285
+#: icc_ueber.cpp:289
 msgid ""
 "Native or separation Gamut. The later is the inbuild default. The native "
 "colour gamut can only be created when iccgamut from ArgyllCMS is available."
@@ -1607,7 +1643,7 @@ msgstr "Obrázek nemá přiřazen profil."
 msgid "No. Tag   Type   Size Description"
 msgstr "Č.  Šť.   Typ     Vel. Popis"
 
-#: icc_ueber.cpp:413
+#: icc_ueber.cpp:417
 msgid ""
 "Note: primaries and some curves are grouped to better understand their "
 "meaning in the profile."
@@ -1615,7 +1651,11 @@ msgstr ""
 "Pozn.: primární barvy a některé křivky jsou seskupeny, aby byl zřejmější "
 "jejich význam v profilu a vzájemný vztah."
 
-#: icc_ueber.cpp:378
+#: icc_ueber.cpp:72
+msgid "November"
+msgstr ""
+
+#: icc_ueber.cpp:382
 msgid ""
 "Now you see the tag list has obtained some entries, showing the profiles "
 "tags. The first entry is allways the header. If the header is selected the "
@@ -1642,12 +1682,16 @@ msgstr "Počet výstupních kanálů"
 msgid "OK"
 msgstr "OK"
 
+#: icc_ueber.cpp:72
+msgid "October"
+msgstr ""
+
 #. grav
 #: icc_helfer.cpp:737
 msgid "Offset Lithography"
 msgstr "Offsetová litografie"
 
-#: icc_ueber.cpp:262
+#: icc_ueber.cpp:266
 msgid "On the bottom you see the status area of the window."
 msgstr "Úplně dole se zobrazuje stav aplikace."
 
@@ -1801,7 +1845,7 @@ msgstr "Profil simulace zobrazení..."
 msgid "Quit"
 msgstr "Ukončit"
 
-#: icc_ueber.cpp:280
+#: icc_ueber.cpp:284
 msgid "Quit - allowes for exiting the application"
 msgstr "Ukončit - umožní zavřít aplikaci."
 
@@ -1913,6 +1957,10 @@ msgstr "Obrazovka:"
 msgid "Separation"
 msgstr "Separace"
 
+#: icc_ueber.cpp:72
+msgid "September"
+msgstr ""
+
 #: icc_oyranos.cpp:699
 msgid "Serial:"
 msgstr "Sériové č.:"
@@ -1929,7 +1977,7 @@ msgid ""
 msgstr ""
 "Nastavit aktuální profil jako profil monitoru a načíst VCGT do video karty"
 
-#: icc_ueber.cpp:283 icc_betrachter.cxx:428 icc_betrachter.cxx:665
+#: icc_ueber.cpp:287 icc_betrachter.cxx:428 icc_betrachter.cxx:665
 msgid "Settings"
 msgstr "Nastavení"
 
@@ -1941,7 +1989,7 @@ msgstr "Zobrazit hlavní okno"
 msgid "Show all channels of this table a own window."
 msgstr "Ukázat všechny kanály této tabulky v samostatném okně."
 
-#: icc_ueber.cpp:288
+#: icc_ueber.cpp:292
 msgid "Show main application window, in case it is a icon."
 msgstr "Je-li hlavní okno aplikace minimalizováno, zobrazit jej."
 
@@ -1981,7 +2029,7 @@ msgstr "Řez"
 msgid "Slice plane"
 msgstr "Rovina řezu"
 
-#: icc_ueber.cpp:304
+#: icc_ueber.cpp:308
 msgid ""
 "Slice plane submenu, with axis slicing in fly through style and rotation"
 msgstr "Podmenu s rovinami řezu se stylem průletu řezem a rotací"
@@ -1994,7 +2042,7 @@ msgstr "Solaris"
 msgid "Some help for My example filter."
 msgstr ""
 
-#: icc_ueber.cpp:268
+#: icc_ueber.cpp:272
 msgid ""
 "Some tags contain complex data. For such tags may appear a choicebutton "
 "below the tag list. There you can select detailed views of a complex tags "
@@ -2037,7 +2085,7 @@ msgstr "Nastala std. výjimka: "
 msgid "Stop loading "
 msgstr "Zastavit načítání"
 
-#: icc_ueber.cpp:350
+#: icc_ueber.cpp:354
 msgid ""
 "Such a comparision from device colours + measurements colours on the one "
 "side and device + profile/CMM colours on the other side are just one "
@@ -2046,11 +2094,11 @@ msgstr ""
 "Porovnání údajů z barev zařízení + měření na straně jedné a barev zařízení + "
 "CMM na straně druhé je jednou z možných metod kontroly kvality profilu."
 
-#: icc_ueber.cpp:159
+#: icc_ueber.cpp:163
 msgid "Table of contents"
 msgstr "Obsah"
 
-#: icc_ueber.cpp:400
+#: icc_ueber.cpp:404
 msgid ""
 "Tags of type text are the most simple ones. They include informations about "
 "the profile like License informations, Description for displaying on behalf "
@@ -2087,7 +2135,7 @@ msgstr ""
 "Plugin \"rawphoto\" nebude fungovat protože program \"dcraw\" není v "
 "prohledávané cestě."
 
-#: icc_ueber.cpp:275
+#: icc_ueber.cpp:279
 msgid ""
 "The 3D gamut viewer can be selected from the menu bar Window &gt; Gamut. It "
 "shows the gamut of the device described by the profile with the absolute "
@@ -2104,7 +2152,7 @@ msgid ""
 "system."
 msgstr ""
 
-#: icc_ueber.cpp:420
+#: icc_ueber.cpp:424
 msgid ""
 "The CLUT view has various options to visualise the table. For instance you "
 "can make table appear coloured or select a channel of choice. The numbers in "
@@ -2114,11 +2162,11 @@ msgstr ""
 "tabulku obarvenou či vybrat pouze konkrétní kanál. Čísla ve stavovém okně "
 "jsou normalizována do intervalu 0.0 -&gt; 1.0."
 
-#: icc_ueber.cpp:278
+#: icc_ueber.cpp:282
 msgid "The Gamut Menus"
 msgstr "Menu pro gamut"
 
-#: icc_ueber.cpp:371
+#: icc_ueber.cpp:375
 msgid ""
 "The Help menus About button shows a short overview, license and other "
 "programers acknowledgement, who helped with providing theyre code for free."
@@ -2126,7 +2174,7 @@ msgstr ""
 "Tlačítko O aplikaci... v menu Nápověda zobrazí stručný přehled, licenci a "
 "poděkování dalším programátorům, kteří zdarma pomohli svým kódem."
 
-#: icc_ueber.cpp:112
+#: icc_ueber.cpp:116
 msgid ""
 "The appliance of color profiles shall help to achive an easy color data "
 "exchange, regardless which application or what kind of operating system is "
@@ -2142,7 +2190,7 @@ msgstr ""
 "transformace barev z jednoho na druhé zařízení závisí především na kvalitě "
 "měření barev a použitém algoritmu během tvorby profilu."
 
-#: icc_ueber.cpp:135
+#: icc_ueber.cpp:139
 msgid ""
 "The color transformations are realised with littleCMS through the Oyranos "
 "CMM API."
@@ -2150,7 +2198,7 @@ msgstr ""
 "Barvové transformace jsou uskutečněny pomocí littleCMS prostřednictvím API "
 "CMM Oyranosu."
 
-#: icc_ueber.cpp:276
+#: icc_ueber.cpp:280
 msgid "The colour space shown is allways in CIE*Lab coordinates. "
 msgstr "Zobrazený barvový prostor je vždy v souřadnicích CIE*Lab."
 
@@ -2158,7 +2206,7 @@ msgstr "Zobrazený barvový prostor je vždy v souřadnicích CIE*Lab."
 msgid "The filter allows to visually observe a images colours."
 msgstr ""
 
-#: icc_ueber.cpp:366
+#: icc_ueber.cpp:370
 msgid ""
 "The gamma tables in the grafic card are shown in an external window, "
 "callable from the View menu. It shows on osX/XFree86/Xorg the RGB "
@@ -2189,7 +2237,7 @@ msgstr ""
 "shodné kalibrační křivky jako jsou tabulky gama grafické karty, případně by "
 "tabulky gama grafické karty měly být lineární či by neměly existovat."
 
-#: icc_ueber.cpp:361
+#: icc_ueber.cpp:365
 msgid ""
 "The measurement data is taken from the profile, if available, and "
 "transformed to fit in the CGATS standard. A window can be called from the "
@@ -2199,7 +2247,7 @@ msgstr ""
 "standardu CGATS. Okno se zobrazením upravených dat měření lze otevřít pomocí "
 "menu Zobrazit."
 
-#: icc_ueber.cpp:436
+#: icc_ueber.cpp:440
 msgid ""
 "The ncl2 tag is used to store named colours in a list. This can be used to "
 "describe spot colours or describe a painters palette. Loading a profile "
@@ -2213,11 +2261,11 @@ msgstr ""
 "gamutu. Barvy jsou pak zobrazeny v 3D (CIE*Lab) a ne jako seznam čísel jako "
 "v prohlížeči štítku."
 
-#: icc_ueber.cpp:354
+#: icc_ueber.cpp:358
 msgid "The report can be exported from the File menu in html format."
 msgstr "Report může být vyexportován ve formátu HTML pomocí menu Soubor."
 
-#: icc_ueber.cpp:424
+#: icc_ueber.cpp:428
 msgid ""
 "The tag is described in in verson 2 of the ICC specification. In ICC "
 "specification version 4 a new even more complex tag is introduced and is "
@@ -2231,7 +2279,7 @@ msgstr ""
 msgid "Thermal wax printer"
 msgstr "Tepelná vosková tiskárna"
 
-#: icc_ueber.cpp:422
+#: icc_ueber.cpp:426
 msgid ""
 "They contain the result of hard work in researching the best translation of "
 "scattered measurements to equally spaced grid tables. Only this step makes "
@@ -2241,7 +2289,7 @@ msgstr ""
 "dat měření do tabulek s rovnoměrně rozloženým krokem. Tento  krok umožňuje "
 "barvové transformace s rozumnou rychlostí."
 
-#: icc_ueber.cpp:293
+#: icc_ueber.cpp:297
 msgid "To navigate arround in a 3D view use the:"
 msgstr "Pro navigaci v 3D použijte:"
 
@@ -2253,7 +2301,7 @@ msgstr "průhledné, "
 msgid "VRML Files (*.wrl)"
 msgstr "Soubory VRML (*.wrl)"
 
-#: icc_ueber.cpp:247
+#: icc_ueber.cpp:251
 msgid ""
 "VRML file are selectable alone. ICC Examin will not accept mixing with other "
 "files. The VRML gamut hull's from ArgyllCMS are the only known supported "
@@ -2290,7 +2338,7 @@ msgstr "Gama tabulka graf. karty"
 msgid "Videocard Gamma"
 msgstr "Gama video karty"
 
-#: icc_ueber.cpp:281 icc_betrachter.cxx:425 icc_betrachter.cxx:660
+#: icc_ueber.cpp:285 icc_betrachter.cxx:425 icc_betrachter.cxx:660
 msgid "View"
 msgstr "Zobrazit"
 
@@ -2345,7 +2393,7 @@ msgstr "Bílá"
 msgid "Whole Screen on/off"
 msgstr "Celá obrazovka zap./vyp."
 
-#: icc_ueber.cpp:286 icc_betrachter.cxx:436 icc_betrachter.cxx:669
+#: icc_ueber.cpp:290 icc_betrachter.cxx:436 icc_betrachter.cxx:669
 msgid "Windows"
 msgstr "Okna"
 
@@ -2370,7 +2418,7 @@ msgstr "X'"
 msgid "XYZ"
 msgstr "XYZ"
 
-#: icc_ueber.cpp:411
+#: icc_ueber.cpp:415
 msgid ""
 "XYZ tags show things like Mediawhitepoint or Primaries of monitors in the "
 "CIE*xy diagram. This diagram shows only the hue and intensity part of the "
@@ -2407,7 +2455,7 @@ msgstr "Žlutá"
 msgid "Yes"
 msgstr "Ano"
 
-#: icc_ueber.cpp:260
+#: icc_ueber.cpp:264
 msgid ""
 "You can select an tag from the taglist and watch its content in the tag "
 "window below."
@@ -2437,7 +2485,7 @@ msgstr "a"
 msgid "a'"
 msgstr "a'"
 
-#: icc_ueber.cpp:389
+#: icc_ueber.cpp:393
 msgid "and some more or less meaningfull informations"
 msgstr "a další více či méně smysluplné informace"
 
@@ -2501,15 +2549,15 @@ msgstr "dE Lab"
 msgid "dE2000"
 msgstr "dE2000"
 
-#: icc_ueber.cpp:387
+#: icc_ueber.cpp:391
 msgid "date of creation"
 msgstr "datum vytvoření"
 
-#: icc_ueber.cpp:385
+#: icc_ueber.cpp:389
 msgid "device colour space"
 msgstr "barvový prostor zařízení"
 
-#: icc_ueber.cpp:318
+#: icc_ueber.cpp:322
 msgid "down key - reduce the slice plane distance"
 msgstr "šipka dolů - zmenšit vzdálenost roviny řezu"
 
@@ -2522,7 +2570,7 @@ msgstr "elementy"
 msgid "empty"
 msgstr "prázdné"
 
-#: icc_ueber.cpp:321
+#: icc_ueber.cpp:325
 msgid "end key - set the slice plane distance to center"
 msgstr "klávesa End - vycentrovat vzdálenost roviny řezu"
 
@@ -2535,7 +2583,7 @@ msgstr "nastala výjimka:"
 msgid "file size 0 for "
 msgstr "velikost souboru 0 pro"
 
-#: icc_ueber.cpp:388
+#: icc_ueber.cpp:392
 msgid "file type sinature (allways acsp)"
 msgstr "file type signature (vždy acsp)"
 
@@ -2572,11 +2620,11 @@ msgstr ""
 msgid "high contrast"
 msgstr "vysoký kontrast"
 
-#: icc_ueber.cpp:320
+#: icc_ueber.cpp:324
 msgid "home key - reset the slice plane distance"
 msgstr "klávesa Home - výchozí vzdálenost roviny řezu"
 
-#: icc_ueber.cpp:941
+#: icc_ueber.cpp:945
 #, fuzzy
 msgid ""
 "integrated sources, lock at the according files for licence conditions:<br/"
@@ -2584,7 +2632,7 @@ msgid ""
 msgstr ""
 "včleněné zdrojové kódy, viz přislušné soubory s podmínkami licence:<br>\n"
 
-#: icc_ueber.cpp:99
+#: icc_ueber.cpp:103
 #, fuzzy
 msgid ""
 "internet: <a href=\"http://www.oyranos.org/icc-examin\">www.oyranos.org/icc-"
@@ -2599,7 +2647,7 @@ msgstr "neviditelný box"
 msgid "is not valid for an"
 msgstr "není platná pro"
 
-#: icc_ueber.cpp:384
+#: icc_ueber.cpp:388
 msgid "kind of usage"
 msgstr "typ použití"
 
@@ -2608,7 +2656,7 @@ msgstr "typ použití"
 msgid "left mouse button -> go back"
 msgstr "levé tlačítko myši -> jít zpět"
 
-#: icc_ueber.cpp:296
+#: icc_ueber.cpp:300
 msgid "left mouse button to rotate"
 msgstr "levé tlačítko myši pro rotaci"
 
@@ -2634,7 +2682,7 @@ msgstr "načteno"
 msgid "matte, "
 msgstr "matné, "
 
-#: icc_ueber.cpp:298
+#: icc_ueber.cpp:302
 msgid "middle mouse button or Shift+left mouse button to move/clip"
 msgstr "střední tlačítko myši nebo shift + levé tlačítko myši pro pohyb/ořez"
 
@@ -2739,7 +2787,7 @@ msgstr "psd3"
 msgid "reset to standard gamma"
 msgstr "obnovit standardní gama"
 
-#: icc_ueber.cpp:300
+#: icc_ueber.cpp:304
 msgid ""
 "right mouse button/ Strg+left mouse button to obtain additional menus. Among "
 "the additional menus are in:"
@@ -2759,7 +2807,7 @@ msgstr "scrn"
 msgid "seconds"
 msgstr "sekund"
 
-#: icc_ueber.cpp:430
+#: icc_ueber.cpp:434
 msgid ""
 "sf32 and similiar tags may contain only numbers. Theyre interpretation "
 "depends on the name of the tag. For instance the tag named chad is used to "
@@ -2779,19 +2827,19 @@ msgstr "kroky"
 msgid "tag list is corrupted for tag"
 msgstr "Seznam štítků je poškozen u štítku"
 
-#: icc_ueber.cpp:381
+#: icc_ueber.cpp:385
 msgid "the internal stored size of the profile"
 msgstr "interně uložená velikost profilu"
 
-#: icc_ueber.cpp:386
+#: icc_ueber.cpp:390
 msgid "the internal used reference colour space"
 msgstr "interně použitý referenční barvový prostor"
 
-#: icc_ueber.cpp:382
+#: icc_ueber.cpp:386
 msgid "the prefered ColourMatchingModule (CMM)"
 msgstr "Upřednostňovaný modul správy barev (CMM)"
 
-#: icc_ueber.cpp:302
+#: icc_ueber.cpp:306
 msgid "top menu: the channel selection if appropriate"
 msgstr "vrchní menu: volba kanálu (jeli k dispozici)"
 
@@ -2803,7 +2851,7 @@ msgstr "neznámý"
 msgid "unknown Colour"
 msgstr "neznamá barva"
 
-#: icc_ueber.cpp:319
+#: icc_ueber.cpp:323
 msgid "up key - increase the slice plane distance"
 msgstr "šipka nahoru - zvětšit vzdálenost roviny řezu"
 
@@ -2836,12 +2884,6 @@ msgstr "chybná velikost štítku v profilu"
 
 #~ msgid "Links"
 #~ msgstr "Odkazy"
-
-#~ msgid "March"
-#~ msgstr "březen"
-
-#~ msgid "May"
-#~ msgstr "květen"
 
 #~ msgid "Project"
 #~ msgstr "Projekt"
