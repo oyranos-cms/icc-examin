@@ -365,10 +365,11 @@ ICCexamin::start (int argc, char** argv)
 
 
   // get high DPI infos for windows width and font scaling
-  cout << " sys_scale: " << getSysScale() << " user_scale: " << getScale() << endl;
   scale = getSysScale() * getScale();
   // setup font size before any widget creation
   FL_NORMAL_SIZE = SCALE(14);
+  iccMessageFunc( ICC_MSG_DBG, NULL, " sys_scale: %.02f  user_scale: %.02f",
+                  getSysScale(), getScale() );
 
 
   icc_betrachter->init( argc, argv );
@@ -2102,6 +2103,9 @@ event_handler(int e)
   return gefunden;
 }
 
+#if defined (HAVE_X)
+# include <X11/Xlib.h>
+#endif
 
 #if defined( HAVE_XRANDR ) || defined(HAVE_Xrandr)
   # include <X11/extensions/Xrandr.h>
@@ -2112,42 +2116,63 @@ float getSysScale()
 {
   float xdpi = 0, ydpi = 0,
         sys_scale = 1.0f;
+  float xft_dpi = 0.0f;
   Fl::screen_dpi (xdpi, ydpi);
   if(xdpi)
-    sys_scale = xdpi / 96.f;
+    sys_scale = xdpi / 96.f; // 96 DPI is a default and obstruction in Xorg ;-D
+
+# if defined(HAVE_X)
+  // check Xft settings as used by DE's and apps 
+  // tested with KDE
+  char * xdefs = XResourceManagerString (fl_display);
+  if(xdefs)
+  {
+    const char * xft = strstr(xdefs, "Xft.dpi:\t");
+    if(xft)
+    {
+      sscanf( xft, "Xft.dpi:\t%f", &xft_dpi );
+      iccMessageFunc( ICC_MSG_WARN, NULL, "Xft dpi: %f", xft_dpi );
+      sys_scale = xft_dpi / 96.0f;
+    }
+  }
+# endif
 
 # if defined(HAVE_XRANDR) || defined(HAVE_Xrandr)
   // work around for FLTK Xinarama based wrong DPI detection
-  // It reports always 96 DPI. Tested up to 1.3.3 .
-  int screen = DefaultScreen( fl_display );
-  Window w = RootWindow(fl_display, screen);
-  XRRScreenResources * res = XRRGetScreenResources(fl_display, w);
-  int first = -1;
-  for(int i=0; i < res->noutput; ++i)
+  // FLTK reports always 96 DPI. Tested up to FLTK 1.3.3 .
+  if(xft_dpi == 0.0f)
   {
-    XRROutputInfo * output_info = XRRGetOutputInfo( fl_display, res, res->outputs[i]);
-    if(output_info->crtc)
+    int screen = DefaultScreen( fl_display );
+    Window w = RootWindow(fl_display, screen);
+    XRRScreenResources * res = XRRGetScreenResources(fl_display, w);
+    int first = -1;
+    for(int i=0; i < res->noutput; ++i)
     {
-      XRRCrtcInfo * crtc_info = XRRGetCrtcInfo( fl_display, res,
-                                                output_info->crtc );
-      unsigned int pixel_width = crtc_info->width,
-                   pixel_height = crtc_info->height;
-      float xdpi = pixel_width * 25.4f / (float)output_info->mm_width,
-            ydpi = pixel_height * 25.4f / (float)output_info->mm_height;
-      printf( "[%d] %upx x %upx  Dimensions: %limm x %limm  DPI: %.02f x %.02f\n",
-              i, pixel_width, pixel_height,
-              output_info->mm_width, output_info->mm_height,
-              xdpi, ydpi );
-
-      if(first == -1)
+      XRROutputInfo * output_info = XRRGetOutputInfo( fl_display, res, res->outputs[i]);
+      if(output_info->crtc)
       {
-         first = i;
-         sys_scale = xdpi / 96.f;
+        XRRCrtcInfo * crtc_info = XRRGetCrtcInfo( fl_display, res,
+                                                  output_info->crtc );
+        unsigned int pixel_width = crtc_info->width,
+                     pixel_height = crtc_info->height;
+        float xdpi = pixel_width * 25.4f / (float)output_info->mm_width,
+              ydpi = pixel_height * 25.4f / (float)output_info->mm_height;
+        iccMessageFunc( ICC_MSG_WARN, NULL,
+                        "[%d] %upx x %upx  Dimensions: %limm x %limm  DPI: %.02f x %.02f\n",
+                        i, pixel_width, pixel_height,
+                        output_info->mm_width, output_info->mm_height,
+                        xdpi, ydpi );
+
+        if(first == -1)
+        {
+           first = i;
+           sys_scale = xdpi / 96.f;
+        }
       }
+      XRRFreeOutputInfo( output_info );
     }
-    XRRFreeOutputInfo( output_info );
+    XRRFreeScreenResources(res);
   }
-  XRRFreeScreenResources(res);
 #endif
 
   return sys_scale;
@@ -2172,7 +2197,7 @@ void setScale( float new_user_scale )
 
   scale = getSysScale() * user_scale;
 
-  printf("user_scale = %f\n", user_scale);
+  iccMessageFunc( ICC_MSG_WARN, NULL, "user_scale = %.02f", user_scale );
 
   icc_examin->updateSizes();
 }
