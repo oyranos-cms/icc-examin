@@ -1443,7 +1443,9 @@ ICCexamin::erneuerTagBrowserText_ (void)
     file_type_name = _("Filename (other data type)");
   if(profile.profil()->data_type == ICCprofile::ICCcorruptedprofileDATA)
     file_type_name = _("Filename (corrupted ICC data type)");
-  char * desc = profile.profil()->getProfileDescription();
+  oyProfile_s * p = profile.profil()->oyProfile();
+  const char * desc = oyProfile_GetText( p, oyNAME_DESCRIPTION );
+  oyProfile_Release( &p );
   if(desc)
   add_s ("@b" << desc )
   else
