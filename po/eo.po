@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2016-01-10 00:32+0100\n"
+"POT-Creation-Date: 2016-03-16 08:27+0100\n"
 "PO-Revision-Date: 2005-08-13 17:35+0200\n"
 "Last-Translator: Kai-Uwe Behrmann\n"
 "Language-Team:  <eo@li.org>\n"
@@ -1200,7 +1200,7 @@ msgstr ""
 msgid "Intent:      "
 msgstr ""
 
-#: icc_examin.cpp:1457
+#: icc_examin.cpp:1459
 msgid "Internal error"
 msgstr ""
 
@@ -1541,7 +1541,7 @@ msgid "No profil assigned to image."
 msgstr ""
 
 #. this string is sensible to formatting in the tag browser GUI, please keep a mono spaced formatting
-#: icc_examin.cpp:1460
+#: icc_examin.cpp:1462
 msgid "No. Tag   Type   Size Description"
 msgstr ""
 
@@ -2430,7 +2430,7 @@ msgstr ""
 msgid "found"
 msgstr ""
 
-#: icc_examin.cpp:1454
+#: icc_examin.cpp:1456
 msgid "found no content for"
 msgstr ""
 
@@ -2509,7 +2509,7 @@ msgstr ""
 msgid "lineare exit curve with 256 steps"
 msgstr ""
 
-#: icc_examin.cpp:527 icc_examin.cpp:1504
+#: icc_examin.cpp:527 icc_examin.cpp:1506
 msgid "loaded"
 msgstr ""
 

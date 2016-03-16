@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cinepaint_icc-examin_eu\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2016-01-10 00:32+0100\n"
+"POT-Creation-Date: 2016-03-16 08:27+0100\n"
 "PO-Revision-Date: 2007-11-07 11:11+0100\n"
 "Last-Translator: Iñaki Larrañaga Murgoitio <dooteo@zundan.com>\n"
 "Language-Team: Basque <itzulpena@euskalgnu.org>\n"
@@ -1245,7 +1245,7 @@ msgstr "Helburua:"
 msgid "Intent:      "
 msgstr "Helburua:       "
 
-#: icc_examin.cpp:1457
+#: icc_examin.cpp:1459
 msgid "Internal error"
 msgstr "Barneko errorea"
 
@@ -1596,7 +1596,7 @@ msgid "No profil assigned to image."
 msgstr "Ez dago profilik esleituta irudiari."
 
 #. this string is sensible to formatting in the tag browser GUI, please keep a mono spaced formatting
-#: icc_examin.cpp:1460
+#: icc_examin.cpp:1462
 msgid "No. Tag   Type   Size Description"
 msgstr "IDa Etik. Mota   Tam. Azalpena"
 
@@ -2503,7 +2503,7 @@ msgstr ""
 msgid "found"
 msgstr "Puntua"
 
-#: icc_examin.cpp:1454
+#: icc_examin.cpp:1456
 msgid "found no content for"
 msgstr "ez da honen edukirik aurkitu"
 
@@ -2587,7 +2587,7 @@ msgstr "sarrerako kurba lineala 256 urratsekin"
 msgid "lineare exit curve with 256 steps"
 msgstr "irteerako kurba lineala 256 urratsekin"
 
-#: icc_examin.cpp:527 icc_examin.cpp:1504
+#: icc_examin.cpp:527 icc_examin.cpp:1506
 msgid "loaded"
 msgstr "kargatuta"
 

@@ -496,10 +496,7 @@ ICCtag::getText                     (std::string text)
                                   status, size_, base );
     char **texts = 0;
     int32_t texts_n = 0;
-    const char * all_text = "";
-
-    if(icc_debug)
-      all_text = 0;
+    const char * all_text = NULL; // NULL - show all languages, "" - select actual language
 
     if(!error)
       texts = oyProfileTag_GetText( tag_, &texts_n, all_text, 0,0,0 );
