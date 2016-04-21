@@ -209,8 +209,9 @@ ICCmeasurement::copy (const ICCmeasurement& m)
     cgats = new CgatsFilter(*(m.cgats));
 
   if(m.options_)
+  {
     options_ = oyOptions_Copy( m.options_, m.options_->oy_ );
-  else
+  } else
     options_ = 0;
   
   DBG_PROG_ENDE

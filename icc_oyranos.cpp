@@ -1373,7 +1373,10 @@ oyProfile_s * Oyranos::oyMoni (int x, int y, int native)
   static oyProfile_s * prof_alt = 0;
 
   if(x == x_alt && y == y_alt && prof_alt)
-    return oyProfile_Copy( prof_alt, 0 );
+  {
+    oyProfile_Copy( prof_alt, 0 );
+    return prof_alt;
+  }
 
 #if defined(HAVE_X) && !defined(__APPLE__)
   disp_name = oyGetDisplayNameFromPosition( 0, x,y, malloc );
@@ -1424,7 +1427,8 @@ oyProfile_s * Oyranos::oyMoni (int x, int y, int native)
     prof_alt = disp_prof;
   }
 
-  return oyProfile_Copy( disp_prof, 0 );
+  oyProfile_Copy( disp_prof, 0 );
+  return disp_prof;
 }
 
 

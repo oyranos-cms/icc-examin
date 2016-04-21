@@ -88,7 +88,7 @@ class ICCprofile {
     size_t              size_;
     oyProfile_s       * profile_;
   public:
-    oyProfile_s       * oyProfile() { return oyProfile_Copy( profile_, 0 ); }
+    oyProfile_s       * oyProfile() { oyProfile_Copy( profile_, 0 ); return profile_; }
 
   private:
     ICCheader           header;

@@ -293,8 +293,9 @@ GL_View::init_()
   agv_ = this->getAgv(this, NULL);
 
   if(icc_oyranos.colourServerActive() & XCM_COLOR_SERVER_PROFILES)
+  {
     edit_ = oyProfile_Copy( icc_oyranos.getEditingProfile(0), NULL );
-  else
+  } else
     edit_ = icc_oyranos.oyMoni( x() + w() / 2, y() + h() / 2 );
 
   window_geometry = oyRectangle_NewWith( x(), y(), w(), h(), NULL );
@@ -2178,8 +2179,9 @@ GL_View::refreshPoints()
 
         oyProfile_s * prof_disp = NULL;
         if(icc_oyranos.colourServerActive() & XCM_COLOR_SERVER_PROFILES)
+        {
           prof_disp = oyProfile_Copy( edit_, NULL );
-        else
+        } else
           prof_disp = icc_oyranos.oyMoni(x,y);
 
         int nc = oyStructList_Count(colours_);
@@ -3649,8 +3651,9 @@ GL_View::setBspFaceProperties_( icc_examin_ns::FACE *faceList )
   oyProfile_s * prof = oyProfile_FromStd( oyEDITING_LAB, icc_oyranos.icc_profile_flags, 0 );
   oyProfile_s * prof_disp = NULL;
   if(icc_oyranos.colourServerActive() & XCM_COLOR_SERVER_PROFILES)
+  {
     prof_disp = oyProfile_Copy( edit_, NULL );
-  else
+  } else
     prof_disp = icc_oyranos.icc_oyranos.oyMoni(
               window()->x() + window()->w()/2, window()->y() + window()->h()/2);
   oyNamedColor_s * c = oyNamedColor_Create( 0, 0, 0, prof, 0 );
@@ -4014,8 +4017,7 @@ GL_View::menuEvents ( int value )
 # define DBG_BUTTON_S(text)
 #endif
 
-int
-GL_View::handle( int event )
+int GL_View::handle( int event )
 {
   DBG_ICCGL_START
   int mouse_button = Fl::event_state();
