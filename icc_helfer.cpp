@@ -1828,11 +1828,13 @@ unterscheideZiffernWorte ( std::string &zeile,
       int letzes_anf_zeichen = -1;
       if( anf_zaehlen )
         for( pos3 = pos2; pos3 < pos; ++pos3)
+        {
           if( zeile[pos3] == '"' &&
               letzes_anf_zeichen >= 0 )
             letzes_anf_zeichen = -1;
           else
             letzes_anf_zeichen = (int)pos3;
+        }
 
       // in case a quotation mark in front of a word is odd // ["" " ABC ]
       if( letzes_anf_zeichen >= 0 )
