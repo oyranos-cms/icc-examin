@@ -114,7 +114,7 @@ LIB=lib$BARCH
 
 UNAME_=`uname`
 if [ $UNAME_ = "MINGW32_NT-6.1" ]; then
-  PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/usr/local/lib/pkgconfig
+  PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/usr/local/$LIB/pkgconfig
 fi
 
 
@@ -194,11 +194,12 @@ export PATH PKG_CONFIG_PATH LD_LIBRARY_PATH kde_prefix
 
 # pkg-config
 packet=pkg-config
-packet_dir=$packet-0.23
+packet_dir=$packet-0.29.1
 packet_file=$packet_dir.tar.gz
 url=http://pkgconfig.freedesktop.org/releases/
 packet_ready=0
-checksum=b59dddd6b5320bd74c0f74b3339618a327096b2a
+checksum=271ce928f6d673cc16cbced2bfd14a5f2e5d3d37
+#b59dddd6b5320bd74c0f74b3339618a327096b2a
 pkg-config --version
 if [ $? -eq 0 ]; then
   echo "$packet found, skipping $packet build and installation"
@@ -229,7 +230,7 @@ else
   tar xzf $packet_file
   cd $packet_dir
    make clean
-  CFLAGS=-I./glib-1.2.10 ./configure $conf_opts $@
+  CFLAGS=-I./glib-1.2.10 ./configure --with-internal-glib $conf_opts $@
   make $MAKE_CPUS
   make install
 fi
@@ -297,7 +298,7 @@ if [ $? -gt 0 ]; then
   ftgl="FTGL is missed or not ready"
 #  stop_build=1
 fi
-pkg-config  --atleast-version=2.2 lcms2
+pkg-config  --atleast-version=2.8 lcms2
 if [ $? -eq 0 ]; then 
   lcms="littleCMS:      `pkg-config --modversion lcms2`"
 else
@@ -307,10 +308,10 @@ else
   # lcms
   echo building lcms ...
   packet=lcms2
-  packet_dir=$packet-2.2
+  packet_dir=$packet-2.8
   packet_file="$packet_dir".tar.gz
-  url="http://sourceforge.net/projects/lcms/files/lcms/2.2/"
-  checksum=55ae4884a92c7fbd491c118aa3b356814b1014df
+  url="http://sourceforge.net/projects/lcms/files/lcms/2.8/"
+  checksum=e9535ec4a572b8fc7a1c405c35e6f4dc97714197
   if [ -f $packet_file ]; then
     echo $packet_file already here
   else
@@ -401,7 +402,7 @@ else
     cd $packet_dir
     cp -a bin/* $prefix/bin/
     cp -a include/* $prefix/include/
-    cp -a lib/* $prefix/lib/
+    cp -a lib/* $prefix/$LIB/
   fi
   libpng="$packet:      `pkg-config --modversion $packet`"
   if [ $verbose -gt 0 ]; then sleep 1; fi
@@ -475,10 +476,10 @@ else
   #stop_build=1
 
   echo building $packet ...
-  packet_dir=$packet-2.8.10.2
+  packet_dir=$packet-3.6.1
   packet_file="$packet_dir".tar.gz
-  url="http://www.cmake.org/files/v2.8/"
-  checksum=2d868ccc3f9f2aa7c2844bd0a4609d5313edaaec
+  url="http://www.cmake.org/files/v3.6/"
+  checksum=a37785b3f256a31ee21a047569bc74a8f57067bb
   if [ -f $packet_file ]; then
     echo $packet_file already here
   else
@@ -628,6 +629,8 @@ git_repo=yajl
     cd build
     echo "$git_repo `pkg-config --modversion $git_repo`"
     update_oyranos=1
+    # the first cmake call finds good defaults, the second add all the script flags
+    cmake "$cmake_target" -DCMAKE_INSTALL_PREFIX="$prefix" -DLIB_SUFFIX=$BARCH -DCMAKE_BUILD_TYPE=Debug ..
     cmake "$cmake_target" -DCMAKE_C_FLAGS="$CFLAGS $OSX_ARCH_LIBRARY" -DCMAKE_CXX_FLAGS="$CXXFLAGS $OSX_ARCH_LIBRARY" -DCMAKE_LD_FLAGS="$LDFLAGS $OSX_ARCH_LIBRARY" -DCMAKE_INSTALL_PREFIX="$prefix" -DLIB_SUFFIX=$BARCH -DCMAKE_BUILD_TYPE=Debug ..
     if [ $UNAME_ = "MINGW32_NT-6.1" ]; then
       make
@@ -676,7 +679,8 @@ git_repo=libelektra
       cmake "$cmake_target" -DCMAKE_C_FLAGS="$CFLAGS" -DCMAKE_CXX_FLAGS="$CXXFLAGS" -DCMAKE_LD_FLAGS="$LDFLAGS" -DCMAKE_INSTALL_PREFIX="$prefix" -DXDG_CONFIG_DIR="$HOME/.local/xdg" -DLIB_SUFFIX=$BARCH -DCMAKE_BUILD_TYPE=Debug ..
       make
     else
-      cmake "$cmake_target" -DCMAKE_C_FLAGS="$CFLAGS $OSX_ARCH_LIBRARY" -DCMAKE_CXX_FLAGS="$CXXFLAGS $OSX_ARCH_LIBRARY" -DCMAKE_LD_FLAGS="$LDFLAGS $OSX_ARCH_LIBRARY" -DCMAKE_INSTALL_PREFIX="$prefix" -DLIB_SUFFIX=$BARCH -DCMAKE_BUILD_TYPE=Debug -DINSTALL_SYSTEM_FILES=false -DBUILD_TESTING=false -DENABLE_TESTING=OFF -DTOOLS=DEFAULT -DPLUGINS="dump;resolver;yajl;rename;struct" ..
+      cmake "$cmake_target" -DCMAKE_INSTALL_PREFIX="$prefix" -DLIB_SUFFIX=$BARCH -DCMAKE_BUILD_TYPE=Debug -DINSTALL_SYSTEM_FILES=false -DBUILD_TESTING=false -DENABLE_TESTING=OFF -DTOOLS=DEFAULT -DPLUGINS="ALL;dump;resolver;yajl;rename;struct;-passwd" ..
+      cmake "$cmake_target" -DCMAKE_C_FLAGS="$CFLAGS $OSX_ARCH_LIBRARY" -DCMAKE_CXX_FLAGS="$CXXFLAGS $OSX_ARCH_LIBRARY" -DCMAKE_LD_FLAGS="$LDFLAGS $OSX_ARCH_LIBRARY" ..
       make $MAKE_CPUS
     fi
     make install
@@ -744,7 +748,8 @@ xcalib -version
   if [ "$git_version" != "$old_git_version" ]; then
     echo "$packet `xcalib -version`"
     cd build
-    cmake "$cmake_target" -DCMAKE_C_FLAGS="$CFLAGS $OSX_ARCH_LIBRARY" -DCMAKE_CXX_FLAGS="$CXXFLAGS $OSX_ARCH_LIBRARY" -DCMAKE_LD_FLAGS="$LDFLAGS $OSX_ARCH_LIBRARY" -DCMAKE_INSTALL_PREFIX="$prefix" -DCMAKE_BUILD_TYPE=Debug ..
+    cmake "$cmake_target" -DCMAKE_INSTALL_PREFIX="$prefix" -DCMAKE_BUILD_TYPE=Debug ..
+    cmake "$cmake_target" -DCMAKE_C_FLAGS="$CFLAGS $OSX_ARCH_LIBRARY" -DCMAKE_CXX_FLAGS="$CXXFLAGS $OSX_ARCH_LIBRARY" -DCMAKE_LD_FLAGS="$LDFLAGS $OSX_ARCH_LIBRARY" -DCMAKE_BUILD_TYPE=Debug ..
     make $MAKE_CPUS
     make install
     cd "$top/$git_repo"
@@ -1018,6 +1023,7 @@ git_repo=oyranos
       cmake "$cmake_target" -DCMAKE_C_FLAGS="$CFLAGS" -DCMAKE_CXX_FLAGS="$CXXFLAGS" -DCMAKE_LD_FLAGS="$LDFLAGS" -DCMAKE_INSTALL_PREFIX="$prefix" -DXDG_CONFIG_DIR="$HOME/.local/xdg" -DLIB_SUFFIX=$BARCH -DCMAKE_BUILD_TYPE=Debug ..
       make
     else
+      ../configure $conf_opts $@  $v --enable-debug --xdgsysdir="$HOME/.local/xdg" $x11_skip
       CFLAGS="$CFLAGS $OSX_ARCH_LIBRARY" CXXFLAGS="$CXXFLAGS $OSX_ARCH_LIBRARY" LDFLAGS="$LDFLAGS $OSX_ARCH_LIBRARY" ../configure $conf_opts $@  $v --enable-debug --xdgsysdir="$HOME/.local/xdg" $x11_skip
       make $MAKE_CPUS
     fi
@@ -1115,7 +1121,8 @@ else
   old_git_version="`cat old_gitrev.txt`"
   if [ $update_oyranos = 1 ] || [ "$git_version" != "$old_git_version" ]; then
     cd build
-    cmake "$cmake_target" -DCMAKE_C_FLAGS="$CFLAGS $OSX_ARCH_LIBRARY" -DCMAKE_CXX_FLAGS="$CXXFLAGS $OSX_ARCH_LIBRARY" -DCMAKE_LD_FLAGS="$LDFLAGS $OSX_ARCH_LIBRARY" -DCMAKE_INSTALL_PREFIX=$prefix -DLIBRARY_OUTPUT_PATH=$libdir -DCMAKE_BUILD_TYPE=Debug ..
+    cmake "$cmake_target" -DCMAKE_INSTALL_PREFIX=$prefix -DLIBRARY_OUTPUT_PATH=$libdir -DCMAKE_BUILD_TYPE=Debug ..
+    cmake "$cmake_target" -DCMAKE_C_FLAGS="$CFLAGS $OSX_ARCH_LIBRARY" -DCMAKE_CXX_FLAGS="$CXXFLAGS $OSX_ARCH_LIBRARY" -DCMAKE_LD_FLAGS="$LDFLAGS $OSX_ARCH_LIBRARY" -DCMAKE_BUILD_TYPE=Debug ..
     make
     make install
     cd "$top/$git_repo"
@@ -1152,7 +1159,8 @@ else
   old_git_version="`cat old_gitrev.txt`"
   if [ $update_oyranos = 1 ] || [ "$git_version" != "$old_git_version" ]; then
     cd build
-    cmake "$cmake_target" -DCMAKE_C_FLAGS="$CFLAGS $OSX_ARCH_COCOA" -DCMAKE_CXX_FLAGS="$CXXFLAGS $OSX_ARCH_COCOA" -DCMAKE_LD_FLAGS="$LDFLAGS $OSX_ARCH_COCOA" -DCMAKE_INSTALL_PREFIX=$prefix -DCMAKE_BUILD_TYPE=Debug ..
+    cmake "$cmake_target" -DCMAKE_INSTALL_PREFIX=$prefix -DCMAKE_BUILD_TYPE=Debug ..
+    cmake "$cmake_target" -DCMAKE_C_FLAGS="$CFLAGS $OSX_ARCH_COCOA" -DCMAKE_CXX_FLAGS="$CXXFLAGS $OSX_ARCH_COCOA" -DCMAKE_LD_FLAGS="$LDFLAGS $OSX_ARCH_COCOA" -DCMAKE_BUILD_TYPE=Debug ..
     make
     make install
     cd "$top/$git_repo"
@@ -1261,7 +1269,8 @@ git_repo=icc-examin
   if [ $update_oyranos = 1 ] || [ "$git_version" != "$old_git_version" ] ||
      [ ! -f "build/$target" ]; then
     cd build
-    cmake "$cmake_target" -DCMAKE_C_FLAGS="$CFLAGS $OSX_ARCH_COCOA" -DCMAKE_CXX_FLAGS="$CXXFLAGS $OSX_ARCH_COCOA" -DCMAKE_LD_FLAGS="$LDFLAGS $OSX_ARCH_COCOA" -DCMAKE_INSTALL_PREFIX="$prefix" -DCMAKE_BUILD_TYPE=Debug ..
+    cmake "$cmake_target" -DCMAKE_INSTALL_PREFIX="$prefix" -DCMAKE_BUILD_TYPE=Debug ..
+    cmake "$cmake_target" -DCMAKE_C_FLAGS="$CFLAGS $OSX_ARCH_COCOA" -DCMAKE_CXX_FLAGS="$CXXFLAGS $OSX_ARCH_COCOA" -DCMAKE_LD_FLAGS="$LDFLAGS $OSX_ARCH_COCOA" -DCMAKE_BUILD_TYPE=Debug ..
     make $MAKE_CPUS
     if [ $? = 0 ] && [ $UNAME_ = "Darwin" ]; then
       make bundle
