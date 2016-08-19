@@ -87,11 +87,11 @@
 #endif
 #ifdef USE_GETTEXT
 # include <libintl.h>
-# define TEXTDOMAIN "icc-examin"
 # define _(text) dgettext( TEXTDOMAIN, text )
 #else
 # define _(text) text
 #endif
+#define TEXTDOMAIN "icc-examin"
 
 
 /* ByteOrder on Solaris */
