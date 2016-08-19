@@ -2105,7 +2105,7 @@ event_handler(int e)
   return gefunden;
 }
 
-#if defined (HAVE_X)
+#if defined (HAVE_X) && !defined(__APPLE__)
 # include <X11/Xlib.h>
 #endif
 
@@ -2123,7 +2123,7 @@ float getSysScale()
   if(xdpi)
     sys_scale = xdpi / 96.f; // 96 DPI is a default and obstruction in Xorg ;-D
 
-# if defined(HAVE_X)
+# if defined(HAVE_X) && !defined(__APPLE__)
   // check Xft settings as used by DE's and apps 
   // tested with KDE
   char * xdefs = XResourceManagerString (fl_display);
