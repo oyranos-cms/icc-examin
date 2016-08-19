@@ -27,7 +27,7 @@
 
 // Date:      November 2006
 
-#ifndef ICC_FATAIWAHL_H
+#ifndef ICC_DATEIWAHL_H
 #define ICC_DATEIWAHL_H
 
 #include "icc_utils.h"
