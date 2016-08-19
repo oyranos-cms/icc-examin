@@ -44,6 +44,7 @@ using namespace icc_examin_ns;
 
 #if defined(__APPLE__)
 #include <Carbon/Carbon.h>
+#include <IOKit/Graphics/IOGraphicsLib.h>
 #endif
 
 #if defined(HAVE_X) && !defined(__APPLE__)
@@ -181,7 +182,7 @@ Oyranos::lab_test_ ()
   DBG_PROG_ENDE
 }
 
-#if defined(__APPLE__)
+#if defined(__APPLE__) && 0
 typedef struct {
   char   *data;
   SInt32  size;
@@ -241,6 +242,7 @@ oyGetProfileBlockOSX (CMProfileRef prof, char *block, size_t *size, oyAlloc_f al
     CMProfileLocation loc;
     UInt32 locationSize = sizeof(CMProfileLocation);
 
+    //CMError err = CMGetProfileLocation( prof, &loc );
     NCMGetProfileLocation(prof, &loc, &locationSize);
     switch(loc.locType)
     {
