@@ -90,7 +90,7 @@ class Oyranos
     int         setzeMonitorProfil     (const char *name, int x, int y );
     char**      moniInfo (int x, int y, int *num);
     // common profiles
-    std::string profil (const char* n) { if(profil_test_(n)) return profil_(n);}
+    std::string profil (const char* n) { if(profil_test_(n)) return profil_(n); else return std::string(); }
     const char* profil (const char* n, size_t &g) { return profil_(n,g); }
 
 //    char*       holeMonitorProfil      (const char *display_name, size_t *size );
