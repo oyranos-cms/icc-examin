@@ -4,8 +4,8 @@ UNAME_=`uname`
 if [ $UNAME_ = "Darwin" ]; then
   export CFLAGS="-Wall -gdwarf-2 -I/Developer/SDKs/MacOSX10.6.sdk/usr/include/libxml2"
   export CXXFLAGS="-Wall -gdwarf-2 -I/Developer/SDKs/MacOSX10.6.sdk/usr/include/libxml2 -I/usr/X11R6/include"
-  export LDFLAGS="-L/usr/X11R6/lib -L/opt/local/lib"
-  export prefix=/opt/local
+  export LDFLAGS="-L/usr/X11R6/lib -L$HOME/.local/lib"
+  export prefix=$HOME/.local
   export skip=openicc,basiccolor,sane,compicc,kolor-manager,cinepaint
 fi
 
