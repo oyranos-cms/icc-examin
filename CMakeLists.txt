@@ -39,7 +39,10 @@ SET( ICC_EXAMIN_V "\"${ICCEXAMIN_VERSION_MAJOR}.${ICCEXAMIN_VERSION_MINOR}${ICCE
 
 IF( ${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
   SET(PLATFORM "OSX")
-  SET( gamma_view icc_helfer_osx.cpp )
+  SET( gamma_view
+       icc_helfer_osx.cpp
+       icc_helfer_osx_cg.c
+     )
 ELSEIF( ${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   SET(PLATFORM "Linux")
   SET( gamma_view icc_helfer_x.cpp )
@@ -94,7 +97,12 @@ FIND_PACKAGE( FLTK REQUIRED )
 IF(FLTK_FOUND)
   SET( HAVE_FLTK TRUE )
   SET( HAVE_FLTK_UTF8 TRUE )
-ENDIF()
+  FIND_PACKAGE( JPEG )
+  IF( NOT JPEG_FOUND )
+    # use fltk's own jpeg
+    SET( FLTK_ADD_LIBS "fltk_jpeg" )
+  ENDIF( NOT JPEG_FOUND )
+ENDIF(FLTK_FOUND)
 INCLUDE_DIRECTORIES( ${FLTK_INCLUDE_DIRS} )
 LINK_DIRECTORIES( ${FLTK_LIBRARY_DIRS} )
 
@@ -202,6 +210,8 @@ SET( icc_examin_SRCS
    )
 
 IF(APPLE)
+  SET( ICCE_APP ICCExamin )
+
   # icon files to copy in the bundle
   SET( OSX_ICON_FILES ${PROJECT_SOURCE_DIR}/extras/osx/icc-examin.icns  )
   CONFIGURE_FILE (
@@ -214,7 +224,6 @@ IF(APPLE)
 
   ADD_EXECUTABLE( ${ICCE_APP} MACOSX_BUNDLE ${icc_examin_SRCS} icc_main.cpp ${OSX_ICON_FILES} )
 
-  SET( ICCE_APP ICCExamin )
   INSTALL( TARGETS ${ICCE_APP}
            EXPORT ICCExaminLibraryDepends
            RUNTIME DESTINATION bin
@@ -230,7 +239,7 @@ IF(APPLE)
   SET_TARGET_PROPERTIES( ${ICCE_APP} PROPERTIES MACOSX_BUNDLE_LONG_VERSION_STRING "ICC Examin ${ICC_EXAMIN_V}" )
   SET_TARGET_PROPERTIES( ${ICCE_APP} PROPERTIES MACOSX_BUNDLE_SHORT_VERSION_STRING ${ICC_EXAMIN_V} )
   SET_TARGET_PROPERTIES( ${ICCE_APP} PROPERTIES MACOSX_BUNDLE_BUNDLE_VERSION 1.0 )
-  SET_TARGET_PROPERTIES( ${ICCE_APP} PROPERTIES MACOSX_BUNDLE_COPYRIGHT "2004-2015 Kai-Uwe Behrmann" )
+  SET_TARGET_PROPERTIES( ${ICCE_APP} PROPERTIES MACOSX_BUNDLE_COPYRIGHT "2004-2016 Kai-Uwe Behrmann" )
 
   # configure CMake to use a custom Info.plist
   #SET_TARGET_PROPERTIES( ${ICCE_APP} PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${PROJECT_SOURCE_DIR}/extras/osx/Info.plist )
@@ -278,21 +287,25 @@ IF(APPLE)
 ELSEIF(UNIX)
   SET( ICCE_APP iccexamin )
   ADD_EXECUTABLE( ${ICCE_APP} ${icc_examin_SRCS} icc_main.cpp )
+  TARGET_LINK_LIBRARIES ( ${ICCE_APP}
+                 ${FREETYPE_LIBRARIES}
+                 ${X11_Xinerama_LIB}
+                 ${X11_Xpm_LIB}
+                 ${X11_Xrandr_LIB}
+                 ${X11_Xxf86vm_LIB}
+                 )
+
 ELSEIF (WIN32)
   SET( ICCE_APP iccexamin )
   ADD_EXECUTABLE( ${ICCE_APP} WIN32 ${icc_examin_SRCS} icc_main.cpp )
 ENDIF ()
 
-TARGET_LINK_LIBRARIES ( ${ICCE_APP} ${EXTRA_LIBS}
-                 ${FLTK_LIBRARIES}
+TARGET_LINK_LIBRARIES ( ${ICCE_APP}
+                 ${EXTRA_LIBS}
+                 ${FLTK_LIBRARIES} ${FLTK_IMAGES_LIBS} ${FLTK_ADD_LIBS}
                  ${OYRANOS_LIBRARIES}
                  ${XCM_LIBRARIES}
-                 ${FREETYPE_LIBRARIES}
                  ${OPENGL_LIBRARIES}
-                 ${X11_Xinerama_LIB}
-                 ${X11_Xpm_LIB}
-                 ${X11_Xrandr_LIB}
-                 ${X11_Xxf86vm_LIB}
                  ${CMAKE_THREAD_LIBS_INIT} )
 
 IF( NOT APPLE )
