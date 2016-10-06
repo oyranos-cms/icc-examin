@@ -452,7 +452,8 @@ ICCexamin::start (int argc, char** argv)
   if(app) free(app); app = 0;
 #endif
 
-# if defined(__APPLE__) && !__LP64__
+# if defined(__APPLE__) 
+#  if !defined(__LP64__)
   // osX Resourcen
   IBNibRef nibRef;
   OSStatus err;
@@ -466,6 +467,7 @@ ICCexamin::start (int argc, char** argv)
   DisposeNibReference(nibRef);
   CantSetMenuBar:
   CantGetNibRef:
+#  endif // __LP64__
 
   // osX DnD behandeln
   fl_open_callback( oeffnen_cb );
