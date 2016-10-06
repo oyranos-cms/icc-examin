@@ -525,12 +525,59 @@ else
   cd "$top"
 fi
 
+packet=gettext
+$packet --version
+if [ $? -eq 0 ]; then 
+  gettext="$packet:         found"
+else
+  #stop_build=1
+
+  echo building $packet ...
+  packet_dir=$packet-0.19.8
+  packet_file="$packet_dir".tar.gz
+  url="http://ftp.gnu.org/gnu/gettext/"
+  checksum=4b3dc947a729fac8a14bde473454730919382b23
+  if [ -f $packet_file ]; then
+    echo $packet_file already here
+  else
+    echo "downloading $url$packet_file"
+    which curl && curl -L "$url$packet_file" -o $packet_file || wget "$url$packet_file"
+    if [ $verbose -gt 0 ]; then sleep 1; fi
+  fi
+  if [ `$SHA1SUM $packet_file | grep $checksum | wc -l` -eq 1 ]; then
+    echo sha1sum for $packet_file passed
+  else
+    echo sha1sum for $packet_file failed
+    exit 1
+  fi
+  packet_ready=0
+  if [ $packet_ready -lt 1 ]; then
+    if [ -d $packet_dir ]; then
+      echo remove $packet_dir
+      if [ $verbose -gt 0 ]; then sleep 1; fi
+      rm -r $packet_dir
+    fi
+    echo unpacking $packet_file ...
+    tar xzf $packet_file
+    cd $packet_dir
+    which c++
+    ./configure --prefix=$prefix
+    make
+    make install
+  fi
+  cmake="$packet:      `cmake --version`"
+  if [ $verbose -gt 0 ]; then sleep 1; fi
+
+  cd "$top"
+fi
+
 echo "$fltk"
 echo "$ftgl"
 echo "$lcms"
 echo "$libxml2"
 echo "$libpng"
 echo "$cmake"
+echo "$gettext"
 echo ""
 echo "$0 $@"
 echo "PATH            = $PATH"
@@ -1288,8 +1335,11 @@ if [ $verbose -gt 0 ]; then sleep 1; fi
 cd "$top"
 
 echo ""
+if [ $UNAME_ = "Darwin" ] || [ `echo "$skip" | grep iccexamin | wc -l` -ne 0 ]; then
+  target=ICCExamin.app
+fi
 if [ -f "$git_repo/build/$target" ]; then
-  echo ICC Examin is in $git_repo/$target
+  echo ICC Examin is in $git_repo/build/$target
   echo You can test it now with:
   echo   $git_repo/build/$target -g icc-profiles-basiccolor-printing2009-1.2.0/default_profiles/printing/ISOcoated_v2_bas.ICC
   echo   hint: the 3D gamut hull is shown with the Ctrl-h shortcut
