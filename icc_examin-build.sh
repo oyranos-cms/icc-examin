@@ -362,47 +362,49 @@ if [ $? -eq 0 ]; then
 else
   libxml2="$packet version is too old; need at least $packet"
 
-  echo building $packet ...
-  packet_dir=libxml2-2.7.8.win32
-  packet_file="$packet_dir".zip
-  url="ftp://ftp.zlatkovic.com/libxml/"
-  checksum=cc021bcb0b84a5e34c5aeed6df43c10ed4c15d35
-  if [ -f $packet_file ]; then
-    echo $packet_file already here
-  else
-    echo "downloading $url$packet_file"
-    which curl && curl -L "$url$packet_file" -o $packet_file || wget "$url$packet_file"
-    if [ $verbose -gt 0 ]; then sleep 1; fi
-  fi
-  if [ `$SHA1SUM $packet_file | grep $checksum | wc -l` -eq 1 ]; then
-    echo sha1sum for $packet_file passed
-  else
-    echo sha1sum for $packet_file failed
-    exit 1
-  fi
-  packet_ready=0
-  pkg-config --atleast-version=1.0 $packet
-  if [ $? -eq 0 ]; then
-    if [ -d $packet_dir ]; then
-      echo "$packet + $packet_dir found, skipping $packet build and installation"
-      packet_ready=1
-    fi
-  else
-    echo PKG_CONFIG_PATH=$PKG_CONFIG_PATH
-    pkg-config --modversion $packet
-  fi
-  if [ $packet_ready -lt 1 ]; then
-    if [ -d $packet_dir ]; then
-      echo remove $packet_dir
+  if [ $UNAME_ = "MINGW32_NT-6.1" ]; then
+    echo downloading $packet ...
+    packet_dir=libxml2-2.7.8.win32
+    packet_file="$packet_dir".zip
+    url="ftp://ftp.zlatkovic.com/libxml/"
+    checksum=cc021bcb0b84a5e34c5aeed6df43c10ed4c15d35
+    if [ -f $packet_file ]; then
+      echo $packet_file already here
+    else
+      echo "downloading $url$packet_file"
+      which curl && curl -L "$url$packet_file" -o $packet_file || wget "$url$packet_file"
       if [ $verbose -gt 0 ]; then sleep 1; fi
-      rm -r $packet_dir
     fi
-    echo unpacking $packet_file ...
-    unzip -q $packet_file
-    cd $packet_dir
-    cp -a bin/* $prefix/bin/
-    cp -a include/* $prefix/include/
-    cp -a lib/* $prefix/$LIB/
+    if [ `$SHA1SUM $packet_file | grep $checksum | wc -l` -eq 1 ]; then
+      echo sha1sum for $packet_file passed
+    else
+      echo sha1sum for $packet_file failed
+      exit 1
+    fi
+    packet_ready=0
+    pkg-config --atleast-version=1.0 $packet
+    if [ $? -eq 0 ]; then
+      if [ -d $packet_dir ]; then
+        echo "$packet + $packet_dir found, skipping $packet build and installation"
+        packet_ready=1
+      fi
+    else
+      echo PKG_CONFIG_PATH=$PKG_CONFIG_PATH
+      pkg-config --modversion $packet
+    fi
+    if [ $packet_ready -lt 1 ]; then
+      if [ -d $packet_dir ]; then
+        echo remove $packet_dir
+        if [ $verbose -gt 0 ]; then sleep 1; fi
+        rm -r $packet_dir
+      fi
+      echo unpacking $packet_file ...
+      unzip -q $packet_file
+      cd $packet_dir
+      cp -a bin/* $prefix/bin/
+      cp -a include/* $prefix/include/
+      cp -a lib/* $prefix/$LIB/
+    fi
   fi
   libpng="$packet:      `pkg-config --modversion $packet`"
   if [ $verbose -gt 0 ]; then sleep 1; fi
