@@ -293,11 +293,7 @@ if [ $? -gt 0 ]; then
 
   cd "$top"
 fi
-  ftgl="FTGL:           `pkg-config --modversion ftgl`"
-if [ $? -gt 0 ]; then 
-  ftgl="FTGL is missed or not ready"
-#  stop_build=1
-fi
+
 pkg-config  --atleast-version=2.8 lcms2
 if [ $? -eq 0 ]; then 
   lcms="littleCMS:      `pkg-config --modversion lcms2`"
@@ -469,10 +465,127 @@ else
   cd "$top"
 fi
 
+packet=freetype2
+pkg-config  --atleast-version=1.0 $packet
+if [ $? -eq 0 ]; then 
+  freetype="$packet:      `pkg-config --modversion $packet`"
+else
+  freetype="$packet version is too old; need at least $packet 1.0"
+  #stop_build=1
+  packet=freetype
+
+  echo building $packet ...
+  packet_dir=$packet-2.7
+  packet=freetype2
+  packet_file="$packet_dir".tar.gz
+  url="http://download.savannah.gnu.org/releases/freetype/"
+  checksum=5dbaca27c80d8a620dd4093fd2a9f934a043ae2b
+  if [ -f $packet_file ]; then
+    echo $packet_file already here
+  else
+    echo "downloading $url$packet_file"
+    which curl && curl -L "$url$packet_file" -o $packet_file || wget "$url$packet_file"
+    if [ $verbose -gt 0 ]; then sleep 1; fi
+  fi
+  if [ `$SHA1SUM $packet_file | grep $checksum | wc -l` -eq 1 ]; then
+    echo sha1sum for $packet_file passed
+  else
+    echo sha1sum for $packet_file failed
+    exit 1
+  fi
+  packet_ready=0
+  pkg-config --atleast-version=1.0 $packet
+  if [ $? -eq 0 ]; then
+    if [ -d $packet_dir ]; then
+      echo "$packet + $packet_dir found, skipping $packet build and installation"
+      packet_ready=1
+    fi
+  else
+    echo PKG_CONFIG_PATH=$PKG_CONFIG_PATH
+    pkg-config --modversion $packet
+  fi
+  if [ $packet_ready -lt 1 ]; then
+    if [ -d $packet_dir ]; then
+      echo remove $packet_dir
+      if [ $verbose -gt 0 ]; then sleep 1; fi
+      rm -r $packet_dir
+    fi
+    echo unpacking $packet_file ...
+    tar xzf $packet_file
+    cd $packet_dir
+    make clean
+    CFLAGS="$CFLAGS $OSX_ARCH_LIBRARY" CXXFLAGS="$CXXFLAGS $OSX_ARCH_LIBRARY" LDFLAGS="$LDFLAGS $OSX_ARCH_LIBRARY" ./configure $conf_opts $@
+    make $MAKE_CPUS
+    make install
+  fi
+  freetype="$packet:      `pkg-config --modversion $packet`"
+  if [ $verbose -gt 0 ]; then sleep 1; fi
+
+  cd "$top"
+fi
+
+packet=ftgl
+pkg-config  --atleast-version=1.0 $packet
+if [ $? -eq 0 ]; then 
+  ftgl="$packet:           `pkg-config --modversion $packet`"
+else
+  ftgl="$packet version is too old; need at least $packet 1.0"
+  #stop_build=1
+
+  echo building $packet ...
+  packet_dir=$packet-2.1.3-rc5
+  packet_file="$packet_dir".tar.gz
+  url="http://downloads.sourceforge.net/project/ftgl/FTGL Source/2.1.3~rc5/"
+  checksum=b9c11d3a594896333f1bbe46e10d8617713b4fc6
+  if [ -f $packet_file ]; then
+    echo $packet_file already here
+  else
+    echo "downloading $url$packet_file"
+    which curl && curl -L "$url$packet_file" -o $packet_file || wget "$url$packet_file"
+    if [ $verbose -gt 0 ]; then sleep 1; fi
+  fi
+  if [ `$SHA1SUM $packet_file | grep $checksum | wc -l` -eq 1 ]; then
+    echo sha1sum for $packet_file passed
+  else
+    echo sha1sum for $packet_file failed
+    exit 1
+  fi
+  packet_ready=0
+  pkg-config --atleast-version=1.0 $packet
+  packet_dir="$packet-2.1.3~rc5"
+  if [ $? -eq 0 ]; then
+    if [ -d $packet_dir ]; then
+      echo "$packet + $packet_dir found, skipping $packet build and installation"
+      packet_ready=1
+    fi
+  else
+    echo PKG_CONFIG_PATH=$PKG_CONFIG_PATH
+    pkg-config --modversion $packet
+  fi
+  if [ $packet_ready -lt 1 ]; then
+    if [ -d $packet_dir ]; then
+      echo remove $packet_dir
+      if [ $verbose -gt 0 ]; then sleep 1; fi
+      rm -r $packet_dir
+    fi
+    echo unpacking $packet_file ...
+    tar xzf $packet_file
+    cd $packet_dir
+    make clean
+    CFLAGS="$CFLAGS $OSX_ARCH_LIBRARY" CXXFLAGS="$CXXFLAGS $OSX_ARCH_LIBRARY" LDFLAGS="$LDFLAGS $OSX_ARCH_LIBRARY" ./configure $conf_opts $@
+    make $MAKE_CPUS
+    make install
+  fi
+  ftgl="$packet:           `pkg-config --modversion $packet`"
+  if [ $verbose -gt 0 ]; then sleep 1; fi
+
+  cd "$top"
+fi
+
 packet=cmake
 $packet --version
 if [ $? -eq 0 ]; then 
-  cmake="$packet:         `cmake --version`"
+  cmake="$packet:          `cmake --version`"
 else
   cmake="$packet version is too old; need at least $packet 2.8"
   #stop_build=1
@@ -528,7 +641,7 @@ fi
 packet=gettext
 $packet --version
 if [ $? -eq 0 ]; then 
-  gettext="$packet:         found"
+  gettext="$packet:        found"
 else
   #stop_build=1
 
@@ -565,13 +678,14 @@ else
     make
     make install
   fi
-  cmake="$packet:      `cmake --version`"
+  gettext="$packet:      `gettext --version | grep gettext`"
   if [ $verbose -gt 0 ]; then sleep 1; fi
 
   cd "$top"
 fi
 
 echo "$fltk"
+echo "$freetype"
 echo "$ftgl"
 echo "$lcms"
 echo "$libxml2"
@@ -601,10 +715,11 @@ packet_dir=$packet-1.9.4
 packet_file=$packet_dir.tar.gz
 url=https://kernel.org/pub/software/scm/git/
 packet_ready=0
-git --version
+git="git:            `git --version`"
 if [ $? -eq 0 ]; then
   echo "$packet found, skipping $packet build and installation"
   packet_ready=1
+  echo "$git"
 else
   if [ -d $packet_dir ]; then
     echo "$packet + $packet_dir found, skipping $packet download"
@@ -1321,9 +1436,6 @@ git_repo=icc-examin
     cmake "$cmake_target" -DCMAKE_INSTALL_PREFIX="$prefix" -DCMAKE_BUILD_TYPE=Debug ..
     cmake "$cmake_target" -DCMAKE_C_FLAGS="$CFLAGS $OSX_ARCH_COCOA" -DCMAKE_CXX_FLAGS="$CXXFLAGS $OSX_ARCH_COCOA" -DCMAKE_LD_FLAGS="$LDFLAGS $OSX_ARCH_COCOA" -DCMAKE_BUILD_TYPE=Debug ..
     make $MAKE_CPUS
-    if [ $? = 0 ] && [ $UNAME_ = "Darwin" ]; then
-      make bundle
-    fi
     make install
     cd "$top/$git_repo"
     echo "$git_version" > old_gitrev.txt
@@ -1336,7 +1448,7 @@ cd "$top"
 
 echo ""
 if [ $UNAME_ = "Darwin" ] || [ `echo "$skip" | grep iccexamin | wc -l` -ne 0 ]; then
-  target=ICCExamin.app
+  target=ICCExamin.app/Contents/MacOS/ICCExamin
 fi
 if [ -f "$git_repo/build/$target" ]; then
   echo ICC Examin is in $git_repo/build/$target
