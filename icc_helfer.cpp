@@ -1538,10 +1538,6 @@ getExecPath(const char *filename)
   return exec_path;
 }
 
-extern "C" {
-char ** oyStringSplit_(const char * name, const char delimiter, int * n, oyAlloc_f alloc);
-void oyStringListRelease_( char***, int, oyDeAlloc_f );
-} /* extern "C" */
 /* resembles which */
 char * findApplication(const char * app_name)
 {
@@ -1550,7 +1546,7 @@ char * findApplication(const char * app_name)
   if(path && app_name)
   {
     int paths_n = 0, i;
-    char ** paths = oyStringSplit_( path, ':', &paths_n, malloc );
+    char ** paths = oyStringSplit( path, ':', &paths_n, malloc );
     for(i = 0; i < paths_n; ++i)
     {
       std::string full_name = paths[i];
@@ -1563,7 +1559,7 @@ char * findApplication(const char * app_name)
         full_app_name = strdup( full_name.c_str() );
       }
     }
-    oyStringListRelease_( &paths, paths_n, free );
+    oyStringListRelease( &paths, paths_n, free );
   }
   return full_app_name;
 }

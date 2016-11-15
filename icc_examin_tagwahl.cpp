@@ -48,10 +48,6 @@ using namespace icc_examin_ns;
 #define DBG_EXAMIN_S( texte )
 #endif
 
-extern "C" {
-char ** oyStringSplit_(const char * name, const char delimiter, int * n, oyAlloc_f alloc);
-void oyStringListRelease_( char***, int, oyDeAlloc_f );
-} /* extern "C" */
 
 const char * selectTextsLine( int * line );
 const char * selecTpsidLine( int * line );
@@ -458,13 +454,13 @@ void ICCexamin::showData( oyStructList_s * elements,
         }
 
         int txts_n = 0, i;
-        char ** txts = oyStringSplit_( t.c_str(),'\n', &txts_n, malloc);
+        char ** txts = oyStringSplit( t.c_str(),'\n', &txts_n, malloc);
         for(i = 0; i < txts_n; ++i)
         {
           std::string text = txts[i];
           texts.push_back( text );
         }
-        oyStringListRelease_( &txts, txts_n, free );
+        oyStringListRelease( &txts, txts_n, free );
 
         if(curves.size())
         {

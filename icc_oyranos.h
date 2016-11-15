@@ -44,6 +44,7 @@
 #include <oyNamedColor_s.h>
 #include <oyNamedColors_s.h>
 #include <oyranos_color.h>
+#include <oyranos_core.h>
 #include <oyranos_image.h>
 
 #include <string>
