@@ -108,7 +108,7 @@ namespace icc_examin_ns {
 //#endif
 
 extern float scale;
-#define SCALE(x) RUND(scale*x)
+#define SCALE(x) (int)RUND(scale * x)
 
 #endif //ICC_FENSTER_H
 
