@@ -148,7 +148,7 @@ struct Channel {
 typedef Channel channel;
 
 /** ncl2 profilbody */
-char data[320] =
+signed char data[320] =
   {
     0,0,1,64,108,99,109,115,
     2,48,0,0,110,109,99,108,
