@@ -418,38 +418,28 @@ ICCexamin::start (int argc, char** argv)
 
 #if !defined(WIN32)
   const char * oyranos_settings_gui_app = getenv("OYRANOS_SETTINGS_GUI");
-  if(!oyranos_settings_gui_app)
-    oyranos_settings_gui_app = "oyranos-config-synnefo";
   char * app = NULL;
   const char * synnefo_bins[] = {"oyranos-config-synnefo",
                                  "oyranos-config-synnefo-qt4",
                                  "synnefo",
                                  "Synnefo",
+                                 "oyranos-config-fltk",
                                  NULL};
   int i = 0;
-  while(synnefo_bins[i])
-  {
-    app = findApplication( oyranos_settings_gui_app );
-    if(app) break;
-    else ++i;
-  }
+  const char * xdg_desktop = getenv("XDG_CURRENT_DESKTOP");
+  if(xdg_desktop && strcmp(xdg_desktop,"KDE"))
+    app = strdup("systemsettings5 settings-kolor-management");
+  if(oyranos_settings_gui_app)
+    app = strdup(oyranos_settings_gui_app);
+  while(!app && synnefo_bins[i])
+    app = findApplication( synnefo_bins[i++] );
 
   if(app)
-  {  
-    oyranos_settings_gui = oyranos_settings_gui_app;
-    icc_betrachter->menu_einstellungen->show();
-  } 
-  else
   {
-    oyranos_settings_gui_app = "oyranos-config-fltk";
-    app = findApplication( oyranos_settings_gui_app );
-    if(app)
-    {  
-      oyranos_settings_gui = oyranos_settings_gui_app;
-      icc_betrachter->menu_einstellungen->show();
-    }
+    oyranos_settings_gui = app;
+    icc_betrachter->menu_einstellungen->show();
+    free(app);
   }
-  if(app) free(app); app = 0;
 #endif
 
 # if defined(__APPLE__) 

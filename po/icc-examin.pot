@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: icc-examin 0.9\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2016-11-15 10:17+0100\n"
+"POT-Creation-Date: 2016-11-23 17:46+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1346,54 +1346,54 @@ msgstr ""
 msgid "Gamut selector"
 msgstr ""
 
-#: icc_examin.cpp:529 icc_examin.cpp:1508
+#: icc_examin.cpp:519 icc_examin.cpp:1498
 msgid "loaded"
 msgstr ""
 
-#: icc_examin.cpp:535
+#: icc_examin.cpp:525
 msgid "Ready"
 msgstr ""
 
-#: icc_examin.cpp:983 icc_examin.cpp:986
+#: icc_examin.cpp:973 icc_examin.cpp:976
 msgid "Compare Measurement <-> Profile Colours"
 msgstr ""
 
-#: icc_examin.cpp:985 icc_oyranos.cpp:672
+#: icc_examin.cpp:975 icc_oyranos.cpp:672
 msgid "none"
 msgstr ""
 
-#: icc_examin.cpp:1003 icc_examin.cpp:1007
+#: icc_examin.cpp:993 icc_examin.cpp:997
 msgid "Gamut View"
 msgstr ""
 
-#: icc_examin.cpp:1075 icc_examin_tagwahl.cpp:1048 icc_gl.h:277
+#: icc_examin.cpp:1065 icc_examin_tagwahl.cpp:1048 icc_gl.h:277
 msgid "not available"
 msgstr ""
 
 #. clrt
 #. flex
-#: icc_examin.cpp:1442 icc_helfer.cpp:648 icc_helfer.cpp:740
+#: icc_examin.cpp:1432 icc_helfer.cpp:648 icc_helfer.cpp:740
 msgid "----"
 msgstr ""
 
-#: icc_examin.cpp:1445
+#: icc_examin.cpp:1435
 msgid "Filename (other data type)"
 msgstr ""
 
-#: icc_examin.cpp:1447
+#: icc_examin.cpp:1437
 msgid "Filename (corrupted ICC data type)"
 msgstr ""
 
-#: icc_examin.cpp:1458
+#: icc_examin.cpp:1448
 msgid "found no content for"
 msgstr ""
 
-#: icc_examin.cpp:1461
+#: icc_examin.cpp:1451
 msgid "Internal error"
 msgstr ""
 
 #. this string is sensible to formatting in the tag browser GUI, please keep a mono spaced formatting
-#: icc_examin.cpp:1464
+#: icc_examin.cpp:1454
 msgid "No. Tag   Type   Size Description"
 msgstr ""
 
