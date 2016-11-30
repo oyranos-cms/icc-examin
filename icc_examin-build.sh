@@ -840,7 +840,7 @@ git_repo=libelektra
     echo "elektra `pkg-config --modversion elektra`"
     update_oyranos=1
     if [ $UNAME_ = "MINGW32_NT-6.1" ]; then
-      cmake "$cmake_target" -DCMAKE_C_FLAGS="$CFLAGS" -DCMAKE_CXX_FLAGS="$CXXFLAGS" -DCMAKE_LD_FLAGS="$LDFLAGS" -DCMAKE_INSTALL_PREFIX="$prefix" -DXDG_CONFIG_DIR="$HOME/.local/xdg" -DLIB_SUFFIX=$BARCH -DCMAKE_BUILD_TYPE=Debug ..
+      cmake "$cmake_target" -DCMAKE_C_FLAGS="$CFLAGS" -DCMAKE_CXX_FLAGS="$CXXFLAGS" -DCMAKE_LD_FLAGS="$LDFLAGS" -DCMAKE_INSTALL_PREFIX="$prefix" -DXDG_CONFIG_DIR="$HOME/.config/xdg" -DLIB_SUFFIX=$BARCH -DCMAKE_BUILD_TYPE=Debug ..
       make
     else
       cmake "$cmake_target" -DCMAKE_INSTALL_PREFIX="$prefix" -DLIB_SUFFIX=$BARCH -DCMAKE_BUILD_TYPE=Debug -DINSTALL_SYSTEM_FILES=false -DBUILD_TESTING=false -DENABLE_TESTING=OFF -DTOOLS=DEFAULT -DPLUGINS="ALL;dump;resolver;yajl;rename;struct;-passwd" ..
@@ -1184,7 +1184,7 @@ git_repo=oyranos
     update_oyranos=1
     if [ $UNAME_ = "MINGW32_NT-6.1" ]; then
       x11_skip="--disable-libX11"
-      cmake "$cmake_target" -DCMAKE_C_FLAGS="$CFLAGS" -DCMAKE_CXX_FLAGS="$CXXFLAGS" -DCMAKE_LD_FLAGS="$LDFLAGS" -DCMAKE_INSTALL_PREFIX="$prefix" -DXDG_CONFIG_DIR="$HOME/.local/xdg" -DLIB_SUFFIX=$BARCH -DCMAKE_BUILD_TYPE=Debug ..
+      cmake "$cmake_target" -DCMAKE_C_FLAGS="$CFLAGS" -DCMAKE_CXX_FLAGS="$CXXFLAGS" -DCMAKE_LD_FLAGS="$LDFLAGS" -DCMAKE_INSTALL_PREFIX="$prefix" -DXDG_CONFIG_DIR="$HOME/.config/xdg" -DLIB_SUFFIX=$BARCH -DCMAKE_BUILD_TYPE=Debug ..
       make
     else
       ../configure $conf_opts $@  $v --enable-debug --xdgsysdir="$HOME/.local/xdg" $x11_skip
