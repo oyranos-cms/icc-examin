@@ -155,7 +155,7 @@ update-mime-database %{_datadir}/mime/
 
 %files -f icc_examin.lang
 %defattr(-, root, root)
-%doc AUTHORS COPYING ChangeLog README.md
+%doc AUTHORS COPYING ChangeLog.md README.md
 %{_bindir}/iccexamin
 %{desktopdir}/iccexamin.desktop
 %{pixmapdir}/iccexamin.png
