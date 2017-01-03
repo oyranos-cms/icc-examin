@@ -1184,7 +1184,7 @@ git_repo=oyranos
     update_oyranos=1
     if [ $UNAME_ = "MINGW32_NT-6.1" ]; then
       x11_skip="--disable-libX11"
-      cmake "$cmake_target" -DCMAKE_C_FLAGS="$CFLAGS" -DCMAKE_CXX_FLAGS="$CXXFLAGS" -DCMAKE_LD_FLAGS="$LDFLAGS" -DCMAKE_INSTALL_PREFIX="$prefix" -DXDG_CONFIG_DIR="$HOME/.config/xdg" -DLIB_SUFFIX=$BARCH -DCMAKE_BUILD_TYPE=Debug ..
+      cmake "$cmake_target" -DCMAKE_C_FLAGS="$CFLAGS" -DCMAKE_CXX_FLAGS="$CXXFLAGS" -DCMAKE_LD_FLAGS="$LDFLAGS" -DCMAKE_INSTALL_PREFIX="$prefix" -DXDG_CONFIG_DIR="$HOME/.config/xdg" -DCMAKE_BUILD_TYPE=Debug ..
       make
     else
       ../configure $conf_opts $@  $v --enable-debug --xdgsysdir="$HOME/.local/xdg" $x11_skip
