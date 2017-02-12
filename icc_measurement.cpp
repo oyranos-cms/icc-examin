@@ -1480,8 +1480,9 @@ ICCmeasurement::getText                     (void)
     layout.push_back (h); layout.push_back (h); layout.push_back (HI); // Lab
     layout.push_back (h); layout.push_back (h); layout.push_back (HI); // Lab'
     layout.push_back (h); layout.push_back (h); layout.push_back (HI); // XYZ
-    if (xyz_erg_sp)
+    if (xyz_erg_sp) {
       layout.push_back (h); layout.push_back (h); layout.push_back (HI);//XYZ'
+    }
     if (RGB_measurement_) {
       layout.push_back (h); layout.push_back (h); layout.push_back (HI);//RGB
     } else {

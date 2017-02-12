@@ -157,7 +157,7 @@ FTFont *font = NULL, *ortho_font = NULL;
 
 #ifdef HAVE_FTGL
 #define drawOTEXT(Font, scal, buffer) { \
-                                   float scal_ = scal; SCALE(scal); \
+                                   float scal_ = scal; \
                                    glScaled(scal,scal_*w()/(double)h(),scal_); \
                                      drawText(Font, buffer); \
                                    glScaled(1.0/scal_,1.0/(scal_*w()/(double)h()),1.0/scal_); \

@@ -634,7 +634,7 @@ ICCexaminIO::oeffnen ()
     if (!ptr)
       ptr = getenv("PWD");
 
-      if(ptr) DBG_PROG_V( ptr );
+    if(ptr) DBG_PROG_V( ptr );
     if(( ptr &&
         (ptr[0] == '/') &&
         (strlen(ptr) == 1) ) ||

@@ -1030,7 +1030,7 @@ ICCexamin::setzeFensterTitel()
 void ICCexamin::optionsRefresh_( void )
 {
   if(!options_)
-    options_ = oyOptions_ForFilter( "//"OY_TYPE_STD"/icc_color", 0, 0 );
+    options_ = oyOptions_ForFilter( "//" OY_TYPE_STD "/icc_color", 0, 0 );
 
   char t[4];
   /* should always be a single digit */
@@ -1735,14 +1735,16 @@ void
 ICCexamin::fortschritt(double f, double anteil)
 {
 #ifndef __APPLE__ /* FLTK has problems to events from different threads on osX*/
-  int thread = wandelThreadId(iccThreadSelf());
-  if(thread != THREAD_HAUPT)
-    icc_examin_ns::lock(__FILE__,__LINE__);
+    int thread = wandelThreadId(iccThreadSelf());
+    if(thread != THREAD_HAUPT)
+      icc_examin_ns::lock(__FILE__,__LINE__);
 
     if(0.0 < f && f <= 1.0) {
       if(!icc_betrachter->load_progress->visible() &&
          anteil > 0.0 )
+      {
         icc_betrachter->load_progress-> show();
+      }
       if(fabs(anteil) >= 1.0)
         icc_betrachter->load_progress-> value( (float)f );
       else
@@ -1756,8 +1758,8 @@ ICCexamin::fortschritt(double f, double anteil)
     }
     icc_betrachter->load_progress-> damage(FL_DAMAGE_ALL);
   
-  if(thread != THREAD_HAUPT)
-    icc_examin_ns::unlock(icc_betrachter->load_progress, __FILE__,__LINE__);
+    if(thread != THREAD_HAUPT)
+      icc_examin_ns::unlock(icc_betrachter->load_progress, __FILE__,__LINE__);
 #endif
 }
 
@@ -1791,8 +1793,8 @@ ICCexamin::statusFarbe(double & L, double & a, double & b)
                                   (int)(rgb[1]*255), (int)(rgb[2]*255) );
 
   int thread = wandelThreadId(iccThreadSelf());
-  if(thread != THREAD_HAUPT)
-    icc_examin_ns::lock(__FILE__,__LINE__);
+    if(thread != THREAD_HAUPT)
+      icc_examin_ns::lock(__FILE__,__LINE__);
 
     if (L < .5)
       icc_betrachter->DD_box_stat->labelcolor( FL_WHITE/*fl_rgb_color( VG )*/ );
@@ -1804,8 +1806,8 @@ ICCexamin::statusFarbe(double & L, double & a, double & b)
     Fl::add_idle(fl_delayed_redraw, icc_betrachter->DD_box_stat);
     Fl::awake((void*)0);
 
-  if(thread != THREAD_HAUPT)
-    icc_examin_ns::unlock(icc_betrachter->DD_box_stat, __FILE__,__LINE__);
+    if(thread != THREAD_HAUPT)
+      icc_examin_ns::unlock(icc_betrachter->DD_box_stat, __FILE__,__LINE__);
 
   DBG_PROG_ENDE
 }

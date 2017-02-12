@@ -69,6 +69,7 @@
 # define icc_strdup_m(text_) strdup(text_)
 #endif 
 #include <iostream>
+#include <ostream>
 #include <sstream>
 #include <cmath>
 # include <cstring>
@@ -165,7 +166,7 @@ void dbgWriteS( std::string s );
 #define dbgWrite(ss) \
 { \
   std::ostringstream dbg_stream; \
-  dbg_stream << ss; \
+  dbg_stream << std::dec << ss; \
   dbgWriteS( dbg_stream.str() ); \
 }
 /* look in icc_utils.cpp for the WRITE_DBG definition */

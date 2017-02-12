@@ -1182,11 +1182,11 @@ ICClist<std::string> ICCfltkBetrachter::open_veraltet(ICClist<std::string> datei
       dateiwahl()->value(ptr);
       DBG_PROG_S( dateinamen[0])
     } 
-      if(ptr) DBG_PROG_V( ptr );
+    if(ptr) DBG_PROG_V( ptr );
     if (!ptr)
       ptr = getenv("PWD");
 
-      if(ptr) DBG_PROG_V( ptr )
+    if(ptr) DBG_PROG_V( ptr )
     if(( ptr &&
         (ptr[0] == '/') &&
         (strlen(ptr) == 1) ) ||

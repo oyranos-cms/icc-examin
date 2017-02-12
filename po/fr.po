@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ICC Examin 0.41\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2016-11-23 17:46+0100\n"
+"POT-Creation-Date: 2017-02-12 15:08+0100\n"
 "PO-Revision-Date: 2006-06-29 19:31+0200\n"
 "Last-Translator: Pascal LACROIX <lacroixpascal at vfemail.net>\n"
 "Language-Team: ALL <ku.b@gmx.de>\n"
@@ -90,7 +90,7 @@ msgstr ""
 msgid " number key - set the number of interpolation planes"
 msgstr ""
 
-#: icc_draw.cpp:796 icc_draw.cpp:857
+#: icc_draw.cpp:798 icc_draw.cpp:859
 msgid " points"
 msgstr " points"
 
@@ -104,17 +104,17 @@ msgid " used too early!"
 msgstr ""
 
 #. show infos
-#: icc_draw.cpp:796 icc_draw.cpp:857
+#: icc_draw.cpp:798 icc_draw.cpp:859
 msgid " with "
 msgstr " avec "
 
 #. show infos
-#: icc_draw.cpp:803
+#: icc_draw.cpp:805
 msgid " with Gamma: 1.0"
 msgstr " avec Gamma: 1.0"
 
 #. show infos
-#: icc_draw.cpp:816 icc_draw.cpp:835
+#: icc_draw.cpp:818 icc_draw.cpp:837
 msgid " with one entry for gamma: "
 msgstr " avec un entrée pour gamma: "
 
@@ -122,8 +122,8 @@ msgstr " avec un entrée pour gamma: "
 msgid "!!! ERROR"
 msgstr ""
 
-#: icc_utils.h:292 icc_utils.h:293 icc_utils.h:294 icc_utils.h:348
-#: icc_utils.h:349 icc_utils.h:350
+#: icc_utils.h:293 icc_utils.h:294 icc_utils.h:295 icc_utils.h:349
+#: icc_utils.h:350 icc_utils.h:351
 msgid "!!! Warning !!!"
 msgstr ""
 
@@ -459,7 +459,7 @@ msgstr "Attributs:   "
 msgid "August"
 msgstr ""
 
-#: icc_measurement.cpp:1513
+#: icc_measurement.cpp:1514
 msgid "B"
 msgstr ""
 
@@ -485,12 +485,12 @@ msgid ""
 "may be intended for."
 msgstr ""
 
-#: icc_draw.cpp:733 icc_helfer.cpp:418 icc_helfer.cpp:428 icc_gl.cpp:2771
+#: icc_draw.cpp:733 icc_gl.cpp:2771 icc_helfer.cpp:418 icc_helfer.cpp:428
 msgid "Black"
 msgstr "Noir"
 
-#: icc_helfer_osx_cg.c:94 icc_helfer_x.cpp:69 icc_draw.cpp:716
-#: icc_draw.cpp:725 icc_helfer.cpp:417 icc_profile_tags.cpp:422
+#: icc_helfer_osx_cg.c:94 icc_draw.cpp:716 icc_draw.cpp:725 icc_helfer.cpp:417
+#: icc_helfer_x.cpp:69 icc_profile_tags.cpp:422
 msgid "Blue"
 msgstr "Bleu"
 
@@ -502,7 +502,7 @@ msgstr ""
 msgid "Blue tone reproduction curve"
 msgstr ""
 
-#: icc_measurement.cpp:1515
+#: icc_measurement.cpp:1516
 msgid "C"
 msgstr ""
 
@@ -511,20 +511,20 @@ msgstr ""
 msgid "CGATS View"
 msgstr "Gamut"
 
-#: icc_examin_farbraum.cpp:402 icc_examin_io.cpp:323 icc_draw.cpp:749
+#: icc_draw.cpp:749 icc_examin_farbraum.cpp:402 icc_examin_io.cpp:323
 #: icc_helfer.cpp:403 icc_helfer.cpp:406
 msgid "CIE *L"
 msgstr "CIE *L"
 
-#: icc_examin_farbraum.cpp:403 icc_examin_io.cpp:324 icc_draw.cpp:751
-#: icc_helfer.cpp:404 icc_gl.cpp:1193 icc_gl.cpp:1264 icc_gl.cpp:1290
-#: icc_gl.cpp:1298
+#: icc_draw.cpp:751 icc_examin_farbraum.cpp:403 icc_examin_io.cpp:324
+#: icc_gl.cpp:1193 icc_gl.cpp:1264 icc_gl.cpp:1290 icc_gl.cpp:1298
+#: icc_helfer.cpp:404
 msgid "CIE *a"
 msgstr "CIE *a"
 
-#: icc_examin_farbraum.cpp:404 icc_examin_io.cpp:325 icc_draw.cpp:753
-#: icc_helfer.cpp:405 icc_gl.cpp:1206 icc_gl.cpp:1306 icc_gl.cpp:1326
-#: icc_gl.cpp:1333
+#: icc_draw.cpp:753 icc_examin_farbraum.cpp:404 icc_examin_io.cpp:325
+#: icc_gl.cpp:1206 icc_gl.cpp:1306 icc_gl.cpp:1326 icc_gl.cpp:1333
+#: icc_helfer.cpp:405
 msgid "CIE *b"
 msgstr "CIE *b"
 
@@ -596,7 +596,7 @@ msgstr ""
 msgid "Chain selection"
 msgstr ""
 
-#: icc_profile_tags.cpp:319 icc_gl.cpp:3295
+#: icc_gl.cpp:3295 icc_profile_tags.cpp:319
 msgid "Channel"
 msgstr "Canal"
 
@@ -903,7 +903,7 @@ msgstr ""
 msgid "Full screen mode"
 msgstr ""
 
-#: icc_measurement.cpp:1512
+#: icc_measurement.cpp:1513
 msgid "G"
 msgstr "V"
 
@@ -955,7 +955,7 @@ msgstr "Gamut"
 msgid "Geometrie"
 msgstr ""
 
-#: icc_oyranos.cpp:707
+#: icc_oyranos.cpp:709
 msgid "Geometry:"
 msgstr ""
 
@@ -977,8 +977,8 @@ msgstr "Gris"
 msgid "Gray tone reproduction curve"
 msgstr ""
 
-#: icc_helfer_osx_cg.c:93 icc_helfer_x.cpp:68 icc_draw.cpp:713
-#: icc_draw.cpp:723 icc_helfer.cpp:416 icc_profile_tags.cpp:421
+#: icc_helfer_osx_cg.c:93 icc_draw.cpp:713 icc_draw.cpp:723 icc_helfer.cpp:416
+#: icc_helfer_x.cpp:68 icc_profile_tags.cpp:421
 msgid "Green"
 msgstr "Vert"
 
@@ -1201,8 +1201,7 @@ msgstr ""
 msgid "Input"
 msgstr "Entrée"
 
-#: icc_examin_tagwahl.cpp:503 icc_profile_tags.cpp:283
-#: icc_profile_tags.cpp:302
+#: icc_examin_tagwahl.cpp:503 icc_profile_tags.cpp:283 icc_profile_tags.cpp:302
 msgid "Intent:"
 msgstr "Intention:"
 
@@ -1238,7 +1237,7 @@ msgstr ""
 msgid "June"
 msgstr ""
 
-#: icc_measurement.cpp:1518
+#: icc_measurement.cpp:1519
 msgid "K"
 msgstr ""
 
@@ -1246,11 +1245,11 @@ msgstr ""
 msgid "Kai-Uwe Behrmann"
 msgstr ""
 
-#: icc_measurement.cpp:1496
+#: icc_measurement.cpp:1497
 msgid "L"
 msgstr ""
 
-#: icc_measurement.cpp:1499
+#: icc_measurement.cpp:1500
 msgid "L'"
 msgstr ""
 
@@ -1349,7 +1348,7 @@ msgstr "Luminance Y"
 msgid "Luv"
 msgstr "Luv"
 
-#: icc_measurement.cpp:1516
+#: icc_measurement.cpp:1517
 msgid "M"
 msgstr ""
 
@@ -1379,7 +1378,7 @@ msgstr ""
 msgid "Manage Favorites"
 msgstr ""
 
-#: icc_profile_header.cpp:250 icc_helfer_x.cpp:239 icc_oyranos.cpp:689
+#: icc_helfer_x.cpp:239 icc_oyranos.cpp:691 icc_profile_header.cpp:250
 msgid "Manufacturer:"
 msgstr "Fabricant:   "
 
@@ -1428,7 +1427,7 @@ msgid ""
 "the 3D view."
 msgstr ""
 
-#: icc_measurement.cpp:1493
+#: icc_measurement.cpp:1494
 msgid "Measurement patch"
 msgstr ""
 
@@ -1448,7 +1447,7 @@ msgstr ""
 msgid "Microsoft"
 msgstr ""
 
-#: icc_oyranos.cpp:695
+#: icc_oyranos.cpp:697
 msgid "Model:"
 msgstr "Model:"
 
@@ -1457,7 +1456,7 @@ msgstr "Model:"
 msgid "Model:      "
 msgstr ""
 
-#: icc_profile_header.cpp:251 icc_helfer_x.cpp:241
+#: icc_helfer_x.cpp:241 icc_profile_header.cpp:251
 msgid "Model:       "
 msgstr "Model:       "
 
@@ -1668,7 +1667,7 @@ msgstr ""
 msgid "Point"
 msgstr "Point"
 
-#: icc_oyranos.cpp:713
+#: icc_oyranos.cpp:715
 #, fuzzy
 msgid "Port:"
 msgstr "Point"
@@ -1758,7 +1757,7 @@ msgstr "Quitter"
 msgid "Quit - allowes for exiting the application"
 msgstr ""
 
-#: icc_measurement.cpp:1511
+#: icc_measurement.cpp:1512
 msgid "R"
 msgstr ""
 
@@ -1774,8 +1773,8 @@ msgstr ""
 msgid "Ready"
 msgstr ""
 
-#: icc_helfer_osx_cg.c:92 icc_helfer_x.cpp:67 icc_draw.cpp:710
-#: icc_draw.cpp:721 icc_helfer.cpp:415 icc_profile_tags.cpp:420
+#: icc_helfer_osx_cg.c:92 icc_draw.cpp:710 icc_draw.cpp:721 icc_helfer.cpp:415
+#: icc_helfer_x.cpp:67 icc_profile_tags.cpp:420
 msgid "Red"
 msgstr "Rouge"
 
@@ -1858,7 +1857,7 @@ msgstr ""
 msgid "Save as VRML"
 msgstr ""
 
-#: icc_helfer_x.cpp:130 icc_oyranos.cpp:671
+#: icc_helfer_x.cpp:130 icc_oyranos.cpp:673
 msgid "Screen:"
 msgstr ""
 
@@ -1870,7 +1869,7 @@ msgstr ""
 msgid "September"
 msgstr ""
 
-#: icc_oyranos.cpp:701
+#: icc_oyranos.cpp:703
 msgid "Serial:"
 msgstr ""
 
@@ -2212,9 +2211,9 @@ msgstr ""
 msgid "WARNING: Could not load corrupt or damaged profile."
 msgstr ""
 
-#: icc_oyranos.cpp:175 icc_oyranos.cpp:443 icc_oyranos.cpp:449
-#: icc_oyranos.cpp:480 icc_oyranos.cpp:486 icc_oyranos.cpp:520
-#: icc_oyranos.cpp:526
+#: icc_oyranos.cpp:175 icc_oyranos.cpp:445 icc_oyranos.cpp:451
+#: icc_oyranos.cpp:482 icc_oyranos.cpp:488 icc_oyranos.cpp:522
+#: icc_oyranos.cpp:528
 msgid "WARNING: Could not load profile."
 msgstr ""
 
@@ -2260,11 +2259,11 @@ msgid "Wrong profil assigned to image."
 msgstr ""
 
 #. Fl_Button* favUpButton
-#: icc_measurement.cpp:1502 my_file_chooser.cxx:277
+#: icc_measurement.cpp:1503 my_file_chooser.cxx:277
 msgid "X"
 msgstr ""
 
-#: icc_measurement.cpp:1506
+#: icc_measurement.cpp:1507
 msgid "X'"
 msgstr ""
 
@@ -2284,11 +2283,11 @@ msgstr ""
 msgid "XineramaScreen:"
 msgstr ""
 
-#: icc_measurement.cpp:1503 icc_measurement.cpp:1517
+#: icc_measurement.cpp:1504 icc_measurement.cpp:1518
 msgid "Y"
 msgstr ""
 
-#: icc_measurement.cpp:1507
+#: icc_measurement.cpp:1508
 msgid "Y'"
 msgstr ""
 
@@ -2319,19 +2318,19 @@ msgstr ""
 msgid "Yxy"
 msgstr "Yxy"
 
-#: icc_measurement.cpp:1504
+#: icc_measurement.cpp:1505
 msgid "Z"
 msgstr ""
 
-#: icc_measurement.cpp:1508
+#: icc_measurement.cpp:1509
 msgid "Z'"
 msgstr ""
 
-#: icc_measurement.cpp:1497
+#: icc_measurement.cpp:1498
 msgid "a"
 msgstr ""
 
-#: icc_measurement.cpp:1500
+#: icc_measurement.cpp:1501
 msgid "a'"
 msgstr ""
 
@@ -2347,11 +2346,11 @@ msgstr ""
 msgid "axis"
 msgstr ""
 
-#: icc_measurement.cpp:1498
+#: icc_measurement.cpp:1499
 msgid "b"
 msgstr ""
 
-#: icc_measurement.cpp:1501
+#: icc_measurement.cpp:1502
 msgid "b'"
 msgstr ""
 
@@ -2391,11 +2390,11 @@ msgstr ""
 msgid "created by:  "
 msgstr ""
 
-#: icc_measurement.cpp:1494
+#: icc_measurement.cpp:1495
 msgid "dE Lab"
 msgstr ""
 
-#: icc_measurement.cpp:1495
+#: icc_measurement.cpp:1496
 msgid "dE2000"
 msgstr ""
 
@@ -2574,7 +2573,7 @@ msgstr "Ouvrir Profil"
 msgid "noName"
 msgstr ""
 
-#: icc_examin.cpp:975 icc_oyranos.cpp:672
+#: icc_examin.cpp:975 icc_oyranos.cpp:674
 msgid "none"
 msgstr ""
 

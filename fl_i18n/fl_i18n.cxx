@@ -288,8 +288,8 @@ fl_initialise_locale( const char *domain, const char *locale_path,
     DBG_PROG_V( locale )
   }
 
-  if(previous_locale) free(previous_locale); previous_locale = NULL;
-  if(tmp) free(tmp); tmp = NULL;
+  if(previous_locale) { free(previous_locale); previous_locale = NULL; }
+  if(tmp) { free(tmp); tmp = NULL; }
 
     // .. or take locale info from environment
   if(!strlen(locale) && getenv("LANG"))

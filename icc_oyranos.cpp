@@ -372,8 +372,9 @@ Oyranos::moni_native_test_ (int x, int y)
       if(oy_moni_name)
         v_block = oy_moni_name;
     }
-    if(block && size)
+    if(block && size) {
       free( block ); block = 0; size = 0;
+    }
 
     oyProfile_Release( &oy_moni );
   }
@@ -410,8 +411,9 @@ Oyranos::moni_test_ (int x, int y)
       if(oy_moni_name)
         v_block = oy_moni_name;
     }
-    if(block && size)
+    if(block && size) {
       free( block ); block = 0; size = 0;
+    }
 
     oyProfile_Release( &oy_moni );
   }
@@ -648,7 +650,7 @@ Oyranos::moniInfo (int x, int y, int * num)
       strcmp(display_name, old_screen_name) != 0))
   {
     oyOptions_SetFromText( &options,
-                             "//"OY_TYPE_STD"/config/command",
+                             "//" OY_TYPE_STD "/config/command",
                              "properties", OY_CREATE_NEW );
     oyDeviceGet( OY_TYPE_STD, "monitor", display_name, options, &device );
     oyOptions_Release( &options );
@@ -1184,11 +1186,11 @@ Oyranos::gamutCheckAbstract(Speicher & s, Speicher & abstract,
                 * result = 0;
     oyProfile_s * prof = oyProfile_FromMem( size, (void*)block, 0, 0 );
     int error = oyOptions_MoveInStruct( &opts,
-                      "//"OY_TYPE_STD"/proofing_profile",
+                      "//" OY_TYPE_STD "/proofing_profile",
                       (oyStruct_s**)&prof, 0 );
 
     oyOptions_AppendOpts( opts, options );
-    error = oyOptions_Handle( "//"OY_TYPE_STD"/create_profile.icc",
+    error = oyOptions_Handle( "//" OY_TYPE_STD "/create_profile.icc",
                       opts,"create_profile.icc_profile.proofing_effect",
                       &result );
 
@@ -1359,7 +1361,7 @@ Oyranos::wandelLabNachProfilUndZurueck(double *lab, // 0.0 - 1.0
     oyImage_Release( &image_lab );
     oyImage_Release( &image_tmp );
 
-    if(channels)    delete [] channels; channels = NULL;
+    if(channels) { delete [] channels; channels = NULL; }
 
   DBG_PROG_ENDE
   return 0;
@@ -1394,10 +1396,10 @@ oyProfile_s * Oyranos::oyMoni (int x, int y, int native)
     if(native)
     {
       oyOptions_SetFromText( &options,
-                             "//"OY_TYPE_STD"/config/command",
+                             "//" OY_TYPE_STD "/config/command",
                              "list", OY_CREATE_NEW );
       oyOptions_SetFromText( &options,
-                   "//"OY_TYPE_STD"/config/icc_profile.x_color_region_target",
+                 "//" OY_TYPE_STD "/config/icc_profile.x_color_region_target",
                                        "yes", OY_CREATE_NEW );
     }
 
@@ -1476,11 +1478,12 @@ Oyranos::wandelLabNachBildschirmFarben(int x, int y, oyProfile_s * profile,
 
       size_old = size;
 
-      if(rgb)
+      if(rgb) {
         free(rgb); rgb = 0;
+      }
       rgb = (double*) calloc(sizeof(double),3*size);
       if(lab)
-        free(lab); lab = 0;
+        free(lab);
       lab = (double*) calloc(sizeof(double),3*size);
 
       oyImage_Release( &image_disp );
@@ -1563,10 +1566,10 @@ double*  Oyranos::convertLabToProfile    ( oyProfile_s * profile,
       size_old = size;
 
       if(rgb)
-        free(rgb); rgb = 0;
+        free(rgb);
       rgb = (double*) calloc(sizeof(double),3*size);
       if(lab)
-        free(lab); lab = 0;
+        free(lab);
       lab = (double*) calloc(sizeof(double),3*size);
 
       oyImage_Release( &image_disp );
@@ -1653,7 +1656,7 @@ void Oyranos::colourServerRegionSet  ( Fl_Widget         * widget,
                           OY_CREATE_NEW );
   }
 
-  error = oyOptions_Handle( "//"OY_TYPE_STD"/set_xcm_region",
+  error = oyOptions_Handle( "//" OY_TYPE_STD "/set_xcm_region",
                                 opts,"set_xcm_region",
                                 &result );
   if(error)
@@ -1709,7 +1712,7 @@ oyProfile_s * Oyranos::getEditingProfile      ( int early_binding )
 
     oyOptions_SetFromInt( &opts, "///icc_profile_flags", icc_oyranos.icc_profile_flags, 0, OY_CREATE_NEW );
     oyOptions_MoveIn( opts, &matrix, -1 );
-    oyOptions_Handle( "//"OY_TYPE_STD"/create_profile.icc",
+    oyOptions_Handle( "//" OY_TYPE_STD "/create_profile.icc",
                                 opts,"create_profile.icc_profile.color_matrix",
                                 &result );
 
