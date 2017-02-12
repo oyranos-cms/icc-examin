@@ -4,10 +4,10 @@ PROJECT (icc-examin)
 
 SET (ICCEXAMIN_VERSION_MAJOR 0)
 SET (ICCEXAMIN_VERSION_MINOR 5)
-SET (ICCEXAMIN_VERSION_MICRO 6)
+SET (ICCEXAMIN_VERSION_MICRO 7)
 
 SET (ICCEXAMIN_DEVEL_MONTH January)
-SET (ICCEXAMIN_DEVEL_YEAR 2016)
+SET (ICCEXAMIN_DEVEL_YEAR 2017)
 
 SET (PACKAGE_NAME "icc-examin")
 set (PACKAGE_DESCRIPTION "ICC Examin is a small utility (unix name: iccexamin) for the purpose of watching the internals of ICC profiles, measurement data (CGATS), colour samples (named colour profiles), gamut visualisations (vrml), video card gamma tables (Xorg/XFree86/osX).")
