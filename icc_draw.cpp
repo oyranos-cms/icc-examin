@@ -759,8 +759,10 @@ TagDrawings::drawKurve_    ()
     } else {
       fl_color(9 + j);
     }
+#   ifdef DEBUG_DRAW
     if(kurven.size())
-      DBG_PROG_S( cout << "draw curv "<< name << " " << j << " " << kurven[j].size() << " parts " );
+      cout << "draw curv "<< name << " " << j << " " << kurven[j].size() << " parts ";
+#   endif
     s.str("");
     if (kurven2.size())
     {
