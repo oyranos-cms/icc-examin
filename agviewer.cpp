@@ -474,7 +474,7 @@ Agviewer::normalize(GLfloat v[3])
   if (d == 0)
     fprintf(stderr, "Zero length vector in normalize\n");
   else
-    v[0] /= d; v[1] /= d; v[2] /= d;
+  { v[0] /= d; v[1] /= d; v[2] /= d; }
   DBG_PROG_ENDE
 }
 
