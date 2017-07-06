@@ -82,13 +82,9 @@ ICCexamin * icc_examin = 0;
 
 int level_Prog = 0;
 
-#if OYRANOS_VERSION > 200
-int iccMessageFunc( int code, const oyPointer c, const char * format, ... )
+int iccMessageFunc( int code, const void * c, const char * format, ... )
 {
   oyStruct_s * context = (oyStruct_s*) c;
-#else
-int iccMessageFunc( int code, const oyStruct_s * context, const char * format, ... )
-#endif
   char* text = 0, *pos = 0;
   va_list list;
   const char * type_name = "";
@@ -102,11 +98,7 @@ int iccMessageFunc( int code, const oyStruct_s * context, const char * format, .
 
   if(context && oyOBJECT_NONE < context->type_)
   {
-#if OYRANOS_VERSION > 109
     type_name = oyStructTypeToText( context->type_ );
-#else
-    type_name = oyStruct_TypeToText( context );
-#endif
     id = oyObject_GetId( context->oy_ );
   }
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2017-02-12 15:08+0100\n"
+"POT-Creation-Date: 2017-06-07 07:14+0200\n"
 "PO-Revision-Date: 2005-08-13 17:35+0200\n"
 "Last-Translator: Kai-Uwe Behrmann\n"
 "Language-Team:  <ku.b@gmx.de>\n"
@@ -130,7 +130,7 @@ msgstr " mit Gamma: 1.0"
 msgid " with one entry for gamma: "
 msgstr " mit einem Eintrag für Gamma: "
 
-#: icc_examin.cpp:139
+#: icc_examin.cpp:131
 msgid "!!! ERROR"
 msgstr "!!! FEHLER"
 
@@ -165,7 +165,7 @@ msgstr ""
 
 #. clrt
 #. flex
-#: icc_examin.cpp:1432 icc_helfer.cpp:648 icc_helfer.cpp:740
+#: icc_examin.cpp:1424 icc_helfer.cpp:648 icc_helfer.cpp:740
 msgid "----"
 msgstr ""
 
@@ -712,7 +712,7 @@ msgstr "Farbanteil r"
 msgid "Colour spots can be enlarged or made smaller by pressing + or -."
 msgstr "Einzelfarben können vergrößert oder verkleinert werden mit + und -."
 
-#: icc_examin.cpp:973 icc_examin.cpp:976
+#: icc_examin.cpp:965 icc_examin.cpp:968
 msgid "Compare Measurement <-> Profile Colours"
 msgstr "Vergleich Mess- und Profilfarben"
 
@@ -855,11 +855,11 @@ msgstr "Datei nicht geladen!"
 msgid "Filename"
 msgstr "Dateiname"
 
-#: icc_examin.cpp:1437
+#: icc_examin.cpp:1429
 msgid "Filename (corrupted ICC data type)"
 msgstr "Dateiname (beschädigte ICC Daten)"
 
-#: icc_examin.cpp:1435
+#: icc_examin.cpp:1427
 msgid "Filename (other data type)"
 msgstr "Dateiname (anderer Datentyp)"
 
@@ -968,7 +968,7 @@ msgstr "Gamma:   "
 msgid "Gamut"
 msgstr "Farbhülle"
 
-#: icc_examin.cpp:993 icc_examin.cpp:997
+#: icc_examin.cpp:985 icc_examin.cpp:989
 msgid "Gamut View"
 msgstr "Farbhüllansicht"
 
@@ -976,7 +976,7 @@ msgstr "Farbhüllansicht"
 msgid "Gamut Warning"
 msgstr "Farb Warnung"
 
-#: icc_examin.cpp:383
+#: icc_examin.cpp:375
 msgid "Gamut selector"
 msgstr "Darstellungsoptionen"
 
@@ -1262,7 +1262,7 @@ msgstr "Übertragung:"
 msgid "Intent:      "
 msgstr "Übertragung: "
 
-#: icc_examin.cpp:1451
+#: icc_examin.cpp:1443
 msgid "Internal error"
 msgstr "interner Fehler"
 
@@ -1623,7 +1623,7 @@ msgid "No profil assigned to image."
 msgstr "Kein Profil am Bild."
 
 #. this string is sensible to formatting in the tag browser GUI, please keep a mono spaced formatting
-#: icc_examin.cpp:1454
+#: icc_examin.cpp:1446
 msgid "No. Tag   Type   Size Description"
 msgstr "Nr. Teil  Typ   Größe Beschreibung"
 
@@ -1845,7 +1845,7 @@ msgstr ""
 msgid "RGB primaries"
 msgstr "RGB Primätrfarben"
 
-#: icc_examin.cpp:525
+#: icc_examin.cpp:517
 msgid "Ready"
 msgstr "Bereit"
 
@@ -2332,7 +2332,7 @@ msgstr "Betrachtungsbedingungen"
 msgid "Viewing conditions description"
 msgstr "Beschreibung der Betrachtungbedingungen"
 
-#: icc_examin.cpp:136
+#: icc_examin.cpp:128
 msgid "WARNING"
 msgstr "WARNUNG"
 
@@ -2576,7 +2576,7 @@ msgstr "die Dateitypesignatur (immer acsp)"
 msgid "found"
 msgstr "Fand"
 
-#: icc_examin.cpp:1448
+#: icc_examin.cpp:1440
 msgid "found no content for"
 msgstr "keine Inhalte gefunden für"
 
@@ -2659,7 +2659,7 @@ msgstr "Lineare Eingangskurve mit 256 Stufungen"
 msgid "lineare exit curve with 256 steps"
 msgstr "Lineare Ausgangskurve mit 256 Stufungen"
 
-#: icc_examin.cpp:519 icc_examin.cpp:1498
+#: icc_examin.cpp:511 icc_examin.cpp:1490
 msgid "loaded"
 msgstr "geladen"
 
@@ -2707,11 +2707,11 @@ msgstr "kein Profil"
 msgid "noName"
 msgstr "kein Name"
 
-#: icc_examin.cpp:975 icc_oyranos.cpp:674
+#: icc_examin.cpp:967 icc_oyranos.cpp:674
 msgid "none"
 msgstr "kein"
 
-#: icc_examin.cpp:1065 icc_examin_tagwahl.cpp:1048 icc_gl.h:277
+#: icc_examin.cpp:1057 icc_examin_tagwahl.cpp:1048 icc_gl.h:277
 msgid "not available"
 msgstr "nicht verfügbar"
 
