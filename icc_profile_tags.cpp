@@ -493,7 +493,7 @@ ICCtag::getText                     (std::string text)
     icTagTypeSignature tag_type = icValue( base->sig );
     oySTATUS_e status = oyOK;
     int error = oyProfileTag_Set( tag_, _sig, tag_type,
-                                  status, size_, base );
+                                  status, size_, (oyPointer*)&base );
     char **texts = 0;
     int32_t texts_n = 0;
     const char * all_text = NULL; // NULL - show all languages, "" - select actual language
