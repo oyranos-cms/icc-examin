@@ -63,7 +63,7 @@ public:
     void frei(int freigeben); //!<@brief lock with wait/unlock
     bool report_owner;
 
-    ThreadDaten&   copy  (const ThreadDaten& s) {
+    ThreadDaten&   copy  (const ThreadDaten& s ICC_UNUSED) {
                               init();
                               return *this; }
     ThreadDaten& operator = (const ThreadDaten& d) {
@@ -101,7 +101,8 @@ public:
     return list_[reserve_ + 1000000000]; // create exception */
   }
   
-  ICCThreadList () {;}
+  ICCThreadList ()
+    : ThreadDaten() {;}
   ~ICCThreadList () {;}
   ICCThreadList (const ICCThreadList & s) {
                               copy(s); }

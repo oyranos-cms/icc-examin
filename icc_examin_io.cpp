@@ -125,7 +125,7 @@ ICCexaminIO::oeffnenThread_ (int pos)
   if(wandelThreadId( iccThreadSelf() ) != THREAD_LADEN)
     WARN_S("THREAD_LADEN???");
 
-  if(erneuern_.size() < 0) {
+  if(erneuern_.size() == 0) {
     icc_examin->fortschritt( 1.1 , 1.0 );
     DBG_PROG_ENDE
     return;

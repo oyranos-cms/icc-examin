@@ -492,8 +492,8 @@ MyFl_File_Chooser::fileListCB()
     // Activate the OK button as needed...
     if (!fl_filename_isdir(pathname) || (type_ & DIRECTORY))
       okButton->activate();
-    else
-      ;//okButton->deactivate();
+    /*else
+      okButton->deactivate();*/
   }
 }
 
@@ -857,8 +857,8 @@ MyFl_File_Chooser::rescan()
 
   if (type_ & DIRECTORY)
     okButton->activate();
-  else
-    ;//okButton->deactivate();
+  //else
+    //okButton->deactivate();
 
   // Build the file list...
   fileList->load(directory_, sort);

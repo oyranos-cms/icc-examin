@@ -90,7 +90,7 @@ Observer::modelDel(Model* model)
     in the derived class to implement
  */
 void
-Observer::message ( Model* model , int infos )
+Observer::message ( Model* model ICC_UNUSED , int infos ICC_UNUSED )
 {
   DBG_PROG;
 }

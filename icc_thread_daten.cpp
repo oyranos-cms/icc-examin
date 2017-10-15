@@ -34,7 +34,7 @@
 #include "icc_utils.h"
 
 void
-icc_examin_ns::ThreadDaten::frei(int freigeben)
+icc_examin_ns::ThreadDaten::frei(int freigeben ICC_UNUSED)
 {
 #if USE_THREADS
   if(freigeben)

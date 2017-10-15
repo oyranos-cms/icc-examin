@@ -238,7 +238,7 @@ void MyFl_Double_Window::hide()
               (shown()?"s":" ") )
 }
 
-void MyFl_Double_Window::hide(MyFl_Double_Window * by)
+void MyFl_Double_Window::hide(MyFl_Double_Window * by ICC_UNUSED)
 {
   DBG_PROG_S( id_<<" "<<(user_hide?"u":" ")<<" "<<(visible()?"v":" ")<<" "<<
               (shown()?"s":" ") )
@@ -277,7 +277,7 @@ void MyFl_Double_Window::iconize()
               (shown()?"s":" ") )
 }
 
-void MyFl_Double_Window::iconize(MyFl_Double_Window * by)
+void MyFl_Double_Window::iconize(MyFl_Double_Window * by ICC_UNUSED)
 {
   DBG_PROG_S( id_<<" "<<(user_hide?"u":" ")<<" "<<(visible()?"v":" ")<<" "<<
               (shown()?"s":" ") )

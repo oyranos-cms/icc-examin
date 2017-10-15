@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: icc-examin 0.9\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2017-06-07 07:14+0200\n"
+"POT-Creation-Date: 2017-10-15 05:52+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -400,7 +400,7 @@ msgstr ""
 msgid "Compare Measurement <-> Profile Colours"
 msgstr ""
 
-#: icc_examin.cpp:967 icc_oyranos.cpp:674
+#: icc_examin.cpp:967 icc_oyranos.cpp:660
 msgid "none"
 msgstr ""
 
@@ -1233,7 +1233,7 @@ msgstr ""
 msgid "open X Display failed"
 msgstr ""
 
-#: icc_helfer_x.cpp:130 icc_oyranos.cpp:673
+#: icc_helfer_x.cpp:130 icc_oyranos.cpp:659
 msgid "Screen:"
 msgstr ""
 
@@ -1241,7 +1241,7 @@ msgstr ""
 msgid "XineramaScreen:"
 msgstr ""
 
-#: icc_helfer_x.cpp:239 icc_oyranos.cpp:691 icc_profile_header.cpp:250
+#: icc_helfer_x.cpp:239 icc_oyranos.cpp:677 icc_profile_header.cpp:250
 msgid "Manufacturer:"
 msgstr ""
 
@@ -1420,19 +1420,19 @@ msgstr ""
 msgid "WARNING: Could not load profile."
 msgstr ""
 
-#: icc_oyranos.cpp:697
+#: icc_oyranos.cpp:683
 msgid "Model:"
 msgstr ""
 
-#: icc_oyranos.cpp:703
+#: icc_oyranos.cpp:689
 msgid "Serial:"
 msgstr ""
 
-#: icc_oyranos.cpp:709
+#: icc_oyranos.cpp:695
 msgid "Geometry:"
 msgstr ""
 
-#: icc_oyranos.cpp:715
+#: icc_oyranos.cpp:701
 msgid "Port:"
 msgstr ""
 
@@ -2684,7 +2684,7 @@ msgstr ""
 msgid "@2>"
 msgstr ""
 
-#: icc_utils.h:293 icc_utils.h:294 icc_utils.h:295 icc_utils.h:349
-#: icc_utils.h:350 icc_utils.h:351
+#: icc_utils.h:317 icc_utils.h:318 icc_utils.h:319 icc_utils.h:373
+#: icc_utils.h:374 icc_utils.h:375
 msgid "!!! Warning !!!"
 msgstr ""

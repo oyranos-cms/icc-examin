@@ -135,6 +135,30 @@
 # define BYTE_ORDER LITTLE_ENDIAN
 #endif
 
+#if   defined(__clang__)
+#define ICC_FALLTHROUGH
+#elif __GNUC__ >= 7 
+#define ICC_FALLTHROUGH                 __attribute__ ((fallthrough));
+#else
+#define ICC_FALLTHROUGH
+#endif
+
+#if   __GNUC__ >= 7
+#define ICC_DEPRECATED                  __attribute__ ((deprecated))
+#elif defined(_MSC_VER)
+#define ICC_DEPRECATED                  __declspec(deprecated)
+#else
+#define ICC_DEPRECATED
+#endif
+
+#if   (__GNUC__*100 + __GNUC_MINOR__) >= 406
+#define ICC_UNUSED                      __attribute__ ((unused))
+#elif defined(_MSC_VER)
+#define ICC_UNUSED                      __declspec(unused)
+#else
+#define ICC_UNUSED
+#endif
+
 
 #ifdef __cplusplus
 #define DBG_MAX_THREADS 12

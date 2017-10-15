@@ -57,7 +57,7 @@ class ICCwaehlerProfil : public Fl_Pack
   icc_examin->icc_betrachter->DD_farbraum->invalidate();
   icc_examin->icc_betrachter->DD_farbraum->flush();
  }
- static void aktiv_knopf_cb_statisch_(Fl_Widget* w, void* data) {DBG_PROG_START
+ static void aktiv_knopf_cb_statisch_(Fl_Widget* w, void* data ICC_UNUSED) {DBG_PROG_START
                 ICCwaehlerProfil* obj = dynamic_cast<ICCwaehlerProfil*>(w->parent());
                 if(obj) 
                   obj->aktiv_knopf_cb_();
@@ -75,7 +75,7 @@ class ICCwaehlerProfil : public Fl_Pack
   icc_examin->icc_betrachter->DD_farbraum->invalidate();
   icc_examin->icc_betrachter->DD_farbraum->flush();
  }
-  static void undurchsicht_cb_statisch_(Fl_Widget* w, void* data) {
+  static void undurchsicht_cb_statisch_(Fl_Widget* w, void* data ICC_UNUSED) {
                 ICCwaehlerProfil* obj = dynamic_cast<ICCwaehlerProfil*>(w->parent()->parent());
                 if(obj)
                   obj->undurchsicht_cb_();
@@ -88,7 +88,7 @@ class ICCwaehlerProfil : public Fl_Pack
   icc_examin->icc_betrachter->DD_farbraum->invalidate();
   icc_examin->icc_betrachter->DD_farbraum->flush();
  }
-  static void grau_cb_statisch_(Fl_Widget* w, void* data) {
+  static void grau_cb_statisch_(Fl_Widget* w, void* data ICC_UNUSED) {
                 ICCwaehlerProfil* obj = dynamic_cast<ICCwaehlerProfil*>(w->parent()->parent());
                 if(obj) 
                   obj->grau_cb_();

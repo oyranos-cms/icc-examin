@@ -275,7 +275,7 @@ ICCexamin::clear ()
 
 
 void
-resize_fuer_menubar(Fl_Widget* w)
+resize_fuer_menubar(Fl_Widget* w ICC_UNUSED)
 {
 # ifdef __APPLE__
   w->resize( w->x(), w->y()-SCALE(25), w->w(), w->h()+SCALE(25) );

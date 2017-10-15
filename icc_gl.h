@@ -137,7 +137,7 @@ public:
   GL_View(int X,int Y,int W,int H, const char *l);
   ~GL_View();
   GL_View (const GL_View & gl)
-    : Fl_Gl_Window(0,0,gl.w(),gl.h()) { id_ = ref_; ++ref_; copy(gl); }
+    : Fl_Gl_Window(0,0,gl.w(),gl.h()), ThreadDaten() { id_ = ref_; ++ref_; copy(gl); }
   GL_View& copy(const GL_View& gl);
   GL_View& operator = (const GL_View& gl) { return copy(gl); }
 private:

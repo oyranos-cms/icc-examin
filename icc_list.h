@@ -91,13 +91,13 @@ public:
       delete [] list_;
     zero();
   }
-  const size_t size() const {
+  size_t size() const {
     return n_;
   }
-  operator const size_t () const {
+  operator size_t () const {
     return n_;
   }
-  operator const size_t & () const {
+  operator size_t & () const {
     return n_;
   }
 

@@ -57,7 +57,7 @@ namespace icc_examin_ns {
 #ifdef HAVE_FLTK
 MyFl_File_Chooser  *dateiwahl_ = 0;
 
-Fl_Image* iccImageCheck( const char* fname, uchar *header, int len )
+Fl_Image* iccImageCheck( const char* fname, uchar *header ICC_UNUSED, int len ICC_UNUSED )
 {
   const char    *home;          // Home directory
   char          preview[1024],  // Preview filename
@@ -169,7 +169,7 @@ MyFl_File_Chooser  * dateiwahl()
 }
 
 void
-dateiwahl_cb (MyFl_File_Chooser *f, void *data, int finish)
+dateiwahl_cb (MyFl_File_Chooser *f, void *data, int finish ICC_UNUSED)
 { DBG_PROG_START
 
   const char *filename;
@@ -321,7 +321,7 @@ MyFl_Double_Window *log_window=(MyFl_Double_Window*)0;
 int log_window_poped = 0;
 static ICCThreadList<int> icc_log_lock_;
 
-int iccCLIMessage( const char * text, int code )
+int iccCLIMessage( const char * text, int code ICC_UNUSED )
 {
   cout << text << endl;
   return 0;

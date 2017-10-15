@@ -310,7 +310,7 @@ void            schreibeDatei(const void *data, gint groesse, std::string name);
 
 /** @brief not used */
 static int
-dialog_ (gint32 image_ID)
+dialog_ (gint32 image_ID ICC_UNUSED)
 {
   return true;
 }
@@ -908,7 +908,7 @@ pthreatFehler (int fehler)
  *  @param layer		stack
  */
 void
-aufraeumen(channel *layer)
+aufraeumen(channel *layer ICC_UNUSED)
 {
   {
     while(farbe_pruefen_laeuft) {
@@ -980,7 +980,7 @@ schreibeDatei(const void *data, gint groesse, std::string name)
  */
 gint
 drawableColourLayoutToOy (  channel    & layer,
-                            oyProfile_s *  p )
+                            oyProfile_s *  p ICC_UNUSED )
 {
   //GDrawableType/*GimpDrawableType*/ drawable_type;
   gint success = GIMP_PDB_SUCCESS;
@@ -1009,8 +1009,8 @@ drawableColourLayoutToOy (  channel    & layer,
         return GIMP_PDB_CALLING_ERROR;
     }
 
-    if(farb_kanaele < layer.samplesperpixel)
-      ;//format |= EXTRA_SH(layer.samplesperpixel - farb_kanaele);
+    //if(farb_kanaele < layer.samplesperpixel)
+      //format |= EXTRA_SH(layer.samplesperpixel - farb_kanaele);
 
     format |= oyChannels_m(farb_kanaele) | oyDataType_m(data_type);
 
@@ -1463,7 +1463,7 @@ minMax(gint32 image_ID, int & min_x, int & min_y,
 
   float max = -100000.0, max_color[4], //max_x, max_y,
         min = 100000.0, min_color[4]; //, min_x, min_y;
-  ShortsFloat u;
+  ShortsFloat u ICC_UNUSED;
 
   for(int i = 0; i < 4; ++i) {
     max_color[i] = 0.0;
@@ -1697,7 +1697,7 @@ getColour (channel* layers, int i,
               case FLOAT16_RGBA_IMAGE:
               case FLOAT16_GRAY_IMAGE:
               case FLOAT16_GRAYA_IMAGE:
-                   ShortsFloat u;
+                   ShortsFloat u ICC_UNUSED;
                    colour[c] = (double) FLT( ((guint16*)data)[c],u);
                    break;
               default: cout << (_("What kind of image is this?\n")); break;

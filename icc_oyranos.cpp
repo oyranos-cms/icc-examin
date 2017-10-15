@@ -583,22 +583,8 @@ Oyranos::setzeMonitorProfil (const char* profil_name , int x, int y )
   const char *display_name=0;
 
 # if defined(HAVE_X) && !defined(__APPLE__)
-  static Display *display=0;
-
-# ifdef HAVE_FLTK
-  if( !display )
-    ;//display = fl_display;
-# endif
-  //if( !display )
-    //display = XOpenDisplay(0);
-
   display_name = XDisplayString( fl_display );  // belongs to X
   DBG_PROG_V( display_name <<" "<< strlen(display_name) )
-
-# ifndef HAVE_FLTK
-    //XCloseDisplay( display ); DBG_PROG
-# endif
-
 # endif
 
   int screen = oyGetScreenFromPosition( display_name, x,y );
@@ -1150,7 +1136,7 @@ Oyranos::vrmlVonProfil (ICCprofile & profil, oyOptions_s * options,
 }
 
 ICClist<double>
-Oyranos::bandVonProfil (const Speicher & p, int intent)
+Oyranos::bandVonProfil (const Speicher & p, int intent ICC_UNUSED)
 {
   DBG_PROG_START
 # ifdef DEBUG
@@ -1794,7 +1780,7 @@ oyranos_pfade_einlesen()
 }
 
 void
-oyranos_pfad_dazu (char* pfad)
+oyranos_pfad_dazu (char* pfad ICC_UNUSED)
 {
 }
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2017-06-07 07:14+0200\n"
+"POT-Creation-Date: 2017-10-15 05:43+0200\n"
 "PO-Revision-Date: 2005-08-13 17:35+0200\n"
 "Last-Translator: Kai-Uwe Behrmann\n"
 "Language-Team:  <ku.b@gmx.de>\n"
@@ -134,8 +134,8 @@ msgstr " mit einem Eintrag für Gamma: "
 msgid "!!! ERROR"
 msgstr "!!! FEHLER"
 
-#: icc_utils.h:293 icc_utils.h:294 icc_utils.h:295 icc_utils.h:349
-#: icc_utils.h:350 icc_utils.h:351
+#: icc_utils.h:317 icc_utils.h:318 icc_utils.h:319 icc_utils.h:373
+#: icc_utils.h:374 icc_utils.h:375
 msgid "!!! Warning !!!"
 msgstr "!!! Warnung !!!"
 
@@ -988,7 +988,7 @@ msgstr "Farbhüllansicht:"
 msgid "Geometrie"
 msgstr ""
 
-#: icc_oyranos.cpp:709
+#: icc_oyranos.cpp:695
 msgid "Geometry:"
 msgstr "Geometrie:"
 
@@ -1442,7 +1442,7 @@ msgstr "Signatur:    "
 msgid "Manage Favorites"
 msgstr "Bearbeite Lesezeichen"
 
-#: icc_helfer_x.cpp:239 icc_oyranos.cpp:691 icc_profile_header.cpp:250
+#: icc_helfer_x.cpp:239 icc_oyranos.cpp:677 icc_profile_header.cpp:250
 msgid "Manufacturer:"
 msgstr "Hersteller:  "
 
@@ -1513,7 +1513,7 @@ msgstr "Medienweißpunkt"
 msgid "Microsoft"
 msgstr ""
 
-#: icc_oyranos.cpp:697
+#: icc_oyranos.cpp:683
 msgid "Model:"
 msgstr "Modell:"
 
@@ -1745,7 +1745,7 @@ msgstr "Bitte wählen Sie eine existierende Datei!"
 msgid "Point"
 msgstr "Punkt"
 
-#: icc_oyranos.cpp:715
+#: icc_oyranos.cpp:701
 msgid "Port:"
 msgstr "Anschluß:"
 
@@ -1933,7 +1933,7 @@ msgstr "Bericht Speichern"
 msgid "Save as VRML"
 msgstr "Speichere als VRML"
 
-#: icc_helfer_x.cpp:130 icc_oyranos.cpp:673
+#: icc_helfer_x.cpp:130 icc_oyranos.cpp:659
 msgid "Screen:"
 msgstr "Bildschirm:"
 
@@ -1945,7 +1945,7 @@ msgstr "Separation"
 msgid "September"
 msgstr "September"
 
-#: icc_oyranos.cpp:703
+#: icc_oyranos.cpp:689
 msgid "Serial:"
 msgstr "Serien Nr.:"
 
@@ -2707,7 +2707,7 @@ msgstr "kein Profil"
 msgid "noName"
 msgstr "kein Name"
 
-#: icc_examin.cpp:967 icc_oyranos.cpp:674
+#: icc_examin.cpp:967 icc_oyranos.cpp:660
 msgid "none"
 msgstr "kein"
 

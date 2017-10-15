@@ -595,7 +595,7 @@ ICCexamin::farbraum ()
 }
 
 void
-ICCexamin::farbraumModus (int profil)
+ICCexamin::farbraumModus (int profil ICC_UNUSED)
 {
   DBG_PROG_START
   MARK( frei(false); )

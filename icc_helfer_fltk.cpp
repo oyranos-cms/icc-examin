@@ -232,7 +232,7 @@ namespace icc_examin_ns {
     DBG_5_S( "locks: "<<icc_thread_lock_zaehler_ <<" stopped at: "<<file<<":"<<line )
   }
 
-  void unlock(void *widget, const char *file, int line)
+  void unlock(void *widget, const char *file ICC_UNUSED, int line ICC_UNUSED)
   {
 # if 0
     --data_mutex_threads_;

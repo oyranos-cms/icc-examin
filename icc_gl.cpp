@@ -714,7 +714,7 @@ GL_View::show()
 
 /** receive of a drawing news */
 void
-GL_View::message(icc_examin_ns::Model* model, int info)
+GL_View::message(icc_examin_ns::Model* model ICC_UNUSED, int info)
 {
   DBG_PROG_START
   DBG_PROG_V( info<<" "<<window()->visible()<<" "<<visible()<<" "<<shown()<<" "<<id_ )
@@ -3040,10 +3040,10 @@ GL_View::drawGL()
                 sprintf( &text[strlen(text)], "%s:%.02f ",
                                from_channel_names_[i].c_str(), d[i] );
           }
-        } else {
+        } /*else {
           if(!epoint_)
             ; //epoint_.name = (char*) myAllocFunc(1);
-        }
+        }*/
       }
 
     l[0] = oY+0.5;
@@ -3589,7 +3589,7 @@ void getFacesFromICCnetz ( const ICCnetz & net, icc_examin_ns::FACE **fList,
   }
 }
 
-void drawGLFaceList(FILE *fp,const icc_examin_ns::FACE *faceList)
+void drawGLFaceList(FILE *fp ICC_UNUSED,const icc_examin_ns::FACE *faceList)
 {
   const icc_examin_ns::FACE *ftrav = 0;
   for (ftrav= faceList; ftrav != 0; ftrav= ftrav->fnext)
@@ -3984,7 +3984,7 @@ GL_View::menuEvents ( int value )
       agv_->thin = true;
       break;
     case Agviewer::ICCPOLAR:
-      agv_->thin = true;
+      agv_->thin = true; ICC_FALLTHROUGH
     case Agviewer::POLAR:
       if(type() == 1)
         agv_->thin = true;
@@ -4289,7 +4289,7 @@ GL_View::c_ ( Fl_Widget* w, void* data )
 
 
 int
-GL_View::backgroundColourToMenuEntry( float colour )
+GL_View::backgroundColourToMenuEntry( float colour ICC_UNUSED )
 {
   int eintrag = MENU_LIGHT_GRAY;
 
