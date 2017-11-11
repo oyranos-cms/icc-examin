@@ -397,7 +397,7 @@ void ICCexamin::showData( oyStructList_s * elements,
 
             element = (oyStructList_s*) oyStructList_GetRefType( elements, j,
                                              oyOBJECT_STRUCT_LIST_S );
-            element_name = oyStructList_GetName( element, 0 );
+            element_name = oyStructList_GetName( element, 0, oyNAME_NAME );
             if(element_name)
             t += element_name;
             t += " ";
@@ -722,7 +722,7 @@ void ICCexamin::showmABData ()
           showData( elements, texte[MFT_VIEWER], MFT_VIEWER );
         } else
         {
-          t = oyStructList_GetName( list, i-1 );
+          t = oyStructList_GetName( list, i-1, oyNAME_NAME );
           t += " ";
           t += strrchr( oyOption_GetRegistration(opt), '/' ) + 1;
           icc_betrachter->table_text->hinein ( t );
