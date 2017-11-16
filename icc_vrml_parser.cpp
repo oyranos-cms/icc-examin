@@ -926,7 +926,7 @@ std::string    vrmlScene          ( icc_examin_ns::ICCThreadList<ICCnetz> netze,
   /* colour conversion context */
   double lab[3], rgba[4];
   oyOptions_s * opts = 0;
-  oyOptions_SetFromText( &opts, "////rendering_intent", "0", OY_CREATE_NEW );
+  oyOptions_SetFromString( &opts, "////rendering_intent", "0", OY_CREATE_NEW );
 
   // named colours
   if (oyStructList_Count( colour_lists ))

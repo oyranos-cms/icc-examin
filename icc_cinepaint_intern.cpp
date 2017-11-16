@@ -524,26 +524,26 @@ transformAnlegen( channel & layer )
     DBG_PROG_S( transf <<" "<< layer.intent )
 
     sprintf(num,"%d", layer.intent);
-    oyOptions_SetFromText( &options, OY_DEFAULT_RENDERING_INTENT, num,
+    oyOptions_SetFromString( &options, OY_DEFAULT_RENDERING_INTENT, num,
                            OY_CREATE_NEW );
     if(layer.intent_proof == 3)
       sprintf(num,"%d", 1);
     else
       sprintf(num,"%d", 0);
-    oyOptions_SetFromText( &options, OY_DEFAULT_RENDERING_INTENT_PROOF,
+    oyOptions_SetFromString( &options, OY_DEFAULT_RENDERING_INTENT_PROOF,
                            num, OY_CREATE_NEW );
     if(layer.flags & 0x2000) /* BPC */
-      oyOptions_SetFromText( &options, OY_DEFAULT_RENDERING_BPC,
+      oyOptions_SetFromString( &options, OY_DEFAULT_RENDERING_BPC,
                              "1", OY_CREATE_NEW );
 
     if(layer.flags & 0x1000) /* gamut warning */
-      oyOptions_SetFromText( &options, OY_DEFAULT_RENDERING_GAMUT_WARNING,
+      oyOptions_SetFromString( &options, OY_DEFAULT_RENDERING_GAMUT_WARNING,
                              "1", OY_CREATE_NEW );
     if(layer.flags & 0x4000) /* proofing */
     {
       oyProfiles_s * proofs = oyProfiles_New(0);
       oyProfile_s * proof = oyProfile_Copy( hs, 0 );
-      oyOptions_SetFromText( &options, OY_DEFAULT_PROOF_SOFT,
+      oyOptions_SetFromString( &options, OY_DEFAULT_PROOF_SOFT,
                              "1", OY_CREATE_NEW );
       oyProfiles_MoveIn( proofs, &proof, -1 );
       oyOptions_MoveInStruct( &options,

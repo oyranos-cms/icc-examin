@@ -228,7 +228,7 @@ TagDrawings::init_shoe_ ()
                          0 );
   oyOptions_s * options = 0;
   // absolute colorimetric intent
-  oyOptions_SetFromText( &options, "rendering_intent", "3", 0 );
+  oyOptions_SetFromString( &options, "rendering_intent", "3", 0 );
   c = oyConversion_CreateBasicPixels( in,out, options, 0 );
   oyOptions_Release( &options );
 }
@@ -363,7 +363,7 @@ TagDrawings::drawCieShoe_ ( int repeated)
                          0 );
       oyOptions_s * options = 0;
       // absolute colorimetric intent
-      oyOptions_SetFromText( &options, "rendering_intent", "3", 0 );
+      oyOptions_SetFromString( &options, "rendering_intent", "3", 0 );
       oyConversion_s * cie = oyConversion_CreateBasicPixels( cie_xyz, cie_image,
                                                              options, 0 );
       oyConversion_RunPixels( cie, 0 );

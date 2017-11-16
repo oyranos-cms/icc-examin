@@ -1027,11 +1027,11 @@ void ICCexamin::optionsRefresh_( void )
   char t[4];
   /* should always be a single digit */
   sprintf( t, "%d", intentGet(NULL));
-  oyOptions_SetFromText( &options_, "rendering_intent", t, 0 );
+  oyOptions_SetFromString( &options_, "rendering_intent", t, 0 );
   sprintf( t, "%d", bpc() );
-  oyOptions_SetFromText( &options_, "rendering_bpc", t, 0 );
+  oyOptions_SetFromString( &options_, "rendering_bpc", t, 0 );
   sprintf( t, "%d", gamutwarn() );
-  oyOptions_SetFromText( &options_, "rendering_gamut_warning", t, 0 );
+  oyOptions_SetFromString( &options_, "rendering_gamut_warning", t, 0 );
 }
 
 void
@@ -1391,10 +1391,10 @@ oyOptions_s * ICCexamin::options( void )
 
   /* default to absolute colorimetric  */
   if(oyOptions_FindString( ui_options, "rendering_intent", NULL) == NULL)
-    oyOptions_SetFromText( &ui_options, OY_BEHAVIOUR_STD "/rendering_intent",
+    oyOptions_SetFromString( &ui_options, OY_BEHAVIOUR_STD "/rendering_intent",
                              "3", OY_CREATE_NEW );
   /* absolute intent in lcms2 is always full adapted to D50 */
-  oyOptions_SetFromText( &ui_options, OY_BEHAVIOUR_STD "/adaption_state",
+  oyOptions_SetFromString( &ui_options, OY_BEHAVIOUR_STD "/adaption_state",
                          "0.0", OY_CREATE_NEW );
 
   return ui_options;

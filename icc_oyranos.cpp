@@ -635,7 +635,7 @@ Oyranos::moniInfo (int x, int y, int * num)
      (!old_screen_name ||
       strcmp(display_name, old_screen_name) != 0))
   {
-    oyOptions_SetFromText( &options,
+    oyOptions_SetFromString( &options,
                              "//" OY_TYPE_STD "/config/command",
                              "properties", OY_CREATE_NEW );
     oyDeviceGet( OY_TYPE_STD, "monitor", display_name, options, &device );
@@ -1381,10 +1381,10 @@ oyProfile_s * Oyranos::oyMoni (int x, int y, int native)
 
     if(native)
     {
-      oyOptions_SetFromText( &options,
+      oyOptions_SetFromString( &options,
                              "//" OY_TYPE_STD "/config/command",
                              "list", OY_CREATE_NEW );
-      oyOptions_SetFromText( &options,
+      oyOptions_SetFromString( &options,
                  "//" OY_TYPE_STD "/config/icc_profile.x_color_region_target",
                                        "yes", OY_CREATE_NEW );
     }

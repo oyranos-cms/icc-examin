@@ -169,7 +169,7 @@ ICCexamin::netzLese (int n,
 
     char num[4];
     sprintf(num, "%d", intent);
-    oyOptions_SetFromText( &opts, "rendering_intent", num, OY_CREATE_NEW );
+    oyOptions_SetFromString( &opts, "rendering_intent", num, OY_CREATE_NEW );
 
     if(profile[n]->data_type == ICCprofile::ICCprofileDATA)
       icc_oyranos.netzVonProfil( *(profile[n]), opts, nativeGamut(),
