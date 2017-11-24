@@ -12,6 +12,8 @@ SET (ICCEXAMIN_DEVEL_YEAR 2017)
 SET (PACKAGE_NAME "icc-examin")
 set (PACKAGE_DESCRIPTION "ICC Examin is a small utility (unix name: iccexamin) for the purpose of watching the internals of ICC profiles, measurement data (CGATS), colour samples (named colour profiles), gamut visualisations (vrml), video card gamma tables (Xorg/XFree86/osX).")
 
+INCLUDE(GNUInstallDirs)
+
 #additional cmake modules for loading libraries
 SET (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
@@ -358,9 +360,10 @@ IF( NOT APPLE )
   INSTALL( TARGETS ${ICCE_APP} 
            RUNTIME DESTINATION bin )
 ENDIF()
-INSTALL( FILES iccexamin.desktop DESTINATION share/applications )
-INSTALL( FILES iccexamin.svg DESTINATION share/pixmaps )
-INSTALL( FILES iccexamin.1 DESTINATION share/man/man1 )
+INSTALL( FILES iccexamin.desktop DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/applications)
+INSTALL( FILES iccexamin.png DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/pixmaps )
+INSTALL( FILES iccexamin.svg DESTINATION share/pixmaps/hicolor/scalable/ )
+INSTALL( FILES iccexamin.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1 )
 
 IF( CINEPAINT_FOUND )
   ADD_EXECUTABLE( icc_examin_cp ${icc_examin_SRCS} icc_cinepaint.cpp )
