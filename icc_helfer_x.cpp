@@ -189,7 +189,7 @@ leseGrafikKartenGamma        (std::string display_name,
     if(!res)
       res = XRRGetScreenResources( display, root );
 
-    if(res && res->ncrtc == n_xin_info)
+    if(res && res->ncrtc >= n_xin_info)
     {
       int ncrtc = 0;
       n = res->noutput;
@@ -215,12 +215,17 @@ leseGrafikKartenGamma        (std::string display_name,
           }
           XRRFreeCrtcInfo( info );
         }
+        else
+          DBG_NUM_S("[" <<ncrtc-1<<"] (" <<screen<<") crtc: "
+                       <<output_info->crtc<<" name: "<<output_info->name );
 
         XRRFreeOutputInfo( output_info ); output_info = 0;
       }
     }
+    DBG_NUM_V( (int)(res?res->ncrtc:0) <<" "<< n_xin_info )
     //XRRFreeScreenResources(res); res = 0;
-  } 
+  }
+  DBG_NUM_V( "XRandR version: " << xrr_version << " gamme_size: " << gamma_size )
     
 #endif /* HAVE_XRANDR */
 

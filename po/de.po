@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2017-10-15 05:43+0200\n"
+"POT-Creation-Date: 2018-01-23 17:39+0100\n"
 "PO-Revision-Date: 2005-08-13 17:35+0200\n"
 "Last-Translator: Kai-Uwe Behrmann\n"
 "Language-Team:  <ku.b@gmx.de>\n"
@@ -943,11 +943,11 @@ msgstr "Ganzer Bildschirmmodus"
 msgid "G"
 msgstr ""
 
-#: icc_helfer_osx_cg.c:121 icc_helfer_x.cpp:276
+#: icc_helfer_osx_cg.c:121 icc_helfer_x.cpp:281
 msgid "Gamma Blue:  "
 msgstr "Gamma Blau:  "
 
-#: icc_helfer_x.cpp:270
+#: icc_helfer_x.cpp:275
 msgid "Gamma Green:"
 msgstr "Gamma Grün: "
 
@@ -955,11 +955,11 @@ msgstr "Gamma Grün: "
 msgid "Gamma Green: "
 msgstr "Gamma Grün:  "
 
-#: icc_helfer_osx_cg.c:111 icc_helfer_x.cpp:264
+#: icc_helfer_osx_cg.c:111 icc_helfer_x.cpp:269
 msgid "Gamma Red:   "
 msgstr "Gamma Rot:   "
 
-#: icc_helfer_x.cpp:254
+#: icc_helfer_x.cpp:259
 msgid "Gamma:   "
 msgstr "Gamma:   "
 
@@ -1442,7 +1442,7 @@ msgstr "Signatur:    "
 msgid "Manage Favorites"
 msgstr "Bearbeite Lesezeichen"
 
-#: icc_helfer_x.cpp:239 icc_oyranos.cpp:677 icc_profile_header.cpp:250
+#: icc_helfer_x.cpp:244 icc_oyranos.cpp:677 icc_profile_header.cpp:250
 msgid "Manufacturer:"
 msgstr "Hersteller:  "
 
@@ -1522,7 +1522,7 @@ msgstr "Modell:"
 msgid "Model:      "
 msgstr "Modell:     "
 
-#: icc_helfer_x.cpp:241 icc_profile_header.cpp:251
+#: icc_helfer_x.cpp:246 icc_profile_header.cpp:251
 msgid "Model:       "
 msgstr "Modell:      "
 
@@ -2683,7 +2683,7 @@ msgstr ""
 msgid "newBSD"
 msgstr ""
 
-#: icc_helfer_x.cpp:299 icc_helfer_x.cpp:323
+#: icc_helfer_x.cpp:304 icc_helfer_x.cpp:328
 msgid "no gammagradient information obtained"
 msgstr "keine Gammainformationen erhalten"
 
