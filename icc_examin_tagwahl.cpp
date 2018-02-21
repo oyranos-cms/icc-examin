@@ -725,7 +725,7 @@ void ICCexamin::showmABData ()
           showData( elements, texte[MFT_VIEWER], MFT_VIEWER );
         } else
         {
-          t = oyStructList_GetName( list, i-1, oyNAME_NAME );
+          t = oyStructList_GetName( list, i, oyNAME_NAME );
           t += " ";
           t += strrchr( oyOption_GetRegistration(opt), '/' ) + 1;
           icc_betrachter->table_text->hinein ( t );
