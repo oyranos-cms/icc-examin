@@ -196,7 +196,8 @@ ICCexamin::selectTag (int item)
       icc_betrachterNeuzeichnen(icc_betrachter->tag_viewer);
     } else if ( TagInfo[1] == "mft2"
              || TagInfo[1] == "mft1" ) { DBG_PROG_S("mft1/2")
-      std::string t = profile.profil()->getTagText (item)[0];
+      ICClist<std::string> l = profile.profil()->getTagText(item);
+      std::string t = l[0];
       frei(false);
       icc_betrachter->table_choice->profilTag (item, t);
       frei(true);
@@ -206,10 +207,11 @@ ICCexamin::selectTag (int item)
     {
       std::string choice_text;
       const char * tmp = 0;
+      ICClist<std::string> l = profile.profil()->getTagText(_item);
+      std::string tmp_string = l[0];
+      tmp = tmp_string.c_str();
       {
         /* skip the two channel info lines */
-        std::string tmp_string = profile.profil()->getTagText(_item)[0];
-        tmp = tmp_string.c_str();
         ICClist<std::string> lines = icc_parser::zeilenNachVector( tmp_string );
         choice_text = lines[0];
         choice_text += "\n";
@@ -510,7 +512,8 @@ void ICCexamin::showmABData ()
       t += renderingIntentName(2);
     t += "\n";
 
-    tmp = profile.profil()->getTagText (_item)[0].c_str();
+    ICClist<std::string> l = profile.profil()->getTagText (_item);
+    tmp = l[0].c_str();
     if(tmp)
       tmp = strchr( tmp, '\n' );
     if(tmp)

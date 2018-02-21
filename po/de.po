@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2018-01-23 17:39+0100\n"
+"POT-Creation-Date: 2018-02-21 14:51+0100\n"
 "PO-Revision-Date: 2005-08-13 17:35+0200\n"
 "Last-Translator: Kai-Uwe Behrmann\n"
 "Language-Team:  <ku.b@gmx.de>\n"
@@ -1023,7 +1023,7 @@ msgstr "Grüne Grundfarbe"
 msgid "Green tone reproduction curve"
 msgstr "Grüne Farbwiedergabekurve"
 
-#: icc_examin_io.cpp:704
+#: icc_examin_io.cpp:705
 msgid "HTML Documents (*.htm*)"
 msgstr "HTML Dokumente (*.htm*)"
 
@@ -1110,7 +1110,7 @@ msgstr ""
 "Abhängig von der Komplexität der Datei und dem benutzen Rechner benötigt es "
 "etwas Zeit."
 
-#: icc_examin_io.cpp:781
+#: icc_examin_io.cpp:782
 msgid "ICC colour profiles (*.ic*)"
 msgstr "ICC Farbprofile (*.ic*)"
 
@@ -1254,7 +1254,7 @@ msgstr "Tintenstrahldrucker"
 msgid "Input"
 msgstr "Eingabe"
 
-#: icc_examin_tagwahl.cpp:503 icc_profile_tags.cpp:283 icc_profile_tags.cpp:302
+#: icc_examin_tagwahl.cpp:505 icc_profile_tags.cpp:283 icc_profile_tags.cpp:302
 msgid "Intent:"
 msgstr "Übertragung:"
 
@@ -1358,7 +1358,7 @@ msgid "Load the current monitor profile"
 msgstr "Das aktuelle Monitor Profile laden"
 
 #. Fl_Box* box_stat
-#: icc_examin_tagwahl.cpp:1040 icc_betrachter.cxx:1120
+#: icc_examin_tagwahl.cpp:1043 icc_betrachter.cxx:1120
 msgid "Loading .."
 msgstr "Lade ..."
 
@@ -1458,7 +1458,7 @@ msgstr "März"
 msgid "Matrix"
 msgstr ""
 
-#: icc_examin_tagwahl.cpp:679
+#: icc_examin_tagwahl.cpp:682
 msgid "Matrix 3x3 + 3"
 msgstr ""
 
@@ -1917,15 +1917,15 @@ msgstr "Sättigung"
 msgid "Save"
 msgstr "Sichern"
 
-#: icc_examin_io.cpp:782 icc_betrachter.cxx:655
+#: icc_examin_io.cpp:783 icc_betrachter.cxx:655
 msgid "Save Gamut as Profile"
 msgstr "Speichere Farbhülle als Profil"
 
-#: icc_examin_io.cpp:785 icc_betrachter.cxx:656
+#: icc_examin_io.cpp:786 icc_betrachter.cxx:656
 msgid "Save Gamut as VRML"
 msgstr "Speichere Farbhülle als VRML"
 
-#: icc_examin_io.cpp:708 icc_betrachter.cxx:654
+#: icc_examin_io.cpp:709 icc_betrachter.cxx:654
 msgid "Save Report"
 msgstr "Bericht Speichern"
 
@@ -2064,7 +2064,7 @@ msgstr "Stern"
 msgid "Std-exception occured: "
 msgstr "Std-Ausnahme: "
 
-#: icc_examin_io.cpp:604
+#: icc_examin_io.cpp:605
 msgid "Stop loading "
 msgstr "Laden angehalten: "
 
@@ -2280,7 +2280,7 @@ msgstr "Zum Navigieren in der 3D Ansicht:"
 msgid "Transparent, "
 msgstr "Durchsicht, "
 
-#: icc_examin_io.cpp:784
+#: icc_examin_io.cpp:785
 msgid "VRML Files (*.wrl)"
 msgstr "VRML Dateien (*.wrl)"
 
@@ -2546,7 +2546,7 @@ msgid "down key - reduce the slice plane distance"
 msgstr "Pfeiltaste nach unten - verringert den Schnittflächenabstand"
 
 #. found XXX elements
-#: icc_examin_tagwahl.cpp:390
+#: icc_examin_tagwahl.cpp:392
 msgid "elements"
 msgstr "Element(e)"
 
@@ -2572,7 +2572,7 @@ msgid "file type sinature (allways acsp)"
 msgstr "die Dateitypesignatur (immer acsp)"
 
 #. found XXX elements
-#: icc_examin_tagwahl.cpp:384
+#: icc_examin_tagwahl.cpp:386
 msgid "found"
 msgstr "Fand"
 
@@ -2711,7 +2711,7 @@ msgstr "kein Name"
 msgid "none"
 msgstr "kein"
 
-#: icc_examin.cpp:1057 icc_examin_tagwahl.cpp:1048 icc_gl.h:277
+#: icc_examin.cpp:1057 icc_examin_tagwahl.cpp:1051 icc_gl.h:277
 msgid "not available"
 msgstr "nicht verfügbar"
 

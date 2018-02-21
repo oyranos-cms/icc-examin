@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cinepaint_icc-examin_eu\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2018-01-23 17:39+0100\n"
+"POT-Creation-Date: 2018-02-21 14:51+0100\n"
 "PO-Revision-Date: 2007-11-07 11:11+0100\n"
 "Last-Translator: Iñaki Larrañaga Murgoitio <dooteo@zundan.com>\n"
 "Language-Team: Basque <itzulpena@euskalgnu.org>\n"
@@ -1021,7 +1021,7 @@ msgstr "Gris koloragarria"
 msgid "Green tone reproduction curve"
 msgstr "Tonu berdearen erreprodukzio-kurba"
 
-#: icc_examin_io.cpp:704
+#: icc_examin_io.cpp:705
 msgid "HTML Documents (*.htm*)"
 msgstr "HTML dokumentuak (*.htm*)"
 
@@ -1105,7 +1105,7 @@ msgid ""
 "open gamut view takes extra time."
 msgstr ""
 
-#: icc_examin_io.cpp:781
+#: icc_examin_io.cpp:782
 msgid "ICC colour profiles (*.ic*)"
 msgstr "ICC kolore-profilak (*.ic*)"
 
@@ -1236,7 +1236,7 @@ msgstr "Tintazko inprimagailua"
 msgid "Input"
 msgstr "Sarrera"
 
-#: icc_examin_tagwahl.cpp:503 icc_profile_tags.cpp:283 icc_profile_tags.cpp:302
+#: icc_examin_tagwahl.cpp:505 icc_profile_tags.cpp:283 icc_profile_tags.cpp:302
 msgid "Intent:"
 msgstr "Helburua:"
 
@@ -1335,7 +1335,7 @@ msgid "Load the current monitor profile"
 msgstr "Kargatu uneko monitorearen profila"
 
 #. Fl_Box* box_stat
-#: icc_examin_tagwahl.cpp:1040 icc_betrachter.cxx:1120
+#: icc_examin_tagwahl.cpp:1043 icc_betrachter.cxx:1120
 msgid "Loading .."
 msgstr "Kargatzen ..."
 
@@ -1435,7 +1435,7 @@ msgstr ""
 msgid "Matrix"
 msgstr "Matrizea"
 
-#: icc_examin_tagwahl.cpp:679
+#: icc_examin_tagwahl.cpp:682
 #, fuzzy
 msgid "Matrix 3x3 + 3"
 msgstr "Matrizea"
@@ -1885,15 +1885,15 @@ msgstr "Saturazioa"
 msgid "Save"
 msgstr "Gorde"
 
-#: icc_examin_io.cpp:782 icc_betrachter.cxx:655
+#: icc_examin_io.cpp:783 icc_betrachter.cxx:655
 msgid "Save Gamut as Profile"
 msgstr "Gorde kolore-gama profila gisa"
 
-#: icc_examin_io.cpp:785 icc_betrachter.cxx:656
+#: icc_examin_io.cpp:786 icc_betrachter.cxx:656
 msgid "Save Gamut as VRML"
 msgstr "Gorde kolore-gama VRML gisa"
 
-#: icc_examin_io.cpp:708 icc_betrachter.cxx:654
+#: icc_examin_io.cpp:709 icc_betrachter.cxx:654
 msgid "Save Report"
 msgstr "Gorde txostena"
 
@@ -2032,7 +2032,7 @@ msgstr "Izarra"
 msgid "Std-exception occured: "
 msgstr "STD salbuespena gertatu da: "
 
-#: icc_examin_io.cpp:604
+#: icc_examin_io.cpp:605
 msgid "Stop loading "
 msgstr "Gelditu kargatzea "
 
@@ -2210,7 +2210,7 @@ msgstr ""
 msgid "Transparent, "
 msgstr "Gardena, "
 
-#: icc_examin_io.cpp:784
+#: icc_examin_io.cpp:785
 msgid "VRML Files (*.wrl)"
 msgstr "VRML fitxategiak (*.wrl)"
 
@@ -2470,7 +2470,7 @@ msgid "down key - reduce the slice plane distance"
 msgstr ""
 
 #. found XXX elements
-#: icc_examin_tagwahl.cpp:390
+#: icc_examin_tagwahl.cpp:392
 #, fuzzy
 msgid "elements"
 msgstr "Neurketa"
@@ -2497,7 +2497,7 @@ msgid "file type sinature (allways acsp)"
 msgstr ""
 
 #. found XXX elements
-#: icc_examin_tagwahl.cpp:384
+#: icc_examin_tagwahl.cpp:386
 #, fuzzy
 msgid "found"
 msgstr "Puntua"
@@ -2638,7 +2638,7 @@ msgstr "izengabea"
 msgid "none"
 msgstr "bat ere ez"
 
-#: icc_examin.cpp:1057 icc_examin_tagwahl.cpp:1048 icc_gl.h:277
+#: icc_examin.cpp:1057 icc_examin_tagwahl.cpp:1051 icc_gl.h:277
 msgid "not available"
 msgstr "ez dago erabilgarri"
 

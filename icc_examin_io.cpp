@@ -393,7 +393,8 @@ ICCexaminIO::oeffnenThread_ ()
 
           if(icc_examin->icc_waehler_)
           {
-            name = profile.name(i).c_str();
+            std::string n = profile.name(i);
+            name = n.c_str();
             icc_examin->icc_waehler_->push_back( dateiName( name ),
                                           undurchsicht, grau, active, waehlbar);
           }

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2018-01-23 17:39+0100\n"
+"POT-Creation-Date: 2018-02-21 14:51+0100\n"
 "PO-Revision-Date: 2005-08-13 17:35+0200\n"
 "Last-Translator: Kai-Uwe Behrmann\n"
 "Language-Team:  <eo@li.org>\n"
@@ -985,7 +985,7 @@ msgstr ""
 msgid "Green tone reproduction curve"
 msgstr ""
 
-#: icc_examin_io.cpp:704
+#: icc_examin_io.cpp:705
 msgid "HTML Documents (*.htm*)"
 msgstr ""
 
@@ -1061,7 +1061,7 @@ msgid ""
 "open gamut view takes extra time."
 msgstr ""
 
-#: icc_examin_io.cpp:781
+#: icc_examin_io.cpp:782
 msgid "ICC colour profiles (*.ic*)"
 msgstr ""
 
@@ -1191,7 +1191,7 @@ msgstr ""
 msgid "Input"
 msgstr ""
 
-#: icc_examin_tagwahl.cpp:503 icc_profile_tags.cpp:283 icc_profile_tags.cpp:302
+#: icc_examin_tagwahl.cpp:505 icc_profile_tags.cpp:283 icc_profile_tags.cpp:302
 msgid "Intent:"
 msgstr ""
 
@@ -1290,7 +1290,7 @@ msgid "Load the current monitor profile"
 msgstr ""
 
 #. Fl_Box* box_stat
-#: icc_examin_tagwahl.cpp:1040 icc_betrachter.cxx:1120
+#: icc_examin_tagwahl.cpp:1043 icc_betrachter.cxx:1120
 msgid "Loading .."
 msgstr ""
 
@@ -1384,7 +1384,7 @@ msgstr ""
 msgid "Matrix"
 msgstr ""
 
-#: icc_examin_tagwahl.cpp:679
+#: icc_examin_tagwahl.cpp:682
 msgid "Matrix 3x3 + 3"
 msgstr ""
 
@@ -1829,15 +1829,15 @@ msgstr "pureco"
 msgid "Save"
 msgstr ""
 
-#: icc_examin_io.cpp:782 icc_betrachter.cxx:655
+#: icc_examin_io.cpp:783 icc_betrachter.cxx:655
 msgid "Save Gamut as Profile"
 msgstr ""
 
-#: icc_examin_io.cpp:785 icc_betrachter.cxx:656
+#: icc_examin_io.cpp:786 icc_betrachter.cxx:656
 msgid "Save Gamut as VRML"
 msgstr ""
 
-#: icc_examin_io.cpp:708 icc_betrachter.cxx:654
+#: icc_examin_io.cpp:709 icc_betrachter.cxx:654
 msgid "Save Report"
 msgstr ""
 
@@ -1972,7 +1972,7 @@ msgstr ""
 msgid "Std-exception occured: "
 msgstr ""
 
-#: icc_examin_io.cpp:604
+#: icc_examin_io.cpp:605
 msgid "Stop loading "
 msgstr ""
 
@@ -2140,7 +2140,7 @@ msgstr ""
 msgid "Transparent, "
 msgstr ""
 
-#: icc_examin_io.cpp:784
+#: icc_examin_io.cpp:785
 msgid "VRML Files (*.wrl)"
 msgstr ""
 
@@ -2399,7 +2399,7 @@ msgid "down key - reduce the slice plane distance"
 msgstr ""
 
 #. found XXX elements
-#: icc_examin_tagwahl.cpp:390
+#: icc_examin_tagwahl.cpp:392
 msgid "elements"
 msgstr ""
 
@@ -2425,7 +2425,7 @@ msgid "file type sinature (allways acsp)"
 msgstr ""
 
 #. found XXX elements
-#: icc_examin_tagwahl.cpp:384
+#: icc_examin_tagwahl.cpp:386
 msgid "found"
 msgstr ""
 
@@ -2560,7 +2560,7 @@ msgstr ""
 msgid "none"
 msgstr ""
 
-#: icc_examin.cpp:1057 icc_examin_tagwahl.cpp:1048 icc_gl.h:277
+#: icc_examin.cpp:1057 icc_examin_tagwahl.cpp:1051 icc_gl.h:277
 msgid "not available"
 msgstr ""
 

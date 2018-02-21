@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: icc_examin\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2018-01-23 17:39+0100\n"
+"POT-Creation-Date: 2018-02-21 14:51+0100\n"
 "PO-Revision-Date: 2012-10-19 15:09+0100\n"
 "Last-Translator: Milan Knížek <knizek@volny.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
@@ -1033,7 +1033,7 @@ msgstr "Zelený kolorant"
 msgid "Green tone reproduction curve"
 msgstr "Křivka reprodukce zelených tónů"
 
-#: icc_examin_io.cpp:704
+#: icc_examin_io.cpp:705
 msgid "HTML Documents (*.htm*)"
 msgstr "Dokumenty HTML (*.htm*)"
 
@@ -1122,7 +1122,7 @@ msgstr ""
 "zvýrazněním postupu načítání. Kompletní načtení může v případě komplexních "
 "profilů chvíli trvat. Vizualizace gamutu trvá ještě déle."
 
-#: icc_examin_io.cpp:781
+#: icc_examin_io.cpp:782
 msgid "ICC colour profiles (*.ic*)"
 msgstr "Barvové profily ICC (*.ic*)"
 
@@ -1267,7 +1267,7 @@ msgstr "Inkoustová tiskárna"
 msgid "Input"
 msgstr "Vstupní"
 
-#: icc_examin_tagwahl.cpp:503 icc_profile_tags.cpp:283 icc_profile_tags.cpp:302
+#: icc_examin_tagwahl.cpp:505 icc_profile_tags.cpp:283 icc_profile_tags.cpp:302
 msgid "Intent:"
 msgstr "Záměr:"
 
@@ -1370,7 +1370,7 @@ msgid "Load the current monitor profile"
 msgstr "Načíst aktuální profil monitoru"
 
 #. Fl_Box* box_stat
-#: icc_examin_tagwahl.cpp:1040 icc_betrachter.cxx:1120
+#: icc_examin_tagwahl.cpp:1043 icc_betrachter.cxx:1120
 msgid "Loading .."
 msgstr "Načítá se ..."
 
@@ -1469,7 +1469,7 @@ msgstr "březen"
 msgid "Matrix"
 msgstr "Matice"
 
-#: icc_examin_tagwahl.cpp:679
+#: icc_examin_tagwahl.cpp:682
 msgid "Matrix 3x3 + 3"
 msgstr "Matice 3x3 + 3"
 
@@ -1932,15 +1932,15 @@ msgstr "Saturace"
 msgid "Save"
 msgstr "Uložit"
 
-#: icc_examin_io.cpp:782 icc_betrachter.cxx:655
+#: icc_examin_io.cpp:783 icc_betrachter.cxx:655
 msgid "Save Gamut as Profile"
 msgstr "Uložit gamut jako profil"
 
-#: icc_examin_io.cpp:785 icc_betrachter.cxx:656
+#: icc_examin_io.cpp:786 icc_betrachter.cxx:656
 msgid "Save Gamut as VRML"
 msgstr "Uložit gamut jako VRML"
 
-#: icc_examin_io.cpp:708 icc_betrachter.cxx:654
+#: icc_examin_io.cpp:709 icc_betrachter.cxx:654
 msgid "Save Report"
 msgstr "Uložit report"
 
@@ -2080,7 +2080,7 @@ msgstr "Hvězda"
 msgid "Std-exception occured: "
 msgstr "Nastala std. výjimka: "
 
-#: icc_examin_io.cpp:604
+#: icc_examin_io.cpp:605
 msgid "Stop loading "
 msgstr "Zastavit načítání"
 
@@ -2296,7 +2296,7 @@ msgstr "Pro navigaci v 3D použijte:"
 msgid "Transparent, "
 msgstr "průhledné, "
 
-#: icc_examin_io.cpp:784
+#: icc_examin_io.cpp:785
 msgid "VRML Files (*.wrl)"
 msgstr "Soubory VRML (*.wrl)"
 
@@ -2561,7 +2561,7 @@ msgid "down key - reduce the slice plane distance"
 msgstr "šipka dolů - zmenšit vzdálenost roviny řezu"
 
 #. found XXX elements
-#: icc_examin_tagwahl.cpp:390
+#: icc_examin_tagwahl.cpp:392
 msgid "elements"
 msgstr "elementy"
 
@@ -2587,7 +2587,7 @@ msgid "file type sinature (allways acsp)"
 msgstr "file type signature (vždy acsp)"
 
 #. found XXX elements
-#: icc_examin_tagwahl.cpp:384
+#: icc_examin_tagwahl.cpp:386
 msgid "found"
 msgstr "nalezeno"
 
@@ -2725,7 +2725,7 @@ msgstr "beze jména"
 msgid "none"
 msgstr "žádný"
 
-#: icc_examin.cpp:1057 icc_examin_tagwahl.cpp:1048 icc_gl.h:277
+#: icc_examin.cpp:1057 icc_examin_tagwahl.cpp:1051 icc_gl.h:277
 msgid "not available"
 msgstr "nedostupné"
 
