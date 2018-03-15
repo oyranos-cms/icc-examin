@@ -97,9 +97,6 @@ public:
   operator size_t () const {
     return n_;
   }
-  operator size_t & () const {
-    return n_;
-  }
 
   /** @brief same as copy */
   ICClist& operator = (const ICClist& l) {
