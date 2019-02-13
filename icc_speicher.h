@@ -230,12 +230,12 @@ class Speicher
                               DBG_MEM_ENDE
                               return *zeiger_;
                             }
-    operator const size_t () const {
+    operator size_t () const {
                               DBG_MEM_START
                               DBG_MEM_ENDE
                               return *groesse_;
                             }
-    operator const size_t & () const {
+    operator size_t & () const {
                               DBG_MEM_START
                               DBG_MEM_ENDE
                               return *groesse_;
