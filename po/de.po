@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2018-02-21 14:51+0100\n"
+"POT-Creation-Date: 2019-02-13 08:28+0100\n"
 "PO-Revision-Date: 2005-08-13 17:35+0200\n"
 "Last-Translator: Kai-Uwe Behrmann\n"
 "Language-Team:  <ku.b@gmx.de>\n"
@@ -406,11 +406,11 @@ msgid "About"
 msgstr "Über"
 
 #. HTML
-#: icc_ueber.cpp:69 icc_betrachter.cxx:759
+#: icc_betrachter.cxx:759 icc_ueber.cpp:69
 msgid "About ICC Examin"
 msgstr "Über ICC Examin"
 
-#: icc_helfer.cpp:268 icc_betrachter.cxx:432
+#: icc_betrachter.cxx:432 icc_helfer.cpp:268
 msgid "Absolute Colorimetric"
 msgstr "Absolut Farbmetrisch"
 
@@ -513,7 +513,7 @@ msgstr ""
 msgid "Black"
 msgstr "Schwarz"
 
-#: icc_helfer_osx_cg.c:94 icc_draw.cpp:716 icc_draw.cpp:725 icc_helfer.cpp:417
+#: icc_draw.cpp:716 icc_draw.cpp:725 icc_helfer.cpp:417 icc_helfer_osx_cg.c:94
 #: icc_helfer_x.cpp:69 icc_profile_tags.cpp:422
 msgid "Blue"
 msgstr "Blau"
@@ -623,6 +623,10 @@ msgstr "Kettenauswahl"
 msgid "Channel"
 msgstr "Kanal"
 
+#: oyranos_cmm_iemn.c:616
+msgid "Check if this module can handle a certain command."
+msgstr ""
+
 #: my_file_chooser.cxx:164
 msgid "Choose File"
 msgstr "Wählen Sie eine Datei"
@@ -657,6 +661,10 @@ msgstr ""
 msgid "Cmyk"
 msgstr ""
 
+#: oyranos_cmm_iemn.c:606
+msgid "Color book[iemn]"
+msgstr ""
+
 #: icc_ueber.cpp:128
 msgid ""
 "Color profiles are often available from manufacturers of optical devices "
@@ -674,8 +682,8 @@ msgstr ""
 "dreidimensionalen Farbraumbetrachter dargestellt. <br>"
 
 #. The following strings must match the categories for a menu entry.
-#: oyranos_cmm_iemn.c:502 icc_helfer.cpp:395 icc_profile_tags.cpp:1265
-#: icc_profile_tags.cpp:1272
+#: icc_helfer.cpp:395 icc_profile_tags.cpp:1265 icc_profile_tags.cpp:1272
+#: oyranos_cmm_iemn.c:1090
 msgid "Colour"
 msgstr "Farbe"
 
@@ -733,8 +741,8 @@ msgstr "Konvertierungskette mit 8-bit Präzission:"
 msgid "Copyright"
 msgstr "Kopierrecht"
 
-#: oyranos_cmm_iemn.c:262
-msgid "Copyright (c) 2010 Kai-Uwe Behrmann; newBSD"
+#: oyranos_cmm_iemn.c:750
+msgid "Copyright (c) 2010 Kai-Uwe Behrmann"
 msgstr ""
 
 #: icc_gl.cpp:918 icc_gl.cpp:921 icc_gl.cpp:928 icc_gl.cpp:939 icc_gl.cpp:943
@@ -835,7 +843,7 @@ msgstr "Lesezeichen"
 msgid "February"
 msgstr "Februar"
 
-#: icc_ueber.cpp:283 icc_betrachter.cxx:421 icc_betrachter.cxx:652
+#: icc_betrachter.cxx:421 icc_betrachter.cxx:652 icc_ueber.cpp:283
 msgid "File"
 msgstr "Datei"
 
@@ -943,6 +951,14 @@ msgstr "Ganzer Bildschirmmodus"
 msgid "G"
 msgstr ""
 
+#: oyranos_cmm_iemn.c:748
+msgid "GPL2+"
+msgstr ""
+
+#: oyranos_cmm_iemn.c:752
+msgid "GPL2+ license: http://www.opensource.org/licenses/gpl2-license.php"
+msgstr ""
+
 #: icc_helfer_osx_cg.c:121 icc_helfer_x.cpp:281
 msgid "Gamma Blue:  "
 msgstr "Gamma Blau:  "
@@ -1002,7 +1018,7 @@ msgstr "Grafik Karten Gamma Tabelle (vcgt)"
 msgid "Gravure"
 msgstr ""
 
-#: icc_oyranos_extern.c:139 icc_draw.cpp:720 icc_gl.cpp:2769 icc_waehler.h:129
+#: icc_draw.cpp:720 icc_gl.cpp:2769 icc_oyranos_extern.c:139 icc_waehler.h:129
 msgid "Gray"
 msgstr "Grau"
 
@@ -1010,7 +1026,7 @@ msgstr "Grau"
 msgid "Gray tone reproduction curve"
 msgstr "Schwarze Wiedergabekurve"
 
-#: icc_helfer_osx_cg.c:93 icc_draw.cpp:713 icc_draw.cpp:723 icc_helfer.cpp:416
+#: icc_draw.cpp:713 icc_draw.cpp:723 icc_helfer.cpp:416 icc_helfer_osx_cg.c:93
 #: icc_helfer_x.cpp:68 icc_profile_tags.cpp:421
 msgid "Green"
 msgstr "Grün"
@@ -1027,10 +1043,10 @@ msgstr "Grüne Farbwiedergabekurve"
 msgid "HTML Documents (*.htm*)"
 msgstr "HTML Dokumente (*.htm*)"
 
-#. HTML
 #. Fl_Help_View* ueber_html
-#: icc_ueber.cpp:155 icc_betrachter.cxx:677 icc_betrachter.cxx:679
-#: icc_betrachter.cxx:783
+#. HTML
+#: icc_betrachter.cxx:677 icc_betrachter.cxx:679 icc_betrachter.cxx:783
+#: icc_ueber.cpp:155
 msgid "Help"
 msgstr "Hilfe"
 
@@ -1052,11 +1068,16 @@ msgid "Hue"
 msgstr "Farbton"
 
 #. icc_examin_ns::MyFl_Double_Window* DD
-#: oyranos_cmm_iemn.c:502 icc_betrachter.cxx:933
+#: icc_betrachter.cxx:933 oyranos_cmm_iemn.c:1090
 msgid "ICC Examin"
 msgstr "ICC Examin"
 
-#: oyranos_cmm_iemn.c:486
+#: oyranos_cmm_iemn.c:608
+#, fuzzy
+msgid "ICC Examin CGATS parser"
+msgstr "ICC Examin"
+
+#: oyranos_cmm_iemn.c:1074
 msgid "ICC Examin Object"
 msgstr "ICC Examin Objekt"
 
@@ -1088,7 +1109,7 @@ msgstr ""
 "Standard  - www.color.org . Im Moment werden Version 2 und Version 4 Profile "
 "unterst&uuml;tzt."
 
-#: oyranos_cmm_iemn.c:246 oyranos_cmm_iemn.c:248
+#: oyranos_cmm_iemn.c:734 oyranos_cmm_iemn.c:736
 msgid "ICC Examin output filter"
 msgstr "ICC Examin Ausgabefilter"
 
@@ -1224,7 +1245,7 @@ msgstr ""
 msgid "Image Profile..."
 msgstr "Bildprofil..."
 
-#: oyranos_cmm_iemn.c:484
+#: oyranos_cmm_iemn.c:1072
 msgid "Image[iemn_filter]"
 msgstr ""
 
@@ -1299,7 +1320,7 @@ msgstr "Juni"
 msgid "K"
 msgstr ""
 
-#: oyranos_cmm_iemn.c:254
+#: oyranos_cmm_iemn.c:742
 msgid "Kai-Uwe Behrmann"
 msgstr ""
 
@@ -1320,7 +1341,7 @@ msgid "Lab"
 msgstr ""
 
 #. Fl_Help_View* hilfe_html
-#: icc_ueber.cpp:476 icc_betrachter.cxx:680 icc_betrachter.cxx:789
+#: icc_betrachter.cxx:680 icc_betrachter.cxx:789 icc_ueber.cpp:476
 msgid "License"
 msgstr "Lizenz"
 
@@ -1358,7 +1379,7 @@ msgid "Load the current monitor profile"
 msgstr "Das aktuelle Monitor Profile laden"
 
 #. Fl_Box* box_stat
-#: icc_examin_tagwahl.cpp:1043 icc_betrachter.cxx:1120
+#: icc_betrachter.cxx:1120 icc_examin_tagwahl.cpp:1043
 msgid "Loading .."
 msgstr "Lade ..."
 
@@ -1466,10 +1487,6 @@ msgstr ""
 msgid "May"
 msgstr "Mai"
 
-#: oyranos_cmm_iemn.c:252
-msgid "Me"
-msgstr ""
-
 #: icc_measurement.cpp:1348
 msgid "Meas colour"
 msgstr "Messfarbe"
@@ -1542,7 +1559,7 @@ msgstr ""
 "enthält euklidische dE und dE2000 Abstandswerte. Zwei Rechtecke ermöglichen "
 "einen augenscheinlichen Vergleich am Bildschirm."
 
-#: oyranos_cmm_iemn.c:495
+#: oyranos_cmm_iemn.c:1083
 msgid "More indepth help  for My example filter."
 msgstr ""
 
@@ -1565,12 +1582,6 @@ msgid ""
 msgstr ""
 "Mein herzlicher Dank gilt insbesondere Marti Maria und den vielen "
 "Schreibenden der Lcms-user Emailliste."
-
-#: oyranos_cmm_iemn.c:256
-msgid ""
-"My project; www: http://www.oyranos.org; support/email: ku.b@gmx.de; "
-"sources: http://www.oyranos.org/wiki/index.php?title=Oyranos/Download"
-msgstr ""
 
 #: icc_profile_tags.cpp:454
 msgid "Name"
@@ -1696,6 +1707,12 @@ msgstr "Ausgabe"
 msgid "Oyranos Settings"
 msgstr "Oyranos Einstellungen"
 
+#: oyranos_cmm_iemn.c:744
+msgid ""
+"Oyranos project; www: http://www.oyranos.org; support/email: ku.b@gmx.de; "
+"sources: http://www.oyranos.org/wiki/index.php?title=Oyranos/Download"
+msgstr ""
+
 #: icc_helfer.cpp:765
 msgid "P22"
 msgstr ""
@@ -1703,6 +1720,14 @@ msgstr ""
 #: icc_profile_header.cpp:244
 msgid "PCS:         "
 msgstr "PCS:         "
+
+#: oyranos_cmm_iemn.c:631
+msgid "Parse CGATS in a robust way."
+msgstr ""
+
+#: oyranos_cmm_iemn.c:622
+msgid "Parse CGATS text."
+msgstr ""
 
 #. CRT
 #: icc_helfer.cpp:732
@@ -1713,7 +1738,7 @@ msgstr "Passivmatrixmonitor"
 msgid "Pause"
 msgstr "Pause"
 
-#: icc_helfer.cpp:259 icc_betrachter.cxx:430
+#: icc_betrachter.cxx:430 icc_helfer.cpp:259
 msgid "Perceptual"
 msgstr "Fotografisch"
 
@@ -1849,7 +1874,7 @@ msgstr "RGB Primätrfarben"
 msgid "Ready"
 msgstr "Bereit"
 
-#: icc_helfer_osx_cg.c:92 icc_draw.cpp:710 icc_draw.cpp:721 icc_helfer.cpp:415
+#: icc_draw.cpp:710 icc_draw.cpp:721 icc_helfer.cpp:415 icc_helfer_osx_cg.c:92
 #: icc_helfer_x.cpp:67 icc_profile_tags.cpp:420
 msgid "Red"
 msgstr "Rot"
@@ -1871,7 +1896,7 @@ msgstr "Auflichtscanner"
 msgid "Reflective, "
 msgstr "Aufsicht, "
 
-#: icc_helfer.cpp:262 icc_betrachter.cxx:431
+#: icc_betrachter.cxx:431 icc_helfer.cpp:262
 msgid "Relative Colorimetric"
 msgstr "Relativ Farbmetrisch"
 
@@ -1917,15 +1942,15 @@ msgstr "Sättigung"
 msgid "Save"
 msgstr "Sichern"
 
-#: icc_examin_io.cpp:783 icc_betrachter.cxx:655
+#: icc_betrachter.cxx:655 icc_examin_io.cpp:783
 msgid "Save Gamut as Profile"
 msgstr "Speichere Farbhülle als Profil"
 
-#: icc_examin_io.cpp:786 icc_betrachter.cxx:656
+#: icc_betrachter.cxx:656 icc_examin_io.cpp:786
 msgid "Save Gamut as VRML"
 msgstr "Speichere Farbhülle als VRML"
 
-#: icc_examin_io.cpp:709 icc_betrachter.cxx:654
+#: icc_betrachter.cxx:654 icc_examin_io.cpp:709
 msgid "Save Report"
 msgstr "Bericht Speichern"
 
@@ -1962,7 +1987,7 @@ msgstr ""
 "Das aktuelle Profile als Monitorprofil setzen und die Gamma Tabelle in die "
 "Grafikkarte laden"
 
-#: icc_ueber.cpp:287 icc_betrachter.cxx:428 icc_betrachter.cxx:665
+#: icc_betrachter.cxx:428 icc_betrachter.cxx:665 icc_ueber.cpp:287
 msgid "Settings"
 msgstr "Einstellungen"
 
@@ -2021,7 +2046,7 @@ msgstr "QuerSchnittmenü mit Schnittführung entlang der Axen oder Rotation"
 msgid "Solaris"
 msgstr ""
 
-#: oyranos_cmm_iemn.c:493
+#: oyranos_cmm_iemn.c:1081
 msgid "Some help for My example filter."
 msgstr ""
 
@@ -2126,7 +2151,7 @@ msgstr ""
 "aufgerufen. Die Ansicht zeigt den Gerätefarbraum gesehen durch die absolut "
 "farmetrische Übertragungsfunktion."
 
-#: oyranos_cmm_iemn.c:272
+#: oyranos_cmm_iemn.c:760
 msgid ""
 "The 3D view uses OpenGL to project the image colours into a 3D view "
 "representing the CIE*Lab colour space. The filter needs a running window "
@@ -2157,6 +2182,14 @@ msgstr ""
 "Lizenzbedingungen, eine Liste von beitragenden Programmierern und "
 "Internetverknüpfungen an."
 
+#: oyranos_cmm_iemn.c:624
+msgid ""
+"The ICC Examin \"parse_cgats\" command lets you parse CGATS files. The "
+"filter expects a oyOption_s object with name \"cgats\" containing a string "
+"value. The result will appear in \"data\" as a oyPointer_s containing a "
+"oyjl_val."
+msgstr ""
+
 #: icc_ueber.cpp:116
 msgid ""
 "The appliance of color profiles shall help to achive an easy color data "
@@ -2186,8 +2219,16 @@ msgid "The colour space shown is allways in CIE*Lab coordinates. "
 msgstr ""
 "Der Farbraum ist wird in immer in CIE*Lab Koordinaten unter D50 angezeigt."
 
-#: oyranos_cmm_iemn.c:270
+#: oyranos_cmm_iemn.c:758
 msgid "The filter allows to visually observe a images colours."
+msgstr ""
+
+#: oyranos_cmm_iemn.c:633
+msgid ""
+"The filter is activated by the \"pares_cgats\" command. It expects a \"cgats"
+"\" option containing a string with CGATS color sample format. The result "
+"will contain a \"data\" object with a oyPointer_s object referencing a "
+"oyjl_val JSON data structure ready for the oyTreeToCGATS() API"
 msgstr ""
 
 #: icc_ueber.cpp:370
@@ -2320,7 +2361,7 @@ msgstr "Grafik Karten Gamma Tabelle (vcgt)"
 msgid "Videocard Gamma"
 msgstr "Grafikkarten Gamma"
 
-#: icc_ueber.cpp:285 icc_betrachter.cxx:425 icc_betrachter.cxx:660
+#: icc_betrachter.cxx:425 icc_betrachter.cxx:660 icc_ueber.cpp:285
 msgid "View"
 msgstr "Ansicht"
 
@@ -2375,7 +2416,7 @@ msgstr "Weiß"
 msgid "Whole Screen on/off"
 msgstr "Ganzer Bildschirm an/aus"
 
-#: icc_ueber.cpp:290 icc_betrachter.cxx:436 icc_betrachter.cxx:669
+#: icc_betrachter.cxx:436 icc_betrachter.cxx:669 icc_ueber.cpp:290
 msgid "Windows"
 msgstr "Fenster"
 
@@ -2433,7 +2474,7 @@ msgid "Yellow"
 msgstr "Gelb"
 
 #. Flmm_Tabs* o
-#: icc_fenster.cpp:352 icc_fenster.cpp:419 icc_betrachter.cxx:810
+#: icc_betrachter.cxx:810 icc_fenster.cpp:352 icc_fenster.cpp:419
 msgid "Yes"
 msgstr "Ja"
 
@@ -2508,6 +2549,10 @@ msgstr "kann unabhängig vom Bild verwendet werden."
 #: icc_profile_header.cpp:164
 msgid "can not be used independently from image."
 msgstr "kann nicht unabhängig vom Bild verwendet werden."
+
+#: oyranos_cmm_iemn.c:614
+msgid "check"
+msgstr ""
 
 #: icc_profile_header.cpp:132
 msgid "colour"
@@ -2596,7 +2641,7 @@ msgstr "glänzend, "
 msgid "gray"
 msgstr "grau"
 
-#: oyranos_cmm_iemn.c:268
+#: oyranos_cmm_iemn.c:756
 msgid "help"
 msgstr ""
 
@@ -2675,14 +2720,6 @@ msgstr "Mittlere Masutaste oder Umschalten und linke Maustaste zum Bewegen"
 msgid "negative, "
 msgstr "negativ, "
 
-#: oyranos_cmm_iemn.c:264
-msgid "new BSD license: http://www.opensource.org/licenses/bsd-license.php"
-msgstr ""
-
-#: oyranos_cmm_iemn.c:260
-msgid "newBSD"
-msgstr ""
-
 #: icc_helfer_x.cpp:304 icc_helfer_x.cpp:328
 msgid "no gammagradient information obtained"
 msgstr "keine Gammainformationen erhalten"
@@ -2730,6 +2767,10 @@ msgstr "Uhr"
 #: icc_helfer_x.cpp:89
 msgid "open X Display failed"
 msgstr "Verbinfung zum X Server gescheitert"
+
+#: oyranos_cmm_iemn.c:740
+msgid "oy"
+msgstr ""
 
 #: icc_profile_tags.cpp:288 icc_profile_tags.cpp:306
 msgid "points length per side"

@@ -41,8 +41,6 @@
 #ifndef Threads_H
 #  define Threads_H
 
-#include "config.h"
-
 #if !defined(_WIN32)
 #ifndef HAVE_PTHREAD_H
 #define HAVE_PTHREAD_H 1

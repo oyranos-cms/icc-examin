@@ -85,7 +85,7 @@ class CgatsFilter
     CgatsFilter& operator = (const CgatsFilter& o) { return copy (o); }
 
     //! @brief Laden der CGATS ascii Daten
-    void lade (char* text, size_t size) { clear();
+    void lade (const char* text, size_t size) { clear();
                                           data_orig_.assign( text,0,size ); }
     void lade (std::string &text)       { clear(); data_orig_ = text; }
     //! @brief Zur&uuml;cksetzen der Datenstrukturen - keine neues Verhalten
@@ -199,12 +199,13 @@ class CgatsFilter
        */
     int  zeilenOhneDuplikate_ ( ICClist<std::string> &zeilen );
 
+  public:
       /** @brief Buchstabenworte von Zahlen unterscheiden
        *
        *  zeilen    : Referenz auf alle Text Zeilen
        */
-    ICClist<std::string> unterscheideZiffernWorte_ ( std::string &zeile );
-
+    ICClist<std::string> unterscheideZiffernWorte ( std::string &zeile );
+  private:
       /** @brief Zeile von pos bis Ende in Anf&uuml;hrungszeichen setzen
        *
        *  zeilen    : Referenz auf alle Text Zeilen

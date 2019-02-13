@@ -36,6 +36,8 @@
 #include <sstream>
 #include <algorithm>
 
+#include <oyjl/oyjl.h>
+
 using namespace icc_parser;
 
 //#define CGATS_DEBUG 2
@@ -112,18 +114,105 @@ int
 CgatsFilter::suchenUndErsetzen_ ( std::string           &text,
                                   const char*            suchen,
                                   const char*            ersetzen,
-                                  std::string::size_type pos )
+                                  std::string::size_type pos OYJL_UNUSED )
 {
-    int n = suchenErsetzen ( text, suchen, ersetzen, pos );
+#ifdef ICC_EXTERN
+  char * t = oyjlStringCopy( text.c_str(),0 );
+  int n = oyjlStringReplace( &t, suchen, ersetzen, 0,0 );
+#else
+  int n = suchenErsetzen ( text, suchen, ersetzen, pos );
+#endif
     if( n )
     {
       std::stringstream s;
       s << "Ersetzung: Suchwort, n mal, Ersatzwort \"" << suchen << "\", "
         << n << ", \"" << ersetzen << "\"";
       logEintrag_( s.str(), -1, "", "" );
+#ifdef ICC_EXTERN
+      text.clear();
+      text = t;
+#endif
     }
   return n;
 }
+
+#ifdef ICC_EXTERN
+int suchenErsetzen ( std::string & text, const char * search, const char * replace, int pos OYJL_UNUSED )
+{
+  char * t = oyjlStringCopy( text.c_str(),0 );
+  int n = oyjlStringReplace( &t, search, replace, 0,0 );
+  if( n )
+  {
+    text.clear();
+    text = t;
+  }
+  return n;
+}
+#ifdef doLocked_m
+#undef doLocked_m
+#endif
+#define doLocked_m( a, widget ) \
+  a;
+int icc_debug = 0;
+ICClist<std::string>
+zeilenNachVector(std::string &text)
+{
+  // fueilen aus einen Text in einen Vector
+  ICClist <std::string> texte;
+
+      int len = (int)strlen(text.c_str());
+      std::string text_line;
+      char c;
+      const char *chars = text.c_str();
+      for (int zeichen = 0; zeichen < len; zeichen++) {
+        c = chars[zeichen];
+        if (c == '\n' || (int)c == 0) { // LF oder 0
+          text_line += '\0';
+          texte.push_back(text_line.c_str());
+          text_line.clear();
+        } else
+          text_line += c;
+      }
+      if (text_line.size() > 0) // falls was uebrig bleibt
+        texte.push_back(text_line.c_str());
+
+  return texte;
+}
+
+std::string::size_type
+sucheWort         ( std::string            &text,
+                    std::string             wort,
+                    std::string::size_type  pos )
+{
+  std::string::size_type pos_ = std::string::npos;
+  bool fertig = false;
+
+  while( !fertig )
+  { // vielleicht etwas viel Aufwand ...
+    if( (pos = text.find( wort, pos )) != std::string::npos )
+    { // Bestaetige das Ende des Wortes
+      //DBG_NUM_V( (pos + wort.size()) <<" "<< text.size() )
+      if( (text[pos + wort.size()] == 0    ||  // NUL
+           text[pos + wort.size()] == ' '  ||  // SP
+           text[pos + wort.size()] == '\t' ||  // HT
+           text[pos + wort.size()] == '\n' ||  // LF
+           text[pos + wort.size()] == '\v' ||  // VT
+           text[pos + wort.size()] == '\f' ||  // FF
+           text[pos + wort.size()] == '\r' ||  // CR
+           (pos + wort.size()) == text.size() ) )
+      {
+        pos_ = pos;
+        fertig = true;
+      } else
+        ++pos;
+    } else if( pos == std::string::npos )
+      fertig = true;
+  }
+
+  return pos_;
+}
+#endif
+
 
 // Implementationen
 
@@ -191,7 +280,7 @@ CgatsFilter::setzeWortInAnfuehrungszeichen_( std::string &zeile,
 }
 
 ICClist<std::string>
-CgatsFilter::unterscheideZiffernWorte_( std::string &zeile )
+CgatsFilter::unterscheideZiffernWorte( std::string &zeile )
 {
   DBG_CGATS_START
   std::string::size_type pos = 0, ende = 0, pos2, pos3;
@@ -360,7 +449,7 @@ CgatsFilter::sucheInDATA_FORMAT_( std::string &zeile , int &zeile_n )
 
   DBG_PROG_V( zeile )
 
-  ICClist<std::string> test = unterscheideZiffernWorte_(zeile);
+  ICClist<std::string> test = unterscheideZiffernWorte(zeile);
   for( unsigned int i = 0; i < test.size() ; ++i )
   { 
     bool gefunden = false;
@@ -386,7 +475,7 @@ CgatsFilter::sucheInDATA_FORMAT_( std::string &zeile , int &zeile_n )
     }
   }
 
-  n = (int)(unterscheideZiffernWorte_ (zeile)).size();
+  n = (int)(unterscheideZiffernWorte (zeile)).size();
 
   anfuehrungsstriche_setzen = anf_setzen;
 
@@ -453,6 +542,10 @@ CgatsFilter::sucheSchluesselwort_( std::string zeile )
     KEY_Suche( "INSTRUMENTATION",    ANFUEHRUNGSSTRICHE )
     KEY_Suche( "MEASUREMENT_SOURCE", ANFUEHRUNGSSTRICHE )
     KEY_Suche( "PRINT_CONDITIONS",   ANFUEHRUNGSSTRICHE )
+    KEY_Suche( "SPECTRAL_BANDS",     ANFUEHRUNGSSTRICHE )
+    KEY_Suche( "SPECTRAL_START_NM",  ANFUEHRUNGSSTRICHE )
+    KEY_Suche( "SPECTRAL_END_NM",    ANFUEHRUNGSSTRICHE )
+    KEY_Suche( "SPECTRAL_NORM",      ANFUEHRUNGSSTRICHE )
     KEY_Suche( "NUMBER_OF_FIELDS",   BELASSEN )
     KEY_Suche( "BEGIN_DATA_FORMAT",  BELASSEN )
     KEY_Suche( "END_DATA_FORMAT",    BELASSEN )
@@ -554,7 +647,7 @@ CgatsFilter::editZeile_( ICClist<std::string> &zeilen,
               log[l].ausgabe.push_back( "BEGIN_DATA_FORMAT" );
               ++zeilendifferenz;
               messungen[messungen.size()-1].felder.push_back(  
-                                       unterscheideZiffernWorte_( zeilen[i] ) );
+                                       unterscheideZiffernWorte( zeilen[i] ) );
               zeilen.insert( zeilen.begin() + i + 3, "END_DATA_FORMAT" );
               log[l].ausgabe.push_back( "END_DATA_FORMAT" );
               ++zeilendifferenz;
@@ -615,7 +708,7 @@ CgatsFilter::cgats_korrigieren_               ()
   char LF[2];
   sprintf (CRLF , "\r\n");
   sprintf (LF , "\n");
-  if(suchenErsetzen (data_,CRLF,LF,pos))
+  if(suchenErsetzen (data_,CRLF,LF,0))
       logEintrag_( "LF CR ersetzt", -1, "", "" );
 
   char CR[2];
@@ -627,7 +720,7 @@ CgatsFilter::cgats_korrigieren_               ()
   {
     // testweises Speichern
     std::ofstream f ( "AtestCGATS.txt",  std::ios::out );
-	f.write ( data_.c_str(), (std::streamsize)data_.size() );
+    f.write ( data_.c_str(), (std::streamsize)data_.size() );
     f.close();
   }
 
@@ -694,7 +787,7 @@ CgatsFilter::cgats_korrigieren_               ()
       DBG_NUM_V( pos <<" "<< ende <<" "<< gtext )
       bool anf_setzen = anfuehrungsstriche_setzen;
       anfuehrungsstriche_setzen = false;
-      //int wort_zahl = unterscheideZiffernWorte_(zeilen_[0]).size();
+      //int wort_zahl = unterscheideZiffernWorte(zeilen_[0]).size();
       anfuehrungsstriche_setzen = anf_setzen;
       if( kopf.size() &&
           ((ende - pos) != 7 &&
@@ -741,7 +834,7 @@ CgatsFilter::cgats_korrigieren_               ()
       {
         ++zaehler_SETS;
         messungen[messungen.size()-1].block.push_back(  
-                                      unterscheideZiffernWorte_( zeilen_[i] ) );
+                                      unterscheideZiffernWorte( zeilen_[i] ) );
         messungen[messungen.size()-1].line.push_back( orig_i );
         messungen[messungen.size()-1].block_zeilen = zaehler_SETS;
       }
@@ -761,12 +854,12 @@ CgatsFilter::cgats_korrigieren_               ()
         if(!messungen[messungen.size()-1].felder.size())
         {
           messungen[messungen.size()-1].felder.push_back( 
-                       unterscheideZiffernWorte_(zeilen_[i] ) );
+                       unterscheideZiffernWorte(zeilen_[i] ) );
           messungen[messungen.size()-1].feld_spalten = 0;
         } else {
 
           // Roger Breton had an example with a splitted DATA_FORMAT line
-          const ICClist<std::string> texts = unterscheideZiffernWorte_( zeilen_[i] );
+          const ICClist<std::string> texts = unterscheideZiffernWorte( zeilen_[i] );
           messungen[messungen.size()-1].felder[0].insert(
                        messungen[messungen.size()-1].felder[0].end(),
                        texts.begin(), texts.end() );
@@ -834,7 +927,7 @@ CgatsFilter::cgats_korrigieren_               ()
         std::string t = zeilen_[zeile_letztes_NUMBER_OF_FIELDS].
                substr( 0, zeilen_[zeile_letztes_NUMBER_OF_FIELDS].find( "#" ) );
         DBG_CGATS_V( t )
-        ICClist<std::string> v = unterscheideZiffernWorte_(t);
+        ICClist<std::string> v = unterscheideZiffernWorte(t);
         int n_o_;
         if( v.size() >= 2 )
           n_o_ = (int)atof( v[1].c_str() );
@@ -904,7 +997,7 @@ CgatsFilter::cgats_korrigieren_               ()
         std::string t = zeilen_[zeile_letztes_NUMBER_OF_SETS].
                  substr( 0, zeilen_[zeile_letztes_NUMBER_OF_SETS].find( "#" ) );
         DBG_PROG_V( t )
-        ICClist<std::string> v = unterscheideZiffernWorte_(t);
+        ICClist<std::string> v = unterscheideZiffernWorte(t);
         int n_o_;
         if( v.size() >= 2 )
           n_o_ = (int)atof( v[1].c_str() );
@@ -966,7 +1059,7 @@ CgatsFilter::cgats_korrigieren_               ()
         {
           int size = (int)gtext.size();
           zeilen_[i].erase( 0, size );
-          unterscheideZiffernWorte_( gtext );
+          unterscheideZiffernWorte( gtext );
           zeilen_[i].insert( 0, gtext );
         }
         DBG_CGATS_V( messungen[messungen.size()-1].block.size()-1 )
@@ -983,7 +1076,7 @@ CgatsFilter::cgats_korrigieren_               ()
   }
 
   if(loc_alt.size())
-    doLocked_m( setlocale(LC_NUMERIC,loc_alt.c_str()) , NULL);
+  { doLocked_m( setlocale(LC_NUMERIC,loc_alt.c_str()) , NULL); }
 
   //DBG_NUM_S (data_)
 

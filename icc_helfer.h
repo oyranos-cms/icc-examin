@@ -191,10 +191,12 @@ namespace icc_parser {
                                         const char             *suchen,
                                         const char             *ersetzen,
                                         std::string::size_type  pos );
+#ifndef ICC_EXTERN
   ICClist<std::string> zeilenNachVector (std::string &text);
   std::string::size_type sucheWort    ( std::string            &text,
                                         std::string             wort,
                                         std::string::size_type  pos );
+#endif // ICC_EXTERN
 
   struct ZifferWort {
     std::pair<bool,std::string> wort;

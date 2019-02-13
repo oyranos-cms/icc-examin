@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: icc-examin 0.9\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2018-02-21 17:03+0100\n"
+"POT-Creation-Date: 2019-02-13 08:28+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,214 +16,6 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
-
-#: icc_helfer_osx_cg.c:92 icc_draw.cpp:710 icc_draw.cpp:721 icc_helfer.cpp:415
-#: icc_helfer_x.cpp:67 icc_profile_tags.cpp:420
-msgid "Red"
-msgstr ""
-
-#: icc_helfer_osx_cg.c:93 icc_draw.cpp:713 icc_draw.cpp:723 icc_helfer.cpp:416
-#: icc_helfer_x.cpp:68 icc_profile_tags.cpp:421
-msgid "Green"
-msgstr ""
-
-#: icc_helfer_osx_cg.c:94 icc_draw.cpp:716 icc_draw.cpp:725 icc_helfer.cpp:417
-#: icc_helfer_x.cpp:69 icc_profile_tags.cpp:422
-msgid "Blue"
-msgstr ""
-
-#: icc_helfer_osx_cg.c:97
-msgid "Manufacturer: "
-msgstr ""
-
-#. texte[texte.size()-1].append(monitor.vendor);
-#: icc_helfer_osx_cg.c:99
-msgid "Model:      "
-msgstr ""
-
-#: icc_helfer_osx_cg.c:111 icc_helfer_x.cpp:269
-msgid "Gamma Red:   "
-msgstr ""
-
-#: icc_helfer_osx_cg.c:116
-msgid "Gamma Green: "
-msgstr ""
-
-#: icc_helfer_osx_cg.c:121 icc_helfer_x.cpp:281
-msgid "Gamma Blue:  "
-msgstr ""
-
-#: icc_oyranos_extern.c:133
-msgid "XYZ"
-msgstr ""
-
-#: icc_oyranos_extern.c:134
-msgid "Lab"
-msgstr ""
-
-#: icc_oyranos_extern.c:135
-msgid "Luv"
-msgstr ""
-
-#: icc_oyranos_extern.c:136
-msgid "YCbCr"
-msgstr ""
-
-#: icc_oyranos_extern.c:137
-msgid "Yxy"
-msgstr ""
-
-#: icc_oyranos_extern.c:138
-msgid "Rgb"
-msgstr ""
-
-#: icc_oyranos_extern.c:139 icc_draw.cpp:720 icc_gl.cpp:2769 icc_waehler.h:129
-msgid "Gray"
-msgstr ""
-
-#: icc_oyranos_extern.c:140
-msgid "Hsv"
-msgstr ""
-
-#: icc_oyranos_extern.c:141
-msgid "Hls"
-msgstr ""
-
-#: icc_oyranos_extern.c:142
-msgid "Cmyk"
-msgstr ""
-
-#: icc_oyranos_extern.c:143
-msgid "Cmy"
-msgstr ""
-
-#: icc_oyranos_extern.c:144
-msgid "2color"
-msgstr ""
-
-#: icc_oyranos_extern.c:145
-msgid "3color"
-msgstr ""
-
-#: icc_oyranos_extern.c:146
-msgid "4color"
-msgstr ""
-
-#: icc_oyranos_extern.c:148
-msgid "5color"
-msgstr ""
-
-#: icc_oyranos_extern.c:150
-msgid "6color"
-msgstr ""
-
-#: icc_oyranos_extern.c:152
-msgid "7color"
-msgstr ""
-
-#: icc_oyranos_extern.c:154
-msgid "8color"
-msgstr ""
-
-#: icc_oyranos_extern.c:156
-msgid "9color"
-msgstr ""
-
-#: icc_oyranos_extern.c:158
-msgid "10color"
-msgstr ""
-
-#: icc_oyranos_extern.c:160
-msgid "11color"
-msgstr ""
-
-#: icc_oyranos_extern.c:162
-msgid "12color"
-msgstr ""
-
-#: icc_oyranos_extern.c:164
-msgid "13color"
-msgstr ""
-
-#: icc_oyranos_extern.c:166
-msgid "14color"
-msgstr ""
-
-#: icc_oyranos_extern.c:168
-msgid "15color"
-msgstr ""
-
-#: oyranos_cmm_iemn.c:246 oyranos_cmm_iemn.c:248
-msgid "ICC Examin output filter"
-msgstr ""
-
-#: oyranos_cmm_iemn.c:252
-msgid "Me"
-msgstr ""
-
-#: oyranos_cmm_iemn.c:254
-msgid "Kai-Uwe Behrmann"
-msgstr ""
-
-#: oyranos_cmm_iemn.c:256
-msgid ""
-"My project; www: http://www.oyranos.org; support/email: ku.b@gmx.de; "
-"sources: http://www.oyranos.org/wiki/index.php?title=Oyranos/Download"
-msgstr ""
-
-#: oyranos_cmm_iemn.c:260
-msgid "newBSD"
-msgstr ""
-
-#: oyranos_cmm_iemn.c:262
-msgid "Copyright (c) 2010 Kai-Uwe Behrmann; newBSD"
-msgstr ""
-
-#: oyranos_cmm_iemn.c:264
-msgid "new BSD license: http://www.opensource.org/licenses/bsd-license.php"
-msgstr ""
-
-#: oyranos_cmm_iemn.c:268
-msgid "help"
-msgstr ""
-
-#: oyranos_cmm_iemn.c:270
-msgid "The filter allows to visually observe a images colours."
-msgstr ""
-
-#: oyranos_cmm_iemn.c:272
-msgid ""
-"The 3D view uses OpenGL to project the image colours into a 3D view "
-"representing the CIE*Lab colour space. The filter needs a running window "
-"system."
-msgstr ""
-
-#: oyranos_cmm_iemn.c:484
-msgid "Image[iemn_filter]"
-msgstr ""
-
-#: oyranos_cmm_iemn.c:486
-msgid "ICC Examin Object"
-msgstr ""
-
-#: oyranos_cmm_iemn.c:493
-msgid "Some help for My example filter."
-msgstr ""
-
-#: oyranos_cmm_iemn.c:495
-msgid "More indepth help  for My example filter."
-msgstr ""
-
-#. The following strings must match the categories for a menu entry.
-#: oyranos_cmm_iemn.c:502 icc_helfer.cpp:395 icc_profile_tags.cpp:1265
-#: icc_profile_tags.cpp:1272
-msgid "Colour"
-msgstr ""
-
-#. icc_examin_ns::MyFl_Double_Window* DD
-#: oyranos_cmm_iemn.c:502 icc_betrachter.cxx:933
-msgid "ICC Examin"
-msgstr ""
 
 #. ICC stop
 #. if (MoveMode == FLYING)
@@ -238,6 +30,240 @@ msgstr ""
 #: agviewer.cpp:348 agviewer.cpp:356 icc_gl.cpp:3962 icc_gl.cpp:3973
 #: icc_gl.cpp:3978 icc_gl.cpp:3983
 msgid "left mouse button -> go back"
+msgstr ""
+
+#: icc_betrachter.cxx:168
+msgid "lineare entrance curve with 256 steps"
+msgstr ""
+
+#: icc_betrachter.cxx:170
+msgid "lineare exit curve with 256 steps"
+msgstr ""
+
+#: icc_betrachter.cxx:421 icc_betrachter.cxx:652 icc_ueber.cpp:283
+msgid "File"
+msgstr ""
+
+#: icc_betrachter.cxx:422
+msgid "Save as VRML"
+msgstr ""
+
+#: icc_betrachter.cxx:423 icc_betrachter.cxx:657
+msgid "Quit"
+msgstr ""
+
+#: icc_betrachter.cxx:425 icc_betrachter.cxx:660 icc_ueber.cpp:285
+msgid "View"
+msgstr ""
+
+#: icc_betrachter.cxx:426 icc_betrachter.cxx:661
+msgid "Whole Screen on/off"
+msgstr ""
+
+#: icc_betrachter.cxx:428 icc_betrachter.cxx:665 icc_ueber.cpp:287
+msgid "Settings"
+msgstr ""
+
+#: icc_betrachter.cxx:429
+msgid "Gamut Warning"
+msgstr ""
+
+#: icc_betrachter.cxx:430 icc_helfer.cpp:259
+msgid "Perceptual"
+msgstr ""
+
+#: icc_betrachter.cxx:431 icc_helfer.cpp:262
+msgid "Relative Colorimetric"
+msgstr ""
+
+#: icc_betrachter.cxx:432 icc_helfer.cpp:268
+msgid "Absolute Colorimetric"
+msgstr ""
+
+#: icc_betrachter.cxx:433
+msgid "BPC"
+msgstr ""
+
+#: icc_betrachter.cxx:434
+msgid "Native Gamut"
+msgstr ""
+
+#: icc_betrachter.cxx:436 icc_betrachter.cxx:669 icc_ueber.cpp:290
+msgid "Windows"
+msgstr ""
+
+#: icc_betrachter.cxx:437
+msgid "Show Main Window"
+msgstr ""
+
+#: icc_betrachter.cxx:438 icc_betrachter.cxx:675
+msgid "Log"
+msgstr ""
+
+#: icc_betrachter.cxx:653
+msgid "Open"
+msgstr ""
+
+#: icc_betrachter.cxx:654 icc_examin_io.cpp:709
+msgid "Save Report"
+msgstr ""
+
+#: icc_betrachter.cxx:655 icc_examin_io.cpp:783
+msgid "Save Gamut as Profile"
+msgstr ""
+
+#: icc_betrachter.cxx:656 icc_examin_io.cpp:786
+msgid "Save Gamut as VRML"
+msgstr ""
+
+#. icc_examin_ns::MyFl_Double_Window* vcgt
+#: icc_betrachter.cxx:659 icc_betrachter.cxx:670 icc_betrachter.cxx:867
+msgid "Gamut"
+msgstr ""
+
+#: icc_betrachter.cxx:662
+msgid "Size+"
+msgstr ""
+
+#: icc_betrachter.cxx:663
+msgid "Size-"
+msgstr ""
+
+#: icc_betrachter.cxx:666
+msgid "Oyranos Settings"
+msgstr ""
+
+#: icc_betrachter.cxx:667
+msgid "LANG"
+msgstr ""
+
+#: icc_betrachter.cxx:671
+msgid "Report View"
+msgstr ""
+
+#: icc_betrachter.cxx:672
+msgid "CGATS View"
+msgstr ""
+
+#: icc_betrachter.cxx:673
+msgid "Videocard Gamma"
+msgstr ""
+
+#: icc_betrachter.cxx:674
+msgid "Test Curves"
+msgstr ""
+
+#. Fl_Help_View* ueber_html
+#. HTML
+#: icc_betrachter.cxx:677 icc_betrachter.cxx:679 icc_betrachter.cxx:783
+#: icc_ueber.cpp:155
+msgid "Help"
+msgstr ""
+
+#: icc_betrachter.cxx:678 icc_betrachter.cxx:777
+msgid "About"
+msgstr ""
+
+#. Fl_Help_View* hilfe_html
+#: icc_betrachter.cxx:680 icc_betrachter.cxx:789 icc_ueber.cpp:476
+msgid "License"
+msgstr ""
+
+#. HTML
+#: icc_betrachter.cxx:759 icc_ueber.cpp:69
+msgid "About ICC Examin"
+msgstr ""
+
+#. Fl_Help_View* lizenz_html
+#: icc_betrachter.cxx:796
+msgid "Acknowlegement"
+msgstr ""
+
+#. Fl_Help_View* dank_html
+#: icc_betrachter.cxx:802
+msgid "Info"
+msgstr ""
+
+#. Flmm_Tabs* o
+#: icc_betrachter.cxx:810 icc_fenster.cpp:352 icc_fenster.cpp:419
+msgid "Yes"
+msgstr ""
+
+#. icc_examin_ns::MyFl_Double_Window* ueber
+#: icc_betrachter.cxx:820
+msgid "Grafic Card Gamma Table"
+msgstr ""
+
+#. TagDrawings* vcgt_viewer
+#: icc_betrachter.cxx:841
+msgid "Set"
+msgstr ""
+
+#: icc_betrachter.cxx:842
+msgid ""
+"Set the current profile as monitor profile and upload vcgt tag to the video "
+"card"
+msgstr ""
+
+#. Fl_Button* vcgt_set_button
+#: icc_betrachter.cxx:847
+msgid "Reset"
+msgstr ""
+
+#: icc_betrachter.cxx:848
+msgid "reset to standard gamma"
+msgstr ""
+
+#. Fl_Button* vcgt_reset_button
+#: icc_betrachter.cxx:852
+msgid "Load"
+msgstr ""
+
+#: icc_betrachter.cxx:853
+msgid "Load the current monitor profile"
+msgstr ""
+
+#. Fl_Button* vcgt_load_button
+#: icc_betrachter.cxx:857
+msgid "Close"
+msgstr ""
+
+#. icc_examin_ns::MyFl_Double_Window* DD
+#: icc_betrachter.cxx:933 oyranos_cmm_iemn.c:1090
+msgid "ICC Examin"
+msgstr ""
+
+#: icc_betrachter.cxx:943
+msgid "invisible box"
+msgstr ""
+
+#: icc_betrachter.cxx:971
+msgid "Choose one profile tag"
+msgstr ""
+
+#: icc_betrachter.cxx:987
+msgid "Chain selection"
+msgstr ""
+
+#: icc_betrachter.cxx:988
+msgid "Choose a attribute"
+msgstr ""
+
+#: icc_betrachter.cxx:1042
+msgid "o"
+msgstr ""
+
+#: icc_betrachter.cxx:1043
+msgid "Show all channels of this table a own window."
+msgstr ""
+
+#: icc_betrachter.cxx:1116
+msgid "..."
+msgstr ""
+
+#. Fl_Box* box_stat
+#: icc_betrachter.cxx:1120 icc_examin_tagwahl.cpp:1043
+msgid "Loading .."
 msgstr ""
 
 #: icc_cinepaint.cpp:197
@@ -286,6 +312,25 @@ msgstr ""
 
 #: icc_draw.cpp:701
 msgid "unknown Colour"
+msgstr ""
+
+#: icc_draw.cpp:710 icc_draw.cpp:721 icc_helfer.cpp:415 icc_helfer_osx_cg.c:92
+#: icc_helfer_x.cpp:67 icc_profile_tags.cpp:420
+msgid "Red"
+msgstr ""
+
+#: icc_draw.cpp:713 icc_draw.cpp:723 icc_helfer.cpp:416 icc_helfer_osx_cg.c:93
+#: icc_helfer_x.cpp:68 icc_profile_tags.cpp:421
+msgid "Green"
+msgstr ""
+
+#: icc_draw.cpp:716 icc_draw.cpp:725 icc_helfer.cpp:417 icc_helfer_osx_cg.c:94
+#: icc_helfer_x.cpp:69 icc_profile_tags.cpp:422
+msgid "Blue"
+msgstr ""
+
+#: icc_draw.cpp:720 icc_gl.cpp:2769 icc_oyranos_extern.c:139 icc_waehler.h:129
+msgid "Gray"
 msgstr ""
 
 #: icc_draw.cpp:727 icc_helfer.cpp:425 icc_helfer.cpp:429
@@ -455,24 +500,12 @@ msgstr ""
 msgid "HTML Documents (*.htm*)"
 msgstr ""
 
-#: icc_examin_io.cpp:709 icc_betrachter.cxx:654
-msgid "Save Report"
-msgstr ""
-
 #: icc_examin_io.cpp:782
 msgid "ICC colour profiles (*.ic*)"
 msgstr ""
 
-#: icc_examin_io.cpp:783 icc_betrachter.cxx:655
-msgid "Save Gamut as Profile"
-msgstr ""
-
 #: icc_examin_io.cpp:785
 msgid "VRML Files (*.wrl)"
-msgstr ""
-
-#: icc_examin_io.cpp:786 icc_betrachter.cxx:656
-msgid "Save Gamut as VRML"
 msgstr ""
 
 #: icc_examin_tagwahl.cpp:61
@@ -501,11 +534,6 @@ msgstr ""
 msgid "Matrix 3x3 + 3"
 msgstr ""
 
-#. Fl_Box* box_stat
-#: icc_examin_tagwahl.cpp:1043 icc_betrachter.cxx:1120
-msgid "Loading .."
-msgstr ""
-
 #: icc_fenster.cpp:134
 msgid ""
 "The \"rawphoto\" plugin won't work because there is no \"dcraw\" executable "
@@ -527,11 +555,6 @@ msgstr ""
 
 #: icc_fenster.cpp:350
 msgid "Log:"
-msgstr ""
-
-#. Flmm_Tabs* o
-#: icc_fenster.cpp:352 icc_fenster.cpp:419 icc_betrachter.cxx:810
-msgid "Yes"
 msgstr ""
 
 #: icc_fenster.cpp:416
@@ -656,20 +679,14 @@ msgstr ""
 msgid "Channel"
 msgstr ""
 
-#: icc_helfer.cpp:259 icc_betrachter.cxx:430
-msgid "Perceptual"
-msgstr ""
-
-#: icc_helfer.cpp:262 icc_betrachter.cxx:431
-msgid "Relative Colorimetric"
-msgstr ""
-
 #: icc_helfer.cpp:265 icc_helfer.cpp:420 icc_helfer.cpp:424
 msgid "Saturation"
 msgstr ""
 
-#: icc_helfer.cpp:268 icc_betrachter.cxx:432
-msgid "Absolute Colorimetric"
+#. The following strings must match the categories for a menu entry.
+#: icc_helfer.cpp:395 icc_profile_tags.cpp:1265 icc_profile_tags.cpp:1272
+#: oyranos_cmm_iemn.c:1090
+msgid "Colour"
 msgstr ""
 
 #: icc_helfer.cpp:407
@@ -1229,6 +1246,27 @@ msgstr ""
 msgid "Show:"
 msgstr ""
 
+#: icc_helfer_osx_cg.c:97
+msgid "Manufacturer: "
+msgstr ""
+
+#. texte[texte.size()-1].append(monitor.vendor);
+#: icc_helfer_osx_cg.c:99
+msgid "Model:      "
+msgstr ""
+
+#: icc_helfer_osx_cg.c:111 icc_helfer_x.cpp:269
+msgid "Gamma Red:   "
+msgstr ""
+
+#: icc_helfer_osx_cg.c:116
+msgid "Gamma Green: "
+msgstr ""
+
+#: icc_helfer_osx_cg.c:121 icc_helfer_x.cpp:281
+msgid "Gamma Blue:  "
+msgstr ""
+
 #: icc_helfer_x.cpp:89
 msgid "open X Display failed"
 msgstr ""
@@ -1434,6 +1472,102 @@ msgstr ""
 
 #: icc_oyranos.cpp:701
 msgid "Port:"
+msgstr ""
+
+#: icc_oyranos_extern.c:133
+msgid "XYZ"
+msgstr ""
+
+#: icc_oyranos_extern.c:134
+msgid "Lab"
+msgstr ""
+
+#: icc_oyranos_extern.c:135
+msgid "Luv"
+msgstr ""
+
+#: icc_oyranos_extern.c:136
+msgid "YCbCr"
+msgstr ""
+
+#: icc_oyranos_extern.c:137
+msgid "Yxy"
+msgstr ""
+
+#: icc_oyranos_extern.c:138
+msgid "Rgb"
+msgstr ""
+
+#: icc_oyranos_extern.c:140
+msgid "Hsv"
+msgstr ""
+
+#: icc_oyranos_extern.c:141
+msgid "Hls"
+msgstr ""
+
+#: icc_oyranos_extern.c:142
+msgid "Cmyk"
+msgstr ""
+
+#: icc_oyranos_extern.c:143
+msgid "Cmy"
+msgstr ""
+
+#: icc_oyranos_extern.c:144
+msgid "2color"
+msgstr ""
+
+#: icc_oyranos_extern.c:145
+msgid "3color"
+msgstr ""
+
+#: icc_oyranos_extern.c:146
+msgid "4color"
+msgstr ""
+
+#: icc_oyranos_extern.c:148
+msgid "5color"
+msgstr ""
+
+#: icc_oyranos_extern.c:150
+msgid "6color"
+msgstr ""
+
+#: icc_oyranos_extern.c:152
+msgid "7color"
+msgstr ""
+
+#: icc_oyranos_extern.c:154
+msgid "8color"
+msgstr ""
+
+#: icc_oyranos_extern.c:156
+msgid "9color"
+msgstr ""
+
+#: icc_oyranos_extern.c:158
+msgid "10color"
+msgstr ""
+
+#: icc_oyranos_extern.c:160
+msgid "11color"
+msgstr ""
+
+#: icc_oyranos_extern.c:162
+msgid "12color"
+msgstr ""
+
+#: icc_oyranos_extern.c:164
+msgid "13color"
+msgstr ""
+
+#: icc_oyranos_extern.c:166
+msgid "14color"
+msgstr ""
+
+#: icc_oyranos_extern.c:168
+msgid "15color"
 msgstr ""
 
 #: icc_profile.cpp:196 icc_profile.cpp:214
@@ -1716,11 +1850,6 @@ msgstr ""
 msgid "Count"
 msgstr ""
 
-#. HTML
-#: icc_ueber.cpp:69 icc_betrachter.cxx:759
-msgid "About ICC Examin"
-msgstr ""
-
 #: icc_ueber.cpp:72
 msgid "January"
 msgstr ""
@@ -1815,13 +1944,6 @@ msgstr ""
 msgid ""
 "The color transformations are realised with littleCMS through the Oyranos "
 "CMM API."
-msgstr ""
-
-#. HTML
-#. Fl_Help_View* ueber_html
-#: icc_ueber.cpp:155 icc_betrachter.cxx:677 icc_betrachter.cxx:679
-#: icc_betrachter.cxx:783
-msgid "Help"
 msgstr ""
 
 #: icc_ueber.cpp:158
@@ -2035,24 +2157,12 @@ msgstr ""
 msgid "The Gamut Menus"
 msgstr ""
 
-#: icc_ueber.cpp:283 icc_betrachter.cxx:421 icc_betrachter.cxx:652
-msgid "File"
-msgstr ""
-
 #: icc_ueber.cpp:284
 msgid "Quit - allowes for exiting the application"
 msgstr ""
 
-#: icc_ueber.cpp:285 icc_betrachter.cxx:425 icc_betrachter.cxx:660
-msgid "View"
-msgstr ""
-
 #: icc_ueber.cpp:286
 msgid "Full screen mode"
-msgstr ""
-
-#: icc_ueber.cpp:287 icc_betrachter.cxx:428 icc_betrachter.cxx:665
-msgid "Settings"
 msgstr ""
 
 #: icc_ueber.cpp:288
@@ -2063,10 +2173,6 @@ msgstr ""
 msgid ""
 "Native or separation Gamut. The later is the inbuild default. The native "
 "colour gamut can only be created when iccgamut from ArgyllCMS is available."
-msgstr ""
-
-#: icc_ueber.cpp:290 icc_betrachter.cxx:436 icc_betrachter.cxx:669
-msgid "Windows"
 msgstr ""
 
 #: icc_ueber.cpp:292
@@ -2393,11 +2499,6 @@ msgid ""
 "visualisations by iccview for instance."
 msgstr ""
 
-#. Fl_Help_View* hilfe_html
-#: icc_ueber.cpp:476 icc_betrachter.cxx:680 icc_betrachter.cxx:789
-msgid "License"
-msgstr ""
-
 #: icc_ueber.cpp:482
 msgid ""
 "    ICC Examin is licensed under the GPL version 2.    Especially all icc_* "
@@ -2473,6 +2574,11 @@ msgstr ""
 msgid "Configure Log"
 msgstr ""
 
+#: icc_utils.h:317 icc_utils.h:318 icc_utils.h:319 icc_utils.h:373
+#: icc_utils.h:374 icc_utils.h:375
+msgid "!!! Warning !!!"
+msgstr ""
+
 #. catches all from exception
 #: icc_vrml.cpp:141
 msgid "exception occured: "
@@ -2486,168 +2592,6 @@ msgstr ""
 #. catches all from exception
 #: icc_vrml.cpp:148
 msgid "Huch, unknown exception"
-msgstr ""
-
-#: icc_betrachter.cxx:168
-msgid "lineare entrance curve with 256 steps"
-msgstr ""
-
-#: icc_betrachter.cxx:170
-msgid "lineare exit curve with 256 steps"
-msgstr ""
-
-#: icc_betrachter.cxx:422
-msgid "Save as VRML"
-msgstr ""
-
-#: icc_betrachter.cxx:423 icc_betrachter.cxx:657
-msgid "Quit"
-msgstr ""
-
-#: icc_betrachter.cxx:426 icc_betrachter.cxx:661
-msgid "Whole Screen on/off"
-msgstr ""
-
-#: icc_betrachter.cxx:429
-msgid "Gamut Warning"
-msgstr ""
-
-#: icc_betrachter.cxx:433
-msgid "BPC"
-msgstr ""
-
-#: icc_betrachter.cxx:434
-msgid "Native Gamut"
-msgstr ""
-
-#: icc_betrachter.cxx:437
-msgid "Show Main Window"
-msgstr ""
-
-#: icc_betrachter.cxx:438 icc_betrachter.cxx:675
-msgid "Log"
-msgstr ""
-
-#: icc_betrachter.cxx:653
-msgid "Open"
-msgstr ""
-
-#. icc_examin_ns::MyFl_Double_Window* vcgt
-#: icc_betrachter.cxx:659 icc_betrachter.cxx:670 icc_betrachter.cxx:867
-msgid "Gamut"
-msgstr ""
-
-#: icc_betrachter.cxx:662
-msgid "Size+"
-msgstr ""
-
-#: icc_betrachter.cxx:663
-msgid "Size-"
-msgstr ""
-
-#: icc_betrachter.cxx:666
-msgid "Oyranos Settings"
-msgstr ""
-
-#: icc_betrachter.cxx:667
-msgid "LANG"
-msgstr ""
-
-#: icc_betrachter.cxx:671
-msgid "Report View"
-msgstr ""
-
-#: icc_betrachter.cxx:672
-msgid "CGATS View"
-msgstr ""
-
-#: icc_betrachter.cxx:673
-msgid "Videocard Gamma"
-msgstr ""
-
-#: icc_betrachter.cxx:674
-msgid "Test Curves"
-msgstr ""
-
-#: icc_betrachter.cxx:678 icc_betrachter.cxx:777
-msgid "About"
-msgstr ""
-
-#. Fl_Help_View* lizenz_html
-#: icc_betrachter.cxx:796
-msgid "Acknowlegement"
-msgstr ""
-
-#. Fl_Help_View* dank_html
-#: icc_betrachter.cxx:802
-msgid "Info"
-msgstr ""
-
-#. icc_examin_ns::MyFl_Double_Window* ueber
-#: icc_betrachter.cxx:820
-msgid "Grafic Card Gamma Table"
-msgstr ""
-
-#. TagDrawings* vcgt_viewer
-#: icc_betrachter.cxx:841
-msgid "Set"
-msgstr ""
-
-#: icc_betrachter.cxx:842
-msgid ""
-"Set the current profile as monitor profile and upload vcgt tag to the video "
-"card"
-msgstr ""
-
-#. Fl_Button* vcgt_set_button
-#: icc_betrachter.cxx:847
-msgid "Reset"
-msgstr ""
-
-#: icc_betrachter.cxx:848
-msgid "reset to standard gamma"
-msgstr ""
-
-#. Fl_Button* vcgt_reset_button
-#: icc_betrachter.cxx:852
-msgid "Load"
-msgstr ""
-
-#: icc_betrachter.cxx:853
-msgid "Load the current monitor profile"
-msgstr ""
-
-#. Fl_Button* vcgt_load_button
-#: icc_betrachter.cxx:857
-msgid "Close"
-msgstr ""
-
-#: icc_betrachter.cxx:943
-msgid "invisible box"
-msgstr ""
-
-#: icc_betrachter.cxx:971
-msgid "Choose one profile tag"
-msgstr ""
-
-#: icc_betrachter.cxx:987
-msgid "Chain selection"
-msgstr ""
-
-#: icc_betrachter.cxx:988
-msgid "Choose a attribute"
-msgstr ""
-
-#: icc_betrachter.cxx:1042
-msgid "o"
-msgstr ""
-
-#: icc_betrachter.cxx:1043
-msgid "Show all channels of this table a own window."
-msgstr ""
-
-#: icc_betrachter.cxx:1116
-msgid "..."
 msgstr ""
 
 #: my_file_chooser.cxx:164
@@ -2684,7 +2628,103 @@ msgstr ""
 msgid "@2>"
 msgstr ""
 
-#: icc_utils.h:317 icc_utils.h:318 icc_utils.h:319 icc_utils.h:373
-#: icc_utils.h:374 icc_utils.h:375
-msgid "!!! Warning !!!"
+#: oyranos_cmm_iemn.c:606
+msgid "Color book[iemn]"
+msgstr ""
+
+#: oyranos_cmm_iemn.c:608
+msgid "ICC Examin CGATS parser"
+msgstr ""
+
+#: oyranos_cmm_iemn.c:614
+msgid "check"
+msgstr ""
+
+#: oyranos_cmm_iemn.c:616
+msgid "Check if this module can handle a certain command."
+msgstr ""
+
+#: oyranos_cmm_iemn.c:622
+msgid "Parse CGATS text."
+msgstr ""
+
+#: oyranos_cmm_iemn.c:624
+msgid ""
+"The ICC Examin \"parse_cgats\" command lets you parse CGATS files. The "
+"filter expects a oyOption_s object with name \"cgats\" containing a string "
+"value. The result will appear in \"data\" as a oyPointer_s containing a "
+"oyjl_val."
+msgstr ""
+
+#: oyranos_cmm_iemn.c:631
+msgid "Parse CGATS in a robust way."
+msgstr ""
+
+#: oyranos_cmm_iemn.c:633
+msgid ""
+"The filter is activated by the \"pares_cgats\" command. It expects a \"cgats"
+"\" option containing a string with CGATS color sample format. The result "
+"will contain a \"data\" object with a oyPointer_s object referencing a "
+"oyjl_val JSON data structure ready for the oyTreeToCGATS() API"
+msgstr ""
+
+#: oyranos_cmm_iemn.c:734 oyranos_cmm_iemn.c:736
+msgid "ICC Examin output filter"
+msgstr ""
+
+#: oyranos_cmm_iemn.c:740
+msgid "oy"
+msgstr ""
+
+#: oyranos_cmm_iemn.c:742
+msgid "Kai-Uwe Behrmann"
+msgstr ""
+
+#: oyranos_cmm_iemn.c:744
+msgid ""
+"Oyranos project; www: http://www.oyranos.org; support/email: ku.b@gmx.de; "
+"sources: http://www.oyranos.org/wiki/index.php?title=Oyranos/Download"
+msgstr ""
+
+#: oyranos_cmm_iemn.c:748
+msgid "GPL2+"
+msgstr ""
+
+#: oyranos_cmm_iemn.c:750
+msgid "Copyright (c) 2010 Kai-Uwe Behrmann"
+msgstr ""
+
+#: oyranos_cmm_iemn.c:752
+msgid "GPL2+ license: http://www.opensource.org/licenses/gpl2-license.php"
+msgstr ""
+
+#: oyranos_cmm_iemn.c:756
+msgid "help"
+msgstr ""
+
+#: oyranos_cmm_iemn.c:758
+msgid "The filter allows to visually observe a images colours."
+msgstr ""
+
+#: oyranos_cmm_iemn.c:760
+msgid ""
+"The 3D view uses OpenGL to project the image colours into a 3D view "
+"representing the CIE*Lab colour space. The filter needs a running window "
+"system."
+msgstr ""
+
+#: oyranos_cmm_iemn.c:1072
+msgid "Image[iemn_filter]"
+msgstr ""
+
+#: oyranos_cmm_iemn.c:1074
+msgid "ICC Examin Object"
+msgstr ""
+
+#: oyranos_cmm_iemn.c:1081
+msgid "Some help for My example filter."
+msgstr ""
+
+#: oyranos_cmm_iemn.c:1083
+msgid "More indepth help  for My example filter."
 msgstr ""

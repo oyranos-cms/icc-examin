@@ -33,7 +33,9 @@
 
 #define oyIGNORE_DEPRECATED 108
 
+#if !defined(ICC_EXTERN)
 #include "config.h"
+#endif
 #include <oyranos.h>
 #include <oyranos_icc.h>
 
