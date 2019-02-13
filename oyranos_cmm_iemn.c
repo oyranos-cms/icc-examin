@@ -3,9 +3,9 @@
  *  a filter for Oyranos 
  *
  *  @par Copyright:
- *            2010-2012 (C) Kai-Uwe Behrmann
+ *            2010-2019 (C) Kai-Uwe Behrmann
  *
- *  @brief    ICC Examin viewer filter for Oyranos
+ *  @brief    ICC Examin viewer filter for Oyranos Color Management System
  *  @internal
  *  @author   Kai-Uwe Behrmann <ku.b@gmx.de>
  *  @par License:
@@ -14,9 +14,16 @@
  */
 
 
-#include "alpha/oyranos_alpha.h"
-#include "alpha/oyranos_cmm.h"
-#include "oyranos_definitions.h"
+#include <oyranos.h>
+#include <oyranos_conversion.h>
+#include <oyranos_definitions.h>
+#include <oyranos_version.h>
+#include <oyCMM_s.h>
+#include <oyPointer_s.h>
+#include <oyCMMapi4_s.h>
+#include <oyCMMapi7_s.h>
+#include <oyCMMapi10_s.h>
+#include <oyConnectorImaging_s.h>
 
 #include <math.h>
 #include <stdarg.h>
@@ -24,17 +31,26 @@
 #include <stdio.h>
 #include <string.h>
 
+#include <oyjl.h> /* oyjl_val */
+#include <oyjl_macros.h> /* OYJL_DEBUG_ARGS */
+
+#include "icc_cgats_filter.h"
 
 /* --- internal definitions --- */
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /** The CMM_NICK consists of four bytes, which appear as well in the library name. This is important for Oyranos to identify the required filter struct name. */
 #define CMM_NICK "iemn"
 #define OY_ICMN_FILTER_REGISTRATION OY_TOP_INTERNAL OY_SLASH OY_DOMAIN_INTERNAL OY_SLASH OY_TYPE_STD OY_SLASH "icc_examin"
 
-int iemnCMMWarnFunc( int code, const oyPointer context, const char * format, ... );
-/** The msg_iemn function pointer to use for messaging. */
-oyMessage_f msg_iemn = iemnCMMWarnFunc;
+int iemnCMMWarnFunc( int code, const void* context, const char * format, ... );
+/** The iemn_msg function pointer to use for messaging. */
+oyMessage_f iemn_msg = iemnCMMWarnFunc;
 
+int    iemnInit( oyStruct_s        * module_info );
 extern oyCMMapi4_s   iemn_api4_iemn_filter;
 extern oyCMMapi7_s   iemn_api7_iemn_filter;
 
@@ -54,7 +70,7 @@ extern oyCMMapi7_s   iemn_api7_iemn_filter;
  *  @date    2010/05/17
  *  @since   2010/05/17 (ICC Examin: 0.47)
  */
-int                iemnCMMInit       ( )
+int                iemnCMMInit       ( oyStruct_s * OY_UNUSED )
 {
   int error = 0;
   return error;
@@ -72,7 +88,7 @@ int                iemnCMMInit       ( )
  *  @date    2010/05/17
  *  @since   2010/05/17 (ICC Examin: 0.47)
  */
-int iemnCMMWarnFunc( int code, const oyPointer cp, const char * format,...)
+int iemnCMMWarnFunc( int code, const void* cp, const char * format,...)
 {
   char* text = (char*)calloc(sizeof(char), 4096);
   va_list list;
@@ -83,7 +99,7 @@ int iemnCMMWarnFunc( int code, const oyPointer cp, const char * format,...)
   if(context && oyOBJECT_NONE < context->type_)
   {
     type_name = oyStructTypeToText( context->type_ );
-    id = oyObject_GetId( context->oy_ );
+    id = oyStruct_GetId( context );
   }
 
   va_start( list, format);
@@ -120,11 +136,672 @@ int iemnCMMWarnFunc( int code, const oyPointer cp, const char * format,...)
  */
 int            iemnCMMMessageFuncSet ( oyMessage_f         message_func )
 {
-  msg_iemn = message_func;
+  iemn_msg = message_func;
   return 0;
 }
 
+/** \addtogroup misc_modules
+ *  @{ */
+/** \addtogroup iemn_misc iemn Module
+ *  @brief      ICC Examin
+ *
+ *  The modules provide ICC observation functionality.
+ *
+ *  @{ */
 
+/* OY_IEMN_PARSE_CGATS -------------------------- */
+
+typedef enum {
+  Lab = 0x01,
+  XYZ = 0x02,
+  CMYK = 0x04,
+  RGB = 0x08,
+  xyY = 0x10,
+  SPEC = 0x20
+} colorEncoding;
+#define NAME 0x100
+#define ID   0x200
+
+int channelsForCEncoding(colorEncoding space)
+{
+  switch(space)
+  {
+    case Lab:
+    case XYZ:
+    case RGB:
+    case xyY:
+      return 3;
+    case CMYK:
+      return 4;
+    case SPEC:
+      return -1;
+  }
+  return 0;
+}
+void orderForCEncoding(const char ** fieldNames, colorEncoding space, int * order)
+{
+  int n = 0, i;
+  while(fieldNames[n]) ++n;
+  for(i = 0; i < n; ++i)
+  {
+    const char * name = fieldNames[i];
+    switch(space)
+    {
+      case Lab:
+        if(strcmp(name,"LAB_L") == 0) order[0] = i;
+        if(strcmp(name,"LAB_A") == 0) order[1] = i;
+        if(strcmp(name,"LAB_B") == 0) order[2] = i;
+        break;
+      case XYZ:
+        if(strcmp(name,"XYZ_X") == 0) order[0] = i;
+        if(strcmp(name,"XYZ_Y") == 0) order[1] = i;
+        if(strcmp(name,"XYZ_Z") == 0) order[2] = i;
+        break;
+      case CMYK:
+        if(strcmp(name,"CMYK_C") == 0) order[0] = i;
+        if(strcmp(name,"CMYK_M") == 0) order[1] = i;
+        if(strcmp(name,"CMYK_Y") == 0) order[2] = i;
+        if(strcmp(name,"CMYK_K") == 0) order[3] = i;
+        break;
+      case RGB:
+        if(strcmp(name,"RGB_R") == 0) order[0] = i;
+        if(strcmp(name,"RGB_G") == 0) order[1] = i;
+        if(strcmp(name,"RGB_B") == 0) order[2] = i;
+        break;
+      case xyY:
+        if(strcmp(name,"XYY_X") == 0) order[0] = i;
+        if(strcmp(name,"XYY_Y") == 0) order[1] = i;
+        if(strcmp(name,"XYY_CAPY") == 0) order[2] = i;
+        break;
+      case SPEC:
+        order[0] = order[1] = order[2] = order[3] = -1;
+        break;
+    }
+  }
+}
+
+
+int orderForSpectral(const char ** fieldNames, int startNM, int lambda, int endNM, int * startNM_ret, int * lambda_ret, int * endNM_ret, int ** order_ret, int * count_ret)
+{
+  char ** nameList = NULL;
+  int nameList_n = 0;
+  int n = 0, i,j, fn = 0;
+  long startNMl = 0, lambdal = 0, endNMl = 0;
+  int error = -1;
+  int * order = NULL;
+
+  /* simple constrained case */
+  if(startNM && lambda && endNM)
+  {
+    n = (endNM-startNM)/lambda + 1;
+    oyjlAllocHelper_m(nameList, char*, n+1, malloc, return 1)
+    for(i = 0; i < n; ++i)
+      oyjlStringAdd( &nameList[i], 0,0, "SPEC_%d", startNM + i  * lambda );
+    startNMl = startNM;
+    lambdal = lambda;
+    endNMl = endNM;
+  } else
+    /* parameterless case */
+  {
+    int firstSpec = -1;
+    while(fieldNames[fn]) ++fn;
+    for(i = 0; i < fn; ++i)
+    {
+      const char * name = fieldNames[i];
+      if(strstr(name,"SPEC_") != NULL)
+      {
+        const char * spect = strstr(name,"SPEC_") + 5;
+        long l = 0;
+        int err = oyjlStringToLong( spect, &l );
+        if(err > 0)
+          iemn_msg( oyMSG_WARN, 0, OYJL_DBG_FORMAT " could not detect spectral wave length: %s/%s", OYJL_DBG_ARGS, spect, name );
+        oyjlStringListAddStaticString( &nameList, &nameList_n, name, 0,0 );
+        if(n == 0)
+        {
+          firstSpec = i;
+          startNMl = l;
+        } else if(n == 1)
+          lambdal = l - startNMl;
+        else
+          if(endNMl && l - endNMl != lambdal)
+        {
+          iemn_msg( oyMSG_WARN, 0, OYJL_DBG_FORMAT "  unexpected local lambda: %i (%s,%s,%s)", OYJL_DBG_ARGS, l - endNMl, nameList[i-firstSpec-2], nameList[i-firstSpec-1], nameList[i-firstSpec] );
+          error = 1;
+          break;
+        }
+
+        endNMl = l;
+        ++n;
+      }
+    }
+  }
+
+  if(startNMl && lambdal && endNMl)
+  {
+    oyjlAllocHelper_m(order, int, n+1, malloc, return 1);
+    j = 0;
+    for(i = 0; i < fn; ++i)
+    {
+      if( strcmp( nameList[j], fieldNames[i] ) == 0 )
+      {
+        order[j] = i;
+        ++j;
+      }
+    }
+    error = 0;
+    if(startNM_ret) *startNM_ret = startNMl;
+    if(lambda_ret) *lambda_ret = lambdal;
+    if(endNM_ret) *endNM_ret = endNMl;
+    if(order_ret) *order_ret = order;
+    if(count_ret) *count_ret = j;
+  }
+  oyjlStringListRelease( &nameList, n, NULL );
+
+  return error;
+}
+
+void writeSpace(colorEncoding space, const char ** SampleNames, CgatsFilter * cgats, int m, int n, int id_index, int name_index, oyjl_val root)
+{
+  const char * json_cn = NULL;
+  switch(space)
+  {
+    case Lab: json_cn = "lab"; break;
+    case XYZ: json_cn = "xyz"; break;
+    case RGB: json_cn = "rgb"; break;
+    case CMYK:json_cn = "cmyk"; break;
+    case xyY: json_cn = "xyY"; break;
+    case SPEC: break;
+  }
+
+  int i,j,cchan,order[4];
+  if(space & Lab || space & XYZ || space & RGB || space & CMYK || space & xyY)
+  {
+    cchan = channelsForCEncoding(space);
+    orderForCEncoding( (const char**)SampleNames, space, (int*)&order);
+    for(i = 0; i < n; ++i)
+    {
+      const char * val;
+      if(name_index >= 0)
+      {
+        val = cgats->messungen[m].block[i][name_index].c_str();
+        oyjlTreeSetStringF( root, OYJL_CREATE_NEW, val, "collection/[%d]/colors/[%d]/name", m, i);
+      }
+      if(id_index >= 0)
+      {
+        val = cgats->messungen[m].block[i][id_index].c_str();
+        oyjlTreeSetStringF( root, OYJL_CREATE_NEW, val, "collection/[%d]/colors/[%d]/id", m, i);
+      }
+      for(j = 0; j < cchan; ++j)
+      {
+        int index = order[j];
+        val = cgats->messungen[m].block[i][index].c_str();
+        double d = 0.0;
+        int double_error = oyjlStringToDouble(val,&d);
+        if(double_error <= 0)
+          oyjlTreeSetDoubleF( root, OYJL_CREATE_NEW, d, "collection/[%d]/colors/[%d]/%s/[%d]", m, i, json_cn, j);
+      }
+    }
+  }
+}
+
+void writeSpec(const char ** SampleNames, CgatsFilter * cgats, int m, int n, int id_index, int name_index, oyjl_val root)
+{
+  const char * json_cn = "spectral";
+
+  int i,j,cchan, *order = NULL;
+
+  int startNM = 0, lambda = 0, endNM = 0;
+  {
+    int error = orderForSpectral(SampleNames, 0, 0, 0, &startNM, &lambda, &endNM, &order, &cchan);
+    for(i = 0; i < n; ++i)
+    {
+      const char * val;
+      if(name_index >= 0)
+      {
+        val = cgats->messungen[m].block[i][name_index].c_str();
+        oyjlTreeSetStringF( root, OYJL_CREATE_NEW, val, "collection/[%d]/colors/[%d]/name", m, i);
+      }
+      if(id_index >= 0)
+      {
+        val = cgats->messungen[m].block[i][id_index].c_str();
+        oyjlTreeSetStringF( root, OYJL_CREATE_NEW, val, "collection/[%d]/colors/[%d]/id", m, i);
+      }
+      for(j = 0; j < cchan; ++j)
+      {
+        int index = order[j];
+        const char * val = cgats->messungen[m].block[i][index].c_str();
+        double d = 0.0;
+        int double_error = oyjlStringToDouble(val,&d);
+        if(double_error <= 0)
+          oyjlTreeSetDoubleF( root, OYJL_CREATE_NEW, d, "collection/[%d]/colors/[%d]/%s/[%d]", m, i, json_cn, j);
+      }
+    }
+  }
+}
+
+
+/** @brief   Parse a CGATS text
+ *
+ *  @version Oyranos: 0.9.7
+ *  @since   2017/11/26 (Oyranos: 0.9.7)
+ *  @date    2019/02/04
+ */
+oyPointer_s* iemnParseCGATS          ( const char        * cgatsT )
+{
+  int error = !cgatsT;
+  oyPointer_s * ptr = NULL;
+  oyjl_val root = oyjlTreeNew("");
+  char ** props = NULL;
+
+  oyjlTreeSetStringF( root, OYJL_CREATE_NEW, "ncc1", "type" );
+  oyjlTreeSetStringF( root, OYJL_CREATE_NEW, "Named Color Collection v1", "comment" );
+
+  /** @todo implement CGATS parsing with CgatsFilter */
+  CgatsFilter * cgats = new CgatsFilter;
+  int len = strlen(cgatsT);
+  cgats->lade( cgatsT, len?len+1:0 );
+  std::string text = cgats->lcms_gefiltert();
+
+  int i;
+  int m_n = cgats->messungen.size();
+  int m = 0; // usualy the first data block
+  int n = cgats->messungen[m].block_zeilen;
+  int f_n = cgats->messungen[m].felder.size(); // should be always 1
+  char ** SampleNames = NULL; // list from DATA_FORMAT
+  int SNsize = 0;
+  bool _sample_id = false;
+  bool _sample_name = false;
+  bool _id_vor_name = false;
+  for(m = 0; m < m_n; ++m)
+  {
+    int spaces = 0;
+    int name_index = -1, id_index = -1;
+    if(cgats->messungen[m].felder.size() == 0)
+      break;
+    int chan = cgats->messungen[m].felder[0].size();
+    int cchan = 0; // number color channels for a selected color space
+    int order[4]; // indexes in SampleNames for a selected color space
+    for (i = 0; i < cgats->messungen[m].kommentare; ++i)
+    {
+      const char * name = cgats->messungen[m].kommentare[i].c_str();
+      std::string line = name;
+      ICClist<std::string> v = cgats->unterscheideZiffernWorte( line );
+      if(icc_debug) iemn_msg( oyMSG_DBG, 0, OYJL_DBG_FORMAT "  comments: %s", OYJL_DBG_ARGS, name );
+      const char * val = v.size() > 1 ? v[1].c_str() : NULL;
+      double d = 0.0;
+      int double_error = oyjlStringToDouble(val,&d);
+
+#define SET_VAL(_CGATS_NAME_, _JSON_NAME_,_test_double_) \
+      if(strstr(name, _CGATS_NAME_) != NULL) { (_test_double_ && (double_error <= 0)) ? oyjlTreeSetDoubleF( root, OYJL_CREATE_NEW, d, _JSON_NAME_) : oyjlTreeSetStringF( root, OYJL_CREATE_NEW, val, _JSON_NAME_ ); }
+
+           SET_VAL("ORIGINATOR",        "creator",            0)
+      else SET_VAL("DESCRIPTOR",        "description",        0)
+      else SET_VAL("CREATED",           "date",               0)
+      else SET_VAL("MANUFACTURER",      "manufacturer",       0)
+      else SET_VAL("PROD_DATE",         "prod_date",          0)
+      else SET_VAL("SERIAL",            "serial",             0)
+      else SET_VAL("MATERIAL",          "material",           0)
+      else SET_VAL("INSTRUMENTATION",   "instrumentation",    0)
+      else SET_VAL("MEASUREMENT_SOURCE","measurement_source", 0)
+      else SET_VAL("PRINT_CONDITIONS",  "print_conditions",   0)
+      else SET_VAL("SPECTRAL_START_NM", "collection/[0]/spectral/startNM",   1)
+      else SET_VAL("SPECTRAL_NORM",     "collection/[0]/spectral/lambda",    1)
+      else SET_VAL("SPECTRAL_END_NM",   "collection/[0]/spectral/endNM",     1)
+#undef SET_VAL
+    }
+    for (i = 0; i < chan; ++i)
+    {
+      const char * name = cgats->messungen[m].felder[m][i].c_str();
+      oyjlStringListAddStaticString( &SampleNames, &SNsize, name, 0,0 );
+      if(icc_debug)
+        iemn_msg( oyMSG_DBG, 0, OYJL_DBG_FORMAT "  FieldName: %s", OYJL_DBG_ARGS, name );
+    }
+    for (i = 0; i < chan; ++i)
+    {
+      if (strstr(SampleNames[i],"SAMPLE_ID") != 0)
+      {
+        _sample_id = true;
+        id_index = i;
+        if(!(spaces&ID)) iemn_msg( oyMSG_DBG,0, "ID" );
+        spaces |= ID;
+      }
+      if (strstr(SampleNames[i],"SAMPLE_NAME") != 0)
+      {
+        _sample_name = true;
+        name_index = i;
+        if(!(spaces&NAME)) iemn_msg( oyMSG_DBG,0, "NAME" );
+        spaces |= NAME;
+        if(_sample_id)
+          _id_vor_name = true;
+      }
+      if ((strstr (SampleNames[i], "LAB_L") != 0)
+       || (strstr (SampleNames[i], "LAB_A") != 0)
+       || (strstr (SampleNames[i], "LAB_B") != 0))
+      {
+        if(!(spaces&Lab)) iemn_msg( oyMSG_DBG,0, "Lab data " );
+        spaces |= Lab;
+      } else if ((strstr (SampleNames[i], "XYZ_X") != 0)
+              || (strstr (SampleNames[i], "XYZ_Y") != 0)
+              || (strstr (SampleNames[i], "XYZ_Z") != 0)) {
+        if(!(spaces&XYZ)) iemn_msg( oyMSG_DBG,0, "XYZ data " );
+        spaces |= XYZ;
+      } else if ((strstr (SampleNames[i], "CMYK_C") != 0)
+              || (strstr (SampleNames[i], "CMYK_M") != 0)
+              || (strstr (SampleNames[i], "CMYK_Y") != 0)
+              || (strstr (SampleNames[i], "CMYK_K") != 0))
+      {
+        if(!(spaces&CMYK)) iemn_msg( oyMSG_DBG,0, "CMYK data " );
+        spaces |= CMYK;
+      } else if ((strstr (SampleNames[i], "RGB_R") != 0)
+              || (strstr (SampleNames[i], "RGB_G") != 0)
+              || (strstr (SampleNames[i], "RGB_B") != 0))
+      {
+        if(!(spaces&RGB)) iemn_msg( oyMSG_DBG,0, "RGB data " );
+        spaces |= RGB;
+      } else if ((strstr (SampleNames[i], "XYY_X") != 0)
+              || (strstr (SampleNames[i], "XYY_Y") != 0)
+              || (strstr (SampleNames[i], "XYY_CAPY") != 0))
+      {
+        if(!(spaces&xyY)) iemn_msg( oyMSG_DBG,0, "xyY data " );
+        spaces |= xyY;
+      } else if (strstr (SampleNames[i], "SPEC_") != 0)
+      {
+        if(!(spaces&SPEC)) iemn_msg( oyMSG_DBG,0, "Spectral data " );
+        spaces |= SPEC;
+      }
+    }
+
+    // write data
+    if(spaces & Lab) writeSpace( Lab, (const char **) SampleNames, cgats, m, n, id_index, name_index, root);
+    if(spaces & XYZ) writeSpace( XYZ, (const char **) SampleNames, cgats, m, n, id_index, name_index, root);
+    if(spaces & RGB) writeSpace( RGB, (const char **) SampleNames, cgats, m, n, id_index, name_index, root);
+    if(spaces & CMYK) writeSpace( CMYK, (const char **) SampleNames, cgats, m, n, id_index, name_index, root);
+    if(spaces & xyY) writeSpace( xyY, (const char **) SampleNames, cgats, m, n, id_index, name_index, root);
+    if(spaces & SPEC) writeSpec( (const char **) SampleNames, cgats, m, n, id_index, name_index, root);
+  }
+
+  ptr = oyPointer_New(0);
+  oyPointer_Set( ptr, __FILE__,
+                 "oyjl_val", root, 0, 0 );
+
+  delete cgats;
+  return ptr;
+}
+#define OY_IEMN_PARSE_CGATS OY_TOP_SHARED OY_SLASH OY_DOMAIN_INTERNAL OY_SLASH OY_TYPE_STD OY_SLASH \
+  "parse_cgats.cgats._" CMM_NICK "._CPU"
+
+/** @brief  iemnMOptions_Handle5()
+ *  This function implements oyMOptions_Handle_f.
+ *
+ *  @param[in]     options             expects at least one options
+ *                                     - "cgats": The option shall be a string.
+ *  @param[in]     command             "//" OY_TYPE_STD "/parse_cgats"
+ *  @param[out]    result              will contain a oyPointer_s in "data"
+ *
+ *  The Handler uses internally iemnParseCGATS().
+ *
+ *  @version Oyranos: 0.9.7
+ *  @since   2017/11/26 (Oyranos: 0.9.7)
+ *  @date    2019/02/04
+ */
+int          iemnMOptions_Handle5   ( oyOptions_s       * options,
+                                       const char        * command,
+                                       oyOptions_s      ** result )
+{
+  int error = 0;
+
+  if(oyFilterRegistrationMatch(command,"can_handle", oyOBJECT_NONE))
+  {
+    if(oyFilterRegistrationMatch(command,"parse_cgats", oyOBJECT_NONE))
+    {
+      const char * cgats = oyOptions_FindString( options, "cgats", 0 );
+      if(!cgats) error = 1;
+      return error;
+    }
+    else
+      return -1;
+  }
+  else if(oyFilterRegistrationMatch(command,"parse_cgats", oyOBJECT_NONE))
+  {
+    oyPointer_s * spec = NULL;
+    const char * cgats = NULL;
+
+    cgats = oyOptions_FindString( options, "cgats", 0 );
+
+    spec = iemnParseCGATS( cgats );
+
+    if(spec)
+    {
+      oyOption_s * o = oyOption_FromRegistration( OY_TOP_SHARED OY_SLASH OY_DOMAIN_INTERNAL OY_SLASH OY_TYPE_STD OY_SLASH "cgats.data._" CMM_NICK, 0 );
+      error = oyOption_MoveInStruct( o, (oyStruct_s**) &spec );
+      if(!*result)
+        *result = oyOptions_New(0);
+      oyOptions_MoveIn( *result, &o, -1 );
+    } else
+        iemn_msg( oyMSG_WARN, (oyStruct_s*)options, OYJL_DBG_FORMAT
+                   "parsing creation failed",
+                   OYJL_DBG_ARGS );
+  }
+
+  return 0;
+}
+/**
+ *  This function implements oyCMMGetText_f.
+ *
+ *  @version ICC Examin: 0.57
+ *  @since   2019/02/07 (ICC Examin: 0.57)
+ *  @date    2019/02/07
+ */
+const char * iemnApi10UiGetText (
+                                       const char        * select,
+                                       oyNAME_e            type,
+                                       oyStruct_s        * context )
+{
+  static char * category = 0;
+  iemn_msg( oyMSG_DBG, context, "select: %s type: %d", select, (int)type );
+         if(strcmp(select,"name")==0)
+  {
+         if(type == oyNAME_NICK)
+      return "iemn.parse_cgats";
+    else if(type == oyNAME_NAME)
+      return _("Color book[iemn]");
+    else
+      return _("ICC Examin CGATS parser");
+  } else if(strcmp(select, "can_handle")==0)
+  {
+         if(type == oyNAME_NICK)
+      return "check";
+    else if(type == oyNAME_NAME)
+      return _("check");
+    else
+      return _("Check if this module can handle a certain command.");
+  } else if(strcmp(select, "parse_cgats")==0)
+  {
+         if(type == oyNAME_NICK)
+      return "parse_cgats";
+    else if(type == oyNAME_NAME)
+      return _("Parse CGATS text.");
+    else
+      return _("The ICC Examin \"parse_cgats\" command lets you parse CGATS files. The filter expects a oyOption_s object with name \"cgats\" containing a string value. The result will appear in \"data\" as a oyPointer_s containing a oyjl_val.");
+  }
+  else if(strcmp(select,"help")==0)
+  {
+         if(type == oyNAME_NICK)
+      return "help";
+    else if(type == oyNAME_NAME)
+      return _("Parse CGATS in a robust way.");
+    else
+      return _("The filter is activated by the \"pares_cgats\" command. It expects a \"cgats\" option containing a string with CGATS color sample format. The result will contain a \"data\" object with a oyPointer_s object referencing a oyjl_val JSON data structure ready for the oyTreeToCGATS() API");
+  }
+  return 0;
+}
+const char *iemn_texts_parse_cgats[4] = {"can_handle","parse_cgats","help",0};
+
+#if 0
+/** l2cms_api10_cmm5
+ *  @brief   Node for Parsing a CGATS text
+ *
+ *  littleCMS 2 oyCMMapi10_s implementation
+ *
+ *  For the front end API see oyOptions_Handle(). The backend options
+ *  are described in l2cmsMOptions_Handle5().
+ *
+ *  @version Oyranos: 0.9.7
+ *  @since   2017/06/05 (Oyranos: 0.9.7)
+ *  @date    2019/02/04
+ */
+oyCMMapi10_s_    l2cms_api10_cmm5 = {
+
+  oyOBJECT_CMM_API10_S,
+  0,0,0,
+  0,
+
+  l2cmsCMMInit,
+  l2cmsCMMMessageFuncSet,
+
+  OY_LCM2_PARSE_CGATS,
+
+  CMM_VERSION,
+  CMM_API_VERSION,                  /**< int32_t module_api[3] */
+  0,   /* id_; keep empty */
+  0,   /* api5_; keep empty */
+  0,   /* runtime_context */
+ 
+  l2cmsInfoGetTextProfileC5,            /**< getText */
+  (char**)l2cms_texts_parse_cgats,      /**<texts; list of arguments to getText*/
+ 
+  l2cmsMOptions_Handle5                 /**< oyMOptions_Handle_f oyMOptions_Handle */
+};
+#endif
+
+/* OY_IEMN_PARSE_CGATS -------------------------- */
+
+/**  @} *//* iemn_misc */
+/**  @} *//* misc_modules */
+
+/**
+ *  @brief   Node for Parsing a CGATS text
+ *
+ *  ICC Examin oyCMMapi10_s implementation
+ *
+ *  For the front end API see oyOptions_Handle(). The backend options
+ *  are described in l2cmsMOptions_Handle5().
+ *
+ *  @version Oyranos: 0.9.7
+ *  @since   2017/06/05 (Oyranos: 0.9.7)
+ *  @date    2019/02/07
+ */
+int    iemnInit( oyStruct_s        * module_info )
+{
+  oyCMM_s * info = (oyCMM_s*) module_info;
+  int32_t cmm_version[3] = {OYRANOS_VERSION_A,OYRANOS_VERSION_B,OYRANOS_VERSION_C},
+          module_api[3]  = {0,9,6};
+  oyCMMapi10_s * filter = oyCMMapi10_Create( iemnCMMInit,
+                                       iemnCMMMessageFuncSet,
+                                       OY_IEMN_PARSE_CGATS,
+                                       cmm_version,
+                                       module_api,
+                                       iemnApi10UiGetText,
+                                       iemn_texts_parse_cgats,
+                                       iemnMOptions_Handle5,
+                                       NULL /* Oyranos object*/ );
+  if( !info || module_info->type_ != oyOBJECT_CMM_INFO_S ||
+      memcmp(info->cmm,CMM_NICK,4) != 0)
+    iemn_msg( oyMSG_WARN, module_info, OYJL_DBG_FORMAT "wrong module info passed in", OYJL_DBG_ARGS );
+  info->api = (oyCMMapi_s*)filter;
+  icc_debug = oy_debug;
+  return 0;
+}
+
+/**
+ *  This function implements oyCMMInfoGetText_f.
+ *
+ *  Implement at least "name", "manufacturer" and "copyright". If you like with
+ *  internationalisation.
+ *
+ *  @version ICC Examin: 0.47
+ *  @since   2010/05/17 (ICC Examin: 0.47)
+ *  @date    2012/02/19
+ */
+const char * iemnGetText             ( const char        * select,
+                                       oyNAME_e            type,
+                                       oyStruct_s        * context )
+{
+         if(strcmp(select, "name")==0)
+  {
+         if(type == oyNAME_NICK)
+      return _(CMM_NICK);
+    else if(type == oyNAME_NAME)
+      return _("ICC Examin output filter");
+    else
+      return _("ICC Examin output filter");
+  } else if(strcmp(select, "manufacturer")==0)
+  {
+         if(type == oyNAME_NICK)
+      return _("oy");
+    else if(type == oyNAME_NAME)
+      return _("Kai-Uwe Behrmann");
+    else
+      return _("Oyranos project; www: http://www.oyranos.org; support/email: ku.b@gmx.de; sources: http://www.oyranos.org/wiki/index.php?title=Oyranos/Download");
+  } else if(strcmp(select, "copyright")==0)
+  {
+         if(type == oyNAME_NICK)
+      return _("GPL2+");
+    else if(type == oyNAME_NAME)
+      return _("Copyright (c) 2010 Kai-Uwe Behrmann");
+    else
+      return _("GPL2+ license: http://www.opensource.org/licenses/gpl2-license.php");
+  } else if(strcmp(select, "help")==0)
+  {
+         if(type == oyNAME_NICK)
+      return _("help");
+    else if(type == oyNAME_NAME)
+      return _("The filter allows to visually observe a images colours.");
+    else
+      return _("The 3D view uses OpenGL to project the image colours into a 3D view representing the CIE*Lab colour space. The filter needs a running window system.");
+  }
+  return 0;
+}
+const char *iemn_texts[5] = {"name","copyright","manufacturer","help",0};
+oyIcon_s iemn_icon = {oyOBJECT_ICON_S, 0,0,0, 0,0,0, "oyranos_logo.png"};
+
+
+/** @instance iemn_cmm_module
+ *  @brief    iemn module infos
+ *
+ *  This structure is dlopened by Oyranos. Its name has to consist of the
+ *  following elements:
+ *  - the four byte CMM_NICK plus
+ *  - "_cmm_module"
+ *  This string must be included in the the filters filename.
+ *
+ *  @version ICC Examin: 0.57
+ *  @date    2019/02/05
+ *  @since   2010/05/17 (ICC Examin: 0.47)
+ */
+oyCMM_s iemn_cmm_module = {
+
+  oyOBJECT_CMM_INFO_S, /**< ::type; the object type */
+  0,0,0,               /**< static objects omit these fields */
+  CMM_NICK,            /**< ::cmm; the four char filter id */
+  (char*)"0.9.7",     /**< ::backend_version */
+  iemnGetText,         /**< ::getText; UI texts */
+  (char**)iemn_texts,  /**< ::texts; list of arguments to getText */
+  OYRANOS_VERSION,     /**< ::oy_compatibility; last supported Oyranos CMM API*/
+
+  /** ::api; The first filter api structure. */
+  NULL,
+
+  /** ::icon; zero terminated list of a icon pyramid */
+  &iemn_icon,
+  iemnInit
+};
+
+
+/* OY_ICMN_FILTER_REGISTRATION ----------------------------------------------*/
+
+
+#if 0
 /** For very simple options we do not need event handling. Dummies suffice in
  *  this case. */
 const char * iemnWidget_GetDummy     ( const char        * func_name,
@@ -224,93 +901,6 @@ typedef struct {
 } Ncl2;
 
 
-/**
- *  This function implements oyCMMInfoGetText_f.
- *
- *  Implement at least "name", "manufacturer" and "copyright". If you like with
- *  internationalisation.
- *
- *  @version ICC Examin: 0.47
- *  @since   2010/05/17 (ICC Examin: 0.47)
- *  @date    2012/02/19
- */
-const char * iemnGetText             ( const char        * select,
-                                       oyNAME_e            type,
-                                       oyStruct_s        * context )
-{
-         if(strcmp(select, "name")==0)
-  {
-         if(type == oyNAME_NICK)
-      return _(CMM_NICK);
-    else if(type == oyNAME_NAME)
-      return _("ICC Examin output filter");
-    else
-      return _("ICC Examin output filter");
-  } else if(strcmp(select, "manufacturer")==0)
-  {
-         if(type == oyNAME_NICK)
-      return _("Me");
-    else if(type == oyNAME_NAME)
-      return _("Kai-Uwe Behrmann");
-    else
-      return _("My project; www: http://www.oyranos.org; support/email: ku.b@gmx.de; sources: http://www.oyranos.org/wiki/index.php?title=Oyranos/Download");
-  } else if(strcmp(select, "copyright")==0)
-  {
-         if(type == oyNAME_NICK)
-      return _("newBSD");
-    else if(type == oyNAME_NAME)
-      return _("Copyright (c) 2010 Kai-Uwe Behrmann; newBSD");
-    else
-      return _("new BSD license: http://www.opensource.org/licenses/bsd-license.php");
-  } else if(strcmp(select, "help")==0)
-  {
-         if(type == oyNAME_NICK)
-      return _("help");
-    else if(type == oyNAME_NAME)
-      return _("The filter allows to visually observe a images colours.");
-    else
-      return _("The 3D view uses OpenGL to project the image colours into a 3D view representing the CIE*Lab colour space. The filter needs a running window system.");
-  }
-  return 0;
-}
-const char *iemn_texts[5] = {"name","copyright","manufacturer","help",0};
-
-
-/** @instance iemn_cmm_module
- *  @brief    iemn module infos
- *
- *  This structure is dlopened by Oyranos. Its name has to consist of the
- *  following elements:
- *  - the four byte CMM_NICK plus
- *  - "_cmm_module"
- *  This string must be included in the the filters filename.
- *
- *  @version ICC Examin: 0.47
- *  @date    2010/05/17
- *  @since   2010/05/17 (ICC Examin: 0.47)
- */
-oyCMMInfo_s iemn_cmm_module = {
-
-  oyOBJECT_CMM_INFO_S, /**< ::type; the object type */
-  0,0,0,               /**< static objects omit these fields */
-  CMM_NICK,            /**< ::cmm; the four char filter id */
-  (char*)"0.1.10",     /**< ::backend_version */
-  iemnGetText,         /**< ::getText; UI texts */
-  (char**)iemn_texts,  /**< ::texts; list of arguments to getText */
-  OYRANOS_VERSION,     /**< ::oy_compatibility; last supported Oyranos CMM API*/
-
-  /** ::api; The first filter api structure. */
-  (oyCMMapi_s*) & iemn_api4_iemn_filter,
-
-  /** ::icon; zero terminated list of a icon pyramid */
-  {oyOBJECT_ICON_S, 0,0,0, 0,0,0, (char*)"oyranos_logo.png"}
-};
-
-
-/* OY_ICMN_FILTER_REGISTRATION ----------------------------------------------*/
-
-
-
 oyOptions_s* iemnFilter_MyFilterValidateOptions
                                      ( oyFilterCore_s    * filter,
                                        oyOptions_s       * validate,
@@ -369,7 +959,7 @@ int      iemnFilterPlug_MyFilterRun (
 
   if( !ticket )
   {
-    msg_iemn( oyMSG_WARN, (oyStruct_s*)node,
+    iemn_msg( oyMSG_WARN, (oyStruct_s*)node,
              "failed to get a job ticket");
     return 1;
   }
@@ -396,7 +986,6 @@ int      iemnFilterPlug_MyFilterRun (
 
 
 oyDATATYPE_e iemn_data_types[3] = {oyUINT8, oyUINT16, (oyDATATYPE_e)0};
-
 
 /** My filters socket for delivering results */
 oyConnectorImaging_s iemn_iemnFilter_connectorSocket = {
@@ -506,7 +1095,7 @@ const char * iemnApi4UiGetText (
         /* Create a translation for iemn_api4_ui_iemn_filter::category. */
         sprintf( category,"%s/%s", i18n[0], i18n[1] );
       else
-        msg_iemn(oyMSG_WARN, (oyStruct_s *) 0, _DBG_FORMAT_ "\n " "Could not allocate enough memory.", _DBG_ARGS_);
+        iemn_msg(oyMSG_WARN, (oyStruct_s *) 0, _DBG_FORMAT_ "\n " "Could not allocate enough memory.", _DBG_ARGS_);
     }
          if(type == oyNAME_NICK)
       return "category";
@@ -618,7 +1207,29 @@ oyCMMapi7_s   iemn_api7_iemn_filter = {
   1,   /* sockets_n */
   0    /* sockets_last_add */
 };
-
+#endif
 
 /* OY_ICMN_FILTER_REGISTRATION ----------------------------------------------*/
 
+char *       oyJsonPrint             ( oyjl_val            root );
+
+#ifdef __cplusplus
+}
+#endif 
+
+#ifdef USE_MAIN
+int main( int argc, char ** argv)
+{
+  int size = 0;
+  oy_debug = 1;
+  oyjlDebugVariableSet(&oy_debug);
+  char * cgatsT = oyjlReadFile( argv[1], &size );
+  int error = !cgatsT;
+  oyPointer_s*ptr = iemnParseCGATS( cgatsT );
+
+  oyjl_val json = (oyjl_val) oyPointer_GetPointer(ptr);
+  printf( "%s\n", oyJsonPrint(json) );
+
+  return 0;
+}
+#endif
