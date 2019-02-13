@@ -28,6 +28,12 @@
 
 
 
+#ifdef ICC_EXTERN
+# ifdef DEBUG
+#  undef DEBUG
+# endif
+#endif
+
 #include "icc_utils.h"
 #include "icc_helfer.h"
 #include "icc_cgats_filter.h"
@@ -54,7 +60,6 @@ using namespace icc_parser;
 #define DBG_CGATS_S( text ) 
 #define DBG_CGATS_V( text )
 #endif
-
 //! statische Initialisierungen
 
 const char *CgatsFilter::cgats_alnum_ = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_|/-+=()[]{}<>&?!:;,.0123456789";
