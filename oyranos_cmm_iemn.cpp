@@ -348,11 +348,18 @@ void writeSpec(const char ** SampleNames, CgatsFilter * cgats, int m, int n, int
 {
   const char * json_cn = "spectral";
 
-  int i,j,cchan, *order = NULL;
+  int i,j,
+      cchan, // number color channels for a selected color space
+      *order = NULL;
 
   int startNM = 0, lambda = 0, endNM = 0;
   {
     int error = orderForSpectral(SampleNames, 0, 0, 0, &startNM, &lambda, &endNM, &order, &cchan);
+    if(error)
+      iemn_msg( oyMSG_WARN, 0, OYJL_DBG_FORMAT "  %scould not get spectral properties", OYJL_DBG_ARGS, error > 0 ? "ERROR: ":"" );
+    oyjlTreeSetDoubleF( root, OYJL_CREATE_NEW, startNM, "collection/[0]/spectral/startNM" );
+    oyjlTreeSetDoubleF( root, OYJL_CREATE_NEW, lambda, "collection/[0]/spectral/lambda" );
+    oyjlTreeSetDoubleF( root, OYJL_CREATE_NEW, endNM, "collection/[0]/spectral/endNM" );
     for(i = 0; i < n; ++i)
     {
       const char * val;
@@ -391,7 +398,8 @@ oyPointer_s* iemnParseCGATS          ( const char        * cgatsT )
   int error = !cgatsT;
   oyPointer_s * ptr = NULL;
   oyjl_val root = oyjlTreeNew("");
-  char ** props = NULL;
+
+  if(error) return ptr;
 
   oyjlTreeSetStringF( root, OYJL_CREATE_NEW, "ncc1", "type" );
   oyjlTreeSetStringF( root, OYJL_CREATE_NEW, "Named Color Collection v1", "comment" );
@@ -409,9 +417,8 @@ oyPointer_s* iemnParseCGATS          ( const char        * cgatsT )
   int f_n = cgats->messungen[m].felder.size(); // should be always 1
   char ** SampleNames = NULL; // list from DATA_FORMAT
   int SNsize = 0;
-  bool _sample_id = false;
-  bool _sample_name = false;
-  bool _id_vor_name = false;
+  if(f_n != 1)
+    iemn_msg( oyMSG_WARN, 0, OYJL_DBG_FORMAT "  Ambiguity: found more than one line in DATA_FORMAT section %d", OYJL_DBG_ARGS, f_n );
   for(m = 0; m < m_n; ++m)
   {
     int spaces = 0;
@@ -419,9 +426,7 @@ oyPointer_s* iemnParseCGATS          ( const char        * cgatsT )
     if(cgats->messungen[m].felder.size() == 0)
       break;
     int chan = cgats->messungen[m].felder[0].size();
-    int cchan = 0; // number color channels for a selected color space
-    int order[4]; // indexes in SampleNames for a selected color space
-    for (i = 0; i < cgats->messungen[m].kommentare; ++i)
+    for (i = 0; i < (int)cgats->messungen[m].kommentare; ++i)
     {
       const char * name = cgats->messungen[m].kommentare[i].c_str();
       std::string line = name;
@@ -460,19 +465,15 @@ oyPointer_s* iemnParseCGATS          ( const char        * cgatsT )
     {
       if (strstr(SampleNames[i],"SAMPLE_ID") != 0)
       {
-        _sample_id = true;
         id_index = i;
         if(!(spaces&ID)) iemn_msg( oyMSG_DBG,0, "ID" );
         spaces |= ID;
       }
       if (strstr(SampleNames[i],"SAMPLE_NAME") != 0)
       {
-        _sample_name = true;
         name_index = i;
         if(!(spaces&NAME)) iemn_msg( oyMSG_DBG,0, "NAME" );
         spaces |= NAME;
-        if(_sample_id)
-          _id_vor_name = true;
       }
       if ((strstr (SampleNames[i], "LAB_L") != 0)
        || (strstr (SampleNames[i], "LAB_A") != 0)
@@ -597,7 +598,6 @@ const char * iemnApi10UiGetText (
                                        oyNAME_e            type,
                                        oyStruct_s        * context )
 {
-  static char * category = 0;
   iemn_msg( oyMSG_DBG, context, "select: %s type: %d", select, (int)type );
          if(strcmp(select,"name")==0)
   {
@@ -725,7 +725,7 @@ int    iemnInit( oyStruct_s        * module_info )
  */
 const char * iemnGetText             ( const char        * select,
                                        oyNAME_e            type,
-                                       oyStruct_s        * context )
+                                       oyStruct_s        * context OYJL_UNUSED )
 {
          if(strcmp(select, "name")==0)
   {
@@ -1218,13 +1218,14 @@ char *       oyJsonPrint             ( oyjl_val            root );
 #endif 
 
 #ifdef USE_MAIN
-int main( int argc, char ** argv)
+int main( int argc OYJL_UNUSED, char ** argv)
 {
   int size = 0;
   oy_debug = 1;
   oyjlDebugVariableSet(&oy_debug);
   char * cgatsT = oyjlReadFile( argv[1], &size );
   int error = !cgatsT;
+  if(error) puts("need a CGATS file as sole argument\n");
   oyPointer_s*ptr = iemnParseCGATS( cgatsT );
 
   oyjl_val json = (oyjl_val) oyPointer_GetPointer(ptr);
