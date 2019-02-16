@@ -359,6 +359,7 @@ void writeSpec(const char ** SampleNames, CgatsFilter * cgats, int m, int n, int
       iemn_msg( oyMSG_WARN, 0, OYJL_DBG_FORMAT "  %scould not get spectral properties", OYJL_DBG_ARGS, error > 0 ? "ERROR: ":"" );
     oyjlTreeSetDoubleF( root, OYJL_CREATE_NEW, startNM, "collection/[0]/spectral/startNM" );
     oyjlTreeSetDoubleF( root, OYJL_CREATE_NEW, lambda, "collection/[0]/spectral/lambda" );
+    oyjlTreeSetDoubleF( root, OYJL_CREATE_NEW, (startNM-endNM+lambda)/lambda, "collection/[0]/spectral/steps" );
     oyjlTreeSetDoubleF( root, OYJL_CREATE_NEW, endNM, "collection/[0]/spectral/endNM" );
     for(i = 0; i < n; ++i)
     {
