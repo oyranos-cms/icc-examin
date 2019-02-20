@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: icc_examin\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2019-02-16 12:40+0100\n"
+"POT-Creation-Date: 2019-02-19 05:52+0100\n"
 "PO-Revision-Date: 2012-10-19 15:09+0100\n"
 "Last-Translator: Milan Knížek <knizek@volny.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
@@ -629,7 +629,7 @@ msgstr "Výběr řetězce"
 msgid "Channel"
 msgstr "Kanál"
 
-#: oyranos_cmm_iemn.cpp:618
+#: oyranos_cmm_iemn.cpp:620
 msgid "Check if this module can handle a certain command."
 msgstr ""
 
@@ -667,7 +667,7 @@ msgstr "Cmy"
 msgid "Cmyk"
 msgstr "Cmyk"
 
-#: oyranos_cmm_iemn.cpp:608
+#: oyranos_cmm_iemn.cpp:610
 msgid "Color book[iemn]"
 msgstr ""
 
@@ -689,7 +689,7 @@ msgstr ""
 
 #. The following strings must match the categories for a menu entry.
 #: icc_helfer.cpp:395 icc_profile_tags.cpp:1265 icc_profile_tags.cpp:1272
-#: oyranos_cmm_iemn.cpp:1092
+#: oyranos_cmm_iemn.cpp:1094
 msgid "Colour"
 msgstr "Barva"
 
@@ -747,7 +747,7 @@ msgstr "Konverzní tabulka s 8 bitovou přesností:"
 msgid "Copyright"
 msgstr "Copyright"
 
-#: oyranos_cmm_iemn.cpp:752
+#: oyranos_cmm_iemn.cpp:754
 msgid "Copyright (c) 2010 Kai-Uwe Behrmann"
 msgstr ""
 
@@ -960,11 +960,11 @@ msgstr "Celoobrazovkový režim"
 msgid "G"
 msgstr "G"
 
-#: oyranos_cmm_iemn.cpp:750
+#: oyranos_cmm_iemn.cpp:752
 msgid "GPL2+"
 msgstr ""
 
-#: oyranos_cmm_iemn.cpp:754
+#: oyranos_cmm_iemn.cpp:756
 msgid "GPL2+ license: http://www.opensource.org/licenses/gpl2-license.php"
 msgstr ""
 
@@ -1078,16 +1078,16 @@ msgid "Hue"
 msgstr "Odstín"
 
 #. icc_examin_ns::MyFl_Double_Window* DD
-#: icc_betrachter.cxx:933 oyranos_cmm_iemn.cpp:1092
+#: icc_betrachter.cxx:933 oyranos_cmm_iemn.cpp:1094
 msgid "ICC Examin"
 msgstr "ICC Examin"
 
-#: oyranos_cmm_iemn.cpp:610
+#: oyranos_cmm_iemn.cpp:612
 #, fuzzy
 msgid "ICC Examin CGATS parser"
 msgstr "ICC Examin Verze"
 
-#: oyranos_cmm_iemn.cpp:1076
+#: oyranos_cmm_iemn.cpp:1078
 #, fuzzy
 msgid "ICC Examin Object"
 msgstr "ICC Examin"
@@ -1119,7 +1119,7 @@ msgstr ""
 "ICC Examin je prohlížeč pro barvové profily dle standardu ICC - www.color."
 "org. V současné době jsou podporovány profily ICC verze 2 a 4."
 
-#: oyranos_cmm_iemn.cpp:736 oyranos_cmm_iemn.cpp:738
+#: oyranos_cmm_iemn.cpp:738 oyranos_cmm_iemn.cpp:740
 #, fuzzy
 msgid "ICC Examin output filter"
 msgstr "ICC Examin Verze"
@@ -1258,7 +1258,7 @@ msgstr ""
 msgid "Image Profile..."
 msgstr "Profil obrázku..."
 
-#: oyranos_cmm_iemn.cpp:1074
+#: oyranos_cmm_iemn.cpp:1076
 msgid "Image[iemn_filter]"
 msgstr ""
 
@@ -1332,7 +1332,7 @@ msgstr ""
 msgid "K"
 msgstr "K"
 
-#: oyranos_cmm_iemn.cpp:744
+#: oyranos_cmm_iemn.cpp:746
 msgid "Kai-Uwe Behrmann"
 msgstr ""
 
@@ -1572,7 +1572,7 @@ msgstr ""
 "obdélníky na pravé straně mohou pomoci vizuálnímu porovnání (k tomu je "
 "použit první profil monitoru)."
 
-#: oyranos_cmm_iemn.cpp:1085
+#: oyranos_cmm_iemn.cpp:1087
 msgid "More indepth help  for My example filter."
 msgstr ""
 
@@ -1721,7 +1721,7 @@ msgstr "Výstupní"
 msgid "Oyranos Settings"
 msgstr "Nastavení Oyranosu"
 
-#: oyranos_cmm_iemn.cpp:746
+#: oyranos_cmm_iemn.cpp:748
 msgid ""
 "Oyranos project; www: http://www.oyranos.org; support/email: ku.b@gmx.de; "
 "sources: http://www.oyranos.org/wiki/index.php?title=Oyranos/Download"
@@ -1735,11 +1735,11 @@ msgstr "P22"
 msgid "PCS:         "
 msgstr "PCS:"
 
-#: oyranos_cmm_iemn.cpp:633
+#: oyranos_cmm_iemn.cpp:635
 msgid "Parse CGATS in a robust way."
 msgstr ""
 
-#: oyranos_cmm_iemn.cpp:624
+#: oyranos_cmm_iemn.cpp:626
 msgid "Parse CGATS text."
 msgstr ""
 
@@ -2061,7 +2061,7 @@ msgstr "Podmenu s rovinami řezu se stylem průletu řezem a rotací"
 msgid "Solaris"
 msgstr "Solaris"
 
-#: oyranos_cmm_iemn.cpp:1083
+#: oyranos_cmm_iemn.cpp:1085
 msgid "Some help for My example filter."
 msgstr ""
 
@@ -2168,7 +2168,7 @@ msgstr ""
 "Gamut. Zobrazí se gamut zařízení popsaného profilem dle absolutního "
 "kolorimetrického záměru transformace."
 
-#: oyranos_cmm_iemn.cpp:762
+#: oyranos_cmm_iemn.cpp:764
 msgid ""
 "The 3D view uses OpenGL to project the image colours into a 3D view "
 "representing the CIE*Lab colour space. The filter needs a running window "
@@ -2197,7 +2197,7 @@ msgstr ""
 "Tlačítko O aplikaci... v menu Nápověda zobrazí stručný přehled, licenci a "
 "poděkování dalším programátorům, kteří zdarma pomohli svým kódem."
 
-#: oyranos_cmm_iemn.cpp:626
+#: oyranos_cmm_iemn.cpp:628
 msgid ""
 "The ICC Examin \"parse_cgats\" command lets you parse CGATS files. The "
 "filter expects a oyOption_s object with name \"cgats\" containing a string "
@@ -2233,11 +2233,11 @@ msgstr ""
 msgid "The colour space shown is allways in CIE*Lab coordinates. "
 msgstr "Zobrazený barvový prostor je vždy v souřadnicích CIE*Lab."
 
-#: oyranos_cmm_iemn.cpp:760
+#: oyranos_cmm_iemn.cpp:762
 msgid "The filter allows to visually observe a images colours."
 msgstr ""
 
-#: oyranos_cmm_iemn.cpp:635
+#: oyranos_cmm_iemn.cpp:637
 msgid ""
 "The filter is activated by the \"pares_cgats\" command. It expects a \"cgats"
 "\" option containing a string with CGATS color sample format. The result "
@@ -2564,7 +2564,7 @@ msgstr "může být použit nezávisle na obrázku."
 msgid "can not be used independently from image."
 msgstr "nemůže být použit nezávisle na obrázku."
 
-#: oyranos_cmm_iemn.cpp:616
+#: oyranos_cmm_iemn.cpp:618
 msgid "check"
 msgstr ""
 
@@ -2655,7 +2655,7 @@ msgstr "lesklé, "
 msgid "gray"
 msgstr "šedá"
 
-#: oyranos_cmm_iemn.cpp:758
+#: oyranos_cmm_iemn.cpp:760
 msgid "help"
 msgstr ""
 
@@ -2781,7 +2781,7 @@ msgstr "hodin"
 msgid "open X Display failed"
 msgstr "selhalo otevření X displeje"
 
-#: oyranos_cmm_iemn.cpp:742
+#: oyranos_cmm_iemn.cpp:744
 #, fuzzy
 msgid "oy"
 msgstr "o"

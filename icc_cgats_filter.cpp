@@ -502,7 +502,7 @@ CgatsFilter::zeilenOhneDuplikate_ ( ICClist<std::string> &zeilen )
       DBG_NUM_S( zeilen[i] <<"="<< zeilen[i+1] << " geloescht" )
       zeilen.erase( zeilen.begin()+i+1 );
       if( i+1 < zeilen.size() )
-        DBG_NUM_S( zeilen[i+1] );
+      { DBG_NUM_S( zeilen[i+1] ); }
       ++n;
     }
   DBG_CGATS_V( zeilen.size() )
@@ -913,7 +913,7 @@ CgatsFilter::cgats_korrigieren_               ()
         for( unsigned k = 0; k < messungen[messungen.size()-1].felder[j].size(); ++k )
           DBG_CGATS_S( "["j<<"]["<<k<<"] "<<messungen[messungen.size()-1].felder[j][k] );
       if( !im_data_format_block )
-        DBG_PROG_S( "oops END_DATA_FORMAT ohne BEGIN_DATA_FORMAT  Zeile: " << i );
+      { DBG_PROG_S( "oops END_DATA_FORMAT ohne BEGIN_DATA_FORMAT  Zeile: " << i ); }
 
       s.str("");
       s << "NUMBER_OF_FIELDS " << zaehler_FIELDS;
@@ -983,7 +983,7 @@ CgatsFilter::cgats_korrigieren_               ()
     if( sucheWort (gtext, "END_DATA", 0 ) != std::string::npos )
     {
       if( !im_data_block )
-        DBG_PROG_S( "oops END_DATA ohne BEGIN_DATA  Zeile " << i );
+      { DBG_PROG_S( "oops END_DATA ohne BEGIN_DATA  Zeile " << i ); }
 
       s.str("");
       s << "NUMBER_OF_SETS " << zaehler_SETS;

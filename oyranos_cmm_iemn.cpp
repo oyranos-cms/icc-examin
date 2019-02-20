@@ -414,7 +414,6 @@ oyPointer_s* iemnParseCGATS          ( const char        * cgatsT )
   int i;
   int m_n = cgats->messungen.size();
   int m = 0; // usualy the first data block
-  int n = cgats->messungen[m].block_zeilen;
   int f_n = cgats->messungen[m].felder.size(); // should be always 1
   char ** SampleNames = NULL; // list from DATA_FORMAT
   int SNsize = 0;
@@ -426,6 +425,7 @@ oyPointer_s* iemnParseCGATS          ( const char        * cgatsT )
     int name_index = -1, id_index = -1;
     if(cgats->messungen[m].felder.size() == 0)
       break;
+    int n = cgats->messungen[m].block_zeilen;
     int chan = cgats->messungen[m].felder[0].size();
     for (i = 0; i < (int)cgats->messungen[m].kommentare; ++i)
     {
@@ -455,9 +455,11 @@ oyPointer_s* iemnParseCGATS          ( const char        * cgatsT )
       else SET_VAL("SPECTRAL_END_NM",   "collection/[0]/spectral/endNM",     1)
 #undef SET_VAL
     }
+    if(SampleNames)
+    { oyjlStringListRelease( &SampleNames, SNsize, 0 ); SNsize = 0; }
     for (i = 0; i < chan; ++i)
     {
-      const char * name = cgats->messungen[m].felder[m][i].c_str();
+      const char * name = cgats->messungen[m].felder[0][i].c_str();
       oyjlStringListAddStaticString( &SampleNames, &SNsize, name, 0,0 );
       if(icc_debug)
         iemn_msg( oyMSG_DBG, 0, OYJL_DBG_FORMAT "  FieldName: %s", OYJL_DBG_ARGS, name );
