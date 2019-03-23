@@ -357,10 +357,10 @@ void writeSpec(const char ** SampleNames, CgatsFilter * cgats, int m, int n, int
     int error = orderForSpectral(SampleNames, 0, 0, 0, &startNM, &lambda, &endNM, &order, &cchan);
     if(error)
       iemn_msg( oyMSG_WARN, 0, OYJL_DBG_FORMAT "  %scould not get spectral properties", OYJL_DBG_ARGS, error > 0 ? "ERROR: ":"" );
-    oyjlTreeSetDoubleF( root, OYJL_CREATE_NEW, startNM, "collection/[0]/spectral/startNM" );
-    oyjlTreeSetDoubleF( root, OYJL_CREATE_NEW, lambda, "collection/[0]/spectral/lambda" );
-    oyjlTreeSetDoubleF( root, OYJL_CREATE_NEW, (startNM-endNM+lambda)/lambda, "collection/[0]/spectral/steps" );
-    oyjlTreeSetDoubleF( root, OYJL_CREATE_NEW, endNM, "collection/[0]/spectral/endNM" );
+    oyjlTreeSetDoubleF( root, OYJL_CREATE_NEW, startNM, "collection/[0]/spectral/[0]/startNM" );
+    oyjlTreeSetDoubleF( root, OYJL_CREATE_NEW, lambda, "collection/[0]/spectral/[0]/lambda" );
+    oyjlTreeSetDoubleF( root, OYJL_CREATE_NEW, (startNM-endNM+lambda)/lambda, "collection/[0]/spectral/[0]/steps" );
+    oyjlTreeSetDoubleF( root, OYJL_CREATE_NEW, endNM, "collection/[0]/spectral/[0]/endNM" );
     for(i = 0; i < n; ++i)
     {
       const char * val;
@@ -372,7 +372,7 @@ void writeSpec(const char ** SampleNames, CgatsFilter * cgats, int m, int n, int
       if(id_index >= 0)
       {
         val = cgats->messungen[m].block[i][id_index].c_str();
-        oyjlTreeSetStringF( root, OYJL_CREATE_NEW, val, "collection/[%d]/colors/[%d]/id", m, i);
+        oyjlTreeSetStringF( root, OYJL_CREATE_NEW, val, "collection/[%d]/colors/[%d]/%s/[0]/id", m, i, json_cn );
       }
       for(j = 0; j < cchan; ++j)
       {
@@ -381,7 +381,7 @@ void writeSpec(const char ** SampleNames, CgatsFilter * cgats, int m, int n, int
         double d = 0.0;
         int double_error = oyjlStringToDouble(val,&d);
         if(double_error <= 0)
-          oyjlTreeSetDoubleF( root, OYJL_CREATE_NEW, d, "collection/[%d]/colors/[%d]/%s/[%d]", m, i, json_cn, j);
+          oyjlTreeSetDoubleF( root, OYJL_CREATE_NEW, d, "collection/[%d]/colors/[%d]/%s/[0]/data/[%d]", m, i, json_cn, j);
       }
     }
   }
