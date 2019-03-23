@@ -419,7 +419,7 @@ ICCexamin::start (int argc, char** argv)
                                  NULL};
   int i = 0;
   const char * xdg_desktop = getenv("XDG_CURRENT_DESKTOP");
-  if(xdg_desktop && strcmp(xdg_desktop,"KDE"))
+  if(xdg_desktop && strcmp(xdg_desktop,"KDE") == 0)
     app = strdup("systemsettings5 settings-kolor-management");
   if(oyranos_settings_gui_app)
     app = strdup(oyranos_settings_gui_app);
