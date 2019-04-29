@@ -663,7 +663,7 @@ msgstr ""
 
 #: oyranos_cmm_iemn.cpp:610
 msgid "Color book[iemn]"
-msgstr ""
+msgstr "Farbsammlung[iemn]"
 
 #: icc_ueber.cpp:128
 msgid ""
@@ -1073,9 +1073,8 @@ msgid "ICC Examin"
 msgstr "ICC Examin"
 
 #: oyranos_cmm_iemn.cpp:612
-#, fuzzy
 msgid "ICC Examin CGATS parser"
-msgstr "ICC Examin"
+msgstr "ICC Examin CGATS Leser"
 
 #: oyranos_cmm_iemn.cpp:1078
 msgid "ICC Examin Object"
@@ -1247,7 +1246,7 @@ msgstr "Bildprofil..."
 
 #: oyranos_cmm_iemn.cpp:1076
 msgid "Image[iemn_filter]"
-msgstr ""
+msgstr "Bild[iemn_filter]"
 
 #: icc_ueber.cpp:262
 msgid ""
@@ -1723,11 +1722,11 @@ msgstr "PCS:         "
 
 #: oyranos_cmm_iemn.cpp:635
 msgid "Parse CGATS in a robust way."
-msgstr ""
+msgstr "Lese CGATS auf robuste Art."
 
 #: oyranos_cmm_iemn.cpp:626
 msgid "Parse CGATS text."
-msgstr ""
+msgstr "Lese CGATS text."
 
 #. CRT
 #: icc_helfer.cpp:732

@@ -31,8 +31,8 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <oyjl.h> /* oyjl_val */
-#include <oyjl_macros.h> /* OYJL_DEBUG_ARGS */
+#include <oyjl/oyjl.h> /* oyjl_val */
+#include <oyjl/oyjl_macros.h> /* OYJL_DEBUG_ARGS */
 
 #include "icc_cgats_filter.h"
 
