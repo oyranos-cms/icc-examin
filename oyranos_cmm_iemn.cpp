@@ -221,7 +221,7 @@ void orderForCEncoding(const char ** fieldNames, colorEncoding space, int * orde
 }
 
 
-int orderForSpectral(const char ** fieldNames, int startNM, int lambda, int endNM, int * startNM_ret, int * lambda_ret, int * endNM_ret, int ** order_ret, int * count_ret)
+int orderForSpectral(const char ** fieldNames, int startNM, int lambda, int endNM, int * startNM_ret, int * lambda_ret, int * endNM_ret, int ** order_ret, int * count_ret, const char * spec)
 {
   char ** nameList = NULL;
   int nameList_n = 0;
@@ -229,6 +229,7 @@ int orderForSpectral(const char ** fieldNames, int startNM, int lambda, int endN
   long startNMl = 0, lambdal = 0, endNMl = 0;
   int error = -1;
   int * order = NULL;
+  int speclen = strlen(spec);
 
   /* simple constrained case */
   if(startNM && lambda && endNM)
@@ -248,9 +249,9 @@ int orderForSpectral(const char ** fieldNames, int startNM, int lambda, int endN
     for(i = 0; i < fn; ++i)
     {
       const char * name = fieldNames[i];
-      if(strstr(name,"SPEC_") != NULL)
+      if(strstr(name,spec) != NULL)
       {
-        const char * spect = strstr(name,"SPEC_") + 5;
+        const char * spect = strstr(name,spec) + speclen;
         long l = 0;
         int err = oyjlStringToLong( spect, &l );
         if(err > 0)
@@ -300,7 +301,7 @@ int orderForSpectral(const char ** fieldNames, int startNM, int lambda, int endN
   return error;
 }
 
-void writeSpace(colorEncoding space, const char ** SampleNames, CgatsFilter * cgats, int m, int n, int id_index, int name_index, oyjl_val root)
+void writeSpace(colorEncoding space, const char ** SampleNames, CgatsFilter * cgats, int m, int n, int id_index, int name_index, oyjl_val root, double max_rgb)
 {
   const char * json_cn = NULL;
   switch(space)
@@ -329,7 +330,10 @@ void writeSpace(colorEncoding space, const char ** SampleNames, CgatsFilter * cg
       if(id_index >= 0)
       {
         val = cgats->messungen[m].block[i][id_index].c_str();
-        oyjlTreeSetStringF( root, OYJL_CREATE_NEW, val, "collection/[%d]/colors/[%d]/id", m, i);
+        if(name_index < 0)
+          oyjlTreeSetStringF( root, OYJL_CREATE_NEW, val, "collection/[%d]/colors/[%d]/name", m, i);
+        else
+          oyjlTreeSetStringF( root, OYJL_CREATE_NEW, val, "collection/[%d]/colors/[%d]/id", m, i);
       }
       for(j = 0; j < cchan; ++j)
       {
@@ -337,6 +341,15 @@ void writeSpace(colorEncoding space, const char ** SampleNames, CgatsFilter * cg
         val = cgats->messungen[m].block[i][index].c_str();
         double d = 0.0;
         int double_error = oyjlStringToDouble(val,&d);
+        switch(space)
+        {
+          case Lab: if(j == 0) d /= 100.; else d = d/255. + 0.5; break;
+          case XYZ: d /= 100.; break;
+          case RGB: d /= max_rgb; break;
+          case CMYK:d /= 100.; break;
+          case xyY: break;
+          case SPEC: break;
+        }
         if(double_error <= 0)
           oyjlTreeSetDoubleF( root, OYJL_CREATE_NEW, d, "collection/[%d]/colors/[%d]/%s/[%d]", m, i, json_cn, j);
       }
@@ -353,13 +366,15 @@ void writeSpec(const char ** SampleNames, CgatsFilter * cgats, int m, int n, int
       *order = NULL;
 
   int startNM = 0, lambda = 0, endNM = 0;
+  const char * spec = cgats->spektral.c_str();
   {
-    int error = orderForSpectral(SampleNames, 0, 0, 0, &startNM, &lambda, &endNM, &order, &cchan);
+    int error = orderForSpectral(SampleNames, 0, 0, 0, &startNM, &lambda, &endNM, &order, &cchan, spec);
     if(error)
       iemn_msg( oyMSG_WARN, 0, OYJL_DBG_FORMAT "  %scould not get spectral properties", OYJL_DBG_ARGS, error > 0 ? "ERROR: ":"" );
+    oyjlTreeSetStringF( root, OYJL_CREATE_NEW, "1", "collection/[0]/spectral/[0]/id" );
     oyjlTreeSetDoubleF( root, OYJL_CREATE_NEW, startNM, "collection/[0]/spectral/[0]/startNM" );
     oyjlTreeSetDoubleF( root, OYJL_CREATE_NEW, lambda, "collection/[0]/spectral/[0]/lambda" );
-    oyjlTreeSetDoubleF( root, OYJL_CREATE_NEW, (startNM-endNM+lambda)/lambda, "collection/[0]/spectral/[0]/steps" );
+    oyjlTreeSetDoubleF( root, OYJL_CREATE_NEW, (endNM-startNM+lambda)/lambda, "collection/[0]/spectral/[0]/steps" );
     oyjlTreeSetDoubleF( root, OYJL_CREATE_NEW, endNM, "collection/[0]/spectral/[0]/endNM" );
     for(i = 0; i < n; ++i)
     {
@@ -371,8 +386,7 @@ void writeSpec(const char ** SampleNames, CgatsFilter * cgats, int m, int n, int
       }
       if(id_index >= 0)
       {
-        val = cgats->messungen[m].block[i][id_index].c_str();
-        oyjlTreeSetStringF( root, OYJL_CREATE_NEW, val, "collection/[%d]/colors/[%d]/%s/[0]/id", m, i, json_cn );
+        oyjlTreeSetStringF( root, OYJL_CREATE_NEW, "1", "collection/[%d]/colors/[%d]/%s/[0]/id", m, i, json_cn );
       }
       for(j = 0; j < cchan; ++j)
       {
@@ -397,6 +411,7 @@ void writeSpec(const char ** SampleNames, CgatsFilter * cgats, int m, int n, int
 oyPointer_s* iemnParseCGATS          ( const char        * cgatsT )
 {
   int error = !cgatsT;
+  double max_rgb = 255.0;
   oyPointer_s * ptr = NULL;
   oyjl_val root = oyjlTreeNew("");
 
@@ -404,6 +419,12 @@ oyPointer_s* iemnParseCGATS          ( const char        * cgatsT )
 
   oyjlTreeSetStringF( root, OYJL_CREATE_NEW, "ncc1", "type" );
   oyjlTreeSetStringF( root, OYJL_CREATE_NEW, "Named Color Collection v1", "comment" );
+
+  if(strstr(cgatsT, "\nDESCRIPTOR \"Argyll Calibration Target chart"))
+    max_rgb = 100.0;
+  else
+  if(strstr(cgatsT, "ORIGINATOR \"Monaco Systems, Inc\""))
+    max_rgb = 1.0;
 
   /** @todo implement CGATS parsing with CgatsFilter */
   CgatsFilter * cgats = new CgatsFilter;
@@ -508,7 +529,7 @@ oyPointer_s* iemnParseCGATS          ( const char        * cgatsT )
       {
         if(!(spaces&xyY)) iemn_msg( oyMSG_DBG,0, "xyY data " );
         spaces |= xyY;
-      } else if (strstr (SampleNames[i], "SPEC_") != 0)
+      } else if (strstr (SampleNames[i], cgats->spektral.c_str()) != 0)
       {
         if(!(spaces&SPEC)) iemn_msg( oyMSG_DBG,0, "Spectral data " );
         spaces |= SPEC;
@@ -516,11 +537,11 @@ oyPointer_s* iemnParseCGATS          ( const char        * cgatsT )
     }
 
     // write data
-    if(spaces & Lab) writeSpace( Lab, (const char **) SampleNames, cgats, m, n, id_index, name_index, root);
-    if(spaces & XYZ) writeSpace( XYZ, (const char **) SampleNames, cgats, m, n, id_index, name_index, root);
-    if(spaces & RGB) writeSpace( RGB, (const char **) SampleNames, cgats, m, n, id_index, name_index, root);
-    if(spaces & CMYK) writeSpace( CMYK, (const char **) SampleNames, cgats, m, n, id_index, name_index, root);
-    if(spaces & xyY) writeSpace( xyY, (const char **) SampleNames, cgats, m, n, id_index, name_index, root);
+    if(spaces & Lab) writeSpace( Lab, (const char **) SampleNames, cgats, m, n, id_index, name_index, root, 0.0);
+    if(spaces & XYZ) writeSpace( XYZ, (const char **) SampleNames, cgats, m, n, id_index, name_index, root, 0.0);
+    if(spaces & RGB) writeSpace( RGB, (const char **) SampleNames, cgats, m, n, id_index, name_index, root, max_rgb);
+    if(spaces & CMYK) writeSpace( CMYK, (const char **) SampleNames, cgats, m, n, id_index, name_index, root, 0.0);
+    if(spaces & xyY) writeSpace( xyY, (const char **) SampleNames, cgats, m, n, id_index, name_index, root, 0.0);
     if(spaces & SPEC) writeSpec( (const char **) SampleNames, cgats, m, n, id_index, name_index, root);
   }
 

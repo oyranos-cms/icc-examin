@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: icc-examin 0.9\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2019-04-29 23:21+0200\n"
+"POT-Creation-Date: 2019-05-31 22:55+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -229,7 +229,7 @@ msgid "Close"
 msgstr ""
 
 #. icc_examin_ns::MyFl_Double_Window* DD
-#: icc_betrachter.cxx:933 oyranos_cmm_iemn.cpp:1094
+#: icc_betrachter.cxx:933 oyranos_cmm_iemn.cpp:1115
 msgid "ICC Examin"
 msgstr ""
 
@@ -685,7 +685,7 @@ msgstr ""
 
 #. The following strings must match the categories for a menu entry.
 #: icc_helfer.cpp:395 icc_profile_tags.cpp:1265 icc_profile_tags.cpp:1272
-#: oyranos_cmm_iemn.cpp:1094
+#: oyranos_cmm_iemn.cpp:1115
 msgid "Colour"
 msgstr ""
 
@@ -2628,27 +2628,27 @@ msgstr ""
 msgid "@2>"
 msgstr ""
 
-#: oyranos_cmm_iemn.cpp:610
+#: oyranos_cmm_iemn.cpp:631
 msgid "Color book[iemn]"
 msgstr ""
 
-#: oyranos_cmm_iemn.cpp:612
+#: oyranos_cmm_iemn.cpp:633
 msgid "ICC Examin CGATS parser"
 msgstr ""
 
-#: oyranos_cmm_iemn.cpp:618
+#: oyranos_cmm_iemn.cpp:639
 msgid "check"
 msgstr ""
 
-#: oyranos_cmm_iemn.cpp:620
+#: oyranos_cmm_iemn.cpp:641
 msgid "Check if this module can handle a certain command."
 msgstr ""
 
-#: oyranos_cmm_iemn.cpp:626
+#: oyranos_cmm_iemn.cpp:647
 msgid "Parse CGATS text."
 msgstr ""
 
-#: oyranos_cmm_iemn.cpp:628
+#: oyranos_cmm_iemn.cpp:649
 msgid ""
 "The ICC Examin \"parse_cgats\" command lets you parse CGATS files. The "
 "filter expects a oyOption_s object with name \"cgats\" containing a string "
@@ -2656,11 +2656,11 @@ msgid ""
 "oyjl_val."
 msgstr ""
 
-#: oyranos_cmm_iemn.cpp:635
+#: oyranos_cmm_iemn.cpp:656
 msgid "Parse CGATS in a robust way."
 msgstr ""
 
-#: oyranos_cmm_iemn.cpp:637
+#: oyranos_cmm_iemn.cpp:658
 msgid ""
 "The filter is activated by the \"pares_cgats\" command. It expects a \"cgats"
 "\" option containing a string with CGATS color sample format. The result "
@@ -2668,63 +2668,63 @@ msgid ""
 "oyjl_val JSON data structure ready for the oyTreeToCGATS() API"
 msgstr ""
 
-#: oyranos_cmm_iemn.cpp:738 oyranos_cmm_iemn.cpp:740
+#: oyranos_cmm_iemn.cpp:759 oyranos_cmm_iemn.cpp:761
 msgid "ICC Examin output filter"
 msgstr ""
 
-#: oyranos_cmm_iemn.cpp:744
+#: oyranos_cmm_iemn.cpp:765
 msgid "oy"
 msgstr ""
 
-#: oyranos_cmm_iemn.cpp:746
+#: oyranos_cmm_iemn.cpp:767
 msgid "Kai-Uwe Behrmann"
 msgstr ""
 
-#: oyranos_cmm_iemn.cpp:748
+#: oyranos_cmm_iemn.cpp:769
 msgid ""
 "Oyranos project; www: http://www.oyranos.org; support/email: ku.b@gmx.de; "
 "sources: http://www.oyranos.org/wiki/index.php?title=Oyranos/Download"
 msgstr ""
 
-#: oyranos_cmm_iemn.cpp:752
+#: oyranos_cmm_iemn.cpp:773
 msgid "GPL2+"
 msgstr ""
 
-#: oyranos_cmm_iemn.cpp:754
+#: oyranos_cmm_iemn.cpp:775
 msgid "Copyright (c) 2010 Kai-Uwe Behrmann"
 msgstr ""
 
-#: oyranos_cmm_iemn.cpp:756
+#: oyranos_cmm_iemn.cpp:777
 msgid "GPL2+ license: http://www.opensource.org/licenses/gpl2-license.php"
 msgstr ""
 
-#: oyranos_cmm_iemn.cpp:760
+#: oyranos_cmm_iemn.cpp:781
 msgid "help"
 msgstr ""
 
-#: oyranos_cmm_iemn.cpp:762
+#: oyranos_cmm_iemn.cpp:783
 msgid "The filter allows to visually observe a images colours."
 msgstr ""
 
-#: oyranos_cmm_iemn.cpp:764
+#: oyranos_cmm_iemn.cpp:785
 msgid ""
 "The 3D view uses OpenGL to project the image colours into a 3D view "
 "representing the CIE*Lab colour space. The filter needs a running window "
 "system."
 msgstr ""
 
-#: oyranos_cmm_iemn.cpp:1076
+#: oyranos_cmm_iemn.cpp:1097
 msgid "Image[iemn_filter]"
 msgstr ""
 
-#: oyranos_cmm_iemn.cpp:1078
+#: oyranos_cmm_iemn.cpp:1099
 msgid "ICC Examin Object"
 msgstr ""
 
-#: oyranos_cmm_iemn.cpp:1085
+#: oyranos_cmm_iemn.cpp:1106
 msgid "Some help for My example filter."
 msgstr ""
 
-#: oyranos_cmm_iemn.cpp:1087
+#: oyranos_cmm_iemn.cpp:1108
 msgid "More indepth help  for My example filter."
 msgstr ""
