@@ -249,6 +249,9 @@ int orderForSpectral(const char ** fieldNames, int startNM, int lambda, int endN
     for(i = 0; i < fn; ++i)
     {
       const char * name = fieldNames[i];
+      speclen = 0;
+      char ns = name[speclen];
+      while(ns && (ns < '0' || '9' < ns)) ns = name[++speclen];
       if(strstr(name,spec) != NULL)
       {
         const char * spect = strstr(name,spec) + speclen;
@@ -351,7 +354,7 @@ void writeSpace(colorEncoding space, const char ** SampleNames, CgatsFilter * cg
           case SPEC: break;
         }
         if(double_error <= 0)
-          oyjlTreeSetDoubleF( root, OYJL_CREATE_NEW, d, "collection/[%d]/colors/[%d]/%s/[%d]", m, i, json_cn, j);
+          oyjlTreeSetDoubleF( root, OYJL_CREATE_NEW, d, "collection/[%d]/colors/[%d]/data/%s/[%d]", m, i, json_cn, j);
       }
     }
   }
@@ -371,19 +374,29 @@ void writeSpec(const char ** SampleNames, CgatsFilter * cgats, int m, int n, int
     int error = orderForSpectral(SampleNames, 0, 0, 0, &startNM, &lambda, &endNM, &order, &cchan, spec);
     if(error)
       iemn_msg( oyMSG_WARN, 0, OYJL_DBG_FORMAT "  %scould not get spectral properties", OYJL_DBG_ARGS, error > 0 ? "ERROR: ":"" );
-    oyjlTreeSetStringF( root, OYJL_CREATE_NEW, "1", "collection/[0]/spectral/[0]/id" );
-    oyjlTreeSetDoubleF( root, OYJL_CREATE_NEW, startNM, "collection/[0]/spectral/[0]/startNM" );
-    oyjlTreeSetDoubleF( root, OYJL_CREATE_NEW, lambda, "collection/[0]/spectral/[0]/lambda" );
-    oyjlTreeSetDoubleF( root, OYJL_CREATE_NEW, (endNM-startNM+lambda)/lambda, "collection/[0]/spectral/[0]/steps" );
-    oyjlTreeSetDoubleF( root, OYJL_CREATE_NEW, endNM, "collection/[0]/spectral/[0]/endNM" );
+    else if(lambda)
+    {
+      oyjlTreeSetStringF( root, OYJL_CREATE_NEW, "1", "collection/[0]/spectral/[0]/id" );
+      oyjlTreeSetDoubleF( root, OYJL_CREATE_NEW, startNM, "collection/[0]/spectral/[0]/startNM" );
+      oyjlTreeSetDoubleF( root, OYJL_CREATE_NEW, lambda, "collection/[0]/spectral/[0]/lambda" );
+      oyjlTreeSetDoubleF( root, OYJL_CREATE_NEW, (endNM-startNM+lambda)/lambda, "collection/[0]/spectral/[0]/steps" );
+      oyjlTreeSetDoubleF( root, OYJL_CREATE_NEW, endNM, "collection/[0]/spectral/[0]/endNM" );
+    }
+    int block_count = cgats->messungen[m].block.size();
     for(i = 0; i < n; ++i)
     {
       const char * val;
-      if(name_index >= 0)
+      int count = cgats->messungen[m].block[i].size();
+      if(name_index >= 0 && name_index < count)
       {
         val = cgats->messungen[m].block[i][name_index].c_str();
         oyjlTreeSetStringF( root, OYJL_CREATE_NEW, val, "collection/[%d]/colors/[%d]/name", m, i);
+      } else
+      {
+        iemn_msg( oyMSG_WARN, 0, OYJL_DBG_FORMAT "  Internal error: unecpected name_index: %d|%d", OYJL_DBG_ARGS, name_index, count );
+        continue;
       }
+
       if(id_index >= 0)
       {
         oyjlTreeSetStringF( root, OYJL_CREATE_NEW, "1", "collection/[%d]/colors/[%d]/%s/[0]/id", m, i, json_cn );
