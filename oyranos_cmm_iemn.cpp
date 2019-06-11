@@ -542,7 +542,9 @@ oyPointer_s* iemnParseCGATS          ( const char        * cgatsT )
       {
         if(!(spaces&xyY)) iemn_msg( oyMSG_DBG,0, "xyY data " );
         spaces |= xyY;
-      } else if (strstr (SampleNames[i], cgats->spektral.c_str()) != 0)
+      } else if (strstr (SampleNames[i], cgats->spektral.c_str()) != 0 ||
+                 strstr (SampleNames[i], "SPEC") != 0 ||
+                 strstr (SampleNames[i], "NM_") != 0)
       {
         if(!(spaces&SPEC)) iemn_msg( oyMSG_DBG,0, "Spectral data " );
         spaces |= SPEC;
@@ -555,7 +557,7 @@ oyPointer_s* iemnParseCGATS          ( const char        * cgatsT )
     if(spaces & RGB) writeSpace( RGB, (const char **) SampleNames, cgats, m, n, id_index, name_index, root, max_rgb);
     if(spaces & CMYK) writeSpace( CMYK, (const char **) SampleNames, cgats, m, n, id_index, name_index, root, 0.0);
     if(spaces & xyY) writeSpace( xyY, (const char **) SampleNames, cgats, m, n, id_index, name_index, root, 0.0);
-    if(spaces & SPEC) writeSpec( (const char **) SampleNames, cgats, m, n, id_index, name_index, root);
+    if(spaces & SPEC) writeSpec( (const char **) SampleNames, cgats, m, n, id_index, name_index != -1 ? name_index : id_index, root);
   }
 
   ptr = oyPointer_New(0);
