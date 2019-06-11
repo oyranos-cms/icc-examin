@@ -237,7 +237,7 @@ int orderForSpectral(const char ** fieldNames, int startNM, int lambda, int endN
     n = (endNM-startNM)/lambda + 1;
     oyjlAllocHelper_m(nameList, char*, n+1, malloc, return 1)
     for(i = 0; i < n; ++i)
-      oyjlStringAdd( &nameList[i], 0,0, "SPEC_%d", startNM + i  * lambda );
+      oyjlStringAdd( &nameList[i], 0,0, "SPECTRAL_%d", startNM + i  * lambda );
     startNMl = startNM;
     lambdal = lambda;
     endNMl = endNM;
@@ -250,11 +250,14 @@ int orderForSpectral(const char ** fieldNames, int startNM, int lambda, int endN
     {
       const char * name = fieldNames[i];
       speclen = 0;
-      char ns = name[speclen];
-      while(ns && (ns < '0' || '9' < ns)) ns = name[++speclen];
-      if(strstr(name,spec) != NULL)
+
+      if( strstr( name, spec ) != NULL ||
+          strstr( name, "SPEC" ) != NULL ||
+          strstr( name, "NM_") != NULL )
       {
-        const char * spect = strstr(name,spec) + speclen;
+        char ns = name[speclen];
+        while(ns && (ns < '0' || '9' < ns)) ns = name[++speclen];
+        const char * spect = name + speclen;
         long l = 0;
         int err = oyjlStringToLong( spect, &l );
         if(err > 0)
@@ -482,8 +485,11 @@ oyPointer_s* iemnParseCGATS          ( const char        * cgatsT )
       else SET_VAL("SERIAL",            "serial",             0)
       else SET_VAL("MATERIAL",          "material",           0)
       else SET_VAL("INSTRUMENTATION",   "instrumentation",    0)
+      else SET_VAL("TARGET_INSTRUMENT", "instrumentation",    0) // Argyll CMS
       else SET_VAL("MEASUREMENT_SOURCE","measurement_source", 0)
       else SET_VAL("PRINT_CONDITIONS",  "print_conditions",   0)
+      else SET_VAL("DEVICE_CLASS",      "device_class",       0) // Argyll CMS
+      else SET_VAL("LUMINANCE_XYZ_CDM2","luminance",          0) // Argyll CMS
       else SET_VAL("SPECTRAL_START_NM", "collection/[0]/spectral/startNM",   1)
       else SET_VAL("SPECTRAL_NORM",     "collection/[0]/spectral/lambda",    1)
       else SET_VAL("SPECTRAL_END_NM",   "collection/[0]/spectral/endNM",     1)
