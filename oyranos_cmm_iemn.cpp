@@ -25,6 +25,7 @@
 #include <oyCMMapi10_s.h>
 #include <oyConnectorImaging_s.h>
 
+#include <ctype.h>
 #include <math.h>
 #include <stdarg.h>
 #include <stdlib.h>
@@ -221,12 +222,12 @@ void orderForCEncoding(const char ** fieldNames, colorEncoding space, int * orde
 }
 
 
-int orderForSpectral(const char ** fieldNames, int startNM, int lambda, int endNM, int * startNM_ret, int * lambda_ret, int * endNM_ret, int ** order_ret, int * count_ret, const char * spec)
+int orderForSpectral(const char ** fieldNames, int startNM, double lambda, int endNM, int * startNM_ret, double * lambda_ret, int * endNM_ret, int ** order_ret, int * count_ret, const char * spec)
 {
   char ** nameList = NULL;
   int nameList_n = 0;
   int n = 0, i,j, fn = 0;
-  long startNMl = 0, lambdal = 0, endNMl = 0;
+  double startNMd = 0, lambdad = 0, endNMd = 0;
   int error = -1;
   int * order = NULL;
   int speclen = strlen(spec);
@@ -238,9 +239,9 @@ int orderForSpectral(const char ** fieldNames, int startNM, int lambda, int endN
     oyjlAllocHelper_m(nameList, char*, n+1, malloc, return 1)
     for(i = 0; i < n; ++i)
       oyjlStringAdd( &nameList[i], 0,0, "SPECTRAL_%d", startNM + i  * lambda );
-    startNMl = startNM;
-    lambdal = lambda;
-    endNMl = endNM;
+    startNMd = startNM;
+    lambdad = lambda;
+    endNMd = endNM;
   } else
     /* parameterless case */
   {
@@ -253,37 +254,38 @@ int orderForSpectral(const char ** fieldNames, int startNM, int lambda, int endN
 
       if( strstr( name, spec ) != NULL ||
           strstr( name, "SPEC" ) != NULL ||
-          strstr( name, "NM_") != NULL )
+          strstr( name, "NM_") != NULL ||
+          isdigit(name[0]) )
       {
         char ns = name[speclen];
         while(ns && (ns < '0' || '9' < ns)) ns = name[++speclen];
         const char * spect = name + speclen;
-        long l = 0;
-        int err = oyjlStringToLong( spect, &l );
+        double d = 0;
+        int err = oyjlStringToDouble( spect, &d );
         if(err > 0)
           iemn_msg( oyMSG_WARN, 0, OYJL_DBG_FORMAT " could not detect spectral wave length: %s/%s", OYJL_DBG_ARGS, spect, name );
         oyjlStringListAddStaticString( &nameList, &nameList_n, name, 0,0 );
         if(n == 0)
         {
           firstSpec = i;
-          startNMl = l;
+          startNMd = d;
         } else if(n == 1)
-          lambdal = l - startNMl;
+          lambdad = d - startNMd;
         else
-          if(endNMl && l - endNMl != lambdal)
+          if(endNMd && fabs(d - endNMd) > lambdad + 1)
         {
-          iemn_msg( oyMSG_WARN, 0, OYJL_DBG_FORMAT "  unexpected local lambda: %i (%s,%s,%s)", OYJL_DBG_ARGS, l - endNMl, nameList[i-firstSpec-2], nameList[i-firstSpec-1], nameList[i-firstSpec] );
+          iemn_msg( oyMSG_WARN, 0, OYJL_DBG_FORMAT "  unexpected local lambda: %g (%s,%s,%s)", OYJL_DBG_ARGS, d - endNMd, nameList[i-firstSpec-2], nameList[i-firstSpec-1], nameList[i-firstSpec] );
           error = 1;
           break;
         }
 
-        endNMl = l;
+        endNMd = d;
         ++n;
       }
     }
   }
 
-  if(startNMl && lambdal && endNMl)
+  if(startNMd && lambdad && endNMd)
   {
     oyjlAllocHelper_m(order, int, n+1, malloc, return 1);
     j = 0;
@@ -296,9 +298,9 @@ int orderForSpectral(const char ** fieldNames, int startNM, int lambda, int endN
       }
     }
     error = 0;
-    if(startNM_ret) *startNM_ret = startNMl;
-    if(lambda_ret) *lambda_ret = lambdal;
-    if(endNM_ret) *endNM_ret = endNMl;
+    if(startNM_ret) *startNM_ret = startNMd;
+    if(lambda_ret) *lambda_ret = lambdad;
+    if(endNM_ret) *endNM_ret = endNMd;
     if(order_ret) *order_ret = order;
     if(count_ret) *count_ret = j;
   }
@@ -371,7 +373,9 @@ void writeSpec(const char ** SampleNames, CgatsFilter * cgats, int m, int n, int
       cchan, // number color channels for a selected color space
       *order = NULL;
 
-  int startNM = 0, lambda = 0, endNM = 0;
+  int startNM = 0,
+      endNM = 0;
+  double lambda = 0;
   const char * spec = cgats->spektral.c_str();
   {
     int error = orderForSpectral(SampleNames, 0, 0, 0, &startNM, &lambda, &endNM, &order, &cchan, spec);
@@ -382,7 +386,7 @@ void writeSpec(const char ** SampleNames, CgatsFilter * cgats, int m, int n, int
       oyjlTreeSetStringF( root, OYJL_CREATE_NEW, "1", "collection/[0]/spectral/[0]/id" );
       oyjlTreeSetDoubleF( root, OYJL_CREATE_NEW, startNM, "collection/[0]/spectral/[0]/startNM" );
       oyjlTreeSetDoubleF( root, OYJL_CREATE_NEW, lambda, "collection/[0]/spectral/[0]/lambda" );
-      oyjlTreeSetDoubleF( root, OYJL_CREATE_NEW, (endNM-startNM+lambda)/lambda, "collection/[0]/spectral/[0]/steps" );
+      oyjlTreeSetDoubleF( root, OYJL_CREATE_NEW, (int)((endNM-startNM+lambda)/lambda + 0.5), "collection/[0]/spectral/[0]/steps" );
       oyjlTreeSetDoubleF( root, OYJL_CREATE_NEW, endNM, "collection/[0]/spectral/[0]/endNM" );
     }
     int block_count = cgats->messungen[m].block.size();
@@ -397,7 +401,7 @@ void writeSpec(const char ** SampleNames, CgatsFilter * cgats, int m, int n, int
       } else
       {
         iemn_msg( oyMSG_WARN, 0, OYJL_DBG_FORMAT "  Internal error: unecpected name_index: %d|%d", OYJL_DBG_ARGS, name_index, count );
-        continue;
+        oyjlTreeSetDoubleF( root, OYJL_CREATE_NEW, i, "collection/[%d]/colors/[%d]/name", m, i);
       }
 
       if(id_index >= 0)
@@ -550,7 +554,8 @@ oyPointer_s* iemnParseCGATS          ( const char        * cgatsT )
         spaces |= xyY;
       } else if (strstr (SampleNames[i], cgats->spektral.c_str()) != 0 ||
                  strstr (SampleNames[i], "SPEC") != 0 ||
-                 strstr (SampleNames[i], "NM_") != 0)
+                 strstr (SampleNames[i], "NM_") != 0 ||
+                 isdigit(SampleNames[i][0]) )
       {
         if(!(spaces&SPEC)) iemn_msg( oyMSG_DBG,0, "Spectral data " );
         spaces |= SPEC;
