@@ -365,7 +365,7 @@ void writeSpace(colorEncoding space, const char ** SampleNames, CgatsFilter * cg
   }
 }
 
-void writeSpec(const char ** SampleNames, CgatsFilter * cgats, int m, int n, int id_index, int name_index, oyjl_val root)
+void writeSpectral(const char ** SampleNames, CgatsFilter * cgats, int m, int n, int id_index, int name_index, oyjl_val root)
 {
   const char * json_cn = "spectral";
 
@@ -383,7 +383,7 @@ void writeSpec(const char ** SampleNames, CgatsFilter * cgats, int m, int n, int
       iemn_msg( oyMSG_WARN, 0, OYJL_DBG_FORMAT "  %scould not get spectral properties", OYJL_DBG_ARGS, error > 0 ? "ERROR: ":"" );
     else if(lambda)
     {
-      oyjlTreeSetStringF( root, OYJL_CREATE_NEW, "1", "collection/[0]/spectral/[0]/id" );
+      oyjlTreeSetDoubleF( root, OYJL_CREATE_NEW, m+1, "collection/[0]/spectral/[0]/id" );
       oyjlTreeSetDoubleF( root, OYJL_CREATE_NEW, startNM, "collection/[0]/spectral/[0]/startNM" );
       oyjlTreeSetDoubleF( root, OYJL_CREATE_NEW, lambda, "collection/[0]/spectral/[0]/lambda" );
       oyjlTreeSetDoubleF( root, OYJL_CREATE_NEW, (int)((endNM-startNM+lambda)/lambda + 0.5), "collection/[0]/spectral/[0]/steps" );
@@ -403,11 +403,13 @@ void writeSpec(const char ** SampleNames, CgatsFilter * cgats, int m, int n, int
         iemn_msg( oyMSG_WARN, 0, OYJL_DBG_FORMAT "  Internal error: unecpected name_index: %d|%d", OYJL_DBG_ARGS, name_index, count );
         oyjlTreeSetDoubleF( root, OYJL_CREATE_NEW, i, "collection/[%d]/colors/[%d]/name", m, i);
       }
-
-      if(id_index >= 0)
+      if(id_index >= 0 && id_index < count)
       {
-        oyjlTreeSetStringF( root, OYJL_CREATE_NEW, "1", "collection/[%d]/colors/[%d]/%s/[0]/id", m, i, json_cn );
+        val = cgats->messungen[m].block[i][name_index].c_str();
+        oyjlTreeSetStringF( root, OYJL_CREATE_NEW, val, "collection/[%d]/colors/[%d]/id", m, i);
       }
+
+      oyjlTreeSetDoubleF( root, OYJL_CREATE_NEW, m+1, "collection/[%d]/colors/[%d]/%s/[0]/id", m, i, json_cn );
       for(j = 0; j < cchan; ++j)
       {
         int index = order[j];
@@ -488,11 +490,11 @@ oyPointer_s* iemnParseCGATS          ( const char        * cgatsT )
       else SET_VAL("PROD_DATE",         "prod_date",          0)
       else SET_VAL("SERIAL",            "serial",             0)
       else SET_VAL("MATERIAL",          "material",           0)
-      else SET_VAL("INSTRUMENTATION",   "instrumentation",    0)
-      else SET_VAL("TARGET_INSTRUMENT", "instrumentation",    0) // Argyll CMS
-      else SET_VAL("MEASUREMENT_SOURCE","measurement_source", 0)
+      else SET_VAL("INSTRUMENTATION",   "collection/[0]/spectral/[0]/measurement/device/instrumentation",    0)
+      else SET_VAL("TARGET_INSTRUMENT", "collection/[0]/spectral/[0]/measurement/device/instrumentation",    0) // Argyll CMS
+      else SET_VAL("MEASUREMENT_SOURCE","collection/[0]/spectral/[0]/measurement/device/illumination", 0)
       else SET_VAL("PRINT_CONDITIONS",  "print_conditions",   0)
-      else SET_VAL("DEVICE_CLASS",      "device_class",       0) // Argyll CMS
+      else SET_VAL("DEVICE_CLASS",      "collection/[0]/spectral/[0]/measurement/device/class",       0) // Argyll CMS
       else SET_VAL("LUMINANCE_XYZ_CDM2","luminance",          0) // Argyll CMS
       else SET_VAL("SPECTRAL_START_NM", "collection/[0]/spectral/[0]/startNM",   1)
       else SET_VAL("SPECTRAL_NORM",     "collection/[0]/spectral/[0]/lambda",    1)
@@ -568,7 +570,7 @@ oyPointer_s* iemnParseCGATS          ( const char        * cgatsT )
     if(spaces & RGB) writeSpace( RGB, (const char **) SampleNames, cgats, m, n, id_index, name_index, root, max_rgb);
     if(spaces & CMYK) writeSpace( CMYK, (const char **) SampleNames, cgats, m, n, id_index, name_index, root, 0.0);
     if(spaces & xyY) writeSpace( xyY, (const char **) SampleNames, cgats, m, n, id_index, name_index, root, 0.0);
-    if(spaces & SPEC) writeSpec( (const char **) SampleNames, cgats, m, n, id_index, name_index != -1 ? name_index : id_index, root);
+    if(spaces & SPEC) writeSpectral( (const char **) SampleNames, cgats, m, n, id_index, name_index != -1 ? name_index : id_index, root);
   }
 
   ptr = oyPointer_New(0);
