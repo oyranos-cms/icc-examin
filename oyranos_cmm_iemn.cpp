@@ -494,9 +494,9 @@ oyPointer_s* iemnParseCGATS          ( const char        * cgatsT )
       else SET_VAL("PRINT_CONDITIONS",  "print_conditions",   0)
       else SET_VAL("DEVICE_CLASS",      "device_class",       0) // Argyll CMS
       else SET_VAL("LUMINANCE_XYZ_CDM2","luminance",          0) // Argyll CMS
-      else SET_VAL("SPECTRAL_START_NM", "collection/[0]/spectral/startNM",   1)
-      else SET_VAL("SPECTRAL_NORM",     "collection/[0]/spectral/lambda",    1)
-      else SET_VAL("SPECTRAL_END_NM",   "collection/[0]/spectral/endNM",     1)
+      else SET_VAL("SPECTRAL_START_NM", "collection/[0]/spectral/[0]/startNM",   1)
+      else SET_VAL("SPECTRAL_NORM",     "collection/[0]/spectral/[0]/lambda",    1)
+      else SET_VAL("SPECTRAL_END_NM",   "collection/[0]/spectral/[0]/endNM",     1)
 #undef SET_VAL
     }
     if(SampleNames)
