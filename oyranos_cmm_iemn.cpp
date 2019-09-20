@@ -52,6 +52,7 @@ int iemnCMMWarnFunc( int code, const void* context, const char * format, ... );
 oyMessage_f iemn_msg = iemnCMMWarnFunc;
 
 int    iemnInit( oyStruct_s        * module_info );
+int    iemnReset( oyStruct_s       * module_info );
 extern oyCMMapi4_s   iemn_api4_iemn_filter;
 extern oyCMMapi7_s   iemn_api7_iemn_filter;
 
@@ -76,6 +77,8 @@ int                iemnCMMInit       ( oyStruct_s * OY_UNUSED )
   int error = 0;
   return error;
 }
+int                iemnCMMReset      ( oyStruct_s * OY_UNUSED )
+{ int error = 0; return error; }
 
 
 
@@ -747,8 +750,8 @@ int    iemnInit( oyStruct_s        * module_info )
 {
   oyCMM_s * info = (oyCMM_s*) module_info;
   int32_t cmm_version[3] = {OYRANOS_VERSION_A,OYRANOS_VERSION_B,OYRANOS_VERSION_C},
-          module_api[3]  = {0,9,6};
-  oyCMMapi10_s * filter = oyCMMapi10_Create( iemnCMMInit,
+          module_api[3]  = {0,9,7};
+  oyCMMapi10_s * filter = oyCMMapi10_Create( iemnCMMInit, iemnCMMReset,
                                        iemnCMMMessageFuncSet,
                                        OY_IEMN_PARSE_CGATS,
                                        cmm_version,
@@ -764,6 +767,15 @@ int    iemnInit( oyStruct_s        * module_info )
   icc_debug = oy_debug;
   return 0;
 }
+
+int    iemnReset( oyStruct_s        * module_info )
+{
+  oyCMM_s * info = (oyCMM_s*) module_info;
+  if(info->api && info->api->release)
+    info->api->release( (oyStruct_s**)&info->api );
+  return 0;
+}
+
 
 /**
  *  This function implements oyCMMInfoGetText_f.
@@ -846,7 +858,8 @@ oyCMM_s iemn_cmm_module = {
 
   /** ::icon; zero terminated list of a icon pyramid */
   &iemn_icon,
-  iemnInit
+  iemnInit,
+  iemnReset
 };
 
 
