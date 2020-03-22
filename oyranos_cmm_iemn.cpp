@@ -362,7 +362,7 @@ void writeSpace(colorEncoding space, const char ** SampleNames, CgatsFilter * cg
           case SPEC: break;
         }
         if(double_error <= 0)
-          oyjlTreeSetDoubleF( root, OYJL_CREATE_NEW, d, "collection/[%d]/colors/[%d]/%s/data/[%d]", m, i, json_cn, j);
+          oyjlTreeSetDoubleF( root, OYJL_CREATE_NEW, d, "collection/[%d]/colors/[%d]/%s/[0]/data/[%d]", m, i, json_cn, j);
       }
     }
   }
