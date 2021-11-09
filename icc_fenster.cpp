@@ -101,7 +101,7 @@ Fl_Image* iccImageCheck( const char* fname, uchar *header ICC_UNUSED, int len IC
   {
     std::string t = "oyranos-profile-graph -w 512 -b";
     if(!icc_examin->icc_betrachter->DD_farbraum->spectral_line)
-      t += " -s";
+      t += " -n";
     t += " -o ";
     t += preview;
     if(profile.size())
