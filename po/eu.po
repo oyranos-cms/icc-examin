@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cinepaint_icc-examin_eu\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2019-09-20 18:51+0200\n"
+"POT-Creation-Date: 2021-12-20 07:40+0100\n"
 "PO-Revision-Date: 2007-11-07 11:11+0100\n"
 "Last-Translator: Iñaki Larrañaga Murgoitio <dooteo@zundan.com>\n"
 "Language-Team: Basque <itzulpena@euskalgnu.org>\n"
@@ -686,7 +686,7 @@ msgstr ""
 
 #. The following strings must match the categories for a menu entry.
 #: icc_helfer.cpp:395 icc_profile_tags.cpp:1265 icc_profile_tags.cpp:1272
-#: oyranos_cmm_iemn.cpp:1156
+#: oyranos_cmm_iemn.cpp:1157
 msgid "Colour"
 msgstr "Kolorea"
 
@@ -744,7 +744,7 @@ msgstr "Bihurketa-taula 8 bit-eko doitzasunarekin:"
 msgid "Copyright"
 msgstr "Copyright-a"
 
-#: oyranos_cmm_iemn.cpp:815
+#: oyranos_cmm_iemn.cpp:816
 msgid "Copyright (c) 2010 Kai-Uwe Behrmann"
 msgstr ""
 
@@ -847,7 +847,8 @@ msgstr "Gogokoak"
 msgid "February"
 msgstr ""
 
-#: icc_betrachter.cxx:421 icc_betrachter.cxx:652 icc_ueber.cpp:283
+#: icc_betrachter.cxx:421 icc_betrachter.cxx:652 icc_main.cpp:69
+#: icc_ueber.cpp:283
 msgid "File"
 msgstr "Fitxategia"
 
@@ -946,11 +947,11 @@ msgstr ""
 msgid "G"
 msgstr "B"
 
-#: oyranos_cmm_iemn.cpp:813
+#: oyranos_cmm_iemn.cpp:814
 msgid "GPL2+"
 msgstr ""
 
-#: oyranos_cmm_iemn.cpp:817
+#: oyranos_cmm_iemn.cpp:818
 msgid "GPL2+ license: http://www.opensource.org/licenses/gpl2-license.php"
 msgstr ""
 
@@ -1066,7 +1067,7 @@ msgid "Hue"
 msgstr "Ñabardura"
 
 #. icc_examin_ns::MyFl_Double_Window* DD
-#: icc_betrachter.cxx:933 oyranos_cmm_iemn.cpp:1156
+#: icc_betrachter.cxx:933 oyranos_cmm_iemn.cpp:1157
 msgid "ICC Examin"
 msgstr "ICC Examin"
 
@@ -1075,7 +1076,7 @@ msgstr "ICC Examin"
 msgid "ICC Examin CGATS parser"
 msgstr "ICC Examin-en bertsioa"
 
-#: oyranos_cmm_iemn.cpp:1140
+#: oyranos_cmm_iemn.cpp:1141
 #, fuzzy
 msgid "ICC Examin Object"
 msgstr "ICC Examin"
@@ -1107,7 +1108,7 @@ msgstr ""
 "ikustailea da: www.color.org . Uneko bertsioak 2 profila soilik onartzen "
 "ditu."
 
-#: oyranos_cmm_iemn.cpp:799 oyranos_cmm_iemn.cpp:801
+#: oyranos_cmm_iemn.cpp:800 oyranos_cmm_iemn.cpp:802
 #, fuzzy
 msgid "ICC Examin output filter"
 msgstr "ICC Examin-en bertsioa"
@@ -1229,7 +1230,7 @@ msgstr ""
 msgid "Image Profile..."
 msgstr "Irudiaren profila..."
 
-#: oyranos_cmm_iemn.cpp:1138
+#: oyranos_cmm_iemn.cpp:1139
 msgid "Image[iemn_filter]"
 msgstr ""
 
@@ -1297,7 +1298,7 @@ msgstr ""
 msgid "K"
 msgstr "K"
 
-#: oyranos_cmm_iemn.cpp:807
+#: oyranos_cmm_iemn.cpp:808
 msgid "Kai-Uwe Behrmann"
 msgstr ""
 
@@ -1531,7 +1532,7 @@ msgid ""
 "monitor profile is used for this."
 msgstr ""
 
-#: oyranos_cmm_iemn.cpp:1149
+#: oyranos_cmm_iemn.cpp:1150
 msgid "More indepth help  for My example filter."
 msgstr ""
 
@@ -1673,7 +1674,7 @@ msgstr "Irteera"
 msgid "Oyranos Settings"
 msgstr "Oyranos-en ezarpenak"
 
-#: oyranos_cmm_iemn.cpp:809
+#: oyranos_cmm_iemn.cpp:810
 msgid ""
 "Oyranos project; www: http://www.oyranos.org; support/email: ku.b@gmx.de; "
 "sources: http://www.oyranos.org/wiki/index.php?title=Oyranos/Download"
@@ -2016,7 +2017,7 @@ msgstr ""
 msgid "Solaris"
 msgstr "Solaris"
 
-#: oyranos_cmm_iemn.cpp:1147
+#: oyranos_cmm_iemn.cpp:1148
 msgid "Some help for My example filter."
 msgstr ""
 
@@ -2111,7 +2112,7 @@ msgid ""
 "colorimetric rendering intent."
 msgstr ""
 
-#: oyranos_cmm_iemn.cpp:825
+#: oyranos_cmm_iemn.cpp:826
 msgid ""
 "The 3D view uses OpenGL to project the image colours into a 3D view "
 "representing the CIE*Lab colour space. The filter needs a running window "
@@ -2173,7 +2174,7 @@ msgstr ""
 msgid "The colour space shown is allways in CIE*Lab coordinates. "
 msgstr ""
 
-#: oyranos_cmm_iemn.cpp:823
+#: oyranos_cmm_iemn.cpp:824
 msgid "The filter allows to visually observe a images colours."
 msgstr ""
 
@@ -2566,7 +2567,7 @@ msgstr "satinatua, "
 msgid "gray"
 msgstr "grisa"
 
-#: oyranos_cmm_iemn.cpp:821
+#: oyranos_cmm_iemn.cpp:822
 msgid "help"
 msgstr ""
 
@@ -2694,7 +2695,7 @@ msgstr "puntuan"
 msgid "open X Display failed"
 msgstr "huts egin du X pantaila irekitzean"
 
-#: oyranos_cmm_iemn.cpp:805
+#: oyranos_cmm_iemn.cpp:806
 msgid "oy"
 msgstr ""
 

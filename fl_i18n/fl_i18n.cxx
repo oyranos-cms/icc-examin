@@ -81,7 +81,7 @@ char* icc_strdup_m (const char* t)
   return temp;
 }
 #endif
-/*extern int icc_debug;*/
+extern int icc_debug;
 #endif
 #ifndef DBG_PROG_START
 #define DBG_PROG_START
@@ -444,6 +444,8 @@ fl_translate_menue( Fl_Menu_Item* menueleiste )
 #ifdef USE_GETTEXT
   DBG_PROG_START
   int size = menueleiste->size();
+  if(icc_debug)
+    fprintf( stderr, "fl_translate_menue() textdomain:%s\n", textdomain(NULL) );
   for(int i = 0; i < size ; ++i) {
     const char* text = menueleiste[i].label();
     if(text)

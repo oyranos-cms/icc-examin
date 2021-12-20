@@ -31,6 +31,7 @@
 #include "icc_examin.h"
 #include "icc_kette.h"
 
+const char * threadGettext( const char* text);
 
 void  MallocDebug_CheckFreeList ();
 
@@ -58,12 +59,24 @@ main (int argc, char** argv)
     icc_debug = atoi(getenv("ICCEXAMIN_DEBUG"));
     for(int i = 0; i < argc; ++i)
       DBG_PROG_S( i <<" "<< argv[i] );
+    fprintf(stderr, "ICCEXAMIN_DEBUG=%d\n", icc_debug );
   } else
     icc_debug = 0;
 
   DBG_PROG_START
 
   setI18N( argv[0] );
+  const char * tr = _("File");
+  if(icc_debug)
+  {
+#define OyjlToString2_M(t) OyjlToString_M(t)
+#define OyjlToString_M(t) #t
+    const char * fn = OyjlToString2_M(_());
+    const char * loc = setlocale(LC_ALL, NULL);
+    const char * d = textdomain( NULL );
+    const char * t = threadGettext("File");
+    fprintf(stderr, "translation: %s %s loc=\"%s\" d=\"%s\" threadGettext=\"%s\"\n", tr, fn, loc, d, t );
+  }
 
   ICCexamin hauptprogramm;
 
