@@ -250,7 +250,6 @@ public:
               image?"created":"failed",
               image_display?"created":"failed");
     oyConversion_Release( &context );
-    oyFilterNode_Release( &icc );
     context = oyConversion_FromImageForDisplay( 
                              image, image_display, &icc,
                              oyOPTIONATTRIBUTE_ADVANCED, oyUINT8, 0, 0 );
