@@ -148,7 +148,7 @@ struct Channel {
 typedef Channel channel;
 
 /** ncl2 profilbody */
-signed char data[320] =
+signed char icc_base_data[320] =
   {
     0,0,1,64,108,99,109,115,
     2,48,0,0,110,109,99,108,
@@ -738,7 +738,7 @@ vergleicheFarben(void* zeiger)
   }
 
   // ... und das ncl2 Profil vervollstaendigen
-  memcpy(colour_profile, data, 320);
+  memcpy(colour_profile, icc_base_data, 320);
 
     // Profilegroesse
   char zahl[4];
