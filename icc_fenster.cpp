@@ -61,7 +61,7 @@ Fl_Image* iccImageCheck( const char* fname, uchar *header ICC_UNUSED, int len IC
 {
   const char    *home;          // Home directory
   char          preview[1024],  // Preview filename
-                command[1024];  // Command
+                command[2048];  // Command
   int stat;
 
   const char *endung = strrchr(fname,'.');
