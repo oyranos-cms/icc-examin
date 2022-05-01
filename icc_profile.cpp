@@ -906,8 +906,8 @@ ICCprofile::checkProfileDevice (char* type, icProfileClassSignature deviceClass)
                      _("Profile\"."));
           check = false;
           break;
-        if (icSigCmykData   != header.colorSpace())
-          g_message ("%s - %s - %s \"%s %s",_("Colour Space"),
+          if (icSigCmykData   != header.colorSpace())
+            g_message ("%s - %s - %s \"%s %s",_("Colour Space"),
                      getColorSpaceName(header.colorSpace()).c_str(),
                      _("is not valid for an"),
                      type,
@@ -1054,11 +1054,13 @@ ICCprofile::removeTag (int item)
   int i = 0,
       zahl = 0; DBG_PROG
   for (; i < (int)tags.size(); i++)
+  {
     if (i != item)
     {   DBG_PROG
       t[zahl] = tags[i]; DBG_PROG_S("i: " << i << " -> zahl: " << zahl)
       zahl++; DBG_PROG
     }
+  }
 
     DBG_PROG
 # if 0

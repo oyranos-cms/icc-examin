@@ -698,7 +698,7 @@ ICCexaminIO::berichtSpeichern (void)
   std::string muster = dateiwahl()->filter(); DBG_PROG
   std::string datei;
   if (dateiwahl()->value())
-    datei = dateiwahl()->value(); DBG_PROG
+  { datei = dateiwahl()->value(); DBG_PROG }
   std::string titel = dateiwahl()->label(); DBG_PROG
 
   dateiwahl()->callback(0);

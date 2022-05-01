@@ -4,7 +4,7 @@
 
 #include <oyranos_version.h>
 
-const char * icc_config_log_=" \
+const char * icc_config_log_ = " \
 PLATFORM = @PLATFORM@ \n\
 prefix =                @CMAKE_INSTALL_PREFIX@ \n\
  \n\

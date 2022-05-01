@@ -250,11 +250,11 @@ extern int icc_debug;
 #ifdef DEBUG
 #define DBG_BED(n) if ((icc_debug >= n && icc_debug < 10) || icc_debug == 1##n)
 #define DBG_BED2(n1,n2) if ((icc_debug >= n1 && icc_debug < 10) || icc_debug == 1##n1 || (icc_debug >= n2 && icc_debug < 10) || icc_debug == 1##n2 )
-#define DBG_NUM        DBG_BED(1) DBG(ICC_MSG_DBG)
-#define DBG_NUM_START  DBG_BED2(1,9) DBG_START
-#define DBG_NUM_ENDE   DBG_BED2(1,9) DBG_ENDE
-#define DBG_NUM_S(txt) DBG_BED(1) DBG_S(txt,ICC_MSG_DBG)
-#define DBG_NUM_V(txt) DBG_BED(1) DBG_V(txt,ICC_MSG_DBG)
+#define DBG_NUM        { DBG_BED(1) DBG(ICC_MSG_DBG) }
+#define DBG_NUM_START  { DBG_BED2(1,9) DBG_START }
+#define DBG_NUM_ENDE   { DBG_BED2(1,9) DBG_ENDE }
+#define DBG_NUM_S(txt) { DBG_BED(1) DBG_S(txt,ICC_MSG_DBG) }
+#define DBG_NUM_V(txt) { DBG_BED(1) DBG_V(txt,ICC_MSG_DBG) }
 #else
 #define DBG_NUM ;
 #define DBG_NUM_START
@@ -263,11 +263,11 @@ extern int icc_debug;
 #define DBG_NUM_V(txt) ;
 #endif
 #ifdef DEBUG
-#define DBG_PROG        DBG_BED(2) DBG(ICC_MSG_DBG)
-#define DBG_PROG_START  DBG_BED2(2,9) DBG_START
-#define DBG_PROG_ENDE   DBG_BED2(2,9) DBG_ENDE
-#define DBG_PROG_S(txt) DBG_BED(2) DBG_S(txt,ICC_MSG_DBG)
-#define DBG_PROG_V(txt) DBG_BED(2) DBG_V(txt,ICC_MSG_DBG)
+#define DBG_PROG        { DBG_BED(2) DBG(ICC_MSG_DBG) }
+#define DBG_PROG_START  { DBG_BED2(2,9) DBG_START }
+#define DBG_PROG_ENDE   { DBG_BED2(2,9) DBG_ENDE }
+#define DBG_PROG_S(txt) { DBG_BED(2) DBG_S(txt,ICC_MSG_DBG) }
+#define DBG_PROG_V(txt) { DBG_BED(2) DBG_V(txt,ICC_MSG_DBG) }
 #else
 #define DBG_PROG ;
 #define DBG_PROG_START ;
@@ -276,11 +276,11 @@ extern int icc_debug;
 #define DBG_PROG_V(txt) ;
 #endif
 #ifdef DEBUG
-#define DBG_MEM        DBG_BED(3) DBG(ICC_MSG_DBG)
-#define DBG_MEM_START  DBG_BED(3) DBG_START
-#define DBG_MEM_ENDE   DBG_BED(3) DBG_ENDE
-#define DBG_MEM_S(txt) DBG_BED(3) DBG_S(txt,ICC_MSG_DBG)
-#define DBG_MEM_V(txt) DBG_BED(3) DBG_V(txt,ICC_MSG_DBG)
+#define DBG_MEM        { DBG_BED(3) DBG(ICC_MSG_DBG) }
+#define DBG_MEM_START  { DBG_BED(3) DBG_START }
+#define DBG_MEM_ENDE   { DBG_BED(3) DBG_ENDE }
+#define DBG_MEM_S(txt) { DBG_BED(3) DBG_S(txt,ICC_MSG_DBG) }
+#define DBG_MEM_V(txt) { DBG_BED(3) DBG_V(txt,ICC_MSG_DBG) }
 #else
 #define DBG_MEM ;
 #define DBG_MEM_START ;
@@ -289,11 +289,11 @@ extern int icc_debug;
 #define DBG_MEM_V(txt) ;
 #endif
 #ifdef DEBUG
-#define DBG_THREAD        DBG_BED(4) DBG(ICC_MSG_DBG)
-#define DBG_THREAD_START  DBG_BED2(4,8) DBG_START
-#define DBG_THREAD_ENDE   DBG_BED2(4,8) DBG_ENDE
-#define DBG_THREAD_S(txt) DBG_BED(4) DBG_S(txt,ICC_MSG_DBG)
-#define DBG_THREAD_V(txt) DBG_BED(4) DBG_V(txt,ICC_MSG_DBG)
+#define DBG_THREAD        { DBG_BED(4) DBG(ICC_MSG_DBG) }
+#define DBG_THREAD_START  { DBG_BED2(4,8) DBG_START }
+#define DBG_THREAD_ENDE   { DBG_BED2(4,8) DBG_ENDE }
+#define DBG_THREAD_S(txt) { DBG_BED(4) DBG_S(txt,ICC_MSG_DBG) }
+#define DBG_THREAD_V(txt) { DBG_BED(4) DBG_V(txt,ICC_MSG_DBG) }
 #else
 #define DBG_THREAD ;
 #define DBG_THREAD_START ;
@@ -302,11 +302,11 @@ extern int icc_debug;
 #define DBG_THREAD_V(txt) ;
 #endif
 #ifdef DEBUG
-#define DBG_5        DBG_BED(5) DBG(ICC_MSG_DBG)
-#define DBG_5_START  DBG_BED2(5,8) DBG_START
-#define DBG_5_ENDE   DBG_BED2(5,8) DBG_ENDE
-#define DBG_5_S(txt) DBG_BED(5) DBG_S(txt,ICC_MSG_DBG)
-#define DBG_5_V(txt) DBG_BED(5) DBG_V(txt,ICC_MSG_DBG)
+#define DBG_5        { DBG_BED(5) DBG(ICC_MSG_DBG) }
+#define DBG_5_START  { DBG_BED2(5,8) DBG_START }
+#define DBG_5_ENDE   { DBG_BED2(5,8) DBG_ENDE }
+#define DBG_5_S(txt) { DBG_BED(5) DBG_S(txt,ICC_MSG_DBG) }
+#define DBG_5_V(txt) { DBG_BED(5) DBG_V(txt,ICC_MSG_DBG) }
 #else
 #define DBG_5 ;
 #define DBG_5_START ;

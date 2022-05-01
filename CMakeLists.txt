@@ -29,6 +29,11 @@ IF (NOT CMAKE_BUILD_TYPE)
 	SET(CMAKE_BUILD_TYPE RelWithDebInfo CACHE STRING "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel." FORCE)
 ENDIF (NOT CMAKE_BUILD_TYPE)
 
+IF("${CMAKE_CXX_COMPILER_ID}" MATCHES "(GNU|Clang)")
+  MESSAGE( "-- Found Compiler GNU|Clang: ${CMAKE_CXX_COMPILER_ID}" )
+  SET( CMAKE_C_FLAGS "-Wmisleading-indentation -Wempty-body" )
+  SET( CMAKE_CXX_FLAGS "-Wmisleading-indentation -Wunused-parameter -Wempty-body" )
+ENDIF()
 
 # some basic and important variables
 SET( DOMAIN oyranos.org ) #needed by doxygen
