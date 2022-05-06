@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: icc-examin 0.9\n"
 "Report-Msgid-Bugs-To: ku.b@gmx.de\n"
-"POT-Creation-Date: 2022-04-30 10:04+0200\n"
+"POT-Creation-Date: 2022-05-06 08:23+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -230,7 +230,7 @@ msgid "Close"
 msgstr ""
 
 #. icc_examin_ns::MyFl_Double_Window* DD
-#: icc_betrachter.cxx:933 oyranos_cmm_iemn.cpp:1157
+#: icc_betrachter.cxx:933 oyranos_cmm_iemn.cpp:1154
 msgid "ICC Examin"
 msgstr ""
 
@@ -686,7 +686,7 @@ msgstr ""
 
 #. The following strings must match the categories for a menu entry.
 #: icc_helfer.cpp:395 icc_profile_tags.cpp:1265 icc_profile_tags.cpp:1272
-#: oyranos_cmm_iemn.cpp:1157
+#: oyranos_cmm_iemn.cpp:1154
 msgid "Colour"
 msgstr ""
 
@@ -2669,63 +2669,63 @@ msgid ""
 "oyjl_val JSON data structure ready for the oyTreeToCGATS() API"
 msgstr ""
 
-#: oyranos_cmm_iemn.cpp:800 oyranos_cmm_iemn.cpp:802
+#: oyranos_cmm_iemn.cpp:797 oyranos_cmm_iemn.cpp:799
 msgid "ICC Examin output filter"
 msgstr ""
 
-#: oyranos_cmm_iemn.cpp:806
+#: oyranos_cmm_iemn.cpp:803
 msgid "oy"
 msgstr ""
 
-#: oyranos_cmm_iemn.cpp:808
+#: oyranos_cmm_iemn.cpp:805
 msgid "Kai-Uwe Behrmann"
 msgstr ""
 
-#: oyranos_cmm_iemn.cpp:810
+#: oyranos_cmm_iemn.cpp:807
 msgid ""
 "Oyranos project; www: http://www.oyranos.org; support/email: ku.b@gmx.de; "
 "sources: http://www.oyranos.org/wiki/index.php?title=Oyranos/Download"
 msgstr ""
 
-#: oyranos_cmm_iemn.cpp:814
+#: oyranos_cmm_iemn.cpp:811
 msgid "GPL2+"
 msgstr ""
 
-#: oyranos_cmm_iemn.cpp:816
+#: oyranos_cmm_iemn.cpp:813
 msgid "Copyright (c) 2010 Kai-Uwe Behrmann"
 msgstr ""
 
-#: oyranos_cmm_iemn.cpp:818
+#: oyranos_cmm_iemn.cpp:815
 msgid "GPL2+ license: http://www.opensource.org/licenses/gpl2-license.php"
 msgstr ""
 
-#: oyranos_cmm_iemn.cpp:822
+#: oyranos_cmm_iemn.cpp:819
 msgid "help"
 msgstr ""
 
-#: oyranos_cmm_iemn.cpp:824
+#: oyranos_cmm_iemn.cpp:821
 msgid "The filter allows to visually observe a images colours."
 msgstr ""
 
-#: oyranos_cmm_iemn.cpp:826
+#: oyranos_cmm_iemn.cpp:823
 msgid ""
 "The 3D view uses OpenGL to project the image colours into a 3D view "
 "representing the CIE*Lab colour space. The filter needs a running window "
 "system."
 msgstr ""
 
-#: oyranos_cmm_iemn.cpp:1139
+#: oyranos_cmm_iemn.cpp:1136
 msgid "Image[iemn_filter]"
 msgstr ""
 
-#: oyranos_cmm_iemn.cpp:1141
+#: oyranos_cmm_iemn.cpp:1138
 msgid "ICC Examin Object"
 msgstr ""
 
-#: oyranos_cmm_iemn.cpp:1148
+#: oyranos_cmm_iemn.cpp:1145
 msgid "Some help for My example filter."
 msgstr ""
 
-#: oyranos_cmm_iemn.cpp:1150
+#: oyranos_cmm_iemn.cpp:1147
 msgid "More indepth help  for My example filter."
 msgstr ""

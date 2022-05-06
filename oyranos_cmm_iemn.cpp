@@ -769,11 +769,8 @@ int    iemnInit( oyStruct_s        * module_info )
   return 0;
 }
 
-int    iemnReset( oyStruct_s        * module_info )
+int    iemnReset( oyStruct_s        * module_info OY_UNUSED)
 {
-  oyCMM_s * info = (oyCMM_s*) module_info;
-  if(info->api && info->api->release)
-    info->api->release( (oyStruct_s**)&info->api );
   return 0;
 }
 
