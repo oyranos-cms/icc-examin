@@ -1,4 +1,4 @@
-CMAKE_MINIMUM_REQUIRED (VERSION 2.6)
+CMAKE_MINIMUM_REQUIRED (VERSION 2.8.12)
 
 PROJECT (icc-examin)
 
@@ -32,7 +32,7 @@ ENDIF (NOT CMAKE_BUILD_TYPE)
 IF("${CMAKE_CXX_COMPILER_ID}" MATCHES "(GNU|Clang)")
   MESSAGE( "-- Found Compiler GNU|Clang: ${CMAKE_CXX_COMPILER_ID}" )
   SET( CMAKE_C_FLAGS "-Wmisleading-indentation -Wempty-body" )
-  SET( CMAKE_CXX_FLAGS "-Wmisleading-indentation -Wunused-parameter -Wempty-body" )
+  SET( CMAKE_CXX_FLAGS "-Wunused-parameter -Wempty-body" )
 ENDIF()
 
 # some basic and important variables
