@@ -370,7 +370,7 @@ fl_initialise_locale( const char *domain, const char *locale_path,
     return 1;
 
   if(strlen(locale))
-    DBG_PROG_S( locale );
+  { DBG_PROG_S( locale ); }
 
 
   // 2. for GNU gettext, the locale info is usually stored in the LANG variable
@@ -393,12 +393,12 @@ fl_initialise_locale( const char *domain, const char *locale_path,
 
       // good?
     if(getenv("LANG"))
-      DBG_PROG_S( getenv("LANG") );
+    { DBG_PROG_S( getenv("LANG") ); }
   }
 
   DBG_PROG_V( system("set | grep LANG") )
   if(strlen(locale))
-    DBG_PROG_S( locale );
+  { DBG_PROG_S( locale ); }
 
   // 3. where to find the MO file? select an appropriate directory
   bdtd = bindtextdomain (domain, locale_path);

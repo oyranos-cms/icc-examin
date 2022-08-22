@@ -267,7 +267,7 @@ int orderForSpectral(const char ** fieldNames, int startNM, double lambda, int e
         int err = oyjlStringToDouble( spect, &d, 0 );
         if(err > 0)
           iemn_msg( oyMSG_WARN, 0, OYJL_DBG_FORMAT " could not detect spectral wave length: %s/%s", OYJL_DBG_ARGS, spect, name );
-        oyjlStringListAddString( &nameList, &nameList_n, name, 0,0 );
+        oyjlStringListPush( &nameList, &nameList_n, name, 0,0 );
         if(n == 0)
         {
           firstSpec = i;
@@ -509,7 +509,7 @@ oyPointer_s* iemnParseCGATS          ( const char        * cgatsT )
     for (i = 0; i < chan; ++i)
     {
       const char * name = cgats->messungen[m].felder[0][i].c_str();
-      oyjlStringListAddString( &SampleNames, &SNsize, name, 0,0 );
+      oyjlStringListPush( &SampleNames, &SNsize, name, 0,0 );
       if(icc_debug)
         iemn_msg( oyMSG_DBG, 0, OYJL_DBG_FORMAT "  FieldName: %s", OYJL_DBG_ARGS, name );
     }
