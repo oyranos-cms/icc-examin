@@ -1286,7 +1286,7 @@ int main( int argc OYJL_UNUSED, char ** argv)
   int size = 0;
   oy_debug = 1;
   oyjlDebugVariableSet(&oy_debug);
-  char * cgatsT = oyjlReadFile( argv[1], &size );
+  char * cgatsT = oyjlReadFile( argv[1], 0, &size );
   int error = !cgatsT;
   if(error) puts("need a CGATS file as sole argument\n");
   oyPointer_s*ptr = iemnParseCGATS( cgatsT );
