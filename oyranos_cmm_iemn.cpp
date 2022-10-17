@@ -264,7 +264,7 @@ int orderForSpectral(const char ** fieldNames, int startNM, double lambda, int e
         while(ns && (ns < '0' || '9' < ns)) ns = name[++speclen];
         const char * spect = name + speclen;
         double d = 0;
-        int err = oyjlStringToDouble( spect, &d, 0 );
+        int err = oyjlStringToDouble( spect, &d, 0,0 );
         if(err > 0)
           iemn_msg( oyMSG_WARN, 0, OYJL_DBG_FORMAT " could not detect spectral wave length: %s/%s", OYJL_DBG_ARGS, spect, name );
         oyjlStringListPush( &nameList, &nameList_n, name, 0,0 );
@@ -351,7 +351,7 @@ void writeSpace(colorEncoding space, const char ** SampleNames, CgatsFilter * cg
         int index = order[j];
         val = cgats->messungen[m].block[i][index].c_str();
         double d = 0.0;
-        int double_error = oyjlStringToDouble(val,&d, 0);
+        int double_error = oyjlStringToDouble(val,&d, 0,0);
         switch(space)
         {
           case Lab: if(j == 0) d /= 100.; else d = d/255. + 0.5; break;
@@ -418,7 +418,7 @@ void writeSpectral(const char ** SampleNames, CgatsFilter * cgats, int m, int n,
         int index = order[j];
         const char * val = cgats->messungen[m].block[i][index].c_str();
         double d = 0.0;
-        int double_error = oyjlStringToDouble(val,&d, 0);
+        int double_error = oyjlStringToDouble(val,&d, 0,0);
         if(double_error <= 0)
           oyjlTreeSetDoubleF( root, OYJL_CREATE_NEW, d, "collection/[%d]/colors/[%d]/%s/[0]/data/[%d]", m, i, json_cn, j);
       }
@@ -481,7 +481,7 @@ oyPointer_s* iemnParseCGATS          ( const char        * cgatsT )
       if(icc_debug) iemn_msg( oyMSG_DBG, 0, OYJL_DBG_FORMAT "  comments: %s", OYJL_DBG_ARGS, name );
       const char * val = v.size() > 1 ? v[1].c_str() : NULL;
       double d = 0.0;
-      int double_error = oyjlStringToDouble(val,&d, 0);
+      int double_error = oyjlStringToDouble(val,&d, 0,0);
 
 #define SET_VAL(_CGATS_NAME_, _JSON_NAME_,_test_double_) \
       if(strstr(name, _CGATS_NAME_) != NULL) { (_test_double_ && (double_error <= 0)) ? oyjlTreeSetDoubleF( root, OYJL_CREATE_NEW, d, _JSON_NAME_) : oyjlTreeSetStringF( root, OYJL_CREATE_NEW, val, _JSON_NAME_ ); }
